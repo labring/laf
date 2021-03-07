@@ -1,0 +1,25 @@
+{
+  "name": "less-framework",
+  "version": "0.0.1",
+  "description": "less framework base on less-api",
+  "main": "./dist/app.js",
+  "scripts": {
+    "build": "npx tsc -p tsconfig.json",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "BaaS",
+    "cloud",
+    "mysql",
+    "acl",
+    "serverless",
+    "less-api"
+  ],
+  "dependencies": {
+    "express": "^4.17.1",
+    "less-api": "^1.2.3"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.11"
+  }
+}
