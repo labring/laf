@@ -14,9 +14,6 @@ app.all('*', function (_req, res, next) {
   next()
 })
 
-// app.post('/admin-entry', require('./routes/admin'))
-// app.post('/user-entry', require('./routes/user'))
-
 app.post('/admin', require('./entry/admin'))
 app.post('/app', require('./entry/app'))
 

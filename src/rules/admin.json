@@ -1,0 +1,29 @@
+{
+  "admin": {
+    ".read": "$role == 'admin'"
+  },
+  "permission": {
+    ".read": true,
+    ".update": "$role == 'admin'",
+    ".add": "$role == 'admin'",
+    ".remove": "$role == 'admin'"
+  },
+  "role": {
+    ".read": true,
+    ".update": "$role == 'admin'",
+    ".add": "$role == 'admin'",
+    ".remove": "$role == 'admin'"
+  },
+  "role_permission": {
+    ".read": true,
+    ".update": "$role == 'admin'",
+    ".add": "$role == 'admin'",
+    ".remove": "$role == 'admin'"
+  },
+  "user_role": {
+    ".read": true,
+    ".update": "$role == 'admin'",
+    ".add": "$role == 'admin'",
+    ".remove": "$role == 'admin'"
+  }
+}

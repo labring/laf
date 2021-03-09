@@ -1,0 +1,5 @@
+{
+  "user_profile": {
+    ".read": "$query.uid == $uid"
+  }
+}
