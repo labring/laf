@@ -1,13 +1,11 @@
-DROP TABLE IF EXISTS admin;
-CREATE TABLE `admin` (
+CREATE TABLE `admin` IF NOT EXISTS(
   `uid` int NOT NULL COMMENT 'Base User Id',
   `username` varchar(64) NOT NULL COMMENT 'Admin Username',
   `created_at` int DEFAULT NULL COMMENT 'Created time',
   `updated_at` int DEFAULT NULL COMMENT 'Updated time',
   PRIMARY KEY (`uid`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User';
-
+) ENGINE = InnoDB DEFAULT CHARSET = utf8 COMMENT = 'User';
 DROP TABLE IF EXISTS base_user;
 CREATE TABLE `base_user` (
   `id` int NOT NULL AUTO_INCREMENT COMMENT 'primary key',
@@ -15,8 +13,7 @@ CREATE TABLE `base_user` (
   `created_at` int DEFAULT NULL COMMENT 'Created time',
   `updated_at` int DEFAULT NULL COMMENT 'Updated time',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User';
-
+) ENGINE = InnoDB AUTO_INCREMENT = 2 DEFAULT CHARSET = utf8 COMMENT = 'User';
 DROP TABLE IF EXISTS permission;
 CREATE TABLE `permission` (
   `id` int NOT NULL AUTO_INCREMENT COMMENT 'primary key',
@@ -28,8 +25,7 @@ CREATE TABLE `permission` (
   `created_by` int DEFAULT NULL COMMENT 'Author id',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Permission';
-
+) ENGINE = InnoDB DEFAULT CHARSET = utf8 COMMENT = 'Permission';
 DROP TABLE IF EXISTS role;
 CREATE TABLE `role` (
   `id` int NOT NULL AUTO_INCREMENT COMMENT 'primary key',
@@ -41,8 +37,7 @@ CREATE TABLE `role` (
   `created_by` int DEFAULT NULL COMMENT 'Author id',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Permission';
-
+) ENGINE = InnoDB DEFAULT CHARSET = utf8 COMMENT = 'Permission';
 DROP TABLE IF EXISTS role_permission;
 CREATE TABLE `role_permission` (
   `id` int NOT NULL AUTO_INCREMENT COMMENT 'primary key',
@@ -51,8 +46,7 @@ CREATE TABLE `role_permission` (
   `created_at` int DEFAULT NULL COMMENT 'Created time',
   `created_by` int DEFAULT NULL COMMENT 'Author id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Role Permission Relation';
-
+) ENGINE = InnoDB DEFAULT CHARSET = utf8 COMMENT = 'Role Permission Relation';
 DROP TABLE IF EXISTS uesr_auth_bind;
 CREATE TABLE `uesr_auth_bind` (
   `id` int NOT NULL AUTO_INCREMENT COMMENT 'primary key',
@@ -64,8 +58,7 @@ CREATE TABLE `uesr_auth_bind` (
   `created_at` int DEFAULT NULL COMMENT 'Created time',
   `updated_at` int DEFAULT NULL COMMENT 'Updated time',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User Auth Bind';
-
+) ENGINE = InnoDB DEFAULT CHARSET = utf8 COMMENT = 'User Auth Bind';
 DROP TABLE IF EXISTS user;
 CREATE TABLE `user` (
   `uid` int NOT NULL COMMENT 'Base User Id',
@@ -74,8 +67,7 @@ CREATE TABLE `user` (
   `updated_at` int DEFAULT NULL COMMENT 'Updated time',
   PRIMARY KEY (`uid`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User';
-
+) ENGINE = InnoDB DEFAULT CHARSET = utf8 COMMENT = 'User';
 DROP TABLE IF EXISTS user_profile;
 CREATE TABLE `user_profile` (
   `uid` int NOT NULL COMMENT 'Base User Id',
@@ -85,9 +77,10 @@ CREATE TABLE `user_profile` (
   `avatar` varchar(256) DEFAULT NULL COMMENT 'Avator',
   `created_at` int DEFAULT NULL COMMENT 'Created time',
   `updated_at` int DEFAULT NULL COMMENT 'Updated time',
-  PRIMARY KEY (`uid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User';
-
+  PRIMARY KEY (`uid`),
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `phone` (`phone`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8 COMMENT = 'User';
 DROP TABLE IF EXISTS user_role;
 CREATE TABLE `user_role` (
   `id` int NOT NULL AUTO_INCREMENT COMMENT 'primary key',
@@ -96,13 +89,4 @@ CREATE TABLE `user_role` (
   `created_at` int DEFAULT NULL COMMENT 'Created time',
   `created_by` int DEFAULT NULL COMMENT 'Author id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User Role Relation';
-
-
-
-
-
-
-
-
-
+) ENGINE = InnoDB DEFAULT CHARSET = utf8 COMMENT = 'User Role Relation';

@@ -8,6 +8,7 @@ const router = Router()
 router.all('*', function (_req, _res, next) {
   next()
 })
+
 const accessor = new MysqlAccessor(Config.db)
 const entry = new Entry(accessor)
 entry.init()

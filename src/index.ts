@@ -1,5 +1,8 @@
 import express = require('express')
-
+import { parseToken } from './lib/token'
+import AdminEntry from './entry/admin'
+import AppEntry from './entry/app'
+import { AdminRouter, UserRouter } from './router'
 
 const app = express()
 app.use(express.json())
@@ -14,8 +17,21 @@ app.all('*', function (_req, res, next) {
   next()
 })
 
-app.post('/admin', require('./entry/admin'))
-app.post('/app', require('./entry/app'))
+// 解析 Bearer Token
+app.use(function (req, _res, next) {
+  const bearer = req.headers['authorization'] ?? ''
+  const splitted = bearer.split('.')
+  const token = splitted.length === 2 ? splitted[1] : ''
+  const auth = parseToken(token) || null
+  req['auth'] = auth
+  next()
+})
+
+app.use('/admin', AdminEntry)
+app.use('/app', AppEntry)
+
+app.use('/admin', AdminRouter)
+app.use('/user', UserRouter)
 
 
 const port = process.env.PORT ?? 8080

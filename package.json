@@ -4,7 +4,9 @@
   "description": "less framework base on less-api",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "npx tsc -p tsconfig.json",
+    "start": "node ./dist/index.js",
+    "build": "npx tsc -p tsconfig.json && cp -R ./src/rules/ ./dist/rules/",
+    "watch": "npx tsc -p tsconfig.json -w && cp -R ./src/rules/ ./dist/rules/",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -17,7 +19,8 @@
   ],
   "dependencies": {
     "express": "^4.17.1",
-    "less-api": "^1.2.3"
+    "less-api": "^1.2.8",
+    "mongodb": "^3.6.3"
   },
   "devDependencies": {
     "@types/express": "^4.17.11"
