@@ -15,10 +15,13 @@ entry.init()
 entry.loadRules(rules)
 
 router.post('/entry', async (req, res) => {
+  const auth = req['auth'] ?? {}
+
   // parse params
   const params = entry.parseParams(req.body)
 
   const injections = {
+    $uid: auth.uid
   }
   // validate query
   const result = await entry.validate(params, injections)

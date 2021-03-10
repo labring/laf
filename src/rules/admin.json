@@ -1,29 +1,32 @@
 {
   "admin": {
-    ".read": "$role == 'admin'"
+    ".read": "$has('admin.read')",
+    ".update": "$has('admin.update')",
+    ".add": "$has('admin.create')",
+    ".remove": "$has('admin.delete')"
   },
   "permission": {
-    ".read": true,
-    ".update": "$role == 'admin'",
-    ".add": "$role == 'admin'",
-    ".remove": "$role == 'admin'"
+    ".read": "$has('permission.read')",
+    ".update": "$has('permission.update')",
+    ".add": "$has('permission.create')",
+    ".remove": "$has('permission.delete')"
   },
   "role": {
-    ".read": true,
-    ".update": "$role == 'admin'",
-    ".add": "$role == 'admin'",
-    ".remove": "$role == 'admin'"
+    ".read": "$has('role.read')",
+    ".update": "$has('role.update')",
+    ".add": "$has('role.create')",
+    ".remove": "$has('role.delete')"
   },
   "role_permission": {
-    ".read": true,
-    ".update": "$role == 'admin'",
-    ".add": "$role == 'admin'",
-    ".remove": "$role == 'admin'"
+    ".read": "$has('role.read')",
+    ".update": "$has('role.update')",
+    ".add": "$has('role.create')",
+    ".remove": "$has('role.delete')"
   },
   "user_role": {
-    ".read": true,
-    ".update": "$role == 'admin'",
-    ".add": "$role == 'admin'",
-    ".remove": "$role == 'admin'"
+    ".read": "$has('admin.read')",
+    ".update": "$has('admin.update')",
+    ".add": "$has('admin.create')",
+    ".remove": "$has('admin.delete')"
   }
 }
