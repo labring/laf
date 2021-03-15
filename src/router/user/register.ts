@@ -74,11 +74,13 @@ RegisterRouter.post('/register/password', async (req, res) => {
   const access_token = getToken(payload, expire)
   return res.send({
     code: 0,
-    access_token,
-    email,
-    phone,
-    username,
-    uid,
-    expire
+    data: {
+      access_token,
+      email,
+      phone,
+      username,
+      uid,
+      expire
+    }
   })
 })

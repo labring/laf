@@ -43,11 +43,13 @@ LoginRouter.post('/login/password', async (req, res) => {
     const access_token = getToken(payload, expire)
     return res.send({
       code: 0,
-      access_token,
-      username: user.username,
-      phone: user.phone,
-      uid: user.uid,
-      expire
+      data: {
+        access_token,
+        username: user.username,
+        phone: user.phone,
+        uid: user.uid,
+        expire
+      }
     })
   }
 

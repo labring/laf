@@ -20,7 +20,7 @@ app.all('*', function (_req, res, next) {
 // 解析 Bearer Token
 app.use(function (req, _res, next) {
   const bearer = req.headers['authorization'] ?? ''
-  const splitted = bearer.split('.')
+  const splitted = bearer.split(' ')
   const token = splitted.length === 2 ? splitted[1] : ''
   const auth = parseToken(token) || null
   req['auth'] = auth

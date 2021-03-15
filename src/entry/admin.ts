@@ -20,17 +20,25 @@ entry.loadRules(rules)
 router.post('/entry', async (req, res) => {
   const auth = req['auth'] ?? {}
 
-  const roles = auth.roles || []
-  const permissions = await getPermissions(roles)
+  const roles = await getRoles(auth.uid)
+  const roleIds = roles.map(role => role.id)
+  const roleNames: string[] = roles.map(role => role.name)
+
+  const permissions = await getPermissions(roleIds)
+  const permNames: string[] = permissions.map(p => p.name)
 
   // parse params
   const params = entry.parseParams(req.body)
 
   const injections = {
     $uid: auth.uid,
-    $perms: permissions,
-    $has: (permission_name: string[]) => {
-      return permissions.includes(permission_name)
+    $roles: roleNames,
+    $perms: permissions.map(perm => perm.name),
+    $has: (permission_name: string) => {
+      return permNames.includes(permission_name)
+    },
+    $is: (role_name: string) => {
+      return roleNames.includes(role_name)
     }
   }
   // validate query
@@ -80,5 +88,15 @@ async function getPermissions(role_ids: number[]) {
 
   assert(r.ok, 'getPermissions failed: ' + role_ids.join(','))
 
+  return r.data
+}
+
+async function getRoles(uid: number) {
+  const r = await db.collection('user_role')
+    .leftJoin('role', 'id', 'role_id')
+    .where({ uid })
+    .get()
+
+  assert(r.ok, 'getRoles failed')
   return r.data
 }

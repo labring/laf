@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node ./dist/index.js",
     "build": "npx tsc -p tsconfig.json && cp -R ./src/rules/ ./dist/rules/",
-    "watch": "npx tsc -p tsconfig.json -w && cp -R ./src/rules/ ./dist/rules/",
+    "watch": "cp -R ./src/rules/ ./dist/rules/ && npx tsc -p tsconfig.json -w",
     "prepublishOnly": "npm run build"
   },
   "keywords": [

@@ -45,7 +45,11 @@ async function createFirstAdmin() {
     const r_add = await db.collection('base_user').add({ password })
     assert(r_add.ok, 'add base_user occurs error')
 
-    const r_add_admin = await db.collection('admin').add({ uid: r_add.id, username })
+    const r_add_admin = await db.collection('admin').add({
+      uid: r_add.id, username,
+      avatar: "https://work.zhuo-zhuo.com/file/data/23ttprpxmavkkuf6nttc/PHID-FILE-vzv6dyqo3ev2tmngx7mu/logoL)",
+      name: 'Admin'
+    })
     assert(r_add_admin.ok, 'add admin occurs error')
 
     return r_add.id
@@ -66,7 +70,7 @@ async function createFirstRole() {
     }
 
     const r_add = await db.collection('role').add({
-      name: 'superadmin',
+      name: 'admin',
       label: 'Super Admin',
       description: 'role of super admin, created when initializing system'
     })
@@ -155,7 +159,7 @@ async function assginRole2Admin(role_id, admin_id) {
   assert(role_id, 'role_id cannot be empty')
   assert(admin_id, 'admin_id cannot be empty')
 
-  const r_count = await db.collection('user_role').where({ user_id: admin_id, role_id }).count()
+  const r_count = await db.collection('user_role').where({ uid: admin_id, role_id }).count()
   assert(r_count.ok, 'count user_role failed')
 
   if (r_count.total > 0) {
@@ -164,7 +168,7 @@ async function assginRole2Admin(role_id, admin_id) {
   }
 
   const r = await db.collection('user_role').add({
-    user_id: admin_id,
+    uid: admin_id,
     role_id
   })
 
