@@ -1,5 +1,5 @@
 import { ConnectionOptions } from 'mysql2'
-
+import path = require('path')
 export default class Config {
   static get db(): ConnectionOptions {
     return {
@@ -24,5 +24,15 @@ export default class Config {
   // 初始化第一个管理员的密码
   static get SUPER_ADMIN_PASSWORD(): string {
     return process.env['SUPER_ADMIN_PASSWORD'] ?? 'less-framework'
+  }
+
+  // 本地上传文件存储目录
+  static get LOCAL_STORAGE_ROOT_PATH(): string {
+    return process.env['LOCAL_STORAGE_ROOT_PATH'] ?? path.join(process.cwd(), "data")
+  }
+
+  // 临时文件目录
+  static get TMP_PATH(): string {
+    return process.env['TMP_PATH'] ?? path.join(process.cwd(), "tmp/uploads")
   }
 }

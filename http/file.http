@@ -1,0 +1,54 @@
+
+
+
+@token={{login.response.body.$.data.access_token}}
+
+### 管理员登陆
+# @name login
+
+POST {{base_url}}/admin/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "less-admin",
+  "password": "less-framework"
+}
+
+### 文件上传 json
+
+POST {{base_url}}/file/upload/public  HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="tsconfig.json"
+
+< ./../tsconfig.json
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### 文件上传 png
+
+POST {{base_url}}/file/upload/public  HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="upload-test.png"
+Content-Type: image/png
+
+< ./../upload-test.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+
+### public 文件访问
+
+GET {{base_url}}/file/public/bbd2ecda-3dd0-4a09-a76d-705923ecc88e.png HTTP/1.1
+
+### 文件下载
+
+GET {{base_url}}/file/download/public/bbd2ecda-3dd0-4a09-a76d-705923ecc88e.png HTTP/1.1
+
+### 文件信息
+
+GET {{base_url}}/file/info/public/bbd2ecda-3dd0-4a09-a76d-705923ecc88e.png HTTP/1.1
+

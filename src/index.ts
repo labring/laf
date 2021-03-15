@@ -2,7 +2,7 @@ import express = require('express')
 import { parseToken } from './lib/token'
 import AdminEntry from './entry/admin'
 import AppEntry from './entry/app'
-import { AdminRouter, UserRouter } from './router'
+import { AdminRouter, UserRouter, FileRouter } from './router'
 
 const app = express()
 app.use(express.json())
@@ -13,7 +13,6 @@ app.all('*', function (_req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Headers', 'Authorization, Content-Type')
   res.header('Access-Control-Allow-Methods', '*')
-  res.header('Content-Type', 'application/json;charset=utf-8')
   next()
 })
 
@@ -32,7 +31,7 @@ app.use('/app', AppEntry)
 
 app.use('/admin', AdminRouter)
 app.use('/user', UserRouter)
-
+app.use('/file', FileRouter)
 
 const port = process.env.PORT ?? 8080
 app.listen(port, () => console.log(`listened on ${port}`))
