@@ -24,7 +24,12 @@
     ".remove": "$has('role.delete')"
   },
   "user_role": {
-    ".read": "$has('admin.read')",
+    ".read": {
+      "condition": "$has('admin.read')",
+      "join": [
+        "role"
+      ]
+    },
     ".update": "$has('admin.edit')",
     ".add": "$has('admin.create')",
     ".remove": "$has('admin.delete')"
