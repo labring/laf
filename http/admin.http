@@ -24,6 +24,22 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "username": "less-test2",
-  "password": "less-framework"
+  "username": "less-test",
+  "password": "less-framework",
+  "avatar": "https://work.zhuo-zhuo.com/file/data/23ttprpxmavkkuf6nttc/PHID-FILE-vzv6dyqo3ev2tmngx7mu/logoL)",
+  "name": "Maslow"
+}
+
+### 编辑管理员
+
+POST {{base_url}}/admin/edit HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "uid": 16,
+  "username": "less-test",
+  "password": "less",
+  "name": "Maslow",
+  "avatar": "https://work.zhuo-zhuo.com/file/data/23ttprpxmavkkuf6nttc/PHID-FILE-vzv6dyqo3ev2tmngx7mu/logoL)"
 }

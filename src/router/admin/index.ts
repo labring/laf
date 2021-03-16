@@ -153,3 +153,99 @@ AdminRouter.post('/add', async (req, res) => {
     }
   })
 })
+
+
+/**
+ * 重置管理员密码
+ */
+AdminRouter.post('/edit', async (req, res) => {
+  // 权限验证
+  {
+    // 当前登陆管理员的 uid
+    const cur_uid = req['auth']?.uid
+    if (!cur_uid) {
+      return res.status(401).send()
+    }
+
+    // 查询管理员的角色列表
+    const roles = await getRoles(cur_uid)
+
+    const rids = roles.map(r => r.id)
+
+    const permissions = await getPermissions(rids)
+    const pnames = permissions.map(p => p.name)
+
+    if (!pnames.includes('admin.edit')) {
+      return res.status(403).send()
+    }
+  }
+
+  // 参数验证
+  const { uid, username, password, avatar, name } = req.body
+  if (!uid) {
+    return res.send({
+      code: 1,
+      error: 'uid cannot be empty'
+    })
+  }
+
+  const { data: admins } = await db.collection('admin').where({ uid }).get()
+  if (!admins || !admins.length) {
+    return res.send({
+      code: 1,
+      error: 'user not exists'
+    })
+  }
+
+
+  // update password
+  if (password) {
+    await db.collection('base_user')
+      .where({ id: uid })
+      .update({
+        password: hash(password),
+        updated_at: now()
+      })
+  }
+
+  const old = admins[0]
+
+  // update admim
+  const data = {
+    updated_at: now()
+  }
+
+  // username
+  if (username && username != old.username) {
+    const { total } = await db.collection('admin').where({ username }).count()
+    if (total) {
+      return res.send({
+        code: 1,
+        error: 'username already exists'
+      })
+    }
+    data['username'] = username
+  }
+
+  // avatar
+  if (avatar && avatar != old.avatar) {
+    data['avatar'] = avatar
+  }
+
+  // name
+  if (name && name != old.name) {
+    data['name'] = name
+  }
+
+  const r = await db.collection('admin')
+    .where({ uid })
+    .update(data)
+
+  return res.send({
+    code: 0,
+    data: {
+      ...r,
+      uid
+    }
+  })
+})
