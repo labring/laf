@@ -28,7 +28,6 @@ RegisterRouter.post('/register/password', async (req, res) => {
 
   // 检查邮箱/手机/用户名 是否已存在
   const r_count = await db.collection('user')
-    .leftJoin('user_profile', 'uid', 'uid')
     .where({ [key]: value })
     .count()
 
@@ -41,26 +40,16 @@ RegisterRouter.post('/register/password', async (req, res) => {
   }
 
   // 创建 base user
-  const r_add_base = await db.collection('base_user').add({
+  const { id: uid } = await db.collection('base_user').add({
     password: hash(password),
     created_at: now(),
     updated_at: now()
   })
-  const uid = r_add_base.id
 
   // 创建 user
   await db.collection('user').add({
     uid,
-    username: username || null,
-    created_at: now(),
-    updated_at: now()
-  })
-
-  // 创建 user_profile
-  await db.collection('user_profile').add({
-    uid,
-    email: email || null,
-    phone: phone || null,
+    [key]: value,
     created_at: now(),
     updated_at: now()
   })

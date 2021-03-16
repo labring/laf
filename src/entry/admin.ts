@@ -1,8 +1,7 @@
 import { Router } from 'express'
 import { Entry, MysqlAccessor } from 'less-api'
 import Config from '../config'
-import assert = require('assert')
-import { db } from '../lib/db'
+import { getPermissions, getRoles } from '../lib/api/permission'
 
 
 const rules = require('../rules/admin.json')
@@ -68,35 +67,3 @@ router.post('/entry', async (req, res) => {
 })
 
 export default router
-
-
-// functions
-
-async function getPermissions(role_ids: number[]) {
-  assert(role_ids, 'getPermissions(): role_ids cannot be empty')
-  if (role_ids.length === 0) {
-    return []
-  }
-
-  const _ = db.command
-  const r = await db.collection('permission')
-    .leftJoin('role_permission', 'permission_id', 'id')
-    .where({
-      role_id: _.in(role_ids)
-    })
-    .get()
-
-  assert(r.ok, 'getPermissions failed: ' + role_ids.join(','))
-
-  return r.data
-}
-
-async function getRoles(uid: number) {
-  const r = await db.collection('user_role')
-    .leftJoin('role', 'id', 'role_id')
-    .where({ uid })
-    .get()
-
-  assert(r.ok, 'getRoles failed')
-  return r.data
-}

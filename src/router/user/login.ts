@@ -20,7 +20,7 @@ LoginRouter.post('/login/password', async (req, res) => {
   //
   const ret = await db.collection('user')
     .leftJoin('base_user', 'id', 'uid')
-    .leftJoin('user_profile', 'uid', 'uid')
+    .field(['user.*'])
     .where({
       password: hash(password),
       $or: [
@@ -45,8 +45,7 @@ LoginRouter.post('/login/password', async (req, res) => {
       code: 0,
       data: {
         access_token,
-        username: user.username,
-        phone: user.phone,
+        user,
         uid: user.uid,
         expire
       }

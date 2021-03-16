@@ -1,7 +1,8 @@
 import { Router } from 'express'
 import { getToken, hash } from '../../lib/token'
 import { db } from '../../lib/db'
-import assert = require('assert')
+import { now } from '../../lib/time'
+import { getPermissions, getRoles } from '../../lib/api/permission'
 
 export const AdminRouter = Router()
 
@@ -28,14 +29,8 @@ AdminRouter.post('/login', async (req, res) => {
     const admin = ret.data[0]
 
     // 查询管理员的角色列表
-    const r_role = await db.collection('user_role')
-      .leftJoin('role', 'id', 'role_id')
-      .where({ uid: admin.uid })
-      .get()
-
-    assert.ok(r_role.ok, 'query user_role failed: ' + admin.uid)
-
-    const roleIds = r_role.data.map(role => role.id)
+    const roles = await getRoles(admin.uid)
+    const roleIds = roles.map(role => role.id)
 
     // 默认 token 有效期为 7 天
     const expire = new Date().getTime() + 60 * 60 * 1000 * 24 * 7
@@ -88,20 +83,73 @@ AdminRouter.get('/info', async (req, res) => {
   const admin = ret.data[0]
 
   // 查询管理员的角色列表
-  const r_role = await db.collection('user_role')
-    .leftJoin('role', 'id', 'role_id')
-    .where({ uid: admin.uid })
-    .get()
-
-  assert.ok(r_role.ok, 'query user_role failed: ' + admin.uid)
-
-  const roles = r_role.data.map(role => role.name)
+  const roles = await getRoles(admin.uid)
 
   return res.send({
     code: 0,
     data: {
       admin,
-      roles
+      roles: roles.map(role => role.name)
+    }
+  })
+})
+
+/**
+ * 新增管理员
+ */
+AdminRouter.post('/add', async (req, res) => {
+  const uid = req['auth']?.uid
+  if (!uid) {
+    return res.status(401).send()
+  }
+
+  // 查询管理员的角色列表
+  const roles = await getRoles(uid)
+
+  const rids = roles.map(r => r.id)
+
+  const permissions = await getPermissions(rids)
+  const pnames = permissions.map(p => p.name)
+
+  if (!pnames.includes('admin.create')) {
+    return res.status(403).send()
+  }
+
+  const { username, password, avatar, name } = req.body
+  if (!username || !password) {
+    return res.send({
+      code: 1,
+      error: 'username or password cannot be empty'
+    })
+  }
+
+  const { total } = await db.collection('admin').where({ username }).count()
+  if (total > 0) {
+    return res.send({
+      code: 1,
+      error: 'username already exists'
+    })
+  }
+
+  // add base user
+  const { id } = await db.collection('base_user')
+    .add({ password: hash(password) })
+
+  // add admim
+  const r = await db.collection('admin')
+    .add({
+      uid: id,
+      username,
+      name: name ?? null,
+      avatar: avatar ?? null,
+      created_at: now(),
+      updated_at: now()
+    })
+  return res.send({
+    code: 0,
+    data: {
+      ...r,
+      uid: id
     }
   })
 })
