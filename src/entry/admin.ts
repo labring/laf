@@ -8,16 +8,18 @@ const rules = require('../rules/admin.json')
 
 const router = Router()
 
-router.all('*', async function (_req, _res, next) {
-  next()
-})
 const accessor = new MysqlAccessor(Config.db)
 const entry = new Entry(accessor)
 entry.init()
 entry.loadRules(rules)
 
 router.post('/entry', async (req, res) => {
+
   const auth = req['auth'] ?? {}
+
+  if (!auth.uid) {
+    return res.status(401).send()
+  }
 
   const roles = await getRoles(auth.uid)
   const roleIds = roles.map(role => role.id)

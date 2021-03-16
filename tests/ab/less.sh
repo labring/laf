@@ -1,0 +1,1 @@
+ab -n 1000 -c 100 -p ./post.json -T application/json -H "Authorization: Bearer eyJ1aWQiOjEsInJvbGVzIjpbMV0sInR5cGUiOiJhZG1pbiIsImV4cGlyZSI6MTYxNjQ5ODM1ODI0Mn0=.28902cb4e5a7f7bc6ac880c706d2435f" http://localhost:8080/admin/entry
