@@ -62,7 +62,7 @@ router.post('/entry', async (req, res) => {
   } catch (error) {
     return res.send({
       code: 2,
-      error: error,
+      error: error.toString(),
       injections
     })
   }
