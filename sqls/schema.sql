@@ -17,7 +17,7 @@ CREATE TABLE `base_user` (
   `created_at` int DEFAULT NULL COMMENT 'Created time',
   `updated_at` int DEFAULT NULL COMMENT 'Updated time',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='User';
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COMMENT='User';
 
 DROP TABLE IF EXISTS permission;
 CREATE TABLE `permission` (
@@ -43,7 +43,7 @@ CREATE TABLE `role` (
   `created_by` int DEFAULT NULL COMMENT 'Author id',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Role ';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='Role ';
 
 DROP TABLE IF EXISTS role_permission;
 CREATE TABLE `role_permission` (
@@ -72,15 +72,6 @@ DROP TABLE IF EXISTS user;
 CREATE TABLE `user` (
   `uid` int NOT NULL COMMENT 'Base User Id',
   `username` varchar(64) DEFAULT NULL COMMENT 'Username',
-  `created_at` int DEFAULT NULL COMMENT 'Created time',
-  `updated_at` int DEFAULT NULL COMMENT 'Updated time',
-  PRIMARY KEY (`uid`),
-  UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User';
-
-DROP TABLE IF EXISTS user_profile;
-CREATE TABLE `user_profile` (
-  `uid` int NOT NULL COMMENT 'Base User Id',
   `nickname` varchar(64) DEFAULT NULL COMMENT 'Nick Name',
   `email` varchar(128) DEFAULT NULL COMMENT 'Email',
   `phone` varchar(128) DEFAULT NULL COMMENT 'Phone Number',
@@ -89,7 +80,8 @@ CREATE TABLE `user_profile` (
   `updated_at` int DEFAULT NULL COMMENT 'Updated time',
   PRIMARY KEY (`uid`),
   UNIQUE KEY `email` (`email`),
-  UNIQUE KEY `phone` (`phone`)
+  UNIQUE KEY `phone` (`phone`),
+  UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User';
 
 DROP TABLE IF EXISTS user_role;
@@ -100,9 +92,11 @@ CREATE TABLE `user_role` (
   `created_at` int DEFAULT NULL COMMENT 'Created time',
   `created_by` int DEFAULT NULL COMMENT 'Author id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='User Role Relation';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='User Role Relation';
 
+CREATE OR REPLACE VIEW `countTest` AS select `role`.`id` AS `id`,`role`.`name` AS `name`,`role`.`label` AS `label`,`role`.`description` AS `description`,`role`.`created_at` AS `created_at`,`role`.`updated_at` AS `updated_at`,`role`.`created_by` AS `created_by`,(select count(`role_permission`.`id`) from `role_permission` where (`role_permission`.`role_id` = `role`.`id`) group by `role_permission`.`role_id`) AS `c` from `role`;
 
+CREATE OR REPLACE VIEW `test` AS select `role_permission`.`id` AS `id`,`role_permission`.`role_id` AS `role_id`,`role_permission`.`permission_id` AS `permission_id`,`role_permission`.`created_at` AS `created_at`,`role_permission`.`created_by` AS `created_by`,`role`.`name` AS `role_name`,`permission`.`name` AS `perm_name` from ((`role_permission` left join `role` on((`role_permission`.`role_id` = `role`.`id`))) left join `permission` on((`role_permission`.`permission_id` = `permission`.`id`)));
 
 
 

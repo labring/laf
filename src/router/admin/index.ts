@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { getToken, hash } from '../../lib/token'
 import { db } from '../../lib/db'
 import { now } from '../../lib/time'
-import { getPermissions, getRoles } from '../../lib/api/permission'
+import { getPermissions } from '../../lib/api/permission'
 
 export const AdminRouter = Router()
 
@@ -20,23 +20,22 @@ AdminRouter.post('/login', async (req, res) => {
   }
 
   //
-  const ret = await db.collection('admin')
-    .leftJoin('base_user', 'id', 'uid')
-    .where({ username, password: hash(password) })
-    .get()
+  const ret = await db.collection('admins')
+    .withOne({
+      query: db.collection('base_user').where({ password: hash(password) }),
+      localField: 'uid',
+      foreignField: '_id',
+    })
+    .where({ username })
+    .merge({ intersection: true })
 
   if (ret.ok && ret.data.length) {
     const admin = ret.data[0]
-
-    // 查询管理员的角色列表
-    const roles = await getRoles(admin.uid)
-    const roleIds = roles.map(role => role.id)
 
     // 默认 token 有效期为 7 天
     const expire = new Date().getTime() + 60 * 60 * 1000 * 24 * 7
     const payload = {
       uid: admin.uid,
-      roles: roleIds,
       type: 'admin'
     }
     const access_token = getToken(payload, expire)
@@ -69,7 +68,7 @@ AdminRouter.get('/info', async (req, res) => {
   }
 
   //
-  const ret = await db.collection('admin')
+  const ret = await db.collection('admins')
     .where({ uid })
     .get()
 
@@ -82,15 +81,10 @@ AdminRouter.get('/info', async (req, res) => {
 
   const admin = ret.data[0]
 
-  // 查询管理员的角色列表
-  const roles = await getRoles(admin.uid)
 
   return res.send({
     code: 0,
-    data: {
-      admin,
-      roles: roles.map(role => role.name)
-    }
+    data: admin
   })
 })
 
@@ -103,15 +97,11 @@ AdminRouter.post('/add', async (req, res) => {
     return res.status(401).send()
   }
 
-  // 查询管理员的角色列表
-  const roles = await getRoles(uid)
+  console.log(await getPermissions(uid))
 
-  const rids = roles.map(r => r.id)
+  const { permissions } = await getPermissions(uid)
 
-  const permissions = await getPermissions(rids)
-  const pnames = permissions.map(p => p.name)
-
-  if (!pnames.includes('admin.create')) {
+  if (!permissions.includes('admin.create')) {
     return res.status(403).send()
   }
 
@@ -123,7 +113,7 @@ AdminRouter.post('/add', async (req, res) => {
     })
   }
 
-  const { total } = await db.collection('admin').where({ username }).count()
+  const { total } = await db.collection('admins').where({ username }).count()
   if (total > 0) {
     return res.send({
       code: 1,
@@ -136,7 +126,7 @@ AdminRouter.post('/add', async (req, res) => {
     .add({ password: hash(password) })
 
   // add admim
-  const r = await db.collection('admin')
+  const r = await db.collection('admins')
     .add({
       uid: id,
       username,
@@ -156,7 +146,7 @@ AdminRouter.post('/add', async (req, res) => {
 
 
 /**
- * 重置管理员密码
+ * 编辑管理员
  */
 AdminRouter.post('/edit', async (req, res) => {
   // 权限验证
@@ -167,15 +157,9 @@ AdminRouter.post('/edit', async (req, res) => {
       return res.status(401).send()
     }
 
-    // 查询管理员的角色列表
-    const roles = await getRoles(cur_uid)
+    const { permissions } = await getPermissions(cur_uid)
 
-    const rids = roles.map(r => r.id)
-
-    const permissions = await getPermissions(rids)
-    const pnames = permissions.map(p => p.name)
-
-    if (!pnames.includes('admin.edit')) {
+    if (!permissions.includes('admin.edit')) {
       return res.status(403).send()
     }
   }
@@ -189,7 +173,7 @@ AdminRouter.post('/edit', async (req, res) => {
     })
   }
 
-  const { data: admins } = await db.collection('admin').where({ uid }).get()
+  const { data: admins } = await db.collection('admins').where({ uid }).get()
   if (!admins || !admins.length) {
     return res.send({
       code: 1,
@@ -217,7 +201,7 @@ AdminRouter.post('/edit', async (req, res) => {
 
   // username
   if (username && username != old.username) {
-    const { total } = await db.collection('admin').where({ username }).count()
+    const { total } = await db.collection('admins').where({ username }).count()
     if (total) {
       return res.send({
         code: 1,
@@ -237,7 +221,7 @@ AdminRouter.post('/edit', async (req, res) => {
     data['name'] = name
   }
 
-  const r = await db.collection('admin')
+  const r = await db.collection('admins')
     .where({ uid })
     .update(data)
 

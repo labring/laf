@@ -1,28 +1,31 @@
 #! /usr/bin/env node
 
-const { db, accessor } = require('./dist/lib/db')
-const { hash } = require('./dist/lib/token')
 const Config = require('./dist/config').default
+const { hash } = require('./dist/lib/token')
 const assert = require('assert')
+const { MongoAccessor, getDb } = require('less-api')
 
 
+const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
 
+db = getDb(accessor)
 
 async function main() {
-  // 创建初始管理员
-  const admin_id = await createFirstAdmin()
-
-  // 创建 RBAC 初始角色
-  const role_id = await createFirstRole()
+  await accessor.init()
 
   // 创建 RBAC 初始权限
   await createInitialPermissions()
 
-  // 分配权限予角色
-  await assignPermission2Role(role_id)
 
-  // 分配角色于管理员
-  await assginRole2Admin(role_id, admin_id)
+  // 创建 RBAC 初始角色
+  const role_id = await createFirstRole()
+
+
+  // 创建初始管理员
+  const admin_id = await createFirstAdmin()
 
   accessor.close()
 }
@@ -35,143 +38,99 @@ async function createFirstAdmin() {
     const username = Config.SUPER_ADMIN
     const password = hash(Config.SUPER_ADMIN_PASSWORD)
 
-    const r_get = await db.collection('admin').get()
-    assert(r_get.ok, 'query admin occurs error:' + r_get.error)
-    if (r_get.data.length > 0) {
-      console.log('already exists admin: ' + r_get.data[0].username)
-      return r_get.data[0].uid
+    const { total } = await db.collection('admins').count()
+    if (total > 0) {
+      console.log('admin already exists')
+      return
     }
+
+    await accessor.db.collection('admins').createIndex('username', { unique: true })
+    await accessor.db.collection('admins').createIndex('uid', { unique: true })
+
 
     const r_add = await db.collection('base_user').add({ password })
     assert(r_add.ok, 'add base_user occurs error')
 
-    const r_add_admin = await db.collection('admin').add({
-      uid: r_add.id, username,
+
+    const { data } = await db.collection('roles').get()
+    const roles = data.map(it => it.name)
+
+    const r_add_admin = await db.collection('admins').add({
+      uid: r_add.id,
+      username,
       avatar: "https://work.zhuo-zhuo.com/file/data/23ttprpxmavkkuf6nttc/PHID-FILE-vzv6dyqo3ev2tmngx7mu/logoL)",
-      name: 'Admin'
+      name: 'Admin',
+      roles
     })
     assert(r_add_admin.ok, 'add admin occurs error')
 
     return r_add.id
   } catch (error) {
-    console.log(error.toString())
-    return false
+    console.error(error.message)
   }
 }
 
 // 创建初始角色
 async function createFirstRole() {
   try {
-    const r_get = await db.collection('role').get()
-    assert(r_get.ok, 'query role occurs error:' + r_get.error)
-    if (r_get.data.length > 0) {
-      console.log('already exists role: ' + r_get.data[0].name)
-      return r_get.data[0].id
-    }
 
-    const r_add = await db.collection('role').add({
-      name: 'admin',
-      label: 'Super Admin',
-      description: 'role of super admin, created when initializing system'
+    await accessor.db.collection('roles').createIndex('name', { unique: true })
+
+    const r_perm = await db.collection('permissions').get()
+    assert(r_perm.ok, 'get permissions failed')
+
+    const permissions = r_perm.data.map(it => it.name)
+
+    const r_add = await db.collection('roles').add({
+      name: 'superadmin',
+      label: '超级管理员',
+      description: '系统初始化的超级管理员',
+      permissions
     })
 
     assert(r_add.ok, 'add role occurs error')
 
     return r_add.id
   } catch (error) {
-    console.log(error.toString())
-    return false
+    if (error.code == 11000) {
+      return console.log('permissions already exists')
+    }
+
+    console.error(error.message)
   }
 }
 
 // 创建初始权限
 async function createInitialPermissions() {
   const permissions = [
-    { name: 'role.create', label: 'Create Role' },
-    { name: 'role.read', label: 'Read Roles' },
-    { name: 'role.edit', label: 'Edit Role' },
-    { name: 'role.delete', label: 'Delete Role' },
+    { name: 'role.create', label: '创建角色' },
+    { name: 'role.read', label: '读取角色' },
+    { name: 'role.edit', label: '编辑角色' },
+    { name: 'role.delete', label: '删除角色' },
 
-    { name: 'permission.create', label: 'Create Permission' },
-    { name: 'permission.read', label: 'Read Permissions' },
-    { name: 'permission.edit', label: 'Edit Permission' },
-    { name: 'permission.delete', label: 'Delete Permission' },
+    { name: 'permission.create', label: '创建权限' },
+    { name: 'permission.read', label: '读取权限' },
+    { name: 'permission.edit', label: '编辑权限' },
+    { name: 'permission.delete', label: '删除权限' },
 
-    { name: 'admin.create', label: 'Create Admin' },
-    { name: 'admin.read', label: 'Read Admins' },
-    { name: 'admin.edit', label: 'Edit Admin' },
-    { name: 'admin.delete', label: 'Delete Admin' },
+    { name: 'admin.create', label: '创建管理员' },
+    { name: 'admin.read', label: '获取管理员' },
+    { name: 'admin.edit', label: '编辑管理员' },
+    { name: 'admin.delete', label: '删除管理员' },
   ]
 
-  for (const perm of permissions) {
-    const coll = db.collection('permission')
-    const r_get = await coll.where({ name: perm.name }).get()
-    assert(r_get.ok, 'query permission failed: ' + perm.name)
+  // 创建唯一索引
+  await accessor.db.collection('permissions').createIndex('name', { unique: true })
 
-    if (r_get.data.length > 0) {
-      console.log('permission already exists: ' + r_get.data[0].name)
-      continue
+  try {
+    await db.collection('permissions').add(permissions, { multi: true })
+  } catch (error) {
+    if (error.code == 11000) {
+      return console.log('permissions already exists')
     }
 
-    const r = await coll.add({
-      name: perm.name,
-      label: perm.label,
-      description: perm.label
-    })
-
-    assert(r.ok, 'create permission failed: ' + perm.name)
+    console.error(error.message)
   }
 
-  return true
-}
-
-// 分配权限予角色
-async function assignPermission2Role(role_id) {
-  assert(role_id, 'role_id cannot be empty')
-
-  const r = await db.collection('role_permission').get()
-  assert(r.ok, 'query role_permission failed')
-
-  const relations = r.data
-  if (relations.length > 0) {
-    console.log('relations of role & permission already exists')
-    return false
-  }
-
-  const r_perm = await db.collection('permission').get()
-  assert(r_perm.ok, 'query permissions failed')
-
-  const permissions = r_perm.data
-
-  for (const perm of permissions) {
-    const r_add = await db.collection('role_permission').add({
-      role_id,
-      permission_id: perm.id
-    })
-
-    assert(r_add.ok, `add role_permission failed: role_id(${role_id}), permission_id(${perm.id})`)
-  }
-  return true
-}
-
-// 分配角色予管理员
-async function assginRole2Admin(role_id, admin_id) {
-  assert(role_id, 'role_id cannot be empty')
-  assert(admin_id, 'admin_id cannot be empty')
-
-  const r_count = await db.collection('user_role').where({ uid: admin_id, role_id }).count()
-  assert(r_count.ok, 'count user_role failed')
-
-  if (r_count.total > 0) {
-    console.log('admin already had a role')
-    return false
-  }
-
-  const r = await db.collection('user_role').add({
-    uid: admin_id,
-    role_id
-  })
-
-  assert(r.ok, 'add user_role failed')
   return true
 }

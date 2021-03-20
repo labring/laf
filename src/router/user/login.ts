@@ -18,18 +18,20 @@ LoginRouter.post('/login/password', async (req, res) => {
   }
 
   //
-  const ret = await db.collection('user')
-    .leftJoin('base_user', 'id', 'uid')
-    .field(['user.*'])
+  const ret = await db.collection('users')
+    .withOne({
+      query: db.collection('base_user').field({ password: 0 }).where({ password: hash(password) }),
+      localField: 'uid',
+      foreignField: '_id'
+    })
     .where({
-      password: hash(password),
       $or: [
         { email: username },
         { phone: username },
         { username: username }
       ]
     })
-    .get()
+    .merge({ intersection: true })
 
   if (ret.ok && ret.data.length) {
     const user = ret.data[0]

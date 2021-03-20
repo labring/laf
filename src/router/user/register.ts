@@ -27,7 +27,7 @@ RegisterRouter.post('/register/password', async (req, res) => {
   }
 
   // 检查邮箱/手机/用户名 是否已存在
-  const r_count = await db.collection('user')
+  const r_count = await db.collection('users')
     .where({ [key]: value })
     .count()
 
@@ -47,7 +47,7 @@ RegisterRouter.post('/register/password', async (req, res) => {
   })
 
   // 创建 user
-  await db.collection('user').add({
+  await db.collection('users').add({
     uid,
     [key]: value,
     created_at: now(),

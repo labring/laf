@@ -1,10 +1,14 @@
 /**
  * @file less-api  database
  */
-import {  MysqlAccessor, getDb } from 'less-api'
+import { MongoAccessor, getDb } from 'less-api'
 import Config from '../config'
 
-const accessor = new MysqlAccessor(Config.db)
+const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+accessor.init()
 
 // 获取 db 对象
 const db = getDb(accessor)

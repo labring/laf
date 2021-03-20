@@ -7,36 +7,37 @@ import { db } from '../../lib/db'
  * @param role_ids 
  * @returns 
  */
-export async function getPermissions(role_ids: number[]) {
-  assert(role_ids, 'getPermissions(): role_ids cannot be empty')
-  if (role_ids.length === 0) {
-    return []
-  }
+export async function getPermissions(uid: string) {
 
-  const _ = db.command
-  const r = await db.collection('permission')
-    .leftJoin('role_permission', 'permission_id', 'id')
-    .where({
-      role_id: _.in(role_ids)
-    })
-    .get()
-
-  assert(r.ok, 'getPermissions failed: ' + role_ids.join(','))
-
-  return r.data
-}
-
-/**
- * 通过用户名获取角色列表
- * @param uid ·
- * @returns 
- */
-export async function getRoles(uid: number) {
-  const r = await db.collection('user_role')
-    .leftJoin('role', 'id', 'role_id')
+  // 查用户
+  const { data: [admin] } = await db.collection('admins')
     .where({ uid })
     .get()
 
-  assert(r.ok, 'getRoles failed')
-  return r.data
+  assert(admin, 'getPermissions failed')
+
+  // 查角色
+  const { data: roles } = await db.collection('roles')
+    .where({
+      name: {
+        $in: admin.roles ?? []
+      }
+    })
+    .get()
+
+  if (!roles) {
+    return { permissions: [], roles: [], user: admin }
+  }
+
+  const permissions = []
+  for (const role of roles) {
+    const perms = role.permissions ?? []
+    permissions.push(...perms)
+  }
+
+  return {
+    permissions,
+    roles: roles.map(role => role.name),
+    user: admin
+  }
 }

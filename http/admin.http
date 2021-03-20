@@ -37,7 +37,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "uid": 16,
+  "uid": "6055c058c342ed67a0cdf856",
   "username": "less-test",
   "password": "less",
   "name": "Maslow",

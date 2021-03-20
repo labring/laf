@@ -1,14 +1,18 @@
 import { Router } from 'express'
-import { Entry, MysqlAccessor } from 'less-api'
+import { Entry, MongoAccessor } from 'less-api'
 import Config from '../config'
-import { getPermissions, getRoles } from '../lib/api/permission'
+import { getPermissions } from '../lib/api/permission'
 
 
 const rules = require('../rules/admin.json')
 
 const router = Router()
 
-const accessor = new MysqlAccessor(Config.db)
+const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
+  poolSize: Config.db.poolSize,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
 const entry = new Entry(accessor)
 entry.init()
 entry.loadRules(rules)
@@ -21,25 +25,20 @@ router.post('/entry', async (req, res) => {
     return res.status(401).send()
   }
 
-  const roles = await getRoles(auth.uid)
-  const roleIds = roles.map(role => role.id)
-  const roleNames: string[] = roles.map(role => role.name)
-
-  const permissions = await getPermissions(roleIds)
-  const permNames: string[] = permissions.map(p => p.name)
+  const { permissions, roles } = await getPermissions(auth.uid)
 
   // parse params
   const params = entry.parseParams(req.body)
 
   const injections = {
     $uid: auth.uid,
-    $roles: roleNames,
+    $roles: roles,
     $perms: permissions.map(perm => perm.name),
-    $has: (permission_name: string) => {
-      return permNames.includes(permission_name)
+    $has: (perm_name: string) => {
+      return permissions.includes(perm_name)
     },
     $is: (role_name: string) => {
-      return roleNames.includes(role_name)
+      return roles.includes(role_name)
     }
   }
   // validate query

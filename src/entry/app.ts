@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { Entry, MysqlAccessor } from 'less-api'
+import { Entry, MongoAccessor } from 'less-api'
 import Config from '../config'
 const rules = require('../rules/app.json')
 
@@ -9,7 +9,11 @@ router.all('*', function (_req, _res, next) {
   next()
 })
 
-const accessor = new MysqlAccessor(Config.db)
+const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
+  poolSize: Config.db.poolSize,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
 const entry = new Entry(accessor)
 entry.init()
 entry.loadRules(rules)

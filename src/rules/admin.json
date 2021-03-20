@@ -1,17 +1,17 @@
 {
-  "admin": {
+  "admins": {
     ".read": "$has('admin.read')",
     ".update": "$has('admin.edit')",
     ".add": "$has('admin.create')",
     ".remove": "$has('admin.delete')"
   },
-  "permission": {
+  "permissions": {
     ".read": "$has('permission.read')",
     ".update": "$has('permission.edit')",
     ".add": "$has('permission.create')",
     ".remove": "$has('permission.delete')"
   },
-  "role": {
+  "roles": {
     ".read": "$has('role.read')",
     ".update": "$has('role.edit')",
     ".add": "$has('role.create')",
