@@ -23,10 +23,12 @@ entry.init()
 entry.loadRules(rules)
 
 router.post('/entry', async (req, res) => {
+  const requestId = req['requestId']
+
   const auth = req['auth'] ?? {}
 
   // parse params
-  const params = entry.parseParams(req.body)
+  const params = entry.parseParams({ ...req.body, requestId })
 
   const injections = {
     $uid: auth.uid

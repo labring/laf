@@ -22,7 +22,7 @@ entry.init()
 entry.loadRules(rules)
 
 router.post('/entry', async (req, res) => {
-
+  const requestId = req['requestId']
   const auth = req['auth'] ?? {}
 
   if (!auth.uid) {
@@ -32,12 +32,12 @@ router.post('/entry', async (req, res) => {
   const { permissions, roles } = await getPermissions(auth.uid)
 
   // parse params
-  const params = entry.parseParams(req.body)
+  const params = entry.parseParams({ ...req.body, requestId })
 
   const injections = {
     $uid: auth.uid,
     $roles: roles,
-    $perms: permissions.map(perm => perm.name),
+    $perms: permissions,
     $has: (perm_name: string) => {
       return permissions.includes(perm_name)
     },
