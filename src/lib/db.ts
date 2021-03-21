@@ -8,6 +8,8 @@ const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
+// const context = new Entry(accessor)
+// context.logger.level = 5
 accessor.init()
 
 // 获取 db 对象

@@ -24,7 +24,7 @@ AdminRouter.post('/login', async (req, res) => {
     .withOne({
       query: db.collection('base_user').where({ password: hash(password) }),
       localField: 'uid',
-      foreignField: '_id',
+      foreignField: '_id'
     })
     .where({ username })
     .merge({ intersection: true })

@@ -14,6 +14,7 @@ const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
   useUnifiedTopology: true,
 })
 const entry = new Entry(accessor)
+entry.logger.level = 5
 entry.init()
 entry.loadRules(rules)
 

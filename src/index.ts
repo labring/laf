@@ -3,16 +3,18 @@ import { parseToken } from './lib/token'
 import AdminEntry from './entry/admin'
 import AppEntry from './entry/app'
 import { AdminRouter, UserRouter, FileRouter } from './router'
+import { v4 as uuidv4 } from 'uuid'
 
 const app = express()
 app.use(express.json())
 
 
 // 服务端开放跨域
-app.all('*', function (_req, res, next) {
+app.all('*', function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Headers', 'Authorization, Content-Type')
   res.header('Access-Control-Allow-Methods', '*')
+  req['requestId'] = uuidv4()
   next()
 })
 
