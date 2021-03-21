@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { Entry, MongoAccessor } from 'less-api'
 import Config from '../config'
 import { getPermissions } from '../lib/api/permission'
+import * as log4js from 'log4js'
 
 
 const rules = require('../rules/admin.json')
@@ -14,7 +15,9 @@ const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
   useUnifiedTopology: true,
 })
 const entry = new Entry(accessor)
-entry.logger.level = 5
+const logger = log4js.getLogger('less-api')
+logger.level = 'debug'
+entry.setLogger(logger as any)
 entry.init()
 entry.loadRules(rules)
 
