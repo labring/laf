@@ -1,5 +1,5 @@
 
-import path = require('path')
+import * as path from 'path'
 export default class Config {
   static get db() {
     return {
@@ -20,12 +20,12 @@ export default class Config {
 
   // 初始化第一个管理员的用户名
   static get SUPER_ADMIN(): string {
-    return process.env['SUPER_ADMIN'] ?? 'less-admin'
+    return process.env['SUPER_ADMIN'] ?? 'less'
   }
 
   // 初始化第一个管理员的密码
   static get SUPER_ADMIN_PASSWORD(): string {
-    return process.env['SUPER_ADMIN_PASSWORD'] ?? 'less-framework'
+    return process.env['SUPER_ADMIN_PASSWORD'] ?? 'less'
   }
 
   // 本地上传文件存储目录
@@ -39,6 +39,10 @@ export default class Config {
   }
 
   static get LOG_LEVEL(): string {
-    return process.env['LOG_LEVEL'] ?? 'debug'
+    return process.env['LOG_LEVEL'] ?? (this.isProd ? 'info' : 'debug')
+  }
+
+  static get isProd(): boolean {
+    return process.env.NODE_ENV === 'production'
   }
 }

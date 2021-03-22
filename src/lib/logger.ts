@@ -1,4 +1,4 @@
-import { LoggerInterface } from 'less-api/dist'
+import { LoggerInterface } from 'less-api'
 import * as log4js from 'log4js'
 import Config from '../config'
 

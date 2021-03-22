@@ -2,13 +2,13 @@ import * as express from 'express'
 import { parseToken } from './lib/token'
 import AdminEntry from './entry/admin'
 import AppEntry from './entry/app'
-import { AdminRouter, UserRouter, FileRouter } from './router'
+import { AdminRouter, UserRouter, FileRouter } from './router/index'
 import { v4 as uuidv4 } from 'uuid'
 import { getLogger } from './lib/logger'
 
+const logger = getLogger('server')
 const server = express()
 server.use(express.json())
-const logger = getLogger('server')
 
 // 服务端开放跨域
 server.all('*', function (req, res, next) {

@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { getToken, hash } from '../../lib/token'
 import { db } from '../../lib/db'
-import assert = require('assert')
+import * as assert from 'assert'
 import { now } from '../../lib/time'
 export const RegisterRouter = Router()
 

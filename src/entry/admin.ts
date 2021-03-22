@@ -3,8 +3,7 @@ import { Entry, MongoAccessor } from 'less-api'
 import Config from '../config'
 import { getPermissions } from '../lib/api/permission'
 import { getLogger } from '../lib/logger'
-
-const rules = require('../rules/admin.json')
+import { getAccessRules } from '../lib/rules'
 
 const router = Router()
 
@@ -13,10 +12,15 @@ const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-const entry = new Entry(accessor)
+export const entry = new Entry(accessor)
 entry.setLogger(getLogger('admin:less-api'))
 entry.init()
-entry.loadRules(rules)
+  .then(() => {
+    return getAccessRules('admin', accessor)
+  })
+  .then(rules => {
+    entry.loadRules(rules)
+  })
 
 router.post('/entry', async (req, res) => {
   const requestId = req['requestId']
@@ -48,7 +52,7 @@ router.post('/entry', async (req, res) => {
     return res.status(403).send({
       code: 'permission denied',
       error: result.errors,
-      injections
+      injections: Config.isProd ? undefined : injections
     })
   }
 
@@ -63,7 +67,7 @@ router.post('/entry', async (req, res) => {
     return res.send({
       code: 2,
       error: error.toString(),
-      injections
+      injections: Config.isProd ? undefined : injections
     })
   }
 })

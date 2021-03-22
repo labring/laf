@@ -1,5 +1,5 @@
 
-import assert = require('assert')
+import * as assert from 'assert'
 import { db } from '../../lib/db'
 
 /**

@@ -17,21 +17,10 @@
     ".add": "$has('role.create')",
     ".remove": "$has('role.delete')"
   },
-  "role_permission": {
-    ".read": "$has('role.read')",
-    ".update": "$has('role.edit')",
-    ".add": "$has('role.create')",
-    ".remove": "$has('role.delete')"
-  },
-  "user_role": {
-    ".read": {
-      "condition": "$has('admin.read')",
-      "join": [
-        "role"
-      ]
-    },
-    ".update": "$has('admin.edit')",
-    ".add": "$has('admin.create')",
-    ".remove": "$has('admin.delete')"
+  "rules": {
+    ".read": "$has('rule.read')",
+    ".update": "$has('rule.edit')",
+    ".add": "$has('rule.create')",
+    ".remove": "$has('rule.delete')"
   }
 }

@@ -4,6 +4,10 @@ import { db } from '../../lib/db'
 import { now } from '../../lib/time'
 import { checkPermission, getPermissions } from '../../lib/api/permission'
 import { getLogger } from '../../lib/logger'
+import { entry as adminEntry } from '../../entry/admin'
+import { entry as appEntry } from '../../entry/app'
+import { getAccessRules } from '../../lib/rules'
+import { Ruler } from 'less-api'
 
 export const AdminRouter = Router()
 const logger = getLogger('admin:api')
@@ -268,4 +272,41 @@ AdminRouter.post('/edit', async (req, res) => {
       uid
     }
   })
+})
+
+
+/**
+ * 应用最新访问规则
+ */
+AdminRouter.post('/apply/rules', async (req, res) => {
+  const requestId = req['requestId']
+  logger.info(`[${requestId}] /admin/edit: ${req.body?.uid}`)
+
+  // 权限验证
+  const code = await checkPermission(req['auth']?.uid, 'rule.apply')
+  if (code) {
+    return res.status(code).send()
+  }
+
+  // apply admin rules
+  {
+    const ruler = new Ruler(adminEntry)
+    const rules = await getAccessRules('admin', adminEntry.accessor)
+    ruler.load(rules)
+    adminEntry.setRuler(ruler)
+  }
+
+  // apply app rules
+  {
+    const ruler = new Ruler(appEntry)
+    const rules = await getAccessRules('app', appEntry.accessor)
+    ruler.load(rules)
+    appEntry.setRuler(ruler)
+  }
+
+  return res.send({
+    code: 0,
+    data: 'applied'
+  })
+
 })

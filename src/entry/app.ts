@@ -1,8 +1,8 @@
 import { Router } from 'express'
 import { Entry, MongoAccessor } from 'less-api'
 import Config from '../config'
-const rules = require('../rules/app.json')
 import { getLogger } from '../lib/logger'
+import { getAccessRules } from '../lib/rules'
 
 const router = Router()
 
@@ -15,10 +15,15 @@ const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-const entry = new Entry(accessor)
+export const entry = new Entry(accessor)
 entry.setLogger(getLogger('app:less-api'))
 entry.init()
-entry.loadRules(rules)
+  .then(() => {
+    return getAccessRules('app', accessor)
+  })
+  .then(rules => {
+    entry.loadRules(rules)
+  })
 
 router.post('/entry', async (req, res) => {
   const requestId = req['requestId']

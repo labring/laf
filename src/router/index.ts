@@ -1,5 +1,5 @@
 
 
-export * from './admin'
-export * from './user'
-export * from './file'
+export * from './admin/index'
+export * from './user/index'
+export * from './file/index'

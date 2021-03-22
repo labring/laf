@@ -20,9 +20,10 @@ npm install
 ### 配置数据库 (MongoDb)
  `/src/config.ts`
 
-### 初始化应用的基础数据（管理员、角色、权色）
+### 初始化应用的基础数据
+> 初始化管理员、角色、权限、访问规则
 ```sh
-node init.js
+npm run init
 ```
 
 ### 运行

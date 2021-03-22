@@ -1,8 +1,8 @@
 #! /usr/bin/env node
 
-const { db, accessor } = require('../dist/lib/db')
-const { hash } = require('../dist/lib/token')
-const Config = require('../dist/config').default
+const { db, accessor } = require('../../dist/lib/db')
+const { hash } = require('../../dist/lib/token')
+const Config = require('../../dist/config').default
 const assert = require('assert')
 
 

@@ -1,7 +1,7 @@
 import * as fse from "fs-extra"
-import assert = require('assert')
+import * as assert from 'assert'
 import { v4 as uuidv4 } from 'uuid'
-import path = require('path')
+import * as path from 'path'
 
 export class LocalFileStorage implements FileStorageInterface {
   rootPath: string

@@ -1,17 +1,41 @@
 #! /usr/bin/env node
 
-const Config = require('./dist/config').default
-const { hash } = require('./dist/lib/token')
+const Config = require('../dist/config').default
+const { hash } = require('../dist/lib/token')
 const assert = require('assert')
 const { MongoAccessor, getDb } = require('less-api')
+const adminRules = require('./rules/admin.json')
+const appRules = require('./rules/app.json')
 
+const permissions = [
+  { name: 'role.create', label: '创建角色' },
+  { name: 'role.read', label: '读取角色' },
+  { name: 'role.edit', label: '编辑角色' },
+  { name: 'role.delete', label: '删除角色' },
+
+  { name: 'permission.create', label: '创建权限' },
+  { name: 'permission.read', label: '读取权限' },
+  { name: 'permission.edit', label: '编辑权限' },
+  { name: 'permission.delete', label: '删除权限' },
+
+  { name: 'admin.create', label: '创建管理员' },
+  { name: 'admin.read', label: '获取管理员' },
+  { name: 'admin.edit', label: '编辑管理员' },
+  { name: 'admin.delete', label: '删除管理员' },
+
+  { name: 'rule.create', label: '创建访问规则' },
+  { name: 'rule.read', label: '获取访问规则' },
+  { name: 'rule.edit', label: '编辑访问规则' },
+  { name: 'rule.delete', label: '删除访问规则' },
+  { name: 'rule.apply', label: '应用访问规则' },
+]
 
 const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
 
-db = getDb(accessor)
+const db = getDb(accessor)
 
 async function main() {
   await accessor.init()
@@ -21,11 +45,14 @@ async function main() {
 
 
   // 创建 RBAC 初始角色
-  const role_id = await createFirstRole()
+  await createFirstRole()
 
 
   // 创建初始管理员
-  const admin_id = await createFirstAdmin()
+  await createFirstAdmin()
+
+  await createInitailAccessRules('admin', adminRules)
+  await createInitailAccessRules('app', appRules)
 
   accessor.close()
 }
@@ -102,35 +129,44 @@ async function createFirstRole() {
 
 // 创建初始权限
 async function createInitialPermissions() {
-  const permissions = [
-    { name: 'role.create', label: '创建角色' },
-    { name: 'role.read', label: '读取角色' },
-    { name: 'role.edit', label: '编辑角色' },
-    { name: 'role.delete', label: '删除角色' },
-
-    { name: 'permission.create', label: '创建权限' },
-    { name: 'permission.read', label: '读取权限' },
-    { name: 'permission.edit', label: '编辑权限' },
-    { name: 'permission.delete', label: '删除权限' },
-
-    { name: 'admin.create', label: '创建管理员' },
-    { name: 'admin.read', label: '获取管理员' },
-    { name: 'admin.edit', label: '编辑管理员' },
-    { name: 'admin.delete', label: '删除管理员' },
-  ]
 
   // 创建唯一索引
   await accessor.db.collection('permissions').createIndex('name', { unique: true })
 
-  try {
-    await db.collection('permissions').add(permissions, { multi: true })
-  } catch (error) {
-    if (error.code == 11000) {
-      return console.log('permissions already exists')
+  for (const perm of permissions) {
+    try {
+      await db.collection('permissions').add(perm)
+    } catch (error) {
+      if (error.code == 11000) {
+        console.log('permissions already exists')
+        continue
+      }
+      console.error(error.message)
     }
-
-    console.error(error.message)
   }
 
   return true
+}
+
+// 创建初始访问规则
+async function createInitailAccessRules(category, rules) {
+
+  for (const collection in rules) {
+    const { total } = await db.collection('rules')
+      .where({ category, collection })
+      .count()
+
+    if (total) {
+      console.log(`rule already exists : ${category}.${collection}`)
+      continue
+    }
+
+    await db.collection('rules').add({
+      category,
+      collection,
+      data: JSON.stringify(rules[collection])
+    })
+
+    console.log(`added rule: ${category}.${collection}`)
+  }
 }

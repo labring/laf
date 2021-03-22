@@ -1,6 +1,6 @@
 import * as express from 'express'
-import path = require('path')
-import multer = require('multer')
+import * as path from 'path'
+import * as multer from 'multer'
 import Config from '../../config'
 import { LocalFileStorage } from '../../lib/storage/local_file_storage'
 import { v4 as uuidv4 } from 'uuid'
