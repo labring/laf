@@ -2,15 +2,19 @@ import { Router } from 'express'
 import { getToken, hash } from '../../lib/token'
 import { db } from '../../lib/db'
 import { now } from '../../lib/time'
-import { getPermissions } from '../../lib/api/permission'
+import { checkPermission, getPermissions } from '../../lib/api/permission'
+import { getLogger } from '../../lib/logger'
 
 export const AdminRouter = Router()
-
+const logger = getLogger('admin:api')
 /**
  * 管理员登陆
  */
 AdminRouter.post('/login', async (req, res) => {
+  const requestId = req['requestId']
   const { username, password } = req.body
+  logger.info(`[${requestId}] /admin/login username: ${username}`)
+
 
   if (!username || !password) {
     return res.send({
@@ -39,6 +43,8 @@ AdminRouter.post('/login', async (req, res) => {
       type: 'admin'
     }
     const access_token = getToken(payload, expire)
+    logger.info(`[${requestId}] admin login success: ${admin.uid} ${username}`)
+
     return res.send({
       code: 0,
       data: {
@@ -61,7 +67,9 @@ AdminRouter.post('/login', async (req, res) => {
  * 管理员信息
  */
 AdminRouter.get('/info', async (req, res) => {
+  const requestId = req['requestId']
   const uid = req['auth']?.uid
+  logger.info(`[${requestId}] /admin/info: ${uid}`)
 
   if (!uid) {
     return res.status(401)
@@ -81,10 +89,14 @@ AdminRouter.get('/info', async (req, res) => {
 
   const admin = ret.data[0]
 
+  const { permissions } = await getPermissions(admin.uid)
 
   return res.send({
     code: 0,
-    data: admin
+    data: {
+      ...admin,
+      permissions
+    }
   })
 })
 
@@ -92,20 +104,16 @@ AdminRouter.get('/info', async (req, res) => {
  * 新增管理员
  */
 AdminRouter.post('/add', async (req, res) => {
-  const uid = req['auth']?.uid
-  if (!uid) {
-    return res.status(401).send()
+  const requestId = req['requestId']
+  logger.info(`[${requestId}] /admin/add: ${req.body?.username}`)
+
+  // 权限验证
+  const code = await checkPermission(req['auth']?.uid, 'admin.create')
+  if (code) {
+    return res.status(code).send()
   }
 
-  console.log(await getPermissions(uid))
-
-  const { permissions } = await getPermissions(uid)
-
-  if (!permissions.includes('admin.create')) {
-    return res.status(403).send()
-  }
-
-  const { username, password, avatar, name } = req.body
+  const { username, password, avatar, name, roles } = req.body
   if (!username || !password) {
     return res.send({
       code: 1,
@@ -113,11 +121,25 @@ AdminRouter.post('/add', async (req, res) => {
     })
   }
 
+  // 验证用户是否已存在
   const { total } = await db.collection('admins').where({ username }).count()
   if (total > 0) {
     return res.send({
       code: 1,
       error: 'username already exists'
+    })
+  }
+
+  // 验证 roles 是否合法
+  const { total: valid_count } = await db.collection('roles')
+    .where({
+      name: db.command.in(roles)
+    }).count()
+
+  if (valid_count !== roles.length) {
+    return res.send({
+      code: 1,
+      error: 'invalid roles'
     })
   }
 
@@ -132,9 +154,11 @@ AdminRouter.post('/add', async (req, res) => {
       username,
       name: name ?? null,
       avatar: avatar ?? null,
+      roles: roles ?? [],
       created_at: now(),
       updated_at: now()
     })
+
   return res.send({
     code: 0,
     data: {
@@ -149,23 +173,17 @@ AdminRouter.post('/add', async (req, res) => {
  * 编辑管理员
  */
 AdminRouter.post('/edit', async (req, res) => {
+  const requestId = req['requestId']
+  logger.info(`[${requestId}] /admin/edit: ${req.body?.uid}`)
+
   // 权限验证
-  {
-    // 当前登陆管理员的 uid
-    const cur_uid = req['auth']?.uid
-    if (!cur_uid) {
-      return res.status(401).send()
-    }
-
-    const { permissions } = await getPermissions(cur_uid)
-
-    if (!permissions.includes('admin.edit')) {
-      return res.status(403).send()
-    }
+  const code = await checkPermission(req['auth']?.uid, 'admin.edit')
+  if (code) {
+    return res.status(code).send()
   }
 
   // 参数验证
-  const { uid, username, password, avatar, name } = req.body
+  const { uid, username, password, avatar, name, roles } = req.body
   if (!uid) {
     return res.send({
       code: 1,
@@ -173,6 +191,7 @@ AdminRouter.post('/edit', async (req, res) => {
     })
   }
 
+  // 验证 uid 是否合法
   const { data: admins } = await db.collection('admins').where({ uid }).get()
   if (!admins || !admins.length) {
     return res.send({
@@ -181,6 +200,18 @@ AdminRouter.post('/edit', async (req, res) => {
     })
   }
 
+  // 验证 roles 是否合法
+  const { total: valid_count } = await db.collection('roles')
+    .where({
+      name: db.command.in(roles)
+    }).count()
+
+  if (valid_count !== roles.length) {
+    return res.send({
+      code: 1,
+      error: 'invalid roles'
+    })
+  }
 
   // update password
   if (password) {
@@ -219,6 +250,11 @@ AdminRouter.post('/edit', async (req, res) => {
   // name
   if (name && name != old.name) {
     data['name'] = name
+  }
+
+  // roles
+  if (roles) {
+    data['roles'] = roles
   }
 
   const r = await db.collection('admins')

@@ -36,4 +36,8 @@ export default class Config {
   static get TMP_PATH(): string {
     return process.env['TMP_PATH'] ?? path.join(process.cwd(), "tmp/uploads")
   }
+
+  static get LOG_LEVEL(): string {
+    return process.env['LOG_LEVEL'] ?? 'debug'
+  }
 }

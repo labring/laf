@@ -3,6 +3,24 @@ import assert = require('assert')
 import { db } from '../../lib/db'
 
 /**
+ * 判断用户是否有权限
+ * @param uid 用户ID
+ * @param permission 权限名
+ * @returns 0 表示用户有权限， 401 表示用户未登录， 403 表示用户未授权
+ */
+export async function checkPermission(uid: string, permission: string): Promise<number> {
+  if (!uid) {
+    return 401
+  }
+  const { permissions } = await getPermissions(uid)
+
+  if (!permissions.includes(permission)) {
+    return 403
+  }
+  return 0
+}
+
+/**
  * 通过 role ids 获取权限列表
  * @param role_ids 
  * @returns 

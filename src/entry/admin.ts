@@ -2,8 +2,7 @@ import { Router } from 'express'
 import { Entry, MongoAccessor } from 'less-api'
 import Config from '../config'
 import { getPermissions } from '../lib/api/permission'
-import * as log4js from 'log4js'
-
+import { getLogger } from '../lib/logger'
 
 const rules = require('../rules/admin.json')
 
@@ -15,9 +14,7 @@ const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
   useUnifiedTopology: true,
 })
 const entry = new Entry(accessor)
-const logger = log4js.getLogger('less-api')
-logger.level = 'debug'
-entry.setLogger(logger as any)
+entry.setLogger(getLogger('admin:less-api'))
 entry.init()
 entry.loadRules(rules)
 
@@ -48,8 +45,8 @@ router.post('/entry', async (req, res) => {
   // validate query
   const result = await entry.validate(params, injections)
   if (result.errors) {
-    return res.send({
-      code: 1,
+    return res.status(403).send({
+      code: 'permission denied',
       error: result.errors,
       injections
     })
