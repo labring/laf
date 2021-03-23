@@ -28,6 +28,12 @@ const permissions = [
   { name: 'rule.edit', label: '编辑访问规则' },
   { name: 'rule.delete', label: '删除访问规则' },
   { name: 'rule.apply', label: '应用访问规则' },
+
+  { name: 'function.create', label: '创建云函数' },
+  { name: 'function.read', label: '获取云函数' },
+  { name: 'function.edit', label: '编辑云函数' },
+  { name: 'function.delete', label: '删除云函数' },
+  { name: 'function.publish', label: '发布云函数' },
 ]
 
 const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
@@ -53,6 +59,9 @@ async function main() {
 
   await createInitailAccessRules('admin', adminRules)
   await createInitailAccessRules('app', appRules)
+
+  // 创建云函数唯一索引
+  await accessor.db.collection('functions').createIndex('name', { unique: true })
 
   accessor.close()
 }

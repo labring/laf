@@ -2,7 +2,7 @@ import * as express from 'express'
 import { parseToken } from './lib/token'
 import AdminEntry from './entry/admin'
 import AppEntry from './entry/app'
-import { AdminRouter, UserRouter, FileRouter } from './router/index'
+import { AdminRouter, UserRouter, FileRouter, FunctionRouter } from './router/index'
 import { v4 as uuidv4 } from 'uuid'
 import { getLogger } from './lib/logger'
 
@@ -36,9 +36,10 @@ server.use(function (req, _res, next) {
 server.use('/admin', AdminEntry)
 server.use('/app', AppEntry)
 
-server.use('/admin', AdminRouter)
+server.use('/admin', AdminRouter, FunctionRouter)
 server.use('/user', UserRouter)
 server.use('/file', FileRouter)
+
 
 const port = process.env.PORT ?? 8080
 server.listen(port, () => console.log(`listened on ${port}`))
