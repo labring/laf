@@ -69,6 +69,10 @@ FunctionRouter.post('/func/invoke/:name', async (req, res) => {
     return res.send({ code: 1, error: r.error, requestId })
   }
 
+  if (!r.data) {
+    return res.send({ code: 1, error: 'function not found', requestId })
+  }
+
   // 调用函数
   const func = r.data
   const engine = new FunctionEngine()
@@ -76,7 +80,7 @@ FunctionRouter.post('/func/invoke/:name', async (req, res) => {
   const result = await engine.run(func.code, {
     requestId,
     functionName: func_name,
-    params: req.params,
+    params: params,
     auth: req['auth'],
     less: {
       database: () => db,

@@ -30,7 +30,8 @@ interface FunctionResult {
 export class FunctionEngine {
   async run(code: string, incomingCtx: IncomingContext): Promise<FunctionResult> {
 
-    const functionConsole = new FunctionConsole()
+    const requestId = incomingCtx.requestId
+    const fconsole = new FunctionConsole()
     const wrapped = `func = ${code}; promise = func(ctx)`
 
     const sandbox: RuntimeContext = {
@@ -39,25 +40,26 @@ export class FunctionEngine {
         auth: incomingCtx.auth,
       },
       promise: null,
-      console: functionConsole,
-      requestId: incomingCtx.requestId,
+      console: fconsole,
+      requestId: requestId,
       less: incomingCtx.less
     }
     try {
+      fconsole.log(requestId)
       const script = new vm.Script(wrapped)
       script.runInNewContext(sandbox)
       const data = await sandbox.promise
 
       return {
         data,
-        logs: functionConsole.logs
+        logs: fconsole.logs
       }
     } catch (error) {
-      functionConsole.logs.push(error.message)
-      functionConsole.logs.push(error.stack)
+      fconsole.log(error.message)
+      fconsole.log(error.stack)
       return {
         error: error,
-        logs: functionConsole.logs
+        logs: fconsole.logs
       }
     }
   }
