@@ -289,19 +289,26 @@ AdminRouter.post('/apply/rules', async (req, res) => {
   }
 
   // apply admin rules
-  {
+  try {
     const ruler = new Ruler(adminEntry)
+    logger.debug(`[${requestId}] apply admin rule`)
     const rules = await getAccessRules('admin', adminEntry.accessor)
     ruler.load(rules)
     adminEntry.setRuler(ruler)
+  } catch (error) {
+    logger.error(`[${requestId}] apply admin rule error: `, error)
   }
 
+
   // apply app rules
-  {
+  try {
     const ruler = new Ruler(appEntry)
+    logger.debug(`[${requestId}] apply admin rule`)
     const rules = await getAccessRules('app', appEntry.accessor)
     ruler.load(rules)
     appEntry.setRuler(ruler)
+  } catch (error) {
+    logger.error(`[${requestId}] apply app rule error: `, error)
   }
 
   return res.send({

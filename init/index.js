@@ -34,6 +34,7 @@ const permissions = [
   { name: 'function.edit', label: '编辑云函数' },
   { name: 'function.delete', label: '删除云函数' },
   { name: 'function.publish', label: '发布云函数' },
+  { name: 'function.debug', label: '调试云函数' },
 ]
 
 const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {

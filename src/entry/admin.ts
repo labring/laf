@@ -22,6 +22,7 @@ entry.init()
     entry.loadRules(rules)
   })
 
+const logger = getLogger('admin:entry')
 router.post('/entry', async (req, res) => {
   const requestId = req['requestId']
   const auth = req['auth'] ?? {}
@@ -49,6 +50,7 @@ router.post('/entry', async (req, res) => {
   // validate query
   const result = await entry.validate(params, injections)
   if (result.errors) {
+    logger.debug(`[${requestId}] validate return errors: `, result.errors)
     return res.status(403).send({
       code: 'permission denied',
       error: result.errors,
@@ -59,6 +61,7 @@ router.post('/entry', async (req, res) => {
   // execute query
   try {
     const data = await entry.execute(params)
+    logger.trace(`[${requestId}] executed query: `, data)
     return res.send({
       code: 0,
       data

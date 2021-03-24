@@ -2,8 +2,11 @@ import * as vm from 'vm'
 import * as util from 'util'
 import * as moment from 'moment'
 
+
 interface RuntimeContext {
   ctx: FunctionContext,
+  module: { exports: Object },
+  exports: Object,
   promise: any,
   console: FunctionConsole,
   requestId: string,
@@ -11,7 +14,8 @@ interface RuntimeContext {
 }
 
 interface FunctionContext {
-  params?: any,
+  query?: any,
+  body?: any,
   auth?: any,
 }
 
@@ -32,20 +36,25 @@ export class FunctionEngine {
 
     const requestId = incomingCtx.requestId
     const fconsole = new FunctionConsole()
-    const wrapped = `func = ${code}; promise = func(ctx)`
+    const wrapped = `${code}; promise = exports.main(ctx)`
 
+    const _module = {
+      exports: {}
+    }
     const sandbox: RuntimeContext = {
       ctx: {
-        params: incomingCtx.params,
+        query: incomingCtx.query,
+        body: incomingCtx.body,
         auth: incomingCtx.auth,
       },
+      module: _module,
+      exports: module.exports,
       promise: null,
       console: fconsole,
       requestId: requestId,
       less: incomingCtx.less
     }
     try {
-      fconsole.log(requestId)
       const script = new vm.Script(wrapped)
       script.runInNewContext(sandbox)
       const data = await sandbox.promise

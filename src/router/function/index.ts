@@ -55,9 +55,17 @@ FunctionRouter.post('/func/invoke/:name', async (req, res) => {
     return res.send({ code: 1, error: 'invalid function name', requestId })
   }
 
-  const { params } = req.body
 
-  logger.info(`[${requestId}] /func/${func_name} params: `, params)
+  const debug = req.query?.debug ?? false
+  // 调试权限验证
+  if (debug) {
+    const code = await checkPermission(req['auth']?.uid, 'function.debug')
+    if (code) {
+      return res.status(code).send('permission denied')
+    }
+  }
+
+  logger.info(`[${requestId}] /func/${func_name} body: `, req.body)
 
   // 获取函数
   const r = await db.collection('functions')
@@ -76,11 +84,11 @@ FunctionRouter.post('/func/invoke/:name', async (req, res) => {
   // 调用函数
   const func = r.data
   const engine = new FunctionEngine()
-
   const result = await engine.run(func.code, {
     requestId,
     functionName: func_name,
-    params: params,
+    query: req.query,
+    body: req.body,
     auth: req['auth'],
     less: {
       database: () => db,
@@ -89,23 +97,39 @@ FunctionRouter.post('/func/invoke/:name', async (req, res) => {
     }
   })
 
+  // 将云函数调用日志存储到数据库
+  {
+    await db.collection('function_logs')
+      .add({
+        requestId: requestId,
+        func_id: func._id,
+        func_name: func_name,
+        logs: result.logs,
+        created_at: Date.now(),
+        updated_at: Date.now(),
+        created_by: req['auth']?.uid
+      })
+  }
+
+  // 调用出错
   if (result.error) {
     logger.info(`[${requestId}] /func/invoke/${func_name} invoke error: `, result.error.message)
     logger.trace(`[${requestId}] /func/invoke/${func_name} invoke error: `, result)
     return res.send({
       code: 1,
       error: 'invoke function occurs error',
-      logs: Config.isProd ? undefined : result.logs,
+      logs: debug ? result.logs : undefined,
       requestId
     })
   }
 
-  logger.trace(`[${requestId}] /func/invoke/${func_name} invoke result: `, result)
+  logger.trace(`[${requestId}] /func/invoke/${func_name} invoke success: `, result)
 
+  // 调用成功返回
   return res.send({
     code: 0,
     requestId,
     data: result.data,
-    logs: Config.isProd ? undefined : result.logs
+    logs: debug ? result.logs : undefined
   })
 })
