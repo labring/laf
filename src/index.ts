@@ -36,10 +36,10 @@ server.use(function (req, _res, next) {
 server.use('/admin', AdminEntry)
 server.use('/app', AppEntry)
 
-server.use('/admin', AdminRouter, FunctionRouter)
+server.use('/admin', AdminRouter)
 server.use('/user', UserRouter)
 server.use('/file', FileRouter)
-
+server.use('/func', FunctionRouter)
 
 const port = process.env.PORT ?? 8080
 server.listen(port, () => console.log(`listened on ${port}`))

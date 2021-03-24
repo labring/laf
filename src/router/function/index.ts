@@ -12,43 +12,7 @@ export const FunctionRouter = Router()
 const logger = getLogger('admin:api')
 
 
-/**
- * 获取云函数
- */
-FunctionRouter.get('/func/:name', async (req, res) => {
-  const requestId = req['requestId']
-  const func_name = req.params?.name
-
-  if (!func_name) {
-    return res.send({ code: 1, error: 'invalid function name' })
-  }
-
-  logger.info(`[${requestId}] /func/${func_name}: ${req.body?.uid}`)
-
-  // 权限验证
-  const code = await checkPermission(req['auth']?.uid, 'function.read')
-  if (code) {
-    return res.status(code).send()
-  }
-
-  // 获取函数
-  const r = await db.collection('functions')
-    .where({ name: func_name })
-    .getOne()
-
-  if (!r.ok) {
-    logger.info(`[${requestId}] /func/${func_name} read functions failed: ` + r.error.toString())
-    return res.send({ code: 1, error: r.error })
-  }
-
-  return res.send({
-    code: 0,
-    data: r.data
-  })
-})
-
-
-FunctionRouter.post('/func/invoke/:name', async (req, res) => {
+FunctionRouter.post('/invoke/:name', async (req, res) => {
   const requestId = req['requestId']
   const func_name = req.params?.name
 
