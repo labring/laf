@@ -6,6 +6,7 @@ import { FunctionEngine } from '../../lib/faas'
 import { LocalFileStorage } from '../../lib/storage/local_file_storage'
 import Config from '../../config'
 import request from 'axios'
+import { nanosecond2ms } from '../../lib/time'
 
 export const FunctionRouter = Router()
 const logger = getLogger('admin:api')
@@ -81,6 +82,9 @@ FunctionRouter.post('/func/invoke/:name', async (req, res) => {
     return res.send({ code: 1, error: 'function not found', requestId })
   }
 
+  // 调用前计时
+  const _start_time = process.hrtime.bigint()
+
   // 调用函数
   const func = r.data
   const engine = new FunctionEngine()
@@ -97,6 +101,10 @@ FunctionRouter.post('/func/invoke/:name', async (req, res) => {
     }
   })
 
+  // 函数执行耗时
+  const _end_time = process.hrtime.bigint()
+  const time_usage = nanosecond2ms(_end_time - _start_time)
+
   // 将云函数调用日志存储到数据库
   {
     await db.collection('function_logs')
@@ -105,6 +113,7 @@ FunctionRouter.post('/func/invoke/:name', async (req, res) => {
         func_id: func._id,
         func_name: func_name,
         logs: result.logs,
+        time_usage: time_usage,
         created_at: Date.now(),
         updated_at: Date.now(),
         created_by: req['auth']?.uid
@@ -119,6 +128,7 @@ FunctionRouter.post('/func/invoke/:name', async (req, res) => {
       code: 1,
       error: 'invoke function occurs error',
       logs: debug ? result.logs : undefined,
+      time_usage: debug ? time_usage : undefined,
       requestId
     })
   }
@@ -130,6 +140,7 @@ FunctionRouter.post('/func/invoke/:name', async (req, res) => {
     code: 0,
     requestId,
     data: result.data,
+    time_usage: debug ? time_usage : undefined,
     logs: debug ? result.logs : undefined
   })
 })
