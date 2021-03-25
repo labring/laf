@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { Request, Response, Router } from 'express'
 import { db } from '../../lib/db'
 import { checkPermission } from '../../lib/api/permission'
 import { getLogger } from '../../lib/logger'
@@ -12,7 +12,10 @@ export const FunctionRouter = Router()
 const logger = getLogger('admin:api')
 
 
-FunctionRouter.post('/invoke/:name', async (req, res) => {
+FunctionRouter.post('/invoke/:name', invokeFunction)
+FunctionRouter.all('/:name', invokeFunction)         // alias for /invoke/:name
+
+async function invokeFunction(req: Request, res: Response) {
   const requestId = req['requestId']
   const func_name = req.params?.name
 
@@ -107,4 +110,4 @@ FunctionRouter.post('/invoke/:name', async (req, res) => {
     time_usage: debug ? time_usage : undefined,
     logs: debug ? result.logs : undefined
   })
-})
+}
