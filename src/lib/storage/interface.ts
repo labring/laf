@@ -12,12 +12,26 @@ interface FileInfo {
 interface FileStorageInterface {
 
   /**
-   * 保存文件
+   * 保存文件，主要用于将上传的临时文件保存（移动）到 storage 目录
    * @param filePath 要保存的文件路径
    */
   saveFile(filePath: string): Promise<FileInfo>
 
+  /**
+   * 获取文件信息
+   * @param filename 文件名
+   */
   getFileInfo(filename: string): Promise<FileInfo>
 
+  /**
+   * 删除文件
+   * @param filename 文件名
+   */
   deleteFile(filename: string): Promise<boolean>
+
+  /**
+   * 读取文件
+   * @param filename 文件名
+   */
+  readFile(filename: string, encoding?: string): Promise<Buffer>
 }
