@@ -35,6 +35,9 @@ const permissions = [
   { name: 'function.delete', label: '删除云函数' },
   { name: 'function.publish', label: '发布云函数' },
   { name: 'function.debug', label: '调试云函数' },
+
+  { name: 'function_logs.read', label: '查看云函数日志' },
+  { name: 'function_logs.delete', label: '查看云函数日志' }
 ]
 
 const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
@@ -61,8 +64,10 @@ async function main() {
   await createInitailAccessRules('admin', adminRules)
   await createInitailAccessRules('app', appRules)
 
-  // 创建云函数唯一索引
+  // 创建云函数索引
   await accessor.db.collection('functions').createIndex('name', { unique: true })
+  await accessor.db.collection('function_logs').createIndex('requestId', { unique: true })
+  await accessor.db.collection('function_logs').createIndex('func_id')
 
   accessor.close()
 }
@@ -97,7 +102,9 @@ async function createFirstAdmin() {
       username,
       avatar: "https://work.zhuo-zhuo.com/file/data/23ttprpxmavkkuf6nttc/PHID-FILE-vzv6dyqo3ev2tmngx7mu/logoL)",
       name: 'Admin',
-      roles
+      roles,
+      created_at: Date.now(),
+      updated_at: Date.now()
     })
     assert(r_add_admin.ok, 'add admin occurs error')
 
@@ -122,7 +129,9 @@ async function createFirstRole() {
       name: 'superadmin',
       label: '超级管理员',
       description: '系统初始化的超级管理员',
-      permissions
+      permissions,
+      created_at: Date.now(),
+      updated_at: Date.now()
     })
 
     assert(r_add.ok, 'add role occurs error')
@@ -145,7 +154,12 @@ async function createInitialPermissions() {
 
   for (const perm of permissions) {
     try {
-      await db.collection('permissions').add(perm)
+      const data = {
+        ...perm,
+        created_at: Date.now(),
+        updated_at: Date.now()
+      }
+      await db.collection('permissions').add(data)
     } catch (error) {
       if (error.code == 11000) {
         console.log('permissions already exists')
@@ -174,7 +188,9 @@ async function createInitailAccessRules(category, rules) {
     await db.collection('rules').add({
       category,
       collection,
-      data: JSON.stringify(rules[collection])
+      data: JSON.stringify(rules[collection]),
+      created_at: Date.now(),
+      updated_at: Date.now()
     })
 
     console.log(`added rule: ${category}.${collection}`)
