@@ -9,7 +9,8 @@
     "watch": "npx tsc -p tsconfig.json -w",
     "init": "node init/index.js",
     "prepublishOnly": "npm run build",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "commit": "commit"
   },
   "keywords": [
     "BaaS",
