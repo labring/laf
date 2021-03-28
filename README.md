@@ -17,6 +17,11 @@ less-framework 让你开箱即用 less-api， 内置基于角色的权限控制�
 npm install
 ```
 
+### 启动 MongoDb
+```sh
+docker run -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=less -e MONGO_INITDB_ROOT_PASSWORD=less --name mongo -d mongo
+```
+
 ### 配置数据库 (MongoDb)
  `/src/config.ts`
 
