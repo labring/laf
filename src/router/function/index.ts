@@ -61,11 +61,7 @@ async function invokeFunction(req: Request, res: Response) {
     query: req.query,
     body: req.body,
     auth: req['auth'],
-    less: {
-      database: () => db,
-      storage: (namespace: string) => new LocalFileStorage(Config.LOCAL_STORAGE_ROOT_PATH, namespace),
-      fetch: request
-    }
+    less: createLessSdk()
   })
 
   // 函数执行耗时
@@ -110,4 +106,21 @@ async function invokeFunction(req: Request, res: Response) {
     time_usage: debug ? time_usage : undefined,
     logs: debug ? result.logs : undefined
   })
+}
+
+function createLessSdk() {
+  const less = {
+    database: () => db,
+    storage: (namespace: string) => new LocalFileStorage(Config.LOCAL_STORAGE_ROOT_PATH, namespace),
+    fetch: request,
+    crypto: require('crypto'),
+    path: require('path'),
+    qs: require('querystring'),
+    url: require('url'),
+    Buffer: Buffer,
+    assert: require('assert'),
+    lodash: require('lodash')
+  }
+
+  return less
 }
