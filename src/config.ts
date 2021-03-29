@@ -1,5 +1,7 @@
-
 import * as path from 'path'
+import * as dotenv from 'dotenv'
+dotenv.config()
+
 export default class Config {
   static get db() {
     return {
@@ -7,6 +9,7 @@ export default class Config {
       uri: process.env['DB_URI'] ?? 'mongodb://localhost:27017',
       poolSize: (process.env['DB_POOL_LIMIT'] ?? 100) as number,
 
+      // for mysql:
       // user: process.env['DB_USER'] ?? "root",
       // password: process.env['DB_PASSWORD'] ?? "kissme",
       // host: process.env['DB_HOST'] ?? "127.0.0.1",
@@ -25,7 +28,7 @@ export default class Config {
 
   // 初始化第一个管理员的密码
   static get SUPER_ADMIN_PASSWORD(): string {
-    return process.env['SUPER_ADMIN_PASSWORD'] ?? 'less'
+    return process.env['SUPER_ADMIN_PASSWORD'] ?? 'less123'
   }
 
   // 本地上传文件存储目录

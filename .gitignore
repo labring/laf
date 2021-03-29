@@ -4,3 +4,5 @@ dist
 upload
 data/*
 tmp
+
+.env
