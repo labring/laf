@@ -9,7 +9,8 @@
     ".read": "$has('permission.read')",
     ".update": "$has('permission.edit')",
     ".add": "$has('permission.create')",
-    ".remove": "$has('permission.delete')"
+    ".remove": "$has('permission.delete')",
+    ".count": "$has('permission.read')"
   },
   "roles": {
     ".read": "$has('role.read')",
@@ -32,6 +33,7 @@
   },
   "function_logs": {
     ".read": "$has('function_logs.read')",
+    ".remove": "$has('function_logs.remove')",
     ".count": "$has('function_logs.read')"
   }
 }
