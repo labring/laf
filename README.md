@@ -16,7 +16,15 @@ less-framework 让你开箱即用 less-api， 内置基于角色的权限控制�
 ## 使用
 ### 安装依赖
 ```sh
+# 下载代码
+git clone https://github.com/Maslow/less-framework.git
+cd less-framework
+
+# 安装依赖（建议使用 node 14+ 或 npm 7.5+，速度更快）
 npm install
+
+# 编译
+npm run build
 ```
 
 ### 启动 MongoDb
@@ -38,8 +46,6 @@ npm run init
 
 ### 运行
 ```sh
-# 编译
-npm run build
 #运行
 npm start
 ```
