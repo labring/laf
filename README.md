@@ -10,6 +10,7 @@ less-framework 让你开箱即用 less-api， 内置基于角色的权限控制�
 
 - 基于 [less-api](https://github.com/Maslow/less-api) 打造的服务端低代码框架
 - less-framework 集成了 RBAC、文件上传下载、用户授权，开箱即用，5分钟上线应用
+- [less-admin](https://github.com/Maslow/less-admin) 是 less-framework 配套的后台管理，可管理访问规则、云函数等功能
 - 前端可使用 [less-api-client](https://github.com/Maslow/less-api-client-js) “直连”数据库，无需与服务端对接口
 - 另有 Flutter SDK [less-api-client](https://github.com/Maslow/less-api-client-dart)，快速上线移动端应用
 
