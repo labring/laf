@@ -9,7 +9,6 @@ interface RuntimeContext {
   exports: Object,
   promise: any,
   console: FunctionConsole,
-  requestId: string,
   less: any
 }
 
@@ -17,6 +16,7 @@ interface FunctionContext {
   query?: any,
   body?: any,
   auth?: any,
+  requestId: string
 }
 
 export interface IncomingContext extends FunctionContext {
@@ -46,12 +46,12 @@ export class FunctionEngine {
         query: incomingCtx.query,
         body: incomingCtx.body,
         auth: incomingCtx.auth,
+        requestId: requestId
       },
       module: _module,
       exports: module.exports,
       promise: null,
       console: fconsole,
-      requestId: requestId,
       less: incomingCtx.less
     }
     try {

@@ -2,6 +2,7 @@ import * as fse from "fs-extra"
 import * as assert from 'assert'
 import { v4 as uuidv4 } from 'uuid'
 import * as path from 'path'
+import { FileInfo, FileStorageInterface } from "./interface"
 
 export class LocalFileStorage implements FileStorageInterface {
   rootPath: string

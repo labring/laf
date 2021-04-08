@@ -1,4 +1,4 @@
-interface FileInfo {
+export interface FileInfo {
   filename: string,  // 文件名，包括扩展名
   ext: string        // 扩展名
   basename: string       // 文件名，不包括扩展名
@@ -9,7 +9,7 @@ interface FileInfo {
   namespace?: string
 }
 
-interface FileStorageInterface {
+export interface FileStorageInterface {
 
   /**
    * 保存文件，主要用于将上传的临时文件保存（移动）到 storage 目录

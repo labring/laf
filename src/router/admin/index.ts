@@ -290,7 +290,7 @@ AdminRouter.post('/apply/rules', async (req, res) => {
 
   // apply admin rules
   try {
-    const ruler = new Ruler(adminEntry)
+    const ruler = new Ruler(adminEntry.accessor)
     logger.debug(`[${requestId}] apply admin rule`)
     const rules = await getAccessRules('admin', adminEntry.accessor)
     ruler.load(rules)
@@ -302,7 +302,7 @@ AdminRouter.post('/apply/rules', async (req, res) => {
 
   // apply app rules
   try {
-    const ruler = new Ruler(appEntry)
+    const ruler = new Ruler(adminEntry.accessor)
     logger.debug(`[${requestId}] apply admin rule`)
     const rules = await getAccessRules('app', appEntry.accessor)
     ruler.load(rules)

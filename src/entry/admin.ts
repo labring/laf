@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { Entry, MongoAccessor } from 'less-api'
+import { Entry, MongoAccessor, Ruler } from 'less-api'
 import Config from '../config'
 import { getPermissions } from '../lib/api/permission'
 import { getLogger } from '../lib/logger'
@@ -12,15 +12,18 @@ const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-export const entry = new Entry(accessor)
-entry.setLogger(getLogger('admin:less-api'))
-entry.init()
+
+const ruler = new Ruler(accessor)
+accessor.init()
   .then(() => {
     return getAccessRules('admin', accessor)
   })
   .then(rules => {
-    entry.loadRules(rules)
+    ruler.load(rules)
   })
+
+export const entry = new Entry(accessor, ruler)
+entry.setLogger(getLogger('admin:less-api'))
 
 const logger = getLogger('admin:entry')
 router.post('/entry', async (req, res) => {

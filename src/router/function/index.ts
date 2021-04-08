@@ -7,6 +7,7 @@ import { LocalFileStorage } from '../../lib/storage/local_file_storage'
 import Config from '../../config'
 import request from 'axios'
 import { nanosecond2ms } from '../../lib/time'
+import { LessInterface } from '../../lib/types'
 
 export const FunctionRouter = Router()
 const logger = getLogger('admin:api')
@@ -108,8 +109,8 @@ async function invokeFunction(req: Request, res: Response) {
   })
 }
 
-function createLessSdk() {
-  const less = {
+function createLessSdk(): LessInterface {
+  const less: LessInterface = {
     database: () => db,
     storage: (namespace: string) => new LocalFileStorage(Config.LOCAL_STORAGE_ROOT_PATH, namespace),
     fetch: request,
