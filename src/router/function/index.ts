@@ -114,13 +114,6 @@ function createLessSdk(): LessInterface {
     database: () => db,
     storage: (namespace: string) => new LocalFileStorage(Config.LOCAL_STORAGE_ROOT_PATH, namespace),
     fetch: request,
-    crypto: require('crypto'),
-    path: require('path'),
-    qs: require('querystring'),
-    url: require('url'),
-    Buffer: Buffer,
-    assert: require('assert'),
-    lodash: require('lodash')
   }
 
   return less

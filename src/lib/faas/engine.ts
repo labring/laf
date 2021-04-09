@@ -1,17 +1,31 @@
 import * as vm from 'vm'
 import * as util from 'util'
 import * as moment from 'moment'
+import { LessInterface } from '../types'
+
+// require function
+export type RequireFuncType = (module: 'crypto' | 'path' | 'querystring' | 'url' | 'lodash' | 'moment') => any
+
+const require_func: RequireFuncType = (module): any => {
+  const supported = ['crypto', 'path', 'querystring', 'url', 'lodash', 'moment']
+  if (supported.includes(module)) { return require(module) as any }
+  return undefined
+}
 
 
-interface RuntimeContext {
+// vm run context (global)
+export interface RuntimeContext {
   ctx: FunctionContext,
   module: { exports: Object },
   exports: Object,
   promise: any,
   console: FunctionConsole,
-  less: any
+  less: LessInterface,
+  require: RequireFuncType,
+  Buffer: typeof Buffer
 }
 
+// ctx passed to function
 interface FunctionContext {
   query?: any,
   body?: any,
@@ -19,10 +33,11 @@ interface FunctionContext {
   requestId: string
 }
 
+// param for engine.run()
 export interface IncomingContext extends FunctionContext {
   functionName: string,
   requestId: string,
-  less?: any
+  less?: LessInterface
 }
 
 interface FunctionResult {
@@ -46,13 +61,15 @@ export class FunctionEngine {
         query: incomingCtx.query,
         body: incomingCtx.body,
         auth: incomingCtx.auth,
-        requestId: requestId
+        requestId: requestId,
       },
       module: _module,
       exports: module.exports,
       promise: null,
       console: fconsole,
-      less: incomingCtx.less
+      less: incomingCtx.less,
+      require: require_func,
+      Buffer: Buffer
     }
     try {
       const script = new vm.Script(wrapped)
