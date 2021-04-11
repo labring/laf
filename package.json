@@ -4,7 +4,7 @@
   "description": "less framework base on less-api",
   "main": "./dist/index.js",
   "scripts": {
-    "start": "node ./dist/index.js",
+    "start": "node --experimental-vm-modules ./dist/index.js",
     "build": "npx tsc -p tsconfig.json",
     "watch": "npx tsc -p tsconfig.json -w",
     "init": "node init/index.js",
@@ -45,6 +45,7 @@
     "@types/fs-extra": "^9.0.8",
     "@types/mongodb": "^3.6.10",
     "@types/multer": "^1.4.5",
+    "@types/node": "^14.14.37",
     "@types/uuid": "^8.3.0",
     "@types/validator": "^13.1.3",
     "husky": "^5.2.0",
