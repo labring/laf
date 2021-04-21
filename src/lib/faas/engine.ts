@@ -1,4 +1,5 @@
 import * as vm from 'vm'
+import { nanosecond2ms } from '../time'
 import { FunctionConsole } from './console'
 import { FunctionResult, IncomingContext, RequireFuncType, RuntimeContext } from './types'
 
@@ -34,21 +35,31 @@ export class FunctionEngine {
       require: require_func,
       Buffer: Buffer
     }
+
+    // 调用前计时
+    const _start_time = process.hrtime.bigint()
     try {
       const script = new vm.Script(wrapped)
       script.runInNewContext(sandbox)
       const data = await sandbox.__runtime_promise
-
+      // 函数执行耗时
+      const _end_time = process.hrtime.bigint()
+      const time_usage = nanosecond2ms(_end_time - _start_time)
       return {
         data,
-        logs: fconsole.logs
+        logs: fconsole.logs,
+        time_usage
       }
     } catch (error) {
       fconsole.log(error.message)
       fconsole.log(error.stack)
+      // 函数执行耗时
+      const _end_time = process.hrtime.bigint()
+      const time_usage = nanosecond2ms(_end_time - _start_time)
       return {
         error: error,
-        logs: fconsole.logs
+        logs: fconsole.logs,
+        time_usage
       }
     }
   }
