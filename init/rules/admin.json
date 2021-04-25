@@ -1,39 +1,39 @@
 {
   "admins": {
-    ".read": "$has('admin.read')",
-    ".update": "$has('admin.edit')",
-    ".add": "$has('admin.create')",
-    ".remove": "$has('admin.delete')"
+    "read": "$has('admin.read')",
+    "update": "$has('admin.edit')",
+    "add": "$has('admin.create')",
+    "remove": "$has('admin.delete')"
   },
   "permissions": {
-    ".read": "$has('permission.read')",
-    ".update": "$has('permission.edit')",
-    ".add": "$has('permission.create')",
-    ".remove": "$has('permission.delete')",
-    ".count": "$has('permission.read')"
+    "read": "$has('permission.read')",
+    "update": "$has('permission.edit')",
+    "add": "$has('permission.create')",
+    "remove": "$has('permission.delete')",
+    "count": "$has('permission.read')"
   },
   "roles": {
-    ".read": "$has('role.read')",
-    ".update": "$has('role.edit')",
-    ".add": "$has('role.create')",
-    ".remove": "$has('role.delete')"
+    "read": "$has('role.read')",
+    "update": "$has('role.edit')",
+    "add": "$has('role.create')",
+    "remove": "$has('role.delete')"
   },
   "rules": {
-    ".read": "$has('rule.read')",
-    ".update": "$has('rule.edit')",
-    ".add": "$has('rule.create')",
-    ".remove": "$has('rule.delete')"
+    "read": "$has('rule.read')",
+    "update": "$has('rule.edit')",
+    "add": "$has('rule.create')",
+    "remove": "$has('rule.delete')"
   },
   "functions": {
-    ".read": "$has('function.read')",
-    ".update": "$has('function.edit')",
-    ".add": "$has('function.create')",
-    ".remove": "$has('function.delete')",
-    ".count": "$has('function.read')"
+    "read": "$has('function.read')",
+    "update": "$has('function.edit')",
+    "add": "$has('function.create')",
+    "remove": "$has('function.delete')",
+    "count": "$has('function.read')"
   },
   "function_logs": {
-    ".read": "$has('function_logs.read')",
-    ".remove": "$has('function_logs.remove')",
-    ".count": "$has('function_logs.read')"
+    "read": "$has('function_logs.read')",
+    "remove": "$has('function_logs.remove')",
+    "count": "$has('function_logs.read')"
   }
 }
