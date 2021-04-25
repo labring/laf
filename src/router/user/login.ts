@@ -20,9 +20,9 @@ LoginRouter.post('/login/password', async (req, res) => {
   //
   const ret = await db.collection('users')
     .withOne({
-      query: db.collection('base_user').field({ password: 0 }).where({ password: hash(password) }),
-      localField: 'uid',
-      foreignField: '_id'
+      query: db.collection('password').field({ password: 0 }).where({  password: hash(password), type: 'login' }),
+      localField: '_id',
+      foreignField: 'uid'
     })
     .where({
       $or: [
@@ -39,7 +39,7 @@ LoginRouter.post('/login/password', async (req, res) => {
     // 默认 token 有效期为 7 天
     const expire = new Date().getTime() + 60 * 60 * 1000 * 24 * 7
     const payload = {
-      uid: user.uid,
+      uid: user._id,
       type: 'user'
     }
     const access_token = getToken(payload, expire)
@@ -48,7 +48,7 @@ LoginRouter.post('/login/password', async (req, res) => {
       data: {
         access_token,
         user,
-        uid: user.uid,
+        uid: user._id,
         expire
       }
     })

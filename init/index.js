@@ -40,6 +40,7 @@ async function main() {
 
   accessor.close()
 }
+
 main()
 
 
@@ -56,18 +57,11 @@ async function createFirstAdmin() {
     }
 
     await accessor.db.collection('admins').createIndex('username', { unique: true })
-    await accessor.db.collection('admins').createIndex('uid', { unique: true })
-
-
-    const r_add = await db.collection('base_user').add({ password })
-    assert(r_add.ok, 'add base_user occurs error')
-
 
     const { data } = await db.collection('roles').get()
     const roles = data.map(it => it.name)
 
-    const r_add_admin = await db.collection('admins').add({
-      uid: r_add.id,
+    const r_add = await db.collection('admins').add({
       username,
       avatar: "https://work.zhuo-zhuo.com/file/data/23ttprpxmavkkuf6nttc/PHID-FILE-vzv6dyqo3ev2tmngx7mu/logoL)",
       name: 'Admin',
@@ -75,7 +69,15 @@ async function createFirstAdmin() {
       created_at: Date.now(),
       updated_at: Date.now()
     })
-    assert(r_add_admin.ok, 'add admin occurs error')
+    assert(r_add.ok, 'add admin occurs error')
+
+    await db.collection('password').add({
+      uid: r_add.id,
+      password,
+      type: 'login',
+      created_at: Date.now(),
+      updated_at: Date.now()
+    })
 
     return r_add.id
   } catch (error) {

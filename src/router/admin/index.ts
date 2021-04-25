@@ -1,7 +1,6 @@
 import { Router } from 'express'
 import { getToken, hash } from '../../lib/token'
 import { db } from '../../lib/db'
-import { now } from '../../lib/time'
 import { checkPermission, getPermissions } from '../../lib/api/permission'
 import { getLogger } from '../../lib/logger'
 import { entry as adminEntry } from '../../entry/admin'
@@ -30,9 +29,9 @@ AdminRouter.post('/login', async (req, res) => {
   //
   const ret = await db.collection('admins')
     .withOne({
-      query: db.collection('base_user').where({ password: hash(password) }),
-      localField: 'uid',
-      foreignField: '_id'
+      query: db.collection('password').where({ password: hash(password), type: 'login' }),
+      localField: '_id',
+      foreignField: 'uid'
     })
     .where({ username })
     .merge({ intersection: true })
@@ -43,18 +42,18 @@ AdminRouter.post('/login', async (req, res) => {
     // 默认 token 有效期为 7 天
     const expire = new Date().getTime() + 60 * 60 * 1000 * 24 * 7
     const payload = {
-      uid: admin.uid,
+      uid: admin._id,
       type: 'admin'
     }
     const access_token = getToken(payload, expire)
-    logger.info(`[${requestId}] admin login success: ${admin.uid} ${username}`)
+    logger.info(`[${requestId}] admin login success: ${admin._id} ${username}`)
 
     return res.send({
       code: 0,
       data: {
         access_token,
         username,
-        uid: admin.uid,
+        uid: admin._id,
         expire
       }
     })
@@ -81,7 +80,7 @@ AdminRouter.get('/info', async (req, res) => {
 
   //
   const ret = await db.collection('admins')
-    .where({ uid })
+    .where({ _id: uid })
     .get()
 
   if (!ret.ok || !ret.data.length) {
@@ -93,7 +92,7 @@ AdminRouter.get('/info', async (req, res) => {
 
   const admin = ret.data[0]
 
-  const { permissions } = await getPermissions(admin.uid)
+  const { permissions } = await getPermissions(admin._id)
 
   return res.send({
     code: 0,
@@ -147,27 +146,32 @@ AdminRouter.post('/add', async (req, res) => {
     })
   }
 
-  // add base user
-  const { id } = await db.collection('base_user')
-    .add({ password: hash(password) })
-
   // add admim
   const r = await db.collection('admins')
     .add({
-      uid: id,
       username,
       name: name ?? null,
       avatar: avatar ?? null,
       roles: roles ?? [],
-      created_at: now(),
-      updated_at: now()
+      created_at: Date.now(),
+      updated_at: Date.now()
+    })
+
+  // add admin password
+  await db.collection('password')
+    .add({
+      uid: r.id,
+      password: hash(password),
+      type: 'login',
+      created_at: Date.now(),
+      updated_at: Date.now()
     })
 
   return res.send({
     code: 0,
     data: {
       ...r,
-      uid: id
+      uid: r.id
     }
   })
 })
@@ -187,16 +191,16 @@ AdminRouter.post('/edit', async (req, res) => {
   }
 
   // 参数验证
-  const { uid, username, password, avatar, name, roles } = req.body
+  const { _id: uid, username, password, avatar, name, roles } = req.body
   if (!uid) {
     return res.send({
       code: 1,
-      error: 'uid cannot be empty'
+      error: 'admin id cannot be empty'
     })
   }
 
   // 验证 uid 是否合法
-  const { data: admins } = await db.collection('admins').where({ uid }).get()
+  const { data: admins } = await db.collection('admins').where({ _id: uid }).get()
   if (!admins || !admins.length) {
     return res.send({
       code: 1,
@@ -219,11 +223,11 @@ AdminRouter.post('/edit', async (req, res) => {
 
   // update password
   if (password) {
-    await db.collection('base_user')
-      .where({ id: uid })
+    await db.collection('password')
+      .where({ uid: uid })
       .update({
         password: hash(password),
-        updated_at: now()
+        updated_at: Date.now()
       })
   }
 
@@ -231,7 +235,7 @@ AdminRouter.post('/edit', async (req, res) => {
 
   // update admim
   const data = {
-    updated_at: now()
+    updated_at: Date.now()
   }
 
   // username
@@ -262,7 +266,7 @@ AdminRouter.post('/edit', async (req, res) => {
   }
 
   const r = await db.collection('admins')
-    .where({ uid })
+    .where({ _id: uid })
     .update(data)
 
   return res.send({

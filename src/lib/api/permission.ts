@@ -28,9 +28,9 @@ export async function checkPermission(uid: string, permission: string): Promise<
 export async function getPermissions(uid: string) {
 
   // 查用户
-  const { data: [admin] } = await db.collection('admins')
-    .where({ uid })
-    .get()
+  const { data: admin } = await db.collection('admins')
+    .where({ _id: uid })
+    .getOne()
 
   assert(admin, 'getPermissions failed')
 
