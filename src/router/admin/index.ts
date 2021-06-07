@@ -285,7 +285,7 @@ AdminRouter.post('/edit', async (req, res) => {
  */
 AdminRouter.post('/apply/rules', async (req, res) => {
   const requestId = req['requestId']
-  logger.info(`[${requestId}] /apply/rules: ${req.body?.uid}`)
+  logger.info(`[${requestId}] /apply/rules`)
 
   // 权限验证
   const code = await checkPermission(req['auth']?.uid, 'rule.apply')
@@ -329,7 +329,7 @@ AdminRouter.post('/apply/rules', async (req, res) => {
  */
 AdminRouter.post('/apply/triggers', async (req, res) => {
   const requestId = req['requestId']
-  logger.info(`[${requestId}] /apply/triggers: ${req.body?.uid}`)
+  logger.info(`[${requestId}] /apply/triggers`)
 
   // 权限验证
   const code = await checkPermission(req['auth']?.uid, 'trigger.apply')

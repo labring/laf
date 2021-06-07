@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { Entry, MongoAccessor, Ruler } from 'less-api'
 import Config from '../config'
+import { scheduler } from '../lib/faas'
 import { getLogger } from '../lib/logger'
 import { getAccessRules } from '../lib/rules'
 
@@ -26,8 +27,9 @@ accessor.init()
   })
 
 export const entry = new Entry(accessor, ruler)
-entry.setLogger(getLogger('app:less-api'))
+entry.setLogger(getLogger('app:less-api', 'warning'))
 
+const logger = getLogger('app:entry')
 router.post('/entry', async (req, res) => {
   const requestId = req['requestId']
 
@@ -42,6 +44,7 @@ router.post('/entry', async (req, res) => {
   // validate query
   const result = await entry.validate(params, injections)
   if (result.errors) {
+    logger.debug(`[${requestId}] validate return errors: `, result.errors)
     return res.send({
       code: 1,
       error: result.errors,
@@ -52,6 +55,11 @@ router.post('/entry', async (req, res) => {
   // execute query
   try {
     const data = await entry.execute(params)
+    logger.trace(`[${requestId}] executed query: `, data)
+    
+    // 触发数据事件
+    const event = `/db/${params.collection}/${params.action}`
+    scheduler.emit(event, data)
     return res.send({
       code: 0,
       data

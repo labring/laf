@@ -2,6 +2,7 @@ import { getLogger } from "../logger"
 import { getCloudFunctionById, invokeFunction } from "./invoke"
 import { db } from '../../lib/db'
 import { now } from "../time"
+import { FunctionContext } from "./types"
 
 
 const logger = getLogger('trigger')
@@ -33,11 +34,11 @@ export class Trigger {
   // 事件触发器的事件名
   public event?: string
 
-  // Timer触发器的间隔
+  // Timer触发器的间隔(秒)
   public duration?: number
 
   // HTTP 触发器方法
-  public method?: string = '*'
+  public method?: string
 
   // 上次执行时间
   public last_exec_time: number
@@ -105,8 +106,8 @@ export class TriggerScheduler {
    * @param event 事件名
    * @param param 事件参数
    */
-  public emit(event: string, param?: any) {
-    logger.debug(`emit ${event} :`, param)
+  public emit(event: string, data?: any) {
+    logger.info(`TriggerScheduler.emit -> ${event}`)
 
     // filter triggers by given eventName
     const triggers = this.getEventTriggers()
@@ -114,8 +115,12 @@ export class TriggerScheduler {
 
     // trigger the functions' execution
     for (const tri of triggers) {
-      logger.debug(`emit() with event [${event}], executing function : ${tri.func_id}`)
-      this.executeFunction(tri.func_id, param)
+      logger.info(`TriggerScheduler.emit -> ${event} - executing function : ${tri.func_id}`)
+      const param: FunctionContext = {
+        extra: data,
+        requestId: `trigger_${tri.id}`
+      }
+      this.executeFunction(tri.func_id, param, tri)
     }
   }
 
@@ -134,9 +139,27 @@ export class TriggerScheduler {
    * @param func_id 
    * @param param 
    */
-  private async executeFunction(func_id: string, param: any) {
+  private async executeFunction(func_id: string, param: FunctionContext, trigger: Trigger) {
     const func = await getCloudFunctionById(func_id)
-    await invokeFunction(func, param)
+    const result = await invokeFunction(func, param)
+
+    // 将云函数调用日志存储到数据库
+    {
+
+      result.logs.unshift(`invoked by trigger: ${trigger.name} (${trigger.id})`)
+      await db.collection('function_logs')
+        .add({
+          requestId: `trigger_${trigger.id}`,
+          func_id: func._id,
+          func_name: func.name,
+          logs: result.logs,
+          time_usage: result.time_usage,
+          created_at: Date.now(),
+          updated_at: Date.now(),
+          created_by: `trigger_${trigger.id}`,
+          trigger_id: trigger.id
+        })
+    }
   }
 
   /**
@@ -166,6 +189,7 @@ export class TriggerScheduler {
       .get()
 
 
+    logger.debug('loadTriggers: ', r.data)
     return r.data.map(data => Trigger.fromJson(data))
   }
 
@@ -187,9 +211,14 @@ export class TriggerScheduler {
     for (const tri of triggers) {
 
       // 判断任务执行时间是否已到
-      if (now() - tri.last_exec_time >= tri.duration) {
+      if (now() - tri.last_exec_time >= tri.duration * 1000) {
+        logger.info(`TriggerScheduler.timer-loop -> trigger(${tri.id})- executing function : ${tri.func_id}`)
+        const param: FunctionContext = {
+          extra: tri,
+          requestId: `trigger_${tri.id}`
+        }
         // 执行任务函数
-        this.executeFunction(tri.func_id, null)
+        this.executeFunction(tri.func_id, param, tri)
 
         // 更新最后执行时间
         tri.last_exec_time = now()

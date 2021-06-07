@@ -24,7 +24,7 @@ accessor.init()
   })
 
 export const entry = new Entry(accessor, ruler)
-entry.setLogger(getLogger('admin:less-api'))
+entry.setLogger(getLogger('admin:less-api', 'warning'))
 
 const logger = getLogger('admin:entry')
 router.post('/entry', async (req, res) => {
@@ -66,9 +66,11 @@ router.post('/entry', async (req, res) => {
   try {
     const data = await entry.execute(params)
     logger.trace(`[${requestId}] executed query: `, data)
+
     // 触发数据事件
     const event = `/db/${params.collection}/${params.action}`
     scheduler.emit(event, data)
+
     return res.send({
       code: 0,
       data

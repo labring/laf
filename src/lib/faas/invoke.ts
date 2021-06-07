@@ -20,6 +20,22 @@ function createCloudSdk(): CloudSdkInterface {
 
     const result = await invokeFunction(func, param ?? {})
 
+    // 将云函数调用日志存储到数据库
+    {
+      result.logs.unshift(`invoked in function: ${func.name} (${func._id})`)
+      await db.collection('function_logs')
+        .add({
+          requestId: `func_${func._id}`,
+          func_id: func._id,
+          func_name: func.name,
+          logs: result.logs,
+          time_usage: result.time_usage,
+          created_at: Date.now(),
+          updated_at: Date.now(),
+          created_by: `${func._id}`
+        })
+    }
+
     return result
   }
 
@@ -46,6 +62,7 @@ export async function invokeFunction(func: CloudFunctionStruct, param: FunctionC
     query: query,
     body: body,
     auth: auth,
+    extra: param.extra,
     less: createCloudSdk()
   })
 

@@ -10,7 +10,7 @@ const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
     useUnifiedTopology: true
 })
 
-accessor.setLogger(getLogger('server:db'))
+accessor.setLogger(getLogger('server:db', 'warning'))
 
 // 为了在外部能够等待异步的数据库连接
 const accessor_ready = accessor.init()

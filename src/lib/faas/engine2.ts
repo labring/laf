@@ -23,6 +23,7 @@ export class FunctionEngine {
         query: incomingCtx.query,
         body: incomingCtx.body,
         auth: incomingCtx.auth,
+        extra: incomingCtx.extra,
         requestId: requestId,
       },
       module: _module,
