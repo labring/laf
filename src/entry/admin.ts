@@ -5,6 +5,7 @@ import { getPermissions } from '../lib/api/permission'
 import { scheduler } from '../lib/faas'
 import { getLogger } from '../lib/logger'
 import { getAccessRules } from '../lib/rules'
+import { convertActionType } from '../lib/util'
 
 const router = Router()
 
@@ -12,6 +13,15 @@ const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
   poolSize: Config.db.poolSize,
   useNewUrlParser: true,
   useUnifiedTopology: true,
+})
+
+accessor.on('result', data => {
+  const { params, result } = data
+  const op = convertActionType(params.action)
+
+  // 触发数据事件
+  const event = `/db/${params.collection}#${op}`
+  scheduler.emit(event, result)
 })
 
 const ruler = new Ruler(accessor)
@@ -66,10 +76,6 @@ router.post('/entry', async (req, res) => {
   try {
     const data = await entry.execute(params)
     logger.trace(`[${requestId}] executed query: `, data)
-
-    // 触发数据事件
-    const event = `/db/${params.collection}/${params.action}`
-    scheduler.emit(event, data)
 
     return res.send({
       code: 0,

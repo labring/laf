@@ -1,8 +1,9 @@
 import { getLogger } from "../logger"
 import { getCloudFunctionById, invokeFunction } from "./invoke"
-import { db } from '../../lib/db'
+import { db, accessor } from '../../lib/db'
 import { now } from "../time"
 import { FunctionContext } from "./types"
+import { convertActionType } from "../util"
 
 
 const logger = getLogger('trigger')
@@ -56,7 +57,7 @@ export class Trigger {
   }
 
   static fromJson(data: any): Trigger {
-    logger.trace('init trigger by fromJson: ', data)
+    logger.debug('init trigger by fromJson: ', data)
     const tri = new Trigger()
     tri.type = data.type
     tri.desc = data.desc
@@ -107,7 +108,7 @@ export class TriggerScheduler {
    * @param param 事件参数
    */
   public emit(event: string, data?: any) {
-    logger.info(`TriggerScheduler.emit -> ${event}`)
+    logger.debug(`TriggerScheduler.emit -> ${event}`)
 
     // filter triggers by given eventName
     const triggers = this.getEventTriggers()
@@ -115,7 +116,7 @@ export class TriggerScheduler {
 
     // trigger the functions' execution
     for (const tri of triggers) {
-      logger.info(`TriggerScheduler.emit -> ${event} - executing function : ${tri.func_id}`)
+      logger.debug(`TriggerScheduler.emit -> ${event} - executing function : ${tri.func_id}`)
       const param: FunctionContext = {
         extra: data,
         requestId: `trigger_${tri.id}`
@@ -212,7 +213,7 @@ export class TriggerScheduler {
 
       // 判断任务执行时间是否已到
       if (now() - tri.last_exec_time >= tri.duration * 1000) {
-        logger.info(`TriggerScheduler.timer-loop -> trigger(${tri.id})- executing function : ${tri.func_id}`)
+        logger.debug(`TriggerScheduler.timer-loop -> trigger(${tri.id})- executing function : ${tri.func_id}`)
         const param: FunctionContext = {
           extra: tri,
           requestId: `trigger_${tri.id}`
@@ -226,3 +227,21 @@ export class TriggerScheduler {
     }
   }
 }
+
+
+// 触发器的调度器单例
+export const scheduler = new TriggerScheduler()
+
+// 当数据库连接成功时，初始化 scheduler
+accessor.ready.then(() => {
+  scheduler.init()
+})
+
+accessor.on('result', data => {
+  const { params, result } = data
+  const op = convertActionType(params.action)
+
+  // 触发数据事件
+  const event = `/db/${params.collection}#${op}`
+  scheduler.emit(event, result)
+})

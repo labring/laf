@@ -8,7 +8,7 @@ export class FunctionConsole {
     return this._logs
   }
 
-  log(...params) {
+  log(...params: any[]) {
     const date = moment().format("YYYY/MM/DD HH:mm:ss")
     const r = util.format("[%s] -", date, ...params)
     this._logs.push(r)
