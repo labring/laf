@@ -7,6 +7,7 @@ import { entry as adminEntry } from '../../entry/admin'
 import { entry as appEntry } from '../../entry/app'
 import { getAccessRules } from '../../lib/rules'
 import { Ruler } from 'less-api'
+import { scheduler } from '../../lib/faas'
 
 export const AdminRouter = Router()
 const logger = getLogger('admin:api')
@@ -284,7 +285,7 @@ AdminRouter.post('/edit', async (req, res) => {
  */
 AdminRouter.post('/apply/rules', async (req, res) => {
   const requestId = req['requestId']
-  logger.info(`[${requestId}] /admin/edit: ${req.body?.uid}`)
+  logger.info(`[${requestId}] /apply/rules: ${req.body?.uid}`)
 
   // 权限验证
   const code = await checkPermission(req['auth']?.uid, 'rule.apply')
@@ -320,4 +321,32 @@ AdminRouter.post('/apply/rules', async (req, res) => {
     data: 'applied'
   })
 
+})
+
+
+/**
+ * 重新调度最新的触发器配置
+ */
+AdminRouter.post('/apply/triggers', async (req, res) => {
+  const requestId = req['requestId']
+  logger.info(`[${requestId}] /apply/triggers: ${req.body?.uid}`)
+
+  // 权限验证
+  const code = await checkPermission(req['auth']?.uid, 'trigger.apply')
+  if (code) {
+    return res.status(code).send()
+  }
+
+  // apply triggers
+  try {
+    logger.debug(`[${requestId}] apply trigger rule`)
+    await scheduler.init()
+  } catch (error) {
+    logger.error(`[${requestId}] apply trigger rule error: `, error)
+  }
+
+  return res.send({
+    code: 0,
+    data: 'applied'
+  })
 })

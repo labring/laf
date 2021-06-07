@@ -8,12 +8,13 @@ import { FileStorageInterface } from "../storage/interface"
 export type RequireFuncType = (module: 'crypto' | 'path' | 'querystring' | 'url' | 'lodash' | 'moment') => any
 
 export type InvokeFunctionType = (name: string, param: FunctionContext) => Promise<any>
-
+export type EmitFunctionType = (event: string, param: any) => void
 export interface CloudSdkInterface {
   fetch: AxiosStatic
   storage(namespace: string): FileStorageInterface
   database(): Db,
   invoke: InvokeFunctionType
+  emit: EmitFunctionType
 }
 
 // vm run context (global)

@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { Entry, MongoAccessor, Ruler } from 'less-api'
 import Config from '../config'
 import { getPermissions } from '../lib/api/permission'
+import { scheduler } from '../lib/faas'
 import { getLogger } from '../lib/logger'
 import { getAccessRules } from '../lib/rules'
 
@@ -65,6 +66,9 @@ router.post('/entry', async (req, res) => {
   try {
     const data = await entry.execute(params)
     logger.trace(`[${requestId}] executed query: `, data)
+    // 触发数据事件
+    const event = `/db/${params.collection}/${params.action}`
+    scheduler.emit(event, data)
     return res.send({
       code: 0,
       data

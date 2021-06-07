@@ -1,4 +1,4 @@
-import { FunctionEngine } from "."
+import { FunctionEngine, scheduler } from "."
 import { db } from '../../lib/db'
 import { LocalFileStorage } from "../storage/local_file_storage"
 import request from 'axios'
@@ -27,14 +27,15 @@ function createCloudSdk(): CloudSdkInterface {
     database: () => db,
     storage: (namespace: string) => new LocalFileStorage(Config.LOCAL_STORAGE_ROOT_PATH, namespace),
     fetch: request,
-    invoke
+    invoke,
+    emit: (event: string, param: any) => scheduler.emit(event, param)
   }
 
   return less
 }
 
 /**
- * 调用函函数
+ * 调用云函数
  */
 export async function invokeFunction(func: CloudFunctionStruct, param: FunctionContext) {
   const { query, body, auth, requestId } = param
@@ -64,7 +65,25 @@ export async function getCloudFunction(func_name: string): Promise<CloudFunction
     .getOne()
 
   if (!r.ok) {
-    throw new Error(`getFunction() failed to get function [${func_name}]: ${r.error.toString()}`)
+    throw new Error(`getCloudFunction() failed to get function [${func_name}]: ${r.error.toString()}`)
+  }
+
+  return r.data
+}
+
+/**
+ * 获取云函数 by id
+ * @param func_name 
+ * @returns 
+ */
+export async function getCloudFunctionById(func_id: string): Promise<CloudFunctionStruct> {
+  // 获取函数
+  const r = await db.collection('functions')
+    .where({ _id: func_id })
+    .getOne()
+
+  if (!r.ok) {
+    throw new Error(`getCloudFunctionById() failed to get function [${func_id}]: ${r.error.toString()}`)
   }
 
   return r.data

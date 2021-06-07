@@ -28,5 +28,11 @@ exports.permissions = [
   { name: 'function.debug', label: '调试云函数' },
 
   { name: 'function_logs.read', label: '查看云函数日志' },
-  { name: 'function_logs.delete', label: '查看云函数日志' }
+  { name: 'function_logs.delete', label: '查看云函数日志' },
+
+  { name: 'trigger.create', label: '创建触发器' },
+  { name: 'trigger.read', label: '获取触发器' },
+  { name: 'trigger.edit', label: '编辑访触发器' },
+  { name: 'trigger.delete', label: '删除触发器' },
+  { name: 'trigger.apply', label: '应用触发器' },
 ]
