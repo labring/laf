@@ -35,7 +35,7 @@ async function main() {
 
   // 创建云函数索引
   await accessor.db.collection('functions').createIndex('name', { unique: true })
-  await accessor.db.collection('function_logs').createIndex('requestId', { unique: true })
+  await accessor.db.collection('function_logs').createIndex('requestId')
   await accessor.db.collection('function_logs').createIndex('func_id')
 
   accessor.close()
