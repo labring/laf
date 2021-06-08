@@ -64,7 +64,7 @@ export class Trigger {
     tri.id = data._id
     tri.func_id = data.func_id
     tri.name = data.name
-    tri.last_exec_time = data.last_exec_time
+    tri.last_exec_time = data.last_exec_time ?? 0
 
     if (tri.isEvent) {
       tri.event = data.event
