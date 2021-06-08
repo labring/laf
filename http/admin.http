@@ -43,8 +43,3 @@ Authorization: Bearer {{token}}
   "name": "Maslow",
   "avatar": "https://work.zhuo-zhuo.com/file/data/23ttprpxmavkkuf6nttc/PHID-FILE-vzv6dyqo3ev2tmngx7mu/logoL)"
 }
-
-### 应用触发器配置
-
-POST {{base_url}}/admin/apply/triggers  HTTP/1.1
-Authorization: Bearer {{token}}

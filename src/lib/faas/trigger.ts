@@ -44,6 +44,9 @@ export class Trigger {
   // 上次执行时间
   public last_exec_time: number
 
+  // 状态
+  public status: number
+
   get isEvent() {
     return this.type === TriggerType.TRIGGER_EVENT
   }
@@ -65,6 +68,7 @@ export class Trigger {
     tri.func_id = data.func_id
     tri.name = data.name
     tri.last_exec_time = data.last_exec_time ?? 0
+    tri.status = data.status
 
     if (tri.isEvent) {
       tri.event = data.event
@@ -100,6 +104,30 @@ export class TriggerScheduler {
 
   public destroy() {
     this.cancelTimer()
+  }
+
+  /**
+   * 更新指定 trigger：
+   *  1. 从库中获取最新 trigger 数据
+   *  2. 若 status 为停用，则从当前调度表中删除
+   *  3. 若 status 为启用，则将其最新数据更新或添加到当前调度列表中
+   * @param triggerId 
+   */
+  public async updateTrigger(trigger: Trigger): Promise<boolean> {
+    // 停用状态，移除调度
+    if (trigger.status === 0) {
+      return this.removeTrigger(trigger.id)
+    }
+
+    // 启用状态，更新或添加
+    const index = this._triggers.findIndex(tri => tri.id === trigger.id)
+    if (index < 0) {
+      this._triggers.push(trigger)
+    } else {
+      this._triggers[index] = trigger
+    }
+
+    return true
   }
 
   /**
@@ -200,6 +228,21 @@ export class TriggerScheduler {
 
   private getTimerTriggers(): Trigger[] {
     return this._triggers.filter(tri => tri.isTimer)
+  }
+
+  /**
+   * 从当前调度列表中移除触发器
+   * @param triggerId 
+   * @returns 
+   */
+  private removeTrigger(triggerId: string): boolean {
+    const index = this._triggers.findIndex(t => t.id === triggerId)
+    if (index === -1) {
+      return false
+    }
+
+    this._triggers.splice(index, 1)
+    return true
   }
 
   /**
