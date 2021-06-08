@@ -40,7 +40,7 @@
     "read": "$has('trigger.read')",
     "update": "$has('trigger.edit')",
     "add": "$has('trigger.create')",
-    "remove": "$has('trigger.delete')",
+    "remove": "$has('trigger.delete') && query.status === 0",
     "count": "$has('trigger.read')"
   }
 }
