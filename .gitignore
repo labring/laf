@@ -6,3 +6,5 @@ data/*
 tmp
 
 .env
+
+ecosystem.config.js
