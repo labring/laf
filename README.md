@@ -30,6 +30,12 @@ npm install
 npm run build
 ```
 
+> 开发环境可自动编译
+
+```sh
+npm run watch
+```
+
 ### 启动 MongoDb
 
 ```sh
@@ -38,13 +44,13 @@ docker run -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=less -e MONGO_INITDB_ROO
 
 ### 配置数据库 (MongoDb)
 
-> 【推荐】将 .env.development 拷贝并重命名为 .env，编辑里面的环境变量
+> A.【推荐】将 .env.development 拷贝并重命名为 .env，编辑里面的环境变量
 
 ```
 mv .env.development .env
 ```
 
-> 【不推荐】或直接修改 `/src/config.ts` 相应配置
+> B.【不推荐】或直接修改 `/src/config.ts` 相应配置
 
 ### 初始化应用的基础数据
 
@@ -61,16 +67,10 @@ npm run init
 npm start
 ```
 
-> 开发环境可自动编译 ts 代码
-
-```sh
-npm run watch
-```
-
 > 也可使用 pm2 来运行应用
 
 ```sh
-# 首次运行前需将 ecosystem.config.js.tpl 重命名为 ecosystem.config.js
+# 首次使用 pm2 运行前，需将创建配置文件 ecosystem.config.js
 mv ecosystem.config.js.tpl ecosystem.config.js
 
 #
@@ -79,12 +79,10 @@ pm2 run
 
 ## TODO
 
-- 支持云函数触发器（定时触发、事件触发、HTTP 触发）
+- 支持云函数触发器（定时触发、事件触发）【已完成】
 - 支持 less-api watch() 功能，实现长连接数据流推送
 - 支持云函数的导入导出（less-admin），可以更好的复用、备份、迁移云函数
-- 支持云函数市场，可以更好的分享、复用云函数
 - 支持云函数版本管理，可发布版本、历史版本、回滚版本
 - 支持 MongoFileStorage，默认将文件存储至 Mongo GridFS（可以更好的利用 Mongo 的分布式、弹性扩展优势）
 - 支持阿里云 OSS 存储, AliOssStorage
 - 支持在线安装 npm 预设包，可配置云函数执行环境依赖
-- 支持本地云函数执行环境，一键调试，一键发版
