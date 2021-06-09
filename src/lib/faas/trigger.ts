@@ -147,6 +147,7 @@ export class TriggerScheduler {
       logger.debug(`TriggerScheduler.emit -> ${event} - executing function : ${tri.func_id}`)
       const param: FunctionContext = {
         extra: data,
+        method: 'trigger',
         requestId: `trigger_${tri.id}`
       }
       this.executeFunction(tri.func_id, param, tri)
@@ -259,6 +260,7 @@ export class TriggerScheduler {
         logger.debug(`TriggerScheduler.timer-loop -> trigger(${tri.id})- executing function : ${tri.func_id}`)
         const param: FunctionContext = {
           extra: tri,
+          method: 'trigger',
           requestId: `trigger_${tri.id}`
         }
         // 执行任务函数

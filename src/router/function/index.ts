@@ -41,7 +41,7 @@ async function handleInvokeFunction(req: Request, res: Response) {
   }
 
   // 调用函数
-  const ctx: FunctionContext = { query: req.query, body: req.body, auth: req['auth'], requestId }
+  const ctx: FunctionContext = { query: req.query, body: req.body, auth: req['auth'], requestId, method: req.method }
   const result = await invokeFunction(func, ctx)
 
   // 将云函数调用日志存储到数据库

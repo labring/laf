@@ -18,7 +18,10 @@ function createCloudSdk(): CloudSdkInterface {
       throw new Error(`invoke() failed to get function: ${name}`)
     }
 
-    const result = await invokeFunction(func, param ?? {})
+    if (param?.method) {
+      param.method = param.method ?? 'call'
+    }
+    const result = await invokeFunction(func, param ?? { method: 'call' })
 
     // 将云函数调用日志存储到数据库
     {
@@ -63,6 +66,7 @@ export async function invokeFunction(func: CloudFunctionStruct, param: FunctionC
     body: body,
     auth: auth,
     extra: param.extra,
+    method: param.method,
     less: createCloudSdk()
   })
 

@@ -35,7 +35,8 @@ export interface FunctionContext {
   body?: any,
   auth?: any,
   requestId?: string,
-  extra?: any
+  extra?: any,
+  method?: string
 }
 
 // param for engine.run()

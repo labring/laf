@@ -24,6 +24,7 @@ export class FunctionEngine {
         body: incomingCtx.body,
         auth: incomingCtx.auth,
         extra: incomingCtx.extra,
+        method: incomingCtx.method,
         requestId: requestId,
       },
       module: _module,
