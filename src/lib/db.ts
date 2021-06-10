@@ -3,13 +3,13 @@ import Config from '../config'
 import { getLogger } from './logger'
 
 export const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
+    poolSize: Config.db.poolSize,
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
 
 accessor.setLogger(getLogger('server:db', 'warning'))
 
-// 为了在外部能够等待异步的数据库连接
 accessor.init()
 
 // 获取 db 对象

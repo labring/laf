@@ -1,45 +1,24 @@
 import { Router } from 'express'
-import { Entry, MongoAccessor, Ruler } from 'less-api'
-import Config from '../config'
-import { scheduler } from '../lib/faas'
+import { Entry, Ruler } from 'less-api'
+import { accessor } from '../lib/db'
 import { getLogger } from '../lib/logger'
 import { getAccessRules } from '../lib/rules'
-import { convertActionType } from '../lib/util'
 
+const logger = getLogger('app:entry')
 const router = Router()
 
 router.all('*', function (_req, _res, next) {
   next()
 })
 
-const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
-  poolSize: Config.db.poolSize,
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-
-accessor.on('result', data => {
-  const { params, result } = data
-  const op = convertActionType(params.action)
-
-  // 触发数据事件
-  const event = `/db/${params.collection}#${op}`
-  scheduler.emit(event, result)
-})
-
 const ruler = new Ruler(accessor)
-accessor.init()
-  .then(() => {
-    return getAccessRules('app', accessor)
-  })
-  .then(rules => {
-    ruler.load(rules)
-  })
+accessor.ready.then(async () => {
+  const rules = await getAccessRules('app', accessor)
+  ruler.load(rules)
+})
 
 export const entry = new Entry(accessor, ruler)
-entry.setLogger(getLogger('app:less-api', 'warning'))
 
-const logger = getLogger('app:entry')
 router.post('/entry', async (req, res) => {
   const requestId = req['requestId']
 
@@ -66,7 +45,7 @@ router.post('/entry', async (req, res) => {
   try {
     const data = await entry.execute(params)
     logger.trace(`[${requestId}] executed query: `, data)
-    
+
     return res.send({
       code: 0,
       data

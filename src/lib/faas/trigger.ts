@@ -282,11 +282,23 @@ accessor.ready.then(() => {
   scheduler.init()
 })
 
-accessor.on('result', data => {
+accessor.on('result', AccessorEventCallBack)
+
+/**
+ * 数据操作事件回调
+ * @param data 
+ */
+export function AccessorEventCallBack(data: any) {
   const { params, result } = data
+
   const op = convertActionType(params.action)
+
+  // 忽略的数据事件
+  if (['read', 'count', 'watch'].includes(op)) {
+    return
+  }
 
   // 触发数据事件
   const event = `/db/${params.collection}#${op}`
   scheduler.emit(event, result)
-})
+}
