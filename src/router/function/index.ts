@@ -4,13 +4,26 @@ import { checkPermission } from '../../lib/api/permission'
 import { getLogger } from '../../lib/logger'
 import { getCloudFunction, invokeFunction } from '../../lib/faas/invoke'
 import { FunctionContext } from '../../lib/faas/types'
+import * as multer from 'multer'
+import * as path from 'path'
+import * as uuid from 'uuid'
+
 
 export const FunctionRouter = Router()
 const logger = getLogger('admin:api')
 
+// multer 上传配置
+const uploader = multer({
+  storage: multer.diskStorage({
+    filename: (_req, file, cb) => {
+      const { ext } = path.parse(file.originalname)
+      cb(null, uuid.v4() + ext)
+    }
+  })
+})
 
-FunctionRouter.post('/invoke/:name', handleInvokeFunction)
-FunctionRouter.all('/:name', handleInvokeFunction)         // alias for /invoke/:name
+FunctionRouter.post('/invoke/:name', uploader.any(), handleInvokeFunction)
+FunctionRouter.all('/:name', uploader.any(), handleInvokeFunction)         // alias for /invoke/:name
 
 async function handleInvokeFunction(req: Request, res: Response) {
   const requestId = req['requestId']
@@ -41,7 +54,15 @@ async function handleInvokeFunction(req: Request, res: Response) {
   }
 
   // 调用函数
-  const ctx: FunctionContext = { query: req.query, body: req.body, auth: req['auth'], requestId, method: req.method }
+  const ctx: FunctionContext = {
+    query: req.query,
+    files: req.files as any,
+    body: req.body,
+    headers: req.headers,
+    method: req.method,
+    auth: req['auth'],
+    requestId,
+  }
   const result = await invokeFunction(func, ctx)
 
   // 将云函数调用日志存储到数据库

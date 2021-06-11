@@ -3,6 +3,7 @@ import { FunctionConsole } from "./console"
 import { AxiosStatic } from 'axios'
 import { Db } from 'less-api-database'
 import { FileStorageInterface } from "../storage/interface"
+import { IncomingHttpHeaders } from "node:http"
 
 
 export type RequireFuncType = (module: 'crypto' | 'path' | 'querystring' | 'url' | 'lodash' | 'moment') => any
@@ -31,11 +32,13 @@ export interface RuntimeContext {
 
 // ctx passed to function
 export interface FunctionContext {
+  files?: File[]
+  headers?: IncomingHttpHeaders
   query?: any,
   body?: any,
+  params?: any,
   auth?: any,
   requestId?: string,
-  extra?: any,
   method?: string
 }
 
@@ -67,4 +70,28 @@ export interface CloudFunctionStruct {
   created_by: number,
   created_at: number
   updated_at: number
+}
+
+/** Object containing file metadata and access information. */
+interface File {
+  /** Name of the form field associated with this file. */
+  fieldname: string
+  /** Name of the file on the uploader's computer. */
+  originalname: string
+  /**
+   * Value of the `Content-Transfer-Encoding` header for this file.
+   * @deprecated since July 2015
+   * @see RFC 7578, Section 4.7
+   */
+  encoding: string
+  /** Value of the `Content-Type` header for this file. */
+  mimetype: string
+  /** Size of the file in bytes. */
+  size: number
+  /** `DiskStorage` only: Directory to which this file has been uploaded. */
+  destination: string
+  /** `DiskStorage` only: Name of this file within `destination`. */
+  filename: string
+  /** `DiskStorage` only: Full path to the uploaded file. */
+  path: string
 }
