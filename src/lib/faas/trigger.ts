@@ -146,7 +146,7 @@ export class TriggerScheduler {
     for (const tri of triggers) {
       logger.debug(`TriggerScheduler.emit -> ${event} - executing function : ${tri.func_id}`)
       const param: FunctionContext = {
-        extra: data,
+        params: data,
         method: 'trigger',
         requestId: `trigger_${tri.id}`
       }
@@ -259,7 +259,7 @@ export class TriggerScheduler {
       if (now() - tri.last_exec_time >= tri.duration * 1000) {
         logger.debug(`TriggerScheduler.timer-loop -> trigger(${tri.id})- executing function : ${tri.func_id}`)
         const param: FunctionContext = {
-          extra: tri,
+          params: tri,
           method: 'trigger',
           requestId: `trigger_${tri.id}`
         }

@@ -1,5 +1,5 @@
 
-// 获取当前时间，整数，秒
+// 获取当前时间戳，毫秒
 export function now(): number {
   return Date.now()
 }

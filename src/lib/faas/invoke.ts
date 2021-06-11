@@ -3,7 +3,7 @@ import { db } from '../../lib/db'
 import { LocalFileStorage } from "../storage/local_file_storage"
 import request from 'axios'
 import Config from "../../config"
-import { CloudFunctionStruct, CloudSdkInterface, FunctionContext, InvokeFunctionType } from "./types"
+import { CloudFunctionStruct, CloudSdkInterface, FunctionContext } from "./types"
 
 /**
  * 创建云函数 cloud sdk
@@ -11,42 +11,11 @@ import { CloudFunctionStruct, CloudSdkInterface, FunctionContext, InvokeFunction
  */
 function createCloudSdk(): CloudSdkInterface {
 
-  // 云函数中调用云函数的接口
-  const invoke: InvokeFunctionType = async (name, param) => {
-    const func = await getCloudFunction(name)
-    if (!func) {
-      throw new Error(`invoke() failed to get function: ${name}`)
-    }
-
-    if (param?.method) {
-      param.method = param.method ?? 'call'
-    }
-    const result = await invokeFunction(func, param ?? { method: 'call' })
-
-    // 将云函数调用日志存储到数据库
-    {
-      result.logs.unshift(`invoked in function: ${func.name} (${func._id})`)
-      await db.collection('function_logs')
-        .add({
-          requestId: `func_${func._id}`,
-          func_id: func._id,
-          func_name: func.name,
-          logs: result.logs,
-          time_usage: result.time_usage,
-          created_at: Date.now(),
-          updated_at: Date.now(),
-          created_by: `${func._id}`
-        })
-    }
-
-    return result
-  }
-
   const less: CloudSdkInterface = {
     database: () => db,
     storage: (namespace: string) => new LocalFileStorage(Config.LOCAL_STORAGE_ROOT_PATH, namespace),
     fetch: request,
-    invoke,
+    invoke: _invokeInFunction,
     emit: (event: string, param: any) => scheduler.emit(event, param)
   }
 
@@ -65,7 +34,7 @@ export async function invokeFunction(func: CloudFunctionStruct, param: FunctionC
     query: query,
     body: body,
     auth: auth,
-    extra: param.extra,
+    params: param.params,
     method: param.method,
     less: createCloudSdk()
   })
@@ -108,4 +77,38 @@ export async function getCloudFunctionById(func_id: string): Promise<CloudFuncti
   }
 
   return r.data
+}
+
+
+/**
+ * 在云函数中[调用云函数]的函数
+ */
+async function _invokeInFunction(name: string, param: FunctionContext) {
+  const func = await getCloudFunction(name)
+  if (!func) {
+    throw new Error(`invoke() failed to get function: ${name}`)
+  }
+
+  if (param?.method) {
+    param.method = param.method ?? 'call'
+  }
+  const result = await invokeFunction(func, param ?? { method: 'call' })
+
+  // 将云函数调用日志存储到数据库
+  {
+    result.logs.unshift(`invoked in function: ${func.name} (${func._id})`)
+    await db.collection('function_logs')
+      .add({
+        requestId: `func_${func._id}`,
+        func_id: func._id,
+        func_name: func.name,
+        logs: result.logs,
+        time_usage: result.time_usage,
+        created_at: Date.now(),
+        updated_at: Date.now(),
+        created_by: `${func._id}`
+      })
+  }
+
+  return result
 }
