@@ -1,5 +1,5 @@
 import * as crypto from 'crypto'
-import Config from '../config'
+import Config from '../../config'
 const secret = Config.SERVER_SALT
 
 // 生成 token

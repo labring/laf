@@ -4,5 +4,5 @@ import { RegisterRouter } from './register'
 
 export const UserRouter = Router()
 
-UserRouter.use(LoginRouter)
-UserRouter.use(RegisterRouter)
+UserRouter.use('/user', LoginRouter)
+UserRouter.use('/user', RegisterRouter)

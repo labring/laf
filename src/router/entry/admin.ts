@@ -1,23 +1,23 @@
 import { Router } from 'express'
 import { Entry, Ruler } from 'less-api'
-import Config from '../config'
-import { getPermissions } from '../lib/api/permission'
-import { accessor } from '../lib/db'
-import { getLogger } from '../lib/logger'
-import { getAccessRules } from '../lib/rules'
+import Config from '../../config'
+import { getPermissions } from '../../lib/api/permission'
+import { accessor } from '../../lib/db'
+import { getLogger } from '../../lib/logger'
+import { getAccessRules } from '../../lib/api/rules'
 
 const logger = getLogger('admin:entry')
-const router = Router()
+export const AdminEntryRouter = Router()
 
 const ruler = new Ruler(accessor)
 accessor.ready.then(async () => {
-  const rules = await getAccessRules('admin', accessor)
+  const rules = await getAccessRules('admin')
   ruler.load(rules)
 })
 
 export const entry = new Entry(accessor, ruler)
 
-router.post('/entry', async (req, res) => {
+AdminEntryRouter.post('/entry', async (req, res) => {
   const requestId = req['requestId']
   const auth = req['auth'] ?? {}
 
@@ -69,5 +69,3 @@ router.post('/entry', async (req, res) => {
     })
   }
 })
-
-export default router

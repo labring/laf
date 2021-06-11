@@ -1,25 +1,21 @@
 import { Router } from 'express'
 import { Entry, Ruler } from 'less-api'
-import { accessor } from '../lib/db'
-import { getLogger } from '../lib/logger'
-import { getAccessRules } from '../lib/rules'
+import { accessor } from '../../lib/db'
+import { getLogger } from '../../lib/logger'
+import { getAccessRules } from '../../lib/api/rules'
 
 const logger = getLogger('app:entry')
-const router = Router()
-
-router.all('*', function (_req, _res, next) {
-  next()
-})
+export const AppEntryRouter = Router()
 
 const ruler = new Ruler(accessor)
 accessor.ready.then(async () => {
-  const rules = await getAccessRules('app', accessor)
+  const rules = await getAccessRules('app')
   ruler.load(rules)
 })
 
 export const entry = new Entry(accessor, ruler)
 
-router.post('/entry', async (req, res) => {
+AppEntryRouter.post('/entry', async (req, res) => {
   const requestId = req['requestId']
 
   const auth = req['auth'] ?? {}
@@ -58,5 +54,3 @@ router.post('/entry', async (req, res) => {
     })
   }
 })
-
-export default router

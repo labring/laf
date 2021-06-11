@@ -1,5 +1,5 @@
 import * as vm from 'vm'
-import { nanosecond2ms } from '../time'
+import { nanosecond2ms } from '../utils/time'
 import { FunctionConsole } from './console'
 import { FunctionResult, IncomingContext, RequireFuncType, RuntimeContext } from './types'
 

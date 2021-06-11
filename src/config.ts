@@ -8,12 +8,6 @@ export default class Config {
       database: process.env['DB'] ?? 'less_framework',
       uri: process.env['DB_URI'] ?? 'mongodb://localhost:27017',
       poolSize: (process.env['DB_POOL_LIMIT'] ?? 100) as number,
-
-      // for mysql:
-      // user: process.env['DB_USER'] ?? "root",
-      // password: process.env['DB_PASSWORD'] ?? "kissme",
-      // host: process.env['DB_HOST'] ?? "127.0.0.1",
-      // port: (process.env['PORT'] ?? 3306) as number,
     }
   }
 

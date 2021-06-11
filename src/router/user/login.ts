@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { getToken, hash } from '../../lib/token'
+import { getToken, hash } from '../../lib/api/token'
 import { db } from '../../lib/db'
 
 export const LoginRouter = Router()

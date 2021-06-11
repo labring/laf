@@ -1,9 +1,9 @@
 import { getLogger } from "../logger"
 import { getCloudFunctionById, invokeFunction } from "./invoke"
 import { db, accessor } from '../../lib/db'
-import { now } from "../time"
+import { now } from "../utils/time"
 import { FunctionContext } from "./types"
-import { convertActionType } from "../util"
+import { convertActionType } from "../utils/util"
 
 
 const logger = getLogger('trigger')
