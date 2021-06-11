@@ -4,21 +4,23 @@ import { LocalFileStorage } from "../storage/local_file_storage"
 import request from 'axios'
 import Config from "../../config"
 import { CloudFunctionStruct, CloudSdkInterface, FunctionContext } from "./types"
+import { getToken, parseToken } from "../utils/token"
 
 /**
  * 调用云函数
  */
 export async function invokeFunction(func: CloudFunctionStruct, param: FunctionContext) {
-  const { query, body, auth, requestId } = param
+  // const { query, body, auth, requestId } = param
   const engine = new FunctionEngine()
   const result = await engine.run(func.code, {
-    requestId,
+    ...param,
+    // requestId,
     functionName: func.name,
-    query: query,
-    body: body,
-    auth: auth,
-    params: param.params,
-    method: param.method,
+    // query: query,
+    // body: body,
+    // auth: auth,
+    // params: param.params,
+    // method: param.method,
     less: createCloudSdk()
   })
 
@@ -79,7 +81,9 @@ function createCloudSdk(): CloudSdkInterface {
     fetch: request,
     invoke: _invokeInFunction,
     emit: (event: string, param: any) => scheduler.emit(event, param),
-    shared: _shared_preference
+    shared: _shared_preference,
+    getToken: getToken,
+    parseToken: parseToken
   }
 
   return less

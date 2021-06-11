@@ -3,7 +3,7 @@ import { getCloudFunctionById, invokeFunction } from "./invoke"
 import { db, accessor } from '../../lib/db'
 import { now } from "../utils/time"
 import { FunctionContext } from "./types"
-import { convertActionType } from "../utils/util"
+import { convertActionType } from "../utils"
 
 
 const logger = getLogger('trigger')

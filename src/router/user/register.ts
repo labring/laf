@@ -1,7 +1,8 @@
 import { Router } from 'express'
-import { getToken, hash } from '../../lib/api/token'
+import { getToken } from '../../lib/utils/token'
 import { db } from '../../lib/db'
 import * as assert from 'assert'
+import { hashPassword } from '../../lib/utils/hash'
 export const RegisterRouter = Router()
 
 /**
@@ -48,20 +49,21 @@ RegisterRouter.post('/register/password', async (req, res) => {
   // 创建 user password
   await db.collection('password').add({
     uid: r.id,
-    password: hash(password),
+    password: hashPassword(password),
     created_at: Date.now(),
     updated_at: Date.now()
   })
 
 
   // 注册完成后自动登录，生成 token: 默认 token 有效期为 7 天
-  const expire = new Date().getTime() + 60 * 60 * 1000 * 24 * 7
+  const expire = Math.floor(Date.now()) + 60 * 60 * 1000 * 24 * 7
   const payload = {
     uid: r.id,
-    type: 'user'
+    type: 'user',
+    exp: expire
   }
 
-  const access_token = getToken(payload, expire)
+  const access_token = getToken(payload)
   return res.send({
     code: 0,
     data: {

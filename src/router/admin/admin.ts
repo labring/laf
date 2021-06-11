@@ -1,8 +1,9 @@
 import { Request, Response } from 'express'
-import { getToken, hash } from '../../lib/api/token'
+import { getToken } from '../../lib/utils/token'
 import { db } from '../../lib/db'
 import { checkPermission, getPermissions } from '../../lib/api/permission'
 import { getLogger } from '../../lib/logger'
+import { hashPassword } from '../../lib/utils/hash'
 
 
 const logger = getLogger('admin:api')
@@ -26,7 +27,9 @@ export async function handleAdminLogin(req: Request, res: Response) {
   //
   const ret = await db.collection('admins')
     .withOne({
-      query: db.collection('password').where({ password: hash(password), type: 'login' }),
+      query: db
+        .collection('password')
+        .where({ password: hashPassword(password), type: 'login' }),
       localField: '_id',
       foreignField: 'uid'
     })
@@ -37,12 +40,13 @@ export async function handleAdminLogin(req: Request, res: Response) {
     const admin = ret.data[0]
 
     // 默认 token 有效期为 7 天
-    const expire = new Date().getTime() + 60 * 60 * 1000 * 24 * 7
+    const expire = Math.floor(Date.now() / 1000) + 60 * 60 * 1000 * 24 * 7
     const payload = {
       uid: admin._id,
-      type: 'admin'
+      type: 'admin',
+      exp: expire
     }
-    const access_token = getToken(payload, expire)
+    const access_token = getToken(payload)
     logger.info(`[${requestId}] admin login success: ${admin._id} ${username}`)
 
     return res.send({
@@ -158,7 +162,7 @@ export async function handleAdminAdd(req: Request, res: Response) {
   await db.collection('password')
     .add({
       uid: r.id,
-      password: hash(password),
+      password: hashPassword(password),
       type: 'login',
       created_at: Date.now(),
       updated_at: Date.now()
@@ -223,7 +227,7 @@ export async function handleAdminEdit(req: Request, res: Response) {
     await db.collection('password')
       .where({ uid: uid })
       .update({
-        password: hash(password),
+        password: hashPassword(password),
         updated_at: Date.now()
       })
   }

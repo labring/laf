@@ -1,6 +1,7 @@
 import { Router } from 'express'
-import { getToken, hash } from '../../lib/api/token'
+import { getToken } from '../../lib/utils/token'
 import { db } from '../../lib/db'
+import { hashPassword } from '../../lib/utils/hash'
 
 export const LoginRouter = Router()
 
@@ -20,7 +21,9 @@ LoginRouter.post('/login/password', async (req, res) => {
   //
   const ret = await db.collection('users')
     .withOne({
-      query: db.collection('password').field({ password: 0 }).where({  password: hash(password), type: 'login' }),
+      query: db.collection('password')
+        .field({ password: 0 })
+        .where({ password: hashPassword(password), type: 'login' }),
       localField: '_id',
       foreignField: 'uid'
     })
@@ -37,12 +40,13 @@ LoginRouter.post('/login/password', async (req, res) => {
     const user = ret.data[0]
 
     // 默认 token 有效期为 7 天
-    const expire = new Date().getTime() + 60 * 60 * 1000 * 24 * 7
+    const expire = Math.floor(Date.now() / 1000) + 60 * 60 * 1000 * 24 * 7
     const payload = {
       uid: user._id,
-      type: 'user'
+      type: 'user',
+      exp: expire
     }
-    const access_token = getToken(payload, expire)
+    const access_token = getToken(payload)
     return res.send({
       code: 0,
       data: {

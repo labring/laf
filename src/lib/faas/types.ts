@@ -5,11 +5,12 @@ import { Db } from 'less-api-database'
 import { FileStorageInterface } from "../storage/interface"
 import { IncomingHttpHeaders } from "node:http"
 
-
-export type RequireFuncType = (module: 'crypto' | 'path' | 'querystring' | 'url' | 'lodash' | 'moment') => any
-
+export type RequireFuncType = (module: string) => any
 export type InvokeFunctionType = (name: string, param: FunctionContext) => Promise<any>
 export type EmitFunctionType = (event: string, param: any) => void
+export type GetTokenFunctionType = (payload: any) => string
+export type ParseTokenFunctionType = (token: string) => any | null
+
 export interface CloudSdkInterface {
   fetch: AxiosStatic
   storage(namespace: string): FileStorageInterface
@@ -17,6 +18,8 @@ export interface CloudSdkInterface {
   invoke: InvokeFunctionType
   emit: EmitFunctionType
   shared: Map<string, any>
+  getToken: GetTokenFunctionType
+  parseToken: ParseTokenFunctionType
 }
 
 // vm run context (global)
@@ -46,7 +49,6 @@ export interface FunctionContext {
 // param for engine.run()
 export interface IncomingContext extends FunctionContext {
   functionName: string,
-  requestId: string,
   less?: CloudSdkInterface
 }
 
