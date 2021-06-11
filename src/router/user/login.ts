@@ -40,7 +40,7 @@ LoginRouter.post('/login/password', async (req, res) => {
     const user = ret.data[0]
 
     // 默认 token 有效期为 7 天
-    const expire = Math.floor(Date.now() / 1000) + 60 * 60 * 1000 * 24 * 7
+    const expire = Math.floor(Date.now() / 1000) + 60 * 60  * 24 * 7
     const payload = {
       uid: user._id,
       type: 'user',

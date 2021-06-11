@@ -9,7 +9,7 @@ Content-Type: application/json
 
 {
   "username": "less",
-  "password": "kissme"
+  "password": "less123"
 }
 
 ### 管理员信息
@@ -25,7 +25,7 @@ Authorization: Bearer {{token}}
 
 {
   "username": "less-test",
-  "password": "less-framework",
+  "password": "less123",
   "avatar": "https://work.zhuo-zhuo.com/file/data/23ttprpxmavkkuf6nttc/PHID-FILE-vzv6dyqo3ev2tmngx7mu/logoL)",
   "name": "Maslow"
 }

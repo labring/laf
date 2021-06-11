@@ -56,7 +56,7 @@ RegisterRouter.post('/register/password', async (req, res) => {
 
 
   // 注册完成后自动登录，生成 token: 默认 token 有效期为 7 天
-  const expire = Math.floor(Date.now()) + 60 * 60 * 1000 * 24 * 7
+  const expire = Math.floor(Date.now()) + 60 * 60 * 24 * 7
   const payload = {
     uid: r.id,
     type: 'user',

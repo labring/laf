@@ -40,7 +40,7 @@ export async function handleAdminLogin(req: Request, res: Response) {
     const admin = ret.data[0]
 
     // 默认 token 有效期为 7 天
-    const expire = Math.floor(Date.now() / 1000) + 60 * 60 * 1000 * 24 * 7
+    const expire = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7
     const payload = {
       uid: admin._id,
       type: 'admin',
