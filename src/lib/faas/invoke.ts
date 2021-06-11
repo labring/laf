@@ -13,14 +13,8 @@ export async function invokeFunction(func: CloudFunctionStruct, param: FunctionC
   // const { query, body, auth, requestId } = param
   const engine = new FunctionEngine()
   const result = await engine.run(func.code, {
-    ...param,
-    // requestId,
+    context: param,
     functionName: func.name,
-    // query: query,
-    // body: body,
-    // auth: auth,
-    // params: param.params,
-    // method: param.method,
     less: createCloudSdk()
   })
 

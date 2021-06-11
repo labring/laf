@@ -24,7 +24,7 @@ export interface CloudSdkInterface {
 
 // vm run context (global)
 export interface RuntimeContext {
-  ctx: FunctionContext,
+  __context__: FunctionContext,
   module: { exports: Object },
   exports: Object,
   __runtime_promise: any,
@@ -47,9 +47,10 @@ export interface FunctionContext {
 }
 
 // param for engine.run()
-export interface IncomingContext extends FunctionContext {
-  functionName: string,
-  less?: CloudSdkInterface
+export interface IncomingContext {
+  context: FunctionContext
+  functionName: string
+  less: CloudSdkInterface
 }
 
 /**

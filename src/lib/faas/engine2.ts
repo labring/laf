@@ -12,22 +12,13 @@ const require_func: RequireFuncType = (module): any => {
 
 export class FunctionEngine {
   buildSandbox(incomingCtx: IncomingContext): RuntimeContext {
-    const requestId = incomingCtx.requestId
     const fconsole = new FunctionConsole()
 
     const _module = {
       exports: {}
     }
     return {
-      ctx: {
-        query: incomingCtx.query,
-        body: incomingCtx.body,
-        auth: incomingCtx.auth,
-        params: incomingCtx.params,
-        files: incomingCtx.files,
-        method: incomingCtx.method,
-        requestId: requestId,
-      },
+      __context__: incomingCtx.context,
       module: _module,
       exports: module.exports,
       __runtime_promise: null,
@@ -45,9 +36,9 @@ export class FunctionEngine {
     const wrapped = `
       ${code};
       if(exports.main && exports.main instanceof Function) {
-        __runtime_promise = exports.main(ctx);
+        __runtime_promise = exports.main(__context__);
       } else if(main && main instanceof Function) {
-        __runtime_promise = main(ctx)
+        __runtime_promise = main(__context__)
       }
   `
 
