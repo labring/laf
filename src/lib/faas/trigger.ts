@@ -100,6 +100,8 @@ export class TriggerScheduler {
     this._triggers = await this.loadTriggers()
 
     this.scheduleTimer()
+
+    this.emit('triggers.init')
   }
 
   public destroy() {

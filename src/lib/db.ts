@@ -9,8 +9,12 @@ export const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
 })
 
 accessor.setLogger(getLogger('server:db', 'warning'))
-
 accessor.init()
 
 // 获取 db 对象
 export const db = getDb(accessor)
+
+// 创建新 db 实例
+export function createDb() {
+    return getDb(accessor)
+}

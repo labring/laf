@@ -1,26 +1,9 @@
 import { FunctionEngine, scheduler } from "."
-import { db } from '../../lib/db'
+import { createDb, db } from '../../lib/db'
 import { LocalFileStorage } from "../storage/local_file_storage"
 import request from 'axios'
 import Config from "../../config"
 import { CloudFunctionStruct, CloudSdkInterface, FunctionContext } from "./types"
-
-/**
- * 创建云函数 cloud sdk
- * @returns 
- */
-function createCloudSdk(): CloudSdkInterface {
-
-  const less: CloudSdkInterface = {
-    database: () => db,
-    storage: (namespace: string) => new LocalFileStorage(Config.LOCAL_STORAGE_ROOT_PATH, namespace),
-    fetch: request,
-    invoke: _invokeInFunction,
-    emit: (event: string, param: any) => scheduler.emit(event, param)
-  }
-
-  return less
-}
 
 /**
  * 调用云函数
@@ -79,6 +62,28 @@ export async function getCloudFunctionById(func_id: string): Promise<CloudFuncti
   return r.data
 }
 
+
+
+// 跨请求、跨函数的全局配置对象，单例（in memory）
+const _shared_preference = new Map<string, any>()
+
+/**
+ * 创建云函数 cloud sdk
+ * @returns 
+ */
+function createCloudSdk(): CloudSdkInterface {
+
+  const less: CloudSdkInterface = {
+    database: () => createDb(),
+    storage: (namespace: string) => new LocalFileStorage(Config.LOCAL_STORAGE_ROOT_PATH, namespace),
+    fetch: request,
+    invoke: _invokeInFunction,
+    emit: (event: string, param: any) => scheduler.emit(event, param),
+    shared: _shared_preference
+  }
+
+  return less
+}
 
 /**
  * 在云函数中[调用云函数]的函数

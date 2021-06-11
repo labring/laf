@@ -16,6 +16,7 @@ export interface CloudSdkInterface {
   database(): Db,
   invoke: InvokeFunctionType
   emit: EmitFunctionType
+  shared: Map<string, any>
 }
 
 // vm run context (global)
