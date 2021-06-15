@@ -53,6 +53,14 @@ async function handleInvokeFunction(req: Request, res: Response) {
     return res.send({ code: 1, error: 'function not found', requestId })
   }
 
+  if (!func.enableHTTP && !debug) {
+    return res.status(404).send('Not Found')
+  }
+
+  if (1 !== func.status && !debug) {
+    return res.status(404).send('Not Found')
+  }
+
   // 调用函数
   const ctx: FunctionContext = {
     query: req.query,

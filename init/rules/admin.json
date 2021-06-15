@@ -36,6 +36,11 @@
     "remove": "$has('function_logs.remove')",
     "count": "$has('function_logs.read')"
   },
+  "function_history": {
+    "read": "$has('function_history.read')",
+    "add": "$has('function_history.create')",
+    "count": "$has('function_history.read')"
+  },
   "triggers": {
     "read": "$has('trigger.read')",
     "update": "$has('trigger.edit')",

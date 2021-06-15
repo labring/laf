@@ -70,6 +70,8 @@ export interface CloudFunctionStruct {
   _id: string,
   name: string,
   code: string,
+  enableHTTP: boolean,
+  status: number,
   time_usage: number,
   created_by: number,
   created_at: number

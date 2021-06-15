@@ -26,10 +26,12 @@ exports.permissions = [
   { name: 'function.delete', label: '删除云函数' },
   { name: 'function.publish', label: '发布云函数' },
   { name: 'function.debug', label: '调试云函数' },
-  { name: 'function.triggers', label: '调试云函数' },
 
   { name: 'function_logs.read', label: '查看云函数日志' },
-  { name: 'function_logs.delete', label: '查看云函数日志' },
+  { name: 'function_logs.delete', label: '删除云函数日志' },
+
+  { name: 'function_history.read', label: '查看云函数历史' },
+  { name: 'function_history.create', label: '创建云函数历史' },
 
   { name: 'trigger.create', label: '创建触发器' },
   { name: 'trigger.read', label: '获取触发器' },

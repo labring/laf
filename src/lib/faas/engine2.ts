@@ -20,7 +20,7 @@ export class FunctionEngine {
     return {
       __context__: incomingCtx.context,
       module: _module,
-      exports: module.exports,
+      exports: _module.exports,
       __runtime_promise: null,
       console: fconsole,
       less: incomingCtx.less,

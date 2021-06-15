@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
 const Config = require('../dist/config').default
-const { hash } = require('../dist/lib/token')
+const { hash } = require('../dist/lib/utils/token')
 const assert = require('assert')
 const { MongoAccessor, getDb } = require('less-api')
 const adminRules = require('./rules/admin.json')
