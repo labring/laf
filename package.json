@@ -10,7 +10,8 @@
     "init": "node init/index.js",
     "prepublishOnly": "npm run build",
     "prepare": "husky install",
-    "commit": "commit"
+    "commit": "commit",
+    "init-start":  "npm run build && npm run init && npm run start"
   },
   "keywords": [
     "BaaS",
