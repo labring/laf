@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
 const Config = require('../dist/config').default
-const { hash } = require('../dist/lib/utils/token')
+const { hashPassword } = require('../dist/lib/utils/hash')
 const assert = require('assert')
 const { MongoAccessor, getDb } = require('less-api')
 const adminRules = require('./rules/admin.json')
@@ -48,7 +48,7 @@ main()
 async function createFirstAdmin() {
   try {
     const username = Config.SUPER_ADMIN
-    const password = hash(Config.SUPER_ADMIN_PASSWORD)
+    const password = hashPassword(Config.SUPER_ADMIN_PASSWORD)
 
     const { total } = await db.collection('admins').count()
     if (total > 0) {
