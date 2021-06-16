@@ -1,17 +1,19 @@
 version: '3'
 services: 
   app:
-    image: lfcloud/less-framework:latest
+    build: .
+    image: less-framework:latest
     environment: 
       SERVER_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
       DB: less_app
-      DB_URI: mongodb://less:less123@mongodb:27017
+      DB_URI: mongodb://mongodb:27017
       DB_POOL_LIMIT: 100
       SUPER_ADMIN: less
       SUPER_ADMIN_PASSWORD: less123
       LOG_LEVEL: debug
     command: npm run init-start
     volumes:
+      - .:/app
       - app-data:/app/data
     ports:
       - "8080:8080"
@@ -20,9 +22,6 @@ services:
 
   mongodb:
     image: mongo:latest
-    environment: 
-      MONGO_INITDB_ROOT_USERNAME: less
-      MONGO_INITDB_ROOT_PASSWORD: less123
     volumes:
       - db-data:/data/db
     networks: 
