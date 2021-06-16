@@ -1,6 +1,6 @@
 version: '3'
 services: 
-  app:
+  server:
     image: lfcloud/less-framework:latest
     environment: 
       SERVER_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
@@ -25,6 +25,13 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: less123
     volumes:
       - db-data:/data/db
+    networks: 
+      - less
+
+  admin:
+    image: lfcloud/less-admin:latest
+    ports: 
+      - 8000:80
     networks: 
       - less
 
