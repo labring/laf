@@ -1,7 +1,7 @@
 version: '3'
 services: 
   server:
-    image: lfcloud/less-framework:latest
+    image: lessx/less-framework:latest
     environment: 
       SERVER_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
       DB: less_app
@@ -29,7 +29,7 @@ services:
       - less
 
   admin:
-    image: lfcloud/less-admin:latest
+    image: lessx/less-admin:latest
     ports: 
       - 8000:80
     networks: 

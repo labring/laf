@@ -1,3 +1,5 @@
+const appid = "修改为你的小程序 AppId"      // 微信小程序 AppId
+const appsecret = "修改为你的小程序 AppSecret"  // 微信小程序 AppSecret
 
 // 主函数
 exports.main = async function (ctx) {
@@ -53,8 +55,6 @@ exports.main = async function (ctx) {
  * @return {Promise<string>}
  */
 async function getOpenId(code) {
-  const appid = "wx7aecb50b1440758d"
-  const appsecret = "b0095168cded167e2ad6d2b1a2878722"
 
   const api_url = `https://api.weixin.qq.com/sns/jscode2session`
   const param = `appid=${appid}&secret=${appsecret}&js_code=${code}&grant_type=authorization_code`
