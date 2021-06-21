@@ -1,0 +1,19 @@
+
+@token={{login.response.body.$.data.access_token}}
+
+### 管理员登陆
+# @name login
+
+POST {{base_url}}/admin/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "less",
+  "password": "less123"
+}
+
+### 获取集合列表
+
+GET {{base_url}}/admin/collections
+Content-Type: application/json
+Authorization: Bearer {{token}}
