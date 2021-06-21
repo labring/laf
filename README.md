@@ -95,7 +95,7 @@ docker run -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=less -e MONGO_INITDB_ROO
 > A.【推荐】将 .env.development 拷贝并重命名为 .env，编辑里面的环境变量
 
 ```
-mv .env.development .env
+cp .env.development .env
 ```
 
 > B.【不推荐】或直接修改 `/src/config.ts` 相应配置
