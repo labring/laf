@@ -91,9 +91,8 @@ async function handleInvokeFunction(req: Request, res: Response) {
   // 调用出错
   if (result.error) {
     logger.info(`[${requestId}] /func/${func_name} invoke error: `, result.error.message)
-    logger.trace(`[${requestId}] /func/${func_name} invoke error: `, result)
-    return res.send({
-      code: 1,
+    logger.error(`[${requestId}] /func/${func_name} invoke error: `, result)
+    return res.status(400).send({
       error: 'invoke function occurs error',
       logs: debug ? result.logs : undefined,
       time_usage: debug ? result.time_usage : undefined,
@@ -105,7 +104,6 @@ async function handleInvokeFunction(req: Request, res: Response) {
 
   // 调用成功返回
   return res.send({
-    code: 0,
     requestId,
     data: result.data,
     time_usage: debug ? result.time_usage : undefined,
