@@ -7,7 +7,7 @@ const { MongoAccessor, getDb } = require('less-api')
 const adminRules = require('./rules/admin.json')
 const appRules = require('./rules/app.json')
 const { permissions } = require('./permissions')
-
+const { FunctionLoader } = require('./func_loader')
 
 const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
   useNewUrlParser: true,
@@ -33,10 +33,8 @@ async function main() {
   await createInitailAccessRules('admin', adminRules)
   await createInitailAccessRules('app', appRules)
 
-  // 创建云函数索引
-  await accessor.db.collection('functions').createIndex('name', { unique: true })
-  await accessor.db.collection('function_logs').createIndex('requestId')
-  await accessor.db.collection('function_logs').createIndex('func_id')
+  // 创建内置云函数
+  await createBuiltinFunctions()
 
   accessor.close()
 }
@@ -166,4 +164,35 @@ async function createInitailAccessRules(category, rules) {
 
     console.log(`added rule: ${category}.${collection}`)
   }
+}
+
+// 创建内置云函数
+async function createBuiltinFunctions() {
+  // 创建云函数索引
+  await accessor.db.collection('functions').createIndex('name', { unique: true })
+  await accessor.db.collection('function_logs').createIndex('requestId')
+  await accessor.db.collection('function_logs').createIndex('func_id')
+  
+
+  const loader = new FunctionLoader()
+  const funcs = await loader.getFunctions()
+  for (const func of funcs) {
+    try {
+      const data = {
+        ...func,
+        status: 1,
+        created_at: Date.now(),
+        updated_at: Date.now()
+      }
+      await db.collection('functions').add(data)
+    } catch (error) {
+      if (error.code == 11000) {
+        console.log('functions already exists: ' + func.name)
+        continue
+      }
+      console.error(error.message)
+    }
+  }
+
+  return true
 }

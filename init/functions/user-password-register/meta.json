@@ -1,0 +1,7 @@
+{
+  "label": "用户密码注册",
+  "name": "user-password-register",
+  "description": "用户密码注册",
+  "enableHTTP": true,
+  "debugParams": "{\"username\":\"less\",\"password\":\"less123\"}"
+}

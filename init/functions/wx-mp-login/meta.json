@@ -1,0 +1,6 @@
+{
+  "label": "微信小程序登陆",
+  "name": "wx-mp-login",
+  "description": "微信小程序登陆",
+  "enableHTTP": true
+}
