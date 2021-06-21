@@ -23,3 +23,24 @@ Authorization: Bearer {{token}}
 GET {{base_url}}/admin/collection/indexes?collection=functions
 Content-Type: application/json
 Authorization: Bearer {{token}}
+
+
+### 创建集合索引
+
+POST {{base_url}}/admin/collection/indexes?collection=functions
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer {{token}}
+
+{
+  "spec": { 
+    "created_at": 1
+  },
+  "unique": true
+}
+
+
+### 删除集合索引
+
+DELETE  {{base_url}}/admin/collection/indexes?collection=functions&index=created_at_1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer {{token}}

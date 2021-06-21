@@ -38,4 +38,8 @@ exports.permissions = [
   { name: 'trigger.edit', label: '编辑访触发器' },
   { name: 'trigger.delete', label: '删除触发器' },
   { name: 'trigger.apply', label: '应用触发器' },
+
+  { name: 'collections.get', label: 'DBM-获取集合列表'},
+  { name: 'collections.createIndex', label: 'DBM-创建集合索引'},
+  { name: 'collections.deleteIndex', label: 'DBM-删除集合索引'}
 ]
