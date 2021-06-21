@@ -3,11 +3,11 @@ import { v4 as uuidv4 } from 'uuid'
 import * as crypto from 'crypto'
 const querystring = require('querystring')
 
-const accessKeyId = 'LTAI5tC3FoH47fQT7oZdcYEw'
-const accessKeySecret = 'B7NHLuoFKvrPw8w3QIBZWNn4zrZcpp'
+const accessKeyId = '修改为你的阿里云访问Key ID'  // 阿里云访问 Key ID
+const accessKeySecret = '修改为你的阿里云访问Key密钥'  // 阿里云访问 Key Secret
 const api_entrypoint = 'https://dysmsapi.aliyuncs.com'
-const signName = '灼灼信息'
-const templateCode = 'SMS_217850726'
+const signName = '灼灼信息'   // 短信签名，修改为你的签名
+const templateCode = 'SMS_217850726'  // 短信模板，修改为你的模板ID
 
 /**
  * @body phone string 手机号
