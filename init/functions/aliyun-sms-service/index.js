@@ -13,7 +13,7 @@ const templateCode = 'SMS_217850726'  // 短信模板，修改为你的模板ID
  * @body phone string 手机号
  * @body code string | number 验证码
  */
-async function main (ctx) {
+ exports.main = async function (ctx) {
   const phone = ctx.body?.phone
   if (!phone) {
     return 'error: invalid phone'

@@ -1,8 +1,11 @@
 
 /**
+ * @api
  * @body phone string 手机号
  */
- async function main (ctx) {
+
+// main function
+ exports.main = async function (ctx) {
   const db = less.database()
   const phone = ctx.body?.phone
   if (!phone) {

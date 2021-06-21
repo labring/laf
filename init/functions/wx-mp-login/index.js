@@ -1,7 +1,10 @@
 const appid = "修改为你的小程序 AppId"      // 微信小程序 AppId
 const appsecret = "修改为你的小程序 AppSecret"  // 微信小程序 AppSecret
 
-// 主函数
+/**
+ * @body string code
+ * @returns 
+ */
 exports.main = async function (ctx) {
   const db = less.database()
 

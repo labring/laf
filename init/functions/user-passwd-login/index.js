@@ -4,7 +4,7 @@ import * as crypto from 'crypto'
  * @body username string 用户名
  * @body password string 密码
  */
-export async function main(ctx) {
+ exports.main = async function (ctx) {
   const db = less.database()
 
   // 参数验证
