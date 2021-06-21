@@ -23,3 +23,22 @@ DbmRouter.get('/collections', async (req, res) => {
 
   return res.send(names)
 })
+
+DbmRouter.get('/collection/indexes', async (req, res) => {
+  const requestId = req['requestId']
+  logger.info(`[${requestId}] get /collection/indexes`)
+
+  // 权限验证
+  const code = await checkPermission(req['auth']?.uid, 'collections.get')
+  if (code) {
+    return res.status(code).send()
+  }
+
+  const collectionName = req.query?.collection
+  if (!collectionName) {
+    return res.status(404).send('Collection not found')
+  }
+
+  const r = await accessor.db.collection(collectionName as string).indexes()
+  return res.send(r)
+})

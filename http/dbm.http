@@ -17,3 +17,9 @@ Content-Type: application/json
 GET {{base_url}}/admin/collections
 Content-Type: application/json
 Authorization: Bearer {{token}}
+
+### 获取集合的索引信息
+
+GET {{base_url}}/admin/collection/indexes?collection=functions
+Content-Type: application/json
+Authorization: Bearer {{token}}
