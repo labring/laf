@@ -31,7 +31,19 @@ export interface FileStorageInterface {
 
   /**
    * 读取文件
-   * @param filename 文件名
+   * @param {string} filename 文件名
    */
   readFile(filename: string, encoding?: string): Promise<Buffer>
+
+  /**
+   * 检查文件夹名是否安全
+   * @param {string} name
+   */
+  checkSafeDirectoryName(name: string): boolean
+
+  /**
+   * 检查文件名是否安全
+   * @param {string} name
+   */
+  checkSafeFilename(name: string): boolean
 }

@@ -100,6 +100,27 @@ export class LocalFileStorage implements FileStorageInterface {
   }
 
   /**
+   * 安全的文件、文件夹名只能由字母、数字、下划线、中划线和点组成
+   * @param name 
+   * @returns 
+   */
+   checkSafeDirectoryName(name: string): boolean {
+    assert(typeof name === 'string', 'name must be a string')
+
+    const reg = /^([0-9]|[A-z]|_|-){3,64}$/
+    return reg.test(name)
+  }
+
+  /**
+   * 检查文件名是否安全
+   */
+  checkSafeFilename(name: string): boolean {
+    assert(typeof name === 'string', 'name must be a string')
+    const reg = /^([0-9]|[A-z]|_|-|\.){3,64}$/
+    return reg.test(name)
+   }
+
+  /**
    * 生成文件名
    * @returns 
    */
