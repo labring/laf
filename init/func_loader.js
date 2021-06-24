@@ -62,12 +62,6 @@ class FunctionLoader {
   }
 }
 
-
-const fi = new FunctionLoader()
-fi.getFunctions()
-  .then(console.log)
-
-
 module.exports = {
   FunctionLoader
 }
