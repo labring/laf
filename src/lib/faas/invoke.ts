@@ -1,5 +1,5 @@
 import { FunctionEngine, scheduler } from "."
-import { createDb, db } from '../../lib/db'
+import { accessor, createDb, db } from '../../lib/db'
 import { LocalFileStorage } from "../storage/local_file_storage"
 import request from 'axios'
 import Config from "../../config"
@@ -77,7 +77,8 @@ function createCloudSdk(): CloudSdkInterface {
     emit: (event: string, param: any) => scheduler.emit(event, param),
     shared: _shared_preference,
     getToken: getToken,
-    parseToken: parseToken
+    parseToken: parseToken,
+    mongodb: accessor.db
   }
 
   return less

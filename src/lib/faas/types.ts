@@ -4,6 +4,7 @@ import { AxiosStatic } from 'axios'
 import { Db } from 'less-api-database'
 import { FileStorageInterface } from "../storage/interface"
 import { IncomingHttpHeaders } from "node:http"
+import * as mongodb from "mongodb"
 
 export type RequireFuncType = (module: string) => any
 export type InvokeFunctionType = (name: string, param: FunctionContext) => Promise<any>
@@ -20,6 +21,7 @@ export interface CloudSdkInterface {
   shared: Map<string, any>
   getToken: GetTokenFunctionType
   parseToken: ParseTokenFunctionType
+  mongodb: mongodb.Db
 }
 
 // vm run context (global)

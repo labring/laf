@@ -32,23 +32,26 @@ FileRouter.post('/upload/:namespace', uploader.single('file'), async (req, res) 
     return res.status(422).send('invalid namespace')
   }
 
-  // 验证上传 token
-  const uploadToken = req.query?.token
-  if(!uploadToken) {
-    return res.status(401).send('Unauthorized')
-  }
+  // 验证访问 token
+  if (namespace !== 'public') {
+    // 验证上传 token
+    const uploadToken = req.query?.token
+    if (!uploadToken) {
+      return res.status(401).send('Unauthorized')
+    }
 
-  const prasedToken = parseToken(uploadToken as string)
-  if(!prasedToken){
-    return res.status(403).send('Invalid upload token')
-  }
-  
-  if(!['create', 'all'].includes(prasedToken?.op)) {
-    return res.status(403).send('Permission denied')
-  } 
+    const prasedToken = parseToken(uploadToken as string)
+    if (!prasedToken) {
+      return res.status(403).send('Invalid upload token')
+    }
 
-  if(prasedToken?.ns != namespace) {
-    return res.status(403).send('Permission denied')
+    if (!['create', 'all'].includes(prasedToken?.op)) {
+      return res.status(403).send('Permission denied')
+    }
+
+    if (prasedToken?.ns != namespace) {
+      return res.status(403).send('Permission denied')
+    }
   }
 
   // 文件不可为空
@@ -78,35 +81,35 @@ FileRouter.get('/download/:namespace/:filename', async (req, res) => {
     return res.status(422).send('invalid namespace')
   }
 
-  if(!checkFilename(filename)) {
+  if (!checkFilename(filename)) {
     return res.status(422).send('invalid filename')
   }
 
   // 验证访问 token
-  if(namespace !== 'public') {
+  if (namespace !== 'public') {
     const token = req.query?.token
-    if(!token) {
+    if (!token) {
       return res.status(401).send('Unauthorized')
     }
 
     const prasedToken = parseToken(token as string)
-    if(!prasedToken){
+    if (!prasedToken) {
       return res.status(403).send('Invalid token')
     }
-    
-    if(prasedToken?.ns != namespace) {
+
+    if (prasedToken?.ns != namespace) {
       return res.status(403).send('Permission denied')
     }
 
-    if(['read', 'all'].includes(prasedToken?.op)) {
+    if (['read', 'all'].includes(prasedToken?.op)) {
       return res.status(403).send('Permission denied')
     }
 
-    if(prasedToken?.fn && prasedToken?.fn != filename) {
+    if (prasedToken?.fn && prasedToken?.fn != filename) {
       return res.status(403).send('Permission denied')
     }
   }
- 
+
   const localStorage = new LocalFileStorage(Config.LOCAL_STORAGE_ROOT_PATH, namespace)
 
   const info = await localStorage.getFileInfo(filename)
