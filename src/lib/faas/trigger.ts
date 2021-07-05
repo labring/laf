@@ -302,5 +302,8 @@ export function AccessorEventCallBack(data: any) {
 
   // 触发数据事件
   const event = `/db/${params.collection}#${op}`
-  scheduler.emit(event, result)
+  scheduler.emit(event, {
+    exec_params: params,
+    exec_result: result
+  })
 }
