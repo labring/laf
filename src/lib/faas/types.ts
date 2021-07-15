@@ -31,7 +31,11 @@ export interface RuntimeContext {
   exports: Object,
   __runtime_promise: any,
   console: FunctionConsole,
-  less: CloudSdkInterface,
+  /**
+   * cloud sdk 的别名，保留以兼容历史版本
+   */
+  less: CloudSdkInterface, 
+  cloud: CloudSdkInterface,
   require: RequireFuncType,
   Buffer: typeof Buffer
 }
@@ -52,7 +56,11 @@ export interface FunctionContext {
 export interface IncomingContext {
   context: FunctionContext
   functionName: string
+  /**
+   * cloud sdk 的别名，保留以兼容历史版本
+   */
   less: CloudSdkInterface
+  cloud: CloudSdkInterface
 }
 
 /**

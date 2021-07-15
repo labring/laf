@@ -24,6 +24,7 @@ export class FunctionEngine {
       __runtime_promise: null,
       console: fconsole,
       less: incomingCtx.less,
+      cloud: incomingCtx.cloud, 
       require: require_func,
       Buffer: Buffer
     }

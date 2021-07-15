@@ -12,10 +12,12 @@ import { getToken, parseToken } from "../utils/token"
 export async function invokeFunction(func: CloudFunctionStruct, param: FunctionContext) {
   // const { query, body, auth, requestId } = param
   const engine = new FunctionEngine()
+  const cloud = createCloudSdk()
   const result = await engine.run(func.code, {
     context: param,
     functionName: func.name,
-    less: createCloudSdk()
+    less: cloud,
+    cloud: cloud
   })
 
   return result
@@ -69,7 +71,7 @@ const _shared_preference = new Map<string, any>()
  */
 function createCloudSdk(): CloudSdkInterface {
 
-  const less: CloudSdkInterface = {
+  const cloud: CloudSdkInterface = {
     database: () => createDb(),
     storage: (namespace: string) => new LocalFileStorage(Config.LOCAL_STORAGE_ROOT_PATH, namespace),
     fetch: request,
@@ -81,7 +83,7 @@ function createCloudSdk(): CloudSdkInterface {
     mongodb: accessor.db
   }
 
-  return less
+  return cloud
 }
 
 /**
