@@ -181,6 +181,7 @@ async function createBuiltinFunctions() {
       const data = {
         ...func,
         status: 1,
+        tags: ['内置'],
         created_at: Date.now(),
         updated_at: Date.now()
       }
