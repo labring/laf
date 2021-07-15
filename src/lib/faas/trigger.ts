@@ -291,7 +291,10 @@ accessor.on('result', AccessorEventCallBack)
  * @param data 
  */
 export function AccessorEventCallBack(data: any) {
-  const { params, result } = data
+  // 解决 mongodb _id 对象字符串问题
+  const _data = JSON.parse(JSON.stringify(data))
+  
+  const { params, result } = _data
 
   const op = convertActionType(params.action)
 
