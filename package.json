@@ -11,7 +11,10 @@
     "prepublishOnly": "npm run build",
     "prepare": "husky install",
     "commit": "commit",
-    "init-start": "npm run build && npm run init && npm run start"
+    "init-start": "npm run build && npm run init && npm run start",
+    "docker-build": "docker build -t lessx/less-framework:latest .",
+    "docker-push": "docker push lessx/less-framework:latest",
+    "docker-bp": "npm run docker-build && npm run docker-push"
   },
   "keywords": [
     "BaaS",
