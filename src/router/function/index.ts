@@ -92,7 +92,7 @@ async function handleInvokeFunction(req: Request, res: Response) {
   if (result.error) {
     logger.info(`[${requestId}] /func/${func_name} invoke error: `, result.error.message)
     logger.error(`[${requestId}] /func/${func_name} invoke error: `, result)
-    return res.status(400).send({
+    return res.send({
       error: 'invoke function occurs error',
       logs: debug ? result.logs : undefined,
       time_usage: debug ? result.time_usage : undefined,
