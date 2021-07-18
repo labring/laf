@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:14-alpine
 EXPOSE 8080
 WORKDIR /app
 ENV LOG_LEVEL=debug
