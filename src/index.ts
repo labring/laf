@@ -3,6 +3,7 @@ import { parseToken } from './lib/utils/token'
 import { router } from './router/index'
 import { v4 as uuidv4 } from 'uuid'
 import { getLogger } from './lib/logger'
+import Config from './config'
 
 const logger = getLogger('server')
 const server = express()
@@ -33,5 +34,4 @@ server.use(function (req, _res, next) {
 
 server.use(router)
 
-const port = process.env.PORT ?? 8080
-server.listen(port, () => console.log(`listened on ${port}`))
+server.listen(Config.PORT, () => console.log(`listened on ${Config.PORT}`))
