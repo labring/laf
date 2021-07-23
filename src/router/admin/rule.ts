@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
-import { checkPermission } from '../../lib/api/permission'
+import { checkPermission } from '../../api/permission'
 import { getLogger } from '../../lib/logger'
-import { applyRules } from '../../lib/api/rules'
+import { applyRules } from '../../api/rules'
 
 const logger = getLogger('admin:api')
 

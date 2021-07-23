@@ -52,17 +52,6 @@ export interface FunctionContext {
   method?: string
 }
 
-// param for engine.run()
-export interface IncomingContext {
-  context: FunctionContext
-  functionName: string
-  /**
-   * cloud sdk 的别名，保留以兼容历史版本
-   */
-  less: CloudSdkInterface
-  cloud: CloudSdkInterface
-}
-
 /**
  * 运行函数返回的结果对象
  */

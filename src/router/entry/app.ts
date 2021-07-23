@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { Entry, Ruler } from 'less-api'
 import { accessor } from '../../lib/db'
 import { getLogger } from '../../lib/logger'
-import { getAccessRules } from '../../lib/api/rules'
+import { getAccessRules } from '../../api/rules'
 
 const logger = getLogger('app:entry')
 export const AppEntryRouter = Router()

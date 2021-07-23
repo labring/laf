@@ -1,5 +1,5 @@
 import * as express from 'express'
-import { checkPermission } from '../../lib/api/permission'
+import { checkPermission } from '../../api/permission'
 import { accessor } from '../../lib/db'
 import { getLogger } from '../../lib/logger'
 

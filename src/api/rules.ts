@@ -1,8 +1,8 @@
 import * as assert from 'assert'
 import { Ruler } from 'less-api'
-import { accessor, db } from '../db'
-import { entry as adminEntry } from '../../router/entry/admin'
-import { entry as appEntry } from '../../router/entry/app'
+import { accessor, db } from '../lib/db'
+import { entry as adminEntry } from '../router/entry/admin'
+import { entry as appEntry } from '../router/entry/app'
 
 export interface RuleDocument {
   category: string,

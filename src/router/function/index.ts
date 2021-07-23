@@ -1,12 +1,13 @@
 import { Request, Response, Router } from 'express'
 import { db } from '../../lib/db'
-import { checkPermission } from '../../lib/api/permission'
+import { checkPermission } from '../../api/permission'
 import { getLogger } from '../../lib/logger'
-import { compileTsFunction2js, getCloudFunction, invokeFunction } from '../../lib/faas/invoke'
 import { FunctionContext } from '../../lib/faas/types'
 import * as multer from 'multer'
 import * as path from 'path'
 import * as uuid from 'uuid'
+import {  CloudFunction } from '../../lib/faas'
+import { getFunctionByName } from '../../api/function'
 
 
 export const FunctionRouter = Router()
@@ -53,12 +54,12 @@ async function handleInvokeFunction(req: Request, res: Response) {
 
   logger.info(`[${requestId}] /func/${func_name} body: `, req.body)
 
-  // 获取函数
-  const func = await getCloudFunction(func_name)
-
-  if (!func) {
+  const funcData = await getFunctionByName(func_name)
+  if (!funcData) {
     return res.send({ code: 1, error: 'function not found', requestId })
   }
+  
+  const func = new CloudFunction(funcData)
 
   // 未启用 HTTP 访问则拒绝访问（调试模式除外）
   if (!func.enableHTTP && !debug) {
@@ -68,6 +69,15 @@ async function handleInvokeFunction(req: Request, res: Response) {
   // 函数停用则拒绝访问（调试模式除外）
   if (1 !== func.status && !debug) {
     return res.status(404).send('Not Found')
+  }
+
+  // 如果是调试模式或者函数未编译，则编译并更新函数
+  if(debug || !func.compiledCode) {
+    func.compile2js()
+
+    await db.collection('functions')
+      .doc(func.id)
+      .update({ compiledCode: func.compiledCode, updated_at: Date.now()})
   }
 
   // 调用函数
@@ -80,23 +90,14 @@ async function handleInvokeFunction(req: Request, res: Response) {
     auth: req['auth'],
     requestId,
   }
-
-  // 如果是调试模式或者函数未编译，则编译并更新函数
-  if(debug || !func.compiledCode) {
-    func.compiledCode = compileTsFunction2js(func.code)
-    await db.collection('functions')
-      .doc(func._id)
-      .update({ compiledCode: func.compiledCode, updated_at: Date.now()})
-  }
-
-  const result = await invokeFunction(func, ctx)
+  const result = await func.invoke(ctx)
 
   // 将云函数调用日志存储到数据库
   if(debug) {
     await db.collection('function_logs')
       .add({
         requestId: requestId,
-        func_id: func._id,
+        func_id: func.id,
         func_name: func_name,
         logs: result.logs,
         time_usage: result.time_usage,

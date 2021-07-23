@@ -5,7 +5,7 @@ export interface FileInfo {
   size: number       // 文件大小，byte
   path: string       // 文件路径，相对路径
   fullpath?: string   // 文件路径，绝对路径
-  orignal_name?: string // 原文件名
+  original_name?: string // 原文件名
   namespace?: string
 }
 

@@ -1,6 +1,6 @@
 
 import * as assert from 'assert'
-import { db } from '../../lib/db'
+import { db } from '../lib/db'
 
 /**
  * 判断用户是否有权限

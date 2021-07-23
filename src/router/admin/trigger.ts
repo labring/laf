@@ -1,8 +1,9 @@
 import { Request, Response } from 'express'
-import { db } from '../../lib/db'
-import { checkPermission } from '../../lib/api/permission'
+import { checkPermission } from '../../api/permission'
 import { getLogger } from '../../lib/logger'
-import { scheduler, Trigger } from '../../lib/faas'
+import { scheduler } from '../../lib/scheduler'
+import { Trigger } from '../../lib/faas/trigger'
+import { getTriggerById, getTriggers } from '../../api/trigger'
 
 const logger = getLogger('admin:api')
 
@@ -27,24 +28,28 @@ export async function handleApplyTrigger(req: Request, res: Response) {
 
     // 若未提供 triggerId， 则更新所有触发器调度
     if (!triggerId) {
-      await scheduler.init()
+      const data = await getTriggers()
+      const triggers = data.map(data => Trigger.fromJson(data))
+      scheduler.init(triggers)
+
       return res.send({ code: 0, data: 'ok:applied' })
     }
 
     // get trigger by id
-    const r = await db.collection('triggers').where({ _id: triggerId }).getOne()
-    if (!r.ok) return res.status(404).send('trigger not found')
-
+    const data = await getTriggerById(triggerId as string)
+    if (!data) {
+      return res.status(404).send('trigger not found')
+    }
     // 更新指定触发器
-    const trigger = Trigger.fromJson(r.data)
-    const result = await scheduler.updateTrigger(trigger)
+    const trigger = Trigger.fromJson(data)
+    const result = scheduler.updateTrigger(trigger)
 
     return res.send({
       code: 0,
       data: result ? 'ok:applied' : 'ok:unchanged'
     })
   } catch (error) {
-    logger.error(`[${requestId}] apply trigger rule error: `, error)
+    logger.error(`[${requestId}] apply trigger error: `, error)
     return res.send({
       code: 1,
       data: error

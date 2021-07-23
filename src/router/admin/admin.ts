@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { getToken } from '../../lib/utils/token'
 import { db } from '../../lib/db'
-import { checkPermission, getPermissions } from '../../lib/api/permission'
+import { checkPermission, getPermissions } from '../../api/permission'
 import { getLogger } from '../../lib/logger'
 import { hashPassword } from '../../lib/utils/hash'
 
