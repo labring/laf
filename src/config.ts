@@ -60,7 +60,8 @@ export default class Config {
 
   // 临时文件目录
   static get TMP_PATH(): string {
-    return process.env['TMP_PATH'] ?? path.join(process.cwd(), "tmp/uploads")
+    const tmp_path =  process.env['TMP_PATH'] ?? path.join(process.cwd(), "tmp")
+    return tmp_path
   }
 
   /**

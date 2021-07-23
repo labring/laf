@@ -1,6 +1,6 @@
 {
   "action": "database.queryDocument",
   "collectionName": "permissions",
-  "limit": 10,
+  "limit": 20,
   "queryType": "WHERE"
 }

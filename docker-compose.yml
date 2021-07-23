@@ -1,7 +1,8 @@
-version: '3'
+version: '3.8'
 services: 
   server:
     image: lessx/less-framework:latest
+    user: node
     environment: 
       SERVER_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
       DB: less_app
@@ -15,11 +16,18 @@ services:
       - app-data:/app/data
     ports:
       - "8080:8080"
+    read_only: true
+    cap_drop: 
+      - ALL
+    tmpfs: 
+      - /tmp
+    restart: always
     networks: 
       - less
 
   mongodb:
     image: mongo:latest
+    user: mongodb
     environment: 
       MONGO_INITDB_ROOT_USERNAME: less
       MONGO_INITDB_ROOT_PASSWORD: less123
