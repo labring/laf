@@ -20,7 +20,7 @@
       ${code}; 
       const __main__ = exports.main || exports.default
       if(!__main__) { throw new Error('FunctionExecError: main function not found') }
-      if(!(__main__ instanceof Function)) { throw new Error('FunctionExecError: main function must be callable')}
+      if(typeof __main__ !== 'function') { throw new Error('FunctionExecError: main function must be callable')}
       __runtime_promise = __main__(__context__ )
       `
  
@@ -30,7 +30,7 @@
      const sandbox: RuntimeContext = {
        __context__: incomingCtx.context,
        module: _module,
-       exports: module.exports,
+       exports: _module.exports,
        __runtime_promise: null,
        console: fconsole,
        less: incomingCtx.less,
