@@ -40,16 +40,16 @@ FileRouter.post('/upload/:namespace', uploader.single('file'), async (req, res) 
       return res.status(401).send('Unauthorized')
     }
 
-    const prasedToken = parseToken(uploadToken as string)
-    if (!prasedToken) {
+    const parsedToken = parseToken(uploadToken as string)
+    if (!parsedToken) {
       return res.status(403).send('Invalid upload token')
     }
 
-    if (!['create', 'all'].includes(prasedToken?.op)) {
+    if (!['create', 'all'].includes(parsedToken?.op)) {
       return res.status(403).send('Permission denied')
     }
 
-    if (prasedToken?.ns != namespace) {
+    if (parsedToken?.ns != namespace) {
       return res.status(403).send('Permission denied')
     }
   }
