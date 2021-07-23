@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express'
 import { db } from '../../lib/db'
 import { checkPermission } from '../../lib/api/permission'
 import { getLogger } from '../../lib/logger'
-import { getCloudFunction, invokeFunction } from '../../lib/faas/invoke'
+import { compileTsFunction2js, getCloudFunction, invokeFunction } from '../../lib/faas/invoke'
 import { FunctionContext } from '../../lib/faas/types'
 import * as multer from 'multer'
 import * as path from 'path'
@@ -22,8 +22,15 @@ const uploader = multer({
   })
 })
 
+/**
+ * 调用云函数，支持文件上传
+ */
 FunctionRouter.post('/invoke/:name', uploader.any(), handleInvokeFunction)
-FunctionRouter.all('/:name', uploader.any(), handleInvokeFunction)         // alias for /invoke/:name
+
+/**
+ * 调用云函数，不支持文件上传
+ */
+FunctionRouter.all('/:name', handleInvokeFunction)         // alias for /invoke/:name
 
 async function handleInvokeFunction(req: Request, res: Response) {
   const requestId = req['requestId']
@@ -53,10 +60,12 @@ async function handleInvokeFunction(req: Request, res: Response) {
     return res.send({ code: 1, error: 'function not found', requestId })
   }
 
+  // 未启用 HTTP 访问则拒绝访问（调试模式除外）
   if (!func.enableHTTP && !debug) {
     return res.status(404).send('Not Found')
   }
 
+  // 函数停用则拒绝访问（调试模式除外）
   if (1 !== func.status && !debug) {
     return res.status(404).send('Not Found')
   }
@@ -71,10 +80,19 @@ async function handleInvokeFunction(req: Request, res: Response) {
     auth: req['auth'],
     requestId,
   }
+
+  // 如果是调试模式或者函数未编译，则编译并更新函数
+  if(debug || !func.compiledCode) {
+    func.compiledCode = compileTsFunction2js(func.code)
+    await db.collection('functions')
+      .doc(func._id)
+      .update({ compiledCode: func.compiledCode, updated_at: Date.now()})
+  }
+
   const result = await invokeFunction(func, ctx)
 
   // 将云函数调用日志存储到数据库
-  {
+  if(debug) {
     await db.collection('function_logs')
       .add({
         requestId: requestId,

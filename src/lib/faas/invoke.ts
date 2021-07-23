@@ -5,6 +5,7 @@ import request from 'axios'
 import Config from "../../config"
 import { CloudFunctionStruct, CloudSdkInterface, FunctionContext } from "./types"
 import { getToken, parseToken } from "../utils/token"
+import * as ts from 'typescript'
 
 /**
  * 调用云函数
@@ -13,7 +14,7 @@ export async function invokeFunction(func: CloudFunctionStruct, param: FunctionC
   // const { query, body, auth, requestId } = param
   const engine = new FunctionEngine()
   const cloud = createCloudSdk()
-  const result = await engine.run(func.code, {
+  const result = await engine.run(func.compiledCode, {
     context: param,
     functionName: func.name,
     less: cloud,
@@ -117,4 +118,16 @@ async function _invokeInFunction(name: string, param: FunctionContext) {
   }
 
   return result
+}
+
+/**
+ * 编译云函数(TS) 到 JS
+ * @param {string} source ts 代码字符串
+ */
+ export function compileTsFunction2js(source: string): string {
+  const jscode = ts.transpile(source, {
+    module: ts.ModuleKind.CommonJS,
+    target: ts.ScriptTarget.ES2017
+  })
+  return jscode
 }

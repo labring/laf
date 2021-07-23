@@ -79,10 +79,16 @@ export interface FunctionResult {
 export interface CloudFunctionStruct {
   _id: string,
   name: string,
+  /**
+   * 云函数源代码，通常是 ts
+   */
   code: string,
+  /**
+   * 云函数编译后的代码，通常是 js
+   */
+  compiledCode: string
   enableHTTP: boolean,
   status: number,
-  time_usage: number,
   created_by: number,
   created_at: number
   updated_at: number
