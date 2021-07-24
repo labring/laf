@@ -106,7 +106,7 @@ export class CloudFunction {
       database: () => Globals.createDb(),
       storage: (namespace: string) => new LocalFileStorage(Config.LOCAL_STORAGE_ROOT_PATH, namespace),
       fetch: request,
-      invoke: this.invokeInFunction.bind(this),
+      invoke: this.invokeInFunction,
       emit: (event: string, param: any) => Scheduler.emit(event, param),
       shared: CloudFunction._shared_preference,
       getToken: getToken,
@@ -143,14 +143,6 @@ export class CloudFunction {
     }
 
     const result = await func.invoke(param)
-    
-    // 将此执行日志并入父函数的日志中
-
-    const logs = result.logs
-    logs.unshift(`**** invoke function ${func.name} logs: ****`)
-    logs.push(`**** end invoke function ${func.name} ****`)
-    this.console.logs.push(...logs)
-
     return result
   }
 
