@@ -1,9 +1,9 @@
 import { Request, Response } from 'express'
 import { checkPermission } from '../../api/permission'
-import { getLogger } from '../../lib/logger'
+import { createLogger } from '../../lib/logger'
 import { applyRules } from '../../api/rules'
 
-const logger = getLogger('admin:api')
+const logger = createLogger('admin:api')
 
 /**
  * 应用最新访问规则

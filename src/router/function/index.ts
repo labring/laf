@@ -1,17 +1,18 @@
 import { Request, Response, Router } from 'express'
-import { db } from '../../lib/db'
 import { checkPermission } from '../../api/permission'
-import { getLogger } from '../../lib/logger'
+import { createLogger } from '../../lib/logger'
 import { FunctionContext } from '../../lib/faas/types'
 import * as multer from 'multer'
 import * as path from 'path'
 import * as uuid from 'uuid'
 import {  CloudFunction } from '../../lib/faas'
 import { getFunctionByName } from '../../api/function'
+import { Globals } from '../../lib/globals'
 
+const db = Globals.db
 
 export const FunctionRouter = Router()
-const logger = getLogger('admin:api')
+const logger = createLogger('admin:api')
 
 // multer 上传配置
 const uploader = multer({

@@ -3,11 +3,11 @@ import { FunctionConsole } from "./console"
 import { AxiosStatic } from 'axios'
 import { Db } from 'less-api-database'
 import { FileStorageInterface } from "../storage/interface"
-import { IncomingHttpHeaders } from "node:http"
+import { IncomingHttpHeaders } from "http"
 import * as mongodb from "mongodb"
 
 export type RequireFuncType = (module: string) => any
-export type InvokeFunctionType = (name: string, param: FunctionContext) => Promise<any>
+export type InvokeFunctionType = (name: string, param: FunctionContext) => Promise<FunctionResult>
 export type EmitFunctionType = (event: string, param: any) => void
 export type GetTokenFunctionType = (payload: any) => string
 export type ParseTokenFunctionType = (token: string) => any | null

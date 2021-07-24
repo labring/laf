@@ -1,11 +1,12 @@
 import * as express from 'express'
 import { parseToken } from './lib/utils/token'
-import { router } from './router/index'
 import { v4 as uuidv4 } from 'uuid'
-import { getLogger } from './lib/logger'
 import Config from './config'
+import { router } from './router/index'
+import { Globals } from './lib/globals'
 
-const logger = getLogger('server')
+
+const logger = Globals.logger
 const server = express()
 server.use(express.json())
 

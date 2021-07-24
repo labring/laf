@@ -1,5 +1,6 @@
-import { db } from "../lib/db"
+import { Globals } from "../lib/globals"
 
+const db = Globals.db
 
 /**
  * 添加函数执行日志

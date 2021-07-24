@@ -1,11 +1,11 @@
 import { Request, Response } from 'express'
 import { checkPermission } from '../../api/permission'
-import { getLogger } from '../../lib/logger'
-import { scheduler } from '../../lib/scheduler'
+import { createLogger } from '../../lib/logger'
 import { Trigger } from '../../lib/faas/trigger'
 import { getTriggerById, getTriggers } from '../../api/trigger'
+import { Scheduler } from '../../lib/scheduler'
 
-const logger = getLogger('admin:api')
+const logger = createLogger('admin:api')
 
 /**
  * 应用触发器配置
@@ -30,7 +30,7 @@ export async function handleApplyTrigger(req: Request, res: Response) {
     if (!triggerId) {
       const data = await getTriggers()
       const triggers = data.map(data => Trigger.fromJson(data))
-      scheduler.init(triggers)
+      Scheduler.init(triggers)
 
       return res.send({ code: 0, data: 'ok:applied' })
     }
@@ -42,7 +42,7 @@ export async function handleApplyTrigger(req: Request, res: Response) {
     }
     // 更新指定触发器
     const trigger = Trigger.fromJson(data)
-    const result = scheduler.updateTrigger(trigger)
+    const result =  Scheduler.updateTrigger(trigger)
 
     return res.send({
       code: 0,

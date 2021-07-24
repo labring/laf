@@ -1,4 +1,4 @@
-import { getLogger } from "../logger"
+import { createLogger } from "../logger"
 import { now } from "../utils/time"
 import { FunctionContext } from "./types"
 import { CloudFunction } from "./function"
@@ -7,12 +7,12 @@ import { addFunctionLog } from "../../api/function-log"
 import { getFunctionById } from "../../api/function"
 
 
-const logger = getLogger('trigger')
+const logger = createLogger('trigger')
 
 
 /**
  * 触发器管理
- * 触发器类型：event, timer, http
+ * 触发器类型：event, timer
  */
 export class TriggerScheduler {
   private _triggers: Trigger[] = []

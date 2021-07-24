@@ -1,5 +1,6 @@
-import { db } from "../lib/db"
+import { Globals } from "../lib/globals"
 
+const db = Globals.db
 
 /**
  * 请求触发器列表

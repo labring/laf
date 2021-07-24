@@ -2,11 +2,12 @@ import { Router } from 'express'
 import { Entry, Ruler } from 'less-api'
 import Config from '../../config'
 import { getPermissions } from '../../api/permission'
-import { accessor } from '../../lib/db'
-import { getLogger } from '../../lib/logger'
+import { createLogger } from '../../lib/logger'
 import { getAccessRules } from '../../api/rules'
+import { Globals } from '../../lib/globals'
 
-const logger = getLogger('admin:entry')
+const logger = createLogger('admin:entry')
+const accessor = Globals.accessor
 export const AdminEntryRouter = Router()
 
 const ruler = new Ruler(accessor)

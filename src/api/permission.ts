@@ -1,6 +1,8 @@
 
 import * as assert from 'assert'
-import { db } from '../lib/db'
+import { Globals } from '../lib/globals'
+
+const db = Globals.db
 
 /**
  * 判断用户是否有权限

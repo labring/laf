@@ -1,5 +1,4 @@
 import { FunctionEngine } from "."
-import { accessor, createDb } from '../db'
 import { LocalFileStorage } from "../storage/local_file_storage"
 import request from 'axios'
 import Config from "../../config"
@@ -7,8 +6,9 @@ import { CloudFunctionStruct, CloudSdkInterface, FunctionContext, FunctionResult
 import { getToken, parseToken } from "../utils/token"
 import * as ts from 'typescript'
 import { FunctionConsole } from "./console"
-import { scheduler } from "../scheduler"
 import {  getFunctionByName } from "../../api/function"
+import { Globals } from "../globals"
+import { Scheduler } from "../scheduler"
 
 export class CloudFunction {
   // 跨请求、跨函数的全局配置对象，单例（in memory）
@@ -103,15 +103,15 @@ export class CloudFunction {
    */
   createCloudSdk(): CloudSdkInterface {
     const cloud: CloudSdkInterface = {
-      database: () => createDb(),
+      database: () => Globals.createDb(),
       storage: (namespace: string) => new LocalFileStorage(Config.LOCAL_STORAGE_ROOT_PATH, namespace),
       fetch: request,
       invoke: this.invokeInFunction.bind(this),
-      emit: (event: string, param: any) => scheduler.emit(event, param),
+      emit: (event: string, param: any) => Scheduler.emit(event, param),
       shared: CloudFunction._shared_preference,
       getToken: getToken,
       parseToken: parseToken,
-      mongodb: accessor.db
+      mongodb: Globals.accessor.db
     }
 
     return cloud

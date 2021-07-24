@@ -1,12 +1,12 @@
 import { Request, Response } from 'express'
 import { getToken } from '../../lib/utils/token'
-import { db } from '../../lib/db'
 import { checkPermission, getPermissions } from '../../api/permission'
-import { getLogger } from '../../lib/logger'
+import { createLogger } from '../../lib/logger'
 import { hashPassword } from '../../lib/utils/hash'
+import { Globals } from '../../lib/globals'
 
-
-const logger = getLogger('admin:api')
+const db = Globals.db
+const logger = createLogger('admin:api')
 
 /**
  * 管理员登陆

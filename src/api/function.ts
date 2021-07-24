@@ -1,5 +1,6 @@
-import { db } from "../lib/db"
+import { Globals } from "../lib/globals"
 
+const db = Globals.db
 
 /**
  * 根据函数名获取云函数

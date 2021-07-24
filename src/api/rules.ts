@@ -1,9 +1,10 @@
 import * as assert from 'assert'
 import { Ruler } from 'less-api'
-import { accessor, db } from '../lib/db'
 import { entry as adminEntry } from '../router/entry/admin'
 import { entry as appEntry } from '../router/entry/app'
+import { Globals } from "../lib/globals"
 
+const db = Globals.db
 export interface RuleDocument {
   category: string,
   collection: string,
@@ -34,7 +35,7 @@ export async function getAccessRules(category: string): Promise<any> {
 export async function applyRules() {
   // apply admin rules
   {
-    const ruler = new Ruler(accessor)
+    const ruler = new Ruler(Globals.accessor)
     const rules = await getAccessRules('admin')
     ruler.load(rules)
     adminEntry.setRuler(ruler)
@@ -42,7 +43,7 @@ export async function applyRules() {
 
   // apply app rules
   {
-    const ruler = new Ruler(accessor)
+    const ruler = new Ruler(Globals.accessor)
     const rules = await getAccessRules('app')
     ruler.load(rules)
     appEntry.setRuler(ruler)

@@ -1,11 +1,12 @@
 import * as express from 'express'
 import { checkPermission } from '../../api/permission'
-import { accessor } from '../../lib/db'
-import { getLogger } from '../../lib/logger'
+import { Globals } from '../../lib/globals'
+import { createLogger } from '../../lib/logger'
 
 
+const accessor = Globals.accessor
 export const DbmRouter = express.Router()
-const logger = getLogger('admin:api')
+const logger = createLogger('admin:api')
 
 /**
  * 获取集合列表

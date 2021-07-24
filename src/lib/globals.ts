@@ -1,0 +1,84 @@
+
+
+import { MongoAccessor, getDb, LoggerInterface } from 'less-api'
+import { Db } from 'less-api-database'
+import Config from '../config'
+import { createLogger } from './logger'
+
+/**
+ * 管理应用的全局对象
+ */
+export class Globals {
+  private static _accessor: MongoAccessor = null
+  private static _db: Db = null
+  private static _logger: LoggerInterface = null
+
+  static get accessor() {
+    return this._accessor
+  }
+
+  static get db() {
+    return this._db
+  }
+
+  static get logger() {
+    return this._logger
+  }
+
+  /**
+   * 初始化全局对象
+   */
+  static init() {
+    // 创建全局日志对象
+    if (null === this._logger) {
+      this._logger = createLogger('server')
+    }
+
+    // 创建 app db accessor
+    if (null === this._accessor) {
+      this._accessor = this._createAccessor()
+    }
+
+    // 创建 Db ORM 实例
+    if (null === this._db) {
+      this._db = this.createDb()
+    }
+
+    Object.freeze(Globals)
+  }
+
+
+  /**
+   * 创建 Db 实例
+   * @returns 
+   */
+  static createDb() {
+    if (null === this._accessor) {
+      throw new Error('Globals.accessor is empty, please run Globals.init() before!')
+    }
+    return getDb(this._accessor)
+  }
+
+
+  /**
+   * 创建 MongoAccessor 对象
+   * @returns 
+   */
+  private static _createAccessor() {
+    const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
+      poolSize: Config.db.poolSize,
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    })
+
+    accessor.setLogger(createLogger('db', 'warning'))
+    accessor.init()
+
+    return accessor
+  }
+}
+
+/**
+ * 初始化全局资源对象
+ */
+ Globals.init()
