@@ -1,15 +1,15 @@
 import { AxiosStatic } from "axios"
 import { Db } from "less-api-database"
-import { FunctionContext, FunctionResult } from "../faas/types"
-import { FileStorageInterface } from "../storage/interface"
+import { FunctionContext, FunctionResult } from "../lib/faas/types"
+import { FileStorageInterface } from "../lib/storage/interface"
 import * as mongodb from "mongodb"
-import { Globals } from "../globals"
-import { LocalFileStorage } from "../storage/local_file_storage"
-import Config from "../../config"
+import { Globals } from "../lib/globals"
+import { LocalFileStorage } from "../lib/storage/local_file_storage"
+import Config from "../config"
 import request from 'axios'
-import { Scheduler } from "../scheduler"
-import { CloudFunction } from "../faas"
-import { getToken, parseToken } from "../utils/token"
+import { Scheduler } from "../lib/scheduler"
+import { CloudFunction } from "../lib/faas"
+import { getToken, parseToken } from "../lib/utils/token"
 import { invokeInFunction } from "./invoke"
 
 

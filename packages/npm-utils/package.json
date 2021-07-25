@@ -1,0 +1,35 @@
+{
+  "name": "npm-utils",
+  "version": "0.0.1",
+  "description": "> TODO: description",
+  "author": "maslow <wangfugen@126.com>",
+  "homepage": "https://github.com/Maslow/less-framework#readme",
+  "license": "ISC",
+  "main": "./dist/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "tests"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Maslow/less-framework.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "npx mocha tests/**test.js"
+  },
+  "bugs": {
+    "url": "https://github.com/Maslow/less-framework/issues"
+  },
+  "dependencies": {
+    "fs-extra": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.12",
+    "@types/node": "^16.4.2"
+  }
+}

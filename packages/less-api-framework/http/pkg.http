@@ -1,0 +1,20 @@
+
+
+### 获取 @type/express
+
+GET {{base_url}}/typing/package?packageName=express HTTP/1.1
+Content-Type: application/json
+
+
+
+### 获取 @
+
+GET {{base_url}}/typing/package?packageName=@ HTTP/1.1
+Content-Type: application/json
+
+
+### 获取 @types/node
+
+GET {{base_url}}/typing/package?packageName=@types/node HTTP/1.1
+Content-Type: application/json
+

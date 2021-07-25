@@ -34,8 +34,6 @@
     "src/**/*",
   ],
   "exclude": [
-    "tests_modules",
     "tests",
-    "test"
   ]
 }

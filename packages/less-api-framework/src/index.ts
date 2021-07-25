@@ -5,6 +5,8 @@ import Config from './config'
 import { router } from './router/index'
 import { Globals } from './lib/globals'
 
+// 为了生成相应的声明文件
+export * from './cloud-sdk'
 
 const logger = Globals.logger
 const server = express()

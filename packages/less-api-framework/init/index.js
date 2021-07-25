@@ -8,6 +8,8 @@ const adminRules = require('./rules/admin.json')
 const appRules = require('./rules/app.json')
 const { permissions } = require('./permissions')
 const { FunctionLoader } = require('./func_loader')
+const fse = require('fs-extra')
+const path = require('path')
 
 const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
   useNewUrlParser: true,
@@ -30,8 +32,8 @@ async function main() {
   // 创建初始管理员
   await createFirstAdmin()
 
-  await createInitailAccessRules('admin', adminRules)
-  await createInitailAccessRules('app', appRules)
+  await createInitialAccessRules('admin', adminRules)
+  await createInitialAccessRules('app', appRules)
 
   // 创建内置云函数
   await createBuiltinFunctions()
@@ -142,7 +144,7 @@ async function createInitialPermissions() {
 }
 
 // 创建初始访问规则
-async function createInitailAccessRules(category, rules) {
+async function createInitialAccessRules(category, rules) {
 
   for (const collection in rules) {
     const { total } = await db.collection('rules')

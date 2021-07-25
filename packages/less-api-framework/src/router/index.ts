@@ -5,6 +5,7 @@ import { AppEntryRouter } from './entry/app'
 import { FileRouter } from './file/index'
 import { FunctionRouter } from './function/index'
 import { DbmRouter } from './dbm'
+import { PackageTypingRouter } from './typing'
 export const router = Router()
 
 router.use('/admin', AdminEntryRouter)
@@ -15,3 +16,4 @@ router.use('/app', AppEntryRouter)
 
 router.use('/file', FileRouter)
 router.use('/func', FunctionRouter)
+router.use('/typing', PackageTypingRouter)

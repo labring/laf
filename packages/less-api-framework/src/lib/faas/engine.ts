@@ -6,7 +6,7 @@ import { CloudSdkInterface, FunctionContext, FunctionResult, RequireFuncType, Ru
 
 const require_func: RequireFuncType = (module): any => {
   if(module === '@/cloud-sdk') {
-    return require('../cloud-sdk')
+    return require('../../cloud-sdk')
   }
   return require(module) as any
 }
