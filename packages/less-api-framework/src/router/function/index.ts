@@ -1,10 +1,9 @@
 import { Request, Response, Router } from 'express'
 import { checkPermission } from '../../api/permission'
-import { FunctionContext } from '../../lib/faas/types'
+import { FunctionContext, CloudFunction } from 'cloud-function'
 import * as multer from 'multer'
 import * as path from 'path'
 import * as uuid from 'uuid'
-import {  CloudFunction } from '../../lib/faas'
 import { getFunctionByName } from '../../api/function'
 import { Globals } from '../../lib/globals'
 

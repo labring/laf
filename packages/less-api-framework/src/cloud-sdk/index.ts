@@ -1,6 +1,6 @@
 import { AxiosStatic } from "axios"
 import { Db } from "less-api-database"
-import { FunctionContext, FunctionResult } from "../lib/faas/types"
+import { FunctionContext, FunctionResult, CloudFunction } from "cloud-function"
 import { FileStorageInterface } from "../lib/storage/interface"
 import * as mongodb from "mongodb"
 import { Globals } from "../lib/globals"
@@ -8,7 +8,6 @@ import { LocalFileStorage } from "../lib/storage/local_file_storage"
 import Config from "../config"
 import request from 'axios'
 import { Scheduler } from "../lib/scheduler"
-import { CloudFunction } from "../lib/faas"
 import { getToken, parseToken } from "../lib/utils/token"
 import { invokeInFunction } from "./invoke"
 

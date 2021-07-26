@@ -3,7 +3,7 @@
 import { MongoAccessor, getDb, LoggerInterface } from 'less-api'
 import { Db } from 'less-api-database'
 import Config from '../config'
-import { RequireFuncType } from './faas'
+import { RequireFuncType } from 'cloud-function'
 import { createLogger } from './logger'
 
 

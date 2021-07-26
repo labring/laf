@@ -7,7 +7,9 @@ import * as ts from 'typescript'
  * 云函数实例，可编译、运行云函数
  */
 export class CloudFunction {
-  // 跨请求、跨函数的全局配置对象，单例（in memory）
+  /**
+   * 跨请求、跨函数的全局配置对象，单例（in memory）
+   */
   static _shared_preference = new Map<string, any>()
 
   /**

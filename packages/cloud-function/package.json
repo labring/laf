@@ -1,38 +1,45 @@
 {
-  "name": "node-modules-utils",
-  "version": "0.0.2",
-  "description": "load package info from node_modules, parse dts (Typescript declaration files, .d.ts) from node_modules",
+  "name": "cloud-function",
+  "version": "0.0.1",
+  "description": "typescript cloud function engine used in less-api-framework",
+  "keywords": [
+    "faas",
+    "cloud",
+    "function",
+    "function",
+    "engine",
+    "less-api",
+    "less-framework"
+  ],
   "author": "maslow <wangfugen@126.com>",
   "homepage": "https://github.com/Maslow/less-framework#readme",
   "license": "ISC",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "directories": {
-    "lib": "src",
-    "test": "tests"
+    "src": "src"
   },
   "files": [
-    "src"
+    "src",
+    "dist"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Maslow/less-framework.git"
   },
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w",
-    "test": "npx mocha tests/**test.js",
+    "build": "npx tsc -p tsconfig.json",
+    "watch": "npx tsc -p tsconfig.json -w",
     "prepublishOnly": "npm run build"
   },
   "bugs": {
     "url": "https://github.com/Maslow/less-framework/issues"
   },
   "dependencies": {
-    "fs-extra": "^10.0.0"
+    "moment": "^2.29.1",
+    "typescript": "^4.2.3"
   },
   "devDependencies": {
-    "@types/fs-extra": "^9.0.12",
-    "@types/node": "^16.4.2",
-    "typescript": "^4.2.3"
+    "@types/node": "^14.14.37"
   }
 }

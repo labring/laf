@@ -1,13 +1,8 @@
-import { createLogger } from "../logger"
-import { now } from "../utils/time"
+
+import { now } from "./utils"
 import { FunctionContext } from "./types"
 import { CloudFunction } from "./function"
 import { Trigger } from "./trigger"
-import { addFunctionLog } from "../../api/function-log"
-import { getFunctionById } from "../../api/function"
-
-
-const logger = createLogger('trigger')
 
 
 /**
@@ -19,7 +14,8 @@ export class TriggerScheduler {
   private _timer = null
 
   public init(triggers: Trigger[]) {
-    logger.debug('init trigger scheduler')
+    this.log('init trigger scheduler')
+
     this._triggers = triggers
 
     this.scheduleTimer()
@@ -63,7 +59,7 @@ export class TriggerScheduler {
    * @param param 事件参数
    */
   public emit(event: string, data?: any) {
-    logger.debug(`TriggerScheduler.emit -> ${event}`)
+    this.log(`TriggerScheduler.emit -> ${event}`)
 
     // filter triggers by given eventName
     const triggers = this.getEventTriggers()
@@ -71,7 +67,7 @@ export class TriggerScheduler {
 
     // trigger the functions' execution
     for (const tri of triggers) {
-      logger.debug(`TriggerScheduler.emit -> ${event} - executing function : ${tri.func_id}`)
+      this.log(`TriggerScheduler.emit -> ${event} - executing function : ${tri.func_id}`)
       const param: FunctionContext = {
         params: data,
         method: 'trigger',
@@ -82,21 +78,28 @@ export class TriggerScheduler {
   }
 
   /**
+   * 加载函数数据
+   * @tip 开发者应派生此类，并重写此函数
+   * @param func_id 函数ID
+   * @returns 
+   */
+  protected async getFunctionById(_func_id: string): Promise<CloudFunction>{
+    throw new Error('not implemented, you should drive TriggerScheduler class and override getFunctionById() method')
+  }
+
+  /**
    * 执行云函数
    * @param func_id 
    * @param param 
    */
-  private async executeFunction(func_id: string, param: FunctionContext, trigger: Trigger) {
-
-    const funcData = await getFunctionById(func_id)
-    const func = new CloudFunction(funcData)
+  protected async executeFunction(func_id: string, param: FunctionContext, trigger: Trigger) {
+    const func = await this.getFunctionById(func_id)
 
     const result = await func.invoke(param)
 
-    // 将云函数调用日志存储到数据库
-  
+    // 将云函数执行日志抛出
     result.logs.unshift(`invoked by trigger: ${trigger.name} (${trigger.id})`)
-    await addFunctionLog({
+    await this.addFunctionLog({
       requestId: `trigger_${trigger.id}`,
       func_id: func.id,
       func_name: func.name,
@@ -110,9 +113,27 @@ export class TriggerScheduler {
   }
 
   /**
+   * 添加函数执行日志，派生类可实现此方法
+   * @override
+   * @param data 
+   */
+  protected async addFunctionLog(data: any) {
+    this.log(data)
+  }
+
+  /**
+   * 打印日志，派生类可重写此方法，实现自定义日志输出
+   * @override
+   * @param params 
+   */
+  protected log(...params: any[]) {
+    console.log(...params)
+  }
+
+  /**
    * 开始调度定时触发器
    */
-  private scheduleTimer() {
+   protected scheduleTimer() {
     this.cancelTimer()
     this._timer = setInterval(this.timerLoop.bind(this), 1000)
   }
@@ -120,17 +141,17 @@ export class TriggerScheduler {
   /**
    * 取消定时触发器调度
    */
-  private cancelTimer() {
+  protected cancelTimer() {
     if (this._timer) {
       clearInterval(this._timer)
     }
   }
 
-  private getEventTriggers(): Trigger[] {
+  protected getEventTriggers(): Trigger[] {
     return this._triggers.filter(tri => tri.isEvent)
   }
 
-  private getTimerTriggers(): Trigger[] {
+  protected getTimerTriggers(): Trigger[] {
     return this._triggers.filter(tri => tri.isTimer)
   }
 
@@ -139,7 +160,7 @@ export class TriggerScheduler {
    * @param triggerId 
    * @returns 
    */
-  private removeTrigger(triggerId: string): boolean {
+   protected removeTrigger(triggerId: string): boolean {
     const index = this._triggers.findIndex(t => t.id === triggerId)
     if (index === -1) {
       return false
@@ -152,15 +173,14 @@ export class TriggerScheduler {
   /**
    * 定时器触发器调度
    */
-  private timerLoop() {
+  protected timerLoop() {
     const triggers = this.getTimerTriggers()
-
     // 遍历所有定时任务
     for (const tri of triggers) {
 
       // 判断任务执行时间是否已到
       if (now() - tri.last_exec_time >= tri.duration * 1000) {
-        logger.debug(`TriggerScheduler.timer-loop -> trigger(${tri.id})- executing function : ${tri.func_id}`)
+        this.log(`TriggerScheduler.timer-loop -> trigger(${tri.id})- executing function : ${tri.func_id}`)
         const param: FunctionContext = {
           params: tri,
           method: 'trigger',

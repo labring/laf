@@ -1,6 +1,6 @@
 
 import * as vm from 'vm'
-import { nanosecond2ms } from '../utils/time'
+import { nanosecond2ms } from './utils'
 import { FunctionConsole } from './console'
 import { FunctionContext, FunctionResult, RequireFuncType, RuntimeContext } from './types'
 
@@ -16,6 +16,11 @@ const defaultRequireFunction: RequireFuncType = (module): any => {
  * 云函数执行引擎
  */
 export class FunctionEngine {
+
+  /**
+   * 函数执行超时时间
+   */
+  timeout = 60 * 1000
 
   /**
    * 云函数中加载依赖包的函数: require('') 
@@ -43,7 +48,7 @@ export class FunctionEngine {
     const _start_time = process.hrtime.bigint()
     try {
       const script = new vm.Script(wrapped)
-      script.runInNewContext(sandbox, {})
+      script.runInNewContext(sandbox, { timeout: this.timeout })
       const data = await sandbox.__runtime_promise
 
       // 函数执行耗时

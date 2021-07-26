@@ -1,6 +1,5 @@
 import { getFunctionByName } from "../api/function"
-import { CloudFunction } from "../lib/faas/function"
-import { FunctionContext } from "../lib/faas/types"
+import { CloudFunction, FunctionContext } from "cloud-function"
 
 
 /**

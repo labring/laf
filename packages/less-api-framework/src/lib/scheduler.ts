@@ -1,15 +1,54 @@
-import { getLogger } from "log4js"
+
+import { getFunctionById } from "../api/function"
+import { addFunctionLog } from "../api/function-log"
 import { getTriggers } from "../api/trigger"
-import { TriggerScheduler } from "./faas"
-import { Trigger } from "./faas/trigger"
+import { CloudFunction, Trigger, TriggerScheduler } from "cloud-function"
 import { Globals } from "./globals"
+import { createLogger } from "./logger"
 import { convertActionType } from "./utils"
 
 const accessor = Globals.accessor
-const logger = getLogger('scheduler')
+const logger = createLogger('scheduler')
+
+/**
+ * 派生类，实现其获取云函数数据的方法
+ */
+class FrameworkScheduler extends TriggerScheduler {
+
+  /**
+   * 加载云函数，派生类需要实现此方法
+   * @override
+   * @param func_id 
+   * @returns 
+   */
+  async getFunctionById(func_id: string): Promise<CloudFunction>{
+    const funcData = await getFunctionById(func_id)
+    return new CloudFunction(funcData)
+  }
+
+  /**
+   * 该方法父类会调用，重写以记录函数执行日志
+   * @override
+   * @param data 
+   */
+  async addFunctionLog(data: any) {
+    await addFunctionLog(data)
+  }
+
+  /**
+   * 重写以处理调试日志
+   * @override
+   * @param params 
+   */
+  async log(...params: any[]) {
+    logger.debug(...params)
+  }
+}
+
+
 
 // 触发器的调度器单例
-export const Scheduler = new TriggerScheduler()
+export const Scheduler = new FrameworkScheduler()
 
 // 当数据库连接成功时，初始化 scheduler
 accessor.ready.then(async () => {
