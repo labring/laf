@@ -10,8 +10,6 @@
     "watch": "lerna run watch",
     "init": "lerna run init",
     "prepublishOnly": "npm run build && npm run copy-readme",
-    "prepare": "husky install",
-    "commit": "commit",
     "init-start": "npm run init && npm run start",
     "copy-readme": "npx copy-cli ./packages/less-api-framework/README.md ./README.md"
   },
@@ -24,9 +22,6 @@
     "less-api"
   ],
   "devDependencies": {
-    "@commitlint/cli": "^12.0.1",
-    "@commitlint/config-conventional": "^12.0.1",
-    "@commitlint/prompt-cli": "^12.0.1",
     "copy": "^0.3.2",
     "husky": "^5.2.0"
   }
