@@ -1,18 +1,20 @@
 import { FunctionEngine } from "."
-import { LocalFileStorage } from "../storage/local_file_storage"
-import request from 'axios'
-import Config from "../../config"
-import { CloudFunctionStruct, CloudSdkInterface, FunctionContext, FunctionResult } from "./types"
-import { getToken, parseToken } from "../utils/token"
+import { CloudFunctionStruct, FunctionContext, FunctionResult, RequireFuncType } from "./types"
 import * as ts from 'typescript'
-import { FunctionConsole } from "./console"
-import {  getFunctionByName } from "../../api/function"
-import { Globals } from "../globals"
-import { Scheduler } from "../scheduler"
 
+/**
+ * 云函数
+ * 云函数实例，可编译、运行云函数
+ */
 export class CloudFunction {
   // 跨请求、跨函数的全局配置对象，单例（in memory）
   static _shared_preference = new Map<string, any>()
+
+  /**
+   * 自定义 require function，如果未设置，则使用云函数引擎默认 require
+   * @see FunctionEngine.require_func
+   */
+  static require_func: RequireFuncType
 
   /**
    * 函数结构
@@ -28,11 +30,6 @@ export class CloudFunction {
    * 函数执行结果
    */
   result: FunctionResult
-
-  /**
-   * 日志对象
-   */
-  console: FunctionConsole
 
   /**
    *  函数ID
@@ -87,63 +84,12 @@ export class CloudFunction {
    */
   async invoke(param: FunctionContext) {
     this.param = param
-    const sdk = this.createCloudSdk()
 
-    const engine = new FunctionEngine(param, sdk)
+    const engine = new FunctionEngine(CloudFunction.require_func)
 
-    this.console = engine.console
-    this.result = await engine.run(this.compiledCode)
+    this.result = await engine.run(this.compiledCode, param)
 
     return this.result
-  }
-
-  /**
-   * 创建云函数 cloud sdk
-   * @returns 
-   */
-  createCloudSdk(): CloudSdkInterface {
-    const cloud: CloudSdkInterface = {
-      database: () => Globals.createDb(),
-      storage: (namespace: string) => new LocalFileStorage(Config.LOCAL_STORAGE_ROOT_PATH, namespace),
-      fetch: request,
-      invoke: this.invokeInFunction,
-      emit: (event: string, param: any) => Scheduler.emit(event, param),
-      shared: CloudFunction._shared_preference,
-      getToken: getToken,
-      parseToken: parseToken,
-      mongodb: Globals.accessor.db
-    }
-
-    return cloud
-  }
-
-  /**
-   * 在云函数中[调用云函数]
-   */
-  protected async invokeInFunction(name: string, param: FunctionContext) {
-    const data = await getFunctionByName(name)
-    const func = new CloudFunction(data)
-
-    if (!func) {
-      throw new Error(`invoke() failed to get function: ${name}`)
-    }
-
-    if(!func.compiledCode) {
-      func.compile2js()
-    }
-
-    param = param ?? {}
-    
-    if(param.requestId) {
-      param.requestId = this.param.requestId
-    }
-
-    if (param.method) {
-      param.method = param.method ?? 'call'
-    }
-
-    const result = await func.invoke(param)
-    return result
   }
 
   /**

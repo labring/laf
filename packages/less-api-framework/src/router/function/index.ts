@@ -1,6 +1,5 @@
 import { Request, Response, Router } from 'express'
 import { checkPermission } from '../../api/permission'
-import { createLogger } from '../../lib/logger'
 import { FunctionContext } from '../../lib/faas/types'
 import * as multer from 'multer'
 import * as path from 'path'
@@ -9,10 +8,13 @@ import {  CloudFunction } from '../../lib/faas'
 import { getFunctionByName } from '../../api/function'
 import { Globals } from '../../lib/globals'
 
+// 设置云函数中的加载函数
+CloudFunction.require_func = Globals.require_func
+
 const db = Globals.db
+const logger = Globals.logger
 
 export const FunctionRouter = Router()
-const logger = createLogger('admin:api')
 
 // multer 上传配置
 const uploader = multer({
@@ -25,23 +27,30 @@ const uploader = multer({
 })
 
 /**
- * 调用云函数，支持文件上传
+ * 使用 invoke 前缀调用云函数，支持文件上传
  */
 FunctionRouter.post('/invoke/:name', uploader.any(), handleInvokeFunction)
 
 /**
- * 调用云函数，不支持文件上传
+ * 默认调用云函数，不支持文件上传
  */
 FunctionRouter.all('/:name', handleInvokeFunction)         // alias for /invoke/:name
 
+/**
+ * 调用云函数
+ * @param req 
+ * @param res 
+ * @returns 
+ */
 async function handleInvokeFunction(req: Request, res: Response) {
   const requestId = req['requestId']
   const func_name = req.params?.name
 
+  logger.info(`[${requestId}] /func/${func_name} body: `, req.body)
+
   if (!func_name) {
     return res.send({ code: 1, error: 'invalid function name', requestId })
   }
-
 
   const debug = req.query?.debug ?? false
 
@@ -52,8 +61,6 @@ async function handleInvokeFunction(req: Request, res: Response) {
       return res.status(code).send('permission denied')
     }
   }
-
-  logger.info(`[${requestId}] /func/${func_name} body: `, req.body)
 
   const funcData = await getFunctionByName(func_name)
   if (!funcData) {

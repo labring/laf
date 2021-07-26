@@ -13,7 +13,6 @@ import { getToken, parseToken } from "../lib/utils/token"
 import { invokeInFunction } from "./invoke"
 
 
-export type RequireFuncType = (module: string) => any
 export type InvokeFunctionType = (name: string, param: FunctionContext) => Promise<FunctionResult>
 export type EmitFunctionType = (event: string, param: any) => void
 export type GetTokenFunctionType = (payload: any) => string

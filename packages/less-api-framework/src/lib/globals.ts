@@ -3,7 +3,16 @@
 import { MongoAccessor, getDb, LoggerInterface } from 'less-api'
 import { Db } from 'less-api-database'
 import Config from '../config'
+import { RequireFuncType } from './faas'
 import { createLogger } from './logger'
+
+
+const require_func: RequireFuncType = (module): any => {
+  if(module === '@/cloud-sdk') {
+    return require('../cloud-sdk')
+  }
+  return require(module) as any
+}
 
 /**
  * 管理应用的全局对象
@@ -23,6 +32,16 @@ export class Globals {
 
   static get logger() {
     return this._logger
+  }
+
+  /**
+   * 自定义 require function
+   * @see 详见 CloudFunction.require_func 和 FunctionEngine.require_func
+   * @param module 
+   * @returns 
+   */
+  static get require_func(): RequireFuncType {
+    return require_func
   }
 
   /**

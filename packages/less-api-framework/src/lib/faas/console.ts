@@ -13,4 +13,10 @@ export class FunctionConsole {
     const r = util.format("[%s] -", date, ...params)
     this._logs.push(r)
   }
+
+  error(...params: any[]) {
+    const date = moment().format("YYYY/MM/DD HH:mm:ss")
+    const r = util.format("[%s] -", date, ...params)
+    this._logs.push(r)
+  }
 }

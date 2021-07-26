@@ -38,18 +38,25 @@ export class Trigger {
   // 状态
   public status: number
 
+  /**
+   * 是否为事件触发器
+   */
   get isEvent() {
     return this.type === TriggerType.TRIGGER_EVENT
   }
 
+  /**
+   * 是否为定时器触发器
+   */
   get isTimer() {
     return this.type === TriggerType.TRIGGER_TIMER
   }
 
-  get isHTTP() {
-    return this.type === TriggerType.TRIGGER_HTTP
-  }
-
+  /**
+   * 加载触发器
+   * @param data 
+   * @returns 
+   */
   static fromJson(data: any): Trigger {
     const tri = new Trigger()
     tri.type = data.type
@@ -66,10 +73,6 @@ export class Trigger {
 
     if (tri.isTimer) {
       tri.duration = data.duration
-    }
-
-    if (tri.isHTTP) {
-      tri.method = data.method
     }
 
     return tri

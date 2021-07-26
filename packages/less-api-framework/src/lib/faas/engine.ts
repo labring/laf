@@ -2,12 +2,13 @@
 import * as vm from 'vm'
 import { nanosecond2ms } from '../utils/time'
 import { FunctionConsole } from './console'
-import { CloudSdkInterface, FunctionContext, FunctionResult, RequireFuncType, RuntimeContext } from './types'
+import { FunctionContext, FunctionResult, RequireFuncType, RuntimeContext } from './types'
 
-const require_func: RequireFuncType = (module): any => {
-  if(module === '@/cloud-sdk') {
-    return require('../../cloud-sdk')
-  }
+
+/**
+ * 云函数中加载依赖包的函数: require('') 
+ */
+const defaultRequireFunction: RequireFuncType = (module): any => {
   return require(module) as any
 }
 
@@ -16,14 +17,13 @@ const require_func: RequireFuncType = (module): any => {
  */
 export class FunctionEngine {
 
-  protected sandbox: RuntimeContext
+  /**
+   * 云函数中加载依赖包的函数: require('') 
+   */
+  require_func: RequireFuncType
 
-  get console() {
-    return this.sandbox?.console
-  }
-
-  constructor(context: FunctionContext, sdk: CloudSdkInterface) {
-    this.sandbox = this.buildSandbox(context, sdk)
+  constructor(require_func?: RequireFuncType) {
+    this.require_func = require_func ?? defaultRequireFunction
   }
 
   /**
@@ -32,17 +32,18 @@ export class FunctionEngine {
    * @param incomingCtx 
    * @returns 
    */
-  async run(code: string): Promise<FunctionResult> {
-    const sandbox = this.sandbox
+  async run(code: string, context: FunctionContext): Promise<FunctionResult> {
+    const sandbox = this.buildSandbox(context)
+  
 
     const wrapped = this.wrap(code)
-    const fconsole = this.console
+    const fconsole = sandbox.console
 
     // 调用前计时
     const _start_time = process.hrtime.bigint()
     try {
       const script = new vm.Script(wrapped)
-      script.runInNewContext(sandbox)
+      script.runInNewContext(sandbox, {})
       const data = await sandbox.__runtime_promise
 
       // 函数执行耗时
@@ -75,7 +76,7 @@ export class FunctionEngine {
    * @param incomingCtx 
    * @returns 
    */
-  buildSandbox(functionContext: FunctionContext, functionSdk: CloudSdkInterface) {
+  buildSandbox(functionContext: FunctionContext): RuntimeContext {
     const fconsole = new FunctionConsole()
 
     const _module = {
@@ -87,9 +88,7 @@ export class FunctionEngine {
       exports: _module.exports,
       __runtime_promise: null,
       console: fconsole,
-      less: functionSdk,
-      cloud: functionSdk,
-      require: require_func,
+      require: this.require_func,
       Buffer: Buffer
     }
   }

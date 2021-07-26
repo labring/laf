@@ -1,46 +1,26 @@
 
 import { FunctionConsole } from "./console"
-import { AxiosStatic } from 'axios'
-import { Db } from 'less-api-database'
-import { FileStorageInterface } from "../storage/interface"
 import { IncomingHttpHeaders } from "http"
-import * as mongodb from "mongodb"
 
 export type RequireFuncType = (module: string) => any
-export type InvokeFunctionType = (name: string, param: FunctionContext) => Promise<FunctionResult>
-export type EmitFunctionType = (event: string, param: any) => void
-export type GetTokenFunctionType = (payload: any) => string
-export type ParseTokenFunctionType = (token: string) => any | null
 
-export interface CloudSdkInterface {
-  fetch: AxiosStatic
-  storage(namespace: string): FileStorageInterface
-  database(): Db,
-  invoke: InvokeFunctionType
-  emit: EmitFunctionType
-  shared: Map<string, any>
-  getToken: GetTokenFunctionType
-  parseToken: ParseTokenFunctionType
-  mongodb: mongodb.Db
-}
 
-// vm run context (global)
+/**
+ * vm run context (global)
+ */
 export interface RuntimeContext {
   __context__: FunctionContext,
   module: { exports: Object },
   exports: Object,
   __runtime_promise: any,
   console: FunctionConsole,
-  /**
-   * cloud sdk 的别名，保留以兼容历史版本
-   */
-  less: CloudSdkInterface, 
-  cloud: CloudSdkInterface,
   require: RequireFuncType,
   Buffer: typeof Buffer
 }
 
-// ctx passed to function
+/**
+ * ctx passed to function
+ */
 export interface FunctionContext {
   files?: File[]
   headers?: IncomingHttpHeaders
