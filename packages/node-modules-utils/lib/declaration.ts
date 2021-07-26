@@ -240,6 +240,10 @@ export class PackageDeclaration extends PackageInfo {
   }
 }
 
+
+/**
+ * 专用于加载 Node 官方内置的包类型文件
+ */
 export class NodePackageDeclarations {
 
   nodeModulesRoot: string
