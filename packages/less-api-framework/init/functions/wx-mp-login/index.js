@@ -1,12 +1,15 @@
-const appid = "修改为你的小程序 AppId"      // 微信小程序 AppId
-const appsecret = "修改为你的小程序 AppSecret"  // 微信小程序 AppSecret
+import cloud from '@/cloud-sdk'
+
+// 你可以让一个云函数监听 `app.ready` 触发器事件，初始化必要的配置信息(cloud.shared)
+const appid = cloud.shared.get('settings.wxmp.appid')     // 微信小程序 AppId
+const appsecret = cloud.shared.get('settings.wxmp.appsecret')  // 微信小程序 AppSecret
 
 /**
  * @body string code
  * @returns 
  */
 exports.main = async function (ctx) {
-  const db = less.database()
+  const db = cloud.database()
 
 
   const { body } = ctx
@@ -43,7 +46,7 @@ exports.main = async function (ctx) {
 
   // 生成 token
   const expire = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7
-  const token = less.getToken({uid: data._id, exp: expire })
+  const token = cloud.getToken({uid: data._id, exp: expire })
   return {
     uid: data._id,
     access_token: token,
@@ -64,7 +67,7 @@ async function getOpenId(code) {
   
   console.log('request url: ', `${api_url}?${param}`)
   
-  const res = await less.fetch(`${api_url}?${param}`)
+  const res = await cloud.fetch(`${api_url}?${param}`)
 
   console.log(res.data)
   // { session_key: string; openid: string } 

@@ -18,3 +18,10 @@ Content-Type: application/json
 GET {{base_url}}/typing/package?packageName=@types/node HTTP/1.1
 Content-Type: application/json
 
+
+
+### 获取 crypto
+
+GET {{base_url}}/typing/package?packageName=crypto HTTP/1.1
+Content-Type: application/json
+

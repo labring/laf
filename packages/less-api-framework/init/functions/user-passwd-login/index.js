@@ -1,11 +1,11 @@
 import * as crypto from 'crypto'
-
+import cloud from '@/cloud-sdk'
 /**
  * @body username string 用户名
  * @body password string 密码
  */
  exports.main = async function (ctx) {
-  const db = less.database()
+  const db = cloud.database()
 
   // 参数验证
   const { username, password } = ctx.body
@@ -36,7 +36,7 @@ import * as crypto from 'crypto'
       type: 'user',
       exp: expire
     }
-    const access_token = less.getToken(payload)
+    const access_token = cloud.getToken(payload)
     return {
       code: 0,
       data: {

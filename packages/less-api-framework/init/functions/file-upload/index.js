@@ -1,4 +1,4 @@
-
+import cloud from '@/cloud-sdk'
 import * as path from 'path'
 
 exports.main = async function (ctx) {
@@ -21,7 +21,7 @@ exports.main = async function (ctx) {
   const namespace = 'public'
 
   // 存储上传文件
-  const storage = less.storage(namespace)
+  const storage = cloud.storage(namespace)
 
   const filepath = path.join(file.destination, `${file.filename}`)
   const info = await storage.saveFile(filepath)

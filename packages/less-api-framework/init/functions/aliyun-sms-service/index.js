@@ -1,13 +1,18 @@
 
+import cloud from '@/cloud-sdk'
 import { v4 as uuidv4 } from 'uuid'
 import * as crypto from 'crypto'
-const querystring = require('querystring')
+import * as querystring from 'querystring'
 
-const accessKeyId = '修改为你的阿里云访问Key ID'  // 阿里云访问 Key ID
-const accessKeySecret = '修改为你的阿里云访问Key密钥'  // 阿里云访问 Key Secret
-const api_entrypoint = 'https://dysmsapi.aliyuncs.com'
-const signName = '灼灼信息'   // 短信签名，修改为你的签名
-const templateCode = 'SMS_217850726'  // 短信模板，修改为你的模板ID
+
+// 你可以让一个云函数监听 `app.ready` 触发器事件，初始化必要的配置信息(cloud.shared）
+const config = cloud.shared.get('aliyun.sms.config')
+
+const accessKeyId = config.accessKeyId  // 阿里云访问 Key ID
+const accessKeySecret = config.accessKeySecret  // 阿里云访问 Key Secret
+const api_entrypoint = config.api_entrypoint ?? 'https://dysmsapi.aliyuncs.com'
+const signName = config.signName   // 短信签名，修改为你的签名，如: "灼灼信息"
+const templateCode = config.templateCode  // 短信模板ID，修改为你的模板ID，如 'SMS_217850726'
 
 /**
  * @body phone string 手机号
@@ -44,7 +49,7 @@ const templateCode = 'SMS_217850726'  // 短信模板，修改为你的模板ID
   const url = `${api_entrypoint}?${query}`
 
   try {
-    const r = await less.fetch(url)
+    const r = await cloud.fetch(url)
     console.log(r.data)
     if(r.data?.Code === 'OK')
       return 'ok'
@@ -99,9 +104,9 @@ function encode(params) {
 function specialEncode(encoded) {
   if (encoded.indexOf('+')) {
     encoded.replace("+", "%20");
-  } else if (str.indexOf('*')) {
+  } else if (encoded.indexOf('*')) {
     encoded.replace("*", "%2A");
-  } else if (str.indexOf('%7E')) {
+  } else if (encoded.indexOf('%7E')) {
     encoded.replace("%7E", "~");
   }
   return encoded

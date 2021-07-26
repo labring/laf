@@ -1,3 +1,4 @@
+import cloud from '@/cloud-sdk'
 
 /**
  * @api
@@ -6,7 +7,7 @@
 
 // main function
  exports.main = async function (ctx) {
-  const db = less.database()
+  const db = cloud.database()
   const phone = ctx.body?.phone
   if (!phone) {
     return 'Error: invalid phone'
@@ -34,7 +35,7 @@
  */
 async function sendSMSCode(phone, code) {
   const body =  { phone, code }
-  const r = await less.invoke('aliyun-sms-service', { body })
+  const r = await cloud.invoke('aliyun-sms-service', { body })
   return r
 }
 

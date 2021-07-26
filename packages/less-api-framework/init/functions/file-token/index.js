@@ -1,3 +1,4 @@
+import cloud from '@/cloud-sdk'
 
 /**
  * 本函数可发放文件访问令牌，用于下载或上传文件
@@ -25,5 +26,5 @@
   const exp = Math.floor(Date.now()/1000) + expire
   const payload = { ns, op, exp, fn }
 
-  return less.getToken(payload)
+  return cloud.getToken(payload)
 }
