@@ -1,6 +1,6 @@
 {
   "name": "less-api-framework",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "less framework base on less-api",
   "main": "./dist/index.js",
   "typings": "/dist/index.d.ts",
@@ -40,10 +40,10 @@
     "moment": "^2.29.1",
     "mongodb": "^3.6.3",
     "multer": "^1.4.2",
-    "uuid": "^8.3.2",
-    "validator": "^12.2.0",
+    "node-modules-utils": "^0.0.2",
     "typescript": "^4.2.3",
-    "node-modules-utils": "^0.0.1"
+    "uuid": "^8.3.2",
+    "validator": "^12.2.0"
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
@@ -55,5 +55,5 @@
     "@types/node": "^14.14.37",
     "@types/uuid": "^8.3.0",
     "@types/validator": "^13.1.3"
-	  }
+  }
 }
