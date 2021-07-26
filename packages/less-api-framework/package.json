@@ -6,9 +6,8 @@
   "typings": "/dist/index.d.ts",
   "private": "true",
   "scripts": {
-    "start": "npm run create-pkg && node ./dist/index.js",
-    "build": "npx tsc -p tsconfig.json && npm run create-pkg",
-    "create-pkg": "cp -R dist node_modules/@ && cp ./init/package.json node_modules/@/package.json",
+    "start": "node ./dist/index.js",
+    "build": "npx tsc -p tsconfig.json",
     "watch": "npx tsc -p tsconfig.json -w",
     "init": "node init/index.js",
     "prepublishOnly": "npm run build",

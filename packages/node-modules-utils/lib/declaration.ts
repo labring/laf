@@ -252,7 +252,8 @@ export class NodePackageDeclarations {
     'assert', 'crypto', 'child_process','path', 'process', 'readline', 'querystring', 'os',
      'dns', 'domain', 'http', 'https', 'http2', 'module', 'net', 'tls', 'dgram',
      'stream', 'tty', 'url', 'wasi', 'v8', 'vm', 'worker_threads', 'zlib',
-     'punycode', 'perf_hooks', 'fs', 'events', 'constants', 'console', 'cluster', 'buffer'
+     'punycode', 'perf_hooks', 'fs', 'events', 'constants', 'console', 'cluster', 'buffer',
+     'fs/promises', 'globals'
   ]
   
 

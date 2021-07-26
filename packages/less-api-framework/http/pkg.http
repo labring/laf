@@ -25,3 +25,19 @@ Content-Type: application/json
 GET {{base_url}}/typing/package?packageName=crypto HTTP/1.1
 Content-Type: application/json
 
+
+
+
+### 获取 fs/promises
+
+GET {{base_url}}/typing/package?packageName=fs/promises HTTP/1.1
+Content-Type: application/json
+
+
+
+### 获取 globals
+
+GET {{base_url}}/typing/package?packageName=globals HTTP/1.1
+Content-Type: application/json
+
+

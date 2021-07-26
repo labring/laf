@@ -11,7 +11,7 @@
     "init": "lerna run init",
     "prepublishOnly": "npm run build && npm run copy-readme",
     "init-start": "npm run init && npm run start",
-    "copy-readme": "npx copy-cli ./packages/less-api-framework/README.md ./README.md"
+    "copy-readme": "node scripts/copy-readme.js"
   },
   "keywords": [
     "BaaS",
@@ -22,7 +22,7 @@
     "less-api"
   ],
   "devDependencies": {
-    "copy": "^0.3.2",
+    "fs-extra": "^9.1.0",
     "husky": "^5.2.0"
   }
 }
