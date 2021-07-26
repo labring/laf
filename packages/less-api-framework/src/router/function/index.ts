@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express'
 import { checkPermission } from '../../api/permission'
-import { FunctionContext, CloudFunction } from 'cloud-function'
+import { FunctionContext, CloudFunction } from 'cloud-function-engine'
 import * as multer from 'multer'
 import * as path from 'path'
 import * as uuid from 'uuid'

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { checkPermission } from '../../api/permission'
 import { createLogger } from '../../lib/logger'
-import { Trigger } from 'cloud-function'
+import { Trigger } from 'cloud-function-engine'
 import { getTriggerById, getTriggers } from '../../api/trigger'
 import { Scheduler } from '../../lib/scheduler'
 

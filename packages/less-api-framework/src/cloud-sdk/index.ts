@@ -1,6 +1,6 @@
 import { AxiosStatic } from "axios"
 import { Db } from "less-api-database"
-import { FunctionContext, FunctionResult, CloudFunction } from "cloud-function"
+import { FunctionContext, FunctionResult, CloudFunction } from "cloud-function-engine"
 import { FileStorageInterface } from "../lib/storage/interface"
 import * as mongodb from "mongodb"
 import { Globals } from "../lib/globals"

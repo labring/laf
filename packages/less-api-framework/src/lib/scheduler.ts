@@ -2,7 +2,7 @@
 import { getFunctionById } from "../api/function"
 import { addFunctionLog } from "../api/function-log"
 import { getTriggers } from "../api/trigger"
-import { CloudFunction, Trigger, TriggerScheduler } from "cloud-function"
+import { CloudFunction, Trigger, TriggerScheduler } from "cloud-function-engine"
 import { Globals } from "./globals"
 import { createLogger } from "./logger"
 import { convertActionType } from "./utils"
