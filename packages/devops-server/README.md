@@ -64,3 +64,4 @@ npm start
 - 数据管理-集合管理：使用 devops server dbm entry，可具备完整的 app db 管理能力 【已完成】
 - 考虑以后去除 app server 中的 RBAC admin 相关的代码，转由云函数实现，云函数可初始配置 应用的 $injections getter
 - 或将 app server 中的 admin entry 移至内置云函数中实现
+- 将 devops 中表名修改，增加前缀， 如: admin -> sys_admins or sys_developers or __sys_admins，以适应用户可能用同一数据库，跑 app & devops server；
