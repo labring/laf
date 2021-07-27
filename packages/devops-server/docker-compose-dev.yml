@@ -1,11 +1,11 @@
-version: '3'
+version: '3.8'
 services: 
-  app:
+  sys_server:
     build: .
-    image: less-framework:latest
+    image: laf-sys-server:latest
     environment: 
       SERVER_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
-      DB: less_app
+      DB: laf_sys_db
       DB_URI: mongodb://mongodb:27017
       DB_POOL_LIMIT: 100
       SUPER_ADMIN: less
@@ -14,23 +14,21 @@ services:
     command: npm run init-start
     volumes:
       - .:/app
-      - app-data:/app/data
     ports:
-      - "8000:8000"
+      - "9000:9000"
     networks: 
-      - less
+      - lsf
 
   mongodb:
     image: mongo:latest
     volumes:
       - db-data:/data/db
     networks: 
-      - less
+      - lsf
 
 networks:
-  less:
+  lsf:
       
 volumes:
-  app-data:
   db-data:
       

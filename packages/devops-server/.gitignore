@@ -1,0 +1,11 @@
+node_modules
+dist
+
+upload
+data/*
+tmp
+
+.env
+
+ecosystem.config.js
+.DS_Store

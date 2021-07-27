@@ -4,13 +4,13 @@ const Config = require('../dist/config').default
 const { hashPassword } = require('../dist/lib/utils/hash')
 const assert = require('assert')
 const { MongoAccessor, getDb } = require('less-api')
-const adminRules = require('./rules/admin.json')
+const adminRules = require('./rules/app-admin.json')
 const appRules = require('./rules/app.json')
-const { permissions } = require('./permissions')
-const { FunctionLoader } = require('./func_loader')
+const { permissions } = require('./sys-permissions')
+const { FunctionLoader } = require('./func-loader')
 
 
-const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
+const accessor = new MongoAccessor(Config.sys_db.database, Config.sys_db.uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
@@ -31,6 +31,12 @@ async function main() {
   // 创建初始管理员
   await createFirstAdmin()
 
+  await createInitialAccessRules('admin', adminRules)
+  await createInitialAccessRules('app', appRules)
+
+  // 创建内置云函数
+  await createBuiltinFunctions()
+
   accessor.close()
 }
 
@@ -40,8 +46,8 @@ main()
 // 创建初始管理员
 async function createFirstAdmin() {
   try {
-    const username = Config.SUPER_ADMIN
-    const password = hashPassword(Config.SUPER_ADMIN_PASSWORD)
+    const username = Config.SYS_ADMIN
+    const password = hashPassword(Config.SYS_ADMIN_PASSWORD)
 
     const { total } = await db.collection('admins').count()
     if (total > 0) {
@@ -127,6 +133,63 @@ async function createInitialPermissions() {
     } catch (error) {
       if (error.code == 11000) {
         console.log('permissions already exists')
+        continue
+      }
+      console.error(error.message)
+    }
+  }
+
+  return true
+}
+
+// 创建初始访问规则
+async function createInitialAccessRules(category, rules) {
+
+  for (const collection in rules) {
+    const { total } = await db.collection('rules')
+      .where({ category, collection })
+      .count()
+
+    if (total) {
+      console.log(`rule already exists : ${category}.${collection}`)
+      continue
+    }
+
+    await db.collection('rules').add({
+      category,
+      collection,
+      data: JSON.stringify(rules[collection]),
+      created_at: Date.now(),
+      updated_at: Date.now()
+    })
+
+    console.log(`added rule: ${category}.${collection}`)
+  }
+}
+
+// 创建内置云函数
+async function createBuiltinFunctions() {
+  // 创建云函数索引
+  await accessor.db.collection('functions').createIndex('name', { unique: true })
+  await accessor.db.collection('function_logs').createIndex('requestId')
+  await accessor.db.collection('function_logs').createIndex('func_id')
+  
+
+  const loader = new FunctionLoader()
+  const funcs = await loader.getFunctions()
+  for (const func of funcs) {
+    try {
+      const data = {
+        ...func,
+        status: 1,
+        tags: ['内置'],
+        created_at: Date.now(),
+        updated_at: Date.now()
+      }
+      await db.collection('functions').add(data)
+    } catch (error) {
+      if (error.code == 11000) {
+        console.log('functions already exists: ' + func.name)
         continue
       }
       console.error(error.message)

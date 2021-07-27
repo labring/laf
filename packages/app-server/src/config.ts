@@ -72,10 +72,10 @@ export default class Config {
   }
 
   /**
-   * 指定服务监听端口号，缺省为 8080
+   * 指定服务监听端口号，缺省为 8000
    */
   static get PORT(): number{
-    return (process.env.PORT ?? 8080) as number
+    return (process.env.PORT ?? 8000) as number
   }
 
   /**

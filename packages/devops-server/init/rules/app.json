@@ -1,0 +1,19 @@
+{
+  "users": {
+    "read": "query._id === $uid",
+    "update": "query._id === $uid",
+    "add": "data.created_by === $uid",
+    "count": "true"
+  },
+  "categories": {
+    "read": true,
+    "count": "true"
+  },
+  "articles": {
+    "read": "query._id === $uid",
+    "update": "query._id === $uid",
+    "add": "data.created_by === $uid",
+    "remove": "query._id === $uid",
+    "count": "true"
+  }
+}

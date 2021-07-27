@@ -1,4 +1,4 @@
-{
+export default {
   "admins": {
     "read": "$has('admin.read')",
     "update": "$has('admin.edit')",
