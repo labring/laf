@@ -1,6 +1,6 @@
 import { Router } from 'express'
 
-import { handleAdminAdd, handleAdminEdit, handleAdminInfo, handleAdminLogin } from './admin'
+import { handleAdminAdd, handleAdminEdit, handleAdminInfo, handleAdminLogin } from './handlers'
 
 export const AdminRouter = Router()
 
