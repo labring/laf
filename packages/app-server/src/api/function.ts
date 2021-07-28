@@ -1,3 +1,4 @@
+import { Constants } from "../constants"
 import { Globals } from "../lib/globals"
 
 const db = Globals.db
@@ -8,7 +9,7 @@ const db = Globals.db
  * @returns 
  */
 export async function getFunctionByName(func_name: string) {
-  const r = await db.collection('functions')
+  const r = await db.collection(Constants.function_collection)
     .where({ name: func_name })
     .getOne()
 
@@ -26,7 +27,7 @@ export async function getFunctionByName(func_name: string) {
    */
   export async function getFunctionById(func_id: string) {
     // 获取函数
-    const r = await db.collection('functions')
+    const r = await db.collection(Constants.function_collection)
       .where({ _id: func_id })
       .getOne()
 

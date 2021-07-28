@@ -1,5 +1,4 @@
 import { Request, Response, Router } from 'express'
-import { checkPermission } from '../../api/permission'
 import { FunctionContext, CloudFunction } from 'cloud-function-engine'
 import * as multer from 'multer'
 import * as path from 'path'
@@ -53,13 +52,13 @@ async function handleInvokeFunction(req: Request, res: Response) {
 
   const debug = req.query?.debug ?? false
 
-  // 调试权限验证
-  if (debug) {
-    const code = await checkPermission(req['auth']?.uid, 'function.debug')
-    if (code) {
-      return res.status(code).send('permission denied')
-    }
-  }
+  // 调试权限验证: @TODO 暂时先注释掉，需要通过令牌来控制调试权限
+  // if (debug) {
+  //   const code = await checkPermission(req['auth']?.uid, 'function.debug')
+  //   if (code) {
+  //     return res.status(code).send('permission denied')
+  //   }
+  // }
 
   const funcData = await getFunctionByName(func_name)
   if (!funcData) {
