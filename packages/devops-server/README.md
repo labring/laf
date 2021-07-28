@@ -55,9 +55,10 @@ npm start
 ## TODO
 
 - 【已完成】 部署数据访问策略：写入 app db __deployed__rules, app server 应监听该库之变化（watch）
-- ** 部署云函数：写入 app db __deployed__functions, app-server 运行前直接读取即可
-- ** 部署应用触发器（新增、修改），应监听该库之变化
+- 【已完成】 部署云函数：写入 app db __deployed__functions, app-server 运行前直接读取即可
 - ** 调试云函数：调用 app server 提供的调试接口，由 devops server 转发，或者发调试令牌直接调
+- ** 部署应用触发器（新增、修改），应监听该库之变化
+- 重新考虑云函数调用的问题： devops client 调用需要知道其地址，并且云函数的日志当前只能写入 app db，导致 devops client 无法获取日志
 
 - ** 思考云函数名称是否唯一，是否可修改，是否支持名字空间
 - ** 思考触发器如何存储，是否存云函数文档中

@@ -50,6 +50,9 @@ async function main() {
   // 部署访问策略
   await deployAccessPolicy()
 
+  // 部署云函数
+  await deployFunctions()
+
   accessor.close()
   app_accessor.close()
 }
@@ -220,12 +223,48 @@ async function deployAccessPolicy() {
   const r = await db.collection('__rules').get();
   assert.ok(r.ok, `deploy policy: read rules failed`);
 
-  const app_coll = app_db.collection(Constants.policy_collection);
-  const cleared = await app_coll.remove({ multi: true });
-  assert(cleared.ok, `clear ${Constants.policy_collection} failed`);
+  const session = app_accessor.conn.startSession()
 
-  const copied = await app_coll.add(r.data, { multi: true });
-  assert(copied.id, `write ${Constants.policy_collection} failed`);
+  try {
+    await session.withTransaction(async () => {
+      const _db = app_accessor.db
+      const app_coll = _db.collection(Constants.policy_collection);
+      const cleared = await app_coll.deleteMany({});
+      assert(cleared.result.ok, `clear ${Constants.policy_collection} failed`);
+
+      const inserted = await app_coll.insertMany(r.data);
+
+      assert(inserted.result.ok, `write ${Constants.policy_collection} failed`);
+      console.log('deploy policy succeed')
+    })
+  } catch (error) {
+    await session.endSession()
+    console.log('deploy policy failed:', error)
+  }
   
-  console.log('deploy policy succeed')
+}
+
+// 部署云函数
+async function deployFunctions() {
+  const r = await db.collection('__functions').get();
+  assert.ok(r.ok, `deploy policy: read functions failed`);
+
+  const session = app_accessor.conn.startSession()
+
+  try {
+    await session.withTransaction(async () => {
+      const _db = app_accessor.db
+      const app_coll = _db.collection(Constants.function_collection);
+      const cleared = await app_coll.deleteMany({});
+      assert(cleared.result.ok, `clear ${Constants.function_collection} failed`);
+
+      const inserted = await app_coll.insertMany(r.data);
+
+      assert(inserted.result.ok, `write ${Constants.function_collection} failed`);
+      console.log('deploy functions succeed')
+    })
+  } catch (error) {
+    await session.endSession()
+    console.log('deploy functions failed:', error)
+  }
 }
