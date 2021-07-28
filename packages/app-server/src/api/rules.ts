@@ -1,8 +1,9 @@
 import * as assert from 'assert'
 import { Ruler } from 'less-api'
+import { Constants } from '../constants'
+import { Globals } from "../lib/globals"
 import { entry as adminEntry } from '../router/entry/admin'
 import { entry as appEntry } from '../router/entry/app'
-import { Globals } from "../lib/globals"
 
 const db = Globals.db
 export interface RuleDocument {
@@ -12,7 +13,7 @@ export interface RuleDocument {
 }
 
 export async function getAccessRules(category: string): Promise<any> {
-  const r = await db.collection('rules')
+  const r = await db.collection(Constants.policy_collection)
     .where({ category })
     .get()
 

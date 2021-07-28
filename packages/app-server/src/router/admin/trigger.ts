@@ -8,6 +8,7 @@ import { Scheduler } from '../../lib/scheduler'
 const logger = createLogger('admin:api')
 
 /**
+ * @TODO to be removed
  * 应用触发器配置
  * @query tid? 触发器ID，若缺省则重新应用所有触发器配置
  */
