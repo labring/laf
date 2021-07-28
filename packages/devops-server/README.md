@@ -54,14 +54,20 @@ npm start
 
 ## TODO
 
-- ** 部署数据访问策略：写入 app db __rules, app server 应监听该库之变化（watch）
-- ** 部署云函数：写入 app db __functions, app-server 运行前直接读取即可
+- 【已完成】 部署数据访问策略：写入 app db __deployed__rules, app server 应监听该库之变化（watch）
+- ** 部署云函数：写入 app db __deployed__functions, app-server 运行前直接读取即可
+- ** 部署应用触发器（新增、修改），应监听该库之变化
 - ** 调试云函数：调用 app server 提供的调试接口，由 devops server 转发，或者发调试令牌直接调
+
 - ** 思考云函数名称是否唯一，是否可修改，是否支持名字空间
 - ** 思考触发器如何存储，是否存云函数文档中
+
+- 【已完成】考虑使用 mongo watch() 替代 less-api accessor 的数据事件，应用于部署监听和云函数事件（可获取变更数据的完整信息）
+- 【已完成】数据管理-集合管理：使用 devops server dbm entry，可具备完整的 app db 管理能力 
+- 【已完成】将 devops 中表名修改，增加前缀， 如: __admins，以适应用户可能用同一数据库，跑 app & devops server；
+
 - 实现远程部署推送：远程推送源管理，推送云函数（及触发器），推送访问规则
 - 远程部署请求管理：查询收到的部署请求，可拒绝，可接受
-- 数据管理-集合管理：使用 devops server dbm entry，可具备完整的 app db 管理能力 【已完成】
 - 考虑以后去除 app server 中的 RBAC admin 相关的代码，转由云函数实现，云函数可初始配置 应用的 $injections getter
 - 或将 app server 中的 admin entry 移至内置云函数中实现
-- 将 devops 中表名修改，增加前缀， 如: admin -> sys_admins or sys_developers or __sys_admins，以适应用户可能用同一数据库，跑 app & devops server；
+

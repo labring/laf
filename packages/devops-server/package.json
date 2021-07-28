@@ -32,7 +32,7 @@
     "less-api": "^1.5.1",
     "lodash": "^4.17.21",
     "log4js": "^6.3.0",
-    "mongodb": "^3.6.3",
+    "mongodb": "^4.0.1",
     "uuid": "^8.3.2",
     "validator": "^12.2.0"
   },
@@ -41,6 +41,7 @@
     "@types/express": "^4.17.11",
     "@types/fs-extra": "^9.0.8",
     "@types/jsonwebtoken": "^8.5.1",
+    "@types/lodash": "^4.14.171",
     "@types/mongodb": "^3.6.10",
     "@types/node": "^14.14.37",
     "@types/uuid": "^8.3.0",

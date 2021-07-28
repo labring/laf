@@ -99,14 +99,12 @@ export class Globals {
    * @param uri 连接 uri
    * @param poolSize 
    * @returns 
-   * @see — https://mongodb.github.io/node-mongodb-native/3.3/reference/connecting/connection-settings/
    */
   private static _createAccessor(database: string, uri: string, poolSize: number) {
     const accessor = new MongoAccessor(database, uri, {
-      poolSize: poolSize,
-      useNewUrlParser: true,
+      maxPoolSize: poolSize,
       useUnifiedTopology: true
-    })
+    } as any)
 
     accessor.setLogger(createLogger('db', 'warning'))
     accessor.init()
