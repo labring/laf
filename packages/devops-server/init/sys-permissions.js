@@ -40,5 +40,9 @@ exports.permissions = [
   { name: 'database.manage', label: '数据库数据管理'},
   { name: 'collections.get', label: 'DBM-获取集合列表'},
   { name: 'collections.createIndex', label: 'DBM-创建集合索引'},
-  { name: 'collections.deleteIndex', label: 'DBM-删除集合索引'}
+  { name: 'collections.deleteIndex', label: 'DBM-删除集合索引' },
+  
+
+  { name: 'deploy.policy', label: '部署数据访问策略'},
+  { name: 'deploy.function', label: '部署云函数'}
 ]

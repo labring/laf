@@ -8,7 +8,7 @@ const adminRules = require('./rules/app-admin.json')
 const appRules = require('./rules/app.json')
 const { permissions } = require('./sys-permissions')
 const { FunctionLoader } = require('./func-loader')
-
+const { Constants } = require('../dist/constants')
 
 const accessor = new MongoAccessor(Config.sys_db.database, Config.sys_db.uri, {
   useNewUrlParser: true,
@@ -17,8 +17,18 @@ const accessor = new MongoAccessor(Config.sys_db.database, Config.sys_db.uri, {
 
 const db = getDb(accessor)
 
+
+const app_accessor = new MongoAccessor(Config.app_db.database, Config.app_db.uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+
+const app_db = getDb(app_accessor)
+
+
 async function main() {
   await accessor.init()
+  await app_accessor.init()
 
   // 创建 RBAC 初始权限
   await createInitialPermissions()
@@ -37,7 +47,11 @@ async function main() {
   // 创建内置云函数
   await createBuiltinFunctions()
 
+  // 部署访问策略
+  await deployAccessPolicy()
+
   accessor.close()
+  app_accessor.close()
 }
 
 main()
@@ -49,18 +63,18 @@ async function createFirstAdmin() {
     const username = Config.SYS_ADMIN
     const password = hashPassword(Config.SYS_ADMIN_PASSWORD)
 
-    const { total } = await db.collection('admins').count()
+    const { total } = await db.collection('__admins').count()
     if (total > 0) {
       console.log('admin already exists')
       return
     }
 
-    await accessor.db.collection('admins').createIndex('username', { unique: true })
+    await accessor.db.collection('__admins').createIndex('username', { unique: true })
 
-    const { data } = await db.collection('roles').get()
+    const { data } = await db.collection('__roles').get()
     const roles = data.map(it => it.name)
 
-    const r_add = await db.collection('admins').add({
+    const r_add = await db.collection('__admins').add({
       username,
       avatar: "https://static.dingtalk.com/media/lALPDe7szaMXyv3NAr3NApw_668_701.png",
       name: 'Admin',
@@ -70,7 +84,7 @@ async function createFirstAdmin() {
     })
     assert(r_add.ok, 'add admin occurs error')
 
-    await db.collection('password').add({
+    await db.collection('__password').add({
       uid: r_add.id,
       password,
       type: 'login',
@@ -88,14 +102,14 @@ async function createFirstAdmin() {
 async function createFirstRole() {
   try {
 
-    await accessor.db.collection('roles').createIndex('name', { unique: true })
+    await accessor.db.collection('__roles').createIndex('name', { unique: true })
 
-    const r_perm = await db.collection('permissions').get()
+    const r_perm = await db.collection('__permissions').get()
     assert(r_perm.ok, 'get permissions failed')
 
     const permissions = r_perm.data.map(it => it.name)
 
-    const r_add = await db.collection('roles').add({
+    const r_add = await db.collection('__roles').add({
       name: 'superadmin',
       label: '超级管理员',
       description: '系统初始化的超级管理员',
@@ -120,7 +134,7 @@ async function createFirstRole() {
 async function createInitialPermissions() {
 
   // 创建唯一索引
-  await accessor.db.collection('permissions').createIndex('name', { unique: true })
+  await accessor.db.collection('__permissions').createIndex('name', { unique: true })
 
   for (const perm of permissions) {
     try {
@@ -129,10 +143,12 @@ async function createInitialPermissions() {
         created_at: Date.now(),
         updated_at: Date.now()
       }
-      await db.collection('permissions').add(data)
+      await db.collection('__permissions').add(data)
+      console.log('permissions added: ' + perm.name)
+
     } catch (error) {
       if (error.code == 11000) {
-        console.log('permissions already exists')
+        console.log('permissions already exists: ' + perm.name)
         continue
       }
       console.error(error.message)
@@ -146,7 +162,7 @@ async function createInitialPermissions() {
 async function createInitialAccessRules(category, rules) {
 
   for (const collection in rules) {
-    const { total } = await db.collection('rules')
+    const { total } = await db.collection('__rules')
       .where({ category, collection })
       .count()
 
@@ -155,7 +171,7 @@ async function createInitialAccessRules(category, rules) {
       continue
     }
 
-    await db.collection('rules').add({
+    await db.collection('__rules').add({
       category,
       collection,
       data: JSON.stringify(rules[collection]),
@@ -170,9 +186,9 @@ async function createInitialAccessRules(category, rules) {
 // 创建内置云函数
 async function createBuiltinFunctions() {
   // 创建云函数索引
-  await accessor.db.collection('functions').createIndex('name', { unique: true })
-  await accessor.db.collection('function_logs').createIndex('requestId')
-  await accessor.db.collection('function_logs').createIndex('func_id')
+  await accessor.db.collection('__functions').createIndex('name', { unique: true })
+  await accessor.db.collection('__function_logs').createIndex('requestId')
+  await accessor.db.collection('__function_logs').createIndex('func_id')
   
 
   const loader = new FunctionLoader()
@@ -186,7 +202,7 @@ async function createBuiltinFunctions() {
         created_at: Date.now(),
         updated_at: Date.now()
       }
-      await db.collection('functions').add(data)
+      await db.collection('__functions').add(data)
     } catch (error) {
       if (error.code == 11000) {
         console.log('functions already exists: ' + func.name)
@@ -197,4 +213,19 @@ async function createBuiltinFunctions() {
   }
 
   return true
+}
+
+// 部署访问策略
+async function deployAccessPolicy() {
+  const r = await db.collection('__rules').get();
+  assert.ok(r.ok, `deploy policy: read rules failed`);
+
+  const app_coll = app_db.collection(Constants.policy_collection);
+  const cleared = await app_coll.remove({ multi: true });
+  assert(cleared.ok, `clear ${Constants.policy_collection} failed`);
+
+  const copied = await app_coll.add(r.data, { multi: true });
+  assert(copied.id, `write ${Constants.policy_collection} failed`);
+  
+  console.log('deploy policy succeed')
 }
