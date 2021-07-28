@@ -4,10 +4,7 @@ const Config = require('../dist/config').default
 const { hashPassword } = require('../dist/lib/utils/hash')
 const assert = require('assert')
 const { MongoAccessor, getDb } = require('less-api')
-const adminRules = require('./rules/admin.json')
-const appRules = require('./rules/app.json')
 const { permissions } = require('./permissions')
-const { FunctionLoader } = require('./func_loader')
 
 
 const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
