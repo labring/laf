@@ -1,4 +1,5 @@
 import * as express from 'express'
+import { Entry, Ruler } from 'less-api'
 import { checkPermission } from '../../api/permission'
 import { Globals } from '../../lib/globals'
 
@@ -7,6 +8,42 @@ const accessor = Globals.app_accessor
 const logger = Globals.logger
 
 export const DbmRouter = express.Router()
+
+/**
+ * 数据管理入口请求：管理 app db
+ */
+ DbmRouter.post('/entry', async (req, res) => {
+  const requestId = req['requestId']
+
+  // 权限验证
+  const code = await checkPermission(req['auth']?.uid, 'database.manage')
+  if (code) {
+    return res.status(code).send()
+  }
+
+  const accessor = Globals.app_accessor
+
+  // 此处无需进行访问策略验证
+  const entry = new Entry(accessor, new Ruler(accessor))
+
+  // parse params
+  const params = entry.parseParams({ ...req.body, requestId })
+
+  // execute query
+  try {
+    const data = await entry.execute(params)
+
+    return res.send({
+      code: 0,
+      data
+    })
+  } catch (error) {
+    return res.send({
+      code: 2,
+      error: error
+    })
+  }
+})
 
 /**
  * 获取集合列表

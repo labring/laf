@@ -1,12 +1,12 @@
 import { Router } from 'express'
 import { AdminRouter } from './admin/index'
-import { DevOpsEntryRouter } from './entry/admin'
-import { DbmEntryRouter } from './entry/dbm'
+import { DevOpsEntryRouter } from './entry'
 import { DbmRouter } from './dbm'
+import { DeployRouter } from './deploy'
+
 export const router = Router()
 
 router.use('/admin', DevOpsEntryRouter)
 router.use('/admin', AdminRouter)
-router.use('/admin', DbmRouter)
-
-router.use('/dbm', DbmEntryRouter)
+router.use('/dbm', DbmRouter)
+router.use('/deploy', DeployRouter)
