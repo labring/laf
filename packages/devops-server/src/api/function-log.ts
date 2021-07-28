@@ -10,7 +10,7 @@ const db = Globals.sys_db
 export async function addFunctionLog(data: any) {
   if(!data) return null
   
-  const r = await db.collection('function_logs')
+  const r = await db.collection('__function_logs')
     .add(data)
 
   return r.id

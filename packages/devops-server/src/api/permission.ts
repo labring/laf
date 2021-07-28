@@ -30,14 +30,14 @@ export async function checkPermission(uid: string, permission: string): Promise<
 export async function getPermissions(uid: string) {
 
   // 查用户
-  const { data: admin } = await db.collection('admins')
+  const { data: admin } = await db.collection('__admins')
     .where({ _id: uid })
     .getOne()
 
   assert(admin, 'getPermissions failed')
 
   // 查角色
-  const { data: roles } = await db.collection('roles')
+  const { data: roles } = await db.collection('__roles')
     .where({
       name: {
         $in: admin.roles ?? []

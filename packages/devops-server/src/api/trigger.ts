@@ -8,7 +8,7 @@ const db = Globals.sys_db
  * @returns 
  */
 export async function getTriggers(status = 1) {
-  const r = await db.collection('triggers')
+  const r = await db.collection('__triggers')
     .where({ status: status })
     .get()
 
@@ -21,7 +21,7 @@ export async function getTriggers(status = 1) {
  * @returns 
  */
 export async function getTriggerById(id: string) {
-  const r = await db.collection('triggers')
+  const r = await db.collection('__triggers')
     .where({ _id: id })
     .getOne()
 
