@@ -45,9 +45,18 @@ export class Globals {
   }
 
   /**
-   * 初始化全局对象
+   * 初始化应用资源
    */
   static init() {
+    this._initGlobalObjects()
+
+    Object.freeze(Globals)
+  }
+
+  /**
+   * 初始化全局对象
+   */
+  private static _initGlobalObjects() {
     // 创建全局日志对象
     if (null === this._logger) {
       this._logger = createLogger('server')
@@ -62,10 +71,7 @@ export class Globals {
     if (null === this._db) {
       this._db = this.createDb()
     }
-
-    Object.freeze(Globals)
   }
-
 
   /**
    * 创建 Db 实例
@@ -85,10 +91,9 @@ export class Globals {
    */
   private static _createAccessor() {
     const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
-      poolSize: Config.db.poolSize,
-      useNewUrlParser: true,
+      maxPoolSize: Config.db.poolSize, 
       useUnifiedTopology: true
-    })
+    } as any)
 
     accessor.setLogger(createLogger('db', 'warning'))
     accessor.init()
