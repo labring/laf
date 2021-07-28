@@ -4,13 +4,11 @@ import { AdminEntryRouter } from './entry/admin'
 import { AppEntryRouter } from './entry/app'
 import { FileRouter } from './file/index'
 import { FunctionRouter } from './function/index'
-import { DbmRouter } from './dbm'
 import { PackageTypingRouter } from './typing'
 export const router = Router()
 
 router.use('/admin', AdminEntryRouter)
 router.use('/admin', AdminRouter)
-router.use('/admin', DbmRouter)
 
 router.use('/app', AppEntryRouter)
 
