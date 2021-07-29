@@ -40,9 +40,18 @@ export class Globals {
   }
 
   /**
-   * 初始化全局对象
+   * 应用初始化
    */
   static init() {
+    this._initGlobalObjects()
+
+    Object.freeze(Globals)
+  }
+
+  /**
+   * 初始化全局对象
+   */
+  private static _initGlobalObjects() {
     // 创建全局日志对象
     if (null === this._logger) {
       this._logger = createLogger('server')
@@ -67,8 +76,6 @@ export class Globals {
     if (null === this._app_db) {
       this._app_db = this.createAppDb()
     }
-
-    Object.freeze(Globals)
   }
 
   /**

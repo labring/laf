@@ -8,6 +8,11 @@ export const Constants = {
   function_collection: '__deployed__functions',
 
   /**
+   * 部署到 app db 中云函数触发器集合名
+   */
+  trigger_collection: '__deployed__triggers',
+
+  /**
    * 部署到 app db 中的访问策略集合名
    */
   policy_collection: '__deployed__rules',
