@@ -36,7 +36,6 @@ accessor.ready.then(async () => {
   stream.on("change", (doc) => {
     DatabaseChangeEventCallBack(doc)
   })
-
 })
 
 // 对应用访问策略的函数进行防抖动处理
@@ -57,6 +56,27 @@ function DatabaseChangeEventCallBack(doc: ChangeStreamDocument) {
   // 访问策略变更时，加载新的访问规则
   if (collection === Constants.policy_collection && operationType === 'insert') {
     debouncedApplyPolicy()
+  }
+
+  // 触发器配置变更时，更新调度器
+  if (collection === Constants.trigger_collection) {
+    if (['insert', 'update', 'replace'].includes(operationType)) {
+      const trigger = Trigger.fromJson(doc.fullDocument)
+      Scheduler.updateTrigger(trigger)
+    }
+
+    if (operationType === 'delete') {
+      getTriggers()
+        .then(data => {
+          const triggers = data.map(it => Trigger.fromJson(it))
+          Scheduler.init(triggers)
+        })
+        .catch(err => logger.error(err))
+    }
+  }
+
+  if(collection.startsWith('__')) {
+    return
   }
 
   // 触发数据变更事件
@@ -93,6 +113,10 @@ export function AccessorEventCallBack(data: any) {
 
   // 忽略的数据事件
   if (['read', 'count', 'watch'].includes(op)) {
+    return
+  }
+
+  if(params.collection?.startsWith('__')) {
     return
   }
 
