@@ -1,3 +1,4 @@
+import { Constants } from "../constants"
 import { Globals } from "../lib/globals"
 
 const db = Globals.db
@@ -10,7 +11,7 @@ const db = Globals.db
 export async function addFunctionLog(data: any) {
   if(!data) return null
   
-  const r = await db.collection('function_logs')
+  const r = await db.collection(Constants.function_log_collection)
     .add(data)
 
   return r.id

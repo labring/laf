@@ -1,3 +1,4 @@
+import { Constants } from "../constants"
 import { Globals } from "../lib/globals"
 
 const db = Globals.db
@@ -8,7 +9,7 @@ const db = Globals.db
  * @returns 
  */
 export async function getTriggers(status = 1) {
-  const r = await db.collection('triggers')
+  const r = await db.collection(Constants.trigger_collection)
     .where({ status: status })
     .get()
 
@@ -21,7 +22,7 @@ export async function getTriggers(status = 1) {
  * @returns 
  */
 export async function getTriggerById(id: string) {
-  const r = await db.collection('triggers')
+  const r = await db.collection(Constants.trigger_collection)
     .where({ _id: id })
     .getOne()
 

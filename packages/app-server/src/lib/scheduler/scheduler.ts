@@ -3,6 +3,7 @@ import { getFunctionById } from "../../api/function"
 import { addFunctionLog } from "../../api/function-log"
 import { CloudFunction, TriggerScheduler } from "cloud-function-engine"
 import { createLogger } from "../logger"
+import assert = require("assert")
 
 
 const logger = createLogger('scheduler')
@@ -19,8 +20,15 @@ export class FrameworkScheduler extends TriggerScheduler {
    * @returns 
    */
   async getFunctionById(func_id: string): Promise<CloudFunction>{
+    assert(func_id)
     const funcData = await getFunctionById(func_id)
-    return new CloudFunction(funcData)
+    assert.ok(funcData)
+
+    const func = new CloudFunction(funcData)
+    if(!func.compiledCode) {
+      func.compile2js()
+    }
+    return func
   }
 
   /**

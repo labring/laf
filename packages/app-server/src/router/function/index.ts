@@ -5,6 +5,7 @@ import * as path from 'path'
 import * as uuid from 'uuid'
 import { getFunctionByName } from '../../api/function'
 import { Globals } from '../../lib/globals'
+import { Constants } from '../../constants'
 
 // 设置云函数中的加载函数
 CloudFunction.require_func = Globals.require_func
@@ -36,9 +37,6 @@ FunctionRouter.all('/:name', handleInvokeFunction)         // alias for /invoke/
 
 /**
  * 调用云函数
- * @param req 
- * @param res 
- * @returns 
  */
 async function handleInvokeFunction(req: Request, res: Response) {
   const requestId = req['requestId']
@@ -52,13 +50,13 @@ async function handleInvokeFunction(req: Request, res: Response) {
 
   const debug = req.query?.debug ?? false
 
-  // 调试权限验证: @TODO 暂时先注释掉，需要通过令牌来控制调试权限
-  // if (debug) {
-  //   const code = await checkPermission(req['auth']?.uid, 'function.debug')
-  //   if (code) {
-  //     return res.status(code).send('permission denied')
-  //   }
-  // }
+  // 调试权限验证: @TODO 需要通过令牌来控制调试权限
+  if (debug) {
+    const auth = req['auth']
+    if(!auth || auth.type !== 'admin') {
+      return res.status(403).send('permission denied')
+    }
+  }
 
   const funcData = await getFunctionByName(func_name)
   if (!funcData) {
@@ -81,7 +79,7 @@ async function handleInvokeFunction(req: Request, res: Response) {
   if(debug || !func.compiledCode) {
     func.compile2js()
 
-    await db.collection('functions')
+    await db.collection(Constants.function_collection)
       .doc(func.id)
       .update({ compiledCode: func.compiledCode, updated_at: Date.now()})
   }
@@ -100,7 +98,7 @@ async function handleInvokeFunction(req: Request, res: Response) {
 
   // 将云函数调用日志存储到数据库
   if(debug) {
-    await db.collection('function_logs')
+    await db.collection(Constants.function_log_collection)
       .add({
         requestId: requestId,
         func_id: func.id,
