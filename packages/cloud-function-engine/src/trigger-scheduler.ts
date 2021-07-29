@@ -16,7 +16,7 @@ export class TriggerScheduler {
   public init(triggers: Trigger[]) {
     this.log('init trigger scheduler')
 
-    this._triggers = triggers
+    this._triggers = triggers.filter(tri => tri.isEnabled)
 
     this.scheduleTimer()
 
@@ -29,16 +29,14 @@ export class TriggerScheduler {
   }
 
   /**
-   * 更新指定 trigger：
-   *  1. 从库中获取最新 trigger 数据
-   *  2. 若 status 为停用，则从当前调度表中删除
-   *  3. 若 status 为启用，则将其最新数据更新或添加到当前调度列表中
+   * 更新或添加指定 trigger：
+   *  1. 若 status 为停用，则从当前调度表中删除
+   *  1. 若 status 为启用，则将其最新数据更新或添加到当前调度列表中
    * @param triggerId 
    */
   public updateTrigger(trigger: Trigger): boolean {
-    console.log(trigger)
     // 停用状态，移除调度
-    if (trigger.status === 0) {
+    if (!trigger.isEnabled) {
       return this.removeTrigger(trigger.id)
     }
 
@@ -47,6 +45,11 @@ export class TriggerScheduler {
     if (index < 0) {
       this._triggers.push(trigger)
     } else {
+      // 若为定时器，则保留其 `最近一次执行时间`
+      if(trigger.isTimer) {
+        trigger.last_exec_time = this._triggers[index].last_exec_time ?? 0
+      }
+      
       this._triggers[index] = trigger
     }
 

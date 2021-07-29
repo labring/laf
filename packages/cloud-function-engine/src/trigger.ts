@@ -35,8 +35,15 @@ export class Trigger {
   // 上次执行时间
   public last_exec_time: number
 
-  // 状态
+  // 状态: 0 停用，1 启用
   public status: number
+
+  /**
+   * 是否启用
+   */
+  get isEnabled() {
+    return this.status === 1
+  }
 
   /**
    * 是否为事件触发器

@@ -1,6 +1,7 @@
 import { FunctionEngine } from "."
 import { CloudFunctionStruct, FunctionContext, FunctionResult, RequireFuncType } from "./types"
 import * as ts from 'typescript'
+import * as assert from "assert"
 
 /**
  * 云函数
@@ -76,6 +77,7 @@ export class CloudFunction {
   }
 
   constructor(data: CloudFunctionStruct) {
+    assert.ok(data)
     this._data = data
   }
 
