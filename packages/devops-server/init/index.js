@@ -9,26 +9,22 @@ const appRules = require('./rules/app.json')
 const { permissions } = require('./sys-permissions')
 const { FunctionLoader } = require('./func-loader')
 const { Constants } = require('../dist/constants')
+const { Globals } = require('../dist/lib/globals')
+const { deployFunctions } = require('../dist/api/function')
+const { deployAccessPolicy } = require('../dist/api/rules')
 
-const accessor = new MongoAccessor(Config.sys_db.database, Config.sys_db.uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+const sys_accessor = Globals.sys_accessor
 
-const db = getDb(accessor)
+const db = getDb(sys_accessor)
 
-
-const app_accessor = new MongoAccessor(Config.app_db.database, Config.app_db.uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+const app_accessor = Globals.app_accessor
 
 const app_db = getDb(app_accessor)
 
 
 async function main() {
-  await accessor.init()
-  await app_accessor.init()
+  await sys_accessor.ready
+  await app_accessor.ready
 
   // 创建 RBAC 初始权限
   await createInitialPermissions()
@@ -48,12 +44,12 @@ async function main() {
   await createBuiltinFunctions()
 
   // 部署访问策略
-  await deployAccessPolicy()
+  await deployAccessPolicy().then(() => console.log('policy deployed'))
 
   // 部署云函数
-  await deployFunctions()
+  await deployFunctions().then(() => console.log('functions deployed'))
 
-  accessor.close()
+  sys_accessor.close()
   app_accessor.close()
 }
 
@@ -72,7 +68,7 @@ async function createFirstAdmin() {
       return
     }
 
-    await accessor.db.collection('__admins').createIndex('username', { unique: true })
+    await sys_accessor.db.collection('__admins').createIndex('username', { unique: true })
 
     const { data } = await db.collection('__roles').get()
     const roles = data.map(it => it.name)
@@ -105,7 +101,7 @@ async function createFirstAdmin() {
 async function createFirstRole() {
   try {
 
-    await accessor.db.collection('__roles').createIndex('name', { unique: true })
+    await sys_accessor.db.collection('__roles').createIndex('name', { unique: true })
 
     const r_perm = await db.collection('__permissions').get()
     assert(r_perm.ok, 'get permissions failed')
@@ -137,7 +133,7 @@ async function createFirstRole() {
 async function createInitialPermissions() {
 
   // 创建唯一索引
-  await accessor.db.collection('__permissions').createIndex('name', { unique: true })
+  await sys_accessor.db.collection('__permissions').createIndex('name', { unique: true })
 
   for (const perm of permissions) {
     try {
@@ -189,9 +185,9 @@ async function createInitialAccessRules(category, rules) {
 // 创建内置云函数
 async function createBuiltinFunctions() {
   // 创建云函数索引
-  await accessor.db.collection('__functions').createIndex('name', { unique: true })
-  await accessor.db.collection('__function_logs').createIndex('requestId')
-  await accessor.db.collection('__function_logs').createIndex('func_id')
+  await sys_accessor.db.collection('__functions').createIndex('name', { unique: true })
+  await sys_accessor.db.collection('__function_logs').createIndex('requestId')
+  await sys_accessor.db.collection('__function_logs').createIndex('func_id')
   
 
   const loader = new FunctionLoader()
@@ -216,55 +212,4 @@ async function createBuiltinFunctions() {
   }
 
   return true
-}
-
-// 部署访问策略
-async function deployAccessPolicy() {
-  const r = await db.collection('__rules').get();
-  assert.ok(r.ok, `deploy policy: read rules failed`);
-
-  const session = app_accessor.conn.startSession()
-
-  try {
-    await session.withTransaction(async () => {
-      const _db = app_accessor.db
-      const app_coll = _db.collection(Constants.policy_collection);
-      const cleared = await app_coll.deleteMany({});
-      assert(cleared.result.ok, `clear ${Constants.policy_collection} failed`);
-
-      const inserted = await app_coll.insertMany(r.data);
-
-      assert(inserted.result.ok, `write ${Constants.policy_collection} failed`);
-      console.log('deploy policy succeed')
-    })
-  } catch (error) {
-    await session.endSession()
-    console.log('deploy policy failed:', error)
-  }
-  
-}
-
-// 部署云函数
-async function deployFunctions() {
-  const r = await db.collection('__functions').get();
-  assert.ok(r.ok, `deploy policy: read functions failed`);
-
-  const session = app_accessor.conn.startSession()
-
-  try {
-    await session.withTransaction(async () => {
-      const _db = app_accessor.db
-      const app_coll = _db.collection(Constants.function_collection);
-      const cleared = await app_coll.deleteMany({});
-      assert(cleared.result.ok, `clear ${Constants.function_collection} failed`);
-
-      const inserted = await app_coll.insertMany(r.data);
-
-      assert(inserted.result.ok, `write ${Constants.function_collection} failed`);
-      console.log('deploy functions succeed')
-    })
-  } catch (error) {
-    await session.endSession()
-    console.log('deploy functions failed:', error)
-  }
 }
