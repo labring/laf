@@ -9,9 +9,8 @@
     "build": "lerna run build",
     "watch": "lerna run watch",
     "init": "lerna run init",
-    "prepublishOnly": "npm run build && npm run copy-readme",
-    "init-start": "npm run init && npm run start",
-    "copy-readme": "node scripts/copy-readme.js"
+    "prepublishOnly": "npm run build",
+    "init-start": "npm run init && npm run start"
   },
   "keywords": [
     "BaaS",
