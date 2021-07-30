@@ -17,7 +17,7 @@ server.use(function (req, _res, next) {
   const auth = parseToken(token) || null
   req['auth'] = auth
 
-  const requestId = req['requestId'] =  uuidv4()
+  const requestId = req['requestId'] = uuidv4()
   logger.info(`[${requestId}] ${req.path} start request`)
   logger.debug(`[${requestId}] auth: ` + JSON.stringify(auth))
   next()
@@ -33,21 +33,21 @@ server.listen(Config.PORT, () => console.log(`listened on ${Config.PORT}`))
 /**
  * 监听云函数、触发器变化 & 部署
  */
- {
+{
   const acc = Globals.sys_accessor
-    acc.ready.then(() => {
-      acc.db
-        .watch([], { fullDocument: 'updateLookup' })
-        .on('change', doc => {
-          const coll = doc.ns.coll
-          if(coll === '__functions') {
-            deployFunctions()
-          }
+  acc.ready.then(() => {
+    acc.db
+      .watch()
+      .on('change', doc => {
+        const coll = doc.ns.coll
+        if (coll === '__functions') {
+          // TODO 此处调试时有问题，客户端保存后，函数被清除，无法获取
+           deployFunctions().then(() => logger.debug('__functions changed: deployed'))
+        }
 
-          if(coll === '__triggers') {
-            deployTriggers()
-          }
-        })
-    })
+        if (coll === '__triggers') {
+          deployTriggers().then(() => logger.debug('__triggers changed: deployed'))
+        }
+      })
+  })
 }
-  
