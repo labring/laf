@@ -28,10 +28,7 @@ npm run build
 
 ```sh
 # 因 laf-app-server 服务使用到了 mongodb watch() 功能，要求 mongo 必须用 replica 或 cluster 模式
-docker run -p 27017:27017 --name laf_mongo -d mongo --replSet "rs0"
-
-# 初始化副本集
-docker exec -it laf_mongo mongo --eval "rs.initiate({ _id: 'rs0', members: [{ _id: 0, host:'localhost:27017'}]})"
+docker run -p 27017:27017 --name laf_mongo -e ALLOW_EMPTY_PASSWORD=yes -e MONGODB_REPLICA_SET_MODE=primary -e MONGODB_INITIAL_PRIMARY_HOST=localhost  -d bitnami/mongodb
 ```
 
 ### 配置数据库 (MongoDb)
