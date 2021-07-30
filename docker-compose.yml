@@ -1,0 +1,74 @@
+version: '3.8'
+services: 
+  server:
+    mongodb:
+      image: mongo:latest
+      user: mongodb
+      environment: 
+        MONGO_INITDB_ROOT_USERNAME: laf
+        MONGO_INITDB_ROOT_PASSWORD: laf
+      volumes:
+        - db-data:/data/db
+      networks: 
+        - laf
+  
+  image: laf-devops-server:latest
+    user: node
+    environment: 
+      SERVER_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
+      DB: laf-sys-db
+      DB_URI: mongodb://laf:laf@mongodb:27017
+      DB_POOL_LIMIT: 10
+      SUPER_ADMIN: laf-sys
+      SUPER_ADMIN_PASSWORD: laf-sys
+      LOG_LEVEL: debug
+    command: npm run init-start
+    ports:
+      - "9000:9000"
+    read_only: true
+    cap_drop: 
+      - ALL
+    tmpfs: 
+      - /tmp
+    restart: always
+    networks: 
+      - laf
+ 
+  image: laf-app-server:latest
+    user: node
+    environment: 
+      SERVER_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
+      DB: laf-app-db
+      DB_URI: mongodb://laf:laf@mongodb:27017
+      DB_POOL_LIMIT: 100
+      SUPER_ADMIN: laf-app
+      SUPER_ADMIN_PASSWORD: laf-app
+      LOG_LEVEL: debug
+    command: npm run init-start
+    volumes:
+      - app-data:/app/data
+    ports:
+      - "8000:8000"
+    read_only: true
+    cap_drop: 
+      - ALL
+    tmpfs: 
+      - /tmp
+    restart: always
+    networks: 
+      - laf
+
+  admin:
+    image: lessx/less-admin:latest
+    ports: 
+      - 8080:80
+    networks: 
+      - laf
+
+networks:
+  laf:
+      
+volumes:
+  app-data:
+  db-data:
+      

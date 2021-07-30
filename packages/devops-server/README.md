@@ -60,7 +60,7 @@ npm start
 - 【已完成】 部署应用触发器（新增、修改），应监听该库之变化
 
 - 【已完成】考虑使用 mongo watch() 替代 less-api accessor 的数据事件，应用于部署监听和云函数事件（可获取变更数据的完整信息）
-- 【已完成】数据管理-集合管理：使用 devo ps server dbm entry，可具备完整的 app db 管理能力 
+- 【已完成】数据管理-集合管理：使用 devops server dbm entry，可具备完整的 app db 管理能力 
 - 【已完成】将 devops 中表名修改，增加前缀， 如: __admins，以适应用户可能用同一数据库，跑 app & devops server；
 
 - 实现远程部署推送：远程推送源管理，推送云函数（及触发器），推送访问规则

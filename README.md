@@ -124,10 +124,9 @@ cp ecosystem.config.js.tpl ecosystem.config.js
 pm2 run
 ```
 
+
 ## TODO
 
-- 支持云函数触发器（定时触发、事件触发）【已完成】
-- 支持 less-api watch() 功能，实现长连接数据流推送
-- 支持云函数版本管理，可发布版本、历史版本、回滚版本
-- 支持 MongoFileStorage，默认将文件存储至 Mongo GridFS（可以更好的利用 Mongo 的分布式、弹性扩展优势）
-- 支持在线安装 npm 预设包，可配置云函数执行环境依赖
+- 添加运行截图到 README.md
+- 完成自动打包 docker 镜像并发布脚本，实现 docker-compose 一键启动
+- 使用 lerna fixed version
