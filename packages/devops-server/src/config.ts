@@ -11,11 +11,11 @@ export default class Config {
    */
   static get sys_db() {
     if(!process.env['SYS_DB']) {
-      throw new Error('env: `DB` is missing')
+      throw new Error('env: `SYS_DB` is missing')
     }
 
     if(!process.env['SYS_DB_URI']) {
-      throw new Error('env: `DB_URI` is missing')
+      throw new Error('env: `SYS_DB_URI` is missing')
     }
 
     return {
@@ -30,11 +30,11 @@ export default class Config {
    */
   static get app_db() {
     if(!process.env['APP_DB']) {
-      throw new Error('env: `DB` is missing')
+      throw new Error('env: `APP_DB` is missing')
     }
 
     if(!process.env['APP_DB_URI']) {
-      throw new Error('env: `DB_URI` is missing')
+      throw new Error('env: `APP_DB_URI` is missing')
     }
 
     return {
