@@ -33,10 +33,10 @@ export async function getAccessPolicy(category: string): Promise<any> {
 }
 
 /**
- * 部署访问策略
+ * 发布访问策略
  * 实为将 sys_db.__rules 中的表，复制其数据至 app_db 中
  */
-export async function deployAccessPolicy() {
+export async function publishAccessPolicy() {
   const logger = Globals.logger
  
   const app_accessor = Globals.app_accessor

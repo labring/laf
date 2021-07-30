@@ -32,10 +32,10 @@ export async function getTriggerById(id: string) {
 
 
 /**
-  * 部署触发器
+  * 发布触发器
   * 实为将 sys db __triggers 集合，复制其数据至 app db 中
   */
- export async function deployTriggers() {
+ export async function publishTriggers() {
   const logger = Globals.logger
 
   const app_accessor = Globals.app_accessor

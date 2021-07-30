@@ -10,8 +10,8 @@ const { permissions } = require('./sys-permissions')
 const { FunctionLoader } = require('./func-loader')
 const { Constants } = require('../dist/constants')
 const { Globals } = require('../dist/lib/globals')
-const { deployFunctions } = require('../dist/api/function')
-const { deployAccessPolicy } = require('../dist/api/rules')
+const { publishFunctions } = require('../dist/api/function')
+const { publishAccessPolicy } = require('../dist/api/rules')
 
 const sys_accessor = Globals.sys_accessor
 
@@ -44,10 +44,10 @@ async function main() {
   await createBuiltinFunctions()
 
   // 部署访问策略
-  await deployAccessPolicy().then(() => console.log('policy deployed'))
+  await publishAccessPolicy().then(() => console.log('policy deployed'))
 
   // 部署云函数
-  await deployFunctions().then(() => console.log('functions deployed'))
+  await publishFunctions().then(() => console.log('functions deployed'))
 
   sys_accessor.close()
   app_accessor.close()

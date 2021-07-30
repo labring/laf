@@ -34,7 +34,8 @@
     "log4js": "^6.3.0",
     "mongodb": "^4.0.1",
     "uuid": "^8.3.2",
-    "validator": "^12.2.0"
+    "validator": "^12.2.0",
+    "cloud-function-engine": "^0.0.5"
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.0",

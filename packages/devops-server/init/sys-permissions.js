@@ -15,13 +15,11 @@ exports.permissions = [
   { name: 'rule.read', label: '获取访问规则' },
   { name: 'rule.edit', label: '编辑访问规则' },
   { name: 'rule.delete', label: '删除访问规则' },
-  { name: 'rule.apply', label: '部署访问规则' },
 
   { name: 'function.create', label: '创建云函数' },
   { name: 'function.read', label: '获取云函数' },
   { name: 'function.edit', label: '编辑云函数' },
   { name: 'function.delete', label: '删除云函数' },
-  { name: 'function.publish', label: '发布云函数' },
   { name: 'function.debug', label: '调试云函数' },
 
   { name: 'function_logs.read', label: '查看云函数日志' },
@@ -35,14 +33,13 @@ exports.permissions = [
   { name: 'trigger.read', label: '获取触发器' },
   { name: 'trigger.edit', label: '编辑访触发器' },
   { name: 'trigger.delete', label: '删除触发器' },
-  { name: 'trigger.apply', label: '应用触发器' },
 
   { name: 'database.manage', label: '数据库数据管理'},
   { name: 'collections.get', label: 'DBM-获取集合列表'},
   { name: 'collections.createIndex', label: 'DBM-创建集合索引'},
   { name: 'collections.deleteIndex', label: 'DBM-删除集合索引' },
   
-
-  { name: 'deploy.policy', label: '部署数据访问策略'},
-  { name: 'deploy.function', label: '部署云函数'}
+  { name: 'publish.policy', label: '发布数据访问策略'},
+  { name: 'publish.function', label: '发布云函数' },
+  { name: 'publish.trigger', label: '发布触发器' },
 ]

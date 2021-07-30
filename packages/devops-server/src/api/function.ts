@@ -1,6 +1,7 @@
 
 import { Constants } from "../constants"
 import { Globals } from "../lib/globals"
+import { compileTs2js } from 'cloud-function-engine/dist/utils'
 
 const db = Globals.sys_db
 
@@ -39,15 +40,20 @@ export async function getFunctionById(func_id: string) {
   return r.data
 }
 
+
+
 /**
-  * 部署云函数
+  * 发布云函数
   * 实为将 sys db __functions 集合，复制其数据至 app db 中
   */
-export async function deployFunctions() {
+export async function publishFunctions() {
   const logger = Globals.logger
 
   const app_accessor = Globals.app_accessor
   const ret = await Globals.sys_accessor.db.collection('__functions').find().toArray()
+
+  // compile
+  const data = ret.map(fn => compileFunction(fn))
 
   const session = app_accessor.conn.startSession()
 
@@ -56,11 +62,20 @@ export async function deployFunctions() {
       const _db = app_accessor.db
       const app_coll = _db.collection(Constants.function_collection)
       await app_coll.deleteMany({})
-      await app_coll.insertMany(ret)
+      await app_coll.insertMany(data)
     })
   } catch (error) {
     logger.error(error)
   } finally {
     await session.endSession()
   }
+}
+
+/**
+ * 编译函数
+ * @param func 
+ */
+function compileFunction(func: any) {
+  func.compiledCode = compileTs2js(func.code)
+  return func
 }
