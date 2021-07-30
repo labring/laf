@@ -2,8 +2,8 @@ const assert = require('assert')
 const child_process = require('child_process')
 
 const images = {
-  devops: 'laf-devops-server',
-  app: 'laf-app-server'
+  devops: 'lessx/laf-devops-server',
+  app: 'lessx/laf-app-server'
 }
 
 function getDevopsServerVersion() {
@@ -48,7 +48,7 @@ function getAppServerVersion() {
  * @param {string} filepath path of Dockerfile
  */
  function pushImage(tag) {
-  const sub = child_process.spawn('docker', ['push', tag)
+  const sub = child_process.spawn('docker', ['push', tag])
 
   sub.stdout.on('data', (data) => {
     console.log(`${tag} stdout: ${data}`);

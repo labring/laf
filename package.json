@@ -10,7 +10,9 @@
     "watch": "lerna run watch",
     "init": "lerna run init",
     "prepublishOnly": "npm run build",
-    "init-start": "npm run init && npm run start"
+    "init-start": "npm run init && npm run start",
+    "docker-build": "node ./scripts/docker-build.js",
+    "docker-push": "node ./scripts/docker-push.js"
   },
   "keywords": [
     "BaaS",

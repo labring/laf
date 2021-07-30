@@ -53,80 +53,22 @@
 > 有以下两种方式: `基于 Docker Compose 快速部署` 和 `手动安装部署`
 ## 基于 Docker Compose 快速部署
 
-```
+```sh
 git clone https://github.com/Maslow/less-framework.git
 cd less-framework
 
+# 因 mongo 启动较慢，所以先启动 mongo 服务
+docker-compose up -d mongo
+
+# 主动等待数秒后，启动所有服务
 docker-compose up
 ```
 
 > 另，[less-admin](https://github.com/Maslow/less-admin) 是 less-framework 配套的后台管理，可管理访问规则、云函数等功能
 
-## 手动安装部署
-
-### 安装依赖
-
-```sh
-# 下载代码
-git clone https://github.com/Maslow/less-framework.git
-cd less-framework
-
-# 安装依赖（建议使用 node 14+ 或 npm 7.5+，速度更快）
-npm install
-
-# 编译
-npm run build
-```
-
-> 开发环境可自动编译
-
-```sh
-npm run watch
-```
-
-### 启动 MongoDb
-
-```sh
-docker run -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=less -e MONGO_INITDB_ROOT_PASSWORD=less --name mongo -d mongo
-```
-
-### 配置数据库 (MongoDb)
-
-> A.【推荐】将 .env.development 拷贝并重命名为 .env，编辑里面的环境变量
-
-```
-cp .env.development .env
-```
-
-> B.【不推荐】或直接修改 `/src/config.ts` 相应配置
-
-### 初始化应用的基础数据
-
-> 初始化管理员、角色、权限、访问规则
-
-```sh
-npm run init
-```
-
-### 运行
-
-```sh
-#运行
-npm start
-```
-
-> 也可使用 pm2 来运行应用
-
-```sh
-# 首次使用 pm2 运行前，需将创建配置文件 ecosystem.config.js
-cp ecosystem.config.js.tpl ecosystem.config.js
-
-pm2 run
-```
-
 
 ## TODO
 
 - 添加运行截图到 README.md
-- 完成自动打包 docker 镜像并发布脚本，实现 docker-compose 一键启动
 - 使用 lerna fixed version
+- 将 less-admin 更名为 devops-admin 并加入到此项目中来

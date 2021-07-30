@@ -9,8 +9,8 @@ services:
       - MONGODB_REPLICA_SET_NAME=rs0
     volumes:
       - db-data:/data/db
-    networks: 
-      - laf
+    ports:
+      - "27018:27017"
 
   devops_server:
     image: lessx/laf-devops-server:latest
@@ -28,6 +28,8 @@ services:
       APP_DB_URI: mongodb://mongo:27017
       APP_DB_POOL_LIMIT: 100
       APP_SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
+    volumes:
+      - ./packages/devops-server:/app
     ports:
       - "9000:9000"
     read_only: true
@@ -38,8 +40,6 @@ services:
     tmpfs: 
       - /tmp
     restart: always
-    networks: 
-      - laf
 
   app_server:
     image: lessx/laf-app-server:latest
@@ -53,8 +53,9 @@ services:
       SUPER_ADMIN_PASSWORD: laf-app
       LOG_LEVEL: debug
       PORT: 8000
-    command: npm run init-start
+    # command: npm run init-start
     volumes:
+      - ./packages/app-server:/app
       - app-data:/app/data
     ports:
       - "8000:8000"
@@ -67,18 +68,9 @@ services:
     tmpfs: 
       - /tmp
     restart: always
-    networks: 
-      - laf
 
-  devops_admin:
-    image: lessx/less-admin:latest
-    ports: 
-      - 8080:80
-    networks: 
-      - laf
-
-networks:
-  laf:
+# networks:
+#   laf:
       
 volumes:
   app-data:

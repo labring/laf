@@ -17,7 +17,7 @@ function main() {
 
   const appDockerfile = path.resolve(__dirname, '../packages/app-server')
   const appVersion = getAppServerVersion()
-  buildImage(devopsDockerfile, `${images.app}:${appVersion}`, `${images.app}:latest`)
+  buildImage(appDockerfile, `${images.app}:${appVersion}`, `${images.app}:latest`)
 }
 
 main()
