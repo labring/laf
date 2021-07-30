@@ -68,7 +68,7 @@ export class Trigger {
     const tri = new Trigger()
     tri.type = data.type
     tri.desc = data.desc
-    tri.id = data._id
+    tri.id = data._id.toString()
     tri.func_id = data.func_id
     tri.name = data.name
     tri.last_exec_time = data.last_exec_time ?? 0
