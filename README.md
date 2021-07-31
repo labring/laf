@@ -50,7 +50,6 @@
 
 # 使用说明
 
-> 有以下两种方式: `基于 Docker Compose 快速部署` 和 `手动安装部署`
 ## 基于 Docker Compose 快速部署
 
 ```sh
@@ -62,13 +61,11 @@ docker-compose up -d mongo
 
 # 主动等待数秒后，启动所有服务
 docker-compose up
+
+# 浏览器打开 http://locahost:8080 访问
 ```
-
-> 另，[less-admin](https://github.com/Maslow/less-admin) 是 less-framework 配套的后台管理，可管理访问规则、云函数等功能
-
 
 ## TODO
 
 - 添加运行截图到 README.md
 - 使用 lerna fixed version
-- 将 less-admin 更名为 devops-admin 并加入到此项目中来
