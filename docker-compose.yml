@@ -71,7 +71,7 @@ services:
       - laf
 
   devops_admin:
-    image: lessx/less-admin:latest
+    image: lessx/laf-devops-admin:latest
     ports: 
       - 8080:80
     networks: 

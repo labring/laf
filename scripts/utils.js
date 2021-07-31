@@ -3,7 +3,8 @@ const child_process = require('child_process')
 
 const images = {
   devops: 'lessx/laf-devops-server',
-  app: 'lessx/laf-app-server'
+  app: 'lessx/laf-app-server',
+  devops_admin: 'lessx/laf-devops-admin'
 }
 
 function getDevopsServerVersion() {
@@ -20,6 +21,12 @@ function getAppServerVersion() {
   return json?.version
 }
 
+function getDevopsAdminVersion() {
+  const json = require('../packages/devops-admin/package.json')
+
+  assert.ok(json)
+  return json?.version
+}
 
 
 /**
@@ -67,6 +74,7 @@ function getAppServerVersion() {
 module.exports = {
   getDevopsServerVersion,
   getAppServerVersion,
+  getDevopsAdminVersion,
   buildImage,
   pushImage,
   images
