@@ -18,11 +18,11 @@ PublishRouter.post('/policy', async (req, res) => {
   }
 
   try {
-    const r = await publishAccessPolicy()
+    await publishAccessPolicy()
 
     return res.send({
       code: 0,
-      data: r
+      data: 'ok'
     })
   } catch (error) {
     return res.send({
@@ -35,7 +35,7 @@ PublishRouter.post('/policy', async (req, res) => {
 /**
  * 发布云函数
  */
- PublishRouter.post('/functions', async (req, res) => {
+PublishRouter.post('/functions', async (req, res) => {
 
   // 权限验证
   const code = await checkPermission(req['auth']?.uid, 'publish.function')
@@ -44,11 +44,11 @@ PublishRouter.post('/policy', async (req, res) => {
   }
 
   try {
-    const r = await publishFunctions()
+    await publishFunctions()
 
     return res.send({
       code: 0,
-      data: r
+      data: 'ok'
     })
   } catch (error) {
     return res.send({
@@ -62,7 +62,7 @@ PublishRouter.post('/policy', async (req, res) => {
 /**
  * 发布触发器
  */
- PublishRouter.post('/triggers', async (req, res) => {
+PublishRouter.post('/triggers', async (req, res) => {
 
   // 权限验证
   const code = await checkPermission(req['auth']?.uid, 'publish.trigger')
@@ -71,11 +71,11 @@ PublishRouter.post('/policy', async (req, res) => {
   }
 
   try {
-    const r = await publishTriggers()
+    await publishTriggers()
 
     return res.send({
       code: 0,
-      data: r
+      data: 'ok'
     })
   } catch (error) {
     return res.send({
