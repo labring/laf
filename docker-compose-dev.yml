@@ -13,8 +13,9 @@ services:
       - "27018:27017"
 
   devops_server:
-    image: lessx/laf-devops-server:latest
+    image: node:14-alpine
     user: node
+    working_dir: /app
     environment: 
       SYS_DB: laf-sys
       SYS_DB_URI: mongodb://mongo:27017
@@ -28,6 +29,7 @@ services:
       APP_DB_URI: mongodb://mongo:27017
       APP_DB_POOL_LIMIT: 100
       APP_SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
+    command: npm run init-start
     volumes:
       - ./packages/devops-server:/app
     ports:
@@ -42,8 +44,9 @@ services:
     restart: always
 
   app_server:
-    image: lessx/laf-app-server:latest
+    image: node:14-alpine
     user: node
+    working_dir: /app
     environment: 
       DB: laf-app
       DB_URI: mongodb://mongo:27017
@@ -53,7 +56,7 @@ services:
       SUPER_ADMIN_PASSWORD: laf-app
       LOG_LEVEL: debug
       PORT: 8000
-    # command: npm run init-start
+    command: npm run init-start
     volumes:
       - ./packages/app-server:/app
       - app-data:/app/data
@@ -68,6 +71,14 @@ services:
     tmpfs: 
       - /tmp
     restart: always
+
+  devops_admin:
+    image: nginx:latest
+    volumes:
+      - ./packages/devops-admin/dist:/app
+      - ./packages/devops-admin/nginx.conf:/etc/nginx/conf.d/app.conf
+    ports: 
+      - 8080:80
 
 # networks:
 #   laf:
