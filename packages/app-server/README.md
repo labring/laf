@@ -31,15 +31,9 @@ npm run build
 docker run -p 27017:27017 --name laf_mongo -e ALLOW_EMPTY_PASSWORD=yes -e MONGODB_REPLICA_SET_MODE=primary -e MONGODB_INITIAL_PRIMARY_HOST=localhost  -d bitnami/mongodb
 ```
 
-### 配置数据库 (MongoDb)
+### 配置数据库，并初始化应用
 
 > 将 .env.development 拷贝并重命名为 .env，编辑里面的环境变量
-
-```
-cp .env.development .env
-```
-
-### 配置数据库，并初始化应用
 
 ```sh
 # 创建配置文件 .env
