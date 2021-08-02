@@ -9,14 +9,10 @@
     "start": "node ./dist/index.js",
     "build": "npx tsc -p tsconfig.json && npm run create-internal-pkg",
     "watch": "npx tsc -p tsconfig.json -w",
-    "init": "node init/index.js",
-    "create-internal-pkg": "node ./init/create-internal-package.js",
+    "create-internal-pkg": "node ./scripts/create-internal-package.js",
     "prepublishOnly": "npm run build",
     "trace-gc": "node --trace_gc --trace_gc_verbose ./dist/index.js",
-    "init-start": "npm run init && npm run start",
-    "docker-build": "docker build -t lessx/less-framework:latest .",
-    "docker-push": "docker push lessx/less-framework:latest",
-    "docker-bp": "npm run docker-build && npm run docker-push"
+    "init-start": "npm run start"
   },
   "keywords": [
     "BaaS",

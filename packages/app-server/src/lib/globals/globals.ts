@@ -9,7 +9,7 @@ import { createLogger } from '../logger'
 
 const require_func: RequireFuncType = (module): any => {
   if (module === '@/cloud-sdk') {
-    return require('../cloud-sdk')
+    return require('../../cloud-sdk')
   }
   return require(module) as any
 }

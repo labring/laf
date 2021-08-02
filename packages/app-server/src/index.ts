@@ -34,4 +34,4 @@ server.use(function (req, _res, next) {
 
 server.use(router)
 
-server.listen(Config.PORT, () => console.log(`listened on ${Config.PORT}`))
+server.listen(Config.PORT, () => logger.info(`listened on ${Config.PORT}`))

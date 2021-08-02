@@ -8,4 +8,4 @@ RUN chown node:node /app/data
 RUN npm i
 RUN npm run build
 USER node
-CMD [ "npm", "run", "init-start" ]
+CMD [ "npm", "run", "start" ]

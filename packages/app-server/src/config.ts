@@ -28,29 +28,12 @@ export default class Config {
   /**
    * 指定服务端密钥，用于生成 token 
    */
-  static get SERVER_SALT(): string {
+  static get SERVER_SECRET_SALT(): string {
     const secret_salt = process.env['SERVER_SECRET_SALT']  ?? process.env['SERVER_SALT'] 
     if(!secret_salt) {
       throw new Error('env: `SERVER_SECRET_SALT` is missing')
     }
     return secret_salt
-  }
-
-  // 初始化第一个管理员的用户名
-  static get SUPER_ADMIN(): string {
-    if(!process.env['SUPER_ADMIN']) {
-      throw new Error('env: `SUPER_ADMIN` is missing')
-    }
-
-    return process.env['SUPER_ADMIN']
-  }
-
-  // 初始化第一个管理员的密码
-  static get SUPER_ADMIN_PASSWORD(): string {
-    if(!process.env['SUPER_ADMIN_PASSWORD']) {
-      throw new Error('env: `SUPER_ADMIN_PASSWORD` is missing')
-    }
-    return process.env['SUPER_ADMIN_PASSWORD']
   }
 
   // 本地上传文件存储目录

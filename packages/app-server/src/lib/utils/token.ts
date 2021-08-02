@@ -1,6 +1,6 @@
 import Config from '../../config'
 import * as jwt from 'jsonwebtoken'
-const secret = Config.SERVER_SALT
+const DEFAULT_SALT = Config.SERVER_SECRET_SALT
 
 /**
  * 生成 token
@@ -8,8 +8,8 @@ const secret = Config.SERVER_SALT
  * @param expire 秒
  * @returns 
  */
-export function getToken(payload: any): string {
-    return jwt.sign(payload, secret)
+ export function getToken(payload: any, secret?: string): string {
+    return jwt.sign(payload, secret ?? DEFAULT_SALT)
 }
 
 /**
@@ -17,10 +17,10 @@ export function getToken(payload: any): string {
  * @param token 
  * @returns 
  */
-export function parseToken(token: string): any | null {
+export function parseToken(token: string, secret?: string): any | null {
     if (!token) return null
     try {
-        const ret = jwt.verify(token, secret)
+        const ret = jwt.verify(token, secret ?? DEFAULT_SALT)
         return ret
     } catch (error) {
         return null
@@ -32,7 +32,7 @@ export function parseToken(token: string): any | null {
  * @param bearer "Bearer xxxxx"
  * @returns 
  */
- export function splitBearerToken(bearer: string): string | null {
+export function splitBearerToken(bearer: string): string | null {
     if(!bearer) return null
 
     const splitted = bearer?.split(' ')
