@@ -2,5 +2,6 @@
   "label": "测试",
   "name": "test",
   "description": "",
-  "enableHTTP": true
+  "enableHTTP": true,
+  "tags": ["预置"]
 }

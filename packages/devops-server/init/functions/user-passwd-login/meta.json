@@ -3,5 +3,6 @@
   "name": "user-passwd-login",
   "description": "用户密码登陆",
   "enableHTTP": true,
-  "debugParams": "{\n  \"username\": \"less\",\n  \"password\": \"less123\"\n}"
+  "debugParams": "{\n  \"username\": \"less\",\n  \"password\": \"less123\"\n}",
+  "tags": ["预置"]
 }

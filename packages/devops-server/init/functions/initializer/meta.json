@@ -1,0 +1,8 @@
+{
+  "label": "应用初始化器",
+  "name": "initializer",
+  "description": "",
+  "enableHTTP": false,
+  "reserved": true,
+  "tags": ["初始化", "预置"]
+}
