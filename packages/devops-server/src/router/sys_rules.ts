@@ -45,6 +45,13 @@ export default {
           "in": [
             0
           ]
+        },
+        "reserved": {
+          "required": true,
+          "default": false,
+          "in": [
+            false
+          ]
         }
       }
     },
