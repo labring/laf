@@ -28,10 +28,12 @@ npm install
 npm run build
 ```
 
+
 ### 启动 MongoDb
 
 ```sh
-docker run -p 27017:27017 --name mongo -d mongo
+# 因 laf-app-server 服务使用到了 mongodb watch() 功能，要求 mongo 必须用 replica 或 cluster 模式
+docker run -p 27017:27017 --name laf_mongo -e ALLOW_EMPTY_PASSWORD=yes -e MONGODB_REPLICA_SET_MODE=primary -e MONGODB_INITIAL_PRIMARY_HOST=localhost  -d bitnami/mongodb
 ```
 
 ### 配置数据库，并初始化应用
@@ -66,6 +68,7 @@ npm start
 - 实现远程部署推送：远程推送源管理，推送云函数（及触发器），推送访问规则
 - 远程部署请求管理：查询收到的部署请求，可拒绝，可接受
 
-- 考虑以后去除 app server 中的 RBAC admin 相关的代码，转由云函数实现，云函数可初始配置 应用的 $injections getter
-- 或将 app server 中的 admin entry 移至内置云函数中实现
-
+- 【已完成】考虑以后去除 app server 中的 RBAC admin 相关的代码，转由云函数实现，云函数可初始配置 应用的 $injections getter
+- 【已完成】将 app server 中的 admin entry 移至内置云函数中实现【使用了通用 proxy/entry 实现】
+- 进行 proxy/entry 访问测试、injector 测试和配置交互
+- 测试预置的几个新云函数
