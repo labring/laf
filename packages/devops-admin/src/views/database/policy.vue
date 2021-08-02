@@ -2,30 +2,33 @@
   <div class="components-container">
     <div class="create-btn" style="margin-bottom: 10px">
       <el-button v-permission="'rule.create'" type="primary" :disabled="loading" @click="dialogVisible = true">新建</el-button>
-      <el-button v-permission="'rule.read'" icon="el-icon-refresh" type="info" style="margin-left: 5px" :disabled="loading" @click="getRule">刷新</el-button>
+      <el-button v-permission="'rule.read'" icon="el-icon-refresh" type="info" style="margin-left: 10px" :disabled="loading" @click="getPolicies">刷新</el-button>
     </div>
 
-    <el-select v-model="category" placeholder="选择类别" :loading="loading">
+    <el-select v-model="policy_id" size="mini" placeholder="选择策略" :loading="loading">
       <el-option
-        v-for="item in categories"
-        :key="item"
-        :label="item"
-        :value="item"
+        v-for="item in policies"
+        :key="item._id"
+        :label="item.name"
+        :value="item._id"
       />
     </el-select>
-    <el-select v-model="collection" placeholder="选择集合" style="margin-left: 5px" :loading="loading">
-      <el-option
-        v-for="item in collections"
-        :key="item"
-        :label="item"
-        :value="item"
-      />
-    </el-select>
-    <el-button v-permission="'rule.edit'" type="success" style="margin-left: 5px" :disabled="loading" @click="updateRule">保存</el-button>
+    <el-button v-permission="'rule.edit'" size="mini" type="success" style="margin-left: 15px" :disabled="loading" @click="updateRule">保存</el-button>
     <el-button v-permission="'rule.delete'" type="info" size="mini" style="margin-left: 20px" :disabled="loading" @click="removeRule">删除</el-button>
 
-    <div class="editor-container">
-      <json-editor v-model="value" :dark="true" :height="600" />
+    <div class="main-row">
+      <div class="collection-list">
+        <div class="label">选择集合</div>
+        <el-radio-group v-model="collection_name">
+          <el-radio v-for="item in collections" :key="item" class="collection-radio" border size="medium" :label="item">
+            {{ item }}
+          </el-radio>
+          <!-- <div/> -->
+        </el-radio-group>
+      </div>
+      <div class="editor-container">
+        <json-editor v-model="value" :dark="true" :height="600" />
+      </div>
     </div>
 
     <aside style="margin-top: 15px">
@@ -39,13 +42,13 @@
       title="创建集合"
     >
       <el-form :model="form" label-width="80px" label-position="left">
-        <el-form-item label="规则类别">
-          <el-select v-model="form.category" placeholder="选择类别" :loading="loading">
+        <el-form-item label="策略名称">
+          <el-select v-model="form.policy" placeholder="选择类别" :loading="loading">
             <el-option
-              v-for="item in categories"
-              :key="item"
-              :label="item"
-              :value="item"
+              v-for="item in policies"
+              :key="item._id"
+              :label="item.name"
+              :value="item._id"
             />
           </el-select>
         </el-form-item>
@@ -68,15 +71,14 @@
 
 <script>
 import JsonEditor from '@/components/JsonEditor/rule'
-import { db } from '@/api/cloud'
+import { db } from '../../api/cloud'
 import $ from 'lodash'
 import { publishPolicy } from '../../api/publish'
-import { array2map } from '@/utils/array'
 
 const defaultValue = '{}'
 const defaultForm = {
   collection: '',
-  category: ''
+  policy: ''
 }
 export default {
   name: 'RuleEditorPage',
@@ -87,36 +89,41 @@ export default {
       loading: false,
       value: defaultValue,
       rules: [], // 所有规则
-      categoried: {}, // 以类别分组的规则
-      category: null, // 当前选择的规则类别
-      categories: [],
-      collection: null, // 当前选择的表
+      policies: [],
+      policy_id: null, // 当前选择的 policy _id
+      collection_name: null, // 当前选择的 collection name
       dialogVisible: false
     }
   },
   computed: {
-    // 当前分类下的表
+    // 当前策略下的集合
     collections() {
-      return this.categoried[this.category]?.map(it => it.collection)
+      if (!this.policy_id) return []
+
+      return Object.keys(this.policy?.rules)
+    },
+    // 当前选中的 policy
+    policy() {
+      const [found] = this.policies.filter(po => po._id === this.policy_id)
+      return found
     }
   },
   watch: {
-    category() {
-      this.collection = $.head(this.collections)
+    policy() {
+      this.collection_name = $.head(this.collections)
     },
-    collection() {
+    collection_name() {
       this.value = defaultValue
       this.getRule()
     }
   },
   created() {
-    this.getCategories()
+    this.getPolicies()
   },
   methods: {
-    async getCategories() {
+    async getPolicies() {
       this.loading = true
-      const r = await db.collection('__rules')
-        .field(['category', 'collection'])
+      const r = await db.collection('__policies')
         .get()
 
       if (!r.ok) {
@@ -124,26 +131,15 @@ export default {
         return
       }
 
-      const categoried = array2map(r.data, 'category', false)
-      this.categoried = categoried
-      this.categories = Object.keys(categoried)
-      this.category = $.head(this.categories)
+      this.policies = r.data
+      this.policy_id = $.head(this.policies)?._id
 
-      this.value = defaultValue
       this.loading = false
     },
     async getRule() {
-      this.loading = true
-      const r = await db.collection('__rules')
-        .where({
-          category: this.category,
-          collection: this.collection
-        })
-        .getOne()
-
-      if (!r.ok) return
-      this.value = JSON.parse(r.data.data)
-      this.loading = false
+      const rules = this.policy?.rules
+      if (!rules) return null
+      this.value = rules[this.collection_name] || defaultValue
     },
     async updateRule() {
       if (this.loading) {
@@ -155,13 +151,14 @@ export default {
 
       this.loading = true
       const rule_data = this.value
-      const r = await db.collection('__rules')
+      const key = `rules.${this.collection_name}`
+      console.log(key, rule_data)
+      const r = await db.collection('__policies')
         .where({
-          category: this.category,
-          collection: this.collection
+          _id: this.policy_id
         })
         .update({
-          data: rule_data
+          [key]: JSON.parse(rule_data)
         })
 
       if (!r.ok) {
@@ -188,7 +185,7 @@ export default {
       }
       this.loading = true
 
-      const { total } = await db.collection('__rules')
+      const { total } = await db.collection('__policies')
         .where({
           category: this.form.category,
           collection: this.form.collection
@@ -199,7 +196,7 @@ export default {
         this.$message('该集合规则已存在！')
         return
       }
-      const r = await db.collection('__rules')
+      const r = await db.collection('__policies')
         .add({
           category: this.form.category,
           collection: this.form.collection,
@@ -242,7 +239,7 @@ export default {
 
       this.loading = true
 
-      const r = await db.collection('__rules')
+      const r = await db.collection('__policies')
         .where({
           category: this.category,
           collection: this.collection
@@ -302,12 +299,33 @@ export default {
 }
 </script>
 
-<style scoped>
-.editor-container{
-  position: relative;
-  height: 100%;
-  margin-top: 10px;
-  width: 1000px;
+<style lang="scss" scoped>
+.main-row {
+  display: flex;
+  .collection-list {
+    width: 200px;
+    margin-top: 20px;
+    border-radius: 5px;
+
+    .label {
+      font-size: 14px;
+      color: gray;
+      margin-bottom: 10px;
+    }
+    .collection-radio {
+      width: 100%;
+      margin-bottom: 10px;
+      margin-left: 0px;
+    }
+  }
+  .editor-container{
+    margin-left: 10px;
+    position: relative;
+    height: 100%;
+    margin-top: 10px;
+    width: 1000px;
+  }
 }
+
 </style>
 
