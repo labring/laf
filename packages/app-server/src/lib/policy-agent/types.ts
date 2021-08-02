@@ -3,7 +3,7 @@ import { Params, Policy } from "less-api"
 
 
 
-export type InjectionGetter = (uid: string, params: Params) => Promise<any>
+export type InjectionGetter = (payload: string, params: Params) => Promise<any>
 
 /**
  * used in policy agent

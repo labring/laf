@@ -1,5 +1,5 @@
 import assert = require("assert")
-import { AccessorInterface, Policy } from "less-api"
+import { AccessorInterface, Params, Policy } from "less-api"
 import { CloudFunction } from "../../../../cloud-function-engine/dist"
 import { getFunctionByName } from "../../api/function"
 import { Globals } from "../globals/globals"
@@ -63,11 +63,12 @@ export class PolicyAgent implements PolicyAgentInterface {
 
 /**
  * 默认的 injection getter
- * @param uid 
+ * @param auth 为 jwt token 的 payload 对象
  * @returns 返回默认的 injections
  */
-async function defaultInjectionGetter(uid: string) {
+async function defaultInjectionGetter(auth: any, _params: Params) {
+  auth = auth || {}
   return {
-    $uid: uid
+    ...auth
   }
 }

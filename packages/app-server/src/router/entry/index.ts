@@ -21,7 +21,7 @@ EntryRouter.post('/proxy/:policy', async (req, res) => {
   const params = proxy.parseParams({ ...req.body, requestId })
 
   // get injections
-  const injections = await policyComposition.injector_func(auth.uid, params)
+  const injections = await policyComposition.injector_func(auth, params)
 
   // validate query
   const result = await proxy.validate(params, injections)
