@@ -3,11 +3,11 @@ import { Db } from "less-api-database"
 import { FunctionContext, FunctionResult, CloudFunction } from "cloud-function-engine"
 import { FileStorageInterface } from "../lib/storage/interface"
 import * as mongodb from "mongodb"
-import { Globals } from "../lib/globals"
+import { Globals } from "../lib/globals/index"
 import { LocalFileStorage } from "../lib/storage/local_file_storage"
 import Config from "../config"
 import request from 'axios'
-import { Scheduler } from "../lib/scheduler"
+import { SchedulerInstance } from "../lib/scheduler"
 import { getToken, parseToken } from "../lib/utils/token"
 import { invokeInFunction } from "./invoke"
 
@@ -35,7 +35,7 @@ const cloud: CloudSdkInterface = {
   storage: (namespace: string) => new LocalFileStorage(Config.LOCAL_STORAGE_ROOT_PATH, namespace),
   fetch: request,
   invoke: invokeInFunction,
-  emit: (event: string, param: any) => Scheduler.emit(event, param),
+  emit: (event: string, param: any) => SchedulerInstance.emit(event, param),
   shared: CloudFunction._shared_preference,
   getToken: getToken,
   parseToken: parseToken,

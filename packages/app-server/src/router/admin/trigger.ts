@@ -3,7 +3,7 @@ import { checkPermission } from '../../api/permission'
 import { createLogger } from '../../lib/logger'
 import { Trigger } from 'cloud-function-engine'
 import { getTriggerById, getTriggers } from '../../api/trigger'
-import { Scheduler } from '../../lib/scheduler'
+import { SchedulerInstance } from '../../lib/scheduler'
 
 const logger = createLogger('admin:api')
 
@@ -31,7 +31,7 @@ export async function handleApplyTrigger(req: Request, res: Response) {
     if (!triggerId) {
       const data = await getTriggers()
       const triggers = data.map(data => Trigger.fromJson(data))
-      Scheduler.init(triggers)
+      SchedulerInstance.init(triggers)
 
       return res.send({ code: 0, data: 'ok:applied' })
     }
@@ -43,7 +43,7 @@ export async function handleApplyTrigger(req: Request, res: Response) {
     }
     // 更新指定触发器
     const trigger = Trigger.fromJson(data)
-    const result =  Scheduler.updateTrigger(trigger)
+    const result =  SchedulerInstance.updateTrigger(trigger)
 
     return res.send({
       code: 0,

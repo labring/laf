@@ -3,7 +3,7 @@ import { getToken } from '../../lib/utils/token'
 import { checkPermission, getPermissions } from '../../api/permission'
 import { createLogger } from '../../lib/logger'
 import { hashPassword } from '../../lib/utils/hash'
-import { Globals } from '../../lib/globals'
+import { Globals } from '../../lib/globals/index'
 
 const db = Globals.db
 const logger = createLogger('admin:api')

@@ -2,13 +2,13 @@
 
 import { MongoAccessor, getDb, LoggerInterface } from 'less-api'
 import { Db } from 'less-api-database'
-import Config from '../config'
+import Config from '../../config'
 import { RequireFuncType } from 'cloud-function-engine'
-import { createLogger } from './logger'
+import { createLogger } from '../logger'
 
 
 const require_func: RequireFuncType = (module): any => {
-  if(module === '@/cloud-sdk') {
+  if (module === '@/cloud-sdk') {
     return require('../cloud-sdk')
   }
   return require(module) as any
@@ -90,10 +90,7 @@ export class Globals {
    * @returns 
    */
   private static _createAccessor() {
-    const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
-      maxPoolSize: Config.db.poolSize, 
-      useUnifiedTopology: true
-    } as any)
+    const accessor = new MongoAccessor(Config.db.database, Config.db.uri, { directConnection: true, maxPoolSize: Config.db.poolSize })
 
     accessor.setLogger(createLogger('db', 'warning'))
     accessor.init()
@@ -101,8 +98,3 @@ export class Globals {
     return accessor
   }
 }
-
-/**
- * 初始化全局资源对象
- */
- Globals.init()

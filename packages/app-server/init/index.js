@@ -7,10 +7,7 @@ const { MongoAccessor, getDb } = require('less-api')
 const { permissions } = require('./permissions')
 
 
-const accessor = new MongoAccessor(Config.db.database, Config.db.uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+const accessor = new MongoAccessor(Config.db.database, Config.db.uri, { directConnection: true })
 
 const db = getDb(accessor)
 

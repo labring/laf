@@ -3,7 +3,7 @@ import { parseToken, splitBearerToken } from './lib/utils/token'
 import { v4 as uuidv4 } from 'uuid'
 import Config from './config'
 import { router } from './router/index'
-import { Globals } from './lib/globals'
+import { Globals } from './lib/globals/globals'
 
 // 为了生成相应的声明文件
 export * from './cloud-sdk'
