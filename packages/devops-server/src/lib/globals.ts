@@ -108,12 +108,9 @@ export class Globals {
    * @returns 
    */
   private static _createAccessor(database: string, uri: string, poolSize: number) {
-    const accessor = new MongoAccessor(database, uri, {
-      maxPoolSize: poolSize,
-      useUnifiedTopology: true
-    } as any)
+    const accessor = new MongoAccessor(database, uri, { maxPoolSize: poolSize, directConnection: true })
 
-    accessor.setLogger(createLogger('db', 'warning'))
+    accessor.setLogger(createLogger(`db:${database}`, 'warning'))
     accessor.init()
 
     return accessor

@@ -3,24 +3,21 @@
 const Config = require('../dist/config').default
 const { hashPassword } = require('../dist/lib/utils/hash')
 const assert = require('assert')
-const { MongoAccessor, getDb } = require('less-api')
-const adminRules = require('./rules/app-admin.json')
-const appRules = require('./rules/app.json')
 const { permissions } = require('./sys-permissions')
 const { FunctionLoader } = require('./func-loader')
 const { Constants } = require('../dist/constants')
 const { Globals } = require('../dist/lib/globals')
 const { publishFunctions } = require('../dist/api/function')
 const { publishAccessPolicy } = require('../dist/api/rules')
+const appAdminRules = require('./policies/app-admin.json')
+const appUserRules = require('./policies/app-user.json')
+
 
 const sys_accessor = Globals.sys_accessor
 
-const db = getDb(sys_accessor)
+const db = Globals.sys_db
 
 const app_accessor = Globals.app_accessor
-
-const app_db = getDb(app_accessor)
-
 
 async function main() {
   await sys_accessor.ready
@@ -29,16 +26,14 @@ async function main() {
   // 创建 RBAC 初始权限
   await createInitialPermissions()
 
-
   // 创建 RBAC 初始角色
   await createFirstRole()
-
 
   // 创建初始管理员
   await createFirstAdmin()
 
-  await createInitialAccessRules('admin', adminRules)
-  await createInitialAccessRules('app', appRules)
+  await createInitialPolicy('admin', appAdminRules)
+  await createInitialPolicy('app', appUserRules)
 
   // 创建内置云函数
   await createBuiltinFunctions()
@@ -56,7 +51,10 @@ async function main() {
 main()
 
 
-// 创建初始管理员
+/**
+ * 创建初始管理员
+ * @returns 
+ */
 async function createFirstAdmin() {
   try {
     const username = Config.SYS_ADMIN
@@ -97,7 +95,10 @@ async function createFirstAdmin() {
   }
 }
 
-// 创建初始角色
+/**
+ * 创建初始角色
+ * @returns 
+ */
 async function createFirstRole() {
   try {
 
@@ -129,7 +130,10 @@ async function createFirstRole() {
   }
 }
 
-// 创建初始权限
+/**
+ * 创建初始权限
+ * @returns 
+ */
 async function createInitialPermissions() {
 
   // 创建唯一索引
@@ -157,37 +161,47 @@ async function createInitialPermissions() {
   return true
 }
 
-// 创建初始访问规则
-async function createInitialAccessRules(category, rules) {
+/**
+ * 创建策略
+ * @param {string} name policy name
+ * @param {string} rules policy rules
+ * @param {string} injector cloud function id
+ * @returns 
+ */
+async function createInitialPolicy(name, rules, injector) {
 
-  for (const collection in rules) {
-    const { total } = await db.collection('__rules')
-      .where({ category, collection })
+  // if policy existed, skip it
+  const { total } = await db.collection('__policies')
+      .where({ name: name })
       .count()
 
-    if (total) {
-      console.log(`rule already exists : ${category}.${collection}`)
-      continue
-    }
-
-    await db.collection('__rules').add({
-      category,
-      collection,
-      data: JSON.stringify(rules[collection]),
-      created_at: Date.now(),
-      updated_at: Date.now()
-    })
-
-    console.log(`added rule: ${category}.${collection}`)
+  if (total) {
+    console.log(`rule already exists : ${name}`)
+    return
   }
+
+  await sys_accessor.db.collection('__policies').createIndex('name', { unique: true })
+
+  // add policy
+  await db.collection('__policies').add({
+    name: name,
+    rules: rules,
+    status: 1,
+    injector: injector,
+    created_at: Date.now(),
+    updated_at: Date.now()
+  })
+
+  console.log(`added policy: ${name}`)
 }
 
-// 创建内置云函数
+/**
+ * 创建内置云函数
+ * @returns 
+ */
 async function createBuiltinFunctions() {
   // 创建云函数索引
   await sys_accessor.db.collection('__functions').createIndex('name', { unique: true })
-  await sys_accessor.db.collection('__function_logs').createIndex('requestId')
-  await sys_accessor.db.collection('__function_logs').createIndex('func_id')
   
 
   const loader = new FunctionLoader()

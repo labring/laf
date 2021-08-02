@@ -23,11 +23,11 @@ export default {
       }
     }
   },
-  "__rules": {
-    "read": "$has('rule.read')",
-    "update": "$has('rule.edit')",
-    "add": "$has('rule.create')",
-    "remove": "$has('rule.delete')"
+  "__policies": {
+    "read": "$has('policy.read')",
+    "update": "$has('policy.edit')",
+    "add": "$has('policy.create')",
+    "remove": "$has('policy.delete')"
   },
   "__functions": {
     "read": "$has('function.read')",

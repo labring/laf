@@ -12,7 +12,7 @@ export const DbmRouter = express.Router()
 /**
  * 数据管理入口请求：管理 app db
  */
- DbmRouter.post('/entry', async (req, res) => {
+DbmRouter.post('/entry', async (req, res) => {
   const requestId = req['requestId']
 
   // 权限验证
@@ -58,8 +58,8 @@ DbmRouter.get('/collections', async (req, res) => {
     return res.status(code).send()
   }
 
-  const colls = await accessor.db.collections()
-  const names = colls.map(coll => coll.collectionName)
+  const colls = await accessor.db.listCollections().toArray()
+  const names = colls.map(coll => coll.name)
 
   return res.send(names)
 })
