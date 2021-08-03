@@ -59,6 +59,7 @@ export class AutoImportTypings {
     if (!this.isLoaded('globals')) { this.loadDeclaration('globals') }
     if (!this.isLoaded('less-api-database')) { this.loadDeclaration('less-api-database') }
     if (!this.isLoaded('axios')) { this.loadDeclaration('axios') }
+    if (!this.isLoaded('cloud-function-engine')) { this.loadDeclaration('cloud-function-engine') }
   }
 
   /**
