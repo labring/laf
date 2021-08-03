@@ -3,7 +3,8 @@ export default {
     "read": "$has('admin.read')",
     "update": "$has('admin.edit')",
     "add": "$has('admin.create')",
-    "remove": "$has('admin.delete')"
+    "remove": "$has('admin.delete')",
+    "count": "$has('admin.read')"
   },
   "__permissions": {
     "read": "$has('permission.read')",
@@ -21,13 +22,15 @@ export default {
           "notExists": "/__admins/roles"
         }
       }
-    }
+    },
+    "count": "$has('role.read')"
   },
   "__policies": {
     "read": "$has('policy.read')",
     "update": "$has('policy.edit')",
     "add": "$has('policy.create')",
-    "remove": "$has('policy.delete')"
+    "remove": "$has('policy.delete')",
+    "count": "$has('policy.read')"
   },
   "__functions": {
     "read": "$has('function.read')",
