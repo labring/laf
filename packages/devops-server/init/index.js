@@ -9,6 +9,7 @@ const { Constants } = require('../dist/constants')
 const { Globals } = require('../dist/lib/globals')
 const { publishFunctions } = require('../dist/api/function')
 const { publishAccessPolicy } = require('../dist/api/rules')
+const { publishTriggers } = require('../dist/api/trigger')
 const appAdminRules = require('./policies/app-admin.json')
 const appUserRules = require('./policies/app-user.json')
 
@@ -43,6 +44,9 @@ async function main() {
 
   // 部署云函数
   await publishFunctions().then(() => console.log('functions deployed'))
+
+  // 部署触发器
+  await publishTriggers().then(() => console.log('triggers deployed'))
 
   sys_accessor.close()
   app_accessor.close()
@@ -208,13 +212,19 @@ async function createBuiltinFunctions() {
   const funcs = await loader.getFunctions()
   for (const func of funcs) {
     try {
+      const triggers = func.triggers || []
       const data = {
         ...func,
         status: 1,
         created_at: Date.now(),
         updated_at: Date.now()
       }
-      await db.collection('__functions').add(data)
+      delete data['triggers']
+      const r = await db.collection('__functions').add(data)
+
+      if (triggers.length) {
+        await createTriggers(r.id, triggers)
+      }
     } catch (error) {
       if (error.code == 11000) {
         console.log('functions already exists: ' + func.name)
@@ -225,4 +235,24 @@ async function createBuiltinFunctions() {
   }
 
   return true
+}
+
+/**
+ * 创建触发器
+ */
+async function createTriggers(func_id, triggers) {
+  assert.ok(func_id, 'invalid func_id')
+  assert.ok(triggers.length, 'no triggers found')
+
+  for (const tri of triggers) {
+    const data = {
+      ...tri,
+      created_at: Date.now(),
+      updated_at: Date.now(),
+      func_id: func_id
+    }
+    await db.collection('__triggers').add(data)
+  }
+
+  console.log(`triggers of func[${func_id}] created`)
 }

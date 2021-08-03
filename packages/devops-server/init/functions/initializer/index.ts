@@ -11,6 +11,7 @@ const db = cloud.database()
 exports.main = async function (ctx) {
 
   const r = await cloud.invoke('init-app-rbac', {})
+  console.log(r.logs)
   if (r.data === 'ok') {
     console.log('init rbac: ok')
   }
