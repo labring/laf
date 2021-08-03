@@ -82,14 +82,25 @@ export const asyncRoutes = [
     },
     children: [
       {
-        path: 'policy',
-        component: () => import('@/views/database/policy'),
+        path: 'policies',
+        component: () => import('@/views/database/policies'),
         name: 'RuleManagement',
         meta: {
           title: '访问策略',
           icon: 'lock',
           noCache: true,
-          permissions: ['rule.read', 'rule.edit', 'rule.delete']
+          permissions: ['policy.read']
+        }
+      },
+      {
+        path: 'policy',
+        component: () => import('@/views/database/policy'),
+        name: 'RuleManagement',
+        hidden: true,
+        meta: {
+          title: '访问规则编辑',
+          icon: 'lock',
+          noCache: true
         }
       },
       {

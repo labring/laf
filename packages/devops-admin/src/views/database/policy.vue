@@ -1,11 +1,8 @@
 <template>
   <div class="components-container">
-    <div class="create-btn" style="margin-bottom: 10px">
-      <el-button v-permission="'rule.create'" type="primary" :disabled="loading" @click="dialogVisible = true">新建</el-button>
-      <el-button v-permission="'rule.read'" icon="el-icon-refresh" type="info" style="margin-left: 10px" :disabled="loading" @click="getPolicies">刷新</el-button>
-    </div>
+    <div class="create-btn" style="margin-bottom: 10px" />
 
-    <el-select v-model="policy_id" size="mini" placeholder="选择策略" :loading="loading">
+    <el-select v-model="policy_id" size="medium" placeholder="选择策略" :loading="loading">
       <el-option
         v-for="item in policies"
         :key="item._id"
@@ -13,8 +10,9 @@
         :value="item._id"
       />
     </el-select>
-    <el-button v-permission="'rule.edit'" size="mini" type="success" style="margin-left: 15px" :disabled="loading" @click="updateRule">保存</el-button>
-    <el-button v-permission="'rule.delete'" type="info" size="mini" style="margin-left: 20px" :disabled="loading" @click="removeRule">删除</el-button>
+    <!-- <el-button  size="medium" style="margin-left: 15px" type="default" :disabled="loading" @click="dialogVisible = true">新建策略</el-button> -->
+    <el-button size="medium" icon="el-icon-refresh" type="default" style="margin-left: 15px" :disabled="loading" @click="getPolicies">刷新</el-button>
+    <!-- <el-button  type="danger" size="mini" style="margin-left: 20px" :disabled="loading" @click="removeRule">删除</el-button> -->
 
     <div class="main-row">
       <div class="collection-list">
@@ -23,10 +21,14 @@
           <el-radio v-for="item in collections" :key="item" class="collection-radio" border size="medium" :label="item">
             {{ item }}
           </el-radio>
-          <!-- <div/> -->
         </el-radio-group>
       </div>
       <div class="editor-container">
+        <div class="buttons">
+          <el-button class="btn" style="margin-left: 0px" size="mini" type="primary" :disabled="loading" @click="dialogVisible = true">新建集合规则</el-button>
+          <el-button class="btn" size="mini" type="success" :disabled="loading" @click="updateRule">保存</el-button>
+          <el-button class="btn" type="danger" size="mini" :disabled="loading" @click="removeRule">删除</el-button>
+        </div>
         <json-editor v-model="value" :dark="true" :height="600" />
       </div>
     </div>
@@ -43,7 +45,7 @@
     >
       <el-form :model="form" label-width="80px" label-position="left">
         <el-form-item label="策略名称">
-          <el-select v-model="form.policy" placeholder="选择类别" :loading="loading">
+          <el-select v-model="form.policy_id" placeholder="选择类别" :loading="loading">
             <el-option
               v-for="item in policies"
               :key="item._id"
@@ -78,7 +80,7 @@ import { publishPolicy } from '../../api/publish'
 const defaultValue = '{}'
 const defaultForm = {
   collection: '',
-  policy: ''
+  policy_id: ''
 }
 export default {
   name: 'RuleEditorPage',
@@ -152,7 +154,6 @@ export default {
       this.loading = true
       const rule_data = this.value
       const key = `rules.${this.collection_name}`
-      console.log(key, rule_data)
       const r = await db.collection('__policies')
         .where({
           _id: this.policy_id
@@ -176,7 +177,7 @@ export default {
       this.loading = false
     },
     async create() {
-      if (!this.form.category || !this.form.collection) {
+      if (!this.form.policy_id || !this.form.collection) {
         this.$message('请正确填写表单！')
         return
       }
@@ -185,10 +186,11 @@ export default {
       }
       this.loading = true
 
+      const key = `rules.${this.form.collection}`
       const { total } = await db.collection('__policies')
         .where({
-          category: this.form.category,
-          collection: this.form.collection
+          _id: this.form.policy_id,
+          [key]: db.command.exists(true)
         }).count()
 
       if (total) {
@@ -197,10 +199,12 @@ export default {
         return
       }
       const r = await db.collection('__policies')
-        .add({
-          category: this.form.category,
-          collection: this.form.collection,
-          data: defaultValue
+        .where({
+          _id: this.form.policy_id,
+          [key]: db.command.exists(false)
+        })
+        .update({
+          [key]: db.command.set({})
         })
 
       if (!r.ok) {
@@ -209,10 +213,10 @@ export default {
         return
       }
 
-      await this.getCategories()
+      await this.getPolicies()
 
-      this.category = this.form.category
-      this.collection = this.form.collection
+      this.policy_id = this.form.policy_id
+      this.collection_name = this.form.collection
 
       this.$notify({
         type: 'success',
@@ -224,7 +228,7 @@ export default {
       this.loading = false
     },
     async removeRule() {
-      if (!this.category || !this.collection) {
+      if (!this.policy_id || !this.collection_name) {
         this.$message('请选择要删除的集合规则！')
         return
       }
@@ -239,20 +243,23 @@ export default {
 
       this.loading = true
 
+      const key = `rules.${this.collection_name}`
       const r = await db.collection('__policies')
         .where({
-          category: this.category,
-          collection: this.collection
+          _id: this.policy_id,
+          [key]: db.command.exists(true)
         })
-        .remove()
+        .update({
+          [key]: db.command.remove()
+        })
 
-      if (r.ok && r.deleted) {
+      if (r.ok && r.updated) {
         this.$notify({
           title: '操作成功',
           type: 'success',
           message: '删除访问规则成功！'
         })
-        this.getCategories()
+        this.getPolicies()
       } else {
         this.$message('删除访问规则操作失败 ' + r.error)
       }
@@ -301,10 +308,13 @@ export default {
 
 <style lang="scss" scoped>
 .main-row {
+  border-top: 1px solid lightgray;
+  padding-top: 20px;
+  margin-top: 20px;
   display: flex;
+
   .collection-list {
     width: 200px;
-    margin-top: 20px;
     border-radius: 5px;
 
     .label {
@@ -318,12 +328,23 @@ export default {
       margin-left: 0px;
     }
   }
+
   .editor-container{
     margin-left: 10px;
     position: relative;
     height: 100%;
-    margin-top: 10px;
     width: 1000px;
+
+    .buttons {
+      display: flex;
+      width: 400px;
+      justify-content: flex-start;
+      margin-bottom: 5px;
+
+      .btn {
+        margin-left: 15px;
+      }
+    }
   }
 }
 
