@@ -15,6 +15,10 @@ EntryRouter.post('/proxy/:policy', async (req, res) => {
   const policy_name = req.params?.policy
 
   const policyComposition = PolicyAgentInstance.get(policy_name)
+  if (!policyComposition) {
+    return res.status(404).send('Policy Not Found')
+  }
+
   const proxy = new Proxy(accessor, policyComposition.policy)
 
   // parse params
