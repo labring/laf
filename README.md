@@ -76,5 +76,6 @@ docker-compose up
 
 # TODO
 
-- 使用 lerna fixed version
-- 考虑增加初始化应用时，初始化触发器
+- 提供在线演示版
+- 提供在线使用文档
+- 将此仓库名更改为 `less-api-framework`，本项目产品名更改为 `LaF`
