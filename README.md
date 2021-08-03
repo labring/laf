@@ -76,5 +76,5 @@ docker-compose up
 
 # TODO
 
-- 添加运行截图到 README.md
 - 使用 lerna fixed version
+- 考虑增加初始化应用时，初始化触发器
