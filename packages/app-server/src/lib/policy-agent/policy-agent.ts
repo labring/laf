@@ -1,6 +1,6 @@
 import assert = require("assert")
 import { AccessorInterface, Params, Policy } from "less-api"
-import { CloudFunction } from "../../../../cloud-function-engine/dist"
+import { CloudFunction } from "cloud-function-engine"
 import { getFunctionByName } from "../../api/function"
 import { Globals } from "../globals/globals"
 import { InjectionGetter, PolicyAgentInterface, PolicyComposition, PolicyDataStruct } from "./types"
