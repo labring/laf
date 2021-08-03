@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'LaF 开发运维平台',
+  title: 'LaF 开发运维控制台',
 
   /**
    * @type {boolean} true | false

@@ -29,7 +29,7 @@ export default {
   },
   data() {
     return {
-      title: 'LaF 开发运维平台',
+      title: 'LaF 开发运维控制台',
       logo:
         'https://static.dingtalk.com/media/lALPDe7szaMXyv3NAr3NApw_668_701.png'
     }
