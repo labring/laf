@@ -102,7 +102,7 @@
         <el-form-item label="描述">
           <el-input v-model="form.description" :autosize="{ minRows: 3, maxRows: 6}" type="textarea" placeholder="描述" />
         </el-form-item>
-         <el-form-item label="injector">
+        <el-form-item label="injector">
           <el-select v-model="form.injector" placeholder="选择云函数做为injector">
             <el-option
               label="无"

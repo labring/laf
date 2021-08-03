@@ -8,9 +8,9 @@ export const asyncRoutes = [
   {
     path: '/development',
     component: Layout,
-    redirect: '/development/rules',
+    redirect: '/development/functions',
     meta: {
-      title: '开发控制台', icon: 'tree-table', noCache: true
+      title: '开发控制台', icon: 'guide', noCache: true
     },
     children: [
       {
@@ -19,9 +19,9 @@ export const asyncRoutes = [
         name: 'FunctionManagement',
         meta: {
           title: '云函数',
-          icon: 'lock',
+          icon: 'bug',
           noCache: true,
-          permissions: ['function.read', 'function.edit', 'function.create', 'function.debug']
+          permissions: ['function.read']
         }
       },
       {
@@ -31,9 +31,9 @@ export const asyncRoutes = [
         hidden: true,
         meta: {
           title: '调试云函数',
-          icon: 'lock',
+          icon: 'bug',
           noCache: true,
-          permissions: ['function.read', 'function.edit', 'function.create', 'function.debug']
+          permissions: ['function.read']
         }
       },
       {
@@ -42,7 +42,7 @@ export const asyncRoutes = [
         name: 'AllFunctionLogs',
         meta: {
           title: '云函数日志',
-          icon: 'lock',
+          icon: 'documentation',
           noCache: true,
           permissions: ['function.read', 'function.edit', 'function.create', 'function.debug']
         }
@@ -78,7 +78,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/database/collections',
     meta: {
-      title: '数据管理', icon: 'tree-table', noCache: true
+      title: '数据管理', icon: 'excel', noCache: true
     },
     children: [
       {
@@ -87,7 +87,7 @@ export const asyncRoutes = [
         name: 'RuleManagement',
         meta: {
           title: '访问策略',
-          icon: 'lock',
+          icon: 'eye',
           noCache: true,
           permissions: ['policy.read']
         }
@@ -99,7 +99,7 @@ export const asyncRoutes = [
         hidden: true,
         meta: {
           title: '访问规则编辑',
-          icon: 'lock',
+          icon: 'edit',
           noCache: true
         }
       },
@@ -109,7 +109,7 @@ export const asyncRoutes = [
         name: 'CollectionManagement',
         meta: {
           title: '集合管理',
-          icon: 'lock',
+          icon: 'example',
           noCache: true,
           permissions: ['database.manage', 'collections.get', 'collections.createIndex', 'collections.deleteIndex']
         }
@@ -121,7 +121,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/system/role',
     meta: {
-      title: '成员管理', icon: 'tree-table', noCache: true
+      title: '成员管理', icon: 'peoples', noCache: true
     },
     children: [
       {
