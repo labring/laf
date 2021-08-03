@@ -33,7 +33,7 @@ async function main() {
   // 创建初始管理员
   await createFirstAdmin()
 
-  await createInitialPolicy('admin', appAdminRules)
+  await createInitialPolicy('admin', appAdminRules, 'injector-admin')
   await createInitialPolicy('app', appUserRules)
 
   // 创建内置云函数

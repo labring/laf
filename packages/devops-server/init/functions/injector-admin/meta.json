@@ -1,0 +1,7 @@
+{
+  "label": "injector-admin",
+  "name": "injector-admin",
+  "description": "",
+  "enableHTTP": false,
+  "tags": ["预置", "injector"]
+}
