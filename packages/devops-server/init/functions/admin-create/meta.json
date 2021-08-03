@@ -1,0 +1,7 @@
+{
+  "label": "后台管理-创建管理员",
+  "name": "admin-create",
+  "description": "",
+  "enableHTTP": true,
+  "tags": ["后台管理", "预置"]
+}

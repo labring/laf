@@ -1,0 +1,17 @@
+{
+  "label": "应用初始化器",
+  "name": "initializer",
+  "description": "",
+  "enableHTTP": false,
+  "reserved": true,
+  "tags": ["初始化", "预置"],
+  "triggers": [
+    {
+      "name": "监听应用启动就绪事件",
+      "type": "event",
+      "event": "App:ready",
+      "desc": "",
+      "status": 1
+    }
+  ]
+}

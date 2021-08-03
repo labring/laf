@@ -1,0 +1,7 @@
+{
+  "label": "后台管理-管理员登陆",
+  "name": "admin-login",
+  "description": "",
+  "enableHTTP": true,
+  "tags": ["后台管理", "预置", "登陆"]
+}

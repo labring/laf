@@ -1,15 +1,14 @@
 
 import { getTriggers } from "../../api/trigger"
 import { Trigger } from "cloud-function-engine"
-import { Globals } from "../globals"
+import { Globals } from "../globals/globals"
 import { createLogger } from "../logger"
 import { convertActionType } from "../utils"
 import { ChangeStreamDocument } from "mongodb"
 import { FrameworkScheduler } from "./scheduler"
 import { debounce } from 'lodash'
-import { applyRules } from "../../api/rules"
+import { applyPolicyRules } from "../../api/rules"
 import { Constants } from "../../constants"
-
 
 const accessor = Globals.accessor
 const logger = createLogger('scheduler')
@@ -17,7 +16,7 @@ const logger = createLogger('scheduler')
 /**
  * 触发器的调度器单例
  */
-export const Scheduler = new FrameworkScheduler()
+export const SchedulerInstance = new FrameworkScheduler()
 
 /**
  * 当数据库连接成功时，初始化 scheduler
@@ -27,8 +26,13 @@ accessor.ready.then(async () => {
   const data = await getTriggers()
   logger.debug('loadTriggers: ', data)
   const triggers = data.map(data => Trigger.fromJson(data))
-  Scheduler.init(triggers)
-  Scheduler.emit('App:ready')
+  SchedulerInstance.init(triggers)
+  SchedulerInstance.emit('App:ready')
+  logger.info('triggers loaded')
+
+  // 初始化访问策略
+  await applyPolicyRules()
+  logger.info('policy rules applied')
 
   // 监听数据操作事件
   const db = accessor.db
@@ -40,9 +44,9 @@ accessor.ready.then(async () => {
 
 // 对应用访问策略的函数进行防抖动处理
 const debouncedApplyPolicy = debounce(() => {
-  applyRules()
-    .then(() => logger.info('policy rules applied'))
-    .catch(err => logger.error('policy rules applied failed: ', err))
+  applyPolicyRules()
+    .then(() => logger.info('hot update: policy rules applied'))
+    .catch(err => logger.error('hot update: policy rules applied failed: ', err))
 }, 2000, { trailing: true, leading: false })
 
 /**
@@ -54,7 +58,7 @@ function DatabaseChangeEventCallBack(doc: ChangeStreamDocument) {
   const collection = doc.ns.coll
 
   // 访问策略变更时，加载新的访问规则
-  if (collection === Constants.policy_collection && operationType === 'insert') {
+  if (collection === Constants.policy_collection && ['insert', 'update', 'delete', 'replace'].includes(operationType)) {
     debouncedApplyPolicy()
   }
 
@@ -62,26 +66,26 @@ function DatabaseChangeEventCallBack(doc: ChangeStreamDocument) {
   if (collection === Constants.trigger_collection) {
     if (['insert', 'update', 'replace'].includes(operationType)) {
       const trigger = Trigger.fromJson(doc.fullDocument)
-      Scheduler.updateTrigger(trigger)
+      SchedulerInstance.updateTrigger(trigger)
     }
 
     if (operationType === 'delete') {
       getTriggers()
         .then(data => {
           const triggers = data.map(it => Trigger.fromJson(it))
-          Scheduler.init(triggers)
+          SchedulerInstance.init(triggers)
         })
         .catch(err => logger.error(err))
     }
   }
 
-  if(collection.startsWith('__')) {
+  if (collection.startsWith('__')) {
     return
   }
 
   // 触发数据变更事件
   const event = `DatabaseChange:${collection}#${operationType}`
-  Scheduler.emit(event, doc)
+  SchedulerInstance.emit(event, doc)
 }
 
 
@@ -116,13 +120,13 @@ export function AccessorEventCallBack(data: any) {
     return
   }
 
-  if(params.collection?.startsWith('__')) {
+  if (params.collection?.startsWith('__')) {
     return
   }
 
   // 触发数据事件
   const event = `/db/${params.collection}#${op}`
-  Scheduler.emit(event, {
+  SchedulerInstance.emit(event, {
     exec_params: params,
     exec_result: result
   })

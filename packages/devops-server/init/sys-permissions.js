@@ -11,10 +11,15 @@ exports.permissions = [
   { name: 'admin.edit', label: '编辑管理员' },
   { name: 'admin.delete', label: '删除管理员' },
 
-  { name: 'rule.create', label: '创建访问规则' },
-  { name: 'rule.read', label: '获取访问规则' },
-  { name: 'rule.edit', label: '编辑访问规则' },
-  { name: 'rule.delete', label: '删除访问规则' },
+  { name: 'policy.create', label: '创建访问策略' },
+  { name: 'policy.read', label: '获取访问策略' },
+  { name: 'policy.edit', label: '编辑访问策略' },
+  { name: 'policy.delete', label: '删除访问策略' },
+
+  { name: 'rule.create', label: '创建访问策略规则' },
+  { name: 'rule.read', label: '获取访问策略规则' },
+  { name: 'rule.edit', label: '编辑访问策略规则' },
+  { name: 'rule.delete', label: '删除访问策略规则' },
 
   { name: 'function.create', label: '创建云函数' },
   { name: 'function.read', label: '获取云函数' },

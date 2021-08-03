@@ -15,7 +15,7 @@ export const Constants = {
   /**
    * 访问策略集合名
    */
-  policy_collection: '__deployed__rules',
+  policy_collection: '__deployed__policies',
 
   /**
    * 函数日志的集合名

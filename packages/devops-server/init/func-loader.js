@@ -34,7 +34,7 @@ class FunctionLoader {
    * @returns 
    */
   async loadFunction(func_path) {
-    const codePath = path.join(func_path, 'index.js')
+    const codePath = path.join(func_path, 'index.ts')
     const code = await this.loadFunctionCode(codePath)
 
     const metaPath = path.join(func_path, 'meta.json')

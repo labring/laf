@@ -2,5 +2,6 @@
   "label": "文件上传",
   "name": "file-upload",
   "description": "文件上传，请使用 postman/curl 等HTTP工具测试此函数；默认上传至 public 空间下，可自行定义上传逻辑",
-  "enableHTTP": true
+  "enableHTTP": true,
+  "tags": ["预置"]
 }

@@ -1,6 +1,6 @@
 {
   "name": "laf-app-server",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "less framework base on less-api",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
@@ -9,14 +9,10 @@
     "start": "node ./dist/index.js",
     "build": "npx tsc -p tsconfig.json && npm run create-internal-pkg",
     "watch": "npx tsc -p tsconfig.json -w",
-    "init": "node init/index.js",
-    "create-internal-pkg": "node ./init/create-internal-package.js",
+    "create-internal-pkg": "node ./scripts/create-internal-package.js",
     "prepublishOnly": "npm run build",
     "trace-gc": "node --trace_gc --trace_gc_verbose ./dist/index.js",
-    "init-start": "npm run init && npm run start",
-    "docker-build": "docker build -t lessx/less-framework:latest .",
-    "docker-push": "docker push lessx/less-framework:latest",
-    "docker-bp": "npm run docker-build && npm run docker-push"
+    "init-start": "npm run start"
   },
   "keywords": [
     "BaaS",
@@ -29,18 +25,18 @@
   "dependencies": {
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
-    "cloud-function-engine": "^0.0.6",
+    "cloud-function-engine": "^0.0.7",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "fs-extra": "^9.1.0",
     "jsonwebtoken": "^8.5.1",
-    "less-api": "^1.5.1",
-    "less-api-database": "^1.5.0",
+    "less-api": "^1.5.3",
+    "less-api-database": "^1.5.3",
     "lodash": "^4.17.21",
     "log4js": "^6.3.0",
     "mongodb": "^4.0.1",
     "multer": "^1.4.2",
-    "node-modules-utils": "^0.0.5",
+    "node-modules-utils": "^0.0.6",
     "uuid": "^8.3.2",
     "validator": "^12.2.0"
   },

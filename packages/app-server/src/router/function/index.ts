@@ -4,7 +4,7 @@ import * as multer from 'multer'
 import * as path from 'path'
 import * as uuid from 'uuid'
 import { getFunctionByName } from '../../api/function'
-import { Globals } from '../../lib/globals'
+import { Globals } from '../../lib/globals/index'
 import { Constants } from '../../constants'
 
 // 设置云函数中的加载函数
@@ -53,7 +53,7 @@ async function handleInvokeFunction(req: Request, res: Response) {
   // 调试权限验证: @TODO 需要通过令牌来控制调试权限
   if (debug) {
     const auth = req['auth']
-    if(!auth || auth.type !== 'admin') {
+    if (!auth || auth.type !== 'admin') {
       return res.status(403).send('permission denied')
     }
   }
@@ -62,7 +62,7 @@ async function handleInvokeFunction(req: Request, res: Response) {
   if (!funcData) {
     return res.send({ code: 1, error: 'function not found', requestId })
   }
-  
+
   const func = new CloudFunction(funcData)
 
   // 未启用 HTTP 访问则拒绝访问（调试模式除外）
@@ -76,12 +76,12 @@ async function handleInvokeFunction(req: Request, res: Response) {
   }
 
   // 如果是调试模式或者函数未编译，则编译并更新函数
-  if(debug || !func.compiledCode) {
+  if (debug || !func.compiledCode) {
     func.compile2js()
 
     await db.collection(Constants.function_collection)
       .doc(func.id)
-      .update({ compiledCode: func.compiledCode, updated_at: Date.now()})
+      .update({ compiledCode: func.compiledCode, updated_at: Date.now() })
   }
 
   // 调用函数
@@ -97,7 +97,7 @@ async function handleInvokeFunction(req: Request, res: Response) {
   const result = await func.invoke(ctx)
 
   // 将云函数调用日志存储到数据库
-  if(debug) {
+  if (debug) {
     await db.collection(Constants.function_log_collection)
       .add({
         requestId: requestId,

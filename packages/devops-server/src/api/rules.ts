@@ -40,7 +40,7 @@ export async function publishAccessPolicy() {
   const logger = Globals.logger
  
   const app_accessor = Globals.app_accessor
-  const ret = await Globals.sys_accessor.db.collection('__rules').find().toArray()
+  const ret = await Globals.sys_accessor.db.collection('__policies').find().toArray()
   const session = app_accessor.conn.startSession()
 
   try {

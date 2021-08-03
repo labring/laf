@@ -72,6 +72,10 @@ services:
 
   devops_admin:
     image: lessx/laf-devops-admin:latest
+    depends_on: 
+      - app_server
+      - devops_server
+      - mongo
     ports: 
       - 8080:80
     networks: 

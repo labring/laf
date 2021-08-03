@@ -1,6 +1,6 @@
 import cloud from '@/cloud-sdk'
 
-// 你可以让一个云函数监听 `app.ready` 触发器事件，初始化必要的配置信息(cloud.shared)
+// 你可以让一个云函数监听 `App:ready` 触发器事件，初始化必要的配置信息(cloud.shared)
 const appid = cloud.shared.get('settings.wxmp.appid')     // 微信小程序 AppId
 const appsecret = cloud.shared.get('settings.wxmp.appsecret')  // 微信小程序 AppSecret
 
@@ -46,7 +46,7 @@ exports.main = async function (ctx) {
 
   // 生成 token
   const expire = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7
-  const token = cloud.getToken({uid: data._id, exp: expire })
+  const token = cloud.getToken({ uid: data._id, exp: expire })
   return {
     uid: data._id,
     access_token: token,
@@ -64,15 +64,15 @@ async function getOpenId(code) {
 
   const api_url = `https://api.weixin.qq.com/sns/jscode2session`
   const param = `appid=${appid}&secret=${appsecret}&js_code=${code}&grant_type=authorization_code`
-  
+
   console.log('request url: ', `${api_url}?${param}`)
-  
+
   const res = await cloud.fetch(`${api_url}?${param}`)
 
   console.log(res.data)
   // { session_key: string; openid: string } 
-  
-  if (res.errcode > 0) {
+
+  if (res.data.errcode > 0) {
     return null
   }
 

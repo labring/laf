@@ -1,5 +1,5 @@
 import { Constants } from "../constants"
-import { Globals } from "../lib/globals"
+import { Globals } from "../lib/globals/index"
 
 const db = Globals.db
 

@@ -15,7 +15,7 @@ export const Constants = {
   /**
    * 部署到 app db 中的访问策略集合名
    */
-  policy_collection: '__deployed__rules',
+  policy_collection: '__deployed__policies',
 }
 
 deepFreeze(Constants)

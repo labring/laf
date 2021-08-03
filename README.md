@@ -48,6 +48,15 @@
     即便是应用重构，也可逐个替换原 `less-framework` 负责的请求，重构过程不影响应用正常运行，持续发布的方式重构。
 
 
+# 运行截图
+
+![](https://s3.bmp.ovh/imgs/2021/08/9ade3cec7ba8bb0a.png)
+![](https://s3.bmp.ovh/imgs/2021/08/5faa3eb4943acd55.png)
+![](https://s3.bmp.ovh/imgs/2021/08/25c2e4298719f9aa.png)
+![](https://s3.bmp.ovh/imgs/2021/08/1216a79b03d17a12.png)
+![](https://s3.bmp.ovh/imgs/2021/08/bb2b4d2e3100d00d.png)
+![](https://s3.bmp.ovh/imgs/2021/08/44a349008ec52d1f.png)
+
 # 使用说明
 
 ## 基于 Docker Compose 快速部署
@@ -65,26 +74,7 @@ docker-compose up
 # 浏览器打开 http://locahost:8080 访问
 ```
 
-## 本地部署
-
-- 确保本地全局安装了 lerna，如未安装先全局安装一下：npm i -g lerna
-- 项目根目录下安装根项目依赖：npm run install && npm run build
-- 执行：docker run -p 27017:27017 --name laf_mongo -e ALLOW_EMPTY_PASSWORD=yes -e MONGODB_REPLICA_SET_MODE=primary -e MONGODB_INITIAL_PRIMARY_HOST=localhost  -d bitnami/mongodb
-- 进入packages/devops-server, 依次执行：cp .env.development .env && npm run init && npm start
-- 进入packages/app-server, 依次执行：cp .env.development .env && npm run init && npm start
-- 进入packages/devops-admin, 执行：npm run dev 
-- 浏览器打开 开发运维控制台
-  
-> ps：注意，以上两个server包下的 .env 的mongo端口是否跟本地mongo冲突，如有冲突可修改配置的端口。
-
-### 本地部署部分运行截图
-- ![](https://i.bmp.ovh/imgs/2021/08/90c8b78f9bd554aa.png)
-- ![](https://i.bmp.ovh/imgs/2021/08/7943950f233878d6.png)
-- ![](https://i.bmp.ovh/imgs/2021/08/a8f635fa3e253087.png)
-- ![](https://s3.bmp.ovh/imgs/2021/08/3b345361452e813e.png)
-- ![](https://s3.bmp.ovh/imgs/2021/08/675db7db07da72d8.png)
-
 # TODO
 
-- 添加运行截图到 README.md
 - 使用 lerna fixed version
+- 考虑增加初始化应用时，初始化触发器
