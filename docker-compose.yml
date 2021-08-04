@@ -49,8 +49,6 @@ services:
       DB_URI: mongodb://mongo:27017
       DB_POOL_LIMIT: 100
       SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
-      SUPER_ADMIN: laf-app
-      SUPER_ADMIN_PASSWORD: laf-app
       LOG_LEVEL: debug
       PORT: 8000
     command: npm run init-start
