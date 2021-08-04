@@ -11,9 +11,10 @@
     "init": "lerna run init",
     "prepublishOnly": "npm run build",
     "init-start": "npm run init && npm run start",
+    "build-devops-admin": "lerna run --scope laf-devops-admin build:prod",
     "docker-build-devops-server": "node ./scripts/docker-build-devops-server.js",
     "docker-build-app-server": "node ./scripts/docker-build-app-server.js",
-    "docker-build-devops-admin": "node ./scripts/docker-build-devops-admin.js",
+    "docker-build-devops-admin": "npm run build-devops-admin && node ./scripts/docker-build-devops-admin.js",
     "docker-build": "npm run docker-build-devops-server && npm run docker-build-app-server && npm run docker-build-devops-admin",
     "docker-push": "node ./scripts/docker-push.js"
   },
@@ -27,6 +28,7 @@
   ],
   "devDependencies": {
     "fs-extra": "^9.1.0",
-    "husky": "^5.2.0"
+    "husky": "^5.2.0",
+    "lerna": "^4.0.0"
   }
 }
