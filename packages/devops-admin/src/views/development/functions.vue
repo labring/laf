@@ -172,7 +172,7 @@
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { db } from '@/api/cloud'
+import { db } from '../../api/cloud'
 
 const defaultCode = `
 import cloud from '@/cloud-sdk'
@@ -183,17 +183,10 @@ exports.main = async function (ctx) {
 
   // 数据库操作
   const db = cloud.database()
-  const db_res = await db.collection('admins').get()
-  console.log(db_res)
+  const r = await db.collection('admins').get()
+  console.log(r)
 
-  // 网络操作
-  const res = await cloud.fetch("https://www.v2ex.com/api/topics/hot.json")
-  console.log(res.status)
-
-  return {
-    data: db_res.data,
-    fetch: res.data
-  }
+  return r.data
 }
 `
 
@@ -416,9 +409,18 @@ export default {
     async handleDelete(row, index) {
       await this.$confirm('确认要删除此数据？', '删除确认')
 
+      if(row.status) {
+        return this.$message.error('请先停用函数，再删除！')
+      }
+
+      const $ = db.command
       // 执行删除请求
       const r = await db.collection('__functions')
-        .where({ _id: row._id })
+        .where({ 
+          _id: row._id, 
+          status: 0, 
+          reserved: $.neq(true)
+        })
         .remove()
 
       if (!r.ok) {

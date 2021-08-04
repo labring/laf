@@ -49,13 +49,7 @@ export default {
             0
           ]
         },
-        "reserved": {
-          "required": true,
-          "default": false,
-          "in": [
-            false
-          ]
-        }
+        "reserved": "$value !== true"
       }
     },
     "count": "$has('function.read')"
