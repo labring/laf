@@ -10,11 +10,11 @@ export default class Config {
    * 获取数据库连接配置
    */
   static get db() {
-    if(!process.env['DB']) {
+    if (!process.env['DB']) {
       throw new Error('env: `DB` is missing')
     }
 
-    if(!process.env['DB_URI']) {
+    if (!process.env['DB_URI']) {
       throw new Error('env: `DB_URI` is missing')
     }
 
@@ -29,8 +29,8 @@ export default class Config {
    * 指定服务端密钥，用于生成 token 
    */
   static get SERVER_SECRET_SALT(): string {
-    const secret_salt = process.env['SERVER_SECRET_SALT']  ?? process.env['SERVER_SALT'] 
-    if(!secret_salt) {
+    const secret_salt = process.env['SERVER_SECRET_SALT'] ?? process.env['SERVER_SALT']
+    if (!secret_salt) {
       throw new Error('env: `SERVER_SECRET_SALT` is missing')
     }
     return secret_salt
@@ -43,7 +43,7 @@ export default class Config {
 
   // 临时文件目录
   static get TMP_PATH(): string {
-    const tmp_path =  process.env['TMP_PATH'] ?? path.join(process.cwd(), "tmp")
+    const tmp_path = process.env['TMP_PATH'] ?? path.join(process.cwd(), "tmp")
     return tmp_path
   }
 
@@ -57,8 +57,15 @@ export default class Config {
   /**
    * 指定服务监听端口号，缺省为 8000
    */
-  static get PORT(): number{
+  static get PORT(): number {
     return (process.env.PORT ?? 8000) as number
+  }
+
+  /**
+   * 指定开启云函数日志: "always" | "debug" | "none"
+   */
+  static get ENABLE_CLOUD_FUNCTION_LOG(): string {
+    return (process.env.ENABLE_CLOUD_FUNCTION_LOG ?? 'debug')
   }
 
   /**

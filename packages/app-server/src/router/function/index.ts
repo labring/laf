@@ -6,6 +6,8 @@ import * as uuid from 'uuid'
 import { getFunctionByName } from '../../api/function'
 import { Globals } from '../../lib/globals/index'
 import { Constants } from '../../constants'
+import { parseToken } from '../../lib/utils/token'
+import Config from '../../config'
 
 // 设置云函数中的加载函数
 CloudFunction.require_func = Globals.require_func
@@ -48,13 +50,13 @@ async function handleInvokeFunction(req: Request, res: Response) {
     return res.send({ code: 1, error: 'invalid function name', requestId })
   }
 
-  const debug = req.query?.debug ?? false
+  const debug = req.get('debug-token') ?? undefined
 
-  // 调试权限验证: @TODO 需要通过令牌来控制调试权限
+  // 调试权限验证: 
   if (debug) {
-    const auth = req['auth']
-    if (!auth || auth.type !== 'admin') {
-      return res.status(403).send('permission denied')
+    const parsed = parseToken(debug as string)
+    if (!parsed || parsed.type !== 'debug') {
+      return res.status(403).send('permission denied: invalid debug token')
     }
   }
 
@@ -97,7 +99,8 @@ async function handleInvokeFunction(req: Request, res: Response) {
   const result = await func.invoke(ctx)
 
   // 将云函数调用日志存储到数据库
-  if (debug) {
+  const shouldLog = Config.ENABLE_CLOUD_FUNCTION_LOG === 'always' || (Config.ENABLE_CLOUD_FUNCTION_LOG === 'debug' && debug)
+  if (shouldLog) {
     await db.collection(Constants.function_log_collection)
       .add({
         requestId: requestId,
