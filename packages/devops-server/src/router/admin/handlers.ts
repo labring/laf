@@ -3,6 +3,7 @@ import { getToken } from '../../lib/utils/token'
 import { checkPermission, getPermissions } from '../../api/permission'
 import { hashPassword } from '../../lib/utils/hash'
 import { Globals } from '../../lib/globals'
+import Config from '../../config'
 
 const db = Globals.sys_db
 const logger = Globals.logger
@@ -37,8 +38,7 @@ export async function handleAdminLogin(req: Request, res: Response) {
   if (ret.ok && ret.data.length) {
     const admin = ret.data[0]
 
-    // 默认 token 有效期为 7 天
-    const expire = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7
+    const expire = Math.floor(Date.now() / 1000) + 60 * 60 * Config.TOKEN_EXPIRED_TIME
     const payload = {
       uid: admin._id,
       type: 'admin',
@@ -47,10 +47,19 @@ export async function handleAdminLogin(req: Request, res: Response) {
     const access_token = getToken(payload)
     logger.info(`[${requestId}] admin login success: ${admin._id} ${username}`)
 
+    let debug_token = undefined
+
+    // if user has debug function permission
+    const canDebug = await checkPermission(admin._id, 'function.debug')
+    if (canDebug === 0) {
+      debug_token = getToken({ uid: admin._id, type: 'debug', exp: expire }, Config.APP_SERVER_SECRET_SALT)
+    }
+
     return res.send({
       code: 0,
       data: {
         access_token,
+        debug_token,
         username,
         uid: admin._id,
         expire

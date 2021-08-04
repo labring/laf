@@ -110,6 +110,13 @@ export default class Config {
   }
 
   /**
+   * 指定服务端令牌默认过期时间（小时）
+   */
+  static get TOKEN_EXPIRED_TIME(): number{
+    return (process.env.TOKEN_EXPIRED_TIME ?? 24) as number
+  }
+
+  /**
    * 是否生产环境
    */
   static get isProd(): boolean {
