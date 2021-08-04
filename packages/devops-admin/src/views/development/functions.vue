@@ -409,16 +409,16 @@ export default {
     async handleDelete(row, index) {
       await this.$confirm('确认要删除此数据？', '删除确认')
 
-      if(row.status) {
+      if (row.status) {
         return this.$message.error('请先停用函数，再删除！')
       }
 
       const $ = db.command
       // 执行删除请求
       const r = await db.collection('__functions')
-        .where({ 
-          _id: row._id, 
-          status: 0, 
+        .where({
+          _id: row._id,
+          status: 0,
           reserved: $.neq(true)
         })
         .remove()

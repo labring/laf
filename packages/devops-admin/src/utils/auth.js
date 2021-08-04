@@ -8,6 +8,7 @@ export function getToken() {
 
   if (!expire || expire <= Date.now() / 1000) {
     removeToken()
+    removeDebugToken()
   }
 
   return token
@@ -21,4 +22,20 @@ export function setToken(token, expire) {
 export function removeToken() {
   localStorage.removeItem(kExpire)
   return localStorage.removeItem(kToken)
+}
+
+/**
+ * 获取调试云函数的 token
+ */
+export function getDebugToken() {
+  const token = localStorage.getItem('debug_token')
+  return token
+}
+
+export function setDebugToken(token) {
+  return localStorage.setItem('debug_token', token)
+}
+
+export function removeDebugToken() {
+  return localStorage.removeItem('debug_token')
 }

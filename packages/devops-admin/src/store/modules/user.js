@@ -1,5 +1,5 @@
 import { login, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken, setDebugToken, removeDebugToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
 const state = {
@@ -41,6 +41,9 @@ const actions = {
         const { data } = response
         commit('SET_TOKEN', data.access_token)
         setToken(data.access_token, data.expire)
+        if (data.debug_token) {
+          setDebugToken(data.debug_token)
+        }
         resolve()
       }).catch(error => {
         reject(error)
@@ -88,6 +91,7 @@ const actions = {
       commit('SET_PERMISSIONS', [])
 
       removeToken()
+      removeDebugToken()
       resetRouter()
 
       // reset visited views and cached views

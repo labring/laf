@@ -17,7 +17,7 @@
     <div class="main-row">
       <div class="collection-list">
         <div class="label">选择集合</div>
-        <el-radio-group v-model="collection_name">
+        <el-radio-group v-model="collection_name" style="width: 100%;">
           <el-radio v-for="item in collections" :key="item" class="collection-radio" border size="medium" :label="item">
             {{ item }}
           </el-radio>
@@ -316,6 +316,7 @@ export default {
   .collection-list {
     width: 200px;
     border-radius: 5px;
+    box-sizing: border-box;
 
     .label {
       font-size: 14px;

@@ -109,9 +109,10 @@
 import FunctionLogDetail from './components/FunctionLogDetail'
 import FunctionEditor from '@/components/FunctionEditor'
 import jsonEditor from '@/components/JsonEditor/param'
-import { db, dbm_cloud } from '@/api/cloud'
-import { launchFunction } from '@/api/func'
-import { publishFunctions } from '@/api/publish'
+import { db, dbm_cloud } from '../../api/cloud'
+import { launchFunction } from '../../api/func'
+import { publishFunctions } from '../../api/publish'
+import { getDebugToken } from '../../utils/auth'
 
 const defaultParamValue = {
   code: 'laf'
@@ -249,6 +250,7 @@ export default {
      * 运行函数代码
      */
     async launch() {
+      const debug_token = getDebugToken()
       await this.updateFunc(false)
       if (this.loading) {
         return
@@ -258,7 +260,7 @@ export default {
 
       const param = this.parseInvokeParam(this.invokeParams)
 
-      const res = await launchFunction(this.func.name, param, true)
+      const res = await launchFunction(this.func.name, param, debug_token)
         .catch(err => {
           console.error(err)
           this.$message.warning('运行失败： ' + err)
