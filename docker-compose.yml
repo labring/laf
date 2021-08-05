@@ -52,12 +52,13 @@ services:
       SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_app_server
       LOG_LEVEL: debug
       PORT: 8000
+      ENABLE_CLOUD_FUNCTION_LOG: always
     command: dockerize -wait http://devops_server:9000/health-check npm run start
     volumes:
       - app-data:/app/data
     ports:
       - "8000:8000"
-    read_only: true
+    read_only: false
     depends_on: 
       - devops_server
       - mongo

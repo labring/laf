@@ -54,6 +54,7 @@ services:
       SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
       LOG_LEVEL: debug
       PORT: 8000
+      ENABLE_CLOUD_FUNCTION_LOG: always
     command: sleep 5 && npm run start
     volumes:
       - ./packages/app-server:/app
