@@ -2,17 +2,19 @@
 
 ## 介绍
 
-`less-framework` 是一套开箱即用、完整、开源、可控的云开发框架————真实落地的 serverless 开发方式。
+`less-framework` 是一套开箱即用、完整、开源、可控的云开发框架———真实落地的 serverless 开发方式。
 
-真正实现，服务端超低代码，极速上线应用。
+真正实现，服务端超低代码，极速上线应用，提供云函数引擎————可在线编程、全类型提示、在线调试、一键部署运行。
 
 如果你熟悉微信云开发，那 less-framework 就是让你拥有自己的、可独立部署的、开源的、可控的云开发框架。
 
 ### 重要相关
+
   - 基于 [less-api](https://github.com/Maslow/less-api) 打造的服务端低代码框架
-  - less-framework 集成了 RBAC、文件上传下载、用户授权，开箱即用，5 分钟上线应用
+  - less-framework 集成了云函数引擎、RBAC、文件上传下载、用户授权，开箱即用，5 分钟上线应用
   - 前端可使用 [less-api-client](https://github.com/Maslow/less-api-client-js) “直连”数据库，无需与服务端对接口
   - 另有 Flutter SDK [less-api-client](https://github.com/Maslow/less-api-client-dart)，快速上线移动端应用
+  - 支持 h5、小程序、Uni-app、Flutter 等客户端环境使用
 
 ## 初心场景
 
@@ -82,25 +84,20 @@ sudo systemctl start docker
 git clone https://github.com/Maslow/less-framework.git
 cd less-framework
 
-# 因 mongo 启动较慢，所以先启动 mongo 服务
-docker-compose up -d mongo
-
-# 主动等待数秒后，启动所有服务
+# 启动所有服务
 docker-compose up
 
 # 浏览器打开 http://locahost:8080 访问
-```
 
-#### 停止
-
-```sh
+# 停止服务
 docker-compose down
-```
 
-#### 更新最新镜像
+# 停止服务并清数据卷
+docker-compose down -v
 
-```sh
+# 更新镜像
 docker-compose pull
+
 ```
 
 # TODO
