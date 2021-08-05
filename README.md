@@ -11,7 +11,6 @@
 ### 重要相关
   - 基于 [less-api](https://github.com/Maslow/less-api) 打造的服务端低代码框架
   - less-framework 集成了 RBAC、文件上传下载、用户授权，开箱即用，5 分钟上线应用
-  - [less-admin](https://github.com/Maslow/less-admin) 是 less-framework 配套的后台管理，可管理访问规则、云函数等功能
   - 前端可使用 [less-api-client](https://github.com/Maslow/less-api-client-js) “直连”数据库，无需与服务端对接口
   - 另有 Flutter SDK [less-api-client](https://github.com/Maslow/less-api-client-dart)，快速上线移动端应用
 
@@ -61,6 +60,24 @@
 
 ### 基于 Docker Compose 快速部署
 
+#### 安装 Docker & Docker Compose (CentOS)
+
+```sh
+sudo yum install -y yum-utils
+sudo yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo
+
+sudo yum install docker-ce docker-ce-cli containerd.io
+sudo systemctl start docker
+
+```
+
+@see https://docs.docker.com/engine/install/
+@see https://docs.docker.com/compose/install/
+
+#### 启动
+
 ```sh
 git clone https://github.com/Maslow/less-framework.git
 cd less-framework
@@ -74,8 +91,19 @@ docker-compose up
 # 浏览器打开 http://locahost:8080 访问
 ```
 
+#### 停止
+
+```sh
+docker-compose down
+```
+
+#### 更新最新镜像
+
+```sh
+docker-compose pull
+```
+
 # TODO
 
 - 提供在线演示版
 - 提供在线使用文档
-- 将此仓库名更改为 `less-api-framework`，本项目产品名更改为 `LaF`
