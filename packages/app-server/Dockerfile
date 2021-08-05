@@ -8,7 +8,7 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 EXPOSE 8000
 WORKDIR /app
 ENV LOG_LEVEL=debug
-COPY . /app
+COPY --chown=node:node . /app
 RUN mkdir /app/data || true
 RUN chown node:node /app/data
 # RUN npm i

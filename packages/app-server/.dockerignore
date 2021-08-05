@@ -4,3 +4,13 @@ ecosystem.config.js
 # dist
 data
 src
+tests
+scripts
+commitlint.config.js
+ecosystem.config.js.tpl
+.DS_Store
+.env.development
+.env.production
+.gitignore
+Dockerfile
+http
