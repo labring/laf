@@ -14,7 +14,10 @@
     "docker-build-app-server": "node ./scripts/docker-build-app-server.js",
     "docker-build-devops-admin": "node ./scripts/docker-build-devops-admin.js",
     "docker-build": "npm run docker-build-devops-server && npm run docker-build-app-server && npm run docker-build-devops-admin",
-    "docker-push": "node ./scripts/docker-push.js"
+    "docker-push-app-server": "node ./scripts/docker-push-app-server.js",
+    "docker-push-devops-server": "node ./scripts/docker-push-devops-server.js",
+    "docker-push-devops-admin": "node ./scripts/docker-push-devops-admin.js",
+    "docker-push": "npm run docker-push-app-server && npm run docker-push-devops-server && npm run docker-push-devops-admin"
   },
   "keywords": [
     "BaaS",
