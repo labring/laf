@@ -5,7 +5,6 @@ ecosystem.config.js
 data
 src
 tests
-scripts
 commitlint.config.js
 ecosystem.config.js.tpl
 .DS_Store
