@@ -29,7 +29,7 @@ services:
       APP_DB_URI: mongodb://mongo:27017
       APP_DB_POOL_LIMIT: 100
       APP_SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
-    command: npm run init-start
+    command: sleep 5 && npm run init-start
     volumes:
       - ./packages/devops-server:/app
     ports:
@@ -54,7 +54,7 @@ services:
       SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
       LOG_LEVEL: debug
       PORT: 8000
-    command: npm run init-start
+    command: sleep 5 && npm run start
     volumes:
       - ./packages/app-server:/app
       - app-data:/app/data
@@ -77,9 +77,6 @@ services:
       - ./packages/devops-admin/nginx.conf:/etc/nginx/conf.d/app.conf
     ports: 
       - 8080:80
-
-# networks:
-#   laf:
       
 volumes:
   app-data:
