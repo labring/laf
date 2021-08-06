@@ -72,12 +72,6 @@ export default {
 
     // 加载必要的类型文件
     autoImportTypings.loadDefaults()
-
-    // listen Ctrl+S
-    document.addEventListener('keydown', this.save, false)
-  },
-  beforeDestroy() {
-    document.removeEventListener('keydown', this.save, false)
   },
   methods: {
     getValue() {
@@ -86,13 +80,7 @@ export default {
     /**
      * 当代码变化时，尝试解析是否有新 import 的依赖，并加载其类型文件
      */
-    parseImports: _.debounce(autoImportTypings.parse, 2000, { leading: true }).bind(autoImportTypings),
-    save(e) {
-      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-        this.$emit('save', this.getValue())
-        e.preventDefault()
-      }
-    }
+    parseImports: _.debounce(autoImportTypings.parse, 2000, { leading: true }).bind(autoImportTypings)
   }
 }
 </script>

@@ -25,7 +25,7 @@
 
     <div style="display: flex;">
       <div class="editor-container">
-        <function-editor v-model="value" :height="700" :dark="false" @save="updateFunc" />
+        <function-editor v-model="value" :height="700" :dark="false" />
       </div>
       <div class="lastest-logs">
         <el-card shadow="never" :body-style="{ padding: '20px' }">
@@ -172,10 +172,10 @@ export default {
     this.getLatestLogs()
     this.setTagViewTitle()
   },
-  mounted() {
+  activated() {
     document.addEventListener('keydown', this.bindShortKey, false)
   },
-  beforeDestroy() {
+  deactivated() {
     document.removeEventListener('keydown', this.bindShortKey, false)
   },
   methods: {
@@ -336,13 +336,20 @@ export default {
       return param
     },
     // 快捷键绑定
-    bindShortKey(e) {
-      // Ctrl + b 为调试运行，并弹出
+    async bindShortKey(e) {
+      // Ctrl + s 为保存
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        this.updateFunc()
+        e.preventDefault()
+      }
+
+      // Ctrl + j 弹出/隐藏调试框
       if ((e.ctrlKey || e.metaKey) && e.key === 'j') {
         this.showDebugPanel = !this.showDebugPanel
         e.preventDefault()
       }
 
+      // Ctrol + 为调试运行，并弹出调试框
       if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
         this.showDebugPanel = true
         this.launch()
