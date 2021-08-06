@@ -4,6 +4,8 @@ import * as crypto from 'crypto'
 const db = cloud.database()
 
 exports.main = async function (ctx) {
+  console.log(ctx)
+
   const uid = ctx.auth?.uid
   if (!uid) {
     return 'Unauthorized'
@@ -40,7 +42,7 @@ exports.main = async function (ctx) {
   // update password
   if (password) {
     await db.collection('password')
-      .where({ uid: uid })
+      .where({ uid: _id })
       .update({
         password: hashPassword(password),
         updated_at: Date.now()
@@ -78,13 +80,14 @@ exports.main = async function (ctx) {
     data['roles'] = roles
   }
 
+  console.log(_id, data)
   const r = await db.collection('admins')
-    .where({ _id: uid })
+    .where({ _id: _id })
     .update(data)
 
   return {
     ...r,
-    uid
+    _id
   }
 }
 
