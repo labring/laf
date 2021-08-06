@@ -172,10 +172,18 @@ export default {
     this.getLatestLogs()
     this.setTagViewTitle()
   },
+  mounted() {
+    document.removeEventListener('keydown', this.bindShortKey, false)
+    document.addEventListener('keydown', this.bindShortKey, false)
+  },
   activated() {
+    document.removeEventListener('keydown', this.bindShortKey, false)
     document.addEventListener('keydown', this.bindShortKey, false)
   },
   deactivated() {
+    document.removeEventListener('keydown', this.bindShortKey, false)
+  },
+  beforeDestroy() {
     document.removeEventListener('keydown', this.bindShortKey, false)
   },
   methods: {
@@ -241,7 +249,7 @@ export default {
       if (showTip) {
         await this.getFunction()
         await this.addFunctionHistory()
-        this.$message.success('已保存')
+        this.$message.success('已保存: ' + this.func.name)
       }
 
       this.loading = false
