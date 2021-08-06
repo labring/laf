@@ -1,12 +1,12 @@
 <template>
   <section class="app-main">
-    <transition name="fade-transform" mode="out-in">
-      <!-- <keep-alive> -->
+    <!-- <transition name="fade-transform" mode="out-in"> -->
+    <!-- <keep-alive> -->
 
-      <keep-alive :include="cachedViews">
-        <router-view :key="key" />
-      </keep-alive>
-    </transition>
+    <keep-alive :include="cachedViews">
+      <router-view :key="key" />
+    </keep-alive>
+    <!-- </transition> -->
   </section>
 </template>
 
@@ -40,11 +40,11 @@ export default {
 .hasTagsView {
   .app-main {
     /* 84 = navbar + tags-view = 50 + 34 */
-    min-height: calc(100vh - 84px);
+    min-height: calc(100vh - 54px);
   }
 
   .fixed-header+.app-main {
-    padding-top: 84px;
+    padding-top: 54px;
   }
 }
 </style>

@@ -14,23 +14,23 @@
 /* fade-transform */
 .fade-transform-leave-active,
 .fade-transform-enter-active {
-  transition: all .5s;
+  transition: all .05s;
 }
 
 .fade-transform-enter {
   opacity: 0;
-  transform: translateX(-30px);
+  transform: translateX(-10px);
 }
 
 .fade-transform-leave-to {
   opacity: 0;
-  transform: translateX(30px);
+  transform: translateX(10px);
 }
 
 /* breadcrumb transition */
 .breadcrumb-enter-active,
 .breadcrumb-leave-active {
-  transition: all .5s;
+  transition: all .2s;
 }
 
 .breadcrumb-enter,
@@ -40,7 +40,7 @@
 }
 
 .breadcrumb-move {
-  transition: all .5s;
+  transition: all .2s;
 }
 
 .breadcrumb-leave-active {

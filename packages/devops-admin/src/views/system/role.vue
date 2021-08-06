@@ -110,6 +110,7 @@ const defaultForm = {
 }
 
 export default {
+  name: 'RoleListPage',
   data() {
     return {
       role: Object.assign({}, defaultForm),

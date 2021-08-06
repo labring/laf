@@ -103,7 +103,7 @@ const defaultForm = {
 }
 
 export default {
-
+  name: 'AdminListPage',
   data() {
     return {
       admin: Object.assign({}, defaultForm),
