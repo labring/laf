@@ -3,5 +3,6 @@
   "name": "admin-login",
   "description": "",
   "enableHTTP": true,
+  "status": 1,
   "tags": ["后台管理", "预置", "登陆"]
 }

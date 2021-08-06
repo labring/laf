@@ -3,5 +3,6 @@
   "name": "test",
   "description": "",
   "enableHTTP": true,
+  "status": 1,
   "tags": ["预置"]
 }

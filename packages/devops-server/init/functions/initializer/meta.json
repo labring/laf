@@ -4,6 +4,7 @@
   "description": "",
   "enableHTTP": false,
   "reserved": true,
+  "status": 1,
   "tags": ["初始化", "预置"],
   "triggers": [
     {

@@ -3,5 +3,6 @@
   "name": "injector-admin",
   "description": "",
   "enableHTTP": false,
+  "status": 1,
   "tags": ["预置", "injector"]
 }

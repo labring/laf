@@ -40,6 +40,9 @@ class FunctionLoader {
     const metaPath = path.join(func_path, 'meta.json')
     const meta = await this.loadFunctionMeta(metaPath)
 
+    if (!meta['status']) {
+      meta['status'] = 0
+    }
     return { ...meta, code }
   }
 

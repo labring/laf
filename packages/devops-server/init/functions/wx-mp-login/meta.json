@@ -3,5 +3,6 @@
   "name": "wx-mp-login",
   "description": "微信小程序登陆",
   "enableHTTP": true,
+  "status": 0,
   "tags": ["预置"]
 }

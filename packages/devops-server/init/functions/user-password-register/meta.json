@@ -3,6 +3,7 @@
   "name": "user-password-register",
   "description": "用户密码注册",
   "enableHTTP": true,
+  "status": 1,
   "debugParams": "{\"username\":\"less\",\"password\":\"less123\"}",
   "tags": ["预置"]
 }

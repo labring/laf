@@ -215,7 +215,6 @@ async function createBuiltinFunctions() {
       const triggers = func.triggers || []
       const data = {
         ...func,
-        status: 1,
         created_at: Date.now(),
         updated_at: Date.now()
       }

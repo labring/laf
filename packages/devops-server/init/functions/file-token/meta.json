@@ -3,5 +3,6 @@
   "name": "file-token",
   "description": "文件访问令牌",
   "enableHTTP": true,
+  "status": 0,
   "tags": ["预置"]
 }
