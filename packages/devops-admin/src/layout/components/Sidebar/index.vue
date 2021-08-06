@@ -4,6 +4,7 @@
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
         :default-active="activeMenu"
+        :default-openeds="openeds"
         :collapse="isCollapse"
         :background-color="variables.menuBg"
         :text-color="variables.menuText"
@@ -31,6 +32,9 @@ export default {
       'permission_routes',
       'sidebar'
     ]),
+    openeds() {
+      return this.permission_routes.map(route => route.path)
+    },
     activeMenu() {
       const route = this.$route
       const { meta, path } = route
