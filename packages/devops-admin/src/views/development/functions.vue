@@ -5,16 +5,18 @@
       <el-input
         v-model="listQuery.keyword"
         placeholder="搜索"
+        size="mini"
         style="width: 200px;margin-right: 10px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+      <el-button size="mini" class="filter-item" type="default" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
-      <el-button v-permission="'function.create'" class="filter-item" type="primary" icon="el-icon-search" @click="showCreateForm">
+      <el-button size="mini" v-permission="'function.create'" class="filter-item" type="primary" icon="el-icon-plus" @click="showCreateForm">
         新建函数
       </el-button>
+      <el-checkbox class="filter-item"  v-model="listQuery.onlyEnabled" label="" :indeterminate="false" @change="handleFilter">只看已启用</el-checkbox>
     </div>
 
     <!-- 标签类别 -->
@@ -33,23 +35,13 @@
       v-loading="listLoading"
       :data="list"
       border
-      fit
+      size="small"
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column
-        label="ID"
-        prop="_id"
-        align="center"
-        min-width="100"
-      >
-        <template slot-scope="{row}">
-          <span>{{ row._id }}</span>
-        </template>
-      </el-table-column>
       <el-table-column label="函数标识" min-width="100">
         <template slot-scope="{row}">
-          <div class="func-name">
+          <div class="func-name" v-clipboard:message="row.name">
             {{ row.name }}
           </div>
         </template>
@@ -59,7 +51,7 @@
           <span class="link-type" @click="showUpdateForm(row)">{{ row.label }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="标签" width="150">
+      <el-table-column label="标签" min-width="200">
         <template slot-scope="{row}">
           <el-tag v-for="tag in row.tags" :key="tag" style="margin-right: 6px;" type="primary" size="mini">{{ tag }}</el-tag>
         </template>
@@ -88,16 +80,16 @@
           <el-tag v-if="row.status === 1" type="success" size="mini" style="font-weight: bold">
             启
           </el-tag>
-          <el-tag v-if="row.status === 0" type="info" size="mini" style="font-weight: bold">
+          <el-tag v-if="row.status === 0" type="warning" size="mini" style="font-weight: bold">
             停
           </el-tag>
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="操作" align="center" width="380" class-name="small-padding">
         <template slot-scope="{row,$index}">
-          <el-button v-permission="'function.edit'" type="primary" size="mini" @click="showUpdateForm(row)">
+          <!-- <el-button v-permission="'function.edit'" type="primary" size="mini" @click="showUpdateForm(row)">
             编辑
-          </el-button>
+          </el-button> -->
           <el-button v-permission="'function.debug'" type="success" size="mini" @click="handleShowDetail(row)">
             调试
           </el-button>
@@ -133,6 +125,9 @@
         label-width="120px"
         style="width: 400px; margin-left:20px;"
       >
+        <el-form-item label="ID" prop="_id" v-if="form._id">
+          <div  :value="form._id">{{ form._id }}</div>
+        </el-form-item>
         <el-form-item label="显示名称" prop="label">
           <el-input v-model="form.label" placeholder="函数显示名，可为中文" />
         </el-form-item>
@@ -235,9 +230,10 @@ export default {
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 20,
+        limit: 10,
         keyword: undefined,
-        tag: ''
+        tag: '',
+        onlyEnabled: true, // 只看启用的函数
       },
       form: getDefaultFormValue(),
       dialogFormVisible: false,
@@ -279,7 +275,7 @@ export default {
       this.listLoading = true
 
       // 拼装查询条件 by this.listQuery
-      const { limit, page, keyword, tag } = this.listQuery
+      const { limit, page, keyword, tag, onlyEnabled} = this.listQuery
       const query = { }
       if (keyword) {
         query['$or'] = [
@@ -291,6 +287,10 @@ export default {
 
       if (tag !== '') {
         query['tags'] = tag
+      }
+
+      if(onlyEnabled) {
+        query['status'] = 1
       }
 
       // 执行数据查询
@@ -486,8 +486,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.filter-container {
+  padding: 0;
+
+  .filter-item {
+    margin-left: 10px;
+  }
+}
 .tag-selector {
-  margin: 20px 0;
+  margin: 10px 0 10px;
   display: flex;
 
   .label {
@@ -507,5 +514,9 @@ export default {
     width: 120px;
     margin-left: 10px;
     vertical-align: bottom;
+}
+.pagination-container {
+  padding: 0;
+  margin-top: 10px;
 }
 </style>

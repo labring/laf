@@ -3,13 +3,14 @@
     <!-- 数据检索区 -->
     <div class="filter-container">
       <el-input
+        size="small"
         v-model="listQuery.keyword"
         placeholder="Request ID"
         style="width: 320px;margin-right: 10px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+      <el-button size="small" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
     </div>
@@ -20,7 +21,7 @@
       v-loading="listLoading"
       :data="list"
       border
-      fit
+      size="mini"
       highlight-current-row
       style="width: 100%;"
     >
@@ -230,3 +231,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.pagination-container {
+  padding: 0;
+  margin-top: 10px;
+}
+</style>
