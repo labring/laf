@@ -133,6 +133,8 @@ async function _deployOneFunction(func: CloudFunctionStruct) {
   }
 
   // if new function
+  data._id = new ObjectId(data._id) as any
+
   const ret = await db.collection('__functions').insertOne(data as any)
   assert(ret.insertedId, `deploy: add function ${func.name} occurred error`)
 }

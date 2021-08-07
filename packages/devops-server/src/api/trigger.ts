@@ -110,6 +110,7 @@ async function _deployOneTrigger(trigger: any) {
   }
 
   // if new function
+  data._id = new ObjectId(data._id) as any
   const ret = await db.collection('__triggers').insertOne(data as any)
   assert(ret.insertedId, `deploy: add trigger ${trigger.name} occurred error`)
 }

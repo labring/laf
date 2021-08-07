@@ -111,6 +111,7 @@ async function _deployOnePolicy(policy: any) {
   }
 
   // if new
+  data._id = new ObjectId(data._id) as any
   const ret = await db.collection('__policies').insertOne(data as any)
   assert(ret.insertedId, `deploy: add policy ${policy.name} occurred error`)
 }

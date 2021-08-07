@@ -76,7 +76,6 @@ DeployRouter.post('/in', async (req, res) => {
   // 令牌验证
   const token = req.body?.deploy_token
   const auth = parseToken(token)
-  console.log(token, auth)
 
   if (!auth) {
     return res.status(401).send('Unauthorized')
