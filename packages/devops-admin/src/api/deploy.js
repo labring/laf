@@ -22,11 +22,12 @@ export function createDeployToken({ permissions, expire, source }) {
 /**
  * 部署访问策略
  */
-export async function deploy2remote(deploy_url, deploy_token, { policies, functions, comment }) {
+export async function deploy2remote(deploy_url, deploy_token, { policies, functions, comment, triggers }) {
   const _data = {
     deploy_token,
     policies: policies,
     functions: functions,
+    triggers: triggers,
     comment
   }
   const res = await axios.post(deploy_url, _data)

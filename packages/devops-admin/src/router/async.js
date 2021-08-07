@@ -83,6 +83,7 @@ export const asyncRoutes = [
         meta: {
           title: '访问策略',
           icon: 'eye',
+          noCache: true,
           permissions: ['policy.read']
         }
       },

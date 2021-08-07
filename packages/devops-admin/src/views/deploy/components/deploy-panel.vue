@@ -18,7 +18,7 @@
                 v-for="item in targets"
                 :key="item._id"
                 :label="item.label"
-                :value="item"
+                :value="item._id"
               />
             </el-select>
           </el-form-item>
@@ -30,6 +30,11 @@
           <el-form-item v-if="functions && functions.length" label="部署函数" size="normal">
             <el-tag v-for="func in functions" :key="func._id" type="default" size="mini" style="margin-right: 10px;">
               {{ func.name }} - {{ func.label }}
+            </el-tag>
+          </el-form-item>
+          <el-form-item v-if="triggers && triggers.length" label="部署触发器" size="normal">
+            <el-tag v-for="tri in triggers" :key="tri._id" type="default" size="mini" style="margin-right: 10px;">
+              {{ tri.name }} - {{ tri.event }}
             </el-tag>
           </el-form-item>
           <el-form-item label="部署说明" prop="comment">
@@ -82,30 +87,79 @@ export default {
       form: this.defaultForm(),
       // 部署目标
       targets: [],
-      formRules
+      formRules,
+      internal_functions: [],
+      triggers: []
     }
   },
   computed: {
     visible() {
       return this.value
+    },
+    selected_target() {
+      if (!this.form.target) {
+        return null
+      }
+      const [found] = this.targets.filter(it => it._id === this.form.target)
+      return found
+    }
+  },
+  watch: {
+    functions() {
+      if (this.functions) {
+        this.internal_functions = [...this.functions]
+        this.loadTriggers()
+      }
     }
   },
   async mounted() {
-    const r = await db.collection('deploy_targets').get()
-    if (!r.ok) throw new Error('get targets failed')
-
-    this.targets = r.data
+    this.load()
+  },
+  activated() {
+    this.load()
   },
   methods: {
+    async load() {
+      const r = await db.collection('deploy_targets').get()
+      if (!r.ok) throw new Error('get targets failed')
+
+      this.targets = r.data
+    },
+    async loadTriggers() {
+      this.triggers = []
+      if (!this.internal_functions?.length) {
+        return
+      }
+      const func_ids = this.internal_functions.map(func => func._id)
+      const r = await db.collection('__triggers')
+        .where({
+          func_id: db.command.in(func_ids)
+        })
+        .get()
+
+      if (r.ok) {
+        this.triggers = r.data
+      }
+    },
     deploy() {
+      if (!this.functions?.length && !this.policies?.length) {
+        this.$message.error('无可部署内容')
+        return
+      }
+
+      if (!this.selected_target) {
+        this.$message.error('无推送目标选中')
+      }
+
       this.$refs['dataForm'].validate(async(valid) => {
         if (!valid) { return }
         const data = {
           policies: this.policies,
           functions: this.functions,
+          triggers: this.triggers,
           comment: this.form.comment
         }
-        const target = this.form.target
+        const target = this.selected_target
         const r = await deploy2remote(target.url, target.token, data)
         if (r.code === 0) {
           this.$message.success('操作成功！')

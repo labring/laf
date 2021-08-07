@@ -260,7 +260,6 @@ export default {
   },
   created() {
     this.getList()
-    this.getAllTags()
   },
   methods: {
     /** 获取所有标签 */
@@ -323,6 +322,7 @@ export default {
 
       this.total = total
       this.listLoading = false
+      this.getAllTags()
     },
     // 搜索
     handleFilter() {
