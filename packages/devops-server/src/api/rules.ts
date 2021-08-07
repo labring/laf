@@ -1,6 +1,7 @@
 import * as assert from 'assert'
 import { Constants } from '../constants'
 import { Globals } from "../lib/globals"
+import { ObjectId } from 'mongodb'
 
 const db = Globals.sys_db
 export interface RuleDocument {
@@ -87,17 +88,20 @@ export async function deployPolicies(policies) {
 }
 
 async function _deployOnePolicy(policy: any) {
+
+  await _deletePolicyWithSameNameButNotId(policy)
+
   const db = Globals.sys_accessor.db
-  const r = await db.collection('__policies').findOne({ name: policy.name })
+  const r = await db.collection('__policies').findOne({ _id: new ObjectId(policy._id) })
 
   const data = {
     ...policy
   }
 
-  delete data['_id']
 
   // if exists
   if (r) {
+    delete data['_id']
     const ret = await db.collection('__policies').updateOne({ _id: r._id }, {
       $set: data
     })
@@ -109,4 +113,18 @@ async function _deployOnePolicy(policy: any) {
   // if new
   const ret = await db.collection('__policies').insertOne(data as any)
   assert(ret.insertedId, `deploy: add policy ${policy.name} occurred error`)
+}
+
+/**
+ * 删除本地 _id 不同，但 name 相同的策略（若存在）
+ * @param func 
+ */
+async function _deletePolicyWithSameNameButNotId(policy: any) {
+  const db = Globals.sys_accessor.db
+  await db.collection('__policies').findOneAndDelete({
+    _id: {
+      $ne: new ObjectId(policy._id)
+    },
+    name: policy.name
+  })
 }

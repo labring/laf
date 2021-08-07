@@ -5,6 +5,7 @@ import { checkPermission } from '../../api/permission'
 import { Globals } from '../../lib/globals'
 import { getToken, parseToken } from '../../lib/utils/token'
 import { deployPolicies, publishAccessPolicy } from '../../api/rules'
+import { deployTriggers, publishTriggers } from '../../api/trigger'
 
 export const DeployRouter = express.Router()
 const logger = Globals.logger
@@ -67,7 +68,7 @@ DeployRouter.post('/create-token', async (req, res) => {
  * 接收部署请求
  */
 DeployRouter.post('/in', async (req, res) => {
-  const { policies, functions, comment } = req.body
+  const { policies, functions, comment, triggers } = req.body
   if (!policies && !functions) {
     return res.status(422).send('invalid polices & functions')
   }
@@ -116,6 +117,7 @@ DeployRouter.post('/in', async (req, res) => {
         status: 'pending',  // 'pending' | 'deployed' | 'canceled' 
         type: 'function',
         data: functions,
+        triggers,
         comment,
         created_at: Date.now()
       }
@@ -159,11 +161,20 @@ DeployRouter.post('/apply', async (req, res) => {
   const type = deploy_request.type
   assert.ok(['function', 'policy'].includes(type))
 
+  // deploy functions
   if (type === 'function') {
     await deployFunctions(deploy_request.data)
+
+    // deploy triggers if had
+    if (deploy_request.triggers) {
+      await deployTriggers(deploy_request.triggers)
+      await publishTriggers()
+    }
+
     await publishFunctions()
   }
 
+  // deploy policies
   if (type === 'policy') {
     await deployPolicies(deploy_request.data)
     await publishAccessPolicy()

@@ -3,6 +3,7 @@ import { Constants } from "../constants"
 import { Globals } from "../lib/globals"
 import { compileTs2js } from 'cloud-function-engine/dist/utils'
 import { CloudFunctionStruct } from "cloud-function-engine"
+import { ObjectId } from 'mongodb'
 import * as assert from 'assert'
 const db = Globals.sys_db
 
@@ -110,17 +111,19 @@ export async function deployFunctions(functions: CloudFunctionStruct[]) {
 }
 
 async function _deployOneFunction(func: CloudFunctionStruct) {
+
+  await _deleteFunctionWithSameNameButNotId(func)
+
   const db = Globals.sys_accessor.db
-  const r = await db.collection('__functions').findOne({ name: func.name })
+  const r = await db.collection('__functions').findOne({ _id: new ObjectId(func._id) })
 
   const data = {
     ...func
   }
 
-  delete data['_id']
-
   // if exists function
   if (r) {
+    delete data['_id']
     const ret = await db.collection('__functions').updateOne({ _id: r._id }, {
       $set: data
     })
@@ -132,4 +135,18 @@ async function _deployOneFunction(func: CloudFunctionStruct) {
   // if new function
   const ret = await db.collection('__functions').insertOne(data as any)
   assert(ret.insertedId, `deploy: add function ${func.name} occurred error`)
+}
+
+/**
+ * 删除本地 _id 不同，但 name 相同的云函数（若存在）
+ * @param func 
+ */
+async function _deleteFunctionWithSameNameButNotId(func: CloudFunctionStruct) {
+  const db = Globals.sys_accessor.db
+  await db.collection('__functions').findOneAndDelete({
+    _id: {
+      $ne: new ObjectId(func._id)
+    },
+    name: func.name
+  })
 }

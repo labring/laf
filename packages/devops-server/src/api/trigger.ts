@@ -1,8 +1,11 @@
 
 import { Constants } from "../constants"
 import { Globals } from "../lib/globals"
+import { ObjectId } from 'mongodb'
+import * as assert from 'assert'
 
 const db = Globals.sys_db
+const logger = Globals.logger
 
 /**
  * 请求触发器列表
@@ -35,7 +38,7 @@ export async function getTriggerById(id: string) {
   * 发布触发器
   * 实为将 sys db __triggers 集合，复制其数据至 app db 中
   */
- export async function publishTriggers() {
+export async function publishTriggers() {
   const logger = Globals.logger
 
   const app_accessor = Globals.app_accessor
@@ -54,4 +57,59 @@ export async function getTriggerById(id: string) {
   } finally {
     await session.endSession()
   }
+}
+
+
+/**
+  * 部署触发器
+  * 应用远程推送过来的部署请求
+  */
+export async function deployTriggers(triggers: any[]) {
+  assert.ok(triggers)
+  assert.ok(triggers instanceof Array)
+  const logger = Globals.logger
+
+  const accessor = Globals.sys_accessor
+
+  const data = triggers
+  const session = accessor.conn.startSession()
+
+  try {
+    await session.withTransaction(async () => {
+      for (const func of data) {
+        await _deployOneTrigger(func)
+      }
+    })
+  } catch (error) {
+    logger.error(error)
+    throw error
+  } finally {
+    await session.endSession()
+  }
+}
+
+async function _deployOneTrigger(trigger: any) {
+
+  const db = Globals.sys_accessor.db
+  const r = await db.collection('__triggers').findOne({ _id: new ObjectId(trigger._id) })
+
+  const data = {
+    ...trigger
+  }
+
+  logger.debug('deploy trigger: ', data, r)
+  // if exists function
+  if (r) {
+    delete data['_id']
+    const ret = await db.collection('__triggers').updateOne({ _id: r._id }, {
+      $set: data
+    })
+
+    assert(ret.matchedCount, `deploy: update trigger ${trigger.name} occurred error`)
+    return
+  }
+
+  // if new function
+  const ret = await db.collection('__triggers').insertOne(data as any)
+  assert(ret.insertedId, `deploy: add trigger ${trigger.name} occurred error`)
 }
