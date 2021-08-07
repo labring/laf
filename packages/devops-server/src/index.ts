@@ -9,6 +9,14 @@ const logger = Globals.logger
 const server = express()
 server.use(express.json())
 
+// 服务端开放跨域
+server.all('*', function (_req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers', 'Authorization, Content-Type')
+  res.header('Access-Control-Allow-Methods', '*')
+  next()
+})
+
 // 解析 Bearer Token
 server.use(function (req, _res, next) {
   const token = splitBearerToken(req.headers['authorization'] ?? '')

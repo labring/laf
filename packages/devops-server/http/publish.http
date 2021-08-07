@@ -13,14 +13,8 @@ Content-Type: application/json
 }
 
 
-### 创建部署令牌
+### 发布访问策略
 
-POST {{base_url}}/deploy/create-token
+POST {{base_url}}/publish/policy
 Content-Type: application/json;charset=UTF-8
 Authorization: Bearer {{token}}
-
-{
-  "permissions": ["policy", "function"],
-  "expire": 1,
-  "source": "test"
-}

@@ -38,7 +38,7 @@ export async function getAccessPolicy(category: string): Promise<any> {
  */
 export async function publishAccessPolicy() {
   const logger = Globals.logger
- 
+
   const app_accessor = Globals.app_accessor
   const ret = await Globals.sys_accessor.db.collection('__policies').find().toArray()
   const session = app_accessor.conn.startSession()
@@ -46,13 +46,67 @@ export async function publishAccessPolicy() {
   try {
     await session.withTransaction(async () => {
       const _db = app_accessor.db
-      const app_coll = _db.collection(Constants.policy_collection);
-      await app_coll.deleteMany({});
-      await app_coll.insertMany(ret);
+      const app_coll = _db.collection(Constants.policy_collection)
+      await app_coll.deleteMany({})
+      await app_coll.insertMany(ret)
     })
   } catch (error) {
     logger.error(error)
   } finally {
     await session.endSession()
   }
+}
+
+
+/**
+  * 部署访问策略
+  * 应用远程推送过来的部署请求
+  */
+export async function deployPolicies(policies) {
+  assert.ok(policies)
+  assert.ok(policies instanceof Array)
+  const logger = Globals.logger
+
+  const accessor = Globals.sys_accessor
+
+  const data = policies
+  const session = accessor.conn.startSession()
+
+  try {
+    await session.withTransaction(async () => {
+      for (const item of data) {
+        await _deployOnePolicy(item)
+      }
+    })
+  } catch (error) {
+    logger.error(error)
+    throw error
+  } finally {
+    await session.endSession()
+  }
+}
+
+async function _deployOnePolicy(policy: any) {
+  const db = Globals.sys_accessor.db
+  const r = await db.collection('__policies').findOne({ name: policy.name })
+
+  const data = {
+    ...policy
+  }
+
+  delete data['_id']
+
+  // if exists
+  if (r) {
+    const ret = await db.collection('__policies').updateOne({ _id: r._id }, {
+      $set: data
+    })
+
+    assert(ret.matchedCount, `deploy: update policy ${policy.name} occurred error`)
+    return
+  }
+
+  // if new
+  const ret = await db.collection('__policies').insertOne(data as any)
+  assert(ret.insertedId, `deploy: add policy ${policy.name} occurred error`)
 }

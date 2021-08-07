@@ -2,7 +2,8 @@
 import { Constants } from "../constants"
 import { Globals } from "../lib/globals"
 import { compileTs2js } from 'cloud-function-engine/dist/utils'
-
+import { CloudFunctionStruct } from "cloud-function-engine"
+import * as assert from 'assert'
 const db = Globals.sys_db
 
 /**
@@ -78,4 +79,57 @@ export async function publishFunctions() {
 function compileFunction(func: any) {
   func.compiledCode = compileTs2js(func.code)
   return func
+}
+
+/**
+  * 部署云函数
+  * 应用远程推送过来的部署请求
+  */
+export async function deployFunctions(functions: CloudFunctionStruct[]) {
+  assert.ok(functions)
+  assert.ok(functions instanceof Array)
+  const logger = Globals.logger
+
+  const accessor = Globals.sys_accessor
+
+  const data = functions
+  const session = accessor.conn.startSession()
+
+  try {
+    await session.withTransaction(async () => {
+      for (const func of data) {
+        await _deployOneFunction(func)
+      }
+    })
+  } catch (error) {
+    logger.error(error)
+    throw error
+  } finally {
+    await session.endSession()
+  }
+}
+
+async function _deployOneFunction(func: CloudFunctionStruct) {
+  const db = Globals.sys_accessor.db
+  const r = await db.collection('__functions').findOne({ name: func.name })
+
+  const data = {
+    ...func
+  }
+
+  delete data['_id']
+
+  // if exists function
+  if (r) {
+    const ret = await db.collection('__functions').updateOne({ _id: r._id }, {
+      $set: data
+    })
+
+    assert(ret.matchedCount, `deploy: update function ${func.name} occurred error`)
+    return
+  }
+
+  // if new function
+  const ret = await db.collection('__functions').insertOne(data as any)
+  assert(ret.insertedId, `deploy: add function ${func.name} occurred error`)
 }

@@ -47,4 +47,17 @@ exports.permissions = [
   { name: 'publish.policy', label: '发布数据访问策略'},
   { name: 'publish.function', label: '发布云函数' },
   { name: 'publish.trigger', label: '发布触发器' },
+
+  { name: 'deploy_target.read', label: '读取部署目标' },
+  { name: 'deploy_target.edit', label: '编辑部署目标' },
+  { name: 'deploy_target.create', label: '添加部署目标' },
+  { name: 'deploy_target.delete', label: '删除部署目标' },
+
+  { name: 'deploy_request.read', label: '读取部署请求' },
+  { name: 'deploy_request.edit', label: '编辑部署请求' },
+  { name: 'deploy_request.create', label: '添加部署请求' },
+  { name: 'deploy_request.delete', label: '删除部署请求' },
+  { name: 'deploy_request.apply', label: '应用部署请求' },
+
+  { name: 'deploy.create_token', label: '创建部署令牌' }
 ]

@@ -70,5 +70,19 @@ export default {
     "add": "$has('trigger.create')",
     "remove": "$has('trigger.delete') && query.status === 0",
     "count": "$has('trigger.read')"
+  },
+  "deploy_targets": {
+    "read": "$has('deploy_target.read')",
+    "update": "$has('deploy_target.edit')",
+    "add": "$has('deploy_target.create')",
+    "remove": "$has('deploy_target.delete')",
+    "count": "$has('deploy_target.read')"
+  },
+  "deploy_requests": {
+    "read": "$has('deploy_request.read')",
+    "update": "$has('deploy_request.edit')",
+    "add": "$has('deploy_request.create')",
+    "remove": "$has('deploy_request.delete')",
+    "count": "$has('deploy_request.read')"
   }
 }
