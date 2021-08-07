@@ -4,7 +4,7 @@
       title="部署面板"
       :visible="visible"
       direction="rtl"
-      size="30%"
+      size="50%"
       :destroy-on-close="true"
       :show-close="true"
       :wrapper-closable="true"
@@ -34,7 +34,7 @@
           </el-form-item>
           <el-form-item v-if="triggers && triggers.length" label="部署触发器" size="normal">
             <el-tag v-for="tri in triggers" :key="tri._id" type="default" size="mini" style="margin-right: 10px;">
-              {{ tri.name }} - {{ tri.event }}
+              {{ tri.name }} - {{ tri.event || 'timer'}}
             </el-tag>
           </el-form-item>
           <el-form-item label="部署说明" prop="comment">
@@ -180,7 +180,13 @@ export default {
 </script>
 
 <style scoped>
-.deploy-comp {
-
+.deploy-comp .panel {
+    padding-top: 10px;
+    width: 100%;
+    height: calc(90vh);
+    padding-bottom: 20px;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
+
 </style>
