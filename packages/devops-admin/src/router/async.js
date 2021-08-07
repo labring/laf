@@ -10,7 +10,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/development/functions',
     meta: {
-      title: '开发控制台', icon: 'guide'
+      title: '开发控制台', icon: 'example'
     },
     children: [
       {
@@ -134,6 +134,39 @@ export const asyncRoutes = [
           title: '角色',
           icon: 'user',
           permissions: ['role.edit', 'role.create']
+        }
+      }
+    ]
+  },
+  {
+    path: '/deploy',
+    component: Layout,
+    redirect: '/deploy/target',
+    meta: {
+      title: '远程部署', icon: 'guide'
+    },
+    children: [
+      {
+        path: 'targets',
+        component: () => import('@/views/deploy/targets'),
+        name: 'DeployTargetsListPage',
+        meta: {
+          title: '目标环境',
+          icon: 'international',
+          noCache: true
+          // permissions: ['admin.read']
+        }
+      },
+      {
+        path: 'requests',
+        component: () => import('@/views/deploy/requests'),
+        name: 'DeployRequestsListPage',
+        meta: {
+          title: '部署请求',
+          icon: 'skill',
+          noCache: true
+
+          // permissions: ['role.edit', 'role.create']
         }
       }
     ]

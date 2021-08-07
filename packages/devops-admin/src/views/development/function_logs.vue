@@ -3,8 +3,8 @@
     <!-- 数据检索区 -->
     <div class="filter-container">
       <el-input
-        size="small"
         v-model="listQuery.keyword"
+        size="small"
         placeholder="Request ID"
         style="width: 320px;margin-right: 10px;"
         class="filter-item"

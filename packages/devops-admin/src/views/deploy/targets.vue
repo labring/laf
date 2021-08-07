@@ -9,14 +9,11 @@
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
-      <el-button class="filter-item" type="default" icon="el-icon-search" @click="handleFilter">
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
-      <el-button class="filter-item" type="default" icon="el-icon-search" @click="showCreateForm">
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="showCreateForm">
         新建
-      </el-button>
-      <el-button plain class="filter-item" type="primary" icon="el-icon-guide" @click="deployPanelVisible = true">
-        远程部署
       </el-button>
     </div>
 
@@ -35,16 +32,19 @@
           <span>{{ row._id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="标识" width="150px">
+      <el-table-column label="目标环境名" min-width="150px">
         <template slot-scope="{row}">
-          <span>{{ row.name }}</span>
+          <span class="link-type" @click="showUpdateForm(row)">{{ row.label }}</span>
+          <el-tag v-for="tag in row.tags" :key="tag">{{ tag }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="说明" align="center">
+      <el-table-column label="部署地址" width="300px">
         <template slot-scope="{row}">
-          <span v-if="row.description">{{ row.description }}</span>
-          <span v-else>-</span>
+          <span>{{ row.url }}</span>
         </template>
+      </el-table-column>
+      <el-table-column label="部署令牌" align="center">
+        <span>-</span>
       </el-table-column>
       <el-table-column label="创建时间" width="150px" align="center">
         <template slot-scope="{row}">
@@ -58,18 +58,8 @@
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" class-name="status-col" width="120">
-        <template slot-scope="{row}">
-          <el-tag type="success">
-            {{ row.status | statusFilter }}
-          </el-tag>
-        </template>
-      </el-table-column>
       <el-table-column label="操作" align="center" width="340" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-          <el-button type="success" size="mini" @click="handleShowDetail(row)">
-            详情
-          </el-button>
           <el-button type="primary" size="mini" @click="showUpdateForm(row)">
             编辑
           </el-button>
@@ -96,28 +86,17 @@
         :rules="rules"
         :model="form"
         label-position="left"
-        label-width="70px"
-        style="width: 500px; margin-left:50px;"
+        label-width="140px"
+        style="width: 400px; margin-left:50px;"
       >
-        <el-form-item label="标识" prop="name">
-          <el-input v-model="form.name" placeholder="唯一标识" />
+        <el-form-item label="目标名称" prop="label">
+          <el-input v-model="form.label" placeholder="测试环境、生产环境" style="width: 400px" />
         </el-form-item>
-        <el-form-item label="描述">
-          <el-input v-model="form.description" :autosize="{ minRows: 3, maxRows: 6}" type="textarea" placeholder="描述" />
+        <el-form-item label="目标地址" prop="url">
+          <el-input v-model="form.url" style="width: 400px" />
         </el-form-item>
-        <el-form-item label="injector">
-          <el-select v-model="form.injector" placeholder="选择云函数做为injector">
-            <el-option
-              label="无"
-              :value="null"
-            />
-            <el-option
-              v-for="item in functions"
-              :key="item._id"
-              :label="item.label"
-              :value="item.name"
-            />
-          </el-select>
+        <el-form-item label="部署令牌" prop="token">
+          <el-input v-model="form.token" style="width: 400px" :autosize="{ minRows: 3, maxRows: 6}" type="textarea" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -129,26 +108,20 @@
         </el-button>
       </div>
     </el-dialog>
-
-    <!-- 部署面板 -->
-    <DeployPanel v-model="deployPanelVisible" :policies="list" />
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { db } from '../../api/cloud'
-import DeployPanel from '../deploy/components/deploy-panel.vue'
+import { db } from '@/api/cloud'
 
 // 默认化创建表单的值
 function getDefaultFormValue() {
   return {
     _id: undefined,
-    name: '',
-    description: '',
-    injector: null,
-    rules: {},
-    status: 1,
+    url: '',
+    label: '',
+    token: '',
     created_at: Date.now(),
     updated_at: Date.now()
   }
@@ -156,20 +129,20 @@ function getDefaultFormValue() {
 
 // 表单验证规则
 const formRules = {
-  name: [{ required: true, message: '标识不可为空', trigger: 'blur' }],
+  url: [{ required: true, message: '部署目标地址不可为空', trigger: 'blur' }],
+  token: [{ required: true, message: '部署令牌不可为空', trigger: 'blur' }],
   label: [{ required: true, message: '标题不可为空', trigger: 'blur' }]
 }
 
 export default {
-  name: 'PoliciesListPage',
-  components: { Pagination, DeployPanel },
+  name: 'DeployTargetsListPage',
+  components: { Pagination },
   filters: {
     statusFilter(status) {
       status = status ?? 0
       // 状态映射表
       const statusMap = {
-        0: '停用',
-        1: '启用'
+        0: 'published'
       }
       return statusMap[status]
     }
@@ -193,26 +166,16 @@ export default {
         create: '创建'
       },
       rules: formRules,
-      downloadLoading: false,
-      functions: [],
-      deployPanelVisible: false
+      downloadLoading: false
     }
   },
   created() {
-    this.getFunctions()
     this.getList()
   },
   methods: {
-    async getFunctions() {
-      const r = await db.collection('__functions')
-        .where({ status: 1 })
-        .get()
-
-      this.functions = r.data ?? []
-    },
     /**
-     * 获取数据列表
-     */
+       * 获取数据列表
+       */
     async getList() {
       this.listLoading = true
 
@@ -228,7 +191,7 @@ export default {
       }
 
       // 执行数据查询
-      const res = await db.collection('__policies')
+      const res = await db.collection('deploy_targets')
         .where(query)
         .limit(limit)
         .skip((page - 1) * limit)
@@ -238,7 +201,7 @@ export default {
       this.list = res.data
 
       // 获取数据总数
-      const { total } = await db.collection('__policies')
+      const { total } = await db.collection('deploy_targets')
         .where(query)
         .limit(limit)
         .skip((page - 1) * limit)
@@ -268,7 +231,7 @@ export default {
         if (!valid) { return }
 
         // 执行创建请求
-        const r = await db.collection('__policies')
+        const r = await db.collection('deploy_targets')
           .add(this.form)
 
         if (!r.id) {
@@ -304,18 +267,17 @@ export default {
       this.$refs['dataForm'].validate(async(valid) => {
         if (!valid) { return }
 
+        // @TODO
         // 构建更新数据对象
         const data = {
-          name: this.form.name,
+          url: this.form.url,
           label: this.form.label,
-          injector: this.form.injector,
-          status: this.form.status,
-          description: this.form.description,
+          token: this.form.token,
           updated_at: Date.now()
         }
 
         // 执行更新请求
-        const r = await db.collection('__policies')
+        const r = await db.collection('deploy_targets')
           .where({ _id: this.form._id })
           .update(data)
 
@@ -343,7 +305,7 @@ export default {
       await this.$confirm('确认要删除此数据？', '删除确认')
 
       // 执行删除请求
-      const r = await db.collection('__policies')
+      const r = await db.collection('deploy_targets')
         .where({ _id: row._id })
         .remove()
 
@@ -363,11 +325,6 @@ export default {
       })
 
       this.list.splice(index, 1)
-    },
-    // 查看详情
-    async handleShowDetail(row) {
-      // 跳转到详情页
-      this.$router.push(`/database/policy?${row._id}`)
     }
   }
 }

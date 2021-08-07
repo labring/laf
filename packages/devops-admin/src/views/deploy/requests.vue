@@ -9,14 +9,11 @@
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
-      <el-button class="filter-item" type="default" icon="el-icon-search" @click="handleFilter">
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
-      <el-button class="filter-item" type="default" icon="el-icon-search" @click="showCreateForm">
-        新建
-      </el-button>
-      <el-button plain class="filter-item" type="primary" icon="el-icon-guide" @click="deployPanelVisible = true">
-        远程部署
+      <el-button class="filter-item" type="primary" icon="el-icon-plus" @click="showCreateForm">
+        新建部署令牌
       </el-button>
     </div>
 
@@ -30,20 +27,30 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column label="ID" prop="id" align="center" width="240">
+      <el-table-column label="ID" prop="id" align="center" width="220">
         <template slot-scope="{row}">
           <span>{{ row._id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="标识" width="150px">
+      <el-table-column label="来源名称" width="150px">
         <template slot-scope="{row}">
-          <span>{{ row.name }}</span>
+          <span>{{ row.source }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="类型" min-width="50px">
+        <template slot-scope="{row}">
+          <span>{{ row.type }}</span>
         </template>
       </el-table-column>
       <el-table-column label="说明" align="center">
         <template slot-scope="{row}">
-          <span v-if="row.description">{{ row.description }}</span>
+          <span v-if="row.comment">{{ row.comment }}</span>
           <span v-else>-</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="内容" align="center">
+        <template slot-scope="{row}">
+          <el-tag v-for="item in row.data" :key="item._id" style="margin-right: 2px" type="default" size="mini" effect="plain">{{ item.name }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" width="150px" align="center">
@@ -52,28 +59,25 @@
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="更新时间" width="150px" align="center">
-        <template slot-scope="{row}">
-          <span v-if="row.updated_at">{{ row.updated_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-          <span v-else>-</span>
-        </template>
-      </el-table-column>
       <el-table-column label="状态" class-name="status-col" width="120">
         <template slot-scope="{row}">
-          <el-tag type="success">
-            {{ row.status | statusFilter }}
-          </el-tag>
+          <el-tag v-if="row.status === 'deployed'" type="success"> {{ row.status }}</el-tag>
+          <el-tag v-if="row.status === 'pending'" type="warning"> {{ row.status }}</el-tag>
+          <el-tag v-if="row.status === 'canceled'" type="info"> {{ row.status }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="340" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-          <el-button type="success" size="mini" @click="handleShowDetail(row)">
+          <!-- <el-button type="success" plain size="mini" @click="handleShowDetail(row)">
             详情
+          </el-button> -->
+          <el-button v-if="row.status == 'pending'" type="primary" plain size="mini" @click="apply(row)">
+            应用
           </el-button>
-          <el-button type="primary" size="mini" @click="showUpdateForm(row)">
-            编辑
-          </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
+          <!-- <el-button v-if="row.status == 'pending'" size="mini" plain type="warning">
+            取消
+          </el-button> -->
+          <el-button size="mini" plain type="danger" @click="handleDelete(row,$index)">
             删除
           </el-button>
         </template>
@@ -96,59 +100,51 @@
         :rules="rules"
         :model="form"
         label-position="left"
-        label-width="70px"
-        style="width: 500px; margin-left:50px;"
+        label-width="150px"
+        style="width: 400px; margin-left:50px;"
       >
-        <el-form-item label="标识" prop="name">
-          <el-input v-model="form.name" placeholder="唯一标识" />
+        <el-form-item label="来源名称" prop="source">
+          <el-input v-model="form.source" maxlength="16" placeholder="用于标识部署来源" style="width: 400px" />
         </el-form-item>
-        <el-form-item label="描述">
-          <el-input v-model="form.description" :autosize="{ minRows: 3, maxRows: 6}" type="textarea" placeholder="描述" />
+        <el-form-item label="令牌权限" prop="permissions">
+          <el-checkbox-group v-model="form.permissions">
+            <el-checkbox label="function" border>云函数</el-checkbox>
+            <el-checkbox label="policy" border>访问策略</el-checkbox>
+          </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="injector">
-          <el-select v-model="form.injector" placeholder="选择云函数做为injector">
-            <el-option
-              label="无"
-              :value="null"
-            />
-            <el-option
-              v-for="item in functions"
-              :key="item._id"
-              :label="item.label"
-              :value="item.name"
-            />
-          </el-select>
+        <el-form-item label="过期时间(小时）" prop="expire">
+          <el-input v-model="form.expire" type="number" />
         </el-form-item>
+        <el-form-item v-if="token_created" label="返回结果" size="normal" style="width: 800px">
+          <div class="token_result">
+            {{ token_created }}
+          </div>
+          <el-tag v-clipboard:message="token_created" v-clipboard:success="onCopy" type="success">复制</el-tag>
+        </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
-          取消
+          关闭
         </el-button>
         <el-button type="primary" @click="dialogStatus==='create'?handleCreate():handleUpdate()">
-          确定
+          生成
         </el-button>
       </div>
     </el-dialog>
-
-    <!-- 部署面板 -->
-    <DeployPanel v-model="deployPanelVisible" :policies="list" />
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { db } from '../../api/cloud'
-import DeployPanel from '../deploy/components/deploy-panel.vue'
-
-// 默认化创建表单的值
+import { db } from '@/api/cloud'
+import { applyDeployRequest, createDeployToken } from '../../api/deploy'
+// 默认的创建部署令牌表单
 function getDefaultFormValue() {
   return {
-    _id: undefined,
-    name: '',
-    description: '',
-    injector: null,
-    rules: {},
-    status: 1,
+    source: '',
+    expire: 1,
+    permissions: ['function', 'policy'],
     created_at: Date.now(),
     updated_at: Date.now()
   }
@@ -156,20 +152,20 @@ function getDefaultFormValue() {
 
 // 表单验证规则
 const formRules = {
-  name: [{ required: true, message: '标识不可为空', trigger: 'blur' }],
-  label: [{ required: true, message: '标题不可为空', trigger: 'blur' }]
+  permissions: [{ required: true, message: '权限不可为空', trigger: 'blur' }],
+  expire: [{ required: true, message: '过期时间不可为空', trigger: 'blur' }],
+  source: [{ required: true, message: '部署来源不可为空', trigger: 'blur' }]
 }
 
 export default {
-  name: 'PoliciesListPage',
-  components: { Pagination, DeployPanel },
+  name: 'DeployRequestsListPage',
+  components: { Pagination },
   filters: {
     statusFilter(status) {
       status = status ?? 0
       // 状态映射表
       const statusMap = {
-        0: '停用',
-        1: '启用'
+        0: 'published'
       }
       return statusMap[status]
     }
@@ -190,26 +186,16 @@ export default {
       dialogStatus: '',
       textMap: {
         update: '编辑',
-        create: '创建'
+        create: '创建令牌'
       },
       rules: formRules,
-      downloadLoading: false,
-      functions: [],
-      deployPanelVisible: false
+      token_created: null
     }
   },
   created() {
-    this.getFunctions()
     this.getList()
   },
   methods: {
-    async getFunctions() {
-      const r = await db.collection('__functions')
-        .where({ status: 1 })
-        .get()
-
-      this.functions = r.data ?? []
-    },
     /**
      * 获取数据列表
      */
@@ -228,7 +214,7 @@ export default {
       }
 
       // 执行数据查询
-      const res = await db.collection('__policies')
+      const res = await db.collection('deploy_requests')
         .where(query)
         .limit(limit)
         .skip((page - 1) * limit)
@@ -238,7 +224,7 @@ export default {
       this.list = res.data
 
       // 获取数据总数
-      const { total } = await db.collection('__policies')
+      const { total } = await db.collection('deploy_requests')
         .where(query)
         .limit(limit)
         .skip((page - 1) * limit)
@@ -247,6 +233,19 @@ export default {
 
       this.total = total
       this.listLoading = false
+    },
+    /**
+     * 应用部署请求
+     */
+    async apply(data) {
+      const r = await applyDeployRequest(data._id)
+      console.log(r)
+      if (r.code === 0) {
+        this.$message.success('应用成功！')
+        this.getList()
+      } else {
+        this.$message.error('出错了')
+      }
     },
     // 搜索
     handleFilter() {
@@ -262,16 +261,20 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
-    // 创建请求
+    // 创建部署令牌请求
     handleCreate() {
       this.$refs['dataForm'].validate(async(valid) => {
         if (!valid) { return }
 
+        const data = {
+          permissions: this.form.permissions,
+          expire: this.form.expire,
+          source: this.form.source
+        }
         // 执行创建请求
-        const r = await db.collection('__policies')
-          .add(this.form)
+        const r = await createDeployToken(data)
 
-        if (!r.id) {
+        if (r.error) {
           this.$notify({
             type: 'error',
             title: '操作失败',
@@ -280,62 +283,12 @@ export default {
           return
         }
 
+        this.token_created = r.data?.token
         this.$notify({
           type: 'success',
           title: '操作成功',
           message: '创建成功！'
         })
-
-        this.getList()
-        this.dialogFormVisible = false
-      })
-    },
-    // 显示更新表单
-    showUpdateForm(row) {
-      this.form = Object.assign({}, row) // copy obj
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    // 更新请求
-    handleUpdate() {
-      this.$refs['dataForm'].validate(async(valid) => {
-        if (!valid) { return }
-
-        // 构建更新数据对象
-        const data = {
-          name: this.form.name,
-          label: this.form.label,
-          injector: this.form.injector,
-          status: this.form.status,
-          description: this.form.description,
-          updated_at: Date.now()
-        }
-
-        // 执行更新请求
-        const r = await db.collection('__policies')
-          .where({ _id: this.form._id })
-          .update(data)
-
-        if (!r.ok) {
-          this.$notify({
-            type: 'error',
-            title: '操作失败',
-            message: '更新失败！' + r.error
-          })
-          return
-        }
-
-        this.$notify({
-          type: 'success',
-          title: '操作成功',
-          message: '更新成功！'
-        })
-
-        this.getList()
-        this.dialogFormVisible = false
       })
     },
     // 删除请求
@@ -343,7 +296,7 @@ export default {
       await this.$confirm('确认要删除此数据？', '删除确认')
 
       // 执行删除请求
-      const r = await db.collection('__policies')
+      const r = await db.collection('deploy_requests')
         .where({ _id: row._id })
         .remove()
 
@@ -365,10 +318,25 @@ export default {
       this.list.splice(index, 1)
     },
     // 查看详情
-    async handleShowDetail(row) {
-      // 跳转到详情页
-      this.$router.push(`/database/policy?${row._id}`)
+    // async handleShowDetail(row) {
+    //   // 跳转到详情页
+    //   this.$router.push(`deploy_requests/${row._id}`)
+    // },
+    onCopy() {
+      this.$message.success('已复制')
     }
   }
 }
 </script>
+
+<style scoped>
+.token_result {
+  display: block;
+  border: 1px solid lightgray;
+  background-color: #eafff5e0;
+  padding: 8px;
+  line-height: 20px;
+  border-radius: 8px;
+  color: gray;
+}
+</style>

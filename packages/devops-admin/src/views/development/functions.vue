@@ -13,10 +13,11 @@
       <el-button size="mini" class="filter-item" type="default" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
-      <el-button size="mini" v-permission="'function.create'" class="filter-item" type="primary" icon="el-icon-plus" @click="showCreateForm">
+      <el-button v-permission="'function.create'" plain size="mini" class="filter-item" type="primary" icon="el-icon-plus" @click="showCreateForm">
         新建函数
       </el-button>
-      <el-checkbox class="filter-item"  v-model="listQuery.onlyEnabled" label="" :indeterminate="false" @change="handleFilter">只看已启用</el-checkbox>
+      <el-button type="default" size="mini" plain class="filter-item" @click="deployPanelVisible = true">远程部署</el-button>
+      <el-checkbox v-model="listQuery.onlyEnabled" class="filter-item" label="" :indeterminate="false" @change="handleFilter">只看已启用</el-checkbox>
     </div>
 
     <!-- 标签类别 -->
@@ -41,7 +42,7 @@
     >
       <el-table-column label="函数标识" min-width="100">
         <template slot-scope="{row}">
-          <div class="func-name" v-clipboard:message="row.name">
+          <div v-clipboard:message="row.name" class="func-name">
             {{ row.name }}
           </div>
         </template>
@@ -90,16 +91,16 @@
           <!-- <el-button v-permission="'function.edit'" type="primary" size="mini" @click="showUpdateForm(row)">
             编辑
           </el-button> -->
-          <el-button v-permission="'function.debug'" type="success" size="mini" @click="handleShowDetail(row)">
+          <el-button v-permission="'function.debug'" plain type="success" size="mini" @click="handleShowDetail(row)">
             调试
           </el-button>
-          <el-button v-permission="'function.debug'" size="mini" @click="handleShowLogs(row)">
+          <el-button v-permission="'function.debug'" plain type="info" size="mini" @click="handleShowLogs(row)">
             日志
           </el-button>
-          <el-button v-permission="'function.edit'" size="mini" @click="handleTriggers(row)">
+          <el-button v-permission="'function.edit'" plain type="primary" size="mini" @click="handleTriggers(row)">
             触发器
           </el-button>
-          <el-button v-if="row.status!='deleted'" v-permission="'function.delete'" size="mini" type="danger" @click="handleDelete(row,$index)">
+          <el-button v-if="row.status!='deleted'" v-permission="'function.delete'" plain size="mini" type="danger" @click="handleDelete(row,$index)">
             删除
           </el-button>
         </template>
@@ -125,8 +126,8 @@
         label-width="120px"
         style="width: 400px; margin-left:20px;"
       >
-        <el-form-item label="ID" prop="_id" v-if="form._id">
-          <div  :value="form._id">{{ form._id }}</div>
+        <el-form-item v-if="form._id" label="ID" prop="_id">
+          <div :value="form._id">{{ form._id }}</div>
         </el-form-item>
         <el-form-item label="显示名称" prop="label">
           <el-input v-model="form.label" placeholder="函数显示名，可为中文" />
@@ -162,12 +163,16 @@
         </el-button>
       </div>
     </el-dialog>
+
+    <!-- 部署面板 -->
+    <deploy-panel v-model="deployPanelVisible" :functions="deploy_functions" />
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { db } from '../../api/cloud'
+import DeployPanel from '../deploy/components/deploy-panel.vue'
 
 const defaultCode = `
 import cloud from '@/cloud-sdk'
@@ -210,7 +215,7 @@ const formRules = {
 
 export default {
   name: 'FunctionListPage',
-  components: { Pagination },
+  components: { Pagination, DeployPanel },
   directives: { },
   filters: {
     statusFilter(status) {
@@ -233,7 +238,7 @@ export default {
         limit: 10,
         keyword: undefined,
         tag: '',
-        onlyEnabled: true, // 只看启用的函数
+        onlyEnabled: true // 只看启用的函数
       },
       form: getDefaultFormValue(),
       dialogFormVisible: false,
@@ -243,10 +248,15 @@ export default {
         create: '创建'
       },
       rules: formRules,
-      all_tags: []
+      all_tags: [],
+      deploy_functions: [],
+      deployPanelVisible: false
     }
   },
-  computed: {
+  watch: {
+    list() {
+      this.deploy_functions = this.list
+    }
   },
   created() {
     this.getList()
@@ -275,7 +285,7 @@ export default {
       this.listLoading = true
 
       // 拼装查询条件 by this.listQuery
-      const { limit, page, keyword, tag, onlyEnabled} = this.listQuery
+      const { limit, page, keyword, tag, onlyEnabled } = this.listQuery
       const query = { }
       if (keyword) {
         query['$or'] = [
@@ -289,7 +299,7 @@ export default {
         query['tags'] = tag
       }
 
-      if(onlyEnabled) {
+      if (onlyEnabled) {
         query['status'] = 1
       }
 
