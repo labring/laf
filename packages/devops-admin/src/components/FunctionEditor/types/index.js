@@ -60,6 +60,7 @@ export class AutoImportTypings {
     if (!this.isLoaded('less-api-database')) { this.loadDeclaration('less-api-database') }
     if (!this.isLoaded('axios')) { this.loadDeclaration('axios') }
     if (!this.isLoaded('cloud-function-engine')) { this.loadDeclaration('cloud-function-engine') }
+    if (!this.isLoaded('mongodb')) { this.loadDeclaration('mongodb') }
   }
 
   /**
@@ -77,17 +78,21 @@ export class AutoImportTypings {
    * @returns
    */
   async loadDeclaration(packageName) {
-    const r = await loadPackageTypings(packageName)
-    if (r.code) {
-      return
-    }
+    try {
+      const r = await loadPackageTypings(packageName)
+      if (r.code) {
+        return
+      }
 
-    const rets = r.data || []
-    for (const lib of rets) {
-      this.addExtraLib(lib)
-    }
+      const rets = r.data || []
+      for (const lib of rets) {
+        this.addExtraLib(lib)
+      }
 
-    this._loaded.push(packageName)
+      this._loaded.push(packageName)
+    } catch (error) {
+      console.error(`failed to load package: ${packageName} :`, error)
+    }
   }
 
   /**
