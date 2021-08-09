@@ -1,8 +1,12 @@
-##  (2021-08-09)
 
-* chore: 优化 cloud-sdk 注释提示；优化 scheduler 调试日志； ([dcdac4e](https://github.com/Maslow/less-framework/commit/dcdac4e))
+## <small>0.4.11 (2021-08-09)</small>
+
+* v0.4.11 ([bb8464d](https://github.com/Maslow/less-framework/commit/bb8464d))
+* doc: add changelog support; ([72ce446](https://github.com/Maslow/less-framework/commit/72ce446))
 * fix: 修复菜单权限显示；优化体验； ([cf3eefb](https://github.com/Maslow/less-framework/commit/cf3eefb))
 * fix: 修复发布、部署资源时事务使用错误； ([b1c350a](https://github.com/Maslow/less-framework/commit/b1c350a))
+* fix: 修复开发控制台 IDE 默认无 mongodb 类型提供的问题； ([e75ae8c](https://github.com/Maslow/less-framework/commit/e75ae8c))
+* chore: 优化 cloud-sdk 注释提示；优化 scheduler 调试日志； ([dcdac4e](https://github.com/Maslow/less-framework/commit/dcdac4e))
 
 
 
