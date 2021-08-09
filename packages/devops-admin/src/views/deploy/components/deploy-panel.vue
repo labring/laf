@@ -34,7 +34,7 @@
           </el-form-item>
           <el-form-item v-if="triggers && triggers.length" label="部署触发器" size="normal">
             <el-tag v-for="tri in triggers" :key="tri._id" type="default" size="mini" style="margin-right: 10px;">
-              {{ tri.name }} - {{ tri.event || 'timer'}}
+              {{ tri.name }} - {{ tri.event || 'timer' }}
             </el-tag>
           </el-form-item>
           <el-form-item label="部署说明" prop="comment">

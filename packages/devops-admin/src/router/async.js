@@ -73,7 +73,8 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/database/collections',
     meta: {
-      title: '数据管理', icon: 'excel', noCache: false
+      title: '数据管理', icon: 'excel',
+      permissions: ['policy.read']
     },
     children: [
       {
@@ -114,7 +115,9 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/system/role',
     meta: {
-      title: '成员管理', icon: 'peoples'
+      title: '成员管理', icon: 'peoples',
+      permissions: ['admin.read'],
+      noCache: true
     },
     children: [
       {
@@ -124,6 +127,7 @@ export const asyncRoutes = [
         meta: {
           title: '开发者',
           icon: 'people',
+          noCache: true,
           permissions: ['admin.read']
         }
       },
@@ -134,6 +138,7 @@ export const asyncRoutes = [
         meta: {
           title: '角色',
           icon: 'user',
+          noCache: true,
           permissions: ['role.edit', 'role.create']
         }
       }
