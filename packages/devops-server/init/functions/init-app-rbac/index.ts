@@ -57,7 +57,7 @@
        return
      }
  
-     await cloud.mongodb.collection('admins').createIndex('username', { unique: true })
+     await cloud.mongo.db.collection('admins').createIndex('username', { unique: true })
  
      const { data } = await db.collection('roles').get()
      const roles = data.map(it => it.name)
@@ -90,7 +90,7 @@
  async function createFirstRole() {
    try {
  
-     await cloud.mongodb.collection('roles').createIndex('name', { unique: true })
+     await cloud.mongo.db.collection('roles').createIndex('name', { unique: true })
  
      const r_perm = await db.collection('permissions').get()
      assert(r_perm.ok, 'get permissions failed')
@@ -122,7 +122,7 @@
  async function createInitialPermissions() {
  
    // 创建唯一索引
-   await cloud.mongodb.collection('permissions').createIndex('name', { unique: true })
+   await cloud.mongo.db.collection('permissions').createIndex('name', { unique: true })
  
    for (const perm of permissions) {
      try {
