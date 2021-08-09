@@ -1,6 +1,6 @@
 {
   "name": "laf-devops-server",
-  "version": "0.4.12",
+  "version": "0.4.14",
   "description": "less api framework - devops server",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
