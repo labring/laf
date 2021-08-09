@@ -1,16 +1,20 @@
+import { Constants } from "../constants"
+
+const cn = Constants.cn
+
 export default {
-  "__admins": {
+  [cn.admins]: {
     "read": "$has('admin.read')",
     "update": "$has('admin.edit')",
     "add": "$has('admin.create')",
     "remove": "$has('admin.delete')",
     "count": "$has('admin.read')"
   },
-  "__permissions": {
+  [cn.permissions]: {
     "read": "$has('permission.read')",
     "count": "$has('permission.read')"
   },
-  "__roles": {
+  [cn.roles]: {
     "read": "$has('role.read')",
     "update": "$has('role.edit')",
     "add": "$has('role.create')",
@@ -19,20 +23,20 @@ export default {
       "query": {
         "name": {
           "required": true,
-          "notExists": "/__admins/roles"
+          "notExists": `/${cn.admins}/roles`
         }
       }
     },
     "count": "$has('role.read')"
   },
-  "__policies": {
+  [cn.policies]: {
     "read": "$has('policy.read')",
     "update": "$has('policy.edit')",
     "add": "$has('policy.create')",
     "remove": "$has('policy.delete')",
     "count": "$has('policy.read')"
   },
-  "__functions": {
+  [cn.functions]: {
     "read": "$has('function.read')",
     "update": "$has('function.edit')",
     "add": "$has('function.create')",
@@ -40,7 +44,7 @@ export default {
       "condition": "$has('function.delete')",
       "query": {
         "_id": {
-          "notExists": "/triggers/func_id"
+          "notExists": `/${cn.triggers}/func_id`
         },
         "status": {
           "required": true,
@@ -54,31 +58,26 @@ export default {
     },
     "count": "$has('function.read')"
   },
-  "__function_logs": {
-    "read": "$has('function_logs.read')",
-    "remove": "$has('function_logs.remove')",
-    "count": "$has('function_logs.read')"
-  },
-  "__function_history": {
+  [cn.function_history]: {
     "read": "$has('function_history.read')",
     "add": "$has('function_history.create')",
     "count": "$has('function_history.read')"
   },
-  "__triggers": {
+  [cn.triggers]: {
     "read": "$has('trigger.read')",
     "update": "$has('trigger.edit')",
     "add": "$has('trigger.create')",
     "remove": "$has('trigger.delete') && query.status === 0",
     "count": "$has('trigger.read')"
   },
-  "deploy_targets": {
+  [cn.deploy_targets]: {
     "read": "$has('deploy_target.read')",
     "update": "$has('deploy_target.edit')",
     "add": "$has('deploy_target.create')",
     "remove": "$has('deploy_target.delete')",
     "count": "$has('deploy_target.read')"
   },
-  "deploy_requests": {
+  [cn.deploy_requests]: {
     "read": "$has('deploy_request.read')",
     "update": "$has('deploy_request.edit')",
     "add": "$has('deploy_request.create')",

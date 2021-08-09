@@ -4,6 +4,7 @@ import { checkPermission, getPermissions } from '../../api/permission'
 import { hashPassword } from '../../lib/utils/hash'
 import { Globals } from '../../lib/globals'
 import Config from '../../config'
+import { Constants } from '../../constants'
 
 const db = Globals.sys_db
 const logger = Globals.logger
@@ -23,10 +24,10 @@ export async function handleAdminLogin(req: Request, res: Response) {
     })
   }
 
-  const ret = await db.collection('__admins')
+  const ret = await db.collection(Constants.cn.admins)
     .withOne({
       query: db
-        .collection('__password')
+        .collection(Constants.cn.password)
         .where({ password: hashPassword(password), type: 'login' }),
       localField: '_id',
       foreignField: 'uid'
@@ -87,7 +88,7 @@ export async function handleAdminInfo(req: Request, res: Response) {
   }
 
   //
-  const ret = await db.collection('__admins')
+  const ret = await db.collection(Constants.cn.admins)
     .where({ _id: uid })
     .get()
 
@@ -133,7 +134,7 @@ export async function handleAdminAdd(req: Request, res: Response) {
   }
 
   // 验证用户是否已存在
-  const { total } = await db.collection('__admins').where({ username }).count()
+  const { total } = await db.collection(Constants.cn.admins).where({ username }).count()
   if (total > 0) {
     return res.send({
       code: 1,
@@ -142,7 +143,7 @@ export async function handleAdminAdd(req: Request, res: Response) {
   }
 
   // 验证 roles 是否合法
-  const { total: valid_count } = await db.collection('__roles')
+  const { total: valid_count } = await db.collection(Constants.cn.roles)
     .where({
       name: db.command.in(roles)
     }).count()
@@ -155,7 +156,7 @@ export async function handleAdminAdd(req: Request, res: Response) {
   }
 
   // add admin
-  const r = await db.collection('__admins')
+  const r = await db.collection(Constants.cn.admins)
     .add({
       username,
       name: name ?? null,
@@ -166,7 +167,7 @@ export async function handleAdminAdd(req: Request, res: Response) {
     })
 
   // add admin password
-  await db.collection('__password')
+  await db.collection(Constants.cn.password)
     .add({
       uid: r.id,
       password: hashPassword(password),
@@ -208,7 +209,7 @@ export async function handleAdminEdit(req: Request, res: Response) {
   }
 
   // 验证 uid 是否合法
-  const { data: admins } = await db.collection('__admins').where({ _id: uid }).get()
+  const { data: admins } = await db.collection(Constants.cn.admins).where({ _id: uid }).get()
   if (!admins || !admins.length) {
     return res.send({
       code: 1,
@@ -217,7 +218,7 @@ export async function handleAdminEdit(req: Request, res: Response) {
   }
 
   // 验证 roles 是否合法
-  const { total: valid_count } = await db.collection('__roles')
+  const { total: valid_count } = await db.collection(Constants.cn.roles)
     .where({
       name: db.command.in(roles)
     }).count()
@@ -231,7 +232,7 @@ export async function handleAdminEdit(req: Request, res: Response) {
 
   // update password
   if (password) {
-    await db.collection('__password')
+    await db.collection(Constants.cn.password)
       .where({ uid: uid })
       .update({
         password: hashPassword(password),
@@ -248,7 +249,7 @@ export async function handleAdminEdit(req: Request, res: Response) {
 
   // username
   if (username && username != old.username) {
-    const { total } = await db.collection('__admins').where({ username }).count()
+    const { total } = await db.collection(Constants.cn.admins).where({ username }).count()
     if (total) {
       return res.send({
         code: 1,
@@ -273,7 +274,7 @@ export async function handleAdminEdit(req: Request, res: Response) {
     data['roles'] = roles
   }
 
-  const r = await db.collection('__admins')
+  const r = await db.collection(Constants.cn.admins)
     .where({ _id: uid })
     .update(data)
 

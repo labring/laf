@@ -13,7 +13,7 @@ const db = Globals.sys_db
  * @returns 
  */
 export async function getFunctionByName(func_name: string) {
-  const r = await db.collection('__functions')
+  const r = await db.collection(Constants.cn.functions)
     .where({ name: func_name })
     .getOne()
 
@@ -31,7 +31,7 @@ export async function getFunctionByName(func_name: string) {
   */
 export async function getFunctionById(func_id: string) {
   // 获取函数
-  const r = await db.collection('__functions')
+  const r = await db.collection(Constants.cn.functions)
     .where({ _id: func_id })
     .getOne()
 
@@ -46,13 +46,13 @@ export async function getFunctionById(func_id: string) {
 
 /**
   * 发布云函数
-  * 实为将 sys db __functions 集合，复制其数据至 app db 中
+  * 实为将 sys db functions 集合，复制其数据至 app db 中
   */
 export async function publishFunctions() {
   const logger = Globals.logger
 
   const app_accessor = Globals.app_accessor
-  const ret = await Globals.sys_accessor.db.collection('__functions').find().toArray()
+  const ret = await Globals.sys_accessor.db.collection(Constants.cn.functions).find().toArray()
 
   // compile
   const data = ret.map(fn => compileFunction(fn))
@@ -115,7 +115,7 @@ async function _deployOneFunction(func: CloudFunctionStruct, session: ClientSess
   await _deleteFunctionWithSameNameButNotId(func, session)
 
   const db = Globals.sys_accessor.db
-  const r = await db.collection('__functions').findOne({ _id: new ObjectId(func._id) }, { session })
+  const r = await db.collection(Constants.cn.functions).findOne({ _id: new ObjectId(func._id) }, { session })
 
   const data = {
     ...func
@@ -124,7 +124,7 @@ async function _deployOneFunction(func: CloudFunctionStruct, session: ClientSess
   // if exists function
   if (r) {
     delete data['_id']
-    const ret = await db.collection('__functions').updateOne({ _id: r._id }, {
+    const ret = await db.collection(Constants.cn.functions).updateOne({ _id: r._id }, {
       $set: data
     }, { session })
 
@@ -135,7 +135,7 @@ async function _deployOneFunction(func: CloudFunctionStruct, session: ClientSess
   // if new function
   data._id = new ObjectId(data._id) as any
 
-  const ret = await db.collection('__functions').insertOne(data as any, { session })
+  const ret = await db.collection(Constants.cn.functions).insertOne(data as any, { session })
   assert(ret.insertedId, `deploy: add function ${func.name} occurred error`)
 }
 
@@ -145,7 +145,7 @@ async function _deployOneFunction(func: CloudFunctionStruct, session: ClientSess
  */
 async function _deleteFunctionWithSameNameButNotId(func: CloudFunctionStruct, session: ClientSession) {
   const db = Globals.sys_accessor.db
-  await db.collection('__functions').findOneAndDelete({
+  await db.collection(Constants.cn.functions).findOneAndDelete({
     _id: {
       $ne: new ObjectId(func._id)
     },

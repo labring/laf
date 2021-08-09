@@ -1,5 +1,6 @@
 
 import * as assert from 'assert'
+import { Constants } from '../constants'
 import { Globals } from '../lib/globals'
 
 const db = Globals.sys_db
@@ -30,14 +31,14 @@ export async function checkPermission(uid: string, permission: string): Promise<
 export async function getPermissions(uid: string) {
 
   // 查用户
-  const { data: admin } = await db.collection('__admins')
+  const { data: admin } = await db.collection(Constants.cn.admins)
     .where({ _id: uid })
     .getOne()
 
   assert(admin, 'getPermissions failed')
 
   // 查角色
-  const { data: roles } = await db.collection('__roles')
+  const { data: roles } = await db.collection(Constants.cn.roles)
     .where({
       name: {
         $in: admin.roles ?? []

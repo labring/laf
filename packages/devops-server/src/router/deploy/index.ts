@@ -6,6 +6,7 @@ import { Globals } from '../../lib/globals'
 import { getToken, parseToken } from '../../lib/utils/token'
 import { deployPolicies, publishAccessPolicy } from '../../api/rules'
 import { deployTriggers, publishTriggers } from '../../api/trigger'
+import { Constants } from '../../constants'
 
 export const DeployRouter = express.Router()
 const logger = Globals.logger
@@ -106,7 +107,7 @@ DeployRouter.post('/in', async (req, res) => {
         created_at: Date.now()
       }
 
-      await db.collection('deploy_requests').add(data)
+      await db.collection(Constants.cn.deploy_requests).add(data)
     }
 
     // 入库云函数
@@ -121,7 +122,7 @@ DeployRouter.post('/in', async (req, res) => {
         created_at: Date.now()
       }
 
-      await db.collection('deploy_requests').add(data)
+      await db.collection(Constants.cn.deploy_requests).add(data)
     }
 
     return res.send({
@@ -151,7 +152,7 @@ DeployRouter.post('/apply', async (req, res) => {
   }
 
   const db = Globals.sys_db
-  const r = await db.collection('deploy_requests').where({ _id: id }).getOne()
+  const r = await db.collection(Constants.cn.deploy_requests).where({ _id: id }).getOne()
   if (!r.ok || !r.data) {
     return res.status(404).send('deploy request not found')
   }
@@ -180,7 +181,7 @@ DeployRouter.post('/apply', async (req, res) => {
   }
 
   // update deploy request status to 'deployed'
-  await db.collection('deploy_requests').where({ _id: id }).update({ status: 'deployed' })
+  await db.collection(Constants.cn.deploy_requests).where({ _id: id }).update({ status: 'deployed' })
 
   return res.send({
     code: 0,

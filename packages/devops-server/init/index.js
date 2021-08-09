@@ -64,18 +64,18 @@ async function createFirstAdmin() {
     const username = Config.SYS_ADMIN
     const password = hashPassword(Config.SYS_ADMIN_PASSWORD)
 
-    const { total } = await db.collection('__admins').count()
+    const { total } = await db.collection(Constants.cn.admins).count()
     if (total > 0) {
       console.log('admin already exists')
       return
     }
 
-    await sys_accessor.db.collection('__admins').createIndex('username', { unique: true })
+    await sys_accessor.db.collection(Constants.cn.admins).createIndex('username', { unique: true })
 
-    const { data } = await db.collection('__roles').get()
+    const { data } = await db.collection(Constants.cn.roles).get()
     const roles = data.map(it => it.name)
 
-    const r_add = await db.collection('__admins').add({
+    const r_add = await db.collection(Constants.cn.admins).add({
       username,
       avatar: "https://static.dingtalk.com/media/lALPDe7szaMXyv3NAr3NApw_668_701.png",
       name: 'Admin',
@@ -85,7 +85,7 @@ async function createFirstAdmin() {
     })
     assert(r_add.ok, 'add admin occurs error')
 
-    await db.collection('__password').add({
+    await db.collection(Constants.cn.password).add({
       uid: r_add.id,
       password,
       type: 'login',
@@ -106,14 +106,14 @@ async function createFirstAdmin() {
 async function createFirstRole() {
   try {
 
-    await sys_accessor.db.collection('__roles').createIndex('name', { unique: true })
+    await sys_accessor.db.collection(Constants.cn.roles).createIndex('name', { unique: true })
 
-    const r_perm = await db.collection('__permissions').get()
+    const r_perm = await db.collection(Constants.cn.permissions).get()
     assert(r_perm.ok, 'get permissions failed')
 
     const permissions = r_perm.data.map(it => it.name)
 
-    const r_add = await db.collection('__roles').add({
+    const r_add = await db.collection(Constants.cn.roles).add({
       name: 'superadmin',
       label: '超级管理员',
       description: '系统初始化的超级管理员',
@@ -141,7 +141,7 @@ async function createFirstRole() {
 async function createInitialPermissions() {
 
   // 创建唯一索引
-  await sys_accessor.db.collection('__permissions').createIndex('name', { unique: true })
+  await sys_accessor.db.collection(Constants.cn.permissions).createIndex('name', { unique: true })
 
   for (const perm of permissions) {
     try {
@@ -150,7 +150,7 @@ async function createInitialPermissions() {
         created_at: Date.now(),
         updated_at: Date.now()
       }
-      await db.collection('__permissions').add(data)
+      await db.collection(Constants.cn.permissions).add(data)
       console.log('permissions added: ' + perm.name)
 
     } catch (error) {
@@ -175,7 +175,7 @@ async function createInitialPermissions() {
 async function createInitialPolicy(name, rules, injector) {
 
   // if policy existed, skip it
-  const { total } = await db.collection('__policies')
+  const { total } = await db.collection(Constants.cn.policies)
       .where({ name: name })
       .count()
 
@@ -184,10 +184,10 @@ async function createInitialPolicy(name, rules, injector) {
     return
   }
 
-  await sys_accessor.db.collection('__policies').createIndex('name', { unique: true })
+  await sys_accessor.db.collection(Constants.cn.policies).createIndex('name', { unique: true })
 
   // add policy
-  await db.collection('__policies').add({
+  await db.collection(Constants.cn.policies).add({
     name: name,
     rules: rules,
     status: 1,
@@ -205,7 +205,7 @@ async function createInitialPolicy(name, rules, injector) {
  */
 async function createBuiltinFunctions() {
   // 创建云函数索引
-  await sys_accessor.db.collection('__functions').createIndex('name', { unique: true })
+  await sys_accessor.db.collection(Constants.cn.functions).createIndex('name', { unique: true })
   
 
   const loader = new FunctionLoader()
@@ -219,7 +219,7 @@ async function createBuiltinFunctions() {
         updated_at: Date.now()
       }
       delete data['triggers']
-      const r = await db.collection('__functions').add(data)
+      const r = await db.collection(Constants.cn.functions).add(data)
 
       if (triggers.length) {
         await createTriggers(r.id, triggers)
@@ -250,7 +250,7 @@ async function createTriggers(func_id, triggers) {
       updated_at: Date.now(),
       func_id: func_id
     }
-    await db.collection('__triggers').add(data)
+    await db.collection(Constants.cn.triggers).add(data)
   }
 
   console.log(`triggers of func[${func_id}] created`)

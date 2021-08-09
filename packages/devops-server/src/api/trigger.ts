@@ -13,7 +13,7 @@ const logger = Globals.logger
  * @returns 
  */
 export async function getTriggers(status = 1) {
-  const r = await db.collection('__triggers')
+  const r = await db.collection(Constants.cn.triggers)
     .where({ status: status })
     .get()
 
@@ -26,7 +26,7 @@ export async function getTriggers(status = 1) {
  * @returns 
  */
 export async function getTriggerById(id: string) {
-  const r = await db.collection('__triggers')
+  const r = await db.collection(Constants.cn.triggers)
     .where({ _id: id })
     .getOne()
 
@@ -36,13 +36,13 @@ export async function getTriggerById(id: string) {
 
 /**
   * 发布触发器
-  * 实为将 sys db __triggers 集合，复制其数据至 app db 中
+  * 实为将 sys db triggers 集合，复制其数据至 app db 中
   */
 export async function publishTriggers() {
   const logger = Globals.logger
 
   const app_accessor = Globals.app_accessor
-  const ret = await Globals.sys_accessor.db.collection('__triggers').find().toArray()
+  const ret = await Globals.sys_accessor.db.collection(Constants.cn.triggers).find().toArray()
   const session = app_accessor.conn.startSession()
 
   try {
@@ -91,7 +91,7 @@ export async function deployTriggers(triggers: any[]) {
 async function _deployOneTrigger(trigger: any, session: ClientSession) {
 
   const db = Globals.sys_accessor.db
-  const r = await db.collection('__triggers').findOne({ _id: new ObjectId(trigger._id) }, { session })
+  const r = await db.collection(Constants.cn.triggers).findOne({ _id: new ObjectId(trigger._id) }, { session })
 
   const data = {
     ...trigger
@@ -101,7 +101,7 @@ async function _deployOneTrigger(trigger: any, session: ClientSession) {
   // if exists function
   if (r) {
     delete data['_id']
-    const ret = await db.collection('__triggers').updateOne({ _id: r._id }, {
+    const ret = await db.collection(Constants.cn.triggers).updateOne({ _id: r._id }, {
       $set: data
     }, { session })
 
@@ -111,6 +111,6 @@ async function _deployOneTrigger(trigger: any, session: ClientSession) {
 
   // if new function
   data._id = new ObjectId(data._id) as any
-  const ret = await db.collection('__triggers').insertOne(data as any, { session })
+  const ret = await db.collection(Constants.cn.triggers).insertOne(data as any, { session })
   assert(ret.insertedId, `deploy: add trigger ${trigger.name} occurred error`)
 }
