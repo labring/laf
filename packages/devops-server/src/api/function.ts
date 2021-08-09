@@ -3,7 +3,7 @@ import { Constants } from "../constants"
 import { Globals } from "../lib/globals"
 import { compileTs2js } from 'cloud-function-engine/dist/utils'
 import { CloudFunctionStruct } from "cloud-function-engine"
-import { ObjectId } from 'mongodb'
+import { ClientSession, ObjectId } from 'mongodb'
 import * as assert from 'assert'
 const db = Globals.sys_db
 
@@ -63,8 +63,8 @@ export async function publishFunctions() {
     await session.withTransaction(async () => {
       const _db = app_accessor.db
       const app_coll = _db.collection(Constants.function_collection)
-      await app_coll.deleteMany({})
-      await app_coll.insertMany(data)
+      await app_coll.deleteMany({}, { session })
+      await app_coll.insertMany(data, { session })
     })
   } catch (error) {
     logger.error(error)
@@ -99,7 +99,7 @@ export async function deployFunctions(functions: CloudFunctionStruct[]) {
   try {
     await session.withTransaction(async () => {
       for (const func of data) {
-        await _deployOneFunction(func)
+        await _deployOneFunction(func, session)
       }
     })
   } catch (error) {
@@ -110,12 +110,12 @@ export async function deployFunctions(functions: CloudFunctionStruct[]) {
   }
 }
 
-async function _deployOneFunction(func: CloudFunctionStruct) {
+async function _deployOneFunction(func: CloudFunctionStruct, session: ClientSession) {
 
-  await _deleteFunctionWithSameNameButNotId(func)
+  await _deleteFunctionWithSameNameButNotId(func, session)
 
   const db = Globals.sys_accessor.db
-  const r = await db.collection('__functions').findOne({ _id: new ObjectId(func._id) })
+  const r = await db.collection('__functions').findOne({ _id: new ObjectId(func._id) }, { session })
 
   const data = {
     ...func
@@ -126,7 +126,7 @@ async function _deployOneFunction(func: CloudFunctionStruct) {
     delete data['_id']
     const ret = await db.collection('__functions').updateOne({ _id: r._id }, {
       $set: data
-    })
+    }, { session })
 
     assert(ret.matchedCount, `deploy: update function ${func.name} occurred error`)
     return
@@ -135,7 +135,7 @@ async function _deployOneFunction(func: CloudFunctionStruct) {
   // if new function
   data._id = new ObjectId(data._id) as any
 
-  const ret = await db.collection('__functions').insertOne(data as any)
+  const ret = await db.collection('__functions').insertOne(data as any, { session })
   assert(ret.insertedId, `deploy: add function ${func.name} occurred error`)
 }
 
@@ -143,12 +143,12 @@ async function _deployOneFunction(func: CloudFunctionStruct) {
  * 删除本地 _id 不同，但 name 相同的云函数（若存在）
  * @param func 
  */
-async function _deleteFunctionWithSameNameButNotId(func: CloudFunctionStruct) {
+async function _deleteFunctionWithSameNameButNotId(func: CloudFunctionStruct, session: ClientSession) {
   const db = Globals.sys_accessor.db
   await db.collection('__functions').findOneAndDelete({
     _id: {
       $ne: new ObjectId(func._id)
     },
     name: func.name
-  })
+  }, { session })
 }

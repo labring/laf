@@ -1,7 +1,7 @@
 
 import { Constants } from "../constants"
 import { Globals } from "../lib/globals"
-import { ObjectId } from 'mongodb'
+import { ClientSession, ObjectId } from 'mongodb'
 import * as assert from 'assert'
 
 const db = Globals.sys_db
@@ -49,8 +49,8 @@ export async function publishTriggers() {
     await session.withTransaction(async () => {
       const _db = app_accessor.db
       const app_coll = _db.collection(Constants.trigger_collection)
-      await app_coll.deleteMany({})
-      await app_coll.insertMany(ret)
+      await app_coll.deleteMany({}, { session })
+      await app_coll.insertMany(ret, { session })
     })
   } catch (error) {
     logger.error(error)
@@ -77,7 +77,7 @@ export async function deployTriggers(triggers: any[]) {
   try {
     await session.withTransaction(async () => {
       for (const func of data) {
-        await _deployOneTrigger(func)
+        await _deployOneTrigger(func, session)
       }
     })
   } catch (error) {
@@ -88,10 +88,10 @@ export async function deployTriggers(triggers: any[]) {
   }
 }
 
-async function _deployOneTrigger(trigger: any) {
+async function _deployOneTrigger(trigger: any, session: ClientSession) {
 
   const db = Globals.sys_accessor.db
-  const r = await db.collection('__triggers').findOne({ _id: new ObjectId(trigger._id) })
+  const r = await db.collection('__triggers').findOne({ _id: new ObjectId(trigger._id) }, { session })
 
   const data = {
     ...trigger
@@ -103,7 +103,7 @@ async function _deployOneTrigger(trigger: any) {
     delete data['_id']
     const ret = await db.collection('__triggers').updateOne({ _id: r._id }, {
       $set: data
-    })
+    }, { session })
 
     assert(ret.matchedCount, `deploy: update trigger ${trigger.name} occurred error`)
     return
@@ -111,6 +111,6 @@ async function _deployOneTrigger(trigger: any) {
 
   // if new function
   data._id = new ObjectId(data._id) as any
-  const ret = await db.collection('__triggers').insertOne(data as any)
+  const ret = await db.collection('__triggers').insertOne(data as any, { session })
   assert(ret.insertedId, `deploy: add trigger ${trigger.name} occurred error`)
 }

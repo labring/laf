@@ -1,7 +1,7 @@
 import * as assert from 'assert'
 import { Constants } from '../constants'
 import { Globals } from "../lib/globals"
-import { ObjectId } from 'mongodb'
+import { ClientSession, ObjectId } from 'mongodb'
 
 const db = Globals.sys_db
 export interface RuleDocument {
@@ -48,8 +48,8 @@ export async function publishAccessPolicy() {
     await session.withTransaction(async () => {
       const _db = app_accessor.db
       const app_coll = _db.collection(Constants.policy_collection)
-      await app_coll.deleteMany({})
-      await app_coll.insertMany(ret)
+      await app_coll.deleteMany({}, { session })
+      await app_coll.insertMany(ret, { session })
     })
   } catch (error) {
     logger.error(error)
@@ -76,7 +76,7 @@ export async function deployPolicies(policies) {
   try {
     await session.withTransaction(async () => {
       for (const item of data) {
-        await _deployOnePolicy(item)
+        await _deployOnePolicy(item, session)
       }
     })
   } catch (error) {
@@ -87,12 +87,12 @@ export async function deployPolicies(policies) {
   }
 }
 
-async function _deployOnePolicy(policy: any) {
+async function _deployOnePolicy(policy: any, session: ClientSession) {
 
-  await _deletePolicyWithSameNameButNotId(policy)
+  await _deletePolicyWithSameNameButNotId(policy, session)
 
   const db = Globals.sys_accessor.db
-  const r = await db.collection('__policies').findOne({ _id: new ObjectId(policy._id) })
+  const r = await db.collection('__policies').findOne({ _id: new ObjectId(policy._id) }, { session })
 
   const data = {
     ...policy
@@ -104,7 +104,7 @@ async function _deployOnePolicy(policy: any) {
     delete data['_id']
     const ret = await db.collection('__policies').updateOne({ _id: r._id }, {
       $set: data
-    })
+    }, { session })
 
     assert(ret.matchedCount, `deploy: update policy ${policy.name} occurred error`)
     return
@@ -112,7 +112,7 @@ async function _deployOnePolicy(policy: any) {
 
   // if new
   data._id = new ObjectId(data._id) as any
-  const ret = await db.collection('__policies').insertOne(data as any)
+  const ret = await db.collection('__policies').insertOne(data as any, { session })
   assert(ret.insertedId, `deploy: add policy ${policy.name} occurred error`)
 }
 
@@ -120,12 +120,12 @@ async function _deployOnePolicy(policy: any) {
  * 删除本地 _id 不同，但 name 相同的策略（若存在）
  * @param func 
  */
-async function _deletePolicyWithSameNameButNotId(policy: any) {
+async function _deletePolicyWithSameNameButNotId(policy: any, session: ClientSession) {
   const db = Globals.sys_accessor.db
   await db.collection('__policies').findOneAndDelete({
     _id: {
       $ne: new ObjectId(policy._id)
     },
     name: policy.name
-  })
+  }, { session })
 }
