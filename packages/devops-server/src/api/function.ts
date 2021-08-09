@@ -5,6 +5,7 @@ import { compileTs2js } from 'cloud-function-engine/dist/utils'
 import { CloudFunctionStruct } from "cloud-function-engine"
 import { ClientSession, ObjectId } from 'mongodb'
 import * as assert from 'assert'
+
 const db = Globals.sys_db
 
 /**
@@ -112,7 +113,7 @@ export async function deployFunctions(functions: CloudFunctionStruct[]) {
 
 async function _deployOneFunction(func: CloudFunctionStruct, session: ClientSession) {
 
-  await _deleteFunctionWithSameNameButNotId(func, session)
+  await _processFunctionWithSameNameButNotId(func, session)
 
   const db = Globals.sys_accessor.db
   const r = await db.collection(Constants.cn.functions).findOne({ _id: new ObjectId(func._id) }, { session })
@@ -140,15 +141,38 @@ async function _deployOneFunction(func: CloudFunctionStruct, session: ClientSess
 }
 
 /**
- * 删除本地 _id 不同，但 name 相同的云函数（若存在）
+ * 处理本地 _id 不同，但 name 相同的云函数（若存在）
  * @param func 
  */
-async function _deleteFunctionWithSameNameButNotId(func: CloudFunctionStruct, session: ClientSession) {
+async function _processFunctionWithSameNameButNotId(func: CloudFunctionStruct, session: ClientSession) {
   const db = Globals.sys_accessor.db
-  await db.collection(Constants.cn.functions).findOneAndDelete({
-    _id: {
-      $ne: new ObjectId(func._id)
+
+  // remove functions
+  const r = await db.collection(Constants.cn.functions).findOneAndDelete(
+    {
+      _id: {
+        $ne: new ObjectId(func._id)
+      },
+      name: func.name
     },
-    name: func.name
-  }, { session })
+    { session })
+
+  if (!r.value) {
+    return
+  }
+
+  Globals.logger.warn(`delete local func ${r?.value?._id} with same name with (${func._id}:${func.name}) but different id `)
+
+  // remove its triggers if any
+  const r0 = await db.collection(Constants.cn.triggers).deleteMany(
+    {
+      func_id: r?.value?._id?.toString()
+    },
+    { session })
+
+  if (!r0.deletedCount) {
+    return
+  }
+
+  Globals.logger.warn(`delete triggers of func ${func._id} which been deleted`, r0)
 }

@@ -89,8 +89,15 @@ export async function deployTriggers(triggers: any[]) {
 }
 
 async function _deployOneTrigger(trigger: any, session: ClientSession) {
-
   const db = Globals.sys_accessor.db
+
+  // skip trigger with invalid func_id
+  const func = await db.collection(Constants.cn.functions).findOne({ _id: new ObjectId(trigger.func_id) })
+  if (!func) {
+    logger.warn(`skip trigger with invalid func_id: ${trigger.func_id}`, trigger)
+    return
+  }
+
   const r = await db.collection(Constants.cn.triggers).findOne({ _id: new ObjectId(trigger._id) }, { session })
 
   const data = {
@@ -98,7 +105,8 @@ async function _deployOneTrigger(trigger: any, session: ClientSession) {
   }
 
   logger.debug('deploy trigger: ', data, r)
-  // if exists function
+  
+  // if exists trigger
   if (r) {
     delete data['_id']
     const ret = await db.collection(Constants.cn.triggers).updateOne({ _id: r._id }, {
@@ -109,7 +117,7 @@ async function _deployOneTrigger(trigger: any, session: ClientSession) {
     return
   }
 
-  // if new function
+  // if new trigger
   data._id = new ObjectId(data._id) as any
   const ret = await db.collection(Constants.cn.triggers).insertOne(data as any, { session })
   assert(ret.insertedId, `deploy: add trigger ${trigger.name} occurred error`)
