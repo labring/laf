@@ -158,6 +158,7 @@
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { db } from '@/api/cloud'
 import { publishTriggers } from '@/api/publish'
+import { Constants } from '../../api/constants'
 
 // 默认化创建表单的值
 function getDefaultFormValue() {
@@ -234,8 +235,7 @@ export default {
     async getFunction() {
       const func_id = this.funcId
       this.loading = true
-      const r = await db
-        .collection('__functions')
+      const r = await db.collection(Constants.cn.functions)
         .where({ _id: func_id })
         .getOne()
 
@@ -270,7 +270,7 @@ export default {
       }
 
       // 执行数据查询
-      const res = await db.collection('__triggers')
+      const res = await db.collection(Constants.cn.triggers)
         .where(query)
         .limit(limit)
         .skip((page - 1) * limit)
@@ -280,7 +280,7 @@ export default {
       this.list = res.data
 
       // 获取数据总数
-      const { total } = await db.collection('__triggers')
+      const { total } = await db.collection(Constants.cn.triggers)
         .where(query)
         .limit(limit)
         .skip((page - 1) * limit)
@@ -325,7 +325,7 @@ export default {
         }
 
         // 执行创建请求
-        const r = await db.collection('__triggers')
+        const r = await db.collection(Constants.cn.triggers)
           .add(params)
 
         if (!r.id) {
@@ -361,7 +361,7 @@ export default {
         if (!valid) { return }
 
         // 执行创建请求
-        const r = await db.collection('__triggers')
+        const r = await db.collection(Constants.cn.triggers)
           .where({ _id: this.form._id })
           .update({
             name: this.form.name,
@@ -406,7 +406,7 @@ export default {
       await this.$confirm('确认要删除此数据？', '删除确认')
 
       // 执行删除请求
-      const r = await db.collection('__triggers')
+      const r = await db.collection(Constants.cn.triggers)
         .where({ _id: row._id, status: 0 })
         .remove()
 

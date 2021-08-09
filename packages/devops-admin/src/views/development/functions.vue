@@ -173,6 +173,7 @@
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { db } from '../../api/cloud'
 import DeployPanel from '../deploy/components/deploy-panel.vue'
+import { Constants } from '../../api/constants'
 
 const defaultCode = `
 import cloud from '@/cloud-sdk'
@@ -264,7 +265,7 @@ export default {
   methods: {
     /** 获取所有标签 */
     async getAllTags() {
-      const r = await db.collection('__functions')
+      const r = await db.collection(Constants.cn.functions)
         .field(['tags'])
         .where({
           tags: db.command.exists(true)
@@ -303,7 +304,7 @@ export default {
       }
 
       // 执行数据查询
-      const res = await db.collection('__functions')
+      const res = await db.collection(Constants.cn.functions)
         .where(query)
         .limit(limit)
         .skip((page - 1) * limit)
@@ -313,7 +314,7 @@ export default {
       this.list = res.data
 
       // 获取数据总数
-      const { total } = await db.collection('__functions')
+      const { total } = await db.collection(Constants.cn.functions)
         .where(query)
         .limit(limit)
         .skip((page - 1) * limit)
@@ -347,7 +348,7 @@ export default {
         delete data['_tag_input']
 
         // 执行创建请求
-        const r = await db.collection('__functions')
+        const r = await db.collection(Constants.cn.functions)
           .add(data)
 
         if (!r.id) {
@@ -384,7 +385,7 @@ export default {
         if (!valid) { return }
 
         // 执行创建请求
-        const r = await db.collection('__functions')
+        const r = await db.collection(Constants.cn.functions)
           .where({ _id: this.form._id })
           .update({
             name: this.form.name,
@@ -425,7 +426,7 @@ export default {
 
       const $ = db.command
       // 执行删除请求
-      const r = await db.collection('__functions')
+      const r = await db.collection(Constants.cn.functions)
         .where({
           _id: row._id,
           status: 0,

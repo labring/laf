@@ -17,7 +17,7 @@
     <div class="main-row">
       <div class="collection-list">
         <div class="label">选择集合</div>
-        <el-radio-group v-model="collection_name" style="width: 100%;">
+        <el-radio-group v-model="collection_name" class="radio-group">
           <el-radio v-for="item in collections" :key="item" class="collection-radio" border size="medium" :label="item">
             {{ item }}
           </el-radio>
@@ -29,7 +29,7 @@
           <el-button class="btn" size="mini" type="success" :disabled="loading" @click="updateRule">保存</el-button>
           <el-button class="btn" type="danger" size="mini" :disabled="loading" @click="removeRule">删除</el-button>
         </div>
-        <json-editor v-model="value" :dark="true" :height="600" />
+        <json-editor v-model="value" class="editor" :line-numbers="true" :dark="false" :height="600" />
       </div>
     </div>
 
@@ -76,6 +76,7 @@ import JsonEditor from '@/components/JsonEditor/rule'
 import { db } from '../../api/cloud'
 import $ from 'lodash'
 import { publishPolicy } from '../../api/publish'
+import { Constants } from '../../api/constants'
 
 const defaultValue = '{}'
 const defaultForm = {
@@ -125,7 +126,7 @@ export default {
   methods: {
     async getPolicies() {
       this.loading = true
-      const r = await db.collection('__policies')
+      const r = await db.collection(Constants.cn.policies)
         .get()
 
       if (!r.ok) {
@@ -154,7 +155,7 @@ export default {
       this.loading = true
       const rule_data = this.value
       const key = `rules.${this.collection_name}`
-      const r = await db.collection('__policies')
+      const r = await db.collection(Constants.cn.policies)
         .where({
           _id: this.policy_id
         })
@@ -187,7 +188,7 @@ export default {
       this.loading = true
 
       const key = `rules.${this.form.collection}`
-      const { total } = await db.collection('__policies')
+      const { total } = await db.collection(Constants.cn.policies)
         .where({
           _id: this.form.policy_id,
           [key]: db.command.exists(true)
@@ -198,7 +199,7 @@ export default {
         this.$message('该集合规则已存在！')
         return
       }
-      const r = await db.collection('__policies')
+      const r = await db.collection(Constants.cn.policies)
         .where({
           _id: this.form.policy_id,
           [key]: db.command.exists(false)
@@ -244,7 +245,7 @@ export default {
       this.loading = true
 
       const key = `rules.${this.collection_name}`
-      const r = await db.collection('__policies')
+      const r = await db.collection(Constants.cn.policies)
         .where({
           _id: this.policy_id,
           [key]: db.command.exists(true)
@@ -314,7 +315,9 @@ export default {
   display: flex;
 
   .collection-list {
-    width: 200px;
+    width: 250px;
+
+    padding-bottom: 10px;
     border-radius: 5px;
     box-sizing: border-box;
 
@@ -323,8 +326,20 @@ export default {
       color: gray;
       margin-bottom: 10px;
     }
-    .collection-radio {
+
+    .radio-group {
       width: 100%;
+      height: 640px;
+      overflow-y: scroll;
+      overflow-x: hidden;
+    }
+
+    .radio-group::-webkit-scrollbar {
+        display: none;
+    }
+
+    .collection-radio {
+      width: 80%;
       margin-bottom: 10px;
       margin-left: 0px;
     }
@@ -340,11 +355,15 @@ export default {
       display: flex;
       width: 400px;
       justify-content: flex-start;
-      margin-bottom: 5px;
+      margin-bottom: 10px;
 
       .btn {
         margin-left: 15px;
       }
+    }
+
+    .editor {
+      border: 1px solid lightgray
     }
   }
 }

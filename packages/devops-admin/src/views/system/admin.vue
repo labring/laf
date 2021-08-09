@@ -93,6 +93,7 @@ import { deepClone } from '@/utils'
 import { db } from '@/api/cloud'
 import * as user from '@/api/user'
 import { array2map, mergeMap2ArrayByKeyArray } from '../../utils/array'
+import { Constants } from '../../api/constants'
 
 const defaultForm = {
   _id: undefined,
@@ -123,7 +124,7 @@ export default {
   methods: {
     /** 获取管理员列表 */
     async getAdmins() {
-      const res = await db.collection('__admins')
+      const res = await db.collection(Constants.cn.admins)
         .get()
 
       const rolesMap = array2map(this.roles, 'name')
@@ -131,7 +132,7 @@ export default {
     },
     /** 获取所有的角色列表 */
     async getRoles() {
-      const res = await db.collection('__roles').get()
+      const res = await db.collection(Constants.cn.roles).get()
       this.roles = res.data || []
     },
     /** 打开添加表单  */
@@ -154,8 +155,7 @@ export default {
         type: 'warning'
       })
         .then(async() => {
-          const { ok } = await db
-            .collection('__admins')
+          const { ok } = await db.collection(Constants.cn.admins)
             .where({ _id: row._id })
             .remove()
           if (!ok) return

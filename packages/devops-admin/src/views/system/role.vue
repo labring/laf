@@ -100,6 +100,7 @@
 import { deepClone } from '@/utils'
 import { db } from '@/api/cloud'
 import { mergeMap2ArrayByKeyArray, array2map } from '@/utils/array'
+import { Constants } from '../../api/constants'
 
 const defaultForm = {
   _id: undefined,
@@ -125,8 +126,8 @@ export default {
   },
   methods: {
     async getRoles() {
-      const res = await db.collection('__roles').get()
-      const { data: permissions } = await db.collection('__permissions').get()
+      const res = await db.collection(Constants.cn.roles).get()
+      const { data: permissions } = await db.collection(Constants.cn.permissions).get()
       this.permissions = permissions
       const permsMap = array2map(permissions, 'name')
       this.rolesList = mergeMap2ArrayByKeyArray(permsMap, res.data, 'permissions', 'full_permissions')
@@ -151,8 +152,7 @@ export default {
         type: 'warning'
       })
         .then(async() => {
-          const r = await db
-            .collection('__roles')
+          const r = await db.collection(Constants.cn.roles)
             .where({ name: row.name })
             .remove()
           if (!r.ok) return
@@ -170,8 +170,7 @@ export default {
       const isEdit = this.dialogType === 'edit'
 
       if (isEdit) {
-        const { ok } = await db
-          .collection('__roles')
+        const { ok } = await db.collection(Constants.cn.roles)
           .where({ _id: this.role._id })
           .update({
             name: this.role.name,
@@ -182,7 +181,7 @@ export default {
         if (!ok) return
         this.getRoles()
       } else {
-        const { ok } = await db.collection('__roles').add(this.role)
+        const { ok } = await db.collection(Constants.cn.roles).add(this.role)
         if (!ok) return
         this.getRoles()
       }

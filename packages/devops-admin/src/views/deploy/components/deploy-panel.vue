@@ -59,6 +59,7 @@
 <script>
 import { db } from '@/api/cloud'
 import { deploy2remote } from '@/api/deploy'
+import { Constants } from '../../../api/constants'
 
 // 表单验证规则
 const formRules = {
@@ -120,7 +121,7 @@ export default {
   },
   methods: {
     async load() {
-      const r = await db.collection('deploy_targets').get()
+      const r = await db.collection(Constants.cn.deploy_targets).get()
       if (!r.ok) throw new Error('get targets failed')
 
       this.targets = r.data
@@ -131,7 +132,7 @@ export default {
         return
       }
       const func_ids = this.internal_functions.map(func => func._id)
-      const r = await db.collection('__triggers')
+      const r = await db.collection(Constants.cn.triggers)
         .where({
           func_id: db.command.in(func_ids)
         })

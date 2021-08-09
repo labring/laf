@@ -3,7 +3,7 @@
     <div class="collec-wrap">
       <div class="filter-container">
         集合名称：
-        <el-select v-model="collectionName" filterable placeholder="请选择集合">
+        <el-select v-model="collectionName" size="mini" filterable placeholder="请选择集合">
           <el-option
             v-for="item in collections"
             :key="item"
@@ -14,7 +14,7 @@
       </div>
 
       <div style="text-align: center;">
-        <el-radio-group v-model="tabType" style="margin-left: 30px;">
+        <el-radio-group v-model="tabType" size="mini" style="margin-left: 30px;">
           <el-radio-button label="record">记录列表</el-radio-button>
           <el-radio-button label="index">索引管理</el-radio-button>
         </el-radio-group>
@@ -22,11 +22,11 @@
 
       <!-- 记录 -->
       <div v-show="tabType === 'record'" style="margin: 10px 0;">
-        <el-input v-model.trim="listQuery._id" placeholder="请输入_id查找" style="width:200px" :disabled="!collectionName" @keyup.enter.native="handleFilter" />
-        <el-button type="primary" style="margin-left: 10px" icon="el-icon-search" :disabled="!collectionName" @click="handleFilter">搜索记录</el-button>
-        <el-button type="primary" style="margin-left: 10px" icon="el-icon-plus" :disabled="!collectionName" @click="handleCreateRecord">添加记录</el-button>
+        <el-input v-model.trim="listQuery._id" size="mini" placeholder="请输入_id查找" style="width:200px" :disabled="!collectionName" @keyup.enter.native="handleFilter" />
+        <el-button size="mini" type="primary" style="margin-left: 10px" icon="el-icon-search" :disabled="!collectionName" @click="handleFilter">搜索记录</el-button>
+        <el-button size="mini" type="primary" style="margin-left: 10px" icon="el-icon-plus" :disabled="!collectionName" @click="handleCreateRecord">添加记录</el-button>
       </div>
-      <el-container v-show="tabType === 'record'" style="height: 800px; border: 1px solid #eee">
+      <el-container v-show="tabType === 'record'" style="height: calc(100vh - 240px); border: 1px solid #eee">
         <el-aside width="300px" style="background-color: #fff;border: 1px solid #eee;padding: 8px;">
           <div v-for="item in list" :key="item._id" class="record-item" :class="getClass(item)" @click="getRecord(item)">
             <span class="">_id: {{ item._id }}</span>
@@ -50,7 +50,7 @@
             <el-button size="mini" type="primary" :disabled="!collectionName" @click="updateRecord">更新</el-button>
           </el-header>
           <el-main>
-            <json-editor v-model="record" :dark="true" :height="660" />
+            <json-editor v-model="record" class="db-editor" :line-numbers="true" :dark="false" :height="600" />
           </el-main>
         </el-container>
       </el-container>
@@ -355,5 +355,15 @@ export default {
     .record-item.active {
       color: blue;
     }
+  }
+
+  .el-main {
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    // .db-editor {
+      // border: 1px solid lightgray
+    // }
   }
 </style>

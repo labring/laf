@@ -72,7 +72,7 @@
           <json-editor
             v-model="invokeParams"
             :line-numbers="false"
-            :height="200"
+            :height="300"
             :dark="false"
           />
         </div>
@@ -113,6 +113,7 @@ import { db, dbm_cloud } from '../../api/cloud'
 import { launchFunction } from '../../api/func'
 import { publishFunctions } from '../../api/publish'
 import { getDebugToken } from '../../utils/auth'
+import { Constants } from '../../api/constants'
 
 const defaultParamValue = {
   code: 'laf'
@@ -193,8 +194,7 @@ export default {
     async getFunction() {
       const func_id = this.func_id
       this.loading = true
-      const r = await db
-        .collection('__functions')
+      const r = await db.collection(Constants.cn.functions)
         .where({ _id: func_id })
         .getOne()
 
@@ -229,8 +229,7 @@ export default {
       if (typeof param !== 'string') {
         param = JSON.stringify(this.invokeParams)
       }
-      const r = await db
-        .collection('__functions')
+      const r = await db.collection(Constants.cn.functions)
         .where({
           _id: this.func._id
         })

@@ -114,6 +114,7 @@
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { db } from '@/api/cloud'
+import { Constants } from '../../api/constants'
 
 // 默认化创建表单的值
 function getDefaultFormValue() {
@@ -191,7 +192,7 @@ export default {
       }
 
       // 执行数据查询
-      const res = await db.collection('deploy_targets')
+      const res = await db.collection(Constants.cn.deploy_targets)
         .where(query)
         .limit(limit)
         .skip((page - 1) * limit)
@@ -201,7 +202,7 @@ export default {
       this.list = res.data
 
       // 获取数据总数
-      const { total } = await db.collection('deploy_targets')
+      const { total } = await db.collection(Constants.cn.deploy_targets)
         .where(query)
         .limit(limit)
         .skip((page - 1) * limit)
@@ -231,7 +232,7 @@ export default {
         if (!valid) { return }
 
         // 执行创建请求
-        const r = await db.collection('deploy_targets')
+        const r = await db.collection(Constants.cn.deploy_targets)
           .add(this.form)
 
         if (!r.id) {
@@ -277,7 +278,7 @@ export default {
         }
 
         // 执行更新请求
-        const r = await db.collection('deploy_targets')
+        const r = await db.collection(Constants.cn.deploy_targets)
           .where({ _id: this.form._id })
           .update(data)
 
@@ -305,7 +306,7 @@ export default {
       await this.$confirm('确认要删除此数据？', '删除确认')
 
       // 执行删除请求
-      const r = await db.collection('deploy_targets')
+      const r = await db.collection(Constants.cn.deploy_targets)
         .where({ _id: row._id })
         .remove()
 

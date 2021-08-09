@@ -139,6 +139,8 @@
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { db } from '@/api/cloud'
 import { applyDeployRequest, createDeployToken } from '../../api/deploy'
+import { Constants } from '../../api/constants'
+
 // 默认的创建部署令牌表单
 function getDefaultFormValue() {
   return {
@@ -214,7 +216,7 @@ export default {
       }
 
       // 执行数据查询
-      const res = await db.collection('deploy_requests')
+      const res = await db.collection(Constants.cn.deploy_requests)
         .where(query)
         .limit(limit)
         .skip((page - 1) * limit)
@@ -224,7 +226,7 @@ export default {
       this.list = res.data
 
       // 获取数据总数
-      const { total } = await db.collection('deploy_requests')
+      const { total } = await db.collection(Constants.cn.deploy_requests)
         .where(query)
         .limit(limit)
         .skip((page - 1) * limit)
@@ -296,7 +298,7 @@ export default {
       await this.$confirm('确认要删除此数据？', '删除确认')
 
       // 执行删除请求
-      const r = await db.collection('deploy_requests')
+      const r = await db.collection(Constants.cn.deploy_requests)
         .where({ _id: row._id })
         .remove()
 
