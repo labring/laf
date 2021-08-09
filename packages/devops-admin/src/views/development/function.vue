@@ -300,7 +300,7 @@ export default {
      */
     async addFunctionHistory() {
       const data = Object.assign({}, this.func)
-      await db.collection('__function_history')
+      await db.collection(Constants.cn.function_history)
         .add({
           func_id: this.func._id,
           data: data,
