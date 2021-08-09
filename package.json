@@ -1,8 +1,11 @@
 {
   "name": "less-framework-root",
-  "version": "0.0.0",
   "description": "less framework base on less-api",
   "private": "true",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Maslow/less-framework.git"
+  },
   "scripts": {
     "install": "lerna exec npm install",
     "install-dev": "lerna bootstrap",
@@ -10,6 +13,7 @@
     "build": "lerna run build",
     "watch": "lerna run watch --parallel",
     "prepublishOnly": "npm run build",
+    "gen-changelog": "npx conventional-changelog -i CHANGELOG.md -s -r 0 ",
     "docker-build-devops-server": "node ./scripts/docker-build-devops-server.js",
     "docker-build-app-server": "node ./scripts/docker-build-app-server.js",
     "docker-build-devops-admin": "node ./scripts/docker-build-devops-admin.js",
@@ -28,6 +32,7 @@
     "less-api"
   ],
   "devDependencies": {
+    "conventional-changelog-cli": "^2.1.1",
     "fs-extra": "^9.1.0",
     "husky": "^5.2.0",
     "lerna": "^4.0.0"
