@@ -1,3 +1,10 @@
+## <small>0.4.12 (2021-08-09)</small>
+
+* fix: 针对后端调整，修改控制台 devops db 集合名称；优化部分页面交互体验； ([fa88671](https://github.com/Maslow/less-framework/commit/fa88671))
+* refactor: 统一、重命名所有 devops db 集合名称，增加前缀支持； ([0713921](https://github.com/Maslow/less-framework/commit/0713921))
+* doc: update changelog; ([2b49b45](https://github.com/Maslow/less-framework/commit/2b49b45))
+
+
 
 ## <small>0.4.11 (2021-08-09)</small>
 
