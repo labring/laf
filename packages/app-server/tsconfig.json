@@ -19,7 +19,7 @@
     "noUnusedParameters": true,
     "outDir": "dist",
     "pretty": true,
-    "removeComments": true,
+    "removeComments": false,
     "stripInternal": true,
     "skipDefaultLibCheck": true,
     "skipLibCheck": true,

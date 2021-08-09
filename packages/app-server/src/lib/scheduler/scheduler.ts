@@ -19,13 +19,14 @@ export class FrameworkScheduler extends TriggerScheduler {
    * @param func_id 
    * @returns 
    */
-  async getFunctionById(func_id: string): Promise<CloudFunction>{
+  async getFunctionById(func_id: string): Promise<CloudFunction> {
     assert(func_id)
     const funcData = await getFunctionById(func_id)
-    assert.ok(funcData)
+    assert.ok(funcData, `failed to get function data: ${func_id}`)
 
     const func = new CloudFunction(funcData)
-    if(!func.compiledCode) {
+    if (!func.compiledCode) {
+      logger.warn(`performance warning: function (${func_id} hadn't been compiled, will be compiled automatically)`)
       func.compile2js()
     }
     return func
