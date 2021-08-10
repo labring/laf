@@ -58,7 +58,7 @@ export class PackageDeclaration extends PackageInfo {
     }
 
     // load type file
-    const typeFile = pkg.info?.types || 'index.d.ts'
+    const typeFile = pkg.info?.types || pkg.info?.typings || 'index.d.ts'
     const typeFilePath = path.join(pkg.rootPath, typeFile)
     if (!await pkg.exists(typeFilePath)) {
       return []
@@ -100,7 +100,7 @@ export class PackageDeclaration extends PackageInfo {
    * 2. 如果未读取到，则指定 package.json#main 所在目录 下的 index.d.ts 为 typings
    */
   async resolveTypingsEntryPath() {
-    const typings = this.info?.typings
+    const typings = this.info?.typings || this.info?.types
 
     const defaultTypings = path.join(this.entryPath, 'index.d.ts')
     if (!typings) {
@@ -249,13 +249,13 @@ export class NodePackageDeclarations {
   nodeModulesRoot: string
 
   static NODE_PACKAGES = [
-    'assert', 'crypto', 'child_process','path', 'process', 'readline', 'querystring', 'os',
-     'dns', 'domain', 'http', 'https', 'http2', 'module', 'net', 'tls', 'dgram',
-     'stream', 'tty', 'url', 'wasi', 'v8', 'vm', 'worker_threads', 'zlib',
-     'punycode', 'perf_hooks', 'fs', 'events', 'constants', 'console', 'cluster', 'buffer',
-     'fs/promises', 'globals'
+    'assert', 'crypto', 'child_process', 'path', 'process', 'readline', 'querystring', 'os',
+    'dns', 'domain', 'http', 'https', 'http2', 'module', 'net', 'tls', 'dgram',
+    'stream', 'tty', 'url', 'wasi', 'v8', 'vm', 'worker_threads', 'zlib',
+    'punycode', 'perf_hooks', 'fs', 'events', 'constants', 'console', 'cluster', 'buffer',
+    'fs/promises', 'globals'
   ]
-  
+
 
   typesDir: string
 
