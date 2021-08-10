@@ -61,6 +61,7 @@ export class AutoImportTypings {
     if (!this.isLoaded('axios')) { this.loadDeclaration('axios') }
     if (!this.isLoaded('cloud-function-engine')) { this.loadDeclaration('cloud-function-engine') }
     if (!this.isLoaded('mongodb')) { this.loadDeclaration('mongodb') }
+    if (!this.isLoaded('@types/node')) { this.loadDeclaration('@types/node') }
   }
 
   /**
@@ -79,13 +80,19 @@ export class AutoImportTypings {
    */
   async loadDeclaration(packageName) {
     try {
-      const r = await loadPackageTypings(packageName)
-      if (r.code) {
+      const r = await loadPackageTypings(packageName).catch(err => console.error(err))
+      if (r?.code) {
         return
       }
 
       const rets = r.data || []
       for (const lib of rets) {
+        // 修复包的类型入口文件不为 index.d.ts 的情况
+        if (packageName === lib.packageName && lib.path !== `${packageName}/index.d.ts`) {
+          const _lib = { ...lib }
+          _lib.path = `${packageName}/index.d.ts`
+          this.addExtraLib(_lib)
+        }
         this.addExtraLib(lib)
       }
 
