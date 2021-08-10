@@ -48,6 +48,7 @@ EntryRouter.post('/proxy/:policy', async (req, res) => {
       data
     })
   } catch (error) {
+    logger.error(requestId, 'execute query got error:  ', error)
     return res.send({
       code: 2,
       error: error.toString(),
