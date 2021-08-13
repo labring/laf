@@ -1,13 +1,17 @@
 import * as path from 'path'
 import * as dotenv from 'dotenv'
+
+/**
+ * parse environment vars from the `.env` file if existing
+ */
 dotenv.config()
 
 /**
- * 应用运行配置管理
+ * configuration management
  */
 export default class Config {
   /**
-   * 获取数据库连接配置
+   * mongodb connection configuration
    */
   static get db() {
     if (!process.env['DB']) {
@@ -21,12 +25,12 @@ export default class Config {
     return {
       database: process.env['DB'],
       uri: process.env['DB_URI'],
-      poolSize: (process.env['DB_POOL_LIMIT'] ?? 100) as number,
+      maxPoolSize: (process.env['DB_POOL_LIMIT'] ?? 10) as number,
     }
   }
 
   /**
-   * 指定服务端密钥，用于生成 token 
+   * the server secret salt, mainly used for generating tokens
    */
   static get SERVER_SECRET_SALT(): string {
     const secret_salt = process.env['SERVER_SECRET_SALT'] ?? process.env['SERVER_SALT']
@@ -36,40 +40,54 @@ export default class Config {
     return secret_salt
   }
 
-  // 本地上传文件存储目录
+  /**
+   * the root path of local file system driver, only used while `FILE_SYSTEM_DRIVER` equals to 'local'
+   */
   static get LOCAL_STORAGE_ROOT_PATH(): string {
     return process.env['LOCAL_STORAGE_ROOT_PATH'] ?? path.join(process.cwd(), "data")
   }
 
-  // 临时文件目录
+  /**
+   * the file system driver: 'local', 'gridfs'
+   */
+  static get FILE_SYSTEM_DRIVER(): string {
+    return process.env['FILE_SYSTEM_DRIVER'] ?? 'gridfs'
+  }
+
+  /**
+   * the `temp path`
+   */
   static get TMP_PATH(): string {
     const tmp_path = process.env['TMP_PATH'] ?? path.join(process.cwd(), "tmp")
     return tmp_path
   }
 
   /**
-   * 指定日志级别
+   * the logger level : 'fatal', 'error', 'warning', 'debug', 'info', 'trace'
    */
   static get LOG_LEVEL(): string {
     return process.env['LOG_LEVEL'] ?? (this.isProd ? 'info' : 'debug')
   }
 
   /**
-   * 指定服务监听端口号，缺省为 8000
+   * the serving port, default is 8000
    */
   static get PORT(): number {
     return (process.env.PORT ?? 8000) as number
   }
 
   /**
-   * 指定开启云函数日志: "always" | "debug" | "none"
+   * enable cloud function logging, default is `always`
+   * - `always` means that all cloud functions' execution will be logged
+   * - `debug` means that only logging for debug invokes
+   * - `never` no logging any case
    */
   static get ENABLE_CLOUD_FUNCTION_LOG(): string {
-    return (process.env.ENABLE_CLOUD_FUNCTION_LOG ?? 'debug')
+    return (process.env.ENABLE_CLOUD_FUNCTION_LOG ?? 'always')
   }
 
   /**
-   * 是否生产环境
+   * in production deploy or not
    */
   static get isProd(): boolean {
     return process.env.NODE_ENV === 'production'

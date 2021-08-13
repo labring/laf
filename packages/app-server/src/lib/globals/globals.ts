@@ -90,7 +90,7 @@ export class Globals {
    * @returns 
    */
   private static _createAccessor() {
-    const accessor = new MongoAccessor(Config.db.database, Config.db.uri, { directConnection: true, maxPoolSize: Config.db.poolSize })
+    const accessor = new MongoAccessor(Config.db.database, Config.db.uri, { directConnection: true, maxPoolSize: Config.db.maxPoolSize })
 
     accessor.setLogger(createLogger('db', 'warning'))
     accessor.init()

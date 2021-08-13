@@ -8,9 +8,9 @@ export class LocalFileStorage implements FileStorageInterface {
   rootPath: string
   namespace: string
 
-  constructor(rootPath: string, namespace: string = 'default') {
+  constructor(rootPath: string, bucket: string = 'public') {
     this.rootPath = rootPath
-    this.namespace = namespace
+    this.namespace = bucket
   }
 
   /**
@@ -104,7 +104,7 @@ export class LocalFileStorage implements FileStorageInterface {
    * @param name 
    * @returns 
    */
-   checkSafeDirectoryName(name: string): boolean {
+  checkSafeDirectoryName(name: string): boolean {
     assert(typeof name === 'string', 'name must be a string')
 
     const reg = /^([0-9]|[A-z]|_|-){3,64}$/
@@ -118,7 +118,7 @@ export class LocalFileStorage implements FileStorageInterface {
     assert(typeof name === 'string', 'name must be a string')
     const reg = /^([0-9]|[A-z]|_|-|\.){3,64}$/
     return reg.test(name)
-   }
+  }
 
   /**
    * 生成文件名
