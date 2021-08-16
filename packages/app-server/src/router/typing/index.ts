@@ -47,21 +47,19 @@ PackageTypingRouter.get('/package', async (req, res) => {
     })
   }
 
-  // 获取其它三方包类型
-  const pkd = new PackageDeclaration(packageName, nodeModulesRoot)
-  await pkd.load()
-  return res.send({
-    code: 0,
-    data: pkd.declarations
-  })
+  try {
+    // 获取其它三方包类型
+    const pkd = new PackageDeclaration(packageName, nodeModulesRoot)
+    await pkd.load()
+    return res.send({
+      code: 0,
+      data: pkd.declarations
+    })
+  } catch (error) {
+    logger.error(requestId, 'failed to get package typings', error)
+    return res.send({
+      code: 1,
+      error: error.toString()
+    })
+  }
 })
-
-
-
-// /**
-//  * 获取 node 所有官方包的声明文件
-//  */
-// async function getAllNodeBuiltinPackages() {
-//   const pkr = new NodePackageDeclarations(nodeModulesRoot)
-
-// }
