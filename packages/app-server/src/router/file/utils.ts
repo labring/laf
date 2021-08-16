@@ -1,6 +1,6 @@
 import assert = require("assert")
 import { parseToken } from "../../lib/utils/token"
-
+import * as crypto from 'crypto'
 
 /**
  * file operations
@@ -65,4 +65,15 @@ export function checkFileOperationToken(bucket: string, token: string, operation
   }
 
   return [0, null]
+}
+
+
+/**
+ * generate http ETag of a file
+ * @param file_size the size of file in bytes
+ * @param update_date the update date time of file
+ * @param filename file name
+ */
+export function generateETag(file_size: number, update_date: string, filename: string) {
+  return crypto.createHash('md5').update(`${filename}#${file_size}#${update_date}`).digest('hex')
 }

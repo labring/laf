@@ -55,6 +55,13 @@ export default class Config {
   }
 
   /**
+   * value of HTTP header Cache-Control: max-age=120 while download file
+   */
+  static get FILE_SYSTEM_HTTP_CACHE_CONTROL(): string {
+    return process.env['FILE_SYSTEM_HTTP_CACHE_CONTROL']
+  }
+
+  /**
    * the `temp path`
    */
   static get TMP_PATH(): string {

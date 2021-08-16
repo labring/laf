@@ -3,7 +3,8 @@ import * as fs from 'fs'
 import * as express from 'express'
 import { GridFSBucket } from 'mongodb'
 import { Globals } from '../../lib/globals'
-import { checkFileOperationToken, FS_OPERATION } from './utils'
+import { checkFileOperationToken, FS_OPERATION, generateETag } from './utils'
+import Config from '../../config'
 
 
 export const GridFSHandlers = {
@@ -37,7 +38,14 @@ async function handleUploadFile(req: express.Request, res: express.Response) {
   const bucket = new GridFSBucket(Globals.accessor.db, { bucketName: bucket_name })
 
   const stream = bucket.openUploadStream(file.filename, {
-    metadata: { original_name: file.originalname, created_by: auth?.uid, bucket: bucket_name, created_at: Date.now() },
+    metadata: {
+      original_name: file.originalname,
+      created_by: auth?.uid,
+      bucket: bucket_name,
+      created_at: Date.now(),
+      contentType: file.mimetype
+    },
+    // @deprecated: this field will be deprecated in future, use metadata instead. keep it now for history reasons
     contentType: file.mimetype
   })
 
@@ -91,8 +99,22 @@ async function handleDownloadFile(req: express.Request, res: express.Response) {
       return res.status(404).send('Not Found')
     }
 
-    if (file?.contentType) {
-      res.contentType(file.contentType)
+    const contentType = file?.metadata?.contentType || file?.contentType
+    if (contentType) {
+      res.contentType(contentType)
+    }
+
+    if (Config.FILE_SYSTEM_HTTP_CACHE_CONTROL) {
+      res.set('Cache-Control', Config.FILE_SYSTEM_HTTP_CACHE_CONTROL)
+    }
+    res.set('Last-Modified', file.uploadDate.toUTCString())
+
+    // process cache policy with ETag & If-None-Match
+    const ETag = generateETag(file.length, file.uploadDate.toString(), file.filename)
+    res.set('ETag', ETag)
+    if (req.header('If-None-Match') === ETag) {
+      res.status(304).send('Not Modified')
+      return
     }
 
     res.set('x-bucket', bucket_name)
