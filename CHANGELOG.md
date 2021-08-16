@@ -1,6 +1,31 @@
 # [](https://github.com/Maslow/less-framework/compare/v0.4.16...v) (2021-08-16)
 
 
+### Bug Fixes
+
+* 修复获取依赖包类型接口报错无捕获； ([43582a5](https://github.com/Maslow/less-framework/commit/43582a5697cb1a7c524798efe5779e80b034c5fb))
+* add node package `util` support; ([be9c373](https://github.com/Maslow/less-framework/commit/be9c373b2505ae34d3ed8a4186d0d279403be745))
+
+
+### Features
+
+* **app-server:** add cache-control & etag of http request for gridfs files; ([acc3c44](https://github.com/Maslow/less-framework/commit/acc3c440afc55c3666c0bca0661daf9f54bb2fd9))
+* **devops-adin:** 优化访问策略编辑页的交互体验、修复修改访问策略时的错误； ([759fe32](https://github.com/Maslow/less-framework/commit/759fe32c7f679274a660d47f27c62ceb6356e875))
+
+
+
+## [0.4.16](https://github.com/Maslow/less-framework/compare/v0.4.15...v0.4.16) (2021-08-13)
+
+
+### Features
+
+* 新增 GridFS 文件存储方式； ([0ddc915](https://github.com/Maslow/less-framework/commit/0ddc9151a437fe7be17c5eae972a0786a6966c38))
+
+
+
+# [](https://github.com/Maslow/less-framework/compare/v0.4.16...v) (2021-08-16)
+
+
 ### Features
 
 * **app-server:** add cache-control & etag of http request for gridfs files; ([acc3c44](https://github.com/Maslow/less-framework/commit/acc3c440afc55c3666c0bca0661daf9f54bb2fd9))
