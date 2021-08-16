@@ -1,6 +1,6 @@
 {
   "name": "laf-app-server",
-  "version": "0.4.16",
+  "version": "0.4.17",
   "description": "less framework base on less-api",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
@@ -39,7 +39,7 @@
     "log4js": "^6.3.0",
     "mongodb": "^4.0.1",
     "multer": "^1.4.2",
-    "node-modules-utils": "^0.4.15",
+    "node-modules-utils": "^0.4.17",
     "nodemailer": "^6.6.3",
     "uuid": "^8.3.2",
     "validator": "^12.2.0"
