@@ -253,7 +253,7 @@ export class NodePackageDeclarations {
     'dns', 'domain', 'http', 'https', 'http2', 'module', 'net', 'tls', 'dgram',
     'stream', 'tty', 'url', 'wasi', 'v8', 'vm', 'worker_threads', 'zlib',
     'punycode', 'perf_hooks', 'fs', 'events', 'constants', 'console', 'cluster', 'buffer',
-    'fs/promises', 'globals'
+    'fs/promises', 'globals', 'util'
   ]
 
 
