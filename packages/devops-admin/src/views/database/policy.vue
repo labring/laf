@@ -1,11 +1,11 @@
 <template>
   <div class="components-container">
-    <span v-if="policy" style="color: black;">访问策略：<b>{{policy.name}}</b></span>
-    
+    <span v-if="policy" style="color: black;">访问策略：<b>{{ policy.name }}</b></span>
+
     <!-- <div class="create-btn" style="margin-bottom: 10px" /> -->
 
     <el-button size="mini" icon="el-icon-refresh" type="default" style="margin-left: 15px" :disabled="loading" @click="getPolicy">刷新</el-button>
-    <el-button plain  size="mini" style="margin-left: 15px" type="primary" :disabled="loading" @click="dialogVisible = true">新建集合规则</el-button>
+    <el-button plain size="mini" style="margin-left: 15px" type="primary" :disabled="loading" @click="dialogVisible = true">新建集合规则</el-button>
 
     <div class="main-row">
       <div class="collection-list">
@@ -52,7 +52,6 @@
 import JsonEditor from '@/components/JsonEditor/rule'
 import { db } from '../../api/cloud'
 import $ from 'lodash'
-import { publishPolicy } from '../../api/publish'
 import { Constants } from '../../api/constants'
 
 const defaultValue = `
@@ -74,7 +73,7 @@ export default {
     return {
       form: { ...defaultForm },
       loading: false,
-      value: defaultValue,  // 编辑器的值
+      value: defaultValue, // 编辑器的值
       rules: [], // 所有规则
       policy_id: null, // 当前选择的 policy id
       policy: null, // 当前策略对象
@@ -127,7 +126,7 @@ export default {
       }
 
       this.policy = r.data
-      if(!this.collection_name) {
+      if (!this.collection_name) {
         this.collection_name = $.head(this.collections)
       }
       this.getRule()
@@ -286,14 +285,14 @@ export default {
       }
       return null
     },
-     // 快捷键绑定
+    // 快捷键绑定
     async bindShortKey(e) {
       // Ctrl + s 为保存
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         this.updateRule()
         e.preventDefault()
       }
-    },
+    }
   }
 }
 </script>
