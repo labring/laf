@@ -12,12 +12,19 @@
       <el-button class="filter-item" type="default" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
-      <el-button class="filter-item" type="default" icon="el-icon-search" @click="showCreateForm">
+      <el-button plain class="filter-item" type="primary" icon="el-icon-plus" @click="showCreateForm">
         新建
       </el-button>
-      <el-button plain class="filter-item" type="primary" icon="el-icon-guide" @click="deployPanelVisible = true">
-        远程部署
-      </el-button>
+      <el-tooltip content="发布策略：策略修改后需要发布才能生效" placement="bottom" effect="light">
+        <el-button plain class="filter-item" type="warning" icon="el-icon-guide" @click="publish">
+          发布策略
+        </el-button>
+      </el-tooltip>
+      <el-tooltip content="远程部署：将本环境的访问策略推送到远程环境中，如推送到测试或生产环境" placement="bottom" effect="light">
+        <el-button plain class="filter-item" type="default" icon="el-icon-guide" @click="deployPanelVisible = true">
+          远程部署
+        </el-button>
+      </el-tooltip>
     </div>
 
     <!-- 表格 -->
@@ -140,6 +147,7 @@ import Pagination from '@/components/Pagination' // secondary package based on e
 import { db } from '../../api/cloud'
 import DeployPanel from '../deploy/components/deploy-panel.vue'
 import { Constants } from '../../api/constants'
+import { publishPolicy } from '../../api/publish'
 
 // 默认化创建表单的值
 function getDefaultFormValue() {
@@ -365,10 +373,27 @@ export default {
 
       this.list.splice(index, 1)
     },
+    // 发布访问策略
+    async publish() {
+      const confirm = await this.$confirm('确定发布所有规则？')
+        .catch(() => false)
+
+      if (!confirm) return
+      const res = await publishPolicy()
+      if (res.data.code) {
+        this.$message('发布失败: ' + res.data.error)
+        return
+      }
+      this.$notify({
+        type: 'success',
+        title: '发布成功',
+        message: '访问策略发布成功！'
+      })
+    },
     // 查看详情
     async handleShowDetail(row) {
       // 跳转到详情页
-      this.$router.push(`/database/policy?${row._id}`)
+      this.$router.push(`/database/policies/${row._id}`)
     }
   }
 }

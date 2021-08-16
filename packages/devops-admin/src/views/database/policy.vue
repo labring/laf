@@ -1,18 +1,11 @@
 <template>
   <div class="components-container">
-    <div class="create-btn" style="margin-bottom: 10px" />
+    <span v-if="policy" style="color: black;">访问策略：<b>{{policy.name}}</b></span>
+    
+    <!-- <div class="create-btn" style="margin-bottom: 10px" /> -->
 
-    <el-select v-model="policy_id" size="medium" placeholder="选择策略" :loading="loading">
-      <el-option
-        v-for="item in policies"
-        :key="item._id"
-        :label="item.name"
-        :value="item._id"
-      />
-    </el-select>
-    <!-- <el-button  size="medium" style="margin-left: 15px" type="default" :disabled="loading" @click="dialogVisible = true">新建策略</el-button> -->
-    <el-button size="medium" icon="el-icon-refresh" type="default" style="margin-left: 15px" :disabled="loading" @click="getPolicies">刷新</el-button>
-    <!-- <el-button  type="danger" size="mini" style="margin-left: 20px" :disabled="loading" @click="removeRule">删除</el-button> -->
+    <el-button size="mini" icon="el-icon-refresh" type="default" style="margin-left: 15px" :disabled="loading" @click="getPolicy">刷新</el-button>
+    <el-button plain  size="mini" style="margin-left: 15px" type="primary" :disabled="loading" @click="dialogVisible = true">新建集合规则</el-button>
 
     <div class="main-row">
       <div class="collection-list">
@@ -25,18 +18,12 @@
       </div>
       <div class="editor-container">
         <div class="buttons">
-          <el-button class="btn" style="margin-left: 0px" size="mini" type="primary" :disabled="loading" @click="dialogVisible = true">新建集合规则</el-button>
-          <el-button class="btn" size="mini" type="success" :disabled="loading" @click="updateRule">保存</el-button>
-          <el-button class="btn" type="danger" size="mini" :disabled="loading" @click="removeRule">删除</el-button>
+          <el-button plain class="btn" size="mini" type="success" :disabled="loading" @click="updateRule">保存(S)</el-button>
+          <el-button plain class="btn" type="danger" size="mini" :disabled="loading" @click="removeRule">删除</el-button>
         </div>
         <json-editor v-model="value" class="editor" :line-numbers="true" :dark="false" :height="600" />
       </div>
     </div>
-
-    <aside style="margin-top: 15px">
-      <span>请谨慎使用「发布所有规则」，规则配置错误，会导致整个应用都无法访问！</span>
-    </aside>
-    <el-button v-permission="'publish.policy'" type="danger" @click="apply">发布所有策略</el-button>
 
     <!-- 表单 -->
     <el-dialog
@@ -44,16 +31,6 @@
       title="创建集合"
     >
       <el-form :model="form" label-width="80px" label-position="left">
-        <el-form-item label="策略名称">
-          <el-select v-model="form.policy_id" placeholder="选择类别" :loading="loading">
-            <el-option
-              v-for="item in policies"
-              :key="item._id"
-              :label="item.name"
-              :value="item._id"
-            />
-          </el-select>
-        </el-form-item>
         <el-form-item label="集合名称">
           <el-input v-model="form.collection" placeholder="唯一标识，为字母" />
         </el-form-item>
@@ -78,10 +55,17 @@ import $ from 'lodash'
 import { publishPolicy } from '../../api/publish'
 import { Constants } from '../../api/constants'
 
-const defaultValue = '{}'
+const defaultValue = `
+{
+  "read": true,
+  "update": false,
+  "remove": false,
+  "add": false,
+  "count": true
+}
+`
 const defaultForm = {
-  collection: '',
-  policy_id: ''
+  collection: ''
 }
 export default {
   name: 'RuleEditorPage',
@@ -90,10 +74,10 @@ export default {
     return {
       form: { ...defaultForm },
       loading: false,
-      value: defaultValue,
+      value: defaultValue,  // 编辑器的值
       rules: [], // 所有规则
-      policies: [],
-      policy_id: null, // 当前选择的 policy _id
+      policy_id: null, // 当前选择的 policy id
+      policy: null, // 当前策略对象
       collection_name: null, // 当前选择的 collection name
       dialogVisible: false
     }
@@ -101,42 +85,52 @@ export default {
   computed: {
     // 当前策略下的集合
     collections() {
-      if (!this.policy_id) return []
-
+      if (!this.policy?.rules) return []
       return Object.keys(this.policy?.rules)
-    },
-    // 当前选中的 policy
-    policy() {
-      const [found] = this.policies.filter(po => po._id === this.policy_id)
-      return found
     }
   },
   watch: {
-    policy() {
-      this.collection_name = $.head(this.collections)
-    },
     collection_name() {
       this.value = defaultValue
       this.getRule()
     }
   },
-  created() {
-    this.getPolicies()
+  async created() {
+    this.policy_id = this.$route.params.id
+    await this.getPolicy()
+    this.setTagViewTitle()
+  },
+  mounted() {
+    document.removeEventListener('keydown', this.bindShortKey, false)
+    document.addEventListener('keydown', this.bindShortKey, false)
+  },
+  activated() {
+    document.removeEventListener('keydown', this.bindShortKey, false)
+    document.addEventListener('keydown', this.bindShortKey, false)
+  },
+  deactivated() {
+    document.removeEventListener('keydown', this.bindShortKey, false)
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.bindShortKey, false)
   },
   methods: {
-    async getPolicies() {
+    async getPolicy() {
       this.loading = true
       const r = await db.collection(Constants.cn.policies)
-        .get()
+        .where({ _id: this.policy_id })
+        .getOne()
 
       if (!r.ok) {
         console.error(r.error)
         return
       }
 
-      this.policies = r.data
-      this.policy_id = $.head(this.policies)?._id
-
+      this.policy = r.data
+      if(!this.collection_name) {
+        this.collection_name = $.head(this.collections)
+      }
+      this.getRule()
       this.loading = false
     },
     async getRule() {
@@ -160,7 +154,7 @@ export default {
           _id: this.policy_id
         })
         .update({
-          [key]: JSON.parse(rule_data)
+          [key]: db.command.set(JSON.parse(rule_data))
         })
 
       if (!r.ok) {
@@ -178,7 +172,7 @@ export default {
       this.loading = false
     },
     async create() {
-      if (!this.form.policy_id || !this.form.collection) {
+      if (!this.form.collection) {
         this.$message('请正确填写表单！')
         return
       }
@@ -190,7 +184,7 @@ export default {
       const key = `rules.${this.form.collection}`
       const { total } = await db.collection(Constants.cn.policies)
         .where({
-          _id: this.form.policy_id,
+          _id: this.policy_id,
           [key]: db.command.exists(true)
         }).count()
 
@@ -201,11 +195,11 @@ export default {
       }
       const r = await db.collection(Constants.cn.policies)
         .where({
-          _id: this.form.policy_id,
+          _id: this.policy_id,
           [key]: db.command.exists(false)
         })
         .update({
-          [key]: db.command.set({})
+          [key]: db.command.set(JSON.parse(defaultValue))
         })
 
       if (!r.ok) {
@@ -214,9 +208,8 @@ export default {
         return
       }
 
-      await this.getPolicies()
+      await this.getPolicy()
 
-      this.policy_id = this.form.policy_id
       this.collection_name = this.form.collection
 
       this.$notify({
@@ -229,7 +222,7 @@ export default {
       this.loading = false
     },
     async removeRule() {
-      if (!this.policy_id || !this.collection_name) {
+      if (!this.collection_name) {
         this.$message('请选择要删除的集合规则！')
         return
       }
@@ -260,29 +253,19 @@ export default {
           type: 'success',
           message: '删除访问规则成功！'
         })
-        this.getPolicies()
+        this.collection_name = ''
+        this.getPolicy()
       } else {
         this.$message('删除访问规则操作失败 ' + r.error)
       }
 
       this.loading = false
     },
-    async apply() {
-      const confirm = await this.$confirm('确定发布所有规则？')
-        .catch(() => false)
-
-      if (!confirm) return
-
-      const res = await publishPolicy()
-      if (res.data.code) {
-        this.$message('发布失败: ' + res.data.error)
-        return
-      }
-      this.$notify({
-        type: 'success',
-        title: '发布成功',
-        message: '访问策略发布成功！'
-      })
+    setTagViewTitle() {
+      const label = this.policy.name
+      const title = this.$route.meta.title
+      const route = Object.assign({}, this.$route, { title: `${title}: ${label}` })
+      this.$store.dispatch('tagsView/updateVisitedView', route)
     },
     validate() {
       let error = null
@@ -302,7 +285,15 @@ export default {
         return error
       }
       return null
-    }
+    },
+     // 快捷键绑定
+    async bindShortKey(e) {
+      // Ctrl + s 为保存
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        this.updateRule()
+        e.preventDefault()
+      }
+    },
   }
 }
 </script>
@@ -358,7 +349,7 @@ export default {
       margin-bottom: 10px;
 
       .btn {
-        margin-left: 15px;
+        margin-right: 10px;
       }
     }
 

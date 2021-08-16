@@ -356,7 +356,7 @@ export default {
         e.preventDefault()
       }
 
-      // Ctrol + 为调试运行，并弹出调试框
+      // Ctrl + b 为调试运行，并弹出调试框
       if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
         this.showDebugPanel = true
         this.launch()

@@ -89,7 +89,7 @@ export const asyncRoutes = [
         }
       },
       {
-        path: 'policy',
+        path: 'policies/:id',
         component: () => import('@/views/database/policy'),
         name: 'RuleEditorPage',
         hidden: true,
