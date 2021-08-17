@@ -1,3 +1,24 @@
+# [](https://github.com/Maslow/less-framework/compare/v0.4.18...v) (2021-08-17)
+
+
+
+## [0.4.18](https://github.com/Maslow/less-framework/compare/v0.4.17...v0.4.18) (2021-08-17)
+
+
+### Bug Fixes
+
+* **app-server:** fix file upload token parsing error; ([aa7368e](https://github.com/Maslow/less-framework/commit/aa7368e79d8d9118e189dc3ee2834305f053407d))
+
+
+### Features
+
+* **app-server:** add filename field to file operation token; ([68f25ef](https://github.com/Maslow/less-framework/commit/68f25ef09a1c3d7a2001ecf55850aef4584ce338))
+* **app-server:** impl start.ts to support cluster process manage; ([64b2a74](https://github.com/Maslow/less-framework/commit/64b2a74a3995b44e7c9353882ff7ca52da9d3737))
+* **devops-server:** add file operation api; ([e1221c6](https://github.com/Maslow/less-framework/commit/e1221c67e727681b00a997534e50ba85823582c6))
+* **devops:** impl file managing in devops admin & server ([8e8aef4](https://github.com/Maslow/less-framework/commit/8e8aef475eafffc29aae04d055d3e3e73a1dd3ef))
+
+
+
 # [](https://github.com/Maslow/less-framework/compare/v0.4.16...v) (2021-08-16)
 
 
