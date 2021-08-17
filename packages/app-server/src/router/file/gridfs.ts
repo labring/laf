@@ -2,9 +2,10 @@
 import * as fs from 'fs'
 import * as express from 'express'
 import { GridFSBucket } from 'mongodb'
-import { Globals } from '../../lib/globals'
+import { DatabaseAgent } from '../../lib/database'
 import { checkFileOperationToken, FS_OPERATION, generateETag } from './utils'
 import Config from '../../config'
+import { logger } from '../../lib/logger'
 
 
 export const GridFSHandlers = {
@@ -35,7 +36,7 @@ async function handleUploadFile(req: express.Request, res: express.Response) {
   }
 
   // create a local file system driver
-  const bucket = new GridFSBucket(Globals.accessor.db, { bucketName: bucket_name })
+  const bucket = new GridFSBucket(DatabaseAgent.accessor.db, { bucketName: bucket_name })
 
   const stream = bucket.openUploadStream(file.filename, {
     metadata: {
@@ -65,7 +66,7 @@ async function handleUploadFile(req: express.Request, res: express.Response) {
       })
     })
     .on('error', (err: Error) => {
-      Globals.logger.error('upload file to gridfs stream occurred error', err)
+      logger.error('upload file to gridfs stream occurred error', err)
       res.status(500).send('internal server error')
     })
 }
@@ -90,7 +91,7 @@ async function handleDownloadFile(req: express.Request, res: express.Response) {
 
   try {
 
-    const bucket = new GridFSBucket(Globals.accessor.db, { bucketName: bucket_name })
+    const bucket = new GridFSBucket(DatabaseAgent.accessor.db, { bucketName: bucket_name })
     const stream = bucket.openDownloadStreamByName(filename)
 
     const files = await bucket.find({ filename: filename }).toArray()
@@ -121,7 +122,7 @@ async function handleDownloadFile(req: express.Request, res: express.Response) {
     res.set('x-uri', `/${bucket_name}/${filename}`)
     return stream.pipe(res)
   } catch (error) {
-    Globals.logger.error('get file info failed', error)
+    logger.error('get file info failed', error)
     return res.status(404).send('Not Found')
   }
 }

@@ -1,10 +1,16 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-07-30 10:30:29
+ * @LastEditTime: 2021-08-17 13:57:16
+ * @Description: 
+ */
 import * as express from 'express'
-import { Globals } from '../../lib/globals/index'
 import { PackageDeclaration, NodePackageDeclarations } from 'node-modules-utils'
 import path = require('path')
+import { logger } from '../../lib/logger'
 
 export const PackageTypingRouter = express.Router()
-const logger = Globals.logger
+
 
 const nodeModulesRoot = path.resolve(__dirname, '../../../node_modules')
 

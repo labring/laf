@@ -1,9 +1,15 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-07-30 10:30:29
+ * @LastEditTime: 2021-08-17 14:06:26
+ * @Description: 
+ */
 import * as assert from 'assert'
 import { Constants } from '../constants'
-import { Globals } from "../lib/globals/index"
+import { DatabaseAgent } from "../lib/database"
 import { PolicyAgentInstance } from '../lib/policy-agent'
 
-const db = Globals.db
+const db = DatabaseAgent.db
 
 /**
  * 获取所有访问策略

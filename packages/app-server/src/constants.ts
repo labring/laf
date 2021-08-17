@@ -1,24 +1,26 @@
 import { deepFreeze } from "./lib/utils/lang"
 
-
+/**
+ * Constants collection
+ */
 export const Constants = {
   /**
-   * 云函数集合名
+   * collection name of cloud functions
    */
   function_collection: '__deployed__functions',
 
   /**
-   * 云函数触发器集合名
+   * collection name of cloud functions' triggers
    */
   trigger_collection: '__deployed__triggers',
 
   /**
-   * 访问策略集合名
+   * collection name of policy which used for authenticating `client-access-database` requests
    */
   policy_collection: '__deployed__policies',
 
   /**
-   * 函数日志的集合名
+   * collection name of cloud functions' log
    */
   function_log_collection: "__function_logs"
 }

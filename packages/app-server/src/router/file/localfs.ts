@@ -1,8 +1,14 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-08-11 18:01:25
+ * @LastEditTime: 2021-08-17 13:57:43
+ * @Description: 
+ */
+import { logger } from '../../lib/logger'
 import * as express from 'express'
 import * as path from 'path'
 import Config from '../../config'
 import { LocalFileStorage } from '../../lib/storage/local_file_storage'
-import { Globals } from '../../lib/globals'
 import { checkFileOperationToken, FS_OPERATION } from './utils'
 
 
@@ -80,7 +86,7 @@ async function handleDownloadFile(req: express.Request, res: express.Response) {
     const info = await localStorage.getFileInfo(filename)
     return res.download(info.fullpath)
   } catch (error) {
-    Globals.logger.error('get file info failed', error)
+    logger.error('get file info failed', error)
     return res.status(404).send('Not Found')
   }
 }

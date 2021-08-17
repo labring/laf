@@ -70,7 +70,7 @@ export default class Config {
   }
 
   /**
-   * the logger level : 'fatal', 'error', 'warning', 'debug', 'info', 'trace'
+   * the logger level : 'fatal', 'error', 'warning', 'info', 'debug', 'trace'
    */
   static get LOG_LEVEL(): string {
     return process.env['LOG_LEVEL'] ?? (this.isProd ? 'info' : 'debug')

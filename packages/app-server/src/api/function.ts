@@ -1,7 +1,13 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-07-30 10:30:29
+ * @LastEditTime: 2021-08-17 14:06:14
+ * @Description: 
+ */
 import { Constants } from "../constants"
-import { Globals } from "../lib/globals/index"
+import { DatabaseAgent } from "../lib/database"
 
-const db = Globals.db
+const db = DatabaseAgent.db
 
 /**
  * 根据函数名获取云函数

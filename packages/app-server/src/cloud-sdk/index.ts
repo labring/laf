@@ -3,7 +3,7 @@ import { Db } from "less-api-database"
 import { FunctionContext, FunctionResult, CloudFunction } from "cloud-function-engine"
 import { FileStorageInterface } from "../lib/storage/interface"
 import * as mongodb from "mongodb"
-import { Globals } from "../lib/globals/index"
+import { DatabaseAgent } from "../lib/database"
 import { LocalFileStorage } from "../lib/storage/local_file_storage"
 import Config from "../config"
 import request from 'axios'
@@ -97,7 +97,7 @@ export interface CloudSdkInterface {
  * Cloud SDK 实例
  */
 const cloud: CloudSdkInterface = {
-  database: () => Globals.createDb(),
+  database: () => DatabaseAgent.createDb(),
   storage: (namespace: string) => new LocalFileStorage(Config.LOCAL_STORAGE_ROOT_PATH, namespace),
   fetch: request,
   invoke: invokeInFunction,
@@ -106,17 +106,17 @@ const cloud: CloudSdkInterface = {
   getToken: getToken,
   parseToken: parseToken,
   mongo: {
-    client: Globals.accessor.conn,
-    db: Globals.accessor.db
+    client: DatabaseAgent.accessor.conn,
+    db: DatabaseAgent.accessor.db
   }
 }
 
 /**
  * 等数据库连接成功后，更新其 mongo 对象，否则为 null
  */
-Globals.accessor.ready.then(() => {
-  cloud.mongo.client = Globals.accessor.conn
-  cloud.mongo.db = Globals.accessor.db
+DatabaseAgent.accessor.ready.then(() => {
+  cloud.mongo.client = DatabaseAgent.accessor.conn
+  cloud.mongo.db = DatabaseAgent.accessor.db
 })
 
 /**
@@ -125,7 +125,7 @@ Globals.accessor.ready.then(() => {
  */
 export function create() {
   const cloud: CloudSdkInterface = {
-    database: () => Globals.createDb(),
+    database: () => DatabaseAgent.createDb(),
     storage: (namespace: string) => new LocalFileStorage(Config.LOCAL_STORAGE_ROOT_PATH, namespace),
     fetch: request,
     invoke: invokeInFunction,
@@ -134,8 +134,8 @@ export function create() {
     getToken: getToken,
     parseToken: parseToken,
     mongo: {
-      client: Globals.accessor.conn,
-      db: Globals.accessor.db
+      client: DatabaseAgent.accessor.conn,
+      db: DatabaseAgent.accessor.db
     }
   }
   return cloud

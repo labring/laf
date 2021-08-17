@@ -1,11 +1,16 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-08-04 00:31:53
+ * @LastEditTime: 2021-08-17 13:58:25
+ * @Description: 
+ */
 import assert = require("assert")
 import { AccessorInterface, Params, Policy } from "less-api"
 import { CloudFunction } from "cloud-function-engine"
 import { getFunctionByName } from "../../api/function"
-import { Globals } from "../globals/globals"
 import { InjectionGetter, PolicyAgentInterface, PolicyComposition, PolicyDataStruct } from "./types"
+import { logger } from "../logger"
 
-const logger = Globals.logger
 
 /**
  * 管理多个 policy, 初始化 injector
@@ -53,11 +58,11 @@ export class PolicyAgent implements PolicyAgentInterface {
       assert(typeof ret.data === 'function', 'function type needed')
 
       return ret.data
-      
+
     } catch (error) {
       logger.error(`failed to get injector by cloud function: ${injectorName}, now using default injector`, error)
       return defaultInjectionGetter
-    }    
+    }
   }
 }
 

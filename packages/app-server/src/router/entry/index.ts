@@ -1,12 +1,18 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-07-30 10:30:29
+ * @LastEditTime: 2021-08-17 14:06:03
+ * @Description: 
+ */
 import { Router } from 'express'
 import { Proxy } from 'less-api'
 import Config from '../../config'
 import { createLogger } from '../../lib/logger'
-import { Globals } from '../../lib/globals/index'
+import { DatabaseAgent } from '../../lib/database'
 import { PolicyAgentInstance } from '../../lib/policy-agent'
 
 const logger = createLogger('proxy')
-const accessor = Globals.accessor
+const accessor = DatabaseAgent.accessor
 export const EntryRouter = Router()
 
 EntryRouter.post('/proxy/:policy', async (req, res) => {

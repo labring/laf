@@ -1,7 +1,7 @@
 
 import { getTriggers } from "../../api/trigger"
 import { Trigger } from "cloud-function-engine"
-import { Globals } from "../globals/globals"
+import { DatabaseAgent } from "../database"
 import { createLogger } from "../logger"
 import { convertActionType } from "../utils"
 import { ChangeStreamDocument } from "mongodb"
@@ -10,7 +10,7 @@ import { debounce } from 'lodash'
 import { applyPolicyRules } from "../../api/rules"
 import { Constants } from "../../constants"
 
-const accessor = Globals.accessor
+const accessor = DatabaseAgent.accessor
 const logger = createLogger('scheduler')
 
 /**
@@ -24,7 +24,7 @@ export const SchedulerInstance = new FrameworkScheduler()
 accessor.ready.then(async () => {
   // 初始化触发器
   const data = await getTriggers()
-  logger.debug('loadTriggers: ', data)
+  logger.trace('loadTriggers: ', data)
   const triggers = data.map(data => Trigger.fromJson(data))
   SchedulerInstance.init(triggers)
   SchedulerInstance.emit('App:ready')
