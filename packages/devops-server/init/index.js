@@ -6,7 +6,7 @@ const assert = require('assert')
 const { permissions } = require('./sys-permissions')
 const { FunctionLoader } = require('./func-loader')
 const { Constants } = require('../dist/constants')
-const { Globals } = require('../dist/lib/globals')
+const { DatabaseAgent } = require('../dist/lib/db-agent')
 const { publishFunctions } = require('../dist/api/function')
 const { publishAccessPolicy } = require('../dist/api/rules')
 const { publishTriggers } = require('../dist/api/trigger')
@@ -14,38 +14,38 @@ const appAdminRules = require('./policies/app-admin.json')
 const appUserRules = require('./policies/app-user.json')
 
 
-const sys_accessor = Globals.sys_accessor
+const sys_accessor = DatabaseAgent.sys_accessor
 
-const db = Globals.sys_db
+const db = DatabaseAgent.sys_db
 
-const app_accessor = Globals.app_accessor
+const app_accessor = DatabaseAgent.app_accessor
 
 async function main() {
   await sys_accessor.ready
   await app_accessor.ready
 
-  // 创建 RBAC 初始权限
+  // init permission
   await createInitialPermissions()
 
-  // 创建 RBAC 初始角色
+  // init first role
   await createFirstRole()
 
-  // 创建初始管理员
+  // create first admin
   await createFirstAdmin()
 
   await createInitialPolicy('admin', appAdminRules, 'injector-admin')
   await createInitialPolicy('app', appUserRules)
 
-  // 创建内置云函数
+  // create built-in functions
   await createBuiltinFunctions()
 
-  // 部署访问策略
+  // publish policies
   await publishAccessPolicy().then(() => console.log('policy deployed'))
 
-  // 部署云函数
+  // publish functions
   await publishFunctions().then(() => console.log('functions deployed'))
 
-  // 部署触发器
+  // publish triggers
   await publishTriggers().then(() => console.log('triggers deployed'))
 
   sys_accessor.close()
@@ -56,7 +56,7 @@ main()
 
 
 /**
- * 创建初始管理员
+ * Create the first admin
  * @returns 
  */
 async function createFirstAdmin() {
@@ -100,7 +100,7 @@ async function createFirstAdmin() {
 }
 
 /**
- * 创建初始角色
+ * Create the first role
  * @returns 
  */
 async function createFirstRole() {
@@ -115,8 +115,8 @@ async function createFirstRole() {
 
     const r_add = await db.collection(Constants.cn.roles).add({
       name: 'superadmin',
-      label: '超级管理员',
-      description: '系统初始化的超级管理员',
+      label: 'Super Admin',
+      description: 'init role',
       permissions,
       created_at: Date.now(),
       updated_at: Date.now()
@@ -135,12 +135,12 @@ async function createFirstRole() {
 }
 
 /**
- * 创建初始权限
+ * Create initial permissions
  * @returns 
  */
 async function createInitialPermissions() {
 
-  // 创建唯一索引
+  // create unique index in permission collection
   await sys_accessor.db.collection(Constants.cn.permissions).createIndex('name', { unique: true })
 
   for (const perm of permissions) {
@@ -166,7 +166,7 @@ async function createInitialPermissions() {
 }
 
 /**
- * 创建策略
+ * Create initial policies
  * @param {string} name policy name
  * @param {string} rules policy rules
  * @param {string} injector cloud function id
@@ -200,14 +200,13 @@ async function createInitialPolicy(name, rules, injector) {
 }
 
 /**
- * 创建内置云函数
+ * Create built-in functions
  * @returns 
  */
 async function createBuiltinFunctions() {
-  // 创建云函数索引
+  // create unique index in function collection
   await sys_accessor.db.collection(Constants.cn.functions).createIndex('name', { unique: true })
   
-
   const loader = new FunctionLoader()
   const funcs = await loader.getFunctions()
   for (const func of funcs) {
@@ -237,7 +236,7 @@ async function createBuiltinFunctions() {
 }
 
 /**
- * 创建触发器
+ * Create built-in triggers
  */
 async function createTriggers(func_id, triggers) {
   assert.ok(func_id, 'invalid func_id')

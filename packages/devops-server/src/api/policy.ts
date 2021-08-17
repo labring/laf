@@ -1,18 +1,26 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-07-30 10:30:29
+ * @LastEditTime: 2021-08-17 16:58:23
+ * @Description: 
+ */
+
 import * as assert from 'assert'
 import { Constants } from '../constants'
-import { Globals } from "../lib/globals"
+import { DatabaseAgent } from "../lib/db-agent"
 import { ClientSession, ObjectId } from 'mongodb'
 
 
 /**
- * 发布访问策略
- * 实为将 sys_db policies 中的文档，复制其数据至 app_db 中
+ * Publish access policies
+ * Means that copying sys db functions to app db
  */
 export async function publishAccessPolicy() {
-  const logger = Globals.logger
+  // read policies from sys db
+  const ret = await DatabaseAgent.sys_accessor.db.collection(Constants.cn.policies).find().toArray()
 
-  const app_accessor = Globals.app_accessor
-  const ret = await Globals.sys_accessor.db.collection(Constants.cn.policies).find().toArray()
+  // write policies to app db
+  const app_accessor = DatabaseAgent.app_accessor
   const session = app_accessor.conn.startSession()
 
   try {
@@ -22,8 +30,6 @@ export async function publishAccessPolicy() {
       await app_coll.deleteMany({}, { session })
       await app_coll.insertMany(ret, { session })
     })
-  } catch (error) {
-    logger.error(error)
   } finally {
     await session.endSession()
   }
@@ -31,15 +37,13 @@ export async function publishAccessPolicy() {
 
 
 /**
-  * 部署访问策略
-  * 应用远程推送过来的部署请求
+  * Deploy policies which pushed from remote environment
   */
-export async function deployPolicies(policies) {
+export async function deployPolicies(policies: any[]) {
   assert.ok(policies)
   assert.ok(policies instanceof Array)
-  const logger = Globals.logger
 
-  const accessor = Globals.sys_accessor
+  const accessor = DatabaseAgent.sys_accessor
 
   const data = policies
   const session = accessor.conn.startSession()
@@ -50,19 +54,24 @@ export async function deployPolicies(policies) {
         await _deployOnePolicy(item, session)
       }
     })
-  } catch (error) {
-    logger.error(error)
-    throw error
   } finally {
     await session.endSession()
   }
 }
 
+/**
+ * Deploy a policy used by `deployPolicies`.
+ * @param policy the policy data to be deployed
+ * @param session the mongodb session for transaction operations
+ * @see deployPolicies
+ * @private
+ * @returns 
+ */
 async function _deployOnePolicy(policy: any, session: ClientSession) {
 
   await _deletePolicyWithSameNameButNotId(policy, session)
 
-  const db = Globals.sys_accessor.db
+  const db = DatabaseAgent.sys_accessor.db
   const r = await db.collection(Constants.cn.policies).findOne({ _id: new ObjectId(policy._id) }, { session })
 
   const data = {
@@ -88,11 +97,14 @@ async function _deployOnePolicy(policy: any, session: ClientSession) {
 }
 
 /**
- * 删除本地 _id 不同，但 name 相同的策略（若存在）
- * @param func 
+ * Remove policy which have same name but different _id.
+ * @param policy the policy to be processing 
+ * @param session the mongodb session for transaction operations
+ * @see _deployOnePolicy()
+ * @private
  */
 async function _deletePolicyWithSameNameButNotId(policy: any, session: ClientSession) {
-  const db = Globals.sys_accessor.db
+  const db = DatabaseAgent.sys_accessor.db
   await db.collection(Constants.cn.policies).findOneAndDelete({
     _id: {
       $ne: new ObjectId(policy._id)

@@ -1,17 +1,25 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-08-07 01:14:33
+ * @LastEditTime: 2021-08-17 17:17:32
+ * @Description: 
+ */
+
 import * as express from 'express'
 import * as assert from 'assert'
 import { deployFunctions, publishFunctions } from '../../api/function'
 import { checkPermission } from '../../api/permission'
-import { Globals } from '../../lib/globals'
+import { DatabaseAgent } from '../../lib/db-agent'
 import { getToken, parseToken } from '../../lib/utils/token'
-import { deployPolicies, publishAccessPolicy } from '../../api/rules'
+import { deployPolicies, publishAccessPolicy } from '../../api/policy'
 import { deployTriggers, publishTriggers } from '../../api/trigger'
 import { Constants } from '../../constants'
+import { logger } from '../../lib/logger'
 
 export const DeployRouter = express.Router()
-const logger = Globals.logger
+
 /**
- * 创建部署令牌
+ * Create a deployment token
  */
 DeployRouter.post('/create-token', async (req, res) => {
   const { permissions, expire, source } = req.body
@@ -36,7 +44,7 @@ DeployRouter.post('/create-token', async (req, res) => {
     })
   }
 
-  // 权限验证
+  // check permission
   const code = await checkPermission(req['auth']?.uid, 'deploy.create_token')
   if (code) {
     return res.status(code).send()
@@ -66,7 +74,7 @@ DeployRouter.post('/create-token', async (req, res) => {
 })
 
 /**
- * 接收部署请求
+ * Accept the deployment requests from remote environment
  */
 DeployRouter.post('/in', async (req, res) => {
   const { policies, functions, comment, triggers } = req.body
@@ -74,7 +82,7 @@ DeployRouter.post('/in', async (req, res) => {
     return res.status(422).send('invalid polices & functions')
   }
 
-  // 令牌验证
+  // verify deploy token
   const token = req.body?.deploy_token
   const auth = parseToken(token)
 
@@ -86,17 +94,17 @@ DeployRouter.post('/in', async (req, res) => {
     return res.status(403).send('Permission Denied')
   }
 
-  // 令牌权限
+  // verify deploy token permissions
   const permissions = auth.pns ?? []
   const can_deploy_function = permissions.includes('function')
   const can_deploy_policy = permissions.includes('policy')
 
-  // 来源标识
+  // the source that identified remote environment
   const source = auth.src
-  const db = Globals.sys_db
+  const db = DatabaseAgent.sys_db
 
   try {
-    // 入库访问策略
+    // write remote policies to db
     if (policies && can_deploy_policy) {
       const data = {
         source,
@@ -110,7 +118,7 @@ DeployRouter.post('/in', async (req, res) => {
       await db.collection(Constants.cn.deploy_requests).add(data)
     }
 
-    // 入库云函数
+    // write remote functions to db
     if (functions && can_deploy_function) {
       const data = {
         source,
@@ -136,11 +144,11 @@ DeployRouter.post('/in', async (req, res) => {
 })
 
 /**
- * 应用部署请求
+ * Apply the deployment requests which accept from remote environment
  */
 DeployRouter.post('/apply', async (req, res) => {
 
-  // 权限验证
+  // check permission
   const code = await checkPermission(req['auth']?.uid, 'deploy_request.apply')
   if (code) {
     return res.status(code).send()
@@ -151,7 +159,7 @@ DeployRouter.post('/apply', async (req, res) => {
     return res.status(422).send('invalid id')
   }
 
-  const db = Globals.sys_db
+  const db = DatabaseAgent.sys_db
   const r = await db.collection(Constants.cn.deploy_requests).where({ _id: id }).getOne()
   if (!r.ok || !r.data) {
     return res.status(404).send('deploy request not found')
@@ -165,7 +173,7 @@ DeployRouter.post('/apply', async (req, res) => {
   if (type === 'function') {
     await deployFunctions(deploy_request.data)
 
-    // deploy triggers if had
+    // deploy triggers if any
     if (deploy_request.triggers) {
       await deployTriggers(deploy_request.triggers)
       await publishTriggers()

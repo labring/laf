@@ -1,15 +1,21 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-07-30 10:30:29
+ * @LastEditTime: 2021-08-17 16:58:09
+ * @Description: 
+ */
 
 import { Constants } from "../constants"
-import { Globals } from "../lib/globals"
+import { DatabaseAgent } from "../lib/db-agent"
 import { ClientSession, ObjectId } from 'mongodb'
 import * as assert from 'assert'
+import { logger } from "../lib/logger"
 
-const db = Globals.sys_db
-const logger = Globals.logger
+const db = DatabaseAgent.sys_db
 
 /**
- * 请求触发器列表
- * @param status 默认为1，取所有开启的触发器
+ * load triggers
+ * @param status the status of trigger, default is 1 means enabled
  * @returns 
  */
 export async function getTriggers(status = 1) {
@@ -21,7 +27,7 @@ export async function getTriggers(status = 1) {
 }
 
 /**
- * 根据ID请求触发器
+ * load trigger by its id
  * @param id 
  * @returns 
  */
@@ -35,14 +41,15 @@ export async function getTriggerById(id: string) {
 
 
 /**
-  * 发布触发器
-  * 实为将 sys db triggers 集合，复制其数据至 app db 中
+  * Publish triggers
+  * Means that copying sys db functions to app db
   */
 export async function publishTriggers() {
-  const logger = Globals.logger
+  // read triggers from sys db
+  const ret = await DatabaseAgent.sys_accessor.db.collection(Constants.cn.triggers).find().toArray()
 
-  const app_accessor = Globals.app_accessor
-  const ret = await Globals.sys_accessor.db.collection(Constants.cn.triggers).find().toArray()
+  // write triggers to app db
+  const app_accessor = DatabaseAgent.app_accessor
   const session = app_accessor.conn.startSession()
 
   try {
@@ -52,8 +59,6 @@ export async function publishTriggers() {
       await app_coll.deleteMany({}, { session })
       await app_coll.insertMany(ret, { session })
     })
-  } catch (error) {
-    logger.error(error)
   } finally {
     await session.endSession()
   }
@@ -61,15 +66,13 @@ export async function publishTriggers() {
 
 
 /**
-  * 部署触发器
-  * 应用远程推送过来的部署请求
+  * Deploy triggers which pushed from remote environment
   */
 export async function deployTriggers(triggers: any[]) {
   assert.ok(triggers)
   assert.ok(triggers instanceof Array)
-  const logger = Globals.logger
 
-  const accessor = Globals.sys_accessor
+  const accessor = DatabaseAgent.sys_accessor
 
   const data = triggers
   const session = accessor.conn.startSession()
@@ -80,16 +83,22 @@ export async function deployTriggers(triggers: any[]) {
         await _deployOneTrigger(func, session)
       }
     })
-  } catch (error) {
-    logger.error(error)
-    throw error
   } finally {
     await session.endSession()
   }
 }
 
+
+/**
+ * Deploy a trigger used by `deployTriggers`.
+ * @param trigger the trigger data to be deployed
+ * @param session the mongodb session for transaction operations
+ * @see deployTriggers
+ * @private
+ * @returns 
+ */
 async function _deployOneTrigger(trigger: any, session: ClientSession) {
-  const db = Globals.sys_accessor.db
+  const db = DatabaseAgent.sys_accessor.db
 
   // skip trigger with invalid func_id
   const func = await db.collection(Constants.cn.functions).findOne({ _id: new ObjectId(trigger.func_id) })
@@ -105,7 +114,7 @@ async function _deployOneTrigger(trigger: any, session: ClientSession) {
   }
 
   logger.debug('deploy trigger: ', data, r)
-  
+
   // if exists trigger
   if (r) {
     delete data['_id']

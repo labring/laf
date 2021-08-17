@@ -1,3 +1,10 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-07-30 10:30:29
+ * @LastEditTime: 2021-08-17 17:34:58
+ * @Description:  
+ */
+
 const fs = require('fs/promises')
 const path = require('path')
 
@@ -5,7 +12,7 @@ class FunctionLoader {
   rootPath = path.join(__dirname, 'functions')
 
   /**
-   * 获取函数目录列表
+   * Get directory list of functions
    * @returns {Promise<string[]>}
    */
   async getFunctionDirectoryList() {
@@ -14,7 +21,7 @@ class FunctionLoader {
   }
 
   /**
-   * 获取函数
+   * Load functions
    * @returns {Promise<any[]>}
    */
   async getFunctions() {
@@ -29,7 +36,7 @@ class FunctionLoader {
   }
 
   /**
-   * 加载函数
+   * Load a function
    * @param {string}} func_path 
    * @returns 
    */
@@ -47,7 +54,7 @@ class FunctionLoader {
   }
 
   /**
-   * 获取函数代码
+   * Load function's code
    * @param {Promise<string>} file_path 
    */
   async loadFunctionCode(file_path) {
@@ -56,7 +63,7 @@ class FunctionLoader {
   }
 
   /**
-   * 获取函数 meta 信息
+   * Load meta of function
    * @param {string} file_path 
    */
   async loadFunctionMeta(file_path) {

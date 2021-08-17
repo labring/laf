@@ -1,23 +1,29 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-07-30 10:30:29
+ * @LastEditTime: 2021-08-17 17:21:08
+ * @Description: 
+ */
+
 import { Router } from 'express'
-import { Entry, Ruler } from 'less-api'
+import { logger } from '../lib/logger'
+import { Proxy, Policy } from 'less-api'
 import Config from '../config'
 import { getPermissions } from '../api/permission'
-import { Globals } from '../lib/globals'
+import { DatabaseAgent } from '../lib/db-agent'
 
 import sys_rules from './sys_rules'
 
 export const DevOpsEntryRouter = Router()
 
-const logger = Globals.logger
-const accessor = Globals.sys_accessor
+const accessor = DatabaseAgent.sys_accessor
 
-const ruler = new Ruler(accessor)
-ruler.load(sys_rules)
+const policy = new Policy(accessor)
+policy.load(sys_rules)
 
 
 /**
- * Sys Db Access Entry
- * 用于开发控制台客户端访问系统开发数据
+ * The less-api proxy entry for sys db served for `devops admin client`
  */
 DevOpsEntryRouter.post('/entry', async (req, res) => {
   const requestId = req['requestId']
@@ -30,7 +36,7 @@ DevOpsEntryRouter.post('/entry', async (req, res) => {
   const { permissions, roles } = await getPermissions(auth.uid)
 
   // parse params
-  const entry = new Entry(accessor, ruler)
+  const entry = new Proxy(accessor, policy)
   const params = entry.parseParams({ ...req.body, requestId })
 
   const injections = {
@@ -67,7 +73,7 @@ DevOpsEntryRouter.post('/entry', async (req, res) => {
     })
   } catch (error) {
     return res.send({
-      code: 2,
+      code: 1,
       error: error.toString(),
       injections: Config.isProd ? undefined : injections
     })

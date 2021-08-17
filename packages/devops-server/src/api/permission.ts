@@ -1,15 +1,21 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-07-30 10:30:29
+ * @LastEditTime: 2021-08-17 16:39:06
+ * @Description: 
+ */
 
 import * as assert from 'assert'
 import { Constants } from '../constants'
-import { Globals } from '../lib/globals'
+import { DatabaseAgent } from '../lib/db-agent'
 
-const db = Globals.sys_db
+const db = DatabaseAgent.sys_db
 
 /**
- * 判断用户是否有权限
- * @param uid 用户ID
- * @param permission 权限名
- * @returns 0 表示用户有权限， 401 表示用户未登录， 403 表示用户未授权
+ * Check if a user have pointed permission
+ * @param uid the user id
+ * @param permission the permission name
+ * @returns 0 means ok, 401 means unauthorized, 403 means permission denied
  */
 export async function checkPermission(uid: string, permission: string): Promise<number> {
   if (!uid) {
@@ -24,20 +30,20 @@ export async function checkPermission(uid: string, permission: string): Promise<
 }
 
 /**
- * 通过 role ids 获取权限列表
- * @param role_ids 
+ * Get granted permissions and roles by user id 
+ * @param uid the user id 
  * @returns 
  */
 export async function getPermissions(uid: string) {
 
-  // 查用户
+  // get user info
   const { data: admin } = await db.collection(Constants.cn.admins)
     .where({ _id: uid })
     .getOne()
 
   assert(admin, 'getPermissions failed')
 
-  // 查角色
+  // get user's roles
   const { data: roles } = await db.collection(Constants.cn.roles)
     .where({
       name: {
@@ -50,6 +56,7 @@ export async function getPermissions(uid: string) {
     return { permissions: [], roles: [], user: admin }
   }
 
+  // get user's permissions
   const permissions = []
   for (const role of roles) {
     const perms = role.permissions ?? []

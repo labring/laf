@@ -1,15 +1,22 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-07-30 10:30:29
+ * @LastEditTime: 2021-08-17 16:53:44
+ * @Description: 
+ */
 
 import { Constants } from "../constants"
-import { Globals } from "../lib/globals"
+import { DatabaseAgent } from "../lib/db-agent"
 import { compileTs2js } from 'cloud-function-engine/dist/utils'
 import { CloudFunctionStruct } from "cloud-function-engine"
 import { ClientSession, ObjectId } from 'mongodb'
 import * as assert from 'assert'
+import { logger } from "../lib/logger"
 
-const db = Globals.sys_db
+const db = DatabaseAgent.sys_db
 
 /**
- * 根据函数名获取云函数
+ * Load function data by its name
  * @param func_name 
  * @returns 
  */
@@ -26,12 +33,11 @@ export async function getFunctionByName(func_name: string) {
 }
 
 /**
-  * 根据ID获取云函数
+  * Load function data by its id
   * @param func_name 
   * @returns 
   */
 export async function getFunctionById(func_id: string) {
-  // 获取函数
   const r = await db.collection(Constants.cn.functions)
     .where({ _id: func_id })
     .getOne()
@@ -46,18 +52,19 @@ export async function getFunctionById(func_id: string) {
 
 
 /**
-  * 发布云函数
-  * 实为将 sys db functions 集合，复制其数据至 app db 中
+  * Publish functions
+  * Means that copying sys db functions to app db
   */
 export async function publishFunctions() {
-  const logger = Globals.logger
 
-  const app_accessor = Globals.app_accessor
-  const ret = await Globals.sys_accessor.db.collection(Constants.cn.functions).find().toArray()
+  // read functions from sys db
+  const ret = await DatabaseAgent.sys_accessor.db.collection(Constants.cn.functions).find().toArray()
 
-  // compile
+  // compile functions
   const data = ret.map(fn => compileFunction(fn))
 
+  // write functions to app db
+  const app_accessor = DatabaseAgent.app_accessor
   const session = app_accessor.conn.startSession()
 
   try {
@@ -75,7 +82,7 @@ export async function publishFunctions() {
 }
 
 /**
- * 编译函数
+ * Compile function codes (from typescript to javascript)
  * @param func 
  */
 function compileFunction(func: any) {
@@ -84,15 +91,13 @@ function compileFunction(func: any) {
 }
 
 /**
-  * 部署云函数
-  * 应用远程推送过来的部署请求
+  * Deploy functions which pushed from remote environment
   */
 export async function deployFunctions(functions: CloudFunctionStruct[]) {
   assert.ok(functions)
   assert.ok(functions instanceof Array)
-  const logger = Globals.logger
 
-  const accessor = Globals.sys_accessor
+  const accessor = DatabaseAgent.sys_accessor
 
   const data = functions
   const session = accessor.conn.startSession()
@@ -103,19 +108,24 @@ export async function deployFunctions(functions: CloudFunctionStruct[]) {
         await _deployOneFunction(func, session)
       }
     })
-  } catch (error) {
-    logger.error(error)
-    throw error
   } finally {
     await session.endSession()
   }
 }
 
+/**
+ * Deploy a function, use in `deployFunctions()`
+ * @param func the cloud function to be deployed
+ * @param session mongodb session for transaction operations
+ * @private
+ * @see deployFunctions()
+ * @returns 
+ */
 async function _deployOneFunction(func: CloudFunctionStruct, session: ClientSession) {
 
   await _processFunctionWithSameNameButNotId(func, session)
 
-  const db = Globals.sys_accessor.db
+  const db = DatabaseAgent.sys_accessor.db
   const r = await db.collection(Constants.cn.functions).findOne({ _id: new ObjectId(func._id) }, { session })
 
   const data = {
@@ -141,11 +151,12 @@ async function _deployOneFunction(func: CloudFunctionStruct, session: ClientSess
 }
 
 /**
- * 处理本地 _id 不同，但 name 相同的云函数（若存在）
- * @param func 
+ * Remove functions which have same name but different _id.
+ * @param func the function to be processing 
+ * @param session the mongodb session for transaction operations
  */
 async function _processFunctionWithSameNameButNotId(func: CloudFunctionStruct, session: ClientSession) {
-  const db = Globals.sys_accessor.db
+  const db = DatabaseAgent.sys_accessor.db
 
   // remove functions
   const r = await db.collection(Constants.cn.functions).findOneAndDelete(
@@ -161,7 +172,7 @@ async function _processFunctionWithSameNameButNotId(func: CloudFunctionStruct, s
     return
   }
 
-  Globals.logger.warn(`delete local func ${r?.value?._id} with same name with (${func._id}:${func.name}) but different id `)
+  logger.warn(`delete local func ${r?.value?._id} with same name with (${func._id}:${func.name}) but different id `)
 
   // remove its triggers if any
   const r0 = await db.collection(Constants.cn.triggers).deleteMany(
@@ -174,5 +185,5 @@ async function _processFunctionWithSameNameButNotId(func: CloudFunctionStruct, s
     return
   }
 
-  Globals.logger.warn(`delete triggers of func ${func._id} which been deleted`, r0)
+  logger.warn(`delete triggers of func ${func._id} which been deleted`, r0)
 }

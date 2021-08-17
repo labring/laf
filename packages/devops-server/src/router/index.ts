@@ -3,7 +3,7 @@ import { AdminRouter } from './admin/index'
 import { DevOpsEntryRouter } from './entry'
 import { DbmRouter } from './dbm'
 import { PublishRouter } from './publish'
-import { Globals } from '../lib/globals'
+import { DatabaseAgent } from '../lib/db-agent'
 import { DeployRouter } from './deploy'
 
 export const router = Router()
@@ -15,7 +15,7 @@ router.use('/publish', PublishRouter)
 router.use('/deploy', DeployRouter)
 
 router.use('/health-check', (_req, res) => {
-  if (!Globals.sys_accessor.db || !Globals.app_accessor.db) {
+  if (!DatabaseAgent.sys_accessor.db || !DatabaseAgent.app_accessor.db) {
     return res.status(400).send('no db connection')
   }
   return res.status(200).send('ok')

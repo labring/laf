@@ -1,7 +1,13 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-07-30 10:30:29
+ * @LastEditTime: 2021-08-17 16:42:57
+ * @Description: 
+ */
 
 
 /**
- * 递归深冻结对象
+ * Deeply freeze object recursively
  * @param object 
  * @returns 
  */
@@ -10,7 +16,6 @@ export function deepFreeze(object: Object) {
   const propNames = Object.getOwnPropertyNames(object)
 
   // Freeze properties before freezing self
-
   for (const name of propNames) {
     const value = object[name]
 

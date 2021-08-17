@@ -1,20 +1,30 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-07-30 10:30:29
+ * @LastEditTime: 2021-08-17 17:28:13
+ * @Description: 
+ */
+
 import { deepFreeze } from "./lib/utils/lang"
 
 const coll_prefix = 'devops_'
 
+/**
+ * Constants collection
+ */
 export const Constants = {
   /**
-   * 部署到 app db 中的云函数集合名
+   *  collection name of cloud functions deployed to app db
    */
   function_collection: '__deployed__functions',
 
   /**
-   * 部署到 app db 中云函数触发器集合名
+   * collection name of triggers deployed to app db
    */
   trigger_collection: '__deployed__triggers',
 
   /**
-   * 部署到 app db 中的访问策略集合名
+   * collection name of policies deployed to app db
    */
   policy_collection: '__deployed__policies',
 

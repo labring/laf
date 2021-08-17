@@ -1,16 +1,23 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-07-30 10:30:29
+ * @LastEditTime: 2021-08-17 17:03:45
+ * @Description: 
+ */
+
 import { Request, Response } from 'express'
 import { getToken } from '../../lib/utils/token'
 import { checkPermission, getPermissions } from '../../api/permission'
 import { hashPassword } from '../../lib/utils/hash'
-import { Globals } from '../../lib/globals'
+import { DatabaseAgent } from '../../lib/db-agent'
 import Config from '../../config'
 import { Constants } from '../../constants'
+import { logger } from '../../lib/logger'
 
-const db = Globals.sys_db
-const logger = Globals.logger
+const db = DatabaseAgent.sys_db
 
 /**
- * 管理员登陆
+ * The handler of admin login
  */
 export async function handleAdminLogin(req: Request, res: Response) {
   const requestId = req['requestId']
@@ -76,7 +83,7 @@ export async function handleAdminLogin(req: Request, res: Response) {
 
 
 /**
- * 管理员信息
+ * The handler of getting admin info
  */
 export async function handleAdminInfo(req: Request, res: Response) {
   const requestId = req['requestId']
@@ -113,13 +120,13 @@ export async function handleAdminInfo(req: Request, res: Response) {
 }
 
 /**
- * 新增管理员
+ * The handler of adding admin
  */
 export async function handleAdminAdd(req: Request, res: Response) {
   const requestId = req['requestId']
   logger.info(`[${requestId}] /admin/add: ${req.body?.username}`)
 
-  // 权限验证
+  // check permission 
   const code = await checkPermission(req['auth']?.uid, 'admin.create')
   if (code) {
     return res.status(code).send()
@@ -133,7 +140,7 @@ export async function handleAdminAdd(req: Request, res: Response) {
     })
   }
 
-  // 验证用户是否已存在
+  // check if user exists
   const { total } = await db.collection(Constants.cn.admins).where({ username }).count()
   if (total > 0) {
     return res.send({
@@ -142,7 +149,7 @@ export async function handleAdminAdd(req: Request, res: Response) {
     })
   }
 
-  // 验证 roles 是否合法
+  // check if roles are valid
   const { total: valid_count } = await db.collection(Constants.cn.roles)
     .where({
       name: db.command.in(roles)
@@ -187,19 +194,19 @@ export async function handleAdminAdd(req: Request, res: Response) {
 
 
 /**
- * 编辑管理员
+ * The handler of editing admin
  */
 export async function handleAdminEdit(req: Request, res: Response) {
   const requestId = req['requestId']
   logger.info(`[${requestId}] /admin/edit: ${req.body?.uid}`)
 
-  // 权限验证
+  // check permission
   const code = await checkPermission(req['auth']?.uid, 'admin.edit')
   if (code) {
     return res.status(code).send()
   }
 
-  // 参数验证
+  // check if params valid
   const { _id: uid, username, password, avatar, name, roles } = req.body
   if (!uid) {
     return res.send({
@@ -208,7 +215,7 @@ export async function handleAdminEdit(req: Request, res: Response) {
     })
   }
 
-  // 验证 uid 是否合法
+  // check if uid valid
   const { data: admins } = await db.collection(Constants.cn.admins).where({ _id: uid }).get()
   if (!admins || !admins.length) {
     return res.send({
@@ -217,7 +224,7 @@ export async function handleAdminEdit(req: Request, res: Response) {
     })
   }
 
-  // 验证 roles 是否合法
+  // check if roles are valid
   const { total: valid_count } = await db.collection(Constants.cn.roles)
     .where({
       name: db.command.in(roles)
@@ -242,12 +249,12 @@ export async function handleAdminEdit(req: Request, res: Response) {
 
   const old = admins[0]
 
-  // update admim
+  // update admin
   const data = {
     updated_at: Date.now()
   }
 
-  // username
+  // update username if provided
   if (username && username != old.username) {
     const { total } = await db.collection(Constants.cn.admins).where({ username }).count()
     if (total) {
@@ -259,17 +266,17 @@ export async function handleAdminEdit(req: Request, res: Response) {
     data['username'] = username
   }
 
-  // avatar
+  // update avatar if provided
   if (avatar && avatar != old.avatar) {
     data['avatar'] = avatar
   }
 
-  // name
+  // update name if provided
   if (name && name != old.name) {
     data['name'] = name
   }
 
-  // roles
+  // update roles if provided
   if (roles) {
     data['roles'] = roles
   }

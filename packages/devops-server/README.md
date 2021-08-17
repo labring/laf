@@ -21,7 +21,7 @@
 git clone https://github.com/Maslow/less-framework.git
 cd less-framework/packages/devops-server
 
-# 安装依赖（建议使用 node 14+ 或 npm 7.5+，速度更快）
+# 安装依赖（建议使用 node 14+）
 npm install
 
 # 编译
@@ -52,9 +52,3 @@ npm run init
 #运行
 npm start
 ```
-
-
-## TODO
-
-- 实现基于 GridFS 的存储器，将内置文件存储器改为 GridFS
-- 实现配置额外 npm 包功能

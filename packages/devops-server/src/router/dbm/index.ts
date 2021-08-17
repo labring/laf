@@ -1,30 +1,37 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-07-30 10:30:29
+ * @LastEditTime: 2021-08-17 17:13:12
+ * @Description: 
+ */
+
 import * as express from 'express'
-import { Entry, Ruler } from 'less-api'
+import { Proxy, Policy } from 'less-api'
 import { checkPermission } from '../../api/permission'
-import { Globals } from '../../lib/globals'
+import { DatabaseAgent } from '../../lib/db-agent'
+import { logger } from '../../lib/logger'
 
 
-const accessor = Globals.app_accessor
-const logger = Globals.logger
+const accessor = DatabaseAgent.app_accessor
 
 export const DbmRouter = express.Router()
 
 /**
- * 数据管理入口请求：管理 app db
+ * The less-api proxy entry for database management
  */
 DbmRouter.post('/entry', async (req, res) => {
   const requestId = req['requestId']
 
-  // 权限验证
+  // check permission
   const code = await checkPermission(req['auth']?.uid, 'database.manage')
   if (code) {
     return res.status(code).send()
   }
 
-  const accessor = Globals.app_accessor
+  const accessor = DatabaseAgent.app_accessor
 
-  // 此处无需进行访问策略验证
-  const entry = new Entry(accessor, new Ruler(accessor))
+  // don't need policy rules, open all collections' access permission for dbm use
+  const entry = new Proxy(accessor, new Policy(accessor))
 
   // parse params
   const params = entry.parseParams({ ...req.body, requestId })
@@ -39,40 +46,40 @@ DbmRouter.post('/entry', async (req, res) => {
     })
   } catch (error) {
     return res.send({
-      code: 2,
+      code: 1,
       error: error
     })
   }
 })
 
 /**
- * 获取集合列表
+ * Get collection name lists
  */
 DbmRouter.get('/collections', async (req, res) => {
   const requestId = req['requestId']
   logger.info(`[${requestId}] get /collections`)
 
-  // 权限验证
+  // check permission
   const code = await checkPermission(req['auth']?.uid, 'collections.get')
   if (code) {
     return res.status(code).send()
   }
 
-  const colls = await accessor.db.listCollections().toArray()
-  const names = colls.map(coll => coll.name)
+  const collections = await accessor.db.listCollections().toArray()
+  const names = collections.map(coll => coll.name)
 
   return res.send(names)
 })
 
 
 /**
- * 获取集合索引列表
+ * Get indexes of collection
  */
 DbmRouter.get('/collection/indexes', async (req, res) => {
   const requestId = req['requestId']
   logger.info(`[${requestId}] get /collection/indexes`)
 
-  // 权限验证
+  // check permission
   const code = await checkPermission(req['auth']?.uid, 'collections.get')
   if (code) {
     return res.status(code).send()
@@ -88,13 +95,13 @@ DbmRouter.get('/collection/indexes', async (req, res) => {
 })
 
 /**
- * 创建集合索引
+ * Create index to collection
  */
 DbmRouter.post('/collection/indexes', async (req, res) => {
   const requestId = req['requestId']
   logger.info(`[${requestId}] post /collection/indexes`)
 
-  // 权限验证
+  // check permission
   const code = await checkPermission(req['auth']?.uid, 'collections.createIndex')
   if (code) {
     return res.status(code).send()
@@ -126,13 +133,13 @@ DbmRouter.post('/collection/indexes', async (req, res) => {
 })
 
 /**
- * 删除集合索引
+ * Delete index of collection
  */
 DbmRouter.delete('/collection/indexes', async (req, res) => {
   const requestId = req['requestId']
   logger.info(`[${requestId}] post /collection/indexes`)
 
-  // 权限验证
+  // check permission
   const code = await checkPermission(req['auth']?.uid, 'collections.deleteIndex')
   if (code) {
     return res.status(code).send()
@@ -161,7 +168,7 @@ DbmRouter.delete('/collection/indexes', async (req, res) => {
 
 
 /**
- * 检查 index spec 合法性
+ * check if index spec valid
  * @param spec 
  * @returns 
  */
