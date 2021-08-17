@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-11 18:01:25
- * @LastEditTime: 2021-08-17 13:57:43
+ * @LastEditTime: 2021-08-17 17:52:20
  * @Description: 
  */
 import { logger } from '../../lib/logger'
@@ -74,7 +74,7 @@ async function handleDownloadFile(req: express.Request, res: express.Response) {
 
   // check file operation token if bucket is not 'public'
   if (bucket !== 'public') {
-    const [code, message] = checkFileOperationToken(bucket, req.query?.token as string, FS_OPERATION.READ)
+    const [code, message] = checkFileOperationToken(bucket, req.query?.token as string, FS_OPERATION.READ, filename)
     if (code) {
       return res.status(code).send(message)
     }

@@ -82,7 +82,7 @@ async function handleDownloadFile(req: express.Request, res: express.Response) {
 
   // check file operation token if bucket is not 'public'
   if (bucket_name !== 'public') {
-    const [code, message] = checkFileOperationToken(bucket_name, req.query?.token as string, FS_OPERATION.READ)
+    const [code, message] = checkFileOperationToken(bucket_name, req.query?.token as string, FS_OPERATION.READ, filename)
     if (code) {
       return res.status(code).send(message)
     }

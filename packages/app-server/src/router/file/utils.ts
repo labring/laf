@@ -1,3 +1,10 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-08-11 18:07:36
+ * @LastEditTime: 2021-08-17 17:58:30
+ * @Description: 
+ */
+
 import assert = require("assert")
 import { parseToken } from "../../lib/utils/token"
 import * as crypto from 'crypto'
@@ -33,15 +40,16 @@ export enum FS_OPERATION {
  * {
  *    bucket: string, // indicated that this token only valid for this `bucket`
  *    ops: string[],  // operation permissions granted, values can be one or more of: 'create' | 'read' | 'delete' | 'list'
- *    
+ *    filename?: string   // optionally, file name
  * }
  * ```
  * @param bucket the bucket name
  * @param token the file operation token
  * @param operation the operation: 'create' | 'read' | 'delete' | 'list'
+ * @param filename the name of file, optionally 
  * @returns 
  */
-export function checkFileOperationToken(bucket: string, token: string, operation: FS_OPERATION): [number, string] {
+export function checkFileOperationToken(bucket: string, token: string, operation: FS_OPERATION, filename?: string): [number, string] {
   assert(bucket, 'empty `bucket` got')
   assert(token, 'empty `token` got')
   assert(operation, 'empty `operation` got')
@@ -60,7 +68,11 @@ export function checkFileOperationToken(bucket: string, token: string, operation
     return [403, 'permission denied']
   }
 
-  if (payload?.bucket != bucket) {
+  if (payload?.bucket != bucket && payload?.bucket !== '*') {
+    return [403, 'permission denied']
+  }
+
+  if (filename && payload?.filename && payload?.filename != filename) {
     return [403, 'permission denied']
   }
 
