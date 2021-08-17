@@ -39,3 +39,19 @@ export function setDebugToken(token) {
 export function removeDebugToken() {
   return localStorage.removeItem('debug_token')
 }
+
+/**
+ * 获取文件上传下载的 token
+ */
+export function getFileToken() {
+  const token = localStorage.getItem('file_token')
+  return token
+}
+
+export function setFileToken(token) {
+  return localStorage.setItem('file_token', token)
+}
+
+export function removeFileToken() {
+  return localStorage.removeItem('file_token')
+}

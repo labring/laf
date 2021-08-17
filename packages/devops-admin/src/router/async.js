@@ -107,6 +107,29 @@ export const asyncRoutes = [
           icon: 'example',
           permissions: ['database.manage', 'collections.get', 'collections.createIndex', 'collections.deleteIndex']
         }
+      },
+      {
+        path: 'buckets',
+        component: () => import('@/views/database/buckets'),
+        name: 'FileBucketListPage',
+        meta: {
+          title: '文件管理',
+          icon: 'zip',
+          noCache: true,
+          permissions: ['file.read']
+        }
+      },
+      {
+        path: 'files/:bucket',
+        component: () => import('@/views/database/files'),
+        name: 'FileListPage',
+        hidden: true,
+        meta: {
+          title: '文件列表',
+          icon: 'documentation',
+          noCache: true,
+          permissions: ['file.read']
+        }
       }
     ]
   },

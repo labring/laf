@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-17 18:58:23
+ * @LastEditTime: 2021-08-18 00:10:46
  * @Description: 
  */
 
@@ -72,7 +72,7 @@ export async function handleAdminLogin(req: Request, res: Response) {
       ops.push('create')
     }
     if (canReadFile === 0) {
-      file_token = getToken({ uid: admin._id, bucket: '*', ops, exp: expire })
+      file_token = getToken({ uid: admin._id, bucket: '*', ops, exp: expire }, Config.APP_SERVER_SECRET_SALT)
     }
 
     return res.send({

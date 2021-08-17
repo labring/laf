@@ -1,5 +1,5 @@
 import { login, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken, setDebugToken, removeDebugToken } from '@/utils/auth'
+import { getToken, setToken, removeToken, setDebugToken, removeDebugToken, setFileToken, removeFileToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
 const state = {
@@ -43,6 +43,9 @@ const actions = {
         setToken(data.access_token, data.expire)
         if (data.debug_token) {
           setDebugToken(data.debug_token)
+        }
+        if (data.file_token) {
+          setFileToken(data.file_token)
         }
         resolve()
       }).catch(error => {
@@ -92,6 +95,7 @@ const actions = {
 
       removeToken()
       removeDebugToken()
+      removeFileToken()
       resetRouter()
 
       // reset visited views and cached views

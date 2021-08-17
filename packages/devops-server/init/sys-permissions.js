@@ -65,4 +65,7 @@ exports.permissions = [
   { name: 'file.edit', label: '文件管理-更新文件' },
   { name: 'file.create', label: '文件管理-创建文件' },
   { name: 'file.delete', label: '文件管理-删除文件' },
+  
+  { name: 'file.bucket.create', label: '文件管理-创建文件桶' },
+  { name: 'file.bucket.delete', label: '文件管理-删除文件桶' },
 ]

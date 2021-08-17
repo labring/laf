@@ -1,7 +1,7 @@
 
 @token={{login.response.body.$.data.access_token}}
 
-### 管理员登陆
+### admin login
 # @name login
 
 POST {{base_url}}/admin/login HTTP/1.1
@@ -12,20 +12,36 @@ Content-Type: application/json
   "password": "{{sys_password}}"
 }
 
-### 获取文件 bucket 列表
+### Get bucket list
 
 GET {{base_url}}/file/buckets
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 
-### 获取文件列表
+### Get file list
 
 GET {{base_url}}/file/public/files?limit=3
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
-### 删除文件
+### Delete a file
 
 DELETE {{base_url}}/file/public/61124d425a821711e7b6b95d
+Authorization: Bearer {{token}}
+
+### Create a bucket
+
+POST {{base_url}}/file/buckets
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "bucket": "t9"
+}
+
+
+### Delete a bucket
+
+DELETE  {{base_url}}/file/buckets/t9
 Authorization: Bearer {{token}}

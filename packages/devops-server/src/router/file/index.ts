@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-17 19:11:24
+ * @LastEditTime: 2021-08-17 22:10:40
  * @Description: 
  */
 
@@ -49,14 +49,76 @@ FileRouter.get('/buckets', async (req, res) => {
   })
 })
 
+/**
+ * Create a bucket
+ */
+FileRouter.post('/buckets', async (req, res) => {
+  const requestId = req['requestId']
+  logger.info(requestId, `post /buckets`)
+
+  const bucketName = req.body?.bucket
+  if (!bucketName) {
+    return res.status(422).send('invalid bucket name')
+  }
+
+  // check permission
+  const code = await checkPermission(req['auth']?.uid, 'file.bucket.create')
+  if (code) {
+    return res.status(code).send()
+  }
+
+  const bucket = new GridFSBucket(accessor.db, { bucketName: bucketName })
+
+  // invoke openUploadStream just for creating a new bucket, ignore the execution result
+  bucket.openUploadStream('placeholder_none_sense')
+
+  return res.send({
+    code: 0,
+    data: bucketName
+  })
+})
+
+
+/**
+ * Delete a bucket
+ */
+FileRouter.delete('/buckets/:bucket', async (req, res) => {
+  const requestId = req['requestId']
+  logger.info(requestId, `post /buckets`)
+
+  const bucketName = req.params?.bucket
+
+  // check permission
+  const code = await checkPermission(req['auth']?.uid, 'file.bucket.delete')
+  if (code) {
+    return res.status(code).send()
+  }
+
+  const bucket = new GridFSBucket(accessor.db, { bucketName: bucketName })
+
+  const files = await bucket.find({}, { limit: 1 }).toArray()
+  if (files.length) {
+    return res.send({
+      code: 1,
+      error: `cannot delete a bucket which not empty`
+    })
+  }
+
+  await bucket.drop()
+
+  return res.send({
+    code: 0,
+    data: bucketName
+  })
+})
 
 /**
  * Get file list in bucket
  */
 FileRouter.get('/:bucket/files', async (req, res) => {
   const bucket = req.params.bucket
-  const offset = req.query?.offset || 0
-  const limit = req.query?.limit || 20
+  const offset = Number(req.query?.offset || 0)
+  const limit = Number(req.query?.limit || 20)
 
   const requestId = req['requestId']
   logger.info(requestId, `get /${bucket}/files`)
