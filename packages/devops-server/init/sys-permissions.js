@@ -59,5 +59,10 @@ exports.permissions = [
   { name: 'deploy_request.delete', label: '删除部署请求' },
   { name: 'deploy_request.apply', label: '应用部署请求' },
 
-  { name: 'deploy.create_token', label: '创建部署令牌' }
+  { name: 'deploy.create_token', label: '创建部署令牌' },
+
+  { name: 'file.read', label: '文件管理-读取文件列表' },
+  { name: 'file.edit', label: '文件管理-更新文件' },
+  { name: 'file.create', label: '文件管理-创建文件' },
+  { name: 'file.delete', label: '文件管理-删除文件' },
 ]

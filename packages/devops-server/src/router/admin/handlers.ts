@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-17 17:03:45
+ * @LastEditTime: 2021-08-17 18:58:23
  * @Description: 
  */
 
@@ -57,10 +57,22 @@ export async function handleAdminLogin(req: Request, res: Response) {
 
     let debug_token = undefined
 
-    // if user has debug function permission
+    // generate debug token if user has debug function permission
     const canDebug = await checkPermission(admin._id, 'function.debug')
     if (canDebug === 0) {
       debug_token = getToken({ uid: admin._id, type: 'debug', exp: expire }, Config.APP_SERVER_SECRET_SALT)
+    }
+
+    // generate file operation token if user has file manage permission 
+    let file_token = undefined
+    const canReadFile = await checkPermission(admin._id, 'file.read')
+    const canCreateFile = await checkPermission(admin._id, 'file.create')
+    const ops = ['read']
+    if (canCreateFile === 0) {
+      ops.push('create')
+    }
+    if (canReadFile === 0) {
+      file_token = getToken({ uid: admin._id, bucket: '*', ops, exp: expire })
     }
 
     return res.send({
@@ -68,6 +80,7 @@ export async function handleAdminLogin(req: Request, res: Response) {
       data: {
         access_token,
         debug_token,
+        file_token,
         username,
         uid: admin._id,
         expire
