@@ -6,7 +6,7 @@
   "typings": "./dist/index.d.ts",
   "private": "true",
   "scripts": {
-    "start": "node ./dist/index.js",
+    "start": "node ./dist/start.js",
     "build": "npx tsc -p tsconfig.json && npm run create-internal-pkg",
     "watch": "npx tsc -p tsconfig.json -w",
     "create-internal-pkg": "node ./scripts/create-internal-package.js",
