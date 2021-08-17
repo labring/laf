@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-11 18:07:36
- * @LastEditTime: 2021-08-17 17:58:30
+ * @LastEditTime: 2021-08-18 00:09:00
  * @Description: 
  */
 
@@ -51,7 +51,6 @@ export enum FS_OPERATION {
  */
 export function checkFileOperationToken(bucket: string, token: string, operation: FS_OPERATION, filename?: string): [number, string] {
   assert(bucket, 'empty `bucket` got')
-  assert(token, 'empty `token` got')
   assert(operation, 'empty `operation` got')
 
   if (!token) {
