@@ -13,7 +13,7 @@
     "build": "lerna run build",
     "watch": "lerna run watch --parallel",
     "prepublishOnly": "npm run build",
-    "changelog": "npx conventional-changelog -i CHANGELOG.md -s -r 2 -p angular",
+    "changelog": "npx conventional-changelog -i CHANGELOG.md -s -r 0 -p angular",
     "docker-build-devops-server": "node ./scripts/docker-build-devops-server.js",
     "docker-build-app-server": "node ./scripts/docker-build-app-server.js",
     "docker-build-devops-admin": "node ./scripts/docker-build-devops-admin.js",

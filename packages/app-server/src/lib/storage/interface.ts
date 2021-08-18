@@ -1,48 +1,55 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-07-30 10:30:29
+ * @LastEditTime: 2021-08-18 16:43:18
+ * @Description: 
+ */
+
 export interface FileInfo {
-  filename: string,  // 文件名，包括扩展名
-  ext: string        // 扩展名
-  basename: string       // 文件名，不包括扩展名
-  size: number       // 文件大小，byte
-  path: string       // 文件路径，相对路径
-  fullpath?: string   // 文件路径，绝对路径
-  original_name?: string // 原文件名
-  namespace?: string
+  filename: string,       // file name, including extension
+  ext: string             // extension
+  basename: string        // file name, excluding the extension
+  size: number            // file size, in bytes
+  path: string            // file path, relative path
+  fullpath?: string       // file path, absolute path
+  original_name?: string  // The original name of the file
+  bucket?: string
 }
 
 export interface FileStorageInterface {
 
   /**
-   * 保存文件，主要用于将上传的临时文件保存（移动）到 storage 目录
-   * @param filePath 要保存的文件路径
+   * Save files: Mainly used to save (move) uploaded temporary files to the storage directory
+   * @param filePath The path of the file to save
    */
   saveFile(filePath: string): Promise<FileInfo>
 
   /**
-   * 获取文件信息
-   * @param filename 文件名
+   * Obtain file information
+   * @param filename
    */
   getFileInfo(filename: string): Promise<FileInfo>
 
   /**
-   * 删除文件
-   * @param filename 文件名
+   * Delete file
+   * @param filename 
    */
   deleteFile(filename: string): Promise<boolean>
 
   /**
-   * 读取文件
-   * @param {string} filename 文件名
+   * Read file
+   * @param {string} filename 
    */
   readFile(filename: string, encoding?: string): Promise<Buffer>
 
   /**
-   * 检查文件夹名是否安全
+   * Check that the folder name is secure
    * @param {string} name
    */
   checkSafeDirectoryName(name: string): boolean
 
   /**
-   * 检查文件名是否安全
+   * Check that the file name is secure
    * @param {string} name
    */
   checkSafeFilename(name: string): boolean

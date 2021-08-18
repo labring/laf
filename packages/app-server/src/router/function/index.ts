@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-17 14:05:55
+ * @LastEditTime: 2021-08-18 15:40:09
  * @Description: 
  */
 
@@ -66,9 +66,6 @@ FunctionRouter.all('/:name', handleInvokeFunction)
 async function handleInvokeFunction(req: Request, res: Response) {
   const requestId = req['requestId']
   const func_name = req.params?.name
-
-  logger.info(requestId, `/func/${func_name} body: `, req.body)
-
   const debug = req.get('debug-token') ?? undefined
 
   // verify the debug token

@@ -1,3 +1,9 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-07-30 10:30:29
+ * @LastEditTime: 2021-08-18 16:36:54
+ * @Description: 
+ */
 
 import { getTriggers } from "../../api/trigger"
 import { Trigger } from "cloud-function-engine"
@@ -14,15 +20,15 @@ const accessor = DatabaseAgent.accessor
 const logger = createLogger('scheduler')
 
 /**
- * 触发器的调度器单例
+ * Single instance of trigger scheduler
  */
 export const SchedulerInstance = new FrameworkScheduler()
 
 /**
- * 当数据库连接成功时，初始化 scheduler
+ * Initialize scheduler while db connection is ready
  */
 accessor.ready.then(async () => {
-  // 初始化触发器
+  // initialize triggers
   const data = await getTriggers()
   logger.trace('loadTriggers: ', data)
   const triggers = data.map(data => Trigger.fromJson(data))
@@ -30,11 +36,11 @@ accessor.ready.then(async () => {
   SchedulerInstance.emit('App:ready')
   logger.info('triggers loaded')
 
-  // 初始化访问策略
+  // initialize policies
   await applyPolicyRules()
   logger.info('policy rules applied')
 
-  // 监听数据操作事件
+  // watch database operation event through `WatchStream` of mongodb
   const db = accessor.db
   const stream = db.watch([], { fullDocument: 'updateLookup' })
   stream.on("change", (doc) => {
@@ -42,7 +48,7 @@ accessor.ready.then(async () => {
   })
 })
 
-// 对应用访问策略的函数进行防抖动处理
+// debounce function `applyPolicyRules`
 const debouncedApplyPolicy = debounce(() => {
   applyPolicyRules()
     .then(() => logger.info('hot update: policy rules applied'))
@@ -50,19 +56,19 @@ const debouncedApplyPolicy = debounce(() => {
 }, 2000, { trailing: true, leading: false })
 
 /**
- * 数据操作事件回调
+ * Callback function for database change event
  * @param doc 
  */
 function DatabaseChangeEventCallBack(doc: ChangeStreamDocument) {
   const operationType = doc.operationType
   const collection = doc.ns.coll
 
-  // 访问策略变更时，加载新的访问规则
+  // apply policies while policies changed
   if (collection === Constants.policy_collection && ['insert', 'update', 'delete', 'replace'].includes(operationType)) {
     debouncedApplyPolicy()
   }
 
-  // 触发器配置变更时，更新调度器
+  // update triggers while triggers changed
   if (collection === Constants.trigger_collection) {
     if (['insert', 'update', 'replace'].includes(operationType)) {
       const trigger = Trigger.fromJson(doc.fullDocument)
@@ -79,52 +85,55 @@ function DatabaseChangeEventCallBack(doc: ChangeStreamDocument) {
     }
   }
 
+  // ignore database changes of internal collections
   if (collection.startsWith('__')) {
     return
   }
 
-  // 触发数据变更事件
+  // emit database change event
   const event = `DatabaseChange:${collection}#${operationType}`
   SchedulerInstance.emit(event, doc)
 }
 
 
 /**
- * @deprecated 未来会去除此实现机制，采取 mongodb watch 机制代替
- * @tip 暂保留此部分代码，以兼容老应用
+ * Implement database change event mechanism by listening accessor event. (!Deprecated)
+ * @deprecated This method would be removed in future, use mongodb WatchStream instead.
+ * @tip Keep this part of the code temporarily for compatibility with older applications
  * 
- * 以下为原数据事件实现机制：监听 Accessor 的数据操作事件
- * Accessor Event 机制实现有以下特点（相对于 mongodb watch 实现的机制）：
- *  - 不局限于 Mongodb 数据库
- *  - 除更新与删除事件外，可监听到 read 和 count 事件
- *  - 不能监听到不是通过 Accessor 操作的数据变化
- *  - update remove 操作不能获取受影响数据的标识（_id)
- *  - 在本服务因意外中止运行期间发生的数据变化无法监听到（而 mongodb watch 机制可以做到从中断中恢复期间的变化监听）
+ * This mechanism has the following characteristics (compared with the mechanism of mongodb WatchStream): 
+ *  - Not limited to Mongodb
+ *  - In addition to update and delete events, you can listen for read and count events
+ *  - Cannot listen for data changes that are not operated by accessor
+ *  - The update and remove operation cannot obtain the id of the affected data.
+ *  - Data changes that occur during an unexpected outage of the service cannot be monitored 
+ *    (whereas the mongodb WatchStream mechanism can be monitored for changes during recovery from an outage)
  */
 accessor.on('result', AccessorEventCallBack)
 
 /**
- * 数据操作事件回调
+ * Callback for database operation event
  * @param data 
  */
 export function AccessorEventCallBack(data: any) {
-  // 解决 mongodb _id 对象字符串问题
+  // fix the type problem of mongodb _id, transform possibly ObjectIds to string type
   const _data = JSON.parse(JSON.stringify(data))
 
   const { params, result } = _data
 
   const op = convertActionType(params.action)
 
-  // 忽略的数据事件
+  // ignored operations
   if (['read', 'count', 'watch'].includes(op)) {
     return
   }
 
+  // ignore operations on internal collections
   if (params.collection?.startsWith('__')) {
     return
   }
 
-  // 触发数据事件
+  // emit database operation event
   const event = `/db/${params.collection}#${op}`
   SchedulerInstance.emit(event, {
     exec_params: params,

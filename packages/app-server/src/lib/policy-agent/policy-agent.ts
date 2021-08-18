@@ -1,9 +1,10 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-04 00:31:53
- * @LastEditTime: 2021-08-17 13:58:25
+ * @LastEditTime: 2021-08-18 15:49:55
  * @Description: 
  */
+
 import assert = require("assert")
 import { AccessorInterface, Params, Policy } from "less-api"
 import { CloudFunction } from "cloud-function-engine"
@@ -13,7 +14,9 @@ import { logger } from "../logger"
 
 
 /**
- * 管理多个 policy, 初始化 injector
+ * Policy Agent class
+ * - managing multiple policies
+ * - initialize injector of policies
  */
 export class PolicyAgent implements PolicyAgentInterface {
   private _accessor: AccessorInterface
@@ -67,9 +70,9 @@ export class PolicyAgent implements PolicyAgentInterface {
 }
 
 /**
- * 默认的 injection getter
- * @param auth 为 jwt token 的 payload 对象
- * @returns 返回默认的 injections
+ * default injection getter
+ * @param auth the payload object of a standard JWT token
+ * @returns injections for validation in policy
  */
 async function defaultInjectionGetter(auth: any, _params: Params) {
   auth = auth || {}

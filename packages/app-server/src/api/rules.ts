@@ -1,9 +1,10 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-17 14:06:26
+ * @LastEditTime: 2021-08-18 16:52:27
  * @Description: 
  */
+
 import * as assert from 'assert'
 import { Constants } from '../constants'
 import { DatabaseAgent } from "../lib/database"
@@ -12,7 +13,7 @@ import { PolicyAgentInstance } from '../lib/policy-agent'
 const db = DatabaseAgent.db
 
 /**
- * 获取所有访问策略
+ * Get all access policies
  */
 export async function getPolicyRules() {
   const r = await db.collection(Constants.policy_collection).get()
@@ -23,7 +24,7 @@ export async function getPolicyRules() {
 
 
 /**
- * 应用访问规则
+ * Applying access policies' rules
  */
 export async function applyPolicyRules() {
   PolicyAgentInstance.clear()

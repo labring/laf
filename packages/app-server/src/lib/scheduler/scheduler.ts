@@ -1,3 +1,9 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-07-30 10:30:29
+ * @LastEditTime: 2021-08-18 16:17:46
+ * @Description: 
+ */
 
 import { getFunctionById } from "../../api/function"
 import { addFunctionLog } from "../../api/function-log"
@@ -9,12 +15,13 @@ import assert = require("assert")
 const logger = createLogger('scheduler')
 
 /**
- * 派生类，实现其获取云函数数据的方法
+ * FrameworkScheduler derived from TriggerScheduler
+ * Override the getting-cloud-function method
  */
 export class FrameworkScheduler extends TriggerScheduler {
 
   /**
-   * 加载云函数，派生类需要实现此方法
+   * Load cloud function by id
    * @override
    * @param func_id 
    * @returns 
@@ -33,7 +40,7 @@ export class FrameworkScheduler extends TriggerScheduler {
   }
 
   /**
-   * 该方法父类会调用，重写以记录函数执行日志
+   * Will be called by TriggerScheduler
    * @override
    * @param data 
    */
@@ -42,7 +49,7 @@ export class FrameworkScheduler extends TriggerScheduler {
   }
 
   /**
-   * 重写以处理调试日志
+   * Process with internal logs in TriggerScheduler 
    * @override
    * @param params 
    */

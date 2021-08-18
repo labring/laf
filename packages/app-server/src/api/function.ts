@@ -1,16 +1,17 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-17 14:06:14
+ * @LastEditTime: 2021-08-18 16:54:06
  * @Description: 
  */
+
 import { Constants } from "../constants"
 import { DatabaseAgent } from "../lib/database"
 
 const db = DatabaseAgent.db
 
 /**
- * 根据函数名获取云函数
+ * Gets the cloud function by function name
  * @param func_name 
  * @returns 
  */
@@ -27,12 +28,11 @@ export async function getFunctionByName(func_name: string) {
 }
 
 /**
-  * 根据ID获取云函数
+  * Get the cloud function by function id
   * @param func_name 
   * @returns 
   */
 export async function getFunctionById(func_id: string) {
-  // 获取函数
   const r = await db.collection(Constants.function_collection)
     .where({ _id: func_id })
     .getOne()

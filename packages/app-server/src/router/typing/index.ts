@@ -1,9 +1,10 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-17 13:57:16
+ * @LastEditTime: 2021-08-18 16:49:35
  * @Description: 
  */
+
 import * as express from 'express'
 import { PackageDeclaration, NodePackageDeclarations } from 'node-modules-utils'
 import path = require('path')
@@ -16,18 +17,17 @@ const nodeModulesRoot = path.resolve(__dirname, '../../../node_modules')
 
 
 /**
- * 获取一个依赖声明文件列表
+ * Gets declaration files of a dependency package
  */
 PackageTypingRouter.get('/package', async (req, res) => {
   const requestId = req['requestId']
-  logger.info(`[${requestId}] get /typing/package`)
 
   const packageName = req.query.packageName as string
   if (!packageName) {
     return res.status(422).send('invalid package name')
   }
 
-  // 获取所有 node 内置包类型
+  // Get all node built-in packages' types
   if (packageName === '@types/node') {
     const pkr = new NodePackageDeclarations(nodeModulesRoot)
     const rets = []
@@ -42,7 +42,7 @@ PackageTypingRouter.get('/package', async (req, res) => {
     })
   }
 
-  // 获取指定 node 内置包类型
+  // Gets a node built-in package types
   if (NodePackageDeclarations.NODE_PACKAGES.includes(packageName)) {
     const pkr = new NodePackageDeclarations(nodeModulesRoot)
     const r = await pkr.getNodeBuiltinPackage(packageName)
@@ -54,7 +54,7 @@ PackageTypingRouter.get('/package', async (req, res) => {
   }
 
   try {
-    // 获取其它三方包类型
+    // Gets other three-party package types
     const pkd = new PackageDeclaration(packageName, nodeModulesRoot)
     await pkd.load()
     return res.send({

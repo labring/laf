@@ -1,7 +1,13 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-07-30 10:30:29
+ * @LastEditTime: 2021-08-18 16:44:25
+ * @Description: 
+ */
 
 
 /**
- * 递归深冻结对象
+ * Recursively deeply freeze objects
  * @param object 
  * @returns 
  */

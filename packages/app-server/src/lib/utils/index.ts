@@ -1,7 +1,14 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-07-30 10:30:29
+ * @LastEditTime: 2021-08-18 16:43:57
+ * @Description: 
+ */
+
 import { ActionType } from "less-api/dist"
 
 /**
- * 将 ActionType 转为简写字符串
+ * Convert ActionType to a shorthand string
  * @param action 
  * @returns 
  */

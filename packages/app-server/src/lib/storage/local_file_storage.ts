@@ -1,3 +1,10 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-07-30 10:30:29
+ * @LastEditTime: 2021-08-18 16:40:16
+ * @Description: 
+ */
+
 import * as fse from "fs-extra"
 import * as assert from 'assert'
 import { v4 as uuidv4 } from 'uuid'
@@ -14,7 +21,7 @@ export class LocalFileStorage implements FileStorageInterface {
   }
 
   /**
-   * 保存临时文件
+   * Save file
    * @param filePath 
    * @returns 
    */
@@ -42,7 +49,7 @@ export class LocalFileStorage implements FileStorageInterface {
 
 
   /**
-   * 读文件
+   * Read file
    * @param filename 
    * @param encoding 
    * @returns 
@@ -57,7 +64,7 @@ export class LocalFileStorage implements FileStorageInterface {
   }
 
   /**
-   * 获取文件信息
+   * Get file info
    * @param filename 
    * @returns 
    */
@@ -75,14 +82,14 @@ export class LocalFileStorage implements FileStorageInterface {
       path: path.join('/', this.namespace, filename),
       fullpath: filepath,
       size: stat.size,
-      namespace: this.namespace
+      bucket: this.namespace
     }
 
     return info
   }
 
   /**
-   * 删除文件
+   * Delete file
    * @param filename 
    * @returns 
    */
@@ -100,7 +107,8 @@ export class LocalFileStorage implements FileStorageInterface {
   }
 
   /**
-   * 安全的文件、文件夹名只能由字母、数字、下划线、中划线和点组成
+   * Check that the directory name is secure
+   * A secure file or folder name can contain only letters, digits, underscores (_), hyphens (-), and periods (.)
    * @param name 
    * @returns 
    */
@@ -112,7 +120,7 @@ export class LocalFileStorage implements FileStorageInterface {
   }
 
   /**
-   * 检查文件名是否安全
+   * Check that the file name is secure
    */
   checkSafeFilename(name: string): boolean {
     assert(typeof name === 'string', 'name must be a string')
@@ -121,7 +129,7 @@ export class LocalFileStorage implements FileStorageInterface {
   }
 
   /**
-   * 生成文件名
+   * Generate file name
    * @returns 
    */
   private getFileName() {
@@ -129,7 +137,7 @@ export class LocalFileStorage implements FileStorageInterface {
   }
 
   /**
-   * 获取文件全路径
+   * Obtain the full path of the file
    * @param filename 
    * @returns 
    */
@@ -138,7 +146,7 @@ export class LocalFileStorage implements FileStorageInterface {
   }
 
   /**
-   * 获取当前 storage 存储目录
+   * Obtain the current storage path
    * @returns 
    */
   private getBasePath(): string {

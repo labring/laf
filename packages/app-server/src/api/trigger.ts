@@ -1,17 +1,18 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-17 14:06:22
+ * @LastEditTime: 2021-08-18 16:53:53
  * @Description: 
  */
+
 import { Constants } from "../constants"
 import { DatabaseAgent } from "../lib/database"
 
 const db = DatabaseAgent.db
 
 /**
- * 请求触发器列表
- * @param status 默认为1，取所有开启的触发器
+ * Get triggers
+ * @param status The default value is 1, means will select all enabled triggers
  * @returns 
  */
 export async function getTriggers(status = 1) {
@@ -23,7 +24,7 @@ export async function getTriggers(status = 1) {
 }
 
 /**
- * 根据ID请求触发器
+ * Get trigger by id
  * @param id 
  * @returns 
  */

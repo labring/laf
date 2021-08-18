@@ -30,9 +30,9 @@ export interface CloudSdkInterface {
 
   /**
    * 获取一个文件存储管理器
-   * @param namespace  文件的名字空间，如 'public'
+   * @param bucket  文件的名字空间，如 'public'
    */
-  storage(namespace: string): FileStorageInterface
+  storage(bucket: string): FileStorageInterface
 
   /**
    * 获取 less api database ORM 实例

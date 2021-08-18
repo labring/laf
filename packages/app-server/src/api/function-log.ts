@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-17 14:06:32
+ * @LastEditTime: 2021-08-18 16:51:13
  * @Description: 
  */
 import { Constants } from "../constants"
@@ -10,7 +10,7 @@ import { DatabaseAgent } from "../lib/database"
 const db = DatabaseAgent.db
 
 /**
- * 添加函数执行日志
+ * Add function execution log
  * @param data 
  * @returns 
  */
