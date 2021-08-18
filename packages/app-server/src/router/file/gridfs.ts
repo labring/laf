@@ -1,11 +1,12 @@
 
-import * as fs from 'fs'
+
 import * as express from 'express'
 import { GridFSBucket } from 'mongodb'
 import { DatabaseAgent } from '../../lib/database'
 import { checkFileOperationToken, FS_OPERATION, generateETag } from './utils'
 import Config from '../../config'
 import { logger } from '../../lib/logger'
+import { GridFSStorage } from '../../lib/storage/gridfs-storage'
 
 
 export const GridFSHandlers = {
@@ -35,37 +36,24 @@ async function handleUploadFile(req: express.Request, res: express.Response) {
     return res.status(422).send('file cannot be empty')
   }
 
-  // create a local file system driver
-  const bucket = new GridFSBucket(DatabaseAgent.accessor.db, { bucketName: bucket_name })
-
-  const stream = bucket.openUploadStream(file.filename, {
-    metadata: {
-      original_name: file.originalname,
-      created_by: auth?.uid,
-      bucket: bucket_name,
-      created_at: Date.now(),
-      contentType: file.mimetype
-    },
-    // @deprecated: this field will be deprecated in future, use metadata instead. keep it now for history reasons
+  // save file to gridfs
+  const storage = new GridFSStorage(bucket_name, DatabaseAgent.accessor.db)
+  const metadata = {
+    original_name: file.originalname,
+    created_by: auth?.uid,
+    bucket: bucket_name,
+    created_at: Date.now(),
     contentType: file.mimetype
-  })
+  }
 
-
-  // save to gridfs
-  fs.createReadStream(file.path)
-    .pipe(stream as any)
-    .on('finish', () => {
+  storage.save(file.path, file.filename, metadata)
+    .then(saved => {
       res.send({
         code: 0,
-        data: {
-          id: stream.id,
-          filename: stream.filename,
-          bucket: bucket_name,
-          contentType: file.mimetype
-        }
+        data: saved
       })
     })
-    .on('error', (err: Error) => {
+    .catch(err => {
       logger.error('upload file to gridfs stream occurred error', err)
       res.status(500).send('internal server error')
     })

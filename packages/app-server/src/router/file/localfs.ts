@@ -1,14 +1,14 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-11 18:01:25
- * @LastEditTime: 2021-08-17 17:52:20
+ * @LastEditTime: 2021-08-19 00:19:42
  * @Description: 
  */
 import { logger } from '../../lib/logger'
 import * as express from 'express'
 import * as path from 'path'
 import Config from '../../config'
-import { LocalFileStorage } from '../../lib/storage/local_file_storage'
+import { LocalFSStorage } from '../../lib/storage/localfs-storage'
 import { checkFileOperationToken, FS_OPERATION } from './utils'
 
 
@@ -24,7 +24,7 @@ export const LocalFileSystemHandlers = {
 async function handleUploadFile(req: express.Request, res: express.Response) {
 
   const bucket = req.params.bucket
-  if (!checkBucketName(bucket)) {
+  if (!LocalFSStorage.checkDirectoryName(bucket)) {
     return res.status(422).send('invalid bucket name')
   }
 
@@ -43,9 +43,9 @@ async function handleUploadFile(req: express.Request, res: express.Response) {
   }
 
   // create a local file system driver
-  const localStorage = new LocalFileStorage(Config.LOCAL_STORAGE_ROOT_PATH, bucket)
+  const localStorage = new LocalFSStorage(Config.LOCAL_STORAGE_ROOT_PATH, bucket)
   const filepath = path.join(file.destination, `${file.filename}`)
-  const info = await localStorage.saveFile(filepath)
+  const info = await localStorage.save(filepath, file.filename)
 
   // do not expose server path to client
   delete info.fullpath
@@ -64,11 +64,11 @@ async function handleUploadFile(req: express.Request, res: express.Response) {
 async function handleDownloadFile(req: express.Request, res: express.Response) {
 
   const { bucket, filename } = req.params
-  if (!checkBucketName(bucket)) {
+  if (!LocalFSStorage.checkDirectoryName(bucket)) {
     return res.status(422).send('invalid bucket')
   }
 
-  if (!checkFilename(filename)) {
+  if (!LocalFSStorage.checkFilename(filename)) {
     return res.status(422).send('invalid filename')
   }
 
@@ -80,21 +80,13 @@ async function handleDownloadFile(req: express.Request, res: express.Response) {
     }
   }
 
-  const localStorage = new LocalFileStorage(Config.LOCAL_STORAGE_ROOT_PATH, bucket)
+  const localStorage = new LocalFSStorage(Config.LOCAL_STORAGE_ROOT_PATH, bucket)
 
   try {
-    const info = await localStorage.getFileInfo(filename)
+    const info = await localStorage.info(filename)
     return res.download(info.fullpath)
   } catch (error) {
     logger.error('get file info failed', error)
     return res.status(404).send('Not Found')
   }
-}
-
-function checkBucketName(namespace: string) {
-  return (new LocalFileStorage('')).checkSafeDirectoryName(namespace)
-}
-
-function checkFilename(name: string) {
-  return (new LocalFileStorage('')).checkSafeFilename(name)
 }

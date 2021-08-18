@@ -4,12 +4,13 @@ import { FunctionContext, FunctionResult, CloudFunction } from "cloud-function-e
 import { FileStorageInterface } from "../lib/storage/interface"
 import * as mongodb from "mongodb"
 import { DatabaseAgent } from "../lib/database"
-import { LocalFileStorage } from "../lib/storage/local_file_storage"
+import { LocalFSStorage } from "../lib/storage/localfs-storage"
 import Config from "../config"
 import request from 'axios'
 import { SchedulerInstance } from "../lib/scheduler"
 import { getToken, parseToken } from "../lib/utils/token"
 import { invokeInFunction } from "./invoke"
+import { GridFSStorage } from "../lib/storage/gridfs-storage"
 
 
 export type InvokeFunctionType = (name: string, param: FunctionContext) => Promise<FunctionResult>
@@ -30,9 +31,9 @@ export interface CloudSdkInterface {
 
   /**
    * 获取一个文件存储管理器
-   * @param bucket  文件的名字空间，如 'public'
+   * @param bucket  文件 Bucket 名字，默认为 'public'
    */
-  storage(bucket: string): FileStorageInterface
+  storage(bucket?: string): FileStorageInterface
 
   /**
    * 获取 less api database ORM 实例
@@ -98,7 +99,7 @@ export interface CloudSdkInterface {
  */
 const cloud: CloudSdkInterface = {
   database: () => DatabaseAgent.createDb(),
-  storage: (namespace: string) => new LocalFileStorage(Config.LOCAL_STORAGE_ROOT_PATH, namespace),
+  storage: createStorage,
   fetch: request,
   invoke: invokeInFunction,
   emit: (event: string, param: any) => SchedulerInstance.emit(event, param),
@@ -126,7 +127,7 @@ DatabaseAgent.accessor.ready.then(() => {
 export function create() {
   const cloud: CloudSdkInterface = {
     database: () => DatabaseAgent.createDb(),
-    storage: (namespace: string) => new LocalFileStorage(Config.LOCAL_STORAGE_ROOT_PATH, namespace),
+    storage: (namespace: string) => new LocalFSStorage(Config.LOCAL_STORAGE_ROOT_PATH, namespace),
     fetch: request,
     invoke: invokeInFunction,
     emit: (event: string, param: any) => SchedulerInstance.emit(event, param),
@@ -142,3 +143,17 @@ export function create() {
 }
 
 export default cloud
+
+
+/**
+ * Create fs storage by configured fs driver
+ * @param bucket bucket name
+ * @returns 
+ */
+function createStorage(bucket = 'public'): FileStorageInterface {
+  if (Config.FILE_SYSTEM_DRIVER === 'localfs') {
+    return new LocalFSStorage(Config.LOCAL_STORAGE_ROOT_PATH, bucket)
+  }
+
+  return new GridFSStorage(bucket, DatabaseAgent.accessor.db)
+}
