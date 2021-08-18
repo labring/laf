@@ -1,3 +1,16 @@
+# [](https://github.com/Maslow/less-framework/compare/v0.4.20...v) (2021-08-18)
+
+
+
+## [0.4.20](https://github.com/Maslow/less-framework/compare/v0.4.19...v0.4.20) (2021-08-18)
+
+
+### Features
+
+* **app-server:** add gridfs-storage; ([d393f6c](https://github.com/Maslow/less-framework/commit/d393f6cd57385dee4ef8c8a3ad52cbc8223a8e12))
+* **app-server:** expose gridfs storage api to cloud-sdk; ([ece5dd4](https://github.com/Maslow/less-framework/commit/ece5dd4f14f8a66cfef2064aef86d20765d5e8e3))
+
+
 
 ## [0.4.19](https://github.com/Maslow/less-framework/compare/v0.4.18...v0.4.19) (2021-08-18)
 
