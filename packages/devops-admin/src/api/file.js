@@ -52,12 +52,17 @@ export async function deleteFileBucket(bucketName) {
  * @param {string} bucketName
  * @returns
  */
-export async function getFilesByBucketName(bucketName, { offset, limit }) {
+export async function getFilesByBucketName(bucketName, { offset, limit, keyword }) {
   assert(bucketName, 'empty `bucketName` got')
   const _offset = offset || 0
   const _limit = limit || 10
+  let query = `offset=${_offset}&limit=${_limit}`
+  if (keyword) {
+    query = query + `&keyword=${keyword}`
+  }
+
   const res = await request({
-    url: `/file/${bucketName}/files?offset=${_offset}&limit=${_limit}`,
+    url: `/file/${bucketName}/files?${query}`,
     method: 'GET'
   })
   assert(res.code === 0, `get files in ${bucketName} got error`, res)

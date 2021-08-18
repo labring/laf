@@ -127,7 +127,7 @@ export const asyncRoutes = [
         meta: {
           title: '文件列表',
           icon: 'documentation',
-          noCache: true,
+          noCache: false,
           permissions: ['file.read']
         }
       }

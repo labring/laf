@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-17 14:40:21
+ * @LastEditTime: 2021-08-18 13:19:45
  * @Description: 
  */
 
@@ -43,8 +43,8 @@ server.use(function (req, _res, next) {
   req['auth'] = auth
 
   const requestId = req['requestId'] = uuidv4()
-  logger.info(requestId, `${req.path} start request`)
-  logger.debug(requestId, `parsed auth: ` + JSON.stringify(auth))
+  logger.info(requestId, `${req.method} "${req.url}" - referer: ${req.get('referer') || '-'} ${req.get('user-agent')}`)
+  logger.trace(requestId, `${req.method} ${req.url}`, { body: req.body, headers: req.headers, auth })
   next()
 })
 

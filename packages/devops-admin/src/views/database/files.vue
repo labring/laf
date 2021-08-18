@@ -4,17 +4,18 @@
     <div class="filter-container">
       <el-input
         v-model="listQuery.keyword"
-        placeholder="搜索"
-        style="width: 200px;margin-right: 10px;"
+        size="mini"
+        placeholder="按文件名检索"
+        style="width: 400px;margin-right: 10px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+      <el-button size="mini" plain class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
-      <!-- <el-button class="filter-item" type="primary" icon="el-icon-search" @click="showCreateForm">
-        新建
-      </el-button> -->
+      <el-button size="mini" plain class="filter-item" type="primary" icon="el-icon-upload" @click="showCreateForm">
+        上传文件
+      </el-button>
     </div>
 
     <!-- 表格 -->
@@ -32,25 +33,26 @@
           <span>{{ row._id }}</span>
         </template>
       </el-table-column> -->
-      <el-table-column label="文件" align="center" width="200">
+      <el-table-column label="文件" align="center">
         <template slot-scope="{row}">
           <a :href="getFileUrl(row)" target="blank" style="margin-right: 8px">
             <img v-if="isImage(row)" class="thumb-image" :src="getFileUrl(row)">
-            <svg-icon v-else icon-class="documentation" />
+            <i v-else-if="isVideo(row)" class="el-icon-video-play" style="font-size: 40px" />
+            <i v-else class="el-icon-paperclip" style="font-size: 40px" />
           </a>
         </template>
       </el-table-column>
-      <el-table-column label="文件名" width="340" align="center">
+      <el-table-column label="文件名" width="330" align="center">
         <template slot-scope="{row}">
           <span>{{ row.filename }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="文件大小" width="150px" align="center">
+      <el-table-column label="文件大小" align="center">
         <template slot-scope="{row}">
           <span>{{ getFileSize(row) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="类型" align="center" width="180">
+      <el-table-column label="类型" align="center">
         <template slot-scope="{row}">
           <span v-if="row.contentType">{{ row.contentType }}</span>
           <span v-else>-</span>
@@ -62,9 +64,14 @@
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="bucket" width="120" align="center">
+      <el-table-column label="bucket" align="center">
         <template slot-scope="{row}">
           <span>  {{ row.metadata.bucket }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="原文件名" align="center">
+        <template slot-scope="{row}">
+          <span>  {{ row.metadata.original_name }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -73,9 +80,6 @@
             <el-button plain type="success" size="mini">
               查看
             </el-button></a>
-          <!-- <el-button type="primary" size="mini" @click="showUpdateForm(row)">
-            编辑
-          </el-button> -->
           <el-button v-if="row.status!='deleted'" plain size="mini" type="danger" @click="handleDelete(row)">
             删除
           </el-button>
@@ -93,65 +97,25 @@
     />
 
     <!-- 表单对话框 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form
-        ref="dataForm"
-        :rules="rules"
-        :model="form"
-        label-position="left"
-        label-width="70px"
-        style="width: 400px; margin-left:50px;"
+    <el-dialog title="上传文件" width="400px" :visible.sync="dialogFormVisible">
+      <el-upload
+        drag
+        :action="getUploadUrl()"
+        :on-success="onUploadSuccess"
       >
-        <el-form-item label="标题" prop="label">
-          <el-input v-model="form.label" placeholder="显示标题" />
-        </el-form-item>
-        <el-form-item label="标识" prop="name">
-          <el-input v-model="form.name" placeholder="唯一标识" />
-        </el-form-item>
-        <el-form-item label="描述">
-          <el-input v-model="form.description" :autosize="{ minRows: 3, maxRows: 6}" type="textarea" placeholder="描述" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          取消
-        </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?handleCreate():handleUpdate()">
-          确定
-        </el-button>
-      </div>
+        <i class="el-icon-upload" />
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <!-- <div slot="tip" class="el-upload__tip">一次可上传一个文件</div> -->
+      </el-upload>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { db } from '@/api/cloud'
 import * as fs from '@/api/file'
 import { assert } from '@/utils/assert'
 import { getFileToken } from '@/utils/auth'
-
-// @TODO
-// 默认化创建表单的值
-function getDefaultFormValue() {
-  return {
-    _id: undefined,
-    name: '',
-    label: '',
-    description: '',
-    status: 0,
-    tags: [],
-    created_at: Date.now(),
-    updated_at: Date.now()
-  }
-}
-
-// @TODO
-// 表单验证规则
-const formRules = {
-  name: [{ required: true, message: '标识不可为空', trigger: 'blur' }],
-  label: [{ required: true, message: '标题不可为空', trigger: 'blur' }]
-}
 
 export default {
   name: 'BucketsListPage',
@@ -168,20 +132,18 @@ export default {
         limit: 20,
         keyword: undefined
       },
-      form: getDefaultFormValue(),
       dialogFormVisible: false,
-      dialogStatus: '',
       textMap: {
         update: '编辑',
         create: '创建'
       },
-      rules: formRules,
       downloadLoading: false
     }
   },
   created() {
     this.bucket = this.$route.params?.bucket
     this.getList()
+    this.setTagViewTitle()
   },
   methods: {
     /**
@@ -191,12 +153,13 @@ export default {
       this.listLoading = true
 
       // 拼装查询条件 by this.listQuery
-      const { limit, page } = this.listQuery
+      const { limit, page, keyword } = this.listQuery
 
       // 执行数据查询
       const res = await fs.getFilesByBucketName(this.bucket, {
         limit,
-        offset: (page - 1) * limit
+        offset: (page - 1) * limit,
+        keyword
       }).catch(() => { this.listLoading = false })
 
       this.list = res.data
@@ -209,89 +172,14 @@ export default {
       this.listQuery.page = 1
       this.getList()
     },
-    // 显示创建表单
+    // 显示上传表单
     showCreateForm() {
-      this.form = getDefaultFormValue()
-      this.dialogStatus = 'create'
       this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
     },
-    // 创建请求
-    handleCreate() {
-      this.$refs['dataForm'].validate(async(valid) => {
-        if (!valid) { return }
-
-        // 执行创建请求
-        const r = await db.collection('buckets')
-          .add(this.form)
-
-        if (!r.id) {
-          this.$notify({
-            type: 'error',
-            title: '操作失败',
-            message: '创建失败！' + r.error
-          })
-          return
-        }
-
-        this.$notify({
-          type: 'success',
-          title: '操作成功',
-          message: '创建成功！'
-        })
-
-        this.getList()
-        this.dialogFormVisible = false
-      })
-    },
-    // 显示更新表单
-    showUpdateForm(row) {
-      this.form = Object.assign({}, row) // copy obj
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    // 更新请求
-    handleUpdate() {
-      this.$refs['dataForm'].validate(async(valid) => {
-        if (!valid) { return }
-
-        // @TODO
-        // 构建更新数据对象
-        const data = {
-          name: this.form.name,
-          label: this.form.label,
-          description: this.form.description,
-          updated_at: Date.now()
-        }
-
-        // 执行更新请求
-        const r = await db.collection('buckets')
-          .where({ _id: this.form._id })
-          .update(data)
-
-        if (!r.ok) {
-          this.$notify({
-            type: 'error',
-            title: '操作失败',
-            message: '更新失败！' + r.error
-          })
-          return
-        }
-
-        this.$notify({
-          type: 'success',
-          title: '操作成功',
-          message: '更新成功！'
-        })
-
-        this.getList()
-        this.dialogFormVisible = false
-      })
+    // 上传成功回调
+    onUploadSuccess(event) {
+      this.$message.success('上传成功')
+      this.getList()
     },
     // 删除请求
     async handleDelete(row) {
@@ -317,12 +205,6 @@ export default {
 
       this.getList()
     },
-    // 查看详情
-    async handleShowDetail(row) {
-      // @TODO
-      // 跳转到详情页
-      this.$router.push(`buckets/${row._id}`)
-    },
     // 拼装文件下载 URL
     getFileUrl(file) {
       assert(file && file.filename, 'invalid file or filename')
@@ -335,9 +217,25 @@ export default {
       const token = getFileToken()
       return file_url + `?token=${token}`
     },
+    // 拼装文件上传地址
+    getUploadUrl() {
+      assert(this.bucket, 'empty bucket name got')
+      const base_url = process.env.VUE_APP_BASE_API_APP + '/file'
+      const bucket = this.bucket
+      const file_url = `${base_url}/upload/${bucket}`
+      if (this.bucket === 'public') {
+        return file_url
+      }
+      const token = getFileToken()
+      return file_url + `?token=${token}`
+    },
     // 判断是否为图片类型
     isImage(row) {
       return row?.contentType?.startsWith('image/')
+    },
+    // 判断是否为视频类型
+    isVideo(row) {
+      return row?.contentType?.startsWith('video/')
     },
     // 获取文件显示大小
     getFileSize(file) {
@@ -346,9 +244,18 @@ export default {
         return (length / (1024 * 1024 * 1024)).toFixed(2) + ' GB'
       } else if (length > 1024 * 1024) {
         return (length / (1024 * 1024)).toFixed(2) + ' MB'
-      } else {
+      } else if (length > 1024) {
         return (length / 1024).toFixed(0) + ' kb'
+      } else if (length) {
+        return length + ' bytes'
       }
+    },
+    // 设置标签页名
+    setTagViewTitle() {
+      const label = this.bucket
+      const title = this.$route.meta.title
+      const route = Object.assign({}, this.$route, { title: `${label} - ${title}` })
+      this.$store.dispatch('tagsView/updateVisitedView', route)
     }
   }
 }
@@ -357,5 +264,6 @@ export default {
 <style scoped>
 .thumb-image {
   width: 100px;
+  max-height: 60px;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-    欢迎使用 less-framework 管理控制台。
+    欢迎使用 LaF 开发运维控制台。
   </div>
 </template>
 

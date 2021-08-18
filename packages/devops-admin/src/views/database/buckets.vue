@@ -2,11 +2,11 @@
   <div class="app-container">
     <!-- 数据检索区 -->
     <div class="filter-container">
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="getList">
+      <el-button plain class="filter-item" type="default" icon="el-icon-search" @click="getList">
         刷新
       </el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="showCreateForm">
-        新建
+      <el-button plain class="filter-item" type="primary" icon="el-icon-plus" @click="showCreateForm">
+        新建文件桶
       </el-button>
     </div>
 
@@ -25,7 +25,7 @@
           <span>{{ $index + 1 }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="标识">
+      <el-table-column label="文件桶">
         <template slot-scope="{row}">
           <span>{{ row }}</span>
         </template>
@@ -71,8 +71,8 @@
 
 <script>
 import * as fs from '@/api/file'
+import { assert } from '@/utils/assert'
 
-// @TODO
 // 默认化创建表单的值
 function getDefaultFormValue() {
   return {
@@ -122,8 +122,9 @@ export default {
 
       // 执行数据查询
       const ret = await fs.getFileBuckets().catch(() => { this.listLoading = false })
-      this.list = ret.data
+      assert(ret.code === 0, 'get file buckets got error')
 
+      this.list = ret.data
       this.listLoading = false
     },
     // 显示创建表单
@@ -158,7 +159,8 @@ export default {
           message: '创建成功！'
         })
 
-        this.getList()
+        // Quirks: 因 gridfs 创建 bucket 确有延迟，故等待刷新
+        setTimeout(() => this.getList(), 1000)
         this.dialogFormVisible = false
       })
     },

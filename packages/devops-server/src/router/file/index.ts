@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-17 22:10:40
+ * @LastEditTime: 2021-08-18 15:08:33
  * @Description: 
  */
 
@@ -19,8 +19,6 @@ export const FileRouter = express.Router()
  * Get file bucket list
  */
 FileRouter.get('/buckets', async (req, res) => {
-  const requestId = req['requestId']
-  logger.info(requestId, `get /buckets`)
 
   // check permission
   const code = await checkPermission(req['auth']?.uid, 'file.read')
@@ -53,8 +51,6 @@ FileRouter.get('/buckets', async (req, res) => {
  * Create a bucket
  */
 FileRouter.post('/buckets', async (req, res) => {
-  const requestId = req['requestId']
-  logger.info(requestId, `post /buckets`)
 
   const bucketName = req.body?.bucket
   if (!bucketName) {
@@ -83,9 +79,6 @@ FileRouter.post('/buckets', async (req, res) => {
  * Delete a bucket
  */
 FileRouter.delete('/buckets/:bucket', async (req, res) => {
-  const requestId = req['requestId']
-  logger.info(requestId, `post /buckets`)
-
   const bucketName = req.params?.bucket
 
   // check permission
@@ -119,9 +112,9 @@ FileRouter.get('/:bucket/files', async (req, res) => {
   const bucket = req.params.bucket
   const offset = Number(req.query?.offset || 0)
   const limit = Number(req.query?.limit || 20)
+  const keyword = req.query?.keyword || undefined
 
   const requestId = req['requestId']
-  logger.info(requestId, `get /${bucket}/files`)
 
   // check permission
   const code = await checkPermission(req['auth']?.uid, 'file.read')
@@ -131,12 +124,20 @@ FileRouter.get('/:bucket/files', async (req, res) => {
 
   try {
     // get files from app db
-    const coll = DatabaseAgent.app_db.collection(`${bucket}.files`)
+    const app_db = DatabaseAgent.app_db
+    const coll = app_db.collection(`${bucket}.files`)
     const { total } = await coll.count()
 
+    const query = {}
+    if (keyword) {
+      query['filename'] = keyword
+    }
+
     const r = await coll
+      .where(query)
       .skip(Number(offset))
       .limit(Number(limit))
+      .orderBy('uploadDate', 'desc')
       .get()
 
     if (!r.ok) {
@@ -167,7 +168,6 @@ FileRouter.delete('/:bucket/:id', async (req, res) => {
   const file_id = req.params.id
 
   const requestId = req['requestId']
-  logger.info(requestId, `delete /${bucket_name}/${file_id}`)
 
   // check permission
   const code = await checkPermission(req['auth']?.uid, 'file.delete')
