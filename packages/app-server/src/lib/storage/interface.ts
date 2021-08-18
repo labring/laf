@@ -1,56 +1,99 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-18 16:43:18
+ * @LastEditTime: 2021-08-19 01:25:55
  * @Description: 
  */
 
+import { ReadStream } from "fs"
+
 export interface FileInfo {
-  filename: string,       // file name, including extension
-  ext: string             // extension
-  basename: string        // file name, excluding the extension
-  size: number            // file size, in bytes
-  path: string            // file path, relative path
-  fullpath?: string       // file path, absolute path
-  original_name?: string  // The original name of the file
-  bucket?: string
+  /**
+   * The file id, only valid for `gridfs`
+   */
+  id?: string
+
+  /**
+   * The file name
+   */
+  filename: string,
+
+  /**
+   * The size of file in bytes
+   */
+  size: number
+
+  /**
+   * The relative path of file
+   */
+  path: string
+
+  /**
+   * The absolute path of file, only valid for `localfs`
+   */
+  fullpath?: string
+
+  /**
+   * The original name of the file
+   */
+  original_name?: string
+
+  /**
+   * The bucket name of file
+   */
+  bucket: string
+
+  /**
+   * The content type of file, only valid for `gridfs`
+   */
+  contentType?: string
+
+  /**
+   * The uploaded date time of file, only valid for `gridfs`
+   */
+  upload_date?: Date
 }
 
 export interface FileStorageInterface {
+  /**
+   * The driver type of file storage : `gridfs` or `localfs`
+   */
+  type: string
 
   /**
-   * Save files: Mainly used to save (move) uploaded temporary files to the storage directory
-   * @param filePath The path of the file to save
+   * The bucket name, default should be `public`
    */
-  saveFile(filePath: string): Promise<FileInfo>
+  bucket: string
+
+  /**
+   * Save file: mainly used to save uploaded temporary files to the storage
+   * @param file_path The path of the file to save
+   * @param filename File name to be stored
+   * @param metadata Meta data of file to be stored, only valid for `gridfs`
+   */
+  save(file_path: string, filename: string, metadata?: any): Promise<FileInfo>
 
   /**
    * Obtain file information
    * @param filename
    */
-  getFileInfo(filename: string): Promise<FileInfo>
+  info(filename: string): Promise<FileInfo>
 
   /**
    * Delete file
    * @param filename 
    */
-  deleteFile(filename: string): Promise<boolean>
+  delete(filename: string): Promise<boolean>
 
   /**
    * Read file
-   * @param {string} filename 
+   * @param filename 
    */
-  readFile(filename: string, encoding?: string): Promise<Buffer>
+  read(filename: string): Promise<Buffer>
 
   /**
-   * Check that the folder name is secure
-   * @param {string} name
+   * Create a read stream of file
+   * @param filename 
    */
-  checkSafeDirectoryName(name: string): boolean
-
-  /**
-   * Check that the file name is secure
-   * @param {string} name
-   */
-  checkSafeFilename(name: string): boolean
+  createReadStream(filename: string): ReadStream
 }
