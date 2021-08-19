@@ -48,10 +48,18 @@ export default class Config {
   }
 
   /**
-   * the file system driver: 'local', 'gridfs'
+   * the file system driver: 'localfs', 'gridfs'
    */
-  static get FILE_SYSTEM_DRIVER(): string {
-    return process.env['FILE_SYSTEM_DRIVER'] ?? 'gridfs'
+  static get FILE_SYSTEM_DRIVER(): 'gridfs' | 'localfs' {
+    return process.env['FILE_SYSTEM_DRIVER'] as any ?? 'gridfs'
+  }
+
+  /**
+   * if enable the unauthorized upload operation in `public` bucket: 'on' | 'off'.
+   * default is 'on'
+   */
+  static get FILE_SYSTEM_ENABLE_UNAUTHORIZED_UPLOAD(): 'on' | 'off' {
+    return process.env['FILE_SYSTEM_ENABLE_UNAUTHORIZED_UPLOAD'] as any ?? 'on'
   }
 
   /**
@@ -72,8 +80,8 @@ export default class Config {
   /**
    * the logger level : 'fatal', 'error', 'warning', 'info', 'debug', 'trace'
    */
-  static get LOG_LEVEL(): string {
-    return process.env['LOG_LEVEL'] ?? (this.isProd ? 'info' : 'debug')
+  static get LOG_LEVEL(): 'fatal' | 'error' | 'warning' | 'info' | 'debug' | 'trace' {
+    return process.env['LOG_LEVEL'] as any ?? (this.isProd ? 'info' : 'debug')
   }
 
   /**
@@ -89,8 +97,8 @@ export default class Config {
    * - `debug` means that only logging for debug invokes
    * - `never` no logging any case
    */
-  static get ENABLE_CLOUD_FUNCTION_LOG(): string {
-    return (process.env.ENABLE_CLOUD_FUNCTION_LOG ?? 'always')
+  static get ENABLE_CLOUD_FUNCTION_LOG(): 'always' | 'debug' | 'never' {
+    return (process.env.ENABLE_CLOUD_FUNCTION_LOG as any ?? 'always')
   }
 
   /**

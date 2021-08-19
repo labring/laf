@@ -54,8 +54,7 @@
       </el-table-column>
       <el-table-column label="类型" align="center">
         <template slot-scope="{row}">
-          <span v-if="row.contentType">{{ row.contentType }}</span>
-          <span v-else>-</span>
+          <span>{{ getContentType(row) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="更新时间" width="180" align="center">
@@ -209,8 +208,7 @@ export default {
     getFileUrl(file) {
       assert(file && file.filename, 'invalid file or filename')
       const base_url = process.env.VUE_APP_BASE_API_APP + '/file'
-      const bucket = this.bucket
-      const file_url = `${base_url}/${bucket}/${file.filename}`
+      const file_url = `${base_url}/${this.bucket}/${file.filename}`
       if (this.bucket === 'public') {
         return file_url
       }
@@ -221,21 +219,20 @@ export default {
     getUploadUrl() {
       assert(this.bucket, 'empty bucket name got')
       const base_url = process.env.VUE_APP_BASE_API_APP + '/file'
-      const bucket = this.bucket
-      const file_url = `${base_url}/upload/${bucket}`
-      if (this.bucket === 'public') {
-        return file_url
-      }
+      const file_url = `${base_url}/upload/${this.bucket}`
       const token = getFileToken()
       return file_url + `?token=${token}`
     },
+    getContentType(row) {
+      return row?.metadata?.contentType ?? row?.contentType ?? 'unknown'
+    },
     // 判断是否为图片类型
     isImage(row) {
-      return row?.contentType?.startsWith('image/')
+      return this.getContentType(row)?.startsWith('image/')
     },
     // 判断是否为视频类型
     isVideo(row) {
-      return row?.contentType?.startsWith('video/')
+      return this.getContentType(row).startsWith('video/')
     },
     // 获取文件显示大小
     getFileSize(file) {
