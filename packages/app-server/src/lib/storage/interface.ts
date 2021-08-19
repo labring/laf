@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-19 01:25:55
+ * @LastEditTime: 2021-08-19 16:41:36
  * @Description: 
  */
 
@@ -49,7 +49,7 @@ export interface FileInfo {
   contentType?: string
 
   /**
-   * The uploaded date time of file, only valid for `gridfs`
+   * The uploaded date time of file
    */
   upload_date?: Date
 }

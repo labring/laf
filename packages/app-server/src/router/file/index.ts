@@ -1,13 +1,20 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-07-30 10:30:29
+ * @LastEditTime: 2021-08-19 16:27:48
+ * @Description: 
+ */
+
 import * as express from 'express'
 import * as path from 'path'
 import * as multer from 'multer'
-import Config from '../../config'
 import { v4 as uuidv4 } from 'uuid'
+import { handleUploadFile } from './upload'
+import { handleDownloadFile } from './download'
 
-import { LocalFileSystemHandlers } from './localfs'
-import { GridFSHandlers } from './gridfs'
-
-// config multer
+/**
+ * Creates the multer uploader
+ */
 const uploader = multer({
   storage: multer.diskStorage({
     filename: (_req, file, cb) => {
@@ -17,61 +24,27 @@ const uploader = multer({
   })
 })
 
+/**
+ * The file router
+ */
 export const FileRouter = express.Router()
 
-
 /**
- * if use GridFS driver
+ * Upload file
+ * @see handleUploadFile()
  */
-if (Config.FILE_SYSTEM_DRIVER === "gridfs") {
-  /**
-   * upload file
-   * @see GridFSHandlers.handleUploadFile()
-   */
-  FileRouter.post('/upload/:bucket', uploader.single('file'), GridFSHandlers.handleUploadFile)
-
-
-  /**
-   * download file
-   * @see GridFSHandlers.handleDownloadFile()
-   */
-  FileRouter.get('/download/:bucket/:filename', GridFSHandlers.handleDownloadFile)
-
-  /**
-   * Alias URL for downloading file
-   * @see GridFSHandlers.handleDownloadFile()
-   */
-  FileRouter.get('/:bucket/:filename', GridFSHandlers.handleDownloadFile)
-}
+FileRouter.post('/upload/:bucket', uploader.single('file'), handleUploadFile)
 
 
 /**
- * if use local file system driver
+ * Download file
+ * @see handleDownloadFile()
  */
-if (Config.FILE_SYSTEM_DRIVER === "local") {
-  // config multer
-  const uploader = multer({
-    storage: multer.diskStorage({
-      filename: (_req, file, cb) => {
-        const { ext } = path.parse(file.originalname)
-        cb(null, uuidv4() + ext)
-      }
-    })
-  })
-
-  FileRouter.use('/public', express.static(path.join(Config.LOCAL_STORAGE_ROOT_PATH, 'public')))
-
-  /**
-   * upload file
-   * @see LocalFileSystemHandlers.handleUploadFile()
-   */
-  FileRouter.post('/upload/:bucket', uploader.single('file'), LocalFileSystemHandlers.handleUploadFile)
+FileRouter.get('/download/:bucket/:filename', handleDownloadFile)
 
 
-  /**
-   * download file
-   * @see LocalFileSystemHandlers.handleDownloadFile()
-   */
-  FileRouter.get('/download/:bucket/:filename', LocalFileSystemHandlers.handleDownloadFile)
-
-}
+/**
+ * Alias URL for downloading file
+ * @see handleDownloadFile()
+ */
+FileRouter.get('/:bucket/:filename', handleDownloadFile)

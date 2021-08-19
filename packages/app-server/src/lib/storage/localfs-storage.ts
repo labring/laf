@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-19 01:40:35
+ * @LastEditTime: 2021-08-19 16:51:24
  * @Description: 
  */
 
@@ -9,6 +9,7 @@ import * as fse from "fs-extra"
 import * as assert from 'assert'
 import * as path from 'path'
 import { FileInfo, FileStorageInterface } from "./interface"
+import { resolveMIMEType } from "./util"
 
 export class LocalFSStorage implements FileStorageInterface {
   readonly type = 'localfs'
@@ -58,7 +59,9 @@ export class LocalFSStorage implements FileStorageInterface {
       path: path.join('/', this.bucket, filename),
       fullpath: filepath,
       size: stat.size,
-      bucket: this.bucket
+      bucket: this.bucket,
+      upload_date: stat.ctime,
+      contentType: resolveMIMEType(filename)
     }
 
     return info

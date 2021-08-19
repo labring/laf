@@ -4,13 +4,11 @@ import { FunctionContext, FunctionResult, CloudFunction } from "cloud-function-e
 import { FileStorageInterface } from "../lib/storage/interface"
 import * as mongodb from "mongodb"
 import { DatabaseAgent } from "../lib/database"
-import { LocalFSStorage } from "../lib/storage/localfs-storage"
-import Config from "../config"
 import request from 'axios'
 import { SchedulerInstance } from "../lib/scheduler"
 import { getToken, parseToken } from "../lib/utils/token"
 import { invokeInFunction } from "./invoke"
-import { GridFSStorage } from "../lib/storage/gridfs-storage"
+import { createFileStorage } from "../lib/storage"
 
 
 export type InvokeFunctionType = (name: string, param: FunctionContext) => Promise<FunctionResult>
@@ -97,20 +95,7 @@ export interface CloudSdkInterface {
 /**
  * Cloud SDK 实例
  */
-const cloud: CloudSdkInterface = {
-  database: () => DatabaseAgent.createDb(),
-  storage: createStorage,
-  fetch: request,
-  invoke: invokeInFunction,
-  emit: (event: string, param: any) => SchedulerInstance.emit(event, param),
-  shared: CloudFunction._shared_preference,
-  getToken: getToken,
-  parseToken: parseToken,
-  mongo: {
-    client: DatabaseAgent.accessor.conn,
-    db: DatabaseAgent.accessor.db
-  }
-}
+const cloud: CloudSdkInterface = create()
 
 /**
  * 等数据库连接成功后，更新其 mongo 对象，否则为 null
@@ -127,7 +112,7 @@ DatabaseAgent.accessor.ready.then(() => {
 export function create() {
   const cloud: CloudSdkInterface = {
     database: () => DatabaseAgent.createDb(),
-    storage: (namespace: string) => new LocalFSStorage(Config.LOCAL_STORAGE_ROOT_PATH, namespace),
+    storage: createFileStorage,
     fetch: request,
     invoke: invokeInFunction,
     emit: (event: string, param: any) => SchedulerInstance.emit(event, param),
@@ -143,17 +128,3 @@ export function create() {
 }
 
 export default cloud
-
-
-/**
- * Create fs storage by configured fs driver
- * @param bucket bucket name
- * @returns 
- */
-function createStorage(bucket = 'public'): FileStorageInterface {
-  if (Config.FILE_SYSTEM_DRIVER === 'localfs') {
-    return new LocalFSStorage(Config.LOCAL_STORAGE_ROOT_PATH, bucket)
-  }
-
-  return new GridFSStorage(bucket, DatabaseAgent.accessor.db)
-}

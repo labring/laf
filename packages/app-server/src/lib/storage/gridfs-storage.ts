@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-18 23:43:17
- * @LastEditTime: 2021-08-19 01:37:08
+ * @LastEditTime: 2021-08-19 16:57:54
  * @Description:
  */
 
@@ -12,6 +12,7 @@ import * as path from 'path'
 
 import { Db, GridFSBucket } from "mongodb"
 import { FileInfo, FileStorageInterface } from "./interface"
+import { resolveMIMEType } from "./util"
 
 
 export class GridFSStorage implements FileStorageInterface {
@@ -35,11 +36,14 @@ export class GridFSStorage implements FileStorageInterface {
     const stats = await fsp.stat(file_path)
     assert(stats.isFile(), `${file_path} is not a file`)
 
+    metadata = metadata ?? {}
+    metadata.contentType = metadata?.contentType || resolveMIMEType(filename)
+
     // create a gridfs bucket
     const bucket = new GridFSBucket(this.db, { bucketName: this.bucket })
 
     const stream = bucket.openUploadStream(filename, {
-      metadata: metadata ?? {},
+      metadata: metadata,
       // @deprecated: this field will be deprecated in future, use metadata.contentType instead. keep it now for history reasons
       contentType: metadata?.contentType
     })
@@ -56,7 +60,7 @@ export class GridFSStorage implements FileStorageInterface {
       id: stream.id.toHexString(),
       filename: stream.filename,
       bucket: this.bucket,
-      contentType: metadata?.contentType,
+      contentType: metadata?.contentType ?? resolveMIMEType(stream.filename),
       path: path.join('/', this.bucket, filename),
       size: stats.size,
       original_name: metadata?.originalname
@@ -81,7 +85,7 @@ export class GridFSStorage implements FileStorageInterface {
       id: file._id.toHexString(),
       filename: file.filename,
       bucket: this.bucket,
-      contentType: file.metadata?.contentType,
+      contentType: file.metadata?.contentType ?? resolveMIMEType(file.filename),
       path: path.join('/', this.bucket, file.filename),
       size: file.length,
       original_name: file.metadata?.original_name,
