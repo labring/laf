@@ -1,9 +1,8 @@
 ---
-sidebar: false
-title: 快速部署 LaF 服务
+title: 快速部署 Laf 服务
 ---
 
-### 快速部署 LaF 服务
+### 快速部署 Laf 服务
 
 > 基于 Docker Compose 快速部署，需要你熟悉 docker 以及 docker-compose 的使用
 

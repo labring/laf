@@ -17,6 +17,7 @@
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:serve": "vitepress serve docs",
+    "docs:deploy": "npm run docs:build && sh ./scripts/deploy-docs.sh",
     "docker-build-devops-server": "node ./scripts/docker-build-devops-server.js",
     "docker-build-app-server": "node ./scripts/docker-build-app-server.js",
     "docker-build-devops-admin": "node ./scripts/docker-build-devops-admin.js",

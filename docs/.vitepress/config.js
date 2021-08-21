@@ -1,24 +1,19 @@
 module.exports = {
   lang: 'zh-CN',
-  title: 'LaF 云开发文档',
-  description: '开发者的使用文档',
+  title: 'Laf 云开发文档',
+  description: '开发者使用文档',
 
   themeConfig: {
     repo: 'Maslow/less-framework',
     docsDir: 'docs',
     editLinks: true,
     editLinkText: '在 GitHub 上编辑此页',
-    lastUpdated: '上次编辑',
+    lastUpdated: '更新于',
 
     nav: [
       { text: '主页', link: '/' },
-      { text: '快速部署', link: '/deploy' },
       { text: '开发指南', link: '/guide/', activeMatch: '^/guide/' },
       { text: '运行截图', link: '/screenshots', },
-      {
-        text: '关于',
-        link: '/about'
-      },
       {
         text: 'Changelogs',
         link: 'https://github.com/Maslow/less-framework/blob/main/CHANGELOG.md'
@@ -27,7 +22,6 @@ module.exports = {
 
     sidebar: {
       '/guide/': getGuideSidebar(),
-      '/about': getGuideSidebar(),
     }
   }
 }
@@ -35,45 +29,39 @@ module.exports = {
 function getGuideSidebar() {
   return [
     {
-      text: 'Introduction',
+      text: 'Laf 介绍',
       children: [
-        { text: 'What is VitePress?', link: '/' },
-        { text: 'Getting Started', link: '/guide/getting-started' },
-        { text: 'Configuration', link: '/guide/configuration' },
-        { text: 'Asset Handling', link: '/guide/assets' },
-        { text: 'Markdown Extensions', link: '/guide/markdown' },
-        { text: 'Using Vue in Markdown', link: '/guide/using-vue' },
-        { text: 'Deploying', link: '/guide/deploy' }
+        { text: '简介', link: '/guide/' },
+        { text: '技术架构', link: '/guide/technology' },
+        { text: '部署服务', link: '/guide/deploy' }
       ]
     },
     {
-      text: 'Advanced',
+      text: '云数据库',
       children: [
-        { text: 'Frontmatter', link: '/guide/frontmatter' },
-        { text: 'Theming', link: '/guide/theming' },
-        { text: 'API Reference', link: '/guide/api' },
+        { text: '简介', link: '/guide/db/' },
+        { text: '数据操作 API', link: '/guide/db/api' },
+        { text: '访问策略', link: '/guide/db/policy' },
+      ]
+    },
+    {
+      text: '云函数',
+      children: [
+        { text: '简介', link: '/guide/function/' },
+        { text: '云函数 Cloud SDK', link: '/guide/function/cloud-sdk' },
+        { text: '使用 Node.js 包', link: '/guide/function/import-npm' },
         {
-          text: 'Differences from Vuepress',
-          link: '/guide/differences-from-vuepress'
-        }
+          text: '触发器',
+          link: '/guide/function/trigger',
+        },
       ]
-    }
-  ]
-}
-
-function getConfigSidebar() {
-  return [
-    {
-      text: 'App Config',
-      children: [{ text: 'Basics', link: '/config/basics' }]
     },
     {
-      text: 'Theme Config',
+      text: '云存储',
       children: [
-        { text: 'Homepage', link: '/config/homepage' },
-        { text: 'Algolia Search', link: '/config/algolia-search' },
-        { text: 'Carbon Ads', link: '/config/carbon-ads' }
+        { text: '使用说明', link: '/guide/storage/' },
+        { text: '文件令牌', link: '/guide/storage/token' },
       ]
-    }
+    },
   ]
 }
