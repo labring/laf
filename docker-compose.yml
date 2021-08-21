@@ -8,7 +8,7 @@ services:
       - MONGODB_INITIAL_PRIMARY_HOST=mongo
       - MONGODB_REPLICA_SET_NAME=rs0
     volumes:
-      - db-data:/data/db
+      - db-data:/bitnami/mongodb
     networks: 
       - laf
 
