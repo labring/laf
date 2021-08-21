@@ -1,5 +1,7 @@
 # LaF 云开发框架
 
+在线开发文档：https://laf.laogen.site/
+
 ## 介绍
 
 `LaF` 是一套开箱即用、完整、开源、为开发者提供的基于 serverless 模式和 js 编程的云开发框架。
