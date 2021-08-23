@@ -73,7 +73,7 @@ export const rules_schemas = [
   {
     uri: 'http://less/data.schema.json', // id of the second schema
     schema: {
-      type: 'object',
+      type: ['object', 'boolean', 'string'],
       patternProperties: {
         '.*': {
           $ref: 'http://less/constraints.json'

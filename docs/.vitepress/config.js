@@ -30,16 +30,17 @@ function getGuideSidebar() {
   return [
     {
       text: 'Laf 介绍',
+      link: '/guide/',
       children: [
-        { text: '简介', link: '/guide/' },
-        { text: '技术架构', link: '/guide/technology' },
+        // { text: '简介', link: '/guide/' },
+        // { text: '技术架构', link: '/guide/technology' },
         // { text: '部署服务', link: '/guide/deploy' }
       ]
     },
     {
       text: '云数据库',
       children: [
-        { text: '简介', link: '/guide/db/' },
+        { text: '云数据库简介', link: '/guide/db/' },
         { text: '数据操作 API', link: '/guide/db/api' },
         { text: '访问策略', link: '/guide/db/policy' },
       ]
@@ -47,7 +48,7 @@ function getGuideSidebar() {
     {
       text: '云函数',
       children: [
-        { text: '简介', link: '/guide/function/' },
+        { text: '云函数简介', link: '/guide/function/' },
         { text: '云函数 Cloud SDK', link: '/guide/function/cloud-sdk' },
         { text: '使用 Node.js 包', link: '/guide/function/import-npm' },
         {
