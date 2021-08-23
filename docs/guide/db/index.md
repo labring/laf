@@ -5,10 +5,10 @@ title: 云数据库简介
 
 ### 介绍
 
-前端可使用 [less-api-client sdk](https://github.com/Maslow/less-api-client-js) “直连”数据库，无需与服务端对接口。
+前端可使用 [less-api-client sdk](https://github.com/Maslow/less-api/tree/master/packages/less-api-client-js) “直连”数据库，无需与服务端对接口。
 
 通过在开发控制台，配置相应的访问策略，即可实现客户端安全操作数据库。
-详见[访问策略](./policy)章。
+详见[访问策略](./policy)。
 
 ### 安装客户端SDK
 

@@ -1,10 +1,10 @@
 module.exports = {
   lang: 'zh-CN',
-  title: 'Laf 云开发文档',
+  title: 'Laf 云开发使用文档',
   description: '开发者使用文档',
 
   themeConfig: {
-    repo: 'Maslow/less-framework',
+    repo: 'Maslow/less-api-framework',
     docsDir: 'docs',
     editLinks: true,
     editLinkText: '在 GitHub 上编辑此页',
@@ -33,7 +33,7 @@ function getGuideSidebar() {
       children: [
         { text: '简介', link: '/guide/' },
         { text: '技术架构', link: '/guide/technology' },
-        { text: '部署服务', link: '/guide/deploy' }
+        // { text: '部署服务', link: '/guide/deploy' }
       ]
     },
     {
