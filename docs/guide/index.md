@@ -7,10 +7,14 @@ title: Laf 云开发介绍
 
 用熟悉的 js，轻松搞定前后台整体业务，前端秒变全栈。
 
+> 如果觉得有用，请不吝给个 star 支持！
+
+[![Github stars](https://img.shields.io/github/stars/Maslow/laf.svg)](https://github.com/Maslow/laf)
+
 ## 主要内容
 
   - 提供云函数引擎、文件存储、数据访问策略，开箱即用，5 分钟上线应用，前端秒变全栈
-  - 前端可使用 [less-api-client sdk](https://github.com/Maslow/less-api-client-js) “直连”数据库，无需与服务端对接口
+  - 前端可使用 [laf client sdk](https://github.com/Maslow/less-api-client-js) “直连”数据库，无需与服务端对接口
   - 另有 Flutter SDK [less-api-client](https://github.com/Maslow/less-api-client-dart)，快速上线移动端应用
   - 支持 h5、小程序、Uni-app、Flutter 等客户端环境使用
   - 提供云开发控制台，在线管理云函数、文件、数据库、远程部署、日志，在线编写、调试云函数，全智能提示IDE
@@ -51,4 +55,7 @@ title: Laf 云开发介绍
 
 
 #### Go for it!
+
+LaF 开发者交流QQ群：603059673
+
 ![](/screenshots/3.png)
