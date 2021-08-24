@@ -3,7 +3,7 @@
     "packages/*",
     "deps/less-api/packages/*"
   ],
-  "version": "0.4.20",
+  "version": "0.4.21-alpha.0",
   "command": {
     "publish": {
       "ignoreChanges": [
