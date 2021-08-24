@@ -22,7 +22,7 @@
     "element-ui": "2.13.2",
     "file-saver": "2.0.1",
     "js-cookie": "2.2.0",
-    "less-api-client": "^1.5.2",
+    "less-api-client": "^1.5.5",
     "lodash": "^4.17.21",
     "monaco-editor": "^0.25.0",
     "normalize.css": "7.0.0",

@@ -29,7 +29,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "less-api": "^1.5.3",
+    "less-api": "^1.5.4",
     "log4js": "^6.3.0",
     "uuid": "^8.3.2"
   },
