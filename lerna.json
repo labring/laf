@@ -1,6 +1,7 @@
 {
   "packages": [
-    "packages/*"
+    "packages/*",
+    "deps/less-api/packages/*"
   ],
   "version": "0.4.20",
   "command": {
