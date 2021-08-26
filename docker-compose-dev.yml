@@ -24,7 +24,6 @@ services:
       SYS_ADMIN: laf-sys
       SYS_ADMIN_PASSWORD: laf-sys
       LOG_LEVEL: debug
-      PORT: 9000
       APP_DB: laf-app
       APP_DB_URI: mongodb://mongo:27017
       APP_DB_POOL_LIMIT: 100
@@ -53,7 +52,6 @@ services:
       DB_POOL_LIMIT: 100
       SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
       LOG_LEVEL: debug
-      PORT: 8000
       ENABLE_CLOUD_FUNCTION_LOG: always
     command: sleep 5 && npm run start
     volumes:

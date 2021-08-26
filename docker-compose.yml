@@ -23,10 +23,9 @@ services:
       SYS_ADMIN: laf-sys
       SYS_ADMIN_PASSWORD: laf-sys
       LOG_LEVEL: debug
-      PORT: 9000
       APP_DB: laf-app
       APP_DB_URI: mongodb://mongo:27017
-      APP_DB_POOL_LIMIT: 100
+      APP_DB_POOL_LIMIT: 10
       APP_SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_app_server
     command: dockerize -wait tcp://mongo:27017 npm run init-start
     ports:
@@ -51,7 +50,6 @@ services:
       DB_POOL_LIMIT: 100
       SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_app_server
       LOG_LEVEL: debug
-      PORT: 8000
       ENABLE_CLOUD_FUNCTION_LOG: always
     command: dockerize -wait http://devops_server:9000/health-check npm run start
     volumes:
