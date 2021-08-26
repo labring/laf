@@ -9,3 +9,4 @@ tmp
 
 ecosystem.config.js
 .DS_Store
+.idea
