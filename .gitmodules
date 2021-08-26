@@ -1,3 +1,0 @@
-[submodule "deps/less-api"]
-	path = deps/less-api
-	url = git@github.com:Maslow/less-api.git
