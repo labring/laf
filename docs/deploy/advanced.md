@@ -30,6 +30,7 @@ docker network create mongo-tier --driver bridge
 
 # 设置 MongoDb root 用户密码（请修改为你的密码）
 export MONGODB_ROOT_PASSWORD=SET_YOUR_ROOT_PASSWORD
+echo $MONGODB_ROOT_PASSWORD > mongo_root_passwd
 
 # 启动 MongoDb 容器
 docker run -d --name mongodb-server --network mongo-tier \
