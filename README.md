@@ -120,3 +120,8 @@ docker-compose down -v
 # 更新镜像
 docker-compose pull
 ```
+
+
+### 进阶部署
+
+如果你需要在一台服务器上部署多个 laf 应用，共用一个 MongoDb 服务，请查看[进阶部署文档](./docs/deploy/advanced.md)。
