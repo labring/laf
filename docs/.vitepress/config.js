@@ -4,7 +4,7 @@ module.exports = {
   description: '开发者使用文档',
 
   themeConfig: {
-    repo: 'Maslow/less-api-framework',
+    repo: 'Maslow/laf',
     docsDir: 'docs',
     editLinks: true,
     editLinkText: '在 GitHub 上编辑此页',
@@ -17,7 +17,7 @@ module.exports = {
       { text: '部署指南', link: '/deploy/quick', },
       {
         text: 'Changelogs',
-        link: 'https://github.com/Maslow/less-framework/blob/main/CHANGELOG.md'
+        link: 'https://github.com/Maslow/laf/blob/main/CHANGELOG.md'
       }
     ],
 
