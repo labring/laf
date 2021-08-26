@@ -94,8 +94,8 @@ sudo systemctl start docker
 ##### 启动服务
 
 ```sh
-git clone https://github.com/Maslow/less-api-framework.git
-cd less-api-framework
+git clone https://github.com/Maslow/laf.git
+cd laf
 
 # 启动所有服务
 docker-compose up

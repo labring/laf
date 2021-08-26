@@ -6,11 +6,8 @@
 ## 开发
 
 ```bash
-# 克隆项目
-git clone https://github.com/Maslow/less-framework.git
-
 # 进入项目目录
-cd less-framework/packages/devops-admin
+cd packages/devops-admin
 
 # 安装依赖
 npm install

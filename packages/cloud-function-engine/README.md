@@ -1,6 +1,6 @@
 # `cloud-function`
 
-> 云函数引擎，在 `less-framework` 中使用，使用方法请参考 [`less-framework`](https://github.com/Maslow/less-framework)
+> 云函数引擎，在 `laf` 中使用，使用方法请参考 [`laf`](https://github.com/Maslow/laf)
 
 主要特点：
   - 支持定时器触发器
