@@ -18,14 +18,12 @@ services:
     environment: 
       SYS_DB: laf-sys
       SYS_DB_URI: mongodb://mongo:27017
-      SYS_DB_POOL_LIMIT: 10
       SYS_SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_devops_server
       SYS_ADMIN: laf-sys
       SYS_ADMIN_PASSWORD: laf-sys
       LOG_LEVEL: debug
       APP_DB: laf-app
       APP_DB_URI: mongodb://mongo:27017
-      APP_DB_POOL_LIMIT: 10
       APP_SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_app_server
     command: dockerize -wait tcp://mongo:27017 npm run init-start
     ports:
