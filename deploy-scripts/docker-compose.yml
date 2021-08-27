@@ -1,0 +1,73 @@
+version: '3.8'
+services: 
+  devops_server:
+    image: lessx/laf-devops-server:latest
+    user: node
+    environment: 
+      SYS_DB: ${SYS_DB}
+      SYS_DB_URI: ${SYS_DB_URI}?authSource=${SYS_DB}
+      SYS_SERVER_SECRET_SALT: ${SYS_SERVER_SECRET_SALT}
+      SYS_ADMIN: ${SYS_ADMIN}
+      SYS_ADMIN_PASSWORD: ${SYS_ADMIN_PASSWORD}
+      LOG_LEVEL: debug
+      APP_DB: ${APP_DB}
+      APP_DB_URI: ${APP_DB_URI}?authSource=${APP_DB}
+      APP_SERVER_SECRET_SALT: ${APP_SERVER_SECRET_SALT}
+    command: dockerize -wait tcp://mongodb-server:27017 npm run init-start
+    ports:
+      - "${SYS_EXPOSE_PORT}:9000"
+    read_only: false
+    cap_drop: 
+      - ALL
+    tmpfs: 
+      - /tmp
+    restart: always
+    networks: 
+      - laf
+      - mongo-tier
+
+  app_server:
+    image: lessx/laf-app-server:latest
+    user: node
+    environment: 
+      DB: ${APP_DB}
+      DB_URI: ${APP_DB_URI}?authSource=${APP_DB}
+      DB_POOL_LIMIT: 100
+      SERVER_SECRET_SALT: ${APP_SERVER_SECRET_SALT}
+      LOG_LEVEL: debug
+      ENABLE_CLOUD_FUNCTION_LOG: always
+    command: dockerize -wait http://devops_server:9000/health-check npm run init-start
+    volumes:
+      - app-data:/app/data
+    ports:
+      - "${APP_EXPOSE_PORT}:8000"
+    read_only: false
+    depends_on: 
+      - devops_server
+    cap_drop: 
+      - ALL
+    tmpfs: 
+      - /tmp
+    restart: always
+    networks: 
+      - laf
+      - mongo-tier
+
+  devops_admin:
+    image: lessx/laf-devops-admin:latest
+    depends_on: 
+      - app_server
+      - devops_server
+    ports: 
+      - "${DEV_ADMIN_EXPOSE_PORT}:80"
+    networks: 
+      - laf
+
+networks:
+  laf:
+  mongo-tier:
+    external: true
+      
+volumes:
+  app-data:
+  db-data:

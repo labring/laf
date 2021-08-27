@@ -5,8 +5,6 @@ upload
 data/*
 tmp
 
-.env
-
 ecosystem.config.js
 .DS_Store
 .idea

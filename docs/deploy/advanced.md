@@ -2,7 +2,7 @@
 title: 进阶部署 Laf 服务
 ---
 
-### 进阶部署 Laf 服务
+## 进阶部署 Laf 服务
 
 你可能已经看过了 [快速部署文档](./quick.md) ，该方法旨在一键快速部署，通常用于预览目的；
 
@@ -17,12 +17,12 @@ title: 进阶部署 Laf 服务
 - 为每个应用下的 app-server 和 devops-server 分别分配单独的数据库及对应的用户和密码
 
 
-### 部署指南
+## 部署指南
 
 
 > 安装 Docker参考 [快速部署文档](./quick.md)，不再累述。
 
-#### 启动 MongoDb 实例
+### 启动 MongoDb 实例
 
 ```sh
 # 创建一个 docker network，以供 mongo 与 其它 docker 服务网络互通
@@ -30,25 +30,25 @@ docker network create mongo-tier --driver bridge
 
 # 设置 MongoDb root 用户密码（请修改为你的密码）
 export MONGODB_ROOT_PASSWORD=SET_YOUR_ROOT_PASSWORD
-echo $MONGODB_ROOT_PASSWORD > mongo_root_passwd
 
 # 启动 MongoDb 容器
 docker run -d --name mongodb-server --network mongo-tier \
     -e MONGODB_ROOT_PASSWORD=$MONGODB_ROOT_PASSWORD \
     -e MONGODB_REPLICA_SET_MODE=primary \
     -e MONGODB_REPLICA_SET_KEY=replicasetkey123 \
-    -e MONGODB_ENABLE_DIRECTORY_PER_DB=yes MONGODB_REPLICA_SET_NAME=rs0 \
+    -e MONGODB_ENABLE_DIRECTORY_PER_DB=yes -e MONGODB_REPLICA_SET_NAME=rs0 \
     -e MONGODB_INITIAL_PRIMARY_HOST=mongodb-server  \
+    -e MONGODB_ADVERTISED_HOSTNAME=mongodb-server \
     -v mongodb-data:/bitnami/mongodb bitnami/mongodb:latest
 ```
 
-#### 启动一个 laf 应用
+### 创建一个 laf 应用
 
 > 假设你的应用名为 `my`
 
 为应用创建两个库：
-- my-dev-db 存储应用开发数据（用于 `devops server`）
-- my-app-db 存储应用数据（用于 `app server`）
+- myapp-devops 存储应用开发数据（用于 `devops server`）
+- myapp 存储应用数据（用于 `app server`）
 
 
 ```sh
@@ -56,19 +56,20 @@ docker run -d --name mongodb-server --network mongo-tier \
 docker exec -it mongodb-server mongo -u root -p $MONGODB_ROOT_PASSWORD
 
   # 创建 my-dev-db 库及用户（请修改其用户名密码）
-  use my-dev-db;
-  db.createUser({ user:"my-dev", pwd:"my_dev_passwd", roles: [ { role: "readWrite", db: "my-dev-db" } ]});
+  use myapp-devops;
+  db.createUser({ user:"myapp-devops", pwd:"my_passwd", roles: [ { role: "readWrite", db: "myapp-devops" } ]});
 
   # 创建 my-app-db 库及用户（请修改其用户名密码）
-  use my-app-db;
-  db.createUser({ user:"my-app", pwd:"my_app_passwd", roles: [ { role: "readWrite", db: "my-app-db" } ]});
+  use myapp;
+  db.createUser({ user:"myapp", pwd:"my_passwd", roles: [ { role: "readWrite", db: "myapp" } ]});
 
 # 退出数据库
 exit
 ```
 
-##### 启动应用
-> 保存以下内容至 `docker-compose.yml`
+#### 启动应用
+
+> 1. 复制以下内容创建 `docker-compose.yml`
 
 ```yml
 version: '3.8'
@@ -77,18 +78,18 @@ services:
     image: lessx/laf-devops-server:latest
     user: node
     environment: 
-      SYS_DB: my-dev-db
-      SYS_DB_URI: mongodb://my-dev:my_dev_passwd@mongodb-server:27017/?authSource=my-dev-db
-      SYS_SERVER_SECRET_SALT: my-devops-server-abcdefg1234567
-      SYS_ADMIN: laf-sys
-      SYS_ADMIN_PASSWORD: laf-sys
+      SYS_DB: ${SYS_DB}
+      SYS_DB_URI: ${SYS_DB_URI}?authSource=${SYS_DB}
+      SYS_SERVER_SECRET_SALT: ${SYS_SERVER_SECRET_SALT}
+      SYS_ADMIN: ${SYS_ADMIN}
+      SYS_ADMIN_PASSWORD: ${SYS_ADMIN_PASSWORD}
       LOG_LEVEL: debug
-      APP_DB: my-app-db
-      APP_DB_URI: mongodb://my-app:my_app_passwd@mongodb-server:27017?authSource=my-app-db
-      APP_SERVER_SECRET_SALT: my-app-server-abcdefg1234567
+      APP_DB: ${APP_DB}
+      APP_DB_URI: ${APP_DB_URI}?authSource=${APP_DB}
+      APP_SERVER_SECRET_SALT: ${APP_SERVER_SECRET_SALT}
     command: dockerize -wait tcp://mongodb-server:27017 npm run init-start
     ports:
-      - "9000:9000"
+      - "${SYS_EXPOSE_PORT}:9000"
     read_only: false
     cap_drop: 
       - ALL
@@ -103,17 +104,17 @@ services:
     image: lessx/laf-app-server:latest
     user: node
     environment: 
-      DB: my-app-db
-      DB_URI: mongodb://my-app:my_app_passwd@mongodb-server:27017?authSource=my-app-db
+      DB: ${APP_DB}
+      DB_URI: ${APP_DB_URI}?authSource=${APP_DB}
       DB_POOL_LIMIT: 100
-      SERVER_SECRET_SALT: my-app-server-abcdefg1234567
+      SERVER_SECRET_SALT: ${APP_SERVER_SECRET_SALT}
       LOG_LEVEL: debug
       ENABLE_CLOUD_FUNCTION_LOG: always
     command: dockerize -wait http://devops_server:9000/health-check npm run init-start
     volumes:
       - app-data:/app/data
     ports:
-      - "8000:8000"
+      - "${APP_EXPOSE_PORT}:8000"
     read_only: false
     depends_on: 
       - devops_server
@@ -132,7 +133,7 @@ services:
       - app_server
       - devops_server
     ports: 
-      - 8080:80
+      - "${DEV_ADMIN_EXPOSE_PORT}:80"
     networks: 
       - laf
 
@@ -146,22 +147,47 @@ volumes:
   db-data:
 ```
 
+
+> 2. 复制以下内容创建配置文件 `.env` （与 `docker-compose.yml` 同目录）
+
+```sh
+# config devops server 
+SYS_DB=myapp-devops
+SYS_DB_URI=mongodb://myapp-devops:my_passwd@mongodb-server:27017/
+SYS_SERVER_SECRET_SALT=devops-server-abcdefg1234567
+SYS_ADMIN=laf-sys
+SYS_ADMIN_PASSWORD=laf-sys
+SYS_EXPOSE_PORT=9000
+
+# config app server
+APP_DB=myapp
+APP_DB_URI=mongodb://myapp:my_passwd@mongodb-server:27017/
+APP_SERVER_SECRET_SALT=app-server-abcdefg1234567
+APP_EXPOSE_PORT=8000
+
+# config devops admin client
+DEV_ADMIN_EXPOSE_PORT=8080
+```
+
+> 3. 在配置文件目录运行以下指令
 启动服务，首次启动会自动拉取 laf 服务镜像，需要数分钟等待：
 
 ```sh
 # 启动
 docker-compose up
 
-# 或 以守护进程方式启动
-docker-compose up -d
-
 # 浏览器打开 http://locahost:8080 访问
 ```
 
-
-##### 停止服务
+### 附一：《应用管理指令》
 
 ```sh
+# 以守护进程方式启动
+docker-compose up -d
+
+# 更新镜像
+docker-compose pull
+
 # 停止服务
 docker-compose down
 
@@ -169,9 +195,16 @@ docker-compose down
 docker-compose down -v
 ```
 
-##### 更新服务镜像
+### 附一：《数据库备份、迁移》
 
 ```sh
-# 更新镜像
-docker-compose pull
+# 备份数据库 `mydb`
+docker exec mongodb-server sh -c \
+  'exec mongodump --archive -u user -p user_passwd -d mydb' \
+   > $(pwd)/$(date +%Y%m%d-%H%M%S)-mydb.archive
+
+# 还原数据库至 `mydb`
+docker exec -i mongodb-server sh -c \
+  'exec mongorestore --archive -d mydb -u user -p user_passwd' \
+  < $(pwd)/$(date +%Y%m%d-%H%M%S)-mydb.archive
 ```
