@@ -1,0 +1,46 @@
+
+@token={{login.response.body.$.data.access_token}}
+
+### 管理员登陆
+# @name login
+
+POST {{base_url}}/admin/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{sys_admin}}",
+  "password": "{{sys_password}}"
+}
+
+### 获取集合列表
+
+GET {{base_url}}/admin/collections
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### 获取集合的索引信息
+
+GET {{base_url}}/admin/collection/indexes?collection=functions
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+### 创建集合索引
+
+POST {{base_url}}/admin/collection/indexes?collection=functions
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer {{token}}
+
+{
+  "spec": { 
+    "created_at": 1
+  },
+  "unique": true
+}
+
+
+### 删除集合索引
+
+DELETE  {{base_url}}/admin/collection/indexes?collection=functions&index=created_at_1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer {{token}}
