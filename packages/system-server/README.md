@@ -1,15 +1,15 @@
-# less api framework - devops server
+# laf - system server
 
 ## 介绍
 
-`laf-devops-server` 是 laf 中负责在线开发和运维应用的服务：
+`laf-system-server` 是 laf 中负责在线开发和运维应用的服务：
 
   - 云函数管理
   - 数据访问策略管理
   - 数据库管理：集合与数据管理，备份与恢复
   - 应用状态：启停、指标统计、伸缩
 
-另配套有 `laf-devops-client` - LAF 开发运维控制台，提供 Web IDE，在线编写、调试云函数，操作数据库等。
+另配套有 `laf-system-client` - LAF 开发运维控制台，提供 Web IDE，在线编写、调试云函数，操作数据库等。
 
 
 ## 安装部署
@@ -17,7 +17,7 @@
 ### 安装依赖
 
 ```sh
-cd packages/devops-server
+cd packages/system-server
 
 # 安装依赖（建议使用 node 14+）
 npm install

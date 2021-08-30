@@ -59,5 +59,10 @@
       "sys_admin": "laf-sys",
       "sys_password": "laf-sys"
     }
-  }
+  },
+  "cSpell.words": [
+    "appid",
+    "signin",
+    "uids"
+  ]
 }
