@@ -1,9 +1,0 @@
-{
-  "label": "发送登陆验证码",
-  "name": "send-login-smscode",
-  "description": "发送登陆短信验证码",
-  "enableHTTP": true,
-  "status": 0,
-  "debugParams": "{\n  \"phone\": \"13184211245\"\n}",
-  "tags": ["预置"]
-}

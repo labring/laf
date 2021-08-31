@@ -1,8 +1,0 @@
-{
-  "label": "在服务端执行 shell 脚本",
-  "name": "exec_shell",
-  "description": "",
-  "enableHTTP": false,
-  "status": 0,
-  "tags": ["预置", "scripts"]
-}
