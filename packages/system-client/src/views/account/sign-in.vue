@@ -9,7 +9,7 @@
       label-position="left"
     >
       <div class="title-container">
-        <h3 class="title">LaF 开发运维控制台</h3>
+        <h3 class="title">LaF 云开发登陆</h3>
       </div>
 
       <el-form-item prop="username">
@@ -63,16 +63,7 @@
         type="primary"
         style="width:100%;margin-bottom:30px;"
         @click.native.prevent="handleLogin"
-      >Login</el-button>
-
-      <div style="position:relative">
-        <div class="tips">
-          <span>Username: laf-sys</span>
-        </div>
-        <div class="tips">
-          <span>Password: laf-sys</span>
-        </div>
-      </div>
+      >登陆</el-button>
     </el-form>
 
   </div>
@@ -82,7 +73,7 @@
 import { validUsername } from '@/utils/validate'
 
 export default {
-  name: 'Login',
+  name: 'SignIn',
   components: { },
   data() {
     const validateUsername = (rule, value, callback) => {
@@ -161,19 +152,21 @@ export default {
       })
     },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.loginForm.validate(async valid => {
         if (valid) {
           this.loading = true
           this.$store
             .dispatch('user/login', this.loginForm)
-            .then(() => {
+            .then(async() => {
+              await this.$store.dispatch('user/getInfo')
               this.$router.push({
                 path: this.redirect || '/',
                 query: this.otherQuery
               })
               this.loading = false
             })
-            .catch(() => {
+            .catch(error => {
+              console.error(error)
               this.loading = false
             })
         } else {

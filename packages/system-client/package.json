@@ -12,7 +12,6 @@
     "build:prod": "vue-cli-service build",
     "build:stage": "vue-cli-service build --mode staging",
     "preview": "node build/index.js --preview",
-    "new": "plop",
     "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml",
     "commit": "commit"
   },
@@ -56,7 +55,6 @@
     "html-webpack-plugin": "3.2.0",
     "lint-staged": "^11.1.0",
     "monaco-editor-webpack-plugin": "^4.0.0",
-    "plop": "^2.7.4",
     "runjs": "^4.1.3",
     "sass": "1.26.2",
     "sass-loader": "8.0.2",

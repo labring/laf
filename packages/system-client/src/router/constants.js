@@ -19,12 +19,17 @@ export const constantRoutes = [
   },
   {
     path: '/login',
-    component: () => import('@/views/login/index'),
+    component: () => import('@/views/account/sign-in'),
+    hidden: true
+  },
+  {
+    path: '/signup',
+    component: () => import('@/views/account/sign-up'),
     hidden: true
   },
   {
     path: '/auth-redirect',
-    component: () => import('@/views/login/auth-redirect'),
+    component: () => import('@/views/account/auth-redirect'),
     hidden: true
   },
   {
@@ -40,13 +45,13 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/applications',
     children: [
       {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
-        meta: { title: '数据看板', icon: 'dashboard', affix: true }
+        path: 'applications',
+        component: () => import('@/views/application/index'),
+        name: 'Application',
+        meta: { title: '主页', icon: 'dashboard', affix: true, noCache: true }
       }
     ]
   }
