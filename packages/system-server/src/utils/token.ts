@@ -5,7 +5,7 @@
  * @Description: 
  */
 
-import Config from '../../config'
+import Config from '../config'
 import * as jwt from 'jsonwebtoken'
 const DEFAULT_SALT = Config.SYS_SERVER_SECRET_SALT
 

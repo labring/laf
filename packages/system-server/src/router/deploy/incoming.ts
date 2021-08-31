@@ -10,7 +10,7 @@ import { Constants } from '../../constants'
 import { getApplicationById } from '../../api/application'
 import { DatabaseAgent } from '../../lib/db-agent'
 import { logger } from '../../lib/logger'
-import { parseToken } from '../../lib/utils/token'
+import { parseToken } from '../../utils/token'
 
 
 /**

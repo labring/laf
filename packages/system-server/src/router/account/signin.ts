@@ -1,52 +1,34 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-30 15:25:39
+ * @LastEditTime: 2021-08-31 17:44:11
  * @Description: 
  */
 
 import { Request, Response } from 'express'
-import { getToken } from '../../lib/utils/token'
-import { hashPassword } from '../../lib/utils/hash'
+import { getToken } from '../../utils/token'
+import { hashPassword } from '../../utils/hash'
 import { DatabaseAgent } from '../../lib/db-agent'
 import Config from '../../config'
 import { Constants } from '../../constants'
-import * as assert from 'assert'
 
 /**
  * The handler of sign in
  */
 export async function handleSignIn(req: Request, res: Response) {
   const { username, password } = req.body
-
-  const login_failed_error = {
-    code: 1,
-    error: 'invalid username or password'
-  }
-
   if (!username || !password) {
-    return res.send(login_failed_error)
+    return res.send({ error: 'username and password are required' })
   }
+
   const db = DatabaseAgent.sys_db
-  const ret = await db.collection(Constants.cn.accounts)
-    .withOne({
-      query: db
-        .collection(Constants.cn.password)
-        .where({ password: hashPassword(password), type: 'login' }),
-      localField: '_id',
-      foreignField: 'uid'
-    })
-    .where({ username })
-    .merge({ intersection: true })
+  const { data: account } = await db.collection(Constants.cn.accounts)
+    .where({ username, password: hashPassword(password) })
+    .getOne()
 
-  assert.ok(ret.ok)
-
-  if (!ret.data.length) {
-    return res.send(login_failed_error)
+  if (!account) {
+    return res.send({ error: 'invalid username or password' })
   }
-
-  const account = ret.data[0]
-
   const expire = Math.floor(Date.now() / 1000) + 60 * 60 * Config.TOKEN_EXPIRED_TIME
   const payload = {
     uid: account._id,

@@ -56,8 +56,8 @@
     "$shared": {},
     "test": {
       "base_url": "http://127.0.0.1:9000",
-      "sys_admin": "laf-sys",
-      "sys_password": "laf-sys"
+      "user": "test",
+      "passwd": "test"
     }
   },
   "cSpell.words": [

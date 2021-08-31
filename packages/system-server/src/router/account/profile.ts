@@ -1,12 +1,11 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-28 22:52:21
+ * @LastEditTime: 2021-08-31 15:35:22
  * @Description: 
  */
 
 import { Request, Response } from 'express'
-import { getPermissionsByAccountId } from '../../api/permission'
 import { DatabaseAgent } from '../../lib/db-agent'
 import { Constants } from '../../constants'
 
@@ -15,9 +14,8 @@ import { Constants } from '../../constants'
  */
 export async function handleProfile(req: Request, res: Response) {
   const uid = req['auth']?.uid
-  if (!uid) {
-    return res.status(401)
-  }
+  if (!uid)
+    return res.status(401).send()
 
   const db = DatabaseAgent.sys_db
 
@@ -29,13 +27,9 @@ export async function handleProfile(req: Request, res: Response) {
     return res.status(422).send('account not found')
   }
 
-  const { permissions } = await getPermissionsByAccountId(account._id)
-
+  delete account.password
   return res.send({
     code: 0,
-    data: {
-      ...account,
-      permissions
-    }
+    data: account
   })
 }

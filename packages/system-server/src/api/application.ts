@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-28 22:00:45
- * @LastEditTime: 2021-08-30 17:32:14
+ * @LastEditTime: 2021-08-31 15:47:43
  * @Description: Application APIs
  */
 
@@ -9,6 +9,7 @@ import { Constants } from "../constants"
 import { DatabaseAgent } from "../lib/db-agent"
 import * as assert from 'assert'
 import { MongoAccessor } from "less-api/dist"
+import * as crypto from 'crypto'
 
 /**
  * The application structure in db
@@ -25,7 +26,7 @@ export interface ApplicationStruct {
     db_max_pool_size: number
     server_secret_salt: string
     file_system_driver?: string
-    file_system_enable_unauthorized_upload: string
+    file_system_enable_unauthorized_upload?: string
     file_system_http_cache_control?: string
     log_level?: string
     enable_cloud_function_log?: string
@@ -57,16 +58,14 @@ export async function getApplicationById(appid: string) {
 /**
  * Get application created by account_id
  * @param account_id 
- * @returns 
+ * @returns applications' data array
  */
 export async function getMyApplications(account_id: string) {
   assert.ok(account_id, 'empty account_id got')
 
   const db = DatabaseAgent.sys_db
   const ret = await db.collection(Constants.cn.applications)
-    .where({
-      'collaborators.uid': account_id
-    })
+    .where({ created_by: account_id })
     .get<ApplicationStruct>()
 
   assert.ok(ret.ok, `getMyApplications() got error: ${account_id}`)
@@ -83,7 +82,9 @@ export async function getMyJoinedApplications(account_id: string) {
 
   const db = DatabaseAgent.sys_db
   const ret = await db.collection(Constants.cn.applications)
-    .where({ created_by: account_id })
+    .where({
+      'collaborators.uid': account_id
+    })
     .get<ApplicationStruct>()
 
   assert.ok(ret.ok, `getMyApplications() got error: ${account_id}`)
@@ -106,4 +107,13 @@ export async function getApplicationDbAccessor(app: ApplicationStruct) {
   await accessor.init()
 
   return accessor
+}
+
+/**
+ * Generate application secret string
+ * @returns 
+ */
+export async function generateApplicationSecret() {
+  const buf = crypto.randomBytes(64)
+  return buf.toString('base64')
 }

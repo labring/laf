@@ -3,13 +3,9 @@
 const Config = require('../dist/config').default
 const { hashPassword } = require('../dist/lib/utils/hash')
 const assert = require('assert')
-const { permissions } = require('./sys-permissions')
 const { FunctionLoader } = require('./func-loader')
 const { Constants } = require('../dist/constants')
 const { DatabaseAgent } = require('../dist/lib/db-agent')
-const { publishFunctions } = require('../dist/api/function')
-const { publishAccessPolicy } = require('../dist/api/rules')
-const { publishTriggers } = require('../dist/api/trigger')
 const appAdminRules = require('./policies/app-admin.json')
 const appUserRules = require('./policies/app-user.json')
 
@@ -18,17 +14,8 @@ const sys_accessor = DatabaseAgent.sys_accessor
 
 const db = DatabaseAgent.sys_db
 
-const app_accessor = DatabaseAgent.app_accessor
-
 async function main() {
   await sys_accessor.ready
-  await app_accessor.ready
-
-  // init permission
-  await createInitialPermissions()
-
-  // init first role
-  await createFirstRole()
 
   // create first admin
   await createFirstAdmin()
@@ -39,17 +26,7 @@ async function main() {
   // create built-in functions
   await createBuiltinFunctions()
 
-  // publish policies
-  await publishAccessPolicy().then(() => console.log('policy deployed'))
-
-  // publish functions
-  await publishFunctions().then(() => console.log('functions deployed'))
-
-  // publish triggers
-  await publishTriggers().then(() => console.log('triggers deployed'))
-
   sys_accessor.close()
-  app_accessor.close()
 }
 
 main()
@@ -61,24 +38,23 @@ main()
  */
 async function createFirstAdmin() {
   try {
-    const username = Config.SYS_ADMIN
-    const password = hashPassword(Config.SYS_ADMIN_PASSWORD)
+    const username = Config.SYS_ADMIN || 'root'
+    const password = hashPassword(Config.SYS_ADMIN_PASSWORD || 'kissme')
 
-    const { total } = await db.collection(Constants.cn.admins).count()
+    const { total } = await db.collection(Constants.cn.accounts).count()
     if (total > 0) {
       console.log('admin already exists')
       return
     }
 
-    await sys_accessor.db.collection(Constants.cn.admins).createIndex('username', { unique: true })
+    await sys_accessor.db.collection(Constants.cn.accounts).createIndex('username', { unique: true })
 
-    const { data } = await db.collection(Constants.cn.roles).get()
-    const roles = data.map(it => it.name)
+    const roles = Object.keys(Constants.roles)
 
-    const r_add = await db.collection(Constants.cn.admins).add({
+    const r_add = await db.collection(Constants.cn.accounts).add({
       username,
       avatar: "https://static.dingtalk.com/media/lALPDe7szaMXyv3NAr3NApw_668_701.png",
-      name: 'Admin',
+      name: 'InitAccount',
       roles,
       created_at: Date.now(),
       updated_at: Date.now()
@@ -97,72 +73,6 @@ async function createFirstAdmin() {
   } catch (error) {
     console.error(error.message)
   }
-}
-
-/**
- * Create the first role
- * @returns 
- */
-async function createFirstRole() {
-  try {
-
-    await sys_accessor.db.collection(Constants.cn.roles).createIndex('name', { unique: true })
-
-    const r_perm = await db.collection(Constants.cn.permissions).get()
-    assert(r_perm.ok, 'get permissions failed')
-
-    const permissions = r_perm.data.map(it => it.name)
-
-    const r_add = await db.collection(Constants.cn.roles).add({
-      name: 'superadmin',
-      label: 'Super Admin',
-      description: 'init role',
-      permissions,
-      created_at: Date.now(),
-      updated_at: Date.now()
-    })
-
-    assert(r_add.ok, 'add role occurs error')
-
-    return r_add.id
-  } catch (error) {
-    if (error.code == 11000) {
-      return console.log('permissions already exists')
-    }
-
-    console.error(error.message)
-  }
-}
-
-/**
- * Create initial permissions
- * @returns 
- */
-async function createInitialPermissions() {
-
-  // create unique index in permission collection
-  await sys_accessor.db.collection(Constants.cn.permissions).createIndex('name', { unique: true })
-
-  for (const perm of permissions) {
-    try {
-      const data = {
-        ...perm,
-        created_at: Date.now(),
-        updated_at: Date.now()
-      }
-      await db.collection(Constants.cn.permissions).add(data)
-      console.log('permissions added: ' + perm.name)
-
-    } catch (error) {
-      if (error.code == 11000) {
-        console.log('permissions already exists: ' + perm.name)
-        continue
-      }
-      console.error(error.message)
-    }
-  }
-
-  return true
 }
 
 /**

@@ -7,7 +7,7 @@
 
 import { Request, Response } from 'express'
 import { checkPermission } from '../../api/permission'
-import { getToken } from '../../lib/utils/token'
+import { getToken } from '../../utils/token'
 import { Constants } from '../../constants'
 import { getApplicationById } from '../../api/application'
 
