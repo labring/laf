@@ -1,0 +1,20 @@
+{
+  "recommendations": [
+    "octref.vetur",
+    "dbaeumer.vscode-eslint",
+    "eamodio.gitlens",
+    "humao.rest-client",
+    "yang-yue.switch-hosts",
+    "andersonmfjr.vue-jumptotag",
+    "sainoba.px-to-rem",
+    "christian-kohler.npm-intellisense",
+    "mariusalchimavicius.json-to-ts",
+    "kisstkondoros.vscode-gutter-preview",
+    "alefragnani.bookmarks"
+  ],
+  "unwantedRecommendations": [
+    "hookyqr.beautify",
+    "dbaeumer.jshint",
+    "ms-vscode.vscode-typescript-tslint-plugin"
+  ]
+}
