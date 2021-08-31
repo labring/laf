@@ -1,47 +1,47 @@
 import request from '@/utils/request'
 
 /**
- * 管理员登录
+ * 账户登录
  * @param {username: string, password: string} data
  * @returns
  */
 export function login(data) {
   return request({
-    url: '/admin/login',
+    url: '/account/login',
     method: 'post',
     data
   })
 }
 
 /**
- * 获取管理员信息
+ * 获取帐户信息
  * @param {string} token
  * @returns
  */
 export function getInfo() {
   return request({
-    url: '/admin/info',
+    url: '/account/profile',
     method: 'get'
   })
 }
 
 /**
- * 添加管理员
+ * 注册帐户
  */
-export function add(data) {
+export function signup(data) {
   return request({
-    url: '/admin/add',
+    url: '/account/signup',
     method: 'post',
     data
   })
 }
 
 /**
- * 编辑管理员
+ * 编辑帐户信息
  */
 export function edit(data) {
   return request({
-    url: '/admin/edit',
+    url: '/account/edit',
     method: 'post',
     data
   })
