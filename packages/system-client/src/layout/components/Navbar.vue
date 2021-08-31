@@ -1,33 +1,25 @@
 <template>
   <div class="navbar">
-    <!-- <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" /> -->
-
-    <!-- <breadcrumb id="breadcrumb-container" class="breadcrumb-container" /> -->
-
+    <div class="logo">LaF 开发控制台</div>
+    <div class="tags-view-container">
+      <tags-view v-if="needTagsView" />
+    </div>
     <div class="right-menu">
       <template v-if="device!=='mobile'">
-
-        <hamburger id="hamburger-container" :is-active="sidebar.opened" class="right-menu-item" @toggleClick="toggleSideBar" />
-
-        <error-log class="errLog-container right-menu-item hover-effect" />
-
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
-
-        <!-- <el-tooltip content="Global Size" effect="dark" placement="bottom">
-          <size-select id="size-select" class="right-menu-item hover-effect" />
-        </el-tooltip> -->
-
       </template>
-
-      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
-        <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+      <div class="github right-menu-item">
+        <a target="_blank" href="https://github.com/Maslow/laf/">
+          Github
+        </a>
+      </div>
+      <el-dropdown class="profile-container right-menu-item hover-effect" trigger="click">
+        <div class="profile-wrapper">
+          <div class="user-name">Maslow</div>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
-          <a target="_blank" href="https://github.com/Maslow/less-framework/">
-            <el-dropdown-item>Github</el-dropdown-item>
-          </a>
+
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">退出登录</span>
           </el-dropdown-item>
@@ -38,32 +30,24 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-// import Breadcrumb from '@/components/Breadcrumb'
-import Hamburger from '@/components/Hamburger'
-import ErrorLog from '@/components/ErrorLog'
+import { mapGetters, mapState } from 'vuex'
 import Screenfull from '@/components/Screenfull'
-// import SizeSelect from '@/components/SizeSelect'
-
+import TagsView from './TagsView'
 export default {
   components: {
-    // Breadcrumb,
-    Hamburger,
-    ErrorLog,
-    Screenfull
-    // SizeSelect
+    Screenfull,
+    TagsView
   },
   computed: {
     ...mapGetters([
-      'sidebar',
-      'avatar',
+      'name',
       'device'
-    ])
+    ]),
+    ...mapState({
+      needTagsView: state => state.settings.tagsView
+    })
   },
   methods: {
-    toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar')
-    },
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
@@ -75,38 +59,28 @@ export default {
 <style lang="scss" scoped>
 .navbar {
   height: 50px;
-  overflow: hidden;
-  position: relative;
+  display: flex;
   background: #fff;
   border-bottom: 1px solid #d8dce5;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
 
-  .hamburger-container {
-    line-height: 46px;
-    height: 100%;
-    float: left;
-    cursor: pointer;
-    transition: background .3s;
-    -webkit-tap-highlight-color:transparent;
-
-    &:hover {
-      background: rgba(0, 0, 0, .025)
-    }
+  .logo {
+    min-width: 180px;
+    width: 180px;
+    line-height: 50px;
+    text-align: center;
   }
 
-  .breadcrumb-container {
-    float: left;
-  }
-
-  .errLog-container {
-    display: inline-block;
-    vertical-align: top;
+  .tags-view-container {
+    width: 100%;
   }
 
   .right-menu {
     float: right;
     height: 100%;
+    width: 200px;
     line-height: 50px;
+    display: flex;
 
     &:focus {
       outline: none;
@@ -116,9 +90,10 @@ export default {
       display: inline-block;
       padding: 0 8px;
       height: 100%;
-      font-size: 18px;
+      font-size: 16px;
       color: #5a5e66;
       vertical-align: text-bottom;
+      align-self: center;
 
       &.hover-effect {
         cursor: pointer;
@@ -130,26 +105,24 @@ export default {
       }
     }
 
-    .avatar-container {
-      margin-right: 30px;
+    .github {
+      font-size: 16px;
+    }
 
-      .avatar-wrapper {
-        margin-top: 5px;
-        position: relative;
+    .profile-container {
+      margin-right: 20px;
+      .profile-wrapper {
+        display: flex;
 
-        .user-avatar {
+        .user-name {
           cursor: pointer;
-          width: 32px;
-          height: 32px;
-          border-radius: 10px;
+          font-size: 16px;
         }
 
         .el-icon-caret-bottom {
           cursor: pointer;
-          position: absolute;
-          right: -20px;
-          top: 20px;
           font-size: 12px;
+          align-self: center;
         }
       }
     }
