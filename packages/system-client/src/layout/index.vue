@@ -1,31 +1,29 @@
 <template>
   <div class="app-wrapper">
-    <navbar class="fixed-header" />
-    <app-main />
+    <navbar :hide-tags="true" class="fixed-header" />
+    <div class="main">
+      <app-main />
+    </div>
   </div>
 </template>
 
 <script>
+import store from '@/store'
 import { AppMain, Navbar } from './components'
-import { mapState } from 'vuex'
+import ResizeMixin from './mixin/ResizeHandler'
+
 export default {
   name: 'Layout',
   components: {
     AppMain,
     Navbar
   },
+  mixins: [ResizeMixin],
   computed: {
-    ...mapState({
-      device: state => state.app.device,
-      showSettings: state => state.settings.showSettings,
-      needTagsView: state => state.settings.tagsView,
-      fixedHeader: state => state.settings.fixedHeader
-    }),
-    classObj() {
-      return {
-        mobile: this.device === 'mobile'
-      }
-    }
+  },
+  created() {
+    console.log('main layout created')
+    store.dispatch('app/clearStates')
   },
   methods: {
   }
@@ -33,9 +31,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
   .app-wrapper {
-
+    .main {
+      padding-top: 50px;
+      display: flex;
+    }
   }
   .fixed-header {
     position: fixed;

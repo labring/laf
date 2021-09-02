@@ -1,8 +1,14 @@
 <template>
   <div class="navbar">
-    <div class="logo">LaF 开发控制台</div>
+    <div class="nav-leading">
+      <div class="logo">
+        <img src="https://laf.laogen.site/logo.png">
+      </div>
+      <div class="title">{{ title }}</div>
+    </div>
+    <div class="sep" />
     <div class="tags-view-container">
-      <tags-view v-if="needTagsView" />
+      <tags-view v-if="!hideTags" />
     </div>
     <div class="right-menu">
       <template v-if="device!=='mobile'">
@@ -10,16 +16,15 @@
       </template>
       <div class="github right-menu-item">
         <a target="_blank" href="https://github.com/Maslow/laf/">
-          Github
+          GitHub
         </a>
       </div>
       <el-dropdown class="profile-container right-menu-item hover-effect" trigger="click">
         <div class="profile-wrapper">
-          <div class="user-name">Maslow</div>
+          <div class="user-name">{{ name }}</div>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
-
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">退出登录</span>
           </el-dropdown-item>
@@ -30,7 +35,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import Screenfull from '@/components/Screenfull'
 import TagsView from './TagsView'
 export default {
@@ -38,14 +43,21 @@ export default {
     Screenfull,
     TagsView
   },
+  props: {
+    hideTags: {
+      type: Boolean,
+      default: false
+    },
+    title: {
+      type: String,
+      default: 'LaF 云开发'
+    }
+  },
   computed: {
     ...mapGetters([
       'name',
       'device'
-    ]),
-    ...mapState({
-      needTagsView: state => state.settings.tagsView
-    })
+    ])
   },
   methods: {
     async logout() {
@@ -63,12 +75,40 @@ export default {
   background: #fff;
   border-bottom: 1px solid #d8dce5;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
+  align-items: center;
 
-  .logo {
-    min-width: 180px;
-    width: 180px;
+  .nav-leading {
+    width: 210px;
+    min-width: 210px;
     line-height: 50px;
-    text-align: center;
+    justify-content: flex-start;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    box-sizing: border-box;
+
+    .logo {
+      width: 28px;
+      height: 40px;
+      img {
+        width: 28px;
+        height: 28px;
+      }
+    }
+
+    .title {
+      margin-left: 4px;
+      font-size: 14px;
+      font-weight: bold;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .sep {
+    height: 50px;
+    border-right: 1px solid rgba(211, 211, 211, 0.15);
   }
 
   .tags-view-container {
@@ -106,7 +146,7 @@ export default {
     }
 
     .github {
-      font-size: 16px;
+      font-size: 14px;
     }
 
     .profile-container {
