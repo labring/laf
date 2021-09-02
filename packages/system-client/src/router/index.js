@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import { constantRoutes } from './constants'
 
 Vue.use(Router)
 
 export { asyncRoutes } from './async'
 export { constantRoutes } from './constants'
-import { constantRoutes } from './constants'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1

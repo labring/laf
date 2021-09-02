@@ -1,4 +1,4 @@
-import Layout from '@/layout'
+import Layout from '@/layout/app.vue'
 
 /**
  * asyncRoutes
@@ -6,11 +6,23 @@ import Layout from '@/layout'
  */
 export const asyncRoutes = [
   {
-    path: '/development',
+    path: '/app/:appid/dashboard',
     component: Layout,
-    redirect: '/development/functions',
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/dashboard/index'),
+        name: 'Dashboard',
+        meta: { title: '欢迎', icon: 'dashboard', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/app/:appid/development',
+    component: Layout,
     meta: {
-      title: '开发控制台', icon: 'example'
+      title: '云函数', icon: 'example'
     },
     children: [
       {
@@ -20,7 +32,7 @@ export const asyncRoutes = [
         meta: {
           title: '云函数',
           icon: 'bug',
-          permissions: ['function.read']
+          noCache: true
         }
       },
       {
@@ -30,8 +42,7 @@ export const asyncRoutes = [
         hidden: true,
         meta: {
           title: '调试云函数',
-          icon: 'bug',
-          permissions: ['function.read']
+          icon: 'bug'
         }
       },
       {
@@ -40,8 +51,7 @@ export const asyncRoutes = [
         name: 'AllFunctionLogs',
         meta: {
           title: '云函数日志',
-          icon: 'documentation',
-          permissions: ['function.read', 'function.edit', 'function.create', 'function.debug']
+          icon: 'documentation'
         }
       },
       {
@@ -51,8 +61,7 @@ export const asyncRoutes = [
         hidden: true,
         meta: {
           title: '云函数日志',
-          icon: 'lock',
-          permissions: ['function_logs.read', 'function.read', 'function.edit', 'function.create', 'function.debug']
+          icon: 'lock'
         }
       },
       {
@@ -62,19 +71,16 @@ export const asyncRoutes = [
         hidden: true,
         meta: {
           title: '云函数触发器',
-          icon: 'lock',
-          permissions: ['trigger.read', 'trigger.edit', 'trigger.create', 'trigger.delete']
+          icon: 'lock'
         }
       }
     ]
   },
   {
-    path: '/database',
+    path: '/app/:appid/database',
     component: Layout,
-    redirect: '/database/collections',
     meta: {
-      title: '数据管理', icon: 'excel',
-      permissions: ['policy.read']
+      title: '数据管理', icon: 'excel'
     },
     children: [
       {
@@ -84,8 +90,7 @@ export const asyncRoutes = [
         meta: {
           title: '访问策略',
           icon: 'eye',
-          noCache: true,
-          permissions: ['policy.read']
+          noCache: true
         }
       },
       {
@@ -104,8 +109,7 @@ export const asyncRoutes = [
         name: 'CollectionManagement',
         meta: {
           title: '集合管理',
-          icon: 'example',
-          permissions: ['database.manage', 'collections.get', 'collections.createIndex', 'collections.deleteIndex']
+          icon: 'example'
         }
       },
       {
@@ -115,8 +119,7 @@ export const asyncRoutes = [
         meta: {
           title: '文件管理',
           icon: 'zip',
-          noCache: true,
-          permissions: ['file.read']
+          noCache: true
         }
       },
       {
@@ -127,42 +130,27 @@ export const asyncRoutes = [
         meta: {
           title: '文件列表',
           icon: 'documentation',
-          noCache: false,
-          permissions: ['file.read']
+          noCache: false
         }
       }
     ]
   },
   {
-    path: '/system',
+    path: '/app/:appid/collaborators',
     component: Layout,
-    redirect: '/system/role',
     meta: {
       title: '成员管理', icon: 'peoples',
-      permissions: ['admin.read'],
       noCache: true
     },
     children: [
       {
-        path: 'admin',
+        path: 'index',
         component: () => import('@/views/system/admin'),
-        name: 'AdminListPage',
+        name: 'CollaboratorListPage',
         meta: {
-          title: '开发者',
+          title: '成员管理',
           icon: 'people',
-          noCache: true,
-          permissions: ['admin.read']
-        }
-      },
-      {
-        path: 'role',
-        component: () => import('@/views/system/role'),
-        name: 'RoleListPage',
-        meta: {
-          title: '角色',
-          icon: 'user',
-          noCache: true,
-          permissions: ['role.edit', 'role.create']
+          noCache: true
         }
       }
     ]

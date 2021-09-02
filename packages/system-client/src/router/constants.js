@@ -46,12 +46,13 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/applications',
+    hidden: true,
     children: [
       {
         path: 'applications',
         component: () => import('@/views/application/index'),
         name: 'Application',
-        meta: { title: '主页', icon: 'dashboard', affix: true, noCache: true }
+        meta: { title: '我的应用', icon: 'dashboard', noCache: true }
       }
     ]
   }
