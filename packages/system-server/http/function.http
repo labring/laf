@@ -13,18 +13,18 @@ Content-Type: application/json
 }
 
 
-### Create an application
+### Create an functions
 
-POST {{base_url}}/apps/create
+POST {{base_url}}/functions/create
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "name": "安徽志愿者小程序"
+  "name": "test app"
 }
 
 
-### Get my applications
+### Get my functions
 
-GET {{base_url}}/apps/my
+GET {{base_url}}/apps/612dde807413904b530d8cff/function
 Authorization: Bearer {{token}}
