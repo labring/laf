@@ -13,7 +13,7 @@
       <el-button size="mini" class="filter-item" type="default" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
-      <el-button v-permission="'function.create'" plain size="mini" class="filter-item" type="primary" icon="el-icon-plus" @click="showCreateForm">
+      <el-button plain size="mini" class="filter-item" type="primary" icon="el-icon-plus" @click="showCreateForm">
         新建函数
       </el-button>
       <el-button type="default" size="mini" plain class="filter-item" @click="deployPanelVisible = true">远程部署</el-button>
@@ -32,7 +32,6 @@
 
     <!-- 表格 -->
     <el-table
-      :key="tableKey"
       v-loading="listLoading"
       :data="list"
       border
@@ -88,19 +87,17 @@
       </el-table-column>
       <el-table-column fixed="right" label="操作" align="center" width="380" class-name="small-padding">
         <template slot-scope="{row,$index}">
-          <!-- <el-button v-permission="'function.edit'" type="primary" size="mini" @click="showUpdateForm(row)">
-            编辑
-          </el-button> -->
-          <el-button v-permission="'function.debug'" plain type="success" size="mini" @click="handleShowDetail(row)">
+
+          <el-button plain type="success" size="mini" @click="handleShowDetail(row)">
             调试
           </el-button>
-          <el-button v-permission="'function.debug'" plain type="info" size="mini" @click="handleShowLogs(row)">
+          <el-button plain type="info" size="mini" @click="handleShowLogs(row)">
             日志
           </el-button>
-          <el-button v-permission="'function.edit'" plain type="primary" size="mini" @click="handleTriggers(row)">
+          <el-button plain type="primary" size="mini" @click="handleTriggers(row)">
             触发器
           </el-button>
-          <el-button v-if="row.status!='deleted'" v-permission="'function.delete'" plain size="mini" type="danger" @click="handleDelete(row,$index)">
+          <el-button v-if="row.status!='deleted'" plain size="mini" type="danger" @click="handleDelete(row,$index)">
             删除
           </el-button>
         </template>
@@ -165,15 +162,16 @@
     </el-dialog>
 
     <!-- 部署面板 -->
-    <deploy-panel v-model="deployPanelVisible" :functions="deploy_functions" />
+    <!-- <deploy-panel v-model="deployPanelVisible" :functions="deploy_functions" /> -->
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { db } from '../../api/cloud'
-import DeployPanel from '../deploy/components/deploy-panel.vue'
+// import DeployPanel from '../deploy/components/deploy-panel.vue'
 import { Constants } from '../../api/constants'
+import { createFunction, getFunctions } from '@/api/func'
 
 const defaultCode = `
 import cloud from '@/cloud-sdk'
@@ -205,6 +203,7 @@ function getDefaultFormValue() {
     created_at: Date.now(),
     updated_at: Date.now(),
     code: defaultCode,
+    // 标签输入框绑定使用，不要提交到服务端
     _tag_input: ''
   }
 }
@@ -216,7 +215,10 @@ const formRules = {
 
 export default {
   name: 'FunctionListPage',
-  components: { Pagination, DeployPanel },
+  components: {
+    Pagination
+  // DeployPanel
+  },
   directives: { },
   filters: {
     statusFilter(status) {
@@ -230,7 +232,6 @@ export default {
   },
   data() {
     return {
-      tableKey: 0,
       list: null,
       total: 0,
       listLoading: true,
@@ -254,28 +255,27 @@ export default {
       deployPanelVisible: false
     }
   },
+  computed: {
+    appid() {
+      return this.app.appid
+    },
+    app() {
+      return this.$store.state.app.application
+    }
+  },
   watch: {
     list() {
       this.deploy_functions = this.list
     }
   },
-  created() {
+  async mounted() {
     this.getList()
   },
   methods: {
     /** 获取所有标签 */
     async getAllTags() {
-      const r = await db.collection(Constants.cn.functions)
-        .field(['tags'])
-        .where({
-          tags: db.command.exists(true)
-        })
-        .get()
-
+      // TODO
       const tags = []
-      for (const item of r.data) {
-        tags.push(...(item?.tags || []))
-      }
       this.all_tags = Array.from(new Set(tags))
     },
     /**
@@ -284,44 +284,15 @@ export default {
     async getList() {
       this.listLoading = true
 
-      // 拼装查询条件 by this.listQuery
       const { limit, page, keyword, tag, onlyEnabled } = this.listQuery
       const query = { }
-      if (keyword) {
-        query['$or'] = [
-          { name: db.RegExp({ regexp: `.*${keyword}.*` }) },
-          { label: db.RegExp({ regexp: `.*${keyword}.*` }) },
-          { description: db.RegExp({ regexp: `.*${keyword}.*` }) }
-        ]
-      }
+      if (keyword) { query['keyword'] = keyword }
+      if (tag !== '') { query['tag'] = tag }
+      if (onlyEnabled) { query['status'] = 1 }
 
-      if (tag !== '') {
-        query['tags'] = tag
-      }
-
-      if (onlyEnabled) {
-        query['status'] = 1
-      }
-
-      // 执行数据查询
-      const res = await db.collection(Constants.cn.functions)
-        .where(query)
-        .limit(limit)
-        .skip((page - 1) * limit)
-        .get()
-        .catch(() => { this.listLoading = false })
-
-      this.list = res.data
-
-      // 获取数据总数
-      const { total } = await db.collection(Constants.cn.functions)
-        .where(query)
-        .limit(limit)
-        .skip((page - 1) * limit)
-        .count()
-        .catch(() => { this.listLoading = false })
-
-      this.total = total
+      const ret = await getFunctions(this.appid, query, page, limit)
+      this.total = ret.total
+      this.list = ret.data
       this.listLoading = false
       this.getAllTags()
     },
@@ -343,29 +314,23 @@ export default {
     handleCreate() {
       this.$refs['dataForm'].validate(async(valid) => {
         if (!valid) { return }
-
         const data = Object.assign({}, this.form)
         delete data['_tag_input']
-
         // 执行创建请求
-        const r = await db.collection(Constants.cn.functions)
-          .add(data)
-
-        if (!r.id) {
+        const res = await createFunction(this.appid, data)
+        if (!res.data?.id) {
           this.$notify({
             type: 'error',
             title: '操作失败',
-            message: '创建失败！' + r.error
+            message: '创建失败！' + res.error
           })
           return
         }
-
         this.$notify({
           type: 'success',
           title: '操作成功',
           message: '创建成功！'
         })
-
         this.getList()
         this.dialogFormVisible = false
       })
