@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'LaF 开发运维控制台',
+  title: 'LaF 云开发',
 
   /**
    * @type {boolean} true | false
@@ -23,7 +23,7 @@ module.exports = {
    * @type {boolean} true | false
    * @description Whether show the logo in sidebar
    */
-  sidebarLogo: true,
+  sidebarLogo: false,
 
   /**
    * @type {string | array} 'production' | ['production', 'development']

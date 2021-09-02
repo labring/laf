@@ -2,7 +2,7 @@ import { asyncRoutes, constantRoutes } from '@/router'
 
 /**
  * Use meta.permission to determine if the current user has permission
- * @param roles
+ * @param permissions
  * @param route
  */
 function hasPermission(permissions, route) {
@@ -47,6 +47,19 @@ export function filterAsyncRoutes(routes, { roles, permissions }) {
   return res
 }
 
+/**
+ * render appid into routes' path
+ * @param {any[]} routes
+ * @param {string} appid
+ */
+function fillAppId2Routes(routes, appid) {
+  for (const route of routes) {
+    if (route.path.startsWith('/app/:appid/')) {
+      route.path = route.path.replace(`/app/:appid/`, `/app/${appid}/`)
+    }
+  }
+}
+
 const state = {
   routes: [],
   addRoutes: []
@@ -60,8 +73,9 @@ const mutations = {
 }
 
 const actions = {
-  async generateRoutes({ commit }, { roles, permissions }) {
+  async generateRoutes({ commit }, { appid, roles, permissions }) {
     const accessedRoutes = filterAsyncRoutes(asyncRoutes, { roles, permissions })
+    fillAppId2Routes(accessedRoutes, appid)
     commit('SET_ROUTES', accessedRoutes)
     return accessedRoutes
   }

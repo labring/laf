@@ -1,50 +1,51 @@
-import Cookies from 'js-cookie'
+import { getApplicationByAppid } from '@/api/application'
+import { assert } from '@/utils/assert'
 
 const state = {
-  sidebar: {
-    opened: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : true,
-    withoutAnimation: false
-  },
-  device: 'desktop',
-  size: Cookies.get('size') || 'medium'
+  /**
+   * 当前应用对象
+   */
+  application: null,
+  /**
+   * 用户在当前应用的角色
+   */
+  roles: [],
+  /**
+   * 用户对当前应用的权限
+   */
+  permissions: []
 }
 
 const mutations = {
-  TOGGLE_SIDEBAR: state => {
-    state.sidebar.opened = !state.sidebar.opened
-    state.sidebar.withoutAnimation = false
-    if (state.sidebar.opened) {
-      Cookies.set('sidebarStatus', 1)
-    } else {
-      Cookies.set('sidebarStatus', 0)
-    }
+  SET_APPLICATION: (state, payload) => {
+    state.application = payload
   },
-  CLOSE_SIDEBAR: (state, withoutAnimation) => {
-    Cookies.set('sidebarStatus', 0)
-    state.sidebar.opened = false
-    state.sidebar.withoutAnimation = withoutAnimation
+  SET_APP_ROLES: (state, payload) => {
+    state.roles = payload || []
   },
-  TOGGLE_DEVICE: (state, device) => {
-    state.device = device
+  SET_APP_PERMISSIONS: (state, payload) => {
+    state.permissions = payload || []
   },
-  SET_SIZE: (state, size) => {
-    state.size = size
-    Cookies.set('size', size)
+  CLEAR_STATE: (state) => {
+    state.application = null
+    state.roles = []
+    state.permissions = []
   }
 }
 
 const actions = {
-  toggleSideBar({ commit }) {
-    commit('TOGGLE_SIDEBAR')
+  async loadCurrentApplication({ commit }, appid) {
+    const res = await getApplicationByAppid(appid)
+    assert(res.data?.application, 'empty `res.data?.application` got')
+    assert(res.data?.roles, 'empty `res.data?.roles` got')
+    assert(res.data?.permissions, 'empty `res.data?.permissions` got')
+
+    commit('SET_APPLICATION', res.data?.application)
+    commit('SET_APP_ROLES', res.data?.roles)
+    commit('SET_APP_PERMISSIONS', res.data?.permissions)
   },
-  closeSideBar({ commit }, { withoutAnimation }) {
-    commit('CLOSE_SIDEBAR', withoutAnimation)
-  },
-  toggleDevice({ commit }, device) {
-    commit('TOGGLE_DEVICE', device)
-  },
-  setSize({ commit }, size) {
-    commit('SET_SIZE', size)
+  clearStates({ commit }) {
+    commit('CLEAR_STATE')
   }
 }
 
