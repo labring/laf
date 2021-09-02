@@ -1,12 +1,12 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-31 15:00:04
- * @LastEditTime: 2021-08-31 15:46:15
+ * @LastEditTime: 2021-09-02 16:10:58
  * @Description: 
  */
 
 import { Request, Response } from 'express'
-import { ApplicationStruct, generateApplicationSecret } from '../../api/application'
+import { ApplicationStruct, generateApplicationId, generateApplicationSecret } from '../../api/application'
 import { Constants } from '../../constants'
 import { DatabaseAgent } from '../../lib/db-agent'
 
@@ -19,14 +19,15 @@ export async function handleCreateApplication(req: Request, res: Response) {
     return res.status(401).send()
 
   const app_name = req.body?.name ?? 'default'
-
   const db = DatabaseAgent.sys_db
 
+  const appid = generateApplicationId()
   const app_secret = await generateApplicationSecret()
   const now = Date.now()
   const data: ApplicationStruct = {
     name: app_name,
     created_by: uid,
+    appid: appid,
     app_secret: app_secret,
     status: 'created',
     collaborators: [],

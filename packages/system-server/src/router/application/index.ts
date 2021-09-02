@@ -1,14 +1,14 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-29 11:35:11
- * @LastEditTime: 2021-08-31 15:56:38
+ * @LastEditTime: 2021-09-01 11:05:36
  * @Description: 
  */
 
 import { Router } from 'express'
 import { handleNotImplemented } from '../common'
 import { handleCreateApplication } from './create'
-import { handleMyApplications } from './my'
+import { handleGetApplicationByAppid, handleMyApplications } from './get'
 
 export const ApplicationRouter = Router()
 
@@ -16,6 +16,11 @@ export const ApplicationRouter = Router()
  * Get my applications 
  */
 ApplicationRouter.get('/my', handleMyApplications)
+
+/**
+ * Get application by id
+ */
+ApplicationRouter.get('/:appid', handleGetApplicationByAppid)
 
 /**
  * Create an application

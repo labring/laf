@@ -6,7 +6,7 @@
  */
 
 import { Request, Response } from 'express'
-import { getApplicationById } from '../../api/application'
+import { getApplicationByAppid } from '../../api/application'
 import { checkPermission } from '../../api/permission'
 import { publishAccessPolicy } from '../../api/policy'
 import Config from '../../config'
@@ -21,7 +21,7 @@ const { PUBLISH_POLICY } = permissions
  */
 export async function handlePublishPolicies(req: Request, res: Response) {
   const appid = req.params.appid
-  const app = await getApplicationById(appid)
+  const app = await getApplicationByAppid(appid)
   if (!app) {
     return res.status(422).send('app not found')
   }

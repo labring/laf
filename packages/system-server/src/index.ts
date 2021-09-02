@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-18 13:25:09
+ * @LastEditTime: 2021-09-02 16:36:36
  * @Description: 
  */
 
@@ -13,7 +13,7 @@ import { router } from './router/index'
 import { logger } from './lib/logger'
 
 const server = express()
-server.use(express.json())
+server.use(express.json() as any)
 
 /**
  * Allow CORS by default

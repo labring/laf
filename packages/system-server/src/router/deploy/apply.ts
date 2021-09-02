@@ -8,7 +8,7 @@
 import { Request, Response } from 'express'
 import { checkPermission } from '../../api/permission'
 import { Constants } from '../../constants'
-import { getApplicationById } from '../../api/application'
+import { getApplicationByAppid } from '../../api/application'
 import { DatabaseAgent } from '../../lib/db-agent'
 import * as assert from 'assert'
 import { deployFunctions, publishFunctions } from '../../api/function'
@@ -21,7 +21,7 @@ import { deployPolicies, publishAccessPolicy } from '../../api/policy'
  */
 export async function handleApplyDeployRequest(req: Request, res: Response) {
   const appid = req.params.appid
-  const app = await getApplicationById(appid)
+  const app = await getApplicationByAppid(appid)
   if (!app) {
     return res.status(422).send('app not found')
   }

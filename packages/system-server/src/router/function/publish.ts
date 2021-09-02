@@ -1,12 +1,12 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:51:19
- * @LastEditTime: 2021-08-30 17:13:04
+ * @LastEditTime: 2021-09-01 11:18:22
  * @Description: 
  */
 
 import { Request, Response } from 'express'
-import { getApplicationById } from '../../api/application'
+import { getApplicationByAppid } from '../../api/application'
 import { publishFunctions } from '../../api/function'
 import { checkPermission } from '../../api/permission'
 import Config from '../../config'
@@ -21,7 +21,7 @@ const { PUBLISH_FUNCTION } = permissions
  */
 export async function handlePublishFunctions(req: Request, res: Response) {
   const appid = req.params.appid
-  const app = await getApplicationById(appid)
+  const app = await getApplicationByAppid(appid)
   if (!app) {
     return res.status(422).send('app not found')
   }
@@ -41,7 +41,7 @@ export async function handlePublishFunctions(req: Request, res: Response) {
       data: 'ok'
     })
   } catch (error) {
-    logger.error(`public triggers occurred error`, error)
+    logger.error(`public functions occurred error`, error)
     return res.status(500).send(Config.isProd ? undefined : error)
   }
 }

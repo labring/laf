@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-29 18:25:36
+ * @LastEditTime: 2021-09-02 16:34:27
  * @Description: 
  */
 
@@ -50,7 +50,7 @@ export async function publishTriggers(app: ApplicationStruct) {
   const ret = await DatabaseAgent.sys_accessor.db
     .collection(Constants.cn.triggers)
     .find({
-      appid: app._id
+      appid: app.appid
     })
     .toArray()
 

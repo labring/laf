@@ -1,12 +1,14 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-29 11:35:05
- * @LastEditTime: 2021-08-30 17:14:46
+ * @LastEditTime: 2021-09-01 13:07:39
  * @Description:
  */
 
 import { Router } from "express"
-import { handlePublishFunctions } from "./function"
+import { handleCreateFunction } from "./create"
+import { handleGetFunctions } from "./get"
+import { handlePublishFunctions } from "./publish"
 import { handlePublishTriggers } from "./trigger"
 
 
@@ -15,12 +17,12 @@ export const FunctionRouter = Router()
 /**
  * Get functions of an application
  */
-FunctionRouter.get('/')
+FunctionRouter.get('/', handleGetFunctions)
 
 /**
  * Create a function
  */
-FunctionRouter.post('/create')
+FunctionRouter.post('/create', handleCreateFunction)
 
 /**
  * Update the function's info except the codes & triggers

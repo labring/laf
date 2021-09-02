@@ -5,7 +5,7 @@
  * @Description: 
  */
 
-import { getApplicationById, getApplicationDbAccessor } from '../../api/application'
+import { getApplicationByAppid, getApplicationDbAccessor } from '../../api/application'
 import { checkPermission } from '../../api/permission'
 import { permissions } from '../../constants/permissions'
 import { Request, Response } from 'express'
@@ -22,7 +22,7 @@ export async function handleCreateIndex(req: Request, res: Response) {
   }
 
   const appid = req.params.appid
-  const app = await getApplicationById(appid)
+  const app = await getApplicationByAppid(appid)
   if (!app) {
     return res.status(422).send('app not found')
   }

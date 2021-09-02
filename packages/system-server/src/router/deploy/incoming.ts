@@ -7,7 +7,7 @@
 
 import { Request, Response } from 'express'
 import { Constants } from '../../constants'
-import { getApplicationById } from '../../api/application'
+import { getApplicationByAppid } from '../../api/application'
 import { DatabaseAgent } from '../../lib/db-agent'
 import { logger } from '../../lib/logger'
 import { parseToken } from '../../utils/token'
@@ -35,7 +35,7 @@ export async function handleDeployRequestIncoming(req: Request, res: Response) {
   if (appid !== auth.appid)
     return res.status(403).send('forbidden operation: token is not matching the appid')
 
-  const app = await getApplicationById(appid)
+  const app = await getApplicationByAppid(appid)
   if (!app)
     return res.status(422).send('app not found')
 

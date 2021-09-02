@@ -6,7 +6,7 @@
  */
 
 import { Request, Response } from 'express'
-import { getApplicationById, getApplicationDbAccessor } from '../../api/application'
+import { getApplicationByAppid, getApplicationDbAccessor } from '../../api/application'
 import { checkPermission } from '../../api/permission'
 import { Constants } from '../../constants'
 
@@ -15,7 +15,7 @@ import { Constants } from '../../constants'
  */
 export async function handleGetFileBuckets(req: Request, res: Response) {
   const appid = req.params.appid
-  const app = await getApplicationById(appid)
+  const app = await getApplicationByAppid(appid)
   if (!app) {
     return res.status(422).send('app not found')
   }

@@ -1,12 +1,12 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:51:19
- * @LastEditTime: 2021-08-30 16:53:27
+ * @LastEditTime: 2021-09-01 11:16:07
  * @Description: 
  */
 
 import { Request, Response } from 'express'
-import { getApplicationById } from '../../api/application'
+import { getApplicationByAppid } from '../../api/application'
 import { checkPermission } from '../../api/permission'
 import { publishTriggers } from '../../api/trigger'
 import Config from '../../config'
@@ -21,7 +21,7 @@ const { PUBLISH_TRIGGER } = permissions
  */
 export async function handlePublishTriggers(req: Request, res: Response) {
   const appid = req.params.appid
-  const app = await getApplicationById(appid)
+  const app = await getApplicationByAppid(appid)
   if (!app) {
     return res.status(422).send('app not found')
   }

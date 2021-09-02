@@ -33,18 +33,22 @@ const owner = [
 
 export const roles = {
   developer: {
+    name: 'developer',
     label: 'Application Developer',
     permissions: developer
   },
   dba: {
+    name: 'dba',
     label: 'Application Database Administrator',
     permissions: dba
   },
   operator: {
+    name: 'operator',
     label: 'Application Operator',
     permissions: operator
   },
   owner: {
+    name: 'owner',
     label: 'Application Owner',
     permissions: owner
   }

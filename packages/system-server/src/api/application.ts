@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-28 22:00:45
- * @LastEditTime: 2021-08-31 15:47:43
+ * @LastEditTime: 2021-09-02 16:12:47
  * @Description: Application APIs
  */
 
@@ -18,6 +18,7 @@ export interface ApplicationStruct {
   _id?: string
   name: string
   created_by: string
+  appid: string
   app_secret: string
   status: 'created' | 'starting' | 'running' | 'stopped'
   config: {
@@ -43,12 +44,16 @@ export interface ApplicationStruct {
 /**
  * Get an application created by account_id
  */
-export async function getApplicationById(appid: string) {
+export async function getApplicationByAppid(appid: string) {
   if (!appid) return null
 
   const db = DatabaseAgent.sys_db
   const ret = await db.collection(Constants.cn.applications)
-    .where({ _id: appid })
+    .where({ appid: appid })
+    .field({
+      app_secret: false,
+      config: false
+    })
     .getOne<ApplicationStruct>()
 
   assert.ok(ret.ok, `getMyApplicationById() got error: ${appid}`)
@@ -66,6 +71,9 @@ export async function getMyApplications(account_id: string) {
   const db = DatabaseAgent.sys_db
   const ret = await db.collection(Constants.cn.applications)
     .where({ created_by: account_id })
+    .field({
+      config: false
+    })
     .get<ApplicationStruct>()
 
   assert.ok(ret.ok, `getMyApplications() got error: ${account_id}`)
@@ -116,4 +124,12 @@ export async function getApplicationDbAccessor(app: ApplicationStruct) {
 export async function generateApplicationSecret() {
   const buf = crypto.randomBytes(64)
   return buf.toString('base64')
+}
+
+/**
+ * Generate application id
+ * @returns 
+ */
+export function generateApplicationId() {
+  return crypto.randomUUID()
 }

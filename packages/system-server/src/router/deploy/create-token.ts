@@ -9,7 +9,7 @@ import { Request, Response } from 'express'
 import { checkPermission } from '../../api/permission'
 import { getToken } from '../../utils/token'
 import { Constants } from '../../constants'
-import { getApplicationById } from '../../api/application'
+import { getApplicationByAppid } from '../../api/application'
 
 
 /**
@@ -23,7 +23,7 @@ export async function handleCreateDeployToken(req: Request, res: Response) {
 
   const uid = req['auth']?.uid
   const appid = req.params.appid
-  const app = await getApplicationById(appid)
+  const app = await getApplicationByAppid(appid)
   if (!app) return res.status(422).send('app not found')
 
   // check permission
