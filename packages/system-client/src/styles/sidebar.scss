@@ -12,13 +12,10 @@
     width: $sideBarWidth !important;
     background-color: $menuBg;
     height: 100%;
-    position: fixed;
     font-size: 0px;
-    top: 0;
-    bottom: 0;
-    left: 0;
     z-index: 1001;
     overflow: hidden;
+    border: 1px solid rgba(211, 211, 211, 0.2);
 
     // reset element-ui css
     .horizontal-collapse-transition {
@@ -64,8 +61,13 @@
 
     .el-menu {
       border: none;
+      border-bottom: 1px solid rgba(211, 211, 211, 0.253);
       height: 100%;
       width: 100% !important;
+    }
+
+    .el-submenu {
+      border-top: 1px solid rgba(211, 211, 211, 0.253);
     }
 
     // menu hover
@@ -84,7 +86,6 @@
     & .el-submenu .el-menu-item {
       min-width: $sideBarWidth !important;
       background-color: $subMenuBg !important;
-
       &:hover {
         background-color: $subMenuHover !important;
       }
