@@ -1,12 +1,12 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:51:19
- * @LastEditTime: 2021-09-01 11:18:22
+ * @LastEditTime: 2021-09-03 20:02:25
  * @Description: 
  */
 
 import { Request, Response } from 'express'
-import { getApplicationByAppid } from '../../api/application'
+import { ApplicationStruct } from '../../api/application'
 import { publishFunctions } from '../../api/function'
 import { checkPermission } from '../../api/permission'
 import Config from '../../config'
@@ -20,20 +20,16 @@ const { PUBLISH_FUNCTION } = permissions
  * Publish functions
  */
 export async function handlePublishFunctions(req: Request, res: Response) {
-  const appid = req.params.appid
-  const app = await getApplicationByAppid(appid)
-  if (!app) {
-    return res.status(422).send('app not found')
-  }
+  const uid = req['auth']?.uid
+  const app: ApplicationStruct = req['parsed-app']
 
   // check permission
-  const code = await checkPermission(req['auth']?.uid, PUBLISH_FUNCTION.name, app)
+  const code = await checkPermission(uid, PUBLISH_FUNCTION.name, app)
   if (code) {
     return res.status(code).send()
   }
 
   try {
-
     await publishFunctions(app)
 
     return res.send({

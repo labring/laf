@@ -1,10 +1,11 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:51:19
- * @LastEditTime: 2021-09-02 16:34:40
+ * @LastEditTime: 2021-09-03 20:30:19
  * @Description: 
  */
 
+import { CloudFunctionStruct } from 'cloud-function-engine'
 import { Request, Response } from 'express'
 import { ApplicationStruct } from '../../api/application'
 import { checkPermission } from '../../api/permission'
@@ -71,5 +72,32 @@ export async function handleGetFunctions(req: Request, res: Response) {
     total: total,
     limit: limit,
     page
+  })
+}
+
+
+/**
+ * Get a function by id
+ */
+export async function handleGetFunctionById(req: Request, res: Response) {
+  const db = DatabaseAgent.sys_db
+  const app: ApplicationStruct = req['parsed-app']
+  const func_id = req.params.func_id
+
+  // check permission
+  const code = await checkPermission(req['auth']?.uid, FUNCTION_READ.name, app)
+  if (code) {
+    return res.status(code).send()
+  }
+
+  const coll = db.collection(Constants.cn.functions)
+
+  // do db query
+  const ret = await coll
+    .where({ _id: func_id })
+    .getOne<CloudFunctionStruct>()
+
+  return res.send({
+    data: ret.data
   })
 }
