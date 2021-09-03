@@ -27,7 +27,7 @@
           {{ scope.row.status }}
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="服务启停" align="center" width="380" class-name="small-padding">
+      <el-table-column label="服务启停" align="center" width="200" class-name="small-padding">
         <template slot-scope="{row}">
           <el-button v-if="row.status !== 'running'" plain type="warning" size="mini" @click="startApp(row)">
             启动

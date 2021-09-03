@@ -125,14 +125,12 @@
 </template>
 
 <script>
-import { dbm_cloud } from '@/api/cloud'
-import { getCollections, getCollectionIndexes, deleCollectionIndexe, setCollectionIndexes } from '@/api/collec'
-// import { TYPES } from '@/utils/types'
 
+import { getCollections, getCollectionIndexes, deleCollectionIndex, setCollectionIndexes, getDb } from '@/api/collec'
 import MiniPagination from '@/components/Pagination/mini'
 import JsonEditor from '@/components/JsonEditor/param'
 
-const db = dbm_cloud.database()
+const db = getDb()
 
 export default {
   name: 'CollectionManagement',
@@ -294,7 +292,7 @@ export default {
 
     async deleIndex(index) {
       await this.$confirm('确认要删除此数据？', '删除确认')
-      await deleCollectionIndexe(this.collectionName, index.name)
+      await deleCollectionIndex(this.collectionName, index.name)
 
       this.$message('删除成功')
       this.getIndexes()

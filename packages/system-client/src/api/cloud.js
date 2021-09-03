@@ -29,13 +29,3 @@ export const cloud = new Cloud({
 })
 
 export const db = cloud.database()
-
-/**
- * 用于数据库管理
- */
-export const dbm_cloud = new Cloud({
-  baseUrl: process.env.VUE_APP_BASE_API,
-  entryUrl: '/dbm/entry',
-  getAccessToken: getToken,
-  requestClass: CloudRequest
-})

@@ -1,11 +1,18 @@
 import request from '@/utils/request'
+import store from '@/store'
+import { getToken } from '@/utils/auth'
+import { Cloud } from 'less-api-client'
 
 /**
- * 获取集合列表
+ * Get collection list
+ * @param {*} query
+ * @param {*} page
+ * @param {*} pageSize
  */
 export function getCollections() {
+  const appid = store.state.app.appid
   return request({
-    url: `/dbm/collections`,
+    url: `/apps/${appid}/dbm/collections`,
     method: 'get'
   })
 }
@@ -13,9 +20,10 @@ export function getCollections() {
 /**
  * 获取集合的索引信息
  */
-export function getCollectionIndexes(collection = 'functions') {
+export function getCollectionIndexes(collection) {
+  const appid = store.state.app.appid
   return request({
-    url: `/dbm/collection/indexes?collection=${collection}`,
+    url: `/apps/${appid}/dbm/collection/indexes?collection=${collection}`,
     method: 'get'
   })
 }
@@ -26,8 +34,9 @@ export function getCollectionIndexes(collection = 'functions') {
  * @return
  */
 export function setCollectionIndexes(collection, data) {
+  const appid = store.state.app.appid
   return request({
-    url: `/dbm/collection/indexes?collection=${collection}`,
+    url: `/apps/${appid}/dbm/collection/indexes?collection=${collection}`,
     method: 'post',
     data
   })
@@ -39,9 +48,25 @@ export function setCollectionIndexes(collection, data) {
  * @param {String} index 索引名
  * @returns
  */
-export function deleCollectionIndexe(collection, index) {
+export function deleCollectionIndex(collection, index) {
+  const appid = store.state.app.appid
   return request({
-    url: `/dbm/collection/indexes?collection=${collection}&index=${index}`,
+    url: `/apps/${appid}/dbm/collection/indexes?collection=${collection}&index=${index}`,
     method: 'delete'
   })
+}
+
+/**
+ * Get a Db instance for dbm
+ * @returns
+ */
+export function getDb() {
+  const appid = store.state.app.appid
+  const dbm_cloud = new Cloud({
+    baseUrl: process.env.VUE_APP_BASE_API,
+    entryUrl: `/apps/${appid}/dbm/entry`,
+    getAccessToken: getToken
+  })
+
+  return dbm_cloud.database()
 }
