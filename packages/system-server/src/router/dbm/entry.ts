@@ -6,7 +6,7 @@
  */
 
 import { Proxy, Policy } from 'less-api'
-import { getApplicationByAppid, getApplicationDbAccessor } from '../../api/application'
+import { ApplicationStruct, getApplicationDbAccessor } from '../../api/application'
 import { checkPermission } from '../../api/permission'
 import { permissions } from '../../constants/permissions'
 import { Request, Response } from 'express'
@@ -18,11 +18,7 @@ import { Request, Response } from 'express'
 export async function handleDbProxy(req: Request, res: Response) {
   const requestId = req['requestId']
   const uid = req['auth']?.uid
-  const appid = req.params.appid
-  const app = await getApplicationByAppid(appid)
-  if (!app) {
-    return res.status(422).send('app not found')
-  }
+  const app: ApplicationStruct = req['parsed-app']
 
   // check permission
   const code = await checkPermission(uid, permissions.DATABASE_MANAGE.name, app)
