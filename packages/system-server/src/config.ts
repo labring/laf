@@ -8,20 +8,22 @@ export default class Config {
   /**
    * the mongodb connection configuration of sys db
    */
-  static get sys_db() {
-    if (!process.env['SYS_DB']) {
-      throw new Error('env: `SYS_DB` is missing')
-    }
-
+  static get sys_db_uri() {
     if (!process.env['SYS_DB_URI']) {
       throw new Error('env: `SYS_DB_URI` is missing')
     }
 
-    return {
-      database: process.env['SYS_DB'],
-      uri: process.env['SYS_DB_URI'],
-      poolSize: (process.env['SYS_DB_POOL_LIMIT'] ?? 10) as number,
+    return process.env['SYS_DB_URI']
+  }
+
+  /**
+   * the mongodb connection configuration of apps' db, use for creating app databases;
+   */
+  static get app_db_uri() {
+    if (!process.env['APP_DB_URI']) {
+      throw new Error('env: `APP_DB_URI` is missing')
     }
+    return process.env['APP_DB_URI']
   }
 
   /**
@@ -61,5 +63,12 @@ export default class Config {
    */
   static get isProd(): boolean {
     return process.env.NODE_ENV === 'production'
+  }
+
+  /**
+   * the name of network which apps used
+   */
+  static get SHARED_NETWORK(): string {
+    return process.env.SHARED_NETWORK ?? 'laf_shared_network'
   }
 }
