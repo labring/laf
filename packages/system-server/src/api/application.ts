@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-28 22:00:45
- * @LastEditTime: 2021-09-02 16:12:47
+ * @LastEditTime: 2021-09-03 18:32:35
  * @Description: Application APIs
  */
 
@@ -9,7 +9,10 @@ import { Constants } from "../constants"
 import { DatabaseAgent } from "../lib/db-agent"
 import * as assert from 'assert'
 import { MongoAccessor } from "less-api/dist"
-import * as crypto from 'crypto'
+import { generateUUID } from "../utils/rand"
+import { MongoClient } from 'mongodb'
+import Config from "../config"
+import * as mongodb_uri from 'mongodb-uri'
 
 /**
  * The application structure in db
@@ -19,12 +22,11 @@ export interface ApplicationStruct {
   name: string
   created_by: string
   appid: string
-  app_secret: string
-  status: 'created' | 'starting' | 'running' | 'stopped'
+  status: 'created' | 'running' | 'stopped'
   config: {
     db_name: string
-    db_uri: string
-    db_max_pool_size: number
+    db_user: string
+    db_password: string
     server_secret_salt: string
     file_system_driver?: string
     file_system_enable_unauthorized_upload?: string
@@ -50,10 +52,6 @@ export async function getApplicationByAppid(appid: string) {
   const db = DatabaseAgent.sys_db
   const ret = await db.collection(Constants.cn.applications)
     .where({ appid: appid })
-    .field({
-      app_secret: false,
-      config: false
-    })
     .getOne<ApplicationStruct>()
 
   assert.ok(ret.ok, `getMyApplicationById() got error: ${appid}`)
@@ -106,30 +104,51 @@ export async function getMyJoinedApplications(account_id: string) {
  * @returns 
  */
 export async function getApplicationDbAccessor(app: ApplicationStruct) {
-  const db_name = app.config.db_name
-  const db_uri = app.config.db_uri
+  const { db_name, db_password, db_user } = app.config
+  assert.ok(db_name, 'empty db_name got')
+  assert.ok(db_password, 'empty db_password got')
+  assert.ok(db_user, 'empty db_user got')
 
-  assert.ok(db_name)
-  assert.ok(db_uri)
+  const db_uri = getApplicationDbUri(app)
   const accessor = new MongoAccessor(db_name, db_uri, { directConnection: true })
   await accessor.init()
 
   return accessor
 }
 
+
+export function getApplicationDbUri(app: ApplicationStruct) {
+  const { db_name, db_password, db_user } = app.config
+
+  // build app db connection uri from config
+  const parsed = mongodb_uri.parse(Config.app_db_uri)
+  parsed.database = db_name
+  parsed.username = db_user
+  parsed.password = db_password
+  parsed.options['authSource'] = db_name
+
+  return mongodb_uri.format(parsed)
+}
+
 /**
- * Generate application secret string
- * @returns 
+ * Create 
+ * @param app
  */
-export async function generateApplicationSecret() {
-  const buf = crypto.randomBytes(64)
-  return buf.toString('base64')
+export async function createApplicationDb(app: ApplicationStruct) {
+  const client = new MongoClient(Config.app_db_uri)
+  await client.connect()
+  const { db_name, db_user, db_password } = app.config
+  const db = client.db(db_name)
+  const result = await db.addUser(db_user, db_password, { roles: [{ role: "readWrite", db: db_name }] })
+
+  await client.close()
+  return result
 }
 
 /**
  * Generate application id
  * @returns 
  */
-export function generateApplicationId() {
-  return crypto.randomUUID()
+export function generateAppid() {
+  return generateUUID()
 }
