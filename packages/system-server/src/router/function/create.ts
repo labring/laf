@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-01 13:07:07
- * @LastEditTime: 2021-09-02 16:52:54
+ * @LastEditTime: 2021-09-03 23:23:31
  * @Description: 
  */
 
@@ -45,6 +45,7 @@ export async function handleCreateFunction(req: Request, res: Response) {
   const func = {
     name: body.name,
     code: body.code,
+    description: body.description,
     enableHTTP: body.enableHTTP ?? false,
     status: body.status ?? 0,
     compiledCode: compileTs2js(body.code),

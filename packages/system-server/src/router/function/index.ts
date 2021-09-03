@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-29 11:35:05
- * @LastEditTime: 2021-09-03 20:25:43
+ * @LastEditTime: 2021-09-04 00:00:56
  * @Description:
  */
 
@@ -9,6 +9,7 @@ import { Router } from "express"
 import { handleCreateFunction } from "./create"
 import { handleGetFunctionById, handleGetFunctions } from "./get"
 import { handlePublishFunctions } from "./publish"
+import { handleRemoveFunctionById } from "./remove"
 import { handlePublishTriggers } from "./trigger"
 
 
@@ -38,6 +39,11 @@ FunctionRouter.post('/:func_id/info')
  * Update the function's code
  */
 FunctionRouter.post('/:func_id/codes')
+
+/**
+ * Remove a function by id of an application
+ */
+FunctionRouter.delete('/:func_id', handleRemoveFunctionById)
 
 /**
  * Create a trigger to the function

@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 15:22:34
- * @LastEditTime: 2021-09-02 16:13:09
+ * @LastEditTime: 2021-09-03 20:21:48
  * @Description: 
  */
 
@@ -45,6 +45,7 @@ export async function handleGetApplicationByAppid(req: Request, res: Response) {
   if (!app)
     return res.status(422).send('invalid appid')
 
+  app.config = undefined
   // return directly if the author here
   if (app.created_by === uid) {
     const roles = [Constants.roles.owner.name]
