@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-01 13:17:21
+ * @LastEditTime: 2021-09-03 23:19:15
  * @Description: 
  */
 
@@ -22,10 +22,10 @@ router.use('/account', AccountRouter)
 router.use('/apps', ApplicationRouter)
 
 router.use('/apps/:appid/function', checkAppid, FunctionRouter)
-router.use('/apps/:appid/policy', PolicyRouter)
+router.use('/apps/:appid/policy', checkAppid, PolicyRouter)
 router.use('/apps/:appid/dbm', DbmRouter)
 router.use('/apps/:appid/deploy', DeployRouter)
-router.use('/apps/:appid/file', FileRouter)
+router.use('/apps/:appid/file', checkAppid, FileRouter)
 
 router.use('/health-check', (_req, res) => {
   if (!DatabaseAgent.sys_accessor.db) {

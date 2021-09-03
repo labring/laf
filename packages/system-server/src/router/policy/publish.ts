@@ -1,12 +1,12 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:51:19
- * @LastEditTime: 2021-08-30 17:14:09
+ * @LastEditTime: 2021-09-04 00:02:20
  * @Description: 
  */
 
 import { Request, Response } from 'express'
-import { getApplicationByAppid } from '../../api/application'
+import { ApplicationStruct } from '../../api/application'
 import { checkPermission } from '../../api/permission'
 import { publishAccessPolicy } from '../../api/policy'
 import Config from '../../config'
@@ -20,14 +20,11 @@ const { PUBLISH_POLICY } = permissions
  * Publish policies
  */
 export async function handlePublishPolicies(req: Request, res: Response) {
-  const appid = req.params.appid
-  const app = await getApplicationByAppid(appid)
-  if (!app) {
-    return res.status(422).send('app not found')
-  }
+  const uid = req['auth']?.uid
+  const app: ApplicationStruct = req['parsed-app']
 
   // check permission
-  const code = await checkPermission(req['auth']?.uid, PUBLISH_POLICY.name, app)
+  const code = await checkPermission(uid, PUBLISH_POLICY.name, app)
   if (code) {
     return res.status(code).send()
   }
@@ -36,7 +33,6 @@ export async function handlePublishPolicies(req: Request, res: Response) {
     await publishAccessPolicy(app)
 
     return res.send({
-      code: 0,
       data: 'ok'
     })
   } catch (error) {

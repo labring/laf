@@ -6,6 +6,7 @@ const state = {
    * 当前应用对象
    */
   application: null,
+  appid: null,
   /**
    * 用户在当前应用的角色
    */
@@ -19,6 +20,7 @@ const state = {
 const mutations = {
   SET_APPLICATION: (state, payload) => {
     state.application = payload
+    state.appid = payload?.appid
   },
   SET_APP_ROLES: (state, payload) => {
     state.roles = payload || []
@@ -28,6 +30,7 @@ const mutations = {
   },
   CLEAR_STATE: (state) => {
     state.application = null
+    state.appid = null
     state.roles = []
     state.permissions = []
   }

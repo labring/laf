@@ -110,8 +110,8 @@ import FunctionLogDetail from './components/FunctionLogDetail'
 import FunctionEditor from '@/components/FunctionEditor'
 import jsonEditor from '@/components/JsonEditor/param'
 import { db, dbm_cloud } from '../../api/cloud'
-import { launchFunction } from '../../api/func'
-import { publishFunctions } from '../../api/publish'
+import { getFunctionById, launchFunction } from '../../api/func'
+import { publishFunctions } from '../../api/func'
 import { getDebugToken } from '../../utils/auth'
 import { Constants } from '../../api/constants'
 
@@ -140,6 +140,12 @@ export default {
     }
   },
   computed: {
+    appid() {
+      return this.app.appid
+    },
+    app() {
+      return this.$store.state.app.application
+    },
     // 调用云函数的日志
     logs() {
       if (!this.invokeResult) {
@@ -194,11 +200,9 @@ export default {
     async getFunction() {
       const func_id = this.func_id
       this.loading = true
-      const r = await db.collection(Constants.cn.functions)
-        .where({ _id: func_id })
-        .getOne()
+      const r = await getFunctionById(func_id)
 
-      if (!r.ok || !r.data) {
+      if (r.error) {
         this.$notify({
           type: 'error',
           title: '错误',
@@ -263,7 +267,7 @@ export default {
         return
       }
 
-      await publishFunctions()
+      await publishFunctions(this.appid)
 
       const param = this.parseInvokeParam(this.invokeParams)
 

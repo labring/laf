@@ -29,7 +29,6 @@
       </el-table-column>
       <el-table-column fixed="right" label="服务启停" align="center" width="380" class-name="small-padding">
         <template slot-scope="{row}">
-
           <el-button v-if="row.status !== 'running'" plain type="warning" size="mini" @click="startApp(row)">
             启动
           </el-button>
@@ -51,12 +50,6 @@
           </el-button>
           <el-button plain type="default" size="mini" @click="showUpdateForm(row)">
             编辑
-          </el-button>
-          <el-button v-if="row.status !== 'running'" plain type="warning" size="mini" @click="startApp(row)">
-            启动应用
-          </el-button>
-          <el-button v-if="row.status === 'running'" plain type="danger" size="mini" @click="stopApp(row)">
-            停止应用
           </el-button>
           <el-button plain size="mini" type="info" @click="deleteApp(row,$index)">
             删除

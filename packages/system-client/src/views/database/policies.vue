@@ -16,7 +16,7 @@
         新建
       </el-button>
       <el-tooltip content="发布策略：策略修改后需要发布才能生效" placement="bottom" effect="light">
-        <el-button plain class="filter-item" type="warning" icon="el-icon-guide" @click="publish">
+        <el-button plain class="filter-item" type="success" icon="el-icon-guide" @click="publish">
           发布策略
         </el-button>
       </el-tooltip>
@@ -138,16 +138,15 @@
     </el-dialog>
 
     <!-- 部署面板 -->
-    <DeployPanel v-model="deployPanelVisible" :policies="list" />
+    <!-- <DeployPanel v-model="deployPanelVisible" :policies="list" /> -->
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { db } from '../../api/cloud'
-import DeployPanel from '../deploy/components/deploy-panel.vue'
-import { Constants } from '../../api/constants'
-import { publishPolicy } from '../../api/publish'
+// import DeployPanel from '../deploy/components/deploy-panel.vue'
+import { createPolicy, deletePolicy, getPolicies, publishPolicies, updatePolicy } from '@/api/policy'
+import { getFunctions } from '@/api/func'
 
 // 默认化创建表单的值
 function getDefaultFormValue() {
@@ -171,7 +170,10 @@ const formRules = {
 
 export default {
   name: 'PoliciesListPage',
-  components: { Pagination, DeployPanel },
+  components: {
+    Pagination
+    // DeployPanel
+  },
   filters: {
     statusFilter(status) {
       status = status ?? 0
@@ -213,10 +215,7 @@ export default {
   },
   methods: {
     async getFunctions() {
-      const r = await db.collection(Constants.cn.functions)
-        .where({ status: 1 })
-        .get()
-
+      const r = await getFunctions({ status: 1 }, 1, 999)
       this.functions = r.data ?? []
     },
     /**
@@ -229,32 +228,14 @@ export default {
       const { limit, page, keyword } = this.listQuery
       const query = {}
       if (keyword) {
-        query['$or'] = [
-          { name: db.RegExp({ regexp: `.*${keyword}.*` }) },
-          { label: db.RegExp({ regexp: `.*${keyword}.*` }) },
-          { description: db.RegExp({ regexp: `.*${keyword}.*` }) }
-        ]
+        query[keyword] = keyword
       }
 
       // 执行数据查询
-      const res = await db.collection(Constants.cn.policies)
-        .where(query)
-        .limit(limit)
-        .skip((page - 1) * limit)
-        .get()
-        .catch(() => { this.listLoading = false })
-
+      const res = await getPolicies(query, page, limit)
       this.list = res.data
 
-      // 获取数据总数
-      const { total } = await db.collection(Constants.cn.policies)
-        .where(query)
-        .limit(limit)
-        .skip((page - 1) * limit)
-        .count()
-        .catch(() => { this.listLoading = false })
-
-      this.total = total
+      this.total = res.total
       this.listLoading = false
     },
     // 搜索
@@ -277,10 +258,9 @@ export default {
         if (!valid) { return }
 
         // 执行创建请求
-        const r = await db.collection(Constants.cn.policies)
-          .add(this.form)
+        const r = await createPolicy(this.form)
 
-        if (!r.id) {
+        if (r.error) {
           this.$notify({
             type: 'error',
             title: '操作失败',
@@ -324,11 +304,9 @@ export default {
         }
 
         // 执行更新请求
-        const r = await db.collection(Constants.cn.policies)
-          .where({ _id: this.form._id })
-          .update(data)
+        const r = await updatePolicy(this.form._id, data)
 
-        if (!r.ok) {
+        if (r.error) {
           this.$notify({
             type: 'error',
             title: '操作失败',
@@ -352,11 +330,9 @@ export default {
       await this.$confirm('确认要删除此数据？', '删除确认')
 
       // 执行删除请求
-      const r = await db.collection(Constants.cn.policies)
-        .where({ _id: row._id })
-        .remove()
+      const r = await deletePolicy(row._id)
 
-      if (!r.ok) {
+      if (r.error) {
         this.$notify({
           type: 'error',
           title: '操作失败',
@@ -379,9 +355,9 @@ export default {
         .catch(() => false)
 
       if (!confirm) return
-      const res = await publishPolicy()
-      if (res.data.code) {
-        this.$message('发布失败: ' + res.data.error)
+      const res = await publishPolicies()
+      if (res.error) {
+        this.$message('发布失败: ' + res.error)
         return
       }
       this.$notify({

@@ -16,7 +16,14 @@
       <el-button plain size="mini" class="filter-item" type="primary" icon="el-icon-plus" @click="showCreateForm">
         新建函数
       </el-button>
-      <el-button type="default" size="mini" plain class="filter-item" @click="deployPanelVisible = true">远程部署</el-button>
+      <el-tooltip content="发布函数：函数要发布后才能生效" placement="bottom" effect="light">
+        <el-button plain class="filter-item" size="mini" type="success" icon="el-icon-guide" @click="publish">
+          发布函数
+        </el-button>
+      </el-tooltip>
+      <el-tooltip content="远程部署：将本环境的云函数推送到远程环境中，如推送到测试或生产环境" placement="bottom" effect="light">
+        <el-button type="default" size="mini" plain class="filter-item" @click="deployPanelVisible = true">远程部署</el-button>
+      </el-tooltip>
       <el-checkbox v-model="listQuery.onlyEnabled" class="filter-item" label="" :indeterminate="false" @change="handleFilter">只看已启用</el-checkbox>
     </div>
 
@@ -171,7 +178,7 @@ import Pagination from '@/components/Pagination' // secondary package based on e
 import { db } from '../../api/cloud'
 // import DeployPanel from '../deploy/components/deploy-panel.vue'
 import { Constants } from '../../api/constants'
-import { createFunction, getFunctions } from '@/api/func'
+import { createFunction, getFunctions, publishFunctions, updateFunction } from '@/api/func'
 
 const defaultCode = `
 import cloud from '@/cloud-sdk'
@@ -255,14 +262,7 @@ export default {
       deployPanelVisible: false
     }
   },
-  computed: {
-    appid() {
-      return this.app.appid
-    },
-    app() {
-      return this.$store.state.app.application
-    }
-  },
+  computed: {},
   watch: {
     list() {
       this.deploy_functions = this.list
@@ -290,7 +290,7 @@ export default {
       if (tag !== '') { query['tag'] = tag }
       if (onlyEnabled) { query['status'] = 1 }
 
-      const ret = await getFunctions(this.appid, query, page, limit)
+      const ret = await getFunctions(query, page, limit)
       this.total = ret.total
       this.list = ret.data
       this.listLoading = false
@@ -317,7 +317,7 @@ export default {
         const data = Object.assign({}, this.form)
         delete data['_tag_input']
         // 执行创建请求
-        const res = await createFunction(this.appid, data)
+        const res = await createFunction(data)
         if (!res.data?.id) {
           this.$notify({
             type: 'error',
@@ -350,19 +350,17 @@ export default {
         if (!valid) { return }
 
         // 执行创建请求
-        const r = await db.collection(Constants.cn.functions)
-          .where({ _id: this.form._id })
-          .update({
-            name: this.form.name,
-            label: this.form.label,
-            tags: this.form.tags || [],
-            description: this.form.description,
-            enableHTTP: this.form.enableHTTP ?? true,
-            status: this.form.status ?? 1,
-            updated_at: Date.now()
-          })
+        const r = await updateFunction(this.form._id, {
+          name: this.form.name,
+          label: this.form.label,
+          tags: this.form.tags || [],
+          description: this.form.description,
+          enableHTTP: this.form.enableHTTP ?? true,
+          status: this.form.status ?? 1,
+          updated_at: Date.now()
+        })
 
-        if (!r.ok) {
+        if (r.error) {
           this.$notify({
             type: 'error',
             title: '操作失败',
@@ -415,6 +413,23 @@ export default {
       })
 
       this.list.splice(index, 1)
+    },
+    // 发布云函数
+    async publish() {
+      const confirm = await this.$confirm('确定发布所有规则？')
+        .catch(() => false)
+
+      if (!confirm) return
+      const res = await publishFunctions()
+      if (res.error) {
+        this.$message('发布失败: ' + res.error)
+        return
+      }
+      this.$notify({
+        type: 'success',
+        title: '发布成功',
+        message: '访问策略发布成功！'
+      })
     },
     // 查看详情
     async handleShowDetail(row) {
