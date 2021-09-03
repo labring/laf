@@ -1,4 +1,5 @@
 
+import store from '@/store'
 import { assert } from '@/utils/assert'
 import request from '@/utils/request'
 
@@ -7,8 +8,9 @@ import request from '@/utils/request'
  * @returns
  */
 export async function getFileBuckets() {
+  const appid = store.state.app.appid
   const res = await request({
-    url: `/file/buckets`,
+    url: `/apps/${appid}/file/buckets`,
     method: 'get'
   })
 
@@ -22,8 +24,9 @@ export async function getFileBuckets() {
  * @returns {Promise<any[]>}
  */
 export async function createFileBucket(bucketName) {
+  const appid = store.state.app.appid
   const res = await request({
-    url: `/file/buckets`,
+    url: `/apps/${appid}/file/buckets`,
     method: 'post',
     data: {
       bucket: bucketName
@@ -39,8 +42,9 @@ export async function createFileBucket(bucketName) {
  * @returns
  */
 export async function deleteFileBucket(bucketName) {
+  const appid = store.state.app.appid
   const res = await request({
-    url: `/file/buckets/${bucketName}`,
+    url: `/apps/${appid}/file/buckets/${bucketName}`,
     method: 'delete'
   })
 
@@ -61,8 +65,9 @@ export async function getFilesByBucketName(bucketName, { offset, limit, keyword 
     query = query + `&keyword=${keyword}`
   }
 
+  const appid = store.state.app.appid
   const res = await request({
-    url: `/file/${bucketName}/files?${query}`,
+    url: `/apps/${appid}/file/${bucketName}/files?${query}`,
     method: 'GET'
   })
   assert(res.code === 0, `get files in ${bucketName} got error`, res)
@@ -79,8 +84,9 @@ export async function deleteFileById(bucketName, file_id) {
   assert(bucketName, 'empty bucketName got')
   assert(file_id, 'empty file_id got')
 
+  const appid = store.state.app.appid
   const res = await request({
-    url: `/file/${bucketName}/${file_id}`,
+    url: `/apps/${appid}/file/${bucketName}/${file_id}`,
     method: 'DELETE'
   })
 
