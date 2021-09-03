@@ -28,3 +28,29 @@ Authorization: Bearer {{token}}
 
 GET {{base_url}}/apps/my
 Authorization: Bearer {{token}}
+
+
+@appid=fd3f56bd-cb72-4eba-86b2-d75eecae60de
+
+
+### Update an application
+
+POST {{base_url}}/apps/{{appid}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "安徽志愿者小程序123"
+}
+
+### Start an application service
+
+POST {{base_url}}/apps/{{appid}}/start
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Remove an application service
+
+POST {{base_url}}/apps/{{appid}}/stop
+Content-Type: application/json
+Authorization: Bearer {{token}}
