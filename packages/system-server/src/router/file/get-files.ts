@@ -1,12 +1,12 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 15:22:34
- * @LastEditTime: 2021-08-30 16:24:44
+ * @LastEditTime: 2021-09-03 20:35:20
  * @Description: 
  */
 
 import { Request, Response } from 'express'
-import { getApplicationByAppid, getApplicationDbAccessor } from '../../api/application'
+import { ApplicationStruct, getApplicationDbAccessor } from '../../api/application'
 import { checkPermission } from '../../api/permission'
 import { Constants } from '../../constants'
 import { logger } from '../../lib/logger'
@@ -21,16 +21,12 @@ export async function handleGetFiles(req: Request, res: Response) {
   const keyword = req.query?.keyword || undefined
 
   const requestId = req['requestId']
-
-  const appid = req.params.appid
-  const app = await getApplicationByAppid(appid)
-  if (!app) {
-    return res.status(422).send('app not found')
-  }
+  const uid = req['auth']?.uid
+  const app: ApplicationStruct = req['parsed-app']
 
   // check permission
   const { FILE_READ } = Constants.permissions
-  const code = await checkPermission(req['auth']?.uid, FILE_READ.name, app)
+  const code = await checkPermission(uid, FILE_READ.name, app)
   if (code) {
     return res.status(code).send()
   }
