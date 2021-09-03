@@ -36,7 +36,7 @@ docker run -d --name mongodb-server --network mongo-tier \
     -e MONGODB_ROOT_PASSWORD=$MONGODB_ROOT_PASSWORD \
     -e MONGODB_REPLICA_SET_MODE=primary \
     -e MONGODB_REPLICA_SET_KEY=replicasetkey123 \
-    -e MONGODB_ENABLE_DIRECTORY_PER_DB=yes -e MONGODB_REPLICA_SET_NAME=rs0 \
+    -e MONGODB_ENABLE_DIRECTORY_PER_DB=yes -e MONGODB_REPLICA_SET_NAME=laf \
     -e MONGODB_INITIAL_PRIMARY_HOST=mongodb-server  \
     -e MONGODB_ADVERTISED_HOSTNAME=mongodb-server \
     -v mongodb-data:/bitnami/mongodb bitnami/mongodb:latest

@@ -6,7 +6,7 @@ services:
       - ALLOW_EMPTY_PASSWORD=yes
       - MONGODB_REPLICA_SET_MODE=primary
       - MONGODB_INITIAL_PRIMARY_HOST=mongo
-      - MONGODB_REPLICA_SET_NAME=rs0
+      - MONGODB_REPLICA_SET_NAME=laf
     volumes:
       - db-data:/bitnami/mongodb
     networks: 
