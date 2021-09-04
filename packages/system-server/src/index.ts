@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-03 19:14:10
+ * @LastEditTime: 2021-09-04 15:43:41
  * @Description: 
  */
 
@@ -46,5 +46,5 @@ server.listen(Config.PORT, () => logger.info(`listened on ${Config.PORT}`))
 
 
 process.on('uncaughtException', function (err) {
-  logger.error(err.stack)
+  logger.error(err)
 })
