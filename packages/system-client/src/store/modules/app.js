@@ -7,14 +7,26 @@ const state = {
    */
   application: null,
   appid: null,
+
   /**
    * 用户在当前应用的角色
    */
   roles: [],
+
   /**
    * 用户对当前应用的权限
    */
-  permissions: []
+  permissions: [],
+
+  /**
+   * The token of debugging cloud function
+   */
+  debug_token: null,
+
+  /**
+   * The token of file uploading and downloading
+   */
+  file_token: null
 }
 
 const mutations = {
@@ -28,11 +40,19 @@ const mutations = {
   SET_APP_PERMISSIONS: (state, payload) => {
     state.permissions = payload || []
   },
+  SET_DEBUG_TOKEN: (state, payload) => {
+    state.debug_token = payload || []
+  },
+  SET_FILE_TOKEN: (state, payload) => {
+    state.file_token = payload || []
+  },
   CLEAR_STATE: (state) => {
     state.application = null
     state.appid = null
     state.roles = []
     state.permissions = []
+    state.debug_token = null
+    state.file_token = null
   }
 }
 
@@ -46,6 +66,8 @@ const actions = {
     commit('SET_APPLICATION', res.data?.application)
     commit('SET_APP_ROLES', res.data?.roles)
     commit('SET_APP_PERMISSIONS', res.data?.permissions)
+    commit('SET_DEBUG_TOKEN', res.data?.debug_token)
+    commit('SET_FILE_TOKEN', res.data?.file_token)
   },
   clearStates({ commit }) {
     commit('CLEAR_STATE')

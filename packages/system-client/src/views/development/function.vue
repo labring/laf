@@ -109,7 +109,6 @@ import jsonEditor from '@/components/JsonEditor/param'
 import { db } from '../../api/cloud'
 import { getFunctionById, launchFunction } from '../../api/func'
 import { publishFunctions } from '../../api/func'
-import { getDebugToken } from '../../utils/auth'
 import { Constants } from '../../api/constants'
 
 const defaultParamValue = {
@@ -258,7 +257,7 @@ export default {
      * 运行函数代码
      */
     async launch() {
-      const debug_token = getDebugToken()
+      const debug_token = this.$store.state.app.debug_token
       // await this.updateFunc(false)
       if (this.loading) {
         return

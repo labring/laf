@@ -95,7 +95,7 @@ export function publishFunctions() {
 export async function launchFunction(functionName, data, debug = false) {
   const appid = store.state.app.appid
   const res = await axios({
-    url: `/app-api/${appid}/func/invoke/${functionName}`,
+    url: process.env.VUE_APP_BASE_API_APP + `/${appid}/func/invoke/${functionName}`,
     method: 'post',
     data: data,
     headers: {
@@ -114,7 +114,7 @@ export async function launchFunction(functionName, data, debug = false) {
 export async function loadPackageTypings(packageName) {
   const appid = store.state.app.appid
   const res = await axios({
-    url: `/app-api/${appid}/typing/package?packageName=${packageName}`,
+    url: process.env.VUE_APP_BASE_API_APP + `/${appid}/typing/package?packageName=${packageName}`,
     method: 'GET'
   })
 
