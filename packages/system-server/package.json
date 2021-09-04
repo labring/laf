@@ -1,7 +1,7 @@
 {
-  "name": "laf-system-server",
+  "name": "system-server",
   "version": "0.4.21",
-  "description": "less api framework - devops server",
+  "description": "less api framework - system server",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "private": "true",

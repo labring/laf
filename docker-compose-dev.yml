@@ -29,6 +29,7 @@ services:
       SYS_DB_URI: mongodb://my_user:password123@mongo:27017/?authSource=laf-sys&replicaSet=laf&writeConcern=majority
       APP_DB_URI: mongodb://root:password123@mongo:27017/?authSource=admin&replicaSet=laf&writeConcern=majority
       SYS_SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
+      SHARED_NETWORK: laf_shared_network
       LOG_LEVEL: debug
     command: npm run start
     volumes:
