@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-29 11:35:05
- * @LastEditTime: 2021-09-04 00:00:56
+ * @LastEditTime: 2021-09-05 02:41:42
  * @Description:
  */
 
@@ -11,6 +11,7 @@ import { handleGetFunctionById, handleGetFunctions } from "./get"
 import { handlePublishFunctions } from "./publish"
 import { handleRemoveFunctionById } from "./remove"
 import { handlePublishTriggers } from "./trigger"
+import { handleUpdateFunction, handleUpdateFunctionCode } from "./update"
 
 
 export const FunctionRouter = Router()
@@ -33,17 +34,28 @@ FunctionRouter.post('/create', handleCreateFunction)
 /**
  * Update the function's info except the codes & triggers
  */
-FunctionRouter.post('/:func_id/info')
+FunctionRouter.post('/:func_id/info', handleUpdateFunction)
 
 /**
  * Update the function's code
  */
-FunctionRouter.post('/:func_id/codes')
+FunctionRouter.post('/:func_id/code', handleUpdateFunctionCode)
 
 /**
  * Remove a function by id of an application
  */
 FunctionRouter.delete('/:func_id', handleRemoveFunctionById)
+
+/**
+ * Debug the function
+ */
+FunctionRouter.post('/:func_id/debug')
+
+/**
+ * Publish functions of the application
+ */
+FunctionRouter.post('/publish', handlePublishFunctions)
+
 
 /**
  * Create a trigger to the function
@@ -56,14 +68,9 @@ FunctionRouter.post('/:func_id/triggers')
 FunctionRouter.post('/:func_id/triggers/:trigger_id')
 
 /**
- * Debug the function
+ * Remove a trigger of the function
  */
-FunctionRouter.post('/:func_id/debug')
-
-/**
- * Publish functions of the application
- */
-FunctionRouter.post('/publish', handlePublishFunctions)
+FunctionRouter.delete('/:func_id/triggers/:trigger_id')
 
 /**
  * Publish triggers of the application
