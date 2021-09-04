@@ -63,7 +63,7 @@ export function deleCollectionIndex(collection, index) {
 export function getDb() {
   const appid = store.state.app.appid
   const dbm_cloud = new Cloud({
-    baseUrl: process.env.VUE_APP_BASE_API,
+    baseUrl: process.env.VUE_APP_BASE_API_SYS,
     entryUrl: `/apps/${appid}/dbm/entry`,
     getAccessToken: getToken
   })

@@ -1,5 +1,6 @@
 import store from '@/store'
 import request from '@/utils/request'
+import axios from 'axios'
 
 /**
  * Get cloud function list
@@ -91,16 +92,18 @@ export function publishFunctions() {
 /**
  * Debug cloud function
  */
-export function launchFunction(functionName, data, debug = false) {
+export async function launchFunction(functionName, data, debug = false) {
   const appid = store.state.app.appid
-  return request({
-    url: `/apps/${appid}/function/debug/${functionName}`,
+  const res = await axios({
+    url: `/app-api/${appid}/func/invoke/${functionName}`,
     method: 'post',
     data: data,
     headers: {
       'debug-token': debug
     }
   })
+
+  return res.data
 }
 
 /**
@@ -108,9 +111,12 @@ export function launchFunction(functionName, data, debug = false) {
  * @param {string} packageName
  * @returns
  */
-export function loadPackageTypings(packageName) {
-  return request({
-    url: `/app/typing/package?packageName=${packageName}`,
+export async function loadPackageTypings(packageName) {
+  const appid = store.state.app.appid
+  const res = await axios({
+    url: `/app-api/${appid}/typing/package?packageName=${packageName}`,
     method: 'GET'
   })
+
+  return res.data
 }

@@ -22,7 +22,7 @@ class CloudRequest extends Request {
 }
 
 export const cloud = new Cloud({
-  baseUrl: process.env.VUE_APP_BASE_API,
+  baseUrl: process.env.VUE_APP_BASE_API_SYS,
   entryUrl: '/admin/entry',
   getAccessToken: getToken,
   requestClass: CloudRequest

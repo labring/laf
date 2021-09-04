@@ -19,8 +19,10 @@ import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
 import clipboard from '@/directive/clipboard/index'
+import permission from '@/directive/permission'
 
 Vue.use(clipboard)
+Vue.use(permission)
 
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // set element-ui default size

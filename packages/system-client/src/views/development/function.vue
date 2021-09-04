@@ -4,7 +4,6 @@
       <span style="font-size: 26px;line-height: 40px;"><b>{{ func.label }}</b> </span>
       <el-tag v-clipboard:message="func.name" v-clipboard:success="onCopy" style="margin-left: 20px; " size="small" type="success">{{ func.name }}</el-tag>
       <el-button
-        v-permission="'function.read'"
         style="margin-left: 20px"
         icon="el-icon-refresh"
         type="text"
@@ -13,7 +12,6 @@
         @click="getFunction"
       >刷新</el-button>
       <el-button
-        v-permission="'function.edit'"
         type="success"
         size="small"
         style="margin-left: 20px;"
@@ -60,7 +58,6 @@
         <div class="title">
           调用参数
           <el-button
-            v-permission="'function.debug'"
             size="mini"
             type="success"
             style="margin-left: 10px"
@@ -109,7 +106,7 @@
 import FunctionLogDetail from './components/FunctionLogDetail'
 import FunctionEditor from '@/components/FunctionEditor'
 import jsonEditor from '@/components/JsonEditor/param'
-import { db, dbm_cloud } from '../../api/cloud'
+import { db } from '../../api/cloud'
 import { getFunctionById, launchFunction } from '../../api/func'
 import { publishFunctions } from '../../api/func'
 import { getDebugToken } from '../../utils/auth'
@@ -262,7 +259,7 @@ export default {
      */
     async launch() {
       const debug_token = getDebugToken()
-      await this.updateFunc(false)
+      // await this.updateFunc(false)
       if (this.loading) {
         return
       }
@@ -286,30 +283,30 @@ export default {
      * 获取最近日志
      */
     async getLatestLogs() {
-      this.loading = true
-      const db = dbm_cloud.database()
-      // 执行数据查询
-      const res = await db.collection('__function_logs')
-        .where({ func_id: this.func_id })
-        .limit(20)
-        .skip(0)
-        .orderBy('created_at', 'desc')
-        .get()
-        .finally(() => { this.loading = false })
+      // this.loading = true
+      // const db = dbm_cloud.database()
+      // // 执行数据查询
+      // const res = await db.collection('__function_logs')
+      //   .where({ func_id: this.func_id })
+      //   .limit(20)
+      //   .skip(0)
+      //   .orderBy('created_at', 'desc')
+      //   .get()
+      //   .finally(() => { this.loading = false })
 
-      this.lastestLogs = res.data || []
+      // this.lastestLogs = res.data || []
     },
     /**
      * 添加函数的更新记录
      */
     async addFunctionHistory() {
-      const data = Object.assign({}, this.func)
-      await db.collection(Constants.cn.function_history)
-        .add({
-          func_id: this.func._id,
-          data: data,
-          created_at: Date.now()
-        })
+      // const data = Object.assign({}, this.func)
+      // await db.collection(Constants.cn.function_history)
+      //   .add({
+      //     func_id: this.func._id,
+      //     data: data,
+      //     created_at: Date.now()
+      //   })
     },
     showLogDetailDlg(log) {
       this.logDetail = log
@@ -340,7 +337,6 @@ export default {
       try {
         param = JSON.parse(data)
       } catch (error) {
-        console.log(data, error)
         param = data
       }
 
