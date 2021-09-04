@@ -106,10 +106,8 @@
 import FunctionLogDetail from './components/FunctionLogDetail'
 import FunctionEditor from '@/components/FunctionEditor'
 import jsonEditor from '@/components/JsonEditor/param'
-import { db } from '../../api/cloud'
-import { getFunctionById, launchFunction } from '../../api/func'
+import { getFunctionById, launchFunction, updateFunctionCode } from '../../api/func'
 import { publishFunctions } from '../../api/func'
-import { Constants } from '../../api/constants'
 
 const defaultParamValue = {
   code: 'laf'
@@ -229,17 +227,14 @@ export default {
       if (typeof param !== 'string') {
         param = JSON.stringify(this.invokeParams)
       }
-      const r = await db.collection(Constants.cn.functions)
-        .where({
-          _id: this.func._id
-        })
-        .update({
-          code: this.value,
-          update_at: Date.now(),
-          debugParams: param
-        })
 
-      if (!r.ok) {
+      const r = await updateFunctionCode(this.func._id, {
+        code: this.value,
+        update_at: Date.now(),
+        debugParams: param
+      })
+
+      if (r.error) {
         this.$message('保存失败!')
         this.loading = false
         return
@@ -247,7 +242,6 @@ export default {
 
       if (showTip) {
         await this.getFunction()
-        await this.addFunctionHistory()
         this.$message.success('已保存: ' + this.func.name)
       }
 
@@ -294,18 +288,6 @@ export default {
       //   .finally(() => { this.loading = false })
 
       // this.lastestLogs = res.data || []
-    },
-    /**
-     * 添加函数的更新记录
-     */
-    async addFunctionHistory() {
-      // const data = Object.assign({}, this.func)
-      // await db.collection(Constants.cn.function_history)
-      //   .add({
-      //     func_id: this.func._id,
-      //     data: data,
-      //     created_at: Date.now()
-      //   })
     },
     showLogDetailDlg(log) {
       this.logDetail = log

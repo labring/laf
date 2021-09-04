@@ -66,6 +66,21 @@ export function updateFunction(func_id, function_data) {
 }
 
 /**
+ * Update the code of cloud function
+ * @param {string} func_id
+ * @param {object} function_data
+ * @returns
+ */
+export function updateFunctionCode(func_id, function_data) {
+  const appid = store.state.app.appid
+  return request({
+    url: `/apps/${appid}/function/${func_id}/code`,
+    method: 'post',
+    data: function_data
+  })
+}
+
+/**
  * Delete a cloud function
  * @param {*} func_id
  * @returns

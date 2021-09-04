@@ -22,6 +22,9 @@ router.beforeEach(async(to, from, next) => {
   const hasToken = getToken()
 
   if (hasToken) {
+    if (!store.state.user.name) {
+      store.dispatch('user/getInfo')
+    }
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       next({ path: '/' })
@@ -43,7 +46,8 @@ router.beforeEach(async(to, from, next) => {
           await store.dispatch('app/loadCurrentApplication', appid)
         } catch (error) {
           console.error(`failed to load application: ${appid}`, error)
-          Message('加载应用信息出错，请重试')
+          Message('加载应用信息出错，请刷新重试')
+          return
         }
 
         const roles = store.state.app.roles

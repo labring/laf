@@ -19,15 +19,15 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/app/:appid/development',
+    path: '/app/:appid/cloudfunction',
     component: Layout,
     meta: {
       title: '云函数', icon: 'example'
     },
     children: [
       {
-        path: 'functions',
-        component: () => import('@/views/development/functions'),
+        path: 'index',
+        component: () => import('@/views/cloudfunction/index'),
         name: 'FunctionListPage',
         meta: {
           title: '云函数',
@@ -37,7 +37,7 @@ export const asyncRoutes = [
       },
       {
         path: 'functions/:id',
-        component: () => import('@/views/development/function'),
+        component: () => import('@/views/cloudfunction/debug'),
         name: 'FunctionEditorPage',
         hidden: true,
         meta: {
@@ -46,8 +46,8 @@ export const asyncRoutes = [
         }
       },
       {
-        path: 'function-logs',
-        component: () => import('@/views/development/function_logs'),
+        path: 'logs',
+        component: () => import('@/views/cloudfunction/logs'),
         name: 'AllFunctionLogs',
         meta: {
           title: '云函数日志',
@@ -55,8 +55,8 @@ export const asyncRoutes = [
         }
       },
       {
-        path: 'function-logs/:id',
-        component: () => import('@/views/development/function_logs'),
+        path: 'logs/:id',
+        component: () => import('@/views/cloudfunction/logs'),
         name: 'FunctionlogsListPage',
         hidden: true,
         meta: {
@@ -66,7 +66,7 @@ export const asyncRoutes = [
       },
       {
         path: 'triggers/:funcId',
-        component: () => import('@/views/development/triggers'),
+        component: () => import('@/views/cloudfunction/triggers'),
         name: 'TriggerListPage',
         hidden: true,
         meta: {
@@ -142,6 +142,7 @@ export const asyncRoutes = [
       title: '成员管理', icon: 'peoples',
       noCache: true
     },
+    hidden: true,
     children: [
       {
         path: 'index',
