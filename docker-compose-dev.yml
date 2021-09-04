@@ -6,31 +6,37 @@ services:
       - ALLOW_EMPTY_PASSWORD=yes
       - MONGODB_REPLICA_SET_MODE=primary
       - MONGODB_INITIAL_PRIMARY_HOST=mongo
+      - MONGODB_ADVERTISED_HOSTNAME=mongo
       - MONGODB_REPLICA_SET_NAME=laf
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+      - MONGODB_ENABLE_DIRECTORY_PER_DB=yes
+      - MONGODB_ROOT_PASSWORD=password123
+      - MONGODB_USERNAME=my_user
+      - MONGODB_PASSWORD=password123
+      - MONGODB_DATABASE=laf-sys
     volumes:
       - db-data:/bitnami/mongodb
     ports:
       - "27018:27017"
-
-  devops_server:
-    image: node:14-alpine
+    networks: 
+      - laf_shared_network
+      
+  system_server:
+    image: node:16-alpine
     user: node
     working_dir: /app
     environment: 
-      SYS_DB: laf-sys
-      SYS_DB_URI: mongodb://mongo:27017
+      SYS_DB_URI: mongodb://my_user:password123@mongo:27017/?authSource=laf-sys&replicaSet=laf&writeConcern=majority
+      APP_DB_URI: mongodb://root:password123@mongo:27017/?authSource=admin&replicaSet=laf&writeConcern=majority
       SYS_SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
-      SYS_ADMIN: laf-sys
-      SYS_ADMIN_PASSWORD: laf-sys
       LOG_LEVEL: debug
-      APP_DB: laf-app
-      APP_DB_URI: mongodb://mongo:27017
-      APP_SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
-    command: sleep 5 && npm run init-start
+    command: npm run start
     volumes:
-      - ./packages/devops-server:/app
+      - ./packages/system-server:/app
+      - /var/run/docker.sock:/var/run/docker.sock
+    user: root
     ports:
-      - "9000:9000"
+      - "9000"
     read_only: true
     depends_on: 
       - mongo
@@ -39,42 +45,22 @@ services:
     tmpfs: 
       - /tmp
     restart: always
+    networks: 
+      - laf_shared_network
 
-  app_server:
-    image: node:14-alpine
-    user: node
-    working_dir: /app
-    environment: 
-      DB: laf-app
-      DB_URI: mongodb://mongo:27017
-      SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
-      LOG_LEVEL: debug
-      ENABLE_CLOUD_FUNCTION_LOG: always
-    command: sleep 5 && npm run start
-    volumes:
-      - ./packages/app-server:/app
-      - app-data:/app/data
-    ports:
-      - "8000:8000"
-    read_only: false
-    depends_on: 
-      - devops_server
-      - mongo
-    cap_drop: 
-      - ALL
-    tmpfs: 
-      - /tmp
-    restart: always
-
-  devops_admin:
+  system_client:
     image: nginx:latest
     volumes:
-      - ./packages/devops-admin/dist:/app
-      - ./packages/devops-admin/nginx.conf:/etc/nginx/conf.d/app.conf
+      - ./packages/system-client/dist:/app
+      - ./packages/system-client/nginx.conf:/etc/nginx/conf.d/app.conf
     ports: 
       - 8080:80
+    networks: 
+      - laf_shared_network
       
 volumes:
-  app-data:
   db-data:
       
+networks:
+  laf_shared_network:
+    external: true
