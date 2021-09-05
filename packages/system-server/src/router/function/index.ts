@@ -1,13 +1,14 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-29 11:35:05
- * @LastEditTime: 2021-09-05 02:41:42
+ * @LastEditTime: 2021-09-05 23:17:32
  * @Description:
  */
 
 import { Router } from "express"
 import { handleCreateFunction } from "./create"
 import { handleGetFunctionById, handleGetFunctions } from "./get"
+import { handleGetFunctionLogs } from "./logs"
 import { handlePublishFunctions } from "./publish"
 import { handleRemoveFunctionById } from "./remove"
 import { handlePublishTriggers } from "./trigger"
@@ -56,6 +57,10 @@ FunctionRouter.post('/:func_id/debug')
  */
 FunctionRouter.post('/publish', handlePublishFunctions)
 
+/**
+ * Get function logs
+ */
+FunctionRouter.get('/logs/query', handleGetFunctionLogs)
 
 /**
  * Create a trigger to the function

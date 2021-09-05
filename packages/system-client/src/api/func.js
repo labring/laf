@@ -135,3 +135,24 @@ export async function loadPackageTypings(packageName) {
 
   return res.data
 }
+
+/**
+ * Get cloud function logs
+ * @param {*} query
+ * @param {*} page
+ * @param {*} pageSize
+ */
+export async function getFunctionLogs(query, page, pageSize) {
+  const appid = store.state.app.appid
+  const res = await request({
+    url: `/apps/${appid}/function/logs/query`,
+    method: 'get',
+    params: {
+      ...query,
+      page,
+      limit: pageSize
+    }
+  })
+
+  return res
+}

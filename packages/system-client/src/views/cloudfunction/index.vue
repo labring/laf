@@ -46,19 +46,22 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column label="函数标识" min-width="100">
+      <el-table-column label="函数标识" min-width="120">
         <template slot-scope="{row}">
-          <div v-clipboard:message="row.name" class="func-name">
-            {{ row.name }}
+          <div style="display: flex;align-items: center;justify-content: space-between;">
+            <div class="func-name">
+              {{ row.name }}
+            </div>
+            <i v-clipboard:message="row.name" v-clipboard:success="onCopy" class="el-icon-document-copy copy-btn" />
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="函数标题" min-width="100px">
+      <el-table-column label="函数标题" min-width="120px">
         <template slot-scope="{row}">
           <span class="link-type" @click="showUpdateForm(row)">{{ row.label }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="标签" min-width="200">
+      <el-table-column label="标签" min-width="140">
         <template slot-scope="{row}">
           <el-tag v-for="tag in row.tags" :key="tag" style="margin-right: 6px;" type="primary" size="mini">{{ tag }}</el-tag>
         </template>
@@ -94,7 +97,6 @@
       </el-table-column>
       <el-table-column fixed="right" label="操作" align="center" width="380" class-name="small-padding">
         <template slot-scope="{row,$index}">
-
           <el-button plain type="success" size="mini" @click="handleShowDetail(row)">
             调试
           </el-button>
@@ -437,7 +439,7 @@ export default {
     },
     // 查看日志详情
     async handleShowLogs(row) {
-      this.$router.push(`function-logs/${row._id}`)
+      this.$router.push(`logs/${row._id}`)
     },
     // 设置触发器
     async handleTriggers(row) {
@@ -471,6 +473,9 @@ export default {
         this.form.tags.push(val)
       }
       this.form._tag_input = ''
+    },
+    onCopy() {
+      this.$message.success('已复制')
     }
   }
 }
@@ -499,8 +504,13 @@ export default {
 .func-name {
   color: black;
   // font-weight: bold;
-  font-size: 16px;
+  font-size: 14px;
 }
+
+.copy-btn {
+  cursor: pointer;
+}
+
 .input-new-tag {
     width: 120px;
     margin-left: 10px;

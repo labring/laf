@@ -31,7 +31,7 @@ services:
       SYS_SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
       SHARED_NETWORK: laf_shared_network
       LOG_LEVEL: debug
-    command: npm run start
+    command: node dist/index.js
     volumes:
       - ./packages/system-server:/app
       - /var/run/docker.sock:/var/run/docker.sock

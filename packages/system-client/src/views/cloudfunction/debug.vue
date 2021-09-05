@@ -106,7 +106,7 @@
 import FunctionLogDetail from './components/FunctionLogDetail'
 import FunctionEditor from '@/components/FunctionEditor'
 import jsonEditor from '@/components/JsonEditor/param'
-import { getFunctionById, launchFunction, updateFunctionCode } from '../../api/func'
+import { getFunctionById, getFunctionLogs, launchFunction, updateFunctionCode } from '../../api/func'
 import { publishFunctions } from '../../api/func'
 
 const defaultParamValue = {
@@ -276,18 +276,11 @@ export default {
      * 获取最近日志
      */
     async getLatestLogs() {
-      // this.loading = true
-      // const db = dbm_cloud.database()
-      // // 执行数据查询
-      // const res = await db.collection('__function_logs')
-      //   .where({ func_id: this.func_id })
-      //   .limit(20)
-      //   .skip(0)
-      //   .orderBy('created_at', 'desc')
-      //   .get()
-      //   .finally(() => { this.loading = false })
+      this.loading = true
+      const res = await getFunctionLogs({ func_id: this.func_id }, 1, 30)
+        .finally(() => { this.loading = false })
 
-      // this.lastestLogs = res.data || []
+      this.lastestLogs = res.data || []
     },
     showLogDetailDlg(log) {
       this.logDetail = log

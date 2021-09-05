@@ -25,22 +25,22 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column label="RequestId" prop="id" align="center" width="200">
+      <el-table-column label="RequestId" prop="id" align="center" width="280">
         <template slot-scope="{row}">
           <span>{{ row.requestId }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="函数名" width="220px" align="center">
+      <el-table-column label="函数名" width="200px" align="center">
         <template slot-scope="{row}">
           <el-tag type="primary">{{ row.func_name }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="函数ID" min-width="140px" align="center">
+      <el-table-column label="函数ID" min-width="150px" align="center">
         <template slot-scope="{row}">
           <span class="link-type">{{ row.func_id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="执行用时" min-width="140px" align="center">
+      <el-table-column label="执行用时" min-width="100px" align="center">
         <template slot-scope="{row}">
           <span v-if="row.time_usage" class="link-type">{{ row.time_usage }}ms</span>
           <span v-else>-</span>
@@ -52,24 +52,15 @@
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="更新时间" width="160px" align="center">
-        <template slot-scope="{row}">
-          <span v-if="row.updated_at">{{ row.updated_at | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-          <span v-else>-</span>
-        </template>
-      </el-table-column>
       <el-table-column label="调用者ID" class-name="status-col" width="240">
         <template slot-scope="{row}">
-          {{ row.created_by }}
+          {{ row.created_by || '-' }}
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="220" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
+        <template slot-scope="{row}">
           <el-button type="info" size="mini" @click="handleShowDetail(row)">
             查看调用日志
-          </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
-            删除
           </el-button>
         </template>
       </el-table-column>
@@ -94,9 +85,7 @@
 <script>
 import FunctionLogDetail from './components/FunctionLogDetail'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { dbm_cloud } from '@/api/cloud'
-
-const db = dbm_cloud.database()
+import { getFunctionLogs } from '@/api/func'
 
 export default {
   name: 'FunctionlogsListPage',
@@ -157,57 +146,17 @@ export default {
       }
 
       // 执行数据查询
-      const res = await db.collection('__function_logs')
-        .where(query)
-        .limit(limit)
-        .skip((page - 1) * limit)
-        .orderBy('created_at', 'desc')
-        .get()
+      const res = await getFunctionLogs(query, page, limit)
         .catch(() => { this.listLoading = false })
 
       this.list = res.data
-
-      // 获取数据总数
-      const { total } = await db.collection('__function_logs')
-        .where(query)
-        .limit(limit)
-        .skip((page - 1) * limit)
-        .count()
-        .catch(() => { this.listLoading = false })
-
-      this.total = total
+      this.total = res.total
       this.listLoading = false
     },
     // 搜索
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
-    },
-    // 删除请求
-    async handleDelete(row, index) {
-      await this.$confirm('确认要删除此数据？', '删除确认')
-
-      // 执行删除请求
-      const r = await db.collection('__function_logs')
-        .where({ _id: row._id })
-        .remove()
-
-      if (!r.ok) {
-        this.$notify({
-          type: 'error',
-          title: '操作失败',
-          message: '删除失败！' + r.error
-        })
-        return
-      }
-
-      this.$notify({
-        type: 'success',
-        title: '操作成功',
-        message: '删除成功！'
-      })
-
-      this.list.splice(index, 1)
     },
     // 查看详情
     async handleShowDetail(row) {
