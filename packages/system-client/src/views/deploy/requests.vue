@@ -19,7 +19,6 @@
 
     <!-- 表格 -->
     <el-table
-      :key="tableKey"
       v-loading="listLoading"
       :data="list"
       border
@@ -137,9 +136,7 @@
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { db } from '@/api/cloud'
-import { applyDeployRequest, createDeployToken } from '../../api/deploy'
-import { Constants } from '../../api/constants'
+import { applyDeployRequest, createDeployToken, getDeployRequests, removeDeployRequest } from '../../api/deploy'
 
 // 默认的创建部署令牌表单
 function getDefaultFormValue() {
@@ -174,7 +171,6 @@ export default {
   },
   data() {
     return {
-      tableKey: 0,
       list: null,
       total: 0,
       listLoading: true,
@@ -203,37 +199,13 @@ export default {
      */
     async getList() {
       this.listLoading = true
-
-      // 拼装查询条件 by this.listQuery
       const { limit, page, keyword } = this.listQuery
-      const query = {}
-      if (keyword) {
-        query['$or'] = [
-          { name: db.RegExp({ regexp: `.*${keyword}.*` }) },
-          { label: db.RegExp({ regexp: `.*${keyword}.*` }) },
-          { description: db.RegExp({ regexp: `.*${keyword}.*` }) }
-        ]
-      }
+      const query = { }
+      if (keyword) { query['keyword'] = keyword }
 
-      // 执行数据查询
-      const res = await db.collection(Constants.cn.deploy_requests)
-        .where(query)
-        .limit(limit)
-        .skip((page - 1) * limit)
-        .get()
-        .catch(() => { this.listLoading = false })
-
+      const res = await getDeployRequests(query, page, limit)
       this.list = res.data
-
-      // 获取数据总数
-      const { total } = await db.collection(Constants.cn.deploy_requests)
-        .where(query)
-        .limit(limit)
-        .skip((page - 1) * limit)
-        .count()
-        .catch(() => { this.listLoading = false })
-
-      this.total = total
+      this.total = res.total
       this.listLoading = false
     },
     /**
@@ -241,7 +213,6 @@ export default {
      */
     async apply(data) {
       const r = await applyDeployRequest(data._id)
-      console.log(r)
       if (r.code === 0) {
         this.$message.success('应用成功！')
         this.getList()
@@ -298,26 +269,14 @@ export default {
       await this.$confirm('确认要删除此数据？', '删除确认')
 
       // 执行删除请求
-      const r = await db.collection(Constants.cn.deploy_requests)
-        .where({ _id: row._id })
-        .remove()
+      const r = await removeDeployRequest(row._id)
 
-      if (!r.ok) {
-        this.$notify({
-          type: 'error',
-          title: '操作失败',
-          message: '删除失败！' + r.error
-        })
-        return
+      if (r.error) {
+        return this.$notify({ type: 'error', title: '操作失败', message: '删除失败！' + r.error })
       }
 
-      this.$notify({
-        type: 'success',
-        title: '操作成功',
-        message: '删除成功！'
-      })
-
-      this.list.splice(index, 1)
+      this.$notify({ type: 'success', title: '操作成功', message: '删除成功！' })
+      this.getList()
     },
     // 查看详情
     // async handleShowDetail(row) {

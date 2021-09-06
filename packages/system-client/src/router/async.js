@@ -157,7 +157,7 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/deploy',
+    path: '/app/:appid/deploy',
     component: Layout,
     redirect: '/deploy/target',
     meta: {

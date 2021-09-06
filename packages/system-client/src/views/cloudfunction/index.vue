@@ -171,7 +171,7 @@
     </el-dialog>
 
     <!-- 部署面板 -->
-    <deploy-panel v-model="deployPanelVisible" :functions="deploy_functions" />
+    <deploy-panel v-if="deployPanelVisible" v-model="deployPanelVisible" :functions="deploy_functions" />
   </div>
 </template>
 

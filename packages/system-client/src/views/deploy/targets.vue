@@ -2,15 +2,8 @@
   <div class="app-container">
     <!-- 数据检索区 -->
     <div class="filter-container">
-      <el-input
-        v-model="listQuery.keyword"
-        placeholder="搜索"
-        style="width: 200px;margin-right: 10px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-      />
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        搜索
+      <el-button class="filter-item" type="default" icon="el-icon-refresh" @click="getList">
+        刷新
       </el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="showCreateForm">
         新建
@@ -19,7 +12,6 @@
 
     <!-- 表格 -->
     <el-table
-      :key="tableKey"
       v-loading="listLoading"
       :data="list"
       border
@@ -70,15 +62,6 @@
       </el-table-column>
     </el-table>
 
-    <!-- 分页 -->
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="listQuery.page"
-      :limit.sync="listQuery.limit"
-      @pagination="getList"
-    />
-
     <!-- 表单对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form
@@ -112,9 +95,7 @@
 </template>
 
 <script>
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { db } from '@/api/cloud'
-import { Constants } from '../../api/constants'
+import { createDeployTarget, getDeployTargets, removeDeployTarget, updateDeployTarget } from '@/api/deploy'
 
 // 默认化创建表单的值
 function getDefaultFormValue() {
@@ -137,7 +118,6 @@ const formRules = {
 
 export default {
   name: 'DeployTargetsListPage',
-  components: { Pagination },
   filters: {
     statusFilter(status) {
       status = status ?? 0
@@ -150,15 +130,9 @@ export default {
   },
   data() {
     return {
-      tableKey: 0,
       list: null,
       total: 0,
       listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        keyword: undefined
-      },
       form: getDefaultFormValue(),
       dialogFormVisible: false,
       dialogStatus: '',
@@ -175,47 +149,13 @@ export default {
   },
   methods: {
     /**
-       * 获取数据列表
-       */
+     * 获取数据列表
+     */
     async getList() {
       this.listLoading = true
-
-      // 拼装查询条件 by this.listQuery
-      const { limit, page, keyword } = this.listQuery
-      const query = {}
-      if (keyword) {
-        query['$or'] = [
-          { name: db.RegExp({ regexp: `.*${keyword}.*` }) },
-          { label: db.RegExp({ regexp: `.*${keyword}.*` }) },
-          { description: db.RegExp({ regexp: `.*${keyword}.*` }) }
-        ]
-      }
-
-      // 执行数据查询
-      const res = await db.collection(Constants.cn.deploy_targets)
-        .where(query)
-        .limit(limit)
-        .skip((page - 1) * limit)
-        .get()
-        .catch(() => { this.listLoading = false })
-
+      const res = await getDeployTargets()
       this.list = res.data
-
-      // 获取数据总数
-      const { total } = await db.collection(Constants.cn.deploy_targets)
-        .where(query)
-        .limit(limit)
-        .skip((page - 1) * limit)
-        .count()
-        .catch(() => { this.listLoading = false })
-
-      this.total = total
       this.listLoading = false
-    },
-    // 搜索
-    handleFilter() {
-      this.listQuery.page = 1
-      this.getList()
     },
     // 显示创建表单
     showCreateForm() {
@@ -231,25 +171,12 @@ export default {
       this.$refs['dataForm'].validate(async(valid) => {
         if (!valid) { return }
 
-        // 执行创建请求
-        const r = await db.collection(Constants.cn.deploy_targets)
-          .add(this.form)
-
-        if (!r.id) {
-          this.$notify({
-            type: 'error',
-            title: '操作失败',
-            message: '创建失败！' + r.error
-          })
-          return
+        const r = await createDeployTarget(this.form)
+        if (r.error) {
+          return this.$notify({ type: 'error', title: '操作失败', message: '创建失败！' + r.error })
         }
 
-        this.$notify({
-          type: 'success',
-          title: '操作成功',
-          message: '创建成功！'
-        })
-
+        this.$notify({ type: 'success', title: '操作成功', message: '创建成功！' })
         this.getList()
         this.dialogFormVisible = false
       })
@@ -268,35 +195,20 @@ export default {
       this.$refs['dataForm'].validate(async(valid) => {
         if (!valid) { return }
 
-        // @TODO
         // 构建更新数据对象
         const data = {
           url: this.form.url,
           label: this.form.label,
-          token: this.form.token,
-          updated_at: Date.now()
+          token: this.form.token
         }
 
         // 执行更新请求
-        const r = await db.collection(Constants.cn.deploy_targets)
-          .where({ _id: this.form._id })
-          .update(data)
-
-        if (!r.ok) {
-          this.$notify({
-            type: 'error',
-            title: '操作失败',
-            message: '更新失败！' + r.error
-          })
-          return
+        const r = await updateDeployTarget(this.form._id, data)
+        if (r.error) {
+          return this.$notify({ type: 'error', title: '操作失败', message: '更新失败！' + r.error })
         }
 
-        this.$notify({
-          type: 'success',
-          title: '操作成功',
-          message: '更新成功！'
-        })
-
+        this.$notify({ type: 'success', title: '操作成功', message: '更新成功！' })
         this.getList()
         this.dialogFormVisible = false
       })
@@ -305,27 +217,13 @@ export default {
     async handleDelete(row, index) {
       await this.$confirm('确认要删除此数据？', '删除确认')
 
-      // 执行删除请求
-      const r = await db.collection(Constants.cn.deploy_targets)
-        .where({ _id: row._id })
-        .remove()
-
-      if (!r.ok) {
-        this.$notify({
-          type: 'error',
-          title: '操作失败',
-          message: '删除失败！' + r.error
-        })
-        return
+      const r = await removeDeployTarget(row._id)
+      if (r.error) {
+        return this.$notify({ type: 'error', title: '操作失败', message: '删除失败！' + r.error })
       }
 
-      this.$notify({
-        type: 'success',
-        title: '操作成功',
-        message: '删除成功！'
-      })
-
-      this.list.splice(index, 1)
+      this.$notify({ type: 'success', title: '操作成功', message: '删除成功！' })
+      this.getList()
     }
   }
 }

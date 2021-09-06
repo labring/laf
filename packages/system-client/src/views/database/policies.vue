@@ -138,7 +138,7 @@
     </el-dialog>
 
     <!-- 部署面板 -->
-    <DeployPanel v-model="deployPanelVisible" :policies="list" />
+    <DeployPanel v-if="deployPanelVisible" v-model="deployPanelVisible" :policies="list" />
   </div>
 </template>
 

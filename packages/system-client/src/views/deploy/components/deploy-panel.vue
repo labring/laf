@@ -32,11 +32,6 @@
               {{ func.name }} - {{ func.label }}
             </el-tag>
           </el-form-item>
-          <el-form-item v-if="triggers && triggers.length" label="部署触发器" size="normal">
-            <el-tag v-for="tri in triggers" :key="tri._id" type="default" size="mini" style="margin-right: 10px;">
-              {{ tri.name }} - {{ tri.event || 'timer' }}
-            </el-tag>
-          </el-form-item>
           <el-form-item label="部署说明" prop="comment">
             <el-input
               v-model="form.comment"
@@ -57,9 +52,9 @@
   </div>
 </template>
 <script>
-import { db } from '@/api/cloud'
-import { deploy2remote } from '@/api/deploy'
-import { Constants } from '../../../api/constants'
+// import { db } from '@/api/cloud'
+import { deploy2remote, getDeployTargets } from '@/api/deploy'
+// import { Constants } from '../../../api/constants'
 
 // 表单验证规则
 const formRules = {
@@ -89,8 +84,7 @@ export default {
       // 部署目标
       targets: [],
       formRules,
-      internal_functions: [],
-      triggers: []
+      internal_functions: []
     }
   },
   computed: {
@@ -109,7 +103,6 @@ export default {
     functions() {
       if (this.functions) {
         this.internal_functions = [...this.functions]
-        this.loadTriggers()
       }
     }
   },
@@ -121,50 +114,32 @@ export default {
   },
   methods: {
     async load() {
-      const r = await db.collection(Constants.cn.deploy_targets).get()
-      if (!r.ok) throw new Error('get targets failed')
-
+      const r = await getDeployTargets()
       this.targets = r.data
-    },
-    async loadTriggers() {
-      this.triggers = []
-      if (!this.internal_functions?.length) {
-        return
-      }
-      const func_ids = this.internal_functions.map(func => func._id)
-      const r = await db.collection(Constants.cn.triggers)
-        .where({
-          func_id: db.command.in(func_ids)
-        })
-        .get()
-
-      if (r.ok) {
-        this.triggers = r.data
-      }
     },
     deploy() {
       if (!this.functions?.length && !this.policies?.length) {
-        this.$message.error('无可部署内容')
-        return
+        return this.$message.error('无可部署内容')
       }
 
       if (!this.selected_target) {
-        this.$message.error('无推送目标选中')
+        return this.$message.error('无推送目标选中')
       }
 
       this.$refs['dataForm'].validate(async(valid) => {
         if (!valid) { return }
+
         const data = {
           policies: this.policies,
           functions: this.functions,
-          triggers: this.triggers,
           comment: this.form.comment
         }
+
         const target = this.selected_target
         const r = await deploy2remote(target.url, target.token, data)
-        if (r.code === 0) {
-          this.$message.success('操作成功！')
-        }
+        if (r.code) { return this.$message.error('出错了') }
+
+        this.$message.success('操作成功！')
       })
     },
     defaultForm() {
