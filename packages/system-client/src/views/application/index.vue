@@ -217,7 +217,9 @@ export default {
       this.$message.success('已复制')
     },
     async startApp(app) {
+      this.loading = true
       const res = await startApplication(app.appid)
+        .finally(() => { this.loading = false })
       if (res.data) {
         this.$notify.success('启动应用成功')
         this.loadApps()
@@ -226,8 +228,9 @@ export default {
     },
     async stopApp(app) {
       await this.$confirm('确认要停止应用服务？', '服务操作确认')
-
+      this.loading = true
       const res = await stopApplication(app.appid)
+        .finally(() => { this.loading = false })
       if (res.data) {
         this.$notify.success('停止应用成功')
         this.loadApps()

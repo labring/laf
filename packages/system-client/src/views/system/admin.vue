@@ -90,10 +90,7 @@
 
 <script>
 import { deepClone } from '@/utils'
-import { db } from '@/api/cloud'
-import * as user from '@/api/user'
 import { array2map, mergeMap2ArrayByKeyArray } from '../../utils/array'
-import { Constants } from '../../api/constants'
 
 const defaultForm = {
   _id: undefined,
@@ -110,30 +107,24 @@ export default {
       admin: Object.assign({}, defaultForm),
       admins: [],
       dialogVisible: false,
-      dialogType: 'new',
-      roles: [] // 所有的角色列表
+      dialogType: 'new'
     }
   },
   computed: {
-
+    roles() {
+      return this.$store.state.app.roles
+    }
   },
   async created() {
-    await this.getRoles()
     await this.getAdmins()
   },
   methods: {
     /** 获取管理员列表 */
     async getAdmins() {
-      const res = await db.collection(Constants.cn.admins)
-        .get()
-
+      const app = this.$store.state.app.application
+      const collaborators = app.collaborators
       const rolesMap = array2map(this.roles, 'name')
-      this.admins = mergeMap2ArrayByKeyArray(rolesMap, res.data, 'roles', 'full_roles')
-    },
-    /** 获取所有的角色列表 */
-    async getRoles() {
-      const res = await db.collection(Constants.cn.roles).get()
-      this.roles = res.data || []
+      this.admins = mergeMap2ArrayByKeyArray(rolesMap, collaborators, 'roles', 'full_roles')
     },
     /** 打开添加表单  */
     handleAddForm() {
@@ -149,66 +140,7 @@ export default {
     },
     /** 删除数据 */
     handleDelete({ $index, row }) {
-      this.$confirm('确定删除?', 'Warning', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(async() => {
-          const { ok } = await db.collection(Constants.cn.admins)
-            .where({ _id: row._id })
-            .remove()
-          if (!ok) return
-          this.admins.splice($index, 1)
-          this.$message({
-            type: 'success',
-            message: 'Delete succed!'
-          })
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    },
-
-    /** 编辑或新建 */
-    async confirmForm() {
-      const isEdit = this.dialogType === 'edit'
-
-      if (isEdit) {
-        const data = {
-          _id: this.admin._id,
-          username: this.admin.username,
-          name: this.admin.name,
-          roles: this.admin.roles
-        }
-        if (this.admin.password !== '') {
-          data['password'] = this.admin.password
-        }
-
-        await user.edit(data)
-        this.getAdmins()
-      } else {
-        const data = {
-          username: this.admin.username,
-          name: this.admin.name,
-          password: this.admin.password,
-          roles: this.admin.roles
-        }
-        await user.add(data)
-        this.getAdmins()
-      }
-
-      const { username, name } = this.admin
-      this.dialogVisible = false
-      this.$notify({
-        title: 'Success',
-        dangerouslyUseHTMLString: true,
-        message: `
-            <div>管理员账户: ${username}</div>
-            <div>管理员名称: ${name}</div>
-          `,
-        type: 'success'
-      })
+      this.$message.info('尚未实现此功能')
     }
   }
 }

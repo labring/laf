@@ -98,9 +98,7 @@
 
 <script>
 import { deepClone } from '@/utils'
-import { db } from '@/api/cloud'
 import { mergeMap2ArrayByKeyArray, array2map } from '@/utils/array'
-import { Constants } from '../../api/constants'
 
 const defaultForm = {
   _id: undefined,
@@ -126,11 +124,11 @@ export default {
   },
   methods: {
     async getRoles() {
-      const res = await db.collection(Constants.cn.roles).get()
-      const { data: permissions } = await db.collection(Constants.cn.permissions).get()
-      this.permissions = permissions
-      const permsMap = array2map(permissions, 'name')
-      this.rolesList = mergeMap2ArrayByKeyArray(permsMap, res.data, 'permissions', 'full_permissions')
+      // const res = await db.collection(Constants.cn.roles).get()
+      // const { data: permissions } = await db.collection(Constants.cn.permissions).get()
+      // this.permissions = permissions
+      // const permsMap = array2map(permissions, 'name')
+      // this.rolesList = mergeMap2ArrayByKeyArray(permsMap, res.data, 'permissions', 'full_permissions')
     },
     handleAddRole() {
       this.role = Object.assign({}, defaultForm)
@@ -146,58 +144,58 @@ export default {
       this.role = deepClone(scope.row)
     },
     handleDelete({ $index, row }) {
-      this.$confirm('确定删除角色?', 'Warning', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(async() => {
-          const r = await db.collection(Constants.cn.roles)
-            .where({ name: row.name })
-            .remove()
-          if (!r.ok) return
-          this.rolesList.splice($index, 1)
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          })
-        })
-        .catch(err => {
-          console.error(err)
-        })
+      // this.$confirm('确定删除角色?', 'Warning', {
+      //   confirmButtonText: '确定',
+      //   cancelButtonText: '取消',
+      //   type: 'warning'
+      // })
+      //   .then(async() => {
+      //     const r = await db.collection(Constants.cn.roles)
+      //       .where({ name: row.name })
+      //       .remove()
+      //     if (!r.ok) return
+      //     this.rolesList.splice($index, 1)
+      //     this.$message({
+      //       type: 'success',
+      //       message: '删除成功!'
+      //     })
+      //   })
+      //   .catch(err => {
+      //     console.error(err)
+      //   })
     },
     async confirmRole() {
-      const isEdit = this.dialogType === 'edit'
+      // const isEdit = this.dialogType === 'edit'
 
-      if (isEdit) {
-        const { ok } = await db.collection(Constants.cn.roles)
-          .where({ _id: this.role._id })
-          .update({
-            name: this.role.name,
-            label: this.role.label,
-            description: this.role.description,
-            permissions: this.role.permissions
-          })
-        if (!ok) return
-        this.getRoles()
-      } else {
-        const { ok } = await db.collection(Constants.cn.roles).add(this.role)
-        if (!ok) return
-        this.getRoles()
-      }
+      // if (isEdit) {
+      //   const { ok } = await db.collection(Constants.cn.roles)
+      //     .where({ _id: this.role._id })
+      //     .update({
+      //       name: this.role.name,
+      //       label: this.role.label,
+      //       description: this.role.description,
+      //       permissions: this.role.permissions
+      //     })
+      //   if (!ok) return
+      //   this.getRoles()
+      // } else {
+      //   const { ok } = await db.collection(Constants.cn.roles).add(this.role)
+      //   if (!ok) return
+      //   this.getRoles()
+      // }
 
-      const { description, name, label } = this.role
-      this.dialogVisible = false
-      this.$notify({
-        title: 'Success',
-        dangerouslyUseHTMLString: true,
-        message: `
-            <div>角色标识: ${name}</div>
-            <div>角色名称: ${label}</div>
-            <div>描述: ${description}</div>
-          `,
-        type: 'success'
-      })
+      // const { description, name, label } = this.role
+      // this.dialogVisible = false
+      // this.$notify({
+      //   title: 'Success',
+      //   dangerouslyUseHTMLString: true,
+      //   message: `
+      //       <div>角色标识: ${name}</div>
+      //       <div>角色名称: ${label}</div>
+      //       <div>描述: ${description}</div>
+      //     `,
+      //   type: 'success'
+      // })
     }
   }
 }
