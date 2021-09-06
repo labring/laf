@@ -7,17 +7,17 @@ export const Constants = {
   /**
    * collection name of cloud functions
    */
-  function_collection: '__deployed__functions',
+  function_collection: '__published__functions',
 
   /**
    * collection name of cloud functions' triggers
    */
-  trigger_collection: '__deployed__triggers',
+  trigger_collection: '__published__triggers',
 
   /**
    * collection name of policy which used for authenticating `client-access-database` requests
    */
-  policy_collection: '__deployed__policies',
+  policy_collection: '__published__policies',
 
   /**
    * collection name of cloud functions' log
