@@ -2,27 +2,27 @@ const assert = require('assert')
 const child_process = require('child_process')
 
 const images = {
-  devops: 'lessx/laf-devops-server',
-  app: 'lessx/laf-app-server',
-  devops_admin: 'lessx/laf-devops-admin'
+  system_server: 'lafyun/system-server',
+  app_service: 'lafyun/app-service',
+  system_client: 'lafyun/system-client'
 }
 
-function getDevopsServerVersion() {
-  const json = require('../packages/devops-server/package.json')
+function getSystemServerVersion() {
+  const json = require('../packages/system-server/package.json')
 
   assert.ok(json)
   return json?.version
 }
 
-function getAppServerVersion() {
-  const json = require('../packages/app-server/package.json')
+function getAppServiceVersion() {
+  const json = require('../packages/app-service/package.json')
 
   assert.ok(json)
   return json?.version
 }
 
-function getDevopsAdminVersion() {
-  const json = require('../packages/devops-admin/package.json')
+function getSystemClientVersion() {
+  const json = require('../packages/system-client/package.json')
 
   assert.ok(json)
   return json?.version
@@ -72,9 +72,9 @@ function getDevopsAdminVersion() {
 
 
 module.exports = {
-  getDevopsServerVersion,
-  getAppServerVersion,
-  getDevopsAdminVersion,
+  getSystemServerVersion,
+  getAppServiceVersion,
+  getSystemClientVersion,
   buildImage,
   pushImage,
   images
