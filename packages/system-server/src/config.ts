@@ -71,4 +71,11 @@ export default class Config {
   static get SHARED_NETWORK(): string {
     return process.env.SHARED_NETWORK ?? 'laf_shared_network'
   }
+
+  /**
+   * the app service image name
+   */
+  static get APP_SERVICE_IMAGE(): string {
+    return process.env.APP_SERVICE_IMAGE
+  }
 }

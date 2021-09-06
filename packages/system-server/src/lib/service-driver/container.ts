@@ -20,8 +20,8 @@ export class DockerContainerServiceDriver {
     const uri = getApplicationDbUri(app)
 
     const container = await this.docker.createContainer({
-      Image: 'lessx/laf-app-server:latest',
-      Cmd: ['npm', 'run', 'init-start'],
+      Image: Config.APP_SERVICE_IMAGE,
+      Cmd: ['node', './dist/start.js'],
       name: `app_${app.appid}`,
       Env: [
         `DB=${app.config.db_name}`,
