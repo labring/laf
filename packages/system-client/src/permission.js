@@ -9,7 +9,7 @@ import { Message } from 'element-ui'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login'] // no redirect whitelist
+const whiteList = ['/login', '/sign-up'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
   // start progress bar
@@ -20,7 +20,6 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the user has logged in
   const hasToken = getToken()
-
   if (hasToken) {
     if (!store.state.user.name) {
       store.dispatch('user/getInfo')
@@ -65,6 +64,8 @@ router.beforeEach(async(to, from, next) => {
   } else {
     /* has no token*/
     if (whiteList.indexOf(to.path) !== -1) {
+      console.log('no token', to)
+
       // in the free login whitelist, go directly
       next()
     } else {

@@ -1,6 +1,7 @@
 import { login, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
+import { Message } from 'element-ui'
 
 const state = {
   token: getToken(),
@@ -22,47 +23,38 @@ const mutations = {
 
 const actions = {
   // user login
-  login({ commit }, userInfo) {
+  async login({ commit }, userInfo) {
     const { username, password } = userInfo
-    return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.access_token)
-        setToken(data.access_token, data.expire)
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
-    })
+    const res = await login({ username: username.trim(), password: password })
+    const { data } = res
+    if (res.error) {
+      console.log(res)
+      Message.error(res.error)
+      return
+    }
+    commit('SET_TOKEN', data.access_token)
+    setToken(data.access_token, data.expire)
   },
 
   // get user info
-  getInfo({ commit }) {
-    return new Promise((resolve, reject) => {
-      getInfo().then(response => {
-        const { data } = response
-
-        if (!data) {
-          reject('Verification failed, please Login again.')
-        }
-
-        const account = data
-
-        commit('SET_NAME', account.name || account.username)
-        commit('SET_AVATAR', account.avatar)
-
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
-    })
+  async getInfo({ commit, dispatch }) {
+    const res = await getInfo()
+    const { data } = res
+    if (!data) {
+      return dispatch('/user/logout')
+    }
+    const account = data
+    commit('SET_NAME', account.name || account.username)
+    commit('SET_AVATAR', account.avatar)
+    return data
   },
 
   // user logout
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
       commit('SET_TOKEN', '')
-
+      commit('SET_NAME', '')
+      commit('SET_AVATAR', '')
       removeToken()
       resetRouter()
 

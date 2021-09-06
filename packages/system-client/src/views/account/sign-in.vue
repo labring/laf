@@ -58,12 +58,20 @@
         </el-form-item>
       </el-tooltip>
 
-      <el-button
-        :loading="loading"
-        type="primary"
-        style="width:100%;margin-bottom:30px;"
-        @click.native.prevent="handleLogin"
-      >登陆</el-button>
+      <div class="btn-row">
+        <el-button
+          :loading="loading"
+          type="primary"
+          style="width:80%;margin-bottom:30px;font-weight: bold;"
+          @click.native.prevent="handleLogin"
+        >登陆</el-button>
+
+        <el-button
+          type="text"
+          style="width:20%;margin-bottom:30px;color: white; font-weight: bold;"
+          @click="toSignUp"
+        >去注册？</el-button>
+      </div>
     </el-form>
 
   </div>
@@ -153,26 +161,27 @@ export default {
     },
     handleLogin() {
       this.$refs.loginForm.validate(async valid => {
-        if (valid) {
-          this.loading = true
-          this.$store
-            .dispatch('user/login', this.loginForm)
-            .then(async() => {
-              await this.$store.dispatch('user/getInfo')
-              this.$router.push({
-                path: this.redirect || '/',
-                query: this.otherQuery
-              })
-              this.loading = false
-            })
-            .catch(error => {
-              console.error(error)
-              this.loading = false
-            })
-        } else {
+        if (!valid) {
           console.log('error submit!!')
-          return false
+          return this.$message.error('请输入正确的账户密码')
         }
+
+        this.loading = true
+        await this.$store
+          .dispatch('user/login', this.loginForm)
+          .catch((err) => { console.error(err) })
+          .finally(() => { this.loading = false })
+
+        this.$router.push({
+          path: this.redirect || '/',
+          query: this.otherQuery
+        })
+        this.loading = false
+      })
+    },
+    toSignUp() {
+      this.$router.push({
+        path: '/sign-up'
       })
     },
     getOtherQuery(query) {
@@ -183,24 +192,6 @@ export default {
         return acc
       }, {})
     }
-    // afterQRScan() {
-    //   if (e.key === 'x-admin-oauth-code') {
-    //     const code = getQueryObject(e.newValue)
-    //     const codeMap = {
-    //       wechat: 'code',
-    //       tencent: 'code'
-    //     }
-    //     const type = codeMap[this.auth_type]
-    //     const codeName = code[type]
-    //     if (codeName) {
-    //       this.$store.dispatch('LoginByThirdparty', codeName).then(() => {
-    //         this.$router.push({ path: this.redirect || '/' })
-    //       })
-    //     } else {
-    //       alert('第三方登录失败')
-    //     }
-    //   }
-    // }
   }
 }
 </script>
@@ -248,6 +239,10 @@ $cursor: #fff;
     background: rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     color: #454545;
+  }
+  .btn-row {
+    display: flex;
+    justify-content: space-between;
   }
 }
 </style>

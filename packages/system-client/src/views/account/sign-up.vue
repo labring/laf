@@ -19,7 +19,7 @@
         <el-input
           ref="username"
           v-model="loginForm.username"
-          placeholder="Username"
+          placeholder="登陆账户"
           name="username"
           type="text"
           tabindex="1"
@@ -42,13 +42,12 @@
             ref="password"
             v-model="loginForm.password"
             :type="passwordType"
-            placeholder="Password"
+            placeholder="登陆密码"
             name="password"
             tabindex="2"
             autocomplete="on"
             @keyup.native="checkCapslock"
             @blur="capsTooltip = false"
-            @keyup.enter.native="handleLogin"
           />
           <span class="show-pwd" @click="showPwd">
             <svg-icon
@@ -57,12 +56,33 @@
           </span>
         </el-form-item>
       </el-tooltip>
-
+      <el-form-item prop="password">
+        <span class="svg-container">
+          <svg-icon icon-class="password" />
+        </span>
+        <el-input
+          :key="passwordType"
+          ref="confirm_password"
+          v-model="loginForm.confirm_password"
+          :type="passwordType"
+          placeholder="确认密码"
+          name="confirm_password"
+          tabindex="3"
+          autocomplete="on"
+          @keyup.native="checkCapslock"
+          @blur="capsTooltip = false"
+        />
+        <span class="show-pwd" @click="showPwd">
+          <svg-icon
+            :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
+          />
+        </span>
+      </el-form-item>
       <el-button
         :loading="loading"
         type="primary"
         style="width:100%;margin-bottom:30px;"
-        @click.native.prevent="handleSignUp"
+        @click="handleSignUp"
       >注册</el-button>
 
     </el-form>
@@ -72,6 +92,7 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
+import { signup } from '@/api/user'
 
 export default {
   name: 'SignUp',
@@ -94,7 +115,8 @@ export default {
     return {
       loginForm: {
         username: '',
-        password: ''
+        password: '',
+        confirm_password: ''
       },
       loginRules: {
         username: [
@@ -112,21 +134,6 @@ export default {
       otherQuery: {}
     }
   },
-  watch: {
-    $route: {
-      handler: function(route) {
-        const query = route.query
-        if (query) {
-          this.redirect = query.redirect
-          this.otherQuery = this.getOtherQuery(query)
-        }
-      },
-      immediate: true
-    }
-  },
-  created() {
-    // window.addEventListener('storage', this.afterQRScan)
-  },
   mounted() {
     if (this.loginForm.username === '') {
       this.$refs.username.focus()
@@ -134,9 +141,7 @@ export default {
       this.$refs.password.focus()
     }
   },
-  destroyed() {
-    // window.removeEventListener('storage', this.afterQRScan)
-  },
+
   methods: {
     checkCapslock(e) {
       const { key } = e
@@ -153,53 +158,29 @@ export default {
       })
     },
     handleSignUp() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$store
-            .dispatch('user/login', this.loginForm)
-            .then(() => {
-              this.$router.push({
-                path: this.redirect || '/',
-                query: this.otherQuery
-              })
-              this.loading = false
-            })
-            .catch(() => {
-              this.loading = false
-            })
-        } else {
+      if (this.loginForm.password !== this.loginForm.confirm_password) {
+        return this.$message.error('两次密码不一致')
+      }
+
+      this.$refs.loginForm.validate(async valid => {
+        if (!valid) {
           console.log('error submit!!')
-          return false
+          return this.$message.error('请输入正确的账户密码')
         }
+
+        this.loading = true
+        const res = await signup(this.loginForm)
+          .finally(() => { this.loading = false })
+        if (res.error) {
+          return this.$message.error(res.error)
+        }
+        this.$router.push({
+          path: this.redirect || '/',
+          query: this.otherQuery
+        })
+        this.loading = false
       })
-    },
-    getOtherQuery(query) {
-      return Object.keys(query).reduce((acc, cur) => {
-        if (cur !== 'redirect') {
-          acc[cur] = query[cur]
-        }
-        return acc
-      }, {})
     }
-    // afterQRScan() {
-    //   if (e.key === 'x-admin-oauth-code') {
-    //     const code = getQueryObject(e.newValue)
-    //     const codeMap = {
-    //       wechat: 'code',
-    //       tencent: 'code'
-    //     }
-    //     const type = codeMap[this.auth_type]
-    //     const codeName = code[type]
-    //     if (codeName) {
-    //       this.$store.dispatch('LoginByThirdparty', codeName).then(() => {
-    //         this.$router.push({ path: this.redirect || '/' })
-    //       })
-    //     } else {
-    //       alert('第三方登录失败')
-    //     }
-    //   }
-    // }
   }
 }
 </script>

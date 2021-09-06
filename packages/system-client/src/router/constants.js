@@ -23,7 +23,7 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/signup',
+    path: '/sign-up',
     component: () => import('@/views/account/sign-up'),
     hidden: true
   },
