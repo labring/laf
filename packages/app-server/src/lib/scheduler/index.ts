@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-18 16:36:54
+ * @LastEditTime: 2021-09-06 00:27:44
  * @Description: 
  */
 
@@ -9,7 +9,6 @@ import { getTriggers } from "../../api/trigger"
 import { Trigger } from "cloud-function-engine"
 import { DatabaseAgent } from "../database"
 import { createLogger } from "../logger"
-import { convertActionType } from "../utils"
 import { ChangeStreamDocument } from "mongodb"
 import { FrameworkScheduler } from "./scheduler"
 import { debounce } from 'lodash'
@@ -93,50 +92,4 @@ function DatabaseChangeEventCallBack(doc: ChangeStreamDocument) {
   // emit database change event
   const event = `DatabaseChange:${collection}#${operationType}`
   SchedulerInstance.emit(event, doc)
-}
-
-
-/**
- * Implement database change event mechanism by listening accessor event. (!Deprecated)
- * @deprecated This method would be removed in future, use mongodb WatchStream instead.
- * @tip Keep this part of the code temporarily for compatibility with older applications
- * 
- * This mechanism has the following characteristics (compared with the mechanism of mongodb WatchStream): 
- *  - Not limited to Mongodb
- *  - In addition to update and delete events, you can listen for read and count events
- *  - Cannot listen for data changes that are not operated by accessor
- *  - The update and remove operation cannot obtain the id of the affected data.
- *  - Data changes that occur during an unexpected outage of the service cannot be monitored 
- *    (whereas the mongodb WatchStream mechanism can be monitored for changes during recovery from an outage)
- */
-accessor.on('result', AccessorEventCallBack)
-
-/**
- * Callback for database operation event
- * @param data 
- */
-export function AccessorEventCallBack(data: any) {
-  // fix the type problem of mongodb _id, transform possibly ObjectIds to string type
-  const _data = JSON.parse(JSON.stringify(data))
-
-  const { params, result } = _data
-
-  const op = convertActionType(params.action)
-
-  // ignored operations
-  if (['read', 'count', 'watch'].includes(op)) {
-    return
-  }
-
-  // ignore operations on internal collections
-  if (params.collection?.startsWith('__')) {
-    return
-  }
-
-  // emit database operation event
-  const event = `/db/${params.collection}#${op}`
-  SchedulerInstance.emit(event, {
-    exec_params: params,
-    exec_result: result
-  })
 }
