@@ -39,9 +39,9 @@ docker run -p 27017:27017 --name laf_mongo -e ALLOW_EMPTY_PASSWORD=yes -e MONGOD
 
 ```sh
 # 创建配置文件 .env
-cp .env.development .env
+cp .env.template .env
 
-# 初始化管理员、访问策略、云函数等数据
+# 初始化应用数据
 npm run init
 ```
 

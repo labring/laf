@@ -17,7 +17,7 @@ services:
     volumes:
       - db-data:/bitnami/mongodb
     ports:
-      - "27018:27017"
+      - "27017:27017"
     networks: 
       - laf_shared_network
       

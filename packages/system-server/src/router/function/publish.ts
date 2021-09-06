@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:51:19
- * @LastEditTime: 2021-09-06 12:02:36
+ * @LastEditTime: 2021-09-06 18:56:09
  * @Description: 
  */
 
@@ -32,7 +32,7 @@ export async function handlePublishFunctions(req: Request, res: Response) {
 
   try {
     await publishFunctions(app)
-      .then(() => publishTriggers(app))
+    await publishTriggers(app)
 
     return res.send({
       code: 0,

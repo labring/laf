@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-02 16:34:14
+ * @LastEditTime: 2021-09-06 18:16:25
  * @Description: 
  */
 
@@ -173,17 +173,4 @@ async function _processFunctionWithSameNameButNotId(func: CloudFunctionStruct, s
   }
 
   logger.warn(`delete local func ${r?.value?._id} with same name with (${func._id}:${func.name}) but different id `)
-
-  // remove its triggers if any
-  const r0 = await db.collection(Constants.cn.triggers).deleteMany(
-    {
-      func_id: r?.value?._id?.toString()
-    },
-    { session })
-
-  if (!r0.deletedCount) {
-    return
-  }
-
-  logger.warn(`delete triggers of func ${func._id} which been deleted`, r0)
 }

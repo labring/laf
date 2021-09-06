@@ -1,30 +1,24 @@
 #! /usr/bin/env node
 
-const Config = require('../dist/config').default
-const { hashPassword } = require('../dist/lib/utils/hash')
+const { hashPassword } = require('../dist/utils/hash')
 const assert = require('assert')
 const { FunctionLoader } = require('./func-loader')
 const { Constants } = require('../dist/constants')
 const { DatabaseAgent } = require('../dist/lib/db-agent')
-const appAdminRules = require('./policies/app-admin.json')
-const appUserRules = require('./policies/app-user.json')
-
 
 const sys_accessor = DatabaseAgent.sys_accessor
-
-const db = DatabaseAgent.sys_db
 
 async function main() {
   await sys_accessor.ready
 
-  // create first admin
-  await createFirstAdmin()
+  const db = sys_accessor.db
+  await sys_accessor.db.collection(Constants.cn.accounts).createIndex('username', { unique: true })
+  await sys_accessor.db.collection(Constants.cn.applications).createIndex('appid', { unique: true })
+  await sys_accessor.db.collection(Constants.cn.functions).createIndex({ appid: 1, name: 1}, { unique: true })
+  await sys_accessor.db.collection(Constants.cn.policies).createIndex({ appid: 1, name: 1}, { unique: true })
 
-  await createInitialPolicy('admin', appAdminRules, 'injector-admin')
-  await createInitialPolicy('app', appUserRules)
-
-  // create built-in functions
-  await createBuiltinFunctions()
+  // create first account
+  await createFirstAccount()
 
   sys_accessor.close()
 }
@@ -36,38 +30,25 @@ main()
  * Create the first admin
  * @returns 
  */
-async function createFirstAdmin() {
-  try {
-    const username = Config.SYS_ADMIN || 'root'
-    const password = hashPassword(Config.SYS_ADMIN_PASSWORD || 'kissme')
+async function createFirstAccount() {
+  const db = DatabaseAgent.sys_db
 
+  try {
     const { total } = await db.collection(Constants.cn.accounts).count()
     if (total > 0) {
-      console.log('admin already exists')
+      console.log('account already exists')
       return
     }
 
-    await sys_accessor.db.collection(Constants.cn.accounts).createIndex('username', { unique: true })
-
     const roles = Object.keys(Constants.roles)
-
     const r_add = await db.collection(Constants.cn.accounts).add({
-      username,
-      avatar: "https://static.dingtalk.com/media/lALPDe7szaMXyv3NAr3NApw_668_701.png",
-      name: 'InitAccount',
-      roles,
+      username: process.env.INIT_ACCOUNT || 'root',
+      name: 'root',
+      password: hashPassword(process.env.INIT_ACCOUNT_PASSWORD || '123456'),
       created_at: Date.now(),
       updated_at: Date.now()
     })
-    assert(r_add.ok, 'add admin occurs error')
-
-    await db.collection(Constants.cn.password).add({
-      uid: r_add.id,
-      password,
-      type: 'login',
-      created_at: Date.now(),
-      updated_at: Date.now()
-    })
+    assert(r_add.ok, 'add account occurs error')
 
     return r_add.id
   } catch (error) {
@@ -83,6 +64,7 @@ async function createFirstAdmin() {
  * @returns 
  */
 async function createInitialPolicy(name, rules, injector) {
+  const db = DatabaseAgent.sys_db
 
   // if policy existed, skip it
   const { total } = await db.collection(Constants.cn.policies)
@@ -114,6 +96,8 @@ async function createInitialPolicy(name, rules, injector) {
  * @returns 
  */
 async function createBuiltinFunctions() {
+  const db = DatabaseAgent.sys_db
+
   // create unique index in function collection
   await sys_accessor.db.collection(Constants.cn.functions).createIndex('name', { unique: true })
   
@@ -127,12 +111,7 @@ async function createBuiltinFunctions() {
         created_at: Date.now(),
         updated_at: Date.now()
       }
-      delete data['triggers']
-      const r = await db.collection(Constants.cn.functions).add(data)
-
-      if (triggers.length) {
-        await createTriggers(r.id, triggers)
-      }
+      await db.collection(Constants.cn.functions).add(data)
     } catch (error) {
       if (error.code == 11000) {
         console.log('functions already exists: ' + func.name)
@@ -143,24 +122,4 @@ async function createBuiltinFunctions() {
   }
 
   return true
-}
-
-/**
- * Create built-in triggers
- */
-async function createTriggers(func_id, triggers) {
-  assert.ok(func_id, 'invalid func_id')
-  assert.ok(triggers.length, 'no triggers found')
-
-  for (const tri of triggers) {
-    const data = {
-      ...tri,
-      created_at: Date.now(),
-      updated_at: Date.now(),
-      func_id: func_id
-    }
-    await db.collection(Constants.cn.triggers).add(data)
-  }
-
-  console.log(`triggers of func[${func_id}] created`)
 }

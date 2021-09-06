@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-06 17:28:50
+ * @LastEditTime: 2021-09-06 18:38:46
  * @Description: 
  */
 
@@ -40,15 +40,11 @@ export const Constants = {
    */
   cn: {
     accounts: coll_prefix + 'accounts',
-    permissions: coll_prefix + 'permissions',
-    roles: coll_prefix + 'roles',
     policies: coll_prefix + 'policies',
     functions: coll_prefix + 'functions',
     function_history: coll_prefix + 'function_history',
-    triggers: coll_prefix + 'triggers',
     deploy_targets: coll_prefix + 'deploy_targets',
     deploy_requests: coll_prefix + 'deploy_requests',
-    password: coll_prefix + 'password',
     applications: coll_prefix + 'applications',
   },
 

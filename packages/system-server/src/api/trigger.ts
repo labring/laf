@@ -1,10 +1,11 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-06 14:24:22
+ * @LastEditTime: 2021-09-06 18:57:33
  * @Description: 
  */
 
+import * as assert from "assert"
 import { Constants } from "../constants"
 import { DatabaseAgent } from "../lib/db-agent"
 import { ApplicationStruct, getApplicationDbAccessor } from "./application"
@@ -16,6 +17,7 @@ import { ApplicationStruct, getApplicationDbAccessor } from "./application"
  * @returns 
  */
 export async function getTriggers(appid: string) {
+  assert.ok(appid, 'empty appid got')
   const db = DatabaseAgent.sys_accessor.db
 
   const funcs = await db.collection(Constants.cn.functions)
@@ -46,6 +48,8 @@ export async function getTriggers(appid: string) {
 export async function publishTriggers(app: ApplicationStruct) {
   // read triggers from sys db
   const ret = await getTriggers(app.appid)
+  if (!ret.length)
+    return
 
   // write triggers to app db
   const app_accessor = await getApplicationDbAccessor(app)

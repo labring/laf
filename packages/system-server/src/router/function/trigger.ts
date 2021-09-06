@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-03 19:55:26
- * @LastEditTime: 2021-09-06 12:14:29
+ * @LastEditTime: 2021-09-06 18:54:28
  * @Description: 
  */
 
@@ -64,7 +64,7 @@ export async function handleCreateTrigger(req: Request, res: Response) {
     triggers: [trigger]
   }
 
-  if (func.triggers?.length) {
+  if (func.triggers) {
     update_cmd = {
       $addToSet: { triggers: trigger }
     }
