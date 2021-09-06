@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:51:19
- * @LastEditTime: 2021-09-03 20:30:19
+ * @LastEditTime: 2021-09-06 16:37:34
  * @Description: 
  */
 
@@ -30,9 +30,9 @@ export async function handleGetFunctions(req: Request, res: Response) {
   }
 
   // build query object
-  const { keyword, tag, status } = req.body
-  const limit = req.body?.limit ?? 10
-  const page = req.body?.page ?? 1
+  const { keyword, tag, status } = req.query
+  const limit = Number(req.query?.limit || 10)
+  const page = Number(req.query?.page || 1)
 
   const query = {
     appid: app.appid
@@ -50,7 +50,7 @@ export async function handleGetFunctions(req: Request, res: Response) {
   }
 
   if (status) {
-    query['status'] = status
+    query['status'] = Number(status)
   }
 
   const coll = db.collection(Constants.cn.functions)

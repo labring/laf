@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-03 23:09:23
- * @LastEditTime: 2021-09-03 23:19:58
+ * @LastEditTime: 2021-09-06 15:58:15
  * @Description: 
  */
 
@@ -31,9 +31,9 @@ export async function handleGetPolicies(req: Request, res: Response) {
   }
 
   // build query object
-  const { keyword } = req.body
-  const limit = req.body?.limit ?? 10
-  const page = req.body?.page ?? 1
+  const { keyword } = req.query
+  const limit = Number(req.query?.limit || 10)
+  const page = Number(req.query?.page || 1)
 
   const query = {
     appid: app.appid
