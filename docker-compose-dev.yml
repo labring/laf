@@ -23,7 +23,7 @@ services:
       
   system_server:
     image: node:16-alpine
-    user: node
+    user: root
     working_dir: /app
     environment: 
       SYS_DB_URI: mongodb://my_user:password123@mongo:27017/?authSource=laf-sys&replicaSet=laf&writeConcern=majority
