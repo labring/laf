@@ -1,45 +1,43 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-02 16:34:27
+ * @LastEditTime: 2021-09-06 14:24:22
  * @Description: 
  */
 
 import { Constants } from "../constants"
 import { DatabaseAgent } from "../lib/db-agent"
-import { ClientSession, ObjectId } from 'mongodb'
-import * as assert from 'assert'
-import { logger } from "../lib/logger"
 import { ApplicationStruct, getApplicationDbAccessor } from "./application"
 
-const db = DatabaseAgent.sys_db
 
 /**
  * load triggers
- * @param status the status of trigger, default is 1 means enabled
+ * @param appid 
  * @returns 
  */
-export async function getTriggers(status = 1) {
-  const r = await db.collection(Constants.cn.triggers)
-    .where({ status: status })
-    .get()
+export async function getTriggers(appid: string) {
+  const db = DatabaseAgent.sys_accessor.db
 
-  return r.data
+  const funcs = await db.collection(Constants.cn.functions)
+    .find(
+      { appid },
+      {
+        projection: { _id: 1, triggers: 1 }
+      })
+    .toArray()
+
+  const rets = []
+  for (const func of funcs) {
+    if (func.triggers?.length) {
+      const triggers = func.triggers.map(tri => {
+        tri['func_id'] = func._id.toString()
+        return tri
+      })
+      rets.push(...triggers)
+    }
+  }
+  return rets
 }
-
-/**
- * load trigger by its id
- * @param id 
- * @returns 
- */
-export async function getTriggerById(id: string) {
-  const r = await db.collection(Constants.cn.triggers)
-    .where({ _id: id })
-    .getOne()
-
-  return r.data
-}
-
 
 /**
   * Publish triggers
@@ -47,12 +45,7 @@ export async function getTriggerById(id: string) {
   */
 export async function publishTriggers(app: ApplicationStruct) {
   // read triggers from sys db
-  const ret = await DatabaseAgent.sys_accessor.db
-    .collection(Constants.cn.triggers)
-    .find({
-      appid: app.appid
-    })
-    .toArray()
+  const ret = await getTriggers(app.appid)
 
   // write triggers to app db
   const app_accessor = await getApplicationDbAccessor(app)
@@ -68,72 +61,4 @@ export async function publishTriggers(app: ApplicationStruct) {
   } finally {
     await session.endSession()
   }
-}
-
-
-/**
-  * Deploy triggers which pushed from remote environment
-  */
-export async function deployTriggers(triggers: any[]) {
-  assert.ok(triggers)
-  assert.ok(triggers instanceof Array)
-
-  const accessor = DatabaseAgent.sys_accessor
-
-  const data = triggers
-  const session = accessor.conn.startSession()
-
-  try {
-    await session.withTransaction(async () => {
-      for (const func of data) {
-        await _deployOneTrigger(func, session)
-      }
-    })
-  } finally {
-    await session.endSession()
-  }
-}
-
-
-/**
- * Deploy a trigger used by `deployTriggers`.
- * @param trigger the trigger data to be deployed
- * @param session the mongodb session for transaction operations
- * @see deployTriggers
- * @private
- * @returns 
- */
-async function _deployOneTrigger(trigger: any, session: ClientSession) {
-  const db = DatabaseAgent.sys_accessor.db
-
-  // skip trigger with invalid func_id
-  const func = await db.collection(Constants.cn.functions).findOne({ _id: new ObjectId(trigger.func_id) })
-  if (!func) {
-    logger.warn(`skip trigger with invalid func_id: ${trigger.func_id}`, trigger)
-    return
-  }
-
-  const r = await db.collection(Constants.cn.triggers).findOne({ _id: new ObjectId(trigger._id) }, { session })
-
-  const data = {
-    ...trigger
-  }
-
-  logger.debug('deploy trigger: ', data, r)
-
-  // if exists trigger
-  if (r) {
-    delete data['_id']
-    const ret = await db.collection(Constants.cn.triggers).updateOne({ _id: r._id }, {
-      $set: data
-    }, { session })
-
-    assert(ret.matchedCount, `deploy: update trigger ${trigger.name} occurred error`)
-    return
-  }
-
-  // if new trigger
-  data._id = new ObjectId(data._id) as any
-  const ret = await db.collection(Constants.cn.triggers).insertOne(data as any, { session })
-  assert(ret.insertedId, `deploy: add trigger ${trigger.name} occurred error`)
 }

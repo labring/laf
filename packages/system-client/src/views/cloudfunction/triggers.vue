@@ -1,30 +1,21 @@
 <template>
   <div class="app-container">
     <div v-if="func" class="func-title">
-      <h3>触发函数: {{ func.label }}</h3>
-      函数调用名：<el-tag type="success">{{ func.name }}</el-tag>
+      <h3>触发函数: {{ func.label }} <el-tag type="success">{{ func.name }}</el-tag></h3>
     </div>
     <!-- 数据检索区 -->
     <div class="filter-container">
-      <el-input
-        v-model="listQuery.keyword"
-        placeholder="搜索"
-        style="width: 200px;margin-right: 10px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-      />
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        搜索
+      <el-button class="filter-item" plain type="default" size="mini" icon="el-icon-refresh" @click="getFunction">
+        刷新
       </el-button>
-      <el-button v-permission="'trigger.create'" class="filter-item" type="primary" icon="el-icon-search" @click="showCreateForm">
+      <el-button class="filter-item" plain type="primary" size="mini" icon="el-icon-plus" @click="showCreateForm">
         新建触发器
       </el-button>
     </div>
 
     <!-- 表格 -->
     <el-table
-      :key="tableKey"
-      v-loading="listLoading"
+      v-loading="loading"
       :data="list"
       border
       fit
@@ -33,7 +24,7 @@
     >
       <el-table-column
         label="ID"
-        prop="id"
+        prop="_id"
         sortable="custom"
         align="center"
         width="240"
@@ -86,24 +77,15 @@
       <el-table-column fixed="right" label="操作" align="center" width="340" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button type="info" size="mini" @click="showTriggerLogs(row)">日志</el-button>
-          <el-button v-permission="'trigger.edit'" type="primary" size="mini" @click="showUpdateForm(row)">
+          <el-button type="primary" size="mini" @click="showUpdateForm(row)">
             编辑
           </el-button>
-          <el-button v-if="row.status!='deleted'" v-permission="'trigger.delete'" size="mini" type="danger" @click="handleDelete(row,$index)">
+          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
             删除
           </el-button>
         </template>
       </el-table-column>
     </el-table>
-
-    <!-- 分页 -->
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="listQuery.page"
-      :limit.sync="listQuery.limit"
-      @pagination="getList"
-    />
 
     <!-- 表单对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
@@ -155,10 +137,9 @@
 </template>
 
 <script>
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { db } from '@/api/cloud'
-import { publishTriggers } from '@/api/publish'
-import { Constants } from '../../api/constants'
+import { getFunctionById } from '@/api/func'
+import { createTrigger, removeTrigger, updateTrigger } from '@/api/trigger'
+import { publishTriggers } from '@/api/trigger'
 
 // 默认化创建表单的值
 function getDefaultFormValue() {
@@ -184,7 +165,6 @@ const formRules = {
 
 export default {
   name: 'TriggerListPage',
-  components: { Pagination },
   directives: { },
   filters: {
     statusFilter(status) {
@@ -202,16 +182,7 @@ export default {
       value: '',
       func: null,
       funcId: '',
-
-      tableKey: 0,
       list: null,
-      total: 0,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        keyword: undefined
-      },
       form: getDefaultFormValue(),
       dialogFormVisible: false,
       dialogStatus: '',
@@ -226,7 +197,6 @@ export default {
     this.funcId = this.$route.params.funcId
     await this.getFunction()
     this.setTagViewTitle()
-    this.getList()
   },
   methods: {
     /**
@@ -235,11 +205,9 @@ export default {
     async getFunction() {
       const func_id = this.funcId
       this.loading = true
-      const r = await db.collection(Constants.cn.functions)
-        .where({ _id: func_id })
-        .getOne()
+      const r = await getFunctionById(func_id)
 
-      if (!r.ok || !r.data) {
+      if (r.error) {
         this.$notify({
           type: 'error',
           title: '错误',
@@ -249,55 +217,12 @@ export default {
       }
 
       this.func = r.data
+      this.list = r.data?.triggers || []
       this.loading = false
     },
-    /**
-     * 获取数据列表
-     */
-    async getList() {
-      this.listLoading = true
-
-      // 拼装查询条件 by this.listQuery
-      const { limit, page, keyword } = this.listQuery
-      const query = {
-        func_id: this.funcId
-      }
-      if (keyword) {
-        query['$or'] = [
-          { name: db.RegExp({ regexp: `.*${keyword}.*` }) },
-          { desc: db.RegExp({ regexp: `.*${keyword}.*` }) }
-        ]
-      }
-
-      // 执行数据查询
-      const res = await db.collection(Constants.cn.triggers)
-        .where(query)
-        .limit(limit)
-        .skip((page - 1) * limit)
-        .get()
-        .catch(() => { this.listLoading = false })
-
-      this.list = res.data
-
-      // 获取数据总数
-      const { total } = await db.collection(Constants.cn.triggers)
-        .where(query)
-        .limit(limit)
-        .skip((page - 1) * limit)
-        .count()
-        .catch(() => { this.listLoading = false })
-
-      this.total = total
-      this.listLoading = false
-    },
     // 发布触发器配置
-    async applyTrigger(triggerId) {
+    async publishTrigger(triggerId) {
       await publishTriggers()
-    },
-    // 搜索
-    handleFilter() {
-      this.listQuery.page = 1
-      this.getList()
     },
     // 显示创建表单
     showCreateForm() {
@@ -313,7 +238,7 @@ export default {
       this.$refs['dataForm'].validate(async(valid) => {
         if (!valid) { return }
 
-        const params = { ...this.form, func_id: this.funcId }
+        const params = { ...this.form }
         console.log(params)
 
         if (params.type === 'event') {
@@ -325,10 +250,9 @@ export default {
         }
 
         // 执行创建请求
-        const r = await db.collection(Constants.cn.triggers)
-          .add(params)
+        const r = await createTrigger(this.funcId, params)
 
-        if (!r.id) {
+        if (r.error) {
           this.$notify({
             type: 'error',
             message: '创建失败！' + r.error
@@ -341,8 +265,8 @@ export default {
           message: '创建成功！'
         })
 
-        this.applyTrigger(r.id)
-        this.getList()
+        this.getFunction()
+        this.publishTrigger()
         this.dialogFormVisible = false
       })
     },
@@ -360,20 +284,15 @@ export default {
       this.$refs['dataForm'].validate(async(valid) => {
         if (!valid) { return }
 
-        // 执行创建请求
-        const r = await db.collection(Constants.cn.triggers)
-          .where({ _id: this.form._id })
-          .update({
-            name: this.form.name,
-            type: this.form.type,
-            event: this.form.type === 'event' ? this.form.event : undefined,
-            duration: this.form.type === 'timer' ? this.form.duration : undefined,
-            desc: this.form.desc,
-            status: this.form.status,
-            updated_at: Date.now()
-          })
+        const r = await updateTrigger(this.funcId, this.form._id, {
+          name: this.form.name,
+          event: this.form.type === 'event' ? this.form.event : undefined,
+          duration: this.form.type === 'timer' ? this.form.duration : undefined,
+          desc: this.form.desc,
+          status: this.form.status
+        })
 
-        if (!r.ok) {
+        if (r.error) {
           this.$notify({
             type: 'error',
             title: '操作失败',
@@ -388,8 +307,8 @@ export default {
           message: '更新成功！'
         })
 
-        this.applyTrigger(this.form._id)
-        this.getList()
+        this.getFunction()
+        this.publishTrigger()
         this.dialogFormVisible = false
       })
     },
@@ -406,11 +325,9 @@ export default {
       await this.$confirm('确认要删除此数据？', '删除确认')
 
       // 执行删除请求
-      const r = await db.collection(Constants.cn.triggers)
-        .where({ _id: row._id, status: 0 })
-        .remove()
+      const r = await removeTrigger(this.funcId, row._id)
 
-      if (!r.ok) {
+      if (r.error) {
         this.$notify({
           type: 'error',
           message: '删除失败！' + r.error
@@ -423,11 +340,12 @@ export default {
         message: '删除成功！'
       })
 
+      this.publishTrigger()
       this.list.splice(index, 1)
     },
     // 查看触发器日志（跳转日志页）
     showTriggerLogs(row) {
-      this.$router.push(`/development/function-logs?trigger_id=${row._id}`)
+      this.$router.push(`/development/logs?trigger_id=${row._id}`)
     },
     // 设置标签标题
     setTagViewTitle() {
