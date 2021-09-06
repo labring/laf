@@ -65,12 +65,28 @@ export function updatePolicy(policy_id, data) {
 }
 
 /**
- * Delete a policy
+ * Update policy rules
  * @param {*} policy_id
- * @param {*} data
+ * @param {*} rules
  * @returns
  */
-export function deletePolicy(policy_id) {
+export function updatePolicyRules(policy_id, rules) {
+  const appid = store.state.app.appid
+  return request({
+    url: `/apps/${appid}/policy/${policy_id}/rules`,
+    method: 'post',
+    data: {
+      rules: rules
+    }
+  })
+}
+
+/**
+ * Remove a policy
+ * @param {*} policy_id
+ * @returns
+ */
+export function removePolicy(policy_id) {
   const appid = store.state.app.appid
   return request({
     url: `/apps/${appid}/policy/${policy_id}`,

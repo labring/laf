@@ -50,19 +50,18 @@
 
 <script>
 import JsonEditor from '@/components/JsonEditor/rule'
-import { db } from '../../api/cloud'
 import $ from 'lodash'
-import { Constants } from '../../api/constants'
+import { getPolicyById, updatePolicyRules } from '@/api/policy'
 
-const defaultValue = `
+const defaultValue =
 {
-  "read": true,
-  "update": false,
-  "remove": false,
-  "add": false,
-  "count": true
+  'read': true,
+  'count': true,
+  'update': false,
+  'remove': false,
+  'add': false
 }
-`
+
 const defaultForm = {
   collection: ''
 }
@@ -116,11 +115,9 @@ export default {
   methods: {
     async getPolicy() {
       this.loading = true
-      const r = await db.collection(Constants.cn.policies)
-        .where({ _id: this.policy_id })
-        .getOne()
+      const r = await getPolicyById(this.policy_id)
 
-      if (!r.ok) {
+      if (r.error) {
         console.error(r.error)
         return
       }
@@ -138,27 +135,19 @@ export default {
       this.value = rules[this.collection_name] || defaultValue
     },
     async updateRule() {
-      if (this.loading) {
-        return
-      }
-      if (this.validate()) {
-        return
-      }
-
+      if (this.loading) return
+      if (this.validate()) return
       this.loading = true
-      const rule_data = this.value
-      const key = `rules.${this.collection_name}`
-      const r = await db.collection(Constants.cn.policies)
-        .where({
-          _id: this.policy_id
-        })
-        .update({
-          [key]: db.command.set(JSON.parse(rule_data))
-        })
 
-      if (!r.ok) {
+      this.policy.rules[this.collection_name] = JSON.parse(this.value)
+      const data = {
+        ...this.policy.rules
+      }
+      const r = await updatePolicyRules(this.policy_id, data)
+        .finally(() => { this.loading = false })
+      if (r.error) {
+        console.error(r.error)
         this.$message('保存失败!')
-        this.loading = false
         return
       }
 
@@ -167,50 +156,33 @@ export default {
         title: '保存',
         message: '保存访问规则成功!'
       })
-
-      this.loading = false
     },
     async create() {
-      if (!this.form.collection) {
-        this.$message('请正确填写表单！')
-        return
-      }
-      if (this.loading) {
-        return
-      }
+      const coll_name = this.form.collection
+      if (!coll_name) return this.$message('请正确填写表单！')
+      if (this.loading) return
       this.loading = true
 
-      const key = `rules.${this.form.collection}`
-      const { total } = await db.collection(Constants.cn.policies)
-        .where({
-          _id: this.policy_id,
-          [key]: db.command.exists(true)
-        }).count()
-
-      if (total) {
+      if (this.collections.includes(coll_name)) {
         this.loading = false
         this.$message('该集合规则已存在！')
         return
       }
-      const r = await db.collection(Constants.cn.policies)
-        .where({
-          _id: this.policy_id,
-          [key]: db.command.exists(false)
-        })
-        .update({
-          [key]: db.command.set(JSON.parse(defaultValue))
-        })
 
-      if (!r.ok) {
+      const data = {
+        ...this.policy.rules,
+        [coll_name]: defaultValue
+      }
+      const r = await updatePolicyRules(this.policy_id, data)
+        .finally(() => { this.loading = false })
+      if (r.error) {
         this.$message('创建失败!')
-        this.loading = false
+        console.error(r.error)
         return
       }
 
       await this.getPolicy()
-
-      this.collection_name = this.form.collection
-
+      this.collection_name = coll_name
       this.$notify({
         type: 'success',
         title: '操作结果',
@@ -218,47 +190,31 @@ export default {
       })
       this.form = { ...defaultForm }
       this.dialogVisible = false
-      this.loading = false
     },
     async removeRule() {
-      if (!this.collection_name) {
-        this.$message('请选择要删除的集合规则！')
-        return
-      }
-      if (this.loading) {
-        return
-      }
-
-      const confirm = await this.$confirm('确定删除该条规则，该操作不可恢复？')
-        .catch(() => false)
-
+      if (!this.collection_name) return this.$message('请选择要删除的集合规则！')
+      if (this.loading) return
+      const confirm = await this.$confirm('确定删除该条规则，该操作不可恢复？').catch(() => false)
       if (!confirm) return
-
       this.loading = true
 
-      const key = `rules.${this.collection_name}`
-      const r = await db.collection(Constants.cn.policies)
-        .where({
-          _id: this.policy_id,
-          [key]: db.command.exists(true)
-        })
-        .update({
-          [key]: db.command.remove()
-        })
+      const data = { ...this.policy.rules }
+      delete data[this.collection_name]
+      const r = await updatePolicyRules(this.policy_id, data)
+        .finally(() => { this.loading = false })
 
-      if (r.ok && r.updated) {
-        this.$notify({
-          title: '操作成功',
-          type: 'success',
-          message: '删除访问规则成功！'
-        })
-        this.collection_name = ''
-        this.getPolicy()
-      } else {
-        this.$message('删除访问规则操作失败 ' + r.error)
+      if (r.error) {
+        console.error(r.error)
+        return this.$message('删除访问规则操作失败 ' + r.error)
       }
 
-      this.loading = false
+      this.$notify({
+        title: '操作成功',
+        type: 'success',
+        message: '删除访问规则成功！'
+      })
+      this.collection_name = ''
+      this.getPolicy()
     },
     setTagViewTitle() {
       const label = this.policy.name

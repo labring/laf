@@ -138,14 +138,14 @@
     </el-dialog>
 
     <!-- 部署面板 -->
-    <!-- <DeployPanel v-model="deployPanelVisible" :policies="list" /> -->
+    <DeployPanel v-model="deployPanelVisible" :policies="list" />
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-// import DeployPanel from '../deploy/components/deploy-panel.vue'
-import { createPolicy, deletePolicy, getPolicies, publishPolicies, updatePolicy } from '@/api/policy'
+import DeployPanel from '../deploy/components/deploy-panel.vue'
+import { createPolicy, removePolicy, getPolicies, publishPolicies, updatePolicy } from '@/api/policy'
 import { getFunctions } from '@/api/func'
 
 // 默认化创建表单的值
@@ -171,8 +171,8 @@ const formRules = {
 export default {
   name: 'PoliciesListPage',
   components: {
-    Pagination
-    // DeployPanel
+    Pagination,
+    DeployPanel
   },
   filters: {
     statusFilter(status) {
@@ -215,7 +215,8 @@ export default {
   },
   methods: {
     async getFunctions() {
-      const r = await getFunctions({ status: 1 }, 1, 999)
+      // get all functions
+      const r = await getFunctions({ status: 1 }, 1, 9999)
       this.functions = r.data ?? []
     },
     /**
@@ -299,8 +300,7 @@ export default {
           label: this.form.label,
           injector: this.form.injector,
           status: this.form.status,
-          description: this.form.description,
-          updated_at: Date.now()
+          description: this.form.description
         }
 
         // 执行更新请求
@@ -330,7 +330,7 @@ export default {
       await this.$confirm('确认要删除此数据？', '删除确认')
 
       // 执行删除请求
-      const r = await deletePolicy(row._id)
+      const r = await removePolicy(row._id)
 
       if (r.error) {
         this.$notify({
@@ -368,8 +368,7 @@ export default {
     },
     // 查看详情
     async handleShowDetail(row) {
-      // 跳转到详情页
-      this.$router.push(`/database/policies/${row._id}`)
+      this.$router.push(`policies/${row._id}`)
     }
   }
 }
