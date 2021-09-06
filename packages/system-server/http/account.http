@@ -1,0 +1,41 @@
+
+@token={{login.response.body.$.data.access_token}}
+
+### 注册
+
+POST {{base_url}}/account/signup HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{user}}",
+  "password": "{{passwd}}"
+}
+
+
+### 登陆
+# @name login
+
+POST {{base_url}}/account/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{user}}",
+  "password": "{{passwd}}"
+}
+
+### 获取账户信息
+
+GET {{base_url}}/account/profile 
+Authorization: Bearer {{token}}
+
+
+### 编辑账户
+
+POST {{base_url}}/account/edit HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Maslow",
+  "avatar": "https://work.zhuo-zhuo.com/file/data/23ttprpxmavkkuf6nttc/PHID-FILE-vzv6dyqo3ev2tmngx7mu/logoL)"
+}

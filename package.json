@@ -18,14 +18,14 @@
     "docs:build": "vitepress build docs",
     "docs:serve": "vitepress serve docs",
     "docs:deploy": "npm run docs:build && sh ./scripts/deploy-docs.sh",
-    "docker-build-devops-server": "node ./scripts/docker-build-devops-server.js",
-    "docker-build-app-server": "node ./scripts/docker-build-app-server.js",
-    "docker-build-devops-admin": "node ./scripts/docker-build-devops-admin.js",
-    "docker-build": "npm run docker-build-devops-server && npm run docker-build-app-server && npm run docker-build-devops-admin",
-    "docker-push-app-server": "node ./scripts/docker-push-app-server.js",
-    "docker-push-devops-server": "node ./scripts/docker-push-devops-server.js",
-    "docker-push-devops-admin": "node ./scripts/docker-push-devops-admin.js",
-    "docker-push": "npm run docker-push-app-server && npm run docker-push-devops-server && npm run docker-push-devops-admin"
+    "docker-build-system-server": "node ./scripts/docker-build-system-server.js",
+    "docker-build-app-service": "node ./scripts/docker-build-app-service.js",
+    "docker-build-system-client": "node ./scripts/docker-build-system-client.js",
+    "docker-build": "npm run docker-build-system-server && npm run docker-build-app-service && npm run docker-build-system-client",
+    "docker-push-app-service": "node ./scripts/docker-push-app-service.js",
+    "docker-push-system-server": "node ./scripts/docker-push-system-server.js",
+    "docker-push-system-client": "node ./scripts/docker-push-system-client.js",
+    "docker-push": "npm run docker-push-app-service && npm run docker-push-system-server && npm run docker-push-system-client"
   },
   "keywords": [
     "BaaS",

@@ -1,0 +1,171 @@
+<template>
+  <div class="navbar">
+    <div class="nav-leading">
+      <div class="logo">
+        <img src="https://laf.laogen.site/logo.png">
+      </div>
+      <div class="title">{{ title }}</div>
+    </div>
+    <div class="sep" />
+    <div class="tags-view-container">
+      <tags-view v-if="!hideTags" />
+    </div>
+    <div class="right-menu">
+      <template v-if="device!=='mobile'">
+        <screenfull id="screenfull" class="right-menu-item hover-effect" />
+      </template>
+      <div class="github right-menu-item">
+        <a target="_blank" href="https://github.com/Maslow/laf/">
+          GitHub
+        </a>
+      </div>
+      <el-dropdown class="profile-container right-menu-item hover-effect" trigger="click">
+        <div class="profile-wrapper">
+          <div class="user-name">{{ name }}</div>
+          <i class="el-icon-caret-bottom" />
+        </div>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item divided @click.native="logout">
+            <span style="display:block;">退出登录</span>
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapGetters } from 'vuex'
+import Screenfull from '@/components/Screenfull'
+import TagsView from './TagsView'
+export default {
+  components: {
+    Screenfull,
+    TagsView
+  },
+  props: {
+    hideTags: {
+      type: Boolean,
+      default: false
+    },
+    title: {
+      type: String,
+      default: 'LaF 云开发'
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'name',
+      'device'
+    ])
+  },
+  methods: {
+    async logout() {
+      await this.$store.dispatch('user/logout')
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.navbar {
+  height: 50px;
+  display: flex;
+  background: #fff;
+  border-bottom: 1px solid #d8dce5;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
+  align-items: center;
+
+  .nav-leading {
+    width: 210px;
+    min-width: 210px;
+    line-height: 50px;
+    justify-content: flex-start;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    box-sizing: border-box;
+
+    .logo {
+      width: 28px;
+      height: 40px;
+      img {
+        width: 28px;
+        height: 28px;
+      }
+    }
+
+    .title {
+      margin-left: 4px;
+      font-size: 14px;
+      font-weight: bold;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .sep {
+    height: 50px;
+    border-right: 1px solid rgba(211, 211, 211, 0.15);
+  }
+
+  .tags-view-container {
+    width: 100%;
+  }
+
+  .right-menu {
+    float: right;
+    height: 100%;
+    width: 200px;
+    line-height: 50px;
+    display: flex;
+
+    &:focus {
+      outline: none;
+    }
+
+    .right-menu-item {
+      display: inline-block;
+      padding: 0 8px;
+      height: 100%;
+      font-size: 16px;
+      color: #5a5e66;
+      vertical-align: text-bottom;
+      align-self: center;
+
+      &.hover-effect {
+        cursor: pointer;
+        transition: background .3s;
+
+        &:hover {
+          background: rgba(0, 0, 0, .025)
+        }
+      }
+    }
+
+    .github {
+      font-size: 14px;
+    }
+
+    .profile-container {
+      margin-right: 20px;
+      .profile-wrapper {
+        display: flex;
+
+        .user-name {
+          cursor: pointer;
+          font-size: 16px;
+        }
+
+        .el-icon-caret-bottom {
+          cursor: pointer;
+          font-size: 12px;
+          align-self: center;
+        }
+      }
+    }
+  }
+}
+</style>

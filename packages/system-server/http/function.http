@@ -1,0 +1,30 @@
+
+@token={{login.response.body.$.data.access_token}}
+
+### Login
+# @name login
+
+POST {{base_url}}/account/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{user}}",
+  "password": "{{passwd}}"
+}
+
+
+### Create an functions
+
+POST {{base_url}}/functions/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "test app"
+}
+
+
+### Get my functions
+
+GET {{base_url}}/apps/612dde807413904b530d8cff/function
+Authorization: Bearer {{token}}

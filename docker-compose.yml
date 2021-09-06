@@ -6,28 +6,37 @@ services:
       - ALLOW_EMPTY_PASSWORD=yes
       - MONGODB_REPLICA_SET_MODE=primary
       - MONGODB_INITIAL_PRIMARY_HOST=mongo
-      - MONGODB_REPLICA_SET_NAME=rs0
+      - MONGODB_ADVERTISED_HOSTNAME=mongo
+      - MONGODB_REPLICA_SET_NAME=laf
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+      - MONGODB_ENABLE_DIRECTORY_PER_DB=yes
+      - MONGODB_ROOT_PASSWORD=password123
+      - MONGODB_USERNAME=my_user
+      - MONGODB_PASSWORD=password123
+      - MONGODB_DATABASE=laf-sys
     volumes:
       - db-data:/bitnami/mongodb
-    networks: 
-      - laf
-
-  devops_server:
-    image: lessx/laf-devops-server:latest
-    user: node
-    environment: 
-      SYS_DB: laf-sys
-      SYS_DB_URI: mongodb://mongo:27017
-      SYS_SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_devops_server
-      SYS_ADMIN: laf-sys
-      SYS_ADMIN_PASSWORD: laf-sys
-      LOG_LEVEL: debug
-      APP_DB: laf-app
-      APP_DB_URI: mongodb://mongo:27017
-      APP_SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_app_server
-    command: dockerize -wait tcp://mongo:27017 npm run init-start
     ports:
-      - "9000:9000"
+      - "27017:27017"
+    networks: 
+      - laf_shared_network
+
+  system_server:
+    image: lafyun/system-server:latest
+    user: root
+    working_dir: /app
+    environment: 
+      SYS_DB_URI: mongodb://my_user:password123@mongo:27017/?authSource=laf-sys&replicaSet=laf&writeConcern=majority
+      APP_DB_URI: mongodb://root:password123@mongo:27017/?authSource=admin&replicaSet=laf&writeConcern=majority
+      SYS_SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
+      SHARED_NETWORK: laf_shared_network
+      LOG_LEVEL: debug
+      APP_SERVICE_IMAGE: lafyun/app-service:latest
+    command: dockerize -wait tcp://mongo:27017 node dist/index.js
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "9000"
     read_only: true
     depends_on: 
       - mongo
@@ -37,50 +46,22 @@ services:
       - /tmp
     restart: always
     networks: 
-      - laf
+      - laf_shared_network
 
-  app_server:
-    image: lessx/laf-app-server:latest
-    user: node
-    environment: 
-      DB: laf-app
-      DB_URI: mongodb://mongo:27017
-      DB_POOL_LIMIT: 100
-      SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_app_server
-      LOG_LEVEL: debug
-      ENABLE_CLOUD_FUNCTION_LOG: always
-    command: dockerize -wait http://devops_server:9000/health-check npm run start
-    volumes:
-      - app-data:/app/data
-    ports:
-      - "8000:8000"
-    read_only: false
+  system_client:
+    image: lafyun/system-client:latest
     depends_on: 
-      - devops_server
-      - mongo
-    cap_drop: 
-      - ALL
-    tmpfs: 
-      - /tmp
-    restart: always
-    networks: 
-      - laf
-
-  devops_admin:
-    image: lessx/laf-devops-admin:latest
-    depends_on: 
-      - app_server
-      - devops_server
+      - system_server
       - mongo
     ports: 
       - 8080:80
     networks: 
-      - laf
+      - laf_shared_network
 
 networks:
-  laf:
+  laf_shared_network:
+    external: true
       
 volumes:
-  app-data:
   db-data:
       

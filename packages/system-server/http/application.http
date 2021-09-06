@@ -1,0 +1,56 @@
+
+@token={{login.response.body.$.data.access_token}}
+
+### Login
+# @name login
+
+POST {{base_url}}/account/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{user}}",
+  "password": "{{passwd}}"
+}
+
+
+### Create an application
+
+POST {{base_url}}/apps/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "安徽志愿者小程序"
+}
+
+
+### Get my applications
+
+GET {{base_url}}/apps/my
+Authorization: Bearer {{token}}
+
+
+@appid=fd3f56bd-cb72-4eba-86b2-d75eecae60de
+
+
+### Update an application
+
+POST {{base_url}}/apps/{{appid}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "安徽志愿者小程序123"
+}
+
+### Start an application service
+
+POST {{base_url}}/apps/{{appid}}/start
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Remove an application service
+
+POST {{base_url}}/apps/{{appid}}/stop
+Content-Type: application/json
+Authorization: Bearer {{token}}
