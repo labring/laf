@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-04 00:12:07
+ * @LastEditTime: 2021-09-05 23:52:32
  * @Description: 
  */
 
@@ -24,7 +24,7 @@ router.use('/apps', ApplicationRouter)
 router.use('/apps/:appid/function', checkAppid, FunctionRouter)
 router.use('/apps/:appid/policy', checkAppid, PolicyRouter)
 router.use('/apps/:appid/dbm', checkAppid, DbmRouter)
-router.use('/apps/:appid/deploy', DeployRouter)
+router.use('/apps/:appid/deploy', checkAppid, DeployRouter)
 router.use('/apps/:appid/file', checkAppid, FileRouter)
 
 router.use('/health-check', (_req, res) => {

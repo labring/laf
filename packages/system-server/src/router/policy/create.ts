@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-03 23:19:36
- * @LastEditTime: 2021-09-03 23:28:01
+ * @LastEditTime: 2021-09-06 13:45:24
  * @Description: 
  */
 
@@ -40,8 +40,7 @@ export async function handleCreatePolicy(req: Request, res: Response) {
     .count()
   if (total) return res.status(422).send('policy name already exists')
 
-
-  // build the func data
+  // build the policy data
   const policy = {
     name: body.name,
     description: body.description,
@@ -55,7 +54,7 @@ export async function handleCreatePolicy(req: Request, res: Response) {
     appid: app.appid
   }
 
-  // add cloud function
+  // add policy
   const ret = await db.collection(Constants.cn.policies)
     .add(policy)
 
