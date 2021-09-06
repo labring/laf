@@ -78,4 +78,19 @@ export default class Config {
   static get APP_SERVICE_IMAGE(): string {
     return process.env.APP_SERVICE_IMAGE
   }
+
+  /**
+   * The application count that an account can create by default
+   */
+  static get ACCOUNT_DEFAULT_APP_QUOTA(): number {
+    return (process.env.ACCOUNT_DEFAULT_APP_QUOTA ?? 2) as number
+  }
+
+  /**
+   * The deploy url used to access the app service
+   * example: http://www.example.com:8080 , don't end with '/'
+   */
+  static get APP_DEPLOY_URL(): string {
+    return process.env.APP_DEPLOY_URL ?? ''
+  }
 }

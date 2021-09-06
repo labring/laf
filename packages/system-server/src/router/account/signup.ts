@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-31 14:37:26
+ * @LastEditTime: 2021-09-06 22:19:49
  * @Description: 
  */
 
@@ -9,6 +9,7 @@ import { Request, Response } from 'express'
 import { hashPassword } from '../../utils/hash'
 import { DatabaseAgent } from '../../lib/db-agent'
 import { Constants } from '../../constants'
+import Config from '../../config'
 
 
 /**
@@ -33,6 +34,9 @@ export async function handleSignUp(req: Request, res: Response) {
   const r = await db.collection(Constants.cn.accounts)
     .add({
       username,
+      quota: {
+        app_count: Config.ACCOUNT_DEFAULT_APP_QUOTA
+      },
       password: hashPassword(password),
       created_at: Date.now(),
       updated_at: Date.now()

@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-28 22:00:45
- * @LastEditTime: 2021-09-03 18:32:35
+ * @LastEditTime: 2021-09-06 22:04:37
  * @Description: Application APIs
  */
 
@@ -116,7 +116,11 @@ export async function getApplicationDbAccessor(app: ApplicationStruct) {
   return accessor
 }
 
-
+/**
+ * Get the db uri of an application
+ * @param app 
+ * @returns 
+ */
 export function getApplicationDbUri(app: ApplicationStruct) {
   const { db_name, db_password, db_user } = app.config
 

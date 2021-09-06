@@ -1,13 +1,16 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-31 15:00:04
- * @LastEditTime: 2021-09-03 19:07:51
+ * @LastEditTime: 2021-09-06 22:22:21
  * @Description: 
  */
 
+import * as assert from 'assert'
 import { Request, Response } from 'express'
-import { ApplicationStruct, createApplicationDb, generateAppid } from '../../api/application'
+import { getAccountByAppid } from '../../api/account'
+import { ApplicationStruct, createApplicationDb, generateAppid, getMyApplications } from '../../api/application'
 import { Constants } from '../../constants'
+import { ErrorCodes } from '../../constants/error-code'
 import { DatabaseAgent } from '../../lib/db-agent'
 import { logger } from '../../lib/logger'
 import { generatePassword } from '../../utils/rand'
@@ -20,11 +23,20 @@ export async function handleCreateApplication(req: Request, res: Response) {
   if (!uid)
     return res.status(401).send()
 
-  const app_name = req.body?.name ?? 'default'
   const db = DatabaseAgent.sys_db
 
-  const appid = generateAppid()
+  // check the application quota in account
+  const account = await getAccountByAppid(uid)
+  assert.ok(account, 'empty account got')
+  const app_quota = account.quota?.app_count ?? 0
+  const my_apps = await getMyApplications(uid)
+  if (my_apps.length >= app_quota) {
+    return res.send(ErrorCodes.MEET_APPLICATION_QUOTA_LIMIT)
+  }
 
+  // build the application config
+  const app_name = req.body?.name ?? 'default'
+  const appid = generateAppid()
   const _salt = generatePassword(6, true, false)
   const db_name = `app_${appid}_${_salt}`
   const db_user = db_name
@@ -47,6 +59,7 @@ export async function handleCreateApplication(req: Request, res: Response) {
     updated_at: now
   }
 
+  // save it
   const ret = await db.collection(Constants.cn.applications)
     .add(data)
 
@@ -54,6 +67,7 @@ export async function handleCreateApplication(req: Request, res: Response) {
     return res.status(400).send('failed to create application')
   }
 
+  // create app db
   const result = await createApplicationDb(data)
   logger.debug(`create application db ${db_name}`, result)
 
