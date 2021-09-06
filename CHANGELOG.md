@@ -1,4 +1,55 @@
-# [](https://github.com/Maslow/laf/compare/v0.4.21-alpha.0...v) (2021-08-26)
+# [](https://github.com/Maslow/laf/compare/v0.5.0-alpha.0...v) (2021-09-06)
+
+
+
+# [0.5.0-alpha.0](https://github.com/Maslow/laf/compare/v0.4.21-alpha.0...v0.5.0-alpha.0) (2021-09-06)
+
+
+### Bug Fixes
+
+* **server-client:** add dynamic router hook ([a4a3923](https://github.com/Maslow/laf/commit/a4a3923125a6b5ed722f2c6415760e88ed22696d))
+* **server-client:** update appid instead app._id ([0aa9288](https://github.com/Maslow/laf/commit/0aa92883706d56981c4fe365e0134b4be598586c))
+* **sys-client:** fix files api; ([7ed35d9](https://github.com/Maslow/laf/commit/7ed35d9db543e1d0949ad3b92141855136d654a5))
+* **system-client:** fix `remove function` feat; ([5c18d15](https://github.com/Maslow/laf/commit/5c18d154dd267dc6ec4c976f51f798ff815f1399))
+* **system-client:** fix app api url access; ([348ca7e](https://github.com/Maslow/laf/commit/348ca7e2cf6140af44e81053d498d612fca66a7c))
+* **system-client:** fix dbm pages; ([e0f44da](https://github.com/Maslow/laf/commit/e0f44dab40558d12f11dc59423152aef8d5fa3e1))
+* **system-client:** fix pagination error; ([308ad8a](https://github.com/Maslow/laf/commit/308ad8aecc451f6730e6c1a79786873b3d2949ec))
+* **system-client:** fix policy rules CRUD feats; ([44a4dbd](https://github.com/Maslow/laf/commit/44a4dbd917a471a448ad288ef374d87f20ab7072))
+* **system-client:** fix the function updating pages; ([49fd049](https://github.com/Maslow/laf/commit/49fd049d948700bd9634534ddea927af364e2161))
+* **system-server:** add appid to applications; ([f1bc2e2](https://github.com/Maslow/laf/commit/f1bc2e220cb5140abfa03580c8cf452bd0667e0d))
+* **system-server:** fix get function error; ([ea20a61](https://github.com/Maslow/laf/commit/ea20a61eec587c54a3ed37a03e2f98ebdcf09d03))
+* **system-server:** little fixes; ([be71012](https://github.com/Maslow/laf/commit/be7101299592c2ff7678a34e83c1020861aab307))
+* **system:** fix trigger CRUD pages; ([00cd4bb](https://github.com/Maslow/laf/commit/00cd4bbd893e35bb573e3580d4bcd6f047a9c057))
+
+
+### Features
+
+* **server-client:** add app to vuex store; ([3abeb9d](https://github.com/Maslow/laf/commit/3abeb9d08fdc92f5f45f8384d18f9ad18decf09c))
+* **server-client:** impl apps & functions pages; ([fe4ae60](https://github.com/Maslow/laf/commit/fe4ae6050a5c8d105e074ad04736e83b296c328c))
+* **server-client:** impl dynamic router for app ([0f7f74d](https://github.com/Maslow/laf/commit/0f7f74d480cd1b334fd227c2c1b1d1baa7cb4b26))
+* **server-client:** impl layout for app ([9d973f0](https://github.com/Maslow/laf/commit/9d973f08ad182e5d2518f3ce3cf5945f4074a8f7))
+* **sys-client:** add sign up page; ([8222387](https://github.com/Maslow/laf/commit/822238705924a50712edc638a92801f610ebbdf1))
+* **system-client:** add application user apis ([0883253](https://github.com/Maslow/laf/commit/08832536cd90a8fb81566b40238c1a3116f1de80))
+* **system-client:** impl app service start & stop; ([f28d199](https://github.com/Maslow/laf/commit/f28d199f60381ed7972712436e2326a08365504c))
+* **system-client:** impl application & sign in/up pages; ([3bbb30f](https://github.com/Maslow/laf/commit/3bbb30f5afe87cd9b492995ca77278b78f047464))
+* **system-client:** impl new navbar ([1fbf8cd](https://github.com/Maslow/laf/commit/1fbf8cd8ed725216f3460fb62f6512aef9d68276))
+* **system-client:** impl remote deploy pages; ([8dee4e5](https://github.com/Maslow/laf/commit/8dee4e5f64e614d48e8603d565f532ee74c4bbf0))
+* **system-server:** add account apis; ([664458e](https://github.com/Maslow/laf/commit/664458edd8b1322b0f748bb9494e30a16a1a1787))
+* **system-server:** add app service docker driver; ([adfb27d](https://github.com/Maslow/laf/commit/adfb27d16bb9d8b1b6f32a3f07635462a5a03b79))
+* **system-server:** add app service image config; ([0f770ab](https://github.com/Maslow/laf/commit/0f770abfec03af8b62961378d55fb29090154e3e))
+* **system-server:** add app service start & stop router; ([c71f362](https://github.com/Maslow/laf/commit/c71f362a6a56026c5186e97bb17014e490983a03))
+* **system-server:** add app update apis; ([5c674f3](https://github.com/Maslow/laf/commit/5c674f39f9b31fcb2595dc51012cbc0c0cfbacdf))
+* **system-server:** add policy CRUD routers; ([8456aab](https://github.com/Maslow/laf/commit/8456aab0ee8073ea99d53ea39706eb84a5c47ce3))
+* **system-server:** add policy rules routes; ([4f33276](https://github.com/Maslow/laf/commit/4f33276e928b5a65cecb9e6271d4584d13acd507))
+* **system-server:** add remote deploy routes; ([7fbb75e](https://github.com/Maslow/laf/commit/7fbb75e82157d0cd0afc4100cdc04c2bac88bf41))
+* **system-server:** add system-server built-in roles & permissions; ([d8794b9](https://github.com/Maslow/laf/commit/d8794b90db416db1a8a2ecf59f5d25072cbbfcce))
+* **system-server:** add update function apis; ([834915a](https://github.com/Maslow/laf/commit/834915a94326674f1fbbab034418c5ab12fe5d10))
+* **system-server:** create system server package; ([508c76e](https://github.com/Maslow/laf/commit/508c76e5be4a2b4ca1d643c89860b80a36063b9e))
+* **system-server:** impl application & account apis; ([c5d6bc0](https://github.com/Maslow/laf/commit/c5d6bc0694e2ff6dcf479d09810b53b538d68ad9))
+* **system-server:** refactor db agent; ([a2e9a6c](https://github.com/Maslow/laf/commit/a2e9a6ce1e483fc1c6d626169c850f5e2ec37862))
+* **system-server:** refactor system server apis, support appid; ([446740f](https://github.com/Maslow/laf/commit/446740f742ea519614cb78b7707edd57abc171c8))
+* **system:** add debug token & file token; fix debug & file feat; ([d6eea7a](https://github.com/Maslow/laf/commit/d6eea7aba3f6d1c47f64b90ffe489684a7631846))
+* **system:** impl functin logs api & pages; ([b11e17e](https://github.com/Maslow/laf/commit/b11e17e58fafdbbc544e2daf1a1332a3b4cf0130))
 
 
 
