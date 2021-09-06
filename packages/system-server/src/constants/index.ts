@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-30 14:38:36
+ * @LastEditTime: 2021-09-06 11:28:19
  * @Description: 
  */
 
@@ -16,19 +16,19 @@ const coll_prefix = 'devops_'
  */
 export const Constants = {
   /**
-   *  collection name of cloud functions deployed to app db
+   *  collection name of cloud functions published to app db
    */
-  function_collection: '__deployed__functions',
+  function_collection: '__published__functions',
 
   /**
-   * collection name of triggers deployed to app db
+   * collection name of triggers published to app db
    */
-  trigger_collection: '__deployed__triggers',
+  trigger_collection: '__published__triggers',
 
   /**
-   * collection name of policies deployed to app db
+   * collection name of policies published to app db
    */
-  policy_collection: '__deployed__policies',
+  policy_collection: '__published__policies',
 
   /**
    * prefix of sys db collection name

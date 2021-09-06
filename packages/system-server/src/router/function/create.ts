@@ -50,6 +50,7 @@ export async function handleCreateFunction(req: Request, res: Response) {
     status: body.status ?? 0,
     compiledCode: compileTs2js(body.code),
     tags: body.tags ?? [],
+    triggers: [],
     label: body.label ?? 'New Function',
     version: 0,
     hash: hashFunctionCode(body.code),

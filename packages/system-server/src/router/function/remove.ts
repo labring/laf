@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-03 23:09:23
- * @LastEditTime: 2021-09-04 00:00:10
+ * @LastEditTime: 2021-09-06 13:26:59
  * @Description: 
  */
 
@@ -31,7 +31,7 @@ export async function handleRemoveFunctionById(req: Request, res: Response) {
 
   // do db query
   const ret = await db.collection(Constants.cn.functions)
-    .where({ _id: func_id })
+    .where({ _id: func_id, appid: app.appid, status: 0 })
     .remove()
 
   return res.send({
