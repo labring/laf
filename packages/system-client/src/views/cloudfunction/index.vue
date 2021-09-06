@@ -104,7 +104,7 @@
             日志
           </el-button>
           <el-button plain type="primary" size="mini" @click="handleTriggers(row)">
-            触发器
+            触发器<b v-if="row.triggers && row.triggers.length">({{ row.triggers.length }})</b>
           </el-button>
           <el-button v-if="row.status!='deleted'" plain size="mini" type="danger" @click="handleDelete(row,$index)">
             删除
@@ -171,16 +171,14 @@
     </el-dialog>
 
     <!-- 部署面板 -->
-    <!-- <deploy-panel v-model="deployPanelVisible" :functions="deploy_functions" /> -->
+    <deploy-panel v-model="deployPanelVisible" :functions="deploy_functions" />
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { db } from '../../api/cloud'
-// import DeployPanel from '../deploy/components/deploy-panel.vue'
-import { Constants } from '../../api/constants'
-import { createFunction, getFunctions, publishFunctions, updateFunction } from '@/api/func'
+import DeployPanel from '../deploy/components/deploy-panel.vue'
+import { createFunction, getFunctions, publishFunctions, removeFunction, updateFunction } from '@/api/func'
 
 const defaultCode = `
 import cloud from '@/cloud-sdk'
@@ -225,8 +223,8 @@ const formRules = {
 export default {
   name: 'FunctionListPage',
   components: {
-    Pagination
-  // DeployPanel
+    Pagination,
+    DeployPanel
   },
   directives: { },
   filters: {
@@ -389,17 +387,10 @@ export default {
         return this.$message.error('请先停用函数，再删除！')
       }
 
-      const $ = db.command
       // 执行删除请求
-      const r = await db.collection(Constants.cn.functions)
-        .where({
-          _id: row._id,
-          status: 0,
-          reserved: $.neq(true)
-        })
-        .remove()
+      const r = await removeFunction(row._id)
 
-      if (!r.ok) {
+      if (r.error) {
         this.$notify({
           type: 'error',
           title: '操作失败',

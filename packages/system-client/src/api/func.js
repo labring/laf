@@ -81,11 +81,11 @@ export function updateFunctionCode(func_id, function_data) {
 }
 
 /**
- * Delete a cloud function
+ * Remove a cloud function
  * @param {*} func_id
  * @returns
  */
-export function deleteFunction(func_id) {
+export function removeFunction(func_id) {
   const appid = store.state.app.appid
   return request({
     url: `/apps/${appid}/function/${func_id}`,
