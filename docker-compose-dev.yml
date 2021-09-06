@@ -31,7 +31,7 @@ services:
       SYS_SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
       SHARED_NETWORK: laf_shared_network
       LOG_LEVEL: debug
-      APP_SERVICE_IMAGE: lessx/laf-app-server:latest
+      APP_SERVICE_IMAGE: lafyun/app-service:latest
     command: node dist/index.js
     volumes:
       - ./packages/system-server:/app
