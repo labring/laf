@@ -1,13 +1,13 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:34:45
- * @LastEditTime: 2021-08-30 16:46:28
+ * @LastEditTime: 2021-09-06 16:12:33
  * @Description: 
  */
 
 import { Request, Response } from 'express'
 import { Constants } from '../../constants'
-import { getApplicationByAppid } from '../../api/application'
+import { ApplicationStruct } from '../../api/application'
 import { DatabaseAgent } from '../../lib/db-agent'
 import { logger } from '../../lib/logger'
 import { parseToken } from '../../utils/token'
@@ -17,13 +17,15 @@ import { parseToken } from '../../utils/token'
  * Accept the deployment requests from remote environment
  */
 export async function handleDeployRequestIncoming(req: Request, res: Response) {
+  const app: ApplicationStruct = req['parsed-app']
+  const appid = app.appid
 
   const { policies, functions, comment, triggers } = req.body
   if (!policies && !functions) return res.status(422).send('not found functions and policies')
 
   // verify deploy token
   const token = req.body?.deploy_token
-  const auth = parseToken(token)
+  const auth = parseToken(token, app.config.server_secret_salt)
 
   if (!auth)
     return res.status(401).send('Unauthorized')
@@ -31,13 +33,8 @@ export async function handleDeployRequestIncoming(req: Request, res: Response) {
   if (auth.type !== 'deploy')
     return res.status(403).send('Permission Denied')
 
-  const appid = req.params.appid
   if (appid !== auth.appid)
     return res.status(403).send('forbidden operation: token is not matching the appid')
-
-  const app = await getApplicationByAppid(appid)
-  if (!app)
-    return res.status(422).send('app not found')
 
   // verify deploy token permissions
   const permissions = auth.pns ?? []
