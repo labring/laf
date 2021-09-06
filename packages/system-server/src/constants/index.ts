@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-06 11:28:19
+ * @LastEditTime: 2021-09-06 17:28:50
  * @Description: 
  */
 
@@ -9,7 +9,7 @@ import { deepFreeze } from "../utils/lang"
 import { permissions } from "./permissions"
 import { roles } from "./roles"
 
-const coll_prefix = 'devops_'
+const coll_prefix = 'sys_'
 
 /**
  * Constants collection
