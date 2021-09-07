@@ -8,55 +8,115 @@
         新建
       </el-button>
     </div>
-    <el-table v-loading="loading" empty-text="-" :data="applications.created" style="width: 100%;margin-top:10px;" stripe>
-      <el-table-column align="center" label="App ID" width="320">
-        <template slot-scope="scope">
-          <div class="table-row">
-            <div> {{ scope.row.appid }}</div>
-            <i v-clipboard:message="scope.row.appid" v-clipboard:success="onCopy" class="el-icon-document-copy copy-btn" />
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="应用名" width="300">
-        <template slot-scope="scope">
-          {{ scope.row.name }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="Status" width="300">
-        <template slot-scope="scope">
-          {{ scope.row.status }}
-        </template>
-      </el-table-column>
-      <el-table-column label="服务启停" align="center" width="200" class-name="small-padding">
-        <template slot-scope="{row}">
-          <el-button v-if="row.status !== 'running'" plain type="warning" size="mini" @click="startApp(row)">
-            启动
-          </el-button>
-          <el-button v-if="row.status === 'running'" plain type="danger" size="mini" @click="stopApp(row)">
-            停止
-          </el-button>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间" align="center">
-        <template slot-scope="{row}">
-          <span v-if="row.created_at">{{ row.created_at | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-          <span v-else>-</span>
-        </template>
-      </el-table-column>
-      <el-table-column fixed="right" label="操作" align="center" width="380" class-name="small-padding">
-        <template slot-scope="{row,$index}">
-          <el-button plain type="primary" size="mini" @click="toDetail(row)">
-            开发
-          </el-button>
-          <el-button plain type="default" size="mini" @click="showUpdateForm(row)">
-            编辑
-          </el-button>
-          <el-button plain size="mini" type="info" @click="deleteApp(row,$index)">
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+
+    <!-- My created apps -->
+    <div class="app-group">
+      <div class="app-group-title">我创建的应用</div>
+      <el-table v-loading="loading" empty-text="-" :data="applications.created" style="width: 100%;margin-top:10px;" stripe>
+        <el-table-column align="center" label="App ID" width="320">
+          <template slot-scope="scope">
+            <div class="table-row">
+              <div> {{ scope.row.appid }}</div>
+              <i v-clipboard:message="scope.row.appid" v-clipboard:success="onCopy" class="el-icon-document-copy copy-btn" />
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="应用名" width="300">
+          <template slot-scope="scope">
+            {{ scope.row.name }}
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="Status" width="300">
+          <template slot-scope="scope">
+            {{ scope.row.status }}
+          </template>
+        </el-table-column>
+        <el-table-column label="服务启停" align="center" width="200" class-name="small-padding">
+          <template slot-scope="{row}">
+            <el-button v-if="row.status !== 'running'" plain type="warning" size="mini" @click="startApp(row)">
+              启动
+            </el-button>
+            <el-button v-if="row.status === 'running'" plain type="danger" size="mini" @click="stopApp(row)">
+              停止
+            </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="创建时间" align="center">
+          <template slot-scope="{row}">
+            <span v-if="row.created_at">{{ row.created_at | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column fixed="right" label="操作" align="center" width="280" class-name="small-padding">
+          <template slot-scope="{row,$index}">
+            <el-button plain type="success" size="mini" @click="toDetail(row)">
+              开发
+            </el-button>
+            <el-button plain type="primary" size="mini" @click="showUpdateForm(row)">
+              编辑
+            </el-button>
+            <el-button plain size="mini" type="info" @click="deleteApp(row,$index)">
+              释放
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+    </div>
+
+    <!-- My joined apps -->
+    <div class="app-group">
+      <div class="app-group-title">我加入的应用</div>
+      <el-table v-loading="loading" empty-text="-" :data="applications.joined" style="width: 100%;margin-top:10px;" stripe>
+        <el-table-column align="center" label="App ID" width="320">
+          <template slot-scope="scope">
+            <div class="table-row">
+              <div> {{ scope.row.appid }}</div>
+              <i v-clipboard:message="scope.row.appid" v-clipboard:success="onCopy" class="el-icon-document-copy copy-btn" />
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="应用名" width="300">
+          <template slot-scope="scope">
+            {{ scope.row.name }}
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="Status" width="300">
+          <template slot-scope="scope">
+            {{ scope.row.status }}
+          </template>
+        </el-table-column>
+        <el-table-column label="服务启停" align="center" width="200" class-name="small-padding">
+          <template slot-scope="{row}">
+            <el-button v-if="row.status !== 'running'" plain type="warning" size="mini" @click="startApp(row)">
+              启动
+            </el-button>
+            <el-button v-if="row.status === 'running'" plain type="danger" size="mini" @click="stopApp(row)">
+              停止
+            </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="创建时间" align="center">
+          <template slot-scope="{row}">
+            <span v-if="row.created_at">{{ row.created_at | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column fixed="right" label="操作" align="center" width="280" class-name="small-padding">
+          <template slot-scope="{row,$index}">
+            <el-button plain type="success" size="mini" @click="toDetail(row)">
+              开发
+            </el-button>
+            <el-button plain type="primary" size="mini" @click="showUpdateForm(row)">
+              编辑
+            </el-button>
+            <el-button plain size="mini" type="info" @click="deleteApp(row,$index)">
+              释放
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
     <!-- 创建应用表单 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
@@ -246,8 +306,6 @@ export default {
   padding: 20px;
   width: calc(100vw - 30px);
   margin: 15px auto;
-  box-shadow: -1px -1px 5px 0 rgb(0 0 0 / 10%);
-  background: white;
 }
 
 .table-row {
@@ -268,5 +326,17 @@ export default {
     font-size: 16px;
     margin-left: 10px;
     cursor: pointer;
+}
+
+.app-group {
+  margin-top: 20px;
+  border: 1px solid rgb(236, 233, 233);
+  box-shadow: -1px -1px 5px 0 rgb(0 0 0 / 10%);
+  background: white;
+}
+
+.app-group-title {
+  color: rgb(85, 83, 83);
+  padding: 10px;
 }
 </style>
