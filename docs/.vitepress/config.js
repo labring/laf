@@ -14,7 +14,7 @@ module.exports = {
       { text: '主页', link: '/' },
       { text: '开发指南', link: '/guide/', activeMatch: '^/guide/' },
       { text: '运行截图', link: '/screenshots', },
-      { text: '部署指南', link: '/deploy/quick', },
+      // { text: '部署指南', link: '/deploy/quick', },
       {
         text: 'Changelogs',
         link: 'https://github.com/Maslow/laf/blob/main/CHANGELOG.md'
@@ -22,8 +22,7 @@ module.exports = {
     ],
 
     sidebar: {
-      '/guide/': getGuideSidebar(),
-      '/deploy/': getDeploySidebar()
+      '/guide/': getGuideSidebar()
     }
   }
 }
@@ -66,12 +65,5 @@ function getGuideSidebar() {
         { text: '文件令牌', link: '/guide/storage/token' },
       ]
     },
-  ]
-}
-
-function getDeploySidebar() {
-  return [
-    {text: '快速部署', link: '/deploy/quick'},
-    {text: '进阶部署', link: '/deploy/advanced'},
   ]
 }
