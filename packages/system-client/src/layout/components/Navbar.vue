@@ -73,7 +73,7 @@ export default {
   height: 50px;
   display: flex;
   background: #fff;
-  border-bottom: 1px solid #d8dce5;
+  // border-bottom: 1px solid #d8dce5;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
   align-items: center;
 
@@ -108,7 +108,7 @@ export default {
 
   .sep {
     height: 50px;
-    border-right: 1px solid rgba(211, 211, 211, 0.15);
+    border-right: 1px solid rgba(196, 196, 196, 0.15);
   }
 
   .tags-view-container {

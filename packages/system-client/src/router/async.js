@@ -8,7 +8,6 @@ export const asyncRoutes = [
   {
     path: '/app/:appid/dashboard',
     component: Layout,
-    hidden: true,
     children: [
       {
         path: 'index',
@@ -136,27 +135,6 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/app/:appid/collaborators',
-    component: Layout,
-    meta: {
-      title: '成员管理', icon: 'peoples',
-      noCache: true
-    },
-    hidden: true,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/system/admin'),
-        name: 'CollaboratorListPage',
-        meta: {
-          title: '成员管理',
-          icon: 'people',
-          noCache: true
-        }
-      }
-    ]
-  },
-  {
     path: '/app/:appid/deploy',
     component: Layout,
     redirect: '/deploy/target',
@@ -185,6 +163,26 @@ export const asyncRoutes = [
           noCache: true
 
           // permissions: ['role.edit', 'role.create']
+        }
+      }
+    ]
+  },
+  {
+    path: '/app/:appid/collaborators',
+    component: Layout,
+    meta: {
+      title: '成员管理', icon: 'peoples',
+      noCache: true
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/system/admin'),
+        name: 'CollaboratorListPage',
+        meta: {
+          title: '成员管理',
+          icon: 'people',
+          noCache: true
         }
       }
     ]
