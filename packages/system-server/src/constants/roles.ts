@@ -2,8 +2,6 @@ import { permissions as pns } from "./permissions"
 
 
 const developer = [
-  pns.POLICY_ADD, pns.POLICY_READ, pns.POLICY_REMOVE, pns.POLICY_UPDATE,
-  pns.PUBLISH_POLICY,
   pns.FUNCTION_ADD, pns.FUNCTION_READ, pns.FUNCTION_REMOVE, pns.FUNCTION_UPDATE,
   pns.FUNCTION_DEBUG, pns.PUBLISH_FUNCTION,
   pns.TRIGGER_ADD, pns.TRIGGER_READ, pns.TRIGGER_REMOVE, pns.TRIGGER_UPDATE,
@@ -11,6 +9,8 @@ const developer = [
 ]
 
 const dba = [
+  pns.POLICY_ADD, pns.POLICY_READ, pns.POLICY_REMOVE, pns.POLICY_UPDATE,
+  pns.PUBLISH_POLICY,
   pns.DATABASE_MANAGE,
   pns.FILE_ADD, pns.FILE_READ, pns.FILE_REMOVE, pns.FILE_UPDATE,
   pns.FILE_BUCKET_ADD, pns.FILE_BUCKET_REMOVE

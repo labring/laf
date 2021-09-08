@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-04 15:43:41
+ * @LastEditTime: 2021-09-09 00:53:24
  * @Description: 
  */
 
@@ -11,9 +11,15 @@ import { v4 as uuidv4 } from 'uuid'
 import Config from './config'
 import { router } from './router/index'
 import { logger } from './lib/logger'
+import { createSystemCollectionIndexes } from './api/init'
 
 const server = express()
 server.use(express.json() as any)
+
+createSystemCollectionIndexes()
+  .then(() => {
+    logger.info('system db indexes created')
+  })
 
 /**
  * Allow CORS by default
