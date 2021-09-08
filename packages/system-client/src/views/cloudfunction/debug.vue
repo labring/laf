@@ -263,10 +263,6 @@ export default {
           this.$message.warning('运行失败： ' + err)
         })
 
-      if (res.error) {
-        return this.$notify.error({ title: '运行失败', message: res.error })
-      }
-
       this.$message.success('运行成功')
       this.invokeResult = res
       this.getLatestLogs()
