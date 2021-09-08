@@ -1,30 +1,25 @@
-import { login, getInfo } from '@/api/user'
+import { login, getUserProfile } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import { Message } from 'element-ui'
 
 const state = {
   token: getToken(),
-  name: '',
-  avatar: ''
+  user_profile: null
 }
 
 const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
-  SET_NAME: (state, name) => {
-    state.name = name
-  },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+  SET_USER_PROFILE: (state, user_profile) => {
+    state.user_profile = user_profile
   }
 }
 
 const actions = {
   // user login
-  async login({ commit }, userInfo) {
-    const { username, password } = userInfo
+  async login({ commit }, { username, password }) {
     const res = await login({ username: username.trim(), password: password })
     const { data } = res
     if (res.error) {
@@ -38,29 +33,26 @@ const actions = {
 
   // get user info
   async getInfo({ commit, dispatch }) {
-    const res = await getInfo()
+    const res = await getUserProfile()
     const { data } = res
     if (!data) {
       return dispatch('/user/logout')
     }
     const account = data
-    commit('SET_NAME', account.name || account.username)
-    commit('SET_AVATAR', account.avatar)
+    commit('SET_USER_PROFILE', account)
     return data
   },
 
   // user logout
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
-      commit('SET_TOKEN', '')
-      commit('SET_NAME', '')
-      commit('SET_AVATAR', '')
       removeToken()
       resetRouter()
 
       // reset visited views and cached views
       // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
       dispatch('tagsView/delAllViews', null, { root: true })
+      dispatch('app/clearStates')
       resolve()
     })
   },
@@ -69,6 +61,8 @@ const actions = {
   resetToken({ commit }) {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
+      commit('SET_USER_PROFILE', null)
+      commit('SET_USER_PROFILE', null)
       removeToken()
       resolve()
     })

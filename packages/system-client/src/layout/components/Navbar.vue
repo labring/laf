@@ -11,9 +11,7 @@
       <tags-view v-if="!hideTags" />
     </div>
     <div class="right-menu">
-      <template v-if="device!=='mobile'">
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
-      </template>
+      <screenfull id="screenfull" class="right-menu-item hover-effect" />
       <div class="github right-menu-item">
         <a target="_blank" href="https://github.com/Maslow/laf/">
           GitHub
@@ -35,7 +33,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import Screenfull from '@/components/Screenfull'
 import TagsView from './TagsView'
 export default {
@@ -54,10 +51,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'name',
-      'device'
-    ])
+    name() {
+      const profile = this.$store.state.user.user_profile
+      return profile?.username || profile?.name
+    }
   },
   methods: {
     async logout() {
@@ -118,7 +115,6 @@ export default {
   .right-menu {
     float: right;
     height: 100%;
-    width: 200px;
     line-height: 50px;
     display: flex;
 

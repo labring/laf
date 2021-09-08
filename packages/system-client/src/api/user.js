@@ -18,7 +18,7 @@ export function login(data) {
  * @param {string} token
  * @returns
  */
-export function getInfo() {
+export function getUserProfile() {
   return request({
     url: '/account/profile',
     method: 'get'

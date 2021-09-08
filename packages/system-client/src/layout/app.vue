@@ -34,6 +34,11 @@ export default {
   },
   async created() {
     console.log('app layout created', this.$route)
+    if (!this.app) {
+      this.$router.push({
+        path: '/applications'
+      })
+    }
   },
   beforeDestroy() {
     resetRouter()
