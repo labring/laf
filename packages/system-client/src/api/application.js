@@ -1,4 +1,29 @@
+import store from '@/store'
 import request from '@/utils/request'
+
+/**
+ * 获取应用的协作者列表
+ * @param {string} username
+ */
+export function getCollaborators() {
+  const appid = store.state.app.appid
+  return request({
+    url: `/apps/${appid}/collaborators`,
+    method: 'get'
+  })
+}
+
+/**
+ * 删除应用的一个协作者
+ * @param {string} collaborator_id
+ */
+export function removeCollaborator(collaborator_id) {
+  const appid = store.state.app.appid
+  return request({
+    url: `/apps/${appid}/collaborators/${collaborator_id}`,
+    method: 'delete'
+  })
+}
 
 /**
  * 请求我的应用
@@ -55,6 +80,49 @@ export async function updateApplication(appid, { name }) {
     }
   })
   return res
+}
+
+/**
+ * 添加协作成员
+ * @param {member_id, roles}
+ * @returns
+ */
+export async function inviteCollaborator(member_id, roles) {
+  const appid = store.state.app.appid
+  const res = await request({
+    url: `/apps/${appid}/invite`,
+    method: 'post',
+    data: {
+      member_id,
+      roles
+    }
+  })
+  return res
+}
+
+/**
+ * 获取所有应用角色
+ * @param {string} username
+ */
+export function getAllApplicationRoles() {
+  return request({
+    url: '/apps/collaborators/roles',
+    method: 'get'
+  })
+}
+
+/**
+ * 根据用户名搜索用户
+ * @param {string} username
+ */
+export function searchUserByUsername(username) {
+  return request({
+    url: '/apps/collaborators/search',
+    method: 'post',
+    data: {
+      username
+    }
+  })
 }
 
 /**

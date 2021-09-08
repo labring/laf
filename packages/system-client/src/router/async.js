@@ -168,16 +168,17 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/app/:appid/collaborators',
+    path: '/app/:appid/collaborate',
     component: Layout,
     meta: {
-      title: '成员管理', icon: 'peoples',
+      title: '成员管理',
+      icon: 'peoples',
       noCache: true
     },
     children: [
       {
         path: 'index',
-        component: () => import('@/views/system/admin'),
+        component: () => import('@/views/collaborate/index'),
         name: 'CollaboratorListPage',
         meta: {
           title: '成员管理',
