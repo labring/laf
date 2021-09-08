@@ -130,9 +130,9 @@ export function searchUserByUsername(username) {
  * @param {*} appid
  * @returns
  */
-export async function startApplication(appid) {
+export async function startApplicationService(appid) {
   const res = await request({
-    url: `/apps/${appid}/start`,
+    url: `/apps/${appid}/service/start`,
     method: 'post'
   })
   return res
@@ -143,9 +143,22 @@ export async function startApplication(appid) {
  * @param {*} appid
  * @returns
  */
-export async function stopApplication(appid) {
+export async function stopApplicationService(appid) {
   const res = await request({
-    url: `/apps/${appid}/stop`,
+    url: `/apps/${appid}/service/stop`,
+    method: 'post'
+  })
+  return res
+}
+
+/**
+ * 删除应用服务
+ * @param {*} appid
+ * @returns
+ */
+export async function removeApplicationService(appid) {
+  const res = await request({
+    url: `/apps/${appid}/service/remove`,
     method: 'post'
   })
   return res

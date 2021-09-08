@@ -31,13 +31,16 @@
             {{ scope.row.status }}
           </template>
         </el-table-column>
-        <el-table-column label="服务启停" align="center" width="200" class-name="small-padding">
+        <el-table-column label="服务启停" align="left" width="200" class-name="small-padding">
           <template slot-scope="{row}">
-            <el-button v-if="row.status !== 'running'" plain type="warning" size="mini" @click="startApp(row)">
+            <el-button v-if="row.status !== 'running'" plain type="success" size="mini" @click="startApp(row)">
               启动
             </el-button>
             <el-button v-if="row.status === 'running'" plain type="danger" size="mini" @click="stopApp(row)">
               停止
+            </el-button>
+            <el-button v-if="row.status === 'stopped'" plain type="default" size="mini" @click="removeAppService(row)">
+              清除
             </el-button>
           </template>
         </el-table-column>
@@ -49,13 +52,13 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" align="center" width="280" class-name="small-padding">
           <template slot-scope="{row,$index}">
-            <el-button plain type="success" size="mini" @click="toDetail(row)">
-              开发
+            <el-button type="success" size="mini" @click="toDetail(row)">
+              开发管理
             </el-button>
             <el-button plain type="primary" size="mini" @click="showUpdateForm(row)">
               编辑
             </el-button>
-            <el-button plain size="mini" type="info" @click="deleteApp(row,$index)">
+            <el-button plain size="mini" type="default" @click="deleteApp(row,$index)">
               释放
             </el-button>
           </template>
@@ -86,13 +89,16 @@
             {{ scope.row.status }}
           </template>
         </el-table-column>
-        <el-table-column label="服务启停" align="center" width="200" class-name="small-padding">
+        <el-table-column label="服务启停" align="left" width="200" class-name="small-padding">
           <template slot-scope="{row}">
-            <el-button v-if="row.status !== 'running'" plain type="warning" size="mini" @click="startApp(row)">
+            <el-button v-if="row.status !== 'running'" plain type="success" size="mini" @click="startApp(row)">
               启动
             </el-button>
             <el-button v-if="row.status === 'running'" plain type="danger" size="mini" @click="stopApp(row)">
               停止
+            </el-button>
+            <el-button v-if="row.status === 'stopped'" plain type="default" size="mini" @click="removeAppService(row)">
+              清除
             </el-button>
           </template>
         </el-table-column>
@@ -104,13 +110,13 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" align="center" width="280" class-name="small-padding">
           <template slot-scope="{row,$index}">
-            <el-button plain type="success" size="mini" @click="toDetail(row)">
-              开发
+            <el-button type="success" size="mini" @click="toDetail(row)">
+              开发管理
             </el-button>
             <el-button plain type="primary" size="mini" @click="showUpdateForm(row)">
               编辑
             </el-button>
-            <el-button plain size="mini" type="info" @click="deleteApp(row,$index)">
+            <el-button plain size="mini" type="default" @click="deleteApp(row,$index)">
               释放
             </el-button>
           </template>
@@ -145,7 +151,7 @@
 </template>
 
 <script>
-import { createApplication, getMyApplications, startApplication, stopApplication, updateApplication } from '@/api/application'
+import { createApplication, getMyApplications, startApplicationService, stopApplicationService, removeApplicationService, updateApplication } from '@/api/application'
 // 默认化创建表单的值
 function getDefaultFormValue() {
   return {
@@ -278,7 +284,7 @@ export default {
     },
     async startApp(app) {
       this.loading = true
-      const res = await startApplication(app.appid)
+      const res = await startApplicationService(app.appid)
         .finally(() => { this.loading = false })
       if (res.data) {
         this.$notify.success('启动应用成功')
@@ -289,10 +295,21 @@ export default {
     async stopApp(app) {
       await this.$confirm('确认要停止应用服务？', '服务操作确认')
       this.loading = true
-      const res = await stopApplication(app.appid)
+      const res = await stopApplicationService(app.appid)
         .finally(() => { this.loading = false })
       if (res.data) {
         this.$notify.success('停止应用成功')
+        this.loadApps()
+        return
+      }
+    },
+    async removeAppService(app) {
+      await this.$confirm('确认要删除应用服务？', '服务操作确认')
+      this.loading = true
+      const res = await removeApplicationService(app.appid)
+        .finally(() => { this.loading = false })
+      if (res.data) {
+        this.$notify.success('删除应用服务成功')
         this.loadApps()
         return
       }
