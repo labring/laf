@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-29 11:35:11
- * @LastEditTime: 2021-09-08 22:57:59
+ * @LastEditTime: 2021-09-09 00:43:39
  * @Description: 
  */
 
@@ -10,7 +10,7 @@ import { handleNotImplemented } from '../common'
 import { handleGetCollaborators, handleGetRoles, handleInviteCollaborator, handleRemoveCollaborator, handleSearchCollaborator } from './collaborator'
 import { handleCreateApplication } from './create'
 import { handleGetApplicationByAppid, handleMyApplications } from './get'
-import { handleStopApplicationService, handleStartApplicationService } from './service'
+import { handleStopApplicationService, handleStartApplicationService, handleRemoveApplicationService } from './service'
 import { handleUpdateApplication } from './update'
 
 export const ApplicationRouter = Router()
@@ -36,14 +36,19 @@ ApplicationRouter.post('/create', handleCreateApplication)
 ApplicationRouter.post('/:appid', handleUpdateApplication)
 
 /**
- * Start an application by appid
+ * Start an application service by appid
  */
-ApplicationRouter.post('/:appid/start', handleStartApplicationService)
+ApplicationRouter.post('/:appid/service/start', handleStartApplicationService)
 
 /**
- * Stop an application by appid
+ * Stop an application service by appid
  */
-ApplicationRouter.post('/:appid/stop', handleStopApplicationService)
+ApplicationRouter.post('/:appid/service/stop', handleStopApplicationService)
+
+/**
+ * Remove an application service by appid
+ */
+ApplicationRouter.post('/:appid/service/remove', handleRemoveApplicationService)
 
 /**
  * Remove an application by appid 

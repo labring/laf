@@ -69,6 +69,26 @@ export class DockerContainerServiceDriver {
   }
 
   /**
+   * Stop application service
+   * @param app 
+   */
+   async stopService(app: ApplicationStruct) {
+    const info = await this.info(app)
+    if (!info) {
+      return
+    }
+
+    const container = this.getContainer(app)
+    if (info.State.Running || info.State.Restarting) {
+      await container.stop()
+    }
+
+    logger.debug(`stop container ${container.id} of app ${app.appid}`)
+
+    return container.id
+  }
+
+  /**
    * Remove application service
    * @param app 
    */

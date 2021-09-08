@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-31 15:00:04
- * @LastEditTime: 2021-09-03 19:04:17
+ * @LastEditTime: 2021-09-08 23:52:11
  * @Description: 
  */
 
@@ -67,11 +67,45 @@ export async function handleStopApplicationService(req: Request, res: Response) 
   }
 
   const dockerService = new DockerContainerServiceDriver()
-  const container_id = await dockerService.removeService(app)
+  const container_id = await dockerService.stopService(app)
 
   await db.collection(Constants.cn.applications)
     .where({ appid: app.appid })
     .update({ status: 'stopped' })
+
+  return res.send({
+    data: {
+      service_id: container_id,
+      appid: app.appid
+    }
+  })
+}
+
+
+/**
+ * The handler of removing application
+ */
+export async function handleRemoveApplicationService(req: Request, res: Response) {
+  const uid = req['auth']?.uid
+  const db = DatabaseAgent.sys_db
+  const appid = req.params.appid
+  const app = await getApplicationByAppid(appid)
+
+  if (!app)
+    return res.status(422).send('app not found')
+
+  // check permission
+  const code = await checkPermission(uid, APPLICATION_UPDATE.name, app)
+  if (code) {
+    return res.status(code).send()
+  }
+
+  const dockerService = new DockerContainerServiceDriver()
+  const container_id = await dockerService.removeService(app)
+
+  await db.collection(Constants.cn.applications)
+    .where({ appid: app.appid })
+    .update({ status: 'removed' })
 
   return res.send({
     data: {
