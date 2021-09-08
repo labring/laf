@@ -1,12 +1,13 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-29 11:35:11
- * @LastEditTime: 2021-09-03 18:09:42
+ * @LastEditTime: 2021-09-08 22:57:59
  * @Description: 
  */
 
 import { Router } from 'express'
 import { handleNotImplemented } from '../common'
+import { handleGetCollaborators, handleGetRoles, handleInviteCollaborator, handleRemoveCollaborator, handleSearchCollaborator } from './collaborator'
 import { handleCreateApplication } from './create'
 import { handleGetApplicationByAppid, handleMyApplications } from './get'
 import { handleStopApplicationService, handleStartApplicationService } from './service'
@@ -50,6 +51,31 @@ ApplicationRouter.post('/:appid/stop', handleStopApplicationService)
 ApplicationRouter.delete('/:appid', handleNotImplemented)
 
 /**
+ * Get collaborators of application
+ */
+ApplicationRouter.get('/:appid/collaborators', handleGetCollaborators)
+
+/**
+ * Search collaborator of application
+ */
+ApplicationRouter.post('/collaborators/search', handleSearchCollaborator)
+
+/**
+ * Get all application roles
+ */
+ApplicationRouter.get('/collaborators/roles', handleGetRoles)
+
+/**
+ * Update a collaborator of application
+ */
+ApplicationRouter.put('/:appid/collaborators', handleNotImplemented)
+
+/**
  * Invite an collaborator into application
  */
-ApplicationRouter.post('/:appid/invite', handleNotImplemented)
+ApplicationRouter.post('/:appid/invite', handleInviteCollaborator)
+
+/**
+ * Remove a collaborator of application
+ */
+ApplicationRouter.delete('/:appid/collaborators/:collaborator_id', handleRemoveCollaborator)

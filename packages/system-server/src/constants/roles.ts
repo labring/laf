@@ -34,12 +34,12 @@ const owner = [
 export const roles = {
   developer: {
     name: 'developer',
-    label: 'Application Developer',
+    label: 'Developer',
     permissions: developer
   },
   dba: {
     name: 'dba',
-    label: 'Application Database Administrator',
+    label: 'Database Administrator',
     permissions: dba
   },
   operator: {
@@ -49,7 +49,7 @@ export const roles = {
   },
   owner: {
     name: 'owner',
-    label: 'Application Owner',
+    label: 'Owner',
     permissions: owner
   }
 }

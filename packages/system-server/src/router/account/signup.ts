@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-06 22:19:49
+ * @LastEditTime: 2021-09-08 20:26:21
  * @Description: 
  */
 
@@ -19,9 +19,13 @@ export async function handleSignUp(req: Request, res: Response) {
 
   const db = DatabaseAgent.sys_db
 
-  const { username, password } = req.body
+  const { username, password, name } = req.body
   if (!username || !password) {
     return res.send({ error: 'username or password cannot be empty' })
+  }
+
+  if (!name) {
+    return res.send({ error: 'name cannot be empty' })
   }
 
   // check if account exists
@@ -37,6 +41,7 @@ export async function handleSignUp(req: Request, res: Response) {
       quota: {
         app_count: Config.ACCOUNT_DEFAULT_APP_QUOTA
       },
+      name: name,
       password: hashPassword(password),
       created_at: Date.now(),
       updated_at: Date.now()

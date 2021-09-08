@@ -45,6 +45,13 @@ export default class Config {
   }
 
   /**
+   * the logger level : 'fatal', 'error', 'warning', 'info', 'debug', 'trace'
+   */
+   static get DB_LOG_LEVEL(): string {
+    return process.env['DB_LOG_LEVEL'] ?? (this.isProd ? 'warning' : 'debug')
+  }
+
+  /**
    * the serving port, default is 9000
    */
   static get PORT(): number {

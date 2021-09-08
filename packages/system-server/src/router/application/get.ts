@@ -1,12 +1,12 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 15:22:34
- * @LastEditTime: 2021-09-05 00:45:55
+ * @LastEditTime: 2021-09-08 18:44:01
  * @Description: 
  */
 
 import { Request, Response } from 'express'
-import { ApplicationStruct, getApplicationByAppid, getMyApplications, getMyJoinedApplications } from '../../api/application'
+import { getApplicationByAppid, getMyApplications, getMyJoinedApplications, getUserRolesOfApplication } from '../../api/application'
 import { getPermissionsOfRoles } from '../../api/permission'
 import { Constants } from '../../constants'
 import { getToken } from '../../utils/token'
@@ -84,24 +84,4 @@ export async function handleGetApplicationByAppid(req: Request, res: Response) {
       file_token
     }
   })
-}
-
-/**
- * Get user's roles of an application
- * @param uid 
- * @param app 
- * @returns 
- */
-function getUserRolesOfApplication(uid: string, app: ApplicationStruct) {
-  if (app.created_by === uid) {
-    return [Constants.roles.owner.name]
-  }
-
-  // reject if not the collaborator
-  const [found] = app.collaborators.filter(co => co.uid === uid)
-  if (!found) {
-    return []
-  }
-
-  return found.roles
 }

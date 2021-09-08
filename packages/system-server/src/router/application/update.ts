@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-31 15:00:04
- * @LastEditTime: 2021-09-03 17:29:23
+ * @LastEditTime: 2021-09-08 03:32:57
  * @Description: 
  */
 
@@ -13,6 +13,7 @@ import { DatabaseAgent } from '../../lib/db-agent'
 import { permissions } from '../../constants/permissions'
 
 const { APPLICATION_UPDATE } = permissions
+
 /**
  * The handler of updating application
  */
@@ -21,7 +22,6 @@ export async function handleUpdateApplication(req: Request, res: Response) {
   const db = DatabaseAgent.sys_db
   const appid = req.params.appid
   const app = await getApplicationByAppid(appid)
-
   if (!app)
     return res.status(422).send('app not found')
 

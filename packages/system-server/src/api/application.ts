@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-28 22:00:45
- * @LastEditTime: 2021-09-06 22:04:37
+ * @LastEditTime: 2021-09-08 18:39:01
  * @Description: Application APIs
  */
 
@@ -114,6 +114,27 @@ export async function getApplicationDbAccessor(app: ApplicationStruct) {
   await accessor.init()
 
   return accessor
+}
+
+
+/**
+ * Get user's roles of an application
+ * @param uid 
+ * @param app 
+ * @returns 
+ */
+export function getUserRolesOfApplication(uid: string, app: ApplicationStruct) {
+  if (app.created_by === uid) {
+    return [Constants.roles.owner.name]
+  }
+
+  // reject if not the collaborator
+  const [found] = app.collaborators.filter(co => co.uid === uid)
+  if (!found) {
+    return []
+  }
+
+  return found.roles
 }
 
 /**

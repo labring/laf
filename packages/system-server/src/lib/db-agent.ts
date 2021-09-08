@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-03 15:28:45
+ * @LastEditTime: 2021-09-08 23:07:02
  * @Description: 
  */
 
@@ -69,7 +69,7 @@ export class DatabaseAgent {
     const { database } = this.parseConnectionUri(uri)
     const accessor = new MongoAccessor(database, uri)
 
-    accessor.setLogger(createLogger(`accessor:${database}`, 'warning'))
+    accessor.setLogger(createLogger(`accessor:${database}`, Config.DB_LOG_LEVEL))
     accessor.init()
       .then(() => {
         logger.info(`db:${database} connected`)
