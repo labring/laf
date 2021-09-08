@@ -1,7 +1,8 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import { MessageBox } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
+import { showError, showInfo } from './show'
 
 // create an axios instance
 const service = axios.create({
@@ -43,40 +44,29 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
-    const res = response
-    // const res = response.data
-
-    // if the custom code is not 20000, it is judged as an error.
-    if (res.status !== 200) {
-      Message({
-        message: res.error || 'Error',
-        type: 'error',
-        duration: 5 * 1000
-      })
-
-      if (res.status === 401) {
-        // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
-          type: 'warning'
-        }).then(() => {
-          store.dispatch('user/resetToken').then(() => {
-            location.reload()
-          })
-        })
-      }
-      return Promise.reject(new Error(res.data.error || 'Error'))
-    } else {
-      return res.data
-    }
+    return response.data
   },
   error => {
-    Message({
-      message: error.message,
-      type: 'info',
-      duration: 5 * 1000
-    })
+    const status = error.response.status
+
+    if (status === 401) {
+      // to re-login
+      MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
+        confirmButtonText: 'Re-Login',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(() => {
+        store.dispatch('user/resetToken')
+          .then(() => { location.reload() })
+      })
+      return Promise.reject(error)
+    }
+    if (status === 403) {
+      showInfo('无此操作权限')
+      return Promise.reject(error)
+    }
+
+    showError(error.message)
     return Promise.reject(error)
   }
 )
