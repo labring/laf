@@ -46,6 +46,7 @@ router.beforeEach(async(to, from, next) => {
         } catch (error) {
           console.error(`failed to load application: ${appid}`, error)
           Message('加载应用信息出错，请刷新重试')
+          next({ path: '/applications' })
           return
         }
 
