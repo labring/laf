@@ -12,7 +12,7 @@
     <!-- My created apps -->
     <div class="app-group">
       <div class="app-group-title">我创建的应用</div>
-      <el-table v-loading="loading" empty-text="-" :data="applications.created" style="width: 100%;margin-top:10px;" stripe>
+      <el-table v-loading="loading" empty-text="还没有创建应用" :data="applications.created" style="width: 100%;margin-top:10px;" stripe>
         <el-table-column align="center" label="App ID" width="320">
           <template slot-scope="scope">
             <div class="table-row">
@@ -67,7 +67,7 @@
     <!-- My joined apps -->
     <div class="app-group">
       <div class="app-group-title">我加入的应用</div>
-      <el-table v-loading="loading" empty-text="-" :data="applications.joined" style="width: 100%;margin-top:10px;" stripe>
+      <el-table v-loading="loading" empty-text="还没有加入的应用" :data="applications.joined" style="width: 100%;margin-top:10px;" stripe>
         <el-table-column align="center" label="App ID" width="320">
           <template slot-scope="scope">
             <div class="table-row">
