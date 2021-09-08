@@ -1,4 +1,38 @@
-# [](https://github.com/Maslow/laf/compare/v0.5.0-alpha.0...v) (2021-09-06)
+
+# [0.5.0-alpha.2](https://github.com/Maslow/laf/compare/v0.5.0-alpha.1...v0.5.0-alpha.2) (2021-09-08)
+
+
+### Bug Fixes
+
+* **sys-client:** add 403 permission tip; ([d845356](https://github.com/Maslow/laf/commit/d845356dcae276808842248f810ac2cc9e504183))
+* **sys-client:** fix error in debug function; ([cab5747](https://github.com/Maslow/laf/commit/cab5747089d518f807708e469b4f6f5defc51db3))
+* **sys-client:** fix nav styles & user state; ([4885ecd](https://github.com/Maslow/laf/commit/4885ecdffcd449a7501485bae1675886b6432686))
+* **sys-client:** fix styles & add util function(show) ([7809903](https://github.com/Maslow/laf/commit/78099030f846d74ca2b6ab7fe4a3dae465d3185b))
+
+
+### Features
+
+* **sys client:** add joined app list ([4587bc7](https://github.com/Maslow/laf/commit/4587bc7c0239da326c02e500e9a445e5df6442df))
+* **sys-client:** impl collaborate crud page ([10ca68f](https://github.com/Maslow/laf/commit/10ca68f2f4da75e4b749aade445c0a790bd6f063))
+* **sys-client:** impl remove app service; ([b0c8634](https://github.com/Maslow/laf/commit/b0c863406d73bfcc70664110d72d98a90d53aff7))
+* **sys-server:** add array util functions; ([b91ba2b](https://github.com/Maslow/laf/commit/b91ba2b9a9957adddab4cb414213f0c22a74c01b))
+* **sys-server:** add max_old_space_size of node vm config; ([5275071](https://github.com/Maslow/laf/commit/527507159dba9c2bcd8d1821fa2d5a8b4ba1b7ad))
+* **sys-server:** add remove app service api; ([6942fa5](https://github.com/Maslow/laf/commit/6942fa54b4bcaf0ef2cf80c9e58d19ae50a4fb00))
+* **system-server:** add app collaborator crud apis; ([2789b0d](https://github.com/Maslow/laf/commit/2789b0d191c183d7ade53bc69c7bde1c7dd5ea40))
+
+
+
+# [0.5.0-alpha.1](https://github.com/Maslow/laf/compare/v0.5.0-alpha.0...v0.5.0-alpha.1) (2021-09-07)
+
+
+### Bug Fixes
+
+* **error:** fix error in devops init script; ([ba310cc](https://github.com/Maslow/laf/commit/ba310cce62f26e78448e5bb95c86d3e6a7c3d496))
+
+
+### Features
+
+* **system-server:** add quota to limit app creating ([77e98db](https://github.com/Maslow/laf/commit/77e98dbc99ae4b94b00767eec67cf1b7016ac2e3))
 
 
 
