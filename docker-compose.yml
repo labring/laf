@@ -33,7 +33,7 @@ services:
       LOG_LEVEL: debug
       APP_SERVICE_IMAGE: lafyun/app-service:latest
       ACCOUNT_DEFAULT_APP_QUOTA: 10
-    command: node dist/index.js
+    command: npx nodemon
     volumes:
       - ./packages/system-server:/app
       - /var/run/docker.sock:/var/run/docker.sock
