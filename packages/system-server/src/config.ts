@@ -47,7 +47,7 @@ export default class Config {
   /**
    * the logger level : 'fatal', 'error', 'warning', 'info', 'debug', 'trace'
    */
-   static get DB_LOG_LEVEL(): string {
+  static get DB_LOG_LEVEL(): string {
     return process.env['DB_LOG_LEVEL'] ?? (this.isProd ? 'warning' : 'debug')
   }
 
@@ -99,5 +99,13 @@ export default class Config {
    */
   static get APP_DEPLOY_URL(): string {
     return process.env.APP_DEPLOY_URL ?? ''
+  }
+
+  /**
+   * The max old space size of node vm of application service, default is 256mb
+   * @see --max_old_space_size of node argv
+   */
+  static get APP_SERVICE_NODE_MAX_OLD_SPACE_SIZE(): number {
+    return (process.env.APP_SERVICE_NODE_MAX_OLD_SPACE_SIZE ?? 256) as number
   }
 }

@@ -18,10 +18,10 @@ export class DockerContainerServiceDriver {
    */
   async createService(app: ApplicationStruct) {
     const uri = getApplicationDbUri(app)
-
+    const max_old_space_size = Config.APP_SERVICE_NODE_MAX_OLD_SPACE_SIZE
     const container = await this.docker.createContainer({
       Image: Config.APP_SERVICE_IMAGE,
-      Cmd: ['node', './dist/start.js'],
+      Cmd: ['node', `--max_old_space_size=${max_old_space_size}`, './dist/start.js'],
       name: `app_${app.appid}`,
       Env: [
         `DB=${app.config.db_name}`,
@@ -72,7 +72,7 @@ export class DockerContainerServiceDriver {
    * Stop application service
    * @param app 
    */
-   async stopService(app: ApplicationStruct) {
+  async stopService(app: ApplicationStruct) {
     const info = await this.info(app)
     if (!info) {
       return
