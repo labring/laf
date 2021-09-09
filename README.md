@@ -95,28 +95,27 @@ sudo systemctl start docker
 
 ```sh
 git clone https://github.com/Maslow/laf.git
+
+# 该目录下有更多部署脚本，可供生产部署时使用
 cd laf/deploy-scripts
 
 # 启动所有服务
 docker-compose up
 
 # 浏览器打开 http://locahost:8080 访问
-
 ```
 
-##### 停止服务
+### 开发环境（开发者）
 
 ```sh
-# 停止服务
-docker-compose down
+# install dependencies
+npm run install   # NOT `npm install`
 
-# 停止服务并清数据卷
-docker-compose down -v
-```
+# build packages
+npm run build
 
-##### 更新服务镜像
+# launch laf services
+docker-compose up
 
-```sh
-# 更新镜像
-docker-compose pull
+# Now open http://locahost:8080 in your browsers!
 ```
