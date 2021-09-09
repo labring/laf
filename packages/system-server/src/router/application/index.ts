@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-29 11:35:11
- * @LastEditTime: 2021-09-09 00:43:39
+ * @LastEditTime: 2021-09-09 10:49:48
  * @Description: 
  */
 
@@ -10,6 +10,7 @@ import { handleNotImplemented } from '../common'
 import { handleGetCollaborators, handleGetRoles, handleInviteCollaborator, handleRemoveCollaborator, handleSearchCollaborator } from './collaborator'
 import { handleCreateApplication } from './create'
 import { handleGetApplicationByAppid, handleMyApplications } from './get'
+import { handleRemoveApplication } from './remove'
 import { handleStopApplicationService, handleStartApplicationService, handleRemoveApplicationService } from './service'
 import { handleUpdateApplication } from './update'
 
@@ -53,7 +54,7 @@ ApplicationRouter.post('/:appid/service/remove', handleRemoveApplicationService)
 /**
  * Remove an application by appid 
  */
-ApplicationRouter.delete('/:appid', handleNotImplemented)
+ApplicationRouter.delete('/:appid', handleRemoveApplication)
 
 /**
  * Get collaborators of application

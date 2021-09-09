@@ -83,6 +83,19 @@ export async function updateApplication(appid, { name }) {
 }
 
 /**
+ * 删除（释放）应用
+ * @param {*} appid
+ * @returns
+ */
+export async function removeApplication(appid) {
+  const res = await request({
+    url: `/apps/${appid}`,
+    method: 'delete'
+  })
+  return res
+}
+
+/**
  * 添加协作成员
  * @param {member_id, roles}
  * @returns

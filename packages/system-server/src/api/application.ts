@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-28 22:00:45
- * @LastEditTime: 2021-09-08 18:39:01
+ * @LastEditTime: 2021-09-09 10:43:23
  * @Description: Application APIs
  */
 
@@ -22,7 +22,7 @@ export interface ApplicationStruct {
   name: string
   created_by: string
   appid: string
-  status: 'created' | 'running' | 'stopped'
+  status: 'created' | 'running' | 'stopped' | 'cleared'
   config: {
     db_name: string
     db_user: string

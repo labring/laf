@@ -51,14 +51,14 @@
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" align="center" width="280" class-name="small-padding">
-          <template slot-scope="{row,$index}">
+          <template slot-scope="{row}">
             <el-button type="success" size="mini" @click="toDetail(row)">
               开发管理
             </el-button>
             <el-button plain type="primary" size="mini" @click="showUpdateForm(row)">
               编辑
             </el-button>
-            <el-button plain size="mini" type="default" @click="deleteApp(row,$index)">
+            <el-button plain size="mini" type="default" @click="deleteApp(row)">
               释放
             </el-button>
           </template>
@@ -109,14 +109,14 @@
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" align="center" width="280" class-name="small-padding">
-          <template slot-scope="{row,$index}">
+          <template slot-scope="{row}">
             <el-button type="success" size="mini" @click="toDetail(row)">
               开发管理
             </el-button>
             <el-button plain type="primary" size="mini" @click="showUpdateForm(row)">
               编辑
             </el-button>
-            <el-button plain size="mini" type="default" @click="deleteApp(row,$index)">
+            <el-button plain size="mini" type="default" @click="deleteApp(row)">
               释放
             </el-button>
           </template>
@@ -151,7 +151,8 @@
 </template>
 
 <script>
-import { createApplication, getMyApplications, startApplicationService, stopApplicationService, removeApplicationService, updateApplication } from '@/api/application'
+import { createApplication, getMyApplications, startApplicationService, stopApplicationService, removeApplicationService, updateApplication, removeApplication } from '@/api/application'
+import { showError, showSuccess } from '@/utils/show'
 // 默认化创建表单的值
 function getDefaultFormValue() {
   return {
@@ -276,8 +277,18 @@ export default {
         this.dialogFormVisible = false
       })
     },
-    async deleteApp() {
-      this.$message('尚未实现此功能')
+    async deleteApp(row) {
+      await this.$confirm('应用被删除后，暂不可恢复，确定释放？', '确认释放应用？')
+      console.log(row)
+      if (row.status !== 'cleared' && row.status !== 'created') { return showError('请先停止并清除该应用的服务') }
+      this.loading = true
+
+      const res = await removeApplication(row.appid)
+        .finally(() => { this.loading = false })
+
+      if (res.error) showError(res.error)
+      showSuccess('应用已释放: ' + row.name)
+      this.loadApps()
     },
     onCopy() {
       this.$message.success('已复制')

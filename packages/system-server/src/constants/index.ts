@@ -46,6 +46,7 @@ export const Constants = {
     deploy_targets: coll_prefix + 'deploy_targets',
     deploy_requests: coll_prefix + 'deploy_requests',
     applications: coll_prefix + 'applications',
+    recycles: coll_prefix + 'recycles',
   },
 
   /**

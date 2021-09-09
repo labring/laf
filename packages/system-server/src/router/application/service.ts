@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-31 15:00:04
- * @LastEditTime: 2021-09-08 23:52:11
+ * @LastEditTime: 2021-09-09 10:42:32
  * @Description: 
  */
 
@@ -105,7 +105,7 @@ export async function handleRemoveApplicationService(req: Request, res: Response
 
   await db.collection(Constants.cn.applications)
     .where({ appid: app.appid })
-    .update({ status: 'removed' })
+    .update({ status: 'cleared' })
 
   return res.send({
     data: {
