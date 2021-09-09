@@ -13,7 +13,7 @@
     <div class="app-group">
       <div class="app-group-title">我创建的应用</div>
       <el-table v-loading="loading" empty-text="还没有创建应用" :data="applications.created" style="width: 100%;margin-top:10px;" stripe>
-        <el-table-column align="center" label="App ID" width="320">
+        <el-table-column align="center" label="App ID" width="340">
           <template slot-scope="scope">
             <div class="table-row">
               <div> {{ scope.row.appid }}</div>
@@ -21,25 +21,25 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="应用名" width="300">
+        <el-table-column align="center" label="应用名" width="400">
           <template slot-scope="{row}">
             <span class="link-type" @click="showUpdateForm(row)">{{ row.name }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="Status" width="300">
+        <el-table-column align="left" label="Status" width="200">
           <template slot-scope="scope">
             {{ scope.row.status }}
           </template>
         </el-table-column>
         <el-table-column label="服务启停" align="left" width="200" class-name="small-padding">
           <template slot-scope="{row}">
-            <el-button v-if="row.status !== 'running'" plain type="success" size="mini" @click="startApp(row)">
+            <el-button v-if="row.status !== 'running'" :loading="serviceLoading" plain type="success" size="mini" @click="startApp(row)">
               启动
             </el-button>
-            <el-button v-if="row.status === 'running'" plain type="danger" size="mini" @click="stopApp(row)">
+            <el-button v-if="row.status === 'running'" :loading="serviceLoading" plain type="danger" size="mini" @click="stopApp(row)">
               停止
             </el-button>
-            <el-button v-if="row.status === 'stopped'" plain type="default" size="mini" @click="removeAppService(row)">
+            <el-button v-if="row.status === 'stopped'" :loading="serviceLoading" plain type="default" size="mini" @click="removeAppService(row)">
               清除
             </el-button>
           </template>
@@ -74,7 +74,7 @@
     <div class="app-group">
       <div class="app-group-title">我加入的应用</div>
       <el-table v-loading="loading" empty-text="还没有加入的应用" :data="applications.joined" style="width: 100%;margin-top:10px;" stripe>
-        <el-table-column align="center" label="App ID" width="320">
+        <el-table-column align="center" label="App ID" width="340">
           <template slot-scope="scope">
             <div class="table-row">
               <div> {{ scope.row.appid }}</div>
@@ -82,25 +82,25 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="应用名" width="300">
+        <el-table-column align="center" label="应用名" width="400">
           <template slot-scope="{row}">
             <span class="link-type" @click="showUpdateForm(row)">{{ row.name }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="Status" width="300">
+        <el-table-column align="left" label="Status" width="200">
           <template slot-scope="scope">
             {{ scope.row.status }}
           </template>
         </el-table-column>
         <el-table-column label="服务启停" align="left" width="200" class-name="small-padding">
           <template slot-scope="{row}">
-            <el-button v-if="row.status !== 'running'" plain type="success" size="mini" @click="startApp(row)">
+            <el-button v-if="row.status !== 'running'" :loading="serviceLoading" plain type="success" size="mini" @click="startApp(row)">
               启动
             </el-button>
-            <el-button v-if="row.status === 'running'" plain type="danger" size="mini" @click="stopApp(row)">
+            <el-button v-if="row.status === 'running'" :loading="serviceLoading" plain type="danger" size="mini" @click="stopApp(row)">
               停止
             </el-button>
-            <el-button v-if="row.status === 'stopped'" plain type="default" size="mini" @click="removeAppService(row)">
+            <el-button v-if="row.status === 'stopped'" :loading="serviceLoading" plain type="default" size="mini" @click="removeAppService(row)">
               清除
             </el-button>
           </template>
@@ -241,7 +241,8 @@ export default {
       importForm: {
         app: null,
         file: null
-      }
+      },
+      serviceLoading: false
     }
   },
   async created() {
@@ -352,9 +353,9 @@ export default {
       this.$message.success('已复制')
     },
     async startApp(app) {
-      this.loading = true
+      this.serviceLoading = true
       const res = await startApplicationService(app.appid)
-        .finally(() => { this.loading = false })
+        .finally(() => { this.serviceLoading = false })
       if (res.data) {
         this.$notify.success('启动应用成功')
         this.loadApps()
@@ -363,9 +364,9 @@ export default {
     },
     async stopApp(app) {
       await this.$confirm('确认要停止应用服务？', '服务操作确认')
-      this.loading = true
+      this.serviceLoading = true
       const res = await stopApplicationService(app.appid)
-        .finally(() => { this.loading = false })
+        .finally(() => { this.serviceLoading = false })
       if (res.data) {
         this.$notify.success('停止应用成功')
         this.loadApps()
@@ -374,9 +375,9 @@ export default {
     },
     async removeAppService(app) {
       await this.$confirm('确认要删除应用服务？', '服务操作确认')
-      this.loading = true
+      this.serviceLoading = true
       const res = await removeApplicationService(app.appid)
-        .finally(() => { this.loading = false })
+        .finally(() => { this.serviceLoading = false })
       if (res.data) {
         this.$notify.success('删除应用服务成功')
         this.loadApps()
