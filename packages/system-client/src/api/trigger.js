@@ -44,15 +44,3 @@ export function removeTrigger(func_id, trigger_id) {
     method: 'delete'
   })
 }
-
-/**
- * Publish triggers
- * @returns
- */
-export function publishTriggers() {
-  const appid = store.state.app.appid
-  return request({
-    url: `/apps/${appid}/function/publish/triggers`,
-    method: 'post'
-  })
-}

@@ -39,9 +39,12 @@
             <el-button v-if="row.status === 'running'" :loading="serviceLoading" plain type="danger" size="mini" @click="stopApp(row)">
               停止
             </el-button>
-            <el-button v-if="row.status === 'stopped'" :loading="serviceLoading" plain type="default" size="mini" @click="removeAppService(row)">
-              清除
-            </el-button>
+            <el-tooltip content="仅清除应用服务实例，并[不会]删除应用或数据，请放心清除" effect="light" placement="bottom">
+              <el-button v-if="row.status === 'stopped'" :loading="serviceLoading" plain type="default" size="mini" @click="removeAppService(row)">
+                清除
+              </el-button>
+            </el-tooltip>
+
           </template>
         </el-table-column>
         <el-table-column label="创建时间" align="center">
@@ -100,9 +103,11 @@
             <el-button v-if="row.status === 'running'" :loading="serviceLoading" plain type="danger" size="mini" @click="stopApp(row)">
               停止
             </el-button>
-            <el-button v-if="row.status === 'stopped'" :loading="serviceLoading" plain type="default" size="mini" @click="removeAppService(row)">
-              清除
-            </el-button>
+            <el-tooltip content="仅清除应用服务实例，并[不会]删除应用或数据，请放心清除" effect="light" placement="bottom">
+              <el-button v-if="row.status === 'stopped'" :loading="serviceLoading" plain type="default" size="mini" @click="removeAppService(row)">
+                清除
+              </el-button>
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" align="center">
@@ -155,7 +160,7 @@
     </el-dialog>
 
     <!-- 导入应用对话框 -->
-    <el-dialog v-if="importForm.app" v-loading="loading" title="导入应用" :visible.sync="dialogImportVisible">
+    <el-dialog v-if="importForm.app" title="导入应用" :visible.sync="dialogImportVisible">
       <el-form
         ref="importForm"
         :rules="importFormRules"
@@ -169,7 +174,7 @@
         </el-form-item>
         <el-form-item label="选择应用文件" prop="file">
           <el-upload
-            ref="upload"
+            ref="uploader"
             action=""
             :auto-upload="false"
             :multiple="false"
@@ -186,7 +191,7 @@
         <el-button @click="dialogImportVisible = false">
           取消
         </el-button>
-        <el-button type="primary" @click="handleImportApp">
+        <el-button :loading="loading" type="primary" @click="handleImportApp">
           确定
         </el-button>
       </div>
@@ -399,6 +404,7 @@ export default {
       this.dialogImportVisible = true
       this.$nextTick(() => {
         this.$refs['importForm'].clearValidate()
+        this.$refs['uploader'].clearFiles()
       })
     },
     onImportFileChanged(data) {

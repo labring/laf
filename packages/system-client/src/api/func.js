@@ -22,6 +22,17 @@ export function getFunctions(query, page, pageSize) {
 }
 
 /**
+ * Get all tags of cloud functions
+ */
+export function getAllFunctionTags() {
+  const appid = store.state.app.appid
+  return request({
+    url: `/apps/${appid}/function/tags/all`,
+    method: 'get'
+  })
+}
+
+/**
  * Get a cloud function
  * @param {*} query
  * @param {*} page

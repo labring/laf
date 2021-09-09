@@ -252,17 +252,15 @@ export default {
      */
     async launch() {
       const debug_token = this.$store.state.app.debug_token
-      // await this.updateFunc(false)
+      await this.updateFunc(false)
       if (this.loading) return
 
+      this.loading = true
       await publishFunctions(this.appid)
       const param = this.parseInvokeParam(this.invokeParams)
       const res = await launchFunction(this.func.name, param, debug_token)
-        .catch(err => {
-          console.error(err)
-          this.$message.warning('运行失败： ' + err)
-        })
 
+      this.loading = false
       this.$message.success('运行成功')
       this.invokeResult = res
       this.getLatestLogs()

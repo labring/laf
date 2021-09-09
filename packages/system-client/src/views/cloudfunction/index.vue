@@ -178,7 +178,7 @@
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import DeployPanel from '../deploy/components/deploy-panel.vue'
-import { createFunction, getFunctions, publishFunctions, removeFunction, updateFunction } from '@/api/func'
+import { createFunction, getAllFunctionTags, getFunctions, publishFunctions, removeFunction, updateFunction } from '@/api/func'
 
 const defaultCode = `
 import cloud from '@/cloud-sdk'
@@ -274,9 +274,9 @@ export default {
   methods: {
     /** 获取所有标签 */
     async getAllTags() {
-      // TODO
-      const tags = []
-      this.all_tags = Array.from(new Set(tags))
+      const res = await getAllFunctionTags()
+      this.all_tags = res.data
+      // this.all_tags = Array.from(new Set(tags))
     },
     /**
      * 获取数据列表

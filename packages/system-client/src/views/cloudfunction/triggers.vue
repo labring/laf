@@ -139,7 +139,6 @@
 <script>
 import { getFunctionById } from '@/api/func'
 import { createTrigger, removeTrigger, updateTrigger } from '@/api/trigger'
-import { publishTriggers } from '@/api/trigger'
 
 // 默认化创建表单的值
 function getDefaultFormValue() {
@@ -220,10 +219,6 @@ export default {
       this.list = r.data?.triggers || []
       this.loading = false
     },
-    // 发布触发器配置
-    async publishTrigger(triggerId) {
-      await publishTriggers()
-    },
     // 显示创建表单
     showCreateForm() {
       this.form = getDefaultFormValue()
@@ -266,7 +261,6 @@ export default {
         })
 
         this.getFunction()
-        this.publishTrigger()
         this.dialogFormVisible = false
       })
     },
@@ -308,7 +302,6 @@ export default {
         })
 
         this.getFunction()
-        this.publishTrigger()
         this.dialogFormVisible = false
       })
     },
@@ -340,12 +333,11 @@ export default {
         message: '删除成功！'
       })
 
-      this.publishTrigger()
       this.list.splice(index, 1)
     },
     // 查看触发器日志（跳转日志页）
     showTriggerLogs(row) {
-      this.$router.push(`/development/logs?trigger_id=${row._id}`)
+      this.$router.push({ path: `../logs?trigger_id=${row._id}` })
     },
     // 设置标签标题
     setTagViewTitle() {

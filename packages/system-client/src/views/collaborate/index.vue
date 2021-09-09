@@ -170,12 +170,14 @@ export default {
     },
     getRoleLabel(role_name) {
       switch (role_name) {
+        case 'owner':
+          return '应用管理员'
         case 'dba':
-          return '数据库管理员'
+          return '数据管理员'
         case 'developer':
           return '开发者'
         case 'operator':
-          return '运维'
+          return '运维工程师'
       }
       return 'Unknown'
     }

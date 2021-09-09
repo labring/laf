@@ -30,8 +30,7 @@ export const asyncRoutes = [
         name: 'FunctionListPage',
         meta: {
           title: '云函数',
-          icon: 'bug',
-          noCache: true
+          icon: 'bug'
         }
       },
       {
