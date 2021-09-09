@@ -176,3 +176,32 @@ export async function removeApplicationService(appid) {
   })
   return res
 }
+
+/**
+ * 导出应用
+ * @param {string} appid
+ * @returns
+ */
+export async function exportApplication(appid) {
+  const res = await request({
+    url: `/apps/${appid}/export`,
+    method: 'get'
+  })
+  return res
+}
+
+/**
+ * 导入应用
+ * @param {string} appid
+ * @returns
+ */
+export async function importApplication(appid, import_data) {
+  const res = await request({
+    url: `/apps/${appid}/import`,
+    method: 'post',
+    data: {
+      import_data
+    }
+  })
+  return res
+}

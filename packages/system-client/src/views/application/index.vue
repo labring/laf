@@ -22,8 +22,8 @@
           </template>
         </el-table-column>
         <el-table-column align="center" label="应用名" width="300">
-          <template slot-scope="scope">
-            {{ scope.row.name }}
+          <template slot-scope="{row}">
+            <span class="link-type" @click="showUpdateForm(row)">{{ row.name }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="Status" width="300">
@@ -50,13 +50,16 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" align="center" width="280" class-name="small-padding">
+        <el-table-column fixed="right" label="操作" align="center" width="320" class-name="small-padding">
           <template slot-scope="{row}">
             <el-button type="success" size="mini" @click="toDetail(row)">
               开发管理
             </el-button>
-            <el-button plain type="primary" size="mini" @click="showUpdateForm(row)">
-              编辑
+            <el-button type="default" size="mini" @click="exportApp(row)">
+              导出
+            </el-button>
+            <el-button type="default" size="mini" @click="showImportForm(row)">
+              导入
             </el-button>
             <el-button plain size="mini" type="default" @click="deleteApp(row)">
               释放
@@ -80,8 +83,8 @@
           </template>
         </el-table-column>
         <el-table-column align="center" label="应用名" width="300">
-          <template slot-scope="scope">
-            {{ scope.row.name }}
+          <template slot-scope="{row}">
+            <span class="link-type" @click="showUpdateForm(row)">{{ row.name }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="Status" width="300">
@@ -108,13 +111,16 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" align="center" width="280" class-name="small-padding">
+        <el-table-column fixed="right" label="操作" align="center" width="320" class-name="small-padding">
           <template slot-scope="{row}">
             <el-button type="success" size="mini" @click="toDetail(row)">
               开发管理
             </el-button>
-            <el-button plain type="primary" size="mini" @click="showUpdateForm(row)">
-              编辑
+            <el-button type="default" size="mini" @click="exportApp(row)">
+              导出
+            </el-button>
+            <el-button type="default" size="mini" @click="showImportForm(row)">
+              导入
             </el-button>
             <el-button plain size="mini" type="default" @click="deleteApp(row)">
               释放
@@ -147,12 +153,53 @@
         </el-button>
       </div>
     </el-dialog>
+
+    <!-- 导入应用对话框 -->
+    <el-dialog v-if="importForm.app" v-loading="loading" title="导入应用" :visible.sync="dialogImportVisible">
+      <el-form
+        ref="importForm"
+        :rules="importFormRules"
+        :model="importForm"
+        label-position="left"
+        label-width="120px"
+        style="width: 300px; margin-left:20px;"
+      >
+        <el-form-item label="应用" prop="app">
+          {{ importForm.app.name }}
+        </el-form-item>
+        <el-form-item label="选择应用文件" prop="file">
+          <el-upload
+            ref="upload"
+            action=""
+            :auto-upload="false"
+            :multiple="false"
+            :show-file-list="true"
+            accept=".json"
+            :limit="1"
+            :on-change="onImportFileChanged"
+          >
+            <el-button slot="trigger" plain size="mini" type="primary">选取导入文件</el-button>
+          </el-upload>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogImportVisible = false">
+          取消
+        </el-button>
+        <el-button type="primary" @click="handleImportApp">
+          确定
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { createApplication, getMyApplications, startApplicationService, stopApplicationService, removeApplicationService, updateApplication, removeApplication } from '@/api/application'
+import { createApplication, getMyApplications, startApplicationService, stopApplicationService, removeApplicationService, updateApplication, removeApplication, exportApplication, importApplication } from '@/api/application'
 import { showError, showSuccess } from '@/utils/show'
+import { exportRawText, readTextFromFile } from '@/utils/file'
+import { parseTime } from '@/utils'
+
 // 默认化创建表单的值
 function getDefaultFormValue() {
   return {
@@ -164,6 +211,11 @@ function getDefaultFormValue() {
 
 const formRules = {
   name: [{ required: true, message: '应用名不可为空', trigger: 'blur' }]
+}
+
+const importFormRules = {
+  app: [{ required: true, message: '没选择应用', trigger: 'blur' }],
+  file: [{ required: true, message: '请选择导入文件', trigger: 'blur' }]
 }
 
 export default {
@@ -183,7 +235,13 @@ export default {
         update: '编辑',
         create: '创建'
       },
-      rules: formRules
+      rules: formRules,
+      importFormRules,
+      dialogImportVisible: false,
+      importForm: {
+        app: null,
+        file: null
+      }
     }
   },
   async created() {
@@ -323,6 +381,45 @@ export default {
         this.$notify.success('删除应用服务成功')
         this.loadApps()
         return
+      }
+    },
+    async exportApp(app) {
+      this.loading = true
+      const res = await exportApplication(app.appid)
+        .finally(() => { this.loading = false })
+
+      const data = JSON.stringify(res)
+      const time = parseTime(Date.now(), '{y}{m}{d}{h}{i}{s}')
+      const filename = `${app.name}_${time}.json`
+      exportRawText(filename, data)
+    },
+    showImportForm(app) {
+      this.importForm = { app, file: null }
+      this.dialogImportVisible = true
+      this.$nextTick(() => {
+        this.$refs['importForm'].clearValidate()
+      })
+    },
+    onImportFileChanged(data) {
+      const file = data.raw
+      this.importForm.file = file
+    },
+    async handleImportApp() {
+      this.loading = true
+      try {
+        const text = await readTextFromFile(this.importForm.file)
+        const import_data = JSON.parse(text)
+        const appid = this.importForm.app?.appid
+        const res = await importApplication(appid, import_data)
+        if (res.error) {
+          return showError('导入失败:' + res.error)
+        }
+
+        showSuccess('导入成功!')
+        this.importForm = { app: null, file: null }
+        this.dialogImportVisible = false
+      } finally {
+        this.loading = false
       }
     }
   }
