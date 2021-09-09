@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-29 11:35:05
- * @LastEditTime: 2021-09-06 13:20:58
+ * @LastEditTime: 2021-09-10 00:06:13
  * @Description:
  */
 
@@ -9,7 +9,7 @@ import { Router } from "express"
 import { handleCreateFunction } from "./create"
 import { handleGetFunctionById, handleGetFunctions } from "./get"
 import { handleGetFunctionLogs } from "./logs"
-import { handlePublishFunctions, handlePublishTriggers } from "./publish"
+import { handlePublishFunctions } from "./publish"
 import { handleRemoveFunctionById } from "./remove"
 import { handleCreateTrigger, handleRemoveTrigger, handleUpdateTrigger } from "./trigger"
 import { handleUpdateFunction, handleUpdateFunctionCode } from "./update"
@@ -76,8 +76,3 @@ FunctionRouter.post('/:func_id/triggers/:trigger_id', handleUpdateTrigger)
  * Remove a trigger of the function
  */
 FunctionRouter.delete('/:func_id/triggers/:trigger_id', handleRemoveTrigger)
-
-/**
- * Publish triggers of the application
- */
-FunctionRouter.post('/publish/triggers', handlePublishTriggers)

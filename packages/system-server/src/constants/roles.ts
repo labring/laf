@@ -4,8 +4,7 @@ import { permissions as pns } from "./permissions"
 const developer = [
   pns.FUNCTION_ADD, pns.FUNCTION_READ, pns.FUNCTION_REMOVE, pns.FUNCTION_UPDATE,
   pns.FUNCTION_DEBUG, pns.PUBLISH_FUNCTION,
-  pns.TRIGGER_ADD, pns.TRIGGER_READ, pns.TRIGGER_REMOVE, pns.TRIGGER_UPDATE,
-  pns.PUBLISH_TRIGGER
+  pns.TRIGGER_ADD, pns.TRIGGER_READ, pns.TRIGGER_REMOVE, pns.TRIGGER_UPDATE
 ]
 
 const dba = [

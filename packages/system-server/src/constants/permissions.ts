@@ -24,7 +24,6 @@ export const permissions = {
 
   PUBLISH_POLICY: { name: 'publish.policy', label: '发布数据访问策略' },
   PUBLISH_FUNCTION: { name: 'publish.function', label: '发布云函数' },
-  PUBLISH_TRIGGER: { name: 'publish.trigger', label: '发布触发器' },
 
   DEPLOY_TARGET_READ: { name: 'deploy_target.read', label: '读取部署目标' },
   DEPLOY_TARGET_UPDATE: { name: 'deploy_target.update', label: '编辑部署目标' },

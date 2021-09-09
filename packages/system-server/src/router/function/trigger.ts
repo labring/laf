@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-03 19:55:26
- * @LastEditTime: 2021-09-06 18:54:28
+ * @LastEditTime: 2021-09-09 20:09:17
  * @Description: 
  */
 
@@ -49,7 +49,7 @@ export async function handleCreateTrigger(req: Request, res: Response) {
 
   // build the trigger data
   const trigger = {
-    _id: new ObjectId(),
+    _id: (new ObjectId()).toHexString(),
     name: body.name,
     type: body.type,
     event: body.event,
@@ -99,7 +99,7 @@ export async function handleUpdateTrigger(req: Request, res: Response) {
 
   // get the cloud function
   const func = await db.collection(Constants.cn.functions)
-    .findOne({ _id: new ObjectId(func_id), appid: app.appid, 'triggers._id': new ObjectId(trigger_id) })
+    .findOne({ _id: new ObjectId(func_id), appid: app.appid, 'triggers._id': trigger_id })
 
   if (!func) return res.status(422).send('trigger not found')
 
@@ -115,7 +115,7 @@ export async function handleUpdateTrigger(req: Request, res: Response) {
   // update it
   const ret = await db.collection(Constants.cn.functions)
     .updateOne(
-      { _id: new ObjectId(func_id), appid: app.appid, 'triggers._id': new ObjectId(trigger_id) },
+      { _id: new ObjectId(func_id), appid: app.appid, 'triggers._id': trigger_id },
       {
         '$set': {
           "triggers.$.name": body.name,
@@ -150,7 +150,7 @@ export async function handleRemoveTrigger(req: Request, res: Response) {
 
   // get the cloud function
   const func = await db.collection(Constants.cn.functions)
-    .findOne({ _id: new ObjectId(func_id), appid: app.appid, 'triggers._id': new ObjectId(trigger_id) })
+    .findOne({ _id: new ObjectId(func_id), appid: app.appid, 'triggers._id': trigger_id })
 
   if (!func) return res.status(422).send('trigger not found')
 
@@ -159,7 +159,7 @@ export async function handleRemoveTrigger(req: Request, res: Response) {
     .updateOne(
       { _id: new ObjectId(func_id), appid: app.appid },
       {
-        '$pull': { triggers: { _id: new ObjectId(trigger_id), status: 0 } }
+        '$pull': { triggers: { _id: trigger_id, status: 0 } }
       }
     )
 

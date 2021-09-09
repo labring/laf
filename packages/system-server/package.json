@@ -1,7 +1,7 @@
 {
   "name": "system-server",
   "version": "0.5.0-alpha.3",
-  "description": "less api framework - system server",
+  "description": "laf - system server",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "private": "true",
@@ -10,8 +10,7 @@
     "build": "npx tsc -p tsconfig.json",
     "watch": "npx tsc -p tsconfig.json -w",
     "init": "node init/index.js",
-    "prepublishOnly": "npm run build",
-    "init-start": "npm run init && npm run start"
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "BaaS",

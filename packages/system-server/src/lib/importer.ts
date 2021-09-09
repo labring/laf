@@ -56,6 +56,8 @@ export class ApplicationImporter {
 
   private async importFunction(func: FunctionStruct, session: ClientSession) {
     const db = DatabaseAgent.sys_accessor.db
+
+    // rename function if same named one exists
     const exists = await getFunctionByName(this.app.appid, func.name)
     if (exists) {
       func.name = func.name + '__' + generateRandString(8, true, false)
@@ -100,7 +102,7 @@ export class ApplicationImporter {
       description: func.description || '',
       enableHTTP: func.enableHTTP || false,
       status: func.status || 0,
-      triggers: func.triggers || [],
+      triggers: this.parseTriggers(func),
       debugParams: func.debugParams,
       version: func.version || 0,
       created_at: Date.now(),
@@ -112,6 +114,17 @@ export class ApplicationImporter {
     }
 
     return data
+  }
+
+  private parseTriggers(func_data: any) {
+    const triggers = func_data.triggers
+    if (!triggers) return []
+    for (const tri of triggers) {
+      assert.ok(tri._id, `got empty trigger id of function ${func_data.name}`)
+      assert.ok(tri.type, `got empty trigger type of function ${func_data.name}`)
+      tri['status'] = tri['status'] || 0
+    }
+    return triggers
   }
 
   private parsePolicies() {

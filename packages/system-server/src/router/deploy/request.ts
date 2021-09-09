@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-06 15:47:57
- * @LastEditTime: 2021-09-06 16:22:13
+ * @LastEditTime: 2021-09-10 00:06:46
  * @Description: 
  */
 
@@ -12,7 +12,6 @@ import { ApplicationStruct } from '../../api/application'
 import { DatabaseAgent } from '../../lib/db-agent'
 import * as assert from 'assert'
 import { deployFunctions, publishFunctions } from '../../api/function'
-import { publishTriggers } from '../../api/trigger'
 import { deployPolicies, publishAccessPolicy } from '../../api/policy'
 
 
@@ -130,7 +129,6 @@ export async function handleApplyDeployRequest(req: Request, res: Response) {
   if (type === 'function') {
     await deployFunctions(deploy_request.data)
     await publishFunctions(app)
-    await publishTriggers(app)
   }
 
   // deploy policies
