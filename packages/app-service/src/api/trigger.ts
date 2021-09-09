@@ -1,14 +1,13 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-18 16:53:53
+ * @LastEditTime: 2021-09-09 23:36:39
  * @Description: 
  */
 
+import { Trigger } from "cloud-function-engine"
 import { Constants } from "../constants"
 import { DatabaseAgent } from "../lib/database"
-
-const db = DatabaseAgent.db
 
 /**
  * Get triggers
@@ -16,22 +15,22 @@ const db = DatabaseAgent.db
  * @returns 
  */
 export async function getTriggers(status = 1) {
-  const r = await db.collection(Constants.trigger_collection)
-    .where({ status: status })
-    .get()
+  const db = DatabaseAgent.accessor.db
 
-  return r.data
-}
+  const docs = await db.collection(Constants.function_collection)
+    .find({
+      triggers: { $exists: true },
+      'triggers.status': status
+    }, {
+      projection: { triggers: 1 }
+    })
+    .toArray()
 
-/**
- * Get trigger by id
- * @param id 
- * @returns 
- */
-export async function getTriggerById(id: string) {
-  const r = await db.collection(Constants.trigger_collection)
-    .where({ _id: id })
-    .getOne()
+  const triggers = []
+  for (const func of docs) {
+    func.triggers.forEach((tri: any) => tri['func_id'] = func._id)
+    triggers.push(...func.triggers)
+  }
 
-  return r.data
+  return triggers.map(data => Trigger.fromJson(data))
 }

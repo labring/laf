@@ -10,11 +10,6 @@ export const Constants = {
   function_collection: '__published__functions',
 
   /**
-   * collection name of cloud functions' triggers
-   */
-  trigger_collection: '__published__triggers',
-
-  /**
    * collection name of policy which used for authenticating `client-access-database` requests
    */
   policy_collection: '__published__policies',

@@ -1,12 +1,11 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-06 00:27:44
+ * @LastEditTime: 2021-09-10 00:08:05
  * @Description: 
  */
 
 import { getTriggers } from "../../api/trigger"
-import { Trigger } from "cloud-function-engine"
 import { DatabaseAgent } from "../database"
 import { createLogger } from "../logger"
 import { ChangeStreamDocument } from "mongodb"
@@ -28,11 +27,9 @@ export const SchedulerInstance = new FrameworkScheduler()
  */
 accessor.ready.then(async () => {
   // initialize triggers
-  const data = await getTriggers()
-  logger.trace('loadTriggers: ', data)
-  const triggers = data.map(data => Trigger.fromJson(data))
+  const triggers = await getTriggers()
+  logger.debug('loadTriggers: ', triggers)
   SchedulerInstance.init(triggers)
-  SchedulerInstance.emit('App:ready')
   logger.info('triggers loaded')
 
   // initialize policies
@@ -42,17 +39,29 @@ accessor.ready.then(async () => {
   // watch database operation event through `WatchStream` of mongodb
   const db = accessor.db
   const stream = db.watch([], { fullDocument: 'updateLookup' })
-  stream.on("change", (doc) => {
-    DatabaseChangeEventCallBack(doc)
-  })
+  stream.on("change", (doc) => { DatabaseChangeEventCallBack(doc) })
+
+  // emit `App:ready` event
+  SchedulerInstance.emit('App:ready')
 })
 
-// debounce function `applyPolicyRules`
-const debouncedApplyPolicy = debounce(() => {
+/**
+ * debounce function `applyPolicyRules`
+ */
+const debouncedApplyPolicies = debounce(() => {
   applyPolicyRules()
     .then(() => logger.info('hot update: policy rules applied'))
     .catch(err => logger.error('hot update: policy rules applied failed: ', err))
-}, 2000, { trailing: true, leading: false })
+}, 1000, { trailing: true, leading: false })
+
+/**
+ * debounce function of apply triggers
+ */
+const debouncedApplyTriggers = debounce(() => {
+  getTriggers()
+    .then(data => SchedulerInstance.init(data))
+    .catch(err => logger.error('hot update: triggers applied failed', err))
+}, 1000, { trailing: true, leading: false })
 
 /**
  * Callback function for database change event
@@ -64,24 +73,12 @@ function DatabaseChangeEventCallBack(doc: ChangeStreamDocument) {
 
   // apply policies while policies changed
   if (collection === Constants.policy_collection && ['insert', 'update', 'delete', 'replace'].includes(operationType)) {
-    debouncedApplyPolicy()
+    debouncedApplyPolicies()
   }
 
-  // update triggers while triggers changed
-  if (collection === Constants.trigger_collection) {
-    if (['insert', 'update', 'replace'].includes(operationType)) {
-      const trigger = Trigger.fromJson(doc.fullDocument)
-      SchedulerInstance.updateTrigger(trigger)
-    }
-
-    if (operationType === 'delete') {
-      getTriggers()
-        .then(data => {
-          const triggers = data.map(it => Trigger.fromJson(it))
-          SchedulerInstance.init(triggers)
-        })
-        .catch(err => logger.error(err))
-    }
+  // update triggers while functions changed
+  if (collection === Constants.function_collection) {
+    debouncedApplyTriggers()
   }
 
   // ignore database changes of internal collections
@@ -92,4 +89,5 @@ function DatabaseChangeEventCallBack(doc: ChangeStreamDocument) {
   // emit database change event
   const event = `DatabaseChange:${collection}#${operationType}`
   SchedulerInstance.emit(event, doc)
+  logger.debug(`scheduler emit database change event: ${event}`)
 }

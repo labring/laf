@@ -1,25 +1,26 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-18 16:52:27
+ * @LastEditTime: 2021-09-09 23:42:13
  * @Description: 
  */
 
-import * as assert from 'assert'
 import { Constants } from '../constants'
 import { DatabaseAgent } from "../lib/database"
 import { PolicyAgentInstance } from '../lib/policy-agent'
+import { PolicyDataStruct } from '../lib/policy-agent/types'
 
-const db = DatabaseAgent.db
 
 /**
  * Get all access policies
  */
 export async function getPolicyRules() {
-  const r = await db.collection(Constants.policy_collection).get()
-  assert.ok(r.ok)
+  const db = DatabaseAgent.accessor.db
+  const docs = await db.collection(Constants.policy_collection)
+    .find({})
+    .toArray<PolicyDataStruct>()
 
-  return r.data
+  return docs
 }
 
 
@@ -27,8 +28,8 @@ export async function getPolicyRules() {
  * Applying access policies' rules
  */
 export async function applyPolicyRules() {
-  PolicyAgentInstance.clear()
   const policies = await getPolicyRules()
+  PolicyAgentInstance.clear()
   for (const policy of policies) {
     await PolicyAgentInstance.set(policy.name, policy)
   }

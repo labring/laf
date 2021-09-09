@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-18 16:17:46
+ * @LastEditTime: 2021-09-09 22:59:48
  * @Description: 
  */
 
@@ -54,6 +54,6 @@ export class FrameworkScheduler extends TriggerScheduler {
    * @param params 
    */
   async log(...params: any[]) {
-    logger.debug(...params)
+    logger.trace(...params)
   }
 }
