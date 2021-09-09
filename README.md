@@ -114,6 +114,9 @@ npm run install   # NOT `npm install`
 # build packages
 npm run build
 
+# watch codes changing while developing
+npm run watch
+
 # launch laf services
 docker-compose up
 
