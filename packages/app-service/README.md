@@ -1,14 +1,16 @@
-# laf - app server
+# laf - app service
 
 ## 介绍
 
-`laf-devops-server` 是 less api framework 中的应用服务引擎：
+`app-service` 是 `laf` 的应用服务引擎：
 
   - 云函数的执行
-  - 数据访问
+  - 数据库访问代理
   - 文件操作
 
 # 安装
+
+> !!!注意：`laf` 服务现需要在 docker 环境下运行，运行方式请参照根目录下的 `README.md`，以下启动方式为老版本遗留，仅做特殊情况下调试时参考。
 
 ### 安装依赖
 
