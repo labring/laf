@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-06 18:16:25
+ * @LastEditTime: 2021-09-09 17:59:42
  * @Description: 
  */
 
@@ -14,7 +14,29 @@ import * as assert from 'assert'
 import { logger } from "../lib/logger"
 import { ApplicationStruct, getApplicationDbAccessor } from "./application"
 
-const db = DatabaseAgent.sys_db
+export enum FunctionStatus {
+  DISABLED = 0,
+  ENABLED = 1
+}
+
+/**
+ * Extended function struct
+ */
+export interface FunctionStruct extends CloudFunctionStruct {
+  description: string
+  tags: string[]
+  label: string
+  triggers: any[]
+  status: FunctionStatus
+  version: number
+  hash: string
+  created_at: number
+  updated_at: number
+  created_by: any
+  appid: string
+  debugParams: string
+}
+
 
 /**
  * Load function data by its name
@@ -22,28 +44,13 @@ const db = DatabaseAgent.sys_db
  * @returns 
  */
 export async function getFunctionByName(appid: string, func_name: string) {
+  const db = DatabaseAgent.sys_db
   const r = await db.collection(Constants.cn.functions)
     .where({ name: func_name, appid })
-    .getOne<CloudFunctionStruct>()
+    .getOne<FunctionStruct>()
 
-  assert.ok(r.ok, `getCloudFunction() failed to get function [${func_name}]: ${r.error.toString()}`)
   return r.data
 }
-
-/**
-  * Load function data by its id
-  * @param func_name 
-  * @returns 
-  */
-export async function getFunctionById(appid: string, func_id: string) {
-  const r = await db.collection(Constants.cn.functions)
-    .where({ _id: func_id, appid })
-    .getOne()
-
-  assert.ok(r.ok, `getCloudFunctionById() failed to get function [${func_id}]: ${r.error.toString()}`)
-  return r.data
-}
-
 
 
 /**
@@ -93,7 +100,7 @@ function compileFunction(func: any) {
 /**
   * Deploy functions which pushed from remote environment
   */
-export async function deployFunctions(functions: CloudFunctionStruct[]) {
+export async function deployFunctions(functions: FunctionStruct[]) {
   assert.ok(functions)
   assert.ok(functions instanceof Array)
 
@@ -121,7 +128,7 @@ export async function deployFunctions(functions: CloudFunctionStruct[]) {
  * @see deployFunctions()
  * @returns 
  */
-async function _deployOneFunction(func: CloudFunctionStruct, session: ClientSession) {
+async function _deployOneFunction(func: FunctionStruct, session: ClientSession) {
 
   await _processFunctionWithSameNameButNotId(func, session)
 
@@ -155,7 +162,7 @@ async function _deployOneFunction(func: CloudFunctionStruct, session: ClientSess
  * @param func the function to be processing 
  * @param session the mongodb session for transaction operations
  */
-async function _processFunctionWithSameNameButNotId(func: CloudFunctionStruct, session: ClientSession) {
+async function _processFunctionWithSameNameButNotId(func: FunctionStruct, session: ClientSession) {
   const db = DatabaseAgent.sys_accessor.db
 
   // remove functions

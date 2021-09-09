@@ -16,6 +16,17 @@ export function generateUUID() {
  * @returns 
  */
 export function generatePassword(length = 8, hasNumbers = true, hasSymbols = true) {
+  return generateRandString(length, hasNumbers, hasSymbols)
+}
+
+/**
+ * Generate a rand string
+ * @param length the length of password, default is 8
+ * @param hasNumbers add numbers to password, [0-9]
+ * @param hasSymbols add symbols to password, [!@#$%^&*_-=+]
+ * @returns 
+ */
+export function generateRandString(length = 8, hasNumbers = true, hasSymbols = true) {
   const alpha = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM'
   const numbers = '0123456789'
   const symbols = '!@#$%^&*_-=+'
@@ -24,9 +35,9 @@ export function generatePassword(length = 8, hasNumbers = true, hasSymbols = tru
   if (hasNumbers) chars += numbers
   if (hasSymbols) chars += symbols
 
-  let password = ''
+  let str = ''
   for (let i = 0; i < length; i++) {
-    password += chars.charAt(Math.floor(Math.random() * chars.length))
+    str += chars.charAt(Math.floor(Math.random() * chars.length))
   }
-  return password
+  return str
 }

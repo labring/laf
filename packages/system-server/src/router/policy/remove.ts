@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-03 23:09:23
- * @LastEditTime: 2021-09-03 23:58:59
+ * @LastEditTime: 2021-09-09 14:44:55
  * @Description: 
  */
 
@@ -31,7 +31,7 @@ export async function handleRemovePolicyById(req: Request, res: Response) {
 
   // do db query
   const ret = await db.collection(Constants.cn.policies)
-    .where({ _id: policy_id })
+    .where({ _id: policy_id, appid: app.appid })
     .remove()
 
   return res.send({

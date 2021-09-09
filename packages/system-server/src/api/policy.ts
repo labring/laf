@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-02 16:34:22
+ * @LastEditTime: 2021-09-09 17:59:47
  * @Description: 
  */
 
@@ -11,6 +11,36 @@ import { DatabaseAgent } from "../lib/db-agent"
 import { ClientSession, ObjectId } from 'mongodb'
 import { ApplicationStruct, getApplicationDbAccessor } from './application'
 
+export enum PolicyStatus {
+  DISABLED = 0,
+  ENABLED = 1
+}
+export interface PolicyStruct {
+  _id: string
+  name: string
+  description: string
+  status: PolicyStatus
+  rules: any
+  injector: string
+  hash: string
+  created_at: number
+  updated_at: number
+  created_by: string
+  appid: string
+}
+/**
+ * Load policy by its name
+ * @param func_name 
+ * @returns 
+ */
+export async function getPolicyByName(appid: string, policy_name: string) {
+  const db = DatabaseAgent.sys_db
+  const r = await db.collection(Constants.cn.policies)
+    .where({ name: policy_name, appid })
+    .getOne<PolicyStruct>()
+
+  return r.data
+}
 
 /**
  * Publish access policies
@@ -45,7 +75,7 @@ export async function publishAccessPolicy(app: ApplicationStruct) {
 /**
   * Deploy policies which pushed from remote environment
   */
-export async function deployPolicies(policies: any[]) {
+export async function deployPolicies(policies: PolicyStruct[]) {
   assert.ok(policies)
   assert.ok(policies instanceof Array)
 
@@ -73,7 +103,7 @@ export async function deployPolicies(policies: any[]) {
  * @private
  * @returns 
  */
-async function _deployOnePolicy(policy: any, session: ClientSession) {
+async function _deployOnePolicy(policy: PolicyStruct, session: ClientSession) {
 
   await _deletePolicyWithSameNameButNotId(policy, session)
 
@@ -109,7 +139,7 @@ async function _deployOnePolicy(policy: any, session: ClientSession) {
  * @see _deployOnePolicy()
  * @private
  */
-async function _deletePolicyWithSameNameButNotId(policy: any, session: ClientSession) {
+async function _deletePolicyWithSameNameButNotId(policy: PolicyStruct, session: ClientSession) {
   const db = DatabaseAgent.sys_accessor.db
   await db.collection(Constants.cn.policies).findOneAndDelete({
     _id: {

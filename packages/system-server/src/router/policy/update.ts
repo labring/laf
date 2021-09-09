@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-03 23:09:23
- * @LastEditTime: 2021-09-06 14:22:53
+ * @LastEditTime: 2021-09-09 14:44:10
  * @Description: 
  */
 
@@ -9,6 +9,7 @@
 import { Request, Response } from 'express'
 import { ApplicationStruct } from '../../api/application'
 import { checkPermission } from '../../api/permission'
+import { PolicyStruct } from '../../api/policy'
 import { Constants } from '../../constants'
 import { permissions } from '../../constants/permissions'
 import { DatabaseAgent } from '../../lib/db-agent'
@@ -35,7 +36,7 @@ export async function handleUpdatePolicy(req: Request, res: Response) {
   // get the policy
   const { data: policy } = await db.collection(Constants.cn.policies)
     .where({ _id: policy_id, appid: app.appid })
-    .getOne()
+    .getOne<PolicyStruct>()
 
   if (!policy) return res.status(422).send('policy not found')
   const body = req.body

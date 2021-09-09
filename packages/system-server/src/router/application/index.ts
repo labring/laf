@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-29 11:35:11
- * @LastEditTime: 2021-09-09 10:49:48
+ * @LastEditTime: 2021-09-09 17:02:28
  * @Description: 
  */
 
@@ -9,7 +9,9 @@ import { Router } from 'express'
 import { handleNotImplemented } from '../common'
 import { handleGetCollaborators, handleGetRoles, handleInviteCollaborator, handleRemoveCollaborator, handleSearchCollaborator } from './collaborator'
 import { handleCreateApplication } from './create'
+import { handleExportApplication } from './exporter'
 import { handleGetApplicationByAppid, handleMyApplications } from './get'
+import { handleImportApplication } from './importer'
 import { handleRemoveApplication } from './remove'
 import { handleStopApplicationService, handleStartApplicationService, handleRemoveApplicationService } from './service'
 import { handleUpdateApplication } from './update'
@@ -85,3 +87,14 @@ ApplicationRouter.post('/:appid/invite', handleInviteCollaborator)
  * Remove a collaborator of application
  */
 ApplicationRouter.delete('/:appid/collaborators/:collaborator_id', handleRemoveCollaborator)
+
+
+/**
+ * Export the definition of application
+ */
+ApplicationRouter.get('/:appid/export', handleExportApplication)
+
+/**
+ * Import the definition to application
+ */
+ApplicationRouter.post('/:appid/import', handleImportApplication)
