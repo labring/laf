@@ -1,13 +1,13 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-29 11:35:05
- * @LastEditTime: 2021-09-10 00:06:13
+ * @LastEditTime: 2021-09-10 01:37:17
  * @Description:
  */
 
 import { Router } from "express"
 import { handleCreateFunction } from "./create"
-import { handleGetFunctionById, handleGetFunctions } from "./get"
+import { handleGetAllFunctionTags, handleGetFunctionById, handleGetFunctions } from "./get"
 import { handleGetFunctionLogs } from "./logs"
 import { handlePublishFunctions } from "./publish"
 import { handleRemoveFunctionById } from "./remove"
@@ -21,6 +21,11 @@ export const FunctionRouter = Router()
  * Get functions of an application
  */
 FunctionRouter.get('/', handleGetFunctions)
+
+/**
+ * Get functions of an application
+ */
+FunctionRouter.get('/tags/all', handleGetAllFunctionTags)
 
 /**
  * Get a function by id of an application

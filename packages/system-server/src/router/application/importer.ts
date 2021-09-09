@@ -1,13 +1,15 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-09 14:46:44
- * @LastEditTime: 2021-09-09 17:52:13
+ * @LastEditTime: 2021-09-10 00:42:10
  * @Description: 
  */
 
 import { Request, Response } from 'express'
 import { getApplicationByAppid } from '../../api/application'
+import { publishFunctions } from '../../api/function'
 import { checkPermission } from '../../api/permission'
+import { publishAccessPolicies } from '../../api/policy'
 import { Constants } from '../../constants'
 import { ApplicationImporter } from '../../lib/importer'
 import { logger } from '../../lib/logger'
@@ -37,6 +39,9 @@ export async function handleImportApplication(req: Request, res: Response) {
   try {
     importer.parse()
     await importer.import()
+
+    await publishFunctions(app)
+    await publishAccessPolicies(app)
     return res.send({ data: 'ok' })
   } catch (error) {
     logger.error('import application got error:', error)

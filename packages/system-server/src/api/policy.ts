@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-09 17:59:47
+ * @LastEditTime: 2021-09-10 00:42:48
  * @Description: 
  */
 
@@ -46,7 +46,7 @@ export async function getPolicyByName(appid: string, policy_name: string) {
  * Publish access policies
  * Means that copying sys db functions to app db
  */
-export async function publishAccessPolicy(app: ApplicationStruct) {
+export async function publishAccessPolicies(app: ApplicationStruct) {
   // read policies from sys db
   const ret = await DatabaseAgent.sys_accessor.db
     .collection(Constants.cn.policies)

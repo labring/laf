@@ -1,13 +1,14 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:51:19
- * @LastEditTime: 2021-09-06 16:37:34
+ * @LastEditTime: 2021-09-10 01:44:34
  * @Description: 
  */
 
 import { CloudFunctionStruct } from 'cloud-function-engine'
 import { Request, Response } from 'express'
 import { ApplicationStruct } from '../../api/application'
+import { FunctionStruct } from '../../api/function'
 import { checkPermission } from '../../api/permission'
 import { Constants } from '../../constants'
 import { permissions } from '../../constants/permissions'
@@ -99,5 +100,39 @@ export async function handleGetFunctionById(req: Request, res: Response) {
 
   return res.send({
     data: ret.data
+  })
+}
+
+
+/**
+ * Get all of the function tags
+ */
+export async function handleGetAllFunctionTags(req: Request, res: Response) {
+  const app: ApplicationStruct = req['parsed-app']
+
+  // check permission
+  const code = await checkPermission(req['auth']?.uid, FUNCTION_READ.name, app)
+  if (code) {
+    return res.status(code).send()
+  }
+
+  const db = DatabaseAgent.sys_accessor.db
+
+  const docs = await db.collection<FunctionStruct>(Constants.cn.functions)
+    .find({
+      tags: { $exists: true, $ne: [] }
+    }, {
+      projection: { tags: 1 }
+    })
+    .toArray()
+
+  const all_tags = []
+  for (const doc of docs) {
+    const tags = doc.tags
+    all_tags.push(...tags)
+  }
+  const rets = Array.from(new Set(all_tags))
+  return res.send({
+    data: rets
   })
 }

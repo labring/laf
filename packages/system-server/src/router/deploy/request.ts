@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-06 15:47:57
- * @LastEditTime: 2021-09-10 00:06:46
+ * @LastEditTime: 2021-09-10 00:42:56
  * @Description: 
  */
 
@@ -12,7 +12,7 @@ import { ApplicationStruct } from '../../api/application'
 import { DatabaseAgent } from '../../lib/db-agent'
 import * as assert from 'assert'
 import { deployFunctions, publishFunctions } from '../../api/function'
-import { deployPolicies, publishAccessPolicy } from '../../api/policy'
+import { deployPolicies, publishAccessPolicies } from '../../api/policy'
 
 
 const { DEPLOY_REQUEST_REMOVE, DEPLOY_REQUEST_READ, DEPLOY_REQUEST_APPLY } = Constants.permissions
@@ -134,7 +134,7 @@ export async function handleApplyDeployRequest(req: Request, res: Response) {
   // deploy policies
   if (type === 'policy') {
     await deployPolicies(deploy_request.data)
-    await publishAccessPolicy(app)
+    await publishAccessPolicies(app)
   }
 
   // update deploy request status to 'deployed'

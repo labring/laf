@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-31 15:00:04
- * @LastEditTime: 2021-09-08 23:05:03
+ * @LastEditTime: 2021-09-10 01:01:21
  * @Description: 
  */
 
@@ -136,7 +136,7 @@ export async function handleGetRoles(req: Request, res: Response) {
 
   const roles = getRoles()
   const rets = Object.keys(roles)
-    .filter(key => key !== roles.owner.name)
+    // .filter(key => key !== roles.owner.name)
     .map(key => roles[key])
 
   return res.send({

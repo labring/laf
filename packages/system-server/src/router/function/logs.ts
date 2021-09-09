@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:51:19
- * @LastEditTime: 2021-09-05 23:24:48
+ * @LastEditTime: 2021-09-10 01:14:32
  * @Description: 
  */
 
@@ -29,7 +29,7 @@ export async function handleGetFunctionLogs(req: Request, res: Response) {
   }
 
   // build query object
-  const { requestId, func_id, triggerId } = req.body
+  const { requestId, func_id, trigger_id } = req.query
   const limit = req.body?.limit ?? 10
   const page = req.body?.page ?? 1
 
@@ -43,8 +43,8 @@ export async function handleGetFunctionLogs(req: Request, res: Response) {
     query['func_id'] = func_id
   }
 
-  if (triggerId) {
-    query['trigger_id'] = triggerId
+  if (trigger_id) {
+    query['trigger_id'] = trigger_id
   }
 
   const coll = db.collection('__function_logs')

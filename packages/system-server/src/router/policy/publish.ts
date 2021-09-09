@@ -1,14 +1,14 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:51:19
- * @LastEditTime: 2021-09-04 00:02:20
+ * @LastEditTime: 2021-09-10 00:42:50
  * @Description: 
  */
 
 import { Request, Response } from 'express'
 import { ApplicationStruct } from '../../api/application'
 import { checkPermission } from '../../api/permission'
-import { publishAccessPolicy } from '../../api/policy'
+import { publishAccessPolicies } from '../../api/policy'
 import Config from '../../config'
 import { permissions } from '../../constants/permissions'
 import { logger } from '../../lib/logger'
@@ -30,7 +30,7 @@ export async function handlePublishPolicies(req: Request, res: Response) {
   }
 
   try {
-    await publishAccessPolicy(app)
+    await publishAccessPolicies(app)
 
     return res.send({
       data: 'ok'

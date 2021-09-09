@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 15:22:34
- * @LastEditTime: 2021-09-09 11:00:29
+ * @LastEditTime: 2021-09-10 01:07:11
  * @Description: 
  */
 
@@ -36,6 +36,12 @@ export async function handleRemoveApplication(req: Request, res: Response) {
   const code = await checkPermission(uid, APPLICATION_REMOVE.name, app)
   if (code) {
     return res.status(code).send()
+  }
+
+  // i know that we just checked the permission, but also limit this permission to the owner.
+  // just ignore the above permission checking, we will re-considered in future.
+  if (uid !== app.created_by) {
+    return res.status(403).send('only owner can remove application')
   }
 
   // save app to recycle collection
