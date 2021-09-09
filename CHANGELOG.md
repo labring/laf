@@ -1,4 +1,20 @@
 
+# [0.5.0](https://github.com/Maslow/laf/compare/v0.5.0-alpha.3...v0.5.0) (2021-09-09)
+
+
+### Bug Fixes
+
+* **sys-client:** fix func tags list; add owner role; ([152d195](https://github.com/Maslow/laf/commit/152d195153644d3b098680dd9f109ebb6057dc75))
+* **sys-server:** add exportor script for old init datas; ([9f1ae71](https://github.com/Maslow/laf/commit/9f1ae713e4d6d382f531ea683deb2f9e59834df9))
+* **sys-server:** add owner role to app; impl get tags of func api; ([5afecf9](https://github.com/Maslow/laf/commit/5afecf9425f4501871812b80c6ee72ec22e99284))
+
+
+### Features
+
+* **app-service:** refactor trigger getter, publish; ([4f1deac](https://github.com/Maslow/laf/commit/4f1deac7301208a60e6ad525e0e9f481f80107a7))
+
+
+
 # [0.5.0-alpha.3](https://github.com/Maslow/laf/compare/v0.5.0-alpha.2...v0.5.0-alpha.3) (2021-09-09)
 
 
