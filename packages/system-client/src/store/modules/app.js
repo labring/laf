@@ -26,7 +26,9 @@ const state = {
   /**
    * The token of file uploading and downloading
    */
-  file_token: null
+  file_token: null,
+
+  app_deploy_host: null
 }
 
 const mutations = {
@@ -46,6 +48,9 @@ const mutations = {
   SET_FILE_TOKEN: (state, payload) => {
     state.file_token = payload || []
   },
+  SET_APP_DEPLOY_HOST: (state, domain) => {
+    state.app_deploy_host = domain
+  },
   CLEAR_STATE: (state) => {
     state.application = null
     state.appid = null
@@ -53,6 +58,7 @@ const mutations = {
     state.permissions = []
     state.debug_token = null
     state.file_token = null
+    state.app_deploy_host = null
   }
 }
 
@@ -68,6 +74,7 @@ const actions = {
     commit('SET_APP_PERMISSIONS', res.data?.permissions)
     commit('SET_DEBUG_TOKEN', res.data?.debug_token)
     commit('SET_FILE_TOKEN', res.data?.file_token)
+    commit('SET_APP_DEPLOY_HOST', res.data?.app_deploy_host)
   },
   clearStates({ commit }) {
     commit('CLEAR_STATE')

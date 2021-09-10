@@ -42,9 +42,14 @@
           <span>{{ row._id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="标识" width="150px">
+      <el-table-column label="标识" align="center" width="150px">
         <template slot-scope="{row}">
           <span>{{ row.name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="入口地址" align="left" width="150px">
+        <template slot-scope="{row}">
+          <span>/proxy/{{ row.name }}</span>
         </template>
       </el-table-column>
       <el-table-column label="说明" align="center">

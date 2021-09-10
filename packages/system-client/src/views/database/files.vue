@@ -114,6 +114,7 @@
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import * as fs from '@/api/file'
 import { assert } from '@/utils/assert'
+import { getAppAccessUrl } from '@/api/application'
 
 export default {
   name: 'BucketsListPage',
@@ -145,8 +146,8 @@ export default {
   },
   methods: {
     /**
-       * 获取数据列表
-       */
+     * 获取数据列表
+     */
     async getList() {
       this.listLoading = true
 
@@ -206,9 +207,8 @@ export default {
     // 拼装文件下载 URL
     getFileUrl(file) {
       assert(file && file.filename, 'invalid file or filename')
-      const appid = this.$store.state.app.appid
-      const base_url = process.env.VUE_APP_BASE_API_APP + `/${appid}/file`
-      const file_url = `${base_url}/${this.bucket}/${file.filename}`
+      const app_url = getAppAccessUrl()
+      const file_url = `${app_url}/file/${this.bucket}/${file.filename}`
       if (this.bucket === 'public') {
         return file_url
       }
@@ -218,9 +218,8 @@ export default {
     // 拼装文件上传地址
     getUploadUrl() {
       assert(this.bucket, 'empty bucket name got')
-      const appid = this.$store.state.app.appid
-      const base_url = process.env.VUE_APP_BASE_API_APP + `/${appid}/file`
-      const file_url = `${base_url}/upload/${this.bucket}`
+      const app_url = getAppAccessUrl()
+      const file_url = `${app_url}/file/upload/${this.bucket}`
       const token = this.$store.state.app.file_token
       return file_url + `?token=${token}`
     },

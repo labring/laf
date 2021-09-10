@@ -117,8 +117,14 @@
         <el-form-item v-if="token_created" label="返回结果" size="normal" style="width: 800px">
           <div class="token_result">
             {{ token_created }}
+            <el-tag v-clipboard:message="token_created" v-clipboard:success="onCopy" type="success">复制</el-tag>
           </div>
-          <el-tag v-clipboard:message="token_created" v-clipboard:success="onCopy" type="success">复制</el-tag>
+        </el-form-item>
+        <el-form-item label="接收部署地址" size="normal" style="width: 800px">
+          <div>
+            {{ getSelfDeployUrl() }}
+            <el-tag v-clipboard:message="getSelfDeployUrl()" v-clipboard:success="onCopy" type="success">复制</el-tag>
+          </div>
         </el-form-item>
 
       </el-form>
@@ -137,6 +143,7 @@
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { applyDeployRequest, createDeployToken, getDeployRequests, removeDeployRequest } from '../../api/deploy'
+import { getAppAccessUrl } from '@/api/application'
 
 // 默认的创建部署令牌表单
 function getDefaultFormValue() {
@@ -285,6 +292,10 @@ export default {
     // },
     onCopy() {
       this.$message.success('已复制')
+    },
+    getSelfDeployUrl() {
+      const base = getAppAccessUrl()
+      return base + '/deploy/incoming'
     }
   }
 }

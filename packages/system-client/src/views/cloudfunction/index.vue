@@ -95,6 +95,13 @@
           </el-tag>
         </template>
       </el-table-column>
+      <el-table-column label="调用地址" align="center" width="80px">
+        <template slot-scope="{row}">
+          <el-tooltip :content="getFunctionInvokeBaseUrl(row.name)" placement="top">
+            <i v-clipboard:message="getFunctionInvokeBaseUrl(row.name)" v-clipboard:success="onCopy" class="el-icon-document-copy copy-btn" />
+          </el-tooltip>
+        </template>
+      </el-table-column>
       <el-table-column fixed="right" label="操作" align="center" width="380" class-name="small-padding">
         <template slot-scope="{row,$index}">
           <el-button plain type="success" size="mini" @click="handleShowDetail(row)">
@@ -179,6 +186,7 @@
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import DeployPanel from '../deploy/components/deploy-panel.vue'
 import { createFunction, getAllFunctionTags, getFunctions, publishFunctions, removeFunction, updateFunction } from '@/api/func'
+import { getAppAccessUrl } from '@/api/application'
 
 const defaultCode = `
 import cloud from '@/cloud-sdk'
@@ -466,6 +474,10 @@ export default {
     },
     onCopy() {
       this.$message.success('已复制')
+    },
+    getFunctionInvokeBaseUrl(func_name) {
+      const app_url = getAppAccessUrl()
+      return app_url + `/func/${func_name}`
     }
   }
 }

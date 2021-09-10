@@ -205,3 +205,15 @@ export async function importApplication(appid, import_data) {
   })
   return res
 }
+
+/**
+ * 获取当前应用的访问地址
+ * @param {*} appid default is current appid
+ * @returns
+ */
+export function getAppAccessUrl() {
+  const appid = store.state.app.appid
+  const domain = store.state.app.app_deploy_host
+  const url = `http://${appid}.${domain}`
+  return url
+}
