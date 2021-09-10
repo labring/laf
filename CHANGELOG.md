@@ -1,3 +1,19 @@
+# [](https://github.com/Maslow/laf/compare/v0.5.1...v) (2021-09-10)
+
+
+
+## [0.5.1](https://github.com/Maslow/laf/compare/v0.5.1-alpha.0...v0.5.1) (2021-09-10)
+
+
+
+## [0.5.1-alpha.0](https://github.com/Maslow/laf/compare/v0.5.0...v0.5.1-alpha.0) (2021-09-10)
+
+
+### Bug Fixes
+
+* **deploy:** IMPORTANT!fix deploy apply bugs(missing appid); ([41ddbfb](https://github.com/Maslow/laf/commit/41ddbfb87d5374322fef9b24c612c554741916e3))
+
+
 
 # [0.5.0](https://github.com/Maslow/laf/compare/v0.5.0-alpha.3...v0.5.0) (2021-09-09)
 
