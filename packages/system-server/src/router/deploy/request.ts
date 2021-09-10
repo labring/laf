@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-06 15:47:57
- * @LastEditTime: 2021-09-10 00:42:56
+ * @LastEditTime: 2021-09-10 11:49:07
  * @Description: 
  */
 
@@ -109,7 +109,6 @@ export async function handleApplyDeployRequest(req: Request, res: Response) {
     return res.status(code).send()
   }
 
-
   const db = DatabaseAgent.sys_db
   const { data: deploy_request } = await db.collection(Constants.cn.deploy_requests)
     .where({ _id: req_id, appid: app.appid })
@@ -127,13 +126,13 @@ export async function handleApplyDeployRequest(req: Request, res: Response) {
 
   // deploy functions
   if (type === 'function') {
-    await deployFunctions(deploy_request.data)
+    await deployFunctions(app.appid, deploy_request.data)
     await publishFunctions(app)
   }
 
   // deploy policies
   if (type === 'policy') {
-    await deployPolicies(deploy_request.data)
+    await deployPolicies(app.appid, deploy_request.data)
     await publishAccessPolicies(app)
   }
 

@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-10 00:42:48
+ * @LastEditTime: 2021-09-10 11:44:11
  * @Description: 
  */
 
@@ -75,7 +75,7 @@ export async function publishAccessPolicies(app: ApplicationStruct) {
 /**
   * Deploy policies which pushed from remote environment
   */
-export async function deployPolicies(policies: PolicyStruct[]) {
+export async function deployPolicies(appid: string, policies: PolicyStruct[]) {
   assert.ok(policies)
   assert.ok(policies instanceof Array)
 
@@ -87,6 +87,7 @@ export async function deployPolicies(policies: PolicyStruct[]) {
   try {
     await session.withTransaction(async () => {
       for (const item of data) {
+        item['appid'] = appid
         await _deployOnePolicy(item, session)
       }
     })
