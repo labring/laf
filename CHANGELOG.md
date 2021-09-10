@@ -1,4 +1,24 @@
-# [](https://github.com/Maslow/laf/compare/v0.5.1...v) (2021-09-10)
+
+## [0.5.2](https://github.com/Maslow/laf/compare/v0.5.2-alpha.0...v0.5.2) (2021-09-10)
+
+
+### Bug Fixes
+
+* **sys-server:** fix remote deploy got duplicated error, dropped func/policy _id; ([1da03a9](https://github.com/Maslow/laf/commit/1da03a9ad527620cdde900700a515e0ae49c704d))
+
+
+
+## [0.5.2-alpha.0](https://github.com/Maslow/laf/compare/v0.5.1...v0.5.2-alpha.0) (2021-09-10)
+
+
+### Bug Fixes
+
+* **sys-server:** fix remote deploy token check message; ([e4cc3d3](https://github.com/Maslow/laf/commit/e4cc3d36fc00978231cabccb263211e3ec75055a))
+
+
+### Features
+
+* **sys-client:** add app access url to func/deploy/policy/file pages; ([21ca41e](https://github.com/Maslow/laf/commit/21ca41e9f59cd8f696f1fea489ad58f8599fbdef))
 
 
 
