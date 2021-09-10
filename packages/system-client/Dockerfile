@@ -8,5 +8,5 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 
 WORKDIR /app
 EXPOSE 80
-ADD ./nginx.conf /etc/nginx/conf.d/app.conf
+ADD ./nginx.conf /etc/nginx/templates/default.conf.template
 ADD ./dist /app/

@@ -64,9 +64,11 @@
             <el-button type="default" size="mini" @click="showImportForm(row)">
               导入
             </el-button>
-            <el-button plain size="mini" type="default" @click="deleteApp(row)">
-              释放
-            </el-button>
+            <el-tooltip content="释放即完全删除应用，暂不可恢复，谨慎操作!" effect="light" placement="left">
+              <el-button plain size="mini" type="default" @click="deleteApp(row)">
+                释放
+              </el-button>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -127,9 +129,11 @@
             <el-button type="default" size="mini" @click="showImportForm(row)">
               导入
             </el-button>
-            <el-button plain size="mini" type="default" @click="deleteApp(row)">
-              释放
-            </el-button>
+            <el-tooltip content="释放即完全删除应用，暂不可恢复，谨慎操作!" effect="light" placement="left">
+              <el-button plain size="mini" type="default" @click="deleteApp(row)">
+                释放
+              </el-button>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>

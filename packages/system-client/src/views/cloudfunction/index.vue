@@ -276,7 +276,6 @@ export default {
     async getAllTags() {
       const res = await getAllFunctionTags()
       this.all_tags = res.data
-      // this.all_tags = Array.from(new Set(tags))
     },
     /**
      * 获取数据列表
