@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-10 11:43:37
+ * @LastEditTime: 2021-09-10 22:19:43
  * @Description: 
  */
 
@@ -9,7 +9,7 @@ import { Constants } from "../constants"
 import { DatabaseAgent } from "../lib/db-agent"
 import { compileTs2js } from 'cloud-function-engine/dist/utils'
 import { CloudFunctionStruct } from "cloud-function-engine"
-import { ClientSession, ObjectId } from 'mongodb'
+import { ClientSession } from 'mongodb'
 import * as assert from 'assert'
 import { logger } from "../lib/logger"
 import { ApplicationStruct, getApplicationDbAccessor } from "./application"
@@ -130,55 +130,29 @@ export async function deployFunctions(appid: string, functions: FunctionStruct[]
  * @returns 
  */
 async function _deployOneFunction(func: FunctionStruct, session: ClientSession) {
-
-  await _processFunctionWithSameNameButNotId(func, session)
-
   const db = DatabaseAgent.sys_accessor.db
-  const r = await db.collection(Constants.cn.functions).findOne({ _id: new ObjectId(func._id) }, { session })
-
   const data = {
-    ...func
+    ...func,
   }
-
-  // if exists function
-  if (r) {
-    delete data['_id']
-    const ret = await db.collection(Constants.cn.functions).updateOne({ _id: r._id }, {
+  delete data['_id']
+  const r = await db.collection(Constants.cn.functions)
+    .updateOne({
+      appid: func.appid,
+      name: func.name
+    }, {
       $set: data
     }, { session })
 
-    assert(ret.matchedCount, `deploy: update function ${func.name} occurred error`)
+  // return if exists & updated 
+  if (r.matchedCount) {
+    logger.debug(`deploy function: found an exists function ${func.name} & updated it, matchedCount ${r.matchedCount}`)
     return
   }
 
   // if new function
-  data._id = new ObjectId(data._id) as any
+  const ret = await db.collection(Constants.cn.functions)
+    .insertOne(data as any, { session })
 
-  const ret = await db.collection(Constants.cn.functions).insertOne(data as any, { session })
   assert(ret.insertedId, `deploy: add function ${func.name} occurred error`)
-}
-
-/**
- * Remove functions which have same name but different _id.
- * @param func the function to be processing 
- * @param session the mongodb session for transaction operations
- */
-async function _processFunctionWithSameNameButNotId(func: FunctionStruct, session: ClientSession) {
-  const db = DatabaseAgent.sys_accessor.db
-
-  // remove functions
-  const r = await db.collection(Constants.cn.functions).findOneAndDelete(
-    {
-      _id: {
-        $ne: new ObjectId(func._id)
-      },
-      name: func.name
-    },
-    { session })
-
-  if (!r.value) {
-    return
-  }
-
-  logger.warn(`delete local func ${r?.value?._id} with same name with (${func._id}:${func.name}) but different id `)
+  logger.debug(`deploy function: inserted a function (${func.name}),  insertedId ${ret.insertedId}`)
 }

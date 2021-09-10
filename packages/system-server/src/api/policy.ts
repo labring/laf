@@ -1,15 +1,16 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-10 11:44:11
+ * @LastEditTime: 2021-09-10 22:09:19
  * @Description: 
  */
 
 import * as assert from 'assert'
 import { Constants } from '../constants'
 import { DatabaseAgent } from "../lib/db-agent"
-import { ClientSession, ObjectId } from 'mongodb'
+import { ClientSession } from 'mongodb'
 import { ApplicationStruct, getApplicationDbAccessor } from './application'
+import { logger } from '../lib/logger'
 
 export enum PolicyStatus {
   DISABLED = 0,
@@ -105,47 +106,27 @@ export async function deployPolicies(appid: string, policies: PolicyStruct[]) {
  * @returns 
  */
 async function _deployOnePolicy(policy: PolicyStruct, session: ClientSession) {
-
-  await _deletePolicyWithSameNameButNotId(policy, session)
-
   const db = DatabaseAgent.sys_accessor.db
-  const r = await db.collection(Constants.cn.policies).findOne({ _id: new ObjectId(policy._id) }, { session })
-
   const data = {
     ...policy
   }
+  delete data['_id']
 
-
-  // if exists
-  if (r) {
-    delete data['_id']
-    const ret = await db.collection(Constants.cn.policies).updateOne({ _id: r._id }, {
+  const r = await db.collection(Constants.cn.policies)
+    .updateOne({
+      appid: policy.appid,
+      name: policy.name
+    }, {
       $set: data
     }, { session })
 
-    assert(ret.matchedCount, `deploy: update policy ${policy.name} occurred error`)
+  if (r.matchedCount) {
+    logger.debug(`deploy policy: found an exists policy (${policy.name}) & updated it, matchedCount ${r.matchedCount}`)
     return
   }
 
   // if new
-  data._id = new ObjectId(data._id) as any
   const ret = await db.collection(Constants.cn.policies).insertOne(data as any, { session })
-  assert(ret.insertedId, `deploy: add policy ${policy.name} occurred error`)
-}
-
-/**
- * Remove policy which have same name but different _id.
- * @param policy the policy to be processing 
- * @param session the mongodb session for transaction operations
- * @see _deployOnePolicy()
- * @private
- */
-async function _deletePolicyWithSameNameButNotId(policy: PolicyStruct, session: ClientSession) {
-  const db = DatabaseAgent.sys_accessor.db
-  await db.collection(Constants.cn.policies).findOneAndDelete({
-    _id: {
-      $ne: new ObjectId(policy._id)
-    },
-    name: policy.name
-  }, { session })
+  assert(ret.insertedId, `deploy policy: add policy ${policy.name} occurred error`)
+  logger.debug(`deploy policy: inserted a policy (${policy.name}), insertedId ${ret.insertedId}`)
 }
