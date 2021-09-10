@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:34:45
- * @LastEditTime: 2021-09-09 20:04:30
+ * @LastEditTime: 2021-09-10 16:55:45
  * @Description: 
  */
 
@@ -43,6 +43,15 @@ export async function handleDeployRequestIncoming(req: Request, res: Response) {
 
   // the source that identified remote environment
   const source = auth.src
+
+  // reject if token hasn't been granted
+  if (policies && !can_deploy_policy) {
+    return res.status(403).send('policies deploy is not granted to given token ')
+  }
+
+  if (functions && !can_deploy_function) {
+    return res.status(403).send('functions deploy is not granted to given token ')
+  }
 
   try {
     // write remote policies to db
