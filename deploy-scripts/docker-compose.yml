@@ -32,7 +32,7 @@ services:
       LOG_LEVEL: ${LOG_LEVEL:-debug}
       APP_SERVICE_IMAGE: ${APP_SERVICE_IMAGE:-lafyun/app-service:latest}
       ACCOUNT_DEFAULT_APP_QUOTA: ${ACCOUNT_DEFAULT_APP_QUOTA:-2}
-      APP_SERVICE_BASE_DOMAIN: ${APP_SERVICE_BASE_DOMAIN:?err}
+      APP_SERVICE_DEPLOY_HOST: ${DEPLOY_DOMAIN:?err}:${PUBLISH_PORT:-8080}
     command: dockerize -wait tcp://mongo:27017 node dist/index.js
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -53,10 +53,10 @@ services:
       - system_server
       - mongo
     environment: 
-       APP_SERVICE_BASE_DOMAIN: ${APP_SERVICE_BASE_DOMAIN:?err}
-       SYS_CLIENT_HOST: ${SYS_CLIENT_HOST:?err}
+       DEPLOY_DOMAIN: ${DEPLOY_DOMAIN:?err}
+       SYS_CLIENT_HOST: console.${DEPLOY_DOMAIN:?err}
     ports: 
-      - ${SYS_CLIENT_PORT:-8080}:80
+      - ${PUBLISH_PORT:-8080}:80
     networks: 
       - laf_shared_network
 

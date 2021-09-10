@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 15:22:34
- * @LastEditTime: 2021-09-10 14:00:00
+ * @LastEditTime: 2021-09-10 17:10:54
  * @Description: 
  */
 
@@ -74,7 +74,7 @@ export async function handleGetApplicationByAppid(req: Request, res: Response) {
     file_token = getToken(payload, app.config.server_secret_salt)
   }
 
-  const app_service_base_domain = Config.APP_SERVICE_BASE_DOMAIN
+  const app_deploy_host = Config.APP_SERVICE_DEPLOY_HOST
 
   app.config = undefined
   return res.send({
@@ -84,7 +84,7 @@ export async function handleGetApplicationByAppid(req: Request, res: Response) {
       roles,
       debug_token,
       file_token,
-      app_service_base_domain
+      app_deploy_host
     }
   })
 }

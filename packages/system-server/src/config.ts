@@ -94,14 +94,17 @@ export default class Config {
   }
 
   /**
-   * The top domain used to access the app service
+   * The host to access the app service
    * For example, if set this to `lafyun.com`, then you can access app service by format `[appid].lafyun.com`: 
    * - 7b0b318c-b96c-4cc5-b521-33d11bd16cde.lafyun.com
    * - http://7b0b318c-b96c-4cc5-b521-33d11bd16cde.lafyun.com/file/public/33d11bd16cde.png
-   * - https://7b0b318c-b96c-4cc5-b521-33d11bd16cde.lafyun.com/func/FUNC_NAME
+   * - http://7b0b318c-b96c-4cc5-b521-33d11bd16cde.lafyun.com/func/FUNC_NAME
+   * 
+   * You should resolve `*.lafyun.com` to your laf server ip, to support `[appid].lafyun.com` url.
+   * You can also provide the PORT, like `lafyun.com:8080`. 
    */
-  static get APP_SERVICE_BASE_DOMAIN(): string {
-    return process.env.APP_SERVICE_BASE_DOMAIN ?? ''
+  static get APP_SERVICE_DEPLOY_HOST(): string {
+    return process.env.APP_SERVICE_DEPLOY_HOST ?? ''
   }
 
   /**

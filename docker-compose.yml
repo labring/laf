@@ -33,7 +33,7 @@ services:
       LOG_LEVEL: debug
       APP_SERVICE_IMAGE: lafyun/app-service:latest
       ACCOUNT_DEFAULT_APP_QUOTA: 5
-      APP_SERVICE_BASE_DOMAIN: zhuo-zhuo.cn     # `*.zhuo-zhuo.cn` always resolved to 127.0.0.1, used to local development
+      APP_SERVICE_DEPLOY_HOST: zhuo-zhuo.cn:8080     # `*.zhuo-zhuo.cn` always resolved to 127.0.0.1, used to local development
     command: npx nodemon
     volumes:
       - ./packages/system-server:/app
@@ -58,8 +58,8 @@ services:
       - mongo
       - system_server
     environment: 
-      APP_SERVICE_BASE_DOMAIN: zhuo-zhuo.cn     # `*.zhuo-zhuo.cn` always resolved to 127.0.0.1, used to local development
-      SYS_CLIENT_HOST: system.zhuo-zhuo.cn
+      DEPLOY_DOMAIN: zhuo-zhuo.cn     # `*.zhuo-zhuo.cn` always resolved to 127.0.0.1, used to local development
+      SYS_CLIENT_HOST: console.zhuo-zhuo.cn
     volumes:
       - ./packages/system-client/dist:/app
       - ./packages/system-client/nginx.conf:/etc/nginx/templates/default.conf.template
