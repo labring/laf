@@ -99,6 +99,8 @@ git clone https://github.com/Maslow/laf.git
 # 该目录下有更多部署脚本，可供生产部署时使用
 cd laf/deploy-scripts
 
+docker network create laf_shared_network --driver bridge || true
+
 # 启动所有服务
 docker-compose up
 
@@ -116,6 +118,8 @@ npm run build
 
 # watch codes changing while developing
 npm run watch
+
+docker network create laf_shared_network --driver bridge || true
 
 # launch laf services
 docker-compose up
