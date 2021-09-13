@@ -1,3 +1,15 @@
+# [](https://github.com/Maslow/laf/compare/v0.5.3...v) (2021-09-13)
+
+
+
+## [0.5.3](https://github.com/Maslow/laf/compare/v0.5.2...v0.5.3) (2021-09-13)
+
+
+### Bug Fixes
+
+* **app-server:** fix trigger invoking bug, func_id type error ([1ff8b51](https://github.com/Maslow/laf/commit/1ff8b510ba9351cee1e5a77206dc0746fbba58fe))
+
+
 
 ## [0.5.2](https://github.com/Maslow/laf/compare/v0.5.2-alpha.0...v0.5.2) (2021-09-10)
 
