@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-09 23:36:39
+ * @LastEditTime: 2021-09-13 14:49:36
  * @Description: 
  */
 
@@ -28,7 +28,7 @@ export async function getTriggers(status = 1) {
 
   const triggers = []
   for (const func of docs) {
-    func.triggers.forEach((tri: any) => tri['func_id'] = func._id)
+    func.triggers.forEach((tri: any) => tri['func_id'] = func._id.toString())
     triggers.push(...func.triggers)
   }
 
