@@ -230,7 +230,7 @@ export default {
       const res = await launchFunction(this.func.name, param, debug_token)
         .finally(() => { this.loading = false })
 
-      this.invokeRequestId = res.headers['requestId']
+      this.invokeRequestId = res.headers['requestid']
       await this.getLogByRequestId(this.invokeRequestId)
         .finally(() => { this.loading = false })
 
@@ -245,7 +245,7 @@ export default {
 
       if (res.data?.length) {
         this.invokeLogs = res.data[0]?.logs
-        this.invokeTimeUsage = this.invokeLogs?.time_usage
+        this.invokeTimeUsage = res.data[0]?.time_usage
       }
     },
     /**
