@@ -1,5 +1,8 @@
+import { response_type } from './response_type'
 
 export const global_declare = `
+${response_type}
+
 declare class FunctionConsole {
   private _logs;
   get logs(): any[];
@@ -63,6 +66,11 @@ interface FunctionContext {
    * 调用方法：GET | POST | PUT | DELETE | TRIGGER
    */
   method?: string;
+
+  /**
+   * Express Response 对象
+   */
+  response: HttpResponse
 }
 
 interface IModule {

@@ -1,6 +1,7 @@
 
 import { FunctionConsole } from "./console"
 import { IncomingHttpHeaders } from "http"
+import { Response } from "express"
 
 export type RequireFuncType = (module: string) => any
 
@@ -29,7 +30,8 @@ export interface FunctionContext {
   params?: any,
   auth?: any,
   requestId?: string,
-  method?: string
+  method?: string,
+  response?: Response
 }
 
 /**

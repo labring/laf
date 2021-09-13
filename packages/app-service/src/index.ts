@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-18 13:19:45
+ * @LastEditTime: 2021-09-13 22:00:08
  * @Description: 
  */
 
@@ -37,7 +37,7 @@ server.all('*', function (_req, res, next) {
 /**
  * Parsing bearer token
  */
-server.use(function (req, _res, next) {
+server.use(function (req, res, next) {
   const token = splitBearerToken(req.headers['authorization'] ?? '')
   const auth = parseToken(token) || null
   req['auth'] = auth
@@ -45,6 +45,7 @@ server.use(function (req, _res, next) {
   const requestId = req['requestId'] = uuidv4()
   logger.info(requestId, `${req.method} "${req.url}" - referer: ${req.get('referer') || '-'} ${req.get('user-agent')}`)
   logger.trace(requestId, `${req.method} ${req.url}`, { body: req.body, headers: req.headers, auth })
+  res.set('requestId', requestId)
   next()
 })
 

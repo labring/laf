@@ -121,7 +121,7 @@ export function publishFunctions() {
 export async function launchFunction(functionName, data, debug = false) {
   const appid = store.state.app.appid
   const res = await axios({
-    url: process.env.VUE_APP_BASE_API_APP + `/${appid}/func/invoke/${functionName}`,
+    url: process.env.VUE_APP_BASE_API_APP + `/${appid}/func/debug/${functionName}`,
     method: 'post',
     data: data,
     headers: {
@@ -129,7 +129,7 @@ export async function launchFunction(functionName, data, debug = false) {
     }
   })
 
-  return res.data
+  return res
 }
 
 /**

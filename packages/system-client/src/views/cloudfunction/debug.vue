@@ -77,19 +77,19 @@
           <div class="title">
             执行日志
             <span
-              v-if="invokeResult"
-            >（ RequestId: {{ invokeResult.requestId }} ）</span>
+              v-if="invokeRequestId"
+            >（ RequestId: {{ invokeRequestId }} ）</span>
           </div>
-          <div class="logs">
-            <div v-for="(log, index) in logs" :key="index" class="log-item">
+          <div v-if="invokeLogs" class="logs">
+            <div v-for="(log, index) in invokeLogs" :key="index" class="log-item">
               <pre>- {{ log }}</pre>
             </div>
           </div>
           <div class="title" style="margin-top: 20px">
-            调用结果 <span v-if="invokeTime"> （ {{ invokeTime }} ms ）</span>
+            调用结果 <span v-if="invokeTimeUsage"> （ {{ invokeTimeUsage }} ms ）</span>
           </div>
           <div class="result">
-            <pre>{{ invokeReturn }}</pre>
+            <pre>{{ invokeResult }}</pre>
           </div>
         </div>
       </div>
@@ -108,6 +108,7 @@ import FunctionEditor from '@/components/FunctionEditor'
 import jsonEditor from '@/components/JsonEditor/param'
 import { getFunctionById, getFunctionLogs, launchFunction, updateFunctionCode } from '../../api/func'
 import { publishFunctions } from '../../api/func'
+import { showError, showSuccess } from '@/utils/show'
 
 const defaultParamValue = {
   code: 'laf'
@@ -122,13 +123,20 @@ export default {
       func: null,
       func_id: '',
       invokeParams: defaultParamValue,
+      // 调用云函数返回的值
       invokeResult: null,
+      // 调用云函数的日志
+      invokeLogs: null,
+      // 云函数执行用时
+      invokeTimeUsage: null,
+      // 云函数调用 request id
+      invokeRequestId: null,
       // 调试面板显示控制
       showDebugPanel: false,
       // 最近日志
       lastestLogs: [],
       // 当前查看日志详情
-      logDetail: null,
+      logDetail: undefined,
       // 日志详情对话框显示控制
       isShowLogDetail: true
     }
@@ -139,27 +147,6 @@ export default {
     },
     app() {
       return this.$store.state.app.application
-    },
-    // 调用云函数的日志
-    logs() {
-      if (!this.invokeResult) {
-        return []
-      }
-      return this.invokeResult.logs
-    },
-    // 调用云函数返回的值
-    invokeReturn() {
-      if (!this.invokeResult) {
-        return ''
-      }
-      return this.invokeResult.data
-    },
-    // 云函数执行用时
-    invokeTime() {
-      if (!this.invokeResult) {
-        return null
-      }
-      return this.invokeResult.time_usage
     }
   },
   watch: {
@@ -195,15 +182,7 @@ export default {
       const func_id = this.func_id
       this.loading = true
       const r = await getFunctionById(func_id)
-
-      if (r.error) {
-        this.$notify({
-          type: 'error',
-          title: '错误',
-          message: '加载函数失败：' + r.error
-        })
-        return
-      }
+      if (r.error) { return showError('加载函数失败: ' + r.error) }
 
       this.func = r.data
       this.value = this.func.code
@@ -214,12 +193,8 @@ export default {
      * 保存函数代码
      */
     async updateFunc(showTip = true) {
-      if (this.loading) {
-        return
-      }
-      if (this.validate()) {
-        return
-      }
+      if (this.loading) { return }
+      if (this.validate()) { return }
 
       this.loading = true
 
@@ -232,20 +207,14 @@ export default {
         code: this.value,
         update_at: Date.now(),
         debugParams: param
-      })
+      }).finally(() => { this.loading = false })
 
-      if (r.error) {
-        this.$message('保存失败!')
-        this.loading = false
-        return
-      }
+      if (r.error) { return showError('保存失败！') }
 
       if (showTip) {
         await this.getFunction()
-        this.$message.success('已保存: ' + this.func.name)
+        showSuccess('已保存: ' + this.func.name)
       }
-
-      this.loading = false
     },
     /**
      * 运行函数代码
@@ -259,11 +228,25 @@ export default {
       await publishFunctions(this.appid)
       const param = this.parseInvokeParam(this.invokeParams)
       const res = await launchFunction(this.func.name, param, debug_token)
+        .finally(() => { this.loading = false })
 
-      this.loading = false
+      this.invokeRequestId = res.headers['requestId']
+      await this.getLogByRequestId(this.invokeRequestId)
+        .finally(() => { this.loading = false })
+
       this.$message.success('运行成功')
-      this.invokeResult = res
+      this.invokeResult = res.data
       this.getLatestLogs()
+    },
+    async getLogByRequestId(requestId) {
+      this.loading = true
+      const res = await getFunctionLogs({ requestId }, 1, 1)
+        .finally(() => { this.loading = false })
+
+      if (res.data?.length) {
+        this.invokeLogs = res.data[0]?.logs
+        this.invokeTimeUsage = this.invokeLogs?.time_usage
+      }
     },
     /**
      * 获取最近日志
