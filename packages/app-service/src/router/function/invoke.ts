@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-13 22:09:23
+ * @LastEditTime: 2021-09-15 15:03:28
  * @Description: 
  */
 
@@ -23,7 +23,7 @@ export async function handleInvokeFunction(req: Request, res: Response) {
   // load function data from db
   const funcData = await getFunctionByName(func_name)
   if (!funcData) {
-    return res.send({ code: 1, error: 'function not found', requestId })
+    return res.status(404).send('Not Found')
   }
 
   const func = new CloudFunction(funcData)
