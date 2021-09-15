@@ -58,7 +58,7 @@ services:
       - mongo
       - system_server
     environment: 
-      DEPLOY_DOMAIN: local-dev.host     # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
+      DEPLOY_DOMAIN: "*.local-dev.host"     # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
       SYS_CLIENT_HOST: console.local-dev.host
     volumes:
       - ./packages/system-client/dist:/app

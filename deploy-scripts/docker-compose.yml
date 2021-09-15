@@ -54,7 +54,7 @@ services:
       - mongo
     environment: 
        DEPLOY_DOMAIN: ${DEPLOY_DOMAIN:?err}
-       SYS_CLIENT_HOST: console.${DEPLOY_DOMAIN:?err}
+       SYS_CLIENT_HOST: ${SYS_CLIENT_HOST:?err}
     ports: 
       - ${PUBLISH_PORT:-8080}:80
     networks: 
