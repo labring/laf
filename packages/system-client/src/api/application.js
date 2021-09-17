@@ -214,6 +214,7 @@ export async function importApplication(appid, import_data) {
 export function getAppAccessUrl() {
   const appid = store.state.app.appid
   const domain = store.state.app.app_deploy_host
-  const url = `http://${appid}.${domain}`
+  const schema = store.state.app.app_deploy_url_schema || 'http'
+  const url = `${schema}://${appid}.${domain}`
   return url
 }

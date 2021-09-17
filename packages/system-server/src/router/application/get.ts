@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 15:22:34
- * @LastEditTime: 2021-09-10 17:10:54
+ * @LastEditTime: 2021-09-17 16:30:27
  * @Description: 
  */
 
@@ -75,6 +75,7 @@ export async function handleGetApplicationByAppid(req: Request, res: Response) {
   }
 
   const app_deploy_host = Config.APP_SERVICE_DEPLOY_HOST
+  const app_deploy_url_schema = Config.APP_SERVICE_DEPLOY_URL_SCHEMA
 
   app.config = undefined
   return res.send({
@@ -84,7 +85,8 @@ export async function handleGetApplicationByAppid(req: Request, res: Response) {
       roles,
       debug_token,
       file_token,
-      app_deploy_host
+      app_deploy_host,
+      app_deploy_url_schema
     }
   })
 }

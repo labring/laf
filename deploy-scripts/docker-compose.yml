@@ -33,6 +33,7 @@ services:
       APP_SERVICE_IMAGE: ${APP_SERVICE_IMAGE:-lafyun/app-service:latest}
       ACCOUNT_DEFAULT_APP_QUOTA: ${ACCOUNT_DEFAULT_APP_QUOTA:-2}
       APP_SERVICE_DEPLOY_HOST: ${DEPLOY_DOMAIN:?err}:${PUBLISH_PORT:-8080}
+      APP_SERVICE_DEPLOY_URL_SCHEMA: ${APP_SERVICE_DEPLOY_URL_SCHEMA}
     command: dockerize -wait tcp://mongo:27017 node dist/index.js
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

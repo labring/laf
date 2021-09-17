@@ -34,6 +34,7 @@ services:
       APP_SERVICE_IMAGE: lafyun/app-service:latest
       ACCOUNT_DEFAULT_APP_QUOTA: 5
       APP_SERVICE_DEPLOY_HOST: local-dev.host:8080     # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
+      APP_SERVICE_DEPLOY_URL_SCHEMA: 'http'
     command: npx nodemon
     volumes:
       - ./packages/system-server:/app

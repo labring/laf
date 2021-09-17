@@ -108,6 +108,14 @@ export default class Config {
   }
 
   /**
+   * The schema of app deployed url: `http` | `https`.
+   * Default value is `http`.
+   */
+  static get APP_SERVICE_DEPLOY_URL_SCHEMA(): string {
+    return process.env.APP_SERVICE_DEPLOY_URL_SCHEMA ?? 'http'
+  }
+
+  /**
    * The max old space size of node vm of application service, default is 256mb
    * @see --max_old_space_size of node argv
    */
