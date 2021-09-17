@@ -100,6 +100,7 @@ git clone https://github.com/Maslow/laf.git
 cd laf/deploy-scripts
 
 docker network create laf_shared_network --driver bridge || true
+docker pull lessx/laf-app-server:latest
 
 # 启动所有服务
 docker-compose up
@@ -120,6 +121,7 @@ npm run build
 npm run watch
 
 docker network create laf_shared_network --driver bridge || true
+docker pull lessx/laf-app-server:latest
 
 # launch laf services
 docker-compose up
