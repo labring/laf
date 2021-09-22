@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:51:19
- * @LastEditTime: 2021-09-10 01:14:32
+ * @LastEditTime: 2021-09-22 13:12:17
  * @Description: 
  */
 
@@ -30,8 +30,8 @@ export async function handleGetFunctionLogs(req: Request, res: Response) {
 
   // build query object
   const { requestId, func_id, trigger_id } = req.query
-  const limit = req.body?.limit ?? 10
-  const page = req.body?.page ?? 1
+  const limit = Number(req.query?.limit || 10)
+  const page = Number(req.query?.page || 1)
 
   const query = {}
 
