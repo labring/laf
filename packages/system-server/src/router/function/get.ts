@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:51:19
- * @LastEditTime: 2021-09-10 01:44:34
+ * @LastEditTime: 2021-09-22 11:45:06
  * @Description: 
  */
 
@@ -95,7 +95,7 @@ export async function handleGetFunctionById(req: Request, res: Response) {
 
   // do db query
   const ret = await coll
-    .where({ _id: func_id })
+    .where({ _id: func_id, appid: app.appid })
     .getOne<CloudFunctionStruct>()
 
   return res.send({
@@ -120,7 +120,8 @@ export async function handleGetAllFunctionTags(req: Request, res: Response) {
 
   const docs = await db.collection<FunctionStruct>(Constants.cn.functions)
     .find({
-      tags: { $exists: true, $ne: [] }
+      tags: { $exists: true, $ne: [] },
+      appid: app.appid
     }, {
       projection: { tags: 1 }
     })
