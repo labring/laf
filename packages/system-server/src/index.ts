@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-09 00:53:24
+ * @LastEditTime: 2021-09-26 16:59:56
  * @Description: 
  */
 
@@ -14,7 +14,9 @@ import { logger } from './lib/logger'
 import { createSystemCollectionIndexes } from './api/init'
 
 const server = express()
-server.use(express.json() as any)
+server.use(express.json({
+  limit: '10000kb'
+}) as any)
 
 createSystemCollectionIndexes()
   .then(() => {
@@ -25,9 +27,6 @@ createSystemCollectionIndexes()
  * Allow CORS by default
  */
 server.all('*', function (_req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Headers', 'Authorization, Content-Type')
-  res.header('Access-Control-Allow-Methods', '*')
   res.header('X-Powered-By', 'LaF Server')
   next()
 })
