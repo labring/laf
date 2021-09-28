@@ -2,7 +2,7 @@
 version: '3.8'
 services: 
   mongo:
-    image: bitnami/mongodb:latest
+    image: bitnami/mongodb:4.4
     environment: 
       - MONGODB_REPLICA_SET_MODE=primary
       - MONGODB_INITIAL_PRIMARY_HOST=mongo
