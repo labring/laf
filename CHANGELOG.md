@@ -1,4 +1,77 @@
-# [](https://github.com/Maslow/laf/compare/v0.5.3...v) (2021-09-13)
+# [](https://github.com/Maslow/laf/compare/v0.5.8-alpha.0...v) (2021-09-28)
+
+
+
+## [0.5.8-alpha.0](https://github.com/Maslow/laf/compare/v0.5.7...v0.5.8-alpha.0) (2021-09-28)
+
+
+### Bug Fixes
+
+* **sys server:** fix mongo version in deploys; fix regexp options error; ([35c4ce6](https://github.com/Maslow/laf/commit/35c4ce65f1167249513ccbee6cd84a48f520abd2))
+
+
+
+## [0.5.7](https://github.com/Maslow/laf/compare/v0.5.7-alpha.0...v0.5.7) (2021-09-26)
+
+
+### Bug Fixes
+
+* **sys server:** fix body limit 413; ([488fc9e](https://github.com/Maslow/laf/commit/488fc9ef5cc0efa0f20ea371b68e14727582487f))
+
+
+
+## [0.5.7-alpha.0](https://github.com/Maslow/laf/compare/v0.5.6...v0.5.7-alpha.0) (2021-09-22)
+
+
+### Bug Fixes
+
+* **sys server:** fix missing query params for func logs fetch api; ([c9b8a75](https://github.com/Maslow/laf/commit/c9b8a7533f876abd25bd39b522b9e95fd942e877))
+
+
+
+## [0.5.6](https://github.com/Maslow/laf/compare/v0.5.5...v0.5.6) (2021-09-22)
+
+
+### Bug Fixes
+
+* **sys server:** fix get tags missing appid; ([164fc85](https://github.com/Maslow/laf/commit/164fc85a43d4e9047b5631a3485db7dbfbd20a0b))
+
+
+
+## [0.5.5](https://github.com/Maslow/laf/compare/v0.5.5-alpha.0...v0.5.5) (2021-09-17)
+
+
+### Bug Fixes
+
+* **https:** add url schema to sys server config; support ssl depoy; ([296272a](https://github.com/Maslow/laf/commit/296272ae660567354dda4fc90afb6aaab87d2be2))
+
+
+
+## [0.5.5-alpha.0](https://github.com/Maslow/laf/compare/v0.5.4...v0.5.5-alpha.0) (2021-09-15)
+
+
+### Bug Fixes
+
+* **app-service:** fix function invoke 404 error; ([030acae](https://github.com/Maslow/laf/commit/030acaefdcb954347b6294b4ff0141c6389f529a))
+* **config:** fix deploy-scripts:docker-compose ([460487e](https://github.com/Maslow/laf/commit/460487ef115a91a368e4b3957f16149deed75ec7))
+
+
+
+## [0.5.4](https://github.com/Maslow/laf/compare/v0.5.4-alpha.0...v0.5.4) (2021-09-15)
+
+
+### Bug Fixes
+
+* **system-client:** fix debug function result output; ([f467003](https://github.com/Maslow/laf/commit/f467003e39c5043949bdbcec4a339b17ccbb6d07))
+
+
+
+## [0.5.4-alpha.0](https://github.com/Maslow/laf/compare/v0.5.3...v0.5.4-alpha.0) (2021-09-13)
+
+
+### Features
+
+* **cloudfunction:** export response object to function; refactor invoke result, directly return what function return; ([902edb4](https://github.com/Maslow/laf/commit/902edb4515a998f3c96db87d7a827eae82b11950))
 
 
 
