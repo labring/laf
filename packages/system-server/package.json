@@ -1,6 +1,6 @@
 {
   "name": "system-server",
-  "version": "0.5.7",
+  "version": "0.5.8-alpha.0",
   "description": "laf - system server",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
