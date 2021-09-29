@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:51:19
- * @LastEditTime: 2021-09-28 17:21:46
+ * @LastEditTime: 2021-09-29 12:12:36
  * @Description: 
  */
 
@@ -119,21 +119,12 @@ export async function handleGetAllFunctionTags(req: Request, res: Response) {
   const db = DatabaseAgent.sys_accessor.db
 
   const docs = await db.collection<FunctionStruct>(Constants.cn.functions)
-    .find({
-      tags: { $exists: true, $ne: [] },
+    .distinct('tags', {
       appid: app.appid
-    }, {
-      projection: { tags: 1 }
-    })
-    .toArray()
 
-  const all_tags = []
-  for (const doc of docs) {
-    const tags = doc.tags
-    all_tags.push(...tags)
-  }
-  const rets = Array.from(new Set(all_tags))
+    })
+
   return res.send({
-    data: rets
+    data: docs
   })
 }
