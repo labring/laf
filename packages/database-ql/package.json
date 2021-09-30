@@ -1,5 +1,5 @@
 {
-  "name": "@lafyun/database-ql",
+  "name": "database-ql",
   "version": "0.0.1",
   "description": "Database interface for cloud development",
   "main": "dist/commonjs/index.js",

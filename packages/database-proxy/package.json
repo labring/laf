@@ -1,5 +1,5 @@
 {
-  "name": "@lafyun/database-proxy",
+  "name": "database-proxy",
   "version": "0.0.1",
   "description": "通过一套「访问控制规则」配置数据库访问，用一个 API 替代服务端 90% 的数据访问 APIs。",
   "main": "./dist",
