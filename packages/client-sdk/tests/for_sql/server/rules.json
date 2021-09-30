@@ -1,0 +1,23 @@
+{
+  "categories": {
+    ".read": true,
+    ".update": {
+      "condition": true,
+      "multi": true
+    },
+    ".add": true,
+    ".remove": true,
+    ".count": true
+  },
+  "articles": {
+    ".read": {
+      "condition": true,
+      "join": [
+        "categories"
+      ]
+    },
+    ".update": true,
+    ".add": true,
+    ".remove": true
+  }
+}

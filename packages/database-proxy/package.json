@@ -1,0 +1,42 @@
+{
+  "name": "@lafyun/database-proxy",
+  "version": "0.0.1",
+  "description": "通过一套「访问控制规则」配置数据库访问，用一个 API 替代服务端 90% 的数据访问 APIs。",
+  "main": "./dist",
+  "scripts": {
+    "test-all": "mocha tests/**/*test.js",
+    "test-units": "mocha tests/units/*",
+    "test": "npm run test-units",
+    "build": "tsc -p tsconfig.json",
+    "watch": "tsc -w",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "BaaS",
+    "cloud",
+    "mongo",
+    "mysql",
+    "acl",
+    "serverless"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Maslow/less-api.git"
+  },
+  "author": "maslow(wangfugen@126.com)",
+  "license": "ISC",
+  "dependencies": {
+    "less-api-database": "^1.5.10",
+    "lodash": "^4.17.21",
+    "mongodb": "^4.0.1",
+    "mysql2": "^2.2.5",
+    "validator": "^12.0.0"
+  },
+  "devDependencies": {
+    "@types/mongodb": "^3.3.8",
+    "@types/node": "^12.12.5",
+    "@types/validator": "^10.11.3",
+    "mocha": "^9.0.2",
+    "typescript": "^3.6.4"
+  }
+}

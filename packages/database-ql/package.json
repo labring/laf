@@ -1,0 +1,41 @@
+{
+  "name": "@lafyun/database-ql",
+  "version": "0.0.1",
+  "description": "Database interface for cloud development",
+  "main": "dist/commonjs/index.js",
+  "module": "dist/esm/index.js",
+  "scripts": {
+    "watch": "tsc -w",
+    "test": "mocha tests/*test.js",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.esm.json",
+    "eslint": "eslint \"./**/*.ts\"",
+    "fix": "eslint --fix \"./**/*.ts\"",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Maslow/less-api.git"
+  },
+  "keywords": [
+    "less-api",
+    "less-api-database"
+  ],
+  "author": "maslow (wangfugen@126.com)",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^5.15.3",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "eslint-plugin-typescript": "^0.14.0",
+    "express": "^4.17.1",
+    "mocha": "^6.2.0",
+    "typescript": "^3.6.2",
+    "typescript-eslint-parser": "^22.0.0"
+  },
+  "dependencies": {
+    "bson": "^4.0.2",
+    "lodash.clonedeep": "4.5.0",
+    "lodash.set": "4.3.2",
+    "lodash.unset": "4.5.2"
+  }
+}

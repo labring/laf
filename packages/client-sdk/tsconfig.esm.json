@@ -1,0 +1,40 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "allowJs": false,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "charset": "utf8",
+    "declaration": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "importHelpers": false,
+    "module": "es6",
+    // "declarationDir": "types",
+    "noEmitOnError": false,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "dist/esm",
+    "pretty": true,
+    "removeComments": false,
+    "stripInternal": true,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "target": "es5",
+    "lib": [
+      "es2015",
+      "es6",
+      "dom"
+    ]
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    // "node_modules",
+    "test"
+  ]
+}

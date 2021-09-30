@@ -1,0 +1,39 @@
+{
+    "categories": {
+        ".read": true,
+        ".update": "$role === 'admin'",
+        ".add": "$role === 'admin'",
+        ".remove": "$role === 'admin'"
+    },
+    "articles": {
+        ".read": true,
+        ".update": {
+            "condition": "$admin === true",
+            "data": {
+                "title": {"length": [1, 64], "required": true },
+                "content": {"length": [1, 20480]},
+                "password": { "match": "^\\d{6,10}$"},
+                "author_id": "value == $userid"
+            },
+            "query": {
+                "_id": "get($value).author_id === $userid"
+            }
+        },
+        ".add": {
+            "condition": "$admin === true",
+            "data": { 
+                "type": {"required": true, "in": ["choice", "fill"]}, 
+                "title": {"length": [4, 64], "required": true, "unique": true},
+                "content": {"length": [4, 20480]},
+                "total": {"number": [0, 100], "default": 0, "required": true},
+                "author_id": { "condition": "$value == $userid" }
+            }
+        },
+        ".remove": {
+            "condition":"$admin === true",
+            "query": {
+                "id": "get($value).author_id === $userid // TODO 尚未实现 get 函数"
+            }
+        }
+    }
+}

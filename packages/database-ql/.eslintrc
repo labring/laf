@@ -1,0 +1,43 @@
+{
+  "extends": [
+    "prettier"
+  ],
+  "plugins": [
+    "typescript"
+  ],
+  "rules": {
+    "indent": [
+      "error",
+      2,
+      {
+          "SwitchCase": 1,
+          "flatTernaryExpressions": true
+      }
+    ],
+    "no-unused-vars": "warn",
+    "typescript/no-unused-vars": "warn",
+    "semi": [
+      "error",
+      "never"
+    ],
+    "quotes": [
+      "error",
+      "single",
+      {
+        "avoidEscape": true
+      }
+    ]
+  },
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "parser": "typescript-eslint-parser",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "modules": true
+    }
+  }
+}

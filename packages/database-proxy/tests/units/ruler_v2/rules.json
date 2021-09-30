@@ -1,0 +1,9 @@
+{
+    "categories": {
+        "read": true,
+        "update": true,
+        "$schema": { 
+            "account": { "match": "^\\d{6,10}$" }
+        }
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "categories": {
+        ".update": {
+            "condition": true,
+            "data": { 
+                "account": { "match": "^\\d{6,10}$" }
+            }
+        }
+    }
+}

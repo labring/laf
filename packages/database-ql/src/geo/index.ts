@@ -1,0 +1,6 @@
+export * from './point'
+export * from './lineString'
+export * from './polygon'
+export * from './multiPoint'
+export * from './multiLineString'
+export * from './multiPolygon'

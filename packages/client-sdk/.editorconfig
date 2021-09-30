@@ -1,0 +1,9 @@
+root = true
+
+[!{node_modules}/**]
+end_of_line = lf
+charset = utf-8
+
+[{*.js,*.ts}]
+indent_style = space
+indent_size = 2

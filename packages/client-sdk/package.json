@@ -1,0 +1,52 @@
+{
+  "name": "@lafyun/client-sdk",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/commonjs/index.js",
+  "module": "dist/esm/index.js",
+  "scripts": {
+    "watch": "tsc -w",
+    "test": "mocha tests/units/*test.js",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.esm.json",
+    "build:bundle": "webpack",
+    "eslint": "eslint \"./**/*.ts\"",
+    "fix": "eslint --fix \"./**/*.ts\"",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Maslow/less-api.git"
+  },
+  "keywords": [
+    "less-api",
+    "less-api-client"
+  ],
+  "author": "maslow (wangfugen@126.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Maslow/less-api/issues"
+  },
+  "homepage": "https://github.com/Maslow/less-api#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "less-api-database": "^1.5.10"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^3.0.0",
+    "eslint": "^5.15.3",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "eslint-plugin-typescript": "^0.14.0",
+    "express": "^4.17.1",
+    "html-webpack-plugin": "^4.3.0",
+    "less-api": "^1.5.10",
+    "mocha": "^7.1.1",
+    "mongodb": "^3.6.3",
+    "ts-loader": "^7.0.5",
+    "typescript": "^3.6.2",
+    "typescript-eslint-parser": "^22.0.0",
+    "uglifyjs-webpack-plugin": "^1.1.2",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  }
+}

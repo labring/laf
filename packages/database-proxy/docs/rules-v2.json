@@ -1,0 +1,19 @@
+{
+    "categories": {
+        "read": true,
+        "update": "$role === 'admin'",
+        "add": "$role === 'admin'",
+        "remove": "$role === 'admin'",
+        "count": true,
+        "watch": true,
+        "$schema": {
+            "password": { "match": "^\\d{6,10}$"},
+            "author_id": "$value == $userid",
+            "type": {"required": true, "in": ["choice", "fill"]}, 
+            "title": {"length": [4, 64], "required": true, "unique": true},
+            "content": {"length": [4, 20480]},
+            "total": {"number": [0, 100], "default": 0, "required": true}
+        },
+        "$version": 2
+    }
+}
