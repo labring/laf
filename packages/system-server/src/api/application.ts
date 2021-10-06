@@ -1,14 +1,14 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-28 22:00:45
- * @LastEditTime: 2021-09-09 10:43:23
+ * @LastEditTime: 2021-10-06 22:19:42
  * @Description: Application APIs
  */
 
 import { Constants } from "../constants"
 import { DatabaseAgent } from "../lib/db-agent"
 import * as assert from 'assert'
-import { MongoAccessor } from "less-api/dist"
+import { MongoAccessor } from "database-proxy"
 import { generateUUID } from "../utils/rand"
 import { MongoClient } from 'mongodb'
 import Config from "../config"

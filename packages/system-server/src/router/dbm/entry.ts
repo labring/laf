@@ -1,11 +1,11 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:26:26
- * @LastEditTime: 2021-08-30 16:28:03
+ * @LastEditTime: 2021-10-06 22:21:53
  * @Description: 
  */
 
-import { Proxy, Policy } from 'less-api'
+import { Proxy, Policy } from 'database-proxy'
 import { ApplicationStruct, getApplicationDbAccessor } from '../../api/application'
 import { checkPermission } from '../../api/permission'
 import { permissions } from '../../constants/permissions'

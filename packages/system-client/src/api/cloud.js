@@ -1,6 +1,6 @@
 import { getToken } from '@/utils/auth'
 import { Message } from 'element-ui'
-import { Cloud, Request } from 'less-api-client'
+import { Cloud, Request } from 'laf-client-sdk'
 
 /**
  * 自定义请求类

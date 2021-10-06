@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-06 15:47:57
- * @LastEditTime: 2021-09-10 11:49:07
+ * @LastEditTime: 2021-10-06 22:23:08
  * @Description: 
  */
 
@@ -41,8 +41,8 @@ export async function handleGetDeployRequests(req: Request, res: Response) {
   }
   if (keyword) {
     query['$or'] = [
-      { source: db.RegExp({ regexp: `.*${keyword}.*` }) },
-      { comment: db.RegExp({ regexp: `.*${keyword}.*` }) }
+      { source: db.RegExp({ regexp: `.*${keyword}.*`, options: 'i' }) },
+      { comment: db.RegExp({ regexp: `.*${keyword}.*`, options: 'i' }) }
     ]
   }
 

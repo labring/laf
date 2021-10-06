@@ -1,18 +1,18 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-10 22:19:43
+ * @LastEditTime: 2021-10-06 21:37:18
  * @Description: 
  */
 
 import { Constants } from "../constants"
 import { DatabaseAgent } from "../lib/db-agent"
-import { compileTs2js } from 'cloud-function-engine/dist/utils'
 import { CloudFunctionStruct } from "cloud-function-engine"
 import { ClientSession } from 'mongodb'
 import * as assert from 'assert'
 import { logger } from "../lib/logger"
 import { ApplicationStruct, getApplicationDbAccessor } from "./application"
+import { compileTs2js } from "../utils/lang"
 
 export enum FunctionStatus {
   DISABLED = 0,

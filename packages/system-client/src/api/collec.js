@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
-import { Cloud } from 'less-api-client'
+import { Cloud } from 'laf-client-sdk'
 
 /**
  * Get collection list

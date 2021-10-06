@@ -1,5 +1,5 @@
 import assert = require("assert")
-import { compileTs2js } from "cloud-function-engine/dist/utils"
+
 import { ClientSession } from "mongodb"
 import { ApplicationStruct } from "../api/application"
 import { FunctionStruct } from "../api/function"
@@ -9,6 +9,7 @@ import { hashFunctionCode } from "../utils/hash"
 import { DatabaseAgent } from "./db-agent"
 import { getFunctionByName } from '../api/function'
 import { generateRandString } from "../utils/rand"
+import { compileTs2js } from "../utils/lang"
 
 /**
  * Import application definition from json object:

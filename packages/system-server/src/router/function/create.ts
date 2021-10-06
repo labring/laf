@@ -1,11 +1,10 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-01 13:07:07
- * @LastEditTime: 2021-09-03 23:23:31
+ * @LastEditTime: 2021-10-06 22:19:58
  * @Description: 
  */
 
-import { compileTs2js } from 'cloud-function-engine/dist/utils'
 import { Request, Response } from 'express'
 import { ApplicationStruct } from '../../api/application'
 import { checkPermission } from '../../api/permission'
@@ -13,6 +12,7 @@ import { Constants } from '../../constants'
 import { permissions } from '../../constants/permissions'
 import { DatabaseAgent } from '../../lib/db-agent'
 import { hashFunctionCode } from '../../utils/hash'
+import { compileTs2js } from '../../utils/lang'
 
 const { FUNCTION_ADD } = permissions
 

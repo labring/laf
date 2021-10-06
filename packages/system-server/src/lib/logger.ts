@@ -1,11 +1,11 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-17 15:04:05
+ * @LastEditTime: 2021-10-06 22:29:30
  * @Description: 
  */
 
-import { LoggerInterface } from 'less-api'
+import { LoggerInterface } from 'database-proxy'
 import * as log4js from 'log4js'
 import Config from '../config'
 

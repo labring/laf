@@ -1,11 +1,11 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-08 23:07:02
+ * @LastEditTime: 2021-10-06 22:22:04
  * @Description: 
  */
 
-import { MongoAccessor, getDb } from 'less-api'
+import { MongoAccessor, getDb } from 'database-proxy'
 import Config from '../config'
 import { createLogger, logger } from './logger'
 import * as mongodb_uri from 'mongodb-uri'

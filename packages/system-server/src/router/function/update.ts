@@ -1,12 +1,11 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-05 02:11:39
- * @LastEditTime: 2021-09-05 03:14:37
+ * @LastEditTime: 2021-10-06 22:21:05
  * @Description: 
  */
 
 
-import { compileTs2js } from 'cloud-function-engine/dist/utils'
 import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
 import { ApplicationStruct } from '../../api/application'
@@ -15,6 +14,7 @@ import { Constants } from '../../constants'
 import { permissions } from '../../constants/permissions'
 import { DatabaseAgent } from '../../lib/db-agent'
 import { hashFunctionCode } from '../../utils/hash'
+import { compileTs2js } from '../../utils/lang'
 
 const { FUNCTION_UPDATE } = permissions
 
