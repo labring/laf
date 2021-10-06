@@ -1,5 +1,5 @@
 import { AccessorInterface } from "../accessor"
-import { Db } from 'less-api-database'
+import { Db } from 'database-ql'
 import { Request } from "./request"
 
 export interface DbConfig {
@@ -7,13 +7,13 @@ export interface DbConfig {
 }
 
 export function getDb(accessor: AccessorInterface): Db {
-   
+
     const config: DbConfig = {
         accessor
     }
 
     Db.reqClass = Request
-    Db.getAccessToken = () => {}
+    Db.getAccessToken = () => { }
 
     return new Db(config)
 }

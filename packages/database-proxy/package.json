@@ -26,7 +26,7 @@
   "author": "maslow(wangfugen@126.com)",
   "license": "ISC",
   "dependencies": {
-    "less-api-database": "^1.5.10",
+    "database-ql": "^0.0.1",
     "lodash": "^4.17.21",
     "mongodb": "^4.0.1",
     "mysql2": "^2.2.5",
