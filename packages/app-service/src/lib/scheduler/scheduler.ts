@@ -32,10 +32,7 @@ export class FrameworkScheduler extends TriggerScheduler {
     assert.ok(funcData, `failed to get function data: ${func_id}`)
 
     const func = new CloudFunction(funcData)
-    if (!func.compiledCode) {
-      logger.warn(`performance warning: function (${func_id} hadn't been compiled, will be compiled automatically)`)
-      func.compile2js()
-    }
+    assert.ok(func.compiledCode, `func.compiledCode got empty: ${func_id}`)
     return func
   }
 

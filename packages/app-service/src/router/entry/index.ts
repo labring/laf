@@ -1,17 +1,16 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-18 16:12:18
+ * @LastEditTime: 2021-10-06 19:27:45
  * @Description: 
  */
 import { Router } from 'express'
-import { Proxy } from 'less-api'
+import { Proxy } from 'database-proxy'
 import Config from '../../config'
-import { createLogger } from '../../lib/logger'
 import { DatabaseAgent } from '../../lib/database'
 import { PolicyAgentInstance } from '../../lib/policy-agent'
+import { logger } from '../../lib/logger'
 
-const logger = createLogger('proxy')
 const accessor = DatabaseAgent.accessor
 export const EntryRouter = Router()
 

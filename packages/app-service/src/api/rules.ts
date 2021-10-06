@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-09 23:42:13
+ * @LastEditTime: 2021-10-06 19:21:30
  * @Description: 
  */
 
@@ -15,7 +15,7 @@ import { PolicyDataStruct } from '../lib/policy-agent/types'
  * Get all access policies
  */
 export async function getPolicyRules() {
-  const db = DatabaseAgent.accessor.db
+  const db = DatabaseAgent.db
   const docs = await db.collection(Constants.policy_collection)
     .find({})
     .toArray<PolicyDataStruct>()

@@ -16,13 +16,9 @@ export async function invokeInFunction(name: string, param: FunctionContext) {
     throw new Error(`invoke() failed to get function: ${name}`)
   }
 
-  if(!func.compiledCode) {
-    func.compile2js()
-  }
-
   param = param ?? {}
-  
-  if(param.requestId) {
+
+  if (param.requestId) {
     param.requestId = this.param.requestId
   }
 

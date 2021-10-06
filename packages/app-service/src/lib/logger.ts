@@ -1,11 +1,11 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-17 13:53:44
+ * @LastEditTime: 2021-10-06 19:26:58
  * @Description: 
  */
 
-import { LoggerInterface } from 'less-api'
+import { LoggerInterface } from 'database-proxy'
 import * as log4js from 'log4js'
 import Config from '../config'
 
@@ -19,7 +19,7 @@ export function createLogger(category: string, level?: string): LoggerInterface 
   const logger = log4js.getLogger(category)
   logger.level = level ?? Config.LOG_LEVEL
 
-  logger.info(`${category} logging level is ${logger.level}`)
+  // logger.info(`${category} logging level is ${logger.level}`)
   return logger as any
 }
 

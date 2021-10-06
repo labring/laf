@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-19 15:48:54
- * @LastEditTime: 2021-08-19 16:33:25
+ * @LastEditTime: 2021-10-06 19:23:34
  * @Description:
  */
 
@@ -22,5 +22,5 @@ export function createFileStorage(bucket = 'public'): FileStorageInterface {
     return new LocalFSStorage(Config.LOCAL_STORAGE_ROOT_PATH, bucket)
   }
 
-  return new GridFSStorage(bucket, DatabaseAgent.accessor.db)
+  return new GridFSStorage(bucket, DatabaseAgent.db)
 }

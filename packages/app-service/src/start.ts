@@ -1,22 +1,22 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-16 15:55:37
- * @LastEditTime: 2021-08-17 14:41:01
+ * @LastEditTime: 2021-10-06 21:55:22
  * @Description: 
  * The start script entry: manage service process by cluster process mode, restart service process while error occurred.
  * You can also run service directly by launching `index.ts`.
  */
 
-import * as cluster from 'cluster'
 import { Worker } from 'cluster'
 import { createLogger } from './lib/logger'
 import * as fs from 'fs'
 import { join } from 'path'
 import { debounce } from 'lodash'
 import { execSync } from 'child_process'
+const cluster = require('cluster')
 
 
-if (cluster.isMaster) {
+if (cluster.isPrimary) {
   const logger = createLogger('primary')
   logger.info(`Primary ${process.pid} is running`)
   let worker: Worker = null

@@ -1,11 +1,11 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-02 14:49:50
- * @LastEditTime: 2021-08-18 15:45:28
+ * @LastEditTime: 2021-10-06 19:02:21
  * @Description: 
  */
 
-import { Params, Policy } from "less-api"
+import { Params, Policy } from "database-proxy"
 
 
 export type InjectionGetter = (payload: any, params: Params) => Promise<any>

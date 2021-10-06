@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-13 14:49:36
+ * @LastEditTime: 2021-10-06 19:21:35
  * @Description: 
  */
 
@@ -15,7 +15,7 @@ import { DatabaseAgent } from "../lib/database"
  * @returns 
  */
 export async function getTriggers(status = 1) {
-  const db = DatabaseAgent.accessor.db
+  const db = DatabaseAgent.db
 
   const docs = await db.collection(Constants.function_collection)
     .find({

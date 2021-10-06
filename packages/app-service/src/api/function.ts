@@ -1,14 +1,13 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-18 16:54:06
+ * @LastEditTime: 2021-10-06 19:25:59
  * @Description: 
  */
 
 import { Constants } from "../constants"
 import { DatabaseAgent } from "../lib/database"
-
-const db = DatabaseAgent.db
+import { ObjectId } from 'mongodb'
 
 /**
  * Gets the cloud function by function name
@@ -16,15 +15,12 @@ const db = DatabaseAgent.db
  * @returns 
  */
 export async function getFunctionByName(func_name: string) {
-  const r = await db.collection(Constants.function_collection)
-    .where({ name: func_name })
-    .getOne()
+  const db = DatabaseAgent.db
 
-  if (!r.ok) {
-    throw new Error(`getCloudFunction() failed to get function [${func_name}]: ${r.error.toString()}`)
-  }
+  const doc = await db.collection(Constants.function_collection)
+    .findOne({ name: func_name })
 
-  return r.data
+  return doc as any
 }
 
 /**
@@ -33,13 +29,12 @@ export async function getFunctionByName(func_name: string) {
   * @returns 
   */
 export async function getFunctionById(func_id: string) {
-  const r = await db.collection(Constants.function_collection)
-    .where({ _id: func_id })
-    .getOne()
+  const db = DatabaseAgent.db
 
-  if (!r.ok) {
-    throw new Error(`getCloudFunctionById() failed to get function [${func_id}]: ${r.error.toString()}`)
-  }
+  const doc = await db.collection(Constants.function_collection)
+    .findOne({
+      _id: new ObjectId(func_id)
+    })
 
-  return r.data
+  return doc as any
 }

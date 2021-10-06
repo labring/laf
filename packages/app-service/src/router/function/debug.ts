@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-13 21:01:37
+ * @LastEditTime: 2021-10-06 21:37:48
  * @Description: 
  */
 
@@ -34,11 +34,6 @@ export async function handleDebugFunction(req: Request, res: Response) {
   }
 
   const func = new CloudFunction(funcData)
-
-  // compile the func while func hadn't been compiled
-  if (!func.compiledCode) {
-    func.compile2js()
-  }
 
   try {
     // execute the func

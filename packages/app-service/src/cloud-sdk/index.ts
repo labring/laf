@@ -1,5 +1,5 @@
 import { AxiosStatic } from "axios"
-import { Db } from "less-api-database"
+import { Db, getDb } from "database-proxy"
 import { FunctionContext, FunctionResult, CloudFunction } from "cloud-function-engine"
 import { FileStorageInterface } from "../lib/storage/interface"
 import * as mongodb from "mongodb"
@@ -111,7 +111,7 @@ DatabaseAgent.accessor.ready.then(() => {
  */
 export function create() {
   const cloud: CloudSdkInterface = {
-    database: () => DatabaseAgent.createDb(),
+    database: () => getDb(DatabaseAgent.accessor),
     storage: createFileStorage,
     fetch: request,
     invoke: invokeInFunction,

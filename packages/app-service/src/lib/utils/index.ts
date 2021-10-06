@@ -1,11 +1,11 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-18 16:43:57
+ * @LastEditTime: 2021-10-06 19:02:28
  * @Description: 
  */
 
-import { ActionType } from "less-api/dist"
+import { ActionType } from "database-proxy"
 
 /**
  * Convert ActionType to a shorthand string
