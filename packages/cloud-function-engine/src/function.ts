@@ -1,7 +1,6 @@
 import { FunctionEngine } from "."
 import { CloudFunctionStruct, FunctionContext, FunctionResult, RequireFuncType } from "./types"
 import * as assert from "assert"
-import { compileTs2js } from "./utils"
 
 /**
  * 云函数
@@ -94,15 +93,6 @@ export class CloudFunction {
     this.result = await engine.run(this.compiledCode, param)
 
     return this.result
-  }
-
-  /**
-   * 编译云函数（TS） 到 JS
-   * @param {string} source ts 代码字符串
-   */
-  compile2js() {
-    const jscode = compileTs2js(this.code)
-    this._data.compiledCode = jscode
   }
 }
 
