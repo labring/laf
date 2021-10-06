@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-13 20:16:56
+ * @LastEditTime: 2021-10-07 01:41:39
  * @Description: 
  */
 
@@ -9,9 +9,9 @@ import { Router } from 'express'
 import { CloudFunction } from 'cloud-function-engine'
 import * as multer from 'multer'
 import * as path from 'path'
-import * as uuid from 'uuid'
 import { handleDebugFunction } from './debug'
 import { handleInvokeFunction } from './invoke'
+import { generateUUID } from '../../lib/utils/rand'
 
 /**
  * Custom require function in cloud function
@@ -35,7 +35,7 @@ const uploader = multer({
   storage: multer.diskStorage({
     filename: (_req, file, cb) => {
       const { ext } = path.parse(file.originalname)
-      cb(null, uuid.v4() + ext)
+      cb(null, generateUUID() + ext)
     }
   })
 })
