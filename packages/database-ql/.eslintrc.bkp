@@ -10,8 +10,8 @@
       "error",
       2,
       {
-          "SwitchCase": 1,
-          "flatTernaryExpressions": true
+        "SwitchCase": 1,
+        "flatTernaryExpressions": true
       }
     ],
     "no-unused-vars": "warn",

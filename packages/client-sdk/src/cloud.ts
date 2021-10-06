@@ -1,5 +1,5 @@
 
-import { Db } from 'less-api-database'
+import { Db } from 'database-ql'
 import { Request } from './request/request'
 import { UniRequest } from './request/request-uni'
 import { WxmpRequest } from './request/request-wxmp'
