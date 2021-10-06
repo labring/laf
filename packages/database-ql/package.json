@@ -1,6 +1,6 @@
 {
   "name": "database-ql",
-  "version": "0.0.1",
+  "version": "0.6.0-alpha.0",
   "description": "Database interface for cloud development",
   "main": "dist/commonjs/index.js",
   "module": "dist/esm/index.js",

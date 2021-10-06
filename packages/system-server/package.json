@@ -1,6 +1,6 @@
 {
   "name": "system-server",
-  "version": "0.5.8-alpha.0",
+  "version": "0.6.0-alpha.0",
   "description": "laf - system server",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
@@ -23,13 +23,13 @@
   ],
   "dependencies": {
     "body-parser": "^1.19.0",
-    "cloud-function-engine": "^0.5.4-alpha.0",
+    "cloud-function-engine": "^0.6.0-alpha.0",
+    "database-proxy": "^0.6.0-alpha.0",
     "dayjs": "^1.10.6",
     "dockerode": "^3.3.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "database-proxy": "^0.0.1",
     "log4js": "^6.3.0",
     "mongodb": "^4.1.3",
     "mongodb-uri": "^0.9.7",

@@ -1,6 +1,6 @@
 {
   "name": "cloud-function-engine",
-  "version": "0.5.4-alpha.0",
+  "version": "0.6.0-alpha.0",
   "description": "typescript cloud function engine used in less-api-framework",
   "keywords": [
     "faas",
@@ -39,8 +39,8 @@
     "moment": "^2.29.1"
   },
   "devDependencies": {
-    "typescript": "^4.2.3",
     "@types/express": "^4.17.11",
-    "@types/node": "^14.14.37"
+    "@types/node": "^14.14.37",
+    "typescript": "^4.2.3"
   }
 }
