@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-10-06 19:21:30
+ * @LastEditTime: 2021-10-06 22:31:03
  * @Description: 
  */
 
@@ -17,8 +17,8 @@ import { PolicyDataStruct } from '../lib/policy-agent/types'
 export async function getPolicyRules() {
   const db = DatabaseAgent.db
   const docs = await db.collection(Constants.policy_collection)
-    .find({})
-    .toArray<PolicyDataStruct>()
+    .find<PolicyDataStruct>({})
+    .toArray()
 
   return docs
 }

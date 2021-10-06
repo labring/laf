@@ -28,12 +28,11 @@
   "dependencies": {
     "database-ql": "^0.0.1",
     "lodash": "^4.17.21",
-    "mongodb": "^4.0.1",
+    "mongodb": "^4.1.1",
     "mysql2": "^2.2.5",
     "validator": "^12.0.0"
   },
   "devDependencies": {
-    "@types/mongodb": "^3.3.8",
     "@types/node": "^12.12.5",
     "@types/validator": "^10.11.3",
     "mocha": "^9.0.2",
