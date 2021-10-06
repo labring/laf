@@ -57,7 +57,8 @@ export class AutoImportTypings {
   loadDefaults() {
     this.addExtraLib({ path: 'globals.d.ts', content: global_declare })
     if (!this.isLoaded('globals')) { this.loadDeclaration('globals') }
-    if (!this.isLoaded('less-api-database')) { this.loadDeclaration('less-api-database') }
+    if (!this.isLoaded('database-proxy')) { this.loadDeclaration('database-proxy') }
+    if (!this.isLoaded('database-ql')) { this.loadDeclaration('database-ql') }
     if (!this.isLoaded('axios')) { this.loadDeclaration('axios') }
     if (!this.isLoaded('cloud-function-engine')) { this.loadDeclaration('cloud-function-engine') }
     if (!this.isLoaded('mongodb')) { this.loadDeclaration('mongodb') }
