@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-10-06 19:27:45
+ * @LastEditTime: 2021-10-07 21:19:09
  * @Description: 
  */
 import { Router } from 'express'
@@ -29,7 +29,7 @@ EntryRouter.post('/proxy/:policy', async (req, res) => {
   const proxy = new Proxy(accessor, policy_comp.policy)
 
   // parse params
-  const params = proxy.parseParams({ ...req.body, requestId })
+  const params = proxy.parseParams(req.body)
 
   // get injections by invoking the injector function of policy
   const injections = await policy_comp.injector_func(auth, params)

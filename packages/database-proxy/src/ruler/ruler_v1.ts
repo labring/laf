@@ -175,14 +175,14 @@ export class Ruler implements PolicyInterface {
    * @param injections 
    */
   public async validate(params: Params, injections: object): Promise<ValidateResult> {
-    const { collection, action: actionType, requestId } = params
-    this.logger.debug(`[${requestId}] ruler validate with injections: `, injections)
+    const { collection, action: actionType } = params
+    this.logger.debug(`ruler validate with injections: `, injections)
 
     let errors: ValidateError[] = []
 
     // 判断所访问的集合是否配置规则
     if (!this.collections.includes(collection)) {
-      this.logger.debug(`[${requestId}] validate() ${collection} not in rules`)
+      this.logger.debug(`validate() ${collection} not in rules`)
       const err: ValidateError = { type: 0, error: `collection "${collection}" not found` }
       errors.push(err)
       return { errors }
@@ -237,13 +237,13 @@ export class Ruler implements PolicyInterface {
 
     // 没有匹配到任何规则，返回验证错误信息
     if (!matched) {
-      this.logger.debug(`[${requestId}] validate rejected: ${actionType} -> ${collection} `)
-      this.logger.trace(`[${requestId}] validate errors: `, errors)
+      this.logger.debug(`validate rejected: ${actionType} -> ${collection} `)
+      this.logger.trace(`validate errors: `, errors)
       return { errors }
     }
 
-    this.logger.debug(`[${requestId}] validate passed: ${actionType} -> ${collection} `)
-    this.logger.trace(`[${requestId}] matched: `, matched)
+    this.logger.debug(`validate passed: ${actionType} -> ${collection} `)
+    this.logger.trace(`matched: `, matched)
 
     return { matched }
   }
@@ -293,7 +293,7 @@ export class Ruler implements PolicyInterface {
         return PermissionType.COUNT
 
       default:
-        throw new Error('getPermissionName() unknow action')
+        throw new Error('getPermissionName() unknown action')
     }
   }
 }

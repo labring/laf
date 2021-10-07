@@ -27,12 +27,6 @@ export enum PermissionType {
   REMOVE = 'remove',
   COUNT = 'count',
   WATCH = 'watch',
-  // // 以下是为了兼容老版本规则
-  // _READ = '.read',
-  // _UPDATE = '.update',
-  // _ADD = '.add',
-  // _REMOVE = '.remove',
-  // _COUNT = '.count',
 }
 
 // 数据库规则
@@ -272,14 +266,14 @@ export class Policy implements PolicyInterface {
    * @param injections 
    */
   async validate(params: Params, injections: object): Promise<ValidateResult> {
-    const { collection, action: actionType, requestId } = params
-    this.logger.debug(`[${requestId}] ruler validate with injections: `, injections)
+    const { collection, action: actionType } = params
+    this.logger.debug(`ruler validate with injections: `, injections)
 
     let errors: ValidateError[] = []
 
     // 判断所访问的集合是否配置规则
     if (!this.collections.includes(collection)) {
-      this.logger.debug(`[${requestId}] validate() ${collection} not in rules`)
+      this.logger.debug(`validate() ${collection} not in rules`)
       const err: ValidateError = { type: 0, error: `collection "${collection}" not found` }
       errors.push(err)
       return { errors }
@@ -303,7 +297,7 @@ export class Policy implements PolicyInterface {
       return { errors }
     }
 
-    this.logger.trace(`[${requestId}] ${actionType} -> ${collection} permission rules: `, permRules)
+    this.logger.trace(`${actionType} -> ${collection} permission rules: `, permRules)
 
     // loop for validating every permission rule
     let matched = null
@@ -332,13 +326,13 @@ export class Policy implements PolicyInterface {
 
     // return error if no permission rule matched
     if (!matched) {
-      this.logger.debug(`[${requestId}] validate rejected: ${actionType} -> ${collection} `)
-      this.logger.trace(`[${requestId}] validate errors: `, errors)
+      this.logger.debug(`validate rejected: ${actionType} -> ${collection} `)
+      this.logger.trace(`validate errors: `, errors)
       return { errors }
     }
 
-    this.logger.debug(`[${requestId}] validate passed: ${actionType} -> ${collection} `)
-    this.logger.trace(`[${requestId}] matched: `, matched)
+    this.logger.debug(`validate passed: ${actionType} -> ${collection} `)
+    this.logger.trace(`matched: `, matched)
 
     return { matched }
   }

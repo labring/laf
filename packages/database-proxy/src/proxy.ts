@@ -86,8 +86,7 @@ export class Proxy {
    * @returns 
    */
   async execute(params: Params) {
-    const { requestId } = params
-    this.logger.info(`[${requestId}] entry before executing`)
+    this.logger.info(`entry before executing`)
     assert(this.accessor, 'accessor not configured for Entry')
     return await this.accessor.execute(params)
   }
@@ -99,14 +98,13 @@ export class Proxy {
    * @returns 
    */
   async validate(params: Params, injections: object) {
-    const { requestId } = params
-    this.logger.info(`[${requestId}] entry validating`)
+    this.logger.info(`entry validating`)
     return await this.ruler.validate(params, injections)
   }
 
   /**
    * Register a Ruler validator
-   * @deprecated this method will be deprecated in future, use `Ruler.register()` instead
+   * @deprecated this method will be deprecated in future, use `Policy.register()` instead
    * @param name 
    * @param handler 
    */
@@ -122,10 +120,10 @@ export class Proxy {
    * @returns 
    */
   parseParams(reqParams: any): Params {
-    const { action, requestId } = reqParams
-    this.logger.info(`[${requestId}] params parsing`)
+    const { action } = reqParams
+    this.logger.info(`params parsing`)
     const result = Proxy.parse(action, reqParams)
-    this.logger.debug(`[${requestId}] params parsed: `, JSON.stringify(result))
+    this.logger.debug(`params parsed: `, JSON.stringify(result))
     return result
   }
 
@@ -136,9 +134,9 @@ export class Proxy {
    * @returns 
    */
   static parse(actionType: ActionType, reqParams: any): Params {
-    const { collectionName: collection, requestId } = reqParams
+    const { collectionName: collection } = reqParams
 
-    let params: Params = { action: actionType, collection, requestId }
+    let params: Params = { action: actionType, collection }
     let action = getAction(actionType)
     if (!action) {
       throw new Error(`unknown action: ${actionType}`)
@@ -157,4 +155,4 @@ export class Proxy {
 /**
  * Proxy 的别名，为了兼容老版本命名
  */
-export class Entry extends Proxy {}
+export class Entry extends Proxy { }

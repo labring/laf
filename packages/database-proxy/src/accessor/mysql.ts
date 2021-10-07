@@ -66,9 +66,9 @@ export class MysqlAccessor implements AccessorInterface {
     }
 
     async execute(params: Params): Promise<ReadResult | UpdateResult | AddResult | RemoveResult | CountResult | never> {
-        const { collection, action, requestId } = params
+        const { collection, action } = params
 
-        this.logger.info(`[${requestId}] mysql start executing {${collection}}: ` + JSON.stringify(params))
+        this.logger.info(`mysql start executing {${collection}}: ` + JSON.stringify(params))
 
         if (action === ActionType.READ) {
             return await this.read(collection, params)
@@ -91,7 +91,7 @@ export class MysqlAccessor implements AccessorInterface {
         }
 
         const error = `invalid 'action': ${action}`
-        this.logger.error(`[${requestId}] mysql end of executing occurred:` + error)
+        this.logger.error(`mysql end of executing occurred:` + error)
         throw new Error(error)
     }
 
@@ -108,12 +108,12 @@ export class MysqlAccessor implements AccessorInterface {
     }
 
     protected async read(_collection: string, params: Params): Promise<ReadResult> {
-        const { collection, requestId } = params
+        const { collection } = params
         const { sql, values } = SqlBuilder.from(params).select()
 
         const nestTables = params.nested ?? false
 
-        this.logger.debug(`[${requestId}] mysql read {${collection}}: `, { sql, values })
+        this.logger.debug(`mysql read {${collection}}: `, { sql, values })
         const [rows] = await this.conn.execute<RowDataPacket[]>({ sql, values, nestTables })
         return {
             list: rows
@@ -121,11 +121,11 @@ export class MysqlAccessor implements AccessorInterface {
     }
 
     protected async update(_collection: string, params: Params): Promise<UpdateResult> {
-        const { collection, requestId } = params
+        const { collection } = params
 
         const { sql, values } = SqlBuilder.from(params).update()
 
-        this.logger.debug(`[${requestId}] mysql update {${collection}}: `, { sql, values })
+        this.logger.debug(`mysql update {${collection}}: `, { sql, values })
         const [ret] = await this.conn.execute<ResultSetHeader>(sql, values)
 
         return {
@@ -136,7 +136,7 @@ export class MysqlAccessor implements AccessorInterface {
     }
 
     protected async add(_collection: string, params: Params): Promise<AddResult> {
-        let { multi, collection, requestId } = params
+        let { multi, collection } = params
 
         if (multi) {
             console.warn('mysql add(): {multi == true} has been ignored!')
@@ -144,7 +144,7 @@ export class MysqlAccessor implements AccessorInterface {
 
         const { sql, values } = SqlBuilder.from(params).insert()
 
-        this.logger.debug(`[${requestId}] mysql add {${collection}}: `, { sql, values })
+        this.logger.debug(`mysql add {${collection}}: `, { sql, values })
         const [ret] = await this.conn.execute<ResultSetHeader>(sql, values)
 
         return {
@@ -154,10 +154,10 @@ export class MysqlAccessor implements AccessorInterface {
     }
 
     protected async remove(_collection: string, params: Params): Promise<RemoveResult> {
-        const { collection, requestId } = params
+        const { collection } = params
 
         const { sql, values } = SqlBuilder.from(params).delete()
-        this.logger.debug(`[${requestId}] mysql remove {${collection}}: `, { sql, values })
+        this.logger.debug(`mysql remove {${collection}}: `, { sql, values })
 
         const [ret] = await this.conn.execute<OkPacket>(sql, values)
         return {
@@ -166,11 +166,11 @@ export class MysqlAccessor implements AccessorInterface {
     }
 
     protected async count(_collection: string, params: Params): Promise<CountResult> {
-        const { collection, requestId } = params
+        const { collection } = params
 
         const { sql, values } = SqlBuilder.from(params).count()
 
-        this.logger.debug(`[${requestId}] mysql count {${collection}}: `, { sql, values })
+        this.logger.debug(`mysql count {${collection}}: `, { sql, values })
         const [ret] = await this.conn.execute<RowDataPacket[]>(sql, values)
 
         if (ret.length === 0) {
