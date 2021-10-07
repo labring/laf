@@ -90,7 +90,8 @@ export default class Config {
    * The application count that an account can create by default
    */
   static get ACCOUNT_DEFAULT_APP_QUOTA(): number {
-    return (process.env.ACCOUNT_DEFAULT_APP_QUOTA ?? 2) as number
+    const value = process.env.ACCOUNT_DEFAULT_APP_QUOTA ?? 2
+    return Number(value)
   }
 
   /**
