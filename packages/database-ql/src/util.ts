@@ -9,7 +9,6 @@ interface DocumentModel {
 /**
  * 工具模块
  *
- * @author haroldhu
  */
 export class Util {
   /**
@@ -146,19 +145,5 @@ export class Util {
       }
     }
     return type
-  }
-
-  /**
-   * 生成文档ID
-   *
-   * 为创建新文档使用
-   */
-  public static generateDocId = () => {
-    let chars = 'ABCDEFabcdef0123456789'
-    let autoId = ''
-    for (let i = 0; i < 24; i++) {
-      autoId += chars.charAt(Math.floor(Math.random() * chars.length))
-    }
-    return autoId
   }
 }
