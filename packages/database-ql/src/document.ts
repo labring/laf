@@ -302,7 +302,7 @@ export class DocumentReference {
       }
     }
 
-    const docs = Util.formatResDocumentData(res.data.list)
+    const docs = res.data.list
     const data: any = docs?.length ? docs[0] : undefined
     return {
       data: data,

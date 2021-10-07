@@ -458,9 +458,9 @@ export class Query {
       }
     }
 
-    const documents = Util.formatResDocumentData(res.data.list)
+    // const documents = Util.formatResDocumentData(res.data.list)
     const result: any = {
-      data: documents,
+      data: res.data.list,
       requestId: res.requestId,
       ok: true
     }
