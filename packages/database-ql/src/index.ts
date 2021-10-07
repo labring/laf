@@ -4,6 +4,7 @@ import { Command } from './command'
 import { ServerDateConstructor } from './serverDate/index'
 import { RegExpConstructor } from './regexp/index'
 import { RequestInterface } from './interface'
+import { ObjectId } from 'bson'
 
 /**
  * 地理位置类型
@@ -76,5 +77,14 @@ export class Db {
       throw new Error('Collection name is required')
     }
     return new CollectionReference(this, collName)
+  }
+
+  /**
+   * Generate a hex string id for document
+   * @returns 
+   */
+  generateId(): string {
+    const id = new ObjectId()
+    return id.toHexString()
   }
 }
