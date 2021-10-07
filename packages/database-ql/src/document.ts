@@ -1,17 +1,17 @@
-import { createPromiseCallback } from './lib/util'
+
 import { Db } from './index'
-import { Util } from './util'
 import { UpdateSerializer } from './serializer/update'
 import { serialize } from './serializer/datatype'
 import { UpdateCommand } from './commands/update'
 import { QueryType } from './constant'
-import { AddRes, GetRes, RemoveRes, UpdateRes } from './result-types'
+import { AddRes, GetOneRes, RemoveRes, UpdateRes } from './result-types'
+import { RequestInterface } from './interface'
+import { Util } from './util'
 
 
 /**
  * 文档模块
  *
- * @author haroldhu
  */
 export class DocumentReference {
   /**
@@ -47,7 +47,7 @@ export class DocumentReference {
    *
    * @internal
    */
-  private request: any
+  private request: RequestInterface
 
   /**
    * 初始化
@@ -73,8 +73,7 @@ export class DocumentReference {
    * @param data - 文档数据
    * @internal
    */
-  create(data: any, options?: { multi: boolean }, callback?: any): Promise<AddRes> {
-    callback = callback || createPromiseCallback()
+  async create(data: any, options?: { multi: boolean }): Promise<AddRes> {
     if (!options) {
       options = { multi: false }
     } else {
@@ -92,57 +91,55 @@ export class DocumentReference {
       params[`${this.primaryKey}`] = this.id
     }
 
-    this.request
+    const res = await this.request
       .send('database.addDocument', params)
-      .then(res => {
-        if (res.code) {
-          callback(0, res)
-        } else {
-          callback(0, {
-            id: res.data._id || res.data.id,
-            insertedCount: res.data.insertedCount,
-            requestId: res.requestId,
-            ok: true
-          })
-        }
-      })
-      .catch(err => {
-        callback(err)
-      })
 
-    return callback.promise
+    if (res.error) {
+      return {
+        requestId: res.requestId,
+        error: res.error,
+        ok: false,
+        id: undefined,
+        insertedCount: undefined
+      }
+    }
+
+    return {
+      id: res.data._id || res.data[this.primaryKey],
+      insertedCount: res.data.insertedCount,
+      requestId: res.requestId,
+      ok: true
+    }
   }
 
   /**
    * 创建或添加数据
    *
-   * 如果文档ID不存在，则创建该文档并插入数据，根据返回数据的 upserted_id 判断
+   * 如果文档ID不存在，则创建该文档并插入数据，根据返回数据的 upsertId 判断
    * 添加数据的话，根据返回数据的 set 判断影响的行数
    *
    * @param data - 文档数据
    */
-  set(data: Object, callback?: any): Promise<UpdateRes> {
-    callback = callback || createPromiseCallback()
-
+  async set(data: Object): Promise<UpdateRes> {
     if (!this.id) {
-      return Promise.resolve({
+      return {
         code: 'INVALID_PARAM',
-        error: 'docId不能为空'
-      })
+        error: 'docId 不能为空'
+      }
     }
 
     if (!data || typeof data !== 'object') {
-      return Promise.resolve({
+      return {
         code: 'INVALID_PARAM',
         error: '参数必需是非空对象'
-      })
+      }
     }
 
     if (data.hasOwnProperty('_id')) {
-      return Promise.resolve({
+      return {
         code: 'INVALID_PARAM',
-        error: '不能更新_id的值'
-      })
+        error: '不能更新 _id 的值'
+      }
     }
 
     let hasOperator = false
@@ -182,26 +179,23 @@ export class DocumentReference {
       param['query'] = { [this.primaryKey]: this.id }
     }
 
-    this.request
+    const res = await this.request
       .send('database.updateDocument', param)
-      .then(res => {
-        if (res.code) {
-          callback(0, res)
-        } else {
-          callback(0, {
-            updated: res.data.updated,
-            matched: res.data.matched,
-            upsertedId: res.data.upserted_id,
-            requestId: res.requestId,
-            ok: true
-          })
-        }
-      })
-      .catch(err => {
-        callback(err)
-      })
+    if (res.error) {
+      return {
+        requestId: res.requestId,
+        error: res.error,
+        ok: false,
+      }
+    }
 
-    return callback.promise
+    return {
+      updated: res.data.updated,
+      matched: res.data.matched,
+      upsertId: res.data.upserted_id,
+      requestId: res.requestId,
+      ok: true
+    }
   }
 
   /**
@@ -209,21 +203,20 @@ export class DocumentReference {
    *
    * @param data - 文档数据
    */
-  update(data: Object, callback?: any): Promise<UpdateRes> {
-    callback = callback || createPromiseCallback()
+  async update(data: Object): Promise<UpdateRes> {
 
     if (!data || typeof data !== 'object') {
-      return Promise.resolve({
+      return {
         code: 'INVALID_PARAM',
         error: '参数必需是非空对象'
-      })
+      }
     }
 
     if (data.hasOwnProperty('_id')) {
-      return Promise.resolve({
+      return {
         code: 'INVALID_PARAM',
-        error: '不能更新_id的值'
-      })
+        error: '不能更新 _id 的值'
+      }
     }
 
     const query = { [this.primaryKey]: this.id }
@@ -239,34 +232,28 @@ export class DocumentReference {
       upsert: false
     }
 
-    this.request
-      .send('database.updateDocument', param)
-      .then(res => {
-        if (res.code) {
-          callback(0, res)
-        } else {
-          callback(0, {
-            updated: res.data.updated,
-            matched: res.data.matched,
-            upsertedId: res.data.upserted_id,
-            requestId: res.requestId,
-            ok: true
-          })
-        }
-      })
-      .catch(err => {
-        callback(err)
-      })
+    const res = await this.request.send('database.updateDocument', param)
+    if (res.error) {
+      return {
+        requestId: res.requestId,
+        error: res.error,
+        ok: false
+      }
+    }
 
-    return callback.promise
+    return {
+      updated: res.data.updated,
+      matched: res.data.matched,
+      upsertId: res.data.upserted_id,
+      requestId: res.requestId,
+      ok: true
+    }
   }
 
   /**
    * 删除文档
    */
-  remove(callback?: any): Promise<RemoveRes> {
-    callback = callback || createPromiseCallback()
-
+  async remove(): Promise<RemoveRes> {
     const query = { [this.primaryKey]: this.id }
     const param = {
       collectionName: this._coll,
@@ -275,31 +262,27 @@ export class DocumentReference {
       multi: false
     }
 
-    this.request
-      .send('database.deleteDocument', param)
-      .then(res => {
-        if (res.code) {
-          callback(0, res)
-        } else {
-          callback(0, {
-            deleted: res.data.deleted,
-            requestId: res.requestId,
-            ok: true
-          })
-        }
-      })
-      .catch(err => {
-        callback(err)
-      })
+    const res = await this.request.send('database.deleteDocument', param)
+    if (res.error) {
+      return {
+        requestId: res.requestId,
+        error: res.error,
+        deleted: undefined,
+        ok: false
+      }
+    }
 
-    return callback.promise
+    return {
+      deleted: res.data.deleted,
+      requestId: res.requestId,
+      ok: true
+    }
   }
 
   /**
    * 返回选中的文档
    */
-  get<T = any>(callback?: any): Promise<GetRes<T>> {
-    callback = callback || createPromiseCallback()
+  async get<T = any>(): Promise<GetOneRes<T>> {
 
     const query = { [this.primaryKey]: this.id }
     const param = {
@@ -309,28 +292,23 @@ export class DocumentReference {
       multi: false,
       projection: this.projection
     }
-    this.request
-      .send('database.queryDocument', param)
-      .then(res => {
-        if (res.code) {
-          callback(0, res)
-        } else {
-          const documents = Util.formatResDocumentData(res.data.list)
-          callback(0, {
-            data: documents,
-            requestId: res.requestId,
-            total: res.TotalCount,
-            limit: res.Limit,
-            offset: res.Offset,
-            ok: true
-          })
-        }
-      })
-      .catch(err => {
-        callback(err)
-      })
 
-    return callback.promise
+    const res = await this.request.send('database.queryDocument', param)
+    if (res.error) {
+      return {
+        requestId: res.requestId,
+        error: res.error,
+        ok: false
+      }
+    }
+
+    const docs = Util.formatResDocumentData(res.data.list)
+    const data: any = docs?.length ? docs[0] : undefined
+    return {
+      data: data,
+      requestId: res.requestId,
+      ok: true
+    }
   }
 
   /**

@@ -45,9 +45,9 @@ export class CollectionReference extends Query {
    *
    * @param data - 数据
    */
-  add(data: Object, options?: { multi: boolean }, callback?: any) {
+  add(data: Object, options?: { multi: boolean }) {
     let docRef = new DocumentReference(this._db, this._coll, undefined)
-    return docRef.create(data, options, callback)
+    return docRef.create(data, options)
   }
 
   aggregate() {

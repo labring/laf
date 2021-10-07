@@ -1,4 +1,3 @@
-import { createPromiseCallback } from './lib/util'
 import { OrderByDirection, QueryType } from './constant'
 import { Db } from './index'
 import { Validate } from './validate'
@@ -48,7 +47,7 @@ interface WithParam {
 
   /**
    * 主表联接键（关联字段）
-   */       
+   */
   localField: string
 
   /**
@@ -60,7 +59,7 @@ interface WithParam {
    * 结果集字段重命名，缺省则用子表名
    */
   as?: string,
-  
+
   /**
    * 是否是一对一查询，只在 Query.withOne() 中使用
    */
@@ -402,10 +401,7 @@ export class Query {
    * - 默认获取集合下全部文档数据
    * - 可以把通过 `orderBy`、`where`、`skip`、`limit`设置的数据添加请求参数上
    */
-  public get<T = any>(options?: { nested?: boolean }, callback?: any): Promise<GetRes<T>> {
-    /* eslint-disable no-param-reassign */
-    callback = callback || createPromiseCallback()
-
+  public async get<T = any>(options?: { stat?: boolean, nested?: boolean }): Promise<GetRes<T>> {
     let newOder = []
     if (this._fieldOrders) {
       this._fieldOrders.forEach(order => {
@@ -421,7 +417,8 @@ export class Query {
       limit?: number
       projection?: Object,
       joins?: JoinParam[],
-      nested?: boolean
+      nested?: boolean,
+      stat?: boolean
     }
     let param: Param = {
       collectionName: this._coll,
@@ -449,30 +446,28 @@ export class Query {
     }
     if (options) {
       param.nested = options.nested ?? false
+      param.stat = options.stat ?? false
     }
-    this._request
-      .send('database.queryDocument', param)
-      .then(res => {
-        if (res.code) {
-          callback(0, res)
-        } else {
-          const documents = Util.formatResDocumentData(res.data.list)
-          const result: any = {
-            data: documents,
-            requestId: res.requestId,
-            ok: true
-          }
-          if (res.total) result.total = res.total
-          if (res.limit) result.limit = res.limit
-          if (res.offset) result.offset = res.offset
-          callback(0, result)
-        }
-      })
-      .catch(err => {
-        callback(err)
-      })
+    const res = await this._request.send('database.queryDocument', param)
+    if (res.error) {
+      return {
+        error: res.error,
+        data: res.data,
+        requestId: res.requestId,
+        ok: false
+      }
+    }
 
-    return callback.promise
+    const documents = Util.formatResDocumentData(res.data.list)
+    const result: any = {
+      data: documents,
+      requestId: res.requestId,
+      ok: true
+    }
+    if (res.total) result.total = res.data?.total
+    if (res.limit) result.limit = res.data?.limit
+    if (res.offset) result.offset = res.data?.offset
+    return result
   }
 
   /**
@@ -482,7 +477,7 @@ export class Query {
    */
   public async getOne<T = any>(options?: { nested?: boolean }): Promise<GetOneRes<T>> {
     const res = await this.get<T>(options)
-    if (res.code) {
+    if (res.error) {
       return res as any
     }
 
@@ -491,7 +486,7 @@ export class Query {
         ok: true,
         data: null,
         requestId: res.requestId
-      } as any
+      }
     }
 
     return {
@@ -585,9 +580,7 @@ export class Query {
   /**
    * 获取总数
    */
-  public count(callback?: any): Promise<CountRes> {
-    callback = callback || createPromiseCallback()
-
+  public async count(): Promise<CountRes> {
     interface Param {
       collectionName: string
       query?: Object
@@ -604,19 +597,23 @@ export class Query {
     if (this._joins.length) {
       param.joins = this._joins
     }
-    this._request.send('database.countDocument', param).then(res => {
-      if (res.code) {
-        callback(0, res)
-      } else {
-        callback(0, {
-          requestId: res.requestId,
-          total: res.data.total,
-          ok: true
-        })
-      }
-    })
 
-    return callback.promise
+    const res = await this._request.send('database.countDocument', param)
+
+    if (res.error) {
+      return {
+        requestId: res.requestId,
+        ok: false,
+        error: res.error,
+        total: undefined
+      }
+    }
+
+    return {
+      requestId: res.requestId,
+      total: res.data.total,
+      ok: true
+    }
   }
 
   /**
@@ -624,8 +621,7 @@ export class Query {
    *
    * @param data 数据
    */
-  public update(data: Object, options?: { multi: boolean, merge: boolean, upsert: boolean }, callback?: any): Promise<UpdateRes> {
-    callback = callback || createPromiseCallback()
+  public async update(data: Object, options?: { multi: boolean, merge: boolean, upsert: boolean }): Promise<UpdateRes> {
     if (!options) {
       options = {
         multi: false,
@@ -648,7 +644,7 @@ export class Query {
     if (data.hasOwnProperty('_id')) {
       return Promise.resolve({
         code: 'INVALID_PARAM',
-        error: '不能更新_id的值'
+        error: '不能更新 _id 的值'
       } as any)
     }
 
@@ -669,27 +665,27 @@ export class Query {
       param.joins = this._joins
     }
 
-    this._request.send('database.updateDocument', param).then(res => {
-      if (res.code) {
-        callback(0, res)
-      } else {
-        callback(0, {
-          requestId: res.requestId,
-          updated: res.data.updated,
-          upsertId: res.data.upsert_id,
-          ok: true
-        })
+    const res = await this._request.send('database.updateDocument', param)
+    if (res.error) {
+      return {
+        requestId: res.requestId,
+        error: res.error,
+        ok: false
       }
-    })
+    }
 
-    return callback.promise
+    return {
+      requestId: res.requestId,
+      updated: res.data.updated,
+      upsertId: res.data.upsert_id,
+      ok: true
+    }
   }
 
   /**
    * 条件删除文档
    */
-  public remove(options?: { multi: boolean }, callback?: any): Promise<RemoveRes> {
-    callback = callback || createPromiseCallback()
+  public async remove(options?: { multi: boolean }): Promise<RemoveRes> {
 
     if (!options) {
       options = { multi: false }
@@ -700,9 +696,11 @@ export class Query {
     if (Object.keys(this._queryOptions).length > 0) {
       console.warn('`offset`, `limit` and `projection` are not supported in remove() operation')
     }
+
     if (this._fieldOrders.length > 0) {
       console.warn('`orderBy` is not supported in remove() operation')
     }
+
     const param = {
       collectionName: this._coll,
       query: QuerySerializer.encode(this._fieldFilters),
@@ -710,21 +708,25 @@ export class Query {
       multi: options.multi,
       joins: undefined
     }
+
     if (this._joins.length) {
       param.joins = this._joins
     }
-    this._request.send('database.deleteDocument', param).then(res => {
-      if (res.code) {
-        callback(0, res)
-      } else {
-        callback(0, {
-          requestId: res.requestId,
-          deleted: res.data.deleted,
-          ok: true
-        })
-      }
-    })
 
-    return callback.promise
+    const res = await this._request.send('database.deleteDocument', param)
+    if (res.error) {
+      return {
+        requestId: res.requestId,
+        error: res.error,
+        ok: false,
+        deleted: undefined
+      }
+    }
+
+    return {
+      requestId: res.requestId,
+      deleted: res.data.deleted,
+      ok: true
+    }
   }
 }
