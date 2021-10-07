@@ -52,9 +52,7 @@
   </div>
 </template>
 <script>
-// import { db } from '@/api/cloud'
 import { deploy2remote, getDeployTargets } from '@/api/deploy'
-// import { Constants } from '../../../api/constants'
 
 // 表单验证规则
 const formRules = {
