@@ -1,6 +1,6 @@
 {
   "name": "laf-client-sdk",
-  "version": "0.6.0-alpha.0",
+  "version": "0.6.0-alpha.3",
   "description": "",
   "main": "dist/commonjs/index.js",
   "module": "dist/esm/index.js",
@@ -29,7 +29,7 @@
   "homepage": "https://github.com/Maslow/less-api#readme",
   "dependencies": {
     "axios": "^0.21.1",
-    "database-ql": "^0.6.0-alpha.0"
+    "database-ql": "^0.6.0-alpha.3"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",

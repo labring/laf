@@ -1,6 +1,6 @@
 {
   "name": "cloud-function-engine",
-  "version": "0.6.0-alpha.0",
+  "version": "0.6.0-alpha.3",
   "description": "typescript cloud function engine used in less-api-framework",
   "keywords": [
     "faas",
