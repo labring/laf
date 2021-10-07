@@ -2,18 +2,8 @@ import { AccessorInterface } from "../accessor"
 import { Db } from 'database-ql'
 import { Request } from "./request"
 
-export interface DbConfig {
-    accessor: AccessorInterface
-}
-
 export function getDb(accessor: AccessorInterface): Db {
-
-    const config: DbConfig = {
-        accessor
-    }
-
-    Db.reqClass = Request
-    Db.getAccessToken = () => { }
-
-    return new Db(config)
+    return new Db({
+        request: new Request(accessor)
+    })
 }
