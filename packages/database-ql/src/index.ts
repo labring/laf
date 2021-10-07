@@ -3,6 +3,7 @@ import { CollectionReference } from './collection'
 import { Command } from './command'
 import { ServerDateConstructor } from './serverDate/index'
 import { RegExpConstructor } from './regexp/index'
+import { RequestInterface } from './interface'
 
 /**
  * 地理位置类型
@@ -20,48 +21,48 @@ export { Query } from './query'
 export { CollectionReference } from './collection'
 export { DocumentReference } from './document'
 
+interface DbConfig {
+  /**
+   * Primary key, default is '_id'
+   */
+  primaryKey?: string
+
+  /**
+   * Request instance
+   */
+  request: RequestInterface
+}
+
 /**
  * 数据库模块
  *
- * @author haroldhu
  */
 export class Db {
   /**
    * Geo 类型
    */
-  Geo: GeoType
+  readonly Geo: GeoType = Geo
 
   /**
    * 逻辑操作的命令
    */
-  command: typeof Command
+  readonly command: typeof Command = Command
 
-  RegExp: typeof RegExpConstructor
+  readonly RegExp = RegExpConstructor
 
-  serverDate: any
+  readonly serverDate = ServerDateConstructor
 
-  /**
-   * 初始化
-   *
-   * @param config
-   */
-  config: any
+  readonly primaryKey: string
 
-  // 惯例通用 primaryKey， mongo: _id, mysql: id
-  get primaryKey(): string {
-    return this.config?.primaryKey || '_id'
-  }
+  readonly request: RequestInterface
 
-  static reqClass: any
+  constructor(config?: DbConfig) {
+    if (!config.request) {
+      throw new Error('DbConfig.request cannot be empty')
+    }
 
-  static getAccessToken: Function
-
-  constructor(config?: any) {
-    this.config = config
-    this.Geo = Geo
-    this.RegExp = RegExpConstructor
-    this.serverDate = ServerDateConstructor
-    this.command = Command
+    this.request = config.request
+    this.primaryKey = config.primaryKey ?? '_id'
   }
 
   /**
@@ -74,18 +75,5 @@ export class Db {
       throw new Error('Collection name is required')
     }
     return new CollectionReference(this, collName)
-  }
-
-  /**
-   * 创建集合
-   */
-  createCollection(collName: string) {
-    let request = new Db.reqClass(this.config)
-
-    const params = {
-      collectionName: collName
-    }
-
-    return request.send('database.addCollection', params)
   }
 }

@@ -1,9 +1,11 @@
 import { Db } from './index'
+import { RequestInterface } from './interface'
+import { GetRes } from './result-types'
 // import { EJSON } from 'bson'
 import { QuerySerializer } from './serializer/query'
 export default class Aggregation {
   _db: Db
-  _request: any
+  _request: RequestInterface
   _stages: any[]
   _collectionName: string
   constructor(db?: Db, collectionName?: string) {
@@ -11,12 +13,12 @@ export default class Aggregation {
 
     if (db && collectionName) {
       this._db = db
-      this._request = new Db.reqClass(this._db.config)
+      this._request = this._db.request
       this._collectionName = collectionName
     }
   }
 
-  async end() {
+  async end<T = any>(): Promise<GetRes<T>> {
     if (!this._collectionName || !this._db) {
       throw new Error('Aggregation pipeline cannot send request')
     }
@@ -26,6 +28,8 @@ export default class Aggregation {
     })
     if (result && result.data && result.data.list) {
       return {
+        code: result.code,
+        ok: result.error ? false: true,
         requestId: result.requestId,
         // data: JSON.parse(result.data.list).map(EJSON.parse)
         data: result.data.list

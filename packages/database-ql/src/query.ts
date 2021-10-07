@@ -7,6 +7,7 @@ import { QuerySerializer } from './serializer/query'
 import { UpdateSerializer } from './serializer/update'
 import { ErrorCode } from './constant'
 import { GetOneRes, GetRes, CountRes, UpdateRes, RemoveRes } from './result-types'
+import { RequestInterface } from './interface'
 
 
 
@@ -132,7 +133,7 @@ export class Query {
    *
    * @internal
    */
-  private _request: any
+  private _request: RequestInterface
 
   /**
    * 初始化
@@ -163,7 +164,7 @@ export class Query {
     this._joins = joins || []
     this._withs = withs || []
     /* eslint-disable new-cap */
-    this._request = new Db.reqClass(this._db.config)
+    this._request = this._db.request
   }
 
   /**

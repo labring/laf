@@ -63,7 +63,7 @@ export class DocumentReference {
     this._coll = coll
     this.id = docID
     /* eslint-disable new-cap*/
-    this.request = new Db.reqClass(this._db.config)
+    this.request = this._db.request
     this.projection = projection
   }
 

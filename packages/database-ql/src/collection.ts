@@ -7,7 +7,6 @@ import Aggregation from './aggregate'
 /**
  * 集合模块，继承 Query 模块
  *
- * @author haroldhu
  */
 export class CollectionReference extends Query {
   /**
@@ -18,7 +17,6 @@ export class CollectionReference extends Query {
    * @param db    - 数据库的引用
    * @param coll  - 集合名称
    */
-  /* eslint-disable no-useless-constructor */
   constructor(db: Db, coll: string) {
     super(db, coll)
   }
@@ -37,7 +35,7 @@ export class CollectionReference extends Query {
    */
   doc(docID?: string | number): DocumentReference {
     if (typeof docID !== 'string' && typeof docID !== 'number') {
-      throw new Error('docId必须为字符串或数字')
+      throw new Error('docId 必须为字符串或数字')
     }
     return new DocumentReference(this._db, this._coll, docID)
   }
@@ -47,7 +45,7 @@ export class CollectionReference extends Query {
    *
    * @param data - 数据
    */
-  add(data: Object, options?: { multi: boolean }, callback?: any){
+  add(data: Object, options?: { multi: boolean }, callback?: any) {
     let docRef = new DocumentReference(this._db, this._coll, undefined)
     return docRef.create(data, options, callback)
   }

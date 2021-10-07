@@ -20,6 +20,6 @@ export class ServerDate {
     }
 }
 
-export function ServerDateConstructor(opt) {
+export function ServerDateConstructor(opt?: { offset: number}) {
   return new ServerDate(opt)
 }
