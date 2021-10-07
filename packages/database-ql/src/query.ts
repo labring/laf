@@ -1,7 +1,7 @@
 import { OrderByDirection, QueryType } from './constant'
 import { Db } from './index'
 import { Validate } from './validate'
-import { Util } from './util'
+// import { Util } from './util'
 import { QuerySerializer } from './serializer/query'
 import { UpdateSerializer } from './serializer/update'
 import { ErrorCode } from './constant'

@@ -6,7 +6,7 @@ import { UpdateCommand } from './commands/update'
 import { QueryType } from './constant'
 import { AddRes, GetOneRes, RemoveRes, UpdateRes } from './result-types'
 import { RequestInterface } from './interface'
-import { Util } from './util'
+// import { Util } from './util'
 
 
 /**
