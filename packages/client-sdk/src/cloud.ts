@@ -7,20 +7,23 @@ import { CloudOptions, EnvironmentType, RequestInterface, UploadFile } from './t
 
 
 /**
- * Cloud 提供 less-api 和 less-framework 的客户端操作接口： 数据库查询 ORM、云函数调用、文件上传
+ * Cloud 提供 `LaF` 应用的客户端操作接口：
+ * - 数据库操作
+ * - 云函数调用
+ * - 文件上传
  */
 class Cloud {
   private config: CloudOptions
 
   /**
-   * less-framework 文件上传、下载基地址
+   * 文件上传、下载基地址
    */
   get fileBaseUrl(): string {
     return this.config.baseUrl + '/file'
   }
 
   /**
-   * less-framework 云函数调用基地址
+   * 云函数调用基地址
    */
   get funcBaseUrl(): string {
     return this.config.baseUrl + '/func'
@@ -50,10 +53,9 @@ class Cloud {
    */
   protected _request: RequestInterface
 
-
   constructor(config: CloudOptions) {
     const warningFunc = () => {
-      console.warn('WARNING: no getAccessToken set for less-api request')
+      console.warn('WARNING: no getAccessToken set for db proxy request')
       return ""
     }
 
@@ -80,9 +82,10 @@ class Cloud {
    * @returns 
    */
   database() {
-    Db.reqClass = this.requestClass
-    Db.getAccessToken = this.config.getAccessToken
-    return new Db({ ...this.config })
+    return new Db({
+      request: this._request,
+      primaryKey: this.config?.primaryKey
+    })
   }
 
   /**

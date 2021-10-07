@@ -1,7 +1,6 @@
+import { RequestInterface as BaseRequestInterface } from 'database-ql'
 
-
-export interface RequestInterface {
-  send(action: string, data: object): Promise<{ code: number, data: any, error: string }>
+export interface RequestInterface extends BaseRequestInterface {
   request(url: string, data: any, options?: any): Promise<any>
   upload(option: UploadFileOption): Promise<any>
 }
@@ -19,21 +18,20 @@ type GetAccessTokenFuncType = () => string
 export interface CloudOptions {
   /**
    * LaF 应用服务的地址，如： "http://localhost:8080"
-   * @tip 后面不要以 `/` 结尾
-   * 
-   * 若后端不使用 less-framework 服务，而是自行集成使用 less-api，则无需设置此项，将 less-api 入口地址写入 `entryUrl` 即可
+   * @tip 后面 `不要` 以 `/` 结尾
    */
   baseUrl?: string
 
   /**
-   * less-api 数据库访问代理的入口地址：
-   * 1. 若不提供 `baseUrl` 则 `dbProxyUrl` 应该为绝对地址，如：`http://localhost:8080/entry`
-   * 2. [推荐]若提供 `baseUrl` 则 `dbProxyUrl` 可为相对地址， 如： `/proxy/app`，`/proxy/admin`
+   * 数据库访问代理的入口地址：
+   * 1. 【不推荐】若不提供 `baseUrl` 则 `dbProxyUrl` 应该为绝对地址，如：`http://localhost:8080/proxy/app`
+   * 2. 【推荐】若提供 `baseUrl` 则 `dbProxyUrl` 可为相对地址， 如： `/proxy/app`，`/proxy/admin`
    */
   dbProxyUrl?: string,
 
   /**
    * `dbProxyUrl` 的别名，为了兼容老版本使用
+   * @deprecated use `dbProxyUrl` instead
    */
   entryUrl?: string,
 
@@ -50,6 +48,7 @@ export interface CloudOptions {
    * 请求超时时间
    */
   timeout?: number
+
   /**
    * 执行环境，默认为浏览器和 Node.js 环境
    */
