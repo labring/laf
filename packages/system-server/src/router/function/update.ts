@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-05 02:11:39
- * @LastEditTime: 2021-10-06 22:21:05
+ * @LastEditTime: 2021-10-08 01:44:47
  * @Description: 
  */
 
@@ -23,7 +23,7 @@ const { FUNCTION_UPDATE } = permissions
  */
 export async function handleUpdateFunction(req: Request, res: Response) {
   const uid = req['auth']?.uid
-  const db = DatabaseAgent.sys_db
+  const db = DatabaseAgent.db
   const app: ApplicationStruct = req['parsed-app']
   const func_id = req.params.func_id
 
@@ -37,7 +37,7 @@ export async function handleUpdateFunction(req: Request, res: Response) {
 
   // function name should be unique
   if (body.name) {
-    const total = await DatabaseAgent.sys_accessor.db.collection(Constants.cn.functions)
+    const total = await db.collection(Constants.cn.functions)
       .countDocuments({
         _id: {
           $ne: new ObjectId(func_id)
@@ -49,9 +49,11 @@ export async function handleUpdateFunction(req: Request, res: Response) {
     if (total) return res.status(422).send('function name already exists')
   }
 
-  const { data: func } = await db.collection(Constants.cn.functions)
-    .where({ _id: func_id, appid: app.appid })
-    .getOne()
+  const func = await db.collection(Constants.cn.functions)
+    .findOne({
+      _id: new ObjectId(func_id),
+      appid: app.appid
+    })
 
   if (!func) return res.status(422).send('function not found')
 
@@ -68,12 +70,12 @@ export async function handleUpdateFunction(req: Request, res: Response) {
 
   // add cloud function
   const ret = await db.collection(Constants.cn.functions)
-    .where({ _id: func_id, appid: app.appid })
-    .update(data)
-
-  if (ret.error) {
-    return res.status(400).send({ error: ret.error })
-  }
+    .updateOne({
+      _id: new ObjectId(func_id),
+      appid: app.appid
+    }, {
+      $set: data
+    })
 
   return res.send({ data: ret })
 }
@@ -84,7 +86,7 @@ export async function handleUpdateFunction(req: Request, res: Response) {
  */
 export async function handleUpdateFunctionCode(req: Request, res: Response) {
   const uid = req['auth']?.uid
-  const db = DatabaseAgent.sys_db
+  const db = DatabaseAgent.db
   const app: ApplicationStruct = req['parsed-app']
   const func_id = req.params.func_id
 
@@ -97,9 +99,11 @@ export async function handleUpdateFunctionCode(req: Request, res: Response) {
   const body = req.body
   if (!body.code) return res.status(422).send('code cannot be empty')
 
-  const { data: func } = await db.collection(Constants.cn.functions)
-    .where({ _id: func_id, appid: app.appid })
-    .getOne()
+  const func = await db.collection(Constants.cn.functions)
+    .findOne({
+      _id: new ObjectId(func_id),
+      appid: app.appid
+    })
 
   if (!func) return res.status(422).send('function not found')
 
@@ -117,7 +121,7 @@ export async function handleUpdateFunctionCode(req: Request, res: Response) {
   if (data.hash !== func.hash) {
     const record = Object.assign({}, func)
     await db.collection(Constants.cn.function_history)
-      .add({
+      .insertOne({
         func_id: func._id,
         data: record,
         created_at: Date.now()
@@ -126,12 +130,12 @@ export async function handleUpdateFunctionCode(req: Request, res: Response) {
 
   // update cloud function
   const ret = await db.collection(Constants.cn.functions)
-    .where({ _id: func_id, appid: app.appid })
-    .update(data)
-
-  if (ret.error) {
-    return res.status(400).send({ error: ret.error })
-  }
+    .updateOne({
+      _id: new ObjectId(func_id),
+      appid: app.appid
+    }, {
+      $set: data
+    })
 
   return res.send({ data: ret })
 }

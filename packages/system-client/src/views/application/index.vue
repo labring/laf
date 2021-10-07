@@ -292,7 +292,7 @@ export default {
 
         // 执行创建请求
         const res = await createApplication({ name: data.name })
-        if (!res.data?.id) {
+        if (!res.data?.insertedId) {
           this.$notify({
             type: 'error',
             title: '操作失败',

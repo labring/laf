@@ -1,11 +1,11 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-10-06 22:22:04
+ * @LastEditTime: 2021-10-08 01:58:51
  * @Description: 
  */
 
-import { MongoAccessor, getDb } from 'database-proxy'
+import { MongoAccessor } from 'database-proxy'
 import Config from '../config'
 import { createLogger, logger } from './logger'
 import * as mongodb_uri from 'mongodb-uri'
@@ -25,23 +25,12 @@ export class DatabaseAgent {
   }
 
   /**
-   * sys database ORM instance
-   */
-  static get sys_db() {
-    return this.createSysDb()
-  }
-
-  /**
-   * Create sys database ORM instance
+   * mongo db instance
    * @returns 
    */
-  static createSysDb() {
-    if (null === this._sys_accessor) {
-      throw new Error('Globals.sys_accessor is empty, please run Globals.init() before!')
-    }
-    return getDb(this._sys_accessor)
+  static get db() {
+    return this._sys_accessor.db
   }
-
 
   /**
    * Parse the connection uri of mongodb

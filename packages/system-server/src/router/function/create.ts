@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-01 13:07:07
- * @LastEditTime: 2021-10-06 22:19:58
+ * @LastEditTime: 2021-10-08 01:39:49
  * @Description: 
  */
 
@@ -21,7 +21,7 @@ const { FUNCTION_ADD } = permissions
  */
 export async function handleCreateFunction(req: Request, res: Response) {
   const uid = req['auth']?.uid
-  const db = DatabaseAgent.sys_db
+  const db = DatabaseAgent.db
   const app: ApplicationStruct = req['parsed-app']
 
   // check permission
@@ -36,9 +36,9 @@ export async function handleCreateFunction(req: Request, res: Response) {
   if (!body.code) return res.status(422).send('code cannot be empty')
 
   // function name should be unique
-  const { total } = await db.collection(Constants.cn.functions)
-    .where({ name: body.name, appid: app.appid })
-    .count()
+  const total = await db.collection(Constants.cn.functions)
+    .countDocuments({ name: body.name, appid: app.appid })
+
   if (total) return res.status(422).send('function name already exists')
 
   // build the func data
@@ -61,10 +61,7 @@ export async function handleCreateFunction(req: Request, res: Response) {
   }
 
   // add cloud function
-  const ret = await db.collection(Constants.cn.functions)
-    .add(func)
-
-  // @TODO check ret.error 
+  const ret = await db.collection(Constants.cn.functions).insertOne(func)
 
   return res.send({ data: ret })
 }

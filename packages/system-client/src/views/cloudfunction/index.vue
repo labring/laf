@@ -325,7 +325,7 @@ export default {
         delete data['_tag_input']
         // 执行创建请求
         const res = await createFunction(data)
-        if (!res.data?.id) {
+        if (!res.data?.insertedId) {
           this.$notify({
             type: 'error',
             title: '操作失败',

@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-10 22:09:19
+ * @LastEditTime: 2021-10-08 00:49:03
  * @Description: 
  */
 
@@ -35,12 +35,11 @@ export interface PolicyStruct {
  * @returns 
  */
 export async function getPolicyByName(appid: string, policy_name: string) {
-  const db = DatabaseAgent.sys_db
-  const r = await db.collection(Constants.cn.policies)
-    .where({ name: policy_name, appid })
-    .getOne<PolicyStruct>()
+  const db = DatabaseAgent.db
+  const doc = await db.collection<PolicyStruct>(Constants.cn.policies)
+    .findOne({ name: policy_name, appid })
 
-  return r.data
+  return doc
 }
 
 /**

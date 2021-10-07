@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 15:22:34
- * @LastEditTime: 2021-09-10 01:07:11
+ * @LastEditTime: 2021-10-08 01:26:40
  * @Description: 
  */
 
@@ -50,10 +50,9 @@ export async function handleRemoveApplication(req: Request, res: Response) {
   assert.ok(saved, 'recycle insert got empty return value')
 
   // remove app
-  const db = DatabaseAgent.sys_db
+  const db = DatabaseAgent.db
   const ret = await db.collection(Constants.cn.applications)
-    .where({ appid })
-    .remove()
+    .deleteOne({ appid })
 
   return res.send({ data: ret })
 }

@@ -1,13 +1,14 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-08 03:33:08
+ * @LastEditTime: 2021-10-08 01:01:49
  * @Description: 
  */
 
 import { Request, Response } from 'express'
 import { DatabaseAgent } from '../../lib/db-agent'
 import { Constants } from '../../constants'
+import { ObjectId } from 'mongodb'
 
 /**
  * The handler of getting profile
@@ -17,11 +18,10 @@ export async function handleProfile(req: Request, res: Response) {
   if (!uid)
     return res.status(401).send()
 
-  const db = DatabaseAgent.sys_db
+  const db = DatabaseAgent.db
 
-  const { data: account } = await db.collection(Constants.cn.accounts)
-    .where({ _id: uid })
-    .getOne()
+  const account = await db.collection(Constants.cn.accounts)
+    .findOne({ _id: new ObjectId(uid) })
 
   if (!account) {
     return res.status(422).send('account not found')

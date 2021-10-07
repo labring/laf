@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-08-31 17:44:11
+ * @LastEditTime: 2021-10-08 01:02:25
  * @Description: 
  */
 
@@ -21,10 +21,9 @@ export async function handleSignIn(req: Request, res: Response) {
     return res.send({ error: 'username and password are required' })
   }
 
-  const db = DatabaseAgent.sys_db
-  const { data: account } = await db.collection(Constants.cn.accounts)
-    .where({ username, password: hashPassword(password) })
-    .getOne()
+  const db = DatabaseAgent.db
+  const account = await db.collection(Constants.cn.accounts)
+    .findOne({ username, password: hashPassword(password) })
 
   if (!account) {
     return res.send({ error: 'invalid username or password' })

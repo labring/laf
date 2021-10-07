@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:26:26
- * @LastEditTime: 2021-10-06 22:21:53
+ * @LastEditTime: 2021-10-07 22:00:34
  * @Description: 
  */
 
@@ -16,7 +16,6 @@ import { Request, Response } from 'express'
  * The less-api proxy entry for database management
  */
 export async function handleDbProxy(req: Request, res: Response) {
-  const requestId = req['requestId']
   const uid = req['auth']?.uid
   const app: ApplicationStruct = req['parsed-app']
 
@@ -32,7 +31,7 @@ export async function handleDbProxy(req: Request, res: Response) {
   const entry = new Proxy(accessor, new Policy(accessor))
 
   // parse params
-  const params = entry.parseParams({ ...req.body, requestId })
+  const params = entry.parseParams(req.body)
 
   // execute query
   try {

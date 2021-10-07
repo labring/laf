@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-31 15:00:04
- * @LastEditTime: 2021-09-10 01:01:21
+ * @LastEditTime: 2021-10-08 01:23:08
  * @Description: 
  */
 
@@ -13,6 +13,7 @@ import { DatabaseAgent } from '../../lib/db-agent'
 import { permissions } from '../../constants/permissions'
 import { getAccountByUsername, getRoles, isValidAccountId, isValidRoleNames } from '../../api/account'
 import { array2map, mergeMap2ArrayByKey } from '../../utils/array'
+import { ObjectId } from 'mongodb'
 
 const { APPLICATION_UPDATE } = permissions
 
@@ -34,15 +35,20 @@ export async function handleGetCollaborators(req: Request, res: Response) {
     return res.send({ data: [] })
   }
 
-  const db = DatabaseAgent.sys_db
+  const db = DatabaseAgent.db
   const co_ids = app.collaborators.map(co => co.uid)
-  const r = await db.collection(Constants.cn.accounts)
-    .where({ _id: db.command.in(co_ids) })
-    .field(['_id', 'username', 'name'])
-    .get()
+  const docs = await db.collection(Constants.cn.accounts)
+    .find({
+      _id: {
+        $in: co_ids.map(id => new ObjectId(id))
+      }
+    }, {
+      projection: { '_id': 1, 'username': 1, 'name': 1 }
+    })
+    .toArray()
 
   // merge app
-  const user_map = array2map(r.data, '_id', true)
+  const user_map = array2map(docs, '_id', true)
   const ret = mergeMap2ArrayByKey(user_map, app.collaborators, 'uid', 'user')
   return res.send({
     data: ret
@@ -54,7 +60,7 @@ export async function handleGetCollaborators(req: Request, res: Response) {
  */
 export async function handleInviteCollaborator(req: Request, res: Response) {
   const uid = req['auth']?.uid
-  const db = DatabaseAgent.sys_db
+  const db = DatabaseAgent.db
   const { member_id, roles } = req.body
 
   if (!isValidRoleNames(roles))
@@ -93,8 +99,13 @@ export async function handleInviteCollaborator(req: Request, res: Response) {
     created_at: Date.now()
   }
   const ret = await db.collection(Constants.cn.applications)
-    .where({ appid: app.appid })
-    .update({ collaborators: db.command.addToSet(collaborator) })
+    .updateOne({
+      appid: app.appid
+    }, {
+      $addToSet: {
+        collaborators: collaborator
+      }
+    })
 
   return res.send({
     data: ret
@@ -170,11 +181,12 @@ export async function handleRemoveCollaborator(req: Request, res: Response) {
     return res.status(422).send('invalid collaborator_id')
   }
 
-  const db = DatabaseAgent.sys_db
+  const db = DatabaseAgent.db
   const r = await db.collection(Constants.cn.applications)
-    .where({ appid })
-    .update({
-      collaborators: db.command.pull({ uid: collaborator_id })
+    .updateOne({ appid }, {
+      $pull: {
+        collaborators: { uid: collaborator_id }
+      }
     })
 
   return res.send({

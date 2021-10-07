@@ -1,5 +1,6 @@
 import { ApplicationStruct } from "../api/application"
 import { FunctionStruct } from "../api/function"
+import { PolicyStruct } from "../api/policy"
 import { Constants } from "../constants"
 import { DatabaseAgent } from "./db-agent"
 
@@ -36,14 +37,12 @@ export class ApplicationExporter {
   }
 
   private async buildFunctions() {
-    const db = DatabaseAgent.sys_db
-    const r = await db.collection(Constants.cn.functions)
-      .where({ appid: this.app.appid })
-      .limit(999)
-      .get<FunctionStruct>()
+    const db = DatabaseAgent.db
+    const docs = await db.collection<FunctionStruct>(Constants.cn.functions)
+      .find({ appid: this.app.appid })
+      .toArray()
 
-    const functions = r.data
-    const ret = functions.map(func => {
+    const ret = docs.map(func => {
       return {
         name: func.name,
         label: func.label,
@@ -63,13 +62,12 @@ export class ApplicationExporter {
   }
 
   private async buildPolicies() {
-    const db = DatabaseAgent.sys_db
-    const r = await db.collection(Constants.cn.policies)
-      .where({ appid: this.app.appid })
-      .get()
+    const db = DatabaseAgent.db
+    const docs = await db.collection<PolicyStruct>(Constants.cn.policies)
+      .find({ appid: this.app.appid })
+      .toArray()
 
-    const policies = r.data
-    const ret = policies.map(po => {
+    const ret = docs.map(po => {
       return {
         name: po.name,
         description: po.description,

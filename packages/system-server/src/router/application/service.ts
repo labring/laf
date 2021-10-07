@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-31 15:00:04
- * @LastEditTime: 2021-09-09 10:42:32
+ * @LastEditTime: 2021-10-08 01:29:21
  * @Description: 
  */
 
@@ -19,7 +19,7 @@ const { APPLICATION_UPDATE } = permissions
  */
 export async function handleStartApplicationService(req: Request, res: Response) {
   const uid = req['auth']?.uid
-  const db = DatabaseAgent.sys_db
+  const db = DatabaseAgent.db
   const appid = req.params.appid
   const app = await getApplicationByAppid(appid)
 
@@ -36,8 +36,12 @@ export async function handleStartApplicationService(req: Request, res: Response)
   const container_id = await dockerService.startService(app)
 
   await db.collection(Constants.cn.applications)
-    .where({ appid: app.appid })
-    .update({ status: 'running' })
+    .updateOne(
+      { appid: app.appid },
+      {
+        $set: { status: 'running' }
+      }
+    )
 
   return res.send({
     data: {
@@ -53,7 +57,7 @@ export async function handleStartApplicationService(req: Request, res: Response)
  */
 export async function handleStopApplicationService(req: Request, res: Response) {
   const uid = req['auth']?.uid
-  const db = DatabaseAgent.sys_db
+  const db = DatabaseAgent.db
   const appid = req.params.appid
   const app = await getApplicationByAppid(appid)
 
@@ -70,8 +74,11 @@ export async function handleStopApplicationService(req: Request, res: Response) 
   const container_id = await dockerService.stopService(app)
 
   await db.collection(Constants.cn.applications)
-    .where({ appid: app.appid })
-    .update({ status: 'stopped' })
+    .updateOne(
+      { appid: app.appid },
+      {
+        $set: { status: 'stopped' }
+      })
 
   return res.send({
     data: {
@@ -87,7 +94,7 @@ export async function handleStopApplicationService(req: Request, res: Response) 
  */
 export async function handleRemoveApplicationService(req: Request, res: Response) {
   const uid = req['auth']?.uid
-  const db = DatabaseAgent.sys_db
+  const db = DatabaseAgent.db
   const appid = req.params.appid
   const app = await getApplicationByAppid(appid)
 
@@ -104,8 +111,10 @@ export async function handleRemoveApplicationService(req: Request, res: Response
   const container_id = await dockerService.removeService(app)
 
   await db.collection(Constants.cn.applications)
-    .where({ appid: app.appid })
-    .update({ status: 'cleared' })
+    .updateOne(
+      { appid: app.appid },
+      { $set: { status: 'cleared' } }
+    )
 
   return res.send({
     data: {

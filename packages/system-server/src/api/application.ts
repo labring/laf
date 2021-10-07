@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-28 22:00:45
- * @LastEditTime: 2021-10-06 22:19:42
+ * @LastEditTime: 2021-10-08 00:45:14
  * @Description: Application APIs
  */
 
@@ -49,13 +49,11 @@ export interface ApplicationStruct {
 export async function getApplicationByAppid(appid: string) {
   if (!appid) return null
 
-  const db = DatabaseAgent.sys_db
-  const ret = await db.collection(Constants.cn.applications)
-    .where({ appid: appid })
-    .getOne<ApplicationStruct>()
+  const db = DatabaseAgent.db
+  const doc = await db.collection<ApplicationStruct>(Constants.cn.applications)
+    .findOne({ appid: appid })
 
-  assert.ok(ret.ok, `getMyApplicationById() got error: ${appid}`)
-  return ret.data
+  return doc
 }
 
 /**
@@ -66,16 +64,13 @@ export async function getApplicationByAppid(appid: string) {
 export async function getMyApplications(account_id: string) {
   assert.ok(account_id, 'empty account_id got')
 
-  const db = DatabaseAgent.sys_db
-  const ret = await db.collection(Constants.cn.applications)
-    .where({ created_by: account_id })
-    .field({
-      config: false
-    })
-    .get<ApplicationStruct>()
+  const db = DatabaseAgent.db
+  const docs = await db.collection<ApplicationStruct>(Constants.cn.applications)
+    .find({ created_by: account_id }, {
+      projection: { config: false }
+    }).toArray()
 
-  assert.ok(ret.ok, `getMyApplications() got error: ${account_id}`)
-  return ret.data
+  return docs
 }
 
 /**
@@ -86,15 +81,13 @@ export async function getMyApplications(account_id: string) {
 export async function getMyJoinedApplications(account_id: string) {
   assert.ok(account_id, 'empty account_id got')
 
-  const db = DatabaseAgent.sys_db
-  const ret = await db.collection(Constants.cn.applications)
-    .where({
+  const db = DatabaseAgent.db
+  const docs = await db.collection<ApplicationStruct>(Constants.cn.applications)
+    .find({
       'collaborators.uid': account_id
-    })
-    .get<ApplicationStruct>()
+    }).toArray()
 
-  assert.ok(ret.ok, `getMyApplications() got error: ${account_id}`)
-  return ret.data
+  return docs
 }
 
 

@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-10-06 21:37:18
+ * @LastEditTime: 2021-10-08 00:46:05
  * @Description: 
  */
 
@@ -44,12 +44,11 @@ export interface FunctionStruct extends CloudFunctionStruct {
  * @returns 
  */
 export async function getFunctionByName(appid: string, func_name: string) {
-  const db = DatabaseAgent.sys_db
-  const r = await db.collection(Constants.cn.functions)
-    .where({ name: func_name, appid })
-    .getOne<FunctionStruct>()
+  const db = DatabaseAgent.db
+  const doc = await db.collection<FunctionStruct>(Constants.cn.functions)
+    .findOne({ name: func_name, appid })
 
-  return r.data
+  return doc
 }
 
 
@@ -60,7 +59,7 @@ export async function getFunctionByName(appid: string, func_name: string) {
 export async function publishFunctions(app: ApplicationStruct) {
 
   // read functions from sys db
-  const ret = await DatabaseAgent.sys_accessor.db
+  const ret = await DatabaseAgent.db
     .collection(Constants.cn.functions)
     .find({
       appid: app.appid

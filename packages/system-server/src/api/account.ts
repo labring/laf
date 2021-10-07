@@ -2,6 +2,7 @@
 import { Constants } from "../constants"
 import { DatabaseAgent } from "../lib/db-agent"
 import * as assert from 'assert'
+import { ObjectId } from "mongodb"
 
 /**
  * Get an account by account_id
@@ -9,26 +10,24 @@ import * as assert from 'assert'
 export async function getAccountByAppid(uid: string) {
   assert.ok(uid, 'empty uid got')
 
-  const db = DatabaseAgent.sys_db
-  const ret = await db.collection(Constants.cn.accounts)
-    .where({ _id: uid })
-    .getOne()
+  const db = DatabaseAgent.db
+  const doc = await db.collection(Constants.cn.accounts)
+    .findOne({ _id: new ObjectId(uid) })
 
-  return ret.data
+  return doc
 }
 
 /**
  * Get an account by username
  */
- export async function getAccountByUsername(username: string) {
+export async function getAccountByUsername(username: string) {
   assert.ok(username, 'empty username got')
 
-  const db = DatabaseAgent.sys_db
-  const ret = await db.collection(Constants.cn.accounts)
-    .where({ username: username })
-    .getOne()
+  const db = DatabaseAgent.db
+  const doc = await db.collection(Constants.cn.accounts)
+    .findOne({ username: username })
 
-  return ret.data
+  return doc
 }
 
 /**

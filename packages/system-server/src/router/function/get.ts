@@ -1,12 +1,13 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:51:19
- * @LastEditTime: 2021-09-29 12:12:36
+ * @LastEditTime: 2021-10-08 00:39:05
  * @Description: 
  */
 
 import { CloudFunctionStruct } from 'cloud-function-engine'
 import { Request, Response } from 'express'
+import { ObjectId } from 'mongodb'
 import { ApplicationStruct } from '../../api/application'
 import { FunctionStruct } from '../../api/function'
 import { checkPermission } from '../../api/permission'
@@ -21,7 +22,7 @@ const { FUNCTION_READ } = permissions
  * Get functions
  */
 export async function handleGetFunctions(req: Request, res: Response) {
-  const db = DatabaseAgent.sys_db
+  const db = DatabaseAgent.db
   const app: ApplicationStruct = req['parsed-app']
 
   // check permission
@@ -35,14 +36,16 @@ export async function handleGetFunctions(req: Request, res: Response) {
   const limit = Number(req.query?.limit || 10)
   const page = Number(req.query?.page || 1)
 
-  const query = {
-    appid: app.appid
-  }
+  const query = { appid: app.appid }
   if (keyword) {
+    const regexp = {
+      $regex: `${keyword}`,
+      $options: ''
+    }
     query['$or'] = [
-      { name: db.RegExp({ regexp: `.*${keyword}.*`, options: 'i' }) },
-      { label: db.RegExp({ regexp: `.*${keyword}.*`, options: 'i' }) },
-      { description: db.RegExp({ regexp: `.*${keyword}.*`, options: 'i' }) }
+      { name: regexp },
+      { label: regexp },
+      { description: regexp }
     ]
   }
 
@@ -54,22 +57,22 @@ export async function handleGetFunctions(req: Request, res: Response) {
     query['status'] = Number(status)
   }
 
-  const coll = db.collection(Constants.cn.functions)
+  const coll = db.collection<CloudFunctionStruct>(Constants.cn.functions)
 
   // do db query
-  const ret = await coll
-    .where(query)
-    .limit(limit)
-    .skip((page - 1) * limit)
-    .get()
+  const docs = await coll
+    .find(query, {
+      limit,
+      skip: (page - 1) * limit,
+      projection: { compiledCode: 0 }
+    })
+    .toArray()
 
   // get the count
-  const { total } = await coll
-    .where(query)
-    .count()
+  const total = await coll.countDocuments(query)
 
   return res.send({
-    data: ret.data,
+    data: docs,
     total: total,
     limit: limit,
     page
@@ -81,7 +84,6 @@ export async function handleGetFunctions(req: Request, res: Response) {
  * Get a function by id
  */
 export async function handleGetFunctionById(req: Request, res: Response) {
-  const db = DatabaseAgent.sys_db
   const app: ApplicationStruct = req['parsed-app']
   const func_id = req.params.func_id
 
@@ -91,16 +93,15 @@ export async function handleGetFunctionById(req: Request, res: Response) {
     return res.status(code).send()
   }
 
-  const coll = db.collection(Constants.cn.functions)
-
   // do db query
-  const ret = await coll
-    .where({ _id: func_id, appid: app.appid })
-    .getOne<CloudFunctionStruct>()
+  const db = DatabaseAgent.db
+  const doc = await db.collection<CloudFunctionStruct>(Constants.cn.functions)
+    .findOne({
+      _id: new ObjectId(func_id),
+      appid: app.appid
+    })
 
-  return res.send({
-    data: ret.data
-  })
+  return res.send({ data: doc })
 }
 
 
@@ -116,13 +117,9 @@ export async function handleGetAllFunctionTags(req: Request, res: Response) {
     return res.status(code).send()
   }
 
-  const db = DatabaseAgent.sys_accessor.db
-
+  const db = DatabaseAgent.db
   const docs = await db.collection<FunctionStruct>(Constants.cn.functions)
-    .distinct('tags', {
-      appid: app.appid
-
-    })
+    .distinct('tags', { appid: app.appid })
 
   return res.send({
     data: docs

@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-03 23:19:36
- * @LastEditTime: 2021-09-06 13:45:24
+ * @LastEditTime: 2021-10-08 01:45:27
  * @Description: 
  */
 
@@ -20,7 +20,7 @@ const { POLICY_ADD } = permissions
  */
 export async function handleCreatePolicy(req: Request, res: Response) {
   const uid = req['auth']?.uid
-  const db = DatabaseAgent.sys_db
+  const db = DatabaseAgent.db
   const app: ApplicationStruct = req['parsed-app']
 
   // check permission
@@ -35,9 +35,9 @@ export async function handleCreatePolicy(req: Request, res: Response) {
   if (!body.rules) return res.status(422).send('rules cannot be empty')
 
   // policy name should be unique
-  const { total } = await db.collection(Constants.cn.policies)
-    .where({ name: body.name, appid: app.appid })
-    .count()
+  const total = await db.collection(Constants.cn.policies)
+    .countDocuments({ name: body.name, appid: app.appid })
+
   if (total) return res.status(422).send('policy name already exists')
 
   // build the policy data
@@ -56,9 +56,7 @@ export async function handleCreatePolicy(req: Request, res: Response) {
 
   // add policy
   const ret = await db.collection(Constants.cn.policies)
-    .add(policy)
-
-  // @TODO check ret.error 
+    .insertOne(policy)
 
   return res.send({ data: ret })
 }

@@ -1,14 +1,16 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-03 23:09:23
- * @LastEditTime: 2021-10-06 22:22:45
+ * @LastEditTime: 2021-10-08 01:47:59
  * @Description: 
  */
 
 
 import { Request, Response } from 'express'
+import { ObjectId } from 'mongodb'
 import { ApplicationStruct } from '../../api/application'
 import { checkPermission } from '../../api/permission'
+import { PolicyStruct } from '../../api/policy'
 import { Constants } from '../../constants'
 import { permissions } from '../../constants/permissions'
 import { DatabaseAgent } from '../../lib/db-agent'
@@ -21,7 +23,7 @@ const { POLICY_READ } = permissions
  */
 export async function handleGetPolicies(req: Request, res: Response) {
   const uid = req['auth']?.uid
-  const db = DatabaseAgent.sys_db
+  const db = DatabaseAgent.db
   const app: ApplicationStruct = req['parsed-app']
 
   // check permission
@@ -40,27 +42,26 @@ export async function handleGetPolicies(req: Request, res: Response) {
   }
   if (keyword) {
     query['$or'] = [
-      { name: db.RegExp({ regexp: `.*${keyword}.*`, options: 'i' }) },
-      { description: db.RegExp({ regexp: `.*${keyword}.*`, options: 'i' }) }
+      { name: { $regex: `${keyword}`, $options: '' } },
+      { description: { $regex: `${keyword}`, $options: '' } }
     ]
   }
 
   const coll = db.collection(Constants.cn.policies)
 
   // do db query
-  const ret = await coll
-    .where(query)
-    .limit(limit)
-    .skip((page - 1) * limit)
-    .get()
+  const docs = await coll
+    .find(query, {
+      limit,
+      skip: (page - 1) * limit
+    })
+    .toArray()
 
   // get the count
-  const { total } = await coll
-    .where(query)
-    .count()
+  const total = await coll.countDocuments(query)
 
   return res.send({
-    data: ret.data,
+    data: docs,
     total: total,
     limit: limit,
     page
@@ -72,7 +73,7 @@ export async function handleGetPolicies(req: Request, res: Response) {
  * Get a policy by id
  */
 export async function handleGetPolicyById(req: Request, res: Response) {
-  const db = DatabaseAgent.sys_db
+  const db = DatabaseAgent.db
   const app: ApplicationStruct = req['parsed-app']
   const policy_id = req.params.policy_id
 
@@ -83,11 +84,10 @@ export async function handleGetPolicyById(req: Request, res: Response) {
   }
 
   // do db query
-  const ret = await db.collection(Constants.cn.policies)
-    .where({ _id: policy_id })
-    .getOne()
+  const doc = await db.collection<PolicyStruct>(Constants.cn.policies)
+    .findOne({ _id: new ObjectId(policy_id) })
 
   return res.send({
-    data: ret.data
+    data: doc
   })
 }

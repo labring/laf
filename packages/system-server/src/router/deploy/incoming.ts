@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:34:45
- * @LastEditTime: 2021-09-10 16:55:45
+ * @LastEditTime: 2021-10-08 01:30:42
  * @Description: 
  */
 
@@ -83,7 +83,7 @@ export async function handleDeployRequestIncoming(req: Request, res: Response) {
  * @param appid 
  */
 async function write_policies(policies: any, source: string, comment: string, appid: string) {
-  const db = DatabaseAgent.sys_db
+  const db = DatabaseAgent.db
 
   const data = {
     source,
@@ -95,7 +95,7 @@ async function write_policies(policies: any, source: string, comment: string, ap
     created_at: Date.now()
   }
 
-  await db.collection(Constants.cn.deploy_requests).add(data)
+  await db.collection(Constants.cn.deploy_requests).insertOne(data)
 }
 
 /**
@@ -107,7 +107,7 @@ async function write_policies(policies: any, source: string, comment: string, ap
  * @param appid 
  */
 async function write_functions(functions: any, source: string, comment: string, appid: string) {
-  const db = DatabaseAgent.sys_db
+  const db = DatabaseAgent.db
 
   const data = {
     source,
@@ -119,5 +119,5 @@ async function write_functions(functions: any, source: string, comment: string, 
     created_at: Date.now()
   }
 
-  await db.collection(Constants.cn.deploy_requests).add(data)
+  await db.collection(Constants.cn.deploy_requests).insertOne(data)
 }

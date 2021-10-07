@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-31 15:00:04
- * @LastEditTime: 2021-09-06 22:22:21
+ * @LastEditTime: 2021-10-08 01:25:43
  * @Description: 
  */
 
@@ -23,7 +23,7 @@ export async function handleCreateApplication(req: Request, res: Response) {
   if (!uid)
     return res.status(401).send()
 
-  const db = DatabaseAgent.sys_db
+  const db = DatabaseAgent.db
 
   // check the application quota in account
   const account = await getAccountByAppid(uid)
@@ -61,9 +61,9 @@ export async function handleCreateApplication(req: Request, res: Response) {
 
   // save it
   const ret = await db.collection(Constants.cn.applications)
-    .add(data)
+    .insertOne(data as any)
 
-  if (!ret.id) {
+  if (!ret.insertedId) {
     return res.status(400).send('failed to create application')
   }
 

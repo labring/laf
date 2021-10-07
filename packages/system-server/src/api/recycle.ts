@@ -1,4 +1,5 @@
 import * as assert from "assert"
+import { ObjectId } from "mongodb"
 import { Constants } from "../constants"
 import { DatabaseAgent } from "../lib/db-agent"
 
@@ -13,33 +14,31 @@ export class RecycleCollector {
     this.collection = collection
   }
 
-  async insert(data: any) {
-    const db = DatabaseAgent.sys_db
+  async insert(data: any): Promise<ObjectId> {
+    const db = DatabaseAgent.db
     const r = await db.collection(Constants.cn.recycles)
-      .add({
+      .insertOne({
         collection: this.collection,
         data,
         created_at: Date.now()
       })
 
-    return r.id
+    return r.insertedId
   }
 
   async retrieve(_id: string) {
-    const db = DatabaseAgent.sys_db
-    const r = await db.collection(Constants.cn.recycles)
-      .where({ _id: _id, collection: this.collection })
-      .getOne()
+    const db = DatabaseAgent.db
+    const doc = await db.collection(Constants.cn.recycles)
+      .findOne({ _id: new ObjectId(_id), collection: this.collection })
 
-    return r.data
+    return doc
   }
 
   async remove(_id: string) {
-    const db = DatabaseAgent.sys_db
+    const db = DatabaseAgent.db
     const r = await db.collection(Constants.cn.recycles)
-      .where({ _id: _id, collection: this.collection })
-      .remove()
+      .deleteOne({ _id: new ObjectId(_id), collection: this.collection })
 
-    return r.deleted
+    return r.deletedCount
   }
 }

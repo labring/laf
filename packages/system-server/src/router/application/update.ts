@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-31 15:00:04
- * @LastEditTime: 2021-09-08 03:32:57
+ * @LastEditTime: 2021-10-08 01:30:06
  * @Description: 
  */
 
@@ -19,7 +19,7 @@ const { APPLICATION_UPDATE } = permissions
  */
 export async function handleUpdateApplication(req: Request, res: Response) {
   const uid = req['auth']?.uid
-  const db = DatabaseAgent.sys_db
+  const db = DatabaseAgent.db
   const appid = req.params.appid
   const app = await getApplicationByAppid(appid)
   if (!app)
@@ -36,8 +36,10 @@ export async function handleUpdateApplication(req: Request, res: Response) {
   if (!body.name) return res.status(422).send('name cannot be empty')
 
   const ret = await db.collection(Constants.cn.applications)
-    .where({ appid: app.appid })
-    .update({ name: body.name })
+    .updateOne(
+      { appid: app.appid },
+      { $set: { name: body.name } }
+    )
 
   return res.send({
     data: ret
