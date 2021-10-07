@@ -1,13 +1,12 @@
 
 # 说明
 
-> 供客户端与服务端使用的类 Mongodb 查询语法的 ORM，可于任意 javascript 环境运行，用于 `less-api` `less-api-client` `less-framework` 中。
-
+> 供客户端与服务端使用的 `类Mongodb` 的查询语法，可于任意 javascript 环境运行，用于 `laf-client-sdk`、`laf` 中。
 
 # 安装
 
 ```sh
-npm i less-api-database
+npm i database-ql
 ```
 
 # API Reference

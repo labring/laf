@@ -1,7 +1,7 @@
 {
   "name": "database-ql",
   "version": "0.6.0-alpha.0",
-  "description": "Database interface for cloud development",
+  "description": "Database interface for laf",
   "main": "dist/commonjs/index.js",
   "module": "dist/esm/index.js",
   "scripts": {
@@ -14,11 +14,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Maslow/less-api.git"
+    "url": "git+https://github.com/Maslow/laf.git"
   },
   "keywords": [
-    "less-api",
-    "less-api-database"
+    "laf",
+    "laf-client-sdk",
+    "database-ql"
   ],
   "author": "maslow (wangfugen@126.com)",
   "license": "ISC",
