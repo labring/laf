@@ -1,6 +1,6 @@
 {
   "name": "app-service",
-  "version": "0.6.0-alpha.3",
+  "version": "0.6.0-alpha.4",
   "description": "the app engine service of lat",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
@@ -25,7 +25,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "cloud-function-engine": "^0.6.0-alpha.3",
-    "database-proxy": "^0.6.0-alpha.3",
+    "database-proxy": "^0.6.0-alpha.4",
     "dayjs": "^1.10.6",
     "dotenv": "^8.2.0",
     "ejs": "^3.1.6",
