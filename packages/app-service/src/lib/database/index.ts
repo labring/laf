@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-16 15:29:15
- * @LastEditTime: 2021-10-06 20:34:59
+ * @LastEditTime: 2021-10-08 14:34:37
  * @Description: 
  */
 
@@ -9,6 +9,7 @@
 import { MongoAccessor } from 'database-proxy'
 import Config from '../../config'
 import { createLogger, logger } from '../logger'
+import * as mongodb_uri from 'mongodb-uri'
 
 
 /**
@@ -36,7 +37,8 @@ export class DatabaseAgent {
    * @returns 
    */
   private static _createAccessor() {
-    const accessor = new MongoAccessor(Config.db.database, Config.db.uri, { directConnection: true, maxPoolSize: Config.db.maxPoolSize })
+    const { database } = mongodb_uri.parse(Config.DB_URI)
+    const accessor = new MongoAccessor(database, Config.DB_URI)
 
     accessor.setLogger(createLogger('accessor', 'warning'))
     accessor.init()

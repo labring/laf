@@ -13,21 +13,13 @@ export default class Config {
   /**
    * mongodb connection configuration
    */
-  static get db() {
-    if (!process.env['DB']) {
-      throw new Error('env: `DB` is missing')
-    }
-
+  static get DB_URI() {
     if (!process.env['DB_URI']) {
       throw new Error('env: `DB_URI` is missing')
     }
-
-    return {
-      database: process.env['DB'],
-      uri: process.env['DB_URI'],
-      maxPoolSize: (process.env['DB_POOL_LIMIT'] ?? 10) as number,
-    }
+    return process.env['DB_URI']
   }
+
 
   /**
    * the server secret salt, mainly used for generating tokens
