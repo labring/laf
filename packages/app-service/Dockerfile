@@ -13,5 +13,6 @@ RUN mkdir /app/data || true
 RUN chown node:node /app/data
 # RUN npm i
 # RUN npm run build
+RUN npm run create-internal-pkg
 USER node
 CMD [ "npm", "run", "start" ]
