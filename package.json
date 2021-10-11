@@ -25,7 +25,9 @@
     "docker-push-app-service": "node ./scripts/docker-push-app-service.js",
     "docker-push-system-server": "node ./scripts/docker-push-system-server.js",
     "docker-push-system-client": "node ./scripts/docker-push-system-client.js",
-    "docker-push": "npm run docker-push-app-service && npm run docker-push-system-server && npm run docker-push-system-client"
+    "docker-push": "npm run docker-push-app-service && npm run docker-push-system-server && npm run docker-push-system-client",
+    "clean:build": "rm -rf ./packages/*/dist",
+    "stats": "find ./packages -name '*.ts' | xargs cat | grep -v ^$| wc -l"
   },
   "keywords": [
     "BaaS",
