@@ -9,7 +9,6 @@
   "scripts": {
     "install": "lerna exec npm install",
     "install-dev": "lerna bootstrap",
-    "start": "lerna run start",
     "build": "lerna run build",
     "watch": "lerna run watch --parallel",
     "prepublishOnly": "npm run build",
