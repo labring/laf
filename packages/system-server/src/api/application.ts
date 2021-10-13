@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-28 22:00:45
- * @LastEditTime: 2021-10-08 00:45:14
+ * @LastEditTime: 2021-10-13 18:27:20
  * @Description: Application APIs
  */
 
@@ -157,7 +157,13 @@ export async function createApplicationDb(app: ApplicationStruct) {
   await client.connect()
   const { db_name, db_user, db_password } = app.config
   const db = client.db(db_name)
-  const result = await db.addUser(db_user, db_password, { roles: [{ role: "readWrite", db: db_name }] })
+  const result = await db.addUser(db_user, db_password, {
+    roles: [
+      { role: "readWrite", db: db_name },
+      { role: "dbAdmin", db: db_name }
+    ]
+
+  })
 
   await client.close()
   return result

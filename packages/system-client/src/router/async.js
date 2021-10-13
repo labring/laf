@@ -107,7 +107,8 @@ export const asyncRoutes = [
         name: 'CollectionManagement',
         meta: {
           title: '集合管理',
-          icon: 'example'
+          icon: 'example',
+          noCache: true
         }
       },
       {

@@ -7,7 +7,7 @@
 
 import * as express from 'express'
 import { handleDbProxy } from './proxy'
-import { handleCollectionList } from './collections'
+import { handleCollectionList } from './get'
 import { handleGetIndexesOfCollection } from './get-indexes'
 import { handleCreateIndex } from './add-index'
 import { handleDeleteIndex } from './delete-index'

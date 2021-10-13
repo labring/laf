@@ -1,64 +1,57 @@
 <template>
   <div class="app-container">
-    <div class="collec-wrap">
-      <div class="filter-container">
-        集合名称：
-        <el-select v-model="collectionName" size="mini" filterable placeholder="请选择集合">
-          <el-option
-            v-for="item in collections"
-            :key="item"
-            :label="item"
-            :value="item"
-          />
-        </el-select>
-      </div>
+    <!-- 记录 -->
+    <div style="margin: 10px 0;">
+      <el-input v-model.trim="listQuery._id" size="mini" placeholder="请输入_id查找" style="width:200px" :disabled="!collectionName" @keyup.enter.native="handleFilter" />
+      <el-button size="mini" plain type="default" style="margin-left: 10px" icon="el-icon-search" :disabled="!collectionName" @click="handleFilter">搜索</el-button>
+      <el-button size="mini" plain type="primary" style="margin-left: 10px" @click="showIndexesList = true">新建集合</el-button>
+      <el-button size="mini" plain type="default" style="margin-left: 10px" :disabled="!collectionName" @click="showIndexesList = true">索引管理</el-button>
+      <el-button size="mini" plain type="default" style="margin-left: 10px" :disabled="!collectionName" @click="showIndexesList = true">集合结构</el-button>
+      <el-button size="mini" plain type="success" style="margin-left: 10px" icon="el-icon-plus" :disabled="!collectionName" @click="handleCreateRecord">添加记录</el-button>
 
-      <div style="text-align: center;">
-        <el-radio-group v-model="tabType" size="mini" style="margin-left: 30px;">
-          <el-radio-button label="record">记录列表</el-radio-button>
-          <el-radio-button label="index">索引管理</el-radio-button>
+    </div>
+    <el-container v-show="tabType === 'record'" style="height: calc(100vh - 200px); border: 1px solid #eee">
+      <el-aside width="240px" class="collection-list">
+        <div class="label">选择集合</div>
+        <el-radio-group v-model="collectionName" class="radio-group">
+          <el-radio v-for="item in collections" :key="item.name" class="collection-radio" border size="medium" :label="item.name" />
         </el-radio-group>
-      </div>
+      </el-aside>
 
-      <!-- 记录 -->
-      <div v-show="tabType === 'record'" style="margin: 10px 0;">
-        <el-input v-model.trim="listQuery._id" size="mini" placeholder="请输入_id查找" style="width:200px" :disabled="!collectionName" @keyup.enter.native="handleFilter" />
-        <el-button size="mini" type="primary" style="margin-left: 10px" icon="el-icon-search" :disabled="!collectionName" @click="handleFilter">搜索记录</el-button>
-        <el-button size="mini" type="primary" style="margin-left: 10px" icon="el-icon-plus" :disabled="!collectionName" @click="handleCreateRecord">添加记录</el-button>
-      </div>
-      <el-container v-show="tabType === 'record'" style="height: calc(100vh - 240px); border: 1px solid #eee">
-        <el-aside width="300px" style="background-color: #fff;border: 1px solid #eee;padding: 8px;">
-          <div v-for="item in list" :key="item._id" class="record-item" :class="getClass(item)" @click="getRecord(item)">
-            <span class="">_id: {{ item._id }}</span>
-            <el-button size="mini" class="close" icon="el-icon-close" circle @click="deleRecord(item)" />
+      <el-container class="record-list">
+        <div v-for="item in list" :key="item._id" class="record-item" :class="getClass(item)">
+          <div class="doc">
+            <pre class="">{{ item }}</pre>
           </div>
-          <div style="text-align: center;">
-            <MiniPagination
-              v-show="total>0"
-              layout="prev, pager, next"
-              :total="total"
-              :background="true"
-              :page.sync="listQuery.page"
-              :limit.sync="listQuery.limit"
-              @pagination="getList"
-            />
+          <div class="tools">
+            <el-button plain class="tools-btn" size="mini" type="primary" @click="handleEditRecord(item)">编辑</el-button>
+            <el-button plain class="tools-btn" size="mini" type="danger" @click="deleRecord(item)">删除</el-button>
           </div>
-        </el-aside>
-
-        <el-container>
-          <el-header>
-            <el-button size="mini" type="primary" :disabled="!collectionName" @click="updateRecord">更新</el-button>
-          </el-header>
-          <el-main>
-            <json-editor v-model="record" class="db-editor" :line-numbers="true" :dark="false" :height="600" />
-          </el-main>
-        </el-container>
+        </div>
+        <div style="text-align: center;">
+          <MiniPagination
+            v-show="total>0"
+            layout="prev, pager, next"
+            :total="total"
+            :background="true"
+            :page.sync="listQuery.page"
+            :limit.sync="listQuery.limit"
+            @pagination="getList"
+          />
+        </div>
       </el-container>
+    </el-container>
 
-      <!-- 索引 -->
-      <div v-show="tabType === 'index'">
+    <!-- 索引管理 -->
+    <el-drawer
+      title="索引管理"
+      size="50%"
+      :visible.sync="showIndexesList"
+      :direction="direction"
+    >
+      <div>
         <div style="margin: 10px 0;">
-          <el-button type="primary" style="margin-left: 10px" icon="el-icon-plus" :disabled="!collectionName" @click="handleCreateIndex">创建索引</el-button>
+          <el-button size="mini" plain type="primary" style="margin-left: 10px" icon="el-icon-plus" :disabled="!collectionName" @click="handleCreateIndex">创建索引</el-button>
         </div>
         <el-table :data="indexes" border style="width: 100%">
           <el-table-column prop="name" label="索引名称" align="center" />
@@ -79,56 +72,57 @@
           </el-table-column>
         </el-table>
       </div>
+    </el-drawer>
 
-      <!-- 记录dialog -->
-      <el-dialog title="添加记录" :visible.sync="showCreateRecordDialog">
-        <json-editor v-model="newRecord" :dark="true" :height="500" />
-        <div style="text-align:right;margin-top: 10px;">
-          <el-button
-            type="info"
-            @click="showCreateRecordDialog = false"
-          >
-            取消
-          </el-button>
-          <el-button type="primary" @click="addRecord">确认</el-button>
-        </div>
-      </el-dialog>
+    <!-- 添加/编辑文档表单 -->
+    <el-drawer
+      :title="formMode === 'edit' ? '编辑文档' : '添加文档'"
+      size="50%"
+      :visible.sync="showDocEditorForm"
+      :direction="direction"
+    >
+      <el-header>
+        <el-button size="mini" type="primary" :disabled="!collectionName" @click="formMode === 'edit' ? updateDocument() : addDocument()">保存</el-button>
+      </el-header>
+      <el-main>
+        <json-editor v-model="record" class="db-editor" :line-numbers="true" :dark="false" :height="600" />
+      </el-main>
+    </el-drawer>
 
-      <!-- 索引dialog -->
-      <el-dialog title="创建索引" :visible.sync="showCreateIndexDialog">
-        <el-form :model="createIndexForm" label-width="100px" style="width:600px">
-          <el-form-item label="索引名称">
-            <el-input v-model="createIndexForm.name" placeholder="请输入索引名称" />
-          </el-form-item>
-          <el-form-item label="索引属性">
-            <el-radio-group v-model="createIndexForm.unique">
-              <el-radio :label="true">唯一</el-radio>
-              <el-radio :label="false">非唯一</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="索引字段" style="width: 250px">
-            <el-input v-model.trim="createIndexForm.key" placeholder="请输入索引字段" />
-          </el-form-item>
-        </el-form>
-        <div style="text-align:right;">
-          <el-button
-            type="info"
-            @click="showCreateIndexDialog = false"
-          >
-            取消
-          </el-button>
-          <el-button type="primary" @click="createIndex">确认</el-button>
-        </div>
-      </el-dialog>
-    </div>
+    <!-- 索引dialog -->
+    <el-dialog title="创建索引" :visible.sync="showCreateIndexDialog">
+      <el-form :model="createIndexForm" label-width="100px" style="width:600px">
+        <el-form-item label="索引名称">
+          <el-input v-model="createIndexForm.name" placeholder="请输入索引名称" />
+        </el-form-item>
+        <el-form-item label="索引属性">
+          <el-radio-group v-model="createIndexForm.unique">
+            <el-radio :label="true">唯一</el-radio>
+            <el-radio :label="false">非唯一</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="索引字段" style="width: 250px">
+          <el-input v-model.trim="createIndexForm.key" placeholder="请输入索引字段" />
+        </el-form-item>
+      </el-form>
+      <div style="text-align:right;">
+        <el-button
+          type="info"
+          @click="showCreateIndexDialog = false"
+        >
+          取消
+        </el-button>
+        <el-button type="primary" @click="createIndex">确认</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 
 import { getCollections, getCollectionIndexes, deleCollectionIndex, setCollectionIndexes, getDb } from '@/api/collec'
-import MiniPagination from '@/components/Pagination/mini'
 import JsonEditor from '@/components/JsonEditor/param'
+import MiniPagination from '@/components/Pagination/mini'
 
 const db = getDb()
 
@@ -150,9 +144,11 @@ export default {
       indexes: [],
       total: 0,
       record: {},
-      newRecord: {},
+      // newRecord: {},
       showCreateIndexDialog: false,
-      showCreateRecordDialog: false,
+      showDocEditorForm: false,
+      showIndexesList: false,
+      formMode: 'edit',
       createIndexForm: {}
     }
   },
@@ -161,11 +157,7 @@ export default {
       if (val) {
         this.getList()
         this.getIndexes()
-        this.getRecord({})
       }
-    },
-    'listQuery.page'() {
-      this.getRecord({})
     }
   },
   async created() {
@@ -174,7 +166,6 @@ export default {
   methods: {
     async getCollections() {
       const ret = await getCollections()
-
       this.collections = ret || []
     },
 
@@ -209,18 +200,6 @@ export default {
       this.total = total
     },
 
-    async deleRecord(record) {
-      await this.$confirm('确认要删除此数据？', '删除确认')
-
-      await db.collection(this.collectionName)
-        .where({ _id: record._id })
-        .remove()
-    },
-
-    getRecord(val) {
-      this.record = val
-    },
-
     getClass(val) {
       let record = this.record
       const isString = typeof (record) === 'string'
@@ -229,37 +208,48 @@ export default {
 
       return val._id === record._id ? 'active' : ''
     },
+    async deleRecord(record) {
+      await this.$confirm('确认要删除此数据？', '删除确认')
 
-    async updateRecord() {
+      await db.collection(this.collectionName)
+        .where({ _id: record._id })
+        .remove()
+    },
+
+    handleEditRecord(val) {
+      this.record = val
+      this.formMode = 'edit'
+      this.showDocEditorForm = true
+    },
+    async updateDocument() {
       await this.$confirm('确认要更新数据？', '确认')
       const record = typeof this.record === 'string' ? JSON.parse(this.record) : this.record
 
       const { _id, ...params } = record
       if (!_id) return
 
-      Reflect.deleteProperty(params, 'created_at')
-
       const ret = await db
         .collection(this.collectionName)
-        .where({
-          _id: _id
-        })
-        .update({ ...params, updated_at: Date.now() })
+        .doc(_id)
+        .set({ ...params })
 
       if (ret) {
         this.$message('更新成功')
         this.getList()
       }
     },
-
-    async addRecord() {
+    handleCreateRecord() {
+      this.formMode = 'create'
+      this.record = {}
+      this.showDocEditorForm = true
+    },
+    async addDocument() {
       try {
-        const params = JSON.parse(this.newRecord)
+        const params = JSON.parse(this.record)
         const r = await db.collection(this.collectionName)
           .add({
             ...params,
-            created_at: Date.now(),
-            updated_at: Date.now()
+            created_at: Date.now()
           })
 
         if (!r.id) {
@@ -276,7 +266,7 @@ export default {
         })
 
         this.getList()
-        this.showCreateRecordDialog = false
+        this.showDocEditorForm = false
       } catch (error) {
         this.$notify({
           type: 'error',
@@ -284,12 +274,18 @@ export default {
         })
       }
     },
-
+    /**
+     * 获取集合索引列表
+     */
     async getIndexes() {
+      if (!this.collectionName) return
       const ret = await getCollectionIndexes(this.collectionName)
       this.indexes = ret
     },
 
+    /**
+     * 删除索引
+     */
     async deleIndex(index) {
       await this.$confirm('确认要删除此数据？', '删除确认')
       await deleCollectionIndex(this.collectionName, index.name)
@@ -298,6 +294,9 @@ export default {
       this.getIndexes()
     },
 
+    /**
+     * 创建索引
+     */
     async createIndex() {
       const form = this.createIndexForm
       const keyName = form.key
@@ -316,10 +315,6 @@ export default {
 
     handleCreateIndex() {
       this.showCreateIndexDialog = true
-    },
-
-    handleCreateRecord() {
-      this.showCreateRecordDialog = true
     }
   }
 }
@@ -332,36 +327,64 @@ export default {
     line-height: 60px;
   }
 
-  .el-aside {
-    color: #333;
-    .record-item {
-      padding: 6px;
-      font-size: 14px;
-      color: #666;
-      margin: 4px 0;
-      cursor:pointer;
-      background: #f2f2f2;
-      position: relative;
+  .collection-list {
+      background-color: #fff;
+      padding: 8px;
+      box-sizing: border-box;
 
-      .close {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%)
-      }
+    .label {
+      font-size: 14px;
+      color: gray;
+      margin-bottom: 10px;
     }
-    .record-item.active {
-      color: blue;
+
+    .radio-group {
+      width: 100%;
+      overflow-y: scroll;
+      overflow-x: hidden;
+    }
+
+    .radio-group::-webkit-scrollbar {
+        display: none;
+    }
+
+    .collection-radio {
+      width: 90%;
+      margin-bottom: 8px;
+      margin-left: 0 !important;
     }
   }
 
-  .el-main {
-    padding: 0;
+  .record-list {
+    display: flex;
+    flex-direction: column;
+    padding: 3px;
     width: 100%;
-    height: 100%;
-    overflow: hidden;
-    // .db-editor {
-      // border: 1px solid lightgray
-    // }
+    // height: calc(100vh - 200px);
+    overflow-y: scroll;
+
+    .record-item {
+      display: flex;
+      justify-content: space-between;
+      border: 1px solid #eee;
+      margin-bottom: 10px;
+      padding: 0 8px;
+      border-radius: 3px;
+      .doc {
+        flex: 1
+      }
+      .tools {
+        width: 160px;
+        text-align: right;
+        padding-top: 15px;
+        .tools-btn {
+          // margin-left: 10px;
+        }
+      }
+    }
+
+    .record-item.active {
+      border: 1px solid rgb(232, 180, 10);
+    }
   }
 </style>

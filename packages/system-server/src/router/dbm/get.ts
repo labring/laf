@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:26:26
- * @LastEditTime: 2021-09-04 00:29:27
+ * @LastEditTime: 2021-10-13 21:30:55
  * @Description: 
  */
 
@@ -28,8 +28,8 @@ export async function handleCollectionList(req: Request, res: Response) {
 
   const collections = await accessor.db.listCollections().toArray()
   const names = collections
-    // .filter(coll => !coll.name.startsWith('__deployed__'))
-    .map(coll => coll.name)
+    .filter(coll => !coll.name.startsWith('__'))
+    // .map(coll => coll.name)
     .sort()
 
   return res.send(names)

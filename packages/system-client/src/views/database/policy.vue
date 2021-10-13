@@ -287,7 +287,7 @@ export default {
     .collection-radio {
       width: 80%;
       margin-bottom: 10px;
-      margin-left: 0px;
+      margin-left: 0px !important;
     }
   }
 
