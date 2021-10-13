@@ -6,7 +6,7 @@
  */
 
 import * as express from 'express'
-import { handleDbProxy } from './entry'
+import { handleDbProxy } from './proxy'
 import { handleCollectionList } from './collections'
 import { handleGetIndexesOfCollection } from './get-indexes'
 import { handleCreateIndex } from './add-index'
