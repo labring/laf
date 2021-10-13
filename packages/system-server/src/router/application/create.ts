@@ -7,7 +7,7 @@
 
 import * as assert from 'assert'
 import { Request, Response } from 'express'
-import { getAccountByAppid } from '../../api/account'
+import { getAccountById } from '../../api/account'
 import { ApplicationStruct, createApplicationDb, generateAppid, getMyApplications } from '../../api/application'
 import { Constants } from '../../constants'
 import { ErrorCodes } from '../../constants/error-code'
@@ -26,7 +26,7 @@ export async function handleCreateApplication(req: Request, res: Response) {
   const db = DatabaseAgent.db
 
   // check the application quota in account
-  const account = await getAccountByAppid(uid)
+  const account = await getAccountById(uid)
   assert.ok(account, 'empty account got')
   const app_quota = account.quota?.app_count ?? 0
   const my_apps = await getMyApplications(uid)

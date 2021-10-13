@@ -7,7 +7,7 @@ import { ObjectId } from "mongodb"
 /**
  * Get an account by account_id
  */
-export async function getAccountByAppid(uid: string) {
+export async function getAccountById(uid: string) {
   assert.ok(uid, 'empty uid got')
 
   const db = DatabaseAgent.db
@@ -37,7 +37,7 @@ export async function getAccountByUsername(username: string) {
  */
 export async function isValidAccountId(uid: string) {
   if (!uid) return false
-  const account = await getAccountByAppid(uid)
+  const account = await getAccountById(uid)
   return account ? true : false
 }
 
