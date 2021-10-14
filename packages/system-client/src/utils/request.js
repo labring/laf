@@ -2,7 +2,7 @@ import axios from 'axios'
 import { MessageBox } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
-import { showError, showInfo } from './show'
+import { showInfo } from './show'
 
 // create an axios instance
 const service = axios.create({
@@ -66,7 +66,7 @@ service.interceptors.response.use(
       return Promise.reject(error)
     }
 
-    showError(error.message)
+    // showError(error.message)
     return Promise.reject(error)
   }
 )

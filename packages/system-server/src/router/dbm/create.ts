@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:26:26
- * @LastEditTime: 2021-10-14 12:25:19
+ * @LastEditTime: 2021-10-14 14:03:32
  * @Description: 
  */
 
@@ -12,9 +12,9 @@ import { Request, Response } from 'express'
 
 
 /**
- * Get collection name lists
+ * Create collection
  */
-export async function handleCollectionList(req: Request, res: Response) {
+export async function handleCreateCollection(req: Request, res: Response) {
   const uid = req['auth']?.uid
   const app: ApplicationStruct = req['parsed-app']
 
@@ -24,9 +24,21 @@ export async function handleCollectionList(req: Request, res: Response) {
     return res.status(code).send()
   }
 
+  const collectionName = req.body?.collectionName
+  if (!collectionName) {
+    return res.status(422).send('collection name got empty')
+  }
+
   const accessor = await getApplicationDbAccessor(app)
 
-  const collections = await accessor.db.listCollections().toArray()
-  const result = collections.filter(coll => !coll.name.startsWith('__'))
-  return res.send(result)
+  const db = accessor.db
+  try {
+    await db.createCollection(collectionName)
+    return res.send({ code: 0, data: 'ok' })
+  } catch (error) {
+    return res.status(400).send({
+      error: error.message,
+      code: error.codeName
+    })
+  }
 }

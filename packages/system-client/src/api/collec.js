@@ -5,15 +5,48 @@ import { Cloud } from 'laf-client-sdk'
 
 /**
  * Get collection list
- * @param {*} query
- * @param {*} page
- * @param {*} pageSize
  */
 export function getCollections() {
   const appid = store.state.app.appid
   return request({
     url: `/apps/${appid}/dbm/collections`,
     method: 'get'
+  })
+}
+
+/**
+ * Create collection
+ * @param {string} collectionName
+ */
+export function createCollection(collectionName) {
+  const appid = store.state.app.appid
+  return request({
+    url: `/apps/${appid}/dbm/collections`,
+    method: 'post',
+    data: {
+      collectionName
+    }
+  })
+}
+
+/**
+ * Update collection
+ * @param {string} collectionName
+ * @param {object} validatorSchema
+ * @param {string} validatorLevel
+ */
+export function updateCollection(collectionName, validatorSchema, validatorLevel = 'strict') {
+  const appid = store.state.app.appid
+  return request({
+    url: `/apps/${appid}/dbm/collections`,
+    method: 'put',
+    data: {
+      collectionName,
+      options: {
+        validatorSchema,
+        validatorLevel
+      }
+    }
   })
 }
 

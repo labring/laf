@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:26:26
- * @LastEditTime: 2021-10-13 15:17:27
+ * @LastEditTime: 2021-10-14 14:30:41
  * @Description: 
  */
 
@@ -42,8 +42,15 @@ export async function handleDbProxy(req: Request, res: Response) {
       data
     })
   } catch (error) {
+    if (error.code === 121) {
+      const errs = error.errInfo?.details?.schemaRulesNotSatisfied
+      return res.send({
+        code: error.code,
+        error: errs,
+      })
+    }
     return res.send({
-      code: 1,
+      code: error.code || 1,
       error: error
     })
   }
