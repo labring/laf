@@ -1,4 +1,80 @@
-# [](https://github.com/Maslow/laf/compare/v0.5.8-alpha.0...v) (2021-09-28)
+# [](https://github.com/Maslow/laf/compare/v0.6.0-alpha.5...v) (2021-10-14)
+
+
+
+# [0.6.0-alpha.5](https://github.com/Maslow/laf/compare/v0.6.0-alpha.4...v0.6.0-alpha.5) (2021-10-14)
+
+
+### Bug Fixes
+
+* **db-ql:** restore the code field in query result ([decaeec](https://github.com/Maslow/laf/commit/decaeece27f872637ff9cd37d2880c39d6328f20))
+
+
+### Features
+
+* **dbm:** impl db schema; impl create db; ([2f29bfd](https://github.com/Maslow/laf/commit/2f29bfd0849d488ff1997c769b8d6301cd8ceb50))
+
+
+
+# [0.6.0-alpha.4](https://github.com/Maslow/laf/compare/v0.6.0-alpha.3...v0.6.0-alpha.4) (2021-10-07)
+
+
+### Bug Fixes
+
+* **db-proxy:** remove stale objectid logic ([56ba516](https://github.com/Maslow/laf/commit/56ba5163899d14fd2c96701eac7875bb67644fa7))
+* **db-ql:** remove res data format ([8064384](https://github.com/Maslow/laf/commit/806438429b6fc4eb75ca67194496cfd39aeaa438))
+
+
+### Features
+
+* **sys-server:** rewrite all db orm in sys server, use mongo db api instead ([2c54c05](https://github.com/Maslow/laf/commit/2c54c05a8885a69733bc70b021e05f6a98dbe3e6))
+
+
+
+# [0.6.0-alpha.3](https://github.com/Maslow/laf/compare/v0.6.0-alpha.2...v0.6.0-alpha.3) (2021-10-07)
+
+
+### Bug Fixes
+
+* **sys-server:** fix ACCOUNT_DEFAULT_APP_QUOTA's type ([ffb2d08](https://github.com/Maslow/laf/commit/ffb2d085696f462cd07da837e69c97d065bfbdc3))
+
+
+### Features
+
+* **db-proxy:** abandon ObjectId type support use string instead ([b97066a](https://github.com/Maslow/laf/commit/b97066a28e21177ccfcc488368b08ed1f9bb2399))
+* **db-ql:** add generate string id support ([7f01d5d](https://github.com/Maslow/laf/commit/7f01d5d6ea5b51663630b682f72efcee31a5f3d6))
+
+
+
+# [0.6.0-alpha.2](https://github.com/Maslow/laf/compare/v0.6.0-alpha.1...v0.6.0-alpha.2) (2021-10-06)
+
+
+### Bug Fixes
+
+* **sys-client:** fix function editor default types loading ([b411785](https://github.com/Maslow/laf/commit/b41178589f65082b502efbbbbb3c419169d5ea48))
+
+
+
+# [0.6.0-alpha.1](https://github.com/Maslow/laf/compare/v0.6.0-alpha.0...v0.6.0-alpha.1) (2021-10-06)
+
+
+### Bug Fixes
+
+* **app-service:** fix uuid gen error; ([d7ecd76](https://github.com/Maslow/laf/commit/d7ecd76abff9dc02ba9b6c77524ff7f2e5d63918))
+
+
+
+# [0.6.0-alpha.0](https://github.com/Maslow/laf/compare/v0.5.8-alpha.0...v0.6.0-alpha.0) (2021-10-06)
+
+
+### Bug Fixes
+
+* use db distinct to refact tags retreiving ([abf40ce](https://github.com/Maslow/laf/commit/abf40cec603e9fce17c3161e79e760e0c6b56eae))
+
+
+### Performance Improvements
+
+* **memory:** remove ts pkg (compile) to reduce 20mb memory useage; ([67b36c4](https://github.com/Maslow/laf/commit/67b36c42a1eceb41fa364e69ff109fe7ab3ae877))
 
 
 
