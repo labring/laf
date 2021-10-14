@@ -1,6 +1,6 @@
 {
   "name": "system-client",
-  "version": "0.6.0-alpha.4",
+  "version": "0.6.0-alpha.5",
   "description": "system-client of laf",
   "author": "Maslow <wangfugen@126.com>",
   "private": true,
@@ -21,7 +21,7 @@
     "element-ui": "2.13.2",
     "file-saver": "2.0.1",
     "js-cookie": "2.2.0",
-    "laf-client-sdk": "^0.6.0-alpha.4",
+    "laf-client-sdk": "^0.6.0-alpha.5",
     "lodash": "^4.17.21",
     "monaco-editor": "^0.25.0",
     "normalize.css": "7.0.0",
