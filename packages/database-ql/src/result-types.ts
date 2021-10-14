@@ -1,9 +1,6 @@
 
 interface BaseResult {
   requestId?: string
-  /**
-   * @deprecated This field is deprecated , use `ok` instead
-   */
   code?: string | number
   error?: string
   ok?: boolean

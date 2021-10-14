@@ -454,7 +454,8 @@ export class Query {
         error: res.error,
         data: res.data,
         requestId: res.requestId,
-        ok: false
+        ok: false,
+        code: res.code
       }
     }
 
@@ -605,7 +606,8 @@ export class Query {
         requestId: res.requestId,
         ok: false,
         error: res.error,
-        total: undefined
+        total: undefined,
+        code: res.code
       }
     }
 
@@ -670,7 +672,8 @@ export class Query {
       return {
         requestId: res.requestId,
         error: res.error,
-        ok: false
+        ok: false,
+        code: res.code
       }
     }
 
@@ -719,7 +722,8 @@ export class Query {
         requestId: res.requestId,
         error: res.error,
         ok: false,
-        deleted: undefined
+        deleted: undefined,
+        code: res.code
       }
     }
 

@@ -100,7 +100,8 @@ export class DocumentReference {
         error: res.error,
         ok: false,
         id: undefined,
-        insertedCount: undefined
+        insertedCount: undefined,
+        code: res.code
       }
     }
 
@@ -186,6 +187,7 @@ export class DocumentReference {
         requestId: res.requestId,
         error: res.error,
         ok: false,
+        code: res.code
       }
     }
 
@@ -237,7 +239,8 @@ export class DocumentReference {
       return {
         requestId: res.requestId,
         error: res.error,
-        ok: false
+        ok: false,
+        code: res.code
       }
     }
 
