@@ -69,6 +69,7 @@
     "signin",
     "uids",
     "upsert",
-    "upserted"
+    "upserted",
+    "vitepress"
   ]
 }
