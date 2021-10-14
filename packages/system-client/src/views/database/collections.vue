@@ -10,7 +10,7 @@
       <el-button size="mini" plain type="success" style="margin-left: 10px" icon="el-icon-plus" :disabled="!collectionName" @click="handleCreateRecord">添加记录</el-button>
 
     </div>
-    <el-container style="height: calc(100vh - 130px); border: 1px solid #eee">
+    <el-container style="height: calc(100vh - 140px); border: 1px solid #eee">
       <el-aside width="240px" class="collection-list">
         <div class="label">
           选择集合
@@ -341,19 +341,21 @@ export default {
     async updateDocument() {
       await this.$confirm('确认要更新数据？', '确认')
       const record = typeof this.record === 'string' ? JSON.parse(this.record) : this.record
-
       const { _id, ...params } = record
       if (!_id) return
 
-      const ret = await db
+      const r = await db
         .collection(this.collectionName)
         .doc(_id)
         .set({ ...params })
 
-      if (ret) {
-        this.$message('更新成功')
-        this.getList()
+      if (r.error) {
+        const message = typeof r.error !== 'string' ? JSON.stringify(r.error) : r.error
+        return showError('更新失败: ' + message)
       }
+
+      showSuccess('更新成功')
+      this.getList()
     },
     handleCreateRecord() {
       this.formMode = 'create'
@@ -364,28 +366,18 @@ export default {
       try {
         const params = JSON.parse(this.record)
         const r = await db.collection(this.collectionName)
-          .add({
-            ...params
-          })
+          .add({ ...params })
 
         if (r.error) {
-          console.log(r.code)
           const message = typeof r.error !== 'string' ? JSON.stringify(r.error) : r.error
-          return showError('创建失败: ' + message)
+          return showError('添加失败: ' + message)
         }
 
-        this.$notify({
-          type: 'success',
-          message: '创建成功！'
-        })
-
+        showSuccess('添加成功')
         this.getList()
         this.showDocEditorForm = false
       } catch (error) {
-        this.$notify({
-          type: 'error',
-          message: '创建失败！' + error
-        })
+        showError('创建失败！' + error)
       }
     },
     /**
