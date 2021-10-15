@@ -31,6 +31,9 @@ services:
     command: npx nodemon
     volumes:
       - ./packages/storage-service:/app
+      - ./packages/database-proxy:/app/node_modules/database-proxy:ro
+      - ./packages/database-ql:/app/node_modules/database-ql:ro
+      - ./packages/database-ql:/app/node_modules/database-proxy/node_modules/database-ql:ro
     ports:
       - "9001:9001"
     depends_on:
@@ -57,18 +60,18 @@ services:
       APP_SERVICE_DEPLOY_URL_SCHEMA: 'http'
     command: npx nodemon
     volumes:
-      - ./packages/system-server/dist:/app/dist
-      - ./packages/system-server/package.json:/app/package.json:cached
-      - ./packages/system-server/node_modules:/app/node_modules:cached
-      - /var/run/docker.sock:/var/run/docker.sock:cached
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./packages/system-server:/app
+      - ./packages/cloud-function-engine:/app/node_modules/cloud-function-engine:ro
+      - ./packages/database-proxy:/app/node_modules/database-proxy:ro
+      - ./packages/database-ql:/app/node_modules/database-ql:ro
+      - ./packages/database-ql:/app/node_modules/database-proxy/node_modules/database-ql:ro
     user: root
     ports:
       - "9000"
     depends_on:
       - mongo
-    # tmpfs:
-    #   - /tmp
-    # restart: always
+    restart: always
     networks:
       - laf_shared_network
 
