@@ -65,6 +65,7 @@
     "bson",
     "coll",
     "dockerode",
+    "EJSON",
     "lafyun",
     "signin",
     "uids",

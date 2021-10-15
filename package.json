@@ -7,9 +7,9 @@
     "url": "git+https://github.com/Maslow/laf.git"
   },
   "scripts": {
-    "install": "lerna exec npm install",
+    "install": "lerna exec npm install --parallel",
     "install-dev": "lerna bootstrap",
-    "build": "lerna run build",
+    "build": "lerna run build --parallel",
     "watch": "lerna run watch --parallel",
     "prepublishOnly": "npm run build",
     "changelog": "npx conventional-changelog -i CHANGELOG.md -s -r 0 -p angular",
