@@ -105,26 +105,29 @@ docker pull lessx/laf-app-server:latest
 # 启动所有服务
 docker-compose up
 
-# 浏览器打开 http://locahost:8080 访问
+# 浏览器打开 http://console.local-dev.host:8080 访问
 ```
 
 ### 开发环境（开发者）
 
 ```sh
 # install dependencies
-npm run install   # NOT `npm install`
+npm install
 
-# build packages
-npm run build
+# bootstrap packages
+npx lerna bootstrap
 
-# watch codes changing while developing
-npm run watch
+# build & watch packages
+npm run build && npm run watch
 
+# create a shared network in docker
 docker network create laf_shared_network --driver bridge || true
-docker pull lessx/laf-app-server:latest
+
+# download the app service image
+docker pull lafyun/laf-app-service:latest
 
 # launch laf services
 docker-compose up
 
-# Now open http://locahost:8080 in your browsers!
+# Now open http://console.local-dev.host:8080 in your browsers!
 ```
