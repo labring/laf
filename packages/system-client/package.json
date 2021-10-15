@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "bson": "^4.5.3",
     "clipboard": "2.0.4",
     "element-ui": "2.13.2",
     "file-saver": "2.0.1",

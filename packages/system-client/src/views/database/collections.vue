@@ -22,7 +22,7 @@
       </el-aside>
 
       <el-container class="record-list">
-        <div v-for="item in list" :key="item._id" class="record-item" :class="getClass(item)">
+        <div v-for="item in list" :key="item._id.toString()" class="record-item" :class="getClass(item)">
           <div class="doc">
             <pre class="">{{ item }}</pre>
           </div>
@@ -158,6 +158,7 @@ import { getCollections, getCollectionIndexes, deleCollectionIndex, setCollectio
 import JsonEditor from '@/components/JsonEditor/param'
 import MiniPagination from '@/components/Pagination/mini'
 import { showError, showSuccess } from '@/utils/show'
+import { EJSON } from 'bson'
 
 const db = getDb()
 
@@ -334,20 +335,25 @@ export default {
       this.getList()
     },
     handleEditRecord(val) {
-      this.record = val
+      this.record = EJSON.serialize(val)
       this.formMode = 'edit'
       this.showDocEditorForm = true
     },
     async updateDocument() {
       await this.$confirm('确认要更新数据？', '确认')
-      const record = typeof this.record === 'string' ? JSON.parse(this.record) : this.record
-      const { _id, ...params } = record
+      // 将 [EJSON字符串] 解析为 [JSON对象]
+      const parsed = typeof this.record === 'string' ? JSON.parse(this.record) : this.record
+
+      // 将 [JSON对象] 序列化为 [EJSON对象]
+      const serialized = EJSON.serialize(parsed)
+      const { _id, ...params } = serialized
+
       if (!_id) return
 
       const r = await db
         .collection(this.collectionName)
-        .doc(_id)
-        .set({ ...params })
+        .where({ _id })
+        .update({ ...params })
 
       if (r.error) {
         const message = typeof r.error !== 'string' ? JSON.stringify(r.error) : r.error
