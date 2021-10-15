@@ -1,9 +1,9 @@
 # !!! This compose file only for development use
 version: '3.8'
-services: 
+services:
   mongo:
     image: bitnami/mongodb:5.0
-    environment: 
+    environment:
       - MONGODB_REPLICA_SET_MODE=primary
       - MONGODB_INITIAL_PRIMARY_HOST=mongo
       - MONGODB_ADVERTISED_HOSTNAME=mongo
@@ -18,14 +18,34 @@ services:
       - db-data:/bitnami/mongodb
     ports:
       - "27017:27017"
-    networks: 
+    networks:
       - laf_shared_network
-      
+
+  storage-service:
+    image: node:16-alpine
+    user: root
+    working_dir: /app
+    environment:
+      DB_URI : mongodb://root:password123@mongo:27017/laf-fs?authSource=admin&replicaSet=laf&writeConcern=majority
+      LOG_LEVEL : debug
+    command: npx nodemon
+    volumes:
+      - ./packages/storage-service:/app
+    ports:
+      - "9001:9001"
+    depends_on:
+      - mongo
+    tmpfs:
+      - /tmp
+    restart: always
+    networks:
+      - laf_shared_network
+
   system_server:
     image: node:16-alpine
     user: root
     working_dir: /app
-    environment: 
+    environment:
       SYS_DB_URI: mongodb://my_user:password123@mongo:27017/?authSource=laf-sys&replicaSet=laf&writeConcern=majority
       APP_DB_URI: mongodb://root:password123@mongo:27017/?authSource=admin&replicaSet=laf&writeConcern=majority
       SYS_SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
@@ -44,33 +64,34 @@ services:
     user: root
     ports:
       - "9000"
-    depends_on: 
+    depends_on:
       - mongo
-    # tmpfs: 
+    # tmpfs:
     #   - /tmp
     # restart: always
-    networks: 
+    networks:
       - laf_shared_network
 
   system_client:
     image: nginx:latest
-    depends_on: 
+    depends_on:
       - mongo
       - system_server
-    environment: 
+    environment:
       DEPLOY_DOMAIN: "*.local-dev.host"     # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
       SYS_CLIENT_HOST: console.local-dev.host
     volumes:
       - ./packages/system-client/dist:/app
       - ./packages/system-client/nginx.conf:/etc/nginx/templates/default.conf.template
-    ports: 
+    ports:
       - 8080:80
-    networks: 
+    networks:
       - laf_shared_network
-      
+
 volumes:
   db-data:
-      
+  grifs-data:
+
 networks:
   laf_shared_network:
     external: true
