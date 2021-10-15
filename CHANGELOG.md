@@ -1,4 +1,25 @@
-# [](https://github.com/Maslow/laf/compare/v0.6.0-alpha.5...v) (2021-10-14)
+# [](https://github.com/Maslow/laf/compare/v0.6.0-alpha.7...v) (2021-10-15)
+
+
+
+# [0.6.0-alpha.7](https://github.com/Maslow/laf/compare/v0.6.0-alpha.6...v0.6.0-alpha.7) (2021-10-15)
+
+
+### Features
+
+* **db-proxy:** impl ejson for mongo; ([52ef727](https://github.com/Maslow/laf/commit/52ef727051885045ad56873675bf726fcb1beb97))
+* **db-ql:** add ejson support; add ObjectId & Binary support; ([4471e6f](https://github.com/Maslow/laf/commit/4471e6f30e75a3526e7af952eecc263b9bfcd2c2))
+* **db-ql:** mark serverDate regexp as deprecated ([be9eb27](https://github.com/Maslow/laf/commit/be9eb272145da03713391da7be89beceb8e8b5cf))
+* **sys-client:** add ejson ObjectId & Binaray type support to dbm; ([0097910](https://github.com/Maslow/laf/commit/0097910cb228aafcb4e8587d2b29f33de1a39b82))
+
+
+
+# [0.6.0-alpha.6](https://github.com/Maslow/laf/compare/v0.6.0-alpha.5...v0.6.0-alpha.6) (2021-10-14)
+
+
+### Bug Fixes
+
+* **sys-client:** dbm - update doc error catch ([d1babbc](https://github.com/Maslow/laf/commit/d1babbc00b53e2ae91c90e4601ce6a5ce77a0c24))
 
 
 
