@@ -7,6 +7,7 @@ import { UpdateSerializer } from './serializer/update'
 import { ErrorCode } from './constant'
 import { GetOneRes, GetRes, CountRes, UpdateRes, RemoveRes } from './result-types'
 import { RequestInterface } from './interface'
+import { Util } from './util'
 
 
 
@@ -172,7 +173,7 @@ export class Query {
    * @param query
    */
   public where(query: object) {
-    // query校验 1. 必填对象类型  2. value 不可均为undefiend
+    // query校验 1. 必填对象类型  2. value 不可均为 undefiend
     if (Object.prototype.toString.call(query).slice(8, -1) !== 'Object') {
       throw Error(ErrorCode.QueryParamTypeError)
     }
@@ -187,10 +188,11 @@ export class Query {
       throw Error(ErrorCode.QueryParamValueError)
     }
 
+    const _query = QuerySerializer.encode(query)
     return new Query(
       this._db,
       this._coll,
-      QuerySerializer.encode(query),
+      _query,
       this._fieldOrders,
       this._queryOptions,
       this._joins,
@@ -459,9 +461,9 @@ export class Query {
       }
     }
 
-    // const documents = Util.formatResDocumentData(res.data.list)
+    const documents = Util.formatResDocumentData(res.data.list)
     const result: any = {
-      data: res.data.list,
+      data: documents,
       requestId: res.requestId,
       ok: true
     }

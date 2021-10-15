@@ -24,7 +24,7 @@ interface IPushModifiers {
 }
 
 export class UpdateSerializer {
-  private constructor() {}
+  private constructor() { }
 
   static encode(query: IQueryCondition | UpdateCommand): IUpdateCondition {
     const stringifier = new UpdateSerializer()

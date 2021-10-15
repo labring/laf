@@ -87,4 +87,13 @@ export class Db {
     const id = new ObjectId()
     return id.toHexString()
   }
+
+  /**
+   * Wrapper for ObjectId() of mongodb
+   * @param params 
+   * @returns 
+   */
+  ObjectId(id?: string | number | ObjectId) {
+    return new ObjectId(id)
+  }
 }

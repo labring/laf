@@ -33,9 +33,9 @@ export class CollectionReference extends Query {
    *
    * @param docID - 文档ID
    */
-  doc(docID?: string | number): DocumentReference {
-    if (typeof docID !== 'string' && typeof docID !== 'number') {
-      throw new Error('docId 必须为字符串或数字')
+  doc(docID: string | number): DocumentReference {
+    if (!docID) {
+      throw new Error('docID cannot be empty')
     }
     return new DocumentReference(this._db, this._coll, docID)
   }

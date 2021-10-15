@@ -6,6 +6,8 @@ import { UpdateCommand } from './commands/update'
 import { QueryType } from './constant'
 import { AddRes, GetOneRes, RemoveRes, UpdateRes } from './result-types'
 import { RequestInterface } from './interface'
+import { EJSON, ObjectId } from 'bson'
+import { isObjectId } from './utils/type'
 // import { Util } from './util'
 
 
@@ -17,7 +19,7 @@ export class DocumentReference {
   /**
    * 文档ID
    */
-  readonly id: string | number
+  readonly id: string | number | ObjectId
 
   /**
    *
@@ -58,10 +60,10 @@ export class DocumentReference {
    * @param coll  - 集合名称
    * @param docID - 文档ID
    */
-  constructor(db: Db, coll: string, docID: string | number, projection = {}) {
+  constructor(db: Db, coll: string, docID: string | number | ObjectId, projection = {}) {
     this._db = db
     this._coll = coll
-    this.id = docID
+    this.id = isObjectId(docID) ? EJSON.serialize(docID) as ObjectId : docID
     /* eslint-disable new-cap*/
     this.request = this._db.request
     this.projection = projection

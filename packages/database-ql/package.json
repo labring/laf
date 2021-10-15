@@ -6,7 +6,7 @@
   "module": "dist/esm/index.js",
   "scripts": {
     "watch": "tsc -w",
-    "test": "mocha tests/*test.js",
+    "test": "mocha tests/units/*.test.js",
     "build": "tsc -p tsconfig.json && tsc -p tsconfig.esm.json",
     "eslint": "eslint \"./**/*.ts\"",
     "fix": "eslint --fix \"./**/*.ts\"",
@@ -34,7 +34,7 @@
     "typescript-eslint-parser": "^22.0.0"
   },
   "dependencies": {
-    "bson": "^4.0.2",
+    "bson": "^4.5.3",
     "lodash.clonedeep": "4.5.0",
     "lodash.set": "4.3.2",
     "lodash.unset": "4.5.2"

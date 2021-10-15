@@ -26,7 +26,7 @@ import {
 export type IQueryCondition = Record<string, any> | LogicCommand
 
 export class QuerySerializer {
-  constructor() {}
+  constructor() { }
 
   static encode(
     query: IQueryCondition | QueryCommand | LogicCommand

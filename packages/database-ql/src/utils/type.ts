@@ -1,3 +1,4 @@
+import { Binary, ObjectId } from 'bson'
 import { InternalSymbol } from './symbol'
 
 export const getType = (x: any): string => Object.prototype.toString.call(x).slice(8, -1).toLowerCase()
@@ -19,6 +20,11 @@ export const isDate = (x: any): x is Date => getType(x) === 'date'
 
 export const isRegExp = (x: any): x is RegExp => getType(x) === 'regexp'
 
+/**
+ * Internal Object can be:  `LogicCommand` | `QueryCommand` | `UpdateCommand`
+ * @param x 
+ * @returns 
+ */
 export const isInternalObject = (x: any): boolean => x && (x._internalType instanceof InternalSymbol)
 
 export const isPlainObject = (obj: any): obj is object => {
@@ -30,4 +36,12 @@ export const isPlainObject = (obj: any): obj is object => {
   }
 
   return Object.getPrototypeOf(obj) === proto
+}
+
+export const isObjectId = (x: any): x is ObjectId => {
+  return x?._bsontype === 'ObjectID'
+}
+
+export const isBinary = (x: any): x is Binary => {
+  return x?._bsontype === 'Binary'
 }

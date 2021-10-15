@@ -36,7 +36,9 @@ const FieldType = {
   Timestamp: 'Date',
   Command: 'Command',
   ServerDate: 'ServerDate',
-  BsonDate: 'BsonDate'
+  BsonDate: 'BsonDate',
+  ObjectId: 'ObjectId',
+  Binary: 'Binary'
 }
 
 /**

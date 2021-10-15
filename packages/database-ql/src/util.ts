@@ -1,3 +1,4 @@
+import { Binary, EJSON, ObjectId } from 'bson'
 import { FieldType } from './constant'
 import { Point, LineString, Polygon, MultiPoint, MultiLineString, MultiPolygon } from './geo/index'
 import { ServerDate } from './serverDate/index'
@@ -87,7 +88,12 @@ export class Util {
         case FieldType.ServerDate:
           realValue = new Date(item.$date)
           break
-
+        case FieldType.ObjectId:
+          realValue = EJSON.deserialize(item)
+          break
+        case FieldType.Binary:
+          realValue = EJSON.deserialize(item)
+          break
         default:
           realValue = item
       }
@@ -124,6 +130,10 @@ export class Util {
         obj instanceof ServerDate
       ) {
         return FieldType.ServerDate
+      } else if (obj instanceof ObjectId) {
+        return FieldType.ObjectId
+      } else if (obj instanceof Binary) {
+        return FieldType.Binary
       }
 
       if (obj.$timestamp) {
@@ -142,6 +152,10 @@ export class Util {
         type = FieldType.GeoMultiLineString
       } else if (MultiPolygon.validate(obj)) {
         type = FieldType.GeoMultiPolygon
+      } else if (obj.$oid) {
+        type = FieldType.ObjectId
+      } else if (obj.$binary) {
+        type = FieldType.Binary
       }
     }
     return type

@@ -1,10 +1,11 @@
 // transpile internal data type
 import { SYMBOL_GEO_POINT, SYMBOL_SERVER_DATE, SYMBOL_REGEXP } from '../helper/symbol'
-import { getType, isObject, isArray, isDate, isNumber, isInternalObject, isRegExp } from '../utils/type'
+import { getType, isObject, isArray, isDate, isNumber, isInternalObject, isRegExp, isObjectId, isBinary } from '../utils/type'
 import { Point } from '../geo/index'
 import { ServerDate } from '../serverDate/index'
 import { RegExp } from '../regexp/index'
 import { LogicCommand } from '../commands/logic'
+import { EJSON } from 'bson'
 
 export type IQueryCondition = Record<string, any> | LogicCommand
 
@@ -35,15 +36,8 @@ function serializeHelper(
         return val.toJSON ? val.toJSON() : val
       }
     }
-  } else if (isDate(val)) {
-    return {
-      $date: +val,
-    }
-  } else if (isRegExp(val)) {
-    return {
-      $regex: val.source,
-      $options: val.flags,
-    }
+  } else if (isDate(val) || isRegExp(val) || isObjectId(val) || isBinary(val)) {
+    return EJSON.serialize(val)
   } else if (isArray(val)) {
     return val.map(item => {
       if (visited.indexOf(item) > -1) {
