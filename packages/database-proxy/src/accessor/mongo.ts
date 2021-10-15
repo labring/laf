@@ -1,8 +1,10 @@
 import { AccessorInterface, ReadResult, UpdateResult, AddResult, RemoveResult, CountResult } from "./accessor"
 import { Params, ActionType, Order, Direction } from '../types'
 import { MongoClient, ObjectId, MongoClientOptions, Db, UpdateOptions, Filter } from 'mongodb'
+import * as mongodb from 'mongodb'
 import { DefaultLogger, LoggerInterface } from "../logger"
 import { EventEmitter } from "events"
+import { EJSON } from "bson"
 
 /**
  * Mongodb Accessor 负责执行 mongodb 数据操作
@@ -195,7 +197,8 @@ export class MongoAccessor implements AccessorInterface {
         const coll = this.db.collection(collection)
 
         let { query, order, offset, limit, projection } = params
-        query = query || {}
+        query = this.deserializedEjson(query || {})
+
         let options: any = {
             limit: 100,
             skip: 0
@@ -214,7 +217,8 @@ export class MongoAccessor implements AccessorInterface {
 
 
         this.emitResult(params, { data })
-        return { list: data, limit: options.limit, offset: options.skip }
+        const serialized = data.map(doc => this.serializeBson(doc))
+        return { list: serialized, limit: options.limit, offset: options.skip }
     }
 
     /**
@@ -228,8 +232,8 @@ export class MongoAccessor implements AccessorInterface {
 
         let { query, data, multi, upsert, merge } = params
 
-        query = query || {}
-        data = data || {}
+        query = this.deserializedEjson(query || {})
+        data = this.deserializedEjson(data || {})
 
         let options: UpdateOptions = {}
         if (upsert) options.upsert = upsert
@@ -247,7 +251,7 @@ export class MongoAccessor implements AccessorInterface {
             return _data
         }
 
-        let result: any
+        let result: mongodb.UpdateResult
 
         // multi 表示更新一条或多条
         if (!multi) {
@@ -256,11 +260,11 @@ export class MongoAccessor implements AccessorInterface {
         } else {
             options.upsert = false
             this.logger.debug(`mongo before update (updateMany) {${collection}}: `, { query, data, options, merge, multi })
-            result = await coll.updateMany(query, data, options)
+            result = await coll.updateMany(query, data, options) as mongodb.UpdateResult
         }
 
-        const ret = {
-            upsert_id: result.upsertedId,
+        const ret: UpdateResult = {
+            upsert_id: this.serializeBson(result.upsertedId) as any,
             updated: result.modifiedCount,
             matched: result.matchedCount
         }
@@ -279,9 +283,9 @@ export class MongoAccessor implements AccessorInterface {
     protected async add(collection: string, params: Params): Promise<AddResult> {
         const coll = this.db.collection(collection)
         let { data, multi } = params
-        data = data || {}
-        let result: any
+        data = this.deserializedEjson(data || {})
 
+        let result: mongodb.InsertOneResult | mongodb.InsertManyResult
         this.logger.debug(`mongo before add {${collection}}: `, { data, multi })
 
         // multi 表示单条或多条添加
@@ -294,10 +298,11 @@ export class MongoAccessor implements AccessorInterface {
             result = await coll.insertMany(data)
         }
 
-        const ret = {
-            _id: result.insertedIds || result.insertedId,
-            insertedCount: result.insertedCount
+        const ret: AddResult = {
+            _id: this.serializeBson((result as mongodb.InsertManyResult).insertedIds || (result as mongodb.InsertOneResult).insertedId) as any,
+            insertedCount: (result as mongodb.InsertManyResult).insertedCount
         }
+
         this.emitResult(params, ret)
         this.logger.debug(`mongo end of add {${collection}}: `, { data, multi, result: ret })
         return ret
@@ -312,9 +317,9 @@ export class MongoAccessor implements AccessorInterface {
     protected async remove(collection: string, params: Params): Promise<RemoveResult> {
         const coll = this.db.collection(collection)
         let { query, multi } = params
-        query = query || {}
-        let result: any
+        query = this.deserializedEjson(query || {})
 
+        let result: any
         this.logger.debug(`mongo before remove {${collection}}: `, { query, multi })
 
         // multi 表示单条或多条删除
@@ -342,7 +347,7 @@ export class MongoAccessor implements AccessorInterface {
     protected async count(collection: string, params: Params): Promise<CountResult> {
         const coll = this.db.collection(collection)
 
-        const query = params.query || {}
+        const query = this.deserializedEjson(params.query || {}) as any
         const options = {}
 
         this.logger.debug(`mongo before count {${collection}}: `, { query })
@@ -377,5 +382,25 @@ export class MongoAccessor implements AccessorInterface {
     protected generateDocId(): string {
         const id = new ObjectId()
         return id.toHexString()
+    }
+
+    /**
+     * Serialize Bson to Extended JSON
+     * @see https://docs.mongodb.com/manual/reference/mongodb-extended-json/
+     * @param bsonDoc 
+     * @returns 
+     */
+    protected serializeBson(bsonDoc: any) {
+        return EJSON.serialize(bsonDoc, { relaxed: true })
+    }
+
+    /**
+     * Deserialize Extended JSOn to Bson
+     * @see https://docs.mongodb.com/manual/reference/mongodb-extended-json/
+     * @param ejsonDoc 
+     * @returns 
+     */
+    protected deserializedEjson(ejsonDoc: any) {
+        return EJSON.deserialize(ejsonDoc, { relaxed: true })
     }
 }
