@@ -3,3 +3,6 @@ coverage
 .nyc_output
 .DS_Store
 DS_Store
+src
+tests
+docs
