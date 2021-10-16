@@ -1,4 +1,4 @@
-
+const { Db } = require('../../dist/commonjs/index')
 const Actions = {
   add: 'database.addDocument',
   get: 'database.queryDocument',
@@ -36,11 +36,15 @@ class MockRequest {
     }
 
     if (action === Actions.update) {
-      data = { updated: 0, upsert_id: '0' }
+      data = { updated: 1, upsert_id: '0' }
     }
 
     if (action === Actions.remove) {
-      data = { deleted: 0 }
+      data = { deleted: 1 }
+    }
+
+    if (action === Actions.add) {
+      data = { _id: '0', insertedCount: 1 }
     }
     
     return {
@@ -51,7 +55,16 @@ class MockRequest {
   }
 }
 
+
+// mock db
+function getDb() {
+  const req = new MockRequest()
+  const db = new Db({ request: req })
+  return { db, req }
+}
+
 module.exports = {
   MockRequest,
-  Actions
+  Actions,
+  getDb
 }
