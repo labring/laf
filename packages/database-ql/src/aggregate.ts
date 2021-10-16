@@ -1,3 +1,4 @@
+import { ActionType } from './constant'
 import { Db } from './index'
 import { RequestInterface } from './interface'
 import { GetRes } from './result-types'
@@ -22,9 +23,9 @@ export default class Aggregation {
     if (!this._collectionName || !this._db) {
       throw new Error('Aggregation pipeline cannot send request')
     }
-    const result = await this._request.send('database.aggregate', {
+    const result = await this._request.send(ActionType.aggregate, {
       collectionName: this._collectionName,
-      stages: this._stages
+      // stages: this._stages
     })
     if (result && result.data && result.data.list) {
       return {

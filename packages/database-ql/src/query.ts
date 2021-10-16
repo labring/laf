@@ -1,4 +1,4 @@
-import { OrderByDirection, QueryType } from './constant'
+import { ActionType, OrderByDirection } from './constant'
 import { Db } from './index'
 import { Validate } from './validate'
 // import { Util } from './util'
@@ -6,15 +6,11 @@ import { QuerySerializer } from './serializer/query'
 import { UpdateSerializer } from './serializer/update'
 import { ErrorCode } from './constant'
 import { GetOneRes, GetRes, CountRes, UpdateRes, RemoveRes } from './result-types'
-import { RequestInterface } from './interface'
+import { ProjectionType, QueryOrder, RequestInterface, QueryParam } from './interface'
 import { Util } from './util'
+import { serialize } from './serializer/datatype'
 
 
-
-interface QueryOrder {
-  field?: string
-  direction?: 'asc' | 'desc'
-}
 
 interface QueryOption {
   // 查询数量
@@ -22,23 +18,9 @@ interface QueryOption {
   // 偏移量
   offset?: number
   // 指定显示或者不显示哪些字段
-  projection?: Object
+  projection?: ProjectionType
 }
 
-// left, right, inner, full
-enum JoinType {
-  INNER = 'inner',
-  LEFT = 'left',
-  RIGHT = 'right',
-  FULL = 'full'
-}
-
-interface JoinParam {
-  collection: string,
-  type: JoinType,
-  leftKey: string,    // 左表连接键
-  rightKey: string    // 右表连接键
-}
 
 interface WithParam {
   /**
@@ -69,82 +51,50 @@ interface WithParam {
 
 
 /**
- * 查询模块
- *
- * @author haroldhu
+ * Db query
  */
 export class Query {
   /**
-   * Db 的引用
-   *
-   * @internal
+   * Reference to db instance
    */
   protected _db: Db
 
   /**
    * Collection name
-   *
-   * @internal
    */
   protected _coll: string
 
   /**
-   * 过滤条件
-   *
-   * @internal
+   * Query conditions
    */
   private _fieldFilters: Object
 
   /**
-   * 排序条件
-   *
-   * @internal
+   * Order by conditions
    */
   private _fieldOrders: QueryOrder[]
 
   /**
-   * 查询条件
-   *
-   * @internal
+   * Query options
    */
   private _queryOptions: QueryOption
 
   /**
-   * 联表条件(join)
-   * 
-   * @internal
-   */
-  private _joins: JoinParam[]
-
-  /**
-   * 子表查询（一对多）
-   * 
-   * @internal
+   * Sub queries
    */
   private _withs: WithParam[]
 
   /**
-   * 原始过滤参数
-   */
-  // private _rawWhereParams: Object
-
-  /**
-   * 请求实例
-   *
-   * @internal
+   * Request instance
    */
   private _request: RequestInterface
 
   /**
-   * 初始化
-   *
-   * @internal
-   *
-   * @param db            - 数据库的引用
-   * @param coll          - 集合名称
-   * @param fieldFilters  - 过滤条件
-   * @param fieldOrders   - 排序条件
-   * @param queryOptions  - 查询条件
+   * @param db            - db reference 
+   * @param coll          - collection name
+   * @param fieldFilters  - query condition
+   * @param fieldOrders   - order by condition
+   * @param queryOptions  - query options
    */
   public constructor(
     db: Db,
@@ -152,18 +102,14 @@ export class Query {
     fieldFilters?: Object,
     fieldOrders?: QueryOrder[],
     queryOptions?: QueryOption,
-    joins?: JoinParam[],
     withs?: WithParam[]
-    // rawWhereParams?: Object
   ) {
     this._db = db
     this._coll = coll
     this._fieldFilters = fieldFilters
     this._fieldOrders = fieldOrders || []
     this._queryOptions = queryOptions || {}
-    this._joins = joins || []
     this._withs = withs || []
-    /* eslint-disable new-cap */
     this._request = this._db.request
   }
 
@@ -195,7 +141,6 @@ export class Query {
       _query,
       this._fieldOrders,
       this._queryOptions,
-      this._joins,
       this._withs
     )
   }
@@ -222,76 +167,8 @@ export class Query {
       this._fieldFilters,
       combinedOrders,
       this._queryOptions,
-      this._joins,
       this._withs
     )
-  }
-
-  /**
-   * 添加联表条件，实联接，即数据库支持的联表操作（仅 SQL 数据库支持）
-   * @param type 联接类型, 以下值之一 "left", "inner", "right", "full"
-   * @param collection 联接的子表名
-   * @param rightKey 子表的联接键名
-   * @param leftKey 主表的联接键名
-   */
-  public join(collection: string, rightKey: string, leftKey: string, type: JoinType = JoinType.INNER): Query {
-    const newJoin: JoinParam = {
-      type,
-      collection,
-      rightKey,
-      leftKey
-    }
-
-    const combinedJoins = this._joins.concat(newJoin)
-    return new Query(
-      this._db,
-      this._coll,
-      this._fieldFilters,
-      this._fieldOrders,
-      this._queryOptions,
-      combinedJoins,
-      this._withs
-    )
-  }
-
-  /**
-   * 添加 left join 联表条件，实联接，即数据库支持的联表操作（仅 SQL 数据库支持）
-   * @param collection 联接的子表名
-   * @param rightKey 子表的联接键名
-   * @param leftKey 主表的联接键名
-   */
-  public leftJoin(collection: string, rightKey: string, leftKey: string): Query {
-    return this.join(collection, rightKey, leftKey, JoinType.LEFT)
-  }
-
-  /**
-   * 添加 right join 联表条件，实联接，即数据库支持的联表操作（仅 SQL 数据库支持）
-   * @param collection 联接的子表名
-   * @param rightKey 子表的联接键名
-   * @param leftKey 主表的联接键名
-   */
-  public rightJoin(collection: string, rightKey: string, leftKey: string): Query {
-    return this.join(collection, rightKey, leftKey, JoinType.RIGHT)
-  }
-
-  /**
-   * 添加 full join 联表条件，实联接，即数据库支持的联表操作（仅 SQL 数据库支持）
-   * @param collection 联接的子表名
-   * @param rightKey 子表的联接键名
-   * @param leftKey 主表的联接键名
-   */
-  public fullJoin(collection: string, rightKey: string, leftKey: string): Query {
-    return this.join(collection, rightKey, leftKey, JoinType.FULL)
-  }
-
-  /**
-   * 添加 inner join 联表条件，实联接，即数据库支持的联表操作（仅 SQL 数据库支持）
-   * @param collection 联接的子表名
-   * @param rightKey 子表的联接键名
-   * @param leftKey 主表的联接键名
-   */
-  public innerJoin(collection: string, rightKey: string, leftKey: string) {
-    return this.join(collection, rightKey, leftKey, JoinType.INNER)
   }
 
   /**
@@ -309,7 +186,7 @@ export class Query {
     }
 
     const combinedWiths = this._withs.concat(newWith)
-    return new Query(this._db, this._coll, this._fieldFilters, this._fieldOrders, this._queryOptions, this._joins, combinedWiths)
+    return new Query(this._db, this._coll, this._fieldFilters, this._fieldOrders, this._queryOptions, combinedWiths)
   }
 
   /**
@@ -327,44 +204,44 @@ export class Query {
     }
 
     const combinedWiths = this._withs.concat(newWith)
-    return new Query(this._db, this._coll, this._fieldFilters, this._fieldOrders, this._queryOptions, this._joins, combinedWiths)
+    return new Query(this._db, this._coll, this._fieldFilters, this._fieldOrders, this._queryOptions, combinedWiths)
   }
 
   /**
    * 指定要返回的字段
    *
-   * @param projection string[] | {[fieldName]: true | false}
+   * @param projection
    */
-  public field(projection: string[] | any): Query {
+  public field(projection: string[] | ProjectionType): Query {
+    let formatted = {} as ProjectionType
     if (projection instanceof Array) {
-      let result = {}
+      let result = {} as ProjectionType
       for (let k of projection) {
         result[k] = 1
       }
-      projection = result
+      formatted = result
     } else {
       for (let k in projection) {
         if (projection[k]) {
           if (typeof projection[k] !== 'object') {
-            projection[k] = 1
+            formatted[k] = 1
           }
         } else {
-          projection[k] = 0
+          formatted[k] = 0
         }
       }
     }
 
+    const option = { ...this._queryOptions }
+    option.projection = formatted
 
-    let option = { ...this._queryOptions }
-    option.projection = projection
-
-    return new Query(this._db, this._coll, this._fieldFilters, this._fieldOrders, option, this._joins, this._withs)
+    return new Query(this._db, this._coll, this._fieldFilters, this._fieldOrders, option, this._withs)
   }
 
   /**
    * 设置查询条数
    *
-   * @param limit - 限制条数
+   * @param limit - 限制条数，当前限制一次请求获取数据条数不得大于 1000
    */
   public limit(limit: number): Query {
     Validate.isInteger('limit', limit)
@@ -372,7 +249,7 @@ export class Query {
     let option = { ...this._queryOptions }
     option.limit = limit
 
-    return new Query(this._db, this._coll, this._fieldFilters, this._fieldOrders, option, this._joins, this._withs)
+    return new Query(this._db, this._coll, this._fieldFilters, this._fieldOrders, option, this._withs)
   }
 
   /**
@@ -386,7 +263,7 @@ export class Query {
     let option = { ...this._queryOptions }
     option.offset = offset
 
-    return new Query(this._db, this._coll, this._fieldFilters, this._fieldOrders, option, this._joins, this._withs)
+    return new Query(this._db, this._coll, this._fieldFilters, this._fieldOrders, option, this._withs)
   }
 
   /**
@@ -394,83 +271,21 @@ export class Query {
    * @returns Query
    */
   public clone(): Query {
-    return new Query(this._db, this._coll, this._fieldFilters, this._fieldOrders, this._queryOptions, this._joins, this._withs)
+    return new Query(this._db, this._coll, this._fieldFilters, this._fieldOrders, this._queryOptions, this._withs)
   }
 
   /**
    * 发起请求获取文档列表
    *
-   * - 默认获取集合下全部文档数据
-   * - 可以把通过 `orderBy`、`where`、`skip`、`limit`设置的数据添加请求参数上
+   * - 默认 `limit` 为 100
+   * - 可以把通过 `orderBy()`、`where()`、`skip()`、`limit()`设置的数据添加请求参数上
    */
-  public async get<T = any>(options?: { stat?: boolean, nested?: boolean }): Promise<GetRes<T>> {
-    let newOder = []
-    if (this._fieldOrders) {
-      this._fieldOrders.forEach(order => {
-        newOder.push(order)
-      })
-    }
-    interface Param {
-      collectionName: string
-      query?: Object
-      queryType: QueryType
-      order?: string[]
-      offset?: number
-      limit?: number
-      projection?: Object,
-      joins?: JoinParam[],
-      nested?: boolean,
-      stat?: boolean
-    }
-    let param: Param = {
-      collectionName: this._coll,
-      queryType: QueryType.WHERE,
-    }
-    if (this._fieldFilters) {
-      param.query = this._fieldFilters
-    }
-    if (newOder.length > 0) {
-      param.order = newOder
-    }
-    if (this._queryOptions.offset) {
-      param.offset = this._queryOptions.offset
-    }
-    if (this._queryOptions.limit) {
-      param.limit = this._queryOptions.limit < 1000 ? this._queryOptions.limit : 1000
+  public async get<T = any>(): Promise<GetRes<T>> {
+    if (this._withs?.length) {
+      return await this.internalMerge()
     } else {
-      param.limit = 100
+      return await this.internalGet()
     }
-    if (this._queryOptions.projection) {
-      param.projection = this._queryOptions.projection
-    }
-    if (this._joins.length) {
-      param.joins = this._joins
-    }
-    if (options) {
-      param.nested = options.nested ?? false
-      param.stat = options.stat ?? false
-    }
-    const res = await this._request.send('database.queryDocument', param)
-    if (res.error) {
-      return {
-        error: res.error,
-        data: res.data,
-        requestId: res.requestId,
-        ok: false,
-        code: res.code
-      }
-    }
-
-    const documents = Util.formatResDocumentData(res.data.list)
-    const result: any = {
-      data: documents,
-      requestId: res.requestId,
-      ok: true
-    }
-    if (res.total) result.total = res.data?.total
-    if (res.limit) result.limit = res.data?.limit
-    if (res.offset) result.offset = res.data?.offset
-    return result
   }
 
   /**
@@ -478,8 +293,8 @@ export class Query {
    * @param options 
    * @returns 
    */
-  public async getOne<T = any>(options?: { nested?: boolean }): Promise<GetOneRes<T>> {
-    const res = await this.get<T>(options)
+  public async getOne<T = any>(): Promise<GetOneRes<T>> {
+    const res = await this.limit(1).get<T>()
     if (res.error) {
       return res as any
     }
@@ -496,24 +311,196 @@ export class Query {
       ok: true,
       data: res.data[0],
       requestId: res.requestId
-    } as any
+    }
   }
 
   /**
    * 发起请求获取文档列表，当使用 with 条件时使用
+   * 
+   * @deprecated 该接口已废弃，直接使用 `get()` 代替
    * 
    * 1. 调用 get() 执行主查询
    * 2. 结合主查询的结果，使用 in 执行子表查询
    * 3. 合并主表 & 子表的结果，即聚合
    * 4. intersection 可指定是否取两个结果集的交集，缺省则以主表结果为主
    */
-  public async merge<T = any>(options?: { nested?: boolean, intersection?: boolean }): Promise<GetRes<T>> {
+  public async merge<T = any>(options?: { intersection?: boolean }): Promise<GetRes<T>> {
+    const res = await this.internalMerge(options)
+    return res
+  }
+
+  /**
+   * 获取总数
+   */
+  public async count(): Promise<CountRes> {
+    const param = this.buildQueryParam()
+    const res = await this.send(ActionType.count, param)
+
+    if (res.error) {
+      return {
+        requestId: res.requestId,
+        ok: false,
+        error: res.error,
+        total: undefined,
+        code: res.code
+      }
+    }
+
+    return {
+      requestId: res.requestId,
+      total: res.data.total,
+      ok: true
+    }
+  }
+
+  /**
+   * 发起请求批量更新文档
+   *
+   * @param data 数据
+   */
+  public async update(data: Object, options?: { multi?: boolean, merge?: boolean, upsert?: boolean }): Promise<UpdateRes> {
+
+    if (!data || typeof data !== 'object' || 0 === Object.keys(data)?.length) {
+      throw new Error('data cannot be empty object')
+    }
+
+    if (data.hasOwnProperty('_id')) {
+      throw new Error('can not update the `_id` field')
+    }
+
+    const param = this.buildQueryParam()
+    param.multi = options?.multi ?? false
+    param.merge = options?.merge ?? true
+    param.upsert = options?.upsert ?? false
+    if (param.merge) {
+      param.data = UpdateSerializer.encode(data)
+    } else {
+      param.data = serialize(data)
+    }
+
+    const res = await this.send(ActionType.update, param)
+    if (res.error) {
+      return {
+        requestId: res.requestId,
+        error: res.error,
+        ok: false,
+        code: res.code
+      }
+    }
+
+    return {
+      requestId: res.requestId,
+      updated: res.data.updated,
+      upsertId: res.data.upsert_id,
+      ok: true
+    }
+  }
+
+  /**
+   * 条件删除文档
+   */
+  public async remove(options?: { multi: boolean }): Promise<RemoveRes> {
+    if (Object.keys(this._queryOptions).length > 0) {
+      console.warn('`offset`, `limit` and `projection` are not supported in remove() operation')
+    }
+
+    if (this._fieldOrders?.length > 0) {
+      console.warn('`orderBy` is not supported in remove() operation')
+    }
+
+    const param = this.buildQueryParam()
+    param.multi = options.multi ?? false
+
+    const res = await this.send(ActionType.remove, param)
+    if (res.error) {
+      return {
+        requestId: res.requestId,
+        error: res.error,
+        ok: false,
+        deleted: undefined,
+        code: res.code
+      }
+    }
+
+    return {
+      requestId: res.requestId,
+      deleted: res.data.deleted,
+      ok: true
+    }
+  }
+
+  /**
+   * Build query param
+   * @returns 
+   */
+  protected buildQueryParam() {
+    const param: QueryParam = {
+      collectionName: this._coll,
+    }
+    if (this._fieldFilters) {
+      param.query = this._fieldFilters
+    }
+    if (this._fieldOrders?.length) {
+      param.order = [...this._fieldOrders]
+    }
+    if (this._queryOptions.offset) {
+      param.offset = this._queryOptions.offset
+    }
+    if (this._queryOptions.limit) {
+      param.limit = this._queryOptions.limit < 1000 ? this._queryOptions.limit : 1000
+    } else {
+      param.limit = 100
+    }
+    if (this._queryOptions.projection) {
+      param.projection = this._queryOptions.projection
+    }
+
+    return param
+  }
+
+  /**
+  * 发起请求获取文档列表
+  */
+  protected async internalGet<T = any>(): Promise<GetRes<T>> {
+    const param = this.buildQueryParam()
+    const res = await this.send(ActionType.query, param)
+    if (res.error) {
+      return {
+        error: res.error,
+        data: res.data,
+        requestId: res.requestId,
+        ok: false,
+        code: res.code
+      }
+    }
+
+    const documents: any[] = Util.formatResDocumentData(res.data.list)
+    const result: GetRes<T> = {
+      data: documents,
+      requestId: res.requestId,
+      ok: true
+    }
+    if (res.total) result.total = res.data?.total
+    if (res.limit) result.limit = res.data?.limit
+    if (res.offset) result.offset = res.data?.offset
+    return result
+  }
+
+  /**
+   * 发起请求获取文档列表，当使用 with 条件时使用
+   * 
+   * 1. 调用 internalGet() 执行主查询
+   * 2. 结合主查询的结果，使用 in 执行子表查询
+   * 3. 合并主表 & 子表的结果，即聚合
+   * 4. intersection 可指定是否取两个结果集的交集，缺省则以主表结果为主
+   */
+  protected async internalMerge<T = any>(options?: { intersection?: boolean }): Promise<GetRes<T>> {
 
     options = options ?? {} as any
     const intersection = options.intersection ?? false
 
     // 调用 get() 执行主查询
-    const res = await this.get(options as any)
+    const res = await this.internalGet()
     if (!res.ok) {
       return res as any
     }
@@ -578,161 +565,13 @@ export class Query {
     return res as any
   }
 
-
-
   /**
-   * 获取总数
+   * Send query request
+   * @param action 
+   * @param param 
+   * @returns 
    */
-  public async count(): Promise<CountRes> {
-    interface Param {
-      collectionName: string
-      query?: Object
-      queryType: QueryType,
-      joins?: JoinParam[]
-    }
-    let param: Param = {
-      collectionName: this._coll,
-      queryType: QueryType.WHERE
-    }
-    if (this._fieldFilters) {
-      param.query = this._fieldFilters
-    }
-    if (this._joins.length) {
-      param.joins = this._joins
-    }
-
-    const res = await this._request.send('database.countDocument', param)
-
-    if (res.error) {
-      return {
-        requestId: res.requestId,
-        ok: false,
-        error: res.error,
-        total: undefined,
-        code: res.code
-      }
-    }
-
-    return {
-      requestId: res.requestId,
-      total: res.data.total,
-      ok: true
-    }
-  }
-
-  /**
-   * 发起请求批量更新文档
-   *
-   * @param data 数据
-   */
-  public async update(data: Object, options?: { multi: boolean, merge: boolean, upsert: boolean }): Promise<UpdateRes> {
-    if (!options) {
-      options = {
-        multi: false,
-        merge: true,
-        upsert: false
-      }
-    } else {
-      options.multi = options.multi ?? false
-      options.merge = options.merge ?? true
-      options.upsert = options.upsert ?? false
-    }
-
-    if (!data || typeof data !== 'object') {
-      return Promise.resolve({
-        code: 'INVALID_PARAM',
-        error: '参数必需是非空对象'
-      } as any)
-    }
-
-    if (data.hasOwnProperty('_id')) {
-      return Promise.resolve({
-        code: 'INVALID_PARAM',
-        error: '不能更新 _id 的值'
-      } as any)
-    }
-
-    let param = {
-      collectionName: this._coll,
-      query: this._fieldFilters,
-      queryType: QueryType.WHERE,
-      // query: QuerySerializer.encode(this._fieldFilters),
-      multi: options.multi,
-      merge: options.merge,
-      upsert: options.upsert,
-      data: UpdateSerializer.encode(data),
-      joins: undefined
-      // data: Util.encodeDocumentDataForReq(data, true)
-      // data: this.convertParams(data)
-    }
-    if (this._joins.length) {
-      param.joins = this._joins
-    }
-
-    const res = await this._request.send('database.updateDocument', param)
-    if (res.error) {
-      return {
-        requestId: res.requestId,
-        error: res.error,
-        ok: false,
-        code: res.code
-      }
-    }
-
-    return {
-      requestId: res.requestId,
-      updated: res.data.updated,
-      upsertId: res.data.upsert_id,
-      ok: true
-    }
-  }
-
-  /**
-   * 条件删除文档
-   */
-  public async remove(options?: { multi: boolean }): Promise<RemoveRes> {
-
-    if (!options) {
-      options = { multi: false }
-    } else {
-      options.multi = options.multi ?? false
-    }
-
-    if (Object.keys(this._queryOptions).length > 0) {
-      console.warn('`offset`, `limit` and `projection` are not supported in remove() operation')
-    }
-
-    if (this._fieldOrders.length > 0) {
-      console.warn('`orderBy` is not supported in remove() operation')
-    }
-
-    const param = {
-      collectionName: this._coll,
-      query: QuerySerializer.encode(this._fieldFilters),
-      queryType: QueryType.WHERE,
-      multi: options.multi,
-      joins: undefined
-    }
-
-    if (this._joins.length) {
-      param.joins = this._joins
-    }
-
-    const res = await this._request.send('database.deleteDocument', param)
-    if (res.error) {
-      return {
-        requestId: res.requestId,
-        error: res.error,
-        ok: false,
-        deleted: undefined,
-        code: res.code
-      }
-    }
-
-    return {
-      requestId: res.requestId,
-      deleted: res.data.deleted,
-      ok: true
-    }
+  public async send(action: ActionType, param: QueryParam) {
+    return await this._request.send(action, param)
   }
 }

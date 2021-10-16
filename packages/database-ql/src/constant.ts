@@ -64,7 +64,7 @@ const WhereFilterOpList = ['<', '<=', '==', '>=', '>']
 /**
  * 操作符别名
  */
-enum Opeartor {
+enum Operator {
   lt = '<',
   gt = '>',
   lte = '<=',
@@ -77,11 +77,11 @@ enum Opeartor {
  * SDK => MongoDB
  */
 const OperatorMap = {
-  [Opeartor.eq]: '$eq',
-  [Opeartor.lt]: '$lt',
-  [Opeartor.lte]: '$lte',
-  [Opeartor.gt]: '$gt',
-  [Opeartor.gte]: '$gte'
+  [Operator.eq]: '$eq',
+  [Operator.lt]: '$lt',
+  [Operator.lte]: '$lte',
+  [Operator.gt]: '$gt',
+  [Operator.gte]: '$gte'
 }
 
 const UpdateOperatorList = [
@@ -98,13 +98,13 @@ const UpdateOperatorList = [
   '$position'
 ]
 
-/**
- * queryType
- */
-
-enum QueryType {
-  WHERE = 'WHERE',
-  DOC = 'DOC'
+enum ActionType {
+  add = 'database.addDocument',
+  query = 'database.queryDocument',
+  update = 'database.updateDocument',
+  count = 'database.countDocument',
+  remove = 'database.deleteDocument',
+  aggregate = 'database.aggregate'
 }
 
 export {
@@ -112,10 +112,10 @@ export {
   FieldType,
   WhereFilterOp,
   WhereFilterOpList,
-  Opeartor,
+  Operator,
   OperatorMap,
   OrderByDirection,
   OrderDirectionList,
   UpdateOperatorList,
-  QueryType
+  ActionType
 }

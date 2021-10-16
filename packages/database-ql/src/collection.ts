@@ -31,7 +31,7 @@ export class CollectionReference extends Query {
   /**
    * 获取文档的引用
    *
-   * @param docID - 文档ID
+   * @param docID - 文档 ID
    */
   doc(docID: string | number): DocumentReference {
     if (!docID) {
