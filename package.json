@@ -1,6 +1,6 @@
 {
   "name": "laf-project",
-  "description": "laf base on less-api",
+  "description": "laf serverless cloud development platform",
   "private": "true",
   "repository": {
     "type": "git",
