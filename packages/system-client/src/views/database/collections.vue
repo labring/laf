@@ -345,7 +345,7 @@ export default {
       const parsed = typeof this.record === 'string' ? JSON.parse(this.record) : this.record
 
       // 将 [JSON对象] 序列化为 [EJSON对象]
-      const serialized = EJSON.serialize(parsed)
+      const serialized = EJSON.deserialize(parsed)
       const { _id, ...params } = serialized
 
       if (!_id) return
