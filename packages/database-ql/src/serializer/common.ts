@@ -1,4 +1,4 @@
-import { getType, isObject, isArray, isDate, isRegExp, isInternalObject, isObjectId } from '../utils/type'
+import { getType, isObject, isArray, isDate, isRegExp, isInternalObject, isObjectId, isBinary } from '../utils/type'
 import { serialize as serializeInternalDataType, deserialize as deserializeInternalDataType } from './datatype'
 import { LogicCommand } from '../commands/logic'
 
@@ -99,13 +99,15 @@ export function mergeConditionAfterEncode(query: Record<string, any>, condition:
 }
 
 /**
- * Check `val` if `InternalObject` | `Date` | `RegExp` | `ObjectId`
+ * Check `val` if `InternalObject` | `Date` | `RegExp` | `ObjectId` | `isBinary`
  * InternalObject can be:  `LogicCommand` | `QueryCommand` | `UpdateCommand`
+ * 
+ * @tip this method also used is `flatten()` function, `flatten` will reserved the required object
  * @param val 
  * @returns 
  */
 export function isConversionRequired(val: any): boolean {
-  return isInternalObject(val) || isDate(val) || isRegExp(val) || isObjectId(val)
+  return isInternalObject(val) || isDate(val) || isRegExp(val) || isObjectId(val) || isBinary(val)
 }
 
 export function encodeInternalDataType(val: any): IQueryCondition {
