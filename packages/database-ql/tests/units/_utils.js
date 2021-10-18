@@ -4,7 +4,8 @@ const Actions = {
   get: 'database.queryDocument',
   update: 'database.updateDocument',
   count: 'database.countDocument',
-  remove: 'database.deleteDocument'
+  remove: 'database.deleteDocument',
+  aggregate: 'database.aggregateDocuments'
 }
 
 class MockRequest {
@@ -27,7 +28,7 @@ class MockRequest {
       data = { _id: '0', insertedCount: 0 }
     }
     
-    if (action === Actions.get) {
+    if (action === Actions.get || action === Actions.aggregate) {
       data = { list: [] }
     }
 

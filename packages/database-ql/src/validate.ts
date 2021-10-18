@@ -7,6 +7,7 @@ import {
   FieldType
 } from './constant'
 import { Util } from './util'
+import { getType } from './utils/type'
 
 /**
  * 校验模块
@@ -15,6 +16,19 @@ import { Util } from './util'
  * @internal
  */
 export class Validate {
+  /**
+  * 
+  * @static
+  * @param {StageName:{}|string} stage
+  * @returns {Boolean}
+  * @memberof Validate
+  */
+  static isValidAggregation(stage: object): Boolean {
+    if (Object.keys(stage).length !== 1) {
+      throw new Error('aggregation stage must have one key')
+    }
+    return true
+  }
 
   /**
    * 检测地址位置的点
@@ -47,6 +61,42 @@ export class Validate {
   static isInteger(param: string, num: number): Boolean {
     if (!Number.isInteger(num)) {
       throw new Error(param + ErrorCode.IntergerError)
+    }
+    return true
+  }
+
+
+  static isProjection(param: string, value: object): Boolean {
+    // 遍历value 的 属性值， 只有1，0，ProjectionOperator 三种类型
+    if (getType(value) !== 'object') {
+      throw new Error(`${param} projection must be an object`)
+    }
+
+    for (const key in value) {
+      const subValue = value[key]
+      if (getType(subValue) === 'number') {
+        if (subValue !== 0 && subValue !== 1) {
+          throw new Error('if the value in projection is of number, it must be 0 or 1')
+        }
+      } else if (getType(subValue) === 'object') {
+      } else {
+        throw new Error('invalid projection')
+      }
+    }
+
+    return true
+  }
+
+  static isOrder(param: string, value: Record<string, any>): Boolean {
+    if (getType(value) !== 'object') {
+      throw new Error(`${param} order must be an object`)
+    }
+
+    for (let key in value) {
+      const subValue = value[key]
+      if (subValue !== 1 && subValue !== -1) {
+        throw new Error(`order value must be 1 or -1`)
+      }
     }
     return true
   }
@@ -101,18 +151,6 @@ export class Validate {
   static isCollName(name: string): Boolean {
     if (!/^[a-zA-Z0-9]([a-zA-Z0-9-_]){1,32}$/.test(name)) {
       throw new Error(ErrorCode.CollNameError)
-    }
-    return true
-  }
-
-  /**
-   * DocID 格式是否正确
-   *
-   * @param docId
-   */
-  static isDocID(docId: string): Boolean {
-    if (!/^([a-fA-F0-9]){24}$/.test(docId)) {
-      throw new Error(ErrorCode.DocIDError)
     }
     return true
   }

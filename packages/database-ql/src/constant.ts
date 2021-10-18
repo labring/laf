@@ -104,7 +104,7 @@ enum ActionType {
   update = 'database.updateDocument',
   count = 'database.countDocument',
   remove = 'database.deleteDocument',
-  aggregate = 'database.aggregate'
+  aggregate = 'database.aggregateDocuments'
 }
 
 export {

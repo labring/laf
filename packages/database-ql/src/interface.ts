@@ -21,8 +21,18 @@ export interface ProjectionType {
   [field: string]: 0 | 1
 }
 
+export interface AggregateStage {
+  stageKey: string,
+  stageValue: any
+}
+
 export interface QueryParam {
+
   collectionName: string
+
+  /**
+   * Query options
+   */
   query?: Object
   order?: QueryOrder[]
   offset?: number
@@ -36,4 +46,9 @@ export interface QueryParam {
   merge?: boolean
   upsert?: boolean
   data?: any
+
+  /**
+   * Aggregate stages
+   */
+  stages?: AggregateStage[]
 }

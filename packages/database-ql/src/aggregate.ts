@@ -1,40 +1,68 @@
-import { ActionType } from './constant'
 import { Db } from './index'
-import { RequestInterface } from './interface'
-import { GetRes } from './result-types'
-// import { EJSON } from 'bson'
+import { EJSON } from 'bson'
 import { QuerySerializer } from './serializer/query'
+import { stringifyByEJSON } from './utils/utils'
+import { getType } from './utils/type'
+import { Validate } from './validate'
+import { AggregateStage, RequestInterface } from './interface'
+import { ActionType } from './constant'
+import { GetRes } from './result-types'
+
+const EARTH_RADIUS = 6378100
+
 export default class Aggregation {
   _db: Db
   _request: RequestInterface
-  _stages: any[]
+  _stages: AggregateStage[]
   _collectionName: string
-  constructor(db?: Db, collectionName?: string) {
+
+  constructor(db?: Db, collectionName?: string, rawPipeline?: any[]) {
     this._stages = []
 
     if (db && collectionName) {
       this._db = db
       this._request = this._db.request
       this._collectionName = collectionName
+
+      if (rawPipeline && rawPipeline.length > 0) {
+        rawPipeline.forEach((stage) => {
+          Validate.isValidAggregation(stage)
+          const stageName = Object.keys(stage)[0]
+          this._pipe(stageName, stage[stageName], true)
+        })
+      }
     }
   }
 
-  async end<T = any>(): Promise<GetRes<T>> {
+  async end<T = any>() {
     if (!this._collectionName || !this._db) {
       throw new Error('Aggregation pipeline cannot send request')
     }
-    const result = await this._request.send(ActionType.aggregate, {
+
+    if (!this._stages?.length) {
+      throw new Error('Aggregation stage cannot be empty')
+    }
+
+    const res = await this._request.send(ActionType.aggregate, {
       collectionName: this._collectionName,
-      // stages: this._stages
+      stages: this._stages
     })
-    if (result && result.data && result.data.list) {
+
+    if (res.error) {
       return {
-        code: result.code,
-        ok: result.error ? false: true,
-        requestId: result.requestId,
-        // data: JSON.parse(result.data.list).map(EJSON.parse)
-        data: result.data.list
+        error: res.error,
+        data: res.data,
+        requestId: res.requestId,
+        ok: false,
+        code: res.code
       }
+    }
+
+    const documents = res.data.list.map(EJSON.parse)
+    const result: GetRes<T> = {
+      data: documents,
+      requestId: res.requestId,
+      ok: true
     }
     return result
   }
@@ -51,10 +79,18 @@ export default class Aggregation {
     })
   }
 
-  _pipe(stage, param) {
+  _pipe(stage: string, param: any, raw = false) {
+    // 区分param是否为字符串
+    let transformParam = ''
+    if (getType(param) === 'object') {
+      transformParam = stringifyByEJSON(param)
+    } else {
+      transformParam = JSON.stringify(param)
+    }
+
     this._stages.push({
-      stageKey: `$${stage}`,
-      stageValue: JSON.stringify(param)
+      stageKey: raw ? stage : `$${stage}`,
+      stageValue: transformParam
     })
     return this
   }
@@ -76,6 +112,16 @@ export default class Aggregation {
   }
 
   geoNear(param) {
+    if (param.query) {
+      param.query = QuerySerializer.encode(param.query)
+    }
+
+    // 判断是否有 distanceMultiplier 参数
+    if (param.distanceMultiplier && typeof (param.distanceMultiplier) === 'number') {
+      param.distanceMultiplier = param.distanceMultiplier * EARTH_RADIUS
+    } else {
+      param.distanceMultiplier = EARTH_RADIUS
+    }
     return this._pipe('geoNear', param)
   }
 

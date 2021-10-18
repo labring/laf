@@ -61,7 +61,7 @@ tnpm run tstest
 
 ## 整体设计
 
-- 使用`document.get()`获取数据时，把`where()`、`orderBy()`、`limit()`、`offser()`、设置的数据拼接到请求里。
+- 使用`document.get()`获取数据时，把`where()`、`orderBy()`、`limit()`、`offset()`、设置的数据拼接到请求里。
 - 对后台返回的数据进行格式化，使其成为一个`DocumentSnapshot`对象，对特殊类型的字段，如地理位置、日期时间进行处理。
 - 使用`document.set()`和`document.update()`时，把数据进行编码，尤其是特殊字段的处理，编码成后端接口的数据格式。
 

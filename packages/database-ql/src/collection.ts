@@ -50,7 +50,7 @@ export class CollectionReference extends Query {
     return docRef.create(data, options)
   }
 
-  aggregate() {
-    return new Aggregation(this._db, this._coll)
+  aggregate(rawPipeline: object[] = []) {
+    return new Aggregation(this._db, this._coll, rawPipeline)
   }
 }
