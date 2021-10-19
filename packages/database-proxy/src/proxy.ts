@@ -1,5 +1,3 @@
-import { Handler } from './processor'
-import { Ruler as RulerV1 } from './ruler/ruler_v1'
 import { AccessorInterface } from './accessor/accessor'
 import { Params, ActionType, getAction } from "./types"
 import assert = require('assert')
@@ -9,18 +7,17 @@ import { PolicyInterface } from './policy'
 export class Proxy {
 
   private _accessor: AccessorInterface
-  private _ruler: PolicyInterface
+  private _policy: PolicyInterface
   private _logger: LoggerInterface
 
-  constructor(accessor: AccessorInterface, ruler: PolicyInterface) {
-    if (!ruler) {
-      this.logger.warn(`
-       You have passed a empty ruler to Entry.constructor() which will be deprecated in the future.
-       Please give an instant of Ruler explicitly, otherwise entry will use an old Ruler automatically (RulerV1)
-      `)
+  constructor(accessor: AccessorInterface, policy: PolicyInterface) {
+    if (policy) {
+      this._policy = policy
     }
-    this._ruler = ruler || new RulerV1(this)
-    this._accessor = accessor
+
+    if (accessor) {
+      this._accessor = accessor
+    }
   }
 
   get logger(): LoggerInterface {
@@ -35,49 +32,31 @@ export class Proxy {
   }
 
   get accessor(): AccessorInterface {
-    assert(this._accessor, 'Entry: accessor is empty')
+    assert(this._accessor, 'proxy: accessor is empty')
     return this._accessor
   }
 
+  /**
+   * @deprecated
+   * @param accessor 
+   */
   async setAccessor(accessor: AccessorInterface) {
-    this.logger.info(`change entry's accessor: ` + accessor.type)
+    this.logger.info(`change proxy's accessor: ` + accessor.type)
     this._accessor = accessor
-    await this.init()
   }
 
-  get ruler(): PolicyInterface {
-    return this._ruler
+  get policy(): PolicyInterface {
+    return this._policy
   }
 
   /**
-   * set ruler
+   * set policy
+   * @deprecated
    * @param ruler 
    */
-  async setRuler(ruler: PolicyInterface) {
-    this.logger.info(`change entry's ruler`)
-    this._ruler = ruler
-  }
-
-  /**
-   * @deprecated Entry.init() will be deprecated in future, you should call accessor.init() directly instead
-   */
-  async init() {
-    this.logger.warn('@deprecated： Entry.init() will be deprecated in future, you should call accessor.init() directly instead')
-    if (this._accessor.type === 'mongo') {
-      await (this._accessor as any).init()
-    }
-  }
-
-  /**
-   * load rules to ruler from json object
-   * @deprecated this method will be deprecated in future, use `Ruler.load()` `Ruler.add()` `Ruler.set()` instead
-   * @param rules 
-   * @returns 
-   */
-  loadRules(rules: object): boolean {
-    this.logger.warn('@deprecated: Entry.loadRules() will be deprecated in future, use `Ruler.load()` `Ruler.add()` `Ruler.set()` instead')
-    this.logger.info(`entry loading rules`)
-    return this.ruler.load(rules)
+  async setPolicy(policy: PolicyInterface) {
+    this.logger.info(`change proxy's policy`)
+    this._policy = policy
   }
 
   /**
@@ -87,7 +66,7 @@ export class Proxy {
    */
   async execute(params: Params) {
     this.logger.info(`entry before executing`)
-    assert(this.accessor, 'accessor not configured for Entry')
+    assert(this._accessor, 'accessor not configured for Proxy')
     return await this.accessor.execute(params)
   }
 
@@ -99,19 +78,7 @@ export class Proxy {
    */
   async validate(params: Params, injections: object) {
     this.logger.info(`entry validating`)
-    return await this.ruler.validate(params, injections)
-  }
-
-  /**
-   * Register a Ruler validator
-   * @deprecated this method will be deprecated in future, use `Policy.register()` instead
-   * @param name 
-   * @param handler 
-   */
-  registerValidator(name: string, handler: Handler) {
-    this.logger.warn("@deprecated: Entry.registerValidator() will be deprecated in future, use `Ruler.register()` instead")
-    this.logger.info(`entry registerValidator: ${name}`)
-    this.ruler.register(name, handler)
+    return await this.policy.validate(params, injections)
   }
 
   /**
