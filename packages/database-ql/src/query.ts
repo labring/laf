@@ -13,12 +13,25 @@ import { serialize } from './serializer/datatype'
 
 
 interface QueryOption {
-  // 查询数量
+  /**
+   * 查询数量
+   */
   limit?: number
-  // 偏移量
+
+  /**
+   * 偏移量
+   */
   offset?: number
-  // 指定显示或者不显示哪些字段
+
+  /**
+   * 指定显示或者不显示哪些字段
+   */
   projection?: ProjectionType
+
+  /**
+   * 是否返回文档总数
+   */
+  count?: boolean
 }
 
 
@@ -270,10 +283,17 @@ export class Query {
    * 设置分页查询
    * @param options { current: number, size: number} `current` 是页码，默认为 `1`, `size` 是每页大小, 默认为 10
    */
-  public page(options: { current: number, size: number } = { current: 1, size: 10 }) {
-    const current = options.current || 1
-    const size = options.size || 10
-    return this.skip((current - 1) * size).limit(size)
+  public page(options: { current: number, size: number }) {
+    const current = options?.current || 1
+    const size = options?.size || 10
+
+    const query = this
+      .skip((current - 1) * size)
+      .limit(size)
+
+    query._queryOptions.count = true
+
+    return query
   }
 
   /**
@@ -463,6 +483,9 @@ export class Query {
     }
     if (this._queryOptions.projection) {
       param.projection = this._queryOptions.projection
+    }
+    if (this._queryOptions.count) {
+      param.count = this._queryOptions.count
     }
 
     return param

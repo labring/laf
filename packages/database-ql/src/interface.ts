@@ -38,6 +38,7 @@ export interface QueryParam {
   offset?: number
   limit?: number
   projection?: ProjectionType
+  count?: boolean
 
   /**
    * Update options
