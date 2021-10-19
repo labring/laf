@@ -63,6 +63,7 @@
   "cSpell.words": [
     "appid",
     "bson",
+    "Builtins",
     "coll",
     "dockerode",
     "EJSON",
@@ -75,5 +76,6 @@
     "vitepress",
     "withs"
   ],
-  "mocha.subdirectory": "packages"
+  "mocha.files.glob": "packages/*/tests/**/*test.js",
+  "mochaExplorer.files": "packages/*/tests/**/*test.js"
 }

@@ -8,3 +8,6 @@ tmp
 ecosystem.config.js
 .DS_Store
 .idea
+
+coverage
+.nyc_output
