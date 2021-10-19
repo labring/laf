@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-03 23:09:23
- * @LastEditTime: 2021-10-08 01:51:10
+ * @LastEditTime: 2021-10-19 21:56:11
  * @Description: 
  */
 
@@ -97,9 +97,7 @@ export async function handleUpdatePolicyRules(req: Request, res: Response) {
 
   // build the policy data
   const data = {
-    rules: {
-      $set: body.rules
-    },
+    rules: body.rules,
     hash: hashFunctionCode(JSON.stringify(body.rules)),
     updated_at: Date.now(),
   }
