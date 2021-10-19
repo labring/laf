@@ -1,6 +1,6 @@
 const dbconfig = {
   dbName: 'testdb',
-  url: 'mongodb://localhost:27017',
+  url: 'mongodb://localhost:27018',
   connSettings: {
     directConnection: true
   }

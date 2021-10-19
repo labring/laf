@@ -1,5 +1,4 @@
 import { Db } from './index'
-import { EJSON } from 'bson'
 import { QuerySerializer } from './serializer/query'
 import { stringifyByEJSON } from './utils/utils'
 import { getType } from './utils/type'
@@ -7,6 +6,7 @@ import { Validate } from './validate'
 import { AggregateStage, RequestInterface } from './interface'
 import { ActionType } from './constant'
 import { GetRes } from './result-types'
+import { Util } from './util'
 
 const EARTH_RADIUS = 6378100
 
@@ -58,7 +58,7 @@ export default class Aggregation {
       }
     }
 
-    const documents = res.data.list.map(EJSON.parse)
+    const documents: any[] = Util.formatResDocumentData(res.data.list)
     const result: GetRes<T> = {
       data: documents,
       requestId: res.requestId,
