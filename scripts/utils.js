@@ -2,39 +2,24 @@ const assert = require('assert')
 const child_process = require('child_process')
 
 const images = {
-  system_server: 'lafyun/system-server',
-  app_service: 'lafyun/app-service',
-  system_client: 'lafyun/system-client'
+  'system-server': 'lafyun/system-server',
+  'app-service': 'lafyun/app-service',
+  'system-client': 'lafyun/system-client'
 }
 
-function getSystemServerVersion() {
-  const json = require('../packages/system-server/package.json')
+function getPackageVersion(packagePath) {
+  const json = require(`${packagePath}/package.json`)
 
   assert.ok(json)
   return json?.version
 }
-
-function getAppServiceVersion() {
-  const json = require('../packages/app-service/package.json')
-
-  assert.ok(json)
-  return json?.version
-}
-
-function getSystemClientVersion() {
-  const json = require('../packages/system-client/package.json')
-
-  assert.ok(json)
-  return json?.version
-}
-
 
 /**
  * build docker image
  * @param {string} filepath path of Dockerfile
  */
  function buildImage(filepath, tag, latest_tag) {
-  const sub = child_process.spawn('docker', ['build', '-t', tag, '-t', latest_tag, filepath])
+  const sub = child_process.spawn('docker', ['build', '-t', tag, filepath])
 
   sub.stdout.on('data', (data) => {
     console.log(`${tag} stdout: ${data}`);
@@ -51,8 +36,30 @@ function getSystemClientVersion() {
 
 
 /**
+ * Docker tag
+ * @param {string} sourceImage 
+ * @param {string} targetImage 
+ */
+ function tagImage(sourceImage, targetImage) {
+  const sub = child_process.spawn('docker', ['tag', sourceImage, targetImage])
+
+  sub.stdout.on('data', (data) => {
+    console.log(`${targetImage} stdout: ${data}`);
+  });
+  
+  sub.stderr.on('data', (data) => {
+    console.error(`${targetImage} output: ${data}`);
+  });
+  
+  sub.on('close', (code) => {
+    console.log(`${targetImage} child process exited with code ${code}`);
+  });
+ }
+
+
+/**
  * push docker image
- * @param {string} filepath path of Dockerfile
+ * @param {string} image
  */
  function pushImage(tag) {
   const sub = child_process.spawn('docker', ['push', tag])
@@ -72,10 +79,9 @@ function getSystemClientVersion() {
 
 
 module.exports = {
-  getSystemServerVersion,
-  getAppServiceVersion,
-  getSystemClientVersion,
+  getPackageVersion,
   buildImage,
   pushImage,
+  tagImage,
   images
 }

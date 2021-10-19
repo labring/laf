@@ -17,14 +17,18 @@
     "docs:build": "vitepress build docs",
     "docs:serve": "vitepress serve docs",
     "docs:deploy": "npm run docs:build && sh ./scripts/deploy-docs.sh",
-    "docker-build-system-server": "node ./scripts/docker-build-system-server.js",
-    "docker-build-app-service": "node ./scripts/docker-build-app-service.js",
-    "docker-build-system-client": "node ./scripts/docker-build-system-client.js",
+    "docker-build-system-server": "cross-env PACKAGE=system-server node ./scripts/docker-build.js",
+    "docker-build-app-service": "cross-env PACKAGE=app-service node ./scripts/docker-build.js",
+    "docker-build-system-client": "cross-env PACKAGE=system-client node ./scripts/docker-build.js",
     "docker-build": "npm run docker-build-system-server && npm run docker-build-app-service && npm run docker-build-system-client",
-    "docker-push-app-service": "node ./scripts/docker-push-app-service.js",
-    "docker-push-system-server": "node ./scripts/docker-push-system-server.js",
-    "docker-push-system-client": "node ./scripts/docker-push-system-client.js",
+    "docker-push-app-service": "cross-env PACKAGE=app-service node ./scripts/docker-push.js",
+    "docker-push-system-server": "cross-env PACKAGE=system-server node ./scripts/docker-push.js",
+    "docker-push-system-client": "cross-env PACKAGE=system-client node ./scripts/docker-push.js",
     "docker-push": "npm run docker-push-app-service && npm run docker-push-system-server && npm run docker-push-system-client",
+    "docker-release-app-service": "cross-env PACKAGE=app-service node ./scripts/docker-release.js",
+    "docker-release-system-server": "cross-env PACKAGE=system-server node ./scripts/docker-release.js",
+    "docker-release-system-client": "cross-env PACKAGE=system-client node ./scripts/docker-release.js",
+    "docker-release": "npm run docker-release-app-service && npm run docker-release-system-server && npm run docker-release-system-client",
     "clean:build": "rm -rf ./packages/*/dist",
     "stats": "find ./packages -name '*.ts' | xargs cat | grep -v ^$| wc -l"
   },
@@ -38,11 +42,15 @@
   ],
   "devDependencies": {
     "conventional-changelog-cli": "^2.1.1",
+    "cross-env": "^7.0.3",
     "fs-extra": "^9.1.0",
     "husky": "^5.2.0",
     "lerna": "^4.0.0",
     "mocha": "^9.1.3",
     "nyc": "^15.1.0",
     "vitepress": "^0.16.1"
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0"
   }
 }
