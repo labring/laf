@@ -1,6 +1,6 @@
 {
   "name": "database-ql",
-  "version": "0.6.0-alpha.9",
+  "version": "0.6.0-alpha.10",
   "description": "Database interface for laf",
   "main": "dist/commonjs/index.js",
   "module": "dist/esm/index.js",
