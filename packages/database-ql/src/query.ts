@@ -267,6 +267,16 @@ export class Query {
   }
 
   /**
+   * 设置分页查询
+   * @param options { current: number, size: number} `current` 是页码，默认为 `1`, `size` 是每页大小, 默认为 10
+   */
+  public page(options: { current: number, size: number } = { current: 1, size: 10 }) {
+    const current = options.current || 1
+    const size = options.size || 10
+    return this.skip((current - 1) * size).limit(size)
+  }
+
+  /**
    * 克隆
    * @returns Query
    */
