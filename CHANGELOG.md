@@ -1,4 +1,45 @@
-# [](https://github.com/Maslow/laf/compare/v0.6.0-alpha.7...v) (2021-10-15)
+# [](https://github.com/Maslow/laf/compare/v0.6.0-alpha.10...v) (2021-10-19)
+
+
+
+# [0.6.0-alpha.10](https://github.com/Maslow/laf/compare/v0.6.0-alpha.9...v0.6.0-alpha.10) (2021-10-19)
+
+
+### Bug Fixes
+
+* **system:** fix rule update error; ([d825931](https://github.com/Maslow/laf/commit/d825931ba868df806f1429555795217ee1f1cbe4))
+
+
+
+# [0.6.0-alpha.9](https://github.com/Maslow/laf/compare/v0.6.0-alpha.8...v0.6.0-alpha.9) (2021-10-19)
+
+
+### Bug Fixes
+
+* **db-ql:** fix ejson deserialize error in aggregation ([832e99a](https://github.com/Maslow/laf/commit/832e99a9ac2c258ac95c83868c573fda0845f89e))
+
+
+
+# [0.6.0-alpha.8](https://github.com/Maslow/laf/compare/v0.6.0-alpha.7...v0.6.0-alpha.8) (2021-10-19)
+
+
+### Bug Fixes
+
+* **db-ql:** fix binary object serialize bug ([5c28d8d](https://github.com/Maslow/laf/commit/5c28d8d2a1ac63524703e28f6ce34150971d92e8))
+* **sys-client:** fix dbm update serialize error ([536fe94](https://github.com/Maslow/laf/commit/536fe94911c85e609739c541642cfcb8ad21f3df))
+
+
+### Features
+
+* **db-proxy:** add aggregation support; ([fbcccea](https://github.com/Maslow/laf/commit/fbcccea89976434ea10e053c5f122c6ee7defb68))
+* **db-proxy:** add count option to read operation ([e7545ca](https://github.com/Maslow/laf/commit/e7545ca1274e96ed1f078f42105d0267d3f73086))
+* **db-proxy:** remove deprecated api: ruler, rulerv1, tests, entry; ([4be2479](https://github.com/Maslow/laf/commit/4be2479db89d06834c269d6512aa2315db929062))
+* **db-ql:** add aggregate() feat & tests; ([efce38a](https://github.com/Maslow/laf/commit/efce38ade563d170fdf3132eb9303e740ae9a613))
+* **db-ql:** add page & count options for query ([1ecc32d](https://github.com/Maslow/laf/commit/1ecc32da246e058dbb11ad85a1644d8f9b73d5af))
+* **db-ql:** add page() method ([1148e4a](https://github.com/Maslow/laf/commit/1148e4ac8c3b073af6e98d9a79fae5966d4aa87a))
+* **db-ql:** add update unit tests; ([aefd260](https://github.com/Maslow/laf/commit/aefd260ad2563984071f2592c390953268afe761))
+* **db-ql:** refactor query & document api impl; ([dbeb55a](https://github.com/Maslow/laf/commit/dbeb55a596b253f99de558bc6377a4fecfba5d3d))
+* **test:** add doc() unit tests; ([0481a8c](https://github.com/Maslow/laf/commit/0481a8c8fdbc9f76f2ef82a22e50ce7f1e715c29))
 
 
 
