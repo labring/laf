@@ -105,7 +105,7 @@ const res = await db.collection('articles')
     })
 ```
 
-更多使用参考[客户端使用文档](./packages/less-api-client-js/README.md)
+更多使用参考[客户端使用文档](./packages/laf-client-sdk/README.md)
 
 ### 数据访问安全规则示例
 

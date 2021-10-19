@@ -35,6 +35,7 @@ export enum PermissionType {
   REMOVE = 'remove',
   COUNT = 'count',
   WATCH = 'watch',
+  AGGREGATE = 'aggregate'
 }
 
 // 数据库规则
@@ -382,6 +383,8 @@ export class Policy implements PolicyInterface {
         return PermissionType.ADD
       case ActionType.READ:
         return PermissionType.READ
+      case ActionType.AGGREGATE:
+        return PermissionType.AGGREGATE
       case ActionType.UPDATE:
         return PermissionType.UPDATE
       case ActionType.REMOVE:
@@ -390,7 +393,7 @@ export class Policy implements PolicyInterface {
         return PermissionType.COUNT
 
       default:
-        throw new Error('getPermissionName() unknow action')
+        throw new Error('getPermissionName() unknown action')
     }
   }
 }

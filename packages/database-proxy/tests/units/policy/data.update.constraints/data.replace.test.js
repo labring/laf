@@ -1,5 +1,5 @@
 const assert = require('assert')
-const {  Ruler } = require('../../../../dist')
+const {  Policy } = require('../../../../dist')
 
 describe('Date Validator - merge options (replace & update)', () => {
     const rules = {
@@ -15,7 +15,7 @@ describe('Date Validator - merge options (replace & update)', () => {
         }
     }
 
-    const ruler = new Ruler()
+    const ruler = new Policy()
     ruler.load(rules)
 
     let params = {

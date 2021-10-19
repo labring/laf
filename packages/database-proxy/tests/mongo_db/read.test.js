@@ -1,5 +1,5 @@
 const assert = require('assert')
-const { Entry, MongoAccessor, ActionType, Policy } = require('../../dist')
+const { Proxy, MongoAccessor, ActionType, Policy } = require('../../dist')
 
 const { dbconfig } = require('./_db')
 
@@ -13,7 +13,7 @@ describe('Database read', function () {
   this.timeout(10000)
 
   const accessor = new MongoAccessor(dbconfig.dbName, dbconfig.url, dbconfig.connSettings)
-  let entry = new Entry(accessor, new Policy)
+  let entry = new Proxy(accessor, new Policy)
   let coll = null
 
   before(async () => {

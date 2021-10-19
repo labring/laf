@@ -1,5 +1,5 @@
 const assert = require('assert')
-const { Entry, MongoAccessor, ActionType, getDb } = require('../../dist')
+const { Proxy, MongoAccessor, ActionType, getDb } = require('../../dist')
 
 const { dbconfig } = require('./_db')
 

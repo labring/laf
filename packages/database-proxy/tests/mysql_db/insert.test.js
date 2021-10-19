@@ -1,6 +1,6 @@
 
 const assert = require('assert')
-const { MysqlAccessor, Entry, ActionType } = require('../../dist')
+const { MysqlAccessor, Proxy, ActionType } = require('../../dist')
 const config = require('./_db')
 
 describe('Database Mysql add', function () {
@@ -16,7 +16,7 @@ describe('Database Mysql add', function () {
 
   const table = 'test_table'
 
-  let entry = new Entry(accessor)
+  let entry = new Proxy(accessor)
 
   before(async () => {
     await entry.init()

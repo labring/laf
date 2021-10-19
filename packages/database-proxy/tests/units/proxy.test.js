@@ -1,18 +1,18 @@
 const assert = require('assert')
-const { Entry, MongoAccessor } = require('../../dist')
+const { Proxy, MongoAccessor } = require('../../dist')
 
-describe('class Entry', () => {
+describe('class Proxy', () => {
   const accessor = new MongoAccessor('test-db', 'mongodb://localhost:27017')
 
   it('constructor() ok', () => {
-    const entry = new Entry(accessor)
+    const entry = new Proxy(accessor)
 
     assert.ok(entry.accessor instanceof MongoAccessor)
     assert.equal(accessor, entry.accessor)
   })
 
   it('parseParams() ok', () => {
-    const entry = new Entry(accessor)
+    const entry = new Proxy(accessor)
 
     const reqParams = {
       collectionName: 'test-name',
@@ -31,7 +31,7 @@ describe('class Entry', () => {
   })
 
   it('parseParams() unknown action should get an error', () => {
-    const entry = new Entry(accessor)
+    const entry = new Proxy(accessor)
 
     try {
       entry.parseParams({ action: 'database.unknowAction'})

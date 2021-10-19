@@ -1,5 +1,5 @@
 const assert = require('assert')
-const { Ruler } = require('../../../dist')
+const { Policy } = require('../../../dist')
 
 describe('Join Validator - [no join configured]', () => {
     const rules = {
@@ -10,7 +10,7 @@ describe('Join Validator - [no join configured]', () => {
         }
     }
 
-    const ruler = new Ruler()
+    const ruler = new Policy()
     ruler.load(rules)
 
     it('.read with joins when no join configuration given should be rejected', async () => {
@@ -58,7 +58,7 @@ describe('Join Validator - [join configured]', () => {
         }
     }
 
-    const ruler = new Ruler()
+    const ruler = new Policy()
     ruler.load(rules)
 
     it('.read with left joins should be ok', async () => {

@@ -1,10 +1,10 @@
 const assert = require('assert')
 const { DefaultLogger } = require('../../../dist')
 // const { Processor } = require('../../../dist')
-const {  Ruler } = require('../../../dist/policy')
+const {  Policy } = require('../../../dist/policy')
 
 
-describe('class Ruler validate() - schema', () => {
+describe('class Policy validate() - schema', () => {
     const rules = {
         categories: {
             read: true,
@@ -20,7 +20,7 @@ describe('class Ruler validate() - schema', () => {
         }
     }
 
-    const ruler = new Ruler()
+    const ruler = new Policy()
     ruler.setLogger(new DefaultLogger(0))
     ruler.load(rules)
     const injections = {

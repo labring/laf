@@ -1,14 +1,14 @@
 const assert = require('assert')
 const { Processor } = require('../../../dist')
-const {  Ruler } = require('../../../dist/policy')
+const {  Policy } = require('../../../dist/policy')
 
 const buildins = require('../../../dist/validators')
 
-describe('class Ruler', () => {
+describe('class Policy', () => {
 
     it('loadBuiltins() ok', () => {
         // 初始化 validator 是否正确
-        const ruler = new Ruler()
+        const ruler = new Policy()
         const validtrs = ruler.validators
 
         assert.equal(Object.keys(buildins).length, Object.keys(validtrs).length)
@@ -20,7 +20,7 @@ describe('class Ruler', () => {
     })
 
     it('register() ok', () => {
-        const ruler = new Ruler()
+        const ruler = new Policy()
         ruler.register('test', (config, context) => {
             return true
         })
@@ -36,7 +36,7 @@ describe('class Ruler', () => {
                 "update": "false",
             }
         }
-        const ruler = new Ruler()
+        const ruler = new Policy()
         ruler.load(rules)
 
         const r = ruler.rules.categories
@@ -64,12 +64,12 @@ describe('class Ruler', () => {
                 },
             }
         }
-        const ruler = new Ruler()
+        const ruler = new Policy()
         assert.throws(() => ruler.load(rules))
     })
 })
 
-describe('class Ruler validate() - condition', () => {
+describe('class Policy validate() - condition', () => {
     const rules = {
         categories: {
             "read": true,
@@ -81,7 +81,7 @@ describe('class Ruler validate() - condition', () => {
         }
     }
 
-    const ruler = new Ruler()
+    const ruler = new Policy()
     ruler.load(rules)
     const injections = {
         $admin: true
@@ -121,7 +121,7 @@ describe('class Ruler validate() - condition', () => {
 
     it('read should be rejected', async () => {
         rules.categories['read'] = false
-        const ruler = new Ruler()
+        const ruler = new Policy()
         ruler.load(rules)
         const injections = { $admin: false }
         const params = { collection: 'categories', action: 'database.queryDocument', injections }
@@ -190,7 +190,7 @@ describe('class Ruler validate() - condition', () => {
 })
 
 
-describe('class Ruler validate() - multiple rules', () => {
+describe('class Policy validate() - multiple rules', () => {
     const rules = {
         categories: {
             "read": [
@@ -200,7 +200,7 @@ describe('class Ruler validate() - multiple rules', () => {
             ]
         }
     }
-    const ruler = new Ruler()
+    const ruler = new Policy()
     ruler.load(rules)
 
     it('injections with { $role: "admin" } should be ok', async () => {

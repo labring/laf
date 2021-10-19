@@ -1,5 +1,5 @@
 const assert = require('assert')
-const {  Ruler } = require('../../../dist')
+const {  Policy } = require('../../../dist')
 
 describe('Multi Validator - [multi config as true]', () => {
     const rules = {
@@ -14,7 +14,7 @@ describe('Multi Validator - [multi config as true]', () => {
         }
     }
 
-    const ruler = new Ruler()
+    const ruler = new Policy()
     ruler.load(rules)
 
     it('.read should be ok', async () => {
@@ -75,7 +75,7 @@ describe('Multi Validator - [multi config as false]', () => {
         }
     }
 
-    const ruler = new Ruler()
+    const ruler = new Policy()
     ruler.load(rules)
 
     it('.read should be ok', async () => {
@@ -182,7 +182,7 @@ describe('Multi Validator - [multi config as expression]', () => {
         }
     }
 
-    const ruler = new Ruler()
+    const ruler = new Policy()
     ruler.load(rules)
 
     it('remove should be ok', async () => {

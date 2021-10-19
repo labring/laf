@@ -1,5 +1,5 @@
 const assert = require('assert')
-const { Entry, MongoAccessor, ActionType } = require('../../dist')
+const { Proxy, MongoAccessor, ActionType } = require('../../dist')
 const { dbconfig } = require('./_db')
 
 const COLL_NAME = 'test_remove'
@@ -19,7 +19,7 @@ describe('Database remove', function () {
   this.timeout(10000)
 
   const accessor = new MongoAccessor(dbconfig.dbName, dbconfig.url, dbconfig.connSettings)
-  let entry = new Entry(accessor)
+  let entry = new Proxy(accessor)
   let coll = null
 
   before(async () => {

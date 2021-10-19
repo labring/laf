@@ -1,6 +1,6 @@
 
 const assert = require('assert')
-const { MysqlAccessor, Entry, ActionType } = require('../../dist')
+const { MysqlAccessor, Proxy, ActionType } = require('../../dist')
 const { SqlBuilder } = require('../../dist/accessor/sql_builder')
 const config = require('./_db')
 
@@ -18,7 +18,7 @@ describe('Database Mysql join', function () {
   const table = 'test_tbl'
   const sub_table = 'test_subtbl'
 
-  let entry = new Entry(accessor)
+  let entry = new Proxy(accessor)
 
   before(async () => {
     await entry.init()

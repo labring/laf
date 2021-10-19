@@ -117,9 +117,3 @@ export class Proxy {
     return params
   }
 }
-
-
-/**
- * Proxy 的别名，为了兼容老版本命名
- */
-export class Entry extends Proxy { }

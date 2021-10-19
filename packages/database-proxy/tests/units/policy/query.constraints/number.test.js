@@ -1,5 +1,5 @@
 const assert = require('assert')
-const { Ruler } = require('../../../../dist/policy')
+const { Policy } = require('../../../../dist/policy')
 
 
 describe('Query Validator - number', () => {
@@ -14,7 +14,7 @@ describe('Query Validator - number', () => {
         }
     }
 
-    const ruler = new Ruler()
+    const ruler = new Policy()
     ruler.load(rules)
 
     let params = {
