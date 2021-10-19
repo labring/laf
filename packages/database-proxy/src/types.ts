@@ -72,7 +72,7 @@ export interface Params {
 
 }
 
-const ReadAcceptParams = ['query', 'order', 'offset', 'limit', 'projection', 'multi', 'joins', 'nested']
+const ReadAcceptParams = ['query', 'order', 'offset', 'limit', 'projection', 'multi', 'count', 'joins', 'nested']
 const UpdateAcceptParams = ['query', 'data', 'multi', 'upsert', 'merge', 'joins']
 const AddAcceptParams = ['data', 'multi']
 const RemoveAcceptParams = ['query', 'multi', 'joins']

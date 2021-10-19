@@ -201,13 +201,14 @@ export class MongoAccessor implements AccessorInterface {
     protected async read(collection: string, params: Params): Promise<ReadResult> {
         const coll = this.db.collection(collection)
 
-        let { query, order, offset, limit, projection } = params
-        query = this.deserializedEjson(query || {})
+        const { order, offset, limit, projection, count } = params
+        const query: any = this.deserializedEjson(params.query || {})
 
-        let options: any = {
+        const options: any = {
             limit: 100,
             skip: 0
         }
+
         if (order) options.sort = this.processOrder(order)
         if (offset) options.skip = offset
         if (projection) options.projection = projection
@@ -220,10 +221,14 @@ export class MongoAccessor implements AccessorInterface {
         const data = await coll.find(query, options).toArray()
         this.logger.debug(`mongo end of read {${collection}}: `, { query, options, dataLength: data.length })
 
+        let total: number
+        if (count) {
+            total = await coll.countDocuments(query as Filter<any>)
+        }
 
         this.emitResult(params, { data })
         const serialized = data.map(doc => this.serializeBson(doc))
-        return { list: serialized, limit: options.limit, offset: options.skip }
+        return { list: serialized, limit: options.limit, offset: options.skip, total }
     }
 
     /**

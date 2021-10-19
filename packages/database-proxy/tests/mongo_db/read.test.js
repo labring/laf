@@ -127,6 +127,19 @@ describe('Database read', function () {
     assert.equal(data.list[0].title, TEST_DATA[0].title)
   })
 
+  it('read with count should be ok', async () => {
+    let params = {
+      collection: 'test_read',
+      action: ActionType.READ,
+      query: {},
+      count: true
+    }
+    const data = await entry.execute(params)
+    assert.ok(data.list instanceof Array)
+    assert.equal(data.list.length, TEST_DATA.length)
+    assert.equal(data.total, TEST_DATA.length)
+  })
+
   it('read with projection should be ok', async () => {
     let params = {
       collection: 'test_read',
