@@ -1,7 +1,7 @@
 const assert = require('assert')
 const { Policy } = require('../../../../dist/policy')
 
-describe('Query Validator - default', () => {
+describe('db-proxy(unit): validator::query - default', () => {
     const rules = {
         categories: {
             "update": {

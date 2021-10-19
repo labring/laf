@@ -1,7 +1,7 @@
 const { getDb  } = require('../_utils')
 const assert = require('assert')
 
-describe('db::page()', () => {
+describe('db-ql(unit): db::page()', () => {
   it('page() should be ok', async () => {
     const { db, req } = getDb()
     const res = await db.collection('tasks')

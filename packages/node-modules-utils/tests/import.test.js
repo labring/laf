@@ -3,12 +3,12 @@ const assert = require('assert')
 const path = require('path')
 const { ImportParser, PackageDeclaration } = require('../dist')
 
-const nmp = path.resolve(__dirname, '../../less-api-framework/node_modules')
+const nmp = path.resolve(__dirname, '../../app-service/node_modules')
 
-describe('Import Parser', () => {
+describe('npm-util(unit): Import Parser', () => {
   
-   it('parse less-api-database index.d.ts', async () => {
-     const pkg = new PackageDeclaration('less-api-database', nmp)
+   it('parse database-proxy index.d.ts', async () => {
+     const pkg = new PackageDeclaration('database-proxy', nmp)
      await pkg.load()
      const dec0 = pkg.declarations[0]
      console.log(dec0.packageName, dec0.path)
@@ -18,7 +18,7 @@ describe('Import Parser', () => {
      
      console.log(r)
      assert.ok(r.length > 0)
-     assert.strictEqual(pkg.name, 'less-api-database')
+     assert.strictEqual(pkg.name, 'database-proxy')
      assert.ok(pkg.declarations.length > 0)
   })
 })

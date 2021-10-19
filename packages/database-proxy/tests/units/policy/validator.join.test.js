@@ -1,7 +1,7 @@
 const assert = require('assert')
 const { Policy } = require('../../../dist')
 
-describe('Join Validator - [no join configured]', () => {
+describe('db-proxy(unit): validator::join - [no join configured]', () => {
     const rules = {
         categories: {
             "read": true,
@@ -46,7 +46,7 @@ describe('Join Validator - [no join configured]', () => {
 })
 
 
-describe('Join Validator - [join configured]', () => {
+describe('db-proxy(unit): validator::join - [join configured]', () => {
     const rules = {
         categories: {
             "read": {

@@ -10,7 +10,7 @@ const TEST_DATA = [
   { title: 'title-3', content: 'content-3', state: 3, gender: 1  }
 ]
 
-describe('Database aggregate', function () {
+describe('db-proxy(mongo): db.aggregate()', function () {
   this.timeout(10000)
 
   const accessor = new MongoAccessor(dbconfig.dbName, dbconfig.url, dbconfig.connSettings)

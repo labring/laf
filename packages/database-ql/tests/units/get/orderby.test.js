@@ -1,7 +1,7 @@
 const { getDb  } = require('../_utils')
 const assert = require('assert')
 
-describe('db::orderBy()', () => {
+describe('db-ql(unit): db::orderBy()', () => {
   it('orderBy() should be ok', async () => {
     const { db, req } = getDb()
     const res = await db.collection('tasks')

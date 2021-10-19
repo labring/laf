@@ -3,7 +3,7 @@ const { Actions, getDb  } = require('../_utils')
 const assert = require('assert')
 const { ObjectId } = require('bson')
 
-describe('db::doc().get()', () => {
+describe('db-ql(unit): db::doc().get()', () => {
   it('get() with string id should be ok', async () => {
     const { db, req } = getDb()
     const res = await db.collection('tasks')

@@ -4,7 +4,7 @@ const { SqlBuilder } = require('../../dist/accessor/sql_builder')
 const { ActionType } = require('../../dist/types')
 const { strictCompareArray } = require('../utils')
 
-describe('class SqlBuilder', () => {
+describe('db-proxy(unit): class SqlBuilder', () => {
   it('constructor() passed', () => {
     const params = {
       collection: 'test_table',

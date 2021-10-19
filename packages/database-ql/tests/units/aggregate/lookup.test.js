@@ -3,7 +3,7 @@ const { Actions, getDb  } = require('../_utils')
 const assert = require('assert')
 const { ObjectId } = require('bson')
 
-describe('db::aggregate()::$lookup', () => {
+describe('db-ql(unit): db::aggregate()::$lookup', () => {
   it('lookup() should be ok', async () => {
     const { db, req } = getDb()
     const res = await db.collection('tasks')

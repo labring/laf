@@ -1,7 +1,7 @@
 const { getDb  } = require('../_utils')
 const assert = require('assert')
 
-describe('db::limit() & skip()', () => {
+describe('db-ql(unit): db::limit() & skip()', () => {
   it('get() default limit is 100 should be ok', async () => {
     const { db, req } = getDb()
     const res = await db.collection('tasks')

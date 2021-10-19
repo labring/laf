@@ -3,7 +3,7 @@ const { Policy } = require('../../../../dist/policy')
 
 
 
-describe('Data Validator - default', () => {
+describe('db-proxy(unit): validator::data - default', () => {
     const rules = {
         categories: {
             "add": {

@@ -3,7 +3,7 @@ const { Actions, getDb  } = require('../_utils')
 const assert = require('assert')
 const { ObjectId, Binary } = require('bson')
 
-describe('db::update()', () => {
+describe('db-ql(unit): db::update()', () => {
   it('update() should be ok', async () => {
     const { db, req } = getDb()
 

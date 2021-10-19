@@ -3,7 +3,7 @@ const { Policy } = require('../../../../dist/policy')
 
 
 
-describe('Data Validator - match', () => {
+describe('db-proxy(unit): validator::data - match', () => {
     const rules = {
         categories: {
             "add": {

@@ -3,9 +3,9 @@ const assert = require('assert')
 const path = require('path')
 const { PackageDeclaration } = require('../dist')
 
-const nmp = path.resolve(__dirname, '../../less-api-framework/node_modules')
+const nmp = path.resolve(__dirname, '../../app-service/node_modules')
 
-describe('Package Declaration Load', () => {
+describe('npm-util(unit): Package Declaration Load', () => {
 
   /**
    * load from self package: @

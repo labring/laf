@@ -2,35 +2,36 @@
 const assert = require('assert')
 const { PackageInfo} = require('../dist')
 const path = require('path')
-const nmp = path.resolve(__dirname, '../../less-api-framework/node_modules')
+const nmp = path.resolve(__dirname, '../../app-service/node_modules')
 
 
-describe('Package parse', () => {
-  it('get pkg dir: less-api-database', async () => {
-    const pkg = new PackageInfo('less-api-database', nmp)
+describe('npm-util(unit): Package parse', () => {
+  it('get pkg dir: database-ql', async () => {
+    const pkg = new PackageInfo('database-ql', nmp)
     await pkg.parse()
-    assert.strictEqual(pkg.name, 'less-api-database')
+    assert.strictEqual(pkg.name, 'database-ql')
+    console.log(pkg.entryPath)
     assert(pkg.entryPath?.endsWith('dist/commonjs'))
   })
 
-  it('get pkg dir: less-api-database/index', async () => {
-    const pkg = new PackageInfo('less-api-database/index', nmp)
+  it('get pkg dir: database-ql/index', async () => {
+    const pkg = new PackageInfo('database-ql/index', nmp)
     await pkg.parse()
-    assert.strictEqual(pkg.name, 'less-api-database')
+    assert.strictEqual(pkg.name, 'database-ql')
     assert(pkg.entryPath?.endsWith('dist/commonjs'))
   })
 
-  it('get pkg dir: less-api-database/dist/commonjs', async () => {
-    const pkg = new PackageInfo('less-api-database/dist/commonjs', nmp)
+  it('get pkg dir: database-ql/dist/commonjs', async () => {
+    const pkg = new PackageInfo('database-ql/dist/commonjs', nmp)
     await pkg.parse()
-    assert.strictEqual(pkg.name, 'less-api-database')
+    assert.strictEqual(pkg.name, 'database-ql')
     assert(pkg.entryPath?.endsWith('dist/commonjs'))
   })
 
-  it('get pkg dir: less-api-database/dist/commonjs/commands/index', async () => {
-    const pkg = new PackageInfo('less-api-database/dist/commonjs/commands/index', nmp)
+  it('get pkg dir: database-ql/dist/commonjs/commands/index', async () => {
+    const pkg = new PackageInfo('database-ql/dist/commonjs/commands/index', nmp)
     await pkg.parse()
-    assert.strictEqual(pkg.name, 'less-api-database')
+    assert.strictEqual(pkg.name, 'database-ql')
     assert(pkg.entryPath?.endsWith('dist/commonjs'))
   })
 

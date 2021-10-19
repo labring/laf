@@ -8,7 +8,7 @@ const TEST_DATA = [
   { type: 'b', title: 'title-3', content: 'content-3' }
 ]
 
-describe('Database count', function () {
+describe('db-proxy(mongo): db.count()', function () {
   this.timeout(10000)
 
   const accessor = new MongoAccessor(dbconfig.dbName, dbconfig.url, dbconfig.connSettings)

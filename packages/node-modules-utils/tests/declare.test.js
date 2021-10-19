@@ -3,9 +3,9 @@ const assert = require('assert')
 const path = require('path')
 const { PackageDeclaration } = require('../dist')
 
-const nmp = path.resolve(__dirname, '../../less-api-framework/node_modules')
+const nmp = path.resolve(__dirname, '../../app-service/node_modules')
 
-describe('Package Declaration Load', () => {
+describe('npm-util(unit): Package Declaration Load', () => {
   /**
    * load from @types/express
    */
@@ -39,12 +39,12 @@ describe('Package Declaration Load', () => {
   /**
    * load from self package: less-api-database
    */
-   it('load d.ts of less-api-database (typings)', async () => {
-    const pkg = new PackageDeclaration('less-api-database', nmp)
+   it('load d.ts of database-proxy (typings)', async () => {
+    const pkg = new PackageDeclaration('database-proxy', nmp)
      await pkg.load()
     console.log(pkg.declarations)
      
-    assert.strictEqual(pkg.name, 'less-api-database')
+    assert.strictEqual(pkg.name, 'database-proxy')
     assert.ok(pkg.declarations.length > 0)
   })
 })

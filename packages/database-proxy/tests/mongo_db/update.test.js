@@ -16,7 +16,7 @@ async function restoreTestData (coll) {
   assert.equal(r.insertedCount, TEST_DATA.length)
 }
 
-describe('Database update', function () {
+describe('db-proxy(mongo): db.update()', function () {
   this.timeout(10000)
 
   const accessor = new MongoAccessor(dbconfig.dbName, dbconfig.url, dbconfig.connSettings)

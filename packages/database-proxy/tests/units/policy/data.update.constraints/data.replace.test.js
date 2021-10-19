@@ -1,7 +1,7 @@
 const assert = require('assert')
 const {  Policy } = require('../../../../dist')
 
-describe('Date Validator - merge options (replace & update)', () => {
+describe('db-proxy(unit): validator::data - merge options (replace & update)', () => {
     const rules = {
         categories: {
             "update": {

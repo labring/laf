@@ -1,18 +1,9 @@
 /* eslint-disable indent */
 const assert = require('assert')
 const client = require('../../dist/commonjs/index')
-
-function getAccessToken(){
-  return 'test-token-xxx'
-}
-
-const config = {
-  entryUrl: 'http://localhost:8080/entry',
-  getAccessToken
-}
-
-describe('Database', function () {
-  const cloud = client.init(config)
+const config = require('./config')
+describe('client-sdk(http): db::update()', function () {
+  const cloud = client.init({ dbProxyUrl: config.dbProxyUrl, getAccessToken: config.getAccessToken})
 
   let result = null
   before(async () => {
@@ -41,8 +32,9 @@ describe('Database', function () {
       .doc(result.id)
       .get()
 
-    assert.equal(data[0]._id, result.id)
-    assert.equal(data[0].title, 'updated-title')
+    console.log(data)
+    assert.equal(data._id, result.id)
+    assert.equal(data.title, 'updated-title')
   })
 
   it('update with $operator should be ok', async () => {
@@ -63,10 +55,10 @@ describe('Database', function () {
       .get()
 
 
-    assert.equal(data[0]._id, result.id)
-    assert.equal(data[0].title, 'updated-title')
-    assert.equal(data[0].age, 1)
-    assert.equal(data[0].content, undefined)
+    assert.equal(data._id, result.id)
+    assert.equal(data.title, 'updated-title')
+    assert.equal(data.age, 1)
+    assert.equal(data.content, undefined)
   })
 
   it('update many should be ok', async () => {
@@ -89,7 +81,7 @@ describe('Database', function () {
       })
   })
 
-  it('set one shouWld be ok', async () => {
+  it('set one should be ok', async () => {
     const db = cloud.database()
     const _ = db.command
     
@@ -104,7 +96,7 @@ describe('Database', function () {
       .doc(result.id)
       .get()
       
-      assert.equal(data[0]._id, result.id)
-      assert.equal(data[0].setField, 'content-set-1')
+      assert.equal(data._id, result.id)
+      assert.equal(data.setField, 'content-set-1')
   })
 })

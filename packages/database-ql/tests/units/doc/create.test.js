@@ -3,7 +3,7 @@ const { Actions, getDb  } = require('../_utils')
 const assert = require('assert')
 const { ObjectId, Binary } = require('bson')
 
-describe('db::doc().create()', () => {
+describe('db-ql(unit): db::doc().create()', () => {
   it('create() should be ok', async () => {
     const { db, req } = getDb()
 

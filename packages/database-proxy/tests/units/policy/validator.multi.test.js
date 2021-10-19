@@ -1,7 +1,7 @@
 const assert = require('assert')
 const {  Policy } = require('../../../dist')
 
-describe('Multi Validator - [multi config as true]', () => {
+describe('db-proxy(unit): validator::multi - [multi config as true]', () => {
     const rules = {
         categories: {
             "read": {},
@@ -60,7 +60,7 @@ describe('Multi Validator - [multi config as true]', () => {
     })
 })
 
-describe('Multi Validator - [multi config as false]', () => {
+describe('db-proxy(unit): validator::multi - [multi config as false]', () => {
     const rules = {
         categories: {
             "read": {
@@ -172,8 +172,7 @@ describe('Multi Validator - [multi config as false]', () => {
 })
 
 
-
-describe('Multi Validator - [multi config as expression]', () => {
+describe('db-proxy(unit): validator::multi - [multi config as expression]', () => {
     const rules = {
         categories: {
             "remove": {

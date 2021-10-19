@@ -2,7 +2,7 @@
 const { Actions, getDb  } = require('../_utils')
 const assert = require('assert')
 
-describe('db::get()', () => {
+describe('db-ql(unit): db::get()', () => {
   it('get() without query options should be ok', async () => {
     const { db, req } = getDb()
     const res = await db.collection('tasks')

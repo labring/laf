@@ -5,7 +5,7 @@ const { ObjectId } = require('bson')
 const { getDb  } = require('../_utils')
 
 
-describe('db::where()', () => {
+describe('db-ql(unit): db::where()', () => {
   it('where({}) should be ok', async () => {
     const { db, req } = getDb()
     const res = await db.collection('tasks')

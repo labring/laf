@@ -1,7 +1,7 @@
 const assert = require('assert')
 const { Policy } = require('../../../../dist/policy')
 
-describe('Data validator - condition', () => {
+describe('db-proxy(unit): validator::data - condition', () => {
     const rules = {
         categories: {
             "add": {

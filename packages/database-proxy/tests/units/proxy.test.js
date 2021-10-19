@@ -1,7 +1,7 @@
 const assert = require('assert')
 const { Proxy, MongoAccessor } = require('../../dist')
 
-describe('class Proxy', () => {
+describe('db-proxy(unit): class Proxy', () => {
   const accessor = new MongoAccessor('test-db', 'mongodb://localhost:27017')
 
   it('constructor() ok', () => {

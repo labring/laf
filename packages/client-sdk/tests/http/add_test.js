@@ -1,18 +1,10 @@
 const assert = require('assert')
 const client = require('../../dist/commonjs/index')
+const config = require('./config')
 
-function getAccessToken(){
-  return 'test-token-xxx'
-}
-
-const config = {
-  entryUrl: 'http://localhost:8080/entry',
-  getAccessToken,
-}
-
-describe('Database', function () {
+describe('client-sdk(http): db.add()', function () {
   it('add one should be ok', async () => {
-    const cloud = client.init(config)
+    const cloud = client.init({ dbProxyUrl: config.dbProxyUrl, getAccessToken: config.getAccessToken})
 
     const result = await cloud.database()
       .collection('categories')
@@ -28,6 +20,6 @@ describe('Database', function () {
       .get()
 
     assert.ok(result.id)
-    assert.equal(data[0]._id, result.id)
+    assert.equal(data._id, result.id)
   })
 })

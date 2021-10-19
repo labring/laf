@@ -9,7 +9,7 @@ async function restoreTestData (coll) {
   await coll.deleteMany({})
 }
 
-describe('Database add', function () {
+describe('db-proxy(mongo): db.add()', function () {
     this.timeout(10000)
 
     const accessor = new MongoAccessor(dbconfig.dbName, dbconfig.url, dbconfig.connSettings)

@@ -4,7 +4,7 @@ const {  Policy } = require('../../../dist/policy')
 
 const buildins = require('../../../dist/validators')
 
-describe('class Policy', () => {
+describe('db-proxy(unit): class Policy', () => {
 
     it('loadBuiltins() ok', () => {
         // 初始化 validator 是否正确
@@ -69,7 +69,7 @@ describe('class Policy', () => {
     })
 })
 
-describe('class Policy validate() - condition', () => {
+describe('db-proxy(unit): class Policy validate() - condition', () => {
     const rules = {
         categories: {
             "read": true,
@@ -190,7 +190,7 @@ describe('class Policy validate() - condition', () => {
 })
 
 
-describe('class Policy validate() - multiple rules', () => {
+describe('db-proxy(unit): class Policy validate() - multiple rules', () => {
     const rules = {
         categories: {
             "read": [

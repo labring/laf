@@ -15,7 +15,7 @@ async function restoreTestData (coll) {
   assert.equal(r.insertedCount, TEST_DATA.length)
 }
 
-describe('Database remove', function () {
+describe('db-proxy(mongo): db.remove()', function () {
   this.timeout(10000)
 
   const accessor = new MongoAccessor(dbconfig.dbName, dbconfig.url, dbconfig.connSettings)

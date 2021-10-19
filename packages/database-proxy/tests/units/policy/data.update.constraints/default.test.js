@@ -1,7 +1,7 @@
 const assert = require('assert')
 const {  Policy } = require('../../../../dist')
 
-describe('Data Validator - default', () => {
+describe('db-proxy(unit): validator::data - default(update)', () => {
     const rules = {
         categories: {
             "update": {

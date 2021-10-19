@@ -1,7 +1,7 @@
 const { getDb  } = require('../_utils')
 const assert = require('assert')
 
-describe('db::field()', () => {
+describe('db-ql(unit): db::field()', () => {
   it('field(value: string[]) should be ok', async () => {
     const { db, req } = getDb()
     const res = await db.collection('tasks')

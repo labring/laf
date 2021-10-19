@@ -6,7 +6,7 @@ const { strictCompareArray } = require('../utils')
 /**
  * 不同的查询情况(case N)，参考 docs/convert-sql.md 文档。
  */
-describe('class SqlQueryBuilder', () => {
+describe('db-proxy(unit): class SqlQueryBuilder', () => {
   it('Query CASE 1: query = {} shoud be ok', () => {
     const query = {}
     const builder = new SqlQueryBuilder(query)
