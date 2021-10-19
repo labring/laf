@@ -5,6 +5,7 @@ import * as mongodb from 'mongodb'
 import { DefaultLogger, LoggerInterface } from "../logger"
 import { EventEmitter } from "events"
 import { EJSON } from "bson"
+import { AggregateStage } from "database-ql/dist/commonjs/interface"
 
 /**
  * Mongodb Accessor 负责执行 mongodb 数据操作
@@ -149,6 +150,10 @@ export class MongoAccessor implements AccessorInterface {
             return await this.read(collection, params)
         }
 
+        if (action === ActionType.AGGREGATE) {
+            return await this.aggregate(collection, params)
+        }
+
         if (action === ActionType.UPDATE) {
             return await this.update(collection, params)
         }
@@ -222,10 +227,29 @@ export class MongoAccessor implements AccessorInterface {
     }
 
     /**
-     * 执行更新文档操作
-     * @param collection 集合名
-     * @param params 请求参数
-     * @returns 执行结果
+     * Execute aggregate query
+     * @param collection 
+     * @param params 
+     * @returns 
+     */
+    protected async aggregate(collection: string, params: Params): Promise<ReadResult> {
+        const coll = this.db.collection(collection)
+        const stages = this.processAggregateStages(params.stages)
+
+        this.logger.debug(`mongo before aggregate {${collection}}: `, stages)
+        const data = await coll.aggregate(stages).toArray()
+        this.logger.debug(`mongo after aggregate {${collection}}: `, stages, { dataLength: data.length })
+
+        this.emitResult(params, { data })
+        const serialized = data.map(doc => this.serializeBson(doc))
+        return { list: serialized }
+    }
+
+    /**
+     * Execute update query
+     * @param collection Collection name
+     * @param params 
+     * @returns 
      */
     protected async update(collection: string, params: Params): Promise<UpdateResult> {
         const coll = this.db.collection(collection)
@@ -275,10 +299,10 @@ export class MongoAccessor implements AccessorInterface {
     }
 
     /**
-     * 执行添加文档操作
-     * @param collection 集合名
-     * @param params 请求参数
-     * @returns 执行结果
+     * Execute insert query
+     * @param collection Collection name
+     * @param params 
+     * @returns 
      */
     protected async add(collection: string, params: Params): Promise<AddResult> {
         const coll = this.db.collection(collection)
@@ -361,7 +385,7 @@ export class MongoAccessor implements AccessorInterface {
     }
 
     /**
-     * 将 Order 结构转换为 Mongo 语法
+     * Convert order params to Mongodb's order format
      * @param order 
      * @returns 
      */
@@ -402,5 +426,19 @@ export class MongoAccessor implements AccessorInterface {
      */
     protected deserializedEjson(ejsonDoc: any) {
         return EJSON.deserialize(ejsonDoc, { relaxed: true })
+    }
+
+    /**
+     * Convert aggregate stages params to Mongodb aggregate pipelines
+     * @param stages 
+     * @returns 
+     */
+    protected processAggregateStages(stages: AggregateStage[]) {
+        const _stages = stages.map(item => {
+            const key = item.stageKey
+            const value = EJSON.parse(item.stageValue, { relaxed: true })
+            return { [key]: value }
+        })
+        return _stages
     }
 }

@@ -40,21 +40,23 @@ export interface JoinParam {
 }
 
 export interface Params {
-  collection: string,
-  action: ActionType,
-  query?: any,
-  data?: any,
+  collection: string
+  action: ActionType
+  query?: any
+  data?: any
 
-  order?: Order[],
-  offset?: number,
-  limit?: number,
-  projection?: any,
+  order?: Order[]
+  offset?: number
+  limit?: number
+  projection?: any
+  count?: boolean
 
-  multi?: boolean,
-  upsert?: boolean,
-  merge?: boolean,
+  multi?: boolean
+  upsert?: boolean
+  merge?: boolean
 
   stages?: { stageKey: string, stageValue: string }[]
+
   /**
    * nested table name, when use join, like [{ tableName: {id: 1, name: 'xxx'}, subTable: {id: 1, age: 1}}]
    * @deprecated this field is only used for mysql, and will be deprecated
@@ -63,9 +65,10 @@ export interface Params {
   nested?: boolean
 
   /**
+   * SQL join
    * @deprecated this field is only used for mysql, and will be deprecated
    */
-  joins?: JoinParam[], // SQL join
+  joins?: JoinParam[]
 
 }
 
