@@ -5,7 +5,8 @@ export enum ActionType {
   ADD = 'database.addDocument',
   REMOVE = 'database.deleteDocument',
   COUNT = 'database.countDocument',
-  WATCH = 'database.countDocument'
+  WATCH = 'database.watchDocument',
+  AGGREGATE = 'database.aggregateDocuments'
 }
 
 export interface Action {
@@ -41,18 +42,31 @@ export interface JoinParam {
 export interface Params {
   collection: string,
   action: ActionType,
-  joins?: JoinParam[], // SQL join
   query?: any,
   data?: any,
+
   order?: Order[],
   offset?: number,
   limit?: number,
   projection?: any,
+
   multi?: boolean,
   upsert?: boolean,
   merge?: boolean,
-  // @see https://github.com/mysqljs/mysql#joins-with-overlapping-column-names
-  nested?: boolean  // nested table name, when use join, like [{ tableName: {id: 1, name: 'xxx'}, subTable: {id: 1, age: 1}}]
+
+  stages?: { stageKey: string, stageValue: string }[]
+  /**
+   * nested table name, when use join, like [{ tableName: {id: 1, name: 'xxx'}, subTable: {id: 1, age: 1}}]
+   * @deprecated this field is only used for mysql, and will be deprecated
+   * @see https://github.com/mysqljs/mysql#joins-with-overlapping-column-names
+   */
+  nested?: boolean
+
+  /**
+   * @deprecated this field is only used for mysql, and will be deprecated
+   */
+  joins?: JoinParam[], // SQL join
+
 }
 
 const ReadAcceptParams = ['query', 'order', 'offset', 'limit', 'projection', 'multi', 'joins', 'nested']
@@ -60,6 +74,7 @@ const UpdateAcceptParams = ['query', 'data', 'multi', 'upsert', 'merge', 'joins'
 const AddAcceptParams = ['data', 'multi']
 const RemoveAcceptParams = ['query', 'multi', 'joins']
 const CountAcceptParams = ['query', 'joins']
+const AggregateAcceptParams = ['stages']
 
 const ReadAction: Action = { type: ActionType.READ, fields: ReadAcceptParams }
 const UpdateAction: Action = { type: ActionType.UPDATE, fields: UpdateAcceptParams }
@@ -67,6 +82,7 @@ const RemoveAction: Action = { type: ActionType.REMOVE, fields: RemoveAcceptPara
 const AddAction: Action = { type: ActionType.ADD, fields: AddAcceptParams }
 const CountAction: Action = { type: ActionType.COUNT, fields: CountAcceptParams }
 const WatchAction: Action = { type: ActionType.WATCH, fields: ReadAcceptParams }
+const AggregateAction: Action = { type: ActionType.AGGREGATE, fields: AggregateAcceptParams }
 
 export function getAction(actionName: ActionType): Action | null {
 
@@ -89,6 +105,9 @@ export function getAction(actionName: ActionType): Action | null {
       break
     case ActionType.WATCH:
       action = WatchAction
+      break
+    case ActionType.AGGREGATE:
+      action = AggregateAction
       break
     default:
       action = null

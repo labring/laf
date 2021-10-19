@@ -6,7 +6,6 @@ import * as BUILT_IN_VALIDATORS from '../validators'
 import { AccessorInterface } from '../accessor'
 import { DefaultLogger, LoggerInterface } from '../logger'
 import { PermissionRule, PolicyInterface, ValidateError, ValidateResult } from './interface'
-import { PermissionType as PermissionTypeV1 } from '../ruler/ruler_v1'
 
 /**
  * 访问规则结构： 
@@ -19,6 +18,15 @@ import { PermissionType as PermissionTypeV1 } from '../ruler/ruler_v1'
  *       ->  count:  PermissionRule[]
  *       ->  watch:  PermissionRule[]
  */
+
+
+export enum PermissionTypeV1 {
+  READ = '.read',
+  UPDATE = '.update',
+  ADD = '.add',
+  REMOVE = '.remove',
+  COUNT = '.count'
+}
 
 export enum PermissionType {
   READ = 'read',
@@ -99,7 +107,7 @@ export class Policy implements PolicyInterface {
   }
 
   /**
-   * 加载 rules in josn
+   * 加载 rules in json
    * @param rules any
    * @returns 
    */

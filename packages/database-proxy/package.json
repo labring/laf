@@ -5,7 +5,7 @@
   "main": "./dist",
   "scripts": {
     "test-all": "mocha tests/**/*test.js",
-    "test-units": "mocha tests/units/*",
+    "test-units": "mocha tests/units/**",
     "test": "npm run test-units",
     "build": "tsc -p tsconfig.json",
     "watch": "tsc -w",

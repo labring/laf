@@ -1,7 +1,6 @@
 
 export * from './proxy'
 export * from './policy'
-export * from './ruler'
 export * from './accessor'
 export * from './types'
 export * from './processor'
