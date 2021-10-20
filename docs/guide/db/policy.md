@@ -1,7 +1,7 @@
 
 ## 数据访问策略
 
-前端可使用 [less-api-client sdk](https://github.com/Maslow/less-api/tree/master/packages/less-api-client-js) “直连”数据库，无需与服务端对接口。
+前端可使用 [laf-client-sdk](https://github.com/Maslow/laf/tree/main/packages/client-sdk) “直连”数据库，无需与服务端对接口。
 
 访问策略用来对客户端对数据库的操作进行安全控制，一个访问策略由多个集合的访问规则组成，每个集合可配置读写操作权限的访问规则。
 
@@ -20,6 +20,7 @@
   - `add` 新增操作
   - `remove` 删除操作
   - `count` 统计集合总数量操作
+  - `aggregate` 聚合操作
 
 
 以下为 `products` （商品集合）的访问策略示例，开放客户端读的权限，在客户端可以直接查询该集合的数据:
@@ -125,17 +126,17 @@
     "articles": {
         "read": true,
         "add": {
-            "condition": "uid === query.author_id"
+            "condition": "uid === query.author_id",
+            "data": {
+                "title": {"length": [1, 64], "required": true},
+                "content": {"length": [1, 4096]},
+                "status": { "boolean": [true,false]},
+                "likes": { "number": [0, ], "default": 0},
+                "author_id": "$value == uid",
+            }
         },
         "remove": "uid === query.author_id",
-        "count": true,
-        "$schema": {
-            "title": {"length": [1, 64], "required": true},
-            "content": {"length": [1, 4096]},
-            "status": { "boolean": [true,false]},
-            "likes": { "number": [0, ], "default": 0},
-             "author_id": "$value == uid",
-        }
+        "count": true
     }
 }
 ```
@@ -157,42 +158,35 @@
         "add": {
             "condition": "uid === data.sender",
              "data": {
-                "read": {"in": [false]}
+                "read": {"in": [false]},
+                "content": {"length": [1, 20480], "required": true},
+                "receiver": {"exists": "/users/id"},
+                "read": { "in": [true, false], "default": false }
             }
         },
-        "remove": false,
-        "$schema": {
-            "content": {"length": [1, 20480], "required": true},
-            "receiver": {"exists": "/users/id"},
-            "read": { "in": [true, false], "default": false }
-        }
+        "remove": false
     }
 }
 ```
 
-### $schema 验证示例
-
-`$schema` 字段可定义集合中数据的结构，以及相关的验证。
-
-当开发者在客户端执行 `update` `add` 操作时，会首先验证该操作是否符合 `$schema` 定义的结构。
+### data 验证器示例
 
 ```json
 {
     "categories": {
         "read": true,
         "update": "role === 'admin'",
-        "add": "role === 'admin'",
-        "remove": "role === 'admin'",
-        "count": true,
-        "$schema": {
-            "password": { "match": "^\\d{6,10}$"},
-            "author_id": "$value == uid",
-            "type": {"required": true, "in": ["choice", "fill"]}, 
-            "title": {"length": [4, 64], "required": true, "unique": true},
-            "content": {"length": [4, 20480]},
-            "total": {"number": [0, 100], "default": 0, "required": true}
-        },
-        "$version": 2
+        "add": {
+            "condition": "role === 'admin'",
+            "data": {
+                "password": { "match": "^\\d{6,10}$"},
+                "author_id": "$value == uid",
+                "type": {"required": true, "in": ["choice", "fill"]}, 
+                "title": {"length": [4, 64], "required": true, "unique": true},
+                "content": {"length": [4, 20480]},
+                "total": {"number": [0, 100], "default": 0, "required": true}
+            }
+        }
     }
 }
 ```

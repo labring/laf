@@ -822,23 +822,6 @@ db.collection('comments').doc('comment-id').update({
 #### shift
 删除数组头部元素。使用同pop
 
-
-### Join 查询（仅MySQL）
-> 主要用于一对一或多对一关系的查询
-
-```js
-const { data } = await db.collection('article')
-  .leftJoin('user', 'id', 'author_id')
-  .get()
-
-// 若左表与右表字段名有重复，避免字段覆盖的写法:
-const { data } = await db.collection('article')
-  .leftJoin('user', 'id', 'author_id')
-  .get({ nested: true })
-
-// 结果如下：[ { article: {}, user: {} }, ... ]
-```
-
 ### With 子表查询（支持 MongoDb 和 MySQL）
 
 #### 一对多关系查询
@@ -852,7 +835,7 @@ const { data } = await db.collection('article')
         foreignField: 'article_id',   // 子表连接键，即 tag.article_id
         as: 'tags'          // 查询结果中字段重命名，缺省为子表名
       })
-      .merge()
+      .get()
 
 console.log(data) 
 //  [ { id: 1, name: xxx, tags: [...] }  ]
@@ -870,7 +853,7 @@ const { data } = await db.collection('article')
         foreignField: 'id',             // 子表连接键，即 tag.article_id
         as: 'author'          // 查询结果中字段重命名，缺省为子表名
       })
-      .merge()
+      .get()
 
 console.log(data) 
 //  [ { id: 1, name: xxx, author: {...} }  ]

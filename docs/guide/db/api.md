@@ -603,7 +603,7 @@ const { data } = await db.collection('article')
         foreignField: 'article_id',   // 子表连接键，即 tag.article_id
         as: 'tags'          // 查询结果中字段重命名，缺省为子表名
       })
-      .merge()
+      .get()
 
 console.log(data) 
 //  [ { id: 1, name: xxx, tags: [...] }  ]
@@ -620,7 +620,7 @@ const { data } = await db.collection('article')
         foreignField: 'id',             // 子表连接键，即 tag.article_id
         as: 'author'          // 查询结果中字段重命名，缺省为子表名
       })
-      .merge()
+      .get()
 
 console.log(data) 
 //  [ { id: 1, name: xxx, author: {...} }  ]

@@ -1,19 +1,22 @@
 
 ### 介绍
 
-Javascript client sdk of [`less-api`](https://github.com/Maslow/less-api).
+Javascript client sdk of [`LaF`](https://github.com/Maslow/laf).
 
 ### 安装
 
 ```sh
-    npm install less-api-client
+    npm install laf-client-sdk
 ```
 
 ### 使用示例
 
 ```js
-const cloud = require('less-api-client').init({
-    entryUrl: 'http://localhost:8080/entry',
+const cloud = require('laf-client-sdk').init({
+    // the laf app server base url
+    baseUrl: 'http://localhost:8000',
+    // the database proxy entry, `app` is the policy name which response for the security of database access
+    dbProxyUrl: '/proxy/app',  
     getAccessToken: () => localStorage.getItem('access_token')
 })
 
@@ -55,8 +58,11 @@ const removed = await db.collection('articles').doc('the-doc-id').remove()
 #### 微信小程序中使用
 
 ```js
-const cloud = require('less-api-client').init({
-    entryUrl: 'http://localhost:8080/entry',
+const cloud = require('laf-client-sdk').init({
+    // the laf app server base url
+    baseUrl: 'http://localhost:8000',
+    // the database proxy entry, `app` is the policy name which response for the security of database access
+    dbProxyUrl: '/proxy/app',  
     getAccessToken: () => localStorage.getItem('access_token'),
     environment: 'wxmp'
 })
@@ -65,8 +71,10 @@ const cloud = require('less-api-client').init({
 #### UNI-APP 中使用
 
 ```js
-const cloud = require('less-api-client').init({
-    entryUrl: 'http://localhost:8080/entry',
+const cloud = require('laf-client-sdk').init({
+    // the laf app server base url
+    baseUrl: 'http://localhost:8000',
+    // the database proxy entry, `app` is the policy name which response for the security of database access
     getAccessToken: () => localStorage.getItem('access_token'),
     environment: 'uniapp'
 })
@@ -889,23 +897,6 @@ db.collection('comments').doc('comment-id').update({
 #### shift
 删除数组头部元素。使用同pop
 
-
-### Join 查询（仅MySQL）
-> 主要用于一对一或多对一关系的查询
-
-```js
-const { data } = await db.collection('article')
-  .leftJoin('user', 'id', 'author_id')
-  .get()
-
-// 若左表与右表字段名有重复，避免字段覆盖的写法:
-const { data } = await db.collection('article')
-  .leftJoin('user', 'id', 'author_id')
-  .get({ nested: true })
-
-// 结果如下：[ { article: {}, user: {} }, ... ]
-```
-
 ### With 子表查询（支持 MongoDb 和 MySQL）
 
 #### 一对多关系查询
@@ -919,7 +910,7 @@ const { data } = await db.collection('article')
         foreignField: 'article_id',   // 子表连接键，即 tag.article_id
         as: 'tags'          // 查询结果中字段重命名，缺省为子表名
       })
-      .merge()
+      .get()
 
 console.log(data) 
 //  [ { id: 1, name: xxx, tags: [...] }  ]
@@ -937,7 +928,7 @@ const { data } = await db.collection('article')
         foreignField: 'id',             // 子表连接键，即 tag.article_id
         as: 'author'          // 查询结果中字段重命名，缺省为子表名
       })
-      .merge()
+      .get()
 
 console.log(data) 
 //  [ { id: 1, name: xxx, author: {...} }  ]

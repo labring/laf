@@ -1,4 +1,3 @@
-![](https://github.com/Maslow/less-api/workflows/release/badge.svg?branch=v1.0.0)
 
 ## 介绍
 
@@ -267,14 +266,6 @@ create table IF NOT EXISTS articles (
     docker rm -f mysqltest
 ```
 
-### PostgreSQL
-
-```sh
-docker run --name pgdb -e POSTGRESQL_PASSWORD=kissme -e POSTGRESQL_DATABASE=testdb -p "5432:5432" -d  bitnami/postgresql
-```
-
-尚未支持 PostgreSQL。
-
 ### 执行所有测试用例
 
 > 请确保已经运行 mongo 和 mysql 测试的实例；
@@ -282,14 +273,3 @@ docker run --name pgdb -e POSTGRESQL_PASSWORD=kissme -e POSTGRESQL_DATABASE=test
 ```sh
 npx mocha tests/**/*.test.js
 ```
-
-##  TODO
-
-- 实现服务端应用内数据操作事件，可订阅相应事件，触发更多自定义的业务逻辑，如表冗余统计字段，或中间统计表的更新
-- 基于 Mongo 的`change watch`, 实现客户端可订阅数据变更通知，服务端通过 websocket 向客户端实时推送数据变更
-- 提供 Flutter (Dart) SDK (`less-client-dart`) [完成]
-- 支持 MySQL 等关系型数据库 [完成]
-- 支持 MySQL 联表查询(Join) [完成]
-- 支持 MongoDb 聚合
-- 支持 MongoDb 事务
-- 补充 schema 验证器的测试用例

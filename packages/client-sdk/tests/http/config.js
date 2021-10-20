@@ -1,7 +1,7 @@
 
 
 const config = {
-  dbProxyUrl: 'http://d9f5f2aa-c7a4-47da-ab43-5f01d6724d36.local-dev.host:8080/proxy/app',
+  dbProxyUrl: 'https://6217ba84-5f56-45b1-a46b-7fb69a7ea1e9.lafyun.com/proxy/app',
   getAccessToken: () => '',
 }
 

@@ -5,27 +5,27 @@ title: 云数据库简介
 
 ### 介绍
 
-前端可使用 [less-api-client sdk](https://github.com/Maslow/less-api/tree/master/packages/less-api-client-js) “直连”数据库，无需与服务端对接口。
+前端可使用 [laf-client-sdk](https://github.com/Maslow/laf/tree/main/packages/client-sdk) “直连”数据库，无需与服务端对接口。
 
 通过在开发控制台，配置相应的访问策略，即可实现客户端安全操作数据库。
 详见[访问策略](./policy)。
 
 ### 安装客户端SDK
 
-在前端项目中安装 less-api-client sdk: 
+在前端项目中安装 laf-client-sdk sdk: 
 
 ```sh
-npm install less-api-client
+npm install laf-client-sdk
 ```
 
 ### 使用示例
 
 ```js
-const cloud = require('less-api-client').init({
+const cloud = require('laf-client-sdk').init({
     // the laf app server base url
     baseUrl: 'http://localhost:8000',
     // the database proxy entry, `app` is the policy name which response for the security of database access
-    entryUrl: '/proxy/app',  
+    dbProxyUrl: '/proxy/app',  
     // provide your own token-get-function, a standard JWT token is expected
     getAccessToken: () => localStorage.getItem('access_token'),
     /**
@@ -41,13 +41,13 @@ const cloud = require('less-api-client').init({
 const db = cloud.database()
 
 // query documents
-const cates = await db.collection('categories').get()
+const res = await db.collection('categories').get()
 
 // query a document
-const cate = await db.collection('categories').doc('the-doc-id').get()
+const res = await db.collection('categories').doc('the-doc-id').get()
 
 // query with options
-const articles = await db.collection('articles')
+const res = await db.collection('articles')
     .where({})
     .orderBy({createdAt: 'asc'})
     .offset(0)
@@ -55,19 +55,19 @@ const articles = await db.collection('articles')
     .get()
 
 // count documents
-const total = await db.collection('articles')
+const { total } = await db.collection('articles')
   .where({createdBy: 'the-user-id'})
   .count()
 
 // update document
-const updated = await db.collection('articles')
+const res = await db.collection('articles')
   .doc('the-doc-id')
   .update({
     title: 'new-title'
   })
 
 // add a document
-const created = await db.collection('articles')
+const res = await db.collection('articles')
   .add({
       title: "less api database",
       content: 'less api more life',
@@ -75,5 +75,5 @@ const created = await db.collection('articles')
   })
 
 // delete a document
-const removed = await db.collection('articles').doc('the-doc-id').remove()
+const res = await db.collection('articles').doc('the-doc-id').remove()
 ```
