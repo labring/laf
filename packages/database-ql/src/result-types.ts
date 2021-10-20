@@ -7,20 +7,20 @@ interface BaseResult {
 }
 
 export interface GetRes<T> extends BaseResult {
-  data?: T[]
+  data: T[]
   total?: number
   limit?: number
   offset?: number
 }
 
 export interface GetOneRes<T> extends BaseResult {
-  data?: T
+  data: T
 }
 
 export interface UpdateRes extends BaseResult {
-  updated?: number
-  matched?: number
-  upsertId?: number
+  updated: number
+  matched: number
+  upsertId: number
 }
 
 export interface AddRes extends BaseResult {

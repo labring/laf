@@ -415,13 +415,17 @@ export class Query {
         requestId: res.requestId,
         error: res.error,
         ok: false,
-        code: res.code
+        code: res.code,
+        updated: undefined,
+        matched: undefined,
+        upsertId: undefined
       }
     }
 
     return {
       requestId: res.requestId,
       updated: res.data.updated,
+      matched: res.data.matched,
       upsertId: res.data.upsert_id,
       ok: true
     }
