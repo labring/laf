@@ -440,7 +440,7 @@ export class Query {
     }
 
     const param = this.buildQueryParam()
-    param.multi = options.multi ?? false
+    param.multi = options?.multi ?? false
 
     const res = await this.send(ActionType.remove, param)
     if (res.error) {
@@ -531,7 +531,7 @@ export class Query {
   protected async internalMerge<T = any>(options?: { intersection?: boolean }): Promise<GetRes<T>> {
 
     options = options ?? {} as any
-    const intersection = options.intersection ?? false
+    const intersection = options?.intersection ?? false
 
     // 调用 get() 执行主查询
     const res = await this.internalGet()
