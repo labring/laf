@@ -8,7 +8,7 @@
       <el-button size="mini" plain type="default" style="margin-left: 10px" :disabled="!collectionName" @click="showIndexesList = true">索引管理</el-button>
       <el-button size="mini" plain type="default" style="margin-left: 10px" :disabled="!collectionName" @click="handleShowCollectinoSchema">集合结构</el-button>
       <el-button size="mini" plain type="success" style="margin-left: 10px" icon="el-icon-plus" :disabled="!collectionName" @click="handleCreateRecord">添加记录</el-button>
-
+      <el-button v-clipboard:message="collectionName" v-clipboard:success="onCopy" size="mini" plain type="default" style="margin-left: 10px" :disabled="!collectionName">复制名称</el-button>
     </div>
     <el-container style="height: calc(100vh - 140px); border: 1px solid #eee">
       <el-aside width="240px" class="collection-list">
@@ -17,7 +17,14 @@
           <el-button :loading="loading" size="medium" circle type="text" style="margin-left: 10px" icon="el-icon-refresh" @click="getCollections" />
         </div>
         <el-radio-group v-model="collectionName" class="radio-group">
-          <el-radio v-for="item in collections" :key="item.name" class="collection-radio" border size="medium" :label="item.name" />
+          <el-radio
+            v-for="item in collections"
+            :key="item.name"
+            class="collection-radio"
+            border
+            size="medium"
+            :label="item.name"
+          />
         </el-radio-group>
       </el-aside>
 
@@ -217,9 +224,16 @@ export default {
   methods: {
     async getCollections() {
       this.loading = true
-      const ret = await getCollections()
+      let ret = await getCollections()
         .finally(() => { this.loading = false })
-      this.collections = ret || []
+
+      ret = ret.filter(it => {
+        if (it.name.endsWith('.chunks')) return false
+        if (it.name.endsWith('.files')) return false
+        return true
+      })
+      const sorted = (ret || []).sort((a, b) => a.name.localeCompare(b.name))
+      this.collections = sorted
     },
 
     // 搜索
@@ -353,7 +367,7 @@ export default {
       const r = await db
         .collection(this.collectionName)
         .where({ _id })
-        .update({ ...params })
+        .update({ ...params }, { merge: false })
 
       if (r.error) {
         const message = typeof r.error !== 'string' ? JSON.stringify(r.error) : r.error
@@ -425,6 +439,9 @@ export default {
     },
     handleCreateIndex() {
       this.showCreateIndexDialog = true
+    },
+    onCopy() {
+      this.$message.success('集合名已复制！')
     }
   }
 }
