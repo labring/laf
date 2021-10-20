@@ -185,7 +185,7 @@ export class Query {
   }
 
   /**
-   * 添加 一对多 子查询条件，需要使用 merge() 代替 get() 发起数据请求
+   * 添加 一对多 子查询条件
    * @param param {WithParam}
    * @returns Query
    */
@@ -203,7 +203,7 @@ export class Query {
   }
 
   /**
-   * 添加 一对一 子查询条件，需要使用 merge() 代替 get() 发起数据请求
+   * 添加 一对一 子查询条件
    * @param param {WithParam}
    * @returns Query
    */
@@ -345,9 +345,10 @@ export class Query {
   }
 
   /**
+   * [该接口已废弃，直接使用 `get()` 代替]
    * 发起请求获取文档列表，当使用 with 条件时使用
    * 
-   * @deprecated 该接口已废弃，直接使用 `get()` 代替
+   * @deprecated 
    * 
    * 1. 调用 get() 执行主查询
    * 2. 结合主查询的结果，使用 in 执行子表查询

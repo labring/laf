@@ -50,8 +50,16 @@ export class Db {
    */
   readonly command: typeof Command = Command
 
+  /**
+   * This method was deprecated, use js native `new RegExp()` instead
+   * @deprecated
+   */
   readonly RegExp = RegExpConstructor
 
+  /**
+   * This method is deprecated, not implemented in server side
+   * @deprecated
+   */
   readonly serverDate = ServerDateConstructor
 
   readonly primaryKey: string
