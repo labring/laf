@@ -10,7 +10,7 @@ describe('npm-util(unit): Package parse', () => {
     const pkg = new PackageInfo('database-ql', nmp)
     await pkg.parse()
     assert.strictEqual(pkg.name, 'database-ql')
-    console.log(pkg.entryPath)
+    // console.log(pkg.entryPath)
     assert(pkg.entryPath?.endsWith('dist/commonjs'))
   })
 
@@ -46,7 +46,7 @@ describe('npm-util(unit): Package parse', () => {
   it('get pkg dir: @types/express', async () => {
     const pkg = new PackageInfo('@types/express', nmp)
     await pkg.parsePackageInfo()
-    console.log(pkg)
+    // console.log(pkg)
     assert.strictEqual(pkg.name, '@types/express')
   })
 })

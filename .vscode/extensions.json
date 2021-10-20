@@ -10,7 +10,8 @@
     "christian-kohler.npm-intellisense",
     "mariusalchimavicius.json-to-ts",
     "kisstkondoros.vscode-gutter-preview",
-    "alefragnani.bookmarks"
+    "alefragnani.bookmarks",
+    "hbenl.vscode-mocha-test-adapter"
   ],
   "unwantedRecommendations": [
     "hookyqr.beautify",

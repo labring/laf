@@ -32,7 +32,7 @@ describe('db-proxy(unit): validator::data - merge options (replace & update)', (
         const { matched, errors } = await ruler.validate(params, {})
         assert.ok(!matched)
         assert.ok(errors.length, 1)
-        console.log(errors)
+        // console.log(errors)
         assert.equal(errors[0].type, 'data')
         assert.equal(errors[0].error, 'data must not contain any operator')
     })

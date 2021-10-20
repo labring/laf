@@ -8,7 +8,7 @@ describe('db-ql(unit): db::page()', () => {
       .page()
       .get()
     
-    console.log(req.params)
+    // console.log(req.params)
     assert.equal(req.params.limit, 10)
     assert.equal(req.params.count, true)
   })
@@ -19,7 +19,7 @@ describe('db-ql(unit): db::page()', () => {
       .page({ current: 3, size: 20 })
       .get()
     
-    console.log(req.params)
+    // console.log(req.params)
     assert.equal(req.params.offset, 40)
     assert.equal(req.params.limit, 20)
     assert.equal(req.params.count, true)

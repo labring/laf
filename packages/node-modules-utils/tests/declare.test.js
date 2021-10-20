@@ -42,7 +42,7 @@ describe('npm-util(unit): Package Declaration Load', () => {
    it('load d.ts of database-proxy (typings)', async () => {
     const pkg = new PackageDeclaration('database-proxy', nmp)
      await pkg.load()
-    console.log(pkg.declarations)
+    // console.log(pkg.declarations)
      
     assert.strictEqual(pkg.name, 'database-proxy')
     assert.ok(pkg.declarations.length > 0)

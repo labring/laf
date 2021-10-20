@@ -17,7 +17,7 @@ describe('db-ql(unit): db::remove()', () => {
     assert.strictEqual(req.params.collectionName, 'tasks')
 
     // check options 
-    console.log(req.params, res)
+    // console.log(req.params, res)
     assert.equal(req.params.multi, false)
 
     // check query

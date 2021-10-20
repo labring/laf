@@ -13,7 +13,7 @@ describe('npm-util(unit): Package Declaration Load', () => {
    it('load d.ts of @ (typings)', async () => {
     const pkg = new PackageDeclaration('@', nmp)
     await pkg.load()
-    console.log(pkg.declarations)
+    // console.log(pkg.declarations)
      
     assert.strictEqual(pkg.name, '@')
     assert.ok(pkg.declarations.length > 0)

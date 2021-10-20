@@ -16,7 +16,7 @@ describe('db-ql(unit): db::aggregate()::$lookup', () => {
       })
       .end()
     
-    console.log(res, req.params)
+    // console.log(res, req.params)
     assert.strictEqual(req.action, Actions.aggregate)
     assert.strictEqual(req.params.collectionName, 'tasks')
     assert.strictEqual(req.params.stages.length, 1)

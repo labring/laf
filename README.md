@@ -131,3 +131,19 @@ docker-compose up
 
 # Now open http://console.local-dev.host:8080 in your browsers!
 ```
+
+## 测试用例
+
+### 启动 mongodb 测试容器
+```sh
+docker run --rm -p 27018:27017 --name mongotest -d mongo
+```
+
+### 
+```sh
+# 运行测试用例
+npx mocha ./packages/*/tests/**/*.test.js 
+
+# 清除测试容器
+docker rm -f mongotest
+```
