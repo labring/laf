@@ -1,4 +1,18 @@
-# [](https://github.com/Maslow/laf/compare/v0.6.0-alpha.10...v) (2021-10-19)
+# [](https://github.com/Maslow/laf/compare/v0.6.1...v) (2021-10-20)
+
+
+
+## [0.6.1](https://github.com/Maslow/laf/compare/v0.6.0...v0.6.1) (2021-10-20)
+
+
+### Bug Fixes
+
+* **db-ql:** fix remove() fatal error; ([0d64aa7](https://github.com/Maslow/laf/commit/0d64aa74a06151549c21298d5dad685d77db71f8))
+* **sys-client:** fix dbm update merge with true -> false ([858a71f](https://github.com/Maslow/laf/commit/858a71ffd0cd9d37e764a61f9143f700f58d0d59))
+
+
+
+# [0.6.0](https://github.com/Maslow/laf/compare/v0.6.0-alpha.10...v0.6.0) (2021-10-20)
 
 
 
