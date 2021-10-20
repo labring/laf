@@ -191,12 +191,6 @@ collection.add({
 
 });
 
-//callback
-collection.add({
-  name: 'Ben'
-}, function(err, res) {
-
-})
 ```
 
 方法2： collection.doc().set(data)
@@ -210,12 +204,6 @@ collection.doc().set({
   name: "Hey"
 });
 
-//callback
-collection.doc().set({
-  name: "Hey"
-}, function(err, res) {
-
-});
 ```
 
 ## 查询文档
@@ -266,16 +254,6 @@ db.collection('goods').where({
 }).count().then(function(res) {
 
 })
-
-//callback
-db.collection('goods').where({
-  category: 'computer',
-  type: {
-    memory: 8,
-  }
-}).count(function(err, res) {
-
-})
 ```
 
 响应参数
@@ -305,11 +283,6 @@ collection.limit()
 collection.limit(1).get().then(function(res) {
 
 });
-
-//callback
-collection.limit(1).get(function(err, res) {
-
-});
 ```
 
 ### 设置起始位置
@@ -328,11 +301,6 @@ collection.skip()
 collection.skip(4).get().then(function(res) {
 
 });
-
-//callback
-collection.skip(4).get(function(err, res) {
-
-})
 ```
 
 ### 对结果排序
@@ -353,10 +321,6 @@ collection.orderBy("name", "asc").get().then(function(res) {
 
 });
 
-//callback
-collection.orderBy("name", "asc").get(function(err, res) {
-
-});
 ```
 
 ### 指定返回字段
@@ -659,13 +623,6 @@ collection.where({
   
 })
 
-//callback
-//promise
-collection.where({
-  a: _.gt(2)
-}).remove(function(err, res) {
-  
-})
 ```
 
 ## 更新文档
@@ -690,13 +647,6 @@ collection.doc('doc-id').set({
 }).then(function(res) {
   
 });
-
-//callback
-collection.doc('doc-id').set({
-  name: "Hey"
-}, function(err, res) {
-  
-});
 ```
 
 ### 批量更新文档
@@ -707,12 +657,6 @@ collection.update()
 collection.where({name: _.eq('hey')}).update({
   age: 18,
 }).then(function(res) {
-  
-});
-//callback
-collection.where({name: _.eq('hey')}).update({
-  age: 18,
-}, function(err, res) {
   
 });
 ```
@@ -734,17 +678,6 @@ db.collection('photo').doc('doc-id').update({
     }
   }
 }).then(function(res) {
-  
-})
-//callback
-db.collection('photo').doc('doc-id').update({
-  data: {
-    property: {
-      location: 'guangzhou',
-      size: 8
-    }
-  }
-}, function(err, res) {
   
 })
 ```
@@ -772,16 +705,7 @@ db.collection('user').where({
 }).then(function(res) {
   
 })
-//callback
-db.collection('user').where({
-  _openid: 'my-open-id'
-}).update({
-  count: {
-    favorites: _.inc(1)
-  }
-}, function(err, res) {
-  
-})
+
 ```
 
 #### mul
@@ -802,13 +726,6 @@ db.collection('comments').doc('comment-id').update({
   
 })
 
-//callback
-const _ = db.command
-db.collection('comments').doc('comment-id').update({
-  rating: _.remove()
-}, function(err, res) {
-  
-})
 ```
 
 #### push
@@ -824,13 +741,6 @@ db.collection('comments').doc('comment-id').update({
   
 })
 
-//callback
-db.collection('comments').doc('comment-id').update({
-  // users: _.push('aaa')
-  users: _.push(['aaa', 'bbb'])
-}, function(err, res) {
-  
-})
 ```
 
 #### pop
@@ -845,12 +755,6 @@ db.collection('comments').doc('comment-id').update({
   
 })
 
-//callback
-db.collection('comments').doc('comment-id').update({
-  users: _.pop()
-}, function(err, res) {
-  
-})
 ```
 #### unshift
 向数组头部添加元素，支持传入单个元素或数组。使用同push
