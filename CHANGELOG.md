@@ -1,4 +1,13 @@
-# [](https://github.com/Maslow/laf/compare/v0.6.1...v) (2021-10-20)
+# [](https://github.com/Maslow/laf/compare/v0.6.2...v) (2021-10-20)
+
+
+
+## [0.6.2](https://github.com/Maslow/laf/compare/v0.6.1...v0.6.2) (2021-10-20)
+
+
+### Bug Fixes
+
+* **db-ql:** fix result-types error; ([71f6ee8](https://github.com/Maslow/laf/commit/71f6ee81bc71914c09e2bf3f55d2434fca5f535a))
 
 
 
