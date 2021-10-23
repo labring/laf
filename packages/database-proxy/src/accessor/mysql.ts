@@ -1,6 +1,7 @@
 import { AccessorInterface, ReadResult, UpdateResult, AddResult, RemoveResult, CountResult } from "./accessor"
 import { Params, ActionType } from '../types'
-import { createPool, Pool, ConnectionOptions, ResultSetHeader, OkPacket, RowDataPacket } from 'mysql2/promise'
+import { createPool, Pool, ResultSetHeader, OkPacket, RowDataPacket } from 'mysql2/promise'
+import { ConnectionOptions } from 'mysql2'
 import { SqlBuilder } from "./sql_builder"
 import { DefaultLogger } from ".."
 import { LoggerInterface } from "../logger"
