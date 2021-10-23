@@ -44,36 +44,48 @@ export default {
       if (value !== editorValue) {
         this.editor.setValue(this.value)
       }
+    },
+    height(value) {
+      // this.initEditor()
     }
   },
   mounted() {
-    const now = Date.now()
-    const filename = `index-${now}.ts`
-    this.editor = monaco.editor.create(this.$refs.jseditor, {
-      lineNumbers: 'on',
-      roundedSelection: true,
-      scrollBeyondLastLine: false,
-      theme: this.dark ? 'vs-dark' : 'vs',
-      readOnly: false,
-      formatOnType: true,
-      fontSize: 16,
-      linkedEditing: true,
-      cursorBlinking: 'expand',
-      smoothScrolling: true,
-      renderWhitespace: 'selection',
-      tabSize: 2,
-      model: monaco.editor.createModel(this.value, 'typescript', monaco.Uri.parse(filename))
-    })
-
-    this.editor.onDidChangeModelContent(e => {
-      this.$emit('input', this.editor?.getValue())
-      this.parseImports(this.getValue())
-    })
+    this.initEditor()
 
     // 加载必要的类型文件
     autoImportTypings.loadDefaults()
   },
   methods: {
+    initEditor() {
+      const now = Date.now()
+      const filename = `index-${now}.ts`
+      this.editor = monaco.editor.create(this.$refs.jseditor, {
+        lineNumbers: 'on',
+        roundedSelection: true,
+        scrollBeyondLastLine: false,
+        theme: this.dark ? 'vs-dark' : 'vs',
+        readOnly: false,
+        formatOnType: true,
+        fontSize: 16,
+        linkedEditing: true,
+        cursorBlinking: 'expand',
+        smoothScrolling: true,
+        renderWhitespace: 'selection',
+        tabSize: 2,
+        automaticLayout: true,
+        autoIndent: true,
+        showFoldingControls: 'always',
+        showDeprecated: true,
+        definitionLinkOpensInPeek: false,
+        model: monaco.editor.createModel(this.value, 'typescript', monaco.Uri.parse(filename))
+      })
+
+      this.editor.onDidChangeModelContent(e => {
+        this.$emit('input', this.editor?.getValue())
+        this.parseImports(this.getValue())
+      })
+    },
+
     getValue() {
       return this.editor?.getValue()
     },

@@ -23,7 +23,7 @@
 
     <div style="display: flex;">
       <div class="editor-container">
-        <function-editor v-model="value" :height="700" :dark="false" />
+        <function-editor v-model="value" :height="editorHeight" :dark="false" />
       </div>
       <div class="lastest-logs">
         <el-card shadow="never" :body-style="{ padding: '20px' }">
@@ -109,6 +109,7 @@ import jsonEditor from '@/components/JsonEditor/param'
 import { getFunctionById, getFunctionLogs, launchFunction, updateFunctionCode } from '../../api/func'
 import { publishFunctions } from '../../api/func'
 import { showError, showSuccess } from '@/utils/show'
+import { debounce } from 'lodash'
 
 const defaultParamValue = {
   code: 'laf'
@@ -120,6 +121,7 @@ export default {
     return {
       loading: false,
       value: '',
+      editorHeight: 500,
       func: null,
       func_id: '',
       invokeParams: defaultParamValue,
@@ -161,8 +163,12 @@ export default {
     this.setTagViewTitle()
   },
   mounted() {
+    this.updateEditorHeight()
     document.removeEventListener('keydown', this.bindShortKey, false)
     document.addEventListener('keydown', this.bindShortKey, false)
+    window.addEventListener('resize', debounce(() => {
+      this.updateEditorHeight()
+    }))
   },
   activated() {
     document.removeEventListener('keydown', this.bindShortKey, false)
@@ -253,7 +259,7 @@ export default {
      */
     async getLatestLogs() {
       this.loading = true
-      const res = await getFunctionLogs({ func_id: this.func_id }, 1, 30)
+      const res = await getFunctionLogs({ func_id: this.func_id }, 1, 15)
         .finally(() => { this.loading = false })
 
       this.lastestLogs = res.data || []
@@ -315,6 +321,10 @@ export default {
     },
     onCopy() {
       this.$message.success('函数名已复制！')
+    },
+    updateEditorHeight() {
+      const height = document.body.clientHeight
+      this.editorHeight = height - 110
     }
   }
 }
@@ -322,14 +332,15 @@ export default {
 
 <style lang="scss" scoped>
 .app-container {
-  padding-top: 10px;
+  padding-top: 6px;
+  padding-bottom: 0;
 }
 .editor-container {
   position: relative;
   height: 100%;
-  margin-top: 10px;
   width: 90%;
   border: 1px solid lightgray;
+  padding: 0;
 }
 
 .lastest-logs {

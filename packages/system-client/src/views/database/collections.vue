@@ -497,7 +497,14 @@ export default {
       padding: 0 8px;
       border-radius: 3px;
       .doc {
-        flex: 1
+        flex: 1;
+        max-width: 88%;
+
+        pre {
+          width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
       .tools {
         width: 160px;
