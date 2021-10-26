@@ -1,9 +1,9 @@
 import * as express from "express"
-import { Constans } from "../../constants"
+import { Constants } from "../../constants"
 import { DatabaseAgent } from "../../lib/database"
 import { mkdir } from "../../lib/mkdir"
 
-const bucket_collection_name = Constans.cn.BUCKET_INFO_COLLECTION_NAME
+const bucket_collection_name = Constants.cn.BUCKET_INFO_COLLECTION_NAME
 
 /**
  * create a bucket in specified application
