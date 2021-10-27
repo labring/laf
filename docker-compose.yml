@@ -35,7 +35,7 @@ services:
       - ./packages/database-ql:/app/node_modules/database-ql:ro
       - ./packages/database-ql:/app/node_modules/database-proxy/node_modules/database-ql:ro
     ports:
-      - "9001:9001"
+      - "9001"
     depends_on:
       - mongo
     tmpfs:

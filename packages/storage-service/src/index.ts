@@ -1,6 +1,3 @@
-/**
- *
- */
 
 import * as express from "express"
 import Config from "./config"
@@ -11,8 +8,8 @@ const server = express()
 server.use(express.json() as any)
 server.use(
   express.urlencoded({
-    extended: true,
-  }) as any
+    extended: true
+  })
 )
 
 /**

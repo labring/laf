@@ -1,0 +1,32 @@
+
+
+
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJucyI6InB1YmxpYyIsIm9wIjoicmxkIiwiaWF0IjoxNjM1MzI5NDcxfQ.SdL_fYpy95WYKxtVTMBEVi7hctVyfp6PfHWEThUnEqc
+
+@bucket=public
+
+### update file
+
+POST {{base_url}}/{{bucket}}/files HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="upload-test.png"
+Content-Type: image/png
+
+< ./upload.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### download file
+GET {{base_url}}/{{bucket}}/files?path=/upload-test.png HTTP/1.1
+
+### list directory
+GET {{base_url}}/{{bucket}}/files?path=/&token={{token}} HTTP/1.1
+
+### mkdir
+POST {{base_url}}/{{bucket}}/dir?name=testdir2 HTTP/1.1
+
+### delete file
+DELETE  {{base_url}}/{{bucket}}/files?path=/test&token={{token}} HTTP/1.1
+

@@ -1,0 +1,28 @@
+
+@bucket=public
+
+### Create a bucket
+POST {{base_url}}/buckets HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "{{bucket}}",
+  "mode": 0,
+  "secret": "123456"
+}
+
+### Get bucket
+GET {{base_url}}/buckets/{{bucket}} HTTP/1.1
+
+### Update bucket
+PUT {{base_url}}/buckets/{{bucket}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "mode": 2,
+  "secret": "abcdef"
+}
+
+### Delete bucket
+DELETE  {{base_url}}/buckets/{{bucket}} HTTP/1.1
+Content-Type: application/json

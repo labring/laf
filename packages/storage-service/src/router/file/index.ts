@@ -1,13 +1,9 @@
 import * as express from "express"
 import * as multer from "multer"
-import {
-  handleCreateBucket,
-  handleDeleteBucket,
-  handleGetBucket,
-  handleUpdateBucket,
-} from "./bucket"
-import { handleUploadFile, handleMakeDir } from "./upload"
-import { handleGetFile } from "./download"
+import { handleUploadFile } from "./upload"
+import { handleGetFile } from "./get"
+import { handleMakeDir } from "./mkdir"
+import { handleDeleteFile } from "./delete"
 
 export const FileRouter = express.Router()
 
@@ -21,26 +17,7 @@ const storage = multer.diskStorage({
 })
 const uploader = multer({ storage })
 
-/**
- * application create bucket
- */
-FileRouter.post("/create-bucket", handleCreateBucket)
-
-/**
- * application delete bucket
- */
-FileRouter.post("/delete-bucket", handleDeleteBucket)
-
-/**
- * application update bucket information
- */
-FileRouter.post("/update-bucket", handleUpdateBucket)
-
-/**
- * list all application buckets
- */
-FileRouter.get("/get-bucket", handleGetBucket)
-
+/******** Classic Style Route *********/
 /**
  * upload file into a specified bucket
  */
@@ -59,9 +36,33 @@ FileRouter.post("/mkdir/:bucket", handleMakeDir)
 /**
  * delete directory by dirpath in a specified bucket
  */
-FileRouter.post("/delete-dir/:bucket")
+FileRouter.post("/delete-dir/:bucket", handleDeleteFile)
 
 /**
  * read a filepath
  */
 FileRouter.get("/:bucket", handleGetFile)
+
+
+
+/********** REST Style Route  *********/
+
+/**
+ * Upload file into a specified bucket
+ */
+FileRouter.post("/:bucket/files", uploader.single("file"), handleUploadFile)
+
+/**
+ * Read a filepath
+ */
+FileRouter.get("/:bucket/files", handleGetFile)
+
+/**
+ * Make directory into a specified bucket
+ */
+FileRouter.post("/:bucket/dir", handleMakeDir)
+
+/**
+ * Delete a file/directory by filepath in a specified bucket
+ */
+FileRouter.delete("/:bucket/files", handleDeleteFile)

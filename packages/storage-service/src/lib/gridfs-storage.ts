@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-18 23:43:17
- * @LastEditTime: 2021-08-19 16:57:54
+ * @LastEditTime: 2021-10-27 15:19:56
  * @Description:
  */
 
@@ -12,38 +12,7 @@ import * as fsp from "fs/promises"
 
 import { Db, GridFSBucket } from "mongodb"
 import { resolveMIMEType } from "./utils"
-
-export interface FileInfo {
-  /**
-   * The file id, only valid for `gridfs`
-   */
-  id?: string
-
-  /**
-   * The file name
-   */
-  filename: string
-
-  /**
-   * The size of file in bytes
-   */
-  size: number
-
-  /**
-   * The bucket name of file
-   */
-  bucket: string
-
-  /**
-   * The content type of file, only valid for `gridfs`
-   */
-  contentType?: string
-
-  /**
-   * The uploaded date time of file
-   */
-  upload_date?: Date
-}
+import { FileItemMeta, FileItemType } from "./types"
 
 export class GridFSStorage {
   readonly type = "gridfs"
@@ -66,28 +35,19 @@ export class GridFSStorage {
    * @param metadata metadata information to save into database
    * @returns FileInfo Object
    */
-  async save(
-    file_path: string,
-    filename: string,
-    metadata?: any
-  ): Promise<FileInfo> {
+  async save(file_path: string, filename: string, metadata: FileItemMeta): Promise<FileItemType> {
     assert(file_path, `error: filePath is empty`)
     assert(filename, `error: filename is empty`)
 
     const stats = await fsp.stat(file_path)
     assert(stats.isFile(), `${file_path} is not a file`)
 
-    metadata = metadata ?? {}
     metadata.contentType = metadata?.contentType || resolveMIMEType(filename)
 
     // create a gridfs bucket
     const bucket = new GridFSBucket(this.db, { bucketName: this.bucket })
 
-    const stream = bucket.openUploadStream(filename, {
-      metadata: metadata,
-      // @deprecated: this field will be deprecated in future, use metadata.contentType instead. keep it now for history reasons
-      contentType: metadata?.contentType,
-    })
+    const stream = bucket.openUploadStream(filename, { metadata })
 
     // save to gridfs
     await new Promise((resolve, reject) => {
@@ -97,16 +57,10 @@ export class GridFSStorage {
         .on("error", reject)
     })
 
-    const info: FileInfo = {
-      id: stream.id.toHexString(),
-      filename: stream.filename,
-      bucket: this.bucket,
-      contentType: metadata?.contentType ?? resolveMIMEType(stream.filename),
-      size: stats.size,
-    }
-    return info
+    return this.info(filename)
   }
-  async info(filename: string): Promise<FileInfo> {
+
+  async info(filename: string): Promise<FileItemType> {
     assert(filename, "error: empty filename got")
 
     // create a gridfs bucket
@@ -119,13 +73,12 @@ export class GridFSStorage {
       return null
     }
 
-    const info: FileInfo = {
-      id: file._id.toHexString(),
+    const info: FileItemType = {
+      _id: file._id,
       filename: file.filename,
-      bucket: this.bucket,
-      contentType: file.metadata?.contentType ?? resolveMIMEType(file.filename),
-      size: file.length,
-      upload_date: file.uploadDate,
+      length: file.length,
+      uploadDate: file.uploadDate,
+      metadata: file.metadata as FileItemMeta
     }
     return info
   }

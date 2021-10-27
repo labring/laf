@@ -49,8 +49,7 @@ export default class Config {
    * the server secret salt, mainly used for generating tokens
    */
   static get SERVER_SECRET_SALT(): string {
-    const secret_salt =
-      process.env["SERVER_SECRET_SALT"] ?? process.env["SERVER_SALT"]
+    const secret_salt = process.env["SERVER_SECRET_SALT"]
     if (!secret_salt) {
       return ""
       // throw new Error("env: `SERVER_SECRET_SALT` is missing")

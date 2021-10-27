@@ -58,6 +58,9 @@
       "base_url": "http://127.0.0.1:9000",
       "user": "test",
       "passwd": "test"
+    },
+    "storage": {
+      "base_url": "http://localhost:9001"
     }
   },
   "cSpell.words": [
