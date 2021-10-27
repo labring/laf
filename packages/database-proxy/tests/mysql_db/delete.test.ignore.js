@@ -19,7 +19,6 @@ describe('Database Mysql delete', function () {
   let entry = new Proxy(accessor)
 
   before(async () => {
-    await entry.init()
     await accessor.conn.execute(`create table IF NOT EXISTS ${table} (id int(11) NOT NULL AUTO_INCREMENT, name varchar(255) NOT NULL, age int, primary key(id))`)
     await accessor.conn.execute(`insert into ${table} (id,name, age) values(111, 'less-api-1', 2)`)
     await accessor.conn.execute(`insert into ${table} (id,name, age) values(112, 'less-api-2', 18)`)

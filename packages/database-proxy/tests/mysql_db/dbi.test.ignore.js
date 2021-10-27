@@ -27,7 +27,7 @@ describe('Database Interface with Mysql read', function () {
 
   before(async () => {
     // insert data
-    await accessor.init()
+    // await accessor.init()
     await accessor.conn.execute(`create table IF NOT EXISTS ${table} (id int(11) NOT NULL AUTO_INCREMENT, name varchar(255) NOT NULL, age int, primary key(id))`)
 
     db = await getDb(accessor)

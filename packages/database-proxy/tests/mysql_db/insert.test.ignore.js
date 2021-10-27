@@ -19,7 +19,6 @@ describe('Database Mysql add', function () {
   let entry = new Proxy(accessor)
 
   before(async () => {
-    await entry.init()
     await accessor.conn.execute(`create table IF NOT EXISTS ${table} (id int(11) NOT NULL AUTO_INCREMENT, name varchar(255) NOT NULL, age int, primary key(id))`)
   })
 

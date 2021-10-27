@@ -21,7 +21,6 @@ describe('Database Mysql join', function () {
   let entry = new Proxy(accessor)
 
   before(async () => {
-    await entry.init()
     await accessor.conn.execute(`create table IF NOT EXISTS ${table} (id int(11) NOT NULL AUTO_INCREMENT, name varchar(255) NOT NULL, primary key(id))`)
     await accessor.conn.execute(`insert into ${table} (id, name) values(111, 'less-api-1')`)
     await accessor.conn.execute(`insert into ${table} (id, name) values(112, 'less-api-2')`)

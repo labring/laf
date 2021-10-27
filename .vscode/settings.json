@@ -77,5 +77,5 @@
     "withs"
   ],
   "mocha.files.glob": "packages/*/tests/**/*test.js",
-  "mochaExplorer.files": "packages/*/tests/**/*test.js"
+  "mochaExplorer.files": "packages/*/tests/**/*test*.js"
 }
