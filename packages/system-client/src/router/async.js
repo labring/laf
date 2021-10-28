@@ -108,7 +108,7 @@ export const asyncRoutes = [
         meta: {
           title: '集合管理',
           icon: 'example',
-          noCache: true
+          noCache: false
         }
       },
       {

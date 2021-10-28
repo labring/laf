@@ -8,15 +8,15 @@
 
 用熟悉的 js，轻松搞定前后台整体业务，前端秒变全栈。
 
-LaF 开发者交流QQ群：603059673
+LaF 开发者交流 QQ 群：603059673
 
 ### 主要内容
 
-  - 提供云函数引擎、文件存储、数据访问策略，开箱即用，5 分钟上线应用，前端秒变全栈
-  - 前端可使用 [laf-client-sdk](https://github.com/Maslow/laf/tree/main/packages/client-sdk) “直连”数据库，无需与服务端对接口
-  - 另有 Flutter SDK [less-api-client](https://github.com/Maslow/less-api-client-dart)，快速上线移动端应用
-  - 支持 h5、小程序、Uni-app、Flutter 等客户端环境使用
-  - 提供云开发控制台，在线管理云函数、文件、数据库、远程部署、日志，在线编写、调试云函数，全智能提示IDE
+- 提供云函数引擎、文件存储、数据访问策略，开箱即用，5 分钟上线应用，前端秒变全栈
+- 前端可使用 [laf-client-sdk](https://github.com/Maslow/laf/tree/main/packages/client-sdk) “直连”数据库，无需与服务端对接口
+- 另有 Flutter SDK [less-api-client](https://github.com/Maslow/less-api-client-dart)，快速上线移动端应用
+- 支持 h5、小程序、Uni-app、Flutter 等客户端环境使用
+- 提供云开发控制台，在线管理云函数、文件、数据库、远程部署、日志，在线编写、调试云函数，全智能提示 IDE
 
 ### 初心场景
 
@@ -25,33 +25,31 @@ LaF 开发者交流QQ群：603059673
 
 > 想了解云开发：[微信云开发](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/basis/getting-started.html)
 
-
 ## 谁适合使用 ？
 
 ### 云开发用户
 
-  如果你喜欢微信云开发的极速体验，但又不想局限于微信等具体平台的限制，那么可以基于 `LaF` 搭建属于自己的云开发平台；
+如果你喜欢微信云开发的极速体验，但又不想局限于微信等具体平台的限制，那么可以基于 `LaF` 搭建属于自己的云开发平台；
 
-  - `LaF` 也是当前已知的唯一的开源云开发项目，相比于大厂直接提供「云开发服务」，
-  - `LaF` 是直接提供「开源云开发框架」，技术选型更自信、风险更可控、场景更易扩展；
-  - 自建云开发，可以获取极速的云开发体验，同时没有技术选型时迁移平台的烦恼顾虑。
-
+- `LaF` 也是当前已知的唯一的开源云开发项目，相比于大厂直接提供「云开发服务」，
+- `LaF` 是直接提供「开源云开发框架」，技术选型更自信、风险更可控、场景更易扩展；
+- 自建云开发，可以获取极速的云开发体验，同时没有技术选型时迁移平台的烦恼顾虑。
 
 ### 个人开发者、初创创业团队
 
-  在产品初期基于 `LaF` 可以极大减少服务端API的数量；
+在产品初期基于 `LaF` 可以极大减少服务端 API 的数量；
 
-  根据我们的实践经验，初期能节约 90% 的服务端API；
+根据我们的实践经验，初期能节约 90% 的服务端 API；
 
-  专注于产品业务本身，快速推出最小可用产品(MVP)，快速进行产品、市场验证。
+专注于产品业务本身，快速推出最小可用产品(MVP)，快速进行产品、市场验证。
 
 ### 软件开发商
 
-  将无需雇佣php或java等服务器工程师，开发成本大幅下降；
-  
-  开发效率大幅提升、上线和迭代速度大幅提速；
+将无需雇佣 php 或 java 等服务器工程师，开发成本大幅下降；
 
-  可完整交付整个云开发框架源码，私网部署；
+开发效率大幅提升、上线和迭代速度大幅提速；
+
+可完整交付整个云开发框架源码，私网部署；
 
 ## 运行截图
 
@@ -74,7 +72,7 @@ LaF 开发者交流QQ群：603059673
 
 > 基于 Docker Compose 快速部署，需要你熟悉 docker 以及 docker-compose 的使用
 
-##### 安装 Docker  (CentOS)
+##### 安装 Docker (CentOS)
 
 > 本例只给出 CentOS 下的安装脚本，若安装其它环境请参考官方文档 https://docs.docker.com/engine/install/
 
@@ -89,7 +87,7 @@ sudo systemctl start docker
 
 ```
 
-> 还需安装 docker-compose @see  https://docs.docker.com/compose/install/
+> 还需安装 docker-compose @see https://docs.docker.com/compose/install/
 
 ##### 启动服务
 
@@ -129,20 +127,25 @@ docker pull lafyun/laf-app-service:latest
 # launch laf services
 docker-compose up
 
+# start laf local client
+cd packages/system-client
+npm run dev
 # Now open http://console.local-dev.host:8080 in your browsers!
 ```
 
 ## 测试用例
 
 ### 启动 mongodb 测试容器
+
 ```sh
 docker run --rm -p 27018:27017 --name mongotest -d mongo
 ```
 
-### 
+###
+
 ```sh
 # 运行测试用例
-npx mocha ./packages/*/tests/**/*.test.js 
+npx mocha ./packages/*/tests/**/*.test.js
 
 # 清除测试容器
 docker rm -f mongotest

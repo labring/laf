@@ -153,6 +153,7 @@ export default {
         .user-name {
           cursor: pointer;
           font-size: 16px;
+          white-space: nowrap;
         }
 
         .el-icon-caret-bottom {
