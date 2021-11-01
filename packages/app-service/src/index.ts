@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-10-06 21:22:31
+ * @LastEditTime: 2021-11-01 11:37:43
  * @Description: 
  */
 
@@ -11,6 +11,9 @@ import Config from './config'
 import { router } from './router/index'
 import { logger } from './lib/logger'
 import { generateUUID } from './lib/utils/rand'
+import { initCloudSdkPackage } from './lib/utils/init'
+
+initCloudSdkPackage()
 
 /**
  * Just for generating declaration type files for `@/cloud-sdk` which used in cloud function

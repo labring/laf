@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-16 15:55:37
- * @LastEditTime: 2021-10-06 21:55:22
+ * @LastEditTime: 2021-11-01 11:04:49
  * @Description: 
  * The start script entry: manage service process by cluster process mode, restart service process while error occurred.
  * You can also run service directly by launching `index.ts`.
@@ -12,7 +12,6 @@ import { createLogger } from './lib/logger'
 import * as fs from 'fs'
 import { join } from 'path'
 import { debounce } from 'lodash'
-import { execSync } from 'child_process'
 const cluster = require('cluster')
 
 
@@ -41,10 +40,6 @@ if (cluster.isPrimary) {
   fs.watch(join(__dirname, '../package.json'))
     .on('change', (type, filename) => {
       logger.info(type, filename)
-
-      // create internal package since npm had cleaned the internal package `@/cloud-sdk` after `npm install` running
-      const ret = execSync("npm run create-internal-pkg")
-      logger.info(ret.toString())
 
       // kill worker to reload packages
       if (worker) {
