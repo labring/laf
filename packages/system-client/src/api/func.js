@@ -118,12 +118,15 @@ export function publishFunctions() {
 /**
  * Debug cloud function
  */
-export async function launchFunction(functionName, data, debug = false) {
+export async function launchFunction(func, param, debug = false) {
   const appid = store.state.app.appid
   const res = await axios({
-    url: process.env.VUE_APP_BASE_API_APP + `/${appid}/func/debug/${functionName}`,
+    url: process.env.VUE_APP_BASE_API_APP + `/${appid}/func/debug/${func.name}`,
     method: 'post',
-    data: data,
+    data: {
+      func,
+      param
+    },
     headers: {
       'debug-token': debug
     }

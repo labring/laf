@@ -1,13 +1,12 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-10-06 21:37:48
+ * @LastEditTime: 2021-11-01 18:55:44
  * @Description: 
  */
 
 import { Request, Response } from 'express'
 import { FunctionContext, CloudFunction } from 'cloud-function-engine'
-import { getFunctionByName } from '../../api/function'
 import { parseToken } from '../../lib/utils/token'
 import { logger } from '../../lib/logger'
 import { addFunctionLog } from '../../api/function-log'
@@ -20,6 +19,12 @@ export async function handleDebugFunction(req: Request, res: Response) {
   const requestId = req['requestId']
   const func_name = req.params?.name
   const debug_token = req.get('debug-token') ?? undefined
+  const func_data = req.body?.func
+  const param = req.body?.param
+
+  if (!func_data) {
+    return res.send({ code: 1, error: 'function data not found', requestId })
+  }
 
   // verify the debug token
   const parsed = parseToken(debug_token as string)
@@ -27,20 +32,14 @@ export async function handleDebugFunction(req: Request, res: Response) {
     return res.status(403).send('permission denied: invalid debug token')
   }
 
-  // load function data from db
-  const funcData = await getFunctionByName(func_name)
-  if (!funcData) {
-    return res.send({ code: 1, error: 'function not found', requestId })
-  }
-
-  const func = new CloudFunction(funcData)
+  const func = new CloudFunction(func_data)
 
   try {
     // execute the func
     const ctx: FunctionContext = {
       query: req.query,
       files: req.files as any,
-      body: req.body,
+      body: param,
       headers: req.headers,
       method: req.method,
       auth: req['auth'],

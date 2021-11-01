@@ -107,7 +107,6 @@ import FunctionLogDetail from './components/FunctionLogDetail'
 import FunctionEditor from '@/components/FunctionEditor'
 import jsonEditor from '@/components/JsonEditor/param'
 import { getFunctionById, getFunctionLogs, launchFunction, updateFunctionCode } from '../../api/func'
-import { publishFunctions } from '../../api/func'
 import { showError, showSuccess } from '@/utils/show'
 import { debounce } from 'lodash'
 
@@ -217,8 +216,12 @@ export default {
 
       if (r.error) { return showError('保存失败！') }
 
+      this.func = r.data
+      this.value = this.func.code
+      this.invokeParams = this.parseInvokeParam(this.func.debugParams) ?? defaultParamValue
+
       if (showTip) {
-        await this.getFunction()
+        // await this.getFunction()
         showSuccess('已保存: ' + this.func.name)
       }
     },
@@ -231,9 +234,8 @@ export default {
       if (this.loading) return
 
       this.loading = true
-      await publishFunctions(this.appid)
       const param = this.parseInvokeParam(this.invokeParams)
-      const res = await launchFunction(this.func.name, param, debug_token)
+      const res = await launchFunction(this.func, param, debug_token)
         .finally(() => { this.loading = false })
 
       this.invokeRequestId = res.headers['requestid']
