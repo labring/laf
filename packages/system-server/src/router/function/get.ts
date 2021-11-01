@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:51:19
- * @LastEditTime: 2021-10-08 00:39:05
+ * @LastEditTime: 2021-11-01 16:56:16
  * @Description: 
  */
 
@@ -9,7 +9,7 @@ import { CloudFunctionStruct } from 'cloud-function-engine'
 import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
 import { ApplicationStruct } from '../../api/application'
-import { FunctionStruct } from '../../api/function'
+import { FunctionStruct, getFunctionById } from '../../api/function'
 import { checkPermission } from '../../api/permission'
 import { Constants } from '../../constants'
 import { permissions } from '../../constants/permissions'
@@ -93,13 +93,7 @@ export async function handleGetFunctionById(req: Request, res: Response) {
     return res.status(code).send()
   }
 
-  // do db query
-  const db = DatabaseAgent.db
-  const doc = await db.collection<CloudFunctionStruct>(Constants.cn.functions)
-    .findOne({
-      _id: new ObjectId(func_id),
-      appid: app.appid
-    })
+  const doc = await getFunctionById(app.appid, new ObjectId(func_id))
 
   return res.send({ data: doc })
 }

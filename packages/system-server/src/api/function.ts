@@ -1,14 +1,14 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-10-08 00:46:05
+ * @LastEditTime: 2021-11-01 16:55:15
  * @Description: 
  */
 
 import { Constants } from "../constants"
 import { DatabaseAgent } from "../lib/db-agent"
 import { CloudFunctionStruct } from "cloud-function-engine"
-import { ClientSession } from 'mongodb'
+import { ClientSession, ObjectId } from 'mongodb'
 import * as assert from 'assert'
 import { logger } from "../lib/logger"
 import { ApplicationStruct, getApplicationDbAccessor } from "./application"
@@ -47,6 +47,19 @@ export async function getFunctionByName(appid: string, func_name: string) {
   const db = DatabaseAgent.db
   const doc = await db.collection<FunctionStruct>(Constants.cn.functions)
     .findOne({ name: func_name, appid })
+
+  return doc
+}
+
+/**
+ * Load function data by id
+ * @param func_name 
+ * @returns 
+ */
+export async function getFunctionById(appid: string, func_id: ObjectId) {
+  const db = DatabaseAgent.db
+  const doc = await db.collection<FunctionStruct>(Constants.cn.functions)
+    .findOne({ _id: func_id, appid })
 
   return doc
 }

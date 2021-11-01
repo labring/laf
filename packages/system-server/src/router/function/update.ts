@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-05 02:11:39
- * @LastEditTime: 2021-10-08 01:44:47
+ * @LastEditTime: 2021-11-01 17:02:59
  * @Description: 
  */
 
@@ -9,6 +9,7 @@
 import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
 import { ApplicationStruct } from '../../api/application'
+import { getFunctionById } from '../../api/function'
 import { checkPermission } from '../../api/permission'
 import { Constants } from '../../constants'
 import { permissions } from '../../constants/permissions'
@@ -99,11 +100,7 @@ export async function handleUpdateFunctionCode(req: Request, res: Response) {
   const body = req.body
   if (!body.code) return res.status(422).send('code cannot be empty')
 
-  const func = await db.collection(Constants.cn.functions)
-    .findOne({
-      _id: new ObjectId(func_id),
-      appid: app.appid
-    })
+  const func = await getFunctionById(app.appid, new ObjectId(func_id))
 
   if (!func) return res.status(422).send('function not found')
 
@@ -129,7 +126,7 @@ export async function handleUpdateFunctionCode(req: Request, res: Response) {
   }
 
   // update cloud function
-  const ret = await db.collection(Constants.cn.functions)
+  await db.collection(Constants.cn.functions)
     .updateOne({
       _id: new ObjectId(func_id),
       appid: app.appid
@@ -137,5 +134,7 @@ export async function handleUpdateFunctionCode(req: Request, res: Response) {
       $set: data
     })
 
-  return res.send({ data: ret })
+  const doc = await getFunctionById(app.appid, new ObjectId(func_id))
+
+  return res.send({ data: doc })
 }

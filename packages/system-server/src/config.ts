@@ -129,4 +129,13 @@ export default class Config {
   static get APP_SERVICE_CPU_SHARES(): number {
     return (process.env.APP_SERVICE_MEMORY_LIMIT ?? 256) as number
   }
+
+  /**
+   * DEBUG: the app-service path that bind to app-service container
+   * This env var should only be set while debugging app service, 
+   * otherwise always keep this env var value be empty
+   */
+  static get DEBUG_BIND_HOST_APP_PATH(): string | undefined {
+    return process.env.DEBUG_BIND_HOST_APP_PATH ?? undefined
+  }
 }

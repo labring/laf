@@ -24,6 +24,12 @@ export class DockerContainerServiceDriver {
     const cpuShares = app.runtime?.metrics?.cpu_shares ?? Config.APP_SERVICE_CPU_SHARES
     const imageName = app.runtime?.image ?? Config.APP_SERVICE_IMAGE
     const logLevel = Config.LOG_LEVEL
+
+    let binds = []
+    if (Config.DEBUG_BIND_HOST_APP_PATH) {
+      binds = [`${Config.DEBUG_BIND_HOST_APP_PATH}:/app`]
+    }
+
     const container = await this.docker.createContainer({
       Image: imageName,
       Cmd: ['node', `--max_old_space_size=${max_old_space_size}`, './dist/index.js'],
@@ -40,8 +46,9 @@ export class DockerContainerServiceDriver {
       },
       HostConfig: {
         Memory: memoryLimit * 1024 * 1024,
-        CpuShares: cpuShares
-      }
+        CpuShares: cpuShares,
+        Binds: binds
+      },
     })
 
     logger.debug(`create container ${container.id} of app ${app.appid}`)
