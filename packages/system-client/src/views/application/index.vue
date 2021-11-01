@@ -292,7 +292,7 @@ export default {
 
         // 执行创建请求
         const res = await createApplication({ name: data.name })
-        if (!res.data?.insertedId) {
+        if (!res.data?.appid) {
           this.$notify({
             type: 'error',
             title: '操作失败',
@@ -306,7 +306,8 @@ export default {
           message: '创建成功！'
         })
 
-        this.loadApps()
+        this.serviceLoading = true
+        this.startApp(res.data)
         this.dialogFormVisible = false
       })
     },
