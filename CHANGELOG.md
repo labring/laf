@@ -1,4 +1,29 @@
-# [](https://github.com/Maslow/laf/compare/v0.6.2...v) (2021-10-20)
+# [](https://github.com/Maslow/laf/compare/v0.6.4...v) (2021-11-01)
+
+
+
+## [0.6.4](https://github.com/Maslow/laf/compare/v0.6.3...v0.6.4) (2021-11-01)
+
+
+### Bug Fixes
+
+* **app-service:** auto create internal pkg; ([543052b](https://github.com/Maslow/laf/commit/543052b7b90d13b63019e1d861c72148aa73a2f6))
+* **style:** 修改名称展示bug ([b715eb4](https://github.com/Maslow/laf/commit/b715eb43b31efe61c2a2c3d8512313092372bce0))
+
+
+### Features
+
+* **sys-client:** start app while created; ([2308451](https://github.com/Maslow/laf/commit/23084517c6dbc4cd78637f975ddab5f94be31af9))
+* **sys-server:** add runtime metrics to app; ([a69ed61](https://github.com/Maslow/laf/commit/a69ed618893607fefa02a8a90f7731b019663f91))
+
+
+
+## [0.6.3](https://github.com/Maslow/laf/compare/v0.6.2...v0.6.3) (2021-10-23)
+
+
+### Bug Fixes
+
+* **sys-client:** optimize function editor height; ([d5d02de](https://github.com/Maslow/laf/commit/d5d02deb3d38ad22159e8d879c42ac89d2d78986))
 
 
 
