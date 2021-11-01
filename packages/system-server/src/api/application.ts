@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-28 22:00:45
- * @LastEditTime: 2021-10-13 18:27:20
+ * @LastEditTime: 2021-11-01 12:19:58
  * @Description: Application APIs
  */
 
@@ -33,6 +33,13 @@ export interface ApplicationStruct {
     file_system_http_cache_control?: string
     log_level?: string
     enable_cloud_function_log?: string
+  }
+  runtime: {
+    image: string
+    metrics: {
+      cpu_shares?: number
+      memory?: number
+    }
   }
   collaborators: {
     uid: string

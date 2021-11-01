@@ -117,10 +117,16 @@ export default class Config {
   }
 
   /**
-   * The max old space size of node vm of application service, default is 256mb
-   * @see --max_old_space_size of node argv
+   * The max memory limit of application service, default is 256 in mb
    */
-  static get APP_SERVICE_NODE_MAX_OLD_SPACE_SIZE(): number {
-    return (process.env.APP_SERVICE_NODE_MAX_OLD_SPACE_SIZE ?? 256) as number
+  static get APP_SERVICE_MEMORY_LIMIT(): number {
+    return (process.env.APP_SERVICE_MEMORY_LIMIT ?? 256) as number
+  }
+
+  /**
+   * The cpu shares of application service, default is 256
+   */
+  static get APP_SERVICE_CPU_SHARES(): number {
+    return (process.env.APP_SERVICE_MEMORY_LIMIT ?? 256) as number
   }
 }

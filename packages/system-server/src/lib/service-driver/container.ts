@@ -18,15 +18,20 @@ export class DockerContainerServiceDriver {
    */
   async createService(app: ApplicationStruct) {
     const uri = getApplicationDbUri(app)
-    const max_old_space_size = Config.APP_SERVICE_NODE_MAX_OLD_SPACE_SIZE
+    const memoryLimit = app.runtime?.metrics?.memory ?? Config.APP_SERVICE_MEMORY_LIMIT
+    const max_old_space_size = ~~(memoryLimit * 0.8)
+    // if no cpu-shares set, use memory limit as it
+    const cpuShares = app.runtime?.metrics?.cpu_shares ?? Config.APP_SERVICE_CPU_SHARES
+    const imageName = app.runtime?.image ?? Config.APP_SERVICE_IMAGE
+    const logLevel = Config.LOG_LEVEL
     const container = await this.docker.createContainer({
-      Image: Config.APP_SERVICE_IMAGE,
-      Cmd: ['node', `--max_old_space_size=${max_old_space_size}`, './dist/start.js'],
+      Image: imageName,
+      Cmd: ['node', `--max_old_space_size=${max_old_space_size}`, './dist/index.js'],
       name: `app_${app.appid}`,
       Env: [
         `DB=${app.config.db_name}`,
         `DB_URI=${uri}`,
-        `LOG_LEVEL=debug`,
+        `LOG_LEVEL=${logLevel}`,
         `ENABLE_CLOUD_FUNCTION_LOG=always`,
         `SERVER_SECRET_SALT=${app.config.server_secret_salt}`
       ],
@@ -34,6 +39,8 @@ export class DockerContainerServiceDriver {
         "8000/tcp": {}
       },
       HostConfig: {
+        Memory: memoryLimit * 1024 * 1024,
+        CpuShares: cpuShares
       }
     })
 

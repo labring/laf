@@ -1,14 +1,15 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-31 15:00:04
- * @LastEditTime: 2021-10-08 01:25:43
+ * @LastEditTime: 2021-11-01 13:16:43
  * @Description: 
  */
 
 import * as assert from 'assert'
 import { Request, Response } from 'express'
 import { getAccountById } from '../../api/account'
-import { ApplicationStruct, createApplicationDb, generateAppid, getMyApplications } from '../../api/application'
+import { ApplicationStruct, createApplicationDb, generateAppid, getApplicationByAppid, getMyApplications } from '../../api/application'
+import Config from '../../config'
 import { Constants } from '../../constants'
 import { ErrorCodes } from '../../constants/error-code'
 import { DatabaseAgent } from '../../lib/db-agent'
@@ -55,6 +56,13 @@ export async function handleCreateApplication(req: Request, res: Response) {
       db_password: db_password,
       server_secret_salt: generatePassword(64),
     },
+    runtime: {
+      image: Config.APP_SERVICE_IMAGE,
+      metrics: {
+        cpu_shares: Config.APP_SERVICE_CPU_SHARES,
+        memory: Config.APP_SERVICE_MEMORY_LIMIT
+      }
+    },
     created_at: now,
     updated_at: now
   }
@@ -71,7 +79,9 @@ export async function handleCreateApplication(req: Request, res: Response) {
   const result = await createApplicationDb(data)
   logger.debug(`create application db ${db_name}`, result)
 
+  const app = await getApplicationByAppid(appid)
+
   return res.send({
-    data: ret
+    data: app
   })
 }
