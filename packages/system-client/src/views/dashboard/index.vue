@@ -16,11 +16,13 @@
     <div class="row">
       <div class="label">应用ID：</div>
       <div class="content">{{ app.appid }}</div>
+      <i v-clipboard:message="app.appid" v-clipboard:success="onCopy" class="el-icon-document-copy copy-btn" />
     </div>
     <div class="row">
       <div class="label">服务地址：</div>
       <div class="content">
-        <a style="color: blue"> {{ getAppUrl() }}</a>
+        <a style="color: black; text-decoration: undeline"> {{ getAppUrl() }}</a>
+        <i v-clipboard:message="getAppUrl()" v-clipboard:success="onCopy" class="el-icon-document-copy copy-btn" />
       </div>
     </div>
   </div>
@@ -28,6 +30,7 @@
 
 <script>
 import { getAppAccessUrl } from '@/api/application'
+import { showSuccess } from '@/utils/show'
 
 export default {
   name: 'Dashboard',
@@ -45,6 +48,9 @@ export default {
   methods: {
     getAppUrl() {
       return getAppAccessUrl()
+    },
+    onCopy() {
+      showSuccess('已复制到剪贴板')
     }
   }
 }
@@ -81,5 +87,12 @@ export default {
 .row .content {
   color: black;
   padding-left: 10px;
+}
+
+.copy-btn {
+  color: green;
+  font-size: 16px;
+  margin-left: 10px;
+  cursor: pointer;
 }
 </style>

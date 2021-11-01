@@ -2,7 +2,9 @@
   <div class="navbar">
     <div class="nav-leading">
       <div class="logo">
-        <img src="https://laf.laogen.site/logo.png">
+        <a href="/">
+          <img src="https://laf.laogen.site/logo.png">
+        </a>
       </div>
       <div class="title">{{ title }}</div>
     </div>
@@ -12,19 +14,36 @@
     </div>
     <div class="right-menu">
       <screenfull id="screenfull" class="right-menu-item hover-effect" />
-      <div class="github right-menu-item">
+      <!-- <div class="github right-menu-item">
         <a target="_blank" href="https://github.com/Maslow/laf/">
           GitHub
         </a>
-      </div>
+      </div> -->
       <el-dropdown class="profile-container right-menu-item hover-effect" trigger="click">
         <div class="profile-wrapper">
           <div class="user-name">{{ name }}</div>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item>
+            <a target="_blank" href="/">
+              我的应用
+            </a>
+          </el-dropdown-item>
+          <el-dropdown-item divided>
+            <div class="content">
+              <a target="_blank" href="https://laf.laogen.site/">开发文档 <i class="el-icon-link" /></a>
+            </div>
+          </el-dropdown-item>
+          <el-dropdown-item divided>
+            <div class="content">
+              <a target="_blank" href="https://github.com/Maslow/laf/">
+                GitHub <i class="el-icon-link" />
+              </a>
+            </div>
+          </el-dropdown-item>
           <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">退出登录</span>
+            <span style="display:block;color: red;">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>

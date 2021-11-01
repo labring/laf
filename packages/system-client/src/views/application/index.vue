@@ -55,16 +55,18 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" align="center" width="320" class-name="small-padding">
           <template slot-scope="{row}">
-            <el-button type="success" size="mini" @click="toDetail(row)">
-              开发管理
-            </el-button>
+            <el-tooltip :content="row.status !== 'running' ? '请在开发前启动服务！' : '编写云函数、查看日志、管理数据库、文件、成员协作等'" effect="light" placement="top">
+              <el-button type="success" size="mini" :disabled="row.status !== 'running'" @click="toDetail(row)">
+                开发管理
+              </el-button>
+            </el-tooltip>
             <el-button type="default" size="mini" @click="exportApp(row)">
               导出
             </el-button>
             <el-button type="default" size="mini" @click="showImportForm(row)">
               导入
             </el-button>
-            <el-tooltip content="释放即完全删除应用，暂不可恢复，谨慎操作!" effect="light" placement="left">
+            <el-tooltip content="释放即完全删除应用，暂不可恢复，谨慎操作，仅应用创建者可执行此操作!" effect="light" placement="left">
               <el-button plain size="mini" type="default" @click="deleteApp(row)">
                 释放
               </el-button>
@@ -120,9 +122,11 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" align="center" width="320" class-name="small-padding">
           <template slot-scope="{row}">
-            <el-button type="success" size="mini" @click="toDetail(row)">
-              开发管理
-            </el-button>
+            <el-tooltip :content="row.status !== 'running' ? '请在开发前启动服务！' : '编写云函数、查看日志、管理数据库、文件、成员协作等'" effect="light" placement="top">
+              <el-button type="success" size="mini" :disabled="row.status !== 'running'" @click="toDetail(row)">
+                开发管理
+              </el-button>
+            </el-tooltip>
             <el-button type="default" size="mini" @click="exportApp(row)">
               导出
             </el-button>
