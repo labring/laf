@@ -1,4 +1,17 @@
-# [](https://github.com/Maslow/laf/compare/v0.6.4...v) (2021-11-01)
+# [](https://github.com/Maslow/laf/compare/v0.6.5...v) (2021-11-02)
+
+
+
+## [0.6.5](https://github.com/Maslow/laf/compare/v0.6.4...v0.6.5) (2021-11-02)
+
+
+### Features
+
+* **cloud-func:** support unpublished func debugging ([61b8f9d](https://github.com/Maslow/laf/commit/61b8f9d53a5f7e0276ae6e850797376c73e1b2f4))
+* **sys-client:** add some copy-btns; optimize ux exp; ([91ff431](https://github.com/Maslow/laf/commit/91ff431a6e8d84619a32a534e2a77fe9fd25d5d9))
+* **sys-server:** add local dev/debug config for app-service; ([83877a7](https://github.com/Maslow/laf/commit/83877a746553bccba1ab6044955ce5e9760db7f4))
+* **sys:** support func version; add save status in ide; ([2df7e05](https://github.com/Maslow/laf/commit/2df7e05ecf308ed83f39f1d5d751244a12dd9cc1))
+* **sys:** support publish single function; ([f67962b](https://github.com/Maslow/laf/commit/f67962bf9b1d0ed59cb00c88978a5a8c8e3eb9aa))
 
 
 
