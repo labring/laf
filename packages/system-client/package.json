@@ -24,6 +24,7 @@
     "js-cookie": "2.2.0",
     "laf-client-sdk": "^0.6.3",
     "lodash": "^4.17.21",
+    "md5": "^2.3.0",
     "monaco-editor": "^0.25.0",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",

@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-05 02:11:39
- * @LastEditTime: 2021-11-01 17:02:59
+ * @LastEditTime: 2021-11-02 15:51:47
  * @Description: 
  */
 
@@ -75,7 +75,8 @@ export async function handleUpdateFunction(req: Request, res: Response) {
       _id: new ObjectId(func_id),
       appid: app.appid
     }, {
-      $set: data
+      $set: data,
+      $inc: { version: 1 }
     })
 
   return res.send({ data: ret })
@@ -101,14 +102,12 @@ export async function handleUpdateFunctionCode(req: Request, res: Response) {
   if (!body.code) return res.status(422).send('code cannot be empty')
 
   const func = await getFunctionById(app.appid, new ObjectId(func_id))
-
   if (!func) return res.status(422).send('function not found')
 
   // build the func data
   const data = {
     code: body.code,
     compiledCode: compileTs2js(body.code),
-    version: func.version++,
     hash: hashFunctionCode(body.code),
     debugParams: body.debugParams || func.debugParams,
     updated_at: Date.now()
@@ -131,7 +130,8 @@ export async function handleUpdateFunctionCode(req: Request, res: Response) {
       _id: new ObjectId(func_id),
       appid: app.appid
     }, {
-      $set: data
+      $set: data,
+      $inc: { version: 1 }
     })
 
   const doc = await getFunctionById(app.appid, new ObjectId(func_id))

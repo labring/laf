@@ -22,6 +22,33 @@ export function getFunctions(query, page, pageSize) {
 }
 
 /**
+ * Get published functions by ids
+ * @param {string[]} ids
+ * @returns
+ */
+export function getPublishedFunctions(ids) {
+  const appid = store.state.app.appid
+  return request({
+    url: `/apps/${appid}/function/published`,
+    method: 'POST',
+    data: {
+      ids
+    }
+  })
+}
+
+/**
+ * Get published function by id
+ * @param {string} id
+ * @returns
+ */
+export async function getPublishedFunction(id) {
+  const res = await getPublishedFunctions([id])
+  const [func] = res?.data ?? []
+  return func
+}
+
+/**
  * Get all tags of cloud functions
  */
 export function getAllFunctionTags() {

@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-03 19:55:26
- * @LastEditTime: 2021-09-09 20:09:17
+ * @LastEditTime: 2021-11-02 15:49:50
  * @Description: 
  */
 
@@ -61,12 +61,14 @@ export async function handleCreateTrigger(req: Request, res: Response) {
   }
 
   let update_cmd: any = {
-    triggers: [trigger]
+    triggers: [trigger],
+    $inc: { version: 1 }
   }
 
   if (func.triggers) {
     update_cmd = {
-      $addToSet: { triggers: trigger }
+      $addToSet: { triggers: trigger },
+      $inc: { version: 1 }
     }
   }
 
@@ -117,14 +119,15 @@ export async function handleUpdateTrigger(req: Request, res: Response) {
     .updateOne(
       { _id: new ObjectId(func_id), appid: app.appid, 'triggers._id': trigger_id },
       {
-        '$set': {
+        $set: {
           "triggers.$.name": body.name,
           "triggers.$.event": body.event,
           "triggers.$.duration": body.duration,
           "triggers.$.status": body.status ?? 0,
           "triggers.$.desc": body.desc,
           "triggers.$.updated_at": Date.now(),
-        }
+        },
+        $inc: { version: 1 }
       }
     )
 
@@ -159,7 +162,8 @@ export async function handleRemoveTrigger(req: Request, res: Response) {
     .updateOne(
       { _id: new ObjectId(func_id), appid: app.appid },
       {
-        '$pull': { triggers: { _id: trigger_id, status: 0 } }
+        $pull: { triggers: { _id: trigger_id, status: 0 } },
+        $inc: { version: 1 }
       }
     )
 

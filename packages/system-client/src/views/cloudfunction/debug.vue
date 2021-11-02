@@ -1,31 +1,39 @@
 <template>
   <div class="app-container">
     <div v-if="func" class="header">
-      <span style="font-size: 22px;line-height: 40px;"><b>{{ func.label }}</b> </span>
+      <span style="font-size: 22px;line-height: 40px;">
+        <!-- <el-tag v-if="saved_code_diff" type="warning" size="mini" effect="plain">*</el-tag> -->
+        <b>{{ func.label }}</b>
+        <span v-if="saved_code_diff" style="margin-left: 8px; font-size: 18px; color: red">
+          <i class="el-icon-edit" />
+        </span>
+      </span>
       <el-tag v-clipboard:message="func.name" v-clipboard:success="onCopy" style="margin-left: 14px; " size="mini" type="success">{{ func.name }}</el-tag>
+
       <el-button
         style="margin-left: 20px"
         icon="el-icon-refresh"
         type="text"
-        :disabled="loading"
         size="default"
+        :loading="loading"
         @click="getFunction"
       >刷新</el-button>
       <el-button
-        type="success"
         size="mini"
         style="margin-left: 20px;"
-        :disabled="loading || !func"
+        :loading="loading"
+        :disabled="!saved_code_diff"
+        :type="saved_code_diff ? 'success' : 'success'"
         @click="updateFunc"
       >保存(S)</el-button>
       <el-button
-        type="warning"
-        plain
+        :type="published_version_diff ? 'default' : 'text'"
         size="mini"
+        :loading="loading"
         style="margin-left: 15px;"
-        :disabled="loading || !func"
+        :disabled="!published_version_diff"
         @click="publishFunction"
-      >发布</el-button>
+      >{{ published_version_diff ? '发布': '已发布' }}</el-button>
       <el-button size="small" style="float: right;" type="primary" @click="showDebugPanel = true">显示调试面板(J)</el-button>
     </div>
 
@@ -69,7 +77,7 @@
             size="mini"
             type="success"
             style="margin-left: 10px"
-            :disabled="loading || !func"
+            :loading="loading"
             @click="launch"
           >运行(B)</el-button>
         </div>
@@ -114,9 +122,10 @@
 import FunctionLogDetail from './components/FunctionLogDetail'
 import FunctionEditor from '@/components/FunctionEditor'
 import jsonEditor from '@/components/JsonEditor/param'
-import { getFunctionById, getFunctionLogs, launchFunction, publishOneFunction, updateFunctionCode } from '../../api/func'
+import { getFunctionById, getFunctionLogs, getPublishedFunction, launchFunction, publishOneFunction, updateFunctionCode } from '../../api/func'
 import { showError, showSuccess } from '@/utils/show'
 import { debounce } from 'lodash'
+import { hashString } from '@/utils/hash'
 
 const defaultParamValue = {
   code: 'laf'
@@ -130,6 +139,7 @@ export default {
       value: '',
       editorHeight: 500,
       func: null,
+      published_func: null,
       func_id: '',
       invokeParams: defaultParamValue,
       // 调用云函数返回的值
@@ -156,6 +166,21 @@ export default {
     },
     app() {
       return this.$store.state.app.application
+    },
+    published_version_diff() {
+      const cur = this.func?.version
+      const pub = this.published_func?.version
+      return cur !== pub
+    },
+    published_code_diff() {
+      const cur = this.func?.hash
+      const pub = this.published_func?.hash
+      return cur !== pub
+    },
+    saved_code_diff() {
+      const cur = hashString(this.value)
+      const saved = this.func?.hash
+      return cur !== saved
     }
   },
   watch: {
@@ -201,11 +226,16 @@ export default {
       this.value = this.func.code
       this.invokeParams = this.parseInvokeParam(this.func.debugParams) ?? defaultParamValue
       this.loading = false
+
+      this.published_func = await getPublishedFunction(func_id)
     },
     /**
      * 保存函数代码
      */
     async updateFunc(showTip = true) {
+      if (!this.saved_code_diff) {
+        return
+      }
       if (this.loading) { return }
       if (this.validate()) { return }
 
@@ -224,12 +254,8 @@ export default {
 
       if (r.error) { return showError('保存失败！') }
 
-      this.func = r.data
-      this.value = this.func.code
-      this.invokeParams = this.parseInvokeParam(this.func.debugParams) ?? defaultParamValue
-
+      await this.getFunction()
       if (showTip) {
-        // await this.getFunction()
         showSuccess('已保存: ' + this.func.name)
       }
     },
@@ -268,6 +294,7 @@ export default {
 
       if (r.error) { return showError('发布失败!') }
 
+      this.getFunction()
       showSuccess('已发布: ' + this.func.name)
     },
     async getLogByRequestId(requestId) {
