@@ -416,7 +416,7 @@ export default {
     },
     // 发布云函数
     async publish() {
-      const confirm = await this.$confirm('确定发布所有规则？')
+      const confirm = await this.$confirm('确定发布所有云函数？')
         .catch(() => false)
 
       if (!confirm) return
@@ -428,7 +428,7 @@ export default {
       this.$notify({
         type: 'success',
         title: '发布成功',
-        message: '访问策略发布成功！'
+        message: '云函数发布成功！'
       })
     },
     // 查看详情

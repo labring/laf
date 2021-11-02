@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-11-01 16:55:15
+ * @LastEditTime: 2021-11-02 14:25:53
  * @Description: 
  */
 
@@ -92,6 +92,36 @@ export async function publishFunctions(app: ApplicationStruct) {
       const app_coll = _db.collection(Constants.function_collection)
       await app_coll.deleteMany({}, { session })
       await app_coll.insertMany(data, { session })
+    })
+  } catch (error) {
+    logger.error(error)
+  } finally {
+    await session.endSession()
+  }
+}
+
+/**
+  * Publish one function
+  * Means that copying sys db function to app db
+  */
+export async function publishOneFunction(app: ApplicationStruct, func_id: string) {
+
+  // read functions from sys db
+  const func = await getFunctionById(app.appid, new ObjectId(func_id))
+
+  // compile functions
+  compileFunction(func)
+
+  // write function to app db
+  const app_accessor = await getApplicationDbAccessor(app)
+  const session = app_accessor.conn.startSession()
+
+  try {
+    await session.withTransaction(async () => {
+      const _db = app_accessor.db
+      const app_coll = _db.collection(Constants.function_collection)
+      await app_coll.deleteOne({ _id: new ObjectId(func_id) }, { session })
+      await app_coll.insertOne(func as any, { session })
     })
   } catch (error) {
     logger.error(error)

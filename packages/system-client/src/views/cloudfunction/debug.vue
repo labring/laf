@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <div v-if="func" class="header">
-      <span style="font-size: 26px;line-height: 40px;"><b>{{ func.label }}</b> </span>
-      <el-tag v-clipboard:message="func.name" v-clipboard:success="onCopy" style="margin-left: 20px; " size="small" type="success">{{ func.name }}</el-tag>
+      <span style="font-size: 22px;line-height: 40px;"><b>{{ func.label }}</b> </span>
+      <el-tag v-clipboard:message="func.name" v-clipboard:success="onCopy" style="margin-left: 14px; " size="mini" type="success">{{ func.name }}</el-tag>
       <el-button
         style="margin-left: 20px"
         icon="el-icon-refresh"
@@ -13,12 +13,20 @@
       >刷新</el-button>
       <el-button
         type="success"
-        size="small"
+        size="mini"
         style="margin-left: 20px;"
         :disabled="loading || !func"
         @click="updateFunc"
       >保存(S)</el-button>
-      <el-button size="medium" style="float: right;" type="primary" @click="showDebugPanel = true">显示调试面板(J)</el-button>
+      <el-button
+        type="warning"
+        plain
+        size="mini"
+        style="margin-left: 15px;"
+        :disabled="loading || !func"
+        @click="publishFunction"
+      >发布</el-button>
+      <el-button size="small" style="float: right;" type="primary" @click="showDebugPanel = true">显示调试面板(J)</el-button>
     </div>
 
     <div style="display: flex;">
@@ -106,7 +114,7 @@
 import FunctionLogDetail from './components/FunctionLogDetail'
 import FunctionEditor from '@/components/FunctionEditor'
 import jsonEditor from '@/components/JsonEditor/param'
-import { getFunctionById, getFunctionLogs, launchFunction, updateFunctionCode } from '../../api/func'
+import { getFunctionById, getFunctionLogs, launchFunction, publishOneFunction, updateFunctionCode } from '../../api/func'
 import { showError, showSuccess } from '@/utils/show'
 import { debounce } from 'lodash'
 
@@ -246,6 +254,22 @@ export default {
       this.invokeResult = res.data
       this.getLatestLogs()
     },
+    /**
+     * 发布函数
+     */
+    async publishFunction() {
+      if (this.loading) { return }
+      if (this.validate()) { return }
+
+      this.loading = true
+
+      const r = await publishOneFunction(this.func._id)
+        .finally(() => { this.loading = false })
+
+      if (r.error) { return showError('发布失败!') }
+
+      showSuccess('已发布: ' + this.func.name)
+    },
     async getLogByRequestId(requestId) {
       this.loading = true
       const res = await getFunctionLogs({ requestId }, 1, 1)
@@ -322,7 +346,7 @@ export default {
       }
     },
     onCopy() {
-      this.$message.success('函数名已复制！')
+      this.$message.success('函数名已复制')
     },
     updateEditorHeight() {
       const height = document.body.clientHeight

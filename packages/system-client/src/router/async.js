@@ -40,7 +40,8 @@ export const asyncRoutes = [
         hidden: true,
         meta: {
           title: '调试云函数',
-          icon: 'bug'
+          icon: 'bug',
+          noCache: true
         }
       },
       {

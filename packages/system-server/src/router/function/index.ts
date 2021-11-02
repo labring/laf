@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-29 11:35:05
- * @LastEditTime: 2021-09-10 01:37:17
+ * @LastEditTime: 2021-11-02 14:25:55
  * @Description:
  */
 
@@ -9,7 +9,7 @@ import { Router } from "express"
 import { handleCreateFunction } from "./create"
 import { handleGetAllFunctionTags, handleGetFunctionById, handleGetFunctions } from "./get"
 import { handleGetFunctionLogs } from "./logs"
-import { handlePublishFunctions } from "./publish"
+import { handlePublishFunctions, handlePublishOneFunction } from "./publish"
 import { handleRemoveFunctionById } from "./remove"
 import { handleCreateTrigger, handleRemoveTrigger, handleUpdateTrigger } from "./trigger"
 import { handleUpdateFunction, handleUpdateFunctionCode } from "./update"
@@ -61,6 +61,12 @@ FunctionRouter.post('/:func_id/debug')
  * Publish functions of the application
  */
 FunctionRouter.post('/publish', handlePublishFunctions)
+
+
+/**
+ * Publish functions of the application
+ */
+FunctionRouter.post('/:func_id/publish', handlePublishOneFunction)
 
 /**
  * Get function logs

@@ -116,6 +116,18 @@ export function publishFunctions() {
 }
 
 /**
+ * Publish one function
+ * @param {string} func_id
+ */
+export function publishOneFunction(func_id) {
+  const appid = store.state.app.appid
+  return request({
+    url: `/apps/${appid}/function/${func_id}/publish`,
+    method: 'post'
+  })
+}
+
+/**
  * Debug cloud function
  */
 export async function launchFunction(func, param, debug = false) {
