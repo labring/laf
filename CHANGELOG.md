@@ -1,4 +1,18 @@
-# [](https://github.com/Maslow/laf/compare/v0.6.5...v) (2021-11-02)
+# [](https://github.com/Maslow/laf/compare/v0.6.6...v) (2021-11-03)
+
+
+
+## [0.6.6](https://github.com/Maslow/laf/compare/v0.6.5...v0.6.6) (2021-11-03)
+
+
+### Bug Fixes
+
+* **app-service:** fix uncaught promise rejected in cloud function, cause that process exit ([250a9e6](https://github.com/Maslow/laf/commit/250a9e605cb885a0372b2f59d98c1228c77f0059))
+
+
+### Features
+
+* **function:** support TTL indexes on logs; support number as return value; support result in log; ([fa82cb4](https://github.com/Maslow/laf/commit/fa82cb4c00324bae0f8b0518ec3883b912aa0f11))
 
 
 

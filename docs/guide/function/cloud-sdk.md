@@ -158,7 +158,7 @@ export interface CloudSdkInterface {
     parseToken: ParseTokenFunctionType;
     /**
      * 当前应用的 MongoDb Node.js Driver 实例对象。
-     * 由于 less-api-database ORM 对象只有部分数据操作能力，故暴露此对象给云函数，让云函数拥有完整的数据库操作能力：
+     * 由于 Laf database ORM 对象只有部分数据操作能力，故暴露此对象给云函数，让云函数拥有完整的数据库操作能力：
      * 1. 事务操作
      * ```js
      *   const session = mongo.client.startSession()
