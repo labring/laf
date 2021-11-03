@@ -1,6 +1,6 @@
 {
   "name": "system-server",
-  "version": "0.6.5",
+  "version": "0.6.6",
   "description": "laf - system server",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
@@ -23,7 +23,7 @@
   ],
   "dependencies": {
     "body-parser": "^1.19.0",
-    "cloud-function-engine": "^0.6.0-alpha.3",
+    "cloud-function-engine": "^0.6.6",
     "database-proxy": "^0.6.4",
     "dayjs": "^1.10.6",
     "dockerode": "^3.3.0",
