@@ -1,6 +1,6 @@
 import { AxiosStatic } from "axios"
 import { Db, getDb } from "database-proxy"
-import { FunctionContext, FunctionResult, CloudFunction } from "cloud-function-engine"
+import { FunctionContext, CloudFunction } from "cloud-function-engine"
 import { FileStorageInterface } from "../lib/storage/interface"
 import * as mongodb from "mongodb"
 import { DatabaseAgent } from "../lib/database"
@@ -11,7 +11,7 @@ import { invokeInFunction } from "./invoke"
 import { createFileStorage } from "../lib/storage"
 
 
-export type InvokeFunctionType = (name: string, param: FunctionContext) => Promise<FunctionResult>
+export type InvokeFunctionType = (name: string, param: FunctionContext) => Promise<any>
 export type EmitFunctionType = (event: string, param: any) => void
 export type GetTokenFunctionType = (payload: any, secret?: string) => string
 export type ParseTokenFunctionType = (token: string, secret?: string) => any | null
