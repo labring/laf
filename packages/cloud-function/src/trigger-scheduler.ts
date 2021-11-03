@@ -46,10 +46,10 @@ export class TriggerScheduler {
       this._triggers.push(trigger)
     } else {
       // 若为定时器，则保留其 `最近一次执行时间`
-      if(trigger.isTimer) {
+      if (trigger.isTimer) {
         trigger.last_exec_time = this._triggers[index].last_exec_time ?? 0
       }
-      
+
       this._triggers[index] = trigger
     }
 
@@ -86,7 +86,7 @@ export class TriggerScheduler {
    * @param func_id 函数ID
    * @returns 
    */
-  protected async getFunctionById(_func_id: string): Promise<CloudFunction>{
+  protected async getFunctionById(_func_id: string): Promise<CloudFunction> {
     throw new Error('not implemented, you should drive TriggerScheduler class and override getFunctionById() method')
   }
 
@@ -104,12 +104,11 @@ export class TriggerScheduler {
     result.logs.unshift(`invoked by trigger: ${trigger.name} (${trigger.id})`)
     await this.addFunctionLog({
       requestId: `trigger_${trigger.id}`,
+      method: param.method,
       func_id: func.id,
       func_name: func.name,
       logs: result.logs,
       time_usage: result.time_usage,
-      created_at: Date.now(),
-      updated_at: Date.now(),
       created_by: `trigger_${trigger.id}`,
       trigger_id: trigger.id
     })
@@ -136,7 +135,7 @@ export class TriggerScheduler {
   /**
    * 开始调度定时触发器
    */
-   protected scheduleTimer() {
+  protected scheduleTimer() {
     this.cancelTimer()
     this._timer = setInterval(this.timerLoop.bind(this), 1000)
   }
@@ -163,7 +162,7 @@ export class TriggerScheduler {
    * @param triggerId 
    * @returns 
    */
-   protected removeTrigger(triggerId: string): boolean {
+  protected removeTrigger(triggerId: string): boolean {
     const index = this._triggers.findIndex(t => t.id === triggerId)
     if (index === -1) {
       return false

@@ -40,7 +40,7 @@ export interface FunctionContext {
 export interface FunctionResult {
   data?: any,
   logs: any[],
-  error?: any,
+  error?: Error,
   time_usage: number
 }
 

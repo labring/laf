@@ -99,4 +99,15 @@ export default class Config {
   static get isProd(): boolean {
     return process.env.NODE_ENV === 'production'
   }
+
+  /**
+   * Expired time of function logs, in seconds
+   */
+  static get FUNCTION_LOG_EXPIRED_TIME(): number {
+    return (process.env.FUNCTION_LOG_EXPIRED_TIME ?? 3600 * 24 * 30) as number
+  }
+
+  static get APP_VERSION(): number {
+    return process.env.APP_VERSION as any as number
+  }
 }

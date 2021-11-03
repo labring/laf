@@ -14,6 +14,11 @@
         <pre>- {{ log }}</pre>
       </div>
     </div>
+
+    <div class="title" style="margin-top: 15px;"> 返回结果 </div>
+    <div class="logs">
+      <pre>{{ returnValue }}</pre>
+    </div>
   </div>
 </template>
 
@@ -34,11 +39,15 @@ export default {
   computed: {
     // 云函数的日志
     logs() {
-      return this.data.logs
+      return this.data?.logs
     },
     // 云函数执行用时
     invokeTime() {
-      return this.data.time_usage
+      return this.data?.time_usage
+    },
+    // 云函数调用结果
+    returnValue() {
+      return this.data?.data
     }
   },
   async created() {

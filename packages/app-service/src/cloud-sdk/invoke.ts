@@ -1,5 +1,6 @@
 import { getFunctionByName } from "../api/function"
 import { CloudFunction, FunctionContext } from "cloud-function-engine"
+import { addFunctionLog } from "../api/function-log"
 
 
 /**
@@ -8,7 +9,7 @@ import { CloudFunction, FunctionContext } from "cloud-function-engine"
  * @param param 函数运行参数
  * @returns 
  */
-export async function invokeInFunction(name: string, param: FunctionContext) {
+export async function invokeInFunction(name: string, param?: FunctionContext) {
   const data = await getFunctionByName(name)
   const func = new CloudFunction(data)
 
@@ -18,15 +19,26 @@ export async function invokeInFunction(name: string, param: FunctionContext) {
 
   param = param ?? {}
 
-  if (param.requestId) {
-    param.requestId = this.param.requestId
-  }
+  param.requestId = param.requestId ?? 'invoke'
 
-  if (param.method) {
-    param.method = param.method ?? 'call'
-  }
+  param.method = param.method ?? 'call'
 
   const result = await func.invoke(param)
 
-  return result
+  await addFunctionLog({
+    requestId: param.requestId,
+    method: param.method,
+    func_id: func.id,
+    func_name: name,
+    logs: result.logs,
+    time_usage: result.time_usage,
+    data: result.data,
+    error: result.error,
+  })
+
+  if (result.error) {
+    throw result.error
+  }
+
+  return result.data
 }

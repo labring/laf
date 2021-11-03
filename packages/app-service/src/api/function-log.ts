@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-10-06 19:21:13
+ * @LastEditTime: 2021-11-03 16:45:06
  * @Description: 
  */
 import { Constants } from "../constants"
@@ -18,7 +18,10 @@ export async function addFunctionLog(data: any): Promise<any> {
 
   if (!data) return null
   const r = await db.collection(Constants.function_log_collection)
-    .insertOne(data)
+    .insertOne({
+      ...data,
+      created_at: new Date()
+    })
 
   return r.insertedId
 }

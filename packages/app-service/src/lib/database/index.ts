@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-16 15:29:15
- * @LastEditTime: 2021-10-08 14:34:37
+ * @LastEditTime: 2021-11-03 17:10:04
  * @Description: 
  */
 
@@ -10,6 +10,7 @@ import { MongoAccessor } from 'database-proxy'
 import Config from '../../config'
 import { createLogger, logger } from '../logger'
 import * as mongodb_uri from 'mongodb-uri'
+import { ensureCollectionIndexes } from '../../api/indexes'
 
 
 /**
@@ -44,6 +45,7 @@ export class DatabaseAgent {
     accessor.init()
       .then(async () => {
         logger.info('db connected')
+        await ensureCollectionIndexes()
       })
       .catch(error => {
         logger.error(error)

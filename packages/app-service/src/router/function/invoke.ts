@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-15 15:03:28
+ * @LastEditTime: 2021-11-03 18:02:23
  * @Description: 
  */
 
@@ -56,12 +56,11 @@ export async function handleInvokeFunction(req: Request, res: Response) {
     if (Config.ENABLE_CLOUD_FUNCTION_LOG === 'always') {
       await addFunctionLog({
         requestId: requestId,
+        method: req.method,
         func_id: func.id,
         func_name: func_name,
         logs: result.logs,
         time_usage: result.time_usage,
-        created_at: Date.now(),
-        updated_at: Date.now(),
         created_by: req['auth']?.uid,
         data: result.data,
         error: result.error,

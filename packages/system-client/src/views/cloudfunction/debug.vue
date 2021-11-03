@@ -48,12 +48,9 @@
             <el-button style="float: right; padding: 3px 0" type="text" @click="getLatestLogs">刷新</el-button>
           </div>
           <div v-for="log in lastestLogs" :key="log._id" class="log-item">
-
             <el-tag type="warning" size="normal" @click="showLogDetailDlg(log)">
               {{ log.created_at | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}
             </el-tag>
-
-            <!-- <el-tag class="time" type="default" size="normal" @click="showLogDetailDlg(log)">查看</el-tag> -->
           </div>
         </el-card>
       </div>
@@ -89,7 +86,7 @@
             :dark="false"
           />
         </div>
-        <div v-if="invokeResult" class="invoke-result">
+        <div v-if="invokeRequestId" class="invoke-result">
           <div class="title">
             执行日志
             <span

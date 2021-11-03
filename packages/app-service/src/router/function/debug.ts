@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-11-01 18:55:44
+ * @LastEditTime: 2021-11-03 19:41:03
  * @Description: 
  */
 
@@ -10,6 +10,7 @@ import { FunctionContext, CloudFunction } from 'cloud-function-engine'
 import { parseToken } from '../../lib/utils/token'
 import { logger } from '../../lib/logger'
 import { addFunctionLog } from '../../api/function-log'
+import { ObjectId } from 'bson'
 
 /**
  * Handler of debugging cloud function
@@ -51,12 +52,11 @@ export async function handleDebugFunction(req: Request, res: Response) {
     // log this execution to db
     await addFunctionLog({
       requestId: requestId,
-      func_id: func.id,
+      method: req.method,
+      func_id: new ObjectId(func.id),
       func_name: func_name,
       logs: result.logs,
       time_usage: result.time_usage,
-      created_at: Date.now(),
-      updated_at: Date.now(),
       created_by: req['auth']?.uid,
       data: result.data,
       error: result.error,
@@ -76,7 +76,11 @@ export async function handleDebugFunction(req: Request, res: Response) {
     logger.trace(requestId, `invoke ${func_name} invoke success: `, result)
 
     if (res.writableEnded === false) {
-      return res.send(result.data)
+      let data = result.data
+      if (typeof result.data === 'number') {
+        data = Number(result.data).toString()
+      }
+      return res.send(data)
     }
   } catch (error) {
     logger.error(requestId, 'failed to invoke error', error)

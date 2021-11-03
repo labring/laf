@@ -36,7 +36,7 @@
     "url": "https://github.com/Maslow/less-framework/issues"
   },
   "dependencies": {
-    "moment": "^2.29.1"
+    "dayjs": "^1.10.7"
   },
   "devDependencies": {
     "@types/express": "^4.17.11",

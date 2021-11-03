@@ -34,7 +34,7 @@ export interface CloudSdkInterface {
   storage(bucket?: string): FileStorageInterface
 
   /**
-   * 获取 less api database ORM 实例
+   * 获取 LaF database 实例
    */
   database(): Db,
 

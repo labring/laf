@@ -1,5 +1,5 @@
 import * as util from 'util'
-import * as moment from 'moment'
+import * as dayjs from 'dayjs'
 
 export class FunctionConsole {
   private _logs: any[] = []
@@ -9,13 +9,13 @@ export class FunctionConsole {
   }
 
   log(...params: any[]) {
-    const date = moment().format("YYYY/MM/DD HH:mm:ss")
+    const date = dayjs().format("YYYY/MM/DD HH:mm:ss")
     const r = util.format("[%s] -", date, ...params)
     this._logs.push(r)
   }
 
   error(...params: any[]) {
-    const date = moment().format("YYYY/MM/DD HH:mm:ss")
+    const date = dayjs().format("YYYY/MM/DD HH:mm:ss")
     const r = util.format("[%s] -", date, ...params)
     this._logs.push(r)
   }

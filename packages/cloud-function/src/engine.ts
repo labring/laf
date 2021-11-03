@@ -39,8 +39,6 @@ export class FunctionEngine {
    */
   async run(code: string, context: FunctionContext): Promise<FunctionResult> {
     const sandbox = this.buildSandbox(context)
-  
-
     const wrapped = this.wrap(code)
     const fconsole = sandbox.console
 
