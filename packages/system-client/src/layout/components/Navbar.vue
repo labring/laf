@@ -26,7 +26,7 @@
         </div>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>
-            <a target="_blank" href="/">
+            <a href="/">
               我的应用
             </a>
           </el-dropdown-item>
