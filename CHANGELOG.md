@@ -1,4 +1,28 @@
-# [](https://github.com/Maslow/laf/compare/v0.6.6...v) (2021-11-03)
+# [](https://github.com/Maslow/laf/compare/v0.6.8...v) (2021-11-04)
+
+
+
+## [0.6.8](https://github.com/Maslow/laf/compare/v0.6.7...v0.6.8) (2021-11-04)
+
+
+### Bug Fixes
+
+* **sys-client:** update navigation logics; ([b68df36](https://github.com/Maslow/laf/commit/b68df362f8864a6c369f9e4e74725d737edd0cee))
+
+
+### Features
+
+* **cloud-function:** add unit tests for function engine; ([40a9ae8](https://github.com/Maslow/laf/commit/40a9ae838932b147c367b2a34f2cdb252aae2c13))
+* **cloud-function:** support async timeout/globals/sync main/filename; ([e5ecf6d](https://github.com/Maslow/laf/commit/e5ecf6d12e83593aa14e66442add2e7dc0312bd0))
+
+
+
+## [0.6.7](https://github.com/Maslow/laf/compare/v0.6.6...v0.6.7) (2021-11-03)
+
+
+### Bug Fixes
+
+* **app-service:** fix invoke() function return type; ([edd1f8a](https://github.com/Maslow/laf/commit/edd1f8a7cd79e344f97da928d2ebc9b9bc30762a))
 
 
 
