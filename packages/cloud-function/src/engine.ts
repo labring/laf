@@ -18,11 +18,6 @@ const defaultRequireFunction: RequireFuncType = (module): any => {
 export class FunctionEngine {
 
   /**
-   * 函数执行超时时间
-   */
-  timeout = 60 * 1000
-
-  /**
    * 云函数中加载依赖包的函数: require('') 
    */
   require_func: RequireFuncType
@@ -37,7 +32,7 @@ export class FunctionEngine {
    * @param incomingCtx 
    * @returns 
    */
-  async run(code: string, context: FunctionContext): Promise<FunctionResult> {
+  async run(code: string, context: FunctionContext, options: vm.RunningScriptOptions): Promise<FunctionResult> {
     const sandbox = this.buildSandbox(context)
     const wrapped = this.wrap(code)
     const fconsole = sandbox.console
@@ -45,9 +40,23 @@ export class FunctionEngine {
     // 调用前计时
     const _start_time = process.hrtime.bigint()
     try {
-      const script = new vm.Script(wrapped)
-      script.runInNewContext(sandbox, { timeout: this.timeout })
-      const data = await sandbox.__runtime_promise
+      const script = new vm.Script(wrapped, options)
+      const result = script.runInNewContext(sandbox, options)
+
+      let data = result
+      if (typeof result?.then === 'function') {
+        /**
+         * 由于 vm 内部的 microTasks queue 为空时会直接释放执行环境，后续 await 则会导致工作线程陷入黑洞，
+         * 故需先给 vm 返回的 promise 设置 then 回调，使 microTasks queue 不为空，以维护 vm 执行环境暂不被释放
+         */
+        const promise = new Promise((resolve, reject) => {
+          result
+            .then(resolve)
+            .catch(reject)
+        })
+
+        data = await promise
+      }
 
       // 函数执行耗时
       const _end_time = process.hrtime.bigint()
@@ -87,12 +96,18 @@ export class FunctionEngine {
     }
     return {
       __context__: functionContext,
+      __filename: functionContext.__function_name,
       module: _module,
       exports: _module.exports,
-      __runtime_promise: null,
       console: fconsole,
       require: this.require_func,
-      Buffer: Buffer
+      Buffer: Buffer,
+      setImmediate: setImmediate,
+      clearImmediate: clearImmediate,
+      setInterval: setInterval,
+      clearInterval: clearInterval,
+      setTimeout: setTimeout,
+      clearTimeout: clearTimeout
     }
   }
 
@@ -106,7 +121,7 @@ export class FunctionEngine {
       const __main__ = exports.main || exports.default
       if(!__main__) { throw new Error('FunctionExecError: main function not found') }
       if(typeof __main__ !== 'function') { throw new Error('FunctionExecError: main function must be callable')}
-      __runtime_promise = __main__(__context__ )
+      __main__(__context__ )
       `
     return wrapped
   }

@@ -3,6 +3,7 @@ import { FunctionConsole } from "./console"
 import { IncomingHttpHeaders } from "http"
 import { Response } from "express"
 
+
 export type RequireFuncType = (module: string) => any
 
 
@@ -13,10 +14,16 @@ export interface RuntimeContext {
   __context__: FunctionContext,
   module: { exports: Object },
   exports: Object,
-  __runtime_promise: any,
   console: FunctionConsole,
   require: RequireFuncType,
-  Buffer: typeof Buffer
+  Buffer: typeof Buffer,
+  setTimeout: typeof setTimeout,
+  clearTimeout: typeof clearTimeout,
+  setInterval: typeof setInterval,
+  clearInterval: typeof clearInterval,
+  setImmediate: typeof setImmediate,
+  clearImmediate: typeof clearImmediate
+  __filename: string
 }
 
 /**
@@ -31,7 +38,8 @@ export interface FunctionContext {
   auth?: any,
   requestId?: string,
   method?: string,
-  response?: Response
+  response?: Response,
+  __function_name?: string
 }
 
 /**

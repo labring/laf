@@ -19,6 +19,11 @@ export class CloudFunction {
   static require_func: RequireFuncType
 
   /**
+    * 函数执行超时时间
+    */
+  timeout = 60 * 1000
+
+  /**
    * 函数结构
    */
   protected _data: CloudFunctionStruct
@@ -90,7 +95,15 @@ export class CloudFunction {
 
     const engine = new FunctionEngine(CloudFunction.require_func)
 
-    this.result = await engine.run(this.compiledCode, param)
+    this.result = await engine.run(this.compiledCode, param, {
+      filename: `CloudFunction.${this.name}`,
+      timeout: this.timeout,
+      displayErrors: true,
+      microtaskMode: 'afterEvaluate',
+      contextCodeGeneration: {
+        strings: false
+      }
+    } as any)
 
     return this.result
   }
