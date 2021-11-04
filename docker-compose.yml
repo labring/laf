@@ -54,11 +54,11 @@ services:
       SYS_SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
       SHARED_NETWORK: laf_shared_network
       LOG_LEVEL: debug
-      APP_SERVICE_IMAGE: lafyun/app-service:latest
+      APP_SERVICE_IMAGE: lafyun/app-service:0.6.8
       ACCOUNT_DEFAULT_APP_QUOTA: 5
       APP_SERVICE_DEPLOY_HOST: local-dev.host:8080     # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
       APP_SERVICE_DEPLOY_URL_SCHEMA: 'http'
-      # DEBUG_BIND_HOST_APP_PATH: '${PWD}/packages/app-service'
+      DEBUG_BIND_HOST_APP_PATH: '${PWD}/packages/app-service'
     command: npx nodemon
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro

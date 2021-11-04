@@ -99,7 +99,12 @@ export class CloudFunction {
       filename: `CloudFunction.${this.name}`,
       timeout: this.timeout,
       displayErrors: true,
-      microtaskMode: 'afterEvaluate',
+      /**
+       * 若关闭此项，则异步中的死循环无法被 timeout 捕捉，且会让工作线程陷入黑洞，
+       * 若打开此项，则异步 IO 会让工作线程陷入黑洞，
+       * 两者取其轻，还是选择关闭此项。
+       */
+      // microtaskMode: 'afterEvaluate',
       contextCodeGeneration: {
         strings: false
       }

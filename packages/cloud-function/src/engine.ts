@@ -46,16 +46,17 @@ export class FunctionEngine {
       let data = result
       if (typeof result?.then === 'function') {
         /**
+         * @TIP 若打开 microtaskMode: 'afterEvaluate' 选项，则需要将以下代码解注，当前这种情况有严重 bug，暂不打开，也不删此注释
          * 由于 vm 内部的 microTasks queue 为空时会直接释放执行环境，后续 await 则会导致工作线程陷入黑洞，
          * 故需先给 vm 返回的 promise 设置 then 回调，使 microTasks queue 不为空，以维护 vm 执行环境暂不被释放
          */
-        const promise = new Promise((resolve, reject) => {
-          result
-            .then(resolve)
-            .catch(reject)
-        })
+        // const promise = new Promise((resolve, reject) => {
+        //   result
+        //     .then(resolve)
+        //     .catch(reject)
+        // })
 
-        data = await promise
+        data = await result
       }
 
       // 函数执行耗时

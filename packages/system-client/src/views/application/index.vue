@@ -271,9 +271,9 @@ export default {
       this.applications.joined = joined
     },
     toDetail(app) {
-      const route_url = this.$router.resolve({
-        path: `/app/${app.appid}/dashboard/index`
-      })
+      // const route_url = this.$router.resolve({
+      //   path: `/app/${app.appid}/dashboard/index`
+      // })
       // window.open(route_url.href, '_blank')
       this.$router.push({
         path: `/app/${app.appid}/dashboard/index`

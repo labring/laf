@@ -1,14 +1,15 @@
 
 const assert = require('assert')
 const { FunctionEngine } = require('../dist/engine')
-const vm = require('vm')
+const http = require('http')
+const fs = require('fs/promises')
 
 describe('FunctionEngine', () => {
 
   const options = {
     filename: 'CloudFunction.test_name',
     timeout: 1000,
-    microtaskMode: 'afterEvaluate',
+    // microtaskMode: 'afterEvaluate',
     contextCodeGeneration: {
       strings: false
     }
@@ -62,7 +63,6 @@ describe('FunctionEngine', () => {
       }
     `
     const res = await engine.run(code, {}, options)
-    console.log(res.error.message)
 
     assert.strictEqual(res.data, undefined)
     assert.ok(res.error instanceof Error)
@@ -85,20 +85,22 @@ describe('FunctionEngine', () => {
     assert.ok(res.time_usage > 1000)
   })
 
-  it('run() with async timeout & microtaskMode === "afterEvaluate" should be ok', async () => {
-    const engine = new FunctionEngine(require)
+  // it('run() with async timeout & microtaskMode === "afterEvaluate" should be ok', async () => {
+  //   // 如果不设置 microtaskMode: 'afterEvaluate' 这种情况当前会让程序陷入黑洞，尚无办法处理
+  //   const engine = new FunctionEngine(require)
     
-    const code = `
-      exports.main = async function(ctx) {
-        Promise.resolve().then(() => { while(true) { }})
-      }
-    `
-    const res = await engine.run(code, {}, options)
+  //   const code = `
+  //     exports.main = async function(ctx) {
+  //       Promise.resolve().then(() => { while(true) { }})
+  //       return 123
+  //     }
+  //   `
+  //   const res = await engine.run(code, {}, options)
 
-    assert.ok(res.error)
-    assert.strictEqual(res.error.code, 'ERR_SCRIPT_EXECUTION_TIMEOUT')
-    assert.ok(res.time_usage > 1000)
-  })
+  //   assert.ok(res.error)
+  //   assert.strictEqual(res.error.code, 'ERR_SCRIPT_EXECUTION_TIMEOUT')
+  //   assert.ok(res.time_usage > 1000)
+  // })
 
   it('run() with timeout & microtaskMode === "afterEvaluate" should be ok', async () => {
     const engine = new FunctionEngine(require)
@@ -113,7 +115,7 @@ describe('FunctionEngine', () => {
     assert.strictEqual(res.data, 123)
   })
 
-  it('run() with contextCodeGeneration.strings === false should be ok', async () => {
+  it('run() with eval() should be ok', async () => {
     const engine = new FunctionEngine(require)
     
     const code = `
@@ -127,5 +129,24 @@ describe('FunctionEngine', () => {
     assert.strictEqual(res.error.name, 'EvalError')
     assert.strictEqual(res.error.message, 'Code generation from strings disallowed for this context')
   })
+
+  // it('run() debug', async () => {
+  //   // 如果设置 microtaskMode: 'afterEvaluate', 异步 Io 会让程序陷入黑洞
+  //   const engine = new FunctionEngine(require)
+    
+  //   const code = `
+  //     const http = require('http')
+  //     const fs = require('fs/promises')
+
+  //     exports.main = async function(ctx) {
+  //       await fs.readFile('test')
+    
+  //       return 123
+  //     }
+  //   `
+  //   const res = await engine.run(code, {}, options)
+  //   console.log(res)
+
+  // })
 
 })
