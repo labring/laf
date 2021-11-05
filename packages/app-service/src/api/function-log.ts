@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-11-05 12:06:42
+ * @LastEditTime: 2021-11-05 15:20:12
  * @Description: 
  */
 import { ObjectId } from "bson"
@@ -32,6 +32,10 @@ export async function addFunctionLog(data: CloudFunctionLogStruct): Promise<any>
   const db = DatabaseAgent.db
 
   if (!data) return null
+  if (typeof data.error === 'object') {
+    data.error = data.error.toString() as any
+  }
+
   const r = await db.collection(Constants.function_log_collection)
     .insertOne({
       ...data,
