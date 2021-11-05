@@ -1,5 +1,5 @@
 import { ApplicationStruct } from "../api/application"
-import { FunctionStruct } from "../api/function"
+import { CloudFunctionStruct } from "../api/function"
 import { PolicyStruct } from "../api/policy"
 import { Constants } from "../constants"
 import { DatabaseAgent } from "./db-agent"
@@ -38,7 +38,7 @@ export class ApplicationExporter {
 
   private async buildFunctions() {
     const db = DatabaseAgent.db
-    const docs = await db.collection<FunctionStruct>(Constants.cn.functions)
+    const docs = await db.collection<CloudFunctionStruct>(Constants.cn.functions)
       .find({ appid: this.app.appid })
       .toArray()
 

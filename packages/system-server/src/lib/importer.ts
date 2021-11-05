@@ -2,7 +2,7 @@ import assert = require("assert")
 
 import { ClientSession } from "mongodb"
 import { ApplicationStruct } from "../api/application"
-import { FunctionStruct } from "../api/function"
+import { CloudFunctionStruct } from "../api/function"
 import { getPolicyByName, PolicyStruct } from "../api/policy"
 import { Constants } from "../constants"
 import { hashFunctionCode } from "../utils/hash"
@@ -20,7 +20,7 @@ export class ApplicationImporter {
   readonly app: ApplicationStruct
   private _data: any = {}
 
-  private functions: FunctionStruct[] = []
+  private functions: CloudFunctionStruct[] = []
   private policies: PolicyStruct[] = []
 
   constructor(app: ApplicationStruct, data: any) {
@@ -55,7 +55,7 @@ export class ApplicationImporter {
     }
   }
 
-  private async importFunction(func: FunctionStruct, session: ClientSession) {
+  private async importFunction(func: CloudFunctionStruct, session: ClientSession) {
     const db = DatabaseAgent.sys_accessor.db
 
     // rename function if same named one exists
@@ -94,7 +94,7 @@ export class ApplicationImporter {
     assert.ok(func.name, 'name of function cannot be empty')
     assert.ok(func.code, 'code of function cannot be empty')
 
-    const data: FunctionStruct = {
+    const data: CloudFunctionStruct = {
       name: func.name,
       code: func.code,
       label: func.label || func.name,

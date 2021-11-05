@@ -1,15 +1,14 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:51:19
- * @LastEditTime: 2021-11-02 15:37:22
+ * @LastEditTime: 2021-11-05 14:12:38
  * @Description: 
  */
 
-import { CloudFunctionStruct } from 'cloud-function-engine'
 import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
 import { ApplicationStruct, getApplicationDbAccessor } from '../../api/application'
-import { FunctionStruct, getFunctionById } from '../../api/function'
+import { CloudFunctionStruct, getFunctionById } from '../../api/function'
 import { checkPermission } from '../../api/permission'
 import { Constants } from '../../constants'
 import { permissions } from '../../constants/permissions'
@@ -112,7 +111,7 @@ export async function handleGetAllFunctionTags(req: Request, res: Response) {
   }
 
   const db = DatabaseAgent.db
-  const docs = await db.collection<FunctionStruct>(Constants.cn.functions)
+  const docs = await db.collection<CloudFunctionStruct>(Constants.cn.functions)
     .distinct('tags', { appid: app.appid })
 
   return res.send({
