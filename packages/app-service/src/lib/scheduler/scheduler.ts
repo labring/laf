@@ -1,15 +1,16 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-09 22:59:48
+ * @LastEditTime: 2021-11-05 14:46:49
  * @Description: 
  */
 
 import { getFunctionById } from "../../api/function"
-import { addFunctionLog } from "../../api/function-log"
+import { addFunctionLog, CloudFunctionLogStruct } from "../../api/function-log"
 import { CloudFunction, TriggerScheduler } from "cloud-function-engine"
 import { createLogger } from "../logger"
 import assert = require("assert")
+import { ObjectId } from "bson"
 
 
 const logger = createLogger('scheduler')
@@ -41,7 +42,9 @@ export class FrameworkScheduler extends TriggerScheduler {
    * @override
    * @param data 
    */
-  async addFunctionLog(data: any) {
+  async addFunctionLog(data: CloudFunctionLogStruct) {
+    // func_id from TriggerScheduler is string type, convert it to ObjectId
+    data.func_id = new ObjectId(data.func_id)
     await addFunctionLog(data)
   }
 

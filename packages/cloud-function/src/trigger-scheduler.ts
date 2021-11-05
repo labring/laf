@@ -87,7 +87,7 @@ export class TriggerScheduler {
    * @returns 
    */
   protected async getFunctionById(_func_id: string): Promise<CloudFunction> {
-    throw new Error('not implemented, you should drive TriggerScheduler class and override getFunctionById() method')
+    throw new Error('not implemented, you should derive TriggerScheduler class and override getFunctionById() method')
   }
 
   /**
@@ -105,7 +105,7 @@ export class TriggerScheduler {
     await this.addFunctionLog({
       requestId: `trigger_${trigger.id}`,
       method: param.method,
-      func_id: func.id,
+      func_id: func_id,
       func_name: func.name,
       logs: result.logs,
       time_usage: result.time_usage,
