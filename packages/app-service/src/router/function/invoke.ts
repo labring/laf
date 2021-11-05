@@ -1,16 +1,17 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-11-03 18:02:23
+ * @LastEditTime: 2021-11-05 13:45:36
  * @Description: 
  */
 
 import { Request, Response } from 'express'
-import { FunctionContext, CloudFunction } from 'cloud-function-engine'
+import { FunctionContext } from 'cloud-function-engine'
 import { getFunctionByName } from '../../api/function'
 import Config from '../../config'
 import { logger } from '../../lib/logger'
 import { addFunctionLog } from '../../api/function-log'
+import { CloudFunction } from '../../lib/function'
 
 
 /**

@@ -39,13 +39,6 @@ export class CloudFunction {
   result: FunctionResult
 
   /**
-   *  函数ID
-   */
-  get id() {
-    return this._data._id
-  }
-
-  /**
    * 函数显示名称
    */
   get name() {
@@ -64,20 +57,6 @@ export class CloudFunction {
    */
   get compiledCode() {
     return this._data.compiledCode
-  }
-
-  /**
-   * 是否允许 HTTP 访问
-   */
-  get enableHTTP() {
-    return this._data.enableHTTP
-  }
-
-  /**
-   * 启停状态
-   */
-  get status() {
-    return this._data.status
   }
 
   constructor(data: CloudFunctionStruct) {

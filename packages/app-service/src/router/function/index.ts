@@ -1,30 +1,16 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-10-07 01:41:39
+ * @LastEditTime: 2021-11-05 13:53:31
  * @Description: 
  */
 
 import { Router } from 'express'
-import { CloudFunction } from 'cloud-function-engine'
 import * as multer from 'multer'
 import * as path from 'path'
 import { handleDebugFunction } from './debug'
 import { handleInvokeFunction } from './invoke'
 import { generateUUID } from '../../lib/utils/rand'
-
-/**
- * Custom require function in cloud function
- * @see CloudFunction.require_func
- * @param module the module id. ex. `path`, `lodash`
- * @returns 
- */
-CloudFunction.require_func = (module): any => {
-  if (module === '@/cloud-sdk') {
-    return require('../../cloud-sdk')
-  }
-  return require(module) as any
-}
 
 export const FunctionRouter = Router()
 

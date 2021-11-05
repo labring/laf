@@ -1,16 +1,16 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-04 00:31:53
- * @LastEditTime: 2021-10-06 21:12:34
+ * @LastEditTime: 2021-11-05 13:52:52
  * @Description: 
  */
 
 import assert = require("assert")
 import { AccessorInterface, Params, Policy } from "database-proxy"
-import { CloudFunction } from "cloud-function-engine"
 import { getFunctionByName } from "../../api/function"
 import { InjectionGetter, PolicyAgentInterface, PolicyComposition, PolicyDataStruct } from "./types"
 import { logger } from "../logger"
+import { CloudFunction } from "../function"
 
 
 /**

@@ -30,7 +30,10 @@
   "scripts": {
     "build": "npx tsc -p tsconfig.json",
     "watch": "npx tsc -p tsconfig.json -w",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "copy2app": "sh copy2app.sh",
+    "copy2sys": "sh copy2sys.sh",
+    "copy4dev": "sh copy2app.sh && sh copy2sys.sh"
   },
   "bugs": {
     "url": "https://github.com/Maslow/less-framework/issues"

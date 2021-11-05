@@ -1,6 +1,7 @@
 import { getFunctionByName } from "../api/function"
-import { CloudFunction, FunctionContext } from "cloud-function-engine"
+import { FunctionContext } from "cloud-function-engine"
 import { addFunctionLog } from "../api/function-log"
+import { CloudFunction } from "../lib/function"
 
 
 /**

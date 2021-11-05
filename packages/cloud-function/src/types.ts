@@ -51,26 +51,24 @@ export interface FunctionResult {
   error?: Error,
   time_usage: number
 }
-
 /**
  * 云函数的存储结构
  */
 export interface CloudFunctionStruct {
-  _id: string,
-  name: string,
+  /**
+   * 云函数名
+   */
+  name: string
+
   /**
    * 云函数源代码，通常是 ts
    */
-  code: string,
+  code: string
+
   /**
    * 云函数编译后的代码，通常是 js
    */
   compiledCode: string
-  enableHTTP: boolean,
-  status: number,
-  created_by: number,
-  created_at: number
-  updated_at: number
 }
 
 /** Object containing file metadata and access information. */

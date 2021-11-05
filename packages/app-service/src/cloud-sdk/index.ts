@@ -1,6 +1,6 @@
 import { AxiosStatic } from "axios"
 import { Db, getDb } from "database-proxy"
-import { FunctionContext, CloudFunction } from "cloud-function-engine"
+import { FunctionContext } from "cloud-function-engine"
 import { FileStorageInterface } from "../lib/storage/interface"
 import * as mongodb from "mongodb"
 import { DatabaseAgent } from "../lib/database"
@@ -9,6 +9,7 @@ import { SchedulerInstance } from "../lib/scheduler"
 import { getToken, parseToken } from "../lib/utils/token"
 import { invokeInFunction } from "./invoke"
 import { createFileStorage } from "../lib/storage"
+import { CloudFunction } from "../lib/function"
 
 
 export type InvokeFunctionType = (name: string, param: FunctionContext) => Promise<any>
