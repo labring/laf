@@ -29,6 +29,7 @@
     "docker-release-system-server": "cross-env PACKAGE=system-server node ./scripts/docker-release.js",
     "docker-release-system-client": "cross-env PACKAGE=system-client node ./scripts/docker-release.js",
     "docker-release": "npm run docker-release-app-service && npm run docker-release-system-server && npm run docker-release-system-client",
+    "docker-bpr": "npm run docker-build && npm run docker-push && npm run docker-release",
     "clean:build": "rm -rf ./packages/*/dist",
     "stats": "find ./packages -name '*.ts' | xargs cat | grep -v ^$| wc -l"
   },
