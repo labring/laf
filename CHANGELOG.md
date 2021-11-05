@@ -1,4 +1,23 @@
-# [](https://github.com/Maslow/laf/compare/v0.6.8...v) (2021-11-04)
+# [](https://github.com/Maslow/laf/compare/v0.6.10...v) (2021-11-05)
+
+
+
+## [0.6.10](https://github.com/Maslow/laf/compare/v0.6.9...v0.6.10) (2021-11-05)
+
+
+### Bug Fixes
+
+* **app-service:** fix bson serialize func log error; ([5f0fa95](https://github.com/Maslow/laf/commit/5f0fa95fe5c3b0adfd6b5a380aebbc94e86929d2))
+* **app-service:** fix func_id type to ObjectId ([8edecc8](https://github.com/Maslow/laf/commit/8edecc8026a0629e8cfc7510b70fa3dd80f8bf9e))
+
+
+
+## [0.6.9](https://github.com/Maslow/laf/compare/v0.6.8...v0.6.9) (2021-11-04)
+
+
+### Bug Fixes
+
+* **cloud-function:** close `microtaskMode` option which cause fatal error ([963da1f](https://github.com/Maslow/laf/commit/963da1f23120ea4985ba3a595b239e119a0aae72))
 
 
 
