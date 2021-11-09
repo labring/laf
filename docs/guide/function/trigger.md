@@ -15,12 +15,18 @@ title: 云函数触发器
 laf 支持事件触发器，监听内置事件、自定义事件。
 
 - 内置事件
-  - `App:ready` 应用启动就绪事件，云函数可监听此事件，完成一些初始化操作；
+  - `App:ready` 应用启动就绪事件，云函数可监听此事件，完成一些初始化操作
   - `DatabaseChange:[集合名]#[操作]` 数据变更事件 ，当数据变化时触发，如：
 
-    - `DatabaseChange:users#add` 当有新用户注册时触发；
-    - `DatabaseChange:orders#update` 当订单被更新时触发；
-    - `DatabaseChange:tasks#remove` 当任务被删除时触发；
+    - `DatabaseChange:users#add` 当有新用户注册时触发
+    - `DatabaseChange:orders#update` 当订单被更新时触发
+    - `DatabaseChange:tasks#remove` 当任务被删除时触发
+
+  - `WebSocket:connection` 有新 WebSocket 连接建立时触发，通过 `ctx.socket` 获取连接
+  - `WebSocket:message` 接收 WebSocket 消息时触发，通过 `ctx.params` 获取消息数据
+  - `WebSocket:close` 有 WebSocket 连接关闭时触发
+  - `WebSocket:error` 有 WebSocket 连接出错时触发
+
 
 - 自定义事件
   - 用户可在云函数中触发自定义事件，如在登陆函数中调用： 

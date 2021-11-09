@@ -36,7 +36,6 @@ import * as dayjs from 'dayjs'
 import * as $ from 'validator'
 import * as axios from 'axios'
 import { ObjectId } from 'mongodb'
-import { v4 as uuid } from 'uuid'
 
 exports.main = async function (ctx) {
   const res = await axios('http://www.baidu.com/')

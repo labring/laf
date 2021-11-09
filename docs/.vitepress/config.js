@@ -56,6 +56,10 @@ function getGuideSidebar() {
           text: '触发器',
           link: '/guide/function/trigger',
         },
+        {
+          text: 'WebSocket 连接',
+          link: '/guide/function/websocket',
+        },
       ]
     },
     {
