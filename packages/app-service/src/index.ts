@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-11-03 16:28:03
+ * @LastEditTime: 2021-11-09 19:09:30
  * @Description: 
  */
 
@@ -12,6 +12,7 @@ import { router } from './router/index'
 import { logger } from './lib/logger'
 import { generateUUID } from './lib/utils/rand'
 import { initCloudSdkPackage } from './lib/utils/init'
+import { WebSocketAgent } from './lib/ws'
 
 initCloudSdkPackage()
 
@@ -20,9 +21,9 @@ initCloudSdkPackage()
  */
 export * from './cloud-sdk'
 
-const server = express()
-server.use(express.json() as any)
-server.use(express.urlencoded({
+const app = express()
+app.use(express.json() as any)
+app.use(express.urlencoded({
   extended: true
 }) as any)
 
@@ -37,7 +38,7 @@ process.on('uncaughtException', err => {
 /**
  * Allow CORS by default
  */
-server.all('*', function (_req, res, next) {
+app.all('*', function (_req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Headers', 'Authorization, Content-Type')
   res.header('Access-Control-Allow-Methods', '*')
@@ -48,7 +49,7 @@ server.all('*', function (_req, res, next) {
 /**
  * Parsing bearer token
  */
-server.use(function (req, res, next) {
+app.use(function (req, res, next) {
   const token = splitBearerToken(req.headers['authorization'] ?? '')
   const auth = parseToken(token) || null
   req['auth'] = auth
@@ -60,6 +61,16 @@ server.use(function (req, res, next) {
   next()
 })
 
-server.use(router)
+app.use(router)
 
-server.listen(Config.PORT, () => logger.info(`server ${process.pid} listened on ${Config.PORT}`))
+const server = app.listen(Config.PORT, () => logger.info(`server ${process.pid} listened on ${Config.PORT}`))
+
+/**
+ * WebSocket upgrade & connect
+ */
+server.on('upgrade', (req, socket, head) => {
+  WebSocketAgent.server.handleUpgrade(req, socket as any, head, (client) => {
+    WebSocketAgent.server.emit('connection', client, req)
+  })
+})
+

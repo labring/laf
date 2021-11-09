@@ -10,6 +10,8 @@ import { getToken, parseToken } from "../lib/utils/token"
 import { invokeInFunction } from "./invoke"
 import { createFileStorage } from "../lib/storage"
 import { CloudFunction } from "../lib/function"
+import { WebSocket } from "ws"
+import { WebSocketAgent } from "../lib/ws"
 
 
 export type InvokeFunctionType = (name: string, param: FunctionContext) => Promise<any>
@@ -90,6 +92,11 @@ export interface CloudSdkInterface {
    * 3. 聚合操作
    */
   mongo: MongoDriverObject
+
+  /**
+   * WebSocket 连接例表
+   */
+  sockets: Set<WebSocket>
 }
 
 
@@ -123,7 +130,8 @@ export function create() {
     mongo: {
       client: DatabaseAgent.accessor.conn,
       db: DatabaseAgent.accessor.db
-    }
+    },
+    sockets: WebSocketAgent.clients
   }
   return cloud
 }

@@ -1,16 +1,19 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-11-05 14:46:49
+ * @LastEditTime: 2021-11-09 20:02:51
  * @Description: 
  */
 
 import { getFunctionById } from "../../api/function"
 import { addFunctionLog, CloudFunctionLogStruct } from "../../api/function-log"
-import { CloudFunction, TriggerScheduler } from "cloud-function-engine"
+import { TriggerScheduler } from "cloud-function-engine"
 import { createLogger } from "../logger"
 import assert = require("assert")
 import { ObjectId } from "bson"
+import { WebSocket } from "ws"
+import { IncomingMessage } from "http"
+import { CloudFunction } from "../function"
 
 
 const logger = createLogger('scheduler')
@@ -35,6 +38,31 @@ export class FrameworkScheduler extends TriggerScheduler {
     const func = new CloudFunction(funcData)
     assert.ok(func.compiledCode, `func.compiledCode got empty: ${func_id}`)
     return func
+  }
+
+
+  /**
+   * Trigger an websocket event
+   * @param event the event name
+   * @param data the params for function
+   */
+  public websocketEmit(event: string, data: any, socket: WebSocket, request?: IncomingMessage) {
+
+    // filter triggers by given eventName
+    const triggers = this.getEventTriggers()
+      .filter(tri => tri.event === event)
+
+    // trigger the functions' execution
+    for (const tri of triggers) {
+      const param: any = {
+        params: data,
+        method: event,
+        requestId: `trigger_${tri.id}`,
+        socket,
+        headers: request?.headers
+      }
+      this.executeFunction(tri.func_id, param, tri)
+    }
   }
 
   /**
