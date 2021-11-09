@@ -1,7 +1,7 @@
 
 export const websocket_type = `
 // WebSocket socket.
-declare class WebSocket extends EventEmitter {
+declare class CloudWebSocket extends EventEmitter {
     /** The connection is not yet open. */
     static readonly CONNECTING: 0;
     /** The connection is open and ready to communicate. */

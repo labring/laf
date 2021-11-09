@@ -1,9 +1,7 @@
 import { response_type } from './response_type'
-import { websocket_type } from './websocket_type'
 
 export const global_declare = `
 ${response_type}
-${websocket_type}
 
 declare class FunctionConsole {
   private _logs;

@@ -26,7 +26,7 @@ export class ImportParser {
 }
 
 /**
- * Ts 自动对引入依赖进行类型提示加载
+ * Typescript 自动对引入依赖进行类型提示加载
  */
 export class AutoImportTypings {
   _parser = new ImportParser()
@@ -62,8 +62,8 @@ export class AutoImportTypings {
     if (!this.isLoaded('axios')) { this.loadDeclaration('axios') }
     if (!this.isLoaded('cloud-function-engine')) { this.loadDeclaration('cloud-function-engine') }
     if (!this.isLoaded('mongodb')) { this.loadDeclaration('mongodb') }
-    if (!this.isLoaded('ws')) { this.loadDeclaration('ws') }
     if (!this.isLoaded('@types/node')) { this.loadDeclaration('@types/node') }
+    // if (!this.isLoaded('ws')) { this.loadDeclaration('ws') }
   }
 
   /**
@@ -81,6 +81,7 @@ export class AutoImportTypings {
    * @returns
    */
   async loadDeclaration(packageName) {
+    if (this.isLoaded(packageName)) return
     try {
       const r = await loadPackageTypings(packageName).catch(err => console.error(err))
       if (r?.code) {
