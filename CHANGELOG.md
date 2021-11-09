@@ -1,4 +1,19 @@
-# [](https://github.com/Maslow/laf/compare/v0.6.10...v) (2021-11-05)
+# [](https://github.com/Maslow/laf/compare/v0.6.11...v) (2021-11-09)
+
+
+
+## [0.6.11](https://github.com/Maslow/laf/compare/v0.6.10...v0.6.11) (2021-11-09)
+
+
+### Bug Fixes
+
+* **app-service:** fix require in cloud function fatal error ([1c12af5](https://github.com/Maslow/laf/commit/1c12af5260514322688a4707ec8ce91aa493dbc4))
+* **nginx:** fix nginx config; ([ca2a391](https://github.com/Maslow/laf/commit/ca2a39132cac8d26400b80c75c3bf067a5ce5427))
+
+
+### Features
+
+* **websocket:** support websocket in app-service; ([025dd39](https://github.com/Maslow/laf/commit/025dd3910e9832c8ccc9863333dbcdd0acc2439e))
 
 
 
