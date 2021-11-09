@@ -37,7 +37,7 @@ exports.main = async function (ctx) {
 import cloud from '@/cloud-sdk'
 
 exports.main = async function (ctx) {
-  const sockets = cloud.sockets
+  const sockets: Set<WebSocket>= cloud.sockets
   sockets.forEach(socket => {
     socket.send('Everyone will receive this message')
   })

@@ -1,4 +1,13 @@
-# [](https://github.com/Maslow/laf/compare/v0.6.11...v) (2021-11-09)
+# [](https://github.com/Maslow/laf/compare/v0.6.12...v) (2021-11-09)
+
+
+
+## [0.6.12](https://github.com/Maslow/laf/compare/v0.6.11...v0.6.12) (2021-11-09)
+
+
+### Bug Fixes
+
+* **sys-client:** fix ide type declaration error ([a238584](https://github.com/Maslow/laf/commit/a23858468068ecd2619a98232e4046c77a1ead77))
 
 
 
