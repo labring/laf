@@ -1,7 +1,7 @@
 
-
 import * as engine from "cloud-function-engine"
 import { ObjectId } from "mongodb"
+
 
 export enum FunctionStatus {
   DISABLED = 0,
@@ -28,22 +28,21 @@ export interface CloudFunctionStruct extends engine.CloudFunctionStruct {
   created_by: any
 }
 
+/**
+  * Custom require function in cloud function
+  * @see CloudFunction.require_func
+  * @param module the module id. ex. `path`, `lodash`
+  * @returns 
+  */
+engine.CloudFunction.require_func = (module: string): any => {
+  if (module === '@/cloud-sdk') {
+    return require('../cloud-sdk')
+  }
+
+  return require(module) as any
+}
 
 export class CloudFunction extends engine.CloudFunction {
-  /**
-   * Custom require function in cloud function
-   * @see CloudFunction.require_func
-   * @param module the module id. ex. `path`, `lodash`
-   * @returns 
-   */
-
-  static require_func = (module: string): any => {
-    if (module === '@/cloud-sdk') {
-      return require('../../cloud-sdk')
-    }
-
-    return require(module) as any
-  }
 
   /**
   * Function data
