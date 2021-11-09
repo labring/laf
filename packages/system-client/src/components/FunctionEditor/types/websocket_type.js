@@ -1,7 +1,5 @@
 
-
 export const websocket_type = `
-
 // WebSocket socket.
 declare class WebSocket extends EventEmitter {
     /** The connection is not yet open. */
