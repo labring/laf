@@ -8,12 +8,13 @@
     "dev": "vue-cli-service serve",
     "lint": "eslint --ext .js,.vue src",
     "fix": "eslint --ext .js,.vue src --fix",
-    "build": "npm run build:prod",
+    "build": "npm run build:prod && npm run copy2gw",
     "build:prod": "vue-cli-service build",
     "build:stage": "vue-cli-service build --mode staging",
     "preview": "node build/index.js --preview",
     "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml",
-    "commit": "commit"
+    "commit": "commit",
+    "copy2gw": "sh copy2gateway.sh"
   },
   "dependencies": {
     "axios": "^0.21.1",

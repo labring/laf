@@ -1,6 +1,7 @@
 import store from '@/store'
 import request from '@/utils/request'
 import axios from 'axios'
+import { getAppAccessUrl } from './application'
 
 /**
  * Get cloud function list
@@ -158,9 +159,9 @@ export function publishOneFunction(func_id) {
  * Debug cloud function
  */
 export async function launchFunction(func, param, debug = false) {
-  const appid = store.state.app.appid
+  const app_url = getAppAccessUrl()
   const res = await axios({
-    url: process.env.VUE_APP_BASE_API_APP + `/${appid}/func/debug/${func.name}`,
+    url: app_url + `/func/debug/${func.name}`,
     method: 'post',
     data: {
       func,
@@ -180,9 +181,9 @@ export async function launchFunction(func, param, debug = false) {
  * @returns
  */
 export async function loadPackageTypings(packageName) {
-  const appid = store.state.app.appid
+  const app_url = getAppAccessUrl()
   const res = await axios({
-    url: process.env.VUE_APP_BASE_API_APP + `/${appid}/typing/package?packageName=${packageName}`,
+    url: app_url + `/typing/package?packageName=${packageName}`,
     method: 'GET'
   })
 

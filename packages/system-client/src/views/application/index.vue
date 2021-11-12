@@ -13,25 +13,37 @@
     <div class="app-group">
       <div class="app-group-title">我创建的应用</div>
       <el-table v-loading="loading" empty-text="还没有创建应用" :data="applications.created" style="width: 100%;margin-top:10px;" stripe>
-        <el-table-column align="center" label="App ID" width="340">
+        <el-table-column align="center" label="App ID" width="320">
           <template slot-scope="scope">
             <div class="table-row">
-              <div> {{ scope.row.appid }}</div>
+              <el-tooltip :content="scope.row.appid" effect="light" placement="top">
+                <div class="table-column-text"> {{ scope.row.appid }}</div>
+              </el-tooltip>
               <i v-clipboard:message="scope.row.appid" v-clipboard:success="onCopy" class="el-icon-document-copy copy-btn" />
             </div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="应用名" width="400">
           <template slot-scope="{row}">
-            <span class="link-type" @click="showUpdateForm(row)">{{ row.name }}</span>
+            <span class="link-type table-column-text" @click="showUpdateForm(row)">{{ row.name }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="Status" width="200">
+        <el-table-column align="center" label="状态" width="100">
           <template slot-scope="scope">
             {{ scope.row.status }}
           </template>
         </el-table-column>
-        <el-table-column label="服务启停" align="left" width="200" class-name="small-padding">
+        <el-table-column align="center" label="服务版本" width="100">
+          <template slot-scope="scope">
+            {{ getRuntimeVersion(scope.row) }}
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="运行内存" width="100">
+          <template slot-scope="scope">
+            {{ getRuntimeMemory(scope.row) }} M
+          </template>
+        </el-table-column>
+        <el-table-column label="服务启停" align="center" width="300" class-name="small-padding">
           <template slot-scope="{row}">
             <el-button v-if="row.status !== 'running'" :loading="serviceLoading" plain type="success" size="mini" @click="startApp(row)">
               启动
@@ -39,12 +51,16 @@
             <el-button v-if="row.status === 'running'" :loading="serviceLoading" plain type="danger" size="mini" @click="stopApp(row)">
               停止
             </el-button>
-            <el-tooltip content="仅清除应用服务实例，并[不会]删除应用或数据，请放心清除" effect="light" placement="bottom">
-              <el-button v-if="row.status === 'stopped'" :loading="serviceLoading" plain type="default" size="mini" @click="removeAppService(row)">
-                清除
+            <el-tooltip content="仅重启应用进程，并不会删除服务实例容器" effect="light" placement="bottom">
+              <el-button v-if="row.status === 'running'" :loading="serviceLoading" plain type="default" size="mini" @click="restartApp(row)">
+                重启
               </el-button>
             </el-tooltip>
-
+            <el-tooltip content="仅重置并重启应用服务实例容器，并不会删除应用或数据" effect="light" placement="bottom">
+              <el-button :loading="serviceLoading" plain type="info" size="mini" @click="removeAppService(row)">
+                重置
+              </el-button>
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" align="center">
@@ -81,25 +97,37 @@
     <div class="app-group">
       <div class="app-group-title">我加入的应用</div>
       <el-table v-loading="loading" empty-text="还没有加入的应用" :data="applications.joined" style="width: 100%;margin-top:10px;" stripe>
-        <el-table-column align="center" label="App ID" width="340">
+        <el-table-column align="center" label="App ID" width="320">
           <template slot-scope="scope">
             <div class="table-row">
-              <div> {{ scope.row.appid }}</div>
+              <el-tooltip :content="scope.row.appid" effect="light" placement="top">
+                <div class="table-column-text"> {{ scope.row.appid }}</div>
+              </el-tooltip>
               <i v-clipboard:message="scope.row.appid" v-clipboard:success="onCopy" class="el-icon-document-copy copy-btn" />
             </div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="应用名" width="400">
           <template slot-scope="{row}">
-            <span class="link-type" @click="showUpdateForm(row)">{{ row.name }}</span>
+            <span class="link-type table-column-text" @click="showUpdateForm(row)">{{ row.name }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="Status" width="200">
+        <el-table-column align="center" label="状态" width="100">
           <template slot-scope="scope">
             {{ scope.row.status }}
           </template>
         </el-table-column>
-        <el-table-column label="服务启停" align="left" width="200" class-name="small-padding">
+        <el-table-column align="center" label="服务版本" width="100">
+          <template slot-scope="scope">
+            {{ getRuntimeVersion(scope.row) }}
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="运行内存" width="100">
+          <template slot-scope="scope">
+            {{ getRuntimeMemory(scope.row) }} M
+          </template>
+        </el-table-column>
+        <el-table-column label="服务启停" align="center" width="300" class-name="small-padding">
           <template slot-scope="{row}">
             <el-button v-if="row.status !== 'running'" :loading="serviceLoading" plain type="success" size="mini" @click="startApp(row)">
               启动
@@ -107,9 +135,14 @@
             <el-button v-if="row.status === 'running'" :loading="serviceLoading" plain type="danger" size="mini" @click="stopApp(row)">
               停止
             </el-button>
-            <el-tooltip content="仅清除应用服务实例，并[不会]删除应用或数据，请放心清除" effect="light" placement="bottom">
-              <el-button v-if="row.status === 'stopped'" :loading="serviceLoading" plain type="default" size="mini" @click="removeAppService(row)">
-                清除
+            <el-tooltip content="仅重启应用进程，并不会删除服务实例容器" effect="light" placement="bottom">
+              <el-button v-if="row.status === 'running'" :loading="serviceLoading" plain type="default" size="mini" @click="restartApp(row)">
+                重启
+              </el-button>
+            </el-tooltip>
+            <el-tooltip content="仅重置并重启应用服务实例容器，并不会删除应用或数据" effect="light" placement="bottom">
+              <el-button :loading="serviceLoading" plain type="info" size="mini" @click="removeAppService(row)">
+                重置
               </el-button>
             </el-tooltip>
           </template>
@@ -387,13 +420,22 @@ export default {
         return
       }
     },
+    async restartApp(app) {
+      if (app.status !== 'running') { return }
+      await this.stopApp(app)
+      await this.startApp(app)
+    },
     async removeAppService(app) {
-      await this.$confirm('确认要删除应用服务？', '服务操作确认')
+      const current_status = app.status
+      await this.$confirm('仅重置并重启应用服务实例容器，并不会删除应用或数据', '确认要重置应用服务？')
       this.serviceLoading = true
       const res = await removeApplicationService(app.appid)
         .finally(() => { this.serviceLoading = false })
       if (res.data) {
-        this.$notify.success('删除应用服务成功')
+        this.$notify.success('重置应用服务成功')
+        if (current_status === 'running') {
+          await this.startApp(app)
+        }
         this.loadApps()
         return
       }
@@ -437,6 +479,19 @@ export default {
       } finally {
         this.loading = false
       }
+    },
+    getRuntimeVersion(app) {
+      const image = app.runtime?.image
+      if (!image) {
+        return 'unknow'
+      }
+
+      const [, version] = image.split(':')
+      return version || 'unknow'
+    },
+    getRuntimeMemory(app) {
+      const memory = app.runtime?.metrics?.memory
+      return memory || '256'
     }
   }
 }
@@ -455,6 +510,12 @@ export default {
   justify-content: space-between;
 }
 
+.table-column-text {
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .app-secret {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -465,7 +526,6 @@ export default {
 .copy-btn {
     display: block;
     font-size: 16px;
-    margin-left: 10px;
     cursor: pointer;
 }
 
