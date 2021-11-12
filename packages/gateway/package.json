@@ -1,0 +1,10 @@
+{
+  "name": "gateway",
+  "version": "0.6.12",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+  },
+  "author": "Maslow(wangfugen@126.com)"
+}

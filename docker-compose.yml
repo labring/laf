@@ -21,29 +21,6 @@ services:
     networks:
       - laf_shared_network
 
-  storage-service:
-    image: node:16-alpine
-    user: root
-    working_dir: /app
-    environment:
-      DB_URI : mongodb://root:password123@mongo:27017/laf-fs?authSource=admin&replicaSet=laf&writeConcern=majority
-      LOG_LEVEL : debug
-    command: npx nodemon
-    volumes:
-      - ./packages/storage-service:/app
-      - ./packages/database-proxy:/app/node_modules/database-proxy:ro
-      - ./packages/database-ql:/app/node_modules/database-ql:ro
-      - ./packages/database-ql:/app/node_modules/database-proxy/node_modules/database-ql:ro
-    ports:
-      - "9001"
-    depends_on:
-      - mongo
-    tmpfs:
-      - /tmp
-    restart: always
-    networks:
-      - laf_shared_network
-
   system_server:
     image: node:16-alpine
     user: root
@@ -76,8 +53,8 @@ services:
     networks:
       - laf_shared_network
 
-  system_client:
-    image: nginx:latest
+  gateway:
+    image: openresty/openresty:latest
     depends_on:
       - mongo
       - system_server
@@ -85,12 +62,38 @@ services:
       DEPLOY_DOMAIN: "*.local-dev.host"     # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
       SYS_CLIENT_HOST: console.local-dev.host
     volumes:
+      - ./packages/gateway/scripts:/scripts
       - ./packages/system-client/dist:/app
-      - ./packages/system-client/nginx.conf:/etc/nginx/templates/default.conf.template
+      - ./packages/gateway/app.conf:/etc/nginx/templates/app.conf.template
+      - ./packages/gateway/system.conf:/etc/nginx/templates/system.conf.template
+    command: "sh /scripts/start.sh"
     ports:
       - 8080:80
     networks:
       - laf_shared_network
+
+  # storage-service:
+  #   image: node:16-alpine
+  #   user: root
+  #   working_dir: /app
+  #   environment:
+  #     DB_URI : mongodb://root:password123@mongo:27017/laf-fs?authSource=admin&replicaSet=laf&writeConcern=majority
+  #     LOG_LEVEL : debug
+  #   command: npx nodemon
+  #   volumes:
+  #     - ./packages/storage-service:/app
+  #     - ./packages/database-proxy:/app/node_modules/database-proxy:ro
+  #     - ./packages/database-ql:/app/node_modules/database-ql:ro
+  #     - ./packages/database-ql:/app/node_modules/database-proxy/node_modules/database-ql:ro
+  #   ports:
+  #     - "9001"
+  #   depends_on:
+  #     - mongo
+  #   tmpfs:
+  #     - /tmp
+  #   restart: always
+  #   networks:
+  #     - laf_shared_network
 
 volumes:
   db-data:
