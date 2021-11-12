@@ -1,4 +1,15 @@
-# [](https://github.com/Maslow/laf/compare/v0.6.12...v) (2021-11-09)
+# [](https://github.com/Maslow/laf/compare/v0.6.13...v) (2021-11-12)
+
+
+
+## [0.6.13](https://github.com/Maslow/laf/compare/v0.6.12...v0.6.13) (2021-11-12)
+
+
+### Features
+
+* **app-service:** remove CORS in app; ([3e29e95](https://github.com/Maslow/laf/commit/3e29e958330892b3124ca3ca7203f6ebd5f8a590))
+* **gateway:** add gateway service; ([2b1debe](https://github.com/Maslow/laf/commit/2b1debe9128b86c18961bddc593427307b0a5b5c))
+* **sys-client:** remove api-app proxy; add runtime version & memory ([5063b2e](https://github.com/Maslow/laf/commit/5063b2e48a4291b6a73d9bd25c2172b49ddae158))
 
 
 
