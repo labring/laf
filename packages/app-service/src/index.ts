@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-11-09 19:09:30
+ * @LastEditTime: 2021-11-12 14:55:11
  * @Description: 
  */
 
@@ -33,17 +33,6 @@ process.on('unhandledRejection', (reason, promise) => {
 
 process.on('uncaughtException', err => {
   logger.error(`Caught uncaughtException:`, err)
-})
-
-/**
- * Allow CORS by default
- */
-app.all('*', function (_req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Headers', 'Authorization, Content-Type')
-  res.header('Access-Control-Allow-Methods', '*')
-  res.header('X-Powered-By', 'LaF Server')
-  next()
 })
 
 /**
