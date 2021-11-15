@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-19 16:10:27
- * @LastEditTime: 2021-11-15 18:10:10
+ * @LastEditTime: 2021-11-16 00:10:38
  * @Description:
  */
 
@@ -52,8 +52,9 @@ export async function handleGetFile(req: express.Request, res: express.Response)
       return res.status(code).send(message)
     }
 
-    const offset = (req.query?.offset ?? 0) as any
-    const limit = req.query?.limit as any
+    const offset = Number(req.query?.offset ?? 0) as any
+    const limit = Number(req.query?.limit) as any
+
     const files = await getFilesInDirectory(bucket_name, filename, offset, limit)
     const total = await countFilesInDirectory(bucket_name, filename)
     res.type('json')

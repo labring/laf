@@ -29,12 +29,12 @@ export async function getFileByName(bucket: string, filename: string) {
 export async function getFilesInDirectory(bucket: string, parent: string, offset?: number, limit?: number) {
   assert.ok(bucket, 'empty bucket got')
   assert.ok(parent, 'empty parent got')
+
   const options = {
-    skip: offset ?? 0
+    skip: offset ?? 0,
+    limit: limit ?? Infinity
   }
-  if (limit) {
-    options['limit'] = limit
-  }
+
   const coll = DatabaseAgent.db.collection<FileItemType>(bucket + ".files")
   const files = await coll.find({ "metadata.parent": parent }, options).toArray()
   return files
