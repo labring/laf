@@ -18,6 +18,7 @@ export async function handleUploadFile(req: express.Request, res: express.Respon
   const parent = req.query?.path as string || "/"
   const bucket_name = req.params.bucket as string
   const token = req.query?.token as string
+  const auto_name = Number(req.query?.auto ?? 0)
 
   // check given params
   if (!req.file) {
@@ -30,10 +31,12 @@ export async function handleUploadFile(req: express.Request, res: express.Respon
     return res.status(400).send('bucket not found')
   }
 
+  const filename = auto_name ? req.file.filename : req.file.originalname
+
   // check file permissions
-  const filename = path.join(parent, req.file.originalname)
+  const filename_full = path.join(parent, filename)
   if (bucket.mode !== BucketMode.PUBLIC_READ_WRITE) {
-    const [code, message] = checkFileOperationToken(bucket, token, FS_OPERATION.WRITE, filename)
+    const [code, message] = checkFileOperationToken(bucket, token, FS_OPERATION.WRITE, filename_full)
     if (code) {
       return res.status(code).send(message)
     }
@@ -45,7 +48,7 @@ export async function handleUploadFile(req: express.Request, res: express.Respon
   }
 
   // check if file already exist
-  if (await pathExists(bucket_name, filename)) {
+  if (await pathExists(bucket_name, filename_full)) {
     return res.send({ code: 'ALREADY_EXISTED', error: "file already exists" })
   }
 
@@ -53,11 +56,11 @@ export async function handleUploadFile(req: express.Request, res: express.Respon
   const metadata: FileItemMeta = {
     contentType: req.file.mimetype,
     parent,
-    name: req.file.originalname,
+    name: filename,
   }
 
   // start save
   const storage = new GridFSStorage(bucket_name, DatabaseAgent.db)
-  const data = await storage.save(req.file.path, filename, metadata)
+  const data = await storage.save(req.file.path, filename_full, metadata)
   return res.send({ code: 0, data })
 }

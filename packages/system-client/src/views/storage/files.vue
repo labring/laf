@@ -17,7 +17,7 @@
         上传文件
       </el-button>
       <el-button size="mini" plain class="filter-item" type="default" icon="el-icon-new" @click="createDirectory">
-        新建目录
+        新建文件夹
       </el-button>
       <div class="filter-item" style="margin-left: 20px;">
         <span style="font-size: 16px;color: gray; margin-right: 5px;">当前:</span>

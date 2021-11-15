@@ -4,6 +4,8 @@ import { handleUploadFile } from "./upload"
 import { handleGetFile } from "./get"
 import { handleMakeDir } from "./mkdir"
 import { handleDeleteFile } from "./delete"
+import { generateUUID } from "../../lib/utils"
+import path = require("path")
 
 export const FileRouter = express.Router()
 
@@ -12,7 +14,8 @@ export const FileRouter = express.Router()
  */
 const storage = multer.diskStorage({
   filename: (_req, file, cb) => {
-    cb(null, file.originalname)
+    const { ext } = path.parse(file.originalname)
+    cb(null, generateUUID() + ext)
   },
 })
 const uploader = multer({ storage })
