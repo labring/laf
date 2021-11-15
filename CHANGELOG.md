@@ -1,4 +1,13 @@
-# [](https://github.com/Maslow/laf/compare/v0.6.14...v) (2021-11-15)
+# [](https://github.com/Maslow/laf/compare/v0.6.15...v) (2021-11-15)
+
+
+
+## [0.6.15](https://github.com/Maslow/laf/compare/v0.6.14...v0.6.15) (2021-11-15)
+
+
+### Bug Fixes
+
+* **storage-service:** fix chinese file name error; ([31abf59](https://github.com/Maslow/laf/commit/31abf59378c1fa64d4c12834c028a949d396a5c2))
 
 
 
