@@ -46,7 +46,7 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column label="函数标识" min-width="120">
+      <el-table-column label="函数标识" min-width="140">
         <template slot-scope="{row}">
           <div style="display: flex;align-items: center;justify-content: space-between;">
             <div class="func-name">
@@ -56,17 +56,17 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="函数标题" min-width="120px">
+      <el-table-column label="函数标题" min-width="140">
         <template slot-scope="{row}">
           <span class="link-type" @click="showUpdateForm(row)">{{ row.label }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="标签" min-width="140">
+      <el-table-column label="标签" width="140">
         <template slot-scope="{row}">
           <el-tag v-for="tag in row.tags" :key="tag" style="margin-right: 6px;" type="primary" size="mini">{{ tag }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="创建/更新时间" width="150px" align="center">
+      <el-table-column label="创建/更新" width="120px" align="center">
         <template slot-scope="{row}">
           <span v-if="row.created_at">{{ row.created_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           <span v-else>-</span>
@@ -75,7 +75,7 @@
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="HTTP访问" class-name="status-col" width="100">
+      <el-table-column label="HTTP" class-name="status-col" width="60">
         <template slot-scope="{row}">
           <el-tag v-if="row.enableHTTP" type="success" size="mini" style="font-weight: bold">
             可
@@ -85,7 +85,7 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="启停状态" class-name="status-col" width="80">
+      <el-table-column label="状态" class-name="status-col" width="60">
         <template slot-scope="{row}">
           <el-tag v-if="row.status === 1" type="success" size="mini" style="font-weight: bold">
             启
@@ -95,17 +95,17 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="调用地址" align="center" width="80px">
+      <el-table-column label="调用地址" align="center" width="70">
         <template slot-scope="{row}">
           <el-tooltip :content="getFunctionInvokeBaseUrl(row.name)" placement="top">
             <i v-clipboard:message="getFunctionInvokeBaseUrl(row.name)" v-clipboard:success="onCopy" class="el-icon-document-copy copy-btn" />
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" align="center" width="380" class-name="small-padding">
+      <el-table-column fixed="right" label="操作" align="center" width="300" class-name="small-padding">
         <template slot-scope="{row,$index}">
           <el-button plain type="success" size="mini" @click="handleShowDetail(row)">
-            调试
+            开发
           </el-button>
           <el-button plain type="info" size="mini" @click="handleShowLogs(row)">
             日志

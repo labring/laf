@@ -37,12 +37,12 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column label="ID" prop="id" align="center" width="240">
+      <!-- <el-table-column label="ID" prop="id" align="center" width="220">
         <template slot-scope="{row}">
           <span>{{ row._id }}</span>
         </template>
-      </el-table-column>
-      <el-table-column label="标识" align="center" width="150px">
+      </el-table-column> -->
+      <el-table-column label="标识" align="center" width="160px">
         <template slot-scope="{row}">
           <span>{{ row.name }}</span>
         </template>
@@ -70,14 +70,14 @@
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" class-name="status-col" width="120">
+      <el-table-column label="状态" class-name="status-col" width="80">
         <template slot-scope="{row}">
           <el-tag type="success">
             {{ row.status | statusFilter }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="340" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button type="success" size="mini" @click="handleShowDetail(row)">
             详情

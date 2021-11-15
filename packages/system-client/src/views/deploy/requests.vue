@@ -25,13 +25,14 @@
       fit
       highlight-current-row
       style="width: 100%;"
+      size="mini"
     >
-      <el-table-column label="ID" prop="id" align="center" width="220">
+      <el-table-column label="ID" prop="id" align="center" width="160">
         <template slot-scope="{row}">
           <span>{{ row._id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="来源名称" width="150px">
+      <el-table-column label="来源名称" width="120">
         <template slot-scope="{row}">
           <span>{{ row.source }}</span>
         </template>
@@ -52,20 +53,20 @@
           <el-tag v-for="item in row.data" :key="item._id" style="margin-right: 2px" type="default" size="mini" effect="plain">{{ item.name }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" width="150px" align="center">
+      <el-table-column label="创建时间" width="150" align="center">
         <template slot-scope="{row}">
           <span v-if="row.created_at">{{ row.created_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" class-name="status-col" width="120">
+      <el-table-column label="状态" class-name="status-col" width="100">
         <template slot-scope="{row}">
           <el-tag v-if="row.status === 'deployed'" type="success"> {{ row.status }}</el-tag>
           <el-tag v-if="row.status === 'pending'" type="warning"> {{ row.status }}</el-tag>
           <el-tag v-if="row.status === 'canceled'" type="info"> {{ row.status }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="340" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="140" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <!-- <el-button type="success" plain size="mini" @click="handleShowDetail(row)">
             详情
@@ -73,9 +74,6 @@
           <el-button v-if="row.status == 'pending'" type="primary" plain size="mini" @click="apply(row)">
             应用
           </el-button>
-          <!-- <el-button v-if="row.status == 'pending'" size="mini" plain type="warning">
-            取消
-          </el-button> -->
           <el-button size="mini" plain type="danger" @click="handleDelete(row,$index)">
             删除
           </el-button>

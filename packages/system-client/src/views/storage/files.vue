@@ -34,8 +34,9 @@
       fit
       highlight-current-row
       style="width: 100%;"
+      size="mini"
     >
-      <el-table-column label="文件" align="center">
+      <el-table-column label="文件" align="center" width="140">
         <template slot-scope="{row}">
           <a v-if="getContentType(row) !== 'application/x-directory'" :href="getFileUrl(row)" target="blank">
             <img
@@ -50,7 +51,7 @@
           <i v-if="getContentType(row) === 'application/x-directory'" class="el-icon-folder-opened" style="cursor: pointer;font-size: 36px; color: orange" @click="changeDirectory(row)" />
         </template>
       </el-table-column>
-      <el-table-column label="文件名" width="330" align="center">
+      <el-table-column label="文件名" width="330" align="left">
         <template slot-scope="{row}">
           <span v-if="getContentType(row) !== 'application/x-directory'">{{ row.metadata.name }}</span>
           <span v-if="getContentType(row) === 'application/x-directory'" class="directory-item" @click="changeDirectory(row)">
@@ -58,17 +59,17 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column label="文件大小" align="center">
+      <el-table-column label="大小" align="center" width="70">
         <template slot-scope="{row}">
           <span>{{ getFileSize(row) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="类型" align="center">
+      <el-table-column label="类型" align="center" width="120">
         <template slot-scope="{row}">
           <span>{{ getContentType(row) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="更新时间" width="180" align="center">
+      <el-table-column label="更新时间" width="140" align="center">
         <template slot-scope="{row}">
           <span v-if="row.uploadDate">{{ Date.parse(row.uploadDate) | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
           <span v-else>-</span>
@@ -79,7 +80,7 @@
           <span>  {{ row.filename }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="160" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <a v-if="getContentType(row) !== 'application/x-directory'" :href="getFileUrl(row)" target="blank" style="margin-right: 8px">
             <el-button plain type="success" size="mini">查看</el-button>

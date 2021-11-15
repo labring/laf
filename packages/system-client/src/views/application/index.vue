@@ -13,7 +13,7 @@
     <div class="app-group">
       <div class="app-group-title">我创建的应用</div>
       <el-table v-loading="loading" empty-text="还没有创建应用" :data="applications.created" style="width: 100%;margin-top:10px;" stripe>
-        <el-table-column align="center" label="App ID" width="320">
+        <el-table-column align="center" label="App ID" min-width="180">
           <template slot-scope="scope">
             <div class="table-row">
               <el-tooltip :content="scope.row.appid" effect="light" placement="top">
@@ -23,27 +23,27 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="应用名" width="400">
+        <el-table-column align="center" label="应用名" min-width="200">
           <template slot-scope="{row}">
             <span class="link-type table-column-text" @click="showUpdateForm(row)">{{ row.name }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="状态" width="100">
+        <el-table-column align="center" label="状态" min-width="80">
           <template slot-scope="scope">
             {{ scope.row.status }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="服务版本" width="100">
+        <el-table-column align="center" label="服务版本" min-width="80">
           <template slot-scope="scope">
             {{ getRuntimeVersion(scope.row) }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="运行内存" width="100">
+        <el-table-column align="center" label="运行内存" min-width="80">
           <template slot-scope="scope">
             {{ getRuntimeMemory(scope.row) }} M
           </template>
         </el-table-column>
-        <el-table-column label="服务启停" align="center" width="300" class-name="small-padding">
+        <el-table-column label="服务启停" align="center" width="200" class-name="small-padding">
           <template slot-scope="{row}">
             <el-button v-if="row.status !== 'running'" :loading="serviceLoading" plain type="success" size="mini" @click="startApp(row)">
               启动
@@ -63,13 +63,13 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" align="center">
+        <el-table-column label="创建时间" align="center" min-width="100">
           <template slot-scope="{row}">
-            <span v-if="row.created_at">{{ row.created_at | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+            <span v-if="row.created_at">{{ row.created_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" align="center" width="320" class-name="small-padding">
+        <el-table-column fixed="right" label="操作" align="center" width="300" class-name="small-padding">
           <template slot-scope="{row}">
             <el-tooltip :content="row.status !== 'running' ? '请在开发前启动服务！' : '编写云函数、查看日志、管理数据库、文件、成员协作等'" effect="light" placement="top">
               <el-button type="success" size="mini" :disabled="row.status !== 'running'" @click="toDetail(row)">
@@ -97,7 +97,7 @@
     <div class="app-group">
       <div class="app-group-title">我加入的应用</div>
       <el-table v-loading="loading" empty-text="还没有加入的应用" :data="applications.joined" style="width: 100%;margin-top:10px;" stripe>
-        <el-table-column align="center" label="App ID" width="320">
+        <el-table-column align="center" label="App ID" min-width="180">
           <template slot-scope="scope">
             <div class="table-row">
               <el-tooltip :content="scope.row.appid" effect="light" placement="top">
@@ -107,27 +107,27 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="应用名" width="400">
+        <el-table-column align="center" label="应用名" min-width="200">
           <template slot-scope="{row}">
             <span class="link-type table-column-text" @click="showUpdateForm(row)">{{ row.name }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="状态" width="100">
+        <el-table-column align="center" label="状态" min-width="80">
           <template slot-scope="scope">
             {{ scope.row.status }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="服务版本" width="100">
+        <el-table-column align="center" label="服务版本" min-width="80">
           <template slot-scope="scope">
             {{ getRuntimeVersion(scope.row) }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="运行内存" width="100">
+        <el-table-column align="center" label="运行内存" min-width="min">
           <template slot-scope="scope">
             {{ getRuntimeMemory(scope.row) }} M
           </template>
         </el-table-column>
-        <el-table-column label="服务启停" align="center" width="300" class-name="small-padding">
+        <el-table-column label="服务启停" align="center" width="200" class-name="small-padding">
           <template slot-scope="{row}">
             <el-button v-if="row.status !== 'running'" :loading="serviceLoading" plain type="success" size="mini" @click="startApp(row)">
               启动
@@ -147,13 +147,13 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" align="center">
+        <el-table-column label="创建时间" align="center" min-width="100">
           <template slot-scope="{row}">
-            <span v-if="row.created_at">{{ row.created_at | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+            <span v-if="row.created_at">{{ row.created_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" align="center" width="320" class-name="small-padding">
+        <el-table-column fixed="right" label="操作" align="center" width="300" class-name="small-padding">
           <template slot-scope="{row}">
             <el-tooltip :content="row.status !== 'running' ? '请在开发前启动服务！' : '编写云函数、查看日志、管理数据库、文件、成员协作等'" effect="light" placement="top">
               <el-button type="success" size="mini" :disabled="row.status !== 'running'" @click="toDetail(row)">
@@ -364,7 +364,7 @@ export default {
 
         // 执行创建请求
         const res = await updateApplication(this.form.appid, { name: this.form.name })
-        if (!res.data.ok) {
+        if (res.error) {
           this.$notify({
             type: 'error',
             title: '操作失败',
@@ -373,11 +373,7 @@ export default {
           return
         }
 
-        this.$notify({
-          type: 'success',
-          title: '操作成功',
-          message: '更新成功！'
-        })
+        showSuccess('更新成功！')
 
         this.loadApps()
         this.dialogFormVisible = false
@@ -499,7 +495,6 @@ export default {
 
 <style scoped>
 .application-container {
-  padding: 20px;
   width: calc(100vw - 30px);
   margin: 15px auto;
 }
@@ -516,16 +511,9 @@ export default {
   white-space: nowrap;
 }
 
-.app-secret {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  width: 240px;
-}
-
 .copy-btn {
     display: block;
-    font-size: 16px;
+    font-size: 15px;
     cursor: pointer;
 }
 

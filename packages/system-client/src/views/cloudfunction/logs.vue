@@ -25,28 +25,28 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column label="RequestId" prop="id" align="center" width="280">
+      <el-table-column label="RequestId" prop="id" align="center" width="240">
         <template slot-scope="{row}">
           <span>{{ row.requestId }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="函数名" width="200px" align="center">
+      <el-table-column label="函数名" width="160" align="center">
         <template slot-scope="{row}">
           <el-tag type="primary">{{ row.func_name }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="函数ID" min-width="150px" align="center">
+      <el-table-column label="函数ID" min-width="160" align="center">
         <template slot-scope="{row}">
           <span class="link-type">{{ row.func_id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="执行用时" min-width="100px" align="center">
+      <el-table-column label="执行用时" min-width="100" align="center">
         <template slot-scope="{row}">
           <span v-if="row.time_usage" class="link-type">{{ row.time_usage }}ms</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" width="160px" align="center">
+      <el-table-column label="创建时间" width="160" align="center">
         <template slot-scope="{row}">
           <span v-if="row.created_at">{{ row.created_at | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
           <span v-else>-</span>
@@ -57,10 +57,10 @@
           {{ row.created_by || '-' }}
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="220" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="80" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="info" size="mini" @click="handleShowDetail(row)">
-            查看调用日志
+            查看
           </el-button>
         </template>
       </el-table-column>

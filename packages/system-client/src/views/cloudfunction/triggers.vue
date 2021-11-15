@@ -25,56 +25,43 @@
       <el-table-column
         label="ID"
         prop="_id"
-        sortable="custom"
         align="center"
-        width="240"
+        width="220"
       >
         <template slot-scope="{row}">
           <span>{{ row._id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="名称" width="150">
+      <el-table-column label="名称" min-width="120">
         <template slot-scope="{row}">
           <span class="link-type" @click="showUpdateForm(row)">{{ row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="类型" align="center">
+      <el-table-column label="类型" align="center" width="80">
         <template slot-scope="{row}">
           <el-tag v-if="row.type === 'event'" type="primary">事件</el-tag>
           <el-tag v-if="row.type === 'timer'" type="success">定时器</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="间隔/事件" align="center">
+      <el-table-column label="间隔/事件" align="center" width="100">
         <template slot-scope="{row}">
           <span v-if="row.type === 'event'">{{ row.event }}</span>
           <span v-if="row.type === 'timer'">{{ row.duration }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="描述" align="center">
+      <el-table-column label="创建/更新" width="140" align="center">
         <template slot-scope="{row}">
-          <span v-if="row.desc">{{ row.desc }}</span>
-          <span v-else>-</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间" width="150px" align="center">
-        <template slot-scope="{row}">
-          <span v-if="row.created_at">{{ row.created_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-          <span v-else>-</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="更新时间" width="150px" align="center">
-        <template slot-scope="{row}">
+          <span v-if="row.created_at">{{ row.created_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span><br>
           <span v-if="row.updated_at">{{ row.updated_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-          <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" class-name="status-col" width="120">
+      <el-table-column label="状态" class-name="status-col" width="80">
         <template slot-scope="{row}">
           <el-tag v-if="row.status === 0" type="danger">停用</el-tag>
           <el-tag v-if="row.status === 1" type="success">启用</el-tag>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" align="center" width="340" class-name="small-padding fixed-width">
+      <el-table-column fixed="right" label="操作" align="center" width="240" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button type="info" size="mini" @click="showTriggerLogs(row)">日志</el-button>
           <el-button type="primary" size="mini" @click="showUpdateForm(row)">

@@ -20,15 +20,15 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column label="文件桶(Bucket)" width="300">
+      <el-table-column label="文件桶(Bucket)" width="200">
         <template slot-scope="{row}">
           <span>{{ row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="默认权限" align="center" width="160">
+      <el-table-column label="默认权限" align="center" width="100">
         <template slot-scope="{row}">
           <span v-if="row.mode === 0">
-            <el-tag type="info" size="small" effect="plain"> 私有</el-tag>
+            <el-tag type="info" size="small" effect="plain">私有</el-tag>
           </span>
           <span v-if="row.mode === 1">
             <el-tag type="primary" size="small" effect="plain">公共读</el-tag>
@@ -44,7 +44,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" class-name="small-padding" width="300">
+      <el-table-column label="操作" align="center" class-name="small-padding" width="260">
         <template slot-scope="{row, $index}">
           <el-button type="primary" size="mini" @click="handleShowDetail(row)">
             管理文件

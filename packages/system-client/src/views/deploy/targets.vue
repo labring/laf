@@ -18,19 +18,15 @@
       fit
       highlight-current-row
       style="width: 100%;"
+      size="mini"
     >
-      <el-table-column label="ID" prop="id" align="center" width="240">
-        <template slot-scope="{row}">
-          <span>{{ row._id }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="目标环境名" min-width="150px">
+      <el-table-column label="目标环境名" min-width="120">
         <template slot-scope="{row}">
           <span class="link-type" @click="showUpdateForm(row)">{{ row.label }}</span>
           <el-tag v-for="tag in row.tags" :key="tag">{{ tag }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="部署地址" width="300px">
+      <el-table-column label="部署地址" width="300">
         <template slot-scope="{row}">
           <span>{{ row.url }}</span>
         </template>
@@ -38,19 +34,13 @@
       <el-table-column label="部署令牌" align="center">
         <span>-</span>
       </el-table-column>
-      <el-table-column label="创建时间" width="150px" align="center">
+      <el-table-column label="创建/更新" width="150" align="center">
         <template slot-scope="{row}">
-          <span v-if="row.created_at">{{ row.created_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-          <span v-else>-</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="更新时间" width="150px" align="center">
-        <template slot-scope="{row}">
+          <span v-if="row.created_at">{{ row.created_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span><br>
           <span v-if="row.updated_at">{{ row.updated_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-          <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="340" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="240" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button type="primary" size="mini" @click="showUpdateForm(row)">
             编辑
