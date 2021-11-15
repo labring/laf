@@ -4,7 +4,8 @@ const child_process = require('child_process')
 const images = {
   'system-server': 'lafyun/system-server',
   'app-service': 'lafyun/app-service',
-  'gateway': 'lafyun/gateway'
+  'gateway': 'lafyun/gateway',
+  'storage-service': 'lafyun/storage-service'
 }
 
 function getPackageVersion(packagePath) {
