@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-19 16:10:27
- * @LastEditTime: 2021-11-13 20:36:48
+ * @LastEditTime: 2021-11-15 18:10:10
  * @Description:
  */
 
@@ -91,7 +91,7 @@ export async function handleGetFile(req: express.Request, res: express.Response)
     }
 
     res.set("x-bucket", bucket_name)
-    res.set("x-uri", filename)
+    res.set("x-uri", encodeURI(filename))
     return stream.pipe(res)
   } catch (error) {
     logger.error("get file failed", error)
