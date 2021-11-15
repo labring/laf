@@ -91,11 +91,8 @@ class Cloud {
   /**
    * 调用云函数
    */
-  async invokeFunction<T = any>(functionName: string, data: any, debug = false): Promise<T> {
-    let url = this.funcBaseUrl + `/invoke/${functionName}`
-    if (debug) {
-      url = url + `?debug=true`
-    }
+  async invokeFunction<T = any>(functionName: string, data: any): Promise<T> {
+    const url = this.funcBaseUrl + `/${functionName}`
     const res = await this
       ._request
       .request(url, data)
@@ -105,12 +102,18 @@ class Cloud {
 
   /**
    * 上传文件
+   * @deprecated 此函数已弃用，请通过文件上传地址，自行实现上传
+   * @param file 文件对象(File)
+   * @param bucket Bucket 名字
+   * @param auto_naming 文件名是否由服务端自动生成，默认为 1（自动生成），0（保留原文件名）
+   * @returns 
    */
-  async uploadFile(file: UploadFile, bucket = 'public') {
+  async uploadFile(file: UploadFile, bucket: string, auto_naming = 1) {
+    const auto = auto_naming ? 1 : 0
     const res = await this
       ._request
       .upload({
-        url: this.fileBaseUrl + `/upload/${bucket}`,
+        url: this.fileBaseUrl + `/${bucket}?auto=${auto}`,
         files: [file]
       })
 
