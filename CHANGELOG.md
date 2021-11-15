@@ -1,4 +1,14 @@
-# [](https://github.com/Maslow/laf/compare/v0.6.13...v) (2021-11-12)
+# [](https://github.com/Maslow/laf/compare/v0.6.14...v) (2021-11-15)
+
+
+
+## [0.6.14](https://github.com/Maslow/laf/compare/v0.6.13...v0.6.14) (2021-11-15)
+
+
+### Features
+
+* **app-service:** add alipay-sdk built-in; ([563f005](https://github.com/Maslow/laf/commit/563f005e9069033e07d80881ecc6ef2ea11c792e))
+* **storage-service:** use storage-service, replace old fs; ([ad73e90](https://github.com/Maslow/laf/commit/ad73e90d21b4de1f337f6298332f235d35ff7342))
 
 
 
