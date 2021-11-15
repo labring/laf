@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-26 16:59:56
+ * @LastEditTime: 2021-11-15 16:00:03
  * @Description: 
  */
 
@@ -50,6 +50,10 @@ server.use(router)
 server.listen(Config.PORT, () => logger.info(`listened on ${Config.PORT}`))
 
 
-process.on('uncaughtException', function (err) {
-  logger.error(err)
+process.on('unhandledRejection', (reason, promise) => {
+  logger.error(`Caught unhandledRejection:`, reason, promise)
+})
+
+process.on('uncaughtException', err => {
+  logger.error(`Caught uncaughtException:`, err)
 })

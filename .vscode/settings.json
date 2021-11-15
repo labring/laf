@@ -70,6 +70,7 @@
     "coll",
     "dockerode",
     "EJSON",
+    "entrypoint",
     "lafyun",
     "objs",
     "signin",

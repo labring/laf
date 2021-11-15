@@ -24,7 +24,7 @@ export async function getBucketByName(name: string) {
  */
 export async function createBucket(bucket: BucketType) {
   assert.ok(bucket, 'empty bucket got')
-  assert.ok(bucket.mode, 'empty bucket mode got')
+  assert.ok(bucket.mode !== undefined, 'empty bucket mode got')
   assert.ok(bucket.name, 'empty bucket name got')
 
   const coll = DatabaseAgent.db.collection(Constants.cn.BUCKETS)
@@ -41,9 +41,19 @@ export async function createBucket(bucket: BucketType) {
 export async function deleteBucketByName(name: string) {
   assert.ok(name, 'empty bucket name got')
 
+  const c_files = name + '.files'
+  const c_chunks = name + '.chunks'
+
   const db = DatabaseAgent.db
-  await db.collection(name + '.files').drop()
-  await db.collection(name + '.chunks').drop()
+  const files_coll = await db.listCollections({ name: c_files }).toArray()
+  if (files_coll?.length) {
+    await db.collection(c_files).drop()
+  }
+
+  const chunks_coll = await db.listCollections({ name: c_chunks }).toArray()
+  if (chunks_coll?.length) {
+    await db.collection(c_chunks).drop()
+  }
 
   const coll = db.collection(Constants.cn.BUCKETS)
   const r = await coll.deleteOne({ name })
@@ -59,7 +69,7 @@ export async function deleteBucketByName(name: string) {
  */
 export async function updateBucketByName(name: string, mode: BucketMode, secret: string) {
   assert.ok(name, 'empty name got')
-  assert.ok(mode, 'empty mode got')
+  assert.ok(mode !== undefined, 'empty mode got')
 
   const data = {
     mode,
@@ -78,6 +88,32 @@ export async function updateBucketByName(name: string, mode: BucketMode, secret:
   return r.matchedCount > 0 ? true : false
 }
 
+/**
+ * Create bucket collections and indexes: [bucket].files, [bucket].chunks
+ * @param bucket bucket name
+ */
+export async function createBucketCollections(bucket: string) {
+  assert.ok(bucket, 'empty bucket got')
+
+  const db = DatabaseAgent.db
+  await db.createCollection(bucket + ".files")
+  await db.createCollection(bucket + ".chunks")
+
+  await db.collection(bucket + ".files").createIndexes([
+    {
+      key: { filename: 1, uploadDate: 1 },
+      unique: true
+    },
+    { key: { 'metadata.parent': 1 } }
+  ])
+
+  await db.collection(bucket + ".chunks").createIndexes([
+    {
+      key: { files_id: 1, n: 1 },
+      unique: true
+    }
+  ])
+}
 
 /**
  * Create the root path for a bucket
@@ -102,13 +138,6 @@ export async function createBucketRootPath(bucket: string) {
     },
   }
 
-  await coll.createIndexes([
-    {
-      key: { filename: 1, uploadDate: -1 },
-      unique: true
-    },
-    { key: { 'metadata.parent': 1 } }
-  ])
   const r = await coll.insertOne(doc)
   return r.insertedId
 }

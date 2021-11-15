@@ -22,7 +22,7 @@ export default class Config {
    * the serving port, default is 9001
    */
   static get PORT(): number {
-    return (process.env.PORT ?? 9001) as number
+    return (process.env.PORT ?? 9010) as number
   }
 
   /**

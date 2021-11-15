@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-11 18:07:36
- * @LastEditTime: 2021-10-27 17:47:00
+ * @LastEditTime: 2021-11-13 16:23:58
  * @Description:
  */
 
@@ -26,8 +26,8 @@ export enum FS_OPERATION {
  * check file operation token, the payload of the file token would have these fields:
  * ```
  * {
- *    ns: string, // bucket name: indicated that this token only valid for this bucket
- *    op: string,  // operation permissions granted, values can be one or more of: 'r' | 'w' | 'rw'
+ *    ns: string,   // bucket name: indicated that this token only valid for this bucket
+ *    op: string,   // operation permissions granted, values can be combined of values: 'r' | 'w' | 'd' | 'l'
  *    fn?: string   // optionally, filename
  * }
  * ```

@@ -41,7 +41,7 @@ export const asyncRoutes = [
         meta: {
           title: '调试云函数',
           icon: 'bug',
-          noCache: true
+          noCache: false
         }
       },
       {
@@ -79,9 +79,19 @@ export const asyncRoutes = [
     path: '/app/:appid/database',
     component: Layout,
     meta: {
-      title: '数据管理', icon: 'excel'
+      title: '云数据库', icon: 'excel'
     },
     children: [
+      {
+        path: 'collections',
+        component: () => import('@/views/database/collections'),
+        name: 'CollectionManagement',
+        meta: {
+          title: '集合管理',
+          icon: 'example',
+          noCache: false
+        }
+      },
       {
         path: 'policies',
         component: () => import('@/views/database/policies'),
@@ -101,30 +111,29 @@ export const asyncRoutes = [
           title: '访问规则编辑',
           icon: 'edit'
         }
-      },
-      {
-        path: 'collections',
-        component: () => import('@/views/database/collections'),
-        name: 'CollectionManagement',
-        meta: {
-          title: '集合管理',
-          icon: 'example',
-          noCache: false
-        }
-      },
+      }
+    ]
+  },
+  {
+    path: '/app/:appid/storage',
+    component: Layout,
+    meta: {
+      title: '云存储', icon: 'excel'
+    },
+    children: [
       {
         path: 'buckets',
-        component: () => import('@/views/database/buckets'),
+        component: () => import('@/views/storage/buckets'),
         name: 'FileBucketListPage',
         meta: {
-          title: '文件管理',
+          title: '云存储',
           icon: 'zip',
           noCache: true
         }
       },
       {
         path: 'files/:bucket',
-        component: () => import('@/views/database/files'),
+        component: () => import('@/views/storage/files'),
         name: 'FileListPage',
         hidden: true,
         meta: {
@@ -182,7 +191,7 @@ export const asyncRoutes = [
         component: () => import('@/views/collaborate/index'),
         name: 'CollaboratorListPage',
         meta: {
-          title: '成员管理',
+          title: '协作成员',
           icon: 'people',
           noCache: true
         }

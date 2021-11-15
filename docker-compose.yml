@@ -31,10 +31,12 @@ services:
       SYS_SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
       SHARED_NETWORK: laf_shared_network
       LOG_LEVEL: debug
-      APP_SERVICE_IMAGE: lafyun/app-service:latest
       ACCOUNT_DEFAULT_APP_QUOTA: 5
+      APP_SERVICE_IMAGE: lafyun/app-service:latest
       APP_SERVICE_DEPLOY_HOST: local-dev.host:8080     # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
       APP_SERVICE_DEPLOY_URL_SCHEMA: 'http'
+      STORAGE_SERVICE_API_ENTRYPOINT: 'http://storage_service:9010'
+      STORAGE_SERVICE_SECRET: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
       DEBUG_BIND_HOST_APP_PATH: '${PWD}/packages/app-service'
     command: npx nodemon
     volumes:
@@ -72,28 +74,26 @@ services:
     networks:
       - laf_shared_network
 
-  # storage-service:
-  #   image: node:16-alpine
-  #   user: root
-  #   working_dir: /app
-  #   environment:
-  #     DB_URI : mongodb://root:password123@mongo:27017/laf-fs?authSource=admin&replicaSet=laf&writeConcern=majority
-  #     LOG_LEVEL : debug
-  #   command: npx nodemon
-  #   volumes:
-  #     - ./packages/storage-service:/app
-  #     - ./packages/database-proxy:/app/node_modules/database-proxy:ro
-  #     - ./packages/database-ql:/app/node_modules/database-ql:ro
-  #     - ./packages/database-ql:/app/node_modules/database-proxy/node_modules/database-ql:ro
-  #   ports:
-  #     - "9001"
-  #   depends_on:
-  #     - mongo
-  #   tmpfs:
-  #     - /tmp
-  #   restart: always
-  #   networks:
-  #     - laf_shared_network
+  storage_service:
+    image: node:16-alpine
+    user: root
+    working_dir: /app
+    environment:
+      DB_URI : mongodb://root:password123@mongo:27017/laf-fs?authSource=admin&replicaSet=laf&writeConcern=majority
+      LOG_LEVEL : debug
+      SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
+    command: npx nodemon
+    volumes:
+      - ./packages/storage-service:/app
+    ports:
+      - "9010"
+    depends_on:
+      - mongo
+    tmpfs:
+      - /tmp
+    restart: always
+    networks:
+      - laf_shared_network
 
 volumes:
   db-data:

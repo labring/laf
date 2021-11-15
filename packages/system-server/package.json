@@ -22,6 +22,7 @@
     "devops"
   ],
   "dependencies": {
+    "axios": "^0.24.0",
     "body-parser": "^1.19.0",
     "database-proxy": "^0.6.4",
     "dayjs": "^1.10.6",

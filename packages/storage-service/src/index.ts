@@ -12,19 +12,16 @@ server.use(
   })
 )
 
-/**
- * Allow CORS by default
- */
-server.all("*", function (_req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*")
-  res.header("Access-Control-Allow-Headers", "Authorization, Content-Type")
-  res.header("Access-Control-Allow-Methods", "*")
-  res.header("X-Powered-By", "LaF Server")
-  next()
-})
-
 server.use(router)
 
 server.listen(Config.PORT, () =>
   logger.info(`server ${process.pid} listened on ${Config.PORT}`)
 )
+
+process.on('unhandledRejection', (reason, promise) => {
+  logger.error(`Caught unhandledRejection:`, reason, promise)
+})
+
+process.on('uncaughtException', err => {
+  logger.error(`Caught uncaughtException:`, err)
+})

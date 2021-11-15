@@ -138,4 +138,10 @@ export default class Config {
   static get DEBUG_BIND_HOST_APP_PATH(): string | undefined {
     return process.env.DEBUG_BIND_HOST_APP_PATH ?? undefined
   }
+
+  static get STORAGE_SERVICE_CONFIG() {
+    const secret: string = process.env.STORAGE_SERVICE_SECRET
+    const entrypoint: string = process.env.STORAGE_SERVICE_API_ENTRYPOINT
+    return { secret, entrypoint }
+  }
 }

@@ -1,5 +1,5 @@
 import * as express from "express"
-import { createBucket, createBucketRootPath, getBucketByName } from "../../api/bucket"
+import { createBucket, createBucketCollections, createBucketRootPath, getBucketByName } from "../../api/bucket"
 import { logger } from "../../lib/logger"
 import { BucketMode, BucketType } from "../../lib/types"
 
@@ -34,6 +34,9 @@ export async function handleCreateBucket(req: express.Request, res: express.Resp
 
     // save into database
     const insertedId = await createBucket(data)
+
+    // create bucket collections
+    await createBucketCollections(name)
 
     // created root directory
     await createBucketRootPath(name)

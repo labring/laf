@@ -19,13 +19,13 @@ export async function handleDeleteBucket(req: express.Request, res: express.Resp
     // check if bucket exists
     const bucket = await getBucketByName(name)
     if (!bucket) {
-      return res.status(400).send("bucket doesn't exist")
+      return res.status(200).send({ code: 'NOT_EXISTS', error: "bucket doesn't exist" })
     }
 
     // check if bucket empty
     const fileCount = await countFilesInDirectory(name, '/')
     if (fileCount > 0) {
-      return res.status(200).send({
+      return res.send({
         code: 'BUCKET_NOT_EMPTY',
         error: 'cannot delete none-empty-bucket'
       })
@@ -33,7 +33,7 @@ export async function handleDeleteBucket(req: express.Request, res: express.Resp
 
     // delete this bucket
     const r = await deleteBucketByName(name)
-    return res.status(200).send({
+    return res.send({
       code: 0,
       data: r
     })

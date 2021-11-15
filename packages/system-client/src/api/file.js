@@ -2,6 +2,7 @@
 import store from '@/store'
 import { assert } from '@/utils/assert'
 import request from '@/utils/request'
+import { getAppAccessUrl } from '@/api/application'
 
 /**
  * Get bucket list
@@ -19,17 +20,53 @@ export async function getFileBuckets() {
 }
 
 /**
+ * Get a bucket & tokens
+ * @returns
+ */
+export async function getOneBucket(bucketName) {
+  const appid = store.state.app.appid
+  const res = await request({
+    url: `/apps/${appid}/file/buckets/${bucketName}`,
+    method: 'get'
+  })
+
+  assert(res.code === 0, 'get bucket got error', res)
+  return res
+}
+
+/**
  * Create a bucket
  * @param {string} bucketName
+ * @param {number} mode
  * @returns {Promise<any[]>}
  */
-export async function createFileBucket(bucketName) {
+export async function createFileBucket(bucketName, mode) {
   const appid = store.state.app.appid
   const res = await request({
     url: `/apps/${appid}/file/buckets`,
     method: 'post',
     data: {
-      bucket: bucketName
+      bucket: bucketName,
+      mode
+    }
+  })
+
+  return res
+}
+
+/**
+ * Update a bucket
+ * @param {string} bucketName
+ * @param {number} mode
+ * @returns {Promise<any[]>}
+ */
+export async function updateFileBucket(bucketName, mode) {
+  const appid = store.state.app.appid
+  const res = await request({
+    url: `/apps/${appid}/file/buckets/${bucketName}`,
+    method: 'put',
+    data: {
+      mode
     }
   })
 
@@ -56,39 +93,101 @@ export async function deleteFileBucket(bucketName) {
  * @param {string} bucketName
  * @returns
  */
-export async function getFilesByBucketName(bucketName, { offset, limit, keyword }) {
+export async function getFilesByBucketName(bucketName, { offset, limit, path, token }) {
   assert(bucketName, 'empty `bucketName` got')
-  const _offset = offset || 0
-  const _limit = limit || 10
-  let query = `offset=${_offset}&limit=${_limit}`
-  if (keyword) {
-    query = query + `&keyword=${keyword}`
+
+  const file_url = getAppFileUrl(bucketName, path)
+  let query = `offset=${offset}&limit=${limit}`
+  if (token) {
+    query = query + `&token=${token}`
   }
 
-  const appid = store.state.app.appid
   const res = await request({
-    url: `/apps/${appid}/file/${bucketName}/files?${query}`,
+    url: `${file_url}?${query}`,
     method: 'GET'
   })
-  assert(res.code === 0, `get files in ${bucketName} got error`, res)
+
   return res
 }
 
 /**
- * Delete a file by its id in a bucket
+ * Make directory in bucket
  * @param {string} bucketName
- * @param {string} file_id
+ * @param {string} name the directory name to create
+ * @param {string} parent
+ * @param {string} token
  * @returns
  */
-export async function deleteFileById(bucketName, file_id) {
-  assert(bucketName, 'empty bucketName got')
-  assert(file_id, 'empty file_id got')
+export async function makeDirectory(bucketName, name, parent = '/', token) {
+  assert(bucketName, 'empty `bucketName` got')
+  assert(name, 'empty `name` got')
 
-  const appid = store.state.app.appid
+  const bucket_url = getAppFileBucketUrl(bucketName)
+  let query = `parent=${parent}&name=${name}`
+  if (token) {
+    query = query + `&token=${token}`
+  }
   const res = await request({
-    url: `/apps/${appid}/file/${bucketName}/${file_id}`,
+    url: `${bucket_url}/dir?${query}`,
+    method: 'post'
+  })
+
+  return res
+}
+
+/**
+ * Delete a file/directory in a bucket
+ * @param {string} bucketName
+ * @param {string} path
+ * @returns
+ */
+export async function deleteFile(bucketName, path, token) {
+  assert(bucketName, 'empty bucketName got')
+  assert(path, 'empty file_id got')
+
+  let query = ``
+  if (token) {
+    query = `?token=${token}`
+  }
+  const file_url = getAppFileUrl(bucketName, path)
+  const res = await request({
+    url: `${file_url}${query}`,
     method: 'DELETE'
   })
 
   return res
+}
+
+/**
+ * 获取当前应用的指定文件桶的服务地址
+ * @param {*} bucket
+ * @returns
+ */
+export function getAppFileBucketUrl(bucket) {
+  const app_url = getAppAccessUrl()
+  return `${app_url}/file/${bucket}`
+}
+
+/**
+ * 获取当前应该的文件地址
+ * @param {*} bucket
+ * @param {*} path
+ * @param {*} token
+ * @returns
+ */
+export function getAppFileUrl(bucket, path, token) {
+  let file_url = getAppFileBucketUrl(bucket)
+  if (path) {
+    file_url += path
+  }
+  let query = ``
+  // if (path) {
+  //   query += `path=${path}`
+  // }
+
+  if (token) {
+    query = `?token=${token}`
+  }
+
+  return `${file_url}${query}`
 }

@@ -15,7 +15,7 @@ import { checkFileOperationToken, FS_OPERATION } from "./utils"
  * @returns doc uploaded file doc
  */
 export async function handleUploadFile(req: express.Request, res: express.Response) {
-  const parent = req.query?.parent as string || "/"
+  const parent = req.query?.path as string || "/"
   const bucket_name = req.params.bucket as string
   const token = req.query?.token as string
 
@@ -41,12 +41,12 @@ export async function handleUploadFile(req: express.Request, res: express.Respon
 
   // check if directory exist
   if (false === await pathExists(bucket_name, parent)) {
-    return res.status(400).send("file's directory doesn't exist")
+    return res.send({ code: 'NOT_FOUND', error: "file's directory doesn't exist" })
   }
 
   // check if file already exist
   if (await pathExists(bucket_name, filename)) {
-    return res.status(400).send("file already exists")
+    return res.send({ code: 'ALREADY_EXISTED', error: "file already exists" })
   }
 
   // construct file metadata
@@ -59,5 +59,5 @@ export async function handleUploadFile(req: express.Request, res: express.Respon
   // start save
   const storage = new GridFSStorage(bucket_name, DatabaseAgent.db)
   const data = await storage.save(req.file.path, filename, metadata)
-  return res.status(200).send({ code: 0, data })
+  return res.send({ code: 0, data })
 }

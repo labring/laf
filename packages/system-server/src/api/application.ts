@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-28 22:00:45
- * @LastEditTime: 2021-11-01 12:19:58
+ * @LastEditTime: 2021-11-13 16:52:50
  * @Description: Application APIs
  */
 
@@ -13,6 +13,7 @@ import { generateUUID } from "../utils/rand"
 import { MongoClient } from 'mongodb'
 import Config from "../config"
 import * as mongodb_uri from 'mongodb-uri'
+import { BucketMode } from "./storage"
 
 /**
  * The application structure in db
@@ -41,6 +42,7 @@ export interface ApplicationStruct {
       memory?: number
     }
   }
+  buckets: { name: string, mode: BucketMode }[]
   collaborators: {
     uid: string
     roles: string[]

@@ -7,7 +7,7 @@ export const Constants = {
    */
   cn: {
     /** buckets collection name */
-    BUCKETS: "laf-fs-buckets",
+    BUCKETS: "fs_buckets",
   },
   DIRECTORY_MIME_TYPE: 'application/x-directory'
 }

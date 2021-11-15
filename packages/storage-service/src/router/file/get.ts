@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-19 16:10:27
- * @LastEditTime: 2021-10-27 18:02:21
+ * @LastEditTime: 2021-11-13 20:36:48
  * @Description:
  */
 
@@ -13,7 +13,7 @@ import { GridFSStorage } from "../../lib/gridfs-storage"
 import { DatabaseAgent } from "../../lib/database"
 import { BucketMode } from "../../lib/types"
 import { getBucketByName } from "../../api/bucket"
-import { getFileByName, getFilesInDirectory } from "../../api/file"
+import { countFilesInDirectory, getFileByName, getFilesInDirectory } from "../../api/file"
 
 /**
  * Downloads file by bucket name and filename
@@ -51,9 +51,13 @@ export async function handleGetFile(req: express.Request, res: express.Response)
     if (code) {
       return res.status(code).send(message)
     }
-    const files = await getFilesInDirectory(bucket_name, filename)
-    res.contentType(file.metadata.contentType)
-    return res.status(200).send({ type: 'directory', data: files })
+
+    const offset = (req.query?.offset ?? 0) as any
+    const limit = req.query?.limit as any
+    const files = await getFilesInDirectory(bucket_name, filename, offset, limit)
+    const total = await countFilesInDirectory(bucket_name, filename)
+    res.type('json')
+    return res.status(200).send({ type: 'directory', data: files, total })
   }
 
   try {

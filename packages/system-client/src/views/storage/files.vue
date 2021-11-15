@@ -2,20 +2,27 @@
   <div class="app-container">
     <!-- 数据检索区 -->
     <div class="filter-container">
-      <el-input
+      <!-- <el-input
         v-model="listQuery.keyword"
         size="mini"
-        placeholder="按文件名检索"
+        placeholder="暂不支持搜索"
         style="width: 400px;margin-right: 10px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
-      />
-      <el-button size="mini" plain class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        搜索
+      /> -->
+      <el-button size="mini" plain class="filter-item" type="primary" icon="el-icon-refresh" @click="handleFilter">
+        刷新
       </el-button>
       <el-button size="mini" plain class="filter-item" type="primary" icon="el-icon-upload" @click="showCreateForm">
         上传文件
       </el-button>
+      <el-button size="mini" plain class="filter-item" type="default" icon="el-icon-new" @click="createDirectory">
+        新建目录
+      </el-button>
+      <div class="filter-item" style="margin-left: 20px;">
+        <span style="font-size: 16px;color: gray; margin-right: 5px;">当前:</span>
+        <path-link :path="currentPath" @change="onChangeDirectory" />
+      </div>
     </div>
 
     <!-- 表格 -->
@@ -28,23 +35,27 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <!-- <el-table-column label="ID" prop="id" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row._id }}</span>
-        </template>
-      </el-table-column> -->
       <el-table-column label="文件" align="center">
         <template slot-scope="{row}">
-          <a :href="getFileUrl(row)" target="blank" style="margin-right: 8px">
-            <img v-if="isImage(row)" class="thumb-image" :src="getFileUrl(row)">
+          <a v-if="getContentType(row) !== 'application/x-directory'" :href="getFileUrl(row)" target="blank">
+            <img
+              v-if="isImage(row)"
+              class="thumb-image"
+              :src="getFileUrl(row)"
+            >
             <i v-else-if="isVideo(row)" class="el-icon-video-play" style="font-size: 40px" />
+            <i v-else-if="getContentType(row) === 'application/x-directory'" class="el-icon-folder-opened" style="font-size: 36px; color: orange" />
             <i v-else class="el-icon-paperclip" style="font-size: 40px" />
           </a>
+          <i v-if="getContentType(row) === 'application/x-directory'" class="el-icon-folder-opened" style="cursor: pointer;font-size: 36px; color: orange" @click="changeDirectory(row)" />
         </template>
       </el-table-column>
       <el-table-column label="文件名" width="330" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.filename }}</span>
+          <span v-if="getContentType(row) !== 'application/x-directory'">{{ row.metadata.name }}</span>
+          <span v-if="getContentType(row) === 'application/x-directory'" class="directory-item" @click="changeDirectory(row)">
+            {{ row.metadata.name }}
+          </span>
         </template>
       </el-table-column>
       <el-table-column label="文件大小" align="center">
@@ -63,22 +74,17 @@
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="bucket" align="center">
+      <el-table-column label="文件路径" align="center">
         <template slot-scope="{row}">
-          <span>  {{ row.metadata.bucket }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="原文件名" align="center">
-        <template slot-scope="{row}">
-          <span>  {{ row.metadata.original_name }}</span>
+          <span>  {{ row.filename }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <a :href="getFileUrl(row)" target="blank" style="margin-right: 8px">
-            <el-button plain type="success" size="mini">
-              查看
-            </el-button></a>
+          <a v-if="getContentType(row) !== 'application/x-directory'" :href="getFileUrl(row)" target="blank" style="margin-right: 8px">
+            <el-button plain type="success" size="mini">查看</el-button>
+          </a>
+          <el-button v-if="getContentType(row) === 'application/x-directory'" plain type="success" size="mini" @click="changeDirectory(row)">查看</el-button>
           <el-button v-if="row.status!='deleted'" plain size="mini" type="danger" @click="handleDelete(row)">
             删除
           </el-button>
@@ -98,13 +104,13 @@
     <!-- 表单对话框 -->
     <el-dialog title="上传文件" width="400px" :visible.sync="dialogFormVisible">
       <el-upload
+        v-if="bucketDetail.full_token"
         drag
         :action="getUploadUrl()"
         :on-success="onUploadSuccess"
       >
         <i class="el-icon-upload" />
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-        <!-- <div slot="tip" class="el-upload__tip">一次可上传一个文件</div> -->
       </el-upload>
     </el-dialog>
   </div>
@@ -114,16 +120,25 @@
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import * as fs from '@/api/file'
 import { assert } from '@/utils/assert'
-import { getAppAccessUrl } from '@/api/application'
+import { getAppFileUrl } from '@/api/file'
+import { showError, showSuccess } from '@/utils/show'
+import PathLink from './components/path-link.vue'
 
 export default {
   name: 'BucketsListPage',
-  components: { Pagination },
+  components: { Pagination, PathLink },
   data() {
     return {
       bucket: null,
+      bucketDetail: {
+        name: '',
+        mode: 0,
+        full_token: '',
+        read_token: ''
+      },
       tableKey: 0,
       list: null,
+      currentPath: '/',
       total: 0,
       listLoading: true,
       listQuery: {
@@ -139,8 +154,11 @@ export default {
       downloadLoading: false
     }
   },
-  created() {
+  async created() {
     this.bucket = this.$route.params?.bucket
+
+    const res = await fs.getOneBucket(this.bucket)
+    this.bucketDetail = res.data
     this.getList()
     this.setTagViewTitle()
   },
@@ -150,15 +168,14 @@ export default {
      */
     async getList() {
       this.listLoading = true
-
       // 拼装查询条件 by this.listQuery
-      const { limit, page, keyword } = this.listQuery
-
+      const { limit, page } = this.listQuery
       // 执行数据查询
       const res = await fs.getFilesByBucketName(this.bucket, {
         limit,
         offset: (page - 1) * limit,
-        keyword
+        path: this.currentPath,
+        token: this.bucketDetail.full_token
       }).catch(() => { this.listLoading = false })
 
       this.list = res.data
@@ -171,13 +188,31 @@ export default {
       this.listQuery.page = 1
       this.getList()
     },
+    // 切换当前文件夹
+    changeDirectory(row) {
+      if (this.getContentType(row) !== 'application/x-directory') { return }
+
+      this.currentPath = row.filename
+      this.listQuery.page = 1
+      this.getList()
+    },
+    // 当用户切换文件夹
+    onChangeDirectory(data) {
+      this.currentPath = data
+      this.listQuery.page = 1
+      this.getList()
+    },
     // 显示上传表单
     showCreateForm() {
       this.dialogFormVisible = true
     },
     // 上传成功回调
     onUploadSuccess(event) {
-      this.$message.success('上传成功')
+      if (event?.code === 'ALREADY_EXISTED') {
+        return showError('文件已存在！')
+      }
+
+      showSuccess('上传成功')
       this.getList()
     },
     // 删除请求
@@ -185,7 +220,12 @@ export default {
       await this.$confirm('确认要删除此数据？', '删除确认')
 
       // 执行删除请求
-      const r = await fs.deleteFileById(this.bucket, row._id)
+      const token = this.bucketDetail.full_token
+      const r = await fs.deleteFile(this.bucket, row.filename, token)
+
+      if (r.code === 'DIRECTORY_NOT_EMPTY') {
+        return showError('不可删除非空文件夹')
+      }
 
       if (r.code) {
         this.$notify({
@@ -204,24 +244,42 @@ export default {
 
       this.getList()
     },
+    // 新建目录
+    async createDirectory() {
+      await this.$prompt('请输入新文件夹名', '新建文件夹', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /[\w|\d|\-]{1,64}/,
+        inputErrorMessage: '文件夹名只可包含字母、数字、下划线和中划线，长度在 1～64之间'
+      }).then(async({ value }) => {
+        const token = this.bucketDetail.full_token
+        const res = await fs.makeDirectory(this.bucket, value, this.currentPath, token)
+        if (res.code === 'ALREADY_EXISTED') {
+          return showError('该文件夹已存在！')
+        }
+
+        this.getList()
+      })
+        .catch(err => {
+          console.error(err)
+        })
+    },
     // 拼装文件下载 URL
     getFileUrl(file) {
       assert(file && file.filename, 'invalid file or filename')
-      const app_url = getAppAccessUrl()
-      const file_url = `${app_url}/file/${this.bucket}/${file.filename}`
-      if (this.bucket === 'public') {
-        return file_url
+      if (this.bucketDetail.mode > 0) {
+        return getAppFileUrl(this.bucket, file.filename)
       }
-      const token = this.$store.state.app.file_token
-      return file_url + `?token=${token}`
+      return getAppFileUrl(this.bucket, file.filename, this.bucketDetail.read_token)
     },
     // 拼装文件上传地址
     getUploadUrl() {
       assert(this.bucket, 'empty bucket name got')
-      const app_url = getAppAccessUrl()
-      const file_url = `${app_url}/file/upload/${this.bucket}`
-      const token = this.$store.state.app.file_token
-      return file_url + `?token=${token}`
+      if (this.bucketDetail.mode === 2) {
+        return getAppFileUrl(this.bucket, this.currentPath)
+      }
+      const token = this.bucketDetail.full_token
+      return getAppFileUrl(this.bucket, this.currentPath, token)
     },
     getContentType(row) {
       return row?.metadata?.contentType ?? row?.contentType ?? 'unknown'
@@ -245,6 +303,8 @@ export default {
         return (length / 1024).toFixed(0) + ' kb'
       } else if (length) {
         return length + ' bytes'
+      } else {
+        return '-'
       }
     },
     // 设置标签页名
@@ -262,5 +322,11 @@ export default {
 .thumb-image {
   width: 100px;
   max-height: 60px;
+}
+
+.directory-item {
+  color: rgb(0, 89, 255);
+  text-decoration: underline;
+  cursor: pointer;
 }
 </style>

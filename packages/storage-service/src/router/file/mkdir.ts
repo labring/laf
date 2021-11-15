@@ -45,7 +45,7 @@ export async function handleMakeDir(req: express.Request, res: express.Response)
 
   // check if directory to be created exists
   if (await pathExists(bucket_name, filename)) {
-    return res.status(400).send('directory already exists')
+    return res.send({ code: 'ALREADY_EXISTED', error: 'directory already existed' })
   }
 
   // construct directory document
