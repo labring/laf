@@ -23,6 +23,7 @@
     "less-api"
   ],
   "dependencies": {
+    "alipay-sdk": "^3.1.7",
     "axios": "^0.21.1",
     "cloud-function-engine": "^0.6.10",
     "database-proxy": "^0.6.4",
