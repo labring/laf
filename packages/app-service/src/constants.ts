@@ -17,7 +17,12 @@ export const Constants = {
   /**
    * collection name of cloud functions' log
    */
-  function_log_collection: "__function_logs"
+  function_log_collection: "__function_logs",
+
+  /**
+   * collection name of application configuration
+   */
+  config_collection: '__config__'
 }
 
 deepFreeze(Constants)

@@ -11,7 +11,7 @@ import Config from './config'
 import { router } from './router/index'
 import { logger } from './lib/logger'
 import { generateUUID } from './lib/utils/rand'
-import { initCloudSdkPackage } from './lib/utils/init'
+import { initCloudSdkPackage } from './api/init'
 import { WebSocketAgent } from './lib/ws'
 
 initCloudSdkPackage()
