@@ -33,7 +33,7 @@ services:
       LOG_LEVEL: debug
       ACCOUNT_DEFAULT_APP_QUOTA: 5
       APP_SERVICE_IMAGE: lafyun/app-service:latest
-      APP_SERVICE_DEPLOY_HOST: local-dev.host:8080     # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
+      APP_SERVICE_DEPLOY_HOST: local-dev.host:8080 # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
       APP_SERVICE_DEPLOY_URL_SCHEMA: 'http'
       STORAGE_SERVICE_API_ENTRYPOINT: http://storage_service:9010
       STORAGE_SERVICE_SECRET: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
@@ -46,7 +46,6 @@ services:
       - ./packages/database-proxy:/app/node_modules/database-proxy:ro
       - ./packages/database-ql:/app/node_modules/database-ql:ro
       - ./packages/database-ql:/app/node_modules/database-proxy/node_modules/database-ql:ro
-    user: root
     ports:
       - "9000"
     depends_on:
@@ -61,7 +60,7 @@ services:
       - mongo
       - system_server
     environment:
-      DEPLOY_DOMAIN: "*.local-dev.host"     # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
+      DEPLOY_DOMAIN: "*.local-dev.host" # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
       SYS_CLIENT_HOST: console.local-dev.host
     volumes:
       - ./packages/gateway/scripts:/scripts
@@ -79,8 +78,8 @@ services:
     user: root
     working_dir: /app
     environment:
-      DB_URI : mongodb://root:password123@mongo:27017/laf-fs?authSource=admin&replicaSet=laf&writeConcern=majority
-      LOG_LEVEL : debug
+      DB_URI: mongodb://root:password123@mongo:27017/laf-fs?authSource=admin&replicaSet=laf&writeConcern=majority
+      LOG_LEVEL: debug
       SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
     command: npx nodemon
     volumes:
@@ -96,9 +95,10 @@ services:
       - laf_shared_network
 
 volumes:
-  db-data:
+  db-data: null
   grifs-data:
 
+    null
 networks:
   laf_shared_network:
     external: true
