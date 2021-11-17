@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-28 22:00:45
- * @LastEditTime: 2021-11-13 16:52:50
+ * @LastEditTime: 2021-11-17 19:21:35
  * @Description: Application APIs
  */
 
@@ -14,6 +14,7 @@ import { MongoClient } from 'mongodb'
 import Config from "../config"
 import * as mongodb_uri from 'mongodb-uri'
 import { BucketMode } from "./storage"
+import { logger } from "../lib/logger"
 
 /**
  * The application structure in db
@@ -42,7 +43,14 @@ export interface ApplicationStruct {
       memory?: number
     }
   }
-  buckets: { name: string, mode: BucketMode }[]
+  buckets: {
+    name: string,
+    mode: BucketMode
+  }[]
+  packages: {
+    name: string,
+    version: string
+  }[]
   collaborators: {
     uid: string
     roles: string[]
@@ -158,7 +166,7 @@ export function getApplicationDbUri(app: ApplicationStruct) {
 }
 
 /**
- * Create 
+ * Create application db
  * @param app
  */
 export async function createApplicationDb(app: ApplicationStruct) {
@@ -171,7 +179,6 @@ export async function createApplicationDb(app: ApplicationStruct) {
       { role: "readWrite", db: db_name },
       { role: "dbAdmin", db: db_name }
     ]
-
   })
 
   await client.close()
@@ -184,4 +191,36 @@ export async function createApplicationDb(app: ApplicationStruct) {
  */
 export function generateAppid() {
   return generateUUID()
+}
+
+/**
+ * Publish application packages
+ * @param app 
+ * @returns 
+ */
+export async function publishApplicationPackages(appid: string) {
+  const app = await getApplicationByAppid(appid)
+
+  // write packages to app db
+  const app_accessor = await getApplicationDbAccessor(app)
+  const session = app_accessor.conn.startSession()
+
+  try {
+    await session.withTransaction(async () => {
+      const db = app_accessor.db
+      const app_coll = db.collection(Constants.config_collection)
+      await app_coll.deleteOne({ key: 'packages' }, { session })
+
+      const packages = app.packages
+      if (packages?.length) {
+        await app_coll.insertOne({
+          key: 'packages', value: packages
+        }, { session })
+      }
+    })
+  } catch (error) {
+    logger.error(error)
+  } finally {
+    await session.endSession()
+  }
 }

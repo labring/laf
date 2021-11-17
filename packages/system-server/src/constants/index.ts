@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-06 18:38:46
+ * @LastEditTime: 2021-11-17 18:06:24
  * @Description: 
  */
 
@@ -29,6 +29,11 @@ export const Constants = {
    * collection name of policies published to app db
    */
   policy_collection: '__published__policies',
+
+  /**
+   * collection name of config to app db
+   */
+  config_collection: '__config__',
 
   /**
    * prefix of sys db collection name

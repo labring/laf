@@ -207,6 +207,61 @@ export async function importApplication(appid, import_data) {
 }
 
 /**
+ * 获取应用的依赖
+ * @param {*} appid
+ * @returns
+ */
+export async function getApplicationPackages(appid) {
+  const res = await request({
+    url: `/apps/${appid}/packages`,
+    method: 'get'
+  })
+  return res
+}
+
+/**
+ * 添加应用的依赖
+ * @param {*} appid
+ * @returns
+ */
+export async function addApplicationPackage(appid, { name, version }) {
+  const res = await request({
+    url: `/apps/${appid}/packages`,
+    method: 'post',
+    data: { name, version }
+  })
+  return res
+}
+
+/**
+ * 更新应用的依赖
+ * @param {*} appid
+ * @returns
+ */
+export async function updateApplicationPackage(appid, { name, version }) {
+  const res = await request({
+    url: `/apps/${appid}/packages`,
+    method: 'put',
+    data: { name, version }
+  })
+  return res
+}
+
+/**
+ * 删除应用的依赖
+ * @param {*} appid
+ * @returns
+ */
+export async function removeApplicationPackage(appid, name) {
+  const res = await request({
+    url: `/apps/${appid}/packages`,
+    method: 'delete',
+    data: { name }
+  })
+  return res
+}
+
+/**
  * 获取当前应用的访问地址
  * @param {*} appid default is current appid
  * @returns

@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-31 15:00:04
- * @LastEditTime: 2021-11-13 19:27:13
+ * @LastEditTime: 2021-11-17 18:17:46
  * @Description: 
  */
 
@@ -64,6 +64,7 @@ export async function handleCreateApplication(req: Request, res: Response) {
       }
     },
     buckets: [],
+    packages: [],
     created_at: now,
     updated_at: now
   }

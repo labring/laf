@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 15:22:34
- * @LastEditTime: 2021-11-13 17:43:10
+ * @LastEditTime: 2021-11-17 18:15:07
  * @Description: 
  */
 
@@ -48,12 +48,6 @@ export async function handleUpdateBucket(req: Request, res: Response) {
   // update bucket to app
   await DatabaseAgent.db.collection<ApplicationStruct>(Constants.cn.applications)
     .updateOne({ appid: app.appid, 'buckets.name': bucketName }, {
-      // $pull: {
-      //   buckets: { name: bucketName }
-      // },
-      // $push: {
-      //   buckets: { name: bucketName, mode }
-      // }
       $set: {
         'buckets.$.mode': mode
       }

@@ -45,11 +45,20 @@ export const asyncRoutes = [
         }
       },
       {
+        path: 'packages',
+        component: () => import('@/views/cloudfunction/packages'),
+        name: 'AllFunctionLogs',
+        meta: {
+          title: '依赖管理',
+          icon: 'tree-table'
+        }
+      },
+      {
         path: 'logs',
         component: () => import('@/views/cloudfunction/logs'),
         name: 'AllFunctionLogs',
         meta: {
-          title: '云函数日志',
+          title: '日志查询',
           icon: 'documentation'
         }
       },

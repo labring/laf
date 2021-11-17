@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-29 11:35:11
- * @LastEditTime: 2021-09-09 17:02:28
+ * @LastEditTime: 2021-11-17 18:54:14
  * @Description: 
  */
 
@@ -12,6 +12,7 @@ import { handleCreateApplication } from './create'
 import { handleExportApplication } from './exporter'
 import { handleGetApplicationByAppid, handleMyApplications } from './get'
 import { handleImportApplication } from './importer'
+import { handleAddPackage, handleGetPackages, handleRemovePackage, handleUpdatePackage } from './packages'
 import { handleRemoveApplication } from './remove'
 import { handleStopApplicationService, handleStartApplicationService, handleRemoveApplicationService } from './service'
 import { handleUpdateApplication } from './update'
@@ -98,3 +99,24 @@ ApplicationRouter.get('/:appid/export', handleExportApplication)
  * Import the definition to application
  */
 ApplicationRouter.post('/:appid/import', handleImportApplication)
+
+
+/**
+ * Get packages from app
+ */
+ApplicationRouter.get('/:appid/packages', handleGetPackages)
+
+/**
+ * Add package to app
+ */
+ApplicationRouter.post('/:appid/packages', handleAddPackage)
+
+/**
+ * Update a package in app
+ */
+ApplicationRouter.put('/:appid/packages', handleUpdatePackage)
+
+/**
+ * Remove a package from app
+ */
+ApplicationRouter.delete('/:appid/packages', handleRemovePackage)
