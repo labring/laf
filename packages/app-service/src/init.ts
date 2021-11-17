@@ -1,28 +1,29 @@
 import { getExtraPackages, initCloudSdkPackage, installPackages, moduleExists } from "./api/init"
+import { logger } from "./lib/logger"
 
 
 async function main() {
   const packages = await getExtraPackages()
   if (!packages.length) {
-    console.log('no extra packages found')
+    logger.info('no extra packages found')
     return 0
   }
 
-  console.log('packages loaded: ', packages)
+  logger.info('packages loaded: ', packages)
 
   const not_exists = packages.filter(pkg => !moduleExists(pkg.name))
   if (!not_exists.length) {
-    console.log('no new packages to be installed')
+    logger.info('no new packages to be installed')
     return 0
   }
 
   try {
     const res = installPackages(packages)
-    console.log(res)
+    logger.info(res)
 
     initCloudSdkPackage()
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     return 1
   }
 
