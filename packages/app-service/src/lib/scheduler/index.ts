@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-10 00:08:05
+ * @LastEditTime: 2021-11-17 14:11:16
  * @Description: 
  */
 
@@ -40,6 +40,8 @@ accessor.ready.then(async () => {
   const db = accessor.db
   const stream = db.watch([], { fullDocument: 'updateLookup' })
   stream.on("change", (doc) => { DatabaseChangeEventCallBack(doc) })
+  process.on('SIGINT', () => stream.close())
+  process.on('SIGTERM', () => stream.close())
 
   // emit `App:ready` event
   SchedulerInstance.emit('App:ready')

@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-11-12 14:55:11
+ * @LastEditTime: 2021-11-17 17:04:35
  * @Description: 
  */
 
@@ -11,10 +11,10 @@ import Config from './config'
 import { router } from './router/index'
 import { logger } from './lib/logger'
 import { generateUUID } from './lib/utils/rand'
-import { initCloudSdkPackage } from './api/init'
 import { WebSocketAgent } from './lib/ws'
+import { DatabaseAgent } from './lib/database'
+import { SchedulerInstance } from './lib/scheduler'
 
-initCloudSdkPackage()
 
 /**
  * Just for generating declaration type files for `@/cloud-sdk` which used in cloud function
@@ -63,3 +63,14 @@ server.on('upgrade', (req, socket, head) => {
   })
 })
 
+
+process.on('SIGTERM', gracefullyExit)
+process.on('SIGINT', gracefullyExit)
+
+async function gracefullyExit() {
+  SchedulerInstance.destroy()
+  DatabaseAgent.accessor.close()
+  server.close(async () => {
+    logger.info('process gracefully exited!')
+  })
+}
