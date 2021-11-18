@@ -1,4 +1,40 @@
-# [](https://github.com/Maslow/laf/compare/v0.6.15...v) (2021-11-15)
+# [](https://github.com/Maslow/laf/compare/v0.6.18...v) (2021-11-18)
+
+
+
+## [0.6.18](https://github.com/Maslow/laf/compare/v0.6.17...v0.6.18) (2021-11-17)
+
+
+### Bug Fixes
+
+* **gateway:** fix start shell, use exec to run; ([669354e](https://github.com/Maslow/laf/commit/669354e80daf5ea8df8fe8b997592dffb2620250))
+
+
+### Features
+
+* **app-service:** add start.sh to init packages on start; ([7d056cc](https://github.com/Maslow/laf/commit/7d056cc90560835c56fcfb3b9143aab2bcfedf30))
+* **app-service:** support gracefully exit; ([393caa2](https://github.com/Maslow/laf/commit/393caa21ccb55877473260dec971c0fc7026325e))
+* **sys:** support package manage in client; add pkg manage apis in sys; ([0f08fdd](https://github.com/Maslow/laf/commit/0f08fddd64aa5c47cca2ffb3df31286d81fc91ce))
+
+
+
+## [0.6.17](https://github.com/Maslow/laf/compare/v0.6.16...v0.6.17) (2021-11-15)
+
+
+### Bug Fixes
+
+* **fs:** fix pagination error @ get files; ([5d4563d](https://github.com/Maslow/laf/commit/5d4563d9bfe5d07b4a7452fc6e4dd5f29bda2c8f))
+* **sys-client:** fix styles for small screen; ([f7994ca](https://github.com/Maslow/laf/commit/f7994ca00afac52efb9762da2ca5e9e46b164a1d))
+
+
+
+## [0.6.16](https://github.com/Maslow/laf/compare/v0.6.15...v0.6.16) (2021-11-15)
+
+
+### Bug Fixes
+
+* **client-sdk:** fix old file upload api; ([25c9f58](https://github.com/Maslow/laf/commit/25c9f58417623d013604cb70230b5754488e2b21))
+* **fs:** fix to support auto naming for file uploads; ([dd743d0](https://github.com/Maslow/laf/commit/dd743d00edc036510e108ab3afdc707718658233))
 
 
 
