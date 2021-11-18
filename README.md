@@ -30,10 +30,8 @@ LaF 开发者交流 QQ 群：603059673
 ### 云开发用户
 
 如果你喜欢微信云开发的极速体验，但又不想局限于微信等具体平台的限制，那么可以基于 `LaF` 搭建属于自己的云开发平台；
-
-- `LaF` 也是当前已知的唯一的开源云开发项目，相比于大厂直接提供「云开发服务」，
-- `LaF` 是直接提供「开源云开发框架」，技术选型更自信、风险更可控、场景更易扩展；
-- 自建云开发，可以获取极速的云开发体验，同时没有技术选型时迁移平台的烦恼顾虑。
+  - `Laf` 也是当前已知的唯一的开源云开发平台，技术选型更自信、风险更可控、场景更易扩展
+  - 自建云开发，可以获取极速的云开发体验，同时没有技术选型时迁移平台的烦恼顾虑
 
 ### 个人开发者、初创创业团队
 
@@ -53,18 +51,31 @@ LaF 开发者交流 QQ 群：603059673
 
 ## 运行截图
 
-![](https://s3.bmp.ovh/imgs/2021/08/c93516996b7e4d70.png)
-![](https://s3.bmp.ovh/imgs/2021/08/fd8e63c2dcb57859.png)
-![](https://s3.bmp.ovh/imgs/2021/08/76814bb1f306a9bd.png)
-![](https://s3.bmp.ovh/imgs/2021/08/3de1eba8e3996177.png)
-![](https://s3.bmp.ovh/imgs/2021/08/dbd180ca0118f2d8.png)
-![](https://s3.bmp.ovh/imgs/2021/08/ac3b3730f929cd32.png)
-![](https://s3.bmp.ovh/imgs/2021/08/2edfa0f64da290f3.png)
-![](https://s3.bmp.ovh/imgs/2021/08/3f42df664f374f0d.png)
-![](https://s3.bmp.ovh/imgs/2021/08/34be691191a6ff42.png)
-![](https://s3.bmp.ovh/imgs/2021/08/8cba6afa35769000.png)
-![](https://s3.bmp.ovh/imgs/2021/08/8db31036f2fb17f1.png)
-![](https://s3.bmp.ovh/imgs/2021/08/e5ed0732680f6ed1.png)
+
+应用列表
+![](https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/apps.png)
+
+云函数列表
+![](https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/functions.png)
+
+在线开发云函数
+![](https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/ide.png)
+
+云存储：文件管理
+![](https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/files.png)
+
+云数据库：数据管理
+![](https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/collection.png)
+
+云数据库：访问策略
+![](https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/policy.png)
+
+远程部署
+![](https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/deploy.png)
+
+协作成员
+![](https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/member.png)
+
 
 ## 使用说明
 

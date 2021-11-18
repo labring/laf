@@ -1,20 +1,28 @@
 ---
+title: Laf 云开发预览图
 sidebar: false
 ---
 
-Laf 开发控制台运行截图
+## 应用列表
+![](https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/apps.png)
 
-## 运行截图
+## 云函数列表
+![](https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/functions.png)
 
-<!-- ![](/screenshots/1.png) -->
-![](/screenshots/2.png)
-![](/screenshots/3.png)
-<!-- ![](/screenshots/4.png) -->
-![](/screenshots/5.png)
-<!-- ![](/screenshots/6.png) -->
-<!-- ![](/screenshots/7.png) -->
-![](/screenshots/8.png)
-<!-- ![](/screenshots/9.png) -->
-<!-- ![](/screenshots/10.png) -->
-![](/screenshots/11.png)
-<!-- ![](/screenshots/12.png) -->
+## 在线开发云函数
+![](https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/ide.png)
+
+## 云存储：文件管理
+![](https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/files.png)
+
+## 云数据库：数据管理
+![](https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/collection.png)
+
+## 云数据库：访问策略
+![](https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/policy.png)
+
+## 远程部署
+![](https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/deploy.png)
+
+## 协作成员
+![](https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/member.png)

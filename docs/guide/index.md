@@ -7,14 +7,14 @@ title: Laf 云开发介绍
 
 用熟悉的 js，轻松搞定前后台整体业务，前端秒变全栈。
 
-> 如果觉得有用，请不吝给个 star 支持！
+> 如果觉得有用，请不吝给个 star 支持。
 
 [![Github stars](https://img.shields.io/github/stars/Maslow/laf.svg)](https://github.com/Maslow/laf)
 
 ## 主要内容
 
   - 提供云函数引擎、文件存储、数据访问策略，开箱即用，5 分钟上线应用，前端秒变全栈
-  - 前端可使用 [laf client sdk](https://github.com/Maslow/less-api-client-js) “直连”数据库，无需与服务端对接口
+  - 前端可使用 [laf-client-sdk](https://github.com/Maslow/laf/tree/main/packages/client-sdk) “直连”数据库，无需与服务端对接口
   - 另有 Flutter SDK [less-api-client](https://github.com/Maslow/less-api-client-dart)，快速上线移动端应用
   - 支持 h5、小程序、Uni-app、Flutter 等客户端环境使用
   - 提供云开发控制台，在线管理云函数、文件、数据库、远程部署、日志，在线编写、调试云函数，全智能提示IDE
@@ -24,17 +24,13 @@ title: Laf 云开发介绍
 - 用于快速开发 MVP，专注于客户端业务，极大程度减少服务端开发工作量
 - 自建属于自己可控的云开发环境
 
-> 想了解云开发：[微信云开发](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/basis/getting-started.html)
-
-
 ## 谁适合使用 ？
 - **云开发用户**
 
-  如果你喜欢微信云开发的极速体验，但又不想局限于微信等具体平台的限制，那么可以基于 `Laf` 搭建属于自己的云开发平台；
+  如果你喜欢微信/阿里/UniCloud 云开发的极速体验，但又不想局限于具体平台的限制，那么可以基于 `Laf` 搭建属于自己的云开发平台；
 
-  - `Laf` 也是当前已知的唯一的开源云开发项目，相比于大厂直接提供「云开发服务」，
-  - `Laf` 是直接提供「开源云开发框架」，技术选型更自信、风险更可控、场景更易扩展；
-  - 自建云开发，可以获取极速的云开发体验，同时没有技术选型时迁移平台的烦恼顾虑。
+  - `Laf` 也是当前已知的唯一的开源云开发平台，技术选型更自信、风险更可控、场景更易扩展
+  - 自建云开发，可以获取极速的云开发体验，同时没有技术选型时迁移平台的烦恼顾虑
 
 
 - **个人开发者、初创创业团队**
@@ -54,22 +50,9 @@ title: Laf 云开发介绍
   可完整交付整个云开发框架源码，私网部署；
 
 
-#### Go for it!
+#### 此致
 
 LaF 开发者交流QQ群：`603059673`
 
-![](/screenshots/3.png)
-
-
-## LaF 前端使用演示: Todo List
-
-<iframe src="https://codesandbox.io/embed/laf-demo-todo-yy1ly?fontsize=14&hidenavigation=1&module=%2Fsrc%2FApp.vue&theme=dark&view=editor"
-     style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
-     title="laf-demo-todo"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
-
-
-> 本页面宽度有限，请点击[链接调试预览](https://codesandbox.io/embed/laf-demo-todo-yy1ly?fontsize=14&hidenavigation=1&theme=dark)
+![](https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/ide.png)
 

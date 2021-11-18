@@ -1,7 +1,7 @@
 module.exports = {
   lang: 'zh-CN',
-  title: 'Laf 云开发使用文档',
-  description: '开发者使用文档',
+  title: 'Laf 云开发文档',
+  description: 'LaF 云开发开发者使用文档',
 
   themeConfig: {
     repo: 'Maslow/laf',
@@ -13,10 +13,10 @@ module.exports = {
     nav: [
       { text: '主页', link: '/' },
       { text: '开发指南', link: '/guide/', activeMatch: '^/guide/' },
-      { text: '运行截图', link: '/screenshots', },
-      // { text: '部署指南', link: '/deploy/quick', },
+      { text: '预览图', link: '/screenshots', },
+      { text: '在线演示', link: '/todo-list', },
       {
-        text: 'Changelogs',
+        text: '更新记录',
         link: 'https://github.com/Maslow/laf/blob/main/CHANGELOG.md'
       }
     ],
