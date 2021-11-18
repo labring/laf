@@ -5,13 +5,11 @@ title: 云存储使用介绍
 
 ## 介绍
 
-前端可使用 [less-api-client sdk](https://github.com/Maslow/less-api-client-js) 上传文件。
+前端可使用 [laf-client-sdk](https://github.com/Maslow/laf/tree/main/packages/client-sdk) 上传文件。
 
 
 ## 文件桶（Bucket）
-Laf 提供基于 `bucket` （文件桶）方式管理的文件存储服务，并内置 `public` 为一个可公共读写的文件桶。
-
-开发者也可在开发控制台中创建其它文件桶，其它文件桶均需要文件 token 来访问，以实现应用自定义的文件访问权限控制。
+Laf 提供基于 `bucket` （文件桶）方式管理的文件存储服务。
 
 > 以下演示皆为 `public` 文件桶中操作。
 
@@ -23,7 +21,7 @@ SDK 当前默认上传到文件 bucket `public` 中
 const inputElement = document.getElementById("fileInput")
 const file = inputElement.files[0];
 
-const ret = await cloud.uploadFile(file)
+const ret = await cloud.uploadFile(file, 'public')
 console.log(ret)
 ```
 

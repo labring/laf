@@ -1,9 +1,9 @@
 
 ### 文件访问令牌(Token)机制
 
-Laf 提供基于 `bucket` （文件桶）方式管理的文件存储服务，并内置 `public` 为一个可公共读写的文件桶。
+Laf 提供基于 `bucket` （文件桶）方式管理的文件存储服务。
 
-开发者也可在开发控制台中创建其它文件桶，其它文件桶均为私有桶，需要生成文件令牌 token 来访问，以实现应用自定义的文件访问权限控制。
+开发者也可在开发控制台中创建私有桶，需要生成文件令牌 token 来访问，以实现应用自定义的文件访问权限控制。
 
 ### 文件访问令牌（Token）生成
 
@@ -17,8 +17,8 @@ import cloud from '@/cloud'
 
 exports.main = async function (ctx) {
   const payload = {
-    bucket: 'test',
-    ops: ['create'],
+    ns: 'test',
+    ops: 'rwdl',
     // token 有效期为 24 小时，请务必提供此 `exp` 字段，详见 JWT 文档。
     exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24, 
   }
@@ -43,9 +43,9 @@ console.log(url)
 
  ```ts
  {
-    bucket: string,     // 授权的文件桶名字，如果其值为 '*'，则此令牌授权所有文件桶
+    ns: string,         // 授权的文件桶名字，需要在前面拼上 `${appid}_`
     ops: string[],      // 授权的文件操作，可以是以下值之一或组合， 'create' | 'read' | 'delete' | 'list' （暂未支持 delete 和 list）
-    filename?: string,  // 可选的文件名，如果指定，则该 token 只能访问此文件名
+    fn?: string,        // 可选的文件名，如果指定，则该 token 只能访问此文件名
     exp: number         // 过期时间，时间截
  }
  ```

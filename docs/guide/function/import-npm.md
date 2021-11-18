@@ -50,4 +50,3 @@ exports.main = async function (ctx) {
 }
 ```
 
-> 注意，以上示例所列出的 npm 包均为 laf app server 已内置安装过的，如需使用其它三方 npm 包，需要单独安装后才可使用。具体方式后续会补充相关文档说明。
