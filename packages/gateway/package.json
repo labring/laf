@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "copy-docs": "sh copy-docs.sh",
+    "build": "vitepress build ../../docs && npm run copy-docs"
+  },
   "author": "Maslow(wangfugen@126.com)"
 }

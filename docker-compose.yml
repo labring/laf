@@ -62,9 +62,11 @@ services:
     environment:
       DEPLOY_DOMAIN: "*.local-dev.host" # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
       SYS_CLIENT_HOST: console.local-dev.host
+      DOCS_HOST: docs.local-dev.host
     volumes:
       - ./packages/gateway/scripts:/scripts
       - ./packages/system-client/dist:/app
+      - ./docs/.vitepress/dist:/docs
       - ./packages/gateway/app.conf:/etc/nginx/templates/app.conf.template
       - ./packages/gateway/system.conf:/etc/nginx/templates/system.conf.template
     command: "sh /scripts/start.sh"

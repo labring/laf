@@ -11,7 +11,7 @@ sidebar: false
 
 > 本例只给出 CentOS 下的安装脚本，若安装其它环境请参考官方文档 https://docs.docker.com/engine/install/
 
-```sh
+```shell
 sudo yum install -y yum-utils
 sudo yum-config-manager \
     --add-repo \
@@ -26,7 +26,7 @@ sudo systemctl start docker
 
 ##### 启动服务
 
-```sh
+```shell
 git clone https://github.com/Maslow/laf.git
 cd laf/deploy-scripts
 
@@ -39,7 +39,7 @@ docker-compose up
 
 ##### 停止服务
 
-```sh
+```shell
 # 停止服务
 docker-compose down
 
@@ -49,7 +49,7 @@ docker-compose down -v
 
 ##### 更新服务镜像
 
-```sh
+```shell
 # 更新镜像
 docker-compose pull
 ```

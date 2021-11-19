@@ -14,7 +14,7 @@ title: 云数据库简介
 
 在前端项目中安装 laf-client-sdk sdk: 
 
-```sh
+```shell
 npm install laf-client-sdk
 ```
 

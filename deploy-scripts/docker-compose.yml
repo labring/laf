@@ -1,8 +1,8 @@
 version: '3.8'
-services: 
+services:
   mongo:
     image: bitnami/mongodb:5.0
-    environment: 
+    environment:
       - MONGODB_REPLICA_SET_MODE=primary
       - MONGODB_INITIAL_PRIMARY_HOST=mongo
       - MONGODB_ADVERTISED_HOSTNAME=mongo
@@ -17,14 +17,14 @@ services:
       - db-data:/bitnami/mongodb
     ports:
       - "27017:27017"
-    networks: 
+    networks:
       - laf_shared_network
 
   system_server:
     image: lafyun/system-server:latest
     user: root
     working_dir: /app
-    environment: 
+    environment:
       SYS_DB_URI: mongodb://${SYS_DB_USER}:${SYS_DB_PASSWORD}@mongo:27017/?authSource=${SYS_DB}&replicaSet=laf&writeConcern=majority
       APP_DB_URI: mongodb://root:${MONGODB_ROOT_PASSWORD}@mongo:27017/?authSource=admin&replicaSet=laf&writeConcern=majority
       SYS_SERVER_SECRET_SALT: ${SYS_SERVER_SECRET_SALT}
@@ -40,28 +40,29 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     read_only: true
-    depends_on: 
+    depends_on:
       - mongo
-    cap_drop: 
+    cap_drop:
       - ALL
-    tmpfs: 
+    tmpfs:
       - /tmp
     restart: always
-    networks: 
+    networks:
       - laf_shared_network
 
   gateway:
     image: lafyun/gateway:latest
-    depends_on: 
+    depends_on:
       - system_server
       - mongo
-    environment: 
-       DEPLOY_DOMAIN: "*.${DEPLOY_DOMAIN:?err}"
-       SYS_CLIENT_HOST: ${SYS_CLIENT_HOST:?err}
+    environment:
+      DEPLOY_DOMAIN: "*.${DEPLOY_DOMAIN:?err}"
+      SYS_CLIENT_HOST: ${SYS_CLIENT_HOST:?err}
+      DOCS_HOST: "docs.${DEPLOY_DOMAIN:?err}"
     command: "sh /scripts/start.sh"
-    ports: 
+    ports:
       - ${PUBLISH_PORT:-8080}:80
-    networks: 
+    networks:
       - laf_shared_network
 
   storage_service:
@@ -69,7 +70,7 @@ services:
     user: root
     working_dir: /app
     environment:
-      DB_URI : mongodb://root:${MONGODB_ROOT_PASSWORD}@mongo:27017/laf_fs?authSource=admin&replicaSet=laf&writeConcern=majority
+      DB_URI: mongodb://root:${MONGODB_ROOT_PASSWORD}@mongo:27017/laf_fs?authSource=admin&replicaSet=laf&writeConcern=majority
       LOG_LEVEL: ${LOG_LEVEL:-debug}
       SERVER_SECRET_SALT: ${SYS_SERVER_SECRET_SALT}
     command: dockerize -wait tcp://mongo:27017 node dist/index.js
@@ -86,6 +87,6 @@ services:
 networks:
   laf_shared_network:
     external: true
-      
+
 volumes:
-  db-data:
+  db-data: null
