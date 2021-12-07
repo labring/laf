@@ -2,7 +2,6 @@
   <div class="app-container">
     <div v-if="func" class="header">
       <span style="font-size: 22px;line-height: 40px;">
-        <!-- <el-tag v-if="saved_code_diff" type="warning" size="mini" effect="plain">*</el-tag> -->
         <b>{{ func.label }}</b>
         <span v-if="saved_code_diff" style="margin-left: 8px; font-size: 18px; color: red">
           <i class="el-icon-edit" />
@@ -34,25 +33,42 @@
         :disabled="!published_version_diff"
         @click="publishFunction"
       >{{ published_version_diff ? '发布': '已发布' }}</el-button>
+      <el-button
+        v-if="published_func"
+        :type="published_version_diff ? 'default' : 'text'"
+        size="mini"
+        :loading="loading"
+        style="margin-left: 10px;"
+        @click="diffPublished"
+      >对比已发布 (#{{ published_func.version }})</el-button>
       <el-button size="small" style="float: right;" type="primary" @click="showDebugPanel = true">显示调试面板(J)</el-button>
     </div>
 
     <div style="display: flex;">
       <div class="editor-container">
+        <!-- <diff-editor :original="value" :modified="value" :height="editorHeight" /> -->
         <function-editor v-model="value" :height="editorHeight" :dark="false" />
       </div>
       <div class="lastest-logs">
-        <el-card shadow="never" :body-style="{ padding: '20px' }">
-          <div slot="header">
-            <span>最近执行</span>
-            <el-button style="float: right; padding: 3px 0" type="text" @click="getLatestLogs">刷新</el-button>
-          </div>
-          <div v-for="log in lastestLogs" :key="log._id" class="log-item">
-            <el-tag type="warning" size="normal" @click="showLogDetailDlg(log)">
-              {{ log.created_at | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}
-            </el-tag>
-          </div>
-        </el-card>
+        <el-tabs type="border-card">
+          <el-tab-pane label="最近执行">
+            <span slot="label">最近执行 <i class="el-icon-refresh" @click="getLatestLogs" /></span>
+
+            <div v-for="log in lastestLogs" :key="log._id" class="log-item">
+              <el-tag type="warning" size="normal" @click="showLogDetailDlg(log)">
+                {{ log.created_at | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}
+              </el-tag>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="变更记录">
+            <span slot="label">变更记录 <i class="el-icon-refresh" @click="getChangeHistory" /></span>
+            <div v-for="(item, index) in changeHistory" :key="item._id" class="history-item" @click="showChangeDiffEditor(index)">
+              <span class="history-title">#{{ item.data.version }}</span>
+              <span style="font-weight: bold;margin-left: 2px;"> {{ item.account.name }} </span>
+              <span style="color:rgb(85, 84, 84);"> {{ item.created_at | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+            </div>
+          </el-tab-pane>
+        </el-tabs>
       </div>
     </div>
 
@@ -112,14 +128,20 @@
     <el-dialog v-if="logDetail" :visible.sync="isShowLogDetail" title="日志详情">
       <FunctionLogDetail :data="logDetail" />
     </el-dialog>
+
+    <!-- 代码对比编辑器对话框 -->
+    <el-dialog v-if="diffCode.modified" :visible.sync="isShowDiffEditor" :title="diffCode.title" width="80%" top="10vh" @close="onCloseDiffEditor">
+      <diff-editor :original="diffCode.original" :modified="diffCode.modified" :height="editorHeight * 0.8" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import FunctionLogDetail from './components/FunctionLogDetail'
 import FunctionEditor from '@/components/FunctionEditor'
+import DiffEditor from '@/components/FunctionEditor/diff'
 import jsonEditor from '@/components/JsonEditor/param'
-import { getFunctionById, getFunctionLogs, getPublishedFunction, launchFunction, publishOneFunction, updateFunctionCode } from '../../api/func'
+import { getFunctionById, getFunctionLogs, getPublishedFunction, launchFunction, publishOneFunction, updateFunctionCode, getFunctionChangeHistory, compileFunctionCode } from '../../api/func'
 import { showError, showSuccess } from '@/utils/show'
 import { debounce } from 'lodash'
 import { hashString } from '@/utils/hash'
@@ -129,7 +151,7 @@ const defaultParamValue = {
 }
 export default {
   name: 'FunctionEditorPage',
-  components: { FunctionEditor, jsonEditor, FunctionLogDetail },
+  components: { FunctionEditor, jsonEditor, FunctionLogDetail, DiffEditor },
   data() {
     return {
       loading: false,
@@ -154,7 +176,17 @@ export default {
       // 当前查看日志详情
       logDetail: undefined,
       // 日志详情对话框显示控制
-      isShowLogDetail: true
+      isShowLogDetail: false,
+      // 函数变更记录
+      changeHistory: [],
+      // 代码对比编辑器对话框显示控制
+      isShowDiffEditor: false,
+      // 代码对比编辑器数据
+      diffCode: {
+        original: '',
+        modified: '',
+        title: 'Code DiffEditor'
+      }
     }
   },
   computed: {
@@ -189,6 +221,7 @@ export default {
     this.func_id = this.$route.params.id
     await this.getFunction()
     this.getLatestLogs()
+    this.getChangeHistory()
     this.setTagViewTitle()
   },
   mounted() {
@@ -245,13 +278,13 @@ export default {
 
       const r = await updateFunctionCode(this.func._id, {
         code: this.value,
-        update_at: Date.now(),
         debugParams: param
       }).finally(() => { this.loading = false })
 
       if (r.error) { return showError('保存失败！') }
 
       await this.getFunction()
+      this.getChangeHistory()
       if (showTip) {
         showSuccess('已保存: ' + this.func.name)
       }
@@ -261,12 +294,15 @@ export default {
      */
     async launch() {
       const debug_token = this.$store.state.app.debug_token
-      await this.updateFunc(false)
+      const r = await compileFunctionCode(this.func._id, {
+        code: this.value
+      }).finally(() => { this.loading = false })
+
       if (this.loading) return
 
       this.loading = true
       const param = this.parseInvokeParam(this.invokeParams)
-      const res = await launchFunction(this.func, param, debug_token)
+      const res = await launchFunction(r.data, param, debug_token)
         .finally(() => { this.loading = false })
 
       this.invokeRequestId = res.headers['requestid']
@@ -314,9 +350,53 @@ export default {
 
       this.lastestLogs = res.data || []
     },
+    /**
+     * 获取函数变更记录
+     */
+    async getChangeHistory() {
+      this.loading = true
+      const res = await getFunctionChangeHistory(this.func_id, 1, 30)
+        .finally(() => { this.loading = false })
+
+      this.changeHistory = res.data || []
+    },
+    /**
+     * 查看日志详情
+     */
     showLogDetailDlg(log) {
       this.logDetail = log
       this.isShowLogDetail = true
+    },
+    /**
+     * 对比已发布与当前的云函数代码
+     */
+    diffPublished() {
+      this.diffCode.original = this.published_func.code
+      this.diffCode.modified = this.value
+      this.diffCode.title = `云函数代码变更对比：#${this.published_func.version}(已发布) -> (当前）`
+      this.isShowDiffEditor = true
+    },
+    onCloseDiffEditor() {
+      this.diffCode = {
+        original: '',
+        modified: '',
+        title: 'Code DiffEditor'
+      }
+    },
+    showChangeDiffEditor(index) {
+      const original = this.changeHistory[index]
+      const modified = index > 0 ? this.changeHistory[index - 1] : null
+      this.diffCode.original = original.data.code
+
+      if (!modified) {
+        this.diffCode.modified = this.value
+        this.diffCode.title = `云函数代码变更对比：#${original.data.version} -> (当前编辑)`
+      } else {
+        this.diffCode.modified = modified.data.code
+        this.diffCode.title = `云函数代码变更对比：#${original.data.version} -> #${modified.data.version}`
+      }
+
+      this.isShowDiffEditor = true
     },
     setTagViewTitle() {
       const label = this.func.label
@@ -388,15 +468,14 @@ export default {
 .editor-container {
   position: relative;
   height: 100%;
-  width: 90%;
+  width: 80%;
   border: 1px solid lightgray;
   padding: 0;
 }
 
 .lastest-logs {
-  padding-left: 20px;
-  padding-top: 10px;
-  width: 15%;
+  padding-left: 5px;
+  width: 20%;
 
   .log-item {
     margin-top: 10px;
@@ -405,6 +484,19 @@ export default {
 
     .time{
       margin-left: 10px;
+    }
+  }
+
+  .history-item {
+    margin-bottom: 10px;
+    font-size: 13px;
+    padding: 3px 0;
+    cursor: pointer;
+    .history-title {
+      color: rgb(79, 79, 235);
+      font-size: 15px;
+      font-weight: bold;
+      text-decoration: underline;
     }
   }
 }

@@ -156,6 +156,21 @@ export function publishOneFunction(func_id) {
 }
 
 /**
+ * Compile the code of cloud function
+ * @param {string} func_id
+ * @param {object} function_data
+ * @returns
+ */
+export function compileFunctionCode(func_id, function_data) {
+  const appid = store.state.app.appid
+  return request({
+    url: `/apps/${appid}/function/${func_id}/compile`,
+    method: 'post',
+    data: function_data
+  })
+}
+
+/**
  * Debug cloud function
  */
 export async function launchFunction(func, param, debug = false) {
@@ -209,4 +224,21 @@ export async function getFunctionLogs(query, page, pageSize) {
   })
 
   return res
+}
+
+/**
+ * Get a cloud function's change history
+ * @param {*} page
+ * @param {*} pageSize
+ */
+export function getFunctionChangeHistory(func_id, page = 1, pageSize = 20) {
+  const appid = store.state.app.appid
+  return request({
+    url: `/apps/${appid}/function/${func_id}/changes`,
+    method: 'get',
+    params: {
+      page,
+      limit: pageSize
+    }
+  })
 }
