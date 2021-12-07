@@ -1,4 +1,28 @@
-# [](https://github.com/Maslow/laf/compare/v0.6.18...v) (2021-11-18)
+# [](https://github.com/Maslow/laf/compare/v0.6.19...v) (2021-12-07)
+
+
+### Bug Fixes
+
+* **app-service:** distinct & add runtime version & image; ([e2a6559](https://github.com/Maslow/laf/commit/e2a65596fe39d3cc1ba1f3d7c362ab36bc22ff39))
+* **gateway:** fix deploy/incoming CORS conf ([2911cc1](https://github.com/Maslow/laf/commit/2911cc1c3e8e54cee752dd987f2dff3e93214f30))
+* **sys-server:** fix func & policy date & objectid type ([83cfe78](https://github.com/Maslow/laf/commit/83cfe78802376a1f9050d3d3894dc80931c38eb7))
+* **sys-service:**  fix func id type to ObjectId; ([6ac01d8](https://github.com/Maslow/laf/commit/6ac01d8a5dcdd3f0d6a931b2848c2669d7fd4a07))
+* **type:** fix app & account date/objectid type; fix styles; ([8ba0761](https://github.com/Maslow/laf/commit/8ba0761ffd4f509ce1286312f1e71f0489f934aa))
+
+
+### Features
+
+* **app-service:** add appid & runtime version to app; ([57fa817](https://github.com/Maslow/laf/commit/57fa817c4dbf5855059663ba3a41b22f59404221))
+* **sys-client:** add func history & code diff editor; ([45a85e9](https://github.com/Maslow/laf/commit/45a85e94c5bf764002349f4f8ee7a210af98d672))
+
+
+
+## [0.6.19](https://github.com/Maslow/laf/compare/v0.6.18...v0.6.19) (2021-11-19)
+
+
+### Features
+
+* **docs:** add docs to gateway deploy; ([54e4ce4](https://github.com/Maslow/laf/commit/54e4ce4f205a7c3a8ac65e5a3be172ec852f860f))
 
 
 
