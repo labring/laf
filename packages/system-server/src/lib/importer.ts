@@ -146,8 +146,8 @@ export class ApplicationImporter {
       rules: po.rules,
       injector: po.injector ?? null,
       hash: po.hash,
-      created_at: Date.now(),
-      updated_at: Date.now(),
+      created_at: new Date(),
+      updated_at: new Date(),
       created_by: this.app.created_by,
       appid: this.app.appid,
       _id: undefined

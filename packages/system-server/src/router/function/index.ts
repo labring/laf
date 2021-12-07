@@ -1,18 +1,18 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-29 11:35:05
- * @LastEditTime: 2021-11-02 15:28:21
+ * @LastEditTime: 2021-12-07 22:34:06
  * @Description:
  */
 
 import { Router } from "express"
 import { handleCreateFunction } from "./create"
-import { handleGetAllFunctionTags, handleGetFunctionById, handleGetFunctions, handleGetPublishedFunctions } from "./get"
+import { handleGetAllFunctionTags, handleGetFunctionById, handleGetFunctionHistory, handleGetFunctions, handleGetPublishedFunctions } from "./get"
 import { handleGetFunctionLogs } from "./logs"
 import { handlePublishFunctions, handlePublishOneFunction } from "./publish"
 import { handleRemoveFunctionById } from "./remove"
 import { handleCreateTrigger, handleRemoveTrigger, handleUpdateTrigger } from "./trigger"
-import { handleUpdateFunction, handleUpdateFunctionCode } from "./update"
+import { handleCompileFunctionCode, handleUpdateFunction, handleUpdateFunctionCode } from "./update"
 
 
 export const FunctionRouter = Router()
@@ -33,6 +33,11 @@ FunctionRouter.get('/tags/all', handleGetAllFunctionTags)
 FunctionRouter.get('/:func_id', handleGetFunctionById)
 
 /**
+ * Get a function change history
+ */
+FunctionRouter.get('/:func_id/changes', handleGetFunctionHistory)
+
+/**
  * Create a function
  */
 FunctionRouter.post('/create', handleCreateFunction)
@@ -46,6 +51,11 @@ FunctionRouter.post('/:func_id/info', handleUpdateFunction)
  * Update the function's code
  */
 FunctionRouter.post('/:func_id/code', handleUpdateFunctionCode)
+
+/**
+ * Compile the function's code
+ */
+FunctionRouter.post('/:func_id/compile', handleCompileFunctionCode)
 
 /**
  * Remove a function by id of an application

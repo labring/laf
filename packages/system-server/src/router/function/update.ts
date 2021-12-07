@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-05 02:11:39
- * @LastEditTime: 2021-11-02 15:51:47
+ * @LastEditTime: 2021-12-07 22:33:13
  * @Description: 
  */
 
@@ -17,7 +17,7 @@ import { DatabaseAgent } from '../../lib/db-agent'
 import { hashFunctionCode } from '../../utils/hash'
 import { compileTs2js } from '../../utils/lang'
 
-const { FUNCTION_UPDATE } = permissions
+const { FUNCTION_UPDATE, FUNCTION_DEBUG } = permissions
 
 /**
  * Update function's basic info
@@ -66,10 +66,10 @@ export async function handleUpdateFunction(req: Request, res: Response) {
     status: body.status ?? func.status,
     tags: body.tags ?? func.tags,
     label: body.label ?? func.label,
-    updated_at: Date.now()
+    updated_at: new Date()
   }
 
-  // add cloud function
+  // update cloud function
   const ret = await db.collection(Constants.cn.functions)
     .updateOne({
       _id: new ObjectId(func_id),
@@ -110,18 +110,7 @@ export async function handleUpdateFunctionCode(req: Request, res: Response) {
     compiledCode: compileTs2js(body.code),
     hash: hashFunctionCode(body.code),
     debugParams: body.debugParams || func.debugParams,
-    updated_at: Date.now()
-  }
-
-  // record the function change history
-  if (data.hash !== func.hash) {
-    const record = Object.assign({}, func)
-    await db.collection(Constants.cn.function_history)
-      .insertOne({
-        func_id: func._id,
-        data: record,
-        created_at: Date.now()
-      })
+    updated_at: new Date()
   }
 
   // update cloud function
@@ -136,5 +125,51 @@ export async function handleUpdateFunctionCode(req: Request, res: Response) {
 
   const doc = await getFunctionById(app.appid, new ObjectId(func_id))
 
+  // record the function change history
+  if (doc.hash !== func.hash) {
+    const record = Object.assign({}, doc)
+    await db.collection(Constants.cn.function_history)
+      .insertOne({
+        appid: app.appid,
+        func_id: func._id,
+        data: record,
+        created_at: new Date(),
+        created_by: new ObjectId(uid),
+      })
+  }
+
   return res.send({ data: doc })
+}
+
+/**
+ * Compile function's code
+ */
+export async function handleCompileFunctionCode(req: Request, res: Response) {
+  const uid = req['auth']?.uid
+  const app: ApplicationStruct = req['parsed-app']
+  const func_id = req.params.func_id
+
+  // check permission
+  const code = await checkPermission(uid, FUNCTION_DEBUG.name, app)
+  if (code) {
+    return res.status(code).send()
+  }
+
+  const body = req.body
+  if (!body.code) return res.status(422).send('code cannot be empty')
+
+  const func = await getFunctionById(app.appid, new ObjectId(func_id))
+  if (!func) return res.status(422).send('function not found')
+
+  // build the func data
+  const data = {
+    ...func,
+    code: body.code,
+    compiledCode: compileTs2js(body.code),
+    hash: hashFunctionCode(body.code),
+    debugParams: body.debugParams || func.debugParams,
+    updated_at: new Date()
+  }
+
+  return res.send({ data: data })
 }

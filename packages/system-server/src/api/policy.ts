@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-12-07 09:42:03
+ * @LastEditTime: 2021-12-07 14:59:23
  * @Description: 
  */
 
@@ -24,8 +24,8 @@ export interface PolicyStruct {
   rules: any
   injector: string
   hash: string
-  created_at: number
-  updated_at: number
+  created_at: Date
+  updated_at: Date
   created_by: ObjectId
   appid: string
 }

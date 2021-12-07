@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:51:19
- * @LastEditTime: 2021-11-05 14:12:38
+ * @LastEditTime: 2021-12-07 17:00:16
  * @Description: 
  */
 
@@ -149,4 +149,54 @@ export async function handleGetPublishedFunctions(req: Request, res: Response) {
   return res.send({
     data: docs
   })
+}
+
+
+/**
+ * Get a function's change history
+ */
+export async function handleGetFunctionHistory(req: Request, res: Response) {
+  const app: ApplicationStruct = req['parsed-app']
+  const func_id = req.params.func_id
+
+  // check permission
+  const code = await checkPermission(req['auth']?.uid, FUNCTION_READ.name, app)
+  if (code) {
+    return res.status(code).send()
+  }
+
+  const limit = Number(req.query?.limit || 10)
+  const page = Number(req.query?.page || 1)
+
+
+  // const doc = await getFunctionById(app.appid, new ObjectId(func_id))
+  const db = DatabaseAgent.db
+  const docs = await db.collection(Constants.cn.function_history)
+    .aggregate()
+    .match({
+      appid: app.appid,
+      func_id: new ObjectId(func_id),
+    })
+    .lookup({
+      from: Constants.cn.accounts,
+      localField: 'created_by',
+      foreignField: '_id',
+      as: 'account'
+    })
+    .project({
+      'account.password': 0,
+      'account.quota': 0,
+      'account.created_at': 0,
+      'account.updated_at': 0,
+    })
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .sort({ created_at: -1 })
+    .toArray()
+
+  for (const doc of docs) {
+    doc.account = doc.account?.length ? doc.account[0] : null
+  }
+
+  return res.send({ data: docs })
 }

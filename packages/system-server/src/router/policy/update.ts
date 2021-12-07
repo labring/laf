@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-03 23:09:23
- * @LastEditTime: 2021-10-19 21:56:11
+ * @LastEditTime: 2021-12-07 15:02:13
  * @Description: 
  */
 
@@ -50,7 +50,7 @@ export async function handleUpdatePolicy(req: Request, res: Response) {
     description: body.description ?? policy.description,
     status: body.status ?? policy.status,
     injector: body.injector ?? policy.injector,
-    updated_at: Date.now(),
+    updated_at: new Date(),
   }
 
   // do db query
@@ -99,7 +99,7 @@ export async function handleUpdatePolicyRules(req: Request, res: Response) {
   const data = {
     rules: body.rules,
     hash: hashFunctionCode(JSON.stringify(body.rules)),
-    updated_at: Date.now(),
+    updated_at: new Date(),
   }
 
   // do db query

@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-03 23:19:36
- * @LastEditTime: 2021-12-07 13:37:40
+ * @LastEditTime: 2021-12-07 14:58:57
  * @Description: 
  */
 
@@ -49,8 +49,8 @@ export async function handleCreatePolicy(req: Request, res: Response) {
     rules: body.rules,
     injector: body.injector,
     hash: hashFunctionCode(JSON.stringify(body.rules)),
-    created_at: Date.now(),
-    updated_at: Date.now(),
+    created_at: new Date(),
+    updated_at: new Date(),
     created_by: new ObjectId(uid),
     appid: app.appid
   }

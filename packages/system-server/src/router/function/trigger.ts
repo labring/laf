@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-03 19:55:26
- * @LastEditTime: 2021-11-02 15:49:50
+ * @LastEditTime: 2021-12-07 15:21:42
  * @Description: 
  */
 
@@ -56,19 +56,21 @@ export async function handleCreateTrigger(req: Request, res: Response) {
     duration: body.duration,
     status: body.status ?? 0,
     desc: body.desc,
-    created_at: Date.now(),
-    updated_at: Date.now()
+    created_at: new Date(),
+    updated_at: new Date()
   }
 
   let update_cmd: any = {
     triggers: [trigger],
-    $inc: { version: 1 }
+    $inc: { version: 1 },
+    $set: { updated_at: new Date() }
   }
 
   if (func.triggers) {
     update_cmd = {
       $addToSet: { triggers: trigger },
-      $inc: { version: 1 }
+      $inc: { version: 1 },
+      $set: { updated_at: new Date() }
     }
   }
 
@@ -125,7 +127,8 @@ export async function handleUpdateTrigger(req: Request, res: Response) {
           "triggers.$.duration": body.duration,
           "triggers.$.status": body.status ?? 0,
           "triggers.$.desc": body.desc,
-          "triggers.$.updated_at": Date.now(),
+          "triggers.$.updated_at": new Date(),
+          updated_at: new Date()
         },
         $inc: { version: 1 }
       }
@@ -163,7 +166,8 @@ export async function handleRemoveTrigger(req: Request, res: Response) {
       { _id: new ObjectId(func_id), appid: app.appid },
       {
         $pull: { triggers: { _id: trigger_id, status: 0 } },
-        $inc: { version: 1 }
+        $inc: { version: 1 },
+        $set: { updated_at: new Date() }
       }
     )
 

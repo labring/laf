@@ -1,10 +1,11 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-01 13:07:07
- * @LastEditTime: 2021-10-08 01:39:49
+ * @LastEditTime: 2021-12-07 14:49:40
  * @Description: 
  */
 
+import { ObjectId } from 'bson'
 import { Request, Response } from 'express'
 import { ApplicationStruct } from '../../api/application'
 import { checkPermission } from '../../api/permission'
@@ -54,9 +55,9 @@ export async function handleCreateFunction(req: Request, res: Response) {
     label: body.label ?? 'New Function',
     version: 0,
     hash: hashFunctionCode(body.code),
-    created_at: Date.now(),
-    updated_at: Date.now(),
-    created_by: uid,
+    created_at: new Date(),
+    updated_at: new Date(),
+    created_by: new ObjectId(uid),
     appid: app.appid
   }
 
