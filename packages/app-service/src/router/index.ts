@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-12-07 13:13:40
+ * @LastEditTime: 2021-12-07 13:32:26
  * @Description: 
  */
 
@@ -25,6 +25,7 @@ router.use('/health-check', (_req, res) => {
   }
   return res.send({
     APP_ID: Config.APP_ID,
-    RUNTIME_VERSION: Config.RUNTIME_VERSION
+    RUNTIME_VERSION: Config.RUNTIME_VERSION,
+    RUNTIME_IMAGE: Config.RUNTIME_IMAGE
   })
 })

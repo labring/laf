@@ -1,5 +1,6 @@
 import * as path from 'path'
 import * as dotenv from 'dotenv'
+import { readFileSync } from 'fs'
 
 /**
  * parse environment vars from the `.env` file if existing
@@ -107,11 +108,17 @@ export default class Config {
     return (process.env.FUNCTION_LOG_EXPIRED_TIME ?? 3600 * 24 * 30) as number
   }
 
-  static get RUNTIME_VERSION(): number {
-    return process.env.RUNTIME_VERSION as any as number
+  static get RUNTIME_IMAGE(): string {
+    return process.env.RUNTIME_IMAGE
+  }
+
+  static get RUNTIME_VERSION(): string {
+    return require('../package.json')?.version
   }
 
   static get APP_ID(): string {
     return process.env.APP_ID
   }
 }
+
+
