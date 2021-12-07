@@ -107,7 +107,11 @@ export default class Config {
     return (process.env.FUNCTION_LOG_EXPIRED_TIME ?? 3600 * 24 * 30) as number
   }
 
-  static get APP_VERSION(): number {
-    return process.env.APP_VERSION as any as number
+  static get RUNTIME_VERSION(): number {
+    return process.env.RUNTIME_VERSION as any as number
+  }
+
+  static get APP_ID(): string {
+    return process.env.APP_ID
   }
 }

@@ -12,6 +12,7 @@ import { createFileStorage } from "../lib/storage"
 import { CloudFunction } from "../lib/function"
 import { WebSocket } from "ws"
 import { WebSocketAgent } from "../lib/ws"
+import Config from "../config"
 
 
 export type InvokeFunctionType = (name: string, param: FunctionContext) => Promise<any>
@@ -32,6 +33,8 @@ export interface CloudSdkInterface {
 
   /**
    * 获取一个文件存储管理器
+   * 
+   * @deprecated
    * @param bucket  文件 Bucket 名字，默认为 'public'
    */
   storage(bucket?: string): FileStorageInterface
@@ -94,9 +97,14 @@ export interface CloudSdkInterface {
   mongo: MongoDriverObject
 
   /**
-   * WebSocket 连接例表
+   * WebSocket 连接列表
    */
   sockets: Set<WebSocket>
+
+  /**
+   * App ID
+   */
+  appid: string
 }
 
 
@@ -131,7 +139,8 @@ export function create() {
       client: DatabaseAgent.accessor.conn,
       db: DatabaseAgent.accessor.db
     },
-    sockets: WebSocketAgent.clients
+    sockets: WebSocketAgent.clients,
+    appid: Config.APP_ID
   }
   return cloud
 }

@@ -382,7 +382,7 @@ export default {
     async deleteApp(row) {
       await this.$confirm('应用被删除后，暂不可恢复，确定释放？', '确认释放应用？')
       console.log(row)
-      if (row.status !== 'cleared' && row.status !== 'created') { return showError('请先停止并清除该应用的服务') }
+      if (row.status === 'running') { return showError('请先停止该应用服务') }
       this.loading = true
 
       const res = await removeApplication(row.appid)
@@ -423,7 +423,7 @@ export default {
     },
     async removeAppService(app) {
       const current_status = app.status
-      await this.$confirm('仅重置并重启应用服务实例容器，并不会删除应用或数据', '确认要重置应用服务？')
+      await this.$confirm('仅重置应用服务实例容器，并不会删除应用或数据', '确认要重置应用服务？')
       this.serviceLoading = true
       const res = await removeApplicationService(app.appid)
         .finally(() => { this.serviceLoading = false })

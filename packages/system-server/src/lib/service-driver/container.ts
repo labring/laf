@@ -32,7 +32,6 @@ export class DockerContainerServiceDriver {
 
     const container = await this.docker.createContainer({
       Image: imageName,
-      // Cmd: ['node', `--max_old_space_size=${max_old_space_size}`, './dist/index.js'],
       Cmd: ['sh', '/app/start.sh'],
       name: `app_${app.appid}`,
       Env: [
@@ -41,7 +40,9 @@ export class DockerContainerServiceDriver {
         `LOG_LEVEL=${logLevel}`,
         `ENABLE_CLOUD_FUNCTION_LOG=always`,
         `SERVER_SECRET_SALT=${app.config.server_secret_salt}`,
-        `FLAGS=--max_old_space_size=${max_old_space_size}`
+        `FLAGS=--max_old_space_size=${max_old_space_size}`,
+        `APP_ID=${app.appid}`,
+        `RUNTIME_VERSION=${app.runtime?.image}`
       ],
       ExposedPorts: {
         "8000/tcp": {}

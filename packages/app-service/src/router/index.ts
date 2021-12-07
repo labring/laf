@@ -1,11 +1,12 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-10-06 21:49:49
+ * @LastEditTime: 2021-12-07 13:13:40
  * @Description: 
  */
 
 import { Router } from 'express'
+import Config from '../config'
 import { DatabaseAgent } from '../lib/database'
 import { EntryRouter } from './entry'
 import { FileRouter } from './file/index'
@@ -22,5 +23,8 @@ router.use('/health-check', (_req, res) => {
   if (!DatabaseAgent.db) {
     return res.status(400).send('no db connection')
   }
-  return res.status(200).send('ok')
+  return res.send({
+    APP_ID: Config.APP_ID,
+    RUNTIME_VERSION: Config.RUNTIME_VERSION
+  })
 })
