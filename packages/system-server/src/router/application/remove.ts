@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 15:22:34
- * @LastEditTime: 2021-10-08 01:26:40
+ * @LastEditTime: 2021-12-07 11:01:40
  * @Description: 
  */
 
@@ -12,6 +12,7 @@ import { getApplicationByAppid } from '../../api/application'
 import { checkPermission } from '../../api/permission'
 import { Constants } from '../../constants'
 import { DatabaseAgent } from '../../lib/db-agent'
+import { DockerContainerServiceDriver } from '../../lib/service-driver/container'
 
 const { APPLICATION_REMOVE } = Constants.permissions
 
@@ -28,8 +29,8 @@ export async function handleRemoveApplication(req: Request, res: Response) {
   if (!app)
     return res.status(422).send('invalid appid')
 
-  if (app.status !== 'cleared' && app.status !== 'created') {
-    return res.status(422).send('app status must be cleared or created')
+  if (app.status === 'running') {
+    return res.status(422).send('you can not remove a running app')
   }
 
   // check permission
@@ -40,8 +41,13 @@ export async function handleRemoveApplication(req: Request, res: Response) {
 
   // i know that we just checked the permission, but also limit this permission to the owner.
   // just ignore the above permission checking, we will re-considered in future.
-  if (uid !== app.created_by) {
+  if (uid !== app.created_by.toHexString()) {
     return res.status(403).send('only owner can remove application')
+  }
+
+  if (app.status === 'stopped') {
+    const ds = new DockerContainerServiceDriver()
+    await ds.removeService(app)
   }
 
   // save app to recycle collection

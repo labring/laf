@@ -1,14 +1,14 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-10-08 00:49:03
+ * @LastEditTime: 2021-12-07 09:42:03
  * @Description: 
  */
 
 import * as assert from 'assert'
 import { Constants } from '../constants'
 import { DatabaseAgent } from "../lib/db-agent"
-import { ClientSession } from 'mongodb'
+import { ClientSession, ObjectId } from 'mongodb'
 import { ApplicationStruct, getApplicationDbAccessor } from './application'
 import { logger } from '../lib/logger'
 
@@ -26,7 +26,7 @@ export interface PolicyStruct {
   hash: string
   created_at: number
   updated_at: number
-  created_by: string
+  created_by: ObjectId
   appid: string
 }
 /**

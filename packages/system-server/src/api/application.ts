@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-28 22:00:45
- * @LastEditTime: 2021-11-17 19:21:35
+ * @LastEditTime: 2021-12-07 09:48:05
  * @Description: Application APIs
  */
 
@@ -10,7 +10,7 @@ import { DatabaseAgent } from "../lib/db-agent"
 import * as assert from 'assert'
 import { MongoAccessor } from "database-proxy"
 import { generateUUID } from "../utils/rand"
-import { MongoClient } from 'mongodb'
+import { MongoClient, ObjectId } from 'mongodb'
 import Config from "../config"
 import * as mongodb_uri from 'mongodb-uri'
 import { BucketMode } from "./storage"
@@ -22,7 +22,7 @@ import { logger } from "../lib/logger"
 export interface ApplicationStruct {
   _id?: string
   name: string
-  created_by: string
+  created_by: ObjectId
   appid: string
   status: 'created' | 'running' | 'stopped' | 'cleared'
   config: {
@@ -83,7 +83,7 @@ export async function getMyApplications(account_id: string) {
 
   const db = DatabaseAgent.db
   const docs = await db.collection<ApplicationStruct>(Constants.cn.applications)
-    .find({ created_by: account_id }, {
+    .find({ created_by: new ObjectId(account_id) }, {
       projection: { config: false }
     }).toArray()
 
@@ -101,7 +101,7 @@ export async function getMyJoinedApplications(account_id: string) {
   const db = DatabaseAgent.db
   const docs = await db.collection<ApplicationStruct>(Constants.cn.applications)
     .find({
-      'collaborators.uid': account_id
+      'collaborators.uid': new ObjectId(account_id)
     }).toArray()
 
   return docs
@@ -134,7 +134,7 @@ export async function getApplicationDbAccessor(app: ApplicationStruct) {
  * @returns 
  */
 export function getUserRolesOfApplication(uid: string, app: ApplicationStruct) {
-  if (app.created_by === uid) {
+  if (app.created_by.toHexString() === uid) {
     return [Constants.roles.owner.name]
   }
 

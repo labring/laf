@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-09-01 18:24:01
+ * @LastEditTime: 2021-12-07 09:45:49
  * @Description: 
  */
 
@@ -22,7 +22,7 @@ export async function checkPermission(uid: string, permission: string, app: Appl
   assert.ok(app, 'empty app got')
 
   // pass directly while the app owner here
-  if (uid === app.created_by) return 0
+  if (uid === app.created_by.toHexString()) return 0
 
   // reject while uid is not the collaborator
   const [collaborator] = app.collaborators?.filter(co => co.uid === uid) ?? []
