@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-10-08 01:00:56
+ * @LastEditTime: 2021-12-07 13:54:45
  * @Description: 
  */
 
@@ -33,7 +33,7 @@ export async function handleEdit(req: Request, res: Response) {
 
   // update account
   const data = {
-    updated_at: Date.now()
+    updated_at: new Date()
   }
 
   // update avatar if provided

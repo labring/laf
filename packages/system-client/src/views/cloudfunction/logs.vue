@@ -25,12 +25,12 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column label="RequestId" prop="id" align="center" width="240">
+      <el-table-column label="RequestId" prop="id" align="center" width="260">
         <template slot-scope="{row}">
           <span>{{ row.requestId }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="函数名" width="160" align="center">
+      <el-table-column label="函数名" min-width="200" align="center">
         <template slot-scope="{row}">
           <el-tag type="primary">{{ row.func_name }}</el-tag>
         </template>
@@ -40,7 +40,7 @@
           <span class="link-type">{{ row.func_id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="执行用时" min-width="100" align="center">
+      <el-table-column label="执行用时" width="100" align="center">
         <template slot-scope="{row}">
           <span v-if="row.time_usage" class="link-type">{{ row.time_usage }}ms</span>
           <span v-else>-</span>
@@ -52,11 +52,11 @@
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="调用者ID" class-name="status-col" width="240">
+      <!-- <el-table-column label="调用者ID" class-name="status-col" width="240">
         <template slot-scope="{row}">
           {{ row.created_by || '-' }}
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="操作" align="center" width="80" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="info" size="mini" @click="handleShowDetail(row)">

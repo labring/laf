@@ -1,12 +1,13 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-31 15:00:04
- * @LastEditTime: 2021-11-17 18:17:46
+ * @LastEditTime: 2021-12-07 13:57:21
  * @Description: 
  */
 
 import * as assert from 'assert'
 import { Request, Response } from 'express'
+import { ObjectId } from 'mongodb'
 import { getAccountById } from '../../api/account'
 import { ApplicationStruct, createApplicationDb, generateAppid, getApplicationByAppid, getMyApplications } from '../../api/application'
 import Config from '../../config'
@@ -43,10 +44,10 @@ export async function handleCreateApplication(req: Request, res: Response) {
   const db_user = db_name
   const db_password = generatePassword(32, true, false)
 
-  const now = Date.now()
+  const now = new Date()
   const data: ApplicationStruct = {
     name: app_name,
-    created_by: uid,
+    created_by: new ObjectId(uid),
     appid: appid,
     status: 'created',
     collaborators: [],

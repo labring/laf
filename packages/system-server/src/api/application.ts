@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-28 22:00:45
- * @LastEditTime: 2021-12-07 09:48:05
+ * @LastEditTime: 2021-12-07 13:50:40
  * @Description: Application APIs
  */
 
@@ -56,8 +56,8 @@ export interface ApplicationStruct {
     roles: string[]
     created_at: number
   }[]
-  created_at?: number
-  updated_at?: number
+  created_at?: Date
+  updated_at?: Date
 }
 
 /**

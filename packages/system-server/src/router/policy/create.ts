@@ -1,11 +1,12 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-03 23:19:36
- * @LastEditTime: 2021-10-08 01:45:27
+ * @LastEditTime: 2021-12-07 13:37:40
  * @Description: 
  */
 
 import { Request, Response } from 'express'
+import { ObjectId } from 'mongodb'
 import { ApplicationStruct } from '../../api/application'
 import { checkPermission } from '../../api/permission'
 import { Constants } from '../../constants'
@@ -50,7 +51,7 @@ export async function handleCreatePolicy(req: Request, res: Response) {
     hash: hashFunctionCode(JSON.stringify(body.rules)),
     created_at: Date.now(),
     updated_at: Date.now(),
-    created_by: uid,
+    created_by: new ObjectId(uid),
     appid: app.appid
   }
 

@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-10-08 01:02:45
+ * @LastEditTime: 2021-12-07 13:54:20
  * @Description: 
  */
 
@@ -43,8 +43,8 @@ export async function handleSignUp(req: Request, res: Response) {
       },
       name: name,
       password: hashPassword(password),
-      created_at: Date.now(),
-      updated_at: Date.now()
+      created_at: new Date(),
+      updated_at: new Date()
     })
 
   return res.send({

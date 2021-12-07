@@ -43,7 +43,7 @@
             {{ getRuntimeMemory(scope.row) }} M
           </template>
         </el-table-column>
-        <el-table-column label="服务启停" align="center" width="200" class-name="small-padding">
+        <el-table-column label="服务启停" align="center" width="300" class-name="small-padding">
           <template slot-scope="{row}">
             <el-button v-if="row.status !== 'running'" :loading="serviceLoading" plain type="success" size="mini" @click="startApp(row)">
               启动
@@ -63,17 +63,17 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" align="center" min-width="100">
+        <el-table-column label="创建时间" align="center" min-width="120">
           <template slot-scope="{row}">
             <span v-if="row.created_at">{{ row.created_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" align="center" width="300" class-name="small-padding">
+        <el-table-column fixed="right" label="操作" align="center" width="280" class-name="small-padding">
           <template slot-scope="{row}">
             <el-tooltip :content="row.status !== 'running' ? '请在开发前启动服务！' : '编写云函数、查看日志、管理数据库、文件、成员协作等'" effect="light" placement="top">
               <el-button type="success" size="mini" :disabled="row.status !== 'running'" @click="toDetail(row)">
-                开发管理
+                开发
               </el-button>
             </el-tooltip>
             <el-button type="default" size="mini" @click="exportApp(row)">
@@ -127,7 +127,7 @@
             {{ getRuntimeMemory(scope.row) }} M
           </template>
         </el-table-column>
-        <el-table-column label="服务启停" align="center" width="200" class-name="small-padding">
+        <el-table-column label="服务启停" align="center" width="300" class-name="small-padding">
           <template slot-scope="{row}">
             <el-button v-if="row.status !== 'running'" :loading="serviceLoading" plain type="success" size="mini" @click="startApp(row)">
               启动
@@ -147,17 +147,17 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" align="center" min-width="100">
+        <el-table-column label="创建时间" align="center" min-width="120">
           <template slot-scope="{row}">
             <span v-if="row.created_at">{{ row.created_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" align="center" width="300" class-name="small-padding">
+        <el-table-column fixed="right" label="操作" align="center" width="280" class-name="small-padding">
           <template slot-scope="{row}">
             <el-tooltip :content="row.status !== 'running' ? '请在开发前启动服务！' : '编写云函数、查看日志、管理数据库、文件、成员协作等'" effect="light" placement="top">
               <el-button type="success" size="mini" :disabled="row.status !== 'running'" @click="toDetail(row)">
-                开发管理
+                开发
               </el-button>
             </el-tooltip>
             <el-button type="default" size="mini" @click="exportApp(row)">
