@@ -1,4 +1,8 @@
-# [](https://github.com/Maslow/laf/compare/v0.6.19...v) (2021-12-07)
+# [](https://github.com/Maslow/laf/compare/v0.6.20...v) (2021-12-07)
+
+
+
+## [0.6.20](https://github.com/Maslow/laf/compare/v0.6.19...v0.6.20) (2021-12-07)
 
 
 ### Bug Fixes

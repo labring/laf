@@ -1,6 +1,5 @@
 import * as path from 'path'
 import * as dotenv from 'dotenv'
-import { readFileSync } from 'fs'
 
 /**
  * parse environment vars from the `.env` file if existing
