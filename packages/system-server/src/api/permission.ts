@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-12-07 09:45:49
+ * @LastEditTime: 2021-12-09 08:22:20
  * @Description: 
  */
 
@@ -25,7 +25,7 @@ export async function checkPermission(uid: string, permission: string, app: Appl
   if (uid === app.created_by.toHexString()) return 0
 
   // reject while uid is not the collaborator
-  const [collaborator] = app.collaborators?.filter(co => co.uid === uid) ?? []
+  const [collaborator] = app.collaborators?.filter(co => co.uid.toHexString() === uid) ?? []
   if (!collaborator) return 403
 
   // reject while uid not have the permission

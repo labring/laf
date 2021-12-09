@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-28 22:00:45
- * @LastEditTime: 2021-12-07 13:50:40
+ * @LastEditTime: 2021-12-09 08:21:51
  * @Description: Application APIs
  */
 
@@ -52,7 +52,7 @@ export interface ApplicationStruct {
     version: string
   }[]
   collaborators: {
-    uid: string
+    uid: ObjectId
     roles: string[]
     created_at: number
   }[]
@@ -139,7 +139,7 @@ export function getUserRolesOfApplication(uid: string, app: ApplicationStruct) {
   }
 
   // reject if not the collaborator
-  const [found] = app.collaborators.filter(co => co.uid === uid)
+  const [found] = app.collaborators.filter(co => co.uid.toHexString() === uid)
   if (!found) {
     return []
   }

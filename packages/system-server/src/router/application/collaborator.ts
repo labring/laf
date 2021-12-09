@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-31 15:00:04
- * @LastEditTime: 2021-10-08 01:23:08
+ * @LastEditTime: 2021-12-09 08:29:02
  * @Description: 
  */
 
@@ -36,11 +36,10 @@ export async function handleGetCollaborators(req: Request, res: Response) {
   }
 
   const db = DatabaseAgent.db
-  const co_ids = app.collaborators.map(co => co.uid)
   const docs = await db.collection(Constants.cn.accounts)
     .find({
       _id: {
-        $in: co_ids.map(id => new ObjectId(id))
+        $in: app.collaborators.map(co => co.uid)
       }
     }, {
       projection: { '_id': 1, 'username': 1, 'name': 1 }
@@ -82,21 +81,21 @@ export async function handleInviteCollaborator(req: Request, res: Response) {
   }
 
   // reject if collaborator exists
-  const exists = app.collaborators.filter(it => it.uid === member_id)
+  const exists = app.collaborators.filter(it => it.uid.toHexString() === member_id)
   if (exists.length) {
     return res.status(422).send('collaborator already exists')
   }
 
   // reject if the application owner get here
-  if (app.created_by === member_id) {
+  if (app.created_by.toHexString() === member_id) {
     return res.status(422).send('collaborator is already the owner of this application')
   }
 
   // add a collaborator
   const collaborator = {
-    uid: member_id,
+    uid: new ObjectId(member_id),
     roles,
-    created_at: Date.now()
+    created_at: new Date()
   }
   const ret = await db.collection(Constants.cn.applications)
     .updateOne({
@@ -176,7 +175,7 @@ export async function handleRemoveCollaborator(req: Request, res: Response) {
 
   // check collaborator_id
   const collaborator_id = req.params.collaborator_id
-  const [found] = app.collaborators.filter(co => co.uid === collaborator_id)
+  const [found] = app.collaborators.filter(co => co.uid.toHexString() === collaborator_id)
   if (!found) {
     return res.status(422).send('invalid collaborator_id')
   }
@@ -185,7 +184,7 @@ export async function handleRemoveCollaborator(req: Request, res: Response) {
   const r = await db.collection(Constants.cn.applications)
     .updateOne({ appid }, {
       $pull: {
-        collaborators: { uid: collaborator_id }
+        collaborators: { uid: new ObjectId(collaborator_id) }
       }
     })
 
