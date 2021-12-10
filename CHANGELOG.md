@@ -1,4 +1,27 @@
-# [](https://github.com/Maslow/laf/compare/v0.6.20...v) (2021-12-07)
+# [](https://github.com/Maslow/laf/compare/v0.6.22...v) (2021-12-10)
+
+
+### Bug Fixes
+
+* **cloud-function:** fix ide error in unpublished function ([633a2b3](https://github.com/Maslow/laf/commit/633a2b3db1fb245740cb27fe256e1bbbcec1490f))
+
+
+
+## [0.6.22](https://github.com/Maslow/laf/compare/v0.6.21...v0.6.22) (2021-12-10)
+
+
+### Features
+
+* **cloud-function:** IDE support cache & restore editing codes in localstorage; ([c084624](https://github.com/Maslow/laf/commit/c08462448475ee3ecd9ec7991438736893e3d80d))
+
+
+
+## [0.6.21](https://github.com/Maslow/laf/compare/v0.6.20...v0.6.21) (2021-12-09)
+
+
+### Bug Fixes
+
+* **sys-server:** fix app collaborators' uid type to objectid; ([835bf20](https://github.com/Maslow/laf/commit/835bf20e3a6dade685ca23c8027019a416cb24e9))
 
 
 
