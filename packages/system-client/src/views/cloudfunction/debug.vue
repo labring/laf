@@ -385,7 +385,7 @@ export default {
     diffSaved() {
       this.diffCode.original = this.func.code
       this.diffCode.modified = this.value
-      this.diffCode.title = `云函数代码变更对比：#${this.published_func.version}(已保存) -> (当前编辑）`
+      this.diffCode.title = `云函数代码变更对比：#${this.func.version}(已保存) -> (当前编辑）`
       this.isShowDiffEditor = true
     },
     onCloseDiffEditor() {
