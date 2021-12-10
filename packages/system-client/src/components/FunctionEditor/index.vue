@@ -27,7 +27,27 @@ const autoImportTypings = new AutoImportTypings()
 export default {
   name: 'FunctionEditor',
   /* eslint-disable vue/require-prop-types */
-  props: ['value', 'height', 'dark', 'name'],
+  // props: ['value', 'height', 'dark', 'name'],
+  props: {
+    value: {
+      type: String,
+      default: ''
+    },
+    height: {
+      type: Number,
+      default: 300
+    },
+    dark: {
+      type: Boolean,
+      default: false
+    },
+    name: {
+      type: String,
+      default: () => {
+        return `index-${Date.now()}.ts`
+      }
+    }
+  },
   data() {
     return {
       editor: {}
@@ -55,10 +75,13 @@ export default {
     // 加载必要的类型文件
     autoImportTypings.loadDefaults()
   },
+  beforeDestroy() {
+    const filename = `${this.name}.ts`
+    this.editor.getModel(monaco.Uri.parse(filename)).dispose()
+  },
   methods: {
     initEditor() {
-      const now = Date.now()
-      const filename = `index-${now}.ts`
+      const filename = `${this.name}.ts`
       this.editor = monaco.editor.create(this.$refs.jseditor, {
         lineNumbers: 'on',
         roundedSelection: true,
@@ -81,7 +104,9 @@ export default {
       })
 
       this.editor.onDidChangeModelContent(e => {
-        this.$emit('input', this.editor?.getValue())
+        const value = this.editor?.getValue()
+        this.$emit('input', value)
+        this.$emit('change', value)
         this.parseImports(this.getValue())
       })
     },

@@ -44,7 +44,7 @@
       </el-table-column> -->
       <el-table-column label="标识" align="center" width="160px">
         <template slot-scope="{row}">
-          <span>{{ row.name }}</span>
+          <span class="link-type" @click="showUpdateForm(row)">{{ row.name }}</span>
         </template>
       </el-table-column>
       <el-table-column label="入口地址" align="left" width="150px">
@@ -79,10 +79,7 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-          <el-button type="success" size="mini" @click="handleShowDetail(row)">
-            详情
-          </el-button>
-          <el-button type="primary" size="mini" @click="showUpdateForm(row)">
+          <el-button type="primary" size="mini" @click="handleShowDetail(row)">
             编辑
           </el-button>
           <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">

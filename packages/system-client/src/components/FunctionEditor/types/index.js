@@ -56,6 +56,7 @@ export class AutoImportTypings {
    */
   loadDefaults() {
     this.addExtraLib({ path: 'globals.d.ts', content: global_declare })
+    if (!this.isLoaded('@/cloud-sdk')) { this.loadDeclaration('@/cloud-sdk') }
     if (!this.isLoaded('globals')) { this.loadDeclaration('globals') }
     if (!this.isLoaded('database-proxy')) { this.loadDeclaration('database-proxy') }
     if (!this.isLoaded('database-ql')) { this.loadDeclaration('database-ql') }

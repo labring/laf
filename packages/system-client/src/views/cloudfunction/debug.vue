@@ -3,20 +3,22 @@
     <div v-if="func" class="header">
       <span style="font-size: 22px;line-height: 40px;">
         <b>{{ func.label }}</b>
-        <span v-if="saved_code_diff" style="margin-left: 8px; font-size: 18px; color: red">
-          <i class="el-icon-edit" />
+        <span v-if="saved_code_diff" style="margin-left: 8px; font-size: 18px; color: red; cursor: pointer" @click="diffSaved">
+          [编辑中<i class="el-icon-hot-water" /> ]
         </span>
       </span>
       <el-tag v-clipboard:message="func.name" v-clipboard:success="onCopy" style="margin-left: 14px; " size="mini" type="success">{{ func.name }}</el-tag>
 
-      <el-button
-        style="margin-left: 20px"
-        icon="el-icon-refresh"
-        type="text"
-        size="default"
-        :loading="loading"
-        @click="getFunction"
-      >刷新</el-button>
+      <el-tooltip content="重新加载函数代码，将会丢弃当前未保存的编辑" effect="light" placement="bottom">
+        <el-button
+          style="margin-left: 20px"
+          icon="el-icon-refresh"
+          type="text"
+          size="default"
+          :loading="loading"
+          @click="getFunction"
+        >刷新</el-button>
+      </el-tooltip>
       <el-button
         size="mini"
         style="margin-left: 20px;"
@@ -35,7 +37,7 @@
       >{{ published_version_diff ? '发布': '已发布' }}</el-button>
       <el-button
         v-if="published_func"
-        :type="published_version_diff ? 'default' : 'text'"
+        type="text"
         size="mini"
         :loading="loading"
         style="margin-left: 10px;"
@@ -45,16 +47,15 @@
     </div>
 
     <div style="display: flex;">
-      <div class="editor-container">
-        <!-- <diff-editor :original="value" :modified="value" :height="editorHeight" /> -->
-        <function-editor v-model="value" :height="editorHeight" :dark="false" />
+      <div v-if="func" class="editor-container">
+        <function-editor v-model="value" :name="func.name" :height="editorHeight" :dark="false" @change="cacheCode" />
       </div>
-      <div class="lastest-logs">
+      <div class="latest-logs">
         <el-tabs type="border-card">
           <el-tab-pane label="最近执行">
             <span slot="label">最近执行 <i class="el-icon-refresh" @click="getLatestLogs" /></span>
 
-            <div v-for="log in lastestLogs" :key="log._id" class="log-item">
+            <div v-for="log in latestLogs" :key="log._id" class="log-item">
               <el-tag type="warning" size="normal" @click="showLogDetailDlg(log)">
                 {{ log.created_at | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}
               </el-tag>
@@ -172,7 +173,7 @@ export default {
       // 调试面板显示控制
       showDebugPanel: false,
       // 最近日志
-      lastestLogs: [],
+      latestLogs: [],
       // 当前查看日志详情
       logDetail: undefined,
       // 日志详情对话框显示控制
@@ -220,6 +221,7 @@ export default {
   async created() {
     this.func_id = this.$route.params.id
     await this.getFunction()
+    this.restoreCachedCode()
     this.getLatestLogs()
     this.getChangeHistory()
     this.setTagViewTitle()
@@ -283,6 +285,7 @@ export default {
 
       if (r.error) { return showError('保存失败！') }
 
+      localStorage.removeItem(this.getCodeCacheKey(this.func.version))
       await this.getFunction()
       this.getChangeHistory()
       if (showTip) {
@@ -327,7 +330,7 @@ export default {
 
       if (r.error) { return showError('发布失败!') }
 
-      this.getFunction()
+      this.published_func = await getPublishedFunction(this.func._id)
       showSuccess('已发布: ' + this.func.name)
     },
     async getLogByRequestId(requestId) {
@@ -348,7 +351,7 @@ export default {
       const res = await getFunctionLogs({ func_id: this.func_id }, 1, 15)
         .finally(() => { this.loading = false })
 
-      this.lastestLogs = res.data || []
+      this.latestLogs = res.data || []
     },
     /**
      * 获取函数变更记录
@@ -368,12 +371,21 @@ export default {
       this.isShowLogDetail = true
     },
     /**
-     * 对比已发布与当前的云函数代码
+     * 对比已发布与当前编辑的云函数代码
      */
     diffPublished() {
       this.diffCode.original = this.published_func.code
       this.diffCode.modified = this.value
-      this.diffCode.title = `云函数代码变更对比：#${this.published_func.version}(已发布) -> (当前）`
+      this.diffCode.title = `云函数代码变更对比：#${this.published_func.version}(已发布) -> (当前编辑）`
+      this.isShowDiffEditor = true
+    },
+    /**
+     * 对比已保存与当前编辑的云函数代码
+     */
+    diffSaved() {
+      this.diffCode.original = this.func.code
+      this.diffCode.modified = this.value
+      this.diffCode.title = `云函数代码变更对比：#${this.published_func.version}(已保存) -> (当前编辑）`
       this.isShowDiffEditor = true
     },
     onCloseDiffEditor() {
@@ -383,6 +395,9 @@ export default {
         title: 'Code DiffEditor'
       }
     },
+    /**
+     * 对比云函数版本记录的代码
+     */
     showChangeDiffEditor(index) {
       const original = this.changeHistory[index]
       const modified = index > 0 ? this.changeHistory[index - 1] : null
@@ -455,6 +470,24 @@ export default {
     updateEditorHeight() {
       const height = document.body.clientHeight
       this.editorHeight = height - 110
+    },
+    /** 本地缓存代码变更 */
+    cacheCode(value) {
+      const version = this.func.version
+      localStorage.removeItem(this.getCodeCacheKey(version - 1))
+      localStorage.setItem(this.getCodeCacheKey(version), value)
+    },
+    /** 加载本地缓存代码变更 */
+    restoreCachedCode() {
+      const key = this.getCodeCacheKey(this.func.version)
+      const code = localStorage.getItem(key)
+      if (code) {
+        this.value = code
+      }
+    },
+    /** 获取本地代码缓存 key */
+    getCodeCacheKey(version) {
+      return `$cached_function@${this.appid}::${this.func.name}#${version}`
     }
   }
 }
@@ -473,7 +506,7 @@ export default {
   padding: 0;
 }
 
-.lastest-logs {
+.latest-logs {
   padding-left: 5px;
   width: 20%;
 
