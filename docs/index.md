@@ -1,4 +1,5 @@
 ---
+title: laf.js 云开发文档
 home: true
 heroImage: /logo.png
 heroAlt: Logo image
@@ -20,5 +21,5 @@ features:
   - title: 云存储
     details: 内置分布式文件存储机制。可按 `Bucket` 存储和管理文件，可通过文件操作 Token，灵活控制文件访问。
 
-footer: BSD-3-Clause Licensed | Copyright © 2021-present Maslow
+footer: Server Side Public Licensed | Copyright © 2021-present Maslow
 ---

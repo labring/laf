@@ -1,14 +1,14 @@
-# LaF 云开发框架
+# laf.js 云开发框架
 
-在线文档：https://docs.lafyun.com/ 
+在线文档：https://docs.lafyun.com/
 
 ## 介绍
 
-`LaF` 是一套开箱即用、完整、开源、为开发者提供的基于 serverless 模式和 js 编程的云开发框架。
+`laf.js` 是一套开箱即用、完整、开源、为开发者提供的基于 serverless 模式和 js 编程的云开发框架。
 
 用熟悉的 js，轻松搞定前后台整体业务，前端秒变全栈。
 
-> **LaF 开发交流QQ群：`603059673`**
+> **`laf.js` 开发交流 QQ 群：`603059673`**
 
 ### 主要内容
 
@@ -30,12 +30,13 @@
 ### 云开发用户
 
 如果你喜欢微信云开发的极速体验，但又不想局限于微信等具体平台的限制，那么可以基于 `LaF` 搭建属于自己的云开发平台；
-  - `Laf` 也是当前已知的唯一的开源云开发平台，技术选型更自信、风险更可控、场景更易扩展
-  - 自建云开发，可以获取极速的云开发体验，同时没有技术选型时迁移平台的烦恼顾虑
+
+- `laf.js` 也是当前已知的唯一的开源云开发平台，技术选型更自信、风险更可控、场景更易扩展
+- 自建云开发，可以获取极速的云开发体验，同时没有技术选型时迁移平台的烦恼顾虑
 
 ### 个人开发者、初创创业团队
 
-在产品初期基于 `LaF` 可以极大减少服务端 API 的数量；
+在产品初期基于 `laf.js` 可以极大减少服务端 API 的数量；
 
 根据我们的实践经验，初期能节约 90% 的服务端 API；
 
@@ -50,7 +51,6 @@
 可完整交付整个云开发框架源码，私网部署；
 
 ## 运行截图
-
 
 应用列表
 ![](https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/apps.png)
@@ -76,10 +76,9 @@
 协作成员
 ![](https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/member.png)
 
-
 ## 使用说明
 
-### 快速部署 LaF 服务
+### 快速部署 `laf.js` 服务
 
 > 基于 Docker Compose 快速部署，需要你熟悉 docker 以及 docker-compose 的使用
 
@@ -109,7 +108,7 @@ git clone https://github.com/Maslow/laf.git
 cd laf/deploy-scripts
 
 docker network create laf_shared_network --driver bridge || true
-docker pull lessx/laf-app-server:latest
+docker pull lafyun/app-service:latest
 
 # 启动所有服务
 docker-compose up
@@ -133,12 +132,12 @@ npm run build && npm run watch
 docker network create laf_shared_network --driver bridge || true
 
 # download the app service image
-docker pull lafyun/laf-app-service:latest
+docker pull lafyun/app-service:latest
 
-# launch laf services
+# launch laf.js services
 docker-compose up
 
-# start laf local client
+# start laf.js local client
 cd packages/system-client
 npm run dev
 # Now open http://console.local-dev.host:8080 in your browsers!

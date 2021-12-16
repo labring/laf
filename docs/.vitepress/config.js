@@ -1,7 +1,7 @@
 module.exports = {
   lang: 'zh-CN',
-  title: 'Laf 云开发文档',
-  description: 'LaF 云开发开发者使用文档',
+  title: 'laf.js 云开发文档',
+  description: 'laf.js 云开发开发者使用文档',
 
   themeConfig: {
     repo: 'Maslow/laf',
@@ -30,7 +30,7 @@ module.exports = {
 function getGuideSidebar() {
   return [
     {
-      text: 'Laf 介绍',
+      text: 'laf.js 介绍',
       link: '/guide/',
       children: [
         // { text: '简介', link: '/guide/' },

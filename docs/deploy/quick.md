@@ -1,13 +1,13 @@
 ---
-title: 快速部署 Laf 服务
+title: 快速部署 laf.js 服务
 sidebar: false
 ---
 
-### 快速部署 Laf 服务
+### 快速部署 laf.js 服务
 
 > 基于 Docker Compose 快速部署，需要你熟悉 docker 以及 docker-compose 的使用
 
-##### 安装 Docker  (CentOS)
+##### 安装 Docker (CentOS)
 
 > 本例只给出 CentOS 下的安装脚本，若安装其它环境请参考官方文档 https://docs.docker.com/engine/install/
 
@@ -22,7 +22,7 @@ sudo systemctl start docker
 
 ```
 
-> 还需安装 docker-compose @see  https://docs.docker.com/compose/install/
+> 还需安装 docker-compose @see https://docs.docker.com/compose/install/
 
 ##### 启动服务
 

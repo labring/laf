@@ -1,6 +1,6 @@
 {
   "name": "laf-project",
-  "description": "laf serverless cloud development platform",
+  "description": "laf.js serverless cloud development platform",
   "private": "true",
   "repository": {
     "type": "git",
