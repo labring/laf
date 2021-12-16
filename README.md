@@ -8,7 +8,7 @@
 
 用熟悉的 js，轻松搞定前后台整体业务，前端秒变全栈。
 
-> **`laf.js` 开发交流 QQ 群：`603059673`**
+`laf.js` 开发交流 QQ 群：`603059673`
 
 ### 主要内容
 
@@ -22,8 +22,6 @@
 
 - 用于快速开发 MVP，专注于客户端业务，极大程度减少服务端开发工作量
 - 自建属于自己可控的云开发环境
-
-> 想了解云开发：[微信云开发](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/basis/getting-started.html)
 
 ## 谁适合使用 ？
 
