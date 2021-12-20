@@ -37,7 +37,7 @@ describe('npm-util(unit): Package Declaration Load', () => {
    })
   
   /**
-   * load from self package: less-api-database
+   * load from self package: database-proxy
    */
    it('load d.ts of database-proxy (typings)', async () => {
     const pkg = new PackageDeclaration('database-proxy', nmp)
@@ -45,6 +45,18 @@ describe('npm-util(unit): Package Declaration Load', () => {
     // console.log(pkg.declarations)
      
     assert.strictEqual(pkg.name, 'database-proxy')
+    assert.ok(pkg.declarations.length > 0)
+   })
+  
+  /**
+   * load from self package: alipay-sdk
+   */
+   it('load d.ts of alipay-sdk (typings)', async () => {
+    const pkg = new PackageDeclaration('alipay-sdk', nmp)
+     await pkg.load()
+    // console.log(pkg)
+     
+    assert.strictEqual(pkg.name, 'alipay-sdk')
     assert.ok(pkg.declarations.length > 0)
   })
 })

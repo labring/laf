@@ -100,13 +100,20 @@ export class PackageDeclaration extends PackageInfo {
    * 2. 如果未读取到，则指定 package.json#main 所在目录 下的 index.d.ts 为 typings
    */
   async resolveTypingsEntryPath() {
+
+    let defaultFilename = 'index.d.ts'
+    const entryStat = await this.exists(this.entryFile)
+    if (entryStat.isFile()) {
+      const { name } = path.parse(this.entryFile)
+      defaultFilename = `${name}.d.ts`
+    }
+
+    const defaultTypings = path.join(this.entryPath, defaultFilename)
     const typings = this.info?.typings || this.info?.types
 
-    const defaultTypings = path.join(this.entryPath, 'index.d.ts')
     if (!typings) {
       return defaultTypings
     }
-
 
     const typingFile = path.join(this.rootPath, typings)
     const stat = await this.exists(typingFile)
@@ -115,7 +122,7 @@ export class PackageDeclaration extends PackageInfo {
     }
 
     if (stat.isDirectory()) {
-      return path.join(typingFile, 'index.d.ts')
+      return path.join(typingFile, defaultFilename)
     }
 
     return typingFile

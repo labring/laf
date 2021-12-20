@@ -42,7 +42,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./packages/system-server:/app
-      - ./packages/cloud-function:/app/node_modules/cloud-function-engine:ro
       - ./packages/database-proxy:/app/node_modules/database-proxy:ro
       - ./packages/database-ql:/app/node_modules/database-ql:ro
       - ./packages/database-ql:/app/node_modules/database-proxy/node_modules/database-ql:ro

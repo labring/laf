@@ -49,4 +49,12 @@ describe('npm-util(unit): Package parse', () => {
     // console.log(pkg)
     assert.strictEqual(pkg.name, '@types/express')
   })
+
+
+  it('get pkg dir: alipay-sdk', async () => {
+    const pkg = new PackageInfo('alipay-sdk', nmp)
+    await pkg.parsePackageInfo()
+    // console.log(pkg)
+    assert.strictEqual(pkg.name, 'alipay-sdk')
+  })
 })

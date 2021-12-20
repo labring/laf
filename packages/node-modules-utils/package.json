@@ -23,7 +23,10 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "npx mocha tests/**test.js",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "copy2app": "sh copy2app.sh",
+    "copy2sys": "sh copy2sys.sh",
+    "copy4dev": "sh copy2app.sh && sh copy2sys.sh"
   },
   "bugs": {
     "url": "https://github.com/Maslow/less-framework/issues"

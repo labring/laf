@@ -20,6 +20,12 @@ export class PackageInfo {
   rootPath: string
 
   /**
+  * entry file
+  * 为 main / module 指定的入口文件
+  */
+  entryFile: string
+
+  /**
    * entry path
    * 为 main / module 指定的入口文件所在目录
    */
@@ -38,10 +44,10 @@ export class PackageInfo {
   }
 
   get dependencyNames(): string[] {
-    if(!this.dependencies) return []
+    if (!this.dependencies) return []
     return Object.keys(this.dependencies)
   }
-  
+
   /**
    * common entry file
    */
@@ -124,6 +130,7 @@ export class PackageInfo {
       entryPath = path.dirname(entryPath)
     }
 
+    this.entryFile = entryFile
     this.entryPath = entryPath
   }
 
@@ -164,7 +171,7 @@ export class PackageInfo {
    * 文件或文件是否存在
    * @param p 
    */
-   async exists(p: string) {
+  async exists(p: string) {
     try {
       const stat = await fse.stat(p)
       return stat
