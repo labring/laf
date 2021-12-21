@@ -48,7 +48,7 @@
   "typescript.updateImportsOnFileMove.enabled": "always",
   // json
   "[json]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    "editor.defaultFormatter": "vscode.json-language-features"
   },
   "editor.renderControlCharacters": true,
   // rest client
