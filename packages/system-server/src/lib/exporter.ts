@@ -1,8 +1,9 @@
-import { ApplicationStruct } from "../api/application"
+import { ApplicationStruct, getApplicationDbAccessor } from "../api/application"
 import { CloudFunctionStruct } from "../api/function"
 import { PolicyStruct } from "../api/policy"
 import { Constants } from "../constants"
 import { DatabaseAgent } from "./db-agent"
+import * as AdmZip from 'adm-zip'
 
 
 /**
@@ -11,42 +12,46 @@ import { DatabaseAgent } from "./db-agent"
  * - policies
  */
 export class ApplicationExporter {
+  readonly version = '1.0'
   readonly app: ApplicationStruct
+  readonly zip: AdmZip
 
   constructor(app: ApplicationStruct) {
     this.app = app
+    this.zip = new AdmZip()
   }
 
   async build() {
-    const meta = this.buildMeta()
-    const functions = await this.buildFunctions()
-    const policies = await this.buildPolicies()
+    this.buildMeta()
+    await this.buildFunctions()
+    await this.buildPolicies()
+    await this.buildCollections()
 
-    return {
-      meta,
-      functions,
-      policies
-    }
+    return this.zip
   }
 
-  private buildMeta() {
-    return {
+  public buildMeta() {
+    const data = {
       name: this.app.name,
-      created_at: Date.now()
+      buckets: this.app.buckets || [],
+      packages: this.app.packages || [],
+      created_at: new Date(),
+      version: this.version
     }
+
+    this.zip.addFile('app.json', this.json2buffer(data))
   }
 
-  private async buildFunctions() {
+  public async buildFunctions() {
     const db = DatabaseAgent.db
     const docs = await db.collection<CloudFunctionStruct>(Constants.cn.functions)
       .find({ appid: this.app.appid })
       .toArray()
 
-    const ret = docs.map(func => {
-      return {
+    for (const func of docs) {
+      const meta = {
         name: func.name,
         label: func.label,
-        code: func.code,
         hash: func.hash,
         tags: func.tags,
         description: func.description,
@@ -56,19 +61,20 @@ export class ApplicationExporter {
         debugParams: func.debugParams,
         version: func.version
       }
-    })
 
-    return ret
+      this.zip.addFile(`functions/${func.name}/meta.json`, this.json2buffer(meta))
+      this.zip.addFile(`functions/${func.name}/index.ts`, Buffer.from(func.code))
+    }
   }
 
-  private async buildPolicies() {
+  public async buildPolicies() {
     const db = DatabaseAgent.db
     const docs = await db.collection<PolicyStruct>(Constants.cn.policies)
       .find({ appid: this.app.appid })
       .toArray()
 
-    const ret = docs.map(po => {
-      return {
+    for (const po of docs) {
+      const data = {
         name: po.name,
         description: po.description,
         status: po.status,
@@ -76,8 +82,31 @@ export class ApplicationExporter {
         injector: po.injector ?? null,
         hash: po.hash,
       }
-    })
 
-    return ret
+      this.zip.addFile(`policies/${po.name}.json`, this.json2buffer(data))
+    }
+  }
+
+  public async buildCollections() {
+    const accessor = await getApplicationDbAccessor(this.app)
+    const docs = await accessor.db.listCollections().toArray()
+
+    for (const co of docs) {
+      if (co.name.startsWith('__')) continue
+      if (co.name.endsWith('.files')) continue
+      if (co.name.endsWith('.chunks')) continue
+
+      const data = {
+        name: co.name,
+        options: (co as any).options,
+        indexes: await accessor.db.collection(co.name).indexes()
+      }
+
+      this.zip.addFile(`collections/${co.name}.json`, this.json2buffer(data))
+    }
+  }
+
+  private json2buffer(data: Object) {
+    return Buffer.from(JSON.stringify(data))
   }
 }

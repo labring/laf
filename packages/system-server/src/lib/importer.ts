@@ -1,7 +1,8 @@
 import assert = require("assert")
 
 import { ClientSession } from "mongodb"
-import { ApplicationStruct } from "../api/application"
+import * as AdmZip from 'adm-zip'
+import { ApplicationStruct, getApplicationDbAccessor } from "../api/application"
 import { CloudFunctionStruct } from "../api/function"
 import { getPolicyByName, PolicyStruct } from "../api/policy"
 import { Constants } from "../constants"
@@ -10,6 +11,30 @@ import { DatabaseAgent } from "./db-agent"
 import { getFunctionByName } from '../api/function'
 import { generateRandString } from "../utils/rand"
 import { compileTs2js } from "../utils/lang"
+import { BucketMode, StorageAgent } from "../api/storage"
+
+interface AppMeta {
+  name: string
+  version: string
+  buckets: {
+    name: string
+    mode: BucketMode
+  }[]
+  packages: {
+    name: string
+    version: string
+  }[]
+}
+
+interface CollectionStructure {
+  name: string
+  options: any
+  indexes: {
+    key: any
+    background?: boolean
+    unique?: boolean
+  }[]
+}
 
 /**
  * Import application definition from json object:
@@ -18,30 +43,55 @@ import { compileTs2js } from "../utils/lang"
  */
 export class ApplicationImporter {
   readonly app: ApplicationStruct
-  private _data: any = {}
+  private zip: AdmZip
 
+  public meta: AppMeta
   private functions: CloudFunctionStruct[] = []
   private policies: PolicyStruct[] = []
+  private collections: CollectionStructure[] = []
 
-  constructor(app: ApplicationStruct, data: any) {
+  /**
+   * 
+   * @param app the app
+   * @param data 
+   */
+  constructor(app: ApplicationStruct, data: Buffer) {
     assert.ok(app, 'empty app got')
     assert.ok(data, 'empty data got')
 
     this.app = app
-    this._data = data
+    this.zip = new AdmZip(data)
   }
 
+  /**
+   * Parse the app
+   */
   parse() {
+    this.parseMeta()
     this.parseFunctions()
     this.parsePolicies()
+    this.parseCollections()
   }
 
+  /**
+   * Import the app
+   */
   async import() {
     const accessor = DatabaseAgent.sys_accessor
     const session = accessor.conn.startSession()
 
     try {
       await session.withTransaction(async () => {
+        // import packages 
+        const packages = this.meta.packages || []
+        for (const pkg of packages)
+          await this.importPackage(pkg.name, pkg.version, session)
+
+        // import buckets
+        const buckets = this.meta.buckets || []
+        for (const bucket of buckets)
+          await this.importBucket(bucket.name, bucket.mode, session)
+
         // import functions
         for (const func of this.functions)
           await this.importFunction(func, session)
@@ -49,10 +99,120 @@ export class ApplicationImporter {
         // import policies
         for (const policy of this.policies)
           await this.importPolicy(policy, session)
+
+        // import collections
+        const collections = this.collections || []
+        for (const collection of collections)
+          await this.importCollection(collection)
       })
     } finally {
       await session.endSession()
     }
+  }
+
+  private parseMeta() {
+    const str = this.zip.readAsText('app.json')
+    this.meta = JSON.parse(str)
+  }
+
+  private parseFunctions() {
+    const funcs = this.zip.getEntries()
+      .filter(c => c.entryName.startsWith('functions/') && c.entryName.endsWith('/meta.json'))
+      .map(c => {
+        const str = this.zip.readAsText(c)
+        const func = JSON.parse(str)
+        assert.ok(func.name, 'name of function cannot be empty')
+        const code = this.zip.readAsText(`functions/${func.name}/index.ts`)
+        return { ...func, code }
+      })
+
+    this.functions = funcs.map(func => this.parseFunction(func))
+  }
+
+  private parseFunction(func: any) {
+    // check function
+    assert.ok(func, 'function data cannot be empty')
+    assert.ok(func.name, 'name of function cannot be empty')
+    assert.ok(func.code, 'code of function cannot be empty')
+
+    const data: CloudFunctionStruct = {
+      name: func.name,
+      code: func.code,
+      label: func.label || func.name,
+      hash: func.hash || hashFunctionCode(func.code),
+      tags: func.tags || [],
+      description: func.description || '',
+      enableHTTP: func.enableHTTP || false,
+      status: func.status || 0,
+      triggers: this.parseTriggers(func),
+      debugParams: func.debugParams,
+      version: func.version || 0,
+      created_at: new Date(),
+      updated_at: new Date(),
+      created_by: this.app.created_by,
+      compiledCode: compileTs2js(func.code),
+      appid: this.app.appid,
+      _id: undefined
+    }
+
+    return data
+  }
+
+  private parseTriggers(func_data: any) {
+    const triggers = func_data.triggers
+    if (!triggers) return []
+    for (const tri of triggers) {
+      assert.ok(tri._id, `got empty trigger id of function ${func_data.name}`)
+      assert.ok(tri.type, `got empty trigger type of function ${func_data.name}`)
+      tri['status'] = tri['status'] || 0
+    }
+    return triggers
+  }
+
+  private parsePolicies() {
+    const policies = this.zip.getEntries()
+      .filter(c => c.entryName.startsWith('policies/') && c.entryName.endsWith('.json'))
+      .map(c => {
+        const str = this.zip.readAsText(c)
+        const po = JSON.parse(str)
+        return po
+      })
+
+    this.policies = policies.map(po => this.parsePolicy(po))
+  }
+
+  private parsePolicy(po: any) {
+    // check policy
+    assert.ok(po, 'policy data cannot be empty')
+    assert.ok(po.name, 'policy name cannot be empty')
+    assert.ok(po.rules, 'policy rules cannot be empty')
+
+    const data: PolicyStruct = {
+      name: po.name,
+      description: po.description,
+      status: po.status,
+      rules: po.rules,
+      injector: po.injector ?? null,
+      hash: po.hash,
+      created_at: new Date(),
+      updated_at: new Date(),
+      created_by: this.app.created_by,
+      appid: this.app.appid,
+      _id: undefined
+    }
+
+    return data
+  }
+
+  private parseCollections() {
+    const collections = this.zip.getEntries()
+      .filter(c => c.entryName.startsWith('collections/') && c.entryName.endsWith('.json'))
+      .map(c => {
+        const str = this.zip.readAsText(c)
+        return JSON.parse(str)
+      })
+
+    this.collections = collections
   }
 
   private async importFunction(func: CloudFunctionStruct, session: ClientSession) {
@@ -83,76 +243,60 @@ export class ApplicationImporter {
     return r.insertedId
   }
 
-  private parseFunctions() {
-    const funcs = this._data?.functions ?? []
-    this.functions = funcs.map(func => this.parseFunction(func))
+  private async importPackage(name: string, version: string, session: ClientSession) {
+    const db = DatabaseAgent.sys_accessor.db
+
+    // check if package existed
+    const packages = this.app.packages ?? []
+    const existed = packages?.filter(pkg => pkg.name === name)?.length
+    if (existed) return
+
+    const r = await db.collection<ApplicationStruct>(Constants.cn.applications)
+      .updateOne(
+        { appid: this.app.appid },
+        {
+          $push: {
+            packages: { name: name, version: version }
+          }
+        }, { session })
+
+    return r.modifiedCount
   }
 
-  private parseFunction(func: any) {
-    // check function
-    assert.ok(func, 'function data cannot be empty')
-    assert.ok(func.name, 'name of function cannot be empty')
-    assert.ok(func.code, 'code of function cannot be empty')
+  private async importBucket(name: string, mode: BucketMode, session: ClientSession) {
+    const db = DatabaseAgent.sys_accessor.db
 
-    const data: CloudFunctionStruct = {
-      name: func.name,
-      code: func.code,
-      label: func.label || func.name,
-      hash: func.hash || hashFunctionCode(func.code),
-      tags: func.tags || [],
-      description: func.description || '',
-      enableHTTP: func.enableHTTP || false,
-      status: func.status || 0,
-      triggers: this.parseTriggers(func),
-      debugParams: func.debugParams,
-      version: func.version || 0,
-      created_at: Date.now(),
-      updated_at: Date.now(),
-      created_by: this.app.created_by,
-      compiledCode: compileTs2js(func.code),
-      appid: this.app.appid,
-      _id: undefined
+    // check bucket name exists
+    const [existed] = (this.app.buckets || []).filter(bk => bk.name === name)
+    if (existed) return
+
+    const sa = new StorageAgent()
+    const internalName = `${this.app.appid}_${name}`
+    const ret = await sa.createBucket(internalName, mode, this.app.config.server_secret_salt)
+    if (!ret) {
+      throw new Error(`Failed to create bucket: ${name}`)
     }
 
-    return data
+    // add to app
+    await db.collection<ApplicationStruct>(Constants.cn.applications)
+      .updateOne({ appid: this.app.appid }, {
+        $push: {
+          buckets: { name, mode }
+        }
+      }, { session })
   }
 
-  private parseTriggers(func_data: any) {
-    const triggers = func_data.triggers
-    if (!triggers) return []
-    for (const tri of triggers) {
-      assert.ok(tri._id, `got empty trigger id of function ${func_data.name}`)
-      assert.ok(tri.type, `got empty trigger type of function ${func_data.name}`)
-      tri['status'] = tri['status'] || 0
-    }
-    return triggers
-  }
+  private async importCollection(coll: CollectionStructure) {
+    const accessor = await getApplicationDbAccessor(this.app)
+    const db = accessor.db
 
-  private parsePolicies() {
-    const policies = this._data?.policies ?? []
-    this.policies = policies.map(po => this.parsePolicy(po))
-  }
+    const collections = await db.listCollections()
+      .toArray()
 
-  private parsePolicy(po: any) {
-    // check policy
-    assert.ok(po, 'policy data cannot be empty')
-    assert.ok(po.name, 'policy name cannot be empty')
-    assert.ok(po.rules, 'policy rules cannot be empty')
+    const existed = collections.filter(c => c.name === coll.name)
+    if (existed.length) return
 
-    const data: PolicyStruct = {
-      name: po.name,
-      description: po.description,
-      status: po.status,
-      rules: po.rules,
-      injector: po.injector ?? null,
-      hash: po.hash,
-      created_at: new Date(),
-      updated_at: new Date(),
-      created_by: this.app.created_by,
-      appid: this.app.appid,
-      _id: undefined
-    }
-
-    return data
+    await db.createCollection(coll.name, coll.options)
+    await db.collection(coll.name).createIndexes(coll.indexes)
   }
 }

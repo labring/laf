@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-11-05 14:13:22
+ * @LastEditTime: 2021-12-21 17:25:44
  * @Description: 
  */
 
@@ -39,8 +39,8 @@ export interface CloudFunctionStruct {
   enableHTTP: boolean
   appid: string
   debugParams: string
-  created_at: number
-  updated_at: number
+  created_at: Date
+  updated_at: Date
   created_by: any
 }
 

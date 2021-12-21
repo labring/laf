@@ -14,6 +14,22 @@ export function exportRawText(name, data) {
 }
 
 /**
+ * export raw blob
+ * @param {string} name
+ * @param {Blob} data
+ */
+export function exportRawBlob(name, data) {
+  const reader = new FileReader()
+  reader.readAsDataURL(data)
+  reader.onload = e => {
+    const save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a')
+    save_link.href = e.target.result
+    save_link.download = name
+    save_link.click()
+  }
+}
+
+/**
  * read text from local file
  * @param {File} file
  */

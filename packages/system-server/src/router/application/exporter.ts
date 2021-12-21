@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-09 14:46:44
- * @LastEditTime: 2021-09-09 15:26:12
+ * @LastEditTime: 2021-12-21 15:40:38
  * @Description: 
  */
 
@@ -30,6 +30,10 @@ export async function handleExportApplication(req: Request, res: Response) {
   if (code) return res.status(code).send()
 
   const exporter = new ApplicationExporter(app)
-  const data = await exporter.build()
-  return res.send(data)
+  const zip = await exporter.build()
+
+  return res
+    .attachment(`${app.name}.zip`)
+    .contentType('application/octet-stream')
+    .send(zip.toBuffer())
 }

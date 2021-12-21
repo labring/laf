@@ -1,11 +1,14 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-29 11:35:11
- * @LastEditTime: 2021-11-17 18:54:14
+ * @LastEditTime: 2021-12-21 17:25:50
  * @Description: 
  */
 
 import { Router } from 'express'
+import * as multer from 'multer'
+import path = require('path')
+import { generateUUID } from '../../utils/rand'
 import { handleNotImplemented } from '../common'
 import { handleGetCollaborators, handleGetRoles, handleInviteCollaborator, handleRemoveCollaborator, handleSearchCollaborator } from './collaborator'
 import { handleCreateApplication } from './create'
@@ -16,6 +19,18 @@ import { handleAddPackage, handleGetPackages, handleRemovePackage, handleUpdateP
 import { handleRemoveApplication } from './remove'
 import { handleStopApplicationService, handleStartApplicationService, handleRemoveApplicationService } from './service'
 import { handleUpdateApplication } from './update'
+
+/**
+ * Creates the multer uploader
+ */
+const uploader = multer({
+  storage: multer.diskStorage({
+    filename: (_req, file, cb) => {
+      const { ext } = path.parse(file.originalname)
+      cb(null, generateUUID() + ext)
+    }
+  })
+})
 
 export const ApplicationRouter = Router()
 
@@ -98,7 +113,7 @@ ApplicationRouter.get('/:appid/export', handleExportApplication)
 /**
  * Import the definition to application
  */
-ApplicationRouter.post('/:appid/import', handleImportApplication)
+ApplicationRouter.post('/:appid/import', uploader.single('file'), handleImportApplication)
 
 
 /**

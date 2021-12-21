@@ -1,12 +1,13 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-09 14:46:44
- * @LastEditTime: 2021-09-10 00:42:10
+ * @LastEditTime: 2021-12-21 19:10:02
  * @Description: 
  */
 
+import fsp = require('fs/promises')
 import { Request, Response } from 'express'
-import { getApplicationByAppid } from '../../api/application'
+import { getApplicationByAppid, publishApplicationPackages } from '../../api/application'
 import { publishFunctions } from '../../api/function'
 import { checkPermission } from '../../api/permission'
 import { publishAccessPolicies } from '../../api/policy'
@@ -27,21 +28,24 @@ export async function handleImportApplication(req: Request, res: Response) {
   const appid = req.params.appid
   const app = await getApplicationByAppid(appid)
   if (!app) return res.status(422).send('invalid appid')
-  const import_data = req.body?.import_data
-  if (!import_data) return res.status(422).send('import_data cannot be empty')
+  const file = req.file
+  if (!file) return res.status(422).send('import file cannot be empty')
 
   // check permission
   const code = await checkPermission(uid, APPLICATION_ADD.name, app)
   if (code) return res.status(code).send()
 
-  const importer = new ApplicationImporter(app, import_data)
 
   try {
+    const data = await fsp.readFile(file.path)
+    const importer = new ApplicationImporter(app, data)
+
     importer.parse()
     await importer.import()
 
     await publishFunctions(app)
     await publishAccessPolicies(app)
+    await publishApplicationPackages(app.appid)
     return res.send({ data: 'ok' })
   } catch (error) {
     logger.error('import application got error:', error)

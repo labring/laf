@@ -220,7 +220,7 @@
             :auto-upload="false"
             :multiple="false"
             :show-file-list="true"
-            accept=".json"
+            accept=".lapp"
             :limit="1"
             :on-change="onImportFileChanged"
           >
@@ -243,7 +243,7 @@
 <script>
 import { createApplication, getMyApplications, startApplicationService, stopApplicationService, removeApplicationService, updateApplication, removeApplication, exportApplication, importApplication } from '@/api/application'
 import { showError, showSuccess } from '@/utils/show'
-import { exportRawText, readTextFromFile } from '@/utils/file'
+import { exportRawBlob } from '@/utils/file'
 import { parseTime } from '@/utils'
 
 // 默认化创建表单的值
@@ -438,13 +438,12 @@ export default {
     },
     async exportApp(app) {
       this.loading = true
-      const res = await exportApplication(app.appid)
+      const data = await exportApplication(app.appid)
         .finally(() => { this.loading = false })
 
-      const data = JSON.stringify(res)
       const time = parseTime(Date.now(), '{y}{m}{d}{h}{i}{s}')
-      const filename = `${app.name}_${time}.json`
-      exportRawText(filename, data)
+      const filename = `${app.name}_${time}.lapp`
+      exportRawBlob(filename, data)
     },
     showImportForm(app) {
       this.importForm = { app, file: null }
@@ -460,16 +459,23 @@ export default {
     },
     async handleImportApp() {
       this.loading = true
+      if (!this.importForm.file) return
+      if (!this.importForm.app) return
+
+      const app = this.importForm.app
       try {
-        const text = await readTextFromFile(this.importForm.file)
-        const import_data = JSON.parse(text)
-        const appid = this.importForm.app?.appid
-        const res = await importApplication(appid, import_data)
+        const file = this.importForm.file
+        const appid = app?.appid
+        const res = await importApplication(appid, file)
         if (res.error) {
           return showError('导入失败:' + res.error)
         }
 
-        showSuccess('导入成功!')
+        // 重启应用
+        await stopApplicationService(app.appid)
+        await startApplicationService(app.appid)
+
+        showSuccess('导入应用成功!')
         this.importForm = { app: null, file: null }
         this.dialogImportVisible = false
       } finally {
@@ -479,11 +485,11 @@ export default {
     getRuntimeVersion(app) {
       const image = app.runtime?.image
       if (!image) {
-        return 'unknow'
+        return 'unknown'
       }
 
       const [, version] = image.split(':')
-      return version || 'unknow'
+      return version || 'unknown'
     },
     getRuntimeMemory(app) {
       const memory = app.runtime?.metrics?.memory

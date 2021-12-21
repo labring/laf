@@ -185,7 +185,8 @@ export async function removeApplicationService(appid) {
 export async function exportApplication(appid) {
   const res = await request({
     url: `/apps/${appid}/export`,
-    method: 'get'
+    method: 'get',
+    responseType: 'blob'
   })
   return res
 }
@@ -193,15 +194,17 @@ export async function exportApplication(appid) {
 /**
  * 导入应用
  * @param {string} appid
+ * @param {File} file
  * @returns
  */
-export async function importApplication(appid, import_data) {
+export async function importApplication(appid, file) {
+  const form = new FormData()
+  form.append('file', file)
   const res = await request({
     url: `/apps/${appid}/import`,
     method: 'post',
-    data: {
-      import_data
-    }
+    data: form,
+    headers: { 'Content-Type': 'multipart/form-data' }
   })
   return res
 }
