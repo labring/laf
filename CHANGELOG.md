@@ -1,9 +1,19 @@
-# [](https://github.com/Maslow/laf/compare/v0.6.22...v) (2021-12-10)
+# [](https://github.com/Maslow/laf/compare/v0.6.23...v) (2021-12-21)
+
+
+
+## [0.6.23](https://github.com/Maslow/laf/compare/v0.6.22...v0.6.23) (2021-12-21)
 
 
 ### Bug Fixes
 
 * **cloud-function:** fix ide error in unpublished function ([633a2b3](https://github.com/Maslow/laf/commit/633a2b3db1fb245740cb27fe256e1bbbcec1490f))
+* **node-modules-util:** fix ts type parsing error for 'alipay-sdk' ([d41dd21](https://github.com/Maslow/laf/commit/d41dd21ef53d5739a6177b326d63e3835bd2b7fb))
+
+
+### Features
+
+* **sys:** refactor export & import app, support app package; ([18a4a8a](https://github.com/Maslow/laf/commit/18a4a8ae6b50ac26d232c844eb0a3a2e543a86ce))
 
 
 
