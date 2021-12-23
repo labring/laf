@@ -42,12 +42,10 @@
     "@types/lodash": "^4.14.168",
     "@vue/cli-plugin-babel": "4.4.4",
     "@vue/cli-plugin-eslint": "^3.1.1",
-    "@vue/cli-plugin-unit-jest": "^4.5.13",
     "@vue/cli-service": "^3.12.1",
     "@vue/test-utils": "1.0.0-beta.29",
     "autoprefixer": "9.5.1",
     "babel-eslint": "10.1.0",
-    "babel-jest": "^26.6.3",
     "babel-plugin-dynamic-import-node": "2.3.3",
     "chalk": "2.4.2",
     "chokidar": "^3.5.2",
@@ -79,12 +77,11 @@
     "npm": ">= 3.0.0"
   },
   "keywords": [
-    "vue",
-    "admin",
-    "less-framework",
+    "laf.js",
+    "cloudfunction",
+    "serverless",
     "element-ui",
-    "less-api",
-    "laf"
+    "less-api"
   ],
   "license": "MIT",
   "lint-staged": {

@@ -65,6 +65,7 @@ services:
     volumes:
       - ./packages/gateway/scripts:/scripts
       - ./packages/system-client/dist:/app
+      - ./packages/app-console/dist:/app-console
       - ./docs/.vitepress/dist:/docs
       - ./packages/gateway/app.conf:/etc/nginx/templates/app.conf.template
       - ./packages/gateway/system.conf:/etc/nginx/templates/system.conf.template

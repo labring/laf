@@ -81,7 +81,7 @@ export default {
   },
   methods: {
     initEditor() {
-      const filename = `${this.name}.ts`
+      const filename = `${this.name}=${Date.now()}.ts`
       this.editor = monaco.editor.create(this.$refs.jseditor, {
         lineNumbers: 'on',
         roundedSelection: true,

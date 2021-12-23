@@ -1,2 +1,2 @@
-rm -rf ../gateway/dist
-cp -r dist ../gateway/dist
+rm -rf ../gateway/system-client
+cp -r dist ../gateway/system-client

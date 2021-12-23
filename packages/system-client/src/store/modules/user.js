@@ -1,6 +1,6 @@
 import { login, getUserProfile } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resetRouter } from '@/router'
+
 import { Message } from 'element-ui'
 
 const state = {
@@ -47,12 +47,7 @@ const actions = {
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
       removeToken()
-      resetRouter()
 
-      // reset visited views and cached views
-      // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
-      dispatch('tagsView/delAllViews', null, { root: true })
-      dispatch('app/clearStates')
       resolve()
     })
   },

@@ -4,7 +4,6 @@ import { constantRoutes } from './constants'
 
 Vue.use(Router)
 
-export { asyncRoutes } from './async'
 export { constantRoutes } from './constants'
 
 /**

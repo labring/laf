@@ -8,7 +8,6 @@
 </template>
 
 <script>
-import store from '@/store'
 import { AppMain, Navbar } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 
@@ -23,7 +22,6 @@ export default {
   },
   created() {
     console.log('main layout created')
-    store.dispatch('app/clearStates')
   },
   methods: {
   }

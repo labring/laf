@@ -241,7 +241,7 @@
 </template>
 
 <script>
-import { createApplication, getMyApplications, startApplicationService, stopApplicationService, removeApplicationService, updateApplication, removeApplication, exportApplication, importApplication } from '@/api/application'
+import { createApplication, getMyApplications, startApplicationService, stopApplicationService, removeApplicationService, updateApplication, removeApplication, exportApplication, importApplication, openAppConsole } from '@/api/application'
 import { showError, showSuccess } from '@/utils/show'
 import { exportRawBlob } from '@/utils/file'
 import { parseTime } from '@/utils'
@@ -308,9 +308,10 @@ export default {
       //   path: `/app/${app.appid}/dashboard/index`
       // })
       // window.open(route_url.href, '_blank')
-      this.$router.push({
-        path: `/app/${app.appid}/dashboard/index`
-      })
+      // this.$router.push({
+      //   path: `/app/${app.appid}/dashboard/index`
+      // })
+      openAppConsole(app)
     },
     // 显示创建表单
     showCreateForm() {

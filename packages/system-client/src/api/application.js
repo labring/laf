@@ -1,29 +1,7 @@
-import store from '@/store'
+
+import { getCurrentBaseURL } from '@/utils'
+import { getToken, getTokenExpire } from '@/utils/auth'
 import request from '@/utils/request'
-
-/**
- * 获取应用的协作者列表
- * @param {string} username
- */
-export function getCollaborators() {
-  const appid = store.state.app.appid
-  return request({
-    url: `/apps/${appid}/collaborators`,
-    method: 'get'
-  })
-}
-
-/**
- * 删除应用的一个协作者
- * @param {string} collaborator_id
- */
-export function removeCollaborator(collaborator_id) {
-  const appid = store.state.app.appid
-  return request({
-    url: `/apps/${appid}/collaborators/${collaborator_id}`,
-    method: 'delete'
-  })
-}
 
 /**
  * 请求我的应用
@@ -93,49 +71,6 @@ export async function removeApplication(appid) {
     method: 'delete'
   })
   return res
-}
-
-/**
- * 添加协作成员
- * @param {member_id, roles}
- * @returns
- */
-export async function inviteCollaborator(member_id, roles) {
-  const appid = store.state.app.appid
-  const res = await request({
-    url: `/apps/${appid}/invite`,
-    method: 'post',
-    data: {
-      member_id,
-      roles
-    }
-  })
-  return res
-}
-
-/**
- * 获取所有应用角色
- * @param {string} username
- */
-export function getAllApplicationRoles() {
-  return request({
-    url: '/apps/collaborators/roles',
-    method: 'get'
-  })
-}
-
-/**
- * 根据用户名搜索用户
- * @param {string} username
- */
-export function searchUserByUsername(username) {
-  return request({
-    url: '/apps/collaborators/search',
-    method: 'post',
-    data: {
-      username
-    }
-  })
 }
 
 /**
@@ -210,69 +145,23 @@ export async function importApplication(appid, file) {
 }
 
 /**
- * 获取应用的依赖
- * @param {*} appid
- * @returns
+ * Open app console
+ * @param {*} app
  */
-export async function getApplicationPackages(appid) {
-  const res = await request({
-    url: `/apps/${appid}/packages`,
-    method: 'get'
-  })
-  return res
-}
+export async function openAppConsole(app) {
+  const base_url = getCurrentBaseURL()
+  const console_uri = process.env.VUE_APP_APP_CONSOLE_URI
+  const back_url = encodeURIComponent(window.location.href)
 
-/**
- * 添加应用的依赖
- * @param {*} appid
- * @returns
- */
-export async function addApplicationPackage(appid, { name, version }) {
-  const res = await request({
-    url: `/apps/${appid}/packages`,
-    method: 'post',
-    data: { name, version }
-  })
-  return res
-}
+  let app_console_url = `${console_uri}/#/app/${app.appid}/dashboard/index?$back_url=${back_url}`
 
-/**
- * 更新应用的依赖
- * @param {*} appid
- * @returns
- */
-export async function updateApplicationPackage(appid, { name, version }) {
-  const res = await request({
-    url: `/apps/${appid}/packages`,
-    method: 'put',
-    data: { name, version }
-  })
-  return res
-}
+  // pass auth info when in CORS
+  if (console_uri.startsWith('http')) {
+    app_console_url = app_console_url + `&access_token=${getToken()}&expire=${getTokenExpire()}&with_auth=true`
+  } else {
+    app_console_url = base_url + app_console_url
+  }
 
-/**
- * 删除应用的依赖
- * @param {*} appid
- * @returns
- */
-export async function removeApplicationPackage(appid, name) {
-  const res = await request({
-    url: `/apps/${appid}/packages`,
-    method: 'delete',
-    data: { name }
-  })
-  return res
-}
-
-/**
- * 获取当前应用的访问地址
- * @param {*} appid default is current appid
- * @returns
- */
-export function getAppAccessUrl() {
-  const appid = store.state.app.appid
-  const domain = store.state.app.app_deploy_host
-  const schema = store.state.app.app_deploy_url_schema || 'http'
-  const url = `${schema}://${appid}.${domain}`
-  return url
+  console.log(app_console_url, 'app_console_url')
+  window.open(app_console_url, '_blank')
 }

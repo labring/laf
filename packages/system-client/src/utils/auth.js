@@ -4,13 +4,18 @@ const kExpire = 'token_expire'
 
 export function getToken() {
   const token = localStorage.getItem(kToken)
-  const expire = parseInt(localStorage.getItem(kExpire) || 0)
+  const expire = getTokenExpire()
 
   if (!expire || expire <= Date.now() / 1000) {
     removeToken()
   }
 
   return token
+}
+
+export function getTokenExpire() {
+  const expire = parseInt(localStorage.getItem(kExpire) || 0)
+  return expire
 }
 
 export function setToken(token, expire) {

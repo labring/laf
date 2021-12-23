@@ -12,7 +12,8 @@ ADD ./system.conf /etc/nginx/templates/system.conf.template
 ADD ./app.conf /etc/nginx/templates/app.conf.template
 ADD ./scripts /scripts
 
-ADD ./dist /app/
+ADD ./system-client /app/
+ADD ./app-console /app-console
 ADD ./docs /docs/
 
 CMD [ "sh", "/scripts/start.sh" ]
