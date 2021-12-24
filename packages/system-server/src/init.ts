@@ -5,7 +5,7 @@ import { InitializerApi } from "./api/init"
 import Config from "./config"
 import { logger } from "./lib/logger"
 
-const SYSTEM_APPID = `00000000-0000-0000-0000-000000000000`
+const SYSTEM_EXTENSION_APPID = `00000000-0000-0000-0000-000000000000`
 
 /**
  * x. create collection indexes
@@ -30,18 +30,18 @@ async function main() {
     account_id = account._id
   }
 
-  // create system server app
-  const app = await getApplicationByAppid(SYSTEM_APPID)
+  // create system extension server app
+  const app = await getApplicationByAppid(SYSTEM_EXTENSION_APPID)
   if (!app) {
-    await InitializerApi.createSystemApp(account_id, SYSTEM_APPID)
+    await InitializerApi.createSystemExtensionApp(account_id, SYSTEM_EXTENSION_APPID)
     logger.info('create system server app')
 
-    await InitializerApi.initSystemApp(SYSTEM_APPID)
+    await InitializerApi.initSystemExtensionApp(SYSTEM_EXTENSION_APPID)
     logger.info('init system server app')
   }
 
-  // run system server app
-  await InitializerApi.startSystemApp(SYSTEM_APPID)
+  // run system extension server app
+  await InitializerApi.startSystemExtensionApp(SYSTEM_EXTENSION_APPID)
   logger.info('start system server app')
 }
 

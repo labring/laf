@@ -159,9 +159,9 @@ export default class Config {
     return password
   }
 
-  static get SYSTEM_SERVER_APP_PACKAGE() {
-    const default_ = path.resolve(__dirname, '../apps/system-server.lapp')
-    const package_: string = process.env.SYSTEM_SERVER_APP_PACKAGE || default_
+  static get SYSTEM_EXTENSION_SERVER_APP_PACKAGE() {
+    const default_ = path.resolve(__dirname, '../extension/system-server.lapp')
+    const package_: string = process.env.SYSTEM_EXTENSION_SERVER_APP_PACKAGE || default_
     return package_
   }
 }

@@ -59,12 +59,12 @@ export class InitializerApi {
   }
 
   /**
-   * create system server app
+   * create system extension server app
    * @param account_id 
    * @param appid 
    * @returns app _id
    */
-  static async createSystemApp(account_id: ObjectId, appid: string) {
+  static async createSystemExtensionApp(account_id: ObjectId, appid: string) {
     const SYSTEM_APP_NAME = 'laf.js system server app'
     const db = DatabaseAgent.db
     const db_config = DatabaseAgent.parseConnectionUri(Config.sys_db_uri)
@@ -102,11 +102,11 @@ export class InitializerApi {
   }
 
   /**
-   * init system server app
+   * init system extension server app
    */
-  static async initSystemApp(appid: string) {
+  static async initSystemExtensionApp(appid: string) {
     const app = await getApplicationByAppid(appid)
-    const data = fs.readFileSync(Config.SYSTEM_SERVER_APP_PACKAGE)
+    const data = fs.readFileSync(Config.SYSTEM_EXTENSION_SERVER_APP_PACKAGE)
 
     const importer = new ApplicationImporter(app, data)
 
@@ -120,11 +120,11 @@ export class InitializerApi {
   }
 
   /**
-   * start system server app
+   * start system extension server app
    * @param appid 
    * @returns container id
    */
-  static async startSystemApp(appid: string) {
+  static async startSystemExtensionApp(appid: string) {
     const app = await getApplicationByAppid(appid)
     const container_id = await ApplicationService.start(app)
 
