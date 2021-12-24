@@ -26,9 +26,7 @@ router.beforeEach(async(to, from, next) => {
 
   // remove auth info if request from system client with auth info
   if (query?.with_auth && query?.access_token && query?.expire) {
-    if (!hasToken) {
-      setToken(query.access_token, query.expire)
-    }
+    setToken(query.access_token, query.expire)
     setSystemClientUrl(query?.$back_url)
     const target = { ...to, query: {}}
     next(target, { replace: true })
@@ -36,7 +34,6 @@ router.beforeEach(async(to, from, next) => {
   }
 
   // remove $back_url in query
-  console.log(query, 'query')
   if (query?.$back_url) {
     setSystemClientUrl(query?.$back_url)
     const target = { ...to, query: {}}
