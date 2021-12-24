@@ -47,22 +47,18 @@ exports.main = async function (ctx) {
 
 ## 客户端 WebSocket 连接
 
-以下示例使用 `ws` (npm install ws) 连接 LaF WebSocket 服务，开发者亦可以使用其它 WebSocket 库:
-
 ```js
-import { WebSocket } from "ws";
-
 const ws = new WebSocket("wss://your-own-appid.lafyun.com");
-ws.on("open", (socket) => {
-  console.log("connected");
-  ws.send("hi");
-});
+wss.onopen = (socket) => {
+  console.log('connected')
+  wss.send('hi')
+}
 
-ws.on("message", (data, isBinary) => {
-  console.log(data.toString());
-});
+wss.onmessage = (data) => {
+  console.log(data.toString())
+}
 
-ws.on("close", () => {
-  console.log("closed");
-});
+wss.onclose = () => {
+  console.log('closed')
+}
 ```
