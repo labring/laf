@@ -9,7 +9,7 @@ import request from '@/utils/request'
  */
 export function getMyApplications() {
   return request({
-    url: '/apps/my',
+    url: '/sys-api/apps/my',
     method: 'get'
   })
 }
@@ -21,7 +21,7 @@ export function getMyApplications() {
  */
 export async function getApplicationByAppid(appid) {
   const res = await request({
-    url: `/apps/${appid}`,
+    url: `/sys-api/apps/${appid}`,
     method: 'get'
   })
 
@@ -35,7 +35,7 @@ export async function getApplicationByAppid(appid) {
  */
 export async function createApplication({ name }) {
   const res = await request({
-    url: `/apps/create`,
+    url: `/sys-api/apps/create`,
     method: 'post',
     data: {
       name
@@ -51,7 +51,7 @@ export async function createApplication({ name }) {
  */
 export async function updateApplication(appid, { name }) {
   const res = await request({
-    url: `/apps/${appid}`,
+    url: `/sys-api/apps/${appid}`,
     method: 'post',
     data: {
       name
@@ -67,7 +67,7 @@ export async function updateApplication(appid, { name }) {
  */
 export async function removeApplication(appid) {
   const res = await request({
-    url: `/apps/${appid}`,
+    url: `/sys-api/apps/${appid}`,
     method: 'delete'
   })
   return res
@@ -80,7 +80,7 @@ export async function removeApplication(appid) {
  */
 export async function startApplicationService(appid) {
   const res = await request({
-    url: `/apps/${appid}/service/start`,
+    url: `/sys-api/apps/${appid}/service/start`,
     method: 'post'
   })
   return res
@@ -93,7 +93,7 @@ export async function startApplicationService(appid) {
  */
 export async function stopApplicationService(appid) {
   const res = await request({
-    url: `/apps/${appid}/service/stop`,
+    url: `/sys-api/apps/${appid}/service/stop`,
     method: 'post'
   })
   return res
@@ -106,7 +106,7 @@ export async function stopApplicationService(appid) {
  */
 export async function removeApplicationService(appid) {
   const res = await request({
-    url: `/apps/${appid}/service/remove`,
+    url: `/sys-api/apps/${appid}/service/remove`,
     method: 'post'
   })
   return res
@@ -119,7 +119,7 @@ export async function removeApplicationService(appid) {
  */
 export async function exportApplication(appid) {
   const res = await request({
-    url: `/apps/${appid}/export`,
+    url: `/sys-api/apps/${appid}/export`,
     method: 'get',
     responseType: 'blob'
   })
@@ -136,7 +136,7 @@ export async function importApplication(appid, file) {
   const form = new FormData()
   form.append('file', file)
   const res = await request({
-    url: `/apps/${appid}/import`,
+    url: `/sys-api/apps/${appid}/import`,
     method: 'post',
     data: form,
     headers: { 'Content-Type': 'multipart/form-data' }

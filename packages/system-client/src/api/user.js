@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function login(data) {
   return request({
-    url: '/account/login',
+    url: '/sys-api/account/login',
     method: 'post',
     data
   })
@@ -20,7 +20,7 @@ export function login(data) {
  */
 export function getUserProfile() {
   return request({
-    url: '/account/profile',
+    url: '/sys-api/account/profile',
     method: 'get'
   })
 }
@@ -30,7 +30,7 @@ export function getUserProfile() {
  */
 export function signup(data) {
   return request({
-    url: '/account/signup',
+    url: '/sys-api/account/signup',
     method: 'post',
     data
   })
@@ -41,7 +41,7 @@ export function signup(data) {
  */
 export function edit(data) {
   return request({
-    url: '/account/edit',
+    url: '/sys-api/account/edit',
     method: 'post',
     data
   })

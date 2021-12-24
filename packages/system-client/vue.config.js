@@ -40,12 +40,13 @@ module.exports = {
     // before: require('./mock/mock-server.js'),
     proxy: {
       // detail: https://cli.vuejs.org/config/#devserver-proxy
-      [process.env.VUE_APP_BASE_API_SYS]: {
+      '/sys-api': {
         target: 'http://console.local-dev.host:8080/',
-        changeOrigin: true,
-        // pathRewrite: {
-        //   ['^' + process.env.VUE_APP_BASE_API_SYS]: ''
-        // }
+        changeOrigin: true
+      },
+      '/sys-extension-api': {
+        target: 'http://console.local-dev.host:8080/',
+        changeOrigin: true
       }
     },
     disableHostCheck: true
