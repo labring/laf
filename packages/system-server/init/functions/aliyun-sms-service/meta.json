@@ -1,9 +1,0 @@
-{
-  "label": "aliyun-sms-service",
-  "name": "aliyun-sms-service",
-  "description": "阿里云通信-发短信内部调用服务，不开启外网访问",
-  "enableHTTP": false,
-  "status": 0,
-  "debugParams": "{\n  \"phone\": \"13184211245\",\n  \"code\": \"1234\"\n}",
-  "tags": ["预置", "阿里云"]
-}

@@ -1,4 +1,5 @@
 import * as dotenv from 'dotenv'
+import * as path from 'path'
 dotenv.config()
 
 /**
@@ -143,5 +144,24 @@ export default class Config {
     const secret: string = process.env.STORAGE_SERVICE_SECRET
     const entrypoint: string = process.env.STORAGE_SERVICE_API_ENTRYPOINT
     return { secret, entrypoint }
+  }
+
+  static get INIT_ROOT_ACCOUNT() {
+    const account: string = process.env.INIT_ROOT_ACCOUNT || 'root'
+    return account
+  }
+
+  static get INIT_ROOT_ACCOUNT_PASSWORD() {
+    const password: string = process.env.INIT_ROOT_ACCOUNT_PASSWORD
+    if (!password) {
+      throw new Error('env: `INIT_ROOT_ACCOUNT_PASSWORD` is missing')
+    }
+    return password
+  }
+
+  static get SYSTEM_SERVER_APP_PACKAGE() {
+    const default_ = path.resolve(__dirname, '../apps/system-server.lapp')
+    const package_: string = process.env.SYSTEM_SERVER_APP_PACKAGE || default_
+    return package_
   }
 }

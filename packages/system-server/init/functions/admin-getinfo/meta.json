@@ -1,8 +1,0 @@
-{
-  "label": "后台管理-获取管理员信息",
-  "name": "admin-getinfo",
-  "description": "",
-  "enableHTTP": true,
-  "status": 1,
-  "tags": ["后台管理", "预置"]
-}

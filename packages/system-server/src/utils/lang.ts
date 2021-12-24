@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-10-06 21:36:32
+ * @LastEditTime: 2021-12-24 13:42:15
  * @Description: 
  */
 
@@ -31,8 +31,8 @@ export function deepFreeze(object: Object) {
 
 
 /**
- * 编译 Typescript 代码到 js
- * @param source Typescript 源代码
+ * compile typescript code to javascript
+ * @param source typescript source code
  */
 export function compileTs2js(source: string) {
   const jscode = ts.transpile(source, {

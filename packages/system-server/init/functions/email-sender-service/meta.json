@@ -1,8 +1,0 @@
-{
-  "label": "email-sender-service",
-  "name": "email-sender-service",
-  "description": "",
-  "enableHTTP": false,
-  "status": 0,
-  "tags": ["预置"]
-}

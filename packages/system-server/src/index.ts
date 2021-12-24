@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-11-15 16:00:03
+ * @LastEditTime: 2021-12-24 13:34:48
  * @Description: 
  */
 
@@ -11,21 +11,13 @@ import { v4 as uuidv4 } from 'uuid'
 import Config from './config'
 import { router } from './router/index'
 import { logger } from './lib/logger'
-import { createSystemCollectionIndexes } from './api/init'
 
 const server = express()
 server.use(express.json({
   limit: '10000kb'
 }) as any)
 
-createSystemCollectionIndexes()
-  .then(() => {
-    logger.info('system db indexes created')
-  })
 
-/**
- * Allow CORS by default
- */
 server.all('*', function (_req, res, next) {
   res.header('X-Powered-By', 'LaF Server')
   next()

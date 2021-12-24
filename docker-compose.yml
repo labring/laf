@@ -38,7 +38,8 @@ services:
       STORAGE_SERVICE_API_ENTRYPOINT: http://storage_service:9010
       STORAGE_SERVICE_SECRET: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
       DEBUG_BIND_HOST_APP_PATH: '${PWD}/packages/app-service'
-    command: npx nodemon
+      INIT_ROOT_ACCOUNT_PASSWORD: abc123
+    command: sh /app/start.sh
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./packages/system-server:/app
