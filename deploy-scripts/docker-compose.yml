@@ -36,6 +36,9 @@ services:
       APP_SERVICE_DEPLOY_URL_SCHEMA: ${APP_SERVICE_DEPLOY_URL_SCHEMA}
       STORAGE_SERVICE_API_ENTRYPOINT: http://storage_service:9010
       STORAGE_SERVICE_SECRET: ${SYS_SERVER_SECRET_SALT}
+      STORAGE_SERVICE_DEPLOY_HOST: "fs.${DEPLOY_DOMAIN:?err}:${PUBLISH_PORT:-8080}"
+      INIT_ROOT_ACCOUNT: ${INIT_ROOT_ACCOUNT}
+      INIT_ROOT_ACCOUNT_PASSWORD: ${INIT_ROOT_ACCOUNT_PASSWORD}
     command: dockerize -wait tcp://mongo:27017 node dist/index.js
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -57,6 +60,7 @@ services:
       - mongo
     environment:
       DEPLOY_DOMAIN: "*.${DEPLOY_DOMAIN:?err}"
+      DEPLOY_FS_DOMAIN: "*.fs.${DEPLOY_DOMAIN:?err}"
       SYS_CLIENT_HOST: ${SYS_CLIENT_HOST:?err}
       DOCS_HOST: "docs.${DEPLOY_DOMAIN:?err}"
     command: "sh /scripts/start.sh"

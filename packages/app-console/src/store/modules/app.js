@@ -29,7 +29,9 @@ const state = {
   file_token: null,
 
   app_deploy_host: null,
-  app_deploy_url_schema: 'http'
+  app_deploy_url_schema: 'http',
+  storage_deploy_host: null,
+  storage_deploy_url_schema: 'http'
 }
 
 const mutations = {
@@ -55,6 +57,12 @@ const mutations = {
   SET_APP_DEPLOY_URL_SCHEMA: (state, schema) => {
     state.app_deploy_url_schema = schema
   },
+  SET_STORAGE_DEPLOY_HOST: (state, domain) => {
+    state.storage_deploy_host = domain
+  },
+  SET_STORAGE_DEPLOY_URL_SCHEMA: (state, schema) => {
+    state.storage_deploy_url_schema = schema
+  },
   CLEAR_STATE: (state) => {
     state.application = null
     state.appid = null
@@ -64,6 +72,8 @@ const mutations = {
     state.file_token = null
     state.app_deploy_host = null
     state.app_deploy_url_schema = 'http'
+    state.storage_deploy_host = null
+    state.storage_deploy_url_schema = 'http'
   }
 }
 
@@ -81,6 +91,8 @@ const actions = {
     commit('SET_FILE_TOKEN', res.data?.file_token)
     commit('SET_APP_DEPLOY_HOST', res.data?.app_deploy_host)
     commit('SET_APP_DEPLOY_URL_SCHEMA', res.data?.app_deploy_url_schema)
+    commit('SET_STORAGE_DEPLOY_HOST', res.data?.storage_deploy_host)
+    commit('SET_STORAGE_DEPLOY_URL_SCHEMA', res.data?.storage_deploy_url_schema)
   },
   clearStates({ commit }) {
     commit('CLEAR_STATE')

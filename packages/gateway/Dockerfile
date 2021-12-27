@@ -10,6 +10,7 @@ WORKDIR /app
 EXPOSE 80
 ADD ./system.conf /etc/nginx/templates/system.conf.template
 ADD ./app.conf /etc/nginx/templates/app.conf.template
+ADD ./fs-proxy.conf /etc/nginx/templates/fs-proxy.conf.template
 ADD ./scripts /scripts
 
 ADD ./system-client /app/

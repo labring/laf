@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-12-24 13:34:48
+ * @LastEditTime: 2021-12-27 11:18:10
  * @Description: 
  */
 
@@ -11,14 +11,15 @@ import { v4 as uuidv4 } from 'uuid'
 import Config from './config'
 import { router } from './router/index'
 import { logger } from './lib/logger'
+import { DatabaseAgent } from './lib/db-agent'
 
-const server = express()
-server.use(express.json({
+const app = express()
+app.use(express.json({
   limit: '10000kb'
 }) as any)
 
 
-server.all('*', function (_req, res, next) {
+app.all('*', function (_req, res, next) {
   res.header('X-Powered-By', 'LaF Server')
   next()
 })
@@ -26,7 +27,7 @@ server.all('*', function (_req, res, next) {
 /**
  * Parsing bearer token
  */
-server.use(function (req, _res, next) {
+app.use(function (req, _res, next) {
   const token = splitBearerToken(req.headers['authorization'] ?? '')
   const auth = parseToken(token) || null
   req['auth'] = auth
@@ -37,9 +38,9 @@ server.use(function (req, _res, next) {
   next()
 })
 
-server.use(router)
+app.use(router)
 
-server.listen(Config.PORT, () => logger.info(`listened on ${Config.PORT}`))
+const server = app.listen(Config.PORT, () => logger.info(`listened on ${Config.PORT}`))
 
 
 process.on('unhandledRejection', (reason, promise) => {
@@ -49,3 +50,14 @@ process.on('unhandledRejection', (reason, promise) => {
 process.on('uncaughtException', err => {
   logger.error(`Caught uncaughtException:`, err)
 })
+
+
+process.on('SIGTERM', gracefullyExit)
+process.on('SIGINT', gracefullyExit)
+
+async function gracefullyExit() {
+  DatabaseAgent.sys_accessor.close()
+  server.close(async () => {
+    logger.info('process gracefully exited!')
+  })
+}

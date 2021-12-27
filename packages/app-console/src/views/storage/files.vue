@@ -177,7 +177,7 @@ export default {
         offset: (page - 1) * limit,
         path: this.currentPath,
         token: this.bucketDetail.full_token
-      }).catch(() => { this.listLoading = false })
+      }).finally(() => { this.listLoading = false })
 
       this.list = res.data
 

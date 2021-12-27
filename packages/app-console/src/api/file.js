@@ -2,7 +2,6 @@
 import store from '@/store'
 import { assert } from '@/utils/assert'
 import request from '@/utils/request'
-import { getAppAccessUrl } from '@/api/application'
 
 /**
  * Get bucket list
@@ -164,8 +163,11 @@ export async function deleteFile(bucketName, path, token) {
  * @returns
  */
 export function getAppFileBucketUrl(bucket) {
-  const app_url = getAppAccessUrl()
-  return `${app_url}/file/${bucket}`
+  const appid = store.state.app.appid
+  const domain = store.state.app.storage_deploy_host
+  const schema = store.state.app.storage_deploy_url_schema || 'http'
+  const url = `${schema}://${appid}_${bucket}.${domain}`
+  return url
 }
 
 /**

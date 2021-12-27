@@ -143,7 +143,9 @@ export default class Config {
   static get STORAGE_SERVICE_CONFIG() {
     const secret: string = process.env.STORAGE_SERVICE_SECRET
     const entrypoint: string = process.env.STORAGE_SERVICE_API_ENTRYPOINT
-    return { secret, entrypoint }
+    const deploy_host = process.env.STORAGE_SERVICE_DEPLOY_HOST
+    const schema = process.env.STORAGE_SERVICE_DEPLOY_URL_SCHEMA || this.APP_SERVICE_DEPLOY_URL_SCHEMA
+    return { secret, entrypoint, deploy_host, schema }
   }
 
   static get INIT_ROOT_ACCOUNT() {

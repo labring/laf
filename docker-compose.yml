@@ -37,6 +37,7 @@ services:
       APP_SERVICE_DEPLOY_URL_SCHEMA: 'http'
       STORAGE_SERVICE_API_ENTRYPOINT: http://storage_service:9010
       STORAGE_SERVICE_SECRET: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
+      STORAGE_SERVICE_DEPLOY_HOST: fs.local-dev.host:8080 # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
       DEBUG_BIND_HOST_APP_PATH: '${PWD}/packages/app-service'
       INIT_ROOT_ACCOUNT_PASSWORD: abc123
     command: sh /app/start.sh
@@ -60,7 +61,8 @@ services:
       - mongo
       - system_server
     environment:
-      DEPLOY_DOMAIN: "*.local-dev.host" # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
+      DEPLOY_DOMAIN: "*.local-dev.host"         # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
+      DEPLOY_FS_DOMAIN: "*.fs.local-dev.host"   
       SYS_CLIENT_HOST: console.local-dev.host
       DOCS_HOST: docs.local-dev.host
     volumes:
@@ -70,6 +72,7 @@ services:
       - ./docs/.vitepress/dist:/docs
       - ./packages/gateway/app.conf:/etc/nginx/templates/app.conf.template
       - ./packages/gateway/system.conf:/etc/nginx/templates/system.conf.template
+      - ./packages/gateway/fs-proxy.conf:/etc/nginx/templates/fs-proxy.conf.template
     command: "sh /scripts/start.sh"
     ports:
       - 8080:80

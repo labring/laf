@@ -65,7 +65,7 @@ export class InitializerApi {
    * @returns app _id
    */
   static async createSystemExtensionApp(account_id: ObjectId, appid: string) {
-    const SYSTEM_APP_NAME = 'laf.js system server app'
+    const SYSTEM_APP_NAME = 'System Extension Server'
     const db = DatabaseAgent.db
     const db_config = DatabaseAgent.parseConnectionUri(Config.sys_db_uri)
 
