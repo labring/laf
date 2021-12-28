@@ -8,6 +8,6 @@ git init
 git add -A
 git commit -m "deploy"
 
-git push -f git@github.com:Maslow/laf.github.io.git main
+git push -f git@github.com:lafjs/lafjs.github.io.git main
 
 cd -
