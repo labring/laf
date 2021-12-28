@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-12-07 14:59:23
+ * @LastEditTime: 2021-12-28 20:36:07
  * @Description: 
  */
 
@@ -54,6 +54,8 @@ export async function publishAccessPolicies(app: ApplicationStruct) {
       appid: app.appid
     })
     .toArray()
+
+  if (ret.length === 0) return
 
   // write policies to app db
   const app_accessor = await getApplicationDbAccessor(app)

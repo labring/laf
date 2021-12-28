@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-12-21 17:25:44
+ * @LastEditTime: 2021-12-28 20:37:17
  * @Description: 
  */
 
@@ -86,6 +86,8 @@ export async function publishFunctions(app: ApplicationStruct) {
       appid: app.appid
     })
     .toArray()
+
+  if (ret.length === 0) return
 
   // compile functions
   const data = ret.map(fn => compileFunction(fn))
