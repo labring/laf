@@ -10,7 +10,7 @@ const SYSTEM_EXTENSION_APPID = `00000000-0000-0000-0000-000000000000`
 /**
  * x. create collection indexes
  * a. create root account if not exists
- * b. create & init`system-server` for root account if not exists
+ * b. create & init`system-extension-server` for root account if not exists
  * c. start system server app if not running
  */
 async function main() {
@@ -34,15 +34,15 @@ async function main() {
   const app = await getApplicationByAppid(SYSTEM_EXTENSION_APPID)
   if (!app) {
     await InitializerApi.createSystemExtensionApp(account_id, SYSTEM_EXTENSION_APPID)
-    logger.info('create system server app')
+    logger.info('create system extension server app')
 
     await InitializerApi.initSystemExtensionApp(SYSTEM_EXTENSION_APPID)
-    logger.info('init system server app')
+    logger.info('init system extension server app')
   }
 
   // run system extension server app
   await InitializerApi.startSystemExtensionApp(SYSTEM_EXTENSION_APPID)
-  logger.info('start system server app')
+  logger.info('start system extension server app')
 }
 
 
