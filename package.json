@@ -37,12 +37,12 @@
     "stats": "find ./packages -name '*.ts' | xargs cat | grep -v ^$| wc -l"
   },
   "keywords": [
-    "BaaS",
-    "cloud",
-    "mysql",
-    "acl",
+    "laf.js",
+    "laf",
+    "baas",
+    "laf",
     "serverless",
-    "less-api"
+    "firebase"
   ],
   "devDependencies": {
     "conventional-changelog-cli": "^2.1.1",
