@@ -39,7 +39,7 @@ services:
       STORAGE_SERVICE_DEPLOY_HOST: "fs.${DEPLOY_DOMAIN:?err}:${PUBLISH_PORT:-8080}"
       INIT_ROOT_ACCOUNT: ${INIT_ROOT_ACCOUNT}
       INIT_ROOT_ACCOUNT_PASSWORD: ${INIT_ROOT_ACCOUNT_PASSWORD}
-    command: dockerize -wait tcp://mongo:27017 node dist/index.js
+    command: dockerize -wait tcp://mongo:27017 sh start.sh
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     read_only: true
