@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-11-17 14:11:16
+ * @LastEditTime: 2021-12-28 10:18:03
  * @Description: 
  */
 
@@ -38,10 +38,23 @@ accessor.ready.then(async () => {
 
   // watch database operation event through `WatchStream` of mongodb
   const db = accessor.db
-  const stream = db.watch([], { fullDocument: 'updateLookup' })
-  stream.on("change", (doc) => { DatabaseChangeEventCallBack(doc) })
-  process.on('SIGINT', () => stream.close())
-  process.on('SIGTERM', () => stream.close())
+
+  function startWatchChangeStream() {
+    logger.info('start watching change stream')
+    const stream = db.watch([], { fullDocument: 'updateLookup' })
+    stream.on("change", (doc) => { DatabaseChangeEventCallBack(doc) })
+    stream.on('error', (err) => {
+      logger.error('stream watch error: ', err)
+      setTimeout(() => {
+        logger.info('restart watching change stream...')
+        startWatchChangeStream()
+      }, 3000)
+    })
+    process.on('SIGINT', () => stream.close())
+    process.on('SIGTERM', () => stream.close())
+  }
+
+  startWatchChangeStream()
 
   // emit `App:ready` event
   SchedulerInstance.emit('App:ready')
