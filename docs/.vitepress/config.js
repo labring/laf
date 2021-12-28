@@ -4,7 +4,7 @@ module.exports = {
   description: 'laf.js 云开发开发者使用文档',
 
   themeConfig: {
-    repo: 'Maslow/laf',
+    repo: 'lafjs/laf',
     docsDir: 'docs',
     editLinks: true,
     editLinkText: '在 GitHub 上编辑此页',
