@@ -1,6 +1,6 @@
 {
   "name": "system-server",
-  "version": "0.6.23",
+  "version": "0.7.0",
   "description": "laf - system server",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
@@ -26,7 +26,7 @@
     "adm-zip": "^0.5.9",
     "axios": "^0.24.0",
     "body-parser": "^1.19.0",
-    "database-proxy": "^0.6.4",
+    "database-proxy": "^0.7.0",
     "dayjs": "^1.10.6",
     "dockerode": "^3.3.0",
     "dotenv": "^8.2.0",

@@ -1,6 +1,6 @@
 {
   "name": "app-service",
-  "version": "0.6.23",
+  "version": "0.7.0",
   "description": "the app engine service of lat",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
@@ -25,8 +25,8 @@
   "dependencies": {
     "alipay-sdk": "^3.1.7",
     "axios": "^0.21.1",
-    "cloud-function-engine": "^0.6.10",
-    "database-proxy": "^0.6.4",
+    "cloud-function-engine": "^0.7.0",
+    "database-proxy": "^0.7.0",
     "dayjs": "^1.10.7",
     "dotenv": "^8.2.0",
     "ejs": "^3.1.6",
@@ -38,7 +38,7 @@
     "mongodb": "^4.1.3",
     "mongodb-uri": "^0.9.7",
     "multer": "^1.4.2",
-    "node-modules-utils": "^0.6.23",
+    "node-modules-utils": "^0.7.0",
     "nodemailer": "^6.6.3",
     "validator": "^12.2.0",
     "ws": "^8.2.3"
