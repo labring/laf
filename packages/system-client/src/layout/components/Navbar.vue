@@ -3,7 +3,7 @@
     <div class="nav-leading">
       <div class="logo">
         <a href="/">
-          <img src="https://laf.laogen.site/logo.png">
+          <img src="https://lafjs.github.io/logo.png">
         </a>
       </div>
       <div class="title">{{ title }}</div>
@@ -32,7 +32,7 @@
           </el-dropdown-item>
           <el-dropdown-item divided>
             <div class="content">
-              <a target="_blank" href="https://laf.laogen.site/">开发文档 <i class="el-icon-link" /></a>
+              <a target="_blank" href="https://lafjs.github.io/">开发文档 <i class="el-icon-link" /></a>
             </div>
           </el-dropdown-item>
           <el-dropdown-item divided>

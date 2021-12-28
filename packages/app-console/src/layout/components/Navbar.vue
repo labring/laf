@@ -22,7 +22,7 @@
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>
             <div class="content">
-              <a target="_blank" href="https://laf.laogen.site/">开发文档 <i class="el-icon-link" /></a>
+              <a target="_blank" href="https://lafjs.github.io/">开发文档 <i class="el-icon-link" /></a>
             </div>
           </el-dropdown-item>
           <el-dropdown-item divided>
