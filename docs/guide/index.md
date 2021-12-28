@@ -10,12 +10,12 @@ title: laf.js 云开发介绍
 
 > 如果觉得有用，请不吝给个 star 支持。
 
-[![Github stars](https://img.shields.io/github/stars/Maslow/laf.svg)](https://github.com/Maslow/laf)
+[![Github stars](https://img.shields.io/github/stars/Maslow/laf.svg)](https://github.com/lafjs/laf)
 
 ## 主要内容
 
 - 提供云函数引擎、文件存储、数据访问策略，开箱即用，5 分钟上线应用，前端秒变全栈
-- 前端可使用 [laf-client-sdk](https://github.com/Maslow/laf/tree/main/packages/client-sdk) “直连”数据库，无需与服务端对接口
+- 前端可使用 [laf-client-sdk](https://github.com/lafjs/laf/tree/main/packages/client-sdk) “直连”数据库，无需与服务端对接口
 - 支持 h5、小程序、Uni-app、Flutter 等客户端环境使用
 - 提供云开发控制台，在线管理云函数、文件、数据库、远程部署、日志，在线编写、调试云函数，全智能提示 IDE
 

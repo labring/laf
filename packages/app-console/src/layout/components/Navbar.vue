@@ -27,7 +27,7 @@
           </el-dropdown-item>
           <el-dropdown-item divided>
             <div class="content">
-              <a target="_blank" href="https://github.com/Maslow/laf/">
+              <a target="_blank" href="https://github.com/lafjs/laf/">
                 GitHub <i class="el-icon-link" />
               </a>
             </div>

@@ -4,7 +4,7 @@
   "private": "true",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Maslow/laf.git"
+    "url": "git+https://github.com/lafjs/laf.git"
   },
   "scripts": {
     "install": "lerna exec npm install --parallel",

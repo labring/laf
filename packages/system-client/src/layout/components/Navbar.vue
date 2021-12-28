@@ -15,7 +15,7 @@
     <div class="right-menu">
       <screenfull id="screenfull" class="right-menu-item hover-effect" />
       <!-- <div class="github right-menu-item">
-        <a target="_blank" href="https://github.com/Maslow/laf/">
+        <a target="_blank" href="https://github.com/lafjs/laf/">
           GitHub
         </a>
       </div> -->
@@ -37,7 +37,7 @@
           </el-dropdown-item>
           <el-dropdown-item divided>
             <div class="content">
-              <a target="_blank" href="https://github.com/Maslow/laf/">
+              <a target="_blank" href="https://github.com/lafjs/laf/">
                 GitHub <i class="el-icon-link" />
               </a>
             </div>

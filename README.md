@@ -13,7 +13,7 @@
 ### 主要内容
 
 - 提供云函数引擎、文件存储、数据访问策略，开箱即用，5 分钟上线应用，前端秒变全栈
-- 前端可使用 [laf-client-sdk](https://github.com/Maslow/laf/tree/main/packages/client-sdk) “直连”数据库，无需与服务端对接口
+- 前端可使用 [laf-client-sdk](https://github.com/lafjs/laf/tree/main/packages/client-sdk) “直连”数据库，无需与服务端对接口
 - 另有 Flutter SDK [less-api-client](https://github.com/Maslow/less-api-client-dart)，快速上线移动端应用
 - 支持 h5、小程序、Uni-app、Flutter 等客户端环境使用
 - 提供云开发控制台，在线管理云函数、文件、数据库、远程部署、日志，在线编写、调试云函数，全智能提示 IDE
@@ -100,7 +100,7 @@ sudo systemctl start docker
 ##### 启动服务
 
 ```sh
-git clone https://github.com/Maslow/laf.git
+git clone https://github.com/lafjs/laf.git
 
 # 该目录下有更多部署脚本，可供生产部署时使用
 cd laf/deploy-scripts

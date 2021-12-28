@@ -17,7 +17,7 @@ module.exports = {
       { text: '在线演示', link: '/todo-list', },
       {
         text: '更新记录',
-        link: 'https://github.com/Maslow/laf/blob/main/CHANGELOG.md'
+        link: 'https://github.com/lafjs/laf/blob/main/CHANGELOG.md'
       }
     ],
 

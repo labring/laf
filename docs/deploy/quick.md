@@ -27,7 +27,7 @@ sudo systemctl start docker
 ##### 启动服务
 
 ```shell
-git clone https://github.com/Maslow/laf.git
+git clone https://github.com/lafjs/laf.git
 cd laf/deploy-scripts
 
 # 启动所有服务
