@@ -3,6 +3,8 @@ import { logger } from "./lib/logger"
 
 
 async function main() {
+  initCloudSdkPackage()
+  
   const packages = await getExtraPackages()
   if (!packages.length) {
     logger.info('no extra packages found')
