@@ -162,7 +162,7 @@ export default class Config {
   }
 
   static get SYSTEM_EXTENSION_SERVER_APP_PACKAGE() {
-    const default_ = path.resolve(__dirname, '../extension/system-server.lapp')
+    const default_ = path.resolve(__dirname, '../extension/system-extension-server.lapp')
     const package_: string = process.env.SYSTEM_EXTENSION_SERVER_APP_PACKAGE || default_
     return package_
   }
