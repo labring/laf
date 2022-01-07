@@ -21,7 +21,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Maslow/less-api.git"
+    "url": "git+https://github.com/lafjs/laf.git"
   },
   "author": "maslow(wangfugen@126.com)",
   "license": "ISC",

@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Maslow/less-api.git"
+    "url": "git+https://github.com/lafjs/laf.git"
   },
   "keywords": [
     "laf",
@@ -24,9 +24,9 @@
   "author": "maslow (wangfugen@126.com)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Maslow/less-api/issues"
+    "url": "https://github.com/lafjs/laf/issues"
   },
-  "homepage": "https://github.com/Maslow/less-api#readme",
+  "homepage": "https://github.com/lafjs/laf#readme",
   "dependencies": {
     "axios": "^0.21.1",
     "database-ql": "^0.7.0"
