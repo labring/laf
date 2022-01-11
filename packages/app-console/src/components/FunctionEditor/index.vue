@@ -107,8 +107,11 @@ export default {
         const value = this.editor?.getValue()
         this.$emit('input', value)
         this.$emit('change', value)
-        this.parseImports(this.getValue())
+        this.parseImports(this.getValue() || '')
       })
+
+      // setTimeout(() => this.parseImports(this.getValue()), 0)
+      this.parseImports(this.getValue())
     },
 
     getValue() {

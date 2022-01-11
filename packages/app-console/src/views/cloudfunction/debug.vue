@@ -75,13 +75,14 @@
 
     <el-drawer
       title="调试面板"
-      :visible.sync="showDebugPanel"
+      :visible="showDebugPanel"
       direction="rtl"
       size="40%"
       :destroy-on-close="false"
       :show-close="true"
       :modal="true"
       :wrapper-closable="true"
+      @close="showDebugPanel = false"
     >
 
       <div class="invoke-panel">
