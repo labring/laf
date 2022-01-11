@@ -17,15 +17,15 @@ type GetAccessTokenFuncType = () => string
 
 export interface CloudOptions {
   /**
-   * LaF 应用服务的地址，如： "http://localhost:8080"
+   * `laf.js` 应用服务的地址，如： "http://localhost:8080"
    * @tip 后面 `不要` 以 `/` 结尾
    */
   baseUrl?: string
 
   /**
    * 数据库访问代理的入口地址：
-   * 1. 【不推荐】若不提供 `baseUrl` 则 `dbProxyUrl` 应该为绝对地址，如：`http://localhost:8080/proxy/app`
-   * 2. 【推荐】若提供 `baseUrl` 则 `dbProxyUrl` 可为相对地址， 如： `/proxy/app`，`/proxy/admin`
+   * 1.【不推荐】若不提供 `baseUrl` 则 `dbProxyUrl` 应该为绝对地址，如：`http://localhost:8080/proxy/app`
+   * 2.【推荐】若提供 `baseUrl` 则 `dbProxyUrl` 可为相对地址， 如： `/proxy/app`，`/proxy/admin`
    */
   dbProxyUrl?: string,
 

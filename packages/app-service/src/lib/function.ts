@@ -30,6 +30,7 @@ export interface CloudFunctionStruct extends engine.CloudFunctionStruct {
 
 /**
   * Custom require function in cloud function
+  * 
   * @see CloudFunction.require_func
   * @param module the module id. ex. `path`, `lodash`
   * @returns 

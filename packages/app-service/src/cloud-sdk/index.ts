@@ -27,94 +27,99 @@ export interface MongoDriverObject {
 
 export interface CloudSdkInterface {
   /**
-   * 发送 HTTP 请求，实为 Axios 实例，使用可直接参考 axios 文档
+   * Sending an HTTP request is actually an Axios instance. You can refer to the Axios documentation directly
    */
   fetch: AxiosStatic
 
   /**
-   * 获取一个文件存储管理器
+   * Get a file storage manager
    * 
-   * @deprecated
-   * @param bucket  文件 Bucket 名字，默认为 'public'
+   * @deprecated this is deprecated and will be removed in a future release
+   * @param bucket the bucket name, default is 'public'
    */
   storage(bucket?: string): FileStorageInterface
 
   /**
-   * 获取 LaF database 实例
+   * Get a laf.js database-ql instance
    */
   database(): Db,
 
   /**
-   * 调用云函数
+   * Invoke cloud function 
    */
   invoke: InvokeFunctionType
 
   /**
-   * 抛出云函数事件，其它云函数可设置触发器监听此类事件
+   * Emit a cloud function event that other cloud functions can set triggers to listen for
    */
   emit: EmitFunctionType
 
   /**
-   * 云函数全局内存单例对象，可跨多次调用、不同云函数之间共享数据
-   * 1. 可将一些全局配置初始化到 shared 中，如微信开发信息、短信发送配置
-   * 2. 可共享一些常用方法，如 checkPermission 等，以提升云函数性能
-   * 3. 可做热数据的缓存，建议少量使用（此对象是在 node vm 堆中分配，因为 node vm 堆内存限制）
+   * Cloud function global memory `shared` object, which can share data across multiple requests and different cloud functions
+   * 1. Some global configurations can be initialized into `shared`, such as 3rd-party API configuration
+   * 2. You can share some common methods, such as checkPermission(), to improve the performance of cloud functions
+   * 3. It can cache hot data and is recommended to use it in a small amount (this object is allocated in the node VM heap because of the memory limit of the node VM heap)
    */
   shared: Map<string, any>
 
   /**
-   * 获取 JWT Token，若缺省 `secret`，则使用当前服务器的密钥做签名
+   * Generate a JWT Token, if don't provide `secret` fields, use current server secret key to do signature
    */
   getToken: GetTokenFunctionType
 
   /**
-   * 解析 JWT Token，若缺省 `secret`，则使用当前服务器的密钥做签名
+   * Parse a JWT Token, if don't provide `secret` fields, use current server secret key to verify signature
    */
   parseToken: ParseTokenFunctionType
 
   /**
-   * 当前应用的 MongoDb Node.js Driver 实例对象。
-   * 由于 less-api-database ORM 对象只有部分数据操作能力，故暴露此对象给云函数，让云函数拥有完整的数据库操作能力：
-   * 1. 事务操作
+   * The mongodb instance of MongoDB node.js native driver.
+   * 
+   * Because the laf.js database-QL has only partial data manipulation capability, 
+   * expose this `mongo` object to the cloud function, so that the cloud function has full database manipulation capability:
+   * 1. Transaction operations
    * ```js
-   *   const session = mongo.client.startSession()
-   *   try {
-   *     await session.withTransaction(async () => {
+   *  const session = mongo.client.startSession()
+   *  try {
+   *       await session.withTransaction(async () => {
    *       await mongo.db.collection('xxx').updateOne({}, { session })
    *       await mongo.db.collection('yyy').deleteMany({}, { session })
-   *       // ...
-   *     })
-   *   } finally {
-   *     await session.endSession()
-   *   }
+   *  } finally {
+   *       await session.endSession()
+   *  }
    * ```
-   * 2. 索引管理
+   * 2. Indexes operations
    * ```js
-   *    mongo.db.collection('admins').createIndex('username', { unique: true })
+   *    await mongo.db.collection('users').createIndex('username', { unique: true })
    * ```
-   * 3. 聚合操作
+   * 3. Aggregation operations
+   * ```js
+   *    await mongo.db.collection('users')
+   *      .aggregate([])
+   *      .toArray()
+   * ```
    */
   mongo: MongoDriverObject
 
   /**
-   * WebSocket 连接列表
+   * Websocket connection list
    */
   sockets: Set<WebSocket>
 
   /**
-   * App ID
+   * Current app id
    */
   appid: string
 }
 
 
 /**
- * Cloud SDK 实例
+ * Cloud SDK instance
  */
 const cloud: CloudSdkInterface = create()
 
 /**
- * 等数据库连接成功后，更新其 mongo 对象，否则为 null
+ * After the database connection is successful, update its Mongo object, otherwise it is null
  */
 DatabaseAgent.accessor.ready.then(() => {
   cloud.mongo.client = DatabaseAgent.accessor.conn
@@ -122,7 +127,8 @@ DatabaseAgent.accessor.ready.then(() => {
 })
 
 /**
- * 创建一个 SDK 实例
+ * Create a new Cloud SDK instance
+ * 
  * @returns 
  */
 export function create() {

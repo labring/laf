@@ -16,9 +16,11 @@ class Cloud {
   private config: CloudOptions
 
   /**
-   * 文件上传、下载基地址
+   * [Deprecated] 文件上传、下载基地址
+   * @deprecated The field is deprecated and will be removed in a future release
    */
   get fileBaseUrl(): string {
+    console.warn('Cloud.fileBaseUrl is deprecated and will be removed in a future release')
     return this.config.baseUrl + '/file'
   }
 
@@ -109,6 +111,7 @@ class Cloud {
    * @returns 
    */
   async uploadFile(file: UploadFile, bucket: string, auto_naming = 1) {
+    console.warn('Cloud.uploadFile is deprecated and will be removed in a future release')
     const auto = auto_naming ? 1 : 0
     const res = await this
       ._request

@@ -5,9 +5,10 @@ import { CloudFunction } from "../lib/function"
 
 
 /**
- * 在云函数中调用云函数，此函数运行于云函数中
- * @param name 函数名
- * @param param 函数运行参数
+ * The cloud function is invoked in the cloud function, which runs in the cloud function.
+ * 
+ * @param name the name of cloud function to be invoked
+ * @param param the invoke params
  * @returns 
  */
 export async function invokeInFunction(name: string, param?: FunctionContext) {
