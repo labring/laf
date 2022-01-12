@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-12-28 10:20:34
+ * @LastEditTime: 2022-01-12 22:46:39
  * @Description: 
  */
 
@@ -26,7 +26,6 @@ export const SchedulerInstance = new FrameworkScheduler()
  * Initialize scheduler while db connection is ready
  */
 accessor.ready.then(async () => {
-  logger.error('db connection', 'hahaha')
   // initialize triggers
   const triggers = await getTriggers()
   logger.debug('loadTriggers: ', triggers)

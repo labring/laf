@@ -15,4 +15,4 @@ RUN chown node:node /app/data
 # RUN npm run build
 RUN npm run create-internal-pkg
 USER node
-CMD [ "npm", "run", "start" ]
+CMD [ "sh", "/app/start.sh" ]
