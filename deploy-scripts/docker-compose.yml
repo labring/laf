@@ -4,7 +4,6 @@ services:
     image: bitnami/mongodb:5.0
     environment:
       - MONGODB_REPLICA_SET_MODE=primary
-      - MONGODB_INITIAL_PRIMARY_HOST=mongo
       - MONGODB_ADVERTISED_HOSTNAME=mongo
       - MONGODB_REPLICA_SET_NAME=laf
       - MONGODB_REPLICA_SET_KEY=replicasetkey123
