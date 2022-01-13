@@ -104,6 +104,8 @@ export class ApplicationExporter {
 
       this.zip.addFile(`collections/${co.name}.json`, this.json2buffer(data))
     }
+
+    await accessor.close()
   }
 
   private json2buffer(data: Object) {

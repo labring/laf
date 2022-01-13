@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:26:26
- * @LastEditTime: 2021-10-14 14:27:34
+ * @LastEditTime: 2022-01-13 13:52:29
  * @Description: 
  */
 
@@ -52,8 +52,10 @@ export async function handleUpdateCollection(req: Request, res: Response) {
 
   try {
     await db.command(command)
+    await accessor.close()
     return res.send({ code: 0, data: 'ok' })
   } catch (error) {
+    await accessor.close()
     return res.status(400).send({
       error: error.message,
       code: error.codeName

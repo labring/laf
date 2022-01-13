@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-28 22:00:45
- * @LastEditTime: 2021-12-09 08:21:51
+ * @LastEditTime: 2022-01-13 13:48:28
  * @Description: Application APIs
  */
 
@@ -222,5 +222,6 @@ export async function publishApplicationPackages(appid: string) {
     logger.error(error)
   } finally {
     await session.endSession()
+    await app_accessor.close()
   }
 }

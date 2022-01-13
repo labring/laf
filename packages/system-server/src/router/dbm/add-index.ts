@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:26:26
- * @LastEditTime: 2021-09-04 00:15:15
+ * @LastEditTime: 2022-01-13 13:55:07
  * @Description: 
  */
 
@@ -36,17 +36,18 @@ export async function handleCreateIndex(req: Request, res: Response) {
     return res.status(422).send('invalid index spec')
   }
 
+  const accessor = await getApplicationDbAccessor(app)
   try {
-    const accessor = await getApplicationDbAccessor(app)
     const r = await accessor.db
       .collection(collectionName as string)
       .createIndex(spec, {
         background: true,
         unique: unique as boolean
       })
-
+    await accessor.close()
     return res.send(r)
   } catch (error) {
+    await accessor.close()
     return res.status(400).send(error)
   }
 }

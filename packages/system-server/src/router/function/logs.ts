@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:51:19
- * @LastEditTime: 2021-10-06 23:42:50
+ * @LastEditTime: 2022-01-13 13:54:13
  * @Description: 
  */
 
@@ -57,6 +57,8 @@ export async function handleGetFunctionLogs(req: Request, res: Response) {
   // get the count
   const total = await coll
     .countDocuments(query)
+
+  await accessor.close()
 
   return res.send({
     data: docs,

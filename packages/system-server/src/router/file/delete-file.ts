@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 15:22:34
- * @LastEditTime: 2021-09-03 20:34:59
+ * @LastEditTime: 2022-01-13 13:52:41
  * @Description: 
  */
 
@@ -29,19 +29,22 @@ export async function handleDeleteFile(req: Request, res: Response) {
     return res.status(code).send()
   }
 
+  const accessor = await getApplicationDbAccessor(app)
+
   // delete file
   try {
-    const accessor = await getApplicationDbAccessor(app)
 
     const bucket = new GridFSBucket(accessor.db, { bucketName: bucket_name })
     await bucket.delete(new ObjectId(file_id))
 
+    await accessor.close()
     return res.send({
       code: 0,
       data: file_id
     })
   } catch (error) {
     logger.error(requestId, `delete file ${file_id} in ${bucket_name} got error`, error)
+    await accessor.close()
     return res.status(500).send('Internal Server Error')
   }
 }

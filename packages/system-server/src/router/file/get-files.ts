@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 15:22:34
- * @LastEditTime: 2021-09-03 20:35:20
+ * @LastEditTime: 2022-01-13 13:52:55
  * @Description: 
  */
 
@@ -31,8 +31,8 @@ export async function handleGetFiles(req: Request, res: Response) {
     return res.status(code).send()
   }
 
+  const accessor = await getApplicationDbAccessor(app)
   try {
-    const accessor = await getApplicationDbAccessor(app)
 
     const query = {}
     if (keyword) {
@@ -52,6 +52,7 @@ export async function handleGetFiles(req: Request, res: Response) {
       .sort('uploadDate', 'desc')
       .toArray()
 
+    await accessor.close()
     return res.send({
       code: 0,
       data: files,
@@ -61,6 +62,7 @@ export async function handleGetFiles(req: Request, res: Response) {
     })
   } catch (err) {
     logger.error(requestId, `get files in ${bucket} got error`, err)
+    await accessor.close()
     return res.status(500).send('Internal Server Error')
   }
 }

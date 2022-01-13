@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:26:26
- * @LastEditTime: 2021-10-14 12:25:19
+ * @LastEditTime: 2022-01-13 13:51:41
  * @Description: 
  */
 
@@ -28,5 +28,7 @@ export async function handleCollectionList(req: Request, res: Response) {
 
   const collections = await accessor.db.listCollections().toArray()
   const result = collections.filter(coll => !coll.name.startsWith('__'))
+
+  await accessor.close()
   return res.send(result)
 }

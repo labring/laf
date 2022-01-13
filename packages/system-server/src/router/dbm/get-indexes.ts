@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:26:26
- * @LastEditTime: 2021-09-04 00:14:53
+ * @LastEditTime: 2022-01-13 13:51:32
  * @Description: 
  */
 
@@ -32,5 +32,7 @@ export async function handleGetIndexesOfCollection(req: Request, res: Response) 
   const accessor = await getApplicationDbAccessor(app)
 
   const r = await accessor.db.collection(collectionName as string).indexes()
+  
+  await accessor.close()
   return res.send(r)
 }

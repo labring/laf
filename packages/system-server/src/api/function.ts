@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-12-28 20:37:17
+ * @LastEditTime: 2022-01-13 13:47:55
  * @Description: 
  */
 
@@ -107,6 +107,7 @@ export async function publishFunctions(app: ApplicationStruct) {
     logger.error(error)
   } finally {
     await session.endSession()
+    await app_accessor.close()
   }
 }
 

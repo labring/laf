@@ -15,10 +15,9 @@
   "keywords": [
     "BaaS",
     "cloud",
-    "mysql",
-    "acl",
+    "laf.js",
     "serverless",
-    "less-api",
+    "laf",
     "devops"
   ],
   "dependencies": {

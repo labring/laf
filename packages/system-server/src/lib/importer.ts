@@ -298,5 +298,7 @@ export class ApplicationImporter {
 
     await db.createCollection(coll.name, coll.options)
     await db.collection(coll.name).createIndexes(coll.indexes)
+
+    await accessor.close()
   }
 }

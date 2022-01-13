@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 16:26:26
- * @LastEditTime: 2021-10-14 14:30:41
+ * @LastEditTime: 2022-01-13 13:52:09
  * @Description: 
  */
 
@@ -37,11 +37,13 @@ export async function handleDbProxy(req: Request, res: Response) {
   try {
     const data = await proxy.execute(params)
 
+    await accessor.close()
     return res.send({
       code: 0,
       data
     })
   } catch (error) {
+    await accessor.close()
     if (error.code === 121) {
       const errs = error.errInfo?.details?.schemaRulesNotSatisfied
       return res.send({
