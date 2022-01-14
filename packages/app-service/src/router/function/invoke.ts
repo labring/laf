@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-11-05 13:45:36
+ * @LastEditTime: 2022-01-14 16:30:39
  * @Description: 
  */
 
@@ -73,9 +73,8 @@ export async function handleInvokeFunction(req: Request, res: Response) {
       logger.error(requestId, `invoke function ${func_name} invoke error: `, result)
 
       return res.status(400).send({
-        error: 'invoke function got error',
-        detail: Config.isProd ? undefined : result.error,
-        logs: Config.isProd ? undefined : result.logs
+        error: 'invoke cloud function got error, please check the function logs',
+        requestId
       })
     }
 
