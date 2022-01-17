@@ -1,4 +1,15 @@
-# [](https://github.com/lafjs/laf/compare/v0.7.0...v) (2021-12-28)
+## [0.7.1](https://github.com/lafjs/laf/compare/v0.7.0...v0.7.1) (2022-01-17)
+
+
+### Bug Fixes
+
+* **app-console:** fix tsd parse missing while init editor ([b2818a0](https://github.com/lafjs/laf/commit/b2818a04da6588688622e0b11bdb9f8fca75402e))
+* **app-service:** fix cloud function unsafe log [#34](https://github.com/lafjs/laf/issues/34) ([ecab8bf](https://github.com/lafjs/laf/commit/ecab8bf9dd5cae9cd1933bf28bab5e68bc0335cd))
+* **gateway:** fix nginx conf support 4xx CORS; ([421b854](https://github.com/lafjs/laf/commit/421b85449ec49c0d2865c995a4aef8e6a54e8b3b))
+* **sys-server:** fix default path of system-extension-server.lapp ([72a55e3](https://github.com/lafjs/laf/commit/72a55e39f373235bc20e0296d51aa96aad063e70))
+* **sys-server:** fix memory overflow [#33](https://github.com/lafjs/laf/issues/33) ([0e1b321](https://github.com/lafjs/laf/commit/0e1b3215d4eeb2631cc69a3c313d618eb1b42fae))
+* **sys-server:** fix publish err when func or policy is empty ([c1d6e2a](https://github.com/lafjs/laf/commit/c1d6e2ac4e75a1205fa1479b547ed22b5079ffff))
+* **sys-server:** update system extension server app pkg; ([a96561e](https://github.com/lafjs/laf/commit/a96561ec4debcd894b242234d40f1b6630c5880c))
 
 
 
