@@ -7,7 +7,7 @@ export * from './index'
 // var window: any
 
 if (window) {
-  window['LessApiClient'] = {
+  window['LafClient'] = {
     initLessClient: init,
     Cloud,
     Db,
