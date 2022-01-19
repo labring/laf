@@ -99,18 +99,6 @@ export async function stopApplicationService(appid) {
   return res
 }
 
-/**
- * 删除应用服务
- * @param {*} appid
- * @returns
- */
-export async function removeApplicationService(appid) {
-  const res = await request({
-    url: `/sys-api/apps/${appid}/service/remove`,
-    method: 'post'
-  })
-  return res
-}
 
 /**
  * 导出应用

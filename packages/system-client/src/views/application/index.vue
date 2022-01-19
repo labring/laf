@@ -43,7 +43,7 @@
             {{ getRuntimeMemory(scope.row) }} M
           </template>
         </el-table-column>
-        <el-table-column label="服务启停" align="center" width="300" class-name="small-padding">
+        <el-table-column label="服务启停" align="center" width="240" class-name="small-padding">
           <template slot-scope="{row}">
             <el-button v-if="row.status !== 'running'" :loading="serviceLoading" plain type="success" size="mini" @click="startApp(row)">
               启动
@@ -51,16 +51,9 @@
             <el-button v-if="row.status === 'running'" :loading="serviceLoading" plain type="danger" size="mini" @click="stopApp(row)">
               停止
             </el-button>
-            <el-tooltip content="仅重启应用进程，并不会删除服务实例容器" effect="light" placement="bottom">
-              <el-button v-if="row.status === 'running'" :loading="serviceLoading" plain type="default" size="mini" @click="restartApp(row)">
-                重启
-              </el-button>
-            </el-tooltip>
-            <el-tooltip content="仅重置并重启应用服务实例容器，并不会删除应用或数据" effect="light" placement="bottom">
-              <el-button :loading="serviceLoading" plain type="info" size="mini" @click="removeAppService(row)">
-                重置
-              </el-button>
-            </el-tooltip>
+            <el-button v-if="row.status === 'running'" :loading="serviceLoading" plain type="default" size="mini" @click="restartApp(row)">
+              重启
+            </el-button>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" align="center" min-width="120">
@@ -71,8 +64,8 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" align="center" width="280" class-name="small-padding">
           <template slot-scope="{row}">
-            <el-tooltip :content="row.status !== 'running' ? '请在开发前启动服务！' : '编写云函数、查看日志、管理数据库、文件、成员协作等'" effect="light" placement="top">
-              <el-button type="success" size="mini" :disabled="row.status !== 'running'" @click="toDetail(row)">
+            <el-tooltip content="编写云函数、查看日志、管理数据库、文件、成员协作等" effect="light" placement="top">
+              <el-button type="success" size="mini" @click="toDetail(row)">
                 开发
               </el-button>
             </el-tooltip>
@@ -83,7 +76,7 @@
               导入
             </el-button>
             <el-tooltip content="释放即完全删除应用，暂不可恢复，谨慎操作，仅应用创建者可执行此操作!" effect="light" placement="left">
-              <el-button plain size="mini" type="default" @click="deleteApp(row)">
+              <el-button :disabled="row.status === 'running'" plain size="mini" type="default" @click="deleteApp(row)">
                 释放
               </el-button>
             </el-tooltip>
@@ -127,7 +120,7 @@
             {{ getRuntimeMemory(scope.row) }} M
           </template>
         </el-table-column>
-        <el-table-column label="服务启停" align="center" width="300" class-name="small-padding">
+        <el-table-column label="服务启停" align="center" width="240" class-name="small-padding">
           <template slot-scope="{row}">
             <el-button v-if="row.status !== 'running'" :loading="serviceLoading" plain type="success" size="mini" @click="startApp(row)">
               启动
@@ -135,16 +128,9 @@
             <el-button v-if="row.status === 'running'" :loading="serviceLoading" plain type="danger" size="mini" @click="stopApp(row)">
               停止
             </el-button>
-            <el-tooltip content="仅重启应用进程，并不会删除服务实例容器" effect="light" placement="bottom">
-              <el-button v-if="row.status === 'running'" :loading="serviceLoading" plain type="default" size="mini" @click="restartApp(row)">
-                重启
-              </el-button>
-            </el-tooltip>
-            <el-tooltip content="仅重置并重启应用服务实例容器，并不会删除应用或数据" effect="light" placement="bottom">
-              <el-button :loading="serviceLoading" plain type="info" size="mini" @click="removeAppService(row)">
-                重置
-              </el-button>
-            </el-tooltip>
+            <el-button v-if="row.status === 'running'" :loading="serviceLoading" plain type="default" size="mini" @click="restartApp(row)">
+              重启
+            </el-button>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" align="center" min-width="120">
@@ -155,8 +141,8 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" align="center" width="280" class-name="small-padding">
           <template slot-scope="{row}">
-            <el-tooltip :content="row.status !== 'running' ? '请在开发前启动服务！' : '编写云函数、查看日志、管理数据库、文件、成员协作等'" effect="light" placement="top">
-              <el-button type="success" size="mini" :disabled="row.status !== 'running'" @click="toDetail(row)">
+            <el-tooltip content="编写云函数、查看日志、管理数据库、文件、成员协作等"  effect="light" placement="top">
+              <el-button type="success" size="mini" @click="toDetail(row)">
                 开发
               </el-button>
             </el-tooltip>
@@ -167,7 +153,7 @@
               导入
             </el-button>
             <el-tooltip content="释放即完全删除应用，暂不可恢复，谨慎操作!" effect="light" placement="left">
-              <el-button plain size="mini" type="default" @click="deleteApp(row)">
+              <el-button :disabled="row.status === 'running'" plain size="mini" type="default" @click="deleteApp(row)">
                 释放
               </el-button>
             </el-tooltip>
@@ -241,8 +227,8 @@
 </template>
 
 <script>
-import { createApplication, getMyApplications, startApplicationService, stopApplicationService, removeApplicationService, updateApplication, removeApplication, exportApplication, importApplication, openAppConsole } from '@/api/application'
-import { showError, showSuccess } from '@/utils/show'
+import { createApplication, getMyApplications, startApplicationService, stopApplicationService, updateApplication, removeApplication, exportApplication, importApplication, openAppConsole } from '@/api/application'
+import { showError, showInfo, showSuccess } from '@/utils/show'
 import { exportRawBlob } from '@/utils/file'
 import { parseTime } from '@/utils'
 
@@ -304,13 +290,9 @@ export default {
       this.applications.joined = joined
     },
     toDetail(app) {
-      // const route_url = this.$router.resolve({
-      //   path: `/app/${app.appid}/dashboard/index`
-      // })
-      // window.open(route_url.href, '_blank')
-      // this.$router.push({
-      //   path: `/app/${app.appid}/dashboard/index`
-      // })
+      if(app.status !== 'running') { 
+        return showInfo('请先启动应用服务！')
+      }
       openAppConsole(app)
     },
     // 显示创建表单
@@ -421,21 +403,6 @@ export default {
       if (app.status !== 'running') { return }
       await this.stopApp(app)
       await this.startApp(app)
-    },
-    async removeAppService(app) {
-      const current_status = app.status
-      await this.$confirm('仅重置应用服务实例容器，并不会删除应用或数据', '确认要重置应用服务？')
-      this.serviceLoading = true
-      const res = await removeApplicationService(app.appid)
-        .finally(() => { this.serviceLoading = false })
-      if (res.data) {
-        this.$notify.success('重置应用服务成功')
-        if (current_status === 'running') {
-          await this.startApp(app)
-        }
-        this.loadApps()
-        return
-      }
     },
     async exportApp(app) {
       this.loading = true
