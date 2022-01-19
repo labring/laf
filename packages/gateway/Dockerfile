@@ -8,11 +8,12 @@ RUN apt-get update && apt-get install -y wget
 
 WORKDIR /app
 EXPOSE 80
-ADD ./system.conf /etc/nginx/templates/system.conf.template
-ADD ./app.conf /etc/nginx/templates/app.conf.template
-ADD ./fs-proxy.conf /etc/nginx/templates/fs-proxy.conf.template
-ADD ./scripts /scripts
 
+ENV SERVICE_DRIVER docker
+
+ADD ./conf.docker /conf.docker
+ADD ./conf.kubernetes /conf.kubernetes
+ADD ./scripts /scripts
 ADD ./system-client /app/
 ADD ./app-console /app-console
 ADD ./docs /docs/
