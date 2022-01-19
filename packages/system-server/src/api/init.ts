@@ -126,8 +126,6 @@ export class InitializerApi {
    */
   static async startSystemExtensionApp(appid: string) {
     const app = await getApplicationByAppid(appid)
-    const container_id = await ApplicationService.start(app)
-
-    return container_id
+    await ApplicationService.start(app)
   }
 }

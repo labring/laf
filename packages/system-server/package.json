@@ -21,6 +21,7 @@
     "devops"
   ],
   "dependencies": {
+    "@kubernetes/client-node": "^0.16.1",
     "@types/adm-zip": "^0.4.34",
     "adm-zip": "^0.5.9",
     "axios": "^0.24.0",

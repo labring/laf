@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-11-17 18:06:24
+ * @LastEditTime: 2022-01-19 15:57:36
  * @Description: 
  */
 
@@ -62,7 +62,9 @@ export const Constants = {
   /**
    * built-in roles for applications
    */
-  roles: roles
+  roles: roles,
+
+  SYSTEM_EXTENSION_APPID: `00000000-0000-0000-0000-000000000000`
 }
 
 deepFreeze(Constants)

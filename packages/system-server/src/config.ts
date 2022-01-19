@@ -140,6 +140,13 @@ export default class Config {
     return process.env.DEBUG_BIND_HOST_APP_PATH ?? undefined
   }
 
+  /**
+   * The app service runtime platform: 'docker' | 'kubernetes'
+   */
+  static get SERVICE_DRIVER(): string {
+    return process.env.SERVICE_DRIVER || 'docker'
+  }
+
   static get STORAGE_SERVICE_CONFIG() {
     const secret: string = process.env.STORAGE_SERVICE_SECRET
     const entrypoint: string = process.env.STORAGE_SERVICE_API_ENTRYPOINT

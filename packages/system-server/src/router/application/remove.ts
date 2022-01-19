@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 15:22:34
- * @LastEditTime: 2021-12-07 11:01:40
+ * @LastEditTime: 2022-01-19 14:48:50
  * @Description: 
  */
 
@@ -12,7 +12,7 @@ import { getApplicationByAppid } from '../../api/application'
 import { checkPermission } from '../../api/permission'
 import { Constants } from '../../constants'
 import { DatabaseAgent } from '../../lib/db-agent'
-import { DockerContainerServiceDriver } from '../../lib/service-driver/container'
+import { ApplicationService } from '../../api/service'
 
 const { APPLICATION_REMOVE } = Constants.permissions
 
@@ -45,9 +45,8 @@ export async function handleRemoveApplication(req: Request, res: Response) {
     return res.status(403).send('only owner can remove application')
   }
 
-  if (app.status === 'stopped') {
-    const ds = new DockerContainerServiceDriver()
-    await ds.removeService(app)
+  if (app.status !== 'stopped') {
+    await ApplicationService.stop(app)
   }
 
   // save app to recycle collection

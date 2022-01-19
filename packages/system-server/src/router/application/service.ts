@@ -66,31 +66,3 @@ export async function handleStopApplicationService(req: Request, res: Response) 
     }
   })
 }
-
-
-/**
- * The handler of removing application
- */
-export async function handleRemoveApplicationService(req: Request, res: Response) {
-  const uid = req['auth']?.uid
-  const appid = req.params.appid
-  const app = await getApplicationByAppid(appid)
-
-  if (!app)
-    return res.status(422).send('app not found')
-
-  // check permission
-  const code = await checkPermission(uid, APPLICATION_UPDATE.name, app)
-  if (code) {
-    return res.status(code).send()
-  }
-
-  const container_id = await ApplicationService.remove(app)
-
-  return res.send({
-    data: {
-      service_id: container_id,
-      appid: app.appid
-    }
-  })
-}

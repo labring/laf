@@ -20,7 +20,7 @@ export class RecycleCollector {
       .insertOne({
         collection: this.collection,
         data,
-        created_at: Date.now()
+        created_at: new Date(),
       })
 
     return r.insertedId

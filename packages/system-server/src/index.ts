@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-12-27 11:18:10
+ * @LastEditTime: 2022-01-19 15:57:56
  * @Description: 
  */
 
@@ -12,6 +12,8 @@ import Config from './config'
 import { router } from './router/index'
 import { logger } from './lib/logger'
 import { DatabaseAgent } from './lib/db-agent'
+import { ServiceDriver } from './lib/service-driver'
+import { Constants } from './constants'
 
 const app = express()
 app.use(express.json({
@@ -56,7 +58,8 @@ process.on('SIGTERM', gracefullyExit)
 process.on('SIGINT', gracefullyExit)
 
 async function gracefullyExit() {
-  DatabaseAgent.sys_accessor.close()
+  await ServiceDriver.create().removeService({ appid: Constants.SYSTEM_EXTENSION_APPID } as any)
+  await DatabaseAgent.sys_accessor.close()
   server.close(async () => {
     logger.info('process gracefully exited!')
   })

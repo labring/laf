@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-29 11:35:11
- * @LastEditTime: 2021-12-21 17:25:50
+ * @LastEditTime: 2022-01-19 14:47:05
  * @Description: 
  */
 
@@ -17,7 +17,7 @@ import { handleGetApplicationByAppid, handleMyApplications } from './get'
 import { handleImportApplication } from './importer'
 import { handleAddPackage, handleGetPackages, handleRemovePackage, handleUpdatePackage } from './packages'
 import { handleRemoveApplication } from './remove'
-import { handleStopApplicationService, handleStartApplicationService, handleRemoveApplicationService } from './service'
+import { handleStopApplicationService, handleStartApplicationService } from './service'
 import { handleUpdateApplication } from './update'
 
 /**
@@ -63,11 +63,6 @@ ApplicationRouter.post('/:appid/service/start', handleStartApplicationService)
  * Stop an application service by appid
  */
 ApplicationRouter.post('/:appid/service/stop', handleStopApplicationService)
-
-/**
- * Remove an application service by appid
- */
-ApplicationRouter.post('/:appid/service/remove', handleRemoveApplicationService)
 
 /**
  * Remove an application by appid 
