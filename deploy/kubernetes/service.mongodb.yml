@@ -1,0 +1,9 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: prod
+  namespace: mongodb
+spec:
+  type: ExternalName
+  externalName: kubernetes.docker.internal

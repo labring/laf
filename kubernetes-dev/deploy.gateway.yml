@@ -1,0 +1,80 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: gateway
+  namespace: laf
+spec:
+  selector:
+    app: gateway
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30000
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  namespace: laf
+  labels:
+    app: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - image: lafyun/gateway:0.7.1
+          name: gateway
+          resources:
+            # requests:
+            #   memory: "128Mi"
+            #   cpu: "1000m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          env:
+            - name: DEPLOY_DOMAIN
+              value: "*.local-dev.host"
+            - name: DEPLOY_FS_DOMAIN
+              value: "*.fs.local-dev.host"
+            - name: SYS_CLIENT_HOST
+              value: console.local-dev.host
+            - name: DOCS_HOST
+              value: docs.local-dev.host
+            - name: SERVICE_DRIVER
+              value: kubernetes
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: system-conf
+              mountPath: /etc/nginx/templates/system.conf.template
+            - name: app-conf
+              mountPath: /etc/nginx/templates/app.conf.template
+            - name: fs-conf
+              mountPath: /etc/nginx/templates/fs-proxy.conf.template
+      restartPolicy: Always
+      volumes:
+        - name: system-conf
+          hostPath:
+            path: /Users/fugen/codes/less/laf/packages/gateway/conf.kubernetes/system.conf
+        - name: app-conf
+          hostPath:
+            path: /Users/fugen/codes/less/laf/packages/gateway/conf.kubernetes/app.conf
+        - name: fs-conf
+          hostPath:
+            path: /Users/fugen/codes/less/laf/packages/gateway/conf.kubernetes/fs-proxy.conf

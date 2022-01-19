@@ -19,7 +19,7 @@ services:
     networks:
       - laf_shared_network
 
-  system_server:
+  system-server:
     image: lafyun/system-server:latest
     user: root
     working_dir: /app
@@ -68,7 +68,7 @@ services:
     networks:
       - laf_shared_network
 
-  storage_service:
+  storage-service:
     image: lafyun/storage-service:latest
     user: root
     working_dir: /app

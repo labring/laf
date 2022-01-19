@@ -1,0 +1,63 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: gateway
+  namespace: laf
+spec:
+  selector:
+    app: gateway
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30000
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  namespace: laf
+  labels:
+    app: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - image: lafyun/gateway:0.7.1
+          name: gateway
+          resources:
+            # requests:
+            #   memory: "128Mi"
+            #   cpu: "1000m"
+            limits:
+              memory: "1024Mi"
+              cpu: "1000m"
+          env:
+            - name: DEPLOY_DOMAIN
+              value: "*.local-dev.host"
+            - name: DEPLOY_FS_DOMAIN
+              value: "*.fs.local-dev.host"
+            - name: SYS_CLIENT_HOST
+              value: console.local-dev.host
+            - name: DOCS_HOST
+              value: docs.local-dev.host
+            - name: SERVICE_DRIVER
+              value: kubernetes
+          ports:
+            - containerPort: 80
+      restartPolicy: Always

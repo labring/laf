@@ -1,0 +1,85 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: system-server
+  namespace: laf
+spec:
+  selector:
+    app: system-server
+  type: ClusterIP
+  ports:
+    - port: 9000
+      targetPort: 9000
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: system-server
+  namespace: laf
+  labels:
+    app: system-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: system-server
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: system-server
+    spec:
+      automountServiceAccountToken: true
+      containers:
+        - image: lafyun/system-server:latest
+          name: system-server
+          resources:
+            # requests:
+            #   memory: "128Mi"
+            #   cpu: "500m"
+            limits:
+              memory: "1024Mi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: /health-check
+              port: 9000
+            initialDelaySeconds: 90
+            timeoutSeconds: 10
+          command: ["sh", "/app/start.sh"]
+          env:
+            - name: SYS_DB_URI
+              value: mongodb://my_user:password123@prod.mongodb:27017/laf-sys?authSource=laf-sys&replicaSet=laf&writeConcern=majority
+            - name: APP_DB_URI
+              value: mongodb://root:password123@prod.mongodb:27017/?authSource=admin&replicaSet=laf&writeConcern=majority
+            - name: SYS_SERVER_SECRET_SALT
+              value: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
+            - name: APP_SERVICE_IMAGE
+              value: lafyun/app-service:latest
+            - name: SERVICE_DRIVER
+              value: kubernetes
+            - name: LOG_LEVEL
+              value: debug
+            - name: ACCOUNT_DEFAULT_APP_QUOTA
+              value: "5"
+            - name: APP_SERVICE_DEPLOY_HOST
+              value: local-dev.host:30000 # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
+            - name: APP_SERVICE_DEPLOY_URL_SCHEMA
+              value: "http"
+            - name: STORAGE_SERVICE_API_ENTRYPOINT
+              value: http://storage-service:9010
+            - name: STORAGE_SERVICE_SECRET
+              value: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
+            - name: STORAGE_SERVICE_DEPLOY_HOST
+              value: fs.local-dev.host:30000 # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
+            - name: INIT_ROOT_ACCOUNT_PASSWORD
+              value: abc123
+          ports:
+            - containerPort: 9000
+      restartPolicy: Always
