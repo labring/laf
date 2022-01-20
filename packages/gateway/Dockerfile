@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y wget
 WORKDIR /app
 EXPOSE 80
 
-ENV SERVICE_DRIVER docker
+ENV SERVICE_DRIVER=docker
 
 ADD ./conf.docker /conf.docker
 ADD ./conf.kubernetes /conf.kubernetes
