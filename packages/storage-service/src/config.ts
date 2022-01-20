@@ -1,6 +1,3 @@
-/**
- *
- */
 import * as dotenv from "dotenv"
 
 /**
@@ -19,7 +16,7 @@ export default class Config {
     return process.env["DB_URI"]
   }
   /**
-   * the serving port, default is 9001
+   * the serving port, default is 9010
    */
   static get PORT(): number {
     return (process.env.PORT ?? 9010) as number
@@ -51,8 +48,7 @@ export default class Config {
   static get SERVER_SECRET_SALT(): string {
     const secret_salt = process.env["SERVER_SECRET_SALT"]
     if (!secret_salt) {
-      return ""
-      // throw new Error("env: `SERVER_SECRET_SALT` is missing")
+      throw new Error("env: `SERVER_SECRET_SALT` is missing")
     }
     return secret_salt
   }

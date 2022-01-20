@@ -5,11 +5,11 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
     && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
-EXPOSE 9000
+EXPOSE 9010
 WORKDIR /app
 ENV LOG_LEVEL=debug
 COPY . /app
 # RUN npm i
 # RUN npm run build
 USER node
-CMD [ "npm", "run", "start" ]
+CMD ["node", "/app/dist/index.js"]

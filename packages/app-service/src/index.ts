@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-11-17 17:04:35
+ * @LastEditTime: 2022-01-20 13:55:22
  * @Description: 
  */
 
@@ -69,8 +69,9 @@ process.on('SIGINT', gracefullyExit)
 
 async function gracefullyExit() {
   SchedulerInstance.destroy()
-  DatabaseAgent.accessor.close()
+  await DatabaseAgent.accessor.close()
   server.close(async () => {
     logger.info('process gracefully exited!')
+    process.exit(0)
   })
 }
