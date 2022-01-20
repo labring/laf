@@ -40,7 +40,7 @@ services:
       STORAGE_SERVICE_DEPLOY_HOST: fs.local-dev.host:8080 # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
       DEBUG_BIND_HOST_APP_PATH: '${PWD}/packages/app-service'
       INIT_ROOT_ACCOUNT_PASSWORD: abc123
-    command: dockerize -wait tcp://mongo:27017 sh /app/start.sh
+    command: sh /app/start.sh
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./packages/system-server:/app
