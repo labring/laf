@@ -64,7 +64,7 @@ services:
       DOCS_HOST: "docs.${DEPLOY_DOMAIN:?err}"
     command: "sh /scripts/start.sh"
     ports:
-      - ${PUBLISH_PORT:-8080}:80
+      - ${PUBLISH_PORT:-8000}:80
     networks:
       - laf_shared_network
 
@@ -92,4 +92,4 @@ networks:
     external: true
 
 volumes:
-  db-data: null
+  db-data:

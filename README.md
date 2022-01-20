@@ -97,13 +97,13 @@ sudo systemctl start docker
 
 > 还需安装 docker-compose @see https://docs.docker.com/compose/install/
 
-##### 启动服务
+##### 启动服务（docker-compose）
 
 ```sh
 git clone https://github.com/lafjs/laf.git
 
 # 该目录下有更多部署脚本，可供生产部署时使用
-cd laf/deploy-scripts
+cd laf/deploy/docker-compose
 
 docker network create laf_shared_network --driver bridge || true
 docker pull lafyun/app-service:latest
@@ -111,7 +111,7 @@ docker pull lafyun/app-service:latest
 # 启动所有服务
 docker-compose up
 
-# 浏览器打开 http://console.local-dev.host:8080 访问
+# 浏览器打开 http://console.local-dev.host:8000 访问
 ```
 
 ### 开发环境（开发者）
@@ -149,7 +149,7 @@ npm run dev
 docker run --rm -p 27018:27017 --name mongotest -d mongo
 ```
 
-###
+### 运行测试
 
 ```sh
 # 运行测试用例

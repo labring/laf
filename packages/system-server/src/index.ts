@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2022-01-19 15:57:56
+ * @LastEditTime: 2022-01-20 13:52:36
  * @Description: 
  */
 
@@ -62,5 +62,6 @@ async function gracefullyExit() {
   await DatabaseAgent.sys_accessor.close()
   server.close(async () => {
     logger.info('process gracefully exited!')
+    process.exit(0)
   })
 }

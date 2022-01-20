@@ -55,9 +55,9 @@ spec:
           command: ["sh", "/app/start.sh"]
           env:
             - name: SYS_DB_URI
-              value: mongodb://my_user:password123@dev.mongodb:27017/laf-sys?authSource=laf-sys&replicaSet=laf&writeConcern=majority&directConnection=true
+              value: mongodb://my_user:password123@mongo:27017/laf-sys?authSource=laf-sys&replicaSet=laf&writeConcern=majority&directConnection=true
             - name: APP_DB_URI
-              value: mongodb://root:password123@dev.mongodb:27017/?authSource=admin&replicaSet=laf&writeConcern=majority&directConnection=true
+              value: mongodb://root:password123@mongo:27017/?authSource=admin&replicaSet=laf&writeConcern=majority&directConnection=true
             - name: SYS_SERVER_SECRET_SALT
               value: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
             - name: APP_SERVICE_IMAGE

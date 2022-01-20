@@ -1,0 +1,70 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: mongo
+  namespace: laf
+spec:
+  selector:
+    app: mongo
+  type: ClusterIP
+  ports:
+    - port: 27017
+      targetPort: 27017
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo
+  namespace: laf
+  labels:
+    app: mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+        - image: bitnami/mongodb:5.0
+          name: mongo
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "256M"
+          env:
+            - name: MONGODB_REPLICA_SET_MODE
+              value: primary
+            - name: MONGODB_ADVERTISED_HOSTNAME
+              value: mongo
+            - name: MONGODB_REPLICA_SET_NAME
+              value: laf
+            - name: MONGODB_REPLICA_SET_KEY
+              value: replicasetkey123
+            - name: MONGODB_ROOT_PASSWORD
+              value: password123
+            - name: MONGODB_USERNAME
+              value: my_user
+            - name: MONGODB_PASSWORD
+              value: password123
+            - name: MONGODB_DATABASE
+              value: laf-sys
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - mountPath: /bitnami/mongodb
+              name: data
+      volumes:
+        - name: data
+          emptyDir: {}
+      restartPolicy: Always

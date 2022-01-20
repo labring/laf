@@ -48,11 +48,19 @@ spec:
               cpu: "500m"
           env:
             - name: DB_URI
-              value: mongodb://root:password123@dev.mongodb:27017/laf-fs?authSource=admin&replicaSet=laf&writeConcern=majority&directConnection=true
+              value: mongodb://root:password123@mongo:27017/laf-fs?authSource=admin&replicaSet=laf&writeConcern=majority&directConnection=true
             - name: LOG_LEVEL
               value: debug
-            - name: SYS_SERVER_SECRET_SALT
+            - name: SERVER_SECRET_SALT
               value: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
           ports:
             - containerPort: 9010
+          command: ["node", "/app/dist/index.js"]
+          volumeMounts:
+            - name: local-storage-service
+              mountPath: /app
       restartPolicy: Always
+      volumes:
+        - name: local-storage-service
+          hostPath:
+            path: /Users/fugen/codes/less/laf/packages/storage-service
