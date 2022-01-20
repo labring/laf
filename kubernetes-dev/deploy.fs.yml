@@ -48,7 +48,7 @@ spec:
               cpu: "500m"
           env:
             - name: DB_URI
-              value: mongodb://root:password123@mongo:27017/laf-fs?authSource=admin&replicaSet=laf&writeConcern=majority&directConnection=true
+              value: mongodb://root:password123@mongo:27017/laf-fs?authSource=admin&replicaSet=laf&writeConcern=majority
             - name: LOG_LEVEL
               value: debug
             - name: SERVER_SECRET_SALT
