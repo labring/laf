@@ -4,9 +4,14 @@ conf_dir=/conf.${SERVICE_DRIVER:-docker}
 
 template_dir="${NGINX_ENVSUBST_TEMPLATE_DIR:-/etc/nginx/templates}"
 
-cp -n ${conf_dir}/system.conf /etc/nginx/templates/system.conf.template || true
-cp -n ${conf_dir}/app.conf /etc/nginx/templates/app.conf.template || true
-cp -n ${conf_dir}/fs-proxy.conf /etc/nginx/templates/fs-proxy.conf.template || true
+echo "template_dir: " $template_dir
+echo "conf_dir: " $conf_dir
+
+mkdir -p $template_dir
+
+cp -n ${conf_dir}/system.conf ${template_dir}/system.conf.template || true
+cp -n ${conf_dir}/app.conf ${template_dir}/app.conf.template || true
+cp -n ${conf_dir}/fs-proxy.conf ${template_dir}/fs-proxy.conf.template || true
 
 sh /scripts/auto_envsubst.sh
 
