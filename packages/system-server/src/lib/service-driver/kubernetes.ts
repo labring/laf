@@ -162,8 +162,6 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
    * @returns 
    */
   private async createK8sService(app: ApplicationStruct, labels: any) {
-    logger.info(`create k8s service of app ${app.appid}`, labels, this.core_api)
-
     const { body: service } = await this.core_api.createNamespacedService(this.namespace, {
       metadata: { name: this.getName(app) },
       spec: {
