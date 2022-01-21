@@ -116,7 +116,7 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
         `SERVER_SECRET_SALT=${app.config.server_secret_salt}`,
         `FLAGS=--max_old_space_size=${max_old_space_size}`,
         `APP_ID=${app.appid}`,
-        `RUNTIME_IMAGE=${app.runtime?.image}`
+        `RUNTIME_IMAGE=${imageName}`
       ],
       ExposedPorts: {
         "8000/tcp": {}
