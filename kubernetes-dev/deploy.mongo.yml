@@ -14,7 +14,7 @@ spec:
 
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: mongo
   namespace: laf
@@ -25,16 +25,13 @@ spec:
   selector:
     matchLabels:
       app: mongo
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-    type: RollingUpdate
+  serviceName: "mongo"
   template:
     metadata:
       labels:
         app: mongo
     spec:
+      terminationGracePeriodSeconds: 10
       containers:
         - image: bitnami/mongodb:5.0
           name: mongo

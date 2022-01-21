@@ -1,9 +1,0 @@
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: dev
-  namespace: mongodb
-spec:
-  type: ExternalName
-  externalName: kubernetes.docker.internal   # your should start a mongodb server and set mongo's hostname here

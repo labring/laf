@@ -40,9 +40,6 @@ spec:
         - image: lafyun/system-server:0.7.1
           name: system-server
           resources:
-            # requests:
-            #   memory: "128Mi"
-            #   cpu: "500m"
             limits:
               memory: "256Mi"
               cpu: "500m"
