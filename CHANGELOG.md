@@ -1,4 +1,22 @@
-# [](https://github.com/lafjs/laf/compare/v0.7.2...v) (2022-01-21)
+# [](https://github.com/lafjs/laf/compare/v0.7.4...v) (2022-01-21)
+
+
+
+## [0.7.4](https://github.com/lafjs/laf/compare/v0.7.3...v0.7.4) (2022-01-21)
+
+
+### Bug Fixes
+
+* **gateway:** fix conf path not created error ([97d2693](https://github.com/lafjs/laf/commit/97d2693eec1451d39a509131267cd327728466f3))
+
+
+
+## [0.7.3](https://github.com/lafjs/laf/compare/v0.7.2...v0.7.3) (2022-01-21)
+
+
+### Bug Fixes
+
+* **storage-service:** add content-length for download api; ([6601885](https://github.com/lafjs/laf/commit/6601885eede5bea930357f0142c6326c25217fc3))
 
 
 
