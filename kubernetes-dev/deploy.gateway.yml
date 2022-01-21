@@ -15,28 +15,25 @@ spec:
 
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
   name: gateway
   namespace: laf
   labels:
     app: gateway
 spec:
-  replicas: 1
+  # replicas: 1
   selector:
     matchLabels:
       app: gateway
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-    type: RollingUpdate
   template:
     metadata:
       labels:
         app: gateway
     spec:
       automountServiceAccountToken: false
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       containers:
         - image: lafyun/gateway:0.7.1
           name: gateway
@@ -58,8 +55,8 @@ spec:
               value: docs.local-dev.host
             - name: SERVICE_DRIVER
               value: kubernetes
-          ports:
-            - containerPort: 80
+          # ports:
+          #   - containerPort: 80
           volumeMounts:
             - name: system-conf
               mountPath: /etc/nginx/templates/system.conf.template
