@@ -1,3 +1,22 @@
+# [](https://github.com/lafjs/laf/compare/v0.7.2...v) (2022-01-21)
+
+
+
+## [0.7.2](https://github.com/lafjs/laf/compare/v0.7.1...v0.7.2) (2022-01-21)
+
+
+### Bug Fixes
+
+* **gateway:** fix fs-proxy nginx conf [#35](https://github.com/lafjs/laf/issues/35) ([21efaab](https://github.com/lafjs/laf/commit/21efaab56494c3634cc2ad6d39d1ba3ec9b47c48))
+
+
+### Features
+
+* **gateway:** add k8s conf ; ([c5e68e8](https://github.com/lafjs/laf/commit/c5e68e8ae5c266b4c3593619810bd36432c69328))
+* **sys-server:** add k8s driver support; ([bb3923a](https://github.com/lafjs/laf/commit/bb3923a56e7e3e7c0f5fef217d2939cf0925ba0f))
+
+
+
 ## [0.7.1](https://github.com/lafjs/laf/compare/v0.7.0...v0.7.1) (2022-01-17)
 
 
