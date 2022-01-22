@@ -37,7 +37,7 @@ spec:
     spec:
       automountServiceAccountToken: true
       containers:
-        - image: lafyun/system-server:0.7.1
+        - image: lafyun/system-server:0.7.2
           name: system-server
           resources:
             limits:
@@ -58,9 +58,13 @@ spec:
             - name: SYS_SERVER_SECRET_SALT
               value: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
             - name: APP_SERVICE_IMAGE
-              value: lafyun/app-service:0.7.1
+              value: lafyun/app-service:0.7.2
             - name: SERVICE_DRIVER
               value: kubernetes
+            - name: APP_SERVICE_MEMORY_LIMIT
+              value: "128"
+            - name: APP_SERVICE_CPU_SHARES
+              value: "128"
             - name: LOG_LEVEL
               value: debug
             - name: ACCOUNT_DEFAULT_APP_QUOTA
@@ -79,11 +83,4 @@ spec:
               value: abc123
           ports:
             - containerPort: 9000
-          volumeMounts:
-            - name: local-system-server
-              mountPath: /app
       restartPolicy: Always
-      volumes:
-        - name: local-system-server
-          hostPath:
-            path: /Users/fugen/codes/less/laf/packages/system-server

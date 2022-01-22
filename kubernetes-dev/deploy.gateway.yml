@@ -34,7 +34,7 @@ spec:
       # hostNetwork: true
       # dnsPolicy: ClusterFirstWithHostNet
       containers:
-        - image: lafyun/gateway:0.7.1
+        - image: lafyun/gateway:0.7.4
           name: gateway
           resources:
             limits:
@@ -53,21 +53,4 @@ spec:
               value: kubernetes
           ports:
             - containerPort: 80
-          volumeMounts:
-            - name: system-conf
-              mountPath: /etc/nginx/templates/system.conf.template
-            - name: app-conf
-              mountPath: /etc/nginx/templates/app.conf.template
-            - name: fs-conf
-              mountPath: /etc/nginx/templates/fs-proxy.conf.template
       restartPolicy: Always
-      volumes:
-        - name: system-conf
-          hostPath:
-            path: /Users/fugen/codes/less/laf/packages/gateway/conf.kubernetes/system.conf
-        - name: app-conf
-          hostPath:
-            path: /Users/fugen/codes/less/laf/packages/gateway/conf.kubernetes/app.conf
-        - name: fs-conf
-          hostPath:
-            path: /Users/fugen/codes/less/laf/packages/gateway/conf.kubernetes/fs-proxy.conf

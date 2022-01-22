@@ -37,12 +37,9 @@ spec:
     spec:
       automountServiceAccountToken: false
       containers:
-        - image: lafyun/storage-service:0.7.0
+        - image: lafyun/storage-service:0.7.3
           name: storage-service
           resources:
-            # requests:
-            #   memory: "128Mi"
-            #   cpu: "500m"
             limits:
               memory: "256Mi"
               cpu: "500m"
@@ -56,11 +53,4 @@ spec:
           ports:
             - containerPort: 9010
           command: ["node", "/app/dist/index.js"]
-          volumeMounts:
-            - name: local-storage-service
-              mountPath: /app
       restartPolicy: Always
-      volumes:
-        - name: local-storage-service
-          hostPath:
-            path: /Users/fugen/codes/less/laf/packages/storage-service

@@ -37,13 +37,12 @@ spec:
         app: gateway
     spec:
       automountServiceAccountToken: false
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       containers:
-        - image: lafyun/gateway:0.7.1
+        - image: lafyun/gateway:latest
           name: gateway
           resources:
-            # requests:
-            #   memory: "128Mi"
-            #   cpu: "1000m"
             limits:
               memory: "1024Mi"
               cpu: "1000m"

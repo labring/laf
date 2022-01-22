@@ -37,12 +37,9 @@ spec:
     spec:
       automountServiceAccountToken: false
       containers:
-        - image: lafyun/storage-service:0.7.0
+        - image: lafyun/storage-service:latest
           name: storage-service
           resources:
-            # requests:
-            #   memory: "128Mi"
-            #   cpu: "500m"
             limits:
               memory: "1024Mi"
               cpu: "1000m"
