@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2022-01-20 13:52:36
+ * @LastEditTime: 2022-01-23 19:46:34
  * @Description: 
  */
 
@@ -58,8 +58,14 @@ process.on('SIGTERM', gracefullyExit)
 process.on('SIGINT', gracefullyExit)
 
 async function gracefullyExit() {
+  logger.info('exiting: removing system extension service')
   await ServiceDriver.create().removeService({ appid: Constants.SYSTEM_EXTENSION_APPID } as any)
+  logger.info('exiting: system extension service has been removed')
+
+  logger.info('exiting: closing db connection')
   await DatabaseAgent.sys_accessor.close()
+  logger.info('exiting: db connection has been closed')
+
   server.close(async () => {
     logger.info('process gracefully exited!')
     process.exit(0)

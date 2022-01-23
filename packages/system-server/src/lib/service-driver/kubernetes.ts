@@ -133,10 +133,6 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
                 ],
                 ports: [{ containerPort: 8000 }],
                 resources: {
-                  // requests: {
-                  //   memory: `${memoryLimit}Mi`,
-                  //   cpu: `${cpuShares}m`
-                  // },
                   limits: {
                     memory: `${memoryLimit}Mi`,
                     cpu: `${cpuShares}m`
