@@ -12,6 +12,7 @@ spec:
     - port: 27017
       targetPort: 27017
 
+### This mongodb ONLY work for demo purpose, you should config your own volume for production use!
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -31,14 +32,14 @@ spec:
       labels:
         app: mongo
     spec:
-      terminationGracePeriodSeconds: 10
+      terminationGracePeriodSeconds: 30
       containers:
         - image: bitnami/mongodb:5.0
           name: mongo
           resources:
             limits:
-              cpu: "100m"
-              memory: "512Mi"
+              cpu: "200m"
+              memory: "1024M"
           env:
             - name: MONGODB_REPLICA_SET_MODE
               value: primary
@@ -64,6 +65,6 @@ spec:
       volumes:
         - name: data
           hostPath:
-            path: /Users/fugen/codes/less/laf/kubernetes-dev/mongo-data       # update to your local path
+            path: /tmp/laf-mongo-test-db      # update to your local path
             type: DirectoryOrCreate
       restartPolicy: Always

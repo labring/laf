@@ -42,7 +42,7 @@ spec:
           resources:
             limits:
               memory: "256Mi"
-              cpu: "500m"
+              cpu: "100m"
           env:
             - name: DB_URI
               value: mongodb://root:password123@mongo:27017/laf-fs?authSource=admin&replicaSet=laf&writeConcern=majority

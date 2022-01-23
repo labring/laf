@@ -47,7 +47,7 @@ spec:
           resources:
             limits:
               memory: "512Mi"
-              cpu: "500m"
+              cpu: "200m"
           env:
             - name: DB_URI
               valueFrom:

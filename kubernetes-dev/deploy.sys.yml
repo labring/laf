@@ -42,14 +42,14 @@ spec:
           resources:
             limits:
               memory: "256Mi"
-              cpu: "500m"
+              cpu: "100m"
           livenessProbe:
             httpGet:
               path: /health-check
               port: 9000
             initialDelaySeconds: 90
             timeoutSeconds: 10
-          command: ["sh", "/app/start.sh"]
+          command: ["dockerize", "-wait", "tcp://mongo:27017", "sh", "/app/start.sh"]
           env:
             - name: SYS_DB_URI
               value: mongodb://my_user:password123@mongo:27017/laf-sys?authSource=laf-sys&replicaSet=laf&writeConcern=majority

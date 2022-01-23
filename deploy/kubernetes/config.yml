@@ -6,9 +6,9 @@ metadata:
   name: db-config
   namespace: laf
 data:
-  sys-db-uri: "mongodb://my_user:password123@your-mongo-host:27017/sys_db?authSource=sys_db&replicaSet=laf&writeConcern=majority"
-  app-db-uri: "mongodb://root:password123@your-mongo-host:27017/?authSource=admin&replicaSet=laf&writeConcern=majority&maxPoolSize=10"
-  fs-db-uri: "mongodb://root:password123@your-mongo-host:27017/fs_db?authSource=admin&replicaSet=laf&writeConcern=majority"
+  sys-db-uri: "mongodb://my_user:password123@mongo:27017/sys_db?authSource=sys_db&replicaSet=laf&writeConcern=majority"
+  app-db-uri: "mongodb://root:password123@mongo:27017/?authSource=admin&replicaSet=laf&writeConcern=majority&maxPoolSize=10"
+  fs-db-uri: "mongodb://root:password123@mongo:27017/fs_db?authSource=admin&replicaSet=laf&writeConcern=majority"
 
 ### Root account for system extension app
 ---

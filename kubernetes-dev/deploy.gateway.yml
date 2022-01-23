@@ -39,7 +39,7 @@ spec:
           resources:
             limits:
               memory: "256Mi"
-              cpu: "500m"
+              cpu: "100m"
           env:
             - name: DEPLOY_DOMAIN
               value: "*.local-dev.host"
