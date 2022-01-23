@@ -1,0 +1,62 @@
+### Databases configuration
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config
+  namespace: laf
+data:
+  sys-db-uri: "mongodb://my_user:password123@your-mongo-host:27017/sys_db?authSource=sys_db&replicaSet=laf&writeConcern=majority"
+  app-db-uri: "mongodb://root:password123@your-mongo-host:27017/?authSource=admin&replicaSet=laf&writeConcern=majority&maxPoolSize=10"
+  fs-db-uri: "mongodb://root:password123@your-mongo-host:27017/fs_db?authSource=admin&replicaSet=laf&writeConcern=majority"
+
+### Root account for system extension app
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: root-account
+  namespace: laf
+data:
+  account: "root"
+  password: "abc123"
+
+### Server secrets used for signature tokens
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: secret-salt
+  namespace: laf
+data:
+  system-server-salt: "Rewrite_Your_Own_Secret_Salt_abcdefg1234567"
+  fs-server-salt: "Rewrite_Your_Own_Secret_Salt_abcdefg1234567"
+
+### Deployment domains for gateway & clients
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: deploy-domain
+  namespace: laf
+data:
+  app-service-host: "local-dev.host:30000" # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
+  fs-service-host: "fs.local-dev.host:30000" # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
+  deploy-url-schema: "http"
+  app-service-domain: "*.local-dev.host"
+  fs-service-domain: "*.fs.local-dev.host"
+  system-console-domain: "console.local-dev.host"
+  docs-domain: "docs.local-dev.host"
+
+### App service config & default quotas
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-service
+  namespace: laf
+data:
+  image: "docker.io/lafyun/app-service:0.7.2"
+  default-memory-limit: "128"
+  default-cpu-limit: "128"
+  default-app-quota-created-per-user: "5"

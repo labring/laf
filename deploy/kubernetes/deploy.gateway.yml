@@ -11,52 +11,72 @@ spec:
   ports:
     - port: 80
       targetPort: 80
+      name: http
       nodePort: 30000
+    - port: 443
+      targetPort: 443
+      name: https
 
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
   name: gateway
   namespace: laf
   labels:
     app: gateway
+    type: sys
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: gateway
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-    type: RollingUpdate
   template:
     metadata:
       labels:
         app: gateway
+        type: sys
     spec:
       automountServiceAccountToken: false
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      tolerations:
+        # this toleration is to have the daemonset runnable on master nodes
+        # remove it if your masters can't run pods
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+          effect: NoSchedule
       containers:
-        - image: lafyun/gateway:latest
+        - image: docker.io/lafyun/gateway:0.7.4
+          imagePullPolicy: IfNotPresent
           name: gateway
           resources:
             limits:
-              memory: "1024Mi"
+              memory: "512Mi"
               cpu: "1000m"
           env:
             - name: DEPLOY_DOMAIN
-              value: "*.local-dev.host"
+              valueFrom:
+                configMapKeyRef:
+                  name: deploy-domain
+                  key: app-service-domain
             - name: DEPLOY_FS_DOMAIN
-              value: "*.fs.local-dev.host"
+              valueFrom:
+                configMapKeyRef:
+                  name: deploy-domain
+                  key: fs-service-domain
             - name: SYS_CLIENT_HOST
-              value: console.local-dev.host
+              valueFrom:
+                configMapKeyRef:
+                  name: deploy-domain
+                  key: system-console-domain
             - name: DOCS_HOST
-              value: docs.local-dev.host
+              valueFrom:
+                configMapKeyRef:
+                  name: deploy-domain
+                  key: docs-domain
             - name: SERVICE_DRIVER
               value: kubernetes
           ports:
             - containerPort: 80
-      restartPolicy: Always

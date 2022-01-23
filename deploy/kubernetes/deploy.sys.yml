@@ -20,6 +20,7 @@ metadata:
   namespace: laf
   labels:
     app: system-server
+    type: sys
 spec:
   replicas: 1
   selector:
@@ -34,14 +35,18 @@ spec:
     metadata:
       labels:
         app: system-server
+        type: sys
     spec:
       automountServiceAccountToken: true
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
       containers:
-        - image: lafyun/system-server:latest
+        - image: docker.io/lafyun/system-server:0.7.2
+          imagePullPolicy: IfNotPresent
           name: system-server
           resources:
             limits:
-              memory: "1024Mi"
+              memory: "512Mi"
               cpu: "1000m"
           livenessProbe:
             httpGet:
@@ -52,31 +57,75 @@ spec:
           command: ["sh", "/app/start.sh"]
           env:
             - name: SYS_DB_URI
-              value: mongodb://my_user:password123@prod.mongodb:27017/laf-sys?authSource=laf-sys&replicaSet=laf&writeConcern=majority
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: sys-db-uri
             - name: APP_DB_URI
-              value: mongodb://root:password123@prod.mongodb:27017/?authSource=admin&replicaSet=laf&writeConcern=majority
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: app-db-uri
             - name: SYS_SERVER_SECRET_SALT
-              value: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
+              valueFrom:
+                configMapKeyRef:
+                  name: secret-salt
+                  key: system-server-salt
             - name: APP_SERVICE_IMAGE
-              value: lafyun/app-service:latest
+              valueFrom:
+                configMapKeyRef:
+                  name: app-service
+                  key: image
             - name: SERVICE_DRIVER
               value: kubernetes
-            - name: LOG_LEVEL
-              value: debug
+            - name: APP_SERVICE_MEMORY_LIMIT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-service
+                  key: default-memory-limit
+            - name: APP_SERVICE_CPU_SHARES
+              valueFrom:
+                configMapKeyRef:
+                  name: app-service
+                  key: default-cpu-limit
             - name: ACCOUNT_DEFAULT_APP_QUOTA
-              value: "5"
+              valueFrom:
+                configMapKeyRef:
+                  name: app-service
+                  key: default-app-quota-created-per-user
             - name: APP_SERVICE_DEPLOY_HOST
-              value: local-dev.host:30000 # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
+              valueFrom:
+                configMapKeyRef:
+                  name: deploy-domain
+                  key: app-service-host
             - name: APP_SERVICE_DEPLOY_URL_SCHEMA
-              value: "http"
+              valueFrom:
+                configMapKeyRef:
+                  name: deploy-domain
+                  key: deploy-url-schema
+            - name: STORAGE_SERVICE_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: secret-salt
+                  key: system-server-salt
+            - name: STORAGE_SERVICE_DEPLOY_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: deploy-domain
+                  key: fs-service-host
+            - name: INIT_ROOT_ACCOUNT
+              valueFrom:
+                configMapKeyRef:
+                  name: root-account
+                  key: account
+            - name: INIT_ROOT_ACCOUNT_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: root-account
+                  key: password
             - name: STORAGE_SERVICE_API_ENTRYPOINT
               value: http://storage-service:9010
-            - name: STORAGE_SERVICE_SECRET
-              value: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
-            - name: STORAGE_SERVICE_DEPLOY_HOST
-              value: fs.local-dev.host:30000 # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
-            - name: INIT_ROOT_ACCOUNT_PASSWORD
-              value: abc123
+            - name: LOG_LEVEL
+              value: debug
           ports:
             - containerPort: 9000
-      restartPolicy: Always

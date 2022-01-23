@@ -20,6 +20,7 @@ metadata:
   namespace: laf
   labels:
     app: storage-service
+    type: sys
 spec:
   replicas: 1
   selector:
@@ -34,22 +35,32 @@ spec:
     metadata:
       labels:
         app: storage-service
+        type: sys
     spec:
       automountServiceAccountToken: false
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
       containers:
-        - image: lafyun/storage-service:latest
+        - image: docker.io/lafyun/storage-service:0.7.3
+          imagePullPolicy: IfNotPresent
           name: storage-service
           resources:
             limits:
-              memory: "1024Mi"
-              cpu: "1000m"
+              memory: "512Mi"
+              cpu: "500m"
           env:
             - name: DB_URI
-              value: mongodb://root:password123@prod.mongodb:27017/laf-fs?authSource=admin&replicaSet=laf&writeConcern=majority
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: fs-db-uri
+            - name: SERVER_SECRET_SALT
+              valueFrom:
+                configMapKeyRef:
+                  name: secret-salt
+                  key: fs-server-salt
             - name: LOG_LEVEL
               value: debug
-            - name: SYS_SERVER_SECRET_SALT
-              value: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
           ports:
             - containerPort: 9010
-      restartPolicy: Always
+          command: ["node", "/app/dist/index.js"]
