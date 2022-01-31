@@ -39,9 +39,9 @@ spec:
     spec:
       automountServiceAccountToken: true
       restartPolicy: Always
-      terminationGracePeriodSeconds: 30
+      terminationGracePeriodSeconds: 10
       containers:
-        - image: docker.io/lafyun/system-server:0.7.2
+        - image: docker.io/lafyun/system-server:0.7.5
           imagePullPolicy: IfNotPresent
           name: system-server
           resources:
@@ -55,8 +55,9 @@ spec:
             httpGet:
               path: /health-check
               port: 9000
-            initialDelaySeconds: 90
-            timeoutSeconds: 10
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
           command: ["sh", "/app/start.sh"]
           env:
             - name: SYS_DB_URI

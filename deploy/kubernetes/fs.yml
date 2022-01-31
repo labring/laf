@@ -39,7 +39,7 @@ spec:
     spec:
       automountServiceAccountToken: false
       restartPolicy: Always
-      terminationGracePeriodSeconds: 30
+      terminationGracePeriodSeconds: 10
       containers:
         - image: docker.io/lafyun/storage-service:0.7.3
           imagePullPolicy: IfNotPresent

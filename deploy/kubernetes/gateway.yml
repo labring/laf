@@ -40,7 +40,7 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       restartPolicy: Always
-      terminationGracePeriodSeconds: 30
+      terminationGracePeriodSeconds: 10
       tolerations:
         # this toleration is to have the daemonset runnable on master nodes
         # remove it if your masters can't run pods
@@ -48,7 +48,7 @@ spec:
           operator: Exists
           effect: NoSchedule
       containers:
-        - image: docker.io/lafyun/gateway:0.7.4
+        - image: docker.io/lafyun/gateway:0.7.5
           imagePullPolicy: IfNotPresent
           name: gateway
           resources:
