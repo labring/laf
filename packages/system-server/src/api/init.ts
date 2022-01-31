@@ -83,9 +83,11 @@ export class InitializerApi {
       },
       runtime: {
         image: Config.APP_SERVICE_IMAGE,
-        metrics: {
-          cpu_shares: 2048,
-          memory: 1024
+        resources: { 
+          req_cpu: '100',
+          req_memory: '256',
+          limit_cpu: '1000',
+          limit_memory: '1024'
         }
       },
       buckets: [],

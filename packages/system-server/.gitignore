@@ -6,6 +6,7 @@ data/*
 tmp
 
 .env
+.env.local
 
 ecosystem.config.js
 .DS_Store

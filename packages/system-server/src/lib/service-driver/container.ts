@@ -92,10 +92,9 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
    */
   private async createService(app: ApplicationStruct) {
     const uri = getApplicationDbUri(app)
-    const memoryLimit = app.runtime?.metrics?.memory ?? Config.APP_SERVICE_MEMORY_LIMIT
+    const memoryLimit = parseInt(app.runtime?.resources?.limit_memory ?? Config.APP_DEFAULT_RESOURCES.limit_memory)
     const max_old_space_size = ~~(memoryLimit * 0.8)
-    // if no cpu-shares set, use memory limit as it
-    const cpuShares = app.runtime?.metrics?.cpu_shares ?? Config.APP_SERVICE_CPU_SHARES
+    const cpuShares = parseInt(app.runtime?.resources?.limit_cpu ?? Config.APP_DEFAULT_RESOURCES.limit_cpu)
     const imageName = app.runtime?.image ?? Config.APP_SERVICE_IMAGE
     const logLevel = Config.LOG_LEVEL
 

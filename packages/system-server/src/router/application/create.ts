@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-31 15:00:04
- * @LastEditTime: 2021-12-07 13:57:21
+ * @LastEditTime: 2022-01-31 23:44:45
  * @Description: 
  */
 
@@ -59,9 +59,11 @@ export async function handleCreateApplication(req: Request, res: Response) {
     },
     runtime: {
       image: Config.APP_SERVICE_IMAGE,
-      metrics: {
-        cpu_shares: Config.APP_SERVICE_CPU_SHARES,
-        memory: Config.APP_SERVICE_MEMORY_LIMIT
+      resources: {
+        req_cpu: Config.APP_DEFAULT_RESOURCES.req_cpu,
+        req_memory: Config.APP_DEFAULT_RESOURCES.req_memory,
+        limit_cpu: Config.APP_DEFAULT_RESOURCES.limit_cpu,
+        limit_memory: Config.APP_DEFAULT_RESOURCES.limit_memory,
       }
     },
     buckets: [],

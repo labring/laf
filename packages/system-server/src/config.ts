@@ -119,16 +119,35 @@ export default class Config {
 
   /**
    * The max memory limit of application service, default is 256 in mb
+   * 
+   * @deprecated this field was deprecated and removed, use APP_SERVICE_DEFAULT_LIMIT_MEMORY instead
    */
-  static get APP_SERVICE_MEMORY_LIMIT(): number {
-    return (process.env.APP_SERVICE_MEMORY_LIMIT ?? 256) as number
+  static get APP_SERVICE_MEMORY_LIMIT() {
+    throw new Error('APP_SERVICE_MEMORY_LIMIT is deprecated, use APP_SERVICE_DEFAULT_LIMIT_MEMORY instead.')
   }
 
   /**
-   * The cpu shares of application service, default is 256
+   * The max cpu limit of application service, default is 100
+   * 
+   * * @deprecated this field was deprecated and removed, use APP_SERVICE_DEFAULT_LIMIT_CPU instead
    */
-  static get APP_SERVICE_CPU_SHARES(): number {
-    return (process.env.APP_SERVICE_MEMORY_LIMIT ?? 256) as number
+  static get APP_SERVICE_CPU_LIMIT(): number {
+    throw new Error('APP_SERVICE_CPU_LIMIT is deprecated, use APP_SERVICE_DEFAULT_LIMIT_CPU instead.')
+  }
+
+  /**
+   * The resources (cpu & memory) limit of application service. 
+   */
+  static get APP_DEFAULT_RESOURCES(): { req_cpu: string, req_memory: string, limit_cpu: string, limit_memory: string } {
+    const limit_cpu = process.env.APP_SERVICE_DEFAULT_LIMIT_CPU ?? '100'
+    const limit_memory = process.env.APP_SERVICE_DEFAULT_LIMIT_MEMORY || '256'
+
+    return { 
+      req_cpu: process.env.APP_SERVICE_DEFAULT_REQUEST_CPU ?? limit_cpu,
+      req_memory: process.env.APP_SERVICE_DEFAULT_REQUEST_MEMORY ?? limit_memory,
+      limit_cpu,
+      limit_memory,
+    }
   }
 
   /**
@@ -172,5 +191,13 @@ export default class Config {
     const default_ = path.resolve(__dirname, '../extension/system-extension-server.lapp')
     const package_: string = process.env.SYSTEM_EXTENSION_SERVER_APP_PACKAGE || default_
     return package_
+  }
+
+  static get KUBE_NAMESPACE_OF_APP_SERVICES() {
+    return process.env.KUBE_NAMESPACE_OF_APP_SERVICES || 'laf'
+  }
+
+  static get KUBE_NAMESPACE_OF_SYS_SERVICES() {
+    return process.env.KUBE_NAMESPACE_OF_SYS_SERVICES || 'laf'
   }
 }

@@ -460,8 +460,8 @@ export default {
       return version || 'unknown'
     },
     getRuntimeMemory(app) {
-      const memory = app.runtime?.metrics?.memory
-      return memory || '256'
+      const memory = app.runtime?.resources?.limit_memory
+      return memory || '-'
     }
   }
 }

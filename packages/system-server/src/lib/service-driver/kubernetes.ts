@@ -7,7 +7,7 @@ import { ServiceDriverInterface } from './interface'
 
 
 export class KubernetesServiceDriver implements ServiceDriverInterface {
-  namespace = "laf"
+  namespace = Config.KUBE_NAMESPACE_OF_APP_SERVICES
   apps_api: k8s.AppsV1Api
   core_api: k8s.CoreV1Api
 
@@ -92,12 +92,17 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
    */
   private async createK8sDeployment(app: ApplicationStruct, labels: any) {
     const uri = getApplicationDbUri(app)
-    const memoryLimit = app.runtime?.metrics?.memory ?? Config.APP_SERVICE_MEMORY_LIMIT
-    const max_old_space_size = ~~(memoryLimit * 0.8)
-    // if no cpu-shares set, use memory limit as it
-    const cpuShares = app.runtime?.metrics?.cpu_shares ?? Config.APP_SERVICE_CPU_SHARES
+
+    const limit_memory = parseInt(app.runtime?.resources?.limit_memory ?? Config.APP_DEFAULT_RESOURCES.limit_memory)
+    const limit_cpu = app.runtime?.resources?.limit_cpu ?? Config.APP_DEFAULT_RESOURCES.limit_cpu
+
+    const req_cpu = app.runtime?.resources?.req_cpu ?? Config.APP_DEFAULT_RESOURCES.req_cpu
+    const req_memory = app.runtime?.resources?.req_memory ?? Config.APP_DEFAULT_RESOURCES.req_memory
+
     const imageName = app.runtime?.image ?? Config.APP_SERVICE_IMAGE
+    const max_old_space_size = ~~(limit_memory * 0.8)
     const logLevel = Config.LOG_LEVEL
+
 
     // create k8s deployment
     const { body: deployment } = await this.apps_api.createNamespacedDeployment(this.namespace, {
@@ -133,9 +138,13 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
                 ],
                 ports: [{ containerPort: 8000 }],
                 resources: {
+                  requests: {
+                    memory: `${req_memory}Mi`,
+                    cpu: `${req_cpu}m`
+                  },
                   limits: {
-                    memory: `${memoryLimit}Mi`,
-                    cpu: `${cpuShares}m`
+                    memory: `${limit_memory}Mi`,
+                    cpu: `${limit_cpu}m`
                   }
                 }
               }
