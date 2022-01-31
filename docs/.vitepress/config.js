@@ -14,7 +14,8 @@ module.exports = {
       { text: '主页', link: '/' },
       { text: '开发指南', link: '/guide/', activeMatch: '^/guide/' },
       { text: '预览图', link: '/screenshots', },
-      { text: '在线演示', link: '/todo-list', },
+      { text: '在线 Demo', link: '/todo-list', },
+      { text: 'lafyun.com', link: 'https://www.lafyun.com/'},
       {
         text: '更新记录',
         link: 'https://github.com/lafjs/laf/blob/main/CHANGELOG.md'

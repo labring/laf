@@ -21,5 +21,15 @@ features:
   - title: 云存储
     details: 内置分布式文件存储机制。可按 `Bucket` 存储和管理文件，可通过文件操作 Token，灵活控制文件访问。
 
-footer: Server Side Public Licensed | Copyright © 2021-present Maslow
+footer: Server Side Public Licensed | Copyright © 2021-present Maslow | lafyun.com
 ---
+
+---
+
+[lafyun.com](http://www.lafyun.com) 正式上线！可直接在线体验，[立即创建](http://www.lafyun.com) laf 云开发应用服务！
+
+> 开发者可免费在 [lafyun.com](http://www.lafyun.com) 上快速创建自己的应用，不用进行服务器部署和运维工作，立即拥有应用独立的域名及 HTTPS 证书，快速上线应用！
+
+> 开发者可以在私有服务器上部署一套 laf 云开发平台，可方便的将 [lafyun.com](http://www.lafyun.com) 中的应用迁至自己的 laf 云开发平台中运行！
+
+[`laf.js`](https://github.com/lafjs/laf) 让每个开发团队都可以随时拥有一个自己的云开发平台！
