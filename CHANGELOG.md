@@ -1,4 +1,19 @@
-# [](https://github.com/lafjs/laf/compare/v0.7.4...v) (2022-01-21)
+# [](https://github.com/lafjs/laf/compare/v0.7.5...v) (2022-01-31)
+
+
+
+## [0.7.5](https://github.com/lafjs/laf/compare/v0.7.4...v0.7.5) (2022-01-31)
+
+
+### Bug Fixes
+
+* **gateway:** fix dns hot resolve in nginx conf for k8s ([72d4a6e](https://github.com/lafjs/laf/commit/72d4a6e362dabd0e832199dde85259d6cff3567a))
+
+
+### Features
+
+* **k8s:** support customize k8s namespace for apps; ([57135de](https://github.com/lafjs/laf/commit/57135ded0251c4f6d9a26bf3cab56fbe9ebe282d))
+* **k8s:** support k8s resources limit for app; ([ffe0e28](https://github.com/lafjs/laf/commit/ffe0e28adde1fb0b305bb5277ce13e3ea1cb20a2))
 
 
 
