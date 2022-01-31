@@ -37,14 +37,17 @@ spec:
         - image: bitnami/mongodb:5.0
           name: mongo
           resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
             limits:
-              cpu: "200m"
-              memory: "1024M"
+              memory: "1024Mi"
+              cpu: "1000m"
           env:
             - name: MONGODB_REPLICA_SET_MODE
               value: primary
             - name: MONGODB_ADVERTISED_HOSTNAME
-              value: mongo
+              value: mongo.laf
             - name: MONGODB_REPLICA_SET_NAME
               value: laf
             - name: MONGODB_REPLICA_SET_KEY
@@ -56,7 +59,7 @@ spec:
             - name: MONGODB_PASSWORD
               value: password123
             - name: MONGODB_DATABASE
-              value: laf-sys
+              value: sys_db
           ports:
             - containerPort: 27017
           volumeMounts:

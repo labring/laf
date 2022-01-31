@@ -52,9 +52,12 @@ spec:
           imagePullPolicy: IfNotPresent
           name: gateway
           resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
             limits:
-              memory: "512Mi"
-              cpu: "200m"
+              memory: "1024Mi"
+              cpu: "1000m"
           env:
             - name: DEPLOY_DOMAIN
               valueFrom:
@@ -76,6 +79,11 @@ spec:
                 configMapKeyRef:
                   name: deploy-domain
                   key: docs-domain
+            - name: KUBE_NAMESPACE_OF_APP_SERVICES
+              valueFrom:
+                configMapKeyRef:
+                  name: app-service
+                  key: kube-namespace-of-app-services
             - name: SERVICE_DRIVER
               value: kubernetes
           ports:

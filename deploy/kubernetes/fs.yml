@@ -45,9 +45,12 @@ spec:
           imagePullPolicy: IfNotPresent
           name: storage-service
           resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
             limits:
-              memory: "512Mi"
-              cpu: "200m"
+              memory: "1024Mi"
+              cpu: "1000m"
           env:
             - name: DB_URI
               valueFrom:

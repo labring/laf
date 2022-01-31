@@ -6,9 +6,9 @@ metadata:
   name: db-config
   namespace: laf
 data:
-  sys-db-uri: "mongodb://my_user:password123@mongo:27017/sys_db?authSource=sys_db&replicaSet=laf&writeConcern=majority"
-  app-db-uri: "mongodb://root:password123@mongo:27017/?authSource=admin&replicaSet=laf&writeConcern=majority&maxPoolSize=10"
-  fs-db-uri: "mongodb://root:password123@mongo:27017/fs_db?authSource=admin&replicaSet=laf&writeConcern=majority"
+  sys-db-uri: "mongodb://my_user:password123@mongo.laf:27017/sys_db?authSource=sys_db&replicaSet=laf&writeConcern=majority"
+  app-db-uri: "mongodb://root:password123@mongo.laf:27017/?authSource=admin&replicaSet=laf&writeConcern=majority&maxPoolSize=10"
+  fs-db-uri: "mongodb://root:password123@mongo.laf:27017/fs_db?authSource=admin&replicaSet=laf&writeConcern=majority"
 
 ### Root account for system extension app
 ---
@@ -57,6 +57,9 @@ metadata:
   namespace: laf
 data:
   image: "docker.io/lafyun/app-service:0.7.2"
-  default-memory-limit: "128"
-  default-cpu-limit: "128"
+  default-request-memory: "128"
+  default-request-cpu: "100"
+  default-limit-memory: "256"
+  default-limit-cpu: "500"
   default-app-quota-created-per-user: "5"
+  kube-namespace-of-app-services: 'laf'

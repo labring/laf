@@ -45,9 +45,12 @@ spec:
           imagePullPolicy: IfNotPresent
           name: system-server
           resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
             limits:
-              memory: "512Mi"
-              cpu: "200m"
+              memory: "1024Mi"
+              cpu: "1000m"
           livenessProbe:
             httpGet:
               path: /health-check
@@ -71,6 +74,11 @@ spec:
                 configMapKeyRef:
                   name: secret-salt
                   key: system-server-salt
+            - name: KUBE_NAMESPACE_OF_APP_SERVICES
+              valueFrom:
+                configMapKeyRef:
+                  name: app-service
+                  key: kube-namespace-of-app-services
             - name: APP_SERVICE_IMAGE
               valueFrom:
                 configMapKeyRef:
@@ -78,16 +86,26 @@ spec:
                   key: image
             - name: SERVICE_DRIVER
               value: kubernetes
-            - name: APP_SERVICE_MEMORY_LIMIT
+            - name: APP_SERVICE_DEFAULT_REQUEST_MEMORY
               valueFrom:
                 configMapKeyRef:
                   name: app-service
-                  key: default-memory-limit
-            - name: APP_SERVICE_CPU_SHARES
+                  key: default-request-memory
+            - name: APP_SERVICE_DEFAULT_REQUEST_CPU
               valueFrom:
                 configMapKeyRef:
                   name: app-service
-                  key: default-cpu-limit
+                  key: default-request-cpu
+            - name: APP_SERVICE_DEFAULT_LIMIT_MEMORY
+              valueFrom:
+                configMapKeyRef:
+                  name: app-service
+                  key: default-limit-memory
+            - name: APP_SERVICE_DEFAULT_LIMIT_CPU
+              valueFrom:
+                configMapKeyRef:
+                  name: app-service
+                  key: default-limit-cpu
             - name: ACCOUNT_DEFAULT_APP_QUOTA
               valueFrom:
                 configMapKeyRef:
