@@ -8,11 +8,24 @@
 
 用熟悉的 js，轻松搞定前后台整体业务，前端秒变全栈。
 
-`laf.js` 开发交流 QQ 群：`603059673`
+[`laf.js`](https://github.com/lafjs/laf) 让每个开发团队都可以随时拥有一个自己的云开发平台！
+
+
+交流 QQ 群：`603059673`
+
+---
+
+> [lafyun.com](http://www.lafyun.com) 正式上线！可直接在线体验，[立即创建](http://www.lafyun.com) laf 云开发应用服务！
+
+> 开发者可免费在 [lafyun.com](http://www.lafyun.com) 上快速创建自己的应用，不用关心服务器部署和运维工作，立即拥有应用独立域名及 HTTPS 证书，快速上线应用！
+
+> 开发者可以在私有服务器上部署一套 laf 云开发平台，可方便的将 [lafyun.com](http://www.lafyun.com) 中的应用迁至自己的 laf 云开发平台中运行！
+
+---
 
 ### 主要内容
 
-- 提供云函数引擎、文件存储、数据访问策略，开箱即用，5 分钟上线应用，前端秒变全栈
+- 提供云函数引擎、文件存储、数据访问策略、触发器、WebSocket 等能力，开箱即用，5 分钟上线应用，前端秒变全栈
 - 前端可使用 [laf-client-sdk](https://github.com/lafjs/laf/tree/main/packages/client-sdk) “直连”数据库，无需与服务端对接口
 - 另有 Flutter SDK [less-api-client](https://github.com/Maslow/less-api-client-dart)，快速上线移动端应用
 - 支持 h5、小程序、Uni-app、Flutter 等客户端环境使用
@@ -21,7 +34,7 @@
 ### 初心场景
 
 - 用于快速开发 MVP，专注于客户端业务，极大程度减少服务端开发工作量
-- 自建属于自己可控的云开发环境
+- 自建属于自己可控的云开发平台
 
 ## 谁适合使用 ？
 
