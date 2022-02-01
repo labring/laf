@@ -48,7 +48,7 @@ spec:
           operator: Exists
           effect: NoSchedule
       containers:
-        - image: docker.io/lafyun/gateway:0.7.5
+        - image: docker.io/lafyun/gateway:0.7.6
           imagePullPolicy: IfNotPresent
           name: gateway
           resources:
