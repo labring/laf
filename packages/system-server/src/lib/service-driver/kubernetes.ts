@@ -120,6 +120,7 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
             labels: labels
           },
           spec: {
+            terminationGracePeriodSeconds: 15,
             automountServiceAccountToken: app.appid === Constants.SYSTEM_EXTENSION_APPID,
             containers: [
               {
@@ -136,7 +137,7 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
                   { name: 'RUNTIME_IMAGE', value: app.runtime?.image },
                   { name: 'FLAGS', value: `--max_old_space_size=${max_old_space_size}` }
                 ],
-                ports: [{ containerPort: 8000 }],
+                ports: [{ containerPort: 8000, name: 'http' }],
                 resources: {
                   requests: {
                     memory: `${req_memory}Mi`,
@@ -146,7 +147,29 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
                     memory: `${limit_memory}Mi`,
                     cpu: `${limit_cpu}m`
                   }
-                }
+                },
+                startupProbe: {
+                  httpGet: {
+                    path: '/health-check',
+                    port: 'http',
+                    httpHeaders: [{ name: 'Referer', value: 'startupProbe' }]
+                  },
+                  initialDelaySeconds: 0,
+                  periodSeconds: 3,
+                  timeoutSeconds: 3,
+                  failureThreshold: 40
+                },
+                readinessProbe: {
+                  httpGet: {
+                    path: '/health-check',
+                    port: 'http',
+                    httpHeaders: [{ name: 'Referer', value: 'readinessProbe' }]
+                  },
+                  initialDelaySeconds: 0,
+                  periodSeconds: 60,
+                  timeoutSeconds: 5,
+                  failureThreshold: 3
+                },
               }
             ],
           }

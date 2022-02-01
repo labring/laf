@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2022-01-23 19:46:34
+ * @LastEditTime: 2022-02-01 22:55:54
  * @Description: 
  */
 
@@ -58,9 +58,13 @@ process.on('SIGTERM', gracefullyExit)
 process.on('SIGINT', gracefullyExit)
 
 async function gracefullyExit() {
-  logger.info('exiting: removing system extension service')
-  await ServiceDriver.create().removeService({ appid: Constants.SYSTEM_EXTENSION_APPID } as any)
-  logger.info('exiting: system extension service has been removed')
+  
+  // NOT remove system extension app service if service driver is 'kubernetes', 
+  if (Config.SERVICE_DRIVER === 'docker') {
+    logger.info('exiting: removing system extension service')
+    await ServiceDriver.create().removeService({ appid: Constants.SYSTEM_EXTENSION_APPID } as any)
+    logger.info('exiting: system extension service has been removed')
+  }
 
   logger.info('exiting: closing db connection')
   await DatabaseAgent.sys_accessor.close()

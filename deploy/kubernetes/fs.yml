@@ -44,6 +44,19 @@ spec:
         - image: docker.io/lafyun/storage-service:0.7.3
           imagePullPolicy: IfNotPresent
           name: storage-service
+          startupProbe:
+            httpGet:
+              path: /health-check
+              port: http
+            periodSeconds: 3
+            timeoutSeconds: 3
+            failureThreshold: 20
+          readinessProbe:
+            httpGet:
+              path: /health-check
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 3
           resources:
             requests:
               memory: "256Mi"

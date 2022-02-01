@@ -51,11 +51,23 @@ spec:
             limits:
               memory: "1024Mi"
               cpu: "1000m"
-          livenessProbe:
+          startupProbe:
             httpGet:
               path: /health-check
-              port: 9000
-            initialDelaySeconds: 20
+              port: http
+              httpHeaders:
+                - name: Referer
+                  value: startupProbe
+            periodSeconds: 3
+            timeoutSeconds: 3
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /health-check
+              port: http
+              httpHeaders:
+                - name: Referer
+                  value: readinessProbe
             periodSeconds: 10
             timeoutSeconds: 3
           command: ["sh", "/app/start.sh"]
@@ -147,4 +159,5 @@ spec:
             - name: LOG_LEVEL
               value: debug
           ports:
-            - containerPort: 9000
+            - name: http
+              containerPort: 9000
