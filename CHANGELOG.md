@@ -1,4 +1,15 @@
-# [](https://github.com/lafjs/laf/compare/v0.7.5...v) (2022-01-31)
+# [](https://github.com/lafjs/laf/compare/v0.7.6...v) (2022-02-01)
+
+
+
+## [0.7.6](https://github.com/lafjs/laf/compare/v0.7.5...v0.7.6) (2022-02-01)
+
+
+### Features
+
+* **fs:** add /health-check to fs service; ([b3f313f](https://github.com/lafjs/laf/commit/b3f313f7665d5bafafd13cc52485c5b52e069107))
+* **gateway:** add gzip conf ([1b1e8d8](https://github.com/lafjs/laf/commit/1b1e8d8b909c0d7c1f55c851e6fe8bf7c1ee6c36))
+* **k8s:** add startupProbe & readinessProbe support to services; ([fa5e57c](https://github.com/lafjs/laf/commit/fa5e57c6e15a87e2a6f14b6613bd99ce85d25967))
 
 
 
