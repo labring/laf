@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-19 16:10:27
- * @LastEditTime: 2022-01-22 01:16:04
+ * @LastEditTime: 2022-02-02 18:56:09
  * @Description:
  */
 
@@ -90,6 +90,9 @@ export async function handleGetFile(req: express.Request, res: express.Response)
       res.status(304).send("Not Modified")
       return
     }
+
+    // process partly request
+    res.set('Accept-Ranges', 'bytes')
 
     res.set("x-bucket", bucket_name)
     res.set("x-uri", encodeURI(filename))
