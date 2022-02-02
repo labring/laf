@@ -45,13 +45,13 @@
         </el-table-column>
         <el-table-column label="服务启停" align="center" width="240" class-name="small-padding">
           <template slot-scope="{row}">
-            <el-button v-if="row.status !== 'running'" :loading="serviceLoading" plain type="success" size="mini" @click="startApp(row)">
+            <el-button v-if="row.status !== 'running'" :loading="serviceLoading[row.appid]" plain type="success" size="mini" @click="startApp(row)">
               启动
             </el-button>
-            <el-button v-if="row.status === 'running'" :loading="serviceLoading" plain type="danger" size="mini" @click="stopApp(row)">
+            <el-button v-if="row.status === 'running'" :loading="serviceLoading[row.appid]" plain type="danger" size="mini" @click="stopApp(row)">
               停止
             </el-button>
-            <el-button v-if="row.status === 'running'" :loading="serviceLoading" plain type="default" size="mini" @click="restartApp(row)">
+            <el-button v-if="row.status === 'running'" :loading="serviceLoading[row.appid]" plain type="default" size="mini" @click="restartApp(row)">
               重启
             </el-button>
           </template>
@@ -122,13 +122,13 @@
         </el-table-column>
         <el-table-column label="服务启停" align="center" width="240" class-name="small-padding">
           <template slot-scope="{row}">
-            <el-button v-if="row.status !== 'running'" :loading="serviceLoading" plain type="success" size="mini" @click="startApp(row)">
+            <el-button v-if="row.status !== 'running'" :loading="serviceLoading[row.appid]" plain type="success" size="mini" @click="startApp(row)">
               启动
             </el-button>
-            <el-button v-if="row.status === 'running'" :loading="serviceLoading" plain type="danger" size="mini" @click="stopApp(row)">
+            <el-button v-if="row.status === 'running'" :loading="serviceLoading[row.appid]" plain type="danger" size="mini" @click="stopApp(row)">
               停止
             </el-button>
-            <el-button v-if="row.status === 'running'" :loading="serviceLoading" plain type="default" size="mini" @click="restartApp(row)">
+            <el-button v-if="row.status === 'running'" :loading="serviceLoading[row.appid]" plain type="default" size="mini" @click="restartApp(row)">
               重启
             </el-button>
           </template>
@@ -274,7 +274,7 @@ export default {
         app: null,
         file: null
       },
-      serviceLoading: false
+      serviceLoading: {}
     }
   },
   async created() {
@@ -288,9 +288,10 @@ export default {
       const { created, joined } = res.data
       this.applications.created = created
       this.applications.joined = joined
+
     },
     toDetail(app) {
-      if(app.status !== 'running') { 
+      if(app.status !== 'running') {
         return showInfo('请先启动应用服务！')
       }
       openAppConsole(app)
@@ -326,7 +327,7 @@ export default {
           message: '创建成功！'
         })
 
-        this.serviceLoading = true
+        this.$set(this.serviceLoading, res.data.appid, true)
         this.startApp(res.data)
         this.dialogFormVisible = false
       })
@@ -364,7 +365,6 @@ export default {
     },
     async deleteApp(row) {
       await this.$confirm('应用被删除后，暂不可恢复，确定释放？', '确认释放应用？')
-      console.log(row)
       if (row.status === 'running') { return showError('请先停止该应用服务') }
       this.loading = true
 
@@ -379,9 +379,9 @@ export default {
       this.$message.success('已复制')
     },
     async startApp(app) {
-      this.serviceLoading = true
+      this.$set(this.serviceLoading, app.appid, true)
       const res = await startApplicationService(app.appid)
-        .finally(() => { this.serviceLoading = false })
+        .finally(() => { this.$set(this.serviceLoading, app.appid, false) })
       if (res.data) {
         this.$notify.success('启动应用成功')
         this.loadApps()
@@ -390,9 +390,9 @@ export default {
     },
     async stopApp(app) {
       await this.$confirm('确认要停止应用服务？', '服务操作确认')
-      this.serviceLoading = true
+      this.$set(this.serviceLoading, app.appid, true)
       const res = await stopApplicationService(app.appid)
-        .finally(() => { this.serviceLoading = false })
+        .finally(() => { this.$set(this.serviceLoading, app.appid, false) })
       if (res.data) {
         this.$notify.success('停止应用成功')
         this.loadApps()
