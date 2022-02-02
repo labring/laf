@@ -51,6 +51,25 @@ spec:
         - image: docker.io/lafyun/gateway:0.7.6
           imagePullPolicy: IfNotPresent
           name: gateway
+          startupProbe:
+            httpGet:
+              path: /gw-health
+              port: http
+              httpHeaders:
+                - name: Referer
+                  value: startupProbe
+            periodSeconds: 3
+            timeoutSeconds: 3
+            failureThreshold: 20
+          readinessProbe:
+            httpGet:
+              path: /gw-health
+              port: http
+              httpHeaders:
+                - name: Referer
+                  value: readinessProbe
+            periodSeconds: 10
+            timeoutSeconds: 3
           resources:
             requests:
               memory: "256Mi"
