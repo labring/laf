@@ -1,4 +1,21 @@
-# [](https://github.com/lafjs/laf/compare/v0.7.6...v) (2022-02-01)
+# [](https://github.com/lafjs/laf/compare/v0.7.7...v) (2022-02-02)
+
+
+
+## [0.7.7](https://github.com/lafjs/laf/compare/v0.7.6...v0.7.7) (2022-02-02)
+
+
+### Bug Fixes
+
+* **app-service:** clean unused codes; remove cloud.storage() [#21](https://github.com/lafjs/laf/issues/21) ([c650bfe](https://github.com/lafjs/laf/commit/c650bfedef1df2258f68c2ad22aab1c8e403dd2d))
+* **fs:** add http accept range support; ([e21f391](https://github.com/lafjs/laf/commit/e21f391519cb65c871ff8a151f81c4f81ab2abbc))
+* **gateway:** remove client_max_body_size limit; ([514b10d](https://github.com/lafjs/laf/commit/514b10d97276d70daede1334f81bef19577c7692))
+* **sys-client:** optimize btn loading status ([b699558](https://github.com/lafjs/laf/commit/b699558ff07419eb4d428da84f73b14e5c2a2928))
+
+
+### Features
+
+* **gateway:** add /gw-health to gateway ([5109a41](https://github.com/lafjs/laf/commit/5109a4155f81ba69b9f6b3f5dbd1da16cae0896a))
 
 
 
