@@ -16,13 +16,13 @@
   },
   "keywords": [
     "BaaS",
-    "cloud",
-    "mysql",
-    "acl",
+    "mongodb",
+    "laf.js",
     "serverless",
-    "less-api"
+    "laf"
   ],
   "dependencies": {
+    "adm-zip": "^0.5.9",
     "alipay-sdk": "^3.1.7",
     "axios": "^0.21.1",
     "cloud-function-engine": "^0.7.0",
@@ -44,9 +44,10 @@
     "ws": "^8.2.3"
   },
   "devDependencies": {
+    "@types/adm-zip": "^0.4.34",
     "@types/dotenv": "^8.2.0",
     "@types/ejs": "^3.0.7",
-    "@types/express": "^4.17.13",
+    "@types/express": "^4.17.11",
     "@types/fs-extra": "^9.0.8",
     "@types/jsonwebtoken": "^8.5.1",
     "@types/lodash": "^4.14.171",

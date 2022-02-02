@@ -1,25 +1,24 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-12-07 13:32:26
+ * @LastEditTime: 2022-02-03 00:32:16
  * @Description: 
  */
 
-import { Router } from 'express'
+import { Router, Request, Response } from 'express'
+
 import Config from '../config'
 import { DatabaseAgent } from '../lib/database'
-import { EntryRouter } from './entry'
-import { FileRouter } from './file/index'
+import { DatabaseProxyRouter } from './proxy'
 import { FunctionRouter } from './function/index'
 import { PackageTypingRouter } from './typing'
 export const router = Router()
 
-router.use(EntryRouter)
+router.use(DatabaseProxyRouter)
 
-router.use('/file', FileRouter)
 router.use('/func', FunctionRouter)
 router.use('/typing', PackageTypingRouter)
-router.use('/health-check', (_req, res) => {
+router.use('/health-check', (_req: Request, res: Response) => {
   if (!DatabaseAgent.db) {
     return res.status(400).send('no db connection')
   }

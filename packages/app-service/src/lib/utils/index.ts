@@ -1,33 +1,29 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-10-06 19:02:28
+ * @LastEditTime: 2022-02-03 00:53:11
  * @Description: 
  */
 
-import { ActionType } from "database-proxy"
 
 /**
- * Convert ActionType to a shorthand string
- * @param action 
+ * Recursively deeply freeze objects
+ * @param object 
  * @returns 
  */
-export function convertActionType(action: ActionType) {
-  switch (action) {
-    case ActionType.READ:
-      return 'read'
-    case ActionType.ADD:
-      return 'add'
-    case ActionType.REMOVE:
-      return 'remove'
-    case ActionType.UPDATE:
-      return 'update'
-    case ActionType.COUNT:
-      return 'count'
-    case ActionType.WATCH:
-      return 'watch'
-    default:
+export function deepFreeze(object: Object) {
+  // Retrieve the property names defined on object
+  const propNames = Object.getOwnPropertyNames(object)
+
+  // Freeze properties before freezing self
+
+  for (const name of propNames) {
+    const value = object[name]
+
+    if (value && typeof value === "object") {
+      deepFreeze(value)
+    }
   }
 
-  throw new Error('Unknown action type')
+  return Object.freeze(object)
 }

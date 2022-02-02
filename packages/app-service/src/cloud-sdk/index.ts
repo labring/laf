@@ -1,14 +1,12 @@
 import { AxiosStatic } from "axios"
 import { Db, getDb } from "database-proxy"
 import { FunctionContext } from "cloud-function-engine"
-import { FileStorageInterface } from "../lib/storage/interface"
 import * as mongodb from "mongodb"
 import { DatabaseAgent } from "../lib/database"
 import request from 'axios'
 import { SchedulerInstance } from "../lib/scheduler"
 import { getToken, parseToken } from "../lib/utils/token"
 import { invokeInFunction } from "./invoke"
-import { createFileStorage } from "../lib/storage"
 import { CloudFunction } from "../lib/function"
 import { WebSocket } from "ws"
 import { WebSocketAgent } from "../lib/ws"
@@ -30,14 +28,6 @@ export interface CloudSdkInterface {
    * Sending an HTTP request is actually an Axios instance. You can refer to the Axios documentation directly
    */
   fetch: AxiosStatic
-
-  /**
-   * Get a file storage manager
-   * 
-   * @deprecated this is deprecated and will be removed in a future release
-   * @param bucket the bucket name, default is 'public'
-   */
-  storage(bucket?: string): FileStorageInterface
 
   /**
    * Get a laf.js database-ql instance
@@ -134,7 +124,6 @@ DatabaseAgent.accessor.ready.then(() => {
 export function create() {
   const cloud: CloudSdkInterface = {
     database: () => getDb(DatabaseAgent.accessor),
-    storage: createFileStorage,
     fetch: request,
     invoke: invokeInFunction,
     emit: (event: string, param: any) => SchedulerInstance.emit(event, param),

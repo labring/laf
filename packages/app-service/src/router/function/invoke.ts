@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2022-01-14 16:30:39
+ * @LastEditTime: 2022-02-03 00:59:07
  * @Description: 
  */
 
@@ -10,7 +10,7 @@ import { FunctionContext } from 'cloud-function-engine'
 import { getFunctionByName } from '../../api/function'
 import Config from '../../config'
 import { logger } from '../../lib/logger'
-import { addFunctionLog } from '../../api/function-log'
+import { addFunctionLog } from '../../api/function'
 import { CloudFunction } from '../../lib/function'
 
 

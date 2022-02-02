@@ -1,12 +1,12 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-11-09 20:02:51
+ * @LastEditTime: 2022-02-03 00:58:59
  * @Description: 
  */
 
 import { getFunctionById } from "../../api/function"
-import { addFunctionLog, CloudFunctionLogStruct } from "../../api/function-log"
+import { addFunctionLog, CloudFunctionLogStruct } from "../../api/function"
 import { TriggerScheduler } from "cloud-function-engine"
 import { createLogger } from "../logger"
 import assert = require("assert")

@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-10-07 21:19:09
+ * @LastEditTime: 2022-02-03 00:39:18
  * @Description: 
  */
 import { Router } from 'express'
@@ -12,9 +12,9 @@ import { PolicyAgentInstance } from '../../lib/policy-agent'
 import { logger } from '../../lib/logger'
 
 const accessor = DatabaseAgent.accessor
-export const EntryRouter = Router()
+export const DatabaseProxyRouter = Router()
 
-EntryRouter.post('/proxy/:policy', async (req, res) => {
+DatabaseProxyRouter.post('/proxy/:policy', async (req, res) => {
   const requestId = req['requestId']
   const auth = req['auth'] ?? {}
   const policy_name = req.params?.policy

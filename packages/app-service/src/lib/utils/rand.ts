@@ -41,3 +41,11 @@ export function generateRandString(length = 8, hasNumbers = true, hasSymbols = t
   }
   return str
 }
+
+
+export function hashPassword(content: string) {
+  return crypto
+    .createHash('sha256')
+    .update(content)
+    .digest('hex')
+}

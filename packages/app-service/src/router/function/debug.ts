@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2021-11-05 13:49:11
+ * @LastEditTime: 2022-02-03 00:59:03
  * @Description: 
  */
 
@@ -9,7 +9,7 @@ import { Request, Response } from 'express'
 import { FunctionContext } from 'cloud-function-engine'
 import { parseToken } from '../../lib/utils/token'
 import { logger } from '../../lib/logger'
-import { addFunctionLog } from '../../api/function-log'
+import { addFunctionLog } from '../../api/function'
 import { ObjectId } from 'bson'
 import { CloudFunction } from '../../lib/function'
 

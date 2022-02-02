@@ -4,6 +4,7 @@ import path = require('path')
 import { Constants } from '../constants'
 import { DatabaseAgent } from '../lib/database'
 import { execSync } from 'child_process'
+import Config from '../config'
 
 /**
  * 在 node_modules 中创建 云函数 sdk 包：@， 这个包是为了云函数IDE 加载类型提示文件而创建的，不可发布
@@ -96,4 +97,26 @@ export function moduleExists(mod: string) {
   } catch (_err) {
     return false
   }
+}
+
+/**
+ * Create necessary indexes of collections
+ * @param data 
+ * @returns 
+ */
+ export async function ensureCollectionIndexes(): Promise<any> {
+  const db = DatabaseAgent.db
+  await db.collection(Constants.function_log_collection)
+    .createIndexes([
+      {
+        key: { created_at: 1 },
+        expireAfterSeconds: Config.FUNCTION_LOG_EXPIRED_TIME
+      },
+      {
+        key: { requestId: 1 }
+      },
+      { key: { func_id: 1 } }
+    ])
+
+  return true
 }

@@ -1,12 +1,15 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-16 15:55:37
- * @LastEditTime: 2021-11-01 11:04:49
+ * @LastEditTime: 2022-02-03 00:21:52
  * @Description: 
  * The start script entry: manage service process by cluster process mode, restart service process while error occurred.
  * You can also run service directly by launching `index.ts`.
  */
 
+/**
+ * This is deprecated and will be removed in a future release
+ */
 import { Worker } from 'cluster'
 import { createLogger } from './lib/logger'
 import * as fs from 'fs'

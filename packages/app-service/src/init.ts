@@ -1,4 +1,4 @@
-import { getExtraPackages, initCloudSdkPackage, installPackages, moduleExists } from "./api/init"
+import { ensureCollectionIndexes, getExtraPackages, initCloudSdkPackage, installPackages, moduleExists } from "./api/init"
 import { logger } from "./lib/logger"
 
 
@@ -24,6 +24,8 @@ async function main() {
     logger.info(res)
 
     initCloudSdkPackage()
+
+    await ensureCollectionIndexes()
   } catch (error) {
     logger.error(error)
     return 1
