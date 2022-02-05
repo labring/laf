@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-09-09 14:46:44
- * @LastEditTime: 2021-12-21 19:10:02
+ * @LastEditTime: 2022-02-05 23:46:59
  * @Description:
  */
 
@@ -53,7 +53,7 @@ export async function handleImportApplication(req: Request, res: Response) {
     return res.send({ data: 'ok' })
   } catch (error) {
     logger.error('import application got error:', error)
-    return res.status(400).send({ error: error })
+    return res.status(500).send({ error: 'import application got error' })
   }
 }
 
@@ -90,7 +90,7 @@ export async function handleInitApplicationWithTemplate(
     await publishApplicationPackages(app.appid)
     return res.send({ data: 'ok' })
   } catch (error) {
-    logger.error('import application got error:', error)
-    return res.status(400).send({ error: error })
+    logger.error('init application got error:', error)
+    return res.status(500).send({ error: 'init application got error' })
   }
 }

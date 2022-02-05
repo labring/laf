@@ -1,7 +1,7 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-28 22:00:45
- * @LastEditTime: 2022-02-01 00:04:33
+ * @LastEditTime: 2022-02-06 00:29:12
  * @Description: Application APIs
  */
 
@@ -131,7 +131,7 @@ export async function getApplicationDbAccessor(app: ApplicationStruct) {
   assert.ok(db_user, 'empty db_user got')
 
   const db_uri = getApplicationDbUri(app)
-  const accessor = new MongoAccessor(db_name, db_uri, { directConnection: true })
+  const accessor = new MongoAccessor(db_name, db_uri)
   await accessor.init()
 
   return accessor
