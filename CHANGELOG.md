@@ -1,4 +1,22 @@
-# [](https://github.com/lafjs/laf/compare/v0.7.7...v) (2022-02-02)
+# [](https://github.com/lafjs/laf/compare/v0.7.9...v) (2022-02-05)
+
+
+
+## [0.7.9](https://github.com/lafjs/laf/compare/v0.7.8...v0.7.9) (2022-02-05)
+
+
+### Bug Fixes
+
+* **sys-server:** FATAL!  remove get app db conn with directConnection option ([4aa6f46](https://github.com/lafjs/laf/commit/4aa6f4656710efb673a0de65831c0872ec6438cb))
+
+
+
+## [0.7.8](https://github.com/lafjs/laf/compare/v0.7.7...v0.7.8) (2022-02-05)
+
+
+### Features
+
+* **sys-server:** add application template init support; ([1d96659](https://github.com/lafjs/laf/commit/1d96659f41735bf0d113e4dbb27203c7ba8c5efb))
 
 
 

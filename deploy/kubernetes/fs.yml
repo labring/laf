@@ -41,7 +41,7 @@ spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 10
       containers:
-        - image: docker.io/lafyun/storage-service:0.7.6
+        - image: docker.io/lafyun/storage-service:0.7.7
           imagePullPolicy: IfNotPresent
           name: storage-service
           startupProbe:

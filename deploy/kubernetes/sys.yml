@@ -41,7 +41,7 @@ spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 10
       containers:
-        - image: docker.io/lafyun/system-server:0.7.6
+        - image: docker.io/lafyun/system-server:0.7.9
           imagePullPolicy: IfNotPresent
           name: system-server
           resources:
