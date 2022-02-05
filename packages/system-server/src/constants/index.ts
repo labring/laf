@@ -2,12 +2,12 @@
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
  * @LastEditTime: 2022-01-19 15:57:36
- * @Description: 
+ * @Description:
  */
 
-import { deepFreeze } from "../utils/lang"
-import { permissions } from "./permissions"
-import { roles } from "./roles"
+import { deepFreeze } from '../utils/lang'
+import { permissions } from './permissions'
+import { roles } from './roles'
 
 const coll_prefix = 'sys_'
 
@@ -52,6 +52,7 @@ export const Constants = {
     deploy_requests: coll_prefix + 'deploy_requests',
     applications: coll_prefix + 'applications',
     recycles: coll_prefix + 'recycles',
+    app_templates: coll_prefix + 'app_templates',
   },
 
   /**
@@ -64,7 +65,7 @@ export const Constants = {
    */
   roles: roles,
 
-  SYSTEM_EXTENSION_APPID: `00000000-0000-0000-0000-000000000000`
+  SYSTEM_EXTENSION_APPID: `00000000-0000-0000-0000-000000000000`,
 }
 
 deepFreeze(Constants)

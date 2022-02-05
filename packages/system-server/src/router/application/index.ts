@@ -2,7 +2,7 @@
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-29 11:35:11
  * @LastEditTime: 2022-01-19 14:47:05
- * @Description: 
+ * @Description:
  */
 
 import { Router } from 'express'
@@ -14,7 +14,7 @@ import { handleGetCollaborators, handleGetRoles, handleInviteCollaborator, handl
 import { handleCreateApplication } from './create'
 import { handleExportApplication } from './exporter'
 import { handleGetApplicationByAppid, handleMyApplications } from './get'
-import { handleImportApplication } from './importer'
+import { handleImportApplication, handleInitApplicationWithTemplate } from './importer'
 import { handleAddPackage, handleGetPackages, handleRemovePackage, handleUpdatePackage } from './packages'
 import { handleRemoveApplication } from './remove'
 import { handleStopApplicationService, handleStartApplicationService } from './service'
@@ -35,7 +35,7 @@ const uploader = multer({
 export const ApplicationRouter = Router()
 
 /**
- * Get my applications 
+ * Get my applications
  */
 ApplicationRouter.get('/my', handleMyApplications)
 
@@ -65,7 +65,7 @@ ApplicationRouter.post('/:appid/service/start', handleStartApplicationService)
 ApplicationRouter.post('/:appid/service/stop', handleStopApplicationService)
 
 /**
- * Remove an application by appid 
+ * Remove an application by appid
  */
 ApplicationRouter.delete('/:appid', handleRemoveApplication)
 
@@ -110,6 +110,10 @@ ApplicationRouter.get('/:appid/export', handleExportApplication)
  */
 ApplicationRouter.post('/:appid/import', uploader.single('file'), handleImportApplication)
 
+/**
+ * Init appliaction with template
+ */
+ApplicationRouter.post('/:appid/init-with-template', handleInitApplicationWithTemplate)
 
 /**
  * Get packages from app
