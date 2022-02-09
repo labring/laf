@@ -32,7 +32,7 @@ services:
       LOG_LEVEL: debug
       ACCOUNT_DEFAULT_APP_QUOTA: 5
       SERVICE_DRIVER: docker
-      APP_SERVICE_IMAGE: lafyun/app-service:latest
+      APP_SERVICE_IMAGE: app-service:debug-3 # lafyun/app-service:0.7.7
       APP_SERVICE_DEPLOY_HOST: local-dev.host:8080 # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
       APP_SERVICE_DEPLOY_URL_SCHEMA: 'http'
       STORAGE_SERVICE_API_ENTRYPOINT: http://storage-service:9010
@@ -40,7 +40,7 @@ services:
       STORAGE_SERVICE_DEPLOY_HOST: fs.local-dev.host:8080 # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
       DEBUG_BIND_HOST_APP_PATH: '${PWD}/packages/app-service'
       INIT_ROOT_ACCOUNT_PASSWORD: abc123
-      APP_SERVICE_ENV_NPM_INSTALL_FLAGS: '--registry=https://registry.npm.taobao.org --no-audit --no-fund'
+      # APP_SERVICE_ENV_NPM_INSTALL_FLAGS: '--registry=https://registry.npm.taobao.org --no-audit --no-fund'
     command: sh /app/start.sh
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro

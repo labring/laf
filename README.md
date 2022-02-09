@@ -2,6 +2,8 @@
 
 在线文档：https://docs.lafyun.com/
 
+在线体验：https://www.lafyun.com/
+
 ## 介绍
 
 `laf.js` 是一套开箱即用、完整、开源、为开发者提供的基于 serverless 模式和 js 编程的云开发框架。
