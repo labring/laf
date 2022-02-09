@@ -30,7 +30,7 @@
     "lodash": "^4.17.21",
     "mongodb": "^4.1.1",
     "mysql2": "^2.2.5",
-    "validator": "^12.0.0"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "@types/node": "^12.12.5",
