@@ -200,4 +200,8 @@ export default class Config {
   static get KUBE_NAMESPACE_OF_SYS_SERVICES() {
     return process.env.KUBE_NAMESPACE_OF_SYS_SERVICES || 'laf'
   }
+
+  static get APP_SERVICE_ENV_NPM_INSTALL_FLAGS(): string {
+    return process.env.APP_SERVICE_ENV_NPM_INSTALL_FLAGS || ''
+  }
 }

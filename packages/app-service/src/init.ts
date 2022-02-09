@@ -3,25 +3,23 @@ import { logger } from "./lib/logger"
 
 
 async function main() {
-  initCloudSdkPackage()
-  
   const packages = await getExtraPackages()
   if (!packages.length) {
     logger.info('no extra packages found')
-    return 0
   }
 
   logger.info('packages loaded: ', packages)
 
   const not_exists = packages.filter(pkg => !moduleExists(pkg.name))
-  if (!not_exists.length) {
+  if (packages.length && !not_exists.length) {
     logger.info('no new packages to be installed')
-    return 0
   }
 
   try {
-    const res = installPackages(packages)
-    logger.info(res)
+    if (not_exists.length) {
+      const res = installPackages(packages)
+      logger.info(res)
+    }
 
     initCloudSdkPackage()
 
@@ -35,6 +33,11 @@ async function main() {
 }
 
 
-main().then(code => {
-  process.exit(code)
-})
+main()
+  .then(code => {
+    process.exit(code)
+  })
+  .catch(err => {
+    logger.error(err)
+    process.exit(2)
+  })

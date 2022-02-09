@@ -33,35 +33,6 @@ export default class Config {
   }
 
   /**
-   * the root path of local file system driver, only used while `FILE_SYSTEM_DRIVER` equals to 'local'
-   */
-  static get LOCAL_STORAGE_ROOT_PATH(): string {
-    return process.env['LOCAL_STORAGE_ROOT_PATH'] ?? path.join(process.cwd(), "data")
-  }
-
-  /**
-   * the file system driver: 'localfs', 'gridfs'
-   */
-  static get FILE_SYSTEM_DRIVER(): 'gridfs' | 'localfs' {
-    return process.env['FILE_SYSTEM_DRIVER'] as any ?? 'gridfs'
-  }
-
-  /**
-   * if enable the unauthorized upload operation in `public` bucket: 'on' | 'off'.
-   * default is 'on'
-   */
-  static get FILE_SYSTEM_ENABLE_UNAUTHORIZED_UPLOAD(): 'on' | 'off' {
-    return process.env['FILE_SYSTEM_ENABLE_UNAUTHORIZED_UPLOAD'] as any ?? 'on'
-  }
-
-  /**
-   * value of HTTP header Cache-Control: max-age=120 while download file
-   */
-  static get FILE_SYSTEM_HTTP_CACHE_CONTROL(): string {
-    return process.env['FILE_SYSTEM_HTTP_CACHE_CONTROL']
-  }
-
-  /**
    * the `temp path`
    */
   static get TMP_PATH(): string {
@@ -117,6 +88,10 @@ export default class Config {
 
   static get APP_ID(): string {
     return process.env.APP_ID
+  }
+
+  static get NPM_INSTALL_FLAGS(): string {
+    return process.env.NPM_INSTALL_FLAGS || ''
   }
 }
 

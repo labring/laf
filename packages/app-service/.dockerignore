@@ -1,9 +1,9 @@
 # node_modules
 .env
 ecosystem.config.js
-# dist
+dist
 data
-src
+# src
 tests
 commitlint.config.js
 ecosystem.config.js.tpl
@@ -13,3 +13,4 @@ ecosystem.config.js.tpl
 .gitignore
 Dockerfile
 http
+node_modules

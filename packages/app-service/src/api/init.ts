@@ -2,9 +2,9 @@ import { ObjectId } from 'bson'
 import fse = require('fs-extra')
 import path = require('path')
 import { Constants } from '../constants'
-import { DatabaseAgent } from '../lib/database'
 import { execSync } from 'child_process'
 import Config from '../config'
+import { logger } from '../lib/logger'
 
 /**
  * 在 node_modules 中创建 云函数 sdk 包：@， 这个包是为了云函数IDE 加载类型提示文件而创建的，不可发布
@@ -57,9 +57,10 @@ interface AppConfigItem {
  * @returns 
  */
 export async function getExtraPackages() {
+  const { DatabaseAgent } = require('../lib/database')
   await DatabaseAgent.accessor.ready
   const db = DatabaseAgent.db
-  const doc = await db.collection<AppConfigItem>(Constants.config_collection)
+  const doc: AppConfigItem = await db.collection(Constants.config_collection)
     .findOne({ key: 'packages' })
 
   return doc?.value ?? []
@@ -81,7 +82,9 @@ export function installPackages(packages: { name: string, version: string }[]) {
     })
 
   const cmd_str = names.join(' ')
-  const r = execSync(`npm install ${cmd_str}`)
+  const flags = Config.NPM_INSTALL_FLAGS
+  logger.info('run command: ', `npm install ${cmd_str} ${flags}`)
+  const r = execSync(`npm install ${cmd_str} ${flags}`)
   return r.toString()
 }
 
@@ -104,7 +107,8 @@ export function moduleExists(mod: string) {
  * @param data 
  * @returns 
  */
- export async function ensureCollectionIndexes(): Promise<any> {
+export async function ensureCollectionIndexes(): Promise<any> {
+  const { DatabaseAgent } = require('../lib/database')
   const db = DatabaseAgent.db
   await db.collection(Constants.function_log_collection)
     .createIndexes([

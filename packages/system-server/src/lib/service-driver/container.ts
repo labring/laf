@@ -97,6 +97,7 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
     const cpuShares = parseInt(app.runtime?.resources?.limit_cpu ?? Config.APP_DEFAULT_RESOURCES.limit_cpu)
     const imageName = app.runtime?.image ?? Config.APP_SERVICE_IMAGE
     const logLevel = Config.LOG_LEVEL
+    const npm_install_flags = Config.APP_SERVICE_ENV_NPM_INSTALL_FLAGS
 
     let binds = []
     if (Config.DEBUG_BIND_HOST_APP_PATH) {
@@ -115,7 +116,8 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
         `SERVER_SECRET_SALT=${app.config.server_secret_salt}`,
         `FLAGS=--max_old_space_size=${max_old_space_size}`,
         `APP_ID=${app.appid}`,
-        `RUNTIME_IMAGE=${imageName}`
+        `RUNTIME_IMAGE=${imageName}`,
+        `NPM_INSTALL_FLAGS=${npm_install_flags}`
       ],
       ExposedPorts: {
         "8000/tcp": {}

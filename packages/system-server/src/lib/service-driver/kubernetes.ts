@@ -102,6 +102,7 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
     const imageName = app.runtime?.image ?? Config.APP_SERVICE_IMAGE
     const max_old_space_size = ~~(limit_memory * 0.8)
     const logLevel = Config.LOG_LEVEL
+    const npm_install_flags = Config.APP_SERVICE_ENV_NPM_INSTALL_FLAGS
 
 
     // create k8s deployment
@@ -135,7 +136,8 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
                   { name: 'SERVER_SECRET_SALT', value: app.config.server_secret_salt },
                   { name: 'APP_ID', value: app.appid },
                   { name: 'RUNTIME_IMAGE', value: app.runtime?.image },
-                  { name: 'FLAGS', value: `--max_old_space_size=${max_old_space_size}` }
+                  { name: 'FLAGS', value: `--max_old_space_size=${max_old_space_size}` },
+                  { name: 'NPM_INSTALL_FLAGS', value: npm_install_flags } 
                 ],
                 ports: [{ containerPort: 8000, name: 'http' }],
                 resources: {
