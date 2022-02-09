@@ -1,4 +1,13 @@
-# [](https://github.com/lafjs/laf/compare/v0.7.9...v) (2022-02-05)
+# [](https://github.com/lafjs/laf/compare/v0.7.10...v) (2022-02-09)
+
+
+
+## [0.7.10](https://github.com/lafjs/laf/compare/v0.7.9...v0.7.10) (2022-02-09)
+
+
+### Features
+
+* **app-service:** add npm install flags config; ([463daa6](https://github.com/lafjs/laf/commit/463daa6220b13c69619686090f86e70c43e8a0b0))
 
 
 
