@@ -8,7 +8,6 @@
   },
   "scripts": {
     "install": "lerna exec npm install --parallel",
-    "install-dev": "lerna bootstrap",
     "build": "lerna run build --parallel",
     "watch": "lerna run watch --parallel",
     "prepublishOnly": "npm run build",
