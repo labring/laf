@@ -135,9 +135,6 @@ docker-compose up
 # install dependencies
 npm install
 
-# bootstrap packages
-npx lerna bootstrap
-
 # build & watch packages
 npm run build && npm run watch
 
