@@ -15,6 +15,7 @@ import { ApplicationRouter } from './application'
 import { FunctionRouter } from './function'
 import { PolicyRouter } from './policy'
 import { getApplicationByAppid } from '../api/application'
+import { OSSRouter } from './oss'
 
 export const router = Router()
 
@@ -26,6 +27,7 @@ router.use('/apps/:appid/policy', checkAppid, PolicyRouter)
 router.use('/apps/:appid/dbm', checkAppid, DbmRouter)
 router.use('/apps/:appid/deploy', checkAppid, DeployRouter)
 router.use('/apps/:appid/file', checkAppid, FileRouter)
+router.use('/apps/:appid/oss', checkAppid, OSSRouter)
 
 router.use('/health-check', (_req, res) => {
   if (!DatabaseAgent.sys_accessor.db) {

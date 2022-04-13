@@ -166,12 +166,34 @@ export default class Config {
     return process.env.SERVICE_DRIVER || 'docker'
   }
 
+  /**
+   * Keep this only for compatibility with older applications.
+   * @deprecated Storage service is deprecated, use minio instead, do not use storage service in new deployments.
+   */
   static get STORAGE_SERVICE_CONFIG() {
     const secret: string = process.env.STORAGE_SERVICE_SECRET
     const entrypoint: string = process.env.STORAGE_SERVICE_API_ENTRYPOINT
     const deploy_host = process.env.STORAGE_SERVICE_DEPLOY_HOST
     const schema = process.env.STORAGE_SERVICE_DEPLOY_URL_SCHEMA || this.APP_SERVICE_DEPLOY_URL_SCHEMA
     return { secret, entrypoint, deploy_host, schema }
+  }
+
+  /**
+   * Minio configuration
+   */
+  static get MINIO_CONFIG() {
+    const access_key: string = process.env.MINIO_ACCESS_KEY
+    const access_secret: string = process.env.MINIO_ACCESS_SECRET
+    const internal_endpoint: string = process.env.MINIO_INTERNAL_ENDPOINT
+    const external_endpoint: string = process.env.MINIO_EXTERNAL_ENDPOINT
+    return {
+      access_key,
+      access_secret,
+      endpoint: {
+        internal: internal_endpoint,
+        external: external_endpoint
+      }
+    }
   }
 
   static get INIT_ROOT_ACCOUNT() {
