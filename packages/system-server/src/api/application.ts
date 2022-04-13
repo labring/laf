@@ -15,6 +15,7 @@ import Config from "../config"
 import * as mongodb_uri from 'mongodb-uri'
 import { BucketMode } from "./storage"
 import { logger } from "../lib/logger"
+import { BUCKET_ACL } from "./oss"
 
 /**
  * The application structure in db
@@ -56,7 +57,7 @@ export interface ApplicationStruct {
   }
   buckets: {
     name: string,
-    mode: BucketMode
+    mode: BucketMode | BUCKET_ACL
   }[]
   packages: {
     name: string,
