@@ -42,8 +42,8 @@ export async function handleCreateBucket(req: Request, res: Response) {
     return res.status(200).send({ code: 'EXISTED', error: 'bucket name already existed' })
   }
 
-  const oss = new MinioAgent()
-  const internalName = `${app.appid}_${bucketName}`
+  const oss = await MinioAgent.New()
+  const internalName = `${app.appid}-${bucketName}`
   const ret = await oss.createBucket(internalName, mode)
   if (!ret) {
     return res.status(400).send('create bucket failed')

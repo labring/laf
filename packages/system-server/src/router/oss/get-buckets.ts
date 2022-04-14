@@ -55,7 +55,7 @@ export async function handleGetOneBucket(req: Request, res: Response) {
 
   // bucket tokens
   const exp = 60 * 60 * Config.TOKEN_EXPIRED_TIME
-  const oss = new MinioAgent()
+  const oss = await MinioAgent.New()
   const sts = await oss.getApplicationSTS(app, exp)
   const data = {
     name,

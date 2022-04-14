@@ -9,7 +9,6 @@ import { Request, Response } from 'express'
 import { ApplicationStruct } from '../../api/application'
 import { checkPermission } from '../../api/permission'
 import { Constants } from '../../constants'
-import { StorageAgent } from '../../api/storage'
 import { DatabaseAgent } from '../../lib/db-agent'
 import { BUCKET_ACL, MinioAgent } from '../../api/oss'
 
@@ -39,8 +38,8 @@ export async function handleSetBucketPolicy(req: Request, res: Response) {
     return res.status(404).send('bucket not found')
   }
 
-  const oss = new MinioAgent()
-  const internalName = `${app.appid}_${bucketName}`
+  const oss = await MinioAgent.New()
+  const internalName = `${app.appid}-${bucketName}`
   const ret = await oss.setBucketACL(internalName, mode)
   if (ret?.$metadata?.httpStatusCode !== 200) {
     return res.send(ret?.$metadata)
