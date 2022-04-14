@@ -28,10 +28,10 @@ export async function handleDeleteBucket(req: Request, res: Response) {
     return res.status(code).send()
   }
 
-  const oss = new MinioAgent()
-  const internalName = `${app.appid}_${bucketName}`
+  const oss = await MinioAgent.New()
+  const internalName = `${app.appid}-${bucketName}`
   const ret = await oss.deleteBucket(internalName)
-  if (ret?.$metadata?.httpStatusCode !== 200) {
+  if (ret?.$metadata?.httpStatusCode !== 204) {
     return res.send(ret?.$metadata)
   }
 

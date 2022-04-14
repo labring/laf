@@ -2,7 +2,7 @@ import assert = require("assert")
 import * as cp from 'child_process'
 import { promisify } from 'util'
 import { STSClient, AssumeRoleCommand } from '@aws-sdk/client-sts'
-import { CreateBucketCommand, DeleteBucketPolicyCommand, PutBucketPolicyCommand, S3 } from '@aws-sdk/client-s3'
+import { CreateBucketCommand, DeleteBucketCommand, DeleteBucketPolicyCommand, PutBucketPolicyCommand, S3 } from '@aws-sdk/client-s3'
 import { logger } from "../lib/logger"
 import Config from "../config"
 import { ApplicationStruct } from "./application"
@@ -36,9 +36,10 @@ export class MinioAgent {
     return ma
   }
 
-  constructor() {
-    throw new Error('constructor() is unsupported, use `await MinioAgent.New()` instead')
-  }
+  /**
+   * @deprecated constructor() is unsupported, use `await MinioAgent.New()` instead
+   */
+  constructor() { }
 
   /**
    * Create s3 client
@@ -132,6 +133,9 @@ export class MinioAgent {
     const s3 = this.getClient()
     const cmd = new CreateBucketCommand({ Bucket: name, ACL: acl })
     const res = await s3.send(cmd)
+    if (res?.$metadata?.httpStatusCode === 200) {
+      await this.setBucketACL(name, acl)
+    }
 
     return res
   }
@@ -168,8 +172,22 @@ export class MinioAgent {
     assert.ok(name, 'empty name got')
 
     const s3 = this.getClient()
-    const cmd = new DeleteBucketPolicyCommand({ Bucket: name })
+    const cmd = new DeleteBucketCommand({ Bucket: name })
     return await s3.send(cmd)
+  }
+
+  /**
+   * Create an user policy
+   * @param policy_name 
+   * @param policy_json_path 
+   * @returns 
+   */
+  public async createUserPolicy(policy_name: string, policy_json_path: string) {
+    assert.ok(policy_name, 'empty policy_name got')
+    assert.ok(policy_json_path, 'empty policy_json_path got')
+
+    const sub_cmd = `admin policy add ${MinioAgent.MC_TARGET} ${policy_name} ${policy_json_path}`
+    return await this.mc_exec(sub_cmd)
   }
 
 
@@ -180,7 +198,7 @@ export class MinioAgent {
    */
   private async mc_exec(sub_cmd: string) {
     const mc_path = process.env.MINIO_CLIENT_PATH || 'mc'
-    const cmd = `${mc_path} ${sub_cmd} --json --anonymous`
+    const cmd = `${mc_path} ${sub_cmd} --json`
 
     try {
       const { stdout } = await exec(cmd)
