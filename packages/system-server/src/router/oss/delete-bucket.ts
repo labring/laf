@@ -32,7 +32,7 @@ export async function handleDeleteBucket(req: Request, res: Response) {
   const internalName = `${app.appid}-${bucketName}`
   const ret = await oss.deleteBucket(internalName)
   if (ret?.$metadata?.httpStatusCode !== 204) {
-    return res.send(ret?.$metadata)
+    return res.send({ code: 'ERROR', data: ret?.$metadata})
   }
 
   // delete bucket from app
