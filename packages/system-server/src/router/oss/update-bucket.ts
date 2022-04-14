@@ -41,8 +41,8 @@ export async function handleSetBucketPolicy(req: Request, res: Response) {
   const oss = await MinioAgent.New()
   const internalName = `${app.appid}-${bucketName}`
   const ret = await oss.setBucketACL(internalName, mode)
-  if (ret?.$metadata?.httpStatusCode !== 200) {
-    return res.send(ret?.$metadata)
+  if (ret?.$metadata?.httpStatusCode !== 204) {
+    return res.send({ code: 'ERROR', data: ret?.$metadata})
   }
 
   // update bucket to app
