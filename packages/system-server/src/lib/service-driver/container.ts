@@ -114,6 +114,7 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
         `LOG_LEVEL=${logLevel}`,
         `ENABLE_CLOUD_FUNCTION_LOG=always`,
         `SERVER_SECRET_SALT=${app.config.server_secret_salt}`,
+        `OSS_ACCESS_SECRET=${app.config.oss_access_secret}`,
         `FLAGS=--max_old_space_size=${max_old_space_size}`,
         `APP_ID=${app.appid}`,
         `RUNTIME_IMAGE=${imageName}`,

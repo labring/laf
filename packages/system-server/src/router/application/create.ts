@@ -10,6 +10,7 @@ import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
 import { getAccountById } from '../../api/account'
 import { ApplicationStruct, createApplicationDb, generateAppid, getApplicationByAppid, getMyApplications } from '../../api/application'
+import { MinioAgent } from '../../api/oss'
 import Config from '../../config'
 import { Constants } from '../../constants'
 import { ErrorCodes } from '../../constants/error-code'
@@ -56,6 +57,7 @@ export async function handleCreateApplication(req: Request, res: Response) {
       db_user: db_user,
       db_password: db_password,
       server_secret_salt: generatePassword(64),
+      oss_access_secret: generatePassword(64, true, false)
     },
     runtime: {
       image: Config.APP_SERVICE_IMAGE,
@@ -72,12 +74,21 @@ export async function handleCreateApplication(req: Request, res: Response) {
     updated_at: now
   }
 
+  // create oss user
+  const oss = await MinioAgent.New()
+  if (false === await oss.createUser(data.appid, data.config.oss_access_secret)) {
+    return res.status(400).send('Error: create oss user failed')
+  }
+  if (false === await oss.setUserPolicy(data.appid, Config.MINIO_CONFIG.user_policy)) {
+    return res.status(400).send('Error: set policy to oss user failed')
+  }
+
   // save it
   const ret = await db.collection(Constants.cn.applications)
     .insertOne(data as any)
 
   if (!ret.insertedId) {
-    return res.status(400).send('failed to create application')
+    return res.status(400).send('Error: create application failed')
   }
 
   // create app db
