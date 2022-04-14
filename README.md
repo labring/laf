@@ -147,11 +147,14 @@ docker pull lafyun/app-service:latest
 # launch laf.js services
 docker-compose up
 
-# start laf.js local client
-cd packages/system-client
-npm run dev
 # Now open http://console.local-dev.host:8080 in your browsers!
+
 ```
+
+> TIPs: 
+> We provide `*.local-dev.host` always resolved to `127.0.0.1` anywhere! 
+> Close your VPN then `local-dev.host` resolving works well. 
+
 
 ## 测试用例
 

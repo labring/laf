@@ -62,8 +62,8 @@ services:
       - mongo
       - system-server
     environment:
-      DEPLOY_DOMAIN: "*.local-dev.host"         # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
-      DEPLOY_FS_DOMAIN: "*.fs.local-dev.host"   
+      DEPLOY_DOMAIN: "*.local-dev.host" # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
+      DEPLOY_FS_DOMAIN: "*.fs.local-dev.host"
       SYS_CLIENT_HOST: console.local-dev.host
       DOCS_HOST: docs.local-dev.host
     volumes:
@@ -71,9 +71,7 @@ services:
       - ./packages/system-client/dist:/app
       - ./packages/app-console/dist:/app-console
       - ./docs/.vitepress/dist:/docs
-      - ./packages/gateway/conf.docker/app.conf:/etc/nginx/templates/app.conf.template
-      - ./packages/gateway/conf.docker/system.conf:/etc/nginx/templates/system.conf.template
-      - ./packages/gateway/conf.docker/fs-proxy.conf:/etc/nginx/templates/fs-proxy.conf.template
+      - ./packages/gateway/conf.docker:/conf.docker
     command: "sh /scripts/start.sh"
     ports:
       - 8080:80
@@ -103,7 +101,7 @@ services:
 
 volumes:
   db-data:
-  
+
 networks:
   laf_shared_network:
     external: true
