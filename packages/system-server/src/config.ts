@@ -192,7 +192,8 @@ export default class Config {
       endpoint: {
         internal: internal_endpoint,
         external: external_endpoint
-      }
+      },
+      user_policy: process.env.MINIO_USER_POLICY || 'owner_by_prefix'
     }
   }
 

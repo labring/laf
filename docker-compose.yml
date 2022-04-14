@@ -21,7 +21,8 @@ services:
       - laf_shared_network
 
   system-server:
-    image: node:16-alpine
+    # image: node:16-alpine
+    build: ./packages/system-server
     user: root
     working_dir: /app
     environment:
@@ -39,8 +40,8 @@ services:
       STORAGE_SERVICE_API_ENTRYPOINT: http://storage-service:9010
       STORAGE_SERVICE_SECRET: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
       STORAGE_SERVICE_DEPLOY_HOST: fs.local-dev.host:8080 # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
-      MINIO_KEY: minio-root-user
-      MINIO_SECRET: minio-root-password
+      MINIO_ACCESS_KEY: minio-root-user
+      MINIO_ACCESS_SECRET: minio-root-password
       MINIO_INTERNAL_ENDPOINT: http://oss:9000
       MINIO_EXTERNAL_ENDPOINT: http://oss.local-dev.host:8080
       DEBUG_BIND_HOST_APP_PATH: '${PWD}/packages/app-service'
@@ -68,6 +69,7 @@ services:
     environment:
       DEPLOY_DOMAIN: "*.local-dev.host" # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
       DEPLOY_FS_DOMAIN: "*.fs.local-dev.host"
+      DEPLOY_OSS_DOMAIN: "oss.local-dev.host"
       SYS_CLIENT_HOST: console.local-dev.host
       DOCS_HOST: docs.local-dev.host
     volumes:
@@ -85,7 +87,7 @@ services:
       - laf_shared_network
 
   oss:
-    image: 'bitnami/minio:2022.4.9'
+    image: 'bitnami/minio:2022.4.12'
     environment:
       - MINIO_ROOT_USER=minio-root-user
       - MINIO_ROOT_PASSWORD=minio-root-password
