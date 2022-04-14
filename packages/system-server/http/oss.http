@@ -28,8 +28,20 @@ Authorization: Bearer {{token}}
 
 {
   "bucket": "test-for-create-bucket",
+  "mode": "private"
+}
+
+
+### Set bucket policy
+
+PUT  {{base_url}}/sys-api/apps/{{appid}}/oss/buckets/test-for-create-bucket
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
   "mode": "public-read"
 }
+
 
 
 ### Delete a bucket
