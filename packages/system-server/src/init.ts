@@ -31,6 +31,10 @@ async function main() {
     account_id = account._id
   }
 
+  // create app user policy
+  await InitializerApi.initAppUserPolicy()
+  logger.info('init app user policy')
+
   // create system extension server app
   const app = await getApplicationByAppid(SYSTEM_EXTENSION_APPID)
   if (!app) {

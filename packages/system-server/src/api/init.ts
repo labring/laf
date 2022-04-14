@@ -6,9 +6,12 @@ import { hashPassword } from "../utils/hash"
 import { ApplicationStruct, getApplicationByAppid, publishApplicationPackages } from "./application"
 import { ApplicationService } from "./service"
 import * as fs from "fs"
+import * as path from 'path'
 import { ApplicationImporter } from "../lib/importer"
 import { publishFunctions } from "./function"
 import { publishAccessPolicies } from "./policy"
+import { generatePassword } from "../utils/rand"
+import { MinioAgent } from "./oss"
 
 /**
  * Initialize APIs
@@ -79,11 +82,12 @@ export class InitializerApi {
         db_name: db_config.database,
         db_user: db_config.username,
         db_password: db_config.password,
-        server_secret_salt: Config.SYS_SERVER_SECRET_SALT
+        server_secret_salt: Config.SYS_SERVER_SECRET_SALT,
+        oss_access_secret: generatePassword(64, true, false)
       },
       runtime: {
         image: Config.APP_SERVICE_IMAGE,
-        resources: { 
+        resources: {
           req_cpu: '100',
           req_memory: '256',
           limit_cpu: '1000',
@@ -94,6 +98,15 @@ export class InitializerApi {
       packages: [],
       created_at: new Date(),
       updated_at: new Date()
+    }
+
+    // create oss user
+    const oss = await MinioAgent.New()
+    if (false === await oss.createUser(data.appid, data.config.oss_access_secret)) {
+      throw new Error('create oss user failed')
+    }
+    if (false === await oss.setUserPolicy(data.appid, Config.MINIO_CONFIG.user_policy)) {
+      throw new Error('set policy to oss user failed')
     }
 
     // save it
@@ -113,7 +126,7 @@ export class InitializerApi {
     const importer = new ApplicationImporter(app, data)
 
     importer.parse()
-    
+
     await importer.import()
 
     await publishFunctions(app)
@@ -129,5 +142,14 @@ export class InitializerApi {
   static async startSystemExtensionApp(appid: string) {
     const app = await getApplicationByAppid(appid)
     await ApplicationService.start(app)
+  }
+
+  /**
+   * create app user policy
+   */
+  static async initAppUserPolicy() {
+    const oss = await MinioAgent.New()
+    const policy_path = path.resolve(__dirname, '../../user-policy.json')
+    await oss.createUserPolicy(Config.MINIO_CONFIG.user_policy, policy_path)
   }
 }
