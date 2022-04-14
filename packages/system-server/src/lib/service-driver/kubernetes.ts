@@ -137,7 +137,8 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
                   { name: 'APP_ID', value: app.appid },
                   { name: 'RUNTIME_IMAGE', value: app.runtime?.image },
                   { name: 'FLAGS', value: `--max_old_space_size=${max_old_space_size}` },
-                  { name: 'NPM_INSTALL_FLAGS', value: npm_install_flags } 
+                  { name: 'NPM_INSTALL_FLAGS', value: npm_install_flags },
+                  { name: 'OSS_ACCESS_SECRET', value: app.config.oss_access_secret }
                 ],
                 ports: [{ containerPort: 8000, name: 'http' }],
                 resources: {
