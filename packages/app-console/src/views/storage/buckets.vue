@@ -27,13 +27,13 @@
       </el-table-column>
       <el-table-column label="默认权限" align="center" width="100">
         <template slot-scope="{row}">
-          <span v-if="row.mode === 0">
+          <span v-if="row.mode === mode.PRIVATE">
             <el-tag type="info" size="small" effect="plain">私有</el-tag>
           </span>
-          <span v-if="row.mode === 1">
+          <span v-if="row.mode === mode.PUBLIC_READ">
             <el-tag type="primary" size="small" effect="plain">公共读</el-tag>
           </span>
-          <span v-if="row.mode === 2">
+          <span v-if="row.mode === mode.PUBLIC_READ_WRITE">
             <el-tag type="danger" size="small" effect="plain">公共读写</el-tag>
           </span>
         </template>
@@ -74,9 +74,9 @@
         </el-form-item>
         <el-form-item label="默认权限" prop="mode">
           <el-select v-model="form.mode" placeholder="">
-            <el-option label="私有" :value="0" />
-            <el-option label="公共读" :value="1" />
-            <el-option label="公共读写" :value="2" />
+            <el-option label="私有" :value="mode.PRIVATE" />
+            <el-option label="公共读" :value="mode.PUBLIC_READ" />
+            <el-option label="公共读写" :value="mode.PUBLIC_READ_WRITE" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -93,15 +93,21 @@
 </template>
 
 <script>
-import * as fs from '@/api/file'
+import * as oss from '@/api/oss'
 import { assert } from '@/utils/assert'
 import { showError, showSuccess } from '@/utils/show'
+
+const MODE = {
+  PRIVATE: 'private',
+  PUBLIC_READ: 'public-read',
+  PUBLIC_READ_WRITE: 'public-read-write',
+}
 
 // 默认化创建表单的值
 function getDefaultFormValue() {
   return {
     name: '',
-    mode: 0
+    mode: MODE.PRIVATE,
   }
 }
 
@@ -133,7 +139,8 @@ export default {
         create: '创建'
       },
       rules: formRules,
-      downloadLoading: false
+      downloadLoading: false,
+      mode: MODE
     }
   },
   created() {
@@ -147,7 +154,7 @@ export default {
       this.listLoading = true
 
       // 执行数据查询
-      const ret = await fs.getFileBuckets().catch(() => { this.listLoading = false })
+      const ret = await oss.getBuckets().catch(() => { this.listLoading = false })
       assert(ret.code === 0, 'get file buckets got error')
 
       this.list = ret.data
@@ -167,12 +174,13 @@ export default {
       this.$refs['dataForm'].validate(async(valid) => {
         if (!valid) { return }
 
-        if (/^[\w|\d]{1,32}$/g.test(this.form.name) === false) {
-          return showError('Bucket 名称长度必须在 1～32 之间，且只能包含字母、数字和下划线')
+        const isNameValid = /^[A-Za-z0-9\-]{1,16}$/g.test(this.form.name)
+        if (!isNameValid) {
+          return showError('Bucket 名称长度必须在 1～16 之间，且只能包含字母、数字和中划线')
         }
 
         // 执行创建请求
-        const r = await fs.createFileBucket(this.form.name, this.form.mode)
+        const r = await oss.createBucket(this.form.name, this.form.mode)
 
         if (r.code) {
           this.$notify({
@@ -208,7 +216,7 @@ export default {
         if (!valid) { return }
 
         // 执行更新请求
-        const r = await fs.updateFileBucket(this.form.name, this.form.mode)
+        const r = await oss.updateBucket(this.form.name, this.form.mode)
 
         if (r.code) {
           this.$notify({
@@ -230,7 +238,7 @@ export default {
       await this.$confirm('确认要删除此数据？', '删除确认')
 
       // 执行删除请求
-      const r = await fs.deleteFileBucket(row.name)
+      const r = await oss.deleteBucket(row.name)
 
       if (r.code === 'BUCKET_NOT_EMPTY') {
         return showError('不可删除非空文件桶')
@@ -250,7 +258,7 @@ export default {
     },
     // 获取 bucket 地址
     getBucketUrl(bucketName) {
-      return fs.getAppFileBucketUrl(bucketName)
+      return oss.getBucketUrl(bucketName)
     },
     // 查看详情
     async handleShowDetail(row) {
