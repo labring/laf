@@ -1,4 +1,3 @@
-
 import { getCurrentBaseURL } from '@/utils'
 import { getToken, getTokenExpire } from '@/utils/auth'
 import request from '@/utils/request'
@@ -98,7 +97,6 @@ export async function stopApplicationService(appid) {
   })
   return res
 }
-
 
 /**
  * 导出应用

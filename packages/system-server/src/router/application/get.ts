@@ -78,6 +78,8 @@ export async function handleGetApplicationByAppid(req: Request, res: Response) {
   const app_deploy_url_schema = Config.APP_SERVICE_DEPLOY_URL_SCHEMA
   const storage_deploy_host = Config.STORAGE_SERVICE_CONFIG.deploy_host
   const storage_deploy_url_schema = Config.STORAGE_SERVICE_CONFIG.schema
+  const oss_external_endpoint = Config.MINIO_CONFIG.endpoint.external
+  const oss_internal_endpoint = Config.MINIO_CONFIG.endpoint.internal
 
   app.config = undefined
   return res.send({
@@ -90,7 +92,9 @@ export async function handleGetApplicationByAppid(req: Request, res: Response) {
       app_deploy_host,
       app_deploy_url_schema,
       storage_deploy_host,
-      storage_deploy_url_schema
+      storage_deploy_url_schema,
+      oss_external_endpoint,
+      oss_internal_endpoint
     }
   })
 }

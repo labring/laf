@@ -141,7 +141,7 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" align="center" width="280" class-name="small-padding">
           <template slot-scope="{row}">
-            <el-tooltip content="编写云函数、查看日志、管理数据库、文件、成员协作等"  effect="light" placement="top">
+            <el-tooltip content="编写云函数、查看日志、管理数据库、文件、成员协作等" effect="light" placement="top">
               <el-button type="success" size="mini" @click="toDetail(row)">
                 开发
               </el-button>
@@ -288,10 +288,9 @@ export default {
       const { created, joined } = res.data
       this.applications.created = created
       this.applications.joined = joined
-
     },
     toDetail(app) {
-      if(app.status !== 'running') {
+      if (app.status !== 'running') {
         return showInfo('请先启动应用服务！')
       }
       openAppConsole(app)
