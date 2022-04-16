@@ -60,7 +60,12 @@ export async function handleGetOneBucket(req: Request, res: Response) {
   const data = {
     name,
     mode: bucket.mode,
-    sts: sts
+    credentials: {
+      accessKeyId: sts.Credentials?.AccessKeyId,
+      secretAccessKey: sts.Credentials?.SecretAccessKey,
+      sessionToken: sts.Credentials?.SessionToken,
+      expiration: sts.Credentials?.Expiration
+    }
   }
 
   return res.send({

@@ -43,6 +43,12 @@ Content-Type: application/json
 }
 
 
+### Get a bucket
+
+GET  {{base_url}}/sys-api/apps/{{appid}}/oss/buckets/test-for-create-bucket
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
 
 ### Delete a bucket
 
