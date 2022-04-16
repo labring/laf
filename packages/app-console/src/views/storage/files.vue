@@ -2,18 +2,10 @@
   <div class="app-container">
     <!-- 数据检索区 -->
     <div class="filter-container">
-      <!-- <el-input
-        v-model="listQuery.keyword"
-        size="mini"
-        placeholder="暂不支持搜索"
-        style="width: 400px;margin-right: 10px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-      /> -->
       <el-button size="mini" plain class="filter-item" type="primary" icon="el-icon-refresh" @click="handleFilter">
         刷新
       </el-button>
-      <el-button size="mini" plain class="filter-item" type="primary" icon="el-icon-upload" @click="showCreateForm">
+      <el-button size="mini" plain class="filter-item" type="primary" icon="el-icon-upload" @click="dialogFormVisible = true">
         上传文件
       </el-button>
       <el-button size="mini" plain class="filter-item" type="default" icon="el-icon-new" @click="createDirectory">
@@ -38,24 +30,24 @@
     >
       <el-table-column label="文件" align="center" width="140">
         <template slot-scope="{row}">
-          <a v-if="getContentType(row) !== 'application/x-directory'" :href="getFileUrl(row)" target="blank">
+          <a v-if="!row.Prefix" :href="getFileUrl(row)" target="blank">
             <img
               v-if="isImage(row)"
               class="thumb-image"
               :src="getFileUrl(row)"
             >
             <i v-else-if="isVideo(row)" class="el-icon-video-play" style="font-size: 40px" />
-            <i v-else-if="getContentType(row) === 'application/x-directory'" class="el-icon-folder-opened" style="font-size: 36px; color: orange" />
+            <i v-else-if="row.Prefix" class="el-icon-folder-opened" style="font-size: 36px; color: orange" />
             <i v-else class="el-icon-paperclip" style="font-size: 40px" />
           </a>
-          <i v-if="getContentType(row) === 'application/x-directory'" class="el-icon-folder-opened" style="cursor: pointer;font-size: 36px; color: orange" @click="changeDirectory(row)" />
+          <i v-if="row.Prefix" class="el-icon-folder-opened" style="cursor: pointer;font-size: 36px; color: orange" @click="changeDirectory(row)" />
         </template>
       </el-table-column>
       <el-table-column label="文件名" width="330" align="left">
         <template slot-scope="{row}">
-          <span v-if="getContentType(row) !== 'application/x-directory'">{{ row.metadata.name }}</span>
-          <span v-if="getContentType(row) === 'application/x-directory'" class="directory-item" @click="changeDirectory(row)">
-            {{ row.metadata.name }}
+          <span v-if="!row.Prefix">{{ row.Key }}</span>
+          <span v-if="row.Prefix" class="directory-item" @click="changeDirectory(row)">
+            {{ row.Prefix }}
           </span>
         </template>
       </el-table-column>
@@ -64,28 +56,23 @@
           <span>{{ getFileSize(row) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="类型" align="center" width="120">
-        <template slot-scope="{row}">
-          <span>{{ getContentType(row) }}</span>
-        </template>
-      </el-table-column>
       <el-table-column label="更新时间" width="140" align="center">
         <template slot-scope="{row}">
-          <span v-if="row.uploadDate">{{ Date.parse(row.uploadDate) | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+          <span v-if="row.LastModified">{{ Date.parse(row.LastModified) | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
       <el-table-column label="文件路径" align="center">
         <template slot-scope="{row}">
-          <span>  {{ row.filename }}</span>
+          <span>  {{ row.Key }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="160" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <a v-if="getContentType(row) !== 'application/x-directory'" :href="getFileUrl(row)" target="blank" style="margin-right: 8px">
+          <a v-if="!row.Prefix" :href="getFileUrl(row)" target="blank" style="margin-right: 8px">
             <el-button plain type="success" size="mini">查看</el-button>
           </a>
-          <el-button v-if="getContentType(row) === 'application/x-directory'" plain type="success" size="mini" @click="changeDirectory(row)">查看</el-button>
+          <el-button v-if="row.Prefix" plain type="success" size="mini" @click="changeDirectory(row)">查看</el-button>
           <el-button v-if="row.status!='deleted'" plain size="mini" type="danger" @click="handleDelete(row)">
             删除
           </el-button>
@@ -105,10 +92,11 @@
     <!-- 表单对话框 -->
     <el-dialog title="上传文件" width="400px" :visible.sync="dialogFormVisible">
       <el-upload
-        v-if="bucketDetail.full_token"
+        v-if="bucketDetail.credentials"
         drag
-        :action="getUploadUrl()"
-        :on-success="onUploadSuccess"
+        action=""
+        :auto-upload="true"
+        :http-request="uploadFile"
       >
         <i class="el-icon-upload" />
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -119,9 +107,8 @@
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import * as fs from '@/api/file'
+import * as fs from '@/api/oss'
 import { assert } from '@/utils/assert'
-import { getAppFileUrl } from '@/api/file'
 import { showError, showSuccess } from '@/utils/show'
 import PathLink from './components/path-link.vue'
 
@@ -135,7 +122,8 @@ export default {
         name: '',
         mode: 0,
         full_token: '',
-        read_token: ''
+        read_token: '',
+        credentials: {}
       },
       tableKey: 0,
       list: null,
@@ -173,15 +161,16 @@ export default {
       const { limit, page } = this.listQuery
       // 执行数据查询
       const res = await fs.getFilesByBucketName(this.bucket, {
-        limit,
-        offset: (page - 1) * limit,
-        path: this.currentPath,
-        token: this.bucketDetail.full_token
+        marker: undefined,
+        prefix: this.currentPath,
+        credentials: this.bucketDetail.credentials
       }).finally(() => { this.listLoading = false })
 
-      this.list = res.data
+      console.log(res)
+      const files = res.Contents || []
+      const dirs = res.CommonPrefixes || []
+      this.list = [...files, ...dirs]
 
-      this.total = res.total
       this.listLoading = false
     },
     // 搜索
@@ -191,9 +180,9 @@ export default {
     },
     // 切换当前文件夹
     changeDirectory(row) {
-      if (this.getContentType(row) !== 'application/x-directory') { return }
+      if (!row.Prefix) { return }
 
-      this.currentPath = row.filename
+      this.currentPath = row.Prefix
       this.listQuery.page = 1
       this.getList()
     },
@@ -201,19 +190,6 @@ export default {
     onChangeDirectory(data) {
       this.currentPath = data
       this.listQuery.page = 1
-      this.getList()
-    },
-    // 显示上传表单
-    showCreateForm() {
-      this.dialogFormVisible = true
-    },
-    // 上传成功回调
-    onUploadSuccess(event) {
-      if (event?.code === 'ALREADY_EXISTED') {
-        return showError('文件已存在！')
-      }
-
-      showSuccess('上传成功')
       this.getList()
     },
     // 删除请求
@@ -247,18 +223,13 @@ export default {
     },
     // 新建目录
     async createDirectory() {
-      await this.$prompt('请输入新文件夹名', '新建文件夹', {
+      await this.$prompt('', '请输入新文件夹名', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         inputPattern: /[\w|\d|\-]{1,64}/,
         inputErrorMessage: '文件夹名只可包含字母、数字、下划线和中划线，长度在 1～64之间'
       }).then(async({ value }) => {
-        const token = this.bucketDetail.full_token
-        const res = await fs.makeDirectory(this.bucket, value, this.currentPath, token)
-        if (res.code === 'ALREADY_EXISTED') {
-          return showError('该文件夹已存在！')
-        }
-
+        this.currentPath = this.currentPath + value + '/'
         this.getList()
       })
         .catch(err => {
@@ -267,35 +238,34 @@ export default {
     },
     // 拼装文件下载 URL
     getFileUrl(file) {
-      assert(file && file.filename, 'invalid file or filename')
-      if (this.bucketDetail.mode > 0) {
-        return getAppFileUrl(this.bucket, file.filename)
-      }
-      return getAppFileUrl(this.bucket, file.filename, this.bucketDetail.read_token)
+      assert(file && file.Key, 'invalid file or filename')
+      return fs.getAppFileUrl(this.bucket, file.Key, this.bucketDetail.credentials)
     },
-    // 拼装文件上传地址
-    getUploadUrl() {
-      assert(this.bucket, 'empty bucket name got')
-      if (this.bucketDetail.mode === 2) {
-        return getAppFileUrl(this.bucket, this.currentPath)
+    async uploadFile(param) {
+      const file = param.file
+      console.log(file)
+      const key = this.currentPath + file.name
+      const res = await fs.uploadAppFile(this.bucket, key, file, this.bucketDetail.credentials, { contentType: file.type} )
+      if(res.$response?.httpResponse?.statusCode !== 200) {
+        return showError('文件上传失败：' + key)
       }
-      const token = this.bucketDetail.full_token
-      return getAppFileUrl(this.bucket, this.currentPath, token)
-    },
-    getContentType(row) {
-      return row?.metadata?.contentType ?? row?.contentType ?? 'unknown'
+
+      showSuccess('文件上传成功: ' + key)
+      this.getList()
     },
     // 判断是否为图片类型
     isImage(row) {
-      return this.getContentType(row)?.startsWith('image/')
+      const key = row.Key?.toLowerCase()
+      return key?.endsWith('.png') || key?.endsWith('.jpeg') || key?.endsWith('.jpg') || key?.endsWith('.gif')
     },
     // 判断是否为视频类型
     isVideo(row) {
-      return this.getContentType(row).startsWith('video/')
+      const key = row.Key?.toLowerCase()
+      return key?.endsWith('.mp4') || key?.endsWith('.mov') || key?.endsWith('.mpeg') || key?.endsWith('.flv') || key?.endsWith('.avi')
     },
     // 获取文件显示大小
     getFileSize(file) {
-      const length = file.length ?? 0
+      const length = file.Size ?? 0
       if (length > 1024 * 1024 * 1024) {
         return (length / (1024 * 1024 * 1024)).toFixed(2) + ' GB'
       } else if (length > 1024 * 1024) {
