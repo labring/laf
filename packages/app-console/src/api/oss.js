@@ -91,14 +91,13 @@ export async function deleteBucket(bucketName) {
 }
 
 /**
- * 获取当前应用的指定文件桶的服务地址
+ * get bucket's url
  * @param {*} bucket
  * @returns
  */
  export function getBucketUrl(bucket) {
   const appid = store.state.app.appid
-  const domain = store.state.app.storage_deploy_host
-  const schema = store.state.app.storage_deploy_url_schema || 'http'
-  const url = `${schema}://${appid}-${bucket}.${domain}`
+  const endpoint = store.state.app.oss_external_endpoint
+  const url = `${endpoint}/${appid}-${bucket}`
   return url
 }

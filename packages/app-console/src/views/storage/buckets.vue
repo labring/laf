@@ -174,9 +174,9 @@ export default {
       this.$refs['dataForm'].validate(async(valid) => {
         if (!valid) { return }
 
-        const isNameValid = /^[A-Za-z0-9\-]{1,16}$/g.test(this.form.name)
+        const isNameValid = /^[A-Za-z0-9]{1,16}$/g.test(this.form.name)
         if (!isNameValid) {
-          return showError('Bucket 名称长度必须在 1～16 之间，且只能包含字母、数字和中划线')
+          return showError('Bucket 名称长度必须在 1～16 之间，且只能包含字母、数字')
         }
 
         // 执行创建请求

@@ -31,7 +31,9 @@ const state = {
   app_deploy_host: null,
   app_deploy_url_schema: 'http',
   storage_deploy_host: null,
-  storage_deploy_url_schema: 'http'
+  storage_deploy_url_schema: 'http',
+  oss_internal_endpoint: null,
+  oss_external_endpoint: null,
 }
 
 const mutations = {
@@ -59,6 +61,9 @@ const mutations = {
   },
   SET_STORAGE_DEPLOY_HOST: (state, domain) => {
     state.storage_deploy_host = domain
+  },
+  SET_OSS_EXTERNAL_ENDPOINT: (state, endpoint) => {
+    state.oss_external_endpoint = endpoint
   },
   SET_STORAGE_DEPLOY_URL_SCHEMA: (state, schema) => {
     state.storage_deploy_url_schema = schema
@@ -92,6 +97,7 @@ const actions = {
     commit('SET_APP_DEPLOY_HOST', res.data?.app_deploy_host)
     commit('SET_APP_DEPLOY_URL_SCHEMA', res.data?.app_deploy_url_schema)
     commit('SET_STORAGE_DEPLOY_HOST', res.data?.storage_deploy_host)
+    commit('SET_OSS_EXTERNAL_ENDPOINT', res.data?.oss_external_endpoint)
     commit('SET_STORAGE_DEPLOY_URL_SCHEMA', res.data?.storage_deploy_url_schema)
   },
   clearStates({ commit }) {
