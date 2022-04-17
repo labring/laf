@@ -2,6 +2,7 @@
 import store from '@/store'
 import { assert } from '@/utils/assert'
 import request from '@/utils/request'
+const AWS = require('aws-sdk');
 
 /**
  * Get bucket list
@@ -22,7 +23,7 @@ export async function getBuckets() {
  * Get a bucket & tokens
  * @returns
  */
-export async function getBucket(bucketName) {
+export async function getOneBucket(bucketName) {
   const appid = store.state.app.appid
   const res = await request({
     url: `/apps/${appid}/oss/buckets/${bucketName}`,
@@ -95,9 +96,75 @@ export async function deleteBucket(bucketName) {
  * @param {*} bucket
  * @returns
  */
- export function getBucketUrl(bucket) {
+export function getBucketUrl(bucket) {
   const appid = store.state.app.appid
   const endpoint = store.state.app.oss_external_endpoint
   const url = `${endpoint}/${appid}-${bucket}`
   return url
+}
+
+
+/**
+ * Get file list in a bucket
+ * @param {string} bucketName
+ * @returns
+ */
+export async function getFilesByBucketName(bucketName, { marker, prefix, credentials }) {
+  assert(bucketName, 'empty `bucketName` got')
+
+  const bucket = getInternalBucketName(bucketName)
+  const s3 = getS3Client(credentials)
+  const res = await s3.listObjects({ Bucket: bucket, MaxKeys: 100, Marker: marker, Prefix: prefix, Delimiter: '/' }).promise()
+  return res
+}
+
+/**
+ * Get app file url
+ * @param {*} bucket
+ * @param {*} key
+ * @param {*} token
+ * @returns
+ */
+export function getAppFileUrl(bucketName, key, credentials) {
+  const s3 = getS3Client(credentials)
+  const bucket = getInternalBucketName(bucketName)
+
+  const res = s3.getSignedUrl('getObject', { Bucket: bucket, Key: key })
+  return res
+}
+
+/**
+ * Upload file
+ * @param {*} bucketName 
+ * @param {*} key 
+ * @param {*} body 
+ * @param {*} credentials 
+ * @param {*} param4 
+ * @returns 
+ */
+export async function uploadAppFile(bucketName, key, body, credentials, { contentType }) {
+  const s3 = getS3Client(credentials)
+  const bucket = getInternalBucketName(bucketName)
+
+  const res = await s3.putObject({ Bucket: bucket, Key: key, ContentType: contentType, Body: body }).promise()
+  return res
+}
+
+
+function getS3Client(credentials) {
+  const endpoint = store.state.app.oss_external_endpoint
+  return new AWS.S3({
+    accessKeyId: credentials.accessKeyId,
+    secretAccessKey: credentials.secretAccessKey,
+    sessionToken: credentials.sessionToken,
+    endpoint: endpoint,
+    s3ForcePathStyle: true,
+    signatureVersion: 'v4',
+    region: 'us-east-1',
+  })
+}
+
+function getInternalBucketName(bucketName) {
+  const appid = store.state.app.appid
+  return `${appid}-${bucketName}`
 }

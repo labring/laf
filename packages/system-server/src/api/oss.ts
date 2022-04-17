@@ -64,10 +64,10 @@ export class MinioAgent {
    */
   public getApplicationSTSClient(app: ApplicationStruct) {
     return new STSClient({
-      endpoint: Config.MINIO_CONFIG.endpoint.external,
+      endpoint: Config.MINIO_CONFIG.endpoint.internal,
       credentials: {
         accessKeyId: app.appid,
-        secretAccessKey: app.config.server_secret_salt,
+        secretAccessKey: app.config.oss_access_secret,
       },
       region: 'us-east-1'
     })
