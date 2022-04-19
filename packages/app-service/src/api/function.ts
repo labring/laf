@@ -25,7 +25,7 @@ export async function getFunctionByName(func_name: string) {
 
 /**
   * Get the cloud function by function id
-  * @param func_name 
+  * @param func_id 
   * @returns 
   */
 export async function getFunctionById(func_id: string) {

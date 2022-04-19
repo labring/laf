@@ -13,7 +13,6 @@ import { generateUUID } from "../utils/rand"
 import { MongoClient, ObjectId } from 'mongodb'
 import Config from "../config"
 import * as mongodb_uri from 'mongodb-uri'
-import { BucketMode } from "./storage"
 import { logger } from "../lib/logger"
 import { BUCKET_ACL } from "./oss"
 
@@ -58,7 +57,7 @@ export interface ApplicationStruct {
   }
   buckets: {
     name: string,
-    mode: BucketMode | BUCKET_ACL
+    mode: BUCKET_ACL
   }[]
   packages: {
     name: string,

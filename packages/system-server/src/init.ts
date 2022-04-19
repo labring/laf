@@ -41,8 +41,6 @@ async function main() {
     await InitializerApi.createSystemExtensionApp(account_id, SYSTEM_EXTENSION_APPID)
     logger.info('create system extension server app')
 
-    await InitializerApi.initSystemExtensionApp(SYSTEM_EXTENSION_APPID)
-    logger.info('init system extension server app')
   }
 
   // run system extension server app

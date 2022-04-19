@@ -138,7 +138,9 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
                   { name: 'RUNTIME_IMAGE', value: app.runtime?.image },
                   { name: 'FLAGS', value: `--max_old_space_size=${max_old_space_size}` },
                   { name: 'NPM_INSTALL_FLAGS', value: npm_install_flags },
-                  { name: 'OSS_ACCESS_SECRET', value: app.config.oss_access_secret }
+                  { name: 'OSS_ACCESS_SECRET', value: app.config.oss_access_secret },
+                  { name: 'OSS_INTERNAL_ENDPOINT', value: Config.MINIO_CONFIG.endpoint.internal },
+                  { name: 'OSS_EXTERNAL_ENDPOINT', value: Config.MINIO_CONFIG.endpoint.external },
                 ],
                 ports: [{ containerPort: 8000, name: 'http' }],
                 resources: {

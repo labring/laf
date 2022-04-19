@@ -22,6 +22,9 @@
     "laf"
   ],
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.72.0",
+    "@aws-sdk/client-sts": "^3.72.0",
+    "@aws-sdk/s3-request-presigner": "^3.72.0",
     "alipay-sdk": "^3.1.7",
     "axios": "^0.21.1",
     "cloud-function-engine": "^0.7.0",

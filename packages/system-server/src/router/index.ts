@@ -10,7 +10,6 @@ import { AccountRouter } from './account/index'
 import { DbmRouter } from './dbm'
 import { DatabaseAgent } from '../lib/db-agent'
 import { DeployRouter } from './deploy'
-import { FileRouter } from './file'
 import { ApplicationRouter } from './application'
 import { FunctionRouter } from './function'
 import { PolicyRouter } from './policy'
@@ -26,7 +25,6 @@ router.use('/apps/:appid/function', checkAppid, FunctionRouter)
 router.use('/apps/:appid/policy', checkAppid, PolicyRouter)
 router.use('/apps/:appid/dbm', checkAppid, DbmRouter)
 router.use('/apps/:appid/deploy', checkAppid, DeployRouter)
-router.use('/apps/:appid/file', checkAppid, FileRouter)
 router.use('/apps/:appid/oss', checkAppid, OSSRouter)
 
 router.use('/health-check', (_req, res) => {
