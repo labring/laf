@@ -4,17 +4,17 @@
  * @LastEditTime: 2022-02-03 00:39:18
  * @Description: 
  */
-import { Router } from 'express'
+import { Request, Response } from 'express'
 import { Proxy } from 'database-proxy'
-import Config from '../../config'
-import { DatabaseAgent } from '../../lib/database'
-import { PolicyAgentInstance } from '../../lib/policy-agent'
-import { logger } from '../../lib/logger'
+import Config from '../config'
+import { DatabaseAgent } from '../lib/database'
+import { PolicyAgentInstance } from '../lib/policy-agent'
+import { logger } from '../lib/logger'
 
-const accessor = DatabaseAgent.accessor
-export const DatabaseProxyRouter = Router()
 
-DatabaseProxyRouter.post('/proxy/:policy', async (req, res) => {
+export async function handleDatabaseProxy(req: Request, res: Response) {
+  const accessor = DatabaseAgent.accessor
+
   const requestId = req['requestId']
   const auth = req['auth'] ?? {}
   const policy_name = req.params?.policy
@@ -63,4 +63,4 @@ DatabaseProxyRouter.post('/proxy/:policy', async (req, res) => {
       injections: Config.isProd ? undefined : injections
     })
   }
-})
+}

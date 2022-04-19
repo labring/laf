@@ -7,11 +7,11 @@
 
 import { Request, Response } from 'express'
 import { FunctionContext } from 'cloud-function-engine'
-import { getFunctionByName } from '../../api/function'
-import Config from '../../config'
-import { logger } from '../../lib/logger'
-import { addFunctionLog } from '../../api/function'
-import { CloudFunction } from '../../lib/function'
+import { getFunctionByName } from '../api/function'
+import Config from '../config'
+import { logger } from '../lib/logger'
+import { addFunctionLog } from '../api/function'
+import { CloudFunction } from '../lib/function'
 
 
 /**

@@ -5,21 +5,17 @@
  * @Description: 
  */
 
-import * as express from 'express'
+import { Request, Response } from 'express'
 import { PackageDeclaration, NodePackageDeclarations } from 'node-modules-utils'
 import path = require('path')
-import { logger } from '../../lib/logger'
+import { logger } from '../lib/logger'
 
-export const PackageTypingRouter = express.Router()
-
-
-const nodeModulesRoot = path.resolve(__dirname, '../../../node_modules')
-
+const nodeModulesRoot = path.resolve(__dirname, '../../node_modules')
 
 /**
  * Gets declaration files of a dependency package
  */
-PackageTypingRouter.get('/package', async (req, res) => {
+export async function handlePackageTypings(req: Request, res: Response) {
   const requestId = req['requestId']
 
   const packageName = req.query.packageName as string
@@ -68,4 +64,4 @@ PackageTypingRouter.get('/package', async (req, res) => {
       error: error.toString()
     })
   }
-})
+}
