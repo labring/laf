@@ -33,7 +33,7 @@ const state = {
   storage_deploy_host: null,
   storage_deploy_url_schema: 'http',
   oss_internal_endpoint: null,
-  oss_external_endpoint: null,
+  oss_external_endpoint: null
 }
 
 const mutations = {

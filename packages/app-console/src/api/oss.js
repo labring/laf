@@ -2,7 +2,7 @@
 import store from '@/store'
 import { assert } from '@/utils/assert'
 import request from '@/utils/request'
-const AWS = require('aws-sdk');
+const AWS = require('aws-sdk')
 
 /**
  * Get bucket list
@@ -51,7 +51,6 @@ export async function createBucket(bucketName, mode) {
     }
   })
 
-  assert(res.code === 0, 'create bucket got error', res)
   return res
 }
 
@@ -103,7 +102,6 @@ export function getBucketUrl(bucket) {
   return url
 }
 
-
 /**
  * Get file list in a bucket
  * @param {string} bucketName
@@ -135,12 +133,11 @@ export function getAppFileUrl(bucketName, key, credentials) {
 
 /**
  * Upload file
- * @param {*} bucketName 
- * @param {*} key 
- * @param {*} body 
- * @param {*} credentials 
- * @param {*} param4 
- * @returns 
+ * @param {*} bucketName
+ * @param {*} key
+ * @param {*} body
+ * @param {*} credentials
+ * @returns
  */
 export async function uploadAppFile(bucketName, key, body, credentials, { contentType }) {
   const s3 = getS3Client(credentials)
@@ -150,6 +147,13 @@ export async function uploadAppFile(bucketName, key, body, credentials, { conten
   return res
 }
 
+export async function deleteAppFile(bucketName, key, credentials) {
+  const s3 = getS3Client(credentials)
+  const bucket = getInternalBucketName(bucketName)
+
+  const res = await s3.deleteObject({ Bucket: bucket, Key: key }).promise()
+  return res
+}
 
 function getS3Client(credentials) {
   const endpoint = store.state.app.oss_external_endpoint
@@ -160,7 +164,7 @@ function getS3Client(credentials) {
     endpoint: endpoint,
     s3ForcePathStyle: true,
     signatureVersion: 'v4',
-    region: 'us-east-1',
+    region: 'us-east-1'
   })
 }
 
