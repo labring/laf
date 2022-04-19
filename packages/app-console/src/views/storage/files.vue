@@ -13,7 +13,7 @@
       </el-button>
       <div class="filter-item" style="margin-left: 20px;">
         <span style="font-size: 16px;color: gray; margin-right: 5px;">当前:</span>
-        <path-link :path="currentPath" @change="onChangeDirectory" />
+        <path-link :path="currentPath" :bucket="bucket" @change="onChangeDirectory" />
       </div>
     </div>
 
@@ -45,7 +45,7 @@
       </el-table-column>
       <el-table-column label="文件名" width="330" align="left">
         <template slot-scope="{row}">
-          <span v-if="!row.Prefix">{{ row.Key }}</span>
+          <span v-if="!row.Prefix">{{ getFileName(row) }}</span>
           <span v-if="row.Prefix" class="directory-item" @click="changeDirectory(row)">
             {{ row.Prefix }}
           </span>
@@ -64,16 +64,16 @@
       </el-table-column>
       <el-table-column label="文件路径" align="center">
         <template slot-scope="{row}">
-          <span>  {{ row.Key }}</span>
+          <span>  {{ row.Prefix ? '-' : row.Key }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="160" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
+          <el-button v-if="row.Prefix" plain type="success" size="mini" @click="changeDirectory(row)">查看</el-button>
           <a v-if="!row.Prefix" :href="getFileUrl(row)" target="blank" style="margin-right: 8px">
             <el-button plain type="success" size="mini">查看</el-button>
           </a>
-          <el-button v-if="row.Prefix" plain type="success" size="mini" @click="changeDirectory(row)">查看</el-button>
-          <el-button v-if="row.status!='deleted'" plain size="mini" type="danger" @click="handleDelete(row)">
+          <el-button :disabled="!!row.Prefix" plain size="mini" type="danger" @click="handleDelete(row)">
             删除
           </el-button>
         </template>
@@ -107,7 +107,7 @@
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import * as fs from '@/api/oss'
+import * as oss from '@/api/oss'
 import { assert } from '@/utils/assert'
 import { showError, showSuccess } from '@/utils/show'
 import PathLink from './components/path-link.vue'
@@ -146,7 +146,7 @@ export default {
   async created() {
     this.bucket = this.$route.params?.bucket
 
-    const res = await fs.getOneBucket(this.bucket)
+    const res = await oss.getOneBucket(this.bucket)
     this.bucketDetail = res.data
     this.getList()
     this.setTagViewTitle()
@@ -158,19 +158,17 @@ export default {
     async getList() {
       this.listLoading = true
       // 拼装查询条件 by this.listQuery
-      const { limit, page } = this.listQuery
+      // const { limit, page } = this.listQuery
       // 执行数据查询
-      const res = await fs.getFilesByBucketName(this.bucket, {
+      const res = await oss.getFilesByBucketName(this.bucket, {
         marker: undefined,
         prefix: this.currentPath,
         credentials: this.bucketDetail.credentials
       }).finally(() => { this.listLoading = false })
 
-      console.log(res)
       const files = res.Contents || []
       const dirs = res.CommonPrefixes || []
       this.list = [...files, ...dirs]
-
       this.listLoading = false
     },
     // 搜索
@@ -194,15 +192,11 @@ export default {
     },
     // 删除请求
     async handleDelete(row) {
-      await this.$confirm('确认要删除此数据？', '删除确认')
+      const confirmRes = await this.$confirm('确认要删除此数据？', '删除确认')
+      if (!confirmRes) { return }
 
       // 执行删除请求
-      const token = this.bucketDetail.full_token
-      const r = await fs.deleteFile(this.bucket, row.filename, token)
-
-      if (r.code === 'DIRECTORY_NOT_EMPTY') {
-        return showError('不可删除非空文件夹')
-      }
+      const r = await oss.deleteAppFile(this.bucket, row.Key, this.bucketDetail.credentials)
 
       if (r.code) {
         this.$notify({
@@ -226,8 +220,8 @@ export default {
       await this.$prompt('', '请输入新文件夹名', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        inputPattern: /[\w|\d|\-]{1,64}/,
-        inputErrorMessage: '文件夹名只可包含字母、数字、下划线和中划线，长度在 1～64之间'
+        inputPattern: /^[a-z0-9]{3,16}$/,
+        inputErrorMessage: '文件夹名称长度必须在 3～16 之间，且只能包含小写字母、数字'
       }).then(async({ value }) => {
         this.currentPath = this.currentPath + value + '/'
         this.getList()
@@ -239,14 +233,17 @@ export default {
     // 拼装文件下载 URL
     getFileUrl(file) {
       assert(file && file.Key, 'invalid file or filename')
-      return fs.getAppFileUrl(this.bucket, file.Key, this.bucketDetail.credentials)
+      return oss.getAppFileUrl(this.bucket, file.Key, this.bucketDetail.credentials)
+    },
+    getFileName(file) {
+      assert(file && file.Key, 'invalid file or filename')
+      return file.Key.split('/').at(-1)
     },
     async uploadFile(param) {
       const file = param.file
-      console.log(file)
       const key = this.currentPath + file.name
-      const res = await fs.uploadAppFile(this.bucket, key, file, this.bucketDetail.credentials, { contentType: file.type} )
-      if(res.$response?.httpResponse?.statusCode !== 200) {
+      const res = await oss.uploadAppFile(this.bucket, key, file, this.bucketDetail.credentials, { contentType: file.type })
+      if (res.$response?.httpResponse?.statusCode !== 200) {
         return showError('文件上传失败：' + key)
       }
 
