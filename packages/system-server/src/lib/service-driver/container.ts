@@ -115,6 +115,8 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
         `ENABLE_CLOUD_FUNCTION_LOG=always`,
         `SERVER_SECRET_SALT=${app.config.server_secret_salt}`,
         `OSS_ACCESS_SECRET=${app.config.oss_access_secret}`,
+        `OSS_INTERNAL_ENDPOINT=${Config.MINIO_CONFIG.endpoint.internal}`,
+        `OSS_EXTERNAL_ENDPOINT=${Config.MINIO_CONFIG.endpoint.external}`,
         `FLAGS=--max_old_space_size=${max_old_space_size}`,
         `APP_ID=${app.appid}`,
         `RUNTIME_IMAGE=${imageName}`,

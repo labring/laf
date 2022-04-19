@@ -72,8 +72,9 @@ export interface CloudSdkInterface {
    *  const session = mongo.client.startSession()
    *  try {
    *       await session.withTransaction(async () => {
-   *       await mongo.db.collection('xxx').updateOne({}, { session })
-   *       await mongo.db.collection('yyy').deleteMany({}, { session })
+   *          await mongo.db.collection('xxx').updateOne({}, { session })
+   *          await mongo.db.collection('yyy').deleteMany({}, { session })
+   *       })
    *  } finally {
    *       await session.endSession()
    *  }
@@ -100,6 +101,19 @@ export interface CloudSdkInterface {
    * Current app id
    */
   appid: string
+
+  env: {
+    DB_URI?: string
+    SERVER_SECRET_SALT?: string
+    APP_ID?: string
+    OSS_ACCESS_KEY?: string
+    OSS_ACCESS_SECRET?: string
+    OSS_REGION?: string
+    OSS_INTERNAL_ENDPOINT?: string
+    OSS_EXTERNAL_ENDPOINT?: string
+    NPM_INSTALL_FLAGS?: string
+    RUNTIME_IMAGE?: string
+  }
 }
 
 
@@ -135,7 +149,19 @@ export function create() {
       db: DatabaseAgent.accessor.db
     },
     sockets: WebSocketAgent.clients,
-    appid: Config.APP_ID
+    appid: Config.APP_ID,
+    env: {
+      DB_URI: Config.DB_URI,
+      SERVER_SECRET_SALT: Config.SERVER_SECRET_SALT,
+      APP_ID: process.env.APP_ID,
+      OSS_ACCESS_KEY: process.env.APP_ID,
+      OSS_ACCESS_SECRET: process.env.OSS_ACCESS_SECRET,
+      OSS_REGION: process.env.OSS_REGION || 'us-east-1',
+      OSS_INTERNAL_ENDPOINT: process.env.OSS_INTERNAL_ENDPOINT,
+      OSS_EXTERNAL_ENDPOINT: process.env.OSS_EXTERNAL_ENDPOINT,
+      NPM_INSTALL_FLAGS: process.env.NPM_INSTALL_FLAGS || '',
+      RUNTIME_IMAGE: process.env.RUNTIME_IMAGE
+    }
   }
   return cloud
 }
