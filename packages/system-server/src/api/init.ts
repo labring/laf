@@ -3,13 +3,9 @@ import Config from "../config"
 import { Constants } from "../constants"
 import { DatabaseAgent } from "../lib/db-agent"
 import { hashPassword } from "../utils/hash"
-import { ApplicationStruct, getApplicationByAppid, publishApplicationPackages } from "./application"
+import { ApplicationStruct, getApplicationByAppid } from "./application"
 import { ApplicationService } from "./service"
-import * as fs from "fs"
 import * as path from 'path'
-import { ApplicationImporter } from "../lib/importer"
-import { publishFunctions } from "./function"
-import { publishAccessPolicies } from "./policy"
 import { generatePassword } from "../utils/rand"
 import { MinioAgent } from "./oss"
 
@@ -114,24 +110,6 @@ export class InitializerApi {
       .insertOne(data as any)
 
     return ret.insertedId
-  }
-
-  /**
-   * init system extension server app
-   */
-  static async initSystemExtensionApp(appid: string) {
-    const app = await getApplicationByAppid(appid)
-    const data = fs.readFileSync(Config.SYSTEM_EXTENSION_SERVER_APP_PACKAGE)
-
-    const importer = new ApplicationImporter(app, data)
-
-    importer.parse()
-
-    await importer.import()
-
-    await publishFunctions(app)
-    await publishAccessPolicies(app)
-    await publishApplicationPackages(app.appid)
   }
 
   /**

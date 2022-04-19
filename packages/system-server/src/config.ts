@@ -1,5 +1,4 @@
 import * as dotenv from 'dotenv'
-import * as path from 'path'
 dotenv.config()
 
 /**
@@ -178,12 +177,6 @@ export default class Config {
       throw new Error('env: `INIT_ROOT_ACCOUNT_PASSWORD` is missing')
     }
     return password
-  }
-
-  static get SYSTEM_EXTENSION_SERVER_APP_PACKAGE() {
-    const default_ = path.resolve(__dirname, '../extension/system-extension-server.lapp')
-    const package_: string = process.env.SYSTEM_EXTENSION_SERVER_APP_PACKAGE || default_
-    return package_
   }
 
   static get KUBE_NAMESPACE_OF_APP_SERVICES() {
