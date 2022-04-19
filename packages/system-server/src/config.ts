@@ -118,31 +118,13 @@ export default class Config {
   }
 
   /**
-   * The max memory limit of application service, default is 256 in mb
-   * 
-   * @deprecated this field was deprecated and removed, use APP_SERVICE_DEFAULT_LIMIT_MEMORY instead
-   */
-  static get APP_SERVICE_MEMORY_LIMIT() {
-    throw new Error('APP_SERVICE_MEMORY_LIMIT is deprecated, use APP_SERVICE_DEFAULT_LIMIT_MEMORY instead.')
-  }
-
-  /**
-   * The max cpu limit of application service, default is 100
-   * 
-   * * @deprecated this field was deprecated and removed, use APP_SERVICE_DEFAULT_LIMIT_CPU instead
-   */
-  static get APP_SERVICE_CPU_LIMIT(): number {
-    throw new Error('APP_SERVICE_CPU_LIMIT is deprecated, use APP_SERVICE_DEFAULT_LIMIT_CPU instead.')
-  }
-
-  /**
    * The resources (cpu & memory) limit of application service. 
    */
   static get APP_DEFAULT_RESOURCES(): { req_cpu: string, req_memory: string, limit_cpu: string, limit_memory: string } {
     const limit_cpu = process.env.APP_SERVICE_DEFAULT_LIMIT_CPU ?? '100'
     const limit_memory = process.env.APP_SERVICE_DEFAULT_LIMIT_MEMORY || '256'
 
-    return { 
+    return {
       req_cpu: process.env.APP_SERVICE_DEFAULT_REQUEST_CPU ?? limit_cpu,
       req_memory: process.env.APP_SERVICE_DEFAULT_REQUEST_MEMORY ?? limit_memory,
       limit_cpu,
@@ -164,18 +146,6 @@ export default class Config {
    */
   static get SERVICE_DRIVER(): string {
     return process.env.SERVICE_DRIVER || 'docker'
-  }
-
-  /**
-   * Keep this only for compatibility with older applications.
-   * @deprecated Storage service is deprecated, use minio instead, do not use storage service in new deployments.
-   */
-  static get STORAGE_SERVICE_CONFIG() {
-    const secret: string = process.env.STORAGE_SERVICE_SECRET
-    const entrypoint: string = process.env.STORAGE_SERVICE_API_ENTRYPOINT
-    const deploy_host = process.env.STORAGE_SERVICE_DEPLOY_HOST
-    const schema = process.env.STORAGE_SERVICE_DEPLOY_URL_SCHEMA || this.APP_SERVICE_DEPLOY_URL_SCHEMA
-    return { secret, entrypoint, deploy_host, schema }
   }
 
   /**

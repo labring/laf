@@ -11,14 +11,15 @@ import { DatabaseAgent } from "./db-agent"
 import { getFunctionByName } from '../api/function'
 import { generateRandString } from "../utils/rand"
 import { compileTs2js } from "../utils/lang"
-import { BucketMode, StorageAgent } from "../api/storage"
+import { BUCKET_ACL, MinioAgent } from "../api/oss"
+
 
 interface AppMeta {
   name: string
   version: string
   buckets: {
     name: string
-    mode: BucketMode
+    mode: BUCKET_ACL
   }[]
   packages: {
     name: string
@@ -263,16 +264,16 @@ export class ApplicationImporter {
     return r.modifiedCount
   }
 
-  private async importBucket(name: string, mode: BucketMode, session: ClientSession) {
+  private async importBucket(name: string, mode: BUCKET_ACL, session: ClientSession) {
     const db = DatabaseAgent.sys_accessor.db
 
     // check bucket name exists
     const [existed] = (this.app.buckets || []).filter(bk => bk.name === name)
     if (existed) return
 
-    const sa = new StorageAgent()
-    const internalName = `${this.app.appid}_${name}`
-    const ret = await sa.createBucket(internalName, mode, this.app.config.server_secret_salt)
+    const oss = await MinioAgent.New()
+    const internalName = `${this.app.appid}-${name}`
+    const ret = await oss.createBucket(internalName, mode)
     if (!ret) {
       throw new Error(`Failed to create bucket: ${name}`)
     }
