@@ -1,7 +1,7 @@
 import * as Docker from 'dockerode'
-import { ApplicationStruct, getApplicationDbUri } from '../../api/application'
+import { ApplicationStruct, getApplicationDbUri } from '../application'
 import Config from '../../config'
-import { logger } from '../logger'
+import { logger } from '../../lib/logger'
 import { ServiceDriverInterface } from './interface'
 
 
@@ -117,6 +117,7 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
         `OSS_ACCESS_SECRET=${app.config.oss_access_secret}`,
         `OSS_INTERNAL_ENDPOINT=${Config.MINIO_CONFIG.endpoint.internal}`,
         `OSS_EXTERNAL_ENDPOINT=${Config.MINIO_CONFIG.endpoint.external}`,
+        `OSS_REGION=${Config.MINIO_CONFIG.region}`,
         `FLAGS=--max_old_space_size=${max_old_space_size}`,
         `APP_ID=${app.appid}`,
         `RUNTIME_IMAGE=${imageName}`,

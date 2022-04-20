@@ -1,6 +1,6 @@
 
 
-import { ApplicationStruct } from '../../api/application'
+import { ApplicationStruct } from '../application'
 
 
 export interface ServiceDriverInterface {
@@ -10,25 +10,25 @@ export interface ServiceDriverInterface {
    * @param app 
    * @returns
    */
-  startService(app: ApplicationStruct): Promise<any>;
+  startService(app: ApplicationStruct): Promise<any>
 
   /**
    * Remove application service
    * @param app 
    */
-  removeService(app: ApplicationStruct): Promise<any>;
+  removeService(app: ApplicationStruct): Promise<any>
 
   /**
    * Get service info
    * @param container 
    * @returns return null if container not exists
    */
-  info(app: ApplicationStruct): Promise<any>;
+  info(app: ApplicationStruct): Promise<any>
 
 
   /**
    * Get name of service
    * @param app 
    */
-  getName(app: ApplicationStruct): string;
+  getName(app: ApplicationStruct): string
 }

@@ -155,6 +155,7 @@ export default class Config {
     const access_secret: string = process.env.MINIO_ACCESS_SECRET
     const internal_endpoint: string = process.env.MINIO_INTERNAL_ENDPOINT
     const external_endpoint: string = process.env.MINIO_EXTERNAL_ENDPOINT
+    const region: string = process.env.MINIO_REGION_NAME
     return {
       access_key,
       access_secret,
@@ -162,7 +163,8 @@ export default class Config {
         internal: internal_endpoint,
         external: external_endpoint
       },
-      user_policy: process.env.MINIO_USER_POLICY || 'owner_by_prefix'
+      user_policy: process.env.MINIO_USER_POLICY || 'owner_by_prefix',
+      region
     }
   }
 

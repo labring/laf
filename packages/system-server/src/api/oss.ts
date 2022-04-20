@@ -53,7 +53,7 @@ export class MinioAgent {
         secretAccessKey: Config.MINIO_CONFIG.access_secret
       },
       forcePathStyle: true,
-      region: 'us-east-1'
+      region: Config.MINIO_CONFIG.region
     })
   }
 
@@ -69,7 +69,7 @@ export class MinioAgent {
         accessKeyId: app.appid,
         secretAccessKey: app.config.oss_access_secret,
       },
-      region: 'us-east-1'
+      region: Config.MINIO_CONFIG.region
     })
   }
 

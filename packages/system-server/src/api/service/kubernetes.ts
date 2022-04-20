@@ -1,8 +1,8 @@
 import * as k8s from '@kubernetes/client-node'
-import { ApplicationStruct, getApplicationDbUri } from '../../api/application'
+import { ApplicationStruct, getApplicationDbUri } from '../application'
 import Config from '../../config'
 import { Constants } from '../../constants'
-import { logger } from '../logger'
+import { logger } from '../../lib/logger'
 import { ServiceDriverInterface } from './interface'
 
 
@@ -141,6 +141,7 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
                   { name: 'OSS_ACCESS_SECRET', value: app.config.oss_access_secret },
                   { name: 'OSS_INTERNAL_ENDPOINT', value: Config.MINIO_CONFIG.endpoint.internal },
                   { name: 'OSS_EXTERNAL_ENDPOINT', value: Config.MINIO_CONFIG.endpoint.external },
+                  { name: 'OSS_REGION', value: Config.MINIO_CONFIG.region },
                 ],
                 ports: [{ containerPort: 8000, name: 'http' }],
                 resources: {

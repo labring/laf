@@ -1,7 +1,11 @@
-import { Constants } from "../constants"
-import { DatabaseAgent } from "../lib/db-agent"
-import { ServiceDriver } from "../lib/service-driver"
-import { ApplicationStruct } from "./application"
+import { Constants } from "../../constants"
+import { DatabaseAgent } from "../../lib/db-agent"
+import { ApplicationStruct } from "../application"
+import { ServiceDriverInterface } from "./interface"
+import { logger } from "../../lib/logger"
+import Config from "../../config"
+import { KubernetesServiceDriver } from "./kubernetes"
+import { DockerContainerServiceDriver } from "./docker"
 
 
 export class ApplicationService {
@@ -12,7 +16,7 @@ export class ApplicationService {
    */
   static async start(app: ApplicationStruct) {
     const db = DatabaseAgent.db
-    const driver = ServiceDriver.create()
+    const driver = this.create()
     const res = await driver.startService(app)
 
     await db.collection(Constants.cn.applications)
@@ -32,7 +36,7 @@ export class ApplicationService {
    */
   static async stop(app: ApplicationStruct) {
     const db = DatabaseAgent.db
-    const driver = ServiceDriver.create()
+    const driver = this.create()
     const res = await driver.removeService(app)
 
     await db.collection(Constants.cn.applications)
@@ -53,5 +57,15 @@ export class ApplicationService {
   static async restart(app: ApplicationStruct) {
     await this.stop(app)
     return await this.start(app)
+  }
+
+  static create(): ServiceDriverInterface {
+    const driver = Config.SERVICE_DRIVER || 'docker'
+    logger.info("creating ServiceDriver with driver: " + driver)
+    if (driver === 'kubernetes') {
+      return new KubernetesServiceDriver()
+    } else {
+      return new DockerContainerServiceDriver()
+    }
   }
 }
