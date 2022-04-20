@@ -192,8 +192,7 @@ export default {
     },
     // 删除请求
     async handleDelete(row) {
-      const confirmRes = await this.$confirm('确认要删除此数据？', '删除确认')
-      if (!confirmRes) { return }
+      await this.$confirm('确认要删除此数据？', '删除确认')
 
       // 执行删除请求
       const r = await oss.deleteAppFile(this.bucket, row.Key, this.bucketDetail.credentials)
@@ -220,8 +219,8 @@ export default {
       await this.$prompt('', '请输入新文件夹名', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        inputPattern: /^[a-z0-9]{3,16}$/,
-        inputErrorMessage: '文件夹名称长度必须在 3～16 之间，且只能包含小写字母、数字'
+        inputPattern: /[\w|\d|\-]{1,64}/,
+        inputErrorMessage: '文件夹名只可包含字母、数字、下划线和中划线，长度在 1～64之间'
       }).then(async({ value }) => {
         this.currentPath = this.currentPath + value + '/'
         this.getList()
