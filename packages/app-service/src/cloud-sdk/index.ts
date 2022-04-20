@@ -156,7 +156,7 @@ export function create() {
       APP_ID: process.env.APP_ID,
       OSS_ACCESS_KEY: process.env.APP_ID,
       OSS_ACCESS_SECRET: process.env.OSS_ACCESS_SECRET,
-      OSS_REGION: process.env.OSS_REGION || 'us-east-1',
+      OSS_REGION: process.env.OSS_REGION,
       OSS_INTERNAL_ENDPOINT: process.env.OSS_INTERNAL_ENDPOINT,
       OSS_EXTERNAL_ENDPOINT: process.env.OSS_EXTERNAL_ENDPOINT,
       NPM_INSTALL_FLAGS: process.env.NPM_INSTALL_FLAGS || '',
