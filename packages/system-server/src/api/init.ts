@@ -1,12 +1,12 @@
 import { ObjectId } from "mongodb"
 import Config from "../config"
 import { Constants } from "../constants"
-import { DatabaseAgent } from "../lib/db-agent"
-import { hashPassword } from "../utils/hash"
+import { DatabaseAgent } from "../db"
+import { hashPassword } from "./utils/hash"
 import { ApplicationStruct, getApplicationByAppid } from "./application"
 import { ApplicationService } from "./service"
 import * as path from 'path'
-import { generatePassword } from "../utils/rand"
+import { generatePassword } from "./utils/rand"
 import { MinioAgent } from "./oss"
 
 /**
@@ -24,10 +24,10 @@ export class InitializerApi {
    */
   static async createSystemCollectionIndexes() {
     const db = DatabaseAgent.db
-    await db.collection(Constants.cn.accounts).createIndex('username', { unique: true })
-    await db.collection(Constants.cn.applications).createIndex('appid', { unique: true })
-    await db.collection(Constants.cn.functions).createIndex({ appid: 1, name: 1 }, { unique: true })
-    await db.collection(Constants.cn.policies).createIndex({ appid: 1, name: 1 }, { unique: true })
+    await db.collection(Constants.colls.accounts).createIndex('username', { unique: true })
+    await db.collection(Constants.colls.applications).createIndex('appid', { unique: true })
+    await db.collection(Constants.colls.functions).createIndex({ appid: 1, name: 1 }, { unique: true })
+    await db.collection(Constants.colls.policies).createIndex({ appid: 1, name: 1 }, { unique: true })
   }
 
 
@@ -41,7 +41,7 @@ export class InitializerApi {
     const password = Config.INIT_ROOT_ACCOUNT_PASSWORD
 
     // add account
-    const r = await db.collection(Constants.cn.accounts)
+    const r = await db.collection(Constants.colls.accounts)
       .insertOne({
         username,
         quota: {
@@ -106,7 +106,7 @@ export class InitializerApi {
     }
 
     // save it
-    const ret = await db.collection(Constants.cn.applications)
+    const ret = await db.collection(Constants.colls.applications)
       .insertOne(data as any)
 
     return ret.insertedId

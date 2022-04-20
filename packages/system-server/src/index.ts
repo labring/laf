@@ -6,12 +6,12 @@
  */
 
 import * as express from 'express'
-import { parseToken, splitBearerToken } from './utils/token'
+import { parseToken, splitBearerToken } from './api/utils/token'
 import { v4 as uuidv4 } from 'uuid'
 import Config from './config'
-import { router } from './router/index'
-import { logger } from './lib/logger'
-import { DatabaseAgent } from './lib/db-agent'
+import { router } from './routes/router'
+import { logger } from './logger'
+import { DatabaseAgent } from './db'
 import { Constants } from './constants'
 import { ApplicationService } from './api/service'
 

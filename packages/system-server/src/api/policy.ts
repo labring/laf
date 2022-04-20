@@ -7,10 +7,10 @@
 
 import * as assert from 'assert'
 import { Constants } from '../constants'
-import { DatabaseAgent } from "../lib/db-agent"
+import { DatabaseAgent } from "../db"
 import { ClientSession, ObjectId } from 'mongodb'
 import { ApplicationStruct, getApplicationDbAccessor } from './application'
-import { logger } from '../lib/logger'
+import { logger } from '../logger'
 
 export enum PolicyStatus {
   DISABLED = 0,
@@ -36,7 +36,7 @@ export interface PolicyStruct {
  */
 export async function getPolicyByName(appid: string, policy_name: string) {
   const db = DatabaseAgent.db
-  const doc = await db.collection<PolicyStruct>(Constants.cn.policies)
+  const doc = await db.collection<PolicyStruct>(Constants.colls.policies)
     .findOne({ name: policy_name, appid })
 
   return doc
@@ -49,7 +49,7 @@ export async function getPolicyByName(appid: string, policy_name: string) {
 export async function publishAccessPolicies(app: ApplicationStruct) {
   // read policies from sys db
   const ret = await DatabaseAgent.sys_accessor.db
-    .collection(Constants.cn.policies)
+    .collection(Constants.colls.policies)
     .find({
       appid: app.appid
     })
@@ -64,7 +64,7 @@ export async function publishAccessPolicies(app: ApplicationStruct) {
   try {
     await session.withTransaction(async () => {
       const _db = app_accessor.db
-      const app_coll = _db.collection(Constants.policy_collection)
+      const app_coll = _db.collection(Constants.published_coll_name_policy)
       await app_coll.deleteMany({}, { session })
       await app_coll.insertMany(ret, { session })
     })
@@ -114,7 +114,7 @@ async function _deployOnePolicy(policy: PolicyStruct, session: ClientSession) {
   }
   delete data['_id']
 
-  const r = await db.collection(Constants.cn.policies)
+  const r = await db.collection(Constants.colls.policies)
     .updateOne({
       appid: policy.appid,
       name: policy.name
@@ -128,7 +128,7 @@ async function _deployOnePolicy(policy: PolicyStruct, session: ClientSession) {
   }
 
   // if new
-  const ret = await db.collection(Constants.cn.policies).insertOne(data as any, { session })
+  const ret = await db.collection(Constants.colls.policies).insertOne(data as any, { session })
   assert(ret.insertedId, `deploy policy: add policy ${policy.name} occurred error`)
   logger.debug(`deploy policy: inserted a policy (${policy.name}), insertedId ${ret.insertedId}`)
 }

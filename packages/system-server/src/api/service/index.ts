@@ -1,8 +1,8 @@
 import { Constants } from "../../constants"
-import { DatabaseAgent } from "../../lib/db-agent"
+import { DatabaseAgent } from "../../db"
 import { ApplicationStruct } from "../application"
 import { ServiceDriverInterface } from "./interface"
-import { logger } from "../../lib/logger"
+import { logger } from "../../logger"
 import Config from "../../config"
 import { KubernetesServiceDriver } from "./kubernetes"
 import { DockerContainerServiceDriver } from "./docker"
@@ -19,7 +19,7 @@ export class ApplicationService {
     const driver = this.create()
     const res = await driver.startService(app)
 
-    await db.collection(Constants.cn.applications)
+    await db.collection(Constants.colls.applications)
       .updateOne(
         { appid: app.appid },
         {
@@ -39,7 +39,7 @@ export class ApplicationService {
     const driver = this.create()
     const res = await driver.removeService(app)
 
-    await db.collection(Constants.cn.applications)
+    await db.collection(Constants.colls.applications)
       .updateOne(
         { appid: app.appid },
         {

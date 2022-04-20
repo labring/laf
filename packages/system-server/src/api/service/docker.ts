@@ -1,7 +1,7 @@
 import * as Docker from 'dockerode'
 import { ApplicationStruct, getApplicationDbUri } from '../application'
 import Config from '../../config'
-import { logger } from '../../lib/logger'
+import { logger } from '../../logger'
 import { ServiceDriverInterface } from './interface'
 
 

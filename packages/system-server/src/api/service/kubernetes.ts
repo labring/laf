@@ -2,7 +2,7 @@ import * as k8s from '@kubernetes/client-node'
 import { ApplicationStruct, getApplicationDbUri } from '../application'
 import Config from '../../config'
 import { Constants } from '../../constants'
-import { logger } from '../../lib/logger'
+import { logger } from '../../logger'
 import { ServiceDriverInterface } from './interface'
 
 
