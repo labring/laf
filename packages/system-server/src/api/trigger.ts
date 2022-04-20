@@ -7,7 +7,7 @@
 
 import * as assert from "assert"
 import { Constants } from "../constants"
-import { DatabaseAgent } from "../lib/db-agent"
+import { DatabaseAgent } from "../db"
 
 
 /**
@@ -19,7 +19,7 @@ export async function getTriggers(appid: string) {
   assert.ok(appid, 'empty appid got')
   const db = DatabaseAgent.sys_accessor.db
 
-  const funcs = await db.collection(Constants.cn.functions)
+  const funcs = await db.collection(Constants.colls.functions)
     .find(
       { appid },
       {

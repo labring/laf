@@ -6,12 +6,12 @@
  */
 
 import { Constants } from "../constants"
-import { DatabaseAgent } from "../lib/db-agent"
+import { DatabaseAgent } from "../db"
 import { ClientSession, ObjectId } from 'mongodb'
 import * as assert from 'assert'
-import { logger } from "../lib/logger"
+import { logger } from "../logger"
 import { ApplicationStruct, getApplicationDbAccessor } from "./application"
-import { compileTs2js } from "../utils/lang"
+import { compileTs2js } from "./utils/lang"
 
 export enum FunctionStatus {
   DISABLED = 0,
@@ -53,7 +53,7 @@ export interface CloudFunctionStruct {
  */
 export async function getFunctionByName(appid: string, func_name: string) {
   const db = DatabaseAgent.db
-  const doc = await db.collection<CloudFunctionStruct>(Constants.cn.functions)
+  const doc = await db.collection<CloudFunctionStruct>(Constants.colls.functions)
     .findOne({ name: func_name, appid })
 
   return doc
@@ -66,7 +66,7 @@ export async function getFunctionByName(appid: string, func_name: string) {
  */
 export async function getFunctionById(appid: string, func_id: ObjectId) {
   const db = DatabaseAgent.db
-  const doc = await db.collection<CloudFunctionStruct>(Constants.cn.functions)
+  const doc = await db.collection<CloudFunctionStruct>(Constants.colls.functions)
     .findOne({ _id: func_id, appid })
 
   return doc
@@ -81,7 +81,7 @@ export async function publishFunctions(app: ApplicationStruct) {
 
   // read functions from sys db
   const ret = await DatabaseAgent.db
-    .collection(Constants.cn.functions)
+    .collection(Constants.colls.functions)
     .find({
       appid: app.appid
     })
@@ -99,7 +99,7 @@ export async function publishFunctions(app: ApplicationStruct) {
   try {
     await session.withTransaction(async () => {
       const _db = app_accessor.db
-      const app_coll = _db.collection(Constants.function_collection)
+      const app_coll = _db.collection(Constants.published_coll_name_function)
       await app_coll.deleteMany({}, { session })
       await app_coll.insertMany(data, { session })
     })
@@ -130,7 +130,7 @@ export async function publishOneFunction(app: ApplicationStruct, func_id: string
   try {
     await session.withTransaction(async () => {
       const _db = app_accessor.db
-      const app_coll = _db.collection(Constants.function_collection)
+      const app_coll = _db.collection(Constants.published_coll_name_function)
       await app_coll.deleteOne({ _id: new ObjectId(func_id) }, { session })
       await app_coll.insertOne(func as any, { session })
     })
@@ -188,7 +188,7 @@ async function _deployOneFunction(func: CloudFunctionStruct, session: ClientSess
     ...func,
   }
   delete data['_id']
-  const r = await db.collection(Constants.cn.functions)
+  const r = await db.collection(Constants.colls.functions)
     .updateOne({
       appid: func.appid,
       name: func.name
@@ -203,7 +203,7 @@ async function _deployOneFunction(func: CloudFunctionStruct, session: ClientSess
   }
 
   // if new function
-  const ret = await db.collection(Constants.cn.functions)
+  const ret = await db.collection(Constants.colls.functions)
     .insertOne(data as any, { session })
 
   assert(ret.insertedId, `deploy: add function ${func.name} occurred error`)

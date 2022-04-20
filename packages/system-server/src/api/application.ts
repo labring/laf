@@ -6,14 +6,14 @@
  */
 
 import { Constants } from "../constants"
-import { DatabaseAgent } from "../lib/db-agent"
+import { DatabaseAgent } from "../db"
 import * as assert from 'assert'
 import { MongoAccessor } from "database-proxy"
-import { generateUUID } from "../utils/rand"
+import { generateUUID } from "./utils/rand"
 import { MongoClient, ObjectId } from 'mongodb'
 import Config from "../config"
 import * as mongodb_uri from 'mongodb-uri'
-import { logger } from "../lib/logger"
+import { logger } from "../logger"
 import { BUCKET_ACL } from "./oss"
 
 /**
@@ -79,7 +79,7 @@ export async function getApplicationByAppid(appid: string) {
   if (!appid) return null
 
   const db = DatabaseAgent.db
-  const doc = await db.collection<ApplicationStruct>(Constants.cn.applications)
+  const doc = await db.collection<ApplicationStruct>(Constants.colls.applications)
     .findOne({ appid: appid })
 
   return doc
@@ -94,7 +94,7 @@ export async function getMyApplications(account_id: string) {
   assert.ok(account_id, 'empty account_id got')
 
   const db = DatabaseAgent.db
-  const docs = await db.collection<ApplicationStruct>(Constants.cn.applications)
+  const docs = await db.collection<ApplicationStruct>(Constants.colls.applications)
     .find({ created_by: new ObjectId(account_id) }, {
       projection: { config: false }
     }).toArray()
@@ -111,7 +111,7 @@ export async function getMyJoinedApplications(account_id: string) {
   assert.ok(account_id, 'empty account_id got')
 
   const db = DatabaseAgent.db
-  const docs = await db.collection<ApplicationStruct>(Constants.cn.applications)
+  const docs = await db.collection<ApplicationStruct>(Constants.colls.applications)
     .find({
       'collaborators.uid': new ObjectId(account_id)
     }).toArray()
@@ -220,7 +220,7 @@ export async function publishApplicationPackages(appid: string) {
   try {
     await session.withTransaction(async () => {
       const db = app_accessor.db
-      const app_coll = db.collection(Constants.config_collection)
+      const app_coll = db.collection(Constants.published_coll_name_config)
       await app_coll.deleteOne({ key: 'packages' }, { session })
 
       const packages = app.packages

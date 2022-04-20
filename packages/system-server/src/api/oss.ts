@@ -3,7 +3,7 @@ import * as cp from 'child_process'
 import { promisify } from 'util'
 import { STSClient, AssumeRoleCommand } from '@aws-sdk/client-sts'
 import { CreateBucketCommand, DeleteBucketCommand, DeleteBucketPolicyCommand, PutBucketPolicyCommand, S3 } from '@aws-sdk/client-s3'
-import { logger } from "../lib/logger"
+import { logger } from "../logger"
 import Config from "../config"
 import { ApplicationStruct } from "./application"
 const exec = promisify(cp.exec)
@@ -53,7 +53,7 @@ export class MinioAgent {
         secretAccessKey: Config.MINIO_CONFIG.access_secret
       },
       forcePathStyle: true,
-      region: 'us-east-1'
+      region: Config.MINIO_CONFIG.region
     })
   }
 
@@ -69,7 +69,7 @@ export class MinioAgent {
         accessKeyId: app.appid,
         secretAccessKey: app.config.oss_access_secret,
       },
-      region: 'us-east-1'
+      region: Config.MINIO_CONFIG.region
     })
   }
 

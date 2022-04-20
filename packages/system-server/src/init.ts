@@ -4,7 +4,7 @@ import { getApplicationByAppid } from "./api/application"
 import { InitializerApi } from "./api/init"
 import Config from "./config"
 import { Constants } from "./constants"
-import { logger } from "./lib/logger"
+import { logger } from "./logger"
 
 const SYSTEM_EXTENSION_APPID = Constants.SYSTEM_EXTENSION_APPID
 
