@@ -41,6 +41,7 @@ services:
       MINIO_ACCESS_SECRET: minio-root-password
       MINIO_INTERNAL_ENDPOINT: http://oss:9000
       MINIO_EXTERNAL_ENDPOINT: http://oss.local-dev.host:8080
+      MINIO_REGION_NAME: cn-default
       DEBUG_BIND_HOST_APP_PATH: '${PWD}/packages/app-service'
       INIT_ROOT_ACCOUNT_PASSWORD: abc123
     command: sh /app/start.sh
@@ -90,6 +91,7 @@ services:
       - MINIO_DISTRIBUTED_NODES=oss/data/{0...3}
       - MINIO_ETCD_ENDPOINTS=http://etcd:2379
       - MINIO_SKIP_CLIENT=yes
+      - MINIO_REGION_NAME=cn-default
     ports:
       - "9020:9000"
       - "9120:9001"
