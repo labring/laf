@@ -8,7 +8,7 @@
 import { Request, Response } from 'express'
 import { ApplicationStruct } from '../../api/application'
 import { checkPermission } from '../../api/permission'
-import { Constants } from '../../constants'
+import { Constants, GB } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { BUCKET_ACL, MinioAgent } from '../../api/oss'
 
@@ -25,6 +25,9 @@ export async function handleCreateBucket(req: Request, res: Response) {
   if (!MinioAgent.BUCKET_ACLS.includes(mode)) {
     return res.status(422).send('invalid bucket mode')
   }
+
+  let quota: number = req.body?.quota || 0
+  if (quota <= 0) { quota = 1 * GB }
 
   const uid = req['auth']?.uid
   const app: ApplicationStruct = req['parsed-app']
@@ -44,7 +47,7 @@ export async function handleCreateBucket(req: Request, res: Response) {
 
   const oss = await MinioAgent.New()
   const internalName = `${app.appid}-${bucketName}`
-  const ret = await oss.createBucket(internalName, mode)
+  const ret = await oss.createBucket(internalName, { acl: mode, quota, with_lock: false })
   if (!ret) {
     return res.status(400).send('create bucket failed')
   }

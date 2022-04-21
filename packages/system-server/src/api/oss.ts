@@ -122,19 +122,28 @@ export class MinioAgent {
 
   /**
    * Create bucket
-   * @param name bucket name
-   * @param acl bucket mode
-   * @returns bucket id or undefined
+   * @param name 
+   * @param options 
+   * @returns 
    */
-  public async createBucket(name: string, acl: BUCKET_ACL) {
+  public async createBucket(name: string, options: { acl?: BUCKET_ACL, with_lock?: boolean, quota?: number }) {
     assert.ok(name, 'empty name got')
-    assert.ok(acl !== undefined, 'undefined mode got')
 
+    const acl = options.acl || BUCKET_ACL.private
     const s3 = this.getClient()
-    const cmd = new CreateBucketCommand({ Bucket: name, ACL: acl })
+    const cmd = new CreateBucketCommand({
+      Bucket: name,
+      ACL: acl,
+      CreateBucketConfiguration: {
+        LocationConstraint: Config.MINIO_CONFIG.region
+      },
+      ObjectLockEnabledForBucket: options?.with_lock ?? false
+    })
     const res = await s3.send(cmd)
     if (res?.$metadata?.httpStatusCode === 200) {
       await this.setBucketACL(name, acl)
+      const quota = options?.quota || 1024 * 1024
+      await this.setBucketQuota(name, quota)
     }
 
     return res
@@ -161,6 +170,42 @@ export class MinioAgent {
 
     const cmd = new PutBucketPolicyCommand({ Bucket: name, Policy: policy })
     return await s3.send(cmd)
+  }
+
+  /**
+   * Set bucket quota
+   * @param name the bucket name
+   * @param quota bucket quota size in bytes
+   */
+  public async setBucketQuota(name: string, quota: number) {
+    assert.ok(name, 'empty name got')
+
+    const sub_cmd = `admin bucket quota ${MinioAgent.MC_TARGET}/${name} --hard ${quota}`
+    return await this.mc_exec(sub_cmd)
+  }
+
+  /**
+   * Get bucket quota
+   * @param name 
+   * @returns 
+   */
+  public async getBucketQuota(name: string) {
+    assert.ok(name, 'empty name got')
+
+    const sub_cmd = `admin bucket quota ${MinioAgent.MC_TARGET}/${name}`
+    return await this.mc_exec(sub_cmd)
+  }
+
+  /**
+   * Clear bucket quota
+   * @param name 
+   * @returns 
+   */
+  public async clearBucketQuota(name: string) {
+    assert.ok(name, 'empty name got')
+
+    const sub_cmd = `admin bucket quota ${MinioAgent.MC_TARGET}/${name} --clear`
+    return await this.mc_exec(sub_cmd)
   }
 
   /**
