@@ -5,7 +5,7 @@
  * @Description:
  */
 
-import { deepFreeze } from './api/utils/lang'
+import { deepFreeze } from './support/util-lang'
 import { permissions } from './permissions'
 import { roles } from './permissions'
 
@@ -69,3 +69,8 @@ export const Constants = {
 }
 
 deepFreeze(Constants)
+
+
+export const KB = 1024
+export const MB = 1024 * KB
+export const GB = 1024 * MB

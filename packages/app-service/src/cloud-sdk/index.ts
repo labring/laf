@@ -2,14 +2,13 @@ import { AxiosStatic } from "axios"
 import { Db, getDb } from "database-proxy"
 import { FunctionContext } from "cloud-function-engine"
 import * as mongodb from "mongodb"
-import { DatabaseAgent } from "../lib/database"
+import { DatabaseAgent } from "../db"
 import request from 'axios'
-import { SchedulerInstance } from "../lib/scheduler"
-import { getToken, parseToken } from "../lib/utils/token"
-import { invokeInFunction } from "./invoke"
-import { CloudFunction } from "../lib/function"
+import { SchedulerInstance } from "../support/scheduler"
+import { getToken, parseToken } from "../support/token"
+import { addFunctionLog, CloudFunction } from "../support/function"
 import { WebSocket } from "ws"
-import { WebSocketAgent } from "../lib/ws"
+import { WebSocketAgent } from "../support/ws"
 import Config from "../config"
 
 
@@ -167,3 +166,45 @@ export function create() {
 }
 
 export default cloud
+
+
+/**
+ * The cloud function is invoked in the cloud function, which runs in the cloud function.
+ * 
+ * @param name the name of cloud function to be invoked
+ * @param param the invoke params
+ * @returns 
+ */
+async function invokeInFunction(name: string, param?: FunctionContext) {
+  const data = await CloudFunction.getFunctionByName(name)
+  const func = new CloudFunction(data)
+
+  if (!func) {
+    throw new Error(`invoke() failed to get function: ${name}`)
+  }
+
+  param = param ?? {}
+
+  param.requestId = param.requestId ?? 'invoke'
+
+  param.method = param.method ?? 'call'
+
+  const result = await func.invoke(param)
+
+  await addFunctionLog({
+    requestId: param.requestId,
+    method: param.method,
+    func_id: func.id,
+    func_name: name,
+    logs: result.logs,
+    time_usage: result.time_usage,
+    data: result.data,
+    error: result.error,
+  })
+
+  if (result.error) {
+    throw result.error
+  }
+
+  return result.data
+}

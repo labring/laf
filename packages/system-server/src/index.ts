@@ -6,14 +6,14 @@
  */
 
 import * as express from 'express'
-import { parseToken, splitBearerToken } from './api/utils/token'
+import { parseToken, splitBearerToken } from './support/token'
 import { v4 as uuidv4 } from 'uuid'
 import Config from './config'
-import { router } from './routes/router'
+import { router } from './handler/router'
 import { logger } from './logger'
 import { DatabaseAgent } from './db'
 import { Constants } from './constants'
-import { ApplicationService } from './api/service'
+import { ApplicationService } from './support/service'
 
 const app = express()
 app.use(express.json({

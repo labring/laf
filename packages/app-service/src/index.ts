@@ -6,14 +6,14 @@
  */
 
 import * as express from 'express'
-import { parseToken, splitBearerToken } from './lib/utils/token'
+import { parseToken, splitBearerToken } from './support/token'
 import Config from './config'
-import { router } from './router/index'
-import { logger } from './lib/logger'
-import { generateUUID } from './lib/utils/rand'
-import { WebSocketAgent } from './lib/ws'
-import { DatabaseAgent } from './lib/database'
-import { SchedulerInstance } from './lib/scheduler'
+import { router } from './handler/router'
+import { logger } from './support/logger'
+import { generateUUID } from './support/utils'
+import { WebSocketAgent } from './support/ws'
+import { DatabaseAgent } from './db'
+import { SchedulerInstance } from './support/scheduler'
 
 
 /**
@@ -44,8 +44,10 @@ app.use(function (req, res, next) {
   req['auth'] = auth
 
   const requestId = req['requestId'] = generateUUID()
-  logger.info(requestId, `${req.method} "${req.url}" - referer: ${req.get('referer') || '-'} ${req.get('user-agent')}`)
-  logger.trace(requestId, `${req.method} ${req.url}`, { body: req.body, headers: req.headers, auth })
+  if (req.url !== '/healthz') {
+    logger.info(requestId, `${req.method} "${req.url}" - referer: ${req.get('referer') || '-'} ${req.get('user-agent')}`)
+    logger.trace(requestId, `${req.method} ${req.url}`, { body: req.body, headers: req.headers, auth })
+  }
   res.set('requestId', requestId)
   next()
 })
