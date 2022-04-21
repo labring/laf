@@ -5,7 +5,7 @@
  * @Description:
  */
 
-import { deepFreeze } from './api/utils/lang'
+import { deepFreeze } from './support/util-lang'
 import { permissions } from './permissions'
 import { roles } from './permissions'
 
