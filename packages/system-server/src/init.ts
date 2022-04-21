@@ -32,15 +32,19 @@ async function main() {
   }
 
   // create app user policy
-  await InitializerApi.initAppUserPolicy()
+  await InitializerApi.initAppOSSUserPolicy()
   logger.info('init app user policy')
+
+
+  if (await InitializerApi.createBuiltinSpecs()) {
+    logger.info('create builtin specs')
+  }
 
   // create system extension server app
   const app = await getApplicationByAppid(SYSTEM_EXTENSION_APPID)
   if (!app) {
     await InitializerApi.createSystemExtensionApp(account_id, SYSTEM_EXTENSION_APPID)
     logger.info('create system extension server app')
-
   }
 
   // run system extension server app

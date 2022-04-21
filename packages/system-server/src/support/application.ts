@@ -26,6 +26,7 @@ export interface ApplicationStruct {
   appid: string
   status: 'created' | 'running' | 'stopped' | 'cleared'
   config: {
+    db_server_name?: string
     db_name: string
     db_user: string
     db_password: string
@@ -39,21 +40,6 @@ export interface ApplicationStruct {
   }
   runtime: {
     image: string
-    /** @deprecated use `resources` instead, will be removed in future */
-    metrics?: {
-      cpu_shares?: number
-      memory?: number
-    },
-    resources: {
-      /** `requests.cpu` in kubernetes, in millicores.  ex. `1000` for 1 cpu, `100` for 0.1 cpu.  */
-      req_cpu: string,
-      /** `requests.memory` in kubernetes, in Mib. */
-      req_memory: string,
-      /** `limits.cpu` in kubernetes, also valid for docker cpu shares. In millicores.  ex. `1000` for 1 cpu, `100` for 0.1 cpu. */
-      limit_cpu: string,
-      /** `limits.memory` in kubernetes, also valid for docker memory limit, in Mib. */
-      limit_memory: string
-    }
   }
   buckets: {
     name: string,

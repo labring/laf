@@ -13,6 +13,7 @@ import { handleGetCollaborators, handleGetRoles, handleInviteCollaborator, handl
 import { handleCreateApplication } from './create'
 import { handleExportApplication } from './exporter'
 import { handleGetApplicationByAppid, handleMyApplications } from './get'
+import { handleGetSpecs } from './get-specs'
 import { handleImportApplication, handleInitApplicationWithTemplate } from './importer'
 import { handleAddPackage, handleGetPackages, handleRemovePackage, handleUpdatePackage } from './packages'
 import { handleRemoveApplication } from './remove'
@@ -37,6 +38,11 @@ export const ApplicationRouter = Router()
  * Get my applications
  */
 ApplicationRouter.get('/my', handleMyApplications)
+
+/**
+ * Get avaliable specs
+ */
+ApplicationRouter.get('/specs', handleGetSpecs)
 
 /**
  * Get application by id
