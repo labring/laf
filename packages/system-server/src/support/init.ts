@@ -1,12 +1,13 @@
 import { ObjectId } from "mongodb"
 import Config from "../config"
-import { Constants } from "../constants"
+import { Constants, DATE_NEVER, GB, MB } from "../constants"
 import { DatabaseAgent } from "../db"
 import { hashPassword, generatePassword } from "./util-passwd"
 import { ApplicationStruct, getApplicationByAppid } from "./application"
 import { ApplicationService } from "./service"
 import * as path from 'path'
 import { MinioAgent } from "./oss"
+import { ApplicationSpec } from "./application-spec"
 
 /**
  * Initialize APIs
@@ -27,8 +28,8 @@ export class InitializerApi {
     await db.collection(Constants.colls.applications).createIndex('appid', { unique: true })
     await db.collection(Constants.colls.functions).createIndex({ appid: 1, name: 1 }, { unique: true })
     await db.collection(Constants.colls.policies).createIndex({ appid: 1, name: 1 }, { unique: true })
+    await db.collection(Constants.colls.specs).createIndex({ name: 1 }, { unique: true })
   }
-
 
   /**
    * create root account
@@ -57,6 +58,33 @@ export class InitializerApi {
   }
 
   /**
+   * Create builtin spec
+   * @returns false if spec already existed 
+   */
+  static async createBuiltinSpecs() {
+    const spec = await ApplicationSpec.getSpec('starter')
+    if (spec) {
+      return false
+    }
+    const res = await ApplicationSpec.createSpec({
+      name: 'starter',
+      label: 'Starter',
+      request_cpu: 50,
+      request_memory: 64 * MB,
+      limit_cpu: 1000,
+      limit_memory: 256 * MB,
+      database_capacity: 2 * GB,
+      storage_capacity: 5 * GB,
+      bandwith: 10 * MB,
+      out_traffic: 5 * GB,
+      priority: 0,
+      enabled: true
+    })
+
+    return res.insertedId
+  }
+
+  /**
    * create system extension server app
    * @param account_id 
    * @param appid 
@@ -81,13 +109,7 @@ export class InitializerApi {
         oss_access_secret: generatePassword(64, true, false)
       },
       runtime: {
-        image: Config.APP_SERVICE_IMAGE,
-        resources: {
-          req_cpu: '100',
-          req_memory: '256',
-          limit_cpu: '1000',
-          limit_memory: '1024'
-        }
+        image: Config.APP_SERVICE_IMAGE
       },
       buckets: [],
       packages: [],
@@ -102,6 +124,12 @@ export class InitializerApi {
     }
     if (false === await oss.setUserPolicy(data.appid, Config.MINIO_CONFIG.user_policy)) {
       throw new Error('set policy to oss user failed')
+    }
+
+    // assign app spec
+    const app_spec = await ApplicationSpec.getValidAppSpec(appid)
+    if (!app_spec) {
+      await ApplicationSpec.assign(appid, 'starter', new Date(), DATE_NEVER)
     }
 
     // save it
@@ -124,7 +152,7 @@ export class InitializerApi {
   /**
    * create app user policy
    */
-  static async initAppUserPolicy() {
+  static async initAppOSSUserPolicy() {
     const oss = await MinioAgent.New()
     const policy_path = path.resolve(__dirname, '../../user-policy.json')
     await oss.createUserPolicy(Config.MINIO_CONFIG.user_policy, policy_path)

@@ -12,10 +12,11 @@ import { getAccountById } from '../../support/account'
 import { ApplicationStruct, createApplicationDb, generateAppid, getApplicationByAppid, getMyApplications } from '../../support/application'
 import { MinioAgent } from '../../support/oss'
 import Config from '../../config'
-import { Constants } from '../../constants'
+import { Constants, DATE_NEVER } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { logger } from '../../logger'
 import { generatePassword } from '../../support/util-passwd'
+import { ApplicationSpec } from '../../support/application-spec'
 
 /**
  * The handler of creating application
@@ -36,6 +37,16 @@ export async function handleCreateApplication(req: Request, res: Response) {
     return res.send({
       code: 'MEET_APPLICATION_QUOTA_LIMIT',
       error: 'you have not more quota to create application'
+    })
+  }
+
+  // check the spec
+  const spec_name = req.body?.spec
+  const spec = await ApplicationSpec.getSpec(spec_name)
+  if (!spec || !spec?.enabled) {
+    return res.send({
+      code: 'INVALID_SPEC_NAME',
+      error: 'spec name is not avaliable'
     })
   }
 
@@ -62,18 +73,18 @@ export async function handleCreateApplication(req: Request, res: Response) {
       oss_access_secret: generatePassword(64, true, false)
     },
     runtime: {
-      image: Config.APP_SERVICE_IMAGE,
-      resources: {
-        req_cpu: Config.APP_DEFAULT_RESOURCES.req_cpu,
-        req_memory: Config.APP_DEFAULT_RESOURCES.req_memory,
-        limit_cpu: Config.APP_DEFAULT_RESOURCES.limit_cpu,
-        limit_memory: Config.APP_DEFAULT_RESOURCES.limit_memory,
-      }
+      image: Config.APP_SERVICE_IMAGE
     },
     buckets: [],
     packages: [],
     created_at: now,
     updated_at: now
+  }
+
+  // assign spec to app
+  const assigned = await ApplicationSpec.assign(appid, spec.name, new Date(), DATE_NEVER)
+  if (!assigned.insertedId) {
+    return res.status(400).send('Error: assign spec to app failed')
   }
 
   // create oss user

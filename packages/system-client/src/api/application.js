@@ -13,6 +13,19 @@ export function getMyApplications() {
   })
 }
 
+
+/**
+ * Get avaliable specs
+ * @returns 
+ */
+ export function getSpecs() {
+  return request({
+    url: '/sys-api/apps/specs',
+    method: 'get'
+  })
+}
+
+
 /**
  * 根据 appid 获取应用
  * @param {string} appid
@@ -32,12 +45,13 @@ export async function getApplicationByAppid(appid) {
  * @param param0
  * @returns
  */
-export async function createApplication({ name }) {
+export async function createApplication({ name, spec }) {
   const res = await request({
     url: `/sys-api/apps/create`,
     method: 'post',
     data: {
-      name
+      name, 
+      spec
     }
   })
   return res

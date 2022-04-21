@@ -1,10 +1,11 @@
 import * as k8s from '@kubernetes/client-node'
 import { ApplicationStruct, getApplicationDbUri } from '../application'
 import Config from '../../config'
-import { Constants } from '../../constants'
+import { Constants, MB } from '../../constants'
 import { logger } from '../../logger'
 import { ServiceDriverInterface } from './interface'
-
+import { ApplicationSpec } from '../application-spec'
+import * as assert from 'assert'
 
 export class KubernetesServiceDriver implements ServiceDriverInterface {
   namespace = Config.KUBE_NAMESPACE_OF_APP_SERVICES
@@ -93,15 +94,18 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
   private async createK8sDeployment(app: ApplicationStruct, labels: any) {
     const uri = getApplicationDbUri(app)
 
-    const limit_memory = parseInt(app.runtime?.resources?.limit_memory ?? Config.APP_DEFAULT_RESOURCES.limit_memory)
-    const limit_cpu = app.runtime?.resources?.limit_cpu ?? Config.APP_DEFAULT_RESOURCES.limit_cpu
+    const app_spec = await ApplicationSpec.getValidAppSpec(app.appid)
+    assert.ok(app_spec, `no spec avaliable with app: ${app.appid}`)
 
-    const req_cpu = app.runtime?.resources?.req_cpu ?? Config.APP_DEFAULT_RESOURCES.req_cpu
-    const req_memory = app.runtime?.resources?.req_memory ?? Config.APP_DEFAULT_RESOURCES.req_memory
+    const limit_memory = ~~(app_spec.spec.limit_memory / MB)
+    const limit_cpu = app_spec.spec.limit_cpu
 
-    const imageName = app.runtime?.image ?? Config.APP_SERVICE_IMAGE
+    const req_cpu = app_spec.spec.request_cpu
+    const req_memory = ~~(app_spec.spec.limit_memory / MB)
+
+    const image_name = app.runtime?.image ?? Config.APP_SERVICE_IMAGE
     const max_old_space_size = ~~(limit_memory * 0.8)
-    const logLevel = Config.LOG_LEVEL
+    const log_level = Config.LOG_LEVEL
     const npm_install_flags = Config.APP_SERVICE_ENV_NPM_INSTALL_FLAGS
 
 
@@ -125,13 +129,13 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
             automountServiceAccountToken: app.appid === Constants.SYSTEM_EXTENSION_APPID,
             containers: [
               {
-                image: imageName,
+                image: image_name,
                 command: ['sh', '/app/start.sh'],
                 name: this.getName(app),
                 env: [
                   { name: 'DB', value: app.config.db_name },
                   { name: 'DB_URI', value: uri },
-                  { name: 'LOG_LEVEL', value: logLevel },
+                  { name: 'LOG_LEVEL', value: log_level },
                   { name: 'ENABLE_CLOUD_FUNCTION_LOG', value: 'always' },
                   { name: 'SERVER_SECRET_SALT', value: app.config.server_secret_salt },
                   { name: 'APP_ID', value: app.appid },

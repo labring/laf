@@ -175,6 +175,18 @@
         <el-form-item label="应用名称" prop="name">
           <el-input v-model="form.name" placeholder="应用名称" />
         </el-form-item>
+         <el-form-item label="选择规格" prop="spec">
+          <el-radio-group v-model="form.spec">
+            <el-radio :label="spec.name" border v-for="spec in specs" :key="spec.name">
+              <div class="spec-card" style="display:inline-block;">
+                {{spec.label}}
+                [ RAM/{{spec.limit_memory / 1024 / 1024}}M,
+                OSS/{{spec.storage_capacity / 1024 /1024/ 1024 }}G,
+                DB/{{spec.database_capacity / 1024 /1024/ 1024}}G ]
+              </div>
+            </el-radio>
+          </el-radio-group>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -227,7 +239,7 @@
 </template>
 
 <script>
-import { createApplication, getMyApplications, startApplicationService, stopApplicationService, updateApplication, removeApplication, exportApplication, importApplication, openAppConsole } from '@/api/application'
+import { createApplication, getMyApplications, startApplicationService, stopApplicationService, updateApplication, removeApplication, exportApplication, importApplication, openAppConsole, getSpecs } from '@/api/application'
 import { showError, showInfo, showSuccess } from '@/utils/show'
 import { exportRawBlob } from '@/utils/file'
 import { parseTime } from '@/utils'
@@ -237,12 +249,14 @@ function getDefaultFormValue() {
   return {
     _id: undefined,
     appid: undefined,
-    name: ''
+    name: '',
+    spec: ''
   }
 }
 
 const formRules = {
-  name: [{ required: true, message: '应用名不可为空', trigger: 'blur' }]
+  name: [{ required: true, message: '应用名不可为空', trigger: 'blur' }],
+  spec: [{ required: true, message: '请选择应用规格', trigger: 'blur' }]
 }
 
 const importFormRules = {
@@ -259,6 +273,7 @@ export default {
         created: [],
         joined: []
       },
+      specs: [],
       loading: false,
       form: getDefaultFormValue(),
       dialogFormVisible: false,
@@ -288,6 +303,9 @@ export default {
       const { created, joined } = res.data
       this.applications.created = created
       this.applications.joined = joined
+
+      const specs = await getSpecs()
+      this.specs = specs.data
     },
     toDetail(app) {
       if (app.status !== 'running') {
@@ -311,7 +329,7 @@ export default {
         const data = Object.assign({}, this.form)
 
         // 执行创建请求
-        const res = await createApplication({ name: data.name })
+        const res = await createApplication({ name: data.name, spec: data.spec })
         if (!res.data?.appid) {
           this.$notify({
             type: 'error',

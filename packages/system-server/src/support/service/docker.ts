@@ -3,6 +3,9 @@ import { ApplicationStruct, getApplicationDbUri } from '../application'
 import Config from '../../config'
 import { logger } from '../../logger'
 import { ServiceDriverInterface } from './interface'
+import { ApplicationSpec } from '../application-spec'
+import * as assert from 'assert'
+import { MB } from '../../constants'
 
 
 export class DockerContainerServiceDriver implements ServiceDriverInterface {
@@ -92,26 +95,30 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
    */
   private async createService(app: ApplicationStruct) {
     const uri = getApplicationDbUri(app)
-    const memoryLimit = parseInt(app.runtime?.resources?.limit_memory ?? Config.APP_DEFAULT_RESOURCES.limit_memory)
-    const max_old_space_size = ~~(memoryLimit * 0.8)
-    const cpuShares = parseInt(app.runtime?.resources?.limit_cpu ?? Config.APP_DEFAULT_RESOURCES.limit_cpu)
-    const imageName = app.runtime?.image ?? Config.APP_SERVICE_IMAGE
-    const logLevel = Config.LOG_LEVEL
+    const app_spec = await ApplicationSpec.getValidAppSpec(app.appid)
+    assert.ok(app_spec, `no spec avaliable with app: ${app.appid}`)
+
+    const limit_memory = app_spec.spec.limit_memory
+    const max_old_space_size = ~~(limit_memory / MB * 0.8)
+    const limit_cpu = app_spec.spec.limit_cpu
+    const image_name = app.runtime?.image ?? Config.APP_SERVICE_IMAGE
+    const log_level = Config.LOG_LEVEL
     const npm_install_flags = Config.APP_SERVICE_ENV_NPM_INSTALL_FLAGS
 
     let binds = []
+    // just for debug purpose in local development mode
     if (Config.DEBUG_BIND_HOST_APP_PATH) {
       binds = [`${Config.DEBUG_BIND_HOST_APP_PATH}:/app`]
     }
 
     const container = await this.docker.createContainer({
-      Image: imageName,
+      Image: image_name,
       Cmd: ['sh', '/app/start.sh'],
       name: this.getName(app),
       Env: [
         `DB=${app.config.db_name}`,
         `DB_URI=${uri}`,
-        `LOG_LEVEL=${logLevel}`,
+        `LOG_LEVEL=${log_level}`,
         `ENABLE_CLOUD_FUNCTION_LOG=always`,
         `SERVER_SECRET_SALT=${app.config.server_secret_salt}`,
         `OSS_ACCESS_SECRET=${app.config.oss_access_secret}`,
@@ -120,15 +127,15 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
         `OSS_REGION=${Config.MINIO_CONFIG.region}`,
         `FLAGS=--max_old_space_size=${max_old_space_size}`,
         `APP_ID=${app.appid}`,
-        `RUNTIME_IMAGE=${imageName}`,
+        `RUNTIME_IMAGE=${image_name}`,
         `NPM_INSTALL_FLAGS=${npm_install_flags}`
       ],
       ExposedPorts: {
         "8000/tcp": {}
       },
       HostConfig: {
-        Memory: memoryLimit * 1024 * 1024,
-        CpuShares: cpuShares,
+        Memory: limit_memory,
+        CpuShares: limit_cpu,
         Binds: binds
       },
     })
