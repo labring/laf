@@ -23,6 +23,9 @@ export async function handleInvokeFunction(req: Request, res: Response) {
   // load function data from db
   const funcData = await CloudFunction.getFunctionByName(func_name)
   if (!funcData) {
+    if (func_name === 'healthz') {
+      return res.status(200).send('ok')
+    }
     return res.status(404).send('Not Found')
   }
 

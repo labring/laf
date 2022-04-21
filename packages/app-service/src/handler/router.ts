@@ -5,11 +5,9 @@
  * @Description: 
  */
 
-import { Router, Request, Response } from 'express'
+import { Router } from 'express'
 import * as multer from 'multer'
 import * as path from 'path'
-import Config from '../config'
-import { DatabaseAgent } from '../db'
 import { handleDatabaseProxy } from './db-proxy'
 import { handlePackageTypings } from './typings'
 import { generateUUID } from '../support/utils'
@@ -71,15 +69,3 @@ router.all('/func/:name', uploader.any(), handleInvokeFunction)
  * @method *
  */
 router.all('/:name', uploader.any(), handleInvokeFunction)
-
-
-router.use('/health-check', (_req: Request, res: Response) => {
-  if (!DatabaseAgent.db) {
-    return res.status(400).send('no db connection')
-  }
-  return res.send({
-    APP_ID: Config.APP_ID,
-    RUNTIME_VERSION: Config.RUNTIME_VERSION,
-    RUNTIME_IMAGE: Config.RUNTIME_IMAGE
-  })
-})

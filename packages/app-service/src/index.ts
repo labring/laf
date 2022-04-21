@@ -44,8 +44,10 @@ app.use(function (req, res, next) {
   req['auth'] = auth
 
   const requestId = req['requestId'] = generateUUID()
-  logger.info(requestId, `${req.method} "${req.url}" - referer: ${req.get('referer') || '-'} ${req.get('user-agent')}`)
-  logger.trace(requestId, `${req.method} ${req.url}`, { body: req.body, headers: req.headers, auth })
+  if (req.url !== '/healthz') {
+    logger.info(requestId, `${req.method} "${req.url}" - referer: ${req.get('referer') || '-'} ${req.get('user-agent')}`)
+    logger.trace(requestId, `${req.method} ${req.url}`, { body: req.body, headers: req.headers, auth })
+  }
   res.set('requestId', requestId)
   next()
 })
