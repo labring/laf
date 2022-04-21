@@ -4,10 +4,10 @@ import path = require('path')
 import { Constants } from '../constants'
 import { execSync } from 'child_process'
 import Config from '../config'
-import { logger } from '../lib/logger'
+import { logger } from './logger'
 
 /**
- * 在 node_modules 中创建 云函数 sdk 包：@， 这个包是为了云函数IDE 加载类型提示文件而创建的，不可发布
+ * Create a internal package named '@' in node_modules, the package is used for loading typings in WebIDE。 
  */
 export function createCloudFunctionDeclarationPackage() {
   const source = path.resolve(__dirname, '../../dist')

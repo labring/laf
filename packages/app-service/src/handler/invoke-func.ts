@@ -7,11 +7,10 @@
 
 import { Request, Response } from 'express'
 import { FunctionContext } from 'cloud-function-engine'
-import { getFunctionByName } from '../api/function'
 import Config from '../config'
-import { logger } from '../lib/logger'
-import { addFunctionLog } from '../api/function'
-import { CloudFunction } from '../lib/function'
+import { logger } from '../support/logger'
+import { addFunctionLog } from '../support/function'
+import { CloudFunction } from '../support/function'
 
 
 /**
@@ -22,7 +21,7 @@ export async function handleInvokeFunction(req: Request, res: Response) {
   const func_name = req.params?.name
 
   // load function data from db
-  const funcData = await getFunctionByName(func_name)
+  const funcData = await CloudFunction.getFunctionByName(func_name)
   if (!funcData) {
     return res.status(404).send('Not Found')
   }

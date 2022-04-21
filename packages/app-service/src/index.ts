@@ -6,14 +6,14 @@
  */
 
 import * as express from 'express'
-import { parseToken, splitBearerToken } from './lib/utils/token'
+import { parseToken, splitBearerToken } from './support/token'
 import Config from './config'
-import { router } from './router/index'
-import { logger } from './lib/logger'
-import { generateUUID } from './lib/utils/rand'
-import { WebSocketAgent } from './lib/ws'
-import { DatabaseAgent } from './lib/database'
-import { SchedulerInstance } from './lib/scheduler'
+import { router } from './handler/router'
+import { logger } from './support/logger'
+import { generateUUID } from './support/utils'
+import { WebSocketAgent } from './support/ws'
+import { DatabaseAgent } from './db'
+import { SchedulerInstance } from './support/scheduler'
 
 
 /**

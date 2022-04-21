@@ -8,7 +8,7 @@
 import { Request, Response } from 'express'
 import { PackageDeclaration, NodePackageDeclarations } from 'node-modules-utils'
 import path = require('path')
-import { logger } from '../lib/logger'
+import { logger } from '../support/logger'
 
 const nodeModulesRoot = path.resolve(__dirname, '../../node_modules')
 

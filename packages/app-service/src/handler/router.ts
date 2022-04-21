@@ -9,12 +9,12 @@ import { Router, Request, Response } from 'express'
 import * as multer from 'multer'
 import * as path from 'path'
 import Config from '../config'
-import { DatabaseAgent } from '../lib/database'
-import { handleDatabaseProxy } from './database-proxy'
-import { handlePackageTypings } from './function-typing'
-import { generateUUID } from '../lib/utils/rand'
-import { handleDebugFunction } from './function-debug'
-import { handleInvokeFunction } from './function-invoke'
+import { DatabaseAgent } from '../db'
+import { handleDatabaseProxy } from './db-proxy'
+import { handlePackageTypings } from './typings'
+import { generateUUID } from '../support/utils'
+import { handleDebugFunction } from './debug-func'
+import { handleInvokeFunction } from './invoke-func'
 
 /**
  * multer uploader config

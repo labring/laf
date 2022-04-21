@@ -5,14 +5,14 @@
  * @Description: 
  */
 
-import { getTriggers } from "../../api/trigger"
-import { DatabaseAgent } from "../database"
+import { getTriggers } from "../trigger"
+import { DatabaseAgent } from "../../db"
 import { createLogger } from "../logger"
 import { ChangeStreamDocument } from "mongodb"
 import { FrameworkScheduler } from "./scheduler"
 import { debounce } from 'lodash'
-import { applyPolicyRules } from "../../api/rules"
 import { Constants } from "../../constants"
+import { PolicyAgent } from "../policy"
 
 const accessor = DatabaseAgent.accessor
 const logger = createLogger('scheduler')
@@ -33,7 +33,7 @@ accessor.ready.then(async () => {
   logger.info('triggers loaded')
 
   // initialize policies
-  await applyPolicyRules()
+  await PolicyAgent.applyPolicies()
   logger.info('policy rules applied')
 
   // watch database operation event through `WatchStream` of mongodb
@@ -64,7 +64,7 @@ accessor.ready.then(async () => {
  * debounce function `applyPolicyRules`
  */
 const debouncedApplyPolicies = debounce(() => {
-  applyPolicyRules()
+  PolicyAgent.applyPolicies()
     .then(() => logger.info('hot update: policy rules applied'))
     .catch(err => logger.error('hot update: policy rules applied failed: ', err))
 }, 1000, { trailing: true, leading: false })

@@ -7,9 +7,9 @@
 import { Request, Response } from 'express'
 import { Proxy } from 'database-proxy'
 import Config from '../config'
-import { DatabaseAgent } from '../lib/database'
-import { PolicyAgentInstance } from '../lib/policy-agent'
-import { logger } from '../lib/logger'
+import { DatabaseAgent } from '../db'
+import { logger } from '../support/logger'
+import { PolicyAgent } from '../support/policy'
 
 
 export async function handleDatabaseProxy(req: Request, res: Response) {
@@ -20,7 +20,7 @@ export async function handleDatabaseProxy(req: Request, res: Response) {
   const policy_name = req.params?.policy
 
   // get corresponding policy
-  const policy_comp = PolicyAgentInstance.get(policy_name)
+  const policy_comp = PolicyAgent.get(policy_name)
   if (!policy_comp) {
     return res.status(404).send('Policy Not Found')
   }

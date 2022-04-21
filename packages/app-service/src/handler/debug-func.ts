@@ -7,11 +7,11 @@
 
 import { Request, Response } from 'express'
 import { FunctionContext } from 'cloud-function-engine'
-import { parseToken } from '../lib/utils/token'
-import { logger } from '../lib/logger'
-import { addFunctionLog } from '../api/function'
+import { parseToken } from '../support/token'
+import { logger } from '../support/logger'
+import { addFunctionLog } from '../support/function'
 import { ObjectId } from 'bson'
-import { CloudFunction } from '../lib/function'
+import { CloudFunction } from '../support/function'
 
 /**
  * Handler of debugging cloud function

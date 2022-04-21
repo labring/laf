@@ -7,7 +7,7 @@
 
 import { Trigger } from "cloud-function-engine"
 import { Constants } from "../constants"
-import { DatabaseAgent } from "../lib/database"
+import { DatabaseAgent } from "../db"
 
 /**
  * Get triggers

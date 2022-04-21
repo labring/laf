@@ -1,4 +1,4 @@
-import { deepFreeze } from "./lib/utils"
+import { deepFreeze } from "./support/utils"
 
 /**
  * Constants collection
