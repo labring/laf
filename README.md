@@ -28,19 +28,19 @@
 
 <table>
   <tr>
-      <td width="50%" align="center"><b>应用列表</b></td>
-      <td width="50%" align="center"><b>云函数列表</b></td>
-  </tr>
-  <tr>
-     <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/apps.png"/></td>
-     <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/functions.png"/></td>
-  </tr>
-  <tr>
-      <td width="50%" align="center"><b>在线开发云函数</b></td>
-      <td width="50%" align="center"><b>云数据库：访问策略</b></td>
+      <td width="50%" align="center"><b>云函数</b></td>
+      <td width="50%" align="center"><b>云存储</b></td>
   </tr>
   <tr>
      <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/ide.png"/></td>
+     <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/files.png"/></td>
+  </tr>
+  <tr>
+      <td width="50%" align="center"><b>云数据库：数据管理</b></td>
+      <td width="50%" align="center"><b>云数据库：访问策略</b></td>
+  </tr>
+  <tr>
+     <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/collection.png"/></td>
      <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/policy.png"/></td>
   </tr>
 </table>
