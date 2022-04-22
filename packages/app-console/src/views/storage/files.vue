@@ -7,7 +7,7 @@
       </el-button>
       <el-dropdown trigger="click" size="mini" class="filter-item" style="margin-left: 10px; margin-right: 10px;" @command="handleUploadCommand">
         <el-button size="mini" plain type="primary">
-          <i class="el-icon-upload el-icon--left"></i>上传<i class="el-icon-arrow-down el-icon--right"></i>
+          <i class="el-icon-upload el-icon--left" />上传<i class="el-icon-arrow-down el-icon--right" />
         </el-button>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="uploadFile">上传文件</el-dropdown-item>
@@ -245,7 +245,7 @@ export default {
       assert(file && file.Key, 'invalid file or filename')
       return file.Key.split('/').at(-1)
     },
-    handleUploadCommand (command) {
+    handleUploadCommand(command) {
       this.dialogFormVisible = true
       if (command === 'uploadFolder') {
         this.$nextTick(() => {

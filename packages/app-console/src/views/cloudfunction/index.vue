@@ -10,21 +10,61 @@
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
-      <el-button size="mini" class="filter-item" type="default" icon="el-icon-search" @click="handleFilter">
+      <el-button
+        size="mini"
+        class="filter-item"
+        type="default"
+        icon="el-icon-search"
+        @click="handleFilter"
+      >
         搜索
       </el-button>
-      <el-button plain size="mini" class="filter-item" type="primary" icon="el-icon-plus" @click="showCreateForm">
+      <el-button
+        plain
+        size="mini"
+        class="filter-item"
+        type="primary"
+        icon="el-icon-plus"
+        @click="showCreateForm"
+      >
         新建函数
       </el-button>
-      <el-tooltip content="发布函数：函数要发布后才能生效" placement="bottom" effect="light">
-        <el-button plain class="filter-item" size="mini" type="success" icon="el-icon-guide" @click="publish">
+      <el-tooltip
+        content="发布函数：函数要发布后才能生效"
+        placement="bottom"
+        effect="light"
+      >
+        <el-button
+          plain
+          class="filter-item"
+          size="mini"
+          type="success"
+          icon="el-icon-guide"
+          @click="publish"
+        >
           发布函数
         </el-button>
       </el-tooltip>
-      <el-tooltip content="远程部署：将本环境的云函数推送到远程环境中，如推送到测试或生产环境" placement="bottom" effect="light">
-        <el-button type="default" size="mini" plain class="filter-item" @click="deployPanelVisible = true">远程部署</el-button>
+      <el-tooltip
+        content="远程部署：将本环境的云函数推送到远程环境中，如推送到测试或生产环境"
+        placement="bottom"
+        effect="light"
+      >
+        <el-button
+          type="default"
+          size="mini"
+          plain
+          class="filter-item"
+          @click="deployPanelVisible = true"
+        >远程部署</el-button>
       </el-tooltip>
-      <el-checkbox v-model="listQuery.onlyEnabled" class="filter-item" label="" :indeterminate="false" @change="handleFilter">只看已启用</el-checkbox>
+      <el-checkbox
+        v-model="listQuery.onlyEnabled"
+        class="filter-item"
+        label=""
+        :indeterminate="false"
+        @change="handleFilter"
+      >只看已启用</el-checkbox>
     </div>
 
     <!-- 标签类别 -->
@@ -33,7 +73,12 @@
       <div class="label">标签类别</div>
       <el-radio-group v-model="listQuery.tag" size="mini" @change="getList">
         <el-radio-button :label="''" border>全部</el-radio-button>
-        <el-radio-button v-for="tag in all_tags" :key="tag" :label="tag" border>{{ tag }}</el-radio-button>
+        <el-radio-button
+          v-for="tag in all_tags"
+          :key="tag"
+          :label="tag"
+          border
+        >{{ tag }}</el-radio-button>
       </el-radio-group>
     </div>
 
@@ -47,31 +92,57 @@
       style="width: 100%;"
     >
       <el-table-column label="函数标识" min-width="200">
-        <template slot-scope="{row}">
-          <span class="link-type" style="font-size: 13px; font-weight: bold;" @click="showUpdateForm(row)">{{ row.label }}</span>
-          <div style="display: flex;align-items: center;justify-content: flex-start;">
-            <div class="func-name"> {{ row.name }} </div> 
-            <i v-clipboard:message="row.name" v-clipboard:success="onCopy" style="margin-left: 3px;" class="el-icon-document-copy copy-btn" />
+        <template slot-scope="{ row }">
+          <span
+            class="link-type"
+            style="font-size: 13px; font-weight: bold;"
+            @click="showUpdateForm(row)"
+          >{{ row.label }}</span>
+          <div
+            style="display: flex;align-items: center;justify-content: flex-start;"
+          >
+            <div class="func-name">{{ row.name }}</div>
+            <i
+              v-clipboard:message="row.name"
+              v-clipboard:success="onCopy"
+              style="margin-left: 3px;"
+              class="el-icon-document-copy copy-btn"
+            />
           </div>
         </template>
       </el-table-column>
       <el-table-column label="标签" min-width="80">
-        <template slot-scope="{row}">
-          <el-tag v-for="tag in row.tags" :key="tag" style="margin-right: 6px;" type="primary" size="mini">{{ tag }}</el-tag>
+        <template slot-scope="{ row }">
+          <el-tag
+            v-for="tag in row.tags"
+            :key="tag"
+            style="margin-right: 6px;"
+            type="primary"
+            size="mini"
+          >{{ tag }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="创建/更新" width="120px" align="center">
-        <template slot-scope="{row}">
-          <span v-if="row.created_at">{{ row.created_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+        <template slot-scope="{ row }">
+          <span v-if="row.created_at">{{
+            row.created_at | parseTime('{y}-{m}-{d} {h}:{i}')
+          }}</span>
           <span v-else>-</span>
           <br>
-          <span v-if="row.updated_at">{{ row.updated_at | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span v-if="row.updated_at">{{
+            row.updated_at | parseTime('{y}-{m}-{d} {h}:{i}')
+          }}</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
       <el-table-column label="HTTP" class-name="status-col" min-width="60">
-        <template slot-scope="{row}">
-          <el-tag v-if="row.enableHTTP" type="success" size="mini" style="font-weight: bold">
+        <template slot-scope="{ row }">
+          <el-tag
+            v-if="row.enableHTTP"
+            type="success"
+            size="mini"
+            style="font-weight: bold"
+          >
             可
           </el-tag>
           <el-tag v-else type="info" size="mini" style="font-weight: bold">
@@ -80,42 +151,83 @@
         </template>
       </el-table-column>
       <el-table-column label="状态" class-name="status-col" min-width="60">
-        <template slot-scope="{row}">
-          <el-tag v-if="row.status === 1" type="success" size="mini" style="font-weight: bold">
+        <template slot-scope="{ row }">
+          <el-tag
+            v-if="row.status === 1"
+            type="success"
+            size="mini"
+            style="font-weight: bold"
+          >
             启
           </el-tag>
-          <el-tag v-if="row.status === 0" type="warning" size="mini" style="font-weight: bold">
+          <el-tag
+            v-if="row.status === 0"
+            type="warning"
+            size="mini"
+            style="font-weight: bold"
+          >
             停
           </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="调用地址" align="center" min-width="70">
-        <template slot-scope="{row}">
-          <el-tooltip :content="getFunctionInvokeBaseUrl(row.name)" placement="top">
-            <i v-clipboard:message="getFunctionInvokeBaseUrl(row.name)" v-clipboard:success="onCopy" class="el-icon-document-copy copy-btn" />
+        <template slot-scope="{ row }">
+          <el-tooltip
+            :content="getFunctionInvokeBaseUrl(row.name)"
+            placement="top"
+          >
+            <i
+              v-clipboard:message="getFunctionInvokeBaseUrl(row.name)"
+              v-clipboard:success="onCopy"
+              class="el-icon-document-copy copy-btn"
+            />
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column  label="操作" align="center" min-width="240" class-name="small-padding">
-        <template slot-scope="{row,$index}">
-          <el-button plain type="success" size="mini" @click="handleShowDetail(row)">
+      <el-table-column
+        label="操作"
+        align="center"
+        min-width="240"
+        class-name="small-padding"
+      >
+        <template slot-scope="{ row, $index }">
+          <el-button
+            plain
+            type="success"
+            size="mini"
+            @click="handleShowDetail(row)"
+          >
             开发
           </el-button>
           <el-button plain type="info" size="mini" @click="handleShowLogs(row)">
             日志
           </el-button>
-          <el-button plain type="primary" size="mini" @click="handleTriggers(row)">
-            触发器<b v-if="row.triggers && row.triggers.length">({{ row.triggers.length }})</b>
+          <el-button
+            plain
+            type="primary"
+            size="mini"
+            @click="handleTriggers(row)"
+          >
+            触发器<b
+              v-if="row.triggers && row.triggers.length"
+            >({{ row.triggers.length }})</b>
           </el-button>
-          <el-button v-if="row.status!='deleted'" icon="el-icon-delete" plain size="mini" type="danger" @click="handleDelete(row,$index)" circle>
-          </el-button>
+          <el-button
+            v-if="row.status != 'deleted'"
+            icon="el-icon-delete"
+            plain
+            size="mini"
+            type="danger"
+            circle
+            @click="handleDelete(row, $index)"
+          />
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 分页 -->
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
@@ -139,22 +251,51 @@
           <el-input v-model="form.label" placeholder="函数显示名，可为中文" />
         </el-form-item>
         <el-form-item label="函数标识" prop="name">
-          <el-input v-model="form.name" placeholder="函数的唯一标识，如 get-user" />
+          <el-input
+            v-model="form.name"
+            placeholder="函数的唯一标识，如 get-user"
+          />
         </el-form-item>
         <el-form-item label="HTTP访问" prop="enableHTTP">
-          <el-switch v-model="form.enableHTTP" :active-value="true" :inactive-value="false" />
+          <el-switch
+            v-model="form.enableHTTP"
+            :active-value="true"
+            :inactive-value="false"
+          />
         </el-form-item>
         <el-form-item label="标签分类" prop="tags">
-          <el-tag v-for="(tag, index) in form.tags" :key="tag" style="margin-right: 10px;" type="" size="medium" closable @close="removeTag(index)">{{ tag }}</el-tag>
-          <el-autocomplete v-model="form._tag_input" :fetch-suggestions="suggestTags" class="input-new-tag" clearable size="mini" type="text" placeholder="添加" @select="addTag" @change="addTag" />
+          <el-tag
+            v-for="(tag, index) in form.tags"
+            :key="tag"
+            style="margin-right: 10px;"
+            type=""
+            size="medium"
+            closable
+            @close="removeTag(index)"
+          >{{ tag }}</el-tag>
+          <el-autocomplete
+            v-model="form._tag_input"
+            :fetch-suggestions="suggestTags"
+            class="input-new-tag"
+            clearable
+            size="mini"
+            type="text"
+            placeholder="添加"
+            @select="addTag"
+            @change="addTag"
+          />
         </el-form-item>
         <el-form-item label="启用" prop="status">
-          <el-switch v-model="form.status" :active-value="1" :inactive-value="0" />
+          <el-switch
+            v-model="form.status"
+            :active-value="1"
+            :inactive-value="0"
+          />
         </el-form-item>
         <el-form-item label="函数描述">
           <el-input
             v-model="form.description"
-            :autosize="{ minRows: 3, maxRows: 6}"
+            :autosize="{ minRows: 3, maxRows: 6 }"
             type="textarea"
             placeholder="函数描述"
           />
@@ -164,21 +305,35 @@
         <el-button @click="dialogFormVisible = false">
           取消
         </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?handleCreate():handleUpdate()">
+        <el-button
+          type="primary"
+          @click="dialogStatus === 'create' ? handleCreate() : handleUpdate()"
+        >
           确定
         </el-button>
       </div>
     </el-dialog>
 
     <!-- 部署面板 -->
-    <deploy-panel v-if="deployPanelVisible" v-model="deployPanelVisible" :functions="deploy_functions" />
+    <deploy-panel
+      v-if="deployPanelVisible"
+      v-model="deployPanelVisible"
+      :functions="deploy_functions"
+    />
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import DeployPanel from '../deploy/components/deploy-panel.vue'
-import { createFunction, getAllFunctionTags, getFunctions, publishFunctions, removeFunction, updateFunction } from '@/api/func'
+import {
+  createFunction,
+  getAllFunctionTags,
+  getFunctions,
+  publishFunctions,
+  removeFunction,
+  updateFunction
+} from '@/api/func'
 import { getAppAccessUrl } from '@/api/application'
 
 const defaultCode = `
@@ -228,7 +383,7 @@ export default {
     Pagination,
     DeployPanel
   },
-  directives: { },
+  directives: {},
   filters: {
     statusFilter(status) {
       status = status ?? 0
@@ -286,10 +441,16 @@ export default {
       this.listLoading = true
 
       const { limit, page, keyword, tag, onlyEnabled } = this.listQuery
-      const query = { }
-      if (keyword) { query['keyword'] = keyword }
-      if (tag !== '') { query['tag'] = tag }
-      if (onlyEnabled) { query['status'] = 1 }
+      const query = {}
+      if (keyword) {
+        query['keyword'] = keyword
+      }
+      if (tag !== '') {
+        query['tag'] = tag
+      }
+      if (onlyEnabled) {
+        query['status'] = 1
+      }
 
       const ret = await getFunctions(query, page, limit)
       this.total = ret.total
@@ -313,8 +474,10 @@ export default {
     },
     // 创建请求
     handleCreate() {
-      this.$refs['dataForm'].validate(async(valid) => {
-        if (!valid) { return }
+      this.$refs['dataForm'].validate(async valid => {
+        if (!valid) {
+          return
+        }
         const data = Object.assign({}, this.form)
         delete data['_tag_input']
         // 执行创建请求
@@ -347,8 +510,10 @@ export default {
     },
     // 更新请求
     handleUpdate() {
-      this.$refs['dataForm'].validate(async(valid) => {
-        if (!valid) { return }
+      this.$refs['dataForm'].validate(async valid => {
+        if (!valid) {
+          return
+        }
 
         // 执行创建请求
         const r = await updateFunction(this.form._id, {
@@ -410,8 +575,9 @@ export default {
     },
     // 发布云函数
     async publish() {
-      const confirm = await this.$confirm('确定发布所有云函数？')
-        .catch(() => false)
+      const confirm = await this.$confirm('确定发布所有云函数？').catch(
+        () => false
+      )
 
       if (!confirm) return
       const res = await publishFunctions()
@@ -498,7 +664,7 @@ export default {
 }
 
 .table-column-text {
-  overflow:hidden;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -514,9 +680,9 @@ export default {
 }
 
 .input-new-tag {
-    width: 120px;
-    margin-left: 10px;
-    vertical-align: bottom;
+  width: 120px;
+  margin-left: 10px;
+  vertical-align: bottom;
 }
 .pagination-container {
   padding: 0;
