@@ -2,7 +2,7 @@
 
 <div align="center">
   <p>
-    <b>一套开箱即用、完整、开源、为开发者提供的基于 serverless 模式和 js 编程的云开发框架</b>
+    <b>一套开箱即用、完整、开源、为开发者提供的基于 Serverless 模式和 JS 编程的云开发框架</b>
   </p>
 
   <p>
@@ -64,8 +64,8 @@
 
 ## 💥 适用场景
 
-- 用于快速开发 MVP，专注于客户端业务，极大程度减少服务端开发工作量
-- 自建属于自己可控的云开发平台
+- 用于快速开发 MVP，专注于客户端业务，极大程度减少服务端开发工作量；
+- 自建属于自己可控的云开发平台。
 
 ## 👨‍💻 适用人群
 
@@ -73,8 +73,8 @@
 
 如果你喜欢微信云开发的极速体验，但又不想局限于微信等具体平台的限制，那么可以基于 `Laf` 搭建属于自己的云开发平台。
 
-- `laf.js` 也是当前已知的唯一的开源云开发平台，技术选型更自信、风险更可控、场景更易扩展
-- 自建云开发，可以获取极速的云开发体验，同时没有技术选型时迁移平台的烦恼顾虑
+- `laf.js` 也是当前已知的唯一的开源云开发平台，技术选型更自信、风险更可控、场景更易扩展；
+- 自建云开发，可以获取极速的云开发体验，同时没有技术选型时迁移平台的烦恼顾虑。
 
 ### 个人开发者、初创创业团队
 
@@ -96,11 +96,11 @@
 
 ### 快速部署 `laf.js` 服务
 
-> 基于 Docker Compose 快速部署，需要你熟悉 Docker 以及 docker-compose 的使用
+> 基于 Docker Compose 快速部署，需要你熟悉 Docker 以及 docker-compose 的使用。
 
 ##### 安装 Docker (CentOS)
 
-> 本例只给出 CentOS 下的安装脚本，若安装其它环境请参考官方文档 https://docs.docker.com/engine/install/
+> 本例只给出 CentOS 下的安装脚本，若安装其它环境请参考官方文档 https://docs.docker.com/engine/install/。
 
 ```sh
 sudo yum install -y yum-utils
@@ -113,7 +113,7 @@ sudo systemctl start docker
 
 ```
 
-> 还需安装 docker-compose @see https://docs.docker.com/compose/install/
+> 还需安装 docker-compose @see https://docs.docker.com/compose/install/。
 
 ##### 启动服务（docker-compose）
 
