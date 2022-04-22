@@ -6,8 +6,8 @@
       </span>
       <span v-if="it.path !== '/'">
         <span class="item-link">{{ it.name }}</span>
-        <span style="margin: 0 1px;color: gray;">/</span>
       </span>
+      <span style="margin: 0 1px;color: gray;">/</span>
     </span>
   </div>
 </template>
@@ -61,7 +61,7 @@ export default {
         return { name, path: '' }
       })
 
-      arr.unshift({ name: this.bucket + '/', path: '/' })
+      arr.unshift({ name: this.bucket, path: '/' })
       for (let i = 1; i < arr.length; i++) {
         const pre = arr[i - 1]
         arr[i].path = pre.path + arr[i].name + '/'

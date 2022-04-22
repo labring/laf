@@ -42,3 +42,12 @@ export async function readTextFromFile(file, encoding = 'utf-8') {
     reader.onerror = error => reject(error)
   })
 }
+
+/**
+ * validate file name with regular expression
+ * @param {string} name
+ */
+export function validateFileName(name) {
+  const reg = /^[^\\\/\:\*\?\"\<\>\|\.]+$/
+  return reg.test(name)
+}
