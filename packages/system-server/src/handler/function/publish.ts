@@ -11,7 +11,7 @@ import { publishFunctions, publishOneFunction } from '../../support/function'
 import { checkPermission } from '../../support/permission'
 import Config from '../../config'
 import { permissions } from '../../permissions'
-import { logger } from '../../logger'
+import { logger } from '../../support/logger'
 
 const { PUBLISH_FUNCTION } = permissions
 

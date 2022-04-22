@@ -9,7 +9,7 @@ import { Request, Response } from 'express'
 import { CN_DEPLOY_REQUESTS } from '../../constants'
 import { IApplicationData } from '../../support/application'
 import { DatabaseAgent } from '../../db'
-import { logger } from '../../logger'
+import { logger } from '../../support/logger'
 import { parseToken } from '../../support/token'
 
 

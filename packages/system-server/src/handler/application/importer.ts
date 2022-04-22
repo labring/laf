@@ -16,7 +16,7 @@ import { checkPermission } from '../../support/permission'
 import { publishAccessPolicies } from '../../support/policy'
 import { CN_APP_TEMPLATES, CONST_DICTS } from '../../constants'
 import { ApplicationImporter } from '../../support/importer'
-import { logger } from '../../logger'
+import { logger } from '../../support/logger'
 import { DatabaseAgent } from '../../db'
 import { Binary, ObjectId } from 'mongodb'
 

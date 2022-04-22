@@ -1,7 +1,7 @@
 import * as Docker from 'dockerode'
 import { IApplicationData, getApplicationDbUri } from './application'
 import Config from '../config'
-import { logger } from '../logger'
+import { logger } from './logger'
 import { ServiceDriverInterface } from './service-operator'
 import { ApplicationSpecSupport } from './application-spec'
 import * as assert from 'assert'

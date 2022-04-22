@@ -13,7 +13,7 @@ import { generateUUID } from "./util-passwd"
 import { MongoClient, ObjectId } from 'mongodb'
 import Config from "../config"
 import * as mongodb_uri from 'mongodb-uri'
-import { logger } from "../logger"
+import { logger } from "./logger"
 import { BUCKET_ACL } from "./minio"
 
 /**

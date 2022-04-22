@@ -11,7 +11,7 @@ import { checkPermission } from '../../support/permission'
 import { publishAccessPolicies } from '../../support/policy'
 import Config from '../../config'
 import { permissions } from '../../permissions'
-import { logger } from '../../logger'
+import { logger } from '../../support/logger'
 
 const { PUBLISH_POLICY } = permissions
 

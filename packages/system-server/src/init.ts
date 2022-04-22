@@ -4,7 +4,7 @@ import { getApplicationByAppid } from "./support/application"
 import { Initializer } from "./support/initializer"
 import Config from "./config"
 import { SYSTEM_EXTENSION_APPID } from "./constants"
-import { logger } from "./logger"
+import { logger } from "./support/logger"
 
 
 /**

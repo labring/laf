@@ -3,7 +3,7 @@ import * as cp from 'child_process'
 import { promisify } from 'util'
 import { STSClient, AssumeRoleCommand } from '@aws-sdk/client-sts'
 import { CreateBucketCommand, DeleteBucketCommand, DeleteBucketPolicyCommand, PutBucketPolicyCommand, S3 } from '@aws-sdk/client-s3'
-import { logger } from "../logger"
+import { logger } from "./logger"
 import Config from "../config"
 import { IApplicationData } from "./application"
 import { GB } from "../constants"

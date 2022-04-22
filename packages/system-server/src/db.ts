@@ -7,7 +7,7 @@
 
 import { MongoAccessor } from 'database-proxy'
 import Config from './config'
-import { createLogger, logger } from './logger'
+import { createLogger, logger } from './support/logger'
 import * as mongodb_uri from 'mongodb-uri'
 import * as assert from 'assert'
 

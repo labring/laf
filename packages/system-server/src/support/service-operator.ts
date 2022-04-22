@@ -1,7 +1,7 @@
 import { CN_APPLICATIONS } from "../constants"
 import { DatabaseAgent } from "../db"
 import { IApplicationData } from "./application"
-import { logger } from "../logger"
+import { logger } from "./logger"
 import Config from "../config"
 import { KubernetesServiceDriver } from "./service-kubernetes-driver"
 import { DockerContainerServiceDriver } from "./service-docker-driver"

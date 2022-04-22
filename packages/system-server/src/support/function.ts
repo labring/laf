@@ -9,7 +9,7 @@ import { CN_FUNCTIONS, CN_PUBLISHED_FUNCTIONS } from "../constants"
 import { DatabaseAgent } from "../db"
 import { ClientSession, ObjectId } from 'mongodb'
 import * as assert from 'assert'
-import { logger } from "../logger"
+import { logger } from "./logger"
 import { IApplicationData, getApplicationDbAccessor } from "./application"
 import { compileTs2js } from "./util-lang"
 

@@ -7,7 +7,7 @@
 
 import { LoggerInterface } from 'database-proxy'
 import * as log4js from 'log4js'
-import Config from './config'
+import Config from '../config'
 
 /**
  * Create logger instance

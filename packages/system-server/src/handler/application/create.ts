@@ -14,7 +14,7 @@ import { MinioAgent } from '../../support/minio'
 import Config from '../../config'
 import { CN_APPLICATIONS, DATE_NEVER } from '../../constants'
 import { DatabaseAgent } from '../../db'
-import { logger } from '../../logger'
+import { logger } from '../../support/logger'
 import { generatePassword } from '../../support/util-passwd'
 import { ApplicationSpecSupport } from '../../support/application-spec'
 

@@ -10,7 +10,7 @@ import { CN_POLICIES, CN_PUBLISHED_POLICIES } from '../constants'
 import { DatabaseAgent } from "../db"
 import { ClientSession, ObjectId } from 'mongodb'
 import { IApplicationData, getApplicationDbAccessor } from './application'
-import { logger } from '../logger'
+import { logger } from './logger'
 
 export enum PolicyStatus {
   DISABLED = 0,
