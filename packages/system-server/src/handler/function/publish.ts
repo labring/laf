@@ -6,7 +6,7 @@
  */
 
 import { Request, Response } from 'express'
-import { ApplicationStruct } from '../../support/application'
+import { IApplicationData } from '../../support/application'
 import { publishFunctions, publishOneFunction } from '../../support/function'
 import { checkPermission } from '../../support/permission'
 import Config from '../../config'
@@ -21,7 +21,7 @@ const { PUBLISH_FUNCTION } = permissions
  */
 export async function handlePublishFunctions(req: Request, res: Response) {
   const uid = req['auth']?.uid
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
 
   // check permission
   const code = await checkPermission(uid, PUBLISH_FUNCTION.name, app)
@@ -49,7 +49,7 @@ export async function handlePublishFunctions(req: Request, res: Response) {
 export async function handlePublishOneFunction(req: Request, res: Response) {
   const uid = req['auth']?.uid
   const func_id = req.params?.func_id
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
 
   // check permission
   const code = await checkPermission(uid, PUBLISH_FUNCTION.name, app)

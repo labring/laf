@@ -6,11 +6,11 @@
  */
 
 import { Request, Response } from 'express'
-import { ApplicationStruct } from '../../support/application'
+import { IApplicationData } from '../../support/application'
 import { checkPermission } from '../../support/permission'
 import { CN_APPLICATIONS, CONST_DICTS } from '../../constants'
 import { DatabaseAgent } from '../../db'
-import { BUCKET_ACL, MinioAgent } from '../../support/oss'
+import { BUCKET_ACL, MinioAgent } from '../../support/minio'
 
 /**
  * The handler of updating a bucket
@@ -23,7 +23,7 @@ export async function handleSetBucketPolicy(req: Request, res: Response) {
   }
 
   const uid = req['auth']?.uid
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
 
   // check permission
   const { FILE_BUCKET_ADD } = CONST_DICTS.permissions
@@ -46,7 +46,7 @@ export async function handleSetBucketPolicy(req: Request, res: Response) {
   }
 
   // update bucket to app
-  await DatabaseAgent.db.collection<ApplicationStruct>(CN_APPLICATIONS)
+  await DatabaseAgent.db.collection<IApplicationData>(CN_APPLICATIONS)
     .updateOne({ appid: app.appid, 'buckets.name': bucketName }, {
       $set: {
         'buckets.$.mode': mode

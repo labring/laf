@@ -9,7 +9,7 @@ import { Request, Response } from 'express'
 import { getApplicationByAppid } from '../../support/application'
 import { checkPermission } from '../../support/permission'
 import { permissions } from '../../permissions'
-import { ApplicationService } from '../../support/service'
+import { ApplicationServiceOperator } from '../../support/service-operator'
 
 const { APPLICATION_UPDATE } = permissions
 /**
@@ -29,7 +29,7 @@ export async function handleStartApplicationService(req: Request, res: Response)
     return res.status(code).send()
   }
 
-  const container_id = await ApplicationService.start(app)
+  const container_id = await ApplicationServiceOperator.start(app)
 
   return res.send({
     data: {
@@ -57,7 +57,7 @@ export async function handleStopApplicationService(req: Request, res: Response) 
     return res.status(code).send()
   }
 
-  const container_id = await ApplicationService.stop(app)
+  const container_id = await ApplicationServiceOperator.stop(app)
 
   return res.send({
     data: {

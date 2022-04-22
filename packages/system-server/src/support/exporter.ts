@@ -1,6 +1,6 @@
-import { ApplicationStruct, getApplicationDbAccessor } from "./application"
-import { CloudFunctionStruct } from "./function"
-import { PolicyStruct } from "./policy"
+import { IApplicationData, getApplicationDbAccessor } from "./application"
+import { ICloudFunctionData } from "./function"
+import { IPolicyData } from "./policy"
 import { CN_FUNCTIONS, CN_POLICIES } from "../constants"
 import { DatabaseAgent } from "../db"
 import * as AdmZip from 'adm-zip'
@@ -13,10 +13,10 @@ import * as AdmZip from 'adm-zip'
  */
 export class ApplicationExporter {
   readonly version = '1.0'
-  readonly app: ApplicationStruct
+  readonly app: IApplicationData
   readonly zip: AdmZip
 
-  constructor(app: ApplicationStruct) {
+  constructor(app: IApplicationData) {
     this.app = app
     this.zip = new AdmZip()
   }
@@ -44,7 +44,7 @@ export class ApplicationExporter {
 
   public async buildFunctions() {
     const db = DatabaseAgent.db
-    const docs = await db.collection<CloudFunctionStruct>(CN_FUNCTIONS)
+    const docs = await db.collection<ICloudFunctionData>(CN_FUNCTIONS)
       .find({ appid: this.app.appid })
       .toArray()
 
@@ -69,7 +69,7 @@ export class ApplicationExporter {
 
   public async buildPolicies() {
     const db = DatabaseAgent.db
-    const docs = await db.collection<PolicyStruct>(CN_POLICIES)
+    const docs = await db.collection<IPolicyData>(CN_POLICIES)
       .find({ appid: this.app.appid })
       .toArray()
 

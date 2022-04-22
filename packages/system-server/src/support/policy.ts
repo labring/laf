@@ -9,14 +9,14 @@ import * as assert from 'assert'
 import { CN_POLICIES, CN_PUBLISHED_POLICIES } from '../constants'
 import { DatabaseAgent } from "../db"
 import { ClientSession, ObjectId } from 'mongodb'
-import { ApplicationStruct, getApplicationDbAccessor } from './application'
+import { IApplicationData, getApplicationDbAccessor } from './application'
 import { logger } from '../logger'
 
 export enum PolicyStatus {
   DISABLED = 0,
   ENABLED = 1
 }
-export interface PolicyStruct {
+export interface IPolicyData {
   _id: string
   name: string
   description: string
@@ -36,7 +36,7 @@ export interface PolicyStruct {
  */
 export async function getPolicyByName(appid: string, policy_name: string) {
   const db = DatabaseAgent.db
-  const doc = await db.collection<PolicyStruct>(CN_POLICIES)
+  const doc = await db.collection<IPolicyData>(CN_POLICIES)
     .findOne({ name: policy_name, appid })
 
   return doc
@@ -46,7 +46,7 @@ export async function getPolicyByName(appid: string, policy_name: string) {
  * Publish access policies
  * Means that copying sys db functions to app db
  */
-export async function publishAccessPolicies(app: ApplicationStruct) {
+export async function publishAccessPolicies(app: IApplicationData) {
   // read policies from sys db
   const ret = await DatabaseAgent.sys_accessor.db
     .collection(CN_POLICIES)
@@ -78,7 +78,7 @@ export async function publishAccessPolicies(app: ApplicationStruct) {
 /**
   * Deploy policies which pushed from remote environment
   */
-export async function deployPolicies(appid: string, policies: PolicyStruct[]) {
+export async function deployPolicies(appid: string, policies: IPolicyData[]) {
   assert.ok(policies)
   assert.ok(policies instanceof Array)
 
@@ -107,7 +107,7 @@ export async function deployPolicies(appid: string, policies: PolicyStruct[]) {
  * @private
  * @returns 
  */
-async function _deployOnePolicy(policy: PolicyStruct, session: ClientSession) {
+async function _deployOnePolicy(policy: IPolicyData, session: ClientSession) {
   const db = DatabaseAgent.sys_accessor.db
   const data = {
     ...policy

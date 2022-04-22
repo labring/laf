@@ -6,7 +6,7 @@
  */
 
 import { Request, Response } from 'express'
-import { ApplicationStruct } from '../../support/application'
+import { IApplicationData } from '../../support/application'
 import { checkPermission } from '../../support/permission'
 import { publishAccessPolicies } from '../../support/policy'
 import Config from '../../config'
@@ -21,7 +21,7 @@ const { PUBLISH_POLICY } = permissions
  */
 export async function handlePublishPolicies(req: Request, res: Response) {
   const uid = req['auth']?.uid
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
 
   // check permission
   const code = await checkPermission(uid, PUBLISH_POLICY.name, app)

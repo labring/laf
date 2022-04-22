@@ -7,7 +7,7 @@
 
 import { ObjectId } from 'bson'
 import { Request, Response } from 'express'
-import { ApplicationStruct } from '../../support/application'
+import { IApplicationData } from '../../support/application'
 import { checkPermission } from '../../support/permission'
 import { CN_FUNCTIONS } from '../../constants'
 import { permissions } from '../../permissions'
@@ -23,7 +23,7 @@ const { FUNCTION_ADD } = permissions
 export async function handleCreateFunction(req: Request, res: Response) {
   const uid = req['auth']?.uid
   const db = DatabaseAgent.db
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
 
   // check permission
   const code = await checkPermission(uid, FUNCTION_ADD.name, app)

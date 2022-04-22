@@ -8,7 +8,7 @@
 
 import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
-import { ApplicationStruct } from '../../support/application'
+import { IApplicationData } from '../../support/application'
 import { checkPermission } from '../../support/permission'
 import { CN_POLICIES } from '../../constants'
 import { permissions } from '../../permissions'
@@ -21,7 +21,7 @@ const { POLICY_REMOVE } = permissions
  */
 export async function handleRemovePolicyById(req: Request, res: Response) {
   const db = DatabaseAgent.db
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
   const policy_id = req.params.policy_id
 
   // check permission

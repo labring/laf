@@ -10,7 +10,7 @@ import { DatabaseAgent } from "../db"
 import { ClientSession, ObjectId } from 'mongodb'
 import * as assert from 'assert'
 import { logger } from "../logger"
-import { ApplicationStruct, getApplicationDbAccessor } from "./application"
+import { IApplicationData, getApplicationDbAccessor } from "./application"
 import { compileTs2js } from "./util-lang"
 
 export enum FunctionStatus {
@@ -21,7 +21,7 @@ export enum FunctionStatus {
 /**
  * Cloud function struct
  */
-export interface CloudFunctionStruct {
+export interface ICloudFunctionData {
   /** basic properties */
   _id: ObjectId
   name: string
@@ -53,7 +53,7 @@ export interface CloudFunctionStruct {
  */
 export async function getFunctionByName(appid: string, func_name: string) {
   const db = DatabaseAgent.db
-  const doc = await db.collection<CloudFunctionStruct>(CN_FUNCTIONS)
+  const doc = await db.collection<ICloudFunctionData>(CN_FUNCTIONS)
     .findOne({ name: func_name, appid })
 
   return doc
@@ -66,7 +66,7 @@ export async function getFunctionByName(appid: string, func_name: string) {
  */
 export async function getFunctionById(appid: string, func_id: ObjectId) {
   const db = DatabaseAgent.db
-  const doc = await db.collection<CloudFunctionStruct>(CN_FUNCTIONS)
+  const doc = await db.collection<ICloudFunctionData>(CN_FUNCTIONS)
     .findOne({ _id: func_id, appid })
 
   return doc
@@ -77,7 +77,7 @@ export async function getFunctionById(appid: string, func_id: ObjectId) {
   * Publish functions
   * Means that copying sys db functions to app db
   */
-export async function publishFunctions(app: ApplicationStruct) {
+export async function publishFunctions(app: IApplicationData) {
 
   // read functions from sys db
   const ret = await DatabaseAgent.db
@@ -115,7 +115,7 @@ export async function publishFunctions(app: ApplicationStruct) {
   * Publish one function
   * Means that copying sys db function to app db
   */
-export async function publishOneFunction(app: ApplicationStruct, func_id: string) {
+export async function publishOneFunction(app: IApplicationData, func_id: string) {
 
   // read functions from sys db
   const func = await getFunctionById(app.appid, new ObjectId(func_id))
@@ -153,7 +153,7 @@ function compileFunction(func: any) {
 /**
   * Deploy functions which pushed from remote environment
   */
-export async function deployFunctions(appid: string, functions: CloudFunctionStruct[]) {
+export async function deployFunctions(appid: string, functions: ICloudFunctionData[]) {
   assert.ok(functions)
   assert.ok(functions instanceof Array)
 
@@ -182,7 +182,7 @@ export async function deployFunctions(appid: string, functions: CloudFunctionStr
  * @see deployFunctions()
  * @returns 
  */
-async function _deployOneFunction(func: CloudFunctionStruct, session: ClientSession) {
+async function _deployOneFunction(func: ICloudFunctionData, session: ClientSession) {
   const db = DatabaseAgent.sys_accessor.db
   const data = {
     ...func,

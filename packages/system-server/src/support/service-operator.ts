@@ -1,20 +1,19 @@
-import { CN_APPLICATIONS } from "../../constants"
-import { DatabaseAgent } from "../../db"
-import { ApplicationStruct } from "../application"
-import { ServiceDriverInterface } from "./interface"
-import { logger } from "../../logger"
-import Config from "../../config"
-import { KubernetesServiceDriver } from "./kubernetes"
-import { DockerContainerServiceDriver } from "./docker"
+import { CN_APPLICATIONS } from "../constants"
+import { DatabaseAgent } from "../db"
+import { IApplicationData } from "./application"
+import { logger } from "../logger"
+import Config from "../config"
+import { KubernetesServiceDriver } from "./service-kubernetes-driver"
+import { DockerContainerServiceDriver } from "./service-docker-driver"
 
 
-export class ApplicationService {
+export class ApplicationServiceOperator {
   /**
    * start app service
    * @param app 
    * @returns 
    */
-  static async start(app: ApplicationStruct) {
+  static async start(app: IApplicationData) {
     const db = DatabaseAgent.db
     const driver = this.create()
     const res = await driver.startService(app)
@@ -34,7 +33,7 @@ export class ApplicationService {
    * @param app 
    * @returns 
    */
-  static async stop(app: ApplicationStruct) {
+  static async stop(app: IApplicationData) {
     const db = DatabaseAgent.db
     const driver = this.create()
     const res = await driver.removeService(app)
@@ -54,7 +53,7 @@ export class ApplicationService {
    * @param app 
    * @returns 
    */
-  static async restart(app: ApplicationStruct) {
+  static async restart(app: IApplicationData) {
     await this.stop(app)
     return await this.start(app)
   }
@@ -68,4 +67,35 @@ export class ApplicationService {
       return new DockerContainerServiceDriver()
     }
   }
+}
+
+
+export interface ServiceDriverInterface {
+
+  /**
+   * Start application service
+   * @param app 
+   * @returns
+   */
+  startService(app: IApplicationData): Promise<any>
+
+  /**
+   * Remove application service
+   * @param app 
+   */
+  removeService(app: IApplicationData): Promise<any>
+
+  /**
+   * Get service info
+   * @param container 
+   * @returns return null if container not exists
+   */
+  info(app: IApplicationData): Promise<any>
+
+
+  /**
+   * Get name of service
+   * @param app 
+   */
+  getName(app: IApplicationData): string
 }

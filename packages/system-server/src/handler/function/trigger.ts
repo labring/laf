@@ -8,7 +8,7 @@
 
 import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
-import { ApplicationStruct } from '../../support/application'
+import { IApplicationData } from '../../support/application'
 import { checkPermission } from '../../support/permission'
 import { CN_FUNCTIONS } from '../../constants'
 import { permissions } from '../../permissions'
@@ -22,7 +22,7 @@ const { TRIGGER_ADD } = permissions
 export async function handleCreateTrigger(req: Request, res: Response) {
   const uid = req['auth']?.uid
   const db = DatabaseAgent.sys_accessor.db
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
   const func_id = req.params.func_id
 
   // check permission
@@ -91,7 +91,7 @@ export async function handleCreateTrigger(req: Request, res: Response) {
 export async function handleUpdateTrigger(req: Request, res: Response) {
   const uid = req['auth']?.uid
   const db = DatabaseAgent.sys_accessor.db
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
   const func_id = req.params.func_id
   const trigger_id = req.params.trigger_id
 
@@ -144,7 +144,7 @@ export async function handleUpdateTrigger(req: Request, res: Response) {
 export async function handleRemoveTrigger(req: Request, res: Response) {
   const uid = req['auth']?.uid
   const db = DatabaseAgent.sys_accessor.db
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
   const func_id = req.params.func_id
   const trigger_id = req.params.trigger_id
 

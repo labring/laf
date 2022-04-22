@@ -5,7 +5,7 @@
  * @Description: 
  */
 
-import { ApplicationStruct, getApplicationDbAccessor } from '../../support/application'
+import { IApplicationData, getApplicationDbAccessor } from '../../support/application'
 import { checkPermission } from '../../support/permission'
 import { permissions } from '../../permissions'
 import { Request, Response } from 'express'
@@ -21,7 +21,7 @@ export async function handleGetIndexesOfCollection(req: Request, res: Response) 
   }
 
   const uid = req['auth']?.uid
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
 
   // check permission
   const code = await checkPermission(uid, permissions.DATABASE_MANAGE.name, app)

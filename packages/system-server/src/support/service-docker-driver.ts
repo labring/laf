@@ -1,11 +1,11 @@
 import * as Docker from 'dockerode'
-import { ApplicationStruct, getApplicationDbUri } from '../application'
-import Config from '../../config'
-import { logger } from '../../logger'
-import { ServiceDriverInterface } from './interface'
-import { ApplicationSpec } from '../application-spec'
+import { IApplicationData, getApplicationDbUri } from './application'
+import Config from '../config'
+import { logger } from '../logger'
+import { ServiceDriverInterface } from './service-operator'
+import { ApplicationSpecSupport } from './application-spec'
 import * as assert from 'assert'
-import { MB, SYSTEM_EXTENSION_APPID } from '../../constants'
+import { MB, SYSTEM_EXTENSION_APPID } from '../constants'
 
 
 export class DockerContainerServiceDriver implements ServiceDriverInterface {
@@ -19,7 +19,7 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
     * Get name of service
     * @param app 
     */
-  getName(app: ApplicationStruct): string {
+  getName(app: IApplicationData): string {
     return `app-${app.appid}`
   }
 
@@ -28,7 +28,7 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
    * @param app 
    * @returns the container id
    */
-  async startService(app: ApplicationStruct) {
+  async startService(app: IApplicationData) {
     let container = this.getContainer(app)
     const info = await this.info(app)
     if (!info) {
@@ -49,7 +49,7 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
    * Remove application service
    * @param app 
    */
-  async removeService(app: ApplicationStruct) {
+  async removeService(app: IApplicationData) {
     const info = await this.info(app)
     if (!info) {
       return
@@ -75,7 +75,7 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
    * @param container 
    * @returns return null if container not exists
    */
-  async info(app: ApplicationStruct): Promise<Docker.ContainerInspectInfo> {
+  async info(app: IApplicationData): Promise<Docker.ContainerInspectInfo> {
     try {
       const container = this.getContainer(app)
       const info = await container.inspect()
@@ -93,9 +93,9 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
    * @param app 
    * @returns 
    */
-  private async createService(app: ApplicationStruct) {
+  private async createService(app: IApplicationData) {
     const uri = getApplicationDbUri(app)
-    const app_spec = await ApplicationSpec.getValidAppSpec(app.appid)
+    const app_spec = await ApplicationSpecSupport.getValidAppSpec(app.appid)
     assert.ok(app_spec, `no spec avaliable with app: ${app.appid}`)
 
     const limit_memory = app_spec.spec.limit_memory
@@ -153,7 +153,7 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
     return container
   }
 
-  private getContainer(app: ApplicationStruct) {
+  private getContainer(app: IApplicationData) {
     const name = this.getName(app)
     return this.docker.getContainer(name)
   }

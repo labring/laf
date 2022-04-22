@@ -7,7 +7,7 @@
 
 import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
-import { ApplicationStruct } from '../../support/application'
+import { IApplicationData } from '../../support/application'
 import { checkPermission } from '../../support/permission'
 import { CN_POLICIES } from '../../constants'
 import { permissions } from '../../permissions'
@@ -22,7 +22,7 @@ const { POLICY_ADD } = permissions
 export async function handleCreatePolicy(req: Request, res: Response) {
   const uid = req['auth']?.uid
   const db = DatabaseAgent.db
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
 
   // check permission
   const code = await checkPermission(uid, POLICY_ADD.name, app)

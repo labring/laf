@@ -7,7 +7,7 @@
 
 import { Request, Response } from 'express'
 import { CN_DEPLOY_REQUESTS } from '../../constants'
-import { ApplicationStruct } from '../../support/application'
+import { IApplicationData } from '../../support/application'
 import { DatabaseAgent } from '../../db'
 import { logger } from '../../logger'
 import { parseToken } from '../../support/token'
@@ -17,7 +17,7 @@ import { parseToken } from '../../support/token'
  * Accept the deployment requests from remote environment
  */
 export async function handleDeployRequestIncoming(req: Request, res: Response) {
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
   const appid = app.appid
 
   const { policies, functions, comment } = req.body

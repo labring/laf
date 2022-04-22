@@ -12,7 +12,7 @@ import { getApplicationByAppid } from '../../support/application'
 import { checkPermission } from '../../support/permission'
 import { CN_APPLICATIONS, CONST_DICTS } from '../../constants'
 import { DatabaseAgent } from '../../db'
-import { ApplicationService } from '../../support/service'
+import { ApplicationServiceOperator } from '../../support/service-operator'
 
 const { APPLICATION_REMOVE } = CONST_DICTS.permissions
 
@@ -46,7 +46,7 @@ export async function handleRemoveApplication(req: Request, res: Response) {
   }
 
   if (app.status !== 'stopped') {
-    await ApplicationService.stop(app)
+    await ApplicationServiceOperator.stop(app)
   }
 
   // save app to recycle collection

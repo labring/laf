@@ -2,15 +2,15 @@ import assert = require("assert")
 
 import { ClientSession } from "mongodb"
 import * as AdmZip from 'adm-zip'
-import { ApplicationStruct, getApplicationDbAccessor } from "./application"
-import { CloudFunctionStruct } from "./function"
-import { getPolicyByName, PolicyStruct } from "./policy"
+import { IApplicationData, getApplicationDbAccessor } from "./application"
+import { ICloudFunctionData } from "./function"
+import { getPolicyByName, IPolicyData } from "./policy"
 import { CN_APPLICATIONS, CN_FUNCTIONS, CN_POLICIES, GB } from "../constants"
 import { DatabaseAgent } from "../db"
 import { getFunctionByName } from './function'
 import { generateRandString, hashFunctionCode } from "./util-passwd"
 import { compileTs2js } from "./util-lang"
-import { BUCKET_ACL, MinioAgent } from "./oss"
+import { BUCKET_ACL, MinioAgent } from "./minio"
 
 
 interface AppMeta {
@@ -42,12 +42,12 @@ interface CollectionStructure {
  * - policies
  */
 export class ApplicationImporter {
-  readonly app: ApplicationStruct
+  readonly app: IApplicationData
   private zip: AdmZip
 
   public meta: AppMeta
-  private functions: CloudFunctionStruct[] = []
-  private policies: PolicyStruct[] = []
+  private functions: ICloudFunctionData[] = []
+  private policies: IPolicyData[] = []
   private collections: CollectionStructure[] = []
 
   /**
@@ -55,7 +55,7 @@ export class ApplicationImporter {
    * @param app the app
    * @param data 
    */
-  constructor(app: ApplicationStruct, data: Buffer) {
+  constructor(app: IApplicationData, data: Buffer) {
     assert.ok(app, 'empty app got')
     assert.ok(data, 'empty data got')
 
@@ -135,7 +135,7 @@ export class ApplicationImporter {
     assert.ok(func.name, 'name of function cannot be empty')
     assert.ok(func.code, 'code of function cannot be empty')
 
-    const data: CloudFunctionStruct = {
+    const data: ICloudFunctionData = {
       name: func.name,
       code: func.code,
       label: func.label || func.name,
@@ -187,7 +187,7 @@ export class ApplicationImporter {
     assert.ok(po.name, 'policy name cannot be empty')
     assert.ok(po.rules, 'policy rules cannot be empty')
 
-    const data: PolicyStruct = {
+    const data: IPolicyData = {
       name: po.name,
       description: po.description,
       status: po.status,
@@ -215,7 +215,7 @@ export class ApplicationImporter {
     this.collections = collections
   }
 
-  private async importFunction(func: CloudFunctionStruct, session: ClientSession) {
+  private async importFunction(func: ICloudFunctionData, session: ClientSession) {
     const db = DatabaseAgent.sys_accessor.db
 
     // rename function if same named one exists
@@ -230,7 +230,7 @@ export class ApplicationImporter {
     return r.insertedId
   }
 
-  private async importPolicy(policy: PolicyStruct, session: ClientSession) {
+  private async importPolicy(policy: IPolicyData, session: ClientSession) {
     const db = DatabaseAgent.sys_accessor.db
     const exists = await getPolicyByName(this.app.appid, policy.name)
     if (exists) {
@@ -251,7 +251,7 @@ export class ApplicationImporter {
     const existed = packages?.filter(pkg => pkg.name === name)?.length
     if (existed) return
 
-    const r = await db.collection<ApplicationStruct>(CN_APPLICATIONS)
+    const r = await db.collection<IApplicationData>(CN_APPLICATIONS)
       .updateOne(
         { appid: this.app.appid },
         {
@@ -278,7 +278,7 @@ export class ApplicationImporter {
     }
 
     // add to app
-    await db.collection<ApplicationStruct>(CN_APPLICATIONS)
+    await db.collection<IApplicationData>(CN_APPLICATIONS)
       .updateOne({ appid: this.app.appid }, {
         $push: {
           buckets: { name, mode, quota: 1 * GB }

@@ -8,7 +8,7 @@
 import { Request, Response } from 'express'
 import { checkPermission } from '../../support/permission'
 import { CN_DEPLOY_REQUESTS, CONST_DICTS } from '../../constants'
-import { ApplicationStruct } from '../../support/application'
+import { IApplicationData } from '../../support/application'
 import { DatabaseAgent } from '../../db'
 import * as assert from 'assert'
 import { deployFunctions, publishFunctions } from '../../support/function'
@@ -23,7 +23,7 @@ const { DEPLOY_REQUEST_REMOVE, DEPLOY_REQUEST_READ, DEPLOY_REQUEST_APPLY } = CON
  */
 export async function handleGetDeployRequests(req: Request, res: Response) {
   const uid = req['auth']?.uid
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
   const db = DatabaseAgent.db
 
   // check permission
@@ -75,7 +75,7 @@ export async function handleGetDeployRequests(req: Request, res: Response) {
  */
 export async function handleRemoveDeployRequest(req: Request, res: Response) {
   const uid = req['auth']?.uid
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
   const db = DatabaseAgent.db
   const req_id = req.params.req_id
 
@@ -96,7 +96,7 @@ export async function handleRemoveDeployRequest(req: Request, res: Response) {
  */
 export async function handleApplyDeployRequest(req: Request, res: Response) {
   const uid = req['auth']?.uid
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
   const req_id = req.params.req_id
 
   // check permission

@@ -8,7 +8,7 @@
 import { Request, Response } from 'express'
 import { checkPermission } from '../../support/permission'
 import { CN_DEPLOY_TARGETS, CONST_DICTS } from '../../constants'
-import { ApplicationStruct } from '../../support/application'
+import { IApplicationData } from '../../support/application'
 import { DatabaseAgent } from '../../db'
 import { ObjectId } from 'mongodb'
 
@@ -20,7 +20,7 @@ const { DEPLOY_TARGET_ADD, DEPLOY_TARGET_READ, DEPLOY_TARGET_REMOVE, DEPLOY_TARG
  */
 export async function handleGetDeployTargets(req: Request, res: Response) {
   const uid = req['auth']?.uid
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
   const db = DatabaseAgent.db
 
   // check permission
@@ -46,7 +46,7 @@ export async function handleCreateDeployTarget(req: Request, res: Response) {
   if (!token) return res.status(422).send('invalid token')
 
   const uid = req['auth']?.uid
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
   const db = DatabaseAgent.db
 
   // check permission
@@ -78,7 +78,7 @@ export async function handleUpdateDeployTarget(req: Request, res: Response) {
   if (!token) return res.status(422).send('invalid token')
 
   const uid = req['auth']?.uid
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
   const db = DatabaseAgent.db
   const target_id = req.params.target_id
 
@@ -110,7 +110,7 @@ export async function handleUpdateDeployTarget(req: Request, res: Response) {
  */
 export async function handleRemoveDeployTarget(req: Request, res: Response) {
   const uid = req['auth']?.uid
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
   const db = DatabaseAgent.db
   const target_id = req.params.target_id
 

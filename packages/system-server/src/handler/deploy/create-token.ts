@@ -9,7 +9,7 @@ import { Request, Response } from 'express'
 import { checkPermission } from '../../support/permission'
 import { getToken } from '../../support/token'
 import { CONST_DICTS } from '../../constants'
-import { ApplicationStruct } from '../../support/application'
+import { IApplicationData } from '../../support/application'
 
 
 const { DEPLOY_TOKEN_CREATE } = CONST_DICTS.permissions
@@ -23,7 +23,7 @@ export async function handleCreateDeployToken(req: Request, res: Response) {
   if (!source) return res.status(422).send('invalid source')
 
   const uid = req['auth']?.uid
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
 
   // check permission
   const code = await checkPermission(uid, DEPLOY_TOKEN_CREATE.name, app)

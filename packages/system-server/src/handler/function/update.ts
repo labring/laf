@@ -8,7 +8,7 @@
 
 import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
-import { ApplicationStruct } from '../../support/application'
+import { IApplicationData } from '../../support/application'
 import { getFunctionById } from '../../support/function'
 import { checkPermission } from '../../support/permission'
 import { CN_FUNCTIONS, CN_FUNCTION_HISTORY } from '../../constants'
@@ -25,7 +25,7 @@ const { FUNCTION_UPDATE, FUNCTION_DEBUG } = permissions
 export async function handleUpdateFunction(req: Request, res: Response) {
   const uid = req['auth']?.uid
   const db = DatabaseAgent.db
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
   const func_id = req.params.func_id
 
   // check permission
@@ -89,7 +89,7 @@ export async function handleUpdateFunction(req: Request, res: Response) {
 export async function handleUpdateFunctionCode(req: Request, res: Response) {
   const uid = req['auth']?.uid
   const db = DatabaseAgent.db
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
   const func_id = req.params.func_id
 
   // check permission
@@ -146,7 +146,7 @@ export async function handleUpdateFunctionCode(req: Request, res: Response) {
  */
 export async function handleCompileFunctionCode(req: Request, res: Response) {
   const uid = req['auth']?.uid
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
   const func_id = req.params.func_id
 
   // check permission

@@ -1,10 +1,10 @@
 import * as k8s from '@kubernetes/client-node'
-import { ApplicationStruct, getApplicationDbUri } from '../application'
-import Config from '../../config'
-import { MB, SYSTEM_EXTENSION_APPID } from '../../constants'
-import { logger } from '../../logger'
-import { ServiceDriverInterface } from './interface'
-import { ApplicationSpec } from '../application-spec'
+import { IApplicationData, getApplicationDbUri } from './application'
+import Config from '../config'
+import { MB, SYSTEM_EXTENSION_APPID } from '../constants'
+import { logger } from '../logger'
+import { ServiceDriverInterface } from './service-operator'
+import { ApplicationSpecSupport } from './application-spec'
 import * as assert from 'assert'
 
 export class KubernetesServiceDriver implements ServiceDriverInterface {
@@ -23,7 +23,7 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
    * Get name of service
    * @param app 
    */
-  getName(app: ApplicationStruct): string {
+  getName(app: IApplicationData): string {
     return `app-${app.appid}`
   }
 
@@ -32,7 +32,7 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
    * @param app 
    * @returns the container id
    */
-  async startService(app: ApplicationStruct) {
+  async startService(app: IApplicationData) {
     const labels = { appid: app.appid, type: 'laf-app' }
 
     const info = await this.info(app)
@@ -52,7 +52,7 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
    * Remove application service
    * @param app 
    */
-  async removeService(app: ApplicationStruct) {
+  async removeService(app: IApplicationData) {
     const info = await this.info(app)
     if (!info) return
 
@@ -76,7 +76,7 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
    * @param container 
    * @returns return null if container not exists
    */
-  async info(app: ApplicationStruct) {
+  async info(app: IApplicationData) {
     try {
       const deployment = await this.getK8sDeployment(this.getName(app))
       const service = await this.getK8sService(this.getName(app))
@@ -91,10 +91,10 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
    * @param app 
    * @returns 
    */
-  private async createK8sDeployment(app: ApplicationStruct, labels: any) {
+  private async createK8sDeployment(app: IApplicationData, labels: any) {
     const uri = getApplicationDbUri(app)
 
-    const app_spec = await ApplicationSpec.getValidAppSpec(app.appid)
+    const app_spec = await ApplicationSpecSupport.getValidAppSpec(app.appid)
     assert.ok(app_spec, `no spec avaliable with app: ${app.appid}`)
 
     const limit_memory = ~~(app_spec.spec.limit_memory / MB)
@@ -199,7 +199,7 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
    * @param labels 
    * @returns 
    */
-  private async createK8sService(app: ApplicationStruct, labels: any) {
+  private async createK8sService(app: IApplicationData, labels: any) {
     const { body: service } = await this.core_api.createNamespacedService(this.namespace, {
       metadata: { name: this.getName(app) },
       spec: {

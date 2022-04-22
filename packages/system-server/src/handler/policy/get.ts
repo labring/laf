@@ -8,9 +8,9 @@
 
 import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
-import { ApplicationStruct } from '../../support/application'
+import { IApplicationData } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { PolicyStruct } from '../../support/policy'
+import { IPolicyData } from '../../support/policy'
 import { CN_POLICIES } from '../../constants'
 import { permissions } from '../../permissions'
 import { DatabaseAgent } from '../../db'
@@ -24,7 +24,7 @@ const { POLICY_READ } = permissions
 export async function handleGetPolicies(req: Request, res: Response) {
   const uid = req['auth']?.uid
   const db = DatabaseAgent.db
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
 
   // check permission
   const code = await checkPermission(uid, POLICY_READ.name, app)
@@ -74,7 +74,7 @@ export async function handleGetPolicies(req: Request, res: Response) {
  */
 export async function handleGetPolicyById(req: Request, res: Response) {
   const db = DatabaseAgent.db
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
   const policy_id = req.params.policy_id
 
   // check permission
@@ -84,7 +84,7 @@ export async function handleGetPolicyById(req: Request, res: Response) {
   }
 
   // do db query
-  const doc = await db.collection<PolicyStruct>(CN_POLICIES)
+  const doc = await db.collection<IPolicyData>(CN_POLICIES)
     .findOne({ _id: new ObjectId(policy_id) })
 
   return res.send({

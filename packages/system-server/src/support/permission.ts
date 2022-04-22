@@ -7,7 +7,7 @@
 
 import * as assert from 'assert'
 import { CONST_DICTS } from '../constants'
-import { ApplicationStruct } from './application'
+import { IApplicationData } from './application'
 
 /**
  * Check if a user have permission for application
@@ -16,7 +16,7 @@ import { ApplicationStruct } from './application'
  * @param app the application which checked for
  * @returns 0 means ok, 401 means unauthorized, 403 means permission denied
  */
-export async function checkPermission(uid: string, permission: string, app: ApplicationStruct): Promise<number> {
+export async function checkPermission(uid: string, permission: string, app: IApplicationData): Promise<number> {
   if (!uid) return 401
   assert.ok(permission, 'empty permission got')
   assert.ok(app, 'empty app got')

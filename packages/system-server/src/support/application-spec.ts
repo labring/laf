@@ -5,7 +5,7 @@ import * as assert from 'assert'
 /**
  * Spec data structure in database
  */
-export interface SpecStruct {
+export interface ISpecData {
   /** unique name */
   name: string
   /** display name */
@@ -35,7 +35,7 @@ export interface SpecStruct {
 /**
  * Database struct of specs assigned to app
  */
-export interface AppSpecStruct {
+export interface IAppSpecData {
   /** appid */
   appid: string
   /** valid from time */
@@ -44,7 +44,7 @@ export interface AppSpecStruct {
   end_at: Date
   /** valid control */
   enabled: boolean
-  spec: SpecStruct
+  spec: ISpecData
   created_at?: Date
   updated_at?: Date
 }
@@ -52,7 +52,7 @@ export interface AppSpecStruct {
 /**
  * Application Specs
  */
-export class ApplicationSpec {
+export class ApplicationSpecSupport {
 
   /**
    * Get enabled app spec by appid
@@ -61,7 +61,7 @@ export class ApplicationSpec {
    */
   public static async getValidAppSpec(appid: string) {
     const db = DatabaseAgent.db
-    const app_spec = await db.collection<AppSpecStruct>(CN_APP_SPECS)
+    const app_spec = await db.collection<IAppSpecData>(CN_APP_SPECS)
       .findOne({
         appid,
         enabled: true,
@@ -82,7 +82,7 @@ export class ApplicationSpec {
     assert.ok(spec, `spec not found with name: ${spec_name}`)
 
     const db = DatabaseAgent.db
-    const data: AppSpecStruct = {
+    const data: IAppSpecData = {
       appid,
       start_at: start,
       end_at: end,
@@ -91,7 +91,7 @@ export class ApplicationSpec {
       created_at: new Date(),
       updated_at: new Date()
     }
-    const res = await db.collection<AppSpecStruct>(CN_APP_SPECS)
+    const res = await db.collection<IAppSpecData>(CN_APP_SPECS)
       .insertOne(data)
 
     return res
@@ -103,7 +103,7 @@ export class ApplicationSpec {
    */
   public static async listSpecs() {
     const db = DatabaseAgent.db
-    const docs = await db.collection<SpecStruct>(CN_SPECS)
+    const docs = await db.collection<ISpecData>(CN_SPECS)
       .find()
       .toArray()
 
@@ -117,7 +117,7 @@ export class ApplicationSpec {
    */
   public static async getSpec(name: string) {
     const db = DatabaseAgent.db
-    const doc = await db.collection<SpecStruct>(CN_SPECS)
+    const doc = await db.collection<ISpecData>(CN_SPECS)
       .findOne({ name })
 
     return doc
@@ -128,14 +128,14 @@ export class ApplicationSpec {
    * @param spec 
    * @returns 
    */
-  public static async createSpec(spec: SpecStruct) {
+  public static async createSpec(spec: ISpecData) {
     const db = DatabaseAgent.db
-    const data: SpecStruct = {
+    const data: ISpecData = {
       ...spec,
       created_at: new Date(),
       updated_at: new Date()
     }
-    const res = await db.collection<ApplicationSpec>(CN_SPECS)
+    const res = await db.collection<ApplicationSpecSupport>(CN_SPECS)
       .insertOne(data)
 
     return res
@@ -148,7 +148,7 @@ export class ApplicationSpec {
    */
   public static async deleteSpec(name: string) {
     const db = DatabaseAgent.db
-    const res = await db.collection<SpecStruct>(CN_SPECS)
+    const res = await db.collection<ISpecData>(CN_SPECS)
       .deleteOne({ name })
 
     return res

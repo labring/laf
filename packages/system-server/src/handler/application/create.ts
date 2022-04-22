@@ -9,14 +9,14 @@ import * as assert from 'assert'
 import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
 import { getAccountById } from '../../support/account'
-import { ApplicationStruct, createApplicationDb, generateAppid, getApplicationByAppid, getMyApplications } from '../../support/application'
-import { MinioAgent } from '../../support/oss'
+import { IApplicationData, createApplicationDb, generateAppid, getApplicationByAppid, getMyApplications } from '../../support/application'
+import { MinioAgent } from '../../support/minio'
 import Config from '../../config'
 import { CN_APPLICATIONS, DATE_NEVER } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { logger } from '../../logger'
 import { generatePassword } from '../../support/util-passwd'
-import { ApplicationSpec } from '../../support/application-spec'
+import { ApplicationSpecSupport } from '../../support/application-spec'
 
 /**
  * The handler of creating application
@@ -42,7 +42,7 @@ export async function handleCreateApplication(req: Request, res: Response) {
 
   // check the spec
   const spec_name = req.body?.spec
-  const spec = await ApplicationSpec.getSpec(spec_name)
+  const spec = await ApplicationSpecSupport.getSpec(spec_name)
   if (!spec || !spec?.enabled) {
     return res.send({
       code: 'INVALID_SPEC_NAME',
@@ -59,7 +59,7 @@ export async function handleCreateApplication(req: Request, res: Response) {
   const db_password = generatePassword(32, true, false)
 
   const now = new Date()
-  const data: ApplicationStruct = {
+  const data: IApplicationData = {
     name: app_name,
     created_by: new ObjectId(uid),
     appid: appid,
@@ -82,7 +82,7 @@ export async function handleCreateApplication(req: Request, res: Response) {
   }
 
   // assign spec to app
-  const assigned = await ApplicationSpec.assign(appid, spec.name, new Date(), DATE_NEVER)
+  const assigned = await ApplicationSpecSupport.assign(appid, spec.name, new Date(), DATE_NEVER)
   if (!assigned.insertedId) {
     return res.status(400).send('Error: assign spec to app failed')
   }

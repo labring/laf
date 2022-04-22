@@ -7,8 +7,8 @@
 
 import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
-import { ApplicationStruct, getApplicationDbAccessor } from '../../support/application'
-import { CloudFunctionStruct, getFunctionById } from '../../support/function'
+import { IApplicationData, getApplicationDbAccessor } from '../../support/application'
+import { ICloudFunctionData, getFunctionById } from '../../support/function'
 import { checkPermission } from '../../support/permission'
 import { CN_ACCOUNTS, CN_FUNCTIONS, CN_FUNCTION_HISTORY, CN_PUBLISHED_FUNCTIONS } from '../../constants'
 import { permissions } from '../../permissions'
@@ -22,7 +22,7 @@ const { FUNCTION_READ } = permissions
  */
 export async function handleGetFunctions(req: Request, res: Response) {
   const db = DatabaseAgent.db
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
 
   // check permission
   const code = await checkPermission(req['auth']?.uid, FUNCTION_READ.name, app)
@@ -56,7 +56,7 @@ export async function handleGetFunctions(req: Request, res: Response) {
     query['status'] = Number(status)
   }
 
-  const coll = db.collection<CloudFunctionStruct>(CN_FUNCTIONS)
+  const coll = db.collection<ICloudFunctionData>(CN_FUNCTIONS)
 
   // do db query
   const docs = await coll
@@ -83,7 +83,7 @@ export async function handleGetFunctions(req: Request, res: Response) {
  * Get a function by id
  */
 export async function handleGetFunctionById(req: Request, res: Response) {
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
   const func_id = req.params.func_id
 
   // check permission
@@ -102,7 +102,7 @@ export async function handleGetFunctionById(req: Request, res: Response) {
  * Get all of the function tags
  */
 export async function handleGetAllFunctionTags(req: Request, res: Response) {
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
 
   // check permission
   const code = await checkPermission(req['auth']?.uid, FUNCTION_READ.name, app)
@@ -111,7 +111,7 @@ export async function handleGetAllFunctionTags(req: Request, res: Response) {
   }
 
   const db = DatabaseAgent.db
-  const docs = await db.collection<CloudFunctionStruct>(CN_FUNCTIONS)
+  const docs = await db.collection<ICloudFunctionData>(CN_FUNCTIONS)
     .distinct('tags', { appid: app.appid })
 
   return res.send({
@@ -123,7 +123,7 @@ export async function handleGetAllFunctionTags(req: Request, res: Response) {
  * Get published functions
  */
 export async function handleGetPublishedFunctions(req: Request, res: Response) {
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
 
   const func_ids = req.body?.ids
   if (!(func_ids instanceof Array) || !func_ids?.length) {
@@ -157,7 +157,7 @@ export async function handleGetPublishedFunctions(req: Request, res: Response) {
  * Get a function's change history
  */
 export async function handleGetFunctionHistory(req: Request, res: Response) {
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
   const func_id = req.params.func_id
 
   // check permission

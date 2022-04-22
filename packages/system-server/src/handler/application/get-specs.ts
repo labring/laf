@@ -6,7 +6,7 @@
  */
 
 import { Request, Response } from 'express'
-import { ApplicationSpec } from '../../support/application-spec'
+import { ApplicationSpecSupport } from '../../support/application-spec'
 
 
 /**
@@ -17,7 +17,7 @@ export async function handleGetSpecs(req: Request, res: Response) {
   if (!uid)
     return res.status(401).send()
 
-  const specs = await ApplicationSpec.listSpecs()
+  const specs = await ApplicationSpecSupport.listSpecs()
   const data = specs.filter(item => item.enabled)
 
   return res.send({

@@ -3,16 +3,16 @@ import Config from "../config"
 import { CN_ACCOUNTS, CN_APPLICATIONS, CN_FUNCTIONS, CN_POLICIES, CN_SPECS, DATE_NEVER, GB, MB } from "../constants"
 import { DatabaseAgent } from "../db"
 import { hashPassword, generatePassword } from "./util-passwd"
-import { ApplicationStruct, getApplicationByAppid } from "./application"
-import { ApplicationService } from "./service"
+import { IApplicationData, getApplicationByAppid } from "./application"
+import { ApplicationServiceOperator } from "./service-operator"
 import * as path from 'path'
-import { MinioAgent } from "./oss"
-import { ApplicationSpec } from "./application-spec"
+import { MinioAgent } from "./minio"
+import { ApplicationSpecSupport } from "./application-spec"
 
 /**
  * Initialize APIs
  */
-export class InitializerApi {
+export class Initializer {
 
   static ready() {
     const sys_accessor = DatabaseAgent.sys_accessor
@@ -62,11 +62,11 @@ export class InitializerApi {
    * @returns false if spec already existed 
    */
   static async createBuiltinSpecs() {
-    const spec = await ApplicationSpec.getSpec('starter')
+    const spec = await ApplicationSpecSupport.getSpec('starter')
     if (spec) {
       return false
     }
-    const res = await ApplicationSpec.createSpec({
+    const res = await ApplicationSpecSupport.createSpec({
       name: 'starter',
       label: 'Starter',
       request_cpu: 50,
@@ -95,7 +95,7 @@ export class InitializerApi {
     const db = DatabaseAgent.db
     const db_config = DatabaseAgent.parseConnectionUri(Config.SYS_DB_URI)
 
-    const data: ApplicationStruct = {
+    const data: IApplicationData = {
       name: SYSTEM_APP_NAME,
       created_by: account_id,
       appid: appid,
@@ -127,9 +127,9 @@ export class InitializerApi {
     }
 
     // assign app spec
-    const app_spec = await ApplicationSpec.getValidAppSpec(appid)
+    const app_spec = await ApplicationSpecSupport.getValidAppSpec(appid)
     if (!app_spec) {
-      await ApplicationSpec.assign(appid, 'starter', new Date(), DATE_NEVER)
+      await ApplicationSpecSupport.assign(appid, 'starter', new Date(), DATE_NEVER)
     }
 
     // save it
@@ -146,7 +146,7 @@ export class InitializerApi {
    */
   static async startSystemExtensionApp(appid: string) {
     const app = await getApplicationByAppid(appid)
-    await ApplicationService.start(app)
+    await ApplicationServiceOperator.start(app)
   }
 
   /**

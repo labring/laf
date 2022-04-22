@@ -6,7 +6,7 @@
  */
 
 import { Request, Response } from 'express'
-import { ApplicationStruct, getApplicationDbAccessor } from '../../support/application'
+import { IApplicationData, getApplicationDbAccessor } from '../../support/application'
 import { checkPermission } from '../../support/permission'
 import { permissions } from '../../permissions'
 import { ObjectId } from 'mongodb'
@@ -18,7 +18,7 @@ const { FUNCTION_READ } = permissions
  * Get function logs
  */
 export async function handleGetFunctionLogs(req: Request, res: Response) {
-  const app: ApplicationStruct = req['parsed-app']
+  const app: IApplicationData = req['parsed-app']
   const accessor = await getApplicationDbAccessor(app)
   const db = accessor.db
 

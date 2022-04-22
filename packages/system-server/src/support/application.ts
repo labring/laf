@@ -14,12 +14,12 @@ import { MongoClient, ObjectId } from 'mongodb'
 import Config from "../config"
 import * as mongodb_uri from 'mongodb-uri'
 import { logger } from "../logger"
-import { BUCKET_ACL } from "./oss"
+import { BUCKET_ACL } from "./minio"
 
 /**
  * The application structure in db
  */
-export interface ApplicationStruct {
+export interface IApplicationData {
   _id?: string
   name: string
   created_by: ObjectId
@@ -66,7 +66,7 @@ export async function getApplicationByAppid(appid: string) {
   if (!appid) return null
 
   const db = DatabaseAgent.db
-  const doc = await db.collection<ApplicationStruct>(CN_APPLICATIONS)
+  const doc = await db.collection<IApplicationData>(CN_APPLICATIONS)
     .findOne({ appid: appid })
 
   return doc
@@ -81,7 +81,7 @@ export async function getMyApplications(account_id: string) {
   assert.ok(account_id, 'empty account_id got')
 
   const db = DatabaseAgent.db
-  const docs = await db.collection<ApplicationStruct>(CN_APPLICATIONS)
+  const docs = await db.collection<IApplicationData>(CN_APPLICATIONS)
     .find({ created_by: new ObjectId(account_id) }, {
       projection: { config: false }
     }).toArray()
@@ -98,7 +98,7 @@ export async function getMyJoinedApplications(account_id: string) {
   assert.ok(account_id, 'empty account_id got')
 
   const db = DatabaseAgent.db
-  const docs = await db.collection<ApplicationStruct>(CN_APPLICATIONS)
+  const docs = await db.collection<IApplicationData>(CN_APPLICATIONS)
     .find({
       'collaborators.uid': new ObjectId(account_id)
     }).toArray()
@@ -112,7 +112,7 @@ export async function getMyJoinedApplications(account_id: string) {
  * @param app 
  * @returns 
  */
-export async function getApplicationDbAccessor(app: ApplicationStruct) {
+export async function getApplicationDbAccessor(app: IApplicationData) {
   const { db_name, db_password, db_user } = app.config
   assert.ok(db_name, 'empty db_name got')
   assert.ok(db_password, 'empty db_password got')
@@ -132,7 +132,7 @@ export async function getApplicationDbAccessor(app: ApplicationStruct) {
  * @param app 
  * @returns 
  */
-export function getUserRolesOfApplication(uid: string, app: ApplicationStruct) {
+export function getUserRolesOfApplication(uid: string, app: IApplicationData) {
   if (app.created_by.toHexString() === uid) {
     return [CONST_DICTS.roles.owner.name]
   }
@@ -151,7 +151,7 @@ export function getUserRolesOfApplication(uid: string, app: ApplicationStruct) {
  * @param app 
  * @returns 
  */
-export function getApplicationDbUri(app: ApplicationStruct) {
+export function getApplicationDbUri(app: IApplicationData) {
   const { db_name, db_password, db_user } = app.config
 
   // build app db connection uri from config
@@ -168,7 +168,7 @@ export function getApplicationDbUri(app: ApplicationStruct) {
  * Create application db
  * @param app
  */
-export async function createApplicationDb(app: ApplicationStruct) {
+export async function createApplicationDb(app: IApplicationData) {
   const client = new MongoClient(Config.APP_DB_URI)
   await client.connect()
   const { db_name, db_user, db_password } = app.config
