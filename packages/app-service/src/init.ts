@@ -1,5 +1,5 @@
-import { ensureCollectionIndexes, getExtraPackages, initCloudSdkPackage, installPackages, moduleExists } from "./api/init"
-import { logger } from "./lib/logger"
+import { ensureCollectionIndexes, getExtraPackages, initCloudSdkPackage, installPackages, moduleExists } from "./support/init"
+import { logger } from "./support/logger"
 
 
 async function main() {

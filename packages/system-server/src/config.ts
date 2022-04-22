@@ -1,5 +1,4 @@
 import * as dotenv from 'dotenv'
-import * as path from 'path'
 dotenv.config()
 
 /**
@@ -9,7 +8,7 @@ export default class Config {
   /**
    * the mongodb connection configuration of sys db
    */
-  static get sys_db_uri() {
+  static get SYS_DB_URI() {
     if (!process.env['SYS_DB_URI']) {
       throw new Error('env: `SYS_DB_URI` is missing')
     }
@@ -20,7 +19,7 @@ export default class Config {
   /**
    * the mongodb connection configuration of apps' db, use for creating app databases;
    */
-  static get app_db_uri() {
+  static get APP_DB_URI() {
     if (!process.env['APP_DB_URI']) {
       throw new Error('env: `APP_DB_URI` is missing')
     }
@@ -76,8 +75,8 @@ export default class Config {
   /**
    * the name of network which apps used
    */
-  static get SHARED_NETWORK(): string {
-    return process.env.SHARED_NETWORK ?? 'laf_shared_network'
+  static get DOCKER_SHARED_NETWORK(): string {
+    return process.env.DOCKER_SHARED_NETWORK || process.env.SHARED_NETWORK || 'laf_shared_network'
   }
 
   /**
@@ -100,7 +99,7 @@ export default class Config {
    * For example, if set this to `lafyun.com`, then you can access app service by format `[appid].lafyun.com`: 
    * - 7b0b318c-b96c-4cc5-b521-33d11bd16cde.lafyun.com
    * - http://7b0b318c-b96c-4cc5-b521-33d11bd16cde.lafyun.com/file/public/33d11bd16cde.png
-   * - http://7b0b318c-b96c-4cc5-b521-33d11bd16cde.lafyun.com/func/FUNC_NAME
+   * - http://7b0b318c-b96c-4cc5-b521-33d11bd16cde.lafyun.com/FUNC_NAME
    * 
    * You should resolve `*.lafyun.com` to your laf server ip, to support `[appid].lafyun.com` url.
    * You can also provide the PORT, like `lafyun.com:8080`. 
@@ -117,38 +116,6 @@ export default class Config {
     return process.env.APP_SERVICE_DEPLOY_URL_SCHEMA ?? 'http'
   }
 
-  /**
-   * The max memory limit of application service, default is 256 in mb
-   * 
-   * @deprecated this field was deprecated and removed, use APP_SERVICE_DEFAULT_LIMIT_MEMORY instead
-   */
-  static get APP_SERVICE_MEMORY_LIMIT() {
-    throw new Error('APP_SERVICE_MEMORY_LIMIT is deprecated, use APP_SERVICE_DEFAULT_LIMIT_MEMORY instead.')
-  }
-
-  /**
-   * The max cpu limit of application service, default is 100
-   * 
-   * * @deprecated this field was deprecated and removed, use APP_SERVICE_DEFAULT_LIMIT_CPU instead
-   */
-  static get APP_SERVICE_CPU_LIMIT(): number {
-    throw new Error('APP_SERVICE_CPU_LIMIT is deprecated, use APP_SERVICE_DEFAULT_LIMIT_CPU instead.')
-  }
-
-  /**
-   * The resources (cpu & memory) limit of application service. 
-   */
-  static get APP_DEFAULT_RESOURCES(): { req_cpu: string, req_memory: string, limit_cpu: string, limit_memory: string } {
-    const limit_cpu = process.env.APP_SERVICE_DEFAULT_LIMIT_CPU ?? '100'
-    const limit_memory = process.env.APP_SERVICE_DEFAULT_LIMIT_MEMORY || '256'
-
-    return { 
-      req_cpu: process.env.APP_SERVICE_DEFAULT_REQUEST_CPU ?? limit_cpu,
-      req_memory: process.env.APP_SERVICE_DEFAULT_REQUEST_MEMORY ?? limit_memory,
-      limit_cpu,
-      limit_memory,
-    }
-  }
 
   /**
    * DEBUG: the app-service path that bind to app-service container
@@ -167,18 +134,6 @@ export default class Config {
   }
 
   /**
-   * Keep this only for compatibility with older applications.
-   * @deprecated Storage service is deprecated, use minio instead, do not use storage service in new deployments.
-   */
-  static get STORAGE_SERVICE_CONFIG() {
-    const secret: string = process.env.STORAGE_SERVICE_SECRET
-    const entrypoint: string = process.env.STORAGE_SERVICE_API_ENTRYPOINT
-    const deploy_host = process.env.STORAGE_SERVICE_DEPLOY_HOST
-    const schema = process.env.STORAGE_SERVICE_DEPLOY_URL_SCHEMA || this.APP_SERVICE_DEPLOY_URL_SCHEMA
-    return { secret, entrypoint, deploy_host, schema }
-  }
-
-  /**
    * Minio configuration
    */
   static get MINIO_CONFIG() {
@@ -186,6 +141,7 @@ export default class Config {
     const access_secret: string = process.env.MINIO_ACCESS_SECRET
     const internal_endpoint: string = process.env.MINIO_INTERNAL_ENDPOINT
     const external_endpoint: string = process.env.MINIO_EXTERNAL_ENDPOINT
+    const region: string = process.env.MINIO_REGION_NAME
     return {
       access_key,
       access_secret,
@@ -193,7 +149,8 @@ export default class Config {
         internal: internal_endpoint,
         external: external_endpoint
       },
-      user_policy: process.env.MINIO_USER_POLICY || 'owner_by_prefix'
+      user_policy: process.env.MINIO_USER_POLICY || 'owner_by_prefix',
+      region
     }
   }
 
@@ -208,12 +165,6 @@ export default class Config {
       throw new Error('env: `INIT_ROOT_ACCOUNT_PASSWORD` is missing')
     }
     return password
-  }
-
-  static get SYSTEM_EXTENSION_SERVER_APP_PACKAGE() {
-    const default_ = path.resolve(__dirname, '../extension/system-extension-server.lapp')
-    const package_: string = process.env.SYSTEM_EXTENSION_SERVER_APP_PACKAGE || default_
-    return package_
   }
 
   static get KUBE_NAMESPACE_OF_APP_SERVICES() {

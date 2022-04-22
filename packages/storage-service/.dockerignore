@@ -1,7 +1,0 @@
-# node_modules
-.env
-ecosystem.config.js
-# dist
-data
-src
-tests
