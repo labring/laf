@@ -46,22 +46,16 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column label="函数标识" min-width="140">
+      <el-table-column label="函数标识" min-width="200">
         <template slot-scope="{row}">
-          <div style="display: flex;align-items: center;justify-content: space-between;">
-            <div class="func-name">
-              {{ row.name }}
-            </div>
-            <i v-clipboard:message="row.name" v-clipboard:success="onCopy" class="el-icon-document-copy copy-btn" />
+          <span class="link-type" style="font-size: 13px; font-weight: bold;" @click="showUpdateForm(row)">{{ row.label }}</span>
+          <div style="display: flex;align-items: center;justify-content: flex-start;">
+            <div class="func-name"> {{ row.name }} </div> 
+            <i v-clipboard:message="row.name" v-clipboard:success="onCopy" style="margin-left: 3px;" class="el-icon-document-copy copy-btn" />
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="函数标题" min-width="140">
-        <template slot-scope="{row}">
-          <span class="link-type" @click="showUpdateForm(row)">{{ row.label }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="标签" width="140">
+      <el-table-column label="标签" min-width="80">
         <template slot-scope="{row}">
           <el-tag v-for="tag in row.tags" :key="tag" style="margin-right: 6px;" type="primary" size="mini">{{ tag }}</el-tag>
         </template>
@@ -75,7 +69,7 @@
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="HTTP" class-name="status-col" width="60">
+      <el-table-column label="HTTP" class-name="status-col" min-width="60">
         <template slot-scope="{row}">
           <el-tag v-if="row.enableHTTP" type="success" size="mini" style="font-weight: bold">
             可
@@ -85,7 +79,7 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="状态" class-name="status-col" width="60">
+      <el-table-column label="状态" class-name="status-col" min-width="60">
         <template slot-scope="{row}">
           <el-tag v-if="row.status === 1" type="success" size="mini" style="font-weight: bold">
             启
@@ -95,14 +89,14 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="调用地址" align="center" width="70">
+      <el-table-column label="调用地址" align="center" min-width="70">
         <template slot-scope="{row}">
           <el-tooltip :content="getFunctionInvokeBaseUrl(row.name)" placement="top">
             <i v-clipboard:message="getFunctionInvokeBaseUrl(row.name)" v-clipboard:success="onCopy" class="el-icon-document-copy copy-btn" />
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" align="center" width="300" class-name="small-padding">
+      <el-table-column  label="操作" align="center" min-width="240" class-name="small-padding">
         <template slot-scope="{row,$index}">
           <el-button plain type="success" size="mini" @click="handleShowDetail(row)">
             开发
@@ -113,8 +107,7 @@
           <el-button plain type="primary" size="mini" @click="handleTriggers(row)">
             触发器<b v-if="row.triggers && row.triggers.length">({{ row.triggers.length }})</b>
           </el-button>
-          <el-button v-if="row.status!='deleted'" plain size="mini" type="danger" @click="handleDelete(row,$index)">
-            删除
+          <el-button v-if="row.status!='deleted'" icon="el-icon-delete" plain size="mini" type="danger" @click="handleDelete(row,$index)" circle>
           </el-button>
         </template>
       </el-table-column>
@@ -478,7 +471,7 @@ export default {
     },
     getFunctionInvokeBaseUrl(func_name) {
       const app_url = getAppAccessUrl()
-      return app_url + `/func/${func_name}`
+      return app_url + `/${func_name}`
     }
   }
 }
@@ -504,8 +497,14 @@ export default {
   }
 }
 
+.table-column-text {
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .func-name {
-  color: black;
+  color: darkcyan;
   // font-weight: bold;
   font-size: 14px;
 }
