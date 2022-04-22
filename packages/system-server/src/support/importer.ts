@@ -5,7 +5,7 @@ import * as AdmZip from 'adm-zip'
 import { ApplicationStruct, getApplicationDbAccessor } from "./application"
 import { CloudFunctionStruct } from "./function"
 import { getPolicyByName, PolicyStruct } from "./policy"
-import { Constants } from "../constants"
+import { CN_APPLICATIONS, CN_FUNCTIONS, CN_POLICIES, GB } from "../constants"
 import { DatabaseAgent } from "../db"
 import { getFunctionByName } from './function'
 import { generateRandString, hashFunctionCode } from "./util-passwd"
@@ -224,7 +224,7 @@ export class ApplicationImporter {
       func.name = func.name + '__' + generateRandString(8, true, false)
     }
 
-    const r = await db.collection(Constants.colls.functions)
+    const r = await db.collection(CN_FUNCTIONS)
       .insertOne(func as any, { session })
 
     return r.insertedId
@@ -237,7 +237,7 @@ export class ApplicationImporter {
       policy.name = policy.name + '__' + generateRandString(8, true, false)
     }
 
-    const r = await db.collection(Constants.colls.policies)
+    const r = await db.collection(CN_POLICIES)
       .insertOne(policy as any, { session })
 
     return r.insertedId
@@ -251,7 +251,7 @@ export class ApplicationImporter {
     const existed = packages?.filter(pkg => pkg.name === name)?.length
     if (existed) return
 
-    const r = await db.collection<ApplicationStruct>(Constants.colls.applications)
+    const r = await db.collection<ApplicationStruct>(CN_APPLICATIONS)
       .updateOne(
         { appid: this.app.appid },
         {
@@ -278,10 +278,10 @@ export class ApplicationImporter {
     }
 
     // add to app
-    await db.collection<ApplicationStruct>(Constants.colls.applications)
+    await db.collection<ApplicationStruct>(CN_APPLICATIONS)
       .updateOne({ appid: this.app.appid }, {
         $push: {
-          buckets: { name, mode }
+          buckets: { name, mode, quota: 1 * GB }
         }
       }, { session })
   }

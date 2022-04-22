@@ -11,7 +11,7 @@ import { ObjectId } from 'mongodb'
 import { ApplicationStruct } from '../../support/application'
 import { getFunctionById } from '../../support/function'
 import { checkPermission } from '../../support/permission'
-import { Constants } from '../../constants'
+import { CN_FUNCTIONS, CN_FUNCTION_HISTORY } from '../../constants'
 import { permissions } from '../../permissions'
 import { DatabaseAgent } from '../../db'
 import { hashFunctionCode } from '../../support/util-passwd'
@@ -38,7 +38,7 @@ export async function handleUpdateFunction(req: Request, res: Response) {
 
   // function name should be unique
   if (body.name) {
-    const total = await db.collection(Constants.colls.functions)
+    const total = await db.collection(CN_FUNCTIONS)
       .countDocuments({
         _id: {
           $ne: new ObjectId(func_id)
@@ -50,7 +50,7 @@ export async function handleUpdateFunction(req: Request, res: Response) {
     if (total) return res.status(422).send('function name already exists')
   }
 
-  const func = await db.collection(Constants.colls.functions)
+  const func = await db.collection(CN_FUNCTIONS)
     .findOne({
       _id: new ObjectId(func_id),
       appid: app.appid
@@ -70,7 +70,7 @@ export async function handleUpdateFunction(req: Request, res: Response) {
   }
 
   // update cloud function
-  const ret = await db.collection(Constants.colls.functions)
+  const ret = await db.collection(CN_FUNCTIONS)
     .updateOne({
       _id: new ObjectId(func_id),
       appid: app.appid
@@ -114,7 +114,7 @@ export async function handleUpdateFunctionCode(req: Request, res: Response) {
   }
 
   // update cloud function
-  await db.collection(Constants.colls.functions)
+  await db.collection(CN_FUNCTIONS)
     .updateOne({
       _id: new ObjectId(func_id),
       appid: app.appid
@@ -128,7 +128,7 @@ export async function handleUpdateFunctionCode(req: Request, res: Response) {
   // record the function change history
   if (doc.hash !== func.hash) {
     const record = Object.assign({}, doc)
-    await db.collection(Constants.colls.function_history)
+    await db.collection(CN_FUNCTION_HISTORY)
       .insertOne({
         appid: app.appid,
         func_id: func._id,

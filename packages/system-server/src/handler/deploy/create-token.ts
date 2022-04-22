@@ -8,11 +8,11 @@
 import { Request, Response } from 'express'
 import { checkPermission } from '../../support/permission'
 import { getToken } from '../../support/token'
-import { Constants } from '../../constants'
+import { CONST_DICTS } from '../../constants'
 import { ApplicationStruct } from '../../support/application'
 
 
-const { DEPLOY_TOKEN_CREATE } = Constants.permissions
+const { DEPLOY_TOKEN_CREATE } = CONST_DICTS.permissions
 /**
  * Create a deployment token
  */

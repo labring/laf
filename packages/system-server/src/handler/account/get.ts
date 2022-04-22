@@ -7,7 +7,7 @@
 
 import { Request, Response } from 'express'
 import { DatabaseAgent } from '../../db'
-import { Constants } from '../../constants'
+import { CN_ACCOUNTS } from '../../constants'
 import { ObjectId } from 'mongodb'
 
 /**
@@ -20,7 +20,7 @@ export async function handleProfile(req: Request, res: Response) {
 
   const db = DatabaseAgent.db
 
-  const account = await db.collection(Constants.colls.accounts)
+  const account = await db.collection(CN_ACCOUNTS)
     .findOne({ _id: new ObjectId(uid) })
 
   if (!account) {

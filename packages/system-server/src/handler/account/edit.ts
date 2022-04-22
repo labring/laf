@@ -7,7 +7,7 @@
 
 import { Request, Response } from 'express'
 import { DatabaseAgent } from '../../db'
-import { Constants } from '../../constants'
+import { CN_ACCOUNTS } from '../../constants'
 import { ObjectId } from 'mongodb'
 
 
@@ -24,7 +24,7 @@ export async function handleEdit(req: Request, res: Response) {
     return res.status(401).send()
 
   // check if uid valid
-  const account = await db.collection(Constants.colls.accounts)
+  const account = await db.collection(CN_ACCOUNTS)
     .findOne({ _id: new ObjectId(uid) })
 
   if (!account) {
@@ -46,7 +46,7 @@ export async function handleEdit(req: Request, res: Response) {
     data['name'] = name
   }
 
-  const r = await db.collection(Constants.colls.accounts)
+  const r = await db.collection(CN_ACCOUNTS)
     .updateOne({
       _id: new ObjectId(uid)
     }, {

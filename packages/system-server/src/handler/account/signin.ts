@@ -10,7 +10,7 @@ import { getToken } from '../../support/token'
 import { hashPassword } from '../../support/util-passwd'
 import { DatabaseAgent } from '../../db'
 import Config from '../../config'
-import { Constants } from '../../constants'
+import { CN_ACCOUNTS } from '../../constants'
 
 /**
  * The handler of sign in
@@ -22,7 +22,7 @@ export async function handleSignIn(req: Request, res: Response) {
   }
 
   const db = DatabaseAgent.db
-  const account = await db.collection(Constants.colls.accounts)
+  const account = await db.collection(CN_ACCOUNTS)
     .findOne({ username, password: hashPassword(password) })
 
   if (!account) {

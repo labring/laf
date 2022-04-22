@@ -14,13 +14,13 @@ import {
 import { publishFunctions } from '../../support/function'
 import { checkPermission } from '../../support/permission'
 import { publishAccessPolicies } from '../../support/policy'
-import { Constants } from '../../constants'
+import { CN_APP_TEMPLATES, CONST_DICTS } from '../../constants'
 import { ApplicationImporter } from '../../support/importer'
 import { logger } from '../../logger'
 import { DatabaseAgent } from '../../db'
 import { Binary, ObjectId } from 'mongodb'
 
-const { APPLICATION_ADD } = Constants.permissions
+const { APPLICATION_ADD } = CONST_DICTS.permissions
 
 /**
  * The handler of import application by id
@@ -73,7 +73,7 @@ export async function handleInitApplicationWithTemplate(
   const code = await checkPermission(uid, APPLICATION_ADD.name, app)
   if (code) return res.status(code).send()
 
-  const coll = DatabaseAgent.db.collection(Constants.colls.app_templates)
+  const coll = DatabaseAgent.db.collection(CN_APP_TEMPLATES)
   try {
     const template = await coll.findOne({
       _id: new ObjectId(req.body?.template_id),

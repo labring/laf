@@ -7,13 +7,13 @@
 
 import { Request, Response } from 'express'
 import { checkPermission } from '../../support/permission'
-import { Constants } from '../../constants'
+import { CN_DEPLOY_TARGETS, CONST_DICTS } from '../../constants'
 import { ApplicationStruct } from '../../support/application'
 import { DatabaseAgent } from '../../db'
 import { ObjectId } from 'mongodb'
 
 
-const { DEPLOY_TARGET_ADD, DEPLOY_TARGET_READ, DEPLOY_TARGET_REMOVE, DEPLOY_TARGET_UPDATE } = Constants.permissions
+const { DEPLOY_TARGET_ADD, DEPLOY_TARGET_READ, DEPLOY_TARGET_REMOVE, DEPLOY_TARGET_UPDATE } = CONST_DICTS.permissions
 
 /**
  * Get deploy targets
@@ -29,7 +29,7 @@ export async function handleGetDeployTargets(req: Request, res: Response) {
     return res.status(code).send()
   }
 
-  const docs = await db.collection(Constants.colls.deploy_targets)
+  const docs = await db.collection(CN_DEPLOY_TARGETS)
     .find({ appid: app.appid })
     .toArray()
 
@@ -55,7 +55,7 @@ export async function handleCreateDeployTarget(req: Request, res: Response) {
     return res.status(code).send()
   }
 
-  const r = await db.collection(Constants.colls.deploy_targets)
+  const r = await db.collection(CN_DEPLOY_TARGETS)
     .insertOne({
       url,
       label,
@@ -88,7 +88,7 @@ export async function handleUpdateDeployTarget(req: Request, res: Response) {
     return res.status(code).send()
   }
 
-  const r = await db.collection(Constants.colls.deploy_targets)
+  const r = await db.collection(CN_DEPLOY_TARGETS)
     .updateOne({
       appid: app.appid,
       _id: new ObjectId(target_id)
@@ -120,7 +120,7 @@ export async function handleRemoveDeployTarget(req: Request, res: Response) {
     return res.status(code).send()
   }
 
-  const r = await db.collection(Constants.colls.deploy_targets)
+  const r = await db.collection(CN_DEPLOY_TARGETS)
     .deleteOne({
       appid: app.appid,
       _id: new ObjectId(target_id)

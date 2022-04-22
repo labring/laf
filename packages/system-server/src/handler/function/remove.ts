@@ -10,7 +10,7 @@ import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
 import { ApplicationStruct } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { Constants } from '../../constants'
+import { CN_FUNCTIONS } from '../../constants'
 import { permissions } from '../../permissions'
 import { DatabaseAgent } from '../../db'
 
@@ -31,7 +31,7 @@ export async function handleRemoveFunctionById(req: Request, res: Response) {
   }
 
   // do db query
-  const ret = await db.collection(Constants.colls.functions)
+  const ret = await db.collection(CN_FUNCTIONS)
     .deleteOne({
       _id: new ObjectId(func_id),
       appid: app.appid,

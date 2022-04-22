@@ -6,6 +6,7 @@ import { CreateBucketCommand, DeleteBucketCommand, DeleteBucketPolicyCommand, Pu
 import { logger } from "../logger"
 import Config from "../config"
 import { ApplicationStruct } from "./application"
+import { GB } from "../constants"
 const exec = promisify(cp.exec)
 
 export enum BUCKET_ACL {
@@ -142,7 +143,7 @@ export class MinioAgent {
     const res = await s3.send(cmd)
     if (res?.$metadata?.httpStatusCode === 200) {
       await this.setBucketACL(name, acl)
-      const quota = options?.quota || 1024 * 1024
+      const quota = options?.quota || 1 * GB
       await this.setBucketQuota(name, quota)
     }
 

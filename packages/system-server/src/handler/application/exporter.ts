@@ -8,10 +8,10 @@
 import { Request, Response } from 'express'
 import { getApplicationByAppid } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { Constants } from '../../constants'
+import { CONST_DICTS } from '../../constants'
 import { ApplicationExporter } from '../../support/exporter'
 
-const { APPLICATION_READ } = Constants.permissions
+const { APPLICATION_READ } = CONST_DICTS.permissions
 
 /**
  * The handler of getting application by id

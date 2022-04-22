@@ -1,4 +1,4 @@
-import { Constants } from "../../constants"
+import { CN_APPLICATIONS } from "../../constants"
 import { DatabaseAgent } from "../../db"
 import { ApplicationStruct } from "../application"
 import { ServiceDriverInterface } from "./interface"
@@ -19,7 +19,7 @@ export class ApplicationService {
     const driver = this.create()
     const res = await driver.startService(app)
 
-    await db.collection(Constants.colls.applications)
+    await db.collection(CN_APPLICATIONS)
       .updateOne(
         { appid: app.appid },
         {
@@ -39,7 +39,7 @@ export class ApplicationService {
     const driver = this.create()
     const res = await driver.removeService(app)
 
-    await db.collection(Constants.colls.applications)
+    await db.collection(CN_APPLICATIONS)
       .updateOne(
         { appid: app.appid },
         {

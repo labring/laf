@@ -6,7 +6,7 @@
  */
 
 import * as assert from 'assert'
-import { Constants } from '../constants'
+import { CONST_DICTS } from '../constants'
 import { ApplicationStruct } from './application'
 
 /**
@@ -46,7 +46,7 @@ export async function checkPermission(uid: string, permission: string, app: Appl
 export function getPermissionsOfRoles(roles_names: string[]) {
   const permissions = []
   for (const name of roles_names) {
-    const pns = Constants.roles[name]?.permissions ?? []
+    const pns = CONST_DICTS.roles[name]?.permissions ?? []
     permissions.push(...pns)
   }
 

@@ -7,7 +7,7 @@
 
 import { Request, Response } from 'express'
 import { checkPermission } from '../../support/permission'
-import { Constants } from '../../constants'
+import { CN_DEPLOY_REQUESTS, CONST_DICTS } from '../../constants'
 import { ApplicationStruct } from '../../support/application'
 import { DatabaseAgent } from '../../db'
 import * as assert from 'assert'
@@ -16,7 +16,7 @@ import { deployPolicies, publishAccessPolicies } from '../../support/policy'
 import { ObjectId } from 'mongodb'
 
 
-const { DEPLOY_REQUEST_REMOVE, DEPLOY_REQUEST_READ, DEPLOY_REQUEST_APPLY } = Constants.permissions
+const { DEPLOY_REQUEST_REMOVE, DEPLOY_REQUEST_READ, DEPLOY_REQUEST_APPLY } = CONST_DICTS.permissions
 
 /**
  * Get deploy requests
@@ -47,7 +47,7 @@ export async function handleGetDeployRequests(req: Request, res: Response) {
     ]
   }
 
-  const coll = db.collection(Constants.colls.deploy_requests)
+  const coll = db.collection(CN_DEPLOY_REQUESTS)
 
   // do db query
   const docs = await coll
@@ -85,7 +85,7 @@ export async function handleRemoveDeployRequest(req: Request, res: Response) {
     return res.status(code).send()
   }
 
-  const r = await db.collection(Constants.colls.deploy_requests)
+  const r = await db.collection(CN_DEPLOY_REQUESTS)
     .deleteOne({ appid: app.appid, _id: new ObjectId(req_id) })
 
   return res.send({ data: r })
@@ -106,7 +106,7 @@ export async function handleApplyDeployRequest(req: Request, res: Response) {
   }
 
   const db = DatabaseAgent.db
-  const deploy_request = await db.collection(Constants.colls.deploy_requests)
+  const deploy_request = await db.collection(CN_DEPLOY_REQUESTS)
     .findOne({ _id: new ObjectId(req_id), appid: app.appid })
 
   if (!deploy_request)
@@ -132,7 +132,7 @@ export async function handleApplyDeployRequest(req: Request, res: Response) {
   }
 
   // update deploy request status to 'deployed'
-  await db.collection(Constants.colls.deploy_requests)
+  await db.collection(CN_DEPLOY_REQUESTS)
     .updateOne({
       _id: new ObjectId(req_id),
       appid: app.appid

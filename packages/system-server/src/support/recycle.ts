@@ -1,6 +1,6 @@
 import * as assert from "assert"
 import { ObjectId } from "mongodb"
-import { Constants } from "../constants"
+import { CN_RECYCLES } from "../constants"
 import { DatabaseAgent } from "../db"
 
 /**
@@ -16,7 +16,7 @@ export class RecycleCollector {
 
   async insert(data: any): Promise<ObjectId> {
     const db = DatabaseAgent.db
-    const r = await db.collection(Constants.colls.recycles)
+    const r = await db.collection(CN_RECYCLES)
       .insertOne({
         collection: this.collection,
         data,
@@ -28,7 +28,7 @@ export class RecycleCollector {
 
   async retrieve(_id: string) {
     const db = DatabaseAgent.db
-    const doc = await db.collection(Constants.colls.recycles)
+    const doc = await db.collection(CN_RECYCLES)
       .findOne({ _id: new ObjectId(_id), collection: this.collection })
 
     return doc
@@ -36,7 +36,7 @@ export class RecycleCollector {
 
   async remove(_id: string) {
     const db = DatabaseAgent.db
-    const r = await db.collection(Constants.colls.recycles)
+    const r = await db.collection(CN_RECYCLES)
       .deleteOne({ _id: new ObjectId(_id), collection: this.collection })
 
     return r.deletedCount

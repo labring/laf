@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb"
 import Config from "../config"
-import { Constants, DATE_NEVER, GB, MB } from "../constants"
+import { CN_ACCOUNTS, CN_APPLICATIONS, CN_FUNCTIONS, CN_POLICIES, CN_SPECS, DATE_NEVER, GB, MB } from "../constants"
 import { DatabaseAgent } from "../db"
 import { hashPassword, generatePassword } from "./util-passwd"
 import { ApplicationStruct, getApplicationByAppid } from "./application"
@@ -24,11 +24,11 @@ export class InitializerApi {
    */
   static async createSystemCollectionIndexes() {
     const db = DatabaseAgent.db
-    await db.collection(Constants.colls.accounts).createIndex('username', { unique: true })
-    await db.collection(Constants.colls.applications).createIndex('appid', { unique: true })
-    await db.collection(Constants.colls.functions).createIndex({ appid: 1, name: 1 }, { unique: true })
-    await db.collection(Constants.colls.policies).createIndex({ appid: 1, name: 1 }, { unique: true })
-    await db.collection(Constants.colls.specs).createIndex({ name: 1 }, { unique: true })
+    await db.collection(CN_ACCOUNTS).createIndex('username', { unique: true })
+    await db.collection(CN_APPLICATIONS).createIndex('appid', { unique: true })
+    await db.collection(CN_FUNCTIONS).createIndex({ appid: 1, name: 1 }, { unique: true })
+    await db.collection(CN_POLICIES).createIndex({ appid: 1, name: 1 }, { unique: true })
+    await db.collection(CN_SPECS).createIndex({ name: 1 }, { unique: true })
   }
 
   /**
@@ -41,7 +41,7 @@ export class InitializerApi {
     const password = Config.INIT_ROOT_ACCOUNT_PASSWORD
 
     // add account
-    const r = await db.collection(Constants.colls.accounts)
+    const r = await db.collection(CN_ACCOUNTS)
       .insertOne({
         username,
         quota: {
@@ -93,7 +93,7 @@ export class InitializerApi {
   static async createSystemExtensionApp(account_id: ObjectId, appid: string) {
     const SYSTEM_APP_NAME = 'System Extension Server'
     const db = DatabaseAgent.db
-    const db_config = DatabaseAgent.parseConnectionUri(Config.sys_db_uri)
+    const db_config = DatabaseAgent.parseConnectionUri(Config.SYS_DB_URI)
 
     const data: ApplicationStruct = {
       name: SYSTEM_APP_NAME,
@@ -133,7 +133,7 @@ export class InitializerApi {
     }
 
     // save it
-    const ret = await db.collection(Constants.colls.applications)
+    const ret = await db.collection(CN_APPLICATIONS)
       .insertOne(data as any)
 
     return ret.insertedId

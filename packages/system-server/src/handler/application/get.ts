@@ -8,11 +8,11 @@
 import { Request, Response } from 'express'
 import { getApplicationByAppid, getMyApplications, getMyJoinedApplications, getUserRolesOfApplication } from '../../support/application'
 import { getPermissionsOfRoles } from '../../support/permission'
-import { Constants } from '../../constants'
+import { CONST_DICTS } from '../../constants'
 import { getToken } from '../../support/token'
 import Config from '../../config'
 
-const { FUNCTION_DEBUG, FILE_ADD } = Constants.permissions
+const { FUNCTION_DEBUG, FILE_ADD } = CONST_DICTS.permissions
 
 /**
  * The handler of getting my applications(created & joined)

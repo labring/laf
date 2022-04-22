@@ -8,7 +8,7 @@
 import { Request, Response } from 'express'
 import { ApplicationStruct } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { Constants } from '../../constants'
+import { CN_APPLICATIONS, CONST_DICTS } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { MinioAgent } from '../../support/oss'
 
@@ -22,7 +22,7 @@ export async function handleDeleteBucket(req: Request, res: Response) {
   const app: ApplicationStruct = req['parsed-app']
 
   // check permission
-  const { FILE_BUCKET_REMOVE } = Constants.permissions
+  const { FILE_BUCKET_REMOVE } = CONST_DICTS.permissions
   const code = await checkPermission(uid, FILE_BUCKET_REMOVE.name, app)
   if (code) {
     return res.status(code).send()
@@ -36,7 +36,7 @@ export async function handleDeleteBucket(req: Request, res: Response) {
   }
 
   // delete bucket from app
-  await DatabaseAgent.db.collection<ApplicationStruct>(Constants.colls.applications)
+  await DatabaseAgent.db.collection<ApplicationStruct>(CN_APPLICATIONS)
     .updateOne({ appid: app.appid }, {
       $pull: {
         buckets: { name: bucketName }

@@ -5,7 +5,7 @@ import { logger } from '../../logger'
 import { ServiceDriverInterface } from './interface'
 import { ApplicationSpec } from '../application-spec'
 import * as assert from 'assert'
-import { MB } from '../../constants'
+import { MB, SYSTEM_EXTENSION_APPID } from '../../constants'
 
 
 export class DockerContainerServiceDriver implements ServiceDriverInterface {
@@ -111,6 +111,10 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
       binds = [`${Config.DEBUG_BIND_HOST_APP_PATH}:/app`]
     }
 
+    if (app.appid === SYSTEM_EXTENSION_APPID) {
+      binds.push('/var/run/docker.sock:/var/run/docker.sock:ro')
+    }
+
     const container = await this.docker.createContainer({
       Image: image_name,
       Cmd: ['sh', '/app/start.sh'],
@@ -159,7 +163,7 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
    * @returns 
    */
   private async getSharedNetwork() {
-    const name = Config.SHARED_NETWORK
+    const name = Config.DOCKER_SHARED_NETWORK
     let net = this.docker.getNetwork(name)
     const info = await net.inspect()
     if (!info) {

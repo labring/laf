@@ -8,7 +8,7 @@
 import { Request, Response } from 'express'
 import { getApplicationByAppid } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { Constants } from '../../constants'
+import { CN_ACCOUNTS, CN_APPLICATIONS } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { permissions } from '../../permissions'
 import { getAccountByUsername, getRoles, isValidAccountId, isValidRoleNames } from '../../support/account'
@@ -36,7 +36,7 @@ export async function handleGetCollaborators(req: Request, res: Response) {
   }
 
   const db = DatabaseAgent.db
-  const docs = await db.collection(Constants.colls.accounts)
+  const docs = await db.collection(CN_ACCOUNTS)
     .find({
       _id: {
         $in: app.collaborators.map(co => co.uid)
@@ -97,7 +97,7 @@ export async function handleInviteCollaborator(req: Request, res: Response) {
     roles,
     created_at: new Date()
   }
-  const ret = await db.collection(Constants.colls.applications)
+  const ret = await db.collection(CN_APPLICATIONS)
     .updateOne({
       appid: app.appid
     }, {
@@ -181,7 +181,7 @@ export async function handleRemoveCollaborator(req: Request, res: Response) {
   }
 
   const db = DatabaseAgent.db
-  const r = await db.collection(Constants.colls.applications)
+  const r = await db.collection(CN_APPLICATIONS)
     .updateOne({ appid }, {
       $pull: {
         collaborators: { uid: new ObjectId(collaborator_id) }

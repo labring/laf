@@ -3,10 +3,9 @@ import { getAccountByUsername } from "./support/account"
 import { getApplicationByAppid } from "./support/application"
 import { InitializerApi } from "./support/init"
 import Config from "./config"
-import { Constants } from "./constants"
+import { SYSTEM_EXTENSION_APPID } from "./constants"
 import { logger } from "./logger"
 
-const SYSTEM_EXTENSION_APPID = Constants.SYSTEM_EXTENSION_APPID
 
 /**
  * x. create collection indexes

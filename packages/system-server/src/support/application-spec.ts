@@ -1,4 +1,4 @@
-import { Constants } from "../constants"
+import { CN_APP_SPECS, CN_SPECS } from "../constants"
 import { DatabaseAgent } from "../db"
 import * as assert from 'assert'
 
@@ -61,7 +61,7 @@ export class ApplicationSpec {
    */
   public static async getValidAppSpec(appid: string) {
     const db = DatabaseAgent.db
-    const app_spec = await db.collection<AppSpecStruct>(Constants.colls.app_specs)
+    const app_spec = await db.collection<AppSpecStruct>(CN_APP_SPECS)
       .findOne({
         appid,
         enabled: true,
@@ -91,7 +91,7 @@ export class ApplicationSpec {
       created_at: new Date(),
       updated_at: new Date()
     }
-    const res = await db.collection<AppSpecStruct>(Constants.colls.app_specs)
+    const res = await db.collection<AppSpecStruct>(CN_APP_SPECS)
       .insertOne(data)
 
     return res
@@ -103,7 +103,7 @@ export class ApplicationSpec {
    */
   public static async listSpecs() {
     const db = DatabaseAgent.db
-    const docs = await db.collection<SpecStruct>(Constants.colls.specs)
+    const docs = await db.collection<SpecStruct>(CN_SPECS)
       .find()
       .toArray()
 
@@ -117,7 +117,7 @@ export class ApplicationSpec {
    */
   public static async getSpec(name: string) {
     const db = DatabaseAgent.db
-    const doc = await db.collection<SpecStruct>(Constants.colls.specs)
+    const doc = await db.collection<SpecStruct>(CN_SPECS)
       .findOne({ name })
 
     return doc
@@ -135,7 +135,7 @@ export class ApplicationSpec {
       created_at: new Date(),
       updated_at: new Date()
     }
-    const res = await db.collection<ApplicationSpec>(Constants.colls.specs)
+    const res = await db.collection<ApplicationSpec>(CN_SPECS)
       .insertOne(data)
 
     return res
@@ -148,7 +148,7 @@ export class ApplicationSpec {
    */
   public static async deleteSpec(name: string) {
     const db = DatabaseAgent.db
-    const res = await db.collection<SpecStruct>(Constants.colls.specs)
+    const res = await db.collection<SpecStruct>(CN_SPECS)
       .deleteOne({ name })
 
     return res

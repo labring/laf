@@ -9,71 +9,53 @@ import { deepFreeze } from './support/util-lang'
 import { permissions } from './permissions'
 import { roles } from './permissions'
 
+/** prefix of sys db collection name */
 const coll_prefix = 'sys_'
 
-/**
- * Constants collection
- */
-export const Constants = {
-  /**
-   *  collection name of cloud functions published to app db
-   */
-  published_coll_name_function: '__published__functions',
-
-  /**
-   * collection name of triggers published to app db
-   */
-  published_coll_name_trigger: '__published__triggers',
-
-  /**
-   * collection name of policies published to app db
-   */
-  published_coll_name_policy: '__published__policies',
-
-  /**
-   * collection name of config to app db
-   */
-  published_coll_name_config: '__config__',
-
-  /**
-   * prefix of sys db collection name
-   */
-  coll_prefix: coll_prefix,
-
-  /**
-   * sys db collection names
-   */
-  colls: {
-    accounts: coll_prefix + 'accounts',
-    policies: coll_prefix + 'policies',
-    functions: coll_prefix + 'functions',
-    function_history: coll_prefix + 'function_history',
-    deploy_targets: coll_prefix + 'deploy_targets',
-    deploy_requests: coll_prefix + 'deploy_requests',
-    applications: coll_prefix + 'applications',
-    recycles: coll_prefix + 'recycles',
-    app_templates: coll_prefix + 'app_templates',
-    specs: coll_prefix + 'specs',
-    app_specs: coll_prefix + 'app_specs'
-  },
-
-  /**
-   * built-in permissions
-   */
-  permissions: permissions,
-
-  /**
-   * built-in roles for applications
-   */
-  roles: roles,
-
-  SYSTEM_EXTENSION_APPID: `00000000-0000-0000-0000-000000000000`,
-}
-
-deepFreeze(Constants)
-
+export const SYSTEM_EXTENSION_APPID = '00000000-0000-0000-0000-000000000000'
 
 export const KB = 1024
 export const MB = 1024 * KB
 export const GB = 1024 * MB
 export const DATE_NEVER = new Date('2099/12/31')
+
+/** regex const */
+export const REGEX_BUCKET_NAME = /^[a-z0-9]{1,16}$/
+
+/** collection name of cloud functions published to app db */
+export const CN_PUBLISHED_FUNCTIONS = '__published__functions'
+/** collection name of triggers published to app db */
+export const CN_PUBLISHED_TRIGGERS = '__published__triggers'
+/** collection name of policies published to app db */
+export const CN_PUBLISHED_POLICIES = '__published__policies'
+/** collection name of config to app db */
+export const CN_PUBLISHED_CONFIG = '__config__'
+
+/** collection names of sys db */
+const _ = (cn: string) => coll_prefix + cn
+export const CN_ACCOUNTS = _('accounts')
+export const CN_POLICIES = _('policies')
+export const CN_FUNCTIONS = _('functions')
+export const CN_FUNCTION_HISTORY = _('function_history')
+export const CN_DEPLOY_TARGETS = _('deploy_targets')
+export const CN_DEPLOY_REQUESTS = _('deploy_requests')
+export const CN_APPLICATIONS = _('applications')
+export const CN_RECYCLES = _('recycles')
+export const CN_APP_TEMPLATES = _('app_templates')
+export const CN_SPECS = _('specs')
+export const CN_APP_SPECS = _('app_specs')
+
+/**
+ * Constants collection
+ */
+export const CONST_DICTS = deepFreeze({
+  /** built-in permissions */
+  permissions: permissions,
+
+  /** built-in roles for applications */
+  roles: roles,
+})
+
+
+/** RESPONSE ERROR CODE */
+export const RESP_INVALID_BUCKET_NAME = deepFreeze({ code: 'INVALID_BUCKET_NAME', error: 'INVALID_BUCKET_NAME' })

@@ -12,7 +12,7 @@ import * as ts from 'typescript'
  * @param object 
  * @returns 
  */
-export function deepFreeze(object: Object) {
+export function deepFreeze<T>(object: T) {
   // Retrieve the property names defined on object
   const propNames = Object.getOwnPropertyNames(object)
 

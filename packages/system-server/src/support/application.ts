@@ -5,7 +5,7 @@
  * @Description: Application APIs
  */
 
-import { Constants } from "../constants"
+import { CN_APPLICATIONS, CN_PUBLISHED_CONFIG, CONST_DICTS } from "../constants"
 import { DatabaseAgent } from "../db"
 import * as assert from 'assert'
 import { MongoAccessor } from "database-proxy"
@@ -43,7 +43,8 @@ export interface ApplicationStruct {
   }
   buckets: {
     name: string,
-    mode: BUCKET_ACL
+    mode: BUCKET_ACL,
+    quota: number
   }[]
   packages: {
     name: string,
@@ -65,7 +66,7 @@ export async function getApplicationByAppid(appid: string) {
   if (!appid) return null
 
   const db = DatabaseAgent.db
-  const doc = await db.collection<ApplicationStruct>(Constants.colls.applications)
+  const doc = await db.collection<ApplicationStruct>(CN_APPLICATIONS)
     .findOne({ appid: appid })
 
   return doc
@@ -80,7 +81,7 @@ export async function getMyApplications(account_id: string) {
   assert.ok(account_id, 'empty account_id got')
 
   const db = DatabaseAgent.db
-  const docs = await db.collection<ApplicationStruct>(Constants.colls.applications)
+  const docs = await db.collection<ApplicationStruct>(CN_APPLICATIONS)
     .find({ created_by: new ObjectId(account_id) }, {
       projection: { config: false }
     }).toArray()
@@ -97,7 +98,7 @@ export async function getMyJoinedApplications(account_id: string) {
   assert.ok(account_id, 'empty account_id got')
 
   const db = DatabaseAgent.db
-  const docs = await db.collection<ApplicationStruct>(Constants.colls.applications)
+  const docs = await db.collection<ApplicationStruct>(CN_APPLICATIONS)
     .find({
       'collaborators.uid': new ObjectId(account_id)
     }).toArray()
@@ -133,7 +134,7 @@ export async function getApplicationDbAccessor(app: ApplicationStruct) {
  */
 export function getUserRolesOfApplication(uid: string, app: ApplicationStruct) {
   if (app.created_by.toHexString() === uid) {
-    return [Constants.roles.owner.name]
+    return [CONST_DICTS.roles.owner.name]
   }
 
   // reject if not the collaborator
@@ -154,7 +155,7 @@ export function getApplicationDbUri(app: ApplicationStruct) {
   const { db_name, db_password, db_user } = app.config
 
   // build app db connection uri from config
-  const parsed = mongodb_uri.parse(Config.app_db_uri)
+  const parsed = mongodb_uri.parse(Config.APP_DB_URI)
   parsed.database = db_name
   parsed.username = db_user
   parsed.password = db_password
@@ -168,7 +169,7 @@ export function getApplicationDbUri(app: ApplicationStruct) {
  * @param app
  */
 export async function createApplicationDb(app: ApplicationStruct) {
-  const client = new MongoClient(Config.app_db_uri)
+  const client = new MongoClient(Config.APP_DB_URI)
   await client.connect()
   const { db_name, db_user, db_password } = app.config
   const db = client.db(db_name)
@@ -206,7 +207,7 @@ export async function publishApplicationPackages(appid: string) {
   try {
     await session.withTransaction(async () => {
       const db = app_accessor.db
-      const app_coll = db.collection(Constants.published_coll_name_config)
+      const app_coll = db.collection(CN_PUBLISHED_CONFIG)
       await app_coll.deleteOne({ key: 'packages' }, { session })
 
       const packages = app.packages

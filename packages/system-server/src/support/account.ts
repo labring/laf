@@ -1,5 +1,5 @@
 
-import { Constants } from "../constants"
+import { CN_ACCOUNTS, CONST_DICTS } from "../constants"
 import { DatabaseAgent } from "../db"
 import * as assert from 'assert'
 import { ObjectId } from "mongodb"
@@ -11,7 +11,7 @@ export async function getAccountById(uid: string) {
   assert.ok(uid, 'empty uid got')
 
   const db = DatabaseAgent.db
-  const doc = await db.collection(Constants.colls.accounts)
+  const doc = await db.collection(CN_ACCOUNTS)
     .findOne({ _id: new ObjectId(uid) })
 
   return doc
@@ -24,7 +24,7 @@ export async function getAccountByUsername(username: string) {
   assert.ok(username, 'empty username got')
 
   const db = DatabaseAgent.db
-  const doc = await db.collection(Constants.colls.accounts)
+  const doc = await db.collection(CN_ACCOUNTS)
     .findOne({ username: username })
 
   return doc
@@ -61,5 +61,5 @@ export function isValidRoleNames(role_names: string[]): boolean {
  * @returns 
  */
 export function getRoles() {
-  return Constants.roles
+  return CONST_DICTS.roles
 }

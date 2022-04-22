@@ -8,7 +8,7 @@
 import { Request, Response } from 'express'
 import { ApplicationStruct, getApplicationByAppid } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { Constants } from '../../constants'
+import { CN_APPLICATIONS } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { permissions } from '../../permissions'
 
@@ -35,7 +35,7 @@ export async function handleUpdateApplication(req: Request, res: Response) {
   const body = req.body
   if (!body.name) return res.status(422).send('name cannot be empty')
 
-  const ret = await db.collection<ApplicationStruct>(Constants.colls.applications)
+  const ret = await db.collection<ApplicationStruct>(CN_APPLICATIONS)
     .updateOne(
       { appid: app.appid },
       {

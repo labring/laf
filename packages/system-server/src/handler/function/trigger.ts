@@ -10,7 +10,7 @@ import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
 import { ApplicationStruct } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { Constants } from '../../constants'
+import { CN_FUNCTIONS } from '../../constants'
 import { permissions } from '../../permissions'
 import { DatabaseAgent } from '../../db'
 
@@ -42,7 +42,7 @@ export async function handleCreateTrigger(req: Request, res: Response) {
   }
 
   // get the cloud function
-  const func = await db.collection(Constants.colls.functions)
+  const func = await db.collection(CN_FUNCTIONS)
     .findOne({ _id: new ObjectId(func_id), appid: app.appid })
 
   if (!func) return res.status(422).send('function not found')
@@ -75,7 +75,7 @@ export async function handleCreateTrigger(req: Request, res: Response) {
   }
 
   // add trigger
-  const ret = await db.collection(Constants.colls.functions)
+  const ret = await db.collection(CN_FUNCTIONS)
     .updateOne({
       _id: new ObjectId(func_id), appid: app.appid
     }, update_cmd)
@@ -102,7 +102,7 @@ export async function handleUpdateTrigger(req: Request, res: Response) {
   }
 
   // get the cloud function
-  const func = await db.collection(Constants.colls.functions)
+  const func = await db.collection(CN_FUNCTIONS)
     .findOne({ _id: new ObjectId(func_id), appid: app.appid, 'triggers._id': trigger_id })
 
   if (!func) return res.status(422).send('trigger not found')
@@ -117,7 +117,7 @@ export async function handleUpdateTrigger(req: Request, res: Response) {
   }
 
   // update it
-  const ret = await db.collection(Constants.colls.functions)
+  const ret = await db.collection(CN_FUNCTIONS)
     .updateOne(
       { _id: new ObjectId(func_id), appid: app.appid, 'triggers._id': trigger_id },
       {
@@ -155,13 +155,13 @@ export async function handleRemoveTrigger(req: Request, res: Response) {
   }
 
   // get the cloud function
-  const func = await db.collection(Constants.colls.functions)
+  const func = await db.collection(CN_FUNCTIONS)
     .findOne({ _id: new ObjectId(func_id), appid: app.appid, 'triggers._id': trigger_id })
 
   if (!func) return res.status(422).send('trigger not found')
 
   // remove it
-  const ret = await db.collection(Constants.colls.functions)
+  const ret = await db.collection(CN_FUNCTIONS)
     .updateOne(
       { _id: new ObjectId(func_id), appid: app.appid },
       {

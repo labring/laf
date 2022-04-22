@@ -10,11 +10,11 @@ import { Request, Response } from 'express'
 import { RecycleCollector } from '../../support/recycle'
 import { getApplicationByAppid } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { Constants } from '../../constants'
+import { CN_APPLICATIONS, CONST_DICTS } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { ApplicationService } from '../../support/service'
 
-const { APPLICATION_REMOVE } = Constants.permissions
+const { APPLICATION_REMOVE } = CONST_DICTS.permissions
 
 /**
  * The handler of removing application
@@ -50,13 +50,13 @@ export async function handleRemoveApplication(req: Request, res: Response) {
   }
 
   // save app to recycle collection
-  const recycle = new RecycleCollector(Constants.colls.applications)
+  const recycle = new RecycleCollector(CN_APPLICATIONS)
   const saved = await recycle.insert(app)
   assert.ok(saved, 'recycle insert got empty return value')
 
   // remove app
   const db = DatabaseAgent.db
-  const ret = await db.collection(Constants.colls.applications)
+  const ret = await db.collection(CN_APPLICATIONS)
     .deleteOne({ appid })
 
   return res.send({ data: ret })

@@ -10,7 +10,7 @@ import { ObjectId } from 'mongodb'
 import { ApplicationStruct, getApplicationDbAccessor } from '../../support/application'
 import { CloudFunctionStruct, getFunctionById } from '../../support/function'
 import { checkPermission } from '../../support/permission'
-import { Constants } from '../../constants'
+import { CN_ACCOUNTS, CN_FUNCTIONS, CN_FUNCTION_HISTORY, CN_PUBLISHED_FUNCTIONS } from '../../constants'
 import { permissions } from '../../permissions'
 import { DatabaseAgent } from '../../db'
 
@@ -56,7 +56,7 @@ export async function handleGetFunctions(req: Request, res: Response) {
     query['status'] = Number(status)
   }
 
-  const coll = db.collection<CloudFunctionStruct>(Constants.colls.functions)
+  const coll = db.collection<CloudFunctionStruct>(CN_FUNCTIONS)
 
   // do db query
   const docs = await coll
@@ -111,7 +111,7 @@ export async function handleGetAllFunctionTags(req: Request, res: Response) {
   }
 
   const db = DatabaseAgent.db
-  const docs = await db.collection<CloudFunctionStruct>(Constants.colls.functions)
+  const docs = await db.collection<CloudFunctionStruct>(CN_FUNCTIONS)
     .distinct('tags', { appid: app.appid })
 
   return res.send({
@@ -142,7 +142,7 @@ export async function handleGetPublishedFunctions(req: Request, res: Response) {
 
   const accessor = await getApplicationDbAccessor(app)
   const db = accessor.db
-  const docs = await db.collection(Constants.published_coll_name_function)
+  const docs = await db.collection(CN_PUBLISHED_FUNCTIONS)
     .find(query, {})
     .toArray()
 
@@ -172,14 +172,14 @@ export async function handleGetFunctionHistory(req: Request, res: Response) {
 
   // const doc = await getFunctionById(app.appid, new ObjectId(func_id))
   const db = DatabaseAgent.db
-  const docs = await db.collection(Constants.colls.function_history)
+  const docs = await db.collection(CN_FUNCTION_HISTORY)
     .aggregate()
     .match({
       appid: app.appid,
       func_id: new ObjectId(func_id),
     })
     .lookup({
-      from: Constants.colls.accounts,
+      from: CN_ACCOUNTS,
       localField: 'created_by',
       foreignField: '_id',
       as: 'account'

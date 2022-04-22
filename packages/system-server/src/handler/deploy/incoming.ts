@@ -6,7 +6,7 @@
  */
 
 import { Request, Response } from 'express'
-import { Constants } from '../../constants'
+import { CN_DEPLOY_REQUESTS } from '../../constants'
 import { ApplicationStruct } from '../../support/application'
 import { DatabaseAgent } from '../../db'
 import { logger } from '../../logger'
@@ -95,7 +95,7 @@ async function write_policies(policies: any, source: string, comment: string, ap
     created_at: Date.now()
   }
 
-  await db.collection(Constants.colls.deploy_requests).insertOne(data)
+  await db.collection(CN_DEPLOY_REQUESTS).insertOne(data)
 }
 
 /**
@@ -119,5 +119,5 @@ async function write_functions(functions: any, source: string, comment: string, 
     created_at: Date.now()
   }
 
-  await db.collection(Constants.colls.deploy_requests).insertOne(data)
+  await db.collection(CN_DEPLOY_REQUESTS).insertOne(data)
 }

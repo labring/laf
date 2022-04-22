@@ -8,7 +8,7 @@
 import { Request, Response } from 'express'
 import { ApplicationStruct, getApplicationByAppid, publishApplicationPackages } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { Constants } from '../../constants'
+import { CN_APPLICATIONS } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { permissions } from '../../permissions'
 
@@ -65,7 +65,7 @@ export async function handleAddPackage(req: Request, res: Response) {
     return res.send({ code: 'ALREADY_EXISTED', error: 'package already existed' })
   }
 
-  await db.collection<ApplicationStruct>(Constants.colls.applications)
+  await db.collection<ApplicationStruct>(CN_APPLICATIONS)
     .updateOne(
       { appid: app.appid },
       {
@@ -108,7 +108,7 @@ export async function handleRemovePackage(req: Request, res: Response) {
     return res.send({ code: 'NOT_EXISTS', error: 'package not exists' })
   }
 
-  await db.collection<ApplicationStruct>(Constants.colls.applications)
+  await db.collection<ApplicationStruct>(CN_APPLICATIONS)
     .updateOne(
       { appid: app.appid },
       {
@@ -153,7 +153,7 @@ export async function handleUpdatePackage(req: Request, res: Response) {
     return res.send({ code: 'NOT_EXISTS', error: 'package not exists' })
   }
 
-  await db.collection<ApplicationStruct>(Constants.colls.applications)
+  await db.collection<ApplicationStruct>(CN_APPLICATIONS)
     .updateOne(
       { appid: app.appid, 'packages.name': pkg_name },
       {

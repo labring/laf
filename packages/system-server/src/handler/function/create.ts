@@ -9,7 +9,7 @@ import { ObjectId } from 'bson'
 import { Request, Response } from 'express'
 import { ApplicationStruct } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { Constants } from '../../constants'
+import { CN_FUNCTIONS } from '../../constants'
 import { permissions } from '../../permissions'
 import { DatabaseAgent } from '../../db'
 import { hashFunctionCode } from '../../support/util-passwd'
@@ -37,7 +37,7 @@ export async function handleCreateFunction(req: Request, res: Response) {
   if (!body.code) return res.status(422).send('code cannot be empty')
 
   // function name should be unique
-  const total = await db.collection(Constants.colls.functions)
+  const total = await db.collection(CN_FUNCTIONS)
     .countDocuments({ name: body.name, appid: app.appid })
 
   if (total) return res.status(422).send('function name already exists')
@@ -62,7 +62,7 @@ export async function handleCreateFunction(req: Request, res: Response) {
   }
 
   // add cloud function
-  const ret = await db.collection(Constants.colls.functions).insertOne(func)
+  const ret = await db.collection(CN_FUNCTIONS).insertOne(func)
 
   return res.send({ data: ret })
 }

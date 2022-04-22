@@ -11,7 +11,7 @@ import { ObjectId } from 'mongodb'
 import { ApplicationStruct } from '../../support/application'
 import { checkPermission } from '../../support/permission'
 import { PolicyStruct } from '../../support/policy'
-import { Constants } from '../../constants'
+import { CN_POLICIES } from '../../constants'
 import { permissions } from '../../permissions'
 import { DatabaseAgent } from '../../db'
 
@@ -47,7 +47,7 @@ export async function handleGetPolicies(req: Request, res: Response) {
     ]
   }
 
-  const coll = db.collection(Constants.colls.policies)
+  const coll = db.collection(CN_POLICIES)
 
   // do db query
   const docs = await coll
@@ -84,7 +84,7 @@ export async function handleGetPolicyById(req: Request, res: Response) {
   }
 
   // do db query
-  const doc = await db.collection<PolicyStruct>(Constants.colls.policies)
+  const doc = await db.collection<PolicyStruct>(CN_POLICIES)
     .findOne({ _id: new ObjectId(policy_id) })
 
   return res.send({

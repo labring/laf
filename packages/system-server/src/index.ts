@@ -12,7 +12,7 @@ import Config from './config'
 import { router } from './handler/router'
 import { logger } from './logger'
 import { DatabaseAgent } from './db'
-import { Constants } from './constants'
+import { SYSTEM_EXTENSION_APPID } from './constants'
 import { ApplicationService } from './support/service'
 
 const app = express()
@@ -62,7 +62,7 @@ async function gracefullyExit() {
   // NOT remove system extension app service if service driver is 'kubernetes', 
   if (Config.SERVICE_DRIVER === 'docker') {
     logger.info('exiting: removing system extension service')
-    await ApplicationService.create().removeService({ appid: Constants.SYSTEM_EXTENSION_APPID } as any)
+    await ApplicationService.create().removeService({ appid: SYSTEM_EXTENSION_APPID } as any)
     logger.info('exiting: system extension service has been removed')
   }
 

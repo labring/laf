@@ -8,7 +8,7 @@
 import { Request, Response } from 'express'
 import { ApplicationStruct } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { Constants, GB } from '../../constants'
+import { CN_APPLICATIONS, CONST_DICTS, GB, REGEX_BUCKET_NAME } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { BUCKET_ACL, MinioAgent } from '../../support/oss'
 
@@ -16,8 +16,8 @@ import { BUCKET_ACL, MinioAgent } from '../../support/oss'
  * The handler of creating a bucket
  */
 export async function handleCreateBucket(req: Request, res: Response) {
-  const bucketName = req.body?.bucket
-  if (!bucketName) {
+  const bucketName = req.body?.bucket ?? ''
+  if (!REGEX_BUCKET_NAME.test(bucketName)) {
     return res.status(422).send('invalid bucket name')
   }
 
@@ -33,7 +33,7 @@ export async function handleCreateBucket(req: Request, res: Response) {
   const app: ApplicationStruct = req['parsed-app']
 
   // check permission
-  const { FILE_BUCKET_ADD } = Constants.permissions
+  const { FILE_BUCKET_ADD } = CONST_DICTS.permissions
   const code = await checkPermission(uid, FILE_BUCKET_ADD.name, app)
   if (code) {
     return res.status(code).send()
@@ -53,10 +53,10 @@ export async function handleCreateBucket(req: Request, res: Response) {
   }
 
   // add to app
-  await DatabaseAgent.db.collection<ApplicationStruct>(Constants.colls.applications)
+  await DatabaseAgent.db.collection<ApplicationStruct>(CN_APPLICATIONS)
     .updateOne({ appid: app.appid }, {
       $push: {
-        buckets: { name: bucketName, mode }
+        buckets: { name: bucketName, mode, quota }
       }
     })
 

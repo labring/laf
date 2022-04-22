@@ -15,7 +15,7 @@ import * as assert from 'assert'
  * Database agent class
  */
 export class DatabaseAgent {
-  private static _sys_accessor: MongoAccessor = DatabaseAgent.createAccessor(Config.sys_db_uri)
+  private static _sys_accessor: MongoAccessor = DatabaseAgent.createAccessor(Config.SYS_DB_URI)
 
   /**
    * sys mongo accessor instance

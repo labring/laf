@@ -1,7 +1,7 @@
 import { ApplicationStruct, getApplicationDbAccessor } from "./application"
 import { CloudFunctionStruct } from "./function"
 import { PolicyStruct } from "./policy"
-import { Constants } from "../constants"
+import { CN_FUNCTIONS, CN_POLICIES } from "../constants"
 import { DatabaseAgent } from "../db"
 import * as AdmZip from 'adm-zip'
 
@@ -44,7 +44,7 @@ export class ApplicationExporter {
 
   public async buildFunctions() {
     const db = DatabaseAgent.db
-    const docs = await db.collection<CloudFunctionStruct>(Constants.colls.functions)
+    const docs = await db.collection<CloudFunctionStruct>(CN_FUNCTIONS)
       .find({ appid: this.app.appid })
       .toArray()
 
@@ -69,7 +69,7 @@ export class ApplicationExporter {
 
   public async buildPolicies() {
     const db = DatabaseAgent.db
-    const docs = await db.collection<PolicyStruct>(Constants.colls.policies)
+    const docs = await db.collection<PolicyStruct>(CN_POLICIES)
       .find({ appid: this.app.appid })
       .toArray()
 

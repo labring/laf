@@ -9,7 +9,7 @@ import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
 import { ApplicationStruct } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { Constants } from '../../constants'
+import { CN_POLICIES } from '../../constants'
 import { permissions } from '../../permissions'
 import { DatabaseAgent } from '../../db'
 import { hashFunctionCode } from '../../support/util-passwd'
@@ -36,7 +36,7 @@ export async function handleCreatePolicy(req: Request, res: Response) {
   if (!body.rules) return res.status(422).send('rules cannot be empty')
 
   // policy name should be unique
-  const total = await db.collection(Constants.colls.policies)
+  const total = await db.collection(CN_POLICIES)
     .countDocuments({ name: body.name, appid: app.appid })
 
   if (total) return res.status(422).send('policy name already exists')
@@ -56,7 +56,7 @@ export async function handleCreatePolicy(req: Request, res: Response) {
   }
 
   // add policy
-  const ret = await db.collection(Constants.colls.policies)
+  const ret = await db.collection(CN_POLICIES)
     .insertOne(policy)
 
   return res.send({ data: ret })

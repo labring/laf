@@ -8,7 +8,7 @@ export default class Config {
   /**
    * the mongodb connection configuration of sys db
    */
-  static get sys_db_uri() {
+  static get SYS_DB_URI() {
     if (!process.env['SYS_DB_URI']) {
       throw new Error('env: `SYS_DB_URI` is missing')
     }
@@ -19,7 +19,7 @@ export default class Config {
   /**
    * the mongodb connection configuration of apps' db, use for creating app databases;
    */
-  static get app_db_uri() {
+  static get APP_DB_URI() {
     if (!process.env['APP_DB_URI']) {
       throw new Error('env: `APP_DB_URI` is missing')
     }
@@ -75,8 +75,8 @@ export default class Config {
   /**
    * the name of network which apps used
    */
-  static get SHARED_NETWORK(): string {
-    return process.env.SHARED_NETWORK ?? 'laf_shared_network'
+  static get DOCKER_SHARED_NETWORK(): string {
+    return process.env.DOCKER_SHARED_NETWORK || process.env.SHARED_NETWORK || 'laf_shared_network'
   }
 
   /**
@@ -99,7 +99,7 @@ export default class Config {
    * For example, if set this to `lafyun.com`, then you can access app service by format `[appid].lafyun.com`: 
    * - 7b0b318c-b96c-4cc5-b521-33d11bd16cde.lafyun.com
    * - http://7b0b318c-b96c-4cc5-b521-33d11bd16cde.lafyun.com/file/public/33d11bd16cde.png
-   * - http://7b0b318c-b96c-4cc5-b521-33d11bd16cde.lafyun.com/func/FUNC_NAME
+   * - http://7b0b318c-b96c-4cc5-b521-33d11bd16cde.lafyun.com/FUNC_NAME
    * 
    * You should resolve `*.lafyun.com` to your laf server ip, to support `[appid].lafyun.com` url.
    * You can also provide the PORT, like `lafyun.com:8080`. 
@@ -116,20 +116,6 @@ export default class Config {
     return process.env.APP_SERVICE_DEPLOY_URL_SCHEMA ?? 'http'
   }
 
-  /**
-   * The resources (cpu & memory) limit of application service. 
-   */
-  static get APP_DEFAULT_RESOURCES(): { req_cpu: string, req_memory: string, limit_cpu: string, limit_memory: string } {
-    const limit_cpu = process.env.APP_SERVICE_DEFAULT_LIMIT_CPU ?? '100'
-    const limit_memory = process.env.APP_SERVICE_DEFAULT_LIMIT_MEMORY || '256'
-
-    return {
-      req_cpu: process.env.APP_SERVICE_DEFAULT_REQUEST_CPU ?? limit_cpu,
-      req_memory: process.env.APP_SERVICE_DEFAULT_REQUEST_MEMORY ?? limit_memory,
-      limit_cpu,
-      limit_memory,
-    }
-  }
 
   /**
    * DEBUG: the app-service path that bind to app-service container

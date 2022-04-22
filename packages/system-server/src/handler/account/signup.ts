@@ -8,7 +8,7 @@
 import { Request, Response } from 'express'
 import { hashPassword } from '../../support/util-passwd'
 import { DatabaseAgent } from '../../db'
-import { Constants } from '../../constants'
+import { CN_ACCOUNTS } from '../../constants'
 import Config from '../../config'
 
 
@@ -29,13 +29,13 @@ export async function handleSignUp(req: Request, res: Response) {
   }
 
   // check if account exists
-  const total = await db.collection(Constants.colls.accounts).countDocuments({ username })
+  const total = await db.collection(CN_ACCOUNTS).countDocuments({ username })
   if (total > 0) {
     return res.send({ error: 'account already exists' })
   }
 
   // add account
-  const r = await db.collection(Constants.colls.accounts)
+  const r = await db.collection(CN_ACCOUNTS)
     .insertOne({
       username,
       quota: {

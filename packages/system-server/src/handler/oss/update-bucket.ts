@@ -8,7 +8,7 @@
 import { Request, Response } from 'express'
 import { ApplicationStruct } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { Constants } from '../../constants'
+import { CN_APPLICATIONS, CONST_DICTS } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { BUCKET_ACL, MinioAgent } from '../../support/oss'
 
@@ -26,7 +26,7 @@ export async function handleSetBucketPolicy(req: Request, res: Response) {
   const app: ApplicationStruct = req['parsed-app']
 
   // check permission
-  const { FILE_BUCKET_ADD } = Constants.permissions
+  const { FILE_BUCKET_ADD } = CONST_DICTS.permissions
   const code = await checkPermission(uid, FILE_BUCKET_ADD.name, app)
   if (code) {
     return res.status(code).send()
@@ -46,7 +46,7 @@ export async function handleSetBucketPolicy(req: Request, res: Response) {
   }
 
   // update bucket to app
-  await DatabaseAgent.db.collection<ApplicationStruct>(Constants.colls.applications)
+  await DatabaseAgent.db.collection<ApplicationStruct>(CN_APPLICATIONS)
     .updateOne({ appid: app.appid, 'buckets.name': bucketName }, {
       $set: {
         'buckets.$.mode': mode

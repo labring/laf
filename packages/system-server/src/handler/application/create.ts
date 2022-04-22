@@ -12,7 +12,7 @@ import { getAccountById } from '../../support/account'
 import { ApplicationStruct, createApplicationDb, generateAppid, getApplicationByAppid, getMyApplications } from '../../support/application'
 import { MinioAgent } from '../../support/oss'
 import Config from '../../config'
-import { Constants, DATE_NEVER } from '../../constants'
+import { CN_APPLICATIONS, DATE_NEVER } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { logger } from '../../logger'
 import { generatePassword } from '../../support/util-passwd'
@@ -97,7 +97,7 @@ export async function handleCreateApplication(req: Request, res: Response) {
   }
 
   // save it
-  const ret = await db.collection(Constants.colls.applications)
+  const ret = await db.collection(CN_APPLICATIONS)
     .insertOne(data as any)
 
   if (!ret.insertedId) {
