@@ -5,7 +5,7 @@
  * @Description: Application APIs
  */
 
-import { CN_APPLICATIONS, CN_PUBLISHED_CONFIG, CONST_DICTS } from "../constants"
+import { CN_APPLICATIONS, CN_APP_SPECS, CN_PUBLISHED_CONFIG, CONST_DICTS } from "../constants"
 import { DatabaseAgent } from "../db"
 import * as assert from 'assert'
 import { MongoAccessor } from "database-proxy"
@@ -82,9 +82,19 @@ export async function getMyApplications(account_id: string) {
 
   const db = DatabaseAgent.db
   const docs = await db.collection<IApplicationData>(CN_APPLICATIONS)
-    .find({ created_by: new ObjectId(account_id) }, {
-      projection: { config: false }
-    }).toArray()
+    .aggregate([
+      { $match: { created_by: new ObjectId(account_id) } },
+      { $unset: ['config'] },
+      {
+        $lookup: {
+          from: CN_APP_SPECS,
+          localField: 'appid',
+          foreignField: 'appid',
+          as: 'spec'
+        }
+      },
+      { $unwind: { path: '$spec' } }
+    ]).toArray()
 
   return docs
 }
@@ -99,9 +109,19 @@ export async function getMyJoinedApplications(account_id: string) {
 
   const db = DatabaseAgent.db
   const docs = await db.collection<IApplicationData>(CN_APPLICATIONS)
-    .find({
-      'collaborators.uid': new ObjectId(account_id)
-    }).toArray()
+    .aggregate([
+      { $match: { 'collaborators.uid': new ObjectId(account_id) } },
+      { $unset: ['config'] },
+      {
+        $lookup: {
+          from: CN_APP_SPECS,
+          localField: 'appid',
+          foreignField: 'appid',
+          as: 'spec'
+        }
+      },
+      { $unwind: { path: '$spec' } }
+    ]).toArray()
 
   return docs
 }

@@ -11,6 +11,7 @@ import { checkPermission } from '../../support/permission'
 import { CN_APPLICATIONS, CONST_DICTS, GB, REGEX_BUCKET_NAME } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { BUCKET_ACL, MinioAgent } from '../../support/minio'
+import { OssSupport } from '../../support/oss'
 
 /**
  * The handler of creating a bucket
@@ -26,11 +27,19 @@ export async function handleCreateBucket(req: Request, res: Response) {
     return res.status(422).send('invalid bucket mode')
   }
 
+  const uid = req['auth']?.uid
+  const app: IApplicationData = req['parsed-app']
+
   let quota: number = req.body?.quota || 0
   if (quota <= 0) { quota = 1 * GB }
 
-  const uid = req['auth']?.uid
-  const app: IApplicationData = req['parsed-app']
+  const avaliable_quota = await OssSupport.getAppAvaliableCapacity(app.appid)
+  if (quota > avaliable_quota) {
+    return res.send({
+      code: 'NO_SUFFICIENT_CAPACITY',
+      error: 'NO_SUFFICIENT_CAPACITY'
+    })
+  }
 
   // check permission
   const { FILE_BUCKET_ADD } = CONST_DICTS.permissions

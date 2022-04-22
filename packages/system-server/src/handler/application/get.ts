@@ -11,8 +11,9 @@ import { getPermissionsOfRoles } from '../../support/permission'
 import { CONST_DICTS } from '../../constants'
 import { getToken } from '../../support/token'
 import Config from '../../config'
+import { ApplicationSpecSupport } from '../../support/application-spec'
 
-const { FUNCTION_DEBUG, FILE_ADD } = CONST_DICTS.permissions
+const { FUNCTION_DEBUG } = CONST_DICTS.permissions
 
 /**
  * The handler of getting my applications(created & joined)
@@ -65,19 +66,12 @@ export async function handleGetApplicationByAppid(req: Request, res: Response) {
     debug_token = getToken({ appid, type: 'debug', exp }, app.config.server_secret_salt)
   }
 
-  // generate token of file uploading & downloading
-  let file_token = undefined
-  if (permissions.includes(FILE_ADD.name)) {
-    const payload = {
-      exp, appid, bucket: '*', ops: ['create', 'read']
-    }
-    file_token = getToken(payload, app.config.server_secret_salt)
-  }
-
   const app_deploy_host = Config.APP_SERVICE_DEPLOY_HOST
   const app_deploy_url_schema = Config.APP_SERVICE_DEPLOY_URL_SCHEMA
   const oss_external_endpoint = Config.MINIO_CONFIG.endpoint.external
   const oss_internal_endpoint = Config.MINIO_CONFIG.endpoint.internal
+
+  const spec = await ApplicationSpecSupport.getValidAppSpec(appid)
 
   app.config = undefined
   return res.send({
@@ -86,11 +80,11 @@ export async function handleGetApplicationByAppid(req: Request, res: Response) {
       permissions,
       roles,
       debug_token,
-      file_token,
       app_deploy_host,
       app_deploy_url_schema,
       oss_external_endpoint,
-      oss_internal_endpoint
+      oss_internal_endpoint,
+      spec
     }
   })
 }

@@ -13,7 +13,7 @@
     <div class="app-group">
       <div class="app-group-title">我创建的应用</div>
       <el-table v-loading="loading" empty-text="还没有创建应用" :data="applications.created" style="width: 100%;margin-top:10px;" stripe>
-        <el-table-column align="center" label="App ID" min-width="180">
+        <el-table-column align="center" label="App ID" min-width="100">
           <template slot-scope="scope">
             <div class="table-row">
               <el-tooltip :content="scope.row.appid" effect="light" placement="top">
@@ -23,24 +23,22 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="应用名" min-width="200">
+        <el-table-column align="center" label="应用名" min-width="120">
           <template slot-scope="{row}">
             <span class="link-type table-column-text" @click="showUpdateForm(row)">{{ row.name }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="状态" min-width="80">
-          <template slot-scope="scope">
-            {{ scope.row.status }}
+        <el-table-column align="center" label="应用规格" min-width="80">
+          <template slot-scope="scope">  
+            <el-tooltip placement="top" >  
+              <div slot="content">{{formatSpec(scope.row).text}}</div>       
+              <el-tag type="info">{{formatSpec(scope.row).label}}</el-tag>
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column align="center" label="服务版本" min-width="80">
           <template slot-scope="scope">
             {{ getRuntimeVersion(scope.row) }}
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="运行内存" min-width="80">
-          <template slot-scope="scope">
-            {{ getRuntimeMemory(scope.row) }} M
           </template>
         </el-table-column>
         <el-table-column label="服务启停" align="center" width="240" class-name="small-padding">
@@ -90,7 +88,7 @@
     <div class="app-group">
       <div class="app-group-title">我加入的应用</div>
       <el-table v-loading="loading" empty-text="还没有加入的应用" :data="applications.joined" style="width: 100%;margin-top:10px;" stripe>
-        <el-table-column align="center" label="App ID" min-width="180">
+        <el-table-column align="center" label="App ID" min-width="100">
           <template slot-scope="scope">
             <div class="table-row">
               <el-tooltip :content="scope.row.appid" effect="light" placement="top">
@@ -100,24 +98,22 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="应用名" min-width="200">
+        <el-table-column align="center" label="应用名" min-width="120">
           <template slot-scope="{row}">
             <span class="link-type table-column-text" @click="showUpdateForm(row)">{{ row.name }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="状态" min-width="80">
-          <template slot-scope="scope">
-            {{ scope.row.status }}
+       <el-table-column align="center" label="规格" min-width="80">
+          <template slot-scope="scope">  
+            <el-tooltip placement="top" >  
+              <div slot="content">{{formatSpec(scope.row).text}}</div>       
+              <el-tag type="info">{{formatSpec(scope.row).label}}</el-tag>
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column align="center" label="服务版本" min-width="80">
           <template slot-scope="scope">
             {{ getRuntimeVersion(scope.row) }}
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="运行内存" min-width="min">
-          <template slot-scope="scope">
-            {{ getRuntimeMemory(scope.row) }} M
           </template>
         </el-table-column>
         <el-table-column label="服务启停" align="center" width="240" class-name="small-padding">
@@ -180,9 +176,9 @@
             <el-radio :label="spec.name" border v-for="spec in specs" :key="spec.name">
               <div class="spec-card" style="display:inline-block;">
                 {{spec.label}}
-                [ RAM/{{spec.limit_memory / 1024 / 1024}}M,
-                OSS/{{spec.storage_capacity / 1024 /1024/ 1024 }}G,
-                DB/{{spec.database_capacity / 1024 /1024/ 1024}}G ]
+                - ram/{{ byte2mb(spec.limit_memory)}}m,
+                oss/{{spec.storage_capacity / 1024 /1024/ 1024 }}g,
+                db/{{spec.database_capacity / 1024 /1024/ 1024}}g
               </div>
             </el-radio>
           </el-radio-group>
@@ -469,16 +465,25 @@ export default {
     },
     getRuntimeVersion(app) {
       const image = app.runtime?.image
-      if (!image) {
-        return 'unknown'
-      }
-
+      if (!image)  return 'unknown'
       const [, version] = image.split(':')
       return version || 'unknown'
     },
-    getRuntimeMemory(app) {
-      const memory = app.runtime?.resources?.limit_memory
-      return memory || '-'
+    formatSpec(app) {
+      const spec = app?.spec?.spec
+      if(!spec) return { label: '-', text: 'unknown' }
+      const label = spec.label
+      const memory = this.byte2mb(spec.limit_memory)
+      const oss = this.byte2gb(spec.storage_capacity)
+      const db = this.byte2gb(spec.database_capacity)
+      const text = `内存:${memory}MB, 数据库:${db}GB, 存储:${oss}GB`
+      return { memory, label, oss, db, text }
+    },
+    byte2mb(bytes) {
+      return ~~(bytes/1024/1024)
+    },
+    byte2gb(bytes) {
+      return ~~(bytes/1024/1024/1024)
     }
   }
 }
