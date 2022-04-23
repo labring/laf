@@ -28,6 +28,12 @@ const state = {
    */
   file_token: null,
 
+  /**
+   * spec 
+   * @type {Object}
+   */
+  spec: null,
+
   app_deploy_host: null,
   app_deploy_url_schema: 'http',
   storage_deploy_host: null,
@@ -53,6 +59,9 @@ const mutations = {
   SET_FILE_TOKEN: (state, payload) => {
     state.file_token = payload || []
   },
+  SET_SPEC: (state, spec) => {
+    state.spec = spec || {}
+  },
   SET_APP_DEPLOY_HOST: (state, domain) => {
     state.app_deploy_host = domain
   },
@@ -75,6 +84,7 @@ const mutations = {
     state.permissions = []
     state.debug_token = null
     state.file_token = null
+    state.spec = null
     state.app_deploy_host = null
     state.app_deploy_url_schema = 'http'
     state.storage_deploy_host = null
@@ -88,12 +98,14 @@ const actions = {
     assert(res.data?.application, 'empty `res.data?.application` got')
     assert(res.data?.roles, 'empty `res.data?.roles` got')
     assert(res.data?.permissions, 'empty `res.data?.permissions` got')
+    console.log('loadCurrentApplication', res.data)
 
     commit('SET_APPLICATION', res.data?.application)
     commit('SET_APP_ROLES', res.data?.roles)
     commit('SET_APP_PERMISSIONS', res.data?.permissions)
     commit('SET_DEBUG_TOKEN', res.data?.debug_token)
     commit('SET_FILE_TOKEN', res.data?.file_token)
+    commit('SET_SPEC', res.data?.spec)
     commit('SET_APP_DEPLOY_HOST', res.data?.app_deploy_host)
     commit('SET_APP_DEPLOY_URL_SCHEMA', res.data?.app_deploy_url_schema)
     commit('SET_STORAGE_DEPLOY_HOST', res.data?.storage_deploy_host)

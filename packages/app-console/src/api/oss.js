@@ -40,14 +40,15 @@ export async function getOneBucket(bucketName) {
  * @param {number} mode
  * @returns {Promise<any[]>}
  */
-export async function createBucket(bucketName, mode) {
+export async function createBucket(bucketName, mode, quota) {
   const appid = store.state.app.appid
   const res = await request({
     url: `/apps/${appid}/oss/buckets`,
     method: 'post',
     data: {
       bucket: bucketName,
-      mode
+      mode,
+      quota
     }
   })
 

@@ -96,7 +96,7 @@
     />
 
     <!-- 表单对话框 -->
-    <el-dialog :title="uploadCommand === 'uploadFile' ? '上传文件' : '上传文件夹'" width="400px" @close="uploadFileList = []" :visible.sync="dialogFormVisible">
+    <el-dialog :title="uploadCommand === 'uploadFile' ? '上传文件' : '上传文件夹'" width="400px" :visible.sync="dialogFormVisible" @close="uploadFileList = []">
       <el-upload
         v-if="bucketDetail.credentials"
         drag
@@ -109,7 +109,7 @@
       >
         <i class="el-icon-upload" />
         <div class="el-upload__text">
-          {{uploadCommand === 'uploadFile' ? '将文件拖到此处，或' : ''}} <em>点击上传</em>
+          {{ uploadCommand === 'uploadFile' ? '将文件拖到此处，或' : '' }} <em>点击上传</em>
         </div>
       </el-upload>
     </el-dialog>
