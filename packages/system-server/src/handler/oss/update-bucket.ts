@@ -8,9 +8,10 @@
 import { Request, Response } from 'express'
 import { IApplicationData } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { CN_APPLICATIONS, CONST_DICTS } from '../../constants'
+import { BUCKET_QUOTA_MIN, CN_APPLICATIONS, CONST_DICTS } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { BUCKET_ACL, MinioAgent } from '../../support/minio'
+import { OssSupport } from '../../support/oss'
 
 /**
  * The handler of updating a bucket
@@ -38,8 +39,30 @@ export async function handleSetBucketPolicy(req: Request, res: Response) {
     return res.status(404).send('bucket not found')
   }
 
-  const oss = await MinioAgent.New()
   const internalName = `${app.appid}-${bucketName}`
+  const oss = await MinioAgent.New()
+  const stats = await oss.statsBucket(internalName)
+
+  // check quota
+  const avaliable_quota = await OssSupport.getAppAvaliableCapacity(app.appid)
+  let quota: number = req.body?.quota || 0
+  if (quota < BUCKET_QUOTA_MIN) { quota = BUCKET_QUOTA_MIN }
+  const increased = quota - existed.quota
+  // for increased case
+  if (increased > avaliable_quota) {
+    return res.send({ code: 'NO_SUFFICIENT_CAPACITY', error: 'NO_SUFFICIENT_CAPACITY' })
+  }
+
+  // for decreased case
+  if (increased < 0 && quota < stats.size) {
+    return res.send({ code: 'INVALID_PARAM', error: 'bucket quota cannot be less than the used size' })
+  }
+
+  // set bucket quota
+  if (increased !== 0) {
+    await oss.setBucketQuota(internalName, quota)
+  }
+
   const ret = await oss.setBucketACL(internalName, mode)
   if (ret?.$metadata?.httpStatusCode !== 204) {
     return res.send({ code: 'ERROR', data: ret?.$metadata })
@@ -49,7 +72,8 @@ export async function handleSetBucketPolicy(req: Request, res: Response) {
   await DatabaseAgent.db.collection<IApplicationData>(CN_APPLICATIONS)
     .updateOne({ appid: app.appid, 'buckets.name': bucketName }, {
       $set: {
-        'buckets.$.mode': mode
+        'buckets.$.mode': mode,
+        'buckets.$.quota': quota
       }
     })
 

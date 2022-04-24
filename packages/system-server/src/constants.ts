@@ -17,7 +17,10 @@ export const SYSTEM_EXTENSION_APPID = '00000000-0000-0000-0000-000000000000'
 export const KB = 1024
 export const MB = 1024 * KB
 export const GB = 1024 * MB
+export const TB = 1024 * GB
 export const DATE_NEVER = new Date('2099/12/31')
+
+export const BUCKET_QUOTA_MIN = 1 * GB
 
 /** regex const */
 export const REGEX_BUCKET_NAME = /^[a-z0-9]{1,16}$/

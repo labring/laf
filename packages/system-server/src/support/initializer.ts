@@ -119,11 +119,13 @@ export class Initializer {
 
     // create oss user
     const oss = await MinioAgent.New()
-    if (false === await oss.createUser(data.appid, data.config.oss_access_secret)) {
-      throw new Error('create oss user failed')
+    const res0 = await oss.createUser(data.appid, data.config.oss_access_secret)
+    if (res0.status === 'error') {
+      throw new Error('create oss user failed:' + res0.error)
     }
-    if (false === await oss.setUserPolicy(data.appid, Config.MINIO_CONFIG.user_policy)) {
-      throw new Error('set policy to oss user failed')
+    const res1 = await oss.setUserPolicy(data.appid, Config.MINIO_CONFIG.user_policy)
+    if (res1.status === 'error') {
+      throw new Error('set policy to oss user failed:' + res1.error)
     }
 
     // assign app spec

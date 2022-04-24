@@ -8,7 +8,7 @@
 import { Request, Response } from 'express'
 import { IApplicationData } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { CN_APPLICATIONS, CONST_DICTS, GB, REGEX_BUCKET_NAME } from '../../constants'
+import { BUCKET_QUOTA_MIN, CN_APPLICATIONS, CONST_DICTS, REGEX_BUCKET_NAME } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { BUCKET_ACL, MinioAgent } from '../../support/minio'
 import { OssSupport } from '../../support/oss'
@@ -31,7 +31,7 @@ export async function handleCreateBucket(req: Request, res: Response) {
   const app: IApplicationData = req['parsed-app']
 
   let quota: number = req.body?.quota || 0
-  if (quota <= 0) { quota = 1 * GB }
+  if (quota < BUCKET_QUOTA_MIN) { quota = BUCKET_QUOTA_MIN }
 
   const avaliable_quota = await OssSupport.getAppAvaliableCapacity(app.appid)
   if (quota > avaliable_quota) {

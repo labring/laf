@@ -88,12 +88,18 @@ export async function handleCreateApplication(req: Request, res: Response) {
   }
 
   // create oss user
-  const oss = await MinioAgent.New()
-  if (false === await oss.createUser(data.appid, data.config.oss_access_secret)) {
-    return res.status(400).send('Error: create oss user failed')
-  }
-  if (false === await oss.setUserPolicy(data.appid, Config.MINIO_CONFIG.user_policy)) {
-    return res.status(400).send('Error: set policy to oss user failed')
+  {
+    const oss = await MinioAgent.New()
+    const r0 = await oss.createUser(data.appid, data.config.oss_access_secret)
+    if (r0.status === 'error') {
+      logger.error(r0.error)
+      return res.status(400).send('Error: create oss user failed')
+    }
+    const r1 = await oss.setUserPolicy(data.appid, Config.MINIO_CONFIG.user_policy)
+    if (r1.status === 'error') {
+      logger.error(r1.error)
+      return res.status(400).send('Error: set policy to oss user failed')
+    }
   }
 
   // save it

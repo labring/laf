@@ -57,9 +57,15 @@ export async function handleGetOneBucket(req: Request, res: Response) {
   const exp = 60 * 60 * Config.TOKEN_EXPIRED_TIME
   const oss = await MinioAgent.New()
   const sts = await oss.getApplicationSTS(app, exp)
+
+  const internal_name = `${app.appid}-${name}`
+  const stats = await oss.statsBucket(internal_name)
   const data = {
     name,
     mode: bucket.mode,
+    quota: bucket.quota,
+    objects: stats.objects,
+    size: stats.size,
     credentials: {
       accessKeyId: sts.Credentials?.AccessKeyId,
       secretAccessKey: sts.Credentials?.SecretAccessKey,
