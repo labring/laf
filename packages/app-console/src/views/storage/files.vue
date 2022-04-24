@@ -96,17 +96,21 @@
     />
 
     <!-- 表单对话框 -->
-    <el-dialog title="上传文件" width="400px" :visible.sync="dialogFormVisible">
+    <el-dialog :title="uploadCommand === 'uploadFile' ? '上传文件' : '上传文件夹'" width="400px" :visible.sync="dialogFormVisible" @close="uploadFileList = []">
       <el-upload
         v-if="bucketDetail.credentials"
         drag
         multiple
         action=""
+        :show-file-list="true"
+        :file-list="uploadFileList"
         :auto-upload="true"
         :http-request="uploadFile"
       >
         <i class="el-icon-upload" />
-        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__text">
+          {{ uploadCommand === 'uploadFile' ? '将文件拖到此处，或' : '' }} <em>点击上传</em>
+        </div>
       </el-upload>
     </el-dialog>
   </div>
@@ -147,7 +151,9 @@ export default {
         update: '编辑',
         create: '创建'
       },
-      downloadLoading: false
+      downloadLoading: false,
+      uploadCommand: 'uploadFile',
+      uploadFileList: []
     }
   },
   async created() {
@@ -226,8 +232,8 @@ export default {
       await this.$prompt('', '请输入新文件夹名', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        inputPattern: /[\w|\d|\-]{1,64}/,
-        inputErrorMessage: '文件夹名只可包含字母、数字、下划线和中划线，长度在 1～64之间'
+        inputPattern: /^[^\\\/\:\*\?\"\<\>\|\.]+$/,
+        inputErrorMessage: '文件夹不能包含 \\\ \/ : * ? \" < > | 这些非法字符'
       }).then(async({ value }) => {
         this.currentPath = this.currentPath + value + '/'
         this.getList()
@@ -248,10 +254,12 @@ export default {
     handleUploadCommand(command) {
       this.dialogFormVisible = true
       if (command === 'uploadFolder') {
+        this.uploadCommand = 'uploadFolder'
         this.$nextTick(() => {
           document.getElementsByClassName('el-upload__input')[0].webkitdirectory = true
         })
       } else {
+        this.uploadCommand = 'uploadFile'
         this.$nextTick(() => {
           document.getElementsByClassName('el-upload__input')[0].webkitdirectory = false
         })

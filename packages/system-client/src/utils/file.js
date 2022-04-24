@@ -42,3 +42,11 @@ export async function readTextFromFile(file, encoding = 'utf-8') {
     reader.onerror = error => reject(error)
   })
 }
+
+export function byte2gb(bytes) {
+  return Math.floor(bytes / 1024 / 1024 / 1024)
+}
+
+export function gb2byte(gb) {
+  return gb * 1024 * 1024 * 1024
+}
