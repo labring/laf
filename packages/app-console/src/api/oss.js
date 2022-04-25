@@ -61,13 +61,14 @@ export async function createBucket(bucketName, mode, quota) {
  * @param {number} mode
  * @returns {Promise<any[]>}
  */
-export async function updateBucket(bucketName, mode) {
+export async function updateBucket(bucketName, mode, quota) {
   const appid = store.state.app.appid
   const res = await request({
     url: `/apps/${appid}/oss/buckets/${bucketName}`,
     method: 'put',
     data: {
-      mode
+      mode,
+      quota
     }
   })
 

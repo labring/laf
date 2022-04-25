@@ -193,11 +193,12 @@ export default {
       const ret = await oss.getBuckets().catch(() => { this.listLoading = false })
       assert(ret.code === 0, 'get file buckets got error')
 
-      this.list = ret.data
       const usedQuota = ret.data.reduce((total, bucket) => {
         return total + bucket.quota
       }, 0)
       this.freeQuota = this.totalQuota - this.byte2gb(usedQuota)
+
+      this.list = ret.data
       this.listLoading = false
     },
     // 显示创建表单
@@ -219,7 +220,7 @@ export default {
         }
 
         if (this.freeQuota < this.form.quota) {
-          return showError('Bucket 容量不能超过总容量')
+          return showError('所有Bucket容量相加不能超过总容量')
         }
         const quota = this.gb2byte(this.form.quota)
         // 执行创建请求
@@ -246,7 +247,7 @@ export default {
     },
     // 显示编辑表单
     showEditForm(row) {
-      this.form = { ...row }
+      this.form = { ...row, quota: this.byte2gb(row.quota) }
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -258,8 +259,16 @@ export default {
       this.$refs['dataForm'].validate(async(valid) => {
         if (!valid) { return }
 
+        // 检查quota是否可用
+        const existedQuota = this.list.find(bucket => bucket.name === this.form.name).quota
+        const freeQuota = this.freeQuota + this.byte2gb(existedQuota)
+        if (freeQuota < this.form.quota) {
+          return showError('所有Bucket容量相加不能超过总容量')
+        }
+        const quota = this.gb2byte(this.form.quota)
+
         // 执行更新请求
-        const r = await oss.updateBucket(this.form.name, this.form.mode)
+        const r = await oss.updateBucket(this.form.name, this.form.mode, quota)
 
         if (r.code) {
           this.$notify({
