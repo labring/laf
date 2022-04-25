@@ -21,6 +21,11 @@
         <span style="font-size: 16px;color: gray; margin-right: 5px;">当前:</span>
         <path-link :path="currentPath" :bucket="bucket" @change="onChangeDirectory" />
       </div>
+      <div class="filter-item tips">
+        <span>bucket容量：{{ bucketQuota }} </span>
+        <span>已用容量：{{ bucketSize }} </span>
+        <span>文件数量：{{ bucketObjects }} </span>
+      </div>
     </div>
 
     <!-- 表格 -->
@@ -105,7 +110,7 @@
         :show-file-list="true"
         :file-list="uploadFileList"
         :auto-upload="true"
-        :http-request="uploadFile"
+        :http-request="handleUploadFile"
       >
         <i class="el-icon-upload" />
         <div class="el-upload__text">
@@ -122,6 +127,7 @@ import * as oss from '@/api/oss'
 import { assert } from '@/utils/assert'
 import { showError, showSuccess } from '@/utils/show'
 import PathLink from './components/path-link.vue'
+import { byte2gb, byte2GbOrMb, gb2byte } from '@/utils/file'
 
 export default {
   name: 'BucketsListPage',
@@ -131,16 +137,19 @@ export default {
       bucket: null,
       bucketDetail: {
         name: '',
-        mode: 0,
+        mode: 'private',
         full_token: '',
         read_token: '',
-        credentials: {}
+        credentials: {},
+        objects: 0,
+        size: 0,
+        quota: 0,
       },
       tableKey: 0,
       list: null,
       currentPath: '/',
       total: 0,
-      listLoading: true,
+      listLoading: false,
       listQuery: {
         page: 1,
         limit: 20,
@@ -153,8 +162,19 @@ export default {
       },
       downloadLoading: false,
       uploadCommand: 'uploadFile',
-      uploadFileList: []
+      uploadFileList: [],
     }
+  },
+  computed: {
+    bucketQuota() {
+      return this.bucketDetail.quota ? byte2GbOrMb(this.bucketDetail.quota) : 0
+    },
+    bucketSize() {
+      return this.bucketDetail.size ? byte2GbOrMb(this.bucketDetail.size) : 0
+    },
+    bucketObjects() {
+      return this.bucketDetail.objects
+    },
   },
   async created() {
     this.bucket = this.$route.params?.bucket
@@ -168,21 +188,25 @@ export default {
     /**
      * 获取数据列表
      */
-    async getList() {
+    getList(upload = false) {
+      if (this.listLoading) return
       this.listLoading = true
-      // 拼装查询条件 by this.listQuery
-      // const { limit, page } = this.listQuery
-      // 执行数据查询
-      const res = await oss.getFilesByBucketName(this.bucket, {
-        marker: undefined,
-        prefix: this.currentPath,
-        credentials: this.bucketDetail.credentials
-      }).finally(() => { this.listLoading = false })
 
-      const files = res.Contents || []
-      const dirs = res.CommonPrefixes || []
-      this.list = [...files, ...dirs]
-      this.listLoading = false
+      const getList = async () => {
+        const res = await oss.getFilesByBucketName(this.bucket, {
+          marker: undefined,
+          prefix: this.currentPath,
+          credentials: this.bucketDetail.credentials
+        }).finally(() => { this.listLoading = false })
+
+        const files = res.Contents || []
+        const dirs = res.CommonPrefixes || []
+        this.list = [...files, ...dirs]
+        this.listLoading = false
+      }
+
+      // 对多文件或文件夹上传做节流处理
+      upload ? setTimeout(getList, 1000) : getList()
     },
     // 搜索
     handleFilter() {
@@ -253,19 +277,19 @@ export default {
     },
     handleUploadCommand(command) {
       this.dialogFormVisible = true
+      this.uploadCommand = command
       if (command === 'uploadFolder') {
-        this.uploadCommand = 'uploadFolder'
         this.$nextTick(() => {
           document.getElementsByClassName('el-upload__input')[0].webkitdirectory = true
         })
       } else {
-        this.uploadCommand = 'uploadFile'
         this.$nextTick(() => {
           document.getElementsByClassName('el-upload__input')[0].webkitdirectory = false
         })
       }
     },
-    async uploadFile(param) {
+    async handleUploadFile(param) {
+      console.log('upload file', param)
       const file = param.file
       const key = this.currentPath + (file.webkitRelativePath ? file.webkitRelativePath : file.name)
       const res = await oss.uploadAppFile(this.bucket, key, file, this.bucketDetail.credentials, { contentType: file.type })
@@ -274,7 +298,7 @@ export default {
       }
 
       showSuccess('文件上传成功: ' + key)
-      this.getList()
+      this.getList(true)
     },
     // 判断是否为图片类型
     isImage(row) {
@@ -313,6 +337,12 @@ export default {
 </script>
 
 <style scoped>
+.filter-container .tips {
+  font-size: 14px; color: #333;position: absolute;right: 20px;
+}
+.filter-container .tips span {
+  margin-right: 10px;
+}
 .thumb-image {
   width: 100px;
   max-height: 60px;

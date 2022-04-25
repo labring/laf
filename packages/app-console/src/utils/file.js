@@ -51,3 +51,21 @@ export function validateFileName(name) {
   const reg = /^[^\\\/\:\*\?\"\<\>\|\.]+$/
   return reg.test(name)
 }
+
+export function byte2gb(bytes) {
+  return Math.floor(bytes / 1024 / 1024 / 1024)
+}
+
+export function gb2byte(gb) {
+  return gb * 1024 * 1024 * 1024
+}
+
+export function byte2GbOrMb(bytes) {
+  if (bytes >= 1024 * 1024 * 1024) {
+    return `${Math.floor(bytes / 1024 / 1024 / 1024)} GB`
+  } else if (bytes > 1024 * 1024) {
+    return `${Math.floor(bytes / 1024 / 1024)} MB`
+  } else {
+    return `${Math.floor(bytes / 1024)} KB`
+  }
+}
