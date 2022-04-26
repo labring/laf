@@ -7,19 +7,15 @@ metadata:
 spec:
   selector:
     app: gateway
-  type: NodePort
+  type: ClusterIP
   ports:
     - port: 80
       targetPort: 80
       name: http
-      nodePort: 30000
-    - port: 443
-      targetPort: 443
-      name: https
 
 ---
 apiVersion: apps/v1
-kind: DaemonSet
+kind: Deployment
 metadata:
   name: gateway
   namespace: laf
@@ -37,16 +33,8 @@ spec:
         type: sys
     spec:
       automountServiceAccountToken: false
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
       restartPolicy: Always
-      terminationGracePeriodSeconds: 10
-      tolerations:
-        # this toleration is to have the daemonset runnable on master nodes
-        # remove it if your masters can't run pods
-        - key: node-role.kubernetes.io/master
-          operator: Exists
-          effect: NoSchedule
+      terminationGracePeriodSeconds: 5
       containers:
         - image: docker.io/lafyun/gateway:0.7.7
           imagePullPolicy: IfNotPresent
@@ -78,32 +66,8 @@ spec:
               memory: "1024Mi"
               cpu: "1000m"
           env:
-            - name: DEPLOY_DOMAIN
-              valueFrom:
-                configMapKeyRef:
-                  name: deploy-domain
-                  key: app-service-domain
-            - name: DEPLOY_FS_DOMAIN
-              valueFrom:
-                configMapKeyRef:
-                  name: deploy-domain
-                  key: fs-service-domain
-            - name: SYS_CLIENT_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: deploy-domain
-                  key: system-console-domain
-            - name: DOCS_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: deploy-domain
-                  key: docs-domain
-            - name: KUBE_NAMESPACE_OF_APP_SERVICES
-              valueFrom:
-                configMapKeyRef:
-                  name: app-service
-                  key: kube-namespace-of-app-services
             - name: SERVICE_DRIVER
               value: kubernetes
           ports:
             - containerPort: 80
+              name: http

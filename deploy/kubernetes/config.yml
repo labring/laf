@@ -40,13 +40,8 @@ metadata:
   name: deploy-domain
   namespace: laf
 data:
-  app-service-host: "local-dev.host:30000" # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
-  fs-service-host: "fs.local-dev.host:30000" # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
+  app-service-host: "local-dev.host" # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
   deploy-url-schema: "http"
-  app-service-domain: "*.local-dev.host"
-  fs-service-domain: "*.fs.local-dev.host"
-  system-console-domain: "console.local-dev.host"
-  docs-domain: "docs.local-dev.host"
 
 ### App service config & default quotas
 ---
@@ -56,10 +51,6 @@ metadata:
   name: app-service
   namespace: laf
 data:
-  image: "docker.io/lafyun/app-service:0.7.2"
-  default-request-memory: "128"
-  default-request-cpu: "100"
-  default-limit-memory: "256"
-  default-limit-cpu: "500"
+  image: "docker.io/lafyun/app-service:0.7.10"
   default-app-quota-created-per-user: "5"
-  kube-namespace-of-app-services: 'laf'
+  kube-namespace-of-app-services: 'laf-apps'

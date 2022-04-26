@@ -11,12 +11,14 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
   namespace = Config.KUBE_NAMESPACE_OF_APP_SERVICES
   apps_api: k8s.AppsV1Api
   core_api: k8s.CoreV1Api
+  net_api: k8s.NetworkingV1Api
 
   constructor(options?: any) {
     const kc = new k8s.KubeConfig()
     kc.loadFromDefault(options)
     this.apps_api = kc.makeApiClient(k8s.AppsV1Api)
     this.core_api = kc.makeApiClient(k8s.CoreV1Api)
+    this.net_api = kc.makeApiClient(k8s.NetworkingV1Api)
   }
 
   /**
@@ -45,6 +47,14 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
       await this.createK8sService(app, labels)
     }
 
+    if (!info?.ingress) {
+      try {
+        await this.createK8sIngress(app, labels)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
     return deployment
   }
 
@@ -68,6 +78,12 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
       logger.debug(`removed k8s service of app ${app.appid}:`, res_svc.body)
     }
 
+    if (info?.ingress) {
+      const res_ingr = await this.net_api.deleteNamespacedIngress(this.getName(app), this.namespace)
+      logger.info(`remove k8s ingress of app ${app.appid}`)
+      logger.debug(`removed k8s ingress of app ${app.appid}:`, res_ingr.body)
+    }
+
     return app.appid
   }
 
@@ -78,9 +94,11 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
    */
   async info(app: IApplicationData) {
     try {
-      const deployment = await this.getK8sDeployment(this.getName(app))
-      const service = await this.getK8sService(this.getName(app))
-      return { deployment, service }
+      const name = this.getName(app)
+      const deployment = await this.getK8sDeployment(name)
+      const service = await this.getK8sService(name)
+      const ingress = await this.getK8sIngress(name)
+      return { deployment, service, ingress }
     } catch (error) {
       throw error
     }
@@ -218,6 +236,53 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
     return service
   }
 
+  /**
+   * create k8s ingress for app
+   * @param app 
+   * @param labels 
+   * @returns 
+   */
+  private async createK8sIngress(app: IApplicationData, labels: any) {
+    const { body: ingress } = await this.net_api.createNamespacedIngress(this.namespace, {
+      metadata: {
+        name: this.getName(app),
+        labels: labels,
+        annotations: {
+          'nginx.ingress.kubernetes.io/enable-cors': "true",
+          'nginx.ingress.kubernetes.io/cors-expose-headers': "*",
+          'nginx.ingress.kubernetes.io/configuration-snippet': `more_set_headers "request-id: $req_id";`
+        }
+      },
+      spec: {
+        ingressClassName: "nginx",
+        rules: [
+          {
+            host: `${app.appid}.${Config.APP_SERVICE_DEPLOY_HOST}`,
+            http: {
+              paths: [
+                {
+                  path: '/',
+                  pathType: 'Prefix',
+                  backend: {
+                    service: {
+                      name: this.getName(app),
+                      port: { number: 8000 }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    })
+
+    logger.info(`create k8s ingress ${ingress.metadata.name} of app ${app.appid}`)
+    logger.debug(`created k8s ingress of app ${app.appid}:`, ingress)
+
+    return ingress
+  }
+
   private async getK8sDeployment(name: string) {
     try {
       const res = await this.apps_api.readNamespacedDeployment(name, this.namespace)
@@ -230,6 +295,15 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
   private async getK8sService(name: string) {
     try {
       const res = await this.core_api.readNamespacedService(name, this.namespace)
+      return res.body
+    } catch (error) {
+      return null
+    }
+  }
+
+  private async getK8sIngress(name: string) {
+    try {
+      const res = await this.net_api.readNamespacedIngress(name, this.namespace)
       return res.body
     } catch (error) {
       return null

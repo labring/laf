@@ -39,9 +39,9 @@ spec:
     spec:
       automountServiceAccountToken: true
       restartPolicy: Always
-      terminationGracePeriodSeconds: 10
+      terminationGracePeriodSeconds: 20
       containers:
-        - image: docker.io/lafyun/system-server:0.7.9
+        - image: docker.io/lafyun/system-server:0.7.10
           imagePullPolicy: IfNotPresent
           name: system-server
           resources:
@@ -53,7 +53,7 @@ spec:
               cpu: "1000m"
           startupProbe:
             httpGet:
-              path: /health-check
+              path: /healthz
               port: http
               httpHeaders:
                 - name: Referer
@@ -63,7 +63,7 @@ spec:
             failureThreshold: 30
           readinessProbe:
             httpGet:
-              path: /health-check
+              path: /healthz
               port: http
               httpHeaders:
                 - name: Referer
@@ -99,26 +99,6 @@ spec:
                   key: image
             - name: SERVICE_DRIVER
               value: kubernetes
-            - name: APP_SERVICE_DEFAULT_REQUEST_MEMORY
-              valueFrom:
-                configMapKeyRef:
-                  name: app-service
-                  key: default-request-memory
-            - name: APP_SERVICE_DEFAULT_REQUEST_CPU
-              valueFrom:
-                configMapKeyRef:
-                  name: app-service
-                  key: default-request-cpu
-            - name: APP_SERVICE_DEFAULT_LIMIT_MEMORY
-              valueFrom:
-                configMapKeyRef:
-                  name: app-service
-                  key: default-limit-memory
-            - name: APP_SERVICE_DEFAULT_LIMIT_CPU
-              valueFrom:
-                configMapKeyRef:
-                  name: app-service
-                  key: default-limit-cpu
             - name: ACCOUNT_DEFAULT_APP_QUOTA
               valueFrom:
                 configMapKeyRef:
@@ -134,16 +114,6 @@ spec:
                 configMapKeyRef:
                   name: deploy-domain
                   key: deploy-url-schema
-            - name: STORAGE_SERVICE_SECRET
-              valueFrom:
-                configMapKeyRef:
-                  name: secret-salt
-                  key: system-server-salt
-            - name: STORAGE_SERVICE_DEPLOY_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: deploy-domain
-                  key: fs-service-host
             - name: INIT_ROOT_ACCOUNT
               valueFrom:
                 configMapKeyRef:
@@ -154,10 +124,18 @@ spec:
                 configMapKeyRef:
                   name: root-account
                   key: password
-            - name: STORAGE_SERVICE_API_ENTRYPOINT
-              value: http://storage-service:9010
             - name: LOG_LEVEL
               value: debug
+            - name: MINIO_ACCESS_KEY
+              value: minio-root-user
+            - name: MINIO_ACCESS_SECRET
+              value: minio-root-password
+            - name: MINIO_INTERNAL_ENDPOINT
+              value: http://oss:9000
+            - name: MINIO_EXTERNAL_ENDPOINT
+              value: http://oss.local-dev.host
+            - name: MINIO_REGION_NAME
+              value: cn-default
           ports:
             - name: http
               containerPort: 9000

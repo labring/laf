@@ -5,6 +5,13 @@ metadata:
   name: laf
 
 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: laf-apps
+
+
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:

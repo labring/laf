@@ -1,0 +1,148 @@
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-oss
+  namespace: laf
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 2048m
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: minio.local-dev.host
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: oss
+            port:
+              number: 9001
+  - host: oss.local-dev.host
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: oss
+            port:
+              number: 9000
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-sys-console
+  namespace: laf
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 2m
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: console.local-dev.host
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: gateway
+            port:
+              number: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-sys-api
+  namespace: laf
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 2m
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: console.local-dev.host
+    http:
+      paths:
+      - path: /sys-api/(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: system-server
+            port:
+              number: 9000
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-sys-extension-api
+  namespace: laf-apps
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 2m
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: console.local-dev.host
+    http:
+      paths:
+      - path: /sys-extension-api/(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: app-0000000000000000
+            port:
+              number: 8000
+
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-docs
+  namespace: laf
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /docs/$1
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: docs.local-dev.host
+    http:
+      paths:
+      - path: /(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: gateway
+            port:
+              number: 80
+
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: app-0000000000000000
+#   namespace: laf-apps
+#   annotations:
+#     nginx.ingress.kubernetes.io/enable-cors: "true"
+#     nginx.ingress.kubernetes.io/cors-expose-headers: "*"
+#     nginx.ingress.kubernetes.io/configuration-snippet: |
+#       more_set_headers "request-id: $req_id";
+# spec:
+#   ingressClassName: nginx
+#   rules:
+#   - host: "0000000000000000.local-dev.host"
+#     http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: app-0000000000000000
+#             port:
+#               number: 8000
