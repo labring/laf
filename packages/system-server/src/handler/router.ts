@@ -27,7 +27,7 @@ router.use('/apps/:appid/dbm', checkAppid, DbmRouter)
 router.use('/apps/:appid/deploy', checkAppid, DeployRouter)
 router.use('/apps/:appid/oss', checkAppid, OSSRouter)
 
-router.use('/health-check', (_req, res) => {
+router.use('/healthz', (_req, res) => {
   if (!DatabaseAgent.sys_accessor.db) {
     return res.status(400).send('no db connection')
   }

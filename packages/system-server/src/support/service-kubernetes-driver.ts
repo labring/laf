@@ -160,7 +160,7 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
                 },
                 startupProbe: {
                   httpGet: {
-                    path: '/health-check',
+                    path: '/healthz',
                     port: 'http',
                     httpHeaders: [{ name: 'Referer', value: 'startupProbe' }]
                   },
@@ -171,7 +171,7 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
                 },
                 readinessProbe: {
                   httpGet: {
-                    path: '/health-check',
+                    path: '/healthz',
                     port: 'http',
                     httpHeaders: [{ name: 'Referer', value: 'readinessProbe' }]
                   },
