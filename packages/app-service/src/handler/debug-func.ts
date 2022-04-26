@@ -7,7 +7,6 @@
 
 import { Request, Response } from 'express'
 import { FunctionContext } from 'cloud-function-engine'
-import { parseToken } from '../support/token'
 import { logger } from '../support/logger'
 import { addFunctionLog } from '../support/function'
 import { ObjectId } from 'bson'
@@ -20,7 +19,6 @@ export async function handleDebugFunction(req: Request, res: Response) {
 
   const requestId = req['requestId']
   const func_name = req.params?.name
-  const debug_token = req.get('debug-token') ?? undefined
   const func_data = req.body?.func
   const param = req.body?.param
 
@@ -29,8 +27,8 @@ export async function handleDebugFunction(req: Request, res: Response) {
   }
 
   // verify the debug token
-  const parsed = parseToken(debug_token as string)
-  if (!parsed || parsed.type !== 'debug') {
+  const auth = req['auth']
+  if (!auth || auth.type !== 'debug') {
     return res.status(403).send('permission denied: invalid debug token')
   }
 

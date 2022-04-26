@@ -173,17 +173,17 @@ export function compileFunctionCode(func_id, function_data) {
 /**
  * Debug cloud function
  */
-export async function launchFunction(func, param, debug = false) {
+export async function launchFunction(func, param, debug_token) {
   const app_url = getAppAccessUrl()
   const res = await axios({
-    url: app_url + `/func/debug/${func.name}`,
+    url: app_url + `/debug/${func.name}`,
     method: 'post',
     data: {
       func,
       param
     },
     headers: {
-      'debug-token': debug
+      'Authorization': `Bearer ${debug_token}`
     }
   })
 

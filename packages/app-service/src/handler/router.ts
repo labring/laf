@@ -32,18 +32,12 @@ export const router = Router()
 router.post('/proxy/:policy', handleDatabaseProxy)
 router.get('/typing/package', handlePackageTypings)
 
-/**
- * Debug cloud function through HTTP request.
- * @deprecated compatible for history versions
- * @method POST
- */
-router.post('/func/debug/:name', uploader.any(), handleDebugFunction)
 
 /**
  * Debug cloud function through HTTP request.
  * @method POST
  */
-router.post('/debug/:name', uploader.any(), handleDebugFunction)
+router.all('/debug/:name', uploader.any(), handleDebugFunction)
 
 
 /**

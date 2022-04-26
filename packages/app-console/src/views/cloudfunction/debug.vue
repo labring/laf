@@ -309,7 +309,7 @@ export default {
       const res = await launchFunction(r.data, param, debug_token)
         .finally(() => { this.loading = false })
 
-      this.invokeRequestId = res.headers['requestid']
+      this.invokeRequestId = res.headers['x-request-id'] || res.headers['request-id'] || res.headers['requestid'] || res.headers['requestId']
       await this.getLogByRequestId(this.invokeRequestId)
         .finally(() => { this.loading = false })
 
