@@ -185,4 +185,8 @@ export default class Config {
   static get APPID_LENGTH(): number {
     return parseInt(process.env.APPID_LENGTH || '16')
   }
+
+  static get SYSTEM_EXTENSION_APPID(): string {
+    return process.env.SYSTEM_EXTENSION_APPID || '0000000000000000'
+  }
 }

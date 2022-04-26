@@ -5,7 +5,7 @@ import { logger } from './logger'
 import { ServiceDriverInterface } from './service-operator'
 import { ApplicationSpecSupport } from './application-spec'
 import * as assert from 'assert'
-import { MB, SYSTEM_EXTENSION_APPID } from '../constants'
+import { MB } from '../constants'
 
 
 export class DockerContainerServiceDriver implements ServiceDriverInterface {
@@ -111,7 +111,7 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
       binds = [`${Config.DEBUG_BIND_HOST_APP_PATH}:/app`]
     }
 
-    if (app.appid === SYSTEM_EXTENSION_APPID) {
+    if (app.appid === Config.SYSTEM_EXTENSION_APPID) {
       binds.push('/var/run/docker.sock:/var/run/docker.sock:ro')
     }
 

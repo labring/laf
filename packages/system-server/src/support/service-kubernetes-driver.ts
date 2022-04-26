@@ -1,7 +1,7 @@
 import * as k8s from '@kubernetes/client-node'
 import { IApplicationData, getApplicationDbUri } from './application'
 import Config from '../config'
-import { MB, SYSTEM_EXTENSION_APPID } from '../constants'
+import { MB } from '../constants'
 import { logger } from './logger'
 import { ServiceDriverInterface } from './service-operator'
 import { ApplicationSpecSupport } from './application-spec'
@@ -126,7 +126,7 @@ export class KubernetesServiceDriver implements ServiceDriverInterface {
           },
           spec: {
             terminationGracePeriodSeconds: 15,
-            automountServiceAccountToken: app.appid === SYSTEM_EXTENSION_APPID,
+            automountServiceAccountToken: app.appid === Config.SYSTEM_EXTENSION_APPID,
             containers: [
               {
                 image: image_name,

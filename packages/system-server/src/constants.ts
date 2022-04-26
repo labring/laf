@@ -12,8 +12,6 @@ import { roles } from './permissions'
 /** prefix of sys db collection name */
 const coll_prefix = 'sys_'
 
-export const SYSTEM_EXTENSION_APPID = '00000000-0000-0000-0000-000000000000'
-
 export const KB = 1024
 export const MB = 1024 * KB
 export const GB = 1024 * MB

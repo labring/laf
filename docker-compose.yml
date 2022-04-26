@@ -44,6 +44,7 @@ services:
       MINIO_REGION_NAME: cn-default
       DEBUG_BIND_HOST_APP_PATH: '${PWD}/packages/app-service'
       INIT_ROOT_ACCOUNT_PASSWORD: abc123
+      SYSTEM_EXTENSION_APPID: '0000000000000000'
     command: sh /app/start.sh
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -66,10 +67,10 @@ services:
       - system-server
     environment:
       DEPLOY_DOMAIN: "*.local-dev.host" # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
-      DEPLOY_FS_DOMAIN: "*.fs.local-dev.host"
       DEPLOY_OSS_DOMAIN: "oss.local-dev.host"
       SYS_CLIENT_HOST: console.local-dev.host
       DOCS_HOST: docs.local-dev.host
+      SYSTEM_EXTENSION_APPID: '0000000000000000'
     volumes:
       - ./packages/gateway/scripts:/scripts
       - ./packages/system-client/dist:/app
@@ -117,6 +118,7 @@ volumes:
   db-data:
   oss-data:
   etcd-data:
+
 
 networks:
   laf_shared_network:

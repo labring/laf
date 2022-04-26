@@ -5,6 +5,7 @@ WORKDIR /app
 EXPOSE 80
 
 ENV SERVICE_DRIVER=docker
+ENV SYSTEM_EXTENSION_APPID=0000000000000000
 
 ADD ./conf.docker /conf.docker
 ADD ./conf.kubernetes /conf.kubernetes

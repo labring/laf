@@ -3,7 +3,6 @@ import { getAccountByUsername } from "./support/account"
 import { getApplicationByAppid } from "./support/application"
 import { Initializer } from "./support/initializer"
 import Config from "./config"
-import { SYSTEM_EXTENSION_APPID } from "./constants"
 import { logger } from "./support/logger"
 
 
@@ -40,14 +39,14 @@ async function main() {
   }
 
   // create system extension server app
-  const app = await getApplicationByAppid(SYSTEM_EXTENSION_APPID)
+  const app = await getApplicationByAppid(Config.SYSTEM_EXTENSION_APPID)
   if (!app) {
-    await Initializer.createSystemExtensionApp(account_id, SYSTEM_EXTENSION_APPID)
+    await Initializer.createSystemExtensionApp(account_id, Config.SYSTEM_EXTENSION_APPID)
     logger.info('create system extension server app')
   }
 
   // run system extension server app
-  await Initializer.startSystemExtensionApp(SYSTEM_EXTENSION_APPID)
+  await Initializer.startSystemExtensionApp(Config.SYSTEM_EXTENSION_APPID)
   logger.info('start system extension server app')
 }
 
