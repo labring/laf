@@ -9,12 +9,13 @@ import { CN_APPLICATIONS, CN_APP_SPECS, CN_PUBLISHED_CONFIG, CONST_DICTS } from 
 import { DatabaseAgent } from "../db"
 import * as assert from 'assert'
 import { MongoAccessor } from "database-proxy"
-import { generateUUID } from "./util-passwd"
 import { MongoClient, ObjectId } from 'mongodb'
 import Config from "../config"
 import * as mongodb_uri from 'mongodb-uri'
 import { logger } from "./logger"
 import { BUCKET_ACL } from "./minio"
+import { customAlphabet } from 'nanoid'
+
 
 /**
  * The application structure in db
@@ -205,12 +206,13 @@ export async function createApplicationDb(app: IApplicationData) {
 }
 
 /**
- * Generate application id
+ * Generate application id :
+ * - lower case
+ * - without "1" and "2"
+ * - alpha & numbers
  * @returns 
  */
-export function generateAppid() {
-  return generateUUID()
-}
+export const generateAppid = customAlphabet('23456789abcdefghijklmnopqrstuvwxyz', Config.APPID_LENGTH)
 
 /**
  * Publish application packages

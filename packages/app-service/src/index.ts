@@ -38,7 +38,7 @@ process.on('uncaughtException', err => {
 /**
  * Parsing bearer token
  */
-app.use(function (req, _res, next) {
+app.use(function (req, res, next) {
   const token = splitBearerToken(req.headers['authorization'] ?? '')
   const auth = parseToken(token) || null
   req['auth'] = auth
@@ -48,6 +48,7 @@ app.use(function (req, _res, next) {
     logger.info(requestId, `${req.method} "${req.url}" - referer: ${req.get('referer') || '-'} ${req.get('user-agent')}`)
     logger.trace(requestId, `${req.method} ${req.url}`, { body: req.body, headers: req.headers, auth })
   }
+  res.set('request-id', requestId)
   next()
 })
 

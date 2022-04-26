@@ -69,7 +69,7 @@ export async function handleCreateApplication(req: Request, res: Response) {
       db_name: db_name,
       db_user: db_user,
       db_password: db_password,
-      server_secret_salt: generatePassword(64),
+      server_secret_salt: generatePassword(64, true, false),
       oss_access_secret: generatePassword(64, true, false)
     },
     runtime: {

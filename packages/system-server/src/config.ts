@@ -178,4 +178,11 @@ export default class Config {
   static get APP_SERVICE_ENV_NPM_INSTALL_FLAGS(): string {
     return process.env.APP_SERVICE_ENV_NPM_INSTALL_FLAGS || ''
   }
+
+  /**
+   * length of appid genereated, deafult value is 16
+   */
+  static get APPID_LENGTH(): number {
+    return parseInt(process.env.APPID_LENGTH || '16')
+  }
 }
