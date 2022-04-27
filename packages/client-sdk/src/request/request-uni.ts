@@ -37,11 +37,7 @@ export class UniRequest extends Request {
       dataType: 'json'
     }
 
-    const [err, res] = await uni.request(options)
-
-    if (err) {
-      throw err
-    }
+    const res = await uni.request(options)
     return res
   }
 
