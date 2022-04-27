@@ -55,7 +55,7 @@
   "rest-client.environmentVariables": {
     "$shared": {},
     "test": {
-      "base_url": "http://console.local-dev.host:8080",
+      "base_url": "http://console.local-dev.host:8080/sys-api",
       "user": "root",
       "passwd": "abc123"
     },
