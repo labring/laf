@@ -30,6 +30,16 @@ spec:
             name: oss
             port:
               number: 9000
+  - host: "*.oss.local-dev.host"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: oss
+            port:
+              number: 9000
 
 ---
 apiVersion: networking.k8s.io/v1
