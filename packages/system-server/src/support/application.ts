@@ -18,6 +18,31 @@ import { customAlphabet } from 'nanoid'
 
 
 /**
+ * Status of application instance
+ */
+export enum ApplicationInstanceStatus {
+  CREATED = 'created',
+  PREPARED_START = 'prepared_start',
+  STARTING = 'starting',
+  RUNNING = 'running',
+  PREPARED_STOP = 'prepared_stop',
+  STOPPING = 'stopping',
+  STOPPED = 'stopped',
+  PREPARED_RESTART = 'prepared_restart',
+  RESTARTING = 'restarting'
+}
+
+export interface IApplicationBucket {
+  name: string,
+  mode: BUCKET_ACL,
+  quota: number,
+  options: {
+    index: string | null
+    domain: string
+  }
+}
+
+/**
  * The application structure in db
  */
 export interface IApplicationData {
@@ -25,7 +50,7 @@ export interface IApplicationData {
   name: string
   created_by: ObjectId
   appid: string
-  status: 'created' | 'running' | 'stopped' | 'cleared'
+  status: ApplicationInstanceStatus
   config: {
     db_server_name?: string
     db_name: string
@@ -42,11 +67,7 @@ export interface IApplicationData {
   runtime: {
     image: string
   }
-  buckets: {
-    name: string,
-    mode: BUCKET_ACL,
-    quota: number
-  }[]
+  buckets: IApplicationBucket[]
   packages: {
     name: string,
     version: string
