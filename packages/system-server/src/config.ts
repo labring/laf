@@ -73,13 +73,6 @@ export default class Config {
   }
 
   /**
-   * the name of network which apps used
-   */
-  static get DOCKER_SHARED_NETWORK(): string {
-    return process.env.DOCKER_SHARED_NETWORK || process.env.SHARED_NETWORK || 'laf_shared_network'
-  }
-
-  /**
    * the app service image name
    */
   static get APP_SERVICE_IMAGE(): string {
@@ -116,23 +109,6 @@ export default class Config {
     return process.env.APP_SERVICE_DEPLOY_URL_SCHEMA ?? 'http'
   }
 
-
-  /**
-   * DEBUG: the app-service path that bind to app-service container
-   * This env var should only be set while debugging app service, 
-   * otherwise always keep this env var value be empty
-   */
-  static get DEBUG_BIND_HOST_APP_PATH(): string | undefined {
-    return process.env.DEBUG_BIND_HOST_APP_PATH ?? undefined
-  }
-
-  /**
-   * The app service runtime platform: 'docker' | 'kubernetes'
-   */
-  static get SERVICE_DRIVER(): string {
-    return process.env.SERVICE_DRIVER || 'docker'
-  }
-
   /**
    * Minio configuration
    */
@@ -165,18 +141,6 @@ export default class Config {
       throw new Error('env: `INIT_ROOT_ACCOUNT_PASSWORD` is missing')
     }
     return password
-  }
-
-  static get KUBE_NAMESPACE_OF_APP_SERVICES() {
-    return process.env.KUBE_NAMESPACE_OF_APP_SERVICES || 'laf'
-  }
-
-  static get KUBE_NAMESPACE_OF_SYS_SERVICES() {
-    return process.env.KUBE_NAMESPACE_OF_SYS_SERVICES || 'laf'
-  }
-
-  static get APP_SERVICE_ENV_NPM_INSTALL_FLAGS(): string {
-    return process.env.APP_SERVICE_ENV_NPM_INSTALL_FLAGS || ''
   }
 
   /**
