@@ -8,7 +8,22 @@ metadata:
 data:
   sys-db-uri: "mongodb://my_user:password123@mongo.laf:27017/sys_db?authSource=sys_db&replicaSet=laf&writeConcern=majority"
   app-db-uri: "mongodb://root:password123@mongo.laf:27017/?authSource=admin&replicaSet=laf&writeConcern=majority&maxPoolSize=10"
-  fs-db-uri: "mongodb://root:password123@mongo.laf:27017/fs_db?authSource=admin&replicaSet=laf&writeConcern=majority"
+
+### OSS configuration
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oss-config
+  namespace: laf
+data:
+  minio-root-user: "minio-root-user"
+  minio-root-password: "minio-root-password"
+  minio-region-name: "cn-default"
+  minio-domain: "oss.local-dev.host"
+  internal-endpoint: "http://oss:9000"
+  external-endpoint: "http://oss.local-dev.host"
+
 
 ### Root account for system extension app
 ---
@@ -30,7 +45,6 @@ metadata:
   namespace: laf
 data:
   system-server-salt: "Rewrite_Your_Own_Secret_Salt_abcdefg1234567"
-  fs-server-salt: "Rewrite_Your_Own_Secret_Salt_abcdefg1234567"
 
 ### Deployment domains for gateway & clients
 ---
@@ -54,3 +68,5 @@ data:
   image: "docker.io/lafyun/app-service:0.7.10"
   default-app-quota-created-per-user: "5"
   kube-namespace-of-app-services: 'laf-apps'
+  system-appid: "000000"
+  appid-length: "6"
