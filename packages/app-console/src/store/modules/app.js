@@ -29,7 +29,7 @@ const state = {
   file_token: null,
 
   /**
-   * spec 
+   * spec
    * @type {Object}
    */
   spec: null,
