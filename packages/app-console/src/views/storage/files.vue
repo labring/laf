@@ -143,7 +143,7 @@ export default {
         credentials: {},
         objects: 0,
         size: 0,
-        quota: 0,
+        quota: 0
       },
       tableKey: 0,
       list: null,
@@ -162,7 +162,7 @@ export default {
       },
       downloadLoading: false,
       uploadCommand: 'uploadFile',
-      uploadFileList: [],
+      uploadFileList: []
     }
   },
   computed: {
@@ -174,7 +174,7 @@ export default {
     },
     bucketObjects() {
       return this.bucketDetail.objects
-    },
+    }
   },
   async created() {
     this.bucket = this.$route.params?.bucket
@@ -192,7 +192,7 @@ export default {
       if (this.listLoading) return
       this.listLoading = true
 
-      const getList = async () => {
+      const getList = async() => {
         const res = await oss.getFilesByBucketName(this.bucket, {
           marker: undefined,
           prefix: this.currentPath,

@@ -29,10 +29,10 @@
           </template>
         </el-table-column>
         <el-table-column align="center" label="应用规格" min-width="80">
-          <template slot-scope="scope">  
-             <el-tooltip placement="top" v-if="scope.row.spec" >  
-              <div slot="content">{{formatSpec(scope.row.spec.spec).text}}</div>       
-              <el-tag type="info">{{formatSpec(scope.row.spec.spec).label}}</el-tag>
+          <template slot-scope="scope">
+            <el-tooltip v-if="scope.row.spec" placement="top">
+              <div slot="content">{{ formatSpec(scope.row.spec.spec).text }}</div>
+              <el-tag type="info">{{ formatSpec(scope.row.spec.spec).label }}</el-tag>
             </el-tooltip>
             <span v-else>-</span>
           </template>
@@ -104,11 +104,11 @@
             <span class="link-type table-column-text" @click="showUpdateForm(row)">{{ row.name }}</span>
           </template>
         </el-table-column>
-       <el-table-column align="center" label="规格" min-width="80">
-          <template slot-scope="scope">  
-            <el-tooltip placement="top" v-if="scope.row.spec" >  
-              <div slot="content">{{formatSpec(scope.row.spec.spec).text}}</div>       
-              <el-tag type="info">{{formatSpec(scope.row.spec.spec).label}}</el-tag>
+        <el-table-column align="center" label="规格" min-width="80">
+          <template slot-scope="scope">
+            <el-tooltip v-if="scope.row.spec" placement="top">
+              <div slot="content">{{ formatSpec(scope.row.spec.spec).text }}</div>
+              <el-tag type="info">{{ formatSpec(scope.row.spec.spec).label }}</el-tag>
             </el-tooltip>
             <span v-else>-</span>
           </template>
@@ -173,16 +173,16 @@
         <el-form-item label="应用名称" prop="name">
           <el-input v-model="form.name" placeholder="应用名称" />
         </el-form-item>
-         <el-form-item label="选择规格" prop="spec">
+        <el-form-item label="选择规格" prop="spec">
           <el-radio-group v-model="form.spec">
-             <el-tooltip placement="bottom"  v-for="spec in specs" :key="spec.name" >  
-                <div slot="content">{{formatSpec(spec).text}}</div>    
-                <el-radio :label="spec.name" border>
-                  <div class="spec-card" style="display:inline-block;">
-                    {{spec.label}}
-                  </div>
-                </el-radio>
-              </el-tooltip>
+            <el-tooltip v-for="spec in specs" :key="spec.name" placement="bottom">
+              <div slot="content">{{ formatSpec(spec).text }}</div>
+              <el-radio :label="spec.name" border>
+                <div class="spec-card" style="display:inline-block;">
+                  {{ spec.label }}
+                </div>
+              </el-radio>
+            </el-tooltip>
           </el-radio-group>
         </el-form-item>
       </el-form>
@@ -467,12 +467,12 @@ export default {
     },
     getRuntimeVersion(app) {
       const image = app.runtime?.image
-      if (!image)  return 'unknown'
+      if (!image) return 'unknown'
       const [, version] = image.split(':')
       return version || 'unknown'
     },
     formatSpec(spec) {
-      if(!spec) return { label: '-', text: 'unknown' }
+      if (!spec) return { label: '-', text: 'unknown' }
       const label = spec.label
       const memory = this.byte2mb(spec.limit_memory)
       const oss = this.byte2gb(spec.storage_capacity)
@@ -481,10 +481,10 @@ export default {
       return { memory, label, oss, db, text }
     },
     byte2mb(bytes) {
-      return ~~(bytes/1024/1024)
+      return ~~(bytes / 1024 / 1024)
     },
     byte2gb(bytes) {
-      return ~~(bytes/1024/1024/1024)
+      return ~~(bytes / 1024 / 1024 / 1024)
     }
   }
 }

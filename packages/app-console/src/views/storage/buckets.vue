@@ -85,17 +85,18 @@
           </el-select>
         </el-form-item>
         <el-form-item label="容量" prop="quota">
-          <el-input 
-            type="number" 
+          <el-input
+            v-model.number="form.quota"
+            type="number"
             :step="1"
             :min="1"
-            v-model.number="form.quota"
             oninput="value=value.replace(/[^0-9]/g,'')"
             style="width: 140px;"
-            placeholder="容量，单位：GB" >
+            placeholder="容量，单位：GB"
+          >
             <template slot="append">GB</template>
           </el-input>
-          <span> 总容量 {{totalQuota}} GB，剩余 {{freeQuota}} GB</span>
+          <span> 总容量 {{ totalQuota }} GB，剩余 {{ freeQuota }} GB</span>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -136,7 +137,7 @@ function getDefaultFormValue() {
 const formRules = {
   name: [{ required: true, message: 'Bucket 名字不可为空', trigger: 'blur' }],
   mode: [{ required: true, message: 'Bucket 权限为必选', trigger: 'blur' }],
-  quota: [{ required: true, message: 'Bucket 容量为必选', trigger: 'blur' }],
+  quota: [{ required: true, message: 'Bucket 容量为必选', trigger: 'blur' }]
 }
 
 export default {
@@ -163,11 +164,8 @@ export default {
       rules: formRules,
       downloadLoading: false,
       mode: MODE,
-      freeQuota: 0,
+      freeQuota: 0
     }
-  },
-  created() {
-    this.getList()
   },
   computed: {
     // 总存储容量 GB
@@ -175,6 +173,9 @@ export default {
       const totalQuota = store.state.app.spec.spec.storage_capacity || 0
       return this.byte2gb(totalQuota)
     }
+  },
+  created() {
+    this.getList()
   },
   methods: {
     byte2gb(byte) {
