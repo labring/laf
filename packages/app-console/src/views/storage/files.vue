@@ -127,7 +127,7 @@ import * as oss from '@/api/oss'
 import { assert } from '@/utils/assert'
 import { showError, showSuccess } from '@/utils/show'
 import PathLink from './components/path-link.vue'
-import { byte2gb, byte2GbOrMb, gb2byte } from '@/utils/file'
+import { byte2GbOrMb } from '@/utils/file'
 
 export default {
   name: 'BucketsListPage',
@@ -289,9 +289,10 @@ export default {
       }
     },
     async handleUploadFile(param) {
-      console.log('upload file', param)
       const file = param.file
-      const key = this.currentPath + (file.webkitRelativePath ? file.webkitRelativePath : file.name)
+      const currentPath = this.currentPath === '/' ? '' : this.currentPath
+      const fileName = file.webkitRelativePath ? file.webkitRelativePath : file.name
+      const key = currentPath + fileName
       const res = await oss.uploadAppFile(this.bucket, key, file, this.bucketDetail.credentials, { contentType: file.type })
       if (res.$response?.httpResponse?.statusCode !== 200) {
         return showError('文件上传失败：' + key)
