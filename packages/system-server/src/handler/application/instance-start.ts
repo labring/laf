@@ -1,0 +1,38 @@
+/*
+ * @Author: Maslow<wangfugen@126.com>
+ * @Date: 2021-08-31 15:00:04
+ * @LastEditTime: 2021-12-24 11:57:45
+ * @Description: 
+ */
+
+import { Request, Response } from 'express'
+import { getApplicationByAppid, InstanceStatus, updateApplicationStatus } from '../../support/application'
+import { checkPermission } from '../../support/permission'
+import { permissions } from '../../permissions'
+
+const { APPLICATION_UPDATE } = permissions
+
+/**
+ * The handler of starting application instance
+ */
+export async function handleStartInstance(req: Request, res: Response) {
+  const uid = req['auth']?.uid
+  const appid = req.params.appid
+  const app = await getApplicationByAppid(appid)
+
+  if (!app)
+    return res.status(422).send('app not found')
+
+  // check permission
+  const code = await checkPermission(uid, APPLICATION_UPDATE.name, app)
+  if (code)
+    return res.status(code).send()
+
+  const ret = await updateApplicationStatus(app.appid, app.status, InstanceStatus.PREPARED_START)
+  return res.send({
+    data: {
+      result: ret > 0 ? true : false,
+      appid: app.appid
+    }
+  })
+}

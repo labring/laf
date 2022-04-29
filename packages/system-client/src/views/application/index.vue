@@ -29,10 +29,10 @@
           </template>
         </el-table-column>
         <el-table-column align="center" label="应用规格" min-width="80">
-          <template slot-scope="scope">  
-             <el-tooltip placement="top" v-if="scope.row.spec" >  
-              <div slot="content">{{formatSpec(scope.row.spec.spec).text}}</div>       
-              <el-tag type="info">{{formatSpec(scope.row.spec.spec).label}}</el-tag>
+          <template slot-scope="scope">
+            <el-tooltip v-if="scope.row.spec" placement="top">
+              <div slot="content">{{ formatSpec(scope.row.spec.spec).text }}</div>
+              <el-tag type="info">{{ formatSpec(scope.row.spec.spec).label }}</el-tag>
             </el-tooltip>
             <span v-else>-</span>
           </template>
@@ -104,11 +104,11 @@
             <span class="link-type table-column-text" @click="showUpdateForm(row)">{{ row.name }}</span>
           </template>
         </el-table-column>
-       <el-table-column align="center" label="规格" min-width="80">
-          <template slot-scope="scope">  
-            <el-tooltip placement="top" v-if="scope.row.spec" >  
-              <div slot="content">{{formatSpec(scope.row.spec.spec).text}}</div>       
-              <el-tag type="info">{{formatSpec(scope.row.spec.spec).label}}</el-tag>
+        <el-table-column align="center" label="规格" min-width="80">
+          <template slot-scope="scope">
+            <el-tooltip v-if="scope.row.spec" placement="top">
+              <div slot="content">{{ formatSpec(scope.row.spec.spec).text }}</div>
+              <el-tag type="info">{{ formatSpec(scope.row.spec.spec).label }}</el-tag>
             </el-tooltip>
             <span v-else>-</span>
           </template>
@@ -173,16 +173,16 @@
         <el-form-item label="应用名称" prop="name">
           <el-input v-model="form.name" placeholder="应用名称" />
         </el-form-item>
-         <el-form-item label="选择规格" prop="spec">
+        <el-form-item label="选择规格" prop="spec">
           <el-radio-group v-model="form.spec">
-             <el-tooltip placement="bottom"  v-for="spec in specs" :key="spec.name" >  
-                <div slot="content">{{formatSpec(spec).text}}</div>    
-                <el-radio :label="spec.name" border>
-                  <div class="spec-card" style="display:inline-block;">
-                    {{spec.label}}
-                  </div>
-                </el-radio>
-              </el-tooltip>
+            <el-tooltip v-for="spec in specs" :key="spec.name" placement="bottom">
+              <div slot="content">{{ formatSpec(spec).text }}</div>
+              <el-radio :label="spec.name" border>
+                <div class="spec-card" style="display:inline-block;">
+                  {{ spec.label }}
+                </div>
+              </el-radio>
+            </el-tooltip>
           </el-radio-group>
         </el-form-item>
       </el-form>
@@ -237,7 +237,7 @@
 </template>
 
 <script>
-import { createApplication, getMyApplications, startApplicationService, stopApplicationService, updateApplication, removeApplication, exportApplication, importApplication, openAppConsole, getSpecs } from '@/api/application'
+import { createApplication, getMyApplications, startApplicationInstance, stopApplicationInstance, restartApplicationInstance, updateApplication, removeApplication, exportApplication, importApplication, openAppConsole, getSpecs } from '@/api/application'
 import { showError, showInfo, showSuccess } from '@/utils/show'
 import { exportRawBlob } from '@/utils/file'
 import { parseTime } from '@/utils'
@@ -395,29 +395,33 @@ export default {
     },
     async startApp(app) {
       this.$set(this.serviceLoading, app.appid, true)
-      const res = await startApplicationService(app.appid)
+      const res = await startApplicationInstance(app.appid)
         .finally(() => { this.$set(this.serviceLoading, app.appid, false) })
       if (res.data) {
-        this.$notify.success('启动应用成功')
         this.loadApps()
         return
       }
     },
     async stopApp(app) {
-      await this.$confirm('确认要停止应用服务？', '服务操作确认')
+      await this.$confirm('确认要停止实例服务？', '实例操作确认')
       this.$set(this.serviceLoading, app.appid, true)
-      const res = await stopApplicationService(app.appid)
+      const res = await stopApplicationInstance(app.appid)
         .finally(() => { this.$set(this.serviceLoading, app.appid, false) })
       if (res.data) {
-        this.$notify.success('停止应用成功')
         this.loadApps()
         return
       }
     },
     async restartApp(app) {
       if (app.status !== 'running') { return }
-      await this.stopApp(app)
-      await this.startApp(app)
+      await this.$confirm('确认要重启应用实例？', '实例操作确认')
+      this.$set(this.serviceLoading, app.appid, true)
+      const res = await restartApplicationInstance(app.appid)
+        .finally(() => { this.$set(this.serviceLoading, app.appid, false) })
+      if (res.data) {
+        this.loadApps()
+        return
+      }
     },
     async exportApp(app) {
       this.loading = true
@@ -455,8 +459,7 @@ export default {
         }
 
         // 重启应用
-        await stopApplicationService(app.appid)
-        await startApplicationService(app.appid)
+        await restartApplicationInstance(app.appid)
 
         showSuccess('导入应用成功!')
         this.importForm = { app: null, file: null }
@@ -467,12 +470,12 @@ export default {
     },
     getRuntimeVersion(app) {
       const image = app.runtime?.image
-      if (!image)  return 'unknown'
+      if (!image) return 'unknown'
       const [, version] = image.split(':')
       return version || 'unknown'
     },
     formatSpec(spec) {
-      if(!spec) return { label: '-', text: 'unknown' }
+      if (!spec) return { label: '-', text: 'unknown' }
       const label = spec.label
       const memory = this.byte2mb(spec.limit_memory)
       const oss = this.byte2gb(spec.storage_capacity)
@@ -481,10 +484,10 @@ export default {
       return { memory, label, oss, db, text }
     },
     byte2mb(bytes) {
-      return ~~(bytes/1024/1024)
+      return ~~(bytes / 1024 / 1024)
     },
     byte2gb(bytes) {
-      return ~~(bytes/1024/1024/1024)
+      return ~~(bytes / 1024 / 1024 / 1024)
     }
   }
 }
