@@ -45,6 +45,11 @@ export const permissions = {
 
   FILE_BUCKET_ADD: { name: 'file.bucket.add', label: '文件管理-创建文件桶' },
   FILE_BUCKET_REMOVE: { name: 'file.bucket.remove', label: '文件管理-删除文件桶' },
+
+  REPLICATE_AUTH_READ: { name: 'replicate_auth.read', label: '授权资源-读取授权应用' },
+  REPLICATE_AUTH_ADD: { name: 'replicate_auth.add', label: '授权资源-创建授权应用' },
+  REPLICATE_AUTH_REMOVE: { name: 'replicate_auth.remove', label: '授权资源-删除授权应用' },
+  REPLICATE_AUTH_UPDATE: { name: 'replicate_auth.update', label: '授权资源-更新授权应用' }
 }
 
 
