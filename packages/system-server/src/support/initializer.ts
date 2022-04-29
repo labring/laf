@@ -3,8 +3,7 @@ import Config from "../config"
 import { CN_ACCOUNTS, CN_APPLICATIONS, CN_FUNCTIONS, CN_POLICIES, CN_SPECS, DATE_NEVER, GB, MB } from "../constants"
 import { DatabaseAgent } from "../db"
 import { hashPassword, generatePassword } from "./util-passwd"
-import { IApplicationData, getApplicationByAppid } from "./application"
-import { ApplicationServiceOperator } from "./service-operator"
+import { IApplicationData, getApplicationByAppid, InstanceStatus, updateApplicationStatus } from "./application"
 import * as path from 'path'
 import { MinioAgent } from "./minio"
 import { ApplicationSpecSupport } from "./application-spec"
@@ -99,7 +98,7 @@ export class Initializer {
       name: SYSTEM_APP_NAME,
       created_by: account_id,
       appid: appid,
-      status: 'created',
+      status: InstanceStatus.CREATED,
       collaborators: [],
       config: {
         db_name: db_config.database,
@@ -148,7 +147,7 @@ export class Initializer {
    */
   static async startSystemExtensionApp(appid: string) {
     const app = await getApplicationByAppid(appid)
-    await ApplicationServiceOperator.start(app)
+    await updateApplicationStatus(appid, app.status, InstanceStatus.PREPARED_START)
   }
 
   /**

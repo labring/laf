@@ -141,7 +141,9 @@ export async function updateApplicationStatus(appid: string, from: InstanceStatu
       appid: appid,
       status: from,
     }, {
-      status: to
+      $set: {
+        status: to
+      }
     })
 
   return r.modifiedCount

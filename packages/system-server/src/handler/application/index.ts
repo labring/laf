@@ -17,7 +17,7 @@ import { handleGetSpecs } from './get-specs'
 import { handleImportApplication, handleInitApplicationWithTemplate } from './importer'
 import { handleAddPackage, handleGetPackages, handleRemovePackage, handleUpdatePackage } from './packages'
 import { handleRemoveApplication } from './remove'
-import { handleStopApplicationService, handleStartApplicationService } from './service'
+import { handleStopApplicationService, handleStartApplicationService } from './instance'
 import { handleUpdateApplication } from './update'
 
 /**

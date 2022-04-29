@@ -16,11 +16,10 @@ import { logger } from "./logger"
 import { BUCKET_ACL } from "./minio"
 import { customAlphabet } from 'nanoid'
 
-
 /**
  * Status of application instance
  */
-export enum ApplicationInstanceStatus {
+export enum InstanceStatus {
   CREATED = 'created',
   PREPARED_START = 'prepared_start',
   STARTING = 'starting',
@@ -36,7 +35,7 @@ export interface IApplicationBucket {
   name: string,
   mode: BUCKET_ACL,
   quota: number,
-  options: {
+  options?: {
     index: string | null
     domain: string
   }
@@ -50,7 +49,7 @@ export interface IApplicationData {
   name: string
   created_by: ObjectId
   appid: string
-  status: ApplicationInstanceStatus
+  status: InstanceStatus
   config: {
     db_server_name?: string
     db_name: string
@@ -92,6 +91,28 @@ export async function getApplicationByAppid(appid: string) {
     .findOne({ appid: appid })
 
   return doc
+}
+
+/**
+ * Update application status
+ * @param appid 
+ * @param from original status
+ * @param to target status to update
+ * @returns 
+ */
+ export async function updateApplicationStatus(appid: string, from: InstanceStatus, to: InstanceStatus) {
+  const db = DatabaseAgent.db
+  const r = await db.collection<IApplicationData>(CN_APPLICATIONS)
+    .updateOne({
+      appid: appid,
+      status: from,
+    }, {
+      $set: {
+        status: to
+      }
+    })
+
+  return r.modifiedCount
 }
 
 /**

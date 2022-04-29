@@ -1,22 +1,20 @@
 
-import { IApplicationData } from "./application"
-import { logger } from "./logger"
+import { IApplicationData, InstanceStatus } from "./application"
 import Config from "../config"
 import { KubernetesDriver } from "./instance-kubernetes-driver"
 import { DockerContainerDriver } from "./instance-docker-driver"
 
-
-export class ApplicationInstanceOperator {
+/**
+ * Application instance operator
+ */
+export class InstanceOperator {
   /**
    * start app service
    * @param app 
    * @returns 
    */
-  static async start(app: IApplicationData) {
-    const driver = this.create()
-    const res = await driver.startService(app)
-
-    return res
+  public static async start(app: IApplicationData) {
+    return await this.driver().create(app)
   }
 
   /**
@@ -24,37 +22,21 @@ export class ApplicationInstanceOperator {
    * @param app 
    * @returns 
    */
-  static async stop(app: IApplicationData) {
-    const driver = this.create()
-    const res = await driver.removeService(app)
-    return res
+  public static async stop(app: IApplicationData) {
+    return await this.driver().remove(app)
   }
 
-  /**
-   * restart app service
-   * @param app 
-   * @returns 
-   */
-  static async restart(app: IApplicationData) {
-    await this.stop(app)
-    return await this.start(app)
+  public static async status(app: IApplicationData) {
+    return await this.driver().status(app)
   }
 
-  static create(): InstanceDriverInterface {
+  private static driver(): InstanceDriverInterface {
     const driver = Config.SERVICE_DRIVER || 'docker'
-    logger.info("creating ServiceDriver with driver: " + driver)
     if (driver === 'kubernetes') {
       return new KubernetesDriver()
     } else {
       return new DockerContainerDriver()
     }
-  }
-
-  /**
-   * @todo
-   */
-  static status() {
-    // to be done
   }
 }
 
@@ -62,25 +44,29 @@ export class ApplicationInstanceOperator {
 export interface InstanceDriverInterface {
 
   /**
-   * Start application service
+   * Start application instance
    * @param app 
    * @returns
    */
-  startService(app: IApplicationData): Promise<any>
+  create(app: IApplicationData): Promise<boolean>
 
   /**
-   * Remove application service
+   * Remove application instance
    * @param app 
    */
-  removeService(app: IApplicationData): Promise<any>
+  remove(app: IApplicationData): Promise<boolean>
 
   /**
-   * Get service info
-   * @param container 
+   * Get instance information
    * @returns return null if container not exists
    */
-  info(app: IApplicationData): Promise<any>
+  inspect(app: IApplicationData): Promise<any>
 
+  /**
+   * Get instance status
+   * @param app 
+   */
+  status(app: IApplicationData): Promise<InstanceStatus>
 
   /**
    * Get name of service

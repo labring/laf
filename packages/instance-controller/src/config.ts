@@ -7,7 +7,7 @@ dotenv.config()
 export default class Config {
 
   /**
-   * scheduler loop interval
+   * scheduler loop interval, in ms
    */
   static get SCHEDULER_INTERVAL(): number {
     const value = process.env.SCHEDULER_INTERVAL || '1000'
@@ -84,10 +84,6 @@ export default class Config {
     return process.env.KUBE_NAMESPACE_OF_APP_SERVICES || 'laf'
   }
 
-  static get KUBE_NAMESPACE_OF_SYS_SERVICES() {
-    return process.env.KUBE_NAMESPACE_OF_SYS_SERVICES || 'laf'
-  }
-
   static get APP_SERVICE_ENV_NPM_INSTALL_FLAGS(): string {
     return process.env.APP_SERVICE_ENV_NPM_INSTALL_FLAGS || ''
   }
@@ -95,29 +91,6 @@ export default class Config {
   static get SYSTEM_EXTENSION_APPID(): string {
     return process.env.SYSTEM_EXTENSION_APPID || '0000000000000000'
   }
-
-  /**
-  * The host to access the app service
-  * For example, if set this to `lafyun.com`, then you can access app service by format `[appid].lafyun.com`: 
-  * - 7b0b318c-b96c-4cc5-b521-33d11bd16cde.lafyun.com
-  * - http://7b0b318c-b96c-4cc5-b521-33d11bd16cde.lafyun.com/file/public/33d11bd16cde.png
-  * - http://7b0b318c-b96c-4cc5-b521-33d11bd16cde.lafyun.com/FUNC_NAME
-  * 
-  * You should resolve `*.lafyun.com` to your laf server ip, to support `[appid].lafyun.com` url.
-  * You can also provide the PORT, like `lafyun.com:8080`. 
-  */
-  static get APP_SERVICE_DEPLOY_HOST(): string {
-    return process.env.APP_SERVICE_DEPLOY_HOST ?? ''
-  }
-
-  /**
-   * The schema of app deployed url: `http` | `https`.
-   * Default value is `http`.
-   */
-  static get APP_SERVICE_DEPLOY_URL_SCHEMA(): string {
-    return process.env.APP_SERVICE_DEPLOY_URL_SCHEMA ?? 'http'
-  }
-
 
   /**
    * Minio configuration
