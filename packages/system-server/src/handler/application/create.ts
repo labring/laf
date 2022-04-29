@@ -9,7 +9,7 @@ import * as assert from 'assert'
 import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
 import { getAccountById } from '../../support/account'
-import { IApplicationData, createApplicationDb, generateAppid, getApplicationByAppid, getMyApplications, InstanceStatus } from '../../support/application'
+import { IApplicationData, createApplicationDb, tryGenerateUniqueAppid, getApplicationByAppid, getMyApplications, InstanceStatus } from '../../support/application'
 import { MinioAgent } from '../../support/minio'
 import Config from '../../config'
 import { CN_APPLICATIONS, DATE_NEVER } from '../../constants'
@@ -52,7 +52,7 @@ export async function handleCreateApplication(req: Request, res: Response) {
 
   // build the application config
   const app_name = req.body?.name ?? 'default'
-  const appid = generateAppid()
+  const appid = await tryGenerateUniqueAppid()
   const _salt = generatePassword(6, true, false)
   const db_name = `app_${appid}_${_salt}`
   const db_user = db_name

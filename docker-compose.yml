@@ -41,6 +41,7 @@ services:
       MINIO_REGION_NAME: cn-default
       INIT_ROOT_ACCOUNT_PASSWORD: abc123
       SYSTEM_EXTENSION_APPID: '0000000000000000'
+      APPID_LENGTH: 6
     command: sh /app/start.sh
     volumes:
       - ./packages/system-server:/app

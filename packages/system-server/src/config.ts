@@ -1,3 +1,4 @@
+import * as assert from 'assert'
 import * as dotenv from 'dotenv'
 dotenv.config()
 
@@ -144,10 +145,14 @@ export default class Config {
   }
 
   /**
-   * length of appid genereated, deafult value is 16
+   * length of appid genereated, deafult value is 6
    */
   static get APPID_LENGTH(): number {
-    return parseInt(process.env.APPID_LENGTH || '16')
+    const size = parseInt(process.env.APPID_LENGTH || '6')
+    assert.ok(size >= 3, 'appid length must great equal than 3')
+    assert.ok(size <= 32, 'appid length must less or equal than 32')
+
+    return size
   }
 
   static get SYSTEM_EXTENSION_APPID(): string {

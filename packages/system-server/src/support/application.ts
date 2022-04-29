@@ -100,7 +100,7 @@ export async function getApplicationByAppid(appid: string) {
  * @param to target status to update
  * @returns 
  */
- export async function updateApplicationStatus(appid: string, from: InstanceStatus, to: InstanceStatus) {
+export async function updateApplicationStatus(appid: string, from: InstanceStatus, to: InstanceStatus) {
   const db = DatabaseAgent.db
   const r = await db.collection<IApplicationData>(CN_APPLICATIONS)
     .updateOne({
@@ -247,6 +247,9 @@ export async function createApplicationDb(app: IApplicationData) {
   return result
 }
 
+
+const generate_appid = customAlphabet('23456789abcdefghijklmnopqrstuvwxyz', Config.APPID_LENGTH)
+
 /**
  * Generate application id :
  * - lower case
@@ -254,7 +257,19 @@ export async function createApplicationDb(app: IApplicationData) {
  * - alpha & numbers
  * @returns 
  */
-export const generateAppid = customAlphabet('23456789abcdefghijklmnopqrstuvwxyz', Config.APPID_LENGTH)
+export async function tryGenerateUniqueAppid() {
+  const db = DatabaseAgent.db
+  let appid: string
+  for (let i = 0; i < 10; i++) {
+    appid = generate_appid()
+    const total = await db.collection<IApplicationData>(CN_APPLICATIONS).countDocuments({ appid: appid })
+    if (total === 0) break
+    appid = null
+  }
+
+  if (!appid) throw new Error('try to genereate appid failed')
+  return appid
+}
 
 /**
  * Publish application packages
