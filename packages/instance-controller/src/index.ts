@@ -4,6 +4,7 @@ import * as express from 'express'
 import Config from './config'
 import { logger } from './support/logger'
 import { DatabaseAgent } from './support/db'
+import { start_schedular } from './scheduler'
 
 DatabaseAgent.init(Config.SYS_DB_URI)
 
@@ -15,6 +16,8 @@ app.get('/healthz', (_req, res) => {
   }
   return res.status(200).send('ok')
 })
+
+start_schedular()
 
 const server = app.listen(Config.PORT, () => logger.info(`listened on ${Config.PORT}`))
 

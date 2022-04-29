@@ -9,7 +9,7 @@ import * as assert from 'assert'
 import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
 import { getAccountById } from '../../support/account'
-import { IApplicationData, createApplicationDb, generateAppid, getApplicationByAppid, getMyApplications } from '../../support/application'
+import { IApplicationData, createApplicationDb, generateAppid, getApplicationByAppid, getMyApplications, InstanceStatus } from '../../support/application'
 import { MinioAgent } from '../../support/minio'
 import Config from '../../config'
 import { CN_APPLICATIONS, DATE_NEVER } from '../../constants'
@@ -63,7 +63,7 @@ export async function handleCreateApplication(req: Request, res: Response) {
     name: app_name,
     created_by: new ObjectId(uid),
     appid: appid,
-    status: 'created',
+    status: InstanceStatus.CREATED,
     collaborators: [],
     config: {
       db_name: db_name,

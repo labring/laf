@@ -6,12 +6,12 @@
  */
 
 import { Request, Response } from 'express'
-import { getApplicationByAppid } from '../../support/application'
+import { getApplicationByAppid, InstanceStatus, updateApplicationStatus } from '../../support/application'
 import { checkPermission } from '../../support/permission'
 import { permissions } from '../../permissions'
-import { ApplicationServiceOperator } from '../../support/service-operator'
 
 const { APPLICATION_UPDATE } = permissions
+
 /**
  * The handler of starting application
  */
@@ -25,15 +25,13 @@ export async function handleStartApplicationService(req: Request, res: Response)
 
   // check permission
   const code = await checkPermission(uid, APPLICATION_UPDATE.name, app)
-  if (code) {
+  if (code)
     return res.status(code).send()
-  }
 
-  const container_id = await ApplicationServiceOperator.start(app)
-
+  const ret = await updateApplicationStatus(app.appid, app.status, InstanceStatus.PREPARED_START)
   return res.send({
     data: {
-      service_id: container_id,
+      result: ret > 0 ? true : false,
       appid: app.appid
     }
   })
@@ -47,21 +45,43 @@ export async function handleStopApplicationService(req: Request, res: Response) 
   const uid = req['auth']?.uid
   const appid = req.params.appid
   const app = await getApplicationByAppid(appid)
+  if (!app)
+    return res.status(422).send('app not found')
+
+  // check permission
+  const code = await checkPermission(uid, APPLICATION_UPDATE.name, app)
+  if (code)
+    return res.status(code).send()
+
+  const ret = await updateApplicationStatus(app.appid, app.status, InstanceStatus.PREPARED_STOP)
+  return res.send({
+    data: {
+      result: ret > 0 ? true : false,
+      appid: app.appid
+    }
+  })
+}
+
+/**
+ * The handler of restarting application
+ */
+export async function handleRestartApplicationService(req: Request, res: Response) {
+  const uid = req['auth']?.uid
+  const appid = req.params.appid
+  const app = await getApplicationByAppid(appid)
 
   if (!app)
     return res.status(422).send('app not found')
 
   // check permission
   const code = await checkPermission(uid, APPLICATION_UPDATE.name, app)
-  if (code) {
+  if (code)
     return res.status(code).send()
-  }
 
-  const container_id = await ApplicationServiceOperator.stop(app)
-
+  const ret = await updateApplicationStatus(app.appid, app.status, InstanceStatus.PREPARED_RESTART)
   return res.send({
     data: {
-      service_id: container_id,
+      result: ret > 0 ? true : false,
       appid: app.appid
     }
   })

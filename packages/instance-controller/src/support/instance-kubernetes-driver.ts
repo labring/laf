@@ -1,5 +1,5 @@
 import * as k8s from '@kubernetes/client-node'
-import { IApplicationData, getApplicationDbUri } from './application'
+import { IApplicationData, getApplicationDbUri, InstanceStatus } from './application'
 import Config from '../config'
 import { MB } from './constants'
 import { logger } from './logger'
@@ -25,7 +25,7 @@ export class KubernetesDriver implements InstanceDriverInterface {
    * Get name of service
    * @param app 
    */
-  getName(app: IApplicationData): string {
+  public getName(app: IApplicationData): string {
     return `app-${app.appid}`
   }
 
@@ -34,10 +34,10 @@ export class KubernetesDriver implements InstanceDriverInterface {
    * @param app 
    * @returns the container id
    */
-  async startService(app: IApplicationData) {
+  public async create(app: IApplicationData) {
     const labels = { appid: app.appid, type: 'laf-app' }
 
-    const info = await this.info(app)
+    const info = await this.inspect(app)
     let deployment = info?.deployment
     if (!deployment) {
       deployment = await this.createK8sDeployment(app, labels)
@@ -47,22 +47,15 @@ export class KubernetesDriver implements InstanceDriverInterface {
       await this.createK8sService(app, labels)
     }
 
-    if (!info?.ingress) {
-      try {
-        await this.createK8sIngress(app, labels)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    return deployment
+    return true
   }
 
   /**
    * Remove application service
    * @param app 
    */
-  async removeService(app: IApplicationData) {
-    const info = await this.info(app)
+  public async remove(app: IApplicationData) {
+    const info = await this.inspect(app)
     if (!info) return
 
     if (info?.deployment) {
@@ -77,30 +70,35 @@ export class KubernetesDriver implements InstanceDriverInterface {
       logger.debug(`removed k8s service of app ${app.appid}:`, res_svc.body)
     }
 
-    if (info?.ingress) {
-      const res_ingr = await this.net_api.deleteNamespacedIngress(this.getName(app), this.namespace)
-      logger.info(`remove k8s ingress of app ${app.appid}`)
-      logger.debug(`removed k8s ingress of app ${app.appid}:`, res_ingr.body)
-    }
-
-    return app.appid
+    return true
   }
 
   /**
-   * Get container info
-   * @param container 
+   * Get instance info
    * @returns return null if container not exists
    */
-  async info(app: IApplicationData) {
-    try {
-      const name = this.getName(app)
-      const deployment = await this.getK8sDeployment(name)
-      const service = await this.getK8sService(name)
-      const ingress = await this.getK8sIngress(name)
-      return { deployment, service, ingress }
-    } catch (error) {
-      throw error
-    }
+  public async inspect(app: IApplicationData) {
+    const name = this.getName(app)
+    const deployment = await this.getK8sDeployment(name)
+    const service = await this.getK8sService(name)
+    return { deployment, service }
+  }
+
+  /**
+   * Get instance status
+   * @param app 
+   * @returns 
+   */
+  public async status(app: IApplicationData) {
+    const res = await this.inspect(app)
+    const deployment = res?.deployment
+    if (!deployment) return InstanceStatus.STOPPED
+
+    const state = deployment.status
+    if (state.readyReplicas > 0)
+      return InstanceStatus.RUNNING
+
+    return InstanceStatus.STOPPING
   }
 
   /**
@@ -236,53 +234,6 @@ export class KubernetesDriver implements InstanceDriverInterface {
     return service
   }
 
-  /**
-   * create k8s ingress for app
-   * @param app 
-   * @param labels 
-   * @returns 
-   */
-  private async createK8sIngress(app: IApplicationData, labels: any) {
-    const { body: ingress } = await this.net_api.createNamespacedIngress(this.namespace, {
-      metadata: {
-        name: this.getName(app),
-        labels: labels,
-        annotations: {
-          'nginx.ingress.kubernetes.io/enable-cors': "true",
-          'nginx.ingress.kubernetes.io/cors-expose-headers': "*",
-          'nginx.ingress.kubernetes.io/configuration-snippet': `more_set_headers "request-id: $req_id";`
-        }
-      },
-      spec: {
-        ingressClassName: "nginx",
-        rules: [
-          {
-            host: `${app.appid}.${Config.APP_SERVICE_DEPLOY_HOST}`,
-            http: {
-              paths: [
-                {
-                  path: '/',
-                  pathType: 'Prefix',
-                  backend: {
-                    service: {
-                      name: this.getName(app),
-                      port: { number: 8000 }
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        ]
-      }
-    })
-
-    logger.info(`create k8s ingress ${ingress.metadata.name} of app ${app.appid}`)
-    logger.debug(`created k8s ingress of app ${app.appid}:`, ingress)
-
-    return ingress
-  }
-
   private async getK8sDeployment(name: string) {
     try {
       const res = await this.apps_api.readNamespacedDeployment(name, this.namespace)
@@ -295,15 +246,6 @@ export class KubernetesDriver implements InstanceDriverInterface {
   private async getK8sService(name: string) {
     try {
       const res = await this.core_api.readNamespacedService(name, this.namespace)
-      return res.body
-    } catch (error) {
-      return null
-    }
-  }
-
-  private async getK8sIngress(name: string) {
-    try {
-      const res = await this.net_api.readNamespacedIngress(name, this.namespace)
       return res.body
     } catch (error) {
       return null

@@ -1,5 +1,5 @@
 import * as Docker from 'dockerode'
-import { IApplicationData, getApplicationDbUri } from './application'
+import { IApplicationData, getApplicationDbUri, InstanceStatus } from './application'
 import Config from '../config'
 import { logger } from './logger'
 import { InstanceDriverInterface } from './instance-operator'
@@ -19,7 +19,7 @@ export class DockerContainerDriver implements InstanceDriverInterface {
     * Get name of service
     * @param app 
     */
-  getName(app: IApplicationData): string {
+  public getName(app: IApplicationData): string {
     return `app-${app.appid}`
   }
 
@@ -28,31 +28,31 @@ export class DockerContainerDriver implements InstanceDriverInterface {
    * @param app 
    * @returns the container id
    */
-  async startService(app: IApplicationData) {
+  public async create(app: IApplicationData) {
     let container = this.getContainer(app)
-    const info = await this.info(app)
+    const info = await this.inspect(app)
     if (!info) {
       container = await this.createService(app)
     }
 
-    if (info?.State?.Running || info?.State?.Restarting) {
-      return container.id
+    if (info?.State?.Running) {
+      return true
     }
 
     await container.start()
     logger.debug(`start container ${container.id} of app ${app.appid}`)
 
-    return container.id
+    return true
   }
 
   /**
    * Remove application service
    * @param app 
    */
-  async removeService(app: IApplicationData) {
-    const info = await this.info(app)
+  public async remove(app: IApplicationData) {
+    const info = await this.inspect(app)
     if (!info) {
-      return
+      return true
     }
 
     const container = this.getContainer(app)
@@ -67,15 +67,14 @@ export class DockerContainerDriver implements InstanceDriverInterface {
     await container.remove()
     logger.debug(`stop & remove container ${container.id} of app ${app.appid}`)
 
-    return container.id
+    return true
   }
 
   /**
    * Get container info
-   * @param container 
    * @returns return null if container not exists
    */
-  async info(app: IApplicationData): Promise<Docker.ContainerInspectInfo> {
+  public async inspect(app: IApplicationData): Promise<Docker.ContainerInspectInfo> {
     try {
       const container = this.getContainer(app)
       const info = await container.inspect()
@@ -86,6 +85,21 @@ export class DockerContainerDriver implements InstanceDriverInterface {
       }
       throw error
     }
+  }
+
+  /**
+   * Get instance status
+   * @param app 
+   * @returns 
+   */
+  public async status(app: IApplicationData): Promise<InstanceStatus> {
+    const res = await this.inspect(app)
+    if (!res) return InstanceStatus.STOPPED
+    const state = res?.State
+    if (state.Running)
+      return InstanceStatus.RUNNING
+
+    return InstanceStatus.STOPPING
   }
 
   /**
