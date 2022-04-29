@@ -2,9 +2,12 @@ const assert = require('assert')
 const child_process = require('child_process')
 
 const images = {
+  'system-client': 'lafyun/system-client',
+  'app-console': 'lafyun/app-console',
   'system-server': 'lafyun/system-server',
   'app-service': 'lafyun/app-service',
-  'gateway': 'lafyun/gateway'
+  'gateway': 'lafyun/gateway',
+  'instance-controller': 'lafyun/instance-controller'
 }
 
 function getPackageVersion(packagePath) {

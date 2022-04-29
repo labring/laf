@@ -149,13 +149,13 @@ export default class Config {
    */
   static get APPID_LENGTH(): number {
     const size = parseInt(process.env.APPID_LENGTH || '6')
-    assert.ok(size >= 3, 'appid length must great equal than 3')
+    assert.ok(size >= 3, 'appid length must great or equal than 3')
     assert.ok(size <= 32, 'appid length must less or equal than 32')
 
     return size
   }
 
   static get SYSTEM_EXTENSION_APPID(): string {
-    return process.env.SYSTEM_EXTENSION_APPID || '0000000000000000'
+    return process.env.SYSTEM_EXTENSION_APPID || '000000'
   }
 }
