@@ -237,7 +237,7 @@
 </template>
 
 <script>
-import { createApplication, getMyApplications, startApplicationService, stopApplicationService, updateApplication, removeApplication, exportApplication, importApplication, openAppConsole, getSpecs } from '@/api/application'
+import { createApplication, getMyApplications, startApplicationInstance, stopApplicationInstance, restartApplicationInstance, updateApplication, removeApplication, exportApplication, importApplication, openAppConsole, getSpecs } from '@/api/application'
 import { showError, showInfo, showSuccess } from '@/utils/show'
 import { exportRawBlob } from '@/utils/file'
 import { parseTime } from '@/utils'
@@ -395,29 +395,33 @@ export default {
     },
     async startApp(app) {
       this.$set(this.serviceLoading, app.appid, true)
-      const res = await startApplicationService(app.appid)
+      const res = await startApplicationInstance(app.appid)
         .finally(() => { this.$set(this.serviceLoading, app.appid, false) })
       if (res.data) {
-        this.$notify.success('启动应用成功')
         this.loadApps()
         return
       }
     },
     async stopApp(app) {
-      await this.$confirm('确认要停止应用服务？', '服务操作确认')
+      await this.$confirm('确认要停止实例服务？', '实例操作确认')
       this.$set(this.serviceLoading, app.appid, true)
-      const res = await stopApplicationService(app.appid)
+      const res = await stopApplicationInstance(app.appid)
         .finally(() => { this.$set(this.serviceLoading, app.appid, false) })
       if (res.data) {
-        this.$notify.success('停止应用成功')
         this.loadApps()
         return
       }
     },
     async restartApp(app) {
       if (app.status !== 'running') { return }
-      await this.stopApp(app)
-      await this.startApp(app)
+      await this.$confirm('确认要重启应用实例？', '实例操作确认')
+      this.$set(this.serviceLoading, app.appid, true)
+      const res = await restartApplicationInstance(app.appid)
+        .finally(() => { this.$set(this.serviceLoading, app.appid, false) })
+      if (res.data) {
+        this.loadApps()
+        return
+      }
     },
     async exportApp(app) {
       this.loading = true
@@ -455,8 +459,7 @@ export default {
         }
 
         // 重启应用
-        await stopApplicationService(app.appid)
-        await startApplicationService(app.appid)
+        await restartApplicationInstance(app.appid)
 
         showSuccess('导入应用成功!')
         this.importForm = { app: null, file: null }

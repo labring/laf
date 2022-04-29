@@ -96,14 +96,10 @@ export default class Config {
    * Minio configuration
    */
   static get MINIO_CONFIG() {
-    const access_key: string = process.env.MINIO_ACCESS_KEY
-    const access_secret: string = process.env.MINIO_ACCESS_SECRET
     const internal_endpoint: string = process.env.MINIO_INTERNAL_ENDPOINT
     const external_endpoint: string = process.env.MINIO_EXTERNAL_ENDPOINT
     const region: string = process.env.MINIO_REGION_NAME
     return {
-      access_key,
-      access_secret,
       endpoint: {
         internal: internal_endpoint,
         external: external_endpoint
