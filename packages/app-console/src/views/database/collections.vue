@@ -213,6 +213,7 @@ export default {
   watch: {
     collectionName(val) {
       if (val) {
+        this.listQuery.page = 1
         this.getList()
         this.getIndexes()
       }

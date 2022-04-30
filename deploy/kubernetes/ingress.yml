@@ -1,4 +1,4 @@
-
+# ingress-oss.yml
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -41,6 +41,7 @@ spec:
             port:
               number: 9000
 
+# ingress-sys-console.yml
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -59,10 +60,34 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: gateway
+            name: sys-console
             port:
-              number: 80
+              number: 8080
 
+# ingress-app-console.yml
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-app-console
+  namespace: laf
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: console.local-dev.host
+    http:
+      paths:
+      - path: /app-console/(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: app-console
+            port:
+              number: 8080
+
+# ingress-sys-api.yml
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -86,6 +111,7 @@ spec:
             port:
               number: 9000
 
+# ingress-sys-extension-api.yml
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -105,54 +131,47 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: app-0000000000000000
+            name: app-000000
             port:
               number: 8000
 
-
+# ingress-apps.yml
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress-docs
-  namespace: laf
+  name: ingress-apps
+  namespace: laf-apps
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /docs/$1
+    nginx.ingress.kubernetes.io/server-snippet: |
+      resolver kube-dns.kube-system.svc.cluster.local valid=10s;
+      location ~ "^/(.*)" {
+        more_set_headers "request-id: $req_id";
+        add_header Access-Control-Allow-Origin * always;
+        add_header Access-Control-Allow-Methods GET,POST,PUT,DELETE,PATCH,OPTIONS always;
+        add_header Access-Control-Allow-Headers * always;
+        add_header Access-Control-Expose-Headers * always;
+        add_header Access-Control-Max-Age 3600 always;
+        if ($request_method = 'OPTIONS') {
+          return 204;
+        }
+
+        if ($host ~* "^([0-9a-z]{3,32})\.(.+)$") {
+          set $appid $1;
+          set $service_id app-$appid;
+        }
+        add_header appid $appid;
+        proxy_read_timeout 600s;
+        proxy_set_header Host $host;
+        proxy_set_header x-request-id $req_id;
+        proxy_http_version 1.1;
+        proxy_pass http://$service_id.laf-apps.svc.cluster.local:8000;
+
+        # Upgrade websocket
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+      }
 spec:
   ingressClassName: nginx
   rules:
-  - host: docs.local-dev.host
-    http:
-      paths:
-      - path: /(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: gateway
-            port:
-              number: 80
-
-# ---
-# apiVersion: networking.k8s.io/v1
-# kind: Ingress
-# metadata:
-#   name: app-0000000000000000
-#   namespace: laf-apps
-#   annotations:
-#     nginx.ingress.kubernetes.io/enable-cors: "true"
-#     nginx.ingress.kubernetes.io/cors-expose-headers: "*"
-#     nginx.ingress.kubernetes.io/configuration-snippet: |
-#       more_set_headers "request-id: $req_id";
-# spec:
-#   ingressClassName: nginx
-#   rules:
-#   - host: "0000000000000000.local-dev.host"
-#     http:
-#       paths:
-#       - path: /
-#         pathType: Prefix
-#         backend:
-#           service:
-#             name: app-0000000000000000
-#             port:
-#               number: 8000
+  - host: "*.local-dev.host"

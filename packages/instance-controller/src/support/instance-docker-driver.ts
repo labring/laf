@@ -1,14 +1,14 @@
 import * as Docker from 'dockerode'
-import { IApplicationData, getApplicationDbUri } from './application'
+import { IApplicationData, getApplicationDbUri, InstanceStatus } from './application'
 import Config from '../config'
 import { logger } from './logger'
-import { ServiceDriverInterface } from './service-operator'
+import { InstanceDriverInterface } from './instance-operator'
 import { ApplicationSpecSupport } from './application-spec'
 import * as assert from 'assert'
-import { MB } from '../constants'
+import { MB } from './constants'
 
 
-export class DockerContainerServiceDriver implements ServiceDriverInterface {
+export class DockerContainerDriver implements InstanceDriverInterface {
   docker: Docker
 
   constructor(options?: Docker.DockerOptions) {
@@ -19,7 +19,7 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
     * Get name of service
     * @param app 
     */
-  getName(app: IApplicationData): string {
+  public getName(app: IApplicationData): string {
     return `app-${app.appid}`
   }
 
@@ -28,31 +28,31 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
    * @param app 
    * @returns the container id
    */
-  async startService(app: IApplicationData) {
+  public async create(app: IApplicationData) {
     let container = this.getContainer(app)
-    const info = await this.info(app)
+    const info = await this.inspect(app)
     if (!info) {
       container = await this.createService(app)
     }
 
-    if (info?.State?.Running || info?.State?.Restarting) {
-      return container.id
+    if (info?.State?.Running) {
+      return true
     }
 
     await container.start()
     logger.debug(`start container ${container.id} of app ${app.appid}`)
 
-    return container.id
+    return true
   }
 
   /**
    * Remove application service
    * @param app 
    */
-  async removeService(app: IApplicationData) {
-    const info = await this.info(app)
+  public async remove(app: IApplicationData) {
+    const info = await this.inspect(app)
     if (!info) {
-      return
+      return true
     }
 
     const container = this.getContainer(app)
@@ -67,15 +67,14 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
     await container.remove()
     logger.debug(`stop & remove container ${container.id} of app ${app.appid}`)
 
-    return container.id
+    return true
   }
 
   /**
    * Get container info
-   * @param container 
    * @returns return null if container not exists
    */
-  async info(app: IApplicationData): Promise<Docker.ContainerInspectInfo> {
+  public async inspect(app: IApplicationData): Promise<Docker.ContainerInspectInfo> {
     try {
       const container = this.getContainer(app)
       const info = await container.inspect()
@@ -89,6 +88,21 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
   }
 
   /**
+   * Get instance status
+   * @param app 
+   * @returns 
+   */
+  public async status(app: IApplicationData): Promise<InstanceStatus> {
+    const res = await this.inspect(app)
+    if (!res) return InstanceStatus.STOPPED
+    const state = res?.State
+    if (state.Running)
+      return InstanceStatus.RUNNING
+
+    return InstanceStatus.STOPPING
+  }
+
+  /**
    * Create application service
    * @param app 
    * @returns 
@@ -97,11 +111,12 @@ export class DockerContainerServiceDriver implements ServiceDriverInterface {
     const uri = getApplicationDbUri(app)
     const app_spec = await ApplicationSpecSupport.getValidAppSpec(app.appid)
     assert.ok(app_spec, `no spec avaliable with app: ${app.appid}`)
+    assert.ok(app.runtime?.image, `empty app runtime image got: ${app.appid}`)
 
     const limit_memory = app_spec.spec.limit_memory
     const max_old_space_size = ~~(limit_memory / MB * 0.8)
     const limit_cpu = app_spec.spec.limit_cpu
-    const image_name = app.runtime?.image ?? Config.APP_SERVICE_IMAGE
+    const image_name = app.runtime?.image
     const log_level = Config.LOG_LEVEL
     const npm_install_flags = Config.APP_SERVICE_ENV_NPM_INSTALL_FLAGS
 

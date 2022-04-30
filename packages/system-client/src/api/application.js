@@ -13,18 +13,16 @@ export function getMyApplications() {
   })
 }
 
-
 /**
  * Get avaliable specs
- * @returns 
+ * @returns
  */
- export function getSpecs() {
+export function getSpecs() {
   return request({
     url: '/sys-api/apps/specs',
     method: 'get'
   })
 }
-
 
 /**
  * 根据 appid 获取应用
@@ -50,7 +48,7 @@ export async function createApplication({ name, spec }) {
     url: `/sys-api/apps/create`,
     method: 'post',
     data: {
-      name, 
+      name,
       spec
     }
   })
@@ -91,9 +89,9 @@ export async function removeApplication(appid) {
  * @param {*} appid
  * @returns
  */
-export async function startApplicationService(appid) {
+export async function startApplicationInstance(appid) {
   const res = await request({
-    url: `/sys-api/apps/${appid}/service/start`,
+    url: `/sys-api/apps/${appid}/instance/start`,
     method: 'post'
   })
   return res
@@ -104,9 +102,22 @@ export async function startApplicationService(appid) {
  * @param {*} appid
  * @returns
  */
-export async function stopApplicationService(appid) {
+export async function stopApplicationInstance(appid) {
   const res = await request({
-    url: `/sys-api/apps/${appid}/service/stop`,
+    url: `/sys-api/apps/${appid}/instance/stop`,
+    method: 'post'
+  })
+  return res
+}
+
+/**
+ * 重启应用服务
+ * @param {*} appid
+ * @returns
+ */
+export async function restartApplicationInstance(appid) {
+  const res = await request({
+    url: `/sys-api/apps/${appid}/instance/stop`,
     method: 'post'
   })
   return res

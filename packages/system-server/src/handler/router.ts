@@ -31,9 +31,9 @@ router.use('/apps/:appid/replicate', checkAppid, ReplicateRouter)
 
 
 router.use('/healthz', (_req, res) => {
-  if (!DatabaseAgent.sys_accessor.db) {
+  if (!DatabaseAgent.sys_accessor.db)
     return res.status(400).send('no db connection')
-  }
+
   return res.status(200).send('ok')
 })
 

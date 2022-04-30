@@ -1,3 +1,4 @@
+import * as assert from 'assert'
 import * as dotenv from 'dotenv'
 dotenv.config()
 
@@ -73,13 +74,6 @@ export default class Config {
   }
 
   /**
-   * the name of network which apps used
-   */
-  static get DOCKER_SHARED_NETWORK(): string {
-    return process.env.DOCKER_SHARED_NETWORK || process.env.SHARED_NETWORK || 'laf_shared_network'
-  }
-
-  /**
    * the app service image name
    */
   static get APP_SERVICE_IMAGE(): string {
@@ -116,23 +110,6 @@ export default class Config {
     return process.env.APP_SERVICE_DEPLOY_URL_SCHEMA ?? 'http'
   }
 
-
-  /**
-   * DEBUG: the app-service path that bind to app-service container
-   * This env var should only be set while debugging app service, 
-   * otherwise always keep this env var value be empty
-   */
-  static get DEBUG_BIND_HOST_APP_PATH(): string | undefined {
-    return process.env.DEBUG_BIND_HOST_APP_PATH ?? undefined
-  }
-
-  /**
-   * The app service runtime platform: 'docker' | 'kubernetes'
-   */
-  static get SERVICE_DRIVER(): string {
-    return process.env.SERVICE_DRIVER || 'docker'
-  }
-
   /**
    * Minio configuration
    */
@@ -167,26 +144,18 @@ export default class Config {
     return password
   }
 
-  static get KUBE_NAMESPACE_OF_APP_SERVICES() {
-    return process.env.KUBE_NAMESPACE_OF_APP_SERVICES || 'laf'
-  }
-
-  static get KUBE_NAMESPACE_OF_SYS_SERVICES() {
-    return process.env.KUBE_NAMESPACE_OF_SYS_SERVICES || 'laf'
-  }
-
-  static get APP_SERVICE_ENV_NPM_INSTALL_FLAGS(): string {
-    return process.env.APP_SERVICE_ENV_NPM_INSTALL_FLAGS || ''
-  }
-
   /**
-   * length of appid genereated, deafult value is 16
+   * length of appid genereated, deafult value is 6
    */
   static get APPID_LENGTH(): number {
-    return parseInt(process.env.APPID_LENGTH || '16')
+    const size = parseInt(process.env.APPID_LENGTH || '6')
+    assert.ok(size >= 3, 'appid length must great or equal than 3')
+    assert.ok(size <= 32, 'appid length must less or equal than 32')
+
+    return size
   }
 
   static get SYSTEM_EXTENSION_APPID(): string {
-    return process.env.SYSTEM_EXTENSION_APPID || '0000000000000000'
+    return process.env.SYSTEM_EXTENSION_APPID || '000000'
   }
 }

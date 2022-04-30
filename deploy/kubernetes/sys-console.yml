@@ -1,0 +1,51 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: sys-console
+  namespace: laf
+spec:
+  selector:
+    app: sys-console
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: http
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sys-console
+  namespace: laf
+  labels:
+    app: sys-console
+    type: sys
+spec:
+  selector:
+    matchLabels:
+      app: sys-console
+  template:
+    metadata:
+      labels:
+        app: sys-console
+        type: sys
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 5
+      containers:
+        - image: docker.io/lafyun/system-client:0.7.11
+          imagePullPolicy: IfNotPresent
+          name: sys-console
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "1024Mi"
+              cpu: "1000m"
+          ports:
+            - containerPort: 8080
+              name: http

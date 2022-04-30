@@ -16,6 +16,30 @@ import { logger } from "./logger"
 import { BUCKET_ACL } from "./minio"
 import { customAlphabet } from 'nanoid'
 
+/**
+ * Status of application instance
+ */
+export enum InstanceStatus {
+  CREATED = 'created',
+  PREPARED_START = 'prepared_start',
+  STARTING = 'starting',
+  RUNNING = 'running',
+  PREPARED_STOP = 'prepared_stop',
+  STOPPING = 'stopping',
+  STOPPED = 'stopped',
+  PREPARED_RESTART = 'prepared_restart',
+  RESTARTING = 'restarting'
+}
+
+export interface IApplicationBucket {
+  name: string,
+  mode: BUCKET_ACL,
+  quota: number,
+  options?: {
+    index: string | null
+    domain: string
+  }
+}
 
 /**
  * The application structure in db
@@ -25,7 +49,7 @@ export interface IApplicationData {
   name: string
   created_by: ObjectId
   appid: string
-  status: 'created' | 'running' | 'stopped' | 'cleared'
+  status: InstanceStatus
   config: {
     db_server_name?: string
     db_name: string
@@ -42,11 +66,7 @@ export interface IApplicationData {
   runtime: {
     image: string
   }
-  buckets: {
-    name: string,
-    mode: BUCKET_ACL,
-    quota: number
-  }[]
+  buckets: IApplicationBucket[]
   packages: {
     name: string,
     version: string
@@ -71,6 +91,28 @@ export async function getApplicationByAppid(appid: string) {
     .findOne({ appid: appid })
 
   return doc
+}
+
+/**
+ * Update application status
+ * @param appid 
+ * @param from original status
+ * @param to target status to update
+ * @returns 
+ */
+export async function updateApplicationStatus(appid: string, from: InstanceStatus, to: InstanceStatus) {
+  const db = DatabaseAgent.db
+  const r = await db.collection<IApplicationData>(CN_APPLICATIONS)
+    .updateOne({
+      appid: appid,
+      status: from,
+    }, {
+      $set: {
+        status: to
+      }
+    })
+
+  return r.modifiedCount
 }
 
 /**
@@ -205,6 +247,9 @@ export async function createApplicationDb(app: IApplicationData) {
   return result
 }
 
+
+const generate_appid = customAlphabet('23456789abcdefghijklmnopqrstuvwxyz', Config.APPID_LENGTH)
+
 /**
  * Generate application id :
  * - lower case
@@ -212,7 +257,19 @@ export async function createApplicationDb(app: IApplicationData) {
  * - alpha & numbers
  * @returns 
  */
-export const generateAppid = customAlphabet('23456789abcdefghijklmnopqrstuvwxyz', Config.APPID_LENGTH)
+export async function tryGenerateUniqueAppid() {
+  const db = DatabaseAgent.db
+  let appid: string
+  for (let i = 0; i < 10; i++) {
+    appid = generate_appid()
+    const total = await db.collection<IApplicationData>(CN_APPLICATIONS).countDocuments({ appid: appid })
+    if (total === 0) break
+    appid = null
+  }
+
+  if (!appid) throw new Error('try to genereate appid failed')
+  return appid
+}
 
 /**
  * Publish application packages

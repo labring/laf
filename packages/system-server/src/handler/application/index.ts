@@ -17,8 +17,10 @@ import { handleGetSpecs } from './get-specs'
 import { handleImportApplication, handleInitApplicationWithTemplate } from './importer'
 import { handleAddPackage, handleGetPackages, handleRemovePackage, handleUpdatePackage } from './packages'
 import { handleRemoveApplication } from './remove'
-import { handleStopApplicationService, handleStartApplicationService } from './service'
+import { handleStartInstance } from './instance-start'
 import { handleUpdateApplication } from './update'
+import { handleStopInstance } from './instance-stop'
+import { handleRestartInstance } from './instance-restart'
 
 /**
  * Creates the multer uploader
@@ -60,14 +62,21 @@ ApplicationRouter.post('/create', handleCreateApplication)
 ApplicationRouter.post('/:appid', handleUpdateApplication)
 
 /**
- * Start an application service by appid
+ * Start an application instance by appid
  */
-ApplicationRouter.post('/:appid/service/start', handleStartApplicationService)
+ApplicationRouter.post('/:appid/instance/start', handleStartInstance)
 
 /**
- * Stop an application service by appid
+ * Stop an application instance by appid
  */
-ApplicationRouter.post('/:appid/service/stop', handleStopApplicationService)
+ApplicationRouter.post('/:appid/instance/stop', handleStopInstance)
+
+
+/**
+ * Restart an application instance by appid
+ */
+ApplicationRouter.post('/:appid/instance/restart', handleRestartInstance)
+
 
 /**
  * Remove an application by appid
