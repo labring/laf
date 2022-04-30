@@ -55,19 +55,19 @@ export async function handleUpdateReplicas(req: Request, res: Response) {
   try {
     await session.withTransaction(async () => {
       if (functions && 'all' === fun_type) {
-        await publishFunctions(app)
+        await publishFunctions(target_app)
       }
       if (functions && 'all' == pol_type) {
-        await publishAccessPolicies(app)
+        await publishAccessPolicies(target_app)
       }
       if (functions && 'part' === fun_type) {
         for (const fuc of functions.items) {
-          await publishOneFunction(app, fuc.id)
+          await publishOneFunction(target_app, fuc.id)
         }
       }
       if (policies && 'part' === pol_type) {
         for (const pol of policies.items) {
-          await publishOneFunction(app, pol.id)
+          await publishOneFunction(target_app, pol.id)
         }
       }
     })
