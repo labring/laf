@@ -5,16 +5,16 @@ import { IApplicationData } from "../../support/application"
 import { checkPermission } from "../../support/permission"
 
 /**
- * 处理获取应用授权资源列表信息
+ * handle get replicate auth
  */
 export async function handleGetReplicateAuth(req: Request, res: Response) {
-  const { permissions, expire, source } = req.body
-  if (!permissions || !permissions?.length) return res.status(422).send('invalid permissions')
-  if (!expire) return res.status(422).send('invalid expire')
-  if (!source) return res.status(422).send('invalid source')
+  const uid = req["auth"]?.uid
+  // check login
+  if (!uid) {
+    res.status(401).send()
+  }
 
-  const uid = req['auth']?.uid
-  const app: IApplicationData = req['parsed-app']
+  const app: IApplicationData = req["parsed-app"]
 
   // check permission
   const { REPLICATE_AUTH_READ } = CONST_DICTS.permissions
@@ -22,10 +22,12 @@ export async function handleGetReplicateAuth(req: Request, res: Response) {
   if (code) {
     return res.status(code).send()
   }
+
+  // find list
+  const query = {}
   const db = DatabaseAgent.db
-  const docs = await db.collection(CN_REPLICATE_AUTH)
-    .find({ appid: app.appid })
-    .toArray()
+  query["$or"] = [{ source_appid: app.appid }, { target_appid: app.appid }]
+  const docs = await db.collection(CN_REPLICATE_AUTH).find(query).toArray()
 
   return res.send({ data: docs })
 }
