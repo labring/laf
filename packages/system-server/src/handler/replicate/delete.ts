@@ -1,4 +1,4 @@
-import { DatabaseAgent } from "./../../../../app-service/src/db"
+import { DatabaseAgent } from '../../db'
 import { Request, Response } from "express"
 import { CN_APPLICATIONS, CONST_DICTS } from "../../constants"
 import { IApplicationData } from "../../support/application"
