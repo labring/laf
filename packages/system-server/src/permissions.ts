@@ -49,7 +49,10 @@ export const permissions = {
   REPLICATE_AUTH_READ: { name: 'replicate_auth.read', label: '授权资源-读取授权应用' },
   REPLICATE_AUTH_ADD: { name: 'replicate_auth.add', label: '授权资源-创建授权应用' },
   REPLICATE_AUTH_REMOVE: { name: 'replicate_auth.remove', label: '授权资源-删除授权应用' },
-  REPLICATE_AUTH_UPDATE: { name: 'replicate_auth.update', label: '授权资源-更新授权应用' }
+  REPLICATE_AUTH_UPDATE: { name: 'replicate_auth.update', label: '授权资源-更新授权应用' },
+  REPLICATES_PUT: { name: 'replicates.update', label: '远程推送' },
+  REPLICATES_POST: { name: 'replicate.add', label: '应用部署' }
+
 }
 
 

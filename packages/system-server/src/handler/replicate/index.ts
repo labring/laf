@@ -9,6 +9,7 @@ import { Router } from "express"
 import { handleCreateReplicateAuth } from "./create"
 import { handleDeleteReplicateAuth } from "./delete"
 import { handleGetReplicateAuth } from "./get"
+import { handleUpdateReplicas } from "./replicas"
 import { handleUpdateReplicateAuth } from "./update"
 
 export const ReplicateRouter = Router()
@@ -28,3 +29,8 @@ ReplicateRouter.post("/replicate_auth/:id", handleUpdateReplicateAuth)
  * replicate auth delete
  */
 ReplicateRouter.delete("/replicate_auth/:id", handleDeleteReplicateAuth)
+
+/**
+ * put replicas
+ */
+ReplicateRouter.put("/replicas", handleUpdateReplicas)
