@@ -1,10 +1,10 @@
 import { ObjectId } from "mongodb"
 import { CN_REPLICATE_AUTH } from "../../constants"
-import { DatabaseAgent } from "../../../../app-service/src/db"
 import { Request, Response } from "express"
 import { CONST_DICTS } from "../../constants"
 import { checkPermission } from "../../support/permission"
 import { IApplicationData } from "../../support/application"
+import { DatabaseAgent } from "../../db"
 
 /**
  *  handle update replicate auth
