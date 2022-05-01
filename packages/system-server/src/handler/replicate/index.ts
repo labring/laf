@@ -6,11 +6,14 @@
  */
 
 import { Router } from "express"
-import { handleCreateReplicateAuth } from "./create"
-import { handleDeleteReplicateAuth } from "./delete"
-import { handleGetReplicateAuth } from "./get"
-import { handleApplyReplicateRequest, handleCreateReplicateRequest, handleDeleteReplicateRequest, handleGetReplicateRequest } from "./request"
-import { handleUpdateReplicateAuth } from "./update"
+import { handleCreateReplicateAuth } from "./auth-create"
+import { handleDeleteReplicateAuth } from "./auth-delete"
+import { handleGetReplicateAuth } from "./auth-get"
+import { handleGetReplicateRequest } from "./request-get"
+import { handleAcceptReplicateAuth } from "./auth-accept"
+import { handleCreateReplicateRequest } from "./request-create"
+import { handleDeleteReplicateRequest } from "./request-delete"
+import { handleApplyReplicateRequest } from "./request-accept"
 
 export const ReplicateRouter = Router()
 /**
@@ -24,7 +27,7 @@ ReplicateRouter.put("/replicate_auth", handleCreateReplicateAuth)
 /**
  * replicate auth post
  */
-ReplicateRouter.post("/replicate_auth/:id", handleUpdateReplicateAuth)
+ReplicateRouter.post("/replicate_auth/:id", handleAcceptReplicateAuth)
 /**
  * replicate auth delete
  */

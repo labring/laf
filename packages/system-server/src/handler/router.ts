@@ -9,7 +9,6 @@ import { Request, Response, Router } from 'express'
 import { AccountRouter } from './account/index'
 import { DbmRouter } from './dbm'
 import { DatabaseAgent } from '../db'
-import { DeployRouter } from './deploy'
 import { ApplicationRouter } from './application'
 import { FunctionRouter } from './function'
 import { PolicyRouter } from './policy'
@@ -25,7 +24,6 @@ router.use('/apps', ApplicationRouter)
 router.use('/apps/:appid/function', checkAppid, FunctionRouter)
 router.use('/apps/:appid/policy', checkAppid, PolicyRouter)
 router.use('/apps/:appid/dbm', checkAppid, DbmRouter)
-router.use('/apps/:appid/deploy', checkAppid, DeployRouter)
 router.use('/apps/:appid/oss', checkAppid, OSSRouter)
 router.use('/apps/:appid/replicate', checkAppid, ReplicateRouter)
 

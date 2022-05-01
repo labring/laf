@@ -26,24 +26,24 @@
         label="源应用"
         width="180"
         align="center"
-      ></el-table-column>
+      />
       <el-table-column
         prop="target_appid"
         label="目标应用"
         align="center"
-      ></el-table-column>
+      />
       <el-table-column
         prop="created_at"
         label="创建时间"
         width="180"
         align="center"
-      ></el-table-column>
+      />
       <el-table-column
         prop="updated_at"
         label="更新时间"
         width="180"
         align="center"
-      ></el-table-column>
+      />
       <el-table-column
         prop="status"
         label="状态"
@@ -51,7 +51,7 @@
         align="center"
       >
         <template slot-scope="scope">
-          <el-tag 
+          <el-tag
             :type="scope.row.status === 'accepted' ? 'success' : 'warning'"
           >
             {{ scope.row.status }}
@@ -70,7 +70,7 @@
             plain
             type="primary"
             @click="handleUpdateRequest(scope.row)"
-          >同意</el-button>
+          >接受</el-button>
           <el-button
             size="mini"
             plain
@@ -91,7 +91,7 @@
     />
 
     <el-dialog :visible.sync="dialogFormVisible" title="请求部署">
-      <el-form 
+      <el-form
         ref="createForm"
         :rules="rules"
         :model="form"
@@ -110,7 +110,7 @@
               :key="item"
               :label="item"
               :value="item"
-            ></el-option>
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="部署权限" prop="permissions">
@@ -136,14 +136,13 @@
 import store from '@/store'
 import dayjs from 'dayjs'
 import Pagination from '@/components/Pagination'
-import { 
-  getReplicateRequests, 
-  createReplicateRequest, 
-  acceptReplicateRequest, 
+import {
+  getReplicateRequests,
+  createReplicateRequest,
+  acceptReplicateRequest,
   deleteReplicateRequest,
   getReplicateAuths
 } from '../../api/replicate'
-import { filter } from 'lodash'
 
 export default {
   components: {
@@ -157,29 +156,29 @@ export default {
       listLoading: true,
       listQuery: {
         limit: 10,
-        page: 1,
+        page: 1
       },
       form: {
         target_appid: '',
-        permissions: [],
+        permissions: []
       },
       rules: {
         target_appid: [
-          { required: true, message: '请输入目标应用appid', trigger: 'blur' },
-        ],
+          { required: true, message: '请输入目标应用appid', trigger: 'blur' }
+        ]
       },
       dialogFormVisible: false,
       requestType: 'target', // target | source
-      targetAppids:[],
+      targetAppids: []
     }
   },
-  created () {
+  created() {
     this.appid = store.state.app.appid
     this.getReplicateTargetAppid()
     this.getReplicateRequests()
   },
   methods: {
-    handleSwitchType({name}) {
+    handleSwitchType({ name }) {
       this.requestType = name
       this.switchList()
     },
@@ -193,8 +192,8 @@ export default {
       }
 
       this.targetAppids = res.data
-      .filter(item => item.source_appid === this.appid)
-      .map(item => item.target_appid)
+        .filter(item => item.source_appid === this.appid)
+        .map(item => item.target_appid)
     },
     async getReplicateRequests() {
       this.listLoading = true
@@ -222,7 +221,7 @@ export default {
         if (!valid) { return }
 
         const params = {
-          target_appid: this.form.target_appid,
+          target_appid: this.form.target_appid
         }
         if (this.form.permissions.includes('function')) {
           params.functions = {
@@ -259,7 +258,7 @@ export default {
       })
     },
     async handleUpdateRequest(request) {
-      await this.$confirm('是否同意此部署？', '部署确认')
+      await this.$confirm('是否接受此部署？', '部署确认')
 
       const res = await acceptReplicateRequest(request._id, 'accepted')
       if (res.code) {
@@ -287,8 +286,8 @@ export default {
       }
 
       this.getReplicateRequests()
-    },
-  },
+    }
+  }
 }
 
 </script>

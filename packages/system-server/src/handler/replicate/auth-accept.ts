@@ -7,9 +7,9 @@ import { IApplicationData } from "../../support/application"
 import { DatabaseAgent } from "../../db"
 
 /**
- *  handle update replicate auth
+ *  handle accept replicate auth
  */
-export async function handleUpdateReplicateAuth(req: Request, res: Response) {
+export async function handleAcceptReplicateAuth(req: Request, res: Response) {
   const uid = req["auth"]?.uid
   if (!uid) res.status(401).send()
 

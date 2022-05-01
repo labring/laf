@@ -15,7 +15,7 @@ export function getReplicateAuths() {
 
 /**
  * Create a replicated auth
- * 
+ *
  * @returns
  */
 export function createReplicateAuth(target_appid) {
@@ -56,7 +56,7 @@ export function deleteReplicateAuth(auth_id) {
 
 /**
  * get replicate requests
- * @returns 
+ * @returns
  */
 export function getReplicateRequests(params) {
   const appid = store.state.app.appid

@@ -45,19 +45,6 @@
           发布函数
         </el-button>
       </el-tooltip>
-      <el-tooltip
-        content="远程部署：将本环境的云函数推送到远程环境中，如推送到测试或生产环境"
-        placement="bottom"
-        effect="light"
-      >
-        <el-button
-          type="default"
-          size="mini"
-          plain
-          class="filter-item"
-          @click="deployPanelVisible = true"
-        >远程部署</el-button>
-      </el-tooltip>
       <el-checkbox
         v-model="listQuery.onlyEnabled"
         class="filter-item"
@@ -313,19 +300,11 @@
         </el-button>
       </div>
     </el-dialog>
-
-    <!-- 部署面板 -->
-    <deploy-panel
-      v-if="deployPanelVisible"
-      v-model="deployPanelVisible"
-      :functions="deploy_functions"
-    />
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import DeployPanel from '../deploy/components/deploy-panel.vue'
 import {
   createFunction,
   getAllFunctionTags,
@@ -380,8 +359,7 @@ const formRules = {
 export default {
   name: 'FunctionListPage',
   components: {
-    Pagination,
-    DeployPanel
+    Pagination
   },
   directives: {},
   filters: {
@@ -414,17 +392,10 @@ export default {
         create: '创建'
       },
       rules: formRules,
-      all_tags: [],
-      deploy_functions: [],
-      deployPanelVisible: false
+      all_tags: []
     }
   },
   computed: {},
-  watch: {
-    list() {
-      this.deploy_functions = this.list
-    }
-  },
   async mounted() {
     this.getList()
   },

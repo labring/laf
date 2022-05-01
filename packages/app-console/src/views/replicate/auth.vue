@@ -14,9 +14,9 @@
       </el-button>
     </div>
 
-    <el-tabs class="tabs" v-model="authType" type="card" @tab-click="handleSwitchType">
-      <el-tab-pane label="被授权" name="target"></el-tab-pane>
-      <el-tab-pane label="我授权" name="source"></el-tab-pane>
+    <el-tabs v-model="authType" class="tabs" type="card" @tab-click="handleSwitchType">
+      <el-tab-pane label="目标应用" name="target" />
+      <el-tab-pane label="授权请求" name="source" />
     </el-tabs>
 
     <!-- 数据列表 -->
@@ -31,24 +31,24 @@
         label="源应用"
         width="180"
         align="center"
-      ></el-table-column>
+      />
       <el-table-column
         prop="target_appid"
         label="目标应用"
         align="center"
-      ></el-table-column>
+      />
       <el-table-column
         prop="created_at"
         label="创建时间"
         width="180"
         align="center"
-      ></el-table-column>
+      />
       <el-table-column
         prop="updated_at"
         label="更新时间"
         width="180"
         align="center"
-      ></el-table-column>
+      />
       <el-table-column
         prop="status"
         label="状态"
@@ -56,7 +56,7 @@
         align="center"
       >
         <template slot-scope="scope">
-          <el-tag 
+          <el-tag
             :type="scope.row.status === 'accepted' ? 'success' : 'warning'"
           >
             {{ scope.row.status }}
@@ -75,7 +75,7 @@
             plain
             type="primary"
             @click="handleUpdateAuth(scope.row)"
-          >同意</el-button>
+          >接受</el-button>
           <el-button
             size="mini"
             plain
@@ -87,7 +87,7 @@
     </el-table>
 
     <el-dialog :visible.sync="dialogFormVisible" title="请求授权">
-      <el-form 
+      <el-form
         ref="createForm"
         :rules="rules"
         :model="form"
@@ -96,7 +96,7 @@
         style="width: 400px; margin-left:20px;"
       >
         <el-form-item label="目标appid" prop="target_appid">
-          <el-input v-model="form.target_appid"></el-input>
+          <el-input v-model="form.target_appid" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -124,27 +124,27 @@ export default {
       tableList: [],
       listLoading: true,
       listQuery: {
-        onlyEnabled: false,
+        onlyEnabled: false
       },
       form: {
-        target_appid: '',
+        target_appid: ''
       },
       rules: {
         target_appid: [
-          { required: true, message: '请输入目标应用appid', trigger: 'blur' },
-        ],
+          { required: true, message: '请输入目标应用appid', trigger: 'blur' }
+        ]
       },
       dialogFormVisible: false,
 
-      authType: 'target', // target | source
+      authType: 'target' // target | source
     }
   },
-  created () {
+  created() {
     this.appid = store.state.app.appid
     this.getReplicateAuths()
   },
   methods: {
-    handleSwitchType({name}) {
+    handleSwitchType({ name }) {
       this.authType = name
       this.switchList()
     },
@@ -205,7 +205,7 @@ export default {
       })
     },
     async handleUpdateAuth(auth) {
-      await this.$confirm('是否同意此授权？', '授权确认')
+      await this.$confirm('是否接受此授权？', '授权确认')
 
       const res = await acceptReplicateAuth(auth._id)
       if (res.code) {
@@ -233,8 +233,8 @@ export default {
       }
 
       this.getReplicateAuths()
-    },
-  },
+    }
+  }
 }
 
 </script>
