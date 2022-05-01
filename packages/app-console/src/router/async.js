@@ -154,34 +154,31 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/app/:appid/deploy',
+    path: '/app/:appid/replicate',
     component: Layout,
-    redirect: '/deploy/target',
+    redirect: '/replicate/auth',
     meta: {
       title: '远程部署', icon: 'guide'
     },
     children: [
       {
-        path: 'targets',
-        component: () => import('@/views/deploy/targets'),
-        name: 'DeployTargetsListPage',
+        path: 'auth',
+        component: () => import('@/views/replicate/auth'),
+        name: 'ReplicateAuth',
         meta: {
-          title: '目标环境',
-          icon: 'international',
+          title: '部署授权',
+          icon: 'guide',
           noCache: true
-          // permissions: ['admin.read']
         }
       },
       {
-        path: 'requests',
-        component: () => import('@/views/deploy/requests'),
-        name: 'DeployRequestsListPage',
+        path: 'request',
+        component: () => import('@/views/replicate/request'),
+        name: 'ReplicateRequest',
         meta: {
           title: '部署请求',
-          icon: 'skill',
+          icon: 'guide',
           noCache: true
-
-          // permissions: ['role.edit', 'role.create']
         }
       }
     ]

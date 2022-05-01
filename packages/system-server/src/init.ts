@@ -1,12 +1,10 @@
 import { ObjectId } from "bson"
-import { getAccountByUsername } from "./api/account"
-import { getApplicationByAppid } from "./api/application"
-import { InitializerApi } from "./api/init"
+import { getAccountByUsername } from "./support/account"
+import { getApplicationByAppid } from "./support/application"
+import { Initializer } from "./support/initializer"
 import Config from "./config"
-import { Constants } from "./constants"
-import { logger } from "./lib/logger"
+import { logger } from "./support/logger"
 
-const SYSTEM_EXTENSION_APPID = Constants.SYSTEM_EXTENSION_APPID
 
 /**
  * x. create collection indexes
@@ -15,34 +13,40 @@ const SYSTEM_EXTENSION_APPID = Constants.SYSTEM_EXTENSION_APPID
  * c. start system server app if not running
  */
 async function main() {
-  await InitializerApi.ready()
+  await Initializer.ready()
 
   // create indexes
-  await InitializerApi.createSystemCollectionIndexes()
+  await Initializer.createSystemCollectionIndexes()
   logger.info('create system collection indexes')
 
   // create root account
   let account_id: ObjectId
   const account = await getAccountByUsername(Config.INIT_ROOT_ACCOUNT)
   if (!account) {
-    account_id = await InitializerApi.createRootAccount()
+    account_id = await Initializer.createRootAccount()
     logger.info('create root account')
   } else {
     account_id = account._id
   }
 
-  // create system extension server app
-  const app = await getApplicationByAppid(SYSTEM_EXTENSION_APPID)
-  if (!app) {
-    await InitializerApi.createSystemExtensionApp(account_id, SYSTEM_EXTENSION_APPID)
-    logger.info('create system extension server app')
+  // create app user policy
+  await Initializer.initAppOSSUserPolicy()
+  logger.info('init app user policy')
 
-    await InitializerApi.initSystemExtensionApp(SYSTEM_EXTENSION_APPID)
-    logger.info('init system extension server app')
+
+  if (await Initializer.createBuiltinSpecs()) {
+    logger.info('create builtin specs')
+  }
+
+  // create system extension server app
+  const app = await getApplicationByAppid(Config.SYSTEM_EXTENSION_APPID)
+  if (!app) {
+    await Initializer.createSystemExtensionApp(account_id, Config.SYSTEM_EXTENSION_APPID)
+    logger.info('create system extension server app')
   }
 
   // run system extension server app
-  await InitializerApi.startSystemExtensionApp(SYSTEM_EXTENSION_APPID)
+  await Initializer.startSystemExtensionApp(Config.SYSTEM_EXTENSION_APPID)
   logger.info('start system extension server app')
 }
 

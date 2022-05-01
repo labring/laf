@@ -5,6 +5,7 @@ metadata:
   name: mongo
   namespace: laf
 spec:
+  # clusterIP: None
   selector:
     app: mongo
   type: ClusterIP
@@ -67,7 +68,5 @@ spec:
               name: data
       volumes:
         - name: data
-          hostPath:
-            path: /tmp/laf-mongo-test-db      # update to your local path
-            type: DirectoryOrCreate
+          emptyDir: {}
       restartPolicy: Always

@@ -20,11 +20,6 @@
           发布策略
         </el-button>
       </el-tooltip>
-      <el-tooltip content="远程部署：将本环境的访问策略推送到远程环境中，如推送到测试或生产环境" placement="bottom" effect="light">
-        <el-button plain class="filter-item" type="default" icon="el-icon-guide" @click="deployPanelVisible = true">
-          远程部署
-        </el-button>
-      </el-tooltip>
     </div>
 
     <!-- 表格 -->
@@ -138,15 +133,11 @@
         </el-button>
       </div>
     </el-dialog>
-
-    <!-- 部署面板 -->
-    <DeployPanel v-if="deployPanelVisible" v-model="deployPanelVisible" :policies="list" />
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import DeployPanel from '../deploy/components/deploy-panel.vue'
 import { createPolicy, removePolicy, getPolicies, publishPolicies, updatePolicy } from '@/api/policy'
 import { getFunctions } from '@/api/func'
 
@@ -173,8 +164,7 @@ const formRules = {
 export default {
   name: 'PoliciesListPage',
   components: {
-    Pagination,
-    DeployPanel
+    Pagination
   },
   filters: {
     statusFilter(status) {
@@ -207,8 +197,7 @@ export default {
       },
       rules: formRules,
       downloadLoading: false,
-      functions: [],
-      deployPanelVisible: false
+      functions: []
     }
   },
   created() {

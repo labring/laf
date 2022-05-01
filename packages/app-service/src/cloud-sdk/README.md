@@ -1,8 +1,6 @@
 
 
-> cloud-sdk 是用于云函数中，做为云函数的 SDK 使用，暴露 LaF 中的一些资源对象。
-
-在云函数中使用示例：
+> cloud-sdk is used in cloud function, exposing resource objects to cloud function.
 
 ```ts
 import cloud from '@/cloud-sdk'

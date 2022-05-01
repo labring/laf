@@ -25,15 +25,20 @@
           <span>{{ row.name }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="容量(Quota)" width="200">
+        <template slot-scope="{row}">
+          <span>{{ byte2gb(row.quota) }} GB</span>
+        </template>
+      </el-table-column>
       <el-table-column label="默认权限" align="center" width="100">
         <template slot-scope="{row}">
-          <span v-if="row.mode === 0">
+          <span v-if="row.mode === mode.PRIVATE">
             <el-tag type="info" size="small" effect="plain">私有</el-tag>
           </span>
-          <span v-if="row.mode === 1">
+          <span v-if="row.mode === mode.PUBLIC_READ">
             <el-tag type="primary" size="small" effect="plain">公共读</el-tag>
           </span>
-          <span v-if="row.mode === 2">
+          <span v-if="row.mode === mode.PUBLIC_READ_WRITE">
             <el-tag type="danger" size="small" effect="plain">公共读写</el-tag>
           </span>
         </template>
@@ -60,7 +65,7 @@
     </el-table>
 
     <!-- 表单对话框 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog width="600px" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form
         ref="dataForm"
         :rules="rules"
@@ -74,10 +79,24 @@
         </el-form-item>
         <el-form-item label="默认权限" prop="mode">
           <el-select v-model="form.mode" placeholder="">
-            <el-option label="私有" :value="0" />
-            <el-option label="公共读" :value="1" />
-            <el-option label="公共读写" :value="2" />
+            <el-option label="私有" :value="mode.PRIVATE" />
+            <el-option label="公共读" :value="mode.PUBLIC_READ" />
+            <el-option label="公共读写" :value="mode.PUBLIC_READ_WRITE" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="容量" prop="quota">
+          <el-input
+            v-model.number="form.quota"
+            type="number"
+            :step="1"
+            :min="1"
+            oninput="value=value.replace(/[^0-9]/g,'')"
+            style="width: 140px;"
+            placeholder="容量，单位：GB"
+          >
+            <template slot="append">GB</template>
+          </el-input>
+          <span> 总容量 {{ totalQuota }} GB，剩余 {{ freeQuota }} GB</span>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -93,22 +112,32 @@
 </template>
 
 <script>
-import * as fs from '@/api/file'
+import * as oss from '@/api/oss'
 import { assert } from '@/utils/assert'
+// import { byte2gb, gb2byte } from '@/utils/file'
+import store from '@/store'
 import { showError, showSuccess } from '@/utils/show'
+
+const MODE = {
+  PRIVATE: 'private',
+  PUBLIC_READ: 'public-read',
+  PUBLIC_READ_WRITE: 'public-read-write'
+}
 
 // 默认化创建表单的值
 function getDefaultFormValue() {
   return {
     name: '',
-    mode: 0
+    mode: MODE.PRIVATE,
+    quota: 1
   }
 }
 
 // 表单验证规则
 const formRules = {
   name: [{ required: true, message: 'Bucket 名字不可为空', trigger: 'blur' }],
-  mode: [{ required: true, message: 'Bucket 权限为必选', trigger: 'blur' }]
+  mode: [{ required: true, message: 'Bucket 权限为必选', trigger: 'blur' }],
+  quota: [{ required: true, message: 'Bucket 容量为必选', trigger: 'blur' }]
 }
 
 export default {
@@ -133,13 +162,28 @@ export default {
         create: '创建'
       },
       rules: formRules,
-      downloadLoading: false
+      downloadLoading: false,
+      mode: MODE,
+      freeQuota: 0
+    }
+  },
+  computed: {
+    // 总存储容量 GB
+    totalQuota() {
+      const totalQuota = store.state.app.spec.spec.storage_capacity || 0
+      return this.byte2gb(totalQuota)
     }
   },
   created() {
     this.getList()
   },
   methods: {
+    byte2gb(byte) {
+      return Math.floor(byte / 1024 / 1024 / 1024)
+    },
+    gb2byte(gb) {
+      return gb * 1024 * 1024 * 1024
+    },
     /**
      * 获取数据列表
      */
@@ -147,8 +191,13 @@ export default {
       this.listLoading = true
 
       // 执行数据查询
-      const ret = await fs.getFileBuckets().catch(() => { this.listLoading = false })
+      const ret = await oss.getBuckets().catch(() => { this.listLoading = false })
       assert(ret.code === 0, 'get file buckets got error')
+
+      const usedQuota = ret.data.reduce((total, bucket) => {
+        return total + bucket.quota
+      }, 0)
+      this.freeQuota = this.totalQuota - this.byte2gb(usedQuota)
 
       this.list = ret.data
       this.listLoading = false
@@ -166,13 +215,17 @@ export default {
     handleCreate() {
       this.$refs['dataForm'].validate(async(valid) => {
         if (!valid) { return }
-
-        if (/^[\w|\d]{1,32}$/g.test(this.form.name) === false) {
-          return showError('Bucket 名称长度必须在 1～32 之间，且只能包含字母、数字和下划线')
+        const isNameValid = /^[a-z0-9]{3,16}$/g.test(this.form.name)
+        if (!isNameValid) {
+          return showError('Bucket 名称长度必须在 3～16 之间，且只能包含小写字母、数字')
         }
 
+        if (this.freeQuota < this.form.quota) {
+          return showError('所有Bucket容量相加不能超过总容量')
+        }
+        const quota = this.gb2byte(this.form.quota)
         // 执行创建请求
-        const r = await fs.createFileBucket(this.form.name, this.form.mode)
+        const r = await oss.createBucket(this.form.name, this.form.mode, quota)
 
         if (r.code) {
           this.$notify({
@@ -195,7 +248,7 @@ export default {
     },
     // 显示编辑表单
     showEditForm(row) {
-      this.form = { ...row }
+      this.form = { ...row, quota: this.byte2gb(row.quota) }
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -207,8 +260,16 @@ export default {
       this.$refs['dataForm'].validate(async(valid) => {
         if (!valid) { return }
 
+        // 检查quota是否可用
+        const existedQuota = this.list.find(bucket => bucket.name === this.form.name).quota
+        const freeQuota = this.freeQuota + this.byte2gb(existedQuota)
+        if (freeQuota < this.form.quota) {
+          return showError('所有Bucket容量相加不能超过总容量')
+        }
+        const quota = this.gb2byte(this.form.quota)
+
         // 执行更新请求
-        const r = await fs.updateFileBucket(this.form.name, this.form.mode)
+        const r = await oss.updateBucket(this.form.name, this.form.mode, quota)
 
         if (r.code) {
           this.$notify({
@@ -230,7 +291,7 @@ export default {
       await this.$confirm('确认要删除此数据？', '删除确认')
 
       // 执行删除请求
-      const r = await fs.deleteFileBucket(row.name)
+      const r = await oss.deleteBucket(row.name)
 
       if (r.code === 'BUCKET_NOT_EMPTY') {
         return showError('不可删除非空文件桶')
@@ -246,11 +307,11 @@ export default {
 
       showSuccess('删除成功！')
 
-      this.list.splice(index, 1)
+      this.getList()
     },
     // 获取 bucket 地址
     getBucketUrl(bucketName) {
-      return fs.getAppFileBucketUrl(bucketName)
+      return oss.getBucketUrl(bucketName)
     },
     // 查看详情
     async handleShowDetail(row) {

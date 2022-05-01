@@ -1,0 +1,87 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: oss
+  namespace: laf
+spec:
+  selector:
+    app: oss
+  clusterIP: None
+  ports:
+    - port: 9000
+      targetPort: 9000
+      name: http
+    - port: 9001
+      targetPort: 9001
+      name: console
+    
+
+### This oss ONLY work for demo purpose, you should config your own volume for production use!
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: oss
+  namespace: laf
+  labels:
+    app: oss
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oss
+  serviceName: "oss"
+  template:
+    metadata:
+      labels:
+        app: oss
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - image: bitnami/minio:2022.4.12
+          name: oss
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "1024Mi"
+              cpu: "1000m"
+          env:
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: oss-config
+                  key: minio-root-user
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: oss-config
+                  key: minio-root-password
+            - name: MINIO_DISTRIBUTED_MODE_ENABLED
+              value: "yes"
+            - name: MINIO_DISTRIBUTED_NODES
+              value: oss-0/data/{0...3}
+            - name: MINIO_REGION_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: oss-config
+                  key: minio-region-name
+            - name: MINIO_DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: oss-config
+                  key: minio-domain
+            - name: MINIO_SKIP_CLIENT
+              value: "yes"
+          ports:
+            - containerPort: 9000
+            - containerPort: 9001
+          volumeMounts:
+            - mountPath: /data
+              name: data
+      volumes:
+        - name: data
+          emptyDir: {}
+      restartPolicy: Always

@@ -2,14 +2,13 @@ import { AxiosStatic } from "axios"
 import { Db, getDb } from "database-proxy"
 import { FunctionContext } from "cloud-function-engine"
 import * as mongodb from "mongodb"
-import { DatabaseAgent } from "../lib/database"
+import { DatabaseAgent } from "../db"
 import request from 'axios'
-import { SchedulerInstance } from "../lib/scheduler"
-import { getToken, parseToken } from "../lib/utils/token"
-import { invokeInFunction } from "./invoke"
-import { CloudFunction } from "../lib/function"
+import { SchedulerInstance } from "../support/scheduler"
+import { getToken, parseToken } from "../support/token"
+import { addFunctionLog, CloudFunction } from "../support/function"
 import { WebSocket } from "ws"
-import { WebSocketAgent } from "../lib/ws"
+import { WebSocketAgent } from "../support/ws"
 import Config from "../config"
 
 
@@ -72,8 +71,9 @@ export interface CloudSdkInterface {
    *  const session = mongo.client.startSession()
    *  try {
    *       await session.withTransaction(async () => {
-   *       await mongo.db.collection('xxx').updateOne({}, { session })
-   *       await mongo.db.collection('yyy').deleteMany({}, { session })
+   *          await mongo.db.collection('xxx').updateOne({}, { session })
+   *          await mongo.db.collection('yyy').deleteMany({}, { session })
+   *       })
    *  } finally {
    *       await session.endSession()
    *  }
@@ -100,6 +100,19 @@ export interface CloudSdkInterface {
    * Current app id
    */
   appid: string
+
+  env: {
+    DB_URI?: string
+    SERVER_SECRET_SALT?: string
+    APP_ID?: string
+    OSS_ACCESS_KEY?: string
+    OSS_ACCESS_SECRET?: string
+    OSS_REGION?: string
+    OSS_INTERNAL_ENDPOINT?: string
+    OSS_EXTERNAL_ENDPOINT?: string
+    NPM_INSTALL_FLAGS?: string
+    RUNTIME_IMAGE?: string
+  }
 }
 
 
@@ -135,9 +148,63 @@ export function create() {
       db: DatabaseAgent.accessor.db
     },
     sockets: WebSocketAgent.clients,
-    appid: Config.APP_ID
+    appid: Config.APP_ID,
+    env: {
+      DB_URI: Config.DB_URI,
+      SERVER_SECRET_SALT: Config.SERVER_SECRET_SALT,
+      APP_ID: process.env.APP_ID,
+      OSS_ACCESS_KEY: process.env.APP_ID,
+      OSS_ACCESS_SECRET: process.env.OSS_ACCESS_SECRET,
+      OSS_REGION: process.env.OSS_REGION,
+      OSS_INTERNAL_ENDPOINT: process.env.OSS_INTERNAL_ENDPOINT,
+      OSS_EXTERNAL_ENDPOINT: process.env.OSS_EXTERNAL_ENDPOINT,
+      NPM_INSTALL_FLAGS: process.env.NPM_INSTALL_FLAGS || '',
+      RUNTIME_IMAGE: process.env.RUNTIME_IMAGE
+    }
   }
   return cloud
 }
 
 export default cloud
+
+
+/**
+ * The cloud function is invoked in the cloud function, which runs in the cloud function.
+ * 
+ * @param name the name of cloud function to be invoked
+ * @param param the invoke params
+ * @returns 
+ */
+async function invokeInFunction(name: string, param?: FunctionContext) {
+  const data = await CloudFunction.getFunctionByName(name)
+  const func = new CloudFunction(data)
+
+  if (!func) {
+    throw new Error(`invoke() failed to get function: ${name}`)
+  }
+
+  param = param ?? {}
+
+  param.requestId = param.requestId ?? 'invoke'
+
+  param.method = param.method ?? 'call'
+
+  const result = await func.invoke(param)
+
+  await addFunctionLog({
+    requestId: param.requestId,
+    method: param.method,
+    func_id: func.id,
+    func_name: name,
+    logs: result.logs,
+    time_usage: result.time_usage,
+    data: result.data,
+    error: result.error,
+  })
+
+  if (result.error) {
+    throw result.error
+  }
+
+  return result.data
+}

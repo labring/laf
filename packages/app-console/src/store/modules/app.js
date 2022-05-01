@@ -28,10 +28,18 @@ const state = {
    */
   file_token: null,
 
+  /**
+   * spec
+   * @type {Object}
+   */
+  spec: null,
+
   app_deploy_host: null,
   app_deploy_url_schema: 'http',
   storage_deploy_host: null,
-  storage_deploy_url_schema: 'http'
+  storage_deploy_url_schema: 'http',
+  oss_internal_endpoint: null,
+  oss_external_endpoint: null
 }
 
 const mutations = {
@@ -51,6 +59,9 @@ const mutations = {
   SET_FILE_TOKEN: (state, payload) => {
     state.file_token = payload || []
   },
+  SET_SPEC: (state, spec) => {
+    state.spec = spec || {}
+  },
   SET_APP_DEPLOY_HOST: (state, domain) => {
     state.app_deploy_host = domain
   },
@@ -59,6 +70,9 @@ const mutations = {
   },
   SET_STORAGE_DEPLOY_HOST: (state, domain) => {
     state.storage_deploy_host = domain
+  },
+  SET_OSS_EXTERNAL_ENDPOINT: (state, endpoint) => {
+    state.oss_external_endpoint = endpoint
   },
   SET_STORAGE_DEPLOY_URL_SCHEMA: (state, schema) => {
     state.storage_deploy_url_schema = schema
@@ -70,6 +84,7 @@ const mutations = {
     state.permissions = []
     state.debug_token = null
     state.file_token = null
+    state.spec = null
     state.app_deploy_host = null
     state.app_deploy_url_schema = 'http'
     state.storage_deploy_host = null
@@ -89,9 +104,11 @@ const actions = {
     commit('SET_APP_PERMISSIONS', res.data?.permissions)
     commit('SET_DEBUG_TOKEN', res.data?.debug_token)
     commit('SET_FILE_TOKEN', res.data?.file_token)
+    commit('SET_SPEC', res.data?.spec)
     commit('SET_APP_DEPLOY_HOST', res.data?.app_deploy_host)
     commit('SET_APP_DEPLOY_URL_SCHEMA', res.data?.app_deploy_url_schema)
     commit('SET_STORAGE_DEPLOY_HOST', res.data?.storage_deploy_host)
+    commit('SET_OSS_EXTERNAL_ENDPOINT', res.data?.oss_external_endpoint)
     commit('SET_STORAGE_DEPLOY_URL_SCHEMA', res.data?.storage_deploy_url_schema)
   },
   clearStates({ commit }) {

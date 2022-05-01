@@ -1,0 +1,57 @@
+
+@token={{login.response.body.$.data.access_token}}
+@appid=000000
+
+
+### 登陆
+# @name login
+
+POST {{base_url}}/account/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{user}}",
+  "password": "{{passwd}}"
+}
+
+### Get bucket list
+
+GET {{base_url}}/apps/{{appid}}/oss/buckets
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+### Create a bucket
+
+POST {{base_url}}/apps/{{appid}}/oss/buckets
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "bucket": "ahah",
+  "mode": "private"
+}
+
+
+### Set bucket policy
+
+PUT  {{base_url}}/apps/{{appid}}/oss/buckets/test-for-create-bucket
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "mode": "public-read"
+}
+
+
+### Get a bucket
+
+GET  {{base_url}}/apps/{{appid}}/oss/buckets/test-for-create-bucket
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+### Delete a bucket
+
+DELETE  {{base_url}}/apps/{{appid}}/oss/buckets/test-for-create-bucket
+Authorization: Bearer {{token}}

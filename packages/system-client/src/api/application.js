@@ -1,4 +1,3 @@
-
 import { getCurrentBaseURL } from '@/utils'
 import { getToken, getTokenExpire } from '@/utils/auth'
 import request from '@/utils/request'
@@ -10,6 +9,17 @@ import request from '@/utils/request'
 export function getMyApplications() {
   return request({
     url: '/sys-api/apps/my',
+    method: 'get'
+  })
+}
+
+/**
+ * Get avaliable specs
+ * @returns
+ */
+export function getSpecs() {
+  return request({
+    url: '/sys-api/apps/specs',
     method: 'get'
   })
 }
@@ -33,12 +43,13 @@ export async function getApplicationByAppid(appid) {
  * @param param0
  * @returns
  */
-export async function createApplication({ name }) {
+export async function createApplication({ name, spec }) {
   const res = await request({
     url: `/sys-api/apps/create`,
     method: 'post',
     data: {
-      name
+      name,
+      spec
     }
   })
   return res
@@ -78,9 +89,9 @@ export async function removeApplication(appid) {
  * @param {*} appid
  * @returns
  */
-export async function startApplicationService(appid) {
+export async function startApplicationInstance(appid) {
   const res = await request({
-    url: `/sys-api/apps/${appid}/service/start`,
+    url: `/sys-api/apps/${appid}/instance/start`,
     method: 'post'
   })
   return res
@@ -91,14 +102,26 @@ export async function startApplicationService(appid) {
  * @param {*} appid
  * @returns
  */
-export async function stopApplicationService(appid) {
+export async function stopApplicationInstance(appid) {
   const res = await request({
-    url: `/sys-api/apps/${appid}/service/stop`,
+    url: `/sys-api/apps/${appid}/instance/stop`,
     method: 'post'
   })
   return res
 }
 
+/**
+ * 重启应用服务
+ * @param {*} appid
+ * @returns
+ */
+export async function restartApplicationInstance(appid) {
+  const res = await request({
+    url: `/sys-api/apps/${appid}/instance/stop`,
+    method: 'post'
+  })
+  return res
+}
 
 /**
  * 导出应用

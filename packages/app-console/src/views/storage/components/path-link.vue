@@ -6,8 +6,8 @@
       </span>
       <span v-if="it.path !== '/'">
         <span class="item-link">{{ it.name }}</span>
-        <span style="margin: 0 1px;color: gray;">/</span>
       </span>
+      <span style="margin: 0 1px;color: gray;">/</span>
     </span>
   </div>
 </template>
@@ -19,6 +19,10 @@ export default {
     path: {
       type: String,
       default: '/'
+    },
+    bucket: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -28,11 +32,11 @@ export default {
   },
   watch: {
     path() {
-      this.resolvePath(this.path)
+      this.resolvePath()
     }
   },
   created() {
-    this.resolvePath(this.path)
+    this.resolvePath()
   },
   methods: {
     onClick(item) {
@@ -49,7 +53,7 @@ export default {
      * ]
      * ```
      */
-    resolvePath(path_string) {
+    resolvePath() {
       const strs = this.path.split('/')
         .filter(str => str !== '')
 
@@ -57,14 +61,10 @@ export default {
         return { name, path: '' }
       })
 
-      arr.unshift({ name: '/', path: '/' })
+      arr.unshift({ name: this.bucket, path: '/' })
       for (let i = 1; i < arr.length; i++) {
         const pre = arr[i - 1]
-        if (pre.name === '/') {
-          arr[i].path = pre.path + arr[i].name
-        } else {
-          arr[i].path = pre.path + '/' + arr[i].name
-        }
+        arr[i].path = pre.path + arr[i].name + '/'
       }
 
       this.items = [...arr]
