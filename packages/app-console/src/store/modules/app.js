@@ -98,7 +98,6 @@ const actions = {
     assert(res.data?.application, 'empty `res.data?.application` got')
     assert(res.data?.roles, 'empty `res.data?.roles` got')
     assert(res.data?.permissions, 'empty `res.data?.permissions` got')
-    console.log('loadCurrentApplication', res.data)
 
     commit('SET_APPLICATION', res.data?.application)
     commit('SET_APP_ROLES', res.data?.roles)

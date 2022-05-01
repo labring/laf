@@ -1,0 +1,59 @@
+@token={{login.response.body.$.data.access_token}}
+@appid=bap2x7
+
+
+### login
+# @name login
+
+POST {{base_url}}/account/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{user}}",
+  "password": "{{passwd}}"
+}
+
+
+### Get replicate_request list
+
+GET {{base_url}}/apps/{{appid}}/replicate/replicate_request
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+### Create replicate_request
+
+POST {{base_url}}/apps/{{appid}}/replicate/replicate_request
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "target_appid": "oig8zg",
+  "functions": {
+      "type": "all",
+      "items": [{
+          "id": "626e4c2c97ae7421f958eff5",
+          "name": "delete_foo"
+      }]
+  },
+  "policies": {
+     "type": "all",
+      "items": []
+  },
+  "comment": "v1.0"
+}
+
+
+### Upadate replicate_request
+
+PUT {{base_url}}/apps/{{appid}}/replicate/replicate_request/626eb0b5ecdc03de13e66ee7
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+
+### Delete replicate_request
+
+DELETE {{base_url}}/apps/{{appid}}/replicate/replicate_request/626e58ce8b20c60e569c6596
+Content-Type: application/json
+Authorization: Bearer {{token}}

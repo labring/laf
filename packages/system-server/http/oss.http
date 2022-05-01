@@ -1,11 +1,12 @@
 
 @token={{login.response.body.$.data.access_token}}
-@appid=00000000-0000-0000-0000-000000000000
+@appid=000000
 
-### admin login
+
+### 登陆
 # @name login
 
-POST {{base_url}}/sys-api/account/login HTTP/1.1
+POST {{base_url}}/account/login HTTP/1.1
 Content-Type: application/json
 
 {
@@ -15,26 +16,26 @@ Content-Type: application/json
 
 ### Get bucket list
 
-GET {{base_url}}/sys-api/apps/{{appid}}/oss/buckets
+GET {{base_url}}/apps/{{appid}}/oss/buckets
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 
 ### Create a bucket
 
-POST {{base_url}}/sys-api/apps/{{appid}}/oss/buckets
+POST {{base_url}}/apps/{{appid}}/oss/buckets
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "bucket": "test-for-create-bucket",
+  "bucket": "ahah",
   "mode": "private"
 }
 
 
 ### Set bucket policy
 
-PUT  {{base_url}}/sys-api/apps/{{appid}}/oss/buckets/test-for-create-bucket
+PUT  {{base_url}}/apps/{{appid}}/oss/buckets/test-for-create-bucket
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -45,12 +46,12 @@ Content-Type: application/json
 
 ### Get a bucket
 
-GET  {{base_url}}/sys-api/apps/{{appid}}/oss/buckets/test-for-create-bucket
+GET  {{base_url}}/apps/{{appid}}/oss/buckets/test-for-create-bucket
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 
 ### Delete a bucket
 
-DELETE  {{base_url}}/sys-api/apps/{{appid}}/oss/buckets/test-for-create-bucket
+DELETE  {{base_url}}/apps/{{appid}}/oss/buckets/test-for-create-bucket
 Authorization: Bearer {{token}}
