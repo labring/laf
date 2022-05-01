@@ -76,7 +76,6 @@ export async function handleGetReplicateRequest(req: Request, res: Response) {
 export async function handleCreateReplicateRequest(req: Request, res: Response) {
   const db = DatabaseAgent.db
   const app: IApplicationData = req["parsed-app"]
-  const body = req.body
   const uid = req["auth"]?.uid
 
   // check login
@@ -91,21 +90,27 @@ export async function handleCreateReplicateRequest(req: Request, res: Response) 
     return res.status(code).send()
   }
 
-  const { target_appid, functions, policies } = body
   // check params
+  const { target_appid, functions, policies } = req.body
   if (!target_appid) {
     return res.status(422).send("invalid target_appid")
   }
+
+  // check app
   const existed = await db.collection(CN_APPLICATIONS)
     .countDocuments({ appid: target_appid })
   if (!existed) {
     return res.status(422).send("invalid target_appid")
   }
+
+  // check authorized
   const authorized = await db.collection(CN_REPLICATE_AUTH)
     .countDocuments({ target_appid: target_appid })
   if (authorized) {
     return res.status(403).send()
   }
+
+  // check functions policies 
   const types = ["all", "part"]
   if (!types.includes(functions?.type)) {
     res.status(422).send(" invalid type")
@@ -121,7 +126,7 @@ export async function handleCreateReplicateRequest(req: Request, res: Response) 
   }
 
   // build doc
-  const doc = { ...body }
+  const doc = { ...req.body }
   if ('all' === functions?.type) {
     const items = await db.collection(CN_FUNCTIONS)
       .find({ appid: app.appid })
