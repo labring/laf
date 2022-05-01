@@ -4,6 +4,8 @@ import { CN_APPLICATIONS, CN_FUNCTIONS, CN_POLICIES, CN_REPLICATE_AUTH, CN_REPLI
 import { IApplicationData } from "../../support/application"
 import { checkPermission } from "../../support/permission"
 import { ObjectId } from "mongodb"
+import { deployFunctions, publishFunctions } from "../../support/function"
+import { deployPolicies, publishAccessPolicies } from "../../support/policy"
 
 /**
  * handle get replicate request
@@ -65,6 +67,12 @@ export async function handleGetReplicateRequest(req: Request, res: Response) {
 
 }
 
+/**
+ * handle create replicate Request
+ * @param req request
+ * @param res response
+ * @returns data
+ */
 export async function handleCreateReplicateRequest(req: Request, res: Response) {
   const db = DatabaseAgent.db
   const app: IApplicationData = req["parsed-app"]
@@ -128,7 +136,6 @@ export async function handleCreateReplicateRequest(req: Request, res: Response) 
         appid: app.appid
       })
       .toArray()
-    console.log("functions items -> ", JSON.stringify(items))
     functions.type = functions.type
     functions.items = items
   }
@@ -151,10 +158,100 @@ export async function handleCreateReplicateRequest(req: Request, res: Response) 
   }
 
   // insert doc
+  doc.source_appid = app.appid
   doc.status = 'pending'
   doc.created_at = new Date()
   doc.created_by = uid
   const r = await db.collection(CN_REPLICATE_REQUESTS).insertOne(doc)
 
   return res.send({ data: r.insertedId })
+}
+
+/**
+ * handle delete replicate Request
+ * @param req request
+ * @param res response
+ * @returns data
+ */
+export async function handleDeleteReplicateRequest(req: Request, res: Response) {
+  const db = DatabaseAgent.db
+  const app: IApplicationData = req["parsed-app"]
+  const uid = req["auth"]?.uid
+  const id = req.params.id
+
+  // check login
+  if (!uid) {
+    res.status(401).send()
+  }
+
+  // check permission
+  const { REPLICATE_REQUEST_REMOVE } = CONST_DICTS.permissions
+  const code = await checkPermission(uid, REPLICATE_REQUEST_REMOVE.name, app)
+  if (code) {
+    return res.status(code).send()
+  }
+
+  // remove 
+  const r = await db.collection(CN_REPLICATE_REQUESTS).deleteOne({ _id: new ObjectId(id) })
+  return res.send({ data: r.deletedCount })
+}
+
+/**
+ * handle apply replicate Request
+ * @param req request
+ * @param res response
+ * @returns data
+ */
+export async function handleApplyReplicateRequest(req: Request, res: Response) {
+  const uid = req["auth"]?.uid
+  const id = req.params.id
+  const app: IApplicationData = req["parsed-app"]
+  // check login
+  if (!uid) {
+    res.status(401).send()
+  }
+
+  // check permission
+  const { REPLICATE_REQUEST_UPDATE } = CONST_DICTS.permissions
+  const code = await checkPermission(uid, REPLICATE_REQUEST_UPDATE.name, app)
+  if (code) {
+    return res.status(code).send()
+  }
+
+  // check request
+  const db = DatabaseAgent.db
+  const request = await db.collection(CN_REPLICATE_REQUESTS)
+    .findOne({ _id: new ObjectId(id), target_appid: app.appid })
+
+  if (!request)
+    return res.status(422).send('invalid request')
+
+  if ('pending' !== request.status) {
+    return res.status(422).send('invalid request')
+  }
+
+  // deploy
+  if (request.functions.item !== 0) {
+    await deployFunctions(app.appid, request.functions.item)
+    await publishFunctions(app)
+  }
+  if (request.policies.item !== 0) {
+    await deployPolicies(app.appid, request.policies.item)
+    await publishAccessPolicies(app)
+  }
+
+  // update status
+  await db.collection(CN_REPLICATE_REQUESTS)
+    .updateOne({
+      _id: new ObjectId(id),
+      target_appid: app.appid
+    }, {
+      $set: {
+        status: 'accepted',
+        updated_at: new Date(),
+        updated_by: uid
+      }
+    })
+
+  return res.send({ data: 'accepted' })
 }
