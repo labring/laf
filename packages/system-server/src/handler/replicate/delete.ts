@@ -36,5 +36,5 @@ export async function handleDeleteReplicateAuth(req: Request, res: Response) {
 
   // remove 
   const r = await db.collection(CN_REPLICATE_AUTH).deleteOne({ _id: new ObjectId(id) })
-  return res.send({ data: r.deletedCount })
+  return res.send({ code: 0, data: r.deletedCount })
 }

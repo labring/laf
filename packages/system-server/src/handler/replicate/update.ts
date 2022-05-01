@@ -12,9 +12,11 @@ import { DatabaseAgent } from "../../db"
 export async function handleUpdateReplicateAuth(req: Request, res: Response) {
   const uid = req["auth"]?.uid
   if (!uid) res.status(401).send()
+
   const id = req.params.id
   const { status } = req.body
   const app: IApplicationData = req["parsed-app"]
+  const db = DatabaseAgent.db
 
   // check params
   if (!["accept", "reject"].includes(status)) {
@@ -27,25 +29,30 @@ export async function handleUpdateReplicateAuth(req: Request, res: Response) {
   if (code) {
     return res.status(code).send()
   }
+  
+  const exited = await db
+    .collection(CN_REPLICATE_AUTH)
+    .countDocuments({ _id: new ObjectId(id), target_appid: app.appid })
+  if (!exited) return res.send({ code: 1, message: "no permission" })
 
   // update auth
-  const db = DatabaseAgent.db
   if (status === "accept") {
     const r = await db.collection(CN_REPLICATE_AUTH).updateOne(
       {
         _id: new ObjectId(id),
+        target_appid: app.appid,
         status: "pending",
       },
       {
         $set: { status, updated_at: new Date() },
       }
     )
-    return res.send({ data: r.modifiedCount })
+    return res.send({ code: 0, data: r.modifiedCount })
   }
 
   // reject and remove
   const r = await db
     .collection(CN_REPLICATE_AUTH)
     .deleteOne({ _id: new ObjectId(id), status: "pending" })
-  return res.send({ data: r.deletedCount })
+  return res.send({ code: 0, data: r.deletedCount })
 }

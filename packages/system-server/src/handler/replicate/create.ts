@@ -45,7 +45,7 @@ export async function handleCreateReplicateAuth(req: Request, res: Response) {
     .collection<IApplicationData>(CN_REPLICATE_AUTH)
     .countDocuments({ source_appid: app.appid, target_appid: target_appid })
   if (total > 0) {
-    return res.status(422).send("existed")
+    return res.send({ code: 422, message: "already exists" })
   }
 
   // add auth
@@ -56,5 +56,5 @@ export async function handleCreateReplicateAuth(req: Request, res: Response) {
     created_at: new Date(),
   })
 
-  return res.send({ data: result.insertedId })
+  return res.send({ code: 0, data: result.insertedId })
 }

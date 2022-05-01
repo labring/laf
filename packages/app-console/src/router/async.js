@@ -154,6 +154,38 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/app/:appid/replicate',
+    component: Layout,
+    redirect: '/replicate/auth',
+    meta: {
+      title: '应用部署', icon: 'guide'
+    },
+    children: [
+      {
+        path: 'auth',
+        component: () => import('@/views/replicate/auth'),
+        name: 'ReplicateAuth',
+        meta: {
+          title: '应用授权',
+          icon: 'guide',
+          noCache: true
+          // permissions: ['admin.read']
+        }
+      },
+      {
+        path: 'replicas',
+        component: () => import('@/views/replicate/replicas'),
+        name: 'ReplicateReplicas',
+        meta: {
+          title: '请求部署',
+          icon: 'guide',
+          noCache: true
+          // permissions: ['admin.read']
+        }
+      }
+    ]
+  },
+  {
     path: '/app/:appid/deploy',
     component: Layout,
     redirect: '/deploy/target',

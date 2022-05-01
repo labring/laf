@@ -1,0 +1,51 @@
+
+@token={{login.response.body.$.data.access_token}}
+@appid=000000
+
+
+### login
+# @name login
+
+POST {{base_url}}/account/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{user}}",
+  "password": "{{passwd}}"
+}
+
+
+### Get replicate_auth list
+
+GET {{base_url}}/apps/{{appid}}/replicate/replicate_auth
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+### Create replicate_auth
+
+PUT {{base_url}}/apps/{{appid}}/replicate/replicate_auth
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "target_appid": "bap2x7"
+}
+
+
+### Upadate replicate_auth
+
+POST {{base_url}}/apps/{{appid}}/replicate/replicate_auth/626e59f38b20c60e569c6597
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "status": "accept"
+}
+
+
+### Delete replicate_auth
+
+DELETE {{base_url}}/apps/{{appid}}/replicate/replicate_auth/626e58ce8b20c60e569c6596
+Content-Type: application/json
+Authorization: Bearer {{token}}
