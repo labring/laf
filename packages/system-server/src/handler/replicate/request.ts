@@ -206,6 +206,7 @@ export async function handleApplyReplicateRequest(req: Request, res: Response) {
   const uid = req["auth"]?.uid
   const id = req.params.id
   const app: IApplicationData = req["parsed-app"]
+
   // check login
   if (!uid) {
     res.status(401).send()
