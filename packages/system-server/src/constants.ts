@@ -46,6 +46,7 @@ export const CN_APP_TEMPLATES = _('app_templates')
 export const CN_SPECS = _('specs')
 export const CN_APP_SPECS = _('app_specs')
 export const CN_REPLICATE_AUTH = _('replicate_auth')
+export const CN_REPLICATE_REQUESTS = _('replicate_requests')
 /**
  * Constants collection
  */

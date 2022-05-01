@@ -22,7 +22,7 @@ export async function handleCreateReplicateAuth(req: Request, res: Response) {
 
   // check params
   if (!target_appid) {
-    return res.status(422).send("target_appid is empty")
+    return res.status(422).send("invalid target_appid")
   }
 
   // check target_appid
