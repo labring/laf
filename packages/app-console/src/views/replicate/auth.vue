@@ -57,7 +57,7 @@
       >
         <template slot-scope="scope">
           <el-tag 
-            :type="scope.row.status === 'accept' ? 'success' : 'warning'"
+            :type="scope.row.status === 'accepted' ? 'success' : 'warning'"
           >
             {{ scope.row.status }}
           </el-tag>
@@ -112,10 +112,9 @@
 </template>
 
 <script>
-import { assert } from '@/utils/assert'
 import store from '@/store'
 import dayjs from 'dayjs'
-import { getReplicateAuths, createReplicateAuth, updateReplicateAuth, deleteReplicateAuth, applyReplicateAuth, acceptReplicateAuth } from '../../api/replicate'
+import { getReplicateAuths, createReplicateAuth, acceptReplicateAuth, deleteReplicateAuth } from '../../api/replicate'
 
 export default {
   data() {
@@ -163,7 +162,14 @@ export default {
       this.listLoading = true
 
       const res = await getReplicateAuths()
-      assert(res.code === 0, 'getReplicateAuths got error')
+      if (res.code) {
+        this.$notify({
+          type: 'error',
+          title: '操作失败',
+          message: res.message
+        })
+        return
+      }
 
       this.list = res.data.map(item => {
         item.created_at = dayjs(item.created_at).format('YYYY-MM-DD HH:mm:ss')
@@ -201,7 +207,7 @@ export default {
     async handleUpdateAuth(auth) {
       await this.$confirm('是否同意此授权？', '授权确认')
 
-      const res = await updateReplicateAuth(auth._id, 'accept')
+      const res = await acceptReplicateAuth(auth._id)
       if (res.code) {
         this.$notify({
           type: 'error',
@@ -227,23 +233,6 @@ export default {
       }
 
       this.getReplicateAuths()
-    },
-    async applyReplicateAuth(auth) {
-      const params = {
-        auth_id: auth._id,
-        functions: {
-          type: 'all',
-        },
-        policies: {
-          type: 'all',
-        },
-      }
-      const res = await applyReplicateAuth(params)
-      // this.getReplicateAuths()
-    },
-    async acceptReplicateAuth(auth) {
-      const res = await acceptReplicateAuth(auth._id)
-      // this.getReplicateAuths()
     },
   },
 }

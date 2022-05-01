@@ -173,9 +173,9 @@ export const asyncRoutes = [
         }
       },
       {
-        path: 'replicas',
-        component: () => import('@/views/replicate/replicas'),
-        name: 'ReplicateReplicas',
+        path: 'request',
+        component: () => import('@/views/replicate/request'),
+        name: 'ReplicateRequest',
         meta: {
           title: '请求部署',
           icon: 'guide',

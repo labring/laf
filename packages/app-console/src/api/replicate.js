@@ -1,6 +1,5 @@
 import store from '@/store'
 import request from '@/utils/request'
-import axios from 'axios'
 
 /**
  * Get replicated auths
@@ -31,17 +30,14 @@ export function createReplicateAuth(target_appid) {
 }
 
 /**
- * Update a replicated auth
+ * Accept a replicated auth
  * @returns
  */
-export function updateReplicateAuth(auth_id, status) {
+export function acceptReplicateAuth(auth_id) {
   const appid = store.state.app.appid
   return request({
     url: `/apps/${appid}/replicate/replicate_auth/${auth_id}`,
-    method: 'post',
-    data: {
-      status
-    }
+    method: 'post'
   })
 }
 
@@ -59,17 +55,30 @@ export function deleteReplicateAuth(auth_id) {
 }
 
 /**
- * apply a replicated auth
+ * get replicate requests
+ * @returns 
+ */
+export function getReplicateRequests(params) {
+  const appid = store.state.app.appid
+  return request({
+    url: `/apps/${appid}/replicate/replicate_request`,
+    method: 'get',
+    params
+  })
+}
+
+/**
+ * create a replicate request
  * @param {string} target_appid
  * @param {object} functions
  * @param {object} policies
  * @returns
  */
-export function applyReplicateAuth({ target_appid, functions, policies }) {
+export function createReplicateRequest({ target_appid, functions, policies }) {
   const appid = store.state.app.appid
   return request({
-    url: `/apps/${appid}/replicate/replicas`,
-    method: 'put',
+    url: `/apps/${appid}/replicate/replicate_request`,
+    method: 'post',
     data: {
       target_appid,
       functions,
@@ -79,14 +88,30 @@ export function applyReplicateAuth({ target_appid, functions, policies }) {
 }
 
 /**
- * accept a replicated auth
+ * accept a replicate request
  * @param {string} auth_id
  * @returns
  */
-export function acceptReplicateAuth(auth_id) {
+export function acceptReplicateRequest(request_id, status) {
   const appid = store.state.app.appid
   return request({
-    url: `/apps/${appid}/replicate/replicas/${auth_id}`,
-    method: 'put'
+    url: `/apps/${appid}/replicate/replicate_request/${request_id}`,
+    method: 'put',
+    data: {
+      status
+    }
+  })
+}
+
+/**
+ * delete a replicate request
+ * @param {string} request_id
+ * @returns
+ */
+export function deleteReplicateRequest(request_id) {
+  const appid = store.state.app.appid
+  return request({
+    url: `/apps/${appid}/replicate/replicate_request/${request_id}`,
+    method: 'delete'
   })
 }

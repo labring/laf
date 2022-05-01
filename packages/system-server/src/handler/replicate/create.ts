@@ -56,5 +56,5 @@ export async function handleCreateReplicateAuth(req: Request, res: Response) {
     created_at: new Date(),
   })
 
-  return res.send({ code: 0, data: result.insertedId })
+  return res.send({ data: result.insertedId })
 }

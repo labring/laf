@@ -10,14 +10,9 @@
         icon="el-icon-plus"
         @click="showCreateForm"
       >
-        新增授权
+        创建部署请求
       </el-button>
     </div>
-
-    <el-tabs class="tabs" v-model="authType" type="card" @tab-click="handleSwitchType">
-      <el-tab-pane label="目标环境" name="target"></el-tab-pane>
-      <el-tab-pane label="授权环境" name="source"></el-tab-pane>
-    </el-tabs>
 
     <!-- 数据列表 -->
     <el-table
@@ -70,22 +65,32 @@
       >
         <template slot-scope="scope">
           <el-button
+            v-if="scope.row.status !== 'accepted'"
             size="mini"
             plain
             type="primary"
-            @click="handleUpdateAuth(scope.row)"
+            @click="handleUpdateRequest(scope.row)"
           >同意</el-button>
           <el-button
             size="mini"
             plain
             type="danger"
-            @click="handleDeleteAuth(scope.row)"
+            @click="handleDeleteRequest(scope.row)"
           >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <el-dialog :visible.sync="dialogFormVisible" title="请求授权">
+    <!-- 分页 -->
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="getReplicateRequests"
+    />
+
+    <el-dialog :visible.sync="dialogFormVisible" title="请求部署">
       <el-form 
         ref="createForm"
         :rules="rules"
@@ -95,14 +100,31 @@
         style="width: 400px; margin-left:20px;"
       >
         <el-form-item label="目标appid" prop="target_appid">
-          <el-input v-model="form.target_appid"></el-input>
+          <el-select
+            v-model="form.target_appid"
+            filterable
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in targetAppids"
+              :key="item"
+              :label="item"
+              :value="item"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="部署权限" prop="permissions">
+          <el-checkbox-group v-model="form.permissions">
+            <el-checkbox label="function" border>云函数</el-checkbox>
+            <el-checkbox label="policy" border>访问策略</el-checkbox>
+          </el-checkbox-group>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
           取消
         </el-button>
-        <el-button type="primary" @click="handleCreateAuth">
+        <el-button type="primary" @click="handleCreateRequest">
           确定
         </el-button>
       </div>
@@ -111,37 +133,35 @@
 </template>
 
 <script>
-import { assert } from '@/utils/assert'
+import store from '@/store'
 import dayjs from 'dayjs'
-import { getReplicateAuths, createReplicateAuth, updateReplicateAuth, deleteReplicateAuth, applyReplicateAuth, acceptReplicateAuth } from '../../api/replicate'
+import Pagination from '@/components/Pagination'
+import { 
+  getReplicateRequests, 
+  createReplicateRequest, 
+  acceptReplicateRequest, 
+  deleteReplicateRequest,
+  getReplicateAuths
+} from '../../api/replicate'
+import { filter } from 'lodash'
 
 export default {
+  components: {
+    Pagination
+  },
   data() {
     return {
-      list: [
-        {
-          _id: 1,
-          source_appid: 'appid-1',
-          target_appid: 'appid-2',
-          status: 'pending',
-          created_at: '2020-01-01 12:00:00',
-          updated_at: '2020-01-01 12:00:00',
-        },
-        {
-          _id: 2,
-          source_appid: 'appid-1',
-          target_appid: 'appid-2',
-          status: 'accepted',
-          created_at: '2020-01-01 12:00:00',
-          updated_at: '2020-01-01 12:00:00',
-        }
-      ],
+      appid: '',
+      list: [],
+      total: 0,
       listLoading: true,
       listQuery: {
-        onlyEnabled: false,
+        limit: 10,
+        page: 1,
       },
       form: {
         target_appid: '',
+        permissions: [],
       },
       rules: {
         target_appid: [
@@ -149,26 +169,47 @@ export default {
         ],
       },
       dialogFormVisible: false,
-
-      authType: 'target', // target | source
+      requestType: 'target', // target | source
+      targetAppids:[],
     }
   },
   created () {
-    this.getReplicateAuths()
+    this.appid = store.state.app.appid
+    this.getReplicateTargetAppid()
+    this.getReplicateRequests()
   },
   methods: {
     handleSwitchType({name}) {
-      console.log(name)
+      this.requestType = name
+      this.switchList()
     },
     showCreateForm() {
       this.dialogFormVisible = true
     },
-    async getReplicateAuths() {
+    async getReplicateTargetAppid() {
+      const res = await getReplicateAuths()
+      if (res.code) {
+        return
+      }
+
+      this.targetAppids = res.data
+      .filter(item => item.source_appid === this.appid)
+      .map(item => item.target_appid)
+    },
+    async getReplicateRequests() {
       this.listLoading = true
 
-      const res = await getReplicateAuths()
-      assert(res.code === 0, 'getReplicateAuths got error')
+      const res = await getReplicateRequests(this.listQuery)
+      if (res.code) {
+        this.$notify({
+          type: 'error',
+          title: '操作失败',
+          message: res.message
+        })
+        return
+      }
 
+      this.total = res.total
       this.list = res.data.map(item => {
         item.created_at = dayjs(item.created_at).format('YYYY-MM-DD HH:mm:ss')
         if (item.updated_at) item.updated_at = dayjs(item.updated_at).format('YYYY-MM-DD HH:mm:ss')
@@ -176,11 +217,27 @@ export default {
       })
       this.listLoading = false
     },
-    async handleCreateAuth() {
+    async handleCreateRequest() {
       this.$refs['createForm'].validate(async(valid) => {
         if (!valid) { return }
 
-        const res = await createReplicateAuth(this.form.target_appid)
+        const params = {
+          target_appid: this.form.target_appid,
+        }
+        if (this.form.permissions.includes('function')) {
+          params.functions = {
+            type: 'all',
+            items: []
+          }
+        }
+        if (this.form.permissions.includes('policy')) {
+          params.policies = {
+            type: 'all',
+            items: []
+          }
+        }
+
+        const res = await createReplicateRequest(params)
 
         if (res.code) {
           this.$notify({
@@ -197,14 +254,14 @@ export default {
           message: '创建成功！'
         })
 
-        this.getReplicateAuths()
+        this.getReplicateRequests()
         this.dialogFormVisible = false
       })
     },
-    async handleUpdateAuth(auth) {
-      await this.$confirm('是否同意此授权？', '授权确认')
+    async handleUpdateRequest(request) {
+      await this.$confirm('是否同意此部署？', '部署确认')
 
-      const res = await updateReplicateAuth(auth._id, 'accept')
+      const res = await acceptReplicateRequest(request._id, 'accepted')
       if (res.code) {
         this.$notify({
           type: 'error',
@@ -214,12 +271,12 @@ export default {
         return
       }
 
-      this.getReplicateAuths()
+      this.getReplicateRequests()
     },
-    async handleDeleteAuth(auth) {
-      await this.$confirm('确认要删除此授权？', '删除确认')
+    async handleDeleteRequest(request) {
+      await this.$confirm('确认要删除此部署？', '删除确认')
 
-      const res = await deleteReplicateAuth(auth._id)
+      const res = await deleteReplicateRequest(request._id)
       if (res.code) {
         this.$notify({
           type: 'error',
@@ -229,24 +286,7 @@ export default {
         return
       }
 
-      this.getReplicateAuths()
-    },
-    async applyReplicateAuth(auth) {
-      const params = {
-        auth_id: auth._id,
-        functions: {
-          type: 'all',
-        },
-        policies: {
-          type: 'all',
-        },
-      }
-      const res = await applyReplicateAuth(params)
-      // this.getReplicateAuths()
-    },
-    async acceptReplicateAuth(auth) {
-      const res = await acceptReplicateAuth(auth._id)
-      // this.getReplicateAuths()
+      this.getReplicateRequests()
     },
   },
 }

@@ -30,20 +30,11 @@ export async function handleGetReplicateRequest(req: Request, res: Response) {
   }
 
   // build query object
-  const { keyword } = req.query
   const limit = Number(req.query?.limit || 10)
   const page = Number(req.query?.page || 1)
 
   // builder query 
-  const params = {}
-  if (keyword) {
-    params['$or'] = [
-      { status: { $regex: `${keyword}`, $options: '' } },
-      { comment: { $regex: `${keyword}`, $options: '' } },
-      { source_appid: app.appid },
-      { target_appid: app.appid }
-    ]
-  }
+  const params = { target_appid: app.appid }
 
   // page query
   const db = DatabaseAgent.db
@@ -76,8 +67,8 @@ export async function handleGetReplicateRequest(req: Request, res: Response) {
 export async function handleCreateReplicateRequest(req: Request, res: Response) {
   const db = DatabaseAgent.db
   const app: IApplicationData = req["parsed-app"]
-  const body = req.body
   const uid = req["auth"]?.uid
+  const { target_appid, functions, policies } = req.body
 
   // check login
   if (!uid) {
@@ -91,77 +82,75 @@ export async function handleCreateReplicateRequest(req: Request, res: Response) 
     return res.status(code).send()
   }
 
-  const { target_appid, functions, policies } = body
   // check params
   if (!target_appid) {
-    return res.status(422).send("invalid target_appid")
+    return res.status(422).send("no target_appid")
   }
   const existed = await db.collection(CN_APPLICATIONS)
     .countDocuments({ appid: target_appid })
   if (!existed) {
     return res.status(422).send("invalid target_appid")
   }
+
   const authorized = await db.collection(CN_REPLICATE_AUTH)
-    .countDocuments({ target_appid: target_appid })
-  if (authorized) {
+    .countDocuments({ target_appid: target_appid, source_appid: app.appid, status: 'accepted' })
+  if (!authorized) {
     return res.status(403).send()
   }
-  const types = ["all", "part"]
-  if (!types.includes(functions?.type)) {
-    res.status(422).send(" invalid type")
-  }
-  if (!types.includes(policies?.type)) {
-    res.status(422).send(" invalid type")
-  }
-  if ('part' === functions?.type && functions?.items.length == 0) {
-    res.status(422).send(" invalid functions")
-  }
-  if ('part' === policies.type && policies?.items.length == 0) {
-    res.status(422).send(" invalid policies")
-  }
 
-  // build doc
-  const doc = { ...body }
+  // build replicate request data
+  const doc = { functions: null, policies: null, target_appid, source_appid: app.appid, status: 'pending', created_by: new ObjectId(uid), created_at: new Date() }
   if ('all' === functions?.type) {
     const items = await db.collection(CN_FUNCTIONS)
       .find({ appid: app.appid })
       .toArray()
-    doc.functions.type = functions.type
-    doc.functions.items = items
+    doc.functions = {
+      type: functions.type,
+      items
+    } 
   }
-  if ('part' === functions?.type) {
+  if ('part' === functions?.type && functions?.items?.length > 0) {
     const items = await db.collection(CN_FUNCTIONS)
       .find({
         _id: { $in: functions.items.map(item => new ObjectId(item.id)) },
         appid: app.appid
       })
       .toArray()
-    functions.type = functions.type
-    functions.items = items
+      doc.functions = {
+        type: functions.type,
+        items
+      } 
   }
+
+
   if ('all' === policies?.type) {
     const items = await db.collection(CN_POLICIES)
       .find({ appid: app.appid })
       .toArray()
-    policies.type = policies.type
-    policies.items = items
+    doc.policies = {
+      type: policies.type,
+      items
+    }
   }
-  if ('part' === policies?.type) {
+  if ('part' === policies?.type && policies?.items?.length > 0) {
     const items = await db.collection(CN_POLICIES)
       .find({
         _id: { $in: policies.items.map(item => new ObjectId(item.id)) },
         appid: app.appid
       })
       .toArray()
-    policies.type = policies.type
-    policies.items = items
+    doc.policies = {
+      type: policies.type,
+      items
+    }
+  }
+
+  // check doc
+  if (!doc.functions && !doc.policies) {
+    return res.status(422).send("no functions or policies")
   }
 
   // insert doc
-  doc.source_appid = app.appid
-  doc.status = 'pending'
-  doc.created_at = new Date()
-  doc.created_by = uid
   const r = await db.collection(CN_REPLICATE_REQUESTS).insertOne(doc)
 
   return res.send({ data: r.insertedId })
@@ -232,12 +221,12 @@ export async function handleApplyReplicateRequest(req: Request, res: Response) {
   }
 
   // deploy
-  if (request.functions.item !== 0) {
-    await deployFunctions(app.appid, request.functions.item)
+  if (request.functions?.items?.length) {
+    await deployFunctions(app.appid, request.functions.items)
     await publishFunctions(app)
   }
-  if (request.policies.item !== 0) {
-    await deployPolicies(app.appid, request.policies.item)
+  if (request.policies?.items?.length) {
+    await deployPolicies(app.appid, request.policies.items)
     await publishAccessPolicies(app)
   }
 
@@ -250,7 +239,7 @@ export async function handleApplyReplicateRequest(req: Request, res: Response) {
       $set: {
         status: 'accepted',
         updated_at: new Date(),
-        updated_by: uid
+        updated_by: new ObjectId(uid)
       }
     })
 

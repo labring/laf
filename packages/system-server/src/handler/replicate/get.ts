@@ -29,5 +29,5 @@ export async function handleGetReplicateAuth(req: Request, res: Response) {
   query["$or"] = [{ source_appid: app.appid }, { target_appid: app.appid }]
   const docs = await db.collection(CN_REPLICATE_AUTH).find(query).toArray()
 
-  return res.send({ code: 0, data: docs })
+  return res.send({ data: docs })
 }
