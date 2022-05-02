@@ -44,14 +44,32 @@
         </el-table-column>
         <el-table-column label="服务启停" align="center" width="240" class-name="small-padding">
           <template slot-scope="{row}">
-            <el-button v-if="row.status !== 'running'" :loading="serviceLoading[row.appid]" plain type="success" size="mini" @click="startApp(row)">
+            <el-button v-if="row.status === 'stopped' || row.status === 'created'" :loading="serviceLoading[row.appid]" plain type="success" size="mini" @click="startApp(row)">
               启动
+            </el-button>
+            <el-button v-if="row.status === 'prepared_start'" :loading="true" plain type="info" size="mini">
+              准备启动
+            </el-button>
+            <el-button v-if="row.status === 'starting'" :loading="true" plain type="info" size="mini">
+              正在启动
             </el-button>
             <el-button v-if="row.status === 'running'" :loading="serviceLoading[row.appid]" plain type="danger" size="mini" @click="stopApp(row)">
               停止
             </el-button>
+            <el-button v-if="row.status === 'prepared_stop'" :loading="true" plain type="info" size="mini">
+              准备停止
+            </el-button>
+            <el-button v-if="row.status === 'stopping'" :loading="true" plain type="info" size="mini">
+              停止中
+            </el-button>
             <el-button v-if="row.status === 'running'" :loading="serviceLoading[row.appid]" plain type="default" size="mini" @click="restartApp(row)">
               重启
+            </el-button>
+            <el-button v-if="row.status === 'prepared_restart'" :loading="true" plain type="info" size="mini">
+              准备重启
+            </el-button>
+            <el-button v-if="row.status === 'restarting'" :loading="true" plain type="info" size="mini">
+              重启中
             </el-button>
           </template>
         </el-table-column>
@@ -190,7 +208,7 @@
         <el-button @click="dialogFormVisible = false">
           取消
         </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?handleCreate():handleUpdate()">
+        <el-button type="primary" :loading="loading" @click="dialogStatus==='create'?handleCreate():handleUpdate()">
           确定
         </el-button>
       </div>
@@ -292,7 +310,7 @@ export default {
   },
   async created() {
     this.loadApps()
-    setInterval(() => { this.getApplications(true) }, 8000)
+    setInterval(() => { this.getApplications(true) }, 5000)
   },
   methods: {
     loadApps() {
@@ -335,7 +353,9 @@ export default {
         const data = Object.assign({}, this.form)
 
         // 执行创建请求
+        this.loading = true
         const res = await createApplication({ name: data.name, spec: data.spec })
+          .finally(() => { this.loading = false })
         if (!res.data?.appid) {
           this.$notify({
             type: 'error',
@@ -369,8 +389,10 @@ export default {
       this.$refs['dataForm'].validate(async(valid) => {
         if (!valid) { return }
 
+        this.loading = true
         // 执行创建请求
         const res = await updateApplication(this.form.appid, { name: this.form.name })
+          .finally(() => { this.loading = false })
         if (res.error) {
           this.$notify({
             type: 'error',
