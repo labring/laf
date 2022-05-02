@@ -311,7 +311,7 @@ export default {
     },
     // 获取 bucket 地址
     getBucketUrl(bucketName) {
-      return oss.getBucketUrl(bucketName)
+      return oss.getBucketSecondaryUrl(bucketName)
     },
     // 查看详情
     async handleShowDetail(row) {

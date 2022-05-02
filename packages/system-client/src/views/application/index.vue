@@ -292,18 +292,26 @@ export default {
   },
   async created() {
     this.loadApps()
+    setInterval(() => { this.getApplications(true) }, 8000)
   },
   methods: {
-    async loadApps() {
-      this.loading = true
+    loadApps() {
+      this.getApplications()
+      this.getSpecs()
+    },
+    async getSpecs() {
+      const specs = await getSpecs()
+      this.specs = specs.data
+    },
+    async getApplications(interval = false) {
+      if (!interval) this.loading = true
       const res = await getMyApplications()
-        .finally(() => { this.loading = false })
+        .finally(() => {
+          if (!interval) this.loading = false
+        })
       const { created, joined } = res.data
       this.applications.created = created
       this.applications.joined = joined
-
-      const specs = await getSpecs()
-      this.specs = specs.data
     },
     toDetail(app) {
       if (app.status !== 'running') {

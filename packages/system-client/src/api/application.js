@@ -117,7 +117,7 @@ export async function stopApplicationInstance(appid) {
  */
 export async function restartApplicationInstance(appid) {
   const res = await request({
-    url: `/sys-api/apps/${appid}/instance/stop`,
+    url: `/sys-api/apps/${appid}/instance/restart`,
     method: 'post'
   })
   return res

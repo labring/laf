@@ -1,19 +1,5 @@
 <template>
   <div class="app-container">
-    <!-- 数据检索区 -->
-    <div class="filter-container">
-      <el-button
-        plain
-        size="mini"
-        class="filter-item"
-        type="primary"
-        icon="el-icon-plus"
-        @click="showCreateForm"
-      >
-        创建部署请求
-      </el-button>
-    </div>
-
     <!-- 数据列表 -->
     <el-table
       :data="list"
@@ -89,46 +75,6 @@
       :limit.sync="listQuery.limit"
       @pagination="getReplicateRequests"
     />
-
-    <el-dialog :visible.sync="dialogFormVisible" title="请求部署">
-      <el-form
-        ref="createForm"
-        :rules="rules"
-        :model="form"
-        label-position="left"
-        label-width="120px"
-        style="width: 400px; margin-left:20px;"
-      >
-        <el-form-item label="目标appid" prop="target_appid">
-          <el-select
-            v-model="form.target_appid"
-            filterable
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in targetAppids"
-              :key="item"
-              :label="item"
-              :value="item"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="部署权限" prop="permissions">
-          <el-checkbox-group v-model="form.permissions">
-            <el-checkbox label="function" border>云函数</el-checkbox>
-            <el-checkbox label="policy" border>访问策略</el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          取消
-        </el-button>
-        <el-button type="primary" @click="handleCreateRequest">
-          确定
-        </el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -140,8 +86,7 @@ import {
   getReplicateRequests,
   createReplicateRequest,
   acceptReplicateRequest,
-  deleteReplicateRequest,
-  getReplicateAuths
+  deleteReplicateRequest
 } from '../../api/replicate'
 
 export default {
@@ -169,31 +114,15 @@ export default {
       },
       dialogFormVisible: false,
       requestType: 'target', // target | source
-      targetAppids: []
     }
   },
   created() {
     this.appid = store.state.app.appid
-    this.getReplicateTargetAppid()
     this.getReplicateRequests()
   },
   methods: {
-    handleSwitchType({ name }) {
-      this.requestType = name
-      this.switchList()
-    },
     showCreateForm() {
       this.dialogFormVisible = true
-    },
-    async getReplicateTargetAppid() {
-      const res = await getReplicateAuths()
-      if (res.code) {
-        return
-      }
-
-      this.targetAppids = res.data
-        .filter(item => item.source_appid === this.appid)
-        .map(item => item.target_appid)
     },
     async getReplicateRequests() {
       this.listLoading = true

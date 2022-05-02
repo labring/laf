@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import store from '@/store'
+
 export default {
   name: 'PathLink',
   props: {
@@ -54,6 +56,7 @@ export default {
      * ```
      */
     resolvePath() {
+      const appid = store.state.app.appid
       const strs = this.path.split('/')
         .filter(str => str !== '')
 
@@ -61,7 +64,7 @@ export default {
         return { name, path: '' }
       })
 
-      arr.unshift({ name: this.bucket, path: '/' })
+      arr.unshift({ name: `${appid}-${this.bucket}`, path: '/' })
       for (let i = 1; i < arr.length; i++) {
         const pre = arr[i - 1]
         arr[i].path = pre.path + arr[i].name + '/'
