@@ -119,7 +119,6 @@ sudo systemctl start docker
 ```sh
 git clone https://github.com/lafjs/laf.git
 
-# 该目录下有更多部署脚本，可供生产部署时使用
 cd laf/deploy/docker-compose
 
 docker network create laf_shared_network --driver bridge || true
