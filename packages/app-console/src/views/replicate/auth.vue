@@ -70,6 +70,16 @@
       >
         <template slot-scope="scope">
           <el-button
+            v-if="authType === 'target' && scope.row.status=== 'accepted'"
+            plain
+            size="mini"
+            class="filter-item"
+            type="primary"
+            @click="showReplicasForm(scope.row)"
+          >
+            部署
+          </el-button>
+          <el-button
             v-if="authType === 'source' && scope.row.status !== 'accepted'"
             size="mini"
             plain
@@ -108,13 +118,42 @@
         </el-button>
       </div>
     </el-dialog>
+
+    <el-dialog :visible.sync="replicasDialogVisible" title="请求部署">
+      <el-form
+        ref="createForm"
+        :rules="rules"
+        :model="replicasForm"
+        label-position="left"
+        label-width="120px"
+        style="width: 400px; margin-left:20px;"
+      >
+        <el-form-item label="目标 appid" prop="target_appid">
+          <el-input v-model="replicasForm.target_appid" disabled />
+        </el-form-item>
+        <el-form-item label="部署权限" prop="permissions">
+          <el-checkbox-group v-model="replicasForm.permissions">
+            <el-checkbox label="function" border>云函数</el-checkbox>
+            <el-checkbox label="policy" border>访问策略</el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="replicasDialogVisible = false">
+          取消
+        </el-button>
+        <el-button type="primary" @click="handleCreateRequest">
+          确定
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import store from '@/store'
 import dayjs from 'dayjs'
-import { getReplicateAuths, createReplicateAuth, acceptReplicateAuth, deleteReplicateAuth } from '../../api/replicate'
+import { getReplicateAuths, createReplicateAuth, acceptReplicateAuth, deleteReplicateAuth, createReplicateRequest } from '../../api/replicate'
 
 export default {
   data() {
@@ -136,7 +175,12 @@ export default {
       },
       dialogFormVisible: false,
 
-      authType: 'target' // target | source
+      authType: 'target', // target | source
+      replicasDialogVisible: false,
+      replicasForm: {
+        target_appid: '',
+        permissions: []
+      },
     }
   },
   created() {
@@ -154,6 +198,55 @@ export default {
       } else {
         this.tableList = this.list.filter(item => item.target_appid === this.appid)
       }
+    },
+    showReplicasForm(row) {
+      this.replicasForm.target_appid = row.target_appid
+      this.replicasDialogVisible = true
+    },
+    async handleCreateRequest() {
+      this.$refs['createForm'].validate(async(valid) => {
+        if (!valid) { return }
+
+        if (this.replicasForm.permissions.length === 0) {
+          this.$message.warning('请至少选择一个部署权限')
+          return
+        }
+
+        const params = {
+          target_appid: this.replicasForm.target_appid
+        }
+        if (this.replicasForm.permissions.includes('function')) {
+          params.functions = {
+            type: 'all',
+            items: []
+          }
+        }
+        if (this.replicasForm.permissions.includes('policy')) {
+          params.policies = {
+            type: 'all',
+            items: []
+          }
+        }
+
+        const res = await createReplicateRequest(params)
+
+        if (res.code) {
+          this.$notify({
+            type: 'error',
+            title: '操作失败',
+            message: res.message
+          })
+          return
+        }
+
+        this.$notify({
+          type: 'success',
+          title: '操作成功',
+          message: '部署成功，等待目标应用接受。'
+        })
+
+        this.replicasDialogVisible = false
+      })
     },
     showCreateForm() {
       this.dialogFormVisible = true
