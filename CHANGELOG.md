@@ -1,4 +1,77 @@
-# [](https://github.com/lafjs/laf/compare/v0.7.10...v) (2022-02-09)
+# [](https://github.com/lafjs/laf/compare/v0.8.0-alpha.0...v) (2022-05-02)
+
+
+
+# [0.8.0-alpha.0](https://github.com/lafjs/laf/compare/v0.7.11...v0.8.0-alpha.0) (2022-05-02)
+
+
+### Bug Fixes
+
+* **app-console:** switch collection get page 1 ([2fa4cbb](https://github.com/lafjs/laf/commit/2fa4cbb27693bfa69e8f471485e001004b28004b))
+* **app-console:** upload file path fix ([6375e0b](https://github.com/lafjs/laf/commit/6375e0b20517b8b4f38a5bcc175a21f1d0944cce))
+* **app-service:** change debug-token to bearer token; ([d4901f1](https://github.com/lafjs/laf/commit/d4901f19e9b40ba356c350b02c5426ec076900a3))
+* fix app-service script error ([fc22342](https://github.com/lafjs/laf/commit/fc223428525d3bfdbde5ee3f87b0406c119e7fa3))
+* front-end lint fix ([6a44a71](https://github.com/lafjs/laf/commit/6a44a719f9c584d9f2ab4f18a8f38417b8251d2a))
+* **gateway:** fix oss.conf error; ([e8639b0](https://github.com/lafjs/laf/commit/e8639b05e9ae1a89607a91a40d3cceb5f5a7685a))
+* impl restart api & update sys client; ([3ba23bb](https://github.com/lafjs/laf/commit/3ba23bbce9eebb13101d378487901cb4841fad7d))
+* **oss:** fix error of setBucketPolicy api; ([8b5a2f0](https://github.com/lafjs/laf/commit/8b5a2f04a0c7ccec09d3f215d36af9ca360de0a1))
+* **oss:** fix error of setBucketPolicy api; ([bee61bd](https://github.com/lafjs/laf/commit/bee61bda08470983087088e5f1ab953629f3ca2c))
+* **oss:** fix oss api error; ([0fe8c90](https://github.com/lafjs/laf/commit/0fe8c90ddc3f038ceee9957dd71f1e4ddc10569a))
+* **oss:** fix oss api error; ([07c87e8](https://github.com/lafjs/laf/commit/07c87e821f970a611fd4d35f065d5611083155fb))
+* **oss:** folder name rule fix ([d8925a2](https://github.com/lafjs/laf/commit/d8925a232741a326ee3388d5994f0c6365eafb09))
+* **oss:** upload folder; ([f946885](https://github.com/lafjs/laf/commit/f94688514ec93f572178f2d7acd9382245b54849))
+* remove /healthz log in app service ([c2b0bc6](https://github.com/lafjs/laf/commit/c2b0bc6ebc7b7ded53e3102c85ca0b99ccd4f78e))
+* **replicate:** Fix. db instance import bug ([1d67b05](https://github.com/lafjs/laf/commit/1d67b050a08542e579e6d193fe61635205a2e08e))
+* **replicate:** Fix. db instance import bug ([3a9a6e2](https://github.com/lafjs/laf/commit/3a9a6e2b6b120a507108d01d8acf7a5d06dcd34f))
+* **replicate:** Fix. replicates appid bug ([b53f39c](https://github.com/lafjs/laf/commit/b53f39c12d1dc5a25e59fa9c124706e67de40feb))
+* **sys:** fix /health-check -> /healthz ([3ebeee1](https://github.com/lafjs/laf/commit/3ebeee1a692a710f961433148f720b0f634fa69f))
+* **sys:** fix oss sts config; ([3a15d32](https://github.com/lafjs/laf/commit/3a15d32beb61c96c00feaab873de82b4ff69d7e3))
+
+
+### Features
+
+* **app-console:** replace bucket fs api with oss ([3286322](https://github.com/lafjs/laf/commit/328632266e3c19305e0cdd65d3cb9be1c40fd326))
+* **app-console:** update bucket add quota param ([954f9b3](https://github.com/lafjs/laf/commit/954f9b3f54886fcfd83034c14ff337de13208e66))
+* **app-service:** add oss config & packages; ([1b8ff91](https://github.com/lafjs/laf/commit/1b8ff913c0bbf36c91b7ba0a6943fc2f1c272a2e))
+* **app-spec:** impl app-spec on app createing. ([8c05fa6](https://github.com/lafjs/laf/commit/8c05fa6804940dfd625fbe81df1c3ca2f1920a2c))
+* bucket show sencondary url; move replicas dialog to auth page;setInterval with getApplications; ([68aa451](https://github.com/lafjs/laf/commit/68aa451c9e39cf331e1c4a69859d057c359ef473))
+* complete the design of instance constroller ([3caa044](https://github.com/lafjs/laf/commit/3caa044c2539e26518390c16d261b5bc77cf0de6))
+* **gateway:** add oss conf in gateway; ([b2151c0](https://github.com/lafjs/laf/commit/b2151c0f9e214dc51d4380b286c1b46749432459))
+* **gateway:** add oss conf in gateway; ([c9b089f](https://github.com/lafjs/laf/commit/c9b089f3be4d920403af7db8c52184332180c0a2))
+* impl instance controller sevice; ([ddb03f0](https://github.com/lafjs/laf/commit/ddb03f0b052a1bb9e4f44c15f53320702b1aee4b))
+* **ingress:** use k8s ingress replace nginx gateway; ([463ea11](https://github.com/lafjs/laf/commit/463ea1115f8e9849dd5af4646bd7abb59e288b98))
+* **oss:** add bucket quota; ([2918104](https://github.com/lafjs/laf/commit/291810401e185a08af7f4245a13a07755a641566))
+* **oss:** add bucket stats api in oss ([eaba65e](https://github.com/lafjs/laf/commit/eaba65eff0a6c50ff30d32b06023afdf7b558252))
+* **oss:** add minio api in system-service; ([cb86567](https://github.com/lafjs/laf/commit/cb865679f0070ae240252b564e464debfe7351f8))
+* **oss:** add minio api in system-service; ([6225641](https://github.com/lafjs/laf/commit/62256413f20c07f63ccbcb6ca1f1d259ba0d4dca))
+* **oss:** create bucket add quota param ([61da895](https://github.com/lafjs/laf/commit/61da8955bc0259d0c2b4743b9b1c90fbb7391ea7))
+* **oss:** create oss user for app; ([c33d7e2](https://github.com/lafjs/laf/commit/c33d7e276512d2dd98131031d83eab1ccd168e53))
+* **oss:** create oss user for app; ([caf2b37](https://github.com/lafjs/laf/commit/caf2b372838a27fbb4ebedf6c979f64fd72a5f03))
+* **oss:** impl file delete;fix bucket name rule; ([5d4f1b2](https://github.com/lafjs/laf/commit/5d4f1b2dd154cfe49f479cb42ac4b61939197966))
+* **oss:** impl oss external bucket url; ([4a43aa5](https://github.com/lafjs/laf/commit/4a43aa58658f028cbf0c7e287bb2197738ce4b39))
+* **oss:** impl oss files(upload/list); ([f1136c1](https://github.com/lafjs/laf/commit/f1136c1eb2ba1992e7ec949c5baaac39086e37d2))
+* **oss:** support upload folder ([a2049fb](https://github.com/lafjs/laf/commit/a2049fbad984c3698e209ba6254e4039ede9888f))
+* **replicate:** Feat. Impl replicate_requests page query and create ([8277ac1](https://github.com/lafjs/laf/commit/8277ac1aa5f28f6d65d7963274cbe8e12a7cd652))
+* **replicate:** Impl put replicas ([01dca0b](https://github.com/lafjs/laf/commit/01dca0b56c760b8fd038ced83c1ce81842b316aa))
+* **replicate:** impl replicate request ([0f6e3b0](https://github.com/lafjs/laf/commit/0f6e3b045aba37ce3b8c8627c3f35b5415bf62c9))
+* **replicate:** impl replicate_auth page ([6f24b70](https://github.com/lafjs/laf/commit/6f24b702e3948ebad1ae7618e46560461298596c))
+* support short appid(3 ~ 32) ([a85065a](https://github.com/lafjs/laf/commit/a85065a4ce02302ccb486e37381c33c17a012bae))
+* **sys:** init oss app policy; ([72d76fc](https://github.com/lafjs/laf/commit/72d76fc1c726fed08aca63bff23330fe162075f0))
+* **sys:** init oss app policy; ([e533b93](https://github.com/lafjs/laf/commit/e533b938fc9b406911be726c1cb4a9a0e5da0132))
+* **sys:** present app spec in client; ([458dc94](https://github.com/lafjs/laf/commit/458dc9482a472874f46a50e79cd3658029ff1754))
+* **sys:** support custom app id of SES ([78f8255](https://github.com/lafjs/laf/commit/78f82552f32d8047fac490ee2bf18c4455a1e948))
+* throttle to get file list; ([0dcb91a](https://github.com/lafjs/laf/commit/0dcb91aee438d33b17029e177e86b94d4ae5e2d0))
+* use shorter appid insteadof uuid; ([62eb55e](https://github.com/lafjs/laf/commit/62eb55ebd76814f3bcf1157189b592b332cadd5d))
+
+
+
+## [0.7.11](https://github.com/lafjs/laf/compare/v0.7.10...v0.7.11) (2022-04-27)
+
+
+### Bug Fixes
+
+* **client-sdk:** fix request api incompatible with uniapp new version ([f90e293](https://github.com/lafjs/laf/commit/f90e2933c9c6742f976760348e7c5a0657df5d36))
+* **deploy:** fix docker ignore of app-service ([ecbf75f](https://github.com/lafjs/laf/commit/ecbf75f36dd8185026799d8de47a83886bd2c8e0))
 
 
 
