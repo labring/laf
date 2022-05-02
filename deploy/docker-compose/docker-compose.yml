@@ -19,8 +19,40 @@ services:
     networks:
       - laf_shared_network
 
+  oss:
+    image: 'bitnami/minio:2022.4.12'
+    environment:
+      - MINIO_ROOT_USER=minio-root-user
+      - MINIO_ROOT_PASSWORD=minio-root-password
+      - MINIO_DISTRIBUTED_MODE_ENABLED=yes
+      - MINIO_DISTRIBUTED_NODES=oss/data/{0...3}
+      - MINIO_ETCD_ENDPOINTS=http://etcd:2379
+      - MINIO_SKIP_CLIENT=yes
+      - MINIO_REGION_NAME=cn-default
+      - MINIO_DOMAIN=oss.local-dev.host
+    ports:
+      - "9020:9000"
+      - "9120:9001"
+    volumes:
+      - oss-data:/data
+    networks:
+      - laf_shared_network
+
+  etcd:
+    image: 'bitnami/etcd:latest'
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+    volumes:
+      - etcd-data:/bitnami/etcd/data
+    ports:
+      - 12379:2379
+      - 12380:2380
+    networks:
+      - laf_shared_network
+
   system-server:
-    image: lafyun/system-server:latest
+    image: lafyun/system-server:0.8.0-alpha.0
     user: root
     working_dir: /app
     environment:
@@ -33,14 +65,16 @@ services:
       ACCOUNT_DEFAULT_APP_QUOTA: ${ACCOUNT_DEFAULT_APP_QUOTA:-2}
       APP_SERVICE_DEPLOY_HOST: ${DEPLOY_DOMAIN:?err}:${PUBLISH_PORT:-8080}
       APP_SERVICE_DEPLOY_URL_SCHEMA: ${APP_SERVICE_DEPLOY_URL_SCHEMA}
-      STORAGE_SERVICE_API_ENTRYPOINT: http://storage-service:9010
-      STORAGE_SERVICE_SECRET: ${SYS_SERVER_SECRET_SALT}
-      STORAGE_SERVICE_DEPLOY_HOST: "fs.${DEPLOY_DOMAIN:?err}:${PUBLISH_PORT:-8080}"
+      MINIO_ACCESS_KEY: minio-root-user
+      MINIO_ACCESS_SECRET: minio-root-password
+      MINIO_INTERNAL_ENDPOINT: http://oss:9000
+      MINIO_EXTERNAL_ENDPOINT: http://oss.local-dev.host:8080
+      MINIO_REGION_NAME: cn-default
       INIT_ROOT_ACCOUNT: ${INIT_ROOT_ACCOUNT}
       INIT_ROOT_ACCOUNT_PASSWORD: ${INIT_ROOT_ACCOUNT_PASSWORD:?err}
-    command: dockerize -wait tcp://mongo:27017 sh start.sh
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      SYSTEM_EXTENSION_APPID: '000000'
+      APPID_LENGTH: 6
+    command: sh /app/start.sh
     read_only: true
     depends_on:
       - mongo
@@ -53,37 +87,59 @@ services:
       - laf_shared_network
 
   gateway:
-    image: lafyun/gateway:latest
+    image: lafyun/gateway:0.8.0-alpha.0
     depends_on:
       - system-server
       - mongo
     environment:
       DEPLOY_DOMAIN: "*.${DEPLOY_DOMAIN:?err}"
-      DEPLOY_FS_DOMAIN: "*.fs.${DEPLOY_DOMAIN:?err}"
+      DEPLOY_OSS_DOMAIN: "oss.${DEPLOY_DOMAIN:?err}"
       SYS_CLIENT_HOST: ${SYS_CLIENT_HOST:?err}
-      DOCS_HOST: "docs.${DEPLOY_DOMAIN:?err}"
+      SYSTEM_EXTENSION_APPID: '000000'
     command: "sh /scripts/start.sh"
     ports:
       - ${PUBLISH_PORT:-8000}:80
     networks:
       - laf_shared_network
 
-  storage-service:
-    image: lafyun/storage-service:latest
+  instance-controller:
+    image: lafyun/instance-controller:0.8.0-alpha.0
     user: root
     working_dir: /app
     environment:
-      DB_URI: mongodb://root:${MONGODB_ROOT_PASSWORD}@mongo:27017/laf_fs?authSource=admin&replicaSet=laf&writeConcern=majority
-      LOG_LEVEL: ${LOG_LEVEL:-debug}
-      SERVER_SECRET_SALT: ${SYS_SERVER_SECRET_SALT}
-    command: dockerize -wait tcp://mongo:27017 node dist/index.js
+      SCHEDULER_INTERVAL: 1000
+      SYS_DB_URI: mongodb://${SYS_DB_USER}:${SYS_DB_PASSWORD}@mongo:27017/?authSource=${SYS_DB}&replicaSet=laf&writeConcern=majority
+      APP_DB_URI: mongodb://root:${MONGODB_ROOT_PASSWORD}@mongo:27017/?authSource=admin&replicaSet=laf&writeConcern=majority
+      SHARED_NETWORK: laf_shared_network
+      LOG_LEVEL: debug
+      SERVICE_DRIVER: docker
+      APP_SERVICE_ENV_NPM_INSTALL_FLAGS: '--registry=https://registry.npm.taobao.org --no-audit --no-fund'
+      MINIO_INTERNAL_ENDPOINT: http://oss:9000
+      MINIO_EXTERNAL_ENDPOINT: http://oss.local-dev.host:8080
+      MINIO_REGION_NAME: cn-default
+      SYSTEM_EXTENSION_APPID: '000000'
+    command: node ./dist/index.js
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
-      - "9010"
+      - "9000"
     depends_on:
       - mongo
-    tmpfs:
-      - /tmp
     restart: always
+    networks:
+      - laf_shared_network
+
+  system-client:
+    image: lafyun/system-client:0.8.0-alpha.0
+    volumes:
+      - ./packages/system-client/dist:/app
+    networks:
+      - laf_shared_network
+
+  app-console:
+    image: lafyun/app-console:0.8.0-alpha.0
+    volumes:
+      - ./packages/app-console/dist:/app
     networks:
       - laf_shared_network
 
@@ -93,3 +149,5 @@ networks:
 
 volumes:
   db-data:
+  oss-data:
+  etcd-data:

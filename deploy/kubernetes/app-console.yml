@@ -36,7 +36,7 @@ spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 5
       containers:
-        - image: docker.io/lafyun/app-console:0.7.11
+        - image: docker.io/lafyun/app-console:0.8.0-alpha.0
           imagePullPolicy: IfNotPresent
           name: app-console
           resources:

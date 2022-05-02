@@ -62,7 +62,7 @@ services:
       SYS_SERVER_SECRET_SALT: Rewrite_Your_Own_Secret_Salt_abcdefg1234567
       LOG_LEVEL: debug
       ACCOUNT_DEFAULT_APP_QUOTA: 5
-      APP_SERVICE_IMAGE: lafyun/app-service:latest
+      APP_SERVICE_IMAGE: lafyun/app-service:0.8.0-alpha.0
       APP_SERVICE_DEPLOY_HOST: local-dev.host:8080 # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
       APP_SERVICE_DEPLOY_URL_SCHEMA: 'http'
       MINIO_ACCESS_KEY: minio-root-user
