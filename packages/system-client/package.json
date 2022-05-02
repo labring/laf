@@ -1,6 +1,6 @@
 {
   "name": "system-client",
-  "version": "0.7.11",
+  "version": "0.8.0-alpha.0",
   "description": "system-client of laf",
   "author": "Maslow <wangfugen@126.com>",
   "private": true,
