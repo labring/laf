@@ -138,14 +138,32 @@
         </el-table-column>
         <el-table-column label="服务启停" align="center" width="240" class-name="small-padding">
           <template slot-scope="{row}">
-            <el-button v-if="row.status !== 'running'" :loading="serviceLoading[row.appid]" plain type="success" size="mini" @click="startApp(row)">
+            <el-button v-if="row.status === 'stopped' || row.status === 'created'" :loading="serviceLoading[row.appid]" plain type="success" size="mini" @click="startApp(row)">
               启动
+            </el-button>
+            <el-button v-if="row.status === 'prepared_start'" :loading="true" plain type="info" size="mini">
+              准备启动
+            </el-button>
+            <el-button v-if="row.status === 'starting'" :loading="true" plain type="info" size="mini">
+              正在启动
             </el-button>
             <el-button v-if="row.status === 'running'" :loading="serviceLoading[row.appid]" plain type="danger" size="mini" @click="stopApp(row)">
               停止
             </el-button>
+            <el-button v-if="row.status === 'prepared_stop'" :loading="true" plain type="info" size="mini">
+              准备停止
+            </el-button>
+            <el-button v-if="row.status === 'stopping'" :loading="true" plain type="info" size="mini">
+              停止中
+            </el-button>
             <el-button v-if="row.status === 'running'" :loading="serviceLoading[row.appid]" plain type="default" size="mini" @click="restartApp(row)">
               重启
+            </el-button>
+            <el-button v-if="row.status === 'prepared_restart'" :loading="true" plain type="info" size="mini">
+              准备重启
+            </el-button>
+            <el-button v-if="row.status === 'restarting'" :loading="true" plain type="info" size="mini">
+              重启中
             </el-button>
           </template>
         </el-table-column>
