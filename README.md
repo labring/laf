@@ -45,6 +45,14 @@
   </tr>
 </table>
 
+### 使用案例
+
+- [bytepay](https://bytepay.online) 是一款基于区块链的开源付费协作平台，web3基金会孵化项目，完全基于laf开发。
+- [sealos商城](https://sealyun.com) 是[sealos](https://github.com/labring/sealos) 的官方商城，基于laf开发，发票/支付/短信/对象存储 等功能都能很好支持，目前该网站服务数千企业用户。
+- 国牧花园 微信小程序，是精品猪肉电商网站，完全基于laf开发，支持支付/物流/短信等功能, laf自带https极大程度方便了应用。
+
+laf已经实际应用到数十款SaaS应用中，成熟稳定简单，减少了60%以上研发工作量，且不再需要专业的后端人员配合，运维上线等流程更是优化到0，是SaaS应用开发的明智之选。低耦合，函数可脱离框架单独运行。
+
 ## 🖥 在线体验
 
 🎉 [lafyun.com](http://www.lafyun.com) 正式上线！可直接在线体验，[立即创建](http://www.lafyun.com) Laf 云开发应用服务！
@@ -63,7 +71,8 @@
 
 ## 💥 适用场景
 
-- 用于快速开发 MVP，专注于客户端业务，极大程度减少服务端开发工作量；
+- 快速构建小程序，如电商，企业各类管理系统等SaaS类应用。
+- 用于快速开发 MVP，专注于客户端业务，极大程度减少服务端开发工作量。
 - 自建属于自己可控的云开发平台。
 
 ## 👨‍💻 适用人群
@@ -93,86 +102,7 @@
 
 ## 🚀 快速开始
 
-### 快速部署 `laf.js` 服务
-
-> 基于 Docker Compose 快速部署，需要你熟悉 Docker 以及 docker-compose 的使用。
-
-##### 安装 Docker (CentOS)
-
-> 本例只给出 CentOS 下的安装脚本，若安装其它环境请参考官方文档 https://docs.docker.com/engine/install/。
-
-```sh
-sudo yum install -y yum-utils
-sudo yum-config-manager \
-    --add-repo \
-    https://download.docker.com/linux/centos/docker-ce.repo
-
-sudo yum install docker-ce docker-ce-cli containerd.io
-sudo systemctl start docker
-
-```
-
-> 还需安装 docker-compose @see https://docs.docker.com/compose/install/。
-
-##### 启动服务（docker-compose）
-
-```sh
-git clone https://github.com/lafjs/laf.git
-
-cd laf/deploy/docker-compose
-
-docker network create laf_shared_network --driver bridge || true
-docker pull lafyun/app-service:latest
-
-# 启动所有服务
-docker-compose up
-
-# 浏览器打开 http://console.local-dev.host:8000 访问
-```
-
-### 开发环境（开发者）
-
-```sh
-# install dependencies
-npm install
-
-# build & watch packages
-npm run build && npm run watch
-
-# create a shared network in docker
-docker network create laf_shared_network --driver bridge || true
-
-# download the app service image
-docker pull lafyun/app-service:latest
-
-# launch laf.js services
-docker-compose up
-
-# Now open http://console.local-dev.host:8080 in your browsers!
-
-```
-
-> TIPs: 
-> We provide `*.local-dev.host` always resolved to `127.0.0.1` anywhere! 
-> Close your VPN then `local-dev.host` resolving works well.
-
-## 测试用例
-
-### 启动 MongoDB 测试容器
-
-```sh
-docker run --rm -p 27018:27017 --name mongotest -d mongo
-```
-
-### 运行测试
-
-```sh
-# 运行测试用例
-npx mocha ./packages/*/tests/**/*.test.js
-
-# 清除测试容器
-docker rm -f mongotest
-```
+[安装教程](./docs/guide/function/install.md)
 
 ## 🏘️ 社群
 
