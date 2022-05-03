@@ -27,7 +27,6 @@ services:
       - MINIO_ROOT_PASSWORD=minio-root-password
       - MINIO_DISTRIBUTED_MODE_ENABLED=yes
       - MINIO_DISTRIBUTED_NODES=oss/data/{0...3}
-      - MINIO_ETCD_ENDPOINTS=http://etcd:2379
       - MINIO_SKIP_CLIENT=yes
       - MINIO_REGION_NAME=cn-default
       - MINIO_DOMAIN=oss.local-dev.host
@@ -36,19 +35,6 @@ services:
       - "9120:9001"
     volumes:
       - oss-data:/data
-    networks:
-      - laf_shared_network
-
-  etcd:
-    image: 'bitnami/etcd:3.5.4'
-    environment:
-      - ALLOW_NONE_AUTHENTICATION=yes
-      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
-    volumes:
-      - etcd-data:/bitnami/etcd/data
-    ports:
-      - 12379:2379
-      - 12380:2380
     networks:
       - laf_shared_network
 
