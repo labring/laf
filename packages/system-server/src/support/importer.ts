@@ -271,8 +271,15 @@ export class ApplicationImporter {
     if (existed) return
 
     const oss = await MinioAgent.New()
-    const internalName = `${this.app.appid}-${name}`
-    const ret = await oss.createBucket(internalName, { acl: mode })
+    const full_name = `${this.app.appid}-${name}`
+
+    // process bucket name & mode for old version compatibility
+    const internal_name = full_name.replace('_', '-')
+    if (mode as any === 0) mode = BUCKET_ACL.private
+    if (mode as any === 1) mode = BUCKET_ACL.readonly
+    if (mode as any === 2) mode = BUCKET_ACL.public
+
+    const ret = await oss.createBucket(internal_name, { acl: mode })
     if (!ret) {
       throw new Error(`Failed to create bucket: ${name}`)
     }
