@@ -2,7 +2,7 @@
 version: '3.8'
 services:
   mongo:
-    image: bitnami/mongodb:5.0
+    image: bitnami/mongodb:5.0.8
     environment:
       - MONGODB_REPLICA_SET_MODE=primary
       - MONGODB_ADVERTISED_HOSTNAME=mongo
@@ -40,7 +40,7 @@ services:
       - laf_shared_network
 
   etcd:
-    image: 'bitnami/etcd:latest'
+    image: 'bitnami/etcd:3.5.4'
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes
       - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
