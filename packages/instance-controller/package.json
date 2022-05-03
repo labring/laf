@@ -1,6 +1,6 @@
 {
   "name": "instance-controller",
-  "version": "0.8.0-alpha.0",
+  "version": "0.8.0-alpha.2",
   "description": "laf - service controller",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
