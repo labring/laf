@@ -1,5 +1,6 @@
 import Config from "./config"
 import { getApplicationsInStatus, InstanceStatus, updateApplicationStatus } from "./support/application"
+import { DatabaseAgent } from "./support/db"
 import { InstanceOperator } from "./support/instance-operator"
 import { logger } from "./support/logger"
 
@@ -10,6 +11,9 @@ export function start_schedular() {
 }
 
 function loop() {
+  if (!DatabaseAgent.db) {
+    return logger.info('waiting for db connected...')
+  }
   const tick = new Date()
   handle_prepared_start(tick)
   handle_starting(tick)
