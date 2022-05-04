@@ -1,4 +1,40 @@
-# [](https://github.com/lafjs/laf/compare/v0.8.0-alpha.0...v) (2022-05-02)
+# [](https://github.com/lafjs/laf/compare/v0.8.0-alpha.4...v) (2022-05-04)
+
+
+
+# [0.8.0-alpha.4](https://github.com/lafjs/laf/compare/v0.8.0-alpha.3...v0.8.0-alpha.4) (2022-05-04)
+
+
+### Bug Fixes
+
+* **app-service:** fix import path error; ([d546499](https://github.com/lafjs/laf/commit/d546499c6a43d55fd069193953a155ed0e699f5f))
+
+
+
+# [0.8.0-alpha.3](https://github.com/lafjs/laf/compare/v0.8.0-alpha.2...v0.8.0-alpha.3) (2022-05-03)
+
+
+### Bug Fixes
+
+* **sys:** process bucket name & mode for old version compatibility ([6846ede](https://github.com/lafjs/laf/commit/6846ede60ba8443e19d0c640734103744dd6c127))
+
+
+
+# [0.8.0-alpha.2](https://github.com/lafjs/laf/compare/v0.8.0-alpha.1...v0.8.0-alpha.2) (2022-05-03)
+
+
+### Bug Fixes
+
+* support waiting db connection; ([e99c312](https://github.com/lafjs/laf/commit/e99c312d6b09dd1d4a7340b8980ba19cc78b70c0))
+
+
+
+# [0.8.0-alpha.1](https://github.com/lafjs/laf/compare/v0.8.0-alpha.0...v0.8.0-alpha.1) (2022-05-03)
+
+
+### Bug Fixes
+
+* add new status for joined apps; ([768cf95](https://github.com/lafjs/laf/commit/768cf9516d515cf40bc3b9454c922eb63c2c2636))
 
 
 

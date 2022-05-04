@@ -52,7 +52,7 @@ services:
       - laf_shared_network
 
   system-server:
-    image: lafyun/system-server:0.8.0-alpha.0
+    image: lafyun/system-server:0.8.0-alpha.3
     user: root
     working_dir: /app
     environment:
