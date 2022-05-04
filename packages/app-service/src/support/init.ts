@@ -5,6 +5,8 @@ import { Constants } from '../constants'
 import { execSync } from 'child_process'
 import Config from '../config'
 import { logger } from './logger'
+import { DatabaseAgent } from '../db'
+
 
 /**
  * Create a internal package named '@' in node_modules, the package is used for loading typings in WebIDE。 
@@ -57,10 +59,9 @@ interface AppConfigItem {
  * @returns 
  */
 export async function getExtraPackages() {
-  const { DatabaseAgent } = require('../lib/database')
   await DatabaseAgent.accessor.ready
   const db = DatabaseAgent.db
-  const doc: AppConfigItem = await db.collection(Constants.config_collection)
+  const doc = await db.collection<AppConfigItem>(Constants.config_collection)
     .findOne({ key: 'packages' })
 
   return doc?.value ?? []
@@ -108,7 +109,6 @@ export function moduleExists(mod: string) {
  * @returns 
  */
 export async function ensureCollectionIndexes(): Promise<any> {
-  const { DatabaseAgent } = require('../lib/database')
   const db = DatabaseAgent.db
   await db.collection(Constants.function_log_collection)
     .createIndexes([
