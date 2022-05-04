@@ -5,7 +5,7 @@
       :data="list"
       :loading="listLoading"
       border
-      style="width: 100%;top: -15px;"
+      style="width: 100%;"
     >
       <el-table-column
         prop="source_appid"
