@@ -39,6 +39,13 @@
             size="mini"
             @click="handleDelete(row)"
           >删除</el-button>
+
+           <el-button
+            plain
+            type="danger"
+            size="mini"
+            @click="resetPassword(row)"
+          >重置密码</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -80,7 +87,7 @@
 </template>
 
 <script>
-import { getAllApplicationRoles, getCollaborators, inviteCollaborator, removeCollaborator } from '@/api/application'
+import { getAllApplicationRoles, getCollaborators, inviteCollaborator, removeCollaborator,resetAccountPassword } from '@/api/application'
 import { searchUserByUsername } from '@/api/application'
 import { showError, showInfo, showSuccess } from '@/utils/show'
 
@@ -167,6 +174,21 @@ export default {
       if (res.error) showError('出错了:' + res.error)
       showSuccess('操作成功')
       this.loadCollaborators()
+    },
+
+    async resetPassword(row){
+
+       await this.$confirm(`确定修改协作者密码: ${row.user.name}？`)
+      const uid = row.uid
+
+      this.loading = true
+      const res = await resetAccountPassword(uid,'abcd1234')
+        .finally(() => { this.loading = false })
+
+      if (res.error) showError('出错了:' + res.error)
+      showSuccess('操作成功')
+      this.loadCollaborators()
+
     },
     getRoleLabel(role_name) {
       switch (role_name) {
