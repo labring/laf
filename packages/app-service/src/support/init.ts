@@ -5,7 +5,6 @@ import { Constants } from '../constants'
 import { execSync } from 'child_process'
 import Config from '../config'
 import { logger } from './logger'
-import { DatabaseAgent } from '../db'
 
 
 /**
@@ -59,9 +58,11 @@ interface AppConfigItem {
  * @returns 
  */
 export async function getExtraPackages() {
+  const { DatabaseAgent } = require('../db')  // init.ts should not import db globally, because init.ts would be referenced in build time
+
   await DatabaseAgent.accessor.ready
   const db = DatabaseAgent.db
-  const doc = await db.collection<AppConfigItem>(Constants.config_collection)
+  const doc: AppConfigItem = await db.collection(Constants.config_collection)
     .findOne({ key: 'packages' })
 
   return doc?.value ?? []
@@ -109,6 +110,8 @@ export function moduleExists(mod: string) {
  * @returns 
  */
 export async function ensureCollectionIndexes(): Promise<any> {
+  const { DatabaseAgent } = require('../db')  // init.ts should not import db globally, because init.ts would be referenced in build time
+
   const db = DatabaseAgent.db
   await db.collection(Constants.function_log_collection)
     .createIndexes([

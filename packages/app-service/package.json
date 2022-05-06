@@ -1,6 +1,6 @@
 {
   "name": "app-service",
-  "version": "0.8.0-alpha.4",
+  "version": "0.8.0-alpha.5",
   "description": "the app engine service of lat",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",

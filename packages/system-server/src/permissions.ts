@@ -25,19 +25,6 @@ export const permissions = {
   PUBLISH_POLICY: { name: 'publish.policy', label: '发布数据访问策略' },
   PUBLISH_FUNCTION: { name: 'publish.function', label: '发布云函数' },
 
-  DEPLOY_TARGET_READ: { name: 'deploy_target.read', label: '读取部署目标' },
-  DEPLOY_TARGET_UPDATE: { name: 'deploy_target.update', label: '编辑部署目标' },
-  DEPLOY_TARGET_ADD: { name: 'deploy_target.add', label: '添加部署目标' },
-  DEPLOY_TARGET_REMOVE: { name: 'deploy_target.remove', label: '删除部署目标' },
-
-  DEPLOY_REQUEST_READ: { name: 'deploy_request.read', label: '读取部署请求' },
-  DEPLOY_REQUEST_UPDATE: { name: 'deploy_request.update', label: '编辑部署请求' },
-  DEPLOY_REQUEST_ADD: { name: 'deploy_request.add', label: '添加部署请求' },
-  DEPLOY_REQUEST_REMOVE: { name: 'deploy_request.remove', label: '删除部署请求' },
-  DEPLOY_REQUEST_APPLY: { name: 'deploy_request.apply', label: '应用部署请求' },
-
-  DEPLOY_TOKEN_CREATE: { name: 'deploy.create_token', label: '创建部署令牌' },
-
   FILE_READ: { name: 'file.read', label: '文件管理-读取文件列表' },
   FILE_UPDATE: { name: 'file.update', label: '文件管理-更新文件' },
   FILE_ADD: { name: 'file.add', label: '文件管理-创建文件' },
@@ -76,10 +63,15 @@ const dba = [
 ]
 
 const operator = [
-  pns.DEPLOY_REQUEST_ADD, pns.DEPLOY_REQUEST_READ, pns.DEPLOY_REQUEST_REMOVE,
-  pns.DEPLOY_REQUEST_UPDATE, pns.DEPLOY_REQUEST_APPLY,
-  pns.DEPLOY_TARGET_ADD, pns.DEPLOY_TARGET_READ, pns.DEPLOY_TARGET_REMOVE,
-  pns.DEPLOY_TARGET_UPDATE, pns.DEPLOY_TOKEN_CREATE
+  pns.REPLICATE_AUTH_READ,
+  pns.REPLICATE_AUTH_ADD,
+  pns.REPLICATE_AUTH_REMOVE,
+  pns.REPLICATE_REQUEST_REMOVE,
+  pns.REPLICATE_AUTH_UPDATE,
+  pns.REPLICATE_REQUEST_READ,
+  pns.REPLICATE_REQUEST_ADD,
+  pns.REPLICATE_REQUEST_REMOVE,
+  pns.REPLICATE_REQUEST_UPDATE
 ]
 
 const owner = [
