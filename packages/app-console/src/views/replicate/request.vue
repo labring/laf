@@ -113,7 +113,7 @@ export default {
         ]
       },
       dialogFormVisible: false,
-      requestType: 'target', // target | source
+      requestType: 'target' // target | source
     }
   },
   created() {

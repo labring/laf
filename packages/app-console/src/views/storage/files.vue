@@ -269,7 +269,7 @@ export default {
     // 拼装文件下载 URL
     getFileUrl(file) {
       assert(file && file.Key, 'invalid file or filename')
-      const url =  oss.getAppFileUrl(this.bucket, file.Key, this.bucketDetail.credentials)
+      const url = oss.getAppFileUrl(this.bucket, file.Key, this.bucketDetail.credentials)
       console.log('getFileURl', url)
       return url
     },

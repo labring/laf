@@ -3,7 +3,7 @@
     <div class="nav-leading">
       <div class="logo">
         <a @click="gotoSystemClient">
-          <img src="https://docs.lafyun.com/logo.png">
+          <img src="../../assets/logo.png">
         </a>
       </div>
       <div class="title">{{ title }}</div>
