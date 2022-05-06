@@ -143,7 +143,7 @@ export function searchUserByUsername(username) {
  * @param {*} appid
  * @returns
  */
- export async function restartApplicationInstance(appid) {
+export async function restartApplicationInstance(appid) {
   const res = await request({
     url: `/apps/${appid}/instance/restart`,
     method: 'post'

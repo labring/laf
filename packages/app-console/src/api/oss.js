@@ -106,9 +106,9 @@ export function getBucketUrl(bucket) {
 
 /**
  * get bucket's secondary url e.g: appid-bucketName.oss.aliyun.com
- * @param {*} bucketName 
- * @param {*} param1 
- * @returns 
+ * @param {*} bucketName
+ * @param {*} param1
+ * @returns
  */
 export function getBucketSecondaryUrl(bucketName) {
   const appid = store.state.app.appid
@@ -117,7 +117,6 @@ export function getBucketSecondaryUrl(bucketName) {
   const url = `${protocol}//${appid}-${bucketName}.${host}`
   return url
 }
-
 
 /**
  * Get file list in a bucket
