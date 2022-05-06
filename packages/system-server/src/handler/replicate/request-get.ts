@@ -20,8 +20,8 @@ export async function handleGetReplicateRequest(req: Request, res: Response) {
   const app: IApplicationData = req["parsed-app"]
 
   // check permission
-  const { DEPLOY_REQUEST_READ } = CONST_DICTS.permissions
-  const code = await checkPermission(uid, DEPLOY_REQUEST_READ.name, app)
+  const { REPLICATE_REQUEST_READ } = CONST_DICTS.permissions
+  const code = await checkPermission(uid, REPLICATE_REQUEST_READ.name, app)
   if (code) {
     return res.status(code).send()
   }

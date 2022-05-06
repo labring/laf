@@ -17,8 +17,8 @@ export async function handleGetReplicateAuth(req: Request, res: Response) {
   const app: IApplicationData = req["parsed-app"]
 
   // check permission
-  const { DEPLOY_TARGET_READ } = CONST_DICTS.permissions
-  const code = await checkPermission(uid, DEPLOY_TARGET_READ.name, app)
+  const { REPLICATE_AUTH_READ } = CONST_DICTS.permissions
+  const code = await checkPermission(uid, REPLICATE_AUTH_READ.name, app)
   if (code) {
     return res.status(code).send()
   }

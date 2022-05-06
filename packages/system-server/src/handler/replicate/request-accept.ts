@@ -26,8 +26,8 @@ export async function handleApplyReplicateRequest(req: Request, res: Response) {
   }
 
   // check permission
-  const { DEPLOY_REQUEST_UPDATE } = CONST_DICTS.permissions
-  const code = await checkPermission(uid, DEPLOY_REQUEST_UPDATE.name, app)
+  const { REPLICATE_REQUEST_UPDATE } = CONST_DICTS.permissions
+  const code = await checkPermission(uid, REPLICATE_REQUEST_UPDATE.name, app)
   if (code) {
     return res.status(code).send()
   }
