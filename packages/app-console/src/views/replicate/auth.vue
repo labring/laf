@@ -180,7 +180,7 @@ export default {
       replicasForm: {
         target_appid: '',
         permissions: []
-      },
+      }
     }
   },
   created() {
