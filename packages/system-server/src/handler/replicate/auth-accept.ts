@@ -18,8 +18,8 @@ export async function handleAcceptReplicateAuth(req: Request, res: Response) {
   const db = DatabaseAgent.db
 
   // check permission
-  const { REPLICATE_AUTH_UPDATE } = CONST_DICTS.permissions
-  const code = await checkPermission(uid, REPLICATE_AUTH_UPDATE.name, app)
+  const { DEPLOY_TARGET_UPDATE } = CONST_DICTS.permissions
+  const code = await checkPermission(uid, DEPLOY_TARGET_UPDATE.name, app)
   if (code) {
     return res.status(code).send()
   }

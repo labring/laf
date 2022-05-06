@@ -34,8 +34,8 @@ export async function handleCreateReplicateAuth(req: Request, res: Response) {
   }
 
   // check permission
-  const { REPLICATE_AUTH_ADD } = CONST_DICTS.permissions
-  const code = await checkPermission(uid, REPLICATE_AUTH_ADD.name, app)
+  const { DEPLOY_TARGET_ADD } = CONST_DICTS.permissions
+  const code = await checkPermission(uid, DEPLOY_TARGET_ADD.name, app)
   if (code) {
     return res.status(code).send()
   }

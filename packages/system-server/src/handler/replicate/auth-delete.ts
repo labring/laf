@@ -19,8 +19,8 @@ export async function handleDeleteReplicateAuth(req: Request, res: Response) {
   }
 
   // check permission
-  const { REPLICATE_AUTH_REMOVE } = CONST_DICTS.permissions
-  const code = await checkPermission(uid, REPLICATE_AUTH_REMOVE.name, app)
+  const { DEPLOY_TARGET_REMOVE } = CONST_DICTS.permissions
+  const code = await checkPermission(uid, DEPLOY_TARGET_REMOVE.name, app)
   if (code) {
     return res.status(code).send()
   }
