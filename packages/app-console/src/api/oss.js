@@ -189,3 +189,19 @@ function getInternalBucketName(bucketName) {
   const appid = store.state.app.appid
   return `${appid}-${bucketName}`
 }
+
+
+/**
+ * update sevice account
+ * @returns
+ */
+ export async function updateAC(bucketName) {
+  const appid = store.state.app.appid
+  const res = await request({
+    url: `/apps/${appid}/oss/buckets/serviceAccount`,
+    method: 'post'
+  })
+
+  assert(res.code === 0, 'update application service accounp', res)
+  return res
+}

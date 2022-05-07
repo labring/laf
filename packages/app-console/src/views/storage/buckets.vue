@@ -8,6 +8,11 @@
       <el-button plain class="filter-item" type="primary" icon="el-icon-plus" @click="showCreateForm">
         新建文件桶(Bucket)
       </el-button>
+
+      <el-button plain class="filter-item" type="primary" icon="el-icon-plus" @click="dialogACFormVisible = true">
+        获取serviceAccount
+      </el-button>
+
     </div>
 
     <!-- 表格 -->
@@ -108,6 +113,20 @@
         </el-button>
       </div>
     </el-dialog>
+
+     <el-dialog width="600px" :title="更新" :visible.sync="dialogACFormVisible">
+    
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogACFormVisible = false">
+          取消
+        </el-button>
+        <el-button type="primary" @click="handleUpdateAC()">
+          确定
+        </el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -156,6 +175,8 @@ export default {
       },
       form: getDefaultFormValue(),
       dialogFormVisible: false,
+
+      dialogACFormVisible: false,
       dialogStatus: '',
       textMap: {
         update: '编辑',
@@ -317,6 +338,13 @@ export default {
     async handleShowDetail(row) {
       // 跳转到详情页
       this.$router.push(`files/${row.name}`)
+    },
+    // 更新ac
+    async handleUpdateAC(){
+
+    const r = await oss.updateAC()
+    console.log(r)
+      return true;
     }
   }
 }
