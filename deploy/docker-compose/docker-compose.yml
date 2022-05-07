@@ -52,7 +52,7 @@ services:
       - laf_shared_network
 
   system-server:
-    image: lafyun/system-server:0.8.0-alpha.3
+    image: lafyun/system-server:0.8.0-alpha.6
     user: root
     working_dir: /app
     environment:
@@ -86,7 +86,7 @@ services:
       - laf_shared_network
 
   gateway:
-    image: lafyun/gateway:0.8.0-alpha.0
+    image: lafyun/gateway:0.8.0-alpha.3
     depends_on:
       - system-server
       - mongo
@@ -129,12 +129,12 @@ services:
       - laf_shared_network
 
   system-client:
-    image: lafyun/system-client:0.8.0-alpha.1
+    image: lafyun/system-client:0.8.0-alpha.7
     networks:
       - laf_shared_network
 
   app-console:
-    image: lafyun/app-console:0.8.0-alpha.0
+    image: lafyun/app-console:0.8.0-alpha.7
     networks:
       - laf_shared_network
 
