@@ -323,12 +323,16 @@ export default {
         app: null,
         file: null
       },
-      serviceLoading: {}
+      serviceLoading: {},
+      interval: null
     }
   },
   async created() {
     this.loadApps()
-    setInterval(() => { this.getApplications(true) }, 5000)
+    this.interval = setInterval(() => { this.getApplications(true) }, 5000)
+  },
+  beforeDestroy() {
+    if (this.interval) clearInterval(this.interval)
   },
   methods: {
     loadApps() {
