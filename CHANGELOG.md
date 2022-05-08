@@ -1,4 +1,37 @@
-# [](https://github.com/lafjs/laf/compare/v0.8.0-alpha.4...v) (2022-05-04)
+# [](https://github.com/lafjs/laf/compare/v0.8.0-alpha.8...v) (2022-05-08)
+
+
+
+# [0.8.0-alpha.8](https://github.com/lafjs/laf/compare/v0.8.0-alpha.7...v0.8.0-alpha.8) (2022-05-08)
+
+
+### Features
+
+* **oss:** impl oss service account ([#80](https://github.com/lafjs/laf/issues/80) [#76](https://github.com/lafjs/laf/issues/76)) ([2ec8f9f](https://github.com/lafjs/laf/commit/2ec8f9f8e8f426a9723e1cae46ec229111026f2d))
+
+
+
+# [0.8.0-alpha.7](https://github.com/lafjs/laf/compare/v0.8.0-alpha.6...v0.8.0-alpha.7) (2022-05-07)
+
+
+
+# [0.8.0-alpha.6](https://github.com/lafjs/laf/compare/v0.8.0-alpha.5...v0.8.0-alpha.6) (2022-05-06)
+
+
+### Bug Fixes
+
+* **app-console:** fix restart old api [#72](https://github.com/lafjs/laf/issues/72) ([bfd49c4](https://github.com/lafjs/laf/commit/bfd49c471d5ad621caa2a247badd0a88e859b2a0))
+* **logo:** fix logo url; ([66448c4](https://github.com/lafjs/laf/commit/66448c49536c24a27c9429d3f100e53a9295ebbc))
+* **replicate:** Fix bug. replicate permission error ([#77](https://github.com/lafjs/laf/issues/77)) ([cbd829d](https://github.com/lafjs/laf/commit/cbd829d11e979289bba3f5c58ead2f1b6229d043))
+
+
+
+# [0.8.0-alpha.5](https://github.com/lafjs/laf/compare/v0.8.0-alpha.4...v0.8.0-alpha.5) (2022-05-05)
+
+
+### Bug Fixes
+
+* **app-service:** fix db import error while building; ([070114e](https://github.com/lafjs/laf/commit/070114e2eec2728d604b62648cbf8093d0e057f9))
 
 
 
