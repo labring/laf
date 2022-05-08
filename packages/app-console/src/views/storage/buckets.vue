@@ -9,7 +9,7 @@
         新建文件桶(Bucket)
       </el-button>
 
-      <el-button plain class="filter-item" type="primary" icon="el-icon-plus" @click="dialogACFormVisible = true">
+      <el-button plain class="filter-item" type="primary" @click="dialogACFormVisible = true">
         获取serviceAccount
       </el-button>
 
@@ -114,9 +114,9 @@
       </div>
     </el-dialog>
 
-     <el-dialog width="600px" :title="更新" :visible.sync="dialogACFormVisible">
+     <el-dialog width="600px" :title="textMap[dialogStatus]" :visible.sync="dialogACFormVisible">
     
-
+      <span> serviceAccount: {{ serviceAccount }}</span>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogACFormVisible = false">
           取消
@@ -177,6 +177,7 @@ export default {
       dialogFormVisible: false,
 
       dialogACFormVisible: false,
+      serviceAccount:'',
       dialogStatus: '',
       textMap: {
         update: '编辑',
@@ -342,10 +343,23 @@ export default {
     // 更新ac
     async handleUpdateAC(){
 
-    const r = await oss.updateAC()
-    console.log(r)
-      return true;
+      await this.$confirm('确认要更新此数据？', 'serviceaccount 更新')
+
+       const ret = await oss.updateAC()
+
+        console.log(ret)
+
+        if (ret.code) {
+              this.$notify({
+                type: 'error',
+                title: '操作失败',
+                message: ret.error
+              })
+        }
+        console.log(ret.data)
+        this.serviceAccount = ret.data.access_key
     }
+
   }
 }
 </script>

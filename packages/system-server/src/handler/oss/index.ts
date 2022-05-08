@@ -43,4 +43,4 @@ OSSRouter.delete('/buckets/:bucket', handleDeleteBucket)
 /**
  * update application service account
  */
-OSSRouter.post('/buckets/serviceAccount', handleUpdateServiceAccount)
+OSSRouter.post('/buckets/service-account', handleUpdateServiceAccount)
