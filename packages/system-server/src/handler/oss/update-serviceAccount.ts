@@ -7,10 +7,11 @@
 
 import { Request, Response } from 'express'
 import { IApplicationData } from '../../support/application'
-
-import { CN_OSS_SERVICE_ACCOUNT } from '../../constants'
+import { checkPermission } from '../../support/permission'
+import { CN_OSS_SERVICE_ACCOUNT, CONST_DICTS } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { MinioAgent } from '../../support/minio'
+import { ObjectId } from 'mongodb'
 
 /**
  * The handler of creating a bucket
@@ -18,14 +19,14 @@ import { MinioAgent } from '../../support/minio'
 export async function handleUpdateServiceAccount(req: Request, res: Response) {
 
 
-
+  const uid = req['auth']?.uid
   const app: IApplicationData = req['parsed-app']
-  // // check permission
-  // const { FILE_BUCKET_ADD } = CONST_DICTS.permissions
-  // const code = await checkPermission(uid, FILE_BUCKET_ADD.name, app)
-  // if (code) {
-  //   return res.status(code).send()
-  // }
+  // check permission
+  const { FILE_BUCKET_ADD } = CONST_DICTS.permissions
+  const code = await checkPermission(uid, FILE_BUCKET_ADD.name, app)
+  if (code) {
+    return res.status(code).send()
+  }
 
   const sa = await DatabaseAgent.db.collection(CN_OSS_SERVICE_ACCOUNT)
     .findOne({ appid: app.appid, status: 1 })
@@ -36,11 +37,11 @@ export async function handleUpdateServiceAccount(req: Request, res: Response) {
     const r0 = await oss.removeServiceAccount(sa.access_key)
     if (r0.status === 'error') {
 
-      return res.status(400).send(sa)
+      return res.status(400).send(r0)
     }
     // save it
     const ret0 = await DatabaseAgent.db.collection(CN_OSS_SERVICE_ACCOUNT)
-      .updateOne({ appid: app.appid }, {
+      .updateOne({ appid: app.appid, _id: new ObjectId(sa._id) }, {
         $set: {
           "status": 0,
           "updated_at": new Date()
