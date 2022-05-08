@@ -26,12 +26,11 @@ export function removeCollaborator(collaborator_id) {
 }
 
 /**
- * 更新协作者密码
+ * 更新协作者密码(TBD)
  * @param {string} accountId
  * @param {string} password
  */
- export function resetAccountPassword(accountId,password) {
-  const appid = store.state.app.appid
+export function resetAccountPassword(accountId, password) {
   return request({
     url: '/account/resetPassword',
     method: 'post',

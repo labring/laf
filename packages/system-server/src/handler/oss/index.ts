@@ -10,7 +10,7 @@ import { handleGetBuckets, handleGetOneBucket } from './get-buckets'
 import { handleCreateBucket } from './add-bucket'
 import { handleDeleteBucket } from './delete-bucket'
 import { handleSetBucketPolicy } from './update-bucket'
-import { handleUpdateServiceAccount } from './update-serviceAccount'
+import { handleUpdateServiceAccount } from './update-service-account'
 
 export const OSSRouter = express.Router()
 

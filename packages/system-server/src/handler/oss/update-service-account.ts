@@ -11,7 +11,7 @@ import { checkPermission } from '../../support/permission'
 import { CN_OSS_SERVICE_ACCOUNT, CONST_DICTS } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { MinioAgent } from '../../support/minio'
-import { ObjectId } from 'mongodb'
+import { logger } from '../../support/logger'
 
 /**
  * The handler of creating a bucket
@@ -33,32 +33,27 @@ export async function handleUpdateServiceAccount(req: Request, res: Response) {
 
   const oss = await MinioAgent.New()
   if (sa) {
-
     const r0 = await oss.removeServiceAccount(sa.access_key)
     if (r0.status === 'error') {
-
-      return res.status(400).send(r0)
+      logger.error(r0)
+      return res.status(400).send('Error: remove oss service account failed')
     }
-    // save it
-    const ret0 = await DatabaseAgent.db.collection(CN_OSS_SERVICE_ACCOUNT)
-      .updateOne({ appid: app.appid, _id: new ObjectId(sa._id) }, {
+
+    await DatabaseAgent.db.collection(CN_OSS_SERVICE_ACCOUNT)
+      .updateOne({ appid: app.appid, _id: sa._id }, {
         $set: {
           "status": 0,
           "updated_at": new Date()
         }
       })
-
-    if (ret0) { }
-
   }
-
-
 
   const r1 = await oss.addServiceAccount(app.appid)
   if (r1.status === 'error') {
-
-    return res.status(400).send('Error: create oss user failed')
+    logger.error(r1)
+    return res.status(400).send('Error: create oss service account failed')
   }
+
   const data = {
     appid: app.appid,
     status: 1,
@@ -66,13 +61,15 @@ export async function handleUpdateServiceAccount(req: Request, res: Response) {
     access_secret: r1.secretKey,
     created_at: new Date(),
     updated_at: new Date(),
-
   }
+
   // save it
-  const ret1 = await DatabaseAgent.db.collection(CN_OSS_SERVICE_ACCOUNT)
+  const r = await DatabaseAgent.db.collection(CN_OSS_SERVICE_ACCOUNT)
     .insertOne(data as any)
 
-  if (ret1) { }
+  if (!r.insertedId) {
+    return res.status(500).send('Error: create oss service account failed')
+  }
 
   return res.send({
     code: 0,

@@ -1,6 +1,5 @@
 <template>
-  <div class="app-container" v-loading="acLoading">
-
+  <div class="app-container">
 
     <!-- 数据检索区 -->
     <div class="filter-container">
@@ -11,9 +10,22 @@
         新建文件桶(Bucket)
       </el-button>
 
-      <el-button plain class="filter-item" type="primary" @click="handleUpdateAC()">
+      <el-button plain class="filter-item" type="primary" :loading="acLoading" @click="handleUpdateAC()">
         获取服务账号
       </el-button>
+
+      <div class="filter-item" style="margin-left: 10px">
+        <el-tooltip :content="oss_external_endpoint" placement="top">
+          <el-tag type="info">OSS EndPoint
+            <i
+              v-clipboard:message="oss_external_endpoint"
+              v-clipboard:success="onCopy"
+              style="margin-left: 3px;"
+              class="el-icon-document-copy copy-btn"
+            />
+          </el-tag>
+        </el-tooltip>
+      </div>
 
     </div>
 
@@ -116,27 +128,41 @@
       </div>
     </el-dialog>
 
-     <el-dialog width="800px" title="服务账号" :visible.sync="dialogACFormVisible">
+    <el-dialog width="800px" title="服务账号" :visible.sync="dialogACFormVisible">
 
-       <el-form
-      
+      <el-form
+
         label-position="left"
         label-width="120px"
         style="width: 600px; margin-left:50px;"
       >
-        <div style="margin-bottom:50px;color:red;">
-            <h2>服务账号只会显示一次，请保存</h2>
-        </div>
-
-        <el-form-item label="access_key" >
-          <el-input v-model="access_key" disabled />
+        <el-alert title="服务账号只会显示一次，请自行保存" type="error" :closable="false" />
+        <br>
+        <el-form-item label="Access Key">
+          <div>
+            {{ access_key }}
+            <i
+              v-clipboard:message="access_key"
+              v-clipboard:success="onCopy"
+              style="margin-left: 3px;"
+              class="el-icon-document-copy copy-btn"
+            />
+          </div>
         </el-form-item>
 
-        <el-form-item label="access_secret" >
-          <el-input v-model="access_secret" disabled />
+        <el-form-item label="Access Secret">
+          <div>
+            {{ access_secret }}
+            <i
+              v-clipboard:message="access_secret"
+              v-clipboard:success="onCopy"
+              style="margin-left: 3px;"
+              class="el-icon-document-copy copy-btn"
+            />
+          </div>
         </el-form-item>
       </el-form>
-       
+
     </el-dialog>
 
   </div>
@@ -189,9 +215,9 @@ export default {
       dialogFormVisible: false,
 
       dialogACFormVisible: false,
-      acLoading:false,
-      access_key:'',
-      access_secret:'',
+      acLoading: false,
+      access_key: '',
+      access_secret: '',
       dialogStatus: '',
       textMap: {
         update: '编辑',
@@ -208,6 +234,12 @@ export default {
     totalQuota() {
       const totalQuota = store.state.app.spec.spec.storage_capacity || 0
       return this.byte2gb(totalQuota)
+    },
+    oss_external_endpoint() {
+      return store.state.app.oss_external_endpoint
+    },
+    oss_internal_endpoint() {
+      return store.state.app.oss_internal_endpoint
     }
   },
   created() {
@@ -355,36 +387,35 @@ export default {
       this.$router.push(`files/${row.name}`)
     },
     // 更新ac
-    async handleUpdateAC(){
+    async handleUpdateAC() {
+      await this.$confirm('服务账号重置以后，之前的服务账号会失效，确定重置？', '服务账号重置', {
+        confirmButtonText: '重置',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
 
-       await this.$confirm('服务账号重置以后，之前的服务账号会失效，确定重置？', '服务账号重置',{
-          confirmButtonText: '重置',
-          cancelButtonText: '取消',
-          type: 'warning'
+      this.acLoading = true
+
+      const ret = await oss.updateAC()
+
+      console.log(ret)
+
+      if (ret.code) {
+        this.$notify({
+          type: 'error',
+          title: '操作失败',
+          message: ret.error
         })
-
-        this.acLoading =true;
-
-        
-
-       const ret = await oss.updateAC()
-
-        console.log(ret)
-
-        if (ret.code) {
-              this.$notify({
-                type: 'error',
-                title: '操作失败',
-                message: ret.error
-              })
-        }
-        this.acLoading =false;
-        this.dialogACFormVisible = true
-        console.log(ret.data)
-        this.access_key = ret.data.access_key
-        this.access_secret = ret.data.access_secret
+      }
+      this.acLoading = false
+      this.dialogACFormVisible = true
+      console.log(ret.data)
+      this.access_key = ret.data.access_key
+      this.access_secret = ret.data.access_secret
+    },
+    onCopy() {
+      this.$message.success('已复制')
     }
-
   }
 }
 </script>

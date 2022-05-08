@@ -143,9 +143,9 @@ export class MinioAgent {
  * @param username 
  * @returns 
  */
-  public async removeServiceAccount(myuserserviceaccount: string) {
-    assert.ok(myuserserviceaccount, 'empty username got')
-    const sub_cmd = `admin user svcacct remove ${MinioAgent.MC_TARGET} ${myuserserviceaccount}`
+  public async removeServiceAccount(sa_access_key: string) {
+    assert.ok(sa_access_key, 'empty sa_access_key got')
+    const sub_cmd = `admin user svcacct remove ${MinioAgent.MC_TARGET} ${sa_access_key}`
     return await this.mc_exec(sub_cmd)
   }
 

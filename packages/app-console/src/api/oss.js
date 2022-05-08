@@ -189,12 +189,11 @@ function getInternalBucketName(bucketName) {
   return `${appid}-${bucketName}`
 }
 
-
 /**
  * update sevice account
  * @returns
  */
- export async function updateAC(bucketName) {
+export async function updateAC(bucketName) {
   const appid = store.state.app.appid
   const res = await request({
     url: `/apps/${appid}/oss/buckets/service-account`,
