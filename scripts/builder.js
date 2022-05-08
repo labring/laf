@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 
 const { Command } = require('commander');
 const program = new Command();
@@ -34,6 +35,7 @@ program
   .option('-p, --push', 'push image')
   .action(function (options) {
 
+    console.log('Running in `DRY-RUN` mode')
     const lernaPath = path.resolve(__dirname, '../lerna.json')
     const lernaVersion = require(lernaPath)?.version
     const tag = options?.tag || lernaVersion
