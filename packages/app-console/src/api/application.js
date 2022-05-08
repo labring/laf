@@ -156,26 +156,13 @@ export function searchUserByUsername(username) {
 }
 
 /**
- * 启动应用服务
+ * 重启应用服务
  * @param {*} appid
  * @returns
  */
-export async function startApplicationService(appid) {
+export async function restartApplicationInstance(appid) {
   const res = await request({
-    url: `/apps/${appid}/service/start`,
-    method: 'post'
-  })
-  return res
-}
-
-/**
- * 停止应用服务
- * @param {*} appid
- * @returns
- */
-export async function stopApplicationService(appid) {
-  const res = await request({
-    url: `/apps/${appid}/service/stop`,
+    url: `/apps/${appid}/instance/restart`,
     method: 'post'
   })
   return res

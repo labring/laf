@@ -77,7 +77,7 @@
 
 <script>
 import store from '@/store'
-import { addApplicationPackage, getApplicationPackages, removeApplicationPackage, startApplicationService, stopApplicationService, updateApplicationPackage } from '@/api/application'
+import { addApplicationPackage, getApplicationPackages, removeApplicationPackage, restartApplicationInstance, updateApplicationPackage } from '@/api/application'
 import { showError, showSuccess } from '@/utils/show'
 
 // 默认化创建表单的值
@@ -171,11 +171,7 @@ export default {
       await this.$confirm('确认要重启应用服务？', '服务操作确认')
       this.listLoading = true
       const app = this.app
-      if (app.status === 'running') {
-        await stopApplicationService(app.appid)
-      }
-
-      await startApplicationService(app.appid)
+      await restartApplicationInstance(app.appid)
 
       this.listLoading = false
       showSuccess('操作成功')

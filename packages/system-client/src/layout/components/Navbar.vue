@@ -3,7 +3,7 @@
     <div class="nav-leading">
       <div class="logo">
         <a href="/">
-          <img src="https://lafjs.github.io/logo.png">
+          <img src="../../assets/logo.png">
         </a>
       </div>
       <div class="title">{{ title }}</div>

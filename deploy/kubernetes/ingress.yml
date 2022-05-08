@@ -1,9 +1,9 @@
-# ingress-oss.yml
+# ingress-oss-console.yml
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress-oss
+  name: ingress-oss-console
   namespace: laf
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: 2048m
@@ -20,6 +20,27 @@ spec:
             name: oss
             port:
               number: 9001
+
+# ingress-oss-endpoint.yml
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-oss-endpoint
+  namespace: laf
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 2048m
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      if ($uri ~* "^/([0-9a-z]{3,32})\-([0-9a-z]{3,32})/(.+)$") {
+        set $appid $1;
+        set $bucket $2;
+      }
+      more_set_headers "appid: $appid";
+      more_set_headers "bucket: $bucket";
+      more_set_headers "Set-Cookie: appid=$appid;bucket=$bucket";
+spec:
+  ingressClassName: nginx
+  rules:
   - host: oss.local-dev.host
     http:
       paths:
@@ -30,6 +51,27 @@ spec:
             name: oss
             port:
               number: 9000
+
+# ingress-oss-subdomain.yml
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-oss-subdomain
+  namespace: laf
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 2048m
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      if ($host ~* "^([0-9a-z]{3,32})\-([0-9a-z]{3,32})\.(.+)$") {
+        set $appid $1;
+        set $bucket $2;
+      }
+      more_set_headers "appid: $appid";
+      more_set_headers "bucket: $bucket";
+      more_set_headers "Set-Cookie: appid=$appid;bucket=$bucket";
+spec:
+  ingressClassName: nginx
+  rules:
   - host: "*.oss.local-dev.host"
     http:
       paths:
