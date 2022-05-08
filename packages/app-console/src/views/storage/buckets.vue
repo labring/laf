@@ -1,5 +1,7 @@
 <template>
-  <div class="app-container">
+  <div class="app-container" v-loading="acLoading">
+
+
     <!-- 数据检索区 -->
     <div class="filter-container">
       <el-button plain class="filter-item" type="default" icon="el-icon-search" @click="getList">
@@ -9,8 +11,8 @@
         新建文件桶(Bucket)
       </el-button>
 
-      <el-button plain class="filter-item" type="primary" @click="dialogACFormVisible = true">
-        获取serviceAccount
+      <el-button plain class="filter-item" type="primary" @click="handleUpdateAC()">
+        获取服务账号
       </el-button>
 
     </div>
@@ -114,17 +116,27 @@
       </div>
     </el-dialog>
 
-     <el-dialog width="600px" :title="textMap[dialogStatus]" :visible.sync="dialogACFormVisible">
-    
-      <span> serviceAccount: {{ serviceAccount }}</span>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogACFormVisible = false">
-          取消
-        </el-button>
-        <el-button type="primary" @click="handleUpdateAC()">
-          确定
-        </el-button>
-      </div>
+     <el-dialog width="800px" title="服务账号" :visible.sync="dialogACFormVisible">
+
+       <el-form
+      
+        label-position="left"
+        label-width="120px"
+        style="width: 600px; margin-left:50px;"
+      >
+        <div style="margin-bottom:50px;color:red;">
+            <h2>服务账号只会显示一次，请保存</h2>
+        </div>
+
+        <el-form-item label="access_key" >
+          <el-input v-model="access_key" disabled />
+        </el-form-item>
+
+        <el-form-item label="access_secret" >
+          <el-input v-model="access_secret" disabled />
+        </el-form-item>
+      </el-form>
+       
     </el-dialog>
 
   </div>
@@ -177,7 +189,9 @@ export default {
       dialogFormVisible: false,
 
       dialogACFormVisible: false,
-      serviceAccount:'',
+      acLoading:false,
+      access_key:'',
+      access_secret:'',
       dialogStatus: '',
       textMap: {
         update: '编辑',
@@ -343,7 +357,15 @@ export default {
     // 更新ac
     async handleUpdateAC(){
 
-      await this.$confirm('确认要更新此数据？', 'serviceaccount 更新')
+       await this.$confirm('服务账号重置以后，之前的服务账号会失效，确定重置？', '服务账号重置',{
+          confirmButtonText: '重置',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+
+        this.acLoading =true;
+
+        
 
        const ret = await oss.updateAC()
 
@@ -356,8 +378,11 @@ export default {
                 message: ret.error
               })
         }
+        this.acLoading =false;
+        this.dialogACFormVisible = true
         console.log(ret.data)
-        this.serviceAccount = ret.data.access_key
+        this.access_key = ret.data.access_key
+        this.access_secret = ret.data.access_secret
     }
 
   }
