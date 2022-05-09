@@ -106,9 +106,9 @@ export function getBucketUrl(bucket) {
 
 /**
  * get bucket's secondary url e.g: appid-bucketName.oss.aliyun.com
- * @param {*} bucketName 
- * @param {*} param1 
- * @returns 
+ * @param {*} bucketName
+ * @param {*} param1
+ * @returns
  */
 export function getBucketSecondaryUrl(bucketName) {
   const appid = store.state.app.appid
@@ -117,7 +117,6 @@ export function getBucketSecondaryUrl(bucketName) {
   const url = `${protocol}//${appid}-${bucketName}.${host}`
   return url
 }
-
 
 /**
  * Get file list in a bucket
@@ -188,4 +187,19 @@ function getS3Client(credentials) {
 function getInternalBucketName(bucketName) {
   const appid = store.state.app.appid
   return `${appid}-${bucketName}`
+}
+
+/**
+ * update sevice account
+ * @returns
+ */
+export async function updateAC(bucketName) {
+  const appid = store.state.app.appid
+  const res = await request({
+    url: `/apps/${appid}/oss/buckets/service-account`,
+    method: 'post'
+  })
+
+  assert(res.code === 0, 'update application service accounp', res)
+  return res
 }

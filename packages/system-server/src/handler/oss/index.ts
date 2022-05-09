@@ -10,6 +10,7 @@ import { handleGetBuckets, handleGetOneBucket } from './get-buckets'
 import { handleCreateBucket } from './add-bucket'
 import { handleDeleteBucket } from './delete-bucket'
 import { handleSetBucketPolicy } from './update-bucket'
+import { handleUpdateServiceAccount } from './update-service-account'
 
 export const OSSRouter = express.Router()
 
@@ -37,3 +38,9 @@ OSSRouter.put('/buckets/:bucket', handleSetBucketPolicy)
  * Delete a bucket
  */
 OSSRouter.delete('/buckets/:bucket', handleDeleteBucket)
+
+
+/**
+ * update application service account
+ */
+OSSRouter.post('/buckets/service-account', handleUpdateServiceAccount)

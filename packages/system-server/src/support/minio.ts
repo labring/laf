@@ -128,6 +128,28 @@ export class MinioAgent {
   }
 
   /**
+   * add service account to the user
+   * @param username 
+   * @returns 
+   */
+  public async addServiceAccount(username: string) {
+    assert.ok(username, 'empty username got')
+    const sub_cmd = `admin user svcacct add ${MinioAgent.MC_TARGET} ${username}`
+    return await this.mc_exec(sub_cmd)
+  }
+
+  /**
+ * add service account to the user
+ * @param username 
+ * @returns 
+ */
+  public async removeServiceAccount(sa_access_key: string) {
+    assert.ok(sa_access_key, 'empty sa_access_key got')
+    const sub_cmd = `admin user svcacct remove ${MinioAgent.MC_TARGET} ${sa_access_key}`
+    return await this.mc_exec(sub_cmd)
+  }
+
+  /**
    * Create bucket
    * @param name 
    * @param options 

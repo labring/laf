@@ -41,7 +41,7 @@
   "[javascript]": {
     "editor.formatOnSave": true,
     "editor.formatOnType": true,
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   },
   // typescript
   "typescript.format.semicolons": "remove",

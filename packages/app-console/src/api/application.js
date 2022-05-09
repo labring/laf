@@ -26,6 +26,22 @@ export function removeCollaborator(collaborator_id) {
 }
 
 /**
+ * 更新协作者密码(TBD)
+ * @param {string} accountId
+ * @param {string} password
+ */
+export function resetAccountPassword(accountId, password) {
+  return request({
+    url: '/account/resetPassword',
+    method: 'post',
+    data: {
+      accountId,
+      password
+    }
+  })
+}
+
+/**
  * 请求我的应用
  * @returns 返回我的应用列表
  */
@@ -139,26 +155,13 @@ export function searchUserByUsername(username) {
 }
 
 /**
- * 启动应用服务
+ * 重启应用服务
  * @param {*} appid
  * @returns
  */
-export async function startApplicationService(appid) {
+export async function restartApplicationInstance(appid) {
   const res = await request({
-    url: `/apps/${appid}/service/start`,
-    method: 'post'
-  })
-  return res
-}
-
-/**
- * 停止应用服务
- * @param {*} appid
- * @returns
- */
-export async function stopApplicationService(appid) {
-  const res = await request({
-    url: `/apps/${appid}/service/stop`,
+    url: `/apps/${appid}/instance/restart`,
     method: 'post'
   })
   return res

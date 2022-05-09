@@ -42,11 +42,7 @@
       <el-table-column label="文件" align="center" width="140">
         <template slot-scope="{row}">
           <a v-if="!row.Prefix" :href="getFileUrl(row)" target="blank">
-            <img
-              v-if="isImage(row)"
-              class="thumb-image"
-              :src="getFileUrl(row)"
-            >
+            <i v-if="isImage(row)" class="el-icon-picture-outline" style="font-size: 40px" />
             <i v-else-if="isVideo(row)" class="el-icon-video-play" style="font-size: 40px" />
             <i v-else-if="row.Prefix" class="el-icon-folder-opened" style="font-size: 36px; color: orange" />
             <i v-else class="el-icon-paperclip" style="font-size: 40px" />
@@ -269,7 +265,7 @@ export default {
     // 拼装文件下载 URL
     getFileUrl(file) {
       assert(file && file.Key, 'invalid file or filename')
-      const url =  oss.getAppFileUrl(this.bucket, file.Key, this.bucketDetail.credentials)
+      const url = oss.getAppFileUrl(this.bucket, file.Key, this.bucketDetail.credentials)
       console.log('getFileURl', url)
       return url
     },
