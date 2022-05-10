@@ -26,6 +26,22 @@ export function removeCollaborator(collaborator_id) {
 }
 
 /**
+ * 更新协作者密码(TBD)
+ * @param {string} accountId
+ * @param {string} password
+ */
+export function resetAccountPassword(accountId, password) {
+  return request({
+    url: '/account/resetPassword',
+    method: 'post',
+    data: {
+      accountId,
+      password
+    }
+  })
+}
+
+/**
  * 请求我的应用
  * @returns 返回我的应用列表
  */

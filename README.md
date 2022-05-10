@@ -108,3 +108,5 @@ laf已经实际应用到数十款SaaS应用中，成熟稳定简单，减少了6
 
 + [微信群](https://cdn.jsdelivr.net/gh/yangchuansheng/imghosting3@main/uPic/2022-04-22-14-21-MRJH9o.png)
 + QQ 群：603059673
+
+先run system-client 在 run app-console

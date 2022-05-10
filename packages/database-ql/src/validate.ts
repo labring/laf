@@ -60,7 +60,7 @@ export class Validate {
    */
   static isInteger(param: string, num: number): Boolean {
     if (!Number.isInteger(num)) {
-      throw new Error(param + ErrorCode.IntergerError)
+      throw new Error(param + ErrorCode.IntegerError)
     }
     return true
   }

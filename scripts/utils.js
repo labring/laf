@@ -21,7 +21,7 @@ function getPackageVersion(packagePath) {
  * build docker image
  * @param {string} filepath path of Dockerfile
  */
- function buildImage(filepath, tag, latest_tag) {
+ function buildImage(filepath, tag) {
   const sub = child_process.spawn('docker', ['build', '-t', tag, filepath])
 
   sub.stdout.on('data', (data) => {

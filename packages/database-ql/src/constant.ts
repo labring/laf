@@ -12,7 +12,7 @@ enum ErrorCode {
   CollNameError = '集合名称不合法',
   OpStrError = '操作符不合法',
   DirectionError = '排序字符不合法',
-  IntergerError = 'must be integer',
+  IntegerError = 'must be integer',
   QueryParamTypeError = '查询参数必须为对象',
   QueryParamValueError = '查询参数对象值不能均为undefined'
 }

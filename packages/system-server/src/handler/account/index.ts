@@ -10,6 +10,7 @@ import { handleEdit } from './edit'
 import { handleProfile } from './get'
 import { handleSignIn } from './signin'
 import { handleSignUp } from './signup'
+import { handleResetPassword } from './resetPassword'
 
 export const AccountRouter = Router()
 
@@ -32,3 +33,9 @@ AccountRouter.post('/signup', handleSignUp)
  * edit admin
  */
 AccountRouter.post('/edit', handleEdit)
+
+
+/**
+ * reset account password
+ */
+AccountRouter.post('/resetPassword', handleResetPassword)
