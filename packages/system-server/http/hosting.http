@@ -32,3 +32,25 @@ Authorization: Bearer {{token}}
   "bucket": "test"
 }
 
+### Delete website
+DELETE {{base_url}}/apps/{{appid}}/hosting/website/627a5eef8de7df65a37beae2
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+### Check domain
+GET {{base_url}}/apps/{{appid}}/hosting/domain/resolve?domain=www.weicaoyueke233.com
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+### bind domain to website
+POST {{base_url}}/apps/{{appid}}/hosting/domain/bind
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "domain": "cname-test.lafjs.com",
+  "website_id": "627a5eef8de7df65a37beae2"
+}
+

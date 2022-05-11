@@ -52,8 +52,8 @@ export async function handleCreateWebsite(req: Request, res: Response) {
     appid: app.appid,
     domain: null,
     cname,
-    status: 'enabled', // 'enabled' | 'disabled' | 'deleted' | 'modified'  资源的逻辑状态
-    state: 'created', // 'created' | 'deleted' | 'pending',  // 资源的物理状态
+    status: 'enabled', // 'enabled' | 'disabled' | 'deleted'  资源的逻辑状态
+    state: 'pending', // 'created' | 'deleted' | 'pending',  // 资源的物理状态
     created_at: new Date(),
     updated_at: new Date()
   }
