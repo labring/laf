@@ -153,7 +153,7 @@
 
 ## 🎉 本地部署
 
-[部署说明](./docs/guide/function/install.md)
+[本地部署](./deploy/README.md)
 
 
 ## 🏘️ 社群
