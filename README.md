@@ -1,4 +1,4 @@
-![laf](https://socialify.git.ci/lafjs/laf/image?description=1&descriptionEditable=像写博客一样写函数！&font=Raleway&forks=1&language=1&name=1&owner=1&pattern=Circuit%20Board&stargazers=1&theme=Dark)
+![laf](https://socialify.git.ci/labring/laf/image?description=1&descriptionEditable=%E5%83%8F%E5%86%99%E5%8D%9A%E5%AE%A2%E4%B8%80%E6%A0%B7%E5%86%99%E4%BB%A3%E7%A0%81%EF%BC%81&font=Inter&forks=1&language=1&name=1&owner=1&pattern=Circuit%20Board&stargazers=1&theme=Dark)
 
 <div align="center">
   <p>
@@ -7,7 +7,7 @@
 
   <p>
     
-  [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/lafjs/laf)
+  [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/labring/laf)
   [![](https://img.shields.io/docker/pulls/lafyun/system-server)](https://hub.docker.com/r/lafyun/system-server)
   ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?logo=typescript&logoColor=white)
   [![Website](https://img.shields.io/website?url=https%3A%2F%2Fdocs.lafyun.com&logo=Postwoman)](https://docs.lafyun.com/)
@@ -24,7 +24,7 @@
 - laf 是一个集「函数计算」、「数据库」、「对象存储」等于一身的一站式开发平台
 - laf 可以是开源版的腾讯云开发、开源版的 Google Firebase、开源版的 UniCloud
 
-[`laf`](https://github.com/lafjs/laf) 让每个开发团队都可以随时拥有一个自己的云开发平台！
+[`laf`](https://github.com/labring/laf) 让每个开发团队都可以随时拥有一个自己的云开发平台！
 
 ## 🎉 `laf` 有什么
 
@@ -34,7 +34,7 @@
 - 云存储，为应用开发提供专业的文件对象存储服务，兼容 S3 和其他存储服务接口
 - WebIDE，在线写代码，完善的类型提示、代码自动完成，像写博客一样写函数，随手发布上线！
 - 静态托管，支持静态网站的托管，可以快速的上线静态网站，无需折腾 nginx
-- Client Db，支持客户端使用 [laf-client-sdk](https://github.com/lafjs/laf/tree/main/packages/client-sdk) “直连”数据库，通过访问策略控制访问权限，极大程度提升应用开发效率
+- Client Db，支持客户端使用 [laf-client-sdk](https://github.com/labring/laf/tree/main/packages/client-sdk) “直连”数据库，通过访问策略控制访问权限，极大程度提升应用开发效率
 - WebSocket，应用支持长连接，业务无死角
 
 可以通过下面的屏幕截图进一步了解 `laf`:
@@ -60,7 +60,7 @@
 ## 👨‍💻 谁适合使用 `laf` ?
 
 1. 前端开发者 + `laf` = 全栈开发者，前端秒变全栈，成为真正的大前端
-    - `laf` 为前端提供了 [laf-client-sdk](https://github.com/lafjs/laf/tree/main/packages/client-sdk)，适用于任何 js 运行环境
+    - `laf` 为前端提供了 [laf-client-sdk](https://github.com/labring/laf/tree/main/packages/client-sdk)，适用于任何 js 运行环境
     - `laf` 云函数使用 js/ts 开发，前后端代码无隔裂，无门槛快速上手
     - `laf` 提供了静态网站托管，可将前端构建的网页直接同步部署上来，无需再配置服务器、nginx、域名等
     - `laf` 后续会提供多种客户端的 SDK（Flutter/Android/iOS等），为所有客户端开发者提供后端开发服务和一致的开发体验
@@ -110,7 +110,7 @@
     - 可使用云函数实现微信授权、支付、热更新等业务
 
 3. 部署个人博客、企业官网
-    - 将 vuepress / hexo / hugo 等静态生成的博客，一键部署到 `laf` 静态托管上， 见 [laf-cli](https://github.com/lafjs/laf-cli)
+    - 将 vuepress / hexo / hugo 等静态生成的博客，一键部署到 `laf` 静态托管上， 见 [laf-cli](https://github.com/labring/laf-cli)
     - 可使用云函数来处理用户留言、评论、访问统计等业务
     - 可使用云函数扩展博客的其它能力，如课程、投票、提问等
     - 可使用云存储存储视频、图片
