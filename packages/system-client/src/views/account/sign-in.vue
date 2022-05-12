@@ -9,7 +9,7 @@
       label-position="left"
     >
       <div class="title-container">
-        <h3 class="title">LaF 云开发账户登陆</h3>
+        <h3 class="title">LaF 云开发账户登录</h3>
       </div>
 
       <el-form-item prop="username" label="用户名">
@@ -35,7 +35,7 @@
             ref="password"
             v-model="loginForm.password"
             type="password"
-            placeholder="登陆密码"
+            placeholder="登录密码"
             name="password"
             tabindex="2"
             autocomplete="on"
@@ -53,7 +53,7 @@
           plain
           style="width:80%;font-weight: bold;"
           @click.native.prevent="handleLogin"
-        >登陆</el-button>
+        >登录</el-button>
 
         <el-button
           type="text"
