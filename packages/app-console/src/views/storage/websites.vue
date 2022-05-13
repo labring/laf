@@ -53,6 +53,7 @@
               :value="bucket.name"
             />
           </el-select>
+          <span style="font-size: 12px;color: #666;"> 可在“文件管理”创建 bucket</span>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
