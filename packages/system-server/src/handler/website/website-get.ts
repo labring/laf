@@ -20,8 +20,6 @@ export async function handleGetWebsites(req: Request, res: Response) {
     res.status(401).send()
   }
 
-  console.log('handleGetWebsites', app.appid)
-
   // check permission
   const { WEBSITE_HOSTING_READ } = CONST_DICTS.permissions
   const code = await checkPermission(uid, WEBSITE_HOSTING_READ.name, app)
@@ -30,7 +28,7 @@ export async function handleGetWebsites(req: Request, res: Response) {
   }
 
   // get list
-  const query = { appid: app.appid }
+  const query = { appid: app.appid, status: { $ne: "deleted" } }
   const docs = await db.collection(CN_WEBSITE_HOSTING).find(query).toArray()
 
   return res.send({ data: docs })

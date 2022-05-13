@@ -17,13 +17,13 @@ Content-Type: application/json
 
 ### Get websites
 
-GET {{base_url}}/apps/{{appid}}/hosting/websites/
+GET {{base_url}}/apps/{{appid}}/websites/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 
 ### Put website
-PUT {{base_url}}/apps/{{appid}}/hosting/website/
+PUT {{base_url}}/apps/{{appid}}/websites/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -33,24 +33,24 @@ Authorization: Bearer {{token}}
 }
 
 ### Delete website
-DELETE {{base_url}}/apps/{{appid}}/hosting/website/627a5eef8de7df65a37beae2
+DELETE {{base_url}}/apps/{{appid}}/websites/627a5eef8de7df65a37beae2
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 
 ### Check domain
-GET {{base_url}}/apps/{{appid}}/hosting/domain/resolve?domain=www.weicaoyueke233.com
+GET {{base_url}}/apps/{{appid}}/websites/domain/resolve?domain=www.walle.fun
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 
 ### bind domain to website
-POST {{base_url}}/apps/{{appid}}/hosting/domain/bind
+POST {{base_url}}/apps/{{appid}}/websites/domain/bind
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
   "domain": "cname-test.lafjs.com",
-  "website_id": "627a5eef8de7df65a37beae2"
+  "website_id": "627ce139221176681092e0b0"
 }
 

@@ -31,15 +31,15 @@ export async function handleDeleteWebsite(req: Request, res: Response) {
   // check id
   const id = req.params.id
   const existed = await db
-    .collection<IApplicationData>(CN_WEBSITE_HOSTING)
-    .countDocuments({ _id: new ObjectId(id) })
+    .collection(CN_WEBSITE_HOSTING)
+    .countDocuments({ _id: new ObjectId(id), appid: app.appid })
   if (!existed) {
     return res.status(422).send("invalid id")
   }
 
   // delete
   const r = await db.collection(CN_WEBSITE_HOSTING).updateOne(
-    { _id: new ObjectId(id) },
+    { _id: new ObjectId(id), appid: app.appid },
     { $set: { status: "deleted", state: "pending", updated_at: new Date() } }
   )
   return res.send({ data: r.modifiedCount })

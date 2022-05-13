@@ -4,6 +4,8 @@ import { CONST_DICTS } from "../../constants"
 import { DatabaseAgent } from "../../db"
 import { IApplicationData } from "../../support/application"
 import { checkPermission } from "../../support/permission"
+import { URL } from "node:url"
+import Config from "../../config"
 
 /**
  * handle create website hosting
@@ -36,14 +38,17 @@ export async function handleCreateWebsite(req: Request, res: Response) {
   if (!bucket) {
     return res.status(422).send("no bucket")
   }
+
   const existed = await db.collection(CN_WEBSITE_HOSTING)
     .countDocuments({ appid: app.appid, bucket })
   if (existed) {
-    return res.status(422).send("bucket already exists")
+    return res.send({ code: 1, error: "bucket existed" })
   }
 
   // generate cname url for bucket and appid
-  const cname = `${app.appid}-${bucket}.oss.lafyun.com`
+  const endpoint = new URL(Config.MINIO_CONFIG.endpoint.external)
+  const { host } = endpoint
+  const cname = `${app.appid}-${bucket}.${host}`
 
   // build website hosting data
   const doc = {
@@ -52,13 +57,13 @@ export async function handleCreateWebsite(req: Request, res: Response) {
     appid: app.appid,
     domain: null,
     cname,
-    status: 'enabled', // 'enabled' | 'disabled' | 'deleted'  资源的逻辑状态
-    state: 'pending', // 'created' | 'deleted' | 'pending',  // 资源的物理状态
+    status: 'enabled', // 'enabled' | 'disabled' | 'deleted' , the logic status of website
+    state: 'pending', // 'created' | 'deleted' | 'pending', the real state of website
     created_at: new Date(),
     updated_at: new Date()
   }
 
-  // insert website hosting
+  // create website hosting
   const result = await db.collection(CN_WEBSITE_HOSTING)
     .insertOne(doc)
   if (!result.insertedId) {
@@ -67,9 +72,6 @@ export async function handleCreateWebsite(req: Request, res: Response) {
 
   // return data
   res.send({
-    code: 0,
-    data: {
-      id: result.insertedId
-    }
+    data: { id: result.insertedId }
   })
 }

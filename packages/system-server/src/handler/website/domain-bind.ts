@@ -30,10 +30,10 @@ export async function handleBindDomain(req: Request, res: Response) {
   }
 
   // check id
-  const existed = await db
-    .collection<IApplicationData>(CN_WEBSITE_HOSTING)
-    .countDocuments({ _id: new ObjectId(website_id) })
-  if (!existed) {
+  const website = await db
+    .collection(CN_WEBSITE_HOSTING)
+    .findOne({ _id: new ObjectId(website_id), appid: app.appid })
+  if (!website) {
     return res.status(422).send("invalid id")
   }
 
@@ -42,24 +42,27 @@ export async function handleBindDomain(req: Request, res: Response) {
     return res.status(422).send("invalid domain")
   }
 
-  // check domain is resolveable
+  // check domain is available
   const dnsPromise = dns.promises
-  const d = await dnsPromise.lookup(domain as string).catch(() => {})
-  if (!d || !d.address) {
-    return res.status(422).send("domain not resolveable")
+  const result = await dnsPromise.resolveCname(domain as string).catch(() => {})
+  if (!result) {
+    return res.send({code: 'DOMAIN_NOT_RESOLVEABLE', error: 'domain is not resolveable'})
+  }
+  if ((result || []).includes(website.cname)) {
+    return res.send({code: 'DOMAIN_RESOLVED_ERROR', error: 'error resolved result got'})
   }
 
   // check if domain is already binded
   const existedDomain = await db
-    .collection<IApplicationData>(CN_WEBSITE_HOSTING)
+    .collection(CN_WEBSITE_HOSTING)
     .countDocuments({ domain })
   if (existedDomain) {
-    return res.status(422).send("domain is already binded")
+    return res.send({ code: 'ALREADY_EXISTED', error: "domain already binded" })
   }
 
   // bind
   const r = await db.collection(CN_WEBSITE_HOSTING).updateOne(
-    { _id: new ObjectId(website_id) },
+    { _id: new ObjectId(website_id), appid: app.appid },
     { $set: { domain, state: "pending", updated_at: new Date() } }
   )
 
