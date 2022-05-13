@@ -64,6 +64,10 @@ service.interceptors.response.use(
       showInfo('无此操作权限')
       return Promise.reject(error)
     }
+    if (status === 422) {
+      showInfo('参数错误')
+      return Promise.reject(error)
+    }
 
     // showError(error.message)
     return Promise.reject(error)

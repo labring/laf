@@ -55,7 +55,7 @@ export async function handleBindDomain(req: Request, res: Response) {
   // check if domain is already binded
   const existedDomain = await db
     .collection(CN_WEBSITE_HOSTING)
-    .countDocuments({ domain })
+    .countDocuments({ domain, status: { $ne: "deleted" } })
   if (existedDomain) {
     return res.send({ code: 'ALREADY_EXISTED', error: "domain already binded" })
   }

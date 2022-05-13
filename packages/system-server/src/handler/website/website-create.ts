@@ -40,9 +40,9 @@ export async function handleCreateWebsite(req: Request, res: Response) {
   }
 
   const existed = await db.collection(CN_WEBSITE_HOSTING)
-    .countDocuments({ appid: app.appid, bucket })
+    .countDocuments({ appid: app.appid, bucket_name: bucket, status: { $ne: "deleted" } })
   if (existed) {
-    return res.send({ code: 1, error: "bucket existed" })
+    return res.send({ code: 1, error: "the bucket has been used" })
   }
 
   // generate cname url for bucket and appid
