@@ -199,15 +199,21 @@
               v-if="row.triggers && row.triggers.length"
             >({{ row.triggers.length }})</b>
           </el-button>
-          <el-button
-            v-if="row.status != 'deleted'"
-            icon="el-icon-delete"
-            plain
-            size="mini"
-            type="danger"
-            circle
-            @click="handleDelete(row, $index)"
-          />
+          <el-tooltip
+            content="请先停用函数，再删除！"
+            :disabled="row.status !== 1"
+            placement="top"
+          >
+            <el-button
+              v-if="row.status != 'deleted'"
+              icon="el-icon-delete"
+              plain
+              size="mini"
+              type="danger"
+              circle
+              @click="handleDelete(row, $index)"
+            />
+          </el-tooltip>
         </template>
       </el-table-column>
     </el-table>

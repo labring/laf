@@ -15,6 +15,7 @@ import { PolicyRouter } from './policy'
 import { getApplicationByAppid } from '../support/application'
 import { OSSRouter } from './oss'
 import { ReplicateRouter } from './replicate'
+import { WebsiteRouter } from './website'
 
 export const router = Router()
 
@@ -26,6 +27,7 @@ router.use('/apps/:appid/policy', checkAppid, PolicyRouter)
 router.use('/apps/:appid/dbm', checkAppid, DbmRouter)
 router.use('/apps/:appid/oss', checkAppid, OSSRouter)
 router.use('/apps/:appid/replicate', checkAppid, ReplicateRouter)
+router.use('/apps/:appid/websites', checkAppid, WebsiteRouter)
 
 
 router.use('/healthz', (_req, res) => {

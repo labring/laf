@@ -135,8 +135,18 @@ export const asyncRoutes = [
         component: () => import('@/views/storage/buckets'),
         name: 'FileBucketListPage',
         meta: {
-          title: '云存储',
+          title: '文件管理',
           icon: 'zip',
+          noCache: true
+        }
+      },
+      {
+        path: 'websites',
+        component: () => import('@/views/storage/websites'),
+        name: 'WebsiteHosting',
+        meta: {
+          title: '网站托管',
+          icon: 'link',
           noCache: true
         }
       },

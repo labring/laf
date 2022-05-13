@@ -1,0 +1,56 @@
+
+@token={{login.response.body.$.data.access_token}}
+@appid=000000
+
+
+### login
+# @name login
+
+POST {{base_url}}/account/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{user}}",
+  "password": "{{passwd}}"
+}
+
+
+### Get websites
+
+GET {{base_url}}/apps/{{appid}}/websites/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+### Put website
+PUT {{base_url}}/apps/{{appid}}/websites/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "label": "test-label",
+  "bucket": "test"
+}
+
+### Delete website
+DELETE {{base_url}}/apps/{{appid}}/websites/627a5eef8de7df65a37beae2
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+### Check domain
+GET {{base_url}}/apps/{{appid}}/websites/domain/resolve?domain=www.walle.fun
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+### bind domain to website
+POST {{base_url}}/apps/{{appid}}/websites/domain/bind
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "domain": "cname-test.lafjs.com",
+  "website_id": "627ce139221176681092e0b0"
+}
+

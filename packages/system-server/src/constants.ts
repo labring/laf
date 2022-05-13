@@ -48,6 +48,7 @@ export const CN_APP_SPECS = _('app_specs')
 export const CN_REPLICATE_AUTH = _('replicate_auth')
 export const CN_REPLICATE_REQUESTS = _('replicate_requests')
 export const CN_OSS_SERVICE_ACCOUNT = _('oss_service_account')
+export const CN_WEBSITE_HOSTING = _('website_hosting')
 /**
  * Constants collection
  */

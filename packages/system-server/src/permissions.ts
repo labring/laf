@@ -43,6 +43,11 @@ export const permissions = {
   REPLICATE_REQUEST_REMOVE: { name: 'replicate_request.remove', label: '推送请求-删除推送请求' },
   REPLICATE_REQUEST_UPDATE: { name: 'replicate_request.update', label: '推送请求-更新推送请求' },
 
+  WEBSITE_HOSTING_READ: { name: 'website_hosting.read', label: '网站托管-读取网站' },
+  WEBSITE_HOSTING_ADD: { name: 'website_hosting.add', label: '网站托管-创建网站' },
+  WEBSITE_HOSTING_REMOVE: { name: 'website_hosting.remove', label: '网站托管-删除网站' },
+  WEBSITE_HOSTING_UPDATE: { name: 'website_hosting.update', label: '网站托管-更新网站' },
+
 }
 
 
@@ -59,7 +64,8 @@ const dba = [
   pns.PUBLISH_POLICY,
   pns.DATABASE_MANAGE,
   pns.FILE_ADD, pns.FILE_READ, pns.FILE_REMOVE, pns.FILE_UPDATE,
-  pns.FILE_BUCKET_ADD, pns.FILE_BUCKET_REMOVE
+  pns.FILE_BUCKET_ADD, pns.FILE_BUCKET_REMOVE,
+  pns.WEBSITE_HOSTING_READ, pns.WEBSITE_HOSTING_ADD, pns.WEBSITE_HOSTING_REMOVE, pns.WEBSITE_HOSTING_UPDATE,
 ]
 
 const operator = [
