@@ -37,6 +37,11 @@ docker-compose up
 # 浏览器打开 http://console.local-dev.host:8000 访问
 ```
 
+> TIPs: 
+> We provide `*.local-dev.host` always resolved to `127.0.0.1` anywhere! 
+> Close your VPN then `local-dev.host` resolving works well.
+
+
 ### 开发环境（开发者）
 
 ```sh
