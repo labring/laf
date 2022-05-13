@@ -39,7 +39,7 @@
           ref="password"
           v-model="signupForm.password"
           type="password"
-          placeholder="登陆密码"
+          placeholder="登录密码"
           name="password"
           tabindex="3"
         />

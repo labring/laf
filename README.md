@@ -1,13 +1,13 @@
-![laf](https://socialify.git.ci/lafjs/laf/image?description=1&descriptionEditable=laf.js%20%E8%AE%A9%E6%AF%8F%E4%B8%AA%E5%BC%80%E5%8F%91%E5%9B%A2%E9%98%9F%E9%83%BD%E5%8F%AF%E4%BB%A5%E9%9A%8F%E6%97%B6%E6%8B%A5%E6%9C%89%E4%B8%80%E4%B8%AA%E8%87%AA%E5%B7%B1%E7%9A%84%E4%BA%91%E5%BC%80%E5%8F%91%E5%B9%B3%E5%8F%B0%EF%BC%81&font=Raleway&forks=1&language=1&name=1&owner=1&pattern=Circuit%20Board&stargazers=1&theme=Dark)
+![laf](https://socialify.git.ci/labring/laf/image?description=1&descriptionEditable=%E5%83%8F%E5%86%99%E5%8D%9A%E5%AE%A2%E4%B8%80%E6%A0%B7%E5%86%99%E4%BB%A3%E7%A0%81%EF%BC%81&font=Inter&forks=1&language=1&name=1&owner=1&pattern=Circuit%20Board&stargazers=1&theme=Dark)
 
 <div align="center">
   <p>
-    <b>一套开箱即用、完整、开源、为开发者提供的基于 Serverless 模式和 JS 编程的云开发框架</b>
+    <b>像写博客一样写函数！</b>
   </p>
 
   <p>
     
-  [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/lafjs/laf)
+  [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/labring/laf)
   [![](https://img.shields.io/docker/pulls/lafyun/system-server)](https://hub.docker.com/r/lafyun/system-server)
   ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?logo=typescript&logoColor=white)
   [![Website](https://img.shields.io/website?url=https%3A%2F%2Fdocs.lafyun.com&logo=Postwoman)](https://docs.lafyun.com/)
@@ -16,16 +16,28 @@
   </p>
 </div>
 
-## 👀 Laf 是什么
+## 👀 `laf` 是什么
 
-`laf.js` 是一套开箱即用、完整、开源、为开发者提供的基于 Serverless 模式和 JS 编程的云开发框架。
+- laf 是云开发平台，可以快速的开发应用
+- laf 是一个开源的 BaaS 开发平台（Backend as a Service)
+- laf 是一个开箱即用的 serverless 开发平台
+- laf 是一个集「函数计算」、「数据库」、「对象存储」等于一身的一站式开发平台
+- laf 可以是开源版的腾讯云开发、开源版的 Google Firebase、开源版的 UniCloud
 
-用熟悉的 JS，轻松搞定前后台整体业务，前端秒变全栈。
+[`laf`](https://github.com/labring/laf) 让每个开发团队都可以随时拥有一个自己的云开发平台！
 
-[`laf.js`](https://github.com/lafjs/laf) 让每个开发团队都可以随时拥有一个自己的云开发平台！
+## 🎉 `laf` 有什么
 
-可以通过下面的屏幕截图进一步了解 Laf，关于 Laf 更详细的介绍与说明请参阅 [laf.js 云开发文档](https://docs.lafyun.com/guide/)
+- 多应用管理，新建、启停应用，无需折腾服务器，一分钟上线应用
+- 云函数，`laf` 提供的函数计算服务，可以快速的实现后端业务
+- 云数据库，为应用开发提供开箱即用的数据库服务
+- 云存储，为应用开发提供专业的文件对象存储服务，兼容 S3 和其他存储服务接口
+- WebIDE，在线写代码，完善的类型提示、代码自动完成，像写博客一样写函数，随手发布上线！
+- 静态托管，支持静态网站的托管，可以快速的上线静态网站，无需折腾 nginx
+- Client Db，支持客户端使用 [laf-client-sdk](https://github.com/labring/laf/tree/main/packages/client-sdk) “直连”数据库，通过访问策略控制访问权限，极大程度提升应用开发效率
+- WebSocket，应用支持长连接，业务无死角
 
+可以通过下面的屏幕截图进一步了解 `laf`:
 <table>
   <tr>
       <td width="50%" align="center"><b>云函数</b></td>
@@ -45,68 +57,111 @@
   </tr>
 </table>
 
-### 使用案例
+## 👨‍💻 谁适合使用 `laf` ?
 
-- [bytepay](https://bytepay.online) 是一款基于区块链的开源付费协作平台，web3基金会孵化项目，完全基于laf开发。
-- [sealos商城](https://sealyun.com) 是[sealos](https://github.com/labring/sealos) 的官方商城，基于laf开发，发票/支付/短信/对象存储 等功能都能很好支持，目前该网站服务数千企业用户。
-- 国牧花园 微信小程序，是精品猪肉电商网站，完全基于laf开发，支持支付/物流/短信等功能, laf自带https极大程度方便了应用。
+1. 前端开发者 + `laf` = 全栈开发者，前端秒变全栈，成为真正的大前端
+    - `laf` 为前端提供了 [laf-client-sdk](https://github.com/labring/laf/tree/main/packages/client-sdk)，适用于任何 js 运行环境
+    - `laf` 云函数使用 js/ts 开发，前后端代码无隔裂，无门槛快速上手
+    - `laf` 提供了静态网站托管，可将前端构建的网页直接同步部署上来，无需再配置服务器、nginx、域名等
+    - `laf` 后续会提供多种客户端的 SDK（Flutter/Android/iOS等），为所有客户端开发者提供后端开发服务和一致的开发体验
 
-laf已经实际应用到数十款SaaS应用中，成熟稳定简单，减少了60%以上研发工作量，且不再需要专业的后端人员配合，运维上线等流程更是优化到0，是SaaS应用开发的明智之选。低耦合，函数可脱离框架单独运行。
+2. 后端开发者，可以从琐事中解放出来，专注于业务本身，提升开发效率
+    - `laf` 可以节约服务器运维、多环境部署和管理精力
+    - `laf` 可以让你告别配置、调试 nginx
+    - `laf` 可以让你告别「为每个项目手动部署数据库、安全顾虑等重复性工作」
+    - `laf` 可以让你告别「修改一次、发布半天」的重复繁琐的迭代体验
+    - `laf` 可以让你随时随地在 Web 上查看函数的运行日志，不必再连接服务器，费神费眼翻找
+    - `laf` 可以让你「像写博客一样写一个函数」，招之即来，挥之即去，随手发布！
+
+3. 云开发用户，若你是微信云开发用户，你不仅可以获得更强大、快速的开发体验，还不被微信云开发平台锁定
+    - 你可以为客户提供源码交付，为客户私有部署一套 `laf` + 你的云开发应用，而使用闭源的云开发服务，无法交付可独立运行的源码
+    - 你可以根据未来的需要，随时将自己的产品部署到自己的服务器上，`laf` 是开源免费的
+    - 你甚至可以修改、订制自己的云开发平台，`laf` 是开源的、高度可扩展的
+
+4. Node.js 开发者，`laf` 是使用 Node.js 开发的，你可以把 `laf` 当成一个更方便的 Node.js 开发平台 or 框架
+    - 你可以在线编写、调试函数，不用重启服务，一键发布即可用
+    - 你可以在线查看、检索函数调用日志
+    - 你可以不必折腾数据库、对象存储、nginx，随时随地让你的应用上线
+    - 你可以随手将一段 Node.js 代码上云，比如一段爬虫，一段监控代码，像写博客一样写 Node！
+
+5. 独立开发者、初创创业团队， 节约成本，快速开始，专注业务
+    - 减少启动项目开发的流程，快速启动，缩短产品验证周期
+    - 极大程度提高迭代速度，随时应对变化，随时发布
+    - 专注于产品业务本身，快速推出最小可用产品(MVP)，快速进行产品、市场验证
+    - 一个人 + `laf` = 团队
+
+> life is short, you need laf:)
+
+## 💥 laf 能用来做什么
+
+> `laf` 是应用的后端开发平台，理论上可以做任何应用！
+
+
+1. 使用 laf 快速开发微信小程序/公众号： 电商、社交、工具、教育、金融、游戏、短视频、社区、企业等应用！
+    - 微信小程序强要求 https 访问，可直接使用 [lafyun.com](http://www.lafyun.com) 创建应用，为小程序提供 https 的接口服务
+    - 可将应用的 h5 页面和管理端(admin) 直接部署到可由 `laf` 静态托管
+    - 将 h5 直接托管到 `laf` 上，将分配的专用域名配置到公众号即可在线访问
+    - 使用云函数实现微信授权、支付等业务
+    - 使用云存储存储视频、头像等用户数据
+
+2. 开发 Android or iOS 应用
+    - 使用云函数、云数据库、云存储进行业务处理
+    - 应用的后端管理(admin) 直接部署到可由 `laf` 静态托管
+    - 可使用云函数实现微信授权、支付、热更新等业务
+
+3. 部署个人博客、企业官网
+    - 将 vuepress / hexo / hugo 等静态生成的博客，一键部署到 `laf` 静态托管上， 见 [laf-cli](https://github.com/labring/laf-cli)
+    - 可使用云函数来处理用户留言、评论、访问统计等业务
+    - 可使用云函数扩展博客的其它能力，如课程、投票、提问等
+    - 可使用云存储存储视频、图片
+    - 可使用云函数做爬虫、推送等功能
+
+4. 企业信息化建设：企业私有部署一套 `laf` 云开发平台
+    - 快速开发企业内部信息化系统，可快速上线、修改、迭代，降成本
+    - 支持多应用、多账户，不同部门、不同系统，即可隔离，亦可连通
+    - 可借助 `laf` 社区生态，直接使用现存的 `laf` 应用，开箱即用，降成本
+    - `laf` 开源免费，没有技术锁定的顾虑，可自由订制和使用
+
+5. 个人开发者的「手边云」
+    - `laf` 让开发者随手写的一段代码，瞬间具备随手上云的能力
+    - 就像在你手机的备忘录随手敲下一段文字，自动同步到云端，且可被全网访问和执行
+    - `laf` 是每个开发者的“烂笔头”，像记事一样写个函数
+    - `laf` 是每个开发者的“私人助理”，比如随时可以写一个定时发送短信、邮件通知的函数
+
+6. 其它
+    - 有用户把 `laf` 云存储当网盘使用
+    - 有用户把 `laf` 应用当成一个日志服务器，收集客户端日志数据，使用云函数做分析统计
+    - 有用户用 `laf` 来跑爬虫，抓取三方新闻和咨讯等内容
+    - 有用户使用 `laf` 云函数做 webhook，监听 Git 仓库提交消息，推送到钉钉、企业微信群
+    - 有用户使用 `laf` 云函数做拨测，定时检查线上服务的健康状态
+    - ...
+
+
+> 未来，`lafyun.com` 会上线一个应用市场，汇总收集这些应用，让 `laf` 用户一键即可使用海量应用!
 
 ## 🖥 在线体验
 
-🎉 [lafyun.com](http://www.lafyun.com) 正式上线！可直接在线体验，[立即创建](http://www.lafyun.com) Laf 云开发应用服务！
+🎉 [lafyun.com](http://www.lafyun.com) 是 `laf` 的一个在线版，可在线免费体验 `laf` 云开发应用服务！
 
-开发者可免费在 [lafyun.com](http://www.lafyun.com) 上快速创建自己的应用，不用关心服务器部署和运维工作，立即拥有应用独立域名及 HTTPS 证书，快速上线应用！
+开发者可免费在 [lafyun.com](http://www.lafyun.com) 上快速创建自己的应用，免除服务器部署和运维工作，立即拥有应用独立域名及 HTTPS 证书，快速上线应用！
 
-开发者可以在私有服务器上部署一套 Laf 云开发平台，可方便的将 [lafyun.com](http://www.lafyun.com) 中的应用迁至自己的 Laf 云开发平台中运行！
-
-## ✅ 主要功能
-
-
-- 提供云函数引擎、文件存储、数据访问策略、触发器、WebSocket 等能力，开箱即用，5 分钟上线应用，前端秒变全栈。
-- 前端可使用 [laf-client-sdk](https://github.com/lafjs/laf/tree/main/packages/client-sdk) “直连”数据库，无需与服务端对接口。
-- 支持 H5、小程序、Uni-app、Flutter 等客户端环境使用。
-- 提供云开发控制台，在线管理云函数、文件、数据库、远程部署、日志，在线编写、调试云函数，全智能提示 IDE。
-
-## 💥 适用场景
-
-- 快速构建小程序，如电商，企业各类管理系统等SaaS类应用。
-- 用于快速开发 MVP，专注于客户端业务，极大程度减少服务端开发工作量。
-- 自建属于自己可控的云开发平台。
-
-## 👨‍💻 适用人群
-
-### 云开发用户
-
-如果你喜欢微信云开发的极速体验，但又不想局限于微信等具体平台的限制，那么可以基于 `Laf` 搭建属于自己的云开发平台。
-
-- `laf.js` 也是当前已知的唯一的开源云开发平台，技术选型更自信、风险更可控、场景更易扩展；
-- 自建云开发，可以获取极速的云开发体验，同时没有技术选型时迁移平台的烦恼顾虑。
-
-### 个人开发者、初创创业团队
-
-在产品初期基于 `laf.js` 可以极大减少服务端 API 的数量；
-
-根据我们的实践经验，初期能节约 90% 的服务端 API；
-
-专注于产品业务本身，快速推出最小可用产品(MVP)，快速进行产品、市场验证。
-
-### 软件开发商
-
-将无需雇佣 PHP 或 Java 等服务器工程师，开发成本大幅下降；
-
-开发效率大幅提升、上线和迭代速度大幅提速；
-
-可完整交付整个云开发框架源码，私网部署。
 
 ## 🚀 快速开始
 
-[安装教程](./docs/guide/function/install.md)
+[三分钟体验使用 laf 开发一个简单的登陆注册功能](./quick-start.md)
+
+
+## 🎉 本地部署
+
+[本地部署](./deploy/README.md)
+
 
 ## 🏘️ 社群
 
 + [微信群](https://cdn.jsdelivr.net/gh/yangchuansheng/imghosting3@main/uPic/2022-04-22-14-21-MRJH9o.png)
 + QQ 群：603059673
 
-先run system-client 在 run app-console
+## 🌟 Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=lafjs/laf&type=Date)](https://star-history.com/#lafjs/laf&Date)
+

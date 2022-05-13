@@ -24,7 +24,7 @@ sudo systemctl start docker
 ##### 启动服务（docker-compose）
 
 ```sh
-git clone https://github.com/lafjs/laf.git
+git clone https://github.com/labring/laf.git
 
 cd laf/deploy/docker-compose
 
