@@ -228,14 +228,14 @@
     />
 
     <!-- 表单对话框 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog :title="textMap[dialogStatus]" width="600px" :visible.sync="dialogFormVisible">
       <el-form
         ref="dataForm"
         :rules="rules"
         :model="form"
         label-position="left"
         label-width="120px"
-        style="width: 400px; margin-left:20px;"
+        style="width: 500px; margin-left:20px;"
       >
         <el-form-item v-if="form._id" label="ID" prop="_id">
           <div :value="form._id">{{ form._id }}</div>
@@ -358,8 +358,8 @@ function getDefaultFormValue() {
 }
 
 const formRules = {
-  name: [{ required: true, message: '函数标识不可为空', trigger: 'blur' }],
-  label: [{ required: true, message: '函数显示名称不可为空', trigger: 'blur' }]
+  name: [{ required: true, message: '标识不可为空，且只能含字母、数字、下划线及中划线', trigger: 'blur', pattern: /^[a-zA-Z0-9_\-]+$/ }],
+  label: [{ required: true, message: '显示名称不可为空', trigger: 'blur' }]
 }
 
 export default {
