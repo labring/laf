@@ -1,11 +1,12 @@
 import { ObjectId } from "mongodb"
 import * as dns from "node:dns"
-import { CN_WEBSITE_HOSTING } from "../../constants"
+import { CN_WEBSITE_HOSTING, REGEX_DOMAIN } from "../../constants"
 import { Request, Response } from "express"
 import { CONST_DICTS } from "../../constants"
 import { checkPermission } from "../../support/permission"
 import { IApplicationData } from "../../support/application"
 import { DatabaseAgent } from "../../db"
+import { logger } from "../../support/logger"
 // import { handleCheckDomain } from "./domain-check"
 
 /**
@@ -15,8 +16,9 @@ export async function handleBindDomain(req: Request, res: Response) {
   const db = DatabaseAgent.db
   const app: IApplicationData = req["parsed-app"]
   const uid = req["auth"]?.uid
-  const { domain, website_id } = req.body
-  
+  const website_id = req.body?.website_id
+  const domain = req.body?.domain || ''
+
   // check login
   if (!uid) {
     res.status(401).send()
@@ -38,18 +40,19 @@ export async function handleBindDomain(req: Request, res: Response) {
   }
 
   // check domain
-  if (!domain) {
+  if (REGEX_DOMAIN.test(domain) === false) {
     return res.status(422).send("invalid domain")
   }
 
   // check domain is available
-  const dnsPromise = dns.promises
-  const result = await dnsPromise.resolveCname(domain as string).catch(() => {})
+  const resolver = new dns.promises.Resolver({ timeout: 3000, tries: 2 })
+  const result = await resolver.resolveCname(domain as string).catch(() => { })
   if (!result) {
-    return res.send({code: 'DOMAIN_NOT_RESOLVEABLE', error: 'domain is not resolveable'})
+    return res.send({ code: 'DOMAIN_NOT_RESOLVEABLE', error: 'domain is not resolveable' })
   }
-  if ((result || []).includes(website.cname)) {
-    return res.send({code: 'DOMAIN_RESOLVED_ERROR', error: 'error resolved result got'})
+
+  if (false === (result || []).includes(website.cname)) {
+    return res.send({ code: 'DOMAIN_RESOLVED_ERROR', error: 'error resolved result got' })
   }
 
   // check if domain is already binded
