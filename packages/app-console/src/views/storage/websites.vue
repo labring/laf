@@ -168,6 +168,7 @@ export default {
       this.websites = ret.data.map(item => {
         item.created_at = dayjs(item.created_at).format('YYYY-MM-DD HH:mm:ss')
         item.updated_at = dayjs(item.updated_at).format('YYYY-MM-DD HH:mm:ss')
+        item.domain = item.domain.join(',')
         return item
       })
       this.loading = false
@@ -248,6 +249,10 @@ export default {
 
         if(ret.code === 'DOMAIN_RESOLVED_ERROR') {
           return showError('解析错误，请使用正确的 CNAME 解析值')
+        }
+
+        if(ret.code === 'ALREADY_EXISTED') {
+          return showError('该域名已经被绑定')
         }
 
         this.$notify({

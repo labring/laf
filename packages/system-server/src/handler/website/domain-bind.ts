@@ -6,8 +6,7 @@ import { CONST_DICTS } from "../../constants"
 import { checkPermission } from "../../support/permission"
 import { IApplicationData } from "../../support/application"
 import { DatabaseAgent } from "../../db"
-import { logger } from "../../support/logger"
-// import { handleCheckDomain } from "./domain-check"
+
 
 /**
  * handle bind a domain to a website
@@ -45,7 +44,7 @@ export async function handleBindDomain(req: Request, res: Response) {
   }
 
   // check domain is available
-  const resolver = new dns.promises.Resolver({ timeout: 3000, tries: 2 })
+  const resolver = new dns.promises.Resolver({ timeout: 3000, tries: 1 })
   const result = await resolver.resolveCname(domain as string).catch(() => { })
   if (!result) {
     return res.send({ code: 'DOMAIN_NOT_RESOLVEABLE', error: 'domain is not resolveable' })
@@ -59,6 +58,7 @@ export async function handleBindDomain(req: Request, res: Response) {
   const existedDomain = await db
     .collection(CN_WEBSITE_HOSTING)
     .countDocuments({ domain, status: { $ne: "deleted" } })
+
   if (existedDomain) {
     return res.send({ code: 'ALREADY_EXISTED', error: "domain already binded" })
   }
@@ -66,7 +66,10 @@ export async function handleBindDomain(req: Request, res: Response) {
   // bind
   const r = await db.collection(CN_WEBSITE_HOSTING).updateOne(
     { _id: new ObjectId(website_id), appid: app.appid },
-    { $set: { domain, state: "pending", updated_at: new Date() } }
+    {
+      $set: { state: "pending", updated_at: new Date() },
+      $push: { domain: domain }
+    }
   )
 
   return res.send({ data: r.modifiedCount })

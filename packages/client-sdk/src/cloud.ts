@@ -3,36 +3,17 @@ import { Db } from 'database-ql'
 import { Request } from './request/request'
 import { UniRequest } from './request/request-uni'
 import { WxmpRequest } from './request/request-wxmp'
-import { CloudOptions, EnvironmentType, RequestInterface, UploadFile } from './types'
+import { CloudOptions, EnvironmentType, RequestInterface } from './types'
 
 
 /**
- * Cloud 提供 `LaF` 应用的客户端操作接口：
- * - 数据库操作
- * - 云函数调用
- * - 文件上传
+ * class Cloud provide the interface to request cloud function and cloud database.
  */
 class Cloud {
   private config: CloudOptions
 
   /**
-   * [Deprecated] 文件上传、下载基地址
-   * @deprecated The field is deprecated and will be removed in a future release
-   */
-  get fileBaseUrl(): string {
-    console.warn('Cloud.fileBaseUrl is deprecated and will be removed in a future release')
-    return this.config.baseUrl + '/file'
-  }
-
-  /**
-   * 云函数调用基地址
-   */
-  get funcBaseUrl(): string {
-    return this.config.baseUrl + '/func'
-  }
-
-  /**
-   * 根据配置获取请求类
+   * request class by environment
    */
   private get requestClass() {
     const env = this.config?.environment
@@ -51,22 +32,23 @@ class Cloud {
   }
 
   /**
-   * 请求对象
+   * internal request class
    */
   protected _request: RequestInterface
 
+  /**
+   * Create a cloud instance
+   * @param config 
+   */
   constructor(config: CloudOptions) {
     const warningFunc = () => {
       console.warn('WARNING: no getAccessToken set for db proxy request')
       return ""
     }
 
-    const db_proxy_url = this.resolveDbProxyUrl(config)
-
     this.config = {
       baseUrl: config.baseUrl,
-      dbProxyUrl: db_proxy_url,
-      entryUrl: db_proxy_url,
+      dbProxyUrl: config.dbProxyUrl,
       getAccessToken: config?.getAccessToken || warningFunc,
       environment: config?.environment || EnvironmentType.H5,
       primaryKey: config?.primaryKey,
@@ -80,7 +62,7 @@ class Cloud {
   }
 
   /**
-   * 获取数据库操作对象
+   * Get a cloud database instance
    * @returns 
    */
   database() {
@@ -91,10 +73,14 @@ class Cloud {
   }
 
   /**
-   * 调用云函数
+   * Invoke cloud function by name use POST http method
+   * @alias alias of `invoke()` for history reason
+   * @param functionName 
+   * @param data 
+   * @returns 
    */
   async invokeFunction<T = any>(functionName: string, data: any): Promise<T> {
-    const url = this.funcBaseUrl + `/${functionName}`
+    const url = this.config.baseUrl + `/${functionName}`
     const res = await this
       ._request
       .request(url, data)
@@ -103,46 +89,13 @@ class Cloud {
   }
 
   /**
-   * 上传文件
-   * @deprecated 此函数已弃用，请通过文件上传地址，自行实现上传
-   * @param file 文件对象(File)
-   * @param bucket Bucket 名字
-   * @param auto_naming 文件名是否由服务端自动生成，默认为 1（自动生成），0（保留原文件名）
+   * Invoke cloud function by name use POST http method
+   * @param functionName 
+   * @param data 
    * @returns 
    */
-  async uploadFile(file: UploadFile, bucket: string, auto_naming = 1) {
-    console.warn('Cloud.uploadFile is deprecated and will be removed in a future release')
-    const auto = auto_naming ? 1 : 0
-    const res = await this
-      ._request
-      .upload({
-        url: this.fileBaseUrl + `/${bucket}?auto=${auto}`,
-        files: [file]
-      })
-
-    return res.data
-  }
-
-  /**
-   * 为了兼容 less-api 老版本用法，处理 db proxy url 为绝对路径
-   * @param options 
-   * @returns 
-   */
-  private resolveDbProxyUrl(options: CloudOptions) {
-    if (options.entryUrl) {
-      console.warn('DEPRECATED: `entryUrl` is deprecated in future, use `dbProxyUrl` instead')
-    }
-
-    const _url = options.dbProxyUrl ?? options.entryUrl
-    if (!_url) {
-      throw new Error('db proxy url should not be empty')
-    }
-
-    if (_url.startsWith('/') && options.baseUrl) {
-      return options.baseUrl + _url
-    }
-
-    return _url
+  async invoke<T = any>(functionName: string, data: any): Promise<T> {
+    return await this.invokeFunction(functionName, data)
   }
 }
 

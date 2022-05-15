@@ -55,7 +55,7 @@ export async function handleCreateWebsite(req: Request, res: Response) {
     label,
     bucket_name: bucket,
     appid: app.appid,
-    domain: null,
+    domain: [] as string[],
     cname,
     status: 'enabled', // 'enabled' | 'disabled' | 'deleted' , the logic status of website
     state: 'pending', // 'created' | 'deleted' | 'pending', the real state of website

@@ -3,19 +3,19 @@ import { logger } from "./support/logger"
 
 
 async function main() {
-  const packages = await getExtraPackages()
-  if (!packages.length) {
-    logger.info('no extra packages found')
-  }
-
-  logger.info('packages loaded: ', packages)
-
-  const not_exists = packages.filter(pkg => !moduleExists(pkg.name))
-  if (packages.length && !not_exists.length) {
-    logger.info('no new packages to be installed')
-  }
-
   try {
+    const packages = await getExtraPackages()
+    if (!packages.length) {
+      logger.info('no extra packages found')
+    }
+
+    logger.info('packages loaded: ', packages)
+
+    const not_exists = packages.filter(pkg => !moduleExists(pkg.name))
+    if (packages.length && !not_exists.length) {
+      logger.info('no new packages to be installed')
+    }
+
     if (not_exists.length) {
       const res = installPackages(packages)
       logger.info(res)
