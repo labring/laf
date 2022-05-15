@@ -110,6 +110,53 @@ curl -X POST -H "Content-Type: application/json" -d '{"username": "admin", "pass
 curl -X POST -H "Content-Type: application/json" -d '{"username": "admin", "password": "admin"}' https://APPID.lafyun.com/login
 ```
 
+### 在前端项目中使用云函数
+
+> 在你的前端项目中安装 laf client sdk:
+
+```bash
+npm install laf-client-sdk
+```
+
+
+```ts
+// user.ts
+
+import { Cloud } from 'laf-client-sdk'
+
+const cloud = new Cloud({ 
+  baseUrl: "https://APPID.lafyun.com",
+  getAccessToken: () => localStorage.getItem('access_token')
+})
+
+// regiser function
+export async function register(username: string, password: string) {
+  const res = await cloud.invoke('register', {
+    username: username,
+    password: password
+  })
+
+  return res
+}
+
+// login function
+export async function login(username: string, password: string) {
+  const res = await cloud.invoke('login', {
+    username: username,
+    password: password
+  })
+
+  if(res.access_token) {
+    // save token
+    localStorage.setItem('access_token', res.access_token)
+  }
+
+  return res
+}
+```
+
+> 最后，可以在你的 Vue/React/Angular/小程序 页面中调用这两个云函数完成具体的登录注册功能！
+
 
 ### 其他
 
