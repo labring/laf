@@ -22,6 +22,7 @@ export const BUCKET_QUOTA_MIN = 1 * GB
 
 /** regex const */
 export const REGEX_BUCKET_NAME = /^[a-z0-9]{1,16}$/
+export const REGEX_DOMAIN = /^(?=^.{3,255}$)[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+$/
 
 /** collection name of cloud functions published to app db */
 export const CN_PUBLISHED_FUNCTIONS = '__published__functions'

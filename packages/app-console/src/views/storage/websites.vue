@@ -95,7 +95,7 @@
         <el-button @click="editFormVisible = false">
           取消
         </el-button>
-        <el-button type="primary" @click="handleBindDomain">
+        <el-button type="primary" @click="handleBindDomain" :loading="loading">
           确定
         </el-button>
       </div>
@@ -228,15 +228,26 @@ export default {
       this.$refs.editForm.validate(async valid => {
         if (!valid) return
 
+        const REGEX_DOMAIN = /^(?=^.{3,255}$)[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+$/
+        if(REGEX_DOMAIN.test(this.editForm.domain) === false) {
+          showError('域名格式不正确')
+          return
+        }
+
         const params = {
           website_id: this.editForm._id,
           domain: this.editForm.domain
         }
+        this.loading = true
         const ret = await websiteAPI.bindDomain(params)
+          .finally(() => this.loading = false)
 
-        if (ret.code) {
-          showError(ret.error)
-          return
+        if (ret.code === 'DOMAIN_NOT_RESOLVEABLE') {
+          return showError('解析失败，请先对该域名做 CNAME 解析')
+        }
+
+        if(ret.code === 'DOMAIN_RESOLVED_ERROR') {
+          return showError('解析错误，请使用正确的 CNAME 解析值')
         }
 
         this.$notify({

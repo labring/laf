@@ -47,8 +47,8 @@ export async function handleCreateWebsite(req: Request, res: Response) {
 
   // generate cname url for bucket and appid
   const endpoint = new URL(Config.MINIO_CONFIG.endpoint.external)
-  const { host } = endpoint
-  const cname = `${app.appid}-${bucket}.${host}`
+  const { hostname } = endpoint
+  const cname = `${app.appid}-${bucket}.${hostname}`
 
   // build website hosting data
   const doc = {
