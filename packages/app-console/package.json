@@ -1,6 +1,6 @@
 {
   "name": "app-console",
-  "version": "0.8.0-alpha.8",
+  "version": "0.8.0-alpha.9",
   "description": "app-console in lay.js",
   "author": "Maslow <wangfugen@126.com>",
   "private": true,
@@ -24,7 +24,7 @@
     "element-ui": "2.13.2",
     "file-saver": "2.0.1",
     "js-cookie": "2.2.0",
-    "laf-client-sdk": "^0.7.11",
+    "laf-client-sdk": "^0.8.0-alpha.9",
     "lodash": "^4.17.21",
     "md5": "^2.3.0",
     "monaco-editor": "^0.25.0",
