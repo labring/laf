@@ -2,7 +2,6 @@ import { RequestInterface as BaseRequestInterface } from 'database-ql'
 
 export interface RequestInterface extends BaseRequestInterface {
   request(url: string, data: any, options?: any): Promise<any>
-  upload(option: UploadFileOption): Promise<any>
 }
 
 
@@ -17,23 +16,16 @@ type GetAccessTokenFuncType = () => string
 
 export interface CloudOptions {
   /**
-   * `laf.js` 应用服务的地址，如： "http://localhost:8080"
+   * `laf` 应用服务的地址，如： "https://APPID.lafyun.com"
    * @tip 后面 `不要` 以 `/` 结尾
    */
   baseUrl?: string
 
   /**
-   * 数据库访问代理的入口地址：
-   * 1.【不推荐】若不提供 `baseUrl` 则 `dbProxyUrl` 应该为绝对地址，如：`http://localhost:8080/proxy/app`
-   * 2.【推荐】若提供 `baseUrl` 则 `dbProxyUrl` 可为相对地址， 如： `/proxy/app`，`/proxy/admin`
+   * 数据库访问代理的入口地址， 如： `/proxy/app`，`/proxy/admin`
    */
   dbProxyUrl?: string,
 
-  /**
-   * `dbProxyUrl` 的别名，为了兼容老版本使用
-   * @deprecated use `dbProxyUrl` instead
-   */
-  entryUrl?: string,
 
   /**
    * 获取访问令牌的函数
@@ -60,7 +52,7 @@ export interface CloudOptions {
    * 自定义请求类需要 实现 `RequestInterface` 接口，一般建议直接继承 `class Request`，重写父类部分方法即可。
    * 
    * ```js
-   * import { Request } from 'less-api-client'
+   * import { Request } from 'laf'
    * class MyRequest extends Request {
    *  async request(url, data) {
    *    const res = await super.request(url, data)

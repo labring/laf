@@ -1,4 +1,4 @@
-import { CloudOptions, EnvironmentType, UploadFileOption } from '../types'
+import { CloudOptions, EnvironmentType } from '../types'
 import { Request } from './request'
 
 interface GlobalObjectType {
@@ -24,7 +24,7 @@ export class WxmpRequest extends Request {
    * @returns 
    */
   async request(url: string, data: any, _options?: any) {
-    if(this.options.environment !== EnvironmentType.WX_MP) {
+    if (this.options.environment !== EnvironmentType.WX_MP) {
       throw new Error('environment type must be wxmp')
     }
 
@@ -51,39 +51,4 @@ export class WxmpRequest extends Request {
       })
     })
   }
-
-  /**
-   * 处理文件上传请求
-   * @param {UploadFileOption} option 
-   */
-   async upload(option: UploadFileOption): Promise<any> {
-    if(this.options.environment !== EnvironmentType.WX_MP) {
-      throw new Error('environment type must be wxmp')
-    }
-    
-    if(!option.files?.length) {
-      throw new Error('files cannot be empty')
-    }
-
-    const form = new FormData()
-    option.files.forEach(file => form.append(file.name, file.file))
-
-    const token = this.options?.getAccessToken()
-
-    const headers = this.getHeaders(token, {})
-    return new Promise((resolve, reject) => {
-      wx.uploadFile({
-        url: option.url,
-        files: option.files,
-        header: headers,
-        success: res => {
-          resolve(res)
-        },
-        fail: error => {
-          reject(error)
-        }
-      })
-    })
-  }
-  
 }

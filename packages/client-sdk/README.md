@@ -11,9 +11,11 @@ Javascript client sdk of [`LaF`](https://github.com/lafjs/laf).
 ### 使用示例
 
 ```js
-const cloud = require("laf-client-sdk").init({
+import { Cloud } from 'laf-client-sdk'
+
+const cloud = new Cloud({
   // the laf app server base url
-  baseUrl: "http://localhost:8000",
+  baseUrl: "https://APPID.lafyun.com",
   // the database proxy entry, `app` is the policy name which response for the security of database access
   dbProxyUrl: "/proxy/app",
   getAccessToken: () => localStorage.getItem("access_token"),
@@ -61,9 +63,9 @@ const removed = await db.collection("articles").doc("the-doc-id").remove();
 #### 微信小程序中使用
 
 ```js
-const cloud = require("laf-client-sdk").init({
+const cloud = new Cloud({
   // the laf app server base url
-  baseUrl: "http://localhost:8000",
+  baseUrl: "https://APPID.lafyun.com",
   // the database proxy entry, `app` is the policy name which response for the security of database access
   dbProxyUrl: "/proxy/app",
   getAccessToken: () => localStorage.getItem("access_token"),
@@ -74,9 +76,9 @@ const cloud = require("laf-client-sdk").init({
 #### UNI-APP 中使用
 
 ```js
-const cloud = require("laf-client-sdk").init({
+const cloud = new Cloud({
   // the laf app server base url
-  baseUrl: "http://localhost:8000",
+  baseUrl: "https://APPID.lafyun.com",
   // the database proxy entry, `app` is the policy name which response for the security of database access
   getAccessToken: () => localStorage.getItem("access_token"),
   environment: "uniapp",
