@@ -53,7 +53,7 @@ services:
       - laf_shared_network
 
   system-server:
-    image: lafyun/system-server:0.8.0-alpha.6
+    image: lafyun/system-server:0.8.0-alpha.9
     user: root
     working_dir: /app
     environment:
@@ -130,12 +130,12 @@ services:
       - laf_shared_network
 
   system-client:
-    image: lafyun/system-client:0.8.0-alpha.7
+    image: lafyun/system-client:0.8.0-alpha.9
     networks:
       - laf_shared_network
 
   app-console:
-    image: lafyun/app-console:0.8.0-alpha.7
+    image: lafyun/app-console:0.8.0-alpha.9
     networks:
       - laf_shared_network
 
