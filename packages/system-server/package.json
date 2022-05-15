@@ -9,7 +9,7 @@
     "start": "node ./dist/index.js",
     "build": "npx tsc -p tsconfig.json",
     "watch": "npx tsc -p tsconfig.json -w",
-    "init": "node init/index.js",
+    "init": "node ./dist/init.js",
     "prepublishOnly": "npm run build"
   },
   "keywords": [

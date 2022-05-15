@@ -75,7 +75,7 @@ services:
       INIT_ROOT_ACCOUNT_PASSWORD: ${INIT_ROOT_ACCOUNT_PASSWORD:?err}
       SYSTEM_EXTENSION_APPID: ${SYSTEM_EXTENSION_APPID}
       APPID_LENGTH: 6
-    command: sh /app/start.sh
+    command: dockerize -wait tcp://mongo:27017 -wait http://oss:9001 -timeout 60s sh /app/start.sh
     depends_on:
       - mongo
     cap_drop:
