@@ -1,4 +1,22 @@
-# [](https://github.com/labring/laf/compare/v0.8.0-alpha.9...v) (2022-05-15)
+# [](https://github.com/labring/laf/compare/v0.8.0-alpha.11...v) (2022-05-16)
+
+
+
+# [0.8.0-alpha.11](https://github.com/labring/laf/compare/v0.8.0-alpha.10...v0.8.0-alpha.11) (2022-05-16)
+
+
+### Bug Fixes
+
+* **sys:** fix [#96](https://github.com/labring/laf/issues/96) ([95e2df6](https://github.com/labring/laf/commit/95e2df63760711c9e51de63c2174941d52a84ab7))
+
+
+
+# [0.8.0-alpha.10](https://github.com/labring/laf/compare/v0.8.0-alpha.9...v0.8.0-alpha.10) (2022-05-16)
+
+
+### Bug Fixes
+
+* **instance controller:** fix req_mem error ([d8c0042](https://github.com/labring/laf/commit/d8c00428d87ac774fdae398909cf7b4c45d1a567))
 
 
 
