@@ -117,7 +117,7 @@ export class KubernetesDriver implements InstanceDriverInterface {
     const limit_cpu = app_spec.spec.limit_cpu
 
     const req_cpu = app_spec.spec.request_cpu
-    const req_memory = ~~(app_spec.spec.limit_memory / MB)
+    const req_memory = ~~(app_spec.spec.request_memory / MB)
 
     const image_name = app.runtime?.image
     const max_old_space_size = ~~(limit_memory * 0.8)
