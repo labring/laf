@@ -30,7 +30,7 @@ services:
       - MINIO_ETCD_ENDPOINTS=http://etcd:2379
       - MINIO_SKIP_CLIENT=yes
       - MINIO_REGION_NAME=cn-default
-      - MINIO_DOMAIN=oss.local-dev.host
+      - MINIO_DOMAIN=${OSS_DOMAIN}
     ports:
       - "9020:9000"
       - "9120:9001"
