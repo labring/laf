@@ -1,4 +1,5 @@
 import * as dotenv from 'dotenv'
+import { URL } from 'node:url'
 dotenv.config()
 
 /**
@@ -96,9 +97,12 @@ export default class Config {
    * Minio configuration
    */
   static get MINIO_CONFIG() {
-    const internal_endpoint: string = process.env.MINIO_INTERNAL_ENDPOINT
-    const external_endpoint: string = process.env.MINIO_EXTERNAL_ENDPOINT
+    // use URL().origin to get the pure hostname, because the hostname may contain port number 
+    // this is to resolve bug of https://github.com/labring/laf/issues/96
+    const internal_endpoint: string = new URL(process.env.MINIO_INTERNAL_ENDPOINT).origin
+    const external_endpoint: string = new URL(process.env.MINIO_EXTERNAL_ENDPOINT).origin
     const region: string = process.env.MINIO_REGION_NAME
+
     return {
       endpoint: {
         internal: internal_endpoint,
