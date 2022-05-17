@@ -37,8 +37,8 @@ export async function handleCreateFunction(req: Request, res: Response) {
   if (!body.code) return res.status(422).send('code cannot be empty')
   if (!body.label) return res.status(422).send('label cannot be empty')
   //check label
-  const labelPattern = /^[a-zA-Z0-9_\-]+$/
-  if (!labelPattern.test(body.label)) return res.status(422).send('label 只能含字母、数字、下划线及中划线')
+  const namePattern = /^[a-zA-Z0-9_\-]+$/
+  if (!namePattern.test(body.name)) return res.status(422).send('函数标识只能含字母、数字、下划线及中划线')
 
   // function name should be unique
   const total = await db.collection(CN_FUNCTIONS)
