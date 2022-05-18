@@ -32,8 +32,9 @@ export async function handleCreateApplication(req: Request, res: Response) {
   const account = await getAccountById(uid)
   assert.ok(account, 'empty account got')
   const app_quota = account.quota?.app_count ?? 0
+  const account_type = account.type ?? 'default'
   const my_apps = await getMyApplications(uid)
-  if (my_apps.length >= app_quota) {
+  if (account_type != 'root' && my_apps.length >= app_quota) {
     return res.send({
       code: 'MEET_APPLICATION_QUOTA_LIMIT',
       error: 'you have not more quota to create application'
