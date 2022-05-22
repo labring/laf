@@ -499,16 +499,18 @@ export default {
       border-radius: 3px;
       .doc {
         flex: 1;
-        max-width: 88%;
+        max-width: 85%;
 
         pre {
           width: 100%;
-          overflow: hidden;
           text-overflow: ellipsis;
+          overflow-x: hidden;
+          overflow-y: auto;
+          max-height: 200px;
         }
       }
       .tools {
-        width: 160px;
+        width: 15%;
         text-align: right;
         padding-top: 15px;
       }
