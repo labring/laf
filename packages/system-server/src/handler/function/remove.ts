@@ -11,10 +11,8 @@ import { ObjectId } from 'mongodb'
 import { IApplicationData } from '../../support/application'
 import { checkPermission } from '../../support/permission'
 import { CN_FUNCTIONS } from '../../constants'
-import { permissions } from '../../permissions'
+import { FunctionActionDef } from '../../actions'
 import { DatabaseAgent } from '../../db'
-
-const { FUNCTION_REMOVE } = permissions
 
 /**
  * Remove a function by id
@@ -25,7 +23,7 @@ export async function handleRemoveFunctionById(req: Request, res: Response) {
   const func_id = req.params.func_id
 
   // check permission
-  const code = await checkPermission(req['auth']?.uid, FUNCTION_REMOVE.name, app)
+  const code = await checkPermission(req['auth']?.uid, FunctionActionDef.DeleteFunction, app)
   if (code) {
     return res.status(code).send()
   }

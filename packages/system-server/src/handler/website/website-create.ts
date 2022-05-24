@@ -1,11 +1,11 @@
 import { CN_WEBSITE_HOSTING } from "../../constants"
 import { Request, Response } from "express"
-import { CONST_DICTS } from "../../constants"
 import { DatabaseAgent } from "../../db"
 import { IApplicationData } from "../../support/application"
 import { checkPermission } from "../../support/permission"
 import { URL } from "node:url"
 import Config from "../../config"
+import { WebsiteActionDef } from "../../actions"
 
 /**
  * handle create website hosting
@@ -25,8 +25,7 @@ export async function handleCreateWebsite(req: Request, res: Response) {
   }
 
   // check permission
-  const { WEBSITE_HOSTING_ADD } = CONST_DICTS.permissions
-  const code = await checkPermission(uid, WEBSITE_HOSTING_ADD.name, app)
+  const code = await checkPermission(uid, WebsiteActionDef.CreateWebsite, app)
   if (code) {
     return res.status(code).send()
   }

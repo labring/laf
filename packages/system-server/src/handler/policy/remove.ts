@@ -11,10 +11,9 @@ import { ObjectId } from 'mongodb'
 import { IApplicationData } from '../../support/application'
 import { checkPermission } from '../../support/permission'
 import { CN_POLICIES } from '../../constants'
-import { permissions } from '../../permissions'
+import { DatabaseActionDef } from '../../actions'
 import { DatabaseAgent } from '../../db'
 
-const { POLICY_REMOVE } = permissions
 
 /**
  * Remove a policy by id
@@ -25,7 +24,7 @@ export async function handleRemovePolicyById(req: Request, res: Response) {
   const policy_id = req.params.policy_id
 
   // check permission
-  const code = await checkPermission(req['auth']?.uid, POLICY_REMOVE.name, app)
+  const code = await checkPermission(req['auth']?.uid, DatabaseActionDef.DeletePolicy, app)
   if (code) {
     return res.status(code).send()
   }

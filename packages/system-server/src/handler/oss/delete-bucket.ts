@@ -8,9 +8,10 @@
 import { Request, Response } from 'express'
 import { IApplicationData } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { CN_APPLICATIONS, CONST_DICTS } from '../../constants'
+import { CN_APPLICATIONS } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { MinioAgent } from '../../support/minio'
+import { StorageActionDef } from '../../actions'
 
 /**
  * The handler of deleting a bucket
@@ -22,8 +23,7 @@ export async function handleDeleteBucket(req: Request, res: Response) {
   const app: IApplicationData = req['parsed-app']
 
   // check permission
-  const { FILE_BUCKET_REMOVE } = CONST_DICTS.permissions
-  const code = await checkPermission(uid, FILE_BUCKET_REMOVE.name, app)
+  const code = await checkPermission(uid, StorageActionDef.DeleteBucket, app)
   if (code) {
     return res.status(code).send()
   }

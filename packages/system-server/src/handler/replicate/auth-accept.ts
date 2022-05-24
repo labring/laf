@@ -1,10 +1,10 @@
 import { ObjectId } from "mongodb"
 import { CN_REPLICATE_AUTH } from "../../constants"
 import { Request, Response } from "express"
-import { CONST_DICTS } from "../../constants"
 import { checkPermission } from "../../support/permission"
 import { IApplicationData } from "../../support/application"
 import { DatabaseAgent } from "../../db"
+import { ReplicationActionDef } from "../../actions"
 
 /**
  *  handle accept replicate auth
@@ -18,12 +18,11 @@ export async function handleAcceptReplicateAuth(req: Request, res: Response) {
   const db = DatabaseAgent.db
 
   // check permission
-  const { REPLICATE_AUTH_UPDATE } = CONST_DICTS.permissions
-  const code = await checkPermission(uid, REPLICATE_AUTH_UPDATE.name, app)
+  const code = await checkPermission(uid, ReplicationActionDef.UpdateReplicateAuth, app)
   if (code) {
     return res.status(code).send()
   }
-  
+
   // check auth
   const exited = await db
     .collection(CN_REPLICATE_AUTH)

@@ -10,7 +10,7 @@ import { IApplicationData } from '../../support/application'
 import { MinioAgent } from '../../support/minio'
 import { checkPermission } from '../../support/permission'
 import Config from '../../config'
-import { CONST_DICTS } from '../../constants'
+import { StorageActionDef } from '../../actions'
 
 /**
  * The handler of getting bucket lists of an application
@@ -20,8 +20,7 @@ export async function handleGetBuckets(req: Request, res: Response) {
   const app: IApplicationData = req['parsed-app']
 
   // check permission
-  const { FILE_READ } = CONST_DICTS.permissions
-  const code = await checkPermission(uid, FILE_READ.name, app)
+  const code = await checkPermission(uid, StorageActionDef.ListBuckets, app)
   if (code) {
     return res.status(code).send()
   }
@@ -41,8 +40,7 @@ export async function handleGetOneBucket(req: Request, res: Response) {
   const name = req.params.bucket
 
   // check permission
-  const { FILE_READ } = CONST_DICTS.permissions
-  const code = await checkPermission(uid, FILE_READ.name, app)
+  const code = await checkPermission(uid, StorageActionDef.GetBucket, app)
   if (code) {
     return res.status(code).send()
   }

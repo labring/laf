@@ -10,12 +10,11 @@ import { Request, Response } from 'express'
 import { IApplicationData } from '../../support/application'
 import { checkPermission } from '../../support/permission'
 import { CN_FUNCTIONS } from '../../constants'
-import { permissions } from '../../permissions'
+import { FunctionActionDef } from '../../actions'
 import { DatabaseAgent } from '../../db'
 import { hashFunctionCode } from '../../support/util-passwd'
 import { compileTs2js } from '../../support/util-lang'
 
-const { FUNCTION_ADD } = permissions
 
 /**
  * Create function
@@ -26,7 +25,7 @@ export async function handleCreateFunction(req: Request, res: Response) {
   const app: IApplicationData = req['parsed-app']
 
   // check permission
-  const code = await checkPermission(uid, FUNCTION_ADD.name, app)
+  const code = await checkPermission(uid, FunctionActionDef.CreateFunction, app)
   if (code) {
     return res.status(code).send()
   }

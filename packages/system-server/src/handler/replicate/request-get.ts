@@ -1,8 +1,9 @@
 import { Request, Response } from "express"
 import { DatabaseAgent } from "../../db"
-import { CN_REPLICATE_REQUESTS, CONST_DICTS } from "../../constants"
+import { CN_REPLICATE_REQUESTS } from "../../constants"
 import { IApplicationData } from "../../support/application"
 import { checkPermission } from "../../support/permission"
+import { ReplicationActionDef } from "../../actions"
 
 /**
  * handle get replicate request
@@ -20,8 +21,7 @@ export async function handleGetReplicateRequest(req: Request, res: Response) {
   const app: IApplicationData = req["parsed-app"]
 
   // check permission
-  const { REPLICATE_REQUEST_READ } = CONST_DICTS.permissions
-  const code = await checkPermission(uid, REPLICATE_REQUEST_READ.name, app)
+  const code = await checkPermission(uid, ReplicationActionDef.ListReplicateRequest, app)
   if (code) {
     return res.status(code).send()
   }

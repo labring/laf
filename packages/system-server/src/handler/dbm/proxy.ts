@@ -5,10 +5,10 @@
  * @Description: 
  */
 
-import { Proxy, Policy } from 'database-proxy'
+import { Proxy, Policy, ActionType } from 'database-proxy'
 import { IApplicationData, getApplicationDbAccessor } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { permissions } from '../../permissions'
+import { DatabaseActionDef } from '../../actions'
 import { Request, Response } from 'express'
 
 
@@ -19,12 +19,6 @@ export async function handleDbProxy(req: Request, res: Response) {
   const uid = req['auth']?.uid
   const app: IApplicationData = req['parsed-app']
 
-  // check permission
-  const code = await checkPermission(uid, permissions.DATABASE_MANAGE.name, app)
-  if (code) {
-    return res.status(code).send()
-  }
-
   const accessor = await getApplicationDbAccessor(app)
 
   // don't need policy rules, open all collections' access permission for dbm use
@@ -32,6 +26,14 @@ export async function handleDbProxy(req: Request, res: Response) {
 
   // parse params
   const params = proxy.parseParams(req.body)
+
+  // check permission
+  const code = await checkDatabaseActionPermission(params.action, uid, app)
+  if (code) {
+    return res.status(code).send()
+  }
+
+  params.action
 
   // execute query
   try {
@@ -56,4 +58,38 @@ export async function handleDbProxy(req: Request, res: Response) {
       error: error
     })
   }
+}
+
+
+
+async function checkDatabaseActionPermission(dbAction: ActionType, uid: string, app: IApplicationData) {
+  let action = ''
+  switch (dbAction) {
+    case ActionType.ADD:
+      action = DatabaseActionDef.CreateDocument
+      break
+    case ActionType.UPDATE:
+      action = DatabaseActionDef.UpdateDocument
+      break
+    case ActionType.REMOVE:
+      action = DatabaseActionDef.DeleteDocument
+      break
+    case ActionType.READ:
+      action = DatabaseActionDef.ListDocuments
+      break
+    case ActionType.COUNT:
+      action = DatabaseActionDef.ListDocuments
+      break
+    case ActionType.AGGREGATE:
+      action = DatabaseActionDef.ListDocuments
+      break
+    case ActionType.WATCH:
+      action = DatabaseActionDef.ListDocuments
+      break
+    default:
+      action = DatabaseActionDef.DeleteDocument
+  }
+
+  const code = await checkPermission(uid, action, app)
+  return code
 }

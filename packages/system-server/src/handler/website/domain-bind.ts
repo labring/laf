@@ -2,10 +2,10 @@ import { ObjectId } from "mongodb"
 import * as dns from "node:dns"
 import { CN_WEBSITE_HOSTING, REGEX_DOMAIN } from "../../constants"
 import { Request, Response } from "express"
-import { CONST_DICTS } from "../../constants"
 import { checkPermission } from "../../support/permission"
 import { IApplicationData } from "../../support/application"
 import { DatabaseAgent } from "../../db"
+import { WebsiteActionDef } from "../../actions"
 
 
 /**
@@ -24,8 +24,7 @@ export async function handleBindDomain(req: Request, res: Response) {
   }
 
   // check permission
-  const { WEBSITE_HOSTING_UPDATE } = CONST_DICTS.permissions
-  const code = await checkPermission(uid, WEBSITE_HOSTING_UPDATE.name, app)
+  const code = await checkPermission(uid, WebsiteActionDef.UpdateWebsite, app)
   if (code) {
     return res.status(code).send()
   }

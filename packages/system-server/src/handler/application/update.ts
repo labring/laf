@@ -10,9 +10,8 @@ import { IApplicationData, getApplicationByAppid } from '../../support/applicati
 import { checkPermission } from '../../support/permission'
 import { CN_APPLICATIONS } from '../../constants'
 import { DatabaseAgent } from '../../db'
-import { permissions } from '../../permissions'
+import { ApplicationActionDef } from '../../actions'
 
-const { APPLICATION_UPDATE } = permissions
 
 /**
  * The handler of updating application
@@ -26,7 +25,7 @@ export async function handleUpdateApplication(req: Request, res: Response) {
     return res.status(422).send('app not found')
 
   // check permission
-  const code = await checkPermission(uid, APPLICATION_UPDATE.name, app)
+  const code = await checkPermission(uid, ApplicationActionDef.UpdateApplication, app)
   if (code) {
     return res.status(code).send()
   }

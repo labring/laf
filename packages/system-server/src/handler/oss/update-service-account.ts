@@ -8,10 +8,11 @@
 import { Request, Response } from 'express'
 import { IApplicationData } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { CN_OSS_SERVICE_ACCOUNT, CONST_DICTS } from '../../constants'
+import { CN_OSS_SERVICE_ACCOUNT } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { MinioAgent } from '../../support/minio'
 import { logger } from '../../support/logger'
+import { StorageActionDef } from '../../actions'
 
 /**
  * The handler of creating a bucket
@@ -22,8 +23,7 @@ export async function handleUpdateServiceAccount(req: Request, res: Response) {
   const uid = req['auth']?.uid
   const app: IApplicationData = req['parsed-app']
   // check permission
-  const { FILE_BUCKET_ADD } = CONST_DICTS.permissions
-  const code = await checkPermission(uid, FILE_BUCKET_ADD.name, app)
+  const code = await checkPermission(uid, StorageActionDef.CreateServiceAccount, app)
   if (code) {
     return res.status(code).send()
   }

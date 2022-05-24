@@ -11,10 +11,8 @@ import { IApplicationData, getApplicationDbAccessor } from '../../support/applic
 import { ICloudFunctionData, getFunctionById } from '../../support/function'
 import { checkPermission } from '../../support/permission'
 import { CN_ACCOUNTS, CN_FUNCTIONS, CN_FUNCTION_HISTORY, CN_PUBLISHED_FUNCTIONS } from '../../constants'
-import { permissions } from '../../permissions'
+import { FunctionActionDef } from '../../actions'
 import { DatabaseAgent } from '../../db'
-
-const { FUNCTION_READ } = permissions
 
 
 /**
@@ -25,7 +23,7 @@ export async function handleGetFunctions(req: Request, res: Response) {
   const app: IApplicationData = req['parsed-app']
 
   // check permission
-  const code = await checkPermission(req['auth']?.uid, FUNCTION_READ.name, app)
+  const code = await checkPermission(req['auth']?.uid, FunctionActionDef.ListFunctions, app)
   if (code) {
     return res.status(code).send()
   }
@@ -87,7 +85,7 @@ export async function handleGetFunctionById(req: Request, res: Response) {
   const func_id = req.params.func_id
 
   // check permission
-  const code = await checkPermission(req['auth']?.uid, FUNCTION_READ.name, app)
+  const code = await checkPermission(req['auth']?.uid, FunctionActionDef.GetFunction, app)
   if (code) {
     return res.status(code).send()
   }
@@ -105,7 +103,7 @@ export async function handleGetAllFunctionTags(req: Request, res: Response) {
   const app: IApplicationData = req['parsed-app']
 
   // check permission
-  const code = await checkPermission(req['auth']?.uid, FUNCTION_READ.name, app)
+  const code = await checkPermission(req['auth']?.uid, FunctionActionDef.ListFunctions, app)
   if (code) {
     return res.status(code).send()
   }
@@ -131,7 +129,7 @@ export async function handleGetPublishedFunctions(req: Request, res: Response) {
   }
 
   // check permission
-  const code = await checkPermission(req['auth']?.uid, FUNCTION_READ.name, app)
+  const code = await checkPermission(req['auth']?.uid, FunctionActionDef.ListFunctions, app)
   if (code) {
     return res.status(code).send()
   }
@@ -161,7 +159,7 @@ export async function handleGetFunctionHistory(req: Request, res: Response) {
   const func_id = req.params.func_id
 
   // check permission
-  const code = await checkPermission(req['auth']?.uid, FUNCTION_READ.name, app)
+  const code = await checkPermission(req['auth']?.uid, FunctionActionDef.ListFunctions, app)
   if (code) {
     return res.status(code).send()
   }

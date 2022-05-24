@@ -7,13 +7,12 @@
 
 import { Request, Response } from 'express'
 import { getApplicationByAppid, getMyApplications, getMyJoinedApplications, getUserRolesOfApplication } from '../../support/application'
-import { getPermissionsOfRoles } from '../../support/permission'
-import { CONST_DICTS } from '../../constants'
+import { getActionsOfRoles } from '../../support/permission'
 import { getToken } from '../../support/token'
 import Config from '../../config'
 import { ApplicationSpecSupport } from '../../support/application-spec'
+import { FunctionActionDef } from '../../actions'
 
-const { FUNCTION_DEBUG } = CONST_DICTS.permissions
 
 /**
  * The handler of getting my applications(created & joined)
@@ -57,12 +56,12 @@ export async function handleGetApplicationByAppid(req: Request, res: Response) {
   }
 
   // get user permissions of the application
-  const permissions = getPermissionsOfRoles(roles)
+  const permissions = getActionsOfRoles(roles)
 
   // generate token of debugging cloud function
   const exp = Math.floor(Date.now() / 1000) + 60 * 60 * Config.TOKEN_EXPIRED_TIME
   let debug_token = undefined
-  if (permissions.includes(FUNCTION_DEBUG.name)) {
+  if (permissions.includes(FunctionActionDef.InvokeFunction)) {
     debug_token = getToken({ appid, type: 'debug', exp }, app.config.server_secret_salt)
   }
 

@@ -8,10 +8,9 @@
 import { Request, Response } from 'express'
 import { getApplicationByAppid } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { CONST_DICTS } from '../../constants'
 import { ApplicationExporter } from '../../support/exporter'
+import { ApplicationActionDef } from '../../actions'
 
-const { APPLICATION_READ } = CONST_DICTS.permissions
 
 /**
  * The handler of getting application by id
@@ -26,7 +25,7 @@ export async function handleExportApplication(req: Request, res: Response) {
   if (!app) return res.status(422).send('invalid appid')
 
   // check permission
-  const code = await checkPermission(uid, APPLICATION_READ.name, app)
+  const code = await checkPermission(uid, ApplicationActionDef.GetApplication, app)
   if (code) return res.status(code).send()
 
   const exporter = new ApplicationExporter(app)

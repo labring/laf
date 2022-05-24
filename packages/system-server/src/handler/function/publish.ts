@@ -10,10 +10,8 @@ import { IApplicationData } from '../../support/application'
 import { publishFunctions, publishOneFunction } from '../../support/function'
 import { checkPermission } from '../../support/permission'
 import Config from '../../config'
-import { permissions } from '../../permissions'
+import { FunctionActionDef } from '../../actions'
 import { logger } from '../../support/logger'
-
-const { PUBLISH_FUNCTION } = permissions
 
 
 /**
@@ -24,7 +22,7 @@ export async function handlePublishFunctions(req: Request, res: Response) {
   const app: IApplicationData = req['parsed-app']
 
   // check permission
-  const code = await checkPermission(uid, PUBLISH_FUNCTION.name, app)
+  const code = await checkPermission(uid, FunctionActionDef.PublishFunction, app)
   if (code) {
     return res.status(code).send()
   }
@@ -52,7 +50,7 @@ export async function handlePublishOneFunction(req: Request, res: Response) {
   const app: IApplicationData = req['parsed-app']
 
   // check permission
-  const code = await checkPermission(uid, PUBLISH_FUNCTION.name, app)
+  const code = await checkPermission(uid, FunctionActionDef.PublishFunction, app)
   if (code) {
     return res.status(code).send()
   }

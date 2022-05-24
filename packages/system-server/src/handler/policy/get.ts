@@ -12,10 +12,8 @@ import { IApplicationData } from '../../support/application'
 import { checkPermission } from '../../support/permission'
 import { IPolicyData } from '../../support/policy'
 import { CN_POLICIES } from '../../constants'
-import { permissions } from '../../permissions'
+import { DatabaseActionDef } from '../../actions'
 import { DatabaseAgent } from '../../db'
-
-const { POLICY_READ } = permissions
 
 
 /**
@@ -27,7 +25,7 @@ export async function handleGetPolicies(req: Request, res: Response) {
   const app: IApplicationData = req['parsed-app']
 
   // check permission
-  const code = await checkPermission(uid, POLICY_READ.name, app)
+  const code = await checkPermission(uid, DatabaseActionDef.ListPolicies, app)
   if (code) {
     return res.status(code).send()
   }
@@ -78,7 +76,7 @@ export async function handleGetPolicyById(req: Request, res: Response) {
   const policy_id = req.params.policy_id
 
   // check permission
-  const code = await checkPermission(req['auth']?.uid, POLICY_READ.name, app)
+  const code = await checkPermission(req['auth']?.uid, DatabaseActionDef.GetPolicy, app)
   if (code) {
     return res.status(code).send()
   }

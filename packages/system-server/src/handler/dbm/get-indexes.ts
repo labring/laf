@@ -7,7 +7,7 @@
 
 import { IApplicationData, getApplicationDbAccessor } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { permissions } from '../../permissions'
+import { DatabaseActionDef } from '../../actions'
 import { Request, Response } from 'express'
 
 
@@ -24,7 +24,7 @@ export async function handleGetIndexesOfCollection(req: Request, res: Response) 
   const app: IApplicationData = req['parsed-app']
 
   // check permission
-  const code = await checkPermission(uid, permissions.DATABASE_MANAGE.name, app)
+  const code = await checkPermission(uid, DatabaseActionDef.ListCollections, app)
   if (code) {
     return res.status(code).send()
   }

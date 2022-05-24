@@ -1,9 +1,10 @@
 import { DatabaseAgent } from '../../db'
 import { Request, Response } from "express"
-import { CN_WEBSITE_HOSTING, CONST_DICTS } from "../../constants"
+import { CN_WEBSITE_HOSTING } from "../../constants"
 import { IApplicationData } from "../../support/application"
 import { checkPermission } from "../../support/permission"
 import { ObjectId } from 'mongodb'
+import { WebsiteActionDef } from '../../actions'
 
 /**
  * handle delete website
@@ -22,8 +23,7 @@ export async function handleDeleteWebsite(req: Request, res: Response) {
   }
 
   // check permission
-  const { WEBSITE_HOSTING_REMOVE } = CONST_DICTS.permissions
-  const code = await checkPermission(uid, WEBSITE_HOSTING_REMOVE.name, app)
+  const code = await checkPermission(uid, WebsiteActionDef.DeleteWebsite, app)
   if (code) {
     return res.status(code).send()
   }

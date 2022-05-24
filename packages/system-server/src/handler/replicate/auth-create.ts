@@ -1,9 +1,9 @@
 import { CN_APPLICATIONS, CN_REPLICATE_AUTH } from "../../constants"
 import { Request, Response } from "express"
-import { CONST_DICTS } from "../../constants"
 import { DatabaseAgent } from "../../db"
 import { IApplicationData } from "../../support/application"
 import { checkPermission } from "../../support/permission"
+import { ReplicationActionDef } from "../../actions"
 
 /**
  * handle create replicate auth
@@ -34,8 +34,7 @@ export async function handleCreateReplicateAuth(req: Request, res: Response) {
   }
 
   // check permission
-  const { REPLICATE_AUTH_ADD } = CONST_DICTS.permissions
-  const code = await checkPermission(uid, REPLICATE_AUTH_ADD.name, app)
+  const code = await checkPermission(uid, ReplicationActionDef.CreateReplicateAuth, app)
   if (code) {
     return res.status(code).send()
   }

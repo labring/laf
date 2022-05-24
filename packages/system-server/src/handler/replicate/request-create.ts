@@ -1,9 +1,10 @@
 import { Request, Response } from "express"
 import { DatabaseAgent } from "../../db"
-import { CN_APPLICATIONS, CN_FUNCTIONS, CN_POLICIES, CN_REPLICATE_AUTH, CN_REPLICATE_REQUESTS, CONST_DICTS } from "../../constants"
+import { CN_APPLICATIONS, CN_FUNCTIONS, CN_POLICIES, CN_REPLICATE_AUTH, CN_REPLICATE_REQUESTS } from "../../constants"
 import { IApplicationData } from "../../support/application"
 import { checkPermission } from "../../support/permission"
 import { ObjectId } from "mongodb"
+import { ReplicationActionDef } from "../../actions"
 
 /**
  * handle create replicate Request
@@ -23,8 +24,7 @@ export async function handleCreateReplicateRequest(req: Request, res: Response) 
   }
 
   // check permission
-  const { REPLICATE_REQUEST_ADD } = CONST_DICTS.permissions
-  const code = await checkPermission(uid, REPLICATE_REQUEST_ADD.name, app)
+  const code = await checkPermission(uid, ReplicationActionDef.CreateReplicateRequest, app)
   if (code) {
     return res.status(code).send()
   }
@@ -54,7 +54,7 @@ export async function handleCreateReplicateRequest(req: Request, res: Response) 
     doc.functions = {
       type: functions.type,
       items
-    } 
+    }
   }
   if ('part' === functions?.type && functions?.items?.length > 0) {
     const items = await db.collection(CN_FUNCTIONS)
@@ -63,10 +63,10 @@ export async function handleCreateReplicateRequest(req: Request, res: Response) 
         appid: app.appid
       })
       .toArray()
-      doc.functions = {
-        type: functions.type,
-        items
-      } 
+    doc.functions = {
+      type: functions.type,
+      items
+    }
   }
 
 

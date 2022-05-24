@@ -1,9 +1,10 @@
 import { Request, Response } from "express"
 import { DatabaseAgent } from "../../db"
-import { CN_REPLICATE_REQUESTS, CONST_DICTS } from "../../constants"
+import { CN_REPLICATE_REQUESTS } from "../../constants"
 import { IApplicationData } from "../../support/application"
 import { checkPermission } from "../../support/permission"
 import { ObjectId } from "mongodb"
+import { ReplicationActionDef } from "../../actions"
 
 /**
  * handle delete replicate Request
@@ -23,8 +24,7 @@ export async function handleDeleteReplicateRequest(req: Request, res: Response) 
   }
 
   // check permission
-  const { REPLICATE_REQUEST_REMOVE } = CONST_DICTS.permissions
-  const code = await checkPermission(uid, REPLICATE_REQUEST_REMOVE.name, app)
+  const code = await checkPermission(uid, ReplicationActionDef.DeleteReplicateRequest, app)
   if (code) {
     return res.status(code).send()
   }

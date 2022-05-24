@@ -5,7 +5,7 @@
  * @Description: Application APIs
  */
 
-import { CN_APPLICATIONS, CN_APP_SPECS, CN_PUBLISHED_CONFIG, CONST_DICTS } from "../constants"
+import { CN_APPLICATIONS, CN_APP_SPECS, CN_PUBLISHED_CONFIG } from "../constants"
 import { DatabaseAgent } from "../db"
 import * as assert from 'assert'
 import { MongoAccessor } from "database-proxy"
@@ -15,6 +15,7 @@ import * as mongodb_uri from 'mongodb-uri'
 import { logger } from "./logger"
 import { BUCKET_ACL } from "./minio"
 import { customAlphabet } from 'nanoid'
+import { Admin } from "../groups"
 
 /**
  * Status of application instance
@@ -197,7 +198,7 @@ export async function getApplicationDbAccessor(app: IApplicationData) {
  */
 export function getUserRolesOfApplication(uid: string, app: IApplicationData) {
   if (app.created_by.toHexString() === uid) {
-    return [CONST_DICTS.roles.owner.name]
+    return [Admin.name]
   }
 
   // reject if not the collaborator

@@ -10,9 +10,7 @@ import { IApplicationData, getApplicationByAppid, publishApplicationPackages } f
 import { checkPermission } from '../../support/permission'
 import { CN_APPLICATIONS } from '../../constants'
 import { DatabaseAgent } from '../../db'
-import { permissions } from '../../permissions'
-
-const { APPLICATION_READ, APPLICATION_UPDATE } = permissions
+import { ApplicationActionDef } from '../../actions'
 
 /**
  * Get packages from app
@@ -25,7 +23,7 @@ export async function handleGetPackages(req: Request, res: Response) {
     return res.status(422).send('app not found')
 
   // check permission
-  const code = await checkPermission(uid, APPLICATION_READ.name, app)
+  const code = await checkPermission(uid, ApplicationActionDef.GetApplication, app)
   if (code) {
     return res.status(code).send()
   }
@@ -53,7 +51,7 @@ export async function handleAddPackage(req: Request, res: Response) {
     return res.status(422).send('app not found')
 
   // check permission
-  const code = await checkPermission(uid, APPLICATION_UPDATE.name, app)
+  const code = await checkPermission(uid, ApplicationActionDef.UpdateApplication, app)
   if (code) {
     return res.status(code).send()
   }
@@ -96,7 +94,7 @@ export async function handleRemovePackage(req: Request, res: Response) {
     return res.status(422).send('app not found')
 
   // check permission
-  const code = await checkPermission(uid, APPLICATION_UPDATE.name, app)
+  const code = await checkPermission(uid, ApplicationActionDef.UpdateApplication, app)
   if (code) {
     return res.status(code).send()
   }
@@ -141,7 +139,7 @@ export async function handleUpdatePackage(req: Request, res: Response) {
     return res.status(422).send('app not found')
 
   // check permission
-  const code = await checkPermission(uid, APPLICATION_UPDATE.name, app)
+  const code = await checkPermission(uid, ApplicationActionDef.UpdateApplication, app)
   if (code) {
     return res.status(code).send()
   }

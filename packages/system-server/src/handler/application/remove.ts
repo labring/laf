@@ -10,10 +10,10 @@ import { Request, Response } from 'express'
 import { RecycleCollector } from '../../support/recycle'
 import { getApplicationByAppid } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { CN_APPLICATIONS, CONST_DICTS } from '../../constants'
+import { CN_APPLICATIONS } from '../../constants'
 import { DatabaseAgent } from '../../db'
+import { ApplicationActionDef } from '../../actions'
 
-const { APPLICATION_REMOVE } = CONST_DICTS.permissions
 
 /**
  * The handler of removing application
@@ -33,7 +33,7 @@ export async function handleRemoveApplication(req: Request, res: Response) {
   }
 
   // check permission
-  const code = await checkPermission(uid, APPLICATION_REMOVE.name, app)
+  const code = await checkPermission(uid, ApplicationActionDef.DeleteApplication, app)
   if (code) {
     return res.status(code).send()
   }

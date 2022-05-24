@@ -14,13 +14,13 @@ import {
 import { publishFunctions } from '../../support/function'
 import { checkPermission } from '../../support/permission'
 import { publishAccessPolicies } from '../../support/policy'
-import { CN_APP_TEMPLATES, CONST_DICTS } from '../../constants'
+import { CN_APP_TEMPLATES } from '../../constants'
 import { ApplicationImporter } from '../../support/importer'
 import { logger } from '../../support/logger'
 import { DatabaseAgent } from '../../db'
 import { Binary, ObjectId } from 'mongodb'
+import { ApplicationActionDef } from '../../actions'
 
-const { APPLICATION_ADD } = CONST_DICTS.permissions
 
 /**
  * The handler of import application by id
@@ -37,7 +37,7 @@ export async function handleImportApplication(req: Request, res: Response) {
   if (!file) return res.status(422).send('import file cannot be empty')
 
   // check permission
-  const code = await checkPermission(uid, APPLICATION_ADD.name, app)
+  const code = await checkPermission(uid, ApplicationActionDef.UpdateApplication, app)
   if (code) return res.status(code).send()
 
   try {
@@ -70,7 +70,7 @@ export async function handleInitApplicationWithTemplate(
   if (!app) return res.status(422).send('invalid appid')
 
   // check permission
-  const code = await checkPermission(uid, APPLICATION_ADD.name, app)
+  const code = await checkPermission(uid, ApplicationActionDef.UpdateApplication, app)
   if (code) return res.status(code).send()
 
   const coll = DatabaseAgent.db.collection(CN_APP_TEMPLATES)

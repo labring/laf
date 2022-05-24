@@ -8,9 +8,8 @@
 import { Request, Response } from 'express'
 import { getApplicationByAppid, InstanceStatus, updateApplicationStatus } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { permissions } from '../../permissions'
+import { ApplicationActionDef } from '../../actions'
 
-const { APPLICATION_UPDATE } = permissions
 
 /**
  * The handler of starting application instance
@@ -24,7 +23,7 @@ export async function handleStartInstance(req: Request, res: Response) {
     return res.status(422).send('app not found')
 
   // check permission
-  const code = await checkPermission(uid, APPLICATION_UPDATE.name, app)
+  const code = await checkPermission(uid, ApplicationActionDef.StartInstance, app)
   if (code)
     return res.status(code).send()
 

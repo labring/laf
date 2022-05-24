@@ -1,8 +1,9 @@
 
-import { CN_ACCOUNTS, CONST_DICTS } from "../constants"
+import { CN_ACCOUNTS } from "../constants"
 import { DatabaseAgent } from "../db"
 import * as assert from 'assert'
 import { ObjectId } from "mongodb"
+import { Groups } from "../groups"
 
 /**
  * Get an account by account_id
@@ -49,17 +50,10 @@ export function isValidRoleNames(role_names: string[]): boolean {
   if (!(role_names instanceof Array))
     return false
 
-  const roles = getRoles()
-  for (const rn of role_names)
-    if (!roles[rn]) return false
+  for (const rn of role_names) {
+    const role = Groups.find(r => r.name === rn)
+    if (!role) return false
+  }
 
   return true
-}
-
-/**
- * Get roles
- * @returns 
- */
-export function getRoles() {
-  return CONST_DICTS.roles
 }

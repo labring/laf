@@ -10,11 +10,10 @@ import { ObjectId } from 'mongodb'
 import { IApplicationData } from '../../support/application'
 import { checkPermission } from '../../support/permission'
 import { CN_POLICIES } from '../../constants'
-import { permissions } from '../../permissions'
+import { DatabaseActionDef } from '../../actions'
 import { DatabaseAgent } from '../../db'
 import { hashFunctionCode } from '../../support/util-passwd'
 
-const { POLICY_ADD } = permissions
 
 /**
  * Create policy
@@ -25,7 +24,7 @@ export async function handleCreatePolicy(req: Request, res: Response) {
   const app: IApplicationData = req['parsed-app']
 
   // check permission
-  const code = await checkPermission(uid, POLICY_ADD.name, app)
+  const code = await checkPermission(uid, DatabaseActionDef.CreatePolicy, app)
   if (code) {
     return res.status(code).send()
   }

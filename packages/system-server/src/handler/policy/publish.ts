@@ -10,10 +10,9 @@ import { IApplicationData } from '../../support/application'
 import { checkPermission } from '../../support/permission'
 import { publishAccessPolicies } from '../../support/policy'
 import Config from '../../config'
-import { permissions } from '../../permissions'
+import { DatabaseActionDef } from '../../actions'
 import { logger } from '../../support/logger'
 
-const { PUBLISH_POLICY } = permissions
 
 
 /**
@@ -24,7 +23,7 @@ export async function handlePublishPolicies(req: Request, res: Response) {
   const app: IApplicationData = req['parsed-app']
 
   // check permission
-  const code = await checkPermission(uid, PUBLISH_POLICY.name, app)
+  const code = await checkPermission(uid, DatabaseActionDef.PublishPolicy, app)
   if (code) {
     return res.status(code).send()
   }

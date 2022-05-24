@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
-import { CN_REPLICATE_AUTH, CONST_DICTS } from "../../constants"
+import { ReplicationActionDef } from "../../actions"
+import { CN_REPLICATE_AUTH } from "../../constants"
 import { DatabaseAgent } from "../../db"
 import { IApplicationData } from "../../support/application"
 import { checkPermission } from "../../support/permission"
@@ -17,8 +18,7 @@ export async function handleGetReplicateAuth(req: Request, res: Response) {
   const app: IApplicationData = req["parsed-app"]
 
   // check permission
-  const { REPLICATE_AUTH_READ } = CONST_DICTS.permissions
-  const code = await checkPermission(uid, REPLICATE_AUTH_READ.name, app)
+  const code = await checkPermission(uid, ReplicationActionDef.ListReplicateAuth, app)
   if (code) {
     return res.status(code).send()
   }

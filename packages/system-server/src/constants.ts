@@ -6,8 +6,6 @@
  */
 
 import { deepFreeze } from './support/util-lang'
-import { permissions } from './permissions'
-import { roles } from './permissions'
 
 /** prefix of sys db collection name */
 const coll_prefix = 'sys_'
@@ -50,17 +48,6 @@ export const CN_REPLICATE_AUTH = _('replicate_auth')
 export const CN_REPLICATE_REQUESTS = _('replicate_requests')
 export const CN_OSS_SERVICE_ACCOUNT = _('oss_service_account')
 export const CN_WEBSITE_HOSTING = _('website_hosting')
-/**
- * Constants collection
- */
-export const CONST_DICTS = deepFreeze({
-  /** built-in permissions */
-  permissions: permissions,
-
-  /** built-in roles for applications */
-  roles: roles,
-})
-
 
 /** RESPONSE ERROR CODE */
 export const RESP_INVALID_BUCKET_NAME = deepFreeze({ code: 'INVALID_BUCKET_NAME', error: 'INVALID_BUCKET_NAME' })

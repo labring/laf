@@ -11,10 +11,9 @@ import { ObjectId } from 'mongodb'
 import { IApplicationData } from '../../support/application'
 import { checkPermission } from '../../support/permission'
 import { CN_FUNCTIONS } from '../../constants'
-import { permissions } from '../../permissions'
+import { FunctionActionDef } from '../../actions'
 import { DatabaseAgent } from '../../db'
 
-const { TRIGGER_ADD } = permissions
 
 /**
  * Create trigger
@@ -26,7 +25,7 @@ export async function handleCreateTrigger(req: Request, res: Response) {
   const func_id = req.params.func_id
 
   // check permission
-  const code = await checkPermission(uid, TRIGGER_ADD.name, app)
+  const code = await checkPermission(uid, FunctionActionDef.UpdateFunction, app)
   if (code) {
     return res.status(code).send()
   }
@@ -96,7 +95,7 @@ export async function handleUpdateTrigger(req: Request, res: Response) {
   const trigger_id = req.params.trigger_id
 
   // check permission
-  const code = await checkPermission(uid, TRIGGER_ADD.name, app)
+  const code = await checkPermission(uid, FunctionActionDef.UpdateFunction, app)
   if (code) {
     return res.status(code).send()
   }
@@ -149,7 +148,7 @@ export async function handleRemoveTrigger(req: Request, res: Response) {
   const trigger_id = req.params.trigger_id
 
   // check permission
-  const code = await checkPermission(uid, TRIGGER_ADD.name, app)
+  const code = await checkPermission(uid, FunctionActionDef.UpdateFunction, app)
   if (code) {
     return res.status(code).send()
   }

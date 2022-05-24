@@ -12,11 +12,10 @@ import { IApplicationData } from '../../support/application'
 import { checkPermission } from '../../support/permission'
 import { IPolicyData } from '../../support/policy'
 import { CN_POLICIES } from '../../constants'
-import { permissions } from '../../permissions'
+import { DatabaseActionDef } from '../../actions'
 import { DatabaseAgent } from '../../db'
 import { hashFunctionCode } from '../../support/util-passwd'
 
-const { POLICY_UPDATE } = permissions
 
 
 /**
@@ -29,7 +28,7 @@ export async function handleUpdatePolicy(req: Request, res: Response) {
   const policy_id = req.params.policy_id
 
   // check permission
-  const code = await checkPermission(uid, POLICY_UPDATE.name, app)
+  const code = await checkPermission(uid, DatabaseActionDef.UpdatePolicy, app)
   if (code) {
     return res.status(code).send()
   }
@@ -78,7 +77,7 @@ export async function handleUpdatePolicyRules(req: Request, res: Response) {
   const policy_id = req.params.policy_id
 
   // check permission
-  const code = await checkPermission(uid, POLICY_UPDATE.name, app)
+  const code = await checkPermission(uid, DatabaseActionDef.UpdatePolicy, app)
   if (code) {
     return res.status(code).send()
   }

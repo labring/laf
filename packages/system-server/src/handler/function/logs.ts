@@ -8,10 +8,8 @@
 import { Request, Response } from 'express'
 import { IApplicationData, getApplicationDbAccessor } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { permissions } from '../../permissions'
+import { FunctionActionDef } from '../../actions'
 import { ObjectId } from 'mongodb'
-
-const { FUNCTION_READ } = permissions
 
 
 /**
@@ -23,7 +21,7 @@ export async function handleGetFunctionLogs(req: Request, res: Response) {
   const db = accessor.db
 
   // check permission
-  const code = await checkPermission(req['auth']?.uid, FUNCTION_READ.name, app)
+  const code = await checkPermission(req['auth']?.uid, FunctionActionDef.ListLogs, app)
   if (code) {
     return res.status(code).send()
   }

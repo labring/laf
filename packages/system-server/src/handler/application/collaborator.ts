@@ -10,12 +10,12 @@ import { getApplicationByAppid } from '../../support/application'
 import { checkPermission } from '../../support/permission'
 import { CN_ACCOUNTS, CN_APPLICATIONS } from '../../constants'
 import { DatabaseAgent } from '../../db'
-import { permissions } from '../../permissions'
-import { getAccountByUsername, getRoles, isValidAccountId, isValidRoleNames } from '../../support/account'
+import { ApplicationActionDef } from '../../actions'
+import { getAccountByUsername, isValidAccountId, isValidRoleNames } from '../../support/account'
 import { array2map, mergeMap2ArrayByKey } from '../../support/util-lang'
 import { ObjectId } from 'mongodb'
+import { Groups } from '../../groups'
 
-const { APPLICATION_UPDATE } = permissions
 
 /**
  * The handler of getting collaborators of an application
@@ -30,6 +30,12 @@ export async function handleGetCollaborators(req: Request, res: Response) {
   const app = await getApplicationByAppid(appid)
   if (!app)
     return res.status(422).send('invalid appid')
+
+  // check permission
+  const code = await checkPermission(uid, ApplicationActionDef.GetApplication, app)
+  if (code) {
+    return res.status(code).send()
+  }
 
   if (!app.collaborators?.length) {
     return res.send({ data: [] })
@@ -75,7 +81,7 @@ export async function handleInviteCollaborator(req: Request, res: Response) {
   }
 
   // check permission
-  const code = await checkPermission(uid, APPLICATION_UPDATE.name, app)
+  const code = await checkPermission(uid, ApplicationActionDef.UpdateApplication, app)
   if (code) {
     return res.status(code).send()
   }
@@ -144,13 +150,9 @@ export async function handleGetRoles(req: Request, res: Response) {
   if (!uid)
     return res.status(401).send()
 
-  const roles = getRoles()
-  const rets = Object.keys(roles)
-    // .filter(key => key !== roles.owner.name)
-    .map(key => roles[key])
-
+  const roles = Groups
   return res.send({
-    data: rets
+    data: roles
   })
 }
 
@@ -168,7 +170,7 @@ export async function handleRemoveCollaborator(req: Request, res: Response) {
     return res.status(422).send('invalid appid')
 
   // check permission
-  const code = await checkPermission(uid, APPLICATION_UPDATE.name, app)
+  const code = await checkPermission(uid, ApplicationActionDef.UpdateApplication, app)
   if (code) {
     return res.status(code).send()
   }

@@ -12,12 +12,11 @@ import { IApplicationData } from '../../support/application'
 import { getFunctionById } from '../../support/function'
 import { checkPermission } from '../../support/permission'
 import { CN_FUNCTIONS, CN_FUNCTION_HISTORY } from '../../constants'
-import { permissions } from '../../permissions'
+import { FunctionActionDef } from '../../actions'
 import { DatabaseAgent } from '../../db'
 import { hashFunctionCode } from '../../support/util-passwd'
 import { compileTs2js } from '../../support/util-lang'
 
-const { FUNCTION_UPDATE, FUNCTION_DEBUG } = permissions
 
 /**
  * Update function's basic info
@@ -29,7 +28,7 @@ export async function handleUpdateFunction(req: Request, res: Response) {
   const func_id = req.params.func_id
 
   // check permission
-  const code = await checkPermission(uid, FUNCTION_UPDATE.name, app)
+  const code = await checkPermission(uid, FunctionActionDef.UpdateFunction, app)
   if (code) {
     return res.status(code).send()
   }
@@ -93,7 +92,7 @@ export async function handleUpdateFunctionCode(req: Request, res: Response) {
   const func_id = req.params.func_id
 
   // check permission
-  const code = await checkPermission(uid, FUNCTION_UPDATE.name, app)
+  const code = await checkPermission(uid, FunctionActionDef.UpdateFunction, app)
   if (code) {
     return res.status(code).send()
   }
@@ -150,7 +149,7 @@ export async function handleCompileFunctionCode(req: Request, res: Response) {
   const func_id = req.params.func_id
 
   // check permission
-  const code = await checkPermission(uid, FUNCTION_DEBUG.name, app)
+  const code = await checkPermission(uid, FunctionActionDef.InvokeFunction, app)
   if (code) {
     return res.status(code).send()
   }

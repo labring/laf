@@ -8,10 +8,11 @@
 import { Request, Response } from 'express'
 import { IApplicationData } from '../../support/application'
 import { checkPermission } from '../../support/permission'
-import { BUCKET_QUOTA_MIN, CN_APPLICATIONS, CONST_DICTS, REGEX_BUCKET_NAME } from '../../constants'
+import { BUCKET_QUOTA_MIN, CN_APPLICATIONS, REGEX_BUCKET_NAME } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { BUCKET_ACL, MinioAgent } from '../../support/minio'
 import { OssSupport } from '../../support/oss'
+import { StorageActionDef } from '../../actions'
 
 /**
  * The handler of creating a bucket
@@ -42,8 +43,7 @@ export async function handleCreateBucket(req: Request, res: Response) {
   }
 
   // check permission
-  const { FILE_BUCKET_ADD } = CONST_DICTS.permissions
-  const code = await checkPermission(uid, FILE_BUCKET_ADD.name, app)
+  const code = await checkPermission(uid, StorageActionDef.CreateBucket, app)
   if (code) {
     return res.status(code).send()
   }

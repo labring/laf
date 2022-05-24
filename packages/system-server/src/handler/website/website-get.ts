@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
-import { CN_WEBSITE_HOSTING, CONST_DICTS } from "../../constants"
+import { WebsiteActionDef } from "../../actions"
+import { CN_WEBSITE_HOSTING } from "../../constants"
 import { DatabaseAgent } from "../../db"
 import { IApplicationData } from "../../support/application"
 import { checkPermission } from "../../support/permission"
@@ -21,8 +22,7 @@ export async function handleGetWebsites(req: Request, res: Response) {
   }
 
   // check permission
-  const { WEBSITE_HOSTING_READ } = CONST_DICTS.permissions
-  const code = await checkPermission(uid, WEBSITE_HOSTING_READ.name, app)
+  const code = await checkPermission(uid, WebsiteActionDef.ListWebsites, app)
   if (code) {
     return res.status(code).send()
   }
