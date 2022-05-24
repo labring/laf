@@ -12,6 +12,7 @@ import { logger } from '../support/logger'
 import { addFunctionLog } from '../support/function'
 import { CloudFunction } from '../support/function'
 
+const DEFAULT_FUNCTION_NAME = '__default__'
 
 /**
  * Handler of invoking cloud function
@@ -21,12 +22,17 @@ export async function handleInvokeFunction(req: Request, res: Response) {
   const func_name = req.params?.name
 
   // load function data from db
-  const funcData = await CloudFunction.getFunctionByName(func_name)
+  let funcData = await CloudFunction.getFunctionByName(func_name)
   if (!funcData) {
     if (func_name === 'healthz') {
       return res.status(200).send('ok')
     }
-    return res.status(404).send('Not Found')
+
+    // load default function from db
+    funcData = await CloudFunction.getFunctionByName(DEFAULT_FUNCTION_NAME)
+    if (!funcData) {
+      return res.status(404).send('Not Found')
+    }
   }
 
   const func = new CloudFunction(funcData)
