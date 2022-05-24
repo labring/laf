@@ -20,11 +20,6 @@
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>
-            <div class="content">
-              <a target="_blank" href="https://lafjs.github.io/">开发文档 <i class="el-icon-link" /></a>
-            </div>
-          </el-dropdown-item>
           <el-dropdown-item divided>
             <div class="content">
               <a target="_blank" href="https://github.com/lafjs/laf/">

@@ -95,7 +95,7 @@
         <el-button @click="editFormVisible = false">
           取消
         </el-button>
-        <el-button type="primary" @click="handleBindDomain" :loading="loading">
+        <el-button type="primary" :loading="loading" @click="handleBindDomain">
           确定
         </el-button>
       </div>
@@ -230,7 +230,7 @@ export default {
         if (!valid) return
 
         const REGEX_DOMAIN = /^(?=^.{3,255}$)[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+$/
-        if(REGEX_DOMAIN.test(this.editForm.domain) === false) {
+        if (REGEX_DOMAIN.test(this.editForm.domain) === false) {
           showError('域名格式不正确')
           return
         }
@@ -241,17 +241,17 @@ export default {
         }
         this.loading = true
         const ret = await websiteAPI.bindDomain(params)
-          .finally(() => this.loading = false)
+          .finally(() => { this.loading = false })
 
         if (ret.code === 'DOMAIN_NOT_RESOLVEABLE') {
           return showError('解析失败，请先对该域名做 CNAME 解析')
         }
 
-        if(ret.code === 'DOMAIN_RESOLVED_ERROR') {
+        if (ret.code === 'DOMAIN_RESOLVED_ERROR') {
           return showError('解析错误，请使用正确的 CNAME 解析值')
         }
 
-        if(ret.code === 'ALREADY_EXISTED') {
+        if (ret.code === 'ALREADY_EXISTED') {
           return showError('该域名已经被绑定')
         }
 
