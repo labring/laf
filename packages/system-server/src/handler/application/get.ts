@@ -6,7 +6,7 @@
  */
 
 import { Request, Response } from 'express'
-import { getApplicationByAppid, getMyApplications, getMyJoinedApplications, getUserRolesOfApplication } from '../../support/application'
+import { getApplicationByAppid, getMyApplications, getMyJoinedApplications, getUserGroupsOfApplication } from '../../support/application'
 import { getActionsOfRoles } from '../../support/permission'
 import { getToken } from '../../support/token'
 import Config from '../../config'
@@ -50,7 +50,7 @@ export async function handleGetApplicationByAppid(req: Request, res: Response) {
     return res.status(422).send('invalid appid')
 
   // get user roles of the application
-  const roles = getUserRolesOfApplication(uid, app)
+  const roles = getUserGroupsOfApplication(uid, app)
   if (!roles.length) {
     return res.status(403).send()
   }

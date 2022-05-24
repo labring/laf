@@ -58,11 +58,6 @@ export interface IApplicationData {
     db_password: string
     server_secret_salt: string
     oss_access_secret: string
-    file_system_driver?: string
-    file_system_enable_unauthorized_upload?: string
-    file_system_http_cache_control?: string
-    log_level?: string
-    enable_cloud_function_log?: string
   }
   runtime: {
     image: string

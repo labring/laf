@@ -27,7 +27,7 @@
             :key="role.id"
             style="margin: 3px 5px"
           >
-            {{ getRoleLabel(role) }}
+            {{ role }}
           </el-tag>
         </template>
       </el-table-column>
@@ -61,7 +61,7 @@
             <el-option
               v-for="item in roles"
               :key="item.name"
-              :label="getRoleLabel(item.name)"
+              :label="item.name"
               :value="item.name"
             />
           </el-select>
@@ -179,7 +179,7 @@ export default {
         case 'operator':
           return '运维工程师'
       }
-      return 'Unknown'
+      return role_name
     }
   }
 }

@@ -7,7 +7,7 @@
 
 import * as assert from 'assert'
 import { Groups } from '../groups'
-import { IApplicationData } from './application'
+import { getUserGroupsOfApplication, IApplicationData } from './application'
 
 /**
  * Check if a user have permission for application
@@ -24,16 +24,13 @@ export async function checkPermission(uid: string, action: string, app: IApplica
   // pass directly while the app owner here
   if (uid === app.created_by.toHexString()) return 0
 
-  // reject while uid is not the collaborator
-  const [collaborator] = app.collaborators?.filter(co => co.uid.toHexString() === uid) ?? []
-  if (!collaborator) return 403
+  // reject if not the collaborator
+  const roles = getUserGroupsOfApplication(uid, app)
+  if (!roles.length) return 403
 
-  // reject while uid not have the permission
-  const roles = collaborator.roles
+  // reject if not the permission
   const actions = getActionsOfRoles(roles)
-  if (!actions.includes(action)) {
-    return 403
-  }
+  if (!actions.includes(action)) return 403
 
   return 0
 }
@@ -46,15 +43,10 @@ export async function checkPermission(uid: string, action: string, app: IApplica
 export function getActionsOfRoles(roles_names: string[]) {
   const rets = []
   for (const name of roles_names) {
-    const role = getRoleByName(name)
+    const role = Groups.find(it => it.name === name)
     const actions = role?.actions ?? []
     rets.push(...actions)
   }
 
-  return rets.map(pn => pn.name)
-}
-
-
-function getRoleByName(name: string) {
-  return Groups.find(it => it.name === name)
+  return rets
 }

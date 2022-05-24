@@ -12,6 +12,10 @@ export const FunctionActionDef = {
   InvokeFunction: 'fn:InvokeFunction',
   PublishFunction: 'fn:PublishFunction',
   ListLogs: 'fn:ListLogs',
+  ListPackages: 'fn:ListPackages',
+  CreatePackage: 'fn:CreatePackage',
+  UpdatePackage: 'fn:UpdatePackage',
+  DeletePackage: 'fn:DeletePackage',
 }
 
 export const ApplicationActionDef = {

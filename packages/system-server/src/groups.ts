@@ -8,7 +8,8 @@ export const FunctionReadyOnly = {
   actions: [
     FunctionActionDef.ListFunctions,
     FunctionActionDef.GetFunction,
-    FunctionActionDef.ListLogs
+    FunctionActionDef.ListLogs,
+    FunctionActionDef.ListPackages,
   ]
 }
 
