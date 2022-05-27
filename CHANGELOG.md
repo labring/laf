@@ -1,4 +1,22 @@
-# [](https://github.com/labring/laf/compare/v0.8.0-alpha.11...v) (2022-05-16)
+# [](https://github.com/labring/laf/compare/v0.8.0...v) (2022-05-27)
+
+
+
+# [0.8.0](https://github.com/labring/laf/compare/v0.8.0-alpha.11...v0.8.0) (2022-05-27)
+
+
+### Bug Fixes
+
+* **app-console:** fix create function label validation fail ([7c67328](https://github.com/labring/laf/commit/7c67328035ec44bba5329e61bda3381356b8dc59))
+* **rbac:** fix check permission error, add actions for pkgs; ([bf772d2](https://github.com/labring/laf/commit/bf772d2c2fdde7a101faf60569109b677ec8d582))
+
+
+### Features
+
+* **app-console:** fix collections list height ([#114](https://github.com/labring/laf/issues/114) [#109](https://github.com/labring/laf/issues/109)) ([562b0e4](https://github.com/labring/laf/commit/562b0e4239a985540c58024efcfc8a5ba866fccd))
+* **app-service:** support default cloud function ([#117](https://github.com/labring/laf/issues/117) [#115](https://github.com/labring/laf/issues/115)) ([04b7320](https://github.com/labring/laf/commit/04b73209bfdbf77afeceda9ab80eed5e4497ea9b))
+* opt index app_id format ([#102](https://github.com/labring/laf/issues/102)) ([28f9c3c](https://github.com/labring/laf/commit/28f9c3ce7e2d9c9f08ea8318a42019aa5a75abe9))
+* **rbac:** refact rbac support more groups(roles) ([a1e28ea](https://github.com/labring/laf/commit/a1e28ea7b343664f9d4430cbbd75931c53327213))
 
 
 
