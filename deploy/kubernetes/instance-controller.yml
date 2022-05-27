@@ -41,7 +41,7 @@ spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 20
       containers:
-        - image: docker.io/lafyun/instance-controller:0.8.0-alpha.2
+        - image: docker.io/lafyun/instance-controller:0.8.0
           imagePullPolicy: IfNotPresent
           name: instance-controller
           resources:

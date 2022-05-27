@@ -53,7 +53,7 @@ services:
       - laf_shared_network
 
   system-server:
-    image: lafyun/system-server:0.8.0-alpha.11
+    image: lafyun/system-server:0.8.0
     user: root
     working_dir: /app
     environment:
@@ -103,7 +103,7 @@ services:
       - laf_shared_network
 
   instance-controller:
-    image: lafyun/instance-controller:0.8.0-alpha.11
+    image: lafyun/instance-controller:0.8.0
     user: root
     working_dir: /app
     environment:
@@ -130,12 +130,12 @@ services:
       - laf_shared_network
 
   system-client:
-    image: lafyun/system-client:0.8.0-alpha.9
+    image: lafyun/system-client:0.8.0
     networks:
       - laf_shared_network
 
   app-console:
-    image: lafyun/app-console:0.8.0-alpha.9
+    image: lafyun/app-console:0.8.0
     networks:
       - laf_shared_network
 
