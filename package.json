@@ -17,14 +17,15 @@
     "stats": "find ./packages -name '*.ts' | xargs cat | grep -v ^$| wc -l"
   },
   "keywords": [
-    "laf.js",
     "laf",
     "baas",
-    "laf",
     "serverless",
     "firebase",
     "minio",
-    "mongodb"
+    "mongodb",
+    "supabase",
+    "appwrite",
+    "cloudbase"
   ],
   "devDependencies": {
     "conventional-changelog-cli": "^2.1.1",
