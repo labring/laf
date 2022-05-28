@@ -41,7 +41,7 @@
     >
       <el-table-column label="文件桶(Bucket)" width="200">
         <template slot-scope="{row}">
-          <span>{{ row.name }}</span>
+          <span>{{app.appid}}-{{ row.name }}</span>
         </template>
       </el-table-column>
       <el-table-column label="容量(Quota)" width="200">
@@ -94,7 +94,11 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="文件桶名" prop="name">
-          <el-input v-model="form.name" :disabled="dialogStatus==='update'" placeholder="唯一标识" />
+          <el-input v-model="form.name" :disabled="dialogStatus==='update'" placeholder="唯一标识" >
+            <template #prepend>
+              {{app.appid}}-
+            </template>
+          </el-input>
         </el-form-item>
         <el-form-item label="默认权限" prop="mode">
           <el-select v-model="form.mode" placeholder="">
@@ -240,6 +244,9 @@ export default {
     },
     oss_internal_endpoint() {
       return store.state.app.oss_internal_endpoint
+    },
+    app() {
+      return this.$store.state.app?.application
     }
   },
   created() {
