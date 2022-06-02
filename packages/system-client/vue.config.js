@@ -41,11 +41,11 @@ module.exports = {
     proxy: {
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       '/sys-api': {
-        target: 'http://console.local-dev.host:8080/',
+        target: 'http://console.127-0-0-1.nip.io:8080/',
         changeOrigin: true
       },
       '/sys-extension-api': {
-        target: 'http://console.local-dev.host:8080/',
+        target: 'http://console.127-0-0-1.nip.io:8080/',
         changeOrigin: true
       }
     },

@@ -1,0 +1,13 @@
+
+node_modules
+dist
+
+upload
+data/*
+tmp
+
+.DS_Store
+.idea
+
+coverage
+.nyc_output

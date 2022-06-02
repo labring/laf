@@ -1,0 +1,16 @@
+{
+  "version": "0.8.1",
+  "name": "laf-docs",
+  "private": true,
+  "scripts": {
+    "start": "npm run dev",
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "serve": "vitepress serve",
+    "docs:deploy": "npm run build && sh ./deploy.sh",
+    "docker-build": "docker build -t lafyun/docs:latest ."
+  },
+  "dependencies": {
+    "vitepress": "^0.22.4"
+  }
+}
