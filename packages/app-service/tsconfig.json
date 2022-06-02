@@ -8,6 +8,7 @@
     "declaration": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
     "importHelpers": false,
     "module": "commonjs",
     "declarationMap": true,

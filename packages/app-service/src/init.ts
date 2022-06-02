@@ -1,43 +1,49 @@
-import { ensureCollectionIndexes, getExtraPackages, initCloudSdkPackage, installPackages, moduleExists } from "./support/init"
-import { logger } from "./support/logger"
-
+import {
+  ensureCollectionIndexes,
+  getExtraPackages,
+  initCloudSdkPackage,
+  installPackages,
+  moduleExists,
+} from "./support/init";
+import { logger } from "./support/logger";
 
 async function main() {
   try {
-    const packages = await getExtraPackages()
+    const packages = await getExtraPackages();
     if (!packages.length) {
-      logger.info('no extra packages found')
+      logger.info("no extra packages found");
     }
 
-    logger.info('packages loaded: ', packages)
+    logger.info("packages loaded: ", packages);
 
-    const not_exists = packages.filter(pkg => !moduleExists(pkg.name))
+    const not_exists = packages.filter((pkg) => !moduleExists(pkg.name));
     if (packages.length && !not_exists.length) {
-      logger.info('no new packages to be installed')
+      logger.info("no new packages to be installed");
     }
 
     if (not_exists.length) {
-      const res = installPackages(packages)
-      logger.info(res)
+      const res = installPackages(packages);
+      logger.info(res);
     }
 
-    initCloudSdkPackage()
+    initCloudSdkPackage();
 
-    await ensureCollectionIndexes()
+    await ensureCollectionIndexes();
   } catch (error) {
-    logger.error(error)
-    return 1
+    logger.error(error);
+    return 1;
   }
 
-  return 0
+  return 0;
 }
 
-
-main()
-  .then(code => {
-    process.exit(code)
-  })
-  .catch(err => {
-    logger.error(err)
-    process.exit(2)
-  })
+export function initAppService() {
+  main()
+    .then((code) => {
+      process.exit(code);
+    })
+    .catch((err) => {
+      logger.error(err);
+      process.exit(2);
+    });
+}

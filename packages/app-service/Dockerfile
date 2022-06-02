@@ -12,6 +12,7 @@ COPY . /app
 # RUN chown node:node /app/data
 # RUN npm install
 # RUN npm run build
+RUN mkdir /app/node_modules
 RUN chown -R node:node /app/node_modules
 RUN chown node:node /app/package.json
 RUN chown node:node /app/package-lock.json

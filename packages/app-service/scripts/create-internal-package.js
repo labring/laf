@@ -1,4 +1,4 @@
-const { createCloudFunctionDeclarationPackage } = require("../dist/support/init");
+const { createCloudFunctionDeclarationPackage } = require("../dist");
 
 createCloudFunctionDeclarationPackage()
 
