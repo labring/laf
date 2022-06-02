@@ -1,25 +1,13 @@
 # 安装教程
 
-### 快速部署 `laf.js` 服务
+### 快速部署 `laf`
 
-> 基于 Docker Compose 快速部署，需要你熟悉 Docker 以及 docker-compose 的使用。
+> 基于 Docker Compose 快速部署，需要你熟悉 Docker 以及 Docker Compose 的使用。
 
-##### 安装 Docker (CentOS)
+##### 安装 Docker
 
-> 本例只给出 CentOS 下的安装脚本，若安装其它环境请参考官方文档 https://docs.docker.com/engine/install/。
-
-```sh
-sudo yum install -y yum-utils
-sudo yum-config-manager \
-    --add-repo \
-    https://download.docker.com/linux/centos/docker-ce.repo
-
-sudo yum install docker-ce docker-ce-cli containerd.io
-sudo systemctl start docker
-
-```
-
-> 还需安装 docker-compose @see https://docs.docker.com/compose/install/。
+- 安装 Docker: https://docs.docker.com/engine/install/
+- 安装 Docker Compose: https://docs.docker.com/compose/install/
 
 ##### 启动服务（docker-compose）
 
@@ -34,13 +22,8 @@ docker pull lafyun/app-service:latest
 # 启动所有服务
 docker-compose up
 
-# 浏览器打开 http://console.local-dev.host:8000 访问
+# 浏览器打开 http://console.127-0-0-1.nip.io:8000 访问
 ```
-
-> TIPs: 
-> We provide `*.local-dev.host` always resolved to `127.0.0.1` anywhere! 
-> Close your VPN then `local-dev.host` resolving works well.
-
 
 ### 开发环境（开发者）
 
@@ -60,13 +43,9 @@ docker pull lafyun/app-service:latest
 # launch laf.js services
 docker-compose up
 
-# Now open http://console.local-dev.host:8080 in your browsers!
+# Now open http://console.127-0-0-1.nip.io:8080 in your browsers!
 
 ```
-
-> TIPs: 
-> We provide `*.local-dev.host` always resolved to `127.0.0.1` anywhere! 
-> Close your VPN then `local-dev.host` resolving works well.
 
 ## 测试用例
 

@@ -10,7 +10,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: minio.local-dev.host
+  - host: minio.127-0-0-1.nip.io
     http:
       paths:
       - path: /
@@ -41,7 +41,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: oss.local-dev.host
+  - host: oss.127-0-0-1.nip.io
     http:
       paths:
       - path: /
@@ -72,7 +72,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: "*.oss.local-dev.host"
+  - host: "*.oss.127-0-0-1.nip.io"
     http:
       paths:
       - path: /
@@ -95,7 +95,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: console.local-dev.host
+  - host: console.127-0-0-1.nip.io
     http:
       paths:
       - path: /
@@ -118,7 +118,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: console.local-dev.host
+  - host: console.127-0-0-1.nip.io
     http:
       paths:
       - path: /app-console/(.*)
@@ -142,7 +142,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: console.local-dev.host
+  - host: console.127-0-0-1.nip.io
     http:
       paths:
       - path: /sys-api/(.*)
@@ -166,7 +166,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: console.local-dev.host
+  - host: console.127-0-0-1.nip.io
     http:
       paths:
       - path: /sys-extension-api/(.*)
@@ -216,4 +216,4 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: "*.local-dev.host"
+  - host: "*.127-0-0-1.nip.io"

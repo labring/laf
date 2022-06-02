@@ -20,9 +20,9 @@ data:
   minio-root-user: "minio-root-user"
   minio-root-password: "minio-root-password"
   minio-region-name: "cn-default"
-  minio-domain: "oss.local-dev.host"
+  minio-domain: "oss.127-0-0-1.nip.io"
   internal-endpoint: "http://oss:9000"
-  external-endpoint: "http://oss.local-dev.host"
+  external-endpoint: "http://oss.127-0-0-1.nip.io"
 
 
 ### Root account for system extension app
@@ -54,7 +54,7 @@ metadata:
   name: deploy-domain
   namespace: laf
 data:
-  app-service-host: "local-dev.host" # `*.local-dev.host` always resolved to 127.0.0.1, used to local development
+  app-service-host: "127-0-0-1.nip.io" # `*.127-0-0-1.nip.io` always resolved to 127.0.0.1, used to local development
   deploy-url-schema: "http"
 
 ### App service config & default quotas
