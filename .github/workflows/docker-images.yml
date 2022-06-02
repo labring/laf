@@ -30,5 +30,8 @@ jobs:
       - name: Install Package
         run: npm install
 
-      - name: Build & Push
+      - name: Build Packages
+        run: npm run build
+
+      - name: Build & Push Images
         run: node ./scripts/builder.js all -l -p
