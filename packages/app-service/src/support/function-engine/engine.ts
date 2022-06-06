@@ -89,7 +89,7 @@ export class FunctionEngine {
       clearInterval: clearInterval,
       setTimeout: setTimeout,
       clearTimeout: clearTimeout,
-      process: { env: process.env }
+      process: { env: {} }
     }
   }
 
