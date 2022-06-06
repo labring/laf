@@ -72,3 +72,19 @@ export function deepFreeze(object: Object) {
 
   return Object.freeze(object)
 }
+
+
+/**
+ * nanosecond to ms
+ * @param nanoseconds 
+ * @returns 
+ */
+export function nanosecond2ms(nanoseconds: bigint): number {
+  // trim the decimal point by devide 1000
+  const _t = nanoseconds / BigInt(1000)
+
+  const ret = parseFloat(_t.toString()) / 1000
+  return ret
+}
+
+

@@ -1,25 +1,22 @@
 
 import * as vm from 'vm'
-import { nanosecond2ms } from './utils'
+import { nanosecond2ms } from '../utils'
 import { FunctionConsole } from './console'
 import { FunctionContext, FunctionResult, RequireFuncType, RuntimeContext } from './types'
 
 
 /**
- * 云函数中加载依赖包的函数: require('') 
+ * Default require function
  */
 const defaultRequireFunction: RequireFuncType = (module): any => {
   return require(module) as any
 }
 
 /**
- * 云函数执行引擎
+ * Function engine
  */
 export class FunctionEngine {
 
-  /**
-   * 云函数中加载依赖包的函数: require('') 
-   */
   require_func: RequireFuncType
 
   constructor(require_func?: RequireFuncType) {
@@ -27,9 +24,7 @@ export class FunctionEngine {
   }
 
   /**
-   * 执行云函数
-   * @param code 函数代码（js)
-   * @param incomingCtx 
+   * Execute function
    * @returns 
    */
   async run(code: string, context: FunctionContext, options: vm.RunningScriptOptions): Promise<FunctionResult> {
@@ -37,7 +32,6 @@ export class FunctionEngine {
     const wrapped = this.wrap(code)
     const fconsole = sandbox.console
 
-    // 调用前计时
     const _start_time = process.hrtime.bigint()
     try {
       const script = new vm.Script(wrapped, options)
@@ -45,21 +39,9 @@ export class FunctionEngine {
 
       let data = result
       if (typeof result?.then === 'function') {
-        /**
-         * @TIP 若打开 microtaskMode: 'afterEvaluate' 选项，则需要将以下代码解注，当前这种情况有严重 bug，暂不打开，也不删此注释
-         * 由于 vm 内部的 microTasks queue 为空时会直接释放执行环境，后续 await 则会导致工作线程陷入黑洞，
-         * 故需先给 vm 返回的 promise 设置 then 回调，使 microTasks queue 不为空，以维护 vm 执行环境暂不被释放
-         */
-        // const promise = new Promise((resolve, reject) => {
-        //   result
-        //     .then(resolve)
-        //     .catch(reject)
-        // })
-
         data = await result
       }
 
-      // 函数执行耗时
       const _end_time = process.hrtime.bigint()
       const time_usage = nanosecond2ms(_end_time - _start_time)
       return {
@@ -71,7 +53,6 @@ export class FunctionEngine {
       fconsole.log(error.message)
       fconsole.log(error.stack)
 
-      // 函数执行耗时
       const _end_time = process.hrtime.bigint()
       const time_usage = nanosecond2ms(_end_time - _start_time)
 
@@ -85,8 +66,7 @@ export class FunctionEngine {
 
 
   /**
-   * 构建函数运行时沙箱环境
-   * @param incomingCtx 
+   * build sandbox
    * @returns 
    */
   buildSandbox(functionContext: FunctionContext): RuntimeContext {
@@ -108,13 +88,13 @@ export class FunctionEngine {
       setInterval: setInterval,
       clearInterval: clearInterval,
       setTimeout: setTimeout,
-      clearTimeout: clearTimeout
+      clearTimeout: clearTimeout,
+      process: { env: process.env }
     }
   }
 
   /**
-   * 封装执行函数的代码
-   * @param code 函数代码
+   * wrap function code
    */
   wrap(code: string): string {
     const wrapped = `

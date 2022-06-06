@@ -8,7 +8,7 @@
 import assert = require("assert")
 import { Params, Policy } from "database-proxy"
 import { logger } from "./logger"
-import { CloudFunction } from "./function"
+import { CloudFunction } from "./function-engine"
 import { DatabaseAgent } from "../db"
 import { Constants } from "../constants"
 

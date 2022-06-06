@@ -5,7 +5,7 @@
  * @Description: 
  */
 
-import { Trigger } from "cloud-function-engine"
+import { Trigger } from "./function-engine"
 import { Constants } from "../constants"
 import { DatabaseAgent } from "../db"
 

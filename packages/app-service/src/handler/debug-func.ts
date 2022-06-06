@@ -6,11 +6,11 @@
  */
 
 import { Request, Response } from 'express'
-import { FunctionContext } from 'cloud-function-engine'
+import { FunctionContext } from '../support/function-engine'
 import { logger } from '../support/logger'
-import { addFunctionLog } from '../support/function'
+import { addFunctionLog } from '../support/function-log'
 import { ObjectId } from 'bson'
-import { CloudFunction } from '../support/function'
+import { CloudFunction } from '../support/function-engine'
 
 /**
  * Handler of debugging cloud function

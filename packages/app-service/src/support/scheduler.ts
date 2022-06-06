@@ -5,14 +5,14 @@
  * @Description: 
  */
 
-import { getTriggers } from "../trigger"
-import { DatabaseAgent } from "../../db"
-import { createLogger } from "../logger"
+import { getTriggers } from "./trigger"
+import { DatabaseAgent } from "../db"
+import { createLogger } from "./logger"
 import { ChangeStreamDocument } from "mongodb"
-import { FrameworkScheduler } from "./scheduler"
+import { TriggerScheduler } from "./function-engine"
 import { debounce } from 'lodash'
-import { Constants } from "../../constants"
-import { PolicyAgent } from "../policy"
+import { Constants } from "../constants"
+import { PolicyAgent } from "./policy"
 
 const accessor = DatabaseAgent.accessor
 const logger = createLogger('scheduler')
@@ -20,7 +20,7 @@ const logger = createLogger('scheduler')
 /**
  * Single instance of trigger scheduler
  */
-export const SchedulerInstance = new FrameworkScheduler()
+export const SchedulerInstance = new TriggerScheduler()
 
 /**
  * Initialize scheduler while db connection is ready

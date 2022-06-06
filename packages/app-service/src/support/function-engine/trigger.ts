@@ -1,5 +1,4 @@
 
-// 触发器类型
 enum TriggerType {
   TRIGGER_EVENT = 'event',
   TRIGGER_TIMER = 'timer',
@@ -7,60 +6,43 @@ enum TriggerType {
 }
 
 /**
- * 触发器
+ * class Trigger
  */
 export class Trigger {
   public id: string
-  // 显示名称
+
   public name: string
 
-  // 描述
   public desc: string
 
-  // 触发器类型
   public type: TriggerType
 
-  // 云函数ID
   public func_id: string
 
-  // 事件触发器的事件名
   public event?: string
 
-  // Timer触发器的间隔(秒)
   public duration?: number
 
-  // HTTP 触发器方法
-  public method?: string
-
-  // 上次执行时间
+  // last execution time
   public last_exec_time: number
 
-  // 状态: 0 停用，1 启用
+  // status: 0 | 1
   public status: number
 
-  /**
-   * 是否启用
-   */
   get isEnabled() {
     return this.status === 1
   }
 
-  /**
-   * 是否为事件触发器
-   */
   get isEvent() {
     return this.type === TriggerType.TRIGGER_EVENT
   }
 
-  /**
-   * 是否为定时器触发器
-   */
   get isTimer() {
     return this.type === TriggerType.TRIGGER_TIMER
   }
 
   /**
-   * 加载触发器
+   * load trigger from json
    * @param data 
    * @returns 
    */

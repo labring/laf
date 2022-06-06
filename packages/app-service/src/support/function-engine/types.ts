@@ -2,10 +2,10 @@
 import { FunctionConsole } from "./console"
 import { IncomingHttpHeaders } from "http"
 import { Response } from "express"
+import { ObjectId } from "mongodb"
 
 
 export type RequireFuncType = (module: string) => any
-
 
 /**
  * vm run context (global)
@@ -23,7 +23,10 @@ export interface RuntimeContext {
   clearInterval: typeof clearInterval,
   setImmediate: typeof setImmediate,
   clearImmediate: typeof clearImmediate
-  __filename: string
+  __filename: string,
+  process: {
+    env: { [key: string]: string },
+  }
 }
 
 /**
@@ -51,24 +54,33 @@ export interface FunctionResult {
   error?: Error,
   time_usage: number
 }
+
+export enum FunctionStatus {
+  DISABLED = 0,
+  ENABLED = 1
+}
+
 /**
- * 云函数的存储结构
+ * cloud function data structure
  */
-export interface CloudFunctionStruct {
-  /**
-   * 云函数名
-   */
+export interface ICloudFunctionData {
+  _id: ObjectId
+  description: string
+  tags: string[]
+  label: string
   name: string
-
-  /**
-   * 云函数源代码，通常是 ts
-   */
+  triggers: any[]
+  version: number
+  hash: string
+  status: FunctionStatus
+  enableHTTP: boolean
+  appid: string
+  debugParams: string
   code: string
-
-  /**
-   * 云函数编译后的代码，通常是 js
-   */
   compiledCode: string
+  created_at: Date
+  updated_at: Date
+  created_by: any
 }
 
 /** Object containing file metadata and access information. */
