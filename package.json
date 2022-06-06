@@ -12,7 +12,8 @@
     "watch": "lerna run watch --parallel",
     "prepublishOnly": "npm run build",
     "changelog": "npx conventional-changelog -i CHANGELOG.md -s -r 0 -p angular",
-    "docker:release": "node ./scripts/builder.js all -l -p -d",
+    "docker:build": "node ./scripts/builder.js build-all -l -d",
+    "docker:push": "node ./scripts/builder.js push-all -l -d",
     "clean:build": "rm -rf ./packages/*/dist",
     "stats": "find ./packages -name '*.ts' | xargs cat | grep -v ^$| wc -l"
   },

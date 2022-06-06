@@ -2,7 +2,6 @@
 
 const { Command } = require('commander');
 const program = new Command();
-const assert = require('assert')
 const path = require('path')
 const { getPackageVersion, images, buildImage, pushImage, tagImage } = require('./utils')
 
@@ -27,19 +26,19 @@ program
   .action(pushPackage)
 
 program
-  .command('all')
-  .description('build and push all package images which version matches the tag')
+  .command('build-all')
+  .description('build all package images which version matches the tag')
   .option('-t, --tag [tag]', 'tag to use for the image, defaults to the root project version')
   .option('-d, --dry-run', 'dry run')
   .option('-l, --latest', 'build latest tag')
-  .option('-p, --push', 'push image')
   .action(function (options) {
 
-    console.log('Running in `DRY-RUN` mode')
     const lernaPath = path.resolve(__dirname, '../lerna.json')
     const lernaVersion = require(lernaPath)?.version
     const tag = options?.tag || lernaVersion
     const dryRun = options?.dryRun || false
+
+    if (dryRun) console.log('Running in `DRY-RUN` mode')
 
     const packages = Object.keys(images)
     const matchedPackages = packages.filter(pkg => {
@@ -51,13 +50,36 @@ program
     if (matchedPackages.length === 0) return console.error(`No packages found with version ${tag}`)
 
     for (const pkg of matchedPackages) {
-      buildPackage(pkg, { tag, dryRun, latest: options?.latest, push: false })
+      buildPackage(pkg, { tag, dryRun, latest: options?.latest })
     }
+  })
 
-    if (options?.push) {
-      for (const pkg of matchedPackages) {
-        pushPackage(pkg, { tag, dryRun, latest: options?.latest })
-      }
+program
+  .command('push-all')
+  .description('push all package images which version matches the tag')
+  .option('-t, --tag [tag]', 'tag to use for the image, defaults to the root project version')
+  .option('-d, --dry-run', 'dry run')
+  .option('-l, --latest', 'push latest tag')
+  .action(function (options) {
+
+    const lernaPath = path.resolve(__dirname, '../lerna.json')
+    const lernaVersion = require(lernaPath)?.version
+    const tag = options?.tag || lernaVersion
+    const dryRun = options?.dryRun || false
+
+    if (dryRun) console.log('Running in `DRY-RUN` mode')
+
+    const packages = Object.keys(images)
+    const matchedPackages = packages.filter(pkg => {
+      const packagePath = path.resolve(__dirname, `../packages/${pkg}`)
+      const version = getPackageVersion(packagePath)
+      return version === tag
+    })
+
+    if (matchedPackages.length === 0) return console.error(`No packages found with version ${tag}`)
+
+    for (const pkg of matchedPackages) {
+      pushPackage(pkg, { tag, dryRun, latest: options?.latest })
     }
   })
 
@@ -88,11 +110,6 @@ function buildPackage(package, options) {
   if (options?.latest) {
     console.log(`Tagging latest image ${image} -> ${images[package]}:latest`)
     if (!dryRun) tagImage(image, `${images[package]}:latest`)
-  }
-
-  if (options?.push) {
-    console.log(`Pushing ${image}`)
-    pushPackage(package, options)
   }
 }
 
