@@ -1,6 +1,6 @@
 {
   "name": "gateway",
-  "version": "0.8.0-alpha.3",
+  "version": "0.8.2",
   "description": "gateway service for laf.js",
   "main": "index.js",
   "private": true,
