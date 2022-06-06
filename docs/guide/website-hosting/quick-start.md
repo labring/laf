@@ -4,9 +4,9 @@ title: 托管静态网站
 
 ### 托管静态网站
 
-  1. 创建一个 bucket 用于存储静态网站文件
-  2. 上传静态网站文件到 bucket
-  3. 创建一个网站托管配置
+1. 创建一个 bucket 用于存储静态网站文件
+2. 上传静态网站文件到 bucket
+3. 创建一个网站托管配置
 
 ### 创建一个存储 bucket
 
@@ -29,7 +29,7 @@ npm install -g laf-cli
 
 - `--access-key` 替换为你上一步获取的 AccessKey
 - `--access-secret` 替换为你上一步获取的 SecretKey
-- `--bucket-name` 参数为目标 bucket 全名，格式为 `APPID-BUCKET`，其中 `APPID` 为你的应用 ID，`BUCKET` 为你的 bucket 短名，如 `qya2cx-public`
+- `--bucket-name` 参数为目标 bucket 全名，如 `qya2cx-public`
 - `./dist` 是本地静态文件所在目录，可以修改为你的项目中的静态文件目录。
 
 ```bash
@@ -51,6 +51,6 @@ laf-cli sync \
 
 <img src="./images/create-hosts-02.png"  width="800" height="100" align="bottom" />
 
-
 ### 注意事项
+
 - 域名根路径对应 bucket 的根路径
