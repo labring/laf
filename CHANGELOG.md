@@ -1,4 +1,15 @@
-# [](https://github.com/labring/laf/compare/v0.8.0...v) (2022-05-27)
+# [](https://github.com/labring/laf/compare/v0.8.1...v) (2022-06-06)
+
+
+
+## [0.8.1](https://github.com/labring/laf/compare/v0.8.0...v0.8.1) (2022-06-06)
+
+
+### Features
+
+* add auto build & push docker images by github actions ([#122](https://github.com/labring/laf/issues/122)) ([fe313b3](https://github.com/labring/laf/commit/fe313b383679c256a8858f39f49f3efc4cb2d72e))
+* **deploy:** use nip.io domain instead of local-dev.host ([8bd2abc](https://github.com/labring/laf/commit/8bd2abcccbda59cefeb30f6cbc49eaf48b181e89))
+* full bucket name ([#125](https://github.com/labring/laf/issues/125)) ([62dacc5](https://github.com/labring/laf/commit/62dacc551d888afbcde29859562efa3acbb422c3))
 
 
 
