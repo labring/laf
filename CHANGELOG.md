@@ -1,4 +1,14 @@
-# [](https://github.com/labring/laf/compare/v0.8.1...v) (2022-06-06)
+# [](https://github.com/labring/laf/compare/v0.8.2...v) (2022-06-06)
+
+
+
+## [0.8.2](https://github.com/labring/laf/compare/v0.8.1...v0.8.2) (2022-06-06)
+
+
+### Bug Fixes
+
+* **app-service:**  fix security risk for expose process.env ([d3004b3](https://github.com/labring/laf/commit/d3004b33e27713ff26f28a6069b8f3b4f29d49f3))
+* **app-service:** fix bug in cloud-sdk path; ([f8df39b](https://github.com/labring/laf/commit/f8df39b5908900a26cf2a7339ed4729f7820c0f3))
 
 
 
