@@ -1,3 +1,4 @@
+import { URL } from 'node:url'
 
 import * as vm from 'vm'
 import { nanosecond2ms } from '../utils'
@@ -75,7 +76,7 @@ export class FunctionEngine {
     const _module = {
       exports: {}
     }
-    return {
+    const sandbox = {
       __context__: functionContext,
       __filename: functionContext.__function_name,
       module: _module,
@@ -89,8 +90,13 @@ export class FunctionEngine {
       clearInterval: clearInterval,
       setTimeout: setTimeout,
       clearTimeout: clearTimeout,
-      process: { env: {} }
+      process: { env: {} },
+      URL: URL,
+      global: null,
     }
+
+    sandbox.global = sandbox
+    return sandbox
   }
 
   /**

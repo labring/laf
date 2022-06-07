@@ -26,7 +26,8 @@ export interface RuntimeContext {
   __filename: string,
   process: {
     env: { [key: string]: string },
-  }
+  },
+  global: RuntimeContext
 }
 
 /**

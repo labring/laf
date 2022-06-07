@@ -92,6 +92,8 @@ interface IExports {
 declare const module: IModule
 declare const exports: IExports
 declare const console: FunctionConsole
+declare const global: typeof globalThis
+
 /**
  * 主函数，云函数的入口函数
  */
