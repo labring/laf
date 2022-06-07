@@ -21,21 +21,27 @@ function getPackageVersion(packagePath) {
  * build docker image
  * @param {string} filepath path of Dockerfile
  */
- function buildImage(filepath, tag) {
-  const sub = child_process.spawn('docker', ['build', '-t', tag, filepath])
+function buildImage(filepath, tag) {
+  return new Promise((res, rej) => {
+    const sub = child_process.spawn('docker', ['build', '-t', tag, filepath])
 
-  sub.stdout.on('data', (data) => {
-    console.log(`${tag} stdout: ${data}`);
-  });
-  
-  sub.stderr.on('data', (data) => {
-    console.error(`${tag} output: ${data}`);
-  });
-  
-  sub.on('close', (code) => {
-    console.log(`${tag} child process exited with code ${code}`);
-  });
- }
+    sub.stdout.on('data', (data) => {
+      console.log(`${tag} stdout: ${data}`)
+    })
+
+    sub.stderr.on('data', (data) => {
+      console.error(`${tag} output: ${data}`)
+    })
+
+    sub.on('close', (code) => {
+      console.log(`\tbuild image ${tag} child process exited with code ${code}`)
+      if (code)
+        rej(code)
+      else
+        res(code)
+    })
+  })
+}
 
 
 /**
@@ -43,41 +49,53 @@ function getPackageVersion(packagePath) {
  * @param {string} sourceImage 
  * @param {string} targetImage 
  */
- function tagImage(sourceImage, targetImage) {
-  const sub = child_process.spawn('docker', ['tag', sourceImage, targetImage])
+function tagImage(sourceImage, targetImage) {
+  return new Promise((res, rej) => {
+    const sub = child_process.spawn('docker', ['tag', sourceImage, targetImage])
 
-  sub.stdout.on('data', (data) => {
-    console.log(`${targetImage} stdout: ${data}`);
-  });
-  
-  sub.stderr.on('data', (data) => {
-    console.error(`${targetImage} output: ${data}`);
-  });
-  
-  sub.on('close', (code) => {
-    console.log(`${targetImage} child process exited with code ${code}`);
-  });
- }
+    sub.stdout.on('data', (data) => {
+      console.log(`${targetImage} stdout: ${data}`)
+    })
+
+    sub.stderr.on('data', (data) => {
+      console.error(`${targetImage} output: ${data}`)
+    })
+
+    sub.on('close', (code) => {
+      console.log(`\ttag image ${targetImage} child process exited with code ${code}`);
+      if (code)
+        rej(code)
+      else
+        res(code)
+    })
+  })
+}
 
 
 /**
  * push docker image
  * @param {string} image
  */
- function pushImage(tag) {
-  const sub = child_process.spawn('docker', ['push', tag])
+function pushImage(tag) {
+  return new Promise((res, rej) => {
+    const sub = child_process.spawn('docker', ['push', tag])
 
-  sub.stdout.on('data', (data) => {
-    console.log(`${tag} stdout: ${data}`);
-  });
-  
-  sub.stderr.on('data', (data) => {
-    console.error(`${tag} output: ${data}`);
-  });
-  
-  sub.on('close', (code) => {
-    console.log(`${tag} child process exited with code ${code}`);
-  });
+    sub.stdout.on('data', (data) => {
+      console.log(`${tag} stdout: ${data}`)
+    });
+
+    sub.stderr.on('data', (data) => {
+      console.error(`${tag} output: ${data}`)
+    })
+
+    sub.on('close', (code) => {
+      console.log(`\tpush image ${tag} child process exited with code ${code}`)
+      if (code)
+        rej(code)
+      else
+        res(code)
+    })
+  })
 }
 
 

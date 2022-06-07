@@ -86,7 +86,7 @@ program
 program.parse(process.argv);
 
 
-function buildPackage(package, options) {
+async function buildPackage(package, options) {
   console.log(`--------------------------- build --------------------------`)
   const packagePath = path.resolve(__dirname, `../packages/${package}`)
   const version = getPackageVersion(packagePath)
@@ -104,16 +104,16 @@ function buildPackage(package, options) {
 
   console.log(`Building ${image}`)
   if (!dryRun) {
-    buildImage(packagePath, image)
+    await buildImage(packagePath, image)
   }
 
   if (options?.latest) {
     console.log(`Tagging latest image ${image} -> ${images[package]}:latest`)
-    if (!dryRun) tagImage(image, `${images[package]}:latest`)
+    if (!dryRun) await tagImage(image, `${images[package]}:latest`)
   }
 }
 
-function pushPackage(package, options) {
+async function pushPackage(package, options) {
   console.log(`--------------------------- push ---------------------------`)
   const packagePath = path.resolve(__dirname, `../packages/${package}`)
   const version = getPackageVersion(packagePath)
@@ -131,12 +131,12 @@ function pushPackage(package, options) {
 
   console.log(`Pushing ${image}`)
   if (!dryRun) {
-    pushImage(image)
+    await pushImage(image)
   }
 
   if (options?.latest) {
     console.log(`Pushing latest tag ${images[package]}:latest`)
-    if (!dryRun) pushImage(`${images[package]}:latest`)
+    if (!dryRun) await pushImage(`${images[package]}:latest`)
   }
 }
 
