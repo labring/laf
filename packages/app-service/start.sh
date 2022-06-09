@@ -5,5 +5,5 @@ node ./dist/init.js
 echo "****** init end *******"
 
 # source .env
-echo "****** start service: node $FLAGS ./dist/index.js *******"
+echo "****** start service: node $FLAGS --experimental-fetch ./dist/index.js *******"
 exec node $FLAGS ./dist/index.js

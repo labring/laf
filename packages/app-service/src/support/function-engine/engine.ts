@@ -1,3 +1,4 @@
+// import fetch from 'node-fetch'
 import { URL } from 'node:url'
 
 import * as vm from 'vm'
@@ -92,6 +93,7 @@ export class FunctionEngine {
       clearTimeout: clearTimeout,
       process: { env: {} },
       URL: URL,
+      fetch: globalThis.fetch,
       global: null,
     }
 
