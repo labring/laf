@@ -1,0 +1,11 @@
+layout:
+  topbar:
+    title: Laf 云开发
+    user:
+      logout: 退出
+      reset-password: 修改密码
+pages:
+  account:
+    login:
+      title: Laf 云开发账户登录
+    register: 注册
