@@ -91,11 +91,11 @@ export default defineConfig({
     // port,
     proxy: {
       "/sys-api": {
-        target: "http://console.local-dev.host:8080/",
+        target: "http://console.127-0-0-1.nip.io:8000/",
         changeOrigin: true,
       },
       "/sys-extension-api": {
-        target: "http://console.local-dev.host:8080/",
+        target: "http://console.127-0-0-1.nip.io:8000/",
         changeOrigin: true,
       },
     },
