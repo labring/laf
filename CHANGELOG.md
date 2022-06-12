@@ -1,4 +1,28 @@
-# [](https://github.com/labring/laf/compare/v0.8.2...v) (2022-06-06)
+# [](https://github.com/labring/laf/compare/v0.8.4...v) (2022-06-09)
+
+
+
+## [0.8.4](https://github.com/labring/laf/compare/v0.8.3...v0.8.4) (2022-06-09)
+
+
+### Bug Fixes
+
+* **sys:** fix [#108](https://github.com/labring/laf/issues/108) ([c6bfc5a](https://github.com/labring/laf/commit/c6bfc5a104a2a6a6a1f7f6b1cb527b8a66bedeb1))
+
+
+### Features
+
+* **app-service:** add node-fetch package & remove cross-fetch pkg; ([81b926b](https://github.com/labring/laf/commit/81b926b67853437349f3b3aa30f49fbb37ef670f))
+* **app-service:** support global fetch in function; ([67f03a2](https://github.com/labring/laf/commit/67f03a2835b94be987a9dbfcef7f50963bddab8b))
+
+
+
+## [0.8.3](https://github.com/labring/laf/compare/v0.8.2...v0.8.3) (2022-06-07)
+
+
+### Features
+
+* **app-service:** support global in cloud functions ([5faf2ff](https://github.com/labring/laf/commit/5faf2ffa2b24db1cb1b5cc96f7c58d43d4552cd0))
 
 
 

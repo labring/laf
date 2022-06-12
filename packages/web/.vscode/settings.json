@@ -1,0 +1,20 @@
+{
+  "cSpell.words": ["Vitesse"],
+  "prettier.enable": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "files.associations": {
+    "*.css": "postcss"
+  },
+  "i18n-ally.sourceLanguage": "en",
+  "i18n-ally.keystyle": "nested",
+  "i18n-ally.localesPaths": "locales",
+  "i18n-ally.sortKeys": true,
+  "i18n-ally.enabledFrameworks": [
+    "vue",
+    "vue-sfc",
+    "i18next"
+  ],
+  "i18n-ally.extract.autoDetect": true
+}

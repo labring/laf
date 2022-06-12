@@ -1,0 +1,11 @@
+layout:
+  topbar:
+    title: Laf Cloud
+    user:
+      logout: Exit
+      reset-password: Reset Password
+pages:
+  account:
+    login:
+      title: Login
+    register: Register

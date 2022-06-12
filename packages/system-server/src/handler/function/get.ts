@@ -168,7 +168,6 @@ export async function handleGetFunctionHistory(req: Request, res: Response) {
   const page = Number(req.query?.page || 1)
 
 
-  // const doc = await getFunctionById(app.appid, new ObjectId(func_id))
   const db = DatabaseAgent.db
   const docs = await db.collection(CN_FUNCTION_HISTORY)
     .aggregate()
@@ -176,6 +175,9 @@ export async function handleGetFunctionHistory(req: Request, res: Response) {
       appid: app.appid,
       func_id: new ObjectId(func_id),
     })
+    .sort({ created_at: -1 })
+    .skip((page - 1) * limit)
+    .limit(limit)
     .lookup({
       from: CN_ACCOUNTS,
       localField: 'created_by',
@@ -188,9 +190,6 @@ export async function handleGetFunctionHistory(req: Request, res: Response) {
       'account.created_at': 0,
       'account.updated_at': 0,
     })
-    .skip((page - 1) * limit)
-    .limit(limit)
-    .sort({ created_at: -1 })
     .toArray()
 
   for (const doc of docs) {
