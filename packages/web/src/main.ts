@@ -3,7 +3,7 @@ import { createPinia } from 'pinia'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import App from './App.vue'
 import router from '~/router'
-import { i18n } from '~/locates'
+import { i18n } from '~/modules/locales'
 
 import '@unocss/reset/tailwind.css'
 import './styles/main.css'

@@ -1,8 +1,16 @@
 <script lang="ts" setup>
 import { LanguageOutlined } from '@vicons/material'
-import { supportLanguages } from '~/locates'
+import { supportLanguages } from '~/modules/locales'
 
+withDefaults(defineProps<{
+  showName?: boolean
+}>(), {
+  showName: false,
+})
 const { locale } = useI18n()
+const langText = computed(() => {
+  return supportLanguages.find(item => item.name === locale.value)?.text || 'Language'
+})
 </script>
 
 <template>
@@ -11,6 +19,7 @@ const { locale } = useI18n()
       <el-icon class="el-icon--right">
         <LanguageOutlined />
       </el-icon>
+      <span v-if="showName" ml-1>{{ langText }}</span>
     </span>
     <template #dropdown>
       <el-dropdown-menu>

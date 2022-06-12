@@ -7,5 +7,13 @@ layout:
 pages:
   account:
     login:
+      account: 账户
+      login-btn: 登录
+      password: 密码
       title: Laf 云开发账户登录
     register: 注册
+utils:
+  form:
+    email: 邮箱格式不正确
+    password: '{name} 至少需要8位'
+    required: '{name}不能为空'

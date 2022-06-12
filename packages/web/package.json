@@ -1,6 +1,5 @@
 {
   "private": true,
-  "packageManager": "pnpm@7.0.0",
   "scripts": {
     "build": "vite build",
     "dev": "vite --port 3333 --open",
@@ -34,6 +33,7 @@
     "@unocss/reset": "^0.33.2",
     "@vitejs/plugin-vue": "^2.3.2",
     "@vue/test-utils": "^2.0.0-rc.21",
+    "balanced-match": "*",
     "eslint": "^8.15.0",
     "jsdom": "^19.0.0",
     "pnpm": "^7.0.1",
