@@ -17,3 +17,14 @@ utils:
     email: 邮箱格式不正确
     password: '{name} 至少需要8位'
     required: '{name}不能为空'
+  message:
+    confirm:
+      buttons:
+        cancel: 取消
+        confirm: 确认
+      default-message: 确定执行此操作吗？
+      default-title: 提示
+    error:
+      default-message: 操作失败
+    success:
+      default-message: 操作成功
