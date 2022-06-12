@@ -17,3 +17,5 @@ export const supportLanguages = [
     text: 'English',
   },
 ]
+
+export const t = i18n.global.t.bind(i18n.global)
