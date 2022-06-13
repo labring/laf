@@ -17,6 +17,7 @@ import { DatabaseAgent } from '../../db'
 import { logger } from '../../support/logger'
 import { generatePassword } from '../../support/util-passwd'
 import { ApplicationSpecSupport } from '../../support/application-spec'
+import {createApplicationRoute} from "../../support/route";
 
 /**
  * The handler of creating application
@@ -115,6 +116,11 @@ export async function handleCreateApplication(req: Request, res: Response) {
   logger.debug(`create application db ${db_name}`, result)
 
   const app = await getApplicationByAppid(appid)
+
+  let rt = await createApplicationRoute(data.name, data.appid, uid)
+  if (!rt) {
+      return res.status(400).send('Error: create route failed')
+  }
 
   return res.send({
     data: app

@@ -1,0 +1,39 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "allowJs": false,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "charset": "utf8",
+    "declaration": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "importHelpers": false,
+    "module": "commonjs",
+    "declarationMap": true,
+    // "declarationDir": "types",
+    "noEmitOnError": false,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "dist",
+    "pretty": true,
+    "removeComments": true,
+    "stripInternal": true,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true,
+    "target": "es2017",
+    "alwaysStrict": true,
+    "lib": [
+      "es2015",
+      "es6"
+    ]
+  },
+  "include": [
+    "src/**/*",
+  ],
+  "exclude": [
+    "tests",
+  ]
+}
