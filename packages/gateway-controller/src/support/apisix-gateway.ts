@@ -45,7 +45,7 @@ class ApiSixOperator {
     static async putRoute(baseUrl: string, appid: string, name: string, hosts: string[], nodes: Record<string, number>) {
         let data = {
             name: name,
-            uri: '/',
+            uri: '/*',
             hosts: hosts,
             priority: 9, // 设置优先级较高点
             upstream: {
