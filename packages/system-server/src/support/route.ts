@@ -12,25 +12,33 @@ export enum RouteStatus {
     DELETED = 'deleted',
 }
 
+export enum RouteType {
+    APP = 'app',
+    OSS_CUSTOM = 'oss_custom'
+}
+
 
 export interface IRouteData {
     _id?: string
     name: string
-    created_by: ObjectId
     appid: string
+    type: RouteType
+    website_id: string
     status: RouteStatus
+    created_by: ObjectId
     created_at?: Date
     updated_at?: Date
 }
-
 
 export async function createApplicationRoute(name: string, appid: string, uid: any): Promise<Boolean> {
     const now = new Date()
     let data: IRouteData = {
         name: name,
         appid: appid,
-        created_by: new ObjectId(uid),
+        type: RouteType.APP,
+        website_id: null,
         status: RouteStatus.PREPARED_CREATE,
+        created_by: new ObjectId(uid),
         created_at: now,
         updated_at: now,
     }
@@ -47,6 +55,45 @@ export async function deleteApplicationRoute(appid: string) {
     const ret = await DatabaseAgent.db.collection<IRouteData>(CN_ROUTES)
         .updateOne({
             appid: appid,
+        }, {
+            $set: {
+                status: RouteStatus.PREPARED_DELETE
+            }
+        })
+    if (!ret.modifiedCount) {
+        logger.error('delete route task successful: {}', appid)
+        return false
+    }
+    return true
+}
+
+
+export async function createOssCustomRoute(name: string, appid: string, websiteId: string, uid: any): Promise<Boolean> {
+    const now = new Date()
+    let data: IRouteData = {
+        name: name,
+        appid: appid,
+        type: RouteType.OSS_CUSTOM,
+        website_id: websiteId,
+        status: RouteStatus.PREPARED_CREATE,
+        created_by: new ObjectId(uid),
+        created_at: now,
+        updated_at: now,
+    }
+    const ret = await DatabaseAgent.db.collection(CN_ROUTES)
+        .insertOne(data as any)
+    if (!ret.insertedId) {
+        logger.error('create route task successful: {}', appid)
+        return false
+    }
+    return true
+}
+
+export async function deleteOssCustomRoute(appid: string, websiteId: string) {
+    const ret = await DatabaseAgent.db.collection<IRouteData>(CN_ROUTES)
+        .updateOne({
+            appid: appid,
+            website_id: websiteId,
         }, {
             $set: {
                 status: RouteStatus.PREPARED_DELETE

@@ -1,9 +1,7 @@
 import {GatewayInterface} from "./gateway-operator";
-import {IRouteData} from "./route";
-import {AxiosRequestHeaders} from "axios";
-import axios from "axios";
-import {logger} from "./logger";
+import {IRouteData, RouteType} from "./route";
 import Config from "../config";
+import {ApiSixHttpUtils} from "./apisix-gateway-utils";
 
 export class ApiSixGateway implements GatewayInterface {
 
@@ -17,73 +15,47 @@ export class ApiSixGateway implements GatewayInterface {
     }
 
     public async create(route: IRouteData) {
-        let hosts = [route.appid + '.' + Config.DEPLOY_DOMAIN]
-        let nodes
-        if (Config.SERVICE_DRIVER == 'docker') {
-            let node = 'app-' + route.appid + ':8000'
-            nodes = {
-                [node]: 1
-            }
+        if (route.type === RouteType.APP) {
+            return await createAppRoute(this.baseUrl, route)
         }
-        return ApiSixOperator.putRoute(this.baseUrl, route.appid, route.name, hosts, nodes)
     }
 
     public async delete(route: IRouteData) {
-        return ApiSixOperator.deleteRoute(this.baseUrl, route.appid)
+        if (route.type === RouteType.APP) {
+            return await deleteAppRoute(this.baseUrl, route)
+        }
     }
 
 }
 
+async function createAppRoute(url: string, route: IRouteData) {
 
-class ApiSixOperator {
-
-    static headers: AxiosRequestHeaders = {
-        'X-API-KEY': Config.API_SIX_KEY,
-        'Content-Type': 'application/json',
+    let host = null, node = null
+    if (Config.SERVICE_DRIVER == 'docker') {
+        host = route.appid + '.' + Config.DEPLOY_DOMAIN
+        node = 'app-' + route.appid + ':8000'
     }
 
-    static async putRoute(baseUrl: string, appid: string, name: string, hosts: string[], nodes: Record<string, number>) {
-        let data = {
-            name: name,
-            uri: '/*',
-            hosts: hosts,
-            priority: 9, // 设置优先级较高点
-            upstream: {
-                type: 'roundrobin',
-                nodes: nodes
-            },
-            timeout: {
-                connect: 600,
-                send: 600,
-                read: 600,
+    let data = {
+        name: route.name,
+        uri: '/*',
+        hosts: [host],
+        priority: 9, // 设置优先级较高点
+        upstream: {
+            type: 'roundrobin',
+            nodes: {
+                [node]: 1
             }
+        },
+        timeout: {
+            connect: 600,
+            send: 600,
+            read: 600,
         }
-        let resStatus = false
-        await axios.put(baseUrl + '/apisix/admin/routes/' + appid, data, {
-            headers: this.headers,
-        })
-            .then(_ => {
-                logger.info('create route successful')
-                resStatus = true
-            })
-            .catch(err => {
-                logger.info('create route failed: ', err)
-            })
-        return resStatus
     }
+    return await ApiSixHttpUtils.put(url, route.appid, data)
+}
 
-    static async deleteRoute(baseUrl: string, appid: string) {
-        let resStatus = false
-        await axios.delete(baseUrl + '/apisix/admin/routes/' + appid, {
-            headers: this.headers,
-        })
-            .then(_ => {
-                logger.info('delete route successful')
-                resStatus = true
-            })
-            .catch(err => {
-                logger.info('delete route failed: ', err)
-            })
-        return resStatus
-    }
+async function deleteAppRoute(url: string, route: IRouteData) {
+    return await ApiSixHttpUtils.delete(url, route.appid)
 }

@@ -2,13 +2,9 @@
  * init base route
  */
 import Config from "../config";
-import axios, {AxiosRequestHeaders} from "axios";
-import {logger} from "./logger";
+import {ApiSixHttpUtils} from "./apisix-gateway-utils";
 
-const headers: AxiosRequestHeaders = {
-    'X-API-KEY': Config.API_SIX_KEY,
-    'Content-Type': 'application/json',
-}
+const baseUrl = 'http://gateway:9080'
 
 export function initBaseRoute() {
     initSystemClientRoute()
@@ -34,13 +30,7 @@ function initSystemClientRoute() {
             read: 600,
         }
     }
-    axios.put('http://gateway:9080/apisix/admin/routes/base_system_client', data, {
-        headers: headers
-    }).then(_ => {
-        logger.info('create system-client route successful')
-    }).catch(err => {
-        logger.info('create system-client route failed: ', err)
-    })
+    ApiSixHttpUtils.put(baseUrl, 'base_system_client', data)
 }
 
 function initAppConsoleRoute() {
@@ -63,13 +53,7 @@ function initAppConsoleRoute() {
             }
         }
     }
-    axios.put('http://gateway:9080/apisix/admin/routes/base_app_console', data, {
-        headers: headers
-    }).then(_ => {
-        logger.info('create app-console route successful')
-    }).catch(err => {
-        logger.info('create app-console route failed: ', err)
-    })
+    ApiSixHttpUtils.put(baseUrl, 'base_app_console', data)
 }
 
 function initSysApiRoute() {
@@ -92,13 +76,7 @@ function initSysApiRoute() {
             }
         }
     }
-    axios.put('http://gateway:9080/apisix/admin/routes/base_sys_api', data, {
-        headers: headers
-    }).then(_ => {
-        logger.info('create sys-api route successful')
-    }).catch(err => {
-        logger.info('create sys-api route failed: ', err)
-    })
+    ApiSixHttpUtils.put(baseUrl, 'base_sys_api', data)
 }
 
 
@@ -117,13 +95,7 @@ function initOssRoute() {
             read: 600,
         }
     }
-    axios.put('http://gateway:9080/apisix/admin/routes/base_oss', data, {
-        headers: headers
-    }).then(_ => {
-        logger.info('create oss route successful')
-    }).catch(err => {
-        logger.info('create oss route failed: ', err)
-    })
+    ApiSixHttpUtils.put(baseUrl, 'base_oss', data)
 }
 
 
@@ -147,11 +119,5 @@ function initOssSubDomainRoute() {
             }
         }
     }
-    axios.put('http://gateway:9080/apisix/admin/routes/base_oss_sub_domain', data, {
-        headers: headers
-    }).then(_ => {
-        logger.info('create oss route successful')
-    }).catch(err => {
-        logger.info('create oss route failed: ', err)
-    })
+    ApiSixHttpUtils.put(baseUrl, 'base_oss_sub_domain', data)
 }

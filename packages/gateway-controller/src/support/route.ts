@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongodb'
+import {ObjectId} from 'mongodb'
 import {CN_ROUTES} from "./constants";
 import {DatabaseAgent} from "./db";
 
@@ -11,13 +11,20 @@ export enum RouteStatus {
     DELETED = 'deleted',
 }
 
+export enum RouteType {
+    APP = 'app',
+    OSS_CUSTOM = 'oss_custom'
+}
+
 
 export interface IRouteData {
     _id?: string
     name: string
-    created_by: ObjectId
     appid: string
+    type: RouteType
+    website_id: string
     status: RouteStatus
+    created_by: ObjectId
     created_at?: Date
     updated_at?: Date
 }
@@ -30,7 +37,7 @@ export interface IRouteData {
 export async function getRoutesInStatus(status: RouteStatus) {
     const db = DatabaseAgent.db
     const docs = await db.collection<IRouteData>(CN_ROUTES)
-        .find({ status: status })
+        .find({status: status})
         .toArray()
 
     return docs
