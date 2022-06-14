@@ -10,11 +10,12 @@ const headers: AxiosRequestHeaders = {
     'Content-Type': 'application/json',
 }
 
-export function initBaseRoute(){
+export function initBaseRoute() {
     initSystemClientRoute()
     initAppConsoleRoute()
     initSysApiRoute()
     initOssRoute()
+    initOssSubDomainRoute()
 }
 
 
@@ -101,7 +102,7 @@ function initSysApiRoute() {
 }
 
 
-function initOssRoute(){
+function initOssRoute() {
     let data = {
         name: 'oss',
         uris: ['/*'],
@@ -117,6 +118,36 @@ function initOssRoute(){
         }
     }
     axios.put('http://gateway:9080/apisix/admin/routes/base_oss', data, {
+        headers: headers
+    }).then(_ => {
+        logger.info('create oss route successful')
+    }).catch(err => {
+        logger.info('create oss route failed: ', err)
+    })
+}
+
+
+function initOssSubDomainRoute() {
+    let data = {
+        name: 'oss-sub-domain',
+        uris: ['/*'],
+        hosts: ['*.' + Config.DEPLOY_OSS_DOMAIN],
+        upstream: {
+            type: 'roundrobin',
+            nodes: {'oss:9000': 1}
+        },
+        timeout: {
+            connect: 600,
+            send: 600,
+            read: 600,
+        },
+        plugins: {
+            'proxy-rewrite': {
+                regex_uri: ["/", "/index.html"]
+            }
+        }
+    }
+    axios.put('http://gateway:9080/apisix/admin/routes/base_oss_sub_domain', data, {
         headers: headers
     }).then(_ => {
         logger.info('create oss route successful')
