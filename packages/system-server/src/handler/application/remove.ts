@@ -13,13 +13,14 @@ import { checkPermission } from '../../support/permission'
 import { CN_APPLICATIONS } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { ApplicationActionDef } from '../../actions'
+import {deleteApplicationRoute} from "../../support/route";
 
 
 /**
  * The handler of removing application
- * @param req 
- * @param res 
- * @returns 
+ * @param req
+ * @param res
+ * @returns
  */
 export async function handleRemoveApplication(req: Request, res: Response) {
   const uid = req['auth']?.uid
@@ -58,5 +59,7 @@ export async function handleRemoveApplication(req: Request, res: Response) {
   const ret = await db.collection(CN_APPLICATIONS)
     .deleteOne({ appid })
 
+  // remote route
+  await deleteApplicationRoute(app.appid)
   return res.send({ data: ret })
 }

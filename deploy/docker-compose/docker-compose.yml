@@ -53,7 +53,7 @@ services:
       - laf_shared_network
 
   system-server:
-    image: lafyun/system-server:0.8.0
+    image: system-server
     user: root
     working_dir: /app
     environment:
@@ -87,18 +87,47 @@ services:
       - laf_shared_network
 
   gateway:
-    image: lafyun/gateway:0.8.0-alpha.3
+    image: apache/apisix:2.14.1-alpine
     depends_on:
       - system-server
       - mongo
+      - etcd
     environment:
       DEPLOY_DOMAIN: "*.${DEPLOY_DOMAIN:?err}"
       DEPLOY_OSS_DOMAIN: ${OSS_DOMAIN}
       SYS_CLIENT_HOST: ${SYS_CLIENT_HOST:?err}
       SYSTEM_EXTENSION_APPID: ${SYSTEM_EXTENSION_APPID}
-    command: "sh /scripts/start.sh"
+    volumes:
+      - ./apisix_conf.yaml:/usr/local/apisix/conf/config.yaml:ro
     ports:
-      - ${PUBLISH_PORT:-8080}:80
+      - ${PUBLISH_PORT:-8080}:9080
+    networks:
+      - laf_shared_network
+
+  gateway-controller:
+    image: gateway-controller
+    depends_on:
+      - gateway
+    environment:
+      DEPLOY_DOMAIN: "${DEPLOY_DOMAIN:?err}"
+      DEPLOY_OSS_DOMAIN: ${OSS_DOMAIN}
+      SYS_CLIENT_HOST: ${SYS_CLIENT_HOST:?err}
+      SYSTEM_EXTENSION_APPID: ${SYSTEM_EXTENSION_APPID}
+      LOG_LEVEL: debug
+      SERVICE_DRIVER: docker
+      GATEWAY_TYPE: apisix
+      SYS_DB_URI: mongodb://${SYS_DB_USER}:${SYS_DB_PASSWORD}@mongo:27017/?authSource=${SYS_DB}&replicaSet=laf&writeConcern=majority
+      API_SIX_KEY: ${API_SIX_KEY}
+    networks:
+      - laf_shared_network
+
+  apisix-dashboard:
+    image: apache/apisix-dashboard:2.13-alpine
+    restart: always
+    volumes:
+      - ./dashboard_conf.yaml:/usr/local/apisix-dashboard/conf/conf.yaml
+    ports:
+      - "9000:9000"
     networks:
       - laf_shared_network
 
