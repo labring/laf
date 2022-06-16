@@ -13,7 +13,7 @@ export enum RouteStatus {
 
 export enum RouteType {
     APP = 'app',
-    OSS_CUSTOM = 'oss_custom'
+    WEBSITE_CUSTOM = 'website_custom'
 }
 
 
@@ -23,6 +23,7 @@ export interface IRouteData {
     appid: string
     type: RouteType
     website_id: string
+    domain: string[]
     status: RouteStatus
     created_by: ObjectId
     created_at?: Date

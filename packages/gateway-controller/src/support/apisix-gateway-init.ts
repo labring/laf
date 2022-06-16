@@ -115,7 +115,7 @@ function initOssSubDomainRoute() {
         },
         plugins: {
             'proxy-rewrite': {
-                regex_uri: ["/", "/index.html"]
+                regex_uri: ["/$", "/index.html"]
             }
         }
     }
