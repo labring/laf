@@ -7,7 +7,7 @@
   "files.associations": {
     "*.css": "postcss"
   },
-  "i18n-ally.sourceLanguage": "en",
+  "i18n-ally.sourceLanguage": "zh-CN",
   "i18n-ally.keystyle": "nested",
   "i18n-ally.localesPaths": "locales",
   "i18n-ally.sortKeys": true,
@@ -16,5 +16,12 @@
     "vue-sfc",
     "i18next"
   ],
-  "i18n-ally.extract.autoDetect": true
+  "i18n-ally.extract.autoDetect": true,
+  "i18n-ally.refactor.templates": [{
+    "name": "i18n-ally-vue-sfc",
+    "extensions": [
+      "ts",
+      "i18n.global.t('${key}')"
+    ]
+  }]
 }
