@@ -14,7 +14,7 @@ export enum RouteStatus {
 
 export enum RouteType {
     APP = 'app',
-    OSS_CUSTOM = 'oss_custom'
+    WEBSITE_CUSTOM = 'website_custom'
 }
 
 
@@ -24,6 +24,7 @@ export interface IRouteData {
     appid: string
     type: RouteType
     website_id: string
+    domain: string[]
     status: RouteStatus
     created_by: ObjectId
     created_at?: Date
@@ -37,6 +38,7 @@ export async function createApplicationRoute(name: string, appid: string, uid: a
         appid: appid,
         type: RouteType.APP,
         website_id: null,
+        domain: [],
         status: RouteStatus.PREPARED_CREATE,
         created_by: new ObjectId(uid),
         created_at: now,
@@ -68,28 +70,52 @@ export async function deleteApplicationRoute(appid: string) {
 }
 
 
-export async function createOssCustomRoute(name: string, appid: string, websiteId: string, uid: any): Promise<Boolean> {
-    const now = new Date()
-    let data: IRouteData = {
-        name: name,
+export async function createWebsiteCustomRoute(name: string, appid: string, websiteId: string, domain: string[], uid: any): Promise<Boolean> {
+    const route = await DatabaseAgent.db.collection(CN_ROUTES).findOne({
         appid: appid,
-        type: RouteType.OSS_CUSTOM,
-        website_id: websiteId,
-        status: RouteStatus.PREPARED_CREATE,
-        created_by: new ObjectId(uid),
-        created_at: now,
-        updated_at: now,
+        websiteId: websiteId
+    })
+    const now = new Date()
+    if (route) {
+        const ret = await DatabaseAgent.db.collection(CN_ROUTES).updateOne({
+            appid: appid,
+            websiteId: websiteId
+        }, {
+            $set: {
+                domain: domain,
+                status: RouteStatus.PREPARED_CREATE,
+                created_at: now,
+                updated_at: now,
+            }
+        })
+        if (!ret.modifiedCount) {
+            logger.error('update route task failed: {}', appid)
+            return false
+        }
+    } else {
+        let data: IRouteData = {
+            name: name,
+            appid: appid,
+            type: RouteType.WEBSITE_CUSTOM,
+            website_id: websiteId,
+            domain: domain,
+            status: RouteStatus.PREPARED_CREATE,
+            created_by: new ObjectId(uid),
+            created_at: now,
+            updated_at: now,
+        }
+        const ret = await DatabaseAgent.db.collection(CN_ROUTES)
+            .insertOne(data as any)
+        if (!ret.insertedId) {
+            logger.error('create route task failed: {}', appid)
+            return false
+        }
     }
-    const ret = await DatabaseAgent.db.collection(CN_ROUTES)
-        .insertOne(data as any)
-    if (!ret.insertedId) {
-        logger.error('create route task successful: {}', appid)
-        return false
-    }
+
     return true
 }
 
-export async function deleteOssCustomRoute(appid: string, websiteId: string) {
+export async function deleteWebsiteCustomRoute(appid: string, websiteId: string) {
     const ret = await DatabaseAgent.db.collection<IRouteData>(CN_ROUTES)
         .updateOne({
             appid: appid,
