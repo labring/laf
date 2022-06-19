@@ -26,14 +26,16 @@ const appForm = reactive<{
   spec: '',
 })
 
+const formRef = $ref<FormInstance>()
+
 const initCreateForm = () => {
+  formRef?.resetFields()
   appForm._id = ''
   appForm.appid = ''
   appForm.name = ''
   appForm.spec = ''
 }
 
-const formRef = $ref<FormInstance>()
 const formRules = {
   name: [
     { required: true, message: '请输入应用名称', trigger: 'blur' },
@@ -87,6 +89,7 @@ const handleSubmit = (formEl: FormInstance | undefined) => {
     v-model="isVisible"
     :title="type === 'update' ? '编辑应用' : '创建应用'"
     @close="$emit('closeCreateDialog')"
+    @closed="initCreateForm()"
   >
     <el-form
       ref="formRef"
