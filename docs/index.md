@@ -24,9 +24,10 @@ features:
 footer: Apache License V2.0 | Copyright © 2021-present labring/laf
 ---
 
-
 ## 🖥 在线体验
 
+::: info
 🎉 [lafyun.com](http://www.lafyun.com) 是 `laf` 的一个在线版，可在免费线体验 `laf` 云开发应用服务！
 
-开发者可免费在 [lafyun.com](http://www.lafyun.com) 上快速创建自己的应用，免除服务器部署和运维工作，立即拥有应用独立域名及 HTTPS 证书，快速上线应用！
+开发者可免费在 [lafyun.com 控制台](http://console.lafyun.com) 上快速创建自己的应用，免除服务器部署和运维工作，立即拥有应用独立域名及 HTTPS 证书，快速上线应用！
+:::
