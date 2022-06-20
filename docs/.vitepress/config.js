@@ -9,14 +9,10 @@ const NavConfig = [
   { text: '开发指南', link: '/guide/', activeMatch: '^/guide/' },
   { text: '预览图', link: '/screenshots', },
   { text: '在线 Demo', link: '/todo-list', },
-  { text: 'lafyun.com', link: 'https://www.lafyun.com/' },
   {
-    text: '更新记录',
-    link: 'https://github.com/labring/laf/blob/main/CHANGELOG.md'
-  },
-  {
-    text: 'GitHub',
-    link: 'https://github.com/labring/laf'
+    text: '控制台',
+    // target: "_self",
+    link: 'https://console.lafyun.com/'
   }
 ]
 
@@ -168,15 +164,15 @@ const GuideSiderbarConfig = [
 
 export default defineConfig({
   lang: 'zh-CN',
-  title: 'laf 云开发文档',
-  description: 'laf 云开发开发者使用文档',
+  title: 'laf 云开发',
+  description: 'laf 云开发，像写博客一样写函数，随手上线',
 
   themeConfig: {
     logo: '/logo.png',
-    // repo: 'labring/laf',
+    repo: 'labring/laf',
     // docsRepo: 'labring/laf-docs',
     docsBranch: 'main',
-    docsDir: '',
+    docsDir: 'docs',
     editLinks: true,
     editLinkText: '在 GitHub 上编辑此页',
     lastUpdated: '更新于',
