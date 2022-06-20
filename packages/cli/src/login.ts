@@ -6,8 +6,6 @@ import * as fs from 'node:fs'
 import {homedir} from 'node:os'
 const CREDENTIALs_file = '.laf-credentials';
 
-
-
 program
 .command('login')
 .option('-u, --username <username>', 'username')
@@ -35,9 +33,7 @@ program
 
     const result = await loginapi({username,password})
 
-     const response =  result.data
-
-   
+    const response =  result.data
 
     if(response.code!=0){
         console.error('username or password is wrong')
