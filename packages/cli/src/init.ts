@@ -1,6 +1,6 @@
 
 import { program } from 'commander'
-import {initapi} from './api/init'
+import {initApi} from './api/init'
 import * as fs from 'node:fs'
 import * as AdmZip from 'adm-zip'
 import  * as path  from 'node:path'
@@ -14,7 +14,7 @@ program
     
         try{
             
-            const result = await initapi(appid)
+            const result = await initApi(appid)
 
             const appname = result.headers['content-disposition'].slice(22,-5);
 
