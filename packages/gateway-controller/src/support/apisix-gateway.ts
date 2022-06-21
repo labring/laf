@@ -55,7 +55,11 @@ async function createAppRoute(url: string, route: IRouteData) {
             connect: 600,
             send: 600,
             read: 600,
-        }
+        },
+        plugins: {
+            cors: {}
+        },
+        enable_websocket: true
     }
     return await ApiSixHttpUtils.put(url, route.appid, data)
 }
