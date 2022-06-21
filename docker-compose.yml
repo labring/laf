@@ -20,6 +20,19 @@ services:
     networks:
       - laf_shared_network
 
+  etcd:
+    image: 'bitnami/etcd:3.5.4'
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+    volumes:
+      - etcd-data:/bitnami/etcd/data
+    ports:
+      - 2379
+      - 2380
+    networks:
+      - laf_shared_network
+
   oss:
     image: 'bitnami/minio:2022.4.12'
     environment:
@@ -104,21 +117,47 @@ services:
       - laf_shared_network
 
   gateway:
-    image: openresty/openresty:latest
+    image: apache/apisix:2.14.1-alpine
     depends_on:
-      - mongo
-      - system-server
-    environment:
-      DEPLOY_DOMAIN: "*.127-0-0-1.nip.io" # `*.127-0-0-1.nip.io` always resolved to 127.0.0.1, used to local development
-      DEPLOY_OSS_DOMAIN: "oss.127-0-0-1.nip.io"
-      SYS_CLIENT_HOST: console.127-0-0-1.nip.io
-      SYSTEM_EXTENSION_APPID: '000000'
+      - etcd
     volumes:
-      - ./packages/gateway/scripts:/scripts
-      - ./packages/gateway/conf.docker:/conf.docker
-    command: "sh /scripts/start.sh"
+      - ./gateway_conf.yaml:/usr/local/apisix/conf/config.yaml:ro
     ports:
-      - 8080:80
+      - 8080:9080
+    networks:
+      - laf_shared_network
+
+  gateway-controller:
+    build: ./packages/gateway-controller
+    user: root
+    working_dir: /app
+    environment:
+      DEPLOY_DOMAIN: 127-0-0-1.nip.io
+      DEPLOY_OSS_DOMAIN: oss.127-0-0-1.nip.io
+      SYS_CLIENT_HOST: console.127-0-0-1.nip.io
+      LOG_LEVEL: debug
+      SERVICE_DRIVER: docker
+      GATEWAY_TYPE: apisix
+      SYS_DB_URI: mongodb://my_user:password123@mongo:27017/?authSource=laf-sys&replicaSet=laf&writeConcern=majority
+      API_SIX_KEY: edd1c9f034335f136f87ad84b625c8f1
+    command: node ./dist/index.js
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./packages/gateway-controller:/app
+    depends_on:
+      - gateway
+    restart: always
+    networks:
+      - laf_shared_network
+
+
+  apisix-dashboard:
+    image: apache/apisix-dashboard:2.13-alpine
+    restart: always
+    volumes:
+      - ./gateway_dashboard_conf.yaml:/usr/local/apisix-dashboard/conf/conf.yaml
+    ports:
+      - "9000:9000"
     networks:
       - laf_shared_network
 
