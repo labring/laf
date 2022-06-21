@@ -8,11 +8,7 @@ import * as Table  from 'cli-table2'
 program
 .command('list')
 .action(async () => {
-    const result = await appList()
-
-    const response = result.data;
-
-    console.log(response)
+    const response = await appList()
 
     if(response.data){
         const table = new Table({
@@ -37,8 +33,7 @@ program
 .option('--env <env-file>', `the file name to generate`, '.env')
 .action(async (appid) => {
 
-    const result = await appStop(appid)
-    const response = result.data;
+    const response = await appStop(appid)
 
     if(response.data.result){
         console.log('stop success')
@@ -53,8 +48,7 @@ program
 .option('--env <env-file>', `the file name to generate`, '.env')
 .action(async (appid) => {
     
-    const result = await appStart(appid)
-    const response = result.data;
+    const response = await appStart(appid)
 
     if(response.data.result){
         console.log('start success')
@@ -69,8 +63,8 @@ program
 .option('--env <env-file>', `the file name to generate`, '.env')
 .action(async (appid) => {
 
-    const result = await appRestart(appid)
-    const response = result.data;
+    const response = await appRestart(appid)
+
 
     if(response.data.result){
         console.log('restart success')

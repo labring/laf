@@ -1,12 +1,35 @@
 import axios from 'axios'
 
-import { API_BASE_URL } from '../config/config'
+import { getRemoteServe } from '../utils/util'
+
+import { getAccessToken } from '../utils/tokens'
 
 
 export const request = axios.create({
     // 联调
-    baseURL: API_BASE_URL
+    baseURL: getRemoteServe()
 })
+
+
+request.interceptors.request.use(
+    async (config) => {
+        config.headers.VERSION = ''
+        const token = await getAccessToken()
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`
+        } else {
+            config.headers.Authorization = 'Basic aGVhbHRoOmhlYWx0aA=='
+        }
+        return config
+    },
+    (error) => {
+        // 错误抛到业务代码
+        error.data = {}
+        error.data.msg = '服务器异常，请联系管理员！'
+        return Promise.resolve(error)
+    },
+)
+
 
 /**
  * 描述 axios post 请求
@@ -16,29 +39,6 @@ export const request = axios.create({
   
       return request.request(obj)
 
-}
-
-
-/**
- * 描述 axios post 请求
- *  @param {string} url
- * @param {Object} data
- */
- export function postData( url:string,data:object) {
-  
-    return request.post(url,data)
-
-}
-
-
-/**
- * 描述 axios get 请求
- * @param {Object} obj
-
- * @returns {Promise}
- */
-export function get(obj:object) {
-    return request(obj)
 }
 
 
