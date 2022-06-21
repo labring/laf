@@ -14,6 +14,13 @@ export function checkCredentialsDir(){
 
 export function getRemoteServe(){
 
+    try{
+        fs.accessSync(CREDENTIALS_DIR, fs.constants.R_OK|fs.constants.W_OK)
+    }catch(err){
+        console.error("please login first")
+        process.exit(1)
+    }
+
     const authData = JSON.parse(fs.readFileSync(AUTH_FILE, 'utf8'));
     return  authData.remote
 }
