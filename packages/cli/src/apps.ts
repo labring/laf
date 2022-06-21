@@ -1,30 +1,13 @@
 
 import { program } from 'commander'
-import {appList,appStop,appStart,appRestart} from './api/apps'
-
-import * as Table  from 'cli-table2'
-
+import {appStop,appStart,appRestart} from './api/apps'
+import { appListCommand } from './actions/appAction'
 
 program
 .command('list')
 .action(async () => {
-    const response = await appList()
 
-    if(response.data){
-        const table = new Table({
-            head: ['APPId', 'name','status'],
-        });
-    
-        response.data.created.forEach(app => {
-            table.push([app.appid,app.name,app.status])
-        });
-
-        response.data.joined.forEach(app => {
-            table.push([app.appid,app.name,app.status])
-        });
-
-        console.log(table.toString())
-    }
+    await appListCommand()
 
 });
 
@@ -64,7 +47,6 @@ program
 .action(async (appid) => {
 
     const response = await appRestart(appid)
-
 
     if(response.data.result){
         console.log('restart success')
