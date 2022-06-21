@@ -33,8 +33,11 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.86.0",
+    "adm-zip": "^0.5.9",
+    "axios": "^0.27.2",
     "chokidar": "^3.5.3",
-    "commander": "^9.2.0",
+    "cli-table2": "^0.2.0",
+    "commander": "^9.3.0",
     "dotenv": "^16.0.0",
     "mime": "^3.0.0"
   }
