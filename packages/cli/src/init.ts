@@ -1,31 +1,20 @@
 
-const { Command } = require('commander');
-const request = require('axios')
-const path  = require('path')
-const fs = require('fs')
-const AdmZip = require('adm-zip');
-const program = new Command();
-const homedir=  require("os").homedir()
-const CREDENTIALs_file = '.laf-credentials/auth.json';
-const envFile = path.resolve(homedir, CREDENTIALs_file)
-const authData = JSON.parse(fs.readFileSync(envFile, 'utf8'));
-const access_token =  authData.access_token
+import { program } from 'commander'
+import {initapi} from './api/init'
+import * as fs from 'node:fs'
+import * as AdmZip from 'adm-zip'
+import  * as path  from 'node:path'
 
+import {LAF_FILE} from './config/config'
 
 program
     .command('init <appid>')
     .option('-s, --sync', 'sync app', false)
     .action(async ( appid,options) => {
-        const url = `https://www.lafyun.com/sys-api/apps/${appid}/export`;
+    
         try{
-            const result = await request({
-                method:"GET",
-                url,
-                responseType: 'stream',
-                headers:{
-                    authorization:`Bearer ${access_token}`,
-                }
-            })
+            
+            const result = await initapi(appid)
 
             const appname = result.headers['content-disposition'].slice(22,-5);
 
@@ -38,7 +27,7 @@ program
                     if (err) throw err;
                 });
             }
-            const lafFile  = path.resolve(appname, 'laf.json')
+            const lafFile  = path.resolve(appname, LAF_FILE)
     
             fs.writeFile(lafFile, JSON.stringify({appid:appid,root:"@laf"}),{ flag: 'w+' },(err) => {
                 if (err) throw err;
