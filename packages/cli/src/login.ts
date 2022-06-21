@@ -1,21 +1,18 @@
 
 import { program } from 'commander'
 import {loginapi} from './api/login'
-import  * as path  from 'node:path'
 import * as fs from 'node:fs'
-import {homedir} from 'node:os'
-const CREDENTIALs_file = '.laf-credentials';
-
+import {CREDENTIALS_DIR,AUTH_FILE} from './config/config'
 program
 .command('login')
 .option('-u, --username <username>', 'username')
 .option('-p, --password <password>', 'password')
 .action(async ( options) => {
-    const envdir = path.resolve(homedir(), CREDENTIALs_file)
-    fs.access(envdir, fs.constants.F_OK,(err) => {
-      console.log(`${envdir} ${err ? 'does not exist' : 'exists'}`);
+    
+    fs.access(CREDENTIALS_DIR, fs.constants.F_OK,(err) => {
+      console.log(`${CREDENTIALS_DIR} ${err ? 'does not exist' : 'exists'}`);
       if(err){
-        fs.mkdir(envdir, { recursive: true }, (err) => {
+        fs.mkdir(CREDENTIALS_DIR, { recursive: true }, (err) => {
           if (err) throw err;
         });
       }
@@ -41,10 +38,10 @@ program
     }
     const content = {access_token:response.data.access_token}
 
-    const envFile  = path.resolve(envdir, 'auth.json')
 
-    fs.writeFileSync(envFile, JSON.stringify(content),{ flag: 'w+' })
-    console.log(`Generated: ${envFile}`)
+
+    fs.writeFileSync(AUTH_FILE, JSON.stringify(content),{ flag: 'w+' })
+    console.log(`Generated: ${AUTH_FILE}`)
 });
 
 program.parse(process.argv);
