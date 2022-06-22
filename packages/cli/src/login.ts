@@ -1,7 +1,7 @@
 
 import { program } from 'commander'
 
-import { loginCommand } from './actions/userAction'
+import { handleLoginCommand } from './actions/userAction'
 
 program
   .command('login')
@@ -22,7 +22,7 @@ program
       process.exit(1)
     }
 
-    await loginCommand(options.remote, username, password)
+    await handleLoginCommand(options.remote, username, password)
 
 
   })

@@ -18,7 +18,8 @@ request.interceptors.request.use(
         if (token) {
             config.headers.Authorization = `Bearer ${token}`
         } else {
-            config.headers.Authorization = 'Basic aGVhbHRoOmhlYWx0aA=='
+            console.error("please login first")
+            process.exit(1)
         }
         return config
     },

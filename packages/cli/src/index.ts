@@ -4,6 +4,7 @@ import { program } from 'commander'
 import * as dotenv from 'dotenv'
 import { resolve } from 'node:path'
 import { handleSyncCommand } from './sync'
+import { handleLoginCommand } from './actions/userAction'
 import * as fs from 'node:fs'
 
 // laf-cli sync 
@@ -92,6 +93,30 @@ program
     console.log('\nVersion:', `v${version}`)
     console.log('\nUpdate laf-cli to latest version:')
     console.log('  npm install -g laf-cli')
+  })
+
+  program
+  .command('login')
+  .option('-u, --username <username>', 'username')
+  .option('-p, --password <password>', 'password')
+  .option('-r, --remote', 'remote server', "https://console.lafyun.com/")
+  .action(async (options) => {
+
+    // check params
+    const username = options.username
+    const password = options.password
+    if (!username) {
+      console.error('username is required')
+      process.exit(1)
+    }
+    if (!password) {
+      console.error('password is required')
+      process.exit(1)
+    }
+
+    await handleLoginCommand(options.remote, username, password)
+
+
   })
 
 program.parse(process.argv)

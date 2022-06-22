@@ -12,8 +12,6 @@ export async function loginApi(server:string,obj:Object) {
         return false
     }
 
-    console.log(response.data)
-
     return {access_token:response.data.access_token,expire_time:response.data.expire}
 
     
