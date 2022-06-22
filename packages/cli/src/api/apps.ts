@@ -1,61 +1,42 @@
-import {requestData }from "./request"
-
-import { getAccessToken } from "../utils/tokens"
-
+import { requestData } from "./request"
 
 export async function appList() {
-    const url = `/sys-api/apps/my`;
-    const access_token = await getAccessToken();
-    const obj =  {
-        method:"GET",
-        url,
-        headers:{
-            authorization:`Bearer ${access_token}`,
-        }
+    const url = `/sys-api/apps/my`
+    const obj = {
+        method: "GET",
+        url
     }
-    return await requestData(obj)
+    const result = await requestData(obj)
+    return result.data
+}
+
+export async function appStop(appid: string) {
+    const url = `/sys-api/apps/${appid}/instance/stop`
+    const obj = {
+        method: "POST",
+        url,
+    }
+    const result = await requestData(obj)
+    return result.data
+}
+
+export async function appStart(appid: string) {
+    const url = `/sys-api/apps/${appid}/instance/start`
+    const obj = {
+        method: "POST",
+        url
+    }
+    const result = await requestData(obj)
+    return result.data
 }
 
 
-
-export async function appStop(appid:string) {
-    const url = `/sys-api/apps/${appid}/instance/stop`;
-    const access_token = await getAccessToken();
-    const obj =  {
-        method:"POST",
-        url,
-        headers:{
-            authorization:`Bearer ${access_token}`,
-        }
+export async function appRestart(appid: string) {
+    const url = `/sys-api/apps/${appid}/instance/start`
+    const obj = {
+        method: "POST",
+        url
     }
-    return await requestData(obj)
-}
-
-
-
-export async function appStart(appid:string) {
-    const url = `/sys-api/apps/${appid}/instance/start`;
-    const access_token = await getAccessToken();
-    const obj =  {
-        method:"POST",
-        url,
-        headers:{
-            authorization:`Bearer ${access_token}`,
-        }
-    }
-    return await requestData(obj)
-}
-
-
-export async function appRestart(appid:string) {
-    const url = `/sys-api/apps/${appid}/instance/start`;
-    const access_token = await getAccessToken();
-    const obj =  {
-        method:"POST",
-        url,
-        headers:{
-            authorization:`Bearer ${access_token}`,
-        }
-    }
-    return await requestData(obj)
+    const result = await requestData(obj)
+    return result.data
 }
