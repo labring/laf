@@ -99,7 +99,7 @@ program
   .command('login')
   .option('-u, --username <username>', 'username')
   .option('-p, --password <password>', 'password')
-  .option('-r, --remote', 'remote server', "https://console.lafyun.com/")
+  .option('-r, --remote <remote>', 'remote server', "https://console.lafyun.com/")
   .action(async (options) => {
 
     // check params
