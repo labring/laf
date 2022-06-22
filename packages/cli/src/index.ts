@@ -114,6 +114,7 @@ program
       process.exit(1)
     }
 
+    // login
     await handleLoginCommand(options.remote, username, password)
 
 

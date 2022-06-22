@@ -5,8 +5,10 @@ import {AUTH_FILE} from '../utils/constants'
 export function checkCredentialsDir(){
 
     try{
+        // check dir
         fs.accessSync(CREDENTIALS_DIR, fs.constants.R_OK|fs.constants.W_OK)
     }catch(err){
+        // mkdir
         fs.mkdirSync(CREDENTIALS_DIR, { recursive: true })
     }
     
@@ -15,6 +17,7 @@ export function checkCredentialsDir(){
 export function getRemoteServe(){
 
     try{
+        // check dir
         fs.accessSync(CREDENTIALS_DIR, fs.constants.R_OK|fs.constants.W_OK)
     }catch(err){
         console.error("please login first")

@@ -6,14 +6,14 @@ import { getAccessToken } from '../utils/tokens'
 
 
 export const request = axios.create({
-    // 联调
+    // set baseURL
     baseURL: getRemoteServe()
 })
 
 
 request.interceptors.request.use(
     async (config) => {
-        config.headers.VERSION = ''
+
         const token = await getAccessToken()
         if (token) {
             config.headers.Authorization = `Bearer ${token}`
