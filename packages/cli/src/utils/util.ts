@@ -3,6 +3,7 @@ import  * as path  from 'node:path'
 import {CREDENTIALS_DIR} from './constants'
 import {AUTH_FILE} from '../utils/constants'
 
+// check auth dir
 export function checkCredentialsDir(){
 
     try{

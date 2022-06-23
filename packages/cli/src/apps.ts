@@ -6,7 +6,7 @@ import { appListCommand } from './actions/appAction'
 program
     .command('list')
     .action(async () => {
-
+    
         await appListCommand()
 
     })

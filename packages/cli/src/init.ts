@@ -7,7 +7,7 @@ import * as path from 'node:path'
 
 import { LAF_FILE } from './utils/constants'
 
-import {checkDir } from './utils/util'
+import { checkDir } from './utils/util'
 
 program
     .command('init <appid>')
@@ -16,8 +16,10 @@ program
 
         try {
 
+            // get app
             const result = await initApi(appid)
 
+            // get app name
             const appName = result.headers['content-disposition'].slice(22, -5)
 
             const appPath = path.resolve(process.cwd(), appName)
@@ -25,27 +27,26 @@ program
             checkDir(appPath)
             const lafFile = path.resolve(appName, LAF_FILE)
 
-            fs.writeFileSync(lafFile, JSON.stringify({ appid: appid, root: "@laf" }))
+            // write data
+            fs.writeFileSync(lafFile, JSON.stringify({ appid: appid, root: "@laf" ,endPoint:""}))
 
             console.log('save success')
 
+            // sync app data
             if (options.sync) {
 
+                 // add app data to zip
                 const appZip = appName + '.zip'
-
                 const appZipPath = path.resolve(process.cwd(), appZip)
-
                 const writer = fs.createWriteStream(appZipPath)
-
                 result.data.pipe(writer)
-
                 await new Promise((resolve, reject) => {
                     writer.on('finish', resolve)
                     writer.on('error', reject)
                 })
 
+                // unzip
                 const file = new AdmZip(appZipPath)
-
                 file.extractAllTo(appPath)
             }
         }
