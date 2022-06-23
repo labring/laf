@@ -10,7 +10,7 @@ export const request = axios.create({
     baseURL: getRemoteServe()
 })
 
-
+// http request
 request.interceptors.request.use(
     async (config) => {
 
@@ -31,9 +31,20 @@ request.interceptors.request.use(
     },
 )
 
+// http response
+request.interceptors.response.use(function (response) {
+    // 对响应数据做点什么
+    return response;
+  }, function (error) {
+      //return Promise.reject(err);
+      console.error(error.response.data)
+      process.exit(1)
+  });
+
+
 
 /**
- * 描述 axios post 请求
+ * 描述 axios request 请求
  * @param {Object} obj
  */
 export function requestData(obj: object) {
