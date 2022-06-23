@@ -11,8 +11,6 @@ import Unocss from 'unocss/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import vueI18n from '@intlify/vite-plugin-vue-i18n'
 
-// const port = 9527 // dev port
-
 export default defineConfig({
   resolve: {
     alias: {
@@ -88,16 +86,22 @@ export default defineConfig({
 
   // server
   server: {
-    // port,
+    port: 9527,
     proxy: {
       '/sys-api': {
-        target: 'http://console.127-0-0-1.nip.io:8000/',
+        target: 'http://console.127-0-0-1.nip.io:8080/',
         changeOrigin: true,
       },
       '/sys-extension-api': {
-        target: 'http://console.127-0-0-1.nip.io:8000/',
+        target: 'http://console.127-0-0-1.nip.io:8080/',
         changeOrigin: true,
       },
+    },
+  },
+
+  build: {
+    rollupOptions: {
+      external: [],
     },
   },
 })

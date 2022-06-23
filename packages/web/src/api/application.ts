@@ -1,4 +1,3 @@
-import { cloud } from './cloud'
 import { getCurrentBaseURL } from '~/utils'
 import { getToken, getTokenExpire } from '~/utils/auth'
 import request from '~/api/request'
