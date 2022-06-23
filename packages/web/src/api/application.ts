@@ -1,4 +1,3 @@
-import { cloud } from './cloud'
 import { getCurrentBaseURL } from '~/utils'
 import { getToken, getTokenExpire } from '~/utils/auth'
 import request from '~/api/request'
@@ -176,7 +175,7 @@ export async function initApplicationWithTemplate(appid, template_id) {
  */
 export async function openAppConsole(app) {
   const base_url = getCurrentBaseURL()
-  const console_uri = process.env.VUE_APP_APP_CONSOLE_URI
+  const console_uri = import.meta.env.VITE_APP_APP_CONSOLE_URI // process.env.VITE_APP_APP_CONSOLE_URI
   const back_url = encodeURIComponent(window.location.href)
 
   let app_console_url = `${console_uri}/#/app/${app.appid}/dashboard/index?$back_url=${back_url}`

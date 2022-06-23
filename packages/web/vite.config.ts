@@ -1,22 +1,20 @@
 /// <reference types="vitest" />
 
-import path from "path";
-import { defineConfig } from "vite";
-import Vue from "@vitejs/plugin-vue";
-import Pages from "vite-plugin-pages";
-import Layouts from "vite-plugin-vue-layouts";
-import Components from "unplugin-vue-components/vite";
-import AutoImport from "unplugin-auto-import/vite";
-import Unocss from "unocss/vite";
-import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
-import vueI18n from "@intlify/vite-plugin-vue-i18n";
-
-// const port = 9527 // dev port
+import path from 'path'
+import { defineConfig } from 'vite'
+import Vue from '@vitejs/plugin-vue'
+import Pages from 'vite-plugin-pages'
+import Layouts from 'vite-plugin-vue-layouts'
+import Components from 'unplugin-vue-components/vite'
+import AutoImport from 'unplugin-auto-import/vite'
+import Unocss from 'unocss/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import vueI18n from '@intlify/vite-plugin-vue-i18n'
 
 export default defineConfig({
   resolve: {
     alias: {
-      "~/": `${path.resolve(__dirname, "src")}/`,
+      '~/': `${path.resolve(__dirname, 'src')}/`,
     },
   },
   plugins: [
@@ -28,19 +26,19 @@ export default defineConfig({
       // compositionOnly: false,
 
       // you need to set i18n resource including paths !
-      include: path.resolve(__dirname, "./locales/**"),
+      include: path.resolve(__dirname, './locales/**'),
       compositionOnly: false,
 
-      defaultSFCLang: "yml",
+      defaultSFCLang: 'yml',
     }),
 
     // https://github.com/hannoeru/vite-plugin-pages
     Pages({
       dirs: [
-        { dir: path.resolve(__dirname, "./src/pages"), baseRoute: "" },
-        { dir: path.resolve(__dirname, "./src/pages/account"), baseRoute: "" },
+        { dir: path.resolve(__dirname, './src/pages'), baseRoute: '' },
+        { dir: path.resolve(__dirname, './src/pages/account'), baseRoute: '' },
       ],
-      exclude: ["**/components/**.vue"],
+      exclude: ['**/components/**.vue'],
       // extensions: ['.vue', '.js', '.ts'],
       // extendRoute(route: any) {
       //   if (route.name === 'about')
@@ -59,13 +57,13 @@ export default defineConfig({
     }),
 
     Layouts({
-      layoutsDirs: path.resolve(__dirname, "./src/layout"),
-      defaultLayout: "default",
+      layoutsDirs: path.resolve(__dirname, './src/layout'),
+      defaultLayout: 'default',
     }),
 
     // https://github.com/antfu/unplugin-auto-import
     AutoImport({
-      imports: ["vue", "vue/macros", "vue-router", "@vueuse/core", "vue-i18n"],
+      imports: ['vue', 'vue/macros', 'vue-router', '@vueuse/core', 'vue-i18n'],
       dts: true,
       resolvers: [ElementPlusResolver()],
     }),
@@ -83,21 +81,27 @@ export default defineConfig({
 
   // https://github.com/vitest-dev/vitest
   test: {
-    environment: "jsdom",
+    environment: 'jsdom',
   },
 
   // server
   server: {
-    // port,
+    port: 9527,
     proxy: {
-      "/sys-api": {
-        target: "http://console.127-0-0-1.nip.io:8000/",
+      '/sys-api': {
+        target: 'http://console.127-0-0-1.nip.io:8080/',
         changeOrigin: true,
       },
-      "/sys-extension-api": {
-        target: "http://console.127-0-0-1.nip.io:8000/",
+      '/sys-extension-api': {
+        target: 'http://console.127-0-0-1.nip.io:8080/',
         changeOrigin: true,
       },
     },
   },
-});
+
+  build: {
+    rollupOptions: {
+      external: [],
+    },
+  },
+})
