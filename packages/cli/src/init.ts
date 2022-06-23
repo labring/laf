@@ -5,7 +5,9 @@ import * as fs from 'node:fs'
 import * as AdmZip from 'adm-zip'
 import * as path from 'node:path'
 
-import { LAF_FILE } from './config/config'
+import { LAF_FILE } from './utils/constants'
+
+import {checkDir } from './utils/util'
 
 program
     .command('init <appid>')
@@ -16,31 +18,24 @@ program
 
             const result = await initApi(appid)
 
-            const appname = result.headers['content-disposition'].slice(22, -5)
+            const appName = result.headers['content-disposition'].slice(22, -5)
 
-            const apppath = path.resolve(process.cwd(), appname)
+            const appPath = path.resolve(process.cwd(), appName)
 
-            try {
-                fs.accessSync(apppath, fs.constants.R_OK | fs.constants.W_OK)
-            } catch (err) {
-                fs.mkdir(apppath, { recursive: true }, (err) => {
-                    if (err) throw err
-                })
-            }
-            const lafFile = path.resolve(appname, LAF_FILE)
+            checkDir(appPath)
+            const lafFile = path.resolve(appName, LAF_FILE)
 
-            fs.writeFile(lafFile, JSON.stringify({ appid: appid, root: "@laf" }), { flag: 'w+' }, (err) => {
-                if (err) throw err
-                console.log('save,success')
-            })
+            fs.writeFileSync(lafFile, JSON.stringify({ appid: appid, root: "@laf" }))
+
+            console.log('save success')
 
             if (options.sync) {
 
-                const appzip = appname + '.zip'
+                const appZip = appName + '.zip'
 
-                const appzippath = path.resolve(process.cwd(), appzip)
+                const appZipPath = path.resolve(process.cwd(), appZip)
 
-                const writer = fs.createWriteStream(appzippath)
+                const writer = fs.createWriteStream(appZipPath)
 
                 result.data.pipe(writer)
 
@@ -49,9 +44,9 @@ program
                     writer.on('error', reject)
                 })
 
-                const file = new AdmZip(appzippath)
+                const file = new AdmZip(appZipPath)
 
-                file.extractAllTo(apppath)
+                file.extractAllTo(appPath)
             }
         }
         catch (err) {

@@ -37,7 +37,8 @@ request.interceptors.response.use(function (response) {
     return response;
   }, function (error) {
       //return Promise.reject(err);
-      console.error(error.response.data)
+      console.error(error.response.status)
+      console.error(error.response.statusText)
       process.exit(1)
   });
 
