@@ -18,12 +18,13 @@ export function initBaseRoute() {
 function initSystemClientRoute() {
     let data = {
         name: 'system-client',
-        uris: ['/'],
+        uris: ['/*'],
         hosts: [Config.SYS_CLIENT_HOST],
         upstream: {
             type: 'roundrobin',
             nodes: {'system-client:8080': 1}
         },
+        priority: 0,
         timeout: {
             connect: 600,
             send: 600,
@@ -47,6 +48,7 @@ function initAppConsoleRoute() {
             send: 600,
             read: 600,
         },
+        priority: 9,
         plugins: {
             'proxy-rewrite': {
                 regex_uri: ["^/app-console/(.*)", "/$1"]
@@ -65,6 +67,7 @@ function initSysApiRoute() {
             type: 'roundrobin',
             nodes: {'system-server:9000': 1}
         },
+        priority: 9,
         timeout: {
             connect: 600,
             send: 600,
