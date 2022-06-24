@@ -94,6 +94,7 @@ export default defineConfig({
       },
       '/sys-extension-api': {
         target: 'http://console.127-0-0-1.nip.io:8080/',
+
         changeOrigin: true,
       },
     },
@@ -104,4 +105,5 @@ export default defineConfig({
       external: [],
     },
   },
+
 })
