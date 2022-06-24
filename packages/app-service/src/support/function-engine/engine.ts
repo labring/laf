@@ -1,82 +1,88 @@
 // import fetch from 'node-fetch'
-import { URL } from 'node:url'
+import { URL } from "node:url";
 
-import * as vm from 'vm'
-import { nanosecond2ms } from '../utils'
-import { FunctionConsole } from './console'
-import { FunctionContext, FunctionResult, RequireFuncType, RuntimeContext } from './types'
-
+import vm from "vm";
+import { nanosecond2ms } from "../utils";
+import { FunctionConsole } from "./console";
+import {
+  FunctionContext,
+  FunctionResult,
+  RequireFuncType,
+  RuntimeContext,
+} from "./types";
 
 /**
  * Default require function
  */
 const defaultRequireFunction: RequireFuncType = (module): any => {
-  return require(module) as any
-}
+  return require(module) as any;
+};
 
 /**
  * Function engine
  */
 export class FunctionEngine {
-
-  require_func: RequireFuncType
+  require_func: RequireFuncType;
 
   constructor(require_func?: RequireFuncType) {
-    this.require_func = require_func ?? defaultRequireFunction
+    this.require_func = require_func ?? defaultRequireFunction;
   }
 
   /**
    * Execute function
-   * @returns 
+   * @returns
    */
-  async run(code: string, context: FunctionContext, options: vm.RunningScriptOptions): Promise<FunctionResult> {
-    const sandbox = this.buildSandbox(context)
-    const wrapped = this.wrap(code)
-    const fconsole = sandbox.console
+  async run(
+    code: string,
+    context: FunctionContext,
+    options: vm.RunningScriptOptions
+  ): Promise<FunctionResult> {
+    const sandbox = this.buildSandbox(context);
+    const wrapped = this.wrap(code);
+    const fconsole = sandbox.console;
 
-    const _start_time = process.hrtime.bigint()
+    const _start_time = process.hrtime.bigint();
     try {
-      const script = new vm.Script(wrapped, options)
-      const result = script.runInNewContext(sandbox, options)
+      const script = new vm.Script(wrapped, options);
+      const result = script.runInNewContext(sandbox, options);
 
-      let data = result
-      if (typeof result?.then === 'function') {
-        data = await result
+      let data = result;
+      if (typeof result?.then === "function") {
+        data = await result;
       }
 
-      const _end_time = process.hrtime.bigint()
-      const time_usage = nanosecond2ms(_end_time - _start_time)
+      const _end_time = process.hrtime.bigint();
+      const time_usage = nanosecond2ms(_end_time - _start_time);
       return {
         data,
         logs: fconsole.logs,
-        time_usage
-      }
+        time_usage,
+      };
     } catch (error) {
-      fconsole.log(error.message)
-      fconsole.log(error.stack)
+      fconsole.log(error.message);
+      fconsole.log(error.stack);
 
-      const _end_time = process.hrtime.bigint()
-      const time_usage = nanosecond2ms(_end_time - _start_time)
+      const _end_time = process.hrtime.bigint();
+      const time_usage = nanosecond2ms(_end_time - _start_time);
 
       return {
         error: error,
         logs: fconsole.logs,
-        time_usage
-      }
+        time_usage,
+      };
     }
   }
 
-
   /**
    * build sandbox
-   * @returns 
+   * @returns
    */
   buildSandbox(functionContext: FunctionContext): RuntimeContext {
-    const fconsole = new FunctionConsole()
+    const fconsole = new FunctionConsole();
 
     const _module = {
-      exports: {}
-    }
+      exports: {},
+    };
     const sandbox = {
       __context__: functionContext,
       __filename: functionContext.__function_name,
@@ -95,10 +101,10 @@ export class FunctionEngine {
       URL: URL,
       fetch: globalThis.fetch,
       global: null,
-    }
+    };
 
-    sandbox.global = sandbox
-    return sandbox
+    sandbox.global = sandbox;
+    return sandbox;
   }
 
   /**
@@ -111,7 +117,7 @@ export class FunctionEngine {
       if(!__main__) { throw new Error('FunctionExecError: main function not found') }
       if(typeof __main__ !== 'function') { throw new Error('FunctionExecError: main function must be callable')}
       __main__(__context__ )
-      `
-    return wrapped
+      `;
+    return wrapped;
   }
 }

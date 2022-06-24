@@ -1,5 +1,1 @@
-const { createCloudFunctionDeclarationPackage } = require("../dist/support/init");
-
-createCloudFunctionDeclarationPackage()
-
-process.exit(0)
+const { createCloudFunctionDeclarationPackage } = require("../dist");

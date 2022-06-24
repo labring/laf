@@ -13,3 +13,5 @@ ecosystem.config.js.tpl
 .gitignore
 Dockerfile
 http
+node_modules
+rollup.config.js
