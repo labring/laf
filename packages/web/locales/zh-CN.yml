@@ -1,3 +1,5 @@
+app:
+  title: Laf 云开发
 layout:
   topbar:
     title: Laf 云开发
@@ -10,7 +12,7 @@ pages:
       account: 账户
       login-btn: 登录
       password: 密码
-      title: Laf 云开发账户登录
+      title: 登录
     register: 注册
 utils:
   form:
