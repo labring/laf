@@ -50,7 +50,7 @@ function createConfig(input, dir = "dist", splitChunks = true) {
         json({
           namedExports: false,
         }),
-        //terser(),
+        terser(),
         nodeResolve({
           preferBuiltins: false
         }),
