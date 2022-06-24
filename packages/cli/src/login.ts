@@ -1,13 +1,13 @@
 
 import { program } from 'commander'
 
-import { loginCommand } from './actions/userAction'
+import { handleLoginCommand } from './actions/userAction'
 
 program
   .command('login')
   .option('-u, --username <username>', 'username')
   .option('-p, --password <password>', 'password')
-  .option('-r, --remote', 'remote server', "https://console.lafyun.com/")
+  .option('-r, --remote <remote>', 'remote server', "https://console.lafyun.com")
   .action(async (options) => {
 
     // check params
@@ -22,7 +22,7 @@ program
       process.exit(1)
     }
 
-    await loginCommand(options.remote, username, password)
+    await handleLoginCommand(options.remote, username, password)
 
 
   })

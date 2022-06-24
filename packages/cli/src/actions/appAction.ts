@@ -9,17 +9,17 @@ export async function appListCommand() {
 
     //init table
     const table = new Table({
-        head: ['APPId', 'name','status'],
+        head: ['appid', 'name','status'],
     });
 
-    // create app
+    // user create app
     if(response.data.created){
         response.data.created.forEach(app => {
             table.push([app.appid,app.name,app.status])
         });
     }
 
-    // join app
+    // user join app
     if(response.data.joined){
         response.data.joined.forEach(app => {
             table.push([app.appid,app.name,app.status])

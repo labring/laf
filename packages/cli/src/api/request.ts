@@ -6,19 +6,20 @@ import { getAccessToken } from '../utils/tokens'
 
 
 export const request = axios.create({
-    // 联调
+    // set baseURL
     baseURL: getRemoteServe()
 })
 
-
+// http request
 request.interceptors.request.use(
     async (config) => {
-        config.headers.VERSION = ''
+
         const token = await getAccessToken()
         if (token) {
             config.headers.Authorization = `Bearer ${token}`
         } else {
-            config.headers.Authorization = 'Basic aGVhbHRoOmhlYWx0aA=='
+            console.error("please login first")
+            process.exit(1)
         }
         return config
     },
@@ -30,9 +31,21 @@ request.interceptors.request.use(
     },
 )
 
+// http response
+request.interceptors.response.use(function (response) {
+    // 对响应数据做点什么
+    return response;
+  }, function (error) {
+      //return Promise.reject(err);
+      console.error(error.response.status)
+      console.error(error.response.statusText)
+      process.exit(1)
+  });
+
+
 
 /**
- * 描述 axios post 请求
+ * 描述 axios request 请求
  * @param {Object} obj
  */
 export function requestData(obj: object) {

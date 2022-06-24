@@ -3,7 +3,7 @@ import * as fs from 'node:fs'
 import {AUTH_FILE} from '../utils/constants'
 import { checkCredentialsDir } from '../utils/util'
 
-export async function loginCommand(remote:string,username:string,password:string) {
+export async function handleLoginCommand(remote:string,username:string,password:string) {
 
     // check auth dir
     checkCredentialsDir()
