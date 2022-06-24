@@ -13,7 +13,10 @@ import {
 import path from "path";
 import { logger } from "../support/logger";
 
-const nodeModulesRoot = path.resolve(__dirname, "../../node_modules");
+const nodeModulesRoot = path.resolve(
+  process.env.APP_SERVICE_ROOT,
+  "./node_modules"
+);
 
 /**
  * Gets declaration files of a dependency package

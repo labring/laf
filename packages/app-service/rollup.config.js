@@ -5,6 +5,7 @@ import { terser } from "rollup-plugin-terser";
 const json = require("@rollup/plugin-json");
 const dts = require("rollup-plugin-dts").default;
 const packageInfo = require('./package.json');
+const replace = require('@rollup/plugin-replace')
 
 const compilerOptions = {
   target: "esnext",
@@ -45,14 +46,16 @@ function createConfig(input, dir = "dist", splitChunks = true) {
         format: "cjs",
         entryFileNames: "index.js",
       },
-      manualChunks: splitChunks ? manualChunks : undefined,
       plugins: [
         json({
           namedExports: false,
         }),
-        terser(),
+        //terser(),
         nodeResolve({
-          preferBuiltins: true
+          preferBuiltins: false
+        }),
+        replace({
+          'process.env.APP_SERVICE_ROOT': `"${__dirname}"`,
         }),
         commonjs(),
         typescript({

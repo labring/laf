@@ -6,7 +6,7 @@
   "typings": "./dist/index.d.ts",
   "private": "true",
   "scripts": {
-    "start": "node ./dist/index.js && npm run create-internal-pkg",
+    "start": "npm run build & node ./scripts/start.js && npm run create-internal-pkg",
     "build": "rollup -c",
     "watch": "rollup -c -w",
     "create-internal-pkg": "node ./scripts/create-internal-package.js",
@@ -52,6 +52,7 @@
     "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
+    "@rollup/plugin-replace": "^4.0.0",
     "@rollup/plugin-typescript": "^8.3.3",
     "@types/dotenv": "^8.2.0",
     "@types/ejs": "^3.0.7",

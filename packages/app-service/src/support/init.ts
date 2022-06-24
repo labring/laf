@@ -10,8 +10,8 @@ import { logger } from "./logger";
  * Create a internal package named '@' in node_modules, the package is used for loading typings in WebIDE。
  */
 export function createCloudFunctionDeclarationPackage() {
-  const source = path.resolve(__dirname, "../../dist");
-  const target = path.resolve(__dirname, "../../node_modules/@");
+  const source = path.resolve(process.env.APP_SERVICE_ROOT, "./dist");
+  const target = path.resolve(process.env.APP_SERVICE_ROOT, "./node_modules/@");
 
   fse.ensureDirSync(target);
   fse.copySync(source, target);
@@ -31,7 +31,10 @@ export function createCloudFunctionDeclarationPackage() {
 }
 
 export function isCloudSdkPackageExists() {
-  const target = path.resolve(__dirname, "../../../node_modules/@");
+  const target = path.resolve(
+    process.env.APP_SERVICE_ROOT,
+    "../node_modules/@"
+  );
   const pkgJsonPath = path.join(target, "package.json");
   return fse.existsSync(pkgJsonPath);
 }
@@ -56,13 +59,13 @@ interface AppConfigItem {
  * @returns
  */
 export async function getExtraPackages() {
-  const { DatabaseAgent } = require("../db"); // init.ts should not import db globally, because init.ts would be referenced in build time
+  const { DatabaseAgent } = await import("../db"); // init.ts should not import db globally, because init.ts would be referenced in build time
 
   await DatabaseAgent.accessor.ready;
   const db = DatabaseAgent.db;
-  const doc: AppConfigItem = await db
+  const doc: AppConfigItem = (await db
     .collection(Constants.config_collection)
-    .findOne({ key: "packages" });
+    .findOne({ key: "packages" })) as any;
 
   return doc?.value ?? [];
 }
@@ -108,7 +111,7 @@ export function moduleExists(mod: string) {
  * @returns
  */
 export async function ensureCollectionIndexes(): Promise<any> {
-  const { DatabaseAgent } = require("../db"); // init.ts should not import db globally, because init.ts would be referenced in build time
+  const { DatabaseAgent } = await import("../db"); // init.ts should not import db globally, because init.ts would be referenced in build time
 
   const db = DatabaseAgent.db;
   await db.collection(Constants.function_log_collection).createIndexes([
