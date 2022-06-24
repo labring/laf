@@ -18,7 +18,7 @@ program
 
             const appname = result.headers['content-disposition'].slice(22,-5);
 
-            const apppath = path.resolve(process.cwd(), appname)
+            const appPath = path.resolve(process.cwd(), appName)
 
             try{
                 fs.accessSync(apppath, fs.constants.R_OK|fs.constants.W_OK)
@@ -43,7 +43,6 @@ program
                 const writer = fs.createWriteStream(appzippath)
 
                 result.data.pipe(writer)
-
                 await new Promise((resolve, reject) => {
                     writer.on('finish', resolve)
                     writer.on('error', reject)
