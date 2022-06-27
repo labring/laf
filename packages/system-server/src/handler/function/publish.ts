@@ -7,7 +7,7 @@
 
 import { Request, Response } from 'express'
 import { IApplicationData } from '../../support/application'
-import { publishFunctions, publishOneFunction } from '../../support/function'
+import { publishFunctions, publishOneFunction, publishOneFunctionByName } from '../../support/function'
 import { checkPermission } from '../../support/permission'
 import Config from '../../config'
 import { FunctionActionDef } from '../../actions'
@@ -57,6 +57,34 @@ export async function handlePublishOneFunction(req: Request, res: Response) {
 
   try {
     await publishOneFunction(app, func_id)
+
+    return res.send({
+      code: 0,
+      data: 'ok'
+    })
+  } catch (error) {
+    logger.error(`public functions occurred error`, error)
+    return res.status(500).send(Config.isProd ? undefined : error)
+  }
+}
+
+
+/**
+ * Publish one function by name
+ */
+ export async function handlePublishOneFunctionByName(req: Request, res: Response) {
+  const uid = req['auth']?.uid
+  const func_name = req.params?.func_name
+  const app: IApplicationData = req['parsed-app']
+
+  // check permission
+  const code = await checkPermission(uid, FunctionActionDef.PublishFunction, app)
+  if (code) {
+    return res.status(code).send()
+  }
+
+  try {
+    await publishOneFunctionByName(app, func_name)
 
     return res.send({
       code: 0,
