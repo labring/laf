@@ -2,7 +2,12 @@ import * as Table  from 'cli-table2'
 
 import {appList} from '../api/apps'
 
-export async function appListCommand() {
+/**
+ * apps list
+ * @returns
+ */
+
+export async function handleAppListCommand() {
 
     // get list
     const response = await appList()

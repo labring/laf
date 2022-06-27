@@ -1,65 +1,75 @@
 
 import { program } from 'commander'
-import  * as path  from 'node:path'
-import * as fs from 'node:fs'
-import { pullFunction } from './api/functions'
-
-import { LAF_FILE , FUNCTIONS_DIR ,FUNCTIONS_FILE} from './utils/constants'
-import { checkDir } from './utils/util'
+import { pullFunction   ,getFunctionByName ,publishFunction } from './api/functions'
+import {  getAppData,checkFuncNameDir } from './utils/util'
+import { handlePullFunctionCommand,handleInvokeFunctionCommand ,handlePushFunctionCommand} from './actions/functionAction'
  
-const appFile = path.resolve(process.cwd(), LAF_FILE)
-const appData = JSON.parse(fs.readFileSync(appFile, 'utf8'))
+const appData = getAppData()
 
 program
 .command('fn-pull')
 .argument('[function-name]',"functionname")
 .option('-f, --force-overwrite', 'force to  file ignore if modified', false)
 .action(async ( functionName,options) => {
-   
     // pull function
     const response =await pullFunction(appData.appid,functionName)
-
     if(response.total){
-
-         // functions dir
-        const functionsDir = path.resolve(process.cwd(), FUNCTIONS_DIR)
-
-        checkDir(functionsDir)
-
-        response.data.forEach(element => {
-
-            //fuction name
-            const funcName =element.name;
-            const funcNameDir = path.resolve(functionsDir, funcName)
-    
-            checkDir(funcNameDir)
-    
-            const funcFile= path.resolve(funcNameDir, FUNCTIONS_FILE)
-            try{
-                // check if exist function file
-                fs.accessSync(funcFile)
-                const currentCode =fs.readFileSync(funcFile,'utf-8')
-                
-                if(currentCode){
-                    // forceOverwrite
-                    if(options.forceOverwrite){
-                        fs.writeFileSync(funcFile, element.code)
-                    }
-                }else{
-                    fs.writeFileSync(funcFile, element.code)
-                }
-            }catch(err){
-    
-                fs.writeFileSync(funcFile, element.code)
-    
-            }
-            
-            console.log('pull success')
-        })
-
+       await handlePullFunctionCommand(response.data,options)
     }else{
-
         console.log('functions not find')
+    }
+})
+
+program
+.command('fn-invoke')
+.argument('function-name',"functionname")
+.argument('[param]','function param','{}')
+.action(async ( functionName,param) => {
+
+    try{
+        const debugParams= JSON.parse(param)
+         // check function
+        checkFuncNameDir(functionName)
+        await handleInvokeFunctionCommand(appData.appid,functionName,debugParams)
+
+    }catch(err){
+        console.error(err.message)
+        process.exit(1)
+
+    }
+    
+})
+
+
+program
+.command('fn-push')
+.argument('function-name',"functionname")
+.option('-f, --force-overwrite', 'force to  file ignore if modified', false)
+.action(async ( functionName,options) => {
+    // check fucntion
+    checkFuncNameDir(functionName)
+
+    await handlePushFunctionCommand(appData.appid,functionName,options)
+
+})
+
+
+program
+.command('fn-publish')
+.argument('function-name',"functionname")
+.action(async ( functionName) => {
+
+    // get function
+    const record = await getFunctionByName(appData.appid,functionName)
+
+    if(record.data){
+        // publish function
+        const res = await publishFunction(appData.appid,functionName)
+        if(res.code==0){
+            console.log('publish success')
+        }
+    }else{
+        console.log('funtion not exist')
     }
 
 })

@@ -8,7 +8,7 @@
 import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
 import { IApplicationData, getApplicationDbAccessor } from '../../support/application'
-import { ICloudFunctionData, getFunctionById } from '../../support/function'
+import { ICloudFunctionData, getFunctionById ,getFunctionByName} from '../../support/function'
 import { checkPermission } from '../../support/permission'
 import { CN_ACCOUNTS, CN_FUNCTIONS, CN_FUNCTION_HISTORY, CN_PUBLISHED_FUNCTIONS } from '../../constants'
 import { FunctionActionDef } from '../../actions'
@@ -95,6 +95,25 @@ export async function handleGetFunctionById(req: Request, res: Response) {
   return res.send({ data: doc })
 }
 
+
+/**
+ * Get a function by name
+ */
+
+export async function handleGetFunctionByName(req: Request, res: Response) {
+  const app: IApplicationData = req['parsed-app']
+  const func_name = req.params.func_name
+
+  // check permission
+  const code = await checkPermission(req['auth']?.uid, FunctionActionDef.GetFunction, app)
+  if (code) {
+    return res.status(code).send()
+  }
+
+  const doc = await getFunctionByName(app.appid, func_name)
+
+  return res.send({ data: doc })
+}
 
 /**
  * Get all of the function tags
