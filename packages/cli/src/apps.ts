@@ -1,13 +1,13 @@
 
 import { program } from 'commander'
 import { appStop, appStart, appRestart } from './api/apps'
-import { appListCommand } from './actions/appAction'
+import { handleAppListCommand } from './actions/appAction'
 
 program
     .command('list')
     .action(async () => {
     
-        await appListCommand()
+        await handleAppListCommand()
 
     })
 

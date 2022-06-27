@@ -1,7 +1,13 @@
 import { requestData } from "./request"
 
 
-export async function initApi(appid: string) {
+/**
+ * 根据 appid 同步数据
+ * @param {string} appid
+ * @returns
+ */
+
+export async function syncApp(appid: string) {
 
     const url = `/sys-api/apps/${appid}/export`
     const obj = {
