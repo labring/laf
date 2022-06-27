@@ -141,6 +141,37 @@ export async function publishOneFunction(app: IApplicationData, func_id: string)
   }
 }
 
+
+/**
+  * Publish one function
+  * Means that copying sys db function to app db
+  */
+ export async function publishOneFunctionByName(app: IApplicationData, func_name: string) {
+
+  // read functions from sys db
+  const func = await getFunctionByName(app.appid, func_name)
+
+  // compile functions
+  compileFunction(func)
+
+  // write function to app db
+  const app_accessor = await getApplicationDbAccessor(app)
+  const session = app_accessor.conn.startSession()
+
+  try {
+    await session.withTransaction(async () => {
+      const _db = app_accessor.db
+      const app_coll = _db.collection(CN_PUBLISHED_FUNCTIONS)
+      await app_coll.deleteOne({ _id: func._id }, { session })
+      await app_coll.insertOne(func as any, { session })
+    })
+  } catch (error) {
+    logger.error(error)
+  } finally {
+    await session.endSession()
+  }
+}
+
 /**
  * Compile function codes (from typescript to javascript)
  * @param func 

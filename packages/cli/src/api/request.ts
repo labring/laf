@@ -31,16 +31,49 @@ request.interceptors.request.use(
     },
 )
 
-// http response
-request.interceptors.response.use(function (response) {
-    // 对响应数据做点什么
-    return response;
-  }, function (error) {
-      //return Promise.reject(err);
-      console.error(error.response.status)
-      console.error(error.response.statusText)
-      process.exit(1)
-  });
+
+
+  request.interceptors.response.use(
+    /**
+     * If you want to get http information such as headers or status
+     * Please return  response => response
+    */
+  
+    /**
+     * Determine the request status by custom code
+     * Here is just an example
+     * You can also judge the status by HTTP Status Code
+     */
+    response => {
+      return response
+    },
+    error => {
+      const status = error.response.status
+  
+      if (status === 401) {
+    
+        console.error(error.response.data)
+
+        process.exit(1)
+        
+      }
+      if (status === 403) {
+        
+        console.error(error.response.data)
+
+        process.exit(1)
+      }
+      if (status === 422) {
+    
+       console.error(error.response.data)
+
+       process.exit(1)
+      }
+  
+      // showError(error.message)
+      return Promise.reject(error)
+    }
+  )
 
 
 

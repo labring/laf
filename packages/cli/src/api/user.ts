@@ -1,8 +1,15 @@
 import axios from 'axios'
 
+/**
+ * 根据 server 登陆
+ * @param {string} server
+ * @param {Object} obj
+ * @returns
+ */
+
 export async function loginApi(server:string,obj:Object) {
     // remote server login url
-    const url = `${server}/sys-extension-api/func/password-login`;
+    const url = `${server}/sys-api/account/login`;
 
     try{
 
