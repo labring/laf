@@ -9,7 +9,7 @@ import { pipeline } from 'node:stream/promises'
 
 /**
  * init app
- * @param {string} funcName
+ * @param {string} appName
  * @param {string} appid
  * @param {string} endPoint
  * @returns
@@ -28,7 +28,7 @@ export async function handleInitAppCommand(appName:string,appid:string,endPoint:
 
 /**
  * sync app
- * @param {string} funcName
+ * @param {string} appName
  * @param {any} data
  * @returns
  */
@@ -47,5 +47,6 @@ export async function handleSyncAppCommand(appName:string,data:any) {
     file.extractAllTo(appPath)
 
     fs.unlinkSync(appZipPath)
+    console.log('success')
     
 }

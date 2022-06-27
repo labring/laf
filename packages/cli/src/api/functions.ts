@@ -32,17 +32,16 @@ export async function pullFunction(appid: string,functionName:string) {
 
 /**
  * 调试函数
- * @param {string} appid
  * @param {string} functionName
  * @param {Object} obj
  * @returns 
  */
 
-export async function debugFunction(appid: string,functionName:string,obj:Object) {
+export async function debugFunction(functionName:string,obj:Object) {
 
     const appData = getAppData();
 
-    const url = `http://${appid}.${appData.endPoint}/debug/${functionName}`
+    const url = `${appData.endPoint}/debug/${functionName}`
 
     try{
 
@@ -52,7 +51,10 @@ export async function debugFunction(appid: string,functionName:string,obj:Object
         const result = await axios.post(url,obj,{headers:headers})
 
         const response =  result.data
-
+        if(response.error){
+            console.error(response.error)
+            process.exit(1)
+        }
         return response
 
     }catch(err){
@@ -94,7 +96,7 @@ export async function createFunction(appid: string,data:Object) {
  */
 
 export async function getFunctionByName(appid: string,functionName:string) {
-    const  url= `/sys-api/apps/${appid}/function/getFunction/${functionName}`
+    const  url= `/sys-api/apps/${appid}/function/detail/${functionName}`
     const obj = {
         method: "GET",
         url,
@@ -113,7 +115,7 @@ export async function getFunctionByName(appid: string,functionName:string) {
 
 
 export async function pushFunction(appid: string,functionName:string,data:object) {
-    const  url= `/sys-api/apps/${appid}/function/updateFunction/${functionName}`
+    const  url= `/sys-api/apps/${appid}/function/save/${functionName}`
 
     const obj = {
         method: "POST",
@@ -134,7 +136,7 @@ export async function pushFunction(appid: string,functionName:string,data:object
  */
 
 export async function publishFunction(appid: string,functionName:string) {
-    const  url= `/sys-api/apps/${appid}/function/publishFunction/${functionName}`
+    const  url= `/sys-api/apps/${appid}/function/publish/${functionName}`
 
     const obj = {
         method: "POST",

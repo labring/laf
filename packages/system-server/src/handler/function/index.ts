@@ -108,16 +108,16 @@ FunctionRouter.delete('/:func_id/triggers/:trigger_id', handleRemoveTrigger)
 /**
  * get function by name
  */
- FunctionRouter.get('/getFunction/:func_name', handleGetFunctionByName)
+ FunctionRouter.get('/detail/:func_name', handleGetFunctionByName)
 
 
  /**
  * update function by name
  */
-  FunctionRouter.post('/updateFunction/:func_name', handleUpdateFunctionCodeByName)
+  FunctionRouter.post('/save/:func_name', handleUpdateFunctionCodeByName)
 
 
 /**
  * publish function by name
  */
-FunctionRouter.post('/publishFunction/:func_name', handlePublishOneFunctionByName)
+FunctionRouter.post('/publish/:func_name', handlePublishOneFunctionByName)

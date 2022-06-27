@@ -1,86 +1,18 @@
 #!/usr/bin/env node
 
 import { program } from 'commander'
-import * as dotenv from 'dotenv'
-import { resolve } from 'node:path'
-import { handleSyncCommand } from './sync'
-import { handleLoginCommand } from './actions/userAction'
-import * as fs from 'node:fs'
 
-// laf-cli sync 
-program
-  .command('sync <source>')
-  .description(`sync files to bucket`)
-  .option('-e, --endpoint <endpoint>', 'oss endpoint, default is https://oss.lafyun.com, could be override by env OSS_ENDPOINT')
-  .option('-k, --access-key <access-key>', 'app oss access-key, default is env OSS_ACCESS_KEY')
-  .option('-s, --access-secret <access-secret>', 'app oss access-secret, default is env OSS_ACCESS_SECRET')
-  .option('-b, --bucket-name <bucket-name>', 'bucket-name, default is env OSS_BUCKET_NAME')
-  .option('-r, --region <region>', 'region', 'cn-default')
-  .option('-d, --dry-run', 'dry-run mode', false)
-  .option('-f, --force', 'force to updated all files ignore if modified', false)
-  .option('--env <env-file>', `your can specify a env file`, '.env')
-  .action(async (source, options) => {
-    dotenv.config({ path: resolve(process.cwd(), options.env) })
+import { handleLoginCommand } from './actions/user'
 
-    const endpoint = options.endpoint || process.env.OSS_ENDPOINT || 'https://oss.lafyun.com'
-    const accessKey = options.accessKey || process.env.OSS_ACCESS_KEY
-    const accessSecret = options.accessSecret || process.env.OSS_ACCESS_SECRET
-    const bucketName = options.bucketName || process.env.OSS_BUCKET_NAME
-    const region = options.region || process.env.OSS_REGION
-    const dryRun = options.dryRun || false
-    const force = options.force || false
+import { syncApp } from './api/sync'
+import { getApplicationByAppid } from './api/apps'
+import { handleInitAppCommand ,handleSyncAppCommand} from './actions/init'
 
-    if(!endpoint) {
-      console.error('endpoint is required')
-      process.exit(1)
-    }
+import { appStop, appStart, appRestart } from './api/apps'
+import { handleAppListCommand } from './actions/app'
 
-    if(!accessKey) {
-      console.error('accessKey is required')
-      process.exit(1)
-    }
+import { makeFnCommand} from './functions'
 
-    if(!accessSecret) {
-      console.error('accessSecret is required')
-      process.exit(1)
-    }
-
-    if(!bucketName) {
-      console.error('bucketName is required')
-      process.exit(1)
-    }
-
-    await handleSyncCommand(source, { endpoint, accessKey, accessSecret, bucketName, dryRun, force, region })
-  })
-
-program
-  .command('init')
-  .description('generate or update .env file')
-  .option('-e, --endpoint <endpoint>', 'oss endpoint, default is https://oss.lafyun.com, could be override by env OSS_ENDPOINT')
-  .option('-k, --access-key <access-key>', 'app oss access-key, default is env OSS_ACCESS_KEY')
-  .option('-s, --access-secret <access-secret>', 'app oss access-secret, default is env OSS_ACCESS_SECRET')
-  .option('-b, --bucket-name <bucket-name>', 'bucket-name, default is env OSS_BUCKET_NAME')
-  .option('-r, --region <region>', 'region', 'cn-default')
-  .option('--env <env-file>', `the file name to generate`, '.env')
-  .action(async (options) => {
-    const envFile = resolve(process.cwd(), options.env)
-    dotenv.config({ path: envFile})
-
-    const endpoint = options.endpoint || process.env.OSS_ENDPOINT || 'https://oss.lafyun.com'
-    const accessKey = options.accessKey || process.env.OSS_ACCESS_KEY || ''
-    const accessSecret = options.accessSecret || process.env.OSS_ACCESS_SECRET || ''
-    const bucketName = options.bucketName || process.env.OSS_BUCKET_NAME || ''
-    const region = options.region || process.env.OSS_REGION
-
-    const content = `OSS_ENDPOINT=${endpoint}
-OSS_ACCESS_KEY=${accessKey}
-OSS_ACCESS_SECRET=${accessSecret}
-OSS_BUCKET_NAME=${bucketName}
-OSS_REGION=${region}`
-
-    fs.writeFileSync(envFile, content)
-    console.log(`Generated: ${envFile}`)
-  })
 
   
 program
@@ -95,7 +27,7 @@ program
     console.log('  npm install -g laf-cli')
   })
 
-  program
+program
   .command('login')
   .option('-u, --username <username>', 'username')
   .option('-p, --password <password>', 'password')
@@ -119,6 +51,89 @@ program
 
 
   })
+
+
+program
+  .command('init <appid>')
+  .option('-s, --sync', 'sync app', false)
+  .action(async (appid, options) => {
+    try {
+        // get app
+        const result = await getApplicationByAppid(appid)
+        const appName = result.data.application.name
+        const endPoint = `${result.data.app_deploy_url_schema}://${appid}.${result.data.app_deploy_host}`
+    
+        await handleInitAppCommand(appName,appid,endPoint)
+
+        // sync app data
+        if (options.sync) {
+            //sync app
+            const data = await syncApp(appid)
+            
+            await handleSyncAppCommand(appName,data)
+        }
+    }
+    catch (err) {
+        console.log(err.message)
+    }
+
+  })
+
+
+program
+  .command('list')
+  .action(async () => {
+
+    await handleAppListCommand()
+
+  })
+
+program
+  .command('stop <appid>')
+  .option('--env <env-file>', `the file name to generate`, '.env')
+  .action(async (appid) => {
+
+    const response = await appStop(appid)
+
+    if (response.data.result) {
+      console.log('stop success')
+    } else {
+      console.log('stop failed')
+    }
+  })  
+
+
+program
+  .command('start <appid>')
+  .option('--env <env-file>', `the file name to generate`, '.env')
+  .action(async (appid) => {
+
+    const response = await appStart(appid)
+
+    if (response.data.result) {
+      console.log('start success')
+    } else {
+        console.log('start failed')
+      }
+    })
+
+
+program
+  .command('restart <appid>')
+  .option('--env <env-file>', `the file name to generate`, '.env')
+  .action(async (appid) => {
+
+    const response = await appRestart(appid)
+
+    if (response.data.result) {
+      console.log('restart success')
+    } else {
+      console.log('restart failed')
+    }
+  })
+
+program.addCommand(makeFnCommand())
+
 
 program.parse(process.argv)
 

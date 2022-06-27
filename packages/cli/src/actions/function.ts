@@ -19,41 +19,41 @@ import { debugFunction,getFunctionByName,pushFunction,createFunction} from '../a
 
 export async function handlePullFunctionCommand(data:any,options:any) {
 
-       // functions dir
-       const functionsDir = path.resolve(process.cwd(), FUNCTIONS_DIR)
+    // functions dir
+    const functionsDir = path.resolve(process.cwd(), FUNCTIONS_DIR)
 
-       checkDir(functionsDir)
+    checkDir(functionsDir)
 
-       data.forEach(element => {
+    data.forEach(element => {
 
-           //fuction name
-           const funcName =element.name;
-           const funcNameDir = path.resolve(functionsDir, funcName)
-   
-           checkDir(funcNameDir)
-   
-           const funcFile= path.resolve(funcNameDir, FUNCTIONS_FILE)
-           try{
-               // check if exist function file
-               fs.accessSync(funcFile)
-               const currentCode =fs.readFileSync(funcFile,'utf-8')
-               
-               if(currentCode){
-                   // forceOverwrite
-                   if(options.forceOverwrite){
-                       fs.writeFileSync(funcFile, element.code)
-                   }
-               }else{
-                   fs.writeFileSync(funcFile, element.code)
-               }
-           }catch(err){
-   
-               fs.writeFileSync(funcFile, element.code)
-   
-           }
-           
-           console.log('pull success')
-       })
+        //fuction name
+        const funcName =element.name;
+        const funcNameDir = path.resolve(functionsDir, funcName)
+
+        checkDir(funcNameDir)
+
+        const funcFile= path.resolve(funcNameDir, FUNCTIONS_FILE)
+        try{
+            // check if exist function file
+            fs.accessSync(funcFile)
+            const currentCode =fs.readFileSync(funcFile,'utf-8')
+            
+            if(currentCode){
+                // forceOverwrite
+                if(options.forceOverwrite){
+                    fs.writeFileSync(funcFile, element.code)
+                }
+            }else{
+                fs.writeFileSync(funcFile, element.code)
+            }
+        }catch(err){
+
+            fs.writeFileSync(funcFile, element.code)
+
+        }
+        
+        console.log('pull success')
+    })
 
     
 }
@@ -62,6 +62,7 @@ export async function handlePullFunctionCommand(data:any,options:any) {
  * invoke function
  * @param {string} appid
  * @param {string} functionName
+ * @param {object} param
  * @returns
  */
 
@@ -72,7 +73,7 @@ export async function handleInvokeFunctionCommand(appid:string,functionName:stri
     // get local code
     const functionNameDir = path.resolve(functionsDir, functionName)
     const funcFile= path.resolve(functionNameDir, FUNCTIONS_FILE)
-    const  code = fs.readFileSync(funcFile, 'utf8')
+    const code = fs.readFileSync(funcFile, 'utf8')
     const obj = {
         func:{
             appid: appid,
@@ -84,9 +85,9 @@ export async function handleInvokeFunctionCommand(appid:string,functionName:stri
         param:param
     }
 
-    const res = await debugFunction(appid,'test',obj)
+    const res = await debugFunction(functionName,obj)
     console.log(res)
-    
+
 }
 
 
@@ -124,9 +125,12 @@ export async function handlePushFunctionCommand(appid:string,functionName:string
                 if(res.data){
                     console.log("push success")
                 }
+            }else{
+
+                console.log("romote code is different with local")
             }
         }else{
-            console.log("push success1")
+            console.log("romote code is same with local")
         }
     
     }else{
@@ -135,6 +139,7 @@ export async function handlePushFunctionCommand(appid:string,functionName:string
             code:code,
             name:functionName,
             label:"test",
+            status:1
         }
     
         const res = await createFunction(appid,data)
