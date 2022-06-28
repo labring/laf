@@ -2,6 +2,7 @@ import * as fs from 'node:fs'
 import  * as path  from 'node:path'
 import { CREDENTIALS_DIR } from './constants'
 import { AUTH_FILE,LAF_FILE,FUNCTIONS_DIR } from '../utils/constants'
+const AWS = require('aws-sdk')
 
 /**
  * check auth dir
@@ -21,14 +22,22 @@ export function checkCredentialsDir(){
 /**
  * check dir
  * @param {string} dir
+ * @param {boolean} flag
  */
-export function checkDir(dir:string){
+export function checkDir(dir:string,flag:boolean=true){
     try{
         // check dir
         fs.accessSync(dir, fs.constants.R_OK|fs.constants.W_OK)
     }catch(err){
         // mkdir
-        fs.mkdirSync(dir, { recursive: true })
+        if(flag){
+            fs.mkdirSync(dir, { recursive: true })
+        }else{
+
+            console.error('dir not exist')
+            process.exit(1)
+        }
+        
     }
 
 }
@@ -88,7 +97,7 @@ export function getRemoteServe(){
         // check dir
         fs.accessSync(CREDENTIALS_DIR, fs.constants.R_OK|fs.constants.W_OK)
     }catch(err){
-        console.error("please login first 3")
+        console.error("please login first")
         process.exit(1)
     }
     const authData = JSON.parse(fs.readFileSync(AUTH_FILE, 'utf8'));
@@ -115,5 +124,25 @@ export function getAppData(){
     }
 
 }
+
+/**
+ * get s3 client
+ * @param endpoint 
+ * @param credentials 
+ * @returns 
+ */
+ export function getS3Client(endpoint: string, credentials:any) {
+    
+    return new AWS.S3({
+        accessKeyId: credentials.accessKeyId,
+        secretAccessKey: credentials.secretAccessKey,
+        sessionToken: credentials.sessionToken,
+        endpoint: endpoint,
+        s3ForcePathStyle: true,
+        signatureVersion: 'v4',
+        region: 'us-east-1'
+      })
+    
+  }
 
    

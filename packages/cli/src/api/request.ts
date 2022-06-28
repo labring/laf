@@ -51,23 +51,21 @@ request.interceptors.request.use(
       const status = error.response.status
   
       if (status === 401) {
-    
         console.error(error.response.data)
-
         process.exit(1)
         
       }
       if (status === 403) {
-        
         console.error(error.response.data)
-
+        process.exit(1)
+      }
+      if (status === 404) {
+        console.error(error.response.data)
         process.exit(1)
       }
       if (status === 422) {
-    
-       console.error(error.response.data)
-
-       process.exit(1)
+        console.error(error.response.data)
+        process.exit(1)
       }
   
       // showError(error.message)

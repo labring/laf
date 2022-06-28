@@ -1,19 +1,14 @@
 #!/usr/bin/env node
 
 import { program } from 'commander'
-
 import { handleLoginCommand } from './actions/user'
-
 import { syncApp } from './api/sync'
 import { getApplicationByAppid } from './api/apps'
 import { handleInitAppCommand ,handleSyncAppCommand} from './actions/init'
-
 import { appStop, appStart, appRestart } from './api/apps'
 import { handleAppListCommand } from './actions/app'
-
 import { makeFnCommand} from './functions'
-
-
+import { makeOssCommand} from './oss'
   
 program
   .option('-v, --version', 'output version')
@@ -62,8 +57,9 @@ program
         const result = await getApplicationByAppid(appid)
         const appName = result.data.application.name
         const endPoint = `${result.data.app_deploy_url_schema}://${appid}.${result.data.app_deploy_host}`
+        const ossEndpoint = result.data.oss_external_endpoint
     
-        await handleInitAppCommand(appName,appid,endPoint)
+        await handleInitAppCommand(appName,appid,endPoint,ossEndpoint)
 
         // sync app data
         if (options.sync) {
@@ -76,7 +72,6 @@ program
     catch (err) {
         console.log(err.message)
     }
-
   })
 
 
@@ -115,7 +110,7 @@ program
     } else {
         console.log('start failed')
       }
-    })
+  })
 
 
 program
@@ -133,6 +128,8 @@ program
   })
 
 program.addCommand(makeFnCommand())
+
+program.addCommand(makeOssCommand())
 
 
 program.parse(process.argv)

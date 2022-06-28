@@ -12,16 +12,17 @@ import { pipeline } from 'node:stream/promises'
  * @param {string} appName
  * @param {string} appid
  * @param {string} endPoint
+ * @param {string} ossEndpoint
  * @returns
  */
 
-export async function handleInitAppCommand(appName:string,appid:string,endPoint:string) {
+export async function handleInitAppCommand(appName:string,appid:string,endPoint:string,ossEndpoint) {
 
     const appPath = path.resolve(process.cwd(), appName)
     checkDir(appPath)
     const lafFile = path.resolve(appPath, LAF_FILE)
     // write data
-    fs.writeFileSync(lafFile, JSON.stringify({ appid: appid, root: appPath ,endPoint}))
+    fs.writeFileSync(lafFile, JSON.stringify({ appid: appid, root: appPath ,endPoint,ossEndpoint}))
     
 }
 

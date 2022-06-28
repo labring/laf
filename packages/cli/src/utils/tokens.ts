@@ -16,7 +16,7 @@ export async function getAccessToken() {
         // check dir
         fs.accessSync(CREDENTIALS_DIR, fs.constants.R_OK | fs.constants.W_OK)
     } catch (err) {
-        console.error("please login first 2")
+        console.error("please login first ")
         process.exit(1)
     }
 
