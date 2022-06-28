@@ -35,10 +35,34 @@ const commonLanguages = intersection(userLocales, supportLanguageNames)
 export const bestDefaultLanguage = commonLanguages.length > 0 ? commonLanguages[0] : 'en'
 
 export function initLanguageModule() {
-  // 同步语言设置
+  // sync config from config to i18n
   const { locale } = useI18n()
   const config = useConfigStore()
   watchEffect(() => {
     locale.value = config.local.language
   })
+}
+
+export function initDocTitleModule() {
+  const { t, locale } = useI18n()
+  const title = useTitle()
+  const route = useRoute()
+  watch([() => route.meta.title, locale], () => {
+    const titleParts = [t('app.title')]
+
+    if (route.meta.title) {
+      // support of expressions like t(\'xxxx.xxxx\')
+      const matchResult = /t\(['\"`](([\w\d.]+))['\"`]\)/g.exec(route.meta.title)
+      titleParts.unshift(matchResult ? t(matchResult[1]) : route.meta.title)
+    }
+
+    title.value = titleParts.join(' - ')
+  }, {
+    immediate: true,
+  })
+}
+
+export function initLocaleModule() {
+  initLanguageModule()
+  initDocTitleModule()
 }

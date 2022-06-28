@@ -1,3 +1,5 @@
+app:
+  title: Laf Cloud
 layout:
   topbar:
     title: Laf Cloud
@@ -17,3 +19,14 @@ utils:
     email: Email is invalid
     password: '{name} requires at least 8 digits'
     required: '{name} cannot be empty'
+  message:
+    confirm:
+      buttons:
+        cancel: Cancel
+        confirm: confirm
+      default-message: Are you sure you want to do this?
+      default-title: hint
+    error:
+      default-message: operation failed
+    success:
+      default-message: Successful operation

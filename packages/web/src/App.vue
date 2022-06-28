@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { initLanguageModule } from './modules/locales'
+import { initLocaleModule } from './modules/locales'
 
-initLanguageModule()
+initLocaleModule()
 </script>
 
 <template>

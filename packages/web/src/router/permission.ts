@@ -12,9 +12,6 @@ router.beforeEach(async (to, from, next) => {
   // start progress bar
   NProgress.start()
 
-  // set page title
-  document.title = to.meta.title ? `${to.meta.title} - LAF 云开发` : 'LAF 云开发'
-
   // determine whether the user has logged in
   const hasToken = getToken()
   if (hasToken) {

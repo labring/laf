@@ -85,5 +85,5 @@ const login = async (loginEl: FormInstance | undefined) => {
 <route lang="yaml">
 name: login
 meta:
-  title: 登录
+  title: t('pages.account.login.title')
 </route>
