@@ -1,6 +1,13 @@
 app:
   title: Laf Cloud
 layout:
+  components:
+    reset-password:
+      form:
+        confirm-password: Confirm Password
+        new-password: New Password
+      rules:
+        confirm: The two passwords do not match!
   topbar:
     title: Laf Cloud
     user:
@@ -19,6 +26,7 @@ utils:
     email: Email is invalid
     password: '{name} requires at least 8 digits'
     required: '{name} cannot be empty'
+    submit: Submit
   message:
     confirm:
       buttons:
