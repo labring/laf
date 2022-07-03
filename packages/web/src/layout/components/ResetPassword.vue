@@ -3,10 +3,13 @@ import type { ElForm } from 'element-plus'
 import { resetPassword } from '~/api/user'
 import { useUserStore } from '~/store'
 import { passwordField, requiredField } from '~/utils/form'
+import { successMsg } from '~/utils/message'
 
 const emit = defineEmits<{
   (type: 'done'): void
 }>()
+
+const { t } = useI18n()
 
 const formEl = ref<typeof ElForm>()
 const dialogVisible = ref(false)
@@ -24,7 +27,7 @@ const submitForm = () => {
   formEl.value?.validate()
   resetPassword(formData).then(() => {
     close()
-    ElMessage.success('密码修改成功!')
+    successMsg()
     emit('done')
   })
 }
@@ -33,7 +36,7 @@ const confirmPasswordRule = {
   trigger: 'blur',
   validator: (rule: any, value: string, callback: any) => {
     if (value !== formData.password)
-      callback(new Error('两次密码不一致!'))
+      callback(new Error(t('layout.components.reset-password.rules.confirm')))
 
     else
       callback()
@@ -45,20 +48,32 @@ defineExpose({ open, close })
 
 <template>
   <el-dialog ref="dialogEl" v-model="dialogVisible" destroy-on-close append-to-body :close-on-click-modal="false" :close-on-press-escape="false" title="重置密码">
-    <el-form ref="formEl" :model="formData">
-      <el-form-item label="新的密码" prop="password" :rules="[passwordField('新密码'), requiredField('新密码')]">
+    <el-form ref="formEl" label-position="top" :model="formData">
+      <el-form-item
+        :label="$t('layout.components.reset-password.form.new-password')"
+        prop="password"
+        :rules="[
+          passwordField($t('layout.components.reset-password.form.new-password')),
+          requiredField($t('layout.components.reset-password.form.new-password')),
+        ]"
+      >
         <el-input
           v-model="formData.password"
-          placeholder="请输入密码"
           type="password"
           clearable
           auto-complete="off"
         />
       </el-form-item>
-      <el-form-item label="确认密码" prop="confirmPassword" :rules="[passwordField('确认密码'), requiredField('确认密码'), confirmPasswordRule]">
+      <el-form-item
+        :label="$t('layout.components.reset-password.form.confirm-password')"
+        prop="confirmPassword" :rules="[
+          passwordField($t('layout.components.reset-password.form.confirm-password')),
+          requiredField($t('layout.components.reset-password.form.confirm-password')),
+          confirmPasswordRule,
+        ]"
+      >
         <el-input
           v-model="formData.confirmPassword"
-          placeholder="请输入确认密码"
           type="password"
           clearable
           auto-complete="off"
@@ -67,7 +82,7 @@ defineExpose({ open, close })
     </el-form>
     <template #footer>
       <el-button type="primary" @click="submitForm">
-        提交
+        {{ $t('utils.form.submit') }}
       </el-button>
     </template>
   </el-dialog>
