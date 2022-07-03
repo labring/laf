@@ -10,6 +10,9 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Unocss from 'unocss/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import vueI18n from '@intlify/vite-plugin-vue-i18n'
+import Inspect from 'vite-plugin-inspect'
+import SFCName from './scripts/vite-plugin-vue-sfc-name'
+import extendRoute from './scripts/extend-route'
 
 export default defineConfig({
   resolve: {
@@ -18,6 +21,9 @@ export default defineConfig({
     },
   },
   plugins: [
+    // debug plugins only
+    // Inspect(),
+    SFCName(),
     Vue({
       reactivityTransform: true,
     }),
@@ -34,26 +40,12 @@ export default defineConfig({
 
     // https://github.com/hannoeru/vite-plugin-pages
     Pages({
+      extendRoute,   
       dirs: [
         { dir: path.resolve(__dirname, './src/pages'), baseRoute: '' },
         { dir: path.resolve(__dirname, './src/pages/account'), baseRoute: '' },
       ],
-      exclude: ['**/components/**.vue'],
-      // extensions: ['.vue', '.js', '.ts'],
-      // extendRoute(route: any) {
-      //   if (route.name === 'about')
-      //     route.props = (route: any) => ({ query: route.query.q })
-
-      //   if (route.name === 'components') {
-      //     return {
-      //       ...route,
-      //       beforeEnter: (route: any) => {
-      //         // eslint-disable-next-line no-console
-      //         console.log(route)
-      //       },
-      //     }
-      //   }
-      // },
+      exclude: ['**/components/**.vue','**/*.ts'],
     }),
 
     Layouts({
