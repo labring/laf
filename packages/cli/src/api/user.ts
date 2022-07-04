@@ -21,7 +21,7 @@ export async function loginApi(server:string,obj:Object) {
             return false
         }
 
-        return {access_token:response.data.access_token,expire_time:response.data.expire}
+        return { access_token:response.data.access_token,expire_time:response.data.expire }
 
     }catch(err){
         
