@@ -111,15 +111,11 @@ function initOssSubDomainRoute() {
             type: 'roundrobin',
             nodes: {'oss:9000': 1}
         },
+        priority: 0,
         timeout: {
             connect: 600,
             send: 600,
             read: 600,
-        },
-        plugins: {
-            'proxy-rewrite': {
-                regex_uri: ["/$", "/index.html"]
-            }
         }
     }
     ApiSixHttpUtils.put(baseUrl, 'base_oss_sub_domain', data)

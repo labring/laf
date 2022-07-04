@@ -6,7 +6,7 @@ import { checkPermission } from "../../support/permission"
 import { IApplicationData } from "../../support/application"
 import { DatabaseAgent } from "../../db"
 import { WebsiteActionDef } from "../../actions"
-import {createWebsiteCustomRoute} from "../../support/route";
+import {createWebsiteRoute} from "../../support/route";
 
 
 /**
@@ -71,8 +71,8 @@ export async function handleBindDomain(req: Request, res: Response) {
       $push: { domain: domain }
     }
   )
-  const domainList = [domain, website.appid + '-' + website.bucket_name]
-  const rt = await createWebsiteCustomRoute('website-custom', app.appid, website_id, domainList, uid)
+  const domainList = [domain, website.cname]
+  const rt = await createWebsiteRoute('website-custom', app.appid, website_id, domainList, uid)
   if (!rt) {
       return res.send({ code: 'ROUTE CREATE FAILED', error: "route create failed" })
   }

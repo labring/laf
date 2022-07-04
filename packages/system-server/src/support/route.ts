@@ -14,7 +14,7 @@ export enum RouteStatus {
 
 export enum RouteType {
     APP = 'app',
-    WEBSITE_CUSTOM = 'website_custom'
+    WEBSITE = 'website'
 }
 
 
@@ -70,7 +70,7 @@ export async function deleteApplicationRoute(appid: string) {
 }
 
 
-export async function createWebsiteCustomRoute(name: string, appid: string, websiteId: string, domain: string[], uid: any): Promise<Boolean> {
+export async function createWebsiteRoute(name: string, appid: string, websiteId: string, domain: string[], uid: any): Promise<Boolean> {
     const route = await DatabaseAgent.db.collection(CN_ROUTES).findOne({
         appid: appid,
         websiteId: websiteId
@@ -96,7 +96,7 @@ export async function createWebsiteCustomRoute(name: string, appid: string, webs
         let data: IRouteData = {
             name: name,
             appid: appid,
-            type: RouteType.WEBSITE_CUSTOM,
+            type: RouteType.WEBSITE,
             website_id: websiteId,
             domain: domain,
             status: RouteStatus.PREPARED_CREATE,
@@ -115,7 +115,7 @@ export async function createWebsiteCustomRoute(name: string, appid: string, webs
     return true
 }
 
-export async function deleteWebsiteCustomRoute(appid: string, websiteId: string) {
+export async function deleteWebsiteRoute(appid: string, websiteId: string) {
     const ret = await DatabaseAgent.db.collection<IRouteData>(CN_ROUTES)
         .updateOne({
             appid: appid,
