@@ -11,13 +11,13 @@ import axios from 'axios'
  * @returns 
  */
 
-export async function pullFunction(appid: string,functionName:string) {
+export async function pullFunction(appid: string, functionName: string) {
 
     let url = ''
 
-    if(functionName){
+    if (functionName) {
         url = `/sys-api/apps/${appid}/function?status=1&page=1&limit=100&keyword=${functionName}`
-    }else{
+    } else {
         url = `/sys-api/apps/${appid}/function?status=1&page=1&limit=100`
 
     }
@@ -32,35 +32,37 @@ export async function pullFunction(appid: string,functionName:string) {
 
 /**
  * 调试函数
- * @param {string} appid
  * @param {string} functionName
  * @param {Object} obj
  * @returns 
  */
 
-export async function debugFunction(appid: string,functionName:string,obj:Object) {
+export async function debugFunction(functionName: string, obj: Object) {
 
-    const appData = getAppData();
+    const appData = getAppData()
 
-    const url = `http://${appid}.${appData.endPoint}/debug/${functionName}`
+    const url = `${appData.endPoint}/debug/${functionName}`
 
-    try{
+    try {
 
         const debug_token = await getDebugToken()
-        const headers ={"authorization":`Bearer ${debug_token}`}
+        const headers = { "authorization": `Bearer ${debug_token}` }
 
-        const result = await axios.post(url,obj,{headers:headers})
+        const result = await axios.post(url, obj, { headers: headers })
 
-        const response =  result.data
-
+        const response = result.data
+        if (response.error) {
+            console.error(response.error)
+            process.exit(1)
+        }
         return response
 
-    }catch(err){
-        
+    } catch (err) {
+
         console.error(err.message)
         process.exit(1)
     }
-    
+
 }
 
 /**
@@ -70,10 +72,10 @@ export async function debugFunction(appid: string,functionName:string,obj:Object
  * @returns 
  */
 
-export async function createFunction(appid: string,data:Object) {
+export async function createFunction(appid: string, data: Object) {
 
 
-    const  url= `/sys-api/apps/${appid}/function/create`
+    const url = `/sys-api/apps/${appid}/function/create`
 
     const obj = {
         method: "POST",
@@ -93,14 +95,14 @@ export async function createFunction(appid: string,data:Object) {
  * @returns 
  */
 
-export async function getFunctionByName(appid: string,functionName:string) {
-    const  url= `/sys-api/apps/${appid}/function/getFunction/${functionName}`
+export async function getFunctionByName(appid: string, functionName: string) {
+    const url = `/sys-api/apps/${appid}/function/detail/${functionName}`
     const obj = {
         method: "GET",
         url,
     }
-   const result = await requestData(obj)
-   return result.data
+    const result = await requestData(obj)
+    return result.data
 }
 
 /**
@@ -112,8 +114,8 @@ export async function getFunctionByName(appid: string,functionName:string) {
  */
 
 
-export async function pushFunction(appid: string,functionName:string,data:object) {
-    const  url= `/sys-api/apps/${appid}/function/updateFunction/${functionName}`
+export async function pushFunction(appid: string, functionName: string, data: object) {
+    const url = `/sys-api/apps/${appid}/function/save/${functionName}`
 
     const obj = {
         method: "POST",
@@ -121,8 +123,8 @@ export async function pushFunction(appid: string,functionName:string,data:object
         data
     }
 
-   const result = await requestData(obj)
-   return result.data
+    const result = await requestData(obj)
+    return result.data
 }
 
 
@@ -133,13 +135,13 @@ export async function pushFunction(appid: string,functionName:string,data:object
  * @returns 
  */
 
-export async function publishFunction(appid: string,functionName:string) {
-    const  url= `/sys-api/apps/${appid}/function/publishFunction/${functionName}`
+export async function publishFunction(appid: string, functionName: string) {
+    const url = `/sys-api/apps/${appid}/function/publish/${functionName}`
 
     const obj = {
         method: "POST",
         url
     }
-   const result = await requestData(obj)
-   return result.data
+    const result = await requestData(obj)
+    return result.data
 }
