@@ -7,12 +7,12 @@
 
 import { Router } from "express"
 import { handleCreateFunction } from "./create"
-import { handleGetAllFunctionTags, handleGetFunctionById,handleGetFunctionByName, handleGetFunctionHistory, handleGetFunctions, handleGetPublishedFunctions } from "./get"
+import { handleGetAllFunctionTags, handleGetFunctionById, handleGetFunctionByName, handleGetFunctionHistory, handleGetFunctions, handleGetPublishedFunctions } from "./get"
 import { handleGetFunctionLogs } from "./logs"
 import { handlePublishFunctions, handlePublishOneFunction, handlePublishOneFunctionByName } from "./publish"
 import { handleRemoveFunctionById } from "./remove"
 import { handleCreateTrigger, handleRemoveTrigger, handleUpdateTrigger } from "./trigger"
-import { handleCompileFunctionCode, handleUpdateFunction, handleUpdateFunctionCode,handleUpdateFunctionCodeByName } from "./update"
+import { handleCompileFunctionCode, handleUpdateFunction, handleUpdateFunctionCode, handleUpdateFunctionCodeByName } from "./update"
 
 
 export const FunctionRouter = Router()
@@ -108,13 +108,13 @@ FunctionRouter.delete('/:func_id/triggers/:trigger_id', handleRemoveTrigger)
 /**
  * get function by name
  */
- FunctionRouter.get('/detail/:func_name', handleGetFunctionByName)
+FunctionRouter.get('/detail/:func_name', handleGetFunctionByName)
 
 
- /**
- * update function by name
- */
-  FunctionRouter.post('/save/:func_name', handleUpdateFunctionCodeByName)
+/**
+* update function by name
+*/
+FunctionRouter.post('/save/:func_name', handleUpdateFunctionCodeByName)
 
 
 /**
