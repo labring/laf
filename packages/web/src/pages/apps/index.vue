@@ -87,6 +87,5 @@ onMounted(() => {
 name: applications
 meta:
   layout: TopBarLayout
-  requiresAuth: true
   title: 应用管理
 </route>

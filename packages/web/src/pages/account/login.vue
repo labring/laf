@@ -43,7 +43,7 @@ const login = async (loginEl: FormInstance | undefined) => {
     if (res.error)
       loginForm.password = ''
 
-    goPage('/application')
+    goPage('/apps')
   })
 }
 </script>

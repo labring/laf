@@ -38,22 +38,18 @@ export default defineConfig({
         { dir: path.resolve(__dirname, './src/pages'), baseRoute: '' },
         { dir: path.resolve(__dirname, './src/pages/account'), baseRoute: '' },
       ],
-      exclude: ['**/components/**.vue'],
-      // extensions: ['.vue', '.js', '.ts'],
-      // extendRoute(route: any) {
-      //   if (route.name === 'about')
-      //     route.props = (route: any) => ({ query: route.query.q })
+      exclude: ['**/components/**.vue', '**/layouts/**.vue', './**.ts'],
+      extendRoute(route) {
+        if (route.path === '/login' || route.path === '/register' || route.path === '/')
+          return route
 
-      //   if (route.name === 'components') {
-      //     return {
-      //       ...route,
-      //       beforeEnter: (route: any) => {
-      //         // eslint-disable-next-line no-console
-      //         console.log(route)
-      //       },
-      //     }
-      //   }
-      // },
+        route.meta.requiresAuth = true
+
+        if (route.path.startsWith('/app/'))
+          route.meta.layout = 'AppLayout'
+
+        return route
+      },
     }),
 
     Layouts({
