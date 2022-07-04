@@ -41,7 +41,7 @@ export async function debugFunction(functionName: string, obj: Object) {
 
     const appData = getAppData()
 
-    const url = `${appData.endPoint}/debug/${functionName}`
+    const url = `${appData.endpoint}/debug/${functionName}`
 
     try {
 
@@ -106,14 +106,12 @@ export async function getFunctionByName(appid: string, functionName: string) {
 }
 
 /**
- *  同步函数
+ * 同步函数
  * @param {string} appid
  * @param {string} functionName
   * @param {Object} data
  * @returns 
  */
-
-
 export async function pushFunction(appid: string, functionName: string, data: object) {
     const url = `/sys-api/apps/${appid}/function/save/${functionName}`
 

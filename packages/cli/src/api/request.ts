@@ -1,13 +1,13 @@
 import axios from 'axios'
 
-import { getRemoteServe } from '../utils/util'
+import { getRemoteServer } from '../utils/util'
 
 import { getAccessToken } from '../utils/tokens'
 
 
 export const request = axios.create({
   // set baseURL
-  baseURL: getRemoteServe()
+  baseURL: getRemoteServer()
 })
 
 // http request
@@ -18,7 +18,7 @@ request.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     } else {
-      console.error("please login first")
+      console.error("please login first: `laf-cli login -u username -p password`")
       process.exit(1)
     }
     return config

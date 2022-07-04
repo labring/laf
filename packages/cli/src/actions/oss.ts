@@ -2,7 +2,7 @@ import * as fs from 'node:fs'
 import * as path from 'node:path'
 import { createHash } from 'node:crypto'
 import * as mime from 'mime'
-import { checkDir, getS3Client } from '../utils/util'
+import { ensureDirectory, getS3Client } from '../utils/util'
 import axios from 'axios'
 import { pipeline } from 'node:stream/promises'
 
@@ -12,8 +12,8 @@ import { pipeline } from 'node:stream/promises'
  * @param {object} options
  * @returns
  */
-export async function handlePushCommand(credentials:any,options:any) {
-    const s3 = getS3Client(options.endpoint,credentials)
+export async function handlePushCommand(credentials: any, options: any) {
+    const s3 = getS3Client(options.endpoint, credentials)
     const source = options.source
 
     // get bucket objects
@@ -22,9 +22,13 @@ export async function handlePushCommand(credentials:any,options:any) {
     // console.log(res.Contents)
     const bucketObjects = res.Contents || []
 
-    // get source files
     const abs_source = path.resolve(source)
-    checkDir(abs_source,false)
+    if (!fs.existsSync(abs_source)) {
+        console.error('source not exist')
+        process.exit(1)
+    }
+
+    // get source files
     const sourceFiles = readdirRecursive(source).map(file => {
         return {
             key: path.relative(abs_source, file),
@@ -33,11 +37,11 @@ export async function handlePushCommand(credentials:any,options:any) {
     })
 
     // get updated files
-    let  updatedFiles = sourceFiles
-    if(!options.force) {
+    let updatedFiles = sourceFiles
+    if (!options.force) {
         updatedFiles = getUpdatedFiles(sourceFiles, bucketObjects)
     }
-  
+
     console.log(`${updatedFiles.length} files need to be updated`)
 
     for (const file of updatedFiles) {
@@ -54,9 +58,9 @@ export async function handlePushCommand(credentials:any,options:any) {
         }
     }
 
-    // get deleted files  // force 才delete
+    // get deleted files 
     const deletedFiles = getDeletedFiles(sourceFiles, bucketObjects)
-    if(deletedFiles?.length > 0) {
+    if (deletedFiles?.length > 0) {
         console.log(`${deletedFiles.length} files need to be deleted`)
         for (const obj of deletedFiles) {
             console.log(`deleting ${obj.Key}`)
@@ -75,9 +79,9 @@ export async function handlePushCommand(credentials:any,options:any) {
  * @returns
  */
 
-export async function handlePullCommand(credentials:any,options:any) {
+export async function handlePullCommand(credentials: any, options: any) {
 
-    const s3 = getS3Client(options.endpoint,credentials)
+    const s3 = getS3Client(options.endpoint, credentials)
 
     const outPath = options.outPath
 
@@ -87,7 +91,7 @@ export async function handlePullCommand(credentials:any,options:any) {
 
     // get local files
     const abs_source = path.resolve(outPath)
-    checkDir(abs_source)
+    ensureDirectory(abs_source)
     const localFiles = readdirRecursive(outPath)
         .map(file => {
             return {
@@ -96,43 +100,43 @@ export async function handlePullCommand(credentials:any,options:any) {
             }
         })
 
-    let  downFiles = bucketObjects
+    let downFiles = bucketObjects
 
 
-    if(!options.force) {
+    if (!options.force) {
         downFiles = getDownFiles(localFiles, bucketObjects)
     }
 
-    
-    downFiles.forEach( async item => {
 
-        const fileurl =   s3.getSignedUrl('getObject', { Bucket: options.bucketName, Key: item.Key })
+    downFiles.forEach(async item => {
+
+        const fileurl = s3.getSignedUrl('getObject', { Bucket: options.bucketName, Key: item.Key })
         const index = item.Key.lastIndexOf("/")
 
-        if(index >0 ){
-            const newDir = item.Key.substring(0,index)
-            const newPath = path.resolve(abs_source,newDir)
-            checkDir(newPath)
+        if (index > 0) {
+            const newDir = item.Key.substring(0, index)
+            const newPath = path.resolve(abs_source, newDir)
+            ensureDirectory(newPath)
         }
 
-        const data = await axios({url: fileurl,method: 'GET',responseType: 'stream'})
+        const data = await axios({ url: fileurl, method: 'GET', responseType: 'stream' })
 
-        const filepath = path.resolve(abs_source,item.Key)
+        const filepath = path.resolve(abs_source, item.Key)
 
         const writer = fs.createWriteStream(filepath)
 
-        await pipeline(data.data,writer)
+        await pipeline(data.data, writer)
     })
 
-     // get deleted files  // force 才delete
-     const deletedFiles = getLocalDeletedFiles(localFiles, bucketObjects)
-     if(deletedFiles?.length > 0) {
-         console.log(`${deletedFiles.length} files need to be deleted`)
-         for (const obj of deletedFiles) {
+    // get deleted files  // force 才delete
+    const deletedFiles = getLocalDeletedFiles(localFiles, bucketObjects)
+    if (deletedFiles?.length > 0) {
+        console.log(`${deletedFiles.length} files need to be deleted`)
+        for (const obj of deletedFiles) {
             console.log(`deleting ${obj.key}`)
             fs.unlinkSync(obj.abs_path)
-         }
-     }
+        }
+    }
 
 }
 
@@ -148,7 +152,7 @@ function readdirRecursive(dir: string) {
         if (stats.isDirectory()) {
             result.push(...readdirRecursive(filepath))
         } else {
-        result.push(filepath)
+            result.push(filepath)
         }
     }
     return result
@@ -160,18 +164,18 @@ function getDeletedFiles(sourceFiles: { key: string, abs_path: string }[], bucke
         const key = bucketObject.Key
         return !sourceFiles.find(sourceFile => sourceFile.key === key)
     })
-  return deletedFiles
+    return deletedFiles
 }
 
 
 // get deleted files which are not in bucketObjects 
-function getLocalDeletedFiles(sourceFiles:any,bucketObjects:any){
+function getLocalDeletedFiles(sourceFiles: any, bucketObjects: any) {
 
     const deletedFiles = sourceFiles.filter(sourceFile => {
         const key = sourceFile.key
         return !bucketObjects.find(bucketObject => bucketObject.Key === key)
     })
-  return deletedFiles
+    return deletedFiles
 
 }
 
@@ -189,7 +193,7 @@ function getUpdatedFiles(sourceFiles: { key: string, abs_path: string }[], bucke
 }
 
 // get down files
-function getDownFiles(sourceFiles:any,bucketObjects:any){
+function getDownFiles(sourceFiles: any, bucketObjects: any) {
 
     const downFiles = bucketObjects.filter(bucketObject => {
         const sourceFile = sourceFiles.find(sourceFile => bucketObject.Key === sourceFile.key)
@@ -198,7 +202,7 @@ function getDownFiles(sourceFiles:any,bucketObjects:any){
         }
         return !compareFileMd5(sourceFile.abs_path, bucketObject)
     })
-    
+
     return downFiles
 
 }
