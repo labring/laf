@@ -1,19 +1,23 @@
-#!/usr/bin/env node
+import { ensureHomeConfig } from './utils/util'
+// run this first of all
+ensureHomeConfig()
 
 import { program } from 'commander'
 import { handleLoginCommand } from './actions/user'
 import { syncApp } from './api/sync'
 import { getApplicationByAppid } from './api/apps'
-import { handleInitAppCommand ,handleSyncAppCommand} from './actions/init'
+import { handleInitAppCommand, handleSyncAppCommand } from './actions/init'
 import { appStop, appStart, appRestart } from './api/apps'
 import { handleAppListCommand } from './actions/app'
-import { makeFnCommand} from './functions'
-import { makeOssCommand} from './oss'
-  
+import { makeFnCommand } from './functions'
+import { makeOssCommand } from './oss'
+
+
+
 program
   .option('-v, --version', 'output version')
   .action((options) => {
-    if(!options.v) {
+    if (!options.v) {
       program.outputHelp()
     }
     const version = require('../package.json').version
@@ -53,24 +57,23 @@ program
   .option('-s, --sync', 'sync app', false)
   .action(async (appid, options) => {
     try {
-        // get app
-        const result = await getApplicationByAppid(appid)
-        const appName = result.data.application.name
-        const endPoint = `${result.data.app_deploy_url_schema}://${appid}.${result.data.app_deploy_host}`
-        const ossEndpoint = result.data.oss_external_endpoint
-    
-        await handleInitAppCommand(appName,appid,endPoint,ossEndpoint)
+      // get app
+      const result = await getApplicationByAppid(appid)
+      const endpoint = `${result.data.app_deploy_url_schema}://${appid}.${result.data.app_deploy_host}`
+      const oss_endpoint = result.data.oss_external_endpoint
 
-        // sync app data
-        if (options.sync) {
-            //sync app
-            const data = await syncApp(appid)
-            
-            await handleSyncAppCommand(appName,data)
-        }
+      await handleInitAppCommand(appid, endpoint, oss_endpoint)
+
+      // sync app data
+      if (options.sync) {
+        //sync app
+        const data = await syncApp(appid)
+
+        await handleSyncAppCommand(appid, data)
+      }
     }
     catch (err) {
-        console.log(err.message)
+      console.log(err.message)
     }
   })
 
@@ -95,7 +98,7 @@ program
     } else {
       console.log('stop failed')
     }
-  })  
+  })
 
 
 program
@@ -108,8 +111,8 @@ program
     if (response.data.result) {
       console.log('start success')
     } else {
-        console.log('start failed')
-      }
+      console.log('start failed')
+    }
   })
 
 
