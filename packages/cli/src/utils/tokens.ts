@@ -1,7 +1,7 @@
 
 import * as fs from 'node:fs'
-import  * as path  from 'node:path'
-import { CREDENTIALS_DIR, AUTH_FILE,LAF_FILE } from '../utils/constants'
+import * as path from 'node:path'
+import { CREDENTIALS_DIR, AUTH_FILE, LAF_FILE } from '../utils/constants'
 import { getApplicationByAppid } from '../api/apps'
 
 
@@ -42,7 +42,7 @@ export async function getDebugToken() {
 
     const appFile = path.resolve(process.cwd(), LAF_FILE)
     const appData = JSON.parse(fs.readFileSync(appFile, 'utf8'))
-    const response = await getApplicationByAppid(appData.appid);
+    const response = await getApplicationByAppid(appData.appid)
     return response.data.debug_token
 
 }
