@@ -13,5 +13,6 @@ export const PROJECT_DIR = path.resolve(process.cwd(), "@laf")
 export const FUNCTIONS_DIR = "functions"
 
 export const FUNCTIONS_FILE = "index.ts"
+export const META_FILE = "meta.json"
 
 export const DEFAULT_SERVER = "https://console.lafyun.com"
