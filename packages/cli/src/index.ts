@@ -1,16 +1,18 @@
+#!/usr/bin/env node
+
 import { ensureHomeConfig } from './utils/util'
 // run this first of all
 ensureHomeConfig()
 
 import { program } from 'commander'
 import { handleLoginCommand } from './actions/user'
-import { syncApp } from './api/sync'
 import { getApplicationByAppid } from './api/apps'
-import { handleInitAppCommand, handleSyncAppCommand } from './actions/init'
+import { handleInitAppCommand } from './actions/init'
 import { appStop, appStart, appRestart } from './api/apps'
 import { handleAppListCommand } from './actions/app'
 import { makeFnCommand } from './functions'
 import { makeOssCommand } from './oss'
+import { handlePullListCommand } from './actions/function-pull-list'
 
 
 
@@ -66,10 +68,8 @@ program
 
       // sync app data
       if (options.sync) {
-        //sync app
-        const data = await syncApp(appid)
-
-        await handleSyncAppCommand(appid, data)
+        //sync app (now only pull function)
+        await handlePullListCommand(appid, [])
       }
     }
     catch (err) {
