@@ -10,6 +10,7 @@ import { resolveComponentNameByPath } from './utils'
 export default function extendRoute(route: RouteRecordRaw) {
   if (!route.component)
     return route
+
   const fileName = route.component as any as string
   const routeName = route.name as string
   // update route.name
@@ -19,5 +20,14 @@ export default function extendRoute(route: RouteRecordRaw) {
     ...route.meta,
     componentName: resolveComponentNameByPath(resolve(process.cwd(), `.${fileName}`)),
   }
+
+  if (route.path === '/login' || route.path === '/register' || route.path === '/')
+    route.meta.requiresAuth = false
+  else
+    route.meta.requiresAuth = true
+
+  if (route.path.startsWith('/app/'))
+    route.meta.layout = 'AppLayout'
+
   return route
 }

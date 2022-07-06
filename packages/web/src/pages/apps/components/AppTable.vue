@@ -12,6 +12,8 @@ const props = defineProps<{
 
 const emit = defineEmits(['showUpdateDialog', 'showImportDialog', 'getApplications'])
 
+const router = useRouter()
+
 const { loading } = toRefs(props)
 const serviceLoading = $ref<any>(new Map())
 
@@ -80,11 +82,13 @@ const exportApp = async (app) => {
   exportRawBlob(filename, data)
 }
 
-const toDetail = (app) => {
+const toDetail = (app: any) => {
   if (app.status !== 'running')
     ElMessage.error('请先启动应用服务！')
 
-  appAPI.openAppConsole(app)
+  const { appid } = app
+  const path = `/app/${appid}/dashboard`
+  router.push(path)
 }
 </script>
 
@@ -109,7 +113,9 @@ const toDetail = (app) => {
       </el-table-column>
       <el-table-column align="center" label="应用名" min-width="120">
         <template #default="{ row }">
-          <span truncate color-blue-400 style="cursor:pointer;" @click="$emit('showUpdateDialog', row)">{{ row.name }}</span>
+          <el-tooltip content="编写云函数、查看日志、管理数据库、文件、成员协作等" effect="light" placement="top">
+            <span truncate color-blue-400 style="cursor:pointer;" @click="toDetail(row)">{{ row.name }}</span>
+          </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column align="center" label="应用规格" min-width="80">
@@ -169,11 +175,9 @@ const toDetail = (app) => {
       </el-table-column>
       <el-table-column fixed="right" label="操作" align="center" width="320" class-name="small-padding">
         <template #default="{ row }">
-          <el-tooltip content="编写云函数、查看日志、管理数据库、文件、成员协作等" effect="light" placement="top">
-            <el-button type="success" size="small" @click="toDetail(row)">
-              开发
-            </el-button>
-          </el-tooltip>
+          <el-button type="success" size="small" @click="$emit('showUpdateDialog', row)">
+            编辑
+          </el-button>
           <el-button type="default" size="small" :loading="loading" @click="exportApp(row)">
             导出
           </el-button>

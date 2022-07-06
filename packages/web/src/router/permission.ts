@@ -1,8 +1,8 @@
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import router from '.'
+import router, { appRoutes } from '.'
 import { getToken } from '~/utils/auth' // get token from cookie
-import { useUserStore } from '~/store'
+import { useAppStore, useMenuStore, useUserStore } from '~/store'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -16,8 +16,22 @@ router.beforeEach(async (to, from, next) => {
   const hasToken = getToken()
   if (hasToken) {
     const userStore = useUserStore()
+    const appStore = useAppStore()
+
     if (!userStore.userProfile?.name)
       await userStore.getUserProfile()
+
+    if (to.path.startsWith('/app/')) {
+      const appid = to.params.appid as string
+      const currentAppid = appStore.currentApp?.appid as unknown as string
+
+      if (!appStore.currentApp || currentAppid !== appid) {
+        await appStore.setCurrentApplication(appid)
+
+        const menuStore = useMenuStore()
+        menuStore.generateMenus(appRoutes, appid)
+      }
+    }
 
     if (to.path === '/login' || to.path === '/register' || to.path === '/') {
       // if is logged in, redirect to the home page

@@ -10,7 +10,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Unocss from 'unocss/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import vueI18n from '@intlify/vite-plugin-vue-i18n'
-import Inspect from 'vite-plugin-inspect'
+// import Inspect from 'vite-plugin-inspect'
 import SFCName from './scripts/vite-plugin-vue-sfc-name'
 import extendRoute from './scripts/extend-route'
 
@@ -40,12 +40,12 @@ export default defineConfig({
 
     // https://github.com/hannoeru/vite-plugin-pages
     Pages({
-      extendRoute,   
+      extendRoute,
       dirs: [
         { dir: path.resolve(__dirname, './src/pages'), baseRoute: '' },
         { dir: path.resolve(__dirname, './src/pages/account'), baseRoute: '' },
       ],
-      exclude: ['**/components/**.vue','**/*.ts'],
+      exclude: ['**/components/**.vue', '**/layouts/**.vue', '**/*.ts'],
     }),
 
     Layouts({
@@ -78,7 +78,6 @@ export default defineConfig({
 
   // server
   server: {
-    port: 9527,
     proxy: {
       '/sys-api': {
         target: 'http://console.127-0-0-1.nip.io:8080/',
