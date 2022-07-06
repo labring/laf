@@ -16,9 +16,9 @@ export async function pullFunction(appid: string, functionName: string) {
     let url = ''
 
     if (functionName) {
-        url = `/sys-api/apps/${appid}/function?status=1&page=1&limit=100&keyword=${functionName}`
+        url = `/sys-api/apps/${appid}/function?page=1&limit=1&keyword=${functionName}`
     } else {
-        url = `/sys-api/apps/${appid}/function?status=1&page=1&limit=100`
+        url = `/sys-api/apps/${appid}/function?page=1&limit=200`
 
     }
     const obj = {
@@ -127,7 +127,7 @@ export async function pushFunction(appid: string, functionName: string, data: ob
 
 
 /**
- * 发布函数
+ * publish by functionName
  * @param {string} appid
  * @param {string} functionName
  * @returns 
@@ -138,6 +138,67 @@ export async function publishFunction(appid: string, functionName: string) {
 
     const obj = {
         method: "POST",
+        url
+    }
+    const result = await requestData(obj)
+    return result.data
+}
+
+
+/**
+ * publish all function
+ * @param {string} appid
+ * @param {string} functionName
+ * @returns 
+ */
+
+export async function publishAllFunction(appid: string) {
+    const url = `/sys-api/apps/${appid}/function/publish`
+
+    const obj = {
+        method: "POST",
+        url
+    }
+    const result = await requestData(obj)
+    return result.data
+}
+
+
+
+/**
+ * 编辑函数
+ * @param {string} appid
+ * @param {string} functionId
+ * @returns 
+ */
+
+export async function editFunction(appid: string, functionId: string, data: any) {
+    const url = `/sys-api/apps/${appid}/function/${functionId}/info`
+
+    const obj = {
+        method: "POST",
+        url,
+        data
+    }
+    const result = await requestData(obj)
+    return result.data
+}
+
+
+
+
+/**
+ * 删除函数
+ * @param {string} appid
+ * @param {string} functionId
+ * @returns 
+ */
+
+export async function deleteFunction(appid: string, functionId: string) {
+    const url = `/sys-api/apps/${appid}/function/${functionId}`
+
+    const obj = {
+        method: "DELETE",
         url
     }
     const result = await requestData(obj)
