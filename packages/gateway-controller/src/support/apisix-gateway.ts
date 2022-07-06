@@ -2,6 +2,7 @@ import {GatewayInterface} from "./gateway-operator";
 import {IRouteData, RouteType} from "./route";
 import Config from "../config";
 import {ApiSixHttpUtils} from "./apisix-gateway-utils";
+import {logger} from "./logger";
 
 export class ApiSixGateway implements GatewayInterface {
 
@@ -17,16 +18,16 @@ export class ApiSixGateway implements GatewayInterface {
     public async create(route: IRouteData) {
         if (route.type === RouteType.APP) {
             return await createAppRoute(this.baseUrl, route)
-        } else if (route.type === RouteType.WEBSITE_CUSTOM) {
-            return await createWebsiteCustomRoute(this.baseUrl, route)
+        } else if (route.type === RouteType.WEBSITE) {
+            return await createWebsiteRoute(this.baseUrl, route)
         }
     }
 
     public async delete(route: IRouteData) {
         if (route.type === RouteType.APP) {
             return await deleteAppRoute(this.baseUrl, route)
-        } else if (route.type === RouteType.WEBSITE_CUSTOM) {
-            return await deleteWebsiteCustomRoute(this.baseUrl, route)
+        } else if (route.type === RouteType.WEBSITE) {
+            return await deleteWebsiteRoute(this.baseUrl, route)
         }
     }
 
@@ -69,24 +70,33 @@ async function deleteAppRoute(url: string, route: IRouteData) {
 }
 
 
-async function createWebsiteCustomRoute(url: string, route: IRouteData) {
-    if (route.domain.length !== 2) {
+async function createWebsiteRoute(url: string, route: IRouteData) {
+    if (route.domain.length <= 0) {
+        logger.warn('website: {} domain list is empty')
         return false
     }
-    let hosts = null, node = null
+    let host = null, node = null
     if (Config.SERVICE_DRIVER == 'docker') {
-        hosts = route.domain[0]
+        host = route.domain[0]
         node = 'oss:9000'
+    }
+
+    let upstream_host = null
+    if (route.domain.length > 1) {
+        upstream_host = route.domain[1]
+    } else {
+        upstream_host = route.domain[0]
+
     }
 
     let data = {
         name: route.name,
         uri: '/*',
-        hosts: hosts,
+        hosts: [host],
         priority: 9, // 设置优先级较高点
         upstream: {
             pass_host: 'rewrite',
-            upstream_host: route.domain[1] + '.' + Config.DEPLOY_OSS_DOMAIN,
+            upstream_host: upstream_host,
             type: 'roundrobin',
             nodes: {
                 [node]: 1
@@ -106,6 +116,6 @@ async function createWebsiteCustomRoute(url: string, route: IRouteData) {
     return await ApiSixHttpUtils.put(url, route.website_id, data)
 }
 
-async function deleteWebsiteCustomRoute(url: string, route: IRouteData) {
+async function deleteWebsiteRoute(url: string, route: IRouteData) {
     return await ApiSixHttpUtils.delete(url, route.website_id)
 }

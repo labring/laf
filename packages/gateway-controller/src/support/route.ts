@@ -13,7 +13,7 @@ export enum RouteStatus {
 
 export enum RouteType {
     APP = 'app',
-    WEBSITE_CUSTOM = 'website_custom'
+    WEBSITE = 'website'
 }
 
 

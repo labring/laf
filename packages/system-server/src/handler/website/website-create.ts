@@ -6,6 +6,7 @@ import { checkPermission } from "../../support/permission"
 import { URL } from "node:url"
 import Config from "../../config"
 import { WebsiteActionDef } from "../../actions"
+import {createWebsiteRoute} from "../../support/route";
 
 /**
  * handle create website hosting
@@ -67,6 +68,12 @@ export async function handleCreateWebsite(req: Request, res: Response) {
     .insertOne(doc)
   if (!result.insertedId) {
     return res.status(500).send("insert failed")
+  }
+
+  const domainList = [cname]
+  const rt = await createWebsiteRoute('website-custom', app.appid, result.insertedId.toString(), domainList, uid)
+  if (!rt) {
+    return res.send({ code: 'ROUTE CREATE FAILED', error: "route create failed" })
   }
 
   // return data
