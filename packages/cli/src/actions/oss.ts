@@ -37,10 +37,7 @@ export async function handlePushCommand(credentials: any, options: any) {
     })
 
     // get updated files
-    let updatedFiles = sourceFiles
-    if (!options.force) {
-        updatedFiles = getUpdatedFiles(sourceFiles, bucketObjects)
-    }
+    const updatedFiles = getUpdatedFiles(sourceFiles, bucketObjects)
 
     console.log(`${updatedFiles.length} files need to be updated`)
 
@@ -61,11 +58,13 @@ export async function handlePushCommand(credentials: any, options: any) {
     // get deleted files 
     const deletedFiles = getDeletedFiles(sourceFiles, bucketObjects)
     if (deletedFiles?.length > 0) {
-        console.log(`${deletedFiles.length} files need to be deleted`)
-        for (const obj of deletedFiles) {
-            console.log(`deleting ${obj.Key}`)
-            if (!options.dryRun) {
-                await s3.deleteObject({ Bucket: options.bucketName, Key: obj.Key }).promise()
+        if (options.forceOverwrite) {
+            console.log(`${deletedFiles.length} files need to be deleted`)
+            for (const obj of deletedFiles) {
+                console.log(`deleting ${obj.Key}`)
+                if (!options.dryRun) {
+                    await s3.deleteObject({ Bucket: options.bucketName, Key: obj.Key }).promise()
+                }
             }
         }
     }
@@ -100,42 +99,45 @@ export async function handlePullCommand(credentials: any, options: any) {
             }
         })
 
-    let downFiles = bucketObjects
+    // get download files
+    const downFiles = getDownFiles(localFiles, bucketObjects)
 
+    if (downFiles?.length > 0) {
 
-    if (!options.force) {
-        downFiles = getDownFiles(localFiles, bucketObjects)
+        downFiles.forEach(async item => {
+
+            const fileurl = s3.getSignedUrl('getObject', { Bucket: options.bucketName, Key: item.Key })
+            const index = item.Key.lastIndexOf("/")
+
+            if (index > 0) {
+                const newDir = item.Key.substring(0, index)
+                const newPath = path.resolve(abs_source, newDir)
+                ensureDirectory(newPath)
+            }
+
+            const data = await axios({ url: fileurl, method: 'GET', responseType: 'stream' })
+
+            const filepath = path.resolve(abs_source, item.Key)
+
+            const writer = fs.createWriteStream(filepath)
+
+            await pipeline(data.data, writer)
+        })
+
     }
 
-
-    downFiles.forEach(async item => {
-
-        const fileurl = s3.getSignedUrl('getObject', { Bucket: options.bucketName, Key: item.Key })
-        const index = item.Key.lastIndexOf("/")
-
-        if (index > 0) {
-            const newDir = item.Key.substring(0, index)
-            const newPath = path.resolve(abs_source, newDir)
-            ensureDirectory(newPath)
-        }
-
-        const data = await axios({ url: fileurl, method: 'GET', responseType: 'stream' })
-
-        const filepath = path.resolve(abs_source, item.Key)
-
-        const writer = fs.createWriteStream(filepath)
-
-        await pipeline(data.data, writer)
-    })
-
-    // get deleted files  // force 才delete
+    // get deleted files 
     const deletedFiles = getLocalDeletedFiles(localFiles, bucketObjects)
+    console.log(deletedFiles)
     if (deletedFiles?.length > 0) {
-        console.log(`${deletedFiles.length} files need to be deleted`)
-        for (const obj of deletedFiles) {
-            console.log(`deleting ${obj.key}`)
-            fs.unlinkSync(obj.abs_path)
+        if (options.forceOverwrite) {
+            console.log(`${deletedFiles.length} files need to be deleted`)
+            for (const obj of deletedFiles) {
+                console.log(`deleting ${obj.key}`)
+                fs.unlinkSync(obj.abs_path)
+            }
         }
+
     }
 
 }
