@@ -124,6 +124,7 @@ services:
       - ./gateway_conf.yaml:/usr/local/apisix/conf/config.yaml:ro
     ports:
       - 8080:9080
+      - 9443:9443
     networks:
       - laf_shared_network
 
@@ -140,10 +141,12 @@ services:
       GATEWAY_TYPE: apisix
       SYS_DB_URI: mongodb://my_user:password123@mongo:27017/?authSource=laf-sys&replicaSet=laf&writeConcern=majority
       API_SIX_KEY: edd1c9f034335f136f87ad84b625c8f1
+      APP_SERVICE_DEPLOY_URL_SCHEMA: 'http'
     command: node ./dist/index.js
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./packages/gateway-controller:/app
+      - ./cert:/ssl
     depends_on:
       - gateway
     restart: always
