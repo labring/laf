@@ -97,6 +97,11 @@ spec:
                 configMapKeyRef:
                   name: app-service
                   key: default-app-quota-created-per-user
+            - name: ACCOUNT_SIGNUP_MODE
+              valueFrom:
+                configMapKeyRef:
+                  name: app-service
+                  key: account-sigup-mode
             - name: APP_SERVICE_DEPLOY_HOST
               valueFrom:
                 configMapKeyRef:
