@@ -2,7 +2,9 @@
 title: 云函数简介
 ---
 
-### 简介
+# {{ $frontmatter.title }}
+
+## 简介
 
 云函数是运行在云端的 JavaScript 代码，熟悉 Node.js 的开发者可以直接上手。
 
@@ -26,18 +28,18 @@ exports.main = async function (ctx) {
 };
 ```
 
-### 客户端调用云函数
+## 客户端调用云函数
 
 ```js
-import { Cloud } from 'laf-client-sdk'
+import { Cloud } from "laf-client-sdk";
 
 const cloud = new Cloud({
   baseUrl: "https://APPID.lafyun.com",
-  getAccessToken: () => localStorage.getItem('access_token')
-})
+  getAccessToken: () => localStorage.getItem("access_token"),
+});
 
 const ret = await cloud.invokeFunction("login", {
-  username: "maslow"
+  username: "maslow",
 });
 
 console.log(ret);

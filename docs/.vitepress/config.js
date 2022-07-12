@@ -21,16 +21,25 @@ const NavConfig = [
  */
 const GuideSiderbarConfig = [
   {
-    text: '概览',
-    link: '/guide/',
-  },
-  {
-    text: '快速开始',
-    link: '/guide/quick-start/',
+    text: '介绍',
+    items: [
+      {
+        text: '概览',
+        link: '/guide/',
+      },
+      {
+        text: '快速开始',
+        link: '/guide/quick-start/',
+      },
+      {
+        text: '私有化部署',
+        link: '/guide/deploy/',
+      }
+    ]
   },
   {
     text: '云函数',
-    children: [
+    items: [
       { text: '云函数简介', link: '/guide/function/' },
       { text: '云函数 Cloud SDK', link: '/guide/function/cloud-sdk' },
       { text: '使用 Node.js 包', link: '/guide/function/import-npm' },
@@ -46,7 +55,7 @@ const GuideSiderbarConfig = [
   },
   {
     text: '云数据库',
-    children: [
+    items: [
       { text: '云数据库简介', link: '/guide/db/' },
       { text: '访问策略', link: '/guide/db/policy' },
       { text: '云数据库 API', link: '/guide/db/api' },
@@ -54,7 +63,7 @@ const GuideSiderbarConfig = [
   },
   {
     text: '云存储',
-    children: [
+    items: [
       { text: '云存储简介', link: '/guide/oss/' },
       { text: '生成云存储临时令牌(STS)', link: '/guide/oss/get-sts' },
       { text: '前端使用 STS 令牌上传文件', link: '/guide/oss/use-sts-in-client' },
@@ -62,15 +71,14 @@ const GuideSiderbarConfig = [
   },
   {
     text: '静态网站托管',
-    children: [
+    items: [
       { text: '静态托管简介', link: '/guide/website-hosting/index' },
       { text: '快速开始', link: '/guide/website-hosting/quick-start' },
     ]
   },
   {
-    text: '示例介绍',
-    // link: '/guide/examples/',
-    children: [
+    text: '案例',
+    items: [
 
       {
         text: '阿里云短信发送函数',
@@ -108,7 +116,7 @@ const GuideSiderbarConfig = [
   },
   // {
   //   text: '原理介绍',
-  //   children: [
+  //   items: [
   //     {
   //       text: '架构介绍',
   //       link: '/guide/architecture',
@@ -117,7 +125,7 @@ const GuideSiderbarConfig = [
   // },
   // {
   //   text: '使用案例',
-  //   children: [
+  //   items: [
   //     {
   //       text: '志愿者服务小程序',
   //       // link: '/guide/cases/volunteer-service',
@@ -155,10 +163,6 @@ const GuideSiderbarConfig = [
   //     }
   //   ]
   // }
-  {
-    text: '私有化部署',
-    link: '/guide/deploy/',
-  }
 ]
 
 
@@ -166,18 +170,27 @@ export default defineConfig({
   lang: 'zh-CN',
   title: 'laf 云开发',
   description: 'laf 云开发，像写博客一样写函数，随手上线',
-
+  markdown: {
+    lineNumbers: true
+  },
   themeConfig: {
     logo: '/logo.png',
     repo: 'labring/laf',
-    // docsRepo: 'labring/laf-docs',
     docsBranch: 'main',
     docsDir: 'docs',
-    editLinks: true,
-    editLinkText: '在 GitHub 上编辑此页',
+    footer: {
+      message: "Apache License V2.0",
+      copyright: "Copyright © 2021-present labring/laf"
+    },
+    editLink: {
+      pattern: 'https://github.com/labring/laf/edit/main/docs/:path',
+      text: '在 GitHub 上编辑此页'
+    },
     lastUpdated: '更新于',
     nav: NavConfig,
-
+    socialLinks: [
+      { icon: 'github', link: 'https://github.com/labring/laf' }
+    ],
     sidebar: {
       '/guide/': GuideSiderbarConfig
     }

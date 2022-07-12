@@ -1,3 +1,9 @@
+---
+title: 访问策略
+---
+
+# {{ $frontmatter.title }}
+
 ## 数据访问策略
 
 前端可使用 [laf-client-sdk](https://github.com/lafjs/laf/tree/main/packages/client-sdk) “直连”数据库，无需与服务端对接口。
