@@ -117,6 +117,7 @@ services:
       GATEWAY_TYPE: apisix
       SYS_DB_URI: mongodb://${SYS_DB_USER}:${SYS_DB_PASSWORD}@mongo:27017/?authSource=${SYS_DB}&replicaSet=laf&writeConcern=majority
       API_SIX_KEY: ${API_SIX_KEY}
+      APP_SERVICE_DEPLOY_URL_SCHEMA: ${APP_SERVICE_DEPLOY_URL_SCHEMA}
     networks:
       - laf_shared_network
 

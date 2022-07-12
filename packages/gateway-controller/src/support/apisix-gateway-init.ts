@@ -3,15 +3,24 @@
  */
 import Config from "../config";
 import {ApiSixHttpUtils} from "./apisix-gateway-utils";
+import {logger} from "./logger";
+
+const fs = require('fs');
 
 const baseUrl = 'http://gateway:9080'
 
 export function initBaseRoute() {
+    logger.info('start init base route')
     initSystemClientRoute()
     initAppConsoleRoute()
     initSysApiRoute()
     initOssRoute()
     initOssSubDomainRoute()
+}
+
+export function initBaseSSL() {
+    logger.info('start init base url')
+    initGlobalSSL()
 }
 
 
@@ -119,4 +128,18 @@ function initOssSubDomainRoute() {
         }
     }
     ApiSixHttpUtils.put(baseUrl, 'base_oss_sub_domain', data)
+}
+
+
+function initGlobalSSL() {
+    let crt = null
+    let key = null
+    try {
+        crt = fs.readFileSync('/ssl/global.crt','utf8')
+        key = fs.readFileSync('/ssl/global.key','utf8')
+        logger.info('load cert successful')
+    } catch (e) {
+        logger.error('read global ssl cert fail: {}', e)
+    }
+    ApiSixHttpUtils.putSSL(baseUrl, 'global_ssl', '*.' + Config.DEPLOY_DOMAIN, crt, key)
 }

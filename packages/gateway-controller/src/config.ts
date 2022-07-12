@@ -112,4 +112,13 @@ export default class Config {
     return process.env['DEPLOY_OSS_DOMAIN']
   }
 
+    /**
+     * The schema of app deployed url: `http` | `https`.
+     * Default value is `http`.
+     */
+    static get APP_SERVICE_DEPLOY_URL_SCHEMA(): string {
+        return process.env.APP_SERVICE_DEPLOY_URL_SCHEMA ?? 'http'
+    }
+
+
 }
