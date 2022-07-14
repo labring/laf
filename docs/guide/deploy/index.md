@@ -2,6 +2,8 @@
 title: 私有化部署
 ---
 
+# {{ $frontmatter.title }}
+
 ## 在 Docker Compose 上部署
 
 ### 准备工作

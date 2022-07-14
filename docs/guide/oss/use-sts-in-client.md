@@ -2,7 +2,7 @@
 title: 前端使用 STS 令牌访问云存储
 ---
 
-### 前端使用 STS 令牌访问云存储
+# {{ $frontmatter.title }}
 
 在前端使用 [使用云函数生成云存储临时令牌(STS)](get-sts.md) 生成的 STS 令牌信息，访问云存储。
 
