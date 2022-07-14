@@ -2,14 +2,16 @@
 title: 云数据库简介
 ---
 
-### 介绍
+# {{ $frontmatter.title }}
+
+## 介绍
 
 前端可使用 [laf-client-sdk](https://github.com/lafjs/laf/tree/main/packages/client-sdk) “直连”数据库，无需与服务端对接口。
 
 通过在开发控制台，配置相应的访问策略，即可实现客户端安全操作数据库。
 详见[访问策略](./policy)。
 
-### 安装客户端 SDK
+## 安装客户端 SDK
 
 在前端项目中安装 laf-client-sdk sdk:
 
@@ -17,7 +19,7 @@ title: 云数据库简介
 npm install laf-client-sdk
 ```
 
-### 使用示例
+## 使用示例
 
 ```js
 const cloud = require("laf-client-sdk").init({

@@ -2,11 +2,13 @@
 title: 云函数 Cloud SDK
 ---
 
-### 云函数 Cloud SDK
+# {{ $frontmatter.title }}
+
+## 云函数 Cloud SDK
 
 在云函数中，`laf.js` 提供了一个 `cloud-sdk` 以方便开发者访问一些应用接口，如数据库、文件、网络等接口。
 
-#### 数据库访问
+### 数据库访问
 
 在云函数中数据库操作 与客户端 SDK 的数据库操作的接口是一致的，前端人员也可以无缝的编写云函数，或者复用代码。
 
@@ -17,15 +19,15 @@ import cloud from "@/cloud-sdk";
 exports.main = async function (ctx) {
   const { username } = ctx.body;
   // 数据库操作
-  const db = cloud.database()
-  const ret = await db.collection("users").where({ username }).get()
+  const db = cloud.database();
+  const ret = await db.collection("users").where({ username }).get();
 
-  console.log(ret)
-  return ret.data
-}
+  console.log(ret);
+  return ret.data;
+};
 ```
 
-#### HTTP 请求
+### HTTP 请求
 
 使用 `cloud.fetch()` 可发起 HTTP 请求，调用三方接口，可完成如支付接口、短信验证码等等三方接口操作。
 
@@ -38,14 +40,14 @@ exports.main = async function (ctx) {
   const ret = await cloud.fetch({
     url: "http://www.baidu.com/",
     method: "post",
-  })
+  });
 
-  console.log(ret.data)
-  return ret.data
+  console.log(ret.data);
+  return ret.data;
 };
 ```
 
-### 生成 JWT token
+## 生成 JWT token
 
 以下实现简单登录函数，以演示 标准 JWT token 的生成，预期开发者已熟悉 JWT 相关知识。
 
@@ -86,7 +88,7 @@ exports.main = async function (ctx) {
 };
 ```
 
-#### 附：SDK 接口定义
+### 附：SDK 接口定义
 
 `Cloud SDK` 还提供了其它能力，可参考其内部定义，同时在开发控制台中编写时，亦有代码提示、类型、注释提示，可根据代码提示使用。
 

@@ -2,6 +2,8 @@
 title: 云函数处理 WebSocket 长连接
 ---
 
+# {{ $frontmatter.title }}
+
 `laf.js` 于 `v0.6.11` 新增支持了 WebSocket 能力。
 
 ## WebSocket 触发器
@@ -50,15 +52,15 @@ exports.main = async function (ctx) {
 ```js
 const ws = new WebSocket("wss://your-own-appid.lafyun.com");
 wss.onopen = (socket) => {
-  console.log('connected')
-  wss.send('hi')
-}
+  console.log("connected");
+  wss.send("hi");
+};
 
 wss.onmessage = (data) => {
-  console.log(data.toString())
-}
+  console.log(data.toString());
+};
 
 wss.onclose = () => {
-  console.log('closed')
-}
+  console.log("closed");
+};
 ```

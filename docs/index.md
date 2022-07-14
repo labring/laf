@@ -1,9 +1,23 @@
 ---
 title: laf 云开发文档
-home: true
-heroImage: https://socialify.git.ci/labring/laf/image?description=1&descriptionEditable=%E5%83%8F%E5%86%99%E5%8D%9A%E5%AE%A2%E4%B8%80%E6%A0%B7%E5%86%99%E4%BB%A3%E7%A0%81%EF%BC%81&font=Inter&forks=1&language=1&name=1&owner=1&pattern=Circuit%20Board&stargazers=1&theme=Dark
-heroAlt: Logo image
-heroText: Life is short, you need laf :)
+layout: home
+
+hero:
+  name: Laf
+  text: 像写博客一样写函数   随时随地上线
+  tagline: Life is short, you need laf :)
+  actions:
+    - theme: brand
+      text: 快速开始
+      link: /guide/
+    - theme: alt
+      text: 在线体验
+      link: http://console.lafyun.com/
+    - theme: alt
+      text: GitHub仓库
+      link: https://github.com/labring/laf
+
+heroImage: https://socialify.git.ci/labring/laf/image?description=1&
 tagline: 像写博客一样写函数，随手上线
 actionText: Get Started
 actionLink: /guide/
@@ -20,14 +34,4 @@ features:
     details: 提供专业兼容S3标准的对象存储服务（MinIO)，支持 Service Account 开放能力。
   - title: 静态网站托管
     details: 将前端静态网站一键部署到云存储，通过自动分配的二级域名直接访问，支持绑定自定义域名。
-
-footer: Apache License V2.0 | Copyright © 2021-present labring/laf
 ---
-
-## 🖥 在线体验
-
-::: info
-🎉 [lafyun.com](http://www.lafyun.com) 是 `laf` 的一个在线版，可在免费线体验 `laf` 云开发应用服务！
-
-开发者可免费在 [lafyun.com 控制台](http://console.lafyun.com) 上快速创建自己的应用，免除服务器部署和运维工作，立即拥有应用独立域名及 HTTPS 证书，快速上线应用！
-:::

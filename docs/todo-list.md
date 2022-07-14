@@ -3,6 +3,8 @@ title: laf.js 前端使用演示 Demo
 sidebar: false
 ---
 
+# {{ $frontmatter.title }}
+
 ## Demo: Todo List
 
 > CodeSandBox 在线 Demo，由于网络原因加载会比较慢

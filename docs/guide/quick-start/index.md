@@ -2,26 +2,26 @@
 title: 快速开始
 ---
 
-## 快速开始
+# {{ $frontmatter.title }}
 
 ::: info
 我们将在 [lafyun.com](https://www.lafyun.com) 上，通过开发一个简单的「用户登录/注册」的功能，快速体验 `laf` 云开发。
 :::
 
-### 准备工作
+## 准备工作
 
 1. 你需要在 [lafyun.com](https://console.lafyun.com) 上注册一个账户
 2. 登录到 [lafyun.com 控制台](https://console.lafyun.com)，点击左上角的 `新建` 按钮，创建一个空应用
 3. 待应用成功启动后，点击右侧 「开发」 按钮，进入应用的「开发控制台」，接下来，我们将在「开发控制台」 进行第一个 `laf` 应用的功能开发
 
-### 编写云函数
+## 编写云函数
 
 本教程会编写两个云函数:
 
 - `register` 处理注册请求
 - `login` 处理登录请求.
 
-#### 用户注册云函数
+### 用户注册云函数
 
 ::: info
 在「云函数」管理页面，点击 「新建函数」，创建注册云函数 `register`，
@@ -66,7 +66,7 @@ exports.main = async function (ctx: FunctionContext) {
 点击右上角的 「显示调试面板」(Ctrl/Cmd + B) 即可调试运行，点击 「保存」 & 「发布」 函数即发布上线！
 :::
 
-#### 用户登录云函数
+### 用户登录云函数
 
 > 同上，创建 `login` 云函数，编写以下代码：
 
@@ -108,7 +108,7 @@ exports.main = async function (ctx: FunctionContext) {
 
 > 点击右上角的 「显示调试面板」(Ctrl/Cmd + B) 即可调试运行，点击 「保存」 & 「发布」 函数即发布上线！
 
-### 使用 curl 调用云函数
+## 使用 curl 调用云函数
 
 你可以通过云函数列表页面，查看 & 复制云函数的调用地址，
 或将以下 curl 命令中的 `APPID` 替换成你的 APPID 后执行：
@@ -123,7 +123,7 @@ curl -X POST -H "Content-Type: application/json" -d '{"username": "admin", "pass
 
 ```
 
-### 在前端项目中使用云函数
+## 在前端项目中使用云函数
 
 > 在你的前端项目中安装 laf client sdk:
 
@@ -169,7 +169,7 @@ export async function login(username: string, password: string) {
 
 > 最后，可以在你的 Vue/React/Angular/小程序 页面中调用这两个云函数完成具体的登录注册功能！
 
-### 其他
+## 其他
 
 - 我们可以在开发控制台，查看云函数的调用日志，在线调试等
 - 如果调用返回 404，请检查函数名是否拼写错误，或者云函数是否已经发布
