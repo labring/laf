@@ -17,6 +17,7 @@ app.get('/healthz', (_req, res) => {
 })
 // init base route
 initBaseRoute()
+
 // init base ssl
 if (Config.APP_SERVICE_DEPLOY_URL_SCHEMA) {
     initBaseSSL()
