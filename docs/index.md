@@ -3,9 +3,9 @@ title: laf 云开发文档
 layout: home
 
 hero:
-  name: Laf
+  name: laf
   text: 像写博客一样写函数   随时随地上线
-  tagline: Life is short, you need laf :)
+  tagline: life is short, you need laf :)
   actions:
     - theme: brand
       text: 快速开始

@@ -10,7 +10,7 @@ const NavConfig = [
   { text: '预览图', link: '/screenshots', },
   { text: '在线 Demo', link: '/todo-list', },
   {
-    text: '控制台',
+    text: '在线体验',
     // target: "_self",
     link: 'https://console.lafyun.com/'
   }
