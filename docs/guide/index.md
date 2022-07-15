@@ -1,20 +1,8 @@
-![laf](https://socialify.git.ci/labring/laf/image?description=1&descriptionEditable=%E5%83%8F%E5%86%99%E5%8D%9A%E5%AE%A2%E4%B8%80%E6%A0%B7%E5%86%99%E4%BB%A3%E7%A0%81%EF%BC%81&font=Inter&forks=1&language=1&name=1&owner=1&pattern=Circuit%20Board&stargazers=1&theme=Dark)
+---
+title: 介绍
+---
 
-<div align="center">
-  <p>
-    <b>像写博客一样写函数！</b>
-  </p>
-
-<div class="inline">
-
-[![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/labring/laf)
-[![](https://img.shields.io/docker/pulls/lafyun/system-server)](https://hub.docker.com/r/lafyun/system-server)
-![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?logo=typescript&logoColor=white)
-[![Website](https://img.shields.io/website?url=https%3A%2F%2Fdocs.lafyun.com&logo=Postwoman)](https://docs.lafyun.com/)
-<a href="https://cdn.jsdelivr.net/gh/yangchuansheng/imghosting3@main/uPic/2022-04-22-14-21-MRJH9o.png"><img src="https://img.shields.io/badge/%E5%BE%AE%E4%BF%A1%E7%BE%A4-2000%2B-brightgreen"></a>
-
-</div>
-</div>
+# {{ $frontmatter.title }}
 
 ## 👀 `laf` 是什么
 
@@ -117,7 +105,7 @@
 
 3. 部署个人博客、企业官网
 
-   - 将 vuepress / hexo / hugo 等静态生成的博客，一键部署到 `laf` 静态托管上， 见 [laf-cli](https://github.com/labring/laf-cli)
+   - 将 vuepress / hexo / hugo 等静态生成的博客，一键部署到 `laf` 静态托管上， 见 [laf-cli](https://github.com/labring/laf/packages/cli)
    - 可使用云函数来处理用户留言、评论、访问统计等业务
    - 可使用云函数扩展博客的其它能力，如课程、投票、提问等
    - 可使用云存储存储视频、图片
@@ -144,20 +132,6 @@
    - 有用户使用 `laf` 云函数做 webhook，监听 Git 仓库提交消息，推送到钉钉、企业微信群
    - 有用户使用 `laf` 云函数做拨测，定时检查线上服务的健康状态
    - ...
-
-> 未来，`lafyun.com` 会上线一个应用市场，汇总收集这些应用，让 `laf` 用户一键即可使用海量应用!
-
-## 🖥 在线体验
-
-::: info
-🎉 [lafyun.com](http://www.lafyun.com) 是 `laf` 的一个在线版，可在免费线体验 `laf` 云开发应用服务！
-
-开发者可免费在 [lafyun.com](http://www.lafyun.com) 上快速创建自己的应用，免除服务器部署和运维工作，立即拥有应用独立域名及 HTTPS 证书，快速上线应用！
-:::
-
-## 🚀 快速开始
-
-[三分钟体验使用 laf 开发一个简单的登陆注册功能](./quick-start/index.md)
 
 ## 🏘️ 社群
 
