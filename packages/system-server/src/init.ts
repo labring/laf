@@ -53,8 +53,9 @@ async function main() {
   // init system app route
   let rt = await createApplicationRoute(app.name, app.appid, 0)
   if (!rt) {
-      logger.error('Error: create route failed')
+    logger.error('Error: create route failed')
   }
+
 
 }
 

@@ -2,6 +2,8 @@ import axios, {AxiosRequestHeaders} from "axios";
 import Config from "../config";
 import {logger} from "./logger";
 
+const {X509Certificate} = require('crypto');
+
 export class ApiSixHttpUtils {
 
     static headers: AxiosRequestHeaders = {
@@ -41,11 +43,18 @@ export class ApiSixHttpUtils {
 
     static async putSSL(url: string, id: string, sns: string, cert: string, key: string) {
         let resStatus = false
+
+        // check ssl cert valid date
+        const certInfo = new X509Certificate(cert)
+        if (certInfo.code != undefined) {
+            logger.error('parse cert fail: ', certInfo.reason)
+            return
+        }
         let data = {
             cert: cert,
             key: key,
             snis: [sns],
-            labels: {'update_time': new Date().getTime() + ''}
+            validity_end: new Date(certInfo.validTo).getTime() / 1000 - 3600 * 24 * 10,
         }
         await axios.put(url + '/apisix/admin/ssl/' + id, data, {
             headers: this.headers,
@@ -75,4 +84,22 @@ export class ApiSixHttpUtils {
         return resStatus
     }
 
+
+    static async getSSL(url: string, id: string) {
+        let ssl = null
+        await axios.get(url + '/apisix/admin/ssl/' + id, {
+            headers: this.headers,
+        })
+            .then(res => {
+                if (res.status == 200) {
+                    ssl = res.data.node.value
+                } else {
+                    logger.error('get ssl failed:  ', res.data)
+                }
+            })
+            .catch(err => {
+                logger.error('get ssl failed: ', err)
+            })
+        return ssl
+    }
 }

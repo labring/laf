@@ -32,24 +32,46 @@ export interface IRouteData {
 }
 
 export async function createApplicationRoute(name: string, appid: string, uid: any): Promise<Boolean> {
-    const now = new Date()
-    let data: IRouteData = {
-        name: name,
+    const route = await DatabaseAgent.db.collection(CN_ROUTES).findOne({
         appid: appid,
         type: RouteType.APP,
-        website_id: null,
-        domain: [],
-        status: RouteStatus.PREPARED_CREATE,
-        created_by: new ObjectId(uid),
-        created_at: now,
-        updated_at: now,
+    })
+    const now = new Date()
+    if (route) {
+        const ret = await DatabaseAgent.db.collection(CN_ROUTES).updateOne({
+            appid: appid,
+            type: RouteType.APP,
+        }, {
+            $set: {
+                status: RouteStatus.PREPARED_CREATE,
+                created_at: now,
+                updated_at: now,
+            }
+        })
+        if (!ret.modifiedCount) {
+            logger.error('update app route task failed: {}', appid)
+            return false
+        }
+    } else {
+        let data: IRouteData = {
+            name: name,
+            appid: appid,
+            type: RouteType.APP,
+            website_id: null,
+            domain: [],
+            status: RouteStatus.PREPARED_CREATE,
+            created_by: new ObjectId(uid),
+            created_at: now,
+            updated_at: now,
+        }
+        const ret = await DatabaseAgent.db.collection(CN_ROUTES)
+            .insertOne(data as any)
+        if (!ret.insertedId) {
+            logger.error('create app route task successful: {}', appid)
+            return false
+        }
     }
-    const ret = await DatabaseAgent.db.collection(CN_ROUTES)
-        .insertOne(data as any)
-    if (!ret.insertedId) {
-        logger.error('create route task successful: {}', appid)
-        return false
-    }
+
     return true
 }
 
