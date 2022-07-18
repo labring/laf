@@ -20,10 +20,15 @@ pages:
       login-btn: Login
       password: Password
       title: Login
-    register: Register
+    register:
+      name: Name
+      success-msg: registration success!
+      title: Register
 utils:
   form:
     email: Email is invalid
+    maxlength: '{name} is not longer than {len} digits'
+    minlength: '{name} is not less than {len} digits'
     password: '{name} requires at least 8 digits'
     required: '{name} cannot be empty'
     submit: Submit

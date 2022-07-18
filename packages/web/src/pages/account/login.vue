@@ -55,7 +55,7 @@ const login = async (loginEl: FormInstance | undefined) => {
         <div flex justify-between items-center>
           <span text-4>{{ $t('pages.account.login.title') }}</span>
           <el-button type="primary" text @click="goPage('/register')">
-            {{ $t('pages.account.register') }}
+            {{ $t('pages.account.register.title') }}
           </el-button>
         </div>
       </template>
