@@ -90,6 +90,16 @@ export default class Config {
   }
 
   /**
+   * Account registration mode
+   * 0(Default): Unlimited registration
+   * 1: Prohibit registration
+   */
+  static get ACCOUNT_SIGNUP_MODE(): number {
+    const value = process.env.ACCOUNT_SIGNUP_MODE ?? 0
+    return Number(value)
+  }
+
+  /**
    * The host to access the app service
    * For example, if set this to `lafyun.com`, then you can access app service by format `[appid].lafyun.com`: 
    * - 7b0b318c-b96c-4cc5-b521-33d11bd16cde.lafyun.com

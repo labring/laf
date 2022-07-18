@@ -1,7 +1,8 @@
 ---
 title: laf.js 前端使用演示 Demo
-sidebar: false
 ---
+
+# {{ $frontmatter.title }}
 
 ## Demo: Todo List
 

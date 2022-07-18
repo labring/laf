@@ -16,6 +16,10 @@ import Config from '../../config'
  * The handler of sign up
  */
 export async function handleSignUp(req: Request, res: Response) {
+  const signUpMode = Config.ACCOUNT_SIGNUP_MODE
+  if (signUpMode === 1) {
+    return res.send({ error: 'account prohibit registration' })
+  }
 
   const db = DatabaseAgent.db
 
