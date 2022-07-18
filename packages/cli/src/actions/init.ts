@@ -37,7 +37,7 @@ function addConfigFromTemplates() {
 
     ensureDirectory(TYPE_DIR)
     //from templates dir
-    const templates_dir = path.resolve(process.cwd(), TEMPLATES_DIR)
+    const templates_dir = path.resolve('../', TEMPLATES_DIR)
 
     // global
     const from_globle_file = path.resolve(templates_dir, GLOBAL_FILE)
