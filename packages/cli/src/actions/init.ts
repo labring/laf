@@ -1,11 +1,10 @@
-import { PROJECT_DIR } from './../utils/constants'
+import { GLOBAL_FILE, PACKAGE_FILE, PROJECT_DIR, RESPONSE_FILE, TEMPLATES_DIR, TSCONFIG_FILE, TYPE_DIR } from './../utils/constants'
 import * as fs from 'node:fs'
-import * as path from 'node:path'
 import { LAF_CONFIG_FILE } from '../utils/constants'
 import { ensureDirectory } from '../utils/util'
 
-import * as AdmZip from 'adm-zip'
-import { pipeline } from 'node:stream/promises'
+import { handlePullListCommand } from './function-pull-list'
+import * as path from 'node:path'
 
 
 /**
@@ -25,19 +24,39 @@ export async function handleInitAppCommand(appid: string, endpoint: string, oss_
  * @returns
  */
 
-export async function handleSyncAppCommand(appid: string, data: any) {
+export async function handleSyncAppCommand(appid: string) {
     ensureDirectory(PROJECT_DIR)
+    // pull function
+    await handlePullListCommand(appid, [])
+    // add config file
+    addConfigFromTemplates()
 
-    // download app zip
-    const appZipPath = path.resolve(process.cwd(), `${appid}.zip`)
-    const writer = fs.createWriteStream(appZipPath)
-    await pipeline(data.data, writer)
+}
 
-    // unzip
-    const file = new AdmZip(appZipPath)
-    file.extractAllTo(PROJECT_DIR)
+function addConfigFromTemplates() {
 
-    fs.unlinkSync(appZipPath)
-    console.log('success')
+    ensureDirectory(TYPE_DIR)
+    //from templates dir
+    const templates_dir = path.resolve(process.cwd(), TEMPLATES_DIR)
+
+    // global
+    const from_globle_file = path.resolve(templates_dir, GLOBAL_FILE)
+    const out_globe_file = path.resolve(TYPE_DIR, GLOBAL_FILE)
+    fs.writeFileSync(out_globe_file, fs.readFileSync(from_globle_file, 'utf-8'))
+
+    // response
+    const from_response_file = path.resolve(templates_dir, RESPONSE_FILE)
+    const out_response_file = path.resolve(TYPE_DIR, RESPONSE_FILE)
+    fs.writeFileSync(out_response_file, fs.readFileSync(from_response_file, 'utf-8'))
+
+    // package
+    const from_package_file = path.resolve(templates_dir, PACKAGE_FILE)
+    const out_package_file = path.resolve(PROJECT_DIR, PACKAGE_FILE)
+    fs.writeFileSync(out_package_file, fs.readFileSync(from_package_file, 'utf-8'))
+
+    // tsconfig
+    const from_tsconfig_file = path.resolve(templates_dir, TSCONFIG_FILE)
+    const out_tsconfig_file = path.resolve(PROJECT_DIR, TSCONFIG_FILE)
+    fs.writeFileSync(out_tsconfig_file, fs.readFileSync(from_tsconfig_file, 'utf-8'))
 
 }
