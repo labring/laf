@@ -1,5 +1,5 @@
 {
-  "version": "0.8.3",
+  "version": "0.8.5",
   "name": "laf-docs",
   "private": true,
   "scripts": {
@@ -11,6 +11,6 @@
     "docker-build": "docker build -t lafyun/docs:latest ."
   },
   "dependencies": {
-    "vitepress": "^0.22.4"
+    "vitepress": "^1.0.0-alpha.4"
   }
 }

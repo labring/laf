@@ -3,6 +3,8 @@ title: laf.js 云开发预览图
 sidebar: false
 ---
 
+# {{ $frontmatter.title }}
+
 ## 应用列表
 
 ![](https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/apps.png)

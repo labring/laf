@@ -20,10 +20,15 @@ pages:
       login-btn: 登录
       password: 密码
       title: 登录
-    register: 注册
+    register:
+      name: 姓名
+      success-msg: 注册成功！
+      title: 注册
 utils:
   form:
     email: 邮箱格式不正确
+    maxlength: '{name}的长度不高于{len}位'
+    minlength: '{name}的长度不少于{len}位'
     password: '{name} 至少需要8位'
     required: '{name}不能为空'
     submit: 提交

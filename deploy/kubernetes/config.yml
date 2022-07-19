@@ -67,6 +67,7 @@ metadata:
 data:
   image: "docker.io/lafyun/app-service:0.8.0-alpha.9"
   default-app-quota-created-per-user: "5"
+  account-signup-mode: "0"
   kube-namespace-of-app-services: 'laf-apps'
   system-appid: "000000"
   appid-length: "6"

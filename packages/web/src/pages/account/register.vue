@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { FormInstance } from 'element-plus'
 import * as useraApi from '~/api/user'
-
+import LanguageMenu from '~/layout/components/LanguageMenu.vue'
+import { maxLengthField, minLengthField, passwordField, requiredField } from '~/utils/form'
+const { t } = useI18n()
 const router = useRouter()
 const goLogin = () => {
   router.push('/login')
@@ -17,24 +19,24 @@ const registerForm = $ref({
 })
 const registerRules = {
   username: [
-    { required: true, message: 'Please input your username!' },
-    { min: 4, message: 'Length should be greater than 4' },
-    { max: 20, message: 'Length should be less than 20' },
+    requiredField(t('pages.account.login.account')),
+    minLengthField(4, t('pages.account.login.account')),
+    maxLengthField(20, t('pages.account.login.account')),
   ],
   name: [
-    { required: true, message: 'Please input your name!' },
+    requiredField(t('pages.account.register.name')),
   ],
   password: [
-    { required: true, message: 'Please input your password!', trigger: 'blur' },
-    { min: 8, message: 'Length should be greater than 8' },
+    requiredField(t('pages.account.login.password')),
+    passwordField(t('pages.account.login.password')),
   ],
   password2: [
-    { required: true, message: 'Please input your password again!' },
-    { min: 8, message: 'Length should be greater than 8' },
+    requiredField(t('layout.components.reset-password.form.confirm-password')),
+    passwordField(t('layout.components.reset-password.form.confirm-password')),
     {
       validator: (rule: any, value: string, callback: any) => {
         if (value !== registerForm.password)
-          callback(new Error('Two passwords that you enter is inconsistent!'))
+          callback(new Error(t('layout.components.reset-password.rules.confirm')))
 
         else
           callback()
@@ -66,7 +68,7 @@ const register = async (registerEl: FormInstance | undefined) => {
     }
 
     ElMessage({
-      message: '注册成功！',
+      message: t('pages.account.register.success-msg'),
       type: 'success',
     })
     goLogin()
@@ -78,13 +80,13 @@ const register = async (registerEl: FormInstance | undefined) => {
   <el-card w-sm mt-20 ma>
     <template #header>
       <div flex justify-between items-center>
-        <span text-4>LAF 云开发账户注册</span>
+        <span text-4>{{ $t('pages.account.register.title') }}</span>
         <el-button
           type="primary"
           text
           @click="goLogin"
         >
-          去登录
+          {{ $t('pages.account.login.title') }}
         </el-button>
       </div>
     </template>
@@ -96,17 +98,17 @@ const register = async (registerEl: FormInstance | undefined) => {
       :rules="registerRules"
       autocomplete="off"
     >
-      <el-form-item label="账户" prop="username">
-        <el-input v-model.trim="registerForm.username" placeholder="请输入账户名" />
+      <el-form-item :label="$t('pages.account.login.account')" prop="username">
+        <el-input v-model.trim="registerForm.username" />
       </el-form-item>
-      <el-form-item label="姓名" mt-6 prop="name">
-        <el-input v-model.trim="registerForm.name" placeholder="请输入姓名" />
+      <el-form-item :label="$t('pages.account.register.name')" mt-6 prop="name">
+        <el-input v-model.trim="registerForm.name" />
       </el-form-item>
-      <el-form-item label="密码" mt-6 prop="password">
-        <el-input v-model.trim="registerForm.password" type="password" placeholder="请输入密码" />
+      <el-form-item :label="$t('pages.account.login.password')" mt-6 prop="password">
+        <el-input v-model.trim="registerForm.password" type="password" />
       </el-form-item>
-      <el-form-item label="确认密码" mt-6 prop="password2">
-        <el-input v-model.trim="registerForm.password2" type="password" placeholder="请再次输入密码" />
+      <el-form-item :label="$t('layout.components.reset-password.form.confirm-password')" mt-6 prop="password2">
+        <el-input v-model.trim="registerForm.password2" type="password" />
       </el-form-item>
       <el-form-item mt-10>
         <el-button
@@ -116,15 +118,18 @@ const register = async (registerEl: FormInstance | undefined) => {
           :loading="loading"
           @click="register(registerFormRef)"
         >
-          注册
+          {{ $t('pages.account.register.title') }}
         </el-button>
       </el-form-item>
     </el-form>
+    <div text-center>
+      <LanguageMenu show-name />
+    </div>
   </el-card>
 </template>
 
 <route lang="yaml">
 name: register
 meta:
-  title: 注册
+  title: t('pages.account.register.title')
 </route>

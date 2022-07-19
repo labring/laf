@@ -19,3 +19,19 @@ export function emailField(name: string): FormItemRule {
     message: i18n.global.t('utils.form.email', { name }),
   }
 }
+
+export function minLengthField(len: number, name: string): FormItemRule {
+  return {
+    trigger: 'blur',
+    min: len,
+    message: i18n.global.t('utils.form.minlength', { name, len }),
+  }
+}
+
+export function maxLengthField(len: number, name: string): FormItemRule {
+  return {
+    trigger: 'blur',
+    max: len,
+    message: i18n.global.t('utils.form.maxlength', { name, len }),
+  }
+}
