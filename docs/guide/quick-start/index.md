@@ -23,9 +23,8 @@ title: 快速开始
 - `register` 处理注册请求
 - `login` 处理登录请求.
 
-#### 用户注册云函数
+### 用户注册云函数
 
-::: info
 在「云函数」管理页面，点击 「新建函数」，创建注册云函数 `register`，
 
 点击 `register` 函数右侧的 「开发」按钮，进入 WebIDE，编写以下代码：
@@ -63,7 +62,6 @@ exports.main = async function (ctx: FunctionContext) {
 };
 ```
 
-::: info
 点击右上角的 「显示调试面板」(Ctrl/Cmd + B) 即可调试运行，点击 「保存」 & 「发布」 函数即发布上线！
 
 ### 用户登录云函数
@@ -108,7 +106,7 @@ exports.main = async function (ctx: FunctionContext) {
 
 点击右上角的 「显示调试面板」(Ctrl/Cmd + B) 即可调试运行，点击 「保存」 & 「发布」 函数即发布上线！
 
-### 使用 curl 调用云函数
+## 使用 curl 调用云函数
 
 你可以通过云函数列表页面，查看 & 复制云函数的调用地址，
 或将以下 curl 命令中的 `APPID` 替换成你的 APPID 后执行：
@@ -130,6 +128,8 @@ curl -X POST -H "Content-Type: application/json" -d '{"username": "admin", "pass
 ```bash
 npm install laf-client-sdk
 ```
+
+然后填写下面的代码：
 
 ```ts
 // user.ts
@@ -167,9 +167,4 @@ export async function login(username: string, password: string) {
 }
 ```
 
-> 最后，可以在你的 Vue/React/Angular/小程序 页面中调用这两个云函数完成具体的登录注册功能！
-
-### 其他
-
-- 我们可以在开发控制台，查看云函数的调用日志，在线调试等
-- 如果调用返回 404，请检查函数名是否拼写错误，或者云函数是否已经发布
+最后，可以在你的 Vue/React/Angular/小程序 页面中调用这两个云函数完成具体的登录注册功能！
