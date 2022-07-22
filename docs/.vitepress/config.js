@@ -72,7 +72,7 @@ const guideSiderbarConfig = [
   {
     text: '静态网站托管',
     items: [
-      { text: '静态托管简介', link: '/guide/website-hosting/index' },
+      { text: '静态托管简介', link: '/guide/website-hosting/' },
       { text: '快速开始', link: '/guide/website-hosting/quick-start' },
     ]
   },
