@@ -1,22 +1,22 @@
-import * as util from 'util'
-import * as dayjs from 'dayjs'
+import util from "util";
+import dayjs from "dayjs";
 
 export class FunctionConsole {
-  private _logs: any[] = []
+  private _logs: any[] = [];
 
   get logs() {
-    return this._logs
+    return this._logs;
   }
 
   log(...params: any[]) {
-    const date = dayjs().format("YYYY/MM/DD HH:mm:ss")
-    const r = util.format("[%s] -", date, ...params)
-    this._logs.push(r)
+    const date = dayjs().format("YYYY/MM/DD HH:mm:ss");
+    const r = util.format("[%s] -", date, ...params);
+    this._logs.push(r);
   }
 
   error(...params: any[]) {
-    const date = dayjs().format("YYYY/MM/DD HH:mm:ss")
-    const r = util.format("[%s] -", date, ...params)
-    this._logs.push(r)
+    const date = dayjs().format("YYYY/MM/DD HH:mm:ss");
+    const r = util.format("[%s] -", date, ...params);
+    this._logs.push(r);
   }
 }

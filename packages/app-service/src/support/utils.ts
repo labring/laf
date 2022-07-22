@@ -1,11 +1,11 @@
-import * as crypto from 'crypto'
+import crypto from "crypto";
 
 /**
  * Generate UUID v4
- * @returns 
+ * @returns
  */
 export function generateUUID() {
-  return crypto.randomUUID()
+  return crypto.randomUUID();
 }
 
 /**
@@ -13,10 +13,14 @@ export function generateUUID() {
  * @param length the length of password, default is 8
  * @param hasNumbers add numbers to password, [0-9]
  * @param hasSymbols add symbols to password, [!@#$%^&*_-=+]
- * @returns 
+ * @returns
  */
-export function generatePassword(length = 8, hasNumbers = true, hasSymbols = true) {
-  return generateRandString(length, hasNumbers, hasSymbols)
+export function generatePassword(
+  length = 8,
+  hasNumbers = true,
+  hasSymbols = true
+) {
+  return generateRandString(length, hasNumbers, hasSymbols);
 }
 
 /**
@@ -24,67 +28,63 @@ export function generatePassword(length = 8, hasNumbers = true, hasSymbols = tru
  * @param length the length of password, default is 8
  * @param hasNumbers add numbers to password, [0-9]
  * @param hasSymbols add symbols to password, [!@#$%^&*_-=+]
- * @returns 
+ * @returns
  */
-export function generateRandString(length = 8, hasNumbers = true, hasSymbols = true) {
-  const alpha = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM'
-  const numbers = '0123456789'
-  const symbols = '!@#$%^&*_-=+'
+export function generateRandString(
+  length = 8,
+  hasNumbers = true,
+  hasSymbols = true
+) {
+  const alpha = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
+  const numbers = "0123456789";
+  const symbols = "!@#$%^&*_-=+";
 
-  let chars = alpha
-  if (hasNumbers) chars += numbers
-  if (hasSymbols) chars += symbols
+  let chars = alpha;
+  if (hasNumbers) chars += numbers;
+  if (hasSymbols) chars += symbols;
 
-  let str = ''
+  let str = "";
   for (let i = 0; i < length; i++) {
-    str += chars.charAt(Math.floor(Math.random() * chars.length))
+    str += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-  return str
+  return str;
 }
-
 
 export function hashPassword(content: string) {
-  return crypto
-    .createHash('sha256')
-    .update(content)
-    .digest('hex')
+  return crypto.createHash("sha256").update(content).digest("hex");
 }
-
 
 /**
  * Recursively deeply freeze objects
- * @param object 
- * @returns 
+ * @param object
+ * @returns
  */
 export function deepFreeze(object: Object) {
   // Retrieve the property names defined on object
-  const propNames = Object.getOwnPropertyNames(object)
+  const propNames = Object.getOwnPropertyNames(object);
 
   // Freeze properties before freezing self
 
   for (const name of propNames) {
-    const value = object[name]
+    const value = object[name];
 
     if (value && typeof value === "object") {
-      deepFreeze(value)
+      deepFreeze(value);
     }
   }
 
-  return Object.freeze(object)
+  return Object.freeze(object);
 }
-
 
 /**
  * nanosecond to ms
- * @param nanoseconds 
- * @returns 
+ * @param nanoseconds
+ * @returns
  */
 export function nanosecond2ms(nanoseconds: bigint): number {
   // trim the decimal point by devide 1000
-  const _t = nanoseconds / BigInt(1000)
+  const _t = nanoseconds / BigInt(1000);
 
-  const ret = parseFloat(_t.toString()) / 1000
-  return ret
+  const ret = parseFloat(_t.toString()) / 1000;
+  return ret;
 }
-
-
