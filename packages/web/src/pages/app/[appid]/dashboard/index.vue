@@ -56,3 +56,44 @@ meta:
   title: 欢迎
   index: 0-0
 </route>
+
+<style scoped>
+.application-container {
+  padding-top: 160px;
+}
+
+.welcome {
+  width: 400px;
+  margin: 0 auto;
+  font-size: 26px;
+  color: rgba(218, 165, 32);
+  margin-bottom: 80px;
+}
+
+.row {
+
+  width: 700px;
+  margin: 0 auto;
+  margin-top: 20px;
+  display: flex;
+}
+
+.row .label {
+  text-align: left;
+  width: 80px;
+  color: rgb(82, 80, 80);
+  font-size: 16;
+}
+
+.row .content {
+  color: black;
+  padding-left: 10px;
+}
+
+.copy-btn {
+  color: green;
+  font-size: 16px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+</style>
