@@ -16,6 +16,8 @@ import * as path from 'node:path'
 
 export async function handleInitAppCommand(appid: string, endpoint: string, oss_endpoint: string) {
     fs.writeFileSync(LAF_CONFIG_FILE, JSON.stringify({ appid: appid, endpoint: endpoint, oss_endpoint: oss_endpoint }))
+    // add config file
+    addConfigFromTemplates()
 }
 
 
@@ -29,7 +31,7 @@ export async function handleSyncAppCommand(appid: string) {
     // pull function
     await handlePullListCommand(appid, [])
     // add config file
-    addConfigFromTemplates()
+    //addConfigFromTemplates()
 
 }
 
