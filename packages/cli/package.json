@@ -4,7 +4,7 @@
   "description": "laf-cli for labring/laf",
   "main": "dist/index.js",
   "bin": {
-    "laf-cli": "dist/index.js"
+    "laf": "dist/index.js"
   },
   "scripts": {
     "dev": "tsc -w",
@@ -14,18 +14,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lafjs/laf-cli.git"
+    "url": "git+https://github.com/labring/laf.git"
   },
   "keywords": [
-    "laf",
-    "laf.js"
+    "laf"
   ],
   "author": "maslow (wangfugen@126.com)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/lafjs/laf-cli/issues"
+    "url": "https://github.com/labring/laf/issues"
   },
-  "homepage": "https://github.com/lafjs/laf-cli#readme",
+  "homepage": "https://github.com/labring/laf#readme",
   "devDependencies": {
     "@types/mime": "^2.0.3",
     "@types/node": "^17.0.31",
