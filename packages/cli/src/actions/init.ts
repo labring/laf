@@ -31,7 +31,6 @@ export async function handleSyncAppCommand(appid: string) {
     await handlePullListCommand(appid, [])
     // add config file
     //addConfigFromTemplates()
-
 }
 
 function addConfigFromTemplates() {
