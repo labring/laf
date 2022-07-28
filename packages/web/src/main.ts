@@ -6,10 +6,9 @@ import router from '~/router'
 import { i18n } from '~/modules/locales'
 
 import '@unocss/reset/tailwind.css'
-import './styles/main.css'
+import './styles/main.scss'
+// import './styles/index.scss'
 import 'uno.css'
-import 'element-plus/dist/index.css'
-
 
 import '~/router/permission'
 import { parseTime } from '~/utils'
@@ -22,7 +21,7 @@ app.use(pinia).use(i18n).use(router).mount('#app')
 app.config.globalProperties.$filters = {
   parseTime(time: string | Date, cFormat: string) {
     return parseTime(time, cFormat)
-  }
+  },
 }
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue))
