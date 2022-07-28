@@ -1,8 +1,8 @@
-import request from "~/api/request";
-import axios from "axios";
-import { getAppAccessUrl } from "./application";
+import request from '~/api/request';
+import axios from 'axios';
+import { getAppAccessUrl } from './application';
 
-import { useAppStore } from "~/store";
+import { useAppStore } from '~/store';
 
 const appStore = useAppStore();
 
@@ -22,7 +22,7 @@ export function getFunctions(
   const appid = appStore.currentApp.appid;
   return request({
     url: `/sys-api/apps/${appid}/function`,
-    method: "get",
+    method: 'get',
     params: {
       ...query,
       page,
@@ -40,7 +40,7 @@ export function getPublishedFunctions(ids: any[]) {
   const appid = appStore.currentApp.appid;
   return request({
     url: `/sys-api/apps/${appid}/function/published`,
-    method: "POST",
+    method: 'POST',
     data: {
       ids,
     },
@@ -65,7 +65,7 @@ export function getAllFunctionTags(): Promise<any> {
   const appid = appStore.currentApp.appid;
   return request({
     url: `/sys-api/apps/${appid}/function/tags/all`,
-    method: "get",
+    method: 'get',
   });
 }
 
@@ -79,7 +79,7 @@ export function getFunctionById(func_id: any) {
   const appid = appStore.currentApp.appid;
   return request({
     url: `/sys-api/apps/${appid}/function/${func_id}`,
-    method: "get",
+    method: 'get',
   });
 }
 
@@ -93,7 +93,7 @@ export function createFunction(function_data: any): Promise<any> {
   const appid = appStore.currentApp.appid;
   return request({
     url: `/sys-api/apps/${appid}/function/create`,
-    method: "post",
+    method: 'post',
     data: function_data,
   });
 }
@@ -108,7 +108,7 @@ export function updateFunction(func_id: any, function_data: any): Promise<any> {
   const appid = appStore.currentApp.appid;
   return request({
     url: `/sys-api/apps/${appid}/function/${func_id}/info`,
-    method: "post",
+    method: 'post',
     data: function_data,
   });
 }
@@ -123,7 +123,7 @@ export function updateFunctionCode(func_id: any, function_data: any) {
   const appid = appStore.currentApp.appid;
   return request({
     url: `/sys-api/apps/${appid}/function/${func_id}/code`,
-    method: "post",
+    method: 'post',
     data: function_data,
   });
 }
@@ -137,7 +137,7 @@ export function removeFunction(func_id: any): Promise<any> {
   const appid = appStore.currentApp.appid;
   return request({
     url: `/sys-api/apps/${appid}/function/${func_id}`,
-    method: "delete",
+    method: 'delete',
   });
 }
 
@@ -148,7 +148,7 @@ export function publishFunctions(): Promise<any> {
   const appid = appStore.currentApp.appid;
   return request({
     url: `/sys-api/apps/${appid}/function/publish`,
-    method: "post",
+    method: 'post',
   });
 }
 
@@ -160,7 +160,7 @@ export function publishOneFunction(func_id: any) {
   const appid = appStore.currentApp.appid;
   return request({
     url: `/sys-api/apps/${appid}/function/${func_id}/publish`,
-    method: "post",
+    method: 'post',
   });
 }
 
@@ -174,7 +174,7 @@ export function compileFunctionCode(func_id: any, function_data: any) {
   const appid = appStore.currentApp.appid;
   return request({
     url: `/sys-api/apps/${appid}/function/${func_id}/compile`,
-    method: "post",
+    method: 'post',
     data: function_data,
   });
 }
@@ -190,7 +190,7 @@ export async function launchFunction(
   const app_url = getAppAccessUrl();
   const res = await axios({
     url: app_url + `/debug/${func.name}`,
-    method: "post",
+    method: 'post',
     data: {
       func,
       param,
@@ -212,7 +212,7 @@ export async function loadPackageTypings(packageName: any) {
   const app_url = getAppAccessUrl();
   const res = await axios({
     url: app_url + `/typing/package?packageName=${packageName}`,
-    method: "GET",
+    method: 'GET',
   });
 
   return res.data;
@@ -228,7 +228,7 @@ export async function getFunctionLogs(query: any, page: any, pageSize: any) {
   const appid = appStore.currentApp.appid;
   const res = await request({
     url: `/sys-api/apps/${appid}/function/logs/query`,
-    method: "get",
+    method: 'get',
     params: {
       ...query,
       page,
@@ -252,7 +252,7 @@ export function getFunctionChangeHistory(
   const appid = appStore.currentApp.appid;
   return request({
     url: `/sys-api/apps/${appid}/function/${func_id}/changes`,
-    method: "get",
+    method: 'get',
     params: {
       page,
       limit: pageSize,

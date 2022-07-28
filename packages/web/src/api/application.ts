@@ -1,6 +1,8 @@
 import { getCurrentBaseURL } from '~/utils'
 import { getToken, getTokenExpire } from '~/utils/auth'
 import request from '~/api/request'
+import { useAppStore } from '~/store';
+
 
 /**
  * 请求我的应用
@@ -193,3 +195,18 @@ export async function openAppConsole(app) {
   console.log(app_console_url, 'app_console_url')
   window.open(app_console_url, '_blank')
 }
+
+/**
+ * 获取当前应用的访问地址
+ * @param {*} appid default is current appid
+ * @returns
+ */
+export function getAppAccessUrl() {
+  const appStore = useAppStore();
+  const appid = appStore.currentApp.appid
+  const domain = appStore.currentApp.app_deploy_host
+  const schema = appStore.currentApp.app_deploy_url_schema || 'http'
+  const url = `${schema}://${appid}.${domain}`
+  return url
+}
+

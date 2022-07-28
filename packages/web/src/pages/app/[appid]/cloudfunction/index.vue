@@ -1,22 +1,23 @@
 <script setup lang="ts">
-import { createFunction, getAllFunctionTags, getFunctions, publishFunctions, removeFunction, updateFunction } from '~/api/func';
+import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
 
-import { ElMessage, ElMessageBox, ElNotification } from "element-plus";
 import type { FormInstance, FormRules } from 'element-plus'
 
-import { nextTick } from 'vue';
-import { getAppAccessUrl } from '~/api/application';
+import {
+  Guide, Plus, Delete, Search,
+} from '@element-plus/icons-vue'
 
+import { nextTick } from 'vue'
 import { useClipboard } from '@vueuse/core'
+import { getAppAccessUrl } from '~/api/application'
 
-
+import { createFunction, getAllFunctionTags, getFunctions, publishFunctions, removeFunction, updateFunction } from '~/api/func'
 
 const router = useRouter()
 
 const dataFormRef = $ref<FormInstance>()
 
 const { copy } = useClipboard()
-
 
 const defaultCode = `
 import cloud from '@/cloud-sdk'
@@ -36,28 +37,26 @@ exports.main = async function (ctx: FunctionContext) {
 
 const formRules = {
   name: [{ required: true, message: '标识不可为空，且只能含字母、数字、下划线及中划线', trigger: 'blur', pattern: /^[a-zA-Z0-9_\-]+$/ }],
-  label: [{ required: true, message: '显示名称不可为空', trigger: 'blur' }]
+  label: [{ required: true, message: '显示名称不可为空', trigger: 'blur' }],
 }
 
-let list = $ref([]);
-let total = $ref(0);
-let listLoading = $ref(true);
-let listQuery = $ref({
-  page: 1, limit: 10, keyword: undefined, tag: '', onlyEnabled: true // 只看启用的函数
-});
-let form = $ref(getDefaultFormValue());
-let dialogFormVisible = $ref(false);
-let dialogStatus = $ref('update');
-let textMap: any = $ref({ update: '编辑', create: '创建' });
-let rules = reactive<FormRules>(formRules);
-let all_tags = $ref([]);
-
+let list = $ref([])
+let total = $ref(0)
+let listLoading = $ref(true)
+const listQuery = $ref({
+  page: 1, limit: 10, keyword: undefined, tag: '', onlyEnabled: true, // 只看启用的函数
+})
+let form = $ref(getDefaultFormValue())
+let dialogFormVisible = $ref(false)
+let dialogStatus = $ref('update')
+const textMap: any = $ref({ update: '编辑', create: '创建' })
+const rules = reactive<FormRules>(formRules)
+let all_tags = $ref([])
 
 function handleFilter() {
   listQuery.page = 1
   getList()
 }
-
 
 async function getAllTags() {
   const res = await getAllFunctionTags()
@@ -76,15 +75,14 @@ async function getList() {
     tag?: string
     status?: number
   } = {}
-  if (keyword) {
-    query['keyword'] = keyword
-  }
-  if (tag !== '') {
-    query['tag'] = tag
-  }
-  if (onlyEnabled) {
-    query['status'] = 1
-  }
+  if (keyword)
+    query.keyword = keyword
+
+  if (tag !== '')
+    query.tag = tag
+
+  if (onlyEnabled)
+    query.status = 1
 
   const ret = await getFunctions(query, page, limit)
   total = ret.total
@@ -97,25 +95,25 @@ onMounted(async () => {
   await getList()
 })
 
-
 // 发布云函数
 async function publish() {
   const confirm = await ElMessageBox.confirm('确定发布所有云函数？').catch(
-    () => false
+    () => false,
   )
 
-  if (!confirm) return
+  if (!confirm)
+    return
   const res = await publishFunctions()
   if (res.error) {
-    ElMessage('发布失败: ' + res.error)
+    ElMessage(`发布失败: ${res.error}`)
     return
   }
   ElNotification({
     type: 'success',
     title: '发布成功',
-    message: '云函数发布成功！'
+    message: '云函数发布成功！',
   })
-};
+}
 
 // 默认化创建表单的值
 function getDefaultFormValue() {
@@ -132,7 +130,7 @@ function getDefaultFormValue() {
     updated_at: Date.now(),
     code: defaultCode,
     // 标签输入框绑定使用，不要提交到服务端
-    _tag_input: ''
+    _tag_input: '',
   }
 }
 
@@ -156,54 +154,53 @@ function showUpdateForm(row: any) {
   })
 }
 
-
 function getFunctionInvokeBaseUrl(func_name: string) {
   const app_url = getAppAccessUrl()
-  return app_url + `/${func_name}`
+  return `${app_url}/${func_name}`
 }
 
-
 // 查看详情
-async function handleShowDetail(row: { _id: any; }) {
+async function handleShowDetail(row: { _id: any }) {
   router.push(`functions/${row._id}`)
 }
 
 // 删除标签
 function removeTag(index: number) {
   const tags = form.tags || []
-  if (!tags.length) return
+  if (!tags.length)
+    return
   tags.splice(index, 1)
 }
 
 // 添加标签
 function addTag() {
-  const val = form._tag_input
-  console.log('val: ', val)
+  const val: any = form._tag_input
 
-  if (!val) return
-  if (!form.tags.includes(val)) {
+  if (!val)
+    return
+  if (!form.tags.includes(val))
     form.tags.push(val)
-  }
+
   form._tag_input = ''
 }
 
 // 查看日志详情
-async function handleShowLogs(row: { _id: any; }) {
+async function handleShowLogs(row: { _id: any }) {
   router.push(`logs/${row._id}`)
 }
 
 // 设置触发器
-async function handleTriggers(row: { _id: any; }) {
+async function handleTriggers(row: { _id: any }) {
   router.push(`triggers/${row._id}`)
 }
 
 // 搜索建议标签
-async function suggestTags(queryString: any, cb: (arg0: { value: never; }[]) => void) {
+async function suggestTags(queryString: any, cb: (arg0: { value: never }[]) => void) {
   const data = all_tags
     .filter((it: any) => {
-      return it.indexOf(queryString) >= 0
+      return it.includes(queryString)
     })
-    .map(it => {
+    .map((it) => {
       return { value: it }
     })
 
@@ -211,12 +208,11 @@ async function suggestTags(queryString: any, cb: (arg0: { value: never; }[]) => 
 }
 
 // 删除请求
-async function handleDelete(row: { status: any; _id: any; }, index: number) {
+async function handleDelete(row: { status: any; _id: any }, index: number) {
   await ElMessageBox.confirm('确认要删除此数据？', '删除确认')
 
-  if (row.status) {
+  if (row.status)
     return ElMessageBox.alert('请先停用函数，再删除！')
-  }
 
   // 执行删除请求
   const r = await removeFunction(row._id)
@@ -225,7 +221,7 @@ async function handleDelete(row: { status: any; _id: any; }, index: number) {
     ElNotification({
       type: 'error',
       title: '操作失败',
-      message: '删除失败！' + r.error
+      message: `删除失败！${r.error}`,
     })
     return
   }
@@ -233,7 +229,7 @@ async function handleDelete(row: { status: any; _id: any; }, index: number) {
   ElNotification({
     type: 'success',
     title: '操作成功',
-    message: '删除成功！'
+    message: '删除成功！',
   })
 
   list.splice(index, 1)
@@ -242,25 +238,25 @@ async function handleDelete(row: { status: any; _id: any; }, index: number) {
 // 创建请求
 function handleCreate() {
   dataFormRef.validate(async (valid: any) => {
-    if (!valid) {
+    if (!valid)
       return
-    }
+
     const data: any = Object.assign({}, form)
-    delete data['_tag_input']
+    delete data._tag_input
     // 执行创建请求
     const res = await createFunction(data)
     if (!res.data?.insertedId) {
       ElNotification({
         type: 'error',
         title: '操作失败',
-        message: '创建失败！' + res.error
+        message: `创建失败！${res.error}`,
       })
       return
     }
     ElNotification({
       type: 'success',
       title: '操作成功',
-      message: '创建成功！'
+      message: '创建成功！',
     })
     getList()
     dialogFormVisible = false
@@ -270,9 +266,8 @@ function handleCreate() {
 // 更新请求
 function handleUpdate() {
   dataFormRef.validate(async (valid: any) => {
-    if (!valid) {
+    if (!valid)
       return
-    }
 
     // 执行创建请求
     const r = await updateFunction(form._id, {
@@ -282,14 +277,14 @@ function handleUpdate() {
       description: form.description,
       enableHTTP: form.enableHTTP ?? true,
       status: form.status ?? 1,
-      updated_at: Date.now()
+      updated_at: Date.now(),
     })
 
     if (r.error) {
       ElNotification({
         type: 'error',
         title: '操作失败',
-        message: '更新失败！' + r.error
+        message: `更新失败！${r.error}`,
       })
       return
     }
@@ -297,69 +292,79 @@ function handleUpdate() {
     ElNotification({
       type: 'success',
       title: '操作成功',
-      message: '更新成功！'
+      message: '更新成功！',
     })
 
     getList()
     dialogFormVisible = false
   })
 }
-
 </script>
 
 <template>
-  <div class="app-container">
+  <div class="app-container bg-white p-24px">
     <!-- 数据检索区 -->
-    <div class="filter-container">
+    <div class="filter-container mb-12px">
       <el-input v-model="listQuery.keyword" placeholder="搜索" size="mini" style="width: 200px;margin-right: 10px;"
         class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-button size="mini" class="filter-item" type="default" icon="el-icon-search" @click="handleFilter">
+      <el-button size="mini" class="filter-item" type="default" :icon="Search" @click="handleFilter">
         搜索
       </el-button>
-      <el-button plain size="mini" class="filter-item" type="primary" icon="el-icon-plus" @click="showCreateForm">
+
+      <el-button type="primary" :icon="Plus" class="filter-item" @click="showCreateForm">
         新建函数
       </el-button>
       <el-tooltip content="发布函数：函数要发布后才能生效" placement="bottom" effect="light">
-        <el-button plain class="filter-item" size="mini" type="success" icon="el-icon-guide" @click="publish">
+        <el-button plain class="filter-item" size="mini" type="success" :icon="Guide" @click="publish">
           发布函数
         </el-button>
       </el-tooltip>
-      <el-checkbox v-model="listQuery.onlyEnabled" class="filter-item" label="" :indeterminate="false"
-        @change="handleFilter">只看已启用</el-checkbox>
+      <el-checkbox v-model="listQuery.onlyEnabled" class="filter-item ml-12px vertical-mid " label="" :indeterminate="false"
+        @change="handleFilter">
+        只看已启用
+      </el-checkbox>
     </div>
 
     <!-- 标签类别 -->
 
-    <div class="tag-selector">
-      <div class="label">标签类别</div>
+    <div class="tag-selector flex items-center mb-12px">
+      <div class="label mr-12px">
+        标签类别
+      </div>
       <el-radio-group v-model="listQuery.tag" size="mini" @change="getList">
-        <el-radio-button :label="''" border>全部</el-radio-button>
-        <el-radio-button v-for="tag in all_tags" :key="tag" :label="tag" border>{{ tag }}</el-radio-button>
+        <el-radio-button label="">
+          全部
+        </el-radio-button>
+        <el-radio-button v-for="tag in all_tags" :key="tag" :label="tag">
+          {{ tag }}
+        </el-radio-button>
       </el-radio-group>
     </div>
 
     <!-- 表格 -->
-    <el-table v-loading="listLoading" :data="list" border size="small" highlight-current-row style="width: 100%;">
+    <el-table v-loading="listLoading" border :data="list" highlight-current-row style="width: 100%;">
       <el-table-column label="函数标识" min-width="200">
         <template #default="{ row }">
-          <span class="link-type" style="font-size: 13px; font-weight: bold;" @click="showUpdateForm(row)">{{ row.label
-          }}</span>
+          <a class="link-type" style="font-size: 13px; font-weight: bold;" @click="showUpdateForm(row)">{{ row.label
+          }}</a>
           <div style="display: flex;align-items: center;justify-content: flex-start;">
-            <div class="func-name">{{ row.name }}</div>
+            <div class="func-name mr-4px">
+              {{ row.name }}
+            </div>
             <el-icon @click="copy(row.name)">
               <CopyDocument />
             </el-icon>
-
           </div>
         </template>
       </el-table-column>
       <el-table-column label="标签" min-width="80">
         <template #default="{ row }">
-          <el-tag v-for="tag in row.tags" :key="tag" style="margin-right: 6px;" type="primary" size="mini">{{ tag }}
+          <el-tag v-for="tag in row.tags" :key="tag" style="margin-right: 6px;" type="primary" size="mini">
+            {{ tag }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="创建/更新" width="120px" align="center">
+      <el-table-column label="创建/更新" width="200" align="center">
         <template #default="{ row }">
           <span v-if="row.created_at">{{
               $filters.parseTime(row.created_at)
@@ -372,7 +377,7 @@ function handleUpdate() {
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="HTTP" class-name="status-col" min-width="60">
+      <el-table-column label="HTTP" class-name="status-col" min-width="60" align="center">
         <template #default="{ row }">
           <el-tag v-if="row.enableHTTP" type="success" size="mini" style="font-weight: bold">
             可
@@ -382,7 +387,7 @@ function handleUpdate() {
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="状态" class-name="status-col" min-width="60">
+      <el-table-column label="状态" class-name="status-col" min-width="60" align="center">
         <template #default="{ row }">
           <el-tag v-if="row.status === 1" type="success" size="mini" style="font-weight: bold">
             启
@@ -395,8 +400,11 @@ function handleUpdate() {
       <el-table-column label="调用地址" align="center" min-width="70">
         <template #default="{ row }">
           <el-tooltip :content="getFunctionInvokeBaseUrl(row.name)" placement="top">
-
+            <el-icon @click="copy(getFunctionInvokeBaseUrl(row.name))">
+              <CopyDocument />
+            </el-icon>
           </el-tooltip>
+
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" min-width="240" class-name="small-padding">
@@ -411,7 +419,7 @@ function handleUpdate() {
             触发器<b v-if="row.triggers && row.triggers.length">({{ row.triggers.length }})</b>
           </el-button>
           <el-tooltip content="请先停用函数，再删除！" :disabled="row.status !== 1" placement="top">
-            <el-button v-if="row.status != 'deleted'" icon="el-icon-delete" plain size="mini" type="danger" circle
+            <el-button v-if="row.status !== 'deleted'" :icon="Delete" plain size="mini" type="danger" circle
               @click="handleDelete(row, $index)" />
           </el-tooltip>
         </template>
@@ -419,15 +427,17 @@ function handleUpdate() {
     </el-table>
 
     <!-- 分页 -->
-    <pagination v-show="total > 0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit"
+    <pagination v-show="total > 0" v-model:page="listQuery.page" v-model:limit="listQuery.limit" :total="total"
       @pagination="getList" />
 
     <!-- 表单对话框 -->
-    <el-dialog :title="textMap[dialogStatus]" width="600px" :visible.sync="dialogFormVisible">
+    <el-dialog v-model:visible="dialogFormVisible" :title="textMap[dialogStatus]" width="600px">
       <el-form ref="dataFormRef" :rules="rules" :model="form" label-position="left" label-width="120px"
         style="width: 500px; margin-left:20px;">
         <el-form-item v-if="form._id" label="ID" prop="_id">
-          <div :value="form._id">{{ form._id }}</div>
+          <div :value="form._id">
+            {{ form._id }}
+          </div>
         </el-form-item>
         <el-form-item label="显示名称" prop="label">
           <el-input v-model="form.label" placeholder="函数显示名，可为中文" />
@@ -440,7 +450,9 @@ function handleUpdate() {
         </el-form-item>
         <el-form-item label="标签分类" prop="tags">
           <el-tag v-for="(tag, index) in form.tags" :key="tag" style="margin-right: 10px;" type="" size="medium"
-            closable @close="removeTag(index)">{{ tag }}</el-tag>
+            closable @close="removeTag(index)">
+            {{ tag }}
+          </el-tag>
           <el-autocomplete v-model="form._tag_input" :fetch-suggestions="suggestTags" class="input-new-tag" clearable
             size="mini" type="text" placeholder="添加" @select="addTag" @change="addTag" />
         </el-form-item>
@@ -463,6 +475,9 @@ function handleUpdate() {
     </el-dialog>
   </div>
 </template>
+
+<style lang="scss" scoped>
+</style>
 
 <route lang="yaml">
 name: 云函数
