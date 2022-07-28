@@ -12,6 +12,19 @@ export const PROJECT_DIR = path.resolve(process.cwd(), "@laf")
 
 export const FUNCTIONS_DIR = "functions"
 
+export const TYPE_DIR = path.resolve(PROJECT_DIR, "type")
+export const TEMPLATES_DIR = "templates"
+
+
+
+export const GLOBAL_FILE = "global.d.ts"
+
+export const PACKAGE_FILE = "package.json"
+
+export const RESPONSE_FILE = "response.d.ts"
+
+export const TSCONFIG_FILE = "tsconfig.json"
+
 export const FUNCTIONS_FILE = "index.ts"
 export const META_FILE = "meta.json"
 
