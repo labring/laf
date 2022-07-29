@@ -2,6 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "module": "ESNext",
+    "isolatedModules": true,
     "target": "es2016",
     "lib": ["DOM", "ESNext"],
     "strict": true,

@@ -4,21 +4,25 @@ import SideBar from './components/SideBar/index.vue'
 </script>
 
 <template>
-  <el-container fixed top-0 bottom-0 left-0 right-0>
-    <el-header relative z-5 style="--el-header-padding: 0;">
-      <top-bar />
+  <el-container>
+    <el-header style="--el-header-padding: 0; z-index: 9; margin-bottom: 2px;">
+      <TopBar />
     </el-header>
 
-    <el-container>
-      <side-bar />
-
-      <el-main style="--el-main-padding: 0;" bg-light pt-10 flex>
+    <el-container style="height: calc(100vh - 64px)">
+      <el-aside width="200px">
         <el-scrollbar>
-          <div p-6 h-screen>
-            <router-view />
-          </div>
+          <SideBar />
         </el-scrollbar>
-      </el-main>
+      </el-aside>
+
+      <el-container>
+        <el-main>
+          <el-scrollbar>
+            <router-view />
+          </el-scrollbar>
+        </el-main>
+      </el-container>
     </el-container>
   </el-container>
 </template>
