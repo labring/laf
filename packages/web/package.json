@@ -16,6 +16,7 @@
     "@vicons/utils": "^0.1.4",
     "@vueuse/core": "^8.4.2",
     "axios": "^0.27.2",
+    "bson": "^4.6.5",
     "dayjs": "^1.11.2",
     "element-plus": "^2.2.0",
     "get-user-locale": "^1.4.0",

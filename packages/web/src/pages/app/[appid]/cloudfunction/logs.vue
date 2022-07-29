@@ -89,8 +89,10 @@ function setTagViewTitle() {
   <div class="app-container bg-white">
     <!-- 数据检索区 -->
     <div class="filter-container mb-24px">
-      <el-input v-model:value="listQuery.keyword" placeholder="Request ID" style="width: 320px; margin-right: 10px"
-        class="filter-item" @keyup.enter="handleFilter" />
+      <el-input
+        v-model="listQuery.keyword" placeholder="Request ID" style="width: 320px; margin-right: 10px"
+        class="filter-item" @keyup.enter="handleFilter"
+      />
       <el-button class="filter-item" type="primary" icon="Search" @click="handleFilter">
         搜索
       </el-button>
@@ -105,7 +107,7 @@ function setTagViewTitle() {
       </el-table-column>
       <el-table-column label="函数名" min-width="200" align="center">
         <template #default="{ row }">
-          <el-tag type="info">
+          <el-tag type="success">
             {{ row.func_name }}
           </el-tag>
         </template>
@@ -124,7 +126,7 @@ function setTagViewTitle() {
       <el-table-column label="创建时间" width="180" align="center">
         <template #default="{ row }">
           <span v-if="row.created_at">{{
-              $filters.parseTime(row.created_at, "{y}-{m}-{d} {h}:{i}:{s}")
+            $filters.parseTime(row.created_at, "{y}-{m}-{d} {h}:{i}:{s}")
           }}</span>
           <span v-else>-</span>
         </template>
@@ -144,8 +146,10 @@ function setTagViewTitle() {
     </el-table>
 
     <!-- 分页 -->
-    <el-pagination v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit" class="mt-12px" :total="total"
-      layout="total, sizes, prev, pager, next, jumper" @size-change="getList" @current-change="getList" />
+    <el-pagination
+      v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit" class="mt-12px" :total="total"
+      layout="total, sizes, prev, pager, next, jumper" @size-change="getList" @current-change="getList"
+    />
 
     <!-- 日志详情对话框 -->
     <el-dialog v-if="detail" v-model="isDialogVisiable" :title="dialogTitle">

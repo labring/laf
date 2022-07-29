@@ -15,6 +15,7 @@ specifiers:
   '@vueuse/core': ^8.4.2
   axios: ^0.27.2
   balanced-match: '*'
+  bson: ^4.6.5
   dayjs: ^1.11.2
   element-plus: ^2.2.0
   eslint: ^8.15.0
@@ -52,6 +53,7 @@ dependencies:
   '@vicons/utils': 0.1.4_vue@3.2.37
   '@vueuse/core': 8.7.5_vue@3.2.37
   axios: 0.27.2
+  bson: 4.6.5
   dayjs: 1.11.3
   element-plus: 2.2.6_vue@3.2.37
   get-user-locale: 1.4.0
@@ -1171,8 +1173,8 @@ packages:
     resolution: {integrity: sha512-9o5UecI3GhkpM6DrXr69PblIuWxPKk9Y0jHBRhdocZ2y7YECBFCsHm79Pr3OyR2AvjhDkabFJaDJMYRazHgsow==}
     dev: true
 
-  /bson/4.6.4:
-    resolution: {integrity: sha512-TdQ3FzguAu5HKPPlr0kYQCyrYUYh8tFM+CMTpxjNzVzxeiJY00Rtuj3LXLHSgiGvmaWlZ8PE+4KyM2thqE38pQ==}
+  /bson/4.6.5:
+    resolution: {integrity: sha512-uqrgcjyOaZsHfz7ea8zLRCLe1u+QGUSzMZmvXqO24CDW7DWoW1qiN9folSwa7hSneTSgM2ykDIzF5kcQQ8cwNw==}
     engines: {node: '>=6.9.0'}
     dependencies:
       buffer: 5.7.1
@@ -1388,7 +1390,7 @@ packages:
   /database-ql/0.8.2:
     resolution: {integrity: sha512-ktvWlFUpoF9bvemWL+MscodbK/4wYj0QGtQ3/Ab6T2D9hJ4jWa5OkAqF+7GdAfMIJPRmU03Uzf+Chl0LD5rs2g==}
     dependencies:
-      bson: 4.6.4
+      bson: 4.6.5
       lodash.clonedeep: 4.5.0
       lodash.set: 4.3.2
       lodash.unset: 4.5.2
