@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { useClipboard } from '@vueuse/core'
+defineProps<{
+  text: string
+}>()
+
 const { copy } = useClipboard()
 
 function handleCopy(text: string) {
@@ -10,12 +14,6 @@ function handleCopy(text: string) {
     duration: 1000,
   })
 }
-
-defineProps<{
-  text: string
-}>()
-
-
 </script>
 
 <template>

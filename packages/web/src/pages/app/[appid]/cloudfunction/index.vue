@@ -312,7 +312,7 @@ function handleUpdate() {
 </script>
 
 <template>
-  <div class="app-container bg-white p-24px">
+  <div class="app-container bg-white">
     <!-- 数据检索区 -->
     <div class="filter-container mb-24px">
       <el-input

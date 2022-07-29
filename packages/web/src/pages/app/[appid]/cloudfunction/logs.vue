@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import FunctionLogDetail from './components/FunctionLogDetail.vue'
 import { getFunctionLogs } from '~/api/func'
 
 const $route = useRoute()
@@ -85,13 +86,11 @@ function setTagViewTitle() {
 </script>
 
 <template>
-  <div class="app-container bg-white p-24px">
+  <div class="app-container bg-white">
     <!-- 数据检索区 -->
     <div class="filter-container mb-24px">
-      <el-input
-        v-model:value="listQuery.keyword" placeholder="Request ID" style="width: 320px; margin-right: 10px"
-        class="filter-item" @keyup.enter="handleFilter"
-      />
+      <el-input v-model:value="listQuery.keyword" placeholder="Request ID" style="width: 320px; margin-right: 10px"
+        class="filter-item" @keyup.enter="handleFilter" />
       <el-button class="filter-item" type="primary" icon="Search" @click="handleFilter">
         搜索
       </el-button>
@@ -99,33 +98,33 @@ function setTagViewTitle() {
 
     <!-- 表格 -->
     <el-table :key="tableKey" v-loading="listLoading" :data="list" border highlight-current-row style="width: 100%">
-      <el-table-column label="RequestId" prop="id" align="center" width="260">
+      <el-table-column label="RequestId" prop="id" align="center" width="300">
         <template #default="{ row }">
           <span>{{ row.requestId }}</span>
         </template>
       </el-table-column>
       <el-table-column label="函数名" min-width="200" align="center">
         <template #default="{ row }">
-          <el-tag type="primary">
+          <el-tag type="info">
             {{ row.func_name }}
           </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="函数ID" min-width="160" align="center">
         <template #default="{ row }">
-          <span class="link-type">{{ row.func_id }}</span>
+          <span>{{ row.func_id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="执行用时" width="100" align="center">
+      <el-table-column label="执行用时" width="120" align="right">
         <template #default="{ row }">
-          <span v-if="row.time_usage" class="link-type">{{ row.time_usage }}ms</span>
+          <span v-if="row.time_usage">{{ row.time_usage }}ms</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" width="160" align="center">
+      <el-table-column label="创建时间" width="180" align="center">
         <template #default="{ row }">
           <span v-if="row.created_at">{{
-            $filters.parseTime(row.created_at, "{y}-{m}-{d} {h}:{i}:{s}")
+              $filters.parseTime(row.created_at, "{y}-{m}-{d} {h}:{i}:{s}")
           }}</span>
           <span v-else>-</span>
         </template>
@@ -137,7 +136,7 @@ function setTagViewTitle() {
         </el-table-column> -->
       <el-table-column label="操作" align="center" width="100" class-name="small-padding fixed-width">
         <template #default="{ row }">
-          <el-button type="info" @click="handleShowDetail(row)">
+          <el-button size="small" type="primary" @click="handleShowDetail(row)">
             查看
           </el-button>
         </template>
@@ -145,13 +144,11 @@ function setTagViewTitle() {
     </el-table>
 
     <!-- 分页 -->
-    <el-pagination
-      v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit" class="mt-12px" :total="total"
-      layout="total, sizes, prev, pager, next, jumper" @size-change="getList" @current-change="getList"
-    />
+    <el-pagination v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit" class="mt-12px" :total="total"
+      layout="total, sizes, prev, pager, next, jumper" @size-change="getList" @current-change="getList" />
 
     <!-- 日志详情对话框 -->
-    <el-dialog v-if="detail" v-model:visible="isDialogVisiable" :title="dialogTitle">
+    <el-dialog v-if="detail" v-model="isDialogVisiable" :title="dialogTitle">
       <FunctionLogDetail :data="detail" />
     </el-dialog>
   </div>
