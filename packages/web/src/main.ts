@@ -1,14 +1,13 @@
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import { createPinia } from 'pinia'
+import { createApp } from 'vue'
 import App from './App.vue'
-import router from '~/router'
 import { i18n } from '~/modules/locales'
+import router from '~/router'
 
 import '@unocss/reset/tailwind.css'
-import './styles/main.scss'
-// import './styles/index.scss'
 import 'uno.css'
+import './styles/main.scss'
 
 import '~/router/permission'
 import { parseTime } from '~/utils'

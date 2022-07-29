@@ -1,23 +1,23 @@
 <script setup lang="ts">
 import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
-
 import type { FormInstance, FormRules } from 'element-plus'
-
-import {
-  Guide, Plus, Delete, Search,
-} from '@element-plus/icons-vue'
-
+import { Delete, Guide, Plus, Search } from '@element-plus/icons-vue'
 import { nextTick } from 'vue'
-import { useClipboard } from '@vueuse/core'
 import { getAppAccessUrl } from '~/api/application'
 
-import { createFunction, getAllFunctionTags, getFunctions, publishFunctions, removeFunction, updateFunction } from '~/api/func'
+import {
+  createFunction,
+  getAllFunctionTags,
+  getFunctions,
+  publishFunctions,
+  removeFunction,
+  updateFunction,
+} from '~/api/func'
+import Copy from '~/components/Copy.vue'
 
 const router = useRouter()
 
 const dataFormRef = $ref<FormInstance>()
-
-const { copy } = useClipboard()
 
 const defaultCode = `
 import cloud from '@/cloud-sdk'
@@ -36,7 +36,14 @@ exports.main = async function (ctx: FunctionContext) {
 `
 
 const formRules = {
-  name: [{ required: true, message: '标识不可为空，且只能含字母、数字、下划线及中划线', trigger: 'blur', pattern: /^[a-zA-Z0-9_\-]+$/ }],
+  name: [
+    {
+      required: true,
+      message: '标识不可为空，且只能含字母、数字、下划线及中划线',
+      trigger: 'blur',
+      pattern: /^[a-zA-Z0-9_\-]+$/,
+    },
+  ],
   label: [{ required: true, message: '显示名称不可为空', trigger: 'blur' }],
 }
 
@@ -44,7 +51,11 @@ let list = $ref([])
 let total = $ref(0)
 let listLoading = $ref(true)
 const listQuery = $ref({
-  page: 1, limit: 10, keyword: undefined, tag: '', onlyEnabled: true, // 只看启用的函数
+  page: 1,
+  limit: 10,
+  keyword: undefined,
+  tag: '',
+  onlyEnabled: true, // 只看启用的函数
 })
 let form = $ref(getDefaultFormValue())
 let dialogFormVisible = $ref(false)
@@ -85,6 +96,7 @@ async function getList() {
     query.status = 1
 
   const ret = await getFunctions(query, page, limit)
+
   total = ret.total
   list = ret.data
   listLoading = false
@@ -97,9 +109,7 @@ onMounted(async () => {
 
 // 发布云函数
 async function publish() {
-  const confirm = await ElMessageBox.confirm('确定发布所有云函数？').catch(
-    () => false,
-  )
+  const confirm = await ElMessageBox.confirm('确定发布所有云函数？').catch(() => false)
 
   if (!confirm)
     return
@@ -116,7 +126,7 @@ async function publish() {
 }
 
 // 默认化创建表单的值
-function getDefaultFormValue() {
+function getDefaultFormValue(): any {
   return {
     _id: undefined,
     name: '',
@@ -140,7 +150,7 @@ function showCreateForm() {
   dialogStatus = 'create'
   dialogFormVisible = true
   nextTick(() => {
-    // $refs['dataForm'].clearValidate()
+    dataFormRef.clearValidate()
   })
 }
 
@@ -150,7 +160,7 @@ function showUpdateForm(row: any) {
   dialogStatus = 'update'
   dialogFormVisible = true
   nextTick(() => {
-    // $refs['dataForm'].clearValidate()
+    dataFormRef.clearValidate()
   })
 }
 
@@ -304,10 +314,12 @@ function handleUpdate() {
 <template>
   <div class="app-container bg-white p-24px">
     <!-- 数据检索区 -->
-    <div class="filter-container mb-12px">
-      <el-input v-model="listQuery.keyword" placeholder="搜索" size="mini" style="width: 200px;margin-right: 10px;"
-        class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-button size="mini" class="filter-item" type="default" :icon="Search" @click="handleFilter">
+    <div class="filter-container mb-24px">
+      <el-input
+        v-model="listQuery.keyword" placeholder="搜索" style="width: 200px; margin-right: 10px"
+        class="filter-item" @keyup.enter="handleFilter"
+      />
+      <el-button class="filter-item" type="default" :icon="Search" @click="handleFilter">
         搜索
       </el-button>
 
@@ -315,23 +327,25 @@ function handleUpdate() {
         新建函数
       </el-button>
       <el-tooltip content="发布函数：函数要发布后才能生效" placement="bottom" effect="light">
-        <el-button plain class="filter-item" size="mini" type="success" :icon="Guide" @click="publish">
+        <el-button plain class="filter-item" type="success" :icon="Guide" @click="publish">
           发布函数
         </el-button>
       </el-tooltip>
-      <el-checkbox v-model="listQuery.onlyEnabled" class="filter-item ml-12px vertical-mid " label="" :indeterminate="false"
-        @change="handleFilter">
+      <el-checkbox
+        v-model="listQuery.onlyEnabled" class="filter-item ml-12px vertical-mid" label=""
+        :indeterminate="false" @change="handleFilter"
+      >
         只看已启用
       </el-checkbox>
     </div>
 
     <!-- 标签类别 -->
 
-    <div class="tag-selector flex items-center mb-12px">
-      <div class="label mr-12px">
+    <div class="tag-selector flex items-center mb-24px">
+      <div class="label mr-12px text-xs">
         标签类别
       </div>
-      <el-radio-group v-model="listQuery.tag" size="mini" @change="getList">
+      <el-radio-group v-model="listQuery.tag" size="small" @change="getList">
         <el-radio-button label="">
           全部
         </el-radio-button>
@@ -342,57 +356,51 @@ function handleUpdate() {
     </div>
 
     <!-- 表格 -->
-    <el-table v-loading="listLoading" border :data="list" highlight-current-row style="width: 100%;">
+    <el-table v-loading="listLoading" border :data="list" highlight-current-row style="width: 100%">
       <el-table-column label="函数标识" min-width="200">
         <template #default="{ row }">
-          <a class="link-type" style="font-size: 13px; font-weight: bold;" @click="showUpdateForm(row)">{{ row.label
+          <a class="link-type" style="font-size: 13px; font-weight: bold" @click="showUpdateForm(row)">{{ row.label
           }}</a>
-          <div style="display: flex;align-items: center;justify-content: flex-start;">
+          <div style="display: flex; align-items: center; justify-content: flex-start">
             <div class="func-name mr-4px">
               {{ row.name }}
             </div>
-            <el-icon @click="copy(row.name)">
-              <CopyDocument />
-            </el-icon>
+            <Copy :text="row.name" />
           </div>
         </template>
       </el-table-column>
       <el-table-column label="标签" min-width="80">
         <template #default="{ row }">
-          <el-tag v-for="tag in row.tags" :key="tag" style="margin-right: 6px;" type="primary" size="mini">
+          <el-tag v-for="tag in row.tags" :key="tag" style="margin-right: 6px" type="success" size="small">
             {{ tag }}
           </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="创建/更新" width="200" align="center">
         <template #default="{ row }">
-          <span v-if="row.created_at">{{
-              $filters.parseTime(row.created_at)
-          }}</span>
+          <span v-if="row.created_at">{{ $filters.parseTime(row.created_at) }}</span>
           <span v-else>-</span>
           <br>
-          <span v-if="row.updated_at">{{
-              $filters.parseTime(row.updated_at)
-          }}</span>
+          <span v-if="row.updated_at">{{ $filters.parseTime(row.updated_at) }}</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
       <el-table-column label="HTTP" class-name="status-col" min-width="60" align="center">
         <template #default="{ row }">
-          <el-tag v-if="row.enableHTTP" type="success" size="mini" style="font-weight: bold">
+          <el-tag v-if="row.enableHTTP" type="success" size="small" style="font-weight: bold">
             可
           </el-tag>
-          <el-tag v-else type="info" size="mini" style="font-weight: bold">
+          <el-tag v-else type="info" size="small" style="font-weight: bold">
             不
           </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="状态" class-name="status-col" min-width="60" align="center">
         <template #default="{ row }">
-          <el-tag v-if="row.status === 1" type="success" size="mini" style="font-weight: bold">
+          <el-tag v-if="row.status === 1" type="success" size="small" style="font-weight: bold">
             启
           </el-tag>
-          <el-tag v-if="row.status === 0" type="warning" size="mini" style="font-weight: bold">
+          <el-tag v-if="row.status === 0" type="warning" size="small" style="font-weight: bold">
             停
           </el-tag>
         </template>
@@ -400,40 +408,43 @@ function handleUpdate() {
       <el-table-column label="调用地址" align="center" min-width="70">
         <template #default="{ row }">
           <el-tooltip :content="getFunctionInvokeBaseUrl(row.name)" placement="top">
-            <el-icon @click="copy(getFunctionInvokeBaseUrl(row.name))">
-              <CopyDocument />
-            </el-icon>
+            <Copy :text="getFunctionInvokeBaseUrl(row.name)" />
           </el-tooltip>
-
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" min-width="240" class-name="small-padding">
         <template #default="{ row, $index }">
-          <el-button plain type="success" size="mini" @click="handleShowDetail(row)">
+          <el-button plain type="success" size="small" @click="handleShowDetail(row)">
             开发
           </el-button>
-          <el-button plain type="info" size="mini" @click="handleShowLogs(row)">
+          <el-button plain type="info" size="small" @click="handleShowLogs(row)">
             日志
           </el-button>
-          <el-button plain type="primary" size="mini" @click="handleTriggers(row)">
+          <el-button plain type="primary" size="small" @click="handleTriggers(row)">
             触发器<b v-if="row.triggers && row.triggers.length">({{ row.triggers.length }})</b>
           </el-button>
           <el-tooltip content="请先停用函数，再删除！" :disabled="row.status !== 1" placement="top">
-            <el-button v-if="row.status !== 'deleted'" :icon="Delete" plain size="mini" type="danger" circle
-              @click="handleDelete(row, $index)" />
+            <el-button
+              v-if="row.status !== 'deleted'" :icon="Delete" plain size="small" type="danger" circle
+              @click="handleDelete(row, $index)"
+            />
           </el-tooltip>
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 分页 -->
-    <pagination v-show="total > 0" v-model:page="listQuery.page" v-model:limit="listQuery.limit" :total="total"
-      @pagination="getList" />
+    <el-pagination
+      v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit" class="mt-12px" :total="total"
+      layout="total, sizes, prev, pager, next, jumper" @size-change="getList" @current-change="getList"
+    />
 
     <!-- 表单对话框 -->
-    <el-dialog v-model:visible="dialogFormVisible" :title="textMap[dialogStatus]" width="600px">
-      <el-form ref="dataFormRef" :rules="rules" :model="form" label-position="left" label-width="120px"
-        style="width: 500px; margin-left:20px;">
+    <el-dialog v-model="dialogFormVisible" :title="textMap[dialogStatus]" width="600px">
+      <el-form
+        ref="dataFormRef" :rules="rules" :model="form" label-position="left" label-width="120px"
+        style="width: 500px; margin-left: 20px"
+      >
         <el-form-item v-if="form._id" label="ID" prop="_id">
           <div :value="form._id">
             {{ form._id }}
@@ -449,29 +460,35 @@ function handleUpdate() {
           <el-switch v-model="form.enableHTTP" :active-value="true" :inactive-value="false" />
         </el-form-item>
         <el-form-item label="标签分类" prop="tags">
-          <el-tag v-for="(tag, index) in form.tags" :key="tag" style="margin-right: 10px;" type="" size="medium"
-            closable @close="removeTag(index)">
+          <el-tag
+            v-for="(tag, index) in form.tags" :key="tag" style="margin-right: 10px" type="" size="medium" closable
+            @close="removeTag(index)"
+          >
             {{ tag }}
           </el-tag>
-          <el-autocomplete v-model="form._tag_input" :fetch-suggestions="suggestTags" class="input-new-tag" clearable
-            size="mini" type="text" placeholder="添加" @select="addTag" @change="addTag" />
+          <el-autocomplete
+            v-model="form._tag_input" :fetch-suggestions="suggestTags" class="input-new-tag" clearable
+            type="text" placeholder="添加" @select="addTag" @change="addTag"
+          />
         </el-form-item>
         <el-form-item label="启用" prop="status">
           <el-switch v-model="form.status" :active-value="1" :inactive-value="0" />
         </el-form-item>
         <el-form-item label="函数描述">
-          <el-input v-model="form.description" :autosize="{ minRows: 3, maxRows: 6 }" type="textarea"
-            placeholder="函数描述" />
+          <el-input
+            v-model="form.description" :autosize="{ minRows: 3, maxRows: 6 }" type="textarea"
+            placeholder="函数描述"
+          />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <template #footer>
         <el-button @click="dialogFormVisible = false">
           取消
         </el-button>
         <el-button type="primary" @click="dialogStatus === 'create' ? handleCreate() : handleUpdate()">
           确定
         </el-button>
-      </div>
+      </template>
     </el-dialog>
   </div>
 </template>

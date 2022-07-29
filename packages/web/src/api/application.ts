@@ -1,8 +1,7 @@
+import request from '~/api/request'
+import { useAppStore } from '~/store'
 import { getCurrentBaseURL } from '~/utils'
 import { getToken, getTokenExpire } from '~/utils/auth'
-import request from '~/api/request'
-import { useAppStore } from '~/store';
-
 
 /**
  * 请求我的应用
@@ -31,7 +30,7 @@ export function getSpecs() {
  * @param {string} appid
  * @returns { Application } Application Data
  */
-export async function getApplicationByAppid(appid) {
+export async function getApplicationByAppid(appid: string) {
   const res = await request({
     url: `/sys-api/apps/${appid}`,
     method: 'get',
@@ -45,7 +44,7 @@ export async function getApplicationByAppid(appid) {
  * @param param0
  * @returns
  */
-export async function createApplication(data) {
+export async function createApplication(data: { name: string; spec: string }) {
   const res = await request({
     url: '/sys-api/apps/create',
     method: 'post',
@@ -75,7 +74,7 @@ export async function updateApplication({ appid, name }) {
  * @param {*} appid
  * @returns
  */
-export async function removeApplication(appid) {
+export async function removeApplication(appid: any) {
   const res = await request({
     url: `/sys-api/apps/${appid}`,
     method: 'delete',
@@ -88,7 +87,7 @@ export async function removeApplication(appid) {
  * @param {*} appid
  * @returns
  */
-export async function startApplicationInstance(appid) {
+export async function startApplicationInstance(appid: any) {
   const res = await request({
     url: `/sys-api/apps/${appid}/instance/start`,
     method: 'post',
@@ -101,7 +100,7 @@ export async function startApplicationInstance(appid) {
  * @param {*} appid
  * @returns
  */
-export async function stopApplicationInstance(appid) {
+export async function stopApplicationInstance(appid: any) {
   const res = await request({
     url: `/sys-api/apps/${appid}/instance/stop`,
     method: 'post',
@@ -114,7 +113,7 @@ export async function stopApplicationInstance(appid) {
  * @param {*} appid
  * @returns
  */
-export async function restartApplicationInstance(appid) {
+export async function restartApplicationInstance(appid: never) {
   const res = await request({
     url: `/sys-api/apps/${appid}/instance/restart`,
     method: 'post',
@@ -127,7 +126,7 @@ export async function restartApplicationInstance(appid) {
  * @param {string} appid
  * @returns
  */
-export async function exportApplication(appid) {
+export async function exportApplication(appid: any) {
   const res = await request({
     url: `/sys-api/apps/${appid}/export`,
     method: 'get',
@@ -142,7 +141,7 @@ export async function exportApplication(appid) {
  * @param {File} file
  * @returns
  */
-export async function importApplication(appid, file) {
+export async function importApplication(appid: never, file: string | Blob) {
   const form = new FormData()
   form.append('file', file)
   const res = await request({
@@ -160,7 +159,7 @@ export async function importApplication(appid, file) {
  * @param {File} file
  * @returns
  */
-export async function initApplicationWithTemplate(appid, template_id) {
+export async function initApplicationWithTemplate(appid: any, template_id: any) {
   const res = await request({
     url: `/sys-api/apps/${appid}/init-with-template`,
     method: 'post',
@@ -175,7 +174,7 @@ export async function initApplicationWithTemplate(appid, template_id) {
  * Open app console
  * @param {*} app
  */
-export async function openAppConsole(app) {
+export async function openAppConsole(app: { appid: any }) {
   const base_url = getCurrentBaseURL()
   const console_uri = import.meta.env.VITE_APP_CONSOLE_URI
   const back_url = encodeURIComponent(window.location.href)
@@ -192,7 +191,6 @@ export async function openAppConsole(app) {
     app_console_url = base_url + app_console_url
   }
 
-  console.log(app_console_url, 'app_console_url')
   window.open(app_console_url, '_blank')
 }
 
@@ -202,7 +200,7 @@ export async function openAppConsole(app) {
  * @returns
  */
 export function getAppAccessUrl() {
-  const appStore = useAppStore();
+  const appStore = useAppStore()
   const appid = appStore.currentApp.appid
   const domain = appStore.currentApp.app_deploy_host
   const schema = appStore.currentApp.app_deploy_url_schema || 'http'
