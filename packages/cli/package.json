@@ -1,6 +1,6 @@
 {
   "name": "laf-cli",
-  "version": "0.8.5-alpha.0",
+  "version": "0.8.5-alpha.1",
   "description": "laf-cli for labring/laf",
   "main": "dist/index.js",
   "bin": {
