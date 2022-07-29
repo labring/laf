@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [16.x]
     steps:
       - name: Login in Docker Hub
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
