@@ -1,7 +1,5 @@
 import axios from 'axios'
-
 import { getRemoteServer } from '../utils/util'
-
 import { getAccessToken } from '../utils/tokens'
 
 
@@ -13,7 +11,6 @@ export const request = axios.create({
 // http request
 request.interceptors.request.use(
   async (config) => {
-
     const token = await getAccessToken()
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
@@ -80,9 +77,7 @@ request.interceptors.response.use(
  * @param {Object} obj
  */
 export function requestData(obj: object) {
-
   return request.request(obj)
-
 }
 
 

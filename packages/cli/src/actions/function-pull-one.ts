@@ -1,9 +1,8 @@
-import { pullFunction } from "../api/functions"
 import * as path from 'node:path'
 import * as fs from 'node:fs'
 import { FUNCTIONS_DIR, PROJECT_DIR } from '../utils/constants'
 import { ensureDirectory } from '../utils/util'
-
+import { pullFunction } from "../api/functions"
 import { createfn, updatefn } from "../utils/function-pull"
 
 
@@ -31,5 +30,4 @@ export async function handlePullOneCommand(appid: string, functionName: string) 
       createfn(response.data[0])
     }
   }
-
 }

@@ -8,9 +8,7 @@ import { FUNCTIONS_FILE, META_FILE } from './constants'
  * @returns
  */
 export function getRemoteList(data: any) {
-
   return data.map((item: any) => {
-
     return { key: item.name, version: item.version, value: item }
   })
 }

@@ -2,9 +2,9 @@ import * as fs from 'node:fs'
 import * as path from 'node:path'
 import { createHash } from 'node:crypto'
 import * as mime from 'mime'
-import { ensureDirectory, getS3Client } from '../utils/util'
 import axios from 'axios'
 import { pipeline } from 'node:stream/promises'
+import { ensureDirectory, getS3Client } from '../utils/util'
 
 /**
  * push files
@@ -31,7 +31,7 @@ export async function handlePushCommand(credentials: any, options: any) {
     // get source files
     const sourceFiles = readdirRecursive(source).map(file => {
         return {
-            key: path.relative(abs_source, file),
+            key: path.relative(abs_source, file).split(path.sep).join('/'),
             abs_path: path.resolve(file),
         }
     })
@@ -48,7 +48,7 @@ export async function handlePushCommand(credentials: any, options: any) {
                 Bucket: options.bucketName,
                 Key: file.key,
                 Body: fs.readFileSync(path.resolve(source, file.abs_path)),
-                ContentType: mime.getType(file.key)
+                ContentType: mime.getType(file.key),
             }).promise()
 
             console.log(path.resolve(source, file.abs_path))

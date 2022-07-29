@@ -1,11 +1,9 @@
-import { ensureDirectory } from "./util"
 import * as path from 'node:path'
-import { FUNCTIONS_DIR, FUNCTIONS_FILE, META_FILE, PROJECT_DIR } from "./constants"
 import * as fs from 'node:fs'
-
+import { ensureDirectory } from "./util"
+import { FUNCTIONS_DIR, FUNCTIONS_FILE, META_FILE, PROJECT_DIR } from "./constants"
 
 const functionsDir = path.resolve(PROJECT_DIR, FUNCTIONS_DIR)
-
 
 /**
  * create function list
@@ -13,11 +11,7 @@ const functionsDir = path.resolve(PROJECT_DIR, FUNCTIONS_DIR)
  * @param { remoteList } any
  * @returns
  */
-
 export function getCreateList(remoteList: any, localList: any) {
-
-
-
   const createFunction = remoteList.filter(remote => {
     const local = localList.find(local => local.key === remote.key)
 
@@ -36,7 +30,6 @@ export function getCreateList(remoteList: any, localList: any) {
  * @param { remoteList } any
  * @returns
  */
-
 export function getUpdateList(remoteList: any, localList: any,) {
   const updateFunction = remoteList.filter(local => {
     const remote = localList.find(remote => local.key === remote.key && local.version != remote.version)
@@ -45,7 +38,6 @@ export function getUpdateList(remoteList: any, localList: any,) {
     }
   })
   return updateFunction
-
 }
 
 
@@ -55,7 +47,6 @@ export function getUpdateList(remoteList: any, localList: any,) {
 * @param { remoteList } any
 * @returns
 */
-
 export function getDeleteList(remoteList: any, localList: any) {
   const deleteFunction = localList.filter(local => {
     const remote = remoteList.find(remote => local.key === remote.key)
@@ -64,11 +55,7 @@ export function getDeleteList(remoteList: any, localList: any) {
     }
   })
   return deleteFunction
-
 }
-
-
-
 
 /**
  * create function
@@ -97,7 +84,6 @@ export function createfn(data: any) {
  * @param { data } any
  * @returns
  */
-
 export function updatefn(data: any) {
 
   const funcNameDir = path.resolve(functionsDir, data.name)
@@ -120,7 +106,6 @@ export function updatefn(data: any) {
     fs.writeFileSync(metaFile, JSON.stringify(meta))
     return true
   }
-
 }
 
 
@@ -129,7 +114,6 @@ export function updatefn(data: any) {
  * @param { funcName } string
  * @returns
  */
-
 export function deletefn(funcName: string) {
 
   const funcNameDir = path.resolve(functionsDir, funcName)

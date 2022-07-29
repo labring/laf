@@ -6,9 +6,7 @@ import { requestData } from "./request"
  * @param {string} appid
  * @returns
  */
-
 export async function syncApp(appid: string) {
-
     const url = `/sys-api/apps/${appid}/export`
     const obj = {
         method: "GET",

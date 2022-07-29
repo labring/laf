@@ -1,11 +1,8 @@
-import { PROJECT_DIR } from '../utils/constants'
-
 import * as path from 'node:path'
 import * as fs from 'node:fs'
 import { compileTs2js } from '../utils/util-lang'
-
+import { PROJECT_DIR } from '../utils/constants'
 import { FUNCTIONS_DIR, FUNCTIONS_FILE } from '../utils/constants'
-
 import { debugFunction } from '../api/functions'
 
 /**
@@ -15,7 +12,6 @@ import { debugFunction } from '../api/functions'
  * @param {object} param
  * @returns
  */
-
 export async function handleInvokeFunctionCommand(appid: string, functionName: string, param: object) {
 
     // get local code
@@ -35,5 +31,4 @@ export async function handleInvokeFunctionCommand(appid: string, functionName: s
 
     const res = await debugFunction(functionName, obj)
     console.log(res)
-
 }

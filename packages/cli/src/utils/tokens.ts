@@ -9,7 +9,6 @@ import { getAppData } from './util'
  * get access token
  * @returns
  */
-
 export async function getAccessToken() {
     // read data
     const authData = JSON.parse(fs.readFileSync(AUTH_FILE, 'utf8'))
@@ -32,5 +31,4 @@ export async function getDebugToken() {
     const appData = getAppData()
     const response = await getApplicationByAppid(appData.appid)
     return response.data.debug_token
-
 }
