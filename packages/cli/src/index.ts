@@ -14,7 +14,6 @@ import { makeFnCommand } from './functions'
 import { makeOssCommand } from './oss'
 
 
-
 program
   .option('-v, --version', 'output version')
   .action((options) => {
@@ -33,7 +32,6 @@ program
   .option('-p, --password <password>', 'password')
   .option('-r, --remote <remote>', 'remote server', "https://console.lafyun.com")
   .action(async (options) => {
-
     // check params
     const username = options.username
     const password = options.password
@@ -48,8 +46,6 @@ program
 
     // login
     await handleLoginCommand(options.remote, username, password)
-
-
   })
 
 
@@ -70,8 +66,7 @@ program
         //sync app (now only pull function)
         await handleSyncAppCommand(appid)
       }
-    }
-    catch (err) {
+    } catch (err) {
       console.log(err.message)
     }
   })
@@ -79,17 +74,15 @@ program
 
 program
   .command('list')
+  .description('show application list')
   .action(async () => {
-
     await handleAppListCommand()
-
   })
 
 program
   .command('stop <appid>')
   .option('--env <env-file>', `the file name to generate`, '.env')
   .action(async (appid) => {
-
     const response = await appStop(appid)
 
     if (response.data.result) {
@@ -102,9 +95,7 @@ program
 
 program
   .command('start <appid>')
-  .option('--env <env-file>', `the file name to generate`, '.env')
   .action(async (appid) => {
-
     const response = await appStart(appid)
 
     if (response.data.result) {
@@ -117,9 +108,7 @@ program
 
 program
   .command('restart <appid>')
-  .option('--env <env-file>', `the file name to generate`, '.env')
   .action(async (appid) => {
-
     const response = await appRestart(appid)
 
     if (response.data.result) {
@@ -130,9 +119,7 @@ program
   })
 
 program.addCommand(makeFnCommand())
-
 program.addCommand(makeOssCommand())
-
 
 program.parse(process.argv)
 

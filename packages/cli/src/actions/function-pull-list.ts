@@ -1,6 +1,5 @@
-import { pullFunction } from "../api/functions"
 import * as path from 'node:path'
-
+import { pullFunction } from "../api/functions"
 import { FUNCTIONS_DIR, PROJECT_DIR } from '../utils/constants'
 import { ensureDirectory } from '../utils/util'
 import { getLocalList, getRemoteList } from "../utils/function-lists"

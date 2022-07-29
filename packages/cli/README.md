@@ -8,13 +8,23 @@ npm i laf-cli -g
 
 ## Usage
 
-#### 1. Generate a env file template for laf-cli: `.env`
+### 1. login your account
 
 ```bash
-  laf init --access-key xxxxx --access-secret xxxxxx --bucket xxxxxx
+  laf login -u maslow -p password -r https://console.lafyun.com
 ```
 
-#### 2. run `laf-cli sync ./dist` command to sync files to OSS bucket
+### 2. show your applications list
+
+```bash
+  laf list
+```
+
+### 3. init in your local project
+
+```bash
+  laf init -s YOUR_APPID
+```
 
 ## Upgrade laf-cli
 

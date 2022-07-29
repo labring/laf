@@ -3,7 +3,6 @@ import { Command } from 'commander'
 import { getFunctionByName, publishAllFunction, publishFunction } from './api/functions'
 import { getAppData, checkFuncNameDir, ensureDirectory } from './utils/util'
 import { handleInvokeFunctionCommand } from './actions/function-invoke'
-
 import { handlePullOneCommand } from './actions/function-pull-one'
 import { handlePullListCommand } from './actions/function-pull-list'
 import { handlePushOneCommand } from './actions/funtcion-push-one'
@@ -11,7 +10,6 @@ import { handlePushListCommand } from './actions/function-push-list'
 import { FUNCTIONS_DIR } from './utils/constants'
 
 export function makeFnCommand() {
-
     const fn = new Command('fn')
 
     fn
@@ -19,18 +17,13 @@ export function makeFnCommand() {
         .argument('[function-name]', "functionname")
         .option('-f, --force-overwrite', 'force to  file ignore if modified', false)
         .action(async (functionName, options) => {
-
             const appData = getAppData()
 
             if (functionName) {
-
                 await handlePullOneCommand(appData.appid, functionName)
             } else {
-
                 await handlePullListCommand(appData.appid, options)
-
             }
-
         })
 
     fn
@@ -46,13 +39,10 @@ export function makeFnCommand() {
                 checkFuncNameDir(functionName)
 
                 await handleInvokeFunctionCommand(appData.appid, functionName, debugParams)
-
             } catch (err) {
                 console.error(err.message)
                 process.exit(1)
-
             }
-
         })
 
 
@@ -66,12 +56,9 @@ export function makeFnCommand() {
                 checkFuncNameDir(functionName)
                 handlePushOneCommand(appData.appid, functionName)
             } else {
-
                 ensureDirectory(FUNCTIONS_DIR)
                 handlePushListCommand(appData.appid, options)
-
             }
-            // check fucntion
         })
 
 
@@ -79,7 +66,6 @@ export function makeFnCommand() {
         .command('publish')
         .argument('[function-name]', "functionname")
         .action(async (functionName) => {
-
             const appData = getAppData()
             if (functionName) {
                 // get function
@@ -94,7 +80,6 @@ export function makeFnCommand() {
                 } else {
                     console.log(`${functionName} funtion not exist`)
                 }
-
             } else {
                 const result = await publishAllFunction(appData.appid)
 
@@ -102,10 +87,8 @@ export function makeFnCommand() {
                     console.log('publish success')
                 }
             }
-
         })
 
     return fn
-
 }
 

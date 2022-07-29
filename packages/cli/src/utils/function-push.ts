@@ -1,13 +1,11 @@
 
 import * as path from 'node:path'
-import { FUNCTIONS_DIR, FUNCTIONS_FILE, META_FILE, PROJECT_DIR } from "./constants"
 import * as fs from 'node:fs'
 import { compileTs2js } from "./util-lang"
 import { createFunction, deleteFunction, editFunction, getFunctionByName, pushFunction } from "../api/functions"
-
+import { FUNCTIONS_DIR, FUNCTIONS_FILE, META_FILE, PROJECT_DIR } from "./constants"
 
 const functionsDir = path.resolve(PROJECT_DIR, FUNCTIONS_DIR)
-
 
 /**
  * create function list
@@ -15,11 +13,7 @@ const functionsDir = path.resolve(PROJECT_DIR, FUNCTIONS_DIR)
  * @param { remoteList } any
  * @returns
  */
-
 export function getCreateList(remoteList: any, localList: any) {
-
-
-
   const createFunction = localList.filter(local => {
     const remote = remoteList.find(remote => local.key === remote.key)
 
@@ -38,7 +32,6 @@ export function getCreateList(remoteList: any, localList: any) {
  * @param { remoteList } any
  * @returns
  */
-
 export function getUpdateList(remoteList: any, localList: any,) {
   const updateFunction = remoteList.filter(local => {
     const remote = localList.find(remote => local.key === remote.key && local.version != remote.version)
@@ -57,7 +50,6 @@ export function getUpdateList(remoteList: any, localList: any,) {
 * @param { remoteList } any
 * @returns
 */
-
 export function getDeleteList(remoteList: any, localList: any) {
   const deleteFunction = remoteList.filter(remote => {
     const local = localList.find(local => local.key === remote.key)
@@ -66,7 +58,6 @@ export function getDeleteList(remoteList: any, localList: any) {
     }
   })
   return deleteFunction
-
 }
 
 
@@ -100,13 +91,11 @@ export async function createRemoteFn(appid: string, functionName: string) {
   }
 
   const res = await createFunction(appid, data)
-
   if (res.data) {
     // create meta file
     await createMetaFile(appid, functionName)
     console.log("create success")
   }
-
 }
 
 /**
@@ -114,7 +103,6 @@ export async function createRemoteFn(appid: string, functionName: string) {
  * @param { data } any
  * @returns
  */
-
 export async function updateRemoteFn(appid: string, functionName: string) {
 
   const functionNameDir = path.resolve(functionsDir, functionName)
@@ -143,12 +131,10 @@ export async function updateRemoteFn(appid: string, functionName: string) {
  * @param { funcName } string
  * @returns
  */
-
 export async function deleteRemoteFn(appid: string, functionId: string) {
   const editResult = await editFunction(appid, functionId, { 'status': 0 })
   if (!editResult.data.modifiedCount) {
     console.error('修改失败')
-
   }
   const res = await deleteFunction(appid, functionId,)
   if (!res.data.deletedCount) {
@@ -163,7 +149,6 @@ export async function deleteRemoteFn(appid: string, functionId: string) {
  * @param { functionName } string
  * @returns
  */
-
 async function createMetaFile(appid: string, functionName: string) {
 
   // get function
@@ -175,7 +160,6 @@ async function createMetaFile(appid: string, functionName: string) {
   const metaFile = path.resolve(funcNameDir, META_FILE)
 
   fs.writeFileSync(metaFile, JSON.stringify(meta))
-
 }
 
 
@@ -197,5 +181,4 @@ function getMetaData(data: any) {
     triggers: data.triggers,
     version: data.version
   }
-
 }

@@ -35,5 +35,4 @@ export async function getDebugToken() {
     const appData = getAppData()
     const response = await getApplicationByAppid(appData.appid)
     return response.data.debug_token
-
 }

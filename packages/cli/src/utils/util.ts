@@ -2,7 +2,7 @@ import * as fs from 'node:fs'
 import * as path from 'node:path'
 import { CREDENTIALS_DIR, DEFAULT_SERVER, PROJECT_DIR } from './constants'
 import { AUTH_FILE, LAF_CONFIG_FILE, FUNCTIONS_DIR } from '../utils/constants'
-const AWS = require('aws-sdk')
+import * as AWS from 'aws-sdk'
 
 /**
  * check auth dir

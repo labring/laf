@@ -16,19 +16,15 @@ export async function handlePushListCommand(appid: string, options: any) {
 
   // functions dir
   const functionsDir = path.resolve(PROJECT_DIR, FUNCTIONS_DIR)
-
   ensureDirectory(functionsDir)
 
   const response = await pullFunction(appid, '')
-
-
   if (!response.data) {
     return false
   }
 
   const remoteList = getRemoteList(response.data)
-
-  const localList = await getLocalList(functionsDir)
+  const localList = getLocalList(functionsDir)
 
   // create list
   const createList = getCreateList(remoteList, localList)
@@ -36,7 +32,6 @@ export async function handlePushListCommand(appid: string, options: any) {
     createList.forEach(async (item) => {
       await createRemoteFn(appid, item.key)
     })
-
   }
 
   //update list
@@ -45,7 +40,6 @@ export async function handlePushListCommand(appid: string, options: any) {
     updateList.forEach(async (item2) => {
       await updateRemoteFn(appid, item2.key)
     })
-
   }
 
   // delete list
@@ -56,7 +50,5 @@ export async function handlePushListCommand(appid: string, options: any) {
         await deleteRemoteFn(appid, item3.value._id)
       })
     }
-
   }
-
 }

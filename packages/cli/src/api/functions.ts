@@ -14,13 +14,12 @@ import axios from 'axios'
 export async function pullFunction(appid: string, functionName: string) {
 
     let url = ''
-
     if (functionName) {
         url = `/sys-api/apps/${appid}/function?page=1&limit=1&keyword=${functionName}`
     } else {
         url = `/sys-api/apps/${appid}/function?page=1&limit=200`
-
     }
+
     const obj = {
         method: "GET",
         url
@@ -36,33 +35,26 @@ export async function pullFunction(appid: string, functionName: string) {
  * @param {Object} obj
  * @returns 
  */
-
 export async function debugFunction(functionName: string, obj: Object) {
 
     const appData = getAppData()
-
     const url = `${appData.endpoint}/debug/${functionName}`
 
     try {
-
         const debug_token = await getDebugToken()
         const headers = { "authorization": `Bearer ${debug_token}` }
 
         const result = await axios.post(url, obj, { headers: headers })
-
         const response = result.data
         if (response.error) {
             console.error(response.error)
             process.exit(1)
         }
         return response
-
     } catch (err) {
-
         console.error(err.message)
         process.exit(1)
     }
-
 }
 
 /**
@@ -71,12 +63,8 @@ export async function debugFunction(functionName: string, obj: Object) {
  * @param {Object} data
  * @returns 
  */
-
 export async function createFunction(appid: string, data: Object) {
-
-
     const url = `/sys-api/apps/${appid}/function/create`
-
     const obj = {
         method: "POST",
         url,
@@ -94,7 +82,6 @@ export async function createFunction(appid: string, data: Object) {
  * @param {string} functionName
  * @returns 
  */
-
 export async function getFunctionByName(appid: string, functionName: string) {
     const url = `/sys-api/apps/${appid}/function/detail/${functionName}`
     const obj = {
@@ -114,7 +101,6 @@ export async function getFunctionByName(appid: string, functionName: string) {
  */
 export async function pushFunction(appid: string, functionName: string, data: object) {
     const url = `/sys-api/apps/${appid}/function/save/${functionName}`
-
     const obj = {
         method: "POST",
         url,
@@ -151,7 +137,6 @@ export async function publishFunction(appid: string, functionName: string) {
  * @param {string} functionName
  * @returns 
  */
-
 export async function publishAllFunction(appid: string) {
     const url = `/sys-api/apps/${appid}/function/publish`
 
@@ -171,7 +156,6 @@ export async function publishAllFunction(appid: string) {
  * @param {string} functionId
  * @returns 
  */
-
 export async function editFunction(appid: string, functionId: string, data: any) {
     const url = `/sys-api/apps/${appid}/function/${functionId}/info`
 
@@ -184,16 +168,12 @@ export async function editFunction(appid: string, functionId: string, data: any)
     return result.data
 }
 
-
-
-
 /**
  * 删除函数
  * @param {string} appid
  * @param {string} functionId
  * @returns 
  */
-
 export async function deleteFunction(appid: string, functionId: string) {
     const url = `/sys-api/apps/${appid}/function/${functionId}`
 
