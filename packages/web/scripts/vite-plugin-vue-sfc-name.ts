@@ -1,8 +1,8 @@
 import { relative } from 'path'
 import type { Plugin } from 'vite'
 
-import { compileScript, parse } from '@vue/compiler-sfc'
 import MagicString from 'magic-string'
+import { compileScript, parse } from 'vue/compiler-sfc'
 import { resolveComponentNameByFileName, resolveComponentNameByPath } from './utils'
 
 /**

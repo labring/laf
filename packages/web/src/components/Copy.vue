@@ -17,7 +17,9 @@ function handleCopy(text: string) {
 </script>
 
 <template>
-  <el-icon @click="handleCopy(text)">
-    <CopyDocument />
-  </el-icon>
+  <span>
+    <el-icon @click="handleCopy(text)">
+      <CopyDocument />
+    </el-icon>
+  </span>
 </template>

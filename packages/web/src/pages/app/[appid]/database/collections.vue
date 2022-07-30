@@ -4,20 +4,21 @@ import { EJSON } from 'bson'
 import type { ReactiveVariable } from 'vue/macros'
 import { createCollection, deleCollectionIndex, getCollectionIndexes, getCollections, getDb, setCollectionIndexes, updateCollection } from '~/api/collec'
 import Copy from '~/components/Copy.vue'
+import JsonEditor from '~/components/JsonEditor/param.vue'
 
 const db = getDb()
 
 let loading = $ref(false)
 let collections: any = $ref([])
-const collectionName = $ref('')
+let collectionName = $ref('')
 const listQuery: any = $ref({ limit: 10, page: 1, id: '' })
 let list: any = $ref([])
 let indexes = $ref([])
 let total = $ref(0)
-let record: any = $ref({})
+let record: any = $ref('{}')
 let formMode = $ref('edit')
 let showCreateIndexDialog = $ref(false)
-let showDocEditorForm = $ref(false)
+const showDocEditorForm = ref(false)
 const createIndexForm = $ref<{
   key?: string
   name?: string
@@ -27,7 +28,7 @@ const showIndexesList = $ref(false)
 let showCreateCollectionForm = $ref(false)
 const createCollectionForm = $ref({ collectionName: '' })
 let showCollectionSchemaForm = $ref(false)
-const collectionSchemaForm = $ref({ schema: null })
+const collectionSchemaForm = $ref({ schema: '' })
 
 async function fetchCollections() {
   loading = true
@@ -44,6 +45,8 @@ async function fetchCollections() {
   })
   const sorted = (ret || []).sort((a: { name: string }, b: { name: any }) => a.name.localeCompare(b.name))
   collections = sorted
+  collectionName = sorted[0]?.name || ''
+  getList()
 }
 
 function handleFilter() {
@@ -148,14 +151,14 @@ async function updateCollectionSchema() {
 function getClass(val: { _id: any }) {
   const isString = typeof record === 'string'
   try {
-    if (isString)
-      record = JSON.parse(record)
+    if (isString) {
+      const _record = JSON.parse(record)
+      return val._id === _record._id ? 'active' : ''
+    }
   }
   catch (error) {
-    return
-  }
 
-  return val._id === record._id ? 'active' : ''
+  }
 }
 
 async function deleRecord(record: { _id: any }) {
@@ -171,17 +174,17 @@ async function deleRecord(record: { _id: any }) {
 function handleEditRecord(val: any) {
   record = EJSON.serialize(val)
   formMode = 'edit'
-  showDocEditorForm = true
+  showDocEditorForm.value = true
 }
 
-async function updateDocument() {
+async function updateDocument(upRecord: any) {
   await ElMessageBox.confirm('确认要更新数据？', '确认')
   // 将 [EJSON字符串] 解析为 [JSON对象]
   const parsed
-    = typeof record === 'string' ? JSON.parse(record) : record
+    = typeof upRecord === 'string' ? JSON.parse(upRecord) : upRecord
 
   // 将 [JSON对象] 序列化为 [EJSON对象]
-  const serialized = EJSON.deserialize(parsed)
+  const serialized: any = EJSON.deserialize(parsed)
   const { _id, ...params } = serialized
 
   if (!_id)
@@ -205,10 +208,10 @@ async function updateDocument() {
 function handleCreateRecord() {
   formMode = 'create'
   record = {}
-  showDocEditorForm = true
+  showDocEditorForm.value = true
 }
 
-async function addDocument() {
+async function addDocument(record: any) {
   try {
     const params = JSON.parse(record)
     const r = await db.collection(collectionName).add({ ...params })
@@ -221,7 +224,7 @@ async function addDocument() {
 
     ElMessage.success('添加成功')
     getList()
-    showDocEditorForm = false
+    showDocEditorForm.value = false
   }
   catch (error) {
     ElMessage.error(`创建失败！${error}`)
@@ -283,83 +286,88 @@ watch($$(collectionName), (val) => {
 onMounted(() => {
   fetchCollections()
 })
-
-
 </script>
 
 <template>
   <div class="app-container">
     <!-- 记录 -->
-    <div style="margin: 10px 0">
+    <div class="mb-24px">
       <el-input
-        v-model.trim="listQuery._id" size="mini" placeholder="请输入_id查找" style="width: 200px"
+        v-model.trim="listQuery._id" placeholder="请输入_id查找" style="width: 200px"
         :disabled="!collectionName" @keyup.enter="handleFilter"
       />
       <el-button
-        size="mini" plain type="default" style="margin-left: 10px" icon="Search" :disabled="!collectionName"
+        plain type="default" style="margin-left: 10px" icon="Search" :disabled="!collectionName"
         @click="handleFilter"
       >
         搜索
       </el-button>
-      <el-button size="mini" plain type="primary" style="margin-left: 10px" @click="showCreateCollectionForm = true">
+      <el-button plain type="primary" style="margin-left: 10px" @click="showCreateCollectionForm = true">
         新建集合
       </el-button>
       <el-button
-        size="mini" plain type="default" style="margin-left: 10px" :disabled="!collectionName"
+        plain type="default" style="margin-left: 10px" :disabled="!collectionName"
         @click="showIndexesList = true"
       >
         索引管理
       </el-button>
       <el-button
-        size="mini" plain type="default" style="margin-left: 10px" :disabled="!collectionName"
+        plain type="default" style="margin-left: 10px" :disabled="!collectionName"
         @click="handleShowCollectinoSchema"
       >
         集合结构
       </el-button>
       <el-button
-        size="mini" plain type="success" style="margin-left: 10px" icon="Plus" :disabled="!collectionName"
+        plain type="success" style="margin-left: 10px" icon="Plus" :disabled="!collectionName"
         @click="handleCreateRecord"
       >
         添加记录
       </el-button>
-      <Copy :text="collectionName" />
+      <el-button>
+        <span class="mr-6px">复制名称</span>
+        <Copy :text="collectionName" />
+      </el-button>
     </div>
-    <el-container style="border: 1px solid #eee">
-      <el-aside width="240px" class="p-12px">
+    <el-container>
+      <el-aside width="240px" class="px-12px">
         <div class="label">
           选择集合
           <el-button
-            :loading="loading" size="medium" circle type="text" style="margin-left: 10px" icon="Refresh"
+            :loading="loading" circle type="text" style="margin-left: 10px" icon="Refresh"
             @click="fetchCollections"
           />
         </div>
-        <el-radio-group v-model="collectionName" class="radio-group">
+        <el-radio-group v-model="collectionName" class="radio-group w-full">
           <el-radio
-            v-for="item in collections" :key="item.name" class="w-200px mb-12px" border size="medium"
+            v-for="item in collections" :key="item.name" class="mb-12px" border
+            style="margin-right: 0; padding-right: 0; width: 100%;"
             :label="item.name"
           />
         </el-radio-group>
       </el-aside>
 
       <el-container class="flex-col" style="flex-direction: column">
-        <div v-for="item in list" :key="item._id.toString()" class=" flex" :class="getClass(item)">
-          <div class="doc">
+        <div v-for="item in list" :key="item._id.toString()" class=" flex border border-gray-300 rounded mb-24px p-12px" :class="getClass(item)">
+          <div class="doc flex-1">
             <pre class="">{{ item }}</pre>
           </div>
           <div class="tools">
-            <el-button plain class="tools-btn" size="mini" type="primary" @click="handleEditRecord(item)">
+            <el-button plain class="tools-btn" type="primary" @click="handleEditRecord(item)">
               编辑
             </el-button>
-            <el-button plain class="tools-btn" size="mini" type="danger" @click="deleRecord(item)">
+            <el-button plain class="tools-btn" type="danger" @click="deleRecord(item)">
               删除
             </el-button>
           </div>
         </div>
-        <div style="text-align: center">
+        <div style="text-align: right">
           <!-- 分页 -->
           <el-pagination
-            v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit" class="mt-12px"
-            :total="total" layout="total, sizes, prev, pager, next, jumper" @size-change="getList"
+            v-show="total > 0"
+            v-model:page-size="listQuery.limit"
+            v-model:limit="listQuery.limit"
+            small background class="mt-12px"
+            :total="total" layout="total, prev, pager, next, " @size-change="getList"
             @current-change="getList"
           />
         </div>
@@ -367,11 +375,11 @@ onMounted(() => {
     </el-container>
 
     <!-- 索引管理 -->
-    <el-drawer v-model:visible="showIndexesList" title="索引管理" size="50%">
+    <el-drawer v-model="showIndexesList" title="索引管理" size="50%">
       <div>
         <div style="margin: 10px 0">
           <el-button
-            size="mini" plain type="primary" style="margin-left: 10px" icon="Plus" :disabled="!collectionName"
+            plain type="primary" style="margin-left: 10px" icon="Plus" :disabled="!collectionName"
             @click="handleCreateIndex"
           >
             创建索引
@@ -391,7 +399,7 @@ onMounted(() => {
           </el-table-column>
           <el-table-column label="操作" align="center">
             <template #default="{ row }">
-              <el-button size="mini" type="danger" @click="deleIndex(row)">
+              <el-button type="danger" @click="deleIndex(row)">
                 删除
               </el-button>
             </template>
@@ -401,57 +409,50 @@ onMounted(() => {
     </el-drawer>
 
     <!-- 编辑集合数据结构 -->
-    <el-drawer v-model:visible="showCollectionSchemaForm" :title="`集合数据结构:${collectionName}`" size="50%">
-      <el-header>
-        <el-button
-          :loading="loading" size="mini" type="primary" :disabled="!collectionName"
-          @click="updateCollectionSchema"
-        >
-          保存
-        </el-button>
-      </el-header>
-      <el-main>
-        <json-editor
-          v-model="collectionSchemaForm.schema" class="db-editor" :line-numbers="true" :dark="false"
-          :height="600"
-        />
-      </el-main>
+    <el-drawer v-model="showCollectionSchemaForm" :title="`集合数据结构:${collectionName}`" size="50%">
+      <el-button
+        :loading="loading" type="primary" :disabled="!collectionName"
+        @click="updateCollectionSchema"
+      >
+        保存
+      </el-button>
+      <JsonEditor v-model="collectionSchemaForm.schema" class="db-editor" :line-numbers="true" :dark="false" :height="600" />
     </el-drawer>
 
     <!-- 添加/编辑文档表单 -->
-    <el-drawer v-model:visible="showDocEditorForm" :title="formMode === 'edit' ? '编辑文档' : '添加文档'" size="50%">
-      <el-header>
-        <el-button
-          size="mini" type="primary" :disabled="!collectionName"
-          @click="formMode === 'edit' ? updateDocument() : addDocument()"
-        >
-          保存
-        </el-button>
-      </el-header>
-      <el-main>
-        <json-editor v-model="record" class="db-editor" :line-numbers="true" :dark="false" :height="600" />
-      </el-main>
+    <el-drawer
+      v-model="showDocEditorForm"
+      :title="formMode === 'edit' ? '编辑文档' : '添加文档'" size="50%"
+    >
+      <el-button
+        class="mb-12px"
+        type="primary" :disabled="!collectionName"
+        @click="formMode === 'edit' ? updateDocument(record) : addDocument(record)"
+      >
+        保存
+      </el-button>
+      <JsonEditor v-model="record" />
     </el-drawer>
 
     <!-- 创建集合表单 -->
-    <el-dialog v-model:visible="showCreateCollectionForm" title="创建集合" width="500px">
+    <el-dialog v-model="showCreateCollectionForm" title="创建集合" width="500px">
       <el-form :model="createCollectionForm" label-width="80px" style="width: 460px">
         <el-form-item label="集合名称">
           <el-input v-model="createCollectionForm.collectionName" placeholder="请输入新集合名称" />
         </el-form-item>
       </el-form>
       <div style="text-align: right">
-        <el-button size="mini" type="default" @click="showCreateCollectionForm = false">
+        <el-button type="default" @click="showCreateCollectionForm = false">
           取消
         </el-button>
-        <el-button size="mini" type="primary" @click="handleCreateCollection">
+        <el-button type="primary" @click="handleCreateCollection">
           确认
         </el-button>
       </div>
     </el-dialog>
 
     <!-- 创建索引表单 -->
-    <el-dialog v-model:visible="showCreateIndexDialog" title="创建索引">
+    <el-dialog v-model="showCreateIndexDialog" title="创建索引">
       <el-form :model="createIndexForm" label-width="100px" style="width: 600px">
         <el-form-item label="索引名称">
           <el-input v-model="createIndexForm.name" placeholder="请输入索引名称" />

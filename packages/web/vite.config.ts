@@ -1,5 +1,3 @@
-/// <reference types="vitest" />
-
 import path from 'path'
 import { defineConfig } from 'vite'
 import Vue from '@vitejs/plugin-vue'
@@ -12,7 +10,9 @@ import ElementPlus from 'unplugin-element-plus/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import vueI18n from '@intlify/vite-plugin-vue-i18n'
 // import Inspect from 'vite-plugin-inspect'
+import monacoEditorPlugin from 'vite-plugin-monaco-editor'
 import SFCName from './scripts/vite-plugin-vue-sfc-name'
+
 import extendRoute from './scripts/extend-route'
 
 export default defineConfig({
@@ -62,8 +62,7 @@ export default defineConfig({
     }),
 
     ElementPlus({
-      importStyle: 'SASS',
-      useSource: true
+      useSource: true,
     }),
 
     // https://github.com/antfu/vite-plugin-components
@@ -75,6 +74,10 @@ export default defineConfig({
     // https://github.com/antfu/unocss
     // see unocss.config.ts for config
     Unocss(),
+
+    monacoEditorPlugin({
+      languageWorkers: ['typescript', 'json'],
+    }),
   ],
 
   // https://github.com/vitest-dev/vitest
