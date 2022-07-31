@@ -15,6 +15,7 @@
     "@vicons/material": "^0.12.0",
     "@vicons/utils": "^0.1.4",
     "@vueuse/core": "^9.0.2",
+    "aws-sdk": "^2.1185.0",
     "axios": "^0.27.2",
     "bson": "^4.6.5",
     "dayjs": "^1.11.4",

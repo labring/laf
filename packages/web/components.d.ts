@@ -10,6 +10,7 @@ declare module '@vue/runtime-core' {
     CommonOpener: typeof import('./src/components/CommonOpener.vue')['default']
     Copy: typeof import('./src/components/Copy.vue')['default']
     Counter: typeof import('./src/components/Counter.vue')['default']
+    ElAlert: typeof import('element-plus/es')['ElAlert']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']
     ElButton: typeof import('element-plus/es')['ElButton']
