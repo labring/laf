@@ -2,7 +2,7 @@
 import FunctionLogDetail from './components/FunctionLogDetail.vue'
 import { getFunctionLogs } from '~/api/func'
 
-const $route = useRoute()
+const route = useRoute()
 
 const tableKey = $ref(0)
 let func_id: any = $ref(null)
@@ -23,8 +23,8 @@ const dialogTitle = $computed(() => {
 })
 
 onMounted(() => {
-  func_id = $route.params.id ?? undefined
-  const triggerId = $route.query?.trigger_id
+  func_id = route.params.id ?? undefined
+  const triggerId = route.query?.trigger_id
   listQuery.triggerId = triggerId ?? undefined
   getList()
   setTagViewTitle()
@@ -68,16 +68,16 @@ async function handleShowDetail(row) {
 function setTagViewTitle() {
   if (func_id) {
     const label = func_id
-    const title = $route.meta.title
-    const route = Object.assign({}, $route, {
+    const title = route.meta.title
+    const route = Object.assign({}, route, {
       title: `${title}: ${label}`,
     })
     // $store.dispatch('tagsView/updateVisitedView', route)
   }
   if (listQuery.triggerId) {
     const label = `trigger - ${listQuery.triggerId}`
-    const title = $route.meta.title
-    const route = Object.assign({}, $route, {
+    const title = route.meta.title
+    const route = Object.assign({}, route, {
       title: `${title}: ${label}`,
     })
     // $store.dispatch('tagsView/updateVisitedView', route)

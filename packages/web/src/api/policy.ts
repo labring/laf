@@ -9,10 +9,10 @@ const appStore = useAppStore()
  * @param {*} page
  * @param {*} pageSize
  */
-export function getPolicies(query: {}, page: number, pageSize: number) {
+export function getPolicies(query: {}, page: number, pageSize: number): Promise<any> {
   const appid = appStore.currentApp.appid
   return request({
-    url: `/apps/${appid}/policy`,
+    url: `/sys-api/apps/${appid}/policy`,
     method: 'get',
     params: {
       ...query,
@@ -28,10 +28,10 @@ export function getPolicies(query: {}, page: number, pageSize: number) {
  * @param {*} page
  * @param {*} pageSize
  */
-export function getPolicyById(policy_id: any) {
+export function getPolicyById(policy_id: any): Promise<any> {
   const appid = appStore.currentApp.appid
   return request({
-    url: `/apps/${appid}/policy/${policy_id}`,
+    url: `/sys-api/apps/${appid}/policy/${policy_id}`,
     method: 'get',
   })
 }
@@ -45,7 +45,7 @@ export function getPolicyById(policy_id: any) {
 export function createPolicy(data: any): Promise<any> {
   const appid = appStore.currentApp.appid
   return request({
-    url: `/apps/${appid}/policy/create`,
+    url: `/sys-api/apps/${appid}/policy/create`,
     method: 'post',
     data,
   })
@@ -60,7 +60,7 @@ export function createPolicy(data: any): Promise<any> {
 export function updatePolicy(policy_id: undefined, data: { name: string; label: any; injector: null; status: number; description: string }): Promise<any> {
   const appid = appStore.currentApp.appid
   return request({
-    url: `/apps/${appid}/policy/${policy_id}/info`,
+    url: `/sys-api/apps/${appid}/policy/${policy_id}/info`,
     method: 'post',
     data,
   })
@@ -72,10 +72,10 @@ export function updatePolicy(policy_id: undefined, data: { name: string; label: 
  * @param {*} rules
  * @returns
  */
-export function updatePolicyRules(policy_id: any, rules: any) {
+export function updatePolicyRules(policy_id: any, rules: any): Promise<any> {
   const appid = appStore.currentApp.appid
   return request({
-    url: `/apps/${appid}/policy/${policy_id}/rules`,
+    url: `/sys-api/apps/${appid}/policy/${policy_id}/rules`,
     method: 'post',
     data: {
       rules,
@@ -91,7 +91,7 @@ export function updatePolicyRules(policy_id: any, rules: any) {
 export function removePolicy(policy_id: any): Promise<any> {
   const appid = appStore.currentApp.appid
   return request({
-    url: `/apps/${appid}/policy/${policy_id}`,
+    url: `/sys-api/apps/${appid}/policy/${policy_id}`,
     method: 'delete',
   })
 }
@@ -102,7 +102,7 @@ export function removePolicy(policy_id: any): Promise<any> {
 export function publishPolicies(): Promise<any> {
   const appid = appStore.currentApp.appid
   return request({
-    url: `/apps/${appid}/policy/publish`,
+    url: `/sys-api/apps/${appid}/policy/publish`,
     method: 'post',
   })
 }

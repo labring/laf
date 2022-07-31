@@ -5,6 +5,7 @@ specifiers:
   '@element-plus/icons-vue': ^2.0.6
   '@iconify-json/carbon': ^1.1.7
   '@intlify/vite-plugin-vue-i18n': ^5.0.1
+  '@types/lodash': ^4.14.182
   '@types/node': ^18.6.2
   '@unocss/reset': ^0.45.1
   '@vicons/carbon': ^0.12.0
@@ -75,6 +76,7 @@ devDependencies:
   '@antfu/eslint-config': 0.25.2_he2ccbldppg44uulnyq4rwocfa
   '@iconify-json/carbon': 1.1.7
   '@intlify/vite-plugin-vue-i18n': 5.0.1_xvemjdrs57vyjchkqoyrcwzkya
+  '@types/lodash': 4.14.182
   '@types/node': 18.6.2
   '@unocss/reset': 0.45.1
   '@vitejs/plugin-vue': 2.3.3_vite@2.9.14+vue@3.2.37
@@ -545,7 +547,6 @@ packages:
 
   /@types/lodash/4.14.182:
     resolution: {integrity: sha512-/THyiqyQAP9AfARo4pF+aCGcyiQ94tX/Is2I7HofNRqoYLgN1PBoOWu2/zTA5zMxzP5EFutMtWtGAFRKUe961Q==}
-    dev: false
 
   /@types/mdast/3.0.10:
     resolution: {integrity: sha512-W864tg/Osz1+9f4lrGTZpCSO5/z4608eUp19tbozkq2HJK6i3z1kT0H9tlADXuYIb1YYOBByU4Jsqkk75q48qA==}

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { FormInstance } from 'element-plus'
 import { ElMessageBox, ElNotification } from 'element-plus'
+import { getFunctions } from '~/api/func'
 import { createPolicy, getPolicies, publishPolicies, removePolicy, updatePolicy } from '~/api/policy'
 
 const router = useRouter()
@@ -60,9 +61,9 @@ async function getList() {
 
   // 拼装查询条件 by listQuery
   const { limit, page, keyword } = listQuery
-  const query = {}
+  const query: any = {}
   if (keyword)
-    query[keyword] = keyword
+    query.keyword = keyword
 
   // 执行数据查询
   const res = await getPolicies(query, page, limit)
@@ -204,7 +205,7 @@ async function publish() {
 }
 
 async function handleShowDetail(row: { _id: any }) {
-  router.push(`policies/${row._id}`)
+  router.push(`${row._id}`)
 }
 
 onMounted(() => {
@@ -216,19 +217,19 @@ onMounted(() => {
 <template>
   <div class="app-container">
     <!-- 数据检索区 -->
-    <div class="filter-container">
+    <div class="filter-container mb-24px">
       <el-input
         v-model="listQuery.keyword" placeholder="搜索" style="width: 200px; margin-right: 10px"
         class="filter-item" @keyup.enter="handleFilter"
       />
-      <el-button class="filter-item" type="default" icon="el-icon-search" @click="handleFilter">
+      <el-button class="filter-item" type="default" icon="Search" @click="handleFilter">
         搜索
       </el-button>
-      <el-button plain class="filter-item" type="primary" icon="el-icon-plus" @click="showCreateForm">
+      <el-button plain class="filter-item" type="primary" icon="Plus" @click="showCreateForm">
         新建
       </el-button>
       <el-tooltip content="发布策略：策略修改后需要发布才能生效" placement="bottom" effect="light">
-        <el-button plain class="filter-item" type="success" icon="el-icon-guide" @click="publish">
+        <el-button plain class="filter-item" type="success" icon="Guide" @click="publish">
           发布策略
         </el-button>
       </el-tooltip>
@@ -296,12 +297,13 @@ onMounted(() => {
 
     <!-- 分页 -->
     <el-pagination
+      v-show="total > 0"
       v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit" class="mt-12px" :total="total"
       layout="total, sizes, prev, pager, next, jumper" @size-change="getList" @current-change="getList"
     />
 
     <!-- 表单对话框 -->
-    <el-dialog v-model:visible="dialogFormVisible" :title="textMap[dialogStatus]">
+    <el-dialog v-model="dialogFormVisible" :title="textMap[dialogStatus]">
       <el-form
         ref="dataFormRef" :rules="rules" :model="form" label-position="left" label-width="70px"
         style="width: 500px; margin-left: 50px"

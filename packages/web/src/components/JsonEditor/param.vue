@@ -52,5 +52,6 @@ watch(() => props.modelValue, (value) => {
 <style scoped>
 .editor {
   height: 100%;
+  width: 100%;
 }
 </style>
