@@ -266,3 +266,92 @@ export async function removeApplicationPackage(appid: string, name: any): Promis
   return res
 }
 
+/**
+ * 获取应用的协作者列表
+ * @param {string} username
+ */
+export function getCollaborators(): Promise<any> {
+  const appStore = useAppStore()
+
+  const appid = appStore.currentApp.appid
+  return request({
+    url: `/sys-api/apps/${appid}/collaborators`,
+    method: 'get',
+  })
+}
+
+/**
+ * 删除应用的一个协作者
+ * @param {string} collaborator_id
+ */
+export function removeCollaborator(collaborator_id: any): Promise<any> {
+  const appStore = useAppStore()
+
+  const appid = appStore.currentApp.appid
+  return request({
+    url: `/sys-api/apps/${appid}/collaborators/${collaborator_id}`,
+    method: 'delete',
+  })
+}
+
+/**
+ * 更新协作者密码(TBD)
+ * @param {string} accountId
+ * @param {string} password
+ */
+export function resetAccountPassword(accountId: any, password: any): Promise<any> {
+  return request({
+    url: '/account/resetPassword',
+    method: 'post',
+    data: {
+      accountId,
+      password,
+    },
+  })
+}
+
+/**
+ * 添加协作成员
+ * @param {member_id, roles}
+ * @returns
+ */
+export async function inviteCollaborator(member_id: any, roles: any): Promise<any> {
+  const appStore = useAppStore()
+
+  const appid = appStore.currentApp.appid
+  const res = await request({
+    url: `/sys-api/apps/${appid}/invite`,
+    method: 'post',
+    data: {
+      member_id,
+      roles,
+    },
+  })
+  return res
+}
+
+/**
+ * 获取所有应用角色
+ * @param {string} username
+ */
+export function getAllApplicationRoles() {
+  return request({
+    url: '/sys-api/apps/collaborators/roles',
+    method: 'get',
+  })
+}
+
+/**
+ * 根据用户名搜索用户
+ * @param {string} username
+ */
+export function searchUserByUsername(username: any) {
+  return request({
+    url: '/sys-api/apps/collaborators/search',
+    method: 'post',
+    data: {
+      username,
+    },
+  })
+}
+
