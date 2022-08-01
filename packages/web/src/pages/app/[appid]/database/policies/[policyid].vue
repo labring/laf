@@ -226,7 +226,7 @@ onUnmounted(() => {
       <el-button  icon="Refresh" type="default" style="margin-left: 15px" :disabled="loading" @click="getPolicy">
         刷新
       </el-button>
-      <el-button plain  style="margin-left: 15px" type="primary" :disabled="loading" @click="dialogVisible = true">
+      <el-button  style="margin-left: 15px" type="primary" :disabled="loading" @click="dialogVisible = true">
         新建集合规则
       </el-button>
     </div>
@@ -248,10 +248,10 @@ onUnmounted(() => {
       <el-container class="record-list ">
         <div class="editor-container flex-1">
           <div class="buttons">
-            <el-button plain class="btn"  type="success" :disabled="loading" @click="updateRule">
+            <el-button class="btn"  type="success" :disabled="loading" @click="updateRule">
               保存(S)
             </el-button>
-            <el-button plain class="btn" type="danger"  :disabled="loading" @click="removeRule">
+            <el-button class="btn" type="danger"  :disabled="loading" @click="removeRule">
               删除
             </el-button>
           </div>

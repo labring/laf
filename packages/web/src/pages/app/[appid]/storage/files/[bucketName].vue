@@ -234,14 +234,14 @@ onMounted(async () => {
   <div class="app-container">
     <!-- 数据检索区 -->
     <div class="filter-container mb-24px">
-      <el-button plain class="filter-item" type="primary" icon="Refresh" @click="handleFilter">
+      <el-button class="filter-item" type="primary" icon="Refresh" @click="handleFilter">
         刷新
       </el-button>
       <el-dropdown
         trigger="click" class="filter-item" style="margin-left: 10px; margin-right: 10px"
         @command="handleUploadCommand"
       >
-        <el-button plain type="primary">
+        <el-button type="primary">
           <el-icon>
             <UploadFilled />
           </el-icon>上传<el-icon>
@@ -259,7 +259,7 @@ onMounted(async () => {
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-      <el-button plain class="inline-block" type="primary" icon="Plus" @click="createDirectory">
+      <el-button class="inline-block" type="primary" icon="Plus" @click="createDirectory">
         新建文件夹
       </el-button>
       <div class="inline-block" style="margin-left: 20px">
@@ -314,8 +314,7 @@ onMounted(async () => {
       </el-table-column>
       <el-table-column label="更新时间" width="140" align="center">
         <template #default="{ row }">
-          <span v-if="row.LastModified">{{ $filters.parseTime(Date.parse(row.LastModified), '{y}-{m}-{d} {h}:{i}:{s}')
-          }}</span>
+          <span v-if="row.LastModified">{{ $filters.formatTime(row.LastModified) }}</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
@@ -326,13 +325,13 @@ onMounted(async () => {
       </el-table-column>
       <el-table-column label="操作" align="center" width="160" class-name="small-padding fixed-width">
         <template #default="{ row }">
-          <el-button v-if="row.Prefix" plain type="success" @click="changeDirectory(row)">
+          <el-button v-if="row.Prefix" type="success" @click="changeDirectory(row)">
             查看
           </el-button>
           <a v-if="!row.Prefix" :href="getFileUrl(row)" target="blank" style="margin-right: 8px">
-            <el-button plain type="success">查看</el-button>
+            <el-button type="success">查看</el-button>
           </a>
-          <el-button :disabled="!!row.Prefix" plain type="danger" @click="handleDelete(row)">
+          <el-button :disabled="!!row.Prefix" type="danger" @click="handleDelete(row)">
             删除
           </el-button>
         </template>
@@ -360,3 +359,8 @@ onMounted(async () => {
   </div>
 </template>
 
+<route lang="yaml">
+name: 文件详情
+meta:
+  title: 文件管理
+</route>

@@ -297,28 +297,28 @@ onMounted(() => {
         @keyup.enter="handleFilter"
       />
       <el-button
-        plain type="default" style="margin-left: 10px" icon="Search" :disabled="!collectionName"
+        type="default" style="margin-left: 10px" icon="Search" :disabled="!collectionName"
         @click="handleFilter"
       >
         搜索
       </el-button>
-      <el-button plain type="primary" style="margin-left: 10px" @click="showCreateCollectionForm = true">
+      <el-button type="primary" style="margin-left: 10px" @click="showCreateCollectionForm = true">
         新建集合
       </el-button>
       <el-button
-        plain type="default" style="margin-left: 10px" :disabled="!collectionName"
+        type="default" style="margin-left: 10px" :disabled="!collectionName"
         @click="showIndexesList = true"
       >
         索引管理
       </el-button>
       <el-button
-        plain type="default" style="margin-left: 10px" :disabled="!collectionName"
+        type="default" style="margin-left: 10px" :disabled="!collectionName"
         @click="handleShowCollectinoSchema"
       >
         集合结构
       </el-button>
       <el-button
-        plain type="success" style="margin-left: 10px" icon="Plus" :disabled="!collectionName"
+        type="success" style="margin-left: 10px" icon="Plus" :disabled="!collectionName"
         @click="handleCreateRecord"
       >
         添加记录
@@ -354,10 +354,10 @@ onMounted(() => {
             <pre class="">{{ item }}</pre>
           </div>
           <div class="tools">
-            <el-button plain class="tools-btn" type="primary" @click="handleEditRecord(item)">
+            <el-button class="tools-btn" type="primary" @click="handleEditRecord(item)">
               编辑
             </el-button>
-            <el-button plain class="tools-btn" type="danger" @click="deleRecord(item)">
+            <el-button class="tools-btn" type="danger" @click="deleRecord(item)">
               删除
             </el-button>
           </div>
@@ -378,7 +378,7 @@ onMounted(() => {
       <div>
         <div style="margin: 10px 0">
           <el-button
-            plain type="primary" style="margin-left: 10px" icon="Plus" :disabled="!collectionName"
+            type="primary" style="margin-left: 10px" icon="Plus" :disabled="!collectionName"
             @click="handleCreateIndex"
           >
             创建索引

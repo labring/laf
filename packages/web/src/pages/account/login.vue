@@ -70,7 +70,7 @@ const login = async (loginEl: FormInstance | undefined) => {
           <el-input v-model="loginForm.password" type="password" @keyup.enter="login(loginFormRef)" />
         </el-form-item>
         <el-form-item mt-10>
-          <el-button type="success" plain w-screen :loading="loading" @click="login(loginFormRef)">
+          <el-button type="success" w-screen :loading="loading" @click="login(loginFormRef)">
             {{ $t('pages.account.login.login-btn') }}
           </el-button>
         </el-form-item>

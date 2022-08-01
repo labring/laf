@@ -327,7 +327,7 @@ function handleUpdate() {
         新建函数
       </el-button>
       <el-tooltip content="发布函数：函数要发布后才能生效" placement="bottom" effect="light">
-        <el-button plain class="filter-item" type="success" :icon="Guide" @click="publish">
+        <el-button class="filter-item" type="success" :icon="Guide" @click="publish">
           发布函数
         </el-button>
       </el-tooltip>
@@ -378,10 +378,10 @@ function handleUpdate() {
       </el-table-column>
       <el-table-column label="创建/更新" width="200" align="center">
         <template #default="{ row }">
-          <span v-if="row.created_at">{{ $filters.parseTime(row.created_at) }}</span>
+          <span v-if="row.created_at">{{ $filters.formatTime(row.created_at) }}</span>
           <span v-else>-</span>
           <br>
-          <span v-if="row.updated_at">{{ $filters.parseTime(row.updated_at) }}</span>
+          <span v-if="row.updated_at">{{ $filters.formatTime(row.updated_at) }}</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
@@ -414,18 +414,18 @@ function handleUpdate() {
       </el-table-column>
       <el-table-column label="操作" align="center" min-width="240" class-name="small-padding">
         <template #default="{ row, $index }">
-          <el-button plain type="success" size="small" @click="handleShowDetail(row)">
+          <el-button type="success" size="small" @click="handleShowDetail(row)">
             开发
           </el-button>
-          <el-button plain type="info" size="small" @click="handleShowLogs(row)">
+          <el-button type="info" size="small" @click="handleShowLogs(row)">
             日志
           </el-button>
-          <el-button plain type="primary" size="small" @click="handleTriggers(row)">
+          <el-button type="primary" size="small" @click="handleTriggers(row)">
             触发器<b v-if="row.triggers && row.triggers.length">({{ row.triggers.length }})</b>
           </el-button>
           <el-tooltip content="请先停用函数，再删除！" :disabled="row.status !== 1" placement="top">
             <el-button
-              v-if="row.status !== 'deleted'" :icon="Delete" plain size="small" type="danger" circle
+              v-if="row.status !== 'deleted'" :icon="Delete" size="small" type="danger" circle
               @click="handleDelete(row, $index)"
             />
           </el-tooltip>

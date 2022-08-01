@@ -126,7 +126,7 @@ function setTagViewTitle() {
       <el-table-column label="创建时间" width="180" align="center">
         <template #default="{ row }">
           <span v-if="row.created_at">{{
-            $filters.parseTime(row.created_at, "{y}-{m}-{d} {h}:{i}:{s}")
+            $filters.formatTime(row.created_at)
           }}</span>
           <span v-else>-</span>
         </template>

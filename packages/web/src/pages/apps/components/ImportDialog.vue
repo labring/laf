@@ -89,7 +89,7 @@ const handleImportApp = (formEl: any) => {
           :limit="1"
           :on-change="onImportFileChanged"
         >
-          <el-button slot="trigger" plain size="small" type="primary">
+          <el-button slot="trigger" size="small" type="primary">
             选取导入文件
           </el-button>
         </el-upload>

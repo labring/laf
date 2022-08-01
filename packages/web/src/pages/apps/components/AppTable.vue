@@ -138,31 +138,31 @@ const toDetail = (app: any) => {
       </el-table-column>
       <el-table-column label="服务启停" align="center" width="240" class-name="small-padding">
         <template #default="{ row }">
-          <el-button v-if="row.status === 'stopped' || row.status === 'created'" :loading="serviceLoading[row.appid]" plain type="success" size="small" @click="startApp(row)">
+          <el-button v-if="row.status === 'stopped' || row.status === 'created'" :loading="serviceLoading[row.appid]" type="success" size="small" @click="startApp(row)">
             启动
           </el-button>
-          <el-button v-if="row.status === 'prepared_start'" :loading="true" plain type="info" size="small">
+          <el-button v-if="row.status === 'prepared_start'" :loading="true" type="info" size="small">
             准备启动
           </el-button>
-          <el-button v-if="row.status === 'starting'" :loading="true" plain type="info" size="small">
+          <el-button v-if="row.status === 'starting'" :loading="true" type="info" size="small">
             正在启动
           </el-button>
-          <el-button v-if="row.status === 'running'" :loading="serviceLoading[row.appid]" plain type="danger" size="small" @click="stopApp(row)">
+          <el-button v-if="row.status === 'running'" :loading="serviceLoading[row.appid]" type="danger" size="small" @click="stopApp(row)">
             停止
           </el-button>
-          <el-button v-if="row.status === 'prepared_stop'" :loading="true" plain type="info" size="small">
+          <el-button v-if="row.status === 'prepared_stop'" :loading="true" type="info" size="small">
             准备停止
           </el-button>
-          <el-button v-if="row.status === 'stopping'" :loading="true" plain type="info" size="small">
+          <el-button v-if="row.status === 'stopping'" :loading="true" type="info" size="small">
             停止中
           </el-button>
-          <el-button v-if="row.status === 'running'" :loading="serviceLoading[row.appid]" plain type="default" size="small" @click="restartApp(row)">
+          <el-button v-if="row.status === 'running'" :loading="serviceLoading[row.appid]" type="default" size="small" @click="restartApp(row)">
             重启
           </el-button>
-          <el-button v-if="row.status === 'prepared_restart'" :loading="true" plain type="info" size="small">
+          <el-button v-if="row.status === 'prepared_restart'" :loading="true" type="info" size="small">
             准备重启
           </el-button>
-          <el-button v-if="row.status === 'restarting'" :loading="true" plain type="info" size="small">
+          <el-button v-if="row.status === 'restarting'" :loading="true" type="info" size="small">
             重启中
           </el-button>
         </template>
@@ -185,7 +185,7 @@ const toDetail = (app: any) => {
             导入
           </el-button>
           <el-tooltip v-if="type === 'created'" content="释放即完全删除应用，暂不可恢复，谨慎操作，仅应用创建者可执行此操作!" effect="light" placement="left">
-            <el-button :disabled="row.status === 'running'" plain size="small" type="default" @click="deleteApp(row)">
+            <el-button :disabled="row.status === 'running'" size="small" type="default" @click="deleteApp(row)">
               释放
             </el-button>
           </el-tooltip>

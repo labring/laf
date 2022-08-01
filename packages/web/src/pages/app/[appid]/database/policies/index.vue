@@ -225,11 +225,11 @@ onMounted(() => {
       <el-button class="filter-item" type="default" icon="Search" @click="handleFilter">
         搜索
       </el-button>
-      <el-button plain class="filter-item" type="primary" icon="Plus" @click="showCreateForm">
+      <el-button class="filter-item" type="primary" icon="Plus" @click="showCreateForm">
         新建
       </el-button>
       <el-tooltip content="发布策略：策略修改后需要发布才能生效" placement="bottom" effect="light">
-        <el-button plain class="filter-item" type="success" icon="Guide" @click="publish">
+        <el-button class="filter-item" type="success" icon="Guide" @click="publish">
           发布策略
         </el-button>
       </el-tooltip>
@@ -263,7 +263,7 @@ onMounted(() => {
       <el-table-column label="创建时间" width="150px" align="center">
         <template #default="{ row }">
           <span v-if="row.created_at">{{
-            $filters.parseTime(row.created_at, '{y}-{m}-{d} {h}:{i}')
+            $filters.formatTime(row.created_at)
           }}</span>
           <span v-else>-</span>
         </template>
