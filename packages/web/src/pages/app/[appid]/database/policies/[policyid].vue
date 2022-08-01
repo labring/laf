@@ -287,7 +287,6 @@ onUnmounted(() => {
 
 <route lang="yaml">
 name: 策略
-hidden: true
 meta:
   title: 策略管理
 </route>

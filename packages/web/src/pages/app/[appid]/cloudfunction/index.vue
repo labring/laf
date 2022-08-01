@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
-import { Delete, Guide, Plus, Search } from '@element-plus/icons-vue'
 import { nextTick } from 'vue'
 import { getAppAccessUrl } from '~/api/application'
 
@@ -15,7 +14,7 @@ import {
 } from '~/api/func'
 import Copy from '~/components/Copy.vue'
 
-const router = useRouter()
+const $router = useRouter()
 
 const dataFormRef = $ref<FormInstance>()
 
@@ -171,7 +170,12 @@ function getFunctionInvokeBaseUrl(func_name: string) {
 
 // 查看详情
 async function handleShowDetail(row: { _id: any }) {
-  router.push(`functions/${row._id}`)
+  $router.push({
+    name: 'trigger',
+    params: {
+      id: row._id,
+    },
+  })
 }
 
 // 删除标签
@@ -179,7 +183,7 @@ function removeTag(index: number) {
   const tags = form.tags || []
   if (!tags.length)
     return
-  tags.splice(index, 1)
+  tags.splice(abs, 1)
 }
 
 // 添加标签
@@ -196,12 +200,22 @@ function addTag() {
 
 // 查看日志详情
 async function handleShowLogs(row: { _id: any }) {
-  router.push(`logs/${row._id}`)
+  $router.push({
+    name: '日志详情',
+    params: {
+      id: row._id,
+    },
+  })
 }
 
 // 设置触发器
 async function handleTriggers(row: { _id: any }) {
-  router.push(`triggers/${row._id}`)
+  $router.push({
+    name: 'trigger',
+    params: {
+      funcId: row._id,
+    },
+  })
 }
 
 // 搜索建议标签
@@ -242,7 +256,7 @@ async function handleDelete(row: { status: any; _id: any }, index: number) {
     message: '删除成功！',
   })
 
-  list.splice(index, 1)
+  list.splice(abs, 1)
 }
 
 // 创建请求
@@ -319,15 +333,15 @@ function handleUpdate() {
         v-model="listQuery.keyword" placeholder="搜索" style="width: 200px; margin-right: 10px"
         class="filter-item" @keyup.enter="handleFilter"
       />
-      <el-button class="filter-item" type="default" :icon="Search" @click="handleFilter">
+      <el-button class="filter-item" type="default" icon="Search" @click="handleFilter">
         搜索
       </el-button>
 
-      <el-button type="primary" :icon="Plus" class="filter-item" @click="showCreateForm">
+      <el-button type="primary" icon="Plus" class="filter-item" @click="showCreateForm">
         新建函数
       </el-button>
       <el-tooltip content="发布函数：函数要发布后才能生效" placement="bottom" effect="light">
-        <el-button class="filter-item" type="success" :icon="Guide" @click="publish">
+        <el-button class="filter-item" type="success" icon="Guide" @click="publish">
           发布函数
         </el-button>
       </el-tooltip>
@@ -425,7 +439,7 @@ function handleUpdate() {
           </el-button>
           <el-tooltip content="请先停用函数，再删除！" :disabled="row.status !== 1" placement="top">
             <el-button
-              v-if="row.status !== 'deleted'" :icon="Delete" size="small" type="danger" circle
+              v-if="row.status !== 'deleted'" icon="Delete" size="small" type="danger" circle
               @click="handleDelete(row, $index)"
             />
           </el-tooltip>
@@ -462,7 +476,7 @@ function handleUpdate() {
         <el-form-item label="标签分类" prop="tags">
           <el-tag
             v-for="(tag, index) in form.tags" :key="tag" style="margin-right: 10px" type="" size="medium" closable
-            @close="removeTag(index)"
+            @close="removeTag(abs)"
           >
             {{ tag }}
           </el-tag>

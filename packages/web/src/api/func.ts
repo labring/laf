@@ -36,7 +36,7 @@ export function getFunctions(
  * @param {string[]} ids
  * @returns
  */
-export function getPublishedFunctions(ids: any[]) {
+export function getPublishedFunctions(ids: any[]): Promise<any> {
   const appid = appStore.currentApp.appid
   return request({
     url: `/sys-api/apps/${appid}/function/published`,
@@ -52,7 +52,7 @@ export function getPublishedFunctions(ids: any[]) {
  * @param {string} id
  * @returns
  */
-export async function getPublishedFunction(id: any) {
+export async function getPublishedFunction(id: any): Promise<any> {
   const res = await getPublishedFunctions([id])
   const [func] = res?.data ?? []
   return func
@@ -75,7 +75,7 @@ export function getAllFunctionTags(): Promise<any> {
  * @param {*} page
  * @param {*} pageSize
  */
-export function getFunctionById(func_id: any) {
+export function getFunctionById(func_id: any): Promise<any> {
   const appid = appStore.currentApp.appid
   return request({
     url: `/sys-api/apps/${appid}/function/${func_id}`,

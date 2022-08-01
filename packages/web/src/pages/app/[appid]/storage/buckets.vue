@@ -209,7 +209,7 @@ function getBucketUrl(bucketName: any) {
 
 async function handleShowDetail(row: { name: any }) {
   // 跳转到详情页
-  $router.push(`files/${row.name}`)
+  $router.push(`./files/${row.name}`)
 }
 
 async function handleUpdateAC() {
@@ -286,7 +286,7 @@ onMounted(() => {
             <el-tag type="info" size="small" effect="plain">私有</el-tag>
           </span>
           <span v-if="row.mode === mode.PUBLIC_READ">
-            <el-tag type="primary" size="small" effect="plain">公共读</el-tag>
+            <el-tag type="success" size="small" effect="plain">公共读</el-tag>
           </span>
           <span v-if="row.mode === mode.PUBLIC_READ_WRITE">
             <el-tag type="danger" size="small" effect="plain">公共读写</el-tag>

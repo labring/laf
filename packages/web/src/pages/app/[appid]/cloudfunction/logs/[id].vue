@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FunctionLogDetail from './components/FunctionLogDetail.vue'
+import FunctionLogDetail from '../components/FunctionLogDetail.vue'
 import { getFunctionLogs } from '~/api/func'
 
 const route = useRoute()
@@ -9,7 +9,7 @@ let func_id: any = $ref(null)
 let list = $ref(null)
 let total = $ref(0)
 let listLoading = $ref(true)
-const listQuery = $ref({
+const listQuery: any = $ref({
   page: 1,
   limit: 20,
   keyword: undefined,
@@ -60,7 +60,7 @@ function handleFilter() {
   getList()
 }
 
-async function handleShowDetail(row) {
+async function handleShowDetail(row: any) {
   detail = row
   isDialogVisiable = true
 }
@@ -69,7 +69,7 @@ function setTagViewTitle() {
   if (func_id) {
     const label = func_id
     const title = route.meta.title
-    const route = Object.assign({}, route, {
+    const _route = Object.assign({}, route, {
       title: `${title}: ${label}`,
     })
     // $store.dispatch('tagsView/updateVisitedView', route)
@@ -77,7 +77,7 @@ function setTagViewTitle() {
   if (listQuery.triggerId) {
     const label = `trigger - ${listQuery.triggerId}`
     const title = route.meta.title
-    const route = Object.assign({}, route, {
+    const _route = Object.assign({}, route, {
       title: `${title}: ${label}`,
     })
     // $store.dispatch('tagsView/updateVisitedView', route)
@@ -90,8 +90,8 @@ function setTagViewTitle() {
     <!-- 数据检索区 -->
     <div class="filter-container mb-24px">
       <el-input
-        v-model="listQuery.keyword" placeholder="Request ID" style="width: 320px; margin-right: 10px"
-        class="filter-item" @keyup.enter="handleFilter"
+          v-model="listQuery.keyword" placeholder="Request ID" style="width: 320px; margin-right: 10px"
+          class="filter-item" @keyup.enter="handleFilter"
       />
       <el-button class="filter-item" type="primary" icon="Search" @click="handleFilter">
         搜索
@@ -126,8 +126,8 @@ function setTagViewTitle() {
       <el-table-column label="创建时间" width="180" align="center">
         <template #default="{ row }">
           <span v-if="row.created_at">{{
-            $filters.formatTime(row.created_at)
-          }}</span>
+              $filters.formatTime(row.created_at)
+            }}</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
@@ -147,8 +147,8 @@ function setTagViewTitle() {
 
     <!-- 分页 -->
     <el-pagination
-      v-model:currentPage="listQuery.page" class="mt-24px" :page-size="listQuery.limit" background
-      layout="->, total, prev, pager, next" :total="total" @size-change="getList" @current-change="getList"
+        v-model:currentPage="listQuery.page" class="mt-24px" :page-size="listQuery.limit" background
+        layout="->, total, prev, pager, next" :total="total" @size-change="getList" @current-change="getList"
     />
 
     <!-- 日志详情对话框 -->
@@ -159,9 +159,8 @@ function setTagViewTitle() {
 </template>
 
 <route lang="yaml">
-name: 日志
+name: 日志详情
+hidden: true
 meta:
-  title: 云函数日志
-  hidden: true
-  index: 1-1
+  title: 日志详情
 </route>

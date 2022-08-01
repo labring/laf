@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { FormInstance } from 'element-plus'
-import { ElMessageBox } from 'element-plus'
+import { ElMessageBox, ElNotification } from 'element-plus'
 import dayjs from 'dayjs'
 import * as oss from '~/api/oss'
 import * as websiteAPI from '~/api/website'
@@ -10,7 +10,7 @@ const editFormRef = $ref<FormInstance>()
 
 let websites = $ref([])
 let loading = $ref(false)
-let buckets = $ref([])
+let buckets: any = $ref([])
 let createForm = $ref({ label: '', bucket_name: '' })
 let createFormVisible = $ref(false)
 const createFormRules = $ref({ label: [{ required: true, message: '请输入名称', trigger: 'blur' }], bucket_name: [{ required: true, message: '请选择文件桶(Bucket)', trigger: 'blur' }] })
@@ -151,10 +151,6 @@ async function handleBindDomain() {
       domain: '',
     }
   })
-}
-
-function onCopy() {
-  ElMessage.success('已复制')
 }
 
 onMounted(async () => {
