@@ -60,7 +60,7 @@ const totalQuota = $computed(() => {
 })
 
 const oss_external_endpoint = $computed(() => {
-  return appStore.ossExternalEndpoint
+  return appStore.ossExternalEndpoint.toString()
 })
 
 function byte2gb(byte: number) {
@@ -249,14 +249,14 @@ onMounted(() => {
   <div class="app-container">
     <!-- 数据检索区 -->
     <div class="filter-container mb-24px">
-      <el-button plain class="filter-item" type="default" icon="Search" @click="getList">
+      <el-button plain class="filter-item inline-block" type="default" icon="Search" @click="getList">
         刷新
       </el-button>
-      <el-button plain class="filter-item" type="primary" icon="Plus" @click="showCreateForm">
+      <el-button plain class="filter-item inline-block" type="primary" icon="Plus" @click="showCreateForm">
         新建文件桶(Bucket)
       </el-button>
 
-      <el-button plain class="filter-item" type="primary" :loading="acLoading" @click="handleUpdateAC()">
+      <el-button plain class="filter-item inline-block" type="primary" :loading="acLoading" @click="handleUpdateAC()">
         获取服务账号
       </el-button>
 

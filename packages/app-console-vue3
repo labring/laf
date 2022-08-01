@@ -3,46 +3,60 @@
     <!-- 数据检索区 -->
     <div class="filter-container">
       <el-button
+        size="mini"
         plain
         class="filter-item"
-        type="default"
-        icon="el-icon-search"
-        @click="getList"
+        type="primary"
+        icon="el-icon-refresh"
+        @click="handleFilter"
       >
         刷新
       </el-button>
+      <el-dropdown
+        trigger="click"
+        size="mini"
+        class="filter-item"
+        style="margin-left: 10px; margin-right: 10px"
+        @command="handleUploadCommand"
+      >
+        <el-button size="mini" plain type="primary">
+          <i class="el-icon-upload el-icon--left" />上传<i
+            class="el-icon-arrow-down el-icon--right"
+          />
+        </el-button>
+        <template v-slot:dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item command="uploadFile">上传文件</el-dropdown-item>
+            <el-dropdown-item command="uploadFolder"
+              >上传文件夹</el-dropdown-item
+            >
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
       <el-button
+        size="mini"
         plain
         class="filter-item"
         type="primary"
-        icon="el-icon-plus"
-        @click="showCreateForm"
+        icon="el-icon-new"
+        @click="createDirectory"
       >
-        新建文件桶(Bucket)
+        新建文件夹
       </el-button>
-
-      <el-button
-        plain
-        class="filter-item"
-        type="primary"
-        :loading="acLoading"
-        @click="handleUpdateAC()"
-      >
-        获取服务账号
-      </el-button>
-
-      <div class="filter-item" style="margin-left: 10px">
-        <el-tooltip :content="oss_external_endpoint" placement="top">
-          <el-tag type="info"
-            >OSS EndPoint
-            <i
-              v-clipboard:message="oss_external_endpoint"
-              v-clipboard:success="onCopy"
-              style="margin-left: 3px"
-              class="el-icon-document-copy copy-btn"
-            />
-          </el-tag>
-        </el-tooltip>
+      <div class="filter-item" style="margin-left: 20px">
+        <span style="font-size: 16px; color: gray; margin-right: 5px"
+          >当前:</span
+        >
+        <path-link
+          :path="currentPath"
+          :bucket="bucket"
+          @change="onChangeDirectory"
+        />
+      </div>
+      <div class="filter-item tips">
+        <span>bucket容量：{{ bucketQuota }} </span>
+        <span>已用容量：{{ bucketSize }} </span>
+        <span>文件数量：{{ bucketObjects }} </span>
       </div>
     </div>
 
@@ -55,54 +69,96 @@
       fit
       highlight-current-row
       style="width: 100%"
+      size="mini"
     >
-      <el-table-column label="文件桶(Bucket)" width="200">
+      <el-table-column label="文件" align="center" width="140">
         <template v-slot="{ row }">
-          <span>{{ app.appid }}-{{ row.name }}</span>
+          <a v-if="!row.Prefix" :href="getFileUrl(row)" target="blank">
+            <i
+              v-if="isImage(row)"
+              class="el-icon-picture-outline"
+              style="font-size: 40px"
+            />
+            <i
+              v-else-if="isVideo(row)"
+              class="el-icon-video-play"
+              style="font-size: 40px"
+            />
+            <i
+              v-else-if="row.Prefix"
+              class="el-icon-folder-opened"
+              style="font-size: 36px; color: orange"
+            />
+            <i v-else class="el-icon-paperclip" style="font-size: 40px" />
+          </a>
+          <i
+            v-if="row.Prefix"
+            class="el-icon-folder-opened"
+            style="cursor: pointer; font-size: 36px; color: orange"
+            @click="changeDirectory(row)"
+          />
         </template>
       </el-table-column>
-      <el-table-column label="容量(Quota)" width="200">
+      <el-table-column label="文件名" width="330" align="left">
         <template v-slot="{ row }">
-          <span>{{ byte2gb(row.quota) }} GB</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="默认权限" align="center" width="100">
-        <template v-slot="{ row }">
-          <span v-if="row.mode === mode.PRIVATE">
-            <el-tag type="info" size="small" effect="plain">私有</el-tag>
+          <span v-if="!row.Prefix">{{ getFileName(row) }}</span>
+          <span
+            v-if="row.Prefix"
+            class="directory-item"
+            @click="changeDirectory(row)"
+          >
+            {{ row.Prefix }}
           </span>
-          <span v-if="row.mode === mode.PUBLIC_READ">
-            <el-tag type="primary" size="small" effect="plain">公共读</el-tag>
-          </span>
-          <span v-if="row.mode === mode.PUBLIC_READ_WRITE">
-            <el-tag type="danger" size="small" effect="plain">公共读写</el-tag>
-          </span>
         </template>
       </el-table-column>
-      <el-table-column label="Bucket URL">
+      <el-table-column label="大小" align="center" width="70">
         <template v-slot="{ row }">
-          <span>{{ getBucketUrl(row.name) }}</span>
+          <span>{{ getFileSize(row) }}</span>
         </template>
       </el-table-column>
-
+      <el-table-column label="更新时间" width="140" align="center">
+        <template v-slot="{ row }">
+          <span
+            v-if="row.LastModified"
+            >{{ $filters.parseTime(, '{y}-{m}-{d} {h}:{i}:{s}') }}</span
+          >
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="文件路径" align="center">
+        <template v-slot="{ row }">
+          <span> {{ row.Prefix ? '-' : row.Key }}</span>
+        </template>
+      </el-table-column>
       <el-table-column
         label="操作"
         align="center"
-        class-name="small-padding"
-        width="260"
+        width="160"
+        class-name="small-padding fixed-width"
       >
-        <template v-slot="{ row, $index }">
-          <el-button type="primary" size="mini" @click="handleShowDetail(row)">
-            管理文件
-          </el-button>
-          <el-button type="success" size="mini" @click="showEditForm(row)">
-            编辑
-          </el-button>
+        <template v-slot="{ row }">
           <el-button
-            v-if="row.status != 'deleted'"
+            v-if="row.Prefix"
+            plain
+            type="success"
+            size="mini"
+            @click="changeDirectory(row)"
+            >查看</el-button
+          >
+          <a
+            v-if="!row.Prefix"
+            :href="getFileUrl(row)"
+            target="blank"
+            style="margin-right: 8px"
+          >
+            <el-button plain type="success" size="mini">查看</el-button>
+          </a>
+          <el-button
+            :disabled="!!row.Prefix"
+            plain
             size="mini"
             type="danger"
-            @click="handleDelete(row, $index)"
+            @click="handleDelete(row)"
           >
             删除
           </el-button>
@@ -110,317 +166,165 @@
       </el-table-column>
     </el-table>
 
+    <!-- 分页 -->
+    <pagination
+      v-show="total > 0"
+      :total="total"
+      v-model:page="listQuery.page"
+      v-model:limit="listQuery.limit"
+      @pagination="getList"
+    />
+
     <!-- 表单对话框 -->
     <el-dialog
-      width="600px"
-      :title="textMap[dialogStatus]"
+      :title="uploadCommand === 'uploadFile' ? '上传文件' : '上传文件夹'"
+      width="400px"
       v-model:visible="dialogFormVisible"
+      @close="uploadFileList = []"
     >
-      <el-form
-        ref="dataForm"
-        :rules="rules"
-        :model="form"
-        label-position="left"
-        label-width="100px"
-        style="width: 400px; margin-left: 50px"
+      <el-upload
+        v-if="bucketDetail.credentials"
+        drag
+        multiple
+        action=""
+        :show-file-list="true"
+        :file-list="uploadFileList"
+        :auto-upload="true"
+        :http-request="handleUploadFile"
       >
-        <el-form-item label="文件桶名" prop="name">
-          <el-input
-            v-model:value="form.name"
-            :disabled="dialogStatus === 'update'"
-            placeholder="唯一标识"
-          >
-            <template #prepend> {{ app.appid }}- </template>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="默认权限" prop="mode">
-          <el-select v-model:value="form.mode" placeholder="">
-            <el-option label="私有" :value="mode.PRIVATE" />
-            <el-option label="公共读" :value="mode.PUBLIC_READ" />
-            <el-option label="公共读写" :value="mode.PUBLIC_READ_WRITE" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="容量" prop="quota">
-          <el-input
-            v-model.number="form.quota"
-            type="number"
-            :step="1"
-            :min="1"
-            oninput="value=value.replace(/[^0-9]/g,'')"
-            style="width: 140px"
-            placeholder="容量，单位：GB"
-          >
-            <template v-slot:append>GB</template>
-          </el-input>
-          <span> 总容量 {{ totalQuota }} GB，剩余 {{ freeQuota }} GB</span>
-        </el-form-item>
-      </el-form>
-      <template v-slot:footer>
-        <div class="dialog-footer">
-          <el-button @click="dialogFormVisible = false"> 取消 </el-button>
-          <el-button
-            type="primary"
-            @click="dialogStatus === 'create' ? handleCreate() : handleUpdate()"
-          >
-            确定
-          </el-button>
+        <i class="el-icon-upload" />
+        <div class="el-upload__text">
+          {{ uploadCommand === 'uploadFile' ? '将文件拖到此处，或' : '' }}
+          <em>点击上传</em>
         </div>
-      </template>
-    </el-dialog>
-
-    <el-dialog
-      width="800px"
-      title="服务账号"
-      v-model:visible="dialogACFormVisible"
-    >
-      <el-form
-        label-position="left"
-        label-width="120px"
-        style="width: 600px; margin-left: 50px"
-      >
-        <el-alert
-          title="服务账号只会显示一次，请自行保存"
-          type="error"
-          :closable="false"
-        />
-        <br />
-        <el-form-item label="Access Key">
-          <div>
-            {{ access_key }}
-            <i
-              v-clipboard:message="access_key"
-              v-clipboard:success="onCopy"
-              style="margin-left: 3px"
-              class="el-icon-document-copy copy-btn"
-            />
-          </div>
-        </el-form-item>
-
-        <el-form-item label="Access Secret">
-          <div>
-            {{ access_secret }}
-            <i
-              v-clipboard:message="access_secret"
-              v-clipboard:success="onCopy"
-              style="margin-left: 3px"
-              class="el-icon-document-copy copy-btn"
-            />
-          </div>
-        </el-form-item>
-      </el-form>
+      </el-upload>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import * as oss from '@/api/oss'
 import { assert } from '@/utils/assert'
-// import { byte2gb, gb2byte } from '@/utils/file'
-import store from '@/store'
 import { showError, showSuccess } from '@/utils/show'
-
-const MODE = {
-  PRIVATE: 'private',
-  PUBLIC_READ: 'public-read',
-  PUBLIC_READ_WRITE: 'public-read-write',
-}
-
-// 默认化创建表单的值
-function getDefaultFormValue() {
-  return {
-    name: '',
-    mode: MODE.PRIVATE,
-    quota: 1,
-  }
-}
-
-// 表单验证规则
-const formRules = {
-  name: [{ required: true, message: 'Bucket 名字不可为空', trigger: 'blur' }],
-  mode: [{ required: true, message: 'Bucket 权限为必选', trigger: 'blur' }],
-  quota: [{ required: true, message: 'Bucket 容量为必选', trigger: 'blur' }],
-}
+import PathLink from './components/path-link.vue'
+import { byte2GbOrMb } from '@/utils/file'
 
 export default {
   name: 'BucketsListPage',
-  components: {},
+  components: { Pagination, PathLink },
   data() {
     return {
+      bucket: null,
+      bucketDetail: {
+        name: '',
+        mode: 'private',
+        full_token: '',
+        read_token: '',
+        credentials: {},
+        objects: 0,
+        size: 0,
+        quota: 0,
+      },
       tableKey: 0,
       list: null,
+      currentPath: '/',
       total: 0,
-      listLoading: true,
+      listLoading: false,
       listQuery: {
         page: 1,
         limit: 20,
         keyword: undefined,
       },
-      form: getDefaultFormValue(),
       dialogFormVisible: false,
-
-      dialogACFormVisible: false,
-      acLoading: false,
-      access_key: '',
-      access_secret: '',
-      dialogStatus: '',
       textMap: {
         update: '编辑',
         create: '创建',
       },
-      rules: formRules,
       downloadLoading: false,
-      mode: MODE,
-      freeQuota: 0,
+      uploadCommand: 'uploadFile',
+      uploadFileList: [],
     }
   },
   computed: {
-    // 总存储容量 GB
-    totalQuota() {
-      const totalQuota = store.state.app.spec.spec.storage_capacity || 0
-      return this.byte2gb(totalQuota)
+    bucketQuota() {
+      return this.bucketDetail.quota ? byte2GbOrMb(this.bucketDetail.quota) : 0
     },
-    oss_external_endpoint() {
-      return store.state.app.oss_external_endpoint
+    bucketSize() {
+      return this.bucketDetail.size ? byte2GbOrMb(this.bucketDetail.size) : 0
     },
-    oss_internal_endpoint() {
-      return store.state.app.oss_internal_endpoint
-    },
-    app() {
-      return this.$store.state.app?.application
+    bucketObjects() {
+      return this.bucketDetail.objects
     },
   },
-  created() {
+  async created() {
+    this.bucket = this.$route.params?.bucket
+
+    const res = await oss.getOneBucket(this.bucket)
+    this.bucketDetail = res.data
     this.getList()
+    this.setTagViewTitle()
   },
   methods: {
-    byte2gb(byte) {
-      return Math.floor(byte / 1024 / 1024 / 1024)
-    },
-    gb2byte(gb) {
-      return gb * 1024 * 1024 * 1024
-    },
     /**
      * 获取数据列表
      */
-    async getList() {
+    getList(upload = false) {
+      if (this.listLoading) return
       this.listLoading = true
 
-      // 执行数据查询
-      const ret = await oss.getBuckets().catch(() => {
+      const getList = async () => {
+        const res = await oss
+          .getFilesByBucketName(this.bucket, {
+            marker: undefined,
+            prefix: this.currentPath,
+            credentials: this.bucketDetail.credentials,
+          })
+          .finally(() => {
+            this.listLoading = false
+          })
+
+        const files = res.Contents || []
+        const dirs = res.CommonPrefixes || []
+        this.list = [...files, ...dirs]
         this.listLoading = false
-      })
-      assert(ret.code === 0, 'get file buckets got error')
+      }
 
-      const usedQuota = ret.data.reduce((total, bucket) => {
-        return total + bucket.quota
-      }, 0)
-      this.freeQuota = this.totalQuota - this.byte2gb(usedQuota)
-
-      this.list = ret.data
-      this.listLoading = false
+      // 对多文件或文件夹上传做节流处理
+      upload ? setTimeout(getList, 1000) : getList()
     },
-    // 显示创建表单
-    showCreateForm() {
-      this.form = getDefaultFormValue()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+    // 搜索
+    handleFilter() {
+      this.listQuery.page = 1
+      this.getList()
     },
-    // 创建请求
-    handleCreate() {
-      this.$refs['dataForm'].validate(async (valid) => {
-        if (!valid) {
-          return
-        }
-        const isNameValid = /^[a-z0-9]{3,16}$/g.test(this.form.name)
-        if (!isNameValid) {
-          return showError(
-            'Bucket 名称长度必须在 3～16 之间，且只能包含小写字母、数字'
-          )
-        }
+    // 切换当前文件夹
+    changeDirectory(row) {
+      if (!row.Prefix) {
+        return
+      }
 
-        if (this.freeQuota < this.form.quota) {
-          return showError('所有Bucket容量相加不能超过总容量')
-        }
-        const quota = this.gb2byte(this.form.quota)
-        // 执行创建请求
-        const r = await oss.createBucket(this.form.name, this.form.mode, quota)
-
-        if (r.code) {
-          this.$notify({
-            type: 'error',
-            title: '操作失败',
-            message: r.error,
-          })
-          return
-        }
-
-        this.$notify({
-          type: 'success',
-          title: '操作成功',
-          message: '创建成功！',
-        })
-
-        this.getList()
-        this.dialogFormVisible = false
-      })
+      this.currentPath = row.Prefix
+      this.listQuery.page = 1
+      this.getList()
     },
-    // 显示编辑表单
-    showEditForm(row) {
-      this.form = { ...row, quota: this.byte2gb(row.quota) }
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    // 更新请求
-    handleUpdate() {
-      this.$refs['dataForm'].validate(async (valid) => {
-        if (!valid) {
-          return
-        }
-
-        // 检查quota是否可用
-        const existedQuota = this.list.find(
-          (bucket) => bucket.name === this.form.name
-        ).quota
-        const freeQuota = this.freeQuota + this.byte2gb(existedQuota)
-        if (freeQuota < this.form.quota) {
-          return showError('所有Bucket容量相加不能超过总容量')
-        }
-        const quota = this.gb2byte(this.form.quota)
-
-        // 执行更新请求
-        const r = await oss.updateBucket(this.form.name, this.form.mode, quota)
-
-        if (r.code) {
-          this.$notify({
-            type: 'error',
-            title: '操作失败',
-            message: r.error,
-          })
-          return
-        }
-
-        showSuccess('更新成功')
-
-        this.getList()
-        this.dialogFormVisible = false
-      })
+    // 当用户切换文件夹
+    onChangeDirectory(data) {
+      this.currentPath = data
+      this.listQuery.page = 1
+      this.getList()
     },
     // 删除请求
-    async handleDelete(row, index) {
+    async handleDelete(row) {
       await this.$confirm('确认要删除此数据？', '删除确认')
 
       // 执行删除请求
-      const r = await oss.deleteBucket(row.name)
+      const r = await oss.deleteAppFile(
+        this.bucket,
+        row.Key,
+        this.bucketDetail.credentials
+      )
 
-      if (r.code === 'BUCKET_NOT_EMPTY') {
-        return showError('不可删除非空文件桶')
-      }
       if (r.code) {
         this.$notify({
           type: 'error',
@@ -430,53 +334,149 @@ export default {
         return
       }
 
-      showSuccess('删除成功！')
+      this.$notify({
+        type: 'success',
+        title: '操作成功',
+        message: '删除成功！',
+      })
 
       this.getList()
     },
-    // 获取 bucket 地址
-    getBucketUrl(bucketName) {
-      return oss.getBucketSecondaryUrl(bucketName)
+    // 新建目录
+    async createDirectory() {
+      await this.$prompt('', '请输入新文件夹名', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /^[^\\\/\:\*\?\"\<\>\|\.]+$/,
+        inputErrorMessage: '文件夹不能包含 \\\ \/ : * ? " < > | 这些非法字符',
+      })
+        .then(async ({ value }) => {
+          this.currentPath = this.currentPath + value + '/'
+          this.getList()
+        })
+        .catch((err) => {
+          console.error(err)
+        })
     },
-    // 查看详情
-    async handleShowDetail(row) {
-      // 跳转到详情页
-      this.$router.push(`files/${row.name}`)
-    },
-    // 更新ac
-    async handleUpdateAC() {
-      await this.$confirm(
-        '服务账号重置以后，之前的服务账号会失效，确定重置？',
-        '服务账号重置',
-        {
-          confirmButtonText: '重置',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }
+    // 拼装文件下载 URL
+    getFileUrl(file) {
+      assert(file && file.Key, 'invalid file or filename')
+      const url = oss.getAppFileUrl(
+        this.bucket,
+        file.Key,
+        this.bucketDetail.credentials
       )
-
-      this.acLoading = true
-
-      const ret = await oss.updateAC()
-
-      console.log(ret)
-
-      if (ret.code) {
-        this.$notify({
-          type: 'error',
-          title: '操作失败',
-          message: ret.error,
+      console.log('getFileURl', url)
+      return url
+    },
+    getFileName(file) {
+      assert(file && file.Key, 'invalid file or filename')
+      return file.Key.split('/').at(-1)
+    },
+    handleUploadCommand(command) {
+      this.dialogFormVisible = true
+      this.uploadCommand = command
+      if (command === 'uploadFolder') {
+        this.$nextTick(() => {
+          document.getElementsByClassName(
+            'el-upload__input'
+          )[0].webkitdirectory = true
+        })
+      } else {
+        this.$nextTick(() => {
+          document.getElementsByClassName(
+            'el-upload__input'
+          )[0].webkitdirectory = false
         })
       }
-      this.acLoading = false
-      this.dialogACFormVisible = true
-      console.log(ret.data)
-      this.access_key = ret.data.access_key
-      this.access_secret = ret.data.access_secret
     },
-    onCopy() {
-      this.$message.success('已复制')
+    async handleUploadFile(param) {
+      const file = param.file
+      const currentPath = this.currentPath === '/' ? '' : this.currentPath
+      const fileName = file.webkitRelativePath
+        ? file.webkitRelativePath
+        : file.name
+      const key = currentPath + fileName
+      const res = await oss.uploadAppFile(
+        this.bucket,
+        key,
+        file,
+        this.bucketDetail.credentials,
+        { contentType: file.type }
+      )
+      if (res.$response?.httpResponse?.statusCode !== 200) {
+        return showError('文件上传失败：' + key)
+      }
+
+      showSuccess('文件上传成功: ' + key)
+      this.getList(true)
+    },
+    // 判断是否为图片类型
+    isImage(row) {
+      const key = row.Key?.toLowerCase()
+      return (
+        key?.endsWith('.png') ||
+        key?.endsWith('.jpeg') ||
+        key?.endsWith('.jpg') ||
+        key?.endsWith('.gif')
+      )
+    },
+    // 判断是否为视频类型
+    isVideo(row) {
+      const key = row.Key?.toLowerCase()
+      return (
+        key?.endsWith('.mp4') ||
+        key?.endsWith('.mov') ||
+        key?.endsWith('.mpeg') ||
+        key?.endsWith('.flv') ||
+        key?.endsWith('.avi')
+      )
+    },
+    // 获取文件显示大小
+    getFileSize(file) {
+      const length = file.Size ?? 0
+      if (length > 1024 * 1024 * 1024) {
+        return (length / (1024 * 1024 * 1024)).toFixed(2) + ' GB'
+      } else if (length > 1024 * 1024) {
+        return (length / (1024 * 1024)).toFixed(2) + ' MB'
+      } else if (length > 1024) {
+        return (length / 1024).toFixed(0) + ' kb'
+      } else if (length) {
+        return length + ' bytes'
+      } else {
+        return '-'
+      }
+    },
+    // 设置标签页名
+    setTagViewTitle() {
+      const label = this.bucket
+      const title = this.$route.meta.title
+      const route = Object.assign({}, this.$route, {
+        title: `${label} - ${title}`,
+      })
+      this.$store.dispatch('tagsView/updateVisitedView', route)
     },
   },
 }
 </script>
+
+<style scoped>
+.filter-container .tips {
+  font-size: 14px;
+  color: #333;
+  position: absolute;
+  right: 20px;
+}
+.filter-container .tips span {
+  margin-right: 10px;
+}
+.thumb-image {
+  width: 100px;
+  max-height: 60px;
+}
+.directory-item {
+  color: rgb(0, 89, 255);
+  text-decoration: underline;
+  cursor: pointer;
+}
+</style>

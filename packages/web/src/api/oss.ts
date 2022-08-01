@@ -24,14 +24,13 @@ export async function getBuckets() {
  * Get a bucket & tokens
  * @returns
  */
-export async function getOneBucket(bucketName: any) {
+export async function getOneBucket(bucketName: any): Promise<any> {
   const appid = appStore.currentApp.appid
   const res: any = await request({
     url: `/sys-api/apps/${appid}/oss/buckets/${bucketName}`,
     method: 'get',
   })
 
-  assert(res.code === 0, 'get bucket got error', res)
   return res
 }
 
@@ -100,7 +99,7 @@ export async function deleteBucket(bucketName: any) {
  */
 export function getBucketUrl(bucket: any) {
   const appid = appStore.currentApp.appid
-  const endpoint = appStore.currentApp.oss_external_endpoint
+  const endpoint = appStore.ossExternalEndpoint
   const url = `${endpoint}/${appid}-${bucket}`
   return url
 }
@@ -164,7 +163,7 @@ export async function uploadAppFile(bucketName: any, key: any, body: any, creden
   return res
 }
 
-export async function deleteAppFile(bucketName: any, key: any, credentials: any) {
+export async function deleteAppFile(bucketName: any, key: any, credentials: any): Promise<any> {
   const s3 = getS3Client(credentials)
   const bucket = getInternalBucketName(bucketName)
 
@@ -173,7 +172,7 @@ export async function deleteAppFile(bucketName: any, key: any, credentials: any)
 }
 
 function getS3Client(credentials: { accessKeyId: any; secretAccessKey: any; sessionToken: any }) {
-  const endpoint = appStore.currentApp.oss_external_endpoint
+  const endpoint = appStore.ossExternalEndpoint.toString()
   return new AWS.S3({
     accessKeyId: credentials.accessKeyId,
     secretAccessKey: credentials.secretAccessKey,
