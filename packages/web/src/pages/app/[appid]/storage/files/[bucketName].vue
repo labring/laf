@@ -3,9 +3,7 @@ import { ElNotification } from 'element-plus'
 import type { ReactiveVariable } from 'vue/macros.js'
 import PathLink from './components/path-link.vue'
 import * as oss from '~/api/oss'
-import { assert } from '~/utils/assert'
 import { byte2GbOrMb } from '~/utils/file'
-
 const $route = useRoute()
 
 const bucket = $route.params?.bucketName || ''
@@ -123,7 +121,6 @@ async function createDirectory() {
 }
 
 function getFileUrl(file: { Key: any }) {
-  assert(file && file.Key, 'invalid file or filename')
   const url = oss.getAppFileUrl(
     bucket,
     file.Key,
@@ -133,7 +130,6 @@ function getFileUrl(file: { Key: any }) {
 }
 
 function getFileName(file: { Key: string }) {
-  assert(file && file.Key, 'invalid file or filename')
   return file.Key.split('/').at(-1)
 }
 
@@ -342,12 +338,6 @@ onMounted(async () => {
         </template>
       </el-table-column>
     </el-table>
-
-    <!-- 分页 -->
-    <el-pagination
-      v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit" class="mt-12px"
-      layout="sizes, prev, pager, next, jumper" @size-change="getList" @current-change="getList"
-    />
 
     <!-- 表单对话框 -->
     <el-dialog

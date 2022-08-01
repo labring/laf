@@ -155,7 +155,7 @@ onMounted(async () => {
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template #default="{ row }">
-          <el-button plain type="info" size="mini" @click="handleDelete(row)">
+          <el-button plain type="info"  @click="handleDelete(row)">
             删除
           </el-button>
         </template>

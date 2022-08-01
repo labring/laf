@@ -285,10 +285,10 @@ onMounted(() => {
       </el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
         <template #default="{ row, $index }">
-          <el-button type="primary" size="mini" @click="handleShowDetail(row)">
+          <el-button type="primary"  @click="handleShowDetail(row)">
             编辑
           </el-button>
-          <el-button v-if="row.status !== 'deleted'" size="mini" type="danger" @click="handleDelete(row, $index)">
+          <el-button v-if="row.status !== 'deleted'"  type="danger" @click="handleDelete(row, $index)">
             删除
           </el-button>
         </template>
@@ -297,9 +297,8 @@ onMounted(() => {
 
     <!-- 分页 -->
     <el-pagination
-      v-show="total > 0"
-      v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit" class="mt-12px" :total="total"
-      layout="total, sizes, prev, pager, next, jumper" @size-change="getList" @current-change="getList"
+      v-model:currentPage="listQuery.page" class="mt-24px" :page-size="listQuery.limit" background
+      layout="->, total, prev, pager, next" :total="total" @size-change="getList" @current-change="getList"
     />
 
     <!-- 表单对话框 -->

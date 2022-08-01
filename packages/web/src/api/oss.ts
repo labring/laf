@@ -200,6 +200,5 @@ export async function updateAC() {
     method: 'post',
   })
 
-  assert(res.code === 0, 'update application service accounp', res)
   return res
 }

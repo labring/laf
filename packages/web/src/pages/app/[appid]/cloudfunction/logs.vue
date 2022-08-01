@@ -147,8 +147,8 @@ function setTagViewTitle() {
 
     <!-- 分页 -->
     <el-pagination
-      v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit" class="mt-12px" :total="total"
-      layout="total, sizes, prev, pager, next, jumper" @size-change="getList" @current-change="getList"
+      v-model:currentPage="listQuery.page" class="mt-24px" :page-size="listQuery.limit" background
+      layout="->, total, prev, pager, next" :total="total" @size-change="getList" @current-change="getList"
     />
 
     <!-- 日志详情对话框 -->

@@ -182,7 +182,7 @@ onMounted(async () => {
     <div class="mb-24px">
       <el-button
         plain
-        size="mini"
+
         class="filter-item"
         type="primary"
         icon="Plus"
@@ -242,7 +242,7 @@ onMounted(async () => {
           <el-button
             v-if="authType === 'target' && scope.row.status === 'accepted'"
             plain
-            size="mini"
+
             class="filter-item"
             type="primary"
             @click="showReplicasForm(scope.row)"
@@ -251,7 +251,7 @@ onMounted(async () => {
           </el-button>
           <el-button
             v-if="authType === 'source' && scope.row.status !== 'accepted'"
-            size="mini"
+
             plain
             type="primary"
             @click="handleUpdateAuth(scope.row)"
@@ -259,7 +259,7 @@ onMounted(async () => {
             接受
           </el-button>
           <el-button
-            size="mini"
+
             plain
             type="danger"
             @click="handleDeleteAuth(scope.row)"

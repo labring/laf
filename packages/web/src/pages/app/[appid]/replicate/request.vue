@@ -86,12 +86,12 @@ onMounted(() => {
       <el-table-column label="操作" width="200" align="center">
         <template #default="scope">
           <el-button
-            v-if="scope.row.status !== 'accepted'" size="mini" plain type="primary"
+            v-if="scope.row.status !== 'accepted'"  plain type="primary"
             @click="handleUpdateRequest(scope.row)"
           >
             接受
           </el-button>
-          <el-button size="mini" plain type="danger" @click="handleDeleteRequest(scope.row)">
+          <el-button  plain type="danger" @click="handleDeleteRequest(scope.row)">
             删除
           </el-button>
         </template>
@@ -100,8 +100,8 @@ onMounted(() => {
 
     <!-- 分页 -->
     <el-pagination
-      v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit" class="mt-12px" :total="total"
-      layout="total, sizes, prev, pager, next, jumper" @size-change="getList" @current-change="getList"
+      v-model:currentPage="listQuery.page" class="mt-24px" :page-size="listQuery.limit" background
+      layout="->, total, prev, pager, next" :total="total" @size-change="getList" @current-change="getList"
     />
   </div>
 </template>
