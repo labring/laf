@@ -6,8 +6,8 @@ import { i18n } from '~/modules/locales'
 import router from '~/router'
 
 import '@unocss/reset/tailwind.css'
-import './styles/main.scss'
 import 'uno.css'
+import './styles/main.scss'
 
 import '~/router/permission'
 import { parseTime } from '~/utils'
