@@ -20,7 +20,7 @@ app.use(pinia).use(i18n).use(router).mount('#app')
 app.config.globalProperties.$filters = {
   formatTime(time: string | Date, cFormat = 'YYYY-MM-DD HH:mm:ss') {
     return dayjs(time).format(cFormat)
-  }
+  },
 }
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue))

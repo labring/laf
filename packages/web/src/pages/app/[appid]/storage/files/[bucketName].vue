@@ -361,6 +361,7 @@ onMounted(async () => {
 
 <route lang="yaml">
 name: 文件详情
+hidden: true
 meta:
   title: 文件管理
 </route>

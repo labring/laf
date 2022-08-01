@@ -263,7 +263,7 @@ onMounted(() => {
       <el-table-column label="创建时间" width="150px" align="center">
         <template #default="{ row }">
           <span v-if="row.created_at">{{
-            $filters.formatTime(row.created_at)
+            $filters.formatTime(row.created_at, 'YYYY-MM-DD HH:mm')
           }}</span>
           <span v-else>-</span>
         </template>
@@ -271,7 +271,7 @@ onMounted(() => {
       <el-table-column label="更新时间" width="150px" align="center">
         <template #default="{ row }">
           <span v-if="row.updated_at">{{
-            $filters.parseTime(row.updated_at, '{y}-{m}-{d} {h}:{i}')
+            $filters.formatTime(row.updated_at, 'YYYY-MM-DD HH:mm')
           }}</span>
           <span v-else>-</span>
         </template>
