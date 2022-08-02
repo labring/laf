@@ -2,7 +2,7 @@
 import FunctionLogDetail from './components/FunctionLogDetail.vue'
 import { getFunctionLogs } from '~/api/func'
 
-const $route = useRoute()
+const route = useRoute()
 
 const tableKey = $ref(0)
 let func_id: any = $ref(null)
@@ -23,8 +23,8 @@ const dialogTitle = $computed(() => {
 })
 
 onMounted(() => {
-  func_id = $route.params.id ?? undefined
-  const triggerId = $route.query?.trigger_id
+  func_id = route.params.id ?? undefined
+  const triggerId = route.query?.trigger_id
   listQuery.triggerId = triggerId ?? undefined
   getList()
   setTagViewTitle()
@@ -68,16 +68,16 @@ async function handleShowDetail(row) {
 function setTagViewTitle() {
   if (func_id) {
     const label = func_id
-    const title = $route.meta.title
-    const route = Object.assign({}, $route, {
+    const title = route.meta.title
+    const route = Object.assign({}, route, {
       title: `${title}: ${label}`,
     })
     // $store.dispatch('tagsView/updateVisitedView', route)
   }
   if (listQuery.triggerId) {
     const label = `trigger - ${listQuery.triggerId}`
-    const title = $route.meta.title
-    const route = Object.assign({}, $route, {
+    const title = route.meta.title
+    const route = Object.assign({}, route, {
       title: `${title}: ${label}`,
     })
     // $store.dispatch('tagsView/updateVisitedView', route)
@@ -89,8 +89,10 @@ function setTagViewTitle() {
   <div class="app-container bg-white">
     <!-- 数据检索区 -->
     <div class="filter-container mb-24px">
-      <el-input v-model:value="listQuery.keyword" placeholder="Request ID" style="width: 320px; margin-right: 10px"
-        class="filter-item" @keyup.enter="handleFilter" />
+      <el-input
+        v-model="listQuery.keyword" placeholder="Request ID" style="width: 320px; margin-right: 10px"
+        class="filter-item" @keyup.enter="handleFilter"
+      />
       <el-button class="filter-item" type="primary" icon="Search" @click="handleFilter">
         搜索
       </el-button>
@@ -105,7 +107,7 @@ function setTagViewTitle() {
       </el-table-column>
       <el-table-column label="函数名" min-width="200" align="center">
         <template #default="{ row }">
-          <el-tag type="info">
+          <el-tag type="success">
             {{ row.func_name }}
           </el-tag>
         </template>
@@ -124,7 +126,7 @@ function setTagViewTitle() {
       <el-table-column label="创建时间" width="180" align="center">
         <template #default="{ row }">
           <span v-if="row.created_at">{{
-              $filters.parseTime(row.created_at, "{y}-{m}-{d} {h}:{i}:{s}")
+            $filters.parseTime(row.created_at, "{y}-{m}-{d} {h}:{i}:{s}")
           }}</span>
           <span v-else>-</span>
         </template>
@@ -144,8 +146,10 @@ function setTagViewTitle() {
     </el-table>
 
     <!-- 分页 -->
-    <el-pagination v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit" class="mt-12px" :total="total"
-      layout="total, sizes, prev, pager, next, jumper" @size-change="getList" @current-change="getList" />
+    <el-pagination
+      v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit" class="mt-12px" :total="total"
+      layout="total, sizes, prev, pager, next, jumper" @size-change="getList" @current-change="getList"
+    />
 
     <!-- 日志详情对话框 -->
     <el-dialog v-if="detail" v-model="isDialogVisiable" :title="dialogTitle">

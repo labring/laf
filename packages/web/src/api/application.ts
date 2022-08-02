@@ -58,7 +58,10 @@ export async function createApplication(data: { name: string; spec: string }) {
  * @param param0
  * @returns
  */
-export async function updateApplication({ appid, name }) {
+export async function updateApplication({ appid, name }: {
+  appid: string
+  name: string
+}) {
   const res = await request({
     url: `/sys-api/apps/${appid}`,
     method: 'post',
@@ -74,7 +77,7 @@ export async function updateApplication({ appid, name }) {
  * @param {*} appid
  * @returns
  */
-export async function removeApplication(appid: any) {
+export async function removeApplication(appid: string) {
   const res = await request({
     url: `/sys-api/apps/${appid}`,
     method: 'delete',
@@ -87,7 +90,7 @@ export async function removeApplication(appid: any) {
  * @param {*} appid
  * @returns
  */
-export async function startApplicationInstance(appid: any) {
+export async function startApplicationInstance(appid: string) {
   const res = await request({
     url: `/sys-api/apps/${appid}/instance/start`,
     method: 'post',
@@ -100,7 +103,7 @@ export async function startApplicationInstance(appid: any) {
  * @param {*} appid
  * @returns
  */
-export async function stopApplicationInstance(appid: any) {
+export async function stopApplicationInstance(appid: string) {
   const res = await request({
     url: `/sys-api/apps/${appid}/instance/stop`,
     method: 'post',
@@ -113,7 +116,7 @@ export async function stopApplicationInstance(appid: any) {
  * @param {*} appid
  * @returns
  */
-export async function restartApplicationInstance(appid: never) {
+export async function restartApplicationInstance(appid: string) {
   const res = await request({
     url: `/sys-api/apps/${appid}/instance/restart`,
     method: 'post',
@@ -126,7 +129,7 @@ export async function restartApplicationInstance(appid: never) {
  * @param {string} appid
  * @returns
  */
-export async function exportApplication(appid: any) {
+export async function exportApplication(appid: string) {
   const res = await request({
     url: `/sys-api/apps/${appid}/export`,
     method: 'get',
@@ -141,7 +144,7 @@ export async function exportApplication(appid: any) {
  * @param {File} file
  * @returns
  */
-export async function importApplication(appid: never, file: string | Blob) {
+export async function importApplication(appid: string, file: string | Blob) {
   const form = new FormData()
   form.append('file', file)
   const res = await request({
@@ -159,7 +162,7 @@ export async function importApplication(appid: never, file: string | Blob) {
  * @param {File} file
  * @returns
  */
-export async function initApplicationWithTemplate(appid: any, template_id: any) {
+export async function initApplicationWithTemplate(appid: string, template_id: any) {
   const res = await request({
     url: `/sys-api/apps/${appid}/init-with-template`,
     method: 'post',
@@ -174,7 +177,7 @@ export async function initApplicationWithTemplate(appid: any, template_id: any) 
  * Open app console
  * @param {*} app
  */
-export async function openAppConsole(app: { appid: any }) {
+export async function openAppConsole(app: { appid: string }) {
   const base_url = getCurrentBaseURL()
   const console_uri = import.meta.env.VITE_APP_CONSOLE_URI
   const back_url = encodeURIComponent(window.location.href)
@@ -208,3 +211,146 @@ export function getAppAccessUrl() {
   return url
 }
 
+/**
+ * 获取应用的依赖
+ * @param {*} appid
+ * @returns
+ */
+export async function getApplicationPackages(appid: string) {
+  const res = await request({
+    url: `/sys-api/apps/${appid}/packages`,
+    method: 'get',
+  })
+  return res
+}
+
+/**
+ * 添加应用的依赖
+ * @param {*} appid
+ * @returns
+ */
+export async function addApplicationPackage(appid: string, { name, version }: any): Promise<any> {
+  const res = await request({
+    url: `/sys-api/apps/${appid}/packages`,
+    method: 'post',
+    data: { name, version },
+  })
+  return res
+}
+
+/**
+ * 更新应用的依赖
+ * @param {*} appid
+ * @returns
+ */
+export async function updateApplicationPackage(appid: string, { name, version }: any): Promise<any> {
+  const res = await request({
+    url: `/sys-api/apps/${appid}/packages`,
+    method: 'put',
+    data: { name, version },
+  })
+  return res
+}
+
+/**
+ * 删除应用的依赖
+ * @param {*} appid
+ * @returns
+ */
+export async function removeApplicationPackage(appid: string, name: any): Promise<any> {
+  const res = await request({
+    url: `/sys-api/apps/${appid}/packages`,
+    method: 'delete',
+    data: { name },
+  })
+  return res
+}
+
+/**
+ * 获取应用的协作者列表
+ * @param {string} username
+ */
+export function getCollaborators(): Promise<any> {
+  const appStore = useAppStore()
+
+  const appid = appStore.currentApp.appid
+  return request({
+    url: `/sys-api/apps/${appid}/collaborators`,
+    method: 'get',
+  })
+}
+
+/**
+ * 删除应用的一个协作者
+ * @param {string} collaborator_id
+ */
+export function removeCollaborator(collaborator_id: any): Promise<any> {
+  const appStore = useAppStore()
+
+  const appid = appStore.currentApp.appid
+  return request({
+    url: `/sys-api/apps/${appid}/collaborators/${collaborator_id}`,
+    method: 'delete',
+  })
+}
+
+/**
+ * 更新协作者密码(TBD)
+ * @param {string} accountId
+ * @param {string} password
+ */
+export function resetAccountPassword(accountId: any, password: any): Promise<any> {
+  return request({
+    url: '/account/resetPassword',
+    method: 'post',
+    data: {
+      accountId,
+      password,
+    },
+  })
+}
+
+/**
+ * 添加协作成员
+ * @param {member_id, roles}
+ * @returns
+ */
+export async function inviteCollaborator(member_id: any, roles: any): Promise<any> {
+  const appStore = useAppStore()
+
+  const appid = appStore.currentApp.appid
+  const res = await request({
+    url: `/sys-api/apps/${appid}/invite`,
+    method: 'post',
+    data: {
+      member_id,
+      roles,
+    },
+  })
+  return res
+}
+
+/**
+ * 获取所有应用角色
+ * @param {string} username
+ */
+export function getAllApplicationRoles() {
+  return request({
+    url: '/sys-api/apps/collaborators/roles',
+    method: 'get',
+  })
+}
+
+/**
+ * 根据用户名搜索用户
+ * @param {string} username
+ */
+export function searchUserByUsername(username: any) {
+  return request({
+    url: '/sys-api/apps/collaborators/search',
+    method: 'post',
+    data: {
+      username,
+    },
+  })
+}
