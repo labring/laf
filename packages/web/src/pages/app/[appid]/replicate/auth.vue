@@ -205,12 +205,16 @@ onMounted(async () => {
       </el-table-column>
       <el-table-column label="操作" width="200" align="center">
         <template #default="scope">
-          <el-button v-if="authType === 'target' && scope.row.status === 'accepted'" class="filter-item" type="primary"
-            @click="showReplicasForm(scope.row)">
+          <el-button
+            v-if="authType === 'target' && scope.row.status === 'accepted'" class="filter-item" type="primary"
+            @click="showReplicasForm(scope.row)"
+          >
             部署
           </el-button>
-          <el-button v-if="authType === 'source' && scope.row.status !== 'accepted'" plain type="primary"
-            @click="handleUpdateAuth(scope.row)">
+          <el-button
+            v-if="authType === 'source' && scope.row.status !== 'accepted'" plain type="primary"
+            @click="handleUpdateAuth(scope.row)"
+          >
             接受
           </el-button>
           <el-button type="danger" @click="handleDeleteAuth(scope.row)">
@@ -221,8 +225,10 @@ onMounted(async () => {
     </el-table>
 
     <el-dialog v-model="dialogFormVisible" title="请求授权">
-      <el-form ref="createForm" :rules="rules" :model="form" label-position="left" label-width="120px"
-        style="width: 400px; margin-left: 20px">
+      <el-form
+        ref="createForm" :rules="rules" :model="form" label-position="left" label-width="120px"
+        style="width: 400px; margin-left: 20px"
+      >
         <el-form-item label="目标appid" prop="target_appid">
           <el-input v-model="form.target_appid" />
         </el-form-item>
@@ -240,8 +246,10 @@ onMounted(async () => {
     </el-dialog>
 
     <el-dialog v-model="replicasDialogVisible" title="请求部署">
-      <el-form ref="createForm" :rules="rules" :model="replicasForm" label-position="left" label-width="120px"
-        style="width: 400px; margin-left: 20px">
+      <el-form
+        ref="createForm" :rules="rules" :model="replicasForm" label-position="left" label-width="120px"
+        style="width: 400px; margin-left: 20px"
+      >
         <el-form-item label="目标 appid" prop="target_appid">
           <el-input v-model="replicasForm.target_appid" disabled />
         </el-form-item>

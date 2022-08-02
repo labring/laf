@@ -301,13 +301,13 @@ onMounted(() => {
 
       <el-table-column label="操作" align="center" class-name="small-padding" width="260">
         <template #default="{ row, $index }">
-          <el-button type="primary"  @click="handleShowDetail(row)">
+          <el-button type="primary" @click="handleShowDetail(row)">
             管理文件
           </el-button>
-          <el-button type="success"  @click="showEditForm(row)">
+          <el-button type="success" @click="showEditForm(row)">
             编辑
           </el-button>
-          <el-button v-if="row.status !== 'deleted'"  type="danger" @click="handleDelete(row, $index)">
+          <el-button v-if="row.status !== 'deleted'" type="danger" @click="handleDelete(row, $index)">
             删除
           </el-button>
         </template>

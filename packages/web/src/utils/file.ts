@@ -32,7 +32,7 @@ export function exportRawBlob(name, data) {
  * read text from local file
  * @param {File} file
  */
-export async function readTextFromFile(file, encoding = 'utf-8') {
+export async function readTextFromFile(file: any) {
   const reader = new FileReader()
   reader.readAsText(file)
 

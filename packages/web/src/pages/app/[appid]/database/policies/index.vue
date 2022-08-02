@@ -218,8 +218,10 @@ onMounted(() => {
   <div class="app-container">
     <!-- 数据检索区 -->
     <div class="filter-container mb-24px">
-      <el-input v-model="listQuery.keyword" placeholder="搜索" style="width: 200px; margin-right: 10px"
-        class="filter-item" @keyup.enter="handleFilter" />
+      <el-input
+        v-model="listQuery.keyword" placeholder="搜索" style="width: 200px; margin-right: 10px"
+        class="filter-item" @keyup.enter="handleFilter"
+      />
       <el-button class="filter-item" type="default" icon="Search" @click="handleFilter">
         搜索
       </el-button>
@@ -243,7 +245,7 @@ onMounted(() => {
       <el-table-column label="标识" align="center" width="160px">
         <template #default="{ row }">
           <span class="link-type" @click="showUpdateForm(row)">{{
-              row.name
+            row.name
           }}</span>
         </template>
       </el-table-column>
@@ -261,7 +263,7 @@ onMounted(() => {
       <el-table-column label="创建时间" width="150px" align="center">
         <template #default="{ row }">
           <span v-if="row.created_at">{{
-              $filters.formatTime(row.created_at, 'YYYY-MM-DD HH:mm')
+            $filters.formatTime(row.created_at, 'YYYY-MM-DD HH:mm')
           }}</span>
           <span v-else>-</span>
         </template>
@@ -269,7 +271,7 @@ onMounted(() => {
       <el-table-column label="更新时间" width="150px" align="center">
         <template #default="{ row }">
           <span v-if="row.updated_at">{{
-              $filters.formatTime(row.updated_at, 'YYYY-MM-DD HH:mm')
+            $filters.formatTime(row.updated_at, 'YYYY-MM-DD HH:mm')
           }}</span>
           <span v-else>-</span>
         </template>
@@ -294,19 +296,25 @@ onMounted(() => {
     </el-table>
 
     <!-- 分页 -->
-    <el-pagination v-model:currentPage="listQuery.page" class="mt-24px" :page-size="listQuery.limit" background
-      layout="->, total, prev, pager, next" :total="total" @size-change="getList" @current-change="getList" />
+    <el-pagination
+      v-model:currentPage="listQuery.page" class="mt-24px" :page-size="listQuery.limit" background
+      layout="->, total, prev, pager, next" :total="total" @size-change="getList" @current-change="getList"
+    />
 
     <!-- 表单对话框 -->
     <el-dialog v-model="dialogFormVisible" :title="textMap[dialogStatus]">
-      <el-form ref="dataFormRef" :rules="rules" :model="form" label-position="left" label-width="70px"
-        style="width: 500px; margin-left: 50px">
+      <el-form
+        ref="dataFormRef" :rules="rules" :model="form" label-position="left" label-width="70px"
+        style="width: 500px; margin-left: 50px"
+      >
         <el-form-item label="标识" prop="name">
           <el-input v-model="form.name" placeholder="唯一标识" />
         </el-form-item>
         <el-form-item label="描述">
-          <el-input v-model="form.description" :autosize="{ minRows: 3, maxRows: 6 }" type="textarea"
-            placeholder="描述" />
+          <el-input
+            v-model="form.description" :autosize="{ minRows: 3, maxRows: 6 }" type="textarea"
+            placeholder="描述"
+          />
         </el-form-item>
         <el-form-item label="injector">
           <el-select v-model="form.injector" placeholder="选择云函数做为injector">

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ElMessage } from 'element-plus'
 import * as appAPI from '~/api/application'
 
 const props = defineProps<{
@@ -89,7 +90,7 @@ const handleImportApp = (formEl: any) => {
           :limit="1"
           :on-change="onImportFileChanged"
         >
-          <el-button slot="trigger" size="small" type="primary">
+          <el-button size="small" type="primary">
             选取导入文件
           </el-button>
         </el-upload>

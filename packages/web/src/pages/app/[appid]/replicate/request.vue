@@ -96,8 +96,10 @@ onMounted(() => {
     </el-table>
 
     <!-- 分页 -->
-    <el-pagination v-model:currentPage="listQuery.page" class="mt-24px" :page-size="listQuery.limit" background
-      layout="->, total, prev, pager, next" :total="total" @size-change="getList" @current-change="getList" />
+    <el-pagination
+      v-model:currentPage="listQuery.page" class="mt-24px" :page-size="listQuery.limit" background
+      layout="->, total, prev, pager, next" :total="total" @size-change="getList" @current-change="getList"
+    />
   </div>
 </template>
 

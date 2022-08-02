@@ -1,6 +1,21 @@
 {
   "name": "laf-web",
   "version": "0.1.0",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/labring/laf/issues"
+  },
+  "keywords": [
+    "laf.js",
+    "cloudfunction",
+    "serverless",
+    "element-ui",
+    "less-api"
+  ],
+  "engines": {
+    "node": ">=16",
+    "npm": ">= 6.0.0"
+  },
   "scripts": {
     "build": "vite build",
     "dev": "vite --port 3333 --open",
@@ -67,21 +82,6 @@
     "> 1%",
     "last 2 versions"
   ],
-  "bugs": {
-    "url": "https://github.com/labring/laf/issues"
-  },
-  "engines": {
-    "node": ">=16",
-    "npm": ">= 6.0.0"
-  },
-  "keywords": [
-    "laf.js",
-    "cloudfunction",
-    "serverless",
-    "element-ui",
-    "less-api"
-  ],
-  "license": "MIT",
   "lint-staged": {
     "src/**/*.{js,vue}": [
       "eslint --fix",

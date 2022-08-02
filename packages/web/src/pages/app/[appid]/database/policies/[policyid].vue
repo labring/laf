@@ -237,8 +237,10 @@ onUnmounted(() => {
           选择集合
         </div>
         <el-radio-group v-model="collection_name" class="radio-group w-full">
-          <el-radio v-for="item in collections" :key="item" class="mb-12px" border
-            style="margin-right: 0; padding-right: 0; width: 100%;" :label="item">
+          <el-radio
+            v-for="item in collections" :key="item" class="mb-12px" border
+            style="margin-right: 0; padding-right: 0; width: 100%;" :label="item"
+          >
             {{ item }}
           </el-radio>
         </el-radio-group>

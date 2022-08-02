@@ -90,8 +90,8 @@ function setTagViewTitle() {
     <!-- 数据检索区 -->
     <div class="filter-container mb-24px">
       <el-input
-          v-model="listQuery.keyword" placeholder="Request ID" style="width: 320px; margin-right: 10px"
-          class="filter-item" @keyup.enter="handleFilter"
+        v-model="listQuery.keyword" placeholder="Request ID" style="width: 320px; margin-right: 10px"
+        class="filter-item" @keyup.enter="handleFilter"
       />
       <el-button class="filter-item" type="primary" icon="Search" @click="handleFilter">
         搜索
@@ -126,8 +126,8 @@ function setTagViewTitle() {
       <el-table-column label="创建时间" width="180" align="center">
         <template #default="{ row }">
           <span v-if="row.created_at">{{
-              $filters.formatTime(row.created_at)
-            }}</span>
+            $filters.formatTime(row.created_at)
+          }}</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
@@ -147,8 +147,8 @@ function setTagViewTitle() {
 
     <!-- 分页 -->
     <el-pagination
-        v-model:currentPage="listQuery.page" class="mt-24px" :page-size="listQuery.limit" background
-        layout="->, total, prev, pager, next" :total="total" @size-change="getList" @current-change="getList"
+      v-model:currentPage="listQuery.page" class="mt-24px" :page-size="listQuery.limit" background
+      layout="->, total, prev, pager, next" :total="total" @size-change="getList" @current-change="getList"
     />
 
     <!-- 日志详情对话框 -->

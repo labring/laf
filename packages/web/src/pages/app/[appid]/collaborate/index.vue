@@ -109,12 +109,11 @@ async function handleDelete(row: any) {
 
   if (res.error) {
     ElMessage.error(`出错了:${res.error}`)
-
-  } else {
+  }
+  else {
     ElMessage.success('操作成功')
     loadCollaborators()
   }
-
 }
 
 onMounted(async () => {
@@ -140,7 +139,7 @@ onMounted(async () => {
       <el-table-column align="center" label="用户名">
         <template #default="{ row }">
           <span v-if="row.user && row.user.username">{{
-              row.user.username
+            row.user.username
           }}</span>
           <span v-else>-</span>
         </template>

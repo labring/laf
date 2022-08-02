@@ -144,7 +144,7 @@ export async function exportApplication(appid: string) {
  * @param {File} file
  * @returns
  */
-export async function importApplication(appid: string, file: string | Blob) {
+export async function importApplication(appid: string, file: string | Blob): Promise<any> {
   const form = new FormData()
   form.append('file', file)
   const res = await request({

@@ -5,8 +5,6 @@ import generatedRoutes from '~pages'
 export const routes = setupLayouts(generatedRoutes)
 export const appRoutes = routes.filter(route => route.path.startsWith('/app/'))
 
-console.log(123, appRoutes)
-
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes,
