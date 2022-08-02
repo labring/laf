@@ -6,14 +6,13 @@ export const useMenuStore = defineStore('appMenu', () => {
   const generateMenus = (routes: any[], appid: string) => {
     const flatMenus = routes.map((route: any) => {
       const { path, children } = route
-      const { meta, name } = children[0]
-      const menu = {
+      const { meta, name, hidden } = children[0]
+      return {
         path: path.replace('/app/:appid/', `/app/${appid}/`),
         name,
+        hidden,
         meta,
       }
-
-      return menu
     })
 
     const names: string[] = []
@@ -30,6 +29,7 @@ export const useMenuStore = defineStore('appMenu', () => {
     const menus = names
       .map((_: string) => {
         const children = flatMenus
+          .filter((menu: any) => !menu.hidden)
           .filter((menu: any) => {
             const { path } = menu
             const name = path.split(`/app/${appid}/`)[1].split('/')[0]

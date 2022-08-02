@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
-import { Delete, Guide, Plus, Search } from '@element-plus/icons-vue'
 import { nextTick } from 'vue'
 import { getAppAccessUrl } from '~/api/application'
 
@@ -15,7 +14,7 @@ import {
 } from '~/api/func'
 import Copy from '~/components/Copy.vue'
 
-const router = useRouter()
+const $router = useRouter()
 
 const dataFormRef = $ref<FormInstance>()
 
@@ -171,7 +170,12 @@ function getFunctionInvokeBaseUrl(func_name: string) {
 
 // 查看详情
 async function handleShowDetail(row: { _id: any }) {
-  router.push(`functions/${row._id}`)
+  $router.push({
+    name: 'debug',
+    params: {
+      id: row._id,
+    },
+  })
 }
 
 // 删除标签
@@ -196,12 +200,22 @@ function addTag() {
 
 // 查看日志详情
 async function handleShowLogs(row: { _id: any }) {
-  router.push(`logs/${row._id}`)
+  $router.push({
+    name: '日志详情',
+    params: {
+      id: row._id,
+    },
+  })
 }
 
 // 设置触发器
 async function handleTriggers(row: { _id: any }) {
-  router.push(`triggers/${row._id}`)
+  $router.push({
+    name: 'trigger',
+    params: {
+      funcId: row._id,
+    },
+  })
 }
 
 // 搜索建议标签
@@ -319,15 +333,15 @@ function handleUpdate() {
         v-model="listQuery.keyword" placeholder="搜索" style="width: 200px; margin-right: 10px"
         class="filter-item" @keyup.enter="handleFilter"
       />
-      <el-button class="filter-item" type="default" :icon="Search" @click="handleFilter">
+      <el-button class="filter-item" type="default" icon="Search" @click="handleFilter">
         搜索
       </el-button>
 
-      <el-button type="primary" :icon="Plus" class="filter-item" @click="showCreateForm">
+      <el-button type="primary" icon="Plus" class="filter-item" @click="showCreateForm">
         新建函数
       </el-button>
       <el-tooltip content="发布函数：函数要发布后才能生效" placement="bottom" effect="light">
-        <el-button plain class="filter-item" type="success" :icon="Guide" @click="publish">
+        <el-button class="filter-item" type="success" icon="Guide" @click="publish">
           发布函数
         </el-button>
       </el-tooltip>
@@ -378,10 +392,10 @@ function handleUpdate() {
       </el-table-column>
       <el-table-column label="创建/更新" width="200" align="center">
         <template #default="{ row }">
-          <span v-if="row.created_at">{{ $filters.parseTime(row.created_at) }}</span>
+          <span v-if="row.created_at">{{ $filters.formatTime(row.created_at) }}</span>
           <span v-else>-</span>
           <br>
-          <span v-if="row.updated_at">{{ $filters.parseTime(row.updated_at) }}</span>
+          <span v-if="row.updated_at">{{ $filters.formatTime(row.updated_at) }}</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
@@ -414,18 +428,18 @@ function handleUpdate() {
       </el-table-column>
       <el-table-column label="操作" align="center" min-width="240" class-name="small-padding">
         <template #default="{ row, $index }">
-          <el-button plain type="success" size="small" @click="handleShowDetail(row)">
+          <el-button type="success" size="small" @click="handleShowDetail(row)">
             开发
           </el-button>
-          <el-button plain type="info" size="small" @click="handleShowLogs(row)">
+          <el-button type="info" size="small" @click="handleShowLogs(row)">
             日志
           </el-button>
-          <el-button plain type="primary" size="small" @click="handleTriggers(row)">
+          <el-button type="primary" size="small" @click="handleTriggers(row)">
             触发器<b v-if="row.triggers && row.triggers.length">({{ row.triggers.length }})</b>
           </el-button>
           <el-tooltip content="请先停用函数，再删除！" :disabled="row.status !== 1" placement="top">
             <el-button
-              v-if="row.status !== 'deleted'" :icon="Delete" plain size="small" type="danger" circle
+              v-if="row.status !== 'deleted'" icon="Delete" size="small" type="danger" circle
               @click="handleDelete(row, $index)"
             />
           </el-tooltip>
@@ -435,8 +449,8 @@ function handleUpdate() {
 
     <!-- 分页 -->
     <el-pagination
-      v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit" class="mt-12px" :total="total"
-      layout="total, sizes, prev, pager, next, jumper" @size-change="getList" @current-change="getList"
+      v-model:currentPage="listQuery.page" class="mt-24px" :page-size="listQuery.limit" background
+      layout="->, total, prev, pager, next" :total="total" @size-change="getList" @current-change="getList"
     />
 
     <!-- 表单对话框 -->

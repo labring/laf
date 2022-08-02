@@ -2,12 +2,12 @@ import { acceptHMRUpdate, defineStore } from 'pinia'
 import { getApplicationByAppid } from '~/api/application'
 
 export const useAppStore = defineStore('application', () => {
-  let currentApp = $ref<{ appid: string; app_deploy_host: string; app_deploy_url_schema: string; created_by: string }>()
+  let currentApp = $ref<{ appid: string; app_deploy_host: string; app_deploy_url_schema: string; created_by: string; oss_external_endpoint: string; spec: any }>()
   let roles = $ref<any>([])
   let permissions = $ref<any>([])
   let debugToken = $ref<any>(null)
   let fileToken = $ref<any>(null)
-  let specs = $ref<any>([])
+  let spec = $ref<any>({})
   let appDeployHost = $ref<any>(null)
   let appDeployUrlSchema = $ref<any>('http')
   let storageDeployHost = $ref<any>(null)
@@ -23,7 +23,7 @@ export const useAppStore = defineStore('application', () => {
     permissions = res.data?.permissions
     debugToken = res.data?.debug_token
     fileToken = res.data?.file_token
-    specs = res.data?.specs
+    spec = res.data?.spec
     appDeployHost = res.data?.app_deploy_host
     appDeployUrlSchema = res.data?.app_deploy_url_schema
     storageDeployHost = res.data?.storage_deploy_host
@@ -38,7 +38,7 @@ export const useAppStore = defineStore('application', () => {
     permissions: $$(permissions),
     debugToken: $$(debugToken),
     fileToken: $$(fileToken),
-    specs: $$(specs),
+    spec: $$(spec),
     appDeployHost: $$(appDeployHost),
     appDeployUrlSchema: $$(appDeployUrlSchema),
     storageDeployHost: $$(storageDeployHost),

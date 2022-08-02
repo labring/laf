@@ -5,7 +5,7 @@ import request from '~/api/request'
  * @param {username: string, password: string} data
  * @returns
  */
-export function login(data) {
+export function login(data: any) {
   return request({
     url: '/sys-api/account/login',
     method: 'post',
@@ -28,7 +28,7 @@ export function getUserProfile() {
 /**
  * 注册帐户
  */
-export function signup(data) {
+export function signup(data: any) {
   return request({
     url: '/sys-api/account/signup',
     method: 'post',
@@ -39,7 +39,7 @@ export function signup(data) {
 /**
  * 编辑帐户信息
  */
-export function edit(data) {
+export function edit(data: any) {
   return request({
     url: '/sys-api/account/edit',
     method: 'post',
@@ -50,7 +50,7 @@ export function edit(data) {
 /**
  * 编辑帐户信息
  */
-export function resetPassword(data) {
+export function resetPassword(data: any) {
   return request({
     url: '/sys-api/account/resetPassword',
     method: 'post',

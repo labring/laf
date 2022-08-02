@@ -133,13 +133,13 @@ onMounted(() => {
   <div class="app-container">
     <!-- 数据检索区 -->
     <div class="filter-container mb-24px">
-      <el-button plain class="filter-item" type="default" icon="Refresh" @click="getList">
+      <el-button class="filter-item" type="default" icon="Refresh" @click="getList">
         刷新
       </el-button>
-      <el-button plain class="filter-item" type="primary" icon="Plus" @click="showCreateForm">
+      <el-button class="filter-item" type="primary" icon="Plus" @click="showCreateForm">
         添加
       </el-button>
-      <el-button plain class="filter-item" type="default" @click="restartApp">
+      <el-button class="filter-item" type="default" @click="restartApp">
         重启服务
       </el-button>
       <span style="margin-left: 20px; font-size: 14px; color: blue">（依赖变更后，需要重启服务才能生效！）</span>
@@ -164,10 +164,10 @@ onMounted(() => {
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="{ row }">
-          <el-button plain type="success" @click="showUpdateForm(row)">
+          <el-button type="success" @click="showUpdateForm(row)">
             编辑
           </el-button>
-          <el-button v-if="row.status !== 'deleted'" plain type="danger" @click="handleDelete(row)">
+          <el-button v-if="row.status !== 'deleted'" type="danger" @click="handleDelete(row)">
             删除
           </el-button>
         </template>

@@ -144,7 +144,7 @@ export async function exportApplication(appid: string) {
  * @param {File} file
  * @returns
  */
-export async function importApplication(appid: string, file: string | Blob) {
+export async function importApplication(appid: string, file: string | Blob): Promise<any> {
   const form = new FormData()
   form.append('file', file)
   const res = await request({
@@ -205,8 +205,8 @@ export async function openAppConsole(app: { appid: string }) {
 export function getAppAccessUrl() {
   const appStore = useAppStore()
   const appid = appStore.currentApp.appid
-  const domain = appStore.currentApp.app_deploy_host
-  const schema = appStore.currentApp.app_deploy_url_schema || 'http'
+  const domain = appStore.appDeployHost
+  const schema = appStore.appDeployUrlSchema || 'http'
   const url = `${schema}://${appid}.${domain}`
   return url
 }

@@ -10,16 +10,18 @@ import SideBar from './components/SideBar/index.vue'
     </el-header>
 
     <el-container style="height: calc(100vh - 64px)">
-      <el-aside width="200px">
+      <el-aside width="240px">
         <el-scrollbar>
           <SideBar />
         </el-scrollbar>
       </el-aside>
 
       <el-container>
-        <el-main>
+        <el-main style="padding: 0">
           <el-scrollbar>
-            <router-view />
+            <div class="m-24px">
+              <router-view />
+            </div>
           </el-scrollbar>
         </el-main>
       </el-container>

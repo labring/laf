@@ -180,59 +180,25 @@ onMounted(async () => {
   <div class="app-container">
     <!-- 数据检索区 -->
     <div class="mb-24px">
-      <el-button
-        plain
-        size="mini"
-        class="filter-item"
-        type="primary"
-        icon="Plus"
-        @click="showCreateForm"
-      >
+      <el-button class="filter-item" type="primary" icon="Plus" @click="showCreateForm">
         新增授权
       </el-button>
     </div>
 
-    <el-tabs
-      v-model="authType"
-      class="mb-12px"
-      type="card"
-      @tab-click="handleSwitchType"
-    >
+    <el-tabs v-model="authType" class="mb-12px" type="card" @tab-click="handleSwitchType">
       <el-tab-pane label="目标应用" name="target" />
       <el-tab-pane label="授权请求" name="source" />
     </el-tabs>
 
     <!-- 数据列表 -->
-    <el-table
-      :data="tableList"
-      :loading="listLoading"
-      border
-      style="width: 100%; top: -15px"
-    >
-      <el-table-column
-        prop="source_appid"
-        label="源应用"
-        width="180"
-        align="center"
-      />
+    <el-table :data="tableList" :loading="listLoading" border style="width: 100%; top: -15px">
+      <el-table-column prop="source_appid" label="源应用" width="180" align="center" />
       <el-table-column prop="target_appid" label="目标应用" align="center" />
-      <el-table-column
-        prop="created_at"
-        label="创建时间"
-        width="180"
-        align="center"
-      />
-      <el-table-column
-        prop="updated_at"
-        label="更新时间"
-        width="180"
-        align="center"
-      />
+      <el-table-column prop="created_at" label="创建时间" width="180" align="center" />
+      <el-table-column prop="updated_at" label="更新时间" width="180" align="center" />
       <el-table-column prop="status" label="状态" width="100" align="center">
         <template #default="scope">
-          <el-tag
-            :type="scope.row.status === 'accepted' ? 'success' : 'warning'"
-          >
+          <el-tag :type="scope.row.status === 'accepted' ? 'success' : 'warning'">
             {{ scope.row.status }}
           </el-tag>
         </template>
@@ -240,30 +206,18 @@ onMounted(async () => {
       <el-table-column label="操作" width="200" align="center">
         <template #default="scope">
           <el-button
-            v-if="authType === 'target' && scope.row.status === 'accepted'"
-            plain
-            size="mini"
-            class="filter-item"
-            type="primary"
+            v-if="authType === 'target' && scope.row.status === 'accepted'" class="filter-item" type="primary"
             @click="showReplicasForm(scope.row)"
           >
             部署
           </el-button>
           <el-button
-            v-if="authType === 'source' && scope.row.status !== 'accepted'"
-            size="mini"
-            plain
-            type="primary"
+            v-if="authType === 'source' && scope.row.status !== 'accepted'" plain type="primary"
             @click="handleUpdateAuth(scope.row)"
           >
             接受
           </el-button>
-          <el-button
-            size="mini"
-            plain
-            type="danger"
-            @click="handleDeleteAuth(scope.row)"
-          >
+          <el-button type="danger" @click="handleDeleteAuth(scope.row)">
             删除
           </el-button>
         </template>
@@ -272,11 +226,7 @@ onMounted(async () => {
 
     <el-dialog v-model="dialogFormVisible" title="请求授权">
       <el-form
-        ref="createForm"
-        :rules="rules"
-        :model="form"
-        label-position="left"
-        label-width="120px"
+        ref="createForm" :rules="rules" :model="form" label-position="left" label-width="120px"
         style="width: 400px; margin-left: 20px"
       >
         <el-form-item label="目标appid" prop="target_appid">
@@ -297,11 +247,7 @@ onMounted(async () => {
 
     <el-dialog v-model="replicasDialogVisible" title="请求部署">
       <el-form
-        ref="createForm"
-        :rules="rules"
-        :model="replicasForm"
-        label-position="left"
-        label-width="120px"
+        ref="createForm" :rules="rules" :model="replicasForm" label-position="left" label-width="120px"
         style="width: 400px; margin-left: 20px"
       >
         <el-form-item label="目标 appid" prop="target_appid">

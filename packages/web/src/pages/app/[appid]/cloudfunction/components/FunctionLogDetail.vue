@@ -28,7 +28,7 @@ const returnValue = $computed(() => {
       <span v-if="data">
         [
         {{
-          $filters.parseTime(props.data.created_at, '{y}-{m}-{d} {h}:{i}:{s}')
+          $filters.formatTime(props.data.created_at)
         }}
         ]</span>
     </div>

@@ -19,6 +19,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '~/': `${path.resolve(__dirname, 'src')}/`,
+      './runtimeConfig': './runtimeConfig.browser',
     },
   },
   plugins: [
@@ -34,7 +35,7 @@ export default defineConfig({
 
       // you need to set i18n resource including paths !
       include: path.resolve(__dirname, './locales/**'),
-      compositionOnly: false,
+      compositionOnly: true,
 
       defaultSFCLang: 'yml',
     }),

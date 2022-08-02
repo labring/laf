@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ElForm } from 'element-plus'
+import { ElForm } from 'element-plus'
 import { resetPassword } from '~/api/user'
 import { useUserStore } from '~/store'
 import { passwordField, requiredField } from '~/utils/form'
@@ -48,7 +48,7 @@ defineExpose({ open, close })
 
 <template>
   <el-dialog ref="dialogEl" v-model="dialogVisible" destroy-on-close append-to-body :close-on-click-modal="false" :close-on-press-escape="false" title="重置密码">
-    <el-form ref="formEl" label-position="top" :model="formData">
+    <ElForm ref="formEl" label-position="top" :model="formData">
       <el-form-item
         :label="$t('layout.components.reset-password.form.new-password')"
         prop="password"
@@ -79,7 +79,7 @@ defineExpose({ open, close })
           auto-complete="off"
         />
       </el-form-item>
-    </el-form>
+    </ElForm>
     <template #footer>
       <el-button type="primary" @click="submitForm">
         {{ $t('utils.form.submit') }}

@@ -1,6 +1,21 @@
 {
   "name": "laf-web",
   "version": "0.1.0",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/labring/laf/issues"
+  },
+  "keywords": [
+    "laf.js",
+    "cloudfunction",
+    "serverless",
+    "element-ui",
+    "less-api"
+  ],
+  "engines": {
+    "node": ">=16",
+    "npm": ">= 6.0.0"
+  },
   "scripts": {
     "build": "vite build",
     "dev": "vite --port 3333 --open",
@@ -15,20 +30,22 @@
     "@vicons/material": "^0.12.0",
     "@vicons/utils": "^0.1.4",
     "@vueuse/core": "^9.0.2",
+    "aws-sdk": "^2.1185.0",
     "axios": "^0.27.2",
     "bson": "^4.6.5",
     "dayjs": "^1.11.4",
-    "element-plus": "^2.2.11",
+    "element-plus": "^2.2.12",
     "get-user-locale": "^1.5.0",
     "laf-client-sdk": "^0.8.2",
     "lodash": "^4.17.21",
+    "md5": "^2.3.0",
     "monaco-editor": "^0.33.0",
     "nprogress": "^0.2.0",
     "pinia": "^2.0.17",
     "postcss": "^8.4.14",
     "vite-plugin-vue-layouts": "^0.7.0",
     "vue": "^3.2.37",
-    "vue-i18n": "^9.1.10",
+    "vue-i18n": "^9.2.0",
     "vue-request": "^1.2.4",
     "vue-router": "^4.1.3"
   },
@@ -37,15 +54,16 @@
     "@iconify-json/carbon": "^1.1.7",
     "@intlify/vite-plugin-vue-i18n": "^5.0.1",
     "@types/lodash": "^4.14.182",
-    "@types/node": "^18.6.2",
+    "@types/md5": "^2.3.2",
+    "@types/node": "^18.6.3",
     "@unocss/reset": "^0.45.1",
-    "@vitejs/plugin-vue": "^2.3.2",
+    "@vitejs/plugin-vue": "^3.0.1",
     "@vue/test-utils": "^2.0.2",
     "balanced-match": "2.0.0",
-    "eslint": "^8.20.0",
+    "eslint": "^8.21.0",
     "jsdom": "^20.0.0",
     "magic-string": "^0.26.2",
-    "pnpm": "^7.7.1",
+    "pnpm": "^7.8.0",
     "postcss-nested": "^5.0.6",
     "sass": "^1.54.0",
     "typescript": "^4.7.4",
@@ -53,32 +71,17 @@
     "unplugin-auto-import": "^0.10.3",
     "unplugin-element-plus": "^0.4.1",
     "unplugin-vue-components": "^0.21.2",
-    "vite": "^2.9.8",
-    "vite-plugin-inspect": "^0.5.1",
+    "vite": "^3.0.4",
+    "vite-plugin-inspect": "^0.6.0",
     "vite-plugin-monaco-editor": "^1.1.0",
     "vite-plugin-pages": "^0.25.0",
-    "vitest": "^0.12.4",
-    "vue-tsc": "^0.34.12"
+    "vitest": "^0.20.2",
+    "vue-tsc": "^0.39.4"
   },
   "browserslist": [
     "> 1%",
     "last 2 versions"
   ],
-  "bugs": {
-    "url": "https://github.com/labring/laf/issues"
-  },
-  "engines": {
-    "node": ">=16",
-    "npm": ">= 6.0.0"
-  },
-  "keywords": [
-    "laf.js",
-    "cloudfunction",
-    "serverless",
-    "element-ui",
-    "less-api"
-  ],
-  "license": "MIT",
   "lint-staged": {
     "src/**/*.{js,vue}": [
       "eslint --fix",

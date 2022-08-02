@@ -24,7 +24,7 @@ const logOut = async () => {
           <el-dropdown-item @click="open">
             {{ $t('layout.topbar.user.reset-password') }}
           </el-dropdown-item>
-          <reset-password :ref="setRef" />
+          <ResetPassword :ref="setRef" />
         </common-opener>
         <el-dropdown-item @click="logOut">
           {{ $t('layout.topbar.user.logout') }}

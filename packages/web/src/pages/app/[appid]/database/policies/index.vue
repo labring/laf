@@ -225,11 +225,11 @@ onMounted(() => {
       <el-button class="filter-item" type="default" icon="Search" @click="handleFilter">
         搜索
       </el-button>
-      <el-button plain class="filter-item" type="primary" icon="Plus" @click="showCreateForm">
+      <el-button class="filter-item" type="primary" icon="Plus" @click="showCreateForm">
         新建
       </el-button>
       <el-tooltip content="发布策略：策略修改后需要发布才能生效" placement="bottom" effect="light">
-        <el-button plain class="filter-item" type="success" icon="Guide" @click="publish">
+        <el-button class="filter-item" type="success" icon="Guide" @click="publish">
           发布策略
         </el-button>
       </el-tooltip>
@@ -263,7 +263,7 @@ onMounted(() => {
       <el-table-column label="创建时间" width="150px" align="center">
         <template #default="{ row }">
           <span v-if="row.created_at">{{
-            $filters.parseTime(row.created_at, '{y}-{m}-{d} {h}:{i}')
+            $filters.formatTime(row.created_at, 'YYYY-MM-DD HH:mm')
           }}</span>
           <span v-else>-</span>
         </template>
@@ -271,7 +271,7 @@ onMounted(() => {
       <el-table-column label="更新时间" width="150px" align="center">
         <template #default="{ row }">
           <span v-if="row.updated_at">{{
-            $filters.parseTime(row.updated_at, '{y}-{m}-{d} {h}:{i}')
+            $filters.formatTime(row.updated_at, 'YYYY-MM-DD HH:mm')
           }}</span>
           <span v-else>-</span>
         </template>
@@ -285,10 +285,10 @@ onMounted(() => {
       </el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
         <template #default="{ row, $index }">
-          <el-button type="primary" size="mini" @click="handleShowDetail(row)">
+          <el-button type="primary" @click="handleShowDetail(row)">
             编辑
           </el-button>
-          <el-button v-if="row.status !== 'deleted'" size="mini" type="danger" @click="handleDelete(row, $index)">
+          <el-button v-if="row.status !== 'deleted'" type="danger" @click="handleDelete(row, $index)">
             删除
           </el-button>
         </template>
@@ -297,9 +297,8 @@ onMounted(() => {
 
     <!-- 分页 -->
     <el-pagination
-      v-show="total > 0"
-      v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit" class="mt-12px" :total="total"
-      layout="total, sizes, prev, pager, next, jumper" @size-change="getList" @current-change="getList"
+      v-model:currentPage="listQuery.page" class="mt-24px" :page-size="listQuery.limit" background
+      layout="->, total, prev, pager, next" :total="total" @size-change="getList" @current-change="getList"
     />
 
     <!-- 表单对话框 -->

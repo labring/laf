@@ -19,8 +19,8 @@ import UserMenu from './UserMenu.vue'
             <LogoGithub />
           </el-icon>
         </a>
-        <language-menu />
-        <user-menu />
+        <LanguageMenu />
+        <UserMenu />
       </el-space>
     </div>
   </div>
