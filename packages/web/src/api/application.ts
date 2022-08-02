@@ -354,4 +354,3 @@ export function searchUserByUsername(username: any) {
     },
   })
 }
-

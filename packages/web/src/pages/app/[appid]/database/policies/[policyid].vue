@@ -223,10 +223,10 @@ onUnmounted(() => {
 
       <!-- <div class="create-btn" style="margin-bottom: 10px" /> -->
 
-      <el-button  icon="Refresh" type="default" style="margin-left: 15px" :disabled="loading" @click="getPolicy">
+      <el-button icon="Refresh" type="default" style="margin-left: 15px" :disabled="loading" @click="getPolicy">
         刷新
       </el-button>
-      <el-button  style="margin-left: 15px" type="primary" :disabled="loading" @click="dialogVisible = true">
+      <el-button style="margin-left: 15px" type="primary" :disabled="loading" @click="dialogVisible = true">
         新建集合规则
       </el-button>
     </div>
@@ -237,10 +237,8 @@ onUnmounted(() => {
           选择集合
         </div>
         <el-radio-group v-model="collection_name" class="radio-group w-full">
-          <el-radio
-            v-for="item in collections" :key="item" class="mb-12px" border
-            style="margin-right: 0; padding-right: 0; width: 100%;" :label="item"
-          >
+          <el-radio v-for="item in collections" :key="item" class="mb-12px" border
+            style="margin-right: 0; padding-right: 0; width: 100%;" :label="item">
             {{ item }}
           </el-radio>
         </el-radio-group>
@@ -248,10 +246,10 @@ onUnmounted(() => {
       <el-container class="record-list ">
         <div class="editor-container flex-1">
           <div class="buttons">
-            <el-button class="btn"  type="success" :disabled="loading" @click="updateRule">
+            <el-button class="btn" type="success" :disabled="loading" @click="updateRule">
               保存(S)
             </el-button>
-            <el-button class="btn" type="danger"  :disabled="loading" @click="removeRule">
+            <el-button class="btn" type="danger" :disabled="loading" @click="removeRule">
               删除
             </el-button>
           </div>
@@ -261,20 +259,14 @@ onUnmounted(() => {
     </el-container>
 
     <!-- 表单 -->
-    <el-dialog
-      v-model="dialogVisible"
-      title="创建集合"
-    >
+    <el-dialog v-model="dialogVisible" title="创建集合">
       <el-form :model="form" label-width="80px" label-position="left">
         <el-form-item label="集合名称">
           <el-input v-model="form.collection" placeholder="唯一标识，为字母" />
         </el-form-item>
       </el-form>
       <div style="text-align:right;">
-        <el-button
-          type="info"
-          @click="dialogVisible = false"
-        >
+        <el-button type="info" @click="dialogVisible = false">
           取消
         </el-button>
         <el-button type="primary" @click="create">

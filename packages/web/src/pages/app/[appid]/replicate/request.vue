@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ElNotification } from 'element-plus'
+import { ElMessageBox, ElNotification } from 'element-plus'
 import dayjs from 'dayjs'
 import { acceptReplicateRequest, deleteReplicateRequest, getReplicateRequests } from '~/api/replicate'
 
@@ -85,13 +85,10 @@ onMounted(() => {
       </el-table-column>
       <el-table-column label="操作" width="200" align="center">
         <template #default="scope">
-          <el-button
-            v-if="scope.row.status !== 'accepted'"  type="primary"
-            @click="handleUpdateRequest(scope.row)"
-          >
+          <el-button v-if="scope.row.status !== 'accepted'" type="primary" @click="handleUpdateRequest(scope.row)">
             接受
           </el-button>
-          <el-button  type="danger" @click="handleDeleteRequest(scope.row)">
+          <el-button type="danger" @click="handleDeleteRequest(scope.row)">
             删除
           </el-button>
         </template>
@@ -99,10 +96,8 @@ onMounted(() => {
     </el-table>
 
     <!-- 分页 -->
-    <el-pagination
-      v-model:currentPage="listQuery.page" class="mt-24px" :page-size="listQuery.limit" background
-      layout="->, total, prev, pager, next" :total="total" @size-change="getList" @current-change="getList"
-    />
+    <el-pagination v-model:currentPage="listQuery.page" class="mt-24px" :page-size="listQuery.limit" background
+      layout="->, total, prev, pager, next" :total="total" @size-change="getList" @current-change="getList" />
   </div>
 </template>
 

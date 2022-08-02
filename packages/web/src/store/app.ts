@@ -2,7 +2,7 @@ import { acceptHMRUpdate, defineStore } from 'pinia'
 import { getApplicationByAppid } from '~/api/application'
 
 export const useAppStore = defineStore('application', () => {
-  let currentApp = $ref<{ appid: string; app_deploy_host: string; app_deploy_url_schema: string; created_by: string ; oss_external_endpoint: string; spec: any }>()
+  let currentApp = $ref<{ appid: string; app_deploy_host: string; app_deploy_url_schema: string; created_by: string; oss_external_endpoint: string; spec: any }>()
   let roles = $ref<any>([])
   let permissions = $ref<any>([])
   let debugToken = $ref<any>(null)

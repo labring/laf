@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   getAllApplicationRoles,
   getCollaborators,
@@ -106,10 +107,14 @@ async function handleDelete(row: any) {
     loading = false
   })
 
-  if (res.error)
+  if (res.error) {
     ElMessage.error(`出错了:${res.error}`)
-  ElMessage.success('操作成功')
-  loadCollaborators()
+
+  } else {
+    ElMessage.success('操作成功')
+    loadCollaborators()
+  }
+
 }
 
 onMounted(async () => {
@@ -135,7 +140,7 @@ onMounted(async () => {
       <el-table-column align="center" label="用户名">
         <template #default="{ row }">
           <span v-if="row.user && row.user.username">{{
-            row.user.username
+              row.user.username
           }}</span>
           <span v-else>-</span>
         </template>
@@ -155,7 +160,7 @@ onMounted(async () => {
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template #default="{ row }">
-          <el-button type="info"  @click="handleDelete(row)">
+          <el-button type="info" @click="handleDelete(row)">
             删除
           </el-button>
         </template>
