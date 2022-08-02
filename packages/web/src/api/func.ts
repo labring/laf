@@ -119,7 +119,7 @@ export function updateFunction(func_id: any, function_data: any): Promise<any> {
  * @param {object} function_data
  * @returns
  */
-export function updateFunctionCode(func_id: any, function_data: any) {
+export function updateFunctionCode(func_id: any, function_data: any): Promise<any> {
   const appid = appStore.currentApp.appid
   return request({
     url: `/sys-api/apps/${appid}/function/${func_id}/code`,
@@ -156,7 +156,7 @@ export function publishFunctions(): Promise<any> {
  * Publish one function
  * @param {string} func_id
  */
-export function publishOneFunction(func_id: any) {
+export function publishOneFunction(func_id: string): Promise<any> {
   const appid = appStore.currentApp.appid
   return request({
     url: `/sys-api/apps/${appid}/function/${func_id}/publish`,

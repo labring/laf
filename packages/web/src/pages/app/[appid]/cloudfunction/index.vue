@@ -171,7 +171,7 @@ function getFunctionInvokeBaseUrl(func_name: string) {
 // 查看详情
 async function handleShowDetail(row: { _id: any }) {
   $router.push({
-    name: 'trigger',
+    name: 'debug',
     params: {
       id: row._id,
     },
@@ -183,7 +183,7 @@ function removeTag(index: number) {
   const tags = form.tags || []
   if (!tags.length)
     return
-  tags.splice(abs, 1)
+  tags.splice(index, 1)
 }
 
 // 添加标签
@@ -256,7 +256,7 @@ async function handleDelete(row: { status: any; _id: any }, index: number) {
     message: '删除成功！',
   })
 
-  list.splice(abs, 1)
+  list.splice(index, 1)
 }
 
 // 创建请求
@@ -476,7 +476,7 @@ function handleUpdate() {
         <el-form-item label="标签分类" prop="tags">
           <el-tag
             v-for="(tag, index) in form.tags" :key="tag" style="margin-right: 10px" type="" size="medium" closable
-            @close="removeTag(abs)"
+            @close="removeTag(index)"
           >
             {{ tag }}
           </el-tag>

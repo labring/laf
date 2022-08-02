@@ -2,8 +2,8 @@
 import type { FormInstance } from 'element-plus'
 import { ElMessageBox, ElNotification } from 'element-plus'
 
-import { createTrigger, removeTrigger, updateTrigger } from '~/api/trigger'
 import { getFunctionById } from '~/api/func'
+import { createTrigger, removeTrigger, updateTrigger } from '~/api/trigger'
 
 const router = useRouter()
 const route = useRoute()
@@ -178,7 +178,12 @@ async function handleDelete(row: any, index: number) {
 }
 
 function showTriggerLogs(row: any) {
-  router.push({ path: `../logs?trigger_id=${row._id}` })
+  router.push({
+    name: '日志',
+    query: {
+      trigger_id: row._id,
+    },
+  })
 }
 
 function setTagViewTitle() {
@@ -197,7 +202,7 @@ onMounted(async () => {
 
 <template>
   <div class="app-container">
-    <div v-if="func" class="func-title">
+    <div v-if="func" class="func-title mb-24px">
       <h3>
         触发函数: {{ func.label }}
         <el-tag type="success">
@@ -207,33 +212,16 @@ onMounted(async () => {
     </div>
     <!-- 数据检索区 -->
     <div class="filter-container mb-24px">
-      <el-button
-        class="filter-item"
-        type="default"
-        icon="Refresh"
-        @click="getFunction"
-      >
+      <el-button class="filter-item" type="default" icon="Refresh" @click="getFunction">
         刷新
       </el-button>
-      <el-button
-        class="filter-item"
-        type="primary"
-        icon="Plus"
-        @click="showCreateForm"
-      >
+      <el-button class="filter-item" type="primary" icon="Plus" @click="showCreateForm">
         新建触发器
       </el-button>
     </div>
 
     <!-- 表格 -->
-    <el-table
-      v-loading="loading"
-      :data="list"
-      border
-      fit
-      highlight-current-row
-      style="width: 100%"
-    >
+    <el-table v-loading="loading" :data="list" border fit highlight-current-row style="width: 100%">
       <el-table-column label="ID" prop="_id" align="center" width="220">
         <template #default="{ row }">
           <span>{{ row._id }}</span>
@@ -248,7 +236,7 @@ onMounted(async () => {
       </el-table-column>
       <el-table-column label="类型" align="center" width="80">
         <template #default="{ row }">
-          <el-tag v-if="row.type === 'event'" type="primary">
+          <el-tag v-if="row.type === 'event'" type="success">
             事件
           </el-tag>
           <el-tag v-if="row.type === 'timer'" type="success">
@@ -282,13 +270,7 @@ onMounted(async () => {
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column
-        fixed="right"
-        label="操作"
-        align="center"
-        width="240"
-        class-name="small-padding fixed-width"
-      >
+      <el-table-column fixed="right" label="操作" align="center" width="240" class-name="small-padding fixed-width">
         <template #default="{ row, $index }">
           <el-button type="info" @click="showTriggerLogs(row)">
             日志
@@ -296,12 +278,7 @@ onMounted(async () => {
           <el-button type="primary" @click="showUpdateForm(row)">
             编辑
           </el-button>
-          <el-button
-            v-if="row.status !== 'deleted'"
-
-            type="danger"
-            @click="handleDelete(row, $index)"
-          >
+          <el-button v-if="row.status !== 'deleted'" type="danger" @click="handleDelete(row, $index)">
             删除
           </el-button>
         </template>
@@ -309,27 +286,16 @@ onMounted(async () => {
     </el-table>
 
     <!-- 表单对话框 -->
-    <el-dialog
-      v-model="dialogFormVisible"
-      :title="textMap[dialogStatus]"
-    >
+    <el-dialog v-model="dialogFormVisible" :title="textMap[dialogStatus]">
       <el-form
-        ref="dataFormRef"
-        :rules="rules"
-        :model="form"
-        label-position="left"
-        label-width="100px"
+        ref="dataFormRef" :rules="rules" :model="form" label-position="left" label-width="100px"
         style="width: 400px; margin-left: 0"
       >
         <el-form-item label="名称" prop="name">
           <el-input v-model="form.name" placeholder="触发器名称" />
         </el-form-item>
         <el-form-item label="类型" prop="type">
-          <el-select
-            v-model="form.type"
-            placeholder="触发器类型"
-            :disabled="!!form._id"
-          >
+          <el-select v-model="form.type" placeholder="触发器类型" :disabled="!!form._id">
             <el-option label="事件" value="event" />
             <el-option label="定时器" value="timer" />
           </el-select>
@@ -338,27 +304,13 @@ onMounted(async () => {
           <el-input v-model="form.event" placeholder="触发器事件" />
         </el-form-item>
         <el-form-item v-if="form.type === 'timer'" label="间隔" prop="duration">
-          <el-input
-            v-model.number="form.duration"
-            min="1"
-            type="number"
-            placeholder="触发器间隔(秒）"
-          />
+          <el-input v-model.number="form.duration" min="1" type="number" placeholder="触发器间隔(秒）" />
         </el-form-item>
         <el-form-item label="是否启用" prop="status">
-          <el-switch
-            v-model="form.status"
-            :active-value="1"
-            :inactive-value="0"
-          />
+          <el-switch v-model="form.status" :active-value="1" :inactive-value="0" />
         </el-form-item>
         <el-form-item label="描述" prop="desc">
-          <el-input
-            v-model="form.desc"
-            :autosize="{ minRows: 3, maxRows: 6 }"
-            type="textarea"
-            placeholder="触发器描述"
-          />
+          <el-input v-model="form.desc" :autosize="{ minRows: 3, maxRows: 6 }" type="textarea" placeholder="触发器描述" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -366,10 +318,7 @@ onMounted(async () => {
           <el-button @click="dialogFormVisible = false">
             取消
           </el-button>
-          <el-button
-            type="primary"
-            @click="dialogStatus === 'create' ? handleCreate() : handleUpdate()"
-          >
+          <el-button type="primary" @click="dialogStatus === 'create' ? handleCreate() : handleUpdate()">
             确定
           </el-button>
         </div>

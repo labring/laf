@@ -13,10 +13,15 @@ let loading = $ref(false)
 let buckets: any = $ref([])
 let createForm = $ref({ label: '', bucket_name: '' })
 let createFormVisible = $ref(false)
-const createFormRules = $ref({ label: [{ required: true, message: '请输入名称', trigger: 'blur' }], bucket_name: [{ required: true, message: '请选择文件桶(Bucket)', trigger: 'blur' }] })
+const createFormRules = $ref({
+  label: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+  bucket_name: [{ required: true, message: '请选择文件桶(Bucket)', trigger: 'blur' }],
+})
 let editForm = $ref({ _id: '', label: '', cname: '', domain: '' })
 let editFormVisible = $ref(false)
-const editFormRules = $ref({ domain: [{ required: true, message: '请输入自定义域名', trigger: 'blur' }] })
+const editFormRules = $ref({
+  domain: [{ required: true, message: '请输入自定义域名', trigger: 'blur' }],
+})
 
 function showCreateForm() {
   createFormVisible = true
@@ -112,8 +117,7 @@ async function handleBindDomain() {
     if (!valid)
       return
 
-    const REGEX_DOMAIN
-      = /^(?=^.{3,255}$)[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+$/
+    const REGEX_DOMAIN = /^(?=^.{3,255}$)[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+$/
     if (REGEX_DOMAIN.test(editForm.domain) === false) {
       ElMessage.error('域名格式不正确')
       return
@@ -173,15 +177,20 @@ onMounted(async () => {
 
     <!-- 数据列表 -->
     <div class="data-container">
-      <el-table v-loading="loading" :data="websites" border fit highlight-current-row style="width: 100%">
+      <el-table
+        v-loading="loading"
+        :data="websites"
+        border
+        fit
+        highlight-current-row
+        style="width: 100%"
+      >
         <el-table-column prop="label" label="名称" />
         <el-table-column prop="bucket_name" label="文件桶(Bucket)" />
         <el-table-column label="访问域名">
           <template #default="{ row }">
             <el-tag type="success">
-              {{
-                row.domain ? row.domain : row.cname
-              }}
+              {{ row.domain ? row.domain : row.cname }}
             </el-tag>
           </template>
         </el-table-column>
@@ -211,16 +220,25 @@ onMounted(async () => {
 
     <!-- 数据创建表单 -->
     <el-dialog v-model="createFormVisible" title="创建网站托管" width="500px">
-      <el-form ref="createFormRef" :model="createForm" :rules="createFormRules" label-width="100px">
+      <el-form
+        ref="createFormRef"
+        :model="createForm"
+        :rules="createFormRules"
+        label-width="100px"
+      >
         <el-form-item label="Label" prop="label">
           <el-input v-model="createForm.label" placeholder="请输入名称" />
         </el-form-item>
         <el-form-item label="Bucket" prop="bucket_name">
           <el-select v-model="createForm.bucket_name" placeholder="请选择文件桶(Bucket)">
-            <el-option v-for="bucket in buckets" :key="bucket.id" :label="bucket.name" :value="bucket.name" />
+            <el-option
+              v-for="bucket in buckets"
+              :key="bucket.id"
+              :label="bucket.name"
+              :value="bucket.name"
+            />
           </el-select>
-          <span style="font-size: 12px; color: #666">
-            可在“文件管理”创建 bucket</span>
+          <span style="font-size: 12px; color: #666"> 可在“文件管理”创建 bucket</span>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -237,7 +255,12 @@ onMounted(async () => {
 
     <!-- 绑定自定义域名 -->
     <el-dialog v-model="editFormVisible" title="绑定自定义域名" width="500px">
-      <el-form ref="editFormRef" :model="editForm" :rules="editFormRules" label-width="100px">
+      <el-form
+        ref="editFormRef"
+        :model="editForm"
+        :rules="editFormRules"
+        label-width="100px"
+      >
         <el-form-item label="Label" prop="label">
           <el-input v-model="editForm.label" disabled />
         </el-form-item>
