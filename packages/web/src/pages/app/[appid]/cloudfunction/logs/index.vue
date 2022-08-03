@@ -159,8 +159,8 @@ function setTagViewTitle() {
 </template>
 
 <route lang="yaml">
-name: 日志
+name: 日志查询
 meta:
   title: 云函数日志
-  index: 1-1
+  index: 1-2
 </route>

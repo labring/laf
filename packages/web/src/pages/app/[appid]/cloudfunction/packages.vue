@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { FormInstance } from 'element-plus'
-import { ElMessage, ElMessageBox } from 'element-plus'
 import { addApplicationPackage, getApplicationPackages, removeApplicationPackage, restartApplicationInstance, updateApplicationPackage } from '~/api/application'
 import { useAppStore } from '~/store'
 
@@ -208,5 +207,5 @@ onMounted(() => {
 name: 依赖管理
 meta:
   title: 云函数依赖
-  index: 1-2
+  index: 1-1
 </route>

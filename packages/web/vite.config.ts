@@ -6,7 +6,6 @@ import Layouts from 'vite-plugin-vue-layouts'
 import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Unocss from 'unocss/vite'
-import ElementPlus from 'unplugin-element-plus/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import vueI18n from '@intlify/vite-plugin-vue-i18n'
 // import Inspect from 'vite-plugin-inspect'
@@ -60,10 +59,6 @@ export default defineConfig({
       imports: ['vue', 'vue/macros', 'vue-router', '@vueuse/core', 'vue-i18n'],
       dts: true,
       resolvers: [ElementPlusResolver()],
-    }),
-
-    ElementPlus({
-      useSource: true,
     }),
 
     // https://github.com/antfu/vite-plugin-components

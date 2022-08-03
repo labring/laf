@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { FormInstance } from 'element-plus'
-import { ElMessageBox, ElNotification } from 'element-plus'
 
 import { getFunctionById } from '~/api/func'
 import { createTrigger, removeTrigger, updateTrigger } from '~/api/trigger'

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ElMessageBox, ElNotification } from 'element-plus'
 import dayjs from 'dayjs'
 import { acceptReplicateRequest, deleteReplicateRequest, getReplicateRequests } from '~/api/replicate'
 

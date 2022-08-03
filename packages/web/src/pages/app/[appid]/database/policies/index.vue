@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { FormInstance } from 'element-plus'
-import { ElMessageBox, ElNotification } from 'element-plus'
 import { getFunctions } from '~/api/func'
 import { createPolicy, getPolicies, publishPolicies, removePolicy, updatePolicy } from '~/api/policy'
 
@@ -205,7 +204,12 @@ async function publish() {
 }
 
 async function handleShowDetail(row: { _id: any }) {
-  router.push(`${row._id}`)
+  router.push({
+    name: '策略详情',
+    params: {
+      policyid: row._id,
+    },
+  })
 }
 
 onMounted(() => {
@@ -338,7 +342,7 @@ onMounted(() => {
 </template>
 
 <route lang="yaml">
-name: policies
+name: 访问策略
 meta:
   title: 策略管理
   index: 2-1

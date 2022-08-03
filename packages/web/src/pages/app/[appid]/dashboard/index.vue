@@ -53,7 +53,7 @@ const getAppUrl = `${schema}://${app.appid}.${domain}`
 </template>
 
 <route lang="yaml">
-name: dashboard
+name: 欢迎
 meta:
   title: 欢迎
   index: 0-0

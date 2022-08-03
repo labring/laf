@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ElMessageBox } from 'element-plus'
 import { EJSON } from 'bson'
 import type { ReactiveVariable } from 'vue/macros'
 import { createCollection, deleCollectionIndex, getCollectionIndexes, getCollections, getDb, setCollectionIndexes, updateCollection } from '~/api/collec'
@@ -476,7 +475,7 @@ onMounted(() => {
 </template>
 
 <route lang="yaml">
-name: collections
+name: 集合管理
 meta:
   title: 集合管理
   index: 2-0
