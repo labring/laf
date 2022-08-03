@@ -137,6 +137,10 @@ services:
     networks:
       - laf_shared_network
 
+  pull-app-service-image:
+    image: lafyun/app-service:latest
+    command: echo 'pulled app-service image successful!'
+
 volumes:
   db-data:
   oss-data:
