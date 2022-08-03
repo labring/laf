@@ -13,8 +13,8 @@ const switchRoute = (item: any) => {
 </script>
 
 <template>
-  <el-menu h-screen background-color="#FAFBFC" text-color="#000" active-text-color="#09e">
-    <el-sub-menu v-for="item in menus" :key="item.name" :collapse="false" :index="item.name">
+  <el-menu text-color="#333" active-text-color="#09e" style="--el-menu-bg-color: #fff; --el-menu-border-color: #fff;">
+    <el-sub-menu v-for="item in menus" :key="item.name" :collapse="false" :index="item.name" style="margin: 6px 20px 6px;">
       <template #title>
         <el-icon>
           <setting />
@@ -30,11 +30,12 @@ const switchRoute = (item: any) => {
 </template>
 
 <style global lang="scss">
-.el-menu-item {
-  margin: 0 12px 4px;
+.el-menu-item, .el-sub-menu__title {
+  margin: 0 0 4px;
   border-radius: 4px;
 
-  &:hover, &.is-active {
+  &:hover,
+  &.is-active {
     background-color: #E6EFFC;
   }
 }

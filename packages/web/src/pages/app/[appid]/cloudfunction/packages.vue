@@ -130,6 +130,7 @@ onMounted(() => {
 
 <template>
   <div class="app-container">
+    <el-alert title="依赖变更后，需要重启服务才能生效" show-icon type="info" style="margin-bottom: 24px" />
     <!-- 数据检索区 -->
     <div class="filter-container mb-24px">
       <el-button class="filter-item" type="default" icon="Refresh" @click="getList">
@@ -141,15 +142,14 @@ onMounted(() => {
       <el-button class="filter-item" type="default" @click="restartApp">
         重启服务
       </el-button>
-      <span style="margin-left: 20px; font-size: 14px; color: blue">（依赖变更后，需要重启服务才能生效！）</span>
     </div>
 
     <!-- 表格 -->
     <el-table
-      v-loading="listLoading" :data="list" border fit highlight-current-row style="max-width: 600px"
+      v-loading="listLoading" :data="list" fit highlight-current-row
       size="medium"
     >
-      <el-table-column label="名称" width="240">
+      <el-table-column label="名称">
         <template #default="{ row }">
           <span class="link-type" @click="showUpdateForm(row)">{{
             row.name
@@ -176,7 +176,7 @@ onMounted(() => {
     <!-- 表单对话框 -->
     <el-dialog v-model="dialogFormVisible" :title="textMap[dialogStatus]">
       <el-form
-        ref="dataFormRef" :rules="rules" :model="form" label-position="left" label-width="140px"
+        ref="dataFormRef" :rules="rules" :model="form" label-width="140px"
         style="width: 400px; margin-left: 50px"
       >
         <el-form-item label="依赖包名" prop="name">

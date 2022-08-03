@@ -269,7 +269,7 @@ onMounted(() => {
     </div>
 
     <!-- 表格 -->
-    <el-table :key="tableKey" v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
+    <el-table :key="tableKey" v-loading="listLoading" :data="list" fit highlight-current-row style="width: 100%">
       <el-table-column label="文件桶(Bucket)" width="200">
         <template #default="{ row }">
           <span>{{ app.appid }}-{{ row.name }}</span>
@@ -317,7 +317,7 @@ onMounted(() => {
     <!-- 表单对话框 -->
     <el-dialog v-model="dialogFormVisible" width="600px" :title="textMap[dialogStatus]">
       <el-form
-        ref="dataFormRef" :rules="rules" :model="form" label-position="left" label-width="100px"
+        ref="dataFormRef" :rules="rules" :model="form" label-width="100px"
         style="width: 400px; margin-left: 50px"
       >
         <el-form-item label="文件桶名" prop="name">
@@ -359,7 +359,7 @@ onMounted(() => {
     </el-dialog>
 
     <el-dialog v-model="dialogACFormVisible" width="800px" title="服务账号">
-      <el-form label-position="left" label-width="120px" style="width: 600px; margin-left: 50px">
+      <el-form label-width="120px" style="width: 600px; margin-left: 50px">
         <el-alert title="服务账号只会显示一次，请自行保存" type="error" :closable="false" />
         <br>
         <el-form-item label="Access Key">

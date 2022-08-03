@@ -325,54 +325,56 @@ function handleUpdate() {
 </script>
 
 <template>
-  <div class="app-container bg-white">
+  <div class="app-container">
     <!-- 数据检索区 -->
-    <div class="filter-container mb-24px">
-      <el-input
-        v-model="listQuery.keyword" placeholder="搜索" style="width: 200px; margin-right: 10px"
-        class="filter-item" @keyup.enter="handleFilter"
-      />
-      <el-button class="filter-item" type="default" icon="Search" @click="handleFilter">
-        搜索
-      </el-button>
-
-      <el-button type="primary" icon="Plus" class="filter-item" @click="showCreateForm">
-        新建函数
-      </el-button>
-      <el-tooltip content="发布函数：函数要发布后才能生效" placement="bottom" effect="light">
-        <el-button class="filter-item" type="success" icon="Guide" @click="publish">
-          发布函数
+    <div class="flex justify-between">
+      <div>
+        <el-input
+          v-model="listQuery.keyword" placeholder="搜索" style="width: 200px; margin-right: 10px; vertical-align: middle;"
+          class="filter-item" @keyup.enter="handleFilter"
+        />
+        <el-button class="filter-item" type="primary" icon="Search" @click="handleFilter">
+          搜索
         </el-button>
-      </el-tooltip>
-      <el-checkbox
-        v-model="listQuery.onlyEnabled" class="filter-item ml-12px vertical-mid" label=""
-        :indeterminate="false" @change="handleFilter"
-      >
-        只看已启用
-      </el-checkbox>
-    </div>
-
-    <!-- 标签类别 -->
-
-    <div class="tag-selector flex items-center mb-24px">
-      <div class="label mr-12px text-xs">
-        标签类别
+        <el-button type="primary" icon="Plus" class="filter-item" @click="showCreateForm">
+          新建函数
+        </el-button>
+        <el-tooltip content="发布函数：函数要发布后才能生效" placement="bottom" effect="light">
+          <el-button class="filter-item" type="success" icon="Guide" @click="publish">
+            发布函数
+          </el-button>
+        </el-tooltip>
+        <el-checkbox
+          v-model="listQuery.onlyEnabled" class="filter-item ml-12px vertical-mid" label=""
+          :indeterminate="false" @change="handleFilter"
+        >
+          只看已启用
+        </el-checkbox>
       </div>
-      <el-radio-group v-model="listQuery.tag" size="small" @change="getList">
-        <el-radio-button label="">
-          全部
-        </el-radio-button>
-        <el-radio-button v-for="tag in all_tags" :key="tag" :label="tag">
-          {{ tag }}
-        </el-radio-button>
-      </el-radio-group>
+
+      <!-- 标签类别 -->
+      <div class="tag-selector flex items-center ">
+        <div class="label mr-12px text-xs">
+          标签类别
+        </div>
+        <el-radio-group v-model="listQuery.tag" size="small" @change="getList">
+          <el-radio-button label="">
+            全部
+          </el-radio-button>
+          <el-radio-button v-for="tag in all_tags" :key="tag" :label="tag">
+            {{ tag }}
+          </el-radio-button>
+        </el-radio-group>
+      </div>
     </div>
+
+    <el-divider />
 
     <!-- 表格 -->
-    <el-table v-loading="listLoading" border :data="list" highlight-current-row style="width: 100%">
+    <el-table v-loading="listLoading" :data="list" highlight-current-row style="width: 100%">
       <el-table-column label="函数标识" min-width="200">
         <template #default="{ row }">
-          <a class="link-type" style="font-size: 13px; font-weight: bold" @click="showUpdateForm(row)">{{ row.label
+          <a class="link-type" style="font-size: 14px; font-weight: 500;" @click="showUpdateForm(row)">{{ row.label
           }}</a>
           <div style="display: flex; align-items: center; justify-content: flex-start">
             <div class="func-name mr-4px">
@@ -398,24 +400,14 @@ function handleUpdate() {
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="HTTP" class-name="status-col" min-width="60" align="center">
+      <el-table-column label="HTTP 访问" class-name="status-col" min-width="80" align="center">
         <template #default="{ row }">
-          <el-tag v-if="row.enableHTTP" type="success" size="small" style="font-weight: bold">
-            可
-          </el-tag>
-          <el-tag v-else type="info" size="small" style="font-weight: bold">
-            不
-          </el-tag>
+          <el-switch v-model="row.enableHTTP" inline-prompt active-text="是" inactive-text="否" />
         </template>
       </el-table-column>
       <el-table-column label="状态" class-name="status-col" min-width="60" align="center">
         <template #default="{ row }">
-          <el-tag v-if="row.status === 1" type="success" size="small" style="font-weight: bold">
-            启
-          </el-tag>
-          <el-tag v-if="row.status === 0" type="warning" size="small" style="font-weight: bold">
-            停
-          </el-tag>
+          <el-switch v-model="row.status" :active-value="1" :width="70" inline-prompt active-text="已启用" inactive-text="已关闭" />
         </template>
       </el-table-column>
       <el-table-column label="调用地址" align="center" min-width="70">
@@ -425,15 +417,15 @@ function handleUpdate() {
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" min-width="240" class-name="small-padding">
+      <el-table-column label="操作" align="center" min-width="160">
         <template #default="{ row, $index }">
-          <el-button type="success" size="small" @click="handleShowDetail(row)">
+          <el-button type="success" plain size="small" @click="handleShowDetail(row)">
             开发
           </el-button>
-          <el-button type="info" size="small" @click="handleShowLogs(row)">
+          <el-button type="info" plain size="small" @click="handleShowLogs(row)">
             日志
           </el-button>
-          <el-button type="primary" size="small" @click="handleTriggers(row)">
+          <el-button type="primary" plain size="small" @click="handleTriggers(row)">
             触发器<b v-if="row.triggers && row.triggers.length">({{ row.triggers.length }})</b>
           </el-button>
           <el-tooltip content="请先停用函数，再删除！" :disabled="row.status !== 1" placement="top">
@@ -455,7 +447,7 @@ function handleUpdate() {
     <!-- 表单对话框 -->
     <el-dialog v-model="dialogFormVisible" :title="textMap[dialogStatus]" width="600px">
       <el-form
-        ref="dataFormRef" :rules="rules" :model="form" label-position="left" label-width="120px"
+        ref="dataFormRef" :rules="rules" :model="form" label-width="120px"
         style="width: 500px; margin-left: 20px"
       >
         <el-form-item v-if="form._id" label="ID" prop="_id">

@@ -261,7 +261,7 @@ onUnmounted(() => {
 
     <!-- 表单 -->
     <el-dialog v-model="dialogVisible" title="创建集合">
-      <el-form :model="form" label-width="80px" label-position="left">
+      <el-form :model="form" label-width="80px" >
         <el-form-item label="集合名称">
           <el-input v-model="form.collection" placeholder="唯一标识，为字母" />
         </el-form-item>

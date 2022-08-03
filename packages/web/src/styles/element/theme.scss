@@ -1,0 +1,39 @@
+@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+  $colors: (
+    'primary': (
+      'base': #4080FF,
+    ),
+    'success': (
+      'base': #21ba45,
+    ),
+    'warning': (
+      'base': #f2711c,
+    ),
+    'danger': (
+      'base': #db2828,
+    ),
+    'error': (
+      'base': #db2828,
+    ),
+    'info': (
+      'base': #42b8dd,
+    ),
+  ),
+  $button-padding-horizontal: (
+    'default': 80px,
+  ),
+  $dialog: (
+    'border-radius': 10px,
+  ),
+  $menu: (
+    'item-height': 42px,
+    'sub-item-height': 42px,
+  ),
+  $table: (
+    'header-text-color': #606266
+  ),
+  $message: (
+    'bg-color': #fff,
+    'padding': 10px 14px,
+  )
+);

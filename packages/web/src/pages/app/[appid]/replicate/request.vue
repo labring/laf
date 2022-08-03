@@ -70,7 +70,7 @@ onMounted(() => {
 <template>
   <div class="app-container">
     <!-- 数据列表 -->
-    <el-table :data="list" :loading="listLoading" border style="width: 100%">
+    <el-table :data="list" :loading="listLoading" style="width: 100%">
       <el-table-column prop="source_appid" label="源应用" width="180" align="center" />
       <el-table-column prop="target_appid" label="目标应用" align="center" />
       <el-table-column prop="created_at" label="创建时间" width="180" align="center" />

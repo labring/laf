@@ -99,7 +99,7 @@ function setTagViewTitle() {
     </div>
 
     <!-- 表格 -->
-    <el-table :key="tableKey" v-loading="listLoading" :data="list" border highlight-current-row style="width: 100%">
+    <el-table :key="tableKey" v-loading="listLoading" :data="list" highlight-current-row style="width: 100%">
       <el-table-column label="RequestId" prop="id" align="center" width="300">
         <template #default="{ row }">
           <span>{{ row.requestId }}</span>

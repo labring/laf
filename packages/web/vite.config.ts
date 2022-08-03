@@ -21,6 +21,15 @@ export default defineConfig({
       './runtimeConfig': './runtimeConfig.browser',
     },
   },
+
+  css: {
+    preprocessorOptions: {
+      scss: { // 注入全局scss变量
+        additionalData: '@use "~/styles/element/theme.scss" as *;',
+      },
+    },
+  },
+
   plugins: [
     // debug plugins only
     // Inspect(),
@@ -64,7 +73,7 @@ export default defineConfig({
     // https://github.com/antfu/vite-plugin-components
     Components({
       dts: true,
-      resolvers: [ElementPlusResolver()],
+      resolvers: [ElementPlusResolver({ importStyle: 'sass' })],
     }),
 
     // https://github.com/antfu/unocss

@@ -18,7 +18,7 @@ const langText = computed(() => {
 <template>
   <el-dropdown>
     <span class="el-dropdown-link flex items-center cursor-pointer">
-      <el-icon class="el-icon--right">
+      <el-icon :size="24">
         <LanguageOutlined />
       </el-icon>
       <span v-if="showName" ml-1>{{ langText }}</span>

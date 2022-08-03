@@ -190,7 +190,7 @@ onMounted(async () => {
     </el-tabs>
 
     <!-- 数据列表 -->
-    <el-table :data="tableList" :loading="listLoading" border style="width: 100%; top: -15px">
+    <el-table :data="tableList" :loading="listLoading" style="width: 100%; top: -15px">
       <el-table-column prop="source_appid" label="源应用" width="180" align="center" />
       <el-table-column prop="target_appid" label="目标应用" align="center" />
       <el-table-column prop="created_at" label="创建时间" width="180" align="center" />
@@ -225,7 +225,7 @@ onMounted(async () => {
 
     <el-dialog v-model="dialogFormVisible" title="请求授权">
       <el-form
-        ref="createForm" :rules="rules" :model="form" label-position="left" label-width="120px"
+        ref="createForm" :rules="rules" :model="form" label-width="120px"
         style="width: 400px; margin-left: 20px"
       >
         <el-form-item label="目标appid" prop="target_appid">
@@ -246,7 +246,7 @@ onMounted(async () => {
 
     <el-dialog v-model="replicasDialogVisible" title="请求部署">
       <el-form
-        ref="createForm" :rules="rules" :model="replicasForm" label-position="left" label-width="120px"
+        ref="createForm" :rules="rules" :model="replicasForm" label-width="120px"
         style="width: 400px; margin-left: 20px"
       >
         <el-form-item label="目标 appid" prop="target_appid">

@@ -240,7 +240,7 @@ onMounted(() => {
     </div>
 
     <!-- 表格 -->
-    <el-table :key="tableKey" v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
+    <el-table :key="tableKey" v-loading="listLoading" :data="list" fit highlight-current-row style="width: 100%">
       <!-- <el-table-column label="ID" prop="id" align="center" width="220">
           <template slot-scope="{row}">
             <span>{{ row._id }}</span>
@@ -308,7 +308,7 @@ onMounted(() => {
     <!-- 表单对话框 -->
     <el-dialog v-model="dialogFormVisible" :title="textMap[dialogStatus]">
       <el-form
-        ref="dataFormRef" :rules="rules" :model="form" label-position="left" label-width="70px"
+        ref="dataFormRef" :rules="rules" :model="form" label-width="70px"
         style="width: 500px; margin-left: 50px"
       >
         <el-form-item label="标识" prop="name">

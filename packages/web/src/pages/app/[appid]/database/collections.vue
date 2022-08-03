@@ -343,7 +343,7 @@ onMounted(() => {
 
       <el-container class="flex-col" style="flex-direction: column">
         <div
-          v-for="item in list" :key="item._id.toString()" class=" flex border border-gray-300 rounded mb-24px p-12px"
+          v-for="item in list" :key="item._id.toString()" class=" flex border-gray-300 rounded mb-24px p-12px"
           :class="getClass(item)"
         >
           <div class="doc flex-1">
@@ -380,7 +380,7 @@ onMounted(() => {
             创建索引
           </el-button>
         </div>
-        <el-table :data="indexes" border style="width: 100%">
+        <el-table :data="indexes" style="width: 100%">
           <el-table-column prop="name" label="索引名称" align="center" />
           <el-table-column label="索引属性" align="center">
             <template #default="{ row }">

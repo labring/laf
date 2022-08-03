@@ -9,7 +9,7 @@ const { copy } = useClipboard()
 function handleCopy(text: string) {
   copy(text)
   ElMessage({
-    message: '已复制!',
+    message: '复制成功',
     type: 'success',
     duration: 1000,
   })

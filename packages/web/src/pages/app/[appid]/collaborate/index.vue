@@ -72,7 +72,7 @@ async function handleCreate() {
 
   // 不可为应用创建者
   if (form.user._id === app.created_by)
-    return ElMessage.error('协作者已是应用的创建')
+    return ElMessage.error('该用户是应用的创建人,无需添加')
 
   // 不可重复添加
   const exists = collaborators.filter(
@@ -167,7 +167,7 @@ onMounted(async () => {
 
     <!-- 表单对话框 -->
     <el-dialog v-model="dialogVisible" title="协作者">
-      <el-form v-loading="loading" :model="form" label-width="100px" label-position="left">
+      <el-form v-loading="loading" :model="form" label-width="100px">
         <el-form-item label="用户名">
           <el-input v-model="form.username" style="width: 300px" placeholder="请输入对方用户名" />
           <el-button type="primary" style="margin-left: 10px" size="medium" @click="search">

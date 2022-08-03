@@ -274,7 +274,7 @@ onMounted(async () => {
     </div>
 
     <!-- 表格 -->
-    <el-table :key="tableKey" v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
+    <el-table :key="tableKey" v-loading="listLoading" :data="list" fit highlight-current-row style="width: 100%">
       <el-table-column label="文件" align="center" width="140">
         <template #default="{ row }">
           <a v-if="!row.Prefix" :href="getFileUrl(row)" target="blank">
