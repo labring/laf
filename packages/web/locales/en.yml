@@ -9,7 +9,7 @@ layout:
       rules:
         confirm: The two passwords do not match!
   topbar:
-    title: Laf Cloud
+    title: Laf
     user:
       logout: Exit
       reset-password: Reset Password

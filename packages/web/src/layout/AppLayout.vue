@@ -8,27 +8,33 @@ import TopBar from './components/TopBar.vue'
 
 <template>
   <ElConfigProvider :locale="zhCn">
-    <el-container>
-      <el-header style="--el-header-padding: 0; z-index: 9; margin-bottom: 2px;">
-        <TopBar />
-      </el-header>
-
-      <el-container style="height: calc(100vh - 64px)">
-        <el-aside width="240px" style="box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 5px 0px; z-index: 1">
-          <el-scrollbar>
+    <el-container class="h-screen">
+      <el-aside width="240px" style="box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 5px 0px; z-index: 1">
+        <el-scrollbar>
+          <div class="flex items-center logo-wrap px-12px py-12px w-240px">
+            <img
+              class="w-30px"
+              alt="logo"
+              src="https://www.gstatic.com/mobilesdk/160503_mobilesdk/logo/2x/firebase_28dp.png"
+            ><span class="ml-8px"> {{ $t('layout.topbar.title') }}</span>
+          </div>
+          <div class="pt-60px">
             <SideBar />
-          </el-scrollbar>
-        </el-aside>
+          </div>
+        </el-scrollbar>
+      </el-aside>
 
-        <el-container>
-          <el-main style="padding: 8px; background: #f2f3f5;">
-            <el-scrollbar>
-              <div class="p-20px bg-white rounded">
-                <router-view />
-              </div>
-            </el-scrollbar>
-          </el-main>
-        </el-container>
+      <el-container>
+        <el-header style="--el-header-padding: 0; z-index: 9; margin-bottom: 2px;">
+          <TopBar />
+        </el-header>
+        <el-main style="padding: 8px; background: #f2f3f5;">
+          <el-scrollbar>
+            <div class="p-20px bg-white rounded">
+              <router-view />
+            </div>
+          </el-scrollbar>
+        </el-main>
       </el-container>
     </el-container>
   </ElConfigProvider>
@@ -38,4 +44,16 @@ import TopBar from './components/TopBar.vue'
 .el-scrollbar__thumb {
   width: 4px !important;
 }
+</style>
+
+<style scoped>
+  .logo-wrap {
+    position: fixed;
+    height: 60px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.1);
+    top: 0;
+    background-color: #fff;
+    z-index: 1;
+    border-bottom: 1px solid #eee;
+  }
 </style>

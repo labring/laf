@@ -220,8 +220,8 @@ onMounted(async () => {
     </div>
 
     <!-- 表格 -->
-    <el-table v-loading="loading" :data="list" fit highlight-current-row style="width: 100%">
-      <el-table-column label="ID" prop="_id" align="center" width="220">
+    <el-table v-loading="loading" :data="list" highlight-current-row>
+      <el-table-column label="ID" prop="_id" align="left">
         <template #default="{ row }">
           <span>{{ row._id }}</span>
         </template>
@@ -269,7 +269,7 @@ onMounted(async () => {
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" align="center" width="240" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="{ row, $index }">
           <el-button type="info" @click="showTriggerLogs(row)">
             日志

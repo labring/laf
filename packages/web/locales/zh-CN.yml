@@ -9,7 +9,7 @@ layout:
       rules:
         confirm: 两次密码不一致!
   topbar:
-    title: Laf 云开发
+    title: Laf
     user:
       logout: 退出
       reset-password: 修改密码
