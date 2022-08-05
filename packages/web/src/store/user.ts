@@ -1,6 +1,7 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { getToken, removeToken, setToken } from '~/utils/auth'
 import * as userAPI from '~/api/user'
+import { successMsg } from '~/utils/message'
 
 export const useUserStore = defineStore('user', () => {
   let token = $ref(getToken())
@@ -9,13 +10,7 @@ export const useUserStore = defineStore('user', () => {
 
   const login = async (username: string, password: string) => {
     const res = await userAPI.login({ username, password }) as any
-    if (res.error) {
-      ElMessage({
-        message: res.error,
-        type: 'error',
-      })
-      return
-    }
+
     token = res.data.access_token
     tokenExpire = res.data.expire
     setToken(token, tokenExpire)
@@ -23,47 +18,23 @@ export const useUserStore = defineStore('user', () => {
   }
 
   const getUserProfile = async () => {
-    const { data, error } = await userAPI.getUserProfile()
-    if (error) {
-      ElMessage({
-        message: error,
-        type: 'error',
-      })
-      return
-    }
+    const { data } = await userAPI.getUserProfile()
+
     userProfile = data
     return data
   }
 
   const signup = async (data: any) => {
     const res = await userAPI.signup(data)
-    if (res.error) {
-      ElMessage({
-        message: res.error,
-        type: 'error',
-      })
-      return
-    }
-    ElMessage({
-      message: '注册成功',
-      type: 'success',
-    })
+
+    successMsg('注册成功')
     return res
   }
 
-  const edit = async (data) => {
+  const edit = async (data: any) => {
     const res = await userAPI.edit(data)
-    if (res.error) {
-      ElMessage({
-        message: res.error,
-        type: 'error',
-      })
-      return
-    }
-    ElMessage({
-      message: '修改成功',
-      type: 'success',
-    })
+
+    successMsg('修改成功')
     return res
   }
 
