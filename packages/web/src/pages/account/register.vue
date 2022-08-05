@@ -3,13 +3,15 @@ import type { FormInstance } from 'element-plus'
 import * as useraApi from '~/api/user'
 import LanguageMenu from '~/layout/components/LanguageMenu.vue'
 import { maxLengthField, minLengthField, passwordField, requiredField } from '~/utils/form'
+import { errorMsg, successMsg } from '~/utils/message'
+import { useLoading } from '~/composables'
 const { t } = useI18n()
 const router = useRouter()
+const { loading, withAsyncLoading } = useLoading()
 const goLogin = () => {
   router.push('/login')
 }
 
-let loading = $ref(false)
 const registerFormRef = $ref<FormInstance>()
 const registerForm = $ref({
   username: '',
@@ -45,35 +47,24 @@ const registerRules = {
   ],
 }
 
-const register = async (registerEl: FormInstance | undefined) => {
+const register = withAsyncLoading(async (registerEl: FormInstance | undefined) => {
   if (!registerEl)
     return
 
-  registerEl.validate(async (valid) => {
-    if (!valid)
-      return
+  await registerEl.validate()
 
-    loading = true
-    const { username, name, password } = registerForm
+  const { username, name, password } = registerForm
 
-    const res = await useraApi.signup({ username, name, password }) as any
+  const res = await useraApi.signup({ username, name, password }) as any
 
-    loading = false
-    if (res.error) {
-      ElMessage({
-        message: res.error,
-        type: 'error',
-      })
-      return
-    }
+  if (res.error) {
+    errorMsg(res.error)
+    return
+  }
 
-    ElMessage({
-      message: t('pages.account.register.success-msg'),
-      type: 'success',
-    })
-    goLogin()
-  })
-}
+  successMsg(t('pages.account.register.success-msg'))
+  goLogin()
+})
 </script>
 
 <template>
