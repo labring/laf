@@ -405,13 +405,18 @@ onMounted(() => {
 
     <!-- 编辑集合数据结构 -->
     <el-drawer v-model="showCollectionSchemaForm" :title="`集合数据结构:${collectionName}`" size="50%">
-      <el-button :loading="loading" type="primary" :disabled="!collectionName" @click="updateCollectionSchema">
-        保存
-      </el-button>
       <JsonEditor
+        key="collection"
         v-model="collectionSchemaForm.schema" class="db-editor" :line-numbers="true" :dark="false"
         :height="600"
       />
+      <template #footer>
+        <div style="flex: auto">
+          <el-button :loading="loading" type="primary" :disabled="!collectionName" @click="updateCollectionSchema">
+            保存
+          </el-button>
+        </div>
+      </template>
     </el-drawer>
 
     <!-- 添加/编辑文档表单 -->
@@ -422,7 +427,7 @@ onMounted(() => {
       >
         保存
       </el-button>
-      <JsonEditor v-model="record" />
+      <JsonEditor key="record" v-model="record" />
     </el-drawer>
 
     <!-- 创建集合表单 -->

@@ -18,6 +18,19 @@ body,
     padding: 10px 25px !important;
     // height: 40px !important;
   }
+  .el-drawer__header {
+    margin-bottom: 0 !important;
+    height: 48px;
+    border-bottom: 1px solid #eee;
+    color: rgb(29, 33, 41);
+  }
+  .el-drawer__body {
+    padding: 12px 20px !important;
+  }
+  .el-drawer__footer {
+    padding: 12px 20px !important;
+    border-top: 1px solid #eee;
+  }
 }
 
 html.dark {

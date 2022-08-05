@@ -329,11 +329,11 @@ onMounted(async () => {
 
 <template>
   <div class="app-container ">
-    <div v-if="func" class="header">
-      <span style="font-size: 22px; line-height: 40px">
+    <div v-if="func" class="header mb-12px">
+      <span>
         <b>{{ func.label }}</b>
         <span
-          v-if="saved_code_diff" style="margin-left: 8px; font-size: 18px; color: red; cursor: pointer"
+          v-if="saved_code_diff" style="margin-left: 8px; color: red; cursor: pointer"
           @click="diffSaved"
         >
           [编辑中<el-icon><HotWater /></el-icon> ]

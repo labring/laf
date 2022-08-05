@@ -63,6 +63,11 @@ function initEditor() {
 onMounted(() => {
   initEditor()
 })
+
+watch(() => props.modified, () => {
+  editorInstance.dispose()
+  initEditor()
+})
 </script>
 
 <template>
