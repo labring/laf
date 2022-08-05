@@ -37,9 +37,9 @@ export function getFunctions(
  * @returns
  */
 export function getPublishedFunctions(ids: any[]): Promise<any> {
-  const appid = appStore.currentApp.appid
+  const appId = appStore.currentApp.appid
   return request({
-    url: `/sys-api/apps/${appid}/function/published`,
+    url: `/sys-api/apps/${appId}/function/published`,
     method: 'POST',
     data: {
       ids,
@@ -75,10 +75,10 @@ export function getAllFunctionTags(): Promise<any> {
  * @param {*} page
  * @param {*} pageSize
  */
-export function getFunctionById(func_id: any): Promise<any> {
+export function getFunctionById(funcId: any): Promise<any> {
   const appid = appStore.currentApp.appid
   return request({
-    url: `/sys-api/apps/${appid}/function/${func_id}`,
+    url: `/sys-api/apps/${appid}/function/${funcId}`,
     method: 'get',
   })
 }
@@ -86,45 +86,45 @@ export function getFunctionById(func_id: any): Promise<any> {
 /**
  * Create a cloud function
  * @param {string} appid
- * @param {object} function_data
+ * @param {object} functionData
  * @returns
  */
-export function createFunction(function_data: any): Promise<any> {
+export function createFunction(functionData: any): Promise<any> {
   const appid = appStore.currentApp.appid
   return request({
     url: `/sys-api/apps/${appid}/function/create`,
     method: 'post',
-    data: function_data,
+    data: functionData,
   })
 }
 
 /**
  * Update the basic info of cloud function
  * @param {string} func_id
- * @param {object} function_data
+ * @param {object} functionData
  * @returns
  */
-export function updateFunction(func_id: any, function_data: any): Promise<any> {
+export function updateFunction(func_id: any, functionData: any): Promise<any> {
   const appid = appStore.currentApp.appid
   return request({
     url: `/sys-api/apps/${appid}/function/${func_id}/info`,
     method: 'post',
-    data: function_data,
+    data: functionData,
   })
 }
 
 /**
  * Update the code of cloud function
  * @param {string} func_id
- * @param {object} function_data
+ * @param {object} functionData
  * @returns
  */
-export function updateFunctionCode(func_id: any, function_data: any): Promise<any> {
+export function updateFunctionCode(func_id: any, functionData: any): Promise<any> {
   const appid = appStore.currentApp.appid
   return request({
     url: `/sys-api/apps/${appid}/function/${func_id}/code`,
     method: 'post',
-    data: function_data,
+    data: functionData,
   })
 }
 
@@ -167,15 +167,15 @@ export function publishOneFunction(func_id: string): Promise<any> {
 /**
  * Compile the code of cloud function
  * @param {string} func_id
- * @param {object} function_data
+ * @param {object} functionData
  * @returns
  */
-export function compileFunctionCode(func_id: any, function_data: any) {
+export function compileFunctionCode(func_id: any, functionData: any) {
   const appid = appStore.currentApp.appid
   return request({
     url: `/sys-api/apps/${appid}/function/${func_id}/compile`,
     method: 'post',
-    data: function_data,
+    data: functionData,
   })
 }
 

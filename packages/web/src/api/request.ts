@@ -64,7 +64,7 @@ service.interceptors.response.use(
       return Promise.reject(error)
     }
 
-    ElMessage.error(error.response.data.message)
+    ElMessage.error(error.response.data || error.response.data.message)
     return Promise.reject(error)
   },
 )

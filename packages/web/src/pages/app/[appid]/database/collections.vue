@@ -326,8 +326,8 @@ onMounted(() => {
     </div>
     <el-container>
       <el-aside width="240px" class="px-12px">
-        <div class="label">
-          选择集合
+        <div class="label mb-12px">
+          <span class="text-sm">选择集合</span>
           <el-button
             :loading="loading" circle link style="margin-left: 10px" icon="Refresh"
             @click="fetchCollections"
@@ -361,7 +361,7 @@ onMounted(() => {
         <div style="text-align: right">
           <!-- 分页 -->
           <el-pagination
-            v-show="total > 0" v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit" small
+            v-show="total > 0" v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit"
             background class="mt-12px" :total="total" layout="->, total, prev, pager, next" @size-change="getList"
             @current-change="getList"
           />

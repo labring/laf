@@ -322,6 +322,20 @@ function handleUpdate() {
     dialogFormVisible = false
   })
 }
+
+async function handleChange(funcId: string, value: any) {
+  const r = await updateFunction(funcId, value)
+  if (r.error) {
+    ElNotification({
+      type: 'error',
+      title: '操作失败',
+      message: `更新失败！${r.error}`,
+    })
+  }
+  else {
+    ElMessage.success('操作成功')
+  }
+}
 </script>
 
 <template>
@@ -330,10 +344,11 @@ function handleUpdate() {
     <div class="flex justify-between">
       <div>
         <el-input
-          v-model="listQuery.keyword" placeholder="搜索" style="width: 200px; margin-right: 10px; vertical-align: middle;"
-          class="filter-item" @keyup.enter="handleFilter"
+          v-model="listQuery.keyword" placeholder="搜索"
+          style="width: 200px; margin-right: 10px; vertical-align: middle;" class="filter-item"
+          @keyup.enter="handleFilter"
         />
-        <el-button class="filter-item" type="primary" icon="Search" @click="handleFilter">
+        <el-button plain class="filter-item" type="primary" icon="Search" @click="handleFilter">
           搜索
         </el-button>
         <el-button type="primary" icon="Plus" class="filter-item" @click="showCreateForm">
@@ -402,12 +417,18 @@ function handleUpdate() {
       </el-table-column>
       <el-table-column label="HTTP 访问" class-name="status-col" min-width="80" align="center">
         <template #default="{ row }">
-          <el-switch v-model="row.enableHTTP" inline-prompt active-text="是" inactive-text="否" />
+          <el-switch
+            v-model="row.enableHTTP" inline-prompt active-text="是" inactive-text="否"
+            @change="handleChange(row._id, { ...row, enableHTTP: row.enableHTTP })"
+          />
         </template>
       </el-table-column>
       <el-table-column label="状态" class-name="status-col" min-width="60" align="center">
         <template #default="{ row }">
-          <el-switch v-model="row.status" :active-value="1" :width="70" inline-prompt active-text="已启用" inactive-text="已关闭" />
+          <el-switch
+            v-model="row.status" :active-value="1" :width="70" inline-prompt active-text="已启用"
+            inactive-text="已关闭" @change="handleChange(row._id, { ...row, status: row.status })"
+          />
         </template>
       </el-table-column>
       <el-table-column label="调用地址" align="center" min-width="70">
