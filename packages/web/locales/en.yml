@@ -1,5 +1,5 @@
 app:
-  title: Laf Cloud
+  title: LaF Cloud
 layout:
   components:
     reset-password:
@@ -9,7 +9,7 @@ layout:
       rules:
         confirm: The two passwords do not match!
   topbar:
-    title: Laf Cloud
+    title: LaF Cloud
     user:
       logout: Exit
       reset-password: Reset Password

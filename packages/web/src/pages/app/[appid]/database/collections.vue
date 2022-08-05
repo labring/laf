@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ElMessageBox } from 'element-plus'
 import { EJSON } from 'bson'
 import type { ReactiveVariable } from 'vue/macros'
 import { createCollection, deleCollectionIndex, getCollectionIndexes, getCollections, getDb, setCollectionIndexes, updateCollection } from '~/api/collec'
@@ -327,8 +326,8 @@ onMounted(() => {
     </div>
     <el-container>
       <el-aside width="240px" class="px-12px">
-        <div class="label">
-          选择集合
+        <div class="label mb-12px">
+          <span class="text-sm">选择集合</span>
           <el-button
             :loading="loading" circle link style="margin-left: 10px" icon="Refresh"
             @click="fetchCollections"
@@ -344,7 +343,7 @@ onMounted(() => {
 
       <el-container class="flex-col" style="flex-direction: column">
         <div
-          v-for="item in list" :key="item._id.toString()" class=" flex border border-gray-300 rounded mb-24px p-12px"
+          v-for="item in list" :key="item._id.toString()" class=" flex border-gray-300 rounded mb-24px p-12px"
           :class="getClass(item)"
         >
           <div class="doc flex-1">
@@ -362,7 +361,7 @@ onMounted(() => {
         <div style="text-align: right">
           <!-- 分页 -->
           <el-pagination
-            v-show="total > 0" v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit" small
+            v-show="total > 0" v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit"
             background class="mt-12px" :total="total" layout="->, total, prev, pager, next" @size-change="getList"
             @current-change="getList"
           />
@@ -381,7 +380,7 @@ onMounted(() => {
             创建索引
           </el-button>
         </div>
-        <el-table :data="indexes" border style="width: 100%">
+        <el-table :data="indexes" style="width: 100%">
           <el-table-column prop="name" label="索引名称" align="center" />
           <el-table-column label="索引属性" align="center">
             <template #default="{ row }">
@@ -476,7 +475,7 @@ onMounted(() => {
 </template>
 
 <route lang="yaml">
-name: collections
+name: 集合管理
 meta:
   title: 集合管理
   index: 2-0

@@ -72,7 +72,7 @@ const handleImportApp = (formEl: any) => {
       ref="importFormRef"
       :rules="importFormRules"
       :model="importForm"
-      label-position="left"
+
       label-width="120px"
       style="width: 300px; margin-left:20px;"
     >

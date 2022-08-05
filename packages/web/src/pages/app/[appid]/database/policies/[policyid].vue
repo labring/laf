@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ElMessageBox, ElNotification } from 'element-plus'
 import { head } from 'lodash'
 import { getPolicyById, updatePolicyRules } from '~/api/policy'
 import JsonEditor from '~/components/JsonEditor/param.vue'
@@ -262,7 +261,7 @@ onUnmounted(() => {
 
     <!-- 表单 -->
     <el-dialog v-model="dialogVisible" title="创建集合">
-      <el-form :model="form" label-width="80px" label-position="left">
+      <el-form :model="form" label-width="80px" >
         <el-form-item label="集合名称">
           <el-input v-model="form.collection" placeholder="唯一标识，为字母" />
         </el-form-item>
@@ -280,7 +279,8 @@ onUnmounted(() => {
 </template>
 
 <route lang="yaml">
-name: 策略
+name: 策略详情
+hidden: true
 meta:
   title: 策略管理
 </route>

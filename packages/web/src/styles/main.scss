@@ -5,14 +5,29 @@ body,
   margin: 0;
   padding: 0;
 }
+:root {
+  --el-message-bg-color: #fff !important;
+  --el-color-info-light-9: #e8f3ff !important;
+  --el-color-info: rgba(22,93,255) !important;
+  .el-message {
+    background-color: #fff !important;
+    box-shadow: 0 4px 10px rgb(0 0 0 / 10%) !important;
+    border: none !important;
+    padding: 10px 25px !important;
+    // height: 40px !important;
+  }
+}
 
 html.dark {
   background: #121212;
 }
 
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
 .link-type,
 .link-type:focus {
-  color: #337ab7;
   cursor: pointer;
 
   &:hover {

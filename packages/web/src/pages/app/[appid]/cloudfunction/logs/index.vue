@@ -99,7 +99,7 @@ function setTagViewTitle() {
     </div>
 
     <!-- 表格 -->
-    <el-table :key="tableKey" v-loading="listLoading" :data="list" border highlight-current-row style="width: 100%">
+    <el-table :key="tableKey" v-loading="listLoading" :data="list" highlight-current-row style="width: 100%">
       <el-table-column label="RequestId" prop="id" align="center" width="300">
         <template #default="{ row }">
           <span>{{ row.requestId }}</span>
@@ -159,8 +159,8 @@ function setTagViewTitle() {
 </template>
 
 <route lang="yaml">
-name: 日志
+name: 日志查询
 meta:
   title: 云函数日志
-  index: 1-1
+  index: 1-2
 </route>

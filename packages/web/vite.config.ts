@@ -6,7 +6,6 @@ import Layouts from 'vite-plugin-vue-layouts'
 import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Unocss from 'unocss/vite'
-import ElementPlus from 'unplugin-element-plus/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import vueI18n from '@intlify/vite-plugin-vue-i18n'
 // import Inspect from 'vite-plugin-inspect'
@@ -22,6 +21,15 @@ export default defineConfig({
       './runtimeConfig': './runtimeConfig.browser',
     },
   },
+
+  css: {
+    preprocessorOptions: {
+      scss: { // 注入全局scss变量
+        additionalData: '@use "~/styles/element/theme.scss" as *;',
+      },
+    },
+  },
+
   plugins: [
     // debug plugins only
     // Inspect(),
@@ -62,14 +70,10 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
 
-    ElementPlus({
-      useSource: true,
-    }),
-
     // https://github.com/antfu/vite-plugin-components
     Components({
       dts: true,
-      resolvers: [ElementPlusResolver()],
+      resolvers: [ElementPlusResolver({ importStyle: 'sass' })],
     }),
 
     // https://github.com/antfu/unocss

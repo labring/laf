@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { FormInstance } from 'element-plus'
-import { ElMessageBox, ElNotification } from 'element-plus'
 import { getFunctions } from '~/api/func'
 import { createPolicy, getPolicies, publishPolicies, removePolicy, updatePolicy } from '~/api/policy'
 
@@ -205,7 +204,12 @@ async function publish() {
 }
 
 async function handleShowDetail(row: { _id: any }) {
-  router.push(`${row._id}`)
+  router.push({
+    name: '策略详情',
+    params: {
+      policyid: row._id,
+    },
+  })
 }
 
 onMounted(() => {
@@ -236,7 +240,7 @@ onMounted(() => {
     </div>
 
     <!-- 表格 -->
-    <el-table :key="tableKey" v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
+    <el-table :key="tableKey" v-loading="listLoading" :data="list" fit highlight-current-row style="width: 100%">
       <!-- <el-table-column label="ID" prop="id" align="center" width="220">
           <template slot-scope="{row}">
             <span>{{ row._id }}</span>
@@ -304,7 +308,7 @@ onMounted(() => {
     <!-- 表单对话框 -->
     <el-dialog v-model="dialogFormVisible" :title="textMap[dialogStatus]">
       <el-form
-        ref="dataFormRef" :rules="rules" :model="form" label-position="left" label-width="70px"
+        ref="dataFormRef" :rules="rules" :model="form" label-width="70px"
         style="width: 500px; margin-left: 50px"
       >
         <el-form-item label="标识" prop="name">
@@ -338,7 +342,7 @@ onMounted(() => {
 </template>
 
 <route lang="yaml">
-name: policies
+name: 访问策略
 meta:
   title: 策略管理
   index: 2-1
