@@ -25,15 +25,14 @@ export const useMenuStore = defineStore('appMenu', () => {
 
       names.push(name)
     }
-
     const menus = names
-      .map((_: string) => {
+      .map((menuGroupName: string) => {
         const children = flatMenus
           .filter((menu: any) => !menu.hidden)
           .filter((menu: any) => {
             const { path } = menu
             const name = path.split(`/app/${appid}/`)[1].split('/')[0]
-            return name === _
+            return name === menuGroupName
           })
           .sort((a: any, b: any) => {
             const { index: aIndex } = a.meta
@@ -44,7 +43,7 @@ export const useMenuStore = defineStore('appMenu', () => {
           })
 
         return {
-          name: _,
+          name: menuGroupName,
           children,
           index: children[0].meta.index ? children[0].meta.index?.split('-')[0] : 0,
         }

@@ -5,10 +5,12 @@ body,
   margin: 0;
   padding: 0;
 }
+
 :root {
   --el-message-bg-color: #fff !important;
   --el-color-info-light-9: #e8f3ff !important;
-  --el-color-info: rgba(22,93,255) !important;
+  --el-color-info: rgba(22, 93, 255) !important;
+
   .el-message {
     background-color: #fff !important;
     box-shadow: 0 4px 10px rgb(0 0 0 / 10%) !important;
@@ -26,10 +28,22 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+a {
+  cursor: pointer;
+  color: rgb(22, 93, 255)
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a.blank:after {
+  content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==);
+  margin: 0 3px 0 5px;
+}
+
 .link-type,
 .link-type:focus {
-  cursor: pointer;
-
   &:hover {
     color: rgb(32, 160, 255);
   }
