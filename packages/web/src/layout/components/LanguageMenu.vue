@@ -17,7 +17,7 @@ const langText = computed(() => {
 
 <template>
   <el-dropdown>
-    <span class="text-slate-800 h-24px">
+    <span class="text-slate-800 h-24px flex items-center">
       <el-icon :size="24">
         <LanguageOutlined />
       </el-icon>

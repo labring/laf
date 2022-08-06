@@ -173,9 +173,12 @@ const toDetail = (app: any) => {
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" align="center" width="320" class-name="small-padding">
+      <el-table-column fixed="right" label="操作" align="center" width="360" class-name="small-padding">
         <template #default="{ row }">
-          <el-button type="success" size="small" @click="$emit('showUpdateDialog', row)">
+          <el-button type="success" size="small" @click="toDetail(row)">
+            进入开发
+          </el-button>
+          <el-button type="default" size="small" @click="$emit('showUpdateDialog', row)">
             编辑
           </el-button>
           <el-button type="default" size="small" :loading="loading" @click="exportApp(row)">
