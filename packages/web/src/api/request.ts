@@ -47,16 +47,16 @@ service.interceptors.response.use(
 
     if (status === 401) {
       // to re-login
-      // ElMessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-      //   confirmButtonText: 'Re-Login',
-      //   cancelButtonText: 'Cancel',
-      //   type: 'warning',
-      // }).then(() => {
-      //   const userStore = useUserStore()
+      ElMessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
+        confirmButtonText: 'Re-Login',
+        cancelButtonText: 'Cancel',
+        type: 'warning',
+      }).then(() => {
+        const userStore = useUserStore()
 
-      //   userStore.logOut()
-      //     .then(() => { location.reload() })
-      // })
+        userStore.logOut()
+          .then(() => { location.reload() })
+      })
       return Promise.reject(error)
     }
     if (status === 403) {

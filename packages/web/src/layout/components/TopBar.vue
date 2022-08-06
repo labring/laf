@@ -40,7 +40,7 @@ onMounted(async () => {
         <img
           class="w-30px"
           alt="logo"
-          src="https://docs.lafyun.com/logo.png"
+          src="/logo.png"
         ><span class="ml-8px"> {{ $t('layout.topbar.title') }}</span>
       </div>
     </div>
