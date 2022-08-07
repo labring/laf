@@ -1,5 +1,8 @@
-import axios from 'axios'
+import type { AxiosResponse } from 'axios'
+import axios, { AxiosError } from 'axios'
+import { useConfigStore } from '~/store'
 import { useUserStore } from '~/store/user'
+import { errorMsg, warnMsg } from '~/utils/message'
 
 // create an axios instance
 const service = axios.create({
@@ -11,62 +14,51 @@ const service = axios.create({
 service.interceptors.request.use(
   (config) => {
     const userStore = useUserStore()
+    const globalConfig = useConfigStore()
     const token = userStore.token
 
-    if (token) {
-      if (config.headers)
-        config.headers.Authorization = `Bearer ${token}`
-      else
-        config.headers = { Authorization: `Bearer ${token}` }
+    config.headers = {
+      ...config.headers,
+      'Authorization': `Bearer ${token}`,
+      'Accept-Language': globalConfig.local.language,
     }
+
     return config
   },
-  (error) => {
-    // Do something with request error
-    Promise.reject(error)
-  },
 )
+
+function isErrorResponse(res: AxiosResponse) {
+  return !!res.data.error
+}
+
+function createAxiosError(res: AxiosResponse) {
+  return new AxiosError(res.data.error, 'ERR_RESPONSE', res.config, res.request, res)
+}
 
 // response interceptor
 service.interceptors.response.use(
-  /**
-   * If you want to get http information such as headers or status
-   * Please return  response => response
-  */
-
-  /**
-   * Determine the request status by custom code
-   * Here is just an example
-   * You can also judge the status by HTTP Status Code
-   */
-  (response) => {
+  (response: any) => {
+    if (isErrorResponse(response))
+      return Promise.reject(createAxiosError(response))
     return response.data
   },
-  (error) => {
-    const status = error.response.status
-
-    if (status === 401) {
-      // to re-login
-      ElMessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-        confirmButtonText: 'Re-Login',
-        cancelButtonText: 'Cancel',
-        type: 'warning',
-      }).then(() => {
-        const userStore = useUserStore()
-
-        userStore.logOut()
-          .then(() => { location.reload() })
-      })
-      return Promise.reject(error)
-    }
-    if (status === 403) {
-      ElMessage.warning('无此操作权限')
-      return Promise.reject(error)
-    }
-
-    ElMessage.error(error.response.data || error.response.data.message)
-    return Promise.reject(error)
-  },
 )
+
+service.interceptors.response.use(undefined, (error: AxiosError<any, any>) => {
+  const status = error.response?.status
+
+  if (status === 401)
+    return Promise.reject(error)
+
+  if (status === 403) {
+    warnMsg('无此操作权限')
+    return Promise.reject(error)
+  }
+
+  if (!error.config.noDefaultErrorMsg)
+    errorMsg(error.message || '请求发生了异常')
+
+  return Promise.reject(error)
+})
 
 export default service

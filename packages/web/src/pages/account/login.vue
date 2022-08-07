@@ -3,7 +3,9 @@ import type { FormInstance } from 'element-plus'
 import LanguageMenu from '~/layout/components/LanguageMenu.vue'
 import { useUserStore } from '~/store/user'
 import { requiredField } from '~/utils/form'
+import { useLoading } from '~/composables'
 const { t } = useI18n()
+const { loading, withAsyncLoading } = useLoading()
 
 const router = useRouter()
 const goPage = (page: string) => {
@@ -11,7 +13,6 @@ const goPage = (page: string) => {
 }
 
 const userStore = useUserStore()
-let loading = $ref(false)
 const loginFormRef = $ref<FormInstance>()
 const loginForm = $ref({
   username: '',
@@ -26,26 +27,21 @@ const loginRules = computed(() => ({
     requiredField(t('pages.account.login.password')),
   ],
 }))
-const login = async (loginEl: FormInstance | undefined) => {
+const login = withAsyncLoading(async (loginEl: FormInstance | undefined) => {
   if (!loginEl)
     return
 
-  loginEl.validate(async (valid) => {
-    if (!valid)
-      return
+  await loginEl.validate()
 
-    loading = true
-    const { username, password } = loginForm
+  const { username, password } = loginForm
 
-    const res = await userStore.login(username, password) as any
+  const res = await userStore.login(username, password) as any
 
-    loading = false
-    if (res.error)
-      loginForm.password = ''
+  if (res.error)
+    loginForm.password = ''
 
-    goPage('/apps')
-  })
-}
+  goPage('/apps')
+})
 </script>
 
 <template>
