@@ -218,7 +218,7 @@ onMounted(async () => {
     </div>
 
     <!-- 数据创建表单 -->
-    <el-dialog v-model="createFormVisible" title="创建网站托管" width="500px">
+    <el-dialog v-model="createFormVisible" title="创建网站托管" width="540px">
       <el-form
         ref="createFormRef"
         :model="createForm"
@@ -237,7 +237,9 @@ onMounted(async () => {
               :value="bucket.name"
             />
           </el-select>
-          <span style="font-size: 12px; color: #666"> 可在“文件管理”创建 bucket</span>
+          <div mt-12px text-xs>
+            可在“文件管理”创建 bucket, bucket 权限为“公共读”
+          </div>
         </el-form-item>
       </el-form>
       <template #footer>

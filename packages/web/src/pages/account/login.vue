@@ -46,11 +46,11 @@ const login = withAsyncLoading(async (loginEl: FormInstance | undefined) => {
 
 <template>
   <div>
-    <el-card w-sm mt-20 ma>
+    <el-card w-lg mt-20 ma>
       <template #header>
         <div flex justify-between items-center>
-          <span text-4>{{ $t('pages.account.login.title') }}</span>
-          <el-button type="primary" text @click="goPage('/register')">
+          <span text-6 font-medium>{{ $t('pages.account.login.title') }}</span>
+          <el-button type="primary" link text @click="goPage('/register')">
             {{ $t('pages.account.register.title') }}
           </el-button>
         </div>
@@ -60,13 +60,13 @@ const login = withAsyncLoading(async (loginEl: FormInstance | undefined) => {
         autocomplete="off"
       >
         <el-form-item :label="$t('pages.account.login.account')" prop="username">
-          <el-input v-model="loginForm.username" />
+          <el-input v-model="loginForm.username" size="large" />
         </el-form-item>
         <el-form-item :label="$t('pages.account.login.password')" mt-6 prop="password">
-          <el-input v-model="loginForm.password" type="password" @keyup.enter="login(loginFormRef)" />
+          <el-input v-model="loginForm.password" size="large" type="password" @keyup.enter="login(loginFormRef)" />
         </el-form-item>
         <el-form-item mt-10>
-          <el-button type="success" w-screen :loading="loading" @click="login(loginFormRef)">
+          <el-button size="large" type="success" w-screen :loading="loading" @click="login(loginFormRef)">
             {{ $t('pages.account.login.login-btn') }}
           </el-button>
         </el-form-item>

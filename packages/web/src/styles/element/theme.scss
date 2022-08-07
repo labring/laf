@@ -19,15 +19,14 @@
       'base': #42b8dd,
     ),
   ),
-  $button-padding-horizontal: (
-    'default': 80px,
-  ),
   $dialog: (
     'border-radius': 10px,
   ),
   $menu: (
     'item-height': 42px,
     'sub-item-height': 42px,
+    'base-level-padding': 8px,
+    'active-color': #4080FF,
   ),
   $table: (
     'header-text-color': #606266
@@ -35,5 +34,8 @@
   $message: (
     'bg-color': #fff,
     'padding': 10px 14px,
+  ),
+  $drawer: (
+    'padding-primary': 0 20px,
   )
 );

@@ -68,11 +68,12 @@ const register = withAsyncLoading(async (registerEl: FormInstance | undefined) =
 </script>
 
 <template>
-  <el-card w-sm mt-20 ma>
+  <el-card w-lg mt-20 ma>
     <template #header>
       <div flex justify-between items-center>
-        <span text-4>{{ $t('pages.account.register.title') }}</span>
+        <span text-6 font-medium>{{ $t('pages.account.register.title') }}</span>
         <el-button
+          link
           type="primary"
           text
           @click="goLogin"
@@ -90,19 +91,20 @@ const register = withAsyncLoading(async (registerEl: FormInstance | undefined) =
       autocomplete="off"
     >
       <el-form-item :label="$t('pages.account.login.account')" prop="username">
-        <el-input v-model.trim="registerForm.username" />
+        <el-input v-model.trim="registerForm.username" size="large" />
       </el-form-item>
       <el-form-item :label="$t('pages.account.register.name')" mt-6 prop="name">
-        <el-input v-model.trim="registerForm.name" />
+        <el-input v-model.trim="registerForm.name" size="large" />
       </el-form-item>
       <el-form-item :label="$t('pages.account.login.password')" mt-6 prop="password">
-        <el-input v-model.trim="registerForm.password" type="password" />
+        <el-input v-model.trim="registerForm.password" size="large" type="password" />
       </el-form-item>
       <el-form-item :label="$t('layout.components.reset-password.form.confirm-password')" mt-6 prop="password2">
-        <el-input v-model.trim="registerForm.password2" type="password" />
+        <el-input v-model.trim="registerForm.password2" size="large" type="password" />
       </el-form-item>
       <el-form-item mt-10>
         <el-button
+          size="large"
           type="success"
           plain
           w-screen

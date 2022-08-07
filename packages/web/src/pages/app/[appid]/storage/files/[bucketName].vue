@@ -244,7 +244,8 @@ onMounted(async () => {
         <el-button type="primary">
           <el-icon>
             <UploadFilled />
-          </el-icon>上传<el-icon>
+          </el-icon> &nbsp;上传&nbsp;
+          <el-icon>
             <ArrowDown />
           </el-icon>
         </el-button>
@@ -266,11 +267,11 @@ onMounted(async () => {
         <span style="font-size: 16px; color: gray; margin-right: 5px">当前:</span>
         <PathLink :path="currentPath" :bucket="bucket" @change="onChangeDirectory" />
       </div>
-      <div class="inline-block float-right">
-        <span>bucket容量：{{ bucketQuota }} </span>
-        <span>已用容量：{{ bucketSize }} </span>
-        <span>文件数量：{{ bucketObjects }} </span>
-      </div>
+      <el-space :size="30" class="inline-block float-right">
+        <span>bucket容量：<span text-green-600 font-bold>{{ bucketQuota }}</span> </span>
+        <span>已用容量：<span text-green-600 font-bold>{{ bucketSize }} </span></span>
+        <span>文件数量：<span text-green-600 font-bold>{{ bucketObjects }} </span></span>
+      </el-space>
     </div>
 
     <!-- 表格 -->
@@ -278,19 +279,19 @@ onMounted(async () => {
       <el-table-column label="文件" align="center" width="140">
         <template #default="{ row }">
           <a v-if="!row.Prefix" :href="getFileUrl(row)" target="blank">
-            <el-icon v-if="isImage(row)" :size="40" @click="changeDirectory(row)">
+            <el-icon v-if="isImage(row)" :size="20" @click="changeDirectory(row)">
               <Picture />
             </el-icon>
 
-            <el-icon v-else-if="isVideo(row)" :size="40" @click="changeDirectory(row)">
+            <el-icon v-else-if="isVideo(row)" :size="20" @click="changeDirectory(row)">
               <VideoPlay />
             </el-icon>
 
-            <el-icon v-else-if="row.Prefix" :size="36" color="orange" @click="changeDirectory(row)">
+            <el-icon v-else-if="row.Prefix" :size="20" color="orange" @click="changeDirectory(row)">
               <FolderOpened />
             </el-icon>
 
-            <el-icon v-else :size="40" @click="changeDirectory(row)">
+            <el-icon v-else :size="20" @click="changeDirectory(row)">
               <Paperclip />
             </el-icon>
           </a>
@@ -312,7 +313,7 @@ onMounted(async () => {
           <span>{{ getFileSize(row) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="更新时间" width="140" align="center">
+      <el-table-column label="更新时间" width="200" align="center">
         <template #default="{ row }">
           <span v-if="row.LastModified">{{ $filters.formatTime(row.LastModified) }}</span>
           <span v-else>-</span>

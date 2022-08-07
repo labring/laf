@@ -58,7 +58,7 @@ function initEditor() {
     theme: props.dark ? 'vs-dark' : 'vs',
     readOnly: false,
     formatOnType: true,
-    fontSize: 16,
+    fontSize: 12,
     linkedEditing: true,
     cursorBlinking: 'expand',
     smoothScrolling: true,

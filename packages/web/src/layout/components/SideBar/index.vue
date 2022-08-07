@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { CloudApp, Collaborate, DataBase, DeploymentPattern, DeploymentPolicy, StoragePool } from '@vicons/carbon'
 import { useMenuStore } from '~/store'
 
 const router = useRouter()
@@ -10,15 +11,25 @@ const switchRoute = (item: any) => {
   const path = item.path
   router.push(path)
 }
+
+const menuIcons: any = {
+  dashboard: DeploymentPolicy,
+  cloudfunction: CloudApp,
+  database: DataBase,
+  storage: StoragePool,
+  replicate: DeploymentPattern,
+  collaborate: Collaborate,
+}
 </script>
 
 <template>
   <el-menu text-color="#333" active-text-color="#09e" style="--el-menu-bg-color: #fff; --el-menu-border-color: #fff;">
     <el-sub-menu v-for="item in menus" :key="item.name" :collapse="false" :index="item.name" style="margin: 6px 20px 6px;">
       <template #title>
-        <el-icon>
-          <setting />
+        <el-icon :size="20">
+          <component :is="menuIcons[item.name]" />
         </el-icon>
+
         <span>{{ item.name }}</span>
       </template>
       <el-menu-item v-for="child in item.children" :key="child.path" :index="child.path" @click="switchRoute(child)">

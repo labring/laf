@@ -343,17 +343,17 @@ onMounted(() => {
 
       <el-container class="flex-col" style="flex-direction: column">
         <div
-          v-for="item in list" :key="item._id.toString()" class=" flex border-gray-300 rounded mb-24px p-12px"
+          v-for="item in list" :key="item._id.toString()" class=" flex border border-gray-300 rounded mb-24px p-12px"
           :class="getClass(item)"
         >
           <div class="doc flex-1">
             <pre class="">{{ item }}</pre>
           </div>
           <div class="tools">
-            <el-button class="tools-btn" type="primary" @click="handleEditRecord(item)">
+            <el-button size="small" class="tools-btn" type="primary" @click="handleEditRecord(item)">
               编辑
             </el-button>
-            <el-button class="tools-btn" type="danger" @click="deleRecord(item)">
+            <el-button size="small" class="tools-btn" type="danger" @click="deleRecord(item)">
               删除
             </el-button>
           </div>
@@ -405,13 +405,18 @@ onMounted(() => {
 
     <!-- 编辑集合数据结构 -->
     <el-drawer v-model="showCollectionSchemaForm" :title="`集合数据结构:${collectionName}`" size="50%">
-      <el-button :loading="loading" type="primary" :disabled="!collectionName" @click="updateCollectionSchema">
-        保存
-      </el-button>
       <JsonEditor
+        key="collection"
         v-model="collectionSchemaForm.schema" class="db-editor" :line-numbers="true" :dark="false"
         :height="600"
       />
+      <template #footer>
+        <div style="flex: auto">
+          <el-button :loading="loading" type="primary" :disabled="!collectionName" @click="updateCollectionSchema">
+            保存
+          </el-button>
+        </div>
+      </template>
     </el-drawer>
 
     <!-- 添加/编辑文档表单 -->
@@ -422,7 +427,7 @@ onMounted(() => {
       >
         保存
       </el-button>
-      <JsonEditor v-model="record" />
+      <JsonEditor key="record" v-model="record" />
     </el-drawer>
 
     <!-- 创建集合表单 -->
