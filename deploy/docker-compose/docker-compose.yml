@@ -106,7 +106,7 @@ services:
       - laf_shared_network
 
   gateway-controller:
-    image: lafyun/gateway-controller:0.8.0
+    image: lafyun/gateway-controller:latest
     depends_on:
       - gateway
     environment:
