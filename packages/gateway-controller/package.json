@@ -1,6 +1,6 @@
 {
   "name": "gateway-controller",
-  "version": "0.8.0",
+  "version": "0.8.6",
   "description": "laf - gateway controller",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
@@ -21,6 +21,7 @@
     "devops"
   ],
   "dependencies": {
+    "axios": "0.27.2",
     "body-parser": "^1.19.0",
     "dayjs": "^1.10.6",
     "dotenv": "^8.2.0",
@@ -28,8 +29,7 @@
     "log4js": "^6.3.0",
     "mongodb": "^4.1.3",
     "mongodb-uri": "^0.9.7",
-    "nanoid": "^3.3.3",
-    "axios": "0.27.2"
+    "nanoid": "^3.3.3"
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
