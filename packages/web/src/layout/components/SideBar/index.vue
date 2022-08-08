@@ -12,6 +12,10 @@ const switchRoute = (item: any) => {
   router.push(path)
 }
 
+const openMenu = menus.value.map((item) => {
+  return item.name
+})
+
 const menuIcons: any = {
   dashboard: DeploymentPolicy,
   cloudfunction: CloudApp,
@@ -23,7 +27,10 @@ const menuIcons: any = {
 </script>
 
 <template>
-  <el-menu text-color="#333" active-text-color="#09e" style="--el-menu-bg-color: #fff; --el-menu-border-color: #fff;">
+  <el-menu
+    :default-openeds="openMenu"
+    text-color="#333" active-text-color="#09e" style="--el-menu-bg-color: #fff; --el-menu-border-color: #fff;"
+  >
     <el-sub-menu v-for="item in menus" :key="item.name" :collapse="false" :index="item.name" style="margin: 6px 20px 6px;">
       <template #title>
         <el-icon :size="20">

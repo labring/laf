@@ -33,7 +33,7 @@ const returnValue = $computed(() => {
         ]</span>
     </div>
     <div class="logs">
-      <div v-for="(log, index) in logs" :key="index" class="log-item">
+      <div v-for="(log, index) in logs" :key="index" class="log-item text-xs">
         <pre>- {{ log }}</pre>
       </div>
     </div>
