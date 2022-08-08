@@ -1,4 +1,49 @@
-# [](https://github.com/labring/laf/compare/v0.8.4...v) (2022-06-09)
+# [](https://github.com/labring/laf/compare/v0.8.5...v) (2022-08-08)
+
+
+### Bug Fixes
+
+* fix route priority ([#155](https://github.com/labring/laf/issues/155)) ([9ad2c58](https://github.com/labring/laf/commit/9ad2c58780a55330e0808da2b8ad0ef545fa3cd8))
+
+
+### Features
+
+* add ssl support ([#179](https://github.com/labring/laf/issues/179)) ([1bac7f0](https://github.com/labring/laf/commit/1bac7f04f06b4d68a9a19b874d56584d829baee5))
+* feat website domain ([#156](https://github.com/labring/laf/issues/156)) ([2b3a578](https://github.com/labring/laf/commit/2b3a578cbd49e8a0521c690e32e6d3448b5f5458))
+* **gateway:** add cors and websocket ([#142](https://github.com/labring/laf/issues/142)) ([fa8dfe0](https://github.com/labring/laf/commit/fa8dfe0d90b353b69034dd0266d706d06013638f))
+* **gateway:** add cors and websocket ([#142](https://github.com/labring/laf/issues/142)) ([4c289a9](https://github.com/labring/laf/commit/4c289a99882008f636107634272aa8c30c8114d7))
+* init gateway controller ([#133](https://github.com/labring/laf/issues/133)) ([0e27b70](https://github.com/labring/laf/commit/0e27b70028325b881248292d02159e493e0687d0))
+* init gateway controller ([#133](https://github.com/labring/laf/issues/133)) ([b7ca2f7](https://github.com/labring/laf/commit/b7ca2f750138a68fa471055f881e018a8e01aadf))
+* support website custom domain ([#138](https://github.com/labring/laf/issues/138)) ([1b2b382](https://github.com/labring/laf/commit/1b2b38275e50ef8143f06103390024b9f18251da))
+* support website custom domain ([#138](https://github.com/labring/laf/issues/138)) ([e2c7196](https://github.com/labring/laf/commit/e2c7196f58d46a12330d93bdf645e7049a98206b))
+
+
+
+## [0.8.5](https://github.com/labring/laf/compare/v0.8.5-alpha.0...v0.8.5) (2022-07-29)
+
+
+### Bug Fixes
+
+* **cli:** fix path sep error in win, add docs, fix code styles ([5c944e8](https://github.com/labring/laf/commit/5c944e87308d2c91a1ac2d714dd9014202c9e92e))
+* **cli:** fix templates dir path error ([c41c1a2](https://github.com/labring/laf/commit/c41c1a2afafba0da4eb5b6cf2e21fe6e029aa010))
+
+
+
+## [0.8.5-alpha.0](https://github.com/labring/laf/compare/v0.8.4...v0.8.5-alpha.0) (2022-07-29)
+
+
+### Bug Fixes
+
+* fix cli pkg error; ([cbebbcc](https://github.com/labring/laf/commit/cbebbcc6bf80ffe147900c788573a4e7f8cc0781))
+* page route ([#197](https://github.com/labring/laf/issues/197)) ([4be3f90](https://github.com/labring/laf/commit/4be3f90e11a8ddcc77fd602608b09a29c7674c26))
+
+
+### Features
+
+* add account sign up mode config ([#172](https://github.com/labring/laf/issues/172)) ([#181](https://github.com/labring/laf/issues/181)) ([60195b2](https://github.com/labring/laf/commit/60195b2a12414b10e7f7c586c07e125353eef124))
+* add cli package; ([fb356cc](https://github.com/labring/laf/commit/fb356cc6af031ad2fab108779b927b18065c49de))
+* **cli:** add oss/server command ([#154](https://github.com/labring/laf/issues/154)) ([65cb7a7](https://github.com/labring/laf/commit/65cb7a7c438f5cdd72d2fda2eff6e676162b9b8e))
+* validate old password before updating password ([#152](https://github.com/labring/laf/issues/152)) ([2f2e84e](https://github.com/labring/laf/commit/2f2e84e3c278d4aa3319bcd1493c0640780f2817))
 
 
 
