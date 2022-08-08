@@ -88,18 +88,39 @@ services:
       - laf_shared_network
 
   gateway:
-    image: lafyun/gateway:latest
+    image: apache/apisix:2.14.1-alpine
     depends_on:
       - system-server
       - mongo
+      - etcd
     environment:
       DEPLOY_DOMAIN: "*.${DEPLOY_DOMAIN:?err}"
       DEPLOY_OSS_DOMAIN: ${OSS_DOMAIN}
       SYS_CLIENT_HOST: ${SYS_CLIENT_HOST:?err}
       SYSTEM_EXTENSION_APPID: ${SYSTEM_EXTENSION_APPID}
-    command: "sh /scripts/start.sh"
+    volumes:
+      - ./gateway_conf.yaml:/usr/local/apisix/conf/config.yaml:ro
     ports:
-      - ${PUBLISH_PORT:-8080}:80
+      - ${PUBLISH_PORT:-8080}:9080
+    networks:
+      - laf_shared_network
+
+  gateway-controller:
+    image: lafyun/gateway-controller:0.8.0
+    depends_on:
+      - gateway
+    environment:
+      DEPLOY_DOMAIN: "${DEPLOY_DOMAIN:?err}"
+      DEPLOY_OSS_DOMAIN: ${OSS_DOMAIN}
+      SYS_CLIENT_HOST: ${SYS_CLIENT_HOST:?err}
+      LOG_LEVEL: debug
+      SERVICE_DRIVER: docker
+      GATEWAY_TYPE: apisix
+      SYS_DB_URI: mongodb://${SYS_DB_USER}:${SYS_DB_PASSWORD}@mongo:27017/?authSource=${SYS_DB}&replicaSet=laf&writeConcern=majority
+      API_SIX_KEY: ${API_SIX_KEY}
+      APP_SERVICE_DEPLOY_URL_SCHEMA: ${APP_SERVICE_DEPLOY_URL_SCHEMA}
+    volumes:
+      - ./cert:/ssl
     networks:
       - laf_shared_network
 

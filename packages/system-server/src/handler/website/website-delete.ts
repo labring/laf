@@ -5,6 +5,7 @@ import { IApplicationData } from "../../support/application"
 import { checkPermission } from "../../support/permission"
 import { ObjectId } from 'mongodb'
 import { WebsiteActionDef } from '../../actions'
+import {deleteWebsiteRoute} from "../../support/route";
 
 /**
  * handle delete website
@@ -42,5 +43,9 @@ export async function handleDeleteWebsite(req: Request, res: Response) {
     { _id: new ObjectId(id), appid: app.appid },
     { $set: { status: "deleted", state: "pending", updated_at: new Date() } }
   )
+  const rt = await deleteWebsiteRoute(app.appid, id)
+  if (!rt) {
+    return res.send({ code: 'ROUTE DELETE FAILED', error: "route delete failed" })
+  }
   return res.send({ data: r.modifiedCount })
 }

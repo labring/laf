@@ -4,6 +4,7 @@ import { getApplicationByAppid } from "./support/application"
 import { Initializer } from "./support/initializer"
 import Config from "./config"
 import { logger } from "./support/logger"
+import {createApplicationRoute} from "./support/route";
 
 
 /**
@@ -48,6 +49,14 @@ async function main() {
   // run system extension server app
   await Initializer.startSystemExtensionApp(Config.SYSTEM_EXTENSION_APPID)
   logger.info('start system extension server app')
+
+  // init system app route
+  let rt = await createApplicationRoute(app.name, app.appid, 0)
+  if (!rt) {
+    logger.error('Error: create route failed')
+  }
+
+
 }
 
 
