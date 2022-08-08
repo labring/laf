@@ -53,7 +53,7 @@ const listQuery = $ref({
   limit: 10,
   keyword: undefined,
   tag: '',
-  onlyEnabled: true, // 只看启用的函数
+  onlyEnabled: false, // 只看启用的函数
 })
 let form = $ref(getDefaultFormValue())
 let dialogFormVisible = $ref(false)
@@ -426,7 +426,7 @@ async function handleChange(funcId: string, value: any) {
       <el-table-column label="状态" class-name="status-col" min-width="60" align="center">
         <template #default="{ row }">
           <el-switch
-            v-model="row.status" :active-value="1" :width="70" inline-prompt active-text="已启用"
+            v-model="row.status" :active-value="1" :width="60" inline-prompt active-text="已启用"
             inactive-text="已关闭" @change="handleChange(row._id, { ...row, status: row.status })"
           />
         </template>
@@ -438,7 +438,7 @@ async function handleChange(funcId: string, value: any) {
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" min-width="160">
+      <el-table-column label="操作" align="center" min-width="180">
         <template #default="{ row, $index }">
           <el-button type="success" plain size="small" @click="handleShowDetail(row)">
             开发

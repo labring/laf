@@ -289,10 +289,10 @@ onMounted(() => {
       </el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
         <template #default="{ row, $index }">
-          <el-button type="primary" @click="handleShowDetail(row)">
+          <el-button plain size="small" type="primary" @click="handleShowDetail(row)">
             编辑
           </el-button>
-          <el-button v-if="row.status !== 'deleted'" type="danger" @click="handleDelete(row, $index)">
+          <el-button v-if="row.status !== 'deleted'" plain size="small" type="danger" @click="handleDelete(row, $index)">
             删除
           </el-button>
         </template>
