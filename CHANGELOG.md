@@ -1,4 +1,8 @@
-# [](https://github.com/labring/laf/compare/v0.8.5...v) (2022-08-08)
+# [](https://github.com/labring/laf/compare/v0.8.6...v) (2022-08-08)
+
+
+
+## [0.8.6](https://github.com/labring/laf/compare/v0.8.5...v0.8.6) (2022-08-08)
 
 
 ### Bug Fixes
