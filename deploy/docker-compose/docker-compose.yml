@@ -1,8 +1,8 @@
 version: '3.8'
 services:
   mongo:
-    image: bitnami/mongodb:5.0.8
-    # image: bitnami/mongodb:4.4.13    # Use this version for Apple M1 Chip
+    # image: bitnami/mongodb:5.0.8
+    image: bitnami/mongodb:4.4.13    # Use this version for Apple M1 Chip
     environment:
       - MONGODB_REPLICA_SET_MODE=primary
       - MONGODB_ADVERTISED_HOSTNAME=mongo
@@ -105,6 +105,16 @@ services:
     networks:
       - laf_shared_network
 
+  apisix-dashboard:
+    image: apache/apisix-dashboard:2.13-alpine
+    restart: always
+    volumes:
+      - ./gateway_dashboard_conf.yaml:/usr/local/apisix-dashboard/conf/conf.yaml
+    ports:
+      - "9000:9000"
+    networks:
+      - laf_shared_network
+      
   gateway-controller:
     image: lafyun/gateway-controller:latest
     depends_on:
