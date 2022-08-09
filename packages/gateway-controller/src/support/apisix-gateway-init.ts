@@ -1,11 +1,11 @@
 /**
  * init base route
  */
-import Config from "../config";
-import {ApiSixHttpUtils} from "./apisix-gateway-utils";
-import {logger} from "./logger";
+import Config from "../config"
+import { ApiSixHttpUtils } from "./apisix-gateway-utils"
+import { logger } from "./logger"
 
-const fs = require('fs');
+const fs = require('fs')
 
 const baseUrl = 'http://gateway:9080'
 
@@ -28,10 +28,12 @@ export async function initBaseSSL() {
         let ssl = await getGlobalSSL()
         if (ssl == null || ssl.validity_end < new Date().getTime() / 1000) {
             initGlobalSSL()
+            initGlobalOssSSL()
         }
         ssl = await getGlobalOssSSL()
         if (ssl == null || ssl.validity_end < new Date().getTime() / 1000) {
             initGlobalSSL()
+            initGlobalOssSSL()
         }
     }, 1000 * 60 * 60 * 24)
 
@@ -45,7 +47,7 @@ function initSystemClientRoute() {
         hosts: [Config.SYS_CLIENT_HOST],
         upstream: {
             type: 'roundrobin',
-            nodes: {'system-client:8080': 1}
+            nodes: { 'system-client:8080': 1 }
         },
         priority: 0,
         timeout: {
@@ -64,7 +66,7 @@ function initAppConsoleRoute() {
         hosts: [Config.SYS_CLIENT_HOST],
         upstream: {
             type: 'roundrobin',
-            nodes: {'app-console:8080': 1}
+            nodes: { 'app-console:8080': 1 }
         },
         timeout: {
             connect: 600,
@@ -88,7 +90,7 @@ function initSysApiRoute() {
         hosts: [Config.SYS_CLIENT_HOST],
         upstream: {
             type: 'roundrobin',
-            nodes: {'system-server:9000': 1}
+            nodes: { 'system-server:9000': 1 }
         },
         priority: 9,
         timeout: {
@@ -113,7 +115,7 @@ function initOssRoute() {
         hosts: [Config.DEPLOY_OSS_DOMAIN],
         upstream: {
             type: 'roundrobin',
-            nodes: {'oss:9000': 1}
+            nodes: { 'oss:9000': 1 }
         },
         timeout: {
             connect: 600,
@@ -132,7 +134,7 @@ function initOssSubDomainRoute() {
         hosts: ['*.' + Config.DEPLOY_OSS_DOMAIN],
         upstream: {
             type: 'roundrobin',
-            nodes: {'oss:9000': 1}
+            nodes: { 'oss:9000': 1 }
         },
         priority: 0,
         timeout: {

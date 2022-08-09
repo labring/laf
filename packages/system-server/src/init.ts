@@ -4,7 +4,7 @@ import { getApplicationByAppid } from "./support/application"
 import { Initializer } from "./support/initializer"
 import Config from "./config"
 import { logger } from "./support/logger"
-import {createApplicationRoute} from "./support/route";
+import { createApplicationRoute } from "./support/route"
 
 
 /**
