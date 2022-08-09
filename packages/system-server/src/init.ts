@@ -51,7 +51,8 @@ async function main() {
   logger.info('start system extension server app')
 
   // init system app route
-  let rt = await createApplicationRoute(app.name, app.appid, 0)
+  const finalApp = await getApplicationByAppid(Config.SYSTEM_EXTENSION_APPID)
+  let rt = await createApplicationRoute(finalApp.name, finalApp.appid, 0)
   if (!rt) {
     logger.error('Error: create route failed')
   }
