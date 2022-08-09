@@ -1,9 +1,9 @@
 import * as express from 'express'
 import Config from './config'
-import {logger} from './support/logger'
-import {DatabaseAgent} from './support/db'
-import {start_scheduler} from './scheduler'
-import {initBaseRoute, initBaseSSL} from "./support/apisix-gateway-init";
+import { logger } from './support/logger'
+import { DatabaseAgent } from './support/db'
+import { start_scheduler } from './scheduler'
+import { initBaseRoute, initBaseSSL } from "./support/apisix-gateway-init"
 
 DatabaseAgent.init(Config.SYS_DB_URI)
 
@@ -19,7 +19,7 @@ app.get('/healthz', (_req, res) => {
 initBaseRoute()
 
 // init base ssl
-if (Config.APP_SERVICE_DEPLOY_URL_SCHEMA) {
+if (Config.APP_SERVICE_DEPLOY_URL_SCHEMA === 'https') {
     initBaseSSL()
 }
 
