@@ -4,6 +4,8 @@ import { ElConfigProvider } from 'element-plus'
 import zhCn from 'element-plus/lib/locale/lang/zh-cn'
 import SideBar from './components/SideBar/index.vue'
 import TopBar from './components/TopBar.vue'
+import Multitab from './components/Multitab/Tabs.vue'
+import MultitabView from './components/Multitab/View.vue'
 const router = useRouter()
 </script>
 
@@ -32,9 +34,12 @@ const router = useRouter()
           <TopBar />
         </el-header>
         <el-main style="padding: 8px; background: #f2f3f5;">
+        <div class="pb-10px">
+          <Multitab></Multitab>
+        </div>
           <el-scrollbar>
             <div class="p-20px bg-white rounded">
-              <router-view />
+              <MultitabView></MultitabView>
             </div>
           </el-scrollbar>
         </el-main>
