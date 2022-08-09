@@ -1,58 +1,60 @@
 <script setup lang="ts">
 import { defineEmits, defineProps, onMounted, ref, toRaw } from 'vue'
 import * as monaco from 'monaco-editor'
+
 const props = defineProps({
   modelValue: String,
   height: Number,
 })
-
 const emit = defineEmits(['update:modelValue'])
 
 const dom = ref()
 
 let editorInstance: monaco.editor.IStandaloneCodeEditor
-onMounted(() => {
-  const jsonModel = monaco.editor.getModels()[0] || monaco.editor.createModel(
-    JSON.stringify(props.modelValue, null, 2) || '',
-    'json',
-    monaco.Uri.parse('json://grid/settings.json'),
-  )
+
+function initEditor() {
+  let _value = props.modelValue || ''
+  if (typeof props.modelValue === 'object')
+    _value = JSON.stringify(props.modelValue, null, 2)
 
   editorInstance = monaco.editor.create(dom.value, {
-    model: jsonModel,
-    minimap: {
-      enabled: false,
-    },
-    tabSize: 2,
+    value: _value,
+    language: 'json',
     fontSize: 12,
-    automaticLayout: true,
+    lineNumbers: 'on',
+    roundedSelection: true,
     scrollBeyondLastLine: false,
+    readOnly: false,
+    theme: 'vs',
+    fontWeight: 'bold',
+    smoothScrolling: true,
+    renderWhitespace: 'selection',
   })
 
   editorInstance.onDidChangeModelContent(() => {
     const value = editorInstance.getValue()
     emit('update:modelValue', value)
   })
+}
+
+onMounted(() => {
+  nextTick(() => {
+    initEditor()
+  })
 })
 
 watch(() => props.modelValue, (value) => {
   if (toRaw(value) !== editorInstance?.getValue())
-    editorInstance.setValue(JSON.stringify(toRaw(value), null, 2) || '')
+    editorInstance.setValue(JSON.stringify(toRaw(value), null, 2))
 })
 
 onDeactivated(() => {
   editorInstance.dispose()
-  monaco.editor.getModels().forEach(model => model.dispose())
 })
 
 onUnmounted(() => {
   editorInstance.dispose()
-  monaco.editor.getModels().forEach(model => model.dispose())
 })
-
-// onUpdated(() => {
-//   editorInstance.setValue(JSON.stringify(props.modelValue, null, 2))
-// })
 </script>
 
 <template>

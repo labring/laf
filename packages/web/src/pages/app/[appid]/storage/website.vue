@@ -166,7 +166,7 @@ onMounted(async () => {
   <div class="app-container">
     <!-- 数据检索区 -->
     <div class="filter-container mb-24px">
-      <el-button class="filter-item" type="default" icon="Search" @click="getWebsites">
+      <el-button class="filter-item" type="default" icon="Refresh" @click="getWebsites">
         刷新
       </el-button>
       <el-button class="filter-item" type="primary" icon="Plus" @click="showCreateForm">
@@ -206,10 +206,10 @@ onMounted(async () => {
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template #default="{ row }">
-            <el-button type="success" @click="showEditForm(row)">
+            <el-button plain size="small" type="primary" @click="showEditForm(row)">
               自定义域名
             </el-button>
-            <el-button type="danger" @click="handleDelete(row)">
+            <el-button plain size="small" type="danger" @click="handleDelete(row)">
               删除
             </el-button>
           </template>

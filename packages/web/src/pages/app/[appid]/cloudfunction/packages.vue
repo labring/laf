@@ -130,7 +130,8 @@ onMounted(() => {
 
 <template>
   <div class="app-container">
-    <el-alert title="依赖变更后，需要重启服务才能生效" show-icon type="info" style="margin-bottom: 24px" />
+    <el-alert title="依赖变更后，需要重启服务才能生效" show-icon type="warning" style="margin-bottom: 24px" :closable="false" />
+
     <!-- 数据检索区 -->
     <div class="filter-container mb-24px">
       <el-button class="filter-item" type="default" icon="Refresh" @click="getList">
@@ -163,10 +164,10 @@ onMounted(() => {
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="{ row }">
-          <el-button type="success" @click="showUpdateForm(row)">
+          <el-button type="success" plain size="small" @click="showUpdateForm(row)">
             编辑
           </el-button>
-          <el-button v-if="row.status !== 'deleted'" type="danger" @click="handleDelete(row)">
+          <el-button v-if="row.status !== 'deleted'" plain size="small" type="danger" @click="handleDelete(row)">
             删除
           </el-button>
         </template>

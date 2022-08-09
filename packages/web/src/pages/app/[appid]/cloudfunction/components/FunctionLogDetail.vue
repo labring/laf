@@ -33,7 +33,7 @@ const returnValue = $computed(() => {
         ]</span>
     </div>
     <div class="logs">
-      <div v-for="(log, index) in logs" :key="index" class="log-item">
+      <div v-for="(log, index) in logs" :key="index" class="log-item text-xs">
         <pre>- {{ log }}</pre>
       </div>
     </div>
@@ -42,7 +42,7 @@ const returnValue = $computed(() => {
       返回结果
     </div>
     <div class="logs">
-      <pre>{{ returnValue }}</pre>
+      <pre text-xs>{{ returnValue }}</pre>
     </div>
   </div>
 </template>
@@ -59,11 +59,10 @@ const returnValue = $computed(() => {
   }
 
   .logs {
-    margin-top: 10px;
     padding: 10px;
     padding-left: 20px;
     background: rgba(233, 243, 221, 0.472);
-    border-radius: 10px;
+    border-radius: 6px;
     overflow-x: auto;
   }
 
@@ -71,7 +70,7 @@ const returnValue = $computed(() => {
     margin-top: 10px;
     padding: 16px;
     background: rgba(233, 243, 221, 0.472);
-    border-radius: 10px;
+    border-radius: 6px;
   }
 }
 </style>

@@ -205,18 +205,20 @@ onMounted(async () => {
       <el-table-column label="操作" width="200" align="center">
         <template #default="scope">
           <el-button
-            v-if="authType === 'target' && scope.row.status === 'accepted'" class="filter-item" type="primary"
+            v-if="authType === 'target' && scope.row.status === 'accepted'" plain
+            size="small" class="filter-item" type="primary"
             @click="showReplicasForm(scope.row)"
           >
             部署
           </el-button>
           <el-button
-            v-if="authType === 'source' && scope.row.status !== 'accepted'" plain type="primary"
+            v-if="authType === 'source' && scope.row.status !== 'accepted'" plain
+            size="small" type="primary"
             @click="handleUpdateAuth(scope.row)"
           >
             接受
           </el-button>
-          <el-button type="danger" @click="handleDeleteAuth(scope.row)">
+          <el-button plain size="small" type="danger" @click="handleDeleteAuth(scope.row)">
             删除
           </el-button>
         </template>
