@@ -17,8 +17,7 @@ const $router = useRouter()
 
 const dataFormRef = $ref<FormInstance>()
 
-const defaultCode = `
-import cloud from '@/cloud-sdk'
+const defaultCode = `import cloud from '@/cloud-sdk'
 
 exports.main = async function (ctx: FunctionContext) {
   // body, query 为请求参数, auth 是授权对象
