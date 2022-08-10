@@ -8,13 +8,13 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Unocss from 'unocss/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import vueI18n from '@intlify/vite-plugin-vue-i18n'
-// import Inspect from 'vite-plugin-inspect'
+import Inspect from 'vite-plugin-inspect'
 import monacoEditorPlugin from 'vite-plugin-monaco-editor'
 import SFCName from './scripts/vite-plugin-vue-sfc-name'
 
 import extendRoute from './scripts/extend-route'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       '~/': `${path.resolve(__dirname, 'src')}/`,
@@ -32,7 +32,7 @@ export default defineConfig({
 
   plugins: [
     // debug plugins only
-    // Inspect(),
+    mode === 'development' && Inspect(),
     SFCName(),
     Vue({
       reactivityTransform: true,
@@ -67,13 +67,13 @@ export default defineConfig({
     AutoImport({
       imports: ['vue', 'vue/macros', 'vue-router', '@vueuse/core', 'vue-i18n'],
       dts: true,
-      resolvers: [ElementPlusResolver()],
+      resolvers: [ElementPlusResolver({ importStyle: mode === 'development' ? false : 'sass' })],
     }),
 
     // https://github.com/antfu/vite-plugin-components
     Components({
       dts: true,
-      resolvers: [ElementPlusResolver({ importStyle: 'sass' })],
+      resolvers: [ElementPlusResolver({ importStyle: mode === 'development' ? false : 'sass' })],
     }),
 
     // https://github.com/antfu/unocss
@@ -104,11 +104,4 @@ export default defineConfig({
       },
     },
   },
-
-  build: {
-    rollupOptions: {
-      external: [],
-    },
-  },
-
-})
+}))
