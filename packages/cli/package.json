@@ -1,0 +1,45 @@
+{
+  "name": "laf-cli",
+  "version": "0.8.5",
+  "description": "laf-cli for labring/laf",
+  "main": "dist/index.js",
+  "bin": {
+    "laf": "dist/index.js"
+  },
+  "scripts": {
+    "dev": "tsc -w",
+    "watch": "tsc -w",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/labring/laf.git"
+  },
+  "keywords": [
+    "laf"
+  ],
+  "author": "maslow (wangfugen@126.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/labring/laf/issues"
+  },
+  "homepage": "https://github.com/labring/laf#readme",
+  "devDependencies": {
+    "@types/mime": "^2.0.3",
+    "@types/node": "^17.0.31"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.86.0",
+    "adm-zip": "^0.5.9",
+    "aws-sdk": "^2.1167.0",
+    "axios": "^0.27.2",
+    "chokidar": "^3.5.3",
+    "cli-table2": "^0.2.0",
+    "commander": "^9.3.0",
+    "dotenv": "^16.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mime": "^3.0.0",
+    "typescript": "^4.7.4"
+  }
+}

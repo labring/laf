@@ -50,14 +50,15 @@ exports.main = async function (ctx) {
 ## 客户端 WebSocket 连接
 
 ```js
-const ws = new WebSocket("wss://your-own-appid.lafyun.com");
+const wss = new WebSocket("wss://your-own-appid.lafyun.com");
 wss.onopen = (socket) => {
   console.log("connected");
   wss.send("hi");
 };
 
-wss.onmessage = (data) => {
-  console.log(data.toString());
+wss.onmessage = (res) => {
+  console.log("收到了新的信息......")
+  console.log(res.data);
 };
 
 wss.onclose = () => {

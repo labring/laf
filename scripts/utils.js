@@ -6,8 +6,8 @@ const images = {
   'app-console': 'lafyun/app-console',
   'system-server': 'lafyun/system-server',
   'app-service': 'lafyun/app-service',
-  'gateway': 'lafyun/gateway',
-  'instance-controller': 'lafyun/instance-controller'
+  'gateway-controller': 'lafyun/gateway-controller',
+  'instance-controller': 'lafyun/instance-controller',
 }
 
 function getPackageVersion(packagePath) {
