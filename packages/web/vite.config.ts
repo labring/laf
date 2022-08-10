@@ -14,7 +14,7 @@ import SFCName from './scripts/vite-plugin-vue-sfc-name'
 
 import extendRoute from './scripts/extend-route'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       '~/': `${path.resolve(__dirname, 'src')}/`,
@@ -25,7 +25,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: { // 注入全局scss变量
-        additionalData: '@use "~/styles/element/theme.scss" as *;',
+        additionalData: `@use "~/styles/element/theme${mode === 'development' ? '.dev' : ''}.scss" as *;`,
       },
     },
   },
@@ -67,13 +67,13 @@ export default defineConfig({
     AutoImport({
       imports: ['vue', 'vue/macros', 'vue-router', '@vueuse/core', 'vue-i18n'],
       dts: true,
-      resolvers: [ElementPlusResolver()],
+      resolvers: [ElementPlusResolver({ importStyle: mode === 'development' ? false : 'sass' })],
     }),
 
     // https://github.com/antfu/vite-plugin-components
     Components({
       dts: true,
-      resolvers: [ElementPlusResolver({ importStyle: 'sass' })],
+      resolvers: [ElementPlusResolver({ importStyle: mode === 'development' ? false : 'sass' })],
     }),
 
     // https://github.com/antfu/unocss
@@ -111,4 +111,4 @@ export default defineConfig({
     },
   },
 
-})
+}))
