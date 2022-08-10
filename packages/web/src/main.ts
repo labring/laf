@@ -15,7 +15,12 @@ import '~/router/permission'
 const pinia = createPinia()
 
 const app = createApp(App)
-app.use(pinia).use(i18n).use(router).mount('#app')
+app.use(pinia).use(i18n).use(router)
+
+if (process.env.NODE_ENV === 'development')
+  import('./styles/element/theme.dev.scss').then(() => app.mount('#app'))
+else
+  app.mount('#app')
 
 app.config.globalProperties.$filters = {
   formatTime(time: string | Date, cFormat = 'YYYY-MM-DD HH:mm:ss') {
