@@ -100,16 +100,19 @@ async function updateFunc(showTip = true) {
 }
 
 async function launch() {
-  const r = await compileFunctionCode(func._id, {
-    code: value,
-  }).finally(() => {
-    loading = false
-  })
-
   if (loading)
     return
 
   loading = true
+
+  const r = await compileFunctionCode(func._id, {
+    code: value,
+  }).finally(
+    () => {
+      loading = false
+    },
+  )
+
   const param = parseInvokeParam(invokeParams)
   const res = await launchFunction(r.data, param, debug_token).finally(
     () => {
@@ -318,12 +321,27 @@ onMounted(async () => {
 
   nextTick(() => {
     updateEditorHeight()
-    document.removeEventListener('keydown', bindShortKey, false)
-    document.addEventListener('keydown', bindShortKey, false)
     window.addEventListener('resize', debounce(() => {
       updateEditorHeight()
     }))
   })
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('keydown', bindShortKey, false)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', bindShortKey, false)
+})
+
+onActivated(() => {
+  document.removeEventListener('keydown', bindShortKey, false)
+  document.addEventListener('keydown', bindShortKey, false)
+})
+
+onDeactivated(() => {
+  document.removeEventListener('keydown', bindShortKey, false)
 })
 </script>
 
