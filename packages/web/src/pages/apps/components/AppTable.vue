@@ -83,8 +83,10 @@ const exportApp = async (app) => {
 }
 
 const toDetail = (app: any) => {
-  if (app.status !== 'running')
+  if (app.status !== 'running') {
     ElMessage.error('请先启动应用服务！')
+    return
+  }
 
   const { appid } = app
   const path = `/app/${appid}/dashboard`
