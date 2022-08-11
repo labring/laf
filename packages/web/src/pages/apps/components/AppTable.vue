@@ -187,11 +187,20 @@ const toDetail = (app: any) => {
           <el-button type="default" size="small" @click="$emit('showImportDialog', row)">
             导入
           </el-button>
-          <el-tooltip v-if="type === 'created'" content="释放即完全删除应用，暂不可恢复，谨慎操作，仅应用创建者可执行此操作!" effect="light" placement="left">
-            <el-button :disabled="row.status === 'running'" size="small" type="default" @click="deleteApp(row)">
-              释放
-            </el-button>
-          </el-tooltip>
+          <template v-if="type === 'created'">
+            <el-tooltip v-if="row.status === 'stopped' || row.status === 'created'" content="释放即完全删除应用，暂不可恢复，谨慎操作，仅应用创建者可执行此操作!" effect="light" placement="left">
+              <el-button size="small" type="default" @click="deleteApp(row)">
+                释放
+              </el-button>
+            </el-tooltip>
+            <el-tooltip v-else content="请先停止应用" effect="light" placement="left">
+              <div class="inline-block ml-12px">
+                <el-button :disabled="true" size="small" type="default" @click="deleteApp(row)">
+                  释放
+                </el-button>
+              </div>
+            </el-tooltip>
+          </template>
         </template>
       </el-table-column>
     </el-table>
