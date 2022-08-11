@@ -189,9 +189,13 @@ const toDetail = (app: any) => {
           </el-button>
           <template v-if="type === 'created'">
             <el-tooltip v-if="row.status === 'stopped' || row.status === 'created'" content="释放即完全删除应用，暂不可恢复，谨慎操作，仅应用创建者可执行此操作!" effect="light" placement="left">
-              <el-button size="small" type="default" @click="deleteApp(row)">
-                释放
-              </el-button>
+              <el-popconfirm title="确认要释放应用吗？该操作不可撤回" cancel-button-text="否" confirm-button-text="是" @confirm="deleteApp(row)">
+                <template #reference>
+                  <el-button size="small" type="default">
+                    释放
+                  </el-button>
+                </template>
+              </el-popconfirm>
             </el-tooltip>
             <el-tooltip v-else content="请先停止应用" effect="light" placement="left">
               <div class="inline-block ml-12px">
