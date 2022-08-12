@@ -6,7 +6,7 @@
     <div class="introduce row">
       <div class="label">使用文档：</div>
       <div class="content">
-        <a style="color: blue" target="_blank" href="https://lafjs.github.io/">https://lafjs.github.io/</a>
+        <a style="color: blue" target="_blank" href="https://docs.lafyun.com/">https://docs.lafyun.com/</a>
       </div>
     </div>
     <div class="row">
