@@ -77,6 +77,12 @@ const guideSiderbarConfig = [
     ]
   },
   {
+    text: 'laf-cli 命令行工具',
+    items: [
+      { text: 'laf-cli 使用说明', link: '/guide/cli/' },
+    ]
+  },
+  {
     text: '私有化部署',
     items: [
       {

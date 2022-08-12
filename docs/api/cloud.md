@@ -14,7 +14,7 @@ export interface CloudSdkInterface {
   fetch: AxiosStatic;
 
   /**
-   * 获取 less api database ORM 实例
+   * 获取 database ORM 实例
    */
   database(): Db;
   /**
