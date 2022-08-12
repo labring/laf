@@ -3,7 +3,7 @@ import { defineEmits, defineProps, onMounted, ref, toRaw } from 'vue'
 import * as monaco from 'monaco-editor'
 
 const props = defineProps({
-  modelValue: String,
+  modelValue: [String, Object],
   height: Number,
   lineNumbers: Boolean,
 })

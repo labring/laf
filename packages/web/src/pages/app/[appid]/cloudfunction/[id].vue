@@ -357,7 +357,8 @@ onMounted(async () => {
           保存(S)
         </el-button>
         <el-button
-          :type="published_version_diff ? 'default' : 'text'" :loading="loading"
+          :type="published_version_diff ? 'default' : ''" :loading="loading"
+          link
           style="margin-left: 15px" :disabled="!published_version_diff" @click="publishFunction"
         >
           {{ published_version_diff ? '发布' : '已发布' }}
@@ -375,7 +376,7 @@ onMounted(async () => {
 
       <div style="display: flex; height: calc(100vh - 140px)">
         <div v-if="func" class="editor-container  w-78/100 mr-12px">
-          <FunctionEditor v-model="value" :name="func.name" :height="editorHeight" :dark="false" />
+          <FunctionEditor v-model="value" :name="func.name" :height="editorHeight" :dark="false" @change="cacheCode" />
         </div>
         <div class="latest-logs w-1/5">
           <el-tabs type="border-card">
@@ -385,7 +386,7 @@ onMounted(async () => {
               </template>
 
               <div v-for="log in latestLogs" :key="log._id" class="log-item">
-                <el-tag type="warning" size="normal" @click="showLogDetailDlg(log)">
+                <el-tag type="warning" size="small" @click="showLogDetailDlg(log)">
                   {{
                     $filters.formatTime(log.created_at)
                   }}
@@ -419,7 +420,7 @@ onMounted(async () => {
 
     <el-drawer
       v-model="showDebugPanel" title="调试面板" direction="rtl" size="40%" :destroy-on-close="false"
-      :show-close="true" :modal="true" :wrapper-closable="true" @close="showDebugPanel = false"
+      :show-close="true" :modal="true" :close-on-click-modal="true" @close="showDebugPanel = false"
     >
       <div class="invoke-panel">
         <div class="title mb-12px">
