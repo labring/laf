@@ -65,7 +65,7 @@ export async function handleGetApplicationByAppid(req: Request, res: Response) {
     debug_token = getToken({ appid, type: 'debug', exp }, app.config.server_secret_salt)
   }
 
-  const app_deploy_host = Config.APP_SERVICE_DEPLOY_HOST
+  const app_deploy_host = Config.APP_SERVICE_DEPLOY_URL_SCHEMA === 'http' ? Config.APP_SERVICE_DEPLOY_HOST + ':' + Config.PUBLISH_PORT : Config.APP_SERVICE_DEPLOY_HOST + ':' + Config.PUBLISH_HTTPS_PORT
   const app_deploy_url_schema = Config.APP_SERVICE_DEPLOY_URL_SCHEMA
   const oss_external_endpoint = Config.MINIO_CONFIG.endpoint.external
   const oss_internal_endpoint = Config.MINIO_CONFIG.endpoint.internal
