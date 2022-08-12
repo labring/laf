@@ -346,103 +346,108 @@ onDeactivated(() => {
 </script>
 
 <template>
-  <div class="app-container ">
-    <div v-if="func" class="header mb-12px">
-      <span>
-        <b>{{ func.label }}</b>
-        <span
-          v-if="saved_code_diff" style="margin-left: 8px; color: red; cursor: pointer"
-          @click="diffSaved"
-        >
-          [编辑中<el-icon><HotWater /></el-icon> ]
+  <div class="app-container min-h-300px">
+    <div v-if="func">
+      <div class="header mb-12px">
+        <span>
+          <b>{{ func.label }}</b>
+          <span
+            v-if="saved_code_diff" style="margin-left: 8px; color: red; cursor: pointer"
+            @click="diffSaved"
+          >
+            [编辑中<el-icon><HotWater /></el-icon> ]
+          </span>
         </span>
-      </span>
-      <Copy :text="func.name" />
+        <Copy :text="func.name" />
 
-      <el-tooltip content="重新加载函数代码，将会丢弃当前未保存的编辑" effect="light" placement="bottom">
+        <el-tooltip content="重新加载函数代码，将会丢弃当前未保存的编辑" effect="light" placement="bottom">
+          <el-button
+            style="margin-left: 20px" icon="Refresh" link size="default" :loading="loading"
+            @click="getFunction"
+          >
+            刷新
+          </el-button>
+        </el-tooltip>
         <el-button
-          style="margin-left: 20px" icon="Refresh" link size="default" :loading="loading"
-          @click="getFunction"
+          style="margin-left: 20px" :loading="loading" :disabled="!saved_code_diff"
+          :type="saved_code_diff ? 'success' : 'success'" @click="updateFunc"
         >
-          刷新
+          保存(S)
         </el-button>
-      </el-tooltip>
-      <el-button
-        style="margin-left: 20px" :loading="loading" :disabled="!saved_code_diff"
-        :type="saved_code_diff ? 'success' : 'success'" @click="updateFunc"
-      >
-        保存(S)
-      </el-button>
-      <el-button
-        :type="published_version_diff ? 'default' : 'text'" :loading="loading"
-        style="margin-left: 15px" :disabled="!published_version_diff" @click="publishFunction"
-      >
-        {{ published_version_diff ? '发布' : '已发布' }}
-      </el-button>
-      <el-button
-        v-if="published_func" link :loading="loading" style="margin-left: 10px"
-        @click="diffPublished"
-      >
-        对比已发布 (#{{ published_func.version }})
-      </el-button>
-      <el-button style="float: right" type="primary" @click="showDebugPanel = true">
-        显示调试面板(J)
-      </el-button>
-    </div>
-
-    <div style="display: flex; height: calc(100vh - 140px)">
-      <div v-if="func" class="editor-container  w-78/100 mr-12px">
-        <FunctionEditor v-model="value" :name="func.name" :height="editorHeight" :dark="false" />
+        <el-button
+          :type="published_version_diff ? 'default' : ''" :loading="loading"
+          link
+          style="margin-left: 15px" :disabled="!published_version_diff" @click="publishFunction"
+        >
+          {{ published_version_diff ? '发布' : '已发布' }}
+        </el-button>
+        <el-button
+          v-if="published_func" link :loading="loading" style="margin-left: 10px"
+          @click="diffPublished"
+        >
+          对比已发布 (#{{ published_func.version }})
+        </el-button>
+        <el-button style="float: right" type="primary" @click="showDebugPanel = true">
+          显示调试面板(J)
+        </el-button>
       </div>
-      <div class="latest-logs w-1/5">
-        <el-tabs type="border-card">
-          <el-tab-pane label="最近执行">
-            <template #label>
-              <span>最近执行 <el-icon @click="getLatestLogs"><Refresh /></el-icon></span>
-            </template>
 
-            <div v-for="log in latestLogs" :key="log._id" class="log-item">
-              <el-tag type="warning" size="normal" @click="showLogDetailDlg(log)">
-                {{
-                  $filters.formatTime(log.created_at)
-                }}
-              </el-tag>
-            </div>
-          </el-tab-pane>
-          <el-tab-pane label="变更记录">
-            <template #label>
-              <span>变更记录 <el-icon @click="getChangeHistory"><Refresh /></el-icon> </span>
-            </template>
-            <div
-              v-for="(item, index) in changeHistory" :key="item._id" class="history-item"
-              @click="showChangeDiffEditor(index)"
-            >
-              <span class="history-title">#{{ item.data.version }}</span>
-              <span style="font-weight: bold; margin-left: 2px">
-                {{ item.account.name }}
-              </span>
-              <span style="color: rgb(85, 84, 84)">
-                {{
-                  $filters.formatTime(item.created_at)
-                }}</span>
-            </div>
-          </el-tab-pane>
-        </el-tabs>
+      <div style="display: flex; height: calc(100vh - 140px)">
+        <div v-if="func" class="editor-container  w-78/100 mr-12px">
+          <FunctionEditor v-model="value" :name="func.name" :height="editorHeight" :dark="false" @change="cacheCode" />
+        </div>
+        <div class="latest-logs w-1/5">
+          <el-tabs type="border-card">
+            <el-tab-pane label="最近执行">
+              <template #label>
+                <span>最近执行 <el-icon @click="getLatestLogs"><Refresh /></el-icon></span>
+              </template>
+
+              <div v-for="log in latestLogs" :key="log._id" class="log-item">
+                <el-tag type="warning" size="small" @click="showLogDetailDlg(log)">
+                  {{
+                    $filters.formatTime(log.created_at)
+                  }}
+                </el-tag>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="变更记录">
+              <template #label>
+                <span>变更记录 <el-icon @click="getChangeHistory"><Refresh /></el-icon> </span>
+              </template>
+              <div
+                v-for="(item, index) in changeHistory" :key="item._id" class="history-item"
+                @click="showChangeDiffEditor(index)"
+              >
+                <span class="history-title">#{{ item.data.version }}</span>
+                <span style="font-weight: bold; margin-left: 2px">
+                  {{ item.account.name }}
+                </span>
+                <span style="color: rgb(85, 84, 84)">
+                  {{
+                    $filters.formatTime(item.created_at)
+                  }}</span>
+              </div>
+            </el-tab-pane>
+          </el-tabs>
+        </div>
       </div>
     </div>
+
+    <div v-else v-loading="loading" class="min-h-300px" />
 
     <el-drawer
       v-model="showDebugPanel" title="调试面板" direction="rtl" size="40%" :destroy-on-close="false"
-      :show-close="true" :modal="true" :wrapper-closable="true" @close="showDebugPanel = false"
+      :show-close="true" :modal="true" :close-on-click-modal="true" @close="showDebugPanel = false"
     >
-      <div class="invoke-panel h-full">
-        <div class="title">
+      <div class="invoke-panel">
+        <div class="title mb-12px">
           调用参数
-          <el-button type="success" style="margin-left: 10px" :loading="loading" @click="launch">
-            运行(B)
+          <el-button type="success" :loading="loading" class="ml-10px" size="small" @click="launch">
+            运行(B
           </el-button>
         </div>
-        <div class="editor h-full">
+        <div class="editor">
           <JsonEditor v-model="invokeParams" :line-numbers="false" :height="300" :dark="false" />
         </div>
         <div v-if="invokeRequestId" class="invoke-result">
@@ -480,6 +485,73 @@ onDeactivated(() => {
     </el-dialog>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.latest-logs {
+  padding-left: 5px;
+  width: 20%;
+
+  .log-item {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+
+    .time{
+      margin-left: 10px;
+    }
+  }
+
+  .history-item {
+    margin-bottom: 10px;
+    font-size: 13px;
+    padding: 3px 0;
+    cursor: pointer;
+    .history-title {
+      color: rgb(79, 79, 235);
+      font-size: 15px;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+  }
+}
+
+.invoke-panel {
+  padding-left: 20px;
+  padding-top: 10px;
+  width: 100%;
+  height: calc(90vh);
+  padding-bottom: 20px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  .title {
+    font-weight: bold;
+    span {
+      font-weight: normal;
+      color: gray;
+    }
+  }
+
+  .invoke-result {
+    margin-top: 20px;
+    .logs {
+      margin-top: 10px;
+      padding: 10px;
+      padding-left: 20px;
+      background: rgba(233, 243, 221, 0.472);
+      border-radius: 10px;
+      overflow-x: auto;
+    }
+    .result {
+      margin-top: 10px;
+      padding: 16px;
+      background: rgba(233, 243, 221, 0.472);
+      border-radius: 10px;
+      overflow-x: auto;
+    }
+  }
+}
+</style>
 
 <route lang="yaml">
 name: debug

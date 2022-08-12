@@ -26,7 +26,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['input', 'update:modelValue'])
+const emit = defineEmits(['input', 'change', 'update:modelValue'])
 
 let editorInstance: monaco.editor.IStandaloneCodeEditor
 const dom = ref()
@@ -76,6 +76,7 @@ function initEditor() {
     const value = editorInstance?.getValue()
     emit('input', value)
     emit('update:modelValue', value)
+    emit('change', value)
     parseImports(getValue() || '')
   })
 
@@ -89,6 +90,12 @@ function getValue() {
 
 onMounted(() => {
   initEditor()
+  autoImportTypings.loadDefaults()
+})
+
+watch(() => props.modelValue, (value) => {
+  if (value !== editorInstance?.getValue())
+    editorInstance.setValue(value)
 })
 </script>
 

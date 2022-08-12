@@ -3,10 +3,15 @@ import { defineEmits, defineProps, onMounted, ref, toRaw } from 'vue'
 import * as monaco from 'monaco-editor'
 
 const props = defineProps({
-  modelValue: String,
+  modelValue: [String, Object],
   height: Number,
+  lineNumbers: Boolean,
 })
 const emit = defineEmits(['update:modelValue'])
+
+const minHeight = computed(() => {
+  return props.height || 150
+})
 
 const dom = ref()
 
@@ -21,7 +26,7 @@ function initEditor() {
     value: _value,
     language: 'json',
     fontSize: 12,
-    lineNumbers: 'on',
+    lineNumbers: props.lineNumbers ? 'on' : 'off',
     roundedSelection: true,
     scrollBeyondLastLine: false,
     readOnly: false,
@@ -58,7 +63,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div ref="dom" class="editor" />
+  <div ref="dom" class="editor" :style="{ minHeight: `${minHeight}px` }" />
 </template>
 
 <style scoped>
