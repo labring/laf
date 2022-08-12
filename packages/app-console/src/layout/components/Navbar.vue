@@ -22,7 +22,7 @@
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item divided>
             <div class="content">
-              <a target="_blank" href="https://github.com/lafjs/laf/">
+              <a target="_blank" href="https://github.com/labring/laf/">
                 GitHub <i class="el-icon-link" />
               </a>
             </div>
