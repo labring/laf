@@ -1,8 +1,8 @@
 version: '3.8'
 services:
   mongo:
-    # image: bitnami/mongodb:5.0.8
-    image: bitnami/mongodb:4.4.13    # Use this version for Apple M1 Chip
+    image: bitnami/mongodb:5.0.8
+    # image: bitnami/mongodb:4.4.13    # Use this version for Apple M1 Chip
     environment:
       - MONGODB_REPLICA_SET_MODE=primary
       - MONGODB_ADVERTISED_HOSTNAME=mongo
