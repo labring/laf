@@ -69,7 +69,7 @@ export async function handleGetApplicationByAppid(req: Request, res: Response) {
 
   const app_deploy_host = Config.APP_SERVICE_DEPLOY_HOST + ':' + export_port
   const app_deploy_url_schema = Config.APP_SERVICE_DEPLOY_URL_SCHEMA
-  const oss_external_endpoint = Config.MINIO_CONFIG.endpoint.external + ':' + export_port
+  const oss_external_endpoint = Config.MINIO_CONFIG.endpoint.external
   const oss_internal_endpoint = Config.MINIO_CONFIG.endpoint.internal
 
   const spec = await ApplicationSpecSupport.getValidAppSpec(appid)

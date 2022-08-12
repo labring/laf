@@ -1,6 +1,7 @@
 import * as assert from 'assert'
 import * as dotenv from 'dotenv'
-import { URL } from 'url'
+import {URL} from 'url'
+
 dotenv.config()
 
 /**
@@ -101,18 +102,17 @@ export default class Config {
 
   /**
    * The host to access the app service
-   * For example, if set this to `lafyun.com`, then you can access app service by format `[appid].lafyun.com`: 
+   * For example, if set this to `lafyun.com`, then you can access app service by format `[appid].lafyun.com`:
    * - 7b0b318c-b96c-4cc5-b521-33d11bd16cde.lafyun.com
    * - http://7b0b318c-b96c-4cc5-b521-33d11bd16cde.lafyun.com/file/public/33d11bd16cde.png
    * - http://7b0b318c-b96c-4cc5-b521-33d11bd16cde.lafyun.com/FUNC_NAME
-   * 
+   *
    * You should resolve `*.lafyun.com` to your laf server ip, to support `[appid].lafyun.com` url.
-   * You can also provide the PORT, like `lafyun.com:8080`. 
+   * You can also provide the PORT, like `lafyun.com:8080`.
    */
   static get APP_SERVICE_DEPLOY_HOST(): string {
     return process.env.APP_SERVICE_DEPLOY_HOST ?? ''
   }
-
 
 
   static get PUBLISH_PORT(): string {
@@ -141,8 +141,8 @@ export default class Config {
     // use URL().origin to get the pure hostname, because the hostname may contain port number 
     // this is to resolve bug of https://github.com/labring/laf/issues/96
     const internal_endpoint: string = new URL(process.env.MINIO_INTERNAL_ENDPOINT).origin
-    const MINIO_EXTERNAL_ENDPOINT =  process.env.APP_SERVICE_DEPLOY_URL_SCHEMA === 'http' ? process.env.MINIO_EXTERNAL_ENDPOINT + ':' + process.env.PUBLISH_PORT : process.env.MINIO_EXTERNAL_ENDPOINT + ':' + process.env.PUBLISH_HTTPS_PORT
-    const external_endpoint: string = new URL(MINIO_EXTERNAL_ENDPOINT).origin
+    const MINIO_EXTERNAL_ENDPOINT = process.env.APP_SERVICE_DEPLOY_URL_SCHEMA === 'http' ? process.env.MINIO_EXTERNAL_ENDPOINT + ':' + process.env.PUBLISH_PORT : process.env.MINIO_EXTERNAL_ENDPOINT + ':' + process.env.PUBLISH_HTTPS_PORT
+    const external_endpoint: string = process.env.APP_SERVICE_DEPLOY_URL_SCHEMA + '://' + new URL(MINIO_EXTERNAL_ENDPOINT).origin
     const region: string = process.env.MINIO_REGION_NAME
 
     return {
