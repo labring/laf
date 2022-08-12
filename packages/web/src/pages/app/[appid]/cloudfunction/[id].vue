@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { debounce } from 'lodash'
 import FunctionLogDetail from './components/FunctionLogDetail.vue'
+import DebugPanel from './components/DebugPanel.vue'
 import { compileFunctionCode, getFunctionById, getFunctionChangeHistory, getFunctionLogs, getPublishedFunction, launchFunction, publishOneFunction, updateFunctionCode } from '~/api/func'
-import JsonEditor from '~/components/JsonEditor/param.vue'
 import FunctionEditor from '~/components/FunctionEditor/index.vue'
 import DiffEditor from '~/components/FunctionEditor/diff.vue'
 import { useAppStore } from '~/store/app'
@@ -29,7 +29,6 @@ let invokeResult = $ref(null)
 let invokeLogs = $ref(null)
 let invokeTimeUsage = $ref(null)
 let invokeRequestId = $ref('')
-let showDebugPanel = $ref(false)
 let latestLogs: any = $ref([])
 let logDetail = $ref(undefined)
 let isShowLogDetail = $ref(false)
@@ -275,15 +274,8 @@ async function bindShortKey(e: { ctrlKey: any; metaKey: any; key: string; preven
     e.preventDefault()
   }
 
-  // Ctrl + j 弹出/隐藏调试框
-  if ((e.ctrlKey || e.metaKey) && e.key === 'j') {
-    showDebugPanel = !showDebugPanel
-    e.preventDefault()
-  }
-
   // Ctrl + b 为调试运行，并弹出调试框
   if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
-    showDebugPanel = true
     launch()
     e.preventDefault()
   }
@@ -387,17 +379,26 @@ onDeactivated(() => {
         >
           对比已发布 (#{{ published_func.version }})
         </el-button>
-        <el-button style="float: right" type="primary" @click="showDebugPanel = true">
-          显示调试面板(J)
+        <el-button type="success" style="float: right; margin-left: 10px" :loading="loading" @click="launch">
+          运行(B)
         </el-button>
       </div>
 
       <div style="display: flex; height: calc(100vh - 140px)">
-        <div v-if="func" class="editor-container  w-78/100 mr-12px">
+        <div v-if="func" class="editor-container w-2/3">
           <FunctionEditor v-model="value" :name="func.name" :height="editorHeight" :dark="false" @change="cacheCode" />
         </div>
-        <div class="latest-logs w-1/5">
-          <el-tabs type="border-card">
+        <div class="right-panel w-1/3 pl-6px">
+          <el-tabs type="border-card" class="inspector h-full overflow-hidden">
+            <el-tab-pane label="在线调试" class="h-full overflow-auto">
+              <DebugPanel
+                :invoke-params="invokeParams"
+                :invoke-request-id="invokeRequestId"
+                :invoke-time-usage="invokeTimeUsage"
+                :invoke-logs="invokeLogs"
+                :invoke-result="invokeResult"
+              />
+            </el-tab-pane>
             <el-tab-pane label="最近执行">
               <template #label>
                 <span>最近执行 <el-icon @click="getLatestLogs"><Refresh /></el-icon></span>
@@ -436,41 +437,6 @@ onDeactivated(() => {
 
     <div v-else v-loading="loading" class="min-h-300px" />
 
-    <el-drawer
-      v-model="showDebugPanel" title="调试面板" direction="rtl" size="40%" :destroy-on-close="false"
-      :show-close="true" :modal="true" :close-on-click-modal="true" @close="showDebugPanel = false"
-    >
-      <div class="invoke-panel">
-        <div class="title mb-12px">
-          调用参数
-          <el-button type="success" :loading="loading" class="ml-10px" size="small" @click="launch">
-            运行(B
-          </el-button>
-        </div>
-        <div class="editor">
-          <JsonEditor v-model="invokeParams" :line-numbers="false" :height="300" :dark="false" />
-        </div>
-        <div v-if="invokeRequestId" class="invoke-result">
-          <div class="title">
-            执行日志
-            <span v-if="invokeRequestId">（ RequestId: {{ invokeRequestId }} ）</span>
-          </div>
-          <div v-if="invokeLogs" class="logs">
-            <div v-for="(log, index) in invokeLogs" :key="index" class="log-item">
-              <pre>- {{ log }}</pre>
-            </div>
-          </div>
-          <div class="title" style="margin-top: 20px">
-            调用结果
-            <span v-if="invokeTimeUsage"> （ {{ invokeTimeUsage }} ms ）</span>
-          </div>
-          <div class="result">
-            <pre>{{ invokeResult }}</pre>
-          </div>
-        </div>
-      </div>
-    </el-drawer>
-
     <!-- 日志详情对话框 -->
     <el-dialog v-if="logDetail" v-model="isShowLogDetail" title="日志详情">
       <FunctionLogDetail :data="logDetail" />
@@ -487,10 +453,7 @@ onDeactivated(() => {
 </template>
 
 <style lang="scss" scoped>
-.latest-logs {
-  padding-left: 5px;
-  width: 20%;
-
+.right-panel {
   .log-item {
     margin-top: 10px;
     display: flex;
@@ -515,41 +478,8 @@ onDeactivated(() => {
   }
 }
 
-.invoke-panel {
-  padding-left: 20px;
-  padding-top: 10px;
-  width: 100%;
-  height: calc(90vh);
-  padding-bottom: 20px;
-  overflow-y: scroll;
-  overflow-x: hidden;
-
-  .title {
-    font-weight: bold;
-    span {
-      font-weight: normal;
-      color: gray;
-    }
-  }
-
-  .invoke-result {
-    margin-top: 20px;
-    .logs {
-      margin-top: 10px;
-      padding: 10px;
-      padding-left: 20px;
-      background: rgba(233, 243, 221, 0.472);
-      border-radius: 10px;
-      overflow-x: auto;
-    }
-    .result {
-      margin-top: 10px;
-      padding: 16px;
-      background: rgba(233, 243, 221, 0.472);
-      border-radius: 10px;
-      overflow-x: auto;
-    }
-  }
+.inspector::v-deep > .el-tabs__content {
+  height: 100%;
 }
 </style>
 
