@@ -138,7 +138,7 @@ function setTagViewTitle() {
         </el-table-column> -->
       <el-table-column label="操作" align="center" width="100" class-name="small-padding fixed-width">
         <template #default="{ row }">
-          <el-button size="small" type="primary" @click="handleShowDetail(row)">
+          <el-button plain size="small" type="primary" @click="handleShowDetail(row)">
             查看
           </el-button>
         </template>

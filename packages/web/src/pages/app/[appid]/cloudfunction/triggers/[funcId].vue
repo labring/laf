@@ -178,7 +178,7 @@ async function handleDelete(row: any, index: number) {
 
 function showTriggerLogs(row: any) {
   router.push({
-    name: '日志',
+    name: '日志查询',
     query: {
       trigger_id: row._id,
     },
@@ -271,13 +271,13 @@ onMounted(async () => {
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="{ row, $index }">
-          <el-button type="info" @click="showTriggerLogs(row)">
+          <el-button plain size="small" type="info" @click="showTriggerLogs(row)">
             日志
           </el-button>
-          <el-button type="primary" @click="showUpdateForm(row)">
+          <el-button plain size="small" type="primary" @click="showUpdateForm(row)">
             编辑
           </el-button>
-          <el-button v-if="row.status !== 'deleted'" type="danger" @click="handleDelete(row, $index)">
+          <el-button v-if="row.status !== 'deleted'" plain size="small" type="danger" @click="handleDelete(row, $index)">
             删除
           </el-button>
         </template>

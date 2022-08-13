@@ -437,7 +437,7 @@ async function handleChange(funcId: string, value: any) {
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" min-width="180">
+      <el-table-column label="操作" align="center" min-width="200">
         <template #default="{ row, $index }">
           <el-button type="success" plain size="small" @click="handleShowDetail(row)">
             开发
