@@ -142,9 +142,8 @@ export default class Config {
     // this is to resolve bug of https://github.com/labring/laf/issues/96
     const internal_endpoint: string = new URL(process.env.MINIO_INTERNAL_ENDPOINT).origin
 
-    // get the port according to the protocol, and then combine it with the host
-    const MINIO_EXTERNAL_ENDPOINT = process.env.APP_SERVICE_DEPLOY_URL_SCHEMA === 'http' ? process.env.MINIO_EXTERNAL_ENDPOINT + ':' + process.env.PUBLISH_PORT : process.env.MINIO_EXTERNAL_ENDPOINT + ':' + process.env.PUBLISH_HTTPS_PORT
-    const external_endpoint: string = new URL(process.env.APP_SERVICE_DEPLOY_URL_SCHEMA + '://' + MINIO_EXTERNAL_ENDPOINT).origin
+    const external_port  = process.env.APP_SERVICE_DEPLOY_URL_SCHEMA === 'http' ? process.env.PUBLISH_PORT : process.env.PUBLISH_HTTPS_PORT
+    const external_endpoint: string = new URL(process.env.APP_SERVICE_DEPLOY_URL_SCHEMA + '://' + process.env.MINIO_EXTERNAL_ENDPOINT + ':' + external_port).origin
     const region: string = process.env.MINIO_REGION_NAME
 
     return {
