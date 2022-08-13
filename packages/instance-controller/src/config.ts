@@ -1,6 +1,5 @@
 import * as dotenv from 'dotenv'
-import {URL} from 'node:url'
-
+import { URL } from 'node:url'
 dotenv.config()
 
 /**
@@ -28,8 +27,8 @@ export default class Config {
   }
 
   /**
-   * the mongodb connection configuration of apps' db, use for creating app databases;
-   */
+  * the mongodb connection configuration of apps' db, use for creating app databases;
+  */
   static get APP_DB_URI() {
     if (!process.env['APP_DB_URI']) {
       throw new Error('env: `APP_DB_URI` is missing')
@@ -102,7 +101,7 @@ export default class Config {
     // this is to resolve bug of https://github.com/labring/laf/issues/96
     const internal_endpoint: string = new URL(process.env.MINIO_INTERNAL_ENDPOINT).origin
     const MINIO_EXTERNAL_ENDPOINT = process.env.APP_SERVICE_DEPLOY_URL_SCHEMA === 'http' ? process.env.MINIO_EXTERNAL_ENDPOINT + ':' + process.env.PUBLISH_PORT : process.env.MINIO_EXTERNAL_ENDPOINT + ':' + process.env.PUBLISH_HTTPS_PORT
-    const external_endpoint: string = process.env.APP_SERVICE_DEPLOY_URL_SCHEMA + '://' + MINIO_EXTERNAL_ENDPOINT
+    const external_endpoint: string = new URL(process.env.APP_SERVICE_DEPLOY_URL_SCHEMA + '://' + MINIO_EXTERNAL_ENDPOINT).origin
     const region: string = process.env.MINIO_REGION_NAME
 
     return {

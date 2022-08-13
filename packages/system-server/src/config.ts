@@ -1,7 +1,6 @@
 import * as assert from 'assert'
 import * as dotenv from 'dotenv'
-import {URL} from 'url'
-
+import { URL } from 'url'
 dotenv.config()
 
 /**
@@ -115,6 +114,7 @@ export default class Config {
   }
 
 
+
   static get PUBLISH_PORT(): string {
     return process.env.PUBLISH_PORT ?? ''
   }
@@ -142,7 +142,7 @@ export default class Config {
     // this is to resolve bug of https://github.com/labring/laf/issues/96
     const internal_endpoint: string = new URL(process.env.MINIO_INTERNAL_ENDPOINT).origin
     const MINIO_EXTERNAL_ENDPOINT = process.env.APP_SERVICE_DEPLOY_URL_SCHEMA === 'http' ? process.env.MINIO_EXTERNAL_ENDPOINT + ':' + process.env.PUBLISH_PORT : process.env.MINIO_EXTERNAL_ENDPOINT + ':' + process.env.PUBLISH_HTTPS_PORT
-    const external_endpoint: string = process.env.APP_SERVICE_DEPLOY_URL_SCHEMA + '://' + MINIO_EXTERNAL_ENDPOINT
+    const external_endpoint: string = new URL(process.env.APP_SERVICE_DEPLOY_URL_SCHEMA + '://' + MINIO_EXTERNAL_ENDPOINT).origin
     const region: string = process.env.MINIO_REGION_NAME
 
     return {
