@@ -16,7 +16,7 @@ const props = defineProps<{
       调用参数
     </div>
     <div class="h-300px">
-      <JsonEditor v-model="invokeParams" :line-numbers="false" :height="300" :dark="false" />
+      <JsonEditor v-model="invokeParams" :line-numbers="false" :height="100" :dark="false" />
     </div>
     <div v-if="props.invokeRequestId" class="invoke-result">
       <div class="title">
@@ -25,7 +25,7 @@ const props = defineProps<{
       </div>
       <div v-if="invokeLogs" class="logs">
         <div v-for="(log, index) in invokeLogs" :key="index" class="log-item">
-          <pre>- {{ log }}</pre>
+          <pre class="text-sm">- {{ log }}</pre>
         </div>
       </div>
       <div class="title" style="margin-top: 20px">
@@ -33,7 +33,7 @@ const props = defineProps<{
         <span v-if="props.invokeTimeUsage"> （ {{ props.invokeTimeUsage }} ms ）</span>
       </div>
       <div class="result overflow-auto">
-        <pre>{{ props.invokeResult }}</pre>
+        <pre class="text-sm">{{ props.invokeResult }}</pre>
       </div>
     </div>
   </div>
