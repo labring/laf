@@ -2,7 +2,7 @@ import assert = require("assert")
 import * as cp from 'child_process'
 import { promisify } from 'util'
 import { STSClient, AssumeRoleCommand } from '@aws-sdk/client-sts'
-import { CreateBucketCommand, DeleteBucketCommand, DeleteBucketPolicyCommand, PutBucketPolicyCommand, S3 } from '@aws-sdk/client-s3'
+import { CreateBucketCommand, DeleteBucketCommand, DeleteBucketPolicyCommand, PutBucketPolicyCommand, PutBucketVersioningCommand, S3 } from '@aws-sdk/client-s3'
 import { logger } from "./logger"
 import Config from "../config"
 import { IApplicationData } from "./application"
@@ -173,6 +173,18 @@ export class MinioAgent {
       await this.setBucketACL(name, acl)
       const quota = options?.quota || 1 * GB
       await this.setBucketQuota(name, quota)
+    }
+
+    const version_cmd = new PutBucketVersioningCommand({
+      Bucket: name,
+      VersioningConfiguration: {
+        Status: 'Enabled'
+      }
+    })
+
+    const version_res = await s3.send(version_cmd)
+    if (version_res?.$metadata?.httpStatusCode === 200) {
+      logger.info(`bucket ${name} versioning enabled`)
     }
 
     return res

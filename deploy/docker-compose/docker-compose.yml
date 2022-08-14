@@ -21,7 +21,7 @@ services:
       - laf_shared_network
 
   oss:
-    image: 'bitnami/minio:2022.4.12'
+    image: 'bitnami/minio:2022.8.11'
     environment:
       - MINIO_ROOT_USER=${MINIO_ROOT_USER}
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
