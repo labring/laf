@@ -2,8 +2,8 @@
 version: '3.8'
 services:
   mongo:
-    # image: bitnami/mongodb:5.0.8
-    image: bitnami/mongodb:4.4.13    # Use this version for Apple M1 Chip
+    image: bitnami/mongodb:5.0.8
+    # image: bitnami/mongodb:4.4.13    # Use this version for Apple M1 Chip
     environment:
       - MONGODB_REPLICA_SET_MODE=primary
       - MONGODB_ADVERTISED_HOSTNAME=mongo
@@ -69,7 +69,9 @@ services:
       MINIO_ACCESS_KEY: minio-root-user
       MINIO_ACCESS_SECRET: minio-root-password
       MINIO_INTERNAL_ENDPOINT: http://oss:9000
-      MINIO_EXTERNAL_ENDPOINT: http://oss.127-0-0-1.nip.io:8080
+      MINIO_EXTERNAL_ENDPOINT: oss.127-0-0-1.nip.io
+      PUBLISH_PORT: ${PUBLISH_PORT:-8080}
+      PUBLISH_HTTPS_PORT: ${PUBLISH_HTTPS_PORT:-9443}
       MINIO_REGION_NAME: cn-default
       INIT_ROOT_ACCOUNT_PASSWORD: abc123
       INIT_ROOT_ACCOUNT: root
@@ -102,7 +104,9 @@ services:
       SERVICE_DRIVER: docker
       APP_SERVICE_ENV_NPM_INSTALL_FLAGS: ' --no-audit --no-fund'
       MINIO_INTERNAL_ENDPOINT: http://oss:9000
-      MINIO_EXTERNAL_ENDPOINT: http://oss.127-0-0-1.nip.io:8080
+      MINIO_EXTERNAL_ENDPOINT: oss.laf.windup.top
+      PUBLISH_PORT: ${PUBLISH_PORT:-8080}
+      PUBLISH_HTTPS_PORT: ${PUBLISH_HTTPS_PORT:-9443}
       MINIO_REGION_NAME: cn-default
       DEBUG_BIND_HOST_APP_PATH: '${PWD}/packages/app-service'
       SYSTEM_EXTENSION_APPID: '000000'
