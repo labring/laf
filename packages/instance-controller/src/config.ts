@@ -67,7 +67,7 @@ export default class Config {
 
   /**
    * DEBUG: the app-service path that bind to app-service container
-   * This env var should only be set while debugging app service, 
+   * This env var should only be set while debugging app service,
    * otherwise always keep this env var value be empty
    */
   static get DEBUG_BIND_HOST_APP_PATH(): string | undefined {
@@ -100,7 +100,9 @@ export default class Config {
     // use URL().origin to get the pure hostname, because the hostname may contain port number 
     // this is to resolve bug of https://github.com/labring/laf/issues/96
     const internal_endpoint: string = new URL(process.env.MINIO_INTERNAL_ENDPOINT).origin
-    const external_endpoint: string = new URL(process.env.MINIO_EXTERNAL_ENDPOINT).origin
+
+    const external_port  = process.env.APP_SERVICE_DEPLOY_URL_SCHEMA === 'http' ? process.env.PUBLISH_PORT : process.env.PUBLISH_HTTPS_PORT
+    const external_endpoint: string = new URL(process.env.APP_SERVICE_DEPLOY_URL_SCHEMA + '://' + process.env.MINIO_EXTERNAL_ENDPOINT + ':' + external_port).origin
     const region: string = process.env.MINIO_REGION_NAME
 
     return {
