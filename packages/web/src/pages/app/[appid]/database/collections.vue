@@ -342,29 +342,34 @@ onMounted(() => {
       </el-aside>
 
       <el-container class="flex-col" style="flex-direction: column">
-        <div
-          v-for="item in list" :key="item._id.toString()" class=" flex border border-gray-300 rounded mb-24px p-12px"
-          :class="getClass(item)"
-        >
-          <div class="doc flex-1">
-            <pre class="">{{ item }}</pre>
+        <div v-if="list.length > 0">
+          <div
+            v-for="item in list" :key="item._id.toString()" class=" flex border border-gray-300 rounded mb-16px p-12px"
+            :class="getClass(item)"
+          >
+            <div class="doc flex-1">
+              <pre class="">{{ item }}</pre>
+            </div>
+            <div class="tools">
+              <el-button size="small" plain class="tools-btn" type="primary" @click="handleEditRecord(item)">
+                编辑
+              </el-button>
+              <el-button size="small" plain class="tools-btn" type="danger" @click="deleRecord(item)">
+                删除
+              </el-button>
+            </div>
           </div>
-          <div class="tools">
-            <el-button size="small" class="tools-btn" type="primary" @click="handleEditRecord(item)">
-              编辑
-            </el-button>
-            <el-button size="small" class="tools-btn" type="danger" @click="deleRecord(item)">
-              删除
-            </el-button>
+          <div style="text-align: right">
+            <!-- 分页 -->
+            <el-pagination
+              v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit"
+              background class="mt-12px" :total="total" layout="->, total, prev, pager, next" @size-change="getList"
+              @current-change="getList"
+            />
           </div>
         </div>
-        <div style="text-align: right">
-          <!-- 分页 -->
-          <el-pagination
-            v-show="total > 0" v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit"
-            background class="mt-12px" :total="total" layout="->, total, prev, pager, next" @size-change="getList"
-            @current-change="getList"
-          />
+        <div v-else>
+          <el-empty description="暂无数据" />
         </div>
       </el-container>
     </el-container>
