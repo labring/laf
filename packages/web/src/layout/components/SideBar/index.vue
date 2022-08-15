@@ -2,7 +2,10 @@
 import { CloudApp, Collaborate, DataBase, DeploymentPattern, DeploymentPolicy, StoragePool } from '@vicons/carbon'
 import { useMenuStore } from '~/store'
 
+const { t } = useI18n()
+
 const router = useRouter()
+const route = useRoute()
 const menuStore = useMenuStore()
 
 const menus = ref<any>(menuStore.appMenus)
@@ -14,6 +17,14 @@ const switchRoute = (item: any) => {
 
 const openMenu = menus.value.map((item) => {
   return item.name
+})
+
+const activeMenu = $computed(() => {
+  const { meta, path } = route
+  if (meta.activeMenu)
+    return meta.activeMenu
+
+  return path
 })
 
 const menuIcons: any = {
@@ -28,6 +39,7 @@ const menuIcons: any = {
 
 <template>
   <el-menu
+    :default-active="activeMenu"
     :default-openeds="openMenu"
     text-color="#333" active-text-color="#09e" style="--el-menu-bg-color: #fff; --el-menu-border-color: #fff;"
   >
@@ -37,11 +49,11 @@ const menuIcons: any = {
           <component :is="menuIcons[item.name]" />
         </el-icon>
 
-        <span>{{ item.name }}</span>
+        <span>{{ t(`layout.menu.${item.name}`) }}</span>
       </template>
       <el-menu-item v-for="child in item.children" :key="child.path" :index="child.path" @click="switchRoute(child)">
         <!-- <el-icon><location /></el-icon> -->
-        <span>{{ child.name }}</span>
+        <span class="pl-8px!">{{ child.name }}</span>
       </el-menu-item>
     </el-sub-menu>
   </el-menu>
