@@ -99,7 +99,7 @@ function setTagViewTitle() {
     </div>
 
     <!-- 表格 -->
-    <el-table :key="tableKey" v-loading="listLoading" :data="list" highlight-current-row style="width: 100%">
+    <el-table :key="tableKey" v-loading="listLoading" :data="list" size="small" highlight-current-row style="width: 100%">
       <el-table-column label="RequestId" prop="id" align="center" width="300">
         <template #default="{ row }">
           <span>{{ row.requestId }}</span>
@@ -138,7 +138,7 @@ function setTagViewTitle() {
         </el-table-column> -->
       <el-table-column label="操作" align="center" width="100" class-name="small-padding fixed-width">
         <template #default="{ row }">
-          <el-button plain size="small" type="primary" @click="handleShowDetail(row)">
+          <el-button link size="small" type="primary" @click="handleShowDetail(row)">
             查看
           </el-button>
         </template>
