@@ -24,6 +24,9 @@ pages:
       name: Name
       success-msg: registration success!
       title: Register
+  cloudfunction:
+    triggers:
+      unit: Seconds
 utils:
   form:
     email: Email is invalid

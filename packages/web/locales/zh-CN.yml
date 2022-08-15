@@ -24,6 +24,9 @@ pages:
       name: 姓名
       success-msg: 注册成功！
       title: 注册
+  cloudfunction:
+    triggers:
+      unit: 秒
 utils:
   form:
     email: 邮箱格式不正确
