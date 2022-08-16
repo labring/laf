@@ -4,6 +4,7 @@ import type { FormInstance } from 'element-plus'
 import { getFunctionById } from '~/api/func'
 import { createTrigger, removeTrigger, updateTrigger } from '~/api/trigger'
 
+const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
 
@@ -303,7 +304,11 @@ onMounted(async () => {
           <el-input v-model="form.event" placeholder="触发器事件" />
         </el-form-item>
         <el-form-item v-if="form.type === 'timer'" label="间隔" prop="duration">
-          <el-input v-model.number="form.duration" min="1" type="number" placeholder="触发器间隔(秒）" />
+          <el-input v-model.number="form.duration" min="1" type="number" placeholder="触发器间隔(秒）">
+            <template #append>
+              {{ t('pages.cloudfunction.triggers.unit') }}
+            </template>
+          </el-input>
         </el-form-item>
         <el-form-item label="是否启用" prop="status">
           <el-switch v-model="form.status" :active-value="1" :inactive-value="0" />
