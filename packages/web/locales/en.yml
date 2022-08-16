@@ -1,6 +1,13 @@
 app:
   title: LaF Cloud
 layout:
+  menu:
+    dashboard: Dashboard
+    cloudfunction: CloudFunction
+    database: Database
+    storage: Storage
+    replicate: Replicate
+    collaborate: Collaborate
   components:
     reset-password:
       form:

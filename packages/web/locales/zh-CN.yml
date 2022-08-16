@@ -1,6 +1,13 @@
 app:
   title: LaF 云开发
 layout:
+  menu:
+    dashboard: '首页'
+    cloudfunction: '云函数'
+    database: '云数据库'
+    storage: '云存储'
+    replicate: '远程部署'
+    collaborate: '协作成员'
   components:
     reset-password:
       form:

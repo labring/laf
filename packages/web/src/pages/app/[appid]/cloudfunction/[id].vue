@@ -405,7 +405,7 @@ onDeactivated(() => {
               </template>
 
               <div v-for="log in latestLogs" :key="log._id" class="log-item">
-                <el-tag type="warning" size="small" @click="showLogDetailDlg(log)">
+                <el-tag type="warning" size="small" class="w-140px" @click="showLogDetailDlg(log)">
                   {{
                     $filters.formatTime(log.created_at)
                   }}
