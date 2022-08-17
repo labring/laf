@@ -179,7 +179,7 @@ onMounted(async () => {
   <div class="app-container">
     <!-- 数据检索区 -->
     <div class="mb-24px">
-      <el-button class="filter-item" type="primary" icon="Plus" @click="showCreateForm">
+      <el-button size="small" class="filter-item" type="primary" icon="Plus" @click="showCreateForm">
         新增授权
       </el-button>
     </div>
@@ -218,7 +218,7 @@ onMounted(async () => {
           >
             接受
           </el-button>
-          <el-button plain size="small" type="danger" @click="handleDeleteAuth(scope.row)">
+          <el-button size="small" plain type="danger" @click="handleDeleteAuth(scope.row)">
             删除
           </el-button>
         </template>
@@ -236,10 +236,10 @@ onMounted(async () => {
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">
+          <el-button size="small" @click="dialogFormVisible = false">
             取消
           </el-button>
-          <el-button type="primary" @click="handleCreateAuth">
+          <el-button size="small" type="primary" @click="handleCreateAuth">
             确定
           </el-button>
         </div>
@@ -267,10 +267,10 @@ onMounted(async () => {
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="replicasDialogVisible = false">
+          <el-button size="small" @click="replicasDialogVisible = false">
             取消
           </el-button>
-          <el-button type="primary" @click="handleCreateRequest">
+          <el-button size="small" type="primary" @click="handleCreateRequest">
             确定
           </el-button>
         </div>

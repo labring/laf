@@ -123,10 +123,10 @@ onMounted(async () => {
 
 <template>
   <div class="app-container">
-    <el-button type="default" @click="loadCollaborators">
+    <el-button size="small" type="default" @click="loadCollaborators">
       刷新
     </el-button>
-    <el-button type="success" @click="showAddForm">
+    <el-button size="small" type="success" @click="showAddForm">
       添加协作者
     </el-button>
     <el-table :data="collaborators" style="width: 100%; margin-top: 30px" border>
@@ -158,7 +158,7 @@ onMounted(async () => {
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template #default="{ row }">
-          <el-button plain size="small" type="danger" @click="handleDelete(row)">
+          <el-button size="small" plain type="danger" @click="handleDelete(row)">
             删除
           </el-button>
         </template>
@@ -170,7 +170,7 @@ onMounted(async () => {
       <el-form v-loading="loading" :model="form" label-width="100px">
         <el-form-item label="用户名">
           <el-input v-model="form.username" style="width: 300px" placeholder="请输入对方用户名" />
-          <el-button type="primary" style="margin-left: 10px" size="medium" @click="search">
+          <el-button size="small" type="primary" style="margin-left: 10px" @click="search">
             搜索
           </el-button>
         </el-form-item>
@@ -184,10 +184,10 @@ onMounted(async () => {
         </el-form-item>
       </el-form>
       <div style="text-align: right">
-        <el-button type="info" @click="dialogVisible = false">
+        <el-button size="small" type="info" @click="dialogVisible = false">
           取消
         </el-button>
-        <el-button type="primary" @click="handleCreate">
+        <el-button size="small" type="primary" @click="handleCreate">
           确认
         </el-button>
       </div>

@@ -166,10 +166,10 @@ onMounted(async () => {
   <div class="app-container">
     <!-- 数据检索区 -->
     <div class="filter-container mb-24px">
-      <el-button class="filter-item" type="default" icon="Refresh" @click="getWebsites">
+      <el-button size="small" class="filter-item" type="default" icon="Refresh" @click="getWebsites">
         刷新
       </el-button>
-      <el-button class="filter-item" type="primary" icon="Plus" @click="showCreateForm">
+      <el-button size="small" class="filter-item" type="primary" icon="Plus" @click="showCreateForm">
         创建网站托管
       </el-button>
     </div>
@@ -206,10 +206,10 @@ onMounted(async () => {
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template #default="{ row }">
-            <el-button plain size="small" type="primary" @click="showEditForm(row)">
+            <el-button size="small" plain type="primary" @click="showEditForm(row)">
               自定义域名
             </el-button>
-            <el-button plain size="small" type="danger" @click="handleDelete(row)">
+            <el-button size="small" plain type="danger" @click="handleDelete(row)">
               删除
             </el-button>
           </template>
@@ -244,10 +244,10 @@ onMounted(async () => {
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="createFormVisible = false">
+          <el-button size="small" @click="createFormVisible = false">
             取消
           </el-button>
-          <el-button type="primary" :loading="loading" @click="createWebsite">
+          <el-button size="small" type="primary" :loading="loading" @click="createWebsite">
             确定
           </el-button>
         </div>
@@ -281,10 +281,10 @@ onMounted(async () => {
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="editFormVisible = false">
+          <el-button size="small" @click="editFormVisible = false">
             取消
           </el-button>
-          <el-button type="primary" :loading="loading" @click="handleBindDomain">
+          <el-button size="small" type="primary" :loading="loading" @click="handleBindDomain">
             确定
           </el-button>
         </div>

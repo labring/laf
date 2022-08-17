@@ -234,14 +234,14 @@ onMounted(async () => {
   <div class="app-container">
     <!-- 数据检索区 -->
     <div class="filter-container mb-24px">
-      <el-button class="filter-item" type="primary" icon="Refresh" @click="handleFilter">
+      <el-button size="small" class="filter-item" type="primary" icon="Refresh" @click="handleFilter">
         刷新
       </el-button>
       <el-dropdown
         trigger="click" class="filter-item" style="margin-left: 10px; margin-right: 10px"
         @command="handleUploadCommand"
       >
-        <el-button type="primary">
+        <el-button size="small" type="primary">
           <el-icon>
             <UploadFilled />
           </el-icon> &nbsp;上传&nbsp;
@@ -260,7 +260,7 @@ onMounted(async () => {
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-      <el-button class="inline-block" type="primary" icon="Plus" @click="createDirectory">
+      <el-button size="small" class="inline-block" type="primary" icon="Plus" @click="createDirectory">
         新建文件夹
       </el-button>
       <div class="inline-block" style="margin-left: 20px">
@@ -326,13 +326,13 @@ onMounted(async () => {
       </el-table-column>
       <el-table-column label="操作" align="center" width="160" class-name="small-padding fixed-width">
         <template #default="{ row }">
-          <el-button v-if="row.Prefix" type="success" @click="changeDirectory(row)">
+          <el-button v-if="row.Prefix" size="small" type="success" @click="changeDirectory(row)">
             查看
           </el-button>
           <a v-if="!row.Prefix" :href="getFileUrl(row)" target="blank" style="margin-right: 8px">
-            <el-button type="success">查看</el-button>
+            <el-button size="small" type="success">查看</el-button>
           </a>
-          <el-button :disabled="!!row.Prefix" type="danger" @click="handleDelete(row)">
+          <el-button size="small" :disabled="!!row.Prefix" type="danger" @click="handleDelete(row)">
             删除
           </el-button>
         </template>

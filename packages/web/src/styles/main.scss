@@ -13,7 +13,6 @@ html {
 :root {
   --el-message-bg-color: #fff !important;
   --el-color-info-light-9: #e8f3ff !important;
-  --el-color-info: rgba(22, 93, 255) !important;
 
   .el-message {
     background-color: #fff !important;
@@ -43,11 +42,12 @@ html.dark {
 
 body {
   -webkit-font-smoothing: antialiased;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 a {
   cursor: pointer;
-  color: rgb(22, 93, 255)
+  color: var(--el-color-primary);
 }
 
 a:hover {
@@ -62,6 +62,6 @@ a.blank:after {
 .link-type,
 .link-type:focus {
   &:hover {
-    color: rgb(32, 160, 255);
+    color: var(--el-color-primary);
   }
 }

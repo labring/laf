@@ -379,7 +379,7 @@ onDeactivated(() => {
         >
           对比已发布 (#{{ published_func.version }})
         </el-button>
-        <el-button type="success" style="float: right; margin-left: 10px" :loading="loading" @click="launch">
+        <el-button size="small" type="success" style="float: right; margin-left: 10px" :loading="loading" @click="launch">
           运行(B)
         </el-button>
       </div>

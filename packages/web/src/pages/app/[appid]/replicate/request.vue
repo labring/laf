@@ -84,10 +84,10 @@ onMounted(() => {
       </el-table-column>
       <el-table-column label="操作" width="200" align="center">
         <template #default="scope">
-          <el-button v-if="scope.row.status !== 'accepted'" plain size="small" type="primary" @click="handleUpdateRequest(scope.row)">
+          <el-button v-if="scope.row.status !== 'accepted'" size="small" plain type="primary" @click="handleUpdateRequest(scope.row)">
             接受
           </el-button>
-          <el-button plain size="small" type="danger" @click="handleDeleteRequest(scope.row)">
+          <el-button size="small" plain type="danger" @click="handleDeleteRequest(scope.row)">
             删除
           </el-button>
         </template>

@@ -58,6 +58,7 @@ async function getList() {
     return
 
   const { limit, page, _id } = listQuery
+  console.log(111, page)
 
   const query = _id ? { _id } : {}
 
@@ -292,34 +293,38 @@ onMounted(() => {
     <!-- 记录 -->
     <div class="mb-24px">
       <el-input
-        v-model.trim="listQuery._id" placeholder="请输入_id查找" style="width: 200px" :disabled="!collectionName"
+        v-model.trim="listQuery._id"
+        size="small" placeholder="请输入_id查找" style="width: 200px; vertical-align: middle;" :disabled="!collectionName"
         @keyup.enter="handleFilter"
       />
       <el-button
+        size="small"
         type="default" style="margin-left: 10px" icon="Search" :disabled="!collectionName"
         @click="handleFilter"
       >
         搜索
       </el-button>
-      <el-button type="primary" style="margin-left: 10px" @click="showCreateCollectionForm = true">
+      <el-button size="small" type="primary" style="margin-left: 10px" @click="showCreateCollectionForm = true">
         新建集合
       </el-button>
-      <el-button type="default" style="margin-left: 10px" :disabled="!collectionName" @click="showIndexesList = true">
+      <el-button size="small" type="default" style="margin-left: 10px" :disabled="!collectionName" @click="showIndexesList = true">
         索引管理
       </el-button>
       <el-button
+        size="small"
         type="default" style="margin-left: 10px" :disabled="!collectionName"
         @click="handleShowCollectinoSchema"
       >
         集合结构
       </el-button>
       <el-button
+        size="small"
         type="success" style="margin-left: 10px" icon="Plus" :disabled="!collectionName"
         @click="handleCreateRecord"
       >
         添加记录
       </el-button>
-      <el-button>
+      <el-button size="small">
         <span class="mr-6px">复制名称</span>
         <Copy :text="collectionName" />
       </el-button>
@@ -362,7 +367,7 @@ onMounted(() => {
           <div style="text-align: right">
             <!-- 分页 -->
             <el-pagination
-              v-model:page-size="listQuery.limit" v-model:limit="listQuery.limit"
+              v-model:page-size="listQuery.limit" v-model:currentPage="listQuery.page"
               background class="mt-12px" :total="total" layout="->, total, prev, pager, next" @size-change="getList"
               @current-change="getList"
             />
@@ -379,6 +384,7 @@ onMounted(() => {
       <div>
         <div style="margin: 10px 0">
           <el-button
+            size="small"
             type="primary" style="margin-left: 10px" icon="Plus" :disabled="!collectionName"
             @click="handleCreateIndex"
           >
@@ -399,7 +405,7 @@ onMounted(() => {
           </el-table-column>
           <el-table-column label="操作" align="center">
             <template #default="{ row }">
-              <el-button type="danger" @click="deleIndex(row)">
+              <el-button plain size="small" type="danger" @click="deleIndex(row)">
                 删除
               </el-button>
             </template>
@@ -410,23 +416,20 @@ onMounted(() => {
 
     <!-- 编辑集合数据结构 -->
     <el-drawer v-model="showCollectionSchemaForm" :title="`集合数据结构:${collectionName}`" size="50%">
+      <el-button size="small" class="mb-12px" :loading="loading" type="primary" :disabled="!collectionName" @click="updateCollectionSchema">
+        保存
+      </el-button>
       <JsonEditor
         key="collection"
         v-model="collectionSchemaForm.schema" class="db-editor" :line-numbers="true" :dark="false"
         :height="600"
       />
-      <template #footer>
-        <div style="flex: auto">
-          <el-button :loading="loading" type="primary" :disabled="!collectionName" @click="updateCollectionSchema">
-            保存
-          </el-button>
-        </div>
-      </template>
     </el-drawer>
 
     <!-- 添加/编辑文档表单 -->
     <el-drawer v-model="showDocEditorForm" :title="formMode === 'edit' ? '编辑文档' : '添加文档'" size="50%">
       <el-button
+        size="small"
         class="mb-12px" type="primary" :disabled="!collectionName"
         @click="formMode === 'edit' ? updateDocument(record) : addDocument(record)"
       >
@@ -443,10 +446,10 @@ onMounted(() => {
         </el-form-item>
       </el-form>
       <div style="text-align: right">
-        <el-button type="default" @click="showCreateCollectionForm = false">
+        <el-button size="small" type="default" @click="showCreateCollectionForm = false">
           取消
         </el-button>
-        <el-button type="primary" @click="handleCreateCollection">
+        <el-button size="small" type="primary" @click="handleCreateCollection">
           确认
         </el-button>
       </div>
@@ -473,10 +476,10 @@ onMounted(() => {
         </el-form-item>
       </el-form>
       <div style="text-align: right">
-        <el-button type="info" @click="showCreateIndexDialog = false">
+        <el-button size="small" type="info" @click="showCreateIndexDialog = false">
           取消
         </el-button>
-        <el-button type="primary" @click="createIndex">
+        <el-button size="small" type="primary" @click="createIndex">
           确认
         </el-button>
       </div>
