@@ -336,5 +336,6 @@ name: trigger
 hidden: true
 meta:
   title: 触发器详情
+  index: 1-0
   icon: cloud-function
 </route>

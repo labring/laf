@@ -22,7 +22,7 @@ const returnValue = $computed(() => {
 
 <template>
   <div class="invoke-logs">
-    <div class="title">
+    <div class="title mb-6px">
       执行日志
       <span v-if="data">（ RequestId: {{ props.data.requestId }} ）</span>
       <span v-if="data">
@@ -32,17 +32,23 @@ const returnValue = $computed(() => {
         }}
         ]</span>
     </div>
-    <div class="logs">
-      <div v-for="(log, index) in logs" :key="index" class="log-item text-xs">
-        <pre>- {{ log }}</pre>
+    <div class="logs mb-24px min-h-60px">
+      <div v-if="logs">
+        <div v-for="(log, index) in logs" :key="index" class="log-item text-xs">
+          <pre>- {{ log }}</pre>
+        </div>
+      </div>
+      <div v-else>
+        无
       </div>
     </div>
 
-    <div class="title" style="margin-top: 15px">
+    <div class="title mb-6px">
       返回结果
     </div>
-    <div class="logs">
-      <pre text-xs>{{ returnValue }}</pre>
+    <div class="logs min-h-60px text-xs">
+      <pre v-if="returnValue">{{ returnValue }}</pre>
+      <pre v-else>无</pre>
     </div>
   </div>
 </template>

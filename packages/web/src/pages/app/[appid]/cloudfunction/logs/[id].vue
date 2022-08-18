@@ -163,4 +163,5 @@ name: 日志详情
 hidden: true
 meta:
   title: 日志详情
+  index: 1-2
 </route>

@@ -287,4 +287,5 @@ name: 策略详情
 hidden: true
 meta:
   title: 策略管理
+  index: 2-1
 </route>

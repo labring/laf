@@ -418,7 +418,7 @@ async function handleChange(funcId: string, value: any) {
       <el-table-column label="HTTP 访问" class-name="status-col" min-width="80" align="center">
         <template #default="{ row }">
           <el-switch
-            v-model="row.enableHTTP" inline-prompt active-text="是" inactive-text="否"
+            v-model="row.enableHTTP" inline-prompt active-text="是" :width="42" inactive-text="否"
             @change="handleChange(row._id, { ...row, enableHTTP: row.enableHTTP })"
           />
         </template>
@@ -426,8 +426,8 @@ async function handleChange(funcId: string, value: any) {
       <el-table-column label="状态" class-name="status-col" min-width="60" align="center">
         <template #default="{ row }">
           <el-switch
-            v-model="row.status" :active-value="1" :width="60" inline-prompt active-text="已启用"
-            inactive-text="已关闭" @change="handleChange(row._id, { ...row, status: row.status })"
+            v-model="row.status" :active-value="1" :width="56" inline-prompt active-text="启用"
+            inactive-text="关闭" @change="handleChange(row._id, { ...row, status: row.status })"
           />
         </template>
       </el-table-column>
