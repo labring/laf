@@ -22,13 +22,13 @@ npm i laf-cli -g
 ```
 
 
-## 登陆
+## 登录
 
 ```bash
 laf login -u username -p password
 ```
 
-默认登陆 `lafyun.com`，如果要登陆私有部署的 laf 可通过 `-r` 参数指定：
+默认登录 `lafyun.com`，如果要登录私有部署的 laf 可通过 `-r` 参数指定：
   
 `laf login -u username -p password -r https://console.lafyun.com`
 
