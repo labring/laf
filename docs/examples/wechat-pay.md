@@ -4,6 +4,13 @@ title: 发起微信支付云函数
 
 # {{ $frontmatter.title }}
 
+本案例以微信 native 支付为例，native 支付服务端下单之后微信支付会返回一个 code-url, 然后前端接收这个返回值，直接把这个 code-url 在前端
+生成一个二维码即可用微信扫描支付，适合 PC 网站支付。
+
+code-url 类似：`weixin://wxpay/bizpayurl?pr=aIQrOYOzz`
+
+notify_url 也可以写一个 laf 云函数来接受支付结果的通知。
+
 创建 `wx-pay` 云函数，添加依赖 [wxpay-v3](https://github.com/yangfuhe/node-wxpay)，编写以下代码：
 
 ```ts
