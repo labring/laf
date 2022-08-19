@@ -6,6 +6,7 @@
  */
 
 import * as express from 'express'
+
 import { parseToken, splitBearerToken } from './support/token'
 import Config from './config'
 import { router } from './handler/router'
@@ -22,10 +23,17 @@ import { SchedulerInstance } from './support/scheduler'
 export * from './cloud-sdk'
 
 const app = express()
-app.use(express.json() as any)
+const limitSize = "10mb"
+
+app.use(express.json({ limit: limitSize }) as any)
 app.use(express.urlencoded({
+  limit: limitSize,
   extended: true
 }) as any)
+app.use(express.raw({
+  limit: limitSize,
+}) as any)
+
 
 process.on('unhandledRejection', (reason, promise) => {
   logger.error(`Caught unhandledRejection:`, reason, promise)
