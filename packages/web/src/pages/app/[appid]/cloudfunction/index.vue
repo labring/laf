@@ -340,21 +340,22 @@ async function handleChange(funcId: string, value: any) {
 <template>
   <div class="app-container">
     <!-- 数据检索区 -->
-    <div class="flex justify-between">
+    <div class="flex justify-between mb-12px">
       <div>
         <el-input
-          v-model="listQuery.keyword" placeholder="搜索"
+          v-model="listQuery.keyword"
+          size="small" placeholder="搜索"
           style="width: 200px; margin-right: 10px; vertical-align: middle;" class="filter-item"
           @keyup.enter="handleFilter"
         />
-        <el-button plain class="filter-item" type="primary" icon="Search" @click="handleFilter">
+        <el-button size="small" plain class="filter-item" type="primary" icon="Search" @click="handleFilter">
           搜索
         </el-button>
-        <el-button type="primary" icon="Plus" class="filter-item" @click="showCreateForm">
+        <el-button size="small" type="primary" icon="Plus" class="filter-item" @click="showCreateForm">
           新建函数
         </el-button>
         <el-tooltip content="发布函数：函数要发布后才能生效" placement="bottom" effect="light">
-          <el-button class="filter-item" type="success" icon="Guide" @click="publish">
+          <el-button size="small" class="filter-item" type="success" icon="Guide" @click="publish">
             发布函数
           </el-button>
         </el-tooltip>
@@ -365,21 +366,21 @@ async function handleChange(funcId: string, value: any) {
           只看已启用
         </el-checkbox>
       </div>
+    </div>
 
-      <!-- 标签类别 -->
-      <div class="tag-selector flex items-center ">
-        <div class="label mr-12px text-xs">
-          标签类别
-        </div>
-        <el-radio-group v-model="listQuery.tag" size="small" @change="getList">
-          <el-radio-button label="">
-            全部
-          </el-radio-button>
-          <el-radio-button v-for="tag in all_tags" :key="tag" :label="tag">
-            {{ tag }}
-          </el-radio-button>
-        </el-radio-group>
+    <!-- 标签类别 -->
+    <div class="tag-selector flex items-center">
+      <div class="label mr-12px text-xs">
+        标签类别
       </div>
+      <el-radio-group v-model="listQuery.tag" size="small" @change="getList">
+        <el-radio-button label="">
+          全部
+        </el-radio-button>
+        <el-radio-button v-for="tag in all_tags" :key="tag" :label="tag">
+          {{ tag }}
+        </el-radio-button>
+      </el-radio-group>
     </div>
 
     <el-divider />
@@ -417,7 +418,7 @@ async function handleChange(funcId: string, value: any) {
       <el-table-column label="HTTP 访问" class-name="status-col" min-width="80" align="center">
         <template #default="{ row }">
           <el-switch
-            v-model="row.enableHTTP" inline-prompt active-text="是" inactive-text="否"
+            v-model="row.enableHTTP" inline-prompt active-text="是" :width="42" inactive-text="否"
             @change="handleChange(row._id, { ...row, enableHTTP: row.enableHTTP })"
           />
         </template>
@@ -425,8 +426,8 @@ async function handleChange(funcId: string, value: any) {
       <el-table-column label="状态" class-name="status-col" min-width="60" align="center">
         <template #default="{ row }">
           <el-switch
-            v-model="row.status" :active-value="1" :width="60" inline-prompt active-text="已启用"
-            inactive-text="已关闭" @change="handleChange(row._id, { ...row, status: row.status })"
+            v-model="row.status" :active-value="1" :width="56" inline-prompt active-text="启用"
+            inactive-text="关闭" @change="handleChange(row._id, { ...row, status: row.status })"
           />
         </template>
       </el-table-column>
@@ -439,13 +440,13 @@ async function handleChange(funcId: string, value: any) {
       </el-table-column>
       <el-table-column label="操作" align="center" min-width="200">
         <template #default="{ row, $index }">
-          <el-button type="success" plain size="small" @click="handleShowDetail(row)">
+          <el-button size="small" type="success" plain @click="handleShowDetail(row)">
             开发
           </el-button>
-          <el-button type="info" plain size="small" @click="handleShowLogs(row)">
+          <el-button size="small" type="info" plain @click="handleShowLogs(row)">
             日志
           </el-button>
-          <el-button type="primary" plain size="small" @click="handleTriggers(row)">
+          <el-button size="small" type="primary" plain @click="handleTriggers(row)">
             触发器<b v-if="row.triggers && row.triggers.length">({{ row.triggers.length }})</b>
           </el-button>
           <el-tooltip content="请先停用函数，再删除！" :disabled="row.status !== 1" placement="top">
@@ -507,10 +508,10 @@ async function handleChange(funcId: string, value: any) {
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="dialogFormVisible = false">
+        <el-button size="small" @click="dialogFormVisible = false">
           取消
         </el-button>
-        <el-button type="primary" @click="dialogStatus === 'create' ? handleCreate() : handleUpdate()">
+        <el-button size="small" type="primary" @click="dialogStatus === 'create' ? handleCreate() : handleUpdate()">
           确定
         </el-button>
       </template>

@@ -116,10 +116,10 @@ const handleSubmit = (formEl: FormInstance | undefined) => {
       </el-form-item>
     </el-form>
     <template #footer>
-      <el-button @click="$emit('closeCreateDialog')">
+      <el-button size="small" @click="$emit('closeCreateDialog')">
         取 消
       </el-button>
-      <el-button type="primary" :loading="createFormLoading" @click="handleSubmit(formRef)">
+      <el-button size="small" type="primary" :loading="createFormLoading" @click="handleSubmit(formRef)">
         确 定
       </el-button>
     </template>

@@ -14,11 +14,11 @@ const router = useRouter()
       <el-aside width="240px" style="box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 5px 0px; z-index: 1">
         <el-scrollbar>
           <div class="flex items-center logo-wrap px-12px py-12px w-240px">
-            <el-button link class="w-240px !justify-start" @click="() => router.push('/')">
+            <el-button size="small" link class="w-240px !justify-start" @click="() => router.push('/')">
               <img
                 class="w-30px"
                 alt="logo"
-                src="/logo.png"
+                src="/logo-v2.png"
               ><span class="ml-8px"> {{ $t('layout.topbar.title') }}</span>
             </el-button>
           </div>

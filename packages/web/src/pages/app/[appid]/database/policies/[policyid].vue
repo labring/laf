@@ -217,22 +217,24 @@ onUnmounted(() => {
 
 <template>
   <div class="components-container">
-    <div class="mb-24px">
+    <div>
       <span v-if="policy" style="color: black;">访问策略：<b>{{ policy.name }}</b></span>
 
       <!-- <div class="create-btn" style="margin-bottom: 10px" /> -->
 
-      <el-button icon="Refresh" type="default" style="margin-left: 15px" :disabled="loading" @click="getPolicy">
+      <el-button size="small" icon="Refresh" type="default" style="margin-left: 15px" :disabled="loading" @click="getPolicy">
         刷新
       </el-button>
-      <el-button style="margin-left: 15px" type="primary" :disabled="loading" @click="dialogVisible = true">
+      <el-button size="small" style="margin-left: 15px" type="primary" :disabled="loading" @click="dialogVisible = true">
         新建集合规则
       </el-button>
     </div>
 
-    <el-container style="height: calc(100vh - 140px);">
+    <el-divider />
+
+    <el-container>
       <el-aside width="240px" class="mr-24px">
-        <div class="label">
+        <div class="label mb-12px">
           选择集合
         </div>
         <el-radio-group v-model="collection_name" class="radio-group w-full">
@@ -246,31 +248,33 @@ onUnmounted(() => {
       </el-aside>
       <el-container class="record-list ">
         <div class="editor-container flex-1">
-          <div class="buttons">
-            <el-button class="btn" type="success" :disabled="loading" @click="updateRule">
+          <div class="buttons mb-12px">
+            <el-button size="small" class="btn" type="success" :disabled="loading" @click="updateRule">
               保存(S)
             </el-button>
-            <el-button class="btn" type="danger" :disabled="loading" @click="removeRule">
+            <el-button size="small" class="btn" type="danger" :disabled="loading" @click="removeRule">
               删除
             </el-button>
           </div>
-          <JsonEditor v-model="value" />
+          <div class="border border-gray-3">
+            <JsonEditor v-model="value" :height="500" />
+          </div>
         </div>
       </el-container>
     </el-container>
 
     <!-- 表单 -->
-    <el-dialog v-model="dialogVisible" title="创建集合">
-      <el-form :model="form" label-width="80px" >
+    <el-dialog v-model="dialogVisible" title="创建集合" :width="450">
+      <el-form :model="form" label-width="80px">
         <el-form-item label="集合名称">
           <el-input v-model="form.collection" placeholder="唯一标识，为字母" />
         </el-form-item>
       </el-form>
       <div style="text-align:right;">
-        <el-button type="info" @click="dialogVisible = false">
+        <el-button size="small" type="info" @click="dialogVisible = false">
           取消
         </el-button>
-        <el-button type="primary" @click="create">
+        <el-button size="small" type="primary" @click="create">
           确认
         </el-button>
       </div>
@@ -283,4 +287,5 @@ name: 策略详情
 hidden: true
 meta:
   title: 策略管理
+  index: 2-1
 </route>

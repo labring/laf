@@ -90,16 +90,19 @@ function setTagViewTitle() {
     <!-- 数据检索区 -->
     <div class="filter-container mb-24px">
       <el-input
-        v-model="listQuery.keyword" placeholder="Request ID" style="width: 320px; margin-right: 10px"
-        class="filter-item" @keyup.enter="handleFilter"
-      />
-      <el-button class="filter-item" type="primary" icon="Search" @click="handleFilter">
-        搜索
-      </el-button>
+        v-model="listQuery.keyword"
+        placeholder="Request ID" style="width: 340px;"
+        class="filter-item"
+        @keyup.enter="handleFilter"
+      >
+        <template #append>
+          <el-button icon="Search" @click="handleFilter" />
+        </template>
+      </el-input>
     </div>
 
     <!-- 表格 -->
-    <el-table :key="tableKey" v-loading="listLoading" :data="list" size="small" highlight-current-row style="width: 100%">
+    <el-table :key="tableKey" v-loading="listLoading" border :data="list" size="small" highlight-current-row style="width: 100%">
       <el-table-column label="RequestId" prop="id" align="center" width="300">
         <template #default="{ row }">
           <span>{{ row.requestId }}</span>
@@ -138,7 +141,7 @@ function setTagViewTitle() {
         </el-table-column> -->
       <el-table-column label="操作" align="center" width="100" class-name="small-padding fixed-width">
         <template #default="{ row }">
-          <el-button link size="small" type="primary" @click="handleShowDetail(row)">
+          <el-button size="small" link type="primary" @click="handleShowDetail(row)">
             查看
           </el-button>
         </template>

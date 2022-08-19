@@ -63,11 +63,6 @@ function initEditor() {
 onMounted(() => {
   initEditor()
 })
-
-watch(() => props.modified, () => {
-  editorInstance.dispose()
-  initEditor()
-})
 </script>
 
 <template>
@@ -77,6 +72,6 @@ watch(() => props.modified, () => {
 <style lang="scss" scoped>
 .diff-editor {
   width: 100%;
-  min-height: 600px;
+  min-height: 400px;
 }
 </style>

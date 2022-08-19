@@ -97,10 +97,10 @@ const handleImportApp = (formEl: any) => {
       </el-form-item>
     </el-form>
     <template #footer>
-      <el-button @click="$emit('closeImportDialog')">
+      <el-button size="small" @click="$emit('closeImportDialog')">
         取消
       </el-button>
-      <el-button :loading="importDialogLoading" type="primary" @click="handleImportApp(importFormRef)">
+      <el-button size="small" :loading="importDialogLoading" type="primary" @click="handleImportApp(importFormRef)">
         确定
       </el-button>
     </template>

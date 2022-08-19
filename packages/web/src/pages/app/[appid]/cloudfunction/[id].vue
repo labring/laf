@@ -361,12 +361,14 @@ onDeactivated(() => {
           </el-button>
         </el-tooltip>
         <el-button
+          size="small"
           style="margin-left: 20px" :loading="loading" :disabled="!saved_code_diff"
           :type="saved_code_diff ? 'success' : 'success'" @click="updateFunc"
         >
           保存(S)
         </el-button>
         <el-button
+          size="small"
           :type="published_version_diff ? 'default' : ''" :loading="loading"
           link
           style="margin-left: 15px" :disabled="!published_version_diff" @click="publishFunction"
@@ -374,12 +376,13 @@ onDeactivated(() => {
           {{ published_version_diff ? '发布' : '已发布' }}
         </el-button>
         <el-button
-          v-if="published_func" link :loading="loading" style="margin-left: 10px"
+          v-if="published_func"
+          size="small" link :loading="loading" style="margin-left: 10px"
           @click="diffPublished"
         >
           对比已发布 (#{{ published_func.version }})
         </el-button>
-        <el-button type="success" style="float: right; margin-left: 10px" :loading="loading" @click="launch">
+        <el-button size="small" type="success" style="float: right; margin-left: 10px" :loading="loading" @click="launch">
           运行(B)
         </el-button>
       </div>
@@ -444,10 +447,11 @@ onDeactivated(() => {
 
     <!-- 代码对比编辑器对话框 -->
     <el-dialog
-      v-model="isShowDiffEditor" :title="diffCode.title" width="80%" top="10vh"
+      v-if="diffCode.modified"
+      v-model="isShowDiffEditor" :title="diffCode.title" width="80%" top="5vh"
       @close="onCloseDiffEditor"
     >
-      <DiffEditor :original="diffCode.original" :modified="diffCode.modified" :height="editorHeight * 0.8" />
+      <DiffEditor :original="diffCode.original" :modified="diffCode.modified" :height="editorHeight * 0.85" />
     </el-dialog>
   </div>
 </template>

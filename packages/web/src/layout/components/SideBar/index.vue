@@ -15,16 +15,17 @@ const switchRoute = (item: any) => {
   router.push(path)
 }
 
-const openMenu = menus.value.map((item) => {
+const openMenu = menus.value.map((item: any) => {
   return item.name
 })
 
 const activeMenu = $computed(() => {
-  const { meta, path } = route
+  const { meta } = route
+
   if (meta.activeMenu)
     return meta.activeMenu
 
-  return path
+  return meta.index
 })
 
 const menuIcons: any = {
@@ -51,7 +52,7 @@ const menuIcons: any = {
 
         <span>{{ t(`layout.menu.${item.name}`) }}</span>
       </template>
-      <el-menu-item v-for="child in item.children" :key="child.path" :index="child.path" @click="switchRoute(child)">
+      <el-menu-item v-for="child in item.children" :key="child.path" :index="child.meta.index" @click="switchRoute(child)">
         <!-- <el-icon><location /></el-icon> -->
         <span class="pl-8px!">{{ child.name }}</span>
       </el-menu-item>

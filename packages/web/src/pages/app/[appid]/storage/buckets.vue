@@ -249,14 +249,14 @@ onMounted(() => {
   <div class="app-container">
     <!-- 数据检索区 -->
     <div class="filter-container mb-24px">
-      <el-button class="filter-item inline-block" type="default" icon="Search" @click="getList">
+      <el-button size="small" class="filter-item inline-block" type="default" icon="Search" @click="getList">
         刷新
       </el-button>
-      <el-button class="filter-item inline-block" type="primary" icon="Plus" @click="showCreateForm">
+      <el-button size="small" class="filter-item inline-block" type="primary" icon="Plus" @click="showCreateForm">
         新建文件桶(Bucket)
       </el-button>
 
-      <el-button class="filter-item inline-block" type="primary" :loading="acLoading" @click="handleUpdateAC()">
+      <el-button size="small" class="filter-item inline-block" type="primary" :loading="acLoading" @click="handleUpdateAC()">
         获取服务账号
       </el-button>
 
@@ -301,13 +301,13 @@ onMounted(() => {
 
       <el-table-column label="操作" align="center" class-name="small-padding" width="260">
         <template #default="{ row, $index }">
-          <el-button plain size="small" type="primary" @click="handleShowDetail(row)">
+          <el-button size="small" plain  type="primary" @click="handleShowDetail(row)">
             管理文件
           </el-button>
-          <el-button plain size="small" type="success" @click="showEditForm(row)">
+          <el-button size="small" plain  type="success" @click="showEditForm(row)">
             编辑
           </el-button>
-          <el-button v-if="row.status !== 'deleted'" plain size="small" type="danger" @click="handleDelete(row, $index)">
+          <el-button v-if="row.status !== 'deleted'" size="small" plain  type="danger" @click="handleDelete(row, $index)">
             删除
           </el-button>
         </template>
@@ -348,10 +348,10 @@ onMounted(() => {
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">
+          <el-button size="small" @click="dialogFormVisible = false">
             取消
           </el-button>
-          <el-button type="primary" @click="dialogStatus === 'create' ? handleCreate() : handleUpdate()">
+          <el-button size="small" type="primary" @click="dialogStatus === 'create' ? handleCreate() : handleUpdate()">
             确定
           </el-button>
         </div>

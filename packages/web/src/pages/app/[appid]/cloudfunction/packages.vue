@@ -134,13 +134,13 @@ onMounted(() => {
 
     <!-- 数据检索区 -->
     <div class="filter-container mb-24px">
-      <el-button class="filter-item" type="default" icon="Refresh" @click="getList">
+      <el-button size="small" class="filter-item" type="default" icon="Refresh" @click="getList">
         刷新
       </el-button>
-      <el-button class="filter-item" type="primary" icon="Plus" @click="showCreateForm">
+      <el-button size="small" class="filter-item" type="primary" icon="Plus" @click="showCreateForm">
         添加
       </el-button>
-      <el-button class="filter-item" type="default" @click="restartApp">
+      <el-button size="small" class="filter-item" type="default" @click="restartApp">
         重启服务
       </el-button>
     </div>
@@ -192,10 +192,10 @@ onMounted(() => {
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">
+          <el-button size="small" @click="dialogFormVisible = false">
             取消
           </el-button>
-          <el-button type="primary" @click="dialogStatus === 'create' ? handleCreate() : handleUpdate()">
+          <el-button size="small" type="primary" @click="dialogStatus === 'create' ? handleCreate() : handleUpdate()">
             确定
           </el-button>
         </div>

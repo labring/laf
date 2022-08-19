@@ -107,7 +107,7 @@ const toDetail = (app: any) => {
     >
       <el-table-column align="center" label="App ID" min-width="100">
         <template #default="{ row }">
-          <el-button text @click="handleCopy(row.appid)">
+          <el-button size="small" text @click="handleCopy(row.appid)">
             {{ row.appid }}
             &nbsp;<el-icon><DocumentCopy /></el-icon>
           </el-button>
@@ -140,31 +140,31 @@ const toDetail = (app: any) => {
       </el-table-column>
       <el-table-column label="服务启停" align="center" width="240" class-name="small-padding">
         <template #default="{ row }">
-          <el-button v-if="row.status === 'stopped' || row.status === 'created'" :loading="serviceLoading[row.appid]" type="success" size="small" @click="startApp(row)">
+          <el-button v-if="row.status === 'stopped' || row.status === 'created'" size="small" :loading="serviceLoading[row.appid]" type="success" @click="startApp(row)">
             启动
           </el-button>
-          <el-button v-if="row.status === 'prepared_start'" :loading="true" type="info" size="small">
+          <el-button v-if="row.status === 'prepared_start'" size="small" :loading="true" type="info">
             准备启动
           </el-button>
-          <el-button v-if="row.status === 'starting'" :loading="true" type="info" size="small">
+          <el-button v-if="row.status === 'starting'" size="small" :loading="true" type="info">
             正在启动
           </el-button>
-          <el-button v-if="row.status === 'running'" :loading="serviceLoading[row.appid]" type="danger" size="small" @click="stopApp(row)">
+          <el-button v-if="row.status === 'running'" size="small" :loading="serviceLoading[row.appid]" type="danger" @click="stopApp(row)">
             停止
           </el-button>
-          <el-button v-if="row.status === 'prepared_stop'" :loading="true" type="info" size="small">
+          <el-button v-if="row.status === 'prepared_stop'" size="small" :loading="true" type="info">
             准备停止
           </el-button>
-          <el-button v-if="row.status === 'stopping'" :loading="true" type="info" size="small">
+          <el-button v-if="row.status === 'stopping'" size="small" :loading="true" type="info">
             停止中
           </el-button>
-          <el-button v-if="row.status === 'running'" :loading="serviceLoading[row.appid]" type="default" size="small" @click="restartApp(row)">
+          <el-button v-if="row.status === 'running'" size="small" :loading="serviceLoading[row.appid]" type="default" @click="restartApp(row)">
             重启
           </el-button>
-          <el-button v-if="row.status === 'prepared_restart'" :loading="true" type="info" size="small">
+          <el-button v-if="row.status === 'prepared_restart'" size="small" :loading="true" type="info">
             准备重启
           </el-button>
-          <el-button v-if="row.status === 'restarting'" :loading="true" type="info" size="small">
+          <el-button v-if="row.status === 'restarting'" size="small" :loading="true" type="info">
             重启中
           </el-button>
         </template>
@@ -177,16 +177,16 @@ const toDetail = (app: any) => {
       </el-table-column>
       <el-table-column fixed="right" label="操作" align="center" width="360" class-name="small-padding">
         <template #default="{ row }">
-          <el-button type="success" size="small" @click="toDetail(row)">
+          <el-button size="small" type="success" @click="toDetail(row)">
             进入开发
           </el-button>
-          <el-button type="default" size="small" @click="$emit('showUpdateDialog', row)">
+          <el-button size="small" type="default" @click="$emit('showUpdateDialog', row)">
             编辑
           </el-button>
-          <el-button type="default" size="small" :loading="loading" @click="exportApp(row)">
+          <el-button size="small" type="default" :loading="loading" @click="exportApp(row)">
             导出
           </el-button>
-          <el-button type="default" size="small" @click="$emit('showImportDialog', row)">
+          <el-button size="small" type="default" @click="$emit('showImportDialog', row)">
             导入
           </el-button>
           <template v-if="type === 'created'">
@@ -201,7 +201,7 @@ const toDetail = (app: any) => {
             </el-tooltip>
             <el-tooltip v-else content="请先停止应用" effect="light" placement="left">
               <div class="inline-block ml-12px">
-                <el-button :disabled="true" size="small" type="default" @click="deleteApp(row)">
+                <el-button size="small" :disabled="true" type="default" @click="deleteApp(row)">
                   释放
                 </el-button>
               </div>

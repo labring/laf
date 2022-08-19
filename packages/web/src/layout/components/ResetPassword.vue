@@ -81,7 +81,7 @@ defineExpose({ open, close })
       </el-form-item>
     </ElForm>
     <template #footer>
-      <el-button type="primary" @click="submitForm">
+      <el-button size="small" type="primary" @click="submitForm">
         {{ $t('utils.form.submit') }}
       </el-button>
     </template>

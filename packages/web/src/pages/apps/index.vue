@@ -40,10 +40,10 @@ onMounted(() => {
 <template>
   <div p-4 :loading="loading">
     <div mb-2>
-      <el-button type="default" @click="getApplications()">
+      <el-button size="small" type="default" @click="getApplications()">
         刷新
       </el-button>
-      <el-button type="primary" @click="showCreateDialog">
+      <el-button size="small" type="primary" @click="showCreateDialog">
         创建应用
       </el-button>
     </div>

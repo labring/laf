@@ -10,6 +10,7 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import vueI18n from '@intlify/vite-plugin-vue-i18n'
 import Inspect from 'vite-plugin-inspect'
 import monacoEditorPlugin from 'vite-plugin-monaco-editor'
+import prismjs from 'vite-plugin-prismjs'
 import SFCName from './scripts/vite-plugin-vue-sfc-name'
 
 import extendRoute from './scripts/extend-route'
@@ -34,6 +35,11 @@ export default defineConfig(({ mode }) => ({
     // debug plugins only
     mode === 'development' && Inspect(),
     SFCName(),
+    prismjs({
+      languages: ['json', 'js'],
+      plugins: ['line-numbers'], // 配置显示行号插件
+      css: true,
+    }),
     Vue({
       reactivityTransform: true,
     }),

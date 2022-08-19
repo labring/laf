@@ -6,7 +6,7 @@ import * as oss from '~/api/oss'
 import { byte2GbOrMb } from '~/utils/file'
 const $route = useRoute()
 
-const bucket = $route.params?.bucketName || ''
+const bucket: string = $route.params?.bucketName || ''
 
 let bucketDetail: any = $ref({ name: '', mode: 'private', full_token: '', read_token: '', credentials: {}, objects: 0, size: 0, quota: 0 })
 const tableKey = $ref(0)
@@ -234,14 +234,14 @@ onMounted(async () => {
   <div class="app-container">
     <!-- 数据检索区 -->
     <div class="filter-container mb-24px">
-      <el-button class="filter-item" type="primary" icon="Refresh" @click="handleFilter">
+      <el-button size="small" class="filter-item" type="primary" icon="Refresh" @click="handleFilter">
         刷新
       </el-button>
       <el-dropdown
-        trigger="click" class="filter-item" style="margin-left: 10px; margin-right: 10px"
+        trigger="click" class="!align-middle ml-10px mr-10px"
         @command="handleUploadCommand"
       >
-        <el-button type="primary">
+        <el-button size="small" type="primary">
           <el-icon>
             <UploadFilled />
           </el-icon> &nbsp;上传&nbsp;
@@ -260,11 +260,11 @@ onMounted(async () => {
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-      <el-button class="inline-block" type="primary" icon="Plus" @click="createDirectory">
+      <el-button size="small" type="primary" icon="Plus" @click="createDirectory">
         新建文件夹
       </el-button>
-      <div class="inline-block" style="margin-left: 20px">
-        <span style="font-size: 16px; color: gray; margin-right: 5px">当前:</span>
+      <div class="inline-block align-middle ml-12px">
+        <span style="font-size: 14px; color: gray; margin-right: 5px">当前:</span>
         <PathLink :path="currentPath" :bucket="bucket" @change="onChangeDirectory" />
       </div>
       <el-space :size="30" class="inline-block float-right">
@@ -276,38 +276,40 @@ onMounted(async () => {
 
     <!-- 表格 -->
     <el-table :key="tableKey" v-loading="listLoading" :data="list" fit highlight-current-row style="width: 100%">
-      <el-table-column label="文件" align="center" width="140">
+      <el-table-column label="文件" align="center" width="280">
         <template #default="{ row }">
-          <a v-if="!row.Prefix" :href="getFileUrl(row)" target="blank">
-            <el-icon v-if="isImage(row)" :size="20" @click="changeDirectory(row)">
-              <Picture />
-            </el-icon>
+          <div class="flex items-center">
+            <a v-if="!row.Prefix" :href="getFileUrl(row)" target="_blank" class="h-18px">
+              <el-icon v-if="isImage(row)" :size="18" @click="changeDirectory(row)">
+                <Picture />
+              </el-icon>
 
-            <el-icon v-else-if="isVideo(row)" :size="20" @click="changeDirectory(row)">
-              <VideoPlay />
-            </el-icon>
+              <el-icon v-else-if="isVideo(row)" :size="18" @click="changeDirectory(row)">
+                <VideoPlay />
+              </el-icon>
 
-            <el-icon v-else-if="row.Prefix" :size="20" color="orange" @click="changeDirectory(row)">
+              <el-icon v-else-if="row.Prefix" :size="18" color="orange" @click="changeDirectory(row)">
+                <FolderOpened />
+              </el-icon>
+
+              <el-icon v-else :size="18" @click="changeDirectory(row)">
+                <Paperclip />
+              </el-icon>
+            </a>
+            <el-icon v-if="row.Prefix" :size="18" color="orange" @click="changeDirectory(row)">
               <FolderOpened />
             </el-icon>
 
-            <el-icon v-else :size="20" @click="changeDirectory(row)">
-              <Paperclip />
-            </el-icon>
-          </a>
-          <el-icon v-if="row.Prefix" :size="36" color="orange" @click="changeDirectory(row)">
-            <FolderOpened />
-          </el-icon>
+            <div class="ml-6px">
+              <a v-if="!row.Prefix" :href="getFileUrl(row)" target="_blank">{{ getFileName(row) }}</a>
+              <a v-if="row.Prefix" class="directory-item" @click="changeDirectory(row)">
+                {{ row.Prefix }}
+              </a>
+            </div>
+          </div>
         </template>
       </el-table-column>
-      <el-table-column label="文件名" width="330" align="left">
-        <template #default="{ row }">
-          <span v-if="!row.Prefix">{{ getFileName(row) }}</span>
-          <span v-if="row.Prefix" class="directory-item" @click="changeDirectory(row)">
-            {{ row.Prefix }}
-          </span>
-        </template>
-      </el-table-column>
+
       <el-table-column label="大小" align="center" width="70">
         <template #default="{ row }">
           <span>{{ getFileSize(row) }}</span>
@@ -326,13 +328,13 @@ onMounted(async () => {
       </el-table-column>
       <el-table-column label="操作" align="center" width="160" class-name="small-padding fixed-width">
         <template #default="{ row }">
-          <el-button v-if="row.Prefix" type="success" @click="changeDirectory(row)">
+          <el-button v-if="row.Prefix" size="small" type="success" @click="changeDirectory(row)">
             查看
           </el-button>
           <a v-if="!row.Prefix" :href="getFileUrl(row)" target="blank" style="margin-right: 8px">
-            <el-button type="success">查看</el-button>
+            <el-button size="small" type="success">查看</el-button>
           </a>
-          <el-button :disabled="!!row.Prefix" type="danger" @click="handleDelete(row)">
+          <el-button size="small" :disabled="!!row.Prefix" type="danger" @click="handleDelete(row)">
             删除
           </el-button>
         </template>
@@ -365,4 +367,5 @@ name: 文件详情
 hidden: true
 meta:
   title: 文件管理
+  index: 3-0
 </route>

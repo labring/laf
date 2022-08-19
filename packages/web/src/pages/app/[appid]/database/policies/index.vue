@@ -223,17 +223,18 @@ onMounted(() => {
     <!-- 数据检索区 -->
     <div class="filter-container mb-24px">
       <el-input
-        v-model="listQuery.keyword" placeholder="搜索" style="width: 200px; margin-right: 10px"
+        v-model="listQuery.keyword"
+        size="small" placeholder="搜索" style="width: 200px; margin-right: 10px"
         class="filter-item" @keyup.enter="handleFilter"
       />
-      <el-button class="filter-item" type="default" icon="Search" @click="handleFilter">
+      <el-button size="small" class="filter-item" type="default" icon="Search" @click="handleFilter">
         搜索
       </el-button>
-      <el-button class="filter-item" type="primary" icon="Plus" @click="showCreateForm">
+      <el-button size="small" class="filter-item" type="primary" icon="Plus" @click="showCreateForm">
         新建
       </el-button>
       <el-tooltip content="发布策略：策略修改后需要发布才能生效" placement="bottom" effect="light">
-        <el-button class="filter-item" type="success" icon="Guide" @click="publish">
+        <el-button size="small" class="filter-item" type="success" icon="Guide" @click="publish">
           发布策略
         </el-button>
       </el-tooltip>
@@ -289,10 +290,10 @@ onMounted(() => {
       </el-table-column>
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
         <template #default="{ row, $index }">
-          <el-button plain size="small" type="primary" @click="handleShowDetail(row)">
+          <el-button size="small" plain type="primary" @click="handleShowDetail(row)">
             编辑
           </el-button>
-          <el-button v-if="row.status !== 'deleted'" plain size="small" type="danger" @click="handleDelete(row, $index)">
+          <el-button v-if="row.status !== 'deleted'" size="small" plain type="danger" @click="handleDelete(row, $index)">
             删除
           </el-button>
         </template>
@@ -329,10 +330,10 @@ onMounted(() => {
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">
+          <el-button size="small" @click="dialogFormVisible = false">
             取消
           </el-button>
-          <el-button type="primary" @click="dialogStatus === 'create' ? handleCreate() : handleUpdate()">
+          <el-button size="small" type="primary" @click="dialogStatus === 'create' ? handleCreate() : handleUpdate()">
             确定
           </el-button>
         </div>

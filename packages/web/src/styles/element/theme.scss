@@ -1,22 +1,24 @@
 @forward 'element-plus/theme-chalk/src/common/var.scss' with (
   $colors: (
+    'white': #ffffff,
+    'black': #000000,
     'primary': (
-      'base': #4080FF,
+      'base': #409eff,
     ),
     'success': (
-      'base': #21ba45,
+      'base': #67c23a,
     ),
     'warning': (
-      'base': #f2711c,
+      'base': #e6a23c,
     ),
     'danger': (
-      'base': #db2828,
+      'base': #f56c6c,
     ),
     'error': (
-      'base': #db2828,
+      'base': #f56c6c,
     ),
     'info': (
-      'base': #42b8dd,
+      'base': #909399,
     ),
   ),
   $dialog: (
@@ -37,5 +39,5 @@
   ),
   $drawer: (
     'padding-primary': 0 20px,
-  )
+  ),
 );

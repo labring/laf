@@ -53,10 +53,6 @@ watch(() => props.modelValue, (value) => {
     editorInstance.setValue(JSON.stringify(toRaw(value), null, 2))
 })
 
-onDeactivated(() => {
-  editorInstance.dispose()
-})
-
 onUnmounted(() => {
   editorInstance.dispose()
 })

@@ -93,7 +93,7 @@ function setTagViewTitle() {
         v-model="listQuery.keyword" placeholder="Request ID" style="width: 320px; margin-right: 10px"
         class="filter-item" @keyup.enter="handleFilter"
       />
-      <el-button class="filter-item" type="primary" icon="Search" @click="handleFilter">
+      <el-button size="small" class="filter-item" type="primary" icon="Search" @click="handleFilter">
         搜索
       </el-button>
     </div>
@@ -163,4 +163,5 @@ name: 日志详情
 hidden: true
 meta:
   title: 日志详情
+  index: 1-2
 </route>
