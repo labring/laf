@@ -18,7 +18,7 @@ const router = useRouter()
               <img
                 class="w-30px"
                 alt="logo"
-                src="/logo.png"
+                src="/logo-v2.png"
               ><span class="ml-8px"> {{ $t('layout.topbar.title') }}</span>
             </el-button>
           </div>
