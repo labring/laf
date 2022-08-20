@@ -93,6 +93,11 @@ export default class Config {
   static get NPM_INSTALL_FLAGS(): string {
     return process.env.NPM_INSTALL_FLAGS || ''
   }
+
+  static get REQUEST_LIMIT_SIZE(): string {
+    return process.env.REQUEST_LIMIT_SIZE || '10mb'
+  }
+
 }
 
 

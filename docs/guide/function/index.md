@@ -103,6 +103,10 @@ exports.main = function (ctx) {
 hello, test;
 ```
 
+::: warning
+laf 现有对 `request` 请求体和请求流的大小限制是 10M(后期会做考虑做 laf 应用环境变量的管理)
+:::
+
 ### 在客户端 SDK 调用带参数的云函数
 
 `invokeFunction` 函数的第二个参数指明了用于发送的数据，这个数据会以 Body 的形式发送：
