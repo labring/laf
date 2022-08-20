@@ -23,15 +23,14 @@ import { SchedulerInstance } from './support/scheduler'
 export * from './cloud-sdk'
 
 const app = express()
-const limitSize = "10mb"
 
-app.use(express.json({ limit: limitSize }) as any)
+app.use(express.json({ limit: Config.REQUEST_LIMIT_SIZE }) as any)
 app.use(express.urlencoded({
-  limit: limitSize,
+  limit: Config.REQUEST_LIMIT_SIZE,
   extended: true
 }) as any)
 app.use(express.raw({
-  limit: limitSize,
+  limit: Config.REQUEST_LIMIT_SIZE,
 }) as any)
 
 
