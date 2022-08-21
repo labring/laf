@@ -27,8 +27,8 @@ export default class Config {
   }
 
   /**
-  * the mongodb connection configuration of apps' db, use for creating app databases;
-  */
+   * the mongodb connection configuration of apps' db, use for creating app databases;
+   */
   static get APP_DB_URI() {
     if (!process.env['APP_DB_URI']) {
       throw new Error('env: `APP_DB_URI` is missing')
@@ -112,13 +112,13 @@ export default class Config {
     return process.env['DEPLOY_OSS_DOMAIN']
   }
 
-    /**
-     * The schema of app deployed url: `http` | `https`.
-     * Default value is `http`.
-     */
-    static get APP_SERVICE_DEPLOY_URL_SCHEMA(): string {
-        return process.env.APP_SERVICE_DEPLOY_URL_SCHEMA ?? 'http'
-    }
+  /**
+   * The schema of app deployed url: `http` | `https`.
+   * Default value is `http`.
+   */
+  static get APP_SERVICE_DEPLOY_URL_SCHEMA(): string {
+    return process.env.APP_SERVICE_DEPLOY_URL_SCHEMA ?? 'http'
+  }
 
 
 }

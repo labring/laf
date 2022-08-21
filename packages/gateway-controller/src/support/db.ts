@@ -1,7 +1,5 @@
-
-
-import { Db, MongoClient } from 'mongodb'
-import { logger } from './logger'
+import {Db, MongoClient} from 'mongodb'
+import {logger} from './logger'
 import * as mongodb_uri from 'mongodb-uri'
 import * as assert from 'assert'
 
@@ -14,7 +12,7 @@ export class DatabaseAgent {
 
   /**
    * mongo db instance
-   * @returns 
+   * @returns
    */
   static get db() {
     return this._db
@@ -30,7 +28,7 @@ export class DatabaseAgent {
   /**
    * Parse the connection uri of mongodb
    * @param uri the connection uri of mongodb
-   * @returns 
+   * @returns
    */
   static parseConnectionUri(uri: string) {
     assert.ok(uri, 'empty db connection uri got')
@@ -45,10 +43,10 @@ export class DatabaseAgent {
   /**
    * Create Mongodb database instance
    * @param uri connection uri of mongodb
-   * @returns 
+   * @returns
    */
   static init(uri: string) {
-    const { database } = this.parseConnectionUri(uri)
+    const {database} = this.parseConnectionUri(uri)
 
     const client = new MongoClient(uri)
     client.connect().then(() => {

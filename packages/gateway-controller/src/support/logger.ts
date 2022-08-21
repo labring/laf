@@ -12,7 +12,7 @@ import Config from '../config'
  * Create logger instance
  * @param category log category
  * @param level the logger level : 'fatal', 'error', 'warning', 'info', 'debug', 'trace'
- * @returns 
+ * @returns
  */
 export function createLogger(category: string, level?: string) {
   const logger = log4js.getLogger(category)
