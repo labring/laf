@@ -41,7 +41,7 @@ export class ApiSixHttpUtils {
         return resStatus
     }
 
-    static async putSSL(url: string, id: string, sns: string, cert: string, key: string) {
+    static async putSSL(url: string, id: string, snis: Array<string>, cert: string, key: string) {
         let resStatus = false
 
         // check ssl cert valid date
@@ -53,7 +53,7 @@ export class ApiSixHttpUtils {
         let data = {
             cert: cert,
             key: key,
-            snis: [sns],
+            snis: snis,
             validity_end: new Date(certInfo.validTo).getTime() / 1000 - 3600 * 24 * 10,
         }
         await axios.put(url + '/apisix/admin/ssl/' + id, data, {
