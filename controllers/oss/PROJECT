@@ -1,0 +1,16 @@
+domain: oss.laf.dev
+layout:
+- go.kubebuilder.io/v3
+projectName: oss
+repo: laf
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: oss.laf.dev
+  group: oss
+  kind: Oss
+  path: laf/api/v1
+  version: v1
+version: "3"
