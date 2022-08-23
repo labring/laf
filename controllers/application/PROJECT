@@ -1,0 +1,16 @@
+domain: application.laf.dev
+layout:
+- go.kubebuilder.io/v3
+projectName: application
+repo: laf
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: application.laf.dev
+  group: application
+  kind: Application
+  path: laf/api/v1
+  version: v1
+version: "3"
