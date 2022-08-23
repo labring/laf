@@ -1,4 +1,5 @@
 import { Command } from 'commander'
+import * as path from 'path'
 import { detail } from './api/oss'
 import { handlePushCommand, handlePullCommand } from './actions/oss'
 import { getAppData } from "./utils/util"
@@ -16,7 +17,7 @@ export function makeOssCommand() {
 
       //get bucket detail
       const buckets = await detail(appData.appid, bucket)
-      options.outPath = outPath
+      options.outPath = path.resolve(outPath)
       options.bucketName = `${appData.appid}-${bucket}`
       options.endpoint = appData.oss_endpoint
       await handlePullCommand(buckets.data.credentials, options)
@@ -31,7 +32,7 @@ export function makeOssCommand() {
       const appData = getAppData()
       // get bucket detail
       const buckets = await detail(appData.appid, bucket)
-      options.source = inputPath
+      options.source = path.resolve(inputPath)
       options.bucketName = `${appData.appid}-${bucket}`
       options.endpoint = appData.oss_endpoint
       await handlePushCommand(buckets.data.credentials, options)
