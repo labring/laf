@@ -1,0 +1,6 @@
+apiVersion: oss.laf.dev/v1
+kind: Oss
+metadata:
+  name: oss-sample
+spec:
+  # TODO(user): Add fields here

@@ -1,0 +1,33 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - oss.laf.dev
+  resources:
+  - osses
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - oss.laf.dev
+  resources:
+  - osses/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - oss.laf.dev
+  resources:
+  - osses/status
+  verbs:
+  - get
+  - patch
+  - update
