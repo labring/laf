@@ -1,16 +1,16 @@
-domain: gateway.laf.dev
+domain: laf.dev
 layout:
 - go.kubebuilder.io/v3
 projectName: gateway
-repo: laf
+repo: github.com/labring/laf/controllers/gateway
 resources:
 - api:
     crdVersion: v1
     namespaced: true
   controller: true
-  domain: gateway.laf.dev
+  domain: laf.dev
   group: gateway
   kind: Gateway
-  path: laf/api/v1
+  path: github.com/labring/laf/controllers/gateway/api/v1
   version: v1
 version: "3"

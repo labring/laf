@@ -1,4 +1,4 @@
-apiVersion: database.database.laf.dev/v1
+apiVersion: database.laf.dev/v1
 kind: Database
 metadata:
   name: database-sample

@@ -24,7 +24,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	gatewayv1 "laf/api/v1"
+	gatewayv1 "github.com/labring/laf/controllers/gateway/api/v1"
 )
 
 // GatewayReconciler reconciles a Gateway object
@@ -33,9 +33,9 @@ type GatewayReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=gateway.gateway.laf.dev,resources=gateways,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=gateway.gateway.laf.dev,resources=gateways/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=gateway.gateway.laf.dev,resources=gateways/finalizers,verbs=update
+//+kubebuilder:rbac:groups=gateway.laf.dev,resources=gateways,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=gateway.laf.dev,resources=gateways/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=gateway.laf.dev,resources=gateways/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -45,7 +45,7 @@ type GatewayReconciler struct {
 // the user.
 //
 // For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.2/pkg/reconcile
+// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.1/pkg/reconcile
 func (r *GatewayReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 

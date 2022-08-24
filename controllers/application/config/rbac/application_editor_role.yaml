@@ -5,7 +5,7 @@ metadata:
   name: application-editor-role
 rules:
 - apiGroups:
-  - application.application.laf.dev
+  - application.laf.dev
   resources:
   - applications
   verbs:
@@ -17,7 +17,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - application.application.laf.dev
+  - application.laf.dev
   resources:
   - applications/status
   verbs:

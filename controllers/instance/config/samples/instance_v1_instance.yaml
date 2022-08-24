@@ -1,4 +1,4 @@
-apiVersion: instance.instance.laf.dev/v1
+apiVersion: instance.laf.dev/v1
 kind: Instance
 metadata:
   name: instance-sample

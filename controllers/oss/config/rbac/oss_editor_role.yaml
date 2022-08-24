@@ -5,7 +5,7 @@ metadata:
   name: oss-editor-role
 rules:
 - apiGroups:
-  - oss.oss.laf.dev
+  - oss.laf.dev
   resources:
   - osses
   verbs:
@@ -17,7 +17,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - oss.oss.laf.dev
+  - oss.laf.dev
   resources:
   - osses/status
   verbs:

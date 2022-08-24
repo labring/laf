@@ -5,7 +5,7 @@ metadata:
   name: oss-viewer-role
 rules:
 - apiGroups:
-  - oss.oss.laf.dev
+  - oss.laf.dev
   resources:
   - osses
   verbs:
@@ -13,7 +13,7 @@ rules:
   - list
   - watch
 - apiGroups:
-  - oss.oss.laf.dev
+  - oss.laf.dev
   resources:
   - osses/status
   verbs:

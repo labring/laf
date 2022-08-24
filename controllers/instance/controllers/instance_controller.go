@@ -24,7 +24,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	instancev1 "laf/api/v1"
+	instancev1 "github.com/labring/laf/controllers/instance/api/v1"
 )
 
 // InstanceReconciler reconciles a Instance object
@@ -33,9 +33,9 @@ type InstanceReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=instance.instance.laf.dev,resources=instances,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=instance.instance.laf.dev,resources=instances/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=instance.instance.laf.dev,resources=instances/finalizers,verbs=update
+//+kubebuilder:rbac:groups=instance.laf.dev,resources=instances,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=instance.laf.dev,resources=instances/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=instance.laf.dev,resources=instances/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -45,7 +45,7 @@ type InstanceReconciler struct {
 // the user.
 //
 // For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.2/pkg/reconcile
+// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.1/pkg/reconcile
 func (r *InstanceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 

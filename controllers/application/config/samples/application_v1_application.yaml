@@ -1,4 +1,4 @@
-apiVersion: application.application.laf.dev/v1
+apiVersion: application.laf.dev/v1
 kind: Application
 metadata:
   name: application-sample

@@ -24,7 +24,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	ossv1 "laf/api/v1"
+	ossv1 "github.com/labring/laf/controllers/oss/api/v1"
 )
 
 // OssReconciler reconciles a Oss object
@@ -33,9 +33,9 @@ type OssReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=oss.oss.laf.dev,resources=osses,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=oss.oss.laf.dev,resources=osses/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=oss.oss.laf.dev,resources=osses/finalizers,verbs=update
+//+kubebuilder:rbac:groups=oss.laf.dev,resources=osses,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=oss.laf.dev,resources=osses/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=oss.laf.dev,resources=osses/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -45,7 +45,7 @@ type OssReconciler struct {
 // the user.
 //
 // For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.2/pkg/reconcile
+// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.1/pkg/reconcile
 func (r *OssReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 

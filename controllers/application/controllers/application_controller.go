@@ -24,7 +24,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	applicationv1 "laf/api/v1"
+	applicationv1 "github.com/labring/laf/controllers/application/api/v1"
 )
 
 // ApplicationReconciler reconciles a Application object
@@ -33,9 +33,9 @@ type ApplicationReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=application.application.laf.dev,resources=applications,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=application.application.laf.dev,resources=applications/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=application.application.laf.dev,resources=applications/finalizers,verbs=update
+//+kubebuilder:rbac:groups=application.laf.dev,resources=applications,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=application.laf.dev,resources=applications/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=application.laf.dev,resources=applications/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -45,7 +45,7 @@ type ApplicationReconciler struct {
 // the user.
 //
 // For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.2/pkg/reconcile
+// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.1/pkg/reconcile
 func (r *ApplicationReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 

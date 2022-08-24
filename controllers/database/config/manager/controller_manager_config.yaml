@@ -8,7 +8,7 @@ webhook:
   port: 9443
 leaderElection:
   leaderElect: true
-  resourceName: 5e608ca8.database.laf.dev
+  resourceName: 3e4d01bb.laf.dev
 # leaderElectionReleaseOnCancel defines if the leader should step down volume
 # when the Manager ends. This requires the binary to immediately end when the
 # Manager is stopped, otherwise, this setting is unsafe. Setting this significantly

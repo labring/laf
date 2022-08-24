@@ -1,4 +1,4 @@
-apiVersion: oss.oss.laf.dev/v1
+apiVersion: oss.laf.dev/v1
 kind: Oss
 metadata:
   name: oss-sample

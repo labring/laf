@@ -1,16 +1,16 @@
-domain: database.laf.dev
+domain: laf.dev
 layout:
 - go.kubebuilder.io/v3
 projectName: database
-repo: laf
+repo: github.com/labring/laf/controllers/database
 resources:
 - api:
     crdVersion: v1
     namespaced: true
   controller: true
-  domain: database.laf.dev
+  domain: laf.dev
   group: database
   kind: Database
-  path: laf/api/v1
+  path: github.com/labring/laf/controllers/database/api/v1
   version: v1
 version: "3"

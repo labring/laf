@@ -5,7 +5,7 @@ metadata:
   name: database-viewer-role
 rules:
 - apiGroups:
-  - database.database.laf.dev
+  - database.laf.dev
   resources:
   - databases
   verbs:
@@ -13,7 +13,7 @@ rules:
   - list
   - watch
 - apiGroups:
-  - database.database.laf.dev
+  - database.laf.dev
   resources:
   - databases/status
   verbs:

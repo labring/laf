@@ -5,7 +5,7 @@ metadata:
   name: application-viewer-role
 rules:
 - apiGroups:
-  - application.application.laf.dev
+  - application.laf.dev
   resources:
   - applications
   verbs:
@@ -13,7 +13,7 @@ rules:
   - list
   - watch
 - apiGroups:
-  - application.application.laf.dev
+  - application.laf.dev
   resources:
   - applications/status
   verbs:
