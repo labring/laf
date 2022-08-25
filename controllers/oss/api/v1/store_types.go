@@ -37,17 +37,17 @@ type StoreCapacity struct {
 	//+optional
 	Storage int64 `json:"storage,omitempty"`
 
-	// The number of objects.
+	// The number of objects. The default value is 0 which means unlimited.
 	//+optional
 	//+kubebuilder:validation:Minimum=0
 	//+kubebuilder:default=0
 	ObjectCount int64 `json:"objectCount,omitempty"`
 
-	// The number of buckets.
+	// The number of buckets. The default value is 0 which means unlimited.
 	//+kubebuilder:validation:Minimum=0
 	//+kubebuilder:default=0
 	//+optional
-	BucketCount int64 `json:"bucketNumber,omitempty"`
+	BucketCount int64 `json:"bucketCount,omitempty"`
 }
 
 // StoreSpec defines the desired state of Store
