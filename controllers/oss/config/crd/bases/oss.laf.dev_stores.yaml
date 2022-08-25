@@ -42,15 +42,17 @@ spec:
               capacity:
                 description: Capacity is the maximum capacity of the store.
                 properties:
-                  bucketNumber:
+                  bucketCount:
                     default: 0
-                    description: The number of buckets.
+                    description: The number of buckets. The default value is 0 which
+                      means unlimited.
                     format: int64
                     minimum: 0
                     type: integer
                   objectCount:
                     default: 0
-                    description: The number of objects.
+                    description: The number of objects. The default value is 0 which
+                      means unlimited.
                     format: int64
                     minimum: 0
                     type: integer
@@ -118,15 +120,17 @@ spec:
               capacity:
                 description: The observed capacity of Store.
                 properties:
-                  bucketNumber:
+                  bucketCount:
                     default: 0
-                    description: The number of buckets.
+                    description: The number of buckets. The default value is 0 which
+                      means unlimited.
                     format: int64
                     minimum: 0
                     type: integer
                   objectCount:
                     default: 0
-                    description: The number of objects.
+                    description: The number of objects. The default value is 0 which
+                      means unlimited.
                     format: int64
                     minimum: 0
                     type: integer

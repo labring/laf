@@ -1,0 +1,6 @@
+apiVersion: oss.laf.dev/v1
+kind: Bucket
+metadata:
+  name: bucket-sample
+spec:
+  # TODO(user): Add fields here
