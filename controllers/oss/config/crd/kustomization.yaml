@@ -2,7 +2,8 @@
 # since it depends on service name and namespace that are out of this kustomize package.
 # It should be run by config/default
 resources:
-- bases/oss.laf.dev_osses.yaml
+- bases/oss.laf.dev_stores.yaml
+- bases/oss.laf.dev_users.yaml
 #+kubebuilder:scaffold:crdkustomizeresource
 
 patchesStrategicMerge:

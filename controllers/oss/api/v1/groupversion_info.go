@@ -15,8 +15,8 @@ limitations under the License.
 */
 
 // Package v1 contains API Schema definitions for the oss v1 API group
-//+kubebuilder:object:generate=true
-//+groupName=oss.laf.dev
+// +kubebuilder:object:generate=true
+// +groupName=oss.laf.dev
 package v1
 
 import (

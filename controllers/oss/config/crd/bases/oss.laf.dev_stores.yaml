@@ -1,0 +1,150 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.9.0
+  creationTimestamp: null
+  name: stores.oss.laf.dev
+spec:
+  group: oss.laf.dev
+  names:
+    kind: Store
+    listKind: StoreList
+    plural: stores
+    singular: store
+  scope: Namespaced
+  versions:
+  - name: v1
+    schema:
+      openAPIV3Schema:
+        description: Store is the Schema for the stores API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: StoreSpec defines the desired state of Store
+            properties:
+              accessKey:
+                description: AccessKey is the access key which have admin rights of
+                  the store service.
+                type: string
+              capacity:
+                description: Capacity is the maximum capacity of the store.
+                properties:
+                  bucketNumber:
+                    default: 0
+                    description: The number of buckets.
+                    format: int64
+                    minimum: 0
+                    type: integer
+                  objectCount:
+                    default: 0
+                    description: The number of objects.
+                    format: int64
+                    minimum: 0
+                    type: integer
+                  storage:
+                    default: 0
+                    description: The storage space. The unit is MB. The default value
+                      is 0 which means unlimited.
+                    format: int64
+                    minimum: 0
+                    type: integer
+                  userCount:
+                    description: The user count of a store.
+                    format: int64
+                    type: integer
+                type: object
+              endpoint:
+                description: Endpoint is the store service endpoint. This is a url
+                  string, like "http://minio-service:9000"
+                type: string
+              priority:
+                default: 10
+                description: Priority is used to guide the allocation of resources.
+                  The higher the priority, the first to allocate resources in. It
+                  is worth noting that if the priority value is 0, it means that the
+                  resource is suspended on the store.
+                maximum: 100
+                minimum: 0
+                type: integer
+              provider:
+                description: 'Provider identifies the store provider. This is readonly,
+                  cannot be modified after creation. This value could be the following:
+                  - "minio" for a minio cluster, **`laf` would only implement minio
+                  controller by default.** - "aws-s3" for aws s3 service - "qiniu"
+                  for qiniu service - "google-cloud-storage" for google cloud storage
+                  - "azure-blob-storage" for azure blob storage - "aliyun-oss" for
+                  aliyun oss - ... (more could be added)'
+                maxLength: 64
+                minLength: 2
+                pattern: '[a-zA-Z0-9-]+'
+                type: string
+              region:
+                default: default
+                description: The region name identifies the location of the store.
+                  This is a required field and default value is "default"
+                maxLength: 64
+                minLength: 2
+                pattern: '[a-zA-Z0-9-]+'
+                type: string
+              secretKey:
+                description: SecretKey is the secret key which have admin rights of
+                  the store service.
+                type: string
+              zone:
+                default: default
+                description: Zone identifies the availability zone of the store. This
+                  is a required field and default value is "default"
+                maxLength: 64
+                minLength: 2
+                pattern: '[a-zA-Z0-9-]+'
+                type: string
+            type: object
+          status:
+            description: StoreStatus defines the observed state of Store
+            properties:
+              capacity:
+                description: The observed capacity of Store.
+                properties:
+                  bucketNumber:
+                    default: 0
+                    description: The number of buckets.
+                    format: int64
+                    minimum: 0
+                    type: integer
+                  objectCount:
+                    default: 0
+                    description: The number of objects.
+                    format: int64
+                    minimum: 0
+                    type: integer
+                  storage:
+                    default: 0
+                    description: The storage space. The unit is MB. The default value
+                      is 0 which means unlimited.
+                    format: int64
+                    minimum: 0
+                    type: integer
+                  userCount:
+                    description: The user count of a store.
+                    format: int64
+                    type: integer
+                type: object
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

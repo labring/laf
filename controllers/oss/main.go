@@ -89,11 +89,18 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err = (&controllers.OssReconciler{
+	if err = (&controllers.StoreReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "Oss")
+		setupLog.Error(err, "unable to create controller", "controller", "Store")
+		os.Exit(1)
+	}
+	if err = (&controllers.UserReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "User")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

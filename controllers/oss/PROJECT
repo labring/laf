@@ -10,7 +10,16 @@ resources:
   controller: true
   domain: laf.dev
   group: oss
-  kind: Oss
+  kind: Store
+  path: github.com/labring/laf/controllers/oss/api/v1
+  version: v1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: laf.dev
+  group: oss
+  kind: User
   path: github.com/labring/laf/controllers/oss/api/v1
   version: v1
 version: "3"

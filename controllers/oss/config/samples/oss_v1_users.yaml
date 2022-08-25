@@ -1,6 +1,6 @@
 apiVersion: oss.laf.dev/v1
-kind: Oss
+kind: User
 metadata:
-  name: oss-sample
+  name: user-sample
 spec:
   # TODO(user): Add fields here

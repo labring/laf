@@ -27,36 +27,37 @@ import (
 	ossv1 "github.com/labring/laf/controllers/oss/api/v1"
 )
 
-// OssReconciler reconciles a Oss object
-type OssReconciler struct {
+// StoreReconciler reconciles a Store object
+type StoreReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=oss.laf.dev,resources=osses,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=oss.laf.dev,resources=osses/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=oss.laf.dev,resources=osses/finalizers,verbs=update
+//+kubebuilder:rbac:groups=oss.laf.dev,resources=stores,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=oss.laf.dev,resources=stores/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=oss.laf.dev,resources=stores/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
 // TODO(user): Modify the Reconcile function to compare the state specified by
-// the Oss object against the actual cluster state, and then
+// the Store object against the actual cluster state, and then
 // perform operations to make the cluster state reflect the state specified by
 // the user.
 //
 // For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.1/pkg/reconcile
-func (r *OssReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.2/pkg/reconcile
+func (r *StoreReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	log := log.FromContext(ctx)
 
 	// TODO(user): your logic here
+	log.Info("Reconciling Store")
 
 	return ctrl.Result{}, nil
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *OssReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *StoreReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&ossv1.Oss{}).
+		For(&ossv1.Store{}).
 		Complete(r)
 }

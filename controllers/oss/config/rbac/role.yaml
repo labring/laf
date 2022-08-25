@@ -8,7 +8,7 @@ rules:
 - apiGroups:
   - oss.laf.dev
   resources:
-  - osses
+  - stores
   verbs:
   - create
   - delete
@@ -20,13 +20,39 @@ rules:
 - apiGroups:
   - oss.laf.dev
   resources:
-  - osses/finalizers
+  - stores/finalizers
   verbs:
   - update
 - apiGroups:
   - oss.laf.dev
   resources:
-  - osses/status
+  - stores/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - oss.laf.dev
+  resources:
+  - users
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - oss.laf.dev
+  resources:
+  - users/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - oss.laf.dev
+  resources:
+  - users/status
   verbs:
   - get
   - patch
