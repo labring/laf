@@ -1,0 +1,6 @@
+apiVersion: database.laf.dev/v1
+kind: Store
+metadata:
+  name: store-sample
+spec:
+  # TODO(user): Add fields here

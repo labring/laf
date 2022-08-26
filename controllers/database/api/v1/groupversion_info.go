@@ -15,8 +15,8 @@ limitations under the License.
 */
 
 // Package v1 contains API Schema definitions for the database v1 API group
-//+kubebuilder:object:generate=true
-//+groupName=database.laf.dev
+// +kubebuilder:object:generate=true
+// +groupName=database.laf.dev
 package v1
 
 import (

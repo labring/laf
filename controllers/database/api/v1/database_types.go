@@ -28,14 +28,53 @@ type DatabaseSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of Database. Edit database_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	// Provider name of the database.
+	// The controller will create the corresponding storage resources based on this provider.
+	//+kubebuilder:validation:Required
+	Provider string `json:"provider"`
+
+	// Region of oss store. It's read-only after creation.
+	// The controller will create the corresponding storage resources based on this region.
+	//+kubebuilder:validation:Required
+	Region string `json:"region"`
+
+	// Capacity desired.
+	//+kubebuilder:validation:Required
+	Capacity DatabaseCapacity `json:"capacity"`
 }
 
 // DatabaseStatus defines the observed state of Database
 type DatabaseStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+
+	// Store name of this database.
+	// The controller has created the corresponding storage resources based on this store.
+	//+kubebuilder:validation:Required
+	Store string `json:"store,omitempty"`
+
+	// Region name identifies the location of the store.
+	//+kubebuilder:validation:Required
+	//+kubebuilder:validation:MinLength=2
+	//+kubebuilder:validation:MaxLength=64
+	//+kubebuilder:default=default
+	//+kubebuilder:validation:Pattern=[a-zA-Z0-9-]+
+	Region string `json:"region,omitempty"`
+
+	// ConnectionURI of the database.
+	ConnectionURI string `json:"connectionURI"`
+
+	// Capacity observed by the controller
+	Capacity DatabaseCapacity `json:"capacity,omitempty"`
+}
+
+type DatabaseCapacity struct {
+	// The storage space of database. The unit is MB.
+	// The default value is 0 which means unlimited.
+	//+kubebuilder:validation:Minimum=0
+	//+kubebuilder:default=0
+	//+optional
+	Storage int64 `json:"storage,omitempty"`
 }
 
 //+kubebuilder:object:root=true
