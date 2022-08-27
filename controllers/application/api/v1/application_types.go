@@ -23,19 +23,63 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
+// ApplicationState defines the state of the application
+type ApplicationState string
+
+const (
+	ApplicationStateCreated   ApplicationState = "Created"
+	ApplicationStateStarted   ApplicationState = "Started"
+	ApplicationStateStopped   ApplicationState = "Stopped"
+	ApplicationStateRunning   ApplicationState = "Running"
+	ApplicationStateRestarted ApplicationState = "Restarted"
+	ApplicationStateDeleted   ApplicationState = "Deleted"
+)
+
 // ApplicationSpec defines the desired state of Application
 type ApplicationSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of Application. Edit application_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	// DisplayName for the application
+	//+kubebuilder:validation:MinLength=3
+	//+kubebuilder:validation:MaxLength=63
+	//+kubebuilder:validation:Required
+	DisplayName string `json:"displayName"`
+
+	// State of the application
+	//+kubebuilder:validation:Enum=Created;Started;Stopped;Running;Restarted;Deleted
+	//+kubebuilder:validation:Required
+	//+kubebuilder:default:=Created
+	State ApplicationState `json:"state"`
+
+	// Specification Name for the application
+	//+kubebuilder:validation:Required
+	SpecificationName string `json:"specificationName"`
+
+	// Runtime Name of the application
+	//+kubebuilder:validation:Required
+	RuntimeName string `json:"runtimeName"`
 }
 
 // ApplicationStatus defines the observed state of Application
 type ApplicationStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+
+	// Appid
+	//+kubebuilder:validation:MinLength=3
+	//+kubebuilder:validation:MaxLength=16
+	//+kubebuilder:validation:Required
+	Appid string `json:"appid"`
+
+	// Specification for the application
+	Specification SpecificationSpec `json:"specification"`
+
+	// State of the application
+	State ApplicationState `json:"state"`
+
+	// Runtime for the application
+	Runtime RuntimeSpec `json:"runtime"`
 }
 
 //+kubebuilder:object:root=true

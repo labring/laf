@@ -23,30 +23,20 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// InstanceSpec defines the desired state of Instance
-type InstanceSpec struct {
+// RuntimePackageSpec defines the desired state of RuntimePackage
+type RuntimePackageSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Docker image to use for the instance
-	Image string `json:"image"`
+	// Name of package.
+	Name string `json:"name"`
 
-	// App ID for the instance
-	Appid string `json:"appid"`
-
-	// Replica count for the instance
-	Replica int32 `json:"replica"`
-
-	// Configuration is an unstructured key value map
-	// +optional
-	Configuration map[string]string `json:"configuration,omitempty"`
-
-	// State
-	State string `json:"state"`
+	// Version of package.
+	Version string `json:"version"`
 }
 
-// InstanceStatus defines the observed state of Instance
-type InstanceStatus struct {
+// RuntimePackageStatus defines the observed state of RuntimePackage
+type RuntimePackageStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 }
@@ -54,24 +44,24 @@ type InstanceStatus struct {
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
-// Instance is the Schema for the instances API
-type Instance struct {
+// RuntimePackage is the Schema for the runtimepackages API
+type RuntimePackage struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   InstanceSpec   `json:"spec,omitempty"`
-	Status InstanceStatus `json:"status,omitempty"`
+	Spec   RuntimePackageSpec   `json:"spec,omitempty"`
+	Status RuntimePackageStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-// InstanceList contains a list of Instance
-type InstanceList struct {
+// RuntimePackageList contains a list of RuntimePackage
+type RuntimePackageList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Instance `json:"items"`
+	Items           []RuntimePackage `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&Instance{}, &InstanceList{})
+	SchemeBuilder.Register(&RuntimePackage{}, &RuntimePackageList{})
 }

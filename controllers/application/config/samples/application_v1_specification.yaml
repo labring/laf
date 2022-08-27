@@ -1,0 +1,6 @@
+apiVersion: application.laf.dev/v1
+kind: Specification
+metadata:
+  name: specification-sample
+spec:
+  # TODO(user): Add fields here

@@ -1,0 +1,20 @@
+# permissions for end users to view cloudfunctions.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cloudfunction-viewer-role
+rules:
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - cloudfunctions
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - cloudfunctions/status
+  verbs:
+  - get
