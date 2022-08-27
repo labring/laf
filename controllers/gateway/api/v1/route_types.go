@@ -28,8 +28,8 @@ type RouteSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// RouteType 是路由类型, 必须存在，且只能是下面的值之一 oss、website、app
-	// +kubebuilder:validation:Enum=oss;website;app
+	// RouteType 是路由类型, 必须存在，且只能是下面的值之一 app、bucket、website
+	// +kubebuilder:validation:Enum=app;bucket;website
 	// +kubebuilder:validation:Required
 	RouteType string `json:"routeType"`
 
@@ -40,12 +40,16 @@ type RouteSpec struct {
 	// +kubebuilder:validation:Required
 	AppId string `json:"appid"`
 
+	// Bucket是oss的bucket名称，可选存在
+	BucketName string `json:"bucketName,omitempty"`
+
 	// Domain 是自定义域名，非必须存在，需要匹配域名规则
 	// +kubebuilder:validation:Pattern="^[a-zA-Z0-9]*$"
 	Domain string `json:"domain,omitempty"`
 
-	// Upstream是上游服务
-	Upstream Upstream `json:"upstream"`
+	// Backend是service配置, 必须存在
+	// +kubebuilder:validation:Required
+	Backend Backend `json:"backend"`
 }
 
 // RouteStatus defines the observed state of Route
@@ -58,13 +62,16 @@ type RouteStatus struct {
 	FullDomain string `json:"fullDomain"`
 }
 
-// Upstream defines the desired state of Upstream
-type Upstream struct {
+// Backend defines the desired state of Backend
+type Backend struct {
 
-	// Nodes 是节点列表，必须存在，至少有一个节点, 每个节点是个key-value对，key是节点名称，value是节点权重
-	// +kubebuilder:validation:MinItems=1
+	// ServiceName 是service的名称，必须存在
 	// +kubebuilder:validation:Required
-	Nodes []map[string]int32 `json:"nodes"`
+	ServiceName string `json:"serviceName"`
+
+	// ServicePort是service的端口，必须存在
+	// +kubebuilder:validation:Required
+	ServicePort int32 `json:"servicePort"`
 }
 
 //+kubebuilder:object:root=true
