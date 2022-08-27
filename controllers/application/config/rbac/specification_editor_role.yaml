@@ -1,0 +1,24 @@
+# permissions for end users to edit specifications.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: specification-editor-role
+rules:
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - specifications
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - specifications/status
+  verbs:
+  - get

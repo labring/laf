@@ -1,0 +1,163 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - applications
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - applications/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - applications/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - cloudfunctions
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - cloudfunctions/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - cloudfunctions/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - runtimepackages
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - runtimepackages/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - runtimepackages/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - runtimes
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - runtimes/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - runtimes/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - specifications
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - specifications/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - specifications/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - triggers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - triggers/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - triggers/status
+  verbs:
+  - get
+  - patch
+  - update

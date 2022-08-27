@@ -23,30 +23,23 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// InstanceSpec defines the desired state of Instance
-type InstanceSpec struct {
+// TriggerSpec defines the desired state of Trigger
+type TriggerSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Docker image to use for the instance
-	Image string `json:"image"`
+	// TODO:
+	// the trigger type: cronjob, bucket, etc
 
-	// App ID for the instance
-	Appid string `json:"appid"`
+	// Name of the trigger
+	Name string `json:"name"`
 
-	// Replica count for the instance
-	Replica int32 `json:"replica"`
-
-	// Configuration is an unstructured key value map
-	// +optional
-	Configuration map[string]string `json:"configuration,omitempty"`
-
-	// State
-	State string `json:"state"`
+	// Type of the trigger
+	Type string `json:"type"`
 }
 
-// InstanceStatus defines the observed state of Instance
-type InstanceStatus struct {
+// TriggerStatus defines the observed state of Trigger
+type TriggerStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 }
@@ -54,24 +47,24 @@ type InstanceStatus struct {
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
-// Instance is the Schema for the instances API
-type Instance struct {
+// Trigger is the Schema for the triggers API
+type Trigger struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   InstanceSpec   `json:"spec,omitempty"`
-	Status InstanceStatus `json:"status,omitempty"`
+	Spec   TriggerSpec   `json:"spec,omitempty"`
+	Status TriggerStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-// InstanceList contains a list of Instance
-type InstanceList struct {
+// TriggerList contains a list of Trigger
+type TriggerList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Instance `json:"items"`
+	Items           []Trigger `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&Instance{}, &InstanceList{})
+	SchemeBuilder.Register(&Trigger{}, &TriggerList{})
 }

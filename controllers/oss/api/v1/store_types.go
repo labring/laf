@@ -60,18 +60,9 @@ type StoreSpec struct {
 	//+kubebuilder:validation:MinLength=2
 	//+kubebuilder:validation:MaxLength=64
 	//+kubebuilder:default=default
-	//+kubebuilder:validation:Pattern=[a-zA-Z0-9-]+
+	//+kubebuilder:validation:Pattern=[a-z0-9-]+
 	//+kubebuilder:printcolumn:name="Region",type="string",JSONPath=".spec.region"
 	Region string `json:"region,omitempty"`
-
-	// Zone identifies the availability zone of the store. This is a required field and default value is "default"
-	//+kubebuilder:validation:Required
-	//+kubebuilder:validation:MinLength=2
-	//+kubebuilder:validation:MaxLength=64
-	//+kubebuilder:default=default
-	//+kubebuilder:validation:Pattern=[a-zA-Z0-9-]+
-	//+kubebuilder:printcolumn:name="Zone",type="string",JSONPath=".spec.zone"
-	Zone string `json:"zone,omitempty"`
 
 	// Provider identifies the store provider. This is readonly, cannot be modified after creation.
 	// This value could be the following:
@@ -108,7 +99,7 @@ type StoreSpec struct {
 
 	// Priority is used to guide the allocation of resources.
 	// The higher the priority, the first to allocate resources in.
-	// It is worth noting that if the priority value is 0, it means that the resource is suspended on the store.
+	// If this value is 0, this store will not be selected for allocating new user.	
 	//+kubebuilder:validation:Minimum=0
 	//+kubebuilder:validation:Maximum=100
 	//+kubebuilder:default=10

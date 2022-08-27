@@ -1,0 +1,166 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.9.0
+  creationTimestamp: null
+  name: applications.application.laf.dev
+spec:
+  group: application.laf.dev
+  names:
+    kind: Application
+    listKind: ApplicationList
+    plural: applications
+    singular: application
+  scope: Namespaced
+  versions:
+  - name: v1
+    schema:
+      openAPIV3Schema:
+        description: Application is the Schema for the applications API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: ApplicationSpec defines the desired state of Application
+            properties:
+              displayName:
+                description: DisplayName for the application
+                maxLength: 63
+                minLength: 3
+                type: string
+              runtimeName:
+                description: Runtime Name of the application
+                type: string
+              specificationName:
+                description: Specification Name for the application
+                type: string
+              state:
+                default: Created
+                description: State of the application
+                enum:
+                - Created
+                - Started
+                - Stopped
+                - Running
+                - Restarted
+                - Deleted
+                type: string
+            required:
+            - displayName
+            - runtimeName
+            - specificationName
+            - state
+            type: object
+          status:
+            description: ApplicationStatus defines the observed state of Application
+            properties:
+              appid:
+                description: Appid
+                maxLength: 16
+                minLength: 3
+                type: string
+              runtime:
+                description: Runtime for the application
+                properties:
+                  image:
+                    description: Image is the container image to use for the runtime
+                    type: string
+                  type:
+                    description: Type of the runtime
+                    type: string
+                  version:
+                    description: Version is the version of the runtime
+                    type: string
+                required:
+                - type
+                type: object
+              specification:
+                description: Specification for the application
+                properties:
+                  databaseCapacity:
+                    description: Database capacity for the specification
+                    format: int64
+                    type: integer
+                  displayName:
+                    description: DisplayName for the specification
+                    type: string
+                  limitCPU:
+                    description: Limit CPU for the specification
+                    format: int32
+                    type: integer
+                  limitMemory:
+                    description: Limit Memory for the specification
+                    format: int64
+                    type: integer
+                  networkBandwidthInbound:
+                    description: Network Bandwidth Inbound for the specification
+                    format: int64
+                    type: integer
+                  networkBandwidthOutbound:
+                    description: Network Bandwidth Outbound for the specification
+                    format: int64
+                    type: integer
+                  networkTrafficOutbound:
+                    description: Network Traffic Outbound for the specification
+                    format: int64
+                    minimum: 0
+                    type: integer
+                  priority:
+                    description: Priority for the specification. The default value
+                      is 0, which means that the specification is not currently available
+                      for creating new applications.
+                    format: int32
+                    maximum: 100
+                    minimum: 0
+                    type: integer
+                  requestCPU:
+                    description: Request CPU for the specification
+                    format: int32
+                    type: integer
+                  requestMemory:
+                    description: Request Memory for the specification
+                    format: int64
+                    type: integer
+                  storageCapacity:
+                    description: Storage capacity for the specification
+                    format: int64
+                    type: integer
+                required:
+                - databaseCapacity
+                - displayName
+                - limitCPU
+                - limitMemory
+                - networkBandwidthInbound
+                - networkBandwidthOutbound
+                - networkTrafficOutbound
+                - priority
+                - requestCPU
+                - requestMemory
+                - storageCapacity
+                type: object
+              state:
+                description: State of the application
+                type: string
+            required:
+            - appid
+            - runtime
+            - specification
+            - state
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

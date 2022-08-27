@@ -1,0 +1,24 @@
+# permissions for end users to edit cloudfunctions.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cloudfunction-editor-role
+rules:
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - cloudfunctions
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - cloudfunctions/status
+  verbs:
+  - get

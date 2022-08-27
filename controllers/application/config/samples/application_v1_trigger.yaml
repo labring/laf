@@ -1,0 +1,6 @@
+apiVersion: application.laf.dev/v1
+kind: Trigger
+metadata:
+  name: trigger-sample
+spec:
+  # TODO(user): Add fields here
