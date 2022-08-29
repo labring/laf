@@ -22,6 +22,7 @@ import (
 	databasev1 "github.com/labring/laf/controllers/database/api/v1"
 	"github.com/labring/laf/controllers/database/dbm"
 	"k8s.io/apimachinery/pkg/runtime"
+	"laf/pkg/util"
 	"net/url"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -70,7 +71,7 @@ func (r *DatabaseReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 func (r *DatabaseReconciler) apply(ctx context.Context, database *databasev1.Database) (ctrl.Result, error) {
 	// add the finalizer
 	if database.ObjectMeta.DeletionTimestamp.IsZero() {
-		if !containsString(database.ObjectMeta.Finalizers, "database.laf.dev") {
+		if !util.ContainsString(database.ObjectMeta.Finalizers, "database.laf.dev") {
 			database.ObjectMeta.Finalizers = append(database.ObjectMeta.Finalizers, "database.laf.dev")
 			if err := r.Update(ctx, database); err != nil {
 				return ctrl.Result{}, err
@@ -248,14 +249,4 @@ func (r *DatabaseReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&databasev1.Database{}).
 		Complete(r)
-}
-
-// TODO: move it to pkg/util
-func containsString(finalizers []string, s string) bool {
-	for _, f := range finalizers {
-		if f == s {
-			return true
-		}
-	}
-	return false
 }
