@@ -2,5 +2,12 @@ apiVersion: database.laf.dev/v1
 kind: Database
 metadata:
   name: database-sample
+#  namespace: appid-1
+  labels:
+    appid: appid-1
 spec:
-  # TODO(user): Add fields here
+  provider: mongodb
+  username: appid-1
+  password: password123password123
+  capacity:
+    storage: 1Gi

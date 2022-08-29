@@ -17,6 +17,7 @@ limitations under the License.
 package v1
 
 import (
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -33,14 +34,21 @@ type DatabaseSpec struct {
 	//+kubebuilder:validation:Required
 	Provider string `json:"provider"`
 
-	// Region of oss store. It's read-only after creation.
-	// The controller will create the corresponding storage resources based on this region.
-	//+kubebuilder:validation:Required
-	Region string `json:"region"`
-
 	// Capacity desired.
 	//+kubebuilder:validation:Required
 	Capacity DatabaseCapacity `json:"capacity"`
+
+	// Username of the database.
+	//+kubebuilder:validation:Required
+	//+kubebuilder:validation:MinLength=6
+	//+kubebuilder:validation:MaxLength=16
+	Username string `json:"username"`
+
+	// Password of the database.
+	//+kubebuilder:validation:Required
+	//+kubebuilder:validation:MinLength=16
+	//+kubebuilder:validation:MaxLength=32
+	Password string `json:"password"`
 }
 
 // DatabaseStatus defines the observed state of Database
@@ -51,15 +59,10 @@ type DatabaseStatus struct {
 	// Store name of this database.
 	// The controller has created the corresponding storage resources based on this store.
 	//+kubebuilder:validation:Required
-	Store string `json:"store,omitempty"`
+	StoreName string `json:"store,omitempty"`
 
-	// Region name identifies the location of the store.
 	//+kubebuilder:validation:Required
-	//+kubebuilder:validation:MinLength=2
-	//+kubebuilder:validation:MaxLength=64
-	//+kubebuilder:default=default
-	//+kubebuilder:validation:Pattern=[a-zA-Z0-9-]+
-	Region string `json:"region,omitempty"`
+	StoreNamespace string `json:"storeNamespace,omitempty"`
 
 	// ConnectionURI of the database.
 	ConnectionURI string `json:"connectionURI"`
@@ -69,12 +72,9 @@ type DatabaseStatus struct {
 }
 
 type DatabaseCapacity struct {
-	// The storage space of database. The unit is MB.
-	// The default value is 0 which means unlimited.
-	//+kubebuilder:validation:Minimum=0
-	//+kubebuilder:default=0
+	// The storage space of database.
 	//+optional
-	Storage int64 `json:"storage,omitempty"`
+	Storage resource.Quantity `json:"storage,omitempty"`
 }
 
 //+kubebuilder:object:root=true

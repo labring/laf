@@ -18,13 +18,15 @@ package controllers
 
 import (
 	"context"
-
+	"errors"
+	databasev1 "github.com/labring/laf/controllers/database/api/v1"
+	"github.com/labring/laf/controllers/database/dbm"
 	"k8s.io/apimachinery/pkg/runtime"
+	"net/url"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
-
-	databasev1 "github.com/labring/laf/controllers/database/api/v1"
+	"time"
 )
 
 // DatabaseReconciler reconciles a Database object
@@ -47,16 +49,213 @@ type DatabaseReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.1/pkg/reconcile
 func (r *DatabaseReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	log := log.FromContext(ctx)
 
-	// TODO(user): your logic here
+	// get the database
+	var database databasev1.Database
+	if err := r.Get(ctx, req.NamespacedName, &database); err != nil {
+		log.Error(err, "unable to fetch Database")
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	// reconcile deletion
+	if !database.ObjectMeta.DeletionTimestamp.IsZero() {
+		return r.delete(ctx, &database)
+	}
+
+	return r.apply(ctx, &database)
+}
+
+// apply the database
+func (r *DatabaseReconciler) apply(ctx context.Context, database *databasev1.Database) (ctrl.Result, error) {
+	// add the finalizer
+	if database.ObjectMeta.DeletionTimestamp.IsZero() {
+		if !containsString(database.ObjectMeta.Finalizers, "database.laf.dev") {
+			database.ObjectMeta.Finalizers = append(database.ObjectMeta.Finalizers, "database.laf.dev")
+			if err := r.Update(ctx, database); err != nil {
+				return ctrl.Result{}, err
+			}
+		}
+	}
+
+	// reconcile the store
+	if database.Status.StoreName == "" {
+		// select a store
+		if err := r.selectStore(ctx, database); err != nil {
+			return ctrl.Result{}, err
+		}
+	}
+
+	// reconcile the connection uri
+	if database.Status.ConnectionURI == "" {
+		if err := r.createDatabase(ctx, database); err != nil {
+			return ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, err
+		}
+	}
+
+	// TODO: reconcile the storage capacity
+	if database.Status.Capacity.Storage.Cmp(database.Spec.Capacity.Storage) < 0 {
+		// TODO: update the storage capacity
+	} else {
+		// TODO: update the storage capacity
+	}
 
 	return ctrl.Result{}, nil
 }
 
+// delete the database
+func (r *DatabaseReconciler) delete(ctx context.Context, database *databasev1.Database) (ctrl.Result, error) {
+	log := log.FromContext(ctx)
+
+	// get the store
+	store, err := r.getDatabaseStore(ctx, database.Status.StoreNamespace, database.Status.StoreName)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+
+	// new database manager
+	mgm, err := dbm.NewMongoManager(ctx, store.Spec.ConnectionURI)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+	defer mgm.Disconnect()
+
+	// delete the database
+	err = mgm.RemoveUser(database.Name, database.Spec.Username)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+
+	log.Info("database deleted", "name", database.Name)
+
+	// remove the finalizer
+	database.ObjectMeta.Finalizers = nil
+	if err := r.Update(ctx, database); err != nil {
+		return ctrl.Result{}, err
+	}
+
+	return ctrl.Result{}, nil
+}
+
+// createDatabase create database
+func (r *DatabaseReconciler) createDatabase(ctx context.Context, database *databasev1.Database) error {
+	log := log.FromContext(ctx)
+
+	// get the store
+	store, err := r.getDatabaseStore(ctx, database.Status.StoreNamespace, database.Status.StoreName)
+	if err != nil {
+		return err
+	}
+
+	// new database manager
+	mgm, err := dbm.NewMongoManager(ctx, store.Spec.ConnectionURI)
+	if err != nil {
+		return err
+	}
+	defer mgm.Disconnect()
+
+	// create the database
+	err = mgm.CreateDatabase(database.Name, database.Spec.Username, database.Spec.Password)
+	if err != nil {
+		return err
+	}
+
+	log.Info("database created", "name", database.Name)
+
+	// assemble the connection uri
+	u, err := url.Parse(store.Spec.ConnectionURI)
+	u.User = url.UserPassword(database.Spec.Username, database.Spec.Password)
+	q := u.Query()
+	q.Set("authSource", database.Name)
+	u.RawQuery = q.Encode()
+
+	// update the database status
+	database.Status.ConnectionURI = u.String()
+	if err := r.Status().Update(ctx, database); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// selectStore select the store which match the database
+func (r *DatabaseReconciler) selectStore(ctx context.Context, database *databasev1.Database) error {
+	// get the store list
+	var storeList databasev1.StoreList
+	if err := r.List(ctx, &storeList); err != nil {
+		return err
+	}
+
+	// select the store:
+	// - match the provider
+	// - match the region
+	// - have enough capacity
+	// - have the higher priority
+	var store databasev1.Store
+	for _, s := range storeList.Items {
+		// skip if the provider is not match
+		if s.Spec.Provider != database.Spec.Provider {
+			continue
+		}
+
+		// skip if the user capacity is not enough
+		if s.Status.Capacity != nil && s.Status.Capacity.UserCount >= s.Spec.Capacity.UserCount {
+			continue
+		}
+
+		// skip if the storage capacity is not enough
+		if s.Status.Capacity != nil && s.Status.Capacity.Storage.Cmp(s.Spec.Capacity.Storage) >= 0 {
+			continue
+		}
+
+		// skip if the priority is lower
+		if s.Spec.Priority < store.Spec.Priority {
+			continue
+		}
+
+		// select the store
+		store = s
+	}
+
+	// return error if no store found
+	if store.Name == "" {
+		return errors.New("no available store found")
+	}
+
+	// update the database status
+	database.Status.StoreName = store.Name
+	database.Status.StoreNamespace = store.Namespace
+	if err := r.Status().Update(ctx, database); err != nil {
+		return err
+	}
+	return nil
+}
+
+// getDatabaseStore get the database store
+func (r *DatabaseReconciler) getDatabaseStore(ctx context.Context, storeNamespace string, storeName string) (*databasev1.Store, error) {
+	// get the store
+	var store databasev1.Store
+	if err := r.Get(ctx, client.ObjectKey{Namespace: storeNamespace, Name: storeName}, &store); err != nil {
+		return nil, err
+	}
+
+	return &store, nil
+}
+
 // SetupWithManager sets up the controller with the Manager.
 func (r *DatabaseReconciler) SetupWithManager(mgr ctrl.Manager) error {
+
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&databasev1.Database{}).
 		Complete(r)
+}
+
+// TODO: move it to pkg/util
+func containsString(finalizers []string, s string) bool {
+	for _, f := range finalizers {
+		if f == s {
+			return true
+		}
+	}
+	return false
 }

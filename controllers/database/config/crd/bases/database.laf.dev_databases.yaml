@@ -39,26 +39,32 @@ spec:
                 description: Capacity desired.
                 properties:
                   storage:
-                    default: 0
-                    description: The storage space of database. The unit is MB. The
-                      default value is 0 which means unlimited.
-                    format: int64
-                    minimum: 0
-                    type: integer
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: The storage space of database.
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
                 type: object
+              password:
+                description: Password of the database.
+                maxLength: 32
+                minLength: 16
+                type: string
               provider:
                 description: Provider name of the database. The controller will create
                   the corresponding storage resources based on this provider.
                 type: string
-              region:
-                description: Region of oss store. It's read-only after creation. The
-                  controller will create the corresponding storage resources based
-                  on this region.
+              username:
+                description: Username of the database.
+                maxLength: 16
+                minLength: 6
                 type: string
             required:
             - capacity
+            - password
             - provider
-            - region
+            - username
             type: object
           status:
             description: DatabaseStatus defines the observed state of Database
@@ -67,26 +73,21 @@ spec:
                 description: Capacity observed by the controller
                 properties:
                   storage:
-                    default: 0
-                    description: The storage space of database. The unit is MB. The
-                      default value is 0 which means unlimited.
-                    format: int64
-                    minimum: 0
-                    type: integer
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: The storage space of database.
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
                 type: object
               connectionURI:
                 description: ConnectionURI of the database.
                 type: string
-              region:
-                default: default
-                description: Region name identifies the location of the store.
-                maxLength: 64
-                minLength: 2
-                pattern: '[a-zA-Z0-9-]+'
-                type: string
               store:
                 description: Store name of this database. The controller has created
                   the corresponding storage resources based on this store.
+                type: string
+              storeNamespace:
                 type: string
             required:
             - connectionURI

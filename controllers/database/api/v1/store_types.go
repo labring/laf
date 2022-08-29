@@ -17,6 +17,7 @@ limitations under the License.
 package v1
 
 import (
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -29,12 +30,9 @@ type StoreCapacity struct {
 	//+optional
 	UserCount int64 `json:"userCount,omitempty"`
 
-	// The storage space. The unit is MB.
-	// The default value is 0 which means unlimited.
-	//+kubebuilder:validation:Minimum=0
-	//+kubebuilder:default=0
+	// The storage space.
 	//+optional
-	Storage int64 `json:"storage,omitempty"`
+	Storage resource.Quantity `json:"storage,omitempty"`
 
 	// The number of databases. The default value is 0 which means unlimited.
 	//+optional

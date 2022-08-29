@@ -53,12 +53,12 @@ spec:
                     minimum: 0
                     type: integer
                   storage:
-                    default: 0
-                    description: The storage space. The unit is MB. The default value
-                      is 0 which means unlimited.
-                    format: int64
-                    minimum: 0
-                    type: integer
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: The storage space.
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
                   userCount:
                     description: The user count of a store.
                     format: int64
@@ -115,12 +115,12 @@ spec:
                     minimum: 0
                     type: integer
                   storage:
-                    default: 0
-                    description: The storage space. The unit is MB. The default value
-                      is 0 which means unlimited.
-                    format: int64
-                    minimum: 0
-                    type: integer
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: The storage space.
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
                   userCount:
                     description: The user count of a store.
                     format: int64
