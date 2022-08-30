@@ -52,10 +52,11 @@ type DatabaseReconciler struct {
 func (r *DatabaseReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := log.FromContext(ctx)
 
+	log.Info("reconciling database")
+
 	// get the database
 	var database databasev1.Database
 	if err := r.Get(ctx, req.NamespacedName, &database); err != nil {
-		log.Error(err, "unable to fetch Database")
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
@@ -69,6 +70,8 @@ func (r *DatabaseReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 
 // apply the database
 func (r *DatabaseReconciler) apply(ctx context.Context, database *databasev1.Database) (ctrl.Result, error) {
+	log := log.FromContext(ctx)
+
 	// add the finalizer
 	if database.ObjectMeta.DeletionTimestamp.IsZero() {
 		if !util.ContainsString(database.ObjectMeta.Finalizers, "database.laf.dev") {
@@ -76,6 +79,7 @@ func (r *DatabaseReconciler) apply(ctx context.Context, database *databasev1.Dat
 			if err := r.Update(ctx, database); err != nil {
 				return ctrl.Result{}, err
 			}
+			log.Info("added the finalizer")
 		}
 	}
 
@@ -85,6 +89,7 @@ func (r *DatabaseReconciler) apply(ctx context.Context, database *databasev1.Dat
 		if err := r.selectStore(ctx, database); err != nil {
 			return ctrl.Result{}, err
 		}
+		log.Info("selected a store for database")
 	}
 
 	// reconcile the connection uri
@@ -92,6 +97,7 @@ func (r *DatabaseReconciler) apply(ctx context.Context, database *databasev1.Dat
 		if err := r.createDatabase(ctx, database); err != nil {
 			return ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, err
 		}
+		log.Info("created database successfully")
 	}
 
 	// TODO: reconcile the storage capacity
@@ -127,14 +133,15 @@ func (r *DatabaseReconciler) delete(ctx context.Context, database *databasev1.Da
 		return ctrl.Result{}, err
 	}
 
-	log.Info("database deleted", "name", database.Name)
+	log.Info("database user deleted", "name", database.Name)
 
 	// remove the finalizer
-	database.ObjectMeta.Finalizers = nil
+	database.ObjectMeta.Finalizers = util.RemoveString(database.ObjectMeta.Finalizers, "database.laf.dev")
 	if err := r.Update(ctx, database); err != nil {
 		return ctrl.Result{}, err
 	}
 
+	log.Info("removed the finalizer")
 	return ctrl.Result{}, nil
 }
 
@@ -245,7 +252,6 @@ func (r *DatabaseReconciler) getDatabaseStore(ctx context.Context, storeNamespac
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *DatabaseReconciler) SetupWithManager(mgr ctrl.Manager) error {
-
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&databasev1.Database{}).
 		Complete(r)
