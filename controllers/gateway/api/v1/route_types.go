@@ -28,28 +28,43 @@ type RouteSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// RouteType 是路由类型, 必须存在，且只能是下面的值之一 app、bucket、website
-	// +kubebuilder:validation:Enum=app;bucket;website
+	// Domain 是路由域名，必须存在
 	// +kubebuilder:validation:Required
-	RouteType string `json:"routeType"`
-
-	// AppId 是应用Id，必须存在，长度3到10之间，由字母和数字组合
-	// +kubebuilder:validation:MinLength=3
-	// +kubebuilder:validation:MaxLength=10
-	// +kubebuilder:validation:Pattern="^[a-zA-Z0-9]*$"
-	// +kubebuilder:validation:Required
-	AppId string `json:"appid"`
-
-	// Bucket是oss的bucket名称，可选存在
-	BucketName string `json:"bucketName,omitempty"`
-
-	// Domain 是自定义域名，非必须存在，需要匹配域名规则
 	// +kubebuilder:validation:Pattern="^[a-zA-Z0-9]*$"
 	Domain string `json:"domain,omitempty"`
 
 	// Backend是service配置, 必须存在
 	// +kubebuilder:validation:Required
 	Backend Backend `json:"backend"`
+
+	// CertConfigRef 是证书配置，可选存在
+	// +kubebuilder:validation:Optional
+	CertConfigRef string `json:"certConfigRef,omitempty"`
+
+	// 下面是一些规则配置，可选存在
+
+	// PathRewrite 是路径重写，可选存在
+	// +kubebuilder:validation:Optional
+	PathRewrite string `json:"pathRewrite,omitempty"`
+
+	// PassHost 传给上游的host，可选存在, 如果不设置，则默认将客户端的 host 透传给上游
+	// +kubebuilder:validation:Optional
+	PassHost string `json:"passHost,omitempty"`
+
+	// EnableWebSocket 是否开启websocket, 默认否
+	// +kubebuilder:validation:Optional
+	EnableWebSocket bool `json:"enableWebSocket,omitempty"`
+}
+
+// PathRewrite 是路径重写
+type PathRewrite struct {
+	// Regex 是正则表达式，必须存在
+	// +kubebuilder:validation:Required
+	Regex string `json:"regex"`
+
+	//Replacement 是替代内容，必须存在
+	// +kubebuilder:validation:Required
+	Replacement string `json:"replacement"`
 }
 
 // RouteStatus defines the observed state of Route
@@ -57,9 +72,13 @@ type RouteStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// FullDomain 是路由的完整域名，必须存在
+	// Domain 是路由的完整域名，必须存在
 	// +kubebuilder:validation:Required
-	FullDomain string `json:"fullDomain"`
+	Domain string `json:"Domain"`
+
+	// SupportSSL 是否支持ssl, 默认为false
+	// +kubebuilder:validation:Required
+	SupportSSL bool `json:"supportSSL"`
 }
 
 // Backend defines the desired state of Backend
