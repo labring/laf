@@ -1,0 +1,78 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.9.0
+  creationTimestamp: null
+  name: gateways.gateway.laf.dev
+spec:
+  group: gateway.laf.dev
+  names:
+    kind: Gateway
+    listKind: GatewayList
+    plural: gateways
+    singular: gateway
+  scope: Namespaced
+  versions:
+  - name: v1
+    schema:
+      openAPIV3Schema:
+        description: Gateway is the Schema for the gateways API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: GatewaySpec defines the desired state of Gateway
+            properties:
+              appId:
+                description: AppId是应用id，字母数字组成，长度5至16位，必须存在
+                pattern: ^[a-zA-Z0-9]{5,16}$
+                type: string
+              buckets:
+                description: Buckets是存储桶, 是一个数组，可选存在
+                items:
+                  type: string
+                type: array
+              websites:
+                description: Websites是静态站点，是一个数组，可选存在
+                items:
+                  type: string
+                type: array
+            required:
+            - appId
+            type: object
+          status:
+            description: GatewayStatus defines the observed state of Gateway
+            properties:
+              appDomain:
+                description: AppDomain 是应用域名，必须存在
+                type: string
+              bucketDomains:
+                description: BucketDomains 是存储桶域名列表，是一个数组，可选存在
+                items:
+                  type: string
+                type: array
+              websiteDomains:
+                description: WebsiteDomains 是静态站点域名列表，是一个数组，可选存在
+                items:
+                  type: string
+                type: array
+            required:
+            - appDomain
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

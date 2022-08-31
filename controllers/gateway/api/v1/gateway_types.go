@@ -29,13 +29,59 @@ type GatewaySpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of Gateway. Edit gateway_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+
+	// AppId是应用id，字母数字组成，长度5至16位，必须存在
+	// +kubebuilder:validation:Pattern="^[a-zA-Z0-9]{5,16}$"
+	// +kubebuilder:validation:Required
+	AppId string `json:"appId"`
+
+	// Buckets是存储桶, 是一个数组，可选存在
+	// +kubebuilder:validation:Optional
+	Buckets []string `json:"buckets,omitempty"`
+
+	// Websites是静态站点，是一个数组，可选存在
+	// +kubebuilder:validation:Optional
+	Websites []string `json:"websites,omitempty"`
 }
 
 // GatewayStatus defines the observed state of Gateway
 type GatewayStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+
+	// AppDomain 是应用域名，必须存在
+	// +kubebuilder:validation:Required
+	AppDomain string `json:"appDomain"`
+
+	// BucketDomains 是存储桶域名列表，是一个数组，可选存在
+	// +kubebuilder:validation:Optional
+	BucketDomains []string `json:"bucketDomains,omitempty"`
+
+	// WebsiteDomains 是静态站点域名列表，是一个数组，可选存在
+	// +kubebuilder:validation:Optional
+	WebsiteDomains []string `json:"websiteDomains,omitempty"`
+}
+
+// BucketDomain 是存储桶位的域名配置
+type BucketDomain struct {
+	// Name 是存储桶名称，必须存在
+	// +kubebuilder:validation:Required
+	Name string `json:"name"`
+
+	// Domain 是存储桶域名，必须存在
+	// +kubebuilder:validation:Required
+	Domain string `json:"domain"`
+}
+
+// WebsiteDomain 是静态站点的域名配置
+type WebsiteDomain struct {
+	// Name 是静态站点名称，必须存在
+	// +kubebuilder:validation:Required
+	Name string `json:"name"`
+
+	// Domain 是静态站点域名，必须存在
+	// +kubebuilder:validation:Required
+	Domain string `json:"domain"`
 }
 
 //+kubebuilder:object:root=true

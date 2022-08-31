@@ -9,7 +9,7 @@ func ContainsString(finalizers []string, s string) bool {
 	return false
 }
 
-func RemoveString(finalizers []string, s string) []string {	
+func RemoveString(finalizers []string, s string) []string {
 	for i, v := range finalizers {
 		if v == s {
 			return append(finalizers[:i], finalizers[i+1:]...)
