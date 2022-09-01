@@ -17,6 +17,7 @@ limitations under the License.
 package v1
 
 import (
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -27,9 +28,9 @@ import (
 type BucketPolicy string
 
 const (
-	BucketPolicyReadOnly  BucketPolicy = "readonly"
-	BucketPolicyReadWrite BucketPolicy = "public"
-	BucketPolicyPrivate   BucketPolicy = "private"
+	BucketPolicyPrivate  BucketPolicy = "private"
+	BucketPolicyReadOnly BucketPolicy = "readonly"
+	BucketPolicyPublic   BucketPolicy = "readwrite"
 )
 
 // BucketSpec defines the desired state of Bucket
@@ -37,28 +38,15 @@ type BucketSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Name of bucket in oss. It's read-only after creation.
-	// This will be used as the bucket name in storage store.
-	// The length is between 3-63 and can only include letters, numbers and short horizontal lines (-).
-	//+kubebuilder:validation:Required
-	//+kubebuilder:validation:MinLength=3
-	//+kubebuilder:validation:MaxLength=64
-	//+kubebuilder:validation:Pattern=^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
-	Name string `json:"name"`
-
-	// Policy of bucket in oss. required.
-	//+kubebuilder:validation:Required
+	// Policy of bucket in oss, defaults to 'private'.
+	//+kubebuilder:validation:Enum=private;readonly;readwrite
+	//+kubebuilder:validation:Default=private
+	//+optional
 	Policy BucketPolicy `json:"policy"`
 
-	// Storage space of this bucket, in MB. It defaults to 0, which means no limit.
+	// Storage space of this bucket.
 	//+kubebuilder:validation:Required
-	//+kubebuilder:validation:Minimum=0
-	//+kubebuilder:default=0
-	Storage int64 `json:"storage"`
-
-	// The name of oss user.
-	//+kubebuilder:validation:Required
-	User string `json:"user"`
+	Storage resource.Quantity `json:"storage"`
 }
 
 // BucketStatus defines the observed state of Bucket
@@ -66,17 +54,25 @@ type BucketStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
+	// Username of bucket in oss.
+	User string `json:"user"`
+
+	// Policy of bucket in oss.
+	Policy BucketPolicy `json:"policy"`
+
+	// Versioning of bucket in oss.
+	Versioning bool `json:"versioning"`
+
 	// Capacity of this bucket.
-	Capacity BucketCapacity `json:"capacity,omitempty"`
+	Capacity BucketCapacity `json:"capacity"`
 }
 
 type BucketCapacity struct {
-	// The user's storage space. The unit is MB.
-	// The default value is 0 which means unlimited.
-	//+kubebuilder:validation:Minimum=0
-	//+kubebuilder:default=0
-	//+optional
-	Storage int64 `json:"storage,omitempty"`
+	// Storage space of this bucket.
+	MaxStorage resource.Quantity `json:"maxStorage,omitempty"`
+
+	// The used storage space.
+	UsedStorage resource.Quantity `json:"storage,omitempty"`
 
 	// The user's number of objects.
 	//+optional

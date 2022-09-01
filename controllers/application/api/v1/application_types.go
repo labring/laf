@@ -66,11 +66,11 @@ type ApplicationStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Appid
+	// AppId
 	//+kubebuilder:validation:MinLength=3
 	//+kubebuilder:validation:MaxLength=16
 	//+kubebuilder:validation:Required
-	Appid string `json:"appid"`
+	AppId string `json:"appid"`
 
 	// Specification for the application
 	Specification SpecificationSpec `json:"specification"`

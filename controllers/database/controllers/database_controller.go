@@ -196,7 +196,6 @@ func (r *DatabaseReconciler) selectStore(ctx context.Context, database *database
 
 	// select the store:
 	// - match the provider
-	// - match the region
 	// - have enough capacity
 	// - have the higher priority
 	var store databasev1.Store

@@ -35,6 +35,12 @@ spec:
           spec:
             description: UserSpec defines the desired state of User
             properties:
+              appid:
+                description: AppId is the unique identifier for the app, usually used
+                  as the username of this User.
+                maxLength: 32
+                minLength: 3
+                type: string
               capacity:
                 description: Capacity that user desired.
                 properties:
@@ -51,33 +57,35 @@ spec:
                     minimum: 0
                     type: integer
                   storage:
-                    default: 0
-                    description: The user's storage space. The unit is MB. The default
-                      value is 0 which means unlimited.
-                    format: int64
-                    minimum: 0
-                    type: integer
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: The user's storage space. The default value is 0
+                      which means unlimited.
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
                 type: object
+              password:
+                description: Password is the secret name of the user, which is used
+                  to authenticate the user.
+                maxLength: 32
+                minLength: 3
+                type: string
               provider:
                 description: Provider name of a oss store. It's read-only after creation.
                   The controller will create the corresponding storage resources based
                   on this provider.
                 type: string
-              region:
-                description: Region of oss store. It's read-only after creation. The
-                  controller will create the corresponding storage resources based
-                  on this region.
-                type: string
             required:
+            - appid
+            - password
             - provider
-            - region
             type: object
           status:
             description: UserStatus defines the observed state of User
             properties:
               accessKey:
-                description: AccessKey for this user. This field might be generated
-                  by controller if accessKey not given in spec.
+                description: AccessKey is the access key of the user
                 type: string
               capacity:
                 description: The user's capacity observed by the controller.
@@ -95,32 +103,32 @@ spec:
                     minimum: 0
                     type: integer
                   storage:
-                    default: 0
-                    description: The user's storage space. The unit is MB. The default
-                      value is 0 which means unlimited.
-                    format: int64
-                    minimum: 0
-                    type: integer
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: The user's storage space. The default value is 0
+                      which means unlimited.
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
                 type: object
               endpoint:
                 description: Endpoint is the store service endpoint.
                 type: string
               region:
-                default: default
-                description: The region name identifies the location of the store.
-                maxLength: 64
-                minLength: 2
-                pattern: '[a-zA-Z0-9-]+'
+                description: Region of oss store.
                 type: string
               secretKey:
-                description: SecretKey for this user. This field might be generated
-                  by controller if accessKey not given in spec.
+                description: SecretKey is the secret key of the user
                 type: string
-              store:
-                description: Store name of a oss store. It's read-only after creation.
+              storeName:
+                description: StoreName of the oss store. It's read-only after creation.
                   The controller has created the corresponding storage resources based
                   on this store.
                 type: string
+              storeNamespace:
+                type: string
+            required:
+            - region
             type: object
         type: object
     served: true

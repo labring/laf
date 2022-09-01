@@ -18,6 +18,9 @@ package controllers
 
 import (
 	"context"
+	"github.com/labring/laf/controllers/oss/driver"
+	"laf/pkg/util"
+	"time"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -26,6 +29,8 @@ import (
 
 	ossv1 "github.com/labring/laf/controllers/oss/api/v1"
 )
+
+const storeFinalizer = "store.oss.laf.dev"
 
 // StoreReconciler reconciles a Store object
 type StoreReconciler struct {
@@ -39,7 +44,6 @@ type StoreReconciler struct {
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
-// TODO(user): Modify the Reconcile function to compare the state specified by
 // the Store object against the actual cluster state, and then
 // perform operations to make the cluster state reflect the state specified by
 // the user.
@@ -47,12 +51,114 @@ type StoreReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.2/pkg/reconcile
 func (r *StoreReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	log := log.FromContext(ctx)
+	_ = log.FromContext(ctx)
 
-	// TODO(user): your logic here
-	log.Info("Reconciling Store")
+	// get the store
+	var store ossv1.Store
+	if err := r.Get(ctx, req.NamespacedName, &store); err != nil {
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
 
+	// reconcile the deletion
+	if !store.DeletionTimestamp.IsZero() {
+		return r.delete(ctx, &store)
+	}
+
+	return r.apply(ctx, &store)
+}
+
+// delete deletes the store.
+// TODO: implement the deletion of the store.
+func (r *StoreReconciler) delete(ctx context.Context, store *ossv1.Store) (ctrl.Result, error) {
+	// TODO: reject deletion
 	return ctrl.Result{}, nil
+}
+
+// apply the store.
+func (r *StoreReconciler) apply(ctx context.Context, store *ossv1.Store) (ctrl.Result, error) {
+	_log := log.FromContext(ctx)
+
+	// add finalizer
+	if !util.ContainsString(store.GetFinalizers(), storeFinalizer) {
+		store.SetFinalizers(append(store.GetFinalizers(), storeFinalizer))
+		if err := r.Update(ctx, store); err != nil {
+			return ctrl.Result{}, err
+		}
+		_log.Info("added finalizer", "finalizer", storeFinalizer)
+	}
+
+	// reconcile the store state
+	if store.Status.State == "" {
+		err := r.initStore(ctx, store)
+		if err != nil {
+			return ctrl.Result{Requeue: true, RequeueAfter: time.Minute}, err
+		}
+		_log.Info("initialized store", "store", store.Name)
+	}
+
+	// sync capacity status
+	if store.Status.State == ossv1.StoreStateEnabled {
+		err := r.syncCapacityStatus(ctx, store)
+		if err != nil {
+			return ctrl.Result{Requeue: true, RequeueAfter: time.Minute}, err
+		}
+		_log.Info("synced capacity status", "store", store.Name)
+	}
+
+	return ctrl.Result{Requeue: true, RequeueAfter: time.Minute * 5}, nil
+}
+
+// initStore initializes the store.
+func (r *StoreReconciler) initStore(ctx context.Context, store *ossv1.Store) error {
+	// create minio admin client
+	mca, err := driver.NewMinioClientAdmin(ctx, store.Spec.Endpoint, store.Spec.AccessKey, store.Spec.SecretKey, false)
+	if err != nil {
+		return err
+	}
+
+	// create initial policy
+	if err := mca.CreateInitialPolicy(); err != nil {
+		return err
+	}
+
+	// create initial group
+	if err := mca.CreateInitialGroup(); err != nil {
+		return err
+	}
+
+	// update store state to enabled
+	store.Status.State = ossv1.StoreStateEnabled
+	if err := r.Status().Update(ctx, store); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// syncCapacityStatus syncs the capacity status of the store.
+func (r *StoreReconciler) syncCapacityStatus(ctx context.Context, store *ossv1.Store) error {
+	// create minio admin client
+	mca, err := driver.NewMinioClientAdmin(ctx, store.Spec.Endpoint, store.Spec.AccessKey, store.Spec.SecretKey, false)
+	if err != nil {
+		return err
+	}
+
+	// get capacity
+	info, err := mca.GetServerInfo()
+	if err != nil {
+		return err
+	}
+
+	// TODO: update the user count
+	// update capacity status
+	store.Status.Capacity.Storage.Set(int64(info.Usage.Size))
+	store.Status.Capacity.BucketCount = int64(info.Buckets.Count)
+	store.Status.Capacity.ObjectCount = int64(info.Objects.Count)
+	if err := r.Status().Update(ctx, store); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // SetupWithManager sets up the controller with the Manager.

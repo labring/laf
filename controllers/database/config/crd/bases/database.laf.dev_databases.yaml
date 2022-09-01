@@ -83,7 +83,7 @@ spec:
               connectionURI:
                 description: ConnectionURI of the database.
                 type: string
-              store:
+              storeName:
                 description: Store name of this database. The controller has created
                   the corresponding storage resources based on this store.
                 type: string

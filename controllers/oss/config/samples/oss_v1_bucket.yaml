@@ -1,6 +1,9 @@
 apiVersion: oss.laf.dev/v1
 kind: Bucket
 metadata:
-  name: bucket-sample
+  name: app1-sample
+  labels:
+    appid: app1
 spec:
-  # TODO(user): Add fields here
+  policy: readonly
+  storage: 100Mi
