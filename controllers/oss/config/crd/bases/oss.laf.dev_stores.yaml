@@ -57,12 +57,13 @@ spec:
                     minimum: 0
                     type: integer
                   storage:
-                    default: 0
+                    anyOf:
+                    - type: integer
+                    - type: string
                     description: The storage space. The unit is MB. The default value
                       is 0 which means unlimited.
-                    format: int64
-                    minimum: 0
-                    type: integer
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
                   userCount:
                     description: The user count of a store.
                     format: int64
@@ -75,9 +76,9 @@ spec:
               priority:
                 default: 10
                 description: Priority is used to guide the allocation of resources.
-                  The higher the priority, the first to allocate resources in. It
-                  is worth noting that if the priority value is 0, it means that the
-                  resource is suspended on the store.
+                  The higher the priority, the first to allocate resources in. If
+                  this value is 0, this store will not be selected for allocating
+                  new user.
                 maximum: 100
                 minimum: 0
                 type: integer
@@ -99,20 +100,17 @@ spec:
                   This is a required field and default value is "default"
                 maxLength: 64
                 minLength: 2
-                pattern: '[a-zA-Z0-9-]+'
+                pattern: '[a-z0-9-]+'
                 type: string
               secretKey:
                 description: SecretKey is the secret key which have admin rights of
                   the store service.
                 type: string
-              zone:
-                default: default
-                description: Zone identifies the availability zone of the store. This
-                  is a required field and default value is "default"
-                maxLength: 64
-                minLength: 2
-                pattern: '[a-zA-Z0-9-]+'
-                type: string
+              useSSL:
+                default: false
+                description: UseSSL indicates whether to use ssl to connect to the
+                  store service.
+                type: boolean
             type: object
           status:
             description: StoreStatus defines the observed state of Store
@@ -135,17 +133,26 @@ spec:
                     minimum: 0
                     type: integer
                   storage:
-                    default: 0
+                    anyOf:
+                    - type: integer
+                    - type: string
                     description: The storage space. The unit is MB. The default value
                       is 0 which means unlimited.
-                    format: int64
-                    minimum: 0
-                    type: integer
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
                   userCount:
                     description: The user count of a store.
                     format: int64
                     type: integer
                 type: object
+              state:
+                default: Pending
+                description: The state of the store, defaults to "Pending".
+                enum:
+                - Pending
+                - Enabled
+                - Disabled
+                type: string
             type: object
         type: object
     served: true

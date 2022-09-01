@@ -35,33 +35,22 @@ spec:
           spec:
             description: BucketSpec defines the desired state of Bucket
             properties:
-              name:
-                description: Name of bucket in oss. It's read-only after creation.
-                  This will be used as the bucket name in storage store. The length
-                  is between 3-63 and can only include letters, numbers and short
-                  horizontal lines (-).
-                maxLength: 64
-                minLength: 3
-                pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
-                type: string
               policy:
-                description: Policy of bucket in oss. required.
+                description: Policy of bucket in oss, defaults to 'private'.
+                enum:
+                - private
+                - readonly
+                - readwrite
                 type: string
               storage:
-                default: 0
-                description: Storage space of this bucket, in MB. It defaults to 0,
-                  which means no limit.
-                format: int64
-                minimum: 0
-                type: integer
-              user:
-                description: The name of oss user.
-                type: string
+                anyOf:
+                - type: integer
+                - type: string
+                description: Storage space of this bucket.
+                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                x-kubernetes-int-or-string: true
             required:
-            - name
-            - policy
             - storage
-            - user
             type: object
           status:
             description: BucketStatus defines the observed state of Bucket
@@ -69,6 +58,13 @@ spec:
               capacity:
                 description: Capacity of this bucket.
                 properties:
+                  maxStorage:
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: Storage space of this bucket.
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
                   objectCount:
                     default: 0
                     description: The user's number of objects.
@@ -76,13 +72,27 @@ spec:
                     minimum: 0
                     type: integer
                   storage:
-                    default: 0
-                    description: The user's storage space. The unit is MB. The default
-                      value is 0 which means unlimited.
-                    format: int64
-                    minimum: 0
-                    type: integer
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: The used storage space.
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
                 type: object
+              policy:
+                description: Policy of bucket in oss.
+                type: string
+              user:
+                description: Username of bucket in oss.
+                type: string
+              versioning:
+                description: Versioning of bucket in oss.
+                type: boolean
+            required:
+            - capacity
+            - policy
+            - user
+            - versioning
             type: object
         type: object
     served: true

@@ -59,7 +59,7 @@ type DatabaseStatus struct {
 	// Store name of this database.
 	// The controller has created the corresponding storage resources based on this store.
 	//+kubebuilder:validation:Required
-	StoreName string `json:"store,omitempty"`
+	StoreName string `json:"storeName,omitempty"`
 
 	//+kubebuilder:validation:Required
 	StoreNamespace string `json:"storeNamespace,omitempty"`

@@ -1,6 +1,12 @@
 apiVersion: oss.laf.dev/v1
 kind: User
 metadata:
-  name: user-sample
+  name: app1
+  labels:
+    appid: app1
 spec:
-  # TODO(user): Add fields here
+  provider: minio
+  appid: app1
+  password: app1-minio-password
+  capacity:
+    storage: 2Gi

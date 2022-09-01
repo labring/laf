@@ -17,6 +17,7 @@ limitations under the License.
 package v1
 
 import (
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -32,10 +33,8 @@ type StoreCapacity struct {
 
 	// The storage space. The unit is MB.
 	// The default value is 0 which means unlimited.
-	//+kubebuilder:validation:Minimum=0
-	//+kubebuilder:default=0
 	//+optional
-	Storage int64 `json:"storage,omitempty"`
+	Storage resource.Quantity `json:"storage,omitempty"`
 
 	// The number of objects. The default value is 0 which means unlimited.
 	//+optional
@@ -49,6 +48,16 @@ type StoreCapacity struct {
 	//+optional
 	BucketCount int64 `json:"bucketCount,omitempty"`
 }
+
+type StoreState string
+
+const (
+	// StoreStateEnabled means the store is enabled.
+	StoreStateEnabled StoreState = "Enabled"
+
+	// StoreStateDisabled means the store is disabled.
+	StoreStateDisabled StoreState = "Disabled"
+)
 
 // StoreSpec defines the desired state of Store
 type StoreSpec struct {
@@ -85,6 +94,11 @@ type StoreSpec struct {
 	//+kubebuilder:validation:Required
 	Endpoint string `json:"endpoint,omitempty"`
 
+	// UseSSL indicates whether to use ssl to connect to the store service.
+	//+kubebuilder:validation:Required
+	//+kubebuilder:default=false
+	UseSSL bool `json:"useSSL,omitempty"`
+
 	// AccessKey is the access key which have admin rights of the store service.
 	//+kubebuilder:validation:Required
 	AccessKey string `json:"accessKey,omitempty"`
@@ -99,7 +113,7 @@ type StoreSpec struct {
 
 	// Priority is used to guide the allocation of resources.
 	// The higher the priority, the first to allocate resources in.
-	// If this value is 0, this store will not be selected for allocating new user.	
+	// If this value is 0, this store will not be selected for allocating new user.
 	//+kubebuilder:validation:Minimum=0
 	//+kubebuilder:validation:Maximum=100
 	//+kubebuilder:default=10
@@ -115,6 +129,11 @@ type StoreStatus struct {
 	// The observed capacity of Store.
 	//+optional
 	Capacity StoreCapacity `json:"capacity,omitempty"`
+
+	// The state of the store, defaults to "Pending".
+	//+kubebuilder:default=Pending
+	//+kubebuilder:validation:Enum=Pending;Enabled;Disabled
+	State StoreState `json:"state,omitempty"`
 }
 
 //+kubebuilder:object:root=true
