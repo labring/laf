@@ -30,8 +30,7 @@ type RouteSpec struct {
 
 	// Domain 是路由域名，必须存在
 	// +kubebuilder:validation:Required
-	// +kubebuilder:validation:Pattern="^[a-zA-Z0-9]*$"
-	Domain string `json:"domain,omitempty"`
+	Domain string `json:"domain"`
 
 	// Backend是service配置, 必须存在
 	// +kubebuilder:validation:Required
@@ -45,7 +44,7 @@ type RouteSpec struct {
 
 	// PathRewrite 是路径重写，可选存在
 	// +kubebuilder:validation:Optional
-	PathRewrite string `json:"pathRewrite,omitempty"`
+	PathRewrite *PathRewrite `json:"pathRewrite,omitempty"`
 
 	// PassHost 传给上游的host，可选存在, 如果不设置，则默认将客户端的 host 透传给上游
 	// +kubebuilder:validation:Optional
