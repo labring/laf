@@ -20,6 +20,7 @@ import (
 	"context"
 	"errors"
 	"github.com/labring/laf/controllers/oss/driver"
+	"github.com/minio/minio-go/v7"
 	"laf/pkg/util"
 	"time"
 
@@ -53,7 +54,6 @@ type BucketReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.2/pkg/reconcile
 func (r *BucketReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
 
 	// get the bucket
 	var bucket ossv1.Bucket
@@ -114,14 +114,36 @@ func (r *BucketReconciler) apply(ctx context.Context, bucket *ossv1.Bucket) (ctr
 		_log.Info("Set bucket quota", "bucket", bucket.Name, "quota", bucket.Spec.Storage.String())
 	}
 
-	// TODO: reconcile the bucket capacity
+	// TODO: sync the bucket capacity
 
 	return ctrl.Result{RequeueAfter: time.Minute * 15}, nil
 }
 
 // delete the bucket
 func (r *BucketReconciler) delete(ctx context.Context, bucket *ossv1.Bucket) (ctrl.Result, error) {
-	// TODO: delete the bucket
+	_log := log.FromContext(ctx)
+
+	// create the minio admin client
+	mca, err := r.createMinioClient(ctx, bucket)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+
+	// delete the bucket
+	if err := mca.DeleteBucket(bucket.Name); err != nil {
+		// reject if the bucket is not exists
+		if minio.ToErrorResponse(err).Code != "NoSuchBucket" {
+			return ctrl.Result{}, nil
+		}
+	}
+
+	// remove the finalizer
+	bucket.ObjectMeta.Finalizers = util.RemoveString(bucket.ObjectMeta.Finalizers, bucketFinalizer)
+	if err := r.Update(ctx, bucket); err != nil {
+		return ctrl.Result{}, err
+	}
+
+	_log.Info("Deleted bucket", "bucket", bucket.Name)
 	return ctrl.Result{}, nil
 }
 

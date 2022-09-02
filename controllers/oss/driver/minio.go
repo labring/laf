@@ -156,8 +156,21 @@ func (mca *MinioClientAdmin) CreateBucket(bucketName string, region string, igno
 
 // DeleteBucket - deletes a bucket in minio.
 func (mca *MinioClientAdmin) DeleteBucket(bucketName string) error {
-	err := mca.s3Client.RemoveBucket(mca.context, bucketName)
+	err := mca.s3Client.RemoveBucketWithOptions(mca.context, bucketName, minio.RemoveBucketOptions{
+		ForceDelete: true,
+	})
+
 	return err
+}
+
+// DataUsageInfo - returns the bucket info.
+func (mca *MinioClientAdmin) DataUsageInfo(bucketName string) (*madmin.DataUsageInfo, error) {
+	stats, err := mca.adminClient.DataUsageInfo(mca.context)
+	if err != nil {
+		return nil, err
+	}
+
+	return &stats, nil
 }
 
 // SetBucketPolicy - sets a bucket policy in minio.
