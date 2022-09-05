@@ -1,6 +1,0 @@
-apiVersion: application.laf.dev/v1
-kind: CloudFunction
-metadata:
-  name: cloudfunction-sample
-spec:
-  # TODO(user): Add fields here

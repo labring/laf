@@ -1,6 +1,0 @@
-apiVersion: application.laf.dev/v1
-kind: RuntimePackage
-metadata:
-  name: runtimepackage-sample
-spec:
-  # TODO(user): Add fields here

@@ -1,6 +1,14 @@
 apiVersion: application.laf.dev/v1
 kind: Specification
 metadata:
-  name: specification-sample
+  name: standard-specification
 spec:
-  # TODO(user): Add fields here
+  displayName: "My Application"
+  requestCPU: "500m"
+  requestMemory: "128Mi"
+  limitCPU: "1000m"
+  limitMemory: "256Mi"
+  databaseCapacity: "1Gi"
+  storageCapacity: "1Gi"
+  networkTrafficOutbound: "1Gi"
+  priority: 10
