@@ -54,7 +54,6 @@ spec:
                 type: string
               domain:
                 description: Domain 是路由域名，必须存在
-                pattern: ^[a-zA-Z0-9]*$
                 type: string
               enableWebSocket:
                 description: EnableWebSocket 是否开启websocket, 默认否
@@ -64,9 +63,20 @@ spec:
                 type: string
               pathRewrite:
                 description: PathRewrite 是路径重写，可选存在
-                type: string
+                properties:
+                  regex:
+                    description: Regex 是正则表达式，必须存在
+                    type: string
+                  replacement:
+                    description: Replacement 是替代内容，必须存在
+                    type: string
+                required:
+                - regex
+                - replacement
+                type: object
             required:
             - backend
+            - domain
             type: object
           status:
             description: RouteStatus defines the observed state of Route
