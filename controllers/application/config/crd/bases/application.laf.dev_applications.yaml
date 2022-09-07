@@ -67,7 +67,7 @@ spec:
             description: ApplicationStatus defines the observed state of Application
             properties:
               appid:
-                description: Appid
+                description: AppId
                 maxLength: 16
                 minLength: 3
                 type: string
@@ -90,60 +90,84 @@ spec:
                 description: Specification for the application
                 properties:
                   databaseCapacity:
+                    anyOf:
+                    - type: integer
+                    - type: string
                     description: Database capacity for the specification
-                    format: int64
-                    type: integer
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
                   displayName:
                     description: DisplayName for the specification
                     type: string
                   limitCPU:
+                    anyOf:
+                    - type: integer
+                    - type: string
                     description: Limit CPU for the specification
-                    format: int32
-                    type: integer
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
                   limitMemory:
+                    anyOf:
+                    - type: integer
+                    - type: string
                     description: Limit Memory for the specification
-                    format: int64
-                    type: integer
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
                   networkBandwidthInbound:
+                    anyOf:
+                    - type: integer
+                    - type: string
                     description: Network Bandwidth Inbound for the specification
-                    format: int64
-                    type: integer
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
                   networkBandwidthOutbound:
+                    anyOf:
+                    - type: integer
+                    - type: string
                     description: Network Bandwidth Outbound for the specification
-                    format: int64
-                    type: integer
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
                   networkTrafficOutbound:
+                    anyOf:
+                    - type: integer
+                    - type: string
                     description: Network Traffic Outbound for the specification
-                    format: int64
-                    minimum: 0
-                    type: integer
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
                   priority:
                     description: Priority for the specification. The default value
                       is 0, which means that the specification is not currently available
                       for creating new applications.
                     format: int32
-                    maximum: 100
+                    maximum: 1000
                     minimum: 0
                     type: integer
                   requestCPU:
+                    anyOf:
+                    - type: integer
+                    - type: string
                     description: Request CPU for the specification
-                    format: int32
-                    type: integer
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
                   requestMemory:
+                    anyOf:
+                    - type: integer
+                    - type: string
                     description: Request Memory for the specification
-                    format: int64
-                    type: integer
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
                   storageCapacity:
+                    anyOf:
+                    - type: integer
+                    - type: string
                     description: Storage capacity for the specification
-                    format: int64
-                    type: integer
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
                 required:
                 - databaseCapacity
                 - displayName
                 - limitCPU
                 - limitMemory
-                - networkBandwidthInbound
-                - networkBandwidthOutbound
                 - networkTrafficOutbound
                 - priority
                 - requestCPU

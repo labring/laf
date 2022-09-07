@@ -17,6 +17,7 @@ limitations under the License.
 package v1
 
 import (
+	v1 "github.com/labring/laf/controllers/runtime/api/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -79,7 +80,7 @@ type ApplicationStatus struct {
 	State ApplicationState `json:"state"`
 
 	// Runtime for the application
-	Runtime RuntimeSpec `json:"runtime"`
+	Runtime v1.RuntimeSpec `json:"runtime"`
 }
 
 //+kubebuilder:object:root=true

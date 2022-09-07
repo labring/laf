@@ -17,6 +17,7 @@ limitations under the License.
 package v1
 
 import (
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -32,39 +33,37 @@ type SpecificationSpec struct {
 	DisplayName string `json:"displayName"`
 
 	// Request CPU for the specification
-	RequestCPU int32 `json:"requestCPU"`
+	RequestCPU resource.Quantity `json:"requestCPU"`
 
 	// Request Memory for the specification
-	RequestMemory int64 `json:"requestMemory"`
+	RequestMemory resource.Quantity `json:"requestMemory"`
 
 	// Limit CPU for the specification
-	LimitCPU int32 `json:"limitCPU"`
+	LimitCPU resource.Quantity `json:"limitCPU"`
 
 	// Limit Memory for the specification
-	LimitMemory int64 `json:"limitMemory"`
+	LimitMemory resource.Quantity `json:"limitMemory"`
 
 	// Database capacity for the specification
-	DatabaseCapacity int64 `json:"databaseCapacity"`
+	DatabaseCapacity resource.Quantity `json:"databaseCapacity"`
 
 	// Storage capacity for the specification
-	StorageCapacity int64 `json:"storageCapacity"`
+	StorageCapacity resource.Quantity `json:"storageCapacity"`
 
 	// Network Bandwidth Outbound for the specification
-	NetworkBandwidthOutbound int64 `json:"networkBandwidthOutbound"`
+	NetworkBandwidthOutbound resource.Quantity `json:"networkBandwidthOutbound,omitempty"`
 
 	// Network Bandwidth Inbound for the specification
-	NetworkBandwidthInbound int64 `json:"networkBandwidthInbound"`
+	NetworkBandwidthInbound resource.Quantity `json:"networkBandwidthInbound,omitempty"`
 
 	// Network Traffic Outbound for the specification
-	//+kubebuilder:validation:Minimum=0
-	//+kubebuilder:validation:Default=0
-	NetworkTrafficOutbound int64 `json:"networkTrafficOutbound"`
+	NetworkTrafficOutbound resource.Quantity `json:"networkTrafficOutbound"`
 
 	// Priority for the specification.
 	// The default value is 0, which means that the specification is not currently available for creating new applications.
 	//+kubebuilder:validation:Minimum=0
-	//+kubebuilder:validation:Maximum=100
-	//+kubebuilder:validation:Default=0
+	//+kubebuilder:validation:Maximum=1000
+	//+kubebuilder:validation:Default=10
 	Priority int32 `json:"priority"`
 }
 

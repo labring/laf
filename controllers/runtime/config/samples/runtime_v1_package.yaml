@@ -1,0 +1,8 @@
+apiVersion: runtime.laf.dev/v1
+kind: Package
+metadata:
+  name: package-sample
+spec:
+  type: npm
+  name: axios
+  version: latest

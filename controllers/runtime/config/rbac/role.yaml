@@ -1,0 +1,85 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - runtime.laf.dev
+  resources:
+  - functions
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - runtime.laf.dev
+  resources:
+  - functions/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - runtime.laf.dev
+  resources:
+  - functions/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - runtime.laf.dev
+  resources:
+  - packages
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - runtime.laf.dev
+  resources:
+  - packages/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - runtime.laf.dev
+  resources:
+  - packages/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - runtime.laf.dev
+  resources:
+  - runtimes
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - runtime.laf.dev
+  resources:
+  - runtimes/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - runtime.laf.dev
+  resources:
+  - runtimes/status
+  verbs:
+  - get
+  - patch
+  - update

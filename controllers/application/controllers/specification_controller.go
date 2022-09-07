@@ -18,6 +18,7 @@ package controllers
 
 import (
 	"context"
+	"laf/pkg/util"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -26,6 +27,8 @@ import (
 
 	applicationv1 "github.com/labring/laf/controllers/application/api/v1"
 )
+
+const finalizerName = "spec.application.laf.dev"
 
 // SpecificationReconciler reconciles a Specification object
 type SpecificationReconciler struct {
@@ -49,8 +52,51 @@ type SpecificationReconciler struct {
 func (r *SpecificationReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 
-	// TODO(user): your logic here
+	// get the specification
+	specification := &applicationv1.Specification{}
+	err := r.Get(ctx, req.NamespacedName, specification)
+	if err != nil {
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
 
+	// reconcile deletions
+	if !specification.ObjectMeta.DeletionTimestamp.IsZero() {
+		return r.delete(ctx, specification)
+	}
+
+	return r.apply(ctx, specification)
+}
+
+// apply the specification
+func (r *SpecificationReconciler) apply(ctx context.Context, specification *applicationv1.Specification) (ctrl.Result, error) {
+	_log := log.FromContext(ctx)
+
+	// add finalizer
+	if !util.ContainsString(specification.ObjectMeta.Finalizers, finalizerName) {
+		specification.ObjectMeta.Finalizers = append(specification.ObjectMeta.Finalizers, finalizerName)
+		err := r.Update(ctx, specification)
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+		_log.Info("finalizer added for specification", "specification", specification.Name)
+	}
+
+	return ctrl.Result{}, nil
+}
+
+// delete the specification
+func (r *SpecificationReconciler) delete(ctx context.Context, specification *applicationv1.Specification) (ctrl.Result, error) {
+	_log := log.FromContext(ctx)
+
+	// TODO: reject it if there are any applications using it
+
+	// remove finalizer
+	specification.ObjectMeta.Finalizers = util.RemoveString(specification.ObjectMeta.Finalizers, finalizerName)
+	err := r.Update(ctx, specification)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+	_log.Info("finalizer removed for specification", "specification", specification.Name)
 	return ctrl.Result{}, nil
 }
 
