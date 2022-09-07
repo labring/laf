@@ -30,35 +30,39 @@ const (
 	FunctionStateDeployed FunctionState = "Deployed"
 )
 
+// FunctionSource supports three storage methods: inline, Git repository, and database. The latter two are specified by URI.
+type FunctionSource struct {
+	// Source codes of the function
+	Codes string `json:"codes,omitempty"`
+
+	// Codes uri of the function
+	URI string `json:"uri,omitempty"`
+
+	// Version of the function
+	//+kubebuilder:default:=0
+	Version int64 `json:"version"`
+}
+
 // FunctionSpec defines the desired state of Function
 type FunctionSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Name of function
-	Name string `json:"name"`
-
 	// Description of function
 	Description string `json:"description"`
 
-	// WebSocket enabled, defaults to false
+	// Websocket enabled, defaults to false
 	//+kubebuilder:default:=false
-	WebSocketEnabled bool `json:"webSocketEnabled"`
+	Websocket bool `json:"websocket"`
 
 	// Allowed HTTP methods. If empty, http access is disabled.
 	// The value of this field can be any one or a combination of the following:
 	//	GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS, CONNECT, TRACE.
-	// The default values are: ["GET", "POST", "PUT", "DELETE"].
-	AllowedHTTPMethods []string `json:"allowedHTTPMethods"`
+	// The default values are: ["GET", "POST", "PUT", "DELETE"]. If the value is "*", all methods are allowed.
+	Methods []string `json:"methods"`
 
-	// Code for the function
-	Code string `json:"code"`
-
-	// Compiled code for the function
-	CompiledCode string `json:"compiledCode"`
-
-	// Version of the function
-	Version int64 `json:"version"`
+	// Function source
+	Source FunctionSource `json:"source"`
 }
 
 // FunctionStatus defines the observed state of Function

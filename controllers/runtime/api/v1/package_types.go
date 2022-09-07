@@ -28,17 +28,28 @@ type PackageSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
+	// Type of the package. eg. npm, pip, go, composer, etc.
+	Type string `json:"type"`
+
 	// Name of package.
 	Name string `json:"name"`
 
-	// Version of package.
-	Version string `json:"version"`
+	// Version of package. default is latest.
+	//+kubebuilder:default:=latest
+	Version string `json:"version,omitempty"`
+
+	// Registry of package.
+	//+optional
+	Registry string `json:"registry"`
 }
 
 // PackageStatus defines the observed state of Package
 type PackageStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+
+	// Actual version of package.
+	ActualVersion string `json:"actualVersion,omitempty"`
 }
 
 //+kubebuilder:object:root=true

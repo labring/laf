@@ -3,4 +3,6 @@ kind: Package
 metadata:
   name: package-sample
 spec:
-  # TODO(user): Add fields here
+  type: npm
+  name: axios
+  version: latest

@@ -35,13 +35,64 @@ spec:
           spec:
             description: RuntimeSpec defines the desired state of Runtime
             properties:
-              foo:
-                description: Foo is an example field of Runtime. Edit runtime_types.go
-                  to remove/update
+              deprecated:
+                description: Deprecated
+                type: boolean
+              image:
+                description: Images of the runtime
+                properties:
+                  init:
+                    description: Init image
+                    type: string
+                  main:
+                    description: Main image
+                    type: string
+                  sidecar:
+                    description: Sidecar image
+                    type: string
+                required:
+                - main
+                type: object
+              type:
+                description: Type of the runtime. eg. node:laf, node:tcb, go:laf,
+                  python:laf, php:laf,  etc.
                 type: string
+              versions:
+                description: Version of the runtime
+                properties:
+                  autoUpgradeFrom:
+                    description: Versions that should auto upgrade from
+                    items:
+                      type: string
+                    type: array
+                  breakBefore:
+                    description: Version that is breaking from
+                    type: string
+                  mustUpgradeFrom:
+                    description: Versions that must upgrade from
+                    items:
+                      type: string
+                    type: array
+                  upgradeFrom:
+                    description: Versions that suggested to upgrade from
+                    items:
+                      type: string
+                    type: array
+                  version:
+                    description: Version is the version of the runtime
+                    type: string
+                type: object
+            required:
+            - image
+            - type
+            - versions
             type: object
           status:
             description: RuntimeStatus defines the observed state of Runtime
+            properties:
+              appCount:
+                description: App count of the runtime
+                type: integer
             type: object
         type: object
     served: true

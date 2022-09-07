@@ -3,4 +3,15 @@ kind: Runtime
 metadata:
   name: runtime-sample
 spec:
-  # TODO(user): Add fields here
+  type: node:laf
+  image: docker.io/lafyun/app-service:0.8.7
+  version:
+    version: 0.8.7
+    breakBefore: 0.8.0
+    upgradeFrom:
+      - 0.8.0
+    autoUpgradeFrom:
+      - 0.8.5
+    mustUpgradeFrom:
+      - 0.8.4
+      - 0.8.6

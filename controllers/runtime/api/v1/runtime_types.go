@@ -23,25 +23,59 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
+type RuntimeImageGroup struct {
+	// Main image
+	Main string `json:"main"`
+
+	// Sidecar image
+	Sidecar string `json:"sidecar,omitempty"`
+
+	// Init image
+	Init string `json:"init,omitempty"`
+}
+
+type RuntimeVersion struct {
+	// Version is the version of the runtime
+	Version string `json:"version,omitempty"`
+
+	// Version that is breaking from
+	BreakBefore string `json:"breakBefore,omitempty"`
+
+	// Versions that suggested to upgrade from
+	UpgradeFrom []string `json:"upgradeFrom,omitempty"`
+
+	// Versions that should auto upgrade from
+	AutoUpgradeFrom []string `json:"autoUpgradeFrom,omitempty"`
+
+	// Versions that must upgrade from
+	MustUpgradeFrom []string `json:"mustUpgradeFrom,omitempty"`
+}
+
 // RuntimeSpec defines the desired state of Runtime
 type RuntimeSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Type of the runtime
+	// Type of the runtime. eg. node:laf, node:tcb, go:laf, python:laf, php:laf,  etc.
 	Type string `json:"type"`
 
-	// Image is the container image to use for the runtime
-	Image string `json:"image,omitempty"`
+	// Images of the runtime
+	Image RuntimeImageGroup `json:"image"`
 
-	// Version is the version of the runtime
-	Version string `json:"version,omitempty"`
+	// Version of the runtime
+	Version RuntimeVersion `json:"versions"`
+
+	// Deprecated
+	Deprecated bool `json:"deprecated,omitempty"`
 }
 
 // RuntimeStatus defines the observed state of Runtime
 type RuntimeStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+
+	// App count of the runtime
+	AppCount int `json:"appCount,omitempty"`
 }
 
 //+kubebuilder:object:root=true

@@ -35,13 +35,29 @@ spec:
           spec:
             description: PackageSpec defines the desired state of Package
             properties:
-              foo:
-                description: Foo is an example field of Package. Edit package_types.go
-                  to remove/update
+              name:
+                description: Name of package.
                 type: string
+              registry:
+                description: Registry of package.
+                type: string
+              type:
+                description: Type of the package. eg. npm, pip, go, composer, etc.
+                type: string
+              version:
+                default: latest
+                description: Version of package. default is latest.
+                type: string
+            required:
+            - name
+            - type
             type: object
           status:
             description: PackageStatus defines the observed state of Package
+            properties:
+              actualVersion:
+                description: Actual version of package.
+                type: string
             type: object
         type: object
     served: true

@@ -3,4 +3,11 @@ kind: Function
 metadata:
   name: function-sample
 spec:
-  # TODO(user): Add fields here
+  description: "Login & Register"
+  websocket: true
+  methods:
+    - GET
+    - POST
+  source:
+    codes: "console.log('hi, laf')"
+    version: 0

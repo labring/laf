@@ -35,13 +35,56 @@ spec:
           spec:
             description: FunctionSpec defines the desired state of Function
             properties:
-              foo:
-                description: Foo is an example field of Function. Edit function_types.go
-                  to remove/update
+              description:
+                description: Description of function
                 type: string
+              methods:
+                description: 'Allowed HTTP methods. If empty, http access is disabled.
+                  The value of this field can be any one or a combination of the following:
+                  GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS, CONNECT, TRACE. The
+                  default values are: ["GET", "POST", "PUT", "DELETE"]. If the value
+                  is "*", all methods are allowed.'
+                items:
+                  type: string
+                type: array
+              source:
+                description: Function source
+                properties:
+                  codes:
+                    description: Source codes of the function
+                    type: string
+                  uri:
+                    description: Codes uri of the function
+                    type: string
+                  version:
+                    default: 0
+                    description: Version of the function
+                    format: int64
+                    type: integer
+                required:
+                - version
+                type: object
+              websocket:
+                default: false
+                description: Websocket enabled, defaults to false
+                type: boolean
+            required:
+            - description
+            - methods
+            - source
+            - websocket
             type: object
           status:
             description: FunctionStatus defines the observed state of Function
+            properties:
+              state:
+                default: Deployed
+                description: State of the function
+                enum:
+                - Deployed
+                type: string
+            required:
+            - state
             type: object
         type: object
     served: true
