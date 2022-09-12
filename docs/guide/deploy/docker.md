@@ -28,12 +28,8 @@ cd laf/deploy/docker-compose
 # 创建一个网络
 docker network create laf_shared_network --driver bridge || true
 
-# 拉取 app-service 镜像，否则无法成功创建应用
-docker pull lafyun/app-service:latest
-
 # 启动所有服务
 docker-compose up
-
 ```
 
 接下来浏览器打开 http://console.127-0-0-1.nip.io:8000 就可以看到 Laf 服务的页面了。

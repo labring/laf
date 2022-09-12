@@ -22,25 +22,7 @@ title: 托管静态网站
 
 1. 使用 laf-cli 上传静态文件
 
-```bash
-# 安装 laf-cli 命令行工具
-npm install -g laf-cli
-```
-
-2. 上传静态文件
-
-- `--access-key` 替换为你上一步获取的 AccessKey
-- `--access-secret` 替换为你上一步获取的 SecretKey
-- `--bucket-name` 参数为目标 bucket 全名，如 `qya2cx-public`
-- `./dist` 是本地静态文件所在目录，可以修改为你的项目中的静态文件目录。
-
-```bash
-laf-cli sync \
-  --access-key YOUR_ACCESS_KEY \
-  --access-secret YOUR_SECRET_KEY \
-  --bucket-name YOUR_APPID-public \
-  ./dist
-```
+> [参考 laf-cli 使用说明](../cli/index.md)
 
 ## 创建网站托管
 
