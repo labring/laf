@@ -28,6 +28,8 @@
     "@aws-sdk/client-sts": "^3.72.0",
     "@aws-sdk/s3-request-presigner": "^3.72.0",
     "@dfinity/nns": "^0.4.3",
+    "@kubernetes/client-node": "^0.17.1",
+    "@waline/vercel": "^1.21.0",
     "alipay-sdk": "^3.1.7",
     "axios": "^0.21.1",
     "database-proxy": "^0.8.2",
@@ -45,6 +47,7 @@
     "multer": "^1.4.2",
     "node-modules-utils": "^0.8.2",
     "nodemailer": "^6.6.3",
+    "tencentcloud-sdk-nodejs": "^4.0.439",
     "validator": "^13.7.0",
     "ws": "^8.2.3"
   },
