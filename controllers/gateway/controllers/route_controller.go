@@ -56,16 +56,16 @@ type RouteReconciler struct {
 func (r *RouteReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 
-	// 获取apiSix集群操作对象
-	apiSixCluster, err := r.getGatewayCluster(ctx, &gatewayv1.Route{})
-	if err != nil {
-		return ctrl.Result{}, err
-	}
-
 	// get the route
 	var route gatewayv1.Route
 	if err := r.Get(ctx, req.NamespacedName, &route); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	// 获取apiSix集群操作对象
+	apiSixCluster, err := r.getGatewayCluster(ctx, &route)
+	if err != nil {
+		return ctrl.Result{}, err
 	}
 
 	// 如果路由已经被设置删除标记，则删除路由
@@ -173,7 +173,7 @@ func (r *RouteReconciler) deleteRoute(ctx context.Context, route *gatewayv1.Rout
 func (r *RouteReconciler) getGatewayCluster(ctx context.Context, route *gatewayv1.Route) (*apisix.Cluster, error) {
 	// get domain
 	domain := gatewayv1.Domain{}
-	if err := r.Get(ctx, types.NamespacedName{Name: route.Spec.Domain}, &domain); err != nil {
+	if err := r.Get(ctx, types.NamespacedName{Namespace: route.Spec.DomainNamespace, Name: route.Spec.DomainName}, &domain); err != nil {
 		return nil, err
 	}
 	cluster := apisix.NewCluster(domain.Spec.Cluster.Url, domain.Spec.Cluster.Key)

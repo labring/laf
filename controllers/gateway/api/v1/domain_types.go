@@ -32,7 +32,7 @@ type DomainSpec struct {
 	Domain string `json:"domain"`
 
 	// BackendType是后端服务类型，必须存在APP;OSS;WEBSITE
-	// +kubebuilder:validation:Enum=APP;OSS;WEBSITE
+	// +kubebuilder:validation:Enum=app;oss;website
 	// +kubebuilder:validation:Required
 	BackendType BackendType `json:"backendType"`
 
@@ -45,8 +45,8 @@ type DomainSpec struct {
 	// +kubebuilder:validation:Required
 	Cluster ClusterSpec `json:"cluster"`
 
-	// CertConfigRef 是字符串类型，是configMap的引用
-	// +kubebuilder:validation:Required
+	// CertConfigRef 是字符串类型，是configMap的引用，可选存在
+	// +kubebuilder:validation:Optional
 	CertConfigRef string `json:"certConfigRef"`
 }
 

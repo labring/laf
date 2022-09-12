@@ -38,12 +38,12 @@ spec:
               backendType:
                 description: BackendType是后端服务类型，必须存在APP;OSS;WEBSITE
                 enum:
-                - APP
-                - OSS
-                - WEBSITE
+                - app
+                - oss
+                - website
                 type: string
               certConfigRef:
-                description: CertConfigRef 是字符串类型，是configMap的引用
+                description: CertConfigRef 是字符串类型，是configMap的引用，可选存在
                 type: string
               cluster:
                 description: Cluster 是网关集群配置 必须存在
@@ -68,7 +68,6 @@ spec:
                 type: string
             required:
             - backendType
-            - certConfigRef
             - cluster
             - domain
             - region

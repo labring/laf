@@ -56,7 +56,7 @@ func (r *GatewayReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 	if !gateway.DeletionTimestamp.IsZero() {
-		return ctrl.Result{}, nil
+		return r.delete(ctx, gateway)
 	}
 
 	return r.apply(ctx, gateway)
@@ -170,7 +170,7 @@ func (r *GatewayReconciler) deleteApp(ctx context.Context, gateway *gatewayv1.Ga
 	// delete app route
 	appRoute := &gatewayv1.Route{}
 	if err := r.Get(ctx, client.ObjectKey{Name: "app", Namespace: gateway.Spec.AppId}, appRoute); err != nil {
-		return ctrl.Result{}, client.IgnoreNotFound(err)
+		return ctrl.Result{}, err
 	}
 	if err := r.Delete(ctx, appRoute); err != nil {
 		return ctrl.Result{}, err
@@ -183,11 +183,6 @@ func (r *GatewayReconciler) deleteApp(ctx context.Context, gateway *gatewayv1.Ga
 			return ctrl.Result{}, err
 		}
 		_log.Info("removed finalizer", "finalizer", finalizerName)
-	}
-
-	gateway.Status.AppRoute = nil
-	if err := r.Status().Update(ctx, gateway); err != nil {
-		return ctrl.Result{}, err
 	}
 
 	return ctrl.Result{}, nil
@@ -317,11 +312,6 @@ func (r *GatewayReconciler) deleteBucket(ctx context.Context, gateway *gatewayv1
 			// delete bucket route
 			delete(gateway.Status.BucketRoutes, bucketName)
 		}
-	}
-
-	gateway.Status.BucketRoutes = nil
-	if err := r.Status().Update(ctx, gateway); err != nil {
-		return ctrl.Result{}, err
 	}
 
 	return ctrl.Result{}, nil

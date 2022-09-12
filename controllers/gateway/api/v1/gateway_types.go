@@ -50,7 +50,7 @@ type GatewaySpec struct {
 	// AppId是应用id，字母数字组成，长度5至16位，必须存在
 	// +kubebuilder:validation:Pattern="^[a-zA-Z0-9]{5,16}$"
 	// +kubebuilder:validation:Required
-	AppId string `json:"appId"`
+	AppId string `json:"appid"`
 
 	// Buckets是存储桶, 是一个数组，可选存在
 	// +kubebuilder:validation:Optional

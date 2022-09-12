@@ -35,7 +35,7 @@ spec:
           spec:
             description: GatewaySpec defines the desired state of Gateway
             properties:
-              appId:
+              appid:
                 description: AppId是应用id，字母数字组成，长度5至16位，必须存在
                 pattern: ^[a-zA-Z0-9]{5,16}$
                 type: string
@@ -50,7 +50,7 @@ spec:
                   type: string
                 type: array
             required:
-            - appId
+            - appid
             type: object
           status:
             description: GatewayStatus defines the observed state of Gateway

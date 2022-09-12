@@ -16,6 +16,6 @@ func (r *RouteClient) Put(id string, data map[string]interface{}) error {
 
 // Delete 删除路由
 func (r *RouteClient) Delete(id string) error {
-	url := r.client.baseURL + "routes/" + id
+	url := r.client.baseURL + "/routes/" + id
 	return r.client.Delete(url, "routes")
 }
