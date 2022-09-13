@@ -31,8 +31,8 @@ type DomainSpec struct {
 	// +kubebuilder:validation:Required
 	Domain string `json:"domain"`
 
-	// BackendType是后端服务类型，必须存在APP;OSS;WEBSITE
-	// +kubebuilder:validation:Enum=app;oss;website
+	// BackendType是后端服务类型，必须存在APP;bucket;WEBSITE
+	// +kubebuilder:validation:Enum=app;bucket;website
 	// +kubebuilder:validation:Required
 	BackendType BackendType `json:"backendType"`
 

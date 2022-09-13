@@ -36,10 +36,10 @@ spec:
             description: DomainSpec defines the desired state of Domain
             properties:
               backendType:
-                description: BackendType是后端服务类型，必须存在APP;OSS;WEBSITE
+                description: BackendType是后端服务类型，必须存在APP;bucket;WEBSITE
                 enum:
                 - app
-                - oss
+                - bucket
                 - website
                 type: string
               certConfigRef:
