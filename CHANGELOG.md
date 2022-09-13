@@ -1,4 +1,22 @@
-# [](https://github.com/labring/laf/compare/v0.8.7...v) (2022-09-12)
+# [](https://github.com/labring/laf/compare/v0.8.9...v) (2022-09-13)
+
+
+
+## [0.8.9](https://github.com/labring/laf/compare/v0.8.8...v0.8.9) (2022-09-13)
+
+
+### Bug Fixes
+
+* **instance:** fix app env of oss external endpoint port ([750a4d4](https://github.com/labring/laf/commit/750a4d4e48bbf5da1fdc4f658eeab0e30edc2263))
+
+
+
+## [0.8.8](https://github.com/labring/laf/compare/v0.8.7...v0.8.8) (2022-09-13)
+
+
+### Bug Fixes
+
+* **deploy:** fix oss external endpoint config format ([543fe9a](https://github.com/labring/laf/commit/543fe9a42c5d1f4f8fe87da48cd680182fce53b8))
 
 
 
