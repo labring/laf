@@ -3,6 +3,7 @@ services:
   mongo:
     image: bitnami/mongodb:5.0.8
     # image: bitnami/mongodb:4.4.13    # Use this version for Apple M1 Chip
+    restart: always
     environment:
       - MONGODB_REPLICA_SET_MODE=primary
       - MONGODB_ADVERTISED_HOSTNAME=mongo
@@ -22,6 +23,7 @@ services:
 
   oss:
     image: 'minio/minio:RELEASE.2022-08-13T21-54-44Z'
+    restart: always
     environment:
       - MINIO_ROOT_USER=${MINIO_ROOT_USER}
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
@@ -38,6 +40,7 @@ services:
 
   etcd:
     image: quay.io/coreos/etcd:v3.5.4
+    restart: always
     environment:
       - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
@@ -53,6 +56,7 @@ services:
     image: lafyun/system-server:latest
     user: root
     working_dir: /app
+    restart: always
     environment:
       SYS_DB_URI: mongodb://${SYS_DB_USER}:${SYS_DB_PASSWORD}@mongo:27017/?authSource=${SYS_DB}&replicaSet=laf&writeConcern=majority
       APP_DB_URI: mongodb://root:${MONGODB_ROOT_PASSWORD}@mongo:27017/?authSource=admin&replicaSet=laf&writeConcern=majority
@@ -67,7 +71,7 @@ services:
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
       MINIO_ACCESS_SECRET: ${MINIO_ROOT_PASSWORD}
       MINIO_INTERNAL_ENDPOINT: http://oss:9000
-      MINIO_EXTERNAL_ENDPOINT: ${OSS_DOMAIN}
+      MINIO_EXTERNAL_ENDPOINT: ${APP_SERVICE_DEPLOY_URL_SCHEMA}://${OSS_DOMAIN}:${PUBLISH_PORT:-8080}
       PUBLISH_PORT: ${PUBLISH_PORT:-8080}
       PUBLISH_HTTPS_PORT: ${PUBLISH_HTTPS_PORT:-9443}
       MINIO_REGION_NAME: cn-default
@@ -88,6 +92,7 @@ services:
 
   gateway:
     image: apache/apisix:2.14.1-alpine
+    restart: always
     depends_on:
       - system-server
       - mongo
@@ -117,6 +122,7 @@ services:
       
   gateway-controller:
     image: lafyun/gateway-controller:latest
+    restart: always
     depends_on:
       - gateway
     environment:
@@ -147,7 +153,7 @@ services:
       SERVICE_DRIVER: docker
       APP_SERVICE_ENV_NPM_INSTALL_FLAGS: ' --no-audit --no-fund'
       MINIO_INTERNAL_ENDPOINT: http://oss:9000
-      MINIO_EXTERNAL_ENDPOINT: ${OSS_DOMAIN}
+      MINIO_EXTERNAL_ENDPOINT: ${APP_SERVICE_DEPLOY_URL_SCHEMA}://${OSS_DOMAIN}:${PUBLISH_PORT:-8080}
       PUBLISH_PORT: ${PUBLISH_PORT:-8080}
       PUBLISH_HTTPS_PORT: ${PUBLISH_HTTPS_PORT:-9443}
       MINIO_REGION_NAME: cn-default

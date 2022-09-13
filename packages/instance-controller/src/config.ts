@@ -103,7 +103,7 @@ export default class Config {
     const external_endpoint: string = new URL(process.env.MINIO_EXTERNAL_ENDPOINT).origin
     
     // fixed external_endpoint with extra schema and port config
-    const external_port = process.env.APP_SERVICE_DEPLOY_URL_SCHEMA === 'http' ? process.env.PUBLISH_PORT : process.env.PUBLISH_HTTPS_PORT
+    const external_port = process.env.APP_SERVICE_DEPLOY_URL_SCHEMA === 'https' ? process.env.PUBLISH_HTTPS_PORT : process.env.PUBLISH_PORT 
     const obj = new URL(external_endpoint)
     obj.port = external_port || obj.port
     obj.protocol = process.env.APP_SERVICE_DEPLOY_URL_SCHEMA || 'http'
