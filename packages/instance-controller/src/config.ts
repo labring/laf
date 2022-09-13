@@ -109,7 +109,6 @@ export default class Config {
     obj.protocol = process.env.APP_SERVICE_DEPLOY_URL_SCHEMA || 'http'
     const fixed_external_endpoint = obj.toString()
 
-    console.log({fixed_external_endpoint}, obj)
     const region: string = process.env.MINIO_REGION_NAME
 
     return {
