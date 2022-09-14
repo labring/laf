@@ -143,9 +143,11 @@ func (r *RouteReconciler) applyRoute(ctx context.Context, route *gatewayv1.Route
 	}
 
 	// update route status
-	route.Status.Domain = route.Spec.Domain
-	if err := r.Status().Update(ctx, route); err != nil {
-		return ctrl.Result{}, err
+	if route.Status.Domain == "" {
+		route.Status.Domain = route.Spec.Domain
+		if err := r.Status().Update(ctx, route); err != nil {
+			return ctrl.Result{}, err
+		}
 	}
 
 	_log.Info("route applied: " + routeId)

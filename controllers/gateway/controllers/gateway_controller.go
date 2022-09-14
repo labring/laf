@@ -18,9 +18,11 @@ package controllers
 
 import (
 	"context"
+	"errors"
 	ossv1 "github.com/labring/laf/controllers/oss/api/v1"
 	"laf/pkg/util"
 
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -28,6 +30,8 @@ import (
 
 	gatewayv1 "github.com/labring/laf/controllers/gateway/api/v1"
 )
+
+const gatewayFinalizer = "gateway.gateway.laf.dev"
 
 // GatewayReconciler reconciles a Gateway object
 type GatewayReconciler struct {
@@ -50,7 +54,7 @@ type GatewayReconciler struct {
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.1/pkg/reconcile
 func (r *GatewayReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
-	// get route
+	// get gateway
 	gateway := &gatewayv1.Gateway{}
 	if err := r.Get(ctx, req.NamespacedName, gateway); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
@@ -63,25 +67,42 @@ func (r *GatewayReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 }
 
 func (r *GatewayReconciler) delete(ctx context.Context, gateway *gatewayv1.Gateway) (ctrl.Result, error) {
+	_log := log.FromContext(ctx)
 
 	// delete app route
-	if gateway.Status.AppRoute != nil {
-		if _, err := r.deleteApp(ctx, gateway); err != nil {
-			return ctrl.Result{}, err
-		}
+	if _, err := r.deleteApp(ctx, gateway); err != nil {
+		return ctrl.Result{}, err
 	}
 
 	// delete bucket route
-	if gateway.Status.BucketRoutes != nil {
-		if _, err := r.deleteBucket(ctx, gateway); err != nil {
-			return ctrl.Result{}, err
-		}
+	if _, err := r.deleteBuckets(ctx, gateway, nil); err != nil {
+		return ctrl.Result{}, err
 	}
+
+	// remove finalizer
+	gateway.Finalizers = util.RemoveString(gateway.Finalizers, gatewayFinalizer)
+	if err := r.Update(ctx, gateway); err != nil {
+		return ctrl.Result{}, err
+	}
+
+	_log.Info("delete gateway: v success", "v", gateway.Name)
 
 	return ctrl.Result{}, nil
 }
 
 func (r *GatewayReconciler) apply(ctx context.Context, gateway *gatewayv1.Gateway) (ctrl.Result, error) {
+	_log := log.FromContext(ctx)
+
+	_log.Info("apply gateway", "v", gateway.Name)
+
+	// add finalizer
+	if !util.ContainsString(gateway.Finalizers, gatewayFinalizer) {
+		gateway.Finalizers = append(gateway.Finalizers, gatewayFinalizer)
+		if err := r.Update(ctx, gateway); err != nil {
+			return ctrl.Result{}, err
+		}
+	}
+
 	if gateway.Status.AppRoute == nil {
 		result, err := r.applyApp(ctx, gateway)
 		if err != nil {
@@ -89,12 +110,10 @@ func (r *GatewayReconciler) apply(ctx context.Context, gateway *gatewayv1.Gatewa
 		}
 	}
 
-	// 添加bucket 路由
-	if gateway.Status.BucketRoutes == nil || len(gateway.Status.BucketRoutes) > len(gateway.Status.BucketRoutes) {
-		result, err := r.applyBucket(ctx, gateway)
-		if err != nil {
-			return result, err
-		}
+	// apply bucket route
+	result, err := r.applyBucket(ctx, gateway)
+	if err != nil {
+		return result, err
 	}
 
 	return ctrl.Result{}, nil
@@ -103,17 +122,6 @@ func (r *GatewayReconciler) apply(ctx context.Context, gateway *gatewayv1.Gatewa
 // applyDomain apply domain
 func (r *GatewayReconciler) applyApp(ctx context.Context, gateway *gatewayv1.Gateway) (ctrl.Result, error) {
 	_log := log.FromContext(ctx)
-
-	finalizerName := "app.gateway.laf.dev"
-
-	// add finalizer
-	if !util.ContainsString(gateway.GetFinalizers(), finalizerName) {
-		gateway.SetFinalizers(append(gateway.GetFinalizers(), finalizerName))
-		if err := r.Update(ctx, gateway); err != nil {
-			return ctrl.Result{}, err
-		}
-		_log.Info("added finalizer", "finalizer", finalizerName)
-	}
 
 	// TODO select app from application
 	region := "default"
@@ -125,10 +133,11 @@ func (r *GatewayReconciler) applyApp(ctx context.Context, gateway *gatewayv1.Gat
 	}
 	if appDomain == nil {
 		_log.Info("no app domain found")
+		return ctrl.Result{}, errors.New("no app domain found")
 	}
 
 	// set gateway status
-	gateway.Status.AppRoute = &gatewayv1.GatewayRoute{
+	routeStatus := &gatewayv1.GatewayRoute{
 		DomainName:      appDomain.Name,
 		DomainNamespace: appDomain.Namespace,
 		Domain:          gateway.Spec.AppId + "." + appDomain.Spec.Domain,
@@ -141,7 +150,7 @@ func (r *GatewayReconciler) applyApp(ctx context.Context, gateway *gatewayv1.Gat
 			Namespace: gateway.Spec.AppId,
 		},
 		Spec: gatewayv1.RouteSpec{
-			Domain:          gateway.Status.AppRoute.Domain,
+			Domain:          routeStatus.Domain,
 			DomainName:      appDomain.Name,
 			DomainNamespace: appDomain.Namespace,
 			Backend: gatewayv1.Backend{
@@ -151,10 +160,14 @@ func (r *GatewayReconciler) applyApp(ctx context.Context, gateway *gatewayv1.Gat
 		},
 	}
 	if err := r.Create(ctx, appRoute); err != nil {
+		if !apierrors.IsAlreadyExists(err) {
+			return ctrl.Result{}, nil
+		}
 		return ctrl.Result{}, err
 	}
 
 	// update gateway status
+	gateway.Status.AppRoute = routeStatus
 	if err := r.Status().Update(ctx, gateway); err != nil {
 		return ctrl.Result{}, err
 	}
@@ -165,24 +178,23 @@ func (r *GatewayReconciler) applyApp(ctx context.Context, gateway *gatewayv1.Gat
 func (r *GatewayReconciler) deleteApp(ctx context.Context, gateway *gatewayv1.Gateway) (ctrl.Result, error) {
 	_log := log.FromContext(ctx)
 
-	finalizerName := "app.gateway.laf.dev"
+	_log.Info("delete app route", "v", gateway.Name)
 
 	// delete app route
 	appRoute := &gatewayv1.Route{}
+
 	if err := r.Get(ctx, client.ObjectKey{Name: "app", Namespace: gateway.Spec.AppId}, appRoute); err != nil {
-		return ctrl.Result{}, err
-	}
-	if err := r.Delete(ctx, appRoute); err != nil {
+		if apierrors.IsNotFound(err) {
+			return ctrl.Result{}, nil
+		}
 		return ctrl.Result{}, err
 	}
 
-	// remove finalizer
-	if util.ContainsString(gateway.GetFinalizers(), finalizerName) {
-		gateway.SetFinalizers(util.RemoveString(gateway.GetFinalizers(), finalizerName))
-		if err := r.Update(ctx, gateway); err != nil {
-			return ctrl.Result{}, err
+	if err := r.Delete(ctx, appRoute); err != nil {
+		if apierrors.IsNotFound(err) {
+			return ctrl.Result{}, nil
 		}
-		_log.Info("removed finalizer", "finalizer", finalizerName)
+		return ctrl.Result{}, err
 	}
 
 	return ctrl.Result{}, nil
@@ -190,6 +202,39 @@ func (r *GatewayReconciler) deleteApp(ctx context.Context, gateway *gatewayv1.Ga
 
 // applyBucket apply bucket
 func (r *GatewayReconciler) applyBucket(ctx context.Context, gateway *gatewayv1.Gateway) (ctrl.Result, error) {
+
+	// create bucket route
+	createBuckets := make([]string, 0)
+	for _, bucketName := range gateway.Spec.Buckets {
+		if _, ok := gateway.Status.BucketRoutes[bucketName]; !ok {
+			createBuckets = append(createBuckets, bucketName)
+		}
+	}
+	if len(createBuckets) != 0 {
+		result, err := r.addBuckets(ctx, gateway, createBuckets)
+		if err != nil {
+			return result, err
+		}
+	}
+
+	// delete bucket route
+	deleteBuckets := make([]string, 0)
+	for bucketName := range gateway.Status.BucketRoutes {
+		if !util.ContainsString(gateway.Spec.Buckets, bucketName) {
+			deleteBuckets = append(deleteBuckets, bucketName)
+		}
+	}
+	if len(deleteBuckets) != 0 {
+		result, err := r.deleteBuckets(ctx, gateway, deleteBuckets)
+		if err != nil {
+			return result, err
+		}
+	}
+
+	return ctrl.Result{}, nil
+}
+
+func (r *GatewayReconciler) addBuckets(ctx context.Context, gateway *gatewayv1.Gateway, buckets []string) (ctrl.Result, error) {
 	_log := log.FromContext(ctx)
 
 	// if gateway status bucketRoutes is nil, init it
@@ -198,18 +243,7 @@ func (r *GatewayReconciler) applyBucket(ctx context.Context, gateway *gatewayv1.
 	}
 
 	// select bucket domain
-	for _, bucketName := range gateway.Spec.Buckets {
-
-		finalizerName := bucketName + ".bucket.gateway.laf.dev"
-
-		// add finalizer
-		if !util.ContainsString(gateway.GetFinalizers(), finalizerName) {
-			gateway.SetFinalizers(append(gateway.GetFinalizers(), finalizerName))
-			if err := r.Update(ctx, gateway); err != nil {
-				return ctrl.Result{}, err
-			}
-			_log.Info("added finalizer", "finalizer", finalizerName)
-		}
+	for _, bucketName := range buckets {
 
 		// if bucket route is not exist, create it
 		if _, ok := gateway.Status.BucketRoutes[bucketName]; ok {
@@ -244,7 +278,7 @@ func (r *GatewayReconciler) applyBucket(ctx context.Context, gateway *gatewayv1.
 			continue
 		}
 
-		gateway.Status.BucketRoutes[bucketName] = &gatewayv1.GatewayRoute{
+		routeStatus := &gatewayv1.GatewayRoute{
 			DomainName:      bucketDomain.Name,
 			DomainNamespace: bucketDomain.Namespace,
 			Domain:          gateway.Spec.AppId + "-" + bucketName + "." + bucketDomain.Spec.Domain,
@@ -257,7 +291,7 @@ func (r *GatewayReconciler) applyBucket(ctx context.Context, gateway *gatewayv1.
 				Namespace: gateway.Spec.AppId,
 			},
 			Spec: gatewayv1.RouteSpec{
-				Domain:          gateway.Status.BucketRoutes[bucketName].Domain,
+				Domain:          routeStatus.Domain,
 				DomainName:      bucketDomain.Name,
 				DomainNamespace: bucketDomain.Namespace,
 				Backend: gatewayv1.Backend{
@@ -268,9 +302,13 @@ func (r *GatewayReconciler) applyBucket(ctx context.Context, gateway *gatewayv1.
 			},
 		}
 		if err := r.Create(ctx, bucketRoute); err != nil {
+			if apierrors.IsAlreadyExists(err) {
+				continue
+			}
 			return ctrl.Result{}, err
 		}
 
+		gateway.Status.BucketRoutes[bucketName] = routeStatus
 		// update gateway status
 		if err := r.Status().Update(ctx, gateway); err != nil {
 			return ctrl.Result{}, err
@@ -281,36 +319,46 @@ func (r *GatewayReconciler) applyBucket(ctx context.Context, gateway *gatewayv1.
 }
 
 // deleteBucket delete bucket
-func (r *GatewayReconciler) deleteBucket(ctx context.Context, gateway *gatewayv1.Gateway) (ctrl.Result, error) {
+func (r *GatewayReconciler) deleteBuckets(ctx context.Context, gateway *gatewayv1.Gateway, buckets []string) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 
-	// convert gateway buckets to map
-	bucketMap := make(map[string]bool, 0)
-	for _, bucketName := range gateway.Spec.Buckets {
-		bucketMap[bucketName] = true
+	// if buckets is nil, add all buckets
+	if buckets == nil {
+		buckets = make([]string, 0)
+		for bucketName := range gateway.Status.BucketRoutes {
+			buckets = append(buckets, bucketName)
+		}
 	}
 
 	// find deleted bucket, remote route and finalizer
-	for bucketName, _ := range gateway.Status.BucketRoutes {
-		if _, ok := bucketMap[bucketName]; !ok {
-			// delete route
-			route := &gatewayv1.Route{}
-			err := r.Get(ctx, client.ObjectKey{Namespace: gateway.Spec.AppId, Name: "bucket-" + bucketName}, route)
-			if err != nil {
-				return ctrl.Result{}, err
-			}
-			if err := r.Delete(ctx, route); err != nil {
-				return ctrl.Result{}, err
-			}
-			// delete finalizer
-			finalizerName := bucketName + ".bucket.gateway.laf.dev"
-			gateway.SetFinalizers(util.RemoveString(gateway.GetFinalizers(), finalizerName))
-			if err := r.Update(ctx, gateway); err != nil {
-				return ctrl.Result{}, err
-			}
+	for _, bucketName := range buckets {
+		// delete route
+		route := &gatewayv1.Route{}
 
-			// delete bucket route
-			delete(gateway.Status.BucketRoutes, bucketName)
+		// 删除名称为test的route
+		err := r.Get(ctx, client.ObjectKey{Namespace: gateway.Spec.AppId, Name: "bucket-" + bucketName}, route)
+		if err != nil {
+
+		}
+
+		if err := r.Get(ctx, client.ObjectKey{Namespace: gateway.Spec.AppId, Name: "bucket-" + bucketName}, route); err != nil {
+			if apierrors.IsNotFound(err) {
+				continue
+			}
+			return ctrl.Result{}, err
+		}
+
+		if err := r.Delete(ctx, route); err != nil {
+			if apierrors.IsNotFound(err) {
+				continue
+			}
+			return ctrl.Result{}, err
+		}
+
+		// delete bucket route
+		delete(gateway.Status.BucketRoutes, bucketName)
+		if err := r.Status().Update(ctx, gateway); err != nil {
+			return ctrl.Result{}, err
 		}
 	}
 
