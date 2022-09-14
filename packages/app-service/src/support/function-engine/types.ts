@@ -1,7 +1,7 @@
 
 import { FunctionConsole } from "./console"
 import { IncomingHttpHeaders } from "http"
-import { Response } from "express"
+import { Request, Response } from "express"
 import { ObjectId } from "mongodb"
 
 
@@ -42,6 +42,7 @@ export interface FunctionContext {
   auth?: any,
   requestId?: string,
   method?: string,
+  request?: Request,
   response?: Response,
   __function_name?: string
 }
