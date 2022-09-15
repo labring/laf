@@ -28,81 +28,81 @@ import (
 	applicationv1 "github.com/labring/laf/controllers/application/api/v1"
 )
 
-const finalizerName = "spec.application.laf.dev"
+const finalizerName = "bundle.application.laf.dev"
 
-// SpecificationReconciler reconciles a Specification object
-type SpecificationReconciler struct {
+// BundleReconciler reconciles a Bundle object
+type BundleReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=application.laf.dev,resources=specifications,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=application.laf.dev,resources=specifications/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=application.laf.dev,resources=specifications/finalizers,verbs=update
+//+kubebuilder:rbac:groups=application.laf.dev,resources=bundles,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=application.laf.dev,resources=bundles/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=application.laf.dev,resources=bundles/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
 // TODO(user): Modify the Reconcile function to compare the state specified by
-// the Specification object against the actual cluster state, and then
+// the Bundle object against the actual cluster state, and then
 // perform operations to make the cluster state reflect the state specified by
 // the user.
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.2/pkg/reconcile
-func (r *SpecificationReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+func (r *BundleReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 
-	// get the specification
-	specification := &applicationv1.Specification{}
-	err := r.Get(ctx, req.NamespacedName, specification)
+	// get the bundle
+	bundle := &applicationv1.Bundle{}
+	err := r.Get(ctx, req.NamespacedName, bundle)
 	if err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
 	// reconcile deletions
-	if !specification.ObjectMeta.DeletionTimestamp.IsZero() {
-		return r.delete(ctx, specification)
+	if !bundle.ObjectMeta.DeletionTimestamp.IsZero() {
+		return r.delete(ctx, bundle)
 	}
 
-	return r.apply(ctx, specification)
+	return r.apply(ctx, bundle)
 }
 
 // apply the specification
-func (r *SpecificationReconciler) apply(ctx context.Context, specification *applicationv1.Specification) (ctrl.Result, error) {
+func (r *BundleReconciler) apply(ctx context.Context, bundle *applicationv1.Bundle) (ctrl.Result, error) {
 	_log := log.FromContext(ctx)
 
 	// add finalizer
-	if !util.ContainsString(specification.ObjectMeta.Finalizers, finalizerName) {
-		specification.ObjectMeta.Finalizers = append(specification.ObjectMeta.Finalizers, finalizerName)
-		err := r.Update(ctx, specification)
+	if !util.ContainsString(bundle.ObjectMeta.Finalizers, finalizerName) {
+		bundle.ObjectMeta.Finalizers = append(bundle.ObjectMeta.Finalizers, finalizerName)
+		err := r.Update(ctx, bundle)
 		if err != nil {
 			return ctrl.Result{}, err
 		}
-		_log.Info("finalizer added for specification", "specification", specification.Name)
+		_log.Info("finalizer added for bundle", "bundle", bundle.Name)
 	}
 
 	return ctrl.Result{}, nil
 }
 
 // delete the specification
-func (r *SpecificationReconciler) delete(ctx context.Context, specification *applicationv1.Specification) (ctrl.Result, error) {
+func (r *BundleReconciler) delete(ctx context.Context, bundle *applicationv1.Bundle) (ctrl.Result, error) {
 	_log := log.FromContext(ctx)
 
 	// TODO: reject it if there are any applications using it
 
 	// remove finalizer
-	specification.ObjectMeta.Finalizers = util.RemoveString(specification.ObjectMeta.Finalizers, finalizerName)
-	err := r.Update(ctx, specification)
+	bundle.ObjectMeta.Finalizers = util.RemoveString(bundle.ObjectMeta.Finalizers, finalizerName)
+	err := r.Update(ctx, bundle)
 	if err != nil {
 		return ctrl.Result{}, err
 	}
-	_log.Info("finalizer removed for specification", "specification", specification.Name)
+	_log.Info("finalizer removed for bundle", "bundle", bundle.Name)
 	return ctrl.Result{}, nil
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *SpecificationReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *BundleReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&applicationv1.Specification{}).
+		For(&applicationv1.Bundle{}).
 		Complete(r)
 }

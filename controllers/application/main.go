@@ -96,14 +96,21 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "Application")
 		os.Exit(1)
 	}
-	if err = (&controllers.SpecificationReconciler{
+
+	if err = (&controllers.BundleReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "Specification")
+		setupLog.Error(err, "unable to create controller", "controller", "Bundle")
 		os.Exit(1)
 	}
-
+	if err = (&controllers.CreationFormReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "CreationForm")
+		os.Exit(1)
+	}
 	//+kubebuilder:scaffold:builder
 
 	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {

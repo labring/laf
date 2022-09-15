@@ -1,24 +1,20 @@
-# permissions for end users to edit cloudfunctions.
+# permissions for end users to view creationforms.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: cloudfunction-editor-role
+  name: creationform-viewer-role
 rules:
 - apiGroups:
   - application.laf.dev
   resources:
-  - cloudfunctions
+  - creationforms
   verbs:
-  - create
-  - delete
   - get
   - list
-  - patch
-  - update
   - watch
 - apiGroups:
   - application.laf.dev
   resources:
-  - cloudfunctions/status
+  - creationforms/status
   verbs:
   - get

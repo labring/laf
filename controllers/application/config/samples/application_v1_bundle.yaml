@@ -1,9 +1,9 @@
 apiVersion: application.laf.dev/v1
-kind: Specification
+kind: Bundle
 metadata:
-  name: standard-specification
+  name: bundle-sample
 spec:
-  displayName: "My Application"
+  displayName: "Standard"
   requestCPU: "500m"
   requestMemory: "128Mi"
   limitCPU: "1000m"

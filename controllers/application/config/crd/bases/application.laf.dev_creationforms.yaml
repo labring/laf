@@ -1,0 +1,68 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.9.0
+  creationTimestamp: null
+  name: creationforms.application.laf.dev
+spec:
+  group: application.laf.dev
+  names:
+    kind: CreationForm
+    listKind: CreationFormList
+    plural: creationforms
+    singular: creationform
+  scope: Namespaced
+  versions:
+  - name: v1
+    schema:
+      openAPIV3Schema:
+        description: CreationForm is the Schema for the creationforms API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CreationFormSpec defines the desired state of CreationForm
+            properties:
+              bundleName:
+                description: Bundle Name for the application
+                type: string
+              displayName:
+                description: DisplayName for the application
+                maxLength: 63
+                minLength: 3
+                type: string
+              runtimeName:
+                description: Runtime Name of the application
+                type: string
+            required:
+            - bundleName
+            - displayName
+            - runtimeName
+            type: object
+          status:
+            description: CreationFormStatus defines the observed state of CreationForm
+            properties:
+              appid:
+                type: string
+              created:
+                type: boolean
+              namespace:
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

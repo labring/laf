@@ -5,20 +5,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.9.0
   creationTimestamp: null
-  name: specifications.application.laf.dev
+  name: bundles.application.laf.dev
 spec:
   group: application.laf.dev
   names:
-    kind: Specification
-    listKind: SpecificationList
-    plural: specifications
-    singular: specification
+    kind: Bundle
+    listKind: BundleList
+    plural: bundles
+    singular: bundle
   scope: Namespaced
   versions:
   - name: v1
     schema:
       openAPIV3Schema:
-        description: Specification is the Schema for the specifications API
+        description: Bundle is the Schema for the bundles API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -33,57 +33,57 @@ spec:
           metadata:
             type: object
           spec:
-            description: SpecificationSpec defines the desired state of Specification
+            description: BundleSpec defines the desired state of Bundle
             properties:
               databaseCapacity:
                 anyOf:
                 - type: integer
                 - type: string
-                description: Database capacity for the specification
+                description: Database capacity for the bundle
                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                 x-kubernetes-int-or-string: true
               displayName:
-                description: DisplayName for the specification
+                description: DisplayName for the bundle
                 type: string
               limitCPU:
                 anyOf:
                 - type: integer
                 - type: string
-                description: Limit CPU for the specification
+                description: Limit CPU for the bundle
                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                 x-kubernetes-int-or-string: true
               limitMemory:
                 anyOf:
                 - type: integer
                 - type: string
-                description: Limit Memory for the specification
+                description: Limit Memory for the bundle
                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                 x-kubernetes-int-or-string: true
               networkBandwidthInbound:
                 anyOf:
                 - type: integer
                 - type: string
-                description: Network Bandwidth Inbound for the specification
+                description: Network Bandwidth Inbound for the bundle
                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                 x-kubernetes-int-or-string: true
               networkBandwidthOutbound:
                 anyOf:
                 - type: integer
                 - type: string
-                description: Network Bandwidth Outbound for the specification
+                description: Network Bandwidth Outbound for the bundle
                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                 x-kubernetes-int-or-string: true
               networkTrafficOutbound:
                 anyOf:
                 - type: integer
                 - type: string
-                description: Network Traffic Outbound for the specification
+                description: Network Traffic Outbound for the bundle
                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                 x-kubernetes-int-or-string: true
               priority:
-                description: Priority for the specification. The default value is
-                  0, which means that the specification is not currently available
-                  for creating new applications.
+                description: Priority for the bundle. The default value is 0, which
+                  means that the bundle is not currently available for creating new
+                  applications.
                 format: int32
                 maximum: 1000
                 minimum: 0
@@ -92,21 +92,21 @@ spec:
                 anyOf:
                 - type: integer
                 - type: string
-                description: Request CPU for the specification
+                description: Request CPU for the bundle
                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                 x-kubernetes-int-or-string: true
               requestMemory:
                 anyOf:
                 - type: integer
                 - type: string
-                description: Request Memory for the specification
+                description: Request Memory for the bundle
                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                 x-kubernetes-int-or-string: true
               storageCapacity:
                 anyOf:
                 - type: integer
                 - type: string
-                description: Storage capacity for the specification
+                description: Storage capacity for the bundle
                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                 x-kubernetes-int-or-string: true
             required:
@@ -121,7 +121,7 @@ spec:
             - storageCapacity
             type: object
           status:
-            description: SpecificationStatus defines the observed state of Specification
+            description: BundleStatus defines the observed state of Bundle
             type: object
         type: object
     served: true

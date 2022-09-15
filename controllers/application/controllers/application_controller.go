@@ -27,6 +27,8 @@ import (
 	applicationv1 "github.com/labring/laf/controllers/application/api/v1"
 )
 
+const ApplicationFinalizer = "application.finalizers.laf.dev"
+
 // ApplicationReconciler reconciles a Application object
 type ApplicationReconciler struct {
 	client.Client
