@@ -28,12 +28,12 @@ import (
 type ApplicationState string
 
 const (
-	ApplicationStateCreated   ApplicationState = "Created"
-	ApplicationStateStarted   ApplicationState = "Started"
-	ApplicationStateStopped   ApplicationState = "Stopped"
-	ApplicationStateRunning   ApplicationState = "Running"
-	ApplicationStateRestarted ApplicationState = "Restarted"
-	ApplicationStateDeleted   ApplicationState = "Deleted"
+	ApplicationStateInitializing ApplicationState = "Initializing"
+	ApplicationStateInitialized  ApplicationState = "Initialized"
+	ApplicationStateStarting     ApplicationState = "Starting"
+	ApplicationStateRunning      ApplicationState = "Running"
+	ApplicationStateStopping     ApplicationState = "Stopping"
+	ApplicationStateStopped      ApplicationState = "Stopped"
 )
 
 // ApplicationSpec defines the desired state of Application
@@ -41,21 +41,15 @@ type ApplicationSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// DisplayName for the application
-	//+kubebuilder:validation:MinLength=3
-	//+kubebuilder:validation:MaxLength=63
-	//+kubebuilder:validation:Required
-	DisplayName string `json:"displayName"`
-
 	// State of the application
-	//+kubebuilder:validation:Enum=Created;Started;Stopped;Running;Restarted;Deleted
+	//+kubebuilder:validation:Enum=Running;Stopped;
 	//+kubebuilder:validation:Required
-	//+kubebuilder:default:=Created
-	State ApplicationState `json:"state"`
+	//+kubebuilder:default:=Running
+	State ApplicationState `json:"state,omitempty"`
 
-	// Specification Name for the application
+	// Bundle Name for the application
 	//+kubebuilder:validation:Required
-	SpecificationName string `json:"specificationName"`
+	BundleName string `json:"bundleName"`
 
 	// Runtime Name of the application
 	//+kubebuilder:validation:Required
@@ -69,18 +63,33 @@ type ApplicationStatus struct {
 
 	// AppId
 	//+kubebuilder:validation:MinLength=3
-	//+kubebuilder:validation:MaxLength=16
+	//+kubebuilder:validation:MaxLength=24
 	//+kubebuilder:validation:Required
 	AppId string `json:"appid"`
 
-	// Specification for the application
-	Specification SpecificationSpec `json:"specification"`
-
 	// State of the application
-	State ApplicationState `json:"state"`
+	Phase ApplicationState `json:"state,omitempty"`
 
-	// Runtime for the application
-	Runtime v1.RuntimeSpec `json:"runtime"`
+	// Bundle of the application
+	Bundle BundleSpec `json:"bundle,omitempty"`
+
+	// Runtime of the application
+	Runtime v1.RuntimeSpec `json:"runtime,omitempty"`
+
+	// Conditions:
+	// - type: DatabaseCreated
+	//   status: True | False | Unknown
+	//   reason: "DatabaseCreated" | "InsufficientResources" | "Unknown"
+	//   message: "Database created Successfully" | "Insufficient resources to create database" | "Unknown error"
+	// - type: ObjectStorageCreated
+	// - type: GatewayCreated
+	// - type: InstanceCreated
+	// - type: InstanceReady
+	// - type: InstanceDeleted
+	// - type: DatabaseDeleted
+	// - type: ObjectStorageDeleted
+	// - type: GatewayDeleted
+	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
 //+kubebuilder:object:root=true
