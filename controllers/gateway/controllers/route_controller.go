@@ -57,12 +57,6 @@ type RouteReconciler struct {
 func (r *RouteReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 
-	// 获取apiSix集群操作对象
-	apiSixCluster, result, err := r.getApiSixCluster(ctx, &gatewayv1.Route{})
-	if err != nil {
-		return result, err
-	}
-
 	// get the route
 	var route gatewayv1.Route
 	if err := r.Get(ctx, req.NamespacedName, &route); err != nil {
