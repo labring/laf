@@ -23,6 +23,23 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
+// BackendType 是后端服务类型
+type BackendType string
+
+const (
+	APP     BackendType = "app"
+	BUCKET  BackendType = "bucket"
+	WEBSITE BackendType = "website"
+)
+
+// RouteState 是路由的状态
+type RouteState string
+
+const (
+	PREPARING RouteState = "preparing"
+	CREATED   RouteState = "created"
+)
+
 // GatewaySpec defines the desired state of Gateway
 type GatewaySpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
@@ -33,7 +50,7 @@ type GatewaySpec struct {
 	// AppId是应用id，字母数字组成，长度5至16位，必须存在
 	// +kubebuilder:validation:Pattern="^[a-zA-Z0-9]{5,16}$"
 	// +kubebuilder:validation:Required
-	AppId string `json:"appId"`
+	AppId string `json:"appid"`
 
 	// Buckets是存储桶, 是一个数组，可选存在
 	// +kubebuilder:validation:Optional
@@ -49,37 +66,26 @@ type GatewayStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// AppDomain 是应用域名，必须存在
-	// +kubebuilder:validation:Required
-	AppDomain string `json:"appDomain"`
+	// AppRoute 是应用路由
+	AppRoute *GatewayRoute `json:"appRoute,omitempty"`
 
-	// BucketDomains 是存储桶域名列表，是一个数组，可选存在
-	// +kubebuilder:validation:Optional
-	BucketDomains []string `json:"bucketDomains,omitempty"`
+	// BucketRoutes 是存储桶路由
+	BucketRoutes map[string]*GatewayRoute `json:"bucketRoutes,omitempty"`
 
-	// WebsiteDomains 是静态站点域名列表，是一个数组，可选存在
-	// +kubebuilder:validation:Optional
-	WebsiteDomains []string `json:"websiteDomains,omitempty"`
+	// WebsiteRoutes 是静态站点路由
+	WebsiteRoutes map[string]*GatewayRoute `json:"websiteRoutes,omitempty"`
 }
 
-// BucketDomain 是存储桶位的域名配置
-type BucketDomain struct {
-	// Name 是存储桶名称，必须存在
+type GatewayRoute struct {
+	// DomainName 是域名名称，必须存在
 	// +kubebuilder:validation:Required
-	Name string `json:"name"`
+	DomainName string `json:"domainName"`
 
-	// Domain 是存储桶域名，必须存在
+	// DomainNamespace 是域名所在的命名空间，必须存在
 	// +kubebuilder:validation:Required
-	Domain string `json:"domain"`
-}
+	DomainNamespace string `json:"domainNamespace"`
 
-// WebsiteDomain 是静态站点的域名配置
-type WebsiteDomain struct {
-	// Name 是静态站点名称，必须存在
-	// +kubebuilder:validation:Required
-	Name string `json:"name"`
-
-	// Domain 是静态站点域名，必须存在
+	// Domain 是域名，必须存在
 	// +kubebuilder:validation:Required
 	Domain string `json:"domain"`
 }

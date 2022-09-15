@@ -36,6 +36,14 @@ type RouteSpec struct {
 	// +kubebuilder:validation:Required
 	Backend Backend `json:"backend"`
 
+	// DomainName 是域名名称，必须存在
+	// +kubebuilder:validation:Required
+	DomainName string `json:"domainName"`
+
+	// DomainNamespace 是域名所在的命名空间，必须存在
+	// +kubebuilder:validation:Required
+	DomainNamespace string `json:"domainNamespace"`
+
 	// CertConfigRef 是证书配置，可选存在
 	// +kubebuilder:validation:Optional
 	CertConfigRef string `json:"certConfigRef,omitempty"`

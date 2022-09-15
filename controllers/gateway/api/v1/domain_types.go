@@ -26,26 +26,37 @@ import (
 // DomainSpec defines the desired state of Domain
 type DomainSpec struct {
 
-	// Preferred 是提供域名使用位置的推荐项，是字符串类型，长度大于1小于10，必须存在
-	// +kubebuilder:validation:MinLength=1
-	// +kubebuilder:validation:MaxLength=10
-	// +kubebuilder:validation:Required
-	Preferred string `json:"preferred"`
-
-	// Region 是域名设定的解析区域，是字符串类型，长度大于1小于10，可选存在
-	// +kubebuilder:validation:MinLength=1
-	// +kubebuilder:validation:MaxLength=10
-	// +kubebuilder:validation:Optional
-	Region string `json:"region,omitempty"`
-
-	// Domain 是域名，是字符串类型，规则匹配域名规则，必须存在
+	// Domain是域名，必须存在，匹配域名规则
 	// +kubebuilder:validation:Pattern="^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,6}$"
 	// +kubebuilder:validation:Required
 	Domain string `json:"domain"`
 
-	// CertConfigRef 是字符串类型，是configMap的引用
+	// BackendType是后端服务类型，必须存在APP;bucket;WEBSITE
+	// +kubebuilder:validation:Enum=app;bucket;website
 	// +kubebuilder:validation:Required
+	BackendType BackendType `json:"backendType"`
+
+	// Region 是区域 必须存在 由字符数组和-组成
+	// +kubebuilder:validation:Pattern="^[a-zA-Z0-9-]+$"
+	// +kubebuilder:validation:Required
+	Region string `json:"region"`
+
+	// Cluster 是网关集群配置 必须存在
+	// +kubebuilder:validation:Required
+	Cluster ClusterSpec `json:"cluster"`
+
+	// CertConfigRef 是字符串类型，是configMap的引用，可选存在
+	// +kubebuilder:validation:Optional
 	CertConfigRef string `json:"certConfigRef"`
+}
+
+// ClusterSpec 是集群的规格
+type ClusterSpec struct {
+	// url是集群的url，必须存在
+	Url string `json:"url"`
+
+	// key是集群的key，必须存在
+	Key string `json:"key"`
 }
 
 // DomainStatus defines the observed state of Domain
