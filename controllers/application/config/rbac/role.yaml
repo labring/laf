@@ -34,7 +34,7 @@ rules:
 - apiGroups:
   - application.laf.dev
   resources:
-  - specifications
+  - bundles
   verbs:
   - create
   - delete
@@ -46,13 +46,39 @@ rules:
 - apiGroups:
   - application.laf.dev
   resources:
-  - specifications/finalizers
+  - bundles/finalizers
   verbs:
   - update
 - apiGroups:
   - application.laf.dev
   resources:
-  - specifications/status
+  - bundles/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - creationforms
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - creationforms/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - application.laf.dev
+  resources:
+  - creationforms/status
   verbs:
   - get
   - patch
