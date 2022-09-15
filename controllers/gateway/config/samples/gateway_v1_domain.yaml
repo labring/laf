@@ -3,4 +3,9 @@ kind: Domain
 metadata:
   name: domain-sample
 spec:
-  # TODO(user): Add fields here
+  domain: app.laf.win
+  backendType: app
+  region: default
+  cluster:
+    url: http://localhost:19180/apisix/admin
+    key: edd1c9f034335f136f87ad84b625c8f1

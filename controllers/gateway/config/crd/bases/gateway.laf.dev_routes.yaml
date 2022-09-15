@@ -55,6 +55,12 @@ spec:
               domain:
                 description: Domain 是路由域名，必须存在
                 type: string
+              domainName:
+                description: DomainName 是域名名称，必须存在
+                type: string
+              domainNamespace:
+                description: DomainNamespace 是域名所在的命名空间，必须存在
+                type: string
               enableWebSocket:
                 description: EnableWebSocket 是否开启websocket, 默认否
                 type: boolean
@@ -77,6 +83,8 @@ spec:
             required:
             - backend
             - domain
+            - domainName
+            - domainNamespace
             type: object
           status:
             description: RouteStatus defines the observed state of Route

@@ -35,7 +35,7 @@ spec:
           spec:
             description: GatewaySpec defines the desired state of Gateway
             properties:
-              appId:
+              appid:
                 description: AppId是应用id，字母数字组成，长度5至16位，必须存在
                 pattern: ^[a-zA-Z0-9]{5,16}$
                 type: string
@@ -50,26 +50,66 @@ spec:
                   type: string
                 type: array
             required:
-            - appId
+            - appid
             type: object
           status:
             description: GatewayStatus defines the observed state of Gateway
             properties:
-              appDomain:
-                description: AppDomain 是应用域名，必须存在
-                type: string
-              bucketDomains:
-                description: BucketDomains 是存储桶域名列表，是一个数组，可选存在
-                items:
-                  type: string
-                type: array
-              websiteDomains:
-                description: WebsiteDomains 是静态站点域名列表，是一个数组，可选存在
-                items:
-                  type: string
-                type: array
-            required:
-            - appDomain
+              appRoute:
+                description: AppRoute 是应用路由
+                properties:
+                  domain:
+                    description: Domain 是域名，必须存在
+                    type: string
+                  domainName:
+                    description: DomainName 是域名名称，必须存在
+                    type: string
+                  domainNamespace:
+                    description: DomainNamespace 是域名所在的命名空间，必须存在
+                    type: string
+                required:
+                - domain
+                - domainName
+                - domainNamespace
+                type: object
+              bucketRoutes:
+                additionalProperties:
+                  properties:
+                    domain:
+                      description: Domain 是域名，必须存在
+                      type: string
+                    domainName:
+                      description: DomainName 是域名名称，必须存在
+                      type: string
+                    domainNamespace:
+                      description: DomainNamespace 是域名所在的命名空间，必须存在
+                      type: string
+                  required:
+                  - domain
+                  - domainName
+                  - domainNamespace
+                  type: object
+                description: BucketRoutes 是存储桶路由
+                type: object
+              websiteRoutes:
+                additionalProperties:
+                  properties:
+                    domain:
+                      description: Domain 是域名，必须存在
+                      type: string
+                    domainName:
+                      description: DomainName 是域名名称，必须存在
+                      type: string
+                    domainNamespace:
+                      description: DomainNamespace 是域名所在的命名空间，必须存在
+                      type: string
+                  required:
+                  - domain
+                  - domainName
+                  - domainNamespace
+                  type: object
+                description: WebsiteRoutes 是静态站点路由
+                type: object
             type: object
         type: object
     served: true

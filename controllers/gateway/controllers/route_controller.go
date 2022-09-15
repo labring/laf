@@ -19,10 +19,11 @@ package controllers
 import (
 	"context"
 	"github.com/labring/laf/controllers/gateway/apisix"
+	"k8s.io/apimachinery/pkg/types"
 	"laf/pkg/util"
+	"strconv"
 	"time"
 
-	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -55,16 +56,16 @@ type RouteReconciler struct {
 func (r *RouteReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 
-	// 获取apiSix集群操作对象
-	apiSixCluster, result, err := r.getApiSixCluster(ctx, &gatewayv1.Route{})
-	if err != nil {
-		return result, err
-	}
-
 	// get the route
 	var route gatewayv1.Route
 	if err := r.Get(ctx, req.NamespacedName, &route); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	// 获取apiSix集群操作对象
+	apiSixCluster, err := r.getGatewayCluster(ctx, &route)
+	if err != nil {
+		return ctrl.Result{}, err
 	}
 
 	// 如果路由已经被设置删除标记，则删除路由
@@ -95,10 +96,16 @@ func (r *RouteReconciler) applyRoute(ctx context.Context, route *gatewayv1.Route
 		"uri":  "/*",
 		"host": route.Spec.Domain,
 	}
+
+	// if port is not 0, set node to serviceName and servicePort combination
+	node := route.Spec.Backend.ServiceName
+	if route.Spec.Backend.ServicePort != 0 {
+		node += ":" + strconv.FormatInt(int64(route.Spec.Backend.ServicePort), 10)
+	}
 	upstream := map[string]interface{}{
 		"type": "roundrobin",
 		"nodes": map[string]interface{}{
-			route.Spec.Domain: 1,
+			node: 1,
 		},
 	}
 
@@ -136,9 +143,11 @@ func (r *RouteReconciler) applyRoute(ctx context.Context, route *gatewayv1.Route
 	}
 
 	// update route status
-	route.Status.Domain = route.Spec.Domain
-	if err := r.Status().Update(ctx, route); err != nil {
-		return ctrl.Result{}, err
+	if route.Status.Domain == "" {
+		route.Status.Domain = route.Spec.Domain
+		if err := r.Status().Update(ctx, route); err != nil {
+			return ctrl.Result{}, err
+		}
 	}
 
 	_log.Info("route applied: " + routeId)
@@ -163,20 +172,14 @@ func (r *RouteReconciler) deleteRoute(ctx context.Context, route *gatewayv1.Rout
 	return ctrl.Result{}, nil
 }
 
-func (r *RouteReconciler) getApiSixCluster(ctx context.Context, route *gatewayv1.Route) (*apisix.Cluster, ctrl.Result, error) {
-	// 这块是否应该从全局配置拿apisix地址和adminKey ?
-	// 还是直接根据习惯拿默认的apisix service地址和adminKey
-	//cluster := apisix.NewCluster("http://apisix-admin.apisix.svc.cluster.local:9180/apisix/admin/", "edd1c9f034335f136f87ad84b625c8f1")
-	cluster := apisix.NewCluster("http://localhost:29180/apisix/admin/", "edd1c9f034335f136f87ad84b625c8f1")
-	return cluster, ctrl.Result{}, nil
-}
-
-func (r *RouteReconciler) getGlobalConfig(ctx context.Context, config *corev1.ConfigMap) (ctrl.Result, error) {
-	err := r.Get(ctx, client.ObjectKey{Namespace: "laf-cloud", Name: "laf-config"}, config)
-	if err != nil {
-		return ctrl.Result{}, client.IgnoreNotFound(err)
+func (r *RouteReconciler) getGatewayCluster(ctx context.Context, route *gatewayv1.Route) (*apisix.Cluster, error) {
+	// get domain
+	domain := gatewayv1.Domain{}
+	if err := r.Get(ctx, types.NamespacedName{Namespace: route.Spec.DomainNamespace, Name: route.Spec.DomainName}, &domain); err != nil {
+		return nil, err
 	}
-	return ctrl.Result{}, nil
+	cluster := apisix.NewCluster(domain.Spec.Cluster.Url, domain.Spec.Cluster.Key)
+	return cluster, nil
 }
 
 func getRouteId(route *gatewayv1.Route) string {

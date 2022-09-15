@@ -18,7 +18,11 @@ package controllers
 
 import (
 	"context"
+	"errors"
+	ossv1 "github.com/labring/laf/controllers/oss/api/v1"
+	"laf/pkg/util"
 
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -26,6 +30,8 @@ import (
 
 	gatewayv1 "github.com/labring/laf/controllers/gateway/api/v1"
 )
+
+const gatewayFinalizer = "gateway.gateway.laf.dev"
 
 // GatewayReconciler reconciles a Gateway object
 type GatewayReconciler struct {
@@ -48,10 +54,338 @@ type GatewayReconciler struct {
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.1/pkg/reconcile
 func (r *GatewayReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
+	// get gateway
+	gateway := &gatewayv1.Gateway{}
+	if err := r.Get(ctx, req.NamespacedName, gateway); err != nil {
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+	if !gateway.DeletionTimestamp.IsZero() {
+		return r.delete(ctx, gateway)
+	}
 
-	// TODO(user): your logic here
+	return r.apply(ctx, gateway)
+}
+
+func (r *GatewayReconciler) delete(ctx context.Context, gateway *gatewayv1.Gateway) (ctrl.Result, error) {
+	_log := log.FromContext(ctx)
+
+	// delete app route
+	if _, err := r.deleteApp(ctx, gateway); err != nil {
+		return ctrl.Result{}, err
+	}
+
+	// delete bucket route
+	if _, err := r.deleteBuckets(ctx, gateway, nil); err != nil {
+		return ctrl.Result{}, err
+	}
+
+	// remove finalizer
+	gateway.Finalizers = util.RemoveString(gateway.Finalizers, gatewayFinalizer)
+	if err := r.Update(ctx, gateway); err != nil {
+		return ctrl.Result{}, err
+	}
+
+	_log.Info("delete gateway: v success", "v", gateway.Name)
 
 	return ctrl.Result{}, nil
+}
+
+func (r *GatewayReconciler) apply(ctx context.Context, gateway *gatewayv1.Gateway) (ctrl.Result, error) {
+	_log := log.FromContext(ctx)
+
+	_log.Info("apply gateway", "v", gateway.Name)
+
+	// add finalizer
+	if !util.ContainsString(gateway.Finalizers, gatewayFinalizer) {
+		gateway.Finalizers = append(gateway.Finalizers, gatewayFinalizer)
+		if err := r.Update(ctx, gateway); err != nil {
+			return ctrl.Result{}, err
+		}
+	}
+
+	if gateway.Status.AppRoute == nil {
+		result, err := r.applyApp(ctx, gateway)
+		if err != nil {
+			return result, err
+		}
+	}
+
+	// apply bucket route
+	result, err := r.applyBucket(ctx, gateway)
+	if err != nil {
+		return result, err
+	}
+
+	return ctrl.Result{}, nil
+}
+
+// applyDomain apply domain
+func (r *GatewayReconciler) applyApp(ctx context.Context, gateway *gatewayv1.Gateway) (ctrl.Result, error) {
+	_log := log.FromContext(ctx)
+
+	// TODO select app from application
+	region := "default"
+
+	// select app domain
+	appDomain, err := r.selectDomain(ctx, gatewayv1.APP, region)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+	if appDomain == nil {
+		_log.Info("no app domain found")
+		return ctrl.Result{}, errors.New("no app domain found")
+	}
+
+	// set gateway status
+	routeStatus := &gatewayv1.GatewayRoute{
+		DomainName:      appDomain.Name,
+		DomainNamespace: appDomain.Namespace,
+		Domain:          gateway.Spec.AppId + "." + appDomain.Spec.Domain,
+	}
+
+	// create app route
+	appRoute := &gatewayv1.Route{
+		ObjectMeta: ctrl.ObjectMeta{
+			Name:      "app",
+			Namespace: gateway.Spec.AppId,
+		},
+		Spec: gatewayv1.RouteSpec{
+			Domain:          routeStatus.Domain,
+			DomainName:      appDomain.Name,
+			DomainNamespace: appDomain.Namespace,
+			Backend: gatewayv1.Backend{
+				ServiceName: gateway.Spec.AppId,
+				ServicePort: 80,
+			},
+		},
+	}
+	if err := r.Create(ctx, appRoute); err != nil {
+		if !apierrors.IsAlreadyExists(err) {
+			return ctrl.Result{}, nil
+		}
+		return ctrl.Result{}, err
+	}
+
+	// update gateway status
+	gateway.Status.AppRoute = routeStatus
+	if err := r.Status().Update(ctx, gateway); err != nil {
+		return ctrl.Result{}, err
+	}
+	return ctrl.Result{}, nil
+}
+
+// deleteApp delete app
+func (r *GatewayReconciler) deleteApp(ctx context.Context, gateway *gatewayv1.Gateway) (ctrl.Result, error) {
+	_log := log.FromContext(ctx)
+
+	_log.Info("delete app route", "v", gateway.Name)
+
+	// delete app route
+	appRoute := &gatewayv1.Route{}
+
+	if err := r.Get(ctx, client.ObjectKey{Name: "app", Namespace: gateway.Spec.AppId}, appRoute); err != nil {
+		if apierrors.IsNotFound(err) {
+			return ctrl.Result{}, nil
+		}
+		return ctrl.Result{}, err
+	}
+
+	if err := r.Delete(ctx, appRoute); err != nil {
+		if apierrors.IsNotFound(err) {
+			return ctrl.Result{}, nil
+		}
+		return ctrl.Result{}, err
+	}
+
+	return ctrl.Result{}, nil
+}
+
+// applyBucket apply bucket
+func (r *GatewayReconciler) applyBucket(ctx context.Context, gateway *gatewayv1.Gateway) (ctrl.Result, error) {
+
+	// create bucket route
+	createBuckets := make([]string, 0)
+	for _, bucketName := range gateway.Spec.Buckets {
+		if _, ok := gateway.Status.BucketRoutes[bucketName]; !ok {
+			createBuckets = append(createBuckets, bucketName)
+		}
+	}
+	if len(createBuckets) != 0 {
+		result, err := r.addBuckets(ctx, gateway, createBuckets)
+		if err != nil {
+			return result, err
+		}
+	}
+
+	// delete bucket route
+	deleteBuckets := make([]string, 0)
+	for bucketName := range gateway.Status.BucketRoutes {
+		if !util.ContainsString(gateway.Spec.Buckets, bucketName) {
+			deleteBuckets = append(deleteBuckets, bucketName)
+		}
+	}
+	if len(deleteBuckets) != 0 {
+		result, err := r.deleteBuckets(ctx, gateway, deleteBuckets)
+		if err != nil {
+			return result, err
+		}
+	}
+
+	return ctrl.Result{}, nil
+}
+
+func (r *GatewayReconciler) addBuckets(ctx context.Context, gateway *gatewayv1.Gateway, buckets []string) (ctrl.Result, error) {
+	_log := log.FromContext(ctx)
+
+	// if gateway status bucketRoutes is nil, init it
+	if gateway.Status.BucketRoutes == nil {
+		gateway.Status.BucketRoutes = make(map[string]*gatewayv1.GatewayRoute, 0)
+	}
+
+	// select bucket domain
+	for _, bucketName := range buckets {
+
+		// if bucket route is not exist, create it
+		if _, ok := gateway.Status.BucketRoutes[bucketName]; ok {
+			continue
+		}
+
+		// get bucket
+		bucket := ossv1.Bucket{}
+		err := r.Get(ctx, client.ObjectKey{Namespace: gateway.Namespace, Name: bucketName}, &bucket)
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+		// get user
+		user := ossv1.User{}
+		err = r.Get(ctx, client.ObjectKey{Namespace: gateway.Namespace, Name: bucket.Status.User}, &user)
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+		// get store
+		store := ossv1.Store{}
+		err = r.Get(ctx, client.ObjectKey{Namespace: gateway.Namespace, Name: user.Status.StoreName}, &store)
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+		// select bucket domain
+		bucketDomain, err := r.selectDomain(ctx, gatewayv1.BUCKET, store.Spec.Region)
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+		if bucketDomain == nil {
+			_log.Info("no bucket domain found")
+			continue
+		}
+
+		routeStatus := &gatewayv1.GatewayRoute{
+			DomainName:      bucketDomain.Name,
+			DomainNamespace: bucketDomain.Namespace,
+			Domain:          gateway.Spec.AppId + "-" + bucketName + "." + bucketDomain.Spec.Domain,
+		}
+
+		// create bucket route
+		bucketRoute := &gatewayv1.Route{
+			ObjectMeta: ctrl.ObjectMeta{
+				Name:      "bucket-" + bucketName,
+				Namespace: gateway.Spec.AppId,
+			},
+			Spec: gatewayv1.RouteSpec{
+				Domain:          routeStatus.Domain,
+				DomainName:      bucketDomain.Name,
+				DomainNamespace: bucketDomain.Namespace,
+				Backend: gatewayv1.Backend{
+					ServiceName: user.Status.Endpoint,
+					ServicePort: 0, // If set to 0, the port is not used
+				},
+				PassHost: bucketName + "." + user.Status.Endpoint,
+			},
+		}
+		if err := r.Create(ctx, bucketRoute); err != nil {
+			if apierrors.IsAlreadyExists(err) {
+				continue
+			}
+			return ctrl.Result{}, err
+		}
+
+		gateway.Status.BucketRoutes[bucketName] = routeStatus
+		// update gateway status
+		if err := r.Status().Update(ctx, gateway); err != nil {
+			return ctrl.Result{}, err
+		}
+	}
+
+	return ctrl.Result{}, nil
+}
+
+// deleteBucket delete bucket
+func (r *GatewayReconciler) deleteBuckets(ctx context.Context, gateway *gatewayv1.Gateway, buckets []string) (ctrl.Result, error) {
+	_ = log.FromContext(ctx)
+
+	// if buckets is nil, add all buckets
+	if buckets == nil {
+		buckets = make([]string, 0)
+		for bucketName := range gateway.Status.BucketRoutes {
+			buckets = append(buckets, bucketName)
+		}
+	}
+
+	// find deleted bucket, remote route and finalizer
+	for _, bucketName := range buckets {
+		// delete route
+		route := &gatewayv1.Route{}
+
+		// 删除名称为test的route
+		err := r.Get(ctx, client.ObjectKey{Namespace: gateway.Spec.AppId, Name: "bucket-" + bucketName}, route)
+		if err != nil {
+
+		}
+
+		if err := r.Get(ctx, client.ObjectKey{Namespace: gateway.Spec.AppId, Name: "bucket-" + bucketName}, route); err != nil {
+			if apierrors.IsNotFound(err) {
+				continue
+			}
+			return ctrl.Result{}, err
+		}
+
+		if err := r.Delete(ctx, route); err != nil {
+			if apierrors.IsNotFound(err) {
+				continue
+			}
+			return ctrl.Result{}, err
+		}
+
+		// delete bucket route
+		delete(gateway.Status.BucketRoutes, bucketName)
+		if err := r.Status().Update(ctx, gateway); err != nil {
+			return ctrl.Result{}, err
+		}
+	}
+
+	return ctrl.Result{}, nil
+}
+
+func (r *GatewayReconciler) selectDomain(ctx context.Context, backendType gatewayv1.BackendType, region string) (*gatewayv1.Domain, error) {
+	_ = log.FromContext(ctx)
+
+	// get all domains
+	var domains gatewayv1.DomainList
+	if err := r.List(ctx, &domains); err != nil {
+		return nil, err
+	}
+
+	// select domain
+	for _, domain := range domains.Items {
+		if domain.Spec.BackendType != backendType {
+			continue
+		}
+
+		if domain.Spec.Region != region {
+			continue
+		}
+		return &domain, nil
+	}
+	return nil, nil
 }
 
 // SetupWithManager sets up the controller with the Manager.
