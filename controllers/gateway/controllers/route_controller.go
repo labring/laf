@@ -20,7 +20,8 @@ import (
 	"context"
 	"github.com/labring/laf/controllers/gateway/apisix"
 	"k8s.io/apimachinery/pkg/types"
-	"laf/pkg/util"
+	"k8s.io/client-go/util/retry"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"strconv"
 	"time"
 
@@ -80,12 +81,10 @@ func (r *RouteReconciler) applyRoute(ctx context.Context, route *gatewayv1.Route
 	_log := log.FromContext(ctx)
 
 	// add finalizer if not present
-	if !util.ContainsString(route.ObjectMeta.Finalizers, routeFinalizer) {
-		route.ObjectMeta.Finalizers = append(route.ObjectMeta.Finalizers, routeFinalizer)
+	if controllerutil.AddFinalizer(route, routeFinalizer) {
 		if err := r.Update(ctx, route); err != nil {
 			return ctrl.Result{}, err
 		}
-		_log.Info("add finalizer to route")
 	}
 
 	// get route id
@@ -145,7 +144,7 @@ func (r *RouteReconciler) applyRoute(ctx context.Context, route *gatewayv1.Route
 	// update route status
 	if route.Status.Domain == "" {
 		route.Status.Domain = route.Spec.Domain
-		if err := r.Status().Update(ctx, route); err != nil {
+		if err := r.updateStatus(ctx, types.NamespacedName{Namespace: route.Namespace, Name: route.Name}, route.Status.DeepCopy()); err != nil {
 			return ctrl.Result{}, err
 		}
 	}
@@ -160,14 +159,16 @@ func (r *RouteReconciler) deleteRoute(ctx context.Context, route *gatewayv1.Rout
 	routeId := getRouteId(route)
 	err := cluster.Route.Delete(routeId)
 	if err != nil {
-		return ctrl.Result{RequeueAfter: time.Minute * 15}, err
+		return ctrl.Result{RequeueAfter: time.Minute * 1}, err
 	}
 
 	// remove the finalizer
-	route.ObjectMeta.Finalizers = util.RemoveString(route.ObjectMeta.Finalizers, routeFinalizer)
-	if err := r.Update(ctx, route); err != nil {
-		return ctrl.Result{}, err
+	if controllerutil.RemoveFinalizer(route, routeFinalizer) {
+		if err := r.Update(ctx, route); err != nil {
+			return ctrl.Result{}, err
+		}
 	}
+
 	_log.Info("route deleted: " + routeId)
 	return ctrl.Result{}, nil
 }
@@ -180,6 +181,23 @@ func (r *RouteReconciler) getGatewayCluster(ctx context.Context, route *gatewayv
 	}
 	cluster := apisix.NewCluster(domain.Spec.Cluster.Url, domain.Spec.Cluster.Key)
 	return cluster, nil
+}
+
+func (r *RouteReconciler) updateStatus(ctx context.Context, nn types.NamespacedName, status *gatewayv1.RouteStatus) error {
+	if err := retry.RetryOnConflict(retry.DefaultRetry, func() error {
+		original := &gatewayv1.Route{}
+		if err := r.Get(ctx, nn, original); err != nil {
+			return err
+		}
+		original.Status = *status
+		if err := r.Client.Status().Update(ctx, original); err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		return err
+	}
+	return nil
 }
 
 func getRouteId(route *gatewayv1.Route) string {
