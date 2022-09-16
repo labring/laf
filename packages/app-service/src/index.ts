@@ -15,7 +15,8 @@ import { generateUUID } from './support/utils'
 import { WebSocketAgent } from './support/ws'
 import { DatabaseAgent } from './db'
 import { SchedulerInstance } from './support/scheduler'
-
+// const xmlparser = require('express-xml-bodyparser')
+import * as xmlparser from 'express-xml-bodyparser'
 
 /**
  * Just for generating declaration type files for `@/cloud-sdk` which used in cloud function
@@ -32,6 +33,8 @@ app.use(express.urlencoded({
 app.use(express.raw({
   limit: Config.REQUEST_LIMIT_SIZE,
 }) as any)
+
+app.use(xmlparser());
 
 
 process.on('unhandledRejection', (reason, promise) => {
