@@ -1,4 +1,22 @@
-# [](https://github.com/labring/laf/compare/v0.8.9...v) (2022-09-13)
+# [](https://github.com/labring/laf/compare/v0.8.11...v) (2022-09-16)
+
+
+
+## [0.8.11](https://github.com/labring/laf/compare/v0.8.10...v0.8.11) (2022-09-16)
+
+
+### Features
+
+* **app:** add xml parser to req ([198027c](https://github.com/labring/laf/commit/198027c5e95515b435fb72d12985a4c9b7e62a94))
+
+
+
+## [0.8.10](https://github.com/labring/laf/compare/v0.8.9...v0.8.10) (2022-09-14)
+
+
+### Features
+
+* **runtime:** add request param to func context ([#290](https://github.com/labring/laf/issues/290)) ([c7865be](https://github.com/labring/laf/commit/c7865bed987fa83fef1d3680b0c560d3bd0c1126))
 
 
 
