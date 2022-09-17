@@ -19,9 +19,9 @@ package controllers
 import (
 	"context"
 	"errors"
-	databasev1 "github.com/labring/laf/controllers/database/api/v1"
-	"github.com/labring/laf/controllers/database/dbm"
 	"k8s.io/apimachinery/pkg/runtime"
+	v1 "laf/controllers/database/api/v1"
+	"laf/controllers/database/dbm"
 	"laf/pkg/util"
 	"net/url"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -50,12 +50,12 @@ type DatabaseReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.1/pkg/reconcile
 func (r *DatabaseReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	log := log.FromContext(ctx)
+	_log := log.FromContext(ctx)
 
-	log.Info("reconciling database")
+	_log.Info("reconciling database")
 
 	// get the database
-	var database databasev1.Database
+	var database v1.Database
 	if err := r.Get(ctx, req.NamespacedName, &database); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
@@ -69,8 +69,8 @@ func (r *DatabaseReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 }
 
 // apply the database
-func (r *DatabaseReconciler) apply(ctx context.Context, database *databasev1.Database) (ctrl.Result, error) {
-	log := log.FromContext(ctx)
+func (r *DatabaseReconciler) apply(ctx context.Context, database *v1.Database) (ctrl.Result, error) {
+	_log := log.FromContext(ctx)
 
 	// add the finalizer
 	if database.ObjectMeta.DeletionTimestamp.IsZero() {
@@ -79,7 +79,7 @@ func (r *DatabaseReconciler) apply(ctx context.Context, database *databasev1.Dat
 			if err := r.Update(ctx, database); err != nil {
 				return ctrl.Result{}, err
 			}
-			log.Info("added the finalizer")
+			_log.Info("added the finalizer")
 		}
 	}
 
@@ -89,7 +89,7 @@ func (r *DatabaseReconciler) apply(ctx context.Context, database *databasev1.Dat
 		if err := r.selectStore(ctx, database); err != nil {
 			return ctrl.Result{}, err
 		}
-		log.Info("selected a store for database")
+		_log.Info("selected a store for database")
 	}
 
 	// reconcile the connection uri
@@ -97,7 +97,7 @@ func (r *DatabaseReconciler) apply(ctx context.Context, database *databasev1.Dat
 		if err := r.createDatabase(ctx, database); err != nil {
 			return ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, err
 		}
-		log.Info("created database successfully")
+		_log.Info("created database successfully")
 	}
 
 	// TODO: reconcile the storage capacity
@@ -111,8 +111,8 @@ func (r *DatabaseReconciler) apply(ctx context.Context, database *databasev1.Dat
 }
 
 // delete the database
-func (r *DatabaseReconciler) delete(ctx context.Context, database *databasev1.Database) (ctrl.Result, error) {
-	log := log.FromContext(ctx)
+func (r *DatabaseReconciler) delete(ctx context.Context, database *v1.Database) (ctrl.Result, error) {
+	_log := log.FromContext(ctx)
 
 	// get the store
 	store, err := r.getDatabaseStore(ctx, database.Status.StoreNamespace, database.Status.StoreName)
@@ -133,7 +133,7 @@ func (r *DatabaseReconciler) delete(ctx context.Context, database *databasev1.Da
 		return ctrl.Result{}, err
 	}
 
-	log.Info("database user deleted", "name", database.Name)
+	_log.Info("database user deleted", "name", database.Name)
 
 	// remove the finalizer
 	database.ObjectMeta.Finalizers = util.RemoveString(database.ObjectMeta.Finalizers, "database.laf.dev")
@@ -141,13 +141,13 @@ func (r *DatabaseReconciler) delete(ctx context.Context, database *databasev1.Da
 		return ctrl.Result{}, err
 	}
 
-	log.Info("removed the finalizer")
+	_log.Info("removed the finalizer")
 	return ctrl.Result{}, nil
 }
 
 // createDatabase create database
-func (r *DatabaseReconciler) createDatabase(ctx context.Context, database *databasev1.Database) error {
-	log := log.FromContext(ctx)
+func (r *DatabaseReconciler) createDatabase(ctx context.Context, database *v1.Database) error {
+	_log := log.FromContext(ctx)
 
 	// get the store
 	store, err := r.getDatabaseStore(ctx, database.Status.StoreNamespace, database.Status.StoreName)
@@ -168,7 +168,7 @@ func (r *DatabaseReconciler) createDatabase(ctx context.Context, database *datab
 		return err
 	}
 
-	log.Info("database created", "name", database.Name)
+	_log.Info("database created", "name", database.Name)
 
 	// assemble the connection uri
 	u, err := url.Parse(store.Spec.ConnectionURI)
@@ -187,9 +187,9 @@ func (r *DatabaseReconciler) createDatabase(ctx context.Context, database *datab
 }
 
 // selectStore select the store which match the database
-func (r *DatabaseReconciler) selectStore(ctx context.Context, database *databasev1.Database) error {
+func (r *DatabaseReconciler) selectStore(ctx context.Context, database *v1.Database) error {
 	// get the store list
-	var storeList databasev1.StoreList
+	var storeList v1.StoreList
 	if err := r.List(ctx, &storeList); err != nil {
 		return err
 	}
@@ -198,7 +198,7 @@ func (r *DatabaseReconciler) selectStore(ctx context.Context, database *database
 	// - match the provider
 	// - have enough capacity
 	// - have the higher priority
-	var store databasev1.Store
+	var store v1.Store
 	for _, s := range storeList.Items {
 		// skip if the provider is not match
 		if s.Spec.Provider != database.Spec.Provider {
@@ -239,9 +239,9 @@ func (r *DatabaseReconciler) selectStore(ctx context.Context, database *database
 }
 
 // getDatabaseStore get the database store
-func (r *DatabaseReconciler) getDatabaseStore(ctx context.Context, storeNamespace string, storeName string) (*databasev1.Store, error) {
+func (r *DatabaseReconciler) getDatabaseStore(ctx context.Context, storeNamespace string, storeName string) (*v1.Store, error) {
 	// get the store
-	var store databasev1.Store
+	var store v1.Store
 	if err := r.Get(ctx, client.ObjectKey{Namespace: storeNamespace, Name: storeName}, &store); err != nil {
 		return nil, err
 	}
@@ -252,6 +252,6 @@ func (r *DatabaseReconciler) getDatabaseStore(ctx context.Context, storeNamespac
 // SetupWithManager sets up the controller with the Manager.
 func (r *DatabaseReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&databasev1.Database{}).
+		For(&v1.Database{}).
 		Complete(r)
 }

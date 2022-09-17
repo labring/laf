@@ -19,15 +19,13 @@ package controllers
 import (
 	"context"
 	applicationv1 "github.com/labring/laf/controllers/application/api/v1"
-	gonanoid "github.com/matoous/go-nanoid/v2"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"laf/pkg/common"
 	"laf/pkg/util"
-	"os"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
-	"strconv"
 )
 
 const creationFormFinalizer = "creationform.finalizers.laf.dev"
@@ -70,7 +68,7 @@ func (r *CreationFormReconciler) Reconcile(ctx context.Context, req ctrl.Request
 
 // apply the form
 func (r *CreationFormReconciler) apply(ctx context.Context, form *applicationv1.CreationForm) (ctrl.Result, error) {
-	log := log.FromContext(ctx)
+	_log := log.FromContext(ctx)
 
 	// add finalizer if not present
 	if !util.ContainsString(form.ObjectMeta.Finalizers, creationFormFinalizer) {
@@ -79,21 +77,22 @@ func (r *CreationFormReconciler) apply(ctx context.Context, form *applicationv1.
 			return ctrl.Result{}, err
 		}
 
-		log.Info("Added finalizer to form")
+		_log.Info("Added finalizer to form")
+		return ctrl.Result{}, nil
 	}
 
 	// TODO: validate the form spec: bundle, runtime
 
 	// reconcile the namespace
 	if form.Status.Namespace == "" {
-		appid, err := GenerateAppId()
+		appid, err := common.GenerateAppId()
 		if err != nil {
 			return ctrl.Result{}, err
 		}
 
 		// create the namespace
 		var namespace v1.Namespace
-		namespace.Name = GetAppNamespacePrefix() + appid
+		namespace.Name = common.GetApplicationNamespace(appid)
 		namespace.Labels = map[string]string{
 			"laf.dev/appid":          appid,
 			"laf.dev/namespace.type": "app",
@@ -103,7 +102,7 @@ func (r *CreationFormReconciler) apply(ctx context.Context, form *applicationv1.
 			return ctrl.Result{}, err
 		}
 
-		log.Info("Created namespace for app")
+		_log.Info("Created namespace for app")
 
 		form.Status.AppId = appid
 		form.Status.Namespace = namespace.Name
@@ -112,7 +111,7 @@ func (r *CreationFormReconciler) apply(ctx context.Context, form *applicationv1.
 			return ctrl.Result{}, err
 		}
 
-		log.Info("Updated form status: fill the namespace")
+		_log.Info("Updated form status: fill the namespace")
 		return ctrl.Result{}, nil
 	}
 
@@ -128,6 +127,8 @@ func (r *CreationFormReconciler) apply(ctx context.Context, form *applicationv1.
 		app.Annotations = map[string]string{
 			"laf.dev/name": form.Spec.DisplayName,
 		}
+
+		app.Spec.AppId = form.Status.AppId
 		app.Spec.State = applicationv1.ApplicationStateRunning
 		app.Spec.BundleName = form.Spec.BundleName
 		app.Spec.RuntimeName = form.Spec.RuntimeName
@@ -136,21 +137,21 @@ func (r *CreationFormReconciler) apply(ctx context.Context, form *applicationv1.
 			return ctrl.Result{}, err
 		}
 
-		log.Info("Created app")
+		_log.Info("Created app")
 
 		form.Status.Created = true
 		if err := r.Status().Update(ctx, form); err != nil {
 			return ctrl.Result{}, err
 		}
 
-		log.Info("Updated form status")
+		_log.Info("Updated form status")
 	} else {
 		// delete the form
 		if err := r.Delete(ctx, form); err != nil {
 			return ctrl.Result{}, err
 		}
 
-		log.Info("Deleted form")
+		_log.Info("Deleted form")
 	}
 
 	return ctrl.Result{}, nil
@@ -175,30 +176,4 @@ func (r *CreationFormReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&applicationv1.CreationForm{}).
 		Complete(r)
-}
-
-// GetAppNamespacePrefix returns the app namespace prefix
-func GetAppNamespacePrefix() string {
-	prefix := ""
-	if prefixStr := os.Getenv("APP_NAMESPACE_PREFIX"); prefixStr != "" {
-		prefix = prefixStr
-	}
-	return prefix
-}
-
-// GenerateAppId generates app id
-func GenerateAppId() (string, error) {
-	const alphabet = "23456789abcdefghijklmnopqrstuvwxyz"
-	size := 6
-
-	// get size from env
-	if sizeStr := os.Getenv("APPID_LENGTH"); sizeStr != "" {
-		int64, err := strconv.ParseInt(sizeStr, 10, 64)
-		if err == nil {
-			size = int(int64)
-		}
-	}
-
-	appid, err := gonanoid.Generate(alphabet, size)
-	return appid, err
 }

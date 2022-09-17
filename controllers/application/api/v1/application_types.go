@@ -17,8 +17,8 @@ limitations under the License.
 package v1
 
 import (
-	v1 "github.com/labring/laf/controllers/runtime/api/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	runtimev1 "laf/controllers/runtime/api/v1"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -41,6 +41,12 @@ type ApplicationSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
+	// AppId
+	//+kubebuilder:validation:MinLength=3
+	//+kubebuilder:validation:MaxLength=24
+	//+kubebuilder:validation:Required
+	AppId string `json:"appid"`
+
 	// State of the application
 	//+kubebuilder:validation:Enum=Running;Stopped;
 	//+kubebuilder:validation:Required
@@ -61,20 +67,14 @@ type ApplicationStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// AppId
-	//+kubebuilder:validation:MinLength=3
-	//+kubebuilder:validation:MaxLength=24
-	//+kubebuilder:validation:Required
-	AppId string `json:"appid"`
+	// Bundle of the application
+	Bundle Bundle `json:"bundle,omitempty"`
+
+	// Runtime of the application
+	Runtime runtimev1.Runtime `json:"runtime,omitempty"`
 
 	// State of the application
 	Phase ApplicationState `json:"state,omitempty"`
-
-	// Bundle of the application
-	Bundle BundleSpec `json:"bundle,omitempty"`
-
-	// Runtime of the application
-	Runtime v1.RuntimeSpec `json:"runtime,omitempty"`
 
 	// Conditions:
 	// - type: DatabaseCreated

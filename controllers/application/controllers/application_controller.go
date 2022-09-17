@@ -18,13 +18,16 @@ package controllers
 
 import (
 	"context"
+	runtimev1 "laf/controllers/runtime/api/v1"
+	"laf/pkg/common"
+	"laf/pkg/util"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	applicationv1 "github.com/labring/laf/controllers/application/api/v1"
+	applicationv1 "laf/controllers/application/api/v1"
 )
 
 const ApplicationFinalizer = "application.finalizers.laf.dev"
@@ -51,7 +54,124 @@ type ApplicationReconciler struct {
 func (r *ApplicationReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 
-	// TODO(user): your logic here
+	// get the application
+	application := &applicationv1.Application{}
+	err := r.Get(ctx, req.NamespacedName, application)
+	if err != nil {
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	// deal with the deletion
+	if !application.ObjectMeta.DeletionTimestamp.IsZero() {
+		return r.delete(ctx, application)
+	}
+
+	return r.apply(ctx, application)
+}
+
+// apply is called when the application is created or updated
+func (r *ApplicationReconciler) apply(ctx context.Context, application *applicationv1.Application) (ctrl.Result, error) {
+	_log := log.FromContext(ctx)
+
+	// check if the finalizer is present
+	if !util.ContainsString(application.ObjectMeta.Finalizers, ApplicationFinalizer) {
+		application.ObjectMeta.Finalizers = append(application.ObjectMeta.Finalizers, ApplicationFinalizer)
+		err := r.Update(ctx, application)
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+
+		_log.Info("finalizer added")
+	}
+
+	// reconcile runtime
+	if application.Status.Runtime.Name != application.Spec.RuntimeName {
+		err := r.reconcileRuntime(ctx, application)
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+		_log.Info("runtime reconciled")
+		return ctrl.Result{}, nil
+	}
+
+	// reconcile bundle
+	if application.Status.Bundle.Name != application.Spec.BundleName {
+		if err := r.reconcileBundle(ctx, application); err != nil {
+			return ctrl.Result{}, err
+		}
+		_log.Info("bundle reconciled")
+		return ctrl.Result{}, nil
+	}
+
+	// reconcile phase of application
+	if application.Status.Phase != application.Spec.State {
+		if err := r.reconcilePhase(ctx, application); err != nil {
+			return ctrl.Result{}, err
+		}
+		_log.Info("phase reconciled")
+		return ctrl.Result{}, nil
+	}
+
+	return ctrl.Result{}, nil
+}
+
+// reconcilePhase reconciles the phase of the application
+func (r *ApplicationReconciler) reconcilePhase(ctx context.Context, application *applicationv1.Application) error {
+	// TODO
+
+	return nil
+}
+
+// reconcileRuntime reconciles the runtime of the application
+func (r *ApplicationReconciler) reconcileRuntime(ctx context.Context, application *applicationv1.Application) error {
+	// get runtime by name
+	rt := &runtimev1.Runtime{}
+	err := r.Get(ctx, client.ObjectKey{
+		Namespace: common.GetSystemNamespace(),
+		Name:      application.Spec.RuntimeName,
+	}, rt)
+	if err != nil {
+		return err
+	}
+
+	// update the status
+	application.Status.Runtime = *rt
+	err = r.Status().Update(ctx, application)
+	return err
+}
+
+// reconcileBundle reconciles the bundle of the application
+func (r *ApplicationReconciler) reconcileBundle(ctx context.Context, application *applicationv1.Application) error {
+	// get bundle by name
+	bundle := &applicationv1.Bundle{}
+	err := r.Get(ctx, client.ObjectKey{
+		Namespace: common.GetSystemNamespace(),
+		Name:      application.Spec.BundleName,
+	}, bundle)
+	if err != nil {
+		return err
+	}
+
+	// update the status
+	application.Status.Bundle = *bundle
+	err = r.Status().Update(ctx, application)
+	return err
+}
+
+// delete is called when the application is deleted
+func (r *ApplicationReconciler) delete(ctx context.Context, application *applicationv1.Application) (ctrl.Result, error) {
+
+	// TODO: delete the application
+	if true {
+		return ctrl.Result{}, nil
+	}
+
+	// remove the finalizer
+	application.ObjectMeta.Finalizers = util.RemoveString(application.ObjectMeta.Finalizers, ApplicationFinalizer)
+	err := r.Update(ctx, application)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
 
 	return ctrl.Result{}, nil
 }

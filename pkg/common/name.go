@@ -1,4 +1,4 @@
-package controllers
+package common
 
 import (
 	gonanoid "github.com/matoous/go-nanoid/v2"
@@ -39,5 +39,3 @@ func GenerateAppId() (string, error) {
 	appid, err := gonanoid.Generate(alphabet, size)
 	return appid, err
 }
-
-
