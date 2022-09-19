@@ -146,14 +146,10 @@ laf/
 Now - Development and testing run in parallel. 
 
 - 先实现本地测试，后续再考虑 CI，先使用本地 kubernetes 集群，后续再考虑使用云服务器
-- 先实现已实现的 `Module Tests`，后续再考虑 `Integration Testing`
+- 先编写已实现的 `Module Tests`，后续再考虑 `Integration Testing`
 - 先实现 common tests api，以便 Module 作者开始编写对应 Module Tests
 
 
 # Finally
 
 > Better test better taste.
-
-
-## References
-- None
