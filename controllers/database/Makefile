@@ -1,6 +1,6 @@
 
 # Image URL to use all building/pushing image targets
-IMG ?= controller:latest
+IMG ?= database-controller:latest
 # ENVTEST_K8S_VERSION refers to the version of kubebuilder assets to be downloaded by envtest binary.
 ENVTEST_K8S_VERSION = 1.24.1
 
@@ -63,7 +63,9 @@ test: manifests generate fmt vet envtest ## Run tests.
 
 .PHONY: build
 build: generate fmt vet ## Build manager binary.
-	go build -o bin/manager main.go
+	#go build -o bin/manager main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/manager-amd64 main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -a -o bin/manager-arm64 main.go
 
 .PHONY: run
 run: manifests generate fmt vet ## Run a controller from your host.

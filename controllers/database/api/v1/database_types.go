@@ -34,6 +34,10 @@ type DatabaseSpec struct {
 	//+kubebuilder:validation:Required
 	Provider string `json:"provider"`
 
+	// Region of the database.
+	//+kubebuilder:validation:Required
+	Region string `json:"region"`
+
 	// Capacity desired.
 	//+kubebuilder:validation:Required
 	Capacity DatabaseCapacity `json:"capacity"`

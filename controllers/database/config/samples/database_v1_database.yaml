@@ -7,6 +7,7 @@ metadata:
     appid: appid-1
 spec:
   provider: mongodb
+  region: default
   username: appid-1
   password: password123password123
   capacity:

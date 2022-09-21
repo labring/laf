@@ -18,16 +18,16 @@ package controllers
 
 import (
 	"context"
-	runtimev1 "laf/controllers/runtime/api/v1"
-	"laf/pkg/common"
-	"laf/pkg/util"
+	runtimev1 "github.com/labring/laf/controllers/runtime/api/v1"
+	"github.com/labring/laf/pkg/common"
+	"github.com/labring/laf/pkg/util"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	applicationv1 "laf/controllers/application/api/v1"
+	applicationv1 "github.com/labring/laf/controllers/application/api/v1"
 )
 
 const ApplicationFinalizer = "application.finalizers.laf.dev"

@@ -19,7 +19,7 @@ package controllers
 import (
 	"context"
 	"github.com/labring/laf/controllers/oss/driver"
-	"laf/pkg/util"
+	"github.com/labring/laf/pkg/util"
 	"time"
 
 	"k8s.io/apimachinery/pkg/runtime"

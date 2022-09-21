@@ -15,8 +15,8 @@ limitations under the License.
 */
 
 // Package v1 contains API Schema definitions for the gateway v1 API group
-//+kubebuilder:object:generate=true
-//+groupName=gateway.laf.dev
+// +kubebuilder:object:generate=true
+// +groupName=gateway.laf.dev
 package v1
 
 import (

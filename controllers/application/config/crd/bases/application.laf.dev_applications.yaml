@@ -35,6 +35,11 @@ spec:
           spec:
             description: ApplicationSpec defines the desired state of Application
             properties:
+              appid:
+                description: AppId
+                maxLength: 24
+                minLength: 3
+                type: string
               bundleName:
                 description: Bundle Name for the application
                 type: string
@@ -49,104 +54,121 @@ spec:
                 - Stopped
                 type: string
             required:
+            - appid
             - bundleName
             - runtimeName
             type: object
           status:
             description: ApplicationStatus defines the observed state of Application
             properties:
-              appid:
-                description: AppId
-                maxLength: 24
-                minLength: 3
-                type: string
               bundle:
                 description: Bundle of the application
                 properties:
-                  databaseCapacity:
-                    anyOf:
-                    - type: integer
-                    - type: string
-                    description: Database capacity for the bundle
-                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                    x-kubernetes-int-or-string: true
-                  displayName:
-                    description: DisplayName for the bundle
+                  apiVersion:
+                    description: 'APIVersion defines the versioned schema of this
+                      representation of an object. Servers should convert recognized
+                      schemas to the latest internal value, and may reject unrecognized
+                      values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
                     type: string
-                  limitCPU:
-                    anyOf:
-                    - type: integer
-                    - type: string
-                    description: Limit CPU for the bundle
-                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                    x-kubernetes-int-or-string: true
-                  limitMemory:
-                    anyOf:
-                    - type: integer
-                    - type: string
-                    description: Limit Memory for the bundle
-                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                    x-kubernetes-int-or-string: true
-                  networkBandwidthInbound:
-                    anyOf:
-                    - type: integer
-                    - type: string
-                    description: Network Bandwidth Inbound for the bundle
-                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                    x-kubernetes-int-or-string: true
-                  networkBandwidthOutbound:
-                    anyOf:
-                    - type: integer
-                    - type: string
-                    description: Network Bandwidth Outbound for the bundle
-                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                    x-kubernetes-int-or-string: true
-                  networkTrafficOutbound:
-                    anyOf:
-                    - type: integer
-                    - type: string
-                    description: Network Traffic Outbound for the bundle
-                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                    x-kubernetes-int-or-string: true
-                  priority:
-                    description: Priority for the bundle. The default value is 0,
-                      which means that the bundle is not currently available for creating
-                      new applications.
-                    format: int32
-                    maximum: 1000
-                    minimum: 0
-                    type: integer
-                  requestCPU:
-                    anyOf:
-                    - type: integer
-                    - type: string
-                    description: Request CPU for the bundle
-                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                    x-kubernetes-int-or-string: true
-                  requestMemory:
-                    anyOf:
-                    - type: integer
-                    - type: string
-                    description: Request Memory for the bundle
-                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                    x-kubernetes-int-or-string: true
-                  storageCapacity:
-                    anyOf:
-                    - type: integer
-                    - type: string
-                    description: Storage capacity for the bundle
-                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                    x-kubernetes-int-or-string: true
-                required:
-                - databaseCapacity
-                - displayName
-                - limitCPU
-                - limitMemory
-                - networkTrafficOutbound
-                - priority
-                - requestCPU
-                - requestMemory
-                - storageCapacity
+                  kind:
+                    description: 'Kind is a string value representing the REST resource
+                      this object represents. Servers may infer this from the endpoint
+                      the client submits requests to. Cannot be updated. In CamelCase.
+                      More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                    type: string
+                  metadata:
+                    type: object
+                  spec:
+                    description: BundleSpec defines the desired state of Bundle
+                    properties:
+                      databaseCapacity:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        description: Database capacity for the bundle
+                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                        x-kubernetes-int-or-string: true
+                      displayName:
+                        description: DisplayName for the bundle
+                        type: string
+                      limitCPU:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        description: Limit CPU for the bundle
+                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                        x-kubernetes-int-or-string: true
+                      limitMemory:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        description: Limit Memory for the bundle
+                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                        x-kubernetes-int-or-string: true
+                      networkBandwidthInbound:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        description: Network Bandwidth Inbound for the bundle
+                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                        x-kubernetes-int-or-string: true
+                      networkBandwidthOutbound:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        description: Network Bandwidth Outbound for the bundle
+                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                        x-kubernetes-int-or-string: true
+                      networkTrafficOutbound:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        description: Network Traffic Outbound for the bundle
+                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                        x-kubernetes-int-or-string: true
+                      priority:
+                        description: Priority for the bundle. The default value is
+                          0, which means that the bundle is not currently available
+                          for creating new applications.
+                        format: int32
+                        maximum: 1000
+                        minimum: 0
+                        type: integer
+                      requestCPU:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        description: Request CPU for the bundle
+                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                        x-kubernetes-int-or-string: true
+                      requestMemory:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        description: Request Memory for the bundle
+                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                        x-kubernetes-int-or-string: true
+                      storageCapacity:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        description: Storage capacity for the bundle
+                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                        x-kubernetes-int-or-string: true
+                    required:
+                    - databaseCapacity
+                    - displayName
+                    - limitCPU
+                    - limitMemory
+                    - networkTrafficOutbound
+                    - priority
+                    - requestCPU
+                    - requestMemory
+                    - storageCapacity
+                    type: object
+                  status:
+                    description: BundleStatus defines the observed state of Bundle
+                    type: object
                 type: object
               conditions:
                 description: 'Conditions: - type: DatabaseCreated status: True | False
@@ -160,8 +182,8 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    type FooStatus struct{ // Represents the observations of a foo's
-                    current state. // Known .status.conditions.type are: \"Available\",
+                    \n type FooStatus struct{ // Represents the observations of a
+                    foo's current state. // Known .status.conditions.type are: \"Available\",
                     \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
                     // +listType=map // +listMapKey=type Conditions []metav1.Condition
                     `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
@@ -226,63 +248,86 @@ spec:
               runtime:
                 description: Runtime of the application
                 properties:
-                  deprecated:
-                    description: Deprecated
-                    type: boolean
-                  image:
-                    description: Images of the runtime
-                    properties:
-                      init:
-                        description: Init image
-                        type: string
-                      main:
-                        description: Main image
-                        type: string
-                      sidecar:
-                        description: Sidecar image
-                        type: string
-                    required:
-                    - main
-                    type: object
-                  type:
-                    description: Type of the runtime. eg. node:laf, node:tcb, go:laf,
-                      python:laf, php:laf,  etc.
+                  apiVersion:
+                    description: 'APIVersion defines the versioned schema of this
+                      representation of an object. Servers should convert recognized
+                      schemas to the latest internal value, and may reject unrecognized
+                      values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
                     type: string
-                  versions:
-                    description: Version of the runtime
-                    properties:
-                      autoUpgradeFrom:
-                        description: Versions that should auto upgrade from
-                        items:
-                          type: string
-                        type: array
-                      breakBefore:
-                        description: Version that is breaking from
-                        type: string
-                      mustUpgradeFrom:
-                        description: Versions that must upgrade from
-                        items:
-                          type: string
-                        type: array
-                      upgradeFrom:
-                        description: Versions that suggested to upgrade from
-                        items:
-                          type: string
-                        type: array
-                      version:
-                        description: Version is the version of the runtime
-                        type: string
+                  kind:
+                    description: 'Kind is a string value representing the REST resource
+                      this object represents. Servers may infer this from the endpoint
+                      the client submits requests to. Cannot be updated. In CamelCase.
+                      More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                    type: string
+                  metadata:
                     type: object
-                required:
-                - image
-                - type
-                - versions
+                  spec:
+                    description: RuntimeSpec defines the desired state of Runtime
+                    properties:
+                      deprecated:
+                        description: Deprecated
+                        type: boolean
+                      image:
+                        description: Images of the runtime
+                        properties:
+                          init:
+                            description: Init image
+                            type: string
+                          main:
+                            description: Main image
+                            type: string
+                          sidecar:
+                            description: Sidecar image
+                            type: string
+                        required:
+                        - main
+                        type: object
+                      type:
+                        description: Type of the runtime. eg. node:laf, node:tcb,
+                          go:laf, python:laf, php:laf,  etc.
+                        type: string
+                      versions:
+                        description: Version of the runtime
+                        properties:
+                          autoUpgradeFrom:
+                            description: Versions that should auto upgrade from
+                            items:
+                              type: string
+                            type: array
+                          breakBefore:
+                            description: Version that is breaking from
+                            type: string
+                          mustUpgradeFrom:
+                            description: Versions that must upgrade from
+                            items:
+                              type: string
+                            type: array
+                          upgradeFrom:
+                            description: Versions that suggested to upgrade from
+                            items:
+                              type: string
+                            type: array
+                          version:
+                            description: Version is the version of the runtime
+                            type: string
+                        type: object
+                    required:
+                    - image
+                    - type
+                    - versions
+                    type: object
+                  status:
+                    description: RuntimeStatus defines the observed state of Runtime
+                    properties:
+                      appCount:
+                        description: App count of the runtime
+                        type: integer
+                    type: object
                 type: object
               state:
                 description: State of the application
                 type: string
-            required:
-            - appid
             type: object
         type: object
     served: true

@@ -19,10 +19,10 @@ package controllers
 import (
 	"context"
 	"errors"
+	v1 "github.com/labring/laf/controllers/database/api/v1"
+	"github.com/labring/laf/controllers/database/dbm"
+	"github.com/labring/laf/pkg/util"
 	"k8s.io/apimachinery/pkg/runtime"
-	v1 "laf/controllers/database/api/v1"
-	"laf/controllers/database/dbm"
-	"laf/pkg/util"
 	"net/url"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -200,6 +200,11 @@ func (r *DatabaseReconciler) selectStore(ctx context.Context, database *v1.Datab
 	// - have the higher priority
 	var store v1.Store
 	for _, s := range storeList.Items {
+		// skip if the region is not match
+		if s.Spec.Region != database.Spec.Region {
+			continue
+		}
+
 		// skip if the provider is not match
 		if s.Spec.Provider != database.Spec.Provider {
 			continue

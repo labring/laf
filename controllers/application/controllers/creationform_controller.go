@@ -19,10 +19,10 @@ package controllers
 import (
 	"context"
 	applicationv1 "github.com/labring/laf/controllers/application/api/v1"
+	"github.com/labring/laf/pkg/common"
+	"github.com/labring/laf/pkg/util"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"laf/pkg/common"
-	"laf/pkg/util"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
