@@ -1,10 +1,15 @@
 package api
 
 import (
+	"context"
+	v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
 	"os"
+	"os/exec"
 	"path/filepath"
 	//
 	// Uncomment to load all auth plugins
@@ -16,17 +21,10 @@ import (
 	// _ "k8s.io/client-go/plugin/pkg/client/auth/oidc"
 )
 
-// GetCurrentKubernetesClient returns a kubernetes client
-func GetCurrentKubernetesClient() *kubernetes.Clientset {
+// GetDefaultKubernetesClient returns a kubernetes client
+func GetDefaultKubernetesClient() *kubernetes.Clientset {
+	kubeconfig := GetDefaultKubeConfigPath()
 
-	// get the value of the environment variable KUBE_CONFIG_FILE
-	kubeconfig := os.Getenv("KUBE_CONFIG_FILE")
-	if kubeconfig == "" {
-		// if KUBECONFIG is not set, use the default location
-		kubeconfig = filepath.Join(homedir.HomeDir(), ".kube", "config")
-	}
-
-	// use the current context in kubeconfig
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 	if err != nil {
 		panic(err.Error())
@@ -37,5 +35,86 @@ func GetCurrentKubernetesClient() *kubernetes.Clientset {
 	if err != nil {
 		panic(err.Error())
 	}
+
 	return client
+}
+
+func GetDefaultKubeConfigPath() string {
+	// get the value of the environment variable KUBE_CONFIG_FILE
+	kubeconfig := os.Getenv("KUBE_CONFIG_FILE")
+	if kubeconfig == "" {
+		// if KUBECONFIG is not set, use the default location
+		kubeconfig = filepath.Join(homedir.HomeDir(), ".kube", "config")
+	}
+
+	return kubeconfig
+}
+
+func GetDefaultDynamicClient() dynamic.Interface {
+	kubeconfig := GetDefaultKubeConfigPath()
+
+	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	// create the client
+	client, err := dynamic.NewForConfig(config)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return client
+}
+
+func GetNodeAddress(client *kubernetes.Clientset) string {
+	nodes, err := client.CoreV1().Nodes().List(context.TODO(), metav1.ListOptions{})
+	if err != nil {
+		panic(err.Error())
+	}
+	return nodes.Items[0].Status.Addresses[0].Address
+}
+
+func ExecCommand(command string) (string, error) {
+	cmd := exec.Command("sh", "-c", command)
+	out, err := cmd.Output()
+	if err != nil {
+		return string(out), err
+	}
+	return string(out), nil
+}
+
+func KubeApply(yaml string) (string, error) {
+	cmd := `kubectl apply -f - <<EOF` + yaml + `EOF`
+	out, err := ExecCommand(cmd)
+	if err != nil {
+		return out, err
+	}
+
+	return out, nil
+}
+
+func KubeDelete(yaml string) (string, error) {
+	cmd := `kubectl delete -f - <<EOF` + yaml + `EOF`
+	out, err := ExecCommand(cmd)
+	if err != nil {
+		return out, err
+	}
+
+	return out, nil
+}
+
+func CreateNamespace(client *kubernetes.Clientset, name string) *v1.Namespace {
+	ns := &v1.Namespace{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: name,
+		},
+	}
+
+	result, err := client.CoreV1().Namespaces().Create(context.TODO(), ns, metav1.CreateOptions{})
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return result
 }
