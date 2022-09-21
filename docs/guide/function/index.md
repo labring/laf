@@ -77,16 +77,16 @@ console.log(ret); // hello world!
 
 `ctx` 具有下面的一些内容：
 
-| 属性            | 介绍                                                         |
-| --------------- | ------------------------------------------------------------ |
-| `ctx.requestId` | 当前请求的唯一 ID                                            |
-| `ctx.method`    | 当前请求的方法，如`GET`、`POST`                              |
-| `ctx.headers`   | 所有请求的 headers                                           |
-| `ctx.auth`      | 使用 Http Bearer Token 认证时，解析出的 token 值             |
-| `ctx.query`     | 当前请求的 query 参数                                        |
-| `ctx.body`      | 当前请求的 body 参数                                         |
-| `ctx.response`  | HTTP 响应，和`express`的`Response`实例保持一致               |
-| `ctx.socket`    | [WebSocket](https://developer.mozilla.org/zh-CN/docs/Web/API/WebSocket) 实例 |
+| 属性            | 介绍                                                                                |
+| --------------- | ----------------------------------------------------------------------------------- |
+| `ctx.requestId` | 当前请求的唯一 ID                                                                   |
+| `ctx.method`    | 当前请求的方法，如`GET`、`POST`                                                     |
+| `ctx.headers`   | 所有请求的 headers                                                                  |
+| `ctx.auth`      | 使用 Http Bearer Token 认证时，解析出的 token 值                                    |
+| `ctx.query`     | 当前请求的 query 参数                                                               |
+| `ctx.body`      | 当前请求的 body 参数                                                                |
+| `ctx.response`  | HTTP 响应，和`express`的`Response`实例保持一致                                      |
+| `ctx.socket`    | [WebSocket](https://developer.mozilla.org/zh-CN/docs/Web/API/WebSocket) 实例        |
 | `ctx.files`     | 上传的文件 ([File](https://developer.mozilla.org/zh-CN/docs/Web/API/File) 对象数组) |
 
 下面的例子可以读取用户传递的 Query 参数`username`：
