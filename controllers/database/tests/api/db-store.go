@@ -1,7 +1,11 @@
 package api
 
 import (
-	"laf/pkg/common"
+	"context"
+	databasev1 "github.com/labring/laf/controllers/database/api/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"laf/tests/api"
 	"strings"
 )
@@ -16,7 +20,7 @@ metadata:
 spec:
   provider: mongodb
   region: ${region}
-  connectionURI: mongodb://root:password123@mongo.default:27017/?authSource=admin
+  connectionURI: mongodb://root:password123@${hostname}/?authSource=admin&directConnection=true
   capacity:
     userCount: 1000
     storage: 100Gi
@@ -24,23 +28,44 @@ spec:
     collectionCount: 10000
 `
 
-func CreateDatabaseStore(name string, region string) {
-	yaml_str := strings.ReplaceAll(storeYaml, "${namespace}", common.GetSystemNamespace())
-	yaml_str = strings.ReplaceAll(yaml_str, "${region}", region)
-	yaml_str = strings.ReplaceAll(yaml_str, "${name}", name)
-	api.EnsureSystemNamespace()
-	_, err := api.KubeApply(yaml_str)
+func CreateDatabaseStore(namespace string, name string, region string, hostname string) {
+	yamlStr := strings.ReplaceAll(storeYaml, "${namespace}", namespace)
+	yamlStr = strings.ReplaceAll(yamlStr, "${region}", region)
+	yamlStr = strings.ReplaceAll(yamlStr, "${name}", name)
+	yamlStr = strings.ReplaceAll(yamlStr, "${hostname}", hostname)
+	_, err := api.KubeApply(yamlStr)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func DeleteDatabaseStore(name string, region string) {
-	yaml_str := strings.ReplaceAll(storeYaml, "${namespace}", common.GetSystemNamespace())
-	yaml_str = strings.ReplaceAll(yaml_str, "${region}", region)
-	yaml_str = strings.ReplaceAll(yaml_str, "${name}", name)
-	_, err := api.KubeDelete(yaml_str)
+func DeleteDatabaseStore(namespace string, name string, region string) {
+	yamlStr := strings.ReplaceAll(storeYaml, "${namespace}", namespace)
+	yamlStr = strings.ReplaceAll(yamlStr, "${region}", region)
+	yamlStr = strings.ReplaceAll(yamlStr, "${name}", name)
+	_, err := api.KubeDelete(yamlStr)
 	if err != nil {
 		panic(err)
 	}
+}
+
+func GetDatabaseStore(namespace string, name string) (*databasev1.Store, error) {
+	client := api.GetDefaultDynamicClient()
+	gvr := schema.GroupVersionResource{
+		Group:    "database.laf.dev",
+		Version:  "v1",
+		Resource: "stores",
+	}
+	store, err := client.Resource(gvr).Namespace(namespace).Get(context.TODO(), name, metav1.GetOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	var storeObj databasev1.Store
+	err = runtime.DefaultUnstructuredConverter.FromUnstructured(store.Object, &storeObj)
+	if err != nil {
+		return nil, err
+	}
+
+	return &storeObj, nil
 }

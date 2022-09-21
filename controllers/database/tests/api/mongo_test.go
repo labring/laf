@@ -1,13 +1,17 @@
 package api
 
-import "testing"
+import (
+	"laf/tests/api"
+	"testing"
+)
 
 func TestInstallMongoDb(t *testing.T) {
 	t.Run("install mongodb should be ok", func(t *testing.T) {
-		InstallMongoDb()
+		InstallMongoDb("testing-db-install-mongodb")
 	})
 
 	t.Cleanup(func() {
-		UninstallMongoDb()
+		UninstallMongoDb("testing-db-install-mongodb")
+		api.DeleteNamespace("testing-db-install-mongodb")
 	})
 }

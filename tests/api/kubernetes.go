@@ -67,12 +67,34 @@ func GetDefaultDynamicClient() dynamic.Interface {
 	return client
 }
 
-func GetNodeAddress(client *kubernetes.Clientset) string {
+func GetNodeAddress() string {
+	// get the address from env variable first: NODE_ADDRESS
+	nodeAddress := os.Getenv("NODE_ADDRESS")
+	if nodeAddress != "" {
+		return nodeAddress
+	}
+
+	client := GetDefaultKubernetesClient()
 	nodes, err := client.CoreV1().Nodes().List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		panic(err.Error())
 	}
 	return nodes.Items[0].Status.Addresses[0].Address
+}
+
+func CreateNamespace(client *kubernetes.Clientset, name string) *v1.Namespace {
+	ns := &v1.Namespace{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: name,
+		},
+	}
+
+	result, err := client.CoreV1().Namespaces().Create(context.TODO(), ns, metav1.CreateOptions{})
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return result
 }
 
 func ExecCommand(command string) (string, error) {
@@ -102,19 +124,4 @@ func KubeDelete(yaml string) (string, error) {
 	}
 
 	return out, nil
-}
-
-func CreateNamespace(client *kubernetes.Clientset, name string) *v1.Namespace {
-	ns := &v1.Namespace{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: name,
-		},
-	}
-
-	result, err := client.CoreV1().Namespaces().Create(context.TODO(), ns, metav1.CreateOptions{})
-	if err != nil {
-		panic(err.Error())
-	}
-
-	return result
 }

@@ -55,15 +55,19 @@ spec:
                 description: Provider name of the database. The controller will create
                   the corresponding storage resources based on this provider.
                 type: string
+              region:
+                description: Region of the database.
+                type: string
               username:
                 description: Username of the database.
-                maxLength: 16
+                maxLength: 32
                 minLength: 6
                 type: string
             required:
             - capacity
             - password
             - provider
+            - region
             - username
             type: object
           status:

@@ -1,23 +1,28 @@
 package api
 
 import (
+	"github.com/opentracing/opentracing-go/log"
 	"laf/tests/api"
+	"strings"
 )
 
-var deploy_yaml = `
+const deployYaml = `
 ---
 kind: Service
 apiVersion: v1
 metadata:
   name: mongo
+  namespace: ${namespace}
 spec:
   # clusterIP: None
   selector:
     app: mongo
-  type: ClusterIP
+  type: NodePort
   ports:
     - port: 27017
       targetPort: 27017
+      nodePort: 30017
+
 
 ### This mongodb ONLY work for demo purpose, you should config your own volume for production use!
 ---
@@ -25,6 +30,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: mongo
+  namespace: ${namespace}
   labels:
     app: mongo
 spec:
@@ -58,23 +64,27 @@ spec:
       restartPolicy: Always
 `
 
-func InstallMongoDb() {
-	out, err := api.KubeApply(deploy_yaml)
+func InstallMongoDb(namespace string) {
+	api.EnsureNamespace(namespace)
+
+	yamlStr := strings.ReplaceAll(deployYaml, "${namespace}", namespace)
+	_, err := api.KubeApply(yamlStr)
 	if err != nil {
+		log.Error(err)
 		panic(err)
 	}
-	println(out)
 
-	_, err = api.ExecCommand("kubectl wait --for=condition=ready pod -l app=mongo --timeout=300s")
+	_, err = api.ExecCommand("kubectl wait --for=condition=ready pod -l app=mongo --timeout=300s -n " + namespace)
 	if err != nil {
+		log.Error(err)
 		panic(err)
 	}
 }
 
-func UninstallMongoDb() {
-	out, err := api.KubeDelete(deploy_yaml)
+func UninstallMongoDb(namespace string) {
+	yamlStr := strings.ReplaceAll(deployYaml, "${namespace}", namespace)
+	_, err := api.KubeDelete(yamlStr)
 	if err != nil {
 		panic(err)
 	}
-	println(out)
 }
