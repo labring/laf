@@ -77,16 +77,16 @@ console.log(ret); // hello world!
 
 `ctx` 具有下面的一些内容：
 
-| 属性            | 介绍                                                                                |
-| --------------- | ----------------------------------------------------------------------------------- |
-| `ctx.requestId` | 当前请求的唯一 ID                                                                   |
-| `ctx.method`    | 当前请求的方法，如`GET`、`POST`                                                     |
-| `ctx.headers`   | 所有请求的 headers                                                                  |
-| `ctx.auth`      | 使用 Http Bearer Token 认证时，解析出的 token 值                                    |
-| `ctx.query`     | 当前请求的 query 参数                                                               |
-| `ctx.body`      | 当前请求的 body 参数                                                                |
-| `ctx.response`  | HTTP 响应，和`express`的`Response`实例保持一致                                      |
-| `ctx.socket`    | [WebSocket](https://developer.mozilla.org/zh-CN/docs/Web/API/WebSocket) 实例        |
+| 属性            | 介绍                                                         |
+| --------------- | ------------------------------------------------------------ |
+| `ctx.requestId` | 当前请求的唯一 ID                                            |
+| `ctx.method`    | 当前请求的方法，如`GET`、`POST`                              |
+| `ctx.headers`   | 所有请求的 headers                                           |
+| `ctx.auth`      | 使用 Http Bearer Token 认证时，解析出的 token 值             |
+| `ctx.query`     | 当前请求的 query 参数                                        |
+| `ctx.body`      | 当前请求的 body 参数                                         |
+| `ctx.response`  | HTTP 响应，和`express`的`Response`实例保持一致               |
+| `ctx.socket`    | [WebSocket](https://developer.mozilla.org/zh-CN/docs/Web/API/WebSocket) 实例 |
 | `ctx.files`     | 上传的文件 ([File](https://developer.mozilla.org/zh-CN/docs/Web/API/File) 对象数组) |
 
 下面的例子可以读取用户传递的 Query 参数`username`：
@@ -258,6 +258,91 @@ exports.main = async function (ctx) {
 };
 ```
 
+### 调用其他云函数
+
+通过`cloud.invoke()` 调用本应用内的其他云函数。
+
+下方例子演示了创建用户成功后为用户发送邀请邮件（`send_mail`函数需自行实现）：
+
+```ts
+import cloud from "@/cloud-sdk";
+
+// invoke方法模型
+
+exports.main = async function (ctx) {
+const { username } = ctx.body;
+  // 数据库操作
+  const db = cloud.database();
+  const ret = await db.collection("users").add({
+    name: 'jack',
+    password: '*******'
+  });
+  if (ret?.ok) {
+    await cloud.invoke(
+      'send_mail', 
+      {
+        ...ctx, // 如果函数内部需要使用ctx中的某些属性，可按此方法传入
+        body: {
+          title: 'xxx',
+          content: 'xxx',
+          date: 'xxx'
+        }
+      }
+    )
+  }
+  
+  console.log(ret);
+  return ret.ok;
+};
+```
+
+### 发送云函数事件
+
+通过`cloud.emit()` 调用本应用内的其他云函数。
+
+上面的例子演示了创建用户成功后为用户发送邀请邮件，但如果在用户创建成功后有许多操作要做（如同时发送欢迎邮件、欢迎短信、为邀请人分配奖励等），这样的操作显然不是很合适。使用`cloud.emit`可简化相关操作。
+
+> 本例仅做`emit`示例使用，业务开发中可直接使用触发器监听`DatabaseChange:users#add`事件实现此功能。[查看详情](trigger.md)
+
+```ts
+import cloud from "@/cloud-sdk";
+
+// invoke方法模型
+// invoke<T>(name: string, ctx: FunctionContext): Promise<T>
+
+exports.main = async function (ctx) {
+const { username } = ctx.body;
+  // 数据库操作
+  const db = cloud.database();
+  const ret = await db.collection("users").add({
+    name: 'jack',
+    password: '*******'
+  });
+  if (ret?.ok) {
+    await cloud.emit(
+      'user_created', 
+      {
+        ...ctx, // 如果函数内部需要使用ctx中的某些属性，可按此方法传入
+        body: {
+        	id: ret?.insertId
+        }
+      }
+    )
+  }
+  
+  console.log(ret);
+  return ret.ok;
+};
+```
+之后可在[触发器](trigger.md)处使用
+![image](https://user-images.githubusercontent.com/27558572/191404414-7d69811e-b192-4d55-9a26-59829d9932aa.png)
+
+在事件处填入你要监听的事件名称，当有云函数`emit`这个事件时，会自动执行这个云函数
+![image](https://user-images.githubusercontent.com/27558572/191404535-700c43b4-3e1c-427a-a36d-4198e10dcc7d.png)
+
+> 新建触发器后需要点击`新建函数`旁的`发布函数`发布后才会应用触发器。
+
+
 ### 生成 JWT token
 
 以下实现简单登录函数，以演示 标准 JWT token 的生成，预期开发者已熟悉 JWT 相关知识。
@@ -296,5 +381,29 @@ exports.main = async function (ctx) {
     username: user.username,
     expired_at: payload.exp,
   };
+};
+```
+
+### 操作缓存数据
+
+::: info
+云函数全局内存单例对象，可跨多次调用、不同云函数之间共享数据
+`cloud.shared`是JS中标准的Map对象，可参照MDN文档学习使用：[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
+
+使用场景：
+1. 可将一些全局配置初始化到 shared 中，如微信开发信息、短信发送配置
+2. 可共享一些常用方法，如 checkPermission 等，以提升云函数性能
+3. 可做热数据的缓存。如：缓存微信access_token。（建议少量使用，此对象是在 node vm 堆中分配，因为 node vm 堆内存限制）
+:::
+```ts
+import cloud from "@/cloud-sdk";
+
+exports.main = async function (ctx) {
+  await cloud.shared.set(key, val) // 设置一个缓存
+  await cloud.shared.get(key) // 获取缓存的值
+  await cloud.shared.has(key) // 判断缓存是否存在
+  await cloud.shared.delete(key) // 删除缓存
+  await cloud.shared.clear() // 清空所有缓存
+  // ... 其他方法可访问上方MDN的Map文档查看
 };
 ```
