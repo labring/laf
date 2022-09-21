@@ -20,8 +20,8 @@ import (
 	"context"
 	"errors"
 	"github.com/labring/laf/controllers/oss/driver"
+	"github.com/labring/laf/pkg/util"
 	"github.com/minio/minio-go/v7"
-	"laf/pkg/util"
 	"time"
 
 	"k8s.io/apimachinery/pkg/runtime"

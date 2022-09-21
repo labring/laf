@@ -2,13 +2,13 @@ package driver
 
 import (
 	"errors"
+	v1 "github.com/labring/laf/controllers/oss/api/v1"
 	gonanoid "github.com/matoous/go-nanoid/v2"
 	"github.com/minio/madmin-go"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"golang.org/x/net/context"
 	"k8s.io/apimachinery/pkg/api/resource"
-	v1 "laf/controllers/oss/api/v1"
 	"strings"
 )
 

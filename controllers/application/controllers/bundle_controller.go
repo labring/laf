@@ -18,7 +18,7 @@ package controllers
 
 import (
 	"context"
-	"laf/pkg/util"
+	"github.com/labring/laf/pkg/util"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"

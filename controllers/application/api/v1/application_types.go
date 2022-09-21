@@ -17,8 +17,8 @@ limitations under the License.
 package v1
 
 import (
+	runtimev1 "github.com/labring/laf/controllers/runtime/api/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	runtimev1 "laf/controllers/runtime/api/v1"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!

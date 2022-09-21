@@ -1,6 +1,9 @@
 #!/usr/bin/env sh
+# Usage:
+# - sh start_vm.sh
+# - sh start_vm.sh dev ~/.kube/config
 
-NAME="laf"
+NAME="laf-test"
 # if set first param in command line
 if [ -n "$1" ]; then
     NAME="$1"
