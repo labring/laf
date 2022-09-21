@@ -29,7 +29,7 @@ func TestGetCurrentKubernetesClient(t *testing.T) {
 
 func TestGetNodeAddress(t *testing.T) {
 	t.Run("get node address should be ok", func(t *testing.T) {
-		addr := GetNodeAddress(GetDefaultKubernetesClient())
+		addr := GetNodeAddress()
 
 		if addr == "" {
 			t.FailNow()
