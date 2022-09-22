@@ -153,8 +153,8 @@ export default defineConfig({
     docsBranch: 'main',
     docsDir: 'docs',
     footer: {
-      message: "Apache License V2.0",
-      copyright: "Copyright © 2021-present labring/laf"
+      message: 'Apache License V2.0',
+      copyright: 'Copyright © 2021-present labring/laf'
     },
     editLink: {
       pattern: 'https://github.com/labring/laf/edit/main/docs/:path',

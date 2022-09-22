@@ -1,0 +1,193 @@
+version: '3.8'
+services:
+  mongo:
+    image: bitnami/mongodb:5.0.8
+    # image: bitnami/mongodb:4.4.13    # Use this version for Apple M1 Chip
+    restart: always
+    environment:
+      - MONGODB_REPLICA_SET_MODE=primary
+      - MONGODB_ADVERTISED_HOSTNAME=mongo
+      - MONGODB_REPLICA_SET_NAME=laf
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+      - MONGODB_ENABLE_DIRECTORY_PER_DB=yes
+      - MONGODB_ROOT_PASSWORD=${MONGODB_ROOT_PASSWORD}
+      - MONGODB_DATABASE=${SYS_DB}
+      - MONGODB_USERNAME=${SYS_DB_USER}
+      - MONGODB_PASSWORD=${SYS_DB_PASSWORD}
+    volumes:
+      - db-data:/bitnami/mongodb
+    ports:
+      - "27017:27017"
+    networks:
+      - laf_shared_network
+
+  oss:
+    image: 'minio/minio:RELEASE.2022-08-13T21-54-44Z'
+    restart: always
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - MINIO_REGION_NAME=cn-default
+      - MINIO_DOMAIN=${OSS_DOMAIN}
+    command: ["minio", "server", "/data/{0...3}", "--console-address", ":9001"]
+    ports:
+      - "9020:9000"
+      - "9120:9001"
+    volumes:
+      - oss-data:/data
+    networks:
+      - laf_shared_network
+
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.4
+    restart: always
+    environment:
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+    volumes:
+      - etcd-data:/default.etcd
+    ports:
+      - 2379
+      - 2380
+    networks:
+      - laf_shared_network
+
+  system-server:
+    image: lafyun/system-server:latest
+    user: root
+    working_dir: /app
+    restart: always
+    environment:
+      SYS_DB_URI: mongodb://${SYS_DB_USER}:${SYS_DB_PASSWORD}@mongo:27017/?authSource=${SYS_DB}&replicaSet=laf&writeConcern=majority
+      APP_DB_URI: mongodb://root:${MONGODB_ROOT_PASSWORD}@mongo:27017/?authSource=admin&replicaSet=laf&writeConcern=majority
+      SYS_SERVER_SECRET_SALT: ${SYS_SERVER_SECRET_SALT}
+      SHARED_NETWORK: laf_shared_network
+      LOG_LEVEL: ${LOG_LEVEL:-debug}
+      APP_SERVICE_IMAGE: ${APP_SERVICE_IMAGE:-lafyun/app-service:latest}
+      ACCOUNT_DEFAULT_APP_QUOTA: ${ACCOUNT_DEFAULT_APP_QUOTA:-2}
+      ACCOUNT_SIGNUP_MODE: ${ACCOUNT_SIGNUP_MODE:-0}
+      APP_SERVICE_DEPLOY_HOST: ${DEPLOY_DOMAIN:?err}
+      APP_SERVICE_DEPLOY_URL_SCHEMA: ${APP_SERVICE_DEPLOY_URL_SCHEMA}
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
+      MINIO_ACCESS_SECRET: ${MINIO_ROOT_PASSWORD}
+      MINIO_INTERNAL_ENDPOINT: http://oss:9000
+      MINIO_EXTERNAL_ENDPOINT: ${APP_SERVICE_DEPLOY_URL_SCHEMA}://${OSS_DOMAIN}:${PUBLISH_PORT:-8080}
+      PUBLISH_PORT: ${PUBLISH_PORT:-8080}
+      PUBLISH_HTTPS_PORT: ${PUBLISH_HTTPS_PORT:-9443}
+      MINIO_REGION_NAME: cn-default
+      INIT_ROOT_ACCOUNT: ${INIT_ROOT_ACCOUNT}
+      INIT_ROOT_ACCOUNT_PASSWORD: ${INIT_ROOT_ACCOUNT_PASSWORD:?err}
+      SYSTEM_EXTENSION_APPID: ${SYSTEM_EXTENSION_APPID}
+      APPID_LENGTH: 6
+    command: dockerize -wait tcp://mongo:27017 -wait http://oss:9001 -timeout 60s sh /app/start.sh
+    depends_on:
+      - mongo
+    cap_drop:
+      - ALL
+    tmpfs:
+      - /tmp
+    restart: always
+    networks:
+      - laf_shared_network
+
+  gateway:
+    image: apache/apisix:2.14.1-alpine
+    restart: always
+    depends_on:
+      - system-server
+      - mongo
+      - etcd
+    environment:
+      DEPLOY_DOMAIN: "*.${DEPLOY_DOMAIN:?err}"
+      DEPLOY_OSS_DOMAIN: ${OSS_DOMAIN}
+      SYS_CLIENT_HOST: ${SYS_CLIENT_HOST:?err}
+      SYSTEM_EXTENSION_APPID: ${SYSTEM_EXTENSION_APPID}
+    volumes:
+      - ./gateway_conf.yaml:/usr/local/apisix/conf/config.yaml:ro
+    ports:
+      - ${PUBLISH_PORT:-8080}:9080
+      - ${PUBLISH_HTTPS_PORT:-9443}:9443
+    networks:
+      - laf_shared_network
+
+  apisix-dashboard:
+    image: apache/apisix-dashboard:2.13-alpine
+    restart: always
+    volumes:
+      - ./gateway_dashboard_conf.yaml:/usr/local/apisix-dashboard/conf/conf.yaml
+    ports:
+      - "9000:9000"
+    networks:
+      - laf_shared_network
+      
+  gateway-controller:
+    image: lafyun/gateway-controller:latest
+    restart: always
+    depends_on:
+      - gateway
+    environment:
+      DEPLOY_DOMAIN: "${DEPLOY_DOMAIN:?err}"
+      DEPLOY_OSS_DOMAIN: ${OSS_DOMAIN}
+      SYS_CLIENT_HOST: ${SYS_CLIENT_HOST:?err}
+      LOG_LEVEL: debug
+      SERVICE_DRIVER: docker
+      GATEWAY_TYPE: apisix
+      SYS_DB_URI: mongodb://${SYS_DB_USER}:${SYS_DB_PASSWORD}@mongo:27017/?authSource=${SYS_DB}&replicaSet=laf&writeConcern=majority
+      API_SIX_KEY: ${API_SIX_KEY}
+      APP_SERVICE_DEPLOY_URL_SCHEMA: ${APP_SERVICE_DEPLOY_URL_SCHEMA}
+    volumes:
+      - ./cert:/ssl
+    networks:
+      - laf_shared_network
+
+  instance-controller:
+    image: lafyun/instance-controller:latest
+    user: root
+    working_dir: /app
+    environment:
+      SCHEDULER_INTERVAL: 1000
+      SYS_DB_URI: mongodb://${SYS_DB_USER}:${SYS_DB_PASSWORD}@mongo:27017/?authSource=${SYS_DB}&replicaSet=laf&writeConcern=majority
+      APP_DB_URI: mongodb://root:${MONGODB_ROOT_PASSWORD}@mongo:27017/?authSource=admin&replicaSet=laf&writeConcern=majority
+      SHARED_NETWORK: laf_shared_network
+      LOG_LEVEL: debug
+      SERVICE_DRIVER: docker
+      APP_SERVICE_ENV_NPM_INSTALL_FLAGS: ' --no-audit --no-fund'
+      MINIO_INTERNAL_ENDPOINT: http://oss:9000
+      MINIO_EXTERNAL_ENDPOINT: ${APP_SERVICE_DEPLOY_URL_SCHEMA}://${OSS_DOMAIN}:${PUBLISH_PORT:-8080}
+      PUBLISH_PORT: ${PUBLISH_PORT:-8080}
+      PUBLISH_HTTPS_PORT: ${PUBLISH_HTTPS_PORT:-9443}
+      MINIO_REGION_NAME: cn-default
+      SYSTEM_EXTENSION_APPID: ${SYSTEM_EXTENSION_APPID}
+    command: node ./dist/index.js
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "9000"
+    depends_on:
+      - mongo
+    restart: always
+    networks:
+      - laf_shared_network
+
+  system-client:
+    image: lafyun/system-client:latest
+    networks:
+      - laf_shared_network
+
+  app-console:
+    image: lafyun/app-console:latest
+    networks:
+      - laf_shared_network
+
+  pull-app-service-image:
+    image: lafyun/app-service:latest
+    command: echo 'pulled app-service image successful!'
+
+networks:
+  laf_shared_network:
+    external: true
+
+volumes:
+  db-data:
+  oss-data:
+  etcd-data:

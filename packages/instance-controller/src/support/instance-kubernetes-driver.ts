@@ -183,7 +183,7 @@ export class KubernetesDriver implements InstanceDriverInterface {
                   initialDelaySeconds: 0,
                   periodSeconds: 3,
                   timeoutSeconds: 3,
-                  failureThreshold: 40
+                  failureThreshold: 240
                 },
                 readinessProbe: {
                   httpGet: {
