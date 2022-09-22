@@ -2,8 +2,10 @@
  * hack `process` missing for wechat miniprogram
  */
 declare const wx: any
-if (wx) {
-  (globalThis as any).process = {}
+if (wx && !process) {
+  (globalThis as any).process = {
+    env: {}
+  }
   console.info('hacked for `process` missing for wechat miniprogram')
 }
 
