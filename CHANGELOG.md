@@ -1,4 +1,14 @@
-# [](https://github.com/labring/laf/compare/v0.8.11...v) (2022-09-16)
+# [](https://github.com/labring/laf/compare/v0.8.12...v) (2022-09-22)
+
+
+
+## [0.8.12](https://github.com/labring/laf/compare/v0.8.11...v0.8.12) (2022-09-22)
+
+
+### Bug Fixes
+
+* **client-sdk:** fix wx `process` hack ([fd55af9](https://github.com/labring/laf/commit/fd55af9df6257632a4e9a497b8ab2e0bf216c210))
+* **client-sdk:** hack for `process` missing for wechat miniprogram ([36002b1](https://github.com/labring/laf/commit/36002b1bd5065843c3ddaf33723c47449e899624))
 
 
 
