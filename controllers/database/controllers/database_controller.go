@@ -80,6 +80,8 @@ func (r *DatabaseReconciler) apply(ctx context.Context, database *v1.Database) (
 				return ctrl.Result{}, err
 			}
 			_log.Info("added the finalizer")
+
+			return ctrl.Result{}, nil
 		}
 	}
 
@@ -90,6 +92,16 @@ func (r *DatabaseReconciler) apply(ctx context.Context, database *v1.Database) (
 			return ctrl.Result{}, err
 		}
 		_log.Info("selected a store for database")
+		return ctrl.Result{}, nil
+	} else if database.Labels["laf.dev/database.store.name"] != database.Status.StoreName {
+		// add store labels
+		database.Labels["laf.dev/database.store.name"] = database.Status.StoreName
+		database.Labels["laf.dev/database.store.namespace"] = database.Status.StoreNamespace
+		if err := r.Update(ctx, database); err != nil {
+			return ctrl.Result{}, err
+		}
+		_log.Info("added store labels to database")
+		return ctrl.Result{}, nil
 	}
 
 	// reconcile the connection uri

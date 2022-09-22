@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	v1 "k8s.io/api/core/v1"
@@ -103,12 +104,21 @@ func CreateNamespace(client *kubernetes.Clientset, name string) *v1.Namespace {
 
 func Exec(command string) (string, error) {
 	cmd := exec.Command("sh", "-c", command)
-	out, err := cmd.Output()
+	var stdout bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	err := cmd.Run()
 	if err != nil {
-		fmt.Println(err, cmd)
-		return string(out), err
+		fmt.Println(fmt.Sprint(err) + ": " + stderr.String())
+		return stderr.String(), err
 	}
-	return string(out), nil
+	return stdout.String(), nil
+}
+
+func KubeApplyFromTemplate(yaml string, params map[string]string) (string, error) {
+	out := os.Expand(yaml, func(k string) string { return params[k] })
+	return KubeApply(out)
 }
 
 func KubeApply(yaml string) (string, error) {

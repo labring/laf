@@ -69,3 +69,33 @@ func GetDatabaseStore(namespace string, name string) (*databasev1.Store, error) 
 
 	return &storeObj, nil
 }
+
+func UpdateDatabaseStoreStatus(namespace string, name string, status databasev1.StoreStatus) {
+	client := baseapi.GetDefaultDynamicClient()
+	gvr := schema.GroupVersionResource{
+		Group:    "database.laf.dev",
+		Version:  "v1",
+		Resource: "stores",
+	}
+	store, err := client.Resource(gvr).Namespace(namespace).Get(context.TODO(), name, metav1.GetOptions{})
+	if err != nil {
+		panic(err)
+	}
+
+	var storeObj databasev1.Store
+	err = runtime.DefaultUnstructuredConverter.FromUnstructured(store.Object, &storeObj)
+	if err != nil {
+		panic(err)
+	}
+
+	storeObj.Status = status
+	store.Object, err = runtime.DefaultUnstructuredConverter.ToUnstructured(&storeObj)
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = client.Resource(gvr).Namespace(namespace).UpdateStatus(context.TODO(), store, metav1.UpdateOptions{})
+	if err != nil {
+		panic(err)
+	}
+}

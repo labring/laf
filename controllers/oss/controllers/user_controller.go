@@ -20,7 +20,7 @@ import (
 	"context"
 	"errors"
 	"github.com/labring/laf/controllers/oss/driver"
-	"laf/pkg/util"
+	"github.com/labring/laf/pkg/util"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"time"
 
@@ -78,6 +78,7 @@ func (r *UserReconciler) apply(ctx context.Context, user *ossv1.User) (ctrl.Resu
 			return ctrl.Result{}, err
 		}
 		_log.Info("added finalizer", "finalizer", finalizerName)
+		return ctrl.Result{}, nil
 	}
 
 	// reconcile the store
@@ -86,6 +87,17 @@ func (r *UserReconciler) apply(ctx context.Context, user *ossv1.User) (ctrl.Resu
 			return ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, err
 		}
 		_log.Info("selected store", "storeName", user.Status.StoreName)
+		return ctrl.Result{}, nil
+	} else if user.Labels["laf.dev/oss.store.name"] != user.Status.StoreName {
+		// add store labels
+		user.Labels["laf.dev/oss.store.name"] = user.Status.StoreName
+		user.Labels["laf.dev/oss.store.namespace"] = user.Status.StoreNamespace
+
+		if err := r.Update(ctx, user); err != nil {
+			return ctrl.Result{}, err
+		}
+		_log.Info("added store labels", "storeName", user.Status.StoreName)
+		return ctrl.Result{}, nil
 	}
 
 	// create the AccessKey & SecretKey
@@ -94,6 +106,7 @@ func (r *UserReconciler) apply(ctx context.Context, user *ossv1.User) (ctrl.Resu
 			return ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, err
 		}
 		_log.Info("reconciled access key", "accessKey", user.Status.AccessKey)
+		return ctrl.Result{}, nil
 	}
 
 	// TODO: reconcile the capacity
