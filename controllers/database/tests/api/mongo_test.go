@@ -1,7 +1,7 @@
 package api
 
 import (
-	"laf/tests/api"
+	baseapi "github.com/labring/laf/tests/api"
 	"testing"
 )
 
@@ -12,6 +12,6 @@ func TestInstallMongoDb(t *testing.T) {
 
 	t.Cleanup(func() {
 		UninstallMongoDb("testing-db-install-mongodb")
-		api.DeleteNamespace("testing-db-install-mongodb")
+		baseapi.DeleteNamespace("testing-db-install-mongodb")
 	})
 }

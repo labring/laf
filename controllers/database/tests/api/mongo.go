@@ -1,8 +1,8 @@
 package api
 
 import (
+	baseapi "github.com/labring/laf/tests/api"
 	"github.com/opentracing/opentracing-go/log"
-	"laf/tests/api"
 	"strings"
 )
 
@@ -65,16 +65,16 @@ spec:
 `
 
 func InstallMongoDb(namespace string) {
-	api.EnsureNamespace(namespace)
+	baseapi.EnsureNamespace(namespace)
 
 	yamlStr := strings.ReplaceAll(deployYaml, "${namespace}", namespace)
-	_, err := api.KubeApply(yamlStr)
+	_, err := baseapi.KubeApply(yamlStr)
 	if err != nil {
 		log.Error(err)
 		panic(err)
 	}
 
-	_, err = api.ExecCommand("kubectl wait --for=condition=ready pod -l app=mongo --timeout=300s -n " + namespace)
+	_, err = baseapi.Exec("kubectl wait --for=condition=ready pod -l app=mongo --timeout=300s -n " + namespace)
 	if err != nil {
 		log.Error(err)
 		panic(err)
@@ -83,8 +83,16 @@ func InstallMongoDb(namespace string) {
 
 func UninstallMongoDb(namespace string) {
 	yamlStr := strings.ReplaceAll(deployYaml, "${namespace}", namespace)
-	_, err := api.KubeDelete(yamlStr)
+	_, err := baseapi.KubeDelete(yamlStr)
 	if err != nil {
 		panic(err)
 	}
+}
+
+func GetMongoDbHostname() string {
+	return baseapi.GetNodeAddress() + ":30017"
+}
+
+func GetMongoDbConnectionURI() string {
+	return "mongodb://root:password123@" + GetMongoDbHostname() + "/?authSource=admin&directConnection=true"
 }

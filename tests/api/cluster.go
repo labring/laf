@@ -2,9 +2,9 @@ package api
 
 import (
 	"context"
+	"github.com/labring/laf/pkg/common"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"laf/pkg/common"
 )
 
 func DeleteSystemNamespace() {

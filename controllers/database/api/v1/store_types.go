@@ -69,7 +69,7 @@ type StoreSpec struct {
 
 	// The connection uri of the store.
 	//+kubebuilder:validation:Required
-	ConnectionURI string `json:"connectionURI"`
+	ConnectionUri string `json:"connectionUri"`
 
 	// The capacity of the store.
 	//+optional

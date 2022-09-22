@@ -46,6 +46,7 @@ type DatabaseSpec struct {
 	//+kubebuilder:validation:Required
 	//+kubebuilder:validation:MinLength=6
 	//+kubebuilder:validation:MaxLength=32
+
 	Username string `json:"username"`
 
 	// Password of the database.
@@ -68,11 +69,16 @@ type DatabaseStatus struct {
 	//+kubebuilder:validation:Required
 	StoreNamespace string `json:"storeNamespace,omitempty"`
 
-	// ConnectionURI of the database.
-	ConnectionURI string `json:"connectionURI"`
+	// ConnectionUri of the database.
+	ConnectionUri string `json:"connectionUri"`
 
 	// Capacity observed by the controller
 	Capacity DatabaseCapacity `json:"capacity,omitempty"`
+
+	// Conditions of the database
+	// - type: Ready
+	//   status: True
+	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
 type DatabaseCapacity struct {

@@ -22,8 +22,8 @@ import (
 	v1 "github.com/labring/laf/controllers/database/api/v1"
 	"github.com/labring/laf/controllers/database/dbm"
 	"github.com/labring/laf/pkg/util"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"net/url"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
@@ -93,7 +93,7 @@ func (r *DatabaseReconciler) apply(ctx context.Context, database *v1.Database) (
 	}
 
 	// reconcile the connection uri
-	if database.Status.ConnectionURI == "" {
+	if database.Status.ConnectionUri == "" {
 		if err := r.createDatabase(ctx, database); err != nil {
 			return ctrl.Result{Requeue: true, RequeueAfter: time.Second * 10}, err
 		}
@@ -121,7 +121,7 @@ func (r *DatabaseReconciler) delete(ctx context.Context, database *v1.Database) 
 	}
 
 	// new database manager
-	mgm, err := dbm.NewMongoManager(ctx, store.Spec.ConnectionURI)
+	mgm, err := dbm.NewMongoManager(ctx, store.Spec.ConnectionUri)
 	if err != nil {
 		return ctrl.Result{}, err
 	}
@@ -156,7 +156,7 @@ func (r *DatabaseReconciler) createDatabase(ctx context.Context, database *v1.Da
 	}
 
 	// new database manager
-	mgm, err := dbm.NewMongoManager(ctx, store.Spec.ConnectionURI)
+	mgm, err := dbm.NewMongoManager(ctx, store.Spec.ConnectionUri)
 	if err != nil {
 		return err
 	}
@@ -171,14 +171,23 @@ func (r *DatabaseReconciler) createDatabase(ctx context.Context, database *v1.Da
 	_log.Info("database created", "name", database.Name)
 
 	// assemble the connection uri
-	u, err := url.Parse(store.Spec.ConnectionURI)
-	u.User = url.UserPassword(database.Spec.Username, database.Spec.Password)
-	q := u.Query()
-	q.Set("authSource", database.Name)
-	u.RawQuery = q.Encode()
+	uri, err := dbm.AssembleUserDatabaseUri(store.Spec.ConnectionUri, database.Spec.Username, database.Spec.Password, database.Name)
+	if err != nil {
+		return err
+	}
 
 	// update the database status
-	database.Status.ConnectionURI = u.String()
+	database.Status.ConnectionUri = uri
+
+	// update conditions Ready to True
+	condition := metav1.Condition{
+		Type:               "Ready",
+		Status:             metav1.ConditionTrue,
+		LastTransitionTime: metav1.Now(),
+		Reason:             "DatabaseCreated",
+		Message:            "Database created successfully",
+	}
+	util.SetCondition(&database.Status.Conditions, condition)
 	if err := r.Status().Update(ctx, database); err != nil {
 		return err
 	}
