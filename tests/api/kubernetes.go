@@ -1,7 +1,9 @@
 package api
 
 import (
+	"bytes"
 	"context"
+	"errors"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/dynamic"
@@ -99,11 +101,14 @@ func CreateNamespace(client *kubernetes.Clientset, name string) *v1.Namespace {
 
 func ExecCommand(command string) (string, error) {
 	cmd := exec.Command("sh", "-c", command)
-	out, err := cmd.Output()
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	err := cmd.Run()
 	if err != nil {
-		return string(out), err
+		return stdout.String(), errors.New(stderr.String() + err.Error())
 	}
-	return string(out), nil
+	return stdout.String(), nil
 }
 
 func KubeApply(yaml string) (string, error) {
