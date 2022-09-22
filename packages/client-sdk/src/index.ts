@@ -1,4 +1,13 @@
-import { Cloud, Db,  } from './cloud'
+/**
+ * hack `process` missing for wechat miniprogram
+ */
+declare const wx: any
+if (wx) {
+  (globalThis as any).process = {}
+  console.info('hacked for `process` missing for wechat miniprogram')
+}
+
+import { Cloud, Db, } from './cloud'
 import { CloudOptions } from './types'
 
 export * from './request'
