@@ -40,11 +40,13 @@ func TestDbCreate(t *testing.T) {
 			t.FailNow()
 		}
 
+		t.Log("verifying the db region")
 		if db.Spec.Region != region {
 			t.Errorf("db region should be %s, but got %s", region, db.Spec.Region)
 			t.Fail()
 		}
 
+		t.Log("verifying the db store & store namespace")
 		if db.Status.StoreName != name+"-store" {
 			t.Errorf("expected: %s, got: %s", name+"-store", db.Status.StoreName)
 			t.Fail()
@@ -55,6 +57,19 @@ func TestDbCreate(t *testing.T) {
 			t.Fail()
 		}
 
+		// check if labels exists
+		t.Log("verifying the db has labels")
+		if db.Labels["laf.dev/database.store.name"] != db.Status.StoreName {
+			t.Errorf("expected: %s, got: %s", db.Status.StoreName, db.Labels["laf.dev/database.store.name"])
+			t.Fail()
+		}
+
+		if db.Labels["laf.dev/database.store.namespace"] != db.Status.StoreNamespace {
+			t.Errorf("expected: %s, got: %s", db.Status.StoreNamespace, db.Labels["laf.dev/database.store.namespace"])
+			t.Fail()
+		}
+
+		t.Log("verifying the db connection uri")
 		expectUri, _ := dbm.AssembleUserDatabaseUri(api.GetMongoDbConnectionURI(), db.Spec.Username, db.Spec.Password, db.Name)
 		if db.Status.ConnectionUri != expectUri {
 			t.Errorf("expected: %s, got: %s", api.GetMongoDbConnectionURI(), db.Status.ConnectionUri)

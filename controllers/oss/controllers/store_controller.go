@@ -71,6 +71,12 @@ func (r *StoreReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 // TODO: implement the deletion of the store.
 func (r *StoreReconciler) delete(ctx context.Context, store *ossv1.Store) (ctrl.Result, error) {
 	// TODO: reject deletion
+
+	// remove finalizer
+	store.SetFinalizers(util.RemoveString(store.GetFinalizers(), storeFinalizer))
+	if err := r.Update(ctx, store); err != nil {
+		return ctrl.Result{}, err
+	}
 	return ctrl.Result{}, nil
 }
 

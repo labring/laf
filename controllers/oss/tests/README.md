@@ -13,11 +13,11 @@ sh scripts/start_vm.sh laf-test ~/.kube/config
 ### 1. run the controller locally  (*Prerequisite*)
 ```bash
 # terminal 1st
-cd controllers/database/
+cd controllers/oss/
 make run
 ```
 
-### 2. run all the tests
+### 2. run all the  tests
 ```bash
 make test
 ```
@@ -37,10 +37,10 @@ go test ./tests/e2e/store_create_test.go
 ### 1. build & push the controller image
 ```bash
 # build the image
-IMG=ghcr.io/database-controller:ci-test make docker-build
+IMG=ghcr.io/oss-controller:ci-test make docker-build
 
 # push the image
-IMG=ghcr.io/database-controller:ci-test make docker-push
+IMG=ghcr.io/oss-controller:ci-test make docker-push
 ```
 
 ### 2. deploy the crd
