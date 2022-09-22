@@ -3,10 +3,10 @@ package api
 import (
 	"context"
 	databasev1 "github.com/labring/laf/controllers/database/api/v1"
+	baseapi "github.com/labring/laf/tests/api"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"laf/tests/api"
 	"strings"
 )
 
@@ -30,7 +30,7 @@ spec:
 func CreateDatabase(appid string, region string) {
 	yamlStr := strings.ReplaceAll(dbYaml, "${appid}", appid)
 	yamlStr = strings.ReplaceAll(yamlStr, "${region}", region)
-	_, err := api.KubeApply(yamlStr)
+	_, err := baseapi.KubeApply(yamlStr)
 	if err != nil {
 		panic(err)
 	}
@@ -39,7 +39,7 @@ func CreateDatabase(appid string, region string) {
 func DeleteDatabase(appid string, region string) {
 	yamlStr := strings.ReplaceAll(dbYaml, "${appid}", appid)
 	yamlStr = strings.ReplaceAll(yamlStr, "${region}", region)
-	_, err := api.KubeDelete(yamlStr)
+	_, err := baseapi.KubeDelete(yamlStr)
 	if err != nil {
 		panic(err)
 	}
@@ -49,7 +49,7 @@ func DeleteDatabase(appid string, region string) {
 }
 
 func GetDatabase(appid string) (*databasev1.Database, error) {
-	client := api.GetDefaultDynamicClient()
+	client := baseapi.GetDefaultDynamicClient()
 	gvr := schema.GroupVersionResource{
 		Group:    "database.laf.dev",
 		Version:  "v1",

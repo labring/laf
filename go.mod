@@ -1,4 +1,4 @@
-module laf
+module github.com/labring/laf
 
 go 1.18
 

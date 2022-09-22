@@ -64,7 +64,7 @@ spec:
                     format: int64
                     type: integer
                 type: object
-              connectionURI:
+              connectionUri:
                 description: The connection uri of the store.
                 type: string
               priority:
@@ -90,7 +90,7 @@ spec:
                 pattern: ^[a-z0-9-]+$
                 type: string
             required:
-            - connectionURI
+            - connectionUri
             - provider
             - region
             type: object

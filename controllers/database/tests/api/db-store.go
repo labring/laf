@@ -3,10 +3,10 @@ package api
 import (
 	"context"
 	databasev1 "github.com/labring/laf/controllers/database/api/v1"
+	baseapi "github.com/labring/laf/tests/api"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"laf/tests/api"
 	"strings"
 )
 
@@ -20,7 +20,7 @@ metadata:
 spec:
   provider: mongodb
   region: ${region}
-  connectionURI: mongodb://root:password123@${hostname}/?authSource=admin&directConnection=true
+  connectionUri: ${connectionURI}
   capacity:
     userCount: 1000
     storage: 100Gi
@@ -28,12 +28,12 @@ spec:
     collectionCount: 10000
 `
 
-func CreateDatabaseStore(namespace string, name string, region string, hostname string) {
+func CreateDatabaseStore(namespace string, name string, region string, connectionURI string) {
 	yamlStr := strings.ReplaceAll(storeYaml, "${namespace}", namespace)
 	yamlStr = strings.ReplaceAll(yamlStr, "${region}", region)
 	yamlStr = strings.ReplaceAll(yamlStr, "${name}", name)
-	yamlStr = strings.ReplaceAll(yamlStr, "${hostname}", hostname)
-	_, err := api.KubeApply(yamlStr)
+	yamlStr = strings.ReplaceAll(yamlStr, "${connectionURI}", connectionURI)
+	_, err := baseapi.KubeApply(yamlStr)
 	if err != nil {
 		panic(err)
 	}
@@ -43,14 +43,14 @@ func DeleteDatabaseStore(namespace string, name string, region string) {
 	yamlStr := strings.ReplaceAll(storeYaml, "${namespace}", namespace)
 	yamlStr = strings.ReplaceAll(yamlStr, "${region}", region)
 	yamlStr = strings.ReplaceAll(yamlStr, "${name}", name)
-	_, err := api.KubeDelete(yamlStr)
+	_, err := baseapi.KubeDelete(yamlStr)
 	if err != nil {
 		panic(err)
 	}
 }
 
 func GetDatabaseStore(namespace string, name string) (*databasev1.Store, error) {
-	client := api.GetDefaultDynamicClient()
+	client := baseapi.GetDefaultDynamicClient()
 	gvr := schema.GroupVersionResource{
 		Group:    "database.laf.dev",
 		Version:  "v1",

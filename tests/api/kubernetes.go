@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/dynamic"
@@ -86,6 +87,9 @@ func CreateNamespace(client *kubernetes.Clientset, name string) *v1.Namespace {
 	ns := &v1.Namespace{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: name,
+			Labels: map[string]string{
+				"laf.dev/testing": "testing",
+			},
 		},
 	}
 
@@ -97,10 +101,11 @@ func CreateNamespace(client *kubernetes.Clientset, name string) *v1.Namespace {
 	return result
 }
 
-func ExecCommand(command string) (string, error) {
+func Exec(command string) (string, error) {
 	cmd := exec.Command("sh", "-c", command)
 	out, err := cmd.Output()
 	if err != nil {
+		fmt.Println(err, cmd)
 		return string(out), err
 	}
 	return string(out), nil
@@ -108,7 +113,7 @@ func ExecCommand(command string) (string, error) {
 
 func KubeApply(yaml string) (string, error) {
 	cmd := `kubectl apply -f - <<EOF` + yaml + `EOF`
-	out, err := ExecCommand(cmd)
+	out, err := Exec(cmd)
 	if err != nil {
 		return out, err
 	}
@@ -118,7 +123,7 @@ func KubeApply(yaml string) (string, error) {
 
 func KubeDelete(yaml string) (string, error) {
 	cmd := `kubectl delete -f - <<EOF` + yaml + `EOF`
-	out, err := ExecCommand(cmd)
+	out, err := Exec(cmd)
 	if err != nil {
 		return out, err
 	}

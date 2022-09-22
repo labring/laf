@@ -39,7 +39,7 @@ func TestGetNodeAddress(t *testing.T) {
 
 func TestExecCommand(t *testing.T) {
 	t.Run("exec command should be ok", func(t *testing.T) {
-		_, err := ExecCommand("ls")
+		_, err := Exec("ls")
 		if err != nil {
 			t.FailNow()
 		}
@@ -57,12 +57,12 @@ metadata:
 EOF
 `
 		cmd = strings.ReplaceAll(cmd, "${name}", name)
-		_, err := ExecCommand(cmd)
+		_, err := Exec(cmd)
 		if err != nil {
 			t.FailNow()
 		}
 
-		defer ExecCommand("kubectl delete namespace " + name)
+		defer Exec("kubectl delete namespace " + name)
 
 		// check if namespace exists
 		client := GetDefaultKubernetesClient()

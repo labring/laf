@@ -16,7 +16,7 @@ metadata:
 spec:
   provider: mongodb
   region: default
-  connectionURI: mongodb://root:password123@mongo.default:27017/?authSource=admin
+  connectionUri: mongodb://root:password123@mongo.default:27017/?authSource=admin
   capacity:
     userCount: 1000
     storage: 100Gi

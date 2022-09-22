@@ -1,30 +1,33 @@
 package e2e
 
 import (
+	"github.com/labring/laf/controllers/database/dbm"
 	"github.com/labring/laf/controllers/database/tests/api"
-	baseapi "laf/tests/api"
+	baseapi "github.com/labring/laf/tests/api"
 	"testing"
 )
 
 func TestDbCreate(t *testing.T) {
 	const name = "testing-db-creation"
+	const region = "testing-default"
 
 	t.Run("create db should be ok", func(t *testing.T) {
 
-		// create a mongodb server
 		t.Log("creating a mongodb server")
 		api.InstallMongoDb(name)
 
-		// create a store named "testing-db-creation-store"
-		t.Log("creating a store named \"testing-db-creation\"")
-		hostname := baseapi.GetNodeAddress() + ":30017"
-		api.CreateDatabaseStore(name, name, "testing-default", hostname)
+		t.Log("creating a store")
+		api.CreateDatabaseStore(name, name+"-store", region, api.GetMongoDbConnectionURI())
 
-		// create a db named "testing-db-creation-db"
-		t.Log("creating a db named \"testing-db-creation\"")
-		api.CreateDatabase(name, "testing-default")
+		t.Log("creating a db")
+		api.CreateDatabase(name, region)
 
-		// verify the db is created
+		_, err := baseapi.Exec("kubectl wait --for=condition=ready --timeout=60s database/" + name + " -n " + name)
+		if err != nil {
+			t.Error("kubectl wait for database creation failed")
+			t.FailNow()
+		}
+
 		t.Log("verifying the db is created")
 		db, err := api.GetDatabase(name)
 		if err != nil {
@@ -32,13 +35,44 @@ func TestDbCreate(t *testing.T) {
 			t.FailNow()
 		}
 
-		if db.Status.ConnectionURI == "" {
-			t.Error("db connection uri is empty")
+		if db.Name != name {
+			t.Errorf("expected db name to be %s, got %s", name, db.Name)
 			t.FailNow()
+		}
+
+		if db.Spec.Region != region {
+			t.Errorf("db region should be %s, but got %s", region, db.Spec.Region)
+			t.Fail()
+		}
+
+		if db.Status.StoreName != name+"-store" {
+			t.Errorf("expected: %s, got: %s", name+"-store", db.Status.StoreName)
+			t.Fail()
+		}
+
+		if db.Status.StoreNamespace != name {
+			t.Errorf("expected: %s, got: %s", name, db.Status.StoreNamespace)
+			t.Fail()
+		}
+
+		expectUri, _ := dbm.AssembleUserDatabaseUri(api.GetMongoDbConnectionURI(), db.Spec.Username, db.Spec.Password, db.Name)
+		if db.Status.ConnectionUri != expectUri {
+			t.Errorf("expected: %s, got: %s", api.GetMongoDbConnectionURI(), db.Status.ConnectionUri)
+			t.Fail()
 		}
 	})
 
 	t.Cleanup(func() {
-		//api.DeleteDatabase(name, "testing-default")
+		api.DeleteDatabase(name, region)
+
+		_, err := baseapi.Exec("kubectl wait --for=delete --timeout=60s database/" + name + " -n " + name)
+		if err != nil {
+			t.Error("delete database failed, please abort the test and delete the database manually")
+			panic(err)
+		}
+
+		api.DeleteDatabaseStore(name, name+"-store", region)
+		api.UninstallMongoDb(name)
+		baseapi.DeleteNamespace(name)
 	})
 }
