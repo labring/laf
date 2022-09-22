@@ -57,6 +57,7 @@ export async function handleInvokeFunction(req: Request, res: Response) {
       method: req.method,
       auth: req['auth'],
       requestId,
+      request: req,
       response: res,
     }
     const result = await func.invoke(ctx)

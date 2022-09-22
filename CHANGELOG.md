@@ -1,4 +1,60 @@
-# [](https://github.com/labring/laf/compare/v0.8.7-alpha.2...v) (2022-08-17)
+# [](https://github.com/labring/laf/compare/v0.8.11...v) (2022-09-16)
+
+
+
+## [0.8.11](https://github.com/labring/laf/compare/v0.8.10...v0.8.11) (2022-09-16)
+
+
+### Features
+
+* **app:** add xml parser to req ([198027c](https://github.com/labring/laf/commit/198027c5e95515b435fb72d12985a4c9b7e62a94))
+
+
+
+## [0.8.10](https://github.com/labring/laf/compare/v0.8.9...v0.8.10) (2022-09-14)
+
+
+### Features
+
+* **runtime:** add request param to func context ([#290](https://github.com/labring/laf/issues/290)) ([c7865be](https://github.com/labring/laf/commit/c7865bed987fa83fef1d3680b0c560d3bd0c1126))
+
+
+
+## [0.8.9](https://github.com/labring/laf/compare/v0.8.8...v0.8.9) (2022-09-13)
+
+
+### Bug Fixes
+
+* **instance:** fix app env of oss external endpoint port ([750a4d4](https://github.com/labring/laf/commit/750a4d4e48bbf5da1fdc4f658eeab0e30edc2263))
+
+
+
+## [0.8.8](https://github.com/labring/laf/compare/v0.8.7...v0.8.8) (2022-09-13)
+
+
+### Bug Fixes
+
+* **deploy:** fix oss external endpoint config format ([543fe9a](https://github.com/labring/laf/commit/543fe9a42c5d1f4f8fe87da48cd680182fce53b8))
+
+
+
+## [0.8.7](https://github.com/labring/laf/compare/v0.8.7-alpha.3...v0.8.7) (2022-09-12)
+
+
+### Bug Fixes
+
+* **client:** fix the regex of function id ([6519c95](https://github.com/labring/laf/commit/6519c951257a1b1bb1650e2119247f8947005e8b))
+* fix missing of console.warn/debug/info ([#289](https://github.com/labring/laf/issues/289)) ([2c2d4ba](https://github.com/labring/laf/commit/2c2d4baecf97db1ee888e3e088b81d79e032bf41))
+* k8s startup time; add extra pkg in app-service; fix deploy scripts ([679d2b4](https://github.com/labring/laf/commit/679d2b40800ca24effc03b65aa179a67dfda2274))
+
+
+
+## [0.8.7-alpha.3](https://github.com/labring/laf/compare/v0.8.7-alpha.2...v0.8.7-alpha.3) (2022-08-23)
+
+
+### Features
+
+* opt ssl create and code style ([#282](https://github.com/labring/laf/issues/282)) ([f118412](https://github.com/labring/laf/commit/f118412c422acc0a85fe4f07163a0422af38255a))
 
 
 

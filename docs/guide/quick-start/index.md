@@ -113,7 +113,7 @@ exports.main = async function (ctx: FunctionContext) {
 # 注册用户
 curl -X POST -H "Content-Type: application/json" -d '{"username": "admin", "password": "admin"}' https://APPID.lafyun.com/register
 
-# 用户登陆
+# 用户登录
 curl -X POST -H "Content-Type: application/json" -d '{"username": "admin", "password": "admin"}' https://APPID.lafyun.com/login
 
 

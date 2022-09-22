@@ -3,7 +3,7 @@
     "packages/*",
     "docs"
   ],
-  "version": "0.8.7-alpha.3",
+  "version": "0.8.11",
   "command": {
     "publish": {
       "ignoreChanges": [

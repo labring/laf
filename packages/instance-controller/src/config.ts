@@ -100,15 +100,21 @@ export default class Config {
     // use URL().origin to get the pure hostname, because the hostname may contain port number 
     // this is to resolve bug of https://github.com/labring/laf/issues/96
     const internal_endpoint: string = new URL(process.env.MINIO_INTERNAL_ENDPOINT).origin
+    const external_endpoint: string = new URL(process.env.MINIO_EXTERNAL_ENDPOINT).origin
+    
+    // fixed external_endpoint with extra schema and port config
+    const external_port = process.env.APP_SERVICE_DEPLOY_URL_SCHEMA === 'https' ? process.env.PUBLISH_HTTPS_PORT : process.env.PUBLISH_PORT 
+    const obj = new URL(external_endpoint)
+    obj.port = external_port || obj.port
+    obj.protocol = process.env.APP_SERVICE_DEPLOY_URL_SCHEMA || 'http'
+    const fixed_external_endpoint = obj.toString()
 
-    const external_port  = process.env.APP_SERVICE_DEPLOY_URL_SCHEMA === 'http' ? process.env.PUBLISH_PORT : process.env.PUBLISH_HTTPS_PORT
-    const external_endpoint: string = new URL(process.env.APP_SERVICE_DEPLOY_URL_SCHEMA + '://' + process.env.MINIO_EXTERNAL_ENDPOINT + ':' + external_port).origin
     const region: string = process.env.MINIO_REGION_NAME
 
     return {
       endpoint: {
-        internal: internal_endpoint,
-        external: external_endpoint
+        internal: internal_endpoint.replace(/\/$/, ''),
+        external: fixed_external_endpoint.replace(/\/$/, '')
       },
       user_policy: process.env.MINIO_USER_POLICY || 'owner_by_prefix',
       region
