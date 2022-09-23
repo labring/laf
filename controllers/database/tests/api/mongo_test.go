@@ -6,12 +6,15 @@ import (
 )
 
 func TestInstallMongoDb(t *testing.T) {
+	const namespace = "testing-db-install-mongodb"
+
 	t.Run("install mongodb should be ok", func(t *testing.T) {
-		InstallMongoDb("testing-db-install-mongodb")
+		baseapi.EnsureNamespace(namespace)
+		InstallMongoDb(namespace)
 	})
 
 	t.Cleanup(func() {
-		UninstallMongoDb("testing-db-install-mongodb")
-		baseapi.DeleteNamespace("testing-db-install-mongodb")
+		UninstallMongoDb(namespace)
+		baseapi.DeleteNamespace(namespace)
 	})
 }
