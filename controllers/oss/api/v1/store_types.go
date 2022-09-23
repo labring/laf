@@ -49,16 +49,6 @@ type StoreCapacity struct {
 	BucketCount int64 `json:"bucketCount,omitempty"`
 }
 
-type StoreState string
-
-const (
-	// StoreStateEnabled means the store is enabled.
-	StoreStateEnabled StoreState = "Enabled"
-
-	// StoreStateDisabled means the store is disabled.
-	StoreStateDisabled StoreState = "Disabled"
-)
-
 // StoreSpec defines the desired state of Store
 type StoreSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
@@ -90,9 +80,9 @@ type StoreSpec struct {
 	Provider string `json:"provider,omitempty"`
 
 	// Endpoint is the store service endpoint.
-	// This is a url string, like "http://minio-service:9000"
+	// This is url string, like "http://minio-service:9000"
 	//+kubebuilder:validation:Required
-	Endpoint string `json:"endpoint,omitempty"`
+	Endpoint string `json:"endpoint"`
 
 	// UseSSL indicates whether to use ssl to connect to the store service.
 	//+kubebuilder:validation:Required
@@ -130,10 +120,9 @@ type StoreStatus struct {
 	//+optional
 	Capacity StoreCapacity `json:"capacity,omitempty"`
 
-	// The state of the store, defaults to "Pending".
-	//+kubebuilder:default=Pending
-	//+kubebuilder:validation:Enum=Pending;Enabled;Disabled
-	State StoreState `json:"state,omitempty"`
+	// Conditions
+	// - Type: Ready
+	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
 //+kubebuilder:object:root=true

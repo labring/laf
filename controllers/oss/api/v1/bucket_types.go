@@ -65,6 +65,10 @@ type BucketStatus struct {
 
 	// Capacity of this bucket.
 	Capacity BucketCapacity `json:"capacity"`
+
+	// Conditions
+	// - Type: Ready
+	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
 type BucketCapacity struct {

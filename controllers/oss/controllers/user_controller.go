@@ -21,6 +21,7 @@ import (
 	"errors"
 	"github.com/labring/laf/controllers/oss/driver"
 	"github.com/labring/laf/pkg/util"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"time"
 
@@ -174,6 +175,16 @@ func (r *UserReconciler) createUser(ctx context.Context, user *ossv1.User) error
 	// update the user status
 	user.Status.AccessKey = user.Spec.AppId
 	user.Status.SecretKey = user.Spec.Password
+
+	// update user conditions
+	condition := metav1.Condition{
+		Type:               "Ready",
+		Status:             metav1.ConditionTrue,
+		Reason:             "UserCreated",
+		Message:            "User created successfully",
+		LastTransitionTime: metav1.Now(),
+	}
+	util.SetCondition(&user.Status.Conditions, condition)
 	return r.Status().Update(ctx, user)
 }
 
@@ -194,7 +205,11 @@ func (r *UserReconciler) selectStore(ctx context.Context, user *ossv1.User) erro
 			continue
 		}
 
-		if s.Status.State != ossv1.StoreStateEnabled {
+		if s.Spec.Region != user.Spec.Region {
+			continue
+		}
+
+		if !util.IsConditionTrue(s.Status.Conditions, "Ready") {
 			continue
 		}
 
@@ -215,6 +230,16 @@ func (r *UserReconciler) selectStore(ctx context.Context, user *ossv1.User) erro
 	user.Status.StoreNamespace = store.Namespace
 	user.Status.Region = store.Spec.Region
 	user.Status.Endpoint = store.Spec.Endpoint
+
+	// update user conditions
+	condition := metav1.Condition{
+		Type:               "StoreSelected",
+		Status:             metav1.ConditionTrue,
+		Reason:             "StoreSelected",
+		Message:            "Store selected successfully",
+		LastTransitionTime: metav1.Now(),
+	}
+	util.SetCondition(&user.Status.Conditions, condition)
 
 	if err := r.Status().Update(ctx, user); err != nil {
 		return err
