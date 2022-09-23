@@ -2,11 +2,9 @@ package api
 
 import (
 	baseapi "github.com/labring/laf/tests/api"
-	"github.com/opentracing/opentracing-go/log"
-	"strings"
 )
 
-const deployYaml = `
+const mongoYaml = `
 ---
 kind: Service
 apiVersion: v1
@@ -44,7 +42,7 @@ spec:
       labels:
         app: mongo
     spec:
-      terminationGracePeriodSeconds: 30
+      terminationGracePeriodSeconds: 1
       containers:
         - image: docker.io/mongo:latest
           name: mongo
@@ -65,25 +63,30 @@ spec:
 `
 
 func InstallMongoDb(namespace string) {
-	baseapi.EnsureNamespace(namespace)
-
-	yamlStr := strings.ReplaceAll(deployYaml, "${namespace}", namespace)
-	_, err := baseapi.KubeApply(yamlStr)
+	params := map[string]string{
+		"namespace": namespace,
+	}
+	_, err := baseapi.KubeApplyFromTemplate(mongoYaml, params)
 	if err != nil {
-		log.Error(err)
 		panic(err)
 	}
 
 	_, err = baseapi.Exec("kubectl wait --for=condition=ready pod -l app=mongo --timeout=300s -n " + namespace)
 	if err != nil {
-		log.Error(err)
 		panic(err)
 	}
 }
 
 func UninstallMongoDb(namespace string) {
-	yamlStr := strings.ReplaceAll(deployYaml, "${namespace}", namespace)
-	_, err := baseapi.KubeDelete(yamlStr)
+	params := map[string]string{
+		"namespace": namespace,
+	}
+	_, err := baseapi.KubeDeleteFromTemplate(mongoYaml, params)
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = baseapi.Exec("kubectl wait --for=delete pod -l app=mongo --timeout=300s -n " + namespace)
 	if err != nil {
 		panic(err)
 	}
@@ -93,6 +96,6 @@ func GetMongoDbHostname() string {
 	return baseapi.GetNodeAddress() + ":30017"
 }
 
-func GetMongoDbConnectionURI() string {
+func GetMongoDbConnectionUri() string {
 	return "mongodb://root:password123@" + GetMongoDbHostname() + "/?authSource=admin&directConnection=true"
 }

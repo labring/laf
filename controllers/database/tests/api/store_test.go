@@ -12,7 +12,7 @@ func TestUpdateDatabaseStoreStatus(t *testing.T) {
 	t.Run("update status should be ok", func(t *testing.T) {
 		api.EnsureNamespace(name)
 
-		CreateDatabaseStore(name, name, "default", GetMongoDbConnectionURI())
+		CreateDatabaseStore(name, name, "default", GetMongoDbConnectionUri())
 
 		var status = databasev1.StoreStatus{
 			Capacity: &databasev1.StoreCapacity{

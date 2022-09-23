@@ -6,62 +6,33 @@ import (
 	"testing"
 )
 
-func TestCreateStore(t *testing.T) {
+func TestDatabaseCreateStore(t *testing.T) {
+	const namespace = "testing-db-store-creation"
+	const name = "testing-store"
+	const region = "testing-store-region"
 
-	const storeYaml = `
----
-apiVersion: database.laf.dev/v1
-kind: Store
-metadata:
-  name: testing-db-store-create
-  namespace: testing-db-store-create
-spec:
-  provider: mongodb
-  region: default
-  connectionUri: mongodb://root:password123@mongo.default:27017/?authSource=admin
-  capacity:
-    userCount: 1000
-    storage: 100Gi
-    databaseCount: 1000
-    collectionCount: 10000
-`
+	t.Run("create a database store should be ok", func(t *testing.T) {
+		baseapi.EnsureNamespace(namespace)
 
-	t.Run("create a store should be ok", func(t *testing.T) {
-		baseapi.EnsureNamespace("testing-db-store-create")
-		_, err := baseapi.KubeApply(storeYaml)
+		t.Log("create a database store")
+		api.CreateDatabaseStore(namespace, name, region, api.GetMongoDbConnectionUri())
+
+		t.Log("verify the store is created")
+		store, err := api.GetDatabaseStore(namespace, name)
 		if err != nil {
-			t.FailNow()
+			t.Fatalf("failed to get store: %v", err)
 		}
 
-		// get the store to verify
-		store, err := api.GetDatabaseStore("testing-db-store-create", "testing-db-store-create")
-		if err != nil {
-			t.Error(err)
-			t.FailNow()
-		}
-		if store == nil {
-			t.Error("store should not be nil")
-			t.FailNow()
-		}
-
-		if store.Name != "testing-db-store-create" {
-			t.Error("store name is not correct")
-			t.Fail()
-		}
-
-		if store.Namespace != "testing-db-store-create" {
-			t.Error("store namespace is not correct")
-			t.Fail()
-		}
-
-		if store.Spec.Region != "default" {
-			t.Error("store region is not correct")
-			t.Fail()
+		if store.Spec.Region != region {
+			t.Fatalf("store region is not correct, expected %s, got %s", region, store.Spec.Region)
 		}
 	})
 
 	t.Cleanup(func() {
-		_, _ = baseapi.KubeDelete(storeYaml)
-		baseapi.DeleteNamespace("testing-db-store-create")
+		t.Log("delete the store")
+		api.DeleteDatabaseStore(namespace, name)
+
+		t.Log("delete the namespace")
+		baseapi.DeleteNamespace(namespace)
 	})
 }
