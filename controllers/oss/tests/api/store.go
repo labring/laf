@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 	ossv1 "github.com/labring/laf/controllers/oss/api/v1"
 	baseapi "github.com/labring/laf/tests/api"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -30,7 +31,7 @@ spec:
     bucketCount: 2000
 `
 
-func CreateOssStore(namespace string, name string, region string, endpoint string) error {
+func CreateOssStore(namespace string, name string, region string, endpoint string) {
 	params := map[string]string{
 		"name":      name,
 		"namespace": namespace,
@@ -38,16 +39,36 @@ func CreateOssStore(namespace string, name string, region string, endpoint strin
 		"endpoint":  endpoint,
 	}
 	_, err := baseapi.KubeApplyFromTemplate(storeYaml, params)
-	return err
+	if err != nil {
+		panic(err)
+	}
 }
 
-func DeleteOssStore(namespace string, name string) error {
+func WaitForOssStoreReady(namespace string, name string) {
+	cmd := fmt.Sprintf("kubectl wait --for=condition=ready --timeout=60s stores.oss.laf.dev/%s -n %s", name, namespace)
+	_, err := baseapi.Exec(cmd)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func DeleteOssStore(namespace string, name string) {
 	params := map[string]string{
 		"name":      name,
 		"namespace": namespace,
 	}
-	_, err := baseapi.KubeApplyFromTemplate(storeYaml, params)
-	return err
+	_, err := baseapi.KubeDeleteFromTemplate(storeYaml, params)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func WaitForOssStoreDeleted(namespace string, name string) {
+	cmd := fmt.Sprintf("kubectl wait --for=delete --timeout=60s stores.oss.laf.dev/%s -n %s", name, namespace)
+	_, err := baseapi.Exec(cmd)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func GetOssStore(namespace string, name string) (*ossv1.Store, error) {

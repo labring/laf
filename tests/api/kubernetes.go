@@ -121,6 +121,11 @@ func KubeApplyFromTemplate(yaml string, params map[string]string) (string, error
 	return KubeApply(out)
 }
 
+func KubeDeleteFromTemplate(yaml string, params map[string]string) (string, error) {
+	out := os.Expand(yaml, func(k string) string { return params[k] })
+	return KubeDelete(out)
+}
+
 func KubeApply(yaml string) (string, error) {
 	cmd := `kubectl apply -f - <<EOF` + yaml + `EOF`
 	out, err := Exec(cmd)

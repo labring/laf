@@ -20,6 +20,7 @@ import (
 	"context"
 	"github.com/labring/laf/controllers/oss/driver"
 	"github.com/labring/laf/pkg/util"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"time"
 
 	"k8s.io/apimachinery/pkg/runtime"
@@ -51,7 +52,7 @@ type StoreReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.2/pkg/reconcile
 func (r *StoreReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	_log := log.FromContext(ctx)
 
 	// get the store
 	var store ossv1.Store
@@ -61,22 +62,27 @@ func (r *StoreReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 
 	// reconcile the deletion
 	if !store.DeletionTimestamp.IsZero() {
+		_log.Info("deleting store", "store", store.Name)
 		return r.delete(ctx, &store)
 	}
 
 	return r.apply(ctx, &store)
 }
 
-// delete deletes the store.
+// delete the store.
 // TODO: implement the deletion of the store.
 func (r *StoreReconciler) delete(ctx context.Context, store *ossv1.Store) (ctrl.Result, error) {
+	_log := log.FromContext(ctx)
+
 	// TODO: reject deletion
 
+	_log.Info("removing finalizer", "store", store.Name)
 	// remove finalizer
-	store.SetFinalizers(util.RemoveString(store.GetFinalizers(), storeFinalizer))
+	store.ObjectMeta.Finalizers = util.RemoveString(store.ObjectMeta.Finalizers, storeFinalizer)
 	if err := r.Update(ctx, store); err != nil {
 		return ctrl.Result{}, err
 	}
+
 	return ctrl.Result{}, nil
 }
 
@@ -91,24 +97,27 @@ func (r *StoreReconciler) apply(ctx context.Context, store *ossv1.Store) (ctrl.R
 			return ctrl.Result{}, err
 		}
 		_log.Info("added finalizer", "finalizer", storeFinalizer)
+		return ctrl.Result{}, nil
 	}
 
-	// reconcile the store state
-	if store.Status.State == "" {
+	// initialize the store
+	if !util.IsConditionTrue(store.Status.Conditions, "Ready") {
 		err := r.initStore(ctx, store)
 		if err != nil {
 			return ctrl.Result{Requeue: true, RequeueAfter: time.Minute}, err
 		}
 		_log.Info("initialized store", "store", store.Name)
+		return ctrl.Result{}, nil
 	}
 
 	// sync capacity status
-	if store.Status.State == ossv1.StoreStateEnabled {
+	if util.IsConditionsTrue(store.Status.Conditions, "Ready") {
 		err := r.syncCapacityStatus(ctx, store)
 		if err != nil {
 			return ctrl.Result{Requeue: true, RequeueAfter: time.Minute}, err
 		}
 		_log.Info("synced capacity status", "store", store.Name)
+		return ctrl.Result{}, err
 	}
 
 	return ctrl.Result{Requeue: true, RequeueAfter: time.Minute * 5}, nil
@@ -132,12 +141,18 @@ func (r *StoreReconciler) initStore(ctx context.Context, store *ossv1.Store) err
 		return err
 	}
 
-	// update store state to enabled
-	store.Status.State = ossv1.StoreStateEnabled
+	// update store state to ready
+	condition := v1.Condition{
+		Type:               "Ready",
+		Status:             v1.ConditionTrue,
+		LastTransitionTime: v1.Now(),
+		Reason:             "Initialized",
+		Message:            "The store has been initialized",
+	}
+	util.SetCondition(&store.Status.Conditions, condition)
 	if err := r.Status().Update(ctx, store); err != nil {
 		return err
 	}
-
 	return nil
 }
 

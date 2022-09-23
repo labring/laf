@@ -35,6 +35,10 @@ type UserSpec struct {
 	//+kubebuilder:validation:Required
 	AppId string `json:"appid"`
 
+	// Region of oss store.
+	//+kubebuilder:validation:Required
+	Region string `json:"region"`
+
 	// Password is the secret name of the user, which is used to authenticate the user.
 	//+kubebuilder:validation:MinLength=3
 	//+kubebuilder:validation:MaxLength=32
@@ -79,6 +83,10 @@ type UserStatus struct {
 
 	// The user's capacity observed by the controller.
 	Capacity UserCapacity `json:"capacity,omitempty"`
+
+	// Conditions
+	// - Type: Ready
+	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
 // UserCapacity is used to obtain the user's used capacity.

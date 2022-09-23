@@ -22,6 +22,7 @@ import (
 	"github.com/labring/laf/controllers/oss/driver"
 	"github.com/labring/laf/pkg/util"
 	"github.com/minio/minio-go/v7"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"time"
 
 	"k8s.io/apimachinery/pkg/runtime"
@@ -88,6 +89,7 @@ func (r *BucketReconciler) apply(ctx context.Context, bucket *ossv1.Bucket) (ctr
 			return ctrl.Result{}, err
 		}
 		_log.Info("Created bucket", "bucket", bucket.Name)
+		return ctrl.Result{}, nil
 	}
 
 	// reconcile the versioning
@@ -96,6 +98,7 @@ func (r *BucketReconciler) apply(ctx context.Context, bucket *ossv1.Bucket) (ctr
 			return ctrl.Result{}, err
 		}
 		_log.Info("Enabled versioning", "bucket", bucket.Name)
+		return ctrl.Result{}, nil
 	}
 
 	// reconcile the policy
@@ -104,6 +107,7 @@ func (r *BucketReconciler) apply(ctx context.Context, bucket *ossv1.Bucket) (ctr
 			return ctrl.Result{}, err
 		}
 		_log.Info("Set bucket policy", "bucket", bucket.Name, "policy", bucket.Spec.Policy)
+		return ctrl.Result{}, nil
 	}
 
 	// reconcile the quota
@@ -112,11 +116,30 @@ func (r *BucketReconciler) apply(ctx context.Context, bucket *ossv1.Bucket) (ctr
 			return ctrl.Result{}, err
 		}
 		_log.Info("Set bucket quota", "bucket", bucket.Name, "quota", bucket.Spec.Storage.String())
+		return ctrl.Result{}, nil
+	}
+
+	// update ready condition
+	if util.IsConditionTrue(bucket.Status.Conditions, "Ready") == false {
+		condition := metav1.Condition{
+			Type:               "Ready",
+			Status:             metav1.ConditionTrue,
+			LastTransitionTime: metav1.NewTime(time.Now()),
+			Reason:             "BucketReady",
+			Message:            "Bucket is ready",
+		}
+
+		util.SetCondition(&bucket.Status.Conditions, condition)
+		if err := r.Status().Update(ctx, bucket); err != nil {
+			return ctrl.Result{}, err
+		}
+		_log.Info("Updated bucket condition to ready", "bucket", bucket.Name)
+		return ctrl.Result{}, nil
 	}
 
 	// TODO: sync the bucket capacity
 
-	return ctrl.Result{RequeueAfter: time.Minute * 15}, nil
+	return ctrl.Result{RequeueAfter: time.Minute * 10}, nil
 }
 
 // delete the bucket
