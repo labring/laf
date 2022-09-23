@@ -1,8 +1,7 @@
 /**
  * hack `process` missing for wechat miniprogram
  */
-declare const wx: any
-if (wx && !process) {
+if (globalThis.wx && !globalThis.process) {
   (globalThis as any).process = {
     env: {}
   }
