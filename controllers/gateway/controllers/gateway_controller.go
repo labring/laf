@@ -20,10 +20,12 @@ import (
 	"context"
 	"errors"
 	ossv1 "github.com/labring/laf/controllers/oss/api/v1"
+	"github.com/labring/laf/pkg/util"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/util/retry"
-	"laf/pkg/util"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
+	"time"
 
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -84,6 +86,24 @@ func (r *GatewayReconciler) apply(ctx context.Context, gateway *gatewayv1.Gatewa
 		return result, err
 	}
 
+	// update ready condition
+	if util.IsConditionTrue(gateway.Status.Conditions, "Ready") == false {
+		condition := metav1.Condition{
+			Type:               "Ready",
+			Status:             metav1.ConditionTrue,
+			LastTransitionTime: metav1.NewTime(time.Now()),
+			Reason:             "GatewayReady",
+			Message:            "Gateway is ready",
+		}
+
+		util.SetCondition(&gateway.Status.Conditions, condition)
+		if err := r.updateStatus(ctx, types.NamespacedName{Name: gateway.Name, Namespace: gateway.Namespace}, gateway.Status.DeepCopy()); err != nil {
+			return ctrl.Result{}, err
+		}
+		_log.Info("Updated gateway condition to ready", "gateway", gateway.Name)
+		return ctrl.Result{}, nil
+	}
+
 	_log.Info("apply gateway: name success", "name", gateway.Name)
 
 	return ctrl.Result{}, nil
@@ -117,7 +137,7 @@ func (r *GatewayReconciler) applyApp(ctx context.Context, gateway *gatewayv1.Gat
 	appRoute := &gatewayv1.Route{
 		ObjectMeta: ctrl.ObjectMeta{
 			Name:      "app",
-			Namespace: gateway.Spec.AppId,
+			Namespace: gateway.Namespace,
 		},
 		Spec: gatewayv1.RouteSpec{
 			Domain:          routeStatus.Domain,
@@ -213,7 +233,7 @@ func (r *GatewayReconciler) addBuckets(ctx context.Context, gateway *gatewayv1.G
 		}
 		// get store
 		store := ossv1.Store{}
-		err = r.Get(ctx, client.ObjectKey{Namespace: gateway.Namespace, Name: user.Status.StoreName}, &store)
+		err = r.Get(ctx, client.ObjectKey{Namespace: user.Status.StoreNamespace, Name: user.Status.StoreName}, &store)
 		if err != nil {
 			return ctrl.Result{}, err
 		}
@@ -237,7 +257,7 @@ func (r *GatewayReconciler) addBuckets(ctx context.Context, gateway *gatewayv1.G
 		bucketRoute := &gatewayv1.Route{
 			ObjectMeta: ctrl.ObjectMeta{
 				Name:      "bucket-" + bucketName,
-				Namespace: gateway.Spec.AppId,
+				Namespace: gateway.Namespace,
 			},
 			Spec: gatewayv1.RouteSpec{
 				Domain:          routeStatus.Domain,
@@ -279,7 +299,7 @@ func (r *GatewayReconciler) deleteBuckets(ctx context.Context, gateway *gatewayv
 		route := &gatewayv1.Route{}
 
 		// 删除名称为test的route
-		if err := r.Get(ctx, client.ObjectKey{Namespace: gateway.Spec.AppId, Name: "bucket-" + bucketName}, route); err != nil {
+		if err := r.Get(ctx, client.ObjectKey{Namespace: gateway.Namespace, Name: "bucket-" + bucketName}, route); err != nil {
 			if apierrors.IsNotFound(err) {
 				continue
 			}
