@@ -4,6 +4,7 @@ import (
 	"github.com/labring/laf/controllers/gateway/tests/api"
 	baseapi "github.com/labring/laf/tests/api"
 	"testing"
+	"time"
 )
 
 func TestCreateGateway(t *testing.T) {
@@ -41,19 +42,21 @@ func TestCreateGateway(t *testing.T) {
 		}
 
 		t.Log("add a gateway bucket resource")
-		api.AddGatewayBucket(appId+"gw", namespace, appId, "app1")
+		api.AddGatewayBucket(appId+"gw", namespace, appId, "app1-sample1")
+		time.Sleep(5 * time.Second)
 		t.Log("verify the route is created")
 		routes, err = api.GetRoutes(namespace)
 		if err != nil {
 			t.Fatalf("get routes failed: %v", err)
 		}
-		if len(routes) != 1 {
+		if len(routes) != 2 {
 			t.Fatalf("routes size not 1, current = %d", len(routes))
 		}
 
 		t.Log("delete a gateway bucket resource")
 		api.DeleteGatewayBucket(appId+"gw", namespace, appId)
-		t.Log("verify the route is created")
+		time.Sleep(5 * time.Second)
+		t.Log("verify the route is deleted")
 		routes, err = api.GetRoutes(namespace)
 		if err != nil {
 			t.Fatalf("get routes failed: %v", err)
