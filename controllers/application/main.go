@@ -18,6 +18,7 @@ package main
 
 import (
 	"flag"
+	runtimev1 "github.com/labring/laf/controllers/runtime/api/v1"
 	"os"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
@@ -46,6 +47,8 @@ func init() {
 
 	utilruntime.Must(applicationv1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
+
+	utilruntime.Must(runtimev1.AddToScheme(scheme))
 }
 
 func main() {

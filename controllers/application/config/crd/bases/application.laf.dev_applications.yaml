@@ -171,13 +171,8 @@ spec:
                     type: object
                 type: object
               conditions:
-                description: 'Conditions: - type: DatabaseCreated status: True | False
-                  | Unknown reason: "DatabaseCreated" | "InsufficientResources" |
-                  "Unknown" message: "Database created Successfully" | "Insufficient
-                  resources to create database" | "Unknown error" - type: ObjectStorageCreated
-                  - type: GatewayCreated - type: InstanceCreated - type: InstanceReady
-                  - type: InstanceDeleted - type: DatabaseDeleted - type: ObjectStorageDeleted
-                  - type: GatewayDeleted'
+                description: 'Conditions: @see ApplicationConditionType for the list
+                  of conditions'
                 items:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
@@ -287,7 +282,7 @@ spec:
                         description: Type of the runtime. eg. node:laf, node:tcb,
                           go:laf, python:laf, php:laf,  etc.
                         type: string
-                      versions:
+                      version:
                         description: Version of the runtime
                         properties:
                           autoUpgradeFrom:
@@ -315,7 +310,7 @@ spec:
                     required:
                     - image
                     - type
-                    - versions
+                    - version
                     type: object
                   status:
                     description: RuntimeStatus defines the observed state of Runtime

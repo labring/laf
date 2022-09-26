@@ -53,6 +53,13 @@ type CreationFormStatus struct {
 	Namespace string `json:"namespace,omitempty"`
 
 	Created bool `json:"created,omitempty"`
+
+	// Conditions
+	// - Type: Validated
+	// - Type: ValidRuntime
+	// - Type: ValidBundle
+	// - Type: Created
+	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
 //+kubebuilder:object:root=true

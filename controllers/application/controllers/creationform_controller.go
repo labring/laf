@@ -159,7 +159,7 @@ func (r *CreationFormReconciler) apply(ctx context.Context, form *applicationv1.
 
 // delete the form
 func (r *CreationFormReconciler) delete(ctx context.Context, form *applicationv1.CreationForm) (ctrl.Result, error) {
-	log := log.FromContext(ctx)
+	_log := log.FromContext(ctx)
 
 	// remove finalizer
 	form.ObjectMeta.Finalizers = util.RemoveString(form.ObjectMeta.Finalizers, creationFormFinalizer)
@@ -167,7 +167,7 @@ func (r *CreationFormReconciler) delete(ctx context.Context, form *applicationv1
 		return ctrl.Result{}, err
 	}
 
-	log.Info("Removed finalizer from form")
+	_log.Info("Removed finalizer from form")
 	return ctrl.Result{}, nil
 }
 

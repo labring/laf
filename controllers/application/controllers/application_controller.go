@@ -21,7 +21,7 @@ import (
 	runtimev1 "github.com/labring/laf/controllers/runtime/api/v1"
 	"github.com/labring/laf/pkg/common"
 	"github.com/labring/laf/pkg/util"
-
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -81,7 +81,8 @@ func (r *ApplicationReconciler) apply(ctx context.Context, application *applicat
 			return ctrl.Result{}, err
 		}
 
-		_log.Info("finalizer added")
+		_log.Info("finalizer added for application")
+		return ctrl.Result{}, nil
 	}
 
 	// reconcile runtime
@@ -115,13 +116,6 @@ func (r *ApplicationReconciler) apply(ctx context.Context, application *applicat
 	return ctrl.Result{}, nil
 }
 
-// reconcilePhase reconciles the phase of the application
-func (r *ApplicationReconciler) reconcilePhase(ctx context.Context, application *applicationv1.Application) error {
-	// TODO
-
-	return nil
-}
-
 // reconcileRuntime reconciles the runtime of the application
 func (r *ApplicationReconciler) reconcileRuntime(ctx context.Context, application *applicationv1.Application) error {
 	// get runtime by name
@@ -133,6 +127,16 @@ func (r *ApplicationReconciler) reconcileRuntime(ctx context.Context, applicatio
 	if err != nil {
 		return err
 	}
+
+	// update the condition
+	condition := metav1.Condition{
+		Type:               string(applicationv1.ApplicationRuntimeInitialized),
+		Status:             metav1.ConditionTrue,
+		Reason:             "RuntimeInitialized",
+		Message:            "runtime initialized",
+		LastTransitionTime: metav1.Now(),
+	}
+	util.SetCondition(&application.Status.Conditions, condition)
 
 	// update the status
 	application.Status.Runtime = *rt
@@ -152,6 +156,16 @@ func (r *ApplicationReconciler) reconcileBundle(ctx context.Context, application
 		return err
 	}
 
+	// update the condition
+	condition := metav1.Condition{
+		Type:               string(applicationv1.ApplicationBundleInitialized),
+		Status:             metav1.ConditionTrue,
+		Reason:             "BundleInitialized",
+		Message:            "bundle initialized",
+		LastTransitionTime: metav1.Now(),
+	}
+	util.SetCondition(&application.Status.Conditions, condition)
+
 	// update the status
 	application.Status.Bundle = *bundle
 	err = r.Status().Update(ctx, application)
@@ -162,7 +176,7 @@ func (r *ApplicationReconciler) reconcileBundle(ctx context.Context, application
 func (r *ApplicationReconciler) delete(ctx context.Context, application *applicationv1.Application) (ctrl.Result, error) {
 
 	// TODO: delete the application
-	if true {
+	if false {
 		return ctrl.Result{}, nil
 	}
 
@@ -174,6 +188,13 @@ func (r *ApplicationReconciler) delete(ctx context.Context, application *applica
 	}
 
 	return ctrl.Result{}, nil
+}
+
+// reconcilePhase reconciles the phase of the application
+func (r *ApplicationReconciler) reconcilePhase(ctx context.Context, application *applicationv1.Application) error {
+	// TODO
+
+	return nil
 }
 
 // SetupWithManager sets up the controller with the Manager.

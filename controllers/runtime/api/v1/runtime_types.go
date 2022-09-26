@@ -63,7 +63,7 @@ type RuntimeSpec struct {
 	Image RuntimeImageGroup `json:"image"`
 
 	// Version of the runtime
-	Version RuntimeVersion `json:"versions"`
+	Version RuntimeVersion `json:"version"`
 
 	// Deprecated
 	Deprecated bool `json:"deprecated,omitempty"`

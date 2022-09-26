@@ -2,12 +2,10 @@ package api
 
 import (
 	"context"
-	"fmt"
 	databasev1 "github.com/labring/laf/controllers/database/api/v1"
 	baseapi "github.com/labring/laf/tests/api"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
 const storeYaml = `
@@ -20,7 +18,7 @@ metadata:
 spec:
   provider: mongodb
   region: ${region}
-  connectionUri: ${connectionURI}
+  connectionUri: ${connectionUri}
   capacity:
     userCount: 1000
     storage: 100Gi
@@ -28,75 +26,45 @@ spec:
     collectionCount: 10000
 `
 
-func CreateDatabaseStore(namespace string, name string, region string, connectionURI string) {
-	params := map[string]string{
+func CreateDatabaseStore(namespace string, name string, region string, connectionUri string) {
+	baseapi.MustKubeApplyFromTemplate(storeYaml, map[string]string{
 		"namespace":     namespace,
 		"name":          name,
 		"region":        region,
-		"connectionURI": connectionURI,
-	}
-	_, err := baseapi.KubeApplyFromTemplate(storeYaml, params)
-	if err != nil {
-		panic(err)
-	}
+		"connectionUri": connectionUri,
+	})
 }
 
 func DeleteDatabaseStore(namespace string, name string) {
-	params := map[string]string{
+	baseapi.MustKubeDeleteFromTemplate(storeYaml, map[string]string{
 		"namespace": namespace,
 		"name":      name,
-	}
-	_, err := baseapi.KubeDeleteFromTemplate(storeYaml, params)
-	if err != nil {
-		panic(err)
-	}
+	})
 }
 
 func WaitForDatabaseStoreReady(namespace string, name string) {
-	cmd := fmt.Sprintf("kubectl wait --for=condition=Ready --timeout=60s stores.database.laf.dev/%s -n %s", name, namespace)
-	_, err := baseapi.Exec(cmd)
-	if err != nil {
-		panic(err)
-	}
+	baseapi.MustKubeWaitForReady(namespace, "stores.database.laf.dev/"+name, "60s")
 }
 
 func WaitForDatabaseStoreDeleted(namespace string, name string) {
-	cmd := fmt.Sprintf("kubectl wait --for=delete --timeout=60s stores.database.laf.dev/%s -n %s", name, namespace)
-	_, err := baseapi.Exec(cmd)
-	if err != nil {
-		panic(err)
-	}
+	baseapi.MustKubeWaitForDeleted(namespace, "stores.database.laf.dev/"+name, "60s")
 }
 
 func GetDatabaseStore(namespace string, name string) (*databasev1.Store, error) {
-	client := baseapi.GetDefaultDynamicClient()
-	gvr := schema.GroupVersionResource{
-		Group:    databasev1.GroupVersion.Group,
-		Version:  databasev1.GroupVersion.Version,
-		Resource: "stores",
-	}
-	store, err := client.Resource(gvr).Namespace(namespace).Get(context.TODO(), name, metav1.GetOptions{})
-	if err != nil {
+	gvr := databasev1.GroupVersion.WithResource("stores")
+	var store databasev1.Store
+	if err := baseapi.GetObject(namespace, name, gvr, &store); err != nil {
 		return nil, err
 	}
 
-	var storeObj databasev1.Store
-	err = runtime.DefaultUnstructuredConverter.FromUnstructured(store.Object, &storeObj)
-	if err != nil {
-		return nil, err
-	}
-
-	return &storeObj, nil
+	return &store, nil
 }
 
 // UpdateDatabaseStoreStatus is to demonstrate how to update status of an resource object.
 func UpdateDatabaseStoreStatus(namespace string, name string, status databasev1.StoreStatus) {
 	client := baseapi.GetDefaultDynamicClient()
-	gvr := schema.GroupVersionResource{
-		Group:    databasev1.GroupVersion.Group,
-		Version:  databasev1.GroupVersion.Version,
-		Resource: "stores",
-	}
+	gvr := databasev1.GroupVersion.WithResource("stores")
+
 	store, err := client.Resource(gvr).Namespace(namespace).Get(context.TODO(), name, metav1.GetOptions{})
 	if err != nil {
 		panic(err)

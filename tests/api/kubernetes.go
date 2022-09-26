@@ -4,6 +4,11 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"k8s.io/apimachinery/pkg/runtime"
+	"os"
+	"os/exec"
+	"path/filepath"
+
 	"gopkg.in/yaml.v3"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -12,9 +17,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
-	"os"
-	"os/exec"
-	"path/filepath"
+
 	//
 	// Uncomment to load all auth plugins
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
@@ -104,48 +107,17 @@ func CreateNamespace(client *kubernetes.Clientset, name string) *v1.Namespace {
 	return result
 }
 
-func Exec(command string) (string, error) {
-	cmd := exec.Command("sh", "-c", command)
-	var stdout bytes.Buffer
-	var stderr bytes.Buffer
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-	err := cmd.Run()
+func GetObject(namespace string, name string, gvr schema.GroupVersionResource, out interface{}) error {
+	client := GetDefaultDynamicClient()
+	obj, err := client.Resource(gvr).Namespace(namespace).Get(context.TODO(), name, metav1.GetOptions{})
 	if err != nil {
-		fmt.Println(fmt.Sprint(err) + ": " + stderr.String())
-		return stderr.String(), err
+		return err
 	}
-	return stdout.String(), nil
-}
-
-func KubeApplyFromTemplate(yaml string, params map[string]string) (string, error) {
-	out := os.Expand(yaml, func(k string) string { return params[k] })
-	return KubeApply(out)
-}
-
-func KubeDeleteFromTemplate(yaml string, params map[string]string) (string, error) {
-	out := os.Expand(yaml, func(k string) string { return params[k] })
-	return KubeDelete(out)
-}
-
-func KubeApply(yaml string) (string, error) {
-	cmd := `kubectl apply -f - <<EOF` + yaml + `EOF`
-	out, err := Exec(cmd)
+	err = runtime.DefaultUnstructuredConverter.FromUnstructured(obj.Object, out)
 	if err != nil {
-		return out, err
+		return err
 	}
-
-	return out, nil
-}
-
-func KubeDelete(yaml string) (string, error) {
-	cmd := `kubectl delete -f - <<EOF` + yaml + `EOF`
-	out, err := Exec(cmd)
-	if err != nil {
-		return out, err
-	}
-
-	return out, nil
+	return nil
 }
 
 func KubeUpdateStatus(name, namespace, statusYaml string, gvr schema.GroupVersionResource) error {
@@ -165,4 +137,126 @@ func KubeUpdateStatus(name, namespace, statusYaml string, gvr schema.GroupVersio
 		return err
 	}
 	return nil
+}
+
+func Exec(command string) (string, error) {
+	cmd := exec.Command("sh", "-c", command)
+	var stdout bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println(fmt.Sprint(err) + ": " + stderr.String())
+		return stderr.String(), err
+	}
+	return stdout.String(), nil
+}
+
+func KubeApplyFromTemplate(yaml string, params map[string]string) (string, error) {
+	out := os.Expand(yaml, func(k string) string { return params[k] })
+	return KubeApply(out)
+}
+
+func MustKubeApplyFromTemplate(yaml string, params map[string]string) {
+	_, err := KubeApplyFromTemplate(yaml, params)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func KubeDeleteFromTemplate(yaml string, params map[string]string) (string, error) {
+	out := os.Expand(yaml, func(k string) string { return params[k] })
+	return KubeDelete(out)
+}
+
+func MustKubeDeleteFromTemplate(yaml string, params map[string]string) {
+	_, err := KubeDeleteFromTemplate(yaml, params)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func KubeApply(yaml string) (string, error) {
+	cmd := `kubectl apply -f - <<EOF` + yaml + `EOF`
+	out, err := Exec(cmd)
+	if err != nil {
+		return out, err
+	}
+
+	return out, nil
+}
+
+func MustKubeApply(yaml string) {
+	_, err := KubeApply(yaml)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func KubeDelete(yaml string) (string, error) {
+	cmd := `kubectl delete -f - <<EOF` + yaml + `EOF`
+	out, err := Exec(cmd)
+	if err != nil {
+		return out, err
+	}
+
+	return out, nil
+}
+
+func MustKubeDelete(yaml string) {
+	_, err := KubeDelete(yaml)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func KubeWaitForDeleted(namespace string, groupResourceName string, timeout string) (string, error) {
+	cmd := fmt.Sprintf(`kubectl wait --for=delete --timeout=%s %s -n %s`, timeout, groupResourceName, namespace)
+	out, err := Exec(cmd)
+	if err != nil {
+		return out, err
+	}
+
+	return out, nil
+}
+
+func MustKubeWaitForDeleted(namespace string, groupResourceName string, timeout string) {
+	_, err := KubeWaitForDeleted(namespace, groupResourceName, timeout)
+	if err != nil {
+		panic(err.Error())
+	}
+}
+
+func KubeWaitForCondition(namespace string, groupResourceName string, condition string, timeout string) (string, error) {
+	cmd := fmt.Sprintf(`kubectl wait --for=condition=%s --timeout=%s %s -n %s`, condition, timeout, groupResourceName, namespace)
+	out, err := Exec(cmd)
+	if err != nil {
+		return out, err
+	}
+
+	return out, nil
+}
+
+func MustKubeWaitForCondition(namespace string, groupResourceName string, condition string, timeout string) {
+	_, err := KubeWaitForCondition(namespace, groupResourceName, condition, timeout)
+	if err != nil {
+		panic(err.Error())
+	}
+}
+
+func KubeWaitForReady(namespace string, groupResourceName string, timeout string) (string, error) {
+	out, err := KubeWaitForCondition(namespace, groupResourceName, "ready", timeout)
+	if err != nil {
+		return out, err
+	}
+
+	return out, nil
+}
+
+func MustKubeWaitForReady(namespace string, groupResourceName string, timeout string) {
+	_, err := KubeWaitForReady(namespace, groupResourceName, timeout)
+	if err != nil {
+		panic(err.Error())
+	}
 }
