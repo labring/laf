@@ -36,6 +36,34 @@ const (
 	ApplicationStateStopped      ApplicationState = "Stopped"
 )
 
+type ApplicationConditionType string
+
+const (
+	ApplicationBundleInitialized  ApplicationConditionType = "BundleInitialized"
+	ApplicationRuntimeInitialized ApplicationConditionType = "RuntimeInitialized"
+
+	// ApplicationInitialized = Initialized + DatabaseCreated + ObjectStorageCreated + GatewayCreated + InstanceCreated
+	ApplicationInitialized          ApplicationConditionType = "Initialized"
+	ApplicationDatabaseCreated      ApplicationConditionType = "DatabaseCreated"
+	ApplicationObjectStorageCreated ApplicationConditionType = "ObjectStorageCreated"
+	ApplicationGatewayCreated       ApplicationConditionType = "GatewayCreated"
+	ApplicationInstanceCreated      ApplicationConditionType = "InstanceCreated"
+
+	// ApplicationReady = DatabaseReady + ObjectStorageReady + GatewayReady + InstanceReady
+	ApplicationReady              ApplicationConditionType = "Ready"
+	ApplicationDatabaseReady      ApplicationConditionType = "DatabaseReady"
+	ApplicationObjectStorageReady ApplicationConditionType = "ObjectStorageReady"
+	ApplicationGatewayReady       ApplicationConditionType = "GatewayReady"
+	ApplicationInstanceReady      ApplicationConditionType = "InstanceReady"
+
+	// ApplicationDeleted = DatabaseDeleted + ObjectStorageDeleted + GatewayDeleted + InstanceDeleted
+	ApplicationDeleted              ApplicationConditionType = "Deleted"
+	ApplicationDatabaseDeleted      ApplicationConditionType = "DatabaseDeleted"
+	ApplicationObjectStorageDeleted ApplicationConditionType = "ObjectStorageDeleted"
+	ApplicationGatewayDeleted       ApplicationConditionType = "GatewayDeleted"
+	ApplicationInstanceDeleted      ApplicationConditionType = "InstanceDeleted"
+)
+
 // ApplicationSpec defines the desired state of Application
 type ApplicationSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
@@ -77,18 +105,7 @@ type ApplicationStatus struct {
 	Phase ApplicationState `json:"state,omitempty"`
 
 	// Conditions:
-	// - type: DatabaseCreated
-	//   status: True | False | Unknown
-	//   reason: "DatabaseCreated" | "InsufficientResources" | "Unknown"
-	//   message: "Database created Successfully" | "Insufficient resources to create database" | "Unknown error"
-	// - type: ObjectStorageCreated
-	// - type: GatewayCreated
-	// - type: InstanceCreated
-	// - type: InstanceReady
-	// - type: InstanceDeleted
-	// - type: DatabaseDeleted
-	// - type: ObjectStorageDeleted
-	// - type: GatewayDeleted
+	// @see ApplicationConditionType for the list of conditions
 	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 

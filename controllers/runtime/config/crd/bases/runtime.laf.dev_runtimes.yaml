@@ -57,7 +57,7 @@ spec:
                 description: Type of the runtime. eg. node:laf, node:tcb, go:laf,
                   python:laf, php:laf,  etc.
                 type: string
-              versions:
+              version:
                 description: Version of the runtime
                 properties:
                   autoUpgradeFrom:
@@ -85,7 +85,7 @@ spec:
             required:
             - image
             - type
-            - versions
+            - version
             type: object
           status:
             description: RuntimeStatus defines the observed state of Runtime
