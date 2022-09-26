@@ -74,6 +74,10 @@ type GatewayStatus struct {
 
 	// WebsiteRoutes 是静态站点路由
 	WebsiteRoutes map[string]*GatewayRoute `json:"websiteRoutes,omitempty"`
+
+	// Conditions
+	// - Type: Ready
+	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
 type GatewayRoute struct {

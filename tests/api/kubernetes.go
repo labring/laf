@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"gopkg.in/yaml.v3"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
@@ -144,4 +146,23 @@ func KubeDelete(yaml string) (string, error) {
 	}
 
 	return out, nil
+}
+
+func KubeUpdateStatus(name, namespace, statusYaml string, gvr schema.GroupVersionResource) error {
+	client := GetDefaultDynamicClient()
+	user, err := client.Resource(gvr).Namespace(namespace).Get(context.TODO(), name, metav1.GetOptions{})
+	if err != nil {
+		return err
+	}
+	status := make(map[string]interface{})
+	err = yaml.Unmarshal([]byte(statusYaml), &status)
+	if err != nil {
+		return err
+	}
+	user.Object["status"] = status
+	_, err = client.Resource(gvr).Namespace(namespace).UpdateStatus(context.TODO(), user, metav1.UpdateOptions{})
+	if err != nil {
+		return err
+	}
+	return nil
 }
