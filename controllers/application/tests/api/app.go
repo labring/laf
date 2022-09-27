@@ -14,17 +14,19 @@ metadata:
 spec:
   appid: ${appid}
   state: Running
+  region: ${region}
   bundleName: ${bundleName}
   runtimeName: ${runtimeName}
 `
 
-func CreateApplication(namespace, name, appid, bundleName, runtimeName string) {
+func CreateApplication(namespace, name, appid, bundleName, runtimeName, region string) {
 	baseapi.MustKubeApplyFromTemplate(appYaml, map[string]string{
 		"namespace":   namespace,
 		"name":        name,
 		"appid":       appid,
 		"bundleName":  bundleName,
 		"runtimeName": runtimeName,
+		"region":      region,
 	})
 }
 

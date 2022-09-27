@@ -14,16 +14,18 @@ metadata:
   namespace: ${namespace}
 spec:
   displayName: "Sample Application Name"
+  region: ${region}
   bundleName: ${bundle}
   runtimeName: ${runtime}
 `
 
-func AddCreationForm(namespace string, name string, bundleName string, runtimeName string) {
+func AddCreationForm(namespace string, name string, bundleName string, runtimeName string, region string) {
 	baseapi.MustKubeApplyFromTemplate(formYaml, map[string]string{
 		"name":      name,
 		"namespace": namespace,
 		"bundle":    bundleName,
 		"runtime":   runtimeName,
+		"region":    region,
 	})
 }
 

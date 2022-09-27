@@ -68,6 +68,12 @@ type ApplicationSpec struct {
 	//+kubebuilder:validation:Required
 	AppId string `json:"appid"`
 
+	// Region
+	//+kubebuilder:validation:Required
+	//+kubebuilder:validation:MinLength=3
+	//+kubebuilder:validation:MaxLength=24
+	Region string `json:"region"`
+
 	// State of the application
 	//+kubebuilder:validation:Enum=Running;Stopped;
 	//+kubebuilder:validation:Required
@@ -88,11 +94,17 @@ type ApplicationStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Bundle of the application
-	Bundle Bundle `json:"bundle,omitempty"`
+	// Bundle Name for the application
+	BundleName string `json:"bundleName"`
 
-	// Runtime of the application
-	Runtime runtimev1.Runtime `json:"runtime,omitempty"`
+	// BundleSpec of the application
+	BundleSpec BundleSpec `json:"bundleSpec"`
+
+	// Runtime Name for the application
+	RuntimeName string `json:"runtimeName"`
+
+	// RuntimeSpec of the application
+	RuntimeSpec runtimev1.RuntimeSpec `json:"runtimeSpec,omitempty"`
 
 	// State of the application
 	Phase ApplicationState `json:"state,omitempty"`

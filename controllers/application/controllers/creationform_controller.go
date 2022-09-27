@@ -129,6 +129,7 @@ func (r *CreationFormReconciler) apply(ctx context.Context, form *applicationv1.
 		}
 
 		app.Spec.AppId = form.Status.AppId
+		app.Spec.Region = form.Spec.Region
 		app.Spec.State = applicationv1.ApplicationStateRunning
 		app.Spec.BundleName = form.Spec.BundleName
 		app.Spec.RuntimeName = form.Spec.RuntimeName

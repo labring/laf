@@ -33,7 +33,7 @@ import (
 
 const ApplicationFinalizer = "application.finalizers.laf.dev"
 
-// ApplicationReconciler reconciles a Application object
+// ApplicationReconciler reconciles application object
 type ApplicationReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
@@ -86,7 +86,7 @@ func (r *ApplicationReconciler) apply(ctx context.Context, app *appv1.Applicatio
 	}
 
 	// reconcile runtime
-	if app.Status.Runtime.Name != app.Spec.RuntimeName {
+	if app.Status.RuntimeName != app.Spec.RuntimeName {
 		err := r.reconcileRuntime(ctx, app)
 		if err != nil {
 			return ctrl.Result{}, err
@@ -96,7 +96,7 @@ func (r *ApplicationReconciler) apply(ctx context.Context, app *appv1.Applicatio
 	}
 
 	// reconcile bundle
-	if app.Status.Bundle.Name != app.Spec.BundleName {
+	if app.Status.BundleName != app.Spec.BundleName {
 		if err := r.reconcileBundle(ctx, app); err != nil {
 			return ctrl.Result{}, err
 		}
@@ -345,12 +345,12 @@ func (r *ApplicationReconciler) initialize(ctx context.Context, app *appv1.Appli
 }
 
 // reconcileRuntime reconciles the runtime of the application
-func (r *ApplicationReconciler) reconcileRuntime(ctx context.Context, application *appv1.Application) error {
+func (r *ApplicationReconciler) reconcileRuntime(ctx context.Context, app *appv1.Application) error {
 	// get runtime by name
 	rt := &runtimev1.Runtime{}
 	err := r.Get(ctx, client.ObjectKey{
 		Namespace: common.GetSystemNamespace(),
-		Name:      application.Spec.RuntimeName,
+		Name:      app.Spec.RuntimeName,
 	}, rt)
 	if err != nil {
 		return err
@@ -364,21 +364,22 @@ func (r *ApplicationReconciler) reconcileRuntime(ctx context.Context, applicatio
 		Message:            "runtime initialized",
 		LastTransitionTime: metav1.Now(),
 	}
-	util.SetCondition(&application.Status.Conditions, condition)
+	util.SetCondition(&app.Status.Conditions, condition)
 
 	// update the status
-	application.Status.Runtime = *rt
-	err = r.Status().Update(ctx, application)
+	app.Status.RuntimeName = app.Spec.RuntimeName
+	app.Status.RuntimeSpec = rt.Spec
+	err = r.Status().Update(ctx, app)
 	return err
 }
 
 // reconcileBundle reconciles the bundle of the application
-func (r *ApplicationReconciler) reconcileBundle(ctx context.Context, application *appv1.Application) error {
+func (r *ApplicationReconciler) reconcileBundle(ctx context.Context, app *appv1.Application) error {
 	// get bundle by name
 	bundle := &appv1.Bundle{}
 	err := r.Get(ctx, client.ObjectKey{
 		Namespace: common.GetSystemNamespace(),
-		Name:      application.Spec.BundleName,
+		Name:      app.Spec.BundleName,
 	}, bundle)
 	if err != nil {
 		return err
@@ -392,25 +393,21 @@ func (r *ApplicationReconciler) reconcileBundle(ctx context.Context, application
 		Message:            "bundle initialized",
 		LastTransitionTime: metav1.Now(),
 	}
-	util.SetCondition(&application.Status.Conditions, condition)
-
-	// update the status
-	application.Status.Bundle = *bundle
-	err = r.Status().Update(ctx, application)
+	util.SetCondition(&app.Status.Conditions, condition)
+	app.Status.BundleName = app.Spec.BundleName
+	app.Status.BundleSpec = bundle.Spec
+	err = r.Status().Update(ctx, app)
 	return err
 }
 
 // delete is called when the application is deleted
-func (r *ApplicationReconciler) delete(ctx context.Context, application *appv1.Application) (ctrl.Result, error) {
+func (r *ApplicationReconciler) delete(ctx context.Context, app *appv1.Application) (ctrl.Result, error) {
 
 	// TODO: delete the application
-	if false {
-		return ctrl.Result{}, nil
-	}
 
 	// remove the finalizer
-	application.ObjectMeta.Finalizers = util.RemoveString(application.ObjectMeta.Finalizers, ApplicationFinalizer)
-	err := r.Update(ctx, application)
+	app.ObjectMeta.Finalizers = util.RemoveString(app.ObjectMeta.Finalizers, ApplicationFinalizer)
+	err := r.Update(ctx, app)
 	if err != nil {
 		return ctrl.Result{}, err
 	}
