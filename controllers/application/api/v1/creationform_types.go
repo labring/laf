@@ -28,6 +28,12 @@ type CreationFormSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
+	// Region
+	//+kubebuilder:validation:Required
+	//+kubebuilder:validation:MinLength=3
+	//+kubebuilder:validation:MaxLength=24
+	Region string `json:"region"`
+
 	// DisplayName for the application
 	//+kubebuilder:validation:MinLength=3
 	//+kubebuilder:validation:MaxLength=63
@@ -38,7 +44,7 @@ type CreationFormSpec struct {
 	//+kubebuilder:validation:Required
 	BundleName string `json:"bundleName"`
 
-	// Runtime Name of the application
+	// RuntimeSpec Name of the application
 	//+kubebuilder:validation:Required
 	RuntimeName string `json:"runtimeName"`
 }

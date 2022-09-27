@@ -1,6 +1,8 @@
 package util
 
-import metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+import (
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+)
 
 func GetCondition(conditions []metav1.Condition, conditionType string) *metav1.Condition {
 	for i := range conditions {
@@ -41,29 +43,44 @@ func RemoveCondition(conditions *[]metav1.Condition, conditionType string) {
 	}
 }
 
-func IsConditionTrue(conditions []metav1.Condition, conditionType string) bool {
+func ConditionIsTrue(conditions []metav1.Condition, conditionType string) bool {
 	if condition := GetCondition(conditions, conditionType); condition != nil {
 		return condition.Status == metav1.ConditionTrue
 	}
 	return false
 }
 
-func IsConditionFalse(conditions []metav1.Condition, conditionType string) bool {
-	return IsConditionTrue(conditions, conditionType) == false
+func ConditionIsFalse(conditions []metav1.Condition, conditionType string) bool {
+	if condition := GetCondition(conditions, conditionType); condition != nil {
+		return condition.Status == metav1.ConditionFalse
+	}
+
+	return false
 }
 
-func IsConditionUnknown(conditions []metav1.Condition, conditionType string) bool {
+func ConditionIsUnknown(conditions []metav1.Condition, conditionType string) bool {
 	if condition := GetCondition(conditions, conditionType); condition != nil {
 		return condition.Status == metav1.ConditionUnknown
 	}
 	return false
 }
 
-func IsConditionsTrue(conditions []metav1.Condition, conditionTypes ...string) bool {
+func ConditionIsNotTrue(conditions []metav1.Condition, conditionType string) bool {
+	return !ConditionIsTrue(conditions, conditionType)
+}
+
+func ConditionsAreTrue(conditions []metav1.Condition, conditionTypes ...string) bool {
 	for _, conditionType := range conditionTypes {
-		if IsConditionTrue(conditions, conditionType) == false {
+		if ConditionIsTrue(conditions, conditionType) == false {
 			return false
 		}
 	}
 	return true
+}
+
+func ConditionOutOfDate(conditions []metav1.Condition, conditionType string, duration metav1.Duration) bool {
+	if condition := GetCondition(conditions, conditionType); condition != nil {
+		return condition.LastTransitionTime.Add(duration.Duration).Before(metav1.Now().Time)
+	}
+	return false
 }

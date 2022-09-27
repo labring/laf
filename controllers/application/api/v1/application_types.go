@@ -36,32 +36,25 @@ const (
 	ApplicationStateStopped      ApplicationState = "Stopped"
 )
 
-type ApplicationConditionType string
-
 const (
-	ApplicationBundleInitialized  ApplicationConditionType = "BundleInitialized"
-	ApplicationRuntimeInitialized ApplicationConditionType = "RuntimeInitialized"
+	BundleInitialized  string = "BundleInitialized"
+	RuntimeInitialized string = "RuntimeInitialized"
 
-	// ApplicationInitialized = Initialized + DatabaseCreated + ObjectStorageCreated + GatewayCreated + InstanceCreated
-	ApplicationInitialized          ApplicationConditionType = "Initialized"
-	ApplicationDatabaseCreated      ApplicationConditionType = "DatabaseCreated"
-	ApplicationObjectStorageCreated ApplicationConditionType = "ObjectStorageCreated"
-	ApplicationGatewayCreated       ApplicationConditionType = "GatewayCreated"
-	ApplicationInstanceCreated      ApplicationConditionType = "InstanceCreated"
+	DatabaseCreated      string = "DatabaseCreated"
+	ObjectStorageCreated string = "ObjectStorageCreated"
+	GatewayCreated       string = "GatewayCreated"
 
-	// ApplicationReady = DatabaseReady + ObjectStorageReady + GatewayReady + InstanceReady
-	ApplicationReady              ApplicationConditionType = "Ready"
-	ApplicationDatabaseReady      ApplicationConditionType = "DatabaseReady"
-	ApplicationObjectStorageReady ApplicationConditionType = "ObjectStorageReady"
-	ApplicationGatewayReady       ApplicationConditionType = "GatewayReady"
-	ApplicationInstanceReady      ApplicationConditionType = "InstanceReady"
+	DatabaseReady      string = "DatabaseReady"
+	ObjectStorageReady string = "ObjectStorageReady"
+	GatewayReady       string = "GatewayReady"
 
-	// ApplicationDeleted = DatabaseDeleted + ObjectStorageDeleted + GatewayDeleted + InstanceDeleted
-	ApplicationDeleted              ApplicationConditionType = "Deleted"
-	ApplicationDatabaseDeleted      ApplicationConditionType = "DatabaseDeleted"
-	ApplicationObjectStorageDeleted ApplicationConditionType = "ObjectStorageDeleted"
-	ApplicationGatewayDeleted       ApplicationConditionType = "GatewayDeleted"
-	ApplicationInstanceDeleted      ApplicationConditionType = "InstanceDeleted"
+	Ready           string = "Ready"
+	InstanceCreated string = "InstanceCreated"
+	InstanceDeleted string = "InstanceDeleted"
+
+	DatabaseDeleted string = "DatabaseDeleted"
+	StorageDeleted  string = "ObjectStorageDeleted"
+	GatewayDeleted  string = "GatewayDeleted"
 )
 
 // ApplicationSpec defines the desired state of Application
@@ -74,6 +67,12 @@ type ApplicationSpec struct {
 	//+kubebuilder:validation:MaxLength=24
 	//+kubebuilder:validation:Required
 	AppId string `json:"appid"`
+
+	// Region
+	//+kubebuilder:validation:Required
+	//+kubebuilder:validation:MinLength=3
+	//+kubebuilder:validation:MaxLength=24
+	Region string `json:"region"`
 
 	// State of the application
 	//+kubebuilder:validation:Enum=Running;Stopped;
@@ -95,17 +94,23 @@ type ApplicationStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Bundle of the application
-	Bundle Bundle `json:"bundle,omitempty"`
+	// Bundle Name for the application
+	BundleName string `json:"bundleName"`
 
-	// Runtime of the application
-	Runtime runtimev1.Runtime `json:"runtime,omitempty"`
+	// BundleSpec of the application
+	BundleSpec BundleSpec `json:"bundleSpec"`
+
+	// Runtime Name for the application
+	RuntimeName string `json:"runtimeName"`
+
+	// RuntimeSpec of the application
+	RuntimeSpec runtimev1.RuntimeSpec `json:"runtimeSpec,omitempty"`
 
 	// State of the application
 	Phase ApplicationState `json:"state,omitempty"`
 
 	// Conditions:
-	// @see ApplicationConditionType for the list of conditions
+	// @see string for the list of conditions
 	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 

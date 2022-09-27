@@ -18,6 +18,10 @@ package main
 
 import (
 	"flag"
+	"github.com/labring/laf/controllers/application/resourcer"
+	databasev1 "github.com/labring/laf/controllers/database/api/v1"
+	gatewayv1 "github.com/labring/laf/controllers/gateway/api/v1"
+	ossv1 "github.com/labring/laf/controllers/oss/api/v1"
 	runtimev1 "github.com/labring/laf/controllers/runtime/api/v1"
 	"os"
 
@@ -49,6 +53,9 @@ func init() {
 	//+kubebuilder:scaffold:scheme
 
 	utilruntime.Must(runtimev1.AddToScheme(scheme))
+	utilruntime.Must(databasev1.AddToScheme(scheme))
+	utilruntime.Must(ossv1.AddToScheme(scheme))
+	utilruntime.Must(gatewayv1.AddToScheme(scheme))
 }
 
 func main() {
@@ -91,6 +98,8 @@ func main() {
 		setupLog.Error(err, "unable to start manager")
 		os.Exit(1)
 	}
+
+	resourcer.SetClient(mgr.GetClient())
 
 	if err = (&controllers.ApplicationReconciler{
 		Client: mgr.GetClient(),

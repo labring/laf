@@ -209,7 +209,7 @@ func (r *UserReconciler) selectStore(ctx context.Context, user *ossv1.User) erro
 			continue
 		}
 
-		if !util.IsConditionTrue(s.Status.Conditions, "Ready") {
+		if !util.ConditionIsTrue(s.Status.Conditions, "Ready") {
 			continue
 		}
 

@@ -120,7 +120,7 @@ func (r *BucketReconciler) apply(ctx context.Context, bucket *ossv1.Bucket) (ctr
 	}
 
 	// update ready condition
-	if util.IsConditionTrue(bucket.Status.Conditions, "Ready") == false {
+	if util.ConditionIsTrue(bucket.Status.Conditions, "Ready") == false {
 		condition := metav1.Condition{
 			Type:               "Ready",
 			Status:             metav1.ConditionTrue,

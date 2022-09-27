@@ -87,7 +87,7 @@ func (r *GatewayReconciler) apply(ctx context.Context, gateway *gatewayv1.Gatewa
 	}
 
 	// update ready condition
-	if util.IsConditionTrue(gateway.Status.Conditions, "Ready") == false {
+	if util.ConditionIsTrue(gateway.Status.Conditions, "Ready") == false {
 		condition := metav1.Condition{
 			Type:               "Ready",
 			Status:             metav1.ConditionTrue,
