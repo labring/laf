@@ -68,7 +68,7 @@ func TestCreateOssUser(t *testing.T) {
 		}
 
 		t.Log("verify the condition ready")
-		if util.IsConditionsTrue(user.Status.Conditions, "Ready") != true {
+		if util.ConditionsAreTrue(user.Status.Conditions, "Ready") != true {
 			t.Fatalf("user condition ready is not true")
 		}
 	})

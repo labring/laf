@@ -171,8 +171,7 @@ spec:
                     type: object
                 type: object
               conditions:
-                description: 'Conditions: @see ApplicationConditionType for the list
-                  of conditions'
+                description: 'Conditions: @see string for the list of conditions'
                 items:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct

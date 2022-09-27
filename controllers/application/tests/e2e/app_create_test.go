@@ -32,6 +32,9 @@ func TestCreateApp(t *testing.T) {
 		t.Log("create the app")
 		api.CreateApplication(namespace, name, appid, runtimeName, bundleName)
 
+		t.Log("wait for the app to be ready")
+		api.WaitForApplicationReady(namespace, name)
+
 		t.Log("get the app")
 		app, err := api.GetApplication(namespace, name)
 		if err != nil {

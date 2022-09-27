@@ -101,7 +101,7 @@ func (r *StoreReconciler) apply(ctx context.Context, store *ossv1.Store) (ctrl.R
 	}
 
 	// initialize the store
-	if !util.IsConditionTrue(store.Status.Conditions, "Ready") {
+	if !util.ConditionIsTrue(store.Status.Conditions, "Ready") {
 		err := r.initStore(ctx, store)
 		if err != nil {
 			return ctrl.Result{Requeue: true, RequeueAfter: time.Minute}, err
@@ -111,7 +111,7 @@ func (r *StoreReconciler) apply(ctx context.Context, store *ossv1.Store) (ctrl.R
 	}
 
 	// sync capacity status
-	if util.IsConditionsTrue(store.Status.Conditions, "Ready") {
+	if util.ConditionsAreTrue(store.Status.Conditions, "Ready") {
 		err := r.syncCapacityStatus(ctx, store)
 		if err != nil {
 			return ctrl.Result{Requeue: true, RequeueAfter: time.Minute}, err
