@@ -46,13 +46,12 @@ type DatabaseSpec struct {
 	//+kubebuilder:validation:Required
 	//+kubebuilder:validation:MinLength=6
 	//+kubebuilder:validation:MaxLength=32
-
 	Username string `json:"username"`
 
 	// Password of the database.
 	//+kubebuilder:validation:Required
 	//+kubebuilder:validation:MinLength=16
-	//+kubebuilder:validation:MaxLength=32
+	//+kubebuilder:validation:MaxLength=64
 	Password string `json:"password"`
 }
 

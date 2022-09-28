@@ -48,7 +48,7 @@ spec:
                 type: object
               password:
                 description: Password of the database.
-                maxLength: 32
+                maxLength: 64
                 minLength: 16
                 type: string
               provider:
@@ -59,6 +59,7 @@ spec:
                 description: Region of the database.
                 type: string
               username:
+                description: Username of the database.
                 maxLength: 32
                 minLength: 6
                 type: string

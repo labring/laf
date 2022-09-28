@@ -68,7 +68,7 @@ spec:
               password:
                 description: Password is the secret name of the user, which is used
                   to authenticate the user.
-                maxLength: 32
+                maxLength: 64
                 minLength: 3
                 type: string
               provider:

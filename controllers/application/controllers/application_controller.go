@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	appv1 "github.com/labring/laf/controllers/application/api/v1"
+	"github.com/labring/laf/controllers/application/resourcer"
 	runtimev1 "github.com/labring/laf/controllers/runtime/api/v1"
 	"github.com/labring/laf/pkg/common"
 	"github.com/labring/laf/pkg/util"
@@ -205,7 +206,10 @@ func (r *ApplicationReconciler) initialize(ctx context.Context, app *appv1.Appli
 
 	// create the database
 	if util.ConditionIsNotTrue(app.Status.Conditions, appv1.DatabaseCreated) {
-		// TODO create database
+		// create app database
+		if err := resourcer.CreateDatabase(ctx, r.Client, r.Scheme, app); err != nil {
+			return ctrl.Result{}, err
+		}
 
 		// set condition DatabaseCreated to true
 		condition := metav1.Condition{
@@ -227,7 +231,10 @@ func (r *ApplicationReconciler) initialize(ctx context.Context, app *appv1.Appli
 
 	// create the oss user
 	if util.ConditionIsNotTrue(app.Status.Conditions, appv1.ObjectStorageCreated) {
-		// TODO create oss user
+		// create oss user
+		if err := resourcer.CreateObjectStorageUser(ctx, r.Client, r.Scheme, app); err != nil {
+			return ctrl.Result{}, err
+		}
 
 		// set condition ObjectStorageCreated to true
 		condition := metav1.Condition{
@@ -249,7 +256,10 @@ func (r *ApplicationReconciler) initialize(ctx context.Context, app *appv1.Appli
 
 	// create the gateway
 	if util.ConditionIsNotTrue(app.Status.Conditions, appv1.GatewayCreated) {
-		// TODO create the gateway
+		// create the gateway
+		if err := resourcer.CreateGateway(ctx, r.Client, r.Scheme, app); err != nil {
+			return ctrl.Result{}, err
+		}
 
 		// set condition GatewayCreated to true
 		condition := metav1.Condition{

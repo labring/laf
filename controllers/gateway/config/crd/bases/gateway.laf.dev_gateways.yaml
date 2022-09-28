@@ -36,8 +36,6 @@ spec:
             description: GatewaySpec defines the desired state of Gateway
             properties:
               appid:
-                description: AppId是应用id，字母数字组成，长度5至16位，必须存在
-                pattern: ^[a-zA-Z0-9]{5,16}$
                 type: string
               buckets:
                 description: Buckets是存储桶, 是一个数组，可选存在

@@ -52,9 +52,9 @@ const (
 	InstanceCreated string = "InstanceCreated"
 	InstanceDeleted string = "InstanceDeleted"
 
-	DatabaseDeleted string = "DatabaseDeleted"
-	StorageDeleted  string = "ObjectStorageDeleted"
-	GatewayDeleted  string = "GatewayDeleted"
+	DatabaseDeleted      string = "DatabaseDeleted"
+	ObjectStorageDeleted string = "ObjectStorageDeleted"
+	GatewayDeleted       string = "GatewayDeleted"
 )
 
 // ApplicationSpec defines the desired state of Application

@@ -3,6 +3,8 @@ package e2e
 import (
 	appv1 "github.com/labring/laf/controllers/application/api/v1"
 	"github.com/labring/laf/controllers/application/tests/api"
+	api2 "github.com/labring/laf/controllers/database/tests/api"
+	api3 "github.com/labring/laf/controllers/oss/tests/api"
 	runtimeapi "github.com/labring/laf/controllers/runtime/tests/api"
 	"github.com/labring/laf/pkg/common"
 	baseapi "github.com/labring/laf/tests/api"
@@ -43,11 +45,6 @@ func TestCreateApp(t *testing.T) {
 			t.Fatalf("ERROR: get app failed: %v", err)
 		}
 
-		t.Log("verify the app")
-		if app.Name != name {
-			t.Fatalf("ERROR: app name is not correct, expect %s, got %s", name, app.Name)
-		}
-
 		t.Log("verify the runtime")
 		if app.Status.RuntimeName != runtimeName {
 			t.Errorf("ERROR: runtime name expect %s got %s", runtimeName, app.Status.RuntimeName)
@@ -57,7 +54,7 @@ func TestCreateApp(t *testing.T) {
 			t.Errorf("ERROR: invalid runtime type got %s", app.Status.RuntimeSpec.Type)
 		}
 
-		t.Log("verify")
+		t.Log("verify the phase is running")
 		if app.Status.Phase != appv1.ApplicationStateRunning {
 			t.Errorf("ERROR: invalid app phase got %s", app.Status.Phase)
 		}
@@ -70,6 +67,69 @@ func TestCreateApp(t *testing.T) {
 		if app.Status.BundleSpec.DisplayName == "" {
 			t.Errorf("ERROR: bundle display name cannot be empty")
 		}
+
+		t.Log("verify the database created")
+		database, err := api2.GetDatabase(namespace, "mongodb")
+		if err != nil {
+			t.Errorf("ERROR: get database failed: %v", err)
+		}
+
+		if database.Spec.Username != appid {
+			t.Errorf("ERROR: database username expect %s got %s", appid, database.Spec.Username)
+		}
+
+		if database.Spec.Password == "" {
+			t.Errorf("ERROR: database password cannot be empty")
+		}
+
+		if database.Spec.Capacity.Storage != app.Status.BundleSpec.DatabaseCapacity {
+			t.Errorf("ERROR: database capacity expect %s got %s", app.Status.BundleSpec.DatabaseCapacity.String(), database.Spec.Capacity.Storage.String())
+		}
+
+		if database.Labels["laf.dev/appid"] != appid {
+			t.Errorf("ERROR: database appid expect %s got %s", appid, database.Labels["laf.dev/appid"])
+		}
+
+		if database.OwnerReferences[0].Name != name {
+			t.Errorf("ERROR: db owner reference expect %s got %s", name, database.OwnerReferences[0].Name)
+		}
+
+		t.Log("verify the oss user")
+		ossUser, err := api3.GetOssUser(namespace, "oss")
+		if err != nil {
+			t.Errorf("ERROR: get oss user failed: %v", err)
+		}
+
+		if ossUser.Spec.AppId != appid {
+			t.Errorf("ERROR: oss user appid expect %s got %s", appid, ossUser.Spec.AppId)
+		}
+
+		if ossUser.Spec.Region != region {
+			t.Errorf("ERROR: oss user region expect %s got %s", region, ossUser.Spec.Region)
+		}
+
+		if ossUser.Spec.Provider != "minio" {
+			t.Errorf("ERROR: oss user provider expect minio got %s", ossUser.Spec.Provider)
+		}
+
+		if ossUser.Spec.Password == "" {
+			t.Errorf("ERROR: oss user password cannot be empty")
+		}
+
+		if ossUser.Spec.Capacity.Storage != app.Status.BundleSpec.StorageCapacity {
+			t.Errorf("ERROR: oss user capacity expect %s got %s", app.Status.BundleSpec.StorageCapacity.String(), ossUser.Spec.Capacity.Storage.String())
+		}
+
+		if ossUser.Labels["laf.dev/appid"] != appid {
+			t.Errorf("ERROR: oss user appid expect %s got %s", appid, ossUser.Labels["laf.dev/appid"])
+		}
+
+		if ossUser.OwnerReferences[0].Name != name {
+			t.Errorf("ERROR: oss user owner reference expect %s got %s", name, ossUser.OwnerReferences[0].Name)
+		}
+
+		// TODO? verify the gateway while gateway testing api supported
+		t.Log("TODO: verify the gateway")
 
 	})
 
