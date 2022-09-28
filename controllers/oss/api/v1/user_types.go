@@ -41,7 +41,7 @@ type UserSpec struct {
 
 	// Password is the secret name of the user, which is used to authenticate the user.
 	//+kubebuilder:validation:MinLength=3
-	//+kubebuilder:validation:MaxLength=32
+	//+kubebuilder:validation:MaxLength=64
 	//+kubebuilder:validation:Required
 	Password string `json:"password"`
 

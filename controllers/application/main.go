@@ -18,7 +18,6 @@ package main
 
 import (
 	"flag"
-	"github.com/labring/laf/controllers/application/resourcer"
 	databasev1 "github.com/labring/laf/controllers/database/api/v1"
 	gatewayv1 "github.com/labring/laf/controllers/gateway/api/v1"
 	ossv1 "github.com/labring/laf/controllers/oss/api/v1"
@@ -98,8 +97,6 @@ func main() {
 		setupLog.Error(err, "unable to start manager")
 		os.Exit(1)
 	}
-
-	resourcer.SetClient(mgr.GetClient())
 
 	if err = (&controllers.ApplicationReconciler{
 		Client: mgr.GetClient(),

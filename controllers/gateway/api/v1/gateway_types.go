@@ -45,10 +45,6 @@ type GatewaySpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of Gateway. Edit gateway_types.go to remove/update
-
-	// AppId是应用id，字母数字组成，长度5至16位，必须存在
-	// +kubebuilder:validation:Pattern="^[a-zA-Z0-9]{5,16}$"
 	// +kubebuilder:validation:Required
 	AppId string `json:"appid"`
 
