@@ -171,9 +171,14 @@
 - [微信群](https://oss.lafyun.com/wofnib-image/2022-04-22-14-21-MRJH9o.png)
 - [QQ 群：603059673](https://jq.qq.com/?_wv=1027&k=DdRCCiuz)
 
-## 架构图
+## 架构图 - 简
 
 ![image](https://user-images.githubusercontent.com/7122237/193285679-a06b593a-c1bd-465e-9647-88fdd87dda4e.png)
+
+## 架构图 - 整
+
+![image](https://user-images.githubusercontent.com/7122237/193356979-d8e78594-f50d-4360-85c2-9c379341106d.png)
+
 
 ## 🌟 Star History
 
