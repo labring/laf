@@ -22,7 +22,8 @@ labels: [ "question" ]
 body:
   - type: markdown
     attributes:
-      For better global communication, Please write in English.
+      value: |
+        For better global communication, Please write in English.
         (为了更好的国际化交流，请您使用英语描述您的问题。)
 
         You can use the following translation tool to translate, but please check the translation carefully after translation to avoid misinterpretation:
