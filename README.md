@@ -171,6 +171,10 @@
 - [微信群](https://oss.lafyun.com/wofnib-image/2022-04-22-14-21-MRJH9o.png)
 - [QQ 群：603059673](https://jq.qq.com/?_wv=1027&k=DdRCCiuz)
 
+## 架构图
+
+![image](https://user-images.githubusercontent.com/7122237/193285679-a06b593a-c1bd-465e-9647-88fdd87dda4e.png)
+
 ## 🌟 Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=labring/laf&type=Date)](https://star-history.com/#labring/laf&Date)
