@@ -171,14 +171,14 @@
 - [微信群](https://oss.lafyun.com/wofnib-image/2022-04-22-14-21-MRJH9o.png)
 - [QQ 群：603059673](https://jq.qq.com/?_wv=1027&k=DdRCCiuz)
 
-## 架构图 - 简
-
-![image](https://user-images.githubusercontent.com/7122237/193285679-a06b593a-c1bd-465e-9647-88fdd87dda4e.png)
-
-## 架构图 - 整
+## :ferris_wheel:架构
 
 ![image](https://user-images.githubusercontent.com/7122237/193356979-d8e78594-f50d-4360-85c2-9c379341106d.png)
 
+> 详见 [laf 架构说明文档](https://github.com/labring/laf/discussions/353)
+
+## :point_right: Roadmap
+> [laf product key & roadmap](https://github.com/labring/laf/discussions/354)
 
 ## 🌟 Star History
 
