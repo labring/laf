@@ -167,7 +167,7 @@
 
 ## 🏘️ 社群
 
-- [Discord](https://discord.gg/uWZqAwwdvy)【推荐】
+- [Discord](https://discord.gg/uWZqAwwdvy)
 - [微信群](https://oss.lafyun.com/wofnib-image/2022-04-22-14-21-MRJH9o.png)
 - [QQ 群：603059673](https://jq.qq.com/?_wv=1027&k=DdRCCiuz)
 
