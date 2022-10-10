@@ -1,0 +1,6 @@
+apiVersion: instance.laf.dev/v1
+kind: Instance
+metadata:
+  name: instance-sample
+spec:
+  # TODO(user): Add fields here
