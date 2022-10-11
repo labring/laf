@@ -18,6 +18,11 @@ package controllers
 
 import (
 	"context"
+	databasev1 "github.com/labring/laf/controllers/database/api/v1"
+	"github.com/labring/laf/controllers/runtime/dbm"
+	"github.com/labring/laf/pkg/util"
+	"k8s.io/apimachinery/pkg/types"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -26,6 +31,8 @@ import (
 
 	runtimev1 "github.com/labring/laf/controllers/runtime/api/v1"
 )
+
+const functionFinalizer = "function.runtime.laf.io"
 
 // FunctionReconciler reconciles a Function object
 type FunctionReconciler struct {
@@ -49,8 +56,111 @@ type FunctionReconciler struct {
 func (r *FunctionReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 
-	// TODO(user): your logic here
+	// get app database
+	database := &databasev1.Database{}
+	databaseName := "mongodb"
+	err := r.Get(ctx, types.NamespacedName{Namespace: req.Namespace, Name: databaseName}, database)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+	fm, err := dbm.NewFunctionManager(ctx, database.Status.ConnectionUri, database.Name)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+	defer fm.Disconnect()
 
+	// get function
+	function := &runtimev1.Function{}
+	err = r.Get(ctx, req.NamespacedName, function)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+
+	if !function.DeletionTimestamp.IsZero() {
+		return r.Delete(ctx, function, fm)
+	}
+
+	return r.apply(ctx, function, fm)
+}
+
+func (r *FunctionReconciler) apply(ctx context.Context, function *runtimev1.Function, fm *dbm.FunctionManager) (ctrl.Result, error) {
+
+	// add finalizer if not present
+	if controllerutil.AddFinalizer(function, functionFinalizer) {
+		if err := r.Update(ctx, function); err != nil {
+			return ctrl.Result{}, err
+		}
+		return ctrl.Result{}, nil
+	}
+
+	//get database functionData
+	functionData, err := fm.Get(function.Name)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+
+	// if functionData is nil, create function
+	if functionData == nil {
+		err := fm.Insert(dbm.FunctionData{
+			Name:        function.Name,
+			Description: function.Spec.Description,
+			Code:        function.Spec.Source.Codes,
+			Methods:     function.Spec.Methods,
+			Websocket:   function.Spec.Websocket,
+			Version:     function.Spec.Source.Version,
+		})
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+
+		// update function status
+		function.Status = runtimev1.FunctionStatus{
+			State: "Deployed",
+		}
+		if err := r.Status().Update(ctx, function); err != nil {
+			return ctrl.Result{}, err
+		}
+		return ctrl.Result{}, nil
+	}
+
+	// if functionData is not nil, check need update
+	updateMap := make(map[string]interface{})
+	if functionData.Version != function.Spec.Source.Version {
+		updateMap["version"] = function.Spec.Source.Version
+		updateMap["code"] = function.Spec.Source.Codes
+	}
+	if functionData.Description != function.Spec.Description {
+		updateMap["description"] = function.Spec.Description
+	}
+	if !util.EqualsSlice(functionData.Methods, function.Spec.Methods) {
+		updateMap["methods"] = function.Spec.Methods
+	}
+	if functionData.Websocket != function.Spec.Websocket {
+		updateMap["websocket"] = function.Spec.Websocket
+	}
+
+	if len(updateMap) > 0 {
+		err := fm.Update(function.Name, map[string]interface{}{
+			"$set": updateMap,
+		})
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+		return ctrl.Result{}, nil
+	}
+	return ctrl.Result{}, nil
+}
+
+func (r *FunctionReconciler) Delete(ctx context.Context, function *runtimev1.Function, fm *dbm.FunctionManager) (ctrl.Result, error) {
+	if err := fm.Delete(function.Name); err != nil {
+		return ctrl.Result{}, err
+	}
+	// remove the finalizer
+	if controllerutil.RemoveFinalizer(function, functionFinalizer) {
+		if err := r.Update(ctx, function); err != nil {
+			return ctrl.Result{}, err
+		}
+	}
 	return ctrl.Result{}, nil
 }
 
