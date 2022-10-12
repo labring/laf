@@ -24,13 +24,15 @@ import (
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 type RuntimeImageGroup struct {
-	// Main image
+	// Main image (e.g. docker.io/lafyun/app-service:latest)
 	Main string `json:"main"`
 
 	// Sidecar image
 	Sidecar string `json:"sidecar,omitempty"`
 
-	// Init image
+	// Init image (e.g. docker.io/lafyun/app-service-init:latest)
+	// - install the dependencies (e.g. npm install)
+	// - prepare the functions (deploy & compile)
 	Init string `json:"init,omitempty"`
 }
 

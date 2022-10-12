@@ -7,4 +7,5 @@ use (
 	./controllers/oss
 	./controllers/gateway
 	./controllers/runtime
+	controllers/instance
 )
