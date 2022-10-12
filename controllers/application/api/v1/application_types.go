@@ -110,7 +110,6 @@ type ApplicationStatus struct {
 	Phase ApplicationState `json:"state,omitempty"`
 
 	// Conditions:
-	// @see string for the list of conditions
 	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 

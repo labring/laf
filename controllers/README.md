@@ -1,7 +1,7 @@
 ### Create a new CRD project
 
 ```shell
-# in ./controllers/
+fd# in ./controllers/
 mkdir mycrd
 kubebuilder init --domain laf.dev --project-name mycrd --repo github.com/labring/laf/controllers/mycrd
 
