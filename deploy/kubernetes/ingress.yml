@@ -186,7 +186,7 @@ metadata:
   namespace: laf-apps
   annotations:
     nginx.ingress.kubernetes.io/server-snippet: |
-      resolver kube-dns.kube-system.svc.cluster.local valid=10s;
+      resolver kubernetes.default.svc.cluster.local valid=10s;
       location ~ "^/(.*)" {
         more_set_headers "request-id: $req_id";
         add_header Access-Control-Allow-Origin * always;

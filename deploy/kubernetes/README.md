@@ -20,4 +20,9 @@ kubectl apply -f .
 
 ## Trouble shooting
 
+> If ingress-nginx-controller is not listening on port 80 on your host machine,
+please refer to [`this link`](https://github.com/kubernetes/ingress-nginx/issues/4799#issuecomment-560406420).
+
+> Please do re-apply with `ingress.yaml` by kubectl after modifying config of ingress-nginx-controller for every once.
+
 > TODO
