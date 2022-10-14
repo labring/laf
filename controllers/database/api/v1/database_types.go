@@ -88,6 +88,9 @@ type DatabaseCapacity struct {
 
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
+//+kubebuilder:resource:shortName=database
+//+kubebuilder:printcolumn:name="PROVIDER",type=string,JSONPath=`.spec.provider`
+//+kubebuilder:printcolumn:name="REGION",type=string,JSONPath=`.spec.region`
 
 // Database is the Schema for the databases API
 type Database struct {
