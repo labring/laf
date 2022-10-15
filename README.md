@@ -165,20 +165,20 @@
 
 [本地部署](./deploy/README.md)
 
-## 🏘️ 社群
+## 🏘️ Community Groups
 
 - [Discord](https://discord.gg/uWZqAwwdvy)
 - [微信群](https://oss.lafyun.com/wofnib-image/2022-04-22-14-21-MRJH9o.png)
 - [QQ 群：603059673](https://jq.qq.com/?_wv=1027&k=DdRCCiuz)
 
-## :ferris_wheel:架构
+## :ferris_wheel:Architecture
 
 ![image](https://user-images.githubusercontent.com/7122237/193356979-d8e78594-f50d-4360-85c2-9c379341106d.png)
 
 > 详见 [laf 架构说明文档](https://github.com/labring/laf/discussions/353)
 
 ## :point_right: Roadmap
-- [laf product key](https://github.com/labring/laf/discussions/354)
+- [**laf product key**](https://github.com/labring/laf/discussions/354)
 - [**laf project roadmap**](https://github.com/orgs/labring/projects/5/views/1)
 
 
