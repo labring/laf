@@ -178,7 +178,9 @@
 > 详见 [laf 架构说明文档](https://github.com/labring/laf/discussions/353)
 
 ## :point_right: Roadmap
-> [laf product key & roadmap](https://github.com/labring/laf/discussions/354)
+- [laf product key](https://github.com/labring/laf/discussions/354)
+- [**laf project roadmap**](https://github.com/orgs/labring/projects/5/views/1)
+
 
 ## 🌟 Star History
 
