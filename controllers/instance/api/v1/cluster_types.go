@@ -17,11 +17,37 @@ limitations under the License.
 package v1
 
 import (
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
+
+// Capacity defines the capacity
+type Capacity struct {
+	// The storage space.
+	//+optional
+	CPU resource.Quantity `json:"cpu,omitempty"`
+
+	// The number of databases. The default value is 0 which means unlimited.
+	//+optional
+	Memory resource.Quantity `json:"memory,omitempty"`
+}
+
+type ClientConfig struct {
+	//+kubebuilder:validation:Required
+	CertificateAuthorityData string `json:"certificateAuthorityData,omitempty"`
+
+	//+kubebuilder:validation:Required
+	Server string `json:"server,omitempty"`
+
+	//+kubebuilder:validation:Required
+	UserClientCertificateData string `json:"userClientCertificateData,omitempty"`
+
+	//+kubebuilder:validation:Required
+	UserClientKeyData string `json:"userClientKeyData,omitempty"`
+}
 
 // ClusterSpec defines the desired state of Cluster
 type ClusterSpec struct {
@@ -38,13 +64,23 @@ type ClusterSpec struct {
 
 	// ClientConfig of the cluster (e.g. kubeconfig)
 	//+kubebuilder:validation:Required
-	ClientConfig string `json:"clientConfig,omitempty"`
+	ClientConfig ClientConfig `json:"clientConfig,omitempty"`
+
+	// The capacity of the cluster.
+	//+optional
+	Capacity *Capacity `json:"capacity,omitempty"`
 }
 
 // ClusterStatus defines the observed state of Cluster
 type ClusterStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+
+	// The capacity of the cluster.
+	//+optional
+	Used *Capacity `json:"used,omitempty"`
+
+	InstanceCount int `json:"instanceCount,omitempty"`
 }
 
 //+kubebuilder:object:root=true
