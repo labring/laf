@@ -40,6 +40,7 @@ const (
 
 const (
 	ClusterSelected              string = "clusterSelected"
+	DeploymentAndServiceCreating string = "DeploymentAndServiceCreating"
 	DeploymentAndServiceCreated  string = "DeploymentAndServiceCreated"
 	Ready                        string = "Ready"
 	DeploymentAndServiceStopping string = "DeploymentAndServiceStopping"

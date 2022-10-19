@@ -35,6 +35,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	instancev1 "github/labring/laf/controllers/instance/api/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 )
 
 // InstanceReconciler reconciles a Instance object
@@ -76,13 +77,11 @@ func (r *InstanceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		_log.Info("select cluster [" + instance.Status.ClusterName + "]")
 	}
 
-	if instance.Status.Status != instance.Spec.State {
-		if instance.Spec.State == instancev1.InstanceStateRunning {
-			return r.runInstance(ctx, &instance)
-		}
-		if instance.Spec.State == instancev1.InstanceStateStopped {
-			return r.stopInstance(ctx, &instance)
-		}
+	if instance.Spec.State == instancev1.InstanceStateRunning {
+		return r.runInstance(ctx, &instance)
+	}
+	if instance.Spec.State == instancev1.InstanceStateStopped {
+		return r.stopInstance(ctx, &instance)
 	}
 
 	return ctrl.Result{}, nil
@@ -147,32 +146,34 @@ func (r *InstanceReconciler) runInstance(ctx context.Context, instance *instance
 	_log := log.FromContext(ctx)
 
 	if util.ConditionIsTrue(instance.Status.Conditions, instancev1.Ready) {
-		// TODO merge deployment
-		instance.Status.Status = "RUNNING"
-		err := r.Status().Update(ctx, instance)
-		if err != nil {
+		instance.Status.Status = instancev1.InstanceStateRunning
+		if err := r.Status().Update(ctx, instance); err != nil {
 			return ctrl.Result{}, err
 		}
-		_log.Info("instance created")
+		_log.Info("instance is ready")
 		return ctrl.Result{}, nil
 	}
+
 	if util.ConditionIsNotTrue(instance.Status.Conditions, instancev1.DeploymentAndServiceCreated) {
 		if err := r.deployInstanceToCluster(ctx, instance); err != nil {
 			return ctrl.Result{}, err
 		}
 		util.SetCondition(&instance.Status.Conditions, metav1.Condition{
-			Type:               instancev1.DeploymentAndServiceCreated,
+			Type:               instancev1.DeploymentAndServiceCreating,
 			Status:             metav1.ConditionTrue,
 			LastTransitionTime: metav1.Now(),
-			Reason:             "DeploymentAndServiceCreated",
-			Message:            "The deployment and service created",
+			Reason:             "DeploymentAndServiceCreating",
+			Message:            "The deployment and service are DeploymentAndServiceCreating",
 		})
+	}
+	if util.ConditionIsTrue(instance.Status.Conditions, instancev1.DeploymentAndServiceCreating) {
+		// todo check deployment and service is ready
 		util.SetCondition(&instance.Status.Conditions, metav1.Condition{
 			Type:               instancev1.Ready,
 			Status:             metav1.ConditionTrue,
 			LastTransitionTime: metav1.Now(),
 			Reason:             "Ready",
-			Message:            "The deployment is ready",
+			Message:            "The deployment and service Ready",
 		})
 		err := r.Status().Update(ctx, instance)
 		if err != nil {
@@ -187,11 +188,10 @@ func (r *InstanceReconciler) runInstance(ctx context.Context, instance *instance
 
 func (r *InstanceReconciler) stopInstance(ctx context.Context, instance *instancev1.Instance) (ctrl.Result, error) {
 	_log := log.FromContext(ctx)
-	if util.ConditionIsNotTrue(instance.Status.Conditions, instancev1.DeploymentAndServiceStopping) {
+	if util.ConditionIsNotTrue(instance.Status.Conditions, instancev1.DeploymentAndServiceStopped) {
 		if err := r.deleteInstanceFromCluster(ctx, instance); err != nil {
 			return ctrl.Result{}, err
 		}
-
 		condition := metav1.Condition{
 			Type:               instancev1.DeploymentAndServiceStopping,
 			Status:             metav1.ConditionTrue,
@@ -207,7 +207,7 @@ func (r *InstanceReconciler) stopInstance(ctx context.Context, instance *instanc
 		_log.Info("The deployment and service are stopping")
 		return ctrl.Result{}, nil
 	}
-	if util.ConditionIsNotTrue(instance.Status.Conditions, instancev1.DeploymentAndServiceStopped) {
+	if util.ConditionIsTrue(instance.Status.Conditions, instancev1.DeploymentAndServiceStopping) {
 		// todo check deployment and service removed  from cluster
 		condition := metav1.Condition{
 			Type:               instancev1.DeploymentAndServiceStopped,
@@ -233,29 +233,47 @@ func (r *InstanceReconciler) deployInstanceToCluster(ctx context.Context, instan
 	if kubernetesClient, err = driver.GetKubernetesClient(instance.Status.ClusterConfig); err != nil {
 		return err
 	}
-	var defaultTerminationGracePeriodSeconds int64 = 15
 
+	if err = createNamespaceIfNotExist(ctx, kubernetesClient, instance.Namespace); err != nil {
+		return err
+	}
+
+	labels := map[string]string{
+		"appid":  instance.Spec.AppId,
+		"region": instance.Spec.Region,
+	}
+	if err := r.applyDeployment(ctx, kubernetesClient, labels, instance); err != nil {
+		return err
+	}
+
+	if err := r.applySvc(ctx, kubernetesClient, labels, instance); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *InstanceReconciler) applyDeployment(ctx context.Context, kubernetesClient *kubernetes.Clientset, labels map[string]string, instance *instancev1.Instance) (err error) {
+	var defaultTerminationGracePeriodSeconds int64 = 15
+	deploymentName := fmt.Sprintf("%s-deployment", instance.Name)
 	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: getDeploymentName(instance.Name),
-			Labels: map[string]string{
-				"appId":  instance.Spec.AppId,
-				"region": instance.Spec.Region,
-			},
+			Name:   deploymentName,
+			Labels: labels,
 		},
 		Spec: appsv1.DeploymentSpec{
 			Replicas: instance.Spec.Replica,
+			Selector: &metav1.LabelSelector{
+				MatchLabels: labels,
+			},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
-					Labels: map[string]string{
-						"appId":  instance.Spec.AppId,
-						"region": instance.Spec.Region,
-					},
+					Labels: labels,
 				},
 				Spec: corev1.PodSpec{
 					TerminationGracePeriodSeconds: &defaultTerminationGracePeriodSeconds,
 					Containers: []corev1.Container{ // todo 是否还有其他的容器需要初始化，类似initContainer
 						{
+							Name:    "main",
 							Image:   instance.Spec.Runtime.Image.Main,
 							Command: []string{"sh", "/app/start.sh"},
 							Env:     r.buildEnv(ctx, instance),
@@ -274,20 +292,53 @@ func (r *InstanceReconciler) deployInstanceToCluster(ctx context.Context, instan
 			},
 		},
 	}
-	var exist *appsv1.Deployment
-	if exist, err = kubernetesClient.AppsV1().Deployments(instance.Namespace).Get(ctx, getDeploymentName(instance.Name), metav1.GetOptions{}); client.IgnoreNotFound(err) != nil {
-		return err
-	}
-	if exist != nil {
-		if _, err = kubernetesClient.AppsV1().Deployments(instance.Namespace).Update(ctx, deployment, metav1.UpdateOptions{}); err != nil {
-
-		}
+	_, err = kubernetesClient.AppsV1().Deployments(instance.Namespace).Get(ctx, deploymentName, metav1.GetOptions{})
+	if apierrors.IsAlreadyExists(err) {
+		// todo update deployment
 	} else {
-		if _, err = kubernetesClient.AppsV1().Deployments(instance.Namespace).Create(ctx, deployment, metav1.CreateOptions{}); err != nil {
-			return err
-		}
+		_, err = kubernetesClient.AppsV1().Deployments(instance.Namespace).Create(ctx, deployment, metav1.CreateOptions{})
 	}
-	return nil
+	return err
+}
+
+func (r *InstanceReconciler) applySvc(ctx context.Context, kubernetesClient *kubernetes.Clientset, labels map[string]string, instance *instancev1.Instance) (err error) {
+	svcName := fmt.Sprintf("%s-svc", instance.Name)
+	svc := &corev1.Service{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   svcName,
+			Labels: labels,
+		},
+		Spec: corev1.ServiceSpec{
+			Selector: labels,
+			Type:     corev1.ServiceTypeClusterIP,
+			Ports: []corev1.ServicePort{
+				{
+					TargetPort: intstr.FromInt(8000),
+					Port:       8000,
+				},
+			},
+		},
+	}
+	_, err = kubernetesClient.CoreV1().Services(instance.Namespace).Get(ctx, svcName, metav1.GetOptions{})
+	if apierrors.IsAlreadyExists(err) {
+		// todo update svc
+	} else {
+		_, err = kubernetesClient.CoreV1().Services(instance.Namespace).Create(ctx, svc, metav1.CreateOptions{})
+	}
+	return err
+}
+func createNamespaceIfNotExist(ctx context.Context, kubernetesClient *kubernetes.Clientset, namespace string) error {
+	ns := &corev1.Namespace{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: namespace,
+		},
+	}
+	_, err := kubernetesClient.CoreV1().Namespaces().Get(context.TODO(), namespace, metav1.GetOptions{})
+	if err != nil {
+		_, err = kubernetesClient.CoreV1().Namespaces().Create(ctx, ns, metav1.CreateOptions{})
+	}
+
+	return err
 }
 
 func (r *InstanceReconciler) deleteInstanceFromCluster(ctx context.Context, instance *instancev1.Instance) (err error) {
@@ -342,8 +393,4 @@ func (r *InstanceReconciler) buildProbe(initialDelaySeconds, periodSeconds, time
 		TimeoutSeconds:      timeoutSeconds,
 		FailureThreshold:    failureThreshold,
 	}
-}
-
-func getDeploymentName(instanceName string) string {
-	return fmt.Sprintf("%s-deployment", instanceName)
 }
