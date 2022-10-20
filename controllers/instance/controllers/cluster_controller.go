@@ -18,7 +18,7 @@ package controllers
 
 import (
 	"context"
-
+	"github.com/labring/laf/pkg/util"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -26,6 +26,8 @@ import (
 
 	instancev1 "github/labring/laf/controllers/instance/api/v1"
 )
+
+const clusterFinalizer = "cluster.instance.laf.dev"
 
 // ClusterReconciler reconciles a Cluster object
 type ClusterReconciler struct {
@@ -47,9 +49,19 @@ type ClusterReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.2/pkg/reconcile
 func (r *ClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	_log := log.FromContext(ctx)
+	_log.Info("reconcile cluster")
+	// get the cluster
+	var cluster instancev1.Cluster
+	if err := r.Get(ctx, req.NamespacedName, &cluster); err != nil {
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
 
-	// TODO(user): your logic here
+	// reconcile the deletion
+	if !cluster.DeletionTimestamp.IsZero() {
+		_log.Info("deleting cluster", "cluster", cluster.Name)
+		return r.delete(ctx, &cluster)
+	}
 
 	return ctrl.Result{}, nil
 }
@@ -59,4 +71,18 @@ func (r *ClusterReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&instancev1.Cluster{}).
 		Complete(r)
+}
+
+// delete
+func (r *ClusterReconciler) delete(ctx context.Context, cluster *instancev1.Cluster) (ctrl.Result, error) {
+	_log := log.FromContext(ctx)
+
+	// TODO delete rejection
+	_log.Info("removing finalizer", "cluster", cluster.Name)
+
+	cluster.ObjectMeta.Finalizers = util.RemoveString(cluster.ObjectMeta.Finalizers, clusterFinalizer)
+	if err := r.Update(ctx, cluster); err != nil {
+		return ctrl.Result{}, err
+	}
+	return ctrl.Result{}, nil
 }
