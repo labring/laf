@@ -8,6 +8,9 @@ on:
       - "docs/**"
       - "**/*.md"
       - "**/*.yaml"
+    paths:
+      - "controllers/**"
+      
 env:
   # Common versions
   GO_VERSION: "1.19"
