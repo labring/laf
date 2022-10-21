@@ -3,6 +3,7 @@ module github.com/labring/laf
 go 1.18
 
 require (
+	github.com/matoous/go-nanoid v1.5.0
 	github.com/matoous/go-nanoid/v2 v2.0.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.25.1
