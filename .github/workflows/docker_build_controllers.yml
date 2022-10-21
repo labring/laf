@@ -8,8 +8,6 @@ on:
       - "docs/**"
       - "**/*.md"
       - "**/*.yaml"
-    paths:
-      - "controllers/**"
       
 env:
   # Common versions
