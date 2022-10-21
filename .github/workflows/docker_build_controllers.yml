@@ -16,6 +16,7 @@ jobs:
   controlls-build:
     runs-on: ubuntu-latest
     strategy:
+      max-parallel: 3
       matrix:
         module: [ application, database, gateway, instance, oss, runtime ]
     steps:
@@ -34,7 +35,7 @@ jobs:
         run: |
           make build
           chmod +x bin/manager-amd64
-          chnod +x bin/manager-arm64
+          chmod +x bin/manager-arm64
 
       - name: Prepare
         id: prepare
