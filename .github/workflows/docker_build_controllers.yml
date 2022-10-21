@@ -1,0 +1,69 @@
+name: Controllers
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "next" ]
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
+      - "**/*.yaml"
+env:
+  # Common versions
+  GO_VERSION: "1.19"
+
+jobs:
+  controlls-build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        module: [ application, database, gateway, instance, oss, runtime ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Golang with cache
+        uses: magnetikonline/action-golang-cache@v3
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Build ${{ matrix.module }} amd64 & arm64
+        working-directory: controllers/${{ matrix.module }}
+        run: |
+          make build
+          chmod +x bin/manager-amd64
+          chnod +x bin/manager-arm64
+
+      - name: Prepare
+        id: prepare
+        run: |
+          TAG=dev
+          echo ::set-output name=tag_name::${TAG}
+
+      - name: set up buildx
+        id: buildx
+        uses: crazy-max/ghaction-docker-buildx@v2
+        with:
+          version: latest
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GH_TOKEN }}
+
+      - name: build (and publish) ${{ matrix.module }} main image
+        env:
+          # fork friendly ^^
+          DOCKER_REPO: ghcr.io/${{ github.repository_owner }}/${{ matrix.module }}-controller
+        working-directory: controllers/${{ matrix.module }}
+        run: |
+          docker buildx build \
+          --platform linux/amd64,linux/arm64 \
+          --push \
+          -t ${DOCKER_REPO}:${{ steps.prepare.outputs.tag_name }} \
+          -f Dockerfile \
+          .
