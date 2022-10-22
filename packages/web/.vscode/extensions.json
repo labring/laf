@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "antfu.vite",
+    "antfu.iconify",
+    "antfu.unocss",
+    "antfu.goto-alias",
+    "lokalise.i18n-ally",
+    "vue.volar",
+    "dbaeumer.vscode-eslint"
+  ]
+}

@@ -168,10 +168,10 @@ services:
     networks:
       - laf_shared_network
 
-  system-client:
-    build: ./packages/system-client
+  laf-web:
+    build: ./packages/web
     volumes:
-      - ./packages/system-client/dist:/app
+      - ./packages/web/dist:/app
     networks:
       - laf_shared_network
 
