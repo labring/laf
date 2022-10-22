@@ -2,7 +2,7 @@
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-30 15:22:34
  * @LastEditTime: 2022-01-19 14:48:50
- * @Description: 
+ * @Description:
  */
 
 import * as assert from 'assert'
@@ -45,7 +45,7 @@ export async function handleRemoveApplication(req: Request, res: Response) {
     return res.status(403).send('only owner can remove application')
   }
 
-  if (app.status !== 'stopped') {
+  if (app.status !== 'stopped' && app.status !== 'created') {
     return res.status(400).send('you should stopped application instance before removing')
   }
 

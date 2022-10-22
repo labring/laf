@@ -4,6 +4,12 @@ services:
   mongo:
     # image: bitnami/mongodb:5.0.8
     image: bitnami/mongodb:4.4.13    # Use this version for Apple M1 Chip
+    healthcheck:
+      test: echo 'db.runCommand({serverStatus:1}).ok' | mongo admin -u root -p password123 --quiet | grep 1
+      interval: 6s
+      timeout: 10s
+      retries: 30
+      start_period: 120s
     environment:
       - MONGODB_REPLICA_SET_MODE=primary
       - MONGODB_ADVERTISED_HOSTNAME=mongo
@@ -93,6 +99,8 @@ services:
     build: ./packages/instance-controller
     user: root
     working_dir: /app
+    depends_on:
+      - mongo
     environment:
       SCHEDULER_INTERVAL: 1000
       SYS_DB_URI: mongodb://my_user:password123@mongo:27017/?authSource=laf-sys&replicaSet=laf&writeConcern=majority
@@ -136,6 +144,9 @@ services:
     build: ./packages/gateway-controller
     user: root
     working_dir: /app
+    depends_on:
+      - mongo
+      - gateway
     environment:
       DEPLOY_DOMAIN: 127-0-0-1.nip.io
       DEPLOY_OSS_DOMAIN: oss.127-0-0-1.nip.io
@@ -151,8 +162,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./packages/gateway-controller:/app
       - ./cert:/ssl
-    depends_on:
-      - gateway
     restart: always
     networks:
       - laf_shared_network
@@ -165,6 +174,13 @@ services:
       - ./gateway_dashboard_conf.yaml:/usr/local/apisix-dashboard/conf/conf.yaml
     ports:
       - "9000:9000"
+    networks:
+      - laf_shared_network
+
+  laf-web:
+    build: ./packages/web
+    volumes:
+      - ./packages/web/dist:/app
     networks:
       - laf_shared_network
 
