@@ -1,0 +1,11 @@
+go 1.18
+
+use (
+	.
+	./controllers/application
+	./controllers/database
+	./controllers/oss
+	./controllers/gateway
+	./controllers/runtime
+	./controllers/instance
+)

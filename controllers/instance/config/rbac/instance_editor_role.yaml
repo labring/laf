@@ -1,0 +1,24 @@
+# permissions for end users to edit instances.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: instance-editor-role
+rules:
+- apiGroups:
+  - instance.laf.dev
+  resources:
+  - instances
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - instance.laf.dev
+  resources:
+  - instances/status
+  verbs:
+  - get

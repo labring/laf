@@ -1,0 +1,34 @@
+domain: laf.dev
+layout:
+- go.kubebuilder.io/v3
+projectName: gateway
+repo: github.com/labring/laf/controllers/gateway
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: laf.dev
+  group: gateway
+  kind: Gateway
+  path: github.com/labring/laf/controllers/gateway/api/v1
+  version: v1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: laf.dev
+  group: gateway
+  kind: Domain
+  path: github.com/labring/laf/controllers/gateway/api/v1
+  version: v1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: laf.dev
+  group: gateway
+  kind: Route
+  path: github.com/labring/laf/controllers/gateway/api/v1
+  version: v1
+version: "3"

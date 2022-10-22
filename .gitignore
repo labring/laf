@@ -15,3 +15,11 @@ coverage
 kubernetes-dev/mongo-data
 
 kubernetes-local/
+.vscode/configurationCache.log
+.vscode/dryrun.log
+.vscode/targets.log
+controllers/oss/.vscode/configurationCache.log
+controllers/oss/.vscode/targets.log
+controllers/oss/.vscode/dryrun.log
+
+.kube/

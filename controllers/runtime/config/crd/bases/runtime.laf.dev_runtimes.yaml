@@ -1,0 +1,101 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.9.2
+  creationTimestamp: null
+  name: runtimes.runtime.laf.dev
+spec:
+  group: runtime.laf.dev
+  names:
+    kind: Runtime
+    listKind: RuntimeList
+    plural: runtimes
+    singular: runtime
+  scope: Namespaced
+  versions:
+  - name: v1
+    schema:
+      openAPIV3Schema:
+        description: Runtime is the Schema for the runtimes API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: RuntimeSpec defines the desired state of Runtime
+            properties:
+              deprecated:
+                description: Deprecated
+                type: boolean
+              image:
+                description: Images of the runtime
+                properties:
+                  init:
+                    description: Init image
+                    type: string
+                  main:
+                    description: Main image
+                    type: string
+                  sidecar:
+                    description: Sidecar image
+                    type: string
+                required:
+                - main
+                type: object
+              type:
+                description: Type of the runtime. eg. node:laf, node:tcb, go:laf,
+                  python:laf, php:laf,  etc.
+                type: string
+              version:
+                description: Version of the runtime
+                properties:
+                  autoUpgradeFrom:
+                    description: Versions that should auto upgrade from
+                    items:
+                      type: string
+                    type: array
+                  breakBefore:
+                    description: Version that is breaking from
+                    type: string
+                  mustUpgradeFrom:
+                    description: Versions that must upgrade from
+                    items:
+                      type: string
+                    type: array
+                  upgradeFrom:
+                    description: Versions that suggested to upgrade from
+                    items:
+                      type: string
+                    type: array
+                  version:
+                    description: Version is the version of the runtime
+                    type: string
+                type: object
+            required:
+            - image
+            - type
+            - version
+            type: object
+          status:
+            description: RuntimeStatus defines the observed state of Runtime
+            properties:
+              appCount:
+                description: App count of the runtime
+                type: integer
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
