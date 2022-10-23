@@ -85,8 +85,15 @@ type BucketCapacity struct {
 	ObjectCount int64 `json:"objectCount,omitempty"`
 }
 
+//+genclient
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
+//+kubebuilder:resource:shortName=bucket
+//+kubebuilder:printcolumn:name="POLICY",type=string,JSONPath=`.spec.policy`
+//+kubebuilder:printcolumn:name="STORAGE",type=string,JSONPath=`.spec.storage`
+//+kubebuilder:printcolumn:name="VERSIONING",type=string,JSONPath=`.status.versioning`
+//+kubebuilder:printcolumn:name="MAX-STORAGE",type=string,JSONPath=".status.capacity.maxStorage"
+//+kubebuilder:printcolumn:name="USED-STORAGE",type=string,JSONPath=".status.capacity.storage"
 
 // Bucket is the Schema for the buckets API
 type Bucket struct {

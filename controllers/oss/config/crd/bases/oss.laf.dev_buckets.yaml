@@ -12,10 +12,28 @@ spec:
     kind: Bucket
     listKind: BucketList
     plural: buckets
+    shortNames:
+    - bucket
     singular: bucket
   scope: Namespaced
   versions:
-  - name: v1
+  - additionalPrinterColumns:
+    - jsonPath: .spec.policy
+      name: POLICY
+      type: string
+    - jsonPath: .spec.storage
+      name: STORAGE
+      type: string
+    - jsonPath: .status.versioning
+      name: VERSIONING
+      type: string
+    - jsonPath: .status.capacity.maxStorage
+      name: MAX-STORAGE
+      type: string
+    - jsonPath: .status.capacity.storage
+      name: USED-STORAGE
+      type: string
+    name: v1
     schema:
       openAPIV3Schema:
         description: Bucket is the Schema for the buckets API

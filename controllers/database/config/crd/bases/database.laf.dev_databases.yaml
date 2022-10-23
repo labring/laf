@@ -12,10 +12,22 @@ spec:
     kind: Database
     listKind: DatabaseList
     plural: databases
+    shortNames:
+    - database
     singular: database
   scope: Namespaced
   versions:
-  - name: v1
+  - additionalPrinterColumns:
+    - jsonPath: .spec.provider
+      name: PROVIDER
+      type: string
+    - jsonPath: .spec.region
+      name: REGION
+      type: string
+    - jsonPath: .status.storeName
+      name: STORE-NAME
+      type: string
+    name: v1
     schema:
       openAPIV3Schema:
         description: Database is the Schema for the databases API

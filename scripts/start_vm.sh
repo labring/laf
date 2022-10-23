@@ -39,7 +39,7 @@ if multipass list | grep -e "^$NAME "; then
 fi
 
 echo "Creating VM..."
-echo "\tmultipass launch --name $NAME --cpus 2 --mem 4G --disk 10G"
+echo "\tmultipass launch --name $NAME --cpus 2 --mem 4G --disk 20G"
 multipass launch --name "$NAME" --cpus 2 --mem 4G --disk 20G
 # shellcheck disable=SC2181
 if [ $? -eq 0 ]; then
@@ -63,7 +63,8 @@ set +x
 
 echo "Installing k8s..."
 set -x
-vm_root_exec sealos run labring/kubernetes:v1.24.0 labring/calico:v3.22.1 --single
+
+vm_root_exec sealos run labring/kubernetes:v1.24.0 labring/helm:v3.8.2 labring/calico:v3.24.1 --single
 vm_root_exec kubectl taint node $NAME node-role.kubernetes.io/master-
 vm_root_exec kubectl taint node $NAME node-role.kubernetes.io/control-plane-
 set +x

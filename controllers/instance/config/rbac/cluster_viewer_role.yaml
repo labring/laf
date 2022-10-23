@@ -1,0 +1,20 @@
+# permissions for end users to view clusters.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-viewer-role
+rules:
+- apiGroups:
+  - instance.laf.dev
+  resources:
+  - clusters
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - instance.laf.dev
+  resources:
+  - clusters/status
+  verbs:
+  - get
