@@ -3,7 +3,7 @@
 # - sh start_vm.sh
 # - sh start_vm.sh dev ~/.kube/config
 
-NAME="laf-test"
+NAME="laf-dev"
 # if set first param in command line
 if [ -n "$1" ]; then
     NAME="$1"
@@ -28,7 +28,7 @@ fi
 # check if multipass is installed
 if ! command -v multipass &> /dev/null
 then
-    echo "ERROR: multipass could not be found"
+    echo "ERROR: multipass could not be found, please install it first. @see https://multipass.run/install"
     exit 1
 fi
 
@@ -64,7 +64,8 @@ set +x
 echo "Installing k8s..."
 set -x
 
-vm_root_exec sealos run labring/kubernetes:v1.24.0 labring/helm:v3.8.2 labring/calico:v3.24.1 --single
+# vm_root_exec sealos run labring/kubernetes:v1.24.0 labring/helm:v3.8.2 labring/calico:v3.24.1 --single
+vm_root_exec sealos run labring/kubernetes:v1.24.0 labring/helm:v3.8.2 labring/flannel:v0.19.0 --single
 vm_root_exec kubectl taint node $NAME node-role.kubernetes.io/master-
 vm_root_exec kubectl taint node $NAME node-role.kubernetes.io/control-plane-
 set +x
