@@ -105,7 +105,7 @@ title: 介绍
 
 3. 部署个人博客、企业官网
 
-   - 将 vuepress / hexo / hugo 等静态生成的博客，一键部署到 `laf` 静态托管上， 见 [laf-cli](https://github.com/labring/laf/packages/cli)
+   - 将 vuepress / hexo / hugo 等静态生成的博客，一键部署到 `laf` 静态托管上， 见 [laf-cli](https://github.com/labring/laf/tree/main/packages/cli)
    - 可使用云函数来处理用户留言、评论、访问统计等业务
    - 可使用云函数扩展博客的其它能力，如课程、投票、提问等
    - 可使用云存储存储视频、图片
