@@ -1,0 +1,72 @@
+name: Build Controllers Docker Image
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "images/casdoor/**"
+      - "!images/casdoor/**/*.md"
+      
+env:
+  # Common versions
+  GO_VERSION: "1.19"
+
+jobs:
+  controllers-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Prepare
+        id: prepare
+        run: |
+          TAG=dev
+          echo ::set-output name=tag_name::${TAG}
+
+      - name: Remove builtin docker
+        run: |
+          sudo apt-get remove docker docker-engine docker.io containerd runc
+          sudo apt-get purge docker-ce docker-ce-cli containerd.io # docker-compose-plugin
+          sudo apt-get remove -y moby-engine moby-cli moby-buildx moby-compose
+
+      - name: Install sealos
+        run: |
+          echo "deb [trusted=yes] https://apt.fury.io/labring/ /" | sudo tee /etc/apt/sources.list.d/labring.list
+          sudo apt update
+          sudo apt install sealos=4.1.3
+          sudo sealos version
+
+      - name: Install buildah
+        run: |
+          arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/)
+          sudo echo "download buildah in https://github.com/labring/cluster-image/releases/download/depend/buildah.linux.${arch}"
+          sudo wget -qO "buildah" "https://github.com/labring/cluster-image/releases/download/depend/buildah.linux.${arch}"
+          sudo chmod a+x buildah
+          sudo mv buildah /usr/bin
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push casdoor cluster image
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/laf-casdoor
+          VERSION: ${{ steps.prepare.outputs.tag_name }}
+        working-directory: images/casdoor
+        run: |
+          buildah build -t $IMAGE:$VERSION-amd64 --arch amd64 --os linux -f Kubefile  .
+          buildah build -t $IMAGE:$VERSION-arm64 --arch arm64 --os linux -f Kubefile  .
+          buildah login --username ${{ github.repository_owner }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io
+          buildah push $IMAGE:$VERSION-amd64
+          buildah push $IMAGE:$VERSION-arm64
+          buildah manifest create $IMAGE:$VERSION
+          buildah manifest add $IMAGE:$VERSION docker://$IMAGE:$VERSION-amd64
+          buildah manifest add $IMAGE:$VERSION docker://$IMAGE:$VERSION-arm64
+          buildah manifest push --all $IMAGE:$VERSION docker://$IMAGE:$VERSION

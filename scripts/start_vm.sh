@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Usage:
 # - sh start_vm.sh
-# - sh start_vm.sh dev ~/.kube/config
+# - sh start_vm.sh laf-dev ~/.kube/config
 
 NAME="laf-dev"
 # if set first param in command line
@@ -57,15 +57,23 @@ set -x
 vm_root_exec -s << EOF
 echo "deb [trusted=yes] https://apt.fury.io/labring/ /" | tee /etc/apt/sources.list.d/labring.list
 apt update
-apt install sealos
+sudo apt install sealos=4.1.3
 EOF
+
+arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/)
+
+vm_root_exec echo "download buildah in https://github.com/labring/cluster-image/releases/download/depend/buildah.linux.${arch}"
+vm_root_exec wget -qO "buildah" "https://github.com/labring/cluster-image/releases/download/depend/buildah.linux.${arch}"
+vm_root_exec chmod a+x buildah
+vm_root_exec mv buildah /usr/bin
+
 set +x
 
 echo "Installing k8s..."
 set -x
 
-# vm_root_exec sealos run labring/kubernetes:v1.24.0 labring/helm:v3.8.2 labring/calico:v3.24.1 --single
-vm_root_exec sealos run labring/kubernetes:v1.24.0 labring/helm:v3.8.2 labring/flannel:v0.19.0 --single
+# vm_root_exec sealos run labring/kubernetes:v1.24.0  labring/calico:v3.24.1 --single
+vm_root_exec sealos run labring/kubernetes:v1.24.0 labring/flannel:v0.19.0 --single
 vm_root_exec kubectl taint node $NAME node-role.kubernetes.io/master-
 vm_root_exec kubectl taint node $NAME node-role.kubernetes.io/control-plane-
 set +x
@@ -87,6 +95,29 @@ while true; do
 done
 
 echo "k8s cluster is ready."
+
+vm_root_exec sealos run labring/helm:v3.8.2
+vm_root_exec sealos run labring/openebs:v1.9.0
+vm_root_exec sealos run labring/cert-manager:v1.8.0
+
+# create the nessary secret config
+cat << EOF | kubectl apply -f -
+apiVersion: v1
+kind: Secret
+metadata:
+  name: payment-secret
+  namespace: user-system 
+type: Opaque
+data:
+  MchID: MTYyNzUwMjQwMg==
+  AppID: d3g1OTRjNTI3OWI1ZmY0NjY3
+  MchAPIv3Key: c3owZWg3MmVxZmw0dDk5OGdiMTlxdjBkdjBlM2VxY2c=
+  MchCertificateSerialNumber: NTdGMkM0QTAyOTdFQTVFNTE0REM1OUY0QzNCNzU2Qzc3OTYyMzM1MA==
+  WechatPrivateKey: c3owZWg3MmVxZmw0dDk5OGdiMTlxdjBkdjBlM2VxY2c=
+EOF
+
+vm_root_exec sealos run docker.io/labring/user-controller:dev 
+
 
 set -x
 set -e
