@@ -3,12 +3,6 @@
  ***************************/
 import React from "react";
 
-import FunctionLayout from "@/components/Layout/Function";
-
-function DatabasePage() {
+export default function Databases() {
   return <div>Function</div>;
 }
-
-DatabasePage.Layout = FunctionLayout;
-
-export default DatabasePage;
