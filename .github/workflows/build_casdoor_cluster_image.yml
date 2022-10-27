@@ -1,19 +1,19 @@
-name: Build Controllers Docker Image
+name: Dev build cluster image - casdoor
 
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
     paths:
       - "images/casdoor/**"
       - "!images/casdoor/**/*.md"
-      
+
 env:
   # Common versions
   GO_VERSION: "1.19"
 
 jobs:
-  controllers-build:
+  build_cluster_image:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
