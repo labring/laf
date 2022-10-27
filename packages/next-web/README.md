@@ -11,79 +11,23 @@ pnpm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-tree:
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-```
-.
-├── README.md
-├── components
-│   ├── Header
-│   │   └── index.tsx
-│   └── Layout
-│       ├── Basic.tsx
-│       └── Function.tsx
-├── constants
-│   └── index.ts
-├── locales
-│   ├── en
-│   │   └── message.js
-│   └── zh-CN
-│       └── message.js
-├── next-env.d.ts
-├── next.config.js
-├── package.json
-├── pages
-│   ├── _app.tsx
-│   ├── _document.tsx
-│   ├── api
-│   │   ├── app.ts
-│   │   └── response.ts
-│   ├── app
-│   │   ├── [id]
-│   │   │   ├── databases
-│   │   │   │   └── index.tsx
-│   │   │   ├── functions
-│   │   │   │   ├── [function_id].tsx
-│   │   │   │   ├── index.module.scss
-│   │   │   │   ├── mockFuncTextString.tsx
-│   │   │   │   ├── mods
-│   │   │   │   │   ├── CreateModal
-│   │   │   │   │   │   └── index.tsx
-│   │   │   │   │   ├── DebugPannel
-│   │   │   │   │   │   └── index.tsx
-│   │   │   │   │   ├── DependecePanel
-│   │   │   │   │   │   ├── index.module.scss
-│   │   │   │   │   │   └── index.tsx
-│   │   │   │   │   ├── FunctionPanel
-│   │   │   │   │   │   ├── index.module.scss
-│   │   │   │   │   │   └── index.tsx
-│   │   │   │   │   └── List
-│   │   │   │   │       └── index.tsx
-│   │   │   │   └── store.ts
-│   │   │   ├── index.tsx
-│   │   │   ├── mods
-│   │   │   │   └── SiderBar
-│   │   │   │       ├── index.module.scss
-│   │   │   │       └── index.tsx
-│   │   │   └── storages
-│   │   │       └── index.tsx
-│   │   ├── index.tsx
-│   │   └── mods
-│   │       └── CrateDialog
-│   │           └── index.tsx
-│   ├── globals.css
-│   ├── home
-│   │   └── index.tsx
-│   └── index.tsx
-├── pnpm-lock.yaml
-├── postcss.config.js
-├── public
-│   ├── favicon.ico
-│   ├── logo.png
-│   └── vercel.svg
-├── tailwind.config.js
-├── tsconfig.json
-└── utils
-    ├── i18n.ts
-    └── request.ts
-```
+[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+
+The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

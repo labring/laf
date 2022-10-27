@@ -1,10 +1,8 @@
 /** @type {import('next').NextConfig} */
-
 const nextConfig = {
   experimental: {
-    newNextLinkBehavior: true,
-    // fallbackNodePolyfills: false
+    appDir: true,
   },
-};
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig
