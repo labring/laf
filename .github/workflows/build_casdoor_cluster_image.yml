@@ -57,13 +57,14 @@ jobs:
         run: |
           echo $IMAGE:$VERSION
           echo password: ${{ secrets.GITHUB_TOKEN }} 
-          buildah login --username ${{ github.repository_owner }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io
+          docker login --username ${{ github.repository_owner }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io
           echo "run: buildah build -t $IMAGE:$VERSION-amd64 --arch amd64 --os linux -f Kubefile  . "
           buildah build -t $IMAGE:$VERSION-amd64 --arch amd64 --os linux -f Kubefile  .
           echo "run: buildah build -t $IMAGE:$VERSION-arm64 --arch arm64 --os linux -f Kubefile  ."
           buildah build -t $IMAGE:$VERSION-arm64 --arch arm64 --os linux -f Kubefile  .
-          
+          echo "run: buildah push $IMAGE:$VERSION-amd64
           buildah push $IMAGE:$VERSION-amd64
+          echo "run: buildah push $IMAGE:$VERSION-arm64"
           buildah push $IMAGE:$VERSION-arm64
           buildah manifest create $IMAGE:$VERSION
           buildah manifest add $IMAGE:$VERSION docker://$IMAGE:$VERSION-amd64
