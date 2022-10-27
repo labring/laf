@@ -56,16 +56,7 @@ spec:
                 type: object
               clientConfig:
                 description: ClientConfig of the cluster (e.g. kubeconfig)
-                properties:
-                  certificateAuthorityData:
-                    type: string
-                  server:
-                    type: string
-                  userClientCertificateData:
-                    type: string
-                  userClientKeyData:
-                    type: string
-                type: object
+                type: string
               region:
                 description: Region of the cluster
                 maxLength: 64

@@ -86,7 +86,7 @@ type InstanceStatus struct {
 	//ClusterName of instance
 	ClusterName string `json:"clusterName,omitempty"`
 
-	ClusterConfig ClientConfig `json:"clusterConfig,omitempty"`
+	ClusterConfig string `json:"clusterConfig,omitempty"`
 
 	DeploymentName string `json:"DeploymentName,omitempty"`
 

@@ -2,13 +2,15 @@ package e2e
 
 import (
 	baseapi "github.com/labring/laf/tests/api"
+	instancev1 "github/labring/laf/controllers/instance/api/v1"
 	"github/labring/laf/controllers/instance/tests/api"
 	"testing"
 )
 
 func TestCreateInstance(t *testing.T) {
 	const namespace = "testing-instance-namespace"
-	const name = "testing-instance"
+	const instanceName = "testing-instance"
+	const clusterName = "testing-cluster"
 	const region = "testing-instance-region"
 	const appId = "test-instance-appId"
 
@@ -17,30 +19,44 @@ func TestCreateInstance(t *testing.T) {
 		baseapi.EnsureNamespace(namespace)
 
 		t.Log("get your local kube config")
-		//filename := clientcmd.NewDefaultClientConfigLoadingRules().GetDefaultFilename()
-		//kubeconfig, err := os.ReadFile(filename)
-		//if err != nil {
-		//	t.Errorf("makesure your local kube config is exist,%v", err)
-		//}
+
 		t.Logf("create a cluster")
-		api.CreateCluster(namespace, name, region)
+		api.CreateCluster(namespace, clusterName, region)
 
 		t.Log("verify the cluster is created")
-		cluster, err := api.GetCluster(namespace, name)
+		cluster, err := api.GetCluster(namespace, clusterName)
 		if err != nil {
 			t.Fatalf("failed to get cluster: %v", err)
 		}
 
-		if cluster.Name != name {
+		if cluster.Name != clusterName {
 			t.Fatalf("failed to create cluster")
 		}
 
+		expect := instancev1.InstanceStateRunning
 		t.Log("create a instance")
-		api.CreateInstance(namespace, name, region, appId, "Running")
+		api.CreateInstance(namespace, instanceName, region, appId, string(expect))
+
+		t.Log("waiting for the instance ready")
+		api.WaitForInstanceReady(namespace, instanceName)
+
+		t.Log("checke instance status is right")
+		instance, err := api.GetInstance(namespace, instanceName)
+		if err != nil {
+			t.Fatalf("failed to get instance: %v", err)
+		}
+		if instance.Status.Status != expect {
+			t.Fatalf("instance current statue is [%s], not [%s]", instance.Status.Status, expect)
+		}
+		//expect = instancev1.InstanceStateStopped
+
+		//t.Log("delete instance")
+		//api.StopInstance(namespace, instanceName, string(expect))
+
 	})
 	t.Cleanup(func() {
 		t.Log("clean up cluster")
-		//api.DeleteCluster(namespace, name)
-
+		api.DeleteCluster(namespace, clusterName)
+		api.DeleteInstance(namespace, instanceName)
 	})
 }

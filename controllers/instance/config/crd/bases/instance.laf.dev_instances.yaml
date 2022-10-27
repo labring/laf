@@ -213,16 +213,7 @@ spec:
               DeploymentName:
                 type: string
               clusterConfig:
-                properties:
-                  certificateAuthorityData:
-                    type: string
-                  server:
-                    type: string
-                  userClientCertificateData:
-                    type: string
-                  userClientKeyData:
-                    type: string
-                type: object
+                type: string
               clusterName:
                 description: ClusterName of instance
                 type: string
