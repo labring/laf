@@ -1,0 +1,84 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgdb
+  namespace: sealos
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: pgdb
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgdb
+  namespace: sealos
+spec:
+  selector:
+    matchLabels:
+      app: pgdb
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: pgdb
+    spec:
+      containers:
+        - name: pgdb
+          image: postgres:14-alpine
+          env:
+            - name: POSTGRES_DB
+              value: casdoor
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-credentials
+                  key: password
+          ports:
+            - containerPort: 5432
+              name: pg
+          volumeMounts:
+            - name: pg-persistent-storage
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: pg-persistent-storage
+          persistentVolumeClaim:
+            claimName: pg-pv-claim
+
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: service-auth-storage-class
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+    openebs.io/cas-type: local
+    cas.openebs.io/config: |
+      - name: StorageType
+        value: hostpath
+      - name: BasePath
+        value: /service-auth
+provisioner: openebs.io/local
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pg-pv-claim
+  namespace: sealos
+  annotations:
+    volume.beta.kubernetes.io/storage-class: service-auth-storage-class
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5G
