@@ -64,8 +64,8 @@ jobs:
         run: |
           echo $IMAGE:$VERSION
           echo "run: sealos build -t $IMAGE:$VERSION-amd64 --arch amd64 --os linux -f Kubefile  . "
-          sudo sealos build -t $IMAGE:$VERSION-amd64 --arch amd64 --os linux -f Kubefile  .
-          echo "run: sealos build -t $IMAGE:$VERSION-arm64 --arch arm64 --os linux -f Kubefile  ."
+          sudo sealos build -t $IMAGE:$VERSION-amd64 --platform linux/amd64 -f Kubefile  .
+          echo "run: sealos build -t $IMAGE:$VERSION-arm64 --platform linux/arm64 -f Kubefile  ."
           sudo sealos build -t $IMAGE:$VERSION-arm64 --arch arm64 --os linux -f Kubefile  .
           echo "run: buildah push $IMAGE:$VERSION-amd64
           sudo buildah push $IMAGE:$VERSION-amd64
