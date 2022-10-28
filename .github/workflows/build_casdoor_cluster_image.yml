@@ -48,6 +48,13 @@ jobs:
           sudo wget -qO "buildah" "https://github.com/labring/cluster-image/releases/download/depend/buildah.linux.${arch}"
           sudo chmod a+x buildah
           sudo mv buildah /usr/bin
+          
+      - name: Login Docker Hub
+        run: |
+          echo TODO.
+          #echo "run: buildah login --username ${{ github.repository_owner }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io" 
+          #buildah login -u ${{ github.repository_owner }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
+
 
       - name: Build and push casdoor cluster image
         env:
@@ -56,5 +63,15 @@ jobs:
         working-directory: images/casdoor
         run: |
           echo $IMAGE:$VERSION
-          echo "run: buildah login --username ${{ github.repository_owner }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io" 
-          buildah login -u ${{ github.repository_owner }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
+          echo "run: buildah build -t $IMAGE:$VERSION-amd64 --arch amd64 --os linux -f Kubefile  . "
+          buildah build -t $IMAGE:$VERSION-amd64 --arch amd64 --os linux -f Kubefile  .
+          echo "run: buildah build -t $IMAGE:$VERSION-arm64 --arch arm64 --os linux -f Kubefile  ."
+          buildah build -t $IMAGE:$VERSION-arm64 --arch arm64 --os linux -f Kubefile  .
+          echo "run: buildah push $IMAGE:$VERSION-amd64
+          buildah push $IMAGE:$VERSION-amd64
+          echo "run: buildah push $IMAGE:$VERSION-arm64"
+          buildah push $IMAGE:$VERSION-arm64
+          buildah manifest create $IMAGE:$VERSION
+          buildah manifest add $IMAGE:$VERSION docker://$IMAGE:$VERSION-amd64
+          buildah manifest add $IMAGE:$VERSION docker://$IMAGE:$VERSION-arm64
+          buildah manifest push --all $IMAGE:$VERSION docker://$IMAGE:$VERSION
