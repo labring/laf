@@ -1,6 +1,25 @@
 apiVersion: instance.laf.dev/v1
 kind: Instance
 metadata:
-  name: instance-sample
+  name: test
+  namespace: testing-instance-namespace
 spec:
-  # TODO(user): Add fields here
+  region: testing-instance-region
+  appid: test-appid
+  state: Stopped
+  bundle:
+    displayName: "Standard"
+    requestCPU: "500m"
+    requestMemory: "128Mi"
+    limitCPU: "1000m"
+    limitMemory: "256Mi"
+    databaseCapacity: "1Gi"
+    storageCapacity: "1Gi"
+    networkTrafficOutbound: "1Gi"
+    priority: 10
+  runtime:
+    type: node:laf
+    image:
+      main: "docker.io/lafyun/app-service:0.8.7"
+    version:
+      version: 0.8.7

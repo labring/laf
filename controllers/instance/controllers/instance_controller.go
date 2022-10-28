@@ -44,6 +44,8 @@ type InstanceReconciler struct {
 	Scheme *runtime.Scheme
 }
 
+const InstanceFinalizer = "instance.finalizers.laf.dev"
+
 //+kubebuilder:rbac:groups=instance.laf.dev,resources=instances,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=instance.laf.dev,resources=instances/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=instance.laf.dev,resources=instances/finalizers,verbs=update
@@ -68,16 +70,33 @@ func (r *InstanceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	// reconcile the instance
-	if instance.Status.ClusterName == "" {
-		// select cluster
-		if err := r.selectCluster(ctx, &instance); err != nil {
-			return ctrl.Result{}, err
+	// reconcile the deletion
+	if !instance.DeletionTimestamp.IsZero() {
+		_log.Info("deleting instance", "instance", instance.Name)
+		return r.delete(ctx, &instance)
+	}
+	// add the finalizer
+	if instance.ObjectMeta.DeletionTimestamp.IsZero() {
+		if !util.ContainsString(instance.ObjectMeta.Finalizers, InstanceFinalizer) {
+			instance.ObjectMeta.Finalizers = append(instance.ObjectMeta.Finalizers, InstanceFinalizer)
+			if err := r.Update(ctx, &instance); err != nil {
+				return ctrl.Result{}, err
+			}
+			_log.Info("added the finalizer")
+
+			return ctrl.Result{}, nil
 		}
-		_log.Info("select cluster [" + instance.Status.ClusterName + "]")
 	}
 
 	if instance.Spec.State == instancev1.InstanceStateRunning {
+		// reconcile the instance
+		if instance.Status.ClusterName == "" {
+			// select cluster
+			if err := r.selectCluster(ctx, &instance); err != nil {
+				return ctrl.Result{}, err
+			}
+			_log.Info("select cluster [" + instance.Status.ClusterName + "]")
+		}
 		return r.runInstance(ctx, &instance)
 	}
 	if instance.Spec.State == instancev1.InstanceStateStopped {
@@ -97,6 +116,7 @@ func (r *InstanceReconciler) SetupWithManager(mgr ctrl.Manager) error {
 // selectCluster  select a cluster for instance，return the first available cluster
 func (r *InstanceReconciler) selectCluster(ctx context.Context, instance *instancev1.Instance) error {
 	_log := log.FromContext(ctx)
+
 	_log.Info("select a cluster for instance ")
 	var clusterList instancev1.ClusterList
 	if err := r.List(ctx, &clusterList); err != nil {
@@ -131,7 +151,7 @@ func (r *InstanceReconciler) selectCluster(ctx context.Context, instance *instan
 			Type:               instancev1.ClusterSelected,
 			Status:             metav1.ConditionFalse,
 			LastTransitionTime: metav1.Now(),
-			Reason:             "No cluster select",
+			Reason:             "NoClusterSelect",
 			Message:            "no cluster select",
 		}
 	}
@@ -158,6 +178,9 @@ func (r *InstanceReconciler) runInstance(ctx context.Context, instance *instance
 		if err := r.deployInstanceToCluster(ctx, instance); err != nil {
 			return ctrl.Result{}, err
 		}
+		// update status deploymentName and svcName
+		instance.Status.DeploymentName = getDeploymentName(instance)
+		instance.Status.ServiceName = getSvcName(instance)
 		util.SetCondition(&instance.Status.Conditions, metav1.Condition{
 			Type:               instancev1.DeploymentAndServiceCreating,
 			Status:             metav1.ConditionTrue,
@@ -254,10 +277,9 @@ func (r *InstanceReconciler) deployInstanceToCluster(ctx context.Context, instan
 
 func (r *InstanceReconciler) applyDeployment(ctx context.Context, kubernetesClient *kubernetes.Clientset, labels map[string]string, instance *instancev1.Instance) (err error) {
 	var defaultTerminationGracePeriodSeconds int64 = 15
-	deploymentName := fmt.Sprintf("%s-deployment", instance.Name)
 	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:   deploymentName,
+			Name:   getDeploymentName(instance),
 			Labels: labels,
 		},
 		Spec: appsv1.DeploymentSpec{
@@ -292,20 +314,19 @@ func (r *InstanceReconciler) applyDeployment(ctx context.Context, kubernetesClie
 			},
 		},
 	}
-	_, err = kubernetesClient.AppsV1().Deployments(instance.Namespace).Get(ctx, deploymentName, metav1.GetOptions{})
-	if apierrors.IsAlreadyExists(err) {
-		// todo update deployment
-	} else {
+	_, err = kubernetesClient.AppsV1().Deployments(instance.Namespace).Get(ctx, getDeploymentName(instance), metav1.GetOptions{})
+	if apierrors.IsNotFound(err) {
 		_, err = kubernetesClient.AppsV1().Deployments(instance.Namespace).Create(ctx, deployment, metav1.CreateOptions{})
+	} else {
+		// todo update deployment
 	}
 	return err
 }
 
 func (r *InstanceReconciler) applySvc(ctx context.Context, kubernetesClient *kubernetes.Clientset, labels map[string]string, instance *instancev1.Instance) (err error) {
-	svcName := fmt.Sprintf("%s-svc", instance.Name)
 	svc := &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:   svcName,
+			Name:   getSvcName(instance),
 			Labels: labels,
 		},
 		Spec: corev1.ServiceSpec{
@@ -319,11 +340,11 @@ func (r *InstanceReconciler) applySvc(ctx context.Context, kubernetesClient *kub
 			},
 		},
 	}
-	_, err = kubernetesClient.CoreV1().Services(instance.Namespace).Get(ctx, svcName, metav1.GetOptions{})
-	if apierrors.IsAlreadyExists(err) {
-		// todo update svc
-	} else {
+	_, err = kubernetesClient.CoreV1().Services(instance.Namespace).Get(ctx, getSvcName(instance), metav1.GetOptions{})
+	if apierrors.IsNotFound(err) {
 		_, err = kubernetesClient.CoreV1().Services(instance.Namespace).Create(ctx, svc, metav1.CreateOptions{})
+	} else {
+		// todo update svc
 	}
 	return err
 }
@@ -393,4 +414,27 @@ func (r *InstanceReconciler) buildProbe(initialDelaySeconds, periodSeconds, time
 		TimeoutSeconds:      timeoutSeconds,
 		FailureThreshold:    failureThreshold,
 	}
+}
+
+func (r *InstanceReconciler) delete(ctx context.Context, instance *instancev1.Instance) (ctrl.Result, error) {
+
+	err := r.deleteInstanceFromCluster(ctx, instance)
+	if err == nil {
+		// remove the finalizer
+		instance.ObjectMeta.Finalizers = util.RemoveString(instance.ObjectMeta.Finalizers, InstanceFinalizer)
+		err := r.Update(ctx, instance)
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+
+	}
+	return ctrl.Result{}, nil
+}
+
+func getDeploymentName(instance *instancev1.Instance) string {
+	return fmt.Sprintf("%s-deployment", instance.Name)
+}
+
+func getSvcName(instance *instancev1.Instance) string {
+	return fmt.Sprintf("%s-svc", instance.Name)
 }

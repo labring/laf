@@ -73,7 +73,7 @@ func (r *FunctionReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 	function := &runtimev1.Function{}
 	err = r.Get(ctx, req.NamespacedName, function)
 	if err != nil {
-		return ctrl.Result{}, err
+		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
 	if !function.DeletionTimestamp.IsZero() {
