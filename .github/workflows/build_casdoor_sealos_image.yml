@@ -1,4 +1,4 @@
-name: Dev build cluster image - casdoor
+name: Build sealos image - casdoor
 
 on:
   workflow_dispatch:

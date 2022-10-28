@@ -3,11 +3,11 @@ name: Build Controllers Docker Image
 on:
   workflow_dispatch:
   push:
-    branches: [ "next" ]
-    paths-ignore:
-      - "docs/**"
-      - "**/*.md"
-      - "**/*.yaml"
+    branches: [ "main", "fix-action-workflow"]
+    paths:
+      - "controllers/**"
+      - ".github/workflows/build_controllers.yml"
+      - "!**/*.md"
       
 env:
   # Common versions
