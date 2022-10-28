@@ -55,8 +55,7 @@ jobs:
           echo "run: buildah login -u ${{ github.repository_owner }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io" 
           sudo buildah login -u ${{ github.repository_owner }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
 
-
-      - name: Build and push casdoor cluster image
+      - name: Build cluster image
         env:
           IMAGE: ghcr.io/${{ github.repository_owner }}/laf-casdoor
           VERSION: ${{ steps.prepare.outputs.tag_name }}
@@ -67,6 +66,14 @@ jobs:
           sudo sealos build -t $IMAGE:$VERSION-amd64 --platform linux/amd64 -f Kubefile  .
           echo "run: sealos build -t $IMAGE:$VERSION-arm64 --platform linux/arm64 -f Kubefile  ."
           sudo sealos build -t $IMAGE:$VERSION-arm64 --platform linux/arm64 -f Kubefile  .
+          sudo sealos images
+
+      - name: Push casdoor cluster image
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/laf-casdoor
+          VERSION: ${{ steps.prepare.outputs.tag_name }}
+        run: |
+          sudo buildah images
           echo "run: buildah push $IMAGE:$VERSION-amd64
           sudo buildah push $IMAGE:$VERSION-amd64
           echo "run: buildah push $IMAGE:$VERSION-arm64"
