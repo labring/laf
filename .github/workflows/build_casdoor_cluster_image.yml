@@ -1,0 +1,84 @@
+name: Dev build cluster image - casdoor
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - "images/casdoor/**"
+      - ".github/workflows/build_casdoor_cluster_image.yml"
+      - "!images/casdoor/**/*.md"
+
+env:
+  # Common versions
+  GO_VERSION: "1.19"
+
+jobs:
+  build_cluster_image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Prepare
+        id: prepare
+        run: |
+          TAG=dev
+          echo ::set-output name=tag_name::${TAG}
+
+      - name: Remove builtin docker
+        run: |
+          sudo apt-get remove docker docker-engine docker.io containerd runc
+          sudo apt-get purge docker-ce docker-ce-cli containerd.io # docker-compose-plugin
+          sudo apt-get remove -y moby-engine moby-cli moby-buildx moby-compose
+
+      - name: Install sealos
+        run: |
+          echo "deb [trusted=yes] https://apt.fury.io/labring/ /" | sudo tee /etc/apt/sources.list.d/labring.list
+          sudo apt update
+          sudo apt install sealos=4.1.3
+          sudo sealos version
+
+      - name: Install buildah
+        run: |
+          sudo apt remove buildah -y || true
+          arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/)
+          sudo echo "download buildah in https://github.com/labring/cluster-image/releases/download/depend/buildah.linux.${arch}"
+          sudo wget -qO "buildah" "https://github.com/labring/cluster-image/releases/download/depend/buildah.linux.${arch}"
+          sudo chmod a+x buildah
+          sudo mv buildah /usr/bin
+          
+      - name: Login GHCR.io
+        run: |
+          echo "run: buildah login -u ${{ github.repository_owner }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io" 
+          sudo buildah login -u ${{ github.repository_owner }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
+
+      - name: Build cluster image
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/laf-casdoor
+          VERSION: ${{ steps.prepare.outputs.tag_name }}
+        working-directory: images/casdoor
+        run: |
+          echo $IMAGE:$VERSION
+          echo "run: sealos build -t $IMAGE:$VERSION-amd64 --platform linux/amd6 -f Kubefile  . "
+          sudo sealos build -t $IMAGE:$VERSION-amd64 --platform linux/amd64 -f Kubefile  .
+          echo "run: sealos build -t $IMAGE:$VERSION-arm64 --platform linux/arm64 -f Kubefile  ."
+          sudo sealos build -t $IMAGE:$VERSION-arm64 --platform linux/arm64 -f Kubefile  .
+          sudo sealos images
+
+      - name: Push casdoor cluster image
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/laf-casdoor
+          VERSION: ${{ steps.prepare.outputs.tag_name }}
+        run: |
+          sudo buildah images
+          echo "run: buildah push $IMAGE:$VERSION-amd64"
+          sudo buildah push $IMAGE:$VERSION-amd64
+          echo "run: buildah push $IMAGE:$VERSION-arm64"
+          sudo buildah push $IMAGE:$VERSION-arm64
+          sudo buildah manifest create $IMAGE:$VERSION
+          sudo buildah manifest add $IMAGE:$VERSION docker://$IMAGE:$VERSION-amd64
+          sudo buildah manifest add $IMAGE:$VERSION docker://$IMAGE:$VERSION-arm64
+          sudo buildah manifest push --all $IMAGE:$VERSION docker://$IMAGE:$VERSION
