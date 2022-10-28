@@ -1,6 +1,9 @@
 package api
 
-import baseapi "github.com/labring/laf/tests/api"
+import (
+	baseapi "github.com/labring/laf/tests/api"
+	instancev1 "github/labring/laf/controllers/instance/api/v1"
+)
 
 const yaml = `
 apiVersion: instance.laf.dev/v1
@@ -37,5 +40,25 @@ func CreateInstance(namespace, name, region, appId, state string) {
 		"region":    region,
 		"appId":     appId,
 		"state":     state,
+	})
+}
+
+func GetInstance(namespace, name string) (*instancev1.Instance, error) {
+	gvr := instancev1.GroupVersion.WithResource("instances")
+	var instance instancev1.Instance
+	if err := baseapi.GetObject(namespace, name, gvr, &instance); err != nil {
+		return nil, err
+	}
+	return &instance, nil
+}
+
+func WaitForInstanceReady(namespace string, name string) {
+	baseapi.MustKubeWaitForReady(namespace, "instances.instance.laf.dev/"+name, "60s")
+}
+
+func DeleteInstance(namespace, name string) {
+	baseapi.MustKubeDeleteFromTemplate(yaml, map[string]string{
+		"name":      name,
+		"namespace": namespace,
 	})
 }

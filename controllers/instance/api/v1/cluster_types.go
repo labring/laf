@@ -64,7 +64,7 @@ type ClusterSpec struct {
 
 	// ClientConfig of the cluster (e.g. kubeconfig)
 	//+kubebuilder:validation:Required
-	ClientConfig ClientConfig `json:"clientConfig,omitempty"`
+	ClientConfig string `json:"clientConfig,omitempty"`
 
 	// The capacity of the cluster.
 	//+optional
