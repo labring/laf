@@ -57,5 +57,4 @@ jobs:
         run: |
           echo $IMAGE:$VERSION
           echo "run: buildah login --username ${{ github.repository_owner }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io" 
-          buildah login --u ${{ github.repository_owner }} --p ${{ secrets.GITHUB_TOKEN }} ghcr.io
-    
+          buildah login -u ${{ github.repository_owner }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
