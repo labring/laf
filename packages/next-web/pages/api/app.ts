@@ -1,8 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
-
 import { JsonResp } from "./response";
 
-export default async function handler(req: NextApiRequest, resp: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  resp: NextApiResponse
+) {
   JsonResp(
     {
       created: [
@@ -153,6 +155,6 @@ export default async function handler(req: NextApiRequest, resp: NextApiResponse
       ],
       joined: [],
     },
-    resp,
+    resp
   );
 }
