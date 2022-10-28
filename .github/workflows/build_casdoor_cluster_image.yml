@@ -63,10 +63,10 @@ jobs:
         working-directory: images/casdoor
         run: |
           echo $IMAGE:$VERSION
-          echo "run: buildah build -t $IMAGE:$VERSION-amd64 --arch amd64 --os linux -f Kubefile  . "
-          sudo buildah build -t $IMAGE:$VERSION-amd64 --arch amd64 --os linux -f Kubefile  .
-          echo "run: buildah build -t $IMAGE:$VERSION-arm64 --arch arm64 --os linux -f Kubefile  ."
-          sudo buildah build -t $IMAGE:$VERSION-arm64 --arch arm64 --os linux -f Kubefile  .
+          echo "run: sealos build -t $IMAGE:$VERSION-amd64 --arch amd64 --os linux -f Kubefile  . "
+          sudo sealos build -t $IMAGE:$VERSION-amd64 --arch amd64 --os linux -f Kubefile  .
+          echo "run: sealos build -t $IMAGE:$VERSION-arm64 --arch arm64 --os linux -f Kubefile  ."
+          sudo sealos build -t $IMAGE:$VERSION-arm64 --arch arm64 --os linux -f Kubefile  .
           echo "run: buildah push $IMAGE:$VERSION-amd64
           sudo buildah push $IMAGE:$VERSION-amd64
           echo "run: buildah push $IMAGE:$VERSION-arm64"
