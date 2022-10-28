@@ -74,7 +74,7 @@ jobs:
           VERSION: ${{ steps.prepare.outputs.tag_name }}
         run: |
           sudo buildah images
-          echo "run: buildah push $IMAGE:$VERSION-amd64
+          echo "run: buildah push $IMAGE:$VERSION-amd64"
           sudo buildah push $IMAGE:$VERSION-amd64
           echo "run: buildah push $IMAGE:$VERSION-arm64"
           sudo buildah push $IMAGE:$VERSION-arm64
