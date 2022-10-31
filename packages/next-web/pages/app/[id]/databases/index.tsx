@@ -2,7 +2,12 @@
  * cloud functions database page
  ***************************/
 import React from "react";
+import FunctionLayout from "@/components/Layout/Function";
 
-export default function Databases() {
+function DatabasePage() {
   return <div>Function</div>;
 }
+
+DatabasePage.Layout = FunctionLayout;
+
+export default DatabasePage;
