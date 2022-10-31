@@ -1,5 +1,4 @@
-const funcString = `
-import cloud from '@/cloud-sdk'
+export default `import cloud from '@/cloud-sdk'
 import * as crypto from 'crypto'
 const db = cloud.database()
 
@@ -123,7 +122,4 @@ function hashPassword(content: string): string {
     .createHash('sha256')
     .update(content)
     .digest('hex')
-}
-`;
-
-export default funcString;
+}`;
