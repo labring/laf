@@ -1,0 +1,9 @@
+.icon {
+  height: 40px;
+  text-align: center;
+}
+
+.icon:hover,
+.icon.current {
+  background-color: #f5f5f5;
+}

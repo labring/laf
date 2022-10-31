@@ -4,8 +4,11 @@
 
 import React from "react";
 
-export default function Header() {
-  return (
+export default function Header(props: { size: "sm" | "lg" }) {
+  const { size } = props;
+  return size === "sm" ? (
+    "small"
+  ) : (
     <div className="flex justify-between p-4 bg-white	drop-shadow">
       <div className="flex items-center">
         <img src="/logo.png" className="mr-2 rounded-full" width={30} />

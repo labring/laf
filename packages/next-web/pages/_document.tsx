@@ -6,6 +6,7 @@ class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
+          <title>laf cloud</title>
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=optional"
