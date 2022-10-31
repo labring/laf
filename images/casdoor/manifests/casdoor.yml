@@ -83,8 +83,6 @@ spec:
                   name: pg-credentials
                   key: password
             - name: DATA_SOURCE_NAME
-              # value: root:$(MYSQL_ROOT_PASSWORD)@tcp(mysql.sealos.svc.cluster.local:3306)/
-              # value: "user=postgres password=$(DB_PASSWORD) host=pgdb port=5432 sslmode=disable dbname=casdoor"
               value: "user=postgres password=123456 host=pgdb port=5432 sslmode=disable dbname=casdoor"
       volumes:
         - name: casdoor-conf-volume

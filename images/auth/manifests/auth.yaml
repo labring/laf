@@ -1,0 +1,67 @@
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: service-auth
+  namespace: sealos
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: service-auth-crd
+subjects:
+  - kind: ServiceAccount
+    name: service-auth # Name is case sensitive
+    namespace: sealos
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin # using admin role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-auth
+  namespace: sealos
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      # By default and for convenience,
+      # the Kubernetes control plane will allocate a port from a range (default: 30000-32767)
+      nodePort: 30801
+  selector:
+    app: service-auth
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-auth
+  namespace: sealos
+spec:
+  selector:
+    matchLabels:
+      app: service-auth
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: service-auth
+    spec:
+      serviceAccountName: service-auth
+      containers:
+        - name: service-auth
+          image: ghcr.io/labring/sealos-service-auth:dev
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: service-auth-volume
+              mountPath: /auth.yaml
+              subPath: auth.yaml
+      volumes:
+        - name: service-auth-volume
+          configMap:
+            name: service-auth-config
