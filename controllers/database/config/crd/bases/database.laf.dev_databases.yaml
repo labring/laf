@@ -24,9 +24,6 @@ spec:
     - jsonPath: .spec.region
       name: REGION
       type: string
-    - jsonPath: .status.storeName
-      name: STORE-NAME
-      type: string
     name: v1
     schema:
       openAPIV3Schema:

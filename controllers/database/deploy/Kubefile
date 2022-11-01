@@ -1,5 +1,7 @@
-
 FROM scratch
-COPY registry ./registry
+
+USER 65532:65532
+
 COPY manifests ./manifests
+COPY registry ./registry
 CMD ["kubectl apply -f manifests/"]
