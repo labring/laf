@@ -76,6 +76,7 @@ jobs:
           echo $IMAGE:$VERSION
           echo "run: sealos build -t $IMAGE:$VERSION-arm64 --platform linux/arm64 -f Kubefile  ."
           sudo sealos build -t $IMAGE:$VERSION-arm64 --platform linux/arm64 -f Kubefile  .
+          sudo rm -rf registry
           echo "run: sealos build -t $IMAGE:$VERSION-amd64 --platform linux/amd6 -f Kubefile  . "
           sudo sealos build -t $IMAGE:$VERSION-amd64 --platform linux/amd64 -f Kubefile  .
           sudo sealos images
