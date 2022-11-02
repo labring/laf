@@ -1,5 +1,3 @@
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-
 import {
   Button,
   Center,
@@ -12,13 +10,11 @@ import {
 import { AddIcon, CopyIcon, Search2Icon } from "@chakra-ui/icons";
 
 import React, { ReactElement } from "react";
-import { useTranslation } from "next-i18next";
 import request from "@/utils/request";
 import { useQuery } from "@tanstack/react-query";
+import { t } from "@lingui/macro";
 
 function HomePage() {
-  const { t } = useTranslation("common");
-
   const appListRes = useQuery(["getAppDetailInfo"], () => {
     return request.get("/api/app");
   });
@@ -33,7 +29,7 @@ function HomePage() {
               pointerEvents="none"
               children={<Search2Icon color="gray.300" />}
             />
-            <Input placeholder={t("Search")} size="lg" />
+            <Input placeholder={t`搜索`} size="lg" />
           </InputGroup>
         </div>
         <Button
@@ -42,7 +38,7 @@ function HomePage() {
           style={{ padding: "0 40px" }}
           leftIcon={<AddIcon />}
         >
-          {t("NewApp")}
+          {t`新建应用`}
         </Button>
       </div>
 
@@ -83,13 +79,5 @@ function HomePage() {
     </div>
   );
 }
-
-export const getStaticProps = async ({ locale }: any) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ["common"])),
-    },
-  };
-};
 
 export default HomePage;
