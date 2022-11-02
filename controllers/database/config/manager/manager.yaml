@@ -38,7 +38,7 @@ spec:
         - /manager
         args:
         - --leader-elect
-        image: database-controller:latest
+        image: controller:latest
         name: manager
         securityContext:
           allowPrivilegeEscalation: false

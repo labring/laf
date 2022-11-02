@@ -6,6 +6,7 @@ on:
     branches: ["main", "add-crd-images-ci"]
     paths:
       - "controllers/**"
+      - "charts/**"
       - ".github/workflows/build_cluster_image.yml"
       - "deploy/Kubefile"
       - "!**/*.md"
@@ -53,6 +54,7 @@ jobs:
         run: |
           echo "run: buildah login -u ${{ github.repository_owner }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io" 
           sudo buildah login -u ${{ github.repository_owner }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
+
 
       - name: Prepare cluster image files
         run: |
