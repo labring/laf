@@ -74,10 +74,10 @@ jobs:
         working-directory: deploy
         run: |
           echo $IMAGE:$VERSION
-          echo "run: sealos build -t $IMAGE:$VERSION-amd64 --platform linux/amd6 -f Kubefile  . "
-          sudo sealos build -t $IMAGE:$VERSION-amd64 --platform linux/amd64 -f Kubefile  .
           echo "run: sealos build -t $IMAGE:$VERSION-arm64 --platform linux/arm64 -f Kubefile  ."
           sudo sealos build -t $IMAGE:$VERSION-arm64 --platform linux/arm64 -f Kubefile  .
+          echo "run: sealos build -t $IMAGE:$VERSION-amd64 --platform linux/amd6 -f Kubefile  . "
+          sudo sealos build -t $IMAGE:$VERSION-amd64 --platform linux/amd64 -f Kubefile  .
           sudo sealos images
 
       - name: Push cluster image to ghcr.io
