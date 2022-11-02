@@ -84,7 +84,7 @@ body:
           linux version: `uname -a`
 
           `laf` versions: `docker images | grep lafyun`
-          
+
       placeholder: >
         docker version: 
         docker compose version: 
@@ -127,26 +127,11 @@ body:
 
         **If you encounter a problem of installation, paste the logs in the installation deployment process here.**
 
-
-        Provide service status with command:
-          
-        - `docker ps`.
-
-        Provide system-server logs with command:
-          
-        - `docker logs --tail 1000 -f $(docker ps --format "{{.Names}}" | grep system-server)`
-
-        Provide mongodb logs with command:
-          
-        - `docker logs --tail 1000 -f $(docker ps --format "{{.Names}}" | grep mongo)`
-
-        Provide gateway-controller logs with command:
-          
-        - `docker logs --tail 1000 -f $(docker ps --format "{{.Names}}" | grep gateway-controller)`
-        - 
-        Provide instance-controller logs with command:
-          
-        - `docker logs --tail 1000 -f $(docker ps --format "{{.Names}}" | grep instance-controller)`
+        - Provide service status: `docker ps`
+        - Provide system-server logs: `docker logs --tail 1000 -f $(docker ps --format "{{.Names}}" | grep system-server)`
+        - Provide mongodb logs: `docker logs --tail 1000 -f $(docker ps --format "{{.Names}}" | grep mongo)`
+        - Provide gateway-controller logs: `docker logs --tail 1000 -f $(docker ps --format "{{.Names}}" | grep gateway-controller)`
+        - Provide instance-controller logs: `docker logs --tail 1000 -f $(docker ps --format "{{.Names}}" | grep instance-controller)`
 
       placeholder: >
         **Provide service status**
