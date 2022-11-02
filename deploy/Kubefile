@@ -1,0 +1,13 @@
+FROM scratch
+
+USER 65532:65532
+COPY charts ./charts
+COPY manifests ./manifests
+COPY registry ./registry
+ENV AUTH_NAMESPACE=sealos
+ENV CASDOOR_HOST=locahost
+ENV CASDOOR_PORT=30080
+ENV CASDOOR_ENDPOINT=http://$CASDOOR_HOST:$CASDOOR_PORT
+ENV CASDOOR_CALLBACK_URL=http://localhost:8080/login/callback
+
+CMD [ "kubectl create namespace $(AUTH_NAMESPACE)", "helm install casdoor ./charts/casdoor --namespace $(AUTH_NAMESPACE)", "helm install service-auth ./charts/service-auth --namespace $(AUTH_NAMESPACE) --set image.tag=dev --set config.callbackUrl=$(CASDOOR_CALLBACK_URL) --set config.ssoEndpoint=$(CASDOOR_ENDPOINT)","kubectl apply -f manifests/"]

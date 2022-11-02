@@ -585,7 +585,7 @@ spec:
         - --leader-elect
         command:
         - /manager
-        image: database-controller:latest
+        image: ghcr.io/labring/laf-database-controller:dev
         livenessProbe:
           httpGet:
             path: /healthz
