@@ -65,8 +65,8 @@ const useFunctionStore = create<State>()(
           state.currentFunction = currentFunction;
           return state;
         }),
-    })),
-  ),
+    }))
+  )
 );
 
 export default useFunctionStore;

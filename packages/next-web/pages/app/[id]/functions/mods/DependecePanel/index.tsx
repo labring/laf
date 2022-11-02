@@ -2,12 +2,12 @@
  * cloud functions list sidebar
  ***************************/
 
-import React from "react";
 import { AttachmentIcon, WarningIcon } from "@chakra-ui/icons";
 import { HStack, Input } from "@chakra-ui/react";
+import React from "react";
 
-import commonStyles from "../../index.module.scss";
 import styles from "./index.module.scss";
+import commonStyles from "../../index.module.scss";
 
 export default function DependecyList() {
   return (

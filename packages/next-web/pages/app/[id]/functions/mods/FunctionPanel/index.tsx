@@ -2,8 +2,8 @@
  * cloud functions list sidebar
  ***************************/
 
-import React from "react";
 import {
+  AddIcon,
   AttachmentIcon,
   HamburgerIcon,
   SettingsIcon,
@@ -11,12 +11,12 @@ import {
   WarningIcon,
 } from "@chakra-ui/icons";
 import { HStack, Input } from "@chakra-ui/react";
+import React from "react";
 
+import styles from "./index.module.scss";
+import commonStyles from "../../index.module.scss";
 import useFunctionStore from "../../store";
 import CreateModal from "../CreateModal";
-
-import commonStyles from "../../index.module.scss";
-import styles from "./index.module.scss";
 
 export default function FunctionList() {
   const store = useFunctionStore((store) => store);

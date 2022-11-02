@@ -1,19 +1,19 @@
-import React from "react";
 import { AddIcon } from "@chakra-ui/icons";
 import {
+  useDisclosure,
   Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
   FormControl,
   FormLabel,
   Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
   ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  useDisclosure,
 } from "@chakra-ui/react";
+import React from "react";
 
 function CreateModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
