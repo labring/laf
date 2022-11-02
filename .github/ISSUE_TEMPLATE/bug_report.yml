@@ -73,11 +73,18 @@ body:
     attributes:
       label: Versions
       description: >
-        Describe the environment versions. For examples:
+        Describe the environment versions. 
+        
+        For examples:
+          
           docker version: `docker version`
+
           docker compose version: `docker-compose version`
+
           linux version: `uname -a`
+
           `laf` versions: `docker images | grep lafyun`
+          
       placeholder: >
         docker version: 
         docker compose version: 
@@ -103,8 +110,11 @@ body:
       placeholder: >
         Please make sure you provide a reproducible step-by-step case of how to reproduce the problem
         as minimally and precisely as possible.
+
         1. xxx
+
         2. xxx
+
         3. ...
     validations:
       required: true
@@ -114,40 +124,59 @@ body:
       label: Debug logs
       description: >
         Anything else we need to know?
+
         **If you encounter a problem of installation, paste the logs in the installation deployment process here.**
 
+
         Provide service status with command:
+          
         - `docker ps`.
+
         Provide system-server logs with command:
+          
         - `docker logs --tail 1000 -f $(docker ps --format "{{.Names}}" | grep system-server)`
+
         Provide mongodb logs with command:
+          
         - `docker logs --tail 1000 -f $(docker ps --format "{{.Names}}" | grep mongo)`
+
         Provide gateway-controller logs with command:
+          
         - `docker logs --tail 1000 -f $(docker ps --format "{{.Names}}" | grep gateway-controller)`
+        - 
         Provide instance-controller logs with command:
+          
         - `docker logs --tail 1000 -f $(docker ps --format "{{.Names}}" | grep instance-controller)`
+
       placeholder: >
         **Provide service status**
+
         ```logs
         
         ```
 
         **Provide system-server logs**
+
         ```logs
         
         ```
+
 
         **Provide mongodb logs**
+
         ```logs
         
         ```
 
+
         Provide gateway-controller logs:
+          
         ```logs
         
         ```
 
         Provide instance-controller logs with command:
+          
         ```logs
         
         ```
