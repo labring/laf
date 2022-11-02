@@ -6,15 +6,19 @@ import Editor from "@monaco-editor/react";
 import React from "react";
 import FunctionLayout from "@/components/Layout/Function";
 import SiderBar from "../mods/SiderBar";
-import FunctionList from "./mods/FunctionList";
+import FunctionList from "./mods/FunctionPanel";
 import { AttachmentIcon } from "@chakra-ui/icons";
-import { Button } from "@chakra-ui/react";
+import { Button, HStack } from "@chakra-ui/react";
 
 import funcString from "./mockFuncTextString";
-import DependecyList from "./mods/DependecyList";
+import DependecyList from "./mods/DependecePanel";
 import { SiderBarWith } from "@/constants/index";
+import useFunctionStore from "./store";
+import DebugPanel from "./mods/DebugPannel";
 
 function FunctionPage() {
+  const store = useFunctionStore((store) => store);
+
   return (
     <div className="bg-white">
       <SiderBar />
@@ -24,29 +28,38 @@ function FunctionPage() {
           <DependecyList />
         </div>
         <div className="flex flex-1 flex-col h-screen">
-          <div>
-            <div className="flex justify-between px-4">
-              <div>
+          <div style={{ borderBottom: "1px solid #efefef" }}>
+            <div className="flex justify-between px-2">
+              <HStack spacing="2">
                 <AttachmentIcon />
-                addToto.js
+                <span>addToto.js</span>
                 <span>M</span>
-              </div>
+              </HStack>
 
-              <div>
-                调用地址：https://qcphsd.api.cloudendpoint.cn/deleteCurrentTodo
-                <Button size="sm">发布</Button>
-              </div>
+              <HStack spacing="4">
+                <span>
+                  调用地址：https://qcphsd.api.cloudendpoint.cn/deleteCurrentTodo
+                </span>
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    alert("发布");
+                  }}
+                >
+                  发布
+                </Button>
+              </HStack>
             </div>
           </div>
-          <div>
+          <div className="flex-1">
             <Editor
-              height="calc(100vh - 300px)"
+              height="100%"
               defaultLanguage="javascript"
               defaultValue={funcString}
             />
           </div>
-          <div>
-            <div className="bg-slate-100">接口调试</div>
+          <div style={{ height: 300 }}>
+            <DebugPanel />
           </div>
         </div>
       </div>

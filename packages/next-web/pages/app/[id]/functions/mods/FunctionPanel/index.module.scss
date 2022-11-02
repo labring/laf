@@ -5,8 +5,9 @@
     justify-content: space-between;
     padding: 2px 8px;
 
-    &:hover {
-      background-color: #F2F3F8;
+    &:hover,
+    &.active {
+      background-color: #f2f3f8;
     }
   }
 }
