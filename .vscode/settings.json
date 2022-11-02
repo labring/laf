@@ -101,6 +101,7 @@
     "Referer",
     "rolebinding",
     "runc",
+    "sealctl",
     "sealos",
     "signin",
     "storageclass",
