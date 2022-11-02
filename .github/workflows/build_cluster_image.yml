@@ -58,12 +58,12 @@ jobs:
         run: |
           mkdir deploy/manifests || true
           mkdir deploy/charts || true
-          cp controller/application/deploy/manifests/deploy.yaml deploy/manifests/application.yaml
-          cp controller/database/deploy/manifests/deploy.yaml deploy/manifests/database.yaml
-          cp controller/gateway/deploy/manifests/deploy.yaml deploy/manifests/gateway.yaml
-          cp controller/instance/deploy/manifests/deploy.yaml deploy/manifests/instance.yaml
-          cp controller/oss/deploy/manifests/deploy.yaml deploy/manifests/oss.yaml
-          cp controller/runtime/deploy/manifests/deploy.yaml deploy/manifests/runtime.yaml
+          cp controllers/application/deploy/manifests/deploy.yaml deploy/manifests/application.yaml
+          cp controllers/database/deploy/manifests/deploy.yaml deploy/manifests/database.yaml
+          cp controllers/gateway/deploy/manifests/deploy.yaml deploy/manifests/gateway.yaml
+          cp controllers/instance/deploy/manifests/deploy.yaml deploy/manifests/instance.yaml
+          cp controllers/oss/deploy/manifests/deploy.yaml deploy/manifests/oss.yaml
+          cp controllers/runtime/deploy/manifests/deploy.yaml deploy/manifests/runtime.yaml
           cp -r charts/* deploy/charts/
 
       - name: Build cluster image
