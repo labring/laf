@@ -18,7 +18,7 @@
 name: Bug report
 title: "[Bug] Bug title "
 description: If something isn't working as expected.
-labels: [ "bug" ]
+labels: ["bug"]
 body:
   # - type: markdown
   #   attributes:
@@ -49,7 +49,7 @@ body:
       label: Environment
       description: Describe the environment.
       options:
-        - lafyun.com 
+        - lafyun.com
         - Mac (self-host)
         - Windows (self-host)
         - Linux (self-host)
@@ -74,7 +74,7 @@ body:
       label: Versions
       description: >
         Describe the environment versions. 
-        
+
         For examples:
           
           docker version: `docker version`
@@ -128,42 +128,46 @@ body:
         **If you encounter a problem of installation, paste the logs in the installation deployment process here.**
 
         - Provide service status: `docker ps`
+          
         - Provide system-server logs: `docker logs --tail 1000 -f $(docker ps --format "{{.Names}}" | grep system-server)`
+          
         - Provide mongodb logs: `docker logs --tail 1000 -f $(docker ps --format "{{.Names}}" | grep mongo)`
+          
         - Provide gateway-controller logs: `docker logs --tail 1000 -f $(docker ps --format "{{.Names}}" | grep gateway-controller)`
+          
         - Provide instance-controller logs: `docker logs --tail 1000 -f $(docker ps --format "{{.Names}}" | grep instance-controller)`
 
       placeholder: >
         **Provide service status**
 
         ```logs
-        
+
         ```
 
         **Provide system-server logs**
 
         ```logs
-        
+
         ```
 
 
         **Provide mongodb logs**
 
         ```logs
-        
+
         ```
 
 
         Provide gateway-controller logs:
           
         ```logs
-        
+
         ```
 
         Provide instance-controller logs with command:
           
         ```logs
-        
+
         ```
     validations:
       required: false
