@@ -86,7 +86,6 @@ services:
       - ALL
     tmpfs:
       - /tmp
-    restart: always
     networks:
       - laf_shared_network
 
