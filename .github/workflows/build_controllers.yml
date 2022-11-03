@@ -29,11 +29,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # - name: Setup Golang with cache
-      #   uses: magnetikonline/action-golang-cache@v3
-      #   with:
-      #     go-version: ${{ env.GO_VERSION }}
-
       - name: Setup Golang
         uses: actions/setup-go@v3
         with:
@@ -60,16 +55,7 @@ jobs:
         id: prepare
         run: |
           TAG=dev
-          # echo ::set-output name=tag_name::${TAG}
           echo "tag=${TAG}" >> $GITHUB_ENV
-
-
-      # deprecated, removing in later version
-      # - name: set up buildx
-      #   id: buildx
-      #   uses: crazy-max/ghaction-docker-buildx@v2
-      #   with:
-      #     version: latest
 
       # Add support for more platforms with QEMU (optional)
       # https://github.com/docker/setup-qemu-action

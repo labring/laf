@@ -3,7 +3,7 @@ name: Build cluster image
 on:
   repository_dispatch:
     types: [controllers_build_success]
-  workflow_dispatch:
+  # workflow_dispatch:
   # push:
   #   branches: ["main", "fix-workflow"]
   #   paths:
@@ -31,7 +31,6 @@ jobs:
         id: prepare
         run: |
           TAG=dev
-          # echo ::set-output name=tag_name::${TAG}
           echo "tag=${TAG}" >> $GITHUB_ENV
 
       - name: Remove builtin docker
