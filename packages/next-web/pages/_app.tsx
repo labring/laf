@@ -1,21 +1,19 @@
-import "./globals.css";
-
+import { ReactElement, ReactNode, useEffect } from "react";
 import { ChakraProvider } from "@chakra-ui/react";
-
 // 1. Import the extendTheme function
 import { extendTheme } from "@chakra-ui/react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import BasicLayout from "@/layout/Basic";
-import { NextPage } from "next";
-import { ReactElement, ReactNode, useEffect } from "react";
-import { AppProps } from "next/app";
 import { i18n } from "@lingui/core";
-
 import { I18nProvider } from "@lingui/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ClickToComponent } from "click-to-react-component";
-
-import { activate } from "@/utils/i18n";
+import { NextPage } from "next";
+import { AppProps } from "next/app";
 import Head from "next/head";
+
+import BasicLayout from "@/layout/Basic";
+import { activate } from "@/utils/i18n";
+
+import "./globals.css";
 
 // 2. Extend the theme to include custom colors, fonts, etc
 const colors = {
@@ -48,8 +46,7 @@ type AppPropsWithLayout = AppProps & {
 };
 
 function APP({ Component, pageProps }: AppPropsWithLayout) {
-  const getLayout =
-    Component.getLayout ?? ((page) => <BasicLayout>{page}</BasicLayout>);
+  const getLayout = Component.getLayout ?? ((page) => <BasicLayout>{page}</BasicLayout>);
 
   useEffect(() => {
     // Activate the default locale on page load
@@ -64,9 +61,7 @@ function APP({ Component, pageProps }: AppPropsWithLayout) {
       <I18nProvider i18n={i18n}>
         <QueryClientProvider client={queryClient}>
           <ChakraProvider theme={theme}>
-            {process.env.NODE_ENV === "development" ? (
-              <ClickToComponent />
-            ) : null}
+            {process.env.NODE_ENV === "development" ? <ClickToComponent /> : null}
             {getLayout(<Component {...pageProps} />)}
           </ChakraProvider>
         </QueryClientProvider>

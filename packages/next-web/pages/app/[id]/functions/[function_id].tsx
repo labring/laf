@@ -2,19 +2,22 @@
  * cloud functions index page
  ***************************/
 
-import Editor from "@monaco-editor/react";
 import React from "react";
-import FunctionLayout from "@/components/Layout/Function";
-import SiderBar from "../mods/SiderBar";
-import FunctionList from "./mods/FunctionPanel";
 import { AttachmentIcon } from "@chakra-ui/icons";
 import { Button, HStack } from "@chakra-ui/react";
+import Editor from "@monaco-editor/react";
 
-import funcString from "./mockFuncTextString";
-import DependecyList from "./mods/DependecePanel";
-import { SiderBarWith } from "@/constants/index";
-import useFunctionStore from "./store";
+import FunctionLayout from "@/components/Layout/Function";
+import { SiderBarWidth } from "@/constants/index";
+
+import SiderBar from "../mods/SiderBar";
+
 import DebugPanel from "./mods/DebugPannel";
+import DependecyList from "./mods/DependecePanel";
+import FunctionList from "./mods/FunctionPanel";
+import funcString from "./mockFuncTextString";
+
+import useFunctionStore from "./store";
 
 function FunctionPage() {
   const store = useFunctionStore((store) => store);
@@ -23,7 +26,7 @@ function FunctionPage() {
     <div className="bg-white">
       <SiderBar />
 
-      <div className="flex  h-screen" style={{ marginLeft: SiderBarWith }}>
+      <div className="flex  h-screen" style={{ marginLeft: SiderBarWidth }}>
         <div className=" w-1/5" style={{ borderRight: "1px solid #eee" }}>
           <FunctionList />
           <DependecyList />
@@ -38,13 +41,11 @@ function FunctionPage() {
               </HStack>
 
               <HStack spacing="4">
-                <span>
-                  调用地址：https://qcphsd.api.cloudendpoint.cn/deleteCurrentTodo
-                </span>
+                <span>调用地址：https://qcphsd.api.cloudendpoint.cn/deleteCurrentTodo</span>
                 <Button
                   size="sm"
                   onClick={() => {
-                    alert("发布");
+                    console.log("发布");
                   }}
                 >
                   发布
@@ -53,11 +54,7 @@ function FunctionPage() {
             </div>
           </div>
           <div className="flex-1">
-            <Editor
-              height="100%"
-              defaultLanguage="javascript"
-              defaultValue={funcString}
-            />
+            <Editor height="100%" defaultLanguage="javascript" defaultValue={funcString} />
           </div>
           <div style={{ height: 300 }}>
             <DebugPanel />

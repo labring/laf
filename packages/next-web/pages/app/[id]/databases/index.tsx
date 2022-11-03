@@ -2,6 +2,7 @@
  * cloud functions database page
  ***************************/
 import React from "react";
+
 import FunctionLayout from "@/components/Layout/Function";
 
 function DatabasePage() {
