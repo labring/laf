@@ -2,10 +2,10 @@ FROM alpine:3.16.2
 
 ARG TARGETARCH
 
-WORKDIR /root
+WORKDIR /
 
-COPY bin /bin
+USER 65532:65532
 
-RUN cp /bin/manager-$TARGETARCH /manager && rm -rf /bin
+COPy bin/manager-$TARGETARCH /manager
 
 ENTRYPOINT ["/manager"]

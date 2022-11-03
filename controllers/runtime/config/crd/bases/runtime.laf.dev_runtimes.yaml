@@ -42,10 +42,12 @@ spec:
                 description: Images of the runtime
                 properties:
                   init:
-                    description: Init image
+                    description: Init image (e.g. docker.io/lafyun/app-service-init:latest)
+                      - install the dependencies (e.g. npm install) - prepare the
+                      functions (deploy & compile)
                     type: string
                   main:
-                    description: Main image
+                    description: Main image (e.g. docker.io/lafyun/app-service:latest)
                     type: string
                   sidecar:
                     description: Sidecar image
