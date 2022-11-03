@@ -9,9 +9,11 @@ import BasicLayout from "@/layout/Basic";
 import { NextPage } from "next";
 import { ReactElement, ReactNode, useEffect } from "react";
 import { AppProps } from "next/app";
+import { i18n } from "@lingui/core";
 
 import { I18nProvider } from "@lingui/react";
-import { i18n } from "@lingui/core";
+import { ClickToComponent } from "click-to-react-component";
+
 import { activate } from "@/utils/i18n";
 import Head from "next/head";
 
@@ -62,6 +64,9 @@ function APP({ Component, pageProps }: AppPropsWithLayout) {
       <I18nProvider i18n={i18n}>
         <QueryClientProvider client={queryClient}>
           <ChakraProvider theme={theme}>
+            {process.env.NODE_ENV === "development" ? (
+              <ClickToComponent />
+            ) : null}
             {getLayout(<Component {...pageProps} />)}
           </ChakraProvider>
         </QueryClientProvider>

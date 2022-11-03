@@ -22,6 +22,7 @@ function FunctionPage() {
   return (
     <div className="bg-white">
       <SiderBar />
+
       <div className="flex  h-screen" style={{ marginLeft: SiderBarWith }}>
         <div className=" w-1/5" style={{ borderRight: "1px solid #eee" }}>
           <FunctionList />
