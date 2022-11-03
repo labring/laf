@@ -11,6 +11,9 @@ import {
   WarningIcon,
 } from "@chakra-ui/icons";
 import { HStack, Input } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
+
+import request from "@/utils/request";
 
 import useFunctionStore from "../../store";
 import CreateModal from "../CreateModal";
@@ -20,6 +23,12 @@ import styles from "./index.module.scss";
 
 export default function FunctionList() {
   const store = useFunctionStore((store) => store);
+
+  const { data } = useQuery(["functions"], () => {
+    return request.get("/api/function_list");
+  });
+
+  console.log(123, data);
 
   return (
     <div>
@@ -39,9 +48,9 @@ export default function FunctionList() {
         </HStack>
       </div>
 
-      <h5 className="m-2">我的收藏</h5>
+      {/* <h5 className="m-2">我的收藏</h5>
       <ul className={styles.functionList + " mb-4"}>
-        {store.favFunctoinList.map((func) => {
+        {(data?.data || []).map((func: any) => {
           return (
             <li
               key={func.id}
@@ -57,17 +66,17 @@ export default function FunctionList() {
             </li>
           );
         })}
-      </ul>
+      </ul> */}
 
       <h5 className="m-2">所有函数</h5>
       <ul className={styles.functionList + " mb-4"}>
-        {store.allFunctionList.map((func) => {
+        {(data?.data || []).map((func: any) => {
           return (
             <li
               className={func.id === store.currentFunction ? styles.active : ""}
-              key={func.id}
+              key={func._id}
               onClick={() => {
-                store.setCurrentFunction(func.id);
+                store.setCurrentFunction(func._id);
               }}
             >
               <div>
