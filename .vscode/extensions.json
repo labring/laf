@@ -1,13 +1,8 @@
 {
   "recommendations": [
-    "octref.vetur",
     "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
     "humao.rest-client",
-    "christian-kohler.npm-intellisense",
-  ],
-  "unwantedRecommendations": [
-    "hookyqr.beautify",
-    "dbaeumer.jshint",
-    "ms-vscode.vscode-typescript-tslint-plugin"
+    "christian-kohler.npm-intellisense"
   ]
 }

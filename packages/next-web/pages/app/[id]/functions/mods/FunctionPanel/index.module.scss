@@ -1,0 +1,13 @@
+.functionList {
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px 8px;
+
+    &:hover,
+    &.active {
+      background-color: #f2f3f8;
+    }
+  }
+}
