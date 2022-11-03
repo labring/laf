@@ -40,7 +40,7 @@ func TestCreateInstance(t *testing.T) {
 		t.Log("waiting for the instance ready")
 		api.WaitForInstanceReady(namespace, instanceName)
 
-		t.Log("checke instance status is right")
+		t.Log("check instance status ")
 		instance, err := api.GetInstance(namespace, instanceName)
 		if err != nil {
 			t.Fatalf("failed to get instance: %v", err)
@@ -48,14 +48,15 @@ func TestCreateInstance(t *testing.T) {
 		if instance.Status.Status != expect {
 			t.Fatalf("instance current statue is [%s], not [%s]", instance.Status.Status, expect)
 		}
-		//expect = instancev1.InstanceStateStopped
+		expect = instancev1.InstanceStateStopped
 
 		//t.Log("delete instance")
-		//api.StopInstance(namespace, instanceName, string(expect))
-
+		//api.StopInstance(namespace, instanceName, region, appId, string(expect))
+		//t.Log("waiting for the instance ready")
+		//api.WaitForInstanceReady(namespace, instanceName)
 	})
 	t.Cleanup(func() {
-		t.Log("clean up cluster")
+		t.Log("clean up")
 		api.DeleteCluster(namespace, clusterName)
 		api.DeleteInstance(namespace, instanceName)
 	})

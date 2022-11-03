@@ -28,12 +28,22 @@ spec:
   runtime:
     type: node:laf
     image:
-      main: "docker.io/lafyun/app-service:0.8.7"
+      main: "nginx"
     version:
       version: 0.8.7
 `
 
 func CreateInstance(namespace, name, region, appId, state string) {
+	baseapi.MustKubeApplyFromTemplate(yaml, map[string]string{
+		"name":      name,
+		"namespace": namespace,
+		"region":    region,
+		"appId":     appId,
+		"state":     state,
+	})
+}
+
+func StopInstance(namespace, name, region, appId, state string) {
 	baseapi.MustKubeApplyFromTemplate(yaml, map[string]string{
 		"name":      name,
 		"namespace": namespace,
@@ -53,7 +63,7 @@ func GetInstance(namespace, name string) (*instancev1.Instance, error) {
 }
 
 func WaitForInstanceReady(namespace string, name string) {
-	baseapi.MustKubeWaitForReady(namespace, "instances.instance.laf.dev/"+name, "60s")
+	baseapi.MustKubeWaitForReady(namespace, "instances.instance.laf.dev/"+name, "120s")
 }
 
 func DeleteInstance(namespace, name string) {

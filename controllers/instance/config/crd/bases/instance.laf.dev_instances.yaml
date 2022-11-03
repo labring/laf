@@ -24,6 +24,18 @@ spec:
     - jsonPath: .status.status
       name: STATUS
       type: string
+    - jsonPath: .status.readyReplicas
+      name: READY
+      type: string
+    - jsonPath: .status.updatedReplicas
+      name: UP-TO-DATE
+      type: string
+    - jsonPath: .status.availableReplicas
+      name: AVAILABLE
+      type: string
+    - jsonPath: .status.unavailableReplicas
+      name: UNAVAILABLE
+      type: string
     name: v1
     schema:
       openAPIV3Schema:
@@ -212,6 +224,11 @@ spec:
             properties:
               DeploymentName:
                 type: string
+              availableReplicas:
+                description: Total number of available pods (ready for at least minReadySeconds)
+                  targeted by this deployment.
+                format: int32
+                type: integer
               clusterConfig:
                 type: string
               clusterName:
@@ -287,10 +304,31 @@ spec:
                   - type
                   type: object
                 type: array
+              readyReplicas:
+                description: readyReplicas is the number of pods targeted by this
+                  Deployment with a Ready Condition.
+                format: int32
+                type: integer
+              replicas:
+                format: int32
+                type: integer
               serviceName:
                 type: string
               status:
                 type: string
+              unavailableReplicas:
+                description: Total number of unavailable pods targeted by this deployment.
+                  This is the total number of pods that are still required for the
+                  deployment to have 100% available capacity. They may either be pods
+                  that are running but not yet available or pods that still have not
+                  been created.
+                format: int32
+                type: integer
+              updatedReplicas:
+                description: Total number of non-terminated pods targeted by this
+                  deployment that have the desired template spec.
+                format: int32
+                type: integer
             type: object
         type: object
     served: true
