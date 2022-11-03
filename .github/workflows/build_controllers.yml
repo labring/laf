@@ -7,9 +7,6 @@ on:
     paths:
       - "controllers/**"
       - ".github/workflows/build_controllers.yml"
-      - "charts/**"
-      - ".github/workflows/build_cluster_image.yml"
-      - "deploy/Kubefile"
       - "!**/*.md"
       
 env:

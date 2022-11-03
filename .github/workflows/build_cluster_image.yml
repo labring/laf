@@ -3,15 +3,14 @@ name: Build cluster image
 on:
   repository_dispatch:
     types: [controllers_build_success]
-  # workflow_dispatch:
-  # push:
-  #   branches: ["main", "fix-workflow"]
-  #   paths:
-  #     - "controllers/**"
-  #     - "charts/**"
-  #     - ".github/workflows/build_cluster_image.yml"
-  #     - "deploy/Kubefile"
-  #     - "!**/*.md"
+  workflow_dispatch:
+  push:
+    branches: ["main", "fix-workflow"]
+    paths:
+      - "charts/**"
+      - ".github/workflows/build_cluster_image.yml"
+      - "deploy/Kubefile"
+      - "!**/*.md"
 
 env:
   # Common versions
@@ -77,10 +76,8 @@ jobs:
         working-directory: deploy
         run: |
           echo $IMAGE:$VERSION
-          echo "run: sealos build -t $IMAGE:$VERSION-arm64 --platform linux/arm64 -f Kubefile  ."
           sudo sealos build -t $IMAGE:$VERSION-arm64 --platform linux/arm64 -f Kubefile  .
           sudo rm -rf registry
-          echo "run: sealos build -t $IMAGE:$VERSION-amd64 --platform linux/amd6 -f Kubefile  . "
           sudo sealos build -t $IMAGE:$VERSION-amd64 --platform linux/amd64 -f Kubefile  .
           sudo sealos images
 
@@ -90,9 +87,7 @@ jobs:
           VERSION: ${{ env.tag }}
         run: |
           sudo buildah images
-          echo "run: buildah push $IMAGE:$VERSION-amd64"
           sudo buildah push $IMAGE:$VERSION-amd64
-          echo "run: buildah push $IMAGE:$VERSION-arm64"
           sudo buildah push $IMAGE:$VERSION-arm64
           sudo buildah manifest create $IMAGE:$VERSION
           sudo buildah manifest add $IMAGE:$VERSION docker://$IMAGE:$VERSION-amd64
