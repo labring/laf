@@ -1,3 +1,5 @@
+import React from "react";
+import { AddIcon, CopyIcon, Search2Icon } from "@chakra-ui/icons";
 import {
   Button,
   Center,
@@ -7,12 +9,10 @@ import {
   Link,
   Spinner,
 } from "@chakra-ui/react";
-import { AddIcon, CopyIcon, Search2Icon } from "@chakra-ui/icons";
-
-import React, { ReactElement } from "react";
-import request from "@/utils/request";
-import { useQuery } from "@tanstack/react-query";
 import { t } from "@lingui/macro";
+import { useQuery } from "@tanstack/react-query";
+
+import request from "@/utils/request";
 
 function HomePage() {
   const appListRes = useQuery(["getAppDetailInfo"], () => {

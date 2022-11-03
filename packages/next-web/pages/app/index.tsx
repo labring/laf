@@ -1,5 +1,5 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export default function App() {
   const queryClient = useQueryClient();

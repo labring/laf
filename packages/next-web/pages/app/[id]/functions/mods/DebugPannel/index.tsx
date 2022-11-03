@@ -1,13 +1,5 @@
-import {
-  Button,
-  Select,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-} from "@chakra-ui/react";
 import React from "react";
+import { Button, Select, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 
 export default function DebugPanel() {
   return (

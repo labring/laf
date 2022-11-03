@@ -1,1 +1,1 @@
-export const SiderBarWith = 40;
+export const SiderBarWidth = 40;

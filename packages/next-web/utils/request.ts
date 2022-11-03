@@ -1,9 +1,5 @@
 // http.ts
-import axios, {
-  AxiosRequestConfig,
-  AxiosRequestHeaders,
-  AxiosResponse,
-} from "axios";
+import axios, { AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse } from "axios";
 
 const showStatus = (status: number) => {
   let message = "";
@@ -83,7 +79,7 @@ request.interceptors.request.use(
     error.data = {};
     error.data.msg = "服务器异常，请联系管理员！";
     return Promise.resolve(error);
-  }
+  },
 );
 
 // response interceptor
@@ -95,8 +91,8 @@ request.interceptors.response.use(
         new Error(
           status + ":" + showStatus(status) + ", " + typeof data === "string"
             ? data
-            : JSON.stringify(data)
-        )
+            : JSON.stringify(data),
+        ),
       );
     }
 
@@ -119,7 +115,7 @@ request.interceptors.response.use(
       error.data.msg = "请求超时或服务器异常，请检查网络或联系管理员！";
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default request;
