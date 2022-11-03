@@ -16,7 +16,8 @@ import { useQuery } from "@tanstack/react-query";
 import request from "@/utils/request";
 
 import useFunctionStore from "../../store";
-import CreateModal from "../CreateModal";
+
+import CreateModal from "./CreateModal";
 
 import commonStyles from "../../index.module.scss";
 import styles from "./index.module.scss";
@@ -24,16 +25,10 @@ import styles from "./index.module.scss";
 export default function FunctionList() {
   const store = useFunctionStore((store) => store);
 
-  const { data } = useQuery(["functions"], () => {
-    return request.get("/api/function_list");
-  });
-
-  console.log(123, data);
-
   return (
     <div>
       <div className={commonStyles.sectionHeader + " flex justify-between"}>
-        <h4 className="m-2">函数列表</h4>
+        <h4>函数列表</h4>
         <HStack spacing="2">
           <SunIcon />
           <CreateModal />
@@ -70,13 +65,13 @@ export default function FunctionList() {
 
       <h5 className="m-2">所有函数</h5>
       <ul className={styles.functionList + " mb-4"}>
-        {(data?.data || []).map((func: any) => {
+        {(store.allFunctionList || []).map((func: any) => {
           return (
             <li
-              className={func.id === store.currentFunction ? styles.active : ""}
+              className={func._id === store.currentFunction?._id ? styles.active : ""}
               key={func._id}
               onClick={() => {
-                store.setCurrentFunction(func._id);
+                store.setCurrentFunction(func);
               }}
             >
               <div>

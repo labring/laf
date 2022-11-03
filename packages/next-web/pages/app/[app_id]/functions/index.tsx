@@ -2,7 +2,7 @@
  * cloud functions index page
  ***************************/
 
-import React from "react";
+import React, { useEffect } from "react";
 import { AttachmentIcon } from "@chakra-ui/icons";
 import { Button, HStack } from "@chakra-ui/react";
 import Editor from "@monaco-editor/react";
@@ -23,7 +23,13 @@ import useFunctionStore from "./store";
 import commonStyles from "./index.module.scss";
 
 function FunctionPage() {
-  const store = useFunctionStore((store) => store);
+  const { initFunctionPage, currentFunction } = useFunctionStore((store) => store);
+
+  useEffect(() => {
+    initFunctionPage();
+
+    return () => {};
+  }, [initFunctionPage]);
 
   return (
     <div className="flex h-screen" style={{ marginLeft: SiderBarWidth }}>
@@ -57,7 +63,7 @@ function FunctionPage() {
           </div>
         </div>
         <div className="flex-1">
-          <Editor height="100%" defaultLanguage="javascript" defaultValue={funcString} />
+          <Editor height="100%" defaultLanguage="javascript" value={currentFunction?.code} />
         </div>
         <div style={{ height: 300 }}>
           <DebugPanel />

@@ -11,7 +11,7 @@ export default function DebugPanel() {
         </HStack>
       </div>
       <div className="flex flex-1">
-        <div style={{ width: 500 }} className="border border-r-indigo-400 ">
+        <div style={{ width: 500 }} className="border-r border-r-slate-300 ">
           <div className="flex p-2">
             <Button size="sm" className="mr-2">
               GET

@@ -2,67 +2,57 @@ import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
-type State = {
-  currentFunction: number;
-  favFunctoinList: any[];
-  allFunctionList: any[];
+import request from "@/utils/request";
 
-  setCurrentFunction: (currentFunction: number) => void;
+type TFunction =
+  | {
+      _id: string;
+      name: string;
+      code: string;
+      label: string;
+      hash: string;
+      tags: string[];
+      description: string;
+      enableHTTP: boolean;
+      status: number;
+      triggers: any[];
+      debugParams: string;
+      version: number;
+      created_at: Date;
+      updated_at: Date;
+      created_by: string;
+      appid: string;
+    }
+  | undefined;
+
+type State = {
+  currentFunction: TFunction;
+  favFunctoinList: any[];
+  allFunctionList?: any[];
+  initFunctionPage: () => void;
+
+  setCurrentFunction: (currentFunction: TFunction) => void;
 };
 
 const useFunctionStore = create<State>()(
   devtools(
     immer((set) => ({
-      currentFunction: 0,
-      favFunctoinList: [
-        {
-          id: "123",
-          name: "addToto",
-        },
-        {
-          id: "222",
-          name: "antDirt",
-        },
-        {
-          id: "333",
-          name: "getUser",
-        },
-        {
-          id: "444",
-          name: "getQrCode",
-        },
-        {
-          id: "555",
-          name: "getUxserInfo",
-        },
-      ],
+      currentFunction: undefined,
+      favFunctoinList: [],
 
-      allFunctionList: [
-        {
-          id: "123",
-          name: "addToto",
-        },
-        {
-          id: "222",
-          name: "antDirt",
-        },
-        {
-          id: "333",
-          name: "getUser",
-        },
-        {
-          id: "444",
-          name: "getQrCode",
-        },
-        {
-          id: "555",
-          name: "getUxserInfo",
-        },
-      ],
+      allFunctionList: [],
+
+      initFunctionPage: async () => {
+        const res = await request.get("/api/function_list");
+        set((state) => {
+          state.allFunctionList = res.data;
+          state.currentFunction = res.data[0];
+        });
+      },
 
       setCurrentFunction: (currentFunction) =>
         set((state) => {
-          state.currentFunction = currentFunction;
+          state.currentFunction = JSON.parse(JSON.stringify(currentFunction));
           return state;
         }),
     })),
