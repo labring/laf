@@ -16,7 +16,7 @@ func GetSystemNamespace() string {
 
 func GetApplicationNamespace(appid string) string {
 	prefix := ""
-	if prefixStr := os.Getenv("APP_NAMESPACE_PREFIX"); prefixStr != "" {
+	if prefixStr := os.Getenv("APP_NAMESPACE_PREFIX"); len(prefixStr) > 0 {
 		prefix = prefixStr
 	}
 

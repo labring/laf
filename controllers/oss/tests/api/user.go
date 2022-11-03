@@ -39,11 +39,11 @@ func DeleteOssUser(namespace string, name string) {
 }
 
 func WaitForOssUserReady(namespace string, name string) {
-	baseapi.MustKubeWaitForReady(namespace, "users.oss.laf.dev/"+name, "60s")
+	baseapi.MustKubeWaitForReady(namespace, "users.oss.laf.dev/"+name, "120s")
 }
 
 func WaitForOssUserDeleted(namespace string, name string) {
-	baseapi.MustKubeWaitForDeleted(namespace, "users.oss.laf.dev/"+name, "60s")
+	baseapi.MustKubeWaitForDeleted(namespace, "users.oss.laf.dev/"+name, "120s")
 }
 
 func GetOssUser(namespace string, name string) (*ossv1.User, error) {

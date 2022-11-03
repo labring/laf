@@ -39,8 +39,8 @@ if multipass list | grep -e "^$NAME "; then
 fi
 
 echo "Creating VM..."
-echo "\tmultipass launch --name $NAME --cpus 2 --mem 4G --disk 20G"
-multipass launch --name "$NAME" --cpus 2 --mem 4G --disk 20G
+echo "\tmultipass launch --name $NAME --cpus 2 --mem 4G --disk 40G"
+multipass launch --name "$NAME" --cpus 2 --mem 4G --disk 40G
 # shellcheck disable=SC2181
 if [ $? -eq 0 ]; then
     echo "vm is created"
@@ -62,10 +62,10 @@ EOF
 
 arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/)
 
-vm_root_exec echo "download buildah in https://github.com/labring/cluster-image/releases/download/depend/buildah.linux.${arch}"
-vm_root_exec wget -qO "buildah" "https://github.com/labring/cluster-image/releases/download/depend/buildah.linux.${arch}"
-vm_root_exec chmod a+x buildah
-vm_root_exec mv buildah /usr/bin
+#vm_root_exec echo "download buildah in https://github.com/labring/cluster-image/releases/download/depend/buildah.linux.${arch}"
+#vm_root_exec wget -qO "buildah" "https://github.com/labring/cluster-image/releases/download/depend/buildah.linux.${arch}"
+#vm_root_exec chmod a+x buildah
+#vm_root_exec mv buildah /usr/bin
 
 set +x
 
@@ -100,13 +100,13 @@ vm_root_exec sealos run labring/helm:v3.8.2
 vm_root_exec sealos run labring/openebs:v1.9.0
 vm_root_exec sealos run labring/cert-manager:v1.8.0
 
-# create the nessary secret config
+# create the necessary secret config
 cat << EOF | kubectl apply -f -
 apiVersion: v1
 kind: Secret
 metadata:
   name: payment-secret
-  namespace: user-system 
+  namespace: user-system
 type: Opaque
 data:
   MchID: MTYyNzUwMjQwMg==
@@ -116,8 +116,7 @@ data:
   WechatPrivateKey: c3owZWg3MmVxZmw0dDk5OGdiMTlxdjBkdjBlM2VxY2c=
 EOF
 
-vm_root_exec sealos run docker.io/labring/user-controller:dev 
-
+vm_root_exec sealos run docker.io/labring/sealos-user-controller:dev
 
 set -x
 set -e

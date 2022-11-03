@@ -19,7 +19,7 @@ image:
   repository: casbin/casdoor
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v1.143.0"
+  tag: "v1.149.0"
 
 imagePullSecrets: []
 nameOverride: "casdoor"
