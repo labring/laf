@@ -10,10 +10,11 @@ import { NextPage } from "next";
 import { AppProps } from "next/app";
 import Head from "next/head";
 
-import BasicLayout from "@/layout/Basic";
 import { activate } from "@/utils/i18n";
 
 import "./globals.css";
+
+import BasicLayout from "@/layout/Basic";
 
 // 2. Extend the theme to include custom colors, fonts, etc
 const colors = {
@@ -60,10 +61,8 @@ function APP({ Component, pageProps }: AppPropsWithLayout) {
       </Head>
       <I18nProvider i18n={i18n}>
         <QueryClientProvider client={queryClient}>
-          <ChakraProvider theme={theme}>
-            {process.env.NODE_ENV === "development" ? <ClickToComponent /> : null}
-            {getLayout(<Component {...pageProps} />)}
-          </ChakraProvider>
+          {process.env.NODE_ENV === "development" ? <ClickToComponent /> : null}
+          <ChakraProvider theme={theme}>{getLayout(<Component {...pageProps} />)}</ChakraProvider>
         </QueryClientProvider>
       </I18nProvider>
     </>

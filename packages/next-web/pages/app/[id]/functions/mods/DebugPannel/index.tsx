@@ -1,18 +1,23 @@
 import React from "react";
-import { Button, Select, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import { Button, HStack, Select, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 
 export default function DebugPanel() {
   return (
     <div className="h-full flex flex-col">
-      <div className="px-2 bg-slate-100">
-        <div className="">接口调试</div>
+      <div className="px-2 bg-slate-100 flex" style={{ height: 30 }}>
+        <HStack spacing="6">
+          <div className="">接口调试</div>
+          <div className="">历史请求</div>
+        </HStack>
       </div>
       <div className="flex flex-1">
         <div style={{ width: 500 }} className="border border-r-indigo-400 ">
           <div className="flex p-2">
-            <Button className="mr-2">GET</Button>
-            <Select variant="filled" placeholder="Filled" />
-            <Button className="ml-2" colorScheme="brand">
+            <Button size="sm" className="mr-2">
+              GET
+            </Button>
+            <Select size="sm" variant="filled" placeholder="Filled" />
+            <Button size="sm" className="ml-2" colorScheme="brand">
               请求
             </Button>
           </div>
