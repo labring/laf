@@ -1,15 +1,17 @@
 name: Build cluster image
 
 on:
+  repository_dispatch:
+    types: [controllers_build_success]
   workflow_dispatch:
-  push:
-    branches: ["main", "add-crd-images-ci"]
-    paths:
-      - "controllers/**"
-      - "charts/**"
-      - ".github/workflows/build_cluster_image.yml"
-      - "deploy/Kubefile"
-      - "!**/*.md"
+  # push:
+  #   branches: ["main", "fix-workflow"]
+  #   paths:
+  #     - "controllers/**"
+  #     - "charts/**"
+  #     - ".github/workflows/build_cluster_image.yml"
+  #     - "deploy/Kubefile"
+  #     - "!**/*.md"
 
 env:
   # Common versions
@@ -23,6 +25,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          ref: ${{ github.event.client_payload.sha }}
 
       - name: Prepare
         id: prepare

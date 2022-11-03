@@ -3,10 +3,13 @@ name: Build Controllers Docker Image
 on:
   workflow_dispatch:
   push:
-    branches: [ "main", "fix-action-workflow"]
+    branches: [ "main", "fix-workflow"]
     paths:
       - "controllers/**"
       - ".github/workflows/build_controllers.yml"
+      - "charts/**"
+      - ".github/workflows/build_cluster_image.yml"
+      - "deploy/Kubefile"
       - "!**/*.md"
       
 env:
@@ -57,7 +60,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: build (and publish) ${{ matrix.module }} main image
+      - name: Build (and publish) ${{ matrix.module }} main image
         env:
           # fork friendly ^^
           DOCKER_REPO: ghcr.io/${{ github.repository_owner }}/laf-${{ matrix.module }}-controller
@@ -69,3 +72,15 @@ jobs:
           -t ${DOCKER_REPO}:${{ steps.prepare.outputs.tag_name }} \
           -f Dockerfile \
           .
+
+  trigger-workflow-cluster-image:
+    needs: [ controllers-build ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger cluster image workflow
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.REPO_GHA_PAT }}
+          repository: ${{ github.repository }}
+          event-type: controllers_build_success
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
