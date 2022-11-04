@@ -6,7 +6,7 @@ metadata:
 spec:
   region: testing-instance-region
   appid: test-appid
-  state: Stopped
+  state: Running
   bundle:
     displayName: "Standard"
     requestCPU: "500m"
@@ -20,6 +20,6 @@ spec:
   runtime:
     type: node:laf
     image:
-      main: "docker.io/lafyun/app-service:0.8.7"
+      main: "nginx"
     version:
       version: 0.8.7

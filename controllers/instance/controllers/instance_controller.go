@@ -28,6 +28,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/client-go/kubernetes"
+	"time"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -74,18 +75,6 @@ func (r *InstanceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 	if !instance.DeletionTimestamp.IsZero() {
 		_log.Info("deleting instance", "instance", instance.Name)
 		return r.delete(ctx, &instance)
-	}
-	// add the finalizer
-	if instance.ObjectMeta.DeletionTimestamp.IsZero() {
-		if !util.ContainsString(instance.ObjectMeta.Finalizers, InstanceFinalizer) {
-			instance.ObjectMeta.Finalizers = append(instance.ObjectMeta.Finalizers, InstanceFinalizer)
-			if err := r.Update(ctx, &instance); err != nil {
-				return ctrl.Result{}, err
-			}
-			_log.Info("added the finalizer")
-
-			return ctrl.Result{}, nil
-		}
 	}
 
 	if instance.Spec.State == instancev1.InstanceStateRunning {
@@ -166,14 +155,49 @@ func (r *InstanceReconciler) runInstance(ctx context.Context, instance *instance
 	_log := log.FromContext(ctx)
 
 	if util.ConditionIsTrue(instance.Status.Conditions, instancev1.Ready) {
+		_, result := r.checkPodStatus(ctx, instance)
+		if result != nil {
+			instance.Status.ReadyReplicas = result.Status.ReadyReplicas
+			instance.Status.UpdatedReplicas = result.Status.UpdatedReplicas
+			instance.Status.UnavailableReplicas = result.Status.UnavailableReplicas
+			instance.Status.AvailableReplicas = result.Status.AvailableReplicas
+		}
+
 		instance.Status.Status = instancev1.InstanceStateRunning
 		if err := r.Status().Update(ctx, instance); err != nil {
 			return ctrl.Result{}, err
 		}
 		_log.Info("instance is ready")
-		return ctrl.Result{}, nil
+		return ctrl.Result{
+			Requeue:      true,
+			RequeueAfter: time.Second * 5,
+		}, nil
 	}
-
+	if util.ConditionIsTrue(instance.Status.Conditions, instancev1.DeploymentAndServiceCreating) {
+		podStatus, result := r.checkPodStatus(ctx, instance)
+		if podStatus {
+			util.SetCondition(&instance.Status.Conditions, metav1.Condition{
+				Type:               instancev1.Ready,
+				Status:             metav1.ConditionTrue,
+				LastTransitionTime: metav1.Now(),
+				Reason:             "Ready",
+				Message:            "The deployment and service Ready",
+			})
+			instance.Status.ReadyReplicas = result.Status.ReadyReplicas
+			instance.Status.UpdatedReplicas = result.Status.UpdatedReplicas
+			instance.Status.UnavailableReplicas = result.Status.UnavailableReplicas
+			instance.Status.AvailableReplicas = result.Status.AvailableReplicas
+			err := r.Status().Update(ctx, instance)
+			if err != nil {
+				return ctrl.Result{}, err
+			}
+			_log.Info("The deployment and service Ready")
+		}
+		return ctrl.Result{
+			Requeue:      true,
+			RequeueAfter: time.Second * 1,
+		}, nil
+	}
 	if util.ConditionIsNotTrue(instance.Status.Conditions, instancev1.DeploymentAndServiceCreated) {
 		if err := r.deployInstanceToCluster(ctx, instance); err != nil {
 			return ctrl.Result{}, err
@@ -188,24 +212,12 @@ func (r *InstanceReconciler) runInstance(ctx context.Context, instance *instance
 			Reason:             "DeploymentAndServiceCreating",
 			Message:            "The deployment and service are DeploymentAndServiceCreating",
 		})
-	}
-	if util.ConditionIsTrue(instance.Status.Conditions, instancev1.DeploymentAndServiceCreating) {
-		// todo check deployment and service is ready
-		util.SetCondition(&instance.Status.Conditions, metav1.Condition{
-			Type:               instancev1.Ready,
-			Status:             metav1.ConditionTrue,
-			LastTransitionTime: metav1.Now(),
-			Reason:             "Ready",
-			Message:            "The deployment and service Ready",
-		})
 		err := r.Status().Update(ctx, instance)
 		if err != nil {
 			return ctrl.Result{}, err
 		}
-		_log.Info("instance created")
-		return ctrl.Result{}, nil
+		_log.Info("the deployment and service are DeploymentAndServiceCreating")
 	}
-
 	return ctrl.Result{}, nil
 }
 
@@ -295,12 +307,12 @@ func (r *InstanceReconciler) applyDeployment(ctx context.Context, kubernetesClie
 					TerminationGracePeriodSeconds: &defaultTerminationGracePeriodSeconds,
 					Containers: []corev1.Container{ // todo 是否还有其他的容器需要初始化，类似initContainer
 						{
-							Name:    "main",
-							Image:   instance.Spec.Runtime.Image.Main,
-							Command: []string{"sh", "/app/start.sh"},
-							Env:     r.buildEnv(ctx, instance),
+							Name:  "main",
+							Image: instance.Spec.Runtime.Image.Main,
+							//Command: []string{"sh", "/app/start.sh"},
+							Env: r.buildEnv(ctx, instance),
 							Ports: []corev1.ContainerPort{
-								{ContainerPort: 8000, Name: "http"},
+								{ContainerPort: 80, Name: "http"},
 							},
 							Resources: corev1.ResourceRequirements{
 								Requests: r.setRequestQuota(ctx, instance.Spec.Bundle),
@@ -404,7 +416,8 @@ func (r *InstanceReconciler) buildProbe(initialDelaySeconds, periodSeconds, time
 	return &corev1.Probe{
 		ProbeHandler: corev1.ProbeHandler{
 			HTTPGet: &corev1.HTTPGetAction{
-				Path:        "/healthz",
+				//Path: "/healthz",
+				Path:        "/",
 				Port:        intstr.FromString("http"),
 				HTTPHeaders: []corev1.HTTPHeader{{Name: "Referer", Value: probeType}},
 			},
@@ -419,16 +432,24 @@ func (r *InstanceReconciler) buildProbe(initialDelaySeconds, periodSeconds, time
 func (r *InstanceReconciler) delete(ctx context.Context, instance *instancev1.Instance) (ctrl.Result, error) {
 
 	err := r.deleteInstanceFromCluster(ctx, instance)
-	if err == nil {
-		// remove the finalizer
-		instance.ObjectMeta.Finalizers = util.RemoveString(instance.ObjectMeta.Finalizers, InstanceFinalizer)
-		err := r.Update(ctx, instance)
-		if err != nil {
-			return ctrl.Result{}, err
-		}
+	return ctrl.Result{}, err
+}
 
+func (r *InstanceReconciler) checkPodStatus(ctx context.Context, instance *instancev1.Instance) (bool, *appsv1.Deployment) {
+	var kubernetesClient *kubernetes.Clientset
+	var err error
+	var result *appsv1.Deployment
+	if kubernetesClient, err = driver.GetKubernetesClient(instance.Status.ClusterConfig); err != nil {
+		return false, nil
 	}
-	return ctrl.Result{}, nil
+	if result, err = kubernetesClient.AppsV1().Deployments(instance.Namespace).Get(ctx, instance.Status.DeploymentName, metav1.GetOptions{}); client.IgnoreNotFound(err) != nil {
+		return false, nil
+	}
+
+	if result.Status.Replicas > 0 && float32(result.Status.ReadyReplicas/result.Status.Replicas) >= 0.5 {
+		return true, result
+	}
+	return false, result
 }
 
 func getDeploymentName(instance *instancev1.Instance) string {
