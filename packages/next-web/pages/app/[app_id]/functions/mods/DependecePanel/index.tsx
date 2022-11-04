@@ -7,7 +7,7 @@ import { HStack } from "@chakra-ui/react";
 
 import AddDepenceModal from "./AddDepenceModal";
 
-import commonStyles from "../../index.module.scss";
+import commonStyles from "../../../index.module.scss";
 import styles from "./index.module.scss";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import useFunctionStore from "../../store";

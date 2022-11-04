@@ -12,7 +12,7 @@ import useFunctionStore from "../../store";
 
 import CreateModal from "./CreateModal";
 
-import commonStyles from "../../index.module.scss";
+import commonStyles from "../../../index.module.scss";
 import styles from "./index.module.scss";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import FileStatusIcon, { FileStatus } from "@/components/FileStatusIcon";

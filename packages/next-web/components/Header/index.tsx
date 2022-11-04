@@ -8,16 +8,24 @@ import { GiDragonfly } from "react-icons/gi";
 import { GrGithub, GrLanguage } from "react-icons/gr";
 import { HStack, Tag, TagLabel } from "@chakra-ui/react";
 import React from "react";
+import { useRouter } from "next/router";
 
 export default function Header(props: { size: "sm" | "lg" }) {
   const { size } = props;
+  const router = useRouter();
+
   return size === "sm" ? (
     <div
       className="flex justify-between items-center bg-white px-4"
       style={{ height: SmallNavHeight }}
     >
       <div className="flex items-center">
-        <div className=" rounded-xl bg-black p-1 mr-2">
+        <div
+          className=" rounded-xl bg-black p-1 mr-2"
+          onClick={() => {
+            router.push("/");
+          }}
+        >
           <GiDragonfly color="white" />
         </div>
         <span className="mr-4">LeezQ</span>
@@ -39,7 +47,7 @@ export default function Header(props: { size: "sm" | "lg" }) {
       </HStack>
     </div>
   ) : (
-    <div className="flex justify-between p-4 bg-white	drop-shadow">
+    <div className="flex justify-between p-4 bg-white	border-b">
       <div className="flex items-center">
         <img src="/logo.png" alt="logo" className="mr-2 rounded-full" width={30} />
         <span>Laf 云开发</span>

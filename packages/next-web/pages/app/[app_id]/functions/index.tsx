@@ -7,15 +7,13 @@ import { Button, HStack } from "@chakra-ui/react";
 import Editor from "@monaco-editor/react";
 import clsx from "clsx";
 
-import { SiderBarWidth } from "@/constants/index";
-
 import DebugPanel from "./mods/DebugPannel";
 import DependecyList from "./mods/DependecePanel";
 import FunctionList from "./mods/FunctionPanel";
 
 import useFunctionStore from "./store";
 
-import commonStyles from "./index.module.scss";
+import commonStyles from "../index.module.scss";
 import FileStatusIcon, { FileStatus } from "@/components/FileStatusIcon";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 
