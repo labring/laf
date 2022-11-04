@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
-# Usage:
-# - sh start_vm.sh
-# - sh start_vm.sh laf-dev ~/.kube/config
+# Intro: Start a VM by multipass with laf deployment environment. Ensure you have installed multipass. https://multipass.run/install"
+# Usage: ./start_vm.sh <vm_name> <kubeconfig_output>
+# - sh scripts/start_vm.sh
+# - sh scripts/start_vm.sh laf-dev ~/.kube/config
 
 NAME="laf-dev"
 # if set first param in command line
@@ -99,24 +100,7 @@ echo "k8s cluster is ready."
 vm_root_exec sealos run labring/helm:v3.8.2
 vm_root_exec sealos run labring/openebs:v1.9.0
 vm_root_exec sealos run labring/cert-manager:v1.8.0
-
-# create the necessary secret config
-cat << EOF | kubectl apply -f -
-apiVersion: v1
-kind: Secret
-metadata:
-  name: payment-secret
-  namespace: user-system
-type: Opaque
-data:
-  MchID: MTYyNzUwMjQwMg==
-  AppID: d3g1OTRjNTI3OWI1ZmY0NjY3
-  MchAPIv3Key: c3owZWg3MmVxZmw0dDk5OGdiMTlxdjBkdjBlM2VxY2c=
-  MchCertificateSerialNumber: NTdGMkM0QTAyOTdFQTVFNTE0REM1OUY0QzNCNzU2Qzc3OTYyMzM1MA==
-  WechatPrivateKey: c3owZWg3MmVxZmw0dDk5OGdiMTlxdjBkdjBlM2VxY2c=
-EOF
-
-vm_root_exec sealos run docker.io/labring/sealos-user-controller:dev
+vm_root_exec sealos run labring/sealos-user-controller:dev
 
 set -x
 set -e
