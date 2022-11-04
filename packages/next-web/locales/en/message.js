@@ -1,7 +1,12 @@
 /*eslint-disable*/
 module.exports = {
   messages: {
-    搜索: "Search",
-    新建应用: "New Application",
+    Search: "Search",
+    NewApplication: "New Application",
+    FunctionList: "FunctionList",
+    DependenceName: "Name",
+    DependenceVersion: "Version",
+    Confirm: "Confirm",
+    Cancel: "Cancel",
   },
 };
