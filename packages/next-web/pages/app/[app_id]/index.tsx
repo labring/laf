@@ -12,8 +12,7 @@ function AppDetail() {
   const [pageId, setPageId] = useState("function");
   return (
     <div className="bg-white">
-      <SiderBar setPageId={(pageId: string) => setPageId(pageId)} />
-
+      <SiderBar pageId={pageId} setPageId={(pageId: string) => setPageId(pageId)} />
       {pageId === Pages.function ? <FunctionPage /> : null}
       {pageId === Pages.database ? <DatabasePage /> : null}
       {pageId === Pages.storage ? <StoragePage /> : null}

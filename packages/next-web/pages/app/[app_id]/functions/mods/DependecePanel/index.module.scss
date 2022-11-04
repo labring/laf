@@ -1,12 +1,21 @@
-.functionList {
+.packageList {
+  height: 200px;
   li {
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 2px 8px;
+    padding: 4px 16px;
+    font-size: 13px;
 
-    &:hover {
+    &:hover,
+    &.active {
       background-color: #f2f3f8;
+      color: #000 !important;
+    }
+
+    &.active {
+      background-color: var(--chakra-colors-gray-200);
     }
   }
 }

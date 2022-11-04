@@ -2,20 +2,32 @@
  * cloud functions list sidebar
  ***************************/
 
-import React from "react";
-import { AttachmentIcon, WarningIcon } from "@chakra-ui/icons";
-import { HStack, Input } from "@chakra-ui/react";
+import React, { useEffect } from "react";
+import { HStack } from "@chakra-ui/react";
 
 import AddDepenceModal from "./AddDepenceModal";
 
 import commonStyles from "../../index.module.scss";
 import styles from "./index.module.scss";
+import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
+import useFunctionStore from "../../store";
+import { ChevronRightIcon } from "@chakra-ui/icons";
 
 export default function DependecyList() {
+  const { getPacakges, allPackages } = useFunctionStore((store) => store);
+
+  useEffect(() => {
+    getPacakges();
+    return () => {};
+  }, [getPacakges]);
+
   return (
     <div>
       <div className={commonStyles.sectionHeader + " flex justify-between"}>
-        <h4>NPM 依赖</h4>
+        <h4>
+          <ChevronRightIcon fontSize={18} />
+          NPM 依赖
+        </h4>
         <HStack spacing="2">
           <AddDepenceModal />
         </HStack>
@@ -25,14 +37,18 @@ export default function DependecyList() {
           <Input size="sm" className="mr-2" />
         </div> */}
 
-        <ul className={styles.functionList + " mb-4"}>
-          <li>
-            <div>
-              <AttachmentIcon />
-              <span className="ml-2">axios</span>
-            </div>
-            <div className={styles.status}>0.24.0</div>
-          </li>
+        <ul className={styles.packageList + " mb-4"}>
+          {allPackages?.map((packageItem) => {
+            return (
+              <li key={packageItem?.name}>
+                <div>
+                  <FileTypeIcon type={FileType.npm} />
+                  <span className="ml-2">{packageItem?.name}</span>
+                </div>
+                <div className={styles.status}>{packageItem?.version}</div>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </div>

@@ -9,14 +9,10 @@ import Editor from "@monaco-editor/react";
 import clsx from "clsx";
 
 import { SiderBarWidth } from "@/constants/index";
-import request from "@/utils/request";
-
-import SiderBar from "../mods/SiderBar";
 
 import DebugPanel from "./mods/DebugPannel";
 import DependecyList from "./mods/DependecePanel";
 import FunctionList from "./mods/FunctionPanel";
-import funcString from "./mockFuncTextString";
 
 import useFunctionStore from "./store";
 
@@ -33,7 +29,7 @@ function FunctionPage() {
 
   return (
     <div className="flex h-screen" style={{ marginLeft: SiderBarWidth }}>
-      <div className=" w-1/5" style={{ borderRight: "1px solid #eee" }}>
+      <div className="" style={{ width: 300, borderRight: "1px solid #eee" }}>
         <FunctionList />
         <DependecyList />
       </div>
@@ -63,7 +59,20 @@ function FunctionPage() {
           </div>
         </div>
         <div className="flex-1">
-          <Editor height="100%" defaultLanguage="javascript" value={currentFunction?.code} />
+          <Editor
+            options={{
+              minimap: {
+                enabled: false,
+              },
+              scrollbar: {
+                verticalScrollbarSize: 6,
+              },
+              scrollBeyondLastLine: false,
+            }}
+            height="100%"
+            defaultLanguage="javascript"
+            value={currentFunction?.code}
+          />
         </div>
         <div style={{ height: 300 }}>
           <DebugPanel />

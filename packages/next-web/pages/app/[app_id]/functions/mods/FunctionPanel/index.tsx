@@ -4,16 +4,15 @@
 
 import React from "react";
 import {
-  AttachmentIcon,
+  ChevronRightIcon,
   HamburgerIcon,
+  Search2Icon,
   SettingsIcon,
   SunIcon,
   WarningIcon,
 } from "@chakra-ui/icons";
-import { HStack, Input } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
-
-import request from "@/utils/request";
+import { HStack, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
+import { t } from "@lingui/macro";
 
 import useFunctionStore from "../../store";
 
@@ -21,6 +20,8 @@ import CreateModal from "./CreateModal";
 
 import commonStyles from "../../index.module.scss";
 import styles from "./index.module.scss";
+import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
+import FileStatusIcon, { FileStatus } from "@/components/FileStatusIcon";
 
 export default function FunctionList() {
   const store = useFunctionStore((store) => store);
@@ -28,7 +29,10 @@ export default function FunctionList() {
   return (
     <div>
       <div className={commonStyles.sectionHeader + " flex justify-between"}>
-        <h4>函数列表</h4>
+        <h4>
+          <ChevronRightIcon fontSize={18} />
+          {t`函数列表`}
+        </h4>
         <HStack spacing="2">
           <SunIcon />
           <CreateModal />
@@ -36,7 +40,16 @@ export default function FunctionList() {
         </HStack>
       </div>
       <div className="flex items-center m-2 mb-2">
-        <Input size="sm" className="mr-2" />
+        <InputGroup>
+          <InputLeftElement
+            height={"8"}
+            width="12"
+            pointerEvents="none"
+            children={<Search2Icon bgSize="sm" color="gray.300" />}
+          />
+          <Input size="sm" className="mr-2" variant="filled" placeholder="输入函数名搜索" />
+        </InputGroup>
+
         <HStack spacing="2">
           <WarningIcon />
           <SettingsIcon />
@@ -63,7 +76,7 @@ export default function FunctionList() {
         })}
       </ul> */}
 
-      <h5 className="m-2">所有函数</h5>
+      <h5 className="m-4">所有函数</h5>
       <ul className={styles.functionList + " mb-4"}>
         {(store.allFunctionList || []).map((func: any) => {
           return (
@@ -75,10 +88,10 @@ export default function FunctionList() {
               }}
             >
               <div>
-                <AttachmentIcon />
-                <span className="ml-2">{func.name}.js</span>
+                <FileTypeIcon type={FileType.js} />
+                <span className="ml-2">{func.label}</span>
               </div>
-              <div className={styles.status}>M</div>
+              <FileStatusIcon status={FileStatus.deleted} />
             </li>
           );
         })}

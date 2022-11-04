@@ -25,11 +25,22 @@ type TFunction =
     }
   | undefined;
 
+type TPackage =
+  | {
+      name: string;
+      version: string;
+    }
+  | undefined;
+
 type State = {
   currentFunction: TFunction;
   favFunctoinList: any[];
   allFunctionList?: any[];
+  allPackages?: TPackage[];
+
   initFunctionPage: () => void;
+
+  getPacakges: () => void;
 
   setCurrentFunction: (currentFunction: TFunction) => void;
 };
@@ -41,12 +52,20 @@ const useFunctionStore = create<State>()(
       favFunctoinList: [],
 
       allFunctionList: [],
+      allPackages: [],
 
       initFunctionPage: async () => {
         const res = await request.get("/api/function_list");
         set((state) => {
           state.allFunctionList = res.data;
           state.currentFunction = res.data[0];
+        });
+      },
+
+      getPacakges: async () => {
+        const res = await request.get("/api/packages");
+        set((state) => {
+          state.allPackages = res.data;
         });
       },
 
