@@ -3,9 +3,9 @@
 
 ## Prerequisites
 
-```shell
-sealos run ghcr.io/labring/laf-casdoor:dev -f
-```
+**You should install casdoor first.**
+
+@see `../casdoor/README.md`.
 
 ## Install
 
