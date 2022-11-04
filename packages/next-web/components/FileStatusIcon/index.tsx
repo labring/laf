@@ -19,7 +19,7 @@ export default function FileStatusIcon(props: { status: string }) {
 
     case FileStatus.deleted:
       return (
-        <Icon viewBox="0 0 48 48" fill="orange" fontSize={15}>
+        <Icon viewBox="0 0 48 16" fill="orange" fontSize={15} style={{ verticalAlign: "-2px" }}>
           <path d="M0 2C0 0.89375 0.89375 0 2 0H10C17.7312 0 24 6.26875 24 14C24 21.7312 17.7312 28 10 28H2C0.89375 28 0 27.1063 0 26V2ZM4 4V24H10C15.525 24 20 19.525 20 14C20 8.475 15.525 4 10 4H4Z" />
         </Icon>
       );

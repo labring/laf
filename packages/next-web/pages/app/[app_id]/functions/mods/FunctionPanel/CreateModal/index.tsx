@@ -2,9 +2,7 @@ import React from "react";
 import { AddIcon } from "@chakra-ui/icons";
 import {
   Button,
-  Checkbox,
   FormControl,
-  FormErrorMessage,
   FormLabel,
   Input,
   Modal,
@@ -21,6 +19,7 @@ import {
 } from "@chakra-ui/react";
 import { Field, Formik } from "formik";
 import { t } from "@lingui/macro";
+import IconWrap from "@/components/IconWrap";
 
 function CreateModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -30,7 +29,9 @@ function CreateModal() {
 
   return (
     <>
-      <AddIcon onClick={onOpen} />
+      <IconWrap size={20} onClick={onOpen}>
+        <AddIcon fontSize={10} />
+      </IconWrap>
 
       <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} size="2xl">
         <ModalOverlay />

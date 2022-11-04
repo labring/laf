@@ -1,4 +1,5 @@
-export const SiderBarWidth = 40;
+export const SiderBarWidth = 50;
+export const SmallNavHeight = 32;
 
 export const Pages = {
   function: "function",

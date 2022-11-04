@@ -53,7 +53,7 @@ function AddDepenceModal() {
   return (
     <>
       <IconWrap onClick={onOpen}>
-        <AddIcon />
+        <AddIcon fontSize={10} />
       </IconWrap>
 
       <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} size="lg">

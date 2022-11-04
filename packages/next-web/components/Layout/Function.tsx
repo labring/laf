@@ -1,5 +1,21 @@
+import { SmallNavHeight } from "@/constants/index";
 import React, { ReactNode } from "react";
+import Header from "../Header";
 
 export default function FunctionLayout(props: { children: ReactNode }) {
-  return <div> {props.children}</div>;
+  return (
+    <div>
+      <Header size="sm" />
+      <div
+        className="bg-white"
+        style={{
+          height: `calc(100vh - ${SmallNavHeight}px)`,
+          overflow: "hidden",
+          position: "relative",
+        }}
+      >
+        {props.children}
+      </div>
+    </div>
+  );
 }

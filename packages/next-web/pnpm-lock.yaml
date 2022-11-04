@@ -53,11 +53,11 @@ dependencies:
   framer-motion: 6.5.1_biqbaboplfbrettd7655fr4n2y
   immer: 9.0.16
   make-plural: 7.1.0
-  next: 12.3.1_2mygebwfgdyopr3fy2qddu2eli
+  next: 12.3.1_orpxj3vgaelozwpc7iiuainqz4
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-icons: 4.6.0_react@18.2.0
-  sass: 1.55.0
+  sass: 1.56.0
   zustand: 4.1.4_immer@9.0.16+react@18.2.0
 
 devDependencies:
@@ -2127,7 +2127,7 @@ packages:
       postcss: ^8.1.0
     dependencies:
       browserslist: 4.21.4
-      caniuse-lite: 1.0.30001429
+      caniuse-lite: 1.0.30001430
       fraction.js: 4.2.0
       normalize-range: 0.1.2
       picocolors: 1.0.0
@@ -2207,7 +2207,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001429
+      caniuse-lite: 1.0.30001430
       electron-to-chromium: 1.4.284
       node-releases: 2.0.6
       update-browserslist-db: 1.0.10_browserslist@4.21.4
@@ -2245,8 +2245,8 @@ packages:
     engines: {node: '>=10'}
     dev: false
 
-  /caniuse-lite/1.0.30001429:
-    resolution: {integrity: sha512-511ThLu1hF+5RRRt0zYCf2U2yRr9GPF6m5y90SBCWsvSoYoW7yAGlv/elyPaNfvGCkp6kj/KFZWU0BMA69Prsg==}
+  /caniuse-lite/1.0.30001430:
+    resolution: {integrity: sha512-IB1BXTZKPDVPM7cnV4iaKaHxckvdr/3xtctB3f7Hmenx3qYBhGtTZ//7EllK66aKXW98Lx0+7Yr0kxBtIt3tzg==}
 
   /chalk/2.4.2:
     resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==}
@@ -3737,7 +3737,7 @@ packages:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
 
-  /next/12.3.1_2mygebwfgdyopr3fy2qddu2eli:
+  /next/12.3.1_orpxj3vgaelozwpc7iiuainqz4:
     resolution: {integrity: sha512-l7bvmSeIwX5lp07WtIiP9u2ytZMv7jIeB8iacR28PuUEFG5j0HGAPnMqyG5kbZNBG2H7tRsrQ4HCjuMOPnANZw==}
     engines: {node: '>=12.22.0'}
     hasBin: true
@@ -3757,11 +3757,11 @@ packages:
     dependencies:
       '@next/env': 12.3.1
       '@swc/helpers': 0.4.11
-      caniuse-lite: 1.0.30001429
+      caniuse-lite: 1.0.30001430
       postcss: 8.4.14
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      sass: 1.55.0
+      sass: 1.56.0
       styled-jsx: 5.0.7_react@18.2.0
       use-sync-external-store: 1.2.0_react@18.2.0
     optionalDependencies:
@@ -4400,8 +4400,8 @@ packages:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
     dev: false
 
-  /sass/1.55.0:
-    resolution: {integrity: sha512-Pk+PMy7OGLs9WaxZGJMn7S96dvlyVBwwtToX895WmCpAOr5YiJYEUJfiJidMuKb613z2xNWcXCHEuOvjZbqC6A==}
+  /sass/1.56.0:
+    resolution: {integrity: sha512-WFJ9XrpkcnqZcYuLRJh5qiV6ibQOR4AezleeEjTjMsCocYW59dEG19U3fwTTXxzi2Ed3yjPBp727hbbj53pHFw==}
     engines: {node: '>=12.0.0'}
     hasBin: true
     dependencies:

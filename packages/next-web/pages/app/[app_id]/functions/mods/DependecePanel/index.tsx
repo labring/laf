@@ -25,7 +25,7 @@ export default function DependecyList() {
     <div>
       <div className={commonStyles.sectionHeader + " flex justify-between"}>
         <h4>
-          <ChevronRightIcon fontSize={18} />
+          <ChevronRightIcon fontSize={16} />
           NPM 依赖
         </h4>
         <HStack spacing="2">

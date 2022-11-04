@@ -3,16 +3,10 @@
  ***************************/
 
 import React from "react";
-import {
-  ChevronRightIcon,
-  HamburgerIcon,
-  Search2Icon,
-  SettingsIcon,
-  SunIcon,
-  WarningIcon,
-} from "@chakra-ui/icons";
+import { ChevronRightIcon, HamburgerIcon, Search2Icon, SunIcon } from "@chakra-ui/icons";
 import { HStack, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
+import { AiOutlineFilter } from "react-icons/ai";
 
 import useFunctionStore from "../../store";
 
@@ -22,6 +16,7 @@ import commonStyles from "../../index.module.scss";
 import styles from "./index.module.scss";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import FileStatusIcon, { FileStatus } from "@/components/FileStatusIcon";
+import IconWrap from "@/components/IconWrap";
 
 export default function FunctionList() {
   const store = useFunctionStore((store) => store);
@@ -30,13 +25,17 @@ export default function FunctionList() {
     <div>
       <div className={commonStyles.sectionHeader + " flex justify-between"}>
         <h4>
-          <ChevronRightIcon fontSize={18} />
+          <ChevronRightIcon fontSize={16} />
           {t`FunctionList`}
         </h4>
-        <HStack spacing="2">
-          <SunIcon />
+        <HStack spacing="0">
+          <IconWrap onClick={() => {}}>
+            <SunIcon fontSize={12} />
+          </IconWrap>
           <CreateModal />
-          <HamburgerIcon />
+          <IconWrap onClick={() => {}}>
+            <HamburgerIcon fontSize={12} />
+          </IconWrap>
         </HStack>
       </div>
       <div className="flex items-center m-2 mb-2">
@@ -51,8 +50,9 @@ export default function FunctionList() {
         </InputGroup>
 
         <HStack spacing="2">
-          <WarningIcon />
-          <SettingsIcon />
+          <IconWrap onClick={() => {}} size={26}>
+            <AiOutlineFilter size={16} />
+          </IconWrap>
         </HStack>
       </div>
 

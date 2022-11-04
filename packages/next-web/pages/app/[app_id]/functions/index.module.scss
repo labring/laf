@@ -3,10 +3,15 @@
   display: flex;
   align-items: center;
   margin-bottom: 12px;
-  padding: 0 12px;
+  padding: 0 4px;
+  padding-right: 8px;
   justify-content: space-between;
   border-top: 1px solid #eaeaea;
   border-bottom: 1px solid #eaeaea;
+
+  h4 {
+    font-weight: bold;
+  }
 
   h4 svg {
     vertical-align: -4px !important;

@@ -29,29 +29,37 @@ function FunctionPage() {
   }, [initFunctionPage]);
 
   return (
-    <div className="flex h-screen" style={{ marginLeft: SiderBarWidth }}>
+    <>
       <div className="" style={{ width: 300, borderRight: "1px solid #eee" }}>
         <FunctionList />
         <DependecyList />
       </div>
-      <div className="flex flex-1 flex-col h-screen">
+      <div className="flex flex-1 flex-col ">
         <div style={{ borderBottom: "1px solid #efefef" }}>
           <div
             className={clsx(commonStyles.sectionHeader, "flex justify-between px-2 ")}
             style={{ marginBottom: 0 }}
           >
-            <HStack spacing="2">
+            <div className="flex items-center">
               <FileTypeIcon type={FileType.js} />
-              <span>addToto.js</span>
-              <span>
+              <span className="font-bold text-base ml-2">
+                {currentFunction?.label} &nbsp;({currentFunction?.name}.js)
+              </span>
+              <span className="ml-4 ">
                 <FileStatusIcon status={FileStatus.deleted} />
               </span>
-            </HStack>
+            </div>
 
             <HStack spacing="4">
-              <span>调用地址：https://qcphsd.api.cloudendpoint.cn/deleteCurrentTodo</span>
+              <span>
+                <span className=" text-slate-500">调用地址：</span>
+                <span>https://qcphsd.api.cloudendpoint.cn/deleteCurrentTodo</span>
+              </span>
               <Button
                 size="xs"
+                borderRadius={2}
+                colorScheme="blue"
+                padding="0 12px"
                 onClick={() => {
                   console.log("发布");
                 }}
@@ -63,6 +71,7 @@ function FunctionPage() {
         </div>
         <div className="flex-1">
           <Editor
+            theme="vs-dark"
             options={{
               minimap: {
                 enabled: false,
@@ -70,6 +79,7 @@ function FunctionPage() {
               scrollbar: {
                 verticalScrollbarSize: 6,
               },
+              lineNumbersMinChars: 4,
               scrollBeyondLastLine: false,
             }}
             height="100%"
@@ -81,7 +91,7 @@ function FunctionPage() {
           <DebugPanel />
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

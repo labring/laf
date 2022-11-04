@@ -24,7 +24,7 @@ export default function SiderBar(props: { pageId: string; setPageId: (pageId: st
   return (
     <div
       style={{ width: SiderBarWidth, borderRight: "1px solid #eee" }}
-      className="absolute h-screen"
+      className="absolute top-0 bottom-0"
     >
       {ICONS.map((item, index) => {
         return (
