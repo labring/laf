@@ -3,7 +3,6 @@
  ***************************/
 
 import React, { useEffect } from "react";
-import { AttachmentIcon } from "@chakra-ui/icons";
 import { Button, HStack } from "@chakra-ui/react";
 import Editor from "@monaco-editor/react";
 import clsx from "clsx";
@@ -17,6 +16,8 @@ import FunctionList from "./mods/FunctionPanel";
 import useFunctionStore from "./store";
 
 import commonStyles from "./index.module.scss";
+import FileStatusIcon, { FileStatus } from "@/components/FileStatusIcon";
+import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 
 function FunctionPage() {
   const { initFunctionPage, currentFunction } = useFunctionStore((store) => store);
@@ -40,9 +41,11 @@ function FunctionPage() {
             style={{ marginBottom: 0 }}
           >
             <HStack spacing="2">
-              <AttachmentIcon />
+              <FileTypeIcon type={FileType.js} />
               <span>addToto.js</span>
-              <span>M</span>
+              <span>
+                <FileStatusIcon status={FileStatus.deleted} />
+              </span>
             </HStack>
 
             <HStack spacing="4">

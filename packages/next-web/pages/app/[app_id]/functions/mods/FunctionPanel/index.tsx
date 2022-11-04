@@ -31,7 +31,7 @@ export default function FunctionList() {
       <div className={commonStyles.sectionHeader + " flex justify-between"}>
         <h4>
           <ChevronRightIcon fontSize={18} />
-          {t`函数列表`}
+          {t`FunctionList`}
         </h4>
         <HStack spacing="2">
           <SunIcon />

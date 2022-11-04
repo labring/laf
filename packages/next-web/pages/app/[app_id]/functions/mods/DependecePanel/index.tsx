@@ -45,7 +45,7 @@ export default function DependecyList() {
                   <FileTypeIcon type={FileType.npm} />
                   <span className="ml-2">{packageItem?.name}</span>
                 </div>
-                <div className={styles.status}>{packageItem?.version}</div>
+                <div className="text-slate-500">{packageItem?.version}</div>
               </li>
             );
           })}

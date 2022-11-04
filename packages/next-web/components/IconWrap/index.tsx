@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Icon(props: { children: React.ReactNode; onClick: () => void }) {
+export default function IconWrap(props: { children: React.ReactNode; onClick: () => void }) {
   return (
     <span
       onClick={props.onClick}

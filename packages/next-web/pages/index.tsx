@@ -29,7 +29,7 @@ function HomePage() {
               pointerEvents="none"
               children={<Search2Icon color="gray.300" />}
             />
-            <Input placeholder={t`搜索`} size="lg" />
+            <Input placeholder={t`Search`} size="lg" />
           </InputGroup>
         </div>
         <Button
@@ -38,7 +38,7 @@ function HomePage() {
           style={{ padding: "0 40px" }}
           leftIcon={<AddIcon />}
         >
-          {t`新建应用`}
+          {t`NewApplication`}
         </Button>
       </div>
 
