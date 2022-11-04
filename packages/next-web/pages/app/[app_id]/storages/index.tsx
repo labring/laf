@@ -4,6 +4,6 @@
 
 import React from "react";
 
-export default function Storages() {
+export default function StoragePage() {
   return <div>Function</div>;
 }

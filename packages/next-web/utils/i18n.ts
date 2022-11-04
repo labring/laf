@@ -1,5 +1,5 @@
 import { i18n } from "@lingui/core";
-import { en, cs } from "make-plural/plurals";
+import { cs, en } from "make-plural/plurals";
 
 i18n.loadLocaleData("en", { plurals: en });
 i18n.loadLocaleData("cs", { plurals: cs });

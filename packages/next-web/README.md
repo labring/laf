@@ -1,17 +1,19 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
 ## Getting Started
 
 First, run the development server:
 
 ```bash
 pnpm install
+// or
+pnpm i --registry=https://registry.npmmirror.com
+
+// then
 pnpm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-tree:
+### File Tree:
 
 ```
 .
@@ -87,3 +89,17 @@ tree:
     ├── i18n.ts
     └── request.ts
 ```
+
+### Tech Stack：
+
+- base: react / nextjs 12.x https://nextjs.org/docs/getting-started (will be update to 13.x)
+- request: react-query + axios https://tanstack.com/query/v4/
+- state mange: zustand + immer https://zustand-demo.pmnd.rs/
+- i18n: lingui https://lingui.js.org/
+- UI : chakra : https://chakra-ui.com/getting-started
+- Style: tailwind + sass https://tailwindcss.com/
+- Icon: react-icons: https://react-icons.github.io/react-icons
+
+### DX:
+
+- click-to-component https://github.com/ericclemmons/click-to-component
