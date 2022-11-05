@@ -6,11 +6,11 @@
 
 config:
   callbackUrl: "http://localhost:8080/login/callback"
+  ssoEndpoint: "http://localhost:30800"
   oauthProviders:
     - type: "GitHub"
       clientId: "update_for_your_own"
       clientSecret: "update_for_your_own"
-  ssoEndpoint: "http://localhost:30800"
 
 ## for k8s resource
 

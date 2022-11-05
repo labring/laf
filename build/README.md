@@ -1,4 +1,6 @@
 
+## **WARNING!**
+> **The image in this directory is temporarily unavailable because SealOS has some inadequate support. Stay here for the time being, and then use it when the time is mature.**
 
 ## Intro
 
