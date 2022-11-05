@@ -1,33 +1,33 @@
-# Default values for casdoor.
+# Default values for postgresql.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-## app configurations
-postgresql:
-  host: postgresql
-  port: 5432
-  username: adm1n
-  password: passw0rd
-  database: casdoor
 
-
-## k8s resource configurations
+# db config
+username: adm1n
+password: passw0rd
+database: casdoor
+storage:
+  size: 5G
+  # class: database-postgresql
+  class: local-hostpath
+  createClass: false
 
 replicaCount: 1
 
 image:
-  repository: casbin/casdoor
+  repository: postgres
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v1.149.0"
+  tag: "14-alpine"
 
 imagePullSecrets: []
-nameOverride: "casdoor"
-fullnameOverride: "casdoor"
+nameOverride: ""
+fullnameOverride: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: false
+  create: true
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
@@ -48,10 +48,9 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: NodePort # ClusterIP
-  port: 8000
-  nodePort: 30800
-
+  name: postgresql
+  type: ClusterIP
+  port: 5432
 
 ingress:
   enabled: false

@@ -1,8 +1,15 @@
 #!/usr/bin/env sh
-# Intro: Start a VM by multipass with laf deployment environment. Ensure you have installed multipass. https://multipass.run/install"
+
+# Intro: Start a VM by multipass with laf deployment environment.
+
+# [ Required ] Install multipass by before run this script (https://multipass.run/install): 
+#   MacOS:   brew install --cask multipass
+#   Linux:   sudo snap install multipass
+#   Windows: https://multipass.run/install
+
 # Usage: ./start_vm.sh <vm_name> <kubeconfig_output>
-# - sh scripts/start_vm.sh
 # - sh scripts/start_vm.sh laf-dev ~/.kube/config
+# - sh scripts/start_vm.sh
 
 NAME="laf-dev"
 # if set first param in command line
@@ -29,7 +36,7 @@ fi
 # check if multipass is installed
 if ! command -v multipass &> /dev/null
 then
-    echo "ERROR: multipass could not be found, please install it first. @see https://multipass.run/install"
+    echo "ERROR: multipass could not be found, please install it first. @see https://multipass.run/install "
     exit 1
 fi
 
@@ -80,23 +87,6 @@ vm_root_exec kubectl taint node $NAME node-role.kubernetes.io/control-plane-
 set +x
 set +e
 
-i=0
-while true; do
-    echo "Waiting for k8s cluster ready..."
-    state=$(vm_root_exec kubectl get nodes | grep Ready | awk '{print $2}')
-    if [ "$state" = "Ready" ]; then
-        break
-    fi
-    i=$((i+1))
-    if [ $i -gt 30 ]; then
-        echo "ERROR: k8s cluster is not ready"
-        exit 1
-    fi
-    sleep 6
-done
-
-echo "k8s cluster is ready."
-
 vm_root_exec sealos run labring/helm:v3.8.2
 vm_root_exec sealos run labring/openebs:v1.9.0
 vm_root_exec sealos run labring/cert-manager:v1.8.0
@@ -111,3 +101,20 @@ vm_ip=$(multipass info "$NAME" | grep IPv4: | awk '{print $2}')
 sed -i -e "s/apiserver.cluster.local/$vm_ip/g" "$KUBECONF"
 set +x
 
+
+i=0
+while true; do
+    echo "Waiting for k8s cluster ready..."
+    state=$(vm_root_exec kubectl get nodes | grep Ready | awk '{print $2}')
+    if [ "$state" = "Ready" ]; then
+        break
+    fi
+    i=$((i+1))
+    if [ $i -gt 60 ]; then
+        echo "ERROR: k8s cluster is not ready"
+        exit 1
+    fi
+    sleep 3
+done
+
+echo "k8s cluster is ready."
