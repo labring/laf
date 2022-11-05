@@ -12,4 +12,4 @@ ENV DATABASE=postgres
 ENV STORAGE_CLASS=local-hostpath
 ENV STORAGE_SIZE=3G
 ENV STORAGE_CLASS_CREATE=false
-CMD [ "helm install ${NAME} ./charts/postgresql --namespace ${NAMESPACE} --set username=${USERNAME},password=${PASSWORD},database=${DATABASE},storage.createClass=${STORAGE_CLASS_CREATE},storage.class=${STORAGE_CLASS},storage.size=${STORAGE_SIZE},service.name=${HOST}" ]
+CMD [ "helm install $(NAME) ./charts/postgresql --namespace $(NAMESPACE) --set username=$(USERNAME),password=$(PASSWORD),database=$(DATABASE),storage.createClass=$(STORAGE_CLASS_CREATE),storage.class=$(STORAGE_CLASS),storage.size=$(STORAGE_SIZE),service.name=$(HOST)" ]
