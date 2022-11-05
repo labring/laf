@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 # Intro: Run this script before building the image.
 
 abs_dir=$(pwd)/$(dirname "$0")
