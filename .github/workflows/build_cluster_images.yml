@@ -64,7 +64,7 @@ jobs:
       - name: Prepare cluster image
         working-directory: build/${{ matrix.module }}
         run: |
-          sh ./pre.sh
+          sh pre.sh
 
       - name: Build cluster image
         env:

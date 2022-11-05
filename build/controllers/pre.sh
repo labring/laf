@@ -8,10 +8,9 @@ controllers_dir=$abs_dir/../../controllers
 
 mkdir -p $abs_dir/manifests
 
-matrix=( "application" "database" "gateway" "instance" "oss" "runtime" )
+matrix=("application" "database" "gateway" "instance" "oss" "runtime")
 
 for i in "${matrix[@]}"
 do
-    echo "cp ${controllers_dir}/${i}/deploy/manifests/deploy.yaml ${abs_dir}/manifests/${i}.yaml"
     cp ${controllers_dir}/${i}/deploy/manifests/deploy.yaml ${abs_dir}/manifests/laf-${i}-controller.yaml
 done
