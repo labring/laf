@@ -12,4 +12,4 @@ ENV PG_PASSWORD=passw0rd
 ENV PG_DATABASE=casdoor
 
 ENV NODE_PORT=30080
-CMD [ "kubectl create namespace $(NAMESPACE)", "helm install $(NAME) ./charts/casdoor --namespace $(NAMESPACE) --set service.nodePort=$(NODE_PORT),postgresql.host=$(PG_HOST),postgresql.port=$(PG_PORT),postgresql.username=$(PG_USERNAME),postgresql.password=$(PG_PASSWORD),postgresql.database=$(PG_DATABASE)" ]
+CMD [ "helm install $(NAME) ./charts/casdoor --namespace $(NAMESPACE) --set service.nodePort=$(NODE_PORT),postgresql.host=$(PG_HOST),postgresql.port=$(PG_PORT),postgresql.username=$(PG_USERNAME),postgresql.password=$(PG_PASSWORD),postgresql.database=$(PG_DATABASE)" ]

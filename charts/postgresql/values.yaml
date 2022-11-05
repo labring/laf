@@ -6,7 +6,7 @@
 # db config
 username: adm1n
 password: passw0rd
-database: casdoor
+database: postgres
 storage:
   size: 5G
   # class: database-postgresql

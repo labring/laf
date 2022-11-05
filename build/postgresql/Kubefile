@@ -8,7 +8,8 @@ ENV NAMESPACE=sealos
 ENV HOST=postgresql
 ENV USERNAME=adm1n
 ENV PASSWORD=passw0rd
+ENV DATABASE=postgres
 ENV STORAGE_CLASS=local-hostpath
-ENV STORAGE_SIZE=1G
+ENV STORAGE_SIZE=3G
 ENV STORAGE_CLASS_CREATE=false
-CMD [ "kubectl create namespace $(NAMESPACE)", "helm install NAME ./charts/postgresql --namespace $(NAMESPACE) --set username=$(USERNAME),password=$(PASSWORD),storage.createClass=$(STORAGE_CLASS_CREATE),storage.class=$(STORAGE_CLASS),storage.size=$(STORAGE_SIZE),service.name=$(HOST)" ]
+CMD [ "helm install ${NAME} ./charts/postgresql --namespace ${NAMESPACE} --set username=${USERNAME},password=${PASSWORD},database=${DATABASE},storage.createClass=${STORAGE_CLASS_CREATE},storage.class=${STORAGE_CLASS},storage.size=${STORAGE_SIZE},service.name=${HOST}" ]
