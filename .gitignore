@@ -24,4 +24,6 @@ controllers/oss/.vscode/dryrun.log
 
 .kube/
 
-images/**/registry
+build/*/manifests
+build/*/registry
+build/*/charts

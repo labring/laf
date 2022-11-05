@@ -78,17 +78,17 @@ spec:
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "mongodb.fullname" . }}-init
+                  name: {{ .Release.Name }}-init
                   key: username
             - name: MONGO_INITDB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "mongodb.fullname" . }}-init
+                  name: {{ .Release.Name }}-init
                   key: password
             - name: MONGO_INITDB_DATABASE
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "mongodb.fullname" . }}-init
+                  name: {{ .Release.Name }}-init
                   key: database
           volumeMounts:
             - name: mongodb-data

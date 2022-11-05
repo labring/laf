@@ -1,0 +1,14 @@
+FROM scratch
+
+USER 65532:65532
+COPY charts ./charts
+COPY registry ./registry
+ENV NAME=mongodb
+ENV NAMESPACE=default
+ENV INIT_USERNAME=adm1n
+ENV INIT_PASSWORD=passw0rd
+ENV INIT_DATABASE=sys_db
+ENV REPLICA_SET_NAME=rs0
+ENV STORAGE_CLASS=database-mongodb
+ENV STORAGE_SIZE=5G
+CMD [ "helm install $(NAME) --set db.username=$(INIT_USERNAME),db.password=$(INIT_PASSWORD),db.database=$(INIT_DATABASE),db.replicaSetName=$(REPLICA_SET_NAME),db.storage.class=$(STORAGE_CLASS),db.storage.size=$(STORAGE_SIZE) --namespace $(NAMESPACE) ./charts/mongodb"]

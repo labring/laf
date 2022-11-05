@@ -10,8 +10,8 @@ db:
   replicaSetName: rs0
 
 storage:
-  size: 1G
-  storageClassName: database
+  size: 5G
+  class: database-mongodb
 
 # k8s resource config
 replicaCount: 1
@@ -24,7 +24,7 @@ image:
 
 imagePullSecrets: []
 nameOverride: ""
-fullnameOverride: "mongo-rs0n0"
+fullnameOverride: "mongodb"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -51,6 +51,7 @@ securityContext:
   # runAsUser: 1000
 
 service:
+  name: mongo
   type: ClusterIP
   port: 27017
 
