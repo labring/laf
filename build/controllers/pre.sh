@@ -8,7 +8,7 @@ controllers_dir=$abs_dir/../../controllers
 
 mkdir -p $abs_dir/manifests
 
-matrix=("application" "database" "gateway" "instance" "oss" "runtime")
+matrix=(application database gateway instance oss runtime)
 
 for i in "${matrix[@]}"
 do
