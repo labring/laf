@@ -4,8 +4,6 @@ import Editor, { useMonaco } from "@monaco-editor/react";
 
 import useDBMStore from "../store";
 
-import styles from "./index.module.scss";
-
 export default function CollectionDataList() {
   const { entryList } = useDBMStore((store) => store);
   const monaco = useMonaco();

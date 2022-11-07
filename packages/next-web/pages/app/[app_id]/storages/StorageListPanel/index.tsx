@@ -14,7 +14,7 @@ export default function StorageListPanel() {
   return (
     <div style={{ width: 300, height: "100%", borderRight: "1px solid #eee" }}>
       <Panel title="云存储" actions={[<CreateModal key={"create_database"} />]}>
-        <div className="flex items-center m-2 mr-0 mb-3">
+        {/* <div className="flex items-center m-2 mr-0 mb-3">
           <InputGroup>
             <InputLeftElement
               height={"8"}
@@ -24,7 +24,7 @@ export default function StorageListPanel() {
             />
             <Input size="sm" className="mr-2" variant="filled" placeholder="输入集合_id查找" />
           </InputGroup>
-        </div>
+        </div> */}
 
         <SectionList>
           {(store.allStorages || []).map((storage) => {

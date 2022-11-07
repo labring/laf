@@ -22,7 +22,7 @@ export default function DebugPanel() {
               variant="filled"
               placeholder="https://qcphsd.api.cloudendpoint.cn/deleteCurrentTodo"
             />
-            <Button style={{ borderRadius: 2 }} size="xs" className="ml-2" colorScheme="brand">
+            <Button style={{ borderRadius: 2 }} size="xs" className="ml-2" colorScheme="primary">
               &nbsp;&nbsp;发送&nbsp;&nbsp;
             </Button>
           </div>

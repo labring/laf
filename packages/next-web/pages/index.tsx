@@ -36,7 +36,7 @@ function HomePage() {
         </div>
         <Button
           size={"lg"}
-          colorScheme="brand"
+          colorScheme="primary"
           style={{ padding: "0 40px" }}
           leftIcon={<AddIcon />}
         >

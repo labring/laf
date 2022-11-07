@@ -28,7 +28,7 @@ const useStorageStore = create<State>()(
       allStorages: [],
 
       initStoragePage: async () => {
-        const res = await request.get("/api/collections");
+        const res = await request.get("/api/buckets");
         set((state) => {
           state.allStorages = res.data;
           state.currentStorage = res.data[0];

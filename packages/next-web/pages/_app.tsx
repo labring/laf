@@ -18,10 +18,10 @@ import BasicLayout from "@/layout/Basic";
 
 // 2. Extend the theme to include custom colors, fonts, etc
 const colors = {
-  brand: {
+  primary: {
     50: "#000",
     100: "#000",
-    500: "#38A169",
+    500: "#000",
   },
 };
 

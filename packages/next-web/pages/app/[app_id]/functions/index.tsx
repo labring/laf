@@ -10,8 +10,8 @@ import FileStatusIcon, { FileStatus } from "@/components/FileStatusIcon";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 
 import DebugPanel from "./mods/DebugPannel";
-import DependecyList from "./mods/DependecePanel";
-import FunctionList from "./mods/FunctionPanel";
+import DependecyPanel from "./mods/DependecePanel";
+import FunctionPanel from "./mods/FunctionPanel";
 
 import useFunctionStore from "./store";
 
@@ -27,8 +27,8 @@ function FunctionPage() {
   return (
     <>
       <div className="" style={{ width: 300, borderRight: "1px solid #eee" }}>
-        <FunctionList />
-        <DependecyList />
+        <FunctionPanel />
+        <DependecyPanel />
       </div>
       <div className="flex flex-1 flex-col ">
         <div className="border-b">
@@ -54,7 +54,7 @@ function FunctionPage() {
               <Button
                 size="xs"
                 borderRadius={2}
-                colorScheme="blue"
+                colorScheme="primary"
                 padding="0 12px"
                 onClick={() => {
                   console.log("发布");

@@ -12,7 +12,7 @@ export default function Panel(props: {
   const { title, actions } = props;
   return (
     <div>
-      <div className={styles.sectionHeader + " flex justify-between "}>
+      <div className={styles.sectionHeader + " flex justify-between"}>
         <h4>
           <ChevronDownIcon fontSize={16} />
           {title}

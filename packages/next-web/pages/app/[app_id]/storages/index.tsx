@@ -4,6 +4,7 @@
 
 import React, { useEffect } from "react";
 
+import FileList from "./FileList";
 import StorageListPanel from "./StorageListPanel";
 
 import useStorageStore from "./store";
@@ -16,8 +17,9 @@ export default function StoragePage() {
   }, [initStoragePage]);
 
   return (
-    <div className="h-full">
+    <>
       <StorageListPanel />
-    </div>
+      <FileList />
+    </>
   );
 }
