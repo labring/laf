@@ -11,9 +11,9 @@ import {
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/router";
 
 import request from "@/utils/request";
-import { useRouter } from "next/router";
 function HomePage() {
   const appListRes = useQuery(["getAppDetailInfo"], () => {
     return request.get("/api/app");

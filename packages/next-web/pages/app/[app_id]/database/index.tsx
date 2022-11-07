@@ -3,6 +3,7 @@
  ***************************/
 import React, { useEffect } from "react";
 
+import CollectionDataList from "./CollectionDataList";
 import CollectionListPanel from "./CollectionListPanel";
 
 import useDBMStore from "./store";
@@ -15,9 +16,10 @@ function DatabasePage() {
   }, [initDBPage]);
 
   return (
-    <div className="h-full">
+    <>
       <CollectionListPanel />
-    </div>
+      <CollectionDataList />
+    </>
   );
 }
 

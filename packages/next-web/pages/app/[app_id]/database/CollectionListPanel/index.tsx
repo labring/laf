@@ -23,7 +23,7 @@ export default function CollectionListPanel() {
               pointerEvents="none"
               children={<Search2Icon bgSize="sm" color="gray.300" />}
             />
-            <Input size="sm" className="mr-2" variant="filled" placeholder="输入集合_id查找" />
+            <Input size="sm" className="mr-2" variant="filled" placeholder="输入集_id查找" />
           </InputGroup>
         </div>
 

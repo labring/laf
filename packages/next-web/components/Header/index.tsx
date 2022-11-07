@@ -6,7 +6,7 @@ import React from "react";
 import { BiHelpCircle } from "react-icons/bi";
 import { GiDragonfly } from "react-icons/gi";
 import { GrGithub, GrLanguage } from "react-icons/gr";
-import { HStack, Tag, TagLabel } from "@chakra-ui/react";
+import { Button, HStack, Tag, TagLabel } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
 import { SmallNavHeight } from "@/constants/index";

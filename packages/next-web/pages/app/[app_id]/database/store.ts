@@ -16,6 +16,8 @@ type State = {
   currentDB?: TDB;
   allDBs?: TDB[];
 
+  entryList?: any[];
+
   initDBPage: () => void;
 
   setCurrentDB: (currentFunction: TDB) => void;
@@ -27,11 +29,15 @@ const useDBMStore = create<State>()(
       currentDB: undefined,
       allDBs: [],
 
+      entryList: [],
+
       initDBPage: async () => {
         const res = await request.get("/api/collections");
+        const entryRes = await request.get("/api/dbm_entry");
         set((state) => {
           state.allDBs = res.data;
           state.currentDB = res.data[0];
+          state.entryList = entryRes.data?.list;
         });
       },
 

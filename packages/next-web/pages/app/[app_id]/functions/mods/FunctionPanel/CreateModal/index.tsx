@@ -17,8 +17,9 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import { Field, Formik } from "formik";
 import { t } from "@lingui/macro";
+import { Field, Formik } from "formik";
+
 import IconWrap from "@/components/IconWrap";
 
 function CreateModal() {
