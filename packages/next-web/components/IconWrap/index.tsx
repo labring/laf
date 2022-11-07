@@ -1,5 +1,5 @@
-import { Center } from "@chakra-ui/react";
 import React from "react";
+import { Center } from "@chakra-ui/react";
 
 export default function IconWrap(props: {
   size?: number;

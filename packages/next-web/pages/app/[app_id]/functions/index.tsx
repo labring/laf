@@ -5,17 +5,15 @@
 import React, { useEffect } from "react";
 import { Button, HStack } from "@chakra-ui/react";
 import Editor from "@monaco-editor/react";
-import clsx from "clsx";
+
+import FileStatusIcon, { FileStatus } from "@/components/FileStatusIcon";
+import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 
 import DebugPanel from "./mods/DebugPannel";
 import DependecyList from "./mods/DependecePanel";
 import FunctionList from "./mods/FunctionPanel";
 
 import useFunctionStore from "./store";
-
-import commonStyles from "../index.module.scss";
-import FileStatusIcon, { FileStatus } from "@/components/FileStatusIcon";
-import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 
 function FunctionPage() {
   const { initFunctionPage, currentFunction } = useFunctionStore((store) => store);
@@ -33,10 +31,10 @@ function FunctionPage() {
         <DependecyList />
       </div>
       <div className="flex flex-1 flex-col ">
-        <div style={{ borderBottom: "1px solid #efefef" }}>
+        <div className="border-b">
           <div
-            className={clsx(commonStyles.sectionHeader, "flex justify-between px-2 ")}
-            style={{ marginBottom: 0 }}
+            className={"flex justify-between px-2  items-center"}
+            style={{ marginBottom: 0, height: 31 }}
           >
             <div className="flex items-center">
               <FileTypeIcon type={FileType.js} />

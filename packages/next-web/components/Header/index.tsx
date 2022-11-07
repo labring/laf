@@ -2,13 +2,14 @@
  * laf website header nav
  ***************************/
 
-import { SmallNavHeight } from "@/constants/index";
+import React from "react";
 import { BiHelpCircle } from "react-icons/bi";
 import { GiDragonfly } from "react-icons/gi";
 import { GrGithub, GrLanguage } from "react-icons/gr";
 import { HStack, Tag, TagLabel } from "@chakra-ui/react";
-import React from "react";
 import { useRouter } from "next/router";
+
+import { SmallNavHeight } from "@/constants/index";
 
 export default function Header(props: { size: "sm" | "lg" }) {
   const { size } = props;
@@ -16,19 +17,19 @@ export default function Header(props: { size: "sm" | "lg" }) {
 
   return size === "sm" ? (
     <div
-      className="flex justify-between items-center bg-white px-4"
+      className="flex justify-between items-center bg-white px-5 border-b"
       style={{ height: SmallNavHeight }}
     >
       <div className="flex items-center">
         <div
-          className=" rounded-xl bg-black p-1 mr-2"
+          className=" rounded-xl bg-black p-1 mr-4"
           onClick={() => {
             router.push("/");
           }}
         >
           <GiDragonfly color="white" />
         </div>
-        <span className="mr-4">LeezQ</span>
+        <span className="mr-4">Allecne</span>
         <Tag size="sm" borderRadius="full" variant="solid" colorScheme="green">
           <TagLabel>Free</TagLabel>
         </Tag>
