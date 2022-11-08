@@ -73,6 +73,7 @@
     "casbin",
     "casdoor",
     "coll",
+    "compat",
     "containerd",
     "creationforms",
     "dockerode",
@@ -113,7 +114,8 @@
     "upsert",
     "upserted",
     "vitepress",
-    "withs"
+    "withs",
+    "zcube"
   ],
   "mocha.files.glob": "packages/*/tests/**/*test.js",
   "mochaExplorer.files": "packages/*/tests/**/*test*.js",

@@ -50,7 +50,7 @@ securityContext: {}
 service:
   type: NodePort # ClusterIP
   port: 8000
-  nodePort: 30800
+  nodePort: 30070
 
 
 ingress:
