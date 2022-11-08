@@ -68,12 +68,6 @@ apt update
 sudo apt install sealos=4.1.3
 EOF
 
-arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/)
-
-#vm_root_exec echo "download buildah in https://github.com/labring/cluster-image/releases/download/depend/buildah.linux.${arch}"
-#vm_root_exec wget -qO "buildah" "https://github.com/labring/cluster-image/releases/download/depend/buildah.linux.${arch}"
-#vm_root_exec chmod a+x buildah
-#vm_root_exec mv buildah /usr/bin
 
 set +x
 
@@ -118,3 +112,12 @@ while true; do
 done
 
 echo "k8s cluster is ready."
+
+
+# Optional installations
+
+# arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/)
+#vm_root_exec echo "download buildah in https://github.com/labring/cluster-image/releases/download/depend/buildah.linux.${arch}"
+#vm_root_exec wget -qO "buildah" "https://github.com/labring/cluster-image/releases/download/depend/buildah.linux.${arch}"
+#vm_root_exec chmod a+x buildah
+#vm_root_exec mv buildah /usr/bin
