@@ -8,6 +8,7 @@ import { WebsitesModule } from './websites/websites.module'
 import { BucketsModule } from './buckets/buckets.module'
 import { PoliciesModule } from './policies/policies.module'
 import { FunctionsModule } from './functions/functions.module'
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { FunctionsModule } from './functions/functions.module'
     WebsitesModule,
     CollectionsModule,
     AuthModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
