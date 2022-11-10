@@ -1,7 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { BucketsService } from './buckets.service';
-import { CreateBucketDto } from './dto/create-bucket.dto';
-import { UpdateBucketDto } from './dto/update-bucket.dto';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common'
+import { BucketsService } from './buckets.service'
+import { CreateBucketDto } from './dto/create-bucket.dto'
+import { UpdateBucketDto } from './dto/update-bucket.dto'
 
 @Controller('buckets')
 export class BucketsController {
@@ -9,26 +17,26 @@ export class BucketsController {
 
   @Post()
   create(@Body() createBucketDto: CreateBucketDto) {
-    return this.bucketsService.create(createBucketDto);
+    return this.bucketsService.create(createBucketDto)
   }
 
   @Get()
   findAll() {
-    return this.bucketsService.findAll();
+    return this.bucketsService.findAll()
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.bucketsService.findOne(+id);
+    return this.bucketsService.findOne(+id)
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateBucketDto: UpdateBucketDto) {
-    return this.bucketsService.update(+id, updateBucketDto);
+    return this.bucketsService.update(+id, updateBucketDto)
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.bucketsService.remove(+id);
+    return this.bucketsService.remove(+id)
   }
 }
