@@ -1,5 +1,7 @@
-import { SmallNavHeight } from "@/constants/index";
 import React, { ReactNode } from "react";
+
+import { SmallNavHeight } from "@/constants/index";
+
 import Header from "../Header";
 
 export default function FunctionLayout(props: { children: ReactNode }) {

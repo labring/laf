@@ -17,8 +17,9 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import { Field, Formik } from "formik";
 import { t } from "@lingui/macro";
+import { Field, Formik } from "formik";
+
 import IconWrap from "@/components/IconWrap";
 
 function CreateModal() {
@@ -42,9 +43,7 @@ function CreateModal() {
             initialValues={{
               name: "",
             }}
-            onSubmit={(values) => {
-              alert(JSON.stringify(values, null, 2));
-            }}
+            onSubmit={(values) => {}}
           >
             {({ handleSubmit, errors, touched }) => (
               <form ref={formRef} onSubmit={handleSubmit}>
@@ -78,7 +77,7 @@ function CreateModal() {
                 </ModalBody>
 
                 <ModalFooter>
-                  <Button colorScheme="brand" mr={3} type="submit">
+                  <Button colorScheme="primary" mr={3} type="submit">
                     {t`Confirm`}
                   </Button>
                   <Button onClick={onClose}>{t`Cancel`}</Button>

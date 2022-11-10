@@ -15,10 +15,10 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-
-import IconWrap from "@/components/IconWrap";
 import { t } from "@lingui/macro";
 import { useMutation } from "@tanstack/react-query";
+
+import IconWrap from "@/components/IconWrap";
 import request from "@/utils/request";
 
 function AddDepenceModal() {
