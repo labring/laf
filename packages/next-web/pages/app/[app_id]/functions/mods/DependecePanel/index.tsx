@@ -3,15 +3,14 @@
  ***************************/
 
 import React, { useEffect } from "react";
-import { HStack } from "@chakra-ui/react";
+
+import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
+import Panel from "@/components/Panel";
+import SectionList from "@/components/SectionList";
+
+import useFunctionStore from "../../store";
 
 import AddDepenceModal from "./AddDepenceModal";
-
-import commonStyles from "../../index.module.scss";
-import styles from "./index.module.scss";
-import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
-import useFunctionStore from "../../store";
-import { ChevronRightIcon } from "@chakra-ui/icons";
 
 export default function DependecyList() {
   const { getPacakges, allPackages } = useFunctionStore((store) => store);
@@ -23,34 +22,21 @@ export default function DependecyList() {
 
   return (
     <div>
-      <div className={commonStyles.sectionHeader + " flex justify-between"}>
-        <h4>
-          <ChevronRightIcon fontSize={16} />
-          NPM 依赖
-        </h4>
-        <HStack spacing="2">
-          <AddDepenceModal />
-        </HStack>
-      </div>
-      <div>
-        {/* <div className="flex items-center m-2 ">
-          <Input size="sm" className="mr-2" />
-        </div> */}
-
-        <ul className={styles.packageList + " mb-4"}>
+      <Panel title="NPM 依赖" actions={[<AddDepenceModal key="AddDepenceModal" />]}>
+        <SectionList>
           {allPackages?.map((packageItem) => {
             return (
-              <li key={packageItem?.name}>
+              <SectionList.Item isActive={false} key={packageItem?.name!} onClick={() => {}}>
                 <div>
                   <FileTypeIcon type={FileType.npm} />
                   <span className="ml-2">{packageItem?.name}</span>
                 </div>
                 <div className="text-slate-500">{packageItem?.version}</div>
-              </li>
+              </SectionList.Item>
             );
           })}
-        </ul>
-      </div>
+        </SectionList>
+      </Panel>
     </div>
   );
 }

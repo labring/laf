@@ -22,8 +22,8 @@ export default function DebugPanel() {
               variant="filled"
               placeholder="https://qcphsd.api.cloudendpoint.cn/deleteCurrentTodo"
             />
-            <Button style={{ borderRadius: 2 }} size="xs" className="ml-2" colorScheme="brand">
-              &nbsp;&nbsp;请求&nbsp;&nbsp;
+            <Button style={{ borderRadius: 2 }} size="xs" className="ml-2" colorScheme="primary">
+              &nbsp;&nbsp;发送&nbsp;&nbsp;
             </Button>
           </div>
           <div className=" relative">
@@ -40,6 +40,9 @@ export default function DebugPanel() {
                     value={`{\n\t"name":"hello"\n}`}
                     options={{
                       lineNumber: false,
+                      guides: {
+                        indentation: false,
+                      },
                       minimap: {
                         enabled: false,
                       },
@@ -50,6 +53,11 @@ export default function DebugPanel() {
                       lineNumbers: "off",
                       lineNumbersMinChars: 0,
                       scrollBeyondLastLine: false,
+                      folding: false,
+                      overviewRulerBorder: false,
+                      roundedSelection: false,
+
+                      tabSize: 2, // tab 缩进长度
                     }}
                   ></Editor>
                 </TabPanel>
