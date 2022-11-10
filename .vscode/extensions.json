@@ -2,7 +2,10 @@
   "recommendations": [
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
-    "humao.rest-client",
-    "christian-kohler.npm-intellisense"
+    "christian-kohler.npm-intellisense",
+    "streetsidesoftware.code-spell-checker",
+    "pomdtr.excalidraw-editor",
+    "golang.go",
+    "Tim-Koehler.helm-intellisense"
   ]
 }
