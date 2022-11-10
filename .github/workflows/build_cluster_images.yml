@@ -5,10 +5,10 @@ on:
     types: [controllers_build_success]
   workflow_dispatch:
   push:
-    branches: ["main", "fix-workflow", "add-image-for-charts"]
+    branches: ["main", "fix-workflow"]
     paths:
-      - "charts/**"
-      - "build/**"
+      - "deploy/charts/**"
+      - "deploy/build/**"
       - ".github/workflows/build_cluster_images.yml"
       - "!**/*.md"
 
@@ -62,7 +62,7 @@ jobs:
           sudo buildah login -u ${{ github.repository_owner }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
 
       - name: Prepare cluster image
-        working-directory: build/${{ matrix.module }}
+        working-directory: deploy/build/${{ matrix.module }}
         run: |
           bash pre.sh
 
@@ -70,7 +70,7 @@ jobs:
         env:
           IMAGE: ghcr.io/${{ github.repository_owner }}/laf-${{ matrix.module }}
           VERSION: ${{ env.tag }}
-        working-directory: build/${{ matrix.module }}
+        working-directory: deploy/build/${{ matrix.module }}
         run: |
           echo $IMAGE:$VERSION
           sudo sealos build -t $IMAGE:$VERSION-arm64 --platform linux/arm64 -f Kubefile  .

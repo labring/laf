@@ -7,9 +7,9 @@
 #   Linux:   sudo snap install multipass
 #   Windows: https://multipass.run/install
 
-# Usage: ./start_vm.sh <vm_name> <kubeconfig_output>
-# - sh scripts/start_vm.sh laf-dev ~/.kube/config
-# - sh scripts/start_vm.sh
+# Usage: ./vm_run.sh <vm_name> <kubeconfig_output>
+# - sh vm_run.sh laf-dev ~/.kube/config
+# - sh vm_run.sh
 
 NAME="laf-dev"
 # if set first param in command line
