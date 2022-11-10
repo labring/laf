@@ -1,3 +1,0 @@
-files:
-  - source: /packages/web/locales/en.yml
-    translation: /packages/web/locales/%locale%.yml

@@ -1,0 +1,25 @@
+domain: laf.dev
+layout:
+- go.kubebuilder.io/v3
+projectName: instance
+repo: github/labring/laf/core/controllers/instance
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: laf.dev
+  group: instance
+  kind: Instance
+  path: github/labring/laf/core/controllers/instance/api/v1
+  version: v1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: laf.dev
+  group: instance
+  kind: Cluster
+  path: github/labring/laf/core/controllers/instance/api/v1
+  version: v1
+version: "3"
