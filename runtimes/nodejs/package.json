@@ -1,5 +1,5 @@
 {
-  "name": "app-service",
+  "name": "runtime-nodejs",
   "version": "0.8.11",
   "description": "the app engine service of lat",
   "main": "./dist/index.js",
@@ -18,8 +18,6 @@
     "laf",
     "BaaS",
     "mongodb",
-    "supabase",
-    "appwrite",
     "firebase",
     "serverless"
   ],

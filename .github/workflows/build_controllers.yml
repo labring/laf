@@ -5,7 +5,7 @@ on:
   push:
     branches: [ "main", "fix-workflow"]
     paths:
-      - "controllers/**"
+      - "core/controllers/**"
       - ".github/workflows/build_controllers.yml"
       - "!**/*.md"
       
@@ -42,7 +42,7 @@ jobs:
             ${{ runner.os }}-golang-
             
       - name: Build ${{ matrix.module }} amd64 & arm64
-        working-directory: controllers/${{ matrix.module }}
+        working-directory: core/controllers/${{ matrix.module }}
         run: |
           make build
           chmod +x bin/manager-amd64
@@ -74,7 +74,7 @@ jobs:
         env:
           # fork friendly ^^
           DOCKER_REPO: ghcr.io/${{ github.repository_owner }}/laf-${{ matrix.module }}-controller
-        working-directory: controllers/${{ matrix.module }}
+        working-directory: core/controllers/${{ matrix.module }}
         run: |
           docker buildx build \
           --platform linux/amd64,linux/arm64 \
