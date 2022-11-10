@@ -163,7 +163,7 @@
 
 ## 🎉 本地部署
 
-[本地部署](./deploy/README.md)
+[本地部署](./deploy/docker-compose/README.md)
 
 ## 🏘️ Community Groups
 
