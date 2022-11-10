@@ -11,13 +11,15 @@ import {
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/router";
 
 import request from "@/utils/request";
-
 function HomePage() {
   const appListRes = useQuery(["getAppDetailInfo"], () => {
     return request.get("/api/app");
   });
+
+  const router = useRouter();
 
   return (
     <div className="w-8/12 mt-10 mx-auto">
@@ -25,7 +27,7 @@ function HomePage() {
         <div className="bg-white flex-1 mr-2">
           <InputGroup>
             <InputLeftElement
-              style={{ height: 48 }}
+              height={"12"}
               pointerEvents="none"
               children={<Search2Icon color="gray.300" />}
             />
@@ -34,7 +36,7 @@ function HomePage() {
         </div>
         <Button
           size={"lg"}
-          colorScheme="brand"
+          colorScheme="primary"
           style={{ padding: "0 40px" }}
           leftIcon={<AddIcon />}
         >
@@ -68,7 +70,14 @@ function HomePage() {
                   <p>创建时间: {item.created_at}</p>
                 </div>
                 <div>
-                  <a className="mr-4">开发</a>
+                  <a
+                    className="mr-4"
+                    onClick={() => {
+                      router.push(`/app/${item.appid}`);
+                    }}
+                  >
+                    开发
+                  </a>
                   <a>配置</a>
                 </div>
               </div>

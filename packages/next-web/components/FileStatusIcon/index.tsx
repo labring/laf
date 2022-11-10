@@ -1,5 +1,5 @@
-import { Icon } from "@chakra-ui/icons";
 import React from "react";
+import { Icon } from "@chakra-ui/icons";
 
 export const FileStatus = {
   modify: "modify",

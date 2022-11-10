@@ -1,12 +1,17 @@
-.packageList {
-  height: 200px;
+.sectionList {
+  overflow-y: hidden;
   li {
     cursor: pointer;
     display: flex;
+    height: 30px;
+    line-height: 30px;
     align-items: center;
     justify-content: space-between;
     padding: 4px 16px;
-    font-size: 13px;
+
+    span {
+      vertical-align: middle;
+    }
 
     &:hover,
     &.active {

@@ -1,5 +1,5 @@
-import { Center } from "@chakra-ui/react";
 import React from "react";
+import { Center } from "@chakra-ui/react";
 
 export default function IconWrap(props: {
   size?: number;
@@ -10,7 +10,7 @@ export default function IconWrap(props: {
   return (
     <Center
       onClick={props.onClick}
-      className="hover:bg-slate-200 rounded inline-block "
+      className="hover:bg-slate-200 rounded inline-block cursor-pointer "
       style={{ width: size, height: size }}
     >
       {props.children}
