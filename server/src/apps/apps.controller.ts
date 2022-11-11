@@ -10,6 +10,7 @@ import {
 import { AppsService } from './apps.service'
 import { CreateAppDto } from './dto/create-app.dto'
 import { UpdateAppDto } from './dto/update-app.dto'
+import { ResponseStruct } from '../utils/response'
 
 @Controller('apps')
 export class AppsController {
@@ -17,12 +18,15 @@ export class AppsController {
 
   /**
    * Create application
-   * @param createAppDto create app struct
    * @returns
    */
   @Post()
-  create(@Body() createAppDto: CreateAppDto) {
-    return this.appsService.create(createAppDto)
+  create(@Body() dto: CreateAppDto) {
+    const error = dto.validate()
+    if (error) {
+      return ResponseStruct.error(error)
+    }
+    return this.appsService.create(dto)
   }
 
   @Get()

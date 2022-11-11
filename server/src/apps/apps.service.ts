@@ -1,11 +1,32 @@
 import { Injectable } from '@nestjs/common'
+import { KubernetesService } from '../core/kubernetes.service'
 import { CreateAppDto } from './dto/create-app.dto'
 import { UpdateAppDto } from './dto/update-app.dto'
+import { Application, ApplicationSpec } from './entities/app.entity'
 
 @Injectable()
 export class AppsService {
-  create(createAppDto: CreateAppDto) {
-    return 'This action adds a new app'
+  constructor(private k8sClient: KubernetesService) {}
+
+  async create(dto: CreateAppDto) {
+    // create app namespace
+    await this.k8sClient.createNamespace(dto.name)
+
+    // create app resources
+    const app = new Application(dto.name)
+    app.spec = new ApplicationSpec({
+      appid: dto.name,
+      state: dto.state,
+      region: dto.region,
+      bundleName: dto.bundleName,
+      runtimeName: dto.runtimeName,
+    })
+    app.metadata.namespace = dto.name
+
+    console.log(app.toJSON())
+    const res = await this.k8sClient.objectApi.create(app.toJSON())
+
+    return res.body
   }
 
   findAll() {
