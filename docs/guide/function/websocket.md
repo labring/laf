@@ -8,6 +8,8 @@ title: 云函数处理 WebSocket 长连接
 
 ## WebSocket 触发器
 
+提示：在使用 WebSocket 之前一定要建立触发器，详见触发器章节
+
 当应用收到 WebSocket 消息时，会触发以下云函数事件，开发者为任一云函数配置以下触发器，即可处理 WebSocket 消息
 
 - `WebSocket:connection` 有新 WebSocket 连接建立时触发，通过 `ctx.socket` 获取连接
