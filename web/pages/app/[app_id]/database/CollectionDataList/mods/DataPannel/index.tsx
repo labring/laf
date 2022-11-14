@@ -1,23 +1,34 @@
-
-import { Button, HStack, Input, InputGroup, InputLeftAddon, InputRightAddon, VStack } from "@chakra-ui/react";
-import Editor, { useMonaco } from "@monaco-editor/react";
-import useDBMStore from "../../../store";
-import { AddIcon } from "@chakra-ui/icons";
 import { useState } from "react";
+import { AddIcon } from "@chakra-ui/icons";
+import {
+  Button,
+  HStack,
+  Input,
+  InputGroup,
+  InputLeftAddon,
+  InputRightAddon,
+  VStack,
+} from "@chakra-ui/react";
+import Editor, { useMonaco } from "@monaco-editor/react";
+
+import useDBMStore from "../../../store";
 export default function DataPannel() {
   const { entryList } = useDBMStore((store) => store);
-  const [addData, setAddData] = useState(false)
+  const [addData, setAddData] = useState(false);
 
   return (
     <div>
       <div className="flex mt-2">
         <div className="flex items-center justify-center h-8 w-24 bg-black">
-          <AddIcon color='white' /><span className="text-white" onClick={() => setAddData(true)}>新增记录</span>
+          <AddIcon color="white" />
+          <span className="text-white" onClick={() => setAddData(true)}>
+            新增记录
+          </span>
         </div>
-        <InputGroup size='sm' className="ml-6 h-9">
-          <InputLeftAddon children='query' />
+        <InputGroup size="sm" className="ml-6 h-9">
+          <InputLeftAddon children="query" />
           <Input placeholder='{"name":"hello"}' />
-          <InputRightAddon children='查询' />
+          <InputRightAddon children="查询" />
         </InputGroup>
       </div>
 
@@ -62,17 +73,15 @@ export default function DataPannel() {
                 />
               </div>
             );
-          })
-          }
-
+          })}
         </div>
 
         <div className="flex-1 border w-1/4 ml-2 mt-4">
           <div className="flex justify-between mt-4 p-4">
-            <div className="text-base">
-              添加数据
-            </div>
-            <Button size="lg" colorScheme="teal">保存</Button>
+            <div className="text-base">添加数据</div>
+            <Button size="lg" colorScheme="teal">
+              保存
+            </Button>
           </div>
           <Editor
             theme="my-theme"
@@ -103,7 +112,6 @@ export default function DataPannel() {
           />
         </div>
       </div>
-    </div >
-  )
-
+    </div>
+  );
 }
