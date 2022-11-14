@@ -16,16 +16,33 @@ import "./globals.css";
 
 import BasicLayout from "@/layout/Basic";
 
-// 2. Extend the theme to include custom colors, fonts, etc
-const colors = {
-  primary: {
-    50: "#000",
-    100: "#000",
-    500: "#000",
+const Button = {};
+
+const Input = {
+  variants: {
+    bgWhite: {
+      field: {
+        bg: "white",
+        borderRadius: "2px",
+      },
+    },
+  },
+  defaultProps: {
+    variant: "bgWhite",
   },
 };
 
-const theme = extendTheme({ colors });
+const theme = extendTheme({
+  colors: {
+    primary: {
+      500: "#000",
+    },
+  },
+  components: {
+    Button,
+    Input,
+  },
+});
 
 // Create a client
 const queryClient = new QueryClient({

@@ -1,4 +1,5 @@
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+
 import ColPannel from "./mods/ColPannel";
 import DataPannel from "./mods/DataPannel";
 import IndexPannel from "./mods/IndexPannel";
