@@ -1,5 +1,5 @@
 import React from "react";
-import { Search2Icon } from "@chakra-ui/icons";
+import { CopyIcon, Search2Icon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
@@ -8,6 +8,7 @@ import SectionList from "@/components/SectionList";
 
 import CreateModal from "../../functions/mods/FunctionPanel/CreateModal";
 import useDBMStore from "../store";
+import { BlockList } from "net";
 
 export default function CollectionListPanel() {
   const store = useDBMStore((store) => store);
@@ -23,7 +24,7 @@ export default function CollectionListPanel() {
               pointerEvents="none"
               children={<Search2Icon bgSize="sm" color="gray.300" />}
             />
-            <Input size="sm" className="mr-2" variant="filled" placeholder="输入集_id查找" />
+            <Input size="sm" className="mr-2" variant="filled" placeholder="输入集ID查找" />
           </InputGroup>
         </div>
 
@@ -37,9 +38,12 @@ export default function CollectionListPanel() {
                   store.setCurrentDB(db);
                 }}
               >
-                <div>
-                  <FileTypeIcon type={FileType.db} />
-                  <span className="ml-2 text-base">{db.name}</span>
+                <div className="w-full flex justify-between">
+                  <div>
+                    <FileTypeIcon type={FileType.db} />
+                    <span className="ml-2 text-base">{db.name}</span>
+                  </div>
+                  <CopyIcon className="mt-3" />
                 </div>
               </SectionList.Item>
             );
