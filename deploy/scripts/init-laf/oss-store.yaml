@@ -1,0 +1,19 @@
+
+apiVersion: oss.laf.dev/v1
+kind: Store
+metadata:
+  name: minio-default
+  namespace: laf-system
+spec:
+  provider: minio
+  endpoint: minio.laf.svc.cluster.local:9000
+  accessKey: minio-root
+  secretKey: passw0rd
+  region: default
+  priority: 10
+  useSSL: false
+  capacity:
+    storage: 10Gi
+    objectCount: 10000
+    userCount: 1000
+    bucketCount: 2000

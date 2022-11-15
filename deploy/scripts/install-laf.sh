@@ -41,6 +41,7 @@ export MONOG_ROOT_PASS=passw0rd
 helm install mongodb \
   --set db.username=$MONGO_ROOT_USER \
   --set db.password=$MONOG_ROOT_PASS \
+  --set db.replicaSetName=rs0 \
   --namespace laf \
   $CHARTS_DIR/mongodb
 
@@ -59,11 +60,10 @@ helm install minio \
 helm install etcd --namespace laf  $CHARTS_DIR/etcd
 
 # Install APISIX
-helm repo add apisix https://charts.apiseven.com
 helm install apisix \
   --set etcd.enabled=false  \
   --set etcd.host={http://etcd:2379} \
   --set etcd.prefix=/apisix \
   --namespace laf \
-  apisix/apisix
+  $CHARTS_DIR/apisix
 
