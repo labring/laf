@@ -1,0 +1,12 @@
+
+apiVersion: runtime.laf.dev/v1
+kind: Runtime
+metadata:
+  name: node-laf
+  namespace: laf-system
+spec:
+  type: node:laf
+  image:
+    main: "docker.io/lafyun/app-service:0.8.11"
+  version:
+    version: 0.8.11

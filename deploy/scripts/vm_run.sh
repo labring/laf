@@ -8,8 +8,8 @@
 #   Windows: https://multipass.run/install
 
 # Usage: ./vm_run.sh <vm_name> <kubeconfig_output>
-# - sh vm_run.sh laf-dev ~/.kube/config
 # - sh vm_run.sh
+# - sh vm_run.sh laf-dev ~/.kube/config
 
 NAME="laf-dev"
 # if set first param in command line
@@ -18,7 +18,7 @@ if [ -n "$1" ]; then
 fi
 
 #BASE_DIR=$(pwd)/$(dirname "$0")
-KUBECONF=$(pwd)/.kube/config
+KUBECONF=~/.kube/config
 
 # if set second param in command line, use it as KUBECONF_DIR
 if [ -n "$2" ]; then
