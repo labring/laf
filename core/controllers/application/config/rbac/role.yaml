@@ -83,3 +83,281 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - database.laf.dev
+  resources:
+  - databases
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - database.laf.dev
+  resources:
+  - databases/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - database.laf.dev
+  resources:
+  - databases/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - database.laf.dev
+  resources:
+  - stores
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - database.laf.dev
+  resources:
+  - stores/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - database.laf.dev
+  resources:
+  - stores/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - gateway.laf.dev
+  resources:
+  - domains
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - gateway.laf.dev
+  resources:
+  - domains/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - gateway.laf.dev
+  resources:
+  - domains/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - gateway.laf.dev
+  resources:
+  - gateways
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - gateway.laf.dev
+  resources:
+  - gateways/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - gateway.laf.dev
+  resources:
+  - gateways/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - gateway.laf.dev
+  resources:
+  - routes
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - gateway.laf.dev
+  resources:
+  - routes/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - gateway.laf.dev
+  resources:
+  - routes/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - instance.laf.dev
+  resources:
+  - clusters
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - instance.laf.dev
+  resources:
+  - clusters/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - instance.laf.dev
+  resources:
+  - clusters/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - instance.laf.dev
+  resources:
+  - instances
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - instance.laf.dev
+  resources:
+  - instances/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - instance.laf.dev
+  resources:
+  - instances/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - oss.laf.dev
+  resources:
+  - buckets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - oss.laf.dev
+  resources:
+  - buckets/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - oss.laf.dev
+  resources:
+  - buckets/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - oss.laf.dev
+  resources:
+  - stores
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - oss.laf.dev
+  resources:
+  - stores/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - oss.laf.dev
+  resources:
+  - stores/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - oss.laf.dev
+  resources:
+  - users
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - oss.laf.dev
+  resources:
+  - users/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - oss.laf.dev
+  resources:
+  - users/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - runtime.laf.dev
+  resources:
+  - runtimes
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - runtime.laf.dev
+  resources:
+  - runtimes/status
+  verbs:
+  - get
