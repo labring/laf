@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { ResponseUtil } from '../utils/response'
 import { KubernetesService } from '../core/kubernetes.service'
 import { CreateAppDto } from './dto/create-app.dto'
 import { UpdateAppDto } from './dto/update-app.dto'
@@ -6,14 +7,22 @@ import { Application, ApplicationSpec } from './entities/app.entity'
 
 @Injectable()
 export class AppsService {
-  constructor(private k8sClient: KubernetesService) {}
+  constructor(public k8sClient: KubernetesService) {}
 
   async create(dto: CreateAppDto) {
     // create app namespace
-    await this.k8sClient.createNamespace(dto.name)
+
+    try {
+      await this.k8sClient.createNamespace(dto.name)
+    } catch (error) {
+      console.error(error)
+      return ResponseUtil.error('create app namespace error')
+    }
 
     // create app resources
-    const app = new Application(dto.name)
+    const app = new Application()
+    app.metadata.name = dto.name
+    app.metadata.namespace = dto.name
     app.spec = new ApplicationSpec({
       appid: dto.name,
       state: dto.state,
@@ -21,12 +30,15 @@ export class AppsService {
       bundleName: dto.bundleName,
       runtimeName: dto.runtimeName,
     })
-    app.metadata.namespace = dto.name
 
-    console.log(app.toJSON())
-    const res = await this.k8sClient.objectApi.create(app.toJSON())
+    try {
+      await this.k8sClient.objectApi.create(app.toJSON())
+    } catch (error) {
+      console.error(error)
+      return ResponseUtil.error('create app resources error')
+    }
 
-    return res.body
+    return ResponseUtil.ok('create app success')
   }
 
   findAll() {

@@ -10,7 +10,7 @@ import {
 import { AppsService } from './apps.service'
 import { CreateAppDto } from './dto/create-app.dto'
 import { UpdateAppDto } from './dto/update-app.dto'
-import { ResponseStruct } from '../utils/response'
+import { ResponseUtil } from '../utils/response'
 
 @Controller('apps')
 export class AppsController {
@@ -24,7 +24,7 @@ export class AppsController {
   create(@Body() dto: CreateAppDto) {
     const error = dto.validate()
     if (error) {
-      return ResponseStruct.error(error)
+      return ResponseUtil.error(error)
     }
     return this.appsService.create(dto)
   }
