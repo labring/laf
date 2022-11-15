@@ -1,0 +1,9 @@
+apiVersion: v2
+appVersion: 2.13.0
+description: A Helm chart for Apache APISIX Dashboard
+icon: https://apache.org/logos/res/apisix/apisix.png
+maintainers:
+- name: tao12345666333
+name: apisix-dashboard
+type: application
+version: 0.6.1

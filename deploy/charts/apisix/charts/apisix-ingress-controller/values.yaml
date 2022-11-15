@@ -1,0 +1,172 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# Default values for apisix-ingress-controller.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+#
+nameOverride: ""
+
+fullnameOverride: ""
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+  # Whether automounting API credentials for a service account
+  automountServiceAccountToken: true
+
+
+replicaCount: 1
+
+image:
+  repository: apache/apisix-ingress-controller
+  pullPolicy: IfNotPresent
+  tag: "1.5.0"
+
+podAnnotations: {}
+
+imagePullSecrets: []
+clusterDomain: cluster.local
+
+service:
+  port: 80
+
+config:
+  # the error log level, default is info, optional values are:
+  # debug
+  # info
+  # warn
+  # error
+  # panic
+  # fatal
+  logLevel: "info"
+  # the output file path of error log, default is stderr, when
+  # the file path is "stderr" or "stdout", logs are marshalled
+  # plainly, which is more readable for human; otherwise logs
+  # are marshalled in JSON format, which can be parsed by
+  # programs easily.
+  logOutput: "stderr"
+  # the TLS certificate file path.
+  certFile: "/etc/webhook/certs/cert.pem"
+  # the TLS key file path.
+  keyFile: "/etc/webhook/certs/key.pem"
+  # the HTTP Server listen address, default is ":8080"
+  httpListen: ":8080"
+  # the HTTPS Server listen address, default is ":8443"
+  httpsListen: ":8443"
+  # the controller will use the Endpoint of this Service to
+  # update the status information of the Ingress resource.
+  # The format is "namespace/svc-name" to solve the situation that
+  # the data plane and the controller are not deployed in the same namespace.
+  ingressPublishService: ""
+  ingressStatusAddress: []
+  # enable profiling via web interfaces host:port/debug/pprof, default is true.
+  enableProfiling: true
+  # Default interval for synchronizing Kubernetes resources to APISIX
+  apisixResourceSyncInterval: "300s"
+  # Kubernetes related configurations.
+  kubernetes:
+    # the Kubernetes configuration file path, default is "", so the in-cluster
+    # configuration will be used.
+    kubeconfig: ""
+    # how long should apisix-ingress-controller re-synchronizes with Kubernetes,
+    # default is 6h,
+    resyncInterval: "6h"
+    # namespace list that controller will watch for resources,
+    # by default all namespaces (represented by "*") are watched.
+    appNamespaces: ["*"]
+    # namespace_selector represent basis for selecting managed namespaces.
+    # the field is support since version 1.4.0
+    # For example, "apisix.ingress=watching", so ingress will watching the namespaces which labels "apisix.ingress=watching"
+    namespaceSelector: [""]
+    # the election id for the controller leader campaign,
+    # only the leader will watch and delivery resource changes,
+    # other instances (as candidates) stand by.
+    electionId: "ingress-apisix-leader"
+    # The class of an Ingress object is set using the field IngressClassName in
+    # Kubernetes clusters version v1.18.0 or higher or the annotation
+    # "kubernetes.io/ingress.class" (deprecated).
+    ingressClass: "apisix"
+    # the supported ingress api group version, can be "networking/v1beta1",
+    # "networking/v1" (for Kubernetes version v1.19.0 or higher), and
+    # "extensions/v1beta1", default is "networking/v1".
+    ingressVersion: "networking/v1"
+    # whether to watch EndpointSlices rather than Endpoints.
+    watchEndpointSlices: false
+    # the supported apisixroute api group version, can be "apisix.apache.org/v2"
+    # "apisix.apache.org/v2beta3" or "apisix.apache.org/v2beta2"
+    apisixRouteVersion: "apisix.apache.org/v2"
+    # whether to enable support for Gateway API.
+    # Note: This feature is currently under development and may not work as expected.
+    # It is not recommended to use it in a production environment.
+    # Before we announce support for it to reach Beta level or GA.
+    enableGatewayAPI: false
+  # APISIX related configurations.
+  apisix:
+    # Enabling this value, overrides serviceName and serviceNamespace.
+    # serviceFullname: "apisix-admin.apisix.svc.local"
+    serviceName: apisix-admin
+    serviceNamespace: ingress-apisix
+    servicePort: 9180
+    adminKey: "edd1c9f034335f136f87ad84b625c8f1"
+    clusterName: "default"
+
+resources: {}
+
+initContainer:
+  image: busybox
+  tag: 1.28
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+tolerations: []
+
+# namespace: "ingress-apisix"
+
+serviceMonitor:
+  enabled: false
+  namespace: "monitoring"
+  interval: 15s
+  # @param serviceMonitor.labels ServiceMonitor extra labels
+  labels: {}
+  # @param serviceMonitor.annotations ServiceMonitor annotations
+  annotations: {}
+
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000

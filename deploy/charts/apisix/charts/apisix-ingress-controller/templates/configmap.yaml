@@ -1,0 +1,71 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+apiVersion: v1
+data:
+  config.yaml: |
+    # log options
+    log_level: {{ .Values.config.logLevel | quote }}
+    log_output: {{ .Values.config.logOutput | quote }}
+    cert_file: {{ .Values.config.certFile | quote }}
+    key_file: {{ .Values.config.keyFile | quote }}
+    http_listen: {{ .Values.config.httpListen | quote }}
+    https_listen: {{ .Values.config.httpsListen | quote }}
+    ingress_publish_service: {{ .Values.config.ingressPublishService }}
+    {{- if gt (len .Values.config.ingressStatusAddress) 0 }}
+    ingress_status_address:
+    {{- range .Values.config.ingressStatusAddress }}
+    - {{ . | quote }}
+    {{- end }}
+    {{- end }}
+    enable_profiling: {{ .Values.config.enableProfiling }}
+    apisix-resource-sync-interval: {{ .Values.config.apisixResourceSyncInterval }}
+    kubernetes:
+      kubeconfig: {{ .Values.config.kubernetes.kubeconfig | quote }}
+      resync_interval: {{ .Values.config.kubernetes.resyncInterval | quote }}
+      {{- if gt (len .Values.config.kubernetes.appNamespaces) 0 }}
+      app_namespaces:
+      {{- range .Values.config.kubernetes.appNamespaces }}
+      - {{ . | quote }}
+      {{- end }}
+      {{- end }}
+
+      {{- if gt (len .Values.config.kubernetes.namespaceSelector) 0 }}
+      namespace_selector:
+      {{- range .Values.config.kubernetes.namespaceSelector }}
+      - {{ . | quote }}
+      {{- end }}
+      {{- end }}
+      election_id: {{ .Values.config.kubernetes.electionId | quote }}
+      ingress_class: {{ .Values.config.kubernetes.ingressClass | quote }}
+      ingress_version: {{ .Values.config.kubernetes.ingressVersion | quote }}
+      watch_endpointslices: {{ .Values.config.kubernetes.watchEndpointSlices }}
+      apisix_route_version: {{ .Values.config.kubernetes.apisixRouteVersion | quote }}
+      enable_gateway_api: {{ .Values.config.kubernetes.enableGatewayAPI }}
+    apisix:
+      {{ if .Values.config.apisix.serviceFullname }}
+      default_cluster_base_url: http://{{ .Values.config.apisix.serviceFullname }}:{{ .Values.config.apisix.servicePort }}/apisix/admin
+      {{ else }}
+      default_cluster_base_url: http://{{ .Values.config.apisix.serviceName }}.{{ .Values.config.apisix.serviceNamespace }}.svc.{{ .Values.clusterDomain }}:{{ .Values.config.apisix.servicePort }}/apisix/admin
+      {{ end}}
+      default_cluster_admin_key: {{ .Values.config.apisix.adminKey | quote }}
+      default_cluster_name: {{ .Values.config.apisix.clusterName | quote }}
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configmap
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "apisix-ingress-controller.labels" . | nindent 4 }}
