@@ -19,6 +19,7 @@ package controllers
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/labring/laf/core/controllers/oss/driver"
@@ -123,7 +124,7 @@ func (r *UserReconciler) delete(ctx context.Context, user *ossv1.User) (ctrl.Res
 
 	// get the store of user
 	var store ossv1.Store
-	if err := r.Get(ctx, client.ObjectKey{Namespace: user.Namespace, Name: user.Status.StoreName}, &store); err != nil {
+	if err := r.Get(ctx, client.ObjectKey{Namespace: user.Status.StoreNamespace, Name: user.Status.StoreName}, &store); err != nil {
 		return ctrl.Result{}, err
 	}
 
@@ -153,13 +154,14 @@ func (r *UserReconciler) delete(ctx context.Context, user *ossv1.User) (ctrl.Res
 func (r *UserReconciler) createUser(ctx context.Context, user *ossv1.User) error {
 	// get the store of user
 	var store ossv1.Store
-	if err := r.Get(ctx, client.ObjectKey{Namespace: user.Namespace, Name: user.Status.StoreName}, &store); err != nil {
+	if err := r.Get(ctx, client.ObjectKey{Namespace: user.Status.StoreNamespace, Name: user.Status.StoreName}, &store); err != nil {
 		return err
 	}
 
 	// create the user
 	mca, err := driver.NewMinioClientAdmin(ctx, store.Spec.Endpoint, store.Spec.AccessKey, store.Spec.SecretKey, store.Spec.UseSSL)
 	if err != nil {
+		fmt.Printf("error: %v\n", err)
 		return err
 	}
 

@@ -45,6 +45,43 @@ type ApplicationReconciler struct {
 //+kubebuilder:rbac:groups=application.laf.dev,resources=applications/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=application.laf.dev,resources=applications/finalizers,verbs=update
 
+//+kubebuilder:rbac:groups=runtime.laf.dev,resources=runtimes,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=runtime.laf.dev,resources=runtimes/status,verbs=get;
+
+//+kubebuilder:rbac:groups=database.laf.dev,resources=databases,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=database.laf.dev,resources=databases/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=database.laf.dev,resources=databases/finalizers,verbs=update
+//+kubebuilder:rbac:groups=database.laf.dev,resources=stores,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=database.laf.dev,resources=stores/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=database.laf.dev,resources=stores/finalizers,verbs=update
+
+//+kubebuilder:rbac:groups=oss.laf.dev,resources=buckets,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=oss.laf.dev,resources=buckets/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=oss.laf.dev,resources=buckets/finalizers,verbs=update
+//+kubebuilder:rbac:groups=oss.laf.dev,resources=users,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=oss.laf.dev,resources=users/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=oss.laf.dev,resources=users/finalizers,verbs=update
+//+kubebuilder:rbac:groups=oss.laf.dev,resources=stores,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=oss.laf.dev,resources=stores/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=oss.laf.dev,resources=stores/finalizers,verbs=update
+
+//+kubebuilder:rbac:groups=gateway.laf.dev,resources=gateways,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=gateway.laf.dev,resources=gateways/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=gateway.laf.dev,resources=gateways/finalizers,verbs=update
+//+kubebuilder:rbac:groups=gateway.laf.dev,resources=domains,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=gateway.laf.dev,resources=domains/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=gateway.laf.dev,resources=domains/finalizers,verbs=update
+//+kubebuilder:rbac:groups=gateway.laf.dev,resources=routes,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=gateway.laf.dev,resources=routes/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=gateway.laf.dev,resources=routes/finalizers,verbs=update
+
+//+kubebuilder:rbac:groups=instance.laf.dev,resources=clusters,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=instance.laf.dev,resources=clusters/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=instance.laf.dev,resources=clusters/finalizers,verbs=update
+//+kubebuilder:rbac:groups=instance.laf.dev,resources=instances,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=instance.laf.dev,resources=instances/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=instance.laf.dev,resources=instances/finalizers,verbs=update
+
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
 // TODO(user): Modify the Reconcile function to compare the state specified by
