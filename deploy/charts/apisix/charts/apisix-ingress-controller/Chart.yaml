@@ -1,0 +1,18 @@
+annotations:
+  artifacthub.io/prerelease: "false"
+apiVersion: v2
+appVersion: 1.5.0
+description: Apache APISIX Ingress Controller for Kubernetes
+icon: https://apache.org/logos/res/apisix/apisix.png
+keywords:
+- ingress
+- apisix
+- nginx
+- crd
+maintainers:
+- name: tao12345666333
+name: apisix-ingress-controller
+sources:
+- https://github.com/apache/apisix-helm-chart
+type: application
+version: 0.10.1
