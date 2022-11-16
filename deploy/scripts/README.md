@@ -1,53 +1,41 @@
 
 
-## Create development environment on MacOS
-
-1. Install multipass for create vm on MacOS
-
-```bash
-brew install --cask multipass
-```
-
-2. Create vm & install sealos in it
-
-```bash
-cd deploy/scripts
-sh vm_run.sh
-```
-> Waiting for the cluster ready
-
-3. Install laf core
-  
-```bash
-multipass mount $(pwd)/.. laf-dev:/deploy/
-multipass exec laf-dev -- sudo -u root sh /deploy/scripts/install-laf.sh 
-```
-
-4. Init laf resource
-
-```base
-multipass exec laf-dev -- sudo -u root kubectl apply -f /deploy/scripts/init-laf/
-```
-
 ## Create development environment on Linux
-
-1. Install kubernetes cluster by sealos
-  
+ 
 ```bash
 cd deploy/scripts
-sh bare_run.sh
-```
 
-> Waiting for the cluster ready
+# setup k8s cluster
+sh install-k8s.sh
 
-2. Install laf core
+# setup laf core
+sh install-laf-core.sh
 
-```bash
-sh install-laf.sh
-```
-
-3. Init laf resource
-
-```base
+# apply laf cluster resources
 kubectl apply -f init-laf/
 ```
+
+## Create development environment on MacOS
+
+1. Install multipass on MacOS
+
+> Skip this step if you have already installed multipass
+
+```bash
+brew install --cask multipass  # or see https://multipass.run/install
+```
+
+2. Create vm & deploy in it 
+
+```bash
+cd deploy/scripts
+
+# create vm & setup k8s in it
+sh init-vm.sh  
+
+# setup laf core
+multipass exec laf-dev -- sudo -u root sh /laf/deploy/scripts/install-laf-core.sh 
+
+# apply laf cluster resource
+multipass exec laf-dev -- sudo -u root kubectl apply -f /laf/deploy/scripts/init-laf/
+``` 

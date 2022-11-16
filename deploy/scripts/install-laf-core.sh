@@ -6,13 +6,14 @@ sealos run lafyun/laf-controllers:dev
 
 kubectl create namespace laf || true
 
-export CHARTS_DIR=../charts
+SCRIPT_DIR=$(dirname "$0")
+CHARTS_DIR=$SCRIPT_DIR/../charts
 
 # Install postgresql
-export PG_HOST=postgresql
-export PG_USERNAME=adm1n
-export PG_PASSWORD=passw0rd
-export PG_DATABASE=casdoor
+PG_HOST=postgresql
+PG_USERNAME=adm1n
+PG_PASSWORD=passw0rd
+PG_DATABASE=casdoor
 helm install postgresql \
   --set service.name=$PG_HOST \
   --set username=$PG_USERNAME \
@@ -22,10 +23,10 @@ helm install postgresql \
   $CHARTS_DIR/postgresql
 
 # Install casdoor 
-export NODE_IP=$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[0].address}")
-export CASDOOR_NODE_PORT=30070
-export CASDOOR_ENDPOINT=http://$NODE_IP:$CASDOOR_NODE_PORT
-export CASDOOR_CALLBACK_URL=http://localhost:8080/login/callback
+NODE_IP=$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[0].address}")
+CASDOOR_NODE_PORT=30070
+CASDOOR_ENDPOINT=http://$NODE_IP:$CASDOOR_NODE_PORT
+CASDOOR_CALLBACK_URL=http://localhost:8080/login/callback
 helm install casdoor \
   --set service.nodePort=$CASDOOR_NODE_PORT \
   --set postgresql.host=$PG_HOST \
@@ -36,8 +37,8 @@ helm install casdoor \
   $CHARTS_DIR/casdoor
 
 # Install MongoDb
-export MONGO_ROOT_USER=admin
-export MONOG_ROOT_PASS=passw0rd
+MONGO_ROOT_USER=admin
+MONOG_ROOT_PASS=passw0rd
 helm install mongodb \
   --set db.username=$MONGO_ROOT_USER \
   --set db.password=$MONOG_ROOT_PASS \
@@ -46,8 +47,8 @@ helm install mongodb \
   $CHARTS_DIR/mongodb
 
 # Install MinIO
-export MINIO_ROOT_USER=minio-root
-export MINIO_ROOT_PASS=passw0rd
+MINIO_ROOT_USER=minio-root
+MINIO_ROOT_PASS=passw0rd
 helm repo add minio https://charts.min.io/
 helm install minio \
     --set rootUser=$MINIO_ROOT_USER,rootPassword=$MINIO_ROOT_PASS \

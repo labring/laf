@@ -42,4 +42,10 @@ kubectl taint node $NODENAME node-role.kubernetes.io/control-plane-
 sealos run labring/helm:v3.8.2
 sealos run labring/openebs:v1.9.0
 sealos run labring/cert-manager:v1.8.0
-# sealos run labring/sealos-user-controller:dev
+
+# Optional installations
+#arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/)
+#vm_root_exec echo "download buildah in https://github.com/labring/cluster-image/releases/download/depend/buildah.linux.${arch}"
+#vm_root_exec wget -qO "buildah" "https://github.com/labring/cluster-image/releases/download/depend/buildah.linux.${arch}"
+#vm_root_exec chmod a+x buildah
+#vm_root_exec mv buildah /usr/bin
