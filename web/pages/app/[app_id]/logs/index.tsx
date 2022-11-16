@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Search2Icon } from "@chakra-ui/icons";
 import {
   Button,
+  Center,
   HStack,
   Input,
   InputGroup,
@@ -29,7 +30,7 @@ export default function LogsPage() {
   });
 
   return (
-    <div className="px-4 py-2 flex-1 bg-slate-200">
+    <div className="px-4 flex-1 bg-slate-200 flex flex-col">
       <form
         onSubmit={(event) => {
           event?.preventDefault();
@@ -96,9 +97,8 @@ export default function LogsPage() {
           <Pagination />
         </div>
       </form>
-      <div className="bg-white px-4 py-1  rounded-md">
-        <div className="mt-4">
-          {logListQuery.isFetching ? <Spinner /> : null}
+      <div className="bg-white px-4 py-1  rounded-md h-full overflow-y-auto ">
+        <div className="mt-4 ">
           <TableContainer>
             <Table variant="simple">
               <Thead>
@@ -111,7 +111,13 @@ export default function LogsPage() {
                   <Th isNumeric>操作</Th>
                 </Tr>
               </Thead>
-              <Tbody>
+
+              <Tbody className="relative">
+                {logListQuery.isFetching ? (
+                  <Center className="absolute w-full bg-white opacity-50">
+                    <Spinner />
+                  </Center>
+                ) : null}
                 {logListQuery.data?.data?.list.map((item: any, index: number) => {
                   return (
                     <Tr key={item._id} _hover={{ bgColor: "#efefef" }}>
