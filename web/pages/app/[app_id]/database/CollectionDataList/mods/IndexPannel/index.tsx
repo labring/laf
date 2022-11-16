@@ -1,4 +1,4 @@
-import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Button, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 
 import AddIndexMoale from "./addIndexModal";
 
@@ -26,11 +26,9 @@ export default function IndexPannel() {
                   <Td>Mark Chandler</Td>
                   <Td>devolper</Td>
                   <Td isNumeric>
-                    <div className="flex justify-end">
-                      <div className="flex flex-col justify-center items-center h-8 w-16 bg-gray-200 text-red-400 ">
-                        删除
-                      </div>
-                    </div>
+                    <Button size="sm" variant={"ghost"} colorScheme={"red"}>
+                      删除
+                    </Button>
                   </Td>
                 </Tr>
               ))}

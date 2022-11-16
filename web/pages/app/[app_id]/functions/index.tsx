@@ -47,7 +47,7 @@ function FunctionPage() {
         <DependecyPanel />
       </div>
       <div className="flex flex-1 flex-col ">
-        <div className="border-b">
+        <div className="border-b" style={{ height: 36 }}>
           <div
             className={"flex justify-between px-2  items-center"}
             style={{ marginBottom: 0, height: 31 }}

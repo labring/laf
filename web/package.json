@@ -30,6 +30,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.6.0",
+    "react-syntax-highlighter": "^15.5.0",
     "sass": "^1.55.0",
     "use-immer": "^0.7.0",
     "zustand": "^4.1.4"
@@ -38,6 +39,7 @@
     "@types/node": "18.11.9",
     "@types/react": "18.0.24",
     "@types/react-dom": "18.0.8",
+    "@types/react-syntax-highlighter": "^15.5.5",
     "autoprefixer": "^10.4.13",
     "click-to-react-component": "^1.0.8",
     "eslint": "8.26.0",

@@ -18,20 +18,6 @@ import BasicLayout from "@/layout/Basic";
 
 const Button = {};
 
-const Input = {
-  variants: {
-    bgWhite: {
-      field: {
-        bg: "white",
-        borderRadius: "2px",
-      },
-    },
-  },
-  defaultProps: {
-    variant: "bgWhite",
-  },
-};
-
 const theme = extendTheme({
   colors: {
     primary: {
@@ -40,7 +26,6 @@ const theme = extendTheme({
   },
   components: {
     Button,
-    Input,
   },
 });
 

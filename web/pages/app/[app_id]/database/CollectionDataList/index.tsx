@@ -6,7 +6,7 @@ import IndexPannel from "./mods/IndexPannel";
 
 export default function CollectionDataList() {
   return (
-    <div className="flex-1 m-4">
+    <div className="flex-1 ">
       <Tabs>
         <TabList>
           <Tab>数据管理</Tab>
