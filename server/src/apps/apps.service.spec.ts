@@ -21,18 +21,10 @@ describe('AppsService', () => {
   })
 })
 
-describe.only('AppService create app', () => {
+describe('AppService create app', () => {
   const timeout = 60 * 1000
   let service: AppsService
-  const name = 'testing-create-app'
-  async function cleanup() {
-    if (await service.k8sClient.existsNamespace(name)) {
-      await service.k8sClient.deleteNamespace(name)
-    }
-    // wait for namespace deleted
-    await new Promise((resolve) => setTimeout(resolve, 3000))
-  }
-
+  let appid: string
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [CoreModule],
@@ -40,30 +32,43 @@ describe.only('AppService create app', () => {
     }).compile()
 
     service = module.get<AppsService>(AppsService)
-
-    await cleanup()
   }, timeout)
 
   jest.setTimeout(timeout)
 
+  async function cleanup() {
+    if (!appid) return
+    if (await service.k8sClient.existsNamespace(appid)) {
+      await service.k8sClient.deleteNamespace(appid)
+    }
+    // wait for namespace deleted
+    await new Promise((resolve) => setTimeout(resolve, 10000))
+  }
+
   it('should create app', async () => {
     const dto = new CreateAppDto()
-    dto.name = name
+    dto.name = 'test-for-create-app'
     dto.state = ApplicationState.ApplicationStateRunning
     dto.region = 'default'
     dto.bundleName = 'mini'
     dto.runtimeName = 'node-laf'
-    try {
-      const res = await service.create(dto)
-      expect(res.error).toBeNull()
-      expect(res.data).toBe('create app success')
-    } catch (err) {
-      console.log(err.response)
-      throw err
-    }
+
+    // create namespace
+    appid = service.generateAppid(6)
+    const ns = await service.createAppNamespace(appid)
+    expect(ns).toBeDefined()
+    expect(ns.kind).toEqual('Namespace')
+    expect(ns.metadata.name).toEqual(appid)
+
+    // create app
+    const res = await service.create(appid, dto)
+    expect(res).not.toBeNull()
+    expect(res.kind).toBe('Application')
+    expect(res.metadata.name).toBe(dto.name)
+    expect(res.spec.state).toBe(ApplicationState.ApplicationStateRunning)
   })
 
   afterAll(async () => {
-    // await cleanup()
+    await cleanup()
   }, 20000)
 })

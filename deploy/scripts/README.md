@@ -8,7 +8,6 @@
 brew install --cask multipass
 ```
 
-
 2. Create vm & install sealos in it
 
 ```bash
@@ -28,4 +27,27 @@ multipass exec laf-dev -- sudo -u root sh /deploy/scripts/install-laf.sh
 
 ```base
 multipass exec laf-dev -- sudo -u root kubectl apply -f /deploy/scripts/init-laf/
+```
+
+## Create development environment on Linux
+
+1. Install kubernetes cluster by sealos
+  
+```bash
+cd deploy/scripts
+sh bare_run.sh
+```
+
+> Waiting for the cluster ready
+
+2. Install laf core
+
+```bash
+sh install-laf.sh
+```
+
+3. Init laf resource
+
+```base
+kubectl apply -f init-laf/
 ```
