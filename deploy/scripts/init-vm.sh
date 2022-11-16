@@ -9,7 +9,7 @@
 
 # Usage: ./vm_run.sh <vm_name> <kubeconfig_output>
 # - sh vm_run.sh
-# - sh vm_run.sh laf-dev ~/.kube/config
+# - sh vm_run.sh laf-dev ~/.kube/configa
 
 NAME="laf-dev"
 # if set first param in command line
@@ -17,7 +17,8 @@ if [ -n "$1" ]; then
     NAME="$1"
 fi
 
-#BASE_DIR=$(pwd)/$(dirname "$0")
+SCRIPT_DIR=$(pwd)/$(dirname "$0")
+PROJECT_ROOT=$SCRIPT_DIR/../..
 KUBECONF=~/.kube/config
 
 # if set second param in command line, use it as KUBECONF_DIR
@@ -36,7 +37,10 @@ fi
 # check if multipass is installed
 if ! command -v multipass &> /dev/null
 then
-    echo "ERROR: multipass could not be found, please install it first. @see https://multipass.run/install "
+    echo "ERROR: multipass could not be found, please install it first:"
+    echo "  On MacOS:    brew install --cask multipass"
+    echo "  On Linux:    sudo snap install multipass"
+    echo "  On Windows:  https://multipass.run/install"
     exit 1
 fi
 
@@ -48,7 +52,7 @@ fi
 
 echo "Creating VM..."
 echo "\tmultipass launch --name $NAME --cpus 2 --mem 4G --disk 40G"
-multipass launch --name "$NAME" --cpus 2 --mem 4G --disk 40G
+multipass launch --name "$NAME" --cpus 2 --mem 4G --disk 50G
 # shellcheck disable=SC2181
 if [ $? -eq 0 ]; then
     echo "vm is created"
@@ -57,34 +61,22 @@ else
     exit 1
 fi
 
+# wait for vm to be ready
+echo "Waiting for vm to be ready..."
+while ! multipass list | grep -e "^$NAME " | grep -e "Running"; do
+    sleep 1
+done
+
+# mount laf project root to vm
+echo "Mounting project to vm: $PROJECT_ROOT -> $NAME:/laf/"
+multipass mount $PROJECT_ROOT $NAME:/laf/
+
 # shellcheck disable=SC2139
 alias vm_root_exec="multipass exec $NAME -- sudo -u root"
 
-echo "Installing sealos..."
-set -x
-vm_root_exec -s << EOF
-echo "deb [trusted=yes] https://apt.fury.io/labring/ /" | tee /etc/apt/sources.list.d/labring.list
-apt update
-sudo apt install sealos=4.1.3
-EOF
-
-
-set +x
-
-echo "Installing k8s..."
-set -x
-
-# vm_root_exec sealos run labring/kubernetes:v1.24.0  labring/calico:v3.24.1 --single
-vm_root_exec sealos run labring/kubernetes:v1.24.0 labring/flannel:v0.19.0 --single
-vm_root_exec kubectl taint node $NAME node-role.kubernetes.io/master-
-vm_root_exec kubectl taint node $NAME node-role.kubernetes.io/control-plane-
-set +x
-set +e
-
-vm_root_exec sealos run labring/helm:v3.8.2
-vm_root_exec sealos run labring/openebs:v1.9.0
-vm_root_exec sealos run labring/cert-manager:v1.8.0
-vm_root_exec sealos run labring/sealos-user-controller:dev
+# install k8s cluster
+echo "Installing k8s cluster"
+vm_root_exec sh /laf/deploy/scripts/install-k8s.sh
 
 set -x
 set -e
@@ -104,7 +96,7 @@ while true; do
         break
     fi
     i=$((i+1))
-    if [ $i -gt 60 ]; then
+    if [ $i -gt 100 ]; then
         echo "ERROR: k8s cluster is not ready"
         exit 1
     fi
