@@ -10,8 +10,6 @@ import { FunctionsModule } from './functions/functions.module'
 import { ConfigModule } from '@nestjs/config'
 import { HttpModule } from '@nestjs/axios'
 import { CoreModule } from './core/core.module'
-import { DemoModule } from './demo/demo.module';
-import { TestService } from './test/test.service';
 
 @Module({
   imports: [
@@ -27,9 +25,8 @@ import { TestService } from './test/test.service';
     CollectionsModule,
     HttpModule,
     CoreModule,
-    DemoModule,
   ],
   controllers: [AppController],
-  providers: [AppService, TestService],
+  providers: [AppService],
 })
 export class AppModule {}
