@@ -6,13 +6,14 @@ export class Application implements KubernetesObject {
   metadata?: V1ObjectMeta
   spec: ApplicationSpec
 
-  constructor(name: string) {
-    this.metadata = {
-      name,
-    }
+  constructor() {
+    this.metadata = {}
   }
 
   toJSON() {
+    if (!this.metadata.name) {
+      throw new Error('name cannot be empty')
+    }
     return {
       apiVersion: this.apiVersion,
       kind: this.kind,

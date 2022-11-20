@@ -20,10 +20,10 @@ import (
 	"flag"
 	"os"
 
-	v14 "github.com/labring/laf/core/controllers/database/api/v1"
-	v12 "github.com/labring/laf/core/controllers/gateway/api/v1"
-	v1 "github.com/labring/laf/core/controllers/oss/api/v1"
-	v13 "github.com/labring/laf/core/controllers/runtime/api/v1"
+	databasev1 "github.com/labring/laf/core/controllers/database/api/v1"
+	gatewayv1 "github.com/labring/laf/core/controllers/gateway/api/v1"
+	ossv1 "github.com/labring/laf/core/controllers/oss/api/v1"
+	runtimev1 "github.com/labring/laf/core/controllers/runtime/api/v1"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
@@ -52,10 +52,10 @@ func init() {
 	utilruntime.Must(applicationv1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 
-	utilruntime.Must(v13.AddToScheme(scheme))
-	utilruntime.Must(v14.AddToScheme(scheme))
-	utilruntime.Must(v1.AddToScheme(scheme))
-	utilruntime.Must(v12.AddToScheme(scheme))
+	utilruntime.Must(runtimev1.AddToScheme(scheme))
+	utilruntime.Must(databasev1.AddToScheme(scheme))
+	utilruntime.Must(ossv1.AddToScheme(scheme))
+	utilruntime.Must(gatewayv1.AddToScheme(scheme))
 }
 
 func main() {

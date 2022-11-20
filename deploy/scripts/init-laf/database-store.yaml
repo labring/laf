@@ -1,0 +1,14 @@
+apiVersion: database.laf.dev/v1
+kind: Store
+metadata:
+  name: mongodb-rs0
+  namespace: laf-system
+spec:
+  provider: mongodb
+  region: default
+  connectionUri: mongodb://admin:passw0rd@mongo.laf.svc.cluster.local:27017/?authSource=admin&replicaSet=rs0&writeConcern=majority
+  capacity:
+    userCount: 1000
+    storage: 100Gi
+    databaseCount: 1000
+    collectionCount: 10000

@@ -56,11 +56,12 @@ spec:
                 - bash
                 - "-c"
                 - |
-                  mongo -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD --eval rs.initiate\(\) > /init_result || true
+                  cat /init_result | grep ok | grep 1 || mongo -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD --eval rs.initiate\(\) > /init_result
+                  cat /conf_result | grep ok | grep 1 || mongo -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD --eval conf=rs.conf\(\)\;conf.members[0].host=\"{{ .Values.service.name }}.{{ .Release.Namespace }}.svc.cluster.local:27017\"\;rs.reconfig\(conf\) > /conf_result
                   mongo -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD --eval db.adminCommand\(\"ping\"\)
             initialDelaySeconds: 20
             failureThreshold: 6
-            periodSeconds: 10
+            periodSeconds: 5
             successThreshold: 1
             timeoutSeconds: 1
           resources:
@@ -73,7 +74,7 @@ spec:
               chmod 400 /data/replica.key
               chown 999:999 /data/replica.key
               exec docker-entrypoint.sh $$@
-          args: ["mongod", "--bind_ip_all", "--replSet", "{{ .Values.db.replicaSetName }}", "--keyFile", "/data/replica.key"]
+          args: ["mongod", "--bind_ip", "0.0.0.0,{{ .Values.service.name }}.{{ .Release.Namespace }}.svc.cluster.local", "--replSet", "{{ .Values.db.replicaSetName }}", "--keyFile", "/data/replica.key"]
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:
