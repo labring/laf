@@ -1,6 +1,6 @@
-import { ApplicationState } from '../entities/app.entity'
+import { ApplicationState } from '../entities/application.entity'
 
-export class CreateAppDto {
+export class CreateApplicationDto {
   name: string
   state: ApplicationState
   region: string

@@ -1,69 +1,83 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import { SDK, Config } from 'casdoor-nodejs-sdk'
-import * as querystring from 'node:querystring'
+import { CasdoorService } from './casdoor.service'
+import { User } from '@prisma/client'
+import { UsersService } from 'src/users/users.service'
 
 @Injectable()
 export class AuthService {
-  private logger = new Logger()
-  constructor(private jwtService: JwtService) {}
+  logger: Logger = new Logger(AuthService.name)
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly casdoorService: CasdoorService,
+    private readonly userService: UsersService,
+  ) {}
 
   /**
-   * Get auth config of casdoor
-   * @returns
-   */
-  getCasdoorConfig() {
-    const authCfg: Config = {
-      endpoint: process.env.CASDOOR_ENDPOINT,
-      clientId: process.env.CASDOOR_CLIENT_ID,
-      clientSecret: process.env.CASDOOR_CLIENT_SECRET,
-      certificate: process.env.CASDOOR_PUBLIC_CERT,
-      orgName: process.env.CASDOOR_ORG_NAME,
-    }
-    return authCfg
-  }
-
-  /**
-   * Create casdoor SDK instance
-   * @returns
-   */
-  getCasdoorSDK() {
-    const sdk = new SDK(this.getCasdoorConfig())
-    return sdk
-  }
-
-  /**
-   * Get user token by code
+   * Get user token by casdoor code:
+   * - code is casdoor code
+   * - user token is laf server token, NOT casdoor token
    * @param code
    * @returns
    */
   async code2token(code: string): Promise<string> {
     try {
-      const token = await this.getCasdoorSDK().getAuthToken(code)
-      return token
+      const casdoorUser = await this.casdoorService.code2user(code)
+      if (!casdoorUser) return null
+
+      // Get or create laf user
+      const profile = await this.userService.getProfileByOpenid(casdoorUser.id)
+      let user = profile?.user
+      if (!user) {
+        user = await this.userService.create({
+          id: this.userService.generateUserId(),
+          username: casdoorUser.name,
+          email: casdoorUser.email,
+          phone: casdoorUser.phone,
+          UserProfile: {
+            create: {
+              openid: casdoorUser.id,
+              name: casdoorUser.displayName,
+              avatar: casdoorUser.avatar,
+            },
+          },
+        })
+      } else {
+        // update it
+        user = await this.userService.updateUser({
+          where: { id: user.id },
+          data: {
+            username: casdoorUser.name,
+            email: casdoorUser.email,
+            phone: casdoorUser.phone,
+            UserProfile: {
+              update: {
+                name: casdoorUser.displayName,
+                avatar: casdoorUser.avatar,
+              },
+            },
+          },
+        })
+      }
+
+      return this.getAccessTokenByUser(user)
     } catch (error) {
+      this.logger.error(error)
       return null
     }
   }
 
   /**
-   * Get user info by token
-   * @param token
+   * Get access token by user
+   * @param user
    * @returns
    */
-  async getUserInfo(token: string) {
-    try {
-      const user = this.jwtService.verify(token, {
-        publicKey: this.getCasdoorConfig().certificate,
-      })
-      Object.keys(user).forEach((key) => {
-        if (user[key] === '' || user[key] === null) delete user[key]
-      })
-      return user
-    } catch (err) {
-      this.logger.error(err)
-      return null
+  getAccessTokenByUser(user: User): string {
+    const payload = {
+      sub: user.id,
     }
+    const token = this.jwtService.sign(payload)
+    return token
   }
 
   /**
@@ -71,18 +85,7 @@ export class AuthService {
    * @returns
    */
   getSignInUrl(): string {
-    const authCfg = this.getCasdoorConfig()
-    const query = {
-      client_id: authCfg.clientId,
-      redirect_uri: process.env.CASDOOR_REDIRECT_URI,
-      response_type: 'code',
-      scope: 'openid,profile,phone,email',
-      state: 'casdoor',
-    }
-    const encoded_query = querystring.encode(query)
-    const base_api = `${authCfg.endpoint}/login/oauth/authorize`
-    const url = `${base_api}?${encoded_query}`
-    return url
+    return this.casdoorService.getSignInUrl()
   }
 
   /**
@@ -90,9 +93,6 @@ export class AuthService {
    * @returns
    */
   getSignUpUrl(): string {
-    const authCfg = this.getCasdoorConfig()
-    const app_name = process.env.CASDOOR_APP_NAME
-    const url = `${authCfg.endpoint}/signup/${app_name}`
-    return url
+    return this.casdoorService.getSignUpUrl()
   }
 }
