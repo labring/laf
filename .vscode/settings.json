@@ -39,6 +39,7 @@
     "compat",
     "containerd",
     "creationforms",
+    "datasource",
     "dockerode",
     "EJSON",
     "entrypoint",
