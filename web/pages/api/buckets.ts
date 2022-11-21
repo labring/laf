@@ -29,6 +29,28 @@ export default async function handler(req: NextApiRequest, resp: NextApiResponse
         ],
         resp,
       );
+    case "POST":
+      JsonResp(
+        [
+          {
+            name: "data",
+            mode: "public-read",
+            quota: 1073741824,
+          },
+          {
+            name: "public",
+            mode: "public-read-write",
+            quota: 1073741824,
+          },
+          {
+            name: "testbk",
+            mode: "private",
+            quota: 1073741824,
+          },
+        ]
+      )
+    case "delete":
+      
       break;
   }
 }

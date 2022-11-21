@@ -4,21 +4,31 @@ import { immer } from "zustand/middleware/immer";
 
 import request from "@/utils/request";
 
-type TStorage = {
+export type TStorage = {
   name: string;
-  type: string;
-  options: any;
-  info: any;
+  mode: string;
+  quota: number;
   idIndex: any;
 };
+
+export type TFile = {
+  name: string;
+  path: string;
+  size: number;
+  updateTime: string;
+  prefix: string;
+}
 
 type State = {
   currentStorage?: TStorage;
   allStorages?: TStorage[];
+  files?: TFile[];
 
   initStoragePage: () => void;
 
   setCurrentStorage: (currentFunction: TStorage) => void;
+  editStorage: (currentFunction: TStorage) => void;
+  deleteStorage: (currentFunction: TStorage) => void;
 };
 
 const useStorageStore = create<State>()(
@@ -26,12 +36,18 @@ const useStorageStore = create<State>()(
     immer((set) => ({
       currentStorage: undefined,
       allStorages: [],
+      files: [],
 
       initStoragePage: async () => {
         const res = await request.get("/api/buckets");
         set((state) => {
           state.allStorages = res.data;
           state.currentStorage = res.data[0];
+        });
+
+        const files = await request.get("/api/files");
+        set((state) => {
+          state.files = files.data;
         });
       },
 
@@ -40,6 +56,22 @@ const useStorageStore = create<State>()(
           state.currentStorage = JSON.parse(JSON.stringify(currentFunction));
           return state;
         }),
+      
+      editStorage: async (storage: TStorage) => {
+        const res = await request.post("/api/buckets", storage);
+        set((state) => {
+          state.allStorages = res.data;
+          state.currentStorage = res.data[0];
+        });
+      },
+
+      deleteStorage: async (storage: TStorage) => {
+        const res = await request.delete(`/api/buckets${storage.idIndex}`);
+        set((state) => {
+          state.allStorages = res.data;
+          state.currentStorage = res.data[0];
+        });
+      }
     })),
   ),
 );

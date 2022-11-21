@@ -4,8 +4,8 @@
 
 import React, { useEffect } from "react";
 
-import FileList from "./FileList";
-import StorageListPanel from "./StorageListPanel";
+import FileList from "./mods/FileList";
+import StorageListPanel from "./mods/StorageListPanel";
 
 import useStorageStore from "./store";
 
