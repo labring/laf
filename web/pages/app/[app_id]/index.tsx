@@ -6,6 +6,7 @@ import { Pages, SiderBarWidth } from "@/constants/index";
 import SiderBar from "./mods/SiderBar";
 import DatabasePage from "./database";
 import FunctionPage from "./functions";
+import LogsPage from "./logs";
 import StoragePage from "./storages";
 
 function AppDetail() {
@@ -13,10 +14,11 @@ function AppDetail() {
   return (
     <>
       <SiderBar pageId={pageId} setPageId={(pageId: string) => setPageId(pageId)} />
-      <div className="flex h-full" style={{ marginLeft: SiderBarWidth, fontSize: "12px" }}>
+      <div className="flex h-full " style={{ marginLeft: SiderBarWidth, fontSize: "12px" }}>
         {pageId === Pages.function ? <FunctionPage key={Pages.function} /> : null}
         {pageId === Pages.database ? <DatabasePage key={Pages.database} /> : null}
         {pageId === Pages.storage ? <StoragePage key={Pages.storage} /> : null}
+        {pageId === Pages.logs ? <LogsPage key={Pages.logs} /> : null}
       </div>
     </>
   );

@@ -1,11 +1,12 @@
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+
 import ColPannel from "./mods/ColPannel";
 import DataPannel from "./mods/DataPannel";
 import IndexPannel from "./mods/IndexPannel";
 
 export default function CollectionDataList() {
   return (
-    <div className="flex-1 m-4">
+    <div className="flex-1 ">
       <Tabs>
         <TabList>
           <Tab>数据管理</Tab>

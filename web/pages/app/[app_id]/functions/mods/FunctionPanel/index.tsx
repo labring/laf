@@ -8,7 +8,6 @@ import { HamburgerIcon, Search2Icon, SunIcon } from "@chakra-ui/icons";
 import { calc, HStack, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 
-import FileStatusIcon, { FileStatus } from "@/components/FileStatusIcon";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
@@ -87,7 +86,7 @@ export default function FunctionList() {
                   <FileTypeIcon type={FileType.js} />
                   <span className="ml-2">{func.label}</span>
                 </div>
-                <FileStatusIcon status={FileStatus.deleted} />
+                {/* <FileStatusIcon status={FileStatus.deleted} /> */}
               </SectionList.Item>
             );
           })}

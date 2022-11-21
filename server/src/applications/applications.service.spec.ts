@@ -1,19 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { CoreModule } from '../core/core.module'
-import { AppsService } from './apps.service'
-import { CreateAppDto } from './dto/create-app.dto'
-import { ApplicationState } from './entities/app.entity'
+import { ApplicationsService } from './applications.service'
+import { CreateApplicationDto } from './dto/create-application.dto'
+import { ApplicationState } from './entities/application.entity'
 
 describe('AppsService', () => {
-  let service: AppsService
+  let service: ApplicationsService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [CoreModule],
-      providers: [AppsService],
+      providers: [ApplicationsService],
     }).compile()
 
-    service = module.get<AppsService>(AppsService)
+    service = module.get<ApplicationsService>(ApplicationsService)
   })
 
   it('should be defined', () => {
@@ -23,15 +23,15 @@ describe('AppsService', () => {
 
 describe('AppService create app', () => {
   const timeout = 60 * 1000
-  let service: AppsService
+  let service: ApplicationsService
   let appid: string
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [CoreModule],
-      providers: [AppsService],
+      providers: [ApplicationsService],
     }).compile()
 
-    service = module.get<AppsService>(AppsService)
+    service = module.get<ApplicationsService>(ApplicationsService)
   }, timeout)
 
   jest.setTimeout(timeout)
@@ -46,7 +46,7 @@ describe('AppService create app', () => {
   }
 
   it('should create app', async () => {
-    const dto = new CreateAppDto()
+    const dto = new CreateApplicationDto()
     dto.name = 'test-for-create-app'
     dto.state = ApplicationState.ApplicationStateRunning
     dto.region = 'default'

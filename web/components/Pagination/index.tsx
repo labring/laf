@@ -49,16 +49,15 @@ export default function Pagination() {
 
       <Flex alignItems="center">
         <Text flexShrink="0" mr={8}>
-          Page
           <Text fontWeight="bold" as="span">
             {pageIndex + 1}
-          </Text>{" "}
-          of
+          </Text>
+          /
           <Text fontWeight="bold" as="span">
             {pageOptions.length}
           </Text>
         </Text>
-        <Text flexShrink="0">Go to page:</Text>{" "}
+        <Text flexShrink="0">Go:</Text>{" "}
         <NumberInput
           ml={2}
           mr={8}
@@ -77,7 +76,7 @@ export default function Pagination() {
             <NumberDecrementStepper />
           </NumberInputStepper>
         </NumberInput>
-        <Select
+        {/* <Select
           w={32}
           value={pageSize}
           onChange={(e) => {
@@ -89,7 +88,7 @@ export default function Pagination() {
               Show {pageSize}
             </option>
           ))}
-        </Select>
+        </Select> */}
       </Flex>
 
       <Flex>

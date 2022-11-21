@@ -4,7 +4,7 @@
 
 import React, { useEffect } from "react";
 import { Button, HStack } from "@chakra-ui/react";
-import Editor from "@monaco-editor/react";
+import Editor, { useMonaco } from "@monaco-editor/react";
 
 import FileStatusIcon, { FileStatus } from "@/components/FileStatusIcon";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
@@ -24,6 +24,22 @@ function FunctionPage() {
     return () => {};
   }, [initFunctionPage]);
 
+  const monaco = useMonaco();
+
+  monaco?.editor.defineTheme("myTheme", {
+    base: "vs",
+    inherit: true,
+    rules: [{ background: "0055ee" }],
+    colors: {
+      "editorLineNumber.foreground": "#999",
+    },
+  });
+
+  useEffect(() => {
+    monaco?.editor.setTheme("myTheme");
+    return () => {};
+  }, [monaco]);
+
   return (
     <>
       <div className="" style={{ width: 300, borderRight: "1px solid #eee" }}>
@@ -31,7 +47,7 @@ function FunctionPage() {
         <DependecyPanel />
       </div>
       <div className="flex flex-1 flex-col ">
-        <div className="border-b">
+        <div className="border-b" style={{ height: 36 }}>
           <div
             className={"flex justify-between px-2  items-center"}
             style={{ marginBottom: 0, height: 31 }}
@@ -67,7 +83,7 @@ function FunctionPage() {
         </div>
         <div className="flex-1">
           <Editor
-            theme="vs-dark"
+            theme="myTheme"
             options={{
               minimap: {
                 enabled: false,

@@ -1,14 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { KubernetesService } from '../core/kubernetes.service'
-import { CreateAppDto } from './dto/create-app.dto'
-import { UpdateAppDto } from './dto/update-app.dto'
-import { Application, ApplicationSpec } from './entities/app.entity'
+import { Application, ApplicationSpec } from './entities/application.entity'
 import * as k8s from '@kubernetes/client-node'
 import * as nanoid from 'nanoid'
+import { CreateApplicationDto } from './dto/create-application.dto'
+import { UpdateApplicationDto } from './dto/update-application.dto'
 
 @Injectable()
-export class AppsService {
-  private readonly logger = new Logger(AppsService.name)
+export class ApplicationsService {
+  private readonly logger = new Logger(ApplicationsService.name)
   constructor(public k8sClient: KubernetesService) {}
 
   // create app namespace
@@ -37,7 +37,7 @@ export class AppsService {
     return nano()
   }
 
-  async create(appid: string, dto: CreateAppDto) {
+  async create(appid: string, dto: CreateApplicationDto) {
     // create app resources
     const app = new Application()
     app.metadata.name = dto.name
@@ -67,7 +67,7 @@ export class AppsService {
     return `This action returns a #${id} app`
   }
 
-  update(id: number, updateAppDto: UpdateAppDto) {
+  update(id: number, dto: UpdateApplicationDto) {
     return `This action updates a #${id} app`
   }
 
