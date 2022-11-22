@@ -2,12 +2,14 @@
  * cloud functions index page
  ***************************/
 
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Button, HStack } from "@chakra-ui/react";
-import Editor, { useMonaco } from "@monaco-editor/react";
+import useHotKey from "hooks/useHotKey";
 
+import FunctionEditor from "@/components/Editor/FunctionEditor";
 import FileStatusIcon, { FileStatus } from "@/components/FileStatusIcon";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
+import PanelHeader from "@/components/Panel/Header";
 
 import DebugPanel from "./mods/DebugPannel";
 import DependecyPanel from "./mods/DependecePanel";
@@ -18,27 +20,19 @@ import useFunctionStore from "./store";
 function FunctionPage() {
   const { initFunctionPage, currentFunction } = useFunctionStore((store) => store);
 
+  useHotKey("s", () => {
+    console.log("save");
+  });
+
+  useHotKey("r", () => {
+    console.log("run");
+  });
+
   useEffect(() => {
     initFunctionPage();
 
     return () => {};
   }, [initFunctionPage]);
-
-  const monaco = useMonaco();
-
-  monaco?.editor.defineTheme("myTheme", {
-    base: "vs",
-    inherit: true,
-    rules: [{ background: "0055ee" }],
-    colors: {
-      "editorLineNumber.foreground": "#999",
-    },
-  });
-
-  useEffect(() => {
-    monaco?.editor.setTheme("myTheme");
-    return () => {};
-  }, [monaco]);
 
   return (
     <>
@@ -48,10 +42,7 @@ function FunctionPage() {
       </div>
       <div className="flex flex-1 flex-col ">
         <div className="border-b" style={{ height: 36 }}>
-          <div
-            className={"flex justify-between px-2  items-center"}
-            style={{ marginBottom: 0, height: 31 }}
-          >
+          <PanelHeader>
             <div className="flex items-center">
               <FileTypeIcon type={FileType.js} />
               <span className="font-bold text-base ml-2">
@@ -79,28 +70,15 @@ function FunctionPage() {
                 发布
               </Button>
             </HStack>
+          </PanelHeader>
+        </div>
+        <div className="flex flex-row h-full">
+          <div className="flex-1 border-r border-r-slate-200">
+            <FunctionEditor value={currentFunction?.code || ""} />
           </div>
-        </div>
-        <div className="flex-1">
-          <Editor
-            theme="myTheme"
-            options={{
-              minimap: {
-                enabled: false,
-              },
-              scrollbar: {
-                verticalScrollbarSize: 6,
-              },
-              lineNumbersMinChars: 4,
-              scrollBeyondLastLine: false,
-            }}
-            height="100%"
-            defaultLanguage="javascript"
-            value={currentFunction?.code}
-          />
-        </div>
-        <div style={{ height: 300 }}>
-          <DebugPanel />
+          <div style={{ width: 550 }}>
+            <DebugPanel />
+          </div>
         </div>
       </div>
     </>

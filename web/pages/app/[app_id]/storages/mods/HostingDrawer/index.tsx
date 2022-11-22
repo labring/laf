@@ -1,32 +1,34 @@
-import React, { useRef } from "react";
-import {Controller, useController, useForm } from "react-hook-form";
-import { FiFile } from "react-icons/fi";
-import { Button, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, FormControl, FormErrorMessage, FormLabel, Icon, Input, InputGroup, InputLeftElement, Modal,
-  Select,
-  Switch,
-  Textarea,
+import React from "react";
+import {
+  Button,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  FormControl,
+  FormLabel,
+  Input,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { Field, Formik } from "formik";
-  
+
 function DrawerExample() {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const btnRef = React.useRef()
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const btnRef = React.useRef();
   const formRef = React.useRef(null);
 
   return (
     <>
+      <Button size="xs" onClick={onOpen}>
+        网站托管
+      </Button>
 
-      <Button size="xs"  onClick={onOpen}>网站托管</Button>
-      
-      <Drawer
-        isOpen={isOpen}
-        placement='right'
-        size={'md'}
-        onClose={onClose}
-      >
+      <Drawer isOpen={isOpen} placement="right" size={"md"} onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
@@ -65,10 +67,10 @@ function DrawerExample() {
                 </DrawerBody>
 
                 <DrawerFooter>
-                  <Button variant='outline' mr={3} onClick={onClose}>
-                  {t`Cancel`}
+                  <Button variant="outline" mr={3} onClick={onClose}>
+                    {t`Cancel`}
                   </Button>
-                  <Button colorScheme='blue'>{t`Confirm`}</Button>
+                  <Button colorScheme="blue">{t`Confirm`}</Button>
                 </DrawerFooter>
               </form>
             )}
@@ -76,7 +78,7 @@ function DrawerExample() {
         </DrawerContent>
       </Drawer>
     </>
-  )
+  );
 }
 
-export default DrawerExample
+export default DrawerExample;

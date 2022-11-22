@@ -1,7 +1,6 @@
 import React from "react";
 import { CopyIcon, Search2Icon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
-import { BlockList } from "net";
 
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import Panel from "@/components/Panel";

@@ -1,12 +1,9 @@
 import React from "react";
-import { AddIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
   FormLabel,
   Input,
-  InputGroup,
-  InputRightElement,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -14,16 +11,11 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Select,
-  Switch,
-  Textarea,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { Field, Formik } from "formik";
-
-import IconWrap from "@/components/IconWrap";
 
 function CreateModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -33,7 +25,9 @@ function CreateModal() {
 
   return (
     <>
-      <Button size="xs" onClick={onOpen}>新建文件夹</Button>
+      <Button size="xs" onClick={onOpen}>
+        新建文件夹
+      </Button>
 
       <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />

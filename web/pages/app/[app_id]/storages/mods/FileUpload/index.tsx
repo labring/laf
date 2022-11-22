@@ -1,20 +1,28 @@
 import React, { useRef } from "react";
-import {Controller, useController,useForm } from "react-hook-form";
+import { useController, useForm } from "react-hook-form";
 import { FiFile } from "react-icons/fi";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import { Button, FormControl, FormErrorMessage, FormLabel, Icon, Input, InputGroup, InputLeftElement, Menu, MenuButton, MenuItem, MenuList, Modal,
-  ModalBody,
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Icon,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Modal,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Select,
-  Switch,
-  Textarea,
-  useDisclosure, } from "@chakra-ui/react";
+  useDisclosure,
+} from "@chakra-ui/react";
 
-const FileUploadForm = ({ name, acceptedFileTypes, children, isRequired=false }: any) => {
+const FileUploadForm = ({ name, acceptedFileTypes, children, isRequired = false }: any) => {
   const inputRef = useRef();
   const { control } = useForm();
 
@@ -26,26 +34,30 @@ const FileUploadForm = ({ name, acceptedFileTypes, children, isRequired=false }:
     rules: { required: isRequired },
   });
 
-  console.log('inputProps', inputProps);
-  
+  console.log("inputProps", inputProps);
 
   return (
     <FormControl isRequired>
       <FormLabel htmlFor="writeUpFile">{children}</FormLabel>
       <InputGroup>
-        <InputLeftElement
-          pointerEvents="none"
-          children={<Icon as={FiFile} />}
-        />
-        <input type='file' accept={acceptedFileTypes} name={name} ref={inputRef} {...inputProps} inputRef={ref} webkitdirectory directory multiple style={{ display: 'none' }}></input>
-        <Input
-          onClick={() => inputRef.current.click()}
-          value={value}
-        />
+        <InputLeftElement pointerEvents="none" children={<Icon as={FiFile} />} />
+        <input
+          type="file"
+          accept={acceptedFileTypes}
+          name={name}
+          ref={inputRef}
+          {...inputProps}
+          inputRef={ref}
+          webkitdirectory
+          directory
+          multiple
+          style={{ display: "none" }}
+        ></input>
+        <Input onClick={() => inputRef.current.click()} value={value} />
       </InputGroup>
     </FormControl>
   );
-}
+};
 
 function FileUpload() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -55,7 +67,7 @@ function FileUpload() {
     <>
       <Menu>
         <MenuButton size="xs" as={Button} rightIcon={<ChevronDownIcon />}>
-        上传
+          上传
         </MenuButton>
         <MenuList>
           <MenuItem onClick={onOpen}>上传文件</MenuItem>
@@ -69,7 +81,7 @@ function FileUpload() {
           <ModalHeader>Upload File</ModalHeader>
           <ModalCloseButton />
           <div className="p-6">
-            {FileUploadForm({ name: 'writeUpFile', acceptedFileTypes: '*', children: '上传文件' })}
+            {FileUploadForm({ name: "writeUpFile", acceptedFileTypes: "*", children: "上传文件" })}
           </div>
         </ModalContent>
       </Modal>

@@ -2,7 +2,7 @@
  * cloud functions list sidebar
  ***************************/
 
-import React from "react";
+import React, { useState } from "react";
 import { AiOutlineFilter } from "react-icons/ai";
 import { HamburgerIcon, Search2Icon, SunIcon } from "@chakra-ui/icons";
 import { calc, HStack, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
@@ -19,6 +19,8 @@ import CreateModal from "./CreateModal";
 
 export default function FunctionList() {
   const store = useFunctionStore((store) => store);
+
+  const [keywords, setKeywords] = useState("");
 
   return (
     <Panel
@@ -42,7 +44,15 @@ export default function FunctionList() {
               pointerEvents="none"
               children={<Search2Icon bgSize="sm" color="gray.300" />}
             />
-            <Input size="sm" className="mr-2" variant="filled" placeholder="输入函数名搜索" />
+            <Input
+              size="sm"
+              className="mr-2"
+              variant="filled"
+              placeholder="输入函数名搜索"
+              onChange={(event) => {
+                setKeywords(event.target.value);
+              }}
+            />
           </InputGroup>
 
           <HStack spacing="2">
@@ -72,24 +82,26 @@ export default function FunctionList() {
         })}
       </ul> */}
 
-        <SectionList style={{ maxHeight: "calc(100vh - 300px)" }}>
-          {(store.allFunctionList || []).map((func: any) => {
-            return (
-              <SectionList.Item
-                isActive={func._id === store.currentFunction?._id}
-                key={func._id}
-                onClick={() => {
-                  store.setCurrentFunction(func);
-                }}
-              >
-                <div>
-                  <FileTypeIcon type={FileType.js} />
-                  <span className="ml-2">{func.label}</span>
-                </div>
-                {/* <FileStatusIcon status={FileStatus.deleted} /> */}
-              </SectionList.Item>
-            );
-          })}
+        <SectionList style={{ height: "calc(100vh - 400px)", overflowY: "auto" }}>
+          {(store.allFunctionList || [])
+            .filter((item) => item.label.includes(keywords))
+            .map((func: any) => {
+              return (
+                <SectionList.Item
+                  isActive={func._id === store.currentFunction?._id}
+                  key={func._id}
+                  onClick={() => {
+                    store.setCurrentFunction(func);
+                  }}
+                >
+                  <div>
+                    <FileTypeIcon type={FileType.js} />
+                    <span className="ml-2">{func.label}</span>
+                  </div>
+                  {/* <FileStatusIcon status={FileStatus.deleted} /> */}
+                </SectionList.Item>
+              );
+            })}
         </SectionList>
       </div>
     </Panel>

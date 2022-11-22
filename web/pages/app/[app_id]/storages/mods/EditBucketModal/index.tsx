@@ -1,5 +1,5 @@
 import React from "react";
-import { AddIcon, EditIcon } from "@chakra-ui/icons";
+import { EditIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
@@ -15,8 +15,6 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
-  Switch,
-  Textarea,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";

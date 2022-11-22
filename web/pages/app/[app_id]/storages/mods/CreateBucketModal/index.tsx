@@ -15,8 +15,6 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
-  Switch,
-  Textarea,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
