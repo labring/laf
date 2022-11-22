@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-d
 dotenv.config({ path: '.env.local' })
 dotenv.config()
 
-export class Constants {
+export class Config {
   static get JWT_SECRET() {
     if (!process.env.JWT_SECRET) {
       throw new Error('JWT_SECRET is not defined')
@@ -40,5 +40,19 @@ export class Constants {
 
   static get CASDOOR_ORG_NAME() {
     return process.env.CASDOOR_ORG_NAME
+  }
+}
+
+export class ResourceLabels {
+  static get USER_ID() {
+    return 'laf.dev/user.id'
+  }
+
+  static get APP_ID() {
+    return 'laf.dev/appid'
+  }
+
+  static get NAMESPACE_TYPE() {
+    return 'laf.dev/namespace.type'
   }
 }

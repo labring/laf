@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
+import { ResourceLabels } from '../constants'
 import { KubernetesService } from './kubernetes.service'
 
 let service: KubernetesService
@@ -66,5 +67,22 @@ describe('KubernetesService::createNamespace()', () => {
     if (await service.existsNamespace(name)) {
       await service.deleteNamespace(name)
     }
+  })
+})
+
+describe.skip('list custom objects with label', () => {
+  it('should be able to list custom objects with label', async () => {
+    const userid = 'test-user-id'
+    const res = await service.customObjectApi.listClusterCustomObject(
+      'application.laf.dev',
+      'v1',
+      'applications',
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      `${ResourceLabels.USER_ID}=${userid}`,
+    )
+    console.log(res.body)
   })
 })

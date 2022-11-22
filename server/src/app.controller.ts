@@ -1,5 +1,6 @@
 import { Controller, Get, Query, Req, Res, UseGuards } from '@nestjs/common'
-import { Response } from 'express'
+import { User } from '@prisma/client'
+import { Request, Response } from 'express'
 import { AuthService } from './auth/auth.service'
 import { JwtAuthGuard } from './auth/jwt-auth.guard'
 import { ResponseUtil } from './utils/response'
@@ -44,7 +45,8 @@ export class AppController {
 
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  async getProfile(@Req() request) {
-    return request.user
+  async getProfile(@Req() request: Request) {
+    const user = request.user as User
+    return ResponseUtil.ok(user)
   }
 }

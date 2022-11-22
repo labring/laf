@@ -61,6 +61,7 @@
     "moby",
     "MONOG",
     "mycrd",
+    "nestjs",
     "objs",
     "openebs",
     "passw",
@@ -77,9 +78,9 @@
     "uids",
     "upsert",
     "upserted",
+    "userid",
     "vitepress",
     "withs",
-    "zcube",
-    "nestjs"
+    "zcube"
   ]
 }
