@@ -1,15 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { CopyIcon } from "@chakra-ui/icons";
 import { useClipboard, useToast } from "@chakra-ui/react";
 
 export default function CopyText(props: { text: string }) {
-  const { onCopy, setValue } = useClipboard("");
+  const { onCopy, hasCopied } = useClipboard(props.text);
   const toast = useToast();
-
-  const text = props.text;
-  useEffect(() => {
-    setValue(text);
-  }, [setValue, text]);
 
   return (
     <CopyIcon
