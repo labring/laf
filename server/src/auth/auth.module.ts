@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
 import { PassportModule } from '@nestjs/passport'
-import { Constants } from 'src/constants'
+import { Config } from 'src/constants'
 import { UsersModule } from '../users/users.module'
 import { AuthService } from './auth.service'
 import { CasdoorService } from './casdoor.service'
@@ -11,8 +11,8 @@ import { JwtStrategy } from './jwt.strategy'
   imports: [
     PassportModule,
     JwtModule.register({
-      secret: Constants.JWT_SECRET,
-      signOptions: { expiresIn: Constants.JWT_EXPIRES_IN },
+      secret: Config.JWT_SECRET,
+      signOptions: { expiresIn: Config.JWT_EXPIRES_IN },
     }),
     UsersModule,
   ],

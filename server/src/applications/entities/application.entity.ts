@@ -1,57 +1,24 @@
 import { KubernetesObject, V1ObjectMeta } from '@kubernetes/client-node'
 
-export class Application implements KubernetesObject {
-  apiVersion = 'application.laf.dev/v1'
-  kind = 'Application'
-  metadata?: V1ObjectMeta
-  spec: ApplicationSpec
-
-  constructor() {
-    this.metadata = {}
+export class Application {
+  static readonly Group = 'application.laf.dev'
+  static readonly Version = 'v1'
+  static readonly PluralName = 'applications'
+  static readonly Kind = 'Application'
+  static get GroupVersion() {
+    return `${Application.Group}/${Application.Version}`
   }
 
-  toJSON() {
-    if (!this.metadata.name) {
-      throw new Error('name cannot be empty')
+  static create(name: string, namespace: string, spec?: IApplicationSpec) {
+    const data: IApplication = {
+      apiVersion: Application.GroupVersion,
+      kind: Application.Kind,
+      metadata: new V1ObjectMeta(),
+      spec: spec,
     }
-    return {
-      apiVersion: this.apiVersion,
-      kind: this.kind,
-      metadata: this.metadata,
-      spec: this.spec.toJSON(),
-    }
-  }
-}
-
-export class ApplicationSpec {
-  appid: string
-  state: ApplicationState
-  region: string
-  bundleName: string
-  runtimeName: string
-
-  constructor(data: {
-    appid: string
-    state: ApplicationState
-    region: string
-    bundleName: string
-    runtimeName: string
-  }) {
-    this.appid = data.appid
-    this.state = data.state
-    this.region = data.region
-    this.bundleName = data.bundleName
-    this.runtimeName = data.runtimeName
-  }
-
-  toJSON() {
-    return {
-      appid: this.appid,
-      state: this.state,
-      region: this.region,
-      bundleName: this.bundleName,
-      runtimeName: this.runtimeName,
-    }
+    data.metadata.name = name
+    data.metadata.namespace = namespace
+    return data
   }
 }
 
@@ -62,4 +29,26 @@ export enum ApplicationState {
   ApplicationStateRunning = 'Running',
   ApplicationStateStopping = 'Stopping',
   ApplicationStateStopped = 'Stopped',
+}
+
+export interface IApplication extends KubernetesObject {
+  spec: IApplicationSpec
+  status?: IApplicationStatus
+}
+
+export interface IApplicationSpec {
+  appid: string
+  state: ApplicationState
+  region: string
+  bundleName: string
+  runtimeName: string
+}
+
+export interface IApplicationStatus {
+  state?: ApplicationState
+}
+
+export interface IApplicationList {
+  apiVersion: string
+  items: IApplication[]
 }

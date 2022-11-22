@@ -21,6 +21,8 @@ describe('AppsService', () => {
   })
 })
 
+const userid = 'test-user-id'
+
 describe('AppService create app', () => {
   const timeout = 60 * 1000
   let service: ApplicationsService
@@ -46,22 +48,22 @@ describe('AppService create app', () => {
   }
 
   it('should create app', async () => {
+    appid = service.generateAppid(6)
     const dto = new CreateApplicationDto()
-    dto.name = 'test-for-create-app'
+    dto.name = appid
     dto.state = ApplicationState.ApplicationStateRunning
     dto.region = 'default'
     dto.bundleName = 'mini'
     dto.runtimeName = 'node-laf'
 
     // create namespace
-    appid = service.generateAppid(6)
-    const ns = await service.createAppNamespace(appid)
+    const ns = await service.createAppNamespace(appid, userid)
     expect(ns).toBeDefined()
     expect(ns.kind).toEqual('Namespace')
     expect(ns.metadata.name).toEqual(appid)
 
     // create app
-    const res = await service.create(appid, dto)
+    const res = await service.create(userid, appid, dto)
     expect(res).not.toBeNull()
     expect(res.kind).toBe('Application')
     expect(res.metadata.name).toBe(dto.name)
@@ -71,4 +73,29 @@ describe('AppService create app', () => {
   afterAll(async () => {
     await cleanup()
   }, 20000)
+})
+
+describe.skip('AppService find app by appid', () => {
+  const timeout = 60 * 1000
+  let service: ApplicationsService
+  let appid: string
+  beforeAll(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      imports: [CoreModule],
+      providers: [ApplicationsService],
+    }).compile()
+
+    service = module.get<ApplicationsService>(ApplicationsService)
+  }, timeout)
+
+  jest.setTimeout(timeout)
+
+  it('should find app by appid', async () => {
+    appid = '1i43zq'
+    const res = await service.findOne(userid, appid)
+    expect(res).not.toBeNull()
+    expect(res.kind).toBe('Application')
+    expect(res.metadata.name).toBe(appid)
+    console.log(res)
+  })
 })

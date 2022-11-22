@@ -6,8 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Req,
+  Res,
 } from '@nestjs/common'
-import { ResponseUtil } from 'src/utils/response'
+import { User } from '@prisma/client'
+import { Request, Response } from 'express'
+import { JwtAuthGuard } from '../auth/jwt-auth.guard'
+import { ResponseUtil } from '../utils/response'
 import { ApplicationsService } from './applications.service'
 import { CreateApplicationDto } from './dto/create-application.dto'
 import { UpdateApplicationDto } from './dto/update-application.dto'
@@ -20,8 +26,10 @@ export class ApplicationsController {
    * Create application
    * @returns
    */
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() dto: CreateApplicationDto) {
+  async create(@Body() dto: CreateApplicationDto, @Req() req: Request) {
+    const user = req.user as User
     const error = dto.validate()
     if (error) {
       return ResponseUtil.error(error)
@@ -29,27 +37,40 @@ export class ApplicationsController {
 
     // create namespace
     const appid = this.appService.generateAppid(6)
-    const namespace = await this.appService.createAppNamespace(appid)
+    const namespace = await this.appService.createAppNamespace(user.id, appid)
     if (!namespace) {
       return ResponseUtil.error('create app namespace error')
     }
 
     // create app
-    const app = await this.appService.create(appid, dto)
+    const app = await this.appService.create(user.id, appid, dto)
     if (!app) {
       return ResponseUtil.error('create app error')
     }
     return ResponseUtil.ok(app)
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.appService.findAll()
+  async findAll(@Req() req: Request) {
+    const user = req.user as User
+    const data = this.appService.findAllByUser(user.id)
+    return ResponseUtil.ok(data)
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.appService.findOne(+id)
+  @UseGuards(JwtAuthGuard)
+  @Get(':appid')
+  findOne(
+    @Param('appid') appid: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const user = req.user as User
+    const data = this.appService.findOne(user.id, appid)
+    if (null === data) {
+      return res.status(404).send('Application not found with appid: ' + appid)
+    }
+    return ResponseUtil.ok(data)
   }
 
   @Patch(':id')

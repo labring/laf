@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { SDK, Config } from 'casdoor-nodejs-sdk'
 import * as querystring from 'node:querystring'
-import { Constants } from '../constants'
+import { Config } from '../constants'
 
 @Injectable()
 export class CasdoorService {
@@ -14,11 +14,11 @@ export class CasdoorService {
    */
   getCasdoorConfig() {
     const authCfg: Config = {
-      endpoint: Constants.CASDOOR_ENDPOINT,
-      clientId: Constants.CASDOOR_CLIENT_ID,
-      clientSecret: Constants.CASDOOR_CLIENT_SECRET,
-      certificate: Constants.CASDOOR_PUBLIC_CERT,
-      orgName: Constants.CASDOOR_ORG_NAME,
+      endpoint: Config.CASDOOR_ENDPOINT,
+      clientId: Config.CASDOOR_CLIENT_ID,
+      clientSecret: Config.CASDOOR_CLIENT_SECRET,
+      certificate: Config.CASDOOR_PUBLIC_CERT,
+      orgName: Config.CASDOOR_ORG_NAME,
     }
     return authCfg
   }
@@ -97,7 +97,7 @@ export class CasdoorService {
    */
   getSignUpUrl(): string {
     const authCfg = this.getCasdoorConfig()
-    const app_name = Constants.CASDOOR_APP_NAME
+    const app_name = Config.CASDOOR_APP_NAME
     const url = `${authCfg.endpoint}/signup/${app_name}`
     return url
   }
