@@ -10,6 +10,7 @@ import * as nanoid from 'nanoid'
 import { CreateApplicationDto } from './dto/create-application.dto'
 import { UpdateApplicationDto } from './dto/update-application.dto'
 import { ResourceLabels } from '../constants'
+import { GetApplicationNamespaceById } from 'src/common/getter'
 
 @Injectable()
 export class ApplicationsService {
@@ -89,7 +90,7 @@ export class ApplicationsService {
   }
 
   async findOne(appid: string): Promise<IApplication> {
-    const namespace = appid
+    const namespace = GetApplicationNamespaceById(appid)
     const name = appid
 
     // get app

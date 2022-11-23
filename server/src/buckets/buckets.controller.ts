@@ -9,6 +9,8 @@ import {
   UseGuards,
   Req,
   Logger,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common'
 import { ApplicationAuthGuard } from 'src/applications/application.auth.guard'
 import { IRequest } from 'src/common/types'
@@ -52,16 +54,33 @@ export class BucketsController {
     return ResponseUtil.ok(bucket)
   }
 
+  /**
+   * Get bucket list of an app
+   * @param appid
+   * @returns
+   */
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get()
-  findAll() {
-    return this.bucketsService.findAll()
+  async findAll(@Param('appid') appid: string) {
+    const data = await this.bucketsService.findAll(appid)
+    return ResponseUtil.ok(data)
   }
 
+  /**
+   * Get a bucket by name
+   * @param appid
+   * @param name
+   * @returns
+   */
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get(':name')
   findOne(@Param('appid') appid: string, @Param('name') name: string) {
-    return this.bucketsService.findOne(appid, name)
+    const data = this.bucketsService.findOne(appid, name)
+    if (null === data) {
+      throw new HttpException('bucket not found', HttpStatus.NOT_FOUND)
+    }
+
+    return ResponseUtil.ok(data)
   }
 
   @Patch(':id')

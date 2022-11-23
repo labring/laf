@@ -8,9 +8,9 @@ import {
   Delete,
   UseGuards,
   Req,
-  Res,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common'
-import { Response } from 'express'
 import { IRequest } from 'src/common/types'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { ResponseUtil } from '../common/response'
@@ -61,15 +61,11 @@ export class ApplicationsController {
 
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get(':appid')
-  async findOne(
-    @Param('appid') appid: string,
-    @Req() req: IRequest,
-    @Res() res: Response,
-  ) {
+  async findOne(@Param('appid') appid: string, @Req() req: IRequest) {
     const user = req.user
     const data = await this.appService.findOneByUser(user.id, appid)
     if (null === data) {
-      return res.status(404).send('Application not found with appid: ' + appid)
+      throw new HttpException('application not found', HttpStatus.NOT_FOUND)
     }
 
     return ResponseUtil.ok(data)
