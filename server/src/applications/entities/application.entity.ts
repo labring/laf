@@ -1,4 +1,7 @@
 import { KubernetesObject, V1ObjectMeta } from '@kubernetes/client-node'
+import { Condition } from '../../core/kubernetes.interface'
+import { IBundleSpec } from './bundle.entity'
+import { IRuntimeSpec } from './runtime.entity'
 
 export class Application {
   static readonly Group = 'application.laf.dev'
@@ -45,7 +48,12 @@ export interface IApplicationSpec {
 }
 
 export interface IApplicationStatus {
-  state?: ApplicationState
+  bundleName: string
+  bundleSpec: IBundleSpec
+  runtimeName: string
+  runtimeSpec: IRuntimeSpec
+  phase: ApplicationState
+  conditions: Condition[]
 }
 
 export interface IApplicationList {

@@ -10,10 +10,11 @@ import {
   Req,
   Res,
 } from '@nestjs/common'
-import { User } from '@prisma/client'
-import { Request, Response } from 'express'
+import { Response } from 'express'
+import { IRequest } from 'src/common/types'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
-import { ResponseUtil } from '../utils/response'
+import { ResponseUtil } from '../common/response'
+import { ApplicationAuthGuard } from './application.auth.guard'
 import { ApplicationsService } from './applications.service'
 import { CreateApplicationDto } from './dto/create-application.dto'
 import { UpdateApplicationDto } from './dto/update-application.dto'
@@ -28,8 +29,8 @@ export class ApplicationsController {
    */
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() dto: CreateApplicationDto, @Req() req: Request) {
-    const user = req.user as User
+  async create(@Body() dto: CreateApplicationDto, @Req() req: IRequest) {
+    const user = req.user
     const error = dto.validate()
     if (error) {
       return ResponseUtil.error(error)
@@ -52,24 +53,25 @@ export class ApplicationsController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll(@Req() req: Request) {
-    const user = req.user as User
+  async findAll(@Req() req: IRequest) {
+    const user = req.user
     const data = this.appService.findAllByUser(user.id)
     return ResponseUtil.ok(data)
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get(':appid')
-  findOne(
+  async findOne(
     @Param('appid') appid: string,
-    @Req() req: Request,
+    @Req() req: IRequest,
     @Res() res: Response,
   ) {
-    const user = req.user as User
-    const data = this.appService.findOne(user.id, appid)
+    const user = req.user
+    const data = await this.appService.findOneByUser(user.id, appid)
     if (null === data) {
       return res.status(404).send('Application not found with appid: ' + appid)
     }
+
     return ResponseUtil.ok(data)
   }
 
