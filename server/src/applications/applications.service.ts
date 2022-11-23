@@ -4,14 +4,12 @@ import {
   Application,
   IApplication,
   IApplicationList,
-  IApplicationSpec,
 } from './entities/application.entity'
 import * as k8s from '@kubernetes/client-node'
 import * as nanoid from 'nanoid'
 import { CreateApplicationDto } from './dto/create-application.dto'
 import { UpdateApplicationDto } from './dto/update-application.dto'
 import { ResourceLabels } from '../constants'
-import { ResponseUtil } from '../utils/response'
 
 @Injectable()
 export class ApplicationsService {
@@ -71,7 +69,7 @@ export class ApplicationsService {
     }
   }
 
-  async findAllByUser(userid: string): Promise<IApplicationList> {
+  async findAll(labelSelector?: string): Promise<IApplicationList> {
     const res = await this.k8sClient.customObjectApi.listClusterCustomObject(
       Application.Group,
       Application.Version,
@@ -80,12 +78,17 @@ export class ApplicationsService {
       undefined,
       undefined,
       undefined,
-      `${ResourceLabels.USER_ID}=${userid}`,
+      labelSelector,
     )
     return res.body as IApplicationList
   }
 
-  async findOne(userid: string, appid: string): Promise<IApplication> {
+  async findAllByUser(userid: string): Promise<IApplicationList> {
+    const apps = await this.findAll(`${ResourceLabels.USER_ID}=${userid}`)
+    return apps
+  }
+
+  async findOne(appid: string): Promise<IApplication> {
     const namespace = appid
     const name = appid
 
@@ -107,6 +110,14 @@ export class ApplicationsService {
       }
       throw err
     }
+  }
+
+  async findOneByUser(userid: string, appid: string): Promise<IApplication> {
+    const app = await this.findOne(appid)
+    if (app?.metadata?.labels?.[ResourceLabels.USER_ID] === userid) {
+      return app
+    }
+    return null
   }
 
   update(id: number, dto: UpdateApplicationDto) {
