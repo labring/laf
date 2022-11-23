@@ -2,9 +2,9 @@
  * cloud functions list sidebar
  ***************************/
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { AiOutlineFilter } from "react-icons/ai";
-import { HamburgerIcon, Search2Icon, SunIcon } from "@chakra-ui/icons";
+import { EditIcon, HamburgerIcon, Search2Icon, SunIcon } from "@chakra-ui/icons";
 import { calc, HStack, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 
@@ -13,7 +13,7 @@ import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
 
-import useFunctionStore from "../../store";
+import useFunctionStore, { TFunction } from "../../store";
 
 import CreateModal from "./CreateModal";
 
@@ -21,6 +21,9 @@ export default function FunctionList() {
   const store = useFunctionStore((store) => store);
 
   const [keywords, setKeywords] = useState("");
+  const createModalRef = useRef<{
+    edit: (item: TFunction) => void;
+  }>();
 
   return (
     <Panel
@@ -29,13 +32,13 @@ export default function FunctionList() {
         <IconWrap key="change_theme" onClick={() => {}}>
           <SunIcon fontSize={12} />
         </IconWrap>,
-        <CreateModal key="create_modal" />,
+        <CreateModal ref={createModalRef} key="create_modal" />,
         <IconWrap key="options" onClick={() => {}}>
           <HamburgerIcon fontSize={12} />
         </IconWrap>,
       ]}
     >
-      <div className="border-b">
+      <div className="border-b border-slate-300">
         <div className="flex items-center m-2 mb-3">
           <InputGroup>
             <InputLeftElement
@@ -84,12 +87,13 @@ export default function FunctionList() {
 
         <SectionList style={{ height: "calc(100vh - 400px)", overflowY: "auto" }}>
           {(store.allFunctionList || [])
-            .filter((item) => item.label.includes(keywords))
+            .filter((item: TFunction) => item?.label.includes(keywords))
             .map((func: any) => {
               return (
                 <SectionList.Item
                   isActive={func._id === store.currentFunction?._id}
                   key={func._id}
+                  className="group"
                   onClick={() => {
                     store.setCurrentFunction(func);
                   }}
@@ -98,7 +102,14 @@ export default function FunctionList() {
                     <FileTypeIcon type={FileType.js} />
                     <span className="ml-2 text-black">{func.label}</span>
                   </div>
-                  {/* <FileStatusIcon status={FileStatus.deleted} /> */}
+                  <div className="hidden group-hover:block">
+                    <EditIcon
+                      fontSize={14}
+                      onClick={() => {
+                        createModalRef.current?.edit(func);
+                      }}
+                    />
+                  </div>
                 </SectionList.Item>
               );
             })}

@@ -42,7 +42,9 @@ export default function FileList() {
                 <Th>文件路径</Th>
                 <Th isNumeric>大小</Th>
                 <Th isNumeric>更新时间</Th>
-                <Th>操作</Th>
+                <Th isNumeric>
+                  <span className="mr-2">操作</span>
+                </Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -59,7 +61,7 @@ export default function FileList() {
                     <Td>{file.path}</Td>
                     <Td isNumeric>19KB</Td>
                     <Td isNumeric>{file.updateTime}</Td>
-                    <Td className="flex">
+                    <Td isNumeric className="flex justify-end">
                       <IconWrap onClick={() => {}}>
                         <DownloadIcon fontSize={12} />
                       </IconWrap>

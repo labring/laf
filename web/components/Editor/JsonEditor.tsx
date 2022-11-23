@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import Editor, { useMonaco } from "@monaco-editor/react";
 
-export default function FunctionEditor(props: { value: string }) {
+export default function JsonEditor(props: { value: string }) {
   const { value } = props;
   const monaco = useMonaco();
 
-  monaco?.editor.defineTheme("lafEditorTheme", {
+  monaco?.editor.defineTheme("lafJsonEditorTheme", {
     base: "vs",
     inherit: true,
     rules: [],
@@ -21,27 +21,37 @@ export default function FunctionEditor(props: { value: string }) {
 
   useEffect(() => {
     setTimeout(() => {
-      monaco?.editor.setTheme("lafEditorTheme");
+      monaco?.editor.setTheme("lafJsonEditorTheme");
     }, 0);
   }, [monaco]);
 
   return (
     <Editor
+      language="json"
+      value={JSON.stringify(value, null, 2)}
+      width={"600"}
+      height="400px"
       options={{
+        lineNumber: false,
+        guides: {
+          indentation: false,
+        },
         minimap: {
           enabled: false,
         },
+        lineHighlightBackground: "red",
         scrollbar: {
-          verticalScrollbarSize: 6,
+          verticalScrollbarSize: 0,
+          alwaysConsumeMouseWheel: false,
         },
-        lineNumbersMinChars: 4,
-        fontSize: "14px",
-        // fontFamily: "monospace",
+        lineNumbers: "off",
+        lineNumbersMinChars: 0,
+        fontSize: 14,
         scrollBeyondLastLine: false,
+        folding: false,
+        overviewRulerBorder: false,
+        tabSize: 2, // tab 缩进长度
       }}
-      height="100%"
-      defaultLanguage="javascript"
-      value={value}
     />
   );
 }

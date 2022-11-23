@@ -22,8 +22,8 @@ export default function SiderBar(props: { pageId: string; setPageId: (pageId: st
   ];
   return (
     <div
-      style={{ width: SiderBarWidth, borderRight: "1px solid #eee" }}
-      className="absolute top-0 bottom-0"
+      style={{ width: SiderBarWidth }}
+      className="absolute top-0 bottom-0 border-r border-r-slate-300"
     >
       {ICONS.map((item, index) => {
         return (

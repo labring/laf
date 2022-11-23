@@ -1,23 +1,13 @@
 import React from "react";
-import {
-  Button,
-  HStack,
-  Input,
-  Select,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-} from "@chakra-ui/react";
+import { Button, Input, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import Editor from "@monaco-editor/react";
 
 import PanelHeader from "@/components/Panel/Header";
 
 export default function DebugPanel() {
   return (
-    <div className="flex h-full ">
-      <Tabs size={"sm"} width="100%">
+    <div className="flex h-full">
+      <Tabs width="100%">
         <TabList>
           <Tab>接口调试</Tab>
           <Tab>历史请求</Tab>
@@ -27,7 +17,7 @@ export default function DebugPanel() {
           <TabPanel padding={0} h="full">
             <div className="flex flex-col h-full">
               <div className="flex-1 border-r-slate-300 ">
-                <div className="flex py-4 px-2">
+                <div className="flex py-6 px-2">
                   <Button size="xs" className="mr-2">
                     GET
                   </Button>
@@ -39,10 +29,11 @@ export default function DebugPanel() {
                   <Button
                     style={{ borderRadius: 2 }}
                     size="xs"
+                    px="4"
                     className="ml-2"
-                    colorScheme="primary"
+                    colorScheme="blue"
                   >
-                    &nbsp;&nbsp;发送&nbsp;&nbsp;
+                    发送
                   </Button>
                 </div>
                 <div className=" relative">

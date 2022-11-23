@@ -41,16 +41,15 @@ export default function LogsPage() {
           <HStack spacing={2}>
             <InputGroup width={300}>
               <InputLeftElement
-                height={"8"}
-                width="12"
+                height={"10"}
                 pointerEvents="none"
-                children={<Search2Icon bgSize="sm" color="gray.300" />}
+                children={<Search2Icon color="gray.300" />}
               />
               <Input
-                size="sm"
                 borderRadius="4"
                 placeholder="Request ID"
                 name="keywords"
+                bg="white"
                 onChange={(e) => {
                   setSearchParams({
                     ...searchParams,
@@ -62,9 +61,9 @@ export default function LogsPage() {
 
             <Input
               width={200}
-              size="sm"
               placeholder="函数名"
               name="functionName"
+              bg="white"
               onChange={(e) => {
                 setSearchParams({
                   ...searchParams,
@@ -74,9 +73,9 @@ export default function LogsPage() {
             />
             <Input
               width={200}
-              size="sm"
               placeholder="函数 ID"
               name="functionId"
+              bg="white"
               onChange={(e) => {
                 setSearchParams({
                   ...searchParams,
@@ -84,13 +83,7 @@ export default function LogsPage() {
                 });
               }}
             />
-            <Button
-              px={9}
-              type={"submit"}
-              size="sm"
-              colorScheme={"primary"}
-              isLoading={logListQuery.isLoading}
-            >
+            <Button px={9} type={"submit"} colorScheme={"green"} isLoading={logListQuery.isLoading}>
               搜索
             </Button>
           </HStack>
@@ -121,11 +114,13 @@ export default function LogsPage() {
                 {logListQuery.data?.data?.list.map((item: any, index: number) => {
                   return (
                     <Tr key={item._id} _hover={{ bgColor: "#efefef" }}>
-                      <Td>{formatDate(item.created_at)}</Td>
+                      <Td className=" text-black-600 ">{formatDate(item.created_at)}</Td>
                       <Td>{item.requestId}</Td>
                       <Td>{item.func_name}</Td>
                       <Td>{item.func_id}</Td>
-                      <Td isNumeric>{item.time_usage} ms</Td>
+                      <Td isNumeric>
+                        <span className=" text-green-700">{item.time_usage} ms</span>
+                      </Td>
                       <Td isNumeric>
                         <Button variant={"link"} size="xs" colorScheme={"blue"}>
                           查看

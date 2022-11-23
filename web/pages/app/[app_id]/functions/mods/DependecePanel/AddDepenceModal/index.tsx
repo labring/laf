@@ -25,6 +25,7 @@ import { TPackage } from "../../../store";
 
 const AddDepenceModal = forwardRef((_, ref) => {
   const [item, setItem] = useState<TPackage | any>();
+  const [isEdit, setIsEdit] = useState(false);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -35,6 +36,7 @@ const AddDepenceModal = forwardRef((_, ref) => {
   useImperativeHandle(ref, () => ({
     edit: (item: TPackage) => {
       setItem(item);
+      setIsEdit(true);
       onOpen();
     },
   }));
@@ -68,6 +70,7 @@ const AddDepenceModal = forwardRef((_, ref) => {
             name: "",
             version: "latest",
           });
+          setIsEdit(false);
           onOpen();
         }}
       >
@@ -84,6 +87,7 @@ const AddDepenceModal = forwardRef((_, ref) => {
               <FormLabel>{t`DependenceName`}</FormLabel>
               <Input
                 value={item?.name}
+                disabled={isEdit}
                 onChange={(e) =>
                   setItem({
                     ...item,

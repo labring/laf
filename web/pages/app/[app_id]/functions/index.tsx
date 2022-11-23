@@ -36,7 +36,10 @@ function FunctionPage() {
 
   return (
     <>
-      <div className="" style={{ width: 300, borderRight: "1px solid #eee" }}>
+      <div
+        className="border-r bg-slate-50 border-r-slate-300"
+        style={{ minWidth: 300, maxWidth: 300 }}
+      >
         <FunctionPanel />
         <DependecyPanel />
       </div>

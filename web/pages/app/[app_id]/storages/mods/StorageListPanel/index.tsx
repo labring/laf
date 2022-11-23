@@ -15,7 +15,7 @@ export default function StorageListPanel() {
   const store = useStorageStore((store) => store);
 
   return (
-    <div style={{ width: 300, height: "100%", borderRight: "1px solid #eee" }}>
+    <div className="border-r border-r-slate-300 h-full" style={{ minWidth: 300, maxWidth: 300 }}>
       <Panel
         title="云存储"
         actions={[

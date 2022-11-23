@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { AddIcon } from "@chakra-ui/icons";
 import {
   Button,
@@ -22,36 +22,53 @@ import { Field, Formik } from "formik";
 
 import IconWrap from "@/components/IconWrap";
 
-function CreateModal() {
+import { TFunction } from "../../../store";
+
+const CreateModal = forwardRef((props, ref) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const formRef = React.useRef(null);
 
+  const [currentFunc, setCurrentFunc] = useState<TFunction | any>();
+  const [isEdit, setIsEdit] = useState(false);
+
   const initialRef = React.useRef(null);
+
+  useImperativeHandle(ref, () => {
+    return {
+      edit: (item: TFunction) => {
+        setCurrentFunc(item);
+        setIsEdit(true);
+        onOpen();
+      },
+    };
+  });
 
   return (
     <>
-      <IconWrap size={20} onClick={onOpen}>
+      <IconWrap
+        size={20}
+        onClick={() => {
+          setCurrentFunc({});
+          setIsEdit(false);
+          onOpen();
+        }}
+      >
         <AddIcon fontSize={10} />
       </IconWrap>
 
       <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} size="2xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Create your account</ModalHeader>
+          <ModalHeader>添加函数</ModalHeader>
           <ModalCloseButton />
-          <Formik
-            initialValues={{
-              name: "",
-            }}
-            onSubmit={(values) => {}}
-          >
+          <Formik initialValues={currentFunc} onSubmit={(values) => {}}>
             {({ handleSubmit, errors, touched }) => (
               <form ref={formRef} onSubmit={handleSubmit}>
                 <ModalBody pb={6}>
                   <VStack spacing={6} align="flex-start">
                     <FormControl>
-                      <FormLabel htmlFor="name">显示名称</FormLabel>
-                      <Field as={Input} id="name" name="name" variant="filled" />
+                      <FormLabel htmlFor="name">函数名称</FormLabel>
+                      <Field as={Input} id="name" name="name" variant="filled" readOnly={isEdit} />
                     </FormControl>
 
                     <FormControl>
@@ -60,12 +77,12 @@ function CreateModal() {
                     </FormControl>
 
                     <FormControl>
-                      <FormLabel htmlFor="tag">标签分类</FormLabel>
+                      <FormLabel htmlFor="tag">标签</FormLabel>
                       <Field as={Input} id="tag" name="tag" variant="filled" />
                     </FormControl>
 
                     <FormControl>
-                      <FormLabel htmlFor="enabled">启用</FormLabel>
+                      <FormLabel htmlFor="enabled">是否启用</FormLabel>
                       <Field as={Switch} id="enabled" name="enabled" variant="filled" />
                     </FormControl>
 
@@ -89,6 +106,8 @@ function CreateModal() {
       </Modal>
     </>
   );
-}
+});
+
+CreateModal.displayName = "CreateModal";
 
 export default CreateModal;

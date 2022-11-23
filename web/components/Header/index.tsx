@@ -29,7 +29,7 @@ export default function Header(props: { size: "sm" | "lg" }) {
         >
           <GiDragonfly color="white" />
         </div>
-        <span className="mr-4">Allecne</span>
+        <span className="mr-4">Allence</span>
         <Tag size="sm" borderRadius="full" variant="solid" colorScheme="green">
           <TagLabel>Free</TagLabel>
         </Tag>

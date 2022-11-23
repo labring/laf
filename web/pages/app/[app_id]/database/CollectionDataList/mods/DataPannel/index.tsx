@@ -1,31 +1,13 @@
-import { useEffect, useState } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { AddIcon } from "@chakra-ui/icons";
 import { Button, Input, InputGroup, InputLeftAddon, InputRightAddon } from "@chakra-ui/react";
-import Editor, { useMonaco } from "@monaco-editor/react";
 import clsx from "clsx";
+
+import JsonEditor from "@/components/Editor/JsonEditor";
 
 import useDBMStore from "../../../store";
 export default function DataPannel() {
   const { entryList, updateCurrentData, currentData } = useDBMStore((store) => store);
-  const [addData, setAddData] = useState(false);
-
-  const monaco = useMonaco();
-
-  monaco?.editor.defineTheme("myTheme", {
-    base: "vs",
-    inherit: true,
-    rules: [{ background: "0055ee" }],
-    colors: {
-      "editorLineNumber.foreground": "#999",
-      "editor.lineHighlightBackground": "#fff",
-    },
-  });
-
-  useEffect(() => {
-    monaco?.editor.setTheme("myTheme");
-    return () => {};
-  }, [monaco]);
 
   return (
     <div>
@@ -53,24 +35,30 @@ export default function DataPannel() {
             return (
               <div
                 key={item._id}
-                className={clsx("border  mt-4 p-2 rounded-md relative group hover:border-black", {
-                  "border-black": currentData?._id === item._id,
-                })}
+                className={clsx(
+                  "border mt-4 p-2 rounded-md relative group hover:border-green-600",
+                  {
+                    "border-green-600": currentData?._id === item._id,
+                  },
+                )}
                 onClick={() => {
                   updateCurrentData(item);
                 }}
               >
-                <div className=" absolute right-2 top-0 hidden group-hover:block z-50">
+                <div className=" absolute right-2 top-2 hidden group-hover:block z-50 ">
                   <Button
-                    size="sx"
-                    className="mr-2"
+                    size="xs"
+                    px="2"
+                    className="mr-2 w-16"
                     onClick={() => {
                       updateCurrentData(item);
                     }}
                   >
-                    edit
+                    Edit
                   </Button>
-                  <Button size="sx">delete</Button>
+                  <Button size="xs" px="2" className="w-16">
+                    Delete
+                  </Button>
                 </div>
                 <SyntaxHighlighter language="json" customStyle={{ background: "#fff" }}>
                   {JSON.stringify(item, null, 2)}
@@ -81,39 +69,14 @@ export default function DataPannel() {
         </div>
 
         {typeof currentData !== "undefined" ? (
-          <div className="flex-1 w-2/5 border ml-4 mt-4">
-            <div className="flex justify-end p-2 border-b mb-4">
+          <div className="flex-1 w-2/5 border ml-4 mt-4 rounded">
+            <div className="flex justify-between p-2 border-b mb-4">
+              <span>编辑</span>
               <Button size={"xs"} borderRadius="2" px="4" onClick={() => {}}>
                 保存
               </Button>
             </div>
-            <Editor
-              theme="my-theme"
-              language="json"
-              value={JSON.stringify(currentData, null, 2)}
-              width={"600"}
-              height="400px"
-              options={{
-                lineNumber: false,
-                guides: {
-                  indentation: false,
-                },
-                minimap: {
-                  enabled: false,
-                },
-                lineHighlightBackground: "red",
-                scrollbar: {
-                  verticalScrollbarSize: 0,
-                  alwaysConsumeMouseWheel: false,
-                },
-                lineNumbers: "off",
-                lineNumbersMinChars: 0,
-                scrollBeyondLastLine: false,
-                folding: false,
-                overviewRulerBorder: false,
-                tabSize: 2, // tab 缩进长度
-              }}
-            />
+            <JsonEditor value={currentData} />
           </div>
         ) : null}
       </div>

@@ -8,15 +8,17 @@ export default function IndexPannel() {
       <div className="flex mt-2">
         <AddIndexMoale />
       </div>
-      <div className="border-solid border-2 border-slate-200 mt-4 p-1">
+      <div className="rounded border border-slate-200 mt-4 ">
         <TableContainer>
           <Table variant="striped" colorScheme="gray">
             <Thead>
               <Tr>
                 <Th>索引名称</Th>
-                <Th>所以属性</Th>
-                <Th> 索引字段</Th>
-                <Th isNumeric> 操作</Th>
+                <Th>索引属性</Th>
+                <Th>索引字段</Th>
+                <Th isNumeric>
+                  <span className="mr-3">操作</span>
+                </Th>
               </Tr>
             </Thead>
             <Tbody>
