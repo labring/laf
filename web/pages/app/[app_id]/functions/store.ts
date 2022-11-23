@@ -25,7 +25,7 @@ type TFunction =
     }
   | undefined;
 
-type TPackage =
+export type TPackage =
   | {
       name: string;
       version: string;

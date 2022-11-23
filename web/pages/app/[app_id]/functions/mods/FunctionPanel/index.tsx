@@ -96,7 +96,7 @@ export default function FunctionList() {
                 >
                   <div>
                     <FileTypeIcon type={FileType.js} />
-                    <span className="ml-2">{func.label}</span>
+                    <span className="ml-2 text-black">{func.label}</span>
                   </div>
                   {/* <FileStatusIcon status={FileStatus.deleted} /> */}
                 </SectionList.Item>

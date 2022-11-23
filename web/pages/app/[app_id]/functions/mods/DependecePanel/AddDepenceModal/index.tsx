@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { AddIcon } from "@chakra-ui/icons";
 import {
   Button,
@@ -21,23 +21,33 @@ import { useMutation } from "@tanstack/react-query";
 import IconWrap from "@/components/IconWrap";
 import request from "@/utils/request";
 
-function AddDepenceModal() {
+import { TPackage } from "../../../store";
+
+const AddDepenceModal = forwardRef((_, ref) => {
+  const [item, setItem] = useState<TPackage | any>();
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialRef = React.useRef(null);
 
-  const [name, setName] = useState("");
-  const [version, setVersion] = useState("latest");
-
   const toast = useToast();
+
+  useImperativeHandle(ref, () => ({
+    edit: (item: TPackage) => {
+      setItem(item);
+      onOpen();
+    },
+  }));
 
   const mutation = useMutation(
     (params: { name: string; version: string }) => request.post("/api/packages", params),
     {
       onSuccess: () => {
         onClose();
-        setName("");
-        setVersion("latest");
+        setItem({
+          name: "",
+          version: "latest",
+        });
         setTimeout(() => {
           toast({
             position: "top",
@@ -52,7 +62,15 @@ function AddDepenceModal() {
 
   return (
     <>
-      <IconWrap onClick={onOpen}>
+      <IconWrap
+        onClick={() => {
+          setItem({
+            name: "",
+            version: "latest",
+          });
+          onOpen();
+        }}
+      >
         <AddIcon fontSize={10} />
       </IconWrap>
 
@@ -65,8 +83,13 @@ function AddDepenceModal() {
             <FormControl isRequired>
               <FormLabel>{t`DependenceName`}</FormLabel>
               <Input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={item?.name}
+                onChange={(e) =>
+                  setItem({
+                    ...item,
+                    name: e.target.value,
+                  })
+                }
                 ref={initialRef}
                 placeholder={t`DependenceName`}
               />
@@ -75,8 +98,13 @@ function AddDepenceModal() {
             <FormControl mt={4}>
               <FormLabel>{t`DependenceVersion`}</FormLabel>
               <Input
-                value={version}
-                onChange={(e) => setVersion(e.target.value)}
+                value={item?.version}
+                onChange={(e) =>
+                  setItem({
+                    ...item,
+                    version: e.target.value,
+                  })
+                }
                 placeholder={t`DependenceVersion`}
               />
             </FormControl>
@@ -88,10 +116,7 @@ function AddDepenceModal() {
               isLoading={mutation.isLoading}
               mr={3}
               onClick={() => {
-                mutation.mutate({
-                  name,
-                  version,
-                });
+                mutation.mutate(item);
               }}
             >
               {t`Confirm`}
@@ -102,6 +127,8 @@ function AddDepenceModal() {
       </Modal>
     </>
   );
-}
+});
+
+AddDepenceModal.displayName = "AddDepenceModal";
 
 export default AddDepenceModal;
