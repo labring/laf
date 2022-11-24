@@ -12,15 +12,18 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
 import { ApplicationAuthGuard } from 'src/applications/application.auth.guard'
 import { IRequest } from 'src/common/types'
 import { ApplicationsService } from '../applications/applications.service'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
-import { ResponseUtil } from '../common/response'
+import { ApiResponseUtil, ResponseUtil } from '../common/response'
 import { BucketsService } from './buckets.service'
 import { CreateBucketDto } from './dto/create-bucket.dto'
 import { UpdateBucketDto } from './dto/update-bucket.dto'
+import { Bucket, BucketList } from './entities/bucket.entity'
 
+@ApiTags('Buckets')
 @Controller('apps/:appid/buckets')
 export class BucketsController {
   logger = new Logger(BucketsController.name)
@@ -29,6 +32,7 @@ export class BucketsController {
     private readonly appService: ApplicationsService,
   ) {}
 
+  @ApiResponseUtil(Bucket)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post()
   async create(@Body() dto: CreateBucketDto, @Req() req: IRequest) {
@@ -59,6 +63,7 @@ export class BucketsController {
    * @param appid
    * @returns
    */
+  @ApiResponseUtil(BucketList)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get()
   async findAll(@Param('appid') appid: string) {
@@ -72,6 +77,7 @@ export class BucketsController {
    * @param name
    * @returns
    */
+  @ApiResponseUtil(Bucket)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get(':name')
   findOne(@Param('appid') appid: string, @Param('name') name: string) {

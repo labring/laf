@@ -41,6 +41,10 @@ export class ServerConfig {
   static get CASDOOR_ORG_NAME() {
     return process.env.CASDOOR_ORG_NAME
   }
+
+  static get SYSTEM_NAMESPACE() {
+    return process.env.SYSTEM_NAMESPACE || 'laf-system'
+  }
 }
 
 export class ResourceLabels {

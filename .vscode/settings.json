@@ -70,6 +70,7 @@
     "Referer",
     "rolebinding",
     "runc",
+    "runtimes",
     "runtimev",
     "sealctl",
     "sealos",

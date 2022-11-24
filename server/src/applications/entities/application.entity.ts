@@ -1,29 +1,8 @@
-import { KubernetesObject, V1ObjectMeta } from '@kubernetes/client-node'
-import { Condition } from '../../core/kubernetes.interface'
-import { IBundleSpec } from './bundle.entity'
-import { IRuntimeSpec } from './runtime.entity'
-
-export class Application {
-  static readonly Group = 'application.laf.dev'
-  static readonly Version = 'v1'
-  static readonly PluralName = 'applications'
-  static readonly Kind = 'Application'
-  static get GroupVersion() {
-    return `${Application.Group}/${Application.Version}`
-  }
-
-  static create(name: string, namespace: string, spec?: IApplicationSpec) {
-    const data: IApplication = {
-      apiVersion: Application.GroupVersion,
-      kind: Application.Kind,
-      metadata: new V1ObjectMeta(),
-      spec: spec,
-    }
-    data.metadata.name = name
-    data.metadata.namespace = namespace
-    return data
-  }
-}
+import { KubernetesObject } from '@kubernetes/client-node'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { Condition, ObjectMeta } from '../../core/kubernetes.interface'
+import { BundleSpec } from './bundle.entity'
+import { RuntimeSpec } from './runtime.entity'
 
 export enum ApplicationState {
   ApplicationStateInitializing = 'Initializing',
@@ -33,30 +12,101 @@ export enum ApplicationState {
   ApplicationStateStopping = 'Stopping',
   ApplicationStateStopped = 'Stopped',
 }
-
-export interface IApplication extends KubernetesObject {
-  spec: IApplicationSpec
-  status?: IApplicationStatus
-}
-
-export interface IApplicationSpec {
+export class ApplicationSpec {
+  @ApiProperty()
   appid: string
+
+  @ApiProperty()
   state: ApplicationState
+
+  @ApiProperty()
   region: string
+
+  @ApiProperty()
   bundleName: string
+
+  @ApiProperty()
   runtimeName: string
+
+  constructor({
+    appid = '',
+    state = ApplicationState.ApplicationStateInitializing,
+    region = '',
+    bundleName = '',
+    runtimeName = '',
+  } = {}) {
+    this.appid = appid
+    this.state = state
+    this.region = region
+    this.bundleName = bundleName
+    this.runtimeName = runtimeName
+  }
 }
 
-export interface IApplicationStatus {
+export class ApplicationStatus {
+  @ApiPropertyOptional()
   bundleName: string
-  bundleSpec: IBundleSpec
+
+  @ApiPropertyOptional()
+  bundleSpec: BundleSpec
+
+  @ApiPropertyOptional()
   runtimeName: string
-  runtimeSpec: IRuntimeSpec
+
+  @ApiPropertyOptional()
+  runtimeSpec: RuntimeSpec
+
+  @ApiPropertyOptional({
+    enum: ApplicationState,
+  })
   phase: ApplicationState
+
+  @ApiPropertyOptional({
+    type: [Condition],
+  })
   conditions: Condition[]
 }
 
-export interface IApplicationList {
+export class Application implements KubernetesObject {
+  @ApiProperty()
   apiVersion: string
-  items: IApplication[]
+
+  @ApiProperty()
+  kind: string
+
+  @ApiProperty()
+  metadata: ObjectMeta
+
+  @ApiProperty()
+  spec: ApplicationSpec
+
+  @ApiPropertyOptional()
+  status?: ApplicationStatus
+
+  static readonly Group = 'application.laf.dev'
+  static readonly Version = 'v1'
+  static readonly PluralName = 'applications'
+  static readonly Kind = 'Application'
+  static get GroupVersion() {
+    return `${this.Group}/${this.Version}`
+  }
+
+  constructor(name: string, namespace: string) {
+    this.apiVersion = Application.GroupVersion
+    this.kind = Application.Kind
+    this.metadata = {
+      name,
+      namespace,
+    }
+    this.spec = new ApplicationSpec()
+  }
+}
+export class ApplicationList {
+  @ApiProperty()
+  apiVersion: string
+
+  @ApiProperty({
+    type: [Application],
+  })
+  items: Application[]
 }
