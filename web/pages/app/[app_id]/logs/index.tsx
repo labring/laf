@@ -30,7 +30,7 @@ export default function LogsPage() {
   });
 
   return (
-    <div className="px-4 flex-1 bg-slate-200 flex flex-col">
+    <div className="px-4 pb-4 flex-1 bg-slate-200 flex flex-col h-full ">
       <form
         onSubmit={(event) => {
           event?.preventDefault();
@@ -90,9 +90,9 @@ export default function LogsPage() {
           <Pagination />
         </div>
       </form>
-      <div className="bg-white px-4 py-1  rounded-md h-full overflow-y-auto ">
+      <div className="bg-white px-4 py-1 rounded-md overflow-y-auto">
         <div className="mt-4 ">
-          <TableContainer>
+          <TableContainer overflowX="unset" overflowY="unset">
             <Table variant="simple">
               <Thead>
                 <Tr>

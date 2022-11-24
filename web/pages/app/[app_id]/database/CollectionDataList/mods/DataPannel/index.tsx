@@ -31,8 +31,8 @@ export default function DataPannel() {
         </Button>
       </div>
 
-      <div className="absolute top-20 bottom-0 right-4 flex left-4">
-        <div className="overflow-y-auto flex-1">
+      <div className="absolute top-20 bottom-0 right-2 flex left-4">
+        <div className="overflow-y-auto flex-1 pr-2">
           {entryList?.map((item, index: number) => {
             return (
               <div
@@ -68,13 +68,15 @@ export default function DataPannel() {
           })}
         </div>
         <div
-          className="flex-1  "
+          className={clsx("flex-1", {
+            "mr-2": typeof currentData !== "undefined",
+          })}
           style={{
-            maxWidth: typeof currentData !== "undefined" ? "100%" : "0",
+            maxWidth: typeof currentData !== "undefined" ? "50%" : "0",
           }}
         >
           <div
-            className="border flex-col flex ml-4 rounded"
+            className="border flex-col ml-2 flex rounded"
             style={{
               height: "-webkit-fill-available",
             }}

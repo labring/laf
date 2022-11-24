@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Editor, { useMonaco } from "@monaco-editor/react";
 
-export default function JsonEditor(props: { value: string }) {
+export default function JsonEditor(props: { value: string | object }) {
   const { value } = props;
   const monaco = useMonaco();
 
@@ -30,6 +30,7 @@ export default function JsonEditor(props: { value: string }) {
       language="json"
       value={JSON.stringify(value, null, 2)}
       width={"600"}
+      height="100%"
       options={{
         lineNumber: false,
         guides: {
