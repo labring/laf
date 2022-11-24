@@ -46,13 +46,11 @@ export class ApplicationsService {
 
   async create(userid: string, appid: string, dto: CreateApplicationDto) {
     // create app resources
-    const app = new Application(dto.name, appid)
-    app.metadata.name = dto.name
-    app.metadata.namespace = appid
-    app.metadata.labels = {
-      [ResourceLabels.APP_ID]: appid,
-      [ResourceLabels.USER_ID]: userid,
-    }
+    const namespace = GetApplicationNamespaceById(appid)
+    const app = new Application(dto.name, namespace)
+    app.setAppid(appid)
+    app.setUserId(userid)
+
     app.spec = new ApplicationSpec({
       appid,
       state: dto.state,
@@ -60,8 +58,6 @@ export class ApplicationsService {
       bundleName: dto.bundleName,
       runtimeName: dto.runtimeName,
     })
-
-    console.log(app)
 
     try {
       const res = await this.k8sClient.objectApi.create(app)
