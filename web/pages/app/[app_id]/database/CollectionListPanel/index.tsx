@@ -8,13 +8,14 @@ import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
 
 import CreateModal from "../../functions/mods/FunctionPanel/CreateModal";
+import LeftPanel from "../../mods/LeftPanel";
 import useDBMStore from "../store";
 
 export default function CollectionListPanel() {
   const store = useDBMStore((store) => store);
 
   return (
-    <div className="border-r border-gray-300 h-full" style={{ minWidth: 300, maxWidth: 300 }}>
+    <LeftPanel>
       <Panel title="集合列表" actions={[<CreateModal key={"create_database"} />]}>
         <div className="flex items-center m-2 mr-0 mb-3">
           <InputGroup>
@@ -52,6 +53,6 @@ export default function CollectionListPanel() {
           })}
         </SectionList>
       </Panel>
-    </div>
+    </LeftPanel>
   );
 }

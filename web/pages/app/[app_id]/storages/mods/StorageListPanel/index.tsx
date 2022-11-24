@@ -1,5 +1,6 @@
 import React from "react";
 import { HamburgerIcon } from "@chakra-ui/icons";
+import LeftPanel from "pages/app/[app_id]/mods/LeftPanel";
 
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
@@ -15,7 +16,7 @@ export default function StorageListPanel() {
   const store = useStorageStore((store) => store);
 
   return (
-    <div className="border-r border-r-slate-300 h-full" style={{ minWidth: 300, maxWidth: 300 }}>
+    <LeftPanel>
       <Panel
         title="云存储"
         actions={[
@@ -46,6 +47,6 @@ export default function StorageListPanel() {
           })}
         </SectionList>
       </Panel>
-    </div>
+    </LeftPanel>
   );
 }

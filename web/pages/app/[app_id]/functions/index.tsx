@@ -11,6 +11,9 @@ import FileStatusIcon, { FileStatus } from "@/components/FileStatusIcon";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import PanelHeader from "@/components/Panel/Header";
 
+import LeftPanel from "../mods/LeftPanel";
+import RightPanel from "../mods/RightPanel";
+
 import DebugPanel from "./mods/DebugPannel";
 import DependecyPanel from "./mods/DependecePanel";
 import FunctionPanel from "./mods/FunctionPanel";
@@ -36,14 +39,11 @@ function FunctionPage() {
 
   return (
     <>
-      <div
-        className="border-r bg-slate-50 border-r-slate-300"
-        style={{ minWidth: 300, maxWidth: 300 }}
-      >
+      <LeftPanel>
         <FunctionPanel />
         <DependecyPanel />
-      </div>
-      <div className="flex flex-1 flex-col ">
+      </LeftPanel>
+      <RightPanel>
         <div className="border-b" style={{ height: 36 }}>
           <PanelHeader>
             <div className="flex items-center">
@@ -75,15 +75,15 @@ function FunctionPage() {
             </HStack>
           </PanelHeader>
         </div>
-        <div className="flex flex-row h-full">
-          <div className="flex-1 border-r border-r-slate-200">
+        <div className="flex flex-row h-full w-full">
+          <div className="flex-1 border-r border-r-slate-200 overflow-hidden ">
             <FunctionEditor value={currentFunction?.code || ""} />
           </div>
           <div style={{ width: 550 }}>
             <DebugPanel />
           </div>
         </div>
-      </div>
+      </RightPanel>
     </>
   );
 }

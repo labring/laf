@@ -1,6 +1,7 @@
 import React from "react";
 import { DeleteIcon, DownloadIcon } from "@chakra-ui/icons";
 import { HStack, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import RightPanel from "pages/app/[app_id]/mods/RightPanel";
 
 import IconWrap from "@/components/IconWrap";
 import PanelHeader from "@/components/Panel/Header";
@@ -20,7 +21,7 @@ export default function FileList() {
   };
 
   return (
-    <div className="flex-1">
+    <RightPanel>
       <PanelHeader>
         <HStack spacing={2}>
           <FileUpload />
@@ -76,6 +77,6 @@ export default function FileList() {
           </Table>
         </TableContainer>
       </div>
-    </div>
+    </RightPanel>
   );
 }

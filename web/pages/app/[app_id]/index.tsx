@@ -14,7 +14,7 @@ function AppDetail() {
   return (
     <>
       <SiderBar pageId={pageId} setPageId={(pageId: string) => setPageId(pageId)} />
-      <div className="flex h-full " style={{ marginLeft: SiderBarWidth }}>
+      <div className="h-full" style={{ marginLeft: SiderBarWidth }}>
         {pageId === Pages.function ? <FunctionPage key={Pages.function} /> : null}
         {pageId === Pages.database ? <DatabasePage key={Pages.database} /> : null}
         {pageId === Pages.storage ? <StoragePage key={Pages.storage} /> : null}

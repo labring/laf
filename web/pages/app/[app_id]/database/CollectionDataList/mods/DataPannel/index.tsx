@@ -9,8 +9,10 @@ import useDBMStore from "../../../store";
 export default function DataPannel() {
   const { entryList, updateCurrentData, currentData } = useDBMStore((store) => store);
 
+  console.log(123, typeof currentData !== "undefined");
+
   return (
-    <div>
+    <>
       <div className="flex mt-2 justify-between">
         <InputGroup size="sm" className="h-9" style={{ width: 600 }}>
           <InputLeftAddon children="query" />
@@ -18,7 +20,7 @@ export default function DataPannel() {
           <InputRightAddon children="查询" />
         </InputGroup>
         <Button
-          colorScheme={"primary"}
+          colorScheme={"blue"}
           size="sm"
           onClick={() => {
             updateCurrentData({});
@@ -29,18 +31,16 @@ export default function DataPannel() {
         </Button>
       </div>
 
-      <div className="flex">
-        <div className="flex-1 w-3/5">
-          {entryList?.map((item) => {
+      <div className="absolute top-20 bottom-0 right-4 flex left-4">
+        <div className="overflow-y-auto flex-1">
+          {entryList?.map((item, index: number) => {
             return (
               <div
                 key={item._id}
-                className={clsx(
-                  "border mt-4 p-2 rounded-md relative group hover:border-green-600",
-                  {
-                    "border-green-600": currentData?._id === item._id,
-                  },
-                )}
+                className={clsx("border p-2 rounded-md relative group hover:border-green-600", {
+                  "border-green-600 shadow": currentData?._id === item._id,
+                  "mb-6": index !== entryList.length - 1,
+                })}
                 onClick={() => {
                   updateCurrentData(item);
                 }}
@@ -67,19 +67,30 @@ export default function DataPannel() {
             );
           })}
         </div>
-
-        {typeof currentData !== "undefined" ? (
-          <div className="flex-1 w-2/5 border ml-4 mt-4 rounded">
+        <div
+          className="flex-1  "
+          style={{
+            maxWidth: typeof currentData !== "undefined" ? "100%" : "0",
+          }}
+        >
+          <div
+            className="border flex-col flex ml-4 rounded"
+            style={{
+              height: "-webkit-fill-available",
+            }}
+          >
             <div className="flex justify-between p-2 border-b mb-4">
               <span>编辑</span>
               <Button size={"xs"} borderRadius="2" px="4" onClick={() => {}}>
                 保存
               </Button>
             </div>
-            <JsonEditor value={currentData} />
+            <div className=" flex-1" style={{}}>
+              <JsonEditor value={currentData} />
+            </div>
           </div>
-        ) : null}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

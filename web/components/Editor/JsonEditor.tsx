@@ -30,7 +30,6 @@ export default function JsonEditor(props: { value: string }) {
       language="json"
       value={JSON.stringify(value, null, 2)}
       width={"600"}
-      height="400px"
       options={{
         lineNumber: false,
         guides: {

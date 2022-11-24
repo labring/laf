@@ -28,6 +28,7 @@ export default function FunctionEditor(props: { value: string }) {
   return (
     <Editor
       options={{
+        automaticLayout: true,
         minimap: {
           enabled: false,
         },
