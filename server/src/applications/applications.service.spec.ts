@@ -92,7 +92,7 @@ describe.skip('AppService find app by appid', () => {
 
   it('should find app by appid', async () => {
     appid = '1i43zq'
-    const res = await service.findOne(userid, appid)
+    const res = await service.findOne(appid)
     expect(res).not.toBeNull()
     expect(res.kind).toBe('Application')
     expect(res.metadata.name).toBe(appid)

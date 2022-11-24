@@ -2,15 +2,15 @@ import { Injectable, Logger } from '@nestjs/common'
 import { KubernetesService } from '../core/kubernetes.service'
 import {
   Application,
-  IApplication,
-  IApplicationList,
+  ApplicationList,
+  ApplicationSpec,
 } from './entities/application.entity'
 import * as k8s from '@kubernetes/client-node'
 import * as nanoid from 'nanoid'
 import { CreateApplicationDto } from './dto/create-application.dto'
 import { UpdateApplicationDto } from './dto/update-application.dto'
 import { ResourceLabels } from '../constants'
-import { GetApplicationNamespaceById } from 'src/common/getter'
+import { GetApplicationNamespaceById } from '../common/getter'
 
 @Injectable()
 export class ApplicationsService {
@@ -46,31 +46,33 @@ export class ApplicationsService {
 
   async create(userid: string, appid: string, dto: CreateApplicationDto) {
     // create app resources
-    const app = Application.create(dto.name, appid)
+    const app = new Application(dto.name, appid)
     app.metadata.name = dto.name
     app.metadata.namespace = appid
     app.metadata.labels = {
       [ResourceLabels.APP_ID]: appid,
       [ResourceLabels.USER_ID]: userid,
     }
-    app.spec = {
+    app.spec = new ApplicationSpec({
       appid,
       state: dto.state,
       region: dto.region,
       bundleName: dto.bundleName,
       runtimeName: dto.runtimeName,
-    }
+    })
+
+    console.log(app)
 
     try {
       const res = await this.k8sClient.objectApi.create(app)
       return res.body
     } catch (error) {
-      this.logger.error(error)
+      this.logger.error(error, error?.response.body)
       return null
     }
   }
 
-  async findAll(labelSelector?: string): Promise<IApplicationList> {
+  async findAll(labelSelector?: string): Promise<ApplicationList> {
     const res = await this.k8sClient.customObjectApi.listClusterCustomObject(
       Application.Group,
       Application.Version,
@@ -81,15 +83,15 @@ export class ApplicationsService {
       undefined,
       labelSelector,
     )
-    return res.body as IApplicationList
+    return res.body as ApplicationList
   }
 
-  async findAllByUser(userid: string): Promise<IApplicationList> {
+  async findAllByUser(userid: string): Promise<ApplicationList> {
     const apps = await this.findAll(`${ResourceLabels.USER_ID}=${userid}`)
     return apps
   }
 
-  async findOne(appid: string): Promise<IApplication> {
+  async findOne(appid: string): Promise<Application> {
     const namespace = GetApplicationNamespaceById(appid)
     const name = appid
 
@@ -103,7 +105,7 @@ export class ApplicationsService {
           Application.PluralName,
           name,
         )
-      return appRes.body as IApplication
+      return appRes.body as Application
     } catch (err) {
       this.logger.error(err)
       if (err?.response?.body?.reason === 'NotFound') {
@@ -113,7 +115,7 @@ export class ApplicationsService {
     }
   }
 
-  async findOneByUser(userid: string, appid: string): Promise<IApplication> {
+  async findOneByUser(userid: string, appid: string): Promise<Application> {
     const app = await this.findOne(appid)
     if (app?.metadata?.labels?.[ResourceLabels.USER_ID] === userid) {
       return app

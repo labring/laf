@@ -1,9 +1,11 @@
+import { ServerConfig } from '../constants'
+
 /**
  * Get system namespace of laf (in kubernetes)
  * @returns
  */
 export function GetSystemNamespace(): string {
-  return 'laf-system'
+  return ServerConfig.SYSTEM_NAMESPACE
 }
 
 /**

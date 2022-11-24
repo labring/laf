@@ -3,7 +3,7 @@ import { GetApplicationNamespaceById } from 'src/common/getter'
 import { KubernetesService } from 'src/core/kubernetes.service'
 import { CreateBucketDto } from './dto/create-bucket.dto'
 import { UpdateBucketDto } from './dto/update-bucket.dto'
-import { Bucket, IBucket, IBucketList } from './entities/bucket.entity'
+import { Bucket, BucketList } from './entities/bucket.entity'
 
 @Injectable()
 export class BucketsService {
@@ -12,7 +12,7 @@ export class BucketsService {
 
   async create(dto: CreateBucketDto) {
     const namespace = GetApplicationNamespaceById(dto.appid)
-    const bucket = Bucket.create(dto.name, namespace)
+    const bucket = new Bucket(dto.name, namespace)
     bucket.spec = {
       policy: dto.policy,
       storage: dto.storage,
@@ -46,10 +46,10 @@ export class BucketsService {
       labelSelector,
     )
 
-    return res.body as IBucketList
+    return res.body as BucketList
   }
 
-  async findOne(appid: string, name: string): Promise<IBucket> {
+  async findOne(appid: string, name: string): Promise<Bucket> {
     const namespace = GetApplicationNamespaceById(appid)
     try {
       const res =
@@ -60,7 +60,7 @@ export class BucketsService {
           Bucket.PluralName,
           name,
         )
-      return res.body as IBucket
+      return res.body as Bucket
     } catch (err) {
       this.logger.error(err)
       if (err?.response?.body?.reason === 'NotFound') {
