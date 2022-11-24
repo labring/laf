@@ -8,6 +8,8 @@ import {
   Delete,
   UseGuards,
   Req,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common'
 import { FunctionsService } from './functions.service'
 import { CreateFunctionDto } from './dto/create-function.dto'
@@ -24,16 +26,21 @@ import { IRequest } from 'src/common/types'
 export class FunctionsController {
   constructor(private readonly functionsService: FunctionsService) {}
 
+  /**
+   * Create a new function
+   * @param dto
+   * @param req
+   * @returns
+   */
   @ApiResponseUtil(CloudFunction)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post()
-  async create(@Body() dto: CreateFunctionDto, @Req() req: IRequest) {
+  async create(@Param('appid') appid: string, @Body() dto: CreateFunctionDto) {
     const error = dto.validate()
     if (error) {
       return ResponseUtil.error(error)
     }
 
-    const appid = req.application.appid
     const res = await this.functionsService.create(appid, dto)
     if (!res) {
       return ResponseUtil.error('create function error')
@@ -41,16 +48,31 @@ export class FunctionsController {
     return ResponseUtil.ok(res)
   }
 
+  /**
+   * Query function list of an app
+   * @returns
+   */
   @ApiResponseUtil(CloudFunctionList)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get()
-  findAll() {
-    return this.functionsService.findAll()
+  async findAll(@Param('appid') appid: string) {
+    const data = await this.functionsService.findAll(appid)
+    return ResponseUtil.ok(data)
   }
 
+  /**
+   * Get a function by its name
+   * @param appid
+   * @param name
+   */
   @ApiResponseUtil(CloudFunction)
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.functionsService.findOne(+id)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Get(':name')
+  async findOne(@Param('appid') appid: string, @Param('name') name: string) {
+    const data = await this.functionsService.findOne(appid, name)
+    if (!data) {
+      throw new HttpException('function not found', HttpStatus.NOT_FOUND)
+    }
   }
 
   @Patch(':id')

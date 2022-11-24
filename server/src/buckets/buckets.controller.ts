@@ -32,6 +32,12 @@ export class BucketsController {
     private readonly appService: ApplicationsService,
   ) {}
 
+  /**
+   * Create a new bucket
+   * @param dto
+   * @param req
+   * @returns
+   */
   @ApiResponseUtil(Bucket)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post()
@@ -68,7 +74,7 @@ export class BucketsController {
   @Get()
   async findAll(@Param('appid') appid: string) {
     const data = await this.bucketsService.findAll(appid)
-    return ResponseUtil.ok(data)
+    return ResponseUtil.ok<BucketList>(data)
   }
 
   /**

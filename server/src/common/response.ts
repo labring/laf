@@ -59,10 +59,6 @@ export const ApiResponseUtil = <DataDto extends Type<unknown>>(
           {
             properties: {
               data: { $ref: getSchemaPath(dataDto) },
-              // data: {
-              //   type: 'array',
-              //   items: { $ref: getSchemaPath(dataDto) },
-              // },
             },
           },
         ],
