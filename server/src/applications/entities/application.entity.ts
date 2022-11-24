@@ -1,5 +1,6 @@
 import { KubernetesObject } from '@kubernetes/client-node'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ResourceLabels } from 'src/constants'
 import { Condition, ObjectMeta } from '../../core/kubernetes.interface'
 import { BundleSpec } from './bundle.entity'
 import { RuntimeSpec } from './runtime.entity'
@@ -94,11 +95,31 @@ export class Application implements KubernetesObject {
   constructor(name: string, namespace: string) {
     this.apiVersion = Application.GroupVersion
     this.kind = Application.Kind
-    this.metadata = {
-      name,
-      namespace,
-    }
+    this.metadata = new ObjectMeta(name, namespace)
+    this.metadata.labels = {}
     this.spec = new ApplicationSpec()
+  }
+
+  setAppid(appid: string) {
+    this.metadata.labels = {
+      ...this.metadata.labels,
+      [ResourceLabels.APP_ID]: appid,
+    }
+  }
+
+  get appid() {
+    return this.metadata.labels?.[ResourceLabels.APP_ID]
+  }
+
+  setUserId(userid: string) {
+    this.metadata.labels = {
+      ...this.metadata.labels,
+      [ResourceLabels.USER_ID]: userid,
+    }
+  }
+
+  get userid() {
+    return this.metadata.labels?.[ResourceLabels.USER_ID]
   }
 }
 export class ApplicationList {

@@ -30,7 +30,6 @@ export class ApplicationsController {
    * Create application
    * @returns
    */
-  // @ApiResponse({ type: ResponseUtil<CreateApplicationDto> })
   @ApiResponseUtil(Application)
   @UseGuards(JwtAuthGuard)
   @Post()
