@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { GetApplicationNamespaceById } from 'src/common/getter'
-import { KubernetesService } from 'src/core/kubernetes.service'
+import { GetApplicationNamespaceById } from '../common/getter'
+import { KubernetesService } from '../core/kubernetes.service'
 import { CreateFunctionDto } from './dto/create-function.dto'
 import { UpdateFunctionDto } from './dto/update-function.dto'
 import { CloudFunction, CloudFunctionList } from './entities/function.entity'
@@ -43,10 +43,10 @@ export class FunctionsService {
   async findAll(appid: string, labelSelector?: string) {
     const namespace = GetApplicationNamespaceById(appid)
     const res = await this.k8sClient.customObjectApi.listNamespacedCustomObject(
-      CloudFunction.Group,
-      CloudFunction.Version,
+      CloudFunction.GVK.group,
+      CloudFunction.GVK.version,
       namespace,
-      CloudFunction.PluralName,
+      CloudFunction.GVK.plural,
       undefined,
       undefined,
       undefined,
@@ -67,10 +67,10 @@ export class FunctionsService {
     try {
       const res =
         await this.k8sClient.customObjectApi.getNamespacedCustomObject(
-          CloudFunction.Group,
-          CloudFunction.Version,
+          CloudFunction.GVK.group,
+          CloudFunction.GVK.version,
           namespace,
-          CloudFunction.PluralName,
+          CloudFunction.GVK.plural,
           name,
         )
       return res.body as CloudFunction

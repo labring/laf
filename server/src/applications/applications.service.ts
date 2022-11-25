@@ -70,9 +70,9 @@ export class ApplicationsService {
 
   async findAll(labelSelector?: string): Promise<ApplicationList> {
     const res = await this.k8sClient.customObjectApi.listClusterCustomObject(
-      Application.Group,
-      Application.Version,
-      Application.PluralName,
+      Application.GVK.group,
+      Application.GVK.version,
+      Application.GVK.plural,
       undefined,
       undefined,
       undefined,
@@ -95,10 +95,10 @@ export class ApplicationsService {
     try {
       const appRes =
         await this.k8sClient.customObjectApi.getNamespacedCustomObject(
-          Application.Group,
-          Application.Version,
+          Application.GVK.group,
+          Application.GVK.version,
           namespace,
-          Application.PluralName,
+          Application.GVK.plural,
           name,
         )
       return appRes.body as Application

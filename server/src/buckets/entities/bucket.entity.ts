@@ -1,6 +1,10 @@
-import { KubernetesObject, V1ObjectMeta } from '@kubernetes/client-node'
+import { KubernetesObject } from '@kubernetes/client-node'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { Condition, ObjectMeta } from '../../core/kubernetes.interface'
+import {
+  Condition,
+  GroupVersionKind,
+  ObjectMeta,
+} from '../../core/kubernetes.interface'
 
 export enum BucketPolicy {
   Private = 'private',
@@ -68,17 +72,16 @@ export class Bucket implements KubernetesObject {
   @ApiPropertyOptional()
   status?: BucketStatus
 
-  static readonly Group = 'oss.laf.dev'
-  static readonly Version = 'v1'
-  static readonly PluralName = 'buckets'
-  static readonly Kind = 'Bucket'
-  static get GroupVersion() {
-    return `${this.Group}/${this.Version}`
-  }
+  static readonly GVK = new GroupVersionKind(
+    'oss.laf.dev',
+    'v1',
+    'Bucket',
+    'buckets',
+  )
 
   constructor(name: string, namespace: string) {
-    this.apiVersion = Bucket.GroupVersion
-    this.kind = Bucket.Kind
+    this.apiVersion = Bucket.GVK.apiVersion
+    this.kind = Bucket.GVK.kind
     this.metadata = new ObjectMeta(name, namespace)
     this.spec = new BucketSpec()
   }

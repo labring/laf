@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { GetApplicationNamespaceById } from 'src/common/getter'
-import { KubernetesService } from 'src/core/kubernetes.service'
+import { GetApplicationNamespaceById } from '../common/getter'
+import { KubernetesService } from '../core/kubernetes.service'
 import { CreateBucketDto } from './dto/create-bucket.dto'
 import { UpdateBucketDto } from './dto/update-bucket.dto'
 import { Bucket, BucketList } from './entities/bucket.entity'
@@ -36,10 +36,10 @@ export class BucketsService {
   async findAll(appid: string, labelSelector?: string) {
     const namespace = GetApplicationNamespaceById(appid)
     const res = await this.k8sClient.customObjectApi.listNamespacedCustomObject(
-      Bucket.Group,
-      Bucket.Version,
+      Bucket.GVK.group,
+      Bucket.GVK.version,
       namespace,
-      Bucket.PluralName,
+      Bucket.GVK.plural,
       undefined,
       undefined,
       undefined,
@@ -54,10 +54,10 @@ export class BucketsService {
     try {
       const res =
         await this.k8sClient.customObjectApi.getNamespacedCustomObject(
-          Bucket.Group,
-          Bucket.Version,
+          Bucket.GVK.group,
+          Bucket.GVK.version,
           namespace,
-          Bucket.PluralName,
+          Bucket.GVK.plural,
           name,
         )
       return res.body as Bucket

@@ -1,5 +1,6 @@
-import { V1ObjectMeta } from '@kubernetes/client-node'
+import { KubernetesObject, V1ObjectMeta } from '@kubernetes/client-node'
 import { ApiProperty } from '@nestjs/swagger'
+import * as assert from 'node:assert'
 
 export enum ConditionStatus {
   ConditionTrue = 'True',
@@ -51,4 +52,43 @@ export class Condition {
 
   @ApiProperty()
   message?: string
+}
+
+export class GroupVersionKind {
+  group: string
+
+  version: string
+
+  kind: string
+
+  plural: string
+
+  constructor(group: string, version: string, kind: string, plural?: string) {
+    assert(group, 'group is required')
+    assert(version, 'version is required')
+    assert(kind, 'kind is required')
+
+    this.group = group
+    this.version = version
+    this.kind = kind
+    this.plural = plural
+    if (!plural) {
+      this.plural = kind.toLowerCase() + 's'
+    }
+  }
+
+  static fromKubernetesObject(obj: KubernetesObject): GroupVersionKind {
+    assert(obj.apiVersion, 'apiVersion is required')
+    assert(obj.kind, 'kind is required')
+
+    return new GroupVersionKind(
+      obj.apiVersion.split('/')[0],
+      obj.apiVersion.split('/')[1],
+      obj.kind,
+    )
+  }
+
+  get apiVersion(): string {
+    return `${this.group}/${this.version}`
+  }
 }
