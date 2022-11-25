@@ -10,8 +10,10 @@ import {
 import { PoliciesService } from './policies.service'
 import { CreatePolicyDto } from './dto/create-policy.dto'
 import { UpdatePolicyDto } from './dto/update-policy.dto'
+import { ApiTags } from '@nestjs/swagger'
 
-@Controller('policies')
+@ApiTags('Database')
+@Controller('apps/:appid/policies')
 export class PoliciesController {
   constructor(private readonly policiesService: PoliciesService) {}
 
