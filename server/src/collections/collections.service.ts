@@ -16,7 +16,6 @@ export class CollectionsService {
    * @returns
    */
   async create(appid: string, dto: CreateCollectionDto) {
-    assert(appid, 'appid is required')
     const { client, db } = await this.databaseService.findAndConnect(appid)
     assert(db, 'Database not found')
     try {
@@ -30,19 +29,91 @@ export class CollectionsService {
     }
   }
 
-  findAll() {
-    return `This action returns all collections`
+  /**
+   * Get collection list in database
+   * @param appid
+   * @returns
+   */
+  async findAll(appid: string) {
+    const { client, db } = await this.databaseService.findAndConnect(appid)
+    assert(db, 'Database not found')
+    try {
+      const collections = await db.listCollections().toArray()
+      const result = collections.filter((coll) => !coll.name.startsWith('__'))
+      await client.close()
+      return result
+    } catch (error) {
+      this.logger.error(error)
+      await client.close()
+      return null
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} collection`
+  /**
+   * TODO
+   * @param appid
+   * @param name
+   * @returns
+   */
+  async findOne(appid: string, name: string) {
+    return `This action returns a #${name} collection`
   }
 
-  update(id: number, updateCollectionDto: UpdateCollectionDto) {
-    return `This action updates a #${id} collection`
+  /**
+   * Update collection, currently only support to update validatorSchema and validationLevel.
+   * @param appid
+   * @param name
+   * @param dto
+   * @returns
+   */
+  async update(appid: string, name: string, dto: UpdateCollectionDto) {
+    const { client, db } = await this.databaseService.findAndConnect(appid)
+    assert(db, 'Database not found')
+    const command = {
+      collMod: name,
+      validationAction: 'error',
+    }
+
+    if (dto.validatorSchema) {
+      command['validator'] = {
+        $jsonSchema: dto.validatorSchema,
+      }
+    }
+
+    if (['strict', 'off', 'moderate'].includes(dto.validationLevel)) {
+      command['validationLevel'] = dto.validationLevel
+    } else {
+      command['validationLevel'] = 'strict'
+    }
+
+    try {
+      await db.command(command)
+      await client.close()
+      return true
+    } catch (error) {
+      this.logger.error(error)
+      await client.close()
+      return false
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} collection`
+  /**
+   * Drop a collection
+   * @param appid
+   * @param name
+   * @returns
+   */
+  async remove(appid: string, name: string) {
+    const { client, db } = await this.databaseService.findAndConnect(appid)
+    assert(db, 'Database not found')
+    try {
+      const res = await db.dropCollection(name)
+      await client.close()
+      return res
+    } catch (error) {
+      this.logger.error(error)
+      await client.close()
+      return false
+    }
   }
 }
