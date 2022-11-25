@@ -1,4 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing'
+import {
+  Application,
+  ApplicationState,
+} from '../applications/entities/application.entity'
 import { ResourceLabels } from '../constants'
 import { KubernetesService } from './kubernetes.service'
 
@@ -84,5 +88,30 @@ describe.skip('list custom objects with label', () => {
       `${ResourceLabels.USER_ID}=${userid}`,
     )
     console.log(res.body)
+  })
+})
+
+describe.skip('patch custom objects', () => {
+  it('should be able to patch custom objects', async () => {
+    const name = '1i43zq'
+    const namespace = name
+    const res = await service.customObjectApi.getNamespacedCustomObject(
+      Application.GVK.group,
+      Application.GVK.version,
+      namespace,
+      Application.GVK.plural,
+      name,
+    )
+
+    const data = res.body as Application
+    data.spec = {
+      ...data.spec,
+      state: ApplicationState.ApplicationStateRunning,
+    }
+
+    const res2 = await service.patchCustomObject(data).catch((err) => {
+      console.log(err)
+    })
+    console.log('patched', res2)
   })
 })

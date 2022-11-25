@@ -1,7 +1,11 @@
 import { KubernetesObject } from '@kubernetes/client-node'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { ResourceLabels } from 'src/constants'
-import { Condition, ObjectMeta } from '../../core/kubernetes.interface'
+import { ResourceLabels } from '../../constants'
+import {
+  Condition,
+  GroupVersionKind,
+  ObjectMeta,
+} from '../../core/kubernetes.interface'
 import { BundleSpec } from './bundle.entity'
 import { RuntimeSpec } from './runtime.entity'
 
@@ -84,17 +88,16 @@ export class Application implements KubernetesObject {
   @ApiPropertyOptional()
   status?: ApplicationStatus
 
-  static readonly Group = 'application.laf.dev'
-  static readonly Version = 'v1'
-  static readonly PluralName = 'applications'
-  static readonly Kind = 'Application'
-  static get GroupVersion() {
-    return `${this.Group}/${this.Version}`
-  }
+  static readonly GVK = new GroupVersionKind(
+    'application.laf.dev',
+    'v1',
+    'Application',
+    'applications',
+  )
 
   constructor(name: string, namespace: string) {
-    this.apiVersion = Application.GroupVersion
-    this.kind = Application.Kind
+    this.apiVersion = Application.GVK.apiVersion
+    this.kind = Application.GVK.kind
     this.metadata = new ObjectMeta(name, namespace)
     this.metadata.labels = {}
     this.spec = new ApplicationSpec()

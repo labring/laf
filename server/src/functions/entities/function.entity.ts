@@ -1,6 +1,6 @@
 import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { ObjectMeta } from 'src/core/kubernetes.interface'
+import { GroupVersionKind, ObjectMeta } from '../../core/kubernetes.interface'
 
 export class CloudFunctionSource {
   @ApiProperty()
@@ -62,17 +62,16 @@ export class CloudFunction implements KubernetesObject {
   @ApiPropertyOptional()
   status?: CloudFunctionStatus
 
-  static readonly Group = 'runtime.laf.dev'
-  static readonly Version = 'v1'
-  static readonly PluralName = 'functions'
-  static readonly Kind = 'Function'
-  static get GroupVersion() {
-    return `${this.Group}/${this.Version}`
-  }
+  static readonly GVK = new GroupVersionKind(
+    'runtime.laf.dev',
+    'v1',
+    'Function',
+    'functions',
+  )
 
   constructor(name: string, namespace: string) {
-    this.apiVersion = CloudFunction.GroupVersion
-    this.kind = CloudFunction.Kind
+    this.apiVersion = CloudFunction.GVK.apiVersion
+    this.kind = CloudFunction.GVK.kind
     this.metadata = {
       name,
       namespace,

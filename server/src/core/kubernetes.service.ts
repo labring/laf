@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import * as k8s from '@kubernetes/client-node'
+import { KubernetesObject } from '@kubernetes/client-node'
+import { compare } from 'fast-json-patch'
+import { GroupVersionKind } from './kubernetes.interface'
+import path from 'path'
 
 /**
  * Single instance of the Kubernetes API client.
@@ -112,5 +116,44 @@ export class KubernetesService {
       }
     }
     return deleted
+  }
+
+  async patchCustomObject(spec: KubernetesObject) {
+    const client = this.customObjectApi
+    const gvk = GroupVersionKind.fromKubernetesObject(spec)
+
+    // get the current spec
+    const res = await client.getNamespacedCustomObject(
+      gvk.group,
+      gvk.version,
+      spec.metadata.namespace,
+      gvk.plural,
+      spec.metadata.name,
+    )
+    const currentSpec = res.body as KubernetesObject
+
+    // calculate the patch
+    const patch = compare(currentSpec, spec)
+    const options = {
+      headers: {
+        'Content-Type': k8s.PatchUtils.PATCH_FORMAT_JSON_PATCH,
+      },
+    }
+
+    // apply the patch
+    const response = await client.patchNamespacedCustomObject(
+      gvk.group,
+      gvk.version,
+      spec.metadata.namespace,
+      gvk.plural,
+      spec.metadata.name,
+      patch,
+      undefined,
+      undefined,
+      undefined,
+      options,
+    )
+
+    return response.body
   }
 }
