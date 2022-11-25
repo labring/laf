@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req,
   HttpException,
   HttpStatus,
 } from '@nestjs/common'
@@ -19,9 +18,8 @@ import { CloudFunction, CloudFunctionList } from './entities/function.entity'
 import { ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
 import { ApplicationAuthGuard } from 'src/applications/application.auth.guard'
-import { IRequest } from 'src/common/types'
 
-@ApiTags('Functions')
+@ApiTags('Function')
 @Controller('apps/:appid/functions')
 export class FunctionsController {
   constructor(private readonly functionsService: FunctionsService) {}

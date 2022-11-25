@@ -23,7 +23,7 @@ import { CreateBucketDto } from './dto/create-bucket.dto'
 import { UpdateBucketDto } from './dto/update-bucket.dto'
 import { Bucket, BucketList } from './entities/bucket.entity'
 
-@ApiTags('Buckets')
+@ApiTags('Bucket')
 @Controller('apps/:appid/buckets')
 export class BucketsController {
   logger = new Logger(BucketsController.name)

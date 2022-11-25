@@ -21,7 +21,7 @@ import { CreateApplicationDto } from './dto/create-application.dto'
 import { UpdateApplicationDto } from './dto/update-application.dto'
 import { Application, ApplicationList } from './entities/application.entity'
 
-@ApiTags('Applications')
+@ApiTags('Application')
 @Controller('applications')
 export class ApplicationsController {
   constructor(private readonly appService: ApplicationsService) {}
