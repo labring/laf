@@ -103,17 +103,6 @@ export class Application implements KubernetesObject {
     this.spec = new ApplicationSpec()
   }
 
-  setAppid(appid: string) {
-    this.metadata.labels = {
-      ...this.metadata.labels,
-      [ResourceLabels.APP_ID]: appid,
-    }
-  }
-
-  get appid() {
-    return this.metadata.labels?.[ResourceLabels.APP_ID]
-  }
-
   setUserId(userid: string) {
     this.metadata.labels = {
       ...this.metadata.labels,

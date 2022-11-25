@@ -48,7 +48,6 @@ export class ApplicationsService {
     // create app resources
     const namespace = GetApplicationNamespaceById(appid)
     const app = new Application(dto.name, namespace)
-    app.setAppid(appid)
     app.setUserId(userid)
 
     app.spec = new ApplicationSpec({

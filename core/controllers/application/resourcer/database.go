@@ -16,7 +16,7 @@ func CreateDatabase(ctx context.Context, c client.Client, schema *runtime.Scheme
 	// Create a new database
 	var db v1.Database
 	db.Namespace = app.Namespace
-	db.Name = "mongodb"
+	db.Name = app.Spec.AppId
 	db.Labels = map[string]string{
 		"laf.dev/appid": app.Spec.AppId,
 	}

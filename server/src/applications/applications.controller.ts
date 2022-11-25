@@ -11,7 +11,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common'
-import { ApiBody, ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiTags } from '@nestjs/swagger'
 import { IRequest } from 'src/common/types'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { ApiResponseUtil, ResponseUtil } from '../common/response'
