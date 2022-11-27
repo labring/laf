@@ -16,6 +16,8 @@ import { useRouter } from "next/router";
 import CopyText from "@/components/CopyText";
 import { formatDate } from "@/utils/format";
 import request from "@/utils/request";
+
+import CreateAppModal from "./mods/CreateModal";
 function HomePage() {
   const appListRes = useQuery(["getAppDetailInfo"], () => {
     return request.get("/api/app");
@@ -36,14 +38,7 @@ function HomePage() {
             <Input placeholder={t`Search`} size="lg" />
           </InputGroup>
         </div>
-        <Button
-          size={"lg"}
-          colorScheme="primary"
-          style={{ padding: "0 40px" }}
-          leftIcon={<AddIcon />}
-        >
-          {t`NewApplication`}
-        </Button>
+        <CreateAppModal />
       </div>
 
       {appListRes.isLoading ? (
@@ -56,7 +51,7 @@ function HomePage() {
             return (
               <div
                 key={item.appid}
-                className="flex justify-between items-center p-4 bg-white rounded-lg shadow mb-6 hover:bg-slate-100"
+                className="flex justify-between items-center p-4 py-6 bg-white rounded-lg shadow mb-6 hover:bg-slate-100"
               >
                 <div style={{ width: 300 }}>
                   <Link href="https://chakra-ui.com" isExternal>

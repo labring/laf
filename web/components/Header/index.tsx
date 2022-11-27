@@ -22,12 +22,12 @@ export default function Header(props: { size: "sm" | "lg" }) {
     >
       <div className="flex items-center">
         <div
-          className="rounded-full bg-black p-2 mr-5"
+          className="rounded-full bg-black p-1 mr-5"
           onClick={() => {
             router.push("/");
           }}
         >
-          <GiDragonfly color="white" />
+          <GiDragonfly color="white" fontSize={22} />
         </div>
         <span className="mr-4 font-bold text-lg">Allence</span>
         <Tag size="sm" borderRadius="full" variant="solid" colorScheme="green">

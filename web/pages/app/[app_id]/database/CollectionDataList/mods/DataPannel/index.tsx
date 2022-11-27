@@ -1,6 +1,13 @@
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { AddIcon } from "@chakra-ui/icons";
-import { Button, Input, InputGroup, InputLeftAddon, InputRightAddon } from "@chakra-ui/react";
+import {
+  Button,
+  Input,
+  InputGroup,
+  InputLeftAddon,
+  InputRightAddon,
+  useToast,
+} from "@chakra-ui/react";
 import clsx from "clsx";
 
 import JsonEditor from "@/components/Editor/JsonEditor";
@@ -8,12 +15,10 @@ import JsonEditor from "@/components/Editor/JsonEditor";
 import useDBMStore from "../../../store";
 export default function DataPannel() {
   const { entryList, updateCurrentData, currentData } = useDBMStore((store) => store);
-
-  console.log(123, typeof currentData !== "undefined");
-
+  const toast = useToast();
   return (
     <>
-      <div className="flex mt-2 justify-between">
+      <div className="flex justify-between pb-2 shadow-sm">
         <InputGroup size="sm" className="h-9" style={{ width: 600 }}>
           <InputLeftAddon children="query" />
           <Input placeholder='{"name":"hello"}' />
@@ -37,10 +42,13 @@ export default function DataPannel() {
             return (
               <div
                 key={item._id}
-                className={clsx("border p-2 rounded-md relative group hover:border-green-600", {
-                  "border-green-600 shadow": currentData?._id === item._id,
-                  "mb-6": index !== entryList.length - 1,
-                })}
+                className={clsx(
+                  "border p-2 rounded-md relative group hover:border-green-600 hover:shadow-md",
+                  {
+                    "border-green-600 shadow-md": currentData?._id === item._id,
+                    "mb-6": index !== entryList.length - 1,
+                  },
+                )}
                 onClick={() => {
                   updateCurrentData(item);
                 }}
@@ -83,7 +91,19 @@ export default function DataPannel() {
           >
             <div className="flex justify-between p-2 border-b mb-4">
               <span>编辑</span>
-              <Button size={"xs"} borderRadius="2" px="4" onClick={() => {}}>
+              <Button
+                size={"xs"}
+                borderRadius="2"
+                px="4"
+                onClick={() => {
+                  toast({
+                    position: "bottom-right",
+                    title: "保存成功",
+                    status: "success",
+                    duration: 1000,
+                  });
+                }}
+              >
                 保存
               </Button>
             </div>

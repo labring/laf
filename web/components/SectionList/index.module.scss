@@ -14,7 +14,7 @@
 
     &:hover,
     &.active {
-      background-color: #f2f3f8;
+      background-color: var(--chakra-colors-gray-100);
       color: #000 !important;
     }
 
