@@ -1,10 +1,11 @@
 import React, { ReactNode, useEffect } from "react";
+import { Spinner } from "@chakra-ui/react";
 import useGlobalStore from "pages/app_store";
 
 import Header from "@/components/Header";
 
 export default function BasicLayout(props: { children: ReactNode }) {
-  const { init } = useGlobalStore((state) => state);
+  const { init, loading } = useGlobalStore((state) => state);
   useEffect(() => {
     init();
   }, [init]);
@@ -12,7 +13,7 @@ export default function BasicLayout(props: { children: ReactNode }) {
   return (
     <div>
       <Header size="lg" />
-      {props.children}
+      {loading ? <Spinner /> : props.children}
     </div>
   );
 }

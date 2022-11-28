@@ -6,16 +6,31 @@ import { immer } from "zustand/middleware/immer";
 
 type State = {
   userInfo: any;
+  loading: boolean;
   init(): void;
 };
 
 const useGlobalStore = create<State>()(
   devtools(
-    immer((set) => ({
+    immer((set, get) => ({
       userInfo: {},
 
+      loading: false,
+
       init: async () => {
+        const userInfo = get().userInfo;
+        if (userInfo.id) {
+          return;
+        }
+        set((state) => {
+          state.loading = true;
+        });
         const res = await AppControllerGetProfile({});
+
+        set((state) => {
+          state.userInfo = res.data;
+          state.loading = false;
+        });
       },
 
       login: async () => {
