@@ -22,7 +22,7 @@ export default function Header(props: { size: "sm" | "lg" }) {
     >
       <div className="flex items-center">
         <div
-          className="rounded-full bg-black p-1 mr-5"
+          className="rounded-full bg-black p-1 mr-5 cursor-pointer"
           onClick={() => {
             router.push("/");
           }}
@@ -51,7 +51,7 @@ export default function Header(props: { size: "sm" | "lg" }) {
     <div className="flex justify-between p-4 bg-white	border-b">
       <div className="flex items-center">
         <img src="/logo.png" alt="logo" className="mr-2 rounded-full" width={30} />
-        <span>Laf 云开发</span>
+        <span className=" font-bold text-lg">Laf 云开发</span>
         <span className="ml-4 mr-4"> / </span>
         <span>LeezQ</span>
       </div>

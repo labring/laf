@@ -6,6 +6,7 @@ import React, { useCallback, useEffect } from "react";
 import { Button, HStack } from "@chakra-ui/react";
 import useHotKey from "hooks/useHotKey";
 
+import CopyText from "@/components/CopyText";
 import FunctionEditor from "@/components/Editor/FunctionEditor";
 import FileStatusIcon, { FileStatus } from "@/components/FileStatusIcon";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
@@ -59,7 +60,8 @@ function FunctionPage() {
             <HStack spacing="4">
               <span>
                 <span className=" text-slate-500">调用地址：</span>
-                <span>https://qcphsd.api.cloudendpoint.cn/deleteCurrentTodo</span>
+                <span className="mr-2">https://qcphsd.api.cloudendpoint.cn/deleteCurrentTodo</span>
+                <CopyText text="https://qcphsd.api.cloudendpoint.cn/deleteCurrentTodo" />
               </span>
               <Button
                 size="xs"

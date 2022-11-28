@@ -18,6 +18,10 @@ import BasicLayout from "@/layout/Basic";
 
 const Button = {};
 
+const Modal = {
+  defaultProps: {},
+};
+
 const theme = extendTheme({
   colors: {
     primary: {
@@ -26,6 +30,7 @@ const theme = extendTheme({
   },
   components: {
     Button,
+    Modal,
   },
 });
 
