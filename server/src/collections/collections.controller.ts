@@ -9,7 +9,12 @@ import {
   Logger,
   UseGuards,
 } from '@nestjs/common'
-import { ApiResponse, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 import { ApplicationAuthGuard } from '../applications/application.auth.guard'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { ApiResponseUtil, ResponseUtil } from '../common/response'
@@ -19,6 +24,7 @@ import { UpdateCollectionDto } from './dto/update-collection.dto'
 import { Collection } from './entities/collection.entity'
 
 @ApiTags('Database')
+@ApiBearerAuth('Authorization')
 @Controller('apps/:appid/collections')
 export class CollectionsController {
   private readonly logger = new Logger(CollectionsController.name)
@@ -31,6 +37,7 @@ export class CollectionsController {
    * @returns
    */
   @ApiResponse({ type: ResponseUtil<boolean> })
+  @ApiOperation({ summary: 'Create a new collection in database' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post()
   async create(
@@ -55,6 +62,7 @@ export class CollectionsController {
    * @returns
    */
   @ApiResponseUtil(Collection) // QUIRKS: should be array but swagger doesn't support it
+  @ApiOperation({ summary: 'Get collection list of an application' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get()
   async findAll(@Param('appid') appid: string) {
@@ -65,7 +73,14 @@ export class CollectionsController {
     return ResponseUtil.ok(collections)
   }
 
+  /**
+   * Get collection by name
+   * @param appid
+   * @param name
+   * @returns
+   */
   @ApiResponseUtil(Collection)
+  @ApiOperation({ summary: 'Get collection by name' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get(':name')
   async findOne(@Param('appid') appid: string, @Param('name') name: string) {
@@ -77,13 +92,14 @@ export class CollectionsController {
   }
 
   /**
-   * Update a collection by its name
+   * Update a collection
    * @param appid
    * @param name
    * @param dto
    * @returns
    */
   @ApiResponse({ type: ResponseUtil })
+  @ApiOperation({ summary: 'Update a collection' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Patch(':name')
   async update(
@@ -106,6 +122,7 @@ export class CollectionsController {
    * @returns
    */
   @ApiResponse({ type: ResponseUtil })
+  @ApiOperation({ summary: 'Delete a collection by its name' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Delete(':name')
   async remove(@Param('appid') appid: string, @Param('name') name: string) {
