@@ -4,20 +4,21 @@
 ## Prerequisites
 
 ```shell
-kubectl create namespace sealos
+kubectl create namespace laf
 ```
 
 
 ## Install
+helm install casdoor -n test . --set service.nodePort=30071
 
 ```shell
 helm install casdoor \
-  --namespace sealos \
+  --namespace laf \
   .
 ```
 
 ## Uninstall
 
 ```shell
-helm delete casdoor -n sealos
+helm delete casdoor -n laf
 ```
