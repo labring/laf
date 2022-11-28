@@ -53,11 +53,14 @@ const request = axios.create({
 request.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     // auto append service prefix
-    if (config.url && !config.url?.startsWith("/api/")) {
-      config.url = process.env.NEXT_PUBLIC_SERVICE + config.url;
+    if (config.url && config.url?.startsWith("/v1/")) {
+      // TODO: localhost 3000
+      config.url = "http://localhost:3000" + config.url;
     }
 
-    let _headers: AxiosRequestHeaders | any = {};
+    let _headers: AxiosRequestHeaders | any = {
+      Authorization: "Bearer " + localStorage.getItem("token"),
+    };
 
     //获取token，并将其添加至请求头中
     // const session = useSessionStore.getState().session;
@@ -97,13 +100,13 @@ request.interceptors.response.use(
     }
 
     // UnWrap
-    const apiResp = data;
-    if (apiResp.code !== 200) {
-      return Promise.reject(new Error(apiResp.code + ":" + apiResp.message));
-    }
 
-    response.data = apiResp.data;
-    return response;
+    // if (apiResp.code !== 200) {
+    //   return Promise.reject(new Error(apiResp.code + ":" + apiResp.message));
+    // }
+
+    // response.data = apiResp;
+    return data;
   },
   (error) => {
     if (axios.isCancel(error)) {

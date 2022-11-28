@@ -1,5 +1,5 @@
 import React from "react";
-import { AddIcon, CopyIcon, Search2Icon } from "@chakra-ui/icons";
+import { Search2Icon } from "@chakra-ui/icons";
 import {
   Button,
   Center,
