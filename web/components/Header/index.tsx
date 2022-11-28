@@ -6,7 +6,7 @@ import React from "react";
 import { BiHelpCircle } from "react-icons/bi";
 import { GiDragonfly } from "react-icons/gi";
 import { GrGithub, GrLanguage } from "react-icons/gr";
-import { Button, HStack, Tag, TagLabel } from "@chakra-ui/react";
+import { HStack, Tag, TagLabel } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
 import { SmallNavHeight } from "@/constants/index";
@@ -22,14 +22,14 @@ export default function Header(props: { size: "sm" | "lg" }) {
     >
       <div className="flex items-center">
         <div
-          className=" rounded-xl bg-black p-1 mr-4"
+          className="rounded-full bg-black p-1 mr-5"
           onClick={() => {
             router.push("/");
           }}
         >
-          <GiDragonfly color="white" />
+          <GiDragonfly color="white" fontSize={22} />
         </div>
-        <span className="mr-4">Allecne</span>
+        <span className="mr-4 font-bold text-lg">Allence</span>
         <Tag size="sm" borderRadius="full" variant="solid" colorScheme="green">
           <TagLabel>Free</TagLabel>
         </Tag>

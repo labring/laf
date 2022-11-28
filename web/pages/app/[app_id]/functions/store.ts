@@ -4,7 +4,7 @@ import { immer } from "zustand/middleware/immer";
 
 import request from "@/utils/request";
 
-type TFunction =
+export type TFunction =
   | {
       _id: string;
       name: string;
@@ -25,7 +25,7 @@ type TFunction =
     }
   | undefined;
 
-type TPackage =
+export type TPackage =
   | {
       name: string;
       version: string;
@@ -35,7 +35,7 @@ type TPackage =
 type State = {
   currentFunction: TFunction;
   favFunctoinList: any[];
-  allFunctionList?: any[];
+  allFunctionList?: TFunction[];
   allPackages?: TPackage[];
 
   initFunctionPage: () => void;

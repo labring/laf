@@ -17,7 +17,7 @@ export type TFile = {
   size: number;
   updateTime: string;
   prefix: string;
-}
+};
 
 type State = {
   currentStorage?: TStorage;
@@ -26,9 +26,9 @@ type State = {
 
   initStoragePage: () => void;
 
-  setCurrentStorage: (currentFunction: TStorage) => void;
-  editStorage: (currentFunction: TStorage) => void;
-  deleteStorage: (currentFunction: TStorage) => void;
+  setCurrentStorage: (currentStorage: TStorage) => void;
+  editStorage: (currentStorage: TStorage) => void;
+  deleteStorage: (currentStorage: TStorage) => void;
 };
 
 const useStorageStore = create<State>()(
@@ -51,12 +51,12 @@ const useStorageStore = create<State>()(
         });
       },
 
-      setCurrentStorage: (currentFunction) =>
+      setCurrentStorage: (currentStorage) =>
         set((state) => {
-          state.currentStorage = JSON.parse(JSON.stringify(currentFunction));
+          state.currentStorage = JSON.parse(JSON.stringify(currentStorage));
           return state;
         }),
-      
+
       editStorage: async (storage: TStorage) => {
         const res = await request.post("/api/buckets", storage);
         set((state) => {
@@ -71,7 +71,7 @@ const useStorageStore = create<State>()(
           state.allStorages = res.data;
           state.currentStorage = res.data[0];
         });
-      }
+      },
     })),
   ),
 );

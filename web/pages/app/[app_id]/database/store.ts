@@ -47,8 +47,6 @@ const useDBMStore = create<State>()(
       },
 
       setCurrentDB: async (currentDB) => {
-        console.log(123, currentDB);
-
         const entryRes = await request.get("/api/dbm_entry", {
           params: {
             name: currentDB.name, // todo

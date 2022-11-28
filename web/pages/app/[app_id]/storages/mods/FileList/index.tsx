@@ -1,37 +1,28 @@
 import React from "react";
 import { DeleteIcon, DownloadIcon } from "@chakra-ui/icons";
-import {
-  Button,
-  HStack,
-  Table,
-  TableCaption,
-  TableContainer,
-  Tbody,
-  Td,
-  Tfoot,
-  Th,
-  Thead,
-  Tr,
-} from "@chakra-ui/react";
+import { HStack, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import RightPanel from "pages/app/[app_id]/mods/RightPanel";
 
 import IconWrap from "@/components/IconWrap";
+import PanelHeader from "@/components/Panel/Header";
 
-import useStorageStore, { TStorage } from "../../store";
-import CreateFolderModal from '../CreateFolderModal'
-import FileUpload from '../FileUpload'
-import HostingDrawer from '../HostingDrawer'
-
+import useStorageStore from "../../store";
+import CreateFolderModal from "../CreateFolderModal";
+import FileUpload from "../FileUpload";
+import HostingDrawer from "../HostingDrawer";
 
 export default function FileList() {
   const store = useStorageStore((store) => store);
 
-  const changeDirectory = (row) => {
-    if (!row.Prefix) { return }
-  }
+  const changeDirectory = (row: any) => {
+    if (!row.Prefix) {
+      return;
+    }
+  };
 
   return (
-    <div className="flex-1">
-      <div className="flex justify-between border-b px-2" style={{ height: 32 }}>
+    <RightPanel>
+      <PanelHeader>
         <HStack spacing={2}>
           <FileUpload />
           <CreateFolderModal />
@@ -42,7 +33,7 @@ export default function FileList() {
           <span>已用： 0 </span>
           <span>文件数： 30 </span>
         </HStack>
-      </div>
+      </PanelHeader>
       <div className="m-2 ">
         <TableContainer>
           <Table variant="simple" size="sm">
@@ -52,7 +43,9 @@ export default function FileList() {
                 <Th>文件路径</Th>
                 <Th isNumeric>大小</Th>
                 <Th isNumeric>更新时间</Th>
-                <Th>操作</Th>
+                <Th isNumeric>
+                  <span className="mr-2">操作</span>
+                </Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -60,26 +53,30 @@ export default function FileList() {
                 return (
                   <Tr _hover={{ bgColor: "#efefef" }} key={file.path}>
                     <Td>
-                      {file.prefix ? <span className="text-blue-600 underline cursor-pointer">{file.name}</span> : <span>{file.name}</span>}
+                      {file.prefix ? (
+                        <span className="text-blue-600 underline cursor-pointer">{file.name}</span>
+                      ) : (
+                        <span>{file.name}</span>
+                      )}
                     </Td>
                     <Td>{file.path}</Td>
                     <Td isNumeric>19KB</Td>
                     <Td isNumeric>{file.updateTime}</Td>
-                    <Td className="flex">
-                      <IconWrap onClick={() => { }}>
+                    <Td isNumeric className="flex justify-end">
+                      <IconWrap onClick={() => {}}>
                         <DownloadIcon fontSize={12} />
                       </IconWrap>
-                      <IconWrap onClick={() => { }}>
+                      <IconWrap onClick={() => {}}>
                         <DeleteIcon fontSize={12} />
                       </IconWrap>
                     </Td>
                   </Tr>
-                )
+                );
               })}
             </Tbody>
           </Table>
         </TableContainer>
       </div>
-    </div>
+    </RightPanel>
   );
 }

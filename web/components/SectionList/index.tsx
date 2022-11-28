@@ -1,4 +1,5 @@
 import React from "react";
+import clsx from "clsx";
 
 import styles from "./index.module.scss";
 
@@ -13,12 +14,18 @@ function SectionList(props: { children: React.ReactNode; style?: React.CSSProper
 function Item(props: {
   children: React.ReactNode;
   isActive: boolean;
+  className?: string;
   key: string;
   onClick: () => void;
 }) {
-  const { children, isActive, onClick } = props;
+  const { children, isActive, onClick, className } = props;
   return (
-    <li className={isActive ? styles.active : ""} onClick={onClick}>
+    <li
+      className={clsx(className, {
+        [styles.active]: isActive,
+      })}
+      onClick={onClick}
+    >
       {children}
     </li>
   );

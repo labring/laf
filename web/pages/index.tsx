@@ -13,7 +13,11 @@ import { t } from "@lingui/macro";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 
+import CopyText from "@/components/CopyText";
+import { formatDate } from "@/utils/format";
 import request from "@/utils/request";
+
+import CreateAppModal from "./mods/CreateModal";
 function HomePage() {
   const appListRes = useQuery(["getAppDetailInfo"], () => {
     return request.get("/api/app");
@@ -34,14 +38,7 @@ function HomePage() {
             <Input placeholder={t`Search`} size="lg" />
           </InputGroup>
         </div>
-        <Button
-          size={"lg"}
-          colorScheme="primary"
-          style={{ padding: "0 40px" }}
-          leftIcon={<AddIcon />}
-        >
-          {t`NewApplication`}
-        </Button>
+        <CreateAppModal />
       </div>
 
       {appListRes.isLoading ? (
@@ -54,31 +51,36 @@ function HomePage() {
             return (
               <div
                 key={item.appid}
-                className="flex justify-between items-center p-4 bg-white rounded-lg shadow mb-4"
+                className="flex justify-between items-center p-4 py-6 bg-white rounded-lg shadow mb-6 hover:bg-slate-100"
               >
                 <div style={{ width: 300 }}>
                   <Link href="https://chakra-ui.com" isExternal>
-                    <span className="text-base font-semibold">{item.name}</span>
+                    <span className="text-lg font-semibold">{item.name}</span>
                   </Link>
 
                   <p>
-                    App ID: {item.appid} <CopyIcon />
+                    App ID: {item.appid} <CopyText text={item.appid} />
                   </p>
                 </div>
                 <div className="flex-1">
                   <p>规格: {item.spec.name}</p>
-                  <p>创建时间: {item.created_at}</p>
+                  <p>创建时间: {formatDate(item.created_at)}</p>
                 </div>
                 <div>
-                  <a
-                    className="mr-4"
-                    onClick={() => {
+                  <Button
+                    colorScheme="teal"
+                    variant="ghost"
+                    onClick={(event) => {
+                      event?.preventDefault();
                       router.push(`/app/${item.appid}`);
                     }}
                   >
                     开发
-                  </a>
-                  <a>配置</a>
+                  </Button>
+
+                  <Button colorScheme="teal" variant="ghost">
+                    配置
+                  </Button>
                 </div>
               </div>
             );
