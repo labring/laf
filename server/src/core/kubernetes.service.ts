@@ -156,4 +156,19 @@ export class KubernetesService {
 
     return response.body
   }
+
+  async deleteCustomObject(spec: KubernetesObject) {
+    const client = this.customObjectApi
+    const gvk = GroupVersionKind.fromKubernetesObject(spec)
+
+    const response = await client.deleteNamespacedCustomObject(
+      gvk.group,
+      gvk.version,
+      spec.metadata.namespace,
+      gvk.plural,
+      spec.metadata.name,
+    )
+
+    return response.body
+  }
 }

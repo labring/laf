@@ -47,8 +47,9 @@ export class ApplicationsService {
   async create(userid: string, appid: string, dto: CreateApplicationDto) {
     // create app resources
     const namespace = GetApplicationNamespaceById(appid)
-    const app = new Application(dto.name, namespace)
+    const app = new Application(appid, namespace)
     app.setUserId(userid)
+    app.setDisplayName(dto.displayName)
 
     app.spec = new ApplicationSpec({
       appid,
@@ -118,11 +119,28 @@ export class ApplicationsService {
     return null
   }
 
-  update(id: number, dto: UpdateApplicationDto) {
-    return `This action updates a #${id} app`
+  async update(app: Application, dto: UpdateApplicationDto) {
+    if (dto.displayName) {
+      app.setDisplayName(dto.displayName)
+    }
+    app.spec.state = dto.state || app.spec.state
+
+    try {
+      const res = await this.k8sClient.patchCustomObject(app)
+      return res as Application
+    } catch (err) {
+      this.logger.error(err)
+      return null
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} app`
+  async remove(app: Application) {
+    try {
+      const res = await this.k8sClient.deleteCustomObject(app)
+      return res
+    } catch (error) {
+      this.logger.error(error)
+      return null
+    }
   }
 }

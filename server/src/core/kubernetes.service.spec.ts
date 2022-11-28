@@ -78,9 +78,9 @@ describe.skip('list custom objects with label', () => {
   it('should be able to list custom objects with label', async () => {
     const userid = 'test-user-id'
     const res = await service.customObjectApi.listClusterCustomObject(
-      'application.laf.dev',
-      'v1',
-      'applications',
+      Application.GVK.group,
+      Application.GVK.version,
+      Application.GVK.plural,
       undefined,
       undefined,
       undefined,
@@ -113,5 +113,24 @@ describe.skip('patch custom objects', () => {
       console.log(err)
     })
     console.log('patched', res2)
+  })
+})
+
+describe.skip('delete custom objects', () => {
+  it('should be able to delete custom objects', async () => {
+    const name = 'efme9x'
+    const namespace = name
+    const res = await service.customObjectApi.getNamespacedCustomObject(
+      Application.GVK.group,
+      Application.GVK.version,
+      namespace,
+      Application.GVK.plural,
+      name,
+    )
+
+    const data = res.body as Application
+
+    const res2 = await service.deleteCustomObject(data)
+    console.log('deleted', res2)
   })
 })

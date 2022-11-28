@@ -110,8 +110,19 @@ export class Application implements KubernetesObject {
     }
   }
 
+  setDisplayName(name: string) {
+    this.metadata.labels = {
+      ...this.metadata.labels,
+      [ResourceLabels.DISPLAY_NAME]: name,
+    }
+  }
+
   get userid() {
     return this.metadata.labels?.[ResourceLabels.USER_ID]
+  }
+
+  get displayName() {
+    return this.metadata.labels?.[ResourceLabels.DISPLAY_NAME]
   }
 }
 export class ApplicationList {
