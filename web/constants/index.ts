@@ -7,3 +7,6 @@ export const Pages = {
   database: "database",
   logs: "logs",
 };
+
+// key of laf app display name
+export const APP_DISPLAY_NAME_KEY = "laf.dev/display.name";

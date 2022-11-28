@@ -8,7 +8,7 @@
 import request from "@/utils/request";
 
 /**
- *
+ * Create a new function
  */
 export async function FunctionsControllerCreate(
   params: Definitions.CreateFunctionDto,
@@ -22,7 +22,21 @@ export async function FunctionsControllerCreate(
 }
 
 /**
- *
+ * Query function list of an app
+ */
+export async function FunctionsControllerFindAll(
+  params: Paths.FunctionsControllerFindAll.BodyParameters,
+  extra?: { [key: string]: any },
+): Promise<Paths.FunctionsControllerFindAll.Responses> {
+  return request("/v1/apps/{appid}/functions", {
+    method: "GET",
+    params: params,
+    ...(extra || {}),
+  });
+}
+
+/**
+ * Get a function by its name
  */
 export async function FunctionsControllerFindOne(
   params: Paths.FunctionsControllerFindOne.BodyParameters,
@@ -36,7 +50,7 @@ export async function FunctionsControllerFindOne(
 }
 
 /**
- *
+ * TODO - ⌛️
  */
 export async function FunctionsControllerUpdate(
   params: Definitions.UpdateFunctionDto,
@@ -50,7 +64,21 @@ export async function FunctionsControllerUpdate(
 }
 
 /**
- *
+ * TODO - ⌛️
+ */
+export async function FunctionsControllerRemove(
+  params: Paths.FunctionsControllerRemove.BodyParameters,
+  extra?: { [key: string]: any },
+): Promise<Paths.FunctionsControllerRemove.Responses> {
+  return request("/v1/apps/{appid}/functions/{id}", {
+    method: "DELETE",
+    data: params,
+    ...(extra || {}),
+  });
+}
+
+/**
+ * TODO - ⌛️
  */
 export async function PoliciesControllerCreate(
   params: Definitions.CreatePolicyDto,
@@ -64,7 +92,21 @@ export async function PoliciesControllerCreate(
 }
 
 /**
- *
+ * TODO - ⌛️
+ */
+export async function PoliciesControllerFindAll(
+  params: Paths.PoliciesControllerFindAll.BodyParameters,
+  extra?: { [key: string]: any },
+): Promise<Paths.PoliciesControllerFindAll.Responses> {
+  return request("/v1/apps/{appid}/policies", {
+    method: "GET",
+    params: params,
+    ...(extra || {}),
+  });
+}
+
+/**
+ * TODO - ⌛️
  */
 export async function PoliciesControllerFindOne(
   params: Paths.PoliciesControllerFindOne.BodyParameters,
@@ -78,7 +120,35 @@ export async function PoliciesControllerFindOne(
 }
 
 /**
- *
+ * TODO - ⌛️
+ */
+export async function PoliciesControllerUpdate(
+  params: Definitions.UpdatePolicyDto,
+  extra?: { [key: string]: any },
+): Promise<Paths.PoliciesControllerUpdate.Responses> {
+  return request("/v1/apps/{appid}/policies/{id}", {
+    method: "PATCH",
+    data: params,
+    ...(extra || {}),
+  });
+}
+
+/**
+ * TODO - ⌛️
+ */
+export async function PoliciesControllerRemove(
+  params: Paths.PoliciesControllerRemove.BodyParameters,
+  extra?: { [key: string]: any },
+): Promise<Paths.PoliciesControllerRemove.Responses> {
+  return request("/v1/apps/{appid}/policies/{id}", {
+    method: "DELETE",
+    data: params,
+    ...(extra || {}),
+  });
+}
+
+/**
+ * Create a new bucket
  */
 export async function BucketsControllerCreate(
   params: Definitions.CreateBucketDto,
@@ -92,7 +162,21 @@ export async function BucketsControllerCreate(
 }
 
 /**
- *
+ * Get bucket list of an app
+ */
+export async function BucketsControllerFindAll(
+  params: Paths.BucketsControllerFindAll.BodyParameters,
+  extra?: { [key: string]: any },
+): Promise<Paths.BucketsControllerFindAll.Responses> {
+  return request("/v1/apps/{appid}/buckets", {
+    method: "GET",
+    params: params,
+    ...(extra || {}),
+  });
+}
+
+/**
+ * Get a bucket by name
  */
 export async function BucketsControllerFindOne(
   params: Paths.BucketsControllerFindOne.BodyParameters,
@@ -106,7 +190,7 @@ export async function BucketsControllerFindOne(
 }
 
 /**
- *
+ * TODO - ⌛️
  */
 export async function BucketsControllerUpdate(
   params: Definitions.UpdateBucketDto,
@@ -120,7 +204,21 @@ export async function BucketsControllerUpdate(
 }
 
 /**
- *
+ * TODO - ⌛️
+ */
+export async function BucketsControllerRemove(
+  params: Paths.BucketsControllerRemove.BodyParameters,
+  extra?: { [key: string]: any },
+): Promise<Paths.BucketsControllerRemove.Responses> {
+  return request("/v1/apps/{appid}/buckets/{id}", {
+    method: "DELETE",
+    data: params,
+    ...(extra || {}),
+  });
+}
+
+/**
+ * TODO - ⌛️
  */
 export async function WebsitesControllerCreate(
   params: Definitions.CreateWebsiteDto,
@@ -134,7 +232,21 @@ export async function WebsitesControllerCreate(
 }
 
 /**
- *
+ * TODO - ⌛️
+ */
+export async function WebsitesControllerFindAll(
+  params: Paths.WebsitesControllerFindAll.BodyParameters,
+  extra?: { [key: string]: any },
+): Promise<Paths.WebsitesControllerFindAll.Responses> {
+  return request("/v1/apps/{appid}/websites", {
+    method: "GET",
+    params: params,
+    ...(extra || {}),
+  });
+}
+
+/**
+ * TODO - ⌛️
  */
 export async function WebsitesControllerFindOne(
   params: Paths.WebsitesControllerFindOne.BodyParameters,
@@ -148,7 +260,35 @@ export async function WebsitesControllerFindOne(
 }
 
 /**
- *
+ * TODO - ⌛️
+ */
+export async function WebsitesControllerUpdate(
+  params: Definitions.UpdateWebsiteDto,
+  extra?: { [key: string]: any },
+): Promise<Paths.WebsitesControllerUpdate.Responses> {
+  return request("/v1/apps/{appid}/websites/{id}", {
+    method: "PATCH",
+    data: params,
+    ...(extra || {}),
+  });
+}
+
+/**
+ * TODO - ⌛️
+ */
+export async function WebsitesControllerRemove(
+  params: Paths.WebsitesControllerRemove.BodyParameters,
+  extra?: { [key: string]: any },
+): Promise<Paths.WebsitesControllerRemove.Responses> {
+  return request("/v1/apps/{appid}/websites/{id}", {
+    method: "DELETE",
+    data: params,
+    ...(extra || {}),
+  });
+}
+
+/**
+ * Create a new collection in database
  */
 export async function CollectionsControllerCreate(
   params: Definitions.CreateCollectionDto,
@@ -162,7 +302,21 @@ export async function CollectionsControllerCreate(
 }
 
 /**
- *
+ * Get collection list of an application
+ */
+export async function CollectionsControllerFindAll(
+  params: Paths.CollectionsControllerFindAll.BodyParameters,
+  extra?: { [key: string]: any },
+): Promise<Paths.CollectionsControllerFindAll.Responses> {
+  return request("/v1/apps/{appid}/collections", {
+    method: "GET",
+    params: params,
+    ...(extra || {}),
+  });
+}
+
+/**
+ * Get collection by name
  */
 export async function CollectionsControllerFindOne(
   params: Paths.CollectionsControllerFindOne.BodyParameters,
@@ -171,6 +325,34 @@ export async function CollectionsControllerFindOne(
   return request("/v1/apps/{appid}/collections/{name}", {
     method: "GET",
     params: params,
+    ...(extra || {}),
+  });
+}
+
+/**
+ * Update a collection
+ */
+export async function CollectionsControllerUpdate(
+  params: Definitions.UpdateCollectionDto,
+  extra?: { [key: string]: any },
+): Promise<Paths.CollectionsControllerUpdate.Responses> {
+  return request("/v1/apps/{appid}/collections/{name}", {
+    method: "PATCH",
+    data: params,
+    ...(extra || {}),
+  });
+}
+
+/**
+ * Delete a collection by its name
+ */
+export async function CollectionsControllerRemove(
+  params: Paths.CollectionsControllerRemove.BodyParameters,
+  extra?: { [key: string]: any },
+): Promise<Paths.CollectionsControllerRemove.Responses> {
+  return request("/v1/apps/{appid}/collections/{name}", {
+    method: "DELETE",
+    data: params,
     ...(extra || {}),
   });
 }

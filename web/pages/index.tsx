@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Search2Icon } from "@chakra-ui/icons";
 import {
   Button,
@@ -8,22 +8,49 @@ import {
   InputLeftElement,
   Link,
   Spinner,
+  useToast,
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
+import {
+  ApplicationsControllerFindAll,
+  ApplicationsControllerRemove,
+} from "services/v1/applications";
 
+import ConfirmButton from "@/components/ConfirmButton";
 import CopyText from "@/components/CopyText";
 import { formatDate } from "@/utils/format";
-import request from "@/utils/request";
 
-import CreateAppModal from "./mods/CreateModal";
+import { APP_DISPLAY_NAME_KEY } from "../constants";
+
+import CreateAppModal from "./mods/CreateAppModal";
+import StatusBadge from "./mods/StatusBadge";
 function HomePage() {
-  const appListRes = useQuery(["getAppDetailInfo"], () => {
-    return request.get("/api/app");
+  const router = useRouter();
+
+  const toast = useToast();
+
+  const createAppRef = useRef<any>(null);
+
+  const appListQuery = useQuery(["appListQuery"], () => {
+    return ApplicationsControllerFindAll({});
   });
 
-  const router = useRouter();
+  const deleteAppMutation = useMutation((params: any) => ApplicationsControllerRemove(params), {
+    onSuccess: () => {
+      appListQuery.refetch();
+      toast({
+        position: "top",
+        title: "delete success.",
+        status: "success",
+        duration: 1000,
+      });
+    },
+    onError: () => {
+      // debugger;
+    },
+  });
 
   return (
     <div className="w-8/12 mt-10 mx-auto">
@@ -38,49 +65,77 @@ function HomePage() {
             <Input placeholder={t`Search`} size="lg" />
           </InputGroup>
         </div>
-        <CreateAppModal />
+        <CreateAppModal ref={createAppRef} />
       </div>
 
-      {appListRes.isLoading ? (
+      {appListQuery.isLoading ? (
         <Center>
           <Spinner size="xl" />
         </Center>
       ) : (
         <div>
-          {(appListRes.data?.data?.created || []).map((item: any) => {
+          {(appListQuery.data?.data?.items || []).map((item: any) => {
             return (
               <div
-                key={item.appid}
+                key={item?.spec?.appid}
                 className="flex justify-between items-center p-4 py-6 bg-white rounded-lg shadow mb-6 hover:bg-slate-100"
               >
                 <div style={{ width: 300 }}>
-                  <Link href="https://chakra-ui.com" isExternal>
-                    <span className="text-lg font-semibold">{item.name}</span>
+                  <Link isExternal>
+                    <span className="text-lg font-semibold ">
+                      {item?.metadata?.labels[APP_DISPLAY_NAME_KEY]}
+                    </span>
                   </Link>
 
-                  <p>
-                    App ID: {item.appid} <CopyText text={item.appid} />
+                  <p className="mt-1">
+                    App ID: {item?.spec?.appid} <CopyText text={item?.spec?.appid} />
                   </p>
                 </div>
                 <div className="flex-1">
-                  <p>规格: {item.spec.name}</p>
-                  <p>创建时间: {formatDate(item.created_at)}</p>
+                  <p>Region: {item.spec.region}</p>
+                  <p className="mt-1">创建时间: {formatDate(item.metadata.creationTimestamp)}</p>
                 </div>
+
+                <div className="flex-1">
+                  <StatusBadge
+                    appid={item?.spec?.appid}
+                    statusConditions={item?.status?.conditions}
+                  />
+                </div>
+
                 <div>
                   <Button
                     colorScheme="teal"
                     variant="ghost"
                     onClick={(event) => {
                       event?.preventDefault();
-                      router.push(`/app/${item.appid}`);
+                      router.push(`/app/${item?.spec?.appid}`);
                     }}
                   >
-                    开发
+                    进入开发
                   </Button>
 
-                  <Button colorScheme="teal" variant="ghost">
-                    配置
+                  <Button
+                    colorScheme="teal"
+                    variant="ghost"
+                    onClick={() => {
+                      createAppRef.current?.edit({ ...item.spec, displayName: "asdf" });
+                    }}
+                  >
+                    编辑
                   </Button>
+
+                  <ConfirmButton
+                    headerText="Delete App?"
+                    bodyText="Are you sure you want to delete this app."
+                    onSuccessAction={() => {
+                      deleteAppMutation.mutate({ appid: item?.spec?.appid });
+                    }}
+                  >
+                    <Button colorScheme="red" variant="ghost">
+                      删除
+                    </Button>
+                  </ConfirmButton>
                 </div>
               </div>
             );

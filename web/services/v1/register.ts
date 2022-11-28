@@ -8,7 +8,7 @@
 import request from "@/utils/request";
 
 /**
- *
+ * Redirect to register page
  */
 export async function AppControllerGetSignupUrl(
   params: Paths.AppControllerGetSignupUrl.BodyParameters,

@@ -15,10 +15,28 @@ function AppDetail() {
     <>
       <SiderBar pageId={pageId} setPageId={(pageId: string) => setPageId(pageId)} />
       <div className="h-full" style={{ marginLeft: SiderBarWidth }}>
-        {pageId === Pages.function ? <FunctionPage key={Pages.function} /> : null}
-        {pageId === Pages.database ? <DatabasePage key={Pages.database} /> : null}
-        {pageId === Pages.storage ? <StoragePage key={Pages.storage} /> : null}
-        {pageId === Pages.logs ? <LogsPage key={Pages.logs} /> : null}
+        {[
+          {
+            pageId: Pages.function,
+            component: FunctionPage,
+          },
+          {
+            pageId: Pages.database,
+            component: DatabasePage,
+          },
+          {
+            pageId: Pages.storage,
+            component: StoragePage,
+          },
+          {
+            pageId: Pages.logs,
+            component: LogsPage,
+          },
+        ].map((item) => (
+          <div key={item.pageId} className={pageId === item.pageId ? "block h-full" : "hidden"}>
+            {item.pageId === pageId ? <item.component /> : null}
+          </div>
+        ))}
       </div>
     </>
   );
