@@ -11,7 +11,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common'
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { IRequest } from 'src/common/types'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { ApiResponseUtil, ResponseUtil } from '../common/response'
@@ -23,6 +23,7 @@ import { Application, ApplicationList } from './entities/application.entity'
 
 @ApiTags('Application')
 @Controller('applications')
+@ApiBearerAuth('Authorization')
 export class ApplicationsController {
   constructor(private readonly appService: ApplicationsService) {}
 
@@ -31,7 +32,7 @@ export class ApplicationsController {
    * @returns
    */
   @ApiResponseUtil(Application)
-  @ApiOperation({ summary: 'Get application list' })
+  @ApiOperation({ summary: 'Create a new application' })
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() dto: CreateApplicationDto, @Req() req: IRequest) {
@@ -56,15 +57,28 @@ export class ApplicationsController {
     return ResponseUtil.ok(app)
   }
 
+  /**
+   * Get user application list
+   * @param req
+   * @returns
+   */
   @ApiResponseUtil(ApplicationList)
   @UseGuards(JwtAuthGuard)
   @Get()
+  @ApiOperation({ summary: 'Get user application list' })
   async findAll(@Req() req: IRequest) {
     const user = req.user
     const data = this.appService.findAllByUser(user.id)
     return ResponseUtil.ok(data)
   }
 
+  /**
+   * Get an application by appid
+   * @param appid
+   * @param req
+   * @returns
+   */
+  @ApiOperation({ summary: 'Get an application by appid' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get(':appid')
   async findOne(@Param('appid') appid: string, @Req() req: IRequest) {
@@ -77,19 +91,47 @@ export class ApplicationsController {
     return ResponseUtil.ok(data)
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateApplicationDto: UpdateApplicationDto,
-  ) {
-    return this.appService.update(+id, updateApplicationDto)
+  /**
+   * Update an application
+   * @param dto
+   * @param req
+   * @returns
+   */
+  @ApiOperation({ summary: 'Update an application' })
+  @ApiResponseUtil(Application)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Patch(':appid')
+  async update(@Body() dto: UpdateApplicationDto, @Req() req: IRequest) {
+    // check dto
+    const error = dto.validate()
+    if (error) {
+      return ResponseUtil.error(error)
+    }
+
+    // update app
+    const app = req.application
+    const res = await this.appService.update(app, dto)
+    if (res === null) {
+      return ResponseUtil.error('update application error')
+    }
+    return ResponseUtil.ok(res)
   }
 
-  @Delete(':id')
+  /**
+   * Delete an application
+   * @returns
+   */
+  @Delete(':appid')
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @ApiOperation({
-    summary: 'TODO: delete application by its appid',
+    summary: 'Delete an application',
   })
-  remove(@Param('id') id: string) {
-    return this.appService.remove(+id)
+  async remove(@Req() req: IRequest) {
+    const app = req.application
+    const res = await this.appService.remove(app)
+    if (res === null) {
+      return ResponseUtil.error('delete application error')
+    }
+    return ResponseUtil.ok(res)
   }
 }

@@ -50,7 +50,7 @@ describe('AppService create app', () => {
   it('should create app', async () => {
     appid = service.generateAppid(6)
     const dto = new CreateApplicationDto()
-    dto.name = appid
+    dto.displayName = appid
     dto.state = ApplicationState.ApplicationStateRunning
     dto.region = 'default'
     dto.bundleName = 'mini'
@@ -66,7 +66,7 @@ describe('AppService create app', () => {
     const res = await service.create(userid, appid, dto)
     expect(res).not.toBeNull()
     expect(res.kind).toBe('Application')
-    expect(res.metadata.name).toBe(dto.name)
+    expect(res.metadata.name).toBe(dto.displayName)
     expect(res.spec.state).toBe(ApplicationState.ApplicationStateRunning)
   })
 

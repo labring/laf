@@ -56,6 +56,10 @@ export class ResourceLabels {
     return 'laf.dev/appid'
   }
 
+  static get DISPLAY_NAME() {
+    return 'laf.dev/display.name'
+  }
+
   static get NAMESPACE_TYPE() {
     return 'laf.dev/namespace.type'
   }

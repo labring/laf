@@ -3,7 +3,7 @@ import { ApplicationState } from '../entities/application.entity'
 
 export class CreateApplicationDto {
   @ApiProperty({ required: true })
-  name: string
+  displayName: string
 
   @ApiProperty({
     default: ApplicationState.ApplicationStateRunning,
@@ -22,7 +22,7 @@ export class CreateApplicationDto {
   runtimeName: string
 
   validate(): string | null {
-    if (!this.name) {
+    if (!this.displayName) {
       return 'name is required'
     }
     if (!this.state) {
