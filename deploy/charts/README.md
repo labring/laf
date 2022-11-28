@@ -34,13 +34,14 @@ helm install postgresql \
 export NODE_IP=$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[0].address}")
 export CASDOOR_NODE_PORT=30070
 export CASDOOR_ENDPOINT=http://$NODE_IP:$CASDOOR_NODE_PORT
-export CASDOOR_CALLBACK_URL=http://localhost:8080/login/callback
+export CASDOOR_REDIRECT_URI=http://localhost:8080/login/callback
 helm install casdoor \
   --set service.nodePort=$CASDOOR_NODE_PORT \
   --set postgresql.host=$PG_HOST \
   --set postgresql.username=$PG_USERNAME \
   --set postgresql.password=$PG_PASSWORD \
   --set postgresql.database=$PG_DATABASE \
+  --set init.redirect_uri=$CASDOOR_REDIRECT_URI \
   --namespace laf \
   $CHARTS_DIR/casdoor
 

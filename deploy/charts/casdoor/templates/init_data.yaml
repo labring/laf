@@ -71,6 +71,7 @@ data:
           ],
           "redirectUris": [
             "http://localhost:3001/login",
+            "http://localhost:3001/login_callback",
             "http://localhost:3000/v1/code2token",
             {{ .Values.init.redirect_uri | quote }}
           ],
