@@ -12,7 +12,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { ApplicationAuthGuard } from 'src/applications/application.auth.guard'
 import { IRequest } from 'src/common/types'
 import { ApplicationsService } from '../applications/applications.service'
@@ -24,6 +24,7 @@ import { UpdateBucketDto } from './dto/update-bucket.dto'
 import { Bucket, BucketList } from './entities/bucket.entity'
 
 @ApiTags('Bucket')
+@ApiBearerAuth('Authorization')
 @Controller('apps/:appid/buckets')
 export class BucketsController {
   logger = new Logger(BucketsController.name)
@@ -39,6 +40,7 @@ export class BucketsController {
    * @returns
    */
   @ApiResponseUtil(Bucket)
+  @ApiOperation({ summary: 'Create a new bucket' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post()
   async create(@Body() dto: CreateBucketDto, @Req() req: IRequest) {
@@ -70,6 +72,7 @@ export class BucketsController {
    * @returns
    */
   @ApiResponseUtil(BucketList)
+  @ApiOperation({ summary: 'Get bucket list of an app' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get()
   async findAll(@Param('appid') appid: string) {
@@ -84,6 +87,7 @@ export class BucketsController {
    * @returns
    */
   @ApiResponseUtil(Bucket)
+  @ApiOperation({ summary: 'Get a bucket by name' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get(':name')
   findOne(@Param('appid') appid: string, @Param('name') name: string) {
@@ -95,11 +99,13 @@ export class BucketsController {
     return ResponseUtil.ok(data)
   }
 
+  @ApiOperation({ summary: 'TODO - ⌛️' })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateBucketDto: UpdateBucketDto) {
     return this.bucketsService.update(+id, updateBucketDto)
   }
 
+  @ApiOperation({ summary: 'TODO - ⌛️' })
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.bucketsService.remove(+id)

@@ -15,11 +15,12 @@ import { CreateFunctionDto } from './dto/create-function.dto'
 import { UpdateFunctionDto } from './dto/update-function.dto'
 import { ApiResponseUtil, ResponseUtil } from 'src/common/response'
 import { CloudFunction, CloudFunctionList } from './entities/function.entity'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
 import { ApplicationAuthGuard } from 'src/applications/application.auth.guard'
 
 @ApiTags('Function')
+@ApiBearerAuth('Authorization')
 @Controller('apps/:appid/functions')
 export class FunctionsController {
   constructor(private readonly functionsService: FunctionsService) {}
@@ -27,10 +28,10 @@ export class FunctionsController {
   /**
    * Create a new function
    * @param dto
-   * @param req
    * @returns
    */
   @ApiResponseUtil(CloudFunction)
+  @ApiOperation({ summary: 'Create a new function' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post()
   async create(@Param('appid') appid: string, @Body() dto: CreateFunctionDto) {
@@ -51,6 +52,7 @@ export class FunctionsController {
    * @returns
    */
   @ApiResponseUtil(CloudFunctionList)
+  @ApiOperation({ summary: 'Query function list of an app' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get()
   async findAll(@Param('appid') appid: string) {
@@ -64,6 +66,7 @@ export class FunctionsController {
    * @param name
    */
   @ApiResponseUtil(CloudFunction)
+  @ApiOperation({ summary: 'Get a function by its name' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get(':name')
   async findOne(@Param('appid') appid: string, @Param('name') name: string) {
@@ -74,6 +77,7 @@ export class FunctionsController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'TODO - ⌛️' })
   update(
     @Param('id') id: string,
     @Body() updateFunctionDto: UpdateFunctionDto,
@@ -81,6 +85,7 @@ export class FunctionsController {
     return this.functionsService.update(+id, updateFunctionDto)
   }
 
+  @ApiOperation({ summary: 'TODO - ⌛️' })
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.functionsService.remove(+id)
