@@ -4,8 +4,6 @@ import { Button, Input, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-
 import JsonEditor from "@/components/Editor/JsonEditor";
 import PanelHeader from "@/components/Panel/Header";
 
-import PanelHeader from "@/components/Panel/Header";
-
 export default function DebugPanel() {
   return (
     <div className="flex h-full">
