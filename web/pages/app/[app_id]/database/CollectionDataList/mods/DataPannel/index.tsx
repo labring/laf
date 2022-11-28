@@ -76,7 +76,7 @@ export default function DataPannel() {
           })}
         </div>
         <div
-          className={clsx("flex-1", {
+          className={clsx("flex-1 tarnsition-all duration-200 ease-in-out ", {
             "mr-2": typeof currentData !== "undefined",
           })}
           style={{

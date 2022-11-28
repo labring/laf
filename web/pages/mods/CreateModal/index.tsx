@@ -2,10 +2,9 @@ import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { AddIcon } from "@chakra-ui/icons";
 import {
   Button,
-  Card,
-  CardBody,
   FormControl,
   FormLabel,
+  HStack,
   Input,
   Modal,
   ModalBody,
@@ -21,7 +20,6 @@ import { t } from "@lingui/macro";
 
 const CreateAppModal = forwardRef((props, ref) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const formRef = React.useRef(null);
 
   const [currentFunc, setCurrentFunc] = useState<any | any>();
   const [isEdit, setIsEdit] = useState(false);
@@ -69,7 +67,12 @@ const CreateAppModal = forwardRef((props, ref) => {
 
               <FormControl>
                 <FormLabel htmlFor="id">选择规格</FormLabel>
-                <Button colorScheme={"green"}>Starter</Button>
+                <HStack spacing={4}>
+                  <Button colorScheme={"green"}>Starter</Button>
+                  <Button colorScheme={"green"} variant="outline">
+                    Starter
+                  </Button>
+                </HStack>
               </FormControl>
 
               <FormControl>
