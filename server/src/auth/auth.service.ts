@@ -34,7 +34,7 @@ export class AuthService {
           username: casdoorUser.name,
           email: casdoorUser.email,
           phone: casdoorUser.phone,
-          UserProfile: {
+          profile: {
             create: {
               openid: casdoorUser.id,
               name: casdoorUser.displayName,
@@ -50,7 +50,7 @@ export class AuthService {
             username: casdoorUser.name,
             email: casdoorUser.email,
             phone: casdoorUser.phone,
-            UserProfile: {
+            profile: {
               update: {
                 name: casdoorUser.displayName,
                 avatar: casdoorUser.avatar,

@@ -15,7 +15,7 @@ model User {
   username    String       @unique
   email       String       @unique
   phone       String       @unique
-  UserProfile UserProfile?
+  profile UserProfile?
 }
 
 model UserProfile {

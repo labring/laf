@@ -39,3 +39,18 @@ multipass exec laf-dev -- sudo -u root sh /laf/deploy/scripts/install-laf-core.s
 # apply laf cluster resource
 multipass exec laf-dev -- sudo -u root kubectl apply -f /laf/deploy/scripts/init-laf/
 ``` 
+
+3. Start laf server
+
+```bash
+kubectl port-forward deployment/postgresql 5432 -n laf
+kubectl port-forward deployments/casdoor 30070:8000 -n laf
+
+# run once
+cd server
+npx prisma db push
+npx prisma generate
+
+# run dev
+npm run watch
+```

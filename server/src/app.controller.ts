@@ -1,5 +1,5 @@
 import { Controller, Get, Query, Req, Res, UseGuards } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiHeader, ApiTags } from '@nestjs/swagger'
 import { Response } from 'express'
 import { AuthService } from './auth/auth.service'
 import { JwtAuthGuard } from './auth/jwt-auth.guard'
@@ -7,6 +7,7 @@ import { ResponseUtil } from './common/response'
 import { IRequest } from './common/types'
 
 @ApiTags('Authentication')
+@ApiBearerAuth('Authorization')
 @Controller()
 export class AppController {
   constructor(private readonly authService: AuthService) {}
