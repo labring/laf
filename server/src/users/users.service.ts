@@ -29,7 +29,7 @@ export class UsersService {
     return this.prisma.user.findUnique({
       where: input,
       include: {
-        UserProfile: withProfile,
+        profile: withProfile,
       },
     })
   }

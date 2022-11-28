@@ -11,7 +11,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { IRequest } from 'src/common/types'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { ApiResponseUtil, ResponseUtil } from '../common/response'
@@ -31,6 +31,7 @@ export class ApplicationsController {
    * @returns
    */
   @ApiResponseUtil(Application)
+  @ApiOperation({ summary: 'Get application list' })
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() dto: CreateApplicationDto, @Req() req: IRequest) {
@@ -85,6 +86,9 @@ export class ApplicationsController {
   }
 
   @Delete(':id')
+  @ApiOperation({
+    summary: 'TODO: delete application by its appid',
+  })
   remove(@Param('id') id: string) {
     return this.appService.remove(+id)
   }
