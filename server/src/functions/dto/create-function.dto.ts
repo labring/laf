@@ -1,5 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsIn, IsNotEmpty, IsString, Length, MaxLength } from 'class-validator'
+import {
+  IsBoolean,
+  IsIn,
+  IsNotEmpty,
+  IsString,
+  Length,
+  MaxLength,
+} from 'class-validator'
 import { HTTP_METHODS } from 'src/constants'
 
 export class CreateFunctionDto {
@@ -15,10 +22,11 @@ export class CreateFunctionDto {
   description: string
 
   @ApiProperty()
+  @IsBoolean()
   websocket: boolean
 
   @ApiProperty({ type: [String], enum: HTTP_METHODS })
-  @IsIn(HTTP_METHODS)
+  @IsIn(HTTP_METHODS, { each: true })
   methods: string[] = []
 
   @ApiProperty({ description: 'The source code of the function' })
@@ -28,14 +36,6 @@ export class CreateFunctionDto {
   codes: string
 
   validate() {
-    if (!this.methods) {
-      this.methods = []
-    }
-    const valid = this.methods.every((method) => HTTP_METHODS.includes(method))
-    if (!valid) {
-      return 'methods is invalid'
-    }
-
     return null
   }
 }

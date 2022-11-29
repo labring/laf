@@ -12,7 +12,12 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common'
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 import { ApplicationAuthGuard } from 'src/applications/application.auth.guard'
 import { IRequest } from 'src/common/types'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
@@ -135,7 +140,7 @@ export class BucketsController {
    * @param name bucket name
    * @returns
    */
-  @ApiResponseUtil(Bucket)
+  @ApiResponse({ type: ResponseUtil })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @ApiOperation({ summary: 'Delete a bucket' })
   @Delete(':name')

@@ -15,7 +15,12 @@ import { CreateFunctionDto } from './dto/create-function.dto'
 import { UpdateFunctionDto } from './dto/update-function.dto'
 import { ApiResponseUtil, ResponseUtil } from 'src/common/response'
 import { CloudFunction, CloudFunctionList } from './entities/function.entity'
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
 import { ApplicationAuthGuard } from 'src/applications/application.auth.guard'
 
@@ -38,6 +43,12 @@ export class FunctionsController {
     const error = dto.validate()
     if (error) {
       return ResponseUtil.error(error)
+    }
+
+    // check name is unique
+    const found = await this.functionsService.findOne(appid, dto.name)
+    if (found) {
+      return ResponseUtil.error('function name is already existed')
     }
 
     const res = await this.functionsService.create(appid, dto)
@@ -77,18 +88,54 @@ export class FunctionsController {
     return ResponseUtil.ok(data)
   }
 
-  @Patch(':id')
-  @ApiOperation({ summary: 'TODO - ⌛️' })
-  update(
-    @Param('id') id: string,
-    @Body() updateFunctionDto: UpdateFunctionDto,
+  /**
+   * Update a function
+   * @param appid
+   * @param name
+   * @param dto
+   * @returns
+   */
+  @ApiResponseUtil(CloudFunction)
+  @ApiOperation({ summary: 'Update a function' })
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Patch(':name')
+  async update(
+    @Param('appid') appid: string,
+    @Param('name') name: string,
+    @Body() dto: UpdateFunctionDto,
   ) {
-    return this.functionsService.update(+id, updateFunctionDto)
+    const func = await this.functionsService.findOne(appid, name)
+    if (!func) {
+      throw new HttpException('function not found', HttpStatus.NOT_FOUND)
+    }
+
+    const res = await this.functionsService.update(func, dto)
+    if (!res) {
+      return ResponseUtil.error('update function error')
+    }
+    return ResponseUtil.ok(res)
   }
 
-  @ApiOperation({ summary: 'TODO - ⌛️' })
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.functionsService.remove(+id)
+  /**
+   * Delete a function
+   * @param appid
+   * @param name
+   * @returns
+   */
+  @ApiResponse({ type: ResponseUtil })
+  @ApiOperation({ summary: 'Delete a function' })
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Delete(':name')
+  async remove(@Param('appid') appid: string, @Param('name') name: string) {
+    const func = await this.functionsService.findOne(appid, name)
+    if (!func) {
+      throw new HttpException('function not found', HttpStatus.NOT_FOUND)
+    }
+
+    const res = await this.functionsService.remove(func)
+    if (!res) {
+      return ResponseUtil.error('delete function error')
+    }
+    return ResponseUtil.ok(res)
   }
 }

@@ -47,9 +47,7 @@ export class AppController {
    * @returns
    */
   @ApiOperation({ summary: 'Get user token by auth code' })
-  @ApiResponse({
-    type: ResponseUtil,
-  })
+  @ApiResponse({ type: ResponseUtil })
   @Get('code2token')
   async code2token(@Query('code') code: string) {
     const token = await this.authService.code2token(code)

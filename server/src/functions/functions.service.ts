@@ -27,7 +27,7 @@ export class FunctionsService {
 
     try {
       const res = await this.k8sClient.objectApi.create(func)
-      return res.body
+      return CloudFunction.fromObject(res.body)
     } catch (error) {
       this.logger.error(error, error?.response?.body)
       return null
@@ -83,11 +83,36 @@ export class FunctionsService {
     }
   }
 
-  update(id: number, updateFunctionDto: UpdateFunctionDto) {
-    return `This action updates a #${id} function`
+  async update(func: CloudFunction, dto: UpdateFunctionDto) {
+    if (dto.description) {
+      func.spec.description = dto.description
+    }
+    if (dto.methods) {
+      func.spec.methods = dto.methods
+    }
+    if (dto.codes) {
+      func.spec.source.codes = dto.codes
+    }
+    if (dto.websocket) {
+      func.spec.websocket = dto.websocket
+    }
+
+    try {
+      const res = await this.k8sClient.patchCustomObject(func)
+      return CloudFunction.fromObject(res)
+    } catch (error) {
+      this.logger.error(error, error?.response?.body)
+      return null
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} function`
+  async remove(func: CloudFunction) {
+    try {
+      const res = await this.k8sClient.deleteCustomObject(func)
+      return CloudFunction.fromObject(res)
+    } catch (error) {
+      this.logger.error(error, error?.response?.body)
+      return null
+    }
   }
 }
