@@ -54,6 +54,7 @@ kubectl port-forward deployments/casdoor 30070:8000 -n laf
 
 # Run these in first time or when someone change the schema.
 cd server
+npm install
 npx prisma db push
 npx prisma generate
 
