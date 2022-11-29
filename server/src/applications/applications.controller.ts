@@ -37,7 +37,7 @@ export class ApplicationsController {
   @Post()
   async create(@Body() dto: CreateApplicationDto, @Req() req: IRequest) {
     const user = req.user
-    const error = CreateApplicationDto.validate(dto)
+    const error = dto.validate()
     if (error) {
       return ResponseUtil.error(error)
     }
@@ -107,7 +107,7 @@ export class ApplicationsController {
     @Req() req: IRequest,
   ) {
     // check dto
-    const error = UpdateApplicationDto.validate(dto)
+    const error = dto.validate()
     if (error) {
       return ResponseUtil.error(error)
     }

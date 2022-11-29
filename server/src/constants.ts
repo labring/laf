@@ -64,3 +64,5 @@ export class ResourceLabels {
     return 'laf.dev/namespace.type'
   }
 }
+
+export const HTTP_METHODS = ['HEAD', 'GET', 'POST', 'PUT', 'DELETE', 'PATCH']

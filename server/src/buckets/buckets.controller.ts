@@ -15,7 +15,6 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { ApplicationAuthGuard } from 'src/applications/application.auth.guard'
 import { IRequest } from 'src/common/types'
-import { ApplicationsService } from '../applications/applications.service'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { ApiResponseUtil, ResponseUtil } from '../common/response'
 import { BucketsService } from './buckets.service'
@@ -28,10 +27,7 @@ import { Bucket, BucketList } from './entities/bucket.entity'
 @Controller('apps/:appid/buckets')
 export class BucketsController {
   logger = new Logger(BucketsController.name)
-  constructor(
-    private readonly bucketsService: BucketsService,
-    private readonly appService: ApplicationsService,
-  ) {}
+  constructor(private readonly bucketsService: BucketsService) {}
 
   /**
    * Create a new bucket
@@ -43,9 +39,14 @@ export class BucketsController {
   @ApiOperation({ summary: 'Create a new bucket' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post()
-  async create(@Body() dto: CreateBucketDto, @Req() req: IRequest) {
+  async create(
+    @Param('appid') appid: string,
+    @Body() dto: CreateBucketDto,
+    @Req() req: IRequest,
+  ) {
     // check if the bucket name is unique
-    const found = await this.bucketsService.findOne(dto.appid, dto.name)
+
+    const found = await this.bucketsService.findOne(appid, dto.fullname(appid))
     if (found) {
       return ResponseUtil.error('bucket name is already existed')
     }
@@ -58,7 +59,7 @@ export class BucketsController {
     )
 
     // create bucket
-    const bucket = await this.bucketsService.create(dto)
+    const bucket = await this.bucketsService.create(appid, dto)
     if (!bucket) {
       return ResponseUtil.error('create bucket failed')
     }

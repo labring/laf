@@ -10,9 +10,9 @@ export class BucketsService {
   logger: Logger = new Logger(BucketsService.name)
   constructor(private readonly k8sClient: KubernetesService) {}
 
-  async create(dto: CreateBucketDto) {
-    const namespace = GetApplicationNamespaceById(dto.appid)
-    const bucket = new Bucket(dto.name, namespace)
+  async create(appid: string, dto: CreateBucketDto) {
+    const namespace = GetApplicationNamespaceById(appid)
+    const bucket = new Bucket(dto.fullname(appid), namespace)
     bucket.spec = {
       policy: dto.policy,
       storage: dto.storage,

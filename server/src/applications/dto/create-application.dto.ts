@@ -1,40 +1,34 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { IsEnum, IsNotEmpty, Length } from 'class-validator'
 import { ApplicationState } from '../entities/application.entity'
 
 export class CreateApplicationDto {
   @ApiProperty({ required: true })
+  @Length(1, 64)
+  @IsNotEmpty()
   displayName: string
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     default: ApplicationState.ApplicationStateRunning,
-    required: false,
     enum: ApplicationState,
   })
+  @IsNotEmpty()
+  @IsEnum(ApplicationState)
   state: ApplicationState
 
   @ApiProperty()
+  @IsNotEmpty()
   region: string
 
   @ApiProperty()
+  @IsNotEmpty()
   bundleName: string
 
   @ApiProperty()
+  @IsNotEmpty()
   runtimeName: string
 
-  static validate(dto: CreateApplicationDto): string | null {
-    if (!dto.displayName) {
-      return 'name is required'
-    }
-    if (!dto.state) {
-      return 'state is required'
-    }
-    if (!dto.region) {
-      return 'region is required'
-    }
-    if (!dto.bundleName) {
-      return 'bundleName is required'
-    }
-
+  validate(): string | null {
     return null
   }
 }

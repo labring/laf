@@ -35,7 +35,7 @@ export class FunctionsController {
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post()
   async create(@Param('appid') appid: string, @Body() dto: CreateFunctionDto) {
-    const error = CreateFunctionDto.validate(dto)
+    const error = dto.validate()
     if (error) {
       return ResponseUtil.error(error)
     }

@@ -1,40 +1,37 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { IsIn, IsNotEmpty, IsString, Length, MaxLength } from 'class-validator'
+import { HTTP_METHODS } from 'src/constants'
 
 export class CreateFunctionDto {
   @ApiProperty({
     description: 'Function name is unique in the application',
   })
+  @IsNotEmpty()
+  @Length(1, 128)
   name: string
 
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @MaxLength(256)
   description: string
 
   @ApiProperty()
   websocket: boolean
 
-  @ApiProperty({
-    type: [String],
-    enum: ['HEAD', 'GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  })
+  @ApiProperty({ type: [String], enum: HTTP_METHODS })
+  @IsIn(HTTP_METHODS)
   methods: string[] = []
 
-  @ApiProperty({
-    description: 'The source code of the function',
-  })
+  @ApiProperty({ description: 'The source code of the function' })
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(1024 * 512)
   codes: string
 
-  static validate(dto: CreateFunctionDto) {
-    if (!dto.name) {
-      return 'name is required'
+  validate() {
+    if (!this.methods) {
+      this.methods = []
     }
-
-    if (!dto.methods) {
-      dto.methods = []
-    }
-
-    const valid = dto.methods.every((method) => {
-      return ['HEAD', 'GET', 'POST', 'PUT', 'DELETE', 'PATCH'].includes(method)
-    })
+    const valid = this.methods.every((method) => HTTP_METHODS.includes(method))
     if (!valid) {
       return 'methods is invalid'
     }

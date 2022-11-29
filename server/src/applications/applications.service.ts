@@ -61,7 +61,7 @@ export class ApplicationsService {
 
     try {
       const res = await this.k8sClient.objectApi.create(app)
-      return res.body
+      return Application.fromObject(res.body)
     } catch (error) {
       this.logger.error(error, error?.response.body)
       return null
