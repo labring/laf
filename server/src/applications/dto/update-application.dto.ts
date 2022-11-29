@@ -1,6 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
 import { ApplicationState } from '../entities/application.entity'
 
+const STATES = ['Running', 'Stopped']
 export class UpdateApplicationDto {
   /**
    * Application name
@@ -9,13 +10,13 @@ export class UpdateApplicationDto {
   displayName?: string
 
   @ApiPropertyOptional({
-    enum: ['running', 'stopped'],
+    enum: STATES,
   })
   state?: ApplicationState
 
-  validate() {
-    if (this.state) {
-      if (!['running', 'stopped'].includes(this.state)) {
+  static validate(dto: UpdateApplicationDto) {
+    if (dto.state) {
+      if (!STATES.includes(dto.state)) {
         return 'state must be running or stopped'
       }
     }

@@ -53,7 +53,7 @@ export class FunctionsService {
       labelSelector,
     )
 
-    return res.body as CloudFunctionList
+    return CloudFunctionList.fromObject(res.body as any)
   }
 
   /**
@@ -73,7 +73,7 @@ export class FunctionsService {
           CloudFunction.GVK.plural,
           name,
         )
-      return res.body as CloudFunction
+      return CloudFunction.fromObject(res.body)
     } catch (err) {
       this.logger.error(err)
       if (err?.response?.body?.reason === 'NotFound') {

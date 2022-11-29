@@ -22,7 +22,7 @@ export class ApplicationsService {
     try {
       const namespace = new k8s.V1Namespace()
       namespace.metadata = new k8s.V1ObjectMeta()
-      namespace.metadata.name = appid
+      namespace.metadata.name = GetApplicationNamespaceById(appid)
       namespace.metadata.labels = {
         [ResourceLabels.APP_ID]: appid,
         [ResourceLabels.NAMESPACE_TYPE]: 'app',
@@ -31,7 +31,7 @@ export class ApplicationsService {
       const res = await this.k8sClient.coreV1Api.createNamespace(namespace)
       return res.body
     } catch (err) {
-      this.logger.error(err)
+      this.logger.error(err, err?.response?.body)
       return null
     }
   }
@@ -79,7 +79,7 @@ export class ApplicationsService {
       undefined,
       labelSelector,
     )
-    return res.body as ApplicationList
+    return ApplicationList.fromObject(res.body as any)
   }
 
   async findAllByUser(userid: string): Promise<ApplicationList> {
@@ -93,7 +93,7 @@ export class ApplicationsService {
 
     // get app
     try {
-      const appRes =
+      const res =
         await this.k8sClient.customObjectApi.getNamespacedCustomObject(
           Application.GVK.group,
           Application.GVK.version,
@@ -101,7 +101,7 @@ export class ApplicationsService {
           Application.GVK.plural,
           name,
         )
-      return appRes.body as Application
+      return Application.fromObject(res.body)
     } catch (err) {
       this.logger.error(err)
       if (err?.response?.body?.reason === 'NotFound') {
@@ -114,7 +114,7 @@ export class ApplicationsService {
   async findOneByUser(userid: string, appid: string): Promise<Application> {
     const app = await this.findOne(appid)
     if (app?.metadata?.labels?.[ResourceLabels.USER_ID] === userid) {
-      return app
+      return Application.fromObject(app)
     }
     return null
   }

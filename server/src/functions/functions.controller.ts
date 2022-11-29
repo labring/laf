@@ -35,7 +35,7 @@ export class FunctionsController {
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post()
   async create(@Param('appid') appid: string, @Body() dto: CreateFunctionDto) {
-    const error = dto.validate()
+    const error = CreateFunctionDto.validate(dto)
     if (error) {
       return ResponseUtil.error(error)
     }
@@ -74,6 +74,7 @@ export class FunctionsController {
     if (!data) {
       throw new HttpException('function not found', HttpStatus.NOT_FOUND)
     }
+    return ResponseUtil.ok(data)
   }
 
   @Patch(':id')

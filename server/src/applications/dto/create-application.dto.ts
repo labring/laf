@@ -21,17 +21,17 @@ export class CreateApplicationDto {
   @ApiProperty()
   runtimeName: string
 
-  validate(): string | null {
-    if (!this.displayName) {
+  static validate(dto: CreateApplicationDto): string | null {
+    if (!dto.displayName) {
       return 'name is required'
     }
-    if (!this.state) {
+    if (!dto.state) {
       return 'state is required'
     }
-    if (!this.region) {
+    if (!dto.region) {
       return 'region is required'
     }
-    if (!this.bundleName) {
+    if (!dto.bundleName) {
       return 'bundleName is required'
     }
 
