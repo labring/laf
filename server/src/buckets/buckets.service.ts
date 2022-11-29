@@ -10,6 +10,12 @@ export class BucketsService {
   logger: Logger = new Logger(BucketsService.name)
   constructor(private readonly k8sClient: KubernetesService) {}
 
+  /**
+   * Create a new bucket
+   * @param appid
+   * @param dto
+   * @returns
+   */
   async create(appid: string, dto: CreateBucketDto) {
     const namespace = GetApplicationNamespaceById(appid)
     const bucket = new Bucket(dto.fullname(appid), namespace)
@@ -20,7 +26,7 @@ export class BucketsService {
 
     try {
       const res = await this.k8sClient.objectApi.create(bucket)
-      return res.body
+      return Bucket.fromObject(res.body)
     } catch (error) {
       this.logger.error(error)
       return null
@@ -46,7 +52,7 @@ export class BucketsService {
       labelSelector,
     )
 
-    return res.body as BucketList
+    return BucketList.fromObject(res.body as any)
   }
 
   async findOne(appid: string, name: string): Promise<Bucket> {
@@ -60,21 +66,41 @@ export class BucketsService {
           Bucket.GVK.plural,
           name,
         )
-      return res.body as Bucket
+      return Bucket.fromObject(res.body)
     } catch (err) {
-      this.logger.error(err)
       if (err?.response?.body?.reason === 'NotFound') {
         return null
       }
+      this.logger.error(err, err.response?.body)
       throw err
     }
   }
 
-  update(id: number, updateBucketDto: UpdateBucketDto) {
-    return `This action updates a #${id} bucket`
+  async update(bucket: Bucket, dto: UpdateBucketDto) {
+    if (dto.policy) {
+      bucket.spec.policy = dto.policy
+    }
+
+    if (dto.storage) {
+      bucket.spec.storage = dto.storage
+    }
+
+    try {
+      const res = await this.k8sClient.patchCustomObject(bucket)
+      return Bucket.fromObject(res)
+    } catch (error) {
+      this.logger.error(error, error.response?.body)
+      return null
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} bucket`
+  async remove(bucket: Bucket) {
+    try {
+      const res = await this.k8sClient.deleteCustomObject(bucket)
+      return Bucket.fromObject(res)
+    } catch (error) {
+      this.logger.error(error, error.response?.body)
+      return null
+    }
   }
 }
