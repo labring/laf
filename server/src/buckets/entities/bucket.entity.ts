@@ -1,4 +1,4 @@
-import { KubernetesObject } from '@kubernetes/client-node'
+import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
   Condition,
@@ -85,6 +85,13 @@ export class Bucket implements KubernetesObject {
     this.metadata = new ObjectMeta(name, namespace)
     this.spec = new BucketSpec()
   }
+
+  static fromObject(obj: KubernetesObject): Bucket {
+    const bucket = new Bucket(obj.metadata.name, obj.metadata.namespace)
+    delete obj.metadata['managedFields']
+    Object.assign(bucket, obj)
+    return bucket
+  }
 }
 
 export class BucketList {
@@ -95,4 +102,11 @@ export class BucketList {
     type: [Bucket],
   })
   items: Bucket[]
+
+  static fromObject(obj: KubernetesListObject<Bucket>): BucketList {
+    const list = new BucketList()
+    Object.assign(list, obj)
+    list.items = obj.items.map((item) => Bucket.fromObject(item))
+    return list
+  }
 }

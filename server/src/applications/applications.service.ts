@@ -139,7 +139,7 @@ export class ApplicationsService {
       const res = await this.k8sClient.deleteCustomObject(app)
       return res
     } catch (error) {
-      this.logger.error(error)
+      this.logger.error(error, error.response?.body)
       return null
     }
   }
