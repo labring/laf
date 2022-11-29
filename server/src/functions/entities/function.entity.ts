@@ -78,6 +78,13 @@ export class CloudFunction implements KubernetesObject {
     }
     this.spec = new CloudFunctionSpec()
   }
+
+  static fromObject(obj: KubernetesObject) {
+    const func = new CloudFunction(obj.metadata?.name, obj.metadata?.namespace)
+    delete obj.metadata['managedFields']
+    Object.assign(func, obj)
+    return func
+  }
 }
 
 export class CloudFunctionList implements KubernetesListObject<CloudFunction> {
@@ -91,4 +98,11 @@ export class CloudFunctionList implements KubernetesListObject<CloudFunction> {
     type: [CloudFunction],
   })
   items: CloudFunction[]
+
+  static fromObject(obj: KubernetesListObject<CloudFunction>) {
+    const list = new CloudFunctionList()
+    Object.assign(list, obj)
+    list.items = list.items.map((item) => CloudFunction.fromObject(item))
+    return list
+  }
 }

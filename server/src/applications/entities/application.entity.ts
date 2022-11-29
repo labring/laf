@@ -1,4 +1,4 @@
-import { KubernetesObject } from '@kubernetes/client-node'
+import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { ResourceLabels } from '../../constants'
 import {
@@ -103,6 +103,13 @@ export class Application implements KubernetesObject {
     this.spec = new ApplicationSpec()
   }
 
+  static fromObject(obj: KubernetesObject) {
+    const app = new Application(obj.metadata?.name, obj.metadata?.namespace)
+    delete obj.metadata['managedFields']
+    Object.assign(app, obj)
+    return app
+  }
+
   setUserId(userid: string) {
     this.metadata.labels = {
       ...this.metadata.labels,
@@ -133,4 +140,11 @@ export class ApplicationList {
     type: [Application],
   })
   items: Application[]
+
+  static fromObject(obj: KubernetesListObject<Application>) {
+    const list = new ApplicationList()
+    Object.assign(list, obj)
+    list.items = obj.items.map((item) => Application.fromObject(item))
+    return list
+  }
 }

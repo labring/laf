@@ -37,14 +37,14 @@ export class ApplicationsController {
   @Post()
   async create(@Body() dto: CreateApplicationDto, @Req() req: IRequest) {
     const user = req.user
-    const error = dto.validate()
+    const error = CreateApplicationDto.validate(dto)
     if (error) {
       return ResponseUtil.error(error)
     }
 
     // create namespace
     const appid = this.appService.generateAppid(6)
-    const namespace = await this.appService.createAppNamespace(user.id, appid)
+    const namespace = await this.appService.createAppNamespace(appid, user.id)
     if (!namespace) {
       return ResponseUtil.error('create app namespace error')
     }
@@ -68,7 +68,7 @@ export class ApplicationsController {
   @ApiOperation({ summary: 'Get user application list' })
   async findAll(@Req() req: IRequest) {
     const user = req.user
-    const data = this.appService.findAllByUser(user.id)
+    const data = await this.appService.findAllByUser(user.id)
     return ResponseUtil.ok(data)
   }
 
@@ -101,9 +101,13 @@ export class ApplicationsController {
   @ApiResponseUtil(Application)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Patch(':appid')
-  async update(@Body() dto: UpdateApplicationDto, @Req() req: IRequest) {
+  async update(
+    @Param('appid') _appid: string,
+    @Body() dto: UpdateApplicationDto,
+    @Req() req: IRequest,
+  ) {
     // check dto
-    const error = dto.validate()
+    const error = UpdateApplicationDto.validate(dto)
     if (error) {
       return ResponseUtil.error(error)
     }
@@ -123,10 +127,8 @@ export class ApplicationsController {
    */
   @Delete(':appid')
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
-  @ApiOperation({
-    summary: 'Delete an application',
-  })
-  async remove(@Req() req: IRequest) {
+  @ApiOperation({ summary: 'Delete an application' })
+  async remove(@Param('appid') _appid: string, @Req() req: IRequest) {
     const app = req.application
     const res = await this.appService.remove(app)
     if (res === null) {

@@ -13,6 +13,7 @@ export class CreateFunctionDto {
   websocket: boolean
 
   @ApiProperty({
+    type: [String],
     enum: ['HEAD', 'GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   })
   methods: string[] = []
@@ -22,12 +23,16 @@ export class CreateFunctionDto {
   })
   codes: string
 
-  validate() {
-    if (!this.name) {
+  static validate(dto: CreateFunctionDto) {
+    if (!dto.name) {
       return 'name is required'
     }
 
-    const valid = this.methods.every((method) => {
+    if (!dto.methods) {
+      dto.methods = []
+    }
+
+    const valid = dto.methods.every((method) => {
       return ['HEAD', 'GET', 'POST', 'PUT', 'DELETE', 'PATCH'].includes(method)
     })
     if (!valid) {
