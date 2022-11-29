@@ -1,109 +1,118 @@
-
-import { Button, HStack, Input, InputGroup, InputLeftAddon, InputRightAddon, VStack } from "@chakra-ui/react";
-import Editor, { useMonaco } from "@monaco-editor/react";
-import useDBMStore from "../../../store";
+import SyntaxHighlighter from "react-syntax-highlighter";
 import { AddIcon } from "@chakra-ui/icons";
-import { useState } from "react";
-export default function DataPannel() {
-  const { entryList } = useDBMStore((store) => store);
-  const [addData, setAddData] = useState(false)
+import {
+  Button,
+  Input,
+  InputGroup,
+  InputLeftAddon,
+  InputRightAddon,
+  useToast,
+} from "@chakra-ui/react";
+import clsx from "clsx";
 
+import JsonEditor from "@/components/Editor/JsonEditor";
+
+import useDBMStore from "../../../store";
+export default function DataPannel() {
+  const { entryList, updateCurrentData, currentData } = useDBMStore((store) => store);
+  const toast = useToast();
   return (
-    <div>
-      <div className="flex mt-2">
-        <div className="flex items-center justify-center h-8 w-24 bg-black">
-          <AddIcon color='white' /><span className="text-white" onClick={() => setAddData(true)}>新增记录</span>
-        </div>
-        <InputGroup size='sm' className="ml-6 h-9">
-          <InputLeftAddon children='query' />
+    <>
+      <div className="flex justify-between pb-2 shadow-sm">
+        <InputGroup size="sm" className="h-9" style={{ width: 600 }}>
+          <InputLeftAddon children="query" />
           <Input placeholder='{"name":"hello"}' />
-          <InputRightAddon children='查询' />
+          <InputRightAddon children="查询" />
         </InputGroup>
+        <Button
+          colorScheme={"blue"}
+          size="sm"
+          onClick={() => {
+            updateCurrentData({});
+          }}
+        >
+          <AddIcon color="white" />
+          新增记录
+        </Button>
       </div>
 
-      <div className="flex">
-        <div className="flex-1">
-          {entryList?.map((item) => {
+      <div className="absolute top-20 bottom-0 right-2 flex left-4">
+        <div className="overflow-y-auto flex-1 pr-2">
+          {entryList?.map((item, index: number) => {
             return (
-              <div key={item._id} className="border mt-4 p-2 rounded-sm relative group">
-                <div className=" absolute right-2 top-0 hidden group-hover:block z-50">
-                  <Button size="sx" className="mr-2">
-                    edit
+              <div
+                key={item._id}
+                className={clsx(
+                  "border p-2 rounded-md relative group hover:border-green-600 hover:shadow-md",
+                  {
+                    "border-green-600 shadow-md": currentData?._id === item._id,
+                    "mb-6": index !== entryList.length - 1,
+                  },
+                )}
+                onClick={() => {
+                  updateCurrentData(item);
+                }}
+              >
+                <div className=" absolute right-2 top-2 hidden group-hover:block z-50 ">
+                  <Button
+                    size="xs"
+                    px="2"
+                    className="mr-2 w-16"
+                    onClick={() => {
+                      updateCurrentData(item);
+                    }}
+                  >
+                    Edit
                   </Button>
-                  <Button size="sx">delete</Button>
+                  <Button size="xs" px="2" className="w-16">
+                    Delete
+                  </Button>
                 </div>
-                <Editor
-                  theme="my-theme"
-                  language="json"
-                  defaultValue={JSON.stringify(item, null, 2)}
-                  width={"100%"}
-                  height="120px"
-                  options={{
-                    readOnly: true,
-                    lineNumber: false,
-                    guides: {
-                      indentation: false,
-                    },
-                    minimap: {
-                      enabled: false,
-                    },
-                    lineHighlightBackground: "red",
-                    scrollbar: {
-                      verticalScrollbarSize: 0,
-                      alwaysConsumeMouseWheel: false,
-                    },
-                    lineNumbers: "off",
-                    lineNumbersMinChars: 0,
-                    scrollBeyondLastLine: false,
-                    folding: false,
-                    overviewRulerBorder: false,
-                    tabSize: 2, // tab 缩进长度
-                  }}
-                />
+                <SyntaxHighlighter language="json" customStyle={{ background: "#fff" }}>
+                  {JSON.stringify(item, null, 2)}
+                </SyntaxHighlighter>
               </div>
             );
-          })
-          }
-
+          })}
         </div>
-
-        <div className="flex-1 border w-1/4 ml-2 mt-4">
-          <div className="flex justify-between mt-4 p-4">
-            <div className="text-base">
-              添加数据
-            </div>
-            <Button size="lg" colorScheme="teal">保存</Button>
-          </div>
-          <Editor
-            theme="my-theme"
-            language="json"
-            defaultValue={`{}`}
-            width={"100%"}
-            height="120px"
-            options={{
-              lineNumber: false,
-              guides: {
-                indentation: false,
-              },
-              minimap: {
-                enabled: false,
-              },
-              lineHighlightBackground: "red",
-              scrollbar: {
-                verticalScrollbarSize: 0,
-                alwaysConsumeMouseWheel: false,
-              },
-              lineNumbers: "off",
-              lineNumbersMinChars: 0,
-              scrollBeyondLastLine: false,
-              folding: false,
-              overviewRulerBorder: false,
-              tabSize: 2, // tab 缩进长度
+        <div
+          className={clsx("flex-1 tarnsition-all duration-200 ease-in-out ", {
+            "mr-2": typeof currentData !== "undefined",
+          })}
+          style={{
+            maxWidth: typeof currentData !== "undefined" ? "50%" : "0",
+          }}
+        >
+          <div
+            className="border flex-col ml-2 flex rounded"
+            style={{
+              height: "-webkit-fill-available",
             }}
-          />
+          >
+            <div className="flex justify-between p-2 border-b mb-4">
+              <span>编辑</span>
+              <Button
+                size={"xs"}
+                borderRadius="2"
+                px="4"
+                onClick={() => {
+                  toast({
+                    position: "bottom-right",
+                    title: "保存成功",
+                    status: "success",
+                    duration: 1000,
+                  });
+                }}
+              >
+                保存
+              </Button>
+            </div>
+            <div className=" flex-1" style={{}}>
+              <JsonEditor value={currentData} />
+            </div>
+          </div>
         </div>
       </div>
-    </div >
-  )
-
+    </>
+  );
 }

@@ -4,20 +4,19 @@
 ## Prerequisites
 
 ```shell
-kubectl create namespace sealos
+kubectl create namespace laf
 ```
 
 
 ## Install
-
 ```shell
 helm install casdoor \
-  --namespace sealos \
+  --namespace laf \
   .
 ```
 
 ## Uninstall
 
 ```shell
-helm delete casdoor -n sealos
+helm delete casdoor -n laf
 ```

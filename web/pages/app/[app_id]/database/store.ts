@@ -9,7 +9,7 @@ type TDB = {
   type: string;
   options: any;
   info: any;
-  idIndex: any;
+  idIndex: string;
 };
 
 type State = {
@@ -20,7 +20,10 @@ type State = {
 
   initDBPage: () => void;
 
-  setCurrentDB: (currentFunction: TDB) => void;
+  setCurrentDB: (currentDB: TDB) => void;
+
+  currentData?: any;
+  updateCurrentData: (data: any) => void;
 };
 
 const useDBMStore = create<State>()(
@@ -30,6 +33,8 @@ const useDBMStore = create<State>()(
       allDBs: [],
 
       entryList: [],
+
+      currentData: undefined,
 
       initDBPage: async () => {
         const res = await request.get("/api/collections");
@@ -41,11 +46,26 @@ const useDBMStore = create<State>()(
         });
       },
 
-      setCurrentDB: (currentFunction) =>
+      setCurrentDB: async (currentDB) => {
+        const entryRes = await request.get("/api/dbm_entry", {
+          params: {
+            name: currentDB.name, // todo
+          },
+        });
         set((state) => {
-          state.currentDB = JSON.parse(JSON.stringify(currentFunction));
+          state.currentDB = JSON.parse(JSON.stringify(currentDB));
+          state.entryList = entryRes.data?.list;
+          state.currentData = undefined;
           return state;
-        }),
+        });
+      },
+
+      updateCurrentData: (data) => {
+        set((state) => {
+          state.currentData = data;
+          return state;
+        });
+      },
     })),
   ),
 );

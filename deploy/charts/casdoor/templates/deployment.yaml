@@ -53,6 +53,9 @@ spec:
             - name: casdoor-conf-volume
               mountPath: /conf/app.conf
               subPath: app.conf
+            - name: casdoor-init-data-volume
+              mountPath: /init_data.json
+              subPath: init_data.json
           env:
             - name: RUNNING_IN_DOCKER
               value: "true"
@@ -60,6 +63,9 @@ spec:
         - name: casdoor-conf-volume
           configMap:
             name: {{ template "casdoor.fullname" . }}-config
+        - name: casdoor-init-data-volume
+          configMap:
+            name: casdoor-init-data
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

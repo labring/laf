@@ -2,24 +2,28 @@
  * cloud functions list sidebar
  ***************************/
 
-import React from "react";
+import React, { useRef, useState } from "react";
 import { AiOutlineFilter } from "react-icons/ai";
-import { HamburgerIcon, Search2Icon, SunIcon } from "@chakra-ui/icons";
+import { EditIcon, HamburgerIcon, Search2Icon, SunIcon } from "@chakra-ui/icons";
 import { calc, HStack, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 
-import FileStatusIcon, { FileStatus } from "@/components/FileStatusIcon";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
 
-import useFunctionStore from "../../store";
+import useFunctionStore, { TFunction } from "../../store";
 
 import CreateModal from "./CreateModal";
 
 export default function FunctionList() {
   const store = useFunctionStore((store) => store);
+
+  const [keywords, setKeywords] = useState("");
+  const createModalRef = useRef<{
+    edit: (item: TFunction) => void;
+  }>();
 
   return (
     <Panel
@@ -28,13 +32,13 @@ export default function FunctionList() {
         <IconWrap key="change_theme" onClick={() => {}}>
           <SunIcon fontSize={12} />
         </IconWrap>,
-        <CreateModal key="create_modal" />,
+        <CreateModal ref={createModalRef} key="create_modal" />,
         <IconWrap key="options" onClick={() => {}}>
           <HamburgerIcon fontSize={12} />
         </IconWrap>,
       ]}
     >
-      <div className="border-b">
+      <div className="border-b border-slate-300">
         <div className="flex items-center m-2 mb-3">
           <InputGroup>
             <InputLeftElement
@@ -43,7 +47,15 @@ export default function FunctionList() {
               pointerEvents="none"
               children={<Search2Icon bgSize="sm" color="gray.300" />}
             />
-            <Input size="sm" className="mr-2" variant="filled" placeholder="输入函数名搜索" />
+            <Input
+              size="sm"
+              className="mr-2"
+              variant="filled"
+              placeholder="输入函数名搜索"
+              onChange={(event) => {
+                setKeywords(event.target.value);
+              }}
+            />
           </InputGroup>
 
           <HStack spacing="2">
@@ -73,24 +85,34 @@ export default function FunctionList() {
         })}
       </ul> */}
 
-        <SectionList style={{ maxHeight: "calc(100vh - 300px)" }}>
-          {(store.allFunctionList || []).map((func: any) => {
-            return (
-              <SectionList.Item
-                isActive={func._id === store.currentFunction?._id}
-                key={func._id}
-                onClick={() => {
-                  store.setCurrentFunction(func);
-                }}
-              >
-                <div>
-                  <FileTypeIcon type={FileType.js} />
-                  <span className="ml-2">{func.label}</span>
-                </div>
-                <FileStatusIcon status={FileStatus.deleted} />
-              </SectionList.Item>
-            );
-          })}
+        <SectionList style={{ height: "calc(100vh - 400px)", overflowY: "auto" }}>
+          {(store.allFunctionList || [])
+            .filter((item: TFunction) => item?.label.includes(keywords))
+            .map((func: any) => {
+              return (
+                <SectionList.Item
+                  isActive={func._id === store.currentFunction?._id}
+                  key={func._id}
+                  className="group"
+                  onClick={() => {
+                    store.setCurrentFunction(func);
+                  }}
+                >
+                  <div>
+                    <FileTypeIcon type={FileType.js} />
+                    <span className="ml-2 text-black">{func.label}</span>
+                  </div>
+                  <div className="hidden group-hover:block">
+                    <EditIcon
+                      fontSize={14}
+                      onClick={() => {
+                        createModalRef.current?.edit(func);
+                      }}
+                    />
+                  </div>
+                </SectionList.Item>
+              );
+            })}
         </SectionList>
       </div>
     </Panel>

@@ -16,7 +16,7 @@ import {
 export default function FileList() {
   return (
     <div className="flex-1">
-      <div className="flex justify-between border-b px-2" style={{ height: 32 }}>
+      <div className="flex justify-between border-b px-2" style={{ height: 36 }}>
         <HStack spacing={2}>
           <Button size="xs">upload</Button>
           <Button size="xs">新建文件</Button>

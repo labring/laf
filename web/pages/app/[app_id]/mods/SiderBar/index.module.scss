@@ -1,14 +1,14 @@
 .icon {
-  height: 40px;
   text-align: center;
   color: var(--chakra-colors-gray-500);
-  border-right: 2px solid #fff;
+  border-right: 2px solid var(--chakra-colors-gray-100);
   cursor: pointer;
 }
 
 .icon:hover,
 .icon.current {
   background-color: #f0fff4;
+  border-right: 2px solid #f0fff4;
 }
 
 .icon.current {

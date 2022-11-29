@@ -138,7 +138,9 @@ func (r *DatabaseReconciler) delete(ctx context.Context, database *v1.Database) 
 	if err != nil {
 		return ctrl.Result{}, err
 	}
-	defer mgm.Disconnect()
+	defer func(mgm *dbm.MongoManager) {
+		_ = mgm.Disconnect()
+	}(mgm)
 
 	// delete the database
 	err = mgm.RemoveUser(database.Name, database.Spec.Username)

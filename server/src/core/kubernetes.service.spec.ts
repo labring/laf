@@ -1,4 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing'
+import {
+  Application,
+  ApplicationState,
+} from '../applications/entities/application.entity'
+import { ResourceLabels } from '../constants'
 import { KubernetesService } from './kubernetes.service'
 
 let service: KubernetesService
@@ -66,5 +71,66 @@ describe('KubernetesService::createNamespace()', () => {
     if (await service.existsNamespace(name)) {
       await service.deleteNamespace(name)
     }
+  })
+})
+
+describe.skip('list custom objects with label', () => {
+  it('should be able to list custom objects with label', async () => {
+    const userid = 'test-user-id'
+    const res = await service.customObjectApi.listClusterCustomObject(
+      Application.GVK.group,
+      Application.GVK.version,
+      Application.GVK.plural,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      `${ResourceLabels.USER_ID}=${userid}`,
+    )
+    console.log(res.body)
+  })
+})
+
+describe.skip('patch custom objects', () => {
+  it('should be able to patch custom objects', async () => {
+    const name = '1i43zq'
+    const namespace = name
+    const res = await service.customObjectApi.getNamespacedCustomObject(
+      Application.GVK.group,
+      Application.GVK.version,
+      namespace,
+      Application.GVK.plural,
+      name,
+    )
+
+    const data = res.body as Application
+    data.spec = {
+      ...data.spec,
+      state: ApplicationState.ApplicationStateRunning,
+    }
+
+    const res2 = await service.patchCustomObject(data).catch((err) => {
+      console.log(err)
+    })
+    console.log('patched', res2)
+  })
+})
+
+describe.skip('delete custom objects', () => {
+  it('should be able to delete custom objects', async () => {
+    const name = 'efme9x'
+    const namespace = name
+    const res = await service.customObjectApi.getNamespacedCustomObject(
+      Application.GVK.group,
+      Application.GVK.version,
+      namespace,
+      Application.GVK.plural,
+      name,
+    )
+
+    const data = res.body as Application
+
+    const res2 = await service.deleteCustomObject(data)
+    console.log('deleted', res2)
   })
 })

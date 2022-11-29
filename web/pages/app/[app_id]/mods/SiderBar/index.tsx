@@ -15,15 +15,15 @@ import styles from "./index.module.scss";
 export default function SiderBar(props: { pageId: string; setPageId: (pageId: string) => void }) {
   const { pageId, setPageId } = props;
   const ICONS = [
-    { pageId: Pages.function, component: <AiOutlineFunction size="22" /> },
-    { pageId: Pages.database, component: <AiFillDatabase size="20" /> },
-    { pageId: Pages.storage, component: <GrStorage size="18" /> },
+    { pageId: Pages.function, component: <AiOutlineFunction size="24" /> },
+    { pageId: Pages.database, component: <AiFillDatabase size="22" /> },
+    { pageId: Pages.storage, component: <GrStorage size="20" /> },
     { pageId: Pages.logs, component: <GrCatalogOption size="18" /> },
   ];
   return (
     <div
-      style={{ width: SiderBarWidth, borderRight: "1px solid #eee" }}
-      className="absolute top-0 bottom-0"
+      style={{ width: SiderBarWidth, background: "#f2f3f9" }}
+      className="absolute top-0 bottom-0 "
     >
       {ICONS.map((item, index) => {
         return (
@@ -32,6 +32,9 @@ export default function SiderBar(props: { pageId: string; setPageId: (pageId: st
             className={clsx(styles.icon, {
               [styles.current]: pageId === item.pageId,
             })}
+            style={{
+              height: SiderBarWidth,
+            }}
             onClick={() => setPageId(item.pageId)}
           >
             {item.component}

@@ -2,12 +2,18 @@
  * cloud functions index page
  ***************************/
 
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Button, HStack } from "@chakra-ui/react";
-import Editor from "@monaco-editor/react";
+import useHotKey from "hooks/useHotKey";
 
+import CopyText from "@/components/CopyText";
+import FunctionEditor from "@/components/Editor/FunctionEditor";
 import FileStatusIcon, { FileStatus } from "@/components/FileStatusIcon";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
+import PanelHeader from "@/components/Panel/Header";
+
+import LeftPanel from "../mods/LeftPanel";
+import RightPanel from "../mods/RightPanel";
 
 import DebugPanel from "./mods/DebugPannel";
 import DependecyPanel from "./mods/DependecePanel";
@@ -18,6 +24,14 @@ import useFunctionStore from "./store";
 function FunctionPage() {
   const { initFunctionPage, currentFunction } = useFunctionStore((store) => store);
 
+  useHotKey("s", () => {
+    console.log("save");
+  });
+
+  useHotKey("r", () => {
+    console.log("run");
+  });
+
   useEffect(() => {
     initFunctionPage();
 
@@ -26,16 +40,13 @@ function FunctionPage() {
 
   return (
     <>
-      <div className="" style={{ width: 300, borderRight: "1px solid #eee" }}>
+      <LeftPanel>
         <FunctionPanel />
         <DependecyPanel />
-      </div>
-      <div className="flex flex-1 flex-col ">
-        <div className="border-b">
-          <div
-            className={"flex justify-between px-2  items-center"}
-            style={{ marginBottom: 0, height: 31 }}
-          >
+      </LeftPanel>
+      <RightPanel>
+        <div className="border-b" style={{ height: 36 }}>
+          <PanelHeader>
             <div className="flex items-center">
               <FileTypeIcon type={FileType.js} />
               <span className="font-bold text-base ml-2">
@@ -49,7 +60,8 @@ function FunctionPage() {
             <HStack spacing="4">
               <span>
                 <span className=" text-slate-500">调用地址：</span>
-                <span>https://qcphsd.api.cloudendpoint.cn/deleteCurrentTodo</span>
+                <span className="mr-2">https://qcphsd.api.cloudendpoint.cn/deleteCurrentTodo</span>
+                <CopyText text="https://qcphsd.api.cloudendpoint.cn/deleteCurrentTodo" />
               </span>
               <Button
                 size="xs"
@@ -63,30 +75,17 @@ function FunctionPage() {
                 发布
               </Button>
             </HStack>
+          </PanelHeader>
+        </div>
+        <div className="flex flex-row h-full w-full">
+          <div className="flex-1 border-r border-r-slate-200 overflow-hidden ">
+            <FunctionEditor value={currentFunction?.code || ""} />
+          </div>
+          <div style={{ width: 550 }}>
+            <DebugPanel />
           </div>
         </div>
-        <div className="flex-1">
-          <Editor
-            theme="vs-dark"
-            options={{
-              minimap: {
-                enabled: false,
-              },
-              scrollbar: {
-                verticalScrollbarSize: 6,
-              },
-              lineNumbersMinChars: 4,
-              scrollBeyondLastLine: false,
-            }}
-            height="100%"
-            defaultLanguage="javascript"
-            value={currentFunction?.code}
-          />
-        </div>
-        <div style={{ height: 300 }}>
-          <DebugPanel />
-        </div>
-      </div>
+      </RightPanel>
     </>
   );
 }
