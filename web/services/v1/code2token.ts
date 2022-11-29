@@ -8,7 +8,7 @@
 import request from "@/utils/request";
 
 /**
- *
+ * Get user token by auth code
  */
 export async function AppControllerCode2token(
   params: Paths.AppControllerCode2token.BodyParameters,

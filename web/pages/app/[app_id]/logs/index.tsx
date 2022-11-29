@@ -106,11 +106,6 @@ export default function LogsPage() {
               </Thead>
 
               <Tbody className="relative">
-                {logListQuery.isFetching ? (
-                  <Center className="absolute w-full bg-white opacity-50">
-                    <Spinner />
-                  </Center>
-                ) : null}
                 {logListQuery.data?.data?.list.map((item: any, index: number) => {
                   return (
                     <Tr key={item._id} _hover={{ bgColor: "#efefef" }}>

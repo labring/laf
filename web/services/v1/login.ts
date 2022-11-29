@@ -8,7 +8,7 @@
 import request from "@/utils/request";
 
 /**
- *
+ * Redirect to login page
  */
 export async function AppControllerGetSigninUrl(
   params: Paths.AppControllerGetSigninUrl.BodyParameters,

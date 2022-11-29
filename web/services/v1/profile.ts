@@ -8,7 +8,7 @@
 import request from "@/utils/request";
 
 /**
- *
+ * Get current user profile
  */
 export async function AppControllerGetProfile(
   params: Paths.AppControllerGetProfile.BodyParameters,

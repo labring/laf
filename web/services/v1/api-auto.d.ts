@@ -11,6 +11,8 @@ declare namespace Definitions {
 
   export type CreatePolicyDto = {};
 
+  export type UpdatePolicyDto = {};
+
   export type CreateBucketDto = {
     shortName?: string /* The short name of the bucket which not contain the appid */;
     appid?: string;
@@ -22,8 +24,15 @@ declare namespace Definitions {
 
   export type CreateWebsiteDto = {};
 
+  export type UpdateWebsiteDto = {};
+
   export type CreateCollectionDto = {
     name?: string;
+  };
+
+  export type UpdateCollectionDto = {
+    validatorSchema?: {};
+    validationLevel?: string;
   };
 
   export type CreateApplicationDto = {
@@ -32,6 +41,11 @@ declare namespace Definitions {
     region?: string;
     bundleName?: string;
     runtimeName?: string;
+  };
+
+  export type UpdateApplicationDto = {
+    displayName?: string;
+    state?: string;
   };
 }
 
@@ -76,6 +90,14 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace FunctionsControllerFindAll {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace FunctionsControllerFindOne {
     export type QueryParameters = any;
 
@@ -92,10 +114,26 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace FunctionsControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace PoliciesControllerCreate {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.CreatePolicyDto;
+
+    export type Responses = any;
+  }
+
+  namespace PoliciesControllerFindAll {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
 
     export type Responses = any;
   }
@@ -108,10 +146,34 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace PoliciesControllerUpdate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.UpdatePolicyDto;
+
+    export type Responses = any;
+  }
+
+  namespace PoliciesControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace BucketsControllerCreate {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.CreateBucketDto;
+
+    export type Responses = any;
+  }
+
+  namespace BucketsControllerFindAll {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
 
     export type Responses = any;
   }
@@ -132,6 +194,14 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace BucketsControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace WebsitesControllerCreate {
     export type QueryParameters = any;
 
@@ -140,7 +210,31 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace WebsitesControllerFindAll {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace WebsitesControllerFindOne {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace WebsitesControllerUpdate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.UpdateWebsiteDto;
+
+    export type Responses = any;
+  }
+
+  namespace WebsitesControllerRemove {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -156,7 +250,31 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace CollectionsControllerFindAll {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace CollectionsControllerFindOne {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace CollectionsControllerUpdate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.UpdateCollectionDto;
+
+    export type Responses = any;
+  }
+
+  namespace CollectionsControllerRemove {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -172,7 +290,31 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace ApplicationsControllerFindAll {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace ApplicationsControllerFindOne {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace ApplicationsControllerUpdate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.UpdateApplicationDto;
+
+    export type Responses = any;
+  }
+
+  namespace ApplicationsControllerRemove {
     export type QueryParameters = any;
 
     export type BodyParameters = any;

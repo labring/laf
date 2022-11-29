@@ -22,15 +22,57 @@ export async function ApplicationsControllerCreate(
 }
 
 /**
+ * Get user application list
+ */
+export async function ApplicationsControllerFindAll(
+  params: Paths.ApplicationsControllerFindAll.BodyParameters,
+  extra?: { [key: string]: any },
+): Promise<Paths.ApplicationsControllerFindAll.Responses> {
+  return request("/v1/applications", {
+    method: "GET",
+    params: params,
+    ...(extra || {}),
+  });
+}
+
+/**
  * Get an application by appid
  */
 export async function ApplicationsControllerFindOne(
   params: Paths.ApplicationsControllerFindOne.BodyParameters,
   extra?: { [key: string]: any },
 ): Promise<Paths.ApplicationsControllerFindOne.Responses> {
-  return request("/v1/applications/{appid}", {
+  return request(`/v1/applications/${params.appid}`, {
     method: "GET",
     params: params,
+    ...(extra || {}),
+  });
+}
+
+/**
+ * Update an application
+ */
+export async function ApplicationsControllerUpdate(
+  params: Definitions.UpdateApplicationDto,
+  extra?: { [key: string]: any },
+): Promise<Paths.ApplicationsControllerUpdate.Responses> {
+  return request("/v1/applications/{appid}", {
+    method: "PATCH",
+    data: params,
+    ...(extra || {}),
+  });
+}
+
+/**
+ * Delete an application
+ */
+export async function ApplicationsControllerRemove(
+  params: Paths.ApplicationsControllerRemove.BodyParameters,
+  extra?: { [key: string]: any },
+): Promise<Paths.ApplicationsControllerRemove.Responses> {
+  return request(`/v1/applications/${params.appid}`, {
+    method: "DELETE",
+    data: params,
     ...(extra || {}),
   });
 }
