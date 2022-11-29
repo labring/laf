@@ -17,8 +17,6 @@ limitations under the License.
 package v1
 
 import (
-	v12 "github.com/labring/laf/core/controllers/application/api/v1"
-	v1 "github.com/labring/laf/core/controllers/runtime/api/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -62,11 +60,31 @@ type InstanceSpec struct {
 
 	// Bundle of the instance
 	//+kubebuilder:validation:Required
-	Bundle v12.BundleSpec `json:"bundle,omitempty"`
+	Bundle string `json:"bundle,omitempty"`
+
+	//+kubebuilder:validation:Required
+	BundleNamespace string `json:"bundleNamespace,omitempty"`
 
 	// Runtime of the instance
 	//+kubebuilder:validation:Required
-	Runtime v1.RuntimeSpec `json:"runtime,omitempty"`
+	RuntimeName string `json:"runtime,omitempty"`
+
+	//+kubebuilder:validation:Required
+	RuntimeNamespace string `json:"runtimeNamespace,omitempty"`
+
+	// Database of the instance
+	//+kubebuilder:validation:Required
+	Database string `json:"database,omitempty"`
+
+	//+kubebuilder:validation:Required
+	DatabaseNamespace string `json:"databaseNamespace,omitempty"`
+
+	// OssUser of the instance
+	//+kubebuilder:validation:Required
+	OssUser string `json:"ossUser,omitempty"`
+
+	//+kubebuilder:validation:Required
+	OssUserNamespace string `json:"ossUserNamespace,omitempty"`
 
 	// Replica of instance
 	//+kubebuilder:default=1
