@@ -10,14 +10,7 @@
 ```bash
 cd deploy/scripts
 
-# setup k8s cluster
-sh install-k8s.sh
-
-# setup laf core
-sh install-laf-core.sh
-
-# apply laf cluster resources
-kubectl apply -f init-laf/
+sh bootstrap-linux.sh 
 ```
 
 ## Create development environment on MacOS

@@ -32,6 +32,14 @@ else
   echo "yum not installed"
 fi
 
+#arch,suse distro condition
+if [ -x "$(command -v sealos)"];then
+  wget https://github.com/labring/sealos/releases/download/v4.1.3/sealos_4.1.3_linux_amd64.tar.gz \
+   && tar zxvf sealos_4.1.3_linux_amd64.tar.gz sealos && chmod +x sealos && mv sealos /usr/bin
+fi
+
+#clean the previous installed sealos images
+sealos reset
 
 # install k8s cluster
 sealos run labring/kubernetes:v1.24.0 labring/flannel:v0.19.0 --single
