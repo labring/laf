@@ -2,7 +2,7 @@ apiVersion: instance.laf.dev/v1
 kind: Instance
 metadata:
   name: test
-  namespace: testing-instance-namespace
+  namespace: testing-app-creation
 spec:
   region: testing-instance-region
   appid: test-appid

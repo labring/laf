@@ -1,12 +1,12 @@
 package e2e
 
 import (
-	"testing"
-
 	appv1 "github.com/labring/laf/core/controllers/application/api/v1"
-	"github.com/labring/laf/core/controllers/application/tests/api"
 	api4 "github.com/labring/laf/core/controllers/database/tests/api"
 	api5 "github.com/labring/laf/core/controllers/oss/tests/api"
+	"testing"
+
+	"github.com/labring/laf/core/controllers/application/tests/api"
 	api2 "github.com/labring/laf/core/controllers/runtime/tests/api"
 	"github.com/labring/laf/core/pkg/common"
 	baseapi "github.com/labring/laf/core/tests/api"
@@ -135,22 +135,22 @@ func TestCreateApp(t *testing.T) {
 	})
 
 	t.Cleanup(func() {
-		t.Log("clean up: delete the app")
-		api.DeleteApplication(namespace, name)
-
-		t.Log("clean up: waiting for the app to be deleted completely")
-		api.WaitForApplicationDeleted(namespace, name)
-
-		t.Log("clean up: delete the bundle")
-		api.DeleteAppBundle(systemNamespace, bundleName)
-
-		t.Log("clean up: delete the runtime")
-		api2.DeleteAppRuntime(systemNamespace, runtimeName)
-
-		t.Log("clean up: delete the namespace")
-		baseapi.DeleteNamespace(namespace)
-
-		t.Log("clean up: delete the system namespace")
-		baseapi.DeleteNamespace(systemNamespace)
+		//t.Log("clean up: delete the app")
+		//api.DeleteApplication(namespace, name)
+		//
+		//t.Log("clean up: waiting for the app to be deleted completely")
+		//api.WaitForApplicationDeleted(namespace, name)
+		//
+		//t.Log("clean up: delete the bundle")
+		//api.DeleteAppBundle(systemNamespace, bundleName)
+		//
+		//t.Log("clean up: delete the runtime")
+		//api2.DeleteAppRuntime(systemNamespace, runtimeName)
+		//
+		//t.Log("clean up: delete the namespace")
+		//baseapi.DeleteNamespace(namespace)
+		//
+		//t.Log("clean up: delete the system namespace")
+		//baseapi.DeleteNamespace(systemNamespace)
 	})
 }

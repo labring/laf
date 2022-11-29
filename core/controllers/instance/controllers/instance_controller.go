@@ -22,7 +22,12 @@ import (
 	"github/labring/laf/core/controllers/instance/driver"
 	"time"
 
-	v1 "github.com/labring/laf/core/controllers/application/api/v1"
+	databasev1 "github.com/labring/laf/core/controllers/database/api/v1"
+	ossv1 "github.com/labring/laf/core/controllers/oss/api/v1"
+	runtimev1 "github.com/labring/laf/core/controllers/runtime/api/v1"
+	"k8s.io/apimachinery/pkg/types"
+
+	applicationv1 "github.com/labring/laf/core/controllers/application/api/v1"
 	"github.com/labring/laf/core/pkg/util"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -290,6 +295,45 @@ func (r *InstanceReconciler) deployInstanceToCluster(ctx context.Context, instan
 }
 
 func (r *InstanceReconciler) applyDeployment(ctx context.Context, kubernetesClient *kubernetes.Clientset, labels map[string]string, instance *instancev1.Instance) (err error) {
+	// get bundle for request/limit cpu etc.
+	var bundle *applicationv1.Bundle
+	if bundle, err = r.getBundle(ctx, instance); err != nil {
+		return err
+	}
+
+	// get runtime
+	var rt *runtimev1.Runtime
+	if rt, err = r.getRuntime(ctx, instance); err != nil {
+		return err
+	}
+
+	// Get database from current namespace,
+	var database *databasev1.Database
+	if database, err = r.getDatabase(ctx, instance); err != nil {
+		return err
+	}
+	// Get database from current namespace,
+
+	var ossUser *ossv1.User
+	if ossUser, err = r.getOssUser(ctx, instance); err != nil {
+		return err
+	}
+
+	env := []corev1.EnvVar{
+		{Name: "DB", Value: database.Status.StoreName},
+		{Name: "DB_URI", Value: database.Status.ConnectionUri},
+		{Name: "LOG_LEVEL", Value: "DEBUG"}, //todo dynamic value
+		{Name: "ENABLE_CLOUD_FUNCTION_LOG", Value: "always"},
+		{Name: "SERVER_SECRET_SALT", Value: ""}, // todo SERVER_SECRET_SALT
+		{Name: "APP_ID", Value: instance.Spec.AppId},
+		{Name: "RUNTIME_IMAGE", Value: rt.Spec.Image.Main},
+		{Name: "FLAGS", Value: fmt.Sprintf("--max_old_space_size=%v", float32(bundle.Spec.LimitMemory.Value())*0.8)},
+		{Name: "NPM_INSTALL_FLAGS", Value: ""}, // todo NPM_INSTALL_FLAGS
+		{Name: "OSS_ACCESS_SECRET", Value: ossUser.Status.AccessKey},
+		{Name: "OSS_INTERNAL_ENDPOINT", Value: ossUser.Status.Endpoint},
+		{Name: "OSS_EXTERNAL_ENDPOINT", Value: ossUser.Status.Endpoint}, // todo OSS_EXTERNAL_ENDPOINT
+		{Name: "OSS_REGION", Value: ossUser.Status.Region},              // todo OSS_EXTERNAL_ENDPOINT
+	}
 	var defaultTerminationGracePeriodSeconds int64 = 15
 	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
@@ -309,16 +353,22 @@ func (r *InstanceReconciler) applyDeployment(ctx context.Context, kubernetesClie
 					TerminationGracePeriodSeconds: &defaultTerminationGracePeriodSeconds,
 					Containers: []corev1.Container{ // todo 是否还有其他的容器需要初始化，类似initContainer
 						{
-							Name:  "main",
-							Image: instance.Spec.Runtime.Image.Main,
-							//Command: []string{"sh", "/app/start.sh"},
-							Env: r.buildEnv(ctx, instance),
+							Name:    "main",
+							Image:   rt.Spec.Image.Main,
+							Command: []string{"sh", "/app/start.sh"},
+							Env:     env,
 							Ports: []corev1.ContainerPort{
-								{ContainerPort: 80, Name: "http"},
+								{ContainerPort: 8000, Name: "http"},
 							},
 							Resources: corev1.ResourceRequirements{
-								Requests: r.setRequestQuota(ctx, instance.Spec.Bundle),
-								Limits:   r.setLimitQuota(ctx, instance.Spec.Bundle),
+								Requests: map[corev1.ResourceName]resource.Quantity{
+									corev1.ResourceCPU:    bundle.Spec.RequestCPU,
+									corev1.ResourceMemory: bundle.Spec.RequestMemory,
+								},
+								Limits: map[corev1.ResourceName]resource.Quantity{
+									corev1.ResourceCPU:    bundle.Spec.LimitCPU,
+									corev1.ResourceMemory: bundle.Spec.LimitMemory,
+								},
 							},
 							StartupProbe:   r.buildProbe(0, 3, 3, 240, "startupProbe"),
 							ReadinessProbe: r.buildProbe(0, 60, 5, 3, "readinessProbe"),
@@ -337,6 +387,7 @@ func (r *InstanceReconciler) applyDeployment(ctx context.Context, kubernetesClie
 	return err
 }
 
+// applySvc Apply service
 func (r *InstanceReconciler) applySvc(ctx context.Context, kubernetesClient *kubernetes.Clientset, labels map[string]string, instance *instancev1.Instance) (err error) {
 	svc := &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
@@ -390,30 +441,6 @@ func (r *InstanceReconciler) deleteInstanceFromCluster(ctx context.Context, inst
 	return nil
 }
 
-func (r *InstanceReconciler) buildEnv(ctx context.Context, instance *instancev1.Instance) []corev1.EnvVar {
-	// todo fix env
-	return []corev1.EnvVar{
-		{
-			Name:  "DB",
-			Value: "test",
-		},
-	}
-}
-
-func (r *InstanceReconciler) setRequestQuota(ctx context.Context, bundle v1.BundleSpec) corev1.ResourceList {
-	return map[corev1.ResourceName]resource.Quantity{
-		corev1.ResourceCPU:    bundle.RequestCPU,
-		corev1.ResourceMemory: bundle.RequestMemory,
-	}
-}
-
-func (r *InstanceReconciler) setLimitQuota(ctx context.Context, bundle v1.BundleSpec) corev1.ResourceList {
-	return map[corev1.ResourceName]resource.Quantity{
-		corev1.ResourceCPU:    bundle.LimitCPU,
-		corev1.ResourceMemory: bundle.LimitMemory,
-	}
-}
-
 func (r *InstanceReconciler) buildProbe(initialDelaySeconds, periodSeconds, timeoutSeconds, failureThreshold int32, probeType string) *corev1.Probe {
 	return &corev1.Probe{
 		ProbeHandler: corev1.ProbeHandler{
@@ -452,6 +479,48 @@ func (r *InstanceReconciler) checkPodStatus(ctx context.Context, instance *insta
 		return true, result
 	}
 	return false, result
+}
+
+// getBundle Get bundle with instance spec
+func (r *InstanceReconciler) getBundle(ctx context.Context, instance *instancev1.Instance) (*applicationv1.Bundle, error) {
+	namespaceName := types.NamespacedName{
+		Namespace: instance.Spec.Bundle,
+		Name:      instance.Spec.BundleNamespace,
+	}
+	bundle := new(applicationv1.Bundle)
+	err := r.Client.Get(ctx, namespaceName, bundle)
+	return bundle, err
+}
+
+// getRuntime Get runtime with instance spec
+func (r *InstanceReconciler) getRuntime(ctx context.Context, instance *instancev1.Instance) (*runtimev1.Runtime, error) {
+	namespaceName := types.NamespacedName{
+		Namespace: instance.Spec.RuntimeName,
+		Name:      instance.Spec.RuntimeNamespace,
+	}
+	rt := new(runtimev1.Runtime)
+	err := r.Client.Get(ctx, namespaceName, rt)
+	return rt, err
+}
+
+func (r *InstanceReconciler) getDatabase(ctx context.Context, instance *instancev1.Instance) (*databasev1.Database, error) {
+	namespaceName := types.NamespacedName{
+		Namespace: instance.Spec.Database,
+		Name:      instance.Spec.DatabaseNamespace,
+	}
+	database := new(databasev1.Database)
+	err := r.Client.Get(ctx, namespaceName, database)
+	return database, err
+}
+
+func (r *InstanceReconciler) getOssUser(ctx context.Context, instance *instancev1.Instance) (*ossv1.User, error) {
+	namespaceName := types.NamespacedName{
+		Namespace: instance.Spec.OssUser,
+		Name:      instance.Spec.OssUserNamespace,
+	}
+	ossUser := new(ossv1.User)
+	err := r.Client.Get(ctx, namespaceName, ossUser)
+	return ossUser, err
 }
 
 func getDeploymentName(instance *instancev1.Instance) string {
