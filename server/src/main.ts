@@ -1,7 +1,9 @@
 import { NestFactory } from '@nestjs/core'
+import * as compression from 'compression'
+import helmet from 'helmet'
 import { AppModule } from './app.module'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
-import { ValidationPipe } from '@nestjs/common'
+import { ValidationPipe, VersioningType } from '@nestjs/common'
 import { HTTP_METHODS } from './constants'
 
 async function bootstrap() {
@@ -14,8 +16,15 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
 
-  app.setGlobalPrefix('v1')
   app.useGlobalPipes(new ValidationPipe({ transform: true }))
+
+  app.enableVersioning({
+    defaultVersion: ['1'],
+    type: VersioningType.URI,
+  })
+
+  app.use(compression())
+  app.use(helmet())
 
   // for swagger api
   const config = new DocumentBuilder()

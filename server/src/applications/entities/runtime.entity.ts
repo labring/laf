@@ -1,6 +1,6 @@
-import { KubernetesObject } from '@kubernetes/client-node'
+import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node'
 import { ApiProperty } from '@nestjs/swagger'
-import { ObjectMeta } from '../../core/kubernetes.interface'
+import { GroupVersionKind, ObjectMeta } from '../../core/kubernetes.interface'
 
 export class RuntimeVersion {
   @ApiProperty()
@@ -31,14 +31,10 @@ export class RuntimeSpec {
 }
 export class Runtime implements KubernetesObject {
   @ApiProperty()
-  get apiVersion(): string {
-    return Runtime.GroupVersion
-  }
+  apiVersion: string
 
   @ApiProperty()
-  get kind(): string {
-    return Runtime.Kind
-  }
+  kind: string
 
   @ApiProperty()
   metadata: ObjectMeta
@@ -46,20 +42,26 @@ export class Runtime implements KubernetesObject {
   @ApiProperty()
   spec: RuntimeSpec
 
-  static readonly Group = 'runtime.laf.dev'
-  static readonly Version = 'v1'
-  static readonly PluralName = 'runtimes'
-  static readonly Kind = 'Runtime'
-  static get GroupVersion() {
-    return `${this.Group}/${this.Version}`
-  }
+  static readonly GVK = new GroupVersionKind(
+    'runtime.laf.dev',
+    'v1',
+    'Runtime',
+    'runtimes',
+  )
 
   constructor(name: string, namespace: string) {
-    this.metadata = {
-      name,
-      namespace,
-    }
+    this.apiVersion = Runtime.GVK.apiVersion
+    this.kind = Runtime.GVK.kind
+    this.metadata = new ObjectMeta(name, namespace)
+    this.metadata.labels = {}
     this.spec = new RuntimeSpec()
+  }
+
+  static fromObject(obj: KubernetesObject) {
+    const runtime = new Runtime(obj.metadata?.name, obj.metadata?.namespace)
+    delete obj.metadata
+    Object.assign(runtime, obj)
+    return runtime
   }
 }
 export class RuntimeList {
@@ -70,4 +72,11 @@ export class RuntimeList {
     type: [Runtime],
   })
   items: Runtime[]
+
+  static fromObject(obj: KubernetesListObject<Runtime>) {
+    const list = new RuntimeList()
+    Object.assign(list, obj)
+    list.items = obj.items.map((item) => Runtime.fromObject(item))
+    return list
+  }
 }

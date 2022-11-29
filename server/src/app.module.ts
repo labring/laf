@@ -10,6 +10,7 @@ import { HttpModule } from '@nestjs/axios'
 import { CoreModule } from './core/core.module'
 import { ApplicationsModule } from './applications/applications.module'
 import { AuthModule } from './auth/auth.module'
+import { ThrottlerModule } from '@nestjs/throttler'
 
 @Module({
   imports: [
@@ -22,6 +23,10 @@ import { AuthModule } from './auth/auth.module'
     AuthModule,
     CoreModule,
     ApplicationsModule,
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 10,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
