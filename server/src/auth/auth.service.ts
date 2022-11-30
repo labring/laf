@@ -30,7 +30,6 @@ export class AuthService {
       let user = profile?.user
       if (!user) {
         user = await this.userService.create({
-          id: this.userService.generateUserId(),
           username: casdoorUser.name,
           email: casdoorUser.email,
           phone: casdoorUser.phone,

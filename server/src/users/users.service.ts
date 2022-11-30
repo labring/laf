@@ -2,11 +2,15 @@ import { Injectable } from '@nestjs/common'
 import { Prisma, User } from '@prisma/client'
 import { PrismaService } from '../prisma.service'
 import * as nanoid from 'nanoid'
-
+import { ObjectID } from 'bson'
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
+  /**
+   * @deprecated
+   * @returns
+   */
   generateUserId() {
     const nano = nanoid.customAlphabet(
       '1234567890abcdefghijklmnopqrstuvwxyz',
@@ -16,10 +20,6 @@ export class UsersService {
   }
 
   async create(data: Prisma.UserCreateInput): Promise<User> {
-    if (!data.id) {
-      data.id = this.generateUserId()
-    }
-
     return this.prisma.user.create({
       data,
     })
