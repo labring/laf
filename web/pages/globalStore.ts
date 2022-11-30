@@ -7,6 +7,8 @@ import { immer } from "zustand/middleware/immer";
 type State = {
   userInfo: any;
   loading: boolean;
+  currentApp: any;
+  setCurrentApp(app: any): void;
   init(): void;
 };
 
@@ -14,6 +16,8 @@ const useGlobalStore = create<State>()(
   devtools(
     immer((set, get) => ({
       userInfo: {},
+
+      currentApp: {},
 
       loading: false,
 
@@ -30,6 +34,12 @@ const useGlobalStore = create<State>()(
         set((state) => {
           state.userInfo = res.data;
           state.loading = false;
+        });
+      },
+
+      setCurrentApp: (app: any) => {
+        set((state) => {
+          state.currentApp = app;
         });
       },
 

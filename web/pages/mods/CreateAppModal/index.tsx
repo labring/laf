@@ -120,6 +120,10 @@ const CreateAppModal = forwardRef((props, ref) => {
                     updateAppInfo((draft) => {
                       draft.displayName = e.target.value;
                     });
+
+                    updateErrors((draft) => {
+                      draft.displayName = "";
+                    });
                   }}
                 />
                 <FormErrorMessage>{errors.displayName}</FormErrorMessage>

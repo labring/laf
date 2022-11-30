@@ -1,3 +1,5 @@
+import useGlobalStore from "pages/globalStore";
+import { CollectionsControllerCreate, CollectionsControllerFindAll } from "services/v1/apps";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
@@ -19,6 +21,7 @@ type State = {
   entryList?: any[];
 
   initDBPage: () => void;
+  createDB: (name: string) => void;
 
   setCurrentDB: (currentDB: TDB) => void;
 
@@ -28,7 +31,7 @@ type State = {
 
 const useDBMStore = create<State>()(
   devtools(
-    immer((set) => ({
+    immer((set, get) => ({
       currentDB: undefined,
       allDBs: [],
 
@@ -37,13 +40,26 @@ const useDBMStore = create<State>()(
       currentData: undefined,
 
       initDBPage: async () => {
-        const res = await request.get("/api/collections");
+        const globalStore = useGlobalStore.getState();
+
+        const res = await CollectionsControllerFindAll({ appid: globalStore.currentApp });
         const entryRes = await request.get("/api/dbm_entry");
         set((state) => {
           state.allDBs = res.data;
           state.currentDB = res.data[0];
           state.entryList = entryRes.data?.list;
         });
+      },
+
+      createDB: async (name: string) => {
+        const globalStore = useGlobalStore.getState();
+
+        const res = await CollectionsControllerCreate({
+          appid: globalStore.currentApp,
+          name,
+        });
+
+        get().initDBPage();
       },
 
       setCurrentDB: async (currentDB) => {

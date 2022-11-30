@@ -5,18 +5,19 @@
 //                                                                   //
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
-import request from "@/utils/request";
+import request from '@/utils/request';
 
 /**
- * Get current user profile
- */
+* Get current user profile
+*/
 export async function AppControllerGetProfile(
-  params: Paths.AppControllerGetProfile.BodyParameters,
+  params: Paths.AppControllerGetProfile.BodyParameters | any,
   extra?: { [key: string]: any },
 ): Promise<Paths.AppControllerGetProfile.Responses> {
-  return request("/v1/profile", {
-    method: "GET",
-    params: params,
+  // /v1/profile
+  return request(`/v1/profile`, {
+    method: 'GET',
+    params : params,
     ...(extra || {}),
   });
 }

@@ -8,14 +8,14 @@
 import request from '@/utils/request';
 
 /**
-* Get user token by auth code
+* Get application runtime list
 */
-export async function AppControllerCode2token(
-  params: Paths.AppControllerCode2token.BodyParameters | any,
+export async function SpecsControllerGetBundles(
+  params: Paths.SpecsControllerGetBundles.BodyParameters | any,
   extra?: { [key: string]: any },
-): Promise<Paths.AppControllerCode2token.Responses> {
-  // /v1/code2token
-  return request(`/v1/code2token`, {
+): Promise<Paths.SpecsControllerGetBundles.Responses> {
+  // /v1/bundles
+  return request(`/v1/bundles`, {
     method: 'GET',
     params : params,
     ...(extra || {}),

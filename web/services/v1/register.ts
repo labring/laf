@@ -5,18 +5,19 @@
 //                                                                   //
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
-import request from "@/utils/request";
+import request from '@/utils/request';
 
 /**
- * Redirect to register page
- */
+* Redirect to register page
+*/
 export async function AppControllerGetSignupUrl(
-  params: Paths.AppControllerGetSignupUrl.BodyParameters,
+  params: Paths.AppControllerGetSignupUrl.BodyParameters | any,
   extra?: { [key: string]: any },
 ): Promise<Paths.AppControllerGetSignupUrl.Responses> {
-  return request("/v1/register", {
-    method: "GET",
-    params: params,
+  // /v1/register
+  return request(`/v1/register`, {
+    method: 'GET',
+    params : params,
     ...(extra || {}),
   });
 }
