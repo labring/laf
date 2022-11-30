@@ -15,8 +15,8 @@ model User {
   username   String   @unique
   email      String   @unique
   phone      String   @unique
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   profile UserProfile?
 }
@@ -32,6 +32,60 @@ model UserProfile {
   updated_at DateTime @updatedAt
 
   user User @relation(fields: [uid], references: [id])
+}
+
+model Region {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  name        String        @unique
+  desc        String?
+  applications Application[]
+}
+
+model Bundle {
+  id                     String        @id @default(auto()) @map("_id") @db.ObjectId
+  name                   String        @unique
+  displayName            String
+  limitCPU               Int
+  limitMemory            Int
+  databaseCapacity       Int
+  storageCapacity        Int
+  networkTrafficOutbound Int
+  networkTrafficInbound  Int?
+  priority               Int
+  applications            Application[]
+}
+
+type RuntimeImageGroup {
+  main    String
+  init    String?
+  sidecar String?
+}
+
+model Runtime {
+  id           String            @id @default(auto()) @map("_id") @db.ObjectId
+  name         String            @unique
+  type         String
+  image        RuntimeImageGroup
+  version      String
+  latest       Boolean
+  Applications Application[]
+}
+
+model Application {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  appid       String   @unique
+  regionName  String
+  bundleName  String
+  runtimeName String
+  tags        String[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  createdBy  String   @db.ObjectId
+
+  region  Region  @relation(fields: [regionName], references: [name])
+  runtime Runtime @relation(fields: [runtimeName], references: [name])
+  bundle  Bundle  @relation(fields: [bundleName], references: [name])
 }
 
 enum HttpMethod {
@@ -60,9 +114,9 @@ model CloudFunction {
   tags       String[]
   websocket  Boolean
   methods    HttpMethod[]
-  created_at DateTime            @default(now())
-  updated_at DateTime            @updatedAt
-  created_by String              @db.ObjectId
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  createdBy String              @db.ObjectId
 
   @@unique([appid, name])
 }
