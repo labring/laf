@@ -16,7 +16,7 @@ func CreateObjectStorageUser(ctx context.Context, c client.Client, schema *runti
 	// Create a new oss user
 	var oss v1.User
 	oss.Namespace = app.Namespace
-	oss.Name = "oss"
+	oss.Name = app.Spec.AppId
 	oss.Labels = map[string]string{
 		"laf.dev/appid": app.Spec.AppId,
 	}
@@ -37,6 +37,6 @@ func CreateObjectStorageUser(ctx context.Context, c client.Client, schema *runti
 func GetObjectStorageUser(ctx context.Context, c client.Client, app *appv1.Application) (*v1.User, error) {
 	// Get the oss user
 	var oss v1.User
-	err := c.Get(ctx, client.ObjectKey{Namespace: app.Namespace, Name: "oss"}, &oss)
+	err := c.Get(ctx, client.ObjectKey{Namespace: app.Namespace, Name: app.Spec.AppId}, &oss)
 	return &oss, err
 }
