@@ -1,6 +1,6 @@
-import { KubernetesObject } from '@kubernetes/client-node'
+import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node'
 import { ApiProperty } from '@nestjs/swagger'
-import { ObjectMeta } from '../../core/kubernetes.interface'
+import { GroupVersionKind, ObjectMeta } from '../../core/kubernetes.interface'
 
 export class BundleSpec {
   @ApiProperty()
@@ -39,14 +39,10 @@ export class BundleSpec {
 
 export class Bundle implements KubernetesObject {
   @ApiProperty()
-  get apiVersion(): string {
-    return Bundle.GroupVersion
-  }
+  apiVersion: string
 
   @ApiProperty()
-  get kind(): string {
-    return Bundle.Kind
-  }
+  kind: string
 
   @ApiProperty()
   metadata: ObjectMeta
@@ -54,20 +50,25 @@ export class Bundle implements KubernetesObject {
   @ApiProperty()
   spec: BundleSpec
 
-  static readonly Group = 'application.laf.dev'
-  static readonly Version = 'v1'
-  static readonly PluralName = 'bundles'
-  static readonly Kind = 'Bundle'
-  static get GroupVersion() {
-    return `${this.Group}/${this.Version}`
+  static readonly GVK = new GroupVersionKind(
+    'application.laf.dev',
+    'v1',
+    'Bundle',
+    'bundles',
+  )
+  constructor(name: string, namespace: string) {
+    this.apiVersion = Bundle.GVK.apiVersion
+    this.kind = Bundle.GVK.kind
+    this.metadata = new ObjectMeta(name, namespace)
+    this.metadata.labels = {}
+    this.spec = new BundleSpec()
   }
 
-  constructor(name: string, namespace: string) {
-    this.metadata = {
-      name,
-      namespace,
-    }
-    this.spec = new BundleSpec()
+  static fromObject(obj: KubernetesObject) {
+    const bundle = new Bundle(obj.metadata?.name, obj.metadata.namespace)
+    delete obj.metadata
+    Object.assign(bundle, obj)
+    return bundle
   }
 }
 
@@ -79,4 +80,11 @@ export class BundleList {
     type: [Bundle],
   })
   items: Bundle[]
+
+  static fromObject(obj: KubernetesListObject<Bundle>) {
+    const list = new BundleList()
+    Object.assign(list, obj)
+    list.items = obj.items.map((item) => Bundle.fromObject(item))
+    return list
+  }
 }
