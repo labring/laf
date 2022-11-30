@@ -39,7 +39,7 @@ func GetDatabase(ctx context.Context, c client.Client, app *appv1.Application) (
 
 	// Get the database
 	var db v1.Database
-	err := c.Get(ctx, client.ObjectKey{Namespace: app.Namespace, Name: "mongodb"}, &db)
+	err := c.Get(ctx, client.ObjectKey{Namespace: app.Namespace, Name: app.Spec.AppId}, &db)
 	return &db, err
 }
 
