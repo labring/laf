@@ -6,23 +6,63 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id          String       @unique
-  username    String       @unique
-  email       String       @unique
-  phone       String       @unique
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  username   String   @unique
+  email      String   @unique
+  phone      String   @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
   profile UserProfile?
 }
 
 model UserProfile {
-  uid    String @unique
-  openid String?
-  from   String?
-  avatar String?
-  name   String?
-  user   User   @relation(fields: [uid], references: [id])
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  uid        String   @unique @db.ObjectId
+  openid     String?
+  from       String?
+  avatar     String?
+  name       String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user User @relation(fields: [uid], references: [id])
+}
+
+enum HttpMethod {
+  GET
+  POST
+  PUT
+  DELETE
+  PATCH
+  HEAD
+}
+
+type CloudFunctionSource {
+  code    String
+  uri     String?
+  version Int     @default(0)
+  hash    String?
+  lang    String?
+}
+
+model CloudFunction {
+  id         String              @id @default(auto()) @map("_id") @db.ObjectId
+  appid      String
+  name       String
+  source     CloudFunctionSource
+  desc       String
+  tags       String[]
+  websocket  Boolean
+  methods    HttpMethod[]
+  created_at DateTime            @default(now())
+  updated_at DateTime            @updatedAt
+  created_by String              @db.ObjectId
+
+  @@unique([appid, name])
 }

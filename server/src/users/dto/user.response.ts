@@ -2,6 +2,8 @@ import { ApiProperty } from '@nestjs/swagger'
 import { User, UserProfile } from '@prisma/client'
 
 export class UserProfileDto implements UserProfile {
+  id: string
+
   @ApiProperty()
   uid: string
 
@@ -15,6 +17,12 @@ export class UserProfileDto implements UserProfile {
   name: string
 
   from: string
+
+  @ApiProperty()
+  created_at: Date
+
+  @ApiProperty()
+  updated_at: Date
 }
 
 export class UserDto implements User {
@@ -32,4 +40,10 @@ export class UserDto implements User {
 
   @ApiProperty()
   profile: UserProfileDto
+
+  @ApiProperty()
+  created_at: Date
+
+  @ApiProperty()
+  updated_at: Date
 }

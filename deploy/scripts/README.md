@@ -49,7 +49,7 @@ multipass exec laf-dev -- sudo -u root kubectl apply -f /laf/deploy/scripts/init
 
 ```bash
 # Forward service in cluster to localhost, run this command in another terminal separately
-kubectl port-forward deployment/postgresql 5432 -n laf
+kubectl port-forward deployment/mongodb 27017:27017 -n laf
 kubectl port-forward deployments/casdoor 30070:8000 -n laf
 
 # Run these in first time or when someone change the schema.
