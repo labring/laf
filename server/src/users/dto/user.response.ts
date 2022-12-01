@@ -19,10 +19,10 @@ export class UserProfileDto implements UserProfile {
   from: string
 
   @ApiProperty()
-  created_at: Date
+  createdAt: Date
 
   @ApiProperty()
-  updated_at: Date
+  updatedAt: Date
 }
 
 export class UserDto implements User {

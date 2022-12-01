@@ -11,6 +11,7 @@ import { CoreModule } from './core/core.module'
 import { ApplicationsModule } from './applications/applications.module'
 import { AuthModule } from './auth/auth.module'
 import { ThrottlerModule } from '@nestjs/throttler'
+import { PrismaService } from './prisma.service'
 
 @Module({
   imports: [
