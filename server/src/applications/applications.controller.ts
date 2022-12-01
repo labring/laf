@@ -17,20 +17,20 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
-import { IRequest } from 'src/common/types'
-import { JwtAuthGuard } from '../auth/jwt-auth.guard'
+import { IRequest } from '../common/types'
+import { ApplicationCoreService } from '../core/application.cr.service'
+import { Application, ApplicationList } from '../core/api/application.cr'
+import { JwtAuthGuard } from '../auth/jwt.auth.guard'
 import { ApiResponseUtil, ResponseUtil } from '../common/response'
-import { ApplicationAuthGuard } from './application.auth.guard'
-import { ApplicationsService } from './applications.service'
+import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import { CreateApplicationDto } from './dto/create-application.dto'
 import { UpdateApplicationDto } from './dto/update-application.dto'
-import { Application, ApplicationList } from './entities/application.entity'
 
 @ApiTags('Application')
 @Controller('applications')
 @ApiBearerAuth('Authorization')
 export class ApplicationsController {
-  constructor(private readonly appService: ApplicationsService) {}
+  constructor(private readonly appService: ApplicationCoreService) {}
 
   /**
    * Create application

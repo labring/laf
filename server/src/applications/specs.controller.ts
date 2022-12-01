@@ -1,18 +1,18 @@
 import { Controller, Get, Logger } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
-import { ApiResponseUtil, ResponseUtil } from 'src/common/response'
-import { BundlesService } from './bundles.service'
-import { BundleList } from './entities/bundle.entity'
-import { RuntimeList } from './entities/runtime.entity'
-import { RuntimesService } from './runtimes.service'
+import { ApiResponseUtil, ResponseUtil } from '../common/response'
+import { BundleCoreService } from '../core/bundle.cr.service'
+import { BundleList } from '../core/api/bundle.cr'
+import { RuntimeList } from '../core/api/runtime.cr'
+import { RuntimeCoreService } from '../core/runtime.cr.service'
 
 @ApiTags('Application')
 @Controller()
 export class SpecsController {
   private readonly logger = new Logger(SpecsController.name)
   constructor(
-    private readonly bundleService: BundlesService,
-    private readonly runtimeService: RuntimesService,
+    private readonly bundleService: BundleCoreService,
+    private readonly runtimeService: RuntimeCoreService,
   ) {}
 
   /**

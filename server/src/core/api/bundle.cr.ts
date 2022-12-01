@@ -1,6 +1,6 @@
 import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node'
 import { ApiProperty } from '@nestjs/swagger'
-import { GroupVersionKind, ObjectMeta } from '../../core/kubernetes.interface'
+import { GroupVersionKind, ObjectMeta } from './types'
 
 export class BundleSpec {
   @ApiProperty()

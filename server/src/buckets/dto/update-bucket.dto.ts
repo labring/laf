@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator'
-import { BucketPolicy } from '../entities/bucket.entity'
+import { BucketPolicy } from '../../core/api/bucket.cr'
 
 export class UpdateBucketDto {
   @ApiProperty({ enum: BucketPolicy })

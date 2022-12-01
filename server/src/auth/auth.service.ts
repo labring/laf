@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { CasdoorService } from './casdoor.service'
 import { User } from '@prisma/client'
-import { UsersService } from 'src/users/users.service'
+import { UsersService } from '../users/users.service'
 
 @Injectable()
 export class AuthService {

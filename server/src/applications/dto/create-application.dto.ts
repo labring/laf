@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { IsEnum, IsNotEmpty, Length } from 'class-validator'
-import { ApplicationState } from '../entities/application.entity'
+import { ApplicationState } from '../../core/api/application.cr'
 
 export class CreateApplicationDto {
   @ApiProperty({ required: true })

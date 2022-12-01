@@ -1,13 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { GetApplicationNamespaceById } from '../common/getter'
-import { KubernetesService } from '../core/kubernetes.service'
-import { CreateBucketDto } from './dto/create-bucket.dto'
-import { UpdateBucketDto } from './dto/update-bucket.dto'
-import { Bucket, BucketList } from './entities/bucket.entity'
+import { KubernetesService } from './kubernetes.service'
+import { CreateBucketDto } from '../buckets/dto/create-bucket.dto'
+import { UpdateBucketDto } from '../buckets/dto/update-bucket.dto'
+import { Bucket, BucketList } from './api/bucket.cr'
 
 @Injectable()
-export class BucketsService {
-  logger: Logger = new Logger(BucketsService.name)
+export class BucketCoreService {
+  logger: Logger = new Logger(BucketCoreService.name)
   constructor(private readonly k8sClient: KubernetesService) {}
 
   /**

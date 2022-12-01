@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { GetSystemNamespace } from 'src/common/getter'
-import { KubernetesService } from 'src/core/kubernetes.service'
-import { Runtime, RuntimeList } from './entities/runtime.entity'
+import { GetSystemNamespace } from '../common/getter'
+import { KubernetesService } from '../core/kubernetes.service'
+import { Runtime, RuntimeList } from './api/runtime.cr'
 
 @Injectable()
-export class RuntimesService {
-  private readonly logger = new Logger(RuntimesService.name)
+export class RuntimeCoreService {
+  private readonly logger = new Logger(RuntimeCoreService.name)
   constructor(private readonly k8sClient: KubernetesService) {}
 
   async findAll() {

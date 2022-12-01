@@ -28,8 +28,8 @@ model UserProfile {
   from       String?
   avatar     String?
   name       String?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   user User @relation(fields: [uid], references: [id])
 }

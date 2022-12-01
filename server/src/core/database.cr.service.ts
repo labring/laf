@@ -1,13 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { GetApplicationNamespaceById } from 'src/common/getter'
-import { KubernetesService } from 'src/core/kubernetes.service'
-import { Database } from './entities/database.entity'
+import { GetApplicationNamespaceById } from '../common/getter'
+import { KubernetesService } from '../core/kubernetes.service'
+import { Database } from './api/database.cr'
 import { MongoClient } from 'mongodb'
 import * as assert from 'node:assert'
 
 @Injectable()
-export class DatabaseService {
-  private readonly logger = new Logger(DatabaseService.name)
+export class DatabaseCoreService {
+  private readonly logger = new Logger(DatabaseCoreService.name)
 
   constructor(private readonly k8sService: KubernetesService) {}
 
