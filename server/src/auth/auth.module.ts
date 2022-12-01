@@ -7,6 +7,7 @@ import { AuthService } from './auth.service'
 import { CasdoorService } from './casdoor.service'
 import { JwtStrategy } from './jwt.strategy'
 import { AuthController } from './auth.controller'
+import { HttpModule } from '@nestjs/axios'
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AuthController } from './auth.controller'
       signOptions: { expiresIn: ServerConfig.JWT_EXPIRES_IN },
     }),
     UsersModule,
+    HttpModule,
   ],
   providers: [AuthService, JwtStrategy, CasdoorService],
   exports: [AuthService],
