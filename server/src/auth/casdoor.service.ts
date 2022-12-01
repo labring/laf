@@ -1,3 +1,4 @@
+import { HttpService } from '@nestjs/axios'
 import { Injectable, Logger } from '@nestjs/common'
 import { SDK, Config } from 'casdoor-nodejs-sdk'
 import * as querystring from 'node:querystring'
@@ -6,6 +7,7 @@ import { ServerConfig } from '../constants'
 @Injectable()
 export class CasdoorService {
   private logger = new Logger()
+  constructor(private readonly httpService: HttpService) {}
 
   /**
    * Get auth config of casdoor
@@ -38,7 +40,7 @@ export class CasdoorService {
    */
   async code2user(code: string) {
     const token = await this.code2token(code)
-    const user = this.getUserInfo(token)
+    const user = await this.getUserInfo(token)
     return user
   }
 
@@ -61,9 +63,16 @@ export class CasdoorService {
    * @param token
    * @returns
    */
-  getUserInfo(token: string) {
+  async getUserInfo(token: string) {
     try {
-      const user = this.getCasdoorSDK().parseJwtToken(token)
+      const url = `${ServerConfig.CASDOOR_ENDPOINT}/api/userinfo`
+      const res = await this.httpService.axiosRef.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      const user = res.data
       return user
     } catch (err) {
       this.logger.error(err)

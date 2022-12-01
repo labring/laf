@@ -35,9 +35,10 @@ export class AuthService {
           phone: casdoorUser.phone,
           profile: {
             create: {
-              openid: casdoorUser.id,
-              name: casdoorUser.displayName,
-              avatar: casdoorUser.avatar,
+              openid: casdoorUser.id || casdoorUser.sub,
+              name: casdoorUser.displayName || casdoorUser.preferred_username,
+              avatar: casdoorUser.avatar || casdoorUser.picture,
+              from: 'casdoor',
             },
           },
         })
