@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { Prisma, User } from '@prisma/client'
 import { PrismaService } from '../prisma.service'
 import * as nanoid from 'nanoid'
-import { ObjectID } from 'bson'
+
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}

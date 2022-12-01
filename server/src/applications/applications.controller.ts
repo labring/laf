@@ -18,25 +18,28 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import { IRequest } from '../common/types'
-import { ApplicationCoreService } from '../core/application.cr.service'
-import { Application, ApplicationList } from '../core/api/application.cr'
 import { JwtAuthGuard } from '../auth/jwt.auth.guard'
 import { ApiResponseUtil, ResponseUtil } from '../common/response'
 import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import { CreateApplicationDto } from './dto/create-application.dto'
 import { UpdateApplicationDto } from './dto/update-application.dto'
+import { ApplicationsService } from './applications.service'
+import { ApplicationCoreService } from 'src/core/application.cr.service'
 
 @ApiTags('Application')
 @Controller('applications')
 @ApiBearerAuth('Authorization')
 export class ApplicationsController {
-  constructor(private readonly appService: ApplicationCoreService) {}
+  constructor(
+    private readonly appService: ApplicationsService,
+    private readonly appCoreService: ApplicationCoreService,
+  ) {}
 
   /**
    * Create application
    * @returns
    */
-  @ApiResponseUtil(Application)
+  // @ApiResponseUtil(Application)
   @ApiOperation({ summary: 'Create a new application' })
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -48,8 +51,11 @@ export class ApplicationsController {
     }
 
     // create namespace
-    const appid = this.appService.generateAppid(6)
-    const namespace = await this.appService.createAppNamespace(appid, user.id)
+    const appid = this.appCoreService.generateAppid(6)
+    const namespace = await this.appCoreService.createAppNamespace(
+      appid,
+      user.id,
+    )
     if (!namespace) {
       return ResponseUtil.error('create app namespace error')
     }
@@ -67,7 +73,7 @@ export class ApplicationsController {
    * @param req
    * @returns
    */
-  @ApiResponseUtil(ApplicationList)
+  // @ApiResponseUtil(ApplicationList)
   @UseGuards(JwtAuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get user application list' })
@@ -86,9 +92,8 @@ export class ApplicationsController {
   @ApiOperation({ summary: 'Get an application by appid' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get(':appid')
-  async findOne(@Param('appid') appid: string, @Req() req: IRequest) {
-    const user = req.user
-    const data = await this.appService.findOneByUser(user.id, appid)
+  async findOne(@Param('appid') appid: string) {
+    const data = await this.appService.findOne(appid)
     if (null === data) {
       throw new HttpException('application not found', HttpStatus.NOT_FOUND)
     }
@@ -99,17 +104,15 @@ export class ApplicationsController {
   /**
    * Update an application
    * @param dto
-   * @param req
    * @returns
    */
   @ApiOperation({ summary: 'Update an application' })
-  @ApiResponseUtil(Application)
+  // @ApiResponseUtil(Application)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Patch(':appid')
   async update(
-    @Param('appid') _appid: string,
+    @Param('appid') appid: string,
     @Body() dto: UpdateApplicationDto,
-    @Req() req: IRequest,
   ) {
     // check dto
     const error = dto.validate()
@@ -118,8 +121,7 @@ export class ApplicationsController {
     }
 
     // update app
-    const app = req.application
-    const res = await this.appService.update(app, dto)
+    const res = await this.appService.update(appid, dto)
     if (res === null) {
       return ResponseUtil.error('update application error')
     }
@@ -134,9 +136,8 @@ export class ApplicationsController {
   @ApiOperation({ summary: 'Delete an application' })
   @Delete(':appid')
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
-  async remove(@Param('appid') _appid: string, @Req() req: IRequest) {
-    const app = req.application
-    const res = await this.appService.remove(app)
+  async remove(@Param('appid') appid: string) {
+    const res = await this.appService.remove(appid)
     if (res === null) {
       return ResponseUtil.error('delete application error')
     }

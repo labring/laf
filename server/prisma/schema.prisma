@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
 }
 
 datasource db {
@@ -11,10 +12,10 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  username   String   @unique
-  email      String   @unique
-  phone      String   @unique
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String   @unique
+  email     String   @unique
+  phone     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -22,12 +23,12 @@ model User {
 }
 
 model UserProfile {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  uid        String   @unique @db.ObjectId
-  openid     String?
-  from       String?
-  avatar     String?
-  name       String?
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  uid       String   @unique @db.ObjectId
+  openid    String?
+  from      String?
+  avatar    String?
+  name      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -38,7 +39,7 @@ model Region {
   id          String        @id @default(auto()) @map("_id") @db.ObjectId
   name        String        @unique
   desc        String?
-  applications Application[]
+  Application Application[]
 }
 
 model Bundle {
@@ -52,7 +53,7 @@ model Bundle {
   networkTrafficOutbound Int
   networkTrafficInbound  Int?
   priority               Int
-  applications            Application[]
+  Application            Application[]
 }
 
 type RuntimeImageGroup {
@@ -62,13 +63,13 @@ type RuntimeImageGroup {
 }
 
 model Runtime {
-  id           String            @id @default(auto()) @map("_id") @db.ObjectId
-  name         String            @unique
-  type         String
-  image        RuntimeImageGroup
-  version      String
-  latest       Boolean
-  Applications Application[]
+  id          String            @id @default(auto()) @map("_id") @db.ObjectId
+  name        String            @unique
+  type        String
+  image       RuntimeImageGroup
+  version     String
+  latest      Boolean
+  Application Application[]
 }
 
 model Application {
@@ -79,9 +80,9 @@ model Application {
   bundleName  String
   runtimeName String
   tags        String[]
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  createdBy  String   @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdBy   String   @db.ObjectId
 
   region  Region  @relation(fields: [regionName], references: [name])
   runtime Runtime @relation(fields: [runtimeName], references: [name])
@@ -106,14 +107,14 @@ type CloudFunctionSource {
 }
 
 model CloudFunction {
-  id         String              @id @default(auto()) @map("_id") @db.ObjectId
-  appid      String
-  name       String
-  source     CloudFunctionSource
-  desc       String
-  tags       String[]
-  websocket  Boolean
-  methods    HttpMethod[]
+  id        String              @id @default(auto()) @map("_id") @db.ObjectId
+  appid     String
+  name      String
+  source    CloudFunctionSource
+  desc      String
+  tags      String[]
+  websocket Boolean
+  methods   HttpMethod[]
   createdAt DateTime            @default(now())
   updatedAt DateTime            @updatedAt
   createdBy String              @db.ObjectId

@@ -58,10 +58,7 @@ export class BucketsController {
 
     // TODO: check the storage capacity of the app
     const app = req.application
-    this.logger.warn(
-      'TODO: check the storage capacity of the app: ',
-      app.metadata.name,
-    )
+    this.logger.warn('TODO: check the storage capacity of the app: ', app.appid)
 
     // create bucket
     const bucket = await this.bucketsService.create(appid, dto)

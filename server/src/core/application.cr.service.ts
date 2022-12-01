@@ -119,13 +119,14 @@ export class ApplicationCoreService {
     return null
   }
 
-  async update(app: Application, dto: UpdateApplicationDto) {
-    if (dto.displayName) {
-      app.setDisplayName(dto.displayName)
-    }
-    app.spec.state = dto.state || app.spec.state
-
+  async update(appid: string, dto: UpdateApplicationDto) {
     try {
+      const app = await this.findOne(appid)
+      if (dto.displayName) {
+        app.setDisplayName(dto.displayName)
+      }
+      app.spec.state = dto.state || app.spec.state
+
       const res = await this.k8sClient.patchCustomObject(app)
       return res as Application
     } catch (err) {
@@ -134,8 +135,9 @@ export class ApplicationCoreService {
     }
   }
 
-  async remove(app: Application) {
+  async remove(appid: string) {
     try {
+      const app = await this.findOne(appid)
       const res = await this.k8sClient.deleteCustomObject(app)
       return res
     } catch (error) {
