@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common'
 import * as k8s from '@kubernetes/client-node'
 import { KubernetesObject } from '@kubernetes/client-node'
 import { compare } from 'fast-json-patch'
-import { GroupVersionKind } from './kubernetes.interface'
-import path from 'path'
+import { GroupVersionKind } from './api/types'
 
 /**
  * Single instance of the Kubernetes API client.

@@ -1,20 +1,20 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { KubernetesService } from '../core/kubernetes.service'
+import { KubernetesService } from './kubernetes.service'
 import {
   Application,
   ApplicationList,
   ApplicationSpec,
-} from './entities/application.entity'
+} from './api/application.cr'
 import * as k8s from '@kubernetes/client-node'
 import * as nanoid from 'nanoid'
-import { CreateApplicationDto } from './dto/create-application.dto'
-import { UpdateApplicationDto } from './dto/update-application.dto'
 import { ResourceLabels } from '../constants'
 import { GetApplicationNamespaceById } from '../common/getter'
+import { CreateApplicationDto } from '../applications/dto/create-application.dto'
+import { UpdateApplicationDto } from '../applications/dto/update-application.dto'
 
 @Injectable()
-export class ApplicationsService {
-  private readonly logger = new Logger(ApplicationsService.name)
+export class ApplicationCoreService {
+  private readonly logger = new Logger(ApplicationCoreService.name)
   constructor(public k8sClient: KubernetesService) {}
 
   // create app namespace

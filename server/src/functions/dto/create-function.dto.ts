@@ -7,7 +7,7 @@ import {
   Length,
   MaxLength,
 } from 'class-validator'
-import { HTTP_METHODS } from 'src/constants'
+import { HTTP_METHODS } from '../../constants'
 
 export class CreateFunctionDto {
   @ApiProperty({

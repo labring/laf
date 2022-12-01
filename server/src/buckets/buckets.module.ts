@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common'
-import { BucketsService } from './buckets.service'
 import { BucketsController } from './buckets.controller'
-import { ApplicationsService } from 'src/applications/applications.service'
+import { CoreModule } from '../core/core.module'
 
 @Module({
+  imports: [CoreModule],
   controllers: [BucketsController],
-  providers: [BucketsService, ApplicationsService],
+  providers: [],
 })
 export class BucketsModule {}

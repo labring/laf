@@ -5,13 +5,13 @@ import {
   Logger,
 } from '@nestjs/common'
 import { User } from '@prisma/client'
-import { IRequest } from 'src/common/types'
-import { ApplicationsService } from './applications.service'
+import { IRequest } from '../common/types'
+import { ApplicationCoreService } from '../core/application.cr.service'
 
 @Injectable()
 export class ApplicationAuthGuard implements CanActivate {
   logger = new Logger(ApplicationAuthGuard.name)
-  constructor(private appService: ApplicationsService) {}
+  constructor(private appService: ApplicationCoreService) {}
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest() as IRequest
     const appid = request.params.appid

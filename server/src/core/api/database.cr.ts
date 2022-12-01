@@ -1,10 +1,6 @@
 import { KubernetesObject } from '@kubernetes/client-node'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import {
-  Condition,
-  GroupVersionKind,
-  ObjectMeta,
-} from '../../core/kubernetes.interface'
+import { Condition, GroupVersionKind, ObjectMeta } from './types'
 
 export class DatabaseCapacity {
   @ApiProperty()

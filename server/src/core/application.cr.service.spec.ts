@@ -1,19 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { CoreModule } from '../core/core.module'
-import { ApplicationsService } from './applications.service'
-import { CreateApplicationDto } from './dto/create-application.dto'
-import { ApplicationState } from './entities/application.entity'
+import { CoreModule } from './core.module'
+import { ApplicationCoreService } from './application.cr.service'
+import { ApplicationState } from './api/application.cr'
+import { CreateApplicationDto } from '../applications/dto/create-application.dto'
 
 describe('AppsService', () => {
-  let service: ApplicationsService
+  let service: ApplicationCoreService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [CoreModule],
-      providers: [ApplicationsService],
+      providers: [ApplicationCoreService],
     }).compile()
 
-    service = module.get<ApplicationsService>(ApplicationsService)
+    service = module.get<ApplicationCoreService>(ApplicationCoreService)
   })
 
   it('should be defined', () => {
@@ -23,17 +23,17 @@ describe('AppsService', () => {
 
 const userid = 'test-user-id'
 
-describe('AppService create app', () => {
+describe('AppService  app', () => {
   const timeout = 60 * 1000
-  let service: ApplicationsService
+  let service: ApplicationCoreService
   let appid: string
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [CoreModule],
-      providers: [ApplicationsService],
+      providers: [ApplicationCoreService],
     }).compile()
 
-    service = module.get<ApplicationsService>(ApplicationsService)
+    service = module.get<ApplicationCoreService>(ApplicationCoreService)
   }, timeout)
 
   jest.setTimeout(timeout)
@@ -77,15 +77,15 @@ describe('AppService create app', () => {
 
 describe.skip('AppService find app by appid', () => {
   const timeout = 60 * 1000
-  let service: ApplicationsService
+  let service: ApplicationCoreService
   let appid: string
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [CoreModule],
-      providers: [ApplicationsService],
+      providers: [ApplicationCoreService],
     }).compile()
 
-    service = module.get<ApplicationsService>(ApplicationsService)
+    service = module.get<ApplicationCoreService>(ApplicationCoreService)
   }, timeout)
 
   jest.setTimeout(timeout)

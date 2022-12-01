@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common'
-import { FunctionsService } from './functions.service'
+import { CoreModule } from '../core/core.module'
 import { FunctionsController } from './functions.controller'
-import { ApplicationsService } from 'src/applications/applications.service'
 
 @Module({
+  imports: [CoreModule],
   controllers: [FunctionsController],
-  providers: [FunctionsService, ApplicationsService],
+  providers: [],
 })
 export class FunctionsModule {}

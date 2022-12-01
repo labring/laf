@@ -42,8 +42,8 @@ export class UserDto implements User {
   profile: UserProfileDto
 
   @ApiProperty()
-  created_at: Date
+  createdAt: Date
 
   @ApiProperty()
-  updated_at: Date
+  updatedAt: Date
 }

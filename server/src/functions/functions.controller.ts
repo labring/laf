@@ -10,25 +10,25 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common'
-import { FunctionsService } from './functions.service'
+import { FunctionCoreService } from '../core/function.cr.service'
 import { CreateFunctionDto } from './dto/create-function.dto'
 import { UpdateFunctionDto } from './dto/update-function.dto'
-import { ApiResponseUtil, ResponseUtil } from 'src/common/response'
-import { CloudFunction, CloudFunctionList } from './entities/function.entity'
+import { ApiResponseUtil, ResponseUtil } from '../common/response'
+import { CloudFunction, CloudFunctionList } from '../core/api/function.cr'
 import {
   ApiBearerAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
-import { ApplicationAuthGuard } from 'src/applications/application.auth.guard'
+import { JwtAuthGuard } from '../auth/jwt.auth.guard'
+import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 
 @ApiTags('Function')
 @ApiBearerAuth('Authorization')
 @Controller('apps/:appid/functions')
 export class FunctionsController {
-  constructor(private readonly functionsService: FunctionsService) {}
+  constructor(private readonly functionsService: FunctionCoreService) {}
 
   /**
    * Create a new function

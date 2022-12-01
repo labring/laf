@@ -1,9 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import {
-  Application,
-  ApplicationState,
-} from '../applications/entities/application.entity'
 import { ResourceLabels } from '../constants'
+import { Application, ApplicationState } from './api/application.cr'
 import { KubernetesService } from './kubernetes.service'
 
 let service: KubernetesService

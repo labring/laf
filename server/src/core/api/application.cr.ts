@@ -1,13 +1,9 @@
 import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { ResourceLabels } from '../../constants'
-import {
-  Condition,
-  GroupVersionKind,
-  ObjectMeta,
-} from '../../core/kubernetes.interface'
-import { BundleSpec } from './bundle.entity'
-import { RuntimeSpec } from './runtime.entity'
+import { Condition, GroupVersionKind, ObjectMeta } from './types'
+import { BundleSpec } from './bundle.cr'
+import { RuntimeSpec } from './runtime.cr'
 
 export enum ApplicationState {
   ApplicationStateInitializing = 'Initializing',

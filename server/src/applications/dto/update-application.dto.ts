@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
 import { IsIn } from 'class-validator'
-import { ApplicationState } from '../entities/application.entity'
+import { ApplicationState } from '../../core/api/application.cr'
 
 const STATES = ['Running', 'Stopped']
 export class UpdateApplicationDto {

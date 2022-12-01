@@ -18,21 +18,21 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
-import { ApplicationAuthGuard } from 'src/applications/application.auth.guard'
-import { IRequest } from 'src/common/types'
-import { JwtAuthGuard } from '../auth/jwt-auth.guard'
+import { ApplicationAuthGuard } from '../auth/application.auth.guard'
+import { IRequest } from '../common/types'
+import { JwtAuthGuard } from '../auth/jwt.auth.guard'
 import { ApiResponseUtil, ResponseUtil } from '../common/response'
-import { BucketsService } from './buckets.service'
+import { BucketCoreService } from '../core/bucket.cr.service'
 import { CreateBucketDto } from './dto/create-bucket.dto'
 import { UpdateBucketDto } from './dto/update-bucket.dto'
-import { Bucket, BucketList } from './entities/bucket.entity'
+import { Bucket, BucketList } from '../core/api/bucket.cr'
 
 @ApiTags('Bucket')
 @ApiBearerAuth('Authorization')
 @Controller('apps/:appid/buckets')
 export class BucketsController {
   logger = new Logger(BucketsController.name)
-  constructor(private readonly bucketsService: BucketsService) {}
+  constructor(private readonly bucketsService: BucketCoreService) {}
 
   /**
    * Create a new bucket
