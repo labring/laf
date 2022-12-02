@@ -1,6 +1,6 @@
 import { createStandaloneToast } from "@chakra-ui/react";
-import { AppControllerGetSigninUrl } from "services/v1/login";
-import { AppControllerGetProfile } from "services/v1/profile";
+import { AuthControllerGetSigninUrl } from "services/v1/login";
+import { AuthControllerGetProfile } from "services/v1/profile";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
@@ -34,7 +34,7 @@ const useGlobalStore = create<State>()(
         set((state) => {
           state.loading = true;
         });
-        const res = await AppControllerGetProfile({});
+        const res = await AuthControllerGetProfile({});
 
         set((state) => {
           state.currentApp = appid;
@@ -50,7 +50,7 @@ const useGlobalStore = create<State>()(
       },
 
       login: async () => {
-        const res = await AppControllerGetSigninUrl({});
+        const res = await AuthControllerGetSigninUrl({});
         console.log(222, res);
       },
 
