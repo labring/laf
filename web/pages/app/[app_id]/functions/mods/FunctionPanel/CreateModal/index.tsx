@@ -1,9 +1,14 @@
 import React, { forwardRef, useImperativeHandle, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { AddIcon } from "@chakra-ui/icons";
 import {
   Button,
+  Checkbox,
+  CheckboxGroup,
   FormControl,
+  FormErrorMessage,
   FormLabel,
+  HStack,
   Input,
   Modal,
   ModalBody,
@@ -13,23 +18,58 @@ import {
   ModalHeader,
   ModalOverlay,
   Switch,
-  Textarea,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
-import { Field, Formik } from "formik";
+import useGlobalStore from "pages/globalStore";
 
 import IconWrap from "@/components/IconWrap";
 
-import { TFunction } from "../../../store";
+import useFunctionStore, { TFunction } from "../../../store";
 
 const CreateModal = forwardRef((props, ref) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const formRef = React.useRef(null);
 
+  const { showSuccess } = useGlobalStore();
+  const { createFunction } = useFunctionStore();
   const [currentFunc, setCurrentFunc] = useState<TFunction | any>();
   const [isEdit, setIsEdit] = useState(false);
+
+  type FormData = {
+    name: string;
+    description: string;
+    websocket: boolean;
+    methods: string[];
+    codes: string;
+  };
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<FormData>({
+    defaultValues: {
+      name: "",
+      description: "",
+      websocket: false,
+      methods: ["HEAD"],
+      codes: "console.log(123)",
+    },
+  });
+
+  const onSubmit = async (data: any) => {
+    const res = await createFunction(data);
+    console.log(res);
+    if (!res.error) {
+      showSuccess("create success.");
+      onClose();
+      reset();
+    }
+  };
 
   const initialRef = React.useRef(null);
 
@@ -61,47 +101,89 @@ const CreateModal = forwardRef((props, ref) => {
         <ModalContent>
           <ModalHeader>添加函数</ModalHeader>
           <ModalCloseButton />
-          <Formik initialValues={currentFunc} onSubmit={(values) => {}}>
-            {({ handleSubmit, errors, touched }) => (
-              <form ref={formRef} onSubmit={handleSubmit}>
+
+          <ModalBody pb={6}>
+            <VStack spacing={6} align="flex-start">
+              <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
                 <ModalBody pb={6}>
                   <VStack spacing={6} align="flex-start">
-                    <FormControl>
+                    <FormControl isInvalid={!!errors?.name}>
                       <FormLabel htmlFor="name">函数名称</FormLabel>
-                      <Field as={Input} id="name" name="name" variant="filled" readOnly={isEdit} />
+                      <Input
+                        {...register("name", {
+                          required: "name is required",
+                        })}
+                        id="name"
+                        variant="filled"
+                        readOnly={isEdit}
+                      />
+                      <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>{" "}
                     </FormControl>
 
-                    <FormControl>
-                      <FormLabel htmlFor="id">函数标识</FormLabel>
-                      <Field as={Input} id="id" name="id" variant="filled" />
+                    <FormControl isInvalid={!!errors?.description}>
+                      <FormLabel htmlFor="description">函数描述</FormLabel>
+                      <Input
+                        {...register("description", {
+                          required: "description is required",
+                        })}
+                        id="description"
+                        variant="filled"
+                        readOnly={isEdit}
+                      />
+                      <FormErrorMessage>
+                        {errors.description && errors.description.message}
+                      </FormErrorMessage>{" "}
                     </FormControl>
 
-                    <FormControl>
-                      <FormLabel htmlFor="tag">标签</FormLabel>
-                      <Field as={Input} id="tag" name="tag" variant="filled" />
+                    <FormControl isInvalid={!!errors?.websocket}>
+                      <FormLabel htmlFor="websocket">是否支持 websocket</FormLabel>
+                      <Switch
+                        {...register("websocket")}
+                        id="websocket"
+                        variant="filled"
+                        readOnly={isEdit}
+                      />
+                      <FormErrorMessage>
+                        {errors.websocket && errors.websocket.message}
+                      </FormErrorMessage>{" "}
                     </FormControl>
 
-                    <FormControl>
-                      <FormLabel htmlFor="enabled">是否启用</FormLabel>
-                      <Field as={Switch} id="enabled" name="enabled" variant="filled" />
-                    </FormControl>
-
-                    <FormControl>
-                      <FormLabel htmlFor="desc">函数描述</FormLabel>
-                      <Field as={Textarea} id="desc" name="desc" variant="filled" />
+                    <FormControl isInvalid={!!errors?.methods}>
+                      <FormLabel htmlFor="methods">请求方法</FormLabel>
+                      <HStack spacing={6}>
+                        <Controller
+                          name="methods"
+                          control={control}
+                          render={({ field: { ref, ...rest } }) => (
+                            <CheckboxGroup {...rest}>
+                              <Checkbox value="HEAD">HEAD</Checkbox>
+                              <Checkbox value="GET">GET</Checkbox>
+                              <Checkbox value="POST">POST</Checkbox>
+                            </CheckboxGroup>
+                          )}
+                          rules={{
+                            required: { value: true, message: "Please select at least one" },
+                          }}
+                        />
+                      </HStack>
+                      <FormErrorMessage>{errors.methods?.message}</FormErrorMessage>
                     </FormControl>
                   </VStack>
                 </ModalBody>
-
-                <ModalFooter>
-                  <Button colorScheme="primary" mr={3} type="submit">
-                    {t`Confirm`}
-                  </Button>
-                  <Button onClick={onClose}>{t`Cancel`}</Button>
-                </ModalFooter>
               </form>
-            )}
-          </Formik>
+            </VStack>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="primary" mr={3} type="submit" onClick={handleSubmit(onSubmit)}>
+              {t`Confirm`}
+            </Button>
+            <Button
+              onClick={() => {
+                onClose();
+              }}
+            >{t`Cancel`}</Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>

@@ -87,12 +87,12 @@ export default function FunctionList() {
 
         <SectionList style={{ height: "calc(100vh - 400px)", overflowY: "auto" }}>
           {(store.allFunctionList || [])
-            .filter((item: TFunction) => item?.label.includes(keywords))
-            .map((func: any) => {
+            .filter((item: TFunction) => item?.metadata?.name.includes(keywords))
+            .map((func) => {
               return (
                 <SectionList.Item
-                  isActive={func._id === store.currentFunction?._id}
-                  key={func._id}
+                  isActive={func?.metadata.name === store.currentFunction?.metadata.name}
+                  key={func?.metadata.name || ""}
                   className="group"
                   onClick={() => {
                     store.setCurrentFunction(func);
@@ -100,7 +100,7 @@ export default function FunctionList() {
                 >
                   <div>
                     <FileTypeIcon type={FileType.js} />
-                    <span className="ml-2 text-black">{func.label}</span>
+                    <span className="ml-2 text-black">{func?.metadata.name}</span>
                   </div>
                   <div className="hidden group-hover:block">
                     <EditIcon

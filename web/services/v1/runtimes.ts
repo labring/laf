@@ -8,14 +8,14 @@
 import request from "@/utils/request";
 
 /**
- * Redirect to register page
+ * Get application runtime list
  */
-export async function AuthControllerGetSignupUrl(
-  params: Paths.AuthControllerGetSignupUrl.BodyParameters | any,
+export async function SpecsControllerGetRuntimes(
+  params: Paths.SpecsControllerGetRuntimes.BodyParameters | any,
   extra?: { [key: string]: any },
-): Promise<Paths.AuthControllerGetSignupUrl.Responses> {
-  // /v1/register
-  return request(`/v1/register`, {
+): Promise<Paths.SpecsControllerGetRuntimes.Responses> {
+  // /v1/runtimes
+  return request(`/v1/runtimes`, {
     method: "GET",
     params: params,
     ...(extra || {}),

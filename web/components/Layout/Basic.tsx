@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect } from "react";
 import { Spinner } from "@chakra-ui/react";
-import useGlobalStore from "pages/app_store";
+import useGlobalStore from "pages/globalStore";
 
 import Header from "@/components/Header";
 

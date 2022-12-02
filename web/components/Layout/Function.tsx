@@ -1,6 +1,7 @@
 import React, { ReactNode, useEffect } from "react";
 import { Spinner } from "@chakra-ui/react";
-import useGlobalStore from "pages/app_store";
+import { useRouter } from "next/router";
+import useGlobalStore from "pages/globalStore";
 
 import { SmallNavHeight } from "@/constants/index";
 
@@ -8,9 +9,13 @@ import Header from "../Header";
 
 export default function FunctionLayout(props: { children: ReactNode }) {
   const { init, loading } = useGlobalStore((state) => state);
+  const {
+    query: { app_id },
+  } = useRouter();
+
   useEffect(() => {
-    init();
-  }, [init]);
+    init((app_id || "").toString());
+  }, [app_id, init]);
 
   return (
     <div>

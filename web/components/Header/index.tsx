@@ -8,7 +8,7 @@ import { GiDragonfly } from "react-icons/gi";
 import { GrGithub, GrLanguage } from "react-icons/gr";
 import { HStack, Tag, TagLabel } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import useGlobalStore from "pages/app_store";
+import useGlobalStore from "pages/globalStore";
 
 import { SmallNavHeight } from "@/constants/index";
 

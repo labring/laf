@@ -1,3 +1,5 @@
+import useGlobalStore from "pages/globalStore";
+import { FunctionsControllerCreate, FunctionsControllerFindAll } from "services/v1/apps";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
@@ -6,22 +8,25 @@ import request from "@/utils/request";
 
 export type TFunction =
   | {
-      _id: string;
-      name: string;
-      code: string;
-      label: string;
-      hash: string;
-      tags: string[];
-      description: string;
-      enableHTTP: boolean;
-      status: number;
-      triggers: any[];
-      debugParams: string;
-      version: number;
-      created_at: Date;
-      updated_at: Date;
-      created_by: string;
-      appid: string;
+      apiVersion: string;
+      kind: string;
+      metadata: {
+        creationTimestamp: string;
+        generation: number;
+        name: string;
+        namespace: string;
+        resourceVersion: string;
+        uid: string;
+      };
+      spec: {
+        description: string;
+        methods: string[];
+        source: {
+          codes: string;
+          version: number;
+        };
+        websocket: boolean;
+      };
     }
   | undefined;
 
@@ -40,6 +45,8 @@ type State = {
 
   initFunctionPage: () => void;
 
+  createFunction: (values: any) => Paths.FunctionsControllerCreate.Responses;
+
   getPacakges: () => void;
 
   setCurrentFunction: (currentFunction: TFunction) => void;
@@ -47,7 +54,7 @@ type State = {
 
 const useFunctionStore = create<State>()(
   devtools(
-    immer((set) => ({
+    immer((set, get) => ({
       currentFunction: undefined,
       favFunctoinList: [],
 
@@ -55,11 +62,23 @@ const useFunctionStore = create<State>()(
       allPackages: [],
 
       initFunctionPage: async () => {
-        const res = await request.get("/api/function_list");
-        set((state) => {
-          state.allFunctionList = res.data;
-          state.currentFunction = res.data[0];
+        const globalStore = useGlobalStore.getState();
+        const res = await FunctionsControllerFindAll({
+          appid: globalStore.currentApp,
         });
+        set((state) => {
+          state.allFunctionList = res.data.items;
+          state.currentFunction = res.data.items[0];
+        });
+      },
+
+      createFunction: async (values) => {
+        const res = await FunctionsControllerCreate({
+          appid: useGlobalStore.getState().currentApp,
+          ...values,
+        });
+        get().initFunctionPage();
+        return res;
       },
 
       getPacakges: async () => {

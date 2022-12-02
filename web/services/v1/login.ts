@@ -10,11 +10,12 @@ import request from "@/utils/request";
 /**
  * Redirect to login page
  */
-export async function AppControllerGetSigninUrl(
-  params: Paths.AppControllerGetSigninUrl.BodyParameters,
+export async function AuthControllerGetSigninUrl(
+  params: Paths.AuthControllerGetSigninUrl.BodyParameters | any,
   extra?: { [key: string]: any },
-): Promise<Paths.AppControllerGetSigninUrl.Responses> {
-  return request("/v1/login", {
+): Promise<Paths.AuthControllerGetSigninUrl.Responses> {
+  // /v1/login
+  return request(`/v1/login`, {
     method: "GET",
     params: params,
     ...(extra || {}),

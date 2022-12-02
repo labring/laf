@@ -10,11 +10,12 @@ import request from "@/utils/request";
 /**
  * Get current user profile
  */
-export async function AppControllerGetProfile(
-  params: Paths.AppControllerGetProfile.BodyParameters,
+export async function AuthControllerGetProfile(
+  params: Paths.AuthControllerGetProfile.BodyParameters | any,
   extra?: { [key: string]: any },
-): Promise<Paths.AppControllerGetProfile.Responses> {
-  return request("/v1/profile", {
+): Promise<Paths.AuthControllerGetProfile.Responses> {
+  // /v1/profile
+  return request(`/v1/profile`, {
     method: "GET",
     params: params,
     ...(extra || {}),

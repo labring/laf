@@ -14,11 +14,11 @@ import {
   ModalHeader,
   ModalOverlay,
   useDisclosure,
-  useToast,
   VStack,
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import useGlobalStore from "pages/globalStore";
 import { ApplicationsControllerCreate } from "services/v1/applications";
 import { useImmer } from "use-immer";
 
@@ -47,19 +47,14 @@ const CreateAppModal = forwardRef((props, ref) => {
   const [errors, updateErrors] = useImmer(initialErrors);
   const [isEdit, setIsEdit] = useState(false);
 
-  const toast = useToast();
+  const { showSuccess } = useGlobalStore();
 
   const appCreateMutaion = useMutation((params: any) => ApplicationsControllerCreate(params), {
     onSuccess: () => {
       onClose();
 
       setTimeout(() => {
-        toast({
-          position: "top",
-          title: "添加成功",
-          status: "success",
-          duration: 2000,
-        });
+        showSuccess("添加成功");
 
         updateAppInfo((draft) => {
           draft = initialAppInfo;
@@ -119,6 +114,10 @@ const CreateAppModal = forwardRef((props, ref) => {
                   onChange={(e) => {
                     updateAppInfo((draft) => {
                       draft.displayName = e.target.value;
+                    });
+
+                    updateErrors((draft) => {
+                      draft.displayName = "";
                     });
                   }}
                 />

@@ -13,10 +13,10 @@ import {
   ModalHeader,
   ModalOverlay,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { useMutation } from "@tanstack/react-query";
+import useGlobalStore from "pages/globalStore";
 
 import IconWrap from "@/components/IconWrap";
 import request from "@/utils/request";
@@ -31,7 +31,7 @@ const AddDepenceModal = forwardRef((_, ref) => {
 
   const initialRef = React.useRef(null);
 
-  const toast = useToast();
+  const { showSuccess } = useGlobalStore();
 
   useImperativeHandle(ref, () => ({
     edit: (item: TPackage) => {
@@ -51,12 +51,7 @@ const AddDepenceModal = forwardRef((_, ref) => {
           version: "latest",
         });
         setTimeout(() => {
-          toast({
-            position: "top",
-            title: "依赖添加成功",
-            status: "success",
-            duration: 2000,
-          });
+          showSuccess("依赖添加成功");
         }, 100);
       },
     },

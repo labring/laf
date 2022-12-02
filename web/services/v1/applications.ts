@@ -11,10 +11,11 @@ import request from "@/utils/request";
  * Create a new application
  */
 export async function ApplicationsControllerCreate(
-  params: Definitions.CreateApplicationDto,
+  params: Definitions.CreateApplicationDto | any,
   extra?: { [key: string]: any },
 ): Promise<Paths.ApplicationsControllerCreate.Responses> {
-  return request("/v1/applications", {
+  // /v1/applications
+  return request(`/v1/applications`, {
     method: "POST",
     data: params,
     ...(extra || {}),
@@ -25,10 +26,11 @@ export async function ApplicationsControllerCreate(
  * Get user application list
  */
 export async function ApplicationsControllerFindAll(
-  params: Paths.ApplicationsControllerFindAll.BodyParameters,
+  params: Paths.ApplicationsControllerFindAll.BodyParameters | any,
   extra?: { [key: string]: any },
 ): Promise<Paths.ApplicationsControllerFindAll.Responses> {
-  return request("/v1/applications", {
+  // /v1/applications
+  return request(`/v1/applications`, {
     method: "GET",
     params: params,
     ...(extra || {}),
@@ -39,9 +41,10 @@ export async function ApplicationsControllerFindAll(
  * Get an application by appid
  */
 export async function ApplicationsControllerFindOne(
-  params: Paths.ApplicationsControllerFindOne.BodyParameters,
+  params: Paths.ApplicationsControllerFindOne.BodyParameters | any,
   extra?: { [key: string]: any },
 ): Promise<Paths.ApplicationsControllerFindOne.Responses> {
+  // /v1/applications/{appid}
   return request(`/v1/applications/${params.appid}`, {
     method: "GET",
     params: params,
@@ -53,10 +56,11 @@ export async function ApplicationsControllerFindOne(
  * Update an application
  */
 export async function ApplicationsControllerUpdate(
-  params: Definitions.UpdateApplicationDto,
+  params: Definitions.UpdateApplicationDto | any,
   extra?: { [key: string]: any },
 ): Promise<Paths.ApplicationsControllerUpdate.Responses> {
-  return request("/v1/applications/{appid}", {
+  // /v1/applications/{appid}
+  return request(`/v1/applications/${params.appid}`, {
     method: "PATCH",
     data: params,
     ...(extra || {}),
@@ -67,9 +71,10 @@ export async function ApplicationsControllerUpdate(
  * Delete an application
  */
 export async function ApplicationsControllerRemove(
-  params: Paths.ApplicationsControllerRemove.BodyParameters,
+  params: Paths.ApplicationsControllerRemove.BodyParameters | any,
   extra?: { [key: string]: any },
 ): Promise<Paths.ApplicationsControllerRemove.Responses> {
+  // /v1/applications/{appid}
   return request(`/v1/applications/${params.appid}`, {
     method: "DELETE",
     data: params,

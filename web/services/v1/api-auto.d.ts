@@ -3,36 +3,15 @@ declare namespace Definitions {
     name?: string /* Function name is unique in the application */;
     description?: string;
     websocket?: boolean;
-    methods?: string;
+    methods?: string[];
     codes?: string /* The source code of the function */;
   };
 
-  export type UpdateFunctionDto = {};
-
-  export type CreatePolicyDto = {};
-
-  export type UpdatePolicyDto = {};
-
-  export type CreateBucketDto = {
-    shortName?: string /* The short name of the bucket which not contain the appid */;
-    appid?: string;
-    policy?: string;
-    storage?: string /* The storage capacity of the bucket: &#34;1Gi&#34;, &#34;0.5Gi&#34;, &#34;100Gi&#34; */;
-  };
-
-  export type UpdateBucketDto = {};
-
-  export type CreateWebsiteDto = {};
-
-  export type UpdateWebsiteDto = {};
-
-  export type CreateCollectionDto = {
-    name?: string;
-  };
-
-  export type UpdateCollectionDto = {
-    validatorSchema?: {};
-    validationLevel?: string;
+  export type UpdateFunctionDto = {
+    description?: string;
+    websocket?: boolean;
+    methods?: string[];
+    codes?: string /* The source code of the function */;
   };
 
   export type CreateApplicationDto = {
@@ -47,41 +26,37 @@ declare namespace Definitions {
     displayName?: string;
     state?: string;
   };
+
+  export type CreatePolicyDto = {};
+
+  export type UpdatePolicyDto = {};
+
+  export type CreateBucketDto = {
+    shortName?: string /* The short name of the bucket which not contain the appid */;
+    policy?: string;
+    storage?: string /* The storage capacity of the bucket: &#34;1Gi&#34;, &#34;0.5Gi&#34;, &#34;100Gi&#34; */;
+  };
+
+  export type UpdateBucketDto = {
+    policy?: string;
+    storage?: string /* The storage capacity of the bucket: &#34;1Gi&#34;, &#34;0.5Gi&#34;, &#34;100Gi&#34; */;
+  };
+
+  export type CreateWebsiteDto = {};
+
+  export type UpdateWebsiteDto = {};
+
+  export type CreateCollectionDto = {
+    name?: string;
+  };
+
+  export type UpdateCollectionDto = {
+    validatorSchema?: {};
+    validationLevel?: string;
+  };
 }
 
 declare namespace Paths {
-  namespace AppControllerGetSigninUrl {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AppControllerGetSignupUrl {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AppControllerCode2token {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AppControllerGetProfile {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
   namespace FunctionsControllerCreate {
     export type QueryParameters = any;
 
@@ -115,6 +90,62 @@ declare namespace Paths {
   }
 
   namespace FunctionsControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace ApplicationsControllerCreate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.CreateApplicationDto;
+
+    export type Responses = any;
+  }
+
+  namespace ApplicationsControllerFindAll {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace ApplicationsControllerFindOne {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace ApplicationsControllerUpdate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.UpdateApplicationDto;
+
+    export type Responses = any;
+  }
+
+  namespace ApplicationsControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace SpecsControllerGetRuntimes {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace SpecsControllerGetBundles {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -282,15 +313,7 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace ApplicationsControllerCreate {
-    export type QueryParameters = any;
-
-    export type BodyParameters = Definitions.CreateApplicationDto;
-
-    export type Responses = any;
-  }
-
-  namespace ApplicationsControllerFindAll {
+  namespace AuthControllerGetSigninUrl {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -298,7 +321,7 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace ApplicationsControllerFindOne {
+  namespace AuthControllerGetSignupUrl {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -306,15 +329,15 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace ApplicationsControllerUpdate {
+  namespace AuthControllerCode2token {
     export type QueryParameters = any;
 
-    export type BodyParameters = Definitions.UpdateApplicationDto;
+    export type BodyParameters = any;
 
     export type Responses = any;
   }
 
-  namespace ApplicationsControllerRemove {
+  namespace AuthControllerGetProfile {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
