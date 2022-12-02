@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AddIcon } from "@chakra-ui/icons";
 import {
@@ -33,8 +33,6 @@ const CreateCollectionModal = forwardRef((props, ref) => {
 
   const [isEdit, setIsEdit] = useState(false);
 
-  const initialRef = React.useRef(null);
-
   type FormData = {
     name: string;
   };
@@ -42,6 +40,7 @@ const CreateCollectionModal = forwardRef((props, ref) => {
   const {
     register,
     handleSubmit,
+    setFocus,
     reset,
     formState: { errors },
   } = useForm<FormData>();
@@ -69,12 +68,15 @@ const CreateCollectionModal = forwardRef((props, ref) => {
         onClick={() => {
           setIsEdit(false);
           onOpen();
+          setTimeout(() => {
+            setFocus("name");
+          }, 0);
         }}
       >
         <AddIcon fontSize={10} />
       </IconWrap>
 
-      <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} size="2xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>添加函数</ModalHeader>

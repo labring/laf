@@ -8,14 +8,15 @@ import { SmallNavHeight } from "@/constants/index";
 import Header from "../Header";
 
 export default function FunctionLayout(props: { children: ReactNode }) {
-  const { init, loading } = useGlobalStore((state) => state);
+  const { init, loading, setCurrentApp, currentApp } = useGlobalStore((state) => state);
   const {
     query: { app_id },
   } = useRouter();
 
   useEffect(() => {
-    init((app_id || "").toString());
-  }, [app_id, init]);
+    init();
+    setCurrentApp(app_id);
+  }, [app_id, init, setCurrentApp]);
 
   return (
     <div>
@@ -28,7 +29,7 @@ export default function FunctionLayout(props: { children: ReactNode }) {
           position: "relative",
         }}
       >
-        {loading ? <Spinner /> : props.children}
+        {loading || !currentApp ? <Spinner /> : props.children}
       </div>
     </div>
   );

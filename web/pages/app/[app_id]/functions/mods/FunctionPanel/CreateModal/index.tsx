@@ -49,6 +49,7 @@ const CreateModal = forwardRef((props, ref) => {
     register,
     handleSubmit,
     control,
+    setFocus,
     reset,
     formState: { errors },
   } = useForm<FormData>({
@@ -63,7 +64,6 @@ const CreateModal = forwardRef((props, ref) => {
 
   const onSubmit = async (data: any) => {
     const res = await createFunction(data);
-    console.log(res);
     if (!res.error) {
       showSuccess("create success.");
       onClose();
@@ -79,6 +79,7 @@ const CreateModal = forwardRef((props, ref) => {
         setCurrentFunc(item);
         setIsEdit(true);
         onOpen();
+        setFocus("name");
       },
     };
   });
@@ -91,12 +92,15 @@ const CreateModal = forwardRef((props, ref) => {
           setCurrentFunc({});
           setIsEdit(false);
           onOpen();
+          setTimeout(() => {
+            setFocus("name");
+          }, 0);
         }}
       >
         <AddIcon fontSize={10} />
       </IconWrap>
 
-      <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} size="2xl">
+      <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>添加函数</ModalHeader>
@@ -104,73 +108,64 @@ const CreateModal = forwardRef((props, ref) => {
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
-              <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
-                <ModalBody pb={6}>
-                  <VStack spacing={6} align="flex-start">
-                    <FormControl isInvalid={!!errors?.name}>
-                      <FormLabel htmlFor="name">函数名称</FormLabel>
-                      <Input
-                        {...register("name", {
-                          required: "name is required",
-                        })}
-                        id="name"
-                        variant="filled"
-                        readOnly={isEdit}
-                      />
-                      <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>{" "}
-                    </FormControl>
+              <FormControl isInvalid={!!errors?.name}>
+                <FormLabel htmlFor="name">函数名称</FormLabel>
+                <Input
+                  {...register("name", {
+                    required: "name is required",
+                  })}
+                  id="name"
+                  variant="filled"
+                />
+                <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>{" "}
+              </FormControl>
 
-                    <FormControl isInvalid={!!errors?.description}>
-                      <FormLabel htmlFor="description">函数描述</FormLabel>
-                      <Input
-                        {...register("description", {
-                          required: "description is required",
-                        })}
-                        id="description"
-                        variant="filled"
-                        readOnly={isEdit}
-                      />
-                      <FormErrorMessage>
-                        {errors.description && errors.description.message}
-                      </FormErrorMessage>{" "}
-                    </FormControl>
+              <FormControl isInvalid={!!errors?.description}>
+                <FormLabel htmlFor="description">函数描述</FormLabel>
+                <Input
+                  {...register("description", {
+                    required: "description is required",
+                  })}
+                  id="description"
+                  variant="filled"
+                  readOnly={isEdit}
+                />
+                <FormErrorMessage>
+                  {errors.description && errors.description.message}
+                </FormErrorMessage>{" "}
+              </FormControl>
 
-                    <FormControl isInvalid={!!errors?.websocket}>
-                      <FormLabel htmlFor="websocket">是否支持 websocket</FormLabel>
-                      <Switch
-                        {...register("websocket")}
-                        id="websocket"
-                        variant="filled"
-                        readOnly={isEdit}
-                      />
-                      <FormErrorMessage>
-                        {errors.websocket && errors.websocket.message}
-                      </FormErrorMessage>{" "}
-                    </FormControl>
+              <FormControl isInvalid={!!errors?.websocket}>
+                <FormLabel htmlFor="websocket">是否支持 websocket</FormLabel>
+                <Switch
+                  {...register("websocket")}
+                  id="websocket"
+                  variant="filled"
+                  readOnly={isEdit}
+                />
+                <FormErrorMessage>{errors.websocket && errors.websocket.message}</FormErrorMessage>{" "}
+              </FormControl>
 
-                    <FormControl isInvalid={!!errors?.methods}>
-                      <FormLabel htmlFor="methods">请求方法</FormLabel>
-                      <HStack spacing={6}>
-                        <Controller
-                          name="methods"
-                          control={control}
-                          render={({ field: { ref, ...rest } }) => (
-                            <CheckboxGroup {...rest}>
-                              <Checkbox value="HEAD">HEAD</Checkbox>
-                              <Checkbox value="GET">GET</Checkbox>
-                              <Checkbox value="POST">POST</Checkbox>
-                            </CheckboxGroup>
-                          )}
-                          rules={{
-                            required: { value: true, message: "Please select at least one" },
-                          }}
-                        />
-                      </HStack>
-                      <FormErrorMessage>{errors.methods?.message}</FormErrorMessage>
-                    </FormControl>
-                  </VStack>
-                </ModalBody>
-              </form>
+              <FormControl isInvalid={!!errors?.methods}>
+                <FormLabel htmlFor="methods">请求方法</FormLabel>
+                <HStack spacing={6}>
+                  <Controller
+                    name="methods"
+                    control={control}
+                    render={({ field: { ref, ...rest } }) => (
+                      <CheckboxGroup {...rest}>
+                        <Checkbox value="HEAD">HEAD</Checkbox>
+                        <Checkbox value="GET">GET</Checkbox>
+                        <Checkbox value="POST">POST</Checkbox>
+                      </CheckboxGroup>
+                    )}
+                    rules={{
+                      required: { value: true, message: "Please select at least one" },
+                    }}
+                  />
+                </HStack>
+                <FormErrorMessage>{errors.methods?.message}</FormErrorMessage>
+              </FormControl>
             </VStack>
           </ModalBody>
 

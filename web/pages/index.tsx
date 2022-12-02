@@ -21,15 +21,13 @@ import ConfirmButton from "@/components/ConfirmButton";
 import CopyText from "@/components/CopyText";
 import { formatDate } from "@/utils/format";
 
-import { APP_DISPLAY_NAME_KEY } from "../constants";
-
 import CreateAppModal from "./mods/CreateAppModal";
 import StatusBadge from "./mods/StatusBadge";
 import useGlobalStore from "./globalStore";
 function HomePage() {
   const router = useRouter();
 
-  const { showSuccess } = useGlobalStore();
+  const { showSuccess, setCurrentApp } = useGlobalStore();
 
   const [searchKey, setSearchKey] = useState("");
 
@@ -75,37 +73,30 @@ function HomePage() {
         </Center>
       ) : (
         <div>
-          {(appListQuery.data?.data?.items || [])
-            .filter(
-              (item: any) => item?.metadata?.labels[APP_DISPLAY_NAME_KEY].indexOf(searchKey) >= 0,
-            )
+          {(appListQuery.data?.data || [])
+            .filter((item: any) => item?.name.indexOf(searchKey) >= 0)
             .map((item: any) => {
               return (
                 <div
-                  key={item?.spec?.appid}
+                  key={item?.appid}
                   className="flex justify-between items-center p-4 py-6 bg-white rounded-lg shadow mb-6 hover:bg-slate-100"
                 >
                   <div style={{ width: 300 }}>
                     <Link isExternal>
-                      <span className="text-lg font-semibold ">
-                        {item?.metadata?.labels[APP_DISPLAY_NAME_KEY]}
-                      </span>
+                      <span className="text-lg font-semibold ">{item?.name}</span>
                     </Link>
 
                     <p className="mt-1">
-                      App ID: {item?.spec?.appid} <CopyText text={item?.spec?.appid} />
+                      App ID: {item?.appid} <CopyText text={item?.appid} />
                     </p>
                   </div>
                   <div className="flex-1">
-                    <p>Region: {item.spec.region}</p>
-                    <p className="mt-1">创建时间: {formatDate(item.metadata.creationTimestamp)}</p>
+                    <p>Region: {item.regionName}</p>
+                    <p className="mt-1">创建时间: {formatDate(item.createdAt)}</p>
                   </div>
 
                   <div className="flex-1">
-                    <StatusBadge
-                      appid={item?.spec?.appid}
-                      statusConditions={item?.status?.conditions}
-                    />
+                    <StatusBadge appid={item?.appid} statusConditions={item?.status?.conditions} />
                   </div>
 
                   <div>
@@ -114,7 +105,8 @@ function HomePage() {
                       variant="ghost"
                       onClick={(event) => {
                         event?.preventDefault();
-                        router.push(`/app/${item?.spec?.appid}`);
+                        setCurrentApp(item?.appid);
+                        router.push(`/app/${item?.appid}`);
                       }}
                     >
                       进入开发
@@ -124,7 +116,7 @@ function HomePage() {
                       colorScheme="teal"
                       variant="ghost"
                       onClick={() => {
-                        createAppRef.current?.edit({ ...item.spec, displayName: "asdf" });
+                        createAppRef.current?.edit(item);
                       }}
                     >
                       编辑
@@ -134,7 +126,7 @@ function HomePage() {
                       headerText="Delete App?"
                       bodyText="Are you sure you want to delete this app."
                       onSuccessAction={() => {
-                        deleteAppMutation.mutate({ appid: item?.spec?.appid });
+                        deleteAppMutation.mutate({ appid: item?.appid });
                       }}
                     >
                       <Button colorScheme="red" variant="ghost">

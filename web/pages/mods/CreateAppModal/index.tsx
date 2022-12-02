@@ -1,10 +1,12 @@
 import React, { forwardRef, useImperativeHandle, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { AddIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
   FormErrorMessage,
   FormLabel,
+  HStack,
   Input,
   Modal,
   ModalBody,
@@ -20,32 +22,38 @@ import { t } from "@lingui/macro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useGlobalStore from "pages/globalStore";
 import { ApplicationsControllerCreate } from "services/v1/applications";
-import { useImmer } from "use-immer";
 
-const initialAppInfo = {
-  displayName: "",
-  state: "Running",
-  region: "default",
-  bundleName: "mini",
-  runtimeName: "node-laf",
-};
-
-const initialErrors = {
-  displayName: "",
-  state: "",
-  region: "",
-  bundleName: "",
-  runtimeName: "",
-};
+import { APP_STATUS } from "@/constants/index";
 
 const CreateAppModal = forwardRef((props, ref) => {
-  const initialRef = React.useRef(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const queryClient = useQueryClient();
 
-  const [appInfo, updateAppInfo] = useImmer(initialAppInfo);
-  const [errors, updateErrors] = useImmer(initialErrors);
   const [isEdit, setIsEdit] = useState(false);
+
+  type FormData = {
+    displayName: string;
+    bundleName: string;
+    runtimeName: string;
+    region: string;
+    state: APP_STATUS;
+  };
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    setFocus,
+    reset,
+    formState: { errors },
+  } = useForm<FormData>({
+    defaultValues: {
+      region: "default",
+      bundleName: "mini",
+      state: APP_STATUS.Running,
+      runtimeName: "node-laf",
+    },
+  });
 
   const { showSuccess } = useGlobalStore();
 
@@ -55,16 +63,6 @@ const CreateAppModal = forwardRef((props, ref) => {
 
       setTimeout(() => {
         showSuccess("添加成功");
-
-        updateAppInfo((draft) => {
-          draft = initialAppInfo;
-          return draft;
-        });
-
-        updateErrors((draft) => {
-          draft = initialErrors;
-          return draft;
-        });
       }, 100);
       queryClient.invalidateQueries(["appListQuery"]);
     },
@@ -74,14 +72,22 @@ const CreateAppModal = forwardRef((props, ref) => {
     return {
       edit: (item: any) => {
         setIsEdit(true);
-        updateAppInfo((draft) => {
-          draft = item;
-          return draft;
+        reset({
+          ...item,
+          displayName: item.name,
+          region: item.regionName,
         });
         onOpen();
+        setTimeout(() => {
+          setFocus("displayName");
+        }, 0);
       },
     };
   });
+
+  const onSubmit = async (data: any) => {
+    appCreateMutaion.mutate(data);
+  };
 
   return (
     <>
@@ -92,13 +98,18 @@ const CreateAppModal = forwardRef((props, ref) => {
         leftIcon={<AddIcon />}
         onClick={() => {
           setIsEdit(false);
+          reset();
           onOpen();
+
+          setTimeout(() => {
+            setFocus("displayName");
+          }, 0);
         }}
       >
         {t`NewApplication`}
       </Button>
 
-      <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} size="2xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>新建应用</ModalHeader>
@@ -106,57 +117,58 @@ const CreateAppModal = forwardRef((props, ref) => {
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
-              <FormControl isRequired isInvalid={errors.displayName !== ""}>
-                <FormLabel htmlFor="name">应用名称</FormLabel>
+              <FormControl isRequired isInvalid={!!errors?.displayName}>
+                <FormLabel htmlFor="displayName">应用名称</FormLabel>
                 <Input
-                  ref={initialRef}
-                  value={appInfo.displayName}
-                  onChange={(e) => {
-                    updateAppInfo((draft) => {
-                      draft.displayName = e.target.value;
-                    });
-
-                    updateErrors((draft) => {
-                      draft.displayName = "";
-                    });
-                  }}
+                  {...register("displayName", {
+                    required: "displayName is required",
+                  })}
                 />
-                <FormErrorMessage>{errors.displayName}</FormErrorMessage>
+                <FormErrorMessage>
+                  {errors?.displayName && errors?.displayName?.message}
+                </FormErrorMessage>
               </FormControl>
 
               <FormControl isRequired>
-                <FormLabel htmlFor="id">Region</FormLabel>
-                <Button variant={"solid"} colorScheme="green">
-                  {appInfo.region}
-                </Button>
+                <FormLabel htmlFor="region">Region</FormLabel>
+                <HStack spacing={6}>
+                  <Controller
+                    name="region"
+                    control={control}
+                    render={({ field: { ref, ...rest } }) => {
+                      return (
+                        <Button variant={"solid"} colorScheme="green">
+                          {rest?.value}
+                        </Button>
+                      );
+                    }}
+                    rules={{
+                      required: { value: true, message: "Please select at least one" },
+                    }}
+                  />
+                </HStack>
               </FormControl>
 
-              <FormControl isRequired isInvalid={errors.bundleName !== ""}>
-                <FormLabel htmlFor="id">Bundle Name</FormLabel>
+              <FormControl isRequired isInvalid={!!errors?.bundleName}>
+                <FormLabel htmlFor="bundleName">Bundle Name</FormLabel>
                 <Input
+                  {...register("bundleName", {
+                    required: "bundleName is required",
+                  })}
                   disabled={isEdit}
-                  value={appInfo.bundleName}
-                  onChange={(e) => {
-                    updateAppInfo((draft) => {
-                      draft.bundleName = e.target.value;
-                    });
-                  }}
                 />
-                <FormErrorMessage>{errors.bundleName}</FormErrorMessage>
+                <FormErrorMessage>{errors?.bundleName?.message}</FormErrorMessage>
               </FormControl>
 
-              <FormControl isRequired isInvalid={errors.runtimeName !== ""}>
-                <FormLabel htmlFor="id">Runtime Name</FormLabel>
+              <FormControl isRequired isInvalid={!!errors?.runtimeName}>
+                <FormLabel htmlFor="runtimeName">Runtime Name</FormLabel>
                 <Input
+                  {...register("runtimeName", {
+                    required: "runtimeName is required",
+                  })}
                   disabled={isEdit}
-                  value={appInfo.runtimeName}
-                  onChange={(e) => {
-                    updateAppInfo((draft) => {
-                      draft.runtimeName = e.target.value;
-                    });
-                  }}
                 />
-                <FormErrorMessage>{errors.runtimeName}</FormErrorMessage>
+                <FormErrorMessage>{errors?.runtimeName?.message}</FormErrorMessage>
               </FormControl>
             </VStack>
           </ModalBody>
@@ -167,42 +179,13 @@ const CreateAppModal = forwardRef((props, ref) => {
               mr={3}
               isLoading={appCreateMutaion.isLoading}
               type="submit"
-              onClick={() => {
-                updateErrors((draft) => {
-                  draft = initialErrors;
-                  return draft;
-                });
-
-                if (appInfo.displayName.trim() === "") {
-                  updateErrors((draft) => {
-                    draft.displayName = "displayName is required";
-                  });
-                  return;
-                }
-                if (appInfo.bundleName.trim() === "") {
-                  updateErrors((draft) => {
-                    draft.bundleName = "bundleName is required";
-                  });
-                  return;
-                }
-                if (appInfo.runtimeName.trim() === "") {
-                  updateErrors((draft) => {
-                    draft.runtimeName = "runtimeName is required";
-                  });
-                  return;
-                }
-                appCreateMutaion.mutate(appInfo);
-              }}
+              onClick={handleSubmit(onSubmit)}
             >
               {t`Confirm`}
             </Button>
             <Button
               onClick={() => {
                 onClose();
-                updateErrors((draft) => {
-                  draft = initialErrors;
-                  return draft;
-                });
               }}
             >{t`Cancel`}</Button>
           </ModalFooter>
