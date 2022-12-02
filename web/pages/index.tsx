@@ -8,7 +8,6 @@ import {
   InputLeftElement,
   Link,
   Spinner,
-  useToast,
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -26,10 +25,11 @@ import { APP_DISPLAY_NAME_KEY } from "../constants";
 
 import CreateAppModal from "./mods/CreateAppModal";
 import StatusBadge from "./mods/StatusBadge";
+import useGlobalStore from "./globalStore";
 function HomePage() {
   const router = useRouter();
 
-  const toast = useToast();
+  const { showSuccess } = useGlobalStore();
 
   const [searchKey, setSearchKey] = useState("");
 
@@ -42,12 +42,7 @@ function HomePage() {
   const deleteAppMutation = useMutation((params: any) => ApplicationsControllerRemove(params), {
     onSuccess: () => {
       appListQuery.refetch();
-      toast({
-        position: "top",
-        title: "delete success.",
-        status: "success",
-        duration: 1000,
-      });
+      showSuccess("delete success.");
     },
     onError: () => {
       // debugger;

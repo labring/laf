@@ -4,7 +4,7 @@ import { Center } from "@chakra-ui/react";
 export default function IconWrap(props: {
   size?: number;
   children: React.ReactNode;
-  onClick: () => void;
+  onClick?: () => void;
 }) {
   const { size = 20 } = props;
   return (

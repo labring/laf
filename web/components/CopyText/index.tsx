@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
 import { CopyIcon } from "@chakra-ui/icons";
-import { useClipboard, useToast } from "@chakra-ui/react";
+import { useClipboard } from "@chakra-ui/react";
+import useGlobalStore from "pages/globalStore";
 
 export default function CopyText(props: { text: string }) {
   const { onCopy, setValue } = useClipboard("");
-  const toast = useToast();
+  const { showSuccess } = useGlobalStore();
 
   const text = props.text;
   useEffect(() => {
@@ -15,12 +16,7 @@ export default function CopyText(props: { text: string }) {
     <CopyIcon
       onClick={() => {
         onCopy();
-        toast({
-          position: "bottom",
-          title: "复制成功",
-          status: "success",
-          duration: 600,
-        });
+        showSuccess("复制成功");
       }}
     />
   );

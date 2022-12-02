@@ -5,19 +5,19 @@
 //                                                                   //
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
-import request from '@/utils/request';
+import request from "@/utils/request";
 
 /**
-* Redirect to login page
-*/
-export async function AppControllerGetSigninUrl(
-  params: Paths.AppControllerGetSigninUrl.BodyParameters | any,
+ * Redirect to login page
+ */
+export async function AuthControllerGetSigninUrl(
+  params: Paths.AuthControllerGetSigninUrl.BodyParameters | any,
   extra?: { [key: string]: any },
-): Promise<Paths.AppControllerGetSigninUrl.Responses> {
+): Promise<Paths.AuthControllerGetSigninUrl.Responses> {
   // /v1/login
   return request(`/v1/login`, {
-    method: 'GET',
-    params : params,
+    method: "GET",
+    params: params,
     ...(extra || {}),
   });
 }

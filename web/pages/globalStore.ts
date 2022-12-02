@@ -1,15 +1,20 @@
+import { createStandaloneToast } from "@chakra-ui/react";
 import { AppControllerGetSigninUrl } from "services/v1/login";
 import { AppControllerGetProfile } from "services/v1/profile";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
+const { toast } = createStandaloneToast();
+
 type State = {
   userInfo: any;
   loading: boolean;
   currentApp: any;
   setCurrentApp(app: any): void;
-  init(): void;
+  init(appid: string): void;
+
+  showSuccess: (text: string | React.ReactNode) => void;
 };
 
 const useGlobalStore = create<State>()(
@@ -19,9 +24,9 @@ const useGlobalStore = create<State>()(
 
       currentApp: {},
 
-      loading: false,
+      loading: true,
 
-      init: async () => {
+      init: async (appid) => {
         const userInfo = get().userInfo;
         if (userInfo.id) {
           return;
@@ -32,6 +37,7 @@ const useGlobalStore = create<State>()(
         const res = await AppControllerGetProfile({});
 
         set((state) => {
+          state.currentApp = appid;
           state.userInfo = res.data;
           state.loading = false;
         });
@@ -46,6 +52,15 @@ const useGlobalStore = create<State>()(
       login: async () => {
         const res = await AppControllerGetSigninUrl({});
         console.log(222, res);
+      },
+
+      showSuccess: (text: string | React.ReactNode) => {
+        toast({
+          position: "top",
+          title: text,
+          status: "success",
+          duration: 1000,
+        });
       },
     })),
   ),

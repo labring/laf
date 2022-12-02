@@ -8,15 +8,14 @@ import { SmallNavHeight } from "@/constants/index";
 import Header from "../Header";
 
 export default function FunctionLayout(props: { children: ReactNode }) {
-  const { init, loading, setCurrentApp } = useGlobalStore((state) => state);
+  const { init, loading } = useGlobalStore((state) => state);
   const {
     query: { app_id },
   } = useRouter();
 
   useEffect(() => {
-    setCurrentApp(app_id);
-    init();
-  }, [app_id, init, setCurrentApp]);
+    init((app_id || "").toString());
+  }, [app_id, init]);
 
   return (
     <div>

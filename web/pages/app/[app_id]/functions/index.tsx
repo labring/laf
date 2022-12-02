@@ -5,6 +5,7 @@
 import React, { useCallback, useEffect } from "react";
 import { Button, HStack } from "@chakra-ui/react";
 import useHotKey from "hooks/useHotKey";
+import useGlobalStore from "pages/globalStore";
 
 import CopyText from "@/components/CopyText";
 import FunctionEditor from "@/components/Editor/FunctionEditor";
@@ -24,12 +25,14 @@ import useFunctionStore from "./store";
 function FunctionPage() {
   const { initFunctionPage, currentFunction } = useFunctionStore((store) => store);
 
+  const { showSuccess } = useGlobalStore((state) => state);
+
   useHotKey("s", () => {
-    console.log("save");
+    showSuccess("saved successfully");
   });
 
   useHotKey("r", () => {
-    console.log("run");
+    showSuccess("it's running");
   });
 
   useEffect(() => {
@@ -50,7 +53,7 @@ function FunctionPage() {
             <div className="flex items-center">
               <FileTypeIcon type={FileType.js} />
               <span className="font-bold text-base ml-2">
-                {currentFunction?.label} &nbsp;({currentFunction?.name}.js)
+                {currentFunction?.metadata.name} &nbsp;({currentFunction?.spec.description})
               </span>
               <span className="ml-4 ">
                 <FileStatusIcon status={FileStatus.deleted} />
@@ -79,7 +82,7 @@ function FunctionPage() {
         </div>
         <div className="flex flex-row h-full w-full">
           <div className="flex-1 border-r border-r-slate-200 overflow-hidden ">
-            <FunctionEditor value={currentFunction?.code || ""} />
+            <FunctionEditor value={currentFunction?.spec.source.codes || ""} />
           </div>
           <div style={{ width: 550 }}>
             <DebugPanel />

@@ -15,10 +15,10 @@ import {
   ModalHeader,
   ModalOverlay,
   useDisclosure,
-  useToast,
   VStack,
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
+import useGlobalStore from "pages/globalStore";
 
 import IconWrap from "@/components/IconWrap";
 
@@ -29,7 +29,7 @@ const CreateCollectionModal = forwardRef((props, ref) => {
   const { createDB } = useDBMStore((state) => state);
   const formRef = React.useRef(null);
 
-  const toast = useToast();
+  const { showSuccess } = useGlobalStore();
 
   const [isEdit, setIsEdit] = useState(false);
 
@@ -45,14 +45,10 @@ const CreateCollectionModal = forwardRef((props, ref) => {
     reset,
     formState: { errors },
   } = useForm<FormData>();
+
   const onSubmit = async (data: any) => {
     await createDB(data.name);
-    toast({
-      position: "top",
-      title: "create success.",
-      status: "success",
-      duration: 1000,
-    });
+    showSuccess("create success.");
     onClose();
     reset();
   };

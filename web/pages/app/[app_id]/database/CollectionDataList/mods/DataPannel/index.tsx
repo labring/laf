@@ -1,21 +1,15 @@
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { AddIcon } from "@chakra-ui/icons";
-import {
-  Button,
-  Input,
-  InputGroup,
-  InputLeftAddon,
-  InputRightAddon,
-  useToast,
-} from "@chakra-ui/react";
+import { Button, Input, InputGroup, InputLeftAddon, InputRightAddon } from "@chakra-ui/react";
 import clsx from "clsx";
+import useGlobalStore from "pages/globalStore";
 
 import JsonEditor from "@/components/Editor/JsonEditor";
 
 import useDBMStore from "../../../store";
 export default function DataPannel() {
   const { entryList, updateCurrentData, currentData } = useDBMStore((store) => store);
-  const toast = useToast();
+  const { showSuccess } = useGlobalStore();
   return (
     <>
       <div className="flex justify-between pb-2 shadow-sm">
@@ -96,12 +90,7 @@ export default function DataPannel() {
                 borderRadius="2"
                 px="4"
                 onClick={() => {
-                  toast({
-                    position: "bottom-right",
-                    title: "保存成功",
-                    status: "success",
-                    duration: 1000,
-                  });
+                  showSuccess("保存成功");
                 }}
               >
                 保存

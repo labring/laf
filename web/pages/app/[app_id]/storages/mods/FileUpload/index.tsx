@@ -34,8 +34,6 @@ const FileUploadForm = ({ name, acceptedFileTypes, children, isRequired = false 
     rules: { required: isRequired },
   });
 
-  console.log("inputProps", inputProps);
-
   return (
     <FormControl isRequired>
       <FormLabel htmlFor="writeUpFile">{children}</FormLabel>

@@ -5,19 +5,19 @@
 //                                                                   //
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
-import request from '@/utils/request';
+import request from "@/utils/request";
 
 /**
-* Get application runtime list
-*/
+ * Get application runtime list
+ */
 export async function SpecsControllerGetBundles(
   params: Paths.SpecsControllerGetBundles.BodyParameters | any,
   extra?: { [key: string]: any },
 ): Promise<Paths.SpecsControllerGetBundles.Responses> {
   // /v1/bundles
   return request(`/v1/bundles`, {
-    method: 'GET',
-    params : params,
+    method: "GET",
+    params: params,
     ...(extra || {}),
   });
 }

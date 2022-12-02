@@ -5,19 +5,19 @@
 //                                                                   //
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
-import request from '@/utils/request';
+import request from "@/utils/request";
 
 /**
-* Get user token by auth code
-*/
-export async function AppControllerCode2token(
-  params: Paths.AppControllerCode2token.BodyParameters | any,
+ * Get user token by auth code
+ */
+export async function AuthControllerCode2token(
+  params: Paths.AuthControllerCode2token.BodyParameters | any,
   extra?: { [key: string]: any },
-): Promise<Paths.AppControllerCode2token.Responses> {
+): Promise<Paths.AuthControllerCode2token.Responses> {
   // /v1/code2token
   return request(`/v1/code2token`, {
-    method: 'GET',
-    params : params,
+    method: "GET",
+    params: params,
     ...(extra || {}),
   });
 }
