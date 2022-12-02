@@ -151,7 +151,7 @@ func (r *ApplicationReconciler) apply(ctx context.Context, app *appv1.Applicatio
 	}
 
 	return ctrl.Result{}, nil
-}
+} 
 
 // reconcilePhase reconciles the phase of the application
 func (r *ApplicationReconciler) reconcilePhase(ctx context.Context, app *appv1.Application) (ctrl.Result, error) {

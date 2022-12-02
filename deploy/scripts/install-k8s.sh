@@ -4,6 +4,9 @@
 
 # TIP: use `sh -x scripts/bare_run.sh` to debug
 
+
+#make a judgement whether sealos exist
+if [ -x "$(command -v sealos)" ]; then
 # Install Sealos
 if [ -x "$(command -v apt)" ]; then
   # if apt installed, use `apt` to install
@@ -16,7 +19,6 @@ if [ -x "$(command -v apt)" ]; then
 else
   echo "apt not installed"
 fi
-
 if [ -x "$(command -v yum)" ]; then
   # if yum installed, use `yum` to install
   cat > /etc/yum.repos.d/labring.repo << EOF
@@ -31,15 +33,20 @@ EOF
 else
   echo "yum not installed"
 fi
-
-#arch,suse distro condition
-if [ -x "$(command -v sealos)"];then
+#arch,suse,.etc distro condition
+#amd64,arm
+if  [ "$(dpkg --print-architecture)"=="amd64"];then
   wget https://github.com/labring/sealos/releases/download/v4.1.3/sealos_4.1.3_linux_amd64.tar.gz \
+   && tar zxvf sealos_4.1.3_linux_amd64.tar.gz sealos && chmod +x sealos && mv sealos /usr/bin
+else
+  wget https://github.com/labring/sealos/releases/download/v4.1.3/sealos_4.1.3_linux_arm64.tar.gz \
    && tar zxvf sealos_4.1.3_linux_amd64.tar.gz sealos && chmod +x sealos && mv sealos /usr/bin
 fi
 
-#clean the previous installed sealos images
-sealos reset
+else
+  #clean the previous installed sealos images
+  sealos reset
+fi
 
 # install k8s cluster
 sealos run labring/kubernetes:v1.24.0 labring/flannel:v0.19.0 --single
