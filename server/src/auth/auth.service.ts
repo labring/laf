@@ -3,6 +3,8 @@ import { JwtService } from '@nestjs/jwt'
 import { CasdoorService } from './casdoor.service'
 import { User } from '@prisma/client'
 import { UsersService } from '../users/users.service'
+import { ServerConfig } from 'src/constants'
+import * as assert from 'node:assert'
 
 @Injectable()
 export class AuthService {
@@ -26,19 +28,20 @@ export class AuthService {
       if (!casdoorUser) return null
 
       // Get or create laf user
+      assert(casdoorUser.id, 'casdoor user id is empty')
       const profile = await this.userService.getProfileByOpenid(casdoorUser.id)
       let user = profile?.user
       if (!user) {
         user = await this.userService.create({
-          username: casdoorUser.name,
+          username: casdoorUser.username,
           email: casdoorUser.email,
           phone: casdoorUser.phone,
           profile: {
             create: {
-              openid: casdoorUser.id || casdoorUser.sub,
-              name: casdoorUser.displayName || casdoorUser.preferred_username,
-              avatar: casdoorUser.avatar || casdoorUser.picture,
-              from: 'casdoor',
+              openid: casdoorUser.id,
+              name: casdoorUser.displayName,
+              avatar: casdoorUser.avatar,
+              from: ServerConfig.CASDOOR_CLIENT_ID,
             },
           },
         })
@@ -47,7 +50,7 @@ export class AuthService {
         user = await this.userService.updateUser({
           where: { id: user.id },
           data: {
-            username: casdoorUser.name,
+            username: casdoorUser.username,
             email: casdoorUser.email,
             phone: casdoorUser.phone,
             profile: {

@@ -72,7 +72,15 @@ export class CasdoorService {
         },
       })
 
-      const user = res.data
+      const data = res.data
+      const user: CasdoorUserInfo = {
+        id: data.id || data.sub,
+        username: data.name,
+        displayName: data.displayName || data.preferred_username || '',
+        email: data.email || undefined,
+        phone: data.phone || undefined,
+        avatar: data.avatar || data.picture || '',
+      }
       return user
     } catch (err) {
       this.logger.error(err)
@@ -109,4 +117,13 @@ export class CasdoorService {
     const url = `${authCfg.endpoint}/signup/${app_name}`
     return url
   }
+}
+
+interface CasdoorUserInfo {
+  id: string
+  username: string
+  email?: string
+  phone?: string
+  displayName: string
+  avatar: string
 }
