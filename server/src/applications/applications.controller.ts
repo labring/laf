@@ -98,7 +98,12 @@ export class ApplicationsController {
       throw new HttpException('application not found', HttpStatus.NOT_FOUND)
     }
 
-    return ResponseUtil.ok(data)
+    const resource = await this.appCoreService.findOne(appid)
+    const res = {
+      ...data,
+      resource,
+    }
+    return ResponseUtil.ok(res)
   }
 
   /**
