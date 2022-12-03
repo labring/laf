@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import Editor, { useMonaco } from "@monaco-editor/react";
 
+import { globalDefinition } from "./globalDefinition";
+
 export default function FunctionEditor(props: { value: string }) {
   const { value } = props;
   const monaco = useMonaco();
@@ -21,8 +23,16 @@ export default function FunctionEditor(props: { value: string }) {
 
   useEffect(() => {
     setTimeout(() => {
+      // extra libraries
+      var libSource = globalDefinition;
+      var libUri = "ts:filename/global.d.ts";
+      monaco?.languages.typescript.javascriptDefaults.addExtraLib(libSource, libUri);
+      // When resolving definitions and references, the editor will try to use created models.
+      // Creating a model for the library allows "peek definition/references" commands to work with the library.
+      monaco?.editor.createModel(libSource, "typescript", monaco.Uri.parse(libUri));
+
       monaco?.editor.setTheme("lafEditorTheme");
-    }, 0);
+    }, 16);
   }, [monaco]);
 
   return (
@@ -41,7 +51,7 @@ export default function FunctionEditor(props: { value: string }) {
         scrollBeyondLastLine: false,
       }}
       height="100%"
-      defaultLanguage="javascript"
+      defaultLanguage="typescript"
       value={value}
     />
   );
