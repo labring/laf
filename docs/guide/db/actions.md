@@ -60,12 +60,13 @@ collection
 
 ```js
 // 删除字段a的值大于2的文档
+// 批量删除需要在 remove() 中添加 {multi: true}
 //promise
 collection
   .where({
     a: _.gt(2),
   })
-  .remove()
+  .remove({multi: true})
   .then(function (res) {});
 ```
 
