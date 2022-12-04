@@ -22,7 +22,7 @@ jobs:
     strategy:
       max-parallel: 2
       matrix:
-        module: [casdoor, controllers, mongodb, postgresql]
+        module: [controllers]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
