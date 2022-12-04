@@ -66,3 +66,6 @@ export class ResourceLabels {
 }
 
 export const HTTP_METHODS = ['HEAD', 'GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+
+export const CN_PUBLISHED_FUNCTIONS = '__functions__'
+export const CN_PUBLISHED_POLICIES = '__policies__'

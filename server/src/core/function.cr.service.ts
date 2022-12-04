@@ -22,7 +22,7 @@ export class FunctionCoreService {
     const func = new CloudFunction(dto.name, namespace)
     func.spec.description = dto.description
     func.spec.methods = dto.methods
-    func.spec.source.codes = dto.codes
+    func.spec.source.codes = dto.code
     func.spec.websocket = dto.websocket
 
     try {
@@ -90,8 +90,8 @@ export class FunctionCoreService {
     if (dto.methods) {
       func.spec.methods = dto.methods
     }
-    if (dto.codes) {
-      func.spec.source.codes = dto.codes
+    if (dto.code) {
+      func.spec.source.codes = dto.code
     }
     if (dto.websocket) {
       func.spec.websocket = dto.websocket

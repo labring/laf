@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { HttpMethod } from '@prisma/client'
 import {
   IsBoolean,
   IsIn,
@@ -17,15 +18,15 @@ export class UpdateFunctionDto {
   @IsBoolean()
   websocket: boolean
 
-  @ApiProperty({ type: [String], enum: HTTP_METHODS })
+  @ApiProperty({ type: [String], enum: HttpMethod })
   @IsIn(HTTP_METHODS, { each: true })
-  methods: string[] = []
+  methods: HttpMethod[] = []
 
   @ApiProperty({ description: 'The source code of the function' })
   @IsNotEmpty()
   @IsString()
   @MaxLength(1024 * 512)
-  codes: string
+  code: string
 
   validate() {
     return null
