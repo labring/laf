@@ -1,7 +1,7 @@
 {
   "name": "runtime-nodejs",
-  "version": "0.8.11",
-  "description": "the app engine service of lat",
+  "version": "1.0-alpha.0",
+  "description": "the node runtime for laf",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "private": "true",
@@ -27,7 +27,6 @@
     "@aws-sdk/s3-request-presigner": "^3.72.0",
     "@dfinity/nns": "^0.4.3",
     "@kubernetes/client-node": "^0.17.1",
-    "@waline/vercel": "^1.21.0",
     "alipay-sdk": "^3.1.7",
     "axios": "^0.21.1",
     "database-proxy": "^0.8.2",
@@ -46,7 +45,6 @@
     "multer": "^1.4.2",
     "node-modules-utils": "^0.8.2",
     "nodemailer": "^6.6.3",
-    "tencentcloud-sdk-nodejs": "^4.0.439",
     "validator": "^13.7.0",
     "ws": "^8.2.3"
   },

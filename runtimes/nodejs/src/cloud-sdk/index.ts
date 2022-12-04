@@ -194,7 +194,7 @@ async function invokeInFunction(name: string, param?: FunctionContext) {
   await addFunctionLog({
     requestId: param.requestId,
     method: param.method,
-    func_id: func.id,
+    func_id: new mongodb.ObjectId(func.id),
     func_name: name,
     logs: result.logs,
     time_usage: result.time_usage,
