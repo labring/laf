@@ -12,6 +12,6 @@
     "docker-build": "docker build --platform linux/amd64 -t lafyun/docs:latest ."
   },
   "dependencies": {
-    "vitepress": "^1.0.0-alpha.4"
+    "vitepress": "^1.0.0-alpha.29"
   }
 }
