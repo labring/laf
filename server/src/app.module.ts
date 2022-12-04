@@ -11,7 +11,7 @@ import { CoreModule } from './core/core.module'
 import { ApplicationsModule } from './applications/applications.module'
 import { AuthModule } from './auth/auth.module'
 import { ThrottlerModule } from '@nestjs/throttler'
-import { PrismaService } from './prisma.service'
+import { InitializerModule } from './initializer/initializer.module'
 
 @Module({
   imports: [
@@ -28,6 +28,7 @@ import { PrismaService } from './prisma.service'
       ttl: 60,
       limit: 10,
     }),
+    InitializerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
