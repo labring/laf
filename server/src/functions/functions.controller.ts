@@ -9,12 +9,11 @@ import {
   UseGuards,
   HttpException,
   HttpStatus,
+  Req,
 } from '@nestjs/common'
-import { FunctionCoreService } from '../core/function.cr.service'
 import { CreateFunctionDto } from './dto/create-function.dto'
 import { UpdateFunctionDto } from './dto/update-function.dto'
-import { ApiResponseUtil, ResponseUtil } from '../common/response'
-import { CloudFunction, CloudFunctionList } from '../core/api/function.cr'
+import { ResponseUtil } from '../common/response'
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -23,23 +22,29 @@ import {
 } from '@nestjs/swagger'
 import { JwtAuthGuard } from '../auth/jwt.auth.guard'
 import { ApplicationAuthGuard } from '../auth/application.auth.guard'
+import { FunctionsService } from './functions.service'
+import { IRequest } from '../common/types'
 
 @ApiTags('Function')
 @ApiBearerAuth('Authorization')
 @Controller('apps/:appid/functions')
 export class FunctionsController {
-  constructor(private readonly functionsService: FunctionCoreService) {}
+  constructor(private readonly functionsService: FunctionsService) {}
 
   /**
    * Create a new function
    * @param dto
    * @returns
    */
-  @ApiResponseUtil(CloudFunction)
+  @ApiResponse({ type: ResponseUtil })
   @ApiOperation({ summary: 'Create a new function' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post()
-  async create(@Param('appid') appid: string, @Body() dto: CreateFunctionDto) {
+  async create(
+    @Param('appid') appid: string,
+    @Body() dto: CreateFunctionDto,
+    @Req() req: IRequest,
+  ) {
     const error = dto.validate()
     if (error) {
       return ResponseUtil.error(error)
@@ -51,7 +56,7 @@ export class FunctionsController {
       return ResponseUtil.error('function name is already existed')
     }
 
-    const res = await this.functionsService.create(appid, dto)
+    const res = await this.functionsService.create(appid, req.user.id, dto)
     if (!res) {
       return ResponseUtil.error('create function error')
     }
@@ -62,7 +67,7 @@ export class FunctionsController {
    * Query function list of an app
    * @returns
    */
-  @ApiResponseUtil(CloudFunctionList)
+  @ApiResponse({ type: ResponseUtil })
   @ApiOperation({ summary: 'Query function list of an app' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get()
@@ -76,7 +81,7 @@ export class FunctionsController {
    * @param appid
    * @param name
    */
-  @ApiResponseUtil(CloudFunction)
+  @ApiResponse({ type: ResponseUtil })
   @ApiOperation({ summary: 'Get a function by its name' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get(':name')
@@ -95,7 +100,7 @@ export class FunctionsController {
    * @param dto
    * @returns
    */
-  @ApiResponseUtil(CloudFunction)
+  @ApiResponse({ type: ResponseUtil })
   @ApiOperation({ summary: 'Update a function' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Patch(':name')
@@ -137,5 +142,25 @@ export class FunctionsController {
       return ResponseUtil.error('delete function error')
     }
     return ResponseUtil.ok(res)
+  }
+
+  /**
+   * Compile a function
+   * @param appid
+   * @param name
+   * @returns
+   */
+  @ApiResponse({ type: ResponseUtil })
+  @ApiOperation({ summary: 'Compile a function ' })
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Post(':name/compile')
+  async compile(@Param('appid') appid: string, @Param('name') name: string) {
+    const func = await this.functionsService.findOne(appid, name)
+    if (!func) {
+      throw new HttpException('function not found', HttpStatus.NOT_FOUND)
+    }
+
+    const res = this.functionsService.compile(func)
+    return res
   }
 }
