@@ -7,6 +7,6 @@ metadata:
 spec:
   type: node:laf
   image:
-    main: "docker.io/lafyun/app-service:0.8.11"
+    main: "docker.io/lafyun/runtime-node:1.0-alpha.0"
   version:
-    version: 0.8.11
+    version: 1.0-alpha.0
