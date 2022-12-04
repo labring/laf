@@ -5,6 +5,7 @@ import { AppModule } from './app.module'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { ValidationPipe, VersioningType } from '@nestjs/common'
 import { HTTP_METHODS } from './constants'
+import { InitializerService } from './initializer/initializer.service'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -46,6 +47,11 @@ async function bootstrap() {
       tagsSorter: 'alpha',
     },
   })
+
+  const initService = app.get(InitializerService)
+  await initService.createDefaultBundle()
+  await initService.createDefaultRegion()
+  await initService.createDefaultRuntime()
 
   await app.listen(3000)
 }
