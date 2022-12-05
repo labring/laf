@@ -11,102 +11,6 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.9.2
   creationTimestamp: null
-  name: clusters.instance.laf.dev
-spec:
-  group: instance.laf.dev
-  names:
-    kind: Cluster
-    listKind: ClusterList
-    plural: clusters
-    singular: cluster
-  scope: Namespaced
-  versions:
-  - name: v1
-    schema:
-      openAPIV3Schema:
-        description: Cluster is the Schema for the clusters API
-        properties:
-          apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
-            type: string
-          kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-            type: string
-          metadata:
-            type: object
-          spec:
-            description: ClusterSpec defines the desired state of Cluster
-            properties:
-              capacity:
-                description: The capacity of the cluster.
-                properties:
-                  cpu:
-                    anyOf:
-                    - type: integer
-                    - type: string
-                    description: The storage space.
-                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                    x-kubernetes-int-or-string: true
-                  memory:
-                    anyOf:
-                    - type: integer
-                    - type: string
-                    description: The number of databases. The default value is 0 which
-                      means unlimited.
-                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                    x-kubernetes-int-or-string: true
-                type: object
-              clientConfig:
-                description: ClientConfig of the cluster (e.g. kubeconfig)
-                type: string
-              region:
-                description: Region of the cluster
-                maxLength: 64
-                minLength: 2
-                pattern: ^[a-z0-9-]+$
-                type: string
-            type: object
-          status:
-            description: ClusterStatus defines the observed state of Cluster
-            properties:
-              instanceCount:
-                type: integer
-              used:
-                description: The capacity of the cluster.
-                properties:
-                  cpu:
-                    anyOf:
-                    - type: integer
-                    - type: string
-                    description: The storage space.
-                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                    x-kubernetes-int-or-string: true
-                  memory:
-                    anyOf:
-                    - type: integer
-                    - type: string
-                    description: The number of databases. The default value is 0 which
-                      means unlimited.
-                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                    x-kubernetes-int-or-string: true
-                type: object
-            type: object
-        type: object
-    served: true
-    storage: true
-    subresources:
-      status: {}
----
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
-metadata:
-  annotations:
-    controller-gen.kubebuilder.io/version: v0.9.2
-  creationTimestamp: null
   name: instances.instance.laf.dev
 spec:
   group: instance.laf.dev
@@ -209,14 +113,6 @@ spec:
                     description: Network Traffic Outbound for the bundle
                     pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                     x-kubernetes-int-or-string: true
-                  priority:
-                    description: Priority for the bundle. The default value is 0,
-                      which means that the bundle is not currently available for creating
-                      new applications.
-                    format: int32
-                    maximum: 1000
-                    minimum: 0
-                    type: integer
                   requestCPU:
                     anyOf:
                     - type: integer
@@ -244,14 +140,35 @@ spec:
                 - limitCPU
                 - limitMemory
                 - networkTrafficOutbound
-                - priority
                 - requestCPU
                 - requestMemory
                 - storageCapacity
                 type: object
-              region:
-                description: Region of the instance
+              databaseConnectionUri:
+                description: Database of the instance
                 type: string
+              ossUser:
+                description: OssAccess of the instance
+                properties:
+                  accessKey:
+                    description: AccessKey is the access key of the user
+                    type: string
+                  endpoint:
+                    description: Endpoint is the oss server endpoint.
+                    type: string
+                  internalEndpoint:
+                    description: InternalEndpoint is the internal endpoint of the
+                      oss server
+                    type: string
+                  region:
+                    description: Region of oss store.
+                    type: string
+                  secretKey:
+                    description: SecretKey is the secret key of the user
+                    type: string
+                required:
+                - region
+                type: object
               replica:
                 default: 1
                 description: Replica of instance
@@ -260,16 +177,11 @@ spec:
               runtime:
                 description: Runtime of the instance
                 properties:
-                  deprecated:
-                    description: Deprecated
-                    type: boolean
                   image:
                     description: Images of the runtime
                     properties:
                       init:
                         description: Init image (e.g. docker.io/lafyun/app-service-init:latest)
-                          - install the dependencies (e.g. npm install) - prepare
-                          the functions (deploy & compile)
                         type: string
                       main:
                         description: Main image (e.g. docker.io/lafyun/app-service:latest)
@@ -280,37 +192,21 @@ spec:
                     required:
                     - main
                     type: object
+                  latest:
+                    description: Latest version or not
+                    type: boolean
+                  name:
+                    type: string
                   type:
                     description: Type of the runtime. eg. node:laf, node:tcb, go:laf,
                       python:laf, php:laf,  etc.
                     type: string
                   version:
                     description: Version of the runtime
-                    properties:
-                      autoUpgradeFrom:
-                        description: Versions that should auto upgrade from
-                        items:
-                          type: string
-                        type: array
-                      breakBefore:
-                        description: Version that is breaking from
-                        type: string
-                      mustUpgradeFrom:
-                        description: Versions that must upgrade from
-                        items:
-                          type: string
-                        type: array
-                      upgradeFrom:
-                        description: Versions that suggested to upgrade from
-                        items:
-                          type: string
-                        type: array
-                      version:
-                        description: Version is the version of the runtime
-                        type: string
-                    type: object
+                    type: string
                 required:
                 - image
+                - name
                 - type
                 - version
                 type: object
@@ -331,11 +227,6 @@ spec:
                   targeted by this deployment.
                 format: int32
                 type: integer
-              clusterConfig:
-                type: string
-              clusterName:
-                description: ClusterName of instance
-                type: string
               conditions:
                 description: Conditions of the instance @see string for the list of
                   conditions
@@ -488,32 +379,6 @@ metadata:
   creationTimestamp: null
   name: instance-manager-role
 rules:
-- apiGroups:
-  - instance.laf.dev
-  resources:
-  - clusters
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - instance.laf.dev
-  resources:
-  - clusters/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - instance.laf.dev
-  resources:
-  - clusters/status
-  verbs:
-  - get
-  - patch
-  - update
 - apiGroups:
   - instance.laf.dev
   resources:

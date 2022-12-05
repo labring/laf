@@ -73,6 +73,7 @@ require (
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	k8s.io/api v0.25.1 // indirect
 	k8s.io/apiextensions-apiserver v0.24.2 // indirect
 	k8s.io/component-base v0.24.2 // indirect
 	k8s.io/klog/v2 v2.70.1 // indirect
@@ -88,7 +89,6 @@ require (
 	github.com/labring/laf/core/controllers/database v0.0.0-00010101000000-000000000000
 	github.com/labring/laf/core/controllers/gateway v0.0.0-00010101000000-000000000000
 	github.com/labring/laf/core/controllers/oss v0.0.0-00010101000000-000000000000
-	k8s.io/api v0.25.1
 )
 
 replace github.com/labring/laf/core => ./../..
