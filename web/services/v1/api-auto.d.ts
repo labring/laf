@@ -4,14 +4,14 @@ declare namespace Definitions {
     description?: string;
     websocket?: boolean;
     methods?: string[];
-    codes?: string /* The source code of the function */;
+    code?: string /* The source code of the function */;
   };
 
   export type UpdateFunctionDto = {
     description?: string;
     websocket?: boolean;
     methods?: string[];
-    codes?: string /* The source code of the function */;
+    code?: string /* The source code of the function */;
   };
 
   export type CreateApplicationDto = {
@@ -90,6 +90,14 @@ declare namespace Paths {
   }
 
   namespace FunctionsControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionsControllerCompile {
     export type QueryParameters = any;
 
     export type BodyParameters = any;

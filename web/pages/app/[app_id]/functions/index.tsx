@@ -23,7 +23,11 @@ import FunctionPanel from "./mods/FunctionPanel";
 import useFunctionStore from "./store";
 
 function FunctionPage() {
-  const { initFunctionPage, currentFunction } = useFunctionStore((store) => store);
+  const {
+    initFunctionPage,
+    currentFunction,
+    updateFunctionCode: updateFunction,
+  } = useFunctionStore((store) => store);
 
   const { showSuccess } = useGlobalStore((state) => state);
 
@@ -53,9 +57,10 @@ function FunctionPage() {
             <div className="flex items-center">
               <FileTypeIcon type={FileType.js} />
               <span className="font-bold text-base ml-2">
-                {currentFunction?.metadata.name} &nbsp;({currentFunction?.spec.description})
+                {currentFunction?.name} &nbsp;({currentFunction?.desc})
               </span>
               <span className="ml-4 ">
+                {currentFunction?.isEdit ? "比阿继中" : "已保存"}
                 <FileStatusIcon status={FileStatus.deleted} />
               </span>
             </div>
@@ -73,6 +78,7 @@ function FunctionPage() {
                 padding="0 12px"
                 onClick={() => {
                   console.log("发布");
+                  console.log(currentFunction?.source.code);
                 }}
               >
                 发布
@@ -82,7 +88,14 @@ function FunctionPage() {
         </div>
         <div className="flex flex-row h-full w-full">
           <div className="flex-1 border-r border-r-slate-200 overflow-hidden ">
-            <FunctionEditor value={currentFunction?.spec.source.codes || ""} />
+            <FunctionEditor
+              path={currentFunction?.name || ""}
+              value={currentFunction?.source.code || ""}
+              onChange={(value) => {
+                console.log(value);
+                updateFunction(currentFunction, value || "");
+              }}
+            />
           </div>
           <div style={{ width: 550 }}>
             <DebugPanel />

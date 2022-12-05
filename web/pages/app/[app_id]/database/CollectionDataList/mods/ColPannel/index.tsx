@@ -12,7 +12,7 @@ export default function ColPannel() {
       <Editor
         theme="my-theme"
         language="json"
-        defaultValue={`{\n\t"name":"hello"\n}`}
+        value={`{\n\t"name":"hello"\n}`}
         width={"100%"}
         height="120px"
         options={{
@@ -38,5 +38,5 @@ export default function ColPannel() {
         }}
       />
     </div>
-  )
-};
+  );
+}

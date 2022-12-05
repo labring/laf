@@ -33,8 +33,7 @@ const CreateModal = forwardRef((props, ref) => {
   const formRef = React.useRef(null);
 
   const { showSuccess } = useGlobalStore();
-  const { createFunction } = useFunctionStore();
-  const [currentFunc, setCurrentFunc] = useState<TFunction | any>();
+  const { createFunction, updateFunction } = useFunctionStore();
   const [isEdit, setIsEdit] = useState(false);
 
   type FormData = {
@@ -42,7 +41,7 @@ const CreateModal = forwardRef((props, ref) => {
     description: string;
     websocket: boolean;
     methods: string[];
-    codes: string;
+    code: string;
   };
 
   const {
@@ -58,12 +57,18 @@ const CreateModal = forwardRef((props, ref) => {
       description: "",
       websocket: false,
       methods: ["HEAD"],
-      codes: "console.log(123)",
+      code: "console.log('welcome to laf')",
     },
   });
 
   const onSubmit = async (data: any) => {
-    const res = await createFunction(data);
+    let res: any = {};
+    if (isEdit) {
+      res = await updateFunction(data);
+    } else {
+      res = await createFunction(data);
+    }
+
     if (!res.error) {
       showSuccess("create success.");
       onClose();
@@ -76,10 +81,16 @@ const CreateModal = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => {
     return {
       edit: (item: TFunction) => {
-        setCurrentFunc(item);
         setIsEdit(true);
         onOpen();
-        setFocus("name");
+        reset({
+          ...item,
+          description: item?.desc,
+          code: item?.source.code,
+        });
+        setTimeout(() => {
+          setFocus("name");
+        }, 16);
       },
     };
   });
@@ -89,12 +100,12 @@ const CreateModal = forwardRef((props, ref) => {
       <IconWrap
         size={20}
         onClick={() => {
-          setCurrentFunc({});
           setIsEdit(false);
           onOpen();
+          reset({});
           setTimeout(() => {
             setFocus("name");
-          }, 0);
+          }, 16);
         }}
       >
         <AddIcon fontSize={10} />
@@ -128,7 +139,6 @@ const CreateModal = forwardRef((props, ref) => {
                   })}
                   id="description"
                   variant="filled"
-                  readOnly={isEdit}
                 />
                 <FormErrorMessage>
                   {errors.description && errors.description.message}
@@ -137,13 +147,10 @@ const CreateModal = forwardRef((props, ref) => {
 
               <FormControl isInvalid={!!errors?.websocket}>
                 <FormLabel htmlFor="websocket">是否支持 websocket</FormLabel>
-                <Switch
-                  {...register("websocket")}
-                  id="websocket"
-                  variant="filled"
-                  readOnly={isEdit}
-                />
-                <FormErrorMessage>{errors.websocket && errors.websocket.message}</FormErrorMessage>{" "}
+                <Switch {...register("websocket")} id="websocket" variant="filled" />
+                <FormErrorMessage>
+                  {errors.websocket && errors.websocket.message}
+                </FormErrorMessage>{" "}
               </FormControl>
 
               <FormControl isInvalid={!!errors?.methods}>

@@ -1,39 +1,40 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Editor, { useMonaco } from "@monaco-editor/react";
 
 import { globalDefinition } from "./globalDefinition";
 
-export default function FunctionEditor(props: { value: string }) {
+export default function FunctionEditor(props: {
+  value: string;
+  path: string;
+  onChange: (value: string | undefined) => void;
+}) {
   const { value } = props;
   const monaco = useMonaco();
 
-  monaco?.editor.defineTheme("lafEditorTheme", {
-    base: "vs",
-    inherit: true,
-    rules: [],
-    colors: {
-      "editorLineNumber.foreground": "#aaa",
-      "editorOverviewRuler.border": "#fff",
-      "editor.lineHighlightBackground": "#F5F6F8",
-      "scrollbarSlider.background": "#E8EAEC",
-      "editorIndentGuide.activeBackground": "#ddd",
-      "editorIndentGuide.background": "#eee",
-    },
-  });
+  function handleEditorWillMount(monaco: any) {
+    monaco?.editor.defineTheme("lafEditorTheme", {
+      base: "vs",
+      inherit: true,
+      rules: [],
+      colors: {
+        "editorLineNumber.foreground": "#aaa",
+        "editorOverviewRuler.border": "#fff",
+        "editor.lineHighlightBackground": "#F5F6F8",
+        "scrollbarSlider.background": "#E8EAEC",
+        "editorIndentGuide.activeBackground": "#ddd",
+        "editorIndentGuide.background": "#eee",
+      },
+    });
 
-  useEffect(() => {
-    setTimeout(() => {
-      // extra libraries
-      var libSource = globalDefinition;
-      var libUri = "ts:filename/global.d.ts";
-      monaco?.languages.typescript.javascriptDefaults.addExtraLib(libSource, libUri);
-      // When resolving definitions and references, the editor will try to use created models.
-      // Creating a model for the library allows "peek definition/references" commands to work with the library.
-      monaco?.editor.createModel(libSource, "typescript", monaco.Uri.parse(libUri));
+    monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
+    const libSource = globalDefinition;
+    const libUri = "ts:filename/global.d.ts";
+    monaco.languages.typescript.javascriptDefaults.addExtraLib(libSource, libUri);
 
-      monaco?.editor.setTheme("lafEditorTheme");
-    }, 16);
-  }, [monaco]);
+    if (!monaco.editor.getModels().length) {
+      monaco.editor.createModel(libSource, "typescript", monaco.Uri.parse(libUri));
+    }
+  }
 
   return (
     <Editor
@@ -52,7 +53,15 @@ export default function FunctionEditor(props: { value: string }) {
       }}
       height="100%"
       defaultLanguage="typescript"
-      value={value}
+      beforeMount={handleEditorWillMount}
+      path={props.path}
+      onMount={(editor, monaco) => {
+        monaco.editor.setTheme("lafEditorTheme");
+      }}
+      defaultValue={value}
+      onChange={(value, event) => {
+        props.onChange && props.onChange(value);
+      }}
     />
   );
 }

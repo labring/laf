@@ -83,6 +83,21 @@ export async function FunctionsControllerRemove(
 }
 
 /**
+ * Compile a function
+ */
+export async function FunctionsControllerCompile(
+  params: Paths.FunctionsControllerCompile.BodyParameters | any,
+  extra?: { [key: string]: any },
+): Promise<Paths.FunctionsControllerCompile.Responses> {
+  // /v1/apps/{appid}/functions/{name}/compile
+  return request(`/v1/apps/${params.appid}/functions/${params.name}/compile`, {
+    method: "POST",
+    data: params,
+    ...(extra || {}),
+  });
+}
+
+/**
  * TODO - ⌛️
  */
 export async function PoliciesControllerCreate(

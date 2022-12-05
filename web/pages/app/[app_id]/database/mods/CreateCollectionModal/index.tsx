@@ -79,7 +79,7 @@ const CreateCollectionModal = forwardRef((props, ref) => {
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>添加函数</ModalHeader>
+          <ModalHeader>添加集合</ModalHeader>
           <ModalCloseButton />
           <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
             <ModalBody pb={6}>
