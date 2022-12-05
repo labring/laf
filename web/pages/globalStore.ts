@@ -1,6 +1,8 @@
 import { createStandaloneToast } from "@chakra-ui/react";
+import { SpecsControllerGetBundles } from "services/v1/bundles";
 import { AuthControllerGetSigninUrl } from "services/v1/login";
 import { AuthControllerGetProfile } from "services/v1/profile";
+import { SpecsControllerGetRuntimes } from "services/v1/runtimes";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
@@ -10,6 +12,8 @@ const { toast } = createStandaloneToast();
 type State = {
   userInfo: any;
   loading: boolean;
+  runtimes?: any[];
+  bundles?: any[];
   currentApp: any;
   setCurrentApp(app: any): void;
   init(appid?: string): void;
@@ -32,11 +36,16 @@ const useGlobalStore = create<State>()(
           return;
         }
 
-        const res = await AuthControllerGetProfile({});
+        const userInfoRes = await AuthControllerGetProfile({});
+
+        const runtimesRes = await SpecsControllerGetRuntimes({});
+        const bundlesRes = await SpecsControllerGetBundles({});
 
         set((state) => {
-          state.userInfo = res.data;
+          state.userInfo = userInfoRes.data;
           state.loading = false;
+          state.runtimes = runtimesRes.data?.items;
+          state.bundles = bundlesRes.data?.items;
         });
       },
 

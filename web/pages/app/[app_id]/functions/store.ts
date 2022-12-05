@@ -2,6 +2,7 @@ import useGlobalStore from "pages/globalStore";
 import {
   FunctionsControllerCreate,
   FunctionsControllerFindAll,
+  FunctionsControllerRemove,
   FunctionsControllerUpdate,
 } from "services/v1/apps";
 import create from "zustand";
@@ -43,7 +44,8 @@ type State = {
   initFunctionPage: (current?: TFunction) => Promise<void>;
 
   createFunction: (values: any) => Paths.FunctionsControllerCreate.Responses;
-  updateFunction: (values: TFunction) => Paths.FunctionsControllerCreate.Responses;
+  updateFunction: (values: any) => Paths.FunctionsControllerCreate.Responses;
+  deleteFunction: (values: TFunction) => Paths.FunctionsControllerRemove.Responses;
 
   updateFunctionCode: (current: TFunction, codes: string) => void;
 
@@ -85,6 +87,15 @@ const useFunctionStore = create<State>()(
         return res;
       },
 
+      deleteFunction: async (values) => {
+        const res = await FunctionsControllerRemove({
+          appid: useGlobalStore.getState().currentApp,
+          name: values?.name,
+        });
+        get().initFunctionPage();
+        return res;
+      },
+
       updateFunction: async (values) => {
         const res = await FunctionsControllerUpdate({
           appid: useGlobalStore.getState().currentApp,
@@ -106,7 +117,6 @@ const useFunctionStore = create<State>()(
       updateFunctionCode: async (current, codes) => {
         set((state) => {
           state.allFunctionList.map((item) => {
-            console.log(111, item);
             if (item?.name === current?.name) {
               item!.source.code = codes;
               item!.isEdit = true;
@@ -118,8 +128,7 @@ const useFunctionStore = create<State>()(
 
       setCurrentFunction: (currentFunction) =>
         set((state) => {
-          state.currentFunction = JSON.parse(JSON.stringify(currentFunction));
-          return state;
+          state.currentFunction = currentFunction;
         }),
     })),
   ),

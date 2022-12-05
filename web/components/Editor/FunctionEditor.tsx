@@ -47,7 +47,7 @@ export default function FunctionEditor(props: {
           verticalScrollbarSize: 6,
         },
         lineNumbersMinChars: 4,
-        fontSize: "14px",
+        fontSize: "16px",
         // fontFamily: "monospace",
         scrollBeyondLastLine: false,
       }}
@@ -58,7 +58,7 @@ export default function FunctionEditor(props: {
       onMount={(editor, monaco) => {
         monaco.editor.setTheme("lafEditorTheme");
       }}
-      defaultValue={value}
+      value={value}
       onChange={(value, event) => {
         props.onChange && props.onChange(value);
       }}

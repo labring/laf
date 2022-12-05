@@ -22,7 +22,7 @@ export default function CollectionDataList() {
           <TabPanel>
             <IndexPannel />
           </TabPanel>
-          <TabPanel>
+          <TabPanel className="overflow-hidden relative" style={{ height: "calc(100% - 35px)" }}>
             <ColPannel />
           </TabPanel>
         </TabPanels>

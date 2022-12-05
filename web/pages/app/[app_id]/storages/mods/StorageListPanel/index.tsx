@@ -50,7 +50,7 @@ export default function StorageListPanel() {
                     </Tag>
                   </div>
                 </div>
-                <div className="hidden group-hover:flex">
+                <div className="invisible flex group-hover:visible">
                   <EditBucketModal storage={storage} />
                   <DeleteBucketModal storage={storage} />
                 </div>

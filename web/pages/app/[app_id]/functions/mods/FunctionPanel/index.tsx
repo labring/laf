@@ -4,10 +4,12 @@
 
 import React, { useRef, useState } from "react";
 import { AiOutlineFilter } from "react-icons/ai";
-import { EditIcon, HamburgerIcon, Search2Icon, SunIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon, HamburgerIcon, Search2Icon, SunIcon } from "@chakra-ui/icons";
 import { HStack, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
+import useGlobalStore from "pages/globalStore";
 
+import ConfirmButton from "@/components/ConfirmButton";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
@@ -19,6 +21,7 @@ import CreateModal from "./CreateModal";
 
 export default function FunctionList() {
   const store = useFunctionStore((store) => store);
+  const { showSuccess } = useGlobalStore();
 
   const [keywords, setKeywords] = useState("");
   const createModalRef = useRef<{
@@ -29,7 +32,7 @@ export default function FunctionList() {
     <Panel
       title={t`FunctionList`}
       actions={[
-        <IconWrap key="change_theme" onClick={() => {}}>
+        <IconWrap tooltip="dark mode" key="change_theme" onClick={() => {}}>
           <SunIcon fontSize={12} />
         </IconWrap>,
         <CreateModal ref={createModalRef} key="create_modal" />,
@@ -39,7 +42,7 @@ export default function FunctionList() {
       ]}
     >
       <div className="border-b border-slate-300">
-        <div className="flex items-center m-2 mb-3">
+        <div className="flex items-center ml-2 mb-3">
           <InputGroup>
             <InputLeftElement
               height={"8"}
@@ -57,12 +60,6 @@ export default function FunctionList() {
               }}
             />
           </InputGroup>
-
-          <HStack spacing="2">
-            <IconWrap onClick={() => {}} size={26}>
-              <AiOutlineFilter size={16} />
-            </IconWrap>
-          </HStack>
         </div>
 
         {/* <h5 className="m-2">我的收藏</h5>
@@ -105,10 +102,33 @@ export default function FunctionList() {
                   <div className="hidden group-hover:block">
                     <EditIcon
                       fontSize={14}
+                      color="gray.500"
+                      _hover={{ color: "black" }}
                       onClick={() => {
                         createModalRef.current?.edit(func);
                       }}
                     />
+
+                    <ConfirmButton
+                      onSuccessAction={async () => {
+                        const res = await store.deleteFunction(func);
+                        if (!res.error) {
+                          showSuccess("删除成功");
+                        }
+                      }}
+                      headerText={"删除"}
+                      bodyText={"确认要删除函数吗？"}
+                    >
+                      <DeleteIcon
+                        className="ml-2"
+                        fontSize={14}
+                        color="gray.500"
+                        _hover={{ color: "black" }}
+                        onClick={() => {
+                          createModalRef.current?.edit(func);
+                        }}
+                      />
+                    </ConfirmButton>
                   </div>
                 </SectionList.Item>
               );

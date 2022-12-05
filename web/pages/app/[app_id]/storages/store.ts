@@ -46,7 +46,7 @@ type State = {
   createStorage: (
     currentStorage: Definitions.CreateBucketDto,
   ) => Paths.BucketsControllerCreate.Responses;
-  deleteStorage: (currentStorage: TStorage) => void;
+  deleteStorage: (currentStorage: TStorage) => Promise<Paths.BucketsControllerRemove.Responses>;
 };
 
 const useStorageStore = create<State>()(
@@ -113,10 +113,7 @@ const useStorageStore = create<State>()(
           appid: globalStore.currentApp,
           name: storage.metadata.name,
         });
-        if (!res.error) {
-          globalStore.showSuccess("delete success");
-          get().initStoragePage();
-        }
+        return res;
       },
     })),
   ),

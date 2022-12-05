@@ -12,12 +12,12 @@ export default function DataPannel() {
   const { showSuccess } = useGlobalStore();
   return (
     <>
-      <div className="flex justify-between pb-2 shadow-sm">
-        <InputGroup size="sm" className="h-9" style={{ width: 600 }}>
+      <div className="flex justify-end pb-2 shadow-sm">
+        {/* <InputGroup size="sm" className="h-9" style={{ width: 600 }}>
           <InputLeftAddon children="query" />
           <Input placeholder='{"name":"hello"}' />
           <InputRightAddon children="查询" />
-        </InputGroup>
+        </InputGroup> */}
         <Button
           colorScheme={"blue"}
           size="sm"

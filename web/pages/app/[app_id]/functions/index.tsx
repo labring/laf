@@ -3,13 +3,12 @@
  ***************************/
 
 import React, { useCallback, useEffect } from "react";
-import { Button, HStack } from "@chakra-ui/react";
+import { Badge, Button, HStack } from "@chakra-ui/react";
 import useHotKey from "hooks/useHotKey";
 import useGlobalStore from "pages/globalStore";
 
 import CopyText from "@/components/CopyText";
 import FunctionEditor from "@/components/Editor/FunctionEditor";
-import FileStatusIcon, { FileStatus } from "@/components/FileStatusIcon";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import PanelHeader from "@/components/Panel/Header";
 
@@ -26,13 +25,27 @@ function FunctionPage() {
   const {
     initFunctionPage,
     currentFunction,
-    updateFunctionCode: updateFunction,
+    setCurrentFunction,
+    updateFunction,
+    updateFunctionCode,
   } = useFunctionStore((store) => store);
 
   const { showSuccess } = useGlobalStore((state) => state);
 
   useHotKey("s", () => {
     showSuccess("saved successfully");
+    updateFunction({
+      description: currentFunction?.desc,
+      code: currentFunction?.source.code,
+      methods: currentFunction?.methods,
+      websocket: currentFunction?.websocket,
+      name: currentFunction?.name,
+    });
+    setCurrentFunction(
+      Object.assign({}, currentFunction, {
+        isEdit: false,
+      }),
+    );
   });
 
   useHotKey("r", () => {
@@ -60,16 +73,18 @@ function FunctionPage() {
                 {currentFunction?.name} &nbsp;({currentFunction?.desc})
               </span>
               <span className="ml-4 ">
-                {currentFunction?.isEdit ? "比阿继中" : "已保存"}
-                <FileStatusIcon status={FileStatus.deleted} />
+                {currentFunction?.isEdit && <Badge colorScheme="purple">Editting...</Badge>}
+                {/* <FileStatusIcon status={FileStatus.deleted} /> */}
               </span>
             </div>
 
             <HStack spacing="4">
               <span>
                 <span className=" text-slate-500">调用地址：</span>
-                <span className="mr-2">https://qcphsd.api.cloudendpoint.cn/deleteCurrentTodo</span>
-                <CopyText text="https://qcphsd.api.cloudendpoint.cn/deleteCurrentTodo" />
+                <span className="mr-4">
+                  https://qcphsd.api.cloudendpoint.cn/{currentFunction?.name}
+                </span>
+                <CopyText text={`https://qcphsd.api.cloudendpoint.cn/${currentFunction?.name}`} />
               </span>
               <Button
                 size="xs"
@@ -93,7 +108,7 @@ function FunctionPage() {
               value={currentFunction?.source.code || ""}
               onChange={(value) => {
                 console.log(value);
-                updateFunction(currentFunction, value || "");
+                updateFunctionCode(currentFunction, value || "");
               }}
             />
           </div>

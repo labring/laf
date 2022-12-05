@@ -55,7 +55,7 @@ export default function CollectionListPanel() {
                       <span className="ml-2 text-base">{db.name}</span>
                     </div>
                     <div className="hidden group-hover:block">
-                      <CopyText text={db.name} />
+                      <CopyText text={db.name} tip="名称复制成功" />
                     </div>
                   </div>
                 </SectionList.Item>

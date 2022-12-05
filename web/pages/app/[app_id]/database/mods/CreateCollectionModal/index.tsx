@@ -27,7 +27,6 @@ import useDBMStore from "../../store";
 const CreateCollectionModal = forwardRef((props, ref) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { createDB } = useDBMStore((state) => state);
-  const formRef = React.useRef(null);
 
   const { showSuccess } = useGlobalStore();
 
@@ -49,7 +48,7 @@ const CreateCollectionModal = forwardRef((props, ref) => {
     await createDB(data.name);
     showSuccess("create success.");
     onClose();
-    reset();
+    reset({});
   };
 
   useImperativeHandle(ref, () => {
@@ -57,6 +56,7 @@ const CreateCollectionModal = forwardRef((props, ref) => {
       edit: (item: any) => {
         setIsEdit(true);
         onOpen();
+        reset(item);
       },
     };
   });
@@ -81,36 +81,34 @@ const CreateCollectionModal = forwardRef((props, ref) => {
         <ModalContent>
           <ModalHeader>添加集合</ModalHeader>
           <ModalCloseButton />
-          <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
-            <ModalBody pb={6}>
-              <VStack spacing={6} align="flex-start">
-                <FormControl isInvalid={!!errors?.name}>
-                  <FormLabel htmlFor="name">集合名称</FormLabel>
-                  <Input
-                    {...register("name", {
-                      required: "name is required",
-                    })}
-                    id="name"
-                    variant="filled"
-                    readOnly={isEdit}
-                  />
-                  <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>{" "}
-                </FormControl>
-              </VStack>
-            </ModalBody>
+          <ModalBody pb={6}>
+            <VStack spacing={6} align="flex-start">
+              <FormControl isInvalid={!!errors?.name}>
+                <FormLabel htmlFor="name">集合名称</FormLabel>
+                <Input
+                  {...register("name", {
+                    required: "name is required",
+                  })}
+                  id="name"
+                  variant="filled"
+                  readOnly={isEdit}
+                />
+                <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
+              </FormControl>
+            </VStack>
+          </ModalBody>
 
-            <ModalFooter>
-              <Button colorScheme="primary" mr={3} type="submit">
-                {t`Confirm`}
-              </Button>
-              <Button
-                onClick={() => {
-                  onClose();
-                  reset();
-                }}
-              >{t`Cancel`}</Button>
-            </ModalFooter>
-          </form>
+          <ModalFooter>
+            <Button colorScheme="primary" mr={3} type="submit" onClick={handleSubmit(onSubmit)}>
+              {t`Confirm`}
+            </Button>
+            <Button
+              onClick={() => {
+                onClose();
+                reset();
+              }}
+            >{t`Cancel`}</Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>

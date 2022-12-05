@@ -30,11 +30,18 @@ import useFunctionStore, { TFunction } from "../../../store";
 
 const CreateModal = forwardRef((props, ref) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const formRef = React.useRef(null);
 
   const { showSuccess } = useGlobalStore();
   const { createFunction, updateFunction } = useFunctionStore();
   const [isEdit, setIsEdit] = useState(false);
+
+  const defaultValues = {
+    name: "",
+    description: "",
+    websocket: false,
+    methods: ["HEAD"],
+    code: "console.log('welcome to laf')",
+  };
 
   type FormData = {
     name: string;
@@ -52,13 +59,7 @@ const CreateModal = forwardRef((props, ref) => {
     reset,
     formState: { errors },
   } = useForm<FormData>({
-    defaultValues: {
-      name: "",
-      description: "",
-      websocket: false,
-      methods: ["HEAD"],
-      code: "console.log('welcome to laf')",
-    },
+    defaultValues,
   });
 
   const onSubmit = async (data: any) => {
@@ -75,8 +76,6 @@ const CreateModal = forwardRef((props, ref) => {
       reset();
     }
   };
-
-  const initialRef = React.useRef(null);
 
   useImperativeHandle(ref, () => {
     return {
@@ -99,10 +98,11 @@ const CreateModal = forwardRef((props, ref) => {
     <>
       <IconWrap
         size={20}
+        tooltip="create function"
         onClick={() => {
           setIsEdit(false);
           onOpen();
-          reset({});
+          reset(defaultValues);
           setTimeout(() => {
             setFocus("name");
           }, 16);
@@ -111,7 +111,7 @@ const CreateModal = forwardRef((props, ref) => {
         <AddIcon fontSize={10} />
       </IconWrap>
 
-      <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} size="xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>添加函数</ModalHeader>
@@ -126,6 +126,7 @@ const CreateModal = forwardRef((props, ref) => {
                     required: "name is required",
                   })}
                   id="name"
+                  disabled={isEdit}
                   variant="filled"
                 />
                 <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>{" "}

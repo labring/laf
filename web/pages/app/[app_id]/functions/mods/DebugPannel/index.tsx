@@ -4,7 +4,10 @@ import { Button, Input, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-
 import JsonEditor from "@/components/Editor/JsonEditor";
 import PanelHeader from "@/components/Panel/Header";
 
+import useFunctionStore from "../../store";
+
 export default function DebugPanel() {
+  const { currentFunction } = useFunctionStore((state) => state);
   return (
     <div className="flex h-full">
       <Tabs width="100%">
@@ -23,17 +26,19 @@ export default function DebugPanel() {
                   </Button>
                   <Input
                     size="xs"
+                    readOnly
                     variant="filled"
-                    defaultValue="https://qcphsd.api.cloudendpoint.cn/deleteCurrentTodo"
+                    value={`https://qcphsd.api.cloudendpoint.cn/${currentFunction?.name}`}
                   />
                   <Button
                     style={{ borderRadius: 2 }}
                     size="xs"
                     px="4"
                     className="ml-2"
+                    onClick={() => {}}
                     colorScheme="blue"
                   >
-                    发送
+                    运行
                   </Button>
                 </div>
                 <Tabs size={"sm"} className="!flex flex-col flex-1">
