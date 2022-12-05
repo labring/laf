@@ -3,8 +3,6 @@
 # It should be run by config/default
 resources:
 - bases/application.laf.dev_applications.yaml
-- bases/application.laf.dev_bundles.yaml
-- bases/application.laf.dev_creationforms.yaml
 #+kubebuilder:scaffold:crdkustomizeresource
 
 patchesStrategicMerge:

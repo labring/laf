@@ -15,20 +15,3 @@ This directory contains sealos cluster image building scripts for laf.
 ```bash
 # Install laf controllers
 sealos run lafyun/laf-controllers:dev
-
-# Install casdoor & service auth in sealos namespace (because service-auth has hard-coding `sealos` namespace in code)
-export NODE_IP=$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[0].address}")
-export CASDOOR_NODE_PORT=30080
-export CASDOOR_ENDPOINT=http://$NODE_IP:$CASDOOR_NODE_PORT
-export CASDOOR_CALLBACK_URL=http://localhost:8080/login/callback
-
-kubectl create namespace laf
-sealos run --env NAMESPACE=laf --env DATABASE=casdoor lafyun/laf-postgresql:dev
-sealos run --env NAMESPACE=laf --env NODE_PORT=${CASDOOR_NODE_PORT} lafyun/laf-casdoor:dev 
-
-
-# Install mongodb
-kubectl create namespace laf
-sealos run --env NAMESPACE=laf lafyun/laf-mongodb:dev
-```
-

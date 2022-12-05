@@ -1,6 +1,0 @@
-apiVersion: instance.laf.dev/v1
-kind: Cluster
-metadata:
-  name: cluster-sample
-spec:
-  # TODO(user): Add fields here
