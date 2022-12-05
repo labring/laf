@@ -1,8 +1,8 @@
 import { createStandaloneToast } from "@chakra-ui/react";
-import { SpecsControllerGetBundles } from "apis/v1/bundles";
-import { AuthControllerGetSigninUrl } from "apis/v1/login";
-import { AuthControllerGetProfile } from "apis/v1/profile";
-import { SpecsControllerGetRuntimes } from "apis/v1/runtimes";
+import { SpecsControllerGetBundles } from "services/v1/bundles";
+import { AuthControllerGetSigninUrl } from "services/v1/login";
+import { AuthControllerGetProfile } from "services/v1/profile";
+import { SpecsControllerGetRuntimes } from "services/v1/runtimes";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
@@ -19,7 +19,6 @@ type State = {
   init(appid?: string): void;
 
   showSuccess: (text: string | React.ReactNode) => void;
-  showError: (text: string | React.ReactNode) => void;
 };
 
 const useGlobalStore = create<State>()(
@@ -45,13 +44,12 @@ const useGlobalStore = create<State>()(
         set((state) => {
           state.userInfo = userInfoRes.data;
           state.loading = false;
-          state.runtimes = runtimesRes.data;
-          state.bundles = bundlesRes.data;
+          state.runtimes = runtimesRes.data?.items;
+          state.bundles = bundlesRes.data?.items;
         });
       },
 
       setCurrentApp: (app: any) => {
-        localStorage.setItem("app", app.appid);
         set((state) => {
           state.currentApp = app;
         });
@@ -67,23 +65,6 @@ const useGlobalStore = create<State>()(
           title: text,
           status: "success",
           duration: 1000,
-          containerStyle: {
-            maxWidth: "100%",
-            minWidth: "100px",
-          },
-        });
-      },
-
-      showError: (text: string | React.ReactNode) => {
-        toast({
-          position: "top",
-          title: text,
-          status: "error",
-          duration: 1000,
-          containerStyle: {
-            maxWidth: "100%",
-            minWidth: "100px",
-          },
         });
       },
     })),

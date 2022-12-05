@@ -1,6 +1,6 @@
-import React from "react";
+import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { AddIcon, EditIcon } from "@chakra-ui/icons";
+import { AddIcon } from "@chakra-ui/icons";
 import {
   Button,
   Checkbox,
@@ -26,25 +26,21 @@ import useGlobalStore from "pages/globalStore";
 
 import IconWrap from "@/components/IconWrap";
 
-import { useCreateFuncitonMutation, useUpdateFunctionMutation } from "../../../service";
-import useFunctionStore from "../../../store";
+import useFunctionStore, { TFunction } from "../../../store";
 
-const CreateModal = (props: { functionItem?: any }) => {
+const CreateModal = forwardRef((props, ref) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const store = useFunctionStore();
-
   const { showSuccess } = useGlobalStore();
-
-  const { functionItem } = props;
-  const isEdit = !!functionItem;
+  const { createFunction, updateFunction } = useFunctionStore();
+  const [isEdit, setIsEdit] = useState(false);
 
   const defaultValues = {
-    name: functionItem?.name || "",
-    description: functionItem?.desc || "",
-    websocket: !!functionItem?.websocket,
-    methods: functionItem?.methods || ["HEAD"],
-    code: functionItem?.source.code || "console.log('welcome to laf')",
+    name: "",
+    description: "",
+    websocket: false,
+    methods: ["HEAD"],
+    code: "console.log('welcome to laf')",
   };
 
   type FormData = {
@@ -66,46 +62,59 @@ const CreateModal = (props: { functionItem?: any }) => {
     defaultValues,
   });
 
-  const createFuncitonMutation = useCreateFuncitonMutation();
-  const updateFunctionMutation = useUpdateFunctionMutation();
-
   const onSubmit = async (data: any) => {
     let res: any = {};
     if (isEdit) {
-      res = await updateFunctionMutation.mutateAsync(data);
-      store.setCurrentFunction(res.data);
+      res = await updateFunction(data);
     } else {
-      res = await createFuncitonMutation.mutateAsync(data);
-      store.setCurrentFunction(res.data);
+      res = await createFunction(data);
     }
 
     if (!res.error) {
-      showSuccess(isEdit ? "update success" : "create success");
+      showSuccess("create success.");
       onClose();
-      reset(defaultValues);
+      reset();
     }
   };
+
+  useImperativeHandle(ref, () => {
+    return {
+      edit: (item: TFunction) => {
+        setIsEdit(true);
+        onOpen();
+        reset({
+          ...item,
+          description: item?.desc,
+          code: item?.source.code,
+        });
+        setTimeout(() => {
+          setFocus("name");
+        }, 16);
+      },
+    };
+  });
 
   return (
     <>
       <IconWrap
         size={20}
-        tooltip={isEdit ? "编辑函数" : "添加函数"}
+        tooltip="create function"
         onClick={() => {
+          setIsEdit(false);
           onOpen();
           reset(defaultValues);
           setTimeout(() => {
             setFocus("name");
-          }, 0);
+          }, 16);
         }}
       >
-        {isEdit ? <EditIcon /> : <AddIcon fontSize={10} />}
+        <AddIcon fontSize={10} />
       </IconWrap>
 
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{isEdit ? "编辑函数" : "添加函数"}</ModalHeader>
+          <ModalHeader>添加函数</ModalHeader>
           <ModalCloseButton />
 
           <ModalBody pb={6}>
@@ -182,7 +191,7 @@ const CreateModal = (props: { functionItem?: any }) => {
       </Modal>
     </>
   );
-};
+});
 
 CreateModal.displayName = "CreateModal";
 
