@@ -1,33 +1,38 @@
-import { useState } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { AddIcon } from "@chakra-ui/icons";
-import { Button } from "@chakra-ui/react";
+import { Button, Input, InputGroup, InputLeftAddon, InputRightAddon } from "@chakra-ui/react";
 import clsx from "clsx";
 import useGlobalStore from "pages/globalStore";
 
 import JsonEditor from "@/components/Editor/JsonEditor";
 
-import { useEntryDataQuery } from "../../../service";
-
-import DeleteButton from "./DeleteButton";
+import useDBMStore from "../../../store";
 export default function DataPannel() {
+  const { entryList, updateCurrentData, currentData } = useDBMStore((store) => store);
   const { showSuccess } = useGlobalStore();
-
-  const entryDataQuery = useEntryDataQuery();
-
-  const [currentData, setCurrentData] = useState<any>(null);
   return (
     <>
       <div className="flex justify-end pb-2 shadow-sm">
-        <Button colorScheme={"blue"} size="sm" onClick={() => {}}>
+        {/* <InputGroup size="sm" className="h-9" style={{ width: 600 }}>
+          <InputLeftAddon children="query" />
+          <Input placeholder='{"name":"hello"}' />
+          <InputRightAddon children="查询" />
+        </InputGroup> */}
+        <Button
+          colorScheme={"blue"}
+          size="sm"
+          onClick={() => {
+            updateCurrentData({});
+          }}
+        >
           <AddIcon color="white" />
           新增记录
         </Button>
       </div>
 
       <div className="absolute top-20 bottom-0 right-2 flex left-4">
-        <div className="overflow-y-auto flex-1 pr-2 overflow-x-hidden">
-          {(entryDataQuery?.data?.data?.list || [])?.map((item: any, index: number) => {
+        <div className="overflow-y-auto flex-1 pr-2">
+          {entryList?.map((item, index: number) => {
             return (
               <div
                 key={item._id}
@@ -35,29 +40,27 @@ export default function DataPannel() {
                   "border p-2 rounded-md relative group hover:border-green-600 hover:shadow-md",
                   {
                     "border-green-600 shadow-md": currentData?._id === item._id,
-                    "mb-6": index !== entryDataQuery?.data?.data?.list.length - 1,
+                    "mb-6": index !== entryList.length - 1,
                   },
                 )}
                 onClick={() => {
-                  setCurrentData(item);
+                  updateCurrentData(item);
                 }}
               >
-                <div
-                  className={clsx(" absolute right-2 top-2  group-hover:block z-50 ", {
-                    hidden: currentData?._id !== item._id,
-                  })}
-                >
+                <div className=" absolute right-2 top-2 hidden group-hover:block z-50 ">
                   <Button
                     size="xs"
                     px="2"
                     className="mr-2 w-16"
                     onClick={() => {
-                      setCurrentData(item);
+                      updateCurrentData(item);
                     }}
                   >
                     Edit
                   </Button>
-                  <DeleteButton data={item} />
+                  <Button size="xs" px="2" className="w-16">
+                    Delete
+                  </Button>
                 </div>
                 <SyntaxHighlighter language="json" customStyle={{ background: "#fff" }}>
                   {JSON.stringify(item, null, 2)}

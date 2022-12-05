@@ -5,6 +5,7 @@ import {
   Button,
   FormControl,
   FormErrorMessage,
+  FormLabel,
   Input,
   Modal,
   ModalBody,
@@ -15,17 +16,18 @@ import {
   ModalOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
+import useGlobalStore from "pages/globalStore";
 
 import IconWrap from "@/components/IconWrap";
 
-import { useBucketDeleteMutation } from "../../service";
+import useStorageStore from "../../store";
 
 function DeleteBucketModal(props: { storage: any }) {
   const { storage } = props;
-
-  const bucketDeleteMutation = useBucketDeleteMutation();
+  const { deleteStorage, initStoragePage } = useStorageStore((state) => state);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { showSuccess } = useGlobalStore();
 
   const {
     register,
@@ -85,12 +87,12 @@ function DeleteBucketModal(props: { storage: any }) {
               colorScheme="red"
               mr={3}
               onClick={handleSubmit(async (data) => {
+                console.log(123, data);
                 if (data.name === storage.metadata.name) {
-                  const res = await bucketDeleteMutation.mutateAsync({
-                    name: storage.metadata.name,
-                    ...storage,
-                  });
+                  const res = await deleteStorage(storage);
                   if (!res.error) {
+                    showSuccess("delete success");
+                    initStoragePage();
                     onClose();
                   }
                 }

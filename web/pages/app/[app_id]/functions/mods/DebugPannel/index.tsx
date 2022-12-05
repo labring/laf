@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Input, Kbd, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import { Button, Input, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 
 import JsonEditor from "@/components/Editor/JsonEditor";
 import PanelHeader from "@/components/Panel/Header";
@@ -7,7 +7,7 @@ import PanelHeader from "@/components/Panel/Header";
 import useFunctionStore from "../../store";
 
 export default function DebugPanel() {
-  const { currentFunction: currentFunction } = useFunctionStore((state) => state);
+  const { currentFunction } = useFunctionStore((state) => state);
   return (
     <div className="flex h-full">
       <Tabs width="100%">
@@ -20,24 +20,19 @@ export default function DebugPanel() {
           <TabPanel padding={0} h="full">
             <div className="flex flex-col h-full">
               <div className="flex-1 border-r-slate-300 flex flex-col">
-                <div className="flex py-6 px-2 items-center">
-                  <Button size="sm" className="mr-2">
+                <div className="flex py-6 px-2 ">
+                  <Button size="xs" className="mr-2">
                     GET
                   </Button>
                   <Input
-                    size="sm"
+                    size="xs"
                     readOnly
-                    rounded={4}
                     variant="filled"
-                    value={
-                      currentFunction?.name
-                        ? `https://qcphsd.api.cloudendpoint.cn/${currentFunction?.name}`
-                        : ""
-                    }
+                    value={`https://qcphsd.api.cloudendpoint.cn/${currentFunction?.name}`}
                   />
                   <Button
                     style={{ borderRadius: 2 }}
-                    size="sm"
+                    size="xs"
                     px="4"
                     className="ml-2"
                     onClick={() => {}}
@@ -52,7 +47,7 @@ export default function DebugPanel() {
                   </TabList>
                   <TabPanels className="flex-1">
                     <TabPanel className="h-full">
-                      <JsonEditor value={{}} />
+                      <JsonEditor value={{ name: "hellor" }} />
                     </TabPanel>
                   </TabPanels>
                 </Tabs>
