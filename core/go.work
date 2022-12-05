@@ -6,6 +6,5 @@ use (
 	./controllers/database
 	./controllers/oss
 	./controllers/gateway
-	./controllers/runtime
 	./controllers/instance
 )

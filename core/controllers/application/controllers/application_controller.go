@@ -19,11 +19,8 @@ package controllers
 import (
 	"context"
 	"fmt"
-	"time"
-
 	appv1 "github.com/labring/laf/core/controllers/application/api/v1"
 	"github.com/labring/laf/core/controllers/application/resourcer"
-	v1 "github.com/labring/laf/core/controllers/runtime/api/v1"
 	"github.com/labring/laf/core/pkg/common"
 	"github.com/labring/laf/core/pkg/util"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -31,6 +28,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
+	"time"
 )
 
 const ApplicationFinalizer = "application.finalizers.laf.dev"
@@ -45,9 +43,6 @@ type ApplicationReconciler struct {
 //+kubebuilder:rbac:groups=application.laf.dev,resources=applications/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=application.laf.dev,resources=applications/finalizers,verbs=update
 
-//+kubebuilder:rbac:groups=runtime.laf.dev,resources=runtimes,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=runtime.laf.dev,resources=runtimes/status,verbs=get;
-
 //+kubebuilder:rbac:groups=database.laf.dev,resources=databases,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=database.laf.dev,resources=databases/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=database.laf.dev,resources=databases/finalizers,verbs=update
@@ -58,9 +53,6 @@ type ApplicationReconciler struct {
 //+kubebuilder:rbac:groups=oss.laf.dev,resources=buckets,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=oss.laf.dev,resources=buckets/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=oss.laf.dev,resources=buckets/finalizers,verbs=update
-//+kubebuilder:rbac:groups=oss.laf.dev,resources=users,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=oss.laf.dev,resources=users/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=oss.laf.dev,resources=users/finalizers,verbs=update
 //+kubebuilder:rbac:groups=oss.laf.dev,resources=stores,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=oss.laf.dev,resources=stores/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=oss.laf.dev,resources=stores/finalizers,verbs=update
@@ -121,16 +113,6 @@ func (r *ApplicationReconciler) apply(ctx context.Context, app *appv1.Applicatio
 			return ctrl.Result{}, err
 		}
 		g.Info("finalizer added for app")
-		return ctrl.Result{}, nil
-	}
-
-	// reconcile runtime
-	if app.Status.RuntimeName != app.Spec.RuntimeName {
-		err := r.reconcileRuntime(ctx, app)
-		if err != nil {
-			return ctrl.Result{}, err
-		}
-		g.Info("runtime reconciled")
 		return ctrl.Result{}, nil
 	}
 
@@ -390,35 +372,6 @@ func (r *ApplicationReconciler) initialize(ctx context.Context, app *appv1.Appli
 	}
 
 	return ctrl.Result{RequeueAfter: time.Second}, nil
-}
-
-// reconcileRuntime reconciles the runtime of the application
-func (r *ApplicationReconciler) reconcileRuntime(ctx context.Context, app *appv1.Application) error {
-	// get runtime by name
-	rt := &v1.Runtime{}
-	err := r.Get(ctx, client.ObjectKey{
-		Namespace: common.GetSystemNamespace(),
-		Name:      app.Spec.RuntimeName,
-	}, rt)
-	if err != nil {
-		return err
-	}
-
-	// update the condition
-	condition := metav1.Condition{
-		Type:               appv1.RuntimeInitialized,
-		Status:             metav1.ConditionTrue,
-		Reason:             "RuntimeInitialized",
-		Message:            "runtime initialized",
-		LastTransitionTime: metav1.Now(),
-	}
-	util.SetCondition(&app.Status.Conditions, condition)
-
-	// update the status
-	app.Status.RuntimeName = app.Spec.RuntimeName
-	app.Status.RuntimeSpec = rt.Spec
-	err = r.Status().Update(ctx, app)
-	return err
 }
 
 // reconcileBundle reconciles the bundle of the application
