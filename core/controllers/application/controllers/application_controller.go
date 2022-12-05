@@ -1,19 +1,3 @@
-/*
-Copyright 2022.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 package controllers
 
 import (
@@ -21,7 +5,6 @@ import (
 	"fmt"
 	appv1 "github.com/labring/laf/core/controllers/application/api/v1"
 	"github.com/labring/laf/core/controllers/application/resourcer"
-	"github.com/labring/laf/core/pkg/common"
 	"github.com/labring/laf/core/pkg/util"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -46,30 +29,15 @@ type ApplicationReconciler struct {
 //+kubebuilder:rbac:groups=database.laf.dev,resources=databases,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=database.laf.dev,resources=databases/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=database.laf.dev,resources=databases/finalizers,verbs=update
-//+kubebuilder:rbac:groups=database.laf.dev,resources=stores,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=database.laf.dev,resources=stores/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=database.laf.dev,resources=stores/finalizers,verbs=update
 
-//+kubebuilder:rbac:groups=oss.laf.dev,resources=buckets,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=oss.laf.dev,resources=buckets/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=oss.laf.dev,resources=buckets/finalizers,verbs=update
-//+kubebuilder:rbac:groups=oss.laf.dev,resources=stores,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=oss.laf.dev,resources=stores/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=oss.laf.dev,resources=stores/finalizers,verbs=update
+//+kubebuilder:rbac:groups=oss.laf.dev,resources=users,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=oss.laf.dev,resources=users/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=oss.laf.dev,resources=users/finalizers,verbs=update
 
 //+kubebuilder:rbac:groups=gateway.laf.dev,resources=gateways,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=gateway.laf.dev,resources=gateways/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=gateway.laf.dev,resources=gateways/finalizers,verbs=update
-//+kubebuilder:rbac:groups=gateway.laf.dev,resources=domains,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=gateway.laf.dev,resources=domains/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=gateway.laf.dev,resources=domains/finalizers,verbs=update
-//+kubebuilder:rbac:groups=gateway.laf.dev,resources=routes,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=gateway.laf.dev,resources=routes/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=gateway.laf.dev,resources=routes/finalizers,verbs=update
 
-//+kubebuilder:rbac:groups=instance.laf.dev,resources=clusters,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=instance.laf.dev,resources=clusters/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=instance.laf.dev,resources=clusters/finalizers,verbs=update
 //+kubebuilder:rbac:groups=instance.laf.dev,resources=instances,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=instance.laf.dev,resources=instances/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=instance.laf.dev,resources=instances/finalizers,verbs=update
@@ -113,15 +81,6 @@ func (r *ApplicationReconciler) apply(ctx context.Context, app *appv1.Applicatio
 			return ctrl.Result{}, err
 		}
 		g.Info("finalizer added for app")
-		return ctrl.Result{}, nil
-	}
-
-	// reconcile bundle
-	if app.Status.BundleName != app.Spec.BundleName {
-		if err := r.reconcileBundle(ctx, app); err != nil {
-			return ctrl.Result{}, err
-		}
-		g.Info("bundle reconciled")
 		return ctrl.Result{}, nil
 	}
 
@@ -372,33 +331,6 @@ func (r *ApplicationReconciler) initialize(ctx context.Context, app *appv1.Appli
 	}
 
 	return ctrl.Result{RequeueAfter: time.Second}, nil
-}
-
-// reconcileBundle reconciles the bundle of the application
-func (r *ApplicationReconciler) reconcileBundle(ctx context.Context, app *appv1.Application) error {
-	// get bundle by name
-	bundle := &appv1.Bundle{}
-	err := r.Get(ctx, client.ObjectKey{
-		Namespace: common.GetSystemNamespace(),
-		Name:      app.Spec.BundleName,
-	}, bundle)
-	if err != nil {
-		return err
-	}
-
-	// update the condition
-	condition := metav1.Condition{
-		Type:               appv1.BundleInitialized,
-		Status:             metav1.ConditionTrue,
-		Reason:             "BundleInitialized",
-		Message:            "bundle initialized",
-		LastTransitionTime: metav1.Now(),
-	}
-	util.SetCondition(&app.Status.Conditions, condition)
-	app.Status.BundleName = app.Spec.BundleName
-	app.Status.BundleSpec = bundle.Spec
-	err = r.Status().Update(ctx, app)
-	return err
 }
 
 // delete is called when the application is deleted

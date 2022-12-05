@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/labring/laf/core/controllers/application/tests/api"
-	//api2 "github.com/labring/laf/core/controllers/runtime/tests/api"
 	"github.com/labring/laf/core/pkg/common"
 	baseapi "github.com/labring/laf/core/tests/api"
 )
@@ -28,12 +27,6 @@ func TestCreateApp(t *testing.T) {
 		t.Log("create the testing namespace")
 		baseapi.EnsureNamespace(namespace)
 
-		t.Log("create the runtime")
-		//api2.CreateAppRuntime(systemNamespace, runtimeName)
-
-		t.Log("create the bundle")
-		api.CreateAppBundle(systemNamespace, bundleName)
-
 		t.Log("create the app")
 		api.CreateApplication(namespace, name, appid, runtimeName, bundleName, region)
 
@@ -46,27 +39,9 @@ func TestCreateApp(t *testing.T) {
 			t.Fatalf("ERROR: get app failed: %v", err)
 		}
 
-		t.Log("verify the runtime")
-		//if app.Status.RuntimeName != runtimeName {
-		//	t.Errorf("ERROR: runtime name expect %s got %s", runtimeName, app.Status.RuntimeName)
-		//}
-
-		//if app.Status.RuntimeSpec.Type != "node:laf" {
-		//	t.Errorf("ERROR: invalid runtime type got %s", app.Status.RuntimeSpec.Type)
-		//}
-
 		t.Log("verify the phase is running")
 		if app.Status.Phase != appv1.ApplicationStateRunning {
 			t.Errorf("ERROR: invalid app phase got %s", app.Status.Phase)
-		}
-
-		t.Log("verify the bundle")
-		if app.Status.BundleName != bundleName {
-			t.Errorf("ERROR: bundle name expect %s got %s", bundleName, app.Status.BundleName)
-		}
-
-		if app.Status.BundleSpec.DisplayName == "" {
-			t.Errorf("ERROR: bundle display name cannot be empty")
 		}
 
 		t.Log("verify the database created")
@@ -83,8 +58,8 @@ func TestCreateApp(t *testing.T) {
 			t.Errorf("ERROR: database password cannot be empty")
 		}
 
-		if database.Spec.Capacity.Storage != app.Status.BundleSpec.DatabaseCapacity {
-			t.Errorf("ERROR: database capacity expect %s got %s", app.Status.BundleSpec.DatabaseCapacity.String(), database.Spec.Capacity.Storage.String())
+		if database.Spec.Capacity.Storage != app.Spec.Bundle.DatabaseCapacity {
+			t.Errorf("ERROR: database capacity expect %s got %s", app.Spec.Bundle.DatabaseCapacity.String(), database.Spec.Capacity.Storage.String())
 		}
 
 		if database.Labels["laf.dev/appid"] != appid {
@@ -117,8 +92,8 @@ func TestCreateApp(t *testing.T) {
 			t.Errorf("ERROR: oss user password cannot be empty")
 		}
 
-		if ossUser.Spec.Capacity.Storage != app.Status.BundleSpec.StorageCapacity {
-			t.Errorf("ERROR: oss user capacity expect %s got %s", app.Status.BundleSpec.StorageCapacity.String(), ossUser.Spec.Capacity.Storage.String())
+		if ossUser.Spec.Capacity.Storage != app.Spec.Bundle.StorageCapacity {
+			t.Errorf("ERROR: oss user capacity expect %s got %s", app.Spec.Bundle.StorageCapacity.String(), ossUser.Spec.Capacity.Storage.String())
 		}
 
 		if ossUser.Labels["laf.dev/appid"] != appid {
@@ -128,29 +103,19 @@ func TestCreateApp(t *testing.T) {
 		if ossUser.OwnerReferences[0].Name != name {
 			t.Errorf("ERROR: oss user owner reference expect %s got %s", name, ossUser.OwnerReferences[0].Name)
 		}
-
-		// TODO? verify the gateway while gateway testing api supported
-		t.Log("TODO: verify the gateway")
-
 	})
 
 	t.Cleanup(func() {
-		//t.Log("clean up: delete the app")
-		//api.DeleteApplication(namespace, name)
-		//
-		//t.Log("clean up: waiting for the app to be deleted completely")
-		//api.WaitForApplicationDeleted(namespace, name)
-		//
-		//t.Log("clean up: delete the bundle")
-		//api.DeleteAppBundle(systemNamespace, bundleName)
-		//
-		//t.Log("clean up: delete the runtime")
-		//api2.DeleteAppRuntime(systemNamespace, runtimeName)
-		//
-		//t.Log("clean up: delete the namespace")
-		//baseapi.DeleteNamespace(namespace)
-		//
-		//t.Log("clean up: delete the system namespace")
-		//baseapi.DeleteNamespace(systemNamespace)
+		t.Log("clean up: delete the app")
+		api.DeleteApplication(namespace, name)
+
+		t.Log("clean up: waiting for the app to be deleted completely")
+		api.WaitForApplicationDeleted(namespace, name)
+
+		t.Log("clean up: delete the namespace")
+		baseapi.DeleteNamespace(namespace)
+
+		t.Log("clean up: delete the system namespace")
+		baseapi.DeleteNamespace(systemNamespace)
 	})
 }

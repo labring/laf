@@ -25,7 +25,7 @@ func CreateDatabase(ctx context.Context, c client.Client, schema *runtime.Scheme
 	db.Spec.Region = app.Spec.Region
 	db.Spec.Username = app.Spec.AppId
 	db.Spec.Password = common.GenerateAlphaNumericPassword(64)
-	db.Spec.Capacity.Storage = app.Status.BundleSpec.DatabaseCapacity
+	db.Spec.Capacity.Storage = app.Spec.Bundle.DatabaseCapacity
 
 	if err := controllerutil.SetControllerReference(app, &db, schema); err != nil {
 		return err
