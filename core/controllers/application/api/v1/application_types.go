@@ -17,6 +17,7 @@ limitations under the License.
 package v1
 
 import (
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -36,9 +37,6 @@ const (
 )
 
 const (
-	BundleInitialized  string = "BundleInitialized"
-	RuntimeInitialized string = "RuntimeInitialized"
-
 	DatabaseCreated      string = "DatabaseCreated"
 	ObjectStorageCreated string = "ObjectStorageCreated"
 	GatewayCreated       string = "GatewayCreated"
@@ -55,6 +53,42 @@ const (
 	ObjectStorageDeleted string = "ObjectStorageDeleted"
 	GatewayDeleted       string = "GatewayDeleted"
 )
+
+// Bundle defines the desired state of Bundle
+type Bundle struct {
+	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
+	// Important: Run "make" to regenerate code after modifying this file
+
+	// DisplayName for the bundle
+	DisplayName string `json:"displayName"`
+
+	// Request CPU for the bundle
+	RequestCPU resource.Quantity `json:"requestCPU"`
+
+	// Request Memory for the bundle
+	RequestMemory resource.Quantity `json:"requestMemory"`
+
+	// Limit CPU for the bundle
+	LimitCPU resource.Quantity `json:"limitCPU"`
+
+	// Limit Memory for the bundle
+	LimitMemory resource.Quantity `json:"limitMemory"`
+
+	// Database capacity for the bundle
+	DatabaseCapacity resource.Quantity `json:"databaseCapacity"`
+
+	// Storage capacity for the bundle
+	StorageCapacity resource.Quantity `json:"storageCapacity"`
+
+	// Network Bandwidth Outbound for the bundle
+	NetworkBandwidthOutbound resource.Quantity `json:"networkBandwidthOutbound,omitempty"`
+
+	// Network Bandwidth Inbound for the bundle
+	NetworkBandwidthInbound resource.Quantity `json:"networkBandwidthInbound,omitempty"`
+
+	// Network Traffic Outbound for the bundle
+	NetworkTrafficOutbound resource.Quantity `json:"networkTrafficOutbound"`
+}
 
 // ApplicationSpec defines the desired state of Application
 type ApplicationSpec struct {
@@ -79,31 +113,14 @@ type ApplicationSpec struct {
 	//+kubebuilder:default:=Running
 	State ApplicationState `json:"state,omitempty"`
 
-	// Bundle Name for the application
-	//+kubebuilder:validation:Required
-	BundleName string `json:"bundleName"`
-
-	// Runtime Name of the application
-	//+kubebuilder:validation:Required
-	RuntimeName string `json:"runtimeName"`
+	// Bundle of the application
+	Bundle Bundle `json:"bundle"`
 }
 
 // ApplicationStatus defines the observed state of Application
 type ApplicationStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-
-	// Bundle Name for the application
-	BundleName string `json:"bundleName"`
-
-	// BundleSpec of the application
-	BundleSpec BundleSpec `json:"bundleSpec"`
-
-	// Runtime Name for the application
-	RuntimeName string `json:"runtimeName"`
-
-	// RuntimeSpec of the application
-	//RuntimeSpec v1.RuntimeSpec `json:"runtimeSpec,omitempty"`
 
 	// State of the application
 	Phase ApplicationState `json:"state,omitempty"`

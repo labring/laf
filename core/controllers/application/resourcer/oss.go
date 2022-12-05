@@ -25,7 +25,7 @@ func CreateObjectStorageUser(ctx context.Context, c client.Client, schema *runti
 	oss.Spec.Region = app.Spec.Region
 	oss.Spec.AppId = app.Spec.AppId
 	oss.Spec.Password = common.GenerateAlphaNumericPassword(64)
-	oss.Spec.Capacity.Storage = app.Status.BundleSpec.StorageCapacity
+	oss.Spec.Capacity.Storage = app.Spec.Bundle.StorageCapacity
 
 	if err := controllerutil.SetControllerReference(app, &oss, schema); err != nil {
 		return err
