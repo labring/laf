@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AddIcon } from "@chakra-ui/icons";
 import {
@@ -18,17 +18,19 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
+import useGlobalStore from "pages/globalStore";
 
 import IconWrap from "@/components/IconWrap";
 
-import { useCreateDBMutation } from "../../service";
+import useDBMStore from "../../store";
 
-const CreateCollectionModal = (props: { collection?: any }) => {
+const CreateCollectionModal = forwardRef((props, ref) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { createDB } = useDBMStore((state) => state);
 
-  const { collection } = props;
+  const { showSuccess } = useGlobalStore();
 
-  const isEdit = !!collection;
+  const [isEdit, setIsEdit] = useState(false);
 
   type FormData = {
     name: string;
@@ -42,22 +44,33 @@ const CreateCollectionModal = (props: { collection?: any }) => {
     formState: { errors },
   } = useForm<FormData>();
 
-  const createDBMutation = useCreateDBMutation();
-
   const onSubmit = async (data: any) => {
-    await createDBMutation.mutateAsync({ name: data.name });
+    await createDB(data.name);
+    showSuccess("create success.");
     onClose();
     reset({});
   };
+
+  useImperativeHandle(ref, () => {
+    return {
+      edit: (item: any) => {
+        setIsEdit(true);
+        onOpen();
+        reset(item);
+      },
+    };
+  });
 
   return (
     <>
       <IconWrap
         size={20}
         onClick={() => {
+          setIsEdit(false);
           onOpen();
-          reset({});
-          setTimeout(() => setFocus("name"), 0);
+          setTimeout(() => {
+            setFocus("name");
+          }, 0);
         }}
       >
         <AddIcon fontSize={10} />
@@ -86,18 +99,13 @@ const CreateCollectionModal = (props: { collection?: any }) => {
           </ModalBody>
 
           <ModalFooter>
-            <Button
-              isLoading={createDBMutation.isLoading}
-              colorScheme="primary"
-              mr={3}
-              type="submit"
-              onClick={handleSubmit(onSubmit)}
-            >
+            <Button colorScheme="primary" mr={3} type="submit" onClick={handleSubmit(onSubmit)}>
               {t`Confirm`}
             </Button>
             <Button
               onClick={() => {
                 onClose();
+                reset();
               }}
             >{t`Cancel`}</Button>
           </ModalFooter>
@@ -105,7 +113,7 @@ const CreateCollectionModal = (props: { collection?: any }) => {
       </Modal>
     </>
   );
-};
+});
 
 CreateCollectionModal.displayName = "CreateModal";
 

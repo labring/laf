@@ -2,8 +2,8 @@
  * cloud functions index page
  ***************************/
 
-import React from "react";
-import { Badge, Button, Center, HStack } from "@chakra-ui/react";
+import React, { useCallback, useEffect } from "react";
+import { Badge, Button, HStack } from "@chakra-ui/react";
 import useHotKey from "hooks/useHotKey";
 import useGlobalStore from "pages/globalStore";
 
@@ -18,36 +18,45 @@ import RightPanel from "../mods/RightPanel";
 import DebugPanel from "./mods/DebugPannel";
 import DependecyPanel from "./mods/DependecePanel";
 import FunctionPanel from "./mods/FunctionPanel";
-import { useUpdateFunctionMutation } from "./service";
 
 import useFunctionStore from "./store";
 
 function FunctionPage() {
-  const store = useFunctionStore((store) => store);
-  const { currentFunction, functionCodes } = store;
+  const {
+    initFunctionPage,
+    currentFunction,
+    setCurrentFunction,
+    updateFunction,
+    updateFunctionCode,
+  } = useFunctionStore((store) => store);
 
   const { currentApp, showSuccess } = useGlobalStore((state) => state);
 
-  const updateFunctionMutation = useUpdateFunctionMutation();
-
-  useHotKey("s", async () => {
-    const res = await updateFunctionMutation.mutateAsync({
+  useHotKey("s", () => {
+    showSuccess("saved successfully");
+    updateFunction({
       description: currentFunction?.desc,
-      code: functionCodes[currentFunction?.id || ""],
+      code: currentFunction?.source.code,
       methods: currentFunction?.methods,
       websocket: currentFunction?.websocket,
       name: currentFunction?.name,
     });
-    if (!res.error) {
-      store.setCurrentFunction(res.data);
-      store.updateFunctionCode(res.data, res.data.source.code);
-      showSuccess("saved successfully");
-    }
+    setCurrentFunction(
+      Object.assign({}, currentFunction, {
+        isEdit: false,
+      }),
+    );
   });
 
   useHotKey("r", () => {
-    showSuccess("running success");
+    showSuccess("it's running");
   });
+
+  useEffect(() => {
+    initFunctionPage();
+
+    return () => {};
+  }, [initFunctionPage]);
 
   return (
     <>
@@ -61,16 +70,10 @@ function FunctionPage() {
             <div className="flex items-center">
               <FileTypeIcon type={FileType.js} />
               <span className="font-bold text-base ml-2">
-                {currentFunction?.name}
-                <span className="ml-2 text-slate-400 font-normal">
-                  {currentFunction?.desc ? currentFunction?.desc : ""}
-                </span>
+                {currentFunction?.name} &nbsp;({currentFunction?.desc})
               </span>
               <span className="ml-4 ">
-                {functionCodes[currentFunction?.id || ""] &&
-                  functionCodes[currentFunction?.id || ""] !== currentFunction?.source.code && (
-                    <Badge colorScheme="purple">Editting...</Badge>
-                  )}
+                {currentFunction?.isEdit && <Badge colorScheme="purple">Editting...</Badge>}
                 {/* <FileStatusIcon status={FileStatus.deleted} /> */}
               </span>
             </div>
@@ -102,20 +105,16 @@ function FunctionPage() {
         </div>
         <div className="flex flex-row h-full w-full">
           <div className="flex-1 border-r border-r-slate-200 overflow-hidden ">
-            {currentFunction?.name ? (
-              <FunctionEditor
-                path={currentFunction?.name || ""}
-                value={functionCodes[currentFunction.id] || currentFunction.source.code}
-                onChange={(value) => {
-                  store.updateFunctionCode(currentFunction, value || "");
-                }}
-              />
-            ) : (
-              <Center className="h-full">请创建函数</Center>
-            )}
+            <FunctionEditor
+              path={currentFunction?.name || ""}
+              value={currentFunction?.source.code || ""}
+              onChange={(value) => {
+                console.log(value);
+                updateFunctionCode(currentFunction, value || "");
+              }}
+            />
           </div>
           <div style={{ width: 550 }}>
-            {/* <div className="h-full border bg-black">1</div> */}
             <DebugPanel />
           </div>
         </div>

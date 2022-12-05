@@ -14,9 +14,9 @@ export default function BasicLayout(props: { children: ReactNode }) {
   return (
     <div>
       <Header size="lg" />
-      <div className="pb-16">{loading ? <Spinner /> : props.children}</div>
-      <div className="text-center bg-white fixed bottom-0 py-4 w-full">
-        Made with <AiFillHeart className="inline text-red-500" />️ by LaF Team
+      <div className="pb-6">{loading ? <Spinner /> : props.children}</div>
+      <div className="text-center bg-white absolute bottom-0 py-4 w-full">
+        Made <AiFillHeart className="inline text-red-500" />️ by LAF Team
       </div>
     </div>
   );
