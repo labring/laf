@@ -68,7 +68,7 @@ export class InitializerService {
         name: 'node-laf',
         type: 'node:laf',
         image: {
-          main: 'docker.io/lafyun/runtime-node:1.0-alpha.0',
+          main: 'docker.io/lafyun/runtime-node:1.0.0-alpha.0',
         },
         version: '1.0-alpha.0',
         latest: true,

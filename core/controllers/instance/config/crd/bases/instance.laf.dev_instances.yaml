@@ -61,22 +61,108 @@ spec:
                 type: string
               bundle:
                 description: Bundle of the instance
-                type: string
-              bundleNamespace:
-                type: string
-              database:
+                properties:
+                  databaseCapacity:
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: Database capacity for the bundle
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
+                  displayName:
+                    description: DisplayName for the bundle
+                    type: string
+                  limitCPU:
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: Limit CPU for the bundle
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
+                  limitMemory:
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: Limit Memory for the bundle
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
+                  networkBandwidthInbound:
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: Network Bandwidth Inbound for the bundle
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
+                  networkBandwidthOutbound:
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: Network Bandwidth Outbound for the bundle
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
+                  networkTrafficOutbound:
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: Network Traffic Outbound for the bundle
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
+                  requestCPU:
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: Request CPU for the bundle
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
+                  requestMemory:
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: Request Memory for the bundle
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
+                  storageCapacity:
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: Storage capacity for the bundle
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
+                required:
+                - databaseCapacity
+                - displayName
+                - limitCPU
+                - limitMemory
+                - networkTrafficOutbound
+                - requestCPU
+                - requestMemory
+                - storageCapacity
+                type: object
+              databaseConnectionUri:
                 description: Database of the instance
                 type: string
-              databaseNamespace:
-                type: string
               ossUser:
-                description: OssUser of the instance
-                type: string
-              ossUserNamespace:
-                type: string
-              region:
-                description: Region of the instance
-                type: string
+                description: OssAccess of the instance
+                properties:
+                  accessKey:
+                    description: AccessKey is the access key of the user
+                    type: string
+                  endpoint:
+                    description: Endpoint is the oss server endpoint.
+                    type: string
+                  internalEndpoint:
+                    description: InternalEndpoint is the internal endpoint of the
+                      oss server
+                    type: string
+                  region:
+                    description: Region of oss store.
+                    type: string
+                  secretKey:
+                    description: SecretKey is the secret key of the user
+                    type: string
+                required:
+                - region
+                type: object
               replica:
                 default: 1
                 description: Replica of instance
@@ -84,9 +170,40 @@ spec:
                 type: integer
               runtime:
                 description: Runtime of the instance
-                type: string
-              runtimeNamespace:
-                type: string
+                properties:
+                  image:
+                    description: Images of the runtime
+                    properties:
+                      init:
+                        description: Init image (e.g. docker.io/lafyun/app-service-init:latest)
+                        type: string
+                      main:
+                        description: Main image (e.g. docker.io/lafyun/app-service:latest)
+                        type: string
+                      sidecar:
+                        description: Sidecar image
+                        type: string
+                    required:
+                    - main
+                    type: object
+                  latest:
+                    description: Latest version or not
+                    type: boolean
+                  name:
+                    type: string
+                  type:
+                    description: Type of the runtime. eg. node:laf, node:tcb, go:laf,
+                      python:laf, php:laf,  etc.
+                    type: string
+                  version:
+                    description: Version of the runtime
+                    type: string
+                required:
+                - image
+                - name
+                - type
+                - version
+                type: object
               state:
                 description: State of the instance
                 enum:
@@ -104,11 +221,6 @@ spec:
                   targeted by this deployment.
                 format: int32
                 type: integer
-              clusterConfig:
-                type: string
-              clusterName:
-                description: ClusterName of instance
-                type: string
               conditions:
                 description: Conditions of the instance @see string for the list of
                   conditions
