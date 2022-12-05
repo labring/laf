@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/labring/laf/core/controllers/application/tests/api"
-	api2 "github.com/labring/laf/core/controllers/runtime/tests/api"
+	//api2 "github.com/labring/laf/core/controllers/runtime/tests/api"
 	"github.com/labring/laf/core/pkg/common"
 	baseapi "github.com/labring/laf/core/tests/api"
 )
@@ -29,7 +29,7 @@ func TestCreateApp(t *testing.T) {
 		baseapi.EnsureNamespace(namespace)
 
 		t.Log("create the runtime")
-		api2.CreateAppRuntime(systemNamespace, runtimeName)
+		//api2.CreateAppRuntime(systemNamespace, runtimeName)
 
 		t.Log("create the bundle")
 		api.CreateAppBundle(systemNamespace, bundleName)
@@ -47,13 +47,13 @@ func TestCreateApp(t *testing.T) {
 		}
 
 		t.Log("verify the runtime")
-		if app.Status.RuntimeName != runtimeName {
-			t.Errorf("ERROR: runtime name expect %s got %s", runtimeName, app.Status.RuntimeName)
-		}
+		//if app.Status.RuntimeName != runtimeName {
+		//	t.Errorf("ERROR: runtime name expect %s got %s", runtimeName, app.Status.RuntimeName)
+		//}
 
-		if app.Status.RuntimeSpec.Type != "node:laf" {
-			t.Errorf("ERROR: invalid runtime type got %s", app.Status.RuntimeSpec.Type)
-		}
+		//if app.Status.RuntimeSpec.Type != "node:laf" {
+		//	t.Errorf("ERROR: invalid runtime type got %s", app.Status.RuntimeSpec.Type)
+		//}
 
 		t.Log("verify the phase is running")
 		if app.Status.Phase != appv1.ApplicationStateRunning {

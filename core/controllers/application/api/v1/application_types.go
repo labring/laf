@@ -17,7 +17,6 @@ limitations under the License.
 package v1
 
 import (
-	v1 "github.com/labring/laf/core/controllers/runtime/api/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -104,7 +103,7 @@ type ApplicationStatus struct {
 	RuntimeName string `json:"runtimeName"`
 
 	// RuntimeSpec of the application
-	RuntimeSpec v1.RuntimeSpec `json:"runtimeSpec,omitempty"`
+	//RuntimeSpec v1.RuntimeSpec `json:"runtimeSpec,omitempty"`
 
 	// State of the application
 	Phase ApplicationState `json:"state,omitempty"`

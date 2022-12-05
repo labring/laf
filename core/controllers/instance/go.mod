@@ -86,12 +86,9 @@ require (
 require (
 	github.com/labring/laf/core v0.0.0-00010101000000-000000000000
 	github.com/labring/laf/core/controllers/application v0.0.0-00010101000000-000000000000
-	github.com/labring/laf/core/controllers/runtime v0.0.0-00010101000000-000000000000
 	k8s.io/api v0.25.1
 )
 
 replace github.com/labring/laf/core => ./../..
-
-replace github.com/labring/laf/core/controllers/runtime => ./../runtime
 
 replace github.com/labring/laf/core/controllers/application => ./../application
