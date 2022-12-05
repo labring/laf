@@ -17,7 +17,7 @@ jobs:
   controllers-build:
     runs-on: ubuntu-latest
     strategy:
-      max-parallel:
+      max-parallel: 2
       matrix:
         module: [application, database, gateway, oss]
     steps:
