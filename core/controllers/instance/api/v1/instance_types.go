@@ -1,33 +1,12 @@
-/*
-Copyright 2022.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 package v1
 
 import (
-	"k8s.io/apimachinery/pkg/api/resource"
+	appv1 "github.com/labring/laf/core/controllers/application/api/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
-type Quota struct {
-	Cpu    resource.Quantity `json:"cpu,omitempty"`
-	Memory resource.Quantity `json:"memory,omitempty"`
-}
 
 type InstanceState string
 
@@ -37,7 +16,6 @@ const (
 )
 
 const (
-	ClusterSelected              string = "clusterSelected"
 	DeploymentAndServiceCreating string = "DeploymentAndServiceCreating"
 	DeploymentAndServiceCreated  string = "DeploymentAndServiceCreated"
 	Ready                        string = "Ready"
@@ -45,14 +23,62 @@ const (
 	DeploymentAndServiceStopped  string = "DeploymentAndServiceStopped"
 )
 
+type RuntimeImageGroup struct {
+	// Main image (e.g. docker.io/lafyun/app-service:latest)
+	Main string `json:"main"`
+
+	// Sidecar image
+	Sidecar string `json:"sidecar,omitempty"`
+
+	// Init image (e.g. docker.io/lafyun/app-service-init:latest)
+	Init string `json:"init,omitempty"`
+}
+
+// Runtime defines the desired state of Runtime
+type Runtime struct {
+	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
+	// Important: Run "make" to regenerate code after modifying this file
+
+	Name string `json:"name"`
+
+	// Type of the runtime. eg. node:laf, node:tcb, go:laf, python:laf, php:laf,  etc.
+	Type string `json:"type"`
+
+	// Images of the runtime
+	Image RuntimeImageGroup `json:"image"`
+
+	// Version of the runtime
+	Version string `json:"version"`
+
+	// Latest version or not
+	Latest bool `json:"latest,omitempty"`
+}
+
+type OSSAccess struct {
+
+	// AccessKey is the access key of the user
+	AccessKey string `json:"accessKey,omitempty"`
+
+	// SecretKey is the secret key of the user
+	SecretKey string `json:"secretKey,omitempty"`
+
+	// Endpoint is the oss server endpoint.
+	//+kubebuilder:validation:Required
+	Endpoint string `json:"endpoint,omitempty"`
+
+	// InternalEndpoint is the internal endpoint of the oss server
+	//+kubebuilder:validation:Required
+	InternalEndpoint string `json:"internalEndpoint,omitempty"`
+
+	// Region of oss store.
+	//+kubebuilder:validation:Required
+	Region string `json:"region"`
+}
+
 // InstanceSpec defines the desired state of Instance
 type InstanceSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-
-	// Region of the instance
-	//+kubebuilder:validation:Required
-	Region string `json:"region,omitempty"`
 
 	// AppId of the instance
 	//+kubebuilder:validation:Required
@@ -60,35 +86,23 @@ type InstanceSpec struct {
 
 	// Bundle of the instance
 	//+kubebuilder:validation:Required
-	Bundle string `json:"bundle,omitempty"`
-
-	//+kubebuilder:validation:Required
-	BundleNamespace string `json:"bundleNamespace,omitempty"`
+	Bundle appv1.Bundle `json:"bundle,omitempty"`
 
 	// Runtime of the instance
 	//+kubebuilder:validation:Required
-	RuntimeName string `json:"runtime,omitempty"`
-
-	//+kubebuilder:validation:Required
-	RuntimeNamespace string `json:"runtimeNamespace,omitempty"`
+	Runtime Runtime `json:"runtime,omitempty"`
 
 	// Database of the instance
 	//+kubebuilder:validation:Required
-	Database string `json:"database,omitempty"`
+	DatabaseConnectionUri string `json:"databaseConnectionUri,omitempty"`
 
+	// OssAccess of the instance
 	//+kubebuilder:validation:Required
-	DatabaseNamespace string `json:"databaseNamespace,omitempty"`
-
-	// OssUser of the instance
-	//+kubebuilder:validation:Required
-	OssUser string `json:"ossUser,omitempty"`
-
-	//+kubebuilder:validation:Required
-	OssUserNamespace string `json:"ossUserNamespace,omitempty"`
+	OssAccess OSSAccess `json:"ossUser,omitempty"`
 
 	// Replica of instance
 	//+kubebuilder:default=1
-	Replica *int32 `json:"replica,omitempty"`
+	Replica int32 `json:"replica,omitempty"`
 
 	// State of the instance
 	//+kubebuilder:validation:Enum=Running;Stopped
@@ -100,11 +114,6 @@ type InstanceSpec struct {
 type InstanceStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-
-	//ClusterName of instance
-	ClusterName string `json:"clusterName,omitempty"`
-
-	ClusterConfig string `json:"clusterConfig,omitempty"`
 
 	DeploymentName string `json:"DeploymentName,omitempty"`
 

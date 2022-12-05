@@ -1,9 +1,9 @@
 package driver
 
 import (
-	"encoding/base64"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/tools/clientcmd"
+	"k8s.io/client-go/rest"
+
 	//
 	// Uncomment to load all auth plugins
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
@@ -15,22 +15,14 @@ import (
 )
 
 // GetKubernetesClient returns a kubernetes client
-func GetKubernetesClient(clientConf string) (*kubernetes.Clientset, error) {
-	bs64, err := base64.StdEncoding.DecodeString(clientConf)
-	if err != nil {
-		return nil, err
-	}
-	clientConfig, err := clientcmd.NewClientConfigFromBytes(bs64)
-	if err != nil {
-		return nil, err
-	}
-
-	// create the client
-	config, err := clientConfig.ClientConfig()
+func GetKubernetesClient() (*kubernetes.Clientset, error) {
+	// creates the in-cluster config
+	config, err := rest.InClusterConfig()
 	if err != nil {
 		return nil, err
 	}
 
+	// creates the clientset
 	client, err := kubernetes.NewForConfig(config)
 	if err != nil {
 		return nil, err

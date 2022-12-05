@@ -3,12 +3,12 @@ name: Build Controllers Docker Image
 on:
   workflow_dispatch:
   push:
-    branches: [ "main", "fix-workflow"]
+    branches: ["main", "fix-workflow"]
     paths:
       - "core/controllers/**"
       - ".github/workflows/build_controllers.yml"
       - "!**/*.md"
-      
+
 env:
   # Common versions
   GO_VERSION: "1.19"
@@ -17,9 +17,9 @@ jobs:
   controllers-build:
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 2
+      max-parallel:
       matrix:
-        module: [ application, database, gateway, instance, oss, runtime ]
+        module: [application, database, gateway, oss]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -40,7 +40,7 @@ jobs:
           key: ${{ runner.os }}-golang-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-golang-
-            
+
       - name: Build ${{ matrix.module }} amd64 & arm64
         working-directory: core/controllers/${{ matrix.module }}
         run: |
@@ -84,7 +84,7 @@ jobs:
           .
 
   trigger-workflow-cluster-image:
-    needs: [ controllers-build ]
+    needs: [controllers-build]
     runs-on: ubuntu-latest
     steps:
       - name: Trigger cluster image workflow

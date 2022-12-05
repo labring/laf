@@ -19,21 +19,6 @@ func TestCreateInstance(t *testing.T) {
 		t.Log("ensure namespace")
 		baseapi.EnsureNamespace(namespace)
 
-		t.Log("get your local kube config")
-
-		t.Logf("create a cluster")
-		api.CreateCluster(namespace, clusterName, region)
-
-		t.Log("verify the cluster is created")
-		cluster, err := api.GetCluster(namespace, clusterName)
-		if err != nil {
-			t.Fatalf("failed to get cluster: %v", err)
-		}
-
-		if cluster.Name != clusterName {
-			t.Fatalf("failed to create cluster")
-		}
-
 		expect := instancev1.InstanceStateRunning
 		t.Log("create a instance")
 		api.CreateInstance(namespace, instanceName, region, appId, string(expect))
@@ -58,7 +43,6 @@ func TestCreateInstance(t *testing.T) {
 	})
 	t.Cleanup(func() {
 		t.Log("clean up")
-		api.DeleteCluster(namespace, clusterName)
 		api.DeleteInstance(namespace, instanceName)
 	})
 }
