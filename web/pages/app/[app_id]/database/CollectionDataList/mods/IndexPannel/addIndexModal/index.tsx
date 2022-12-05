@@ -29,7 +29,7 @@ function AddIndexModal() {
         <AddIcon color="white" className="mr-2" />
         添加索引
       </Button>
-      <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>创建索引</ModalHeader>

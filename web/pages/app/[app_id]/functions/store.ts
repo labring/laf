@@ -1,5 +1,9 @@
 import useGlobalStore from "pages/globalStore";
-import { FunctionsControllerCreate, FunctionsControllerFindAll } from "services/v1/apps";
+import {
+  FunctionsControllerCreate,
+  FunctionsControllerFindAll,
+  FunctionsControllerUpdate,
+} from "services/v1/apps";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
@@ -8,25 +12,18 @@ import request from "@/utils/request";
 
 export type TFunction =
   | {
-      apiVersion: string;
-      kind: string;
-      metadata: {
-        creationTimestamp: string;
-        generation: number;
-        name: string;
-        namespace: string;
-        resourceVersion: string;
-        uid: string;
-      };
-      spec: {
-        description: string;
-        methods: string[];
-        source: {
-          codes: string;
-          version: number;
-        };
-        websocket: boolean;
-      };
+      id: string;
+      appid: string;
+      name: string;
+      source: { code: string; compiled: string; uri: any; version: number; hash: any; lang: any };
+      desc: string;
+      tags: any[];
+      websocket: boolean;
+      methods: string[];
+      createdAt: string;
+      updatedAt: string;
+      createdBy: string;
+      isEdit?: boolean;
     }
   | undefined;
 
@@ -40,12 +37,15 @@ export type TPackage =
 type State = {
   currentFunction: TFunction;
   favFunctoinList: any[];
-  allFunctionList?: TFunction[];
+  allFunctionList: TFunction[];
   allPackages?: TPackage[];
 
-  initFunctionPage: () => void;
+  initFunctionPage: (current?: TFunction) => Promise<void>;
 
   createFunction: (values: any) => Paths.FunctionsControllerCreate.Responses;
+  updateFunction: (values: TFunction) => Paths.FunctionsControllerCreate.Responses;
+
+  updateFunctionCode: (current: TFunction, codes: string) => void;
 
   getPacakges: () => void;
 
@@ -61,14 +61,18 @@ const useFunctionStore = create<State>()(
       allFunctionList: [],
       allPackages: [],
 
-      initFunctionPage: async () => {
+      initFunctionPage: async (current: TFunction) => {
         const globalStore = useGlobalStore.getState();
         const res = await FunctionsControllerFindAll({
           appid: globalStore.currentApp,
         });
+
+        const data = res.data || [];
         set((state) => {
-          state.allFunctionList = res.data.items;
-          state.currentFunction = res.data.items[0];
+          state.allFunctionList = data;
+          state.currentFunction = current
+            ? res.data.find((item: TFunction) => item?.name === current?.name)
+            : data[0];
         });
       },
 
@@ -77,7 +81,18 @@ const useFunctionStore = create<State>()(
           appid: useGlobalStore.getState().currentApp,
           ...values,
         });
-        get().initFunctionPage();
+        get().initFunctionPage(values);
+        return res;
+      },
+
+      updateFunction: async (values) => {
+        const res = await FunctionsControllerUpdate({
+          appid: useGlobalStore.getState().currentApp,
+          ...values,
+        });
+
+        get().initFunctionPage(values);
+        setTimeout(() => {}, 100);
         return res;
       },
 
@@ -85,6 +100,19 @@ const useFunctionStore = create<State>()(
         const res = await request.get("/api/packages");
         set((state) => {
           state.allPackages = res.data;
+        });
+      },
+
+      updateFunctionCode: async (current, codes) => {
+        set((state) => {
+          state.allFunctionList.map((item) => {
+            console.log(111, item);
+            if (item?.name === current?.name) {
+              item!.source.code = codes;
+              item!.isEdit = true;
+              state.currentFunction = item;
+            }
+          });
         });
       },
 

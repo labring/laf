@@ -5,7 +5,7 @@
 import React, { useRef, useState } from "react";
 import { AiOutlineFilter } from "react-icons/ai";
 import { EditIcon, HamburgerIcon, Search2Icon, SunIcon } from "@chakra-ui/icons";
-import { calc, HStack, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
+import { HStack, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
@@ -87,12 +87,12 @@ export default function FunctionList() {
 
         <SectionList style={{ height: "calc(100vh - 400px)", overflowY: "auto" }}>
           {(store.allFunctionList || [])
-            .filter((item: TFunction) => item?.metadata?.name.includes(keywords))
+            .filter((item: TFunction) => item?.name.includes(keywords))
             .map((func) => {
               return (
                 <SectionList.Item
-                  isActive={func?.metadata.name === store.currentFunction?.metadata.name}
-                  key={func?.metadata.name || ""}
+                  isActive={func?.name === store.currentFunction?.name}
+                  key={func?.name || ""}
                   className="group"
                   onClick={() => {
                     store.setCurrentFunction(func);
@@ -100,7 +100,7 @@ export default function FunctionList() {
                 >
                   <div>
                     <FileTypeIcon type={FileType.js} />
-                    <span className="ml-2 text-black">{func?.metadata.name}</span>
+                    <span className="ml-2 text-black">{func?.name}</span>
                   </div>
                   <div className="hidden group-hover:block">
                     <EditIcon

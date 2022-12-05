@@ -1,29 +1,40 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Editor, { useMonaco } from "@monaco-editor/react";
 
-export default function FunctionEditor(props: { value: string }) {
+import { globalDefinition } from "./globalDefinition";
+
+export default function FunctionEditor(props: {
+  value: string;
+  path: string;
+  onChange: (value: string | undefined) => void;
+}) {
   const { value } = props;
   const monaco = useMonaco();
 
-  monaco?.editor.defineTheme("lafEditorTheme", {
-    base: "vs",
-    inherit: true,
-    rules: [],
-    colors: {
-      "editorLineNumber.foreground": "#aaa",
-      "editorOverviewRuler.border": "#fff",
-      "editor.lineHighlightBackground": "#F5F6F8",
-      "scrollbarSlider.background": "#E8EAEC",
-      "editorIndentGuide.activeBackground": "#ddd",
-      "editorIndentGuide.background": "#eee",
-    },
-  });
+  function handleEditorWillMount(monaco: any) {
+    monaco?.editor.defineTheme("lafEditorTheme", {
+      base: "vs",
+      inherit: true,
+      rules: [],
+      colors: {
+        "editorLineNumber.foreground": "#aaa",
+        "editorOverviewRuler.border": "#fff",
+        "editor.lineHighlightBackground": "#F5F6F8",
+        "scrollbarSlider.background": "#E8EAEC",
+        "editorIndentGuide.activeBackground": "#ddd",
+        "editorIndentGuide.background": "#eee",
+      },
+    });
 
-  useEffect(() => {
-    setTimeout(() => {
-      monaco?.editor.setTheme("lafEditorTheme");
-    }, 0);
-  }, [monaco]);
+    monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
+    const libSource = globalDefinition;
+    const libUri = "ts:filename/global.d.ts";
+    monaco.languages.typescript.javascriptDefaults.addExtraLib(libSource, libUri);
+
+    if (!monaco.editor.getModels().length) {
+      monaco.editor.createModel(libSource, "typescript", monaco.Uri.parse(libUri));
+    }
+  }
 
   return (
     <Editor
@@ -41,8 +52,16 @@ export default function FunctionEditor(props: { value: string }) {
         scrollBeyondLastLine: false,
       }}
       height="100%"
-      defaultLanguage="javascript"
-      value={value}
+      defaultLanguage="typescript"
+      beforeMount={handleEditorWillMount}
+      path={props.path}
+      onMount={(editor, monaco) => {
+        monaco.editor.setTheme("lafEditorTheme");
+      }}
+      defaultValue={value}
+      onChange={(value, event) => {
+        props.onChange && props.onChange(value);
+      }}
     />
   );
 }
