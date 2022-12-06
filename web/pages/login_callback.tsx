@@ -2,14 +2,14 @@ import React from "react";
 import { Center, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { AppControllerCode2token } from "services/v1/code2token";
+import { AuthControllerCode2token } from "services/v1/code2token";
 
 export default function LoginCallBack() {
   const router = useRouter();
   const { code } = router.query;
 
   const tokenRes = useQuery(["tokenRes"], () => {
-    return AppControllerCode2token({
+    return AuthControllerCode2token({
       code,
     });
   });

@@ -35,7 +35,7 @@ function CreateBucketModal() {
 
   return (
     <>
-      <IconWrap size={20} onClick={onOpen}>
+      <IconWrap size={20} onClick={onOpen} tooltip="创建 Bucket">
         <AddIcon fontSize={10} />
       </IconWrap>
 

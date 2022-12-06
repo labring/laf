@@ -32,13 +32,13 @@ export default function FunctionList() {
     <Panel
       title={t`FunctionList`}
       actions={[
-        <IconWrap tooltip="dark mode" key="change_theme" onClick={() => {}}>
-          <SunIcon fontSize={12} />
-        </IconWrap>,
+        // <IconWrap tooltip="dark mode" key="change_theme" onClick={() => {}}>
+        //   <SunIcon fontSize={12} />
+        // </IconWrap>,
         <CreateModal ref={createModalRef} key="create_modal" />,
-        <IconWrap key="options" onClick={() => {}}>
-          <HamburgerIcon fontSize={12} />
-        </IconWrap>,
+        // <IconWrap key="options" onClick={() => {}}>
+        //   <HamburgerIcon fontSize={12} />
+        // </IconWrap>,
       ]}
     >
       <div className="border-b border-slate-300">

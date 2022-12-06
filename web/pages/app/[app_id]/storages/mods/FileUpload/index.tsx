@@ -1,15 +1,7 @@
-import React, { useRef } from "react";
-import { useController, useForm } from "react-hook-form";
-import { FiFile } from "react-icons/fi";
+import React from "react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
   Button,
-  FormControl,
-  FormLabel,
-  Icon,
-  Input,
-  InputGroup,
-  InputLeftElement,
   Menu,
   MenuButton,
   MenuItem,
@@ -22,44 +14,10 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
-const FileUploadForm = ({ name, acceptedFileTypes, children, isRequired = false }: any) => {
-  const inputRef = useRef();
-  const { control } = useForm();
+import FileUpload from "@/components/FileUplaod";
 
-  const {
-    field: { ref, value, ...inputProps },
-  } = useController({
-    name,
-    control,
-    rules: { required: isRequired },
-  });
-
-  return (
-    <FormControl isRequired>
-      <FormLabel htmlFor="writeUpFile">{children}</FormLabel>
-      <InputGroup>
-        <InputLeftElement pointerEvents="none" children={<Icon as={FiFile} />} />
-        <input
-          type="file"
-          accept={acceptedFileTypes}
-          name={name}
-          ref={inputRef}
-          {...inputProps}
-          inputRef={ref}
-          webkitdirectory
-          directory
-          multiple
-          style={{ display: "none" }}
-        ></input>
-        <Input onClick={() => inputRef.current.click()} value={value} />
-      </InputGroup>
-    </FormControl>
-  );
-};
-
-function FileUpload() {
+function E() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const initialRef = React.useRef(null);
 
   return (
     <>
@@ -73,13 +31,17 @@ function FileUpload() {
         </MenuList>
       </Menu>
 
-      <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} size="lg">
+      <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Upload File</ModalHeader>
           <ModalCloseButton />
           <div className="p-6">
-            {FileUploadForm({ name: "writeUpFile", acceptedFileTypes: "*", children: "上传文件" })}
+            <FileUpload
+              onUpload={(files) => {
+                console.log(123, files);
+              }}
+            />
           </div>
         </ModalContent>
       </Modal>
@@ -87,4 +49,4 @@ function FileUpload() {
   );
 }
 
-export default FileUpload;
+export default E;

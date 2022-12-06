@@ -60,6 +60,7 @@ const AddDepenceModal = forwardRef((_, ref) => {
   return (
     <>
       <IconWrap
+        tooltip="添加依赖"
         onClick={() => {
           setItem({
             name: "",

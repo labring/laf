@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import { CopyIcon, Search2Icon } from "@chakra-ui/icons";
+import { CopyIcon, DeleteIcon, Search2Icon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 
 import CopyText from "@/components/CopyText";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
+import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
 
 import LeftPanel from "../../mods/LeftPanel";
 import CreateCollectionModal from "../mods/CreateCollectionModal";
+import DeleteCollectionModal from "../mods/DeleteCollectionModal";
 import useDBMStore from "../store";
 
 export default function CollectionListPanel() {
@@ -54,8 +56,11 @@ export default function CollectionListPanel() {
                       <FileTypeIcon type={FileType.db} />
                       <span className="ml-2 text-base">{db.name}</span>
                     </div>
-                    <div className="hidden group-hover:block">
-                      <CopyText text={db.name} tip="名称复制成功" />
+                    <div className="invisible flex group-hover:visible">
+                      <IconWrap tooltip="复制">
+                        <CopyText text={db.name} tip="名称复制成功" />
+                      </IconWrap>
+                      <DeleteCollectionModal database={db} />
                     </div>
                   </div>
                 </SectionList.Item>

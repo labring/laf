@@ -55,16 +55,19 @@ const CreateAppModal = forwardRef((props, ref) => {
     },
   });
 
-  const { showSuccess } = useGlobalStore();
+  const { showSuccess, showError } = useGlobalStore();
 
   const appCreateMutaion = useMutation((params: any) => ApplicationsControllerCreate(params), {
-    onSuccess: () => {
-      onClose();
-
-      setTimeout(() => {
-        showSuccess("添加成功");
-      }, 100);
-      queryClient.invalidateQueries(["appListQuery"]);
+    onSuccess: (data) => {
+      if (!data.error) {
+        onClose();
+        setTimeout(() => {
+          showSuccess("添加成功");
+        }, 100);
+        queryClient.invalidateQueries(["appListQuery"]);
+      } else {
+        showError(data.error);
+      }
     },
   });
 

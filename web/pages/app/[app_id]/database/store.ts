@@ -1,5 +1,9 @@
 import useGlobalStore from "pages/globalStore";
-import { CollectionsControllerCreate, CollectionsControllerFindAll } from "services/v1/apps";
+import {
+  CollectionsControllerCreate,
+  CollectionsControllerFindAll,
+  CollectionsControllerRemove,
+} from "services/v1/apps";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
@@ -23,6 +27,7 @@ type State = {
   initDBPage: () => void;
   createDB: (name: string) => void;
 
+  deleteDB: (name: string) => Promise<Paths.CollectionsControllerRemove.Responses>;
   setCurrentDB: (currentDB: TDB) => void;
 
   currentData?: any;
@@ -60,6 +65,16 @@ const useDBMStore = create<State>()(
         });
 
         get().initDBPage();
+      },
+
+      deleteDB: async (name: string) => {
+        const globalStore = useGlobalStore.getState();
+
+        const res = await CollectionsControllerRemove({
+          appid: globalStore.currentApp,
+          name,
+        });
+        return res;
       },
 
       setCurrentDB: async (currentDB) => {

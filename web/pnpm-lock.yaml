@@ -11,6 +11,7 @@ specifiers:
   '@lingui/react': ^3.14.0
   '@monaco-editor/react': ^4.4.6
   '@tanstack/react-query': ^4.13.0
+  '@types/lodash': ^4.14.191
   '@types/node': 18.11.9
   '@types/react': 18.0.24
   '@types/react-dom': 18.0.8
@@ -26,6 +27,7 @@ specifiers:
   formik: ^2.2.9
   framer-motion: ^6.5.1
   immer: ^9.0.16
+  lodash: ^4.17.21
   make-plural: ^7.1.0
   next: 12.3.1
   postcss: ^8.4.18
@@ -57,6 +59,7 @@ dependencies:
   formik: 2.2.9_react@18.2.0
   framer-motion: 6.5.1_biqbaboplfbrettd7655fr4n2y
   immer: 9.0.16
+  lodash: 4.17.21
   make-plural: 7.2.0
   next: 12.3.1_m5sxuueb27gk6ddc5gums6vtgq
   react: 18.2.0
@@ -69,6 +72,7 @@ dependencies:
   zustand: 4.1.4_immer@9.0.16+react@18.2.0
 
 devDependencies:
+  '@types/lodash': 4.14.191
   '@types/node': 18.11.9
   '@types/react': 18.0.24
   '@types/react-dom': 18.0.8
@@ -1901,12 +1905,11 @@ packages:
   /@types/lodash.mergewith/4.6.6:
     resolution: {integrity: sha512-RY/8IaVENjG19rxTZu9Nukqh0W2UrYgmBj5sdns4hWRZaV8PqR7wIKHFKzvOTjo4zVRV7sVI+yFhAJql12Kfqg==}
     dependencies:
-      '@types/lodash': 4.14.189
+      '@types/lodash': 4.14.191
     dev: false
 
-  /@types/lodash/4.14.189:
-    resolution: {integrity: sha512-kb9/98N6X8gyME9Cf7YaqIMvYGnBSWqEci6tiettE6iJWH1XdJz/PO8LB0GtLCG7x8dU3KWhZT+lA1a35127tA==}
-    dev: false
+  /@types/lodash/4.14.191:
+    resolution: {integrity: sha512-BdZ5BCCvho3EIXw6wUCXHe7rS53AIDPLE+JzwgT+OsJk53oBfbSmZZ7CX4VaRoN78N+TJpFi9QPlfIVNmJYWxQ==}
 
   /@types/node/18.11.9:
     resolution: {integrity: sha512-CRpX21/kGdzjOpFsZSkcrXMGIBWMGNIHXXBVFSH+ggkftxg+XYP20TESbh+zFvFj3EQOl5byk0HTRn1IL6hbqg==}

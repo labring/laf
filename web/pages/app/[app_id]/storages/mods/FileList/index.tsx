@@ -8,7 +8,7 @@ import PanelHeader from "@/components/Panel/Header";
 
 import useStorageStore from "../../store";
 import CreateFolderModal from "../CreateFolderModal";
-import FileUpload from "../FileUpload";
+import E from "../FileUpload";
 import HostingDrawer from "../HostingDrawer";
 
 export default function FileList() {
@@ -24,7 +24,7 @@ export default function FileList() {
     <RightPanel>
       <PanelHeader>
         <HStack spacing={2}>
-          <FileUpload />
+          <E />
           <CreateFolderModal />
           <HostingDrawer />
         </HStack>
