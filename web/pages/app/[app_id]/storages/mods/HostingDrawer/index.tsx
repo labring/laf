@@ -1,4 +1,5 @@
 import React from "react";
+import { useForm } from "react-hook-form";
 import {
   Button,
   Drawer,
@@ -15,12 +16,10 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
-import { Field, Formik } from "formik";
 
 function DrawerExample() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const btnRef = React.useRef();
-  const formRef = React.useRef(null);
+  const { register, handleSubmit } = useForm();
 
   return (
     <>
@@ -34,47 +33,60 @@ function DrawerExample() {
           <DrawerCloseButton />
           <DrawerHeader>网站托管</DrawerHeader>
 
-          <Formik
-            initialValues={{
-              name: "",
-            }}
-            onSubmit={(values) => {}}
-          >
-            {({ handleSubmit, errors, touched }) => (
-              <form ref={formRef} onSubmit={handleSubmit}>
-                <DrawerBody pb={6}>
-                  <VStack spacing={6} align="flex-start">
-                    <FormControl>
-                      <FormLabel htmlFor="name">网站名称</FormLabel>
-                      <Field as={Input} id="name" name="name" variant="filled" />
-                    </FormControl>
+          <DrawerBody pb={6}>
+            <VStack spacing={6} align="flex-start">
+              <FormControl isRequired>
+                <FormLabel htmlFor="siteName">网站名称</FormLabel>
+                <Input
+                  {...register("siteName", {
+                    required: true,
+                  })}
+                  id="siteName"
+                  variant="filled"
+                />
+              </FormControl>
 
-                    <FormControl>
-                      <FormLabel htmlFor="name">Bucket</FormLabel>
-                      <Field as={Input} id="name" name="name" variant="filled" />
-                    </FormControl>
+              <FormControl isRequired>
+                <FormLabel htmlFor="bucketName">Bucket</FormLabel>
+                <Input
+                  {...register("bucketName", {
+                    required: true,
+                  })}
+                  id="name"
+                  variant="filled"
+                />
+              </FormControl>
 
-                    <FormControl>
-                      <FormLabel htmlFor="name">域名</FormLabel>
-                      <Field as={Input} id="name" name="name" variant="filled" />
-                    </FormControl>
+              <FormControl isRequired>
+                <FormLabel htmlFor="domainName">域名</FormLabel>
+                <Input
+                  {...register("domainName", {
+                    required: true,
+                  })}
+                  id="domainName"
+                  variant="filled"
+                />
+              </FormControl>
 
-                    <FormControl>
-                      <FormLabel htmlFor="name">自定义域名</FormLabel>
-                      <Field as={Input} id="name" name="name" variant="filled" />
-                    </FormControl>
-                  </VStack>
-                </DrawerBody>
+              <FormControl isRequired>
+                <FormLabel htmlFor="customDomain">自定义域名</FormLabel>
+                <Input
+                  {...register("customDomain", {
+                    required: true,
+                  })}
+                  id="customDomain"
+                  variant="filled"
+                />
+              </FormControl>
+            </VStack>
+          </DrawerBody>
 
-                <DrawerFooter>
-                  <Button variant="outline" mr={3} onClick={onClose}>
-                    {t`Cancel`}
-                  </Button>
-                  <Button colorScheme="blue">{t`Confirm`}</Button>
-                </DrawerFooter>
-              </form>
-            )}
-          </Formik>
+          <DrawerFooter>
+            <Button variant="outline" mr={3} onClick={onClose}>
+              {t`Cancel`}
+            </Button>
+            <Button colorScheme="blue" onClick={handleSubmit(() => {})}>{t`Confirm`}</Button>
+          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </>
