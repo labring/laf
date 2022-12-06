@@ -11,7 +11,6 @@ import SectionList from "@/components/SectionList";
 import useStorageStore, { TStorage } from "../../store";
 import CreateBucketModal from "../CreateBucketModal";
 import DeleteBucketModal from "../DeleteBucketModal";
-import EditBucketModal from "../EditBucketModal";
 
 export default function StorageListPanel() {
   const store = useStorageStore((store) => store);
@@ -51,7 +50,7 @@ export default function StorageListPanel() {
                   </div>
                 </div>
                 <div className="invisible flex group-hover:visible">
-                  <EditBucketModal storage={storage} />
+                  <CreateBucketModal storage={storage} />
                   <DeleteBucketModal storage={storage} />
                 </div>
               </SectionList.Item>

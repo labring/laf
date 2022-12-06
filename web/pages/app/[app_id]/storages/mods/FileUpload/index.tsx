@@ -39,7 +39,7 @@ function E() {
           <div className="p-6">
             <FileUpload
               onUpload={(files) => {
-                console.log(123, files);
+                console.log(files);
               }}
             />
           </div>

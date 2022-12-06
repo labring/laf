@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Input, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import { Button, Input, Kbd, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 
 import JsonEditor from "@/components/Editor/JsonEditor";
 import PanelHeader from "@/components/Panel/Header";
@@ -20,13 +20,14 @@ export default function DebugPanel() {
           <TabPanel padding={0} h="full">
             <div className="flex flex-col h-full">
               <div className="flex-1 border-r-slate-300 flex flex-col">
-                <div className="flex py-6 px-2 ">
-                  <Button size="xs" className="mr-2">
+                <div className="flex py-6 px-2 items-center">
+                  <Button size="sm" className="mr-2">
                     GET
                   </Button>
                   <Input
-                    size="xs"
+                    size="sm"
                     readOnly
+                    rounded={4}
                     variant="filled"
                     value={
                       currentFunction?.name
@@ -36,7 +37,7 @@ export default function DebugPanel() {
                   />
                   <Button
                     style={{ borderRadius: 2 }}
-                    size="xs"
+                    size="sm"
                     px="4"
                     className="ml-2"
                     onClick={() => {}}
