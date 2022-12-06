@@ -1,8 +1,0 @@
-apiVersion: application.laf.dev/v1
-kind: CreationForm
-metadata:
-  name: creationform-sample
-spec:
-  displayName: "Sample Application Name"
-  bundleName: "bundle-sample"
-  runtimeName: "runtime-sample"
