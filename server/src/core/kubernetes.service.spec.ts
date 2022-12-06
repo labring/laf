@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { ResourceLabels } from '../constants'
-import { Application, ApplicationState } from './api/application.cr'
+import { Bucket, BucketPolicy } from './api/bucket.cr'
 import { KubernetesService } from './kubernetes.service'
 
 let service: KubernetesService
@@ -75,9 +75,9 @@ describe.skip('list custom objects with label', () => {
   it('should be able to list custom objects with label', async () => {
     const userid = 'test-user-id'
     const res = await service.customObjectApi.listClusterCustomObject(
-      Application.GVK.group,
-      Application.GVK.version,
-      Application.GVK.plural,
+      Bucket.GVK.group,
+      Bucket.GVK.version,
+      Bucket.GVK.plural,
       undefined,
       undefined,
       undefined,
@@ -93,17 +93,17 @@ describe.skip('patch custom objects', () => {
     const name = '1i43zq'
     const namespace = name
     const res = await service.customObjectApi.getNamespacedCustomObject(
-      Application.GVK.group,
-      Application.GVK.version,
+      Bucket.GVK.group,
+      Bucket.GVK.version,
       namespace,
-      Application.GVK.plural,
+      Bucket.GVK.plural,
       name,
     )
 
-    const data = res.body as Application
+    const data = res.body as Bucket
     data.spec = {
       ...data.spec,
-      state: ApplicationState.ApplicationStateRunning,
+      policy: BucketPolicy.Public,
     }
 
     const res2 = await service.patchCustomObject(data).catch((err) => {
@@ -118,14 +118,14 @@ describe.skip('delete custom objects', () => {
     const name = 'efme9x'
     const namespace = name
     const res = await service.customObjectApi.getNamespacedCustomObject(
-      Application.GVK.group,
-      Application.GVK.version,
+      Bucket.GVK.group,
+      Bucket.GVK.version,
       namespace,
-      Application.GVK.plural,
+      Bucket.GVK.plural,
       name,
     )
 
-    const data = res.body as Application
+    const data = res.body as Bucket
 
     const res2 = await service.deleteCustomObject(data)
     console.log('deleted', res2)

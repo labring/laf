@@ -4,12 +4,46 @@ import { KubernetesService } from '../core/kubernetes.service'
 import { Database } from './api/database.cr'
 import { MongoClient } from 'mongodb'
 import * as assert from 'node:assert'
+import { Bundle, Application } from '@prisma/client'
+import { MB, ResourceLabels } from 'src/constants'
+import { GenerateAlphaNumericPassword } from 'src/common/random'
+import { toQuantityString } from 'src/common/types'
 
 @Injectable()
 export class DatabaseCoreService {
   private readonly logger = new Logger(DatabaseCoreService.name)
 
   constructor(private readonly k8sService: KubernetesService) {}
+
+  /**
+   * Create app database
+   * @param app
+   * @param bundle
+   * @returns
+   */
+  async create(app: Application, bundle: Bundle) {
+    const appid = app.appid
+    const namespace = GetApplicationNamespaceById(appid)
+    const name = appid
+    const db = new Database(name, namespace)
+    db.metadata.labels = {
+      [ResourceLabels.APP_ID]: appid,
+    }
+
+    db.spec.provider = 'mongodb'
+    db.spec.region = app.regionName
+    db.spec.username = appid
+    db.spec.password = GenerateAlphaNumericPassword(64)
+    db.spec.capacity.storage = toQuantityString(bundle.databaseCapacity * MB)
+
+    try {
+      const res = await this.k8sService.objectApi.create(db)
+      return Database.fromObject(res.body)
+    } catch (error) {
+      this.logger.error(error)
+      return null
+    }
+  }
 
   /**
    * Find a database and connect to it
@@ -43,7 +77,7 @@ export class DatabaseCoreService {
           Database.GVK.plural,
           name,
         )
-      return res.body as Database
+      return Database.fromObject(res.body)
     } catch (err) {
       this.logger.error(err)
       if (err?.response?.body?.reason === 'NotFound') {
@@ -73,6 +107,16 @@ export class DatabaseCoreService {
         `Failed to connect to database ${db.metadata.namespace}`,
       )
       await client.close()
+      return null
+    }
+  }
+
+  async remove(database: Database) {
+    try {
+      const res = await this.k8sService.deleteCustomObject(database)
+      return res
+    } catch (error) {
+      this.logger.error(error, error.response?.body)
       return null
     }
   }

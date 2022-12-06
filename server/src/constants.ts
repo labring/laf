@@ -73,3 +73,5 @@ export const CN_PUBLISHED_POLICIES = '__policies__'
 export const CPU_UNIT = 1000
 export const MB = 1024 * 1024
 export const GB = 1024 * MB
+
+export const APPLICATION_SECRET_KEY = 'SERVER_SECRET'

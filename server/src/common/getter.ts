@@ -1,3 +1,4 @@
+import { Condition } from 'src/core/api/types'
 import { ServerConfig } from '../constants'
 
 /**
@@ -15,4 +16,15 @@ export function GetSystemNamespace(): string {
  */
 export function GetApplicationNamespaceById(appid: string): string {
   return appid
+}
+
+export function isConditionTrue(type: string, conditions: Condition[]) {
+  if (!conditions) return false
+
+  for (const condition of conditions) {
+    if (condition.type === type) {
+      return condition.status === 'True'
+    }
+  }
+  return false
 }

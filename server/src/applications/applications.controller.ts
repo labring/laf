@@ -10,6 +10,7 @@ import {
   Req,
   HttpException,
   HttpStatus,
+  Logger,
 } from '@nestjs/common'
 import {
   ApiBearerAuth,
@@ -19,7 +20,7 @@ import {
 } from '@nestjs/swagger'
 import { IRequest } from '../common/types'
 import { JwtAuthGuard } from '../auth/jwt.auth.guard'
-import { ApiResponseUtil, ResponseUtil } from '../common/response'
+import { ResponseUtil } from '../common/response'
 import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import { CreateApplicationDto } from './dto/create-application.dto'
 import { UpdateApplicationDto } from './dto/update-application.dto'
@@ -30,6 +31,7 @@ import { ApplicationCoreService } from 'src/core/application.cr.service'
 @Controller('applications')
 @ApiBearerAuth('Authorization')
 export class ApplicationsController {
+  private logger = new Logger(ApplicationsController.name)
   constructor(
     private readonly appService: ApplicationsService,
     private readonly appCoreService: ApplicationCoreService,
@@ -39,7 +41,6 @@ export class ApplicationsController {
    * Create application
    * @returns
    */
-  // @ApiResponseUtil(Application)
   @ApiOperation({ summary: 'Create a new application' })
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -73,7 +74,6 @@ export class ApplicationsController {
    * @param req
    * @returns
    */
-  // @ApiResponseUtil(ApplicationList)
   @UseGuards(JwtAuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get user application list' })
@@ -86,23 +86,28 @@ export class ApplicationsController {
   /**
    * Get an application by appid
    * @param appid
-   * @param req
    * @returns
    */
   @ApiOperation({ summary: 'Get an application by appid' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get(':appid')
-  async findOne(@Param('appid') appid: string) {
-    const data = await this.appService.findOne(appid)
-    if (null === data) {
-      throw new HttpException('application not found', HttpStatus.NOT_FOUND)
-    }
+  async findOne(@Param('appid') appid: string, @Req() req: IRequest) {
+    const app = req.application
 
-    const resource = await this.appCoreService.findOne(appid)
-    const res = {
-      ...data,
-      resource,
-    }
+    // get sub resources
+    const resources = await this.appService.getSubResources(appid)
+
+    // update app phase if needed
+    await this.appService.updatePhaseIfSubResourceCreated(
+      app,
+      resources.database,
+      resources.gateway,
+      resources.oss,
+    )
+
+    const data = await this.appService.findOne(appid)
+    const res = { ...data, ...resources }
+
     return ResponseUtil.ok(res)
   }
 
@@ -112,7 +117,6 @@ export class ApplicationsController {
    * @returns
    */
   @ApiOperation({ summary: 'Update an application' })
-  // @ApiResponseUtil(Application)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Patch(':appid')
   async update(
@@ -144,7 +148,15 @@ export class ApplicationsController {
   async remove(@Param('appid') appid: string) {
     const res = await this.appService.remove(appid)
     if (res === null) {
+      this.logger.error('delete application error')
       return ResponseUtil.error('delete application error')
+    }
+
+    // remove app namespace
+    const removed = await this.appCoreService.removeAppNamespace(appid)
+    if (!removed) {
+      this.logger.error(`remove app namespace error: ${appid}`)
+      return ResponseUtil.error('remove app namespace error')
     }
     return ResponseUtil.ok(res)
   }

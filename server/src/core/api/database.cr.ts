@@ -22,6 +22,11 @@ export class DatabaseSpec {
 
   @ApiProperty()
   password: string
+
+  constructor() {
+    this.provider = 'mongodb'
+    this.capacity = new DatabaseCapacity()
+  }
 }
 
 export class DatabaseStatus {
@@ -69,5 +74,12 @@ export class Database implements KubernetesObject {
     this.kind = Database.GVK.kind
     this.metadata = new ObjectMeta(name, namespace)
     this.spec = new DatabaseSpec()
+  }
+
+  static fromObject(obj: KubernetesObject): Database {
+    const db = new Database(obj.metadata.name, obj.metadata.namespace)
+    delete obj.metadata['managedFields']
+    Object.assign(db, obj)
+    return db
   }
 }
