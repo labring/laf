@@ -86,7 +86,6 @@ function DeleteCollectionModal(props: { database: any }) {
               colorScheme="red"
               mr={3}
               onClick={handleSubmit(async (data) => {
-                console.log(123, data);
                 if (data.name === database.name) {
                   const res = await deleteDB(database.name);
                   if (!res.error) {
