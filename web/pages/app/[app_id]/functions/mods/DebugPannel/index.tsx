@@ -28,7 +28,11 @@ export default function DebugPanel() {
                     size="xs"
                     readOnly
                     variant="filled"
-                    value={`https://qcphsd.api.cloudendpoint.cn/${currentFunction?.name}`}
+                    value={
+                      currentFunction?.name
+                        ? `https://qcphsd.api.cloudendpoint.cn/${currentFunction?.name}`
+                        : ""
+                    }
                   />
                   <Button
                     style={{ borderRadius: 2 }}
@@ -47,7 +51,7 @@ export default function DebugPanel() {
                   </TabList>
                   <TabPanels className="flex-1">
                     <TabPanel className="h-full">
-                      <JsonEditor value={{ name: "hellor" }} />
+                      <JsonEditor value={{}} />
                     </TabPanel>
                   </TabPanels>
                 </Tabs>
