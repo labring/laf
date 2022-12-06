@@ -1,0 +1,41 @@
+{
+  "name": "laf-cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/main.js",
+  "bin": {
+    "laf": "dist/main.js"
+  },
+  "scripts": {
+    "dev": "tsc -w",
+    "watch": "tsc -w",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/labring/laf.git"
+  },
+  "keywords": [
+    "laf"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/labring/laf/issues"
+  },
+  "devDependencies": {
+    "@types/cli-table2": "^0.2.3",
+    "@types/mime": "^2.0.3",
+    "@types/node": "^17.0.31"
+  },
+  "dependencies": {
+    "axios": "^1.2.1",
+    "class-transformer": "^0.5.1",
+    "cli-table3": "^0.6.3",
+    "commander": "^9.3.0",
+    "reflect-metadata": "^0.1.13",
+    "typescript": "^4.7.4",
+    "yaml": "^2.1.3"
+  }
+}
