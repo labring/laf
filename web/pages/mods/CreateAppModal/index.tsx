@@ -1,5 +1,6 @@
-import React from "react";
+import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { AddIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
@@ -19,34 +20,23 @@ import {
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ApplicationsControllerCreate, ApplicationsControllerUpdate } from "apis/v1/applications";
 import useGlobalStore from "pages/globalStore";
+import { ApplicationsControllerCreate } from "services/v1/applications";
 
-import { APP_STATUS, DEFAULT_REGION } from "@/constants/index";
+import { APP_STATUS } from "@/constants/index";
 
-const CreateAppModal = (props: { application?: any; children: React.ReactNode }) => {
+const CreateAppModal = forwardRef((props, ref) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const queryClient = useQueryClient();
 
-  const { application = {} } = props;
-  const isEdit = !!application.name;
-
-  const { bundles = [], runtimes = [] } = useGlobalStore();
+  const [isEdit, setIsEdit] = useState(false);
 
   type FormData = {
-    name: string;
-    state: APP_STATUS;
-    region: string;
+    displayName: string;
     bundleName: string;
     runtimeName: string;
-  };
-
-  const defaultValues = {
-    name: application.name,
-    state: application.state || APP_STATUS.Running,
-    region: application.regionName || DEFAULT_REGION,
-    bundleName: bundles[0].name,
-    runtimeName: runtimes[0].name,
+    region: string;
+    state: APP_STATUS;
   };
 
   const {
@@ -57,43 +47,70 @@ const CreateAppModal = (props: { application?: any; children: React.ReactNode })
     reset,
     formState: { errors },
   } = useForm<FormData>({
-    defaultValues,
+    defaultValues: {
+      region: "default",
+      bundleName: "mini",
+      state: APP_STATUS.Running,
+      runtimeName: "node-laf",
+    },
   });
 
   const { showSuccess, showError } = useGlobalStore();
 
-  const appCreateMutaion = useMutation((params: any) => ApplicationsControllerCreate(params));
+  const appCreateMutaion = useMutation((params: any) => ApplicationsControllerCreate(params), {
+    onSuccess: (data) => {
+      if (!data.error) {
+        onClose();
+        setTimeout(() => {
+          showSuccess("添加成功");
+        }, 100);
+        queryClient.invalidateQueries(["appListQuery"]);
+      } else {
+        showError(data.error);
+      }
+    },
+  });
 
-  const updateAppMutation = useMutation((params: any) => ApplicationsControllerUpdate(params));
+  useImperativeHandle(ref, () => {
+    return {
+      edit: (item: any) => {
+        setIsEdit(true);
+        reset({
+          ...item,
+          displayName: item.name,
+          region: item.regionName,
+        });
+        onOpen();
+        setTimeout(() => {
+          setFocus("displayName");
+        }, 0);
+      },
+    };
+  });
 
   const onSubmit = async (data: any) => {
-    let res: any = {};
-    if (isEdit) {
-      res = await updateAppMutation.mutateAsync(data);
-    } else {
-      res = await appCreateMutaion.mutateAsync(data);
-    }
-
-    if (!res.error) {
-      onClose();
-      showSuccess(isEdit ? "update success." : "create success.");
-      queryClient.invalidateQueries(["appListQuery"]);
-    } else {
-      showError(res.error);
-    }
+    appCreateMutaion.mutate(data);
   };
 
   return (
     <>
-      {React.cloneElement(props.children as React.ReactElement, {
-        onClick: () => {
-          reset(defaultValues);
+      <Button
+        size={"lg"}
+        colorScheme="primary"
+        style={{ padding: "0 40px" }}
+        leftIcon={<AddIcon />}
+        onClick={() => {
+          setIsEdit(false);
+          reset();
           onOpen();
+
           setTimeout(() => {
-            setFocus("name");
+            setFocus("displayName");
           }, 0);
-        },
-      })}
+        }}
+      >
+        {t`NewApplication`}
+      </Button>
 
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
@@ -103,14 +120,16 @@ const CreateAppModal = (props: { application?: any; children: React.ReactNode })
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
-              <FormControl isRequired isInvalid={!!errors?.name}>
-                <FormLabel htmlFor="name">应用名称</FormLabel>
+              <FormControl isRequired isInvalid={!!errors?.displayName}>
+                <FormLabel htmlFor="displayName">应用名称</FormLabel>
                 <Input
-                  {...register("name", {
-                    required: "name is required",
+                  {...register("displayName", {
+                    required: "displayName is required",
                   })}
                 />
-                <FormErrorMessage>{errors?.name && errors?.name?.message}</FormErrorMessage>
+                <FormErrorMessage>
+                  {errors?.displayName && errors?.displayName?.message}
+                </FormErrorMessage>
               </FormControl>
 
               <FormControl isRequired>
@@ -177,7 +196,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactNode })
       </Modal>
     </>
   );
-};
+});
 
 CreateAppModal.displayName = "CreateModal";
 

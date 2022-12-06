@@ -31,7 +31,7 @@ export default function Header(props: { size: "sm" | "lg" }) {
             router.push("/");
           }}
         >
-          <img src="/logo.png" alt="logo" className="mr-2 rounded-full" width={24} />
+          <img src="/logo.png" alt="logo" className="mr-2 rounded-full" width={30} />
         </div>
         <span className="mr-4 font-bold text-lg">{userInfo.username}</span>
       </div>

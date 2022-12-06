@@ -2,8 +2,8 @@
  * cloud functions index page
  ***************************/
 
-import React, { useCallback, useEffect } from "react";
-import { Badge, Button, HStack } from "@chakra-ui/react";
+import React, { useEffect } from "react";
+import { Badge, Button, Center, HStack } from "@chakra-ui/react";
 import useHotKey from "hooks/useHotKey";
 import useGlobalStore from "pages/globalStore";
 
@@ -32,24 +32,26 @@ function FunctionPage() {
 
   const { showSuccess } = useGlobalStore((state) => state);
 
-  useHotKey("s", () => {
-    showSuccess("saved successfully");
-    updateFunction({
+  useHotKey("s", async () => {
+    const res = await updateFunction({
       description: currentFunction?.desc,
       code: currentFunction?.source.code,
       methods: currentFunction?.methods,
       websocket: currentFunction?.websocket,
       name: currentFunction?.name,
     });
-    setCurrentFunction(
-      Object.assign({}, currentFunction, {
-        isEdit: false,
-      }),
-    );
+    if (!res.error) {
+      setCurrentFunction(
+        Object.assign({}, currentFunction, {
+          isEdit: false,
+        }),
+      );
+      showSuccess("saved successfully");
+    }
   });
 
   useHotKey("r", () => {
-    showSuccess("it's running");
+    showSuccess("running success");
   });
 
   useEffect(() => {
@@ -70,7 +72,8 @@ function FunctionPage() {
             <div className="flex items-center">
               <FileTypeIcon type={FileType.js} />
               <span className="font-bold text-base ml-2">
-                {currentFunction?.name} &nbsp;({currentFunction?.desc})
+                {currentFunction?.name}{" "}
+                <span>{currentFunction?.desc ? currentFunction?.desc : ""}</span>
               </span>
               <span className="ml-4 ">
                 {currentFunction?.isEdit && <Badge colorScheme="purple">Editting...</Badge>}
@@ -103,14 +106,17 @@ function FunctionPage() {
         </div>
         <div className="flex flex-row h-full w-full">
           <div className="flex-1 border-r border-r-slate-200 overflow-hidden ">
-            <FunctionEditor
-              path={currentFunction?.name || ""}
-              value={currentFunction?.source.code || ""}
-              onChange={(value) => {
-                console.log(value);
-                updateFunctionCode(currentFunction, value || "");
-              }}
-            />
+            {currentFunction?.name ? (
+              <FunctionEditor
+                path={currentFunction?.name || ""}
+                value={currentFunction?.source.code || ""}
+                onChange={(value) => {
+                  updateFunctionCode(currentFunction, value || "");
+                }}
+              />
+            ) : (
+              <Center className="h-full">请创建函数</Center>
+            )}
           </div>
           <div style={{ width: 550 }}>
             <DebugPanel />

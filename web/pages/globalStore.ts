@@ -19,6 +19,7 @@ type State = {
   init(appid?: string): void;
 
   showSuccess: (text: string | React.ReactNode) => void;
+  showError: (text: string | React.ReactNode) => void;
 };
 
 const useGlobalStore = create<State>()(
@@ -65,6 +66,23 @@ const useGlobalStore = create<State>()(
           title: text,
           status: "success",
           duration: 1000,
+          containerStyle: {
+            maxWidth: "100%",
+            minWidth: "100px",
+          },
+        });
+      },
+
+      showError: (text: string | React.ReactNode) => {
+        toast({
+          position: "top",
+          title: text,
+          status: "error",
+          duration: 1000,
+          containerStyle: {
+            maxWidth: "100%",
+            minWidth: "100px",
+          },
         });
       },
     })),

@@ -103,7 +103,6 @@ const useFunctionStore = create<State>()(
         });
 
         get().initFunctionPage(values);
-        setTimeout(() => {}, 100);
         return res;
       },
 
