@@ -15,21 +15,18 @@ import {
   ModalOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
+import useGlobalStore from "pages/globalStore";
 
 import IconWrap from "@/components/IconWrap";
 
-import { useDeleteDBMutation } from "../../service";
+import useDBMStore from "../../store";
 
 function DeleteCollectionModal(props: { database: any }) {
   const { database } = props;
+  const { deleteDB, initDBPage } = useDBMStore((state) => state);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const deleteDBMutation = useDeleteDBMutation({
-    onSuccess() {
-      onClose();
-    },
-  });
+  const { showSuccess } = useGlobalStore();
 
   const {
     register,
@@ -89,8 +86,14 @@ function DeleteCollectionModal(props: { database: any }) {
               colorScheme="red"
               mr={3}
               onClick={handleSubmit(async (data) => {
+                console.log(123, data);
                 if (data.name === database.name) {
-                  await deleteDBMutation.mutateAsync({ name: database.name });
+                  const res = await deleteDB(database.name);
+                  if (!res.error) {
+                    showSuccess("delete success");
+                    initDBPage();
+                    onClose();
+                  }
                 }
               })}
             >

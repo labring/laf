@@ -7,6 +7,8 @@ import useGlobalStore from "pages/globalStore";
 import JsonEditor from "@/components/Editor/JsonEditor";
 
 import useDBMStore from "../../../store";
+
+import DeleteButton from "./DeleteButton";
 export default function DataPannel() {
   const { entryList, updateCurrentData, currentData } = useDBMStore((store) => store);
   const { showSuccess } = useGlobalStore();
@@ -31,7 +33,7 @@ export default function DataPannel() {
       </div>
 
       <div className="absolute top-20 bottom-0 right-2 flex left-4">
-        <div className="overflow-y-auto flex-1 pr-2">
+        <div className="overflow-y-auto flex-1 pr-2 overflow-x-hidden">
           {entryList?.map((item, index: number) => {
             return (
               <div
@@ -47,7 +49,11 @@ export default function DataPannel() {
                   updateCurrentData(item);
                 }}
               >
-                <div className=" absolute right-2 top-2 hidden group-hover:block z-50 ">
+                <div
+                  className={clsx(" absolute right-2 top-2  group-hover:block z-50 ", {
+                    hidden: currentData?._id !== item._id,
+                  })}
+                >
                   <Button
                     size="xs"
                     px="2"
@@ -58,9 +64,7 @@ export default function DataPannel() {
                   >
                     Edit
                   </Button>
-                  <Button size="xs" px="2" className="w-16">
-                    Delete
-                  </Button>
+                  <DeleteButton data={item} />
                 </div>
                 <SyntaxHighlighter language="json" customStyle={{ background: "#fff" }}>
                   {JSON.stringify(item, null, 2)}

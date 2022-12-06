@@ -22,9 +22,9 @@ export default function StorageListPanel() {
         title="云存储"
         actions={[
           <CreateBucketModal key="create_modal" />,
-          <IconWrap key="options" onClick={() => {}}>
-            <HamburgerIcon fontSize={12} />
-          </IconWrap>,
+          // <IconWrap key="options" onClick={() => {}}>
+          //   <HamburgerIcon fontSize={12} />
+          // </IconWrap>,
         ]}
       >
         <SectionList>

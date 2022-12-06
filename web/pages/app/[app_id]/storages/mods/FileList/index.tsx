@@ -6,25 +6,25 @@ import RightPanel from "pages/app/[app_id]/mods/RightPanel";
 import IconWrap from "@/components/IconWrap";
 import PanelHeader from "@/components/Panel/Header";
 
-import { useFileListQuery } from "../../service";
+import useStorageStore from "../../store";
 import CreateFolderModal from "../CreateFolderModal";
+import E from "../FileUpload";
 import HostingDrawer from "../HostingDrawer";
-import UploadButton from "../UploadButton";
 
 export default function FileList() {
+  const store = useStorageStore((store) => store);
+
   const changeDirectory = (row: any) => {
     if (!row.Prefix) {
       return;
     }
   };
 
-  const fileListQuery = useFileListQuery();
-
   return (
     <RightPanel>
       <PanelHeader>
         <HStack spacing={2}>
-          <UploadButton />
+          <E />
           <CreateFolderModal />
           <HostingDrawer />
         </HStack>
@@ -49,7 +49,7 @@ export default function FileList() {
               </Tr>
             </Thead>
             <Tbody>
-              {(fileListQuery?.data?.data || []).map((file: any) => {
+              {(store.files || []).map((file) => {
                 return (
                   <Tr _hover={{ bgColor: "#efefef" }} key={file.path}>
                     <Td>
