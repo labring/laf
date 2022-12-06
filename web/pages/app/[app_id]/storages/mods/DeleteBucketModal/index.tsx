@@ -87,7 +87,6 @@ function DeleteBucketModal(props: { storage: any }) {
               colorScheme="red"
               mr={3}
               onClick={handleSubmit(async (data) => {
-                console.log(123, data);
                 if (data.name === storage.metadata.name) {
                   const res = await deleteStorage(storage);
                   if (!res.error) {

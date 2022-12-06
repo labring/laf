@@ -42,7 +42,7 @@ type State = {
 
   setCurrentStorage: (currentStorage: TStorage) => void;
   editStorage: (currentStorage: TStorage) => void;
-  updateStorage: (currentStorage: TStorage) => any;
+  updateStorage: (currentStorage: Definitions.UpdateBucketDto | any) => any;
   createStorage: (
     currentStorage: Definitions.CreateBucketDto,
   ) => Paths.BucketsControllerCreate.Responses;
@@ -94,7 +94,7 @@ const useStorageStore = create<State>()(
         const res = await BucketsControllerUpdate({
           appid: globalStore.currentApp,
           ...storage,
-          name: storage.name,
+          name: storage.shortName,
         });
         return res;
       },
