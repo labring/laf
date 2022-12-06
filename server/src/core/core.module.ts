@@ -1,31 +1,28 @@
 import { Global, Module } from '@nestjs/common'
 import { ApplicationCoreService } from './application.cr.service'
 import { BucketCoreService } from './bucket.cr.service'
-import { BundleCoreService } from './bundle.cr.service'
 import { DatabaseCoreService } from './database.cr.service'
-import { FunctionCoreService } from './function.cr.service'
+import { GatewayCoreService } from './gateway.cr.service'
 import { KubernetesService } from './kubernetes.service'
-import { RuntimeCoreService } from './runtime.cr.service'
+import { OSSUserCoreService } from './oss-user.cr.service'
 
 @Global()
 @Module({
   providers: [
     KubernetesService,
     ApplicationCoreService,
-    RuntimeCoreService,
-    BundleCoreService,
     BucketCoreService,
     DatabaseCoreService,
-    FunctionCoreService,
+    OSSUserCoreService,
+    GatewayCoreService,
   ],
   exports: [
     KubernetesService,
     ApplicationCoreService,
-    RuntimeCoreService,
-    BundleCoreService,
     BucketCoreService,
     DatabaseCoreService,
-    FunctionCoreService,
+    OSSUserCoreService,
+    GatewayCoreService,
   ],
 })
 export class CoreModule {}

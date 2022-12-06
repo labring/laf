@@ -15,7 +15,7 @@ model User {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   username  String   @unique
   email     String?
-  phone     String? 
+  phone     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -72,6 +72,22 @@ model Runtime {
   Application Application[]
 }
 
+enum ApplicationState {
+  Running
+  Stopped
+}
+
+enum ApplicationPhase {
+  Creating
+  Created
+  Starting
+  Started
+  Stopping
+  Stopped
+  Deleting
+  Deleted
+}
+
 model Application {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String
@@ -79,14 +95,32 @@ model Application {
   regionName  String
   bundleName  String
   runtimeName String
+  state       ApplicationState
+  phase       ApplicationPhase
   tags        String[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   createdBy   String   @db.ObjectId
 
-  region  Region  @relation(fields: [regionName], references: [name])
-  runtime Runtime @relation(fields: [runtimeName], references: [name])
-  bundle  Bundle  @relation(fields: [bundleName], references: [name])
+  region        Region                    @relation(fields: [regionName], references: [name])
+  runtime       Runtime                   @relation(fields: [runtimeName], references: [name])
+  bundle        Bundle                    @relation(fields: [bundleName], references: [name])
+  configuration ApplicationConfiguration?
+}
+
+type EnvironmentVariable {
+  name  String
+  value String
+}
+
+model ApplicationConfiguration {
+  id           String                @id @default(auto()) @map("_id") @db.ObjectId
+  appid        String                @unique
+  environments EnvironmentVariable[]
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+
+  application Application @relation(fields: [appid], references: [appid])
 }
 
 enum HttpMethod {
@@ -99,12 +133,12 @@ enum HttpMethod {
 }
 
 type CloudFunctionSource {
-  code    String
+  code     String
   compiled String?
-  uri     String?
-  version Int     @default(0)
-  hash    String?
-  lang    String?
+  uri      String?
+  version  Int     @default(0)
+  hash     String?
+  lang     String?
 }
 
 model CloudFunction {

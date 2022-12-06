@@ -1,15 +1,15 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ApplicationState } from '@prisma/client'
 import { IsEnum, IsNotEmpty, Length } from 'class-validator'
-import { ApplicationState } from '../../core/api/application.cr'
 
 export class CreateApplicationDto {
   @ApiProperty({ required: true })
   @Length(1, 64)
   @IsNotEmpty()
-  displayName: string
+  name: string
 
   @ApiPropertyOptional({
-    default: ApplicationState.ApplicationStateRunning,
+    default: ApplicationState.Running,
     enum: ApplicationState,
   })
   @IsNotEmpty()

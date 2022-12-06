@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
+import { ApplicationState } from '@prisma/client'
 import { IsIn } from 'class-validator'
-import { ApplicationState } from '../../core/api/application.cr'
 
 const STATES = ['Running', 'Stopped']
 export class UpdateApplicationDto {
@@ -8,10 +8,10 @@ export class UpdateApplicationDto {
    * Application name
    */
   @ApiPropertyOptional()
-  displayName?: string
+  name?: string
 
   @ApiPropertyOptional({
-    enum: STATES,
+    enum: ApplicationState,
   })
   @IsIn(STATES)
   state?: ApplicationState
