@@ -35,6 +35,9 @@ export function main() {
 发布云函数后，可以在云函数列表中的"调用地址"获得云函数的访问地址。
 
 使用浏览器或者 PostMan 等工具访问该地址，即可得到 `hello world!`字符串。
+::: warning
+暂不能设置云函数url化的path
+:::
 
 ### 通过 SDK 访问云函数
 
