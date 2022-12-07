@@ -58,6 +58,10 @@ request.interceptors.response.use(
     } else {
       // handle error code
       const { data } = error.response;
+      if (data.statusCode === 401) {
+        location.href = "http://localhost:3000/v1/login";
+        return;
+      }
       toast({
         title: data.message,
         position: "top",

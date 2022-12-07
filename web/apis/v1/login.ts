@@ -8,16 +8,18 @@
 import request from "@/utils/request";
 
 /**
- * Get current user profile
+ * Redirect to login page
  */
-export async function AuthControllerGetProfile(
-  params: Paths.AuthControllerGetProfile.BodyParameters | any,
-  extra?: { [key: string]: any },
-): Promise<Paths.AuthControllerGetProfile.Responses> {
-  // /v1/profile
-  return request(`/v1/profile`, {
+export async function AuthControllerGetSigninUrl(
+  params: Paths.AuthControllerGetSigninUrl.BodyParameters | any,
+): Promise<Paths.AuthControllerGetSigninUrl.Responses> {
+  // /v1/login
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/login`, {
     method: "GET",
     params: params,
-    ...(extra || {}),
   });
 }

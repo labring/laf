@@ -8,9 +8,6 @@ export const Pages = {
   logs: "logs",
 };
 
-// key of laf app display name
-export const APP_DISPLAY_NAME_KEY = "laf.dev/display.name";
-
 export enum APP_STATUS {
   // [ Initializing, Initialized, Starting, Running, Stopping, Stopped ]
   Initializing = "Initializing",
@@ -19,4 +16,11 @@ export enum APP_STATUS {
   Running = "Running",
   Stopping = "Stopping",
   Stopped = "Stopped",
+}
+
+export const DEFAULT_REGION = "default";
+
+export enum APP_PHASE_STATUS {
+  Creating = "Creating",
+  Started = "Started",
 }

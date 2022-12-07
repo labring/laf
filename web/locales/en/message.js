@@ -8,5 +8,8 @@ module.exports = {
     DependenceVersion: "Version",
     Confirm: "Confirm",
     Cancel: "Cancel",
+    Edit: "Edit",
+    Delete: "Delete",
+    CreateTime: "CreateTime",
   },
 };

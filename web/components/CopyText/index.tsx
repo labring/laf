@@ -14,6 +14,8 @@ export default function CopyText(props: { text: string; tip?: string }) {
 
   return (
     <CopyIcon
+      className="ml-1"
+      fontSize={12}
       onClick={() => {
         onCopy();
         showSuccess(props.tip || "复制成功");

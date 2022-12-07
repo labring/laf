@@ -10,14 +10,16 @@ import request from "@/utils/request";
 /**
  * Get application runtime list
  */
-export async function SpecsControllerGetBundles(
-  params: Paths.SpecsControllerGetBundles.BodyParameters | any,
-  extra?: { [key: string]: any },
-): Promise<Paths.SpecsControllerGetBundles.Responses> {
-  // /v1/bundles
-  return request(`/v1/bundles`, {
+export async function SpecsControllerGetRuntimes(
+  params: Paths.SpecsControllerGetRuntimes.BodyParameters | any,
+): Promise<Paths.SpecsControllerGetRuntimes.Responses> {
+  // /v1/runtimes
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/runtimes`, {
     method: "GET",
     params: params,
-    ...(extra || {}),
   });
 }

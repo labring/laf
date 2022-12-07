@@ -1,8 +1,8 @@
 import { createStandaloneToast } from "@chakra-ui/react";
-import { SpecsControllerGetBundles } from "services/v1/bundles";
-import { AuthControllerGetSigninUrl } from "services/v1/login";
-import { AuthControllerGetProfile } from "services/v1/profile";
-import { SpecsControllerGetRuntimes } from "services/v1/runtimes";
+import { SpecsControllerGetBundles } from "apis/v1/bundles";
+import { AuthControllerGetSigninUrl } from "apis/v1/login";
+import { AuthControllerGetProfile } from "apis/v1/profile";
+import { SpecsControllerGetRuntimes } from "apis/v1/runtimes";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
@@ -45,12 +45,13 @@ const useGlobalStore = create<State>()(
         set((state) => {
           state.userInfo = userInfoRes.data;
           state.loading = false;
-          state.runtimes = runtimesRes.data?.items;
-          state.bundles = bundlesRes.data?.items;
+          state.runtimes = runtimesRes.data;
+          state.bundles = bundlesRes.data;
         });
       },
 
       setCurrentApp: (app: any) => {
+        localStorage.setItem("app", app.appid);
         set((state) => {
           state.currentApp = app;
         });

@@ -16,7 +16,7 @@ import {
 
 import FileUpload from "@/components/FileUplaod";
 
-function E() {
+function UploadButton() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -49,4 +49,4 @@ function E() {
   );
 }
 
-export default E;
+export default UploadButton;

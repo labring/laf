@@ -8,16 +8,18 @@
 import request from "@/utils/request";
 
 /**
- * Get user token by auth code
+ * Get application runtime list
  */
-export async function AuthControllerCode2token(
-  params: Paths.AuthControllerCode2token.BodyParameters | any,
-  extra?: { [key: string]: any },
-): Promise<Paths.AuthControllerCode2token.Responses> {
-  // /v1/code2token
-  return request(`/v1/code2token`, {
+export async function SpecsControllerGetBundles(
+  params: Paths.SpecsControllerGetBundles.BodyParameters | any,
+): Promise<Paths.SpecsControllerGetBundles.Responses> {
+  // /v1/bundles
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/bundles`, {
     method: "GET",
     params: params,
-    ...(extra || {}),
   });
 }

@@ -37,7 +37,7 @@ export default function LogsPage() {
           logListQuery.refetch();
         }}
       >
-        <div className="flex justify-between">
+        <div className="flex justify-between my-4">
           <HStack spacing={2}>
             <InputGroup width={300}>
               <InputLeftElement
@@ -87,7 +87,7 @@ export default function LogsPage() {
               搜索
             </Button>
           </HStack>
-          <Pagination />
+          {/* <Pagination /> */}
         </div>
       </form>
       <div className="bg-white px-4 py-1 rounded-md overflow-y-auto">

@@ -2,7 +2,7 @@
  * cloud functions index page
  ***************************/
 
-import React, { useEffect } from "react";
+import React from "react";
 import { Badge, Button, Center, HStack } from "@chakra-ui/react";
 import useHotKey from "hooks/useHotKey";
 import useGlobalStore from "pages/globalStore";
@@ -18,34 +18,29 @@ import RightPanel from "../mods/RightPanel";
 import DebugPanel from "./mods/DebugPannel";
 import DependecyPanel from "./mods/DependecePanel";
 import FunctionPanel from "./mods/FunctionPanel";
+import { useUpdateFunctionMutation } from "./service";
 
 import useFunctionStore from "./store";
 
 function FunctionPage() {
-  const {
-    initFunctionPage,
-    currentFunction,
-    setCurrentFunction,
-    updateFunction,
-    updateFunctionCode,
-  } = useFunctionStore((store) => store);
+  const store = useFunctionStore((store) => store);
+  const { currentFunction, functionCodes } = store;
 
   const { showSuccess } = useGlobalStore((state) => state);
 
+  const updateFunctionMutation = useUpdateFunctionMutation();
+
   useHotKey("s", async () => {
-    const res = await updateFunction({
+    const res = await updateFunctionMutation.mutateAsync({
       description: currentFunction?.desc,
-      code: currentFunction?.source.code,
+      code: functionCodes[currentFunction?.id || ""],
       methods: currentFunction?.methods,
       websocket: currentFunction?.websocket,
       name: currentFunction?.name,
     });
     if (!res.error) {
-      setCurrentFunction(
-        Object.assign({}, currentFunction, {
-          isEdit: false,
-        }),
-      );
+      store.setCurrentFunction(res.data);
+      store.updateFunctionCode(res.data, res.data.source.code);
       showSuccess("saved successfully");
     }
   });
@@ -53,12 +48,6 @@ function FunctionPage() {
   useHotKey("r", () => {
     showSuccess("running success");
   });
-
-  useEffect(() => {
-    initFunctionPage();
-
-    return () => {};
-  }, [initFunctionPage]);
 
   return (
     <>
@@ -72,11 +61,16 @@ function FunctionPage() {
             <div className="flex items-center">
               <FileTypeIcon type={FileType.js} />
               <span className="font-bold text-base ml-2">
-                {currentFunction?.name}{" "}
-                <span>{currentFunction?.desc ? currentFunction?.desc : ""}</span>
+                {currentFunction?.name}
+                <span className="ml-2 text-slate-400 font-normal">
+                  {currentFunction?.desc ? currentFunction?.desc : ""}
+                </span>
               </span>
               <span className="ml-4 ">
-                {currentFunction?.isEdit && <Badge colorScheme="purple">Editting...</Badge>}
+                {functionCodes[currentFunction?.id || ""] &&
+                  functionCodes[currentFunction?.id || ""] !== currentFunction?.source.code && (
+                    <Badge colorScheme="purple">Editting...</Badge>
+                  )}
                 {/* <FileStatusIcon status={FileStatus.deleted} /> */}
               </span>
             </div>
@@ -109,9 +103,9 @@ function FunctionPage() {
             {currentFunction?.name ? (
               <FunctionEditor
                 path={currentFunction?.name || ""}
-                value={currentFunction?.source.code || ""}
+                value={functionCodes[currentFunction.id] || currentFunction.source.code}
                 onChange={(value) => {
-                  updateFunctionCode(currentFunction, value || "");
+                  store.updateFunctionCode(currentFunction, value || "");
                 }}
               />
             ) : (
@@ -119,6 +113,7 @@ function FunctionPage() {
             )}
           </div>
           <div style={{ width: 550 }}>
+            {/* <div className="h-full border bg-black">1</div> */}
             <DebugPanel />
           </div>
         </div>
