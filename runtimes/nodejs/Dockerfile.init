@@ -17,4 +17,4 @@ RUN chown node:node /app/package.json
 RUN chown node:node /app/package-lock.json
 
 USER node
-CMD [ "node", "./dist/init.js" ]
+CMD [ "sh", "/app/init.sh" ]

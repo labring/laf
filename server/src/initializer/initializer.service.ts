@@ -9,11 +9,9 @@ export class InitializerService {
 
   async createDefaultRegion() {
     // check if exists
-    const region = await this.prisma.region.findUnique({
-      where: { name: 'default' },
-    })
-    if (region) {
-      this.logger.debug('default region already exists')
+    const existed = await this.prisma.region.count()
+    if (existed) {
+      this.logger.debug('region already exists')
       return
     }
 
@@ -27,10 +25,8 @@ export class InitializerService {
 
   async createDefaultBundle() {
     // check if exists
-    const bundle = await this.prisma.bundle.findUnique({
-      where: { name: 'mini' },
-    })
-    if (bundle) {
+    const existed = await this.prisma.bundle.count()
+    if (existed) {
       this.logger.debug('default bundle already exists')
       return
     }
@@ -38,10 +34,12 @@ export class InitializerService {
     // create default bundle
     const res = await this.prisma.bundle.create({
       data: {
-        name: 'mini',
-        displayName: 'Mini',
+        name: 'standard',
+        displayName: 'Standard',
         limitCPU: 0.5 * CPU_UNIT,
-        limitMemory: 128,
+        limitMemory: 256,
+        requestCPU: 0.05 * CPU_UNIT,
+        requestMemory: 128,
         databaseCapacity: 1024,
         storageCapacity: 1024 * 5,
         networkTrafficOutbound: 1024 * 5,
@@ -54,10 +52,8 @@ export class InitializerService {
 
   async createDefaultRuntime() {
     // check if exists
-    const runtime = await this.prisma.runtime.findUnique({
-      where: { name: 'node-laf' },
-    })
-    if (runtime) {
+    const existed = await this.prisma.runtime.count()
+    if (existed) {
       this.logger.debug('default runtime already exists')
       return
     }
@@ -65,12 +61,13 @@ export class InitializerService {
     // create default runtime
     const res = await this.prisma.runtime.create({
       data: {
-        name: 'node-laf',
+        name: 'node',
         type: 'node:laf',
         image: {
           main: 'docker.io/lafyun/runtime-node:1.0.0-alpha.0',
+          init: 'docker.io/lafyun/runtime-node-init:1.0.0-alpha.0',
         },
-        version: '1.0-alpha.0',
+        version: '1.0.0-alpha.0',
         latest: true,
       },
     })

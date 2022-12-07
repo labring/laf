@@ -69,3 +69,6 @@ helm install apisix \
   --namespace laf \
   $CHARTS_DIR/apisix
 
+
+# init laf resources
+kubectl apply -f $SCRIPT_DIR/init-laf/

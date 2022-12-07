@@ -12,9 +12,16 @@ import { ApplicationsModule } from './applications/applications.module'
 import { AuthModule } from './auth/auth.module'
 import { ThrottlerModule } from '@nestjs/throttler'
 import { InitializerModule } from './initializer/initializer.module'
+import { InstanceModule } from './instance/instance.module'
+import { ScheduleModule } from '@nestjs/schedule'
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 10,
+    }),
     FunctionsModule,
     PoliciesModule,
     BucketsModule,
@@ -24,11 +31,8 @@ import { InitializerModule } from './initializer/initializer.module'
     AuthModule,
     CoreModule,
     ApplicationsModule,
-    ThrottlerModule.forRoot({
-      ttl: 60,
-      limit: 10,
-    }),
     InitializerModule,
+    InstanceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

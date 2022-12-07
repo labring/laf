@@ -34,7 +34,7 @@ func (m *MongoManager) CreateDatabase(databaseName string, username string, pass
 	command := bson.D{
 		{Key: "createUser", Value: username},
 		{Key: "pwd", Value: password},
-		{Key: "roles", Value: []bson.M{{"role": "readWrite", "db": databaseName}}}}
+		{Key: "roles", Value: []bson.M{{"role": "readWrite", "db": databaseName}, {"role": "dbAdmin", "db": databaseName}}}}
 
 	err := m.client.Database(databaseName).RunCommand(m.context, command).Decode(&result)
 	if err != nil {

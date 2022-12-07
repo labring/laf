@@ -4,10 +4,7 @@ import {
   Application,
   ApplicationPhase,
   ApplicationState,
-  Bundle,
   Prisma,
-  Region,
-  Runtime,
 } from '@prisma/client'
 import { PrismaService } from '../prisma.service'
 import { UpdateApplicationDto } from './dto/update-application.dto'
@@ -16,10 +13,6 @@ import { GatewayCoreService } from 'src/core/gateway.cr.service'
 import { OSSUserCoreService } from 'src/core/oss-user.cr.service'
 import { APPLICATION_SECRET_KEY } from 'src/constants'
 import { GenerateAlphaNumericPassword } from 'src/common/random'
-import { Database } from 'src/core/api/database.cr'
-import { Gateway } from 'src/core/api/gateway.cr'
-import { OSSUser } from 'src/core/api/oss-user.cr'
-import { isConditionTrue } from 'src/common/getter'
 
 @Injectable()
 export class ApplicationsService {
@@ -133,36 +126,18 @@ export class ApplicationsService {
     })
   }
 
-  async findOne(appid: string) {
+  async findOne(appid: string, include?: Prisma.ApplicationInclude) {
     const application = await this.prisma.application.findUnique({
       where: { appid },
       include: {
-        region: true,
-        bundle: true,
-        runtime: true,
+        region: include?.region,
+        bundle: include?.bundle,
+        runtime: include?.runtime,
+        configuration: include?.configuration,
       },
     })
 
     return application
-  }
-
-  async updatePhaseIfSubResourceCreated(
-    app: Application,
-    database: Database,
-    gateway: Gateway,
-    oss: OSSUser,
-  ) {
-    if (app.phase !== ApplicationPhase.Creating) return
-    if (!isConditionTrue('Ready', database.status?.conditions)) return
-    if (!isConditionTrue('Ready', gateway.status?.conditions)) return
-    if (!isConditionTrue('Ready', oss.status?.conditions)) return
-
-    return await this.prisma.application.update({
-      where: { appid: app.appid },
-      data: {
-        phase: ApplicationPhase.Created,
-      },
-    })
   }
 
   async update(appid: string, dto: UpdateApplicationDto) {

@@ -46,6 +46,7 @@
     "fullname",
     "ghaction",
     "gonanoid",
+    "healthz",
     "hostpath",
     "Kube",
     "kubebuilder",
