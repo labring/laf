@@ -15,9 +15,6 @@ sh install-k8s.sh
 
 # setup laf core
 sh install-laf-core.sh
-
-# apply laf cluster resources
-kubectl apply -f init-laf/
 ```
 
 ## Create development environment on MacOS
@@ -40,9 +37,6 @@ sh init-vm.sh
 
 # setup laf core
 multipass exec laf-dev -- sudo -u root sh /laf/deploy/scripts/install-laf-core.sh 
-
-# apply laf cluster resource
-multipass exec laf-dev -- sudo -u root kubectl apply -f /laf/deploy/scripts/init-laf/
 ``` 
 
 3. Start laf server

@@ -48,6 +48,8 @@ model Bundle {
   displayName            String
   limitCPU               Int
   limitMemory            Int
+  requestCPU             Int
+  requestMemory          Int
   databaseCapacity       Int
   storageCapacity        Int
   networkTrafficOutbound Int

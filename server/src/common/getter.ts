@@ -18,7 +18,7 @@ export function GetApplicationNamespaceById(appid: string): string {
   return appid
 }
 
-export function isConditionTrue(type: string, conditions: Condition[]) {
+export function isConditionTrue(type: string, conditions: Condition[] | any[]) {
   if (!conditions) return false
 
   for (const condition of conditions) {

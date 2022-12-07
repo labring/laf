@@ -8,8 +8,6 @@ import {
   Delete,
   UseGuards,
   Req,
-  HttpException,
-  HttpStatus,
   Logger,
 } from '@nestjs/common'
 import {
@@ -91,19 +89,9 @@ export class ApplicationsController {
   @ApiOperation({ summary: 'Get an application by appid' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get(':appid')
-  async findOne(@Param('appid') appid: string, @Req() req: IRequest) {
-    const app = req.application
-
+  async findOne(@Param('appid') appid: string) {
     // get sub resources
     const resources = await this.appService.getSubResources(appid)
-
-    // update app phase if needed
-    await this.appService.updatePhaseIfSubResourceCreated(
-      app,
-      resources.database,
-      resources.gateway,
-      resources.oss,
-    )
 
     const data = await this.appService.findOne(appid)
     const res = { ...data, ...resources }

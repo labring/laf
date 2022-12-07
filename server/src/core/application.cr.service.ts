@@ -4,8 +4,6 @@ import * as k8s from '@kubernetes/client-node'
 import * as nanoid from 'nanoid'
 import { ResourceLabels } from '../constants'
 import { GetApplicationNamespaceById } from '../common/getter'
-import { CreateApplicationDto } from '../applications/dto/create-application.dto'
-import { UpdateApplicationDto } from '../applications/dto/update-application.dto'
 
 @Injectable()
 export class ApplicationCoreService {
