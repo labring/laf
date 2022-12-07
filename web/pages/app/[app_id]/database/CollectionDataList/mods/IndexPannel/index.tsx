@@ -1,12 +1,12 @@
 import { Button, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 
-import AddIndexMoale from "./addIndexModal";
+import AddIndexModal from "./addIndexModal";
 
 export default function IndexPannel() {
   return (
     <div>
       <div className="flex mt-2">
-        <AddIndexMoale />
+        <AddIndexModal />
       </div>
       <div className="rounded border border-slate-200 mt-4 ">
         <TableContainer>

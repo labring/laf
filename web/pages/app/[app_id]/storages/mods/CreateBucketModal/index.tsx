@@ -24,13 +24,16 @@ import useGlobalStore from "pages/globalStore";
 
 import IconWrap from "@/components/IconWrap";
 
-import useStorageStore, { TStorage } from "../../store";
+import { useBucketCreateMutation, useBucketUpdateMutation } from "../../service";
+import { TStorage } from "../../store";
 
 function CreateBucketModal(props: { storage?: TStorage }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { createStorage, updateStorage, initStoragePage } = useStorageStore((state) => state);
 
   const { storage } = props;
+
+  const bucketCreateMutation = useBucketCreateMutation();
+  const bucketUpdateMutation = useBucketUpdateMutation();
 
   const defaultValues = {
     shortName: storage?.metadata.name,
@@ -54,18 +57,21 @@ function CreateBucketModal(props: { storage?: TStorage }) {
     let res: any = {};
     values.storage = values.storage + "Gi";
     if (isEdit) {
-      res = await updateStorage(values);
+      res = await bucketUpdateMutation.mutateAsync({
+        name: values.shortName,
+        ...values,
+      });
+
       if (!res.error) {
         showSuccess("update success.");
         onClose();
-        initStoragePage();
       }
     } else {
-      res = await createStorage(values);
+      res = await bucketCreateMutation.mutateAsync(values);
+
       if (!res.error) {
         showSuccess("create success.");
         onClose();
-        initStoragePage();
       }
     }
   };

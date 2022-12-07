@@ -8,12 +8,15 @@ import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
 
+import { useBucketListQuery } from "../../service";
 import useStorageStore, { TStorage } from "../../store";
 import CreateBucketModal from "../CreateBucketModal";
 import DeleteBucketModal from "../DeleteBucketModal";
 
 export default function StorageListPanel() {
   const store = useStorageStore((store) => store);
+
+  const bucketListQuery = useBucketListQuery();
 
   return (
     <LeftPanel>
@@ -27,7 +30,7 @@ export default function StorageListPanel() {
         ]}
       >
         <SectionList>
-          {(store.allStorages || []).map((storage: TStorage) => {
+          {(bucketListQuery?.data?.data?.items || []).map((storage: TStorage) => {
             return (
               <SectionList.Item
                 isActive={storage?.metadata?.name === store.currentStorage?.metadata?.name}
