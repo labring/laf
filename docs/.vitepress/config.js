@@ -37,7 +37,14 @@ const guideSiderbarConfig = [
   {
     text: '云函数',
     items: [
-      { text: '云函数入门', link: '/guide/function/' },
+      {
+        text: '云函数入门',
+        link: '/guide/function/'
+      },
+      {
+        text: '依赖管理',
+        link: '/guide/function/depend'
+      },
       {
         text: '触发器',
         link: '/guide/function/trigger',
@@ -90,6 +97,15 @@ const guideSiderbarConfig = [
         link: '/guide/deploy/docker',
       }
     ]
+  },
+  {
+    text: 'FAQ',
+    items: [
+      {
+        text: '问答',
+        link: '/guide/faq/',
+      }
+    ]
   }
 ]
 
@@ -130,6 +146,10 @@ const examplesSideBarConfig = [
       {
         text: '使用 WebSocket 长连接',
         link: '/examples/websocket'
+      },
+      {
+        text: '使用 SMTP 服务发送邮件',
+        link: '/examples/send-mail'
       },
     ]
   }, {
