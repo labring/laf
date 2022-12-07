@@ -7,7 +7,7 @@ import PanelHeader from "@/components/Panel/Header";
 import useFunctionStore from "../../store";
 
 export default function DebugPanel() {
-  const { currentFunction } = useFunctionStore((state) => state);
+  const { currentFunction: currentFunction } = useFunctionStore((state) => state);
   return (
     <div className="flex h-full">
       <Tabs width="100%">

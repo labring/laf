@@ -1,40 +1,33 @@
+import { useState } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { AddIcon } from "@chakra-ui/icons";
-import { Button, Input, InputGroup, InputLeftAddon, InputRightAddon } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import clsx from "clsx";
 import useGlobalStore from "pages/globalStore";
 
 import JsonEditor from "@/components/Editor/JsonEditor";
 
-import useDBMStore from "../../../store";
+import { useEntryDataQuery } from "../../../service";
 
 import DeleteButton from "./DeleteButton";
 export default function DataPannel() {
-  const { entryList, updateCurrentData, currentData } = useDBMStore((store) => store);
   const { showSuccess } = useGlobalStore();
+
+  const entryDataQuery = useEntryDataQuery();
+
+  const [currentData, setCurrentData] = useState<any>(null);
   return (
     <>
-      <div className="flex justify-end pb-2 shadow-sm">
-        {/* <InputGroup size="sm" className="h-9" style={{ width: 600 }}>
-          <InputLeftAddon children="query" />
-          <Input placeholder='{"name":"hello"}' />
-          <InputRightAddon children="查询" />
-        </InputGroup> */}
-        <Button
-          colorScheme={"blue"}
-          size="sm"
-          onClick={() => {
-            updateCurrentData({});
-          }}
-        >
-          <AddIcon color="white" />
+      <div className="flex pb-2 mt-2 shadow-sm">
+        <Button colorScheme={"primary"} size="sm" onClick={() => {}}>
+          <AddIcon color="white" className="mr-2" />
           新增记录
         </Button>
       </div>
 
       <div className="absolute top-20 bottom-0 right-2 flex left-4">
         <div className="overflow-y-auto flex-1 pr-2 overflow-x-hidden">
-          {entryList?.map((item, index: number) => {
+          {(entryDataQuery?.data?.data?.list || [])?.map((item: any, index: number) => {
             return (
               <div
                 key={item._id}
@@ -42,11 +35,11 @@ export default function DataPannel() {
                   "border p-2 rounded-md relative group hover:border-green-600 hover:shadow-md",
                   {
                     "border-green-600 shadow-md": currentData?._id === item._id,
-                    "mb-6": index !== entryList.length - 1,
+                    "mb-6": index !== entryDataQuery?.data?.data?.list.length - 1,
                   },
                 )}
                 onClick={() => {
-                  updateCurrentData(item);
+                  setCurrentData(item);
                 }}
               >
                 <div
@@ -59,7 +52,7 @@ export default function DataPannel() {
                     px="2"
                     className="mr-2 w-16"
                     onClick={() => {
-                      updateCurrentData(item);
+                      setCurrentData(item);
                     }}
                   >
                     Edit
