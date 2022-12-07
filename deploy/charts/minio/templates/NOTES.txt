@@ -1,0 +1,43 @@
+{{- if eq .Values.service.type "ClusterIP" "NodePort" }}
+MinIO can be accessed via port {{ .Values.service.port }} on the following DNS name from within your cluster:
+{{ template "minio.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+To access MinIO from localhost, run the below commands:
+
+  1. export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+
+  2. kubectl port-forward $POD_NAME 9000 --namespace {{ .Release.Namespace }}
+
+Read more about port forwarding here: http://kubernetes.io/docs/user-guide/kubectl/kubectl_port-forward/
+
+You can now access MinIO server on http://localhost:9000. Follow the below steps to connect to MinIO server with mc client:
+
+  1. Download the MinIO mc client - https://min.io/docs/minio/linux/reference/minio-mc.html#quickstart
+
+  2. export MC_HOST_{{ template "minio.fullname" . }}-local=http://$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "minio.secretName" . }} -o jsonpath="{.data.rootUser}" | base64 --decode):$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "minio.secretName" . }} -o jsonpath="{.data.rootPassword}" | base64 --decode)@localhost:{{ .Values.service.port }}
+
+  3. mc ls {{ template "minio.fullname" . }}-local
+
+{{- end }}
+{{- if eq .Values.service.type "LoadBalancer" }}
+MinIO can be accessed via port {{ .Values.service.port }} on an external IP address. Get the service external IP address by:
+kubectl get svc --namespace {{ .Release.Namespace }} -l app={{ template "minio.fullname" . }}
+
+Note that the public IP may take a couple of minutes to be available.
+
+You can now access MinIO server on http://<External-IP>:9000. Follow the below steps to connect to MinIO server with mc client:
+
+  1. Download the MinIO mc client - https://min.io/docs/minio/linux/reference/minio-mc.html#quickstart
+
+  2. export MC_HOST_{{ template "minio.fullname" . }}-local=http://$(kubectl get secret {{ template "minio.secretName" . }} --namespace {{ .Release.Namespace }} -o jsonpath="{.data.rootUser}" | base64 --decode):$(kubectl get secret {{ template "minio.secretName" . }} -o jsonpath="{.data.rootPassword}" | base64 --decode)@<External-IP>:{{ .Values.service.port }}
+
+  3. mc ls {{ template "minio.fullname" . }}
+
+Alternately, you can use your browser or the MinIO SDK to access the server - https://min.io/docs/minio/linux/reference/minio-server/minio-server.html
+{{- end }}
+
+{{ if and (.Values.networkPolicy.enabled) (not .Values.networkPolicy.allowExternal) }}
+Note: Since NetworkPolicy is enabled, only pods with label
+{{ template "minio.fullname" . }}-client=true"
+will be able to connect to this minio cluster.
+{{- end }}

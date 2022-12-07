@@ -1,5 +1,6 @@
 #!/bin/sh
 
 # echo "****** init start ******"
-exec node ./dist/init.js
+node ./dist/init.js
+cp -r /app/* /tmp/app
 # echo "****** init end *******"

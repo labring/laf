@@ -106,8 +106,11 @@ export class InstanceTaskService {
       try {
         const appid = app.appid
         const instance = await this.instanceService.get(appid)
-        if (!isConditionTrue('Ready', instance.deployment.status?.conditions))
-          continue
+        const available = isConditionTrue(
+          'Available',
+          instance.deployment.status?.conditions,
+        )
+        if (!available) continue
 
         if (!instance.service) continue
 

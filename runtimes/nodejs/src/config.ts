@@ -104,4 +104,8 @@ export default class Config {
   static get REQUEST_LIMIT_SIZE(): string {
     return process.env.REQUEST_LIMIT_SIZE || "10mb";
   }
+
+  static get PACKAGES(): string {
+    return process.env.PACKAGES || "";
+  }
 }

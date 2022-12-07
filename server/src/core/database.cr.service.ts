@@ -96,7 +96,7 @@ export class DatabaseCoreService {
     assert(db.status.connectionUri, 'Database connection uri is required')
 
     const uri = db.status?.connectionUri
-    const client = new MongoClient(uri, { maxPoolSize: 1, minPoolSize: 0 })
+    const client = new MongoClient(uri)
     try {
       this.logger.verbose(`Connecting to database ${db.metadata.name}`)
       await client.connect()
