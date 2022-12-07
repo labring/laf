@@ -1,0 +1,18 @@
+apiVersion: v1
+appVersion: RELEASE.2022-11-11T03-44-20Z
+description: Multi-Cloud Object Storage
+home: https://min.io
+icon: https://min.io/resources/img/logo/MINIO_wordmark.png
+keywords:
+- minio
+- storage
+- object-storage
+- s3
+- cluster
+maintainers:
+- email: dev@minio.io
+  name: MinIO, Inc
+name: minio
+sources:
+- https://github.com/minio/minio
+version: 5.0.1

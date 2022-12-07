@@ -101,9 +101,15 @@ export class InstanceService {
                   memory: `${requestMemory}Mi`,
                 },
               },
+              volumeMounts: [
+                {
+                  name: 'app',
+                  mountPath: '/app',
+                },
+              ],
               startupProbe: {
                 httpGet: {
-                  path: '/__healthz__',
+                  path: '/healthz',
                   port: 'http',
                   httpHeaders: [{ name: 'Referer', value: 'startupProbe' }],
                 },
@@ -114,7 +120,7 @@ export class InstanceService {
               },
               readinessProbe: {
                 httpGet: {
-                  path: '/__healthz__',
+                  path: '/healthz',
                   port: 'http',
                   httpHeaders: [{ name: 'Referer', value: 'readinessProbe' }],
                 },
@@ -131,6 +137,18 @@ export class InstanceService {
               image: app.runtime.image.init,
               command: ['sh', '/app/init.sh'],
               env,
+              volumeMounts: [
+                {
+                  name: 'app',
+                  mountPath: '/tmp/app',
+                },
+              ],
+            },
+          ],
+          volumes: [
+            {
+              name: 'app',
+              emptyDir: {},
             },
           ],
         },

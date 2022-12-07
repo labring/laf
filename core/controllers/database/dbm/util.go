@@ -11,6 +11,10 @@ func AssembleUserDatabaseUri(originalUri string, newUser string, newPassword str
 	u.User = url.UserPassword(newUser, newPassword)
 	q := u.Query()
 	q.Set("authSource", newDb)
+	if u.Path != "/" {
+		u.Path = "/"
+	}
+	u.Path = u.Path + newDb
 	u.RawQuery = q.Encode()
 
 	return u.String(), nil

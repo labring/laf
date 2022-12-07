@@ -50,13 +50,12 @@ helm install mongodb \
 # Install MinIO
 MINIO_ROOT_USER=minio-root
 MINIO_ROOT_PASS=passw0rd
-helm repo add minio https://charts.min.io/
 helm install minio \
     --set rootUser=$MINIO_ROOT_USER,rootPassword=$MINIO_ROOT_PASS \
     --set replicas=1 --set resources.requests.memory=100Mi --set drivesPerNode=4 \
     --set persistence.enabled=true --set persistence.storageClass=local-hostpath --set persistence.size=1Gi \
     --namespace laf \
-    minio/minio
+    $CHARTS_DIR/minio
 
 # Install etcd
 helm install etcd --namespace laf  $CHARTS_DIR/etcd
