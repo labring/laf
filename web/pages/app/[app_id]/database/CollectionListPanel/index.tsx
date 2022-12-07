@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CopyIcon, DeleteIcon, Search2Icon } from "@chakra-ui/icons";
+import { Search2Icon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 
 import CopyText from "@/components/CopyText";
@@ -11,10 +11,19 @@ import SectionList from "@/components/SectionList";
 import LeftPanel from "../../mods/LeftPanel";
 import CreateCollectionModal from "../mods/CreateCollectionModal";
 import DeleteCollectionModal from "../mods/DeleteCollectionModal";
+import { useCollectionListQuery } from "../service";
 import useDBMStore from "../store";
 
 export default function CollectionListPanel() {
   const store = useDBMStore((store) => store);
+
+  const collectionListQuery = useCollectionListQuery({
+    onSuccess: (data) => {
+      if (data.data.length > 0) {
+        store.setCurrentDB(data.data[0]);
+      }
+    },
+  });
 
   const [search, setSearch] = useState("");
 
@@ -40,9 +49,9 @@ export default function CollectionListPanel() {
         </div>
 
         <SectionList>
-          {(store.allDBs || [])
-            .filter((db) => db.name.indexOf(search) >= 0)
-            .map((db) => {
+          {(collectionListQuery?.data?.data || [])
+            .filter((db: any) => db.name.indexOf(search) >= 0)
+            .map((db: any) => {
               return (
                 <SectionList.Item
                   isActive={db.name === store.currentDB?.name}

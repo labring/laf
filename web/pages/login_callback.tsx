@@ -1,8 +1,10 @@
 import React from "react";
 import { Center, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
+import { AuthControllerCode2token } from "apis/v1/code2token";
 import { useRouter } from "next/router";
-import { AuthControllerCode2token } from "services/v1/code2token";
+
+import LoginReg from "@/components/Layout/LoginReg";
 
 export default function LoginCallBack() {
   const router = useRouter();
@@ -23,3 +25,7 @@ export default function LoginCallBack() {
     <Center minHeight={300}>{tokenRes.isLoading ? <Spinner /> : <>{tokenRes.data.error}</>}</Center>
   );
 }
+
+LoginCallBack.getLayout = (page: React.ReactElement) => {
+  return <LoginReg>{page}</LoginReg>;
+};
