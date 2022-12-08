@@ -66,8 +66,8 @@ export class CloudFunction {
   /**
    * Http enabled status
    */
-  get enableHTTP() {
-    return this._data.methods?.length > 0;
+  get methods() {
+    return this._data.methods || [];
   }
 
   /**
