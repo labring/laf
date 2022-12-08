@@ -1,7 +1,7 @@
 import { V1Deployment } from '@kubernetes/client-node'
 import { Injectable, Logger } from '@nestjs/common'
 import { GetApplicationNamespaceById } from 'src/common/getter'
-import { CPU_UNIT, ResourceLabels } from 'src/constants'
+import { ResourceLabels } from 'src/constants'
 import { DatabaseCoreService } from 'src/core/database.cr.service'
 import { KubernetesService } from 'src/core/kubernetes.service'
 import { OSSUserCoreService } from 'src/core/oss-user.cr.service'
@@ -87,6 +87,7 @@ export class InstanceService {
           containers: [
             {
               image: app.runtime.image.main,
+              imagePullPolicy: 'Always',
               command: ['sh', '/app/start.sh'],
               name: app.appid,
               env,
@@ -135,6 +136,7 @@ export class InstanceService {
             {
               name: 'init',
               image: app.runtime.image.init,
+              imagePullPolicy: 'Always',
               command: ['sh', '/app/init.sh'],
               env,
               volumeMounts: [
@@ -167,7 +169,7 @@ export class InstanceService {
 
   async createService(appid: string, labels: any) {
     const namespace = GetApplicationNamespaceById(appid)
-    const serviceName = this.getServiceName(appid)
+    const serviceName = appid
     const res = await this.k8sService.coreV1Api.createNamespacedService(
       namespace,
       {
@@ -193,7 +195,7 @@ export class InstanceService {
       )
     }
     if (service) {
-      const name = this.getServiceName(appid)
+      const name = appid
       await this.k8sService.coreV1Api.deleteNamespacedService(name, namespace)
     }
   }
@@ -219,7 +221,7 @@ export class InstanceService {
 
   async getService(appid: string) {
     try {
-      const serviceName = this.getServiceName(appid)
+      const serviceName = appid
       const namespace = GetApplicationNamespaceById(appid)
       const res = await this.k8sService.coreV1Api.readNamespacedService(
         serviceName,
@@ -229,9 +231,5 @@ export class InstanceService {
     } catch (error) {
       return null
     }
-  }
-
-  getServiceName(appid: string) {
-    return `s-${appid}`
   }
 }

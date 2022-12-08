@@ -32,15 +32,15 @@ export async function handleInvokeFunction(req: Request, res: Response) {
     // load default function from db
     funcData = await CloudFunction.getFunctionByName(DEFAULT_FUNCTION_NAME);
     if (!funcData) {
-      return res.status(404).send("Not Found");
+      return res.status(404).send("Function Not Found");
     }
   }
 
   const func = new CloudFunction(funcData);
 
   // reject while no HTTP enabled
-  if (!func.enableHTTP) {
-    return res.status(404).send("Not Found");
+  if (!func.methods.includes(req.method.toUpperCase())) {
+    return res.status(405).send("Method Not Allowed");
   }
 
   try {

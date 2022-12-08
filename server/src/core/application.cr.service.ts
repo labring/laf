@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { KubernetesService } from './kubernetes.service'
 import * as k8s from '@kubernetes/client-node'
-import * as nanoid from 'nanoid'
 import { ResourceLabels } from '../constants'
 import { GetApplicationNamespaceById } from '../common/getter'
 
@@ -24,7 +23,21 @@ export class ApplicationCoreService {
       const res = await this.k8sClient.coreV1Api.createNamespace(namespace)
       return res.body
     } catch (err) {
-      this.logger.error(err, err?.response?.body)
+      this.logger.error(err)
+      this.logger.verbose(err?.response?.body)
+      return null
+    }
+  }
+
+  // get app namespace
+  async getAppNamespace(appid: string) {
+    try {
+      const namespace = GetApplicationNamespaceById(appid)
+      const res = await this.k8sClient.coreV1Api.readNamespace(namespace)
+      return res.body
+    } catch (err) {
+      this.logger.error(err)
+      this.logger.verbose(err?.response?.body)
       return null
     }
   }
@@ -36,16 +49,9 @@ export class ApplicationCoreService {
       const res = await this.k8sClient.coreV1Api.deleteNamespace(namespace)
       return res
     } catch (err) {
-      this.logger.error(err, err?.response?.body)
+      this.logger.error(err)
+      this.logger.verbose(err?.response?.body)
       return null
     }
-  }
-
-  generateAppid(len: number) {
-    const nano = nanoid.customAlphabet(
-      '1234567890abcdefghijklmnopqrstuvwxyz',
-      len || 6,
-    )
-    return nano()
   }
 }

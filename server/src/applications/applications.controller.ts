@@ -49,18 +49,8 @@ export class ApplicationsController {
       return ResponseUtil.error(error)
     }
 
-    // create namespace
-    const appid = this.appCoreService.generateAppid(6)
-    const namespace = await this.appCoreService.createAppNamespace(
-      appid,
-      user.id,
-    )
-    if (!namespace) {
-      return ResponseUtil.error('create app namespace error')
-    }
-
     // create app
-    const app = await this.appService.create(user.id, appid, dto)
+    const app = await this.appService.create(user.id, dto)
     if (!app) {
       return ResponseUtil.error('create app error')
     }
@@ -140,12 +130,6 @@ export class ApplicationsController {
       return ResponseUtil.error('delete application error')
     }
 
-    // remove app namespace
-    const removed = await this.appCoreService.removeAppNamespace(appid)
-    if (!removed) {
-      this.logger.error(`remove app namespace error: ${appid}`)
-      return ResponseUtil.error('remove app namespace error')
-    }
     return ResponseUtil.ok(res)
   }
 }

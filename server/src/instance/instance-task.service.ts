@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { ApplicationPhase, ApplicationState } from '@prisma/client'
-import { ApplicationsService } from 'src/applications/applications.service'
 import { isConditionTrue } from 'src/common/getter'
 import { DatabaseCoreService } from 'src/core/database.cr.service'
 import { GatewayCoreService } from 'src/core/gateway.cr.service'
@@ -20,41 +19,6 @@ export class InstanceTaskService {
     private readonly ossCore: OSSUserCoreService,
     private readonly prisma: PrismaService,
   ) {}
-
-  @Cron(CronExpression.EVERY_SECOND)
-  async handleCreating() {
-    const apps = await this.prisma.application.findMany({
-      where: {
-        phase: ApplicationPhase.Creating,
-      },
-      take: 5,
-    })
-
-    for (const app of apps) {
-      try {
-        const appid = app.appid
-        const database = await this.databaseCore.findOne(appid)
-        const oss = await this.ossCore.findOne(appid)
-        const gateway = await this.gatewayCore.findOne(appid)
-        if (!isConditionTrue('Ready', database.status?.conditions)) return
-        if (!isConditionTrue('Ready', gateway.status?.conditions)) return
-        if (!isConditionTrue('Ready', oss.status?.conditions)) return
-
-        await this.prisma.application.updateMany({
-          where: {
-            appid: app.appid,
-            phase: ApplicationPhase.Creating,
-          },
-          data: {
-            phase: ApplicationPhase.Created,
-          },
-        })
-        this.logger.debug(`Application ${app.appid} updated to phase created`)
-      } catch (e) {
-        this.logger.error(e)
-      }
-    }
-  }
 
   @Cron(CronExpression.EVERY_SECOND)
   async handlePreparedStart() {
@@ -188,6 +152,7 @@ export class InstanceTaskService {
             phase: ApplicationPhase.Stopped,
           },
         })
+        this.logger.debug(`Application ${app.appid} updated to phase stopped`)
       } catch (error) {
         this.logger.error(error)
       }

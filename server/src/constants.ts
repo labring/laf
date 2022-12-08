@@ -45,6 +45,10 @@ export class ServerConfig {
   static get SYSTEM_NAMESPACE() {
     return process.env.SYSTEM_NAMESPACE || 'laf-system'
   }
+
+  static get APPID_LENGTH(): number {
+    return parseInt(process.env.APPID_LENGTH || '6')
+  }
 }
 
 export class ResourceLabels {

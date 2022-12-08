@@ -1,17 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common'
+import * as nanoid from 'nanoid'
 import { CreateApplicationDto } from './dto/create-application.dto'
-import {
-  Application,
-  ApplicationPhase,
-  ApplicationState,
-  Prisma,
-} from '@prisma/client'
+import { ApplicationPhase, ApplicationState, Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma.service'
 import { UpdateApplicationDto } from './dto/update-application.dto'
 import { DatabaseCoreService } from 'src/core/database.cr.service'
 import { GatewayCoreService } from 'src/core/gateway.cr.service'
 import { OSSUserCoreService } from 'src/core/oss-user.cr.service'
-import { APPLICATION_SECRET_KEY } from 'src/constants'
+import { APPLICATION_SECRET_KEY, ServerConfig } from 'src/constants'
 import { GenerateAlphaNumericPassword } from 'src/common/random'
 
 @Injectable()
@@ -24,13 +20,14 @@ export class ApplicationsService {
     private readonly ossCore: OSSUserCoreService,
   ) {}
 
-  async create(userid: string, appid: string, dto: CreateApplicationDto) {
+  async create(userid: string, dto: CreateApplicationDto) {
     try {
       // create app in db
       const appSecret = {
         name: APPLICATION_SECRET_KEY,
         value: GenerateAlphaNumericPassword(64),
       }
+      const appid = this.generateAppID(ServerConfig.APPID_LENGTH)
 
       const data: Prisma.ApplicationCreateInput = {
         name: dto.name,
@@ -66,8 +63,6 @@ export class ApplicationsService {
         throw new Error('create application failed')
       }
 
-      // create app resources
-      await this.createSubResources(application)
       return application
     } catch (error) {
       this.logger.error(error, error.response?.body)
@@ -75,53 +70,13 @@ export class ApplicationsService {
     }
   }
 
-  /**
-   * Create app resource in k8s: database, gateway, oss
-   * @param app
-   * @returns
-   */
-  async createSubResources(app: Application) {
-    // get app bundle
-    const bundle = await this.prisma.bundle.findUnique({
-      where: { name: app.bundleName },
-    })
-    if (!bundle) {
-      throw new Error('bundle not found')
-    }
-
-    // create database resource
-    const database = await this.databaseCore.create(app, bundle)
-    if (!database) {
-      throw new Error('create database failed')
-    }
-
-    // create oss resource
-    const oss = await this.ossCore.create(app, bundle)
-    if (!oss) {
-      throw new Error('create oss failed')
-    }
-
-    // create gateway resource
-    const gateway = await this.gatewayCore.create(app.appid)
-    if (!gateway) {
-      throw new Error('create gateway failed')
-    }
-
-    return { database, oss, gateway }
-  }
-
-  async getSubResources(appid: string) {
-    const database = await this.databaseCore.findOne(appid)
-    const oss = await this.ossCore.findOne(appid)
-    const gateway = await this.gatewayCore.findOne(appid)
-
-    return { database, oss, gateway }
-  }
-
   async findAllByUser(userid: string) {
     return this.prisma.application.findMany({
       where: {
         createdBy: userid,
+        phase: {
+          not: ApplicationPhase.Deleted,
+        },
       },
     })
   }
@@ -138,6 +93,14 @@ export class ApplicationsService {
     })
 
     return application
+  }
+
+  async getSubResources(appid: string) {
+    const database = await this.databaseCore.findOne(appid)
+    const oss = await this.ossCore.findOne(appid)
+    const gateway = await this.gatewayCore.findOne(appid)
+
+    return { database, oss, gateway }
   }
 
   async update(appid: string, dto: UpdateApplicationDto) {
@@ -167,15 +130,26 @@ export class ApplicationsService {
 
   async remove(appid: string) {
     try {
-      // remove app in db
-      const application = await this.prisma.application.delete({
+      const res = await this.prisma.application.update({
         where: { appid },
+        data: {
+          phase: ApplicationPhase.Deleting,
+        },
       })
 
-      return application
+      return res
     } catch (error) {
       this.logger.error(error, error.response?.body)
       return null
     }
+  }
+
+  generateAppID(len: number) {
+    len = len || 6
+    const only_alpha = 'abcdefghijklmnopqrstuvwxyz'
+    const alphanumeric = 'abcdefghijklmnopqrstuvwxyz0123456789'
+    const prefix = nanoid.customAlphabet(only_alpha, 1)()
+    const nano = nanoid.customAlphabet(alphanumeric, len - 1)
+    return prefix + nano()
   }
 }
