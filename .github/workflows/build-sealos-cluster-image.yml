@@ -1,15 +1,9 @@
-name: Build cluster images
+name: build-sealos-cluster-image
 
 on:
   repository_dispatch:
-    types: [controllers_build_success]
+    types: [docker_build_success]
   workflow_dispatch:
-  push:
-    branches: ["main", "fix-workflow"]
-    paths:
-      - "deploy/build/**"
-      - ".github/workflows/build_cluster_image.yml"
-      - "!**/*.md"
 
 env:
   # Common versions
@@ -29,7 +23,7 @@ jobs:
         id: prepare
         run: |
           IMAGE=laf
-          TAG=dev
+          TAG=${{ github.event.client_payload.version }}
           echo "tag=${TAG}" >> $GITHUB_ENV
           echo "image=${IMAGE}" >> $GITHUB_ENV
 

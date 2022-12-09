@@ -13,4 +13,4 @@ kind: Kustomization
 images:
 - name: controller
   newName: ghcr.io/labring/laf-gateway-controller
-  newTag: dev
+  newTag: latest
