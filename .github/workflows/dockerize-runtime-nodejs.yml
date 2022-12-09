@@ -47,7 +47,7 @@ jobs:
             type=raw,enable=${{ startsWith(github.ref, 'refs/tags/v') }},value=prerelease
             type=edge,enable=true,branch=$repo.default_branch
             type=ref,event=pr,enable=true,format=pr-${{ github.event.number }}
-
+            type=ref,event=branch,enable=true
   #     - name: Set up QEMU
   #       uses: docker/setup-qemu-action@v2
 
