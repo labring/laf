@@ -88,6 +88,7 @@ export class InstanceTaskService {
             phase: ApplicationPhase.Started,
           },
         })
+        this.logger.debug(`Application ${app.appid} updated to phase started`)
       } catch (error) {
         this.logger.error(error)
       }

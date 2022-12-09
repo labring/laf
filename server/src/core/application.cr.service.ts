@@ -35,6 +35,7 @@ export class ApplicationCoreService {
       const res = await this.k8sClient.coreV1Api.readNamespace(namespace)
       return res.body
     } catch (err) {
+      if (err?.response?.body?.reason === 'NotFound') return null
       this.logger.error(err)
       return null
     }
