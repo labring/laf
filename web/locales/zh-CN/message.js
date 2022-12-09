@@ -9,5 +9,8 @@ module.exports = {
     DependenceVersion: "依赖版本",
     Confirm: "确定",
     Cancel: "取消",
+    Edit: "编辑",
+    Delete: "删除",
+    CreateTime: "创建时间",
   },
 };

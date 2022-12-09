@@ -12,13 +12,15 @@ import request from "@/utils/request";
  */
 export async function FunctionsControllerCreate(
   params: Definitions.CreateFunctionDto | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.FunctionsControllerCreate.Responses> {
   // /v1/apps/{appid}/functions
-  return request(`/v1/apps/${params.appid}/functions`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/functions`, {
     method: "POST",
     data: params,
-    ...(extra || {}),
   });
 }
 
@@ -27,13 +29,15 @@ export async function FunctionsControllerCreate(
  */
 export async function FunctionsControllerFindAll(
   params: Paths.FunctionsControllerFindAll.BodyParameters | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.FunctionsControllerFindAll.Responses> {
   // /v1/apps/{appid}/functions
-  return request(`/v1/apps/${params.appid}/functions`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/functions`, {
     method: "GET",
     params: params,
-    ...(extra || {}),
   });
 }
 
@@ -42,13 +46,15 @@ export async function FunctionsControllerFindAll(
  */
 export async function FunctionsControllerFindOne(
   params: Paths.FunctionsControllerFindOne.BodyParameters | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.FunctionsControllerFindOne.Responses> {
   // /v1/apps/{appid}/functions/{name}
-  return request(`/v1/apps/${params.appid}/functions/${params.name}`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/functions/${_params.name}`, {
     method: "GET",
     params: params,
-    ...(extra || {}),
   });
 }
 
@@ -57,13 +63,15 @@ export async function FunctionsControllerFindOne(
  */
 export async function FunctionsControllerUpdate(
   params: Definitions.UpdateFunctionDto | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.FunctionsControllerUpdate.Responses> {
   // /v1/apps/{appid}/functions/{name}
-  return request(`/v1/apps/${params.appid}/functions/${params.name}`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/functions/${_params.name}`, {
     method: "PATCH",
     data: params,
-    ...(extra || {}),
   });
 }
 
@@ -72,13 +80,15 @@ export async function FunctionsControllerUpdate(
  */
 export async function FunctionsControllerRemove(
   params: Paths.FunctionsControllerRemove.BodyParameters | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.FunctionsControllerRemove.Responses> {
   // /v1/apps/{appid}/functions/{name}
-  return request(`/v1/apps/${params.appid}/functions/${params.name}`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/functions/${_params.name}`, {
     method: "DELETE",
     data: params,
-    ...(extra || {}),
   });
 }
 
@@ -87,13 +97,15 @@ export async function FunctionsControllerRemove(
  */
 export async function FunctionsControllerCompile(
   params: Paths.FunctionsControllerCompile.BodyParameters | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.FunctionsControllerCompile.Responses> {
   // /v1/apps/{appid}/functions/{name}/compile
-  return request(`/v1/apps/${params.appid}/functions/${params.name}/compile`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/functions/${_params.name}/compile`, {
     method: "POST",
     data: params,
-    ...(extra || {}),
   });
 }
 
@@ -102,13 +114,15 @@ export async function FunctionsControllerCompile(
  */
 export async function PoliciesControllerCreate(
   params: Definitions.CreatePolicyDto | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.PoliciesControllerCreate.Responses> {
   // /v1/apps/{appid}/policies
-  return request(`/v1/apps/${params.appid}/policies`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/policies`, {
     method: "POST",
     data: params,
-    ...(extra || {}),
   });
 }
 
@@ -117,13 +131,15 @@ export async function PoliciesControllerCreate(
  */
 export async function PoliciesControllerFindAll(
   params: Paths.PoliciesControllerFindAll.BodyParameters | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.PoliciesControllerFindAll.Responses> {
   // /v1/apps/{appid}/policies
-  return request(`/v1/apps/${params.appid}/policies`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/policies`, {
     method: "GET",
     params: params,
-    ...(extra || {}),
   });
 }
 
@@ -132,13 +148,15 @@ export async function PoliciesControllerFindAll(
  */
 export async function PoliciesControllerFindOne(
   params: Paths.PoliciesControllerFindOne.BodyParameters | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.PoliciesControllerFindOne.Responses> {
   // /v1/apps/{appid}/policies/{id}
-  return request(`/v1/apps/${params.appid}/policies/${params.id}`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/policies/${_params.id}`, {
     method: "GET",
     params: params,
-    ...(extra || {}),
   });
 }
 
@@ -147,13 +165,15 @@ export async function PoliciesControllerFindOne(
  */
 export async function PoliciesControllerUpdate(
   params: Definitions.UpdatePolicyDto | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.PoliciesControllerUpdate.Responses> {
   // /v1/apps/{appid}/policies/{id}
-  return request(`/v1/apps/${params.appid}/policies/${params.id}`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/policies/${_params.id}`, {
     method: "PATCH",
     data: params,
-    ...(extra || {}),
   });
 }
 
@@ -162,13 +182,15 @@ export async function PoliciesControllerUpdate(
  */
 export async function PoliciesControllerRemove(
   params: Paths.PoliciesControllerRemove.BodyParameters | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.PoliciesControllerRemove.Responses> {
   // /v1/apps/{appid}/policies/{id}
-  return request(`/v1/apps/${params.appid}/policies/${params.id}`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/policies/${_params.id}`, {
     method: "DELETE",
     data: params,
-    ...(extra || {}),
   });
 }
 
@@ -177,13 +199,15 @@ export async function PoliciesControllerRemove(
  */
 export async function BucketsControllerCreate(
   params: Definitions.CreateBucketDto | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.BucketsControllerCreate.Responses> {
   // /v1/apps/{appid}/buckets
-  return request(`/v1/apps/${params.appid}/buckets`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/buckets`, {
     method: "POST",
     data: params,
-    ...(extra || {}),
   });
 }
 
@@ -192,13 +216,15 @@ export async function BucketsControllerCreate(
  */
 export async function BucketsControllerFindAll(
   params: Paths.BucketsControllerFindAll.BodyParameters | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.BucketsControllerFindAll.Responses> {
   // /v1/apps/{appid}/buckets
-  return request(`/v1/apps/${params.appid}/buckets`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/buckets`, {
     method: "GET",
     params: params,
-    ...(extra || {}),
   });
 }
 
@@ -207,13 +233,15 @@ export async function BucketsControllerFindAll(
  */
 export async function BucketsControllerFindOne(
   params: Paths.BucketsControllerFindOne.BodyParameters | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.BucketsControllerFindOne.Responses> {
   // /v1/apps/{appid}/buckets/{name}
-  return request(`/v1/apps/${params.appid}/buckets/${params.name}`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/buckets/${_params.name}`, {
     method: "GET",
     params: params,
-    ...(extra || {}),
   });
 }
 
@@ -222,13 +250,15 @@ export async function BucketsControllerFindOne(
  */
 export async function BucketsControllerUpdate(
   params: Definitions.UpdateBucketDto | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.BucketsControllerUpdate.Responses> {
   // /v1/apps/{appid}/buckets/{name}
-  return request(`/v1/apps/${params.appid}/buckets/${params.name}`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/buckets/${_params.name}`, {
     method: "PATCH",
     data: params,
-    ...(extra || {}),
   });
 }
 
@@ -237,13 +267,15 @@ export async function BucketsControllerUpdate(
  */
 export async function BucketsControllerRemove(
   params: Paths.BucketsControllerRemove.BodyParameters | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.BucketsControllerRemove.Responses> {
   // /v1/apps/{appid}/buckets/{name}
-  return request(`/v1/apps/${params.appid}/buckets/${params.name}`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/buckets/${_params.name}`, {
     method: "DELETE",
     data: params,
-    ...(extra || {}),
   });
 }
 
@@ -252,13 +284,15 @@ export async function BucketsControllerRemove(
  */
 export async function WebsitesControllerCreate(
   params: Definitions.CreateWebsiteDto | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.WebsitesControllerCreate.Responses> {
   // /v1/apps/{appid}/websites
-  return request(`/v1/apps/${params.appid}/websites`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/websites`, {
     method: "POST",
     data: params,
-    ...(extra || {}),
   });
 }
 
@@ -267,13 +301,15 @@ export async function WebsitesControllerCreate(
  */
 export async function WebsitesControllerFindAll(
   params: Paths.WebsitesControllerFindAll.BodyParameters | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.WebsitesControllerFindAll.Responses> {
   // /v1/apps/{appid}/websites
-  return request(`/v1/apps/${params.appid}/websites`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/websites`, {
     method: "GET",
     params: params,
-    ...(extra || {}),
   });
 }
 
@@ -282,13 +318,15 @@ export async function WebsitesControllerFindAll(
  */
 export async function WebsitesControllerFindOne(
   params: Paths.WebsitesControllerFindOne.BodyParameters | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.WebsitesControllerFindOne.Responses> {
   // /v1/apps/{appid}/websites/{id}
-  return request(`/v1/apps/${params.appid}/websites/${params.id}`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/websites/${_params.id}`, {
     method: "GET",
     params: params,
-    ...(extra || {}),
   });
 }
 
@@ -297,13 +335,15 @@ export async function WebsitesControllerFindOne(
  */
 export async function WebsitesControllerUpdate(
   params: Definitions.UpdateWebsiteDto | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.WebsitesControllerUpdate.Responses> {
   // /v1/apps/{appid}/websites/{id}
-  return request(`/v1/apps/${params.appid}/websites/${params.id}`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/websites/${_params.id}`, {
     method: "PATCH",
     data: params,
-    ...(extra || {}),
   });
 }
 
@@ -312,13 +352,15 @@ export async function WebsitesControllerUpdate(
  */
 export async function WebsitesControllerRemove(
   params: Paths.WebsitesControllerRemove.BodyParameters | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.WebsitesControllerRemove.Responses> {
   // /v1/apps/{appid}/websites/{id}
-  return request(`/v1/apps/${params.appid}/websites/${params.id}`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/websites/${_params.id}`, {
     method: "DELETE",
     data: params,
-    ...(extra || {}),
   });
 }
 
@@ -327,13 +369,15 @@ export async function WebsitesControllerRemove(
  */
 export async function CollectionsControllerCreate(
   params: Definitions.CreateCollectionDto | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.CollectionsControllerCreate.Responses> {
   // /v1/apps/{appid}/collections
-  return request(`/v1/apps/${params.appid}/collections`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/collections`, {
     method: "POST",
     data: params,
-    ...(extra || {}),
   });
 }
 
@@ -342,13 +386,15 @@ export async function CollectionsControllerCreate(
  */
 export async function CollectionsControllerFindAll(
   params: Paths.CollectionsControllerFindAll.BodyParameters | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.CollectionsControllerFindAll.Responses> {
   // /v1/apps/{appid}/collections
-  return request(`/v1/apps/${params.appid}/collections`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/collections`, {
     method: "GET",
     params: params,
-    ...(extra || {}),
   });
 }
 
@@ -357,13 +403,15 @@ export async function CollectionsControllerFindAll(
  */
 export async function CollectionsControllerFindOne(
   params: Paths.CollectionsControllerFindOne.BodyParameters | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.CollectionsControllerFindOne.Responses> {
   // /v1/apps/{appid}/collections/{name}
-  return request(`/v1/apps/${params.appid}/collections/${params.name}`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/collections/${_params.name}`, {
     method: "GET",
     params: params,
-    ...(extra || {}),
   });
 }
 
@@ -372,13 +420,15 @@ export async function CollectionsControllerFindOne(
  */
 export async function CollectionsControllerUpdate(
   params: Definitions.UpdateCollectionDto | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.CollectionsControllerUpdate.Responses> {
   // /v1/apps/{appid}/collections/{name}
-  return request(`/v1/apps/${params.appid}/collections/${params.name}`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/collections/${_params.name}`, {
     method: "PATCH",
     data: params,
-    ...(extra || {}),
   });
 }
 
@@ -387,12 +437,14 @@ export async function CollectionsControllerUpdate(
  */
 export async function CollectionsControllerRemove(
   params: Paths.CollectionsControllerRemove.BodyParameters | any,
-  extra?: { [key: string]: any },
 ): Promise<Paths.CollectionsControllerRemove.Responses> {
   // /v1/apps/{appid}/collections/{name}
-  return request(`/v1/apps/${params.appid}/collections/${params.name}`, {
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/collections/${_params.name}`, {
     method: "DELETE",
     data: params,
-    ...(extra || {}),
   });
 }

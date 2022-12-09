@@ -8,16 +8,18 @@
 import request from "@/utils/request";
 
 /**
- * Get application runtime list
+ * Redirect to register page
  */
-export async function SpecsControllerGetRuntimes(
-  params: Paths.SpecsControllerGetRuntimes.BodyParameters | any,
-  extra?: { [key: string]: any },
-): Promise<Paths.SpecsControllerGetRuntimes.Responses> {
-  // /v1/runtimes
-  return request(`/v1/runtimes`, {
+export async function AuthControllerGetSignupUrl(
+  params: Paths.AuthControllerGetSignupUrl.BodyParameters | any,
+): Promise<Paths.AuthControllerGetSignupUrl.Responses> {
+  // /v1/register
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/register`, {
     method: "GET",
     params: params,
-    ...(extra || {}),
   });
 }

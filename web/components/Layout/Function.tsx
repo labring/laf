@@ -1,5 +1,7 @@
 import React, { ReactNode, useEffect } from "react";
 import { Spinner } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
+import { ApplicationsControllerFindOne } from "apis/v1/applications";
 import { useRouter } from "next/router";
 import useGlobalStore from "pages/globalStore";
 
@@ -13,10 +15,24 @@ export default function FunctionLayout(props: { children: ReactNode }) {
     query: { app_id },
   } = useRouter();
 
+  useQuery(
+    ["getAppDetailQuery", app_id],
+    () => {
+      return ApplicationsControllerFindOne({ appid: app_id });
+    },
+    {
+      enabled: !!app_id,
+      onSuccess(data) {
+        setCurrentApp(data?.data);
+      },
+    },
+  );
+
   useEffect(() => {
-    init();
-    setCurrentApp(app_id);
-  }, [app_id, init, setCurrentApp]);
+    if (currentApp.appid) {
+      init();
+    }
+  }, [currentApp, init]);
 
   return (
     <div>
@@ -29,7 +45,7 @@ export default function FunctionLayout(props: { children: ReactNode }) {
           position: "relative",
         }}
       >
-        {loading || !currentApp ? <Spinner /> : props.children}
+        {loading || !currentApp.appid ? <Spinner /> : props.children}
       </div>
     </div>
   );

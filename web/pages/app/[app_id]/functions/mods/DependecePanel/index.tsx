@@ -2,7 +2,7 @@
  * cloud functions list sidebar
  ***************************/
 
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { CloseIcon, EditIcon } from "@chakra-ui/icons";
 import { Tooltip } from "@chakra-ui/react";
 
@@ -10,25 +10,25 @@ import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
 
-import useFunctionStore, { TPackage } from "../../store";
-
 import AddDepenceModal from "./AddDepenceModal";
+import { usePackageQuery } from "./service";
+
+type TPackage =
+  | {
+      name: string;
+      version: string;
+    }
+  | undefined;
 
 export default function DependecyList() {
-  const { getPacakges, allPackages } = useFunctionStore((store) => store);
-
   const modalRef = useRef<{ edit: (item: TPackage) => void }>();
-
-  useEffect(() => {
-    getPacakges();
-    return () => {};
-  }, [getPacakges]);
+  const packageQuery = usePackageQuery();
 
   return (
     <div>
       <Panel title="NPM 依赖" actions={[<AddDepenceModal ref={modalRef} key="AddDepenceModal" />]}>
         <SectionList>
-          {allPackages?.map((packageItem) => {
+          {packageQuery?.data?.data?.map((packageItem: TPackage) => {
             return (
               <SectionList.Item
                 isActive={false}

@@ -1,18 +1,29 @@
 import React, { useState } from "react";
-import { CopyIcon, Search2Icon } from "@chakra-ui/icons";
+import { Search2Icon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 
 import CopyText from "@/components/CopyText";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
+import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
 
 import LeftPanel from "../../mods/LeftPanel";
 import CreateCollectionModal from "../mods/CreateCollectionModal";
+import DeleteCollectionModal from "../mods/DeleteCollectionModal";
+import { useCollectionListQuery } from "../service";
 import useDBMStore from "../store";
 
 export default function CollectionListPanel() {
   const store = useDBMStore((store) => store);
+
+  const collectionListQuery = useCollectionListQuery({
+    onSuccess: (data) => {
+      if (data.data.length > 0) {
+        store.setCurrentDB(data.data[0]);
+      }
+    },
+  });
 
   const [search, setSearch] = useState("");
 
@@ -38,9 +49,9 @@ export default function CollectionListPanel() {
         </div>
 
         <SectionList>
-          {(store.allDBs || [])
-            .filter((db) => db.name.indexOf(search) >= 0)
-            .map((db) => {
+          {(collectionListQuery?.data?.data || [])
+            .filter((db: any) => db.name.indexOf(search) >= 0)
+            .map((db: any) => {
               return (
                 <SectionList.Item
                   isActive={db.name === store.currentDB?.name}
@@ -54,8 +65,11 @@ export default function CollectionListPanel() {
                       <FileTypeIcon type={FileType.db} />
                       <span className="ml-2 text-base">{db.name}</span>
                     </div>
-                    <div className="hidden group-hover:block">
-                      <CopyText text={db.name} />
+                    <div className="invisible flex group-hover:visible">
+                      <IconWrap tooltip="复制">
+                        <CopyText text={db.name} tip="名称复制成功" />
+                      </IconWrap>
+                      <DeleteCollectionModal database={db} />
                     </div>
                   </div>
                 </SectionList.Item>

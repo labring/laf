@@ -1,5 +1,6 @@
 import React from "react";
-import { AddIcon } from "@chakra-ui/icons";
+import { useForm } from "react-hook-form";
+import { AddIcon, EditIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
@@ -19,24 +20,76 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
-import { Field, Formik } from "formik";
 import useGlobalStore from "pages/globalStore";
 
 import IconWrap from "@/components/IconWrap";
 
-import useStorageStore from "../../store";
+import { useBucketCreateMutation, useBucketUpdateMutation } from "../../service";
+import { TStorage } from "../../store";
 
-function CreateBucketModal() {
+function CreateBucketModal(props: { storage?: TStorage }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { createStorage, initStoragePage } = useStorageStore((state) => state);
-  const formRef = React.useRef(null);
+
+  const { storage } = props;
+
+  const bucketCreateMutation = useBucketCreateMutation();
+  const bucketUpdateMutation = useBucketUpdateMutation();
+
+  const defaultValues = {
+    shortName: storage?.metadata.name,
+    policy: storage?.spec.policy,
+    storage: parseInt(storage?.spec.storage || "", 10),
+  };
+
+  const { register, handleSubmit, reset, setFocus } = useForm<{
+    shortName: string;
+    policy: string;
+    storage: number;
+  }>({
+    defaultValues,
+  });
 
   const { showSuccess } = useGlobalStore();
 
+  const isEdit = !!storage;
+
+  const onSubmit = async (values: any) => {
+    let res: any = {};
+    values.storage = values.storage + "Gi";
+    if (isEdit) {
+      res = await bucketUpdateMutation.mutateAsync({
+        name: values.shortName,
+        ...values,
+      });
+
+      if (!res.error) {
+        showSuccess("update success.");
+        onClose();
+      }
+    } else {
+      res = await bucketCreateMutation.mutateAsync(values);
+
+      if (!res.error) {
+        showSuccess("create success.");
+        onClose();
+      }
+    }
+  };
+
   return (
     <>
-      <IconWrap size={20} onClick={onOpen}>
-        <AddIcon fontSize={10} />
+      <IconWrap
+        size={20}
+        onClick={() => {
+          onOpen();
+          reset(defaultValues);
+          setTimeout(() => {
+            setFocus("shortName");
+          }, 0);
+        }}
+        tooltip="创建 Bucket"
+      >
+        {isEdit ? <EditIcon fontSize={13} /> : <AddIcon fontSize={10} />}
       </IconWrap>
 
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
@@ -44,63 +97,48 @@ function CreateBucketModal() {
         <ModalContent>
           <ModalHeader>Create Bucket</ModalHeader>
           <ModalCloseButton />
-          <Formik
-            initialValues={{
-              policy: "readonly",
-            }}
-            onSubmit={async (values: any) => {
-              values.storage = values.storage + "Gi";
-              const res = await createStorage(values);
-              if (!res.error) {
-                showSuccess("create success.");
-                onClose();
-                initStoragePage();
-              }
-            }}
-          >
-            {({ handleSubmit, errors, touched }) => (
-              <form ref={formRef} onSubmit={handleSubmit}>
-                <ModalBody pb={6}>
-                  <VStack spacing={6} align="flex-start">
-                    <FormControl>
-                      <FormLabel htmlFor="shortName">Bucket名称</FormLabel>
-                      <Field as={Input} id="shortName" name="shortName" variant="filled" />
-                    </FormControl>
 
-                    <FormControl>
-                      <FormLabel htmlFor="policy">权限</FormLabel>
-                      <Field as={Select} id="policy" name="policy" variant="filled">
-                        <option value="private">私有</option>
-                        <option value="readonly">公共读</option>
-                        <option value="readwrite">公共读写</option>
-                      </Field>
-                    </FormControl>
+          <ModalBody pb={6}>
+            <VStack spacing={6} align="flex-start">
+              <FormControl>
+                <FormLabel htmlFor="shortName">Bucket名称</FormLabel>
+                <Input
+                  {...register("shortName", { required: true })}
+                  variant="filled"
+                  disabled={isEdit}
+                />
+              </FormControl>
 
-                    <FormControl>
-                      <FormLabel htmlFor="storage">容量</FormLabel>
-                      <Field as={InputGroup}>
-                        <Input
-                          id="storage"
-                          type="number"
-                          name="storage"
-                          variant="filled"
-                          className="w-1"
-                        />
-                        <InputRightElement children="GB" />
-                      </Field>
-                    </FormControl>
-                  </VStack>
-                </ModalBody>
+              <FormControl>
+                <FormLabel htmlFor="policy">权限</FormLabel>
+                <Select {...register("policy", { required: true })} variant="filled">
+                  <option value="private">私有</option>
+                  <option value="readonly">公共读</option>
+                  <option value="readwrite">公共读写</option>
+                </Select>
+              </FormControl>
 
-                <ModalFooter>
-                  <Button colorScheme="primary" mr={3} type="submit">
-                    {t`Confirm`}
-                  </Button>
-                  <Button onClick={onClose}>{t`Cancel`}</Button>
-                </ModalFooter>
-              </form>
-            )}
-          </Formik>
+              <FormControl>
+                <FormLabel htmlFor="storage">容量</FormLabel>
+                <InputGroup>
+                  <Input
+                    {...register("storage", { required: true })}
+                    type="number"
+                    variant="filled"
+                    className="w-1"
+                  />
+                  <InputRightElement children="GB" />
+                </InputGroup>
+              </FormControl>
+            </VStack>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="primary" mr={3} type="submit" onClick={handleSubmit(onSubmit)}>
+              {t`Confirm`}
+            </Button>
+            <Button onClick={onClose}>{t`Cancel`}</Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>

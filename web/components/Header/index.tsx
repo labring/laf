@@ -2,15 +2,16 @@
  * laf website header nav
  ***************************/
 
-import React, { useEffect } from "react";
+import React from "react";
 import { BiHelpCircle } from "react-icons/bi";
-import { GiDragonfly } from "react-icons/gi";
 import { GrGithub, GrLanguage } from "react-icons/gr";
 import { HStack, Tag, TagLabel } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import useGlobalStore from "pages/globalStore";
 
 import { SmallNavHeight } from "@/constants/index";
+
+import IconWrap from "../IconWrap";
 
 export default function Header(props: { size: "sm" | "lg" }) {
   const { size } = props;
@@ -25,23 +26,29 @@ export default function Header(props: { size: "sm" | "lg" }) {
     >
       <div className="flex items-center">
         <div
-          className="rounded-full bg-black p-1 mr-5 cursor-pointer"
+          className="mr-5 cursor-pointer"
           onClick={() => {
             router.push("/");
           }}
         >
-          <GiDragonfly color="white" fontSize={22} />
+          <img src="/logo.png" alt="logo" className="mr-2 rounded-full" width={24} />
         </div>
         <span className="mr-4 font-bold text-lg">{userInfo.username}</span>
-        <Tag size="sm" borderRadius="full" variant="solid" colorScheme="green">
-          <TagLabel>Free</TagLabel>
-        </Tag>
       </div>
 
       <HStack spacing={5}>
         <GrLanguage fontSize={16} />
-        <BiHelpCircle fontSize={20} />
-        <GrGithub fontSize={18} />
+        <IconWrap tooltip="Doc">
+          <BiHelpCircle fontSize={20} />
+        </IconWrap>
+        <IconWrap
+          tooltip="Star on Github"
+          onClick={() => {
+            window.open("https://www.github.com/labring/laf", "_blank");
+          }}
+        >
+          <GrGithub fontSize={18} className="cursor-pointer" />
+        </IconWrap>
         <img src={userInfo.profile?.avatar} className="rounded-full" width={20} alt="avatar" />
       </HStack>
     </div>

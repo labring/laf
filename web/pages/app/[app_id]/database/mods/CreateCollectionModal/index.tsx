@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { AddIcon } from "@chakra-ui/icons";
 import {
@@ -18,20 +18,17 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
-import useGlobalStore from "pages/globalStore";
 
 import IconWrap from "@/components/IconWrap";
 
-import useDBMStore from "../../store";
+import { useCreateDBMutation } from "../../service";
 
-const CreateCollectionModal = forwardRef((props, ref) => {
+const CreateCollectionModal = (props: { collection?: any }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { createDB } = useDBMStore((state) => state);
-  const formRef = React.useRef(null);
 
-  const { showSuccess } = useGlobalStore();
+  const { collection } = props;
 
-  const [isEdit, setIsEdit] = useState(false);
+  const isEdit = !!collection;
 
   type FormData = {
     name: string;
@@ -45,32 +42,22 @@ const CreateCollectionModal = forwardRef((props, ref) => {
     formState: { errors },
   } = useForm<FormData>();
 
-  const onSubmit = async (data: any) => {
-    await createDB(data.name);
-    showSuccess("create success.");
-    onClose();
-    reset();
-  };
+  const createDBMutation = useCreateDBMutation();
 
-  useImperativeHandle(ref, () => {
-    return {
-      edit: (item: any) => {
-        setIsEdit(true);
-        onOpen();
-      },
-    };
-  });
+  const onSubmit = async (data: any) => {
+    await createDBMutation.mutateAsync({ name: data.name });
+    onClose();
+    reset({});
+  };
 
   return (
     <>
       <IconWrap
         size={20}
         onClick={() => {
-          setIsEdit(false);
           onOpen();
-          setTimeout(() => {
-            setFocus("name");
-          }, 0);
+          reset({});
+          setTimeout(() => setFocus("name"), 0);
         }}
       >
         <AddIcon fontSize={10} />
@@ -81,41 +68,44 @@ const CreateCollectionModal = forwardRef((props, ref) => {
         <ModalContent>
           <ModalHeader>添加集合</ModalHeader>
           <ModalCloseButton />
-          <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
-            <ModalBody pb={6}>
-              <VStack spacing={6} align="flex-start">
-                <FormControl isInvalid={!!errors?.name}>
-                  <FormLabel htmlFor="name">集合名称</FormLabel>
-                  <Input
-                    {...register("name", {
-                      required: "name is required",
-                    })}
-                    id="name"
-                    variant="filled"
-                    readOnly={isEdit}
-                  />
-                  <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>{" "}
-                </FormControl>
-              </VStack>
-            </ModalBody>
+          <ModalBody pb={6}>
+            <VStack spacing={6} align="flex-start">
+              <FormControl isInvalid={!!errors?.name}>
+                <FormLabel htmlFor="name">集合名称</FormLabel>
+                <Input
+                  {...register("name", {
+                    required: "name is required",
+                  })}
+                  id="name"
+                  variant="filled"
+                  readOnly={isEdit}
+                />
+                <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
+              </FormControl>
+            </VStack>
+          </ModalBody>
 
-            <ModalFooter>
-              <Button colorScheme="primary" mr={3} type="submit">
-                {t`Confirm`}
-              </Button>
-              <Button
-                onClick={() => {
-                  onClose();
-                  reset();
-                }}
-              >{t`Cancel`}</Button>
-            </ModalFooter>
-          </form>
+          <ModalFooter>
+            <Button
+              isLoading={createDBMutation.isLoading}
+              colorScheme="primary"
+              mr={3}
+              type="submit"
+              onClick={handleSubmit(onSubmit)}
+            >
+              {t`Confirm`}
+            </Button>
+            <Button
+              onClick={() => {
+                onClose();
+              }}
+            >{t`Cancel`}</Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>
   );
-});
+};
 
 CreateCollectionModal.displayName = "CreateModal";
 

@@ -64,7 +64,7 @@ function APP({ Component, pageProps }: AppPropsWithLayout) {
   return (
     <>
       <Head>
-        <title>laf cloud</title>
+        <title>LaF 云开发</title>
       </Head>
       <I18nProvider i18n={i18n}>
         <QueryClientProvider client={queryClient}>

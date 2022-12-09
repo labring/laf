@@ -1,6 +1,6 @@
-import React, { forwardRef, useImperativeHandle, useState } from "react";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, EditIcon } from "@chakra-ui/icons";
 import {
   Button,
   Checkbox,
@@ -26,15 +26,26 @@ import useGlobalStore from "pages/globalStore";
 
 import IconWrap from "@/components/IconWrap";
 
-import useFunctionStore, { TFunction } from "../../../store";
+import { useCreateFuncitonMutation, useUpdateFunctionMutation } from "../../../service";
+import useFunctionStore from "../../../store";
 
-const CreateModal = forwardRef((props, ref) => {
+const CreateModal = (props: { functionItem?: any }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const formRef = React.useRef(null);
+
+  const store = useFunctionStore();
 
   const { showSuccess } = useGlobalStore();
-  const { createFunction, updateFunction } = useFunctionStore();
-  const [isEdit, setIsEdit] = useState(false);
+
+  const { functionItem } = props;
+  const isEdit = !!functionItem;
+
+  const defaultValues = {
+    name: functionItem?.name || "",
+    description: functionItem?.desc || "",
+    websocket: !!functionItem?.websocket,
+    methods: functionItem?.methods || ["HEAD"],
+    code: functionItem?.source.code || "console.log('welcome to laf')",
+  };
 
   type FormData = {
     name: string;
@@ -52,69 +63,49 @@ const CreateModal = forwardRef((props, ref) => {
     reset,
     formState: { errors },
   } = useForm<FormData>({
-    defaultValues: {
-      name: "",
-      description: "",
-      websocket: false,
-      methods: ["HEAD"],
-      code: "console.log('welcome to laf')",
-    },
+    defaultValues,
   });
+
+  const createFuncitonMutation = useCreateFuncitonMutation();
+  const updateFunctionMutation = useUpdateFunctionMutation();
 
   const onSubmit = async (data: any) => {
     let res: any = {};
     if (isEdit) {
-      res = await updateFunction(data);
+      res = await updateFunctionMutation.mutateAsync(data);
+      store.setCurrentFunction(res.data);
     } else {
-      res = await createFunction(data);
+      res = await createFuncitonMutation.mutateAsync(data);
+      store.setCurrentFunction(res.data);
     }
 
     if (!res.error) {
-      showSuccess("create success.");
+      showSuccess(isEdit ? "update success" : "create success");
       onClose();
-      reset();
+      reset(defaultValues);
     }
   };
-
-  const initialRef = React.useRef(null);
-
-  useImperativeHandle(ref, () => {
-    return {
-      edit: (item: TFunction) => {
-        setIsEdit(true);
-        onOpen();
-        reset({
-          ...item,
-          description: item?.desc,
-          code: item?.source.code,
-        });
-        setTimeout(() => {
-          setFocus("name");
-        }, 16);
-      },
-    };
-  });
 
   return (
     <>
       <IconWrap
         size={20}
+        tooltip={isEdit ? "编辑函数" : "添加函数"}
         onClick={() => {
-          setIsEdit(false);
           onOpen();
-          reset({});
+          reset(defaultValues);
           setTimeout(() => {
             setFocus("name");
-          }, 16);
+          }, 0);
         }}
       >
-        <AddIcon fontSize={10} />
+        {isEdit ? <EditIcon /> : <AddIcon fontSize={10} />}
       </IconWrap>
 
-      <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} size="xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>添加函数</ModalHeader>
+          <ModalHeader>{isEdit ? "编辑函数" : "添加函数"}</ModalHeader>
           <ModalCloseButton />
 
           <ModalBody pb={6}>
@@ -126,6 +117,7 @@ const CreateModal = forwardRef((props, ref) => {
                     required: "name is required",
                   })}
                   id="name"
+                  disabled={isEdit}
                   variant="filled"
                 />
                 <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>{" "}
@@ -190,7 +182,7 @@ const CreateModal = forwardRef((props, ref) => {
       </Modal>
     </>
   );
-});
+};
 
 CreateModal.displayName = "CreateModal";
 

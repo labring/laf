@@ -1,10 +1,13 @@
 import React from "react";
-import { Button, Input, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import { Button, Input, Kbd, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 
 import JsonEditor from "@/components/Editor/JsonEditor";
 import PanelHeader from "@/components/Panel/Header";
 
+import useFunctionStore from "../../store";
+
 export default function DebugPanel() {
+  const { currentFunction: currentFunction } = useFunctionStore((state) => state);
   return (
     <div className="flex h-full">
       <Tabs width="100%">
@@ -17,23 +20,30 @@ export default function DebugPanel() {
           <TabPanel padding={0} h="full">
             <div className="flex flex-col h-full">
               <div className="flex-1 border-r-slate-300 flex flex-col">
-                <div className="flex py-6 px-2 ">
-                  <Button size="xs" className="mr-2">
+                <div className="flex py-6 px-2 items-center">
+                  <Button size="sm" className="mr-2">
                     GET
                   </Button>
                   <Input
-                    size="xs"
+                    size="sm"
+                    readOnly
+                    rounded={4}
                     variant="filled"
-                    defaultValue="https://qcphsd.api.cloudendpoint.cn/deleteCurrentTodo"
+                    value={
+                      currentFunction?.name
+                        ? `https://qcphsd.api.cloudendpoint.cn/${currentFunction?.name}`
+                        : ""
+                    }
                   />
                   <Button
                     style={{ borderRadius: 2 }}
-                    size="xs"
+                    size="sm"
                     px="4"
                     className="ml-2"
+                    onClick={() => {}}
                     colorScheme="blue"
                   >
-                    发送
+                    运行
                   </Button>
                 </div>
                 <Tabs size={"sm"} className="!flex flex-col flex-1">
@@ -42,7 +52,7 @@ export default function DebugPanel() {
                   </TabList>
                   <TabPanels className="flex-1">
                     <TabPanel className="h-full">
-                      <JsonEditor value={{ name: "hellor" }} />
+                      <JsonEditor value={{}} />
                     </TabPanel>
                   </TabPanels>
                 </Tabs>

@@ -18,14 +18,18 @@ import {
 
 import IconWrap from "@/components/IconWrap";
 
-import { useBucketDeleteMutation } from "../../service";
+import { useDeleteDBMutation } from "../../service";
 
-function DeleteBucketModal(props: { storage: any }) {
-  const { storage } = props;
-
-  const bucketDeleteMutation = useBucketDeleteMutation();
+function DeleteCollectionModal(props: { database: any }) {
+  const { database } = props;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const deleteDBMutation = useDeleteDBMutation({
+    onSuccess() {
+      onClose();
+    },
+  });
 
   const {
     register,
@@ -40,6 +44,7 @@ function DeleteBucketModal(props: { storage: any }) {
   return (
     <>
       <IconWrap
+        tooltip="删除"
         onClick={() => {
           reset();
           onOpen();
@@ -54,17 +59,16 @@ function DeleteBucketModal(props: { storage: any }) {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>删除 storage</ModalHeader>
+          <ModalHeader>删除集合</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <p className="mb-2">
               This action cannot be undone. This will permanently delete the{" "}
-              <span className=" text-black mr-1 font-bold">{storage.metadata.name}</span>
+              <span className=" text-black mr-1 font-bold">{database.name}</span>
               storage,
             </p>
             <p className="mb-4">
-              Please type{" "}
-              <span className=" text-red-500 mr-1 font-bold">{storage.metadata.name}</span> to
+              Please type <span className=" text-red-500 mr-1 font-bold">{database.name}</span> to
               confirm.
             </p>
             <FormControl>
@@ -73,7 +77,7 @@ function DeleteBucketModal(props: { storage: any }) {
                   required: "name is required",
                 })}
                 id="name"
-                placeholder={storage?.metadata.name}
+                placeholder={database?.name}
                 variant="filled"
               />
               <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
@@ -85,14 +89,8 @@ function DeleteBucketModal(props: { storage: any }) {
               colorScheme="red"
               mr={3}
               onClick={handleSubmit(async (data) => {
-                if (data.name === storage.metadata.name) {
-                  const res = await bucketDeleteMutation.mutateAsync({
-                    name: storage.metadata.name,
-                    ...storage,
-                  });
-                  if (!res.error) {
-                    onClose();
-                  }
+                if (data.name === database.name) {
+                  await deleteDBMutation.mutateAsync({ name: database.name });
                 }
               })}
             >
@@ -106,4 +104,4 @@ function DeleteBucketModal(props: { storage: any }) {
   );
 }
 
-export default DeleteBucketModal;
+export default DeleteCollectionModal;

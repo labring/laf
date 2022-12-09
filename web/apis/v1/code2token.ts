@@ -8,16 +8,18 @@
 import request from "@/utils/request";
 
 /**
- * Redirect to register page
+ * Get user token by auth code
  */
-export async function AuthControllerGetSignupUrl(
-  params: Paths.AuthControllerGetSignupUrl.BodyParameters | any,
-  extra?: { [key: string]: any },
-): Promise<Paths.AuthControllerGetSignupUrl.Responses> {
-  // /v1/register
-  return request(`/v1/register`, {
+export async function AuthControllerCode2token(
+  params: Paths.AuthControllerCode2token.BodyParameters | any,
+): Promise<Paths.AuthControllerCode2token.Responses> {
+  // /v1/code2token
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/code2token`, {
     method: "GET",
     params: params,
-    ...(extra || {}),
   });
 }

@@ -15,13 +15,17 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
-import { useMutation } from "@tanstack/react-query";
-import useGlobalStore from "pages/globalStore";
 
 import IconWrap from "@/components/IconWrap";
-import request from "@/utils/request";
 
-import { TPackage } from "../../../store";
+import { useAddPackageMutation } from "../service";
+
+type TPackage =
+  | {
+      name: string;
+      version: string;
+    }
+  | undefined;
 
 const AddDepenceModal = forwardRef((_, ref) => {
   const [item, setItem] = useState<TPackage | any>();
@@ -31,8 +35,6 @@ const AddDepenceModal = forwardRef((_, ref) => {
 
   const initialRef = React.useRef(null);
 
-  const { showSuccess } = useGlobalStore();
-
   useImperativeHandle(ref, () => ({
     edit: (item: TPackage) => {
       setItem(item);
@@ -41,25 +43,14 @@ const AddDepenceModal = forwardRef((_, ref) => {
     },
   }));
 
-  const mutation = useMutation(
-    (params: { name: string; version: string }) => request.post("/api/packages", params),
-    {
-      onSuccess: () => {
-        onClose();
-        setItem({
-          name: "",
-          version: "latest",
-        });
-        setTimeout(() => {
-          showSuccess("依赖添加成功");
-        }, 100);
-      },
-    },
-  );
+  const addPackageMutation = useAddPackageMutation(() => {
+    onClose();
+  });
 
   return (
     <>
       <IconWrap
+        tooltip="添加依赖"
         onClick={() => {
           setItem({
             name: "",
@@ -112,10 +103,10 @@ const AddDepenceModal = forwardRef((_, ref) => {
           <ModalFooter>
             <Button
               colorScheme="blue"
-              isLoading={mutation.isLoading}
+              isLoading={addPackageMutation.isLoading}
               mr={3}
               onClick={() => {
-                mutation.mutate(item);
+                addPackageMutation.mutate(item);
               }}
             >
               {t`Confirm`}

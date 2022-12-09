@@ -2,44 +2,49 @@
  * cloud functions list sidebar
  ***************************/
 
-import React, { useRef, useState } from "react";
-import { AiOutlineFilter } from "react-icons/ai";
-import { EditIcon, HamburgerIcon, Search2Icon, SunIcon } from "@chakra-ui/icons";
-import { HStack, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { DeleteIcon, Search2Icon } from "@chakra-ui/icons";
+import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 
+import ConfirmButton from "@/components/ConfirmButton";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
 
+import { useDeleteFunctionMutation, useFunctionListQuery } from "../../service";
 import useFunctionStore, { TFunction } from "../../store";
 
 import CreateModal from "./CreateModal";
 
 export default function FunctionList() {
   const store = useFunctionStore((store) => store);
+  const { setCurrentFunction } = store;
 
   const [keywords, setKeywords] = useState("");
-  const createModalRef = useRef<{
-    edit: (item: TFunction) => void;
-  }>();
+
+  useFunctionListQuery({
+    onSuccess: (data) => {
+      store.setAllFunctionList(data.data);
+      if (!store.currentFunction) {
+        store.setCurrentFunction(data.data[0]);
+      }
+    },
+  });
+
+  useEffect(() => {
+    return () => {
+      setCurrentFunction(undefined);
+    };
+  }, [setCurrentFunction]);
+
+  const deleteFunctionMutaion = useDeleteFunctionMutation();
 
   return (
-    <Panel
-      title={t`FunctionList`}
-      actions={[
-        <IconWrap key="change_theme" onClick={() => {}}>
-          <SunIcon fontSize={12} />
-        </IconWrap>,
-        <CreateModal ref={createModalRef} key="create_modal" />,
-        <IconWrap key="options" onClick={() => {}}>
-          <HamburgerIcon fontSize={12} />
-        </IconWrap>,
-      ]}
-    >
+    <Panel title={t`FunctionList`} actions={[<CreateModal key="create_modal" />]}>
       <div className="border-b border-slate-300">
-        <div className="flex items-center m-2 mb-3">
+        <div className="flex items-center ml-2 mb-3">
           <InputGroup>
             <InputLeftElement
               height={"8"}
@@ -57,38 +62,12 @@ export default function FunctionList() {
               }}
             />
           </InputGroup>
-
-          <HStack spacing="2">
-            <IconWrap onClick={() => {}} size={26}>
-              <AiOutlineFilter size={16} />
-            </IconWrap>
-          </HStack>
         </div>
-
-        {/* <h5 className="m-2">我的收藏</h5>
-      <ul className={styles.functionList + " mb-4"}>
-        {(data?.data || []).map((func: any) => {
-          return (
-            <li
-              key={func.id}
-              onClick={() => {
-                store.setCurrentFunction(func.id);
-              }}
-            >
-              <div>
-                <AttachmentIcon />
-                <span className="ml-2">{func.name}.js</span>
-              </div>
-              <div className={styles.status}>M</div>
-            </li>
-          );
-        })}
-      </ul> */}
 
         <SectionList style={{ height: "calc(100vh - 400px)", overflowY: "auto" }}>
           {(store.allFunctionList || [])
             .filter((item: TFunction) => item?.name.includes(keywords))
-            .map((func) => {
+            .map((func: any) => {
               return (
                 <SectionList.Item
                   isActive={func?.name === store.currentFunction?.name}
@@ -102,13 +81,25 @@ export default function FunctionList() {
                     <FileTypeIcon type={FileType.js} />
                     <span className="ml-2 text-black">{func?.name}</span>
                   </div>
-                  <div className="hidden group-hover:block">
-                    <EditIcon
-                      fontSize={14}
-                      onClick={() => {
-                        createModalRef.current?.edit(func);
+                  <div className="invisible flex items-center group-hover:visible">
+                    <CreateModal functionItem={func} />
+
+                    <ConfirmButton
+                      onSuccessAction={async () => {
+                        await deleteFunctionMutaion.mutateAsync(func);
                       }}
-                    />
+                      headerText={"删除"}
+                      bodyText={"确认要删除函数吗？"}
+                    >
+                      <IconWrap tooltip="删除">
+                        <DeleteIcon
+                          className="ml-2"
+                          fontSize={14}
+                          color="gray.500"
+                          _hover={{ color: "black" }}
+                        />
+                      </IconWrap>
+                    </ConfirmButton>
                   </div>
                 </SectionList.Item>
               );

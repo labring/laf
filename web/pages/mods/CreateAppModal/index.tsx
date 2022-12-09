@@ -1,6 +1,5 @@
-import React, { forwardRef, useImperativeHandle, useState } from "react";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { AddIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
@@ -20,23 +19,34 @@ import {
 } from "@chakra-ui/react";
 import { t } from "@lingui/macro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ApplicationsControllerCreate, ApplicationsControllerUpdate } from "apis/v1/applications";
 import useGlobalStore from "pages/globalStore";
-import { ApplicationsControllerCreate } from "services/v1/applications";
 
-import { APP_STATUS } from "@/constants/index";
+import { APP_STATUS, DEFAULT_REGION } from "@/constants/index";
 
-const CreateAppModal = forwardRef((props, ref) => {
+const CreateAppModal = (props: { application?: any; children: React.ReactNode }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const queryClient = useQueryClient();
 
-  const [isEdit, setIsEdit] = useState(false);
+  const { application = {} } = props;
+  const isEdit = !!application.name;
+
+  const { bundles = [], runtimes = [] } = useGlobalStore();
 
   type FormData = {
-    displayName: string;
+    name: string;
+    state: APP_STATUS;
+    region: string;
     bundleName: string;
     runtimeName: string;
-    region: string;
-    state: APP_STATUS;
+  };
+
+  const defaultValues = {
+    name: application.name,
+    state: application.state || APP_STATUS.Running,
+    region: application.regionName || DEFAULT_REGION,
+    bundleName: bundles[0].name,
+    runtimeName: runtimes[0].name,
   };
 
   const {
@@ -47,67 +57,43 @@ const CreateAppModal = forwardRef((props, ref) => {
     reset,
     formState: { errors },
   } = useForm<FormData>({
-    defaultValues: {
-      region: "default",
-      bundleName: "mini",
-      state: APP_STATUS.Running,
-      runtimeName: "node-laf",
-    },
+    defaultValues,
   });
 
-  const { showSuccess } = useGlobalStore();
+  const { showSuccess, showError } = useGlobalStore();
 
-  const appCreateMutaion = useMutation((params: any) => ApplicationsControllerCreate(params), {
-    onSuccess: () => {
-      onClose();
+  const appCreateMutaion = useMutation((params: any) => ApplicationsControllerCreate(params));
 
-      setTimeout(() => {
-        showSuccess("添加成功");
-      }, 100);
-      queryClient.invalidateQueries(["appListQuery"]);
-    },
-  });
-
-  useImperativeHandle(ref, () => {
-    return {
-      edit: (item: any) => {
-        setIsEdit(true);
-        reset({
-          ...item,
-          displayName: item.name,
-          region: item.regionName,
-        });
-        onOpen();
-        setTimeout(() => {
-          setFocus("displayName");
-        }, 0);
-      },
-    };
-  });
+  const updateAppMutation = useMutation((params: any) => ApplicationsControllerUpdate(params));
 
   const onSubmit = async (data: any) => {
-    appCreateMutaion.mutate(data);
+    let res: any = {};
+    if (isEdit) {
+      res = await updateAppMutation.mutateAsync(data);
+    } else {
+      res = await appCreateMutaion.mutateAsync(data);
+    }
+
+    if (!res.error) {
+      onClose();
+      showSuccess(isEdit ? "update success." : "create success.");
+      queryClient.invalidateQueries(["appListQuery"]);
+    } else {
+      showError(res.error);
+    }
   };
 
   return (
     <>
-      <Button
-        size={"lg"}
-        colorScheme="primary"
-        style={{ padding: "0 40px" }}
-        leftIcon={<AddIcon />}
-        onClick={() => {
-          setIsEdit(false);
-          reset();
+      {React.cloneElement(props.children as React.ReactElement, {
+        onClick: () => {
+          reset(defaultValues);
           onOpen();
-
           setTimeout(() => {
-            setFocus("displayName");
+            setFocus("name");
           }, 0);
-        }}
-      >
-        {t`NewApplication`}
-      </Button>
+        },
+      })}
 
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
@@ -117,16 +103,14 @@ const CreateAppModal = forwardRef((props, ref) => {
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
-              <FormControl isRequired isInvalid={!!errors?.displayName}>
-                <FormLabel htmlFor="displayName">应用名称</FormLabel>
+              <FormControl isRequired isInvalid={!!errors?.name}>
+                <FormLabel htmlFor="name">应用名称</FormLabel>
                 <Input
-                  {...register("displayName", {
-                    required: "displayName is required",
+                  {...register("name", {
+                    required: "name is required",
                   })}
                 />
-                <FormErrorMessage>
-                  {errors?.displayName && errors?.displayName?.message}
-                </FormErrorMessage>
+                <FormErrorMessage>{errors?.name && errors?.name?.message}</FormErrorMessage>
               </FormControl>
 
               <FormControl isRequired>
@@ -193,7 +177,7 @@ const CreateAppModal = forwardRef((props, ref) => {
       </Modal>
     </>
   );
-});
+};
 
 CreateAppModal.displayName = "CreateModal";
 

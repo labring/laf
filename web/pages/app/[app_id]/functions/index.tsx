@@ -2,14 +2,13 @@
  * cloud functions index page
  ***************************/
 
-import React, { useCallback, useEffect } from "react";
-import { Button, HStack } from "@chakra-ui/react";
+import React from "react";
+import { Badge, Button, Center, HStack } from "@chakra-ui/react";
 import useHotKey from "hooks/useHotKey";
 import useGlobalStore from "pages/globalStore";
 
 import CopyText from "@/components/CopyText";
 import FunctionEditor from "@/components/Editor/FunctionEditor";
-import FileStatusIcon, { FileStatus } from "@/components/FileStatusIcon";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import PanelHeader from "@/components/Panel/Header";
 
@@ -19,31 +18,36 @@ import RightPanel from "../mods/RightPanel";
 import DebugPanel from "./mods/DebugPannel";
 import DependecyPanel from "./mods/DependecePanel";
 import FunctionPanel from "./mods/FunctionPanel";
+import { useUpdateFunctionMutation } from "./service";
 
 import useFunctionStore from "./store";
 
 function FunctionPage() {
-  const {
-    initFunctionPage,
-    currentFunction,
-    updateFunctionCode: updateFunction,
-  } = useFunctionStore((store) => store);
+  const store = useFunctionStore((store) => store);
+  const { currentFunction, functionCodes } = store;
 
   const { showSuccess } = useGlobalStore((state) => state);
 
-  useHotKey("s", () => {
-    showSuccess("saved successfully");
+  const updateFunctionMutation = useUpdateFunctionMutation();
+
+  useHotKey("s", async () => {
+    const res = await updateFunctionMutation.mutateAsync({
+      description: currentFunction?.desc,
+      code: functionCodes[currentFunction?.id || ""],
+      methods: currentFunction?.methods,
+      websocket: currentFunction?.websocket,
+      name: currentFunction?.name,
+    });
+    if (!res.error) {
+      store.setCurrentFunction(res.data);
+      store.updateFunctionCode(res.data, res.data.source.code);
+      showSuccess("saved successfully");
+    }
   });
 
   useHotKey("r", () => {
-    showSuccess("it's running");
+    showSuccess("running success");
   });
-
-  useEffect(() => {
-    initFunctionPage();
-
-    return () => {};
-  }, [initFunctionPage]);
 
   return (
     <>
@@ -57,19 +61,27 @@ function FunctionPage() {
             <div className="flex items-center">
               <FileTypeIcon type={FileType.js} />
               <span className="font-bold text-base ml-2">
-                {currentFunction?.name} &nbsp;({currentFunction?.desc})
+                {currentFunction?.name}
+                <span className="ml-2 text-slate-400 font-normal">
+                  {currentFunction?.desc ? currentFunction?.desc : ""}
+                </span>
               </span>
               <span className="ml-4 ">
-                {currentFunction?.isEdit ? "比阿继中" : "已保存"}
-                <FileStatusIcon status={FileStatus.deleted} />
+                {functionCodes[currentFunction?.id || ""] &&
+                  functionCodes[currentFunction?.id || ""] !== currentFunction?.source.code && (
+                    <Badge colorScheme="purple">Editting...</Badge>
+                  )}
+                {/* <FileStatusIcon status={FileStatus.deleted} /> */}
               </span>
             </div>
 
             <HStack spacing="4">
               <span>
                 <span className=" text-slate-500">调用地址：</span>
-                <span className="mr-2">https://qcphsd.api.cloudendpoint.cn/deleteCurrentTodo</span>
-                <CopyText text="https://qcphsd.api.cloudendpoint.cn/deleteCurrentTodo" />
+                <span className="mr-4">
+                  https://qcphsd.api.cloudendpoint.cn/{currentFunction?.name}
+                </span>
+                <CopyText text={`https://qcphsd.api.cloudendpoint.cn/${currentFunction?.name}`} />
               </span>
               <Button
                 size="xs"
@@ -88,16 +100,20 @@ function FunctionPage() {
         </div>
         <div className="flex flex-row h-full w-full">
           <div className="flex-1 border-r border-r-slate-200 overflow-hidden ">
-            <FunctionEditor
-              path={currentFunction?.name || ""}
-              value={currentFunction?.source.code || ""}
-              onChange={(value) => {
-                console.log(value);
-                updateFunction(currentFunction, value || "");
-              }}
-            />
+            {currentFunction?.name ? (
+              <FunctionEditor
+                path={currentFunction?.name || ""}
+                value={functionCodes[currentFunction.id] || currentFunction.source.code}
+                onChange={(value) => {
+                  store.updateFunctionCode(currentFunction, value || "");
+                }}
+              />
+            ) : (
+              <Center className="h-full">请创建函数</Center>
+            )}
           </div>
           <div style={{ width: 550 }}>
+            {/* <div className="h-full border bg-black">1</div> */}
             <DebugPanel />
           </div>
         </div>

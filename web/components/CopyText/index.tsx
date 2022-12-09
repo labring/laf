@@ -3,7 +3,7 @@ import { CopyIcon } from "@chakra-ui/icons";
 import { useClipboard } from "@chakra-ui/react";
 import useGlobalStore from "pages/globalStore";
 
-export default function CopyText(props: { text: string }) {
+export default function CopyText(props: { text: string; tip?: string }) {
   const { onCopy, setValue } = useClipboard("");
   const { showSuccess } = useGlobalStore();
 
@@ -14,9 +14,11 @@ export default function CopyText(props: { text: string }) {
 
   return (
     <CopyIcon
+      className="ml-1"
+      fontSize={12}
       onClick={() => {
         onCopy();
-        showSuccess("复制成功");
+        showSuccess(props.tip || "复制成功");
       }}
     />
   );

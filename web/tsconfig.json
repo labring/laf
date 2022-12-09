@@ -32,7 +32,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "services/v1/api-auto.d.ts"
+    "apis/v1/api-auto.d.ts"
   ],
   "exclude": ["node_modules"]
 }
