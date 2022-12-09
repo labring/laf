@@ -48,7 +48,7 @@ jobs:
           # https://github.com/docker/metadata-action#typesemver
           tags: |
             type=semver,pattern={{version}}
-            type=edge,enable=true,branch=main,value=latest
+            type=raw,value=latest,enable=true
             type=sha,enable=true,format=short
             
       - name: Set up QEMU
@@ -111,7 +111,7 @@ jobs:
           # https://github.com/docker/metadata-action#typesemver
           tags: |
             type=semver,pattern={{version}}
-            type=edge,enable=true,branch=main,value=latest
+            type=raw,value=latest,enable=true
             type=sha,enable=true,format=short
 
       - name: Set up QEMU
