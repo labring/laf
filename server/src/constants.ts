@@ -49,6 +49,23 @@ export class ServerConfig {
   static get APPID_LENGTH(): number {
     return parseInt(process.env.APPID_LENGTH || '6')
   }
+
+  static get DEFAULT_RUNTIME_IMAGE() {
+    const image =
+      process.env.DEFAULT_RUNTIME_IMAGE ||
+      'docker.io/lafyun/runtime-node:latest'
+
+    const initImage =
+      process.env.DEFAULT_RUNTIME_INIT_IMAGE ||
+      'docker.io/lafyun/runtime-node-init:latest'
+    return {
+      image: {
+        main: image,
+        init: initImage,
+      },
+      version: 'latest',
+    }
+  }
 }
 
 export class ResourceLabels {

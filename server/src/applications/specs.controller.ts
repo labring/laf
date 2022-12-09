@@ -10,6 +10,17 @@ export class SpecsController {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
+   * Get region list
+   * @returns
+   */
+  @ApiOperation({ summary: 'Get region list' })
+  @Get('regions')
+  async getRegions() {
+    const data = await this.prisma.region.findMany()
+    return ResponseUtil.ok(data)
+  }
+
+  /**
    * Get runtime list
    * @returns
    */
