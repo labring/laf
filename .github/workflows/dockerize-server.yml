@@ -45,7 +45,7 @@ jobs:
             docker.io/${{ secrets.DOCKER_USERNAME }}/laf-server
           # https://github.com/docker/metadata-action#typesemver
           tags: |
-            type=edge,enable=true,branch=main,value=latest
+            type=raw,value=latest,enable=true
             type=sha,enable=true,format=short
 
       - name: Set up QEMU
