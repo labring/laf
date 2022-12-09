@@ -45,7 +45,7 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=raw,enable=${{ startsWith(github.ref, 'refs/tags/v') }},value=prerelease
-            type=edge,enable=true,branch=$repo.default_branch
+            type=edge,enable=true
             type=ref,event=pr,enable=true,format=pr-${{ github.event.number }}
 
       - name: Set up QEMU
