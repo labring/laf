@@ -9,6 +9,10 @@ env:
   # Common versions
   GO_VERSION: "1.19"
 
+concurrency:
+  group: build-sealos-cluster-image-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build_cluster_image:
     runs-on: ubuntu-latest

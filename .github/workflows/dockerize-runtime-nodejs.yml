@@ -13,7 +13,8 @@ on:
       - "!**/*.md"
 
 concurrency:
-  group: dockerize-${{ github.ref }}
+  group: dockerize-runtime-nodejs-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   dockerize-main-image:

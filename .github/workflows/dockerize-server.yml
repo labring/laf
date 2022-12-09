@@ -11,7 +11,8 @@ on:
       - "!**/*.md"
 
 concurrency:
-  group: dockerize-${{ github.ref }}
+  group: dockerize-server-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   dockerize-server:
