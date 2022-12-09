@@ -215,6 +215,7 @@ export class InstanceService {
       )
       return res.body
     } catch (error) {
+      if (error?.response?.body?.reason === 'NotFound') return null
       return null
     }
   }

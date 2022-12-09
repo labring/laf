@@ -79,11 +79,9 @@ export class DatabaseCoreService {
         )
       return Database.fromObject(res.body)
     } catch (err) {
+      if (err?.response?.body?.reason === 'NotFound') return null
       this.logger.error(err)
-      if (err?.response?.body?.reason === 'NotFound') {
-        return null
-      }
-      throw err
+      return null
     }
   }
 

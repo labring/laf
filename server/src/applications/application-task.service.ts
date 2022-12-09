@@ -130,5 +130,6 @@ export class ApplicationTaskService {
         phase: ApplicationPhase.Deleted,
       },
     })
+    this.logger.log(`Application ${app.appid} updated to phase deleted`)
   }
 }
