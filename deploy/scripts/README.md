@@ -9,12 +9,7 @@
  
 ```bash
 cd deploy/scripts
-
-# setup k8s cluster
-sh install-k8s.sh
-
-# setup laf core
-sh install-laf-core.sh
+sh install-on-linux.sh   # install k8s cluster
 ```
 
 ## Create development environment on MacOS
@@ -31,20 +26,15 @@ brew install --cask multipass  # or see https://multipass.run/install
 
 ```bash
 cd deploy/scripts
-
-# create vm & setup k8s in it
-sh init-vm.sh  
-
-# setup laf core
-multipass exec laf-dev -- sudo -u root sh /laf/deploy/scripts/install-laf-core.sh 
+sh install-on-mac.sh  # create vm & setup in it
 ``` 
 
 3. Start laf server
 
 ```bash
 # Forward service in cluster to localhost, run this command in another terminal separately
-kubectl port-forward deployment/mongodb 27017:27017 -n laf
-kubectl port-forward deployments/casdoor 30070:8000 -n laf
+kubectl port-forward deployment/mongodb 27017:27017 -n laf-system
+kubectl port-forward deployments/casdoor 30070:8000 -n laf-system
 
 # Run these in first time or when someone change the schema.
 cd server

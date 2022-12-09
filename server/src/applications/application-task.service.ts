@@ -74,14 +74,15 @@ export class ApplicationTaskService {
 
     // reconcile resources
     const namespace = await this.appCore.getAppNamespace(appid)
-    let database = await this.databaseCore.findOne(appid)
-    let oss = await this.ossCore.findOne(appid)
-    let gateway = await this.gatewayCore.findOne(appid)
-
     if (!namespace) {
       await this.appCore.createAppNamespace(appid, app.createdBy)
       return
     }
+
+    let database = await this.databaseCore.findOne(appid)
+    let oss = await this.ossCore.findOne(appid)
+    let gateway = await this.gatewayCore.findOne(appid)
+
     if (!database) database = await this.databaseCore.create(app, bundle)
     if (!oss) oss = await this.ossCore.create(app, bundle)
     if (!gateway) gateway = await this.gatewayCore.create(app.appid)

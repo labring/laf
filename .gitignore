@@ -27,6 +27,7 @@ core/controllers/oss/.vscode/dryrun.log
 deploy/build/*/manifests
 deploy/build/*/registry
 deploy/build/*/charts
+deploy/build/registry
 
 docs/.vitepress/.temp
 .idea/

@@ -1,0 +1,67 @@
+# Default values for laf.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+global:
+  region: default
+  domain: app.laf.dev
+
+  
+# Casdoor
+casdoor:
+  postgresql:
+    username: adm1n
+    password: passw0rd
+    database: casdoor
+  client_id: a71f65e93723c436027e
+  client_secret: 0d7e157be08055867b81456df3c222ea7c68a097
+  redirect_uri: http://localhost:3001/login_callback
+
+# Gateway
+apisix:
+  admin:
+    credentials:
+      admin: 4054f7cf07e344346cd3f287985e7c8f1
+      viewer: 4054f7cf07e344346cd3f287985e76a2
+  etcd:
+    enabled: false
+    host: 
+      - http://apisix-etcd:2379
+    prefix: /apisix
+  dashboard:
+    enabled: false
+  ingress-controller:
+    enabled: false
+  apisix-ingress-controller:
+    config:
+      apisix:
+        adminKey: 4054f7cf07e344346cd3f287985e7c8f1
+  
+
+
+
+# Mongodb
+mongodb:
+  db:
+    username: admin
+    password: passw0rd
+    database: sys_db
+    replicaSetName: rs0
+  storage:
+    size: 10Gi
+    class: database-mongodb
+
+# MinIO
+minio:
+  rootUser: minio-root
+  rootPassword: passw0rd
+  replicas: 1
+  drivesPerNode: 4
+  persistence:
+    enabled: true
+    storageClass: local-hostpath
+    size: 20Gi
+  resources:
+    requests:
+      memory: 100Mi
