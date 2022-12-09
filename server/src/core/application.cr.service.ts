@@ -24,7 +24,6 @@ export class ApplicationCoreService {
       return res.body
     } catch (err) {
       this.logger.error(err)
-      this.logger.verbose(err?.response?.body)
       return null
     }
   }
@@ -37,7 +36,6 @@ export class ApplicationCoreService {
       return res.body
     } catch (err) {
       this.logger.error(err)
-      this.logger.verbose(err?.response?.body)
       return null
     }
   }
@@ -50,7 +48,6 @@ export class ApplicationCoreService {
       return res
     } catch (err) {
       this.logger.error(err)
-      this.logger.verbose(err?.response?.body)
       return null
     }
   }

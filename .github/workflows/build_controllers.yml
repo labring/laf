@@ -72,7 +72,6 @@ jobs:
 
       - name: Build (and publish) ${{ matrix.module }} main image
         env:
-          # fork friendly ^^
           DOCKER_REPO: ghcr.io/${{ github.repository_owner }}/laf-${{ matrix.module }}-controller
         working-directory: core/controllers/${{ matrix.module }}
         run: |

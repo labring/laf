@@ -1,0 +1,11 @@
+apiVersion: gateway.laf.dev/v1
+kind: Domain
+metadata:
+  name: default-domain
+spec:
+  backendType: app
+  cluster:
+    key: {{ .Values.apisix.admin.credentials.admin }}
+    url: http://apisix-admin.{{ .Release.Namespace }}.svc.cluster.local:9180/apisix/admin
+  domain: {{ .Values.global.domain }}
+  region: {{ .Values.global.region }}

@@ -3,7 +3,8 @@
     "../../packages/*",
     "../../docs",
     "../../server",
-    "../../web"
+    "../../web",
+    "../../runtimes/nodejs"
   ],
   "version": "0.8.13",
   "command": {

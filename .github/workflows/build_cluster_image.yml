@@ -1,0 +1,105 @@
+name: Build cluster images
+
+on:
+  repository_dispatch:
+    types: [controllers_build_success]
+  workflow_dispatch:
+  push:
+    branches: ["main", "fix-workflow"]
+    paths:
+      - "deploy/build/**"
+      - ".github/workflows/build_cluster_image.yml"
+      - "!**/*.md"
+
+env:
+  # Common versions
+  GO_VERSION: "1.19"
+
+jobs:
+  build_cluster_image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.client_payload.ref }}
+
+      - name: Prepare
+        id: prepare
+        run: |
+          IMAGE=laf
+          TAG=dev
+          echo "tag=${TAG}" >> $GITHUB_ENV
+          echo "image=${IMAGE}" >> $GITHUB_ENV
+
+      - name: Remove builtin docker
+        run: |
+          sudo apt-get remove -y moby-engine moby-cli moby-buildx moby-compose
+
+      - name: Install sealos
+        run: |
+          echo "deb [trusted=yes] https://apt.fury.io/labring/ /" | sudo tee /etc/apt/sources.list.d/labring.list
+          sudo apt update
+          sudo apt install sealos=4.1.3
+          sudo sealos version
+
+      - name: Install buildah
+        run: |
+          sudo apt remove buildah -y || true
+          arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/)
+          sudo echo "download buildah in https://github.com/labring/cluster-image/releases/download/depend/buildah.linux.${arch}"
+          sudo wget -qO "buildah" "https://github.com/labring/cluster-image/releases/download/depend/buildah.linux.${arch}"
+          sudo chmod a+x buildah
+          sudo mv buildah /usr/bin
+
+      - name: Login GHCR.io
+        run: |
+          echo "run: buildah login -u ${{ github.repository_owner }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io" 
+          sudo buildah login -u ${{ github.repository_owner }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
+
+      - name: Prepare cluster image
+        working-directory: deploy/build
+        run: |
+          bash pre-build.sh
+
+      - name: Build cluster image
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/${{ env.image }}
+          VERSION: ${{ env.tag }}
+        working-directory: deploy/build
+        run: |
+          echo $IMAGE:$VERSION
+          sudo sealos build -t $IMAGE:$VERSION-arm64 --platform linux/arm64 -f Kubefile  .
+          sudo rm -rf registry
+          sudo sealos build -t $IMAGE:$VERSION-amd64 --platform linux/amd64 -f Kubefile  .
+          sudo sealos images
+
+      - name: Push cluster image to ghcr.io
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/${{ env.image }}
+          VERSION: ${{ env.tag }}
+        run: |
+          sudo buildah images
+          sudo buildah push $IMAGE:$VERSION-amd64
+          sudo buildah push $IMAGE:$VERSION-arm64
+          sudo buildah manifest create $IMAGE:$VERSION
+          sudo buildah manifest add $IMAGE:$VERSION docker://$IMAGE:$VERSION-amd64
+          sudo buildah manifest add $IMAGE:$VERSION docker://$IMAGE:$VERSION-arm64
+          sudo buildah manifest push --all $IMAGE:$VERSION docker://$IMAGE:$VERSION
+
+      - name: Push cluster image to docker.io
+        env:
+          GHCR_IMAGE: ghcr.io/${{ github.repository_owner }}/${{ env.image }}
+          IMAGE: docker.io/${{ secrets.DOCKER_USERNAME }}/${{ env.image }}
+          VERSION: ${{ env.tag }}
+        run: |
+          sudo buildah login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} docker.io
+          sudo buildah tag $GHCR_IMAGE:$VERSION-amd64 $IMAGE:$VERSION-amd64
+          sudo buildah tag $GHCR_IMAGE:$VERSION-arm64 $IMAGE:$VERSION-arm64
+          sudo buildah push $IMAGE:$VERSION-amd64
+          sudo buildah push $IMAGE:$VERSION-arm64
+          sudo buildah manifest create $IMAGE:$VERSION
+          sudo buildah manifest add $IMAGE:$VERSION docker://$IMAGE:$VERSION-amd64
+          sudo buildah manifest add $IMAGE:$VERSION docker://$IMAGE:$VERSION-arm64
+          sudo buildah manifest push --all $IMAGE:$VERSION docker://$IMAGE:$VERSION
