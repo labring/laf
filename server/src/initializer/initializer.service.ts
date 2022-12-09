@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { CPU_UNIT, MB } from 'src/constants'
+import { CPU_UNIT, MB, ServerConfig } from 'src/constants'
 import { PrismaService } from 'src/prisma.service'
 
 @Injectable()
@@ -64,10 +64,10 @@ export class InitializerService {
         name: 'node',
         type: 'node:laf',
         image: {
-          main: 'docker.io/lafyun/runtime-node:1.0.0-alpha.0',
-          init: 'docker.io/lafyun/runtime-node-init:1.0.0-alpha.0',
+          main: ServerConfig.DEFAULT_RUNTIME_IMAGE.image.main,
+          init: ServerConfig.DEFAULT_RUNTIME_IMAGE.image.init,
         },
-        version: '1.0.0-alpha.0',
+        version: ServerConfig.DEFAULT_RUNTIME_IMAGE.version,
         latest: true,
       },
     })
