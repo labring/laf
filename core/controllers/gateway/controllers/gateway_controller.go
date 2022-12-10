@@ -148,6 +148,7 @@ func (r *GatewayReconciler) applyApp(ctx context.Context, gateway *gatewayv1.Gat
 				ServiceName: gateway.Spec.AppId,
 				ServicePort: 80,
 			},
+			EnableWebSocket: true,
 		},
 	}
 
