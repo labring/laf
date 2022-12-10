@@ -145,8 +145,8 @@ func (r *GatewayReconciler) applyApp(ctx context.Context, gateway *gatewayv1.Gat
 			DomainName:      appDomain.Name,
 			DomainNamespace: appDomain.Namespace,
 			Backend: gatewayv1.Backend{
-				ServiceName: gateway.Spec.AppId,
-				ServicePort: 80,
+				ServiceName: gateway.Spec.AppId + "." + gateway.Namespace,
+				ServicePort: 8000,
 			},
 		},
 	}
