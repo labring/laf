@@ -2,7 +2,7 @@ name: build-sealos-cluster-image
 
 on:
   repository_dispatch:
-    types: [docker_build_success]
+    types: [docker_build_success,build-scripts-updated]
   workflow_dispatch:
 
 env:
