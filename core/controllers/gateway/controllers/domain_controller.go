@@ -18,14 +18,20 @@ package controllers
 
 import (
 	"context"
-
+	"errors"
+	"github.com/labring/laf/core/controllers/gateway/apisix"
+	"github.com/labring/laf/core/pkg/common"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	gatewayv1 "github.com/labring/laf/core/controllers/gateway/api/v1"
+	corev1 "k8s.io/api/core/v1"
 )
+
+const sslFinalizer = "ssl.gateway.laf.dev"
 
 // DomainReconciler reconciles a Domain object
 type DomainReconciler struct {
@@ -58,9 +64,67 @@ type DomainReconciler struct {
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.2/pkg/reconcile
 func (r *DomainReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
+	var domain gatewayv1.Domain
+	if err := r.Get(ctx, req.NamespacedName, &domain); err != nil {
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+	if !domain.DeletionTimestamp.IsZero() {
+		return r.delete(ctx, &domain)
+	}
 
-	// TODO(user): your logic here
+	return r.apply(ctx, &domain)
+}
 
+func (r *DomainReconciler) apply(ctx context.Context, domain *gatewayv1.Domain) (ctrl.Result, error) {
+
+	if domain.Spec.CertConfigRef == "" {
+		return ctrl.Result{}, nil
+	}
+
+	var secret corev1.Secret
+	if err := r.Get(ctx, client.ObjectKey{Namespace: common.GetSystemNamespace(), Name: domain.Spec.CertConfigRef}, &secret); err != nil {
+		return ctrl.Result{}, err
+	}
+	if secret.Data["tls.crt"] == nil || secret.Data["tls.key"] == nil {
+		return ctrl.Result{}, errors.New("secret tls.crt or tls.key is nil")
+	}
+	data := map[string]interface{}{
+		"cert": string(secret.Data["tls.crt"]),
+		"key":  string(secret.Data["tls.key"]),
+		"snis": []string{"*." + domain.Spec.Domain},
+	}
+	cluster := apisix.NewCluster(domain.Spec.Cluster.Url, domain.Spec.Cluster.Key)
+	sslClient := apisix.NewSSLClient(cluster)
+	err := sslClient.Put(domain.Name, data)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+
+	// add finalizer if not present
+	if controllerutil.AddFinalizer(domain, routeFinalizer) {
+		if err := r.Update(ctx, domain); err != nil {
+			return ctrl.Result{}, err
+		}
+	}
+
+	return ctrl.Result{}, nil
+}
+
+func (r *DomainReconciler) delete(ctx context.Context, domain *gatewayv1.Domain) (ctrl.Result, error) {
+	_log := log.FromContext(ctx)
+
+	cluster := apisix.NewCluster(domain.Spec.Cluster.Url, domain.Spec.Cluster.Key)
+	sslClient := apisix.NewSSLClient(cluster)
+	sslClient.Delete(domain.Name)
+
+	// remove the finalizer
+	if controllerutil.RemoveFinalizer(domain, routeFinalizer) {
+		if err := r.Update(ctx, domain); err != nil {
+			return ctrl.Result{}, err
+		}
+	}
+
+	_log.Info("ssl deleted: " + domain.Name)
 	return ctrl.Result{}, nil
 }
 
