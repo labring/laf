@@ -1,15 +1,22 @@
 #!/usr/bin/env sh
 # Intro: start laf with sealos in linux
-# Usage: sh ./bare_run.sh
+# Usage: sh ./install-on-linux.sh <domain>
 
 # TIP: use `sh -x scripts/bare_run.sh` to debug
+
+# set the first param as domain
+DOMAIN="$1"
+# if domain is empty string, use default domain
+if [ -z "$DOMAIN" ]; then
+    DOMAIN="127.0.0.1.nip.io"
+fi
 
 # Install Sealos
 if [ -x "$(command -v apt)" ]; then
   # if apt installed, use `apt` to install
   echo "deb [trusted=yes] https://apt.fury.io/labring/ /" | tee /etc/apt/sources.list.d/labring.list
   apt update
-  apt install sealos=4.1.3 -y
+  apt install sealos -y
   
   # fix /etc/hosts overwrite bug in ubuntu while restarting
   sed -i \"/update_etc_hosts/c \\ - ['update_etc_hosts', 'once-per-instance']\" /etc/cloud/cloud.cfg && touch /var/lib/cloud/instance/sem/config_update_etc_hosts
@@ -45,7 +52,9 @@ kubectl taint node $NODENAME node-role.kubernetes.io/control-plane-
 sealos run labring/helm:v3.8.2
 sealos run labring/openebs:v1.9.0
 sealos run labring/cert-manager:v1.8.0
-sealos run lafyun/laf:latest
+
+
+sealos run --env DOMAIN=$DOMAIN lafyun/laf:latest
 
 # Optional installations
 #arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/)

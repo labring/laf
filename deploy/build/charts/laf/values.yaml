@@ -5,7 +5,7 @@
 
 global:
   region: default
-  domain: app.laf.dev
+  domain: 127.0.0.1.nip.io
 
   
 # Casdoor

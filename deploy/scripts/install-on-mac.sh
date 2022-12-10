@@ -73,21 +73,14 @@ multipass mount $PROJECT_ROOT $NAME:/laf/
 
 # shellcheck disable=SC2139
 alias vm_root_exec="multipass exec $NAME -- sudo -u root"
+vm_ip=$(multipass info "$NAME" | grep IPv4: | awk '{print $2}')
 
 # install k8s cluster
 echo "Installing k8s cluster"
-vm_root_exec sh /laf/deploy/scripts/install-on-linux.sh
+DOMAIN="$vm_ip.nip.io"
+vm_root_exec sh /laf/deploy/scripts/install-on-linux.sh $DOMAIN
 
-set -x
-set -e
-multipass exec "$NAME" -- sudo -u root cat /root/.kube/config > "$KUBECONF"
-
-# replace ip address in kubeconf
-vm_ip=$(multipass info "$NAME" | grep IPv4: | awk '{print $2}')
-sed -i -e "s/apiserver.cluster.local/$vm_ip/g" "$KUBECONF"
-set +x
-
-
+# waiting for k8s cluster to be ready
 i=0
 while true; do
     echo "Waiting for k8s cluster ready..."
@@ -102,6 +95,15 @@ while true; do
     fi
     sleep 3
 done
+
+set -x
+set -e
+# copy kubeconfig to host
+multipass exec "$NAME" -- sudo -u root cat /root/.kube/config > "$KUBECONF"
+
+# replace ip address in kubeconf
+sed -i -e "s/apiserver.cluster.local/$vm_ip/g" "$KUBECONF"
+set +x
 
 echo "k8s cluster is ready."
 echo "ip: $vm_ip"

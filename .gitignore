@@ -28,6 +28,6 @@ deploy/build/*/manifests
 deploy/build/*/registry
 deploy/build/*/charts
 deploy/build/registry
-
+deploy/build-dev
 docs/.vitepress/.temp
 .idea/
