@@ -73,7 +73,7 @@ apisix:
     tag: 2.15.0-alpine
 
   # Use a `DaemonSet` or `Deployment`
-  kind: DaemonSet
+  kind: Deployment
   # kind is DaemonSet, replicaCount not become effective
   replicaCount: 1
 
@@ -109,7 +109,7 @@ apisix:
     # requests:
     #   cpu: 100m
     #   memory: 128Mi
-  hostNetwork: true
+  hostNetwork: false
 
   nodeSelector: {}
   tolerations: []

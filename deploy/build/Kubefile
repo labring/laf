@@ -5,4 +5,7 @@ COPY charts  ./charts
 COPY manifests ./manifests
 COPY registry ./registry
 COPY start.sh ./start.sh
-CMD ["sh start.sh"]
+
+ENV DOMAIN=127.0.0.1.nip.io
+
+CMD ["DOMAIN=$(DOMAIN) sh start.sh"]
