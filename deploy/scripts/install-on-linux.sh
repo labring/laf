@@ -54,7 +54,7 @@ sealos run labring/openebs:v1.9.0
 sealos run labring/cert-manager:v1.8.0
 
 
-sealos run --env DOMAIN=$DOMAIN lafyun/laf:latest
+sealos run --env DOMAIN=$DOMAIN --env DB_PV_SIZE=3Gi --env OSS_PV_SIZE=3Gi lafyun/laf:latest
 
 # Optional installations
 #arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/)

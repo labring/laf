@@ -6,6 +6,9 @@ COPY manifests ./manifests
 COPY registry ./registry
 COPY start.sh ./start.sh
 
+ENV REGION=default
 ENV DOMAIN=127.0.0.1.nip.io
+ENV DB_PV_SIZE=10Gi
+ENV OSS_PV_SIZE=20Gi
 
-CMD ["DOMAIN=$(DOMAIN) sh start.sh"]
+CMD ["DOMAIN=$(DOMAIN) DB_PV_SIZE=$(DB_PV_SIZE) OSS_PV_SIZE=$(OSS_PV_SIZE) REGION=$(REGION) sh start.sh"]
