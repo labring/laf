@@ -1,0 +1,9 @@
+
+Domains: 
+- http://api.{{ .Values.global.domain }}
+- http://www.{{ .Values.global.domain }}
+- http://oss.{{ .Values.global.domain }}
+- http://casdoor.{{ .Values.global.domain }}
+- http://minio.{{ .Values.global.domain }}
+
+> Please resolve the `*.{{ .Values.global.domain }}` to the IP address of the server.

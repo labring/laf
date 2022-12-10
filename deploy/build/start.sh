@@ -4,11 +4,8 @@ kubectl apply -f manifests/
 echo "DOMAIN: $DOMAIN"
 
 helm install laf -n laf-system \
-    --set minio.persistence.size=5Gi \
-    --set mongodb.storage.size=5Gi \
-    --set gateway.http.containerPort=80 \
-    --set gateway.tls.containerPort=443 \
-    --set apisix.kind=DaemonSet \
-    --set apisix.hostNetwork=true \
+    --set minio.persistence.size=${OSS_PV_SIZE} \
+    --set mongodb.storage.size=${DB_PV_SIZE} \
     --set global.domain=${DOMAIN} \
+    --set global.region=${REGION} \
     ./charts/laf
