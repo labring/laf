@@ -29,8 +29,12 @@ jobs:
           node-version: 18.x
 
       - name: Install Package
-        working-directory: runtimes/nodejs
+        working-directory: server
         run: npm cache clean --force && npm install
+
+      - name: Build Server
+        working-directory: server
+        run: npm run build
 
       - name: Docker meta
         id: meta

@@ -3,7 +3,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["interactiveTransactions"]
+  // previewFeatures = ["interactiveTransactions"]
   binaryTargets = ["native", "linux-arm64-openssl-1.1.x"]
 }
 
