@@ -11,7 +11,9 @@ WORKDIR /app
 EXPOSE 3000
 
 COPY . /app
-RUN npm install --production
+
+RUN npm install -g @nestjs/cli
+RUN npm install
 RUN npx prisma generate
 RUN npm run build
 
