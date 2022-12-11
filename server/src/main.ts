@@ -1,10 +1,9 @@
 import { NestFactory } from '@nestjs/core'
 import * as compression from 'compression'
-import helmet from 'helmet'
 import { AppModule } from './app.module'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { ValidationPipe, VersioningType } from '@nestjs/common'
-import { HTTP_METHODS } from './constants'
+import { HTTP_METHODS, ServerConfig } from './constants'
 import { InitializerService } from './initializer/initializer.service'
 
 async function bootstrap() {
@@ -25,7 +24,6 @@ async function bootstrap() {
   })
 
   app.use(compression())
-  app.use(helmet())
 
   // for swagger api
   const config = new DocumentBuilder()
@@ -34,6 +32,7 @@ async function bootstrap() {
     .setVersion('1.0.alpha')
     .addServer('http://localhost:3000', 'local server')
     .addServer('http://dev.server:3000', 'dev server')
+    .addServer(ServerConfig.SERVER, 'prod server')
     .addBearerAuth(
       { type: 'http', scheme: 'bearer', bearerFormat: 'JWT', in: 'header' },
       'Authorization',
