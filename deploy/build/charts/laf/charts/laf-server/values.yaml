@@ -1,34 +1,30 @@
-# Default values for mongodb.
+# Default values for laf-server.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# app config
-db:
-  username: admin
-  password: passw0rd
-  database: sys_db
-  replicaSetName: rs0
-
-storage:
-  size: 5G
-  class: database-mongodb
-
-# k8s resource config
+jwt:
+  secret: laf_server_abc123
+  expires_in: 7d
+casdoor:
+  client_id: a71f65e93723c436027e
+  client_secret: 0d7e157be08055867b81456df3c222ea7c68a097
+  org_name: laf
+  app_name: laf
 replicaCount: 1
 
 image:
-  repository: mongo
+  repository: docker.io/lafyun/laf-server
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "5.0"
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
-fullnameOverride: "mongodb"
+fullnameOverride: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: false
+  create: true
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
@@ -37,12 +33,10 @@ serviceAccount:
 
 podAnnotations: {}
 
-podSecurityContext:
-  {fsGroup: 999}
+podSecurityContext: {}
   # fsGroup: 2000
 
-securityContext:
-  {}
+securityContext: {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -51,15 +45,13 @@ securityContext:
   # runAsUser: 1000
 
 service:
-  name: mongo
   type: ClusterIP
-  port: 27017
+  port: 80
 
 ingress:
   enabled: false
   className: ""
-  annotations:
-    {}
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
@@ -72,8 +64,7 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources:
-  {}
+resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
