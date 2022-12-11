@@ -12,8 +12,8 @@ EXPOSE 3000
 
 COPY . /app
 
-RUN npm install -g @nestjs/cli
 RUN npm install
+RUN npm install -g @nestjs/cli
 RUN npx prisma generate
 RUN npm run build
 
