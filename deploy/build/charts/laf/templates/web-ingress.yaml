@@ -1,0 +1,21 @@
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-web-ingress
+spec:
+  # apisix-ingress-controller is only interested in Ingress
+  # resources with the matched ingressClass name, in our case,
+  # it's apisix.
+  ingressClassName: apisix
+  rules:
+  - host: www.{{ .Values.global.domain }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: laf-web
+            port:
+              number: 3000
+        path: /
+        pathType: Prefix
