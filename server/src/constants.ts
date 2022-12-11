@@ -66,6 +66,10 @@ export class ServerConfig {
       version: 'latest',
     }
   }
+
+  static get SERVER() {
+    return process.env.SERVER || 'http://localhost:3000'
+  }
 }
 
 export class ResourceLabels {

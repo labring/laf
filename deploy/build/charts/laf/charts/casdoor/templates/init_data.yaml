@@ -73,6 +73,7 @@ data:
             "http://localhost:3001/login",
             "http://localhost:3001/login_callback",
             "http://localhost:3000/v1/code2token",
+            "http://www.{{ .Values.global.domain }}/login_callback",
             {{ .Values.init.redirect_uri | quote }}
           ],
           "expireInHours": 168

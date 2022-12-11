@@ -21,12 +21,10 @@ laf-server:
     secret: laf_server_abc123
     expires_in: 7d
   casdoor:
-    endpoint: http://casdoor.{{ .Values.global.domain }}
     client_id: a71f65e93723c436027e
     client_secret: 0d7e157be08055867b81456df3c222ea7c68a097
     org_name: laf
     app_name: laf
-    redirect_uri: http://www.{{ .Values.global.domain }}/login_callback
   replicaCount: 1
   image:
     repository: docker.io/lafyun/laf-server
@@ -40,9 +38,9 @@ casdoor:
     username: adm1n
     password: passw0rd
     database: casdoor
-  client_id: a71f65e93723c436027e
-  client_secret: 0d7e157be08055867b81456df3c222ea7c68a097
-  redirect_uri: http://www.{{ .Values.global.domain }}/login_callback
+  init:
+    client_id: a71f65e93723c436027e
+    client_secret: 0d7e157be08055867b81456df3c222ea7c68a097
 
 # Gateway
 apisix:

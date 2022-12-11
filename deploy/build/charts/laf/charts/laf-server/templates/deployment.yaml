@@ -52,6 +52,8 @@ spec:
               value: mongodb://{{ .Values.global.db.username }}:{{ .Values.global.db.password }}@mongo.{{ .Release.Namespace }}.svc.cluster.local:27017/{{ .Values.global.db.database }}?authSource=admin&replicaSet={{ .Values.global.db.replicaSetName }}&w=majority
             - name: JWT_SECRET
               value: {{ .Values.jwt.secret | quote}}
+            - name: SERVER
+              value: http://api.{{ .Values.global.domain }}
             - name: JWT_EXPIRES_IN
               value: {{ .Values.jwt.expires_in | quote}}
             - name: OSS_ENDPOINT
