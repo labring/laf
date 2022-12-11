@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "laf-server.fullname" . }}
+  labels:
+    {{- include "laf-server.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "laf-server.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "laf-server.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "laf-server.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - sh
+            - -c
+            - |
+              npx prisma generate
+              node dist/main
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /v1/regions
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /v1/regions
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: DATABASE_URL
+              value: mongodb://{{ .Values.global.db.username }}:{{ .Values.global.db.password }}@mongo.{{ .Release.Namespace }}.svc.cluster.local:27017/{{ .Values.global.db.database }}?authSource=admin&replicaSet={{ .Values.global.db.replicaSetName }}&w=majority
+            - name: JWT_SECRET
+              value: {{ .Values.jwt.secret | quote}}
+            - name: JWT_EXPIRES_IN
+              value: {{ .Values.jwt.expires_in | quote}}
+            - name: OSS_ENDPOINT
+              value: http://oss.{{ .Values.global.domain }}
+            - name: OSS_ACCESS_KEY
+              value: {{ .Values.global.oss.access_key | quote}}
+            - name: OSS_SECRET_KEY
+              value: {{ .Values.global.oss.secret_key | quote}}
+            - name: OSS_REGION
+              value: {{ .Values.global.oss.region | quote}}
+            - name: CASDOOR_ENDPOINT
+              value: http://casdoor.{{ .Values.global.domain }}
+            - name: CASDOOR_ORG_NAME
+              value: {{ .Values.casdoor.org_name | quote}}
+            - name: CASDOOR_APP_NAME
+              value: {{ .Values.casdoor.app_name | quote}}
+            - name: CASDOOR_CLIENT_ID
+              value: {{ .Values.casdoor.client_id | quote}}
+            - name: CASDOOR_CLIENT_SECRET
+              value: {{ .Values.casdoor.client_secret | quote}}
+            - name: CASDOOR_REDIRECT_URI
+              value : http://www.{{ .Values.global.domain }}/login_callback
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

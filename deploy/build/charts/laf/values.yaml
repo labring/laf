@@ -5,6 +5,34 @@
 global:
   region: default
   domain: 127.0.0.1.nip.io
+  db:
+    username: admin
+    password: passw0rd
+    database: sys_db
+    replicaSetName: rs0
+  oss:
+    access_key: minio-root
+    secret_key: passw0rd
+    region: default
+
+laf-server:
+  databaseUrl: mongodb://admin:passw0rd@mongo.{{ .Release.Namespace }}.svc.cluster.local:27017/sys_db?authSource=admin&replicaSet=rs0&w=majoritya
+  jwt:
+    secret: laf_server_abc123
+    expires_in: 7d
+  casdoor:
+    endpoint: http://casdoor.{{ .Values.global.domain }}
+    client_id: a71f65e93723c436027e
+    client_secret: 0d7e157be08055867b81456df3c222ea7c68a097
+    org_name: laf
+    app_name: laf
+    redirect_uri: http://www.{{ .Values.global.domain }}/login_callback
+  replicaCount: 1
+  image:
+    repository: docker.io/lafyun/laf-server
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "latest"
 
 # Casdoor
 casdoor:
