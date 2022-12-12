@@ -11,6 +11,8 @@ import { OSSUserCoreService } from 'src/core/oss-user.cr.service'
 import { APPLICATION_SECRET_KEY, ServerConfig } from 'src/constants'
 import { GenerateAlphaNumericPassword } from 'src/common/random'
 import { OSSUser } from 'src/core/api/oss-user.cr'
+import * as assert from 'node:assert'
+import { JwtService } from '@nestjs/jwt'
 
 @Injectable()
 export class ApplicationsService {
@@ -20,6 +22,7 @@ export class ApplicationsService {
     private readonly databaseCore: DatabaseCoreService,
     private readonly gatewayCore: GatewayCoreService,
     private readonly ossCore: OSSUserCoreService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async create(userid: string, dto: CreateApplicationDto) {
@@ -160,7 +163,7 @@ export class ApplicationsService {
    * @param app
    * @returns
    */
-  public getSTSClient(oss: OSSUser) {
+  private getSTSClient(oss: OSSUser) {
     return new STSClient({
       endpoint: ServerConfig.OSS_ENDPOINT,
       credentials: {
@@ -172,12 +175,12 @@ export class ApplicationsService {
   }
 
   /**
-   * Generate application full-granted STS
+   * Generate application full-granted OSS STS
    * @param bucket
    * @param duration_seconds
    * @returns
    */
-  public async getApplicationSTS(
+  public async getOssSTS(
     appid: string,
     user: OSSUser,
     duration_seconds?: number,
@@ -208,5 +211,26 @@ export class ApplicationsService {
       ],
     }
     return JSON.stringify(policy)
+  }
+
+  async getDebugFunctionToken(appid: string) {
+    const conf = await this.prisma.applicationConfiguration.findUnique({
+      where: { appid },
+    })
+
+    // get secret from envs
+    const secret = conf?.environments.find(
+      (env) => env.name === APPLICATION_SECRET_KEY,
+    )
+    assert(secret?.value, 'application secret not found')
+
+    // generate token
+    const exp = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7 // 7 days
+
+    const token = this.jwtService.sign(
+      { appid, type: 'debug', exp },
+      { secret: secret.value },
+    )
+    return token
   }
 }

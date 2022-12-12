@@ -24,6 +24,7 @@ import { CreateApplicationDto } from './dto/create-application.dto'
 import { UpdateApplicationDto } from './dto/update-application.dto'
 import { ApplicationsService } from './applications.service'
 import { ApplicationCoreService } from 'src/core/application.cr.service'
+import { ServerConfig } from 'src/constants'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -83,14 +84,17 @@ export class ApplicationsController {
     // get sub resources
     const resources = await this.appService.getSubResources(appid)
 
-    const data = await this.appService.findOne(appid)
-    const sts = await this.appService.getApplicationSTS(appid, resources.oss)
+    const data = await this.appService.findOne(appid, { configuration: true })
+    const sts = await this.appService.getOssSTS(appid, resources.oss)
     const credentials = {
+      endpoint: ServerConfig.OSS_ENDPOINT,
       accessKeyId: sts.Credentials?.AccessKeyId,
       secretAccessKey: sts.Credentials?.SecretAccessKey,
       sessionToken: sts.Credentials?.SessionToken,
       expiration: sts.Credentials?.Expiration,
     }
+
+    const debug_token = await this.appService.getDebugFunctionToken(appid)
     const res = {
       ...data,
       gateway: resources.gateway,
@@ -99,6 +103,7 @@ export class ApplicationsController {
         ...resources.oss,
         credentials,
       },
+      function_debug_token: debug_token,
     }
 
     return ResponseUtil.ok(res)
