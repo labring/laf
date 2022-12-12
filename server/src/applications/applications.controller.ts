@@ -84,7 +84,22 @@ export class ApplicationsController {
     const resources = await this.appService.getSubResources(appid)
 
     const data = await this.appService.findOne(appid)
-    const res = { ...data, ...resources }
+    const sts = await this.appService.getApplicationSTS(appid, resources.oss)
+    const credentials = {
+      accessKeyId: sts.Credentials?.AccessKeyId,
+      secretAccessKey: sts.Credentials?.SecretAccessKey,
+      sessionToken: sts.Credentials?.SessionToken,
+      expiration: sts.Credentials?.Expiration,
+    }
+    const res = {
+      ...data,
+      gateway: resources.gateway,
+      database: resources.database,
+      oss: {
+        ...resources.oss,
+        credentials,
+      },
+    }
 
     return ResponseUtil.ok(res)
   }

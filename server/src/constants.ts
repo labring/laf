@@ -70,6 +70,13 @@ export class ServerConfig {
   static get SERVER() {
     return process.env.SERVER || 'http://localhost:3000'
   }
+
+  /**
+   * The external endpoint of oss server
+   */
+  static get OSS_ENDPOINT() {
+    return process.env.OSS_ENDPOINT
+  }
 }
 
 export class ResourceLabels {

@@ -23,6 +23,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@aws-sdk/client-sts": "^3.226.0",
     "@kubernetes/client-node": "^0.17.1",
     "@nestjs/axios": "^1.0.0",
     "@nestjs/common": "^9.0.0",
