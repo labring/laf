@@ -20,6 +20,7 @@ spec:
       labels:
         {{- include "laf-server.selectorLabels" . | nindent 8 }}
     spec:
+      automountServiceAccountToken: {{ .Values.serviceAccount.create }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

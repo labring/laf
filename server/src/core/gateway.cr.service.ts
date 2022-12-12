@@ -47,6 +47,7 @@ export class GatewayCoreService {
     } catch (err) {
       if (err?.response?.body?.reason === 'NotFound') return null
       this.logger.error(err)
+      this.logger.debug(err.response?.body)
       return null
     }
   }

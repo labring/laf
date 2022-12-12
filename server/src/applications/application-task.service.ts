@@ -75,6 +75,7 @@ export class ApplicationTaskService {
     // reconcile resources
     const namespace = await this.appCore.getAppNamespace(appid)
     if (!namespace) {
+      this.logger.debug(`Creating namespace for application ${appid}`)
       await this.appCore.createAppNamespace(appid, app.createdBy)
       return
     }
@@ -83,9 +84,18 @@ export class ApplicationTaskService {
     let oss = await this.ossCore.findOne(appid)
     let gateway = await this.gatewayCore.findOne(appid)
 
-    if (!database) database = await this.databaseCore.create(app, bundle)
-    if (!oss) oss = await this.ossCore.create(app, bundle)
-    if (!gateway) gateway = await this.gatewayCore.create(app.appid)
+    if (!database) {
+      this.logger.debug(`Creating database for application ${appid}`)
+      database = await this.databaseCore.create(app, bundle)
+    }
+    if (!oss) {
+      this.logger.debug(`Creating oss for application ${appid}`)
+      oss = await this.ossCore.create(app, bundle)
+    }
+    if (!gateway) {
+      this.logger.debug(`Creating gateway for application ${appid}`)
+      gateway = await this.gatewayCore.create(app.appid)
+    }
 
     // reconcile state
     if (!isConditionTrue('Ready', database?.status?.conditions)) return
