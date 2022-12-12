@@ -22,7 +22,6 @@ request.interceptors.request.use(
       Authorization: "Bearer " + localStorage.getItem("token"),
     };
 
-    //获取token，并将其添加至请求头中
     // const session = useSessionStore.getState().session;
     // if (session?.token?.access_token) {
     //   const token = session.token.access_token;
@@ -40,7 +39,7 @@ request.interceptors.request.use(
   },
   (error) => {
     error.data = {};
-    error.data.msg = "服务器异常，请联系管理员！";
+    error.data.msg = "The server is abnormal, please contact the administrator!";
     return Promise.resolve(error);
   },
 );
@@ -58,7 +57,8 @@ request.interceptors.response.use(
       // handle error code
       const { data } = error.response;
       if (data.statusCode === 401) {
-        location.href = process.env.NEXT_PUBLIC_LOGIN_PATH as string;
+        const loginUrl = process.env.NEXT_PUBLIC_API_SERVER + '/v1/login';
+        location.href = loginUrl;
         return;
       }
       toast({
