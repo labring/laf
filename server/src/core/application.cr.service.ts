@@ -24,6 +24,7 @@ export class ApplicationCoreService {
       return res.body
     } catch (err) {
       this.logger.error(err)
+      this.logger.debug(err?.response?.body)
       return null
     }
   }
@@ -37,6 +38,7 @@ export class ApplicationCoreService {
     } catch (err) {
       if (err?.response?.body?.reason === 'NotFound') return null
       this.logger.error(err)
+      this.logger.debug(err?.response?.body)
       return null
     }
   }
@@ -49,6 +51,7 @@ export class ApplicationCoreService {
       return res
     } catch (err) {
       this.logger.error(err)
+      this.logger.debug(err?.response?.body)
       return null
     }
   }

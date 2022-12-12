@@ -15,6 +15,9 @@ import (
 	"time"
 )
 
+//+kubebuilder:rbac:groups=core,resources=secrets,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=gateway.laf.dev,resources=gateways,verbs=get;list;watch;create;update;patch;delete
+
 var secretUpdateTimeAnnotation = "secret.laf.dev/secret-update-time"
 
 type SecretReconciler struct {

@@ -435,6 +435,18 @@ metadata:
   name: gateway-manager-role
 rules:
 - apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
   - gateway.laf.dev
   resources:
   - domains

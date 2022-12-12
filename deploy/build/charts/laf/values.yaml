@@ -14,6 +14,7 @@ global:
     access_key: minio-root
     secret_key: passw0rd
     region: default
+  devMode: false
 
 laf-server:
   databaseUrl: mongodb://admin:passw0rd@mongo.{{ .Release.Namespace }}.svc.cluster.local:27017/sys_db?authSource=admin&replicaSet=rs0&w=majoritya
