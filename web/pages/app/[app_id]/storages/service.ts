@@ -95,3 +95,8 @@ export const useFileListQuery = () => {
     {},
   );
 };
+
+const server = () => {
+  return null;
+};
+export default server;

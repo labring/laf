@@ -15,8 +15,7 @@ request.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     // auto append service prefix
     if (config.url && config.url?.startsWith("/v1/")) {
-      // TODO: localhost 3000
-      config.url = "http://localhost:3000" + config.url;
+      config.url = process.env.NEXT_PUBLIC_API_SERVER + config.url;
     }
 
     let _headers: AxiosRequestHeaders | any = {
@@ -59,7 +58,7 @@ request.interceptors.response.use(
       // handle error code
       const { data } = error.response;
       if (data.statusCode === 401) {
-        location.href = "http://localhost:3000/v1/login";
+        location.href = process.env.NEXT_PUBLIC_LOGIN_PATH as string;
         return;
       }
       toast({

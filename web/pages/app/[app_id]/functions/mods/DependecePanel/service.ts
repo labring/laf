@@ -26,3 +26,9 @@ export const useAddPackageMutation = (callback?: () => void) => {
     },
   );
 };
+
+const server = () => {
+  return null;
+};
+
+export default server;

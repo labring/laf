@@ -1,4 +1,4 @@
-import React, { DragEventHandler, ReactEventHandler } from "react";
+import React from "react";
 import clsx from "clsx";
 
 import styles from "./index.module.scss";
@@ -57,6 +57,7 @@ function FileUpload(props: { onUpload: (files: any) => void }) {
         type="file"
         className={styles.inputFileUpload}
         multiple={true}
+        // @ts-ignore
         webkitdirectory
         onChange={handleChange}
       />
