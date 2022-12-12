@@ -6,6 +6,7 @@ import { ApplicationsService } from './applications.service'
 import { PrismaService } from '../prisma.service'
 import { ApplicationTaskService } from './application-task.service'
 import { InstanceService } from 'src/instance/instance.service'
+import { JwtService } from '@nestjs/jwt'
 
 @Module({
   imports: [CoreModule],
@@ -15,6 +16,7 @@ import { InstanceService } from 'src/instance/instance.service'
     PrismaService,
     ApplicationTaskService,
     InstanceService,
+    JwtService,
   ],
   exports: [ApplicationsService],
 })
