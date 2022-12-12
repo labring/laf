@@ -18,9 +18,9 @@ export default function DataPannel() {
   const [currentData, setCurrentData] = useState<any>(null);
   return (
     <>
-      <div className="flex justify-end pb-2 shadow-sm">
-        <Button colorScheme={"blue"} size="sm" onClick={() => {}}>
-          <AddIcon color="white" />
+      <div className="flex pb-2 mt-2 shadow-sm">
+        <Button colorScheme={"primary"} size="sm" onClick={() => {}}>
+          <AddIcon color="white" className="mr-2" />
           新增记录
         </Button>
       </div>

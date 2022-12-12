@@ -84,3 +84,8 @@ export const useDeleteFunctionMutation = () => {
     },
   );
 };
+
+const server = () => {
+  return null;
+};
+export default server;

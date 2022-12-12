@@ -81,3 +81,8 @@ export const useDeleteDBMutation = (config?: { onSuccess: (data: any) => void })
     },
   );
 };
+
+const server = () => {
+  return null;
+};
+export default server;

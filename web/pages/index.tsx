@@ -101,15 +101,7 @@ function HomePage() {
                   className="flex justify-between items-center p-4 py-6 bg-white rounded-lg shadow mb-6 hover:bg-slate-100"
                 >
                   <div style={{ width: 300 }}>
-                    <Link
-                      onClick={(event) => {
-                        event?.preventDefault();
-                        setCurrentApp(item?.appid);
-                        router.push(`/app/${item?.appid}`);
-                      }}
-                    >
-                      <span className="text-lg font-semibold ">{item?.name}</span>
-                    </Link>
+                    <span className="text-lg font-semibold ">{item?.name}</span>
 
                     <p className="mt-1">
                       App ID: {item?.appid} <CopyText text={item?.appid} />
