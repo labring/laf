@@ -78,7 +78,7 @@ jobs:
           platforms: linux/amd64, linux/arm64
 
   trigger-workflow-build-cluster-image:
-    needs: [dockerize-server]
+    needs: [dockerize-web]
     runs-on: ubuntu-latest
     steps:
       - name: trigger cluster image workflow
