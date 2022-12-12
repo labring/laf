@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: laf-web
+  labels:
+    {{- include "laf-web.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "laf-web.selectorLabels" . | nindent 4 }}
