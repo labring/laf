@@ -114,15 +114,17 @@ func (r *RouteReconciler) applyRoute(ctx context.Context, route *gatewayv1.Route
 		routeData["enable_websocket"] = true
 	}
 
+	plugins := map[string]interface{}{
+		"cors": map[string]interface{}{},
+	}
+
 	// set path rewrite
 	if route.Spec.PathRewrite != nil {
 		pathRewrite := route.Spec.PathRewrite
-		routeData["plugins"] = map[string]interface{}{
-			"proxy-rewrite": map[string]interface{}{
-				"regex_uri": []string{
-					pathRewrite.Regex,
-					pathRewrite.Replacement,
-				},
+		plugins["proxy-rewrite"] = map[string]interface{}{
+			"regex_uri": []string{
+				pathRewrite.Regex,
+				pathRewrite.Replacement,
 			},
 		}
 	}
@@ -135,6 +137,7 @@ func (r *RouteReconciler) applyRoute(ctx context.Context, route *gatewayv1.Route
 
 	// set upstream to base data
 	routeData["upstream"] = upstream
+	routeData["plugins"] = plugins
 
 	// put route to apisix
 	err := cluster.Route.Put(routeId, routeData)
