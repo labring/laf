@@ -16,6 +16,13 @@ spec:
           service:
             name: laf-web
             port:
-              number: 3000
+              number: 80
         path: /
+        pathType: Prefix
+      - backend:
+          service:
+            name: laf-server
+            port:
+              number: 3000
+        path: /api
         pathType: Prefix
