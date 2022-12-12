@@ -26,7 +26,7 @@ function FunctionPage() {
   const store = useFunctionStore((store) => store);
   const { currentFunction, functionCodes } = store;
 
-  const { showSuccess } = useGlobalStore((state) => state);
+  const { currentApp, showSuccess } = useGlobalStore((state) => state);
 
   const updateFunctionMutation = useUpdateFunctionMutation();
 
@@ -78,13 +78,15 @@ function FunctionPage() {
             <HStack spacing="4">
               <span>
                 <span className=" text-slate-500">调用地址：</span>
-                <span className="mr-4">
-                  https://qcphsd.api.cloudendpoint.cn/{currentFunction?.name}
+                <span className="mr-2">
+                  http://{currentApp?.gateway.status.appRoute.domain}/{currentFunction?.name}
                 </span>
-                <CopyText text={`https://qcphsd.api.cloudendpoint.cn/${currentFunction?.name}`} />
+                <CopyText
+                  text={`http://{currentApp?.gateway.status.appRoute.domain}/{currentFunction?.name}`}
+                />
               </span>
               <Button
-                size="xs"
+                size="sm"
                 borderRadius={2}
                 colorScheme="primary"
                 padding="0 12px"

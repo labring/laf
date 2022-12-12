@@ -29,7 +29,7 @@ export default function FunctionLayout(props: { children: ReactNode }) {
   );
 
   useEffect(() => {
-    if (currentApp.appid) {
+    if (currentApp?.appid) {
       init();
     }
   }, [currentApp, init]);
@@ -45,7 +45,7 @@ export default function FunctionLayout(props: { children: ReactNode }) {
           position: "relative",
         }}
       >
-        {loading || !currentApp.appid ? <Spinner /> : props.children}
+        {loading || !currentApp?.appid ? <Spinner /> : props.children}
       </div>
     </div>
   );

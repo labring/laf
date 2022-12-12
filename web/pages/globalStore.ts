@@ -1,4 +1,5 @@
 import { createStandaloneToast } from "@chakra-ui/react";
+import { TApplication } from "apis/typing";
 import { SpecsControllerGetBundles } from "apis/v1/bundles";
 import { AuthControllerGetSigninUrl } from "apis/v1/login";
 import { AuthControllerGetProfile } from "apis/v1/profile";
@@ -14,8 +15,8 @@ type State = {
   loading: boolean;
   runtimes?: any[];
   bundles?: any[];
-  currentApp: any;
-  setCurrentApp(app: any): void;
+  currentApp: TApplication | undefined;
+  setCurrentApp(app: TApplication): void;
   init(appid?: string): void;
 
   showSuccess: (text: string | React.ReactNode) => void;
@@ -27,7 +28,7 @@ const useGlobalStore = create<State>()(
     immer((set, get) => ({
       userInfo: {},
 
-      currentApp: {},
+      currentApp: undefined,
 
       loading: true,
 
@@ -50,7 +51,7 @@ const useGlobalStore = create<State>()(
         });
       },
 
-      setCurrentApp: (app: any) => {
+      setCurrentApp: (app) => {
         localStorage.setItem("app", app.appid);
         set((state) => {
           state.currentApp = app;

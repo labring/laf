@@ -9,7 +9,7 @@ type Credentials = {
 const useOss = (credentials: Credentials) => {
   const { currentApp } = useGlobalStore();
   const region = "us-east-1";
-  const endpoint = `http://${currentApp.name}.oss-${region}.com`;
+  const endpoint = `http://${currentApp?.name}.oss-${region}.com`;
 
   AWS.config.update({
     accessKeyId: "YOUR_ACCESS_KEY_HERE",

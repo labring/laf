@@ -20,7 +20,7 @@ export default function DebugPanel() {
           <TabPanel padding={0} h="full">
             <div className="flex flex-col h-full">
               <div className="flex-1 border-r-slate-300 flex flex-col">
-                <div className="flex py-6 px-2 items-center">
+                <div className="flex py-4 px-2 items-center">
                   <Button size="sm" className="mr-2">
                     GET
                   </Button>
@@ -28,7 +28,6 @@ export default function DebugPanel() {
                     size="sm"
                     readOnly
                     rounded={4}
-                    variant="filled"
                     value={
                       currentFunction?.name
                         ? `https://qcphsd.api.cloudendpoint.cn/${currentFunction?.name}`
@@ -41,21 +40,13 @@ export default function DebugPanel() {
                     px="4"
                     className="ml-2"
                     onClick={() => {}}
-                    colorScheme="blue"
+                    colorScheme="green"
                   >
                     运行
                   </Button>
                 </div>
-                <Tabs size={"sm"} className="!flex flex-col flex-1">
-                  <TabList>
-                    <Tab>参数</Tab>
-                  </TabList>
-                  <TabPanels className="flex-1">
-                    <TabPanel className="h-full">
-                      <JsonEditor value={{}} />
-                    </TabPanel>
-                  </TabPanels>
-                </Tabs>
+                <div className="mx-2 pb-2 mb-2">调用参数:</div>
+                <JsonEditor value={{ name: "test" }} />
               </div>
               <div className="flex-1 ">
                 <PanelHeader className="bg-slate-100">日志</PanelHeader>
