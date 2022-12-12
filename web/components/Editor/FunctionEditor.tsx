@@ -47,7 +47,7 @@ export default function FunctionEditor(props: {
           verticalScrollbarSize: 6,
         },
         lineNumbersMinChars: 4,
-        fontSize: "16px",
+        fontSize: 16,
         // fontFamily: "monospace",
         scrollBeyondLastLine: false,
       }}

@@ -30,19 +30,17 @@ export default function JsonEditor(props: { value: string | object; height?: str
       }}
       beforeMount={handleEditorWillMount}
       options={{
-        lineNumber: false,
+        lineNumbers: "off",
         guides: {
           indentation: false,
         },
         minimap: {
           enabled: false,
         },
-        lineHighlightBackground: "red",
         scrollbar: {
           verticalScrollbarSize: 0,
           alwaysConsumeMouseWheel: false,
         },
-        lineNumbers: "off",
         lineNumbersMinChars: 0,
         fontSize: 14,
         scrollBeyondLastLine: false,
