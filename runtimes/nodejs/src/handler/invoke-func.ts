@@ -7,11 +7,8 @@
 
 import { Request, Response } from "express";
 import { FunctionContext } from "../support/function-engine";
-import Config from "../config";
 import { logger } from "../support/logger";
-import { addFunctionLog } from "../support/function-log";
 import { CloudFunction } from "../support/function-engine";
-import { ObjectId } from "mongodb";
 
 const DEFAULT_FUNCTION_NAME = "__default__";
 
@@ -57,22 +54,6 @@ export async function handleInvokeFunction(req: Request, res: Response) {
       response: res,
     };
     const result = await func.invoke(ctx);
-
-    // log this execution to db
-    if (Config.ENABLE_CLOUD_FUNCTION_LOG === "always") {
-      await addFunctionLog({
-        requestId: requestId,
-        method: req.method,
-        func_id: new ObjectId(func.id),
-        func_name: func_name,
-        logs: result.logs,
-        time_usage: result.time_usage,
-        created_by: req["auth"]?.uid,
-        data: result.data,
-        error: result.error,
-        debug: false,
-      });
-    }
 
     if (result.error) {
       logger.error(

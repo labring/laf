@@ -4,8 +4,12 @@ import { URL } from 'node:url'
 import * as vm from 'vm'
 import { nanosecond2ms } from '../utils'
 import { FunctionConsole } from './console'
-import { FunctionContext, FunctionResult, RequireFuncType, RuntimeContext } from './types'
-
+import {
+  FunctionContext,
+  FunctionResult,
+  RequireFuncType,
+  RuntimeContext,
+} from './types'
 
 /**
  * Default require function
@@ -18,7 +22,6 @@ const defaultRequireFunction: RequireFuncType = (module): any => {
  * Function engine
  */
 export class FunctionEngine {
-
   require_func: RequireFuncType
 
   constructor(require_func?: RequireFuncType) {
@@ -27,9 +30,13 @@ export class FunctionEngine {
 
   /**
    * Execute function
-   * @returns 
+   * @returns
    */
-  async run(code: string, context: FunctionContext, options: vm.RunningScriptOptions): Promise<FunctionResult> {
+  async run(
+    code: string,
+    context: FunctionContext,
+    options: vm.RunningScriptOptions,
+  ): Promise<FunctionResult> {
     const sandbox = this.buildSandbox(context)
     const wrapped = this.wrap(code)
     const fconsole = sandbox.console
@@ -48,34 +55,30 @@ export class FunctionEngine {
       const time_usage = nanosecond2ms(_end_time - _start_time)
       return {
         data,
-        logs: fconsole.logs,
-        time_usage
+        time_usage,
       }
     } catch (error) {
-      fconsole.log(error.message)
-      fconsole.log(error.stack)
+      fconsole.log(error.message, error.stack)
 
       const _end_time = process.hrtime.bigint()
       const time_usage = nanosecond2ms(_end_time - _start_time)
 
       return {
         error: error,
-        logs: fconsole.logs,
-        time_usage
+        time_usage,
       }
     }
   }
 
-
   /**
    * build sandbox
-   * @returns 
+   * @returns
    */
   buildSandbox(functionContext: FunctionContext): RuntimeContext {
-    const fconsole = new FunctionConsole()
+    const fconsole = new FunctionConsole(functionContext.requestId)
 
     const _module = {
-      exports: {}
+      exports: {},
     }
     const sandbox = {
       __context__: functionContext,

@@ -45,11 +45,10 @@ export interface FunctionContext {
 }
 
 /**
- * 运行函数返回的结果对象
+ * Result object returned by the running function
  */
 export interface FunctionResult {
   data?: any;
-  logs: any[];
   error?: Error;
   time_usage: number;
 }
@@ -88,26 +87,6 @@ export interface ICloudFunctionData {
   updatedAt: Date;
   createdBy: string;
 }
-
-// export interface ICloudFunctionData {
-//   _id: ObjectId
-//   description: string
-//   tags: string[]
-//   label: string
-//   name: string
-//   triggers: any[]
-//   version: number
-//   hash: string
-//   status: FunctionStatus
-//   enableHTTP: boolean
-//   appid: string
-//   debugParams: string
-//   code: string
-//   compiledCode: string
-//   created_at: Date
-//   updated_at: Date
-//   created_by: any
-// }
 
 /** Object containing file metadata and access information. */
 interface File {

@@ -15,8 +15,9 @@ import { generateUUID } from './support/utils'
 import { WebSocketAgent } from './support/ws'
 import { DatabaseAgent } from './db'
 import { SchedulerInstance } from './support/scheduler'
-// const xmlparser = require('express-xml-bodyparser')
 import * as xmlparser from 'express-xml-bodyparser'
+
+import "./support/function-log"
 
 /**
  * Just for generating declaration type files for `@/cloud-sdk` which used in cloud function
