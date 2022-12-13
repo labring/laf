@@ -5,7 +5,7 @@ import {
   Logger,
 } from '@nestjs/common'
 import { User } from '@prisma/client'
-import { ApplicationsService } from 'src/applications/applications.service'
+import { ApplicationsService } from 'src/application/applications.service'
 import { IRequest } from '../utils/types'
 
 @Injectable()

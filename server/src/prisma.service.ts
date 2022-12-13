@@ -10,7 +10,6 @@ import { PrismaClient } from '@prisma/client'
 export class PrismaService extends PrismaClient implements OnModuleInit {
   private readonly logger = new Logger(PrismaService.name)
   async onModuleInit() {
-    this.logger.debug('PrismaService initialized')
     await this.$connect()
     this.logger.debug('PrismaService connected')
   }

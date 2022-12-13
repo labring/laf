@@ -23,9 +23,9 @@ import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import { CreateApplicationDto } from './dto/create-application.dto'
 import { UpdateApplicationDto } from './dto/update-application.dto'
 import { ApplicationsService } from './applications.service'
-import { ApplicationCoreService } from 'src/core/application.cr.service'
 import { ServerConfig } from 'src/constants'
 import { FunctionsService } from 'src/functions/functions.service'
+import { StorageService } from 'src/storage/storage.service'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -35,6 +35,7 @@ export class ApplicationsController {
   constructor(
     private readonly appService: ApplicationsService,
     private readonly funcService: FunctionsService,
+    private readonly storageService: StorageService,
   ) {}
 
   /**
@@ -86,7 +87,7 @@ export class ApplicationsController {
     const resources = await this.appService.getSubResources(appid)
 
     const data = await this.appService.findOne(appid, { configuration: true })
-    const sts = await this.appService.getOssSTS(appid, resources.oss)
+    const sts = await this.storageService.getOssSTS(appid, resources.oss)
     const credentials = {
       endpoint: ServerConfig.OSS_ENDPOINT,
       accessKeyId: sts.Credentials?.AccessKeyId,

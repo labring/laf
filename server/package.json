@@ -43,6 +43,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "compression": "^1.7.4",
+    "database-proxy": "^0.8.2",
     "dotenv": "^16.0.3",
     "fast-json-patch": "^3.1.1",
     "mongodb": "^4.12.1",

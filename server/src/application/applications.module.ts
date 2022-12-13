@@ -7,6 +7,7 @@ import { ApplicationTaskService } from './application-task.service'
 import { InstanceService } from 'src/instance/instance.service'
 import { JwtService } from '@nestjs/jwt'
 import { FunctionsService } from 'src/functions/functions.service'
+import { StorageService } from 'src/storage/storage.service'
 
 @Module({
   imports: [CoreModule],
@@ -18,6 +19,7 @@ import { FunctionsService } from 'src/functions/functions.service'
     InstanceService,
     JwtService,
     FunctionsService,
+    StorageService,
   ],
   exports: [ApplicationsService],
 })
