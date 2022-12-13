@@ -252,7 +252,7 @@ func (r *GatewayReconciler) addBuckets(ctx context.Context, gateway *gatewayv1.G
 		routeStatus := &gatewayv1.GatewayRoute{
 			DomainName:      bucketDomain.Name,
 			DomainNamespace: bucketDomain.Namespace,
-			Domain:          gateway.Spec.AppId + "-" + bucketName + "." + bucketDomain.Spec.Domain,
+			Domain:          bucketName + "." + bucketDomain.Spec.Domain,
 		}
 
 		// create bucket route

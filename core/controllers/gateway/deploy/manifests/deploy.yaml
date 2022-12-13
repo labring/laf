@@ -42,34 +42,27 @@ spec:
             description: DomainSpec defines the desired state of Domain
             properties:
               backendType:
-                description: BackendType是后端服务类型，必须存在APP;bucket;WEBSITE
                 enum:
                 - app
                 - bucket
                 - website
                 type: string
               certConfigRef:
-                description: CertConfigRef 是字符串类型，是configMap的引用，可选存在
                 type: string
               cluster:
-                description: Cluster 是网关集群配置 必须存在
                 properties:
                   key:
-                    description: key是集群的key，必须存在
                     type: string
                   url:
-                    description: url是集群的url，必须存在
                     type: string
                 required:
                 - key
                 - url
                 type: object
               domain:
-                description: Domain是域名，必须存在，匹配域名规则
                 pattern: ^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$
                 type: string
               region:
-                description: Region 是区域 必须存在 由字符数组和-组成
                 pattern: ^[a-zA-Z0-9-]+$
                 type: string
             required:
@@ -82,7 +75,6 @@ spec:
             description: DomainStatus defines the observed state of Domain
             properties:
               certConfigRef:
-                description: CertConfigRef 是字符串类型，是configMap的引用
                 type: string
             required:
             - certConfigRef
@@ -132,12 +124,10 @@ spec:
               appid:
                 type: string
               buckets:
-                description: Buckets是存储桶, 是一个数组，可选存在
                 items:
                   type: string
                 type: array
               websites:
-                description: Websites是静态站点，是一个数组，可选存在
                 items:
                   type: string
                 type: array
@@ -148,16 +138,12 @@ spec:
             description: GatewayStatus defines the observed state of Gateway
             properties:
               appRoute:
-                description: AppRoute 是应用路由
                 properties:
                   domain:
-                    description: Domain 是域名，必须存在
                     type: string
                   domainName:
-                    description: DomainName 是域名名称，必须存在
                     type: string
                   domainNamespace:
-                    description: DomainNamespace 是域名所在的命名空间，必须存在
                     type: string
                 required:
                 - domain
@@ -168,20 +154,16 @@ spec:
                 additionalProperties:
                   properties:
                     domain:
-                      description: Domain 是域名，必须存在
                       type: string
                     domainName:
-                      description: DomainName 是域名名称，必须存在
                       type: string
                     domainNamespace:
-                      description: DomainNamespace 是域名所在的命名空间，必须存在
                       type: string
                   required:
                   - domain
                   - domainName
                   - domainNamespace
                   type: object
-                description: BucketRoutes 是存储桶路由
                 type: object
               conditions:
                 description: 'Conditions - Type: Ready'
@@ -256,20 +238,16 @@ spec:
                 additionalProperties:
                   properties:
                     domain:
-                      description: Domain 是域名，必须存在
                       type: string
                     domainName:
-                      description: DomainName 是域名名称，必须存在
                       type: string
                     domainNamespace:
-                      description: DomainNamespace 是域名所在的命名空间，必须存在
                       type: string
                   required:
                   - domain
                   - domainName
                   - domainNamespace
                   type: object
-                description: WebsiteRoutes 是静态站点路由
                 type: object
             type: object
         type: object
@@ -315,13 +293,11 @@ spec:
             description: RouteSpec defines the desired state of Route
             properties:
               backend:
-                description: Backend是service配置, 必须存在
+                description: Backend defines the desired state of Backend
                 properties:
                   serviceName:
-                    description: ServiceName 是service的名称，必须存在
                     type: string
                   servicePort:
-                    description: ServicePort是service的端口，必须存在
                     format: int32
                     type: integer
                 required:
@@ -329,31 +305,22 @@ spec:
                 - servicePort
                 type: object
               certConfigRef:
-                description: CertConfigRef 是证书配置，可选存在
                 type: string
               domain:
-                description: Domain 是路由域名，必须存在
                 type: string
               domainName:
-                description: DomainName 是域名名称，必须存在
                 type: string
               domainNamespace:
-                description: DomainNamespace 是域名所在的命名空间，必须存在
                 type: string
               enableWebSocket:
-                description: EnableWebSocket 是否开启websocket, 默认否
                 type: boolean
               passHost:
-                description: PassHost 传给上游的host，可选存在, 如果不设置，则默认将客户端的 host 透传给上游
                 type: string
               pathRewrite:
-                description: PathRewrite 是路径重写，可选存在
                 properties:
                   regex:
-                    description: Regex 是正则表达式，必须存在
                     type: string
                   replacement:
-                    description: Replacement 是替代内容，必须存在
                     type: string
                 required:
                 - regex
@@ -369,10 +336,8 @@ spec:
             description: RouteStatus defines the observed state of Route
             properties:
               Domain:
-                description: Domain 是路由的完整域名，必须存在
                 type: string
               supportSSL:
-                description: SupportSSL 是否支持ssl, 默认为false
                 type: boolean
             required:
             - Domain
