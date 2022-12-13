@@ -1,16 +1,26 @@
-import { i18n } from "@lingui/core";
-import { cs, en } from "make-plural/plurals";
+import i18n from "i18next";
+import Backend from "i18next-http-backend";
+import LanguageDetector from "i18next-browser-languagedetector";
+import { initReactI18next } from "react-i18next";
 
-i18n.loadLocaleData("en", { plurals: en });
-i18n.loadLocaleData("cs", { plurals: cs });
+i18n
+  // load translation using http -> see /public/locales
+  // learn more: https://github.com/i18next/i18next-http-backend
+  .use(Backend)
+  // detect user language
+  // learn more: https://github.com/i18next/i18next-browser-languageDetector
+  .use(LanguageDetector)
+  // pass the i18n instance to react-i18next.
+  .use(initReactI18next)
+  // init i18next
+  // for all options read: https://www.i18next.com/overview/configuration-options
+  .init({
+    fallbackLng: "zh",
+    debug: true,
 
-/**
- * Load messages for requested locale and activate it.
- * This function isn't part of the LinguiJS library because there're
- * many ways how to load messages — from REST API, from file, from cache, etc.
- */
-export async function activate(locale: string) {
-  const { messages } = await import(`../locales/${locale}/message.js`);
-  i18n.load(locale, messages);
-  i18n.activate(locale);
-}
+    interpolation: {
+      escapeValue: false, // not needed for react as it escapes by default
+    },
+  });
+
+export default i18n;

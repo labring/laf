@@ -1,6 +1,7 @@
 import BasicLayout from "@/layouts/Basic";
+import FunctionLayout from "@/layouts/Function";
 import LoginReg from "@/layouts/LoginReg";
-import { Spinner } from "@chakra-ui/react";
+import { Center, Spinner } from "@chakra-ui/react";
 import { lazy, Suspense } from "react";
 import { Navigate } from "react-router-dom";
 
@@ -23,7 +24,6 @@ const routes = [
   },
   {
     path: "/",
-
     children: [
       {
         path: "/",
@@ -31,7 +31,17 @@ const routes = [
         children: [
           {
             path: "/",
-            element: () => import("@/pages/index"),
+            element: () => import("@/pages/home/index"),
+          },
+        ],
+      },
+      {
+        path: "/app",
+        element: <FunctionLayout />,
+        children: [
+          {
+            path: "/app/:appid",
+            element: () => import("@/pages/app/index"),
           },
         ],
       },
@@ -44,13 +54,18 @@ function LazyElement(props: any) {
   const { importFunc } = props;
   const LazyComponent = lazy(importFunc);
   return (
-    <Suspense fallback={<Spinner />}>
+    <Suspense
+      fallback={
+        <Center height={200}>
+          <Spinner />
+        </Center>
+      }
+    >
       <LazyComponent />
     </Suspense>
   );
 }
 
-// 处理routes 如果element是懒加载，要包裹Suspense
 function dealRoutes(routesArr: any) {
   if (routesArr && Array.isArray(routesArr) && routesArr.length > 0) {
     routesArr.forEach((route) => {

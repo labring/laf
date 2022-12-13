@@ -7,6 +7,9 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { extendTheme } from "@chakra-ui/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ClickToComponent } from "click-to-react-component";
+import { useEffect } from "react";
+
+import "@/utils/i18n";
 
 function RouteElement() {
   const element = useRoutes(routes as any);
@@ -43,24 +46,16 @@ const queryClient = new QueryClient({
 });
 
 function APP() {
-  // useEffect(() => {
-  //   // Activate the default locale on page load
-  //   activate("zh-CN");
-  // }, []);
-
   return (
     <>
-      {/* <I18nProvider i18n={i18n}> */}
       <QueryClientProvider client={queryClient}>
         {process.env.NODE_ENV === "development" ? <ClickToComponent /> : null}
         <ChakraProvider theme={theme}>
-          {" "}
           <BrowserRouter>
             <RouteElement />
           </BrowserRouter>
         </ChakraProvider>
       </QueryClientProvider>
-      {/* </I18nProvider> */}
     </>
   );
 }

@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from "react";
+import { useEffect } from "react";
 import { Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { ApplicationsControllerFindOne } from "@/apis/v1/applications";
@@ -7,22 +7,22 @@ import useGlobalStore from "@/pages/globalStore";
 import { SmallNavHeight } from "@/constants/index";
 
 import Header from "./Header";
-import { useSearchParams } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 
-export default function FunctionLayout(props: { children: ReactNode }) {
+export default function FunctionLayout() {
   const { init, loading, setCurrentApp, currentApp } = useGlobalStore((state) => state);
 
-  const [searchParams] = useSearchParams();
+  const params = useParams();
 
-  const app_id = searchParams.get("app_id");
+  const { appid } = params;
 
   useQuery(
-    ["getAppDetailQuery", app_id],
+    ["getAppDetailQuery", appid],
     () => {
-      return ApplicationsControllerFindOne({ appid: app_id });
+      return ApplicationsControllerFindOne({ appid: appid });
     },
     {
-      enabled: !!app_id,
+      enabled: !!appid,
       onSuccess(data) {
         setCurrentApp(data?.data);
       },
@@ -46,7 +46,7 @@ export default function FunctionLayout(props: { children: ReactNode }) {
           position: "relative",
         }}
       >
-        {loading || !currentApp?.appid ? <Spinner /> : props.children}
+        {loading || !currentApp?.appid ? <Spinner /> : <Outlet />}
       </div>
     </div>
   );

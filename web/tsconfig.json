@@ -17,15 +17,10 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/components/*": ["src/components/*"],
-      "@/constants/*": ["src/constants/*"],
-      "@/utils/*": ["src/utils/*"],
-      "@/layouts/*": ["src/layouts/*"],
-      "@/apis/*": ["src/apis/*"],
-      "@/pages/*": ["src/pages/*"]
+      "@/*": ["src/*"]
     }
   },
-  "include": ["src", "apis/v1/api-auto.d.ts"],
+  "include": ["src", "apis/v1/api-auto.d.ts", "public/locales"],
   "references": [{ "path": "./tsconfig.node.json" }],
   "exclude": ["node_modules"]
 }

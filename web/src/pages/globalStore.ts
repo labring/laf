@@ -1,12 +1,13 @@
 import { createStandaloneToast } from "@chakra-ui/react";
+import create from "zustand";
+import { devtools } from "zustand/middleware";
+import { immer } from "zustand/middleware/immer";
+
 import { TApplication } from "@/apis/typing";
 import { SpecsControllerGetBundles } from "@/apis/v1/bundles";
 import { AuthControllerGetSigninUrl } from "@/apis/v1/login";
 import { AuthControllerGetProfile } from "@/apis/v1/profile";
 import { SpecsControllerGetRuntimes } from "@/apis/v1/runtimes";
-import create from "zustand";
-import { devtools } from "zustand/middleware";
-import { immer } from "zustand/middleware/immer";
 
 const { toast } = createStandaloneToast();
 
@@ -59,7 +60,7 @@ const useGlobalStore = create<State>()(
       },
 
       login: async () => {
-        const res = await AuthControllerGetSigninUrl({});
+        await AuthControllerGetSigninUrl({});
       },
 
       showSuccess: (text: string | React.ReactNode) => {
