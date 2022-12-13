@@ -10,7 +10,7 @@ import * as assert from 'node:assert'
 import { JwtService } from '@nestjs/jwt'
 
 @Injectable()
-export class FunctionsService {
+export class FunctionService {
   constructor(
     private readonly db: DatabaseCoreService,
     private readonly prisma: PrismaService,

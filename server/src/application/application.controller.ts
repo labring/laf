@@ -22,19 +22,20 @@ import { ResponseUtil } from '../utils/response'
 import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import { CreateApplicationDto } from './dto/create-application.dto'
 import { UpdateApplicationDto } from './dto/update-application.dto'
-import { ApplicationsService } from './applications.service'
-import { ApplicationCoreService } from 'src/core/application.cr.service'
-import { ServerConfig } from 'src/constants'
-import { FunctionsService } from 'src/functions/functions.service'
+import { ApplicationService } from './application.service'
+import { ServerConfig } from '../constants'
+import { FunctionService } from '../function/function.service'
+import { StorageService } from '../storage/storage.service'
 
 @ApiTags('Application')
 @Controller('applications')
 @ApiBearerAuth('Authorization')
-export class ApplicationsController {
-  private logger = new Logger(ApplicationsController.name)
+export class ApplicationController {
+  private logger = new Logger(ApplicationController.name)
   constructor(
-    private readonly appService: ApplicationsService,
-    private readonly funcService: FunctionsService,
+    private readonly appService: ApplicationService,
+    private readonly funcService: FunctionService,
+    private readonly storageService: StorageService,
   ) {}
 
   /**
@@ -86,7 +87,7 @@ export class ApplicationsController {
     const resources = await this.appService.getSubResources(appid)
 
     const data = await this.appService.findOne(appid, { configuration: true })
-    const sts = await this.appService.getOssSTS(appid, resources.oss)
+    const sts = await this.storageService.getOssSTS(appid, resources.oss)
     const credentials = {
       endpoint: ServerConfig.OSS_ENDPOINT,
       accessKeyId: sts.Credentials?.AccessKeyId,

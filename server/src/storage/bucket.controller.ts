@@ -30,8 +30,8 @@ import { Bucket, BucketList } from '../core/api/bucket.cr'
 @ApiTags('Storage')
 @ApiBearerAuth('Authorization')
 @Controller('apps/:appid/buckets')
-export class BucketsController {
-  logger = new Logger(BucketsController.name)
+export class BucketController {
+  logger = new Logger(BucketController.name)
   constructor(private readonly bucketsService: BucketCoreService) {}
 
   /**

@@ -4,7 +4,7 @@ import { PrismaService } from '../prisma.service'
 import * as nanoid from 'nanoid'
 
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(private prisma: PrismaService) {}
 
   /**

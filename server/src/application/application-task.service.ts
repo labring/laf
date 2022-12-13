@@ -1,13 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { Application, ApplicationPhase } from '@prisma/client'
-import { isConditionTrue } from 'src/utils/getter'
-import { DatabaseCoreService } from 'src/core/database.cr.service'
-import { GatewayCoreService } from 'src/core/gateway.cr.service'
-import { OSSUserCoreService } from 'src/core/oss-user.cr.service'
-import { PrismaService } from 'src/prisma.service'
+import { isConditionTrue } from '../utils/getter'
+import { DatabaseCoreService } from '../core/database.cr.service'
+import { GatewayCoreService } from '../core/gateway.cr.service'
+import { OSSUserCoreService } from '../core/oss-user.cr.service'
+import { PrismaService } from '../prisma.service'
 import * as assert from 'node:assert'
-import { ApplicationCoreService } from 'src/core/application.cr.service'
+import { ApplicationCoreService } from '../core/application.cr.service'
 
 @Injectable()
 export class ApplicationTaskService {

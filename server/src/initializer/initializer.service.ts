@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { CPU_UNIT, MB, ServerConfig } from 'src/constants'
-import { PrismaService } from 'src/prisma.service'
+import { CPU_UNIT, ServerConfig } from '../constants'
+import { PrismaService } from '../prisma.service'
 
 @Injectable()
 export class InitializerService {

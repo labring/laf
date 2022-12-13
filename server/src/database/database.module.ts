@@ -1,14 +1,16 @@
 import { Module } from '@nestjs/common'
-import { CollectionsService } from '../database/collections.service'
-import { CollectionsController } from '../database/collections.controller'
+import { CollectionService } from './collection.service'
+import { CollectionController } from './collection.controller'
 import { CoreModule } from '../core/core.module'
-import { ApplicationsModule } from '../applications/applications.module'
-import { PoliciesController } from './policies.controller'
-import { PoliciesService } from './policies.service'
+import { ApplicationModule } from '../application/application.module'
+import { PolicyController } from './policy.controller'
+import { PolicyService } from './policy.service'
+import { DatabaseService } from './database.service'
+import { DatabaseController } from './database.controller'
 
 @Module({
-  imports: [CoreModule, ApplicationsModule],
-  controllers: [CollectionsController, PoliciesController],
-  providers: [CollectionsService, PoliciesService],
+  imports: [CoreModule, ApplicationModule],
+  controllers: [CollectionController, PolicyController, DatabaseController],
+  providers: [CollectionService, PolicyService, DatabaseService],
 })
 export class DatabaseModule {}

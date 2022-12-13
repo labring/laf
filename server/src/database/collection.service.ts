@@ -5,8 +5,8 @@ import { UpdateCollectionDto } from './dto/update-collection.dto'
 import * as assert from 'node:assert'
 
 @Injectable()
-export class CollectionsService {
-  private readonly logger = new Logger(CollectionsService.name)
+export class CollectionService {
+  private readonly logger = new Logger(CollectionService.name)
   constructor(private readonly databaseService: DatabaseCoreService) {}
 
   /**
