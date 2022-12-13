@@ -62,7 +62,9 @@ export default function Header(props: { size: "sm" | "lg" }) {
       </div>
 
       <div>
-        <img src={userInfo.profile?.avatar} className="rounded-full" width={30} alt="avatar" />
+        {userInfo.profile ? (
+          <img src={userInfo.profile?.avatar} className="rounded-full" width={30} alt="avatar" />
+        ) : null}
       </div>
     </div>
   );

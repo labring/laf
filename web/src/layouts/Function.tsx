@@ -7,7 +7,7 @@ import { SmallNavHeight } from "@/constants/index";
 
 import Header from "./Header";
 
-import { ApplicationsControllerFindOne } from "@/apis/v1/applications";
+import { ApplicationControllerFindOne } from "@/apis/v1/applications";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function FunctionLayout() {
@@ -20,7 +20,7 @@ export default function FunctionLayout() {
   useQuery(
     ["getAppDetailQuery", appid],
     () => {
-      return ApplicationsControllerFindOne({ appid: appid });
+      return ApplicationControllerFindOne({ appid: appid });
     },
     {
       enabled: !!appid,

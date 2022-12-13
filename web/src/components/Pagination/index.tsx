@@ -9,18 +9,16 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  Select,
   Text,
   Tooltip,
 } from "@chakra-ui/react";
 
 export default function Pagination() {
-  const [pageCount, setPageCount] = useState(0);
-  const [canPreviousPage, setcanPreviousPage] = useState(false);
-  const [canNextPage, setCanNextPage] = useState(false);
-  const [pageIndex, setPageIndex] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
-  const [pageOptions, setPageOptions] = useState([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+  const [pageCount] = useState(0);
+  const [canPreviousPage] = useState(false);
+  const [canNextPage] = useState(false);
+  const [pageIndex] = useState(0);
+  const [pageOptions] = useState([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
   const previousPage = () => {};
   const nextPage = () => {};

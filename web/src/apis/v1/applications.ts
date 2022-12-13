@@ -12,9 +12,9 @@ import request from "@/utils/request";
 /**
  * Create a new application
  */
-export async function ApplicationsControllerCreate(
+export async function ApplicationControllerCreate(
   params: Definitions.CreateApplicationDto | any,
-): Promise<Paths.ApplicationsControllerCreate.Responses> {
+): Promise<Paths.ApplicationControllerCreate.Responses> {
   // /v1/applications
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
@@ -29,9 +29,9 @@ export async function ApplicationsControllerCreate(
 /**
  * Get user application list
  */
-export async function ApplicationsControllerFindAll(
-  params: Paths.ApplicationsControllerFindAll.BodyParameters | any,
-): Promise<Paths.ApplicationsControllerFindAll.Responses> {
+export async function ApplicationControllerFindAll(
+  params: Paths.ApplicationControllerFindAll.BodyParameters | any,
+): Promise<Paths.ApplicationControllerFindAll.Responses> {
   // /v1/applications
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
@@ -46,9 +46,9 @@ export async function ApplicationsControllerFindAll(
 /**
  * Get an application by appid
  */
-export async function ApplicationsControllerFindOne(
-  params: Paths.ApplicationsControllerFindOne.BodyParameters | any,
-): Promise<Paths.ApplicationsControllerFindOne.Responses> {
+export async function ApplicationControllerFindOne(
+  params: Paths.ApplicationControllerFindOne.BodyParameters | any,
+): Promise<Paths.ApplicationControllerFindOne.Responses> {
   // /v1/applications/{appid}
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
@@ -63,9 +63,9 @@ export async function ApplicationsControllerFindOne(
 /**
  * Update an application
  */
-export async function ApplicationsControllerUpdate(
+export async function ApplicationControllerUpdate(
   params: Definitions.UpdateApplicationDto | any,
-): Promise<Paths.ApplicationsControllerUpdate.Responses> {
+): Promise<Paths.ApplicationControllerUpdate.Responses> {
   // /v1/applications/{appid}
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
@@ -80,9 +80,9 @@ export async function ApplicationsControllerUpdate(
 /**
  * Delete an application
  */
-export async function ApplicationsControllerRemove(
-  params: Paths.ApplicationsControllerRemove.BodyParameters | any,
-): Promise<Paths.ApplicationsControllerRemove.Responses> {
+export async function ApplicationControllerRemove(
+  params: Paths.ApplicationControllerRemove.BodyParameters | any,
+): Promise<Paths.ApplicationControllerRemove.Responses> {
   // /v1/applications/{appid}
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),

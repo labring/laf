@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AddIcon, Search2Icon } from "@chakra-ui/icons";
 import { Button, Center, Input, InputGroup, InputLeftElement, Spinner } from "@chakra-ui/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { t } from "i18next";
 
 import ConfirmButton from "@/components/ConfirmButton";
 import CopyText from "@/components/CopyText";
@@ -14,10 +15,7 @@ import useGlobalStore from "../globalStore";
 import CreateAppModal from "./mods/CreateAppModal";
 import StatusBadge from "./mods/StatusBadge";
 
-import {
-  ApplicationsControllerFindAll,
-  ApplicationsControllerRemove,
-} from "@/apis/v1/applications";
+import { ApplicationControllerFindAll, ApplicationControllerRemove } from "@/apis/v1/applications";
 
 function HomePage() {
   const navigate = useNavigate();
@@ -31,7 +29,7 @@ function HomePage() {
   const appListQuery = useQuery(
     ["appListQuery"],
     () => {
-      return ApplicationsControllerFindAll({});
+      return ApplicationControllerFindAll({});
     },
     {
       refetchInterval: shouldRefetch ? 1000 : false,
@@ -43,7 +41,7 @@ function HomePage() {
     },
   );
 
-  const deleteAppMutation = useMutation((params: any) => ApplicationsControllerRemove(params), {
+  const deleteAppMutation = useMutation((params: any) => ApplicationControllerRemove(params), {
     onSuccess: () => {
       appListQuery.refetch();
       showSuccess("delete success.");
@@ -73,7 +71,7 @@ function HomePage() {
             style={{ padding: "0 40px" }}
             leftIcon={<AddIcon />}
           >
-            应用列表
+            {t("NewApplication")}
           </Button>
         </CreateAppModal>
       </div>

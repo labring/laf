@@ -1,5 +1,4 @@
 import { lazy, Suspense } from "react";
-import { Navigate } from "react-router-dom";
 import { Center, Spinner } from "@chakra-ui/react";
 
 import BasicLayout from "@/layouts/Basic";

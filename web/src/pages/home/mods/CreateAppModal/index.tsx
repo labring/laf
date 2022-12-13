@@ -21,7 +21,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { APP_STATUS, DEFAULT_REGION } from "@/constants/index";
 
-import { ApplicationsControllerCreate, ApplicationsControllerUpdate } from "@/apis/v1/applications";
+import { ApplicationControllerCreate, ApplicationControllerUpdate } from "@/apis/v1/applications";
 import useGlobalStore from "@/pages/globalStore";
 
 const CreateAppModal = (props: { application?: any; children: React.ReactNode }) => {
@@ -62,9 +62,9 @@ const CreateAppModal = (props: { application?: any; children: React.ReactNode })
 
   const { showSuccess, showError } = useGlobalStore();
 
-  const appCreateMutaion = useMutation((params: any) => ApplicationsControllerCreate(params));
+  const appCreateMutaion = useMutation((params: any) => ApplicationControllerCreate(params));
 
-  const updateAppMutation = useMutation((params: any) => ApplicationsControllerUpdate(params));
+  const updateAppMutation = useMutation((params: any) => ApplicationControllerUpdate(params));
 
   const onSubmit = async (data: any) => {
     let res: any = {};
