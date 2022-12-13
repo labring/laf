@@ -4,11 +4,16 @@ import { KubernetesService } from './kubernetes.service'
 import { CreateBucketDto } from '../storage/dto/create-bucket.dto'
 import { UpdateBucketDto } from '../storage/dto/update-bucket.dto'
 import { Bucket, BucketList } from './api/bucket.cr'
+import * as assert from 'node:assert'
+import { GatewayCoreService } from './gateway.cr.service'
 
 @Injectable()
 export class BucketCoreService {
   logger: Logger = new Logger(BucketCoreService.name)
-  constructor(private readonly k8sClient: KubernetesService) {}
+  constructor(
+    private readonly k8sClient: KubernetesService,
+    private readonly gatewayCore: GatewayCoreService,
+  ) {}
 
   /**
    * Create a new bucket
@@ -66,6 +71,7 @@ export class BucketCoreService {
           Bucket.GVK.plural,
           name,
         )
+
       return Bucket.fromObject(res.body)
     } catch (err) {
       if (err?.response?.body?.reason === 'NotFound') {
@@ -102,5 +108,19 @@ export class BucketCoreService {
       this.logger.error(error, error.response?.body)
       return null
     }
+  }
+
+  async reconcileGateway(appid: string) {
+    const res = await this.findAll(appid)
+    const buckets = res.items || []
+    const gateway = await this.gatewayCore.findOne(appid)
+    assert(gateway, 'gateway not found')
+
+    const bucketNames = buckets.map((b) => b.metadata.name)
+    if (!gateway.spec.buckets) gateway.spec.buckets = []
+    gateway.spec.buckets = bucketNames
+
+    const updated = await this.gatewayCore.update(gateway)
+    return updated
   }
 }

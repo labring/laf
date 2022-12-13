@@ -26,13 +26,19 @@ import { BucketCoreService } from '../core/bucket.cr.service'
 import { CreateBucketDto } from './dto/create-bucket.dto'
 import { UpdateBucketDto } from './dto/update-bucket.dto'
 import { Bucket, BucketList } from '../core/api/bucket.cr'
+import { GatewayCoreService } from 'src/core/gateway.cr.service'
+import * as assert from 'node:assert'
 
 @ApiTags('Storage')
 @ApiBearerAuth('Authorization')
 @Controller('apps/:appid/buckets')
 export class BucketController {
-  logger = new Logger(BucketController.name)
-  constructor(private readonly bucketsService: BucketCoreService) {}
+  private readonly logger = new Logger(BucketController.name)
+
+  constructor(
+    private readonly bucketsService: BucketCoreService,
+    private readonly gatewayCore: GatewayCoreService,
+  ) {}
 
   /**
    * Create a new bucket
@@ -50,7 +56,6 @@ export class BucketController {
     @Req() req: IRequest,
   ) {
     // check if the bucket name is unique
-
     const found = await this.bucketsService.findOne(appid, dto.fullname(appid))
     if (found) {
       return ResponseUtil.error('bucket name is already existed')
@@ -65,6 +70,9 @@ export class BucketController {
     if (!bucket) {
       return ResponseUtil.error('create bucket failed')
     }
+
+    // create bucket in gateway
+    await this.bucketsService.reconcileGateway(appid)
 
     return ResponseUtil.ok(bucket)
   }
@@ -151,6 +159,9 @@ export class BucketController {
     if (null === res) {
       return ResponseUtil.error('delete bucket failed')
     }
+
+    // remove bucket in gateway
+    await this.bucketsService.reconcileGateway(appid)
     return ResponseUtil.ok(res)
   }
 }

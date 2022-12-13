@@ -28,48 +28,35 @@ type RouteSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Domain 是路由域名，必须存在
 	// +kubebuilder:validation:Required
 	Domain string `json:"domain"`
 
-	// Backend是service配置, 必须存在
 	// +kubebuilder:validation:Required
 	Backend Backend `json:"backend"`
 
-	// DomainName 是域名名称，必须存在
 	// +kubebuilder:validation:Required
 	DomainName string `json:"domainName"`
 
-	// DomainNamespace 是域名所在的命名空间，必须存在
 	// +kubebuilder:validation:Required
 	DomainNamespace string `json:"domainNamespace"`
 
-	// CertConfigRef 是证书配置，可选存在
 	// +kubebuilder:validation:Optional
 	CertConfigRef string `json:"certConfigRef,omitempty"`
 
-	// 下面是一些规则配置，可选存在
-
-	// PathRewrite 是路径重写，可选存在
 	// +kubebuilder:validation:Optional
 	PathRewrite *PathRewrite `json:"pathRewrite,omitempty"`
 
-	// PassHost 传给上游的host，可选存在, 如果不设置，则默认将客户端的 host 透传给上游
 	// +kubebuilder:validation:Optional
 	PassHost string `json:"passHost,omitempty"`
 
-	// EnableWebSocket 是否开启websocket, 默认否
 	// +kubebuilder:validation:Optional
 	EnableWebSocket bool `json:"enableWebSocket,omitempty"`
 }
 
-// PathRewrite 是路径重写
 type PathRewrite struct {
-	// Regex 是正则表达式，必须存在
 	// +kubebuilder:validation:Required
 	Regex string `json:"regex"`
 
-	//Replacement 是替代内容，必须存在
 	// +kubebuilder:validation:Required
 	Replacement string `json:"replacement"`
 }
@@ -79,11 +66,9 @@ type RouteStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Domain 是路由的完整域名，必须存在
 	// +kubebuilder:validation:Required
 	Domain string `json:"Domain"`
 
-	// SupportSSL 是否支持ssl, 默认为false
 	// +kubebuilder:validation:Required
 	SupportSSL bool `json:"supportSSL"`
 }
@@ -91,11 +76,9 @@ type RouteStatus struct {
 // Backend defines the desired state of Backend
 type Backend struct {
 
-	// ServiceName 是service的名称，必须存在
 	// +kubebuilder:validation:Required
 	ServiceName string `json:"serviceName"`
 
-	// ServicePort是service的端口，必须存在
 	// +kubebuilder:validation:Required
 	ServicePort int32 `json:"servicePort"`
 }
