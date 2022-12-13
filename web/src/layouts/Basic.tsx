@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { AiFillHeart } from "react-icons/ai";
+import { Outlet } from "react-router-dom";
 import { Spinner } from "@chakra-ui/react";
 
 import Header from "@/layouts/Header";
 import useGlobalStore from "@/pages/globalStore";
-import { Outlet } from "react-router-dom";
 
 export default function BasicLayout() {
   const { init, loading } = useGlobalStore((state) => state);

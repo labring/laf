@@ -1,13 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Search2Icon } from "@chakra-ui/icons";
 import {
   Button,
-  Center,
   HStack,
   Input,
   InputGroup,
   InputLeftElement,
-  Spinner,
   Table,
   TableContainer,
   Tbody,
@@ -18,7 +16,6 @@ import {
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 
-import Pagination from "@/components/Pagination";
 import { formatDate } from "@/utils/format";
 import request from "@/utils/request";
 
@@ -90,9 +87,9 @@ export default function LogsPage() {
           {/* <Pagination /> */}
         </div>
       </form>
-      <div className="bg-white px-4 py-1 rounded-md overflow-y-auto">
+      <div className="bg-white px-4 py-1 rounded-md overflow-y-auto h-full">
         <div className="mt-4 ">
-          <TableContainer overflowX="unset" overflowY="unset">
+          <TableContainer>
             <Table variant="simple">
               <Thead>
                 <Tr>

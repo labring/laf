@@ -4,13 +4,14 @@
 
 import { BiHelpCircle } from "react-icons/bi";
 import { GrGithub, GrLanguage } from "react-icons/gr";
+import { useNavigate } from "react-router-dom";
 import { HStack } from "@chakra-ui/react";
-import useGlobalStore from "@/pages/globalStore";
 
 import { SmallNavHeight } from "@/constants/index";
 
 import IconWrap from "../../components/IconWrap";
-import { useNavigate } from "react-router-dom";
+
+import useGlobalStore from "@/pages/globalStore";
 
 export default function Header(props: { size: "sm" | "lg" }) {
   const { size } = props;

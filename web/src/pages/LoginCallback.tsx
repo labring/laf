@@ -1,7 +1,8 @@
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Center, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
+
 import { AuthControllerCode2token } from "@/apis/v1/code2token";
-import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function LoginCallBack() {
   const navigate = useNavigate();

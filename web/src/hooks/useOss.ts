@@ -1,4 +1,5 @@
 import AWS from "aws-sdk";
+
 import useGlobalStore from "@/pages/globalStore";
 type Credentials = {
   accessKeyId: string;

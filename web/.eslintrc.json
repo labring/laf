@@ -1,5 +1,5 @@
 {
-  "extends": ["next", "next/core-web-vitals"],
+  "extends": "react-app",
   "rules": {
     "no-alert": "error",
     "react/no-children-prop": 0,
