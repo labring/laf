@@ -162,7 +162,7 @@ Independent domain names and HTTPS licenses can be applied to your applications 
 
 ## 🚀 Quick Start
 
-[develop a register/login feature within 3 minutes](./quick-start.md)
+[develop a register/login feature within 3 minutes](./docs/guide/quick-start/index.md)
 
 ## 🎉 Self-hosting
 
