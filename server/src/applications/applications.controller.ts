@@ -16,15 +16,16 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
-import { IRequest } from '../common/types'
+import { IRequest } from '../utils/types'
 import { JwtAuthGuard } from '../auth/jwt.auth.guard'
-import { ResponseUtil } from '../common/response'
+import { ResponseUtil } from '../utils/response'
 import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import { CreateApplicationDto } from './dto/create-application.dto'
 import { UpdateApplicationDto } from './dto/update-application.dto'
 import { ApplicationsService } from './applications.service'
 import { ApplicationCoreService } from 'src/core/application.cr.service'
 import { ServerConfig } from 'src/constants'
+import { FunctionsService } from 'src/functions/functions.service'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -33,7 +34,7 @@ export class ApplicationsController {
   private logger = new Logger(ApplicationsController.name)
   constructor(
     private readonly appService: ApplicationsService,
-    private readonly appCoreService: ApplicationCoreService,
+    private readonly funcService: FunctionsService,
   ) {}
 
   /**
@@ -94,7 +95,7 @@ export class ApplicationsController {
       expiration: sts.Credentials?.Expiration,
     }
 
-    const debug_token = await this.appService.getDebugFunctionToken(appid)
+    const debug_token = await this.funcService.getDebugFunctionToken(appid)
     const res = {
       ...data,
       gateway: resources.gateway,

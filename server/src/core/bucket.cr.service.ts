@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { GetApplicationNamespaceById } from '../common/getter'
+import { GetApplicationNamespaceById } from '../utils/getter'
 import { KubernetesService } from './kubernetes.service'
-import { CreateBucketDto } from '../buckets/dto/create-bucket.dto'
-import { UpdateBucketDto } from '../buckets/dto/update-bucket.dto'
+import { CreateBucketDto } from '../storage/dto/create-bucket.dto'
+import { UpdateBucketDto } from '../storage/dto/update-bucket.dto'
 import { Bucket, BucketList } from './api/bucket.cr'
 
 @Injectable()

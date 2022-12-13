@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common'
 import { KubernetesService } from './kubernetes.service'
 import * as k8s from '@kubernetes/client-node'
 import { ResourceLabels } from '../constants'
-import { GetApplicationNamespaceById } from '../common/getter'
+import { GetApplicationNamespaceById } from '../utils/getter'
 
 @Injectable()
 export class ApplicationCoreService {

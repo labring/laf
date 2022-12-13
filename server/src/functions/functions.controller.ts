@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common'
 import { CreateFunctionDto } from './dto/create-function.dto'
 import { UpdateFunctionDto } from './dto/update-function.dto'
-import { ResponseUtil } from '../common/response'
+import { ResponseUtil } from '../utils/response'
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -23,7 +23,7 @@ import {
 import { JwtAuthGuard } from '../auth/jwt.auth.guard'
 import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import { FunctionsService } from './functions.service'
-import { IRequest } from '../common/types'
+import { IRequest } from '../utils/types'
 
 @ApiTags('Function')
 @ApiBearerAuth('Authorization')

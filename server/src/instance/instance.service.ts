@@ -1,6 +1,6 @@
 import { V1Deployment } from '@kubernetes/client-node'
 import { Injectable, Logger } from '@nestjs/common'
-import { GetApplicationNamespaceById } from 'src/common/getter'
+import { GetApplicationNamespaceById } from 'src/utils/getter'
 import { ResourceLabels } from 'src/constants'
 import { DatabaseCoreService } from 'src/core/database.cr.service'
 import { KubernetesService } from 'src/core/kubernetes.service'

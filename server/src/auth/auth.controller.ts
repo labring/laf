@@ -6,8 +6,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import { Response } from 'express'
-import { ApiResponseUtil, ResponseUtil } from '../common/response'
-import { IRequest } from '../common/types'
+import { ApiResponseUtil, ResponseUtil } from '../utils/response'
+import { IRequest } from '../utils/types'
 import { UserDto } from '../users/dto/user.response'
 import { AuthService } from './auth.service'
 import { JwtAuthGuard } from './jwt.auth.guard'

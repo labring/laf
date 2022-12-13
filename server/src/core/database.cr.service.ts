@@ -1,13 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { GetApplicationNamespaceById } from '../common/getter'
+import { GetApplicationNamespaceById } from '../utils/getter'
 import { KubernetesService } from '../core/kubernetes.service'
 import { Database } from './api/database.cr'
 import { MongoClient } from 'mongodb'
 import * as assert from 'node:assert'
 import { Bundle, Application } from '@prisma/client'
 import { MB, ResourceLabels } from 'src/constants'
-import { GenerateAlphaNumericPassword } from 'src/common/random'
-import { toQuantityString } from 'src/common/types'
+import { GenerateAlphaNumericPassword } from 'src/utils/random'
+import { toQuantityString } from 'src/utils/types'
 
 @Injectable()
 export class DatabaseCoreService {

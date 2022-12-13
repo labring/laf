@@ -9,8 +9,8 @@ import {
 } from '@nestjs/common'
 import { PoliciesService } from './policies.service'
 import { CreatePolicyDto } from './dto/create-policy.dto'
-import { UpdatePolicyDto } from './dto/update-policy.dto'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
+import { UpdatePolicyDto } from './dto/update-policy.dto'
 
 @ApiTags('Database')
 @ApiBearerAuth('Authorization')
