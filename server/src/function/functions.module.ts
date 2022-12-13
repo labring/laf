@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import { ApplicationsModule } from 'src/application/applications.module'
+import { ApplicationModule } from 'src/application/application.module'
 import { PrismaService } from 'src/prisma.service'
 import { CoreModule } from '../core/core.module'
 import { FunctionsController } from './functions.controller'
 import { FunctionsService } from './functions.service'
 
 @Module({
-  imports: [CoreModule, ApplicationsModule],
+  imports: [CoreModule, ApplicationModule],
   controllers: [FunctionsController],
   providers: [FunctionsService, PrismaService, JwtService],
 })

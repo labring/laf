@@ -22,18 +22,18 @@ import { ResponseUtil } from '../utils/response'
 import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import { CreateApplicationDto } from './dto/create-application.dto'
 import { UpdateApplicationDto } from './dto/update-application.dto'
-import { ApplicationsService } from './applications.service'
-import { ServerConfig } from 'src/constants'
-import { FunctionsService } from 'src/functions/functions.service'
-import { StorageService } from 'src/storage/storage.service'
+import { ApplicationService } from './application.service'
+import { ServerConfig } from '../constants'
+import { FunctionsService } from '../function/functions.service'
+import { StorageService } from '../storage/storage.service'
 
 @ApiTags('Application')
 @Controller('applications')
 @ApiBearerAuth('Authorization')
-export class ApplicationsController {
-  private logger = new Logger(ApplicationsController.name)
+export class ApplicationController {
+  private logger = new Logger(ApplicationController.name)
   constructor(
-    private readonly appService: ApplicationsService,
+    private readonly appService: ApplicationService,
     private readonly funcService: FunctionsService,
     private readonly storageService: StorageService,
   ) {}

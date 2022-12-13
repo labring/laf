@@ -4,15 +4,15 @@ import { CreateApplicationDto } from './dto/create-application.dto'
 import { ApplicationPhase, ApplicationState, Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma.service'
 import { UpdateApplicationDto } from './dto/update-application.dto'
-import { DatabaseCoreService } from 'src/core/database.cr.service'
-import { GatewayCoreService } from 'src/core/gateway.cr.service'
-import { OSSUserCoreService } from 'src/core/oss-user.cr.service'
-import { APPLICATION_SECRET_KEY, ServerConfig } from 'src/constants'
-import { GenerateAlphaNumericPassword } from 'src/utils/random'
+import { DatabaseCoreService } from '../core/database.cr.service'
+import { GatewayCoreService } from '../core/gateway.cr.service'
+import { OSSUserCoreService } from '../core/oss-user.cr.service'
+import { APPLICATION_SECRET_KEY, ServerConfig } from '../constants'
+import { GenerateAlphaNumericPassword } from '../utils/random'
 
 @Injectable()
-export class ApplicationsService {
-  private readonly logger = new Logger(ApplicationsService.name)
+export class ApplicationService {
+  private readonly logger = new Logger(ApplicationService.name)
   constructor(
     private readonly prisma: PrismaService,
     private readonly databaseCore: DatabaseCoreService,

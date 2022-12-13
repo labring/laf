@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { WebsitesModule } from './websites/websites.module'
-import { FunctionsModule } from './functions/functions.module'
+import { FunctionsModule } from './function/functions.module'
 import { HttpModule } from '@nestjs/axios'
 import { CoreModule } from './core/core.module'
-import { ApplicationsModule } from './application/applications.module'
+import { ApplicationModule } from './application/application.module'
 import { AuthModule } from './auth/auth.module'
 import { ThrottlerModule } from '@nestjs/throttler'
 import { InitializerModule } from './initializer/initializer.module'
@@ -27,7 +27,7 @@ import { StorageModule } from './storage/storage.module'
     HttpModule,
     AuthModule,
     CoreModule,
-    ApplicationsModule,
+    ApplicationModule,
     InitializerModule,
     InstanceModule,
     DatabaseModule,
