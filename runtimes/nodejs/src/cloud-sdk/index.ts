@@ -6,7 +6,6 @@ import { DatabaseAgent } from "../db";
 import request from "axios";
 import { SchedulerInstance } from "../support/scheduler";
 import { getToken, parseToken } from "../support/token";
-import { addFunctionLog } from "../support/function-log";
 import { WebSocket } from "ws";
 import { WebSocketAgent } from "../support/ws";
 import Config from "../config";
@@ -108,7 +107,7 @@ export interface CloudSdkInterface {
 
   env: {
     DB_URI?: string;
-    SERVER_SECRET_SALT?: string;
+    SERVER_SECRET?: string;
     APP_ID?: string;
     OSS_ACCESS_KEY?: string;
     OSS_ACCESS_SECRET?: string;
@@ -155,7 +154,7 @@ export function create() {
     appid: Config.APP_ID,
     env: {
       DB_URI: Config.DB_URI,
-      SERVER_SECRET_SALT: Config.SERVER_SECRET,
+      SERVER_SECRET: Config.SERVER_SECRET,
       APP_ID: process.env.APP_ID,
       OSS_ACCESS_KEY: process.env.APP_ID,
       OSS_ACCESS_SECRET: process.env.OSS_ACCESS_SECRET,
@@ -193,17 +192,6 @@ async function invokeInFunction(name: string, param?: FunctionContext) {
   param.method = param.method ?? "call";
 
   const result = await func.invoke(param);
-
-  await addFunctionLog({
-    requestId: param.requestId,
-    method: param.method,
-    func_id: new mongodb.ObjectId(func.id),
-    func_name: name,
-    logs: result.logs,
-    time_usage: result.time_usage,
-    data: result.data,
-    error: result.error,
-  });
 
   if (result.error) {
     throw result.error;

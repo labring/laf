@@ -19,7 +19,6 @@ export function createLogger(category: string, level?: string): LoggerInterface 
   const logger = log4js.getLogger(category)
   logger.level = level ?? Config.LOG_LEVEL
 
-  // logger.info(`${category} logging level is ${logger.level}`)
   return logger as any
 }
 

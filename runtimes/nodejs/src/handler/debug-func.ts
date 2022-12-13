@@ -8,8 +8,6 @@
 import { Request, Response } from 'express'
 import { FunctionContext } from '../support/function-engine'
 import { logger } from '../support/logger'
-import { addFunctionLog } from '../support/function-log'
-import { ObjectId } from 'bson'
 import { CloudFunction } from '../support/function-engine'
 
 /**
@@ -48,25 +46,10 @@ export async function handleDebugFunction(req: Request, res: Response) {
     }
     const result = await func.invoke(ctx)
 
-    // log this execution to db
-    await addFunctionLog({
-      requestId: requestId,
-      method: req.method,
-      func_id: new ObjectId(func.id),
-      func_name: func_name,
-      logs: result.logs,
-      time_usage: result.time_usage,
-      created_by: req['auth']?.uid,
-      data: result.data,
-      error: result.error,
-      debug: true
-    })
-
     if (result.error) {
       logger.error(requestId, `debug function ${func_name} error: `, result)
       return res.send({
         error: 'invoke function got error: ' + result.error.toString(),
-        logs: result.logs,
         time_usage: result.time_usage,
         requestId
       })
