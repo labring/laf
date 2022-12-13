@@ -1,17 +1,20 @@
 import { Injectable } from '@nestjs/common'
 import { CloudFunction, Prisma } from '@prisma/client'
-import { compileTs2js } from '../common/lang'
-import { CN_PUBLISHED_FUNCTIONS } from '../constants'
+import { compileTs2js } from '../utils/lang'
+import { APPLICATION_SECRET_KEY, CN_PUBLISHED_FUNCTIONS } from '../constants'
 import { DatabaseCoreService } from '../core/database.cr.service'
 import { PrismaService } from '../prisma.service'
 import { CreateFunctionDto } from './dto/create-function.dto'
 import { UpdateFunctionDto } from './dto/update-function.dto'
+import * as assert from 'node:assert'
+import { JwtService } from '@nestjs/jwt'
 
 @Injectable()
 export class FunctionsService {
   constructor(
     private readonly db: DatabaseCoreService,
     private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
   ) {}
   async create(appid: string, userid: string, dto: CreateFunctionDto) {
     const data: Prisma.CloudFunctionCreateInput = {
@@ -99,5 +102,26 @@ export class FunctionsService {
     const code = func.source.code
     func.source.compiled = compileTs2js(code)
     return func
+  }
+
+  async getDebugFunctionToken(appid: string) {
+    const conf = await this.prisma.applicationConfiguration.findUnique({
+      where: { appid },
+    })
+
+    // get secret from envs
+    const secret = conf?.environments.find(
+      (env) => env.name === APPLICATION_SECRET_KEY,
+    )
+    assert(secret?.value, 'application secret not found')
+
+    // generate token
+    const exp = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7 // 7 days
+
+    const token = this.jwtService.sign(
+      { appid, type: 'debug', exp },
+      { secret: secret.value },
+    )
+    return token
   }
 }

@@ -19,15 +19,15 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import { ApplicationAuthGuard } from '../auth/application.auth.guard'
-import { IRequest } from '../common/types'
+import { IRequest } from '../utils/types'
 import { JwtAuthGuard } from '../auth/jwt.auth.guard'
-import { ApiResponseUtil, ResponseUtil } from '../common/response'
+import { ApiResponseUtil, ResponseUtil } from '../utils/response'
 import { BucketCoreService } from '../core/bucket.cr.service'
 import { CreateBucketDto } from './dto/create-bucket.dto'
 import { UpdateBucketDto } from './dto/update-bucket.dto'
 import { Bucket, BucketList } from '../core/api/bucket.cr'
 
-@ApiTags('Bucket')
+@ApiTags('Storage')
 @ApiBearerAuth('Authorization')
 @Controller('apps/:appid/buckets')
 export class BucketsController {

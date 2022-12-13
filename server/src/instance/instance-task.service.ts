@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { ApplicationPhase, ApplicationState } from '@prisma/client'
-import { isConditionTrue } from 'src/common/getter'
+import { isConditionTrue } from 'src/utils/getter'
 import { DatabaseCoreService } from 'src/core/database.cr.service'
 import { GatewayCoreService } from 'src/core/gateway.cr.service'
 import { OSSUserCoreService } from 'src/core/oss-user.cr.service'
