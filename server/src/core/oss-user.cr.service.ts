@@ -3,9 +3,9 @@ import { GetApplicationNamespaceById } from '../utils/getter'
 import { KubernetesService } from './kubernetes.service'
 import * as assert from 'node:assert'
 import { Bundle, Application } from '@prisma/client'
-import { MB, ResourceLabels } from 'src/constants'
-import { GenerateAlphaNumericPassword } from 'src/utils/random'
-import { toQuantityString } from 'src/utils/types'
+import { MB, ResourceLabels } from '../constants'
+import { GenerateAlphaNumericPassword } from '../utils/random'
+import { toQuantityString } from '../utils/types'
 import { OSSUser } from './api/oss-user.cr'
 
 @Injectable()

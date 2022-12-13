@@ -1,7 +1,7 @@
 import { STSClient, AssumeRoleCommand } from '@aws-sdk/client-sts'
 import { Injectable } from '@nestjs/common'
-import { ServerConfig } from 'src/constants'
-import { OSSUser } from 'src/core/api/oss-user.cr'
+import { ServerConfig } from '../constants'
+import { OSSUser } from '../core/api/oss-user.cr'
 
 @Injectable()
 export class StorageService {

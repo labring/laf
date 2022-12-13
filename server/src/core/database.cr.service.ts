@@ -5,9 +5,9 @@ import { Database } from './api/database.cr'
 import { MongoClient } from 'mongodb'
 import * as assert from 'node:assert'
 import { Bundle, Application } from '@prisma/client'
-import { MB, ResourceLabels } from 'src/constants'
-import { GenerateAlphaNumericPassword } from 'src/utils/random'
-import { toQuantityString } from 'src/utils/types'
+import { MB, ResourceLabels } from '../constants'
+import { GenerateAlphaNumericPassword } from '../utils/random'
+import { toQuantityString } from '../utils/types'
 
 @Injectable()
 export class DatabaseCoreService {

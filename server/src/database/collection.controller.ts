@@ -18,7 +18,7 @@ import {
 import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import { JwtAuthGuard } from '../auth/jwt.auth.guard'
 import { ApiResponseUtil, ResponseUtil } from '../utils/response'
-import { CollectionsService } from './collections.service'
+import { CollectionService } from './collection.service'
 import { CreateCollectionDto } from './dto/create-collection.dto'
 import { UpdateCollectionDto } from './dto/update-collection.dto'
 import { Collection } from './entities/collection.entity'
@@ -26,9 +26,9 @@ import { Collection } from './entities/collection.entity'
 @ApiTags('Database')
 @ApiBearerAuth('Authorization')
 @Controller('apps/:appid/collections')
-export class CollectionsController {
-  private readonly logger = new Logger(CollectionsController.name)
-  constructor(private readonly collectionService: CollectionsService) {}
+export class CollectionController {
+  private readonly logger = new Logger(CollectionController.name)
+  constructor(private readonly collectionService: CollectionService) {}
 
   /**
    * Create a new collection in database

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { DatabaseCoreService } from 'src/core/database.cr.service'
+import { DatabaseCoreService } from '../core/database.cr.service'
 import * as assert from 'node:assert'
 import { MongoAccessor } from 'database-proxy'
 

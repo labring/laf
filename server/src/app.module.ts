@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { WebsitesModule } from './websites/websites.module'
-import { FunctionsModule } from './function/functions.module'
+import { FunctionModule } from './function/function.module'
 import { HttpModule } from '@nestjs/axios'
 import { CoreModule } from './core/core.module'
 import { ApplicationModule } from './application/application.module'
@@ -22,7 +22,7 @@ import { StorageModule } from './storage/storage.module'
       ttl: 60,
       limit: 10,
     }),
-    FunctionsModule,
+    FunctionModule,
     WebsitesModule,
     HttpModule,
     AuthModule,

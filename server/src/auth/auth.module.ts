@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
 import { PassportModule } from '@nestjs/passport'
 import { ServerConfig } from '../constants'
-import { UsersModule } from '../users/users.module'
+import { UserModule } from '../user/user.module'
 import { AuthService } from './auth.service'
 import { CasdoorService } from './casdoor.service'
 import { JwtStrategy } from './jwt.strategy'
@@ -16,7 +16,7 @@ import { HttpModule } from '@nestjs/axios'
       secret: ServerConfig.JWT_SECRET,
       signOptions: { expiresIn: ServerConfig.JWT_EXPIRES_IN },
     }),
-    UsersModule,
+    UserModule,
     HttpModule,
   ],
   providers: [AuthService, JwtStrategy, CasdoorService],

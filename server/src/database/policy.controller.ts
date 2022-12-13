@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
 } from '@nestjs/common'
-import { PoliciesService } from './policies.service'
+import { PolicyService } from './policy.service'
 import { CreatePolicyDto } from './dto/create-policy.dto'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { UpdatePolicyDto } from './dto/update-policy.dto'
@@ -15,8 +15,8 @@ import { UpdatePolicyDto } from './dto/update-policy.dto'
 @ApiTags('Database')
 @ApiBearerAuth('Authorization')
 @Controller('apps/:appid/policies')
-export class PoliciesController {
-  constructor(private readonly policiesService: PoliciesService) {}
+export class PolicyController {
+  constructor(private readonly policiesService: PolicyService) {}
 
   @Post()
   @ApiOperation({ summary: 'TODO - ⌛️' })

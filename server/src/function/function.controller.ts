@@ -22,14 +22,14 @@ import {
 } from '@nestjs/swagger'
 import { JwtAuthGuard } from '../auth/jwt.auth.guard'
 import { ApplicationAuthGuard } from '../auth/application.auth.guard'
-import { FunctionsService } from './functions.service'
+import { FunctionService } from './function.service'
 import { IRequest } from '../utils/types'
 
 @ApiTags('Function')
 @ApiBearerAuth('Authorization')
 @Controller('apps/:appid/functions')
-export class FunctionsController {
-  constructor(private readonly functionsService: FunctionsService) {}
+export class FunctionController {
+  constructor(private readonly functionsService: FunctionService) {}
 
   /**
    * Create a new function

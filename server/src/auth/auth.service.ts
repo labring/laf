@@ -2,8 +2,8 @@ import { Injectable, Logger } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { CasdoorService } from './casdoor.service'
 import { User } from '@prisma/client'
-import { UsersService } from '../users/users.service'
-import { ServerConfig } from 'src/constants'
+import { UserService } from '../user/user.service'
+import { ServerConfig } from '../constants'
 import * as assert from 'node:assert'
 
 @Injectable()
@@ -12,7 +12,7 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly casdoorService: CasdoorService,
-    private readonly userService: UsersService,
+    private readonly userService: UserService,
   ) {}
 
   /**

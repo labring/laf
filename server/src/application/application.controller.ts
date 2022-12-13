@@ -24,7 +24,7 @@ import { CreateApplicationDto } from './dto/create-application.dto'
 import { UpdateApplicationDto } from './dto/update-application.dto'
 import { ApplicationService } from './application.service'
 import { ServerConfig } from '../constants'
-import { FunctionsService } from '../function/functions.service'
+import { FunctionService } from '../function/function.service'
 import { StorageService } from '../storage/storage.service'
 
 @ApiTags('Application')
@@ -34,7 +34,7 @@ export class ApplicationController {
   private logger = new Logger(ApplicationController.name)
   constructor(
     private readonly appService: ApplicationService,
-    private readonly funcService: FunctionsService,
+    private readonly funcService: FunctionService,
     private readonly storageService: StorageService,
   ) {}
 

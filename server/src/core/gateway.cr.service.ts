@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common'
 import { GetApplicationNamespaceById } from '../utils/getter'
 import { KubernetesService } from './kubernetes.service'
 import * as assert from 'node:assert'
-import { ResourceLabels } from 'src/constants'
+import { ResourceLabels } from '../constants'
 import { Gateway } from './api/gateway.cr'
 
 @Injectable()

@@ -6,7 +6,7 @@ import { PrismaService } from '../prisma.service'
 import { ApplicationTaskService } from './application-task.service'
 import { InstanceService } from '../instance/instance.service'
 import { JwtService } from '@nestjs/jwt'
-import { FunctionsService } from '../function/functions.service'
+import { FunctionService } from '../function/function.service'
 import { StorageService } from '../storage/storage.service'
 
 @Module({
@@ -18,7 +18,7 @@ import { StorageService } from '../storage/storage.service'
     ApplicationTaskService,
     InstanceService,
     JwtService,
-    FunctionsService,
+    FunctionService,
     StorageService,
   ],
   exports: [ApplicationService],
