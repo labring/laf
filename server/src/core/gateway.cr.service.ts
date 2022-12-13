@@ -20,6 +20,7 @@ export class GatewayCoreService {
     }
 
     gw.spec.appid = appid
+    gw.spec.buckets = []
 
     try {
       const res = await this.k8sService.objectApi.create(gw)
@@ -48,6 +49,16 @@ export class GatewayCoreService {
       if (err?.response?.body?.reason === 'NotFound') return null
       this.logger.error(err)
       this.logger.debug(err.response?.body)
+      return null
+    }
+  }
+
+  async update(gw: Gateway) {
+    try {
+      const res = await this.k8sService.patchCustomObject(gw)
+      return Gateway.fromObject(res)
+    } catch (error) {
+      this.logger.error(error, error.response?.body)
       return null
     }
   }

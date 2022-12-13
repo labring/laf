@@ -23,7 +23,6 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// BackendType 是后端服务类型
 type BackendType string
 
 const (
@@ -32,7 +31,6 @@ const (
 	WEBSITE BackendType = "website"
 )
 
-// RouteState 是路由的状态
 type RouteState string
 
 const (
@@ -48,11 +46,9 @@ type GatewaySpec struct {
 	// +kubebuilder:validation:Required
 	AppId string `json:"appid"`
 
-	// Buckets是存储桶, 是一个数组，可选存在
 	// +kubebuilder:validation:Optional
 	Buckets []string `json:"buckets,omitempty"`
 
-	// Websites是静态站点，是一个数组，可选存在
 	// +kubebuilder:validation:Optional
 	Websites []string `json:"websites,omitempty"`
 }
@@ -62,13 +58,10 @@ type GatewayStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// AppRoute 是应用路由
 	AppRoute *GatewayRoute `json:"appRoute,omitempty"`
 
-	// BucketRoutes 是存储桶路由
 	BucketRoutes map[string]*GatewayRoute `json:"bucketRoutes,omitempty"`
 
-	// WebsiteRoutes 是静态站点路由
 	WebsiteRoutes map[string]*GatewayRoute `json:"websiteRoutes,omitempty"`
 
 	// Conditions
@@ -77,15 +70,12 @@ type GatewayStatus struct {
 }
 
 type GatewayRoute struct {
-	// DomainName 是域名名称，必须存在
 	// +kubebuilder:validation:Required
 	DomainName string `json:"domainName"`
 
-	// DomainNamespace 是域名所在的命名空间，必须存在
 	// +kubebuilder:validation:Required
 	DomainNamespace string `json:"domainNamespace"`
 
-	// Domain 是域名，必须存在
 	// +kubebuilder:validation:Required
 	Domain string `json:"domain"`
 }

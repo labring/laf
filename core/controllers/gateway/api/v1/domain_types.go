@@ -26,42 +26,32 @@ import (
 // DomainSpec defines the desired state of Domain
 type DomainSpec struct {
 
-	// Domain是域名，必须存在，匹配域名规则
 	// +kubebuilder:validation:Pattern="^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,6}$"
 	// +kubebuilder:validation:Required
 	Domain string `json:"domain"`
 
-	// BackendType是后端服务类型，必须存在APP;bucket;WEBSITE
 	// +kubebuilder:validation:Enum=app;bucket;website
 	// +kubebuilder:validation:Required
 	BackendType BackendType `json:"backendType"`
 
-	// Region 是区域 必须存在 由字符数组和-组成
 	// +kubebuilder:validation:Pattern="^[a-zA-Z0-9-]+$"
 	// +kubebuilder:validation:Required
 	Region string `json:"region"`
 
-	// Cluster 是网关集群配置 必须存在
 	// +kubebuilder:validation:Required
 	Cluster ClusterSpec `json:"cluster"`
 
-	// CertConfigRef 是字符串类型，是configMap的引用，可选存在
 	// +kubebuilder:validation:Optional
 	CertConfigRef string `json:"certConfigRef"`
 }
 
-// ClusterSpec 是集群的规格
 type ClusterSpec struct {
-	// url是集群的url，必须存在
 	Url string `json:"url"`
-
-	// key是集群的key，必须存在
 	Key string `json:"key"`
 }
 
 // DomainStatus defines the observed state of Domain
 type DomainStatus struct {
-	// CertConfigRef 是字符串类型，是configMap的引用
 	// +kubebuilder:validation:Required
 	CertConfigRef string `json:"certConfigRef"`
 }
