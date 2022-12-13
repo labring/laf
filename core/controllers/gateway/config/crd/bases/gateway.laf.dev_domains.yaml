@@ -36,34 +36,27 @@ spec:
             description: DomainSpec defines the desired state of Domain
             properties:
               backendType:
-                description: BackendType是后端服务类型，必须存在APP;bucket;WEBSITE
                 enum:
                 - app
                 - bucket
                 - website
                 type: string
               certConfigRef:
-                description: CertConfigRef 是字符串类型，是configMap的引用，可选存在
                 type: string
               cluster:
-                description: Cluster 是网关集群配置 必须存在
                 properties:
                   key:
-                    description: key是集群的key，必须存在
                     type: string
                   url:
-                    description: url是集群的url，必须存在
                     type: string
                 required:
                 - key
                 - url
                 type: object
               domain:
-                description: Domain是域名，必须存在，匹配域名规则
                 pattern: ^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$
                 type: string
               region:
-                description: Region 是区域 必须存在 由字符数组和-组成
                 pattern: ^[a-zA-Z0-9-]+$
                 type: string
             required:
@@ -76,7 +69,6 @@ spec:
             description: DomainStatus defines the observed state of Domain
             properties:
               certConfigRef:
-                description: CertConfigRef 是字符串类型，是configMap的引用
                 type: string
             required:
             - certConfigRef
