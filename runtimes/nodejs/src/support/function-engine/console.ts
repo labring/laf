@@ -1,17 +1,22 @@
 import * as util from 'util'
-import * as dayjs from 'dayjs'
 
 export class FunctionConsole {
-  private _logs: string[] = []
+  requestId: string = ''
 
-  get logs() {
-    return this._logs
+  static write: (message: string, requestId: string) => void = console.log
+
+  constructor(requestId: string) {
+    this.requestId = requestId
   }
 
   private _log(...params: any[]) {
-    const date = dayjs().format("YYYY/MM/DD HH:mm:ss")
-    const r = util.format("[%s] -", date, ...params)
-    this._logs.push(r)
+    const content = params
+      .map((param) => {
+        return util.inspect(param, { depth: 30 })
+      })
+      .join(' ')
+
+    FunctionConsole.write(content, this.requestId)
   }
 
   debug(...params: any[]) {

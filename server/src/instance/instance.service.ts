@@ -1,7 +1,7 @@
 import { V1Deployment } from '@kubernetes/client-node'
 import { Injectable, Logger } from '@nestjs/common'
 import { GetApplicationNamespaceById } from '../utils/getter'
-import { ResourceLabels } from '../constants'
+import { ResourceLabels, ServerConfig } from '../constants'
 import { DatabaseCoreService } from '../core/database.cr.service'
 import { KubernetesService } from '../core/kubernetes.service'
 import { OSSUserCoreService } from '../core/oss-user.cr.service'
@@ -57,7 +57,7 @@ export class InstanceService {
       { name: 'OSS_ACCESS_KEY', value: oss.status?.accessKey },
       { name: 'OSS_ACCESS_SECRET', value: oss.status?.secretKey },
       { name: 'OSS_INTERNAL_ENDPOINT', value: oss.status?.endpoint },
-      { name: 'OSS_EXTERNAL_ENDPOINT', value: oss.status?.endpoint },
+      { name: 'OSS_EXTERNAL_ENDPOINT', value: ServerConfig.OSS_ENDPOINT },
       { name: 'OSS_REGION', value: oss.status?.region },
       { name: 'FLAGS', value: `--max_old_space_size=${max_old_space_size}` },
     ]

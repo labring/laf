@@ -6,9 +6,6 @@ import { Trigger } from "./trigger"
 import assert = require('node:assert')
 import WebSocket = require('ws')
 import { IncomingMessage } from 'node:http'
-import { addFunctionLog } from '../function-log'
-import { ObjectId } from 'mongodb'
-
 
 export class TriggerScheduler {
   private _triggers: Trigger[] = []
@@ -73,7 +70,7 @@ export class TriggerScheduler {
         method: 'trigger',
         requestId: `trigger_${tri.id}`
       }
-      this.executeFunction(tri.func_id, param, tri)
+      this.executeFunction(tri.func_id, param)
     }
   }
 
@@ -111,29 +108,16 @@ export class TriggerScheduler {
         socket,
         headers: request?.headers
       }
-      this.executeFunction(tri.func_id, param, tri)
+      this.executeFunction(tri.func_id, param)
     }
   }
 
   /**
    * Execute function
    */
-  protected async executeFunction(func_id: string, param: FunctionContext, trigger: Trigger) {
+  protected async executeFunction(func_id: string, param: FunctionContext) {
     const func = await this.getFunctionById(func_id)
-    const result = await func.invoke(param)
-
-    // save function log
-    result.logs.unshift(`invoked by trigger: ${trigger.name} (${trigger.id})`)
-    await addFunctionLog({
-      requestId: `trigger_${trigger.id}`,
-      method: param.method,
-      func_id: new ObjectId(func_id),
-      func_name: func.name,
-      logs: result.logs,
-      time_usage: result.time_usage,
-      created_by: `trigger_${trigger.id}`,
-      trigger_id: trigger.id
-    })
+    await func.invoke(param)
   }
 
   /**
@@ -188,7 +172,7 @@ export class TriggerScheduler {
           requestId: `trigger_${tri.id}`
         }
         // execute function
-        this.executeFunction(tri.func_id, param, tri)
+        this.executeFunction(tri.func_id, param)
 
         // update last exec time
         tri.last_exec_time = Date.now()
