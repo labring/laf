@@ -70,7 +70,7 @@ export class LogController {
     page = page || 1
     limit = limit || 10
 
-    const res = await this.funcService.findLogs(appid, {
+    const res = await this.funcService.getLogs(appid, {
       requestId,
       functionName,
       limit,

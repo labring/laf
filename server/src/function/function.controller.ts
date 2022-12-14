@@ -24,6 +24,7 @@ import { JwtAuthGuard } from '../auth/jwt.auth.guard'
 import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import { FunctionService } from './function.service'
 import { IRequest } from '../utils/types'
+import { CompileFunctionDto } from './dto/compile-function.dto.ts'
 
 @ApiTags('Function')
 @ApiBearerAuth('Authorization')
@@ -154,13 +155,21 @@ export class FunctionController {
   @ApiOperation({ summary: 'Compile a function ' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post(':name/compile')
-  async compile(@Param('appid') appid: string, @Param('name') name: string) {
+  async compile(
+    @Param('appid') appid: string,
+    @Param('name') name: string,
+    @Body() dto: CompileFunctionDto,
+  ) {
+    if (!dto.code) {
+      return ResponseUtil.error('code is required')
+    }
+
     const func = await this.functionsService.findOne(appid, name)
     if (!func) {
       throw new HttpException('function not found', HttpStatus.NOT_FOUND)
     }
 
-    const res = this.functionsService.compile(func)
+    const res = await this.functionsService.compile(func, dto)
     return res
   }
 }

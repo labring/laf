@@ -12,6 +12,7 @@ import { CreateFunctionDto } from './dto/create-function.dto'
 import { UpdateFunctionDto } from './dto/update-function.dto'
 import * as assert from 'node:assert'
 import { JwtService } from '@nestjs/jwt'
+import { CompileFunctionDto } from './dto/compile-function.dto.ts'
 
 @Injectable()
 export class FunctionService {
@@ -108,10 +109,18 @@ export class FunctionService {
     }
   }
 
-  compile(func: CloudFunction) {
-    const code = func.source.code
-    func.source.compiled = compileTs2js(code)
-    return func
+  async compile(func: CloudFunction, dto: CompileFunctionDto) {
+    const data: CloudFunction = {
+      ...func,
+      source: {
+        ...func.source,
+        code: dto.code,
+        compiled: compileTs2js(dto.code),
+        version: func.source.version + 1,
+      },
+      updatedAt: new Date(),
+    }
+    return data
   }
 
   async getDebugFunctionToken(appid: string) {
@@ -135,7 +144,7 @@ export class FunctionService {
     return token
   }
 
-  async findLogs(
+  async getLogs(
     appid: string,
     params: {
       page: number
@@ -151,7 +160,7 @@ export class FunctionService {
       const coll = db.collection(CN_FUNCTION_LOGS)
       const query: any = {}
       if (requestId) {
-        query.requestId = requestId
+        query.request_id = requestId
       }
       if (functionName) {
         query.func = functionName
