@@ -14,6 +14,7 @@ import { ScheduleModule } from '@nestjs/schedule'
 import { DatabaseModule } from './database/database.module'
 import { PrismaService } from './prisma.service'
 import { StorageModule } from './storage/storage.module'
+import { LogModule } from './log/log.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { StorageModule } from './storage/storage.module'
     InstanceModule,
     DatabaseModule,
     StorageModule,
+    LogModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
