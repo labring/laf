@@ -41,7 +41,7 @@ fi
 
 
 # install k8s cluster
-sealos run labring/kubernetes:v1.24.0 labring/flannel:v0.19.0 --single
+sealos run labring/kubernetes:v1.24.0-4.1.1 labring/flannel:v0.19.0 --single
 
 # taint master node
 NODENAME=$(kubectl get nodes -ojsonpath='{.items[0].metadata.name}')
