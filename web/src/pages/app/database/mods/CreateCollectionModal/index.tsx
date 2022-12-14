@@ -88,20 +88,20 @@ const CreateCollectionModal = (props: { collection?: any }) => {
 
           <ModalFooter>
             <Button
-              isLoading={createDBMutation.isLoading}
-              colorScheme="primary"
               mr={3}
-              type="submit"
-              onClick={handleSubmit(onSubmit)}
-            >
-              {t("Confirm")}
-            </Button>
-            <Button
               onClick={() => {
                 onClose();
               }}
             >
-              {t("Cancel")}
+              {t("Common.Dialog.Cancel")}
+            </Button>
+            <Button
+              isLoading={createDBMutation.isLoading}
+              colorScheme="blue"
+              type="submit"
+              onClick={handleSubmit(onSubmit)}
+            >
+              {t("Common.Dialog.Confirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

@@ -1,14 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import request from "@/utils/request";
-
 import useDBMStore from "./store";
 
 import {
-  CollectionsControllerCreate,
-  CollectionsControllerFindAll,
-  CollectionsControllerRemove,
+  CollectionControllerCreate,
+  CollectionControllerFindAll,
+  CollectionControllerRemove,
 } from "@/apis/v1/apps";
+import useDB from "@/hooks/useDB";
 import useGlobalStore from "@/pages/globalStore";
 
 const queryKeys = {
@@ -20,7 +19,7 @@ export const useCollectionListQuery = (config?: { onSuccess: (data: any) => void
   return useQuery(
     queryKeys.useCollectionListQuery,
     () => {
-      return CollectionsControllerFindAll({});
+      return CollectionControllerFindAll({});
     },
     {
       onSuccess: config?.onSuccess,
@@ -30,10 +29,27 @@ export const useCollectionListQuery = (config?: { onSuccess: (data: any) => void
 
 export const useEntryDataQuery = () => {
   const { currentDB } = useDBMStore();
+  const { db } = useDB();
   return useQuery(
     queryKeys.useEntryDataQuery(currentDB?.name || ""),
-    () => {
-      return request.get("/api/dbm_entry?db=" + currentDB?.name);
+    async () => {
+      if (!currentDB) return;
+
+      const { limit = 10, page = 1, _id }: any = {};
+
+      const query = _id ? { _id } : {};
+
+      // 执行数据查询
+      const res = await db
+        .collection(currentDB?.name)
+        .where(query)
+        .limit(limit)
+        .skip((page - 1) * limit)
+        .get();
+
+      // 获取数据总数
+      const { total } = await db.collection(currentDB?.name).where(query).count();
+      return { list: res.data, total };
     },
     {
       enabled: !!currentDB,
@@ -46,7 +62,7 @@ export const useCreateDBMutation = (config?: { onSuccess: (data: any) => void })
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
-      return CollectionsControllerCreate(values);
+      return CollectionControllerCreate(values);
     },
     {
       onSuccess: async (data) => {
@@ -67,7 +83,7 @@ export const useDeleteDBMutation = (config?: { onSuccess: (data: any) => void })
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
-      return CollectionsControllerRemove(values);
+      return CollectionControllerRemove(values);
     },
     {
       onSuccess(data) {
@@ -82,8 +98,3 @@ export const useDeleteDBMutation = (config?: { onSuccess: (data: any) => void })
     },
   );
 };
-
-const server = () => {
-  return null;
-};
-export default server;

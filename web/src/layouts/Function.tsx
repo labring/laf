@@ -1,13 +1,14 @@
 import { useEffect } from "react";
-import { Spinner } from "@chakra-ui/react";
+import { Outlet, useParams } from "react-router-dom";
+import { Center, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
-import { ApplicationsControllerFindOne } from "@/apis/v1/applications";
-import useGlobalStore from "@/pages/globalStore";
 
 import { SmallNavHeight } from "@/constants/index";
 
 import Header from "./Header";
-import { Outlet, useParams } from "react-router-dom";
+
+import { ApplicationControllerFindOne } from "@/apis/v1/applications";
+import useGlobalStore from "@/pages/globalStore";
 
 export default function FunctionLayout() {
   const { init, loading, setCurrentApp, currentApp } = useGlobalStore((state) => state);
@@ -19,7 +20,7 @@ export default function FunctionLayout() {
   useQuery(
     ["getAppDetailQuery", appid],
     () => {
-      return ApplicationsControllerFindOne({ appid: appid });
+      return ApplicationControllerFindOne({ appid: appid });
     },
     {
       enabled: !!appid,
@@ -46,7 +47,13 @@ export default function FunctionLayout() {
           position: "relative",
         }}
       >
-        {loading || !currentApp?.appid ? <Spinner /> : <Outlet />}
+        {loading || !currentApp?.appid ? (
+          <Center height={200}>
+            <Spinner />
+          </Center>
+        ) : (
+          <Outlet />
+        )}
       </div>
     </div>
   );

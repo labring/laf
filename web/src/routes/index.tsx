@@ -1,9 +1,9 @@
+import { lazy, Suspense } from "react";
+import { Center, Spinner } from "@chakra-ui/react";
+
 import BasicLayout from "@/layouts/Basic";
 import FunctionLayout from "@/layouts/Function";
 import LoginReg from "@/layouts/LoginReg";
-import { Center, Spinner } from "@chakra-ui/react";
-import { lazy, Suspense } from "react";
-import { Navigate } from "react-router-dom";
 
 const route404 = {
   path: "*",

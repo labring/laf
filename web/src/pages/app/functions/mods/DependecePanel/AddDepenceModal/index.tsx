@@ -102,17 +102,18 @@ const AddDepenceModal = forwardRef((_, ref) => {
           </ModalBody>
 
           <ModalFooter>
+            <Button mr={3} onClick={onClose}>
+              {t("Common.Dialog.Cancel")}
+            </Button>
             <Button
               colorScheme="blue"
               isLoading={addPackageMutation.isLoading}
-              mr={3}
               onClick={() => {
                 addPackageMutation.mutate(item);
               }}
             >
-              {t("Confirm")}
+              {t("Common.Dialog.Confirm")}
             </Button>
-            <Button onClick={onClose}>{t("Cancel")}</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

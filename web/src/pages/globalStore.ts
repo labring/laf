@@ -4,10 +4,11 @@ import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
 import { TApplication } from "@/apis/typing";
-import { SpecsControllerGetBundles } from "@/apis/v1/bundles";
+import { AppControllerGetBundles } from "@/apis/v1/bundles";
 import { AuthControllerGetSigninUrl } from "@/apis/v1/login";
 import { AuthControllerGetProfile } from "@/apis/v1/profile";
-import { SpecsControllerGetRuntimes } from "@/apis/v1/runtimes";
+import { AppControllerGetRegions } from "@/apis/v1/regions";
+import { AppControllerGetRuntimes } from "@/apis/v1/runtimes";
 
 const { toast } = createStandaloneToast();
 
@@ -15,6 +16,7 @@ type State = {
   userInfo: any;
   loading: boolean;
   runtimes?: any[];
+  regions?: any[];
   bundles?: any[];
   currentApp: TApplication | undefined;
   setCurrentApp(app: TApplication): void;
@@ -41,14 +43,16 @@ const useGlobalStore = create<State>()(
 
         const userInfoRes = await AuthControllerGetProfile({});
 
-        const runtimesRes = await SpecsControllerGetRuntimes({});
-        const bundlesRes = await SpecsControllerGetBundles({});
+        const runtimesRes = await AppControllerGetRuntimes({});
+        const bundlesRes = await AppControllerGetBundles({});
+        const regionsRes = await AppControllerGetRegions({});
 
         set((state) => {
           state.userInfo = userInfoRes.data;
           state.loading = false;
           state.runtimes = runtimesRes.data;
           state.bundles = bundlesRes.data;
+          state.regions = regionsRes.data;
         });
       },
 

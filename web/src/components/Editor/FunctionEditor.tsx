@@ -1,5 +1,4 @@
-import React from "react";
-import Editor, { useMonaco } from "@monaco-editor/react";
+import Editor from "@monaco-editor/react";
 
 import { globalDefinition } from "./globalDefinition";
 
@@ -9,7 +8,6 @@ export default function FunctionEditor(props: {
   onChange: (value: string | undefined) => void;
 }) {
   const { value } = props;
-  const monaco = useMonaco();
 
   function handleEditorWillMount(monaco: any) {
     monaco?.editor.defineTheme("lafEditorTheme", {

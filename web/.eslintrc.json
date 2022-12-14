@@ -20,7 +20,7 @@
               ["^react", "^@?\\w"],
               ["^(@chakra-ui)/(/.*|$/)"],
               // Internal packages.
-              ["^(@/components|@/constants|@/utils)(/.*|$)"],
+              ["^(@/components|@/constants|@/utils|/@/services)(/.*|$)"],
               // Side effect imports.
               ["^\\u0000"],
               // Parent imports. Put `..` last.

@@ -4,13 +4,14 @@
 
 import { BiHelpCircle } from "react-icons/bi";
 import { GrGithub, GrLanguage } from "react-icons/gr";
+import { useNavigate } from "react-router-dom";
 import { HStack } from "@chakra-ui/react";
-import useGlobalStore from "@/pages/globalStore";
 
 import { SmallNavHeight } from "@/constants/index";
 
 import IconWrap from "../../components/IconWrap";
-import { useNavigate } from "react-router-dom";
+
+import useGlobalStore from "@/pages/globalStore";
 
 export default function Header(props: { size: "sm" | "lg" }) {
   const { size } = props;
@@ -32,7 +33,7 @@ export default function Header(props: { size: "sm" | "lg" }) {
         >
           <img src="/logo.png" alt="logo" className="mr-2 rounded-full" width={24} />
         </div>
-        <span className="mr-4 font-bold text-lg">{userInfo.username}</span>
+        <span className="mr-4 font-bold text-gray-500 text-lg">{userInfo.username}</span>
       </div>
 
       <HStack spacing={5}>
@@ -61,7 +62,9 @@ export default function Header(props: { size: "sm" | "lg" }) {
       </div>
 
       <div>
-        <img src={userInfo.profile?.avatar} className="rounded-full" width={30} alt="avatar" />
+        {userInfo.profile ? (
+          <img src={userInfo.profile?.avatar} className="rounded-full" width={30} alt="avatar" />
+        ) : null}
       </div>
     </div>
   );

@@ -16,12 +16,20 @@ import {
 
 import FileUpload from "@/components/FileUplaod";
 
+import useStorageStore from "../../store";
+
+import useAwsS3 from "@/hooks/useAwsS3";
+
 function UploadButton() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const { currentStorage } = useStorageStore();
+
+  const { uploadFile } = useAwsS3();
+
   return (
-    <>
-      <Menu>
+    <div>
+      <Menu placement="bottom-start">
         <MenuButton size="xs" as={Button} rightIcon={<ChevronDownIcon />}>
           上传
         </MenuButton>
@@ -38,14 +46,20 @@ function UploadButton() {
           <ModalCloseButton />
           <div className="p-6">
             <FileUpload
-              onUpload={(files) => {
-                console.log(files);
+              onUpload={async (files) => {
+                for (let i = 0; i < files.length; i++) {
+                  await uploadFile(currentStorage?.metadata.name!, "/" + files[i].name, files[i], {
+                    contentType: files[i].type,
+                  });
+                }
+                console.log("success");
+                return files;
               }}
             />
           </div>
         </ModalContent>
       </Modal>
-    </>
+    </div>
   );
 }
 

@@ -3,10 +3,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useFunctionStore from "./store";
 
 import {
-  FunctionsControllerCreate,
-  FunctionsControllerFindAll,
-  FunctionsControllerRemove,
-  FunctionsControllerUpdate,
+  FunctionControllerCompile,
+  FunctionControllerCreate,
+  FunctionControllerFindAll,
+  FunctionControllerRemove,
+  FunctionControllerUpdate,
 } from "@/apis/v1/apps";
 import useGlobalStore from "@/pages/globalStore";
 
@@ -18,7 +19,7 @@ export const useFunctionListQuery = ({ onSuccess }: { onSuccess: (data: any) => 
   return useQuery(
     queryKeys.useFunctionListQuery,
     () => {
-      return FunctionsControllerFindAll({});
+      return FunctionControllerFindAll({});
     },
     {
       onSuccess,
@@ -32,7 +33,7 @@ export const useCreateFuncitonMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
-      return FunctionsControllerCreate(values);
+      return FunctionControllerCreate(values);
     },
     {
       onSuccess(data) {
@@ -52,7 +53,7 @@ export const useUpdateFunctionMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
-      return FunctionsControllerUpdate(values);
+      return FunctionControllerUpdate(values);
     },
     {
       onSuccess(data) {
@@ -71,7 +72,7 @@ export const useDeleteFunctionMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
-      return FunctionsControllerRemove(values);
+      return FunctionControllerRemove(values);
     },
     {
       onSuccess(data) {
@@ -85,7 +86,21 @@ export const useDeleteFunctionMutation = () => {
   );
 };
 
-const server = () => {
-  return null;
+export const useCompileMutation = () => {
+  const globalStore = useGlobalStore();
+  const queryClient = useQueryClient();
+  return useMutation(
+    (codes: string) => {
+      return FunctionControllerCompile(codes);
+    },
+    {
+      onSuccess(data) {
+        if (data.error) {
+          globalStore.showError(data.error);
+        } else {
+          queryClient.invalidateQueries(queryKeys.useFunctionListQuery);
+        }
+      },
+    },
+  );
 };
-export default server;

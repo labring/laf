@@ -1,15 +1,14 @@
 import { BrowserRouter, useRoutes } from "react-router-dom";
-import routes from "./routes";
-import "./App.css";
-
 import { ChakraProvider } from "@chakra-ui/react";
-
 import { extendTheme } from "@chakra-ui/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ClickToComponent } from "click-to-react-component";
-import { useEffect } from "react";
 
 import "@/utils/i18n";
+
+import routes from "./routes";
+
+import "./App.css";
 
 function RouteElement() {
   const element = useRoutes(routes as any);

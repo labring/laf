@@ -10,17 +10,17 @@
 import request from "@/utils/request";
 
 /**
- * Get application runtime list
+ * Get region list
  */
-export async function AppControllerGetBundles(
-  params: Paths.AppControllerGetBundles.BodyParameters | any,
-): Promise<Paths.AppControllerGetBundles.Responses> {
-  // /v1/bundles
+export async function AppControllerGetRegions(
+  params: Paths.AppControllerGetRegions.BodyParameters | any,
+): Promise<Paths.AppControllerGetRegions.Responses> {
+  // /v1/regions
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
     ...params,
   };
-  return request(`/v1/bundles`, {
+  return request(`/v1/regions`, {
     method: "GET",
     params: params,
   });
