@@ -4,19 +4,20 @@
  * @LastEditTime: 2022-02-03 00:39:18
  * @Description: 
  */
-import { Request, Response } from 'express'
+import { Response } from 'express'
 import { Proxy } from 'database-proxy'
 import Config from '../config'
 import { DatabaseAgent } from '../db'
 import { logger } from '../support/logger'
 import { PolicyAgent } from '../support/policy'
+import { IRequest } from '../support/types'
 
 
-export async function handleDatabaseProxy(req: Request, res: Response) {
+export async function handleDatabaseProxy(req: IRequest, res: Response) {
   const accessor = DatabaseAgent.accessor
 
   const requestId = req['requestId']
-  const auth = req['auth'] ?? {}
+  const auth = req.user || {}
   const policy_name = req.params?.policy
 
   // get corresponding policy

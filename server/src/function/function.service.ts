@@ -1,7 +1,11 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { CloudFunction, Prisma } from '@prisma/client'
 import { compileTs2js } from '../utils/lang'
-import { APPLICATION_SECRET_KEY, CN_PUBLISHED_FUNCTIONS } from '../constants'
+import {
+  APPLICATION_SECRET_KEY,
+  CN_FUNCTION_LOGS,
+  CN_PUBLISHED_FUNCTIONS,
+} from '../constants'
 import { DatabaseCoreService } from '../core/database.cr.service'
 import { PrismaService } from '../prisma.service'
 import { CreateFunctionDto } from './dto/create-function.dto'
@@ -11,6 +15,7 @@ import { JwtService } from '@nestjs/jwt'
 
 @Injectable()
 export class FunctionService {
+  private readonly logger = new Logger(FunctionService.name)
   constructor(
     private readonly db: DatabaseCoreService,
     private readonly prisma: PrismaService,
@@ -82,20 +87,25 @@ export class FunctionService {
   async publish(func: CloudFunction) {
     const { db, client } = await this.db.findAndConnect(func.appid)
     const session = client.startSession()
-    await session.withTransaction(async () => {
-      const coll = db.collection(CN_PUBLISHED_FUNCTIONS)
-      await coll.deleteOne({ name: func.name }, { session })
-      await coll.insertOne(func, { session })
-    })
+    try {
+      await session.withTransaction(async () => {
+        const coll = db.collection(CN_PUBLISHED_FUNCTIONS)
+        await coll.deleteOne({ name: func.name }, { session })
+        await coll.insertOne(func, { session })
+      })
+    } finally {
+      await client.close()
+    }
   }
 
   async unpublish(appid: string, name: string) {
     const { db, client } = await this.db.findAndConnect(appid)
-    const session = client.startSession()
-    await session.withTransaction(async () => {
+    try {
       const coll = db.collection(CN_PUBLISHED_FUNCTIONS)
-      await coll.deleteOne({ name }, { session })
-    })
+      await coll.deleteOne({ name })
+    } finally {
+      await client.close()
+    }
   }
 
   compile(func: CloudFunction) {
@@ -123,5 +133,45 @@ export class FunctionService {
       { secret: secret.value },
     )
     return token
+  }
+
+  async findLogs(
+    appid: string,
+    params: {
+      page: number
+      limit: number
+      requestId?: string
+      functionName?: string
+    },
+  ) {
+    const { page, limit, requestId, functionName } = params
+    const { db, client } = await this.db.findAndConnect(appid)
+
+    try {
+      const coll = db.collection(CN_FUNCTION_LOGS)
+      const query: any = {}
+      if (requestId) {
+        query.requestId = requestId
+      }
+      if (functionName) {
+        query.func = functionName
+      }
+
+      const data = await coll
+        .find(query, {
+          limit,
+          skip: (page - 1) * limit,
+          sort: { created_at: -1 },
+        })
+        .toArray()
+
+      const total = await coll.countDocuments(query)
+      return {
+        data,
+        total,
+      }
+    } finally {
+      await client.close()
+    }
   }
 }

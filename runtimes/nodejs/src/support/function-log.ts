@@ -7,15 +7,16 @@
 
 import { Constants } from '../constants'
 import { DatabaseAgent } from '../db'
-import { FunctionConsole } from './function-engine'
+import { FunctionConsole, FunctionContext } from './function-engine'
 
 export interface IFunctionLog {
   request_id: string
+  func: string
   data: string
   created_at: Date
 }
 
-FunctionConsole.write = async (message: string, request_id: string) => {
+FunctionConsole.write = async (message: string, ctx: FunctionContext) => {
   const db = DatabaseAgent.db
   if (!db) return
 
@@ -23,7 +24,8 @@ FunctionConsole.write = async (message: string, request_id: string) => {
     Constants.function_log_collection,
   )
   const doc = {
-    request_id: request_id,
+    request_id: ctx.requestId,
+    func: ctx.__function_name,
     data: message,
     created_at: new Date(),
   }

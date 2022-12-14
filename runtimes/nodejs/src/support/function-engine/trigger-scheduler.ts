@@ -6,6 +6,7 @@ import { Trigger } from "./trigger"
 import assert = require('node:assert')
 import WebSocket = require('ws')
 import { IncomingMessage } from 'node:http'
+import { generateUUID } from '../utils'
 
 export class TriggerScheduler {
   private _triggers: Trigger[] = []
@@ -68,7 +69,8 @@ export class TriggerScheduler {
       const param: FunctionContext = {
         params: data,
         method: 'trigger',
-        requestId: `trigger_${tri.id}`
+        requestId: generateUUID(),
+        __function_name: ''
       }
       this.executeFunction(tri.func_id, param)
     }
@@ -104,7 +106,7 @@ export class TriggerScheduler {
       const param: any = {
         params: data,
         method: event,
-        requestId: `trigger_${tri.id}`,
+        requestId: generateUUID(),
         socket,
         headers: request?.headers
       }
@@ -117,6 +119,7 @@ export class TriggerScheduler {
    */
   protected async executeFunction(func_id: string, param: FunctionContext) {
     const func = await this.getFunctionById(func_id)
+    param.__function_name = func.name
     await func.invoke(param)
   }
 
@@ -169,7 +172,8 @@ export class TriggerScheduler {
         const param: FunctionContext = {
           params: tri,
           method: 'trigger',
-          requestId: `trigger_${tri.id}`
+          requestId: generateUUID(),
+          __function_name: tri.func_id
         }
         // execute function
         this.executeFunction(tri.func_id, param)

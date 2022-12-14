@@ -1,56 +1,58 @@
-import { FunctionConsole } from "./console";
-import { IncomingHttpHeaders } from "http";
-import { Request, Response } from "express";
+import { FunctionConsole } from './console'
+import { IncomingHttpHeaders } from 'http'
+import { Request, Response } from 'express'
 
-export type RequireFuncType = (module: string) => any;
+export type RequireFuncType = (module: string) => any
 
 /**
  * vm run context (global)
  */
 export interface RuntimeContext {
-  __context__: FunctionContext;
-  module: { exports: Object };
-  exports: Object;
-  console: FunctionConsole;
-  require: RequireFuncType;
-  Buffer: typeof Buffer;
-  setTimeout: typeof setTimeout;
-  clearTimeout: typeof clearTimeout;
-  setInterval: typeof setInterval;
-  clearInterval: typeof clearInterval;
-  setImmediate: typeof setImmediate;
-  clearImmediate: typeof clearImmediate;
-  __filename: string;
+  __context__: FunctionContext
+  module: { exports: Object }
+  exports: Object
+  console: FunctionConsole
+  require: RequireFuncType
+  Buffer: typeof Buffer
+  setTimeout: typeof setTimeout
+  clearTimeout: typeof clearTimeout
+  setInterval: typeof setInterval
+  clearInterval: typeof clearInterval
+  setImmediate: typeof setImmediate
+  clearImmediate: typeof clearImmediate
+  __filename: string
   process: {
-    env: { [key: string]: string };
-  };
-  global: RuntimeContext;
+    env: { [key: string]: string }
+  }
+  global: RuntimeContext
 }
 
 /**
  * ctx passed to function
  */
 export interface FunctionContext {
-  files?: File[];
-  headers?: IncomingHttpHeaders;
-  query?: any;
-  body?: any;
-  params?: any;
-  auth?: any;
-  requestId?: string;
-  method?: string;
-  request?: Request;
-  response?: Response;
-  __function_name?: string;
+  files?: File[]
+  headers?: IncomingHttpHeaders
+  query?: any
+  body?: any
+  params?: any
+  // @Deprecated use user instead
+  auth?: any
+  user?: any
+  requestId: string
+  method?: string
+  request?: Request
+  response?: Response
+  __function_name: string
 }
 
 /**
  * Result object returned by the running function
  */
 export interface FunctionResult {
-  data?: any;
-  error?: Error;
-  time_usage: number;
+  data?: any
+  error?: Error
+  time_usage: number
 }
 
 export enum FunctionStatus {
@@ -63,51 +65,51 @@ export enum FunctionStatus {
  *
  */
 export type CloudFunctionSource = {
-  code: string;
-  compiled: string | null;
-  uri: string | null;
-  version: number;
-  hash: string | null;
-  lang: string | null;
-};
+  code: string
+  compiled: string | null
+  uri: string | null
+  version: number
+  hash: string | null
+  lang: string | null
+}
 
 /**
  * cloud function data structure
  */
 export interface ICloudFunctionData {
-  id: string;
-  appid: string;
-  name: string;
-  source: CloudFunctionSource;
-  desc: string;
-  tags: string[];
-  websocket: boolean;
-  methods: string[];
-  createdAt: Date;
-  updatedAt: Date;
-  createdBy: string;
+  id: string
+  appid: string
+  name: string
+  source: CloudFunctionSource
+  desc: string
+  tags: string[]
+  websocket: boolean
+  methods: string[]
+  createdAt: Date
+  updatedAt: Date
+  createdBy: string
 }
 
 /** Object containing file metadata and access information. */
 interface File {
   /** Name of the form field associated with this file. */
-  fieldname: string;
+  fieldname: string
   /** Name of the file on the uploader's computer. */
-  originalname: string;
+  originalname: string
   /**
    * Value of the `Content-Transfer-Encoding` header for this file.
    * @deprecated since July 2015
    * @see RFC 7578, Section 4.7
    */
-  encoding: string;
+  encoding: string
   /** Value of the `Content-Type` header for this file. */
-  mimetype: string;
+  mimetype: string
   /** Size of the file in bytes. */
-  size: number;
+  size: number
   /** `DiskStorage` only: Directory to which this file has been uploaded. */
-  destination: string;
+  destination: string
   /** `DiskStorage` only: Name of this file within `destination`. */
-  filename: string;
+  filename: string
   /** `DiskStorage` only: Full path to the uploaded file. */
-  path: string;
+  path: string
 }

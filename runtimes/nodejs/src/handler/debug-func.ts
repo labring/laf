@@ -5,15 +5,16 @@
  * @Description: 
  */
 
-import { Request, Response } from 'express'
+import { Response } from 'express'
 import { FunctionContext } from '../support/function-engine'
 import { logger } from '../support/logger'
 import { CloudFunction } from '../support/function-engine'
+import { IRequest } from '../support/types'
 
 /**
  * Handler of debugging cloud function
  */
-export async function handleDebugFunction(req: Request, res: Response) {
+export async function handleDebugFunction(req: IRequest, res: Response) {
 
   const requestId = req['requestId']
   const func_name = req.params?.name
@@ -25,7 +26,7 @@ export async function handleDebugFunction(req: Request, res: Response) {
   }
 
   // verify the debug token
-  const auth = req['auth']
+  const auth = req.user
   if (!auth || auth.type !== 'debug') {
     return res.status(403).send('permission denied: invalid debug token')
   }
@@ -40,9 +41,11 @@ export async function handleDebugFunction(req: Request, res: Response) {
       body: param,
       headers: req.headers,
       method: req.method,
-      auth: req['auth'],
+      auth: req.user,
+      user: req.user,
       requestId,
-      response: res
+      response: res,
+      __function_name: func.name,
     }
     const result = await func.invoke(ctx)
 

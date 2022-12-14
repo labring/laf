@@ -11,6 +11,7 @@ import { logger } from "./logger"
 import { CloudFunction } from "./function-engine"
 import { DatabaseAgent } from "../db"
 import { Constants } from "../constants"
+import { generateUUID } from "./utils"
 
 
 export type InjectionGetter = (payload: any, params: Params) => Promise<any>
@@ -77,11 +78,13 @@ export class PolicyAgent {
       assert.ok(func_data, 'getFunctionByName(): function not found')
 
       const func = new CloudFunction(func_data)
-      const ret = await func.invoke({})
+      const ret = await func.invoke({
+        __function_name: func.name,
+        requestId: generateUUID()
+      })
       assert(typeof ret.data === 'function', 'function type needed')
 
       return ret.data
-
     } catch (error) {
       logger.error(`failed to get injector by cloud function: ${injectorName}, now using default injector`, error)
       return defaultInjectionGetter
