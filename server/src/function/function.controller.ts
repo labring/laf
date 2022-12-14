@@ -10,6 +10,7 @@ import {
   HttpException,
   HttpStatus,
   Req,
+  Query,
 } from '@nestjs/common'
 import { CreateFunctionDto } from './dto/create-function.dto'
 import { UpdateFunctionDto } from './dto/update-function.dto'
@@ -162,5 +163,40 @@ export class FunctionController {
 
     const res = this.functionsService.compile(func)
     return res
+  }
+
+  /**
+   * Get function logs
+   * @param appid
+   * @param name
+   * @returns
+   */
+  @ApiResponse({ type: ResponseUtil })
+  @ApiOperation({ summary: 'Get function logs' })
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Get('logs')
+  async getLogs(
+    @Param('appid') appid: string,
+    @Query('requestId') requestId?: string,
+    @Query('functionName') functionName?: string,
+    @Query('limit') limit?: number,
+    @Query('page') page?: number,
+  ) {
+    page = page || 1
+    limit = limit || 10
+
+    const res = await this.functionsService.findLogs(appid, {
+      requestId,
+      functionName,
+      limit,
+      page,
+    })
+
+    return ResponseUtil.ok({
+      list: res.data,
+      total: res.total,
+      page,
+      limit,
+    })
   }
 }

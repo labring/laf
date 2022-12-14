@@ -52,7 +52,7 @@ process.on('uncaughtException', err => {
 app.use(function (req, res, next) {
   const token = splitBearerToken(req.headers['authorization'] ?? '')
   const auth = parseToken(token) || null
-  req['auth'] = auth
+  req['user'] = auth
 
   const requestId = req['requestId'] = req.headers['x-request-id'] || generateUUID()
   if (req.url !== '/healthz') {

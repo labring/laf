@@ -101,6 +101,7 @@ export const HTTP_METHODS = ['HEAD', 'GET', 'POST', 'PUT', 'DELETE', 'PATCH']
 
 export const CN_PUBLISHED_FUNCTIONS = '__functions__'
 export const CN_PUBLISHED_POLICIES = '__policies__'
+export const CN_FUNCTION_LOGS = '__function_logs__'
 
 export const CPU_UNIT = 1000
 export const MB = 1024 * 1024

@@ -75,7 +75,7 @@ export class FunctionEngine {
    * @returns
    */
   buildSandbox(functionContext: FunctionContext): RuntimeContext {
-    const fconsole = new FunctionConsole(functionContext.requestId)
+    const fconsole = new FunctionConsole(functionContext)
 
     const _module = {
       exports: {},

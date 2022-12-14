@@ -20,12 +20,12 @@ export class CollectionService {
     assert(db, 'Database not found')
     try {
       await db.createCollection(dto.name)
-      await client.close()
       return true
     } catch (error) {
       this.logger.error(error)
-      await client.close()
       return false
+    } finally {
+      await client.close()
     }
   }
 
@@ -40,12 +40,12 @@ export class CollectionService {
     try {
       const collections = await db.listCollections().toArray()
       const result = collections.filter((coll) => !coll.name.startsWith('__'))
-      await client.close()
       return result
     } catch (error) {
       this.logger.error(error)
-      await client.close()
       return null
+    } finally {
+      await client.close()
     }
   }
 
@@ -69,6 +69,7 @@ export class CollectionService {
   async update(appid: string, name: string, dto: UpdateCollectionDto) {
     const { client, db } = await this.databaseService.findAndConnect(appid)
     assert(db, 'Database not found')
+
     const command = {
       collMod: name,
       validationAction: 'error',
@@ -88,12 +89,12 @@ export class CollectionService {
 
     try {
       await db.command(command)
-      await client.close()
       return true
     } catch (error) {
       this.logger.error(error)
-      await client.close()
       return false
+    } finally {
+      await client.close()
     }
   }
 
@@ -108,12 +109,12 @@ export class CollectionService {
     assert(db, 'Database not found')
     try {
       const res = await db.dropCollection(name)
-      await client.close()
       return res
     } catch (error) {
       this.logger.error(error)
-      await client.close()
       return false
+    } finally {
+      await client.close()
     }
   }
 }
