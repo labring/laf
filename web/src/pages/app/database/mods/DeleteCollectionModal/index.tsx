@@ -85,18 +85,19 @@ function DeleteCollectionModal(props: { database: any }) {
           </ModalBody>
 
           <ModalFooter>
+            <Button mr={3} onClick={onClose}>
+              Cancel
+            </Button>
             <Button
               colorScheme="red"
-              mr={3}
               onClick={handleSubmit(async (data) => {
                 if (data.name === database.name) {
                   await deleteDBMutation.mutateAsync({ name: database.name });
                 }
               })}
             >
-              Save
+              Confirm
             </Button>
-            <Button onClick={onClose}>Cancel</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

@@ -45,7 +45,7 @@ const CreateModal = (props: { functionItem?: any }) => {
     name: functionItem?.name || "",
     description: functionItem?.desc || "",
     websocket: !!functionItem?.websocket,
-    methods: functionItem?.methods || ["HEAD"],
+    methods: functionItem?.methods || ["GET", "POST"],
     code: functionItem?.source.code || defaultString,
   };
 
@@ -126,19 +126,9 @@ const CreateModal = (props: { functionItem?: any }) => {
                 <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
               </FormControl>
 
-              <FormControl isInvalid={!!errors?.description}>
-                <FormLabel htmlFor="description">显示名称</FormLabel>
-                <Input
-                  {...register("description", {
-                    required: "description is required",
-                  })}
-                  id="description"
-                  placeholder="函数显示名, 可为中文"
-                  variant="filled"
-                />
-                <FormErrorMessage>
-                  {errors.description && errors.description.message}
-                </FormErrorMessage>{" "}
+              <FormControl>
+                <FormLabel htmlFor="description">函数描述</FormLabel>
+                <Input id="description" placeholder="函数描述" variant="filled" />
               </FormControl>
 
               <FormControl isInvalid={!!errors?.websocket}>
@@ -157,9 +147,11 @@ const CreateModal = (props: { functionItem?: any }) => {
                     control={control}
                     render={({ field: { ref, ...rest } }) => (
                       <CheckboxGroup {...rest}>
-                        <Checkbox value="HEAD">HEAD</Checkbox>
                         <Checkbox value="GET">GET</Checkbox>
                         <Checkbox value="POST">POST</Checkbox>
+                        <Checkbox value="HEAD">HEAD</Checkbox>
+                        <Checkbox value="PATCH">PATCH</Checkbox>
+                        <Checkbox value="DELETE">DELETE</Checkbox>
                       </CheckboxGroup>
                     )}
                     rules={{
@@ -173,14 +165,15 @@ const CreateModal = (props: { functionItem?: any }) => {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="primary" mr={3} type="submit" onClick={handleSubmit(onSubmit)}>
-              {t`Confirm`}
-            </Button>
             <Button
+              mr={3}
               onClick={() => {
                 onClose();
               }}
             >{t`Cancel`}</Button>
+            <Button colorScheme="blue" type="submit" onClick={handleSubmit(onSubmit)}>
+              {t`Confirm`}
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

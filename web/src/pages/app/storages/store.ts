@@ -2,19 +2,7 @@ import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
-export type TStorage = {
-  name: string;
-  mode: string;
-  quota: number;
-  idIndex: any;
-  spec: {
-    policy: string;
-    storage: string;
-  };
-  metadata: {
-    name: string;
-  };
-};
+import { TBucket } from "@/apis/typing";
 
 export type TFile = {
   name: string;
@@ -25,8 +13,8 @@ export type TFile = {
 };
 
 type State = {
-  currentStorage?: TStorage;
-  setCurrentStorage: (currentStorage: TStorage) => void;
+  currentStorage?: TBucket;
+  setCurrentStorage: (currentStorage: TBucket) => void;
 };
 
 const useStorageStore = create<State>()(

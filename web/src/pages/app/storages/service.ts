@@ -1,12 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import request from "@/utils/request";
-
 import {
-  BucketsControllerCreate,
-  BucketsControllerFindAll,
-  BucketsControllerRemove,
-  BucketsControllerUpdate,
+  BucketControllerCreate,
+  BucketControllerFindAll,
+  BucketControllerRemove,
+  BucketControllerUpdate,
 } from "@/apis/v1/apps";
 import useGlobalStore from "@/pages/globalStore";
 
@@ -19,7 +17,7 @@ export const useBucketListQuery = (config?: { onSuccess: (data: any) => void }) 
   return useQuery(
     queryKeys.useBucketListQuery,
     () => {
-      return BucketsControllerFindAll({});
+      return BucketControllerFindAll({});
     },
     {
       onSuccess: config?.onSuccess,
@@ -32,7 +30,7 @@ export const useBucketCreateMutation = (config?: { onSuccess: (data: any) => voi
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
-      return BucketsControllerCreate(values);
+      return BucketControllerCreate(values);
     },
     {
       onSuccess: async (data) => {
@@ -51,7 +49,7 @@ export const useBucketUpdateMutation = (config?: { onSuccess: (data: any) => voi
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
-      return BucketsControllerUpdate(values);
+      return BucketControllerUpdate(values);
     },
     {
       onSuccess: async (data) => {
@@ -72,7 +70,7 @@ export const useBucketDeleteMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
-      return BucketsControllerRemove(values);
+      return BucketControllerRemove(values);
     },
     {
       onSuccess: async (data) => {
@@ -86,18 +84,3 @@ export const useBucketDeleteMutation = () => {
     },
   );
 };
-
-export const useFileListQuery = () => {
-  return useQuery(
-    queryKeys.useFileListQuery,
-    () => {
-      return request.get("/api/files");
-    },
-    {},
-  );
-};
-
-const server = () => {
-  return null;
-};
-export default server;

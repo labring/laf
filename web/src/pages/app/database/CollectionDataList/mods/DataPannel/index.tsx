@@ -19,7 +19,7 @@ export default function DataPannel() {
   const [currentData, setCurrentData] = useState<any>(undefined);
   return (
     <>
-      <div className="flex pb-2 mt-2 shadow-sm">
+      <div className="flex pb-4 shadow-sm">
         <Button
           colorScheme={"primary"}
           size="sm"

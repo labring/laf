@@ -9,5 +9,12 @@
   "Cancel": "取消",
   "Edit": "编辑",
   "Delete": "删除",
-  "CreateTime": "创建时间"
+  "CreateTime": "创建时间",
+  "Editting...": "编辑中...",
+  "Common": {
+    "Dialog": {
+      "Confirm": "确定",
+      "Cancel": "取消"
+    }
+  }
 }

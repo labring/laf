@@ -24,11 +24,11 @@ import {
 import IconWrap from "@/components/IconWrap";
 
 import { useBucketCreateMutation, useBucketUpdateMutation } from "../../service";
-import { TStorage } from "../../store";
+import { TBucket } from "../../store";
 
 import useGlobalStore from "@/pages/globalStore";
 
-function CreateBucketModal(props: { storage?: TStorage }) {
+function CreateBucketModal(props: { storage?: TBucket }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { t } = useTranslation();
 
@@ -136,10 +136,12 @@ function CreateBucketModal(props: { storage?: TStorage }) {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="primary" mr={3} type="submit" onClick={handleSubmit(onSubmit)}>
-              {t("Confirm")}
+            <Button mr={3} onClick={onClose}>
+              {t("Common.Dialog.Cancel")}
             </Button>
-            <Button onClick={onClose}>{t("Cancel")}</Button>
+            <Button colorScheme="primary" type="submit" onClick={handleSubmit(onSubmit)}>
+              {t("Common.Dialog.Confirm")}
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

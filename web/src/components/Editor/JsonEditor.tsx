@@ -1,4 +1,3 @@
-import React from "react";
 import Editor from "@monaco-editor/react";
 
 export default function JsonEditor(props: { value: string | object; height?: string }) {

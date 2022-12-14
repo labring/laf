@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Outlet, useParams } from "react-router-dom";
-import { Spinner } from "@chakra-ui/react";
+import { Center, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 
 import { SmallNavHeight } from "@/constants/index";
@@ -47,7 +47,13 @@ export default function FunctionLayout() {
           position: "relative",
         }}
       >
-        {loading || !currentApp?.appid ? <Spinner /> : <Outlet />}
+        {loading || !currentApp?.appid ? (
+          <Center height={200}>
+            <Spinner />
+          </Center>
+        ) : (
+          <Outlet />
+        )}
       </div>
     </div>
   );

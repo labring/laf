@@ -5,9 +5,9 @@ import request from "@/utils/request";
 import useDBMStore from "./store";
 
 import {
-  CollectionsControllerCreate,
-  CollectionsControllerFindAll,
-  CollectionsControllerRemove,
+  CollectionControllerCreate,
+  CollectionControllerFindAll,
+  CollectionControllerRemove,
 } from "@/apis/v1/apps";
 import useGlobalStore from "@/pages/globalStore";
 
@@ -20,7 +20,7 @@ export const useCollectionListQuery = (config?: { onSuccess: (data: any) => void
   return useQuery(
     queryKeys.useCollectionListQuery,
     () => {
-      return CollectionsControllerFindAll({});
+      return CollectionControllerFindAll({});
     },
     {
       onSuccess: config?.onSuccess,
@@ -46,7 +46,7 @@ export const useCreateDBMutation = (config?: { onSuccess: (data: any) => void })
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
-      return CollectionsControllerCreate(values);
+      return CollectionControllerCreate(values);
     },
     {
       onSuccess: async (data) => {
@@ -67,7 +67,7 @@ export const useDeleteDBMutation = (config?: { onSuccess: (data: any) => void })
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
-      return CollectionsControllerRemove(values);
+      return CollectionControllerRemove(values);
     },
     {
       onSuccess(data) {
@@ -82,8 +82,3 @@ export const useDeleteDBMutation = (config?: { onSuccess: (data: any) => void })
     },
   );
 };
-
-const server = () => {
-  return null;
-};
-export default server;

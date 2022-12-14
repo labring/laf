@@ -1,18 +1,32 @@
 import { DeleteIcon, DownloadIcon } from "@chakra-ui/icons";
 import { HStack, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
 
 import IconWrap from "@/components/IconWrap";
 import PanelHeader from "@/components/Panel/Header";
+import { formatDate } from "@/utils/format";
 
-import { useFileListQuery } from "../../service";
+import useStorageStore from "../../store";
 import CreateFolderModal from "../CreateFolderModal";
 import HostingDrawer from "../HostingDrawer";
 import UploadButton from "../UploadButton";
 
+import useAwsS3 from "@/hooks/useAwsS3";
 import RightPanel from "@/pages/app/mods/RightPanel";
 
 export default function FileList() {
-  const fileListQuery = useFileListQuery();
+  const { getList } = useAwsS3();
+
+  const { currentStorage } = useStorageStore();
+  const bucketName = currentStorage?.metadata.name;
+
+  const query = useQuery(
+    ["fileList", bucketName, "/"],
+    () => getList(bucketName, { marker: "", prefix: "/" }),
+    {
+      enabled: !!bucketName,
+    },
+  );
 
   return (
     <RightPanel>
@@ -23,9 +37,9 @@ export default function FileList() {
           <HostingDrawer />
         </HStack>
         <HStack spacing={12}>
-          <span>容量： 1GB </span>
-          <span>已用： 0 </span>
-          <span>文件数： 30 </span>
+          <span>容量： {currentStorage?.spec.storage} </span>
+          <span>已用： {currentStorage?.status.capacity.storage} </span>
+          <span>文件数： {currentStorage?.status.capacity.objectCount} </span>
         </HStack>
       </PanelHeader>
       <div className="m-2 ">
@@ -43,9 +57,9 @@ export default function FileList() {
               </Tr>
             </Thead>
             <Tbody>
-              {(fileListQuery?.data?.data || []).map((file: any) => {
+              {(query?.data || []).map((file: any) => {
                 return (
-                  <Tr _hover={{ bgColor: "#efefef" }} key={file.path}>
+                  <Tr _hover={{ bgColor: "#efefef" }} key={file.key}>
                     <Td>
                       {file.prefix ? (
                         <span className="text-blue-600 underline cursor-pointer">{file.name}</span>
@@ -53,9 +67,9 @@ export default function FileList() {
                         <span>{file.name}</span>
                       )}
                     </Td>
-                    <Td>{file.path}</Td>
-                    <Td isNumeric>19KB</Td>
-                    <Td isNumeric>{file.updateTime}</Td>
+                    <Td style={{ maxWidth: 200 }}>{file.Key}</Td>
+                    <Td isNumeric>{file.Size}</Td>
+                    <Td isNumeric>{formatDate(file.LastModified)}</Td>
                     <Td isNumeric className="flex justify-end">
                       <IconWrap onClick={() => {}}>
                         <DownloadIcon fontSize={12} />

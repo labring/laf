@@ -5,9 +5,13 @@
   "DependenceTitle": "添加依赖",
   "DependenceName": "依赖包名",
   "DependenceVersion": "依赖版本",
-  "Confirm": "确定",
-  "Cancel": "取消",
   "Edit": "编辑",
   "Delete": "删除",
-  "CreateTime": "创建时间"
+  "CreateTime": "创建时间",
+  "Common": {
+    "Dialog": {
+      "Confirm": "确定",
+      "Cancel": "取消"
+    }
+  }
 }

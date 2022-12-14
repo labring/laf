@@ -58,7 +58,6 @@ function FileUpload(props: { onUpload: (files: any) => void }) {
         className={styles.inputFileUpload}
         multiple={true}
         // @ts-ignore
-        webkitdirectory
         onChange={handleChange}
       />
       <label

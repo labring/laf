@@ -56,17 +56,18 @@ function CreateModal() {
           </ModalBody>
 
           <ModalFooter>
+            <Button mr={3} onClick={onClose}>
+              {t("Common.Dialog.Cancel")}
+            </Button>
             <Button
               colorScheme="primary"
-              mr={3}
               type="submit"
               onClick={handleSubmit(() => {
                 console.log("submit");
               })}
             >
-              {t("Confirm")}
+              {t("Common.Dialog.Confirm")}
             </Button>
-            <Button onClick={onClose}>{t("Cancel")}</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

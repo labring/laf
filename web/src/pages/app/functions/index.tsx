@@ -3,6 +3,7 @@
  ***************************/
 
 import { Badge, Button, Center, HStack } from "@chakra-ui/react";
+import { t } from "i18next";
 
 import CopyText from "@/components/CopyText";
 import FunctionEditor from "@/components/Editor/FunctionEditor";
@@ -45,10 +46,6 @@ function FunctionPage() {
     }
   });
 
-  useHotKey("r", () => {
-    showSuccess("running success");
-  });
-
   return (
     <>
       <LeftPanel>
@@ -69,21 +66,25 @@ function FunctionPage() {
               <span className="ml-4 ">
                 {functionCodes[currentFunction?.id || ""] &&
                   functionCodes[currentFunction?.id || ""] !== currentFunction?.source.code && (
-                    <Badge colorScheme="purple">Editting...</Badge>
+                    <Badge colorScheme="purple">{t("Editting...")}</Badge>
                   )}
                 {/* <FileStatusIcon status={FileStatus.deleted} /> */}
               </span>
             </div>
 
             <HStack spacing="4">
-              <span>
-                <span className=" text-slate-500">调用地址：</span>
-                <span className="mr-2">{store.getFunctionUrl()}</span>
-                <CopyText text={store.getFunctionUrl()} />
-              </span>
+              {store.getFunctionUrl() !== "" && (
+                <span>
+                  <span className=" text-slate-500">调用地址：</span>
+                  <span className="mr-2">{store.getFunctionUrl()}</span>
+                  <CopyText text={store.getFunctionUrl()} />
+                </span>
+              )}
+
               <Button
                 size="sm"
                 borderRadius={2}
+                disabled={store.getFunctionUrl() === ""}
                 colorScheme="primary"
                 padding="0 12px"
                 onClick={() => {
@@ -91,7 +92,7 @@ function FunctionPage() {
                   console.log(currentFunction?.source.code);
                 }}
               >
-                发布
+                发布 (⌘ + S)
               </Button>
             </HStack>
           </PanelHeader>
@@ -110,7 +111,7 @@ function FunctionPage() {
               <Center className="h-full">请创建函数</Center>
             )}
           </div>
-          <div style={{ width: 550 }}>
+          <div style={{ width: "30%" }}>
             {/* <div className="h-full border bg-black">1</div> */}
             <DebugPanel />
           </div>

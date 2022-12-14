@@ -14,10 +14,12 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Select,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { t } from "i18next";
 
 import { APP_STATUS, DEFAULT_REGION } from "@/constants/index";
 
@@ -31,7 +33,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactNode })
   const { application = {} } = props;
   const isEdit = !!application.name;
 
-  const { bundles = [], runtimes = [] } = useGlobalStore();
+  const { bundles = [], runtimes = [], regions = [] } = useGlobalStore();
 
   type FormData = {
     name: string;
@@ -121,9 +123,19 @@ const CreateAppModal = (props: { application?: any; children: React.ReactNode })
                     control={control}
                     render={({ field: { ref, ...rest } }) => {
                       return (
-                        <Button variant={"solid"} colorScheme="green">
-                          {rest?.value}
-                        </Button>
+                        <div>
+                          {regions.map((region: any) => {
+                            return (
+                              <Button
+                                variant={"solid"}
+                                colorScheme={rest.value === region.name ? "green" : "gray"}
+                                key={region.name}
+                              >
+                                {region.name}
+                              </Button>
+                            );
+                          })}
+                        </div>
                       );
                     }}
                     rules={{
@@ -135,23 +147,39 @@ const CreateAppModal = (props: { application?: any; children: React.ReactNode })
 
               <FormControl isRequired isInvalid={!!errors?.bundleName}>
                 <FormLabel htmlFor="bundleName">Bundle Name</FormLabel>
-                <Input
+                <Select
                   {...register("bundleName", {
                     required: "bundleName is required",
                   })}
                   disabled={isEdit}
-                />
+                >
+                  {(bundles || []).map((bundle: any) => {
+                    return (
+                      <option value={bundle.name} key={bundle.name}>
+                        {bundle.displayName}
+                      </option>
+                    );
+                  })}
+                </Select>
                 <FormErrorMessage>{errors?.bundleName?.message}</FormErrorMessage>
               </FormControl>
 
               <FormControl isRequired isInvalid={!!errors?.runtimeName}>
                 <FormLabel htmlFor="runtimeName">Runtime Name</FormLabel>
-                <Input
+                <Select
                   {...register("runtimeName", {
                     required: "runtimeName is required",
                   })}
                   disabled={isEdit}
-                />
+                >
+                  {(runtimes || []).map((runtime: any) => {
+                    return (
+                      <option value={runtime.name} key={runtime.name}>
+                        {runtime.name} - {runtime.version}
+                      </option>
+                    );
+                  })}
+                </Select>
                 <FormErrorMessage>{errors?.runtimeName?.message}</FormErrorMessage>
               </FormControl>
             </VStack>
@@ -159,20 +187,20 @@ const CreateAppModal = (props: { application?: any; children: React.ReactNode })
 
           <ModalFooter>
             <Button
-              colorScheme="primary"
               mr={3}
-              isLoading={appCreateMutaion.isLoading}
-              type="submit"
-              onClick={handleSubmit(onSubmit)}
-            >
-              确定
-            </Button>
-            <Button
               onClick={() => {
                 onClose();
               }}
             >
-              删除
+              {t("Common.Dialog.Cancel")}
+            </Button>
+            <Button
+              colorScheme="blue"
+              isLoading={appCreateMutaion.isLoading}
+              type="submit"
+              onClick={handleSubmit(onSubmit)}
+            >
+              {t("Common.Dialog.Confirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

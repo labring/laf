@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useFunctionStore from "./store";
 
 import {
+  FunctionControllerCompile,
   FunctionControllerCreate,
   FunctionControllerFindAll,
   FunctionControllerRemove,
@@ -85,7 +86,21 @@ export const useDeleteFunctionMutation = () => {
   );
 };
 
-const server = () => {
-  return null;
+export const useCompileMutation = () => {
+  const globalStore = useGlobalStore();
+  const queryClient = useQueryClient();
+  return useMutation(
+    (codes: string) => {
+      return FunctionControllerCompile(codes);
+    },
+    {
+      onSuccess(data) {
+        if (data.error) {
+          globalStore.showError(data.error);
+        } else {
+          queryClient.invalidateQueries(queryKeys.useFunctionListQuery);
+        }
+      },
+    },
+  );
 };
-export default server;

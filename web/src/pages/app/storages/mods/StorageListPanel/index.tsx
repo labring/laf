@@ -5,16 +5,23 @@ import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
 
 import { useBucketListQuery } from "../../service";
-import useStorageStore, { TStorage } from "../../store";
+import useStorageStore from "../../store";
 import CreateBucketModal from "../CreateBucketModal";
 import DeleteBucketModal from "../DeleteBucketModal";
 
+import { TBucket } from "@/apis/typing";
 import LeftPanel from "@/pages/app/mods/LeftPanel";
 
 export default function StorageListPanel() {
   const store = useStorageStore((store) => store);
 
-  const bucketListQuery = useBucketListQuery();
+  const bucketListQuery = useBucketListQuery({
+    onSuccess(data) {
+      if (data?.data?.items?.length) {
+        store.setCurrentStorage(data?.data?.items[0]);
+      }
+    },
+  });
 
   return (
     <LeftPanel>
@@ -28,7 +35,7 @@ export default function StorageListPanel() {
         ]}
       >
         <SectionList>
-          {(bucketListQuery?.data?.data?.items || []).map((storage: TStorage) => {
+          {(bucketListQuery?.data?.data?.items || []).map((storage: TBucket) => {
             return (
               <SectionList.Item
                 isActive={storage?.metadata?.name === store.currentStorage?.metadata?.name}
