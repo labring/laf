@@ -116,9 +116,6 @@ export async function ensureCollectionIndexes(): Promise<any> {
       key: { created_at: 1 },
       expireAfterSeconds: Config.FUNCTION_LOG_EXPIRED_TIME,
     },
-    // {
-    //   key: { request_id: 1 }
-    // },
   ])
 
   return true

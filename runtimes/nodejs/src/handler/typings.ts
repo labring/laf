@@ -5,17 +5,18 @@
  * @Description: 
  */
 
-import { Request, Response } from 'express'
+import { Response } from 'express'
 import { PackageDeclaration, NodePackageDeclarations } from 'node-modules-utils'
 import path = require('path')
 import { logger } from '../support/logger'
+import { IRequest } from '../support/types'
 
 const nodeModulesRoot = path.resolve(__dirname, '../../node_modules')
 
 /**
  * Gets declaration files of a dependency package
  */
-export async function handlePackageTypings(req: Request, res: Response) {
+export async function handlePackageTypings(req: IRequest, res: Response) {
   const requestId = req['requestId']
 
   const packageName = req.query.packageName as string

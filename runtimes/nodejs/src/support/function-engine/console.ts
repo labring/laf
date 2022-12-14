@@ -1,12 +1,13 @@
 import * as util from 'util'
+import { FunctionContext } from './types'
 
 export class FunctionConsole {
-  requestId: string = ''
+  ctx: FunctionContext
 
-  static write: (message: string, requestId: string) => void = console.log
+  static write: (message: string, ctx: FunctionContext) => void = console.log
 
-  constructor(requestId: string) {
-    this.requestId = requestId
+  constructor(ctx: FunctionContext) {
+    this.ctx = ctx
   }
 
   private _log(...params: any[]) {
@@ -16,7 +17,7 @@ export class FunctionConsole {
       })
       .join(' ')
 
-    FunctionConsole.write(content, this.requestId)
+    FunctionConsole.write(content, this.ctx)
   }
 
   debug(...params: any[]) {
