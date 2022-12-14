@@ -24,8 +24,8 @@ import {
 import IconWrap from "@/components/IconWrap";
 
 import { useBucketCreateMutation, useBucketUpdateMutation } from "../../service";
-import { TBucket } from "../../store";
 
+import { TBucket } from "@/apis/typing";
 import useGlobalStore from "@/pages/globalStore";
 
 function CreateBucketModal(props: { storage?: TBucket }) {

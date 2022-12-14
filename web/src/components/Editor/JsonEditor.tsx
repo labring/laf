@@ -1,6 +1,10 @@
 import Editor from "@monaco-editor/react";
 
-export default function JsonEditor(props: { value: string | object; height?: string }) {
+export default function JsonEditor(props: {
+  value: string | object;
+  height?: string;
+  onChange?: (value: string | undefined) => void;
+}) {
   const { value } = props;
 
   function handleEditorWillMount(monaco: any) {
@@ -24,6 +28,9 @@ export default function JsonEditor(props: { value: string | object; height?: str
       defaultLanguage="json"
       value={JSON.stringify(value, null, 2)}
       height={props.height || "100%"}
+      onChange={(value, event) => {
+        props.onChange && props.onChange(value);
+      }}
       onMount={(editor, monaco) => {
         monaco.editor.setTheme("jsonEditorTheme");
       }}

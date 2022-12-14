@@ -301,3 +301,28 @@ export interface Condition {
   status: string;
   type: string;
 }
+
+export interface TDB {
+  name: string;
+  type: string;
+  options: Options;
+  info: Info;
+  idIndex: IdIndex;
+}
+
+export interface Options {}
+
+export interface Info {
+  readOnly: boolean;
+  uuid: string;
+}
+
+export interface IdIndex {
+  v: number;
+  key: Key;
+  name: string;
+}
+
+export interface Key {
+  _id: number;
+}

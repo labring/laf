@@ -2,13 +2,7 @@ import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
-type TDB = {
-  name: string;
-  type: string;
-  options: any;
-  info: any;
-  idIndex: string;
-};
+import { TDB } from "@/apis/typing";
 
 type State = {
   currentDB?: TDB;

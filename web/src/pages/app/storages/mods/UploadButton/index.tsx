@@ -16,10 +16,14 @@ import {
 
 import FileUpload from "@/components/FileUplaod";
 
+import useStorageStore from "../../store";
+
 import useAwsS3 from "@/hooks/useAwsS3";
 
 function UploadButton() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const { currentStorage } = useStorageStore();
 
   const { uploadFile } = useAwsS3();
 
@@ -44,7 +48,7 @@ function UploadButton() {
             <FileUpload
               onUpload={async (files) => {
                 for (let i = 0; i < files.length; i++) {
-                  await uploadFile("ymactc-site", "/" + files[i].name, files[i], {
+                  await uploadFile(currentStorage?.metadata.name!, "/" + files[i].name, files[i], {
                     contentType: files[i].type,
                   });
                 }

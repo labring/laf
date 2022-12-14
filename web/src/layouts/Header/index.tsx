@@ -33,7 +33,7 @@ export default function Header(props: { size: "sm" | "lg" }) {
         >
           <img src="/logo.png" alt="logo" className="mr-2 rounded-full" width={24} />
         </div>
-        <span className="mr-4 font-bold text-lg">{userInfo.username}</span>
+        <span className="mr-4 font-bold text-gray-500 text-lg">{userInfo.username}</span>
       </div>
 
       <HStack spacing={5}>
