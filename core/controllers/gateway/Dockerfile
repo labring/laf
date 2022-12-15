@@ -6,6 +6,6 @@ WORKDIR /
 
 USER 65532:65532
 
-COPy bin/manager-$TARGETARCH /manager
+COPY bin/manager-$TARGETARCH /manager
 
 ENTRYPOINT ["/manager"]
