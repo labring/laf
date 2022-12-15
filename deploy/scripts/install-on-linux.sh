@@ -33,15 +33,29 @@ baseurl=https://yum.fury.io/labring/
 enabled=1
 gpgcheck=0
 EOF
-  yum update
+  # yum update
+  yum clean all
   yum install sealos -y
 else
   echo "yum not installed"
 fi
 
+ARCH=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/)
+echo "ARCH: $ARCH"
+
+# if sealos not installed
+if [ ! -x "$(command -v sealos)" ]; then
+    echo "sealos not installed"
+    exit 1
+    # download sealos
+    # wget https://oss.lafyun.com/xaqth3-data/sealos_4.1.4-rc2_linux_${ARCH}.tar.gz  && \
+    #     tar -zxvf sealos_4.1.4-rc2_linux_arm64.tar.gz sealos &&  chmod +x sealos && mv sealos /usr/bin
+fi
+
 
 # install k8s cluster
-sealos run labring/kubernetes:v1.24.0-4.1.1 labring/flannel:v0.19.0 --single
+# sealos run labring/kubernetes:v1.24.0 labring/flannel:v0.19.0 labring/helm:v3.8.2 --single
+sealos run labring/kubernetes:v1.24.9 labring/flannel:v0.19.0 labring/helm:v3.8.2 --single
 
 # taint master node
 NODENAME=$(kubectl get nodes -ojsonpath='{.items[0].metadata.name}')
@@ -49,7 +63,6 @@ kubectl taint node $NODENAME node-role.kubernetes.io/master-
 kubectl taint node $NODENAME node-role.kubernetes.io/control-plane-
 
 # install required components
-sealos run labring/helm:v3.8.2
 sealos run labring/openebs:v1.9.0
 sealos run labring/cert-manager:v1.8.0
 

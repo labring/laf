@@ -9,17 +9,22 @@
  
 ```bash
 cd deploy/scripts
-sh install-on-linux.sh   # install k8s cluster
+
+# replace with your domain here. 
+export DOMAIN=127.0.0.1.nip.io  
+
+# install k8s cluster
+sh install-on-linux.sh $DOMAIN  
 ```
 
 ## Create development environment on MacOS
 
 1. Install multipass on MacOS
 
-> Skip this step if you have already installed multipass
-
 ```bash
-brew install --cask multipass  # or see https://multipass.run/install
+# Skip this step if you have already installed multipass
+# see https://multipass.run/install
+brew install --cask multipass 
 ```
 
 2. Create vm & deploy in it 
@@ -28,20 +33,3 @@ brew install --cask multipass  # or see https://multipass.run/install
 cd deploy/scripts
 sh install-on-mac.sh  # create vm & setup in it
 ``` 
-
-3. Start laf server
-
-```bash
-# Forward service in cluster to localhost, run this command in another terminal separately
-kubectl port-forward deployment/mongodb 27017:27017 -n laf-system
-kubectl port-forward deployments/casdoor 30070:8000 -n laf-system
-
-# Run these in first time or when someone change the schema.
-cd server
-npm install
-npx prisma db push
-npx prisma generate
-
-# run dev
-npm run watch
-```
