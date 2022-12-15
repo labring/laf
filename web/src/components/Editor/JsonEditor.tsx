@@ -5,7 +5,13 @@ export default function JsonEditor(props: {
   height?: string;
   onChange?: (value: string | undefined) => void;
 }) {
-  const { value } = props;
+  let value = "{\n\t\n}";
+  let objValue = {};
+  try {
+    objValue = JSON.parse(props.value || "{}");
+  } catch (error) {}
+
+  value = Object.keys(objValue).length ? JSON.stringify(objValue, null, 2) : value;
 
   function handleEditorWillMount(monaco: any) {
     monaco?.editor.defineTheme("jsonEditorTheme", {
@@ -26,7 +32,7 @@ export default function JsonEditor(props: {
   return (
     <Editor
       defaultLanguage="json"
-      value={JSON.stringify(JSON.parse(value), null, 2) || ""}
+      value={value}
       height={props.height || "100%"}
       onChange={(value, event) => {
         props.onChange && props.onChange(value);

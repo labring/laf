@@ -98,7 +98,6 @@ export default function DataPannel() {
                 px="4"
                 onClick={async () => {
                   const params = JSON.parse(record);
-                  debugger;
                   const r = await db.collection(currentDB?.name!).add({ ...params });
                   if (!r.error) {
                     showSuccess("保存成功");
@@ -113,7 +112,7 @@ export default function DataPannel() {
             </div>
             <div className=" flex-1" style={{}}>
               <JsonEditor
-                value={currentData}
+                value={JSON.stringify(currentData || {}, null, 2)}
                 onChange={(values) => {
                   setRecord(values!);
                 }}

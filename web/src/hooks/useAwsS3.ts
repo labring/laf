@@ -1,4 +1,4 @@
-import AWS from "aws-sdk";
+// import { S3Client } from '@aws-sdk/client-s3';
 
 import useGlobalStore from "@/pages/globalStore";
 
@@ -7,7 +7,7 @@ function useAwsS3() {
   const credentials = currentApp?.oss.credentials!;
   const region = currentApp?.oss.spec.region;
 
-  const s3 = new AWS.S3({
+  const s3 = new (window as any).AWS.S3({
     accessKeyId: credentials.accessKeyId,
     secretAccessKey: credentials.secretAccessKey,
     sessionToken: credentials.sessionToken,

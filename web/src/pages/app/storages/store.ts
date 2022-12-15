@@ -5,11 +5,16 @@ import { immer } from "zustand/middleware/immer";
 import { TBucket } from "@/apis/typing";
 
 export type TFile = {
-  name: string;
-  path: string;
-  size: number;
-  updateTime: string;
-  prefix: string;
+  Key: string;
+  LastModified: string;
+  ETag: string;
+  ChecksumAlgorithm: any[];
+  Size: number;
+  StorageClass: string;
+  Owner: {
+    DisplayName: string;
+    ID: string;
+  };
 };
 
 type State = {
