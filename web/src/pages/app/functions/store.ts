@@ -2,36 +2,19 @@ import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
+import { TFunction } from "@/apis/typing";
 import useGlobalStore from "@/pages/globalStore";
-
-export type TFunction =
-  | {
-      id: string;
-      appid: string;
-      name: string;
-      source: { code: string; compiled: string; uri: any; version: number; hash: any; lang: any };
-      desc: string;
-      tags: any[];
-      websocket: boolean;
-      methods: string[];
-      createdAt: string;
-      updatedAt: string;
-      createdBy: string;
-      isEdit?: boolean;
-      isCurrent?: boolean;
-    }
-  | undefined;
 
 type State = {
   allFunctionList: TFunction[];
-  currentFunction: TFunction | undefined;
+  currentFunction: TFunction | { [key: string]: any };
+  functionCodes: { [key: string]: string };
   getFunctionUrl: () => string;
+  getFunctionDebugUrl: () => string;
 
   setAllFunctionList: (funcionList: TFunction[]) => void;
-  setCurrentFunction: (currentFunction: TFunction) => void;
-
-  functionCodes: { [key: string]: string };
-  updateFunctionCode: (current: TFunction, codes: string) => void;
+  setCurrentFunction: (currentFunction: TFunction | { [key: string]: any }) => void;
+  updateFunctionCode: (current: TFunction | { [key: string]: any }, codes: string) => void;
 };
 
 const useFunctionStore = create<State>()(
@@ -39,7 +22,7 @@ const useFunctionStore = create<State>()(
     immer((set, get) => ({
       allFunctionList: [],
 
-      currentFunction: undefined,
+      currentFunction: {},
 
       functionCodes: {},
 
@@ -52,6 +35,15 @@ const useFunctionStore = create<State>()(
           : "";
       },
 
+      getFunctionDebugUrl: () => {
+        const currentApp = useGlobalStore.getState().currentApp;
+        const currentFunction = get().currentFunction;
+
+        return currentFunction?.name
+          ? `http://${currentApp?.gateway.status.appRoute.domain}/debug/${currentFunction?.name}`
+          : "";
+      },
+
       setAllFunctionList: (allFunctionList) => {
         set((state) => {
           state.allFunctionList = allFunctionList;
@@ -61,9 +53,6 @@ const useFunctionStore = create<State>()(
       setCurrentFunction: (currentFunction) => {
         set((state) => {
           state.currentFunction = currentFunction;
-          if (currentFunction?.id && !state.functionCodes[currentFunction?.id]) {
-            state.functionCodes[currentFunction!.id] = currentFunction!.source.code;
-          }
         });
       },
 

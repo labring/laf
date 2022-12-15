@@ -98,7 +98,7 @@ export async function FunctionControllerRemove(
  * Compile a function
  */
 export async function FunctionControllerCompile(
-  params: Paths.FunctionControllerCompile.BodyParameters | any,
+  params: Definitions.CompileFunctionDto,
 ): Promise<Paths.FunctionControllerCompile.Responses> {
   // /v1/apps/{appid}/functions/{name}/compile
   let _params: { [key: string]: any } = {
@@ -465,5 +465,22 @@ export async function BucketControllerRemove(
   return request(`/v1/apps/${_params.appid}/buckets/${_params.name}`, {
     method: "DELETE",
     data: params,
+  });
+}
+
+/**
+ * Get function logs
+ */
+export async function LogControllerGetLogs(
+  params: Paths.LogControllerGetLogs.BodyParameters | any,
+): Promise<Paths.LogControllerGetLogs.Responses> {
+  // /v1/apps/{appid}/logs/functions
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/logs/functions`, {
+    method: "GET",
+    params: params,
   });
 }
