@@ -6,7 +6,7 @@ import IconWrap from "@/components/IconWrap";
 import PanelHeader from "@/components/Panel/Header";
 import { formatDate } from "@/utils/format";
 
-import useStorageStore from "../../store";
+import useStorageStore, { TFile } from "../../store";
 import CreateFolderModal from "../CreateFolderModal";
 import HostingDrawer from "../HostingDrawer";
 import UploadButton from "../UploadButton";
@@ -57,16 +57,10 @@ export default function FileList() {
               </Tr>
             </Thead>
             <Tbody>
-              {(query?.data || []).map((file: any) => {
+              {(query?.data || []).map((file: TFile) => {
                 return (
-                  <Tr _hover={{ bgColor: "#efefef" }} key={file.key}>
-                    <Td>
-                      {file.prefix ? (
-                        <span className="text-blue-600 underline cursor-pointer">{file.name}</span>
-                      ) : (
-                        <span>{file.name}</span>
-                      )}
-                    </Td>
+                  <Tr _hover={{ bgColor: "#efefef" }} key={file.Key}>
+                    <Td>jpg</Td>
                     <Td style={{ maxWidth: 200 }}>{file.Key}</Td>
                     <Td isNumeric>{file.Size}</Td>
                     <Td isNumeric>{formatDate(file.LastModified)}</Td>
