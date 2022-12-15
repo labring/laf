@@ -1,7 +1,7 @@
 import Editor from "@monaco-editor/react";
 
 export default function JsonEditor(props: {
-  value: string | object;
+  value: string;
   height?: string;
   onChange?: (value: string | undefined) => void;
 }) {
@@ -26,7 +26,7 @@ export default function JsonEditor(props: {
   return (
     <Editor
       defaultLanguage="json"
-      value={JSON.stringify(value, null, 2)}
+      value={JSON.stringify(JSON.parse(value), null, 2) || ""}
       height={props.height || "100%"}
       onChange={(value, event) => {
         props.onChange && props.onChange(value);

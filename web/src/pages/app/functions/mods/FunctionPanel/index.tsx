@@ -14,9 +14,11 @@ import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
 
 import { useDeleteFunctionMutation, useFunctionListQuery } from "../../service";
-import useFunctionStore, { TFunction } from "../../store";
+import useFunctionStore from "../../store";
 
 import CreateModal from "./CreateModal";
+
+import { TFunction } from "@/apis/typing";
 
 export default function FunctionList() {
   const store = useFunctionStore((store) => store);
@@ -27,7 +29,7 @@ export default function FunctionList() {
   useFunctionListQuery({
     onSuccess: (data) => {
       store.setAllFunctionList(data.data);
-      if (!store.currentFunction) {
+      if (!store.currentFunction?.id) {
         store.setCurrentFunction(data.data[0]);
       }
     },
@@ -35,7 +37,7 @@ export default function FunctionList() {
 
   useEffect(() => {
     return () => {
-      setCurrentFunction(undefined);
+      setCurrentFunction({});
     };
   }, [setCurrentFunction]);
 
@@ -56,7 +58,7 @@ export default function FunctionList() {
               size="sm"
               className="mr-2"
               variant="filled"
-              placeholder="输入函数名搜索"
+              placeholder={String(t("SearchPlacehoder"))}
               onChange={(event) => {
                 setKeywords(event.target.value);
               }}
@@ -88,10 +90,10 @@ export default function FunctionList() {
                       onSuccessAction={async () => {
                         await deleteFunctionMutaion.mutateAsync(func);
                       }}
-                      headerText={"删除"}
-                      bodyText={"确认要删除函数吗？"}
+                      headerText={String(t("Delete"))}
+                      bodyText={String(t("DeleteConfirm"))}
                     >
-                      <IconWrap tooltip="删除">
+                      <IconWrap tooltip={String(t("Delete"))}>
                         <DeleteIcon
                           className="ml-2"
                           fontSize={14}

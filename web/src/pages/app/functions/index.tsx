@@ -20,30 +20,42 @@ import { useUpdateFunctionMutation } from "./service";
 
 import useFunctionStore from "./store";
 
+import useFunctionCache from "@/hooks/useFuncitonCache";
 import useHotKey from "@/hooks/useHotKey";
 import useGlobalStore from "@/pages/globalStore";
 
 function FunctionPage() {
   const store = useFunctionStore((store) => store);
-  const { currentFunction, functionCodes } = store;
+  const { currentFunction, updateFunctionCode } = store;
+
+  const functionCache = useFunctionCache();
 
   const { showSuccess } = useGlobalStore((state) => state);
 
   const updateFunctionMutation = useUpdateFunctionMutation();
 
-  useHotKey("s", async () => {
+  const deploy = async () => {
     const res = await updateFunctionMutation.mutateAsync({
       description: currentFunction?.desc,
-      code: functionCodes[currentFunction?.id || ""],
+      code: functionCache.getCache(currentFunction!.id),
       methods: currentFunction?.methods,
       websocket: currentFunction?.websocket,
       name: currentFunction?.name,
     });
     if (!res.error) {
       store.setCurrentFunction(res.data);
-      store.updateFunctionCode(res.data, res.data.source.code);
-      showSuccess("saved successfully");
+      // delete cache after deploy
+      functionCache.removeCache(currentFunction!.id);
+      showSuccess("deployed successfully");
     }
+  };
+
+  useHotKey("p", async () => {
+    deploy();
+  });
+
+  useHotKey("s", async () => {
+    // functionCache.setCache(currentFunction!.id, functionCodes[currentFunction!.id]);
   });
 
   return (
@@ -53,62 +65,62 @@ function FunctionPage() {
         <DependecyPanel />
       </LeftPanel>
       <RightPanel>
-        <div className="border-b" style={{ height: 36 }}>
-          <PanelHeader>
-            <div className="flex items-center">
-              <FileTypeIcon type={FileType.js} />
-              <span className="font-bold text-base ml-2">
-                {currentFunction?.name}
-                <span className="ml-2 text-slate-400 font-normal">
-                  {currentFunction?.desc ? currentFunction?.desc : ""}
-                </span>
-              </span>
-              <span className="ml-4 ">
-                {functionCodes[currentFunction?.id || ""] &&
-                  functionCodes[currentFunction?.id || ""] !== currentFunction?.source.code && (
-                    <Badge colorScheme="purple">{t("Editting...")}</Badge>
-                  )}
-                {/* <FileStatusIcon status={FileStatus.deleted} /> */}
-              </span>
-            </div>
-
-            <HStack spacing="4">
-              {store.getFunctionUrl() !== "" && (
-                <span>
-                  <span className=" text-slate-500">调用地址：</span>
-                  <span className="mr-2">{store.getFunctionUrl()}</span>
-                  <CopyText text={store.getFunctionUrl()} />
-                </span>
-              )}
-
-              <Button
-                size="sm"
-                borderRadius={2}
-                disabled={store.getFunctionUrl() === ""}
-                colorScheme="primary"
-                padding="0 12px"
-                onClick={() => {
-                  console.log("发布");
-                  console.log(currentFunction?.source.code);
-                }}
-              >
-                发布 (⌘ + S)
-              </Button>
-            </HStack>
-          </PanelHeader>
-        </div>
         <div className="flex flex-row h-full w-full">
           <div className="flex-1 border-r border-r-slate-200 overflow-hidden ">
+            <div className="border-b" style={{ height: 36 }}>
+              <PanelHeader>
+                <div className="flex items-center">
+                  <FileTypeIcon type={FileType.js} />
+                  <span className="font-bold text-base ml-2">
+                    {currentFunction?.name}
+                    <span className="ml-2 text-slate-400 font-normal">
+                      {currentFunction?.desc ? currentFunction?.desc : ""}
+                    </span>
+                  </span>
+                  <span className="ml-4 ">
+                    {currentFunction?.id &&
+                      functionCache.getCache(currentFunction?.id) !==
+                        currentFunction?.source?.code && (
+                        <Badge colorScheme="purple">{t("Editting...")}</Badge>
+                      )}
+                    {/* <FileStatusIcon status={FileStatus.deleted} /> */}
+                  </span>
+                </div>
+
+                <HStack spacing="4">
+                  {store.getFunctionUrl() !== "" && (
+                    <span>
+                      <span className=" text-slate-500">调用地址：{store.getFunctionUrl()}</span>
+                      <CopyText text={store.getFunctionUrl()} />
+                    </span>
+                  )}
+
+                  <Button
+                    size="sm"
+                    borderRadius={4}
+                    disabled={store.getFunctionUrl() === ""}
+                    colorScheme="blue"
+                    padding="0 12px"
+                    onClick={() => {
+                      deploy();
+                    }}
+                  >
+                    {t("FunctionPanel.Deploy")} (⌘ + P)
+                  </Button>
+                </HStack>
+              </PanelHeader>
+            </div>
             {currentFunction?.name ? (
               <FunctionEditor
                 path={currentFunction?.name || ""}
-                value={functionCodes[currentFunction.id] || currentFunction.source.code}
+                value={functionCache.getCache(currentFunction!.id)}
                 onChange={(value) => {
-                  store.updateFunctionCode(currentFunction, value || "");
+                  updateFunctionCode(currentFunction, value || "");
+                  functionCache.setCache(currentFunction!.id, value || "");
                 }}
               />
             ) : (
-              <Center className="h-full">请创建函数</Center>
+              <Center className="h-full">{t("FunctionPanel.EmptyText")}</Center>
             )}
           </div>
           <div style={{ width: "30%" }}>

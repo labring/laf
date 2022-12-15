@@ -9,8 +9,15 @@
   "Cancel": "取消",
   "Edit": "编辑",
   "Delete": "删除",
+  "DeleteConfirm": "确认要删除函数吗？",
+  "SearchPlacehoder": "输入函数名搜索",
   "CreateTime": "创建时间",
   "Editting...": "编辑中...",
+  "FunctionPanel": {
+    "Debug": "调试",
+    "Deploy": "发布",
+    "EmptyText": "请先选择函数"
+  },
   "Common": {
     "Dialog": {
       "Confirm": "确定",

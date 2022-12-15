@@ -14,6 +14,10 @@ declare namespace Definitions {
     code?: string /* The source code of the function */;
   };
 
+  export type CompileFunctionDto = {
+    code?: string /* The source code of the function */;
+  };
+
   export type CreateApplicationDto = {
     name?: string;
     state?: string;
@@ -124,7 +128,7 @@ declare namespace Paths {
   namespace FunctionControllerCompile {
     export type QueryParameters = any;
 
-    export type BodyParameters = any;
+    export type BodyParameters = Definitions.CompileFunctionDto;
 
     export type Responses = any;
   }
@@ -362,6 +366,14 @@ declare namespace Paths {
   }
 
   namespace BucketControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace LogControllerGetLogs {
     export type QueryParameters = any;
 
     export type BodyParameters = any;

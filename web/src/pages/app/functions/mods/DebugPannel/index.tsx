@@ -12,34 +12,58 @@ import {
   Tabs,
 } from "@chakra-ui/react";
 import axios from "axios";
+import { t } from "i18next";
 
 import JsonEditor from "@/components/Editor/JsonEditor";
 import PanelHeader from "@/components/Panel/Header";
 
+import { useCompileMutation } from "../../service";
 import useFunctionStore from "../../store";
 
+import useFunctionCache from "@/hooks/useFuncitonCache";
 import useHotKey from "@/hooks/useHotKey";
+import useGlobalStore from "@/pages/globalStore";
 
 export default function DebugPanel() {
-  const { getFunctionUrl } = useFunctionStore((state) => state);
+  const { getFunctionDebugUrl, currentFunction } = useFunctionStore((state) => state);
+
+  const globalStore = useGlobalStore((state) => state);
+
+  const functionCache = useFunctionCache();
 
   const [runningResData, setRunningResData] = useState();
   const [isLoading, setIsLoading] = useState(false);
+
+  const compileMutation = useCompileMutation();
+
+  const [params, setParams] = useState(JSON.stringify({ name: "test" }));
 
   useHotKey("r", () => {
     runningCode();
   });
 
   const runningCode = async () => {
-    if (isLoading) return;
-    // TODO compile code
+    if (isLoading || !currentFunction?.id) return;
     setIsLoading(true);
     try {
-      const res = await axios({
-        url: getFunctionUrl(),
-        method: "GET",
+      const compileRes = await compileMutation.mutateAsync({
+        code: functionCache.getCache(currentFunction!.id),
+        name: currentFunction!.name,
       });
-      setRunningResData(res.data);
+      if (compileRes.id) {
+        const res = await axios({
+          url: getFunctionDebugUrl(),
+          method: "post",
+          data: {
+            func: compileRes || "",
+            param: JSON.parse(params),
+          },
+          headers: {
+            Authorization: `Bearer ${globalStore.currentApp?.function_debug_token}`,
+          },
+        });
+        setRunningResData(res.data);
+      }
     } catch (error: any) {
       setRunningResData(error.toString());
     } finally {
@@ -63,22 +87,27 @@ export default function DebugPanel() {
                   <Button size="sm" className="mr-2">
                     GET
                   </Button>
-                  <Input size="sm" readOnly rounded={4} value={getFunctionUrl()} />
+                  <Input size="sm" readOnly rounded={4} value={getFunctionDebugUrl()} />
                   <Button
                     style={{ borderRadius: 2 }}
                     size="sm"
                     px="6"
-                    disabled={getFunctionUrl() === ""}
+                    disabled={getFunctionDebugUrl() === ""}
                     className="ml-2"
                     onClick={() => runningCode()}
                     colorScheme="green"
                     isLoading={isLoading}
                   >
-                    调试 (⌘ + R)
+                    {t("FunctionPanel.Debug")} (⌘ + R)
                   </Button>
                 </div>
                 <div className="mx-2 pb-2 mb-2">调用参数:</div>
-                <JsonEditor value={{ name: "test" }} />
+                <JsonEditor
+                  onChange={(values) => {
+                    setParams(values || "{}");
+                  }}
+                  value={params}
+                />
               </div>
               <div className="flex-1 ">
                 <PanelHeader className="bg-slate-100">运行结果</PanelHeader>
@@ -99,7 +128,7 @@ export default function DebugPanel() {
               </div>
             </div>
           </TabPanel>
-          <TabPanel padding={0}></TabPanel>
+          <TabPanel padding={0}>to be continued...</TabPanel>
         </TabPanels>
       </Tabs>
     </div>

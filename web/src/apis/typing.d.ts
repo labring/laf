@@ -326,3 +326,26 @@ export interface IdIndex {
 export interface Key {
   _id: number;
 }
+
+export interface TFunction {
+  id: string;
+  appid: string;
+  name: string;
+  source: Source;
+  desc: string;
+  tags: any[];
+  websocket: boolean;
+  methods: string[];
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+}
+
+export interface Source {
+  code: string;
+  compiled: string;
+  uri: any;
+  version: number;
+  hash: any;
+  lang: any;
+}

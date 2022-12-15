@@ -69,6 +69,7 @@ export const useUpdateFunctionMutation = () => {
 
 export const useDeleteFunctionMutation = () => {
   const globalStore = useGlobalStore();
+  const store = useFunctionStore();
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
@@ -80,6 +81,7 @@ export const useDeleteFunctionMutation = () => {
           globalStore.showError(data.error);
         } else {
           queryClient.invalidateQueries(queryKeys.useFunctionListQuery);
+          store.setCurrentFunction({});
         }
       },
     },
@@ -88,17 +90,14 @@ export const useDeleteFunctionMutation = () => {
 
 export const useCompileMutation = () => {
   const globalStore = useGlobalStore();
-  const queryClient = useQueryClient();
   return useMutation(
-    (codes: string) => {
-      return FunctionControllerCompile(codes);
+    (values: { code: string; name: string }) => {
+      return FunctionControllerCompile(values);
     },
     {
       onSuccess(data) {
         if (data.error) {
           globalStore.showError(data.error);
-        } else {
-          queryClient.invalidateQueries(queryKeys.useFunctionListQuery);
         }
       },
     },
