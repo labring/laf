@@ -170,6 +170,6 @@ export class FunctionController {
     }
 
     const res = await this.functionsService.compile(func, dto)
-    return res
+    return ResponseUtil.ok(res)
   }
 }
