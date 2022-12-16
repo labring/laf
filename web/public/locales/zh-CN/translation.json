@@ -12,17 +12,19 @@
   "DeleteConfirm": "确认要删除函数吗？",
   "SearchPlacehoder": "输入函数名搜索",
   "CreateTime": "创建时间",
-  "Editting...": "编辑中 (Ctrl/⌘ + S 保存)",
-  "LocalSaved...": "已保存本地",
-  "LocalSavedTip": "(代码已保存到本地,可直接发起调试)",
+  "Editting...": "已编辑",
   "FunctionPanel": {
     "Debug": "调试",
     "Deploy": "发布",
     "EmptyText": "请先选择函数"
   },
+  "Message": {
+    "DeploySuccess": "发布成功"
+  },
   "Common": {
     "Dialog": {
       "Confirm": "确定",
+      "ConfirmDeploy": "确认发布",
       "Cancel": "取消"
     }
   }

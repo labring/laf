@@ -42,6 +42,10 @@ export default function DebugPanel() {
     runningCode();
   });
 
+  useHotKey("s", () => {
+    runningCode();
+  });
+
   const runningCode = async () => {
     if (isLoading || !currentFunction?.id) return;
     setIsLoading(true);
