@@ -50,6 +50,8 @@ export class InstanceService {
     const requestMemory = app.bundle.requestMemory
     const requestCpu = app.bundle.requestCPU
     const max_old_space_size = ~~(limitMemory * 0.8)
+    const dependencies = app.configuration?.dependencies || []
+    const dependencies_string = dependencies.join(' ')
 
     const env = [
       { name: 'DB_URI', value: database.status?.connectionUri },
@@ -60,6 +62,7 @@ export class InstanceService {
       { name: 'OSS_EXTERNAL_ENDPOINT', value: ServerConfig.OSS_ENDPOINT },
       { name: 'OSS_REGION', value: oss.status?.region },
       { name: 'FLAGS', value: `--max_old_space_size=${max_old_space_size}` },
+      { name: 'DEPENDENCIES', value: dependencies_string },
     ]
 
     // merge env from app configuration, override if exists
