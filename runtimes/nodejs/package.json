@@ -12,7 +12,7 @@
     "create-internal-pkg": "node ./scripts/create-internal-package.js",
     "prepublishOnly": "npm run build",
     "trace-gc": "node --trace_gc --trace_gc_verbose ./dist/index.js",
-    "init-start": "npm run start"
+    "init": "node ./dist/init.js"
   },
   "keywords": [
     "laf",
