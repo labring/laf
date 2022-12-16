@@ -54,6 +54,7 @@ export class ApplicationService {
         configuration: {
           create: {
             environments: [appSecret],
+            dependencies: [],
           },
         },
       }

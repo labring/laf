@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider        = "prisma-client-js"
+  provider      = "prisma-client-js"
   // previewFeatures = ["interactiveTransactions"]
   // binaryTargets = ["native", "linux-arm64-openssl-1.1.x"]
   binaryTargets = ["native"]
@@ -93,18 +93,18 @@ enum ApplicationPhase {
 }
 
 model Application {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String           @id @default(auto()) @map("_id") @db.ObjectId
   name        String
-  appid       String   @unique
+  appid       String           @unique
   regionName  String
   bundleName  String
   runtimeName String
   state       ApplicationState
   phase       ApplicationPhase
   tags        String[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdBy   String   @db.ObjectId
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  createdBy   String           @db.ObjectId
 
   region        Region                    @relation(fields: [regionName], references: [name])
   runtime       Runtime                   @relation(fields: [runtimeName], references: [name])
@@ -121,8 +121,10 @@ model ApplicationConfiguration {
   id           String                @id @default(auto()) @map("_id") @db.ObjectId
   appid        String                @unique
   environments EnvironmentVariable[]
-  createdAt    DateTime              @default(now())
-  updatedAt    DateTime              @updatedAt
+  dependencies String[]              @default([])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   application Application @relation(fields: [appid], references: [appid])
 }
