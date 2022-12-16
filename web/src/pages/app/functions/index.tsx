@@ -2,8 +2,7 @@
  * cloud functions index page
  ***************************/
 
-import { useState } from "react";
-import { Badge, Button, Center, HStack } from "@chakra-ui/react";
+import { Badge, Center, HStack } from "@chakra-ui/react";
 import { t } from "i18next";
 
 import CopyText from "@/components/CopyText";
@@ -16,50 +15,22 @@ import RightPanel from "../mods/RightPanel";
 
 import DebugPanel from "./mods/DebugPannel";
 import DependecyPanel from "./mods/DependecePanel";
+import DeployButton from "./mods/DeployButton";
 import FunctionPanel from "./mods/FunctionPanel";
-import { useUpdateFunctionMutation } from "./service";
 
 import useFunctionStore from "./store";
 
 import useFunctionCache from "@/hooks/useFuncitonCache";
 import useHotKey from "@/hooks/useHotKey";
-import useGlobalStore from "@/pages/globalStore";
 
 function FunctionPage() {
   const store = useFunctionStore((store) => store);
-  const { currentFunction, updateFunctionCode, functionCodes } = store;
+  const { currentFunction, updateFunctionCode } = store;
 
   const functionCache = useFunctionCache();
 
-  const { showSuccess } = useGlobalStore((state) => state);
-
-  const updateFunctionMutation = useUpdateFunctionMutation();
-
-  const [localSaved, setLocalSaved] = useState(false);
-
-  const deploy = async () => {
-    const res = await updateFunctionMutation.mutateAsync({
-      description: currentFunction?.desc,
-      code: functionCache.getCache(currentFunction!.id),
-      methods: currentFunction?.methods,
-      websocket: currentFunction?.websocket,
-      name: currentFunction?.name,
-    });
-    if (!res.error) {
-      store.setCurrentFunction(res.data);
-      // delete cache after deploy
-      functionCache.removeCache(currentFunction!.id);
-      showSuccess("deployed successfully");
-    }
-  };
-
-  useHotKey("p", async () => {
-    deploy();
-  });
-
   useHotKey("s", async () => {
-    setLocalSaved(true);
-    functionCache.setCache(currentFunction!.id, functionCodes[currentFunction!.id]);
+    // showInfo("已开启自动保存");
   });
 
   return (
@@ -82,22 +53,13 @@ function FunctionPage() {
                     </span>
                   </span>
                   <span className="ml-4 ">
-                    {localSaved ? (
-                      <div>
-                        <Badge colorScheme="gray" className="mr-2">
-                          {t("LocalSaved...")}
-                        </Badge>
-                        <span className="ml-2 text-slate-500 text-sm">{t("LocalSavedTip")}</span>
-                      </div>
-                    ) : (
-                      currentFunction?.id &&
+                    {currentFunction?.id &&
                       functionCache.getCache(currentFunction?.id) !==
                         currentFunction?.source?.code && (
                         <div>
-                          <Badge colorScheme="purple">{t("Editting...")}</Badge>{" "}
+                          <Badge colorScheme="purple">{t("Editting...")}</Badge>
                         </div>
-                      )
-                    )}
+                      )}
 
                     {/* <FileStatusIcon status={FileStatus.deleted} /> */}
                   </span>
@@ -110,19 +72,7 @@ function FunctionPage() {
                       <CopyText text={store.getFunctionUrl()} />
                     </span>
                   )}
-
-                  <Button
-                    size="sm"
-                    borderRadius={4}
-                    disabled={store.getFunctionUrl() === ""}
-                    colorScheme="blue"
-                    padding="0 12px"
-                    onClick={() => {
-                      deploy();
-                    }}
-                  >
-                    {t("FunctionPanel.Deploy")} (⌘ + P)
-                  </Button>
+                  <DeployButton />
                 </HStack>
               </PanelHeader>
             </div>
@@ -131,9 +81,8 @@ function FunctionPage() {
                 path={currentFunction?.name || ""}
                 value={functionCache.getCache(currentFunction!.id)}
                 onChange={(value) => {
-                  setLocalSaved(false);
                   updateFunctionCode(currentFunction, value || "");
-                  // functionCache.setCache(currentFunction!.id, value || "");
+                  functionCache.setCache(currentFunction!.id, value || "");
                 }}
               />
             ) : (
