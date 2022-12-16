@@ -2,6 +2,7 @@
  * cloud functions index page
  ***************************/
 
+import { useState } from "react";
 import { Badge, Button, Center, HStack } from "@chakra-ui/react";
 import { t } from "i18next";
 
@@ -26,13 +27,15 @@ import useGlobalStore from "@/pages/globalStore";
 
 function FunctionPage() {
   const store = useFunctionStore((store) => store);
-  const { currentFunction, updateFunctionCode } = store;
+  const { currentFunction, updateFunctionCode, functionCodes } = store;
 
   const functionCache = useFunctionCache();
 
   const { showSuccess } = useGlobalStore((state) => state);
 
   const updateFunctionMutation = useUpdateFunctionMutation();
+
+  const [localSaved, setLocalSaved] = useState(false);
 
   const deploy = async () => {
     const res = await updateFunctionMutation.mutateAsync({
@@ -55,7 +58,8 @@ function FunctionPage() {
   });
 
   useHotKey("s", async () => {
-    // functionCache.setCache(currentFunction!.id, functionCodes[currentFunction!.id]);
+    setLocalSaved(true);
+    functionCache.setCache(currentFunction!.id, functionCodes[currentFunction!.id]);
   });
 
   return (
@@ -78,11 +82,23 @@ function FunctionPage() {
                     </span>
                   </span>
                   <span className="ml-4 ">
-                    {currentFunction?.id &&
+                    {localSaved ? (
+                      <div>
+                        <Badge colorScheme="gray" className="mr-2">
+                          {t("LocalSaved...")}
+                        </Badge>
+                        <span className="ml-2 text-slate-500 text-sm">{t("LocalSavedTip")}</span>
+                      </div>
+                    ) : (
+                      currentFunction?.id &&
                       functionCache.getCache(currentFunction?.id) !==
                         currentFunction?.source?.code && (
-                        <Badge colorScheme="purple">{t("Editting...")}</Badge>
-                      )}
+                        <div>
+                          <Badge colorScheme="purple">{t("Editting...")}</Badge>{" "}
+                        </div>
+                      )
+                    )}
+
                     {/* <FileStatusIcon status={FileStatus.deleted} /> */}
                   </span>
                 </div>
@@ -115,8 +131,9 @@ function FunctionPage() {
                 path={currentFunction?.name || ""}
                 value={functionCache.getCache(currentFunction!.id)}
                 onChange={(value) => {
+                  setLocalSaved(false);
                   updateFunctionCode(currentFunction, value || "");
-                  functionCache.setCache(currentFunction!.id, value || "");
+                  // functionCache.setCache(currentFunction!.id, value || "");
                 }}
               />
             ) : (
