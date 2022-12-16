@@ -2,7 +2,7 @@
  * cloud functions list sidebar
  ***************************/
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { DeleteIcon, Search2Icon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { t } from "i18next";

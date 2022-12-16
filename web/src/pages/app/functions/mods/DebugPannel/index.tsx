@@ -50,12 +50,12 @@ export default function DebugPanel() {
         code: functionCache.getCache(currentFunction!.id),
         name: currentFunction!.name,
       });
-      if (compileRes.id) {
+      if (!compileRes.error) {
         const res = await axios({
           url: getFunctionDebugUrl(),
           method: "post",
           data: {
-            func: compileRes || "",
+            func: compileRes.data || "",
             param: JSON.parse(params),
           },
           headers: {
