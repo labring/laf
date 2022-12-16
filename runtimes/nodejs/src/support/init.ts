@@ -1,4 +1,3 @@
-import { ObjectId } from 'bson'
 import fse = require('fs-extra')
 import path = require('path')
 import { Constants } from '../constants'
@@ -42,50 +41,21 @@ export function initCloudSdkPackage() {
   }
 }
 
-interface AppConfigItem {
-  _id: ObjectId
-  key: string
-  value: {
-    name: string
-    version: string
-  }[]
-}
-
-/**
- * Get extra npm packages
- * @returns
- */
-export async function getExtraPackages() {
-  const { DatabaseAgent } = require('../db') // init.ts should not import db globally, because init.ts would be referenced in build time
-
-  await DatabaseAgent.accessor.ready
-  const db = DatabaseAgent.db
-  const doc: AppConfigItem = await db
-    .collection(Constants.config_collection)
-    .findOne({ key: 'packages' })
-
-  return doc?.value ?? []
-}
-
 /**
  * Install packages
  * @param packages
  * @returns
  */
-export function installPackages(packages: { name: string; version: string }[]) {
-  if (!packages?.length) {
+export function installPackages() {
+  const deps = process.env.DEPENDENCIES || ''
+  if (!deps) {
     return
   }
 
-  const names = packages.map((pkg) => {
-    return pkg.version ? `${pkg.name}@${pkg.version}` : `${pkg.name}`
-  })
-
-  const cmd_str = names.join(' ')
   const flags = Config.NPM_INSTALL_FLAGS
-  logger.info('run command: ', `npm install ${cmd_str} ${flags}`)
-  const r = execSync(`npm install ${cmd_str} ${flags}`)
-  return r.toString()
+  logger.info('run command: ', `npm install ${deps} ${flags}`)
+  const r = execSync(`npm install ${deps} ${flags}`)
+  console.log(r.toString())
 }
 
 /**
@@ -110,6 +80,7 @@ export function moduleExists(mod: string) {
 export async function ensureCollectionIndexes(): Promise<any> {
   // init.ts should not import db globally, because init.ts would be referenced in build time
   const { DatabaseAgent } = require('../db')
+  await DatabaseAgent.accessor.ready
   const db = DatabaseAgent.db
   await db.collection(Constants.function_log_collection).createIndexes([
     {
