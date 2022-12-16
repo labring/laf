@@ -63,6 +63,7 @@ kubectl taint node $NODENAME node-role.kubernetes.io/master-
 kubectl taint node $NODENAME node-role.kubernetes.io/control-plane-
 
 # install required components
+sealos run labring/coredns:v0.0.1
 sealos run labring/openebs:v1.9.0
 sealos run labring/cert-manager:v1.8.0
 
