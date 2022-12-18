@@ -29,7 +29,7 @@ export default function FunctionList() {
   useFunctionListQuery({
     onSuccess: (data) => {
       store.setAllFunctionList(data.data);
-      if (!store.currentFunction?.id) {
+      if (!store.currentFunction?.id && data.data.length > 0) {
         store.setCurrentFunction(data.data[0]);
       }
     },
