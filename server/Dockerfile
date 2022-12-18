@@ -1,4 +1,5 @@
-FROM node:18-slim
+# FROM node:18-slim
+FROM ghcr.io/labring/laf-server:1.0.0-alpha.1
 
 RUN apt-get update
 RUN apt-get install -y openssl
