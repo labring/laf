@@ -56,7 +56,7 @@ export default function Header(props: { size: "sm" | "lg" }) {
     <div className="flex justify-between p-4 bg-white	border-b">
       <div className="flex items-center">
         <img src="/logo.png" alt="logo" className="mr-2 rounded-full" width={30} />
-        <span className=" font-bold text-lg">Laf 云开发</span>
+        <span className=" font-bold text-lg">laf 云开发</span>
         <span className="ml-4 mr-4"> / </span>
         <span>{userInfo.username}</span>
       </div>

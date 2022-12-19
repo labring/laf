@@ -58,6 +58,11 @@ declare namespace Definitions {
     policy?: string;
     storage?: string /* The storage capacity of the bucket: &#34;1Gi&#34;, &#34;0.5Gi&#34;, &#34;100Gi&#34; */;
   };
+
+  export type CreateDependencyDto = {
+    name?: string;
+    spec?: string;
+  };
 }
 
 declare namespace Paths {
@@ -374,6 +379,30 @@ declare namespace Paths {
   }
 
   namespace LogControllerGetLogs {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace DependencyControllerAdd {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.CreateDependencyDto;
+
+    export type Responses = any;
+  }
+
+  namespace DependencyControllerGetDependencies {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace DependencyControllerRemove {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
