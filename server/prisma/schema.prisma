@@ -79,6 +79,7 @@ model Runtime {
 enum ApplicationState {
   Running
   Stopped
+  Restarting
 }
 
 enum ApplicationPhase {
