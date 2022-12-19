@@ -66,7 +66,7 @@ export default function CollectionListPanel() {
                       <span className="ml-2 text-base">{db.name}</span>
                     </div>
                     <div className="invisible flex group-hover:visible">
-                      <IconWrap tooltip="复制">
+                      <IconWrap>
                         <CopyText text={db.name} tip="名称复制成功" />
                       </IconWrap>
                       <DeleteCollectionModal database={db} />

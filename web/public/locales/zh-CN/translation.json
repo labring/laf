@@ -21,6 +21,10 @@
   "Message": {
     "DeploySuccess": "发布成功"
   },
+  "ToolTip": {
+    "Copy": "复制",
+    "Copied": "已复制"
+  },
   "Common": {
     "Dialog": {
       "Confirm": "确定",
