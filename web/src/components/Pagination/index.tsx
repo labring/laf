@@ -1,35 +1,32 @@
-/* eslint-disable react/jsx-no-undef */
-import React, { useState } from "react";
 import { ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import {
-  Flex,
-  IconButton,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  Text,
-  Tooltip,
-} from "@chakra-ui/react";
+import { Flex, IconButton, Text, Tooltip } from "@chakra-ui/react";
 
-export default function Pagination() {
-  const [pageCount] = useState(0);
-  const [canPreviousPage] = useState(false);
-  const [canNextPage] = useState(false);
-  const [pageIndex] = useState(0);
-  const [pageOptions] = useState([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+type PageValues = {
+  page: number;
+  limit: number;
+  total?: number;
+};
 
-  const previousPage = () => {};
-  const nextPage = () => {};
+export default function Pagination(props: {
+  values: PageValues;
+  onChange: (values: PageValues) => void;
+}) {
+  const { values, onChange } = props;
+  const { page = 1, total, limit = 10 } = values;
+  const maxPage = total ? Math.ceil(total / limit) : undefined;
 
   return (
-    <Flex justifyContent="space-between" m={4} alignItems="center">
+    <Flex justifyContent="end" m={4} alignItems="center">
       <Flex>
         <Tooltip label="First Page">
           <IconButton
-            onClick={() => gotoPage(0)}
-            isDisabled={!canPreviousPage}
+            onClick={() => {
+              props.onChange({
+                ...values,
+                page: 1,
+              });
+            }}
+            isDisabled={page === 1}
             icon={<ArrowLeftIcon h={3} w={3} />}
             mr={4}
             aria-label={""}
@@ -37,8 +34,13 @@ export default function Pagination() {
         </Tooltip>
         <Tooltip label="Previous Page">
           <IconButton
-            onClick={previousPage}
-            isDisabled={!canPreviousPage}
+            onClick={() =>
+              onChange({
+                ...values,
+                page: page - 1,
+              })
+            }
+            isDisabled={page === 1}
             icon={<ChevronLeftIcon h={6} w={6} />}
             aria-label={""}
           />
@@ -46,62 +48,44 @@ export default function Pagination() {
       </Flex>
 
       <Flex alignItems="center">
-        <Text flexShrink="0" mr={8}>
-          <Text fontWeight="bold" as="span">
-            {pageIndex + 1}
-          </Text>
-          /
-          <Text fontWeight="bold" as="span">
-            {pageOptions.length}
-          </Text>
+        <Text
+          fontWeight="bold"
+          as="span"
+          width={"40px"}
+          display="inline-block"
+          textAlign={"center"}
+        >
+          {page}
         </Text>
-        <Text flexShrink="0">Go:</Text>{" "}
-        <NumberInput
-          ml={2}
-          mr={8}
-          w={28}
-          min={1}
-          max={pageOptions.length}
-          onChange={(value) => {
-            const page = value ? parseInt(value, 10) - 1 : 0;
-            gotoPage(page);
-          }}
-          defaultValue={pageIndex + 1}
-        >
-          <NumberInputField />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
-        {/* <Select
-          w={32}
-          value={pageSize}
-          onChange={(e) => {
-            setPageSize(Number(e.target.value));
-          }}
-        >
-          {[10, 20, 30, 40, 50].map((pageSize) => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </Select> */}
+        /
+        <Text fontWeight="bold" as="p" width={"40px"} display="inline-block" textAlign={"center"}>
+          {isNaN(maxPage) ? "" : maxPage}
+        </Text>
       </Flex>
 
       <Flex>
         <Tooltip label="Next Page">
           <IconButton
-            onClick={nextPage}
-            isDisabled={!canNextPage}
+            isDisabled={maxPage === page}
             icon={<ChevronRightIcon h={6} w={6} />}
             aria-label={""}
+            onClick={() => {
+              props.onChange({
+                ...values,
+                page: page + 1,
+              });
+            }}
           />
         </Tooltip>
         <Tooltip label="Last Page">
           <IconButton
-            onClick={() => gotoPage(pageCount - 1)}
-            isDisabled={!canNextPage}
+            onClick={() => {
+              props.onChange({
+                ...values,
+                page: maxPage,
+              });
+            }}
+            isDisabled={maxPage === page}
             icon={<ArrowRightIcon h={3} w={3} />}
             ml={4}
             aria-label={""}
@@ -110,7 +94,4 @@ export default function Pagination() {
       </Flex>
     </Flex>
   );
-}
-function gotoPage(page: number) {
-  throw new Error("Function not implemented.");
 }

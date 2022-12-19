@@ -98,7 +98,7 @@ export async function FunctionControllerRemove(
  * Compile a function
  */
 export async function FunctionControllerCompile(
-  params: Definitions.CompileFunctionDto,
+  params: Definitions.CompileFunctionDto | any,
 ): Promise<Paths.FunctionControllerCompile.Responses> {
   // /v1/apps/{appid}/functions/{name}/compile
   let _params: { [key: string]: any } = {
@@ -482,5 +482,56 @@ export async function LogControllerGetLogs(
   return request(`/v1/apps/${_params.appid}/logs/functions`, {
     method: "GET",
     params: params,
+  });
+}
+
+/**
+ * Add a dependency
+ */
+export async function DependencyControllerAdd(
+  params: Definitions.CreateDependencyDto | any,
+): Promise<Paths.DependencyControllerAdd.Responses> {
+  // /v1/apps/{appid}/dependencies
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/dependencies`, {
+    method: "POST",
+    data: params,
+  });
+}
+
+/**
+ * Get application dependencies
+ */
+export async function DependencyControllerGetDependencies(
+  params: Paths.DependencyControllerGetDependencies.BodyParameters | any,
+): Promise<Paths.DependencyControllerGetDependencies.Responses> {
+  // /v1/apps/{appid}/dependencies
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/dependencies`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+/**
+ * Remove a dependency
+ */
+export async function DependencyControllerRemove(
+  params: Paths.DependencyControllerRemove.BodyParameters | any,
+): Promise<Paths.DependencyControllerRemove.Responses> {
+  // /v1/apps/{appid}/dependencies/{name}
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/dependencies/${_params.name}`, {
+    method: "DELETE",
+    data: params,
   });
 }

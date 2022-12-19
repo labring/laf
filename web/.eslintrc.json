@@ -5,7 +5,8 @@
     "react/no-children-prop": 0,
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
-    "@next/next/no-img-element": 0
+    "@next/next/no-img-element": 0,
+    "no-unused-vars": "error"
   },
   "plugins": ["simple-import-sort"],
   "overrides": [
