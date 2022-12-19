@@ -19,6 +19,7 @@ import {
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 
+import CopyText from "@/components/CopyText";
 import Pagination from "@/components/Pagination";
 import { formatDate } from "@/utils/format";
 import getPageInfo from "@/utils/getPageInfo";
@@ -116,21 +117,32 @@ export default function LogsPage() {
                 </Tr>
               </Thead>
 
-              {logListQuery.isFetching ? (
-                <Center>
-                  <Spinner />
-                </Center>
-              ) : null}
-
               <Tbody className="relative">
+                {logListQuery.isFetching ? (
+                  <Tr>
+                    <Td colSpan={5} height="200px" border={"none"}>
+                      <Center>
+                        <Spinner />
+                      </Center>
+                    </Td>
+                  </Tr>
+                ) : null}
                 {logListQuery.data?.data?.list.map((item: any) => {
                   return (
                     <Tr key={item._id} _hover={{ bgColor: "#efefef" }}>
                       <Td width={"200px"} className=" text-black-600 ">
                         {formatDate(item.created_at)}
                       </Td>
-                      <Td width={"360px"}>{item.request_id}</Td>
-                      <Td>{item.func}</Td>
+                      <Td width={"360px"}>
+                        <CopyText text={item.request_id}>
+                          <span>{item.request_id}</span>
+                        </CopyText>
+                      </Td>
+                      <Td>
+                        <CopyText text={item.func}>
+                          <span>{item.func}</span>
+                        </CopyText>
+                      </Td>
                       <Td isNumeric>
                         <span className=" text-green-700">{item.time_usage} ms</span>
                       </Td>

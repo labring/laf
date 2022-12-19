@@ -13,7 +13,7 @@ export default function Pagination(props: {
 }) {
   const { values, onChange } = props;
   const { page = 1, total, limit = 10 } = values;
-  const maxPage = total ? Math.ceil(total / limit) : undefined;
+  const maxPage = total ? Math.ceil(total / limit) : -1;
 
   return (
     <Flex justifyContent="end" m={4} alignItems="center">
@@ -59,7 +59,7 @@ export default function Pagination(props: {
         </Text>
         /
         <Text fontWeight="bold" as="p" width={"40px"} display="inline-block" textAlign={"center"}>
-          {isNaN(maxPage) ? "" : maxPage}
+          {maxPage < 0 ? "" : maxPage}
         </Text>
       </Flex>
 

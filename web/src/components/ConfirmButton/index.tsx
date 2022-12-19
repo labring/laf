@@ -16,7 +16,7 @@ interface ConfirmButtonProps {
   headerText: string;
   bodyText: string;
 
-  children: React.ReactNode;
+  children: React.ReactElement;
 }
 
 const ConfirmButton = ({ onSuccessAction, headerText, bodyText, children }: ConfirmButtonProps) => {
@@ -30,7 +30,7 @@ const ConfirmButton = ({ onSuccessAction, headerText, bodyText, children }: Conf
 
   return (
     <>
-      {React.cloneElement(children as React.ReactElement, {
+      {React.cloneElement(children, {
         onClick: onOpen,
       })}
 
