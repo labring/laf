@@ -2,6 +2,11 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { ApplicationState } from '@prisma/client'
 import { IsEnum, IsNotEmpty, Length } from 'class-validator'
 
+enum CreateApplicationState {
+  Running = 'Running',
+  Stopped = 'Stopped',
+}
+
 export class CreateApplicationDto {
   @ApiProperty({ required: true })
   @Length(1, 64)
@@ -9,11 +14,11 @@ export class CreateApplicationDto {
   name: string
 
   @ApiPropertyOptional({
-    default: ApplicationState.Running,
-    enum: ApplicationState,
+    default: CreateApplicationState.Running,
+    enum: CreateApplicationState,
   })
   @IsNotEmpty()
-  @IsEnum(ApplicationState)
+  @IsEnum(CreateApplicationState)
   state: ApplicationState
 
   @ApiProperty()

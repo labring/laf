@@ -20,6 +20,11 @@ export class InstanceTaskService {
     private readonly prisma: PrismaService,
   ) {}
 
+  /**
+   * State `Running` with phase `Created` or `Stopped` - create instance
+   *
+   * -> Phase `Starting`
+   */
   @Cron(CronExpression.EVERY_SECOND)
   async handlePreparedStart() {
     const apps = await this.prisma.application.findMany({
@@ -57,6 +62,11 @@ export class InstanceTaskService {
     }
   }
 
+  /**
+   * Phase `Starting` - waiting for instance to be available
+   *
+   * -> Phase `Started`
+   */
   @Cron(CronExpression.EVERY_SECOND)
   async handleStarting() {
     const apps = await this.prisma.application.findMany({
@@ -78,6 +88,12 @@ export class InstanceTaskService {
 
         if (!instance.service) continue
 
+        // if state is `Restarting`, update state to `Running` with phase `Started`
+        let toState = app.state
+        if (app.state === ApplicationState.Restarting) {
+          toState = ApplicationState.Running
+        }
+
         // update application state
         await this.prisma.application.updateMany({
           where: {
@@ -85,6 +101,7 @@ export class InstanceTaskService {
             phase: ApplicationPhase.Starting,
           },
           data: {
+            state: toState,
             phase: ApplicationPhase.Started,
           },
         })
@@ -95,6 +112,11 @@ export class InstanceTaskService {
     }
   }
 
+  /**
+   * State `Stopped` with phase `Started` - remove instance
+   *
+   * -> Phase `Stopping`
+   */
   @Cron(CronExpression.EVERY_SECOND)
   async handlePreparedStop() {
     const apps = await this.prisma.application.findMany({
@@ -128,6 +150,11 @@ export class InstanceTaskService {
     }
   }
 
+  /**
+   * Phase `Stopping` - waiting for deployment to be removed.
+   *
+   * -> Phase `Stopped`
+   */
   @Cron(CronExpression.EVERY_SECOND)
   async handleStopping() {
     const apps = await this.prisma.application.findMany({
@@ -154,6 +181,86 @@ export class InstanceTaskService {
           },
         })
         this.logger.debug(`Application ${app.appid} updated to phase stopped`)
+      } catch (error) {
+        this.logger.error(error)
+      }
+    }
+  }
+
+  /**
+   * State `Restarting` with phase `Started` - remove instance
+   *
+   * -> Phase `Stopping`
+   */
+  @Cron(CronExpression.EVERY_SECOND)
+  async handlePreparedRestart() {
+    const apps = await this.prisma.application.findMany({
+      where: {
+        state: ApplicationState.Restarting,
+        phase: ApplicationPhase.Started,
+      },
+      take: 5,
+    })
+
+    for (const app of apps) {
+      try {
+        const appid = app.appid
+        await this.instanceService.remove(appid)
+
+        await this.prisma.application.updateMany({
+          where: {
+            appid: app.appid,
+            state: ApplicationState.Restarting,
+            phase: ApplicationPhase.Started,
+          },
+          data: {
+            phase: ApplicationPhase.Stopping,
+          },
+        })
+
+        this.logger.debug(
+          `Application ${app.appid} updated to phase stopping for restart`,
+        )
+      } catch (error) {
+        this.logger.error(error)
+      }
+    }
+  }
+
+  /**
+   * State `Restarting` with phase `Stopped` - create instance
+   *
+   * -> Phase `Starting`
+   */
+  @Cron(CronExpression.EVERY_SECOND)
+  async handleRestarting() {
+    const apps = await this.prisma.application.findMany({
+      where: {
+        state: ApplicationState.Restarting,
+        phase: ApplicationPhase.Stopped,
+      },
+      take: 5,
+    })
+
+    for (const app of apps) {
+      try {
+        const appid = app.appid
+        await this.instanceService.create(appid)
+
+        await this.prisma.application.updateMany({
+          where: {
+            appid: app.appid,
+            state: ApplicationState.Restarting,
+            phase: ApplicationPhase.Stopped,
+          },
+          data: {
+            phase: ApplicationPhase.Starting,
+          },
+        })
+
+        this.logger.debug(
+          `Application ${app.appid} updated to phase starting for restart`,
+        )
       } catch (error) {
         this.logger.error(error)
       }
