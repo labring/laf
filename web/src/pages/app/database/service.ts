@@ -48,7 +48,7 @@ export const useEntryDataQuery = (params:any) => {
 
       // 获取数据总数
       const { total } = await db.collection(currentDB?.name).where(query).count();
-      return { list: res.data, total ,page,limit};
+      return { list: res.data, total, page, limit };
     },
     {
       enabled: !!currentDB,

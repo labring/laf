@@ -9,7 +9,7 @@ import JsonEditor from "@/components/Editor/JsonEditor";
 import Pagination from "@/components/Pagination";
 import getPageInfo from "@/utils/getPageInfo";
 
-import { useAddDataMutation, useDeleteDataMutation, useEntryDataQuery, useUpdateDataMutation } from "../../../service";
+import { useAddDataMutation, useEntryDataQuery, useUpdateDataMutation } from "../../../service";
 
 import DeleteButton from "./DeleteButton";
 export default function DataPannel() {
@@ -54,9 +54,6 @@ export default function DataPannel() {
     }
   }
 
-  const deleteDataMutation = useDeleteDataMutation({onSuccess(data) {
-    setCurrentData(undefined)
-  },});
 
   return (
     <>
@@ -140,9 +137,7 @@ export default function DataPannel() {
                     hidden: currentData?._id !== item._id,
                   })}
                 >
-                  <DeleteButton isLoading={deleteDataMutation.isLoading} fn={async () => {
-                    await deleteDataMutation.mutateAsync(item)
-                  }} />
+                  <DeleteButton data={ item } />
                 </div>
 
                 <SyntaxHighlighter language="json" customStyle={{ background: "#fff" }}>

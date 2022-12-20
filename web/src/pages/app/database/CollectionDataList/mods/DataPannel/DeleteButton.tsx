@@ -7,8 +7,13 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
-export default function DeleteButton(props: { isLoading: any ,fn:any}) {
+import { useDeleteDataMutation } from "../../../service";
+
+export default function DeleteButton(props: { data: any }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const deleteDataMutation = useDeleteDataMutation({onSuccess(data) {
+    //setCurrentData(undefined)
+  },});
 
   return (
     <>
@@ -36,10 +41,10 @@ export default function DeleteButton(props: { isLoading: any ,fn:any}) {
             </Button>
             <Button
               colorScheme="red"
-              isLoading = {props.isLoading}
+              isLoading = {deleteDataMutation.isLoading}
               onClick={async(event) => {
               event?.stopPropagation();
-              props.fn()
+              await deleteDataMutation.mutateAsync(props.data)
             }}>
               Apply
             </Button>
