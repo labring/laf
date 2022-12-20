@@ -33,9 +33,7 @@ import useGlobalStore from "@/pages/globalStore";
 
 const CreateModal = (props: { functionItem?: any }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
   const store = useFunctionStore();
-
   const { showSuccess } = useGlobalStore();
 
   const { functionItem } = props;
