@@ -61,15 +61,6 @@ SchedulerInstance.emit('App:ready')
 })
 
 /**
- * debounce function `applyPolicyRules`
- */
-const debouncedApplyPolicies = debounce(() => {
-PolicyAgent.applyPolicies()
-  .then(() => logger.info('hot update: policy rules applied'))
-  .catch(err => logger.error('hot update: policy rules applied failed: ', err))
-}, 1000, { trailing: true, leading: false })
-
-/**
  * debounce function of apply triggers
  */
 const debouncedApplyTriggers = debounce(() => {
@@ -85,11 +76,6 @@ getTriggers()
 function DatabaseChangeEventCallBack(doc: ChangeStreamDocument) {
 const operationType = doc.operationType
 const collection = (doc as any).ns.coll
-
-// apply policies while policies changed
-if (collection === Constants.policy_collection && ['insert', 'update', 'delete', 'replace'].includes(operationType)) {
-  debouncedApplyPolicies()
-}
 
 // update triggers while functions changed
 if (collection === Constants.function_collection) {

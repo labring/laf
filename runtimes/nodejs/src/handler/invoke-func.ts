@@ -10,6 +10,7 @@ import { FunctionContext } from '../support/function-engine'
 import { logger } from '../support/logger'
 import { CloudFunction } from '../support/function-engine'
 import { IRequest } from '../support/types'
+import { handleDebugFunction } from './debug-func'
 
 const DEFAULT_FUNCTION_NAME = '__default__'
 
@@ -17,16 +18,16 @@ const DEFAULT_FUNCTION_NAME = '__default__'
  * Handler of invoking cloud function
  */
 export async function handleInvokeFunction(req: IRequest, res: Response) {
-  const requestId = req['requestId']
+  if (req.get('x-laf-debug-token')) {
+    return await handleDebugFunction(req, res)
+  }
+  
+  const requestId = req.requestId
   const func_name = req.params?.name
 
   // load function data from db
   let funcData = await CloudFunction.getFunctionByName(func_name)
   if (!funcData) {
-    if (func_name === 'healthz') {
-      return res.status(200).send('ok')
-    }
-
     // load default function from db
     funcData = await CloudFunction.getFunctionByName(DEFAULT_FUNCTION_NAME)
     if (!funcData) {
