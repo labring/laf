@@ -11,8 +11,8 @@ import * as path from 'path'
 import { handleDatabaseProxy } from './db-proxy'
 import { handlePackageTypings } from './typings'
 import { generateUUID } from '../support/utils'
-import { handleDebugFunction } from './debug-func'
 import { handleInvokeFunction } from './invoke-func'
+import { handlePublishPolicies } from './publish'
 
 /**
  * multer uploader config
@@ -31,32 +31,9 @@ export const router = Router()
 
 router.post('/proxy/:policy', handleDatabaseProxy)
 router.get('/typing/package', handlePackageTypings)
-
-
-/**
- * Debug cloud function through HTTP request.
- * @method POST
- */
-router.all('/debug/:name', uploader.any(), handleDebugFunction)
-
-
-/**
- * Invoke cloud function through HTTP request.
- * Alias for `/:name` for fallback to old version api
- * @deprecated compatible for history versions
- * @method *
- */
-router.all('/func/invoke/:name', uploader.any(), handleInvokeFunction)
-
-
-/**
- * Invoke cloud function through HTTP request.
- * Alias for `/:name` for fallback to old version api
- * @deprecated compatible for history versions
- * @method *
- */
-router.all('/func/:name', uploader.any(), handleInvokeFunction)
-
+router.post('/_/healthz', (_req, res) => res.status(200).send('ok'))
+router.post('/_/publish/functions', (_req, res) => res.status(400).send('TODO'))
+router.post('/_/publish/policies', handlePublishPolicies)
 
 /**
  * Invoke cloud function through HTTP request.
