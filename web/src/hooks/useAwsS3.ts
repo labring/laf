@@ -1,5 +1,3 @@
-// import { S3Client } from '@aws-sdk/client-s3';
-
 import useGlobalStore from "@/pages/globalStore";
 
 function useAwsS3() {

@@ -45,9 +45,15 @@ export default function LogsPage() {
     ...defaultValues,
   });
 
-  const logListQuery = useQuery([queryKeys.useLogsQuery, queryData], () => {
-    return LogControllerGetLogs({ ...queryData, limit: DEFAULT_LIMIT });
-  });
+  const logListQuery = useQuery(
+    [queryKeys.useLogsQuery, queryData],
+    () => {
+      return LogControllerGetLogs({ ...queryData, limit: DEFAULT_LIMIT });
+    },
+    {
+      keepPreviousData: true,
+    },
+  );
 
   const submit = () => {
     setQueryData({
@@ -103,8 +109,13 @@ export default function LogsPage() {
           />
         </div>
       </form>
-      <div className="bg-white px-4 py-1 rounded-md overflow-y-auto h-full">
-        <div className="mt-4 ">
+      <div className="bg-white px-4 py-1 rounded-md h-full relative">
+        {logListQuery.isFetching ? (
+          <Center className="opacity-60 bg-white absolute left-0 right-0 top-0 bottom-0 z-10">
+            <Spinner size={"lg"} />
+          </Center>
+        ) : null}
+        <div className="overflow-y-auto h-full">
           <TableContainer minH={"400px"}>
             <Table variant="simple">
               <Thead>
@@ -118,15 +129,6 @@ export default function LogsPage() {
               </Thead>
 
               <Tbody className="relative">
-                {logListQuery.isFetching ? (
-                  <Tr>
-                    <Td colSpan={5} height="200px" border={"none"}>
-                      <Center>
-                        <Spinner />
-                      </Center>
-                    </Td>
-                  </Tr>
-                ) : null}
                 {logListQuery.data?.data?.list.map((item: any) => {
                   return (
                     <Tr key={item._id} _hover={{ bgColor: "#efefef" }}>

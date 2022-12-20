@@ -1,9 +1,9 @@
 import { ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { Flex, IconButton, Text, Tooltip } from "@chakra-ui/react";
 
-type PageValues = {
-  page: number;
-  limit: number;
+export type PageValues = {
+  page?: number;
+  limit?: number;
   total?: number;
 };
 
@@ -12,8 +12,8 @@ export default function Pagination(props: {
   onChange: (values: PageValues) => void;
 }) {
   const { values, onChange } = props;
-  const { page = 1, total, limit = 10 } = values;
-  const maxPage = total ? Math.ceil(total / limit) : -1;
+  const { page, total, limit } = values;
+  const maxPage = total && limit ? Math.ceil(total / limit) : -1;
 
   return (
     <Flex justifyContent="end" m={4} alignItems="center">
@@ -37,7 +37,7 @@ export default function Pagination(props: {
             onClick={() =>
               onChange({
                 ...values,
-                page: page - 1,
+                page: page! - 1,
               })
             }
             isDisabled={page === 1}
@@ -51,14 +51,22 @@ export default function Pagination(props: {
         <Text
           fontWeight="bold"
           as="span"
-          width={"40px"}
+          minWidth={"36px"}
+          px="8px"
           display="inline-block"
           textAlign={"center"}
         >
           {page}
         </Text>
         /
-        <Text fontWeight="bold" as="p" width={"40px"} display="inline-block" textAlign={"center"}>
+        <Text
+          fontWeight="bold"
+          as="p"
+          minWidth={"36px"}
+          px="8px"
+          display="inline-block"
+          textAlign={"center"}
+        >
           {maxPage < 0 ? "" : maxPage}
         </Text>
       </Flex>
@@ -72,7 +80,7 @@ export default function Pagination(props: {
             onClick={() => {
               props.onChange({
                 ...values,
-                page: page + 1,
+                page: page! + 1,
               });
             }}
           />

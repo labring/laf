@@ -1,12 +1,18 @@
 import { useCallback, useEffect } from "react";
 
-function useHotKey(keyMap: string, trigger: () => void) {
+function useHotKey(
+  keyMap: string,
+  trigger: () => void,
+  config: {
+    enabled?: boolean;
+  } = {
+    enabled: true,
+  },
+) {
   const handleKeyDown = useCallback(
     (event: any) => {
       if (event.key === keyMap && (event.ctrlKey || event.metaKey)) {
         event.preventDefault();
-
-        // remove test log when api called
         trigger();
       }
     },
@@ -15,13 +21,15 @@ function useHotKey(keyMap: string, trigger: () => void) {
 
   useEffect(() => {
     // attach the event listener
-    document.addEventListener("keydown", handleKeyDown);
+    if (config?.enabled) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
 
     // remove the event listener
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [handleKeyDown]);
+  }, [config?.enabled, handleKeyDown]);
 
   return "⌘" + keyMap;
 }
