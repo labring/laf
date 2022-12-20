@@ -137,7 +137,7 @@ export default function DataPannel() {
                     hidden: currentData?._id !== item._id,
                   })}
                 >
-                  <DeleteButton data={ item } />
+                  <DeleteButton data={ item } fn={ setCurrentData } />
                 </div>
 
                 <SyntaxHighlighter language="json" customStyle={{ background: "#fff" }}>

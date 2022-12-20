@@ -9,11 +9,11 @@ import {
 
 import { useDeleteDataMutation } from "../../../service";
 
-export default function DeleteButton(props: { data: any }) {
+export default function DeleteButton(props: { data: any ,fn: any}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const deleteDataMutation = useDeleteDataMutation({onSuccess(data) {
-    //setCurrentData(undefined)
-  },});
+    props.fn(undefined)
+  }});
 
   return (
     <>
