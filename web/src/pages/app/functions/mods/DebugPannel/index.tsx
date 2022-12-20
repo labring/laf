@@ -16,6 +16,7 @@ import { t } from "i18next";
 
 import JsonEditor from "@/components/Editor/JsonEditor";
 import PanelHeader from "@/components/Panel/Header";
+import { Pages } from "@/constants";
 
 import { useCompileMutation } from "../../service";
 import useFunctionStore from "../../store";
@@ -38,13 +39,25 @@ export default function DebugPanel() {
 
   const [params, setParams] = useState(JSON.stringify({ name: "test" }));
 
-  useHotKey("r", () => {
-    runningCode();
-  });
+  useHotKey(
+    "r",
+    () => {
+      runningCode();
+    },
+    {
+      enabled: globalStore.currentPageId === Pages.function,
+    },
+  );
 
-  useHotKey("s", () => {
-    runningCode();
-  });
+  useHotKey(
+    "s",
+    () => {
+      runningCode();
+    },
+    {
+      enabled: globalStore.currentPageId === Pages.function,
+    },
+  );
 
   const runningCode = async () => {
     if (isLoading || !currentFunction?.id) return;

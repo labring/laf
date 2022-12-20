@@ -8,14 +8,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.231.0",
     "@chakra-ui/icons": "^2.0.13",
     "@chakra-ui/react": "^2.4.3",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@monaco-editor/react": "^4.4.6",
     "@tanstack/react-query": "^4.20.2",
-    "aws-sdk": "^2.1274.0",
     "axios": "^1.2.1",
     "clsx": "^1.2.1",
     "dayjs": "^1.11.7",

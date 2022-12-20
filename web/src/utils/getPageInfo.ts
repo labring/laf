@@ -1,21 +1,14 @@
-export default function getPageInfo(data: {
+import { PageValues } from "@/components/Pagination";
+
+export default function getPageInfo(data?: {
   limit: number;
   page: number;
   total: number;
   [key: string]: any;
-}): {
-  limit: number;
-  page: number;
-  total?: number;
-} {
-  if (!data)
-    return {
-      limit: 10,
-      page: 1,
-    };
+}): PageValues {
   return {
-    limit: data.limit,
-    page: data.page,
-    total: data.total,
+    limit: data?.limit,
+    page: data?.page,
+    total: data?.total,
   };
 }
