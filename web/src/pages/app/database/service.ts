@@ -27,15 +27,14 @@ export const useCollectionListQuery = (config?: { onSuccess: (data: any) => void
   );
 };
 
-export const useEntryDataQuery = () => {
+export const useEntryDataQuery = (params:any) => {
   const { currentDB } = useDBMStore();
   const { db } = useDB();
   return useQuery(
-    queryKeys.useEntryDataQuery(currentDB?.name || ""),
+    [queryKeys.useEntryDataQuery(currentDB?.name || ""),params],
     async () => {
       if (!currentDB) return;
-
-      const { limit = 10, page = 1, _id }: any = {};
+      const { limit = 10, page = 1, _id } = params
 
       const query = _id ? { _id } : {};
 
@@ -49,7 +48,7 @@ export const useEntryDataQuery = () => {
 
       // 获取数据总数
       const { total } = await db.collection(currentDB?.name).where(query).count();
-      return { list: res.data, total };
+      return { list: res.data, total ,page,limit};
     },
     {
       enabled: !!currentDB,
@@ -98,3 +97,92 @@ export const useDeleteDBMutation = (config?: { onSuccess: (data: any) => void })
     },
   );
 };
+
+export const useAddDataMutation = (config?: { onSuccess: (data: any) => void })=>{
+
+  const { currentDB } = useDBMStore();
+  const globalStore = useGlobalStore();
+  const { db } = useDB();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    async (values: any) => {
+      const result = await db.collection(currentDB?.name!).add({ ...values });
+      return result;
+    },
+    {
+      onSuccess(data) {
+        if (data.ok) {
+          globalStore.showSuccess("add success")
+          queryClient.invalidateQueries([queryKeys.useEntryDataQuery(currentDB?.name || "")])
+          //config && config.onSuccess(data);
+        } else {
+          globalStore.showError(data.error);
+        }
+      }
+    } 
+  
+  );
+
+}
+
+
+export const useUpdateDataMutation = (config?: { onSuccess: (data: any) => void }) => {
+
+  const { currentDB } = useDBMStore();
+  const globalStore = useGlobalStore();
+  const { db } = useDB();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    async (values: any) => {
+      const query = db.collection(currentDB?.name!).where({ _id: values._id });
+      delete values._id
+      const result = query.update({...values})
+      return result;
+    },
+    {
+      onSuccess(data) {
+        console.log(data)
+        if (data.ok) {
+          globalStore.showSuccess("update success")
+          queryClient.invalidateQueries([queryKeys.useEntryDataQuery(currentDB?.name || "")])
+          //config && config.onSuccess(data);
+        } else {
+          globalStore.showError(data.error);
+        }
+      }
+    } 
+  );
+  
+}
+
+
+export const useDeleteDataMutation = (config?: { onSuccess: (data: any) => void }) => {
+
+  const { currentDB } = useDBMStore();
+  const globalStore = useGlobalStore();
+  const { db } = useDB();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    async (values: any) => {
+      const result = await db.collection(currentDB?.name!).where({ _id: values._id }).remove();
+      return result;
+    },
+    {
+      onSuccess(data) {
+        if (data.ok) {
+          globalStore.showSuccess("delete success")
+          queryClient.invalidateQueries([queryKeys.useEntryDataQuery(currentDB?.name || "")])
+          config && config.onSuccess(data);
+        } else {
+          globalStore.showError(data.error);
+        }
+      
+      }
+    } 
+  
+  );
+  
+}
