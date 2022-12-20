@@ -3,6 +3,8 @@ import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
+import { Pages } from "@/constants";
+
 import { TApplication } from "@/apis/typing";
 import { AppControllerGetBundles } from "@/apis/v1/bundles";
 import { AuthControllerGetSigninUrl } from "@/apis/v1/login";
@@ -22,6 +24,11 @@ type State = {
   setCurrentApp(app: TApplication): void;
   init(appid?: string): void;
 
+  currentPageId: string;
+  setCurrentPage: (pageId: string) => void;
+
+  visitedViews: string[];
+
   showSuccess: (text: string | React.ReactNode) => void;
   showInfo: (text: string | React.ReactNode) => void;
   showError: (text: string | React.ReactNode) => void;
@@ -35,6 +42,16 @@ const useGlobalStore = create<State>()(
       currentApp: undefined,
 
       loading: true,
+
+      currentPageId: Pages.function,
+      setCurrentPage(pageId) {
+        set((state) => {
+          state.currentPageId = pageId;
+          if (!state.visitedViews.includes(pageId)) {
+            state.visitedViews.push(pageId);
+          }
+        });
+      },
 
       init: async () => {
         const userInfo = get().userInfo;
@@ -67,6 +84,8 @@ const useGlobalStore = create<State>()(
       login: async () => {
         await AuthControllerGetSigninUrl({});
       },
+
+      visitedViews: [Pages.function],
 
       showSuccess: (text: string | React.ReactNode) => {
         toast({

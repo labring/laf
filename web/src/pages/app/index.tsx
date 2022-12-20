@@ -1,6 +1,6 @@
-import { useState } from "react";
-
 import { Pages, SiderBarWidth } from "@/constants/index";
+
+import useGlobalStore from "../globalStore";
 
 import SiderBar from "./mods/SiderBar";
 import DatabasePage from "./database";
@@ -9,10 +9,16 @@ import LogsPage from "./logs";
 import StoragePage from "./storages";
 
 function AppDetail() {
-  const [pageId, setPageId] = useState("function");
+  const { visitedViews, currentPageId, setCurrentPage } = useGlobalStore();
+
   return (
     <>
-      <SiderBar pageId={pageId} setPageId={(pageId: string) => setPageId(pageId)} />
+      <SiderBar
+        pageId={currentPageId}
+        setPageId={(pageId: string) => {
+          setCurrentPage(pageId);
+        }}
+      />
       <div className="h-full" style={{ marginLeft: SiderBarWidth }}>
         {[
           {
@@ -31,11 +37,20 @@ function AppDetail() {
             pageId: Pages.logs,
             component: LogsPage,
           },
-        ].map((item) => (
-          <div key={item.pageId} className={pageId === item.pageId ? "block h-full" : "hidden"}>
-            {item.pageId === pageId ? <item.component /> : null}
-          </div>
-        ))}
+        ].map((item) =>
+          visitedViews.includes(item.pageId) ? (
+            <div
+              key={item.pageId}
+              className={
+                currentPageId === item.pageId && visitedViews.includes(currentPageId)
+                  ? "block h-full"
+                  : "hidden"
+              }
+            >
+              <item.component />
+            </div>
+          ) : null,
+        )}
       </div>
     </>
   );
