@@ -1,4 +1,4 @@
-import Cloud from './cloud'
+import { Cloud } from './cloud'
 
 export * from './cloud.interface'
 export * from './function.interface'

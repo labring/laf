@@ -23,9 +23,10 @@ export interface MongoDriverObject {
 
 export interface CloudSdkInterface {
   /**
-   * Sending an HTTP request is actually an Axios instance. You can refer to the Axios documentation directly
+   * Sending an HTTP request is actually an Axios instance. You can refer to the Axios documentation directly.
+   * @see https://axios-http.com/docs/intro
    */
-  fetch: AxiosStatic
+  fetch?: AxiosStatic
 
   /**
    * Get a database-ql instance
