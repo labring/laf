@@ -1,10 +1,11 @@
-const defaultString = `import cloud from '@/cloud-sdk'
+const defaultString = `
+import cloud from '@lafjs/cloud'
 
 exports.main = async function (ctx: FunctionContext) {
 
-  const { auth, body, query } = ctx
+  console.log('Hello World')
 
-  return { hello: 'LaF'}
+  return { data: 'hi, laf'}
 }
 
 `;
