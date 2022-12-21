@@ -1,13 +1,13 @@
-import { FunctionEngine } from ".";
+import { FunctionEngine } from '.'
 import {
   ICloudFunctionData,
   FunctionContext,
   FunctionResult,
   RequireFuncType,
-} from "./types";
-import * as assert from "assert";
-import { DatabaseAgent } from "../../db";
-import { Constants } from "../../constants";
+} from './types'
+import * as assert from 'assert'
+import { DatabaseAgent } from '../../db'
+import { Constants } from '../../constants'
 
 /**
  * CloudFunction Class
@@ -16,7 +16,7 @@ export class CloudFunction {
   /**
    * object shared cross all functions & requests
    */
-  static _shared_preference = new Map<string, any>();
+  static _shared_preference = new Map<string, any>()
 
   /**
    * Custom require function in cloud function
@@ -25,68 +25,68 @@ export class CloudFunction {
    * @returns
    */
   static require_func: RequireFuncType = (module: string): any => {
-    if (module === "@/cloud-sdk") {
-      return require("../../cloud-sdk");
+    if (module === '@/cloud-sdk') {
+      return require('../../cloud-sdk')
     }
 
-    return require(module) as any;
-  };
+    return require(module) as any
+  }
 
   /**
    * execution timeout
    */
-  timeout = 60 * 1000;
+  timeout = 60 * 1000
 
   /**
    * function data struct
    */
-  protected _data: ICloudFunctionData;
+  protected _data: ICloudFunctionData
 
   /**
    * function context
    */
-  param: FunctionContext;
+  param: FunctionContext
 
   /**
    * execution result
    */
-  result: FunctionResult;
+  result: FunctionResult
 
   get id() {
-    return this._data.id;
+    return this._data.id
   }
 
   /**
    * function name
    */
   get name() {
-    return this._data.name;
+    return this._data.name
   }
 
   /**
    * Http enabled status
    */
   get methods() {
-    return this._data.methods || [];
+    return this._data.methods || []
   }
 
   /**
    * function code
    */
   get code() {
-    return this._data.source.code;
+    return this._data.source.code
   }
 
   /**
    * compiled code
    */
   get compiledCode() {
-    return this._data.source.compiled;
+    return this._data.source.compiled
   }
 
   constructor(data: ICloudFunctionData) {
-    assert.ok(data);
-    this._data = data;
+    assert.ok(data)
+    this._data = data
   }
 
   /**
@@ -95,9 +95,9 @@ export class CloudFunction {
    * @returns
    */
   async invoke(param: FunctionContext) {
-    this.param = param;
+    this.param = param
 
-    const engine = new FunctionEngine(CloudFunction.require_func);
+    const engine = new FunctionEngine(CloudFunction.require_func)
 
     this.result = await engine.run(this.compiledCode, param, {
       filename: `CloudFunction.${this.name}`,
@@ -106,9 +106,9 @@ export class CloudFunction {
       contextCodeGeneration: {
         strings: false,
       },
-    } as any);
+    } as any)
 
-    return this.result;
+    return this.result
   }
 
   /**
@@ -117,13 +117,13 @@ export class CloudFunction {
    * @returns
    */
   static async getFunctionByName(func_name: string) {
-    const db = DatabaseAgent.db;
+    const db = DatabaseAgent.db
 
     const doc = await db
       .collection<ICloudFunctionData>(Constants.function_collection)
-      .findOne({ name: func_name });
+      .findOne({ name: func_name })
 
-    return doc;
+    return doc
   }
 
   /**
@@ -132,15 +132,15 @@ export class CloudFunction {
    * @returns
    */
   static async getFunctionById(func_id: string) {
-    const db = DatabaseAgent.db;
+    const db = DatabaseAgent.db
 
     const doc = await db
       .collection<ICloudFunctionData>(Constants.function_collection)
       .findOne({
         // _id: new ObjectId(func_id)
         id: func_id,
-      });
+      })
 
-    return doc;
+    return doc
   }
 }

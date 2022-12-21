@@ -4,7 +4,6 @@ import { CloudFunction, FunctionContext } from '../support/function-engine'
 import * as mongodb from 'mongodb'
 import { DatabaseAgent } from '../db'
 import request from 'axios'
-import { SchedulerInstance } from '../support/scheduler'
 import { getToken, parseToken } from '../support/token'
 import { WebSocket } from 'ws'
 import { WebSocketAgent } from '../support/ws'
@@ -43,6 +42,7 @@ export interface CloudSdkInterface {
   invoke: InvokeFunctionType
 
   /**
+   * @deprecated `emit()` is deprecated and removed since v1.0.0 , please use invoke() instead.
    * Emit a cloud function event that other cloud functions can set triggers to listen for
    */
   emit: EmitFunctionType
@@ -142,7 +142,9 @@ export function create() {
     database: () => getDb(DatabaseAgent.accessor),
     fetch: request,
     invoke: invokeInFunction,
-    emit: (event: string, param: any) => SchedulerInstance.emit(event, param),
+    emit: (_event: string, _param: any) => {
+      console.warn('emit() is deprecated.')
+    },
     shared: CloudFunction._shared_preference,
     getToken: getToken,
     parseToken: parseToken,
@@ -185,7 +187,7 @@ async function invokeInFunction(name: string, param?: FunctionContext) {
     throw new Error(`invoke() failed to get function: ${name}`)
   }
 
-  param = param ?? {} as any
+  param = param ?? ({} as any)
   param.__function_name = name
 
   param.requestId = param.requestId ?? 'invoke'
