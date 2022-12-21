@@ -23,11 +23,13 @@
 
   "cSpell.words": [
     "aarch",
+    "alipay",
     "apiextensions",
     "appid",
     "appv",
     "automount",
     "bitnami",
+    "bodyparser",
     "bson",
     "buildah",
     "buildx",
@@ -68,6 +70,7 @@
     "openebs",
     "passw",
     "pgdb",
+    "presigner",
     "readwrite",
     "Referer",
     "rolebinding",

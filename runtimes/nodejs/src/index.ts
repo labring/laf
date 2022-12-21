@@ -14,7 +14,6 @@ import { logger } from './support/logger'
 import { generateUUID } from './support/utils'
 import { WebSocketAgent } from './support/ws'
 import { DatabaseAgent } from './db'
-import { SchedulerInstance } from './support/scheduler'
 import * as xmlparser from 'express-xml-bodyparser'
 
 import "./support/function-log"
@@ -81,7 +80,6 @@ process.on('SIGTERM', gracefullyExit)
 process.on('SIGINT', gracefullyExit)
 
 async function gracefullyExit() {
-  SchedulerInstance.destroy()
   await DatabaseAgent.accessor.close()
   server.close(async () => {
     logger.info('process gracefully exited!')

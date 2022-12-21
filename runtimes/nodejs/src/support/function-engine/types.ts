@@ -1,6 +1,7 @@
 import { FunctionConsole } from './console'
 import { IncomingHttpHeaders } from 'http'
 import { Request, Response } from 'express'
+import WebSocket = require('ws')
 
 export type RequireFuncType = (module: string) => any
 
@@ -41,6 +42,7 @@ export interface FunctionContext {
   user?: any
   requestId: string
   method?: string
+  socket?: WebSocket
   request?: Request
   response?: Response
   __function_name: string
