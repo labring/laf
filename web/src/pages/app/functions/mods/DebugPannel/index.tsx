@@ -76,7 +76,7 @@ export default function DebugPanel() {
             param: JSON.parse(params),
           },
           headers: {
-            Authorization: `Bearer ${globalStore.currentApp?.function_debug_token}`,
+            "x-laf-debug-token": `${globalStore.currentApp?.function_debug_token}`,
           },
         });
         setRunningResData(res.data);
