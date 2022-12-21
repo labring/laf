@@ -40,20 +40,19 @@ export default function DataPannel() {
     });
   };
 
-  const addDataMutation = useAddDataMutation()
+  const addDataMutation = useAddDataMutation();
 
-  const updateDataMutation = useUpdateDataMutation()
+  const updateDataMutation = useUpdateDataMutation();
 
   const handleData = async () => {
     if (currentData?._id) {
       const params = JSON.parse(record);
-      await updateDataMutation.mutateAsync(params)
+      await updateDataMutation.mutateAsync(params);
     } else {
       const params = JSON.parse(record);
-      await addDataMutation.mutateAsync(params)
+      await addDataMutation.mutateAsync(params);
     }
-  }
-
+  };
 
   return (
     <>
@@ -72,12 +71,7 @@ export default function DataPannel() {
                   pointerEvents="none"
                   children={<Search2Icon color="gray.300" />}
                 />
-                <Input
-                  borderRadius="4"
-                  placeholder="_id"
-                  bg="white"
-                  {...register("_id")}
-                />
+                <Input borderRadius="4" placeholder="_id" bg="white" {...register("_id")} />
               </InputGroup>
               <Button
                 px={9}
@@ -89,7 +83,6 @@ export default function DataPannel() {
                 搜索
               </Button>
             </HStack>
-        
           </div>
         </form>
         <Button
@@ -105,13 +98,13 @@ export default function DataPannel() {
         <Pagination
           values={getPageInfo(entryDataQuery.data as any)}
           onChange={(values) => {
-              console.log(values)
-              setQueryData({
-                ...values,
-                ...getValues(),
-              });
-            }}
-          />
+            console.log(values);
+            setQueryData({
+              ...values,
+              ...getValues(),
+            });
+          }}
+        />
         {/* <span>总数: {entryDataQuery.data?.total}</span> */}
       </div>
 
@@ -137,7 +130,7 @@ export default function DataPannel() {
                     hidden: currentData?._id !== item._id,
                   })}
                 >
-                  <DeleteButton data={ item } fn={ setCurrentData } />
+                  <DeleteButton data={item} fn={setCurrentData} />
                 </div>
 
                 <SyntaxHighlighter language="json" customStyle={{ background: "#fff" }}>
@@ -170,7 +163,9 @@ export default function DataPannel() {
                   bgColor={"blue.600"}
                   borderRadius="2"
                   px="4"
-                  isLoading={currentData?._id?updateDataMutation.isLoading:addDataMutation.isLoading}
+                  isLoading={
+                    currentData?._id ? updateDataMutation.isLoading : addDataMutation.isLoading
+                  }
                   onClick={handleData}
                 >
                   保存
@@ -181,9 +176,9 @@ export default function DataPannel() {
                   bgColor={"blue.600"}
                   borderRadius="2"
                   ml="3"
-                  onClick={()=>setCurrentData(undefined)}
+                  onClick={() => setCurrentData(undefined)}
                 >
-                取消
+                  取消
                 </Button>
               </div>
             </div>
