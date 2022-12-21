@@ -26,7 +26,7 @@ export class CloudFunction {
    */
   static require_func: RequireFuncType = (module: string): any => {
     if (module === '@/cloud-sdk') {
-      return require('../../cloud-sdk')
+      return require('@lafjs/cloud')
     }
 
     return require(module) as any

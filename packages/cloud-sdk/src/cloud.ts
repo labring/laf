@@ -1,65 +1,65 @@
-import { Db } from "database-proxy";
-import request, { AxiosStatic } from "axios";
+import { Db } from 'database-proxy'
+import request, { AxiosStatic } from 'axios'
 import {
   CloudSdkInterface,
   GetTokenFunctionType,
   InvokeFunctionType,
   MongoDriverObject,
   ParseTokenFunctionType,
-} from "./cloud.interface";
-import { WebSocket } from "ws";
+} from './cloud.interface'
+import { WebSocket } from 'ws'
 
-export default class Cloud implements CloudSdkInterface {
+export class Cloud implements CloudSdkInterface {
   /**
    * This method should be overwrite
    * @returns
    */
-  static create: () => CloudSdkInterface;
+  static create: () => CloudSdkInterface
 
-  private _cloud: CloudSdkInterface;
+  private _cloud: CloudSdkInterface
 
   private get cloud(): CloudSdkInterface {
     if (!this._cloud) {
-      this._cloud = Cloud.create();
+      this._cloud = Cloud.create()
     }
-    return this._cloud;
+    return this._cloud
   }
 
-  fetch: AxiosStatic = request;
+  fetch: AxiosStatic = request
 
   database(): Db {
-    return this.cloud.database();
+    return this.cloud.database()
   }
 
   invoke: InvokeFunctionType = (name: string, param: any) => {
-    return this.cloud.invoke(name, param);
-  };
+    return this.cloud.invoke(name, param)
+  }
 
   getToken: GetTokenFunctionType = (param: any) => {
-    return this.cloud.getToken(param);
-  };
+    return this.cloud.getToken(param)
+  }
 
   parseToken: ParseTokenFunctionType = (token: string) => {
-    return this.cloud.parseToken(token);
-  };
+    return this.cloud.parseToken(token)
+  }
 
   get shared(): Map<string, any> {
-    return this.cloud.shared;
+    return this.cloud.shared
   }
 
   get mongo(): MongoDriverObject {
-    return this.cloud.mongo;
+    return this.cloud.mongo
   }
 
   get sockets(): Set<WebSocket> {
-    return this.cloud.sockets;
+    return this.cloud.sockets
   }
 
   get appid(): string {
-    return this.cloud.appid;
+    return this.cloud.appid
   }
 
   get env() {
-    return this.cloud.env;
+    return this.cloud.env
   }
 }
