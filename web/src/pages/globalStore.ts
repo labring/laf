@@ -3,9 +3,10 @@ import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
-import { Pages } from "@/constants";
+import { APP_PHASE_STATUS, Pages } from "@/constants";
 
 import { TApplication } from "@/apis/typing";
+import { ApplicationControllerUpdate } from "@/apis/v1/applications";
 import { AppControllerGetBundles } from "@/apis/v1/bundles";
 import { AuthControllerGetSigninUrl } from "@/apis/v1/login";
 import { AuthControllerGetProfile } from "@/apis/v1/profile";
@@ -23,6 +24,8 @@ type State = {
   currentApp: TApplication | undefined;
   setCurrentApp(app: TApplication): void;
   init(appid?: string): void;
+
+  restartCurrentApp(): void;
 
   currentPageId: string;
   setCurrentPage: (pageId: string) => void;
@@ -72,6 +75,24 @@ const useGlobalStore = create<State>()(
           state.bundles = bundlesRes.data;
           state.regions = regionsRes.data;
         });
+      },
+
+      restartCurrentApp: async () => {
+        const app = get().currentApp;
+        if (!app) {
+          return;
+        }
+        const restartRes = await ApplicationControllerUpdate({
+          name: app.name,
+          state: APP_PHASE_STATUS.Restarting,
+        });
+        if (!restartRes.error) {
+          set((state) => {
+            if (state.currentApp) {
+              state.currentApp.phase = APP_PHASE_STATUS.Restarting;
+            }
+          });
+        }
       },
 
       setCurrentApp: (app) => {

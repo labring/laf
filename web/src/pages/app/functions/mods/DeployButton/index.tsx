@@ -13,6 +13,7 @@ import {
 import { t } from "i18next";
 
 import CommonDiffEditor from "@/components/Editor/CommonDiffEditor";
+import { Pages } from "@/constants";
 
 import { useUpdateFunctionMutation } from "../../service";
 import useFunctionStore from "../../store";
@@ -26,13 +27,19 @@ export default function DeployButton() {
   const store = useFunctionStore((state) => state);
   const functionCache = useFunctionCache();
 
-  const { showSuccess } = useGlobalStore((state) => state);
+  const { showSuccess, currentPageId } = useGlobalStore((state) => state);
 
   const updateFunctionMutation = useUpdateFunctionMutation();
 
-  useHotKey("p", async () => {
-    onOpen();
-  });
+  useHotKey(
+    "p",
+    async () => {
+      onOpen();
+    },
+    {
+      enabled: currentPageId === Pages.function,
+    },
+  );
 
   const deploy = async () => {
     const res = await updateFunctionMutation.mutateAsync({

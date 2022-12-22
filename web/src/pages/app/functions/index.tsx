@@ -2,13 +2,14 @@
  * cloud functions index page
  ***************************/
 
-import { Badge, Center, HStack } from "@chakra-ui/react";
+import { Badge, Button, Center, HStack } from "@chakra-ui/react";
 import { t } from "i18next";
 
 import CopyText from "@/components/CopyText";
 import FunctionEditor from "@/components/Editor/FunctionEditor";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import PanelHeader from "@/components/Panel/Header";
+import { Pages } from "@/constants";
 
 import LeftPanel from "../mods/LeftPanel";
 import RightPanel from "../mods/RightPanel";
@@ -22,16 +23,24 @@ import useFunctionStore from "./store";
 
 import useFunctionCache from "@/hooks/useFuncitonCache";
 import useHotKey from "@/hooks/useHotKey";
+import useGlobalStore from "@/pages/globalStore";
 
 function FunctionPage() {
+  const globalStore = useGlobalStore((state) => state);
   const store = useFunctionStore((store) => store);
   const { currentFunction, updateFunctionCode } = store;
 
   const functionCache = useFunctionCache();
 
-  useHotKey("s", async () => {
-    // showInfo("已开启自动保存");
-  });
+  useHotKey(
+    "s",
+    async () => {
+      // showInfo("已开启自动保存");
+    },
+    {
+      enabled: globalStore.currentPageId === Pages.function,
+    },
+  );
 
   return (
     <>
@@ -73,6 +82,14 @@ function FunctionPage() {
                     </span>
                   )}
                   <DeployButton />
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      globalStore.restartCurrentApp();
+                    }}
+                  >
+                    Restart
+                  </Button>
                 </HStack>
               </PanelHeader>
             </div>
