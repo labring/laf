@@ -23,6 +23,8 @@ import useFunctionStore from "./store";
 import useFunctionCache from "@/hooks/useFuncitonCache";
 import useHotKey from "@/hooks/useHotKey";
 
+console.log(123123);
+
 function FunctionPage() {
   const store = useFunctionStore((store) => store);
   const { currentFunction, updateFunctionCode } = store;
