@@ -130,6 +130,18 @@ model ApplicationConfiguration {
   application Application @relation(fields: [appid], references: [appid])
 }
 
+model DatabasePolicy {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  appid     String
+  name      String
+  rules     String
+  injector  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([appid, name])
+}
+
 enum HttpMethod {
   GET
   POST
