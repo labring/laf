@@ -73,7 +73,7 @@ export class PolicyService {
         },
       },
     })
-    await this.unpublish(res)
+    await this.unpublish(appid, name)
     return res
   }
 
