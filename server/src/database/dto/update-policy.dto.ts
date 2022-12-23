@@ -1,4 +1,7 @@
-import { PartialType } from '@nestjs/mapped-types'
-import { CreatePolicyDto } from './create-policy.dto'
-
-export class UpdatePolicyDto extends PartialType(CreatePolicyDto) {}
+import { ApiProperty } from '@nestjs/swagger'
+import { IsNotEmpty } from 'class-validator'
+export class UpdatePolicyDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  rules: string
+}
