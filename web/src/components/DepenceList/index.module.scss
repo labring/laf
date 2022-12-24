@@ -1,0 +1,30 @@
+.depenceList {
+  max-height: 50vh;
+  overflow: auto;
+
+  li {
+    cursor: pointer;
+    display: flex;
+    height: 80px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px 8px;
+
+    span {
+      vertical-align: middle;
+    }
+
+    &:hover,
+    &.active {
+      background-color: var(--chakra-colors-gray-100);
+
+      span {
+        color: #000 !important;
+      }
+    }
+
+    &.active {
+      background-color: var(--chakra-colors-gray-200);
+    }
+  }
+}
