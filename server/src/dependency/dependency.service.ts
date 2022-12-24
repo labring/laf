@@ -40,30 +40,27 @@ export class DependencyService {
     return Object.values(deps)
   }
 
-  async add(appid: string, dto: CreateDependencyDto) {
-    if (!this.validate(dto)) {
-      return false
-    }
+  async add(appid: string, dto: CreateDependencyDto[]) {
+    // validate
+    const valid = dto.every((dep) => this.validate(dep))
+    if (!valid) return false
 
     const extras = await this.getExtras(appid)
     const builtins = this.getBuiltins()
     const all = extras.concat(builtins)
 
     // check if the dependency name is already existed
-    const existed = all.find((dep) => {
-      const r = npa(dep)
-      return r.name === dto.name
-    })
-    if (existed) return false
+    const names = all.map((dep) => npa(dep).name)
+    const new_names = dto.map((dep) => npa(dep.name).name)
+    const has_dup = new_names.some((name) => names.includes(name))
+    if (has_dup) return false
 
-    const new_dep = `${dto.name}@${dto.spec}`
+    // add
+    const new_deps = dto.map((dep) => `${dep.name}@${dep.spec}`)
+    const deps = extras.concat(new_deps)
     await this.prisma.applicationConfiguration.update({
       where: { appid },
-      data: {
-        dependencies: {
-          push: new_dep,
-        },
-      },
+      data: { dependencies: deps },
     })
 
     return true
