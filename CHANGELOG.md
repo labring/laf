@@ -1,4 +1,62 @@
-# [](https://github.com/maslow/laf/compare/v1.0.0-alpha.0...v) (2022-12-13)
+# [](https://github.com/maslow/laf/compare/v1.0.0-alpha.2...v) (2022-12-24)
+
+
+### Bug Fixes
+
+* **server:** add policy service to module provider ([#576](https://github.com/maslow/laf/issues/576)) ([7911ba0](https://github.com/maslow/laf/commit/7911ba0a0475804982f5d1bb050346f647657b5a))
+* **server:** fix build error in policy service ([#575](https://github.com/maslow/laf/issues/575)) ([88ae17d](https://github.com/maslow/laf/commit/88ae17d718f37def429b17e141bd0137c4e33ce9))
+* **server:** support array input param for adding deps ([#577](https://github.com/maslow/laf/issues/577)) ([a7c0dc8](https://github.com/maslow/laf/commit/a7c0dc893305248276d33abc359758b95f25640f))
+* **web:** fix to use new function debug token header & url ([99cf35c](https://github.com/maslow/laf/commit/99cf35c504383af67c947ea74f9e57b24f405820))
+
+
+### Features
+
+* **runtime:** support interceptor function [#341](https://github.com/maslow/laf/issues/341) ([#579](https://github.com/maslow/laf/issues/579)) ([17f7606](https://github.com/maslow/laf/commit/17f7606642c511e85824537a97c4ca3b502fb561))
+* **sdk:** add cloud sdk package ([c98aaec](https://github.com/maslow/laf/commit/c98aaec086ae023da544ca7b23068464fc29d13a))
+* **server:** implement cron trigger schema & crud apis ([#578](https://github.com/maslow/laf/issues/578)) ([3f6927c](https://github.com/maslow/laf/commit/3f6927c34e5526c16c41c68c9d4fae3d823106be))
+* **server:** implement policy schema & apis ([#574](https://github.com/maslow/laf/issues/574)) ([0d1d090](https://github.com/maslow/laf/commit/0d1d090d330bb33f89fa2f04c4f8476f6d68b30f))
+* **web:** add app restart ([#571](https://github.com/maslow/laf/issues/571)) ([c53d76a](https://github.com/maslow/laf/commit/c53d76a4db1ddd2c6d49759f1b4c6f780933d447))
+* **web:** add page cache when switch sidebar page ([#563](https://github.com/maslow/laf/issues/563)) ([c499afe](https://github.com/maslow/laf/commit/c499afeacf913d08b9ebb99cd9fc90d9812a5bad))
+
+
+
+# [1.0.0-alpha.2](https://github.com/maslow/laf/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2022-12-19)
+
+
+### Bug Fixes
+
+* **runtime:** update deps installation impl to new design ([#553](https://github.com/maslow/laf/issues/553)) ([cdda443](https://github.com/maslow/laf/commit/cdda44352ce0435efbc6782e291c7caa84c9376d))
+* **web:** error when no function data ([#556](https://github.com/maslow/laf/issues/556)) ([8d2e4b6](https://github.com/maslow/laf/commit/8d2e4b6ed6ba3d17b8cd7e9ac4a55c5cea8fff1b))
+* **web:** fix function compile res data error ([#549](https://github.com/maslow/laf/issues/549)) ([9d6f8b0](https://github.com/maslow/laf/commit/9d6f8b036006f8136dc67795ed66d4d11763059e))
+* **web:** pagination ts error ([#560](https://github.com/maslow/laf/issues/560)) ([3380690](https://github.com/maslow/laf/commit/3380690041930a7bc0181be2b16ea3b26b643bfb))
+
+
+### Features
+
+* **server:** add app restart api & handler ([#558](https://github.com/maslow/laf/issues/558)) ([5764029](https://github.com/maslow/laf/commit/57640292a5e1d46618eccdb22ab00d70f7f87874))
+* **server:** add dependency module & apis ([#552](https://github.com/maslow/laf/issues/552)) ([24a497d](https://github.com/maslow/laf/commit/24a497d26859c754bcb6d161ea8c5a1acec9de12))
+* **web:** add func deploy confirm  &  code diff info ([#550](https://github.com/maslow/laf/issues/550)) ([682dcc5](https://github.com/maslow/laf/commit/682dcc528af18951c689a0c4e9bc80904f608196))
+* **web:** impl function logs page ([#559](https://github.com/maslow/laf/issues/559)) ([97c4728](https://github.com/maslow/laf/commit/97c4728c846ca4c8725e4f56edfae3fd535dd7e2))
+
+
+
+# [1.0.0-alpha.1](https://github.com/maslow/laf/compare/v1.0.0-alpha.0...v1.0.0-alpha.1) (2022-12-15)
+
+
+### Bug Fixes
+
+* **core:** fix gateway bucket name issue & minio deploy domain config ([#537](https://github.com/maslow/laf/issues/537)) ([b08b4e2](https://github.com/maslow/laf/commit/b08b4e2e5c661fee77846bcd6b77022d96bf714a))
+* **runtime:** impv runtime logging struct; add func logs api ([#538](https://github.com/maslow/laf/issues/538)) ([c9d2292](https://github.com/maslow/laf/commit/c9d22925cd4222a5088b388ff068fad8b2644a9b))
+* **server:** fix compile function api params schema error ([#540](https://github.com/maslow/laf/issues/540)) ([37c049c](https://github.com/maslow/laf/commit/37c049ccff0dbcb9e0c66b967dfb9f87301341ba))
+* **server:** fix prisma bin engine error in amd64 ([#547](https://github.com/maslow/laf/issues/547)) ([4c76333](https://github.com/maslow/laf/commit/4c7633302e78072881a3fdac708fb8e74eb00e58))
+* **server:** func compile api response struct dismatch standard ([#543](https://github.com/maslow/laf/issues/543)) ([97de760](https://github.com/maslow/laf/commit/97de760e57820f6418e82fdb1c75f23ce61f0121))
+* **web:** replace aws client sdk v3 with v2 ([#546](https://github.com/maslow/laf/issues/546)) ([3282894](https://github.com/maslow/laf/commit/328289416920ae0685ec2bd9f25fd937a8f01fb4))
+
+
+### Features
+
+* **web:** complete function compile ([#545](https://github.com/maslow/laf/issues/545)) ([7c712e8](https://github.com/maslow/laf/commit/7c712e86163117e97aee262fd4edf1bc9877f3d9))
+* **web:** impl db crud; impl file crud; ([#542](https://github.com/maslow/laf/issues/542)) ([9782423](https://github.com/maslow/laf/commit/978242306449121c1e493e0e57136cee15850ae7)), closes [#535](https://github.com/maslow/laf/issues/535) [#536](https://github.com/maslow/laf/issues/536) [#537](https://github.com/maslow/laf/issues/537) [#538](https://github.com/maslow/laf/issues/538) [#539](https://github.com/maslow/laf/issues/539)
 
 
 
