@@ -3,6 +3,13 @@ dotenv.config({ path: '.env.local' })
 dotenv.config()
 
 export class ServerConfig {
+  static get DATABASE_URL() {
+    if (!process.env.DATABASE_URL) {
+      throw new Error('DATABASE_URL is not defined')
+    }
+    return process.env.DATABASE_URL
+  }
+
   static get JWT_SECRET() {
     if (!process.env.JWT_SECRET) {
       throw new Error('JWT_SECRET is not defined')

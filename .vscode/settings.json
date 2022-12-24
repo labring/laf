@@ -49,6 +49,7 @@
     "ghaction",
     "gonanoid",
     "healthz",
+    "hokify",
     "hostpath",
     "Kube",
     "kubebuilder",
