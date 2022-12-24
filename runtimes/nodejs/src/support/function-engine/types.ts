@@ -37,7 +37,9 @@ export interface FunctionContext {
   query?: any
   body?: any
   params?: any
-  // @Deprecated use user instead
+  /**
+   * @deprecated use user instead
+   */
   auth?: any
   user?: any
   requestId: string
