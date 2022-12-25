@@ -130,6 +130,18 @@ model ApplicationConfiguration {
   application Application @relation(fields: [appid], references: [appid])
 }
 
+model DatabasePolicy {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  appid     String
+  name      String
+  rules     String
+  injector  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([appid, name])
+}
+
 enum HttpMethod {
   GET
   POST
@@ -161,5 +173,19 @@ model CloudFunction {
   updatedAt DateTime            @updatedAt
   createdBy String              @db.ObjectId
 
+  cronTriggers CronTrigger[]
+
   @@unique([appid, name])
+}
+
+model CronTrigger {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  appid     String
+  desc      String
+  cron      String
+  target    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cloudFunction CloudFunction @relation(fields: [appid, target], references: [appid, name])
 }

@@ -40,7 +40,7 @@ const useFunctionStore = create<State>()(
         const currentFunction = get().currentFunction;
 
         return currentFunction?.name
-          ? `http://${currentApp?.gateway.status.appRoute.domain}/debug/${currentFunction?.name}`
+          ? `http://${currentApp?.gateway.status.appRoute.domain}/${currentFunction?.name}`
           : "";
       },
 

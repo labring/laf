@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common'
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -38,7 +39,8 @@ export class DependencyController {
   @ApiOperation({ summary: 'Add a dependency' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post()
-  async add(@Param('appid') appid: string, @Body() dto: CreateDependencyDto) {
+  @ApiBody({ type: [CreateDependencyDto] })
+  async add(@Param('appid') appid: string, @Body() dto: CreateDependencyDto[]) {
     const res = await this.depsService.add(appid, dto)
     return ResponseUtil.ok(res)
   }

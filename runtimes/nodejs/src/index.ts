@@ -2,7 +2,7 @@
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
  * @LastEditTime: 2022-01-20 13:55:22
- * @Description: 
+ * @Description:
  */
 
 import * as express from 'express'
@@ -14,35 +14,34 @@ import { logger } from './support/logger'
 import { generateUUID } from './support/utils'
 import { WebSocketAgent } from './support/ws'
 import { DatabaseAgent } from './db'
-import { SchedulerInstance } from './support/scheduler'
 import * as xmlparser from 'express-xml-bodyparser'
 
-import "./support/function-log"
-
-/**
- * Just for generating declaration type files for `@/cloud-sdk` which used in cloud function
- */
-export * from './cloud-sdk'
+// init static method of class
+import './support/function-log'
+import './support/cloud-sdk'
 
 const app = express()
 
 app.use(express.json({ limit: Config.REQUEST_LIMIT_SIZE }) as any)
-app.use(express.urlencoded({
-  limit: Config.REQUEST_LIMIT_SIZE,
-  extended: true
-}) as any)
-app.use(express.raw({
-  limit: Config.REQUEST_LIMIT_SIZE,
-}) as any)
+app.use(
+  express.urlencoded({
+    limit: Config.REQUEST_LIMIT_SIZE,
+    extended: true,
+  }) as any,
+)
+app.use(
+  express.raw({
+    limit: Config.REQUEST_LIMIT_SIZE,
+  }) as any,
+)
 
-app.use(xmlparser());
-
+app.use(xmlparser())
 
 process.on('unhandledRejection', (reason, promise) => {
   logger.error(`Caught unhandledRejection:`, reason, promise)
 })
 
-process.on('uncaughtException', err => {
+process.on('uncaughtException', (err) => {
   logger.error(`Caught uncaughtException:`, err)
 })
 
@@ -54,10 +53,20 @@ app.use(function (req, res, next) {
   const auth = parseToken(token) || null
   req['user'] = auth
 
-  const requestId = req['requestId'] = req.headers['x-request-id'] || generateUUID()
-  if (req.url !== '/healthz') {
-    logger.info(requestId, `${req.method} "${req.url}" - referer: ${req.get('referer') || '-'} ${req.get('user-agent')}`)
-    logger.trace(requestId, `${req.method} ${req.url}`, { body: req.body, headers: req.headers, auth })
+  const requestId = (req['requestId'] =
+    req.headers['x-request-id'] || generateUUID())
+  if (req.url !== '/_/healthz') {
+    logger.info(
+      requestId,
+      `${req.method} "${req.url}" - referer: ${
+        req.get('referer') || '-'
+      } ${req.get('user-agent')}`,
+    )
+    logger.trace(requestId, `${req.method} ${req.url}`, {
+      body: req.body,
+      headers: req.headers,
+      auth,
+    })
   }
   res.set('request-id', requestId)
   next()
@@ -65,7 +74,9 @@ app.use(function (req, res, next) {
 
 app.use(router)
 
-const server = app.listen(Config.PORT, () => logger.info(`server ${process.pid} listened on ${Config.PORT}`))
+const server = app.listen(Config.PORT, () =>
+  logger.info(`server ${process.pid} listened on ${Config.PORT}`),
+)
 
 /**
  * WebSocket upgrade & connect
@@ -76,12 +87,10 @@ server.on('upgrade', (req, socket, head) => {
   })
 })
 
-
 process.on('SIGTERM', gracefullyExit)
 process.on('SIGINT', gracefullyExit)
 
 async function gracefullyExit() {
-  SchedulerInstance.destroy()
   await DatabaseAgent.accessor.close()
   server.close(async () => {
     logger.info('process gracefully exited!')

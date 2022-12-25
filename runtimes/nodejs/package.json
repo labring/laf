@@ -7,9 +7,8 @@
   "private": "true",
   "scripts": {
     "start": "node ./dist/index.js",
-    "build": "npx tsc -p tsconfig.json && npm run create-internal-pkg",
+    "build": "npx tsc -p tsconfig.json",
     "watch": "npx tsc -p tsconfig.json -w",
-    "create-internal-pkg": "node ./scripts/create-internal-package.js",
     "prepublishOnly": "npm run build",
     "trace-gc": "node --trace_gc --trace_gc_verbose ./dist/index.js",
     "init": "node ./dist/init.js"
@@ -26,6 +25,7 @@
     "@aws-sdk/client-sts": "^3.231.0",
     "@aws-sdk/s3-request-presigner": "^3.231.0",
     "@kubernetes/client-node": "^0.18.0",
+    "@lafjs/cloud": "^0.0.2",
     "alipay-sdk": "^3.2.0",
     "axios": "^1.2.1",
     "database-proxy": "^0.8.2",

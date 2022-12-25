@@ -121,10 +121,10 @@ export default function LogsPage() {
               <Thead>
                 <Tr>
                   <Th width={"200px"}>时间</Th>
-                  <Th width={"360px"}>Request ID</Th>
+                  <Th width={"200px"}>Request ID</Th>
                   <Th>函数名</Th>
-                  <Th isNumeric>执行用时</Th>
-                  <Th isNumeric>操作</Th>
+                  <Th>Content</Th>
+                  <Th>操作</Th>
                 </Tr>
               </Thead>
 
@@ -133,9 +133,9 @@ export default function LogsPage() {
                   return (
                     <Tr key={item._id} _hover={{ bgColor: "#efefef" }}>
                       <Td width={"200px"} className=" text-black-600 ">
-                        {formatDate(item.created_at)}
+                        {formatDate(item.created_at, "YYYY-MM-DD HH:mm:ss")}
                       </Td>
-                      <Td width={"360px"}>
+                      <Td width={"200px"}>
                         <CopyText text={item.request_id}>
                           <span>{item.request_id}</span>
                         </CopyText>
@@ -145,8 +145,8 @@ export default function LogsPage() {
                           <span>{item.func}</span>
                         </CopyText>
                       </Td>
-                      <Td isNumeric>
-                        <span className=" text-green-700">{item.time_usage} ms</span>
+                      <Td>
+                        <span className="text-green-700">{item.data}</span>
                       </Td>
                       <Td isNumeric>
                         <Button variant={"link"} size="xs" colorScheme={"blue"}>

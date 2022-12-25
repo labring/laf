@@ -16,6 +16,7 @@ import { PrismaService } from './prisma.service'
 import { StorageModule } from './storage/storage.module'
 import { LogModule } from './log/log.module'
 import { DependencyModule } from './dependency/dependency.module'
+import { TriggerModule } from './trigger/trigger.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { DependencyModule } from './dependency/dependency.module'
     StorageModule,
     LogModule,
     DependencyModule,
+    TriggerModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

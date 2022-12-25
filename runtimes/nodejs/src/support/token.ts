@@ -12,7 +12,7 @@ const DEFAULT_SALT = Config.SERVER_SECRET;
 /**
  * Generate a JWT token
  * @param payload
- * @param expire 秒
+ * @param expire second
  * @returns
  */
 export function getToken(payload: any, secret?: string): string {

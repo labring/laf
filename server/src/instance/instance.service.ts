@@ -113,7 +113,7 @@ export class InstanceService {
               ],
               startupProbe: {
                 httpGet: {
-                  path: '/healthz',
+                  path: '/_/healthz',
                   port: 'http',
                   httpHeaders: [{ name: 'Referer', value: 'startupProbe' }],
                 },
@@ -124,7 +124,7 @@ export class InstanceService {
               },
               readinessProbe: {
                 httpGet: {
-                  path: '/healthz',
+                  path: '/_/healthz',
                   port: 'http',
                   httpHeaders: [{ name: 'Referer', value: 'readinessProbe' }],
                 },

@@ -25,11 +25,12 @@
   },
   "dependencies": {
     "@aws-sdk/client-sts": "^3.226.0",
+    "@hokify/agenda": "^6.3.0",
     "@kubernetes/client-node": "^0.17.1",
     "@nestjs/axios": "^1.0.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.2.0",
-    "@nestjs/core": "^9.0.0",
+    "@nestjs/core": "^9.2.1",
     "@nestjs/jwt": "^9.0.0",
     "@nestjs/mapped-types": "*",
     "@nestjs/passport": "^9.0.0",

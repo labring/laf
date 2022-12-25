@@ -24,4 +24,5 @@ export const DEFAULT_REGION = "default";
 export enum APP_PHASE_STATUS {
   Creating = "Creating",
   Started = "Started",
+  Restarting = "Restarting",
 }

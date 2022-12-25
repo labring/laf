@@ -23,11 +23,13 @@
 
   "cSpell.words": [
     "aarch",
+    "alipay",
     "apiextensions",
     "appid",
     "appv",
     "automount",
     "bitnami",
+    "bodyparser",
     "bson",
     "buildah",
     "buildx",
@@ -47,6 +49,7 @@
     "ghaction",
     "gonanoid",
     "healthz",
+    "hokify",
     "hostpath",
     "Kube",
     "kubebuilder",
@@ -68,6 +71,7 @@
     "openebs",
     "passw",
     "pgdb",
+    "presigner",
     "readwrite",
     "Referer",
     "rolebinding",
@@ -86,6 +90,7 @@
     "userid",
     "vitepress",
     "withs",
+    "xmlparser",
     "zcube"
   ]
 }

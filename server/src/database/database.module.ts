@@ -7,10 +7,11 @@ import { PolicyController } from './policy.controller'
 import { PolicyService } from './policy.service'
 import { DatabaseService } from './database.service'
 import { DatabaseController } from './database.controller'
+import { PrismaService } from 'src/prisma.service'
 
 @Module({
   imports: [CoreModule, ApplicationModule],
   controllers: [CollectionController, PolicyController, DatabaseController],
-  providers: [CollectionService, PolicyService, DatabaseService],
+  providers: [CollectionService, PolicyService, DatabaseService, PrismaService],
 })
 export class DatabaseModule {}
