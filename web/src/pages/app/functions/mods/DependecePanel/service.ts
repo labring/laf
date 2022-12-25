@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import request from "@/utils/request";
-
+import {
+  DependencyControllerAdd,
+  DependencyControllerGetDependencies,
+  DependencyControllerRemove,
+} from "@/apis/v1/apps";
 import { DependencySearch, GetDependencyVersions } from "@/apis/v2/dependence";
 import useGlobalStore from "@/pages/globalStore";
 export type TDependenceItem = {
@@ -14,6 +17,10 @@ export type TDependenceItem = {
   };
   [key: string]: any;
 };
+export type TPackage = {
+  name: string;
+  spec: string;
+};
 
 const queryKeys = {
   usePackageQuery: ["usePackageQuery"],
@@ -22,26 +29,33 @@ const queryKeys = {
 };
 
 export const usePackageQuery = () => {
-  return useQuery(queryKeys.usePackageQuery, async () => {
-    return request.get("/api/packages");
+  return useQuery(queryKeys.usePackageQuery, () => {
+    return DependencyControllerGetDependencies({});
   });
 };
 
 export const useAddPackageMutation = (callback?: () => void) => {
   const queryClient = useQueryClient();
-  return useMutation(
-    (params: { name: string; version: string }) => request.post("/api/packages", params),
-    {
-      onSuccess: async () => {
-        useGlobalStore.getState().showSuccess("add package success");
-        await queryClient.invalidateQueries(queryKeys.usePackageQuery);
-        callback && callback();
-      },
+  return useMutation((params: TPackage[]) => DependencyControllerAdd(params), {
+    onSuccess: async () => {
+      useGlobalStore.getState().showSuccess("add package success");
+      await queryClient.invalidateQueries(queryKeys.usePackageQuery);
+      callback && callback();
     },
-  );
+  });
 };
 
-export const usePackageSearchQuery = (q: string, setList: any, checkList: any) => {
+export const useDelPackageMutation = (callback?: () => void) => {
+  const queryClient = useQueryClient();
+  return useMutation((params: { name: string | undefined }) => DependencyControllerRemove(params), {
+    onSuccess: async () => {
+      useGlobalStore.getState().showSuccess("delete package success");
+      await queryClient.invalidateQueries(queryKeys.usePackageQuery);
+      callback && callback();
+    },
+  });
+};
+export const usePackageSearchQuery = (q: string, callback?: (data: any) => void) => {
   return useQuery(
     queryKeys.usePackageSearchQuery(q),
     async () => {
@@ -49,13 +63,7 @@ export const usePackageSearchQuery = (q: string, setList: any, checkList: any) =
     },
     {
       onSuccess(data: any) {
-        const list: TDependenceItem[] = (data?.data?.objects || []).map((item: any) => {
-          const existItem = checkList.find((checkItem: TDependenceItem) => {
-            return checkItem.package.name === item.package.name;
-          });
-          return existItem ? existItem : { ...item, versions: [] };
-        });
-        setList(list);
+        callback && callback(data?.data?.objects);
       },
     },
   );

@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useImperativeHandle, useState } from "react";
+import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AddIcon, SearchIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import {
@@ -28,16 +28,15 @@ import loadsh from "lodash";
 import DepenceList from "@/components/DepenceList";
 import IconWrap from "@/components/IconWrap";
 
-import { TDependenceItem, usePackageSearchQuery, usePackageVersionsQuery } from "../service";
+import {
+  TDependenceItem,
+  TPackage,
+  useAddPackageMutation,
+  usePackageSearchQuery,
+  usePackageVersionsQuery,
+} from "../service";
 
-type TPackage =
-  | {
-      name: string;
-      version: string;
-    }
-  | undefined;
-
-const AddDepenceModal = forwardRef((_, ref) => {
+const AddDepenceModal = (props: { packageList: TPackage[] }) => {
   const { t } = useTranslation();
   const [checkList, setCheckList] = useState<TDependenceItem[]>([]);
   const [name, setName] = useState("");
@@ -47,8 +46,16 @@ const AddDepenceModal = forwardRef((_, ref) => {
   const [isShowChecked, setIsShowChecked] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const initialRef = React.useRef(null);
-  const packageSearchQuery = usePackageSearchQuery(name, setList, checkList);
+  const packageSearchQuery = usePackageSearchQuery(name, (data) => {
+    const list: TDependenceItem[] = (data || []).map((item: any) => {
+      const existItem = checkList.find((checkItem: TDependenceItem) => {
+        return checkItem.package.name === item.package.name;
+      });
+      return existItem ? existItem : { ...item, versions: [] };
+    });
+    setList(list);
+  });
+
   usePackageVersionsQuery(clickItem, (versions: string[]) => {
     const newList: TDependenceItem[] = list.map((item: TDependenceItem) => {
       if (item.package.name === clickItem) {
@@ -59,14 +66,6 @@ const AddDepenceModal = forwardRef((_, ref) => {
     });
     setList(newList);
   });
-
-  useImperativeHandle(ref, () => ({
-    edit: (item: TPackage) => {
-      // setItem(item);
-      setIsEdit(true);
-      onOpen();
-    },
-  }));
 
   const search = useCallback(
     loadsh.debounce((val: string) => {
@@ -95,14 +94,13 @@ const AddDepenceModal = forwardRef((_, ref) => {
 
   const submitDependece = () => {
     const data: TPackage[] = [];
-    checkList.map((item: TDependenceItem) => {
+    checkList.forEach((item: TDependenceItem) => {
       data.push({
         name: item.package.name,
-        version: item.package.version,
+        spec: item.package.version,
       });
     });
-    console.log(data);
-    // addPackageMutation.mutate(data);
+    addPackageMutation.mutate(data);
   };
 
   const setVersion = (version: string, key: string) => {
@@ -129,9 +127,9 @@ const AddDepenceModal = forwardRef((_, ref) => {
     setCheckList(list);
   };
 
-  // const addPackageMutation = useAddPackageMutation(() => {
-  //   onClose();
-  // });
+  const addPackageMutation = useAddPackageMutation(() => {
+    onClose();
+  });
 
   const renderList = (list: TDependenceItem[]) => {
     return (
@@ -146,12 +144,17 @@ const AddDepenceModal = forwardRef((_, ref) => {
             >
               <Checkbox
                 size="lg"
+                isDisabled={props.packageList.some(
+                  (item) => item.name === packageItem.package.name,
+                )}
                 onChange={() => {
                   setCheck(packageItem);
                 }}
-                isChecked={checkList.some(
-                  (item: TDependenceItem) => item.package.name === packageItem.package.name,
-                )}
+                isChecked={
+                  checkList.some(
+                    (item: TDependenceItem) => item.package.name === packageItem.package.name,
+                  ) || props.packageList.some((item) => item.name === packageItem.package.name)
+                }
               >
                 <Box ml={5} width="400px">
                   <b>{packageItem.package.name}</b>
@@ -167,6 +170,9 @@ const AddDepenceModal = forwardRef((_, ref) => {
                 width="150px"
                 size="sm"
                 placeholder={packageItem.package.version}
+                isDisabled={props.packageList.some(
+                  (item) => item.name === packageItem.package.name,
+                )}
                 onChange={(e) => {
                   setVersion(e.target.value, packageItem.package.name);
                 }}
@@ -192,7 +198,7 @@ const AddDepenceModal = forwardRef((_, ref) => {
   return (
     <>
       <IconWrap
-        tooltip="添加依赖"
+        tooltip={t("DependenceAdd").toString()}
         onClick={() => {
           initModal();
           setIsEdit(false);
@@ -202,10 +208,10 @@ const AddDepenceModal = forwardRef((_, ref) => {
         <AddIcon fontSize={10} />
       </IconWrap>
 
-      <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} size="3xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="3xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{t("DependenceTitle")}</ModalHeader>
+          <ModalHeader>{t("DependenceAdd")}</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <Flex mb={6} minWidth="max-content" alignItems="center" gap="2">
@@ -216,7 +222,6 @@ const AddDepenceModal = forwardRef((_, ref) => {
                   onChange={(e: any) => {
                     search(e.target.value);
                   }}
-                  ref={initialRef}
                   placeholder={String(t("DependenceName"))}
                 />
               </InputGroup>
@@ -273,7 +278,7 @@ const AddDepenceModal = forwardRef((_, ref) => {
       </Modal>
     </>
   );
-});
+};
 
 AddDepenceModal.displayName = "AddDepenceModal";
 
