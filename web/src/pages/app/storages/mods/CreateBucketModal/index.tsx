@@ -24,6 +24,7 @@ import {
 import IconWrap from "@/components/IconWrap";
 
 import { useBucketCreateMutation, useBucketUpdateMutation } from "../../service";
+import useStorageStore from "../../store";
 
 import { TBucket } from "@/apis/typing";
 import useGlobalStore from "@/pages/globalStore";
@@ -31,6 +32,7 @@ import useGlobalStore from "@/pages/globalStore";
 function CreateBucketModal(props: { storage?: TBucket }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { t } = useTranslation();
+  const store = useStorageStore((store) => store);
 
   const { storage } = props;
 
@@ -72,6 +74,7 @@ function CreateBucketModal(props: { storage?: TBucket }) {
       res = await bucketCreateMutation.mutateAsync(values);
 
       if (!res.error) {
+        store.setCurrentStorage(res.data);
         showSuccess("create success.");
         onClose();
       }
@@ -89,7 +92,7 @@ function CreateBucketModal(props: { storage?: TBucket }) {
             setFocus("shortName");
           }, 0);
         }}
-        tooltip="创建 Bucket"
+        tooltip={isEdit ? "编辑 Bucket" : "创建 Bucket" }
       >
         {isEdit ? <EditIcon fontSize={13} /> : <AddIcon fontSize={10} />}
       </IconWrap>
@@ -97,7 +100,7 @@ function CreateBucketModal(props: { storage?: TBucket }) {
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Create Bucket</ModalHeader>
+          <ModalHeader>{isEdit ? "编辑 Bucket" : "创建 Bucket" }</ModalHeader>
           <ModalCloseButton />
 
           <ModalBody pb={6}>

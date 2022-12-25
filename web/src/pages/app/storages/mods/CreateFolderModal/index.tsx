@@ -16,10 +16,14 @@ import {
 } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import useStorageStore, { TFile } from "../../store";
+
 function CreateModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { prefix, setPrefix } = useStorageStore();
 
-  const { register, setFocus, handleSubmit } = useForm<{ name: string }>();
+
+  const { register, setFocus, handleSubmit } = useForm<{ prefix: string }>();
 
   return (
     <>
@@ -28,7 +32,7 @@ function CreateModal() {
         onClick={() => {
           onOpen();
           setTimeout(() => {
-            setFocus("name");
+            setFocus("prefix");
           }, 0);
         }}
       >
@@ -44,9 +48,9 @@ function CreateModal() {
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
               <FormControl>
-                <FormLabel htmlFor="name">文件夹名称</FormLabel>
+                <FormLabel htmlFor="prefix">文件夹名称</FormLabel>
                 <Input
-                  {...register("name", {
+                  {...register("prefix", {
                     required: true,
                   })}
                   variant="filled"
@@ -62,8 +66,9 @@ function CreateModal() {
             <Button
               colorScheme="primary"
               type="submit"
-              onClick={handleSubmit(() => {
-                console.log("submit");
+              onClick={handleSubmit((value) => {
+                setPrefix(prefix + value.prefix + "/");
+                onClose();
               })}
             >
               {t("Common.Dialog.Confirm")}

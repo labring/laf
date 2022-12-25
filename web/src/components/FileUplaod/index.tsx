@@ -1,15 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import clsx from "clsx";
 
 import styles from "./index.module.scss";
 
 // drag drop file component
-function FileUpload(props: { onUpload: (files: any) => void }) {
-  const { onUpload = () => {} } = props;
+function FileUpload(props: { onUpload: (files: any) => void, uploadType: "file" | "folder" }) {
+  const { onUpload = () => {}, uploadType } = props;
   // drag state
   const [dragActive, setDragActive] = React.useState(false);
   // ref
   const inputRef = React.useRef<any>(null);
+
+  useEffect(() => {
+    if (uploadType === "folder") {
+      inputRef.current.setAttribute("webkitdirectory", "");
+      inputRef.current.setAttribute("directory", "");
+    } else {
+      inputRef.current.removeAttribute("webkitdirectory");
+      inputRef.current.removeAttribute("directory");
+    }
+  }, [uploadType]);
 
   // handle drag events
   const handleDrag = function (e: any) {
@@ -57,7 +67,6 @@ function FileUpload(props: { onUpload: (files: any) => void }) {
         type="file"
         className={styles.inputFileUpload}
         multiple={true}
-        // @ts-ignore
         onChange={handleChange}
       />
       <label
@@ -68,9 +77,9 @@ function FileUpload(props: { onUpload: (files: any) => void }) {
         htmlFor="input-file-upload"
       >
         <div>
-          <p>Drag and drop your file here or</p>
+          <p>Drag and drop your {uploadType} here or</p>
           <button className={styles.uploadButton} onClick={onButtonClick}>
-            Upload a file
+            {uploadType === "file" ? "Upload File" : "Upload Folder"}
           </button>
         </div>
       </label>

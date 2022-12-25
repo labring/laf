@@ -19,13 +19,14 @@ import FileUpload from "@/components/FileUplaod";
 import useStorageStore from "../../store";
 
 import useAwsS3 from "@/hooks/useAwsS3";
+import useGlobalStore from "@/pages/globalStore";
 
-function UploadButton() {
+function UploadButton({onUploadSuccess}: {onUploadSuccess: () => void}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const { currentStorage } = useStorageStore();
-
+  const { currentStorage, prefix } = useStorageStore();
+  const { showSuccess } = useGlobalStore();
   const { uploadFile } = useAwsS3();
+  const [uploadType, setUploadType] = React.useState<"file" | "folder">("file");
 
   return (
     <div>
@@ -34,26 +35,38 @@ function UploadButton() {
           上传
         </MenuButton>
         <MenuList>
-          <MenuItem onClick={onOpen}>上传文件</MenuItem>
-          <MenuItem>上传文件夹</MenuItem>
+          <MenuItem onClick={() => {
+            setUploadType("file");
+            onOpen();
+          }}>上传文件</MenuItem>
+          <MenuItem onClick={() => {
+            setUploadType("folder");
+            onOpen();
+          }}>上传文件夹</MenuItem>
         </MenuList>
       </Menu>
 
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Upload File</ModalHeader>
+          <ModalHeader>Upload {uploadType === "file" ? "File" : "Folder"}</ModalHeader>
           <ModalCloseButton />
           <div className="p-6">
             <FileUpload
+              uploadType={uploadType}
               onUpload={async (files) => {
+                console.log(files);                
                 for (let i = 0; i < files.length; i++) {
-                  await uploadFile(currentStorage?.metadata.name!, "/" + files[i].name, files[i], {
-                    contentType: files[i].type,
+                  const file = files[i];
+                  const fileName = file.webkitRelativePath ? file.webkitRelativePath : file.name;
+                  await uploadFile(currentStorage?.metadata.name!, prefix + fileName, file, {
+                    contentType: file.type,
                   });
                 }
-                console.log("success");
-                return files;
+
+                onUploadSuccess();
+                onClose();
+                showSuccess("上传成功");
               }}
             />
           </div>
