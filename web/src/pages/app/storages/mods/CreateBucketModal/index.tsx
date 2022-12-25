@@ -67,6 +67,7 @@ function CreateBucketModal(props: { storage?: TBucket }) {
       });
 
       if (!res.error) {
+        store.setCurrentStorage(res.data);
         showSuccess("update success.");
         onClose();
       }

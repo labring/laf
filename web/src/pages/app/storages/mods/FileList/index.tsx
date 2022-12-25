@@ -32,15 +32,9 @@ export default function FileList() {
     },
   );
 
-  console.log("query1", query.data);
-
-
   useEffect(() => {
     query.refetch();
-    console.log("query2", query.data);
   }, [bucketName, prefix]);
-
-  
 
   const viewAppFile = (file: TFile) => {
     if (file.Prefix) {
@@ -66,8 +60,8 @@ export default function FileList() {
         </HStack>
         <HStack spacing={12}>
           <span>容量： {currentStorage?.spec.storage} </span>
-          <span>已用： {currentStorage?.status.capacity.storage} </span>
-          <span>文件数： {currentStorage?.status.capacity.objectCount} </span>
+          <span>已用： {currentStorage?.status?.capacity?.storage} </span>
+          <span>文件数： {currentStorage?.status?.capacity?.objectCount} </span>
         </HStack>
       </PanelHeader>
       <div className="m-2 ">

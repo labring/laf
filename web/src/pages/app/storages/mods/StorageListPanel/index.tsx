@@ -18,7 +18,7 @@ export default function StorageListPanel() {
   const bucketListQuery = useBucketListQuery({
     onSuccess(data) {
       if (data?.data?.items?.length) {        
-        store.setCurrentStorage(data?.data?.items[0]);
+        if (!store.currentStorage) store.setCurrentStorage(data?.data?.items[0]);
       }
     },
   });
