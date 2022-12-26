@@ -1,8 +1,15 @@
 import * as fs from 'node:fs'
+import * as path from 'node:path'
 import { stringify, parse } from 'yaml'
+import { ConfigMetadata } from '../templates/config';
+import { CONFIG_FILE_NAME, DEFAULT_REMOTE_SERVER } from './constant';
 
 export function getHomeDir() {
   return "/Users/mac/Work/laf-cli-test/";
+}
+
+export function getConfigDir() {
+  return path.join(process.env.HOME || process.env.USERPROFILE, '/.laf')
 }
 
 export function ensureDirectory(dir: string) {
@@ -11,6 +18,16 @@ export function ensureDirectory(dir: string) {
   } catch (err) {
     fs.mkdirSync(dir, { recursive: true })
   }
+}
+
+export function ensureSystemConfig() {
+  const configDir = getConfigDir();
+  ensureDirectory(configDir);
+  const configData: ConfigMetadata = {
+    remoteServer: DEFAULT_REMOTE_SERVER,
+    accessToken: null,
+  }
+  writeYamlFile(path.join(configDir, CONFIG_FILE_NAME), configData);
 }
 
 export function exist(fp: string): boolean {

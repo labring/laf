@@ -35,11 +35,11 @@ export async function handleInitApplication(appid: string, options: { sync: bool
 
 export async function handleListApplication() {
   const table = new Table({
-    head: ['appid', 'name', 'region', 'bundle', 'runtime'],
+    head: ['appid', 'name', 'region', 'bundle', 'runtime', 'phase'],
   })
   const res = await listApplication();
   for (let app of res.data) {
-    table.push([app.appid, app.name, app.regionName, app.bundleName, app.runtimeName])
+    table.push([app.appid, app.name, app.regionName, app.bundleName, app.runtimeName, app.phase])
   }
   console.log(table.toString());
 }
