@@ -24,9 +24,8 @@ request.interceptors.request.use(
     return config
   },
   (error) => {
-    // 错误抛到业务代码
     error.data = {}
-    error.data.msg = '服务器异常，请联系管理员！'
+    error.data.msg = 'The server is abnormal, please contact the administrator!'
     return Promise.resolve(error)
   },
 )
@@ -76,7 +75,6 @@ request.interceptors.response.use(
 
 
 /**
- * 描述 axios request 请求
  * @param {Object} obj
  */
 export function requestData(obj: object) {

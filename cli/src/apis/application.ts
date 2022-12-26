@@ -1,9 +1,9 @@
 import { requestData } from "../utils/request"
 
 /**
- * 根据 appid 获取应用
+ * Get application by appid
  * @param {string} appid
- * @returns 返回应用数据
+ * @returns
  */
  export async function getApplicationByAppid(appid: string) {
   const res = await requestData({
@@ -14,8 +14,8 @@ import { requestData } from "../utils/request"
  }
 
 /**
- * 获取应用列表
- * @returns 返回应用数据
+ * Get the application list
+ * @returns
  */
  export async function listApplication() {
   const url = `/v1/applications`
