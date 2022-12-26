@@ -21,6 +21,8 @@ export default function CollectionListPanel() {
     onSuccess: (data) => {
       if (data.data.length > 0) {
         store.setCurrentDB(data.data[0]);
+      } else {
+        store.setCurrentDB(undefined);
       }
     },
   });
