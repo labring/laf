@@ -15,11 +15,14 @@ export type TFile = {
     DisplayName: string;
     ID: string;
   };
+  Prefix?: string;
 };
 
 type State = {
   currentStorage?: TBucket;
   setCurrentStorage: (currentStorage: TBucket) => void;
+  prefix?: string;
+  setPrefix: (prefix: string) => void;
 };
 
 const useStorageStore = create<State>()(
@@ -30,6 +33,10 @@ const useStorageStore = create<State>()(
         set((state) => {
           state.currentStorage = currentStorage;
         }),
+      prefix: "/",
+      setPrefix: (prefix) => set((state) => {
+        state.prefix = prefix;
+      }),
     })),
   ),
 );
