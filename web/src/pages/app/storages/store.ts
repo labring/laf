@@ -34,9 +34,10 @@ const useStorageStore = create<State>()(
           state.currentStorage = currentStorage;
         }),
       prefix: "/",
-      setPrefix: (prefix) => set((state) => {
-        state.prefix = prefix;
-      }),
+      setPrefix: (prefix) =>
+        set((state) => {
+          state.prefix = prefix;
+        }),
     })),
   ),
 );

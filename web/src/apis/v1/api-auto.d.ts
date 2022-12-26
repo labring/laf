@@ -44,9 +44,14 @@ declare namespace Definitions {
     validationLevel?: string;
   };
 
-  export type CreatePolicyDto = {};
+  export type CreatePolicyDto = {
+    name?: string;
+    rules?: string;
+  };
 
-  export type UpdatePolicyDto = {};
+  export type UpdatePolicyDto = {
+    rules?: string;
+  };
 
   export type CreateBucketDto = {
     shortName?: string /* The short name of the bucket which not contain the appid */;
@@ -59,9 +64,10 @@ declare namespace Definitions {
     storage?: string /* The storage capacity of the bucket: &#34;1Gi&#34;, &#34;0.5Gi&#34;, &#34;100Gi&#34; */;
   };
 
-  export type CreateDependencyDto = {
-    name?: string;
-    spec?: string;
+  export type CreateTriggerDto = {
+    desc?: string;
+    cron?: string;
+    target?: string;
   };
 }
 
@@ -306,14 +312,6 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace PolicyControllerFindOne {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
   namespace PolicyControllerUpdate {
     export type QueryParameters = any;
 
@@ -389,7 +387,7 @@ declare namespace Paths {
   namespace DependencyControllerAdd {
     export type QueryParameters = any;
 
-    export type BodyParameters = Definitions.CreateDependencyDto;
+    export type BodyParameters = any;
 
     export type Responses = any;
   }
@@ -403,6 +401,30 @@ declare namespace Paths {
   }
 
   namespace DependencyControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace TriggerControllerCreate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.CreateTriggerDto;
+
+    export type Responses = any;
+  }
+
+  namespace TriggerControllerFindAll {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace TriggerControllerRemove {
     export type QueryParameters = any;
 
     export type BodyParameters = any;

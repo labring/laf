@@ -282,7 +282,7 @@ export async function CollectionControllerRemove(
 }
 
 /**
- * TODO - ⌛️
+ * Create database policy
  */
 export async function PolicyControllerCreate(
   params: Definitions.CreatePolicyDto | any,
@@ -299,7 +299,7 @@ export async function PolicyControllerCreate(
 }
 
 /**
- * TODO - ⌛️
+ * Get database policy list
  */
 export async function PolicyControllerFindAll(
   params: Paths.PolicyControllerFindAll.BodyParameters | any,
@@ -316,51 +316,34 @@ export async function PolicyControllerFindAll(
 }
 
 /**
- * TODO - ⌛️
- */
-export async function PolicyControllerFindOne(
-  params: Paths.PolicyControllerFindOne.BodyParameters | any,
-): Promise<Paths.PolicyControllerFindOne.Responses> {
-  // /v1/apps/{appid}/policies/{id}
-  let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
-    ...params,
-  };
-  return request(`/v1/apps/${_params.appid}/policies/${_params.id}`, {
-    method: "GET",
-    params: params,
-  });
-}
-
-/**
- * TODO - ⌛️
+ * Update policy rules
  */
 export async function PolicyControllerUpdate(
   params: Definitions.UpdatePolicyDto | any,
 ): Promise<Paths.PolicyControllerUpdate.Responses> {
-  // /v1/apps/{appid}/policies/{id}
+  // /v1/apps/{appid}/policies/{name}
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
     ...params,
   };
-  return request(`/v1/apps/${_params.appid}/policies/${_params.id}`, {
+  return request(`/v1/apps/${_params.appid}/policies/${_params.name}`, {
     method: "PATCH",
     data: params,
   });
 }
 
 /**
- * TODO - ⌛️
+ * Remove a database policy
  */
 export async function PolicyControllerRemove(
   params: Paths.PolicyControllerRemove.BodyParameters | any,
 ): Promise<Paths.PolicyControllerRemove.Responses> {
-  // /v1/apps/{appid}/policies/{id}
+  // /v1/apps/{appid}/policies/{name}
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
     ...params,
   };
-  return request(`/v1/apps/${_params.appid}/policies/${_params.id}`, {
+  return request(`/v1/apps/${_params.appid}/policies/${_params.name}`, {
     method: "DELETE",
     data: params,
   });
@@ -489,7 +472,7 @@ export async function LogControllerGetLogs(
  * Add a dependency
  */
 export async function DependencyControllerAdd(
-  params: Definitions.CreateDependencyDto | any,
+  params: Paths.DependencyControllerAdd.BodyParameters | any,
 ): Promise<Paths.DependencyControllerAdd.Responses> {
   // /v1/apps/{appid}/dependencies
   let _params: { [key: string]: any } = {
@@ -531,6 +514,57 @@ export async function DependencyControllerRemove(
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/dependencies/${_params.name}`, {
+    method: "DELETE",
+    data: params,
+  });
+}
+
+/**
+ * Create a cron trigger
+ */
+export async function TriggerControllerCreate(
+  params: Definitions.CreateTriggerDto | any,
+): Promise<Paths.TriggerControllerCreate.Responses> {
+  // /v1/apps/{appid}/triggers
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/triggers`, {
+    method: "POST",
+    data: params,
+  });
+}
+
+/**
+ * Get trigger list of an application
+ */
+export async function TriggerControllerFindAll(
+  params: Paths.TriggerControllerFindAll.BodyParameters | any,
+): Promise<Paths.TriggerControllerFindAll.Responses> {
+  // /v1/apps/{appid}/triggers
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/triggers`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+/**
+ * Remove a cron trigger
+ */
+export async function TriggerControllerRemove(
+  params: Paths.TriggerControllerRemove.BodyParameters | any,
+): Promise<Paths.TriggerControllerRemove.Responses> {
+  // /v1/apps/{appid}/triggers/{id}
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/triggers/${_params.id}`, {
     method: "DELETE",
     data: params,
   });

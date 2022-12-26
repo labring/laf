@@ -27,17 +27,16 @@ function useAwsS3() {
         Delimiter: "/",
       })
       .promise();
-    
-    const files = res.Contents || []
-    const dirs = res.CommonPrefixes || []
+
+    const files = res.Contents || [];
+    const dirs = res.CommonPrefixes || [];
     return [...files, ...dirs];
   };
 
-
   const getFileUrl = (bucket: string, key: string) => {
-    const res = s3.getSignedUrl('getObject', { Bucket: bucket, Key: key })
-    return res
-  }
+    const res = s3.getSignedUrl("getObject", { Bucket: bucket, Key: key });
+    return res;
+  };
 
   const uploadFile = async (bucketName: string, key: string, body: any, { contentType }: any) => {
     const res = await s3
@@ -47,9 +46,9 @@ function useAwsS3() {
   };
 
   const deleteFile = async (bucket: string, key: string) => {
-    const res = await s3.deleteObject({ Bucket: bucket, Key: key }).promise()
-    return res
-  }
+    const res = await s3.deleteObject({ Bucket: bucket, Key: key }).promise();
+    return res;
+  };
 
   return { s3, getList, uploadFile, getFileUrl, deleteFile };
 }

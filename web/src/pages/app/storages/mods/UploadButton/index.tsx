@@ -21,7 +21,7 @@ import useStorageStore from "../../store";
 import useAwsS3 from "@/hooks/useAwsS3";
 import useGlobalStore from "@/pages/globalStore";
 
-function UploadButton({onUploadSuccess}: {onUploadSuccess: () => void}) {
+function UploadButton({ onUploadSuccess }: { onUploadSuccess: () => void }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { currentStorage, prefix } = useStorageStore();
   const { showSuccess } = useGlobalStore();
@@ -35,14 +35,22 @@ function UploadButton({onUploadSuccess}: {onUploadSuccess: () => void}) {
           上传
         </MenuButton>
         <MenuList>
-          <MenuItem onClick={() => {
-            setUploadType("file");
-            onOpen();
-          }}>上传文件</MenuItem>
-          <MenuItem onClick={() => {
-            setUploadType("folder");
-            onOpen();
-          }}>上传文件夹</MenuItem>
+          <MenuItem
+            onClick={() => {
+              setUploadType("file");
+              onOpen();
+            }}
+          >
+            上传文件
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              setUploadType("folder");
+              onOpen();
+            }}
+          >
+            上传文件夹
+          </MenuItem>
         </MenuList>
       </Menu>
 
@@ -55,7 +63,7 @@ function UploadButton({onUploadSuccess}: {onUploadSuccess: () => void}) {
             <FileUpload
               uploadType={uploadType}
               onUpload={async (files) => {
-                console.log(files);                
+                console.log(files);
                 for (let i = 0; i < files.length; i++) {
                   const file = files[i];
                   const fileName = file.webkitRelativePath ? file.webkitRelativePath : file.name;
