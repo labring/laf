@@ -22,7 +22,6 @@ function CreateModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { prefix, setPrefix } = useStorageStore();
 
-
   const { register, setFocus, handleSubmit } = useForm<{ prefix: string }>();
 
   return (

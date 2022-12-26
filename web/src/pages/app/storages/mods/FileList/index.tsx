@@ -39,15 +39,15 @@ export default function FileList() {
   const viewAppFile = (file: TFile) => {
     if (file.Prefix) {
       changeDirectory(file);
-      return
+      return;
     }
 
     window.open(getFileUrl(bucketName!, file.Key), "_blank");
-  }
+  };
 
   const changeDirectory = (file: TFile) => {
-    setPrefix(file.Prefix!)
-  }
+    setPrefix(file.Prefix!);
+  };
 
   return (
     <RightPanel>
@@ -83,13 +83,20 @@ export default function FileList() {
                 return (
                   <Tr _hover={{ bgColor: "#efefef" }} key={file.Key || file.Prefix}>
                     <Td style={{ maxWidth: 200 }}>
-                      {file.Prefix ?
-                        <a className="cursor-pointer text-blue-700 underline" onClick={() => changeDirectory(file)}>{bucketName + '/' + file.Prefix}</a>
-                        : bucketName + '/' + file.Key}
+                      {file.Prefix ? (
+                        <a
+                          className="cursor-pointer text-blue-700 underline"
+                          onClick={() => changeDirectory(file)}
+                        >
+                          {bucketName + "/" + file.Prefix}
+                        </a>
+                      ) : (
+                        bucketName + "/" + file.Key
+                      )}
                     </Td>
                     <Td>--</Td>
-                    <Td isNumeric>{file.Size ? formatSize(file.Size) : '--'}</Td>
-                    <Td isNumeric>{file.LastModified ? formatDate(file.LastModified) : '--'}</Td>
+                    <Td isNumeric>{file.Size ? formatSize(file.Size) : "--"}</Td>
+                    <Td isNumeric>{file.LastModified ? formatDate(file.LastModified) : "--"}</Td>
                     <Td isNumeric className="flex justify-end">
                       <IconWrap onClick={() => viewAppFile(file)}>
                         <ViewIcon fontSize={12} />
@@ -100,12 +107,10 @@ export default function FileList() {
                           query.refetch();
                         }}
                         headerText={String(t("Delete"))}
-                        bodyText={'确认要删除文件吗？'}
+                        bodyText={"确认要删除文件吗？"}
                       >
                         <IconWrap tooltip={String(t("Delete"))}>
-                          <DeleteIcon
-                            fontSize={14}
-                          />
+                          <DeleteIcon fontSize={14} />
                         </IconWrap>
                       </ConfirmButton>
                     </Td>

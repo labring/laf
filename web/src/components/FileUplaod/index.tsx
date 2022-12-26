@@ -4,7 +4,7 @@ import clsx from "clsx";
 import styles from "./index.module.scss";
 
 // drag drop file component
-function FileUpload(props: { onUpload: (files: any) => void, uploadType: "file" | "folder" }) {
+function FileUpload(props: { onUpload: (files: any) => void; uploadType: "file" | "folder" }) {
   const { onUpload = () => {}, uploadType } = props;
   // drag state
   const [dragActive, setDragActive] = React.useState(false);

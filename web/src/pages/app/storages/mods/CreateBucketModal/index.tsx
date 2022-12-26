@@ -93,7 +93,7 @@ function CreateBucketModal(props: { storage?: TBucket }) {
             setFocus("shortName");
           }, 0);
         }}
-        tooltip={isEdit ? "编辑 Bucket" : "创建 Bucket" }
+        tooltip={isEdit ? "编辑 Bucket" : "创建 Bucket"}
       >
         {isEdit ? <EditIcon fontSize={13} /> : <AddIcon fontSize={10} />}
       </IconWrap>
@@ -101,7 +101,7 @@ function CreateBucketModal(props: { storage?: TBucket }) {
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{isEdit ? "编辑 Bucket" : "创建 Bucket" }</ModalHeader>
+          <ModalHeader>{isEdit ? "编辑 Bucket" : "创建 Bucket"}</ModalHeader>
           <ModalCloseButton />
 
           <ModalBody pb={6}>

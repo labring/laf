@@ -5,7 +5,7 @@ function PathLink() {
   const bucketName = currentStorage?.metadata.name || "";
 
   const strs = prefix?.split("/").filter((s) => s !== "");
-  
+
   const paths = strs?.map((s, i) => {
     return {
       name: s,
@@ -17,7 +17,6 @@ function PathLink() {
     name: bucketName,
     path: "/",
   });
-  
 
   const changeDirectory = (path: string) => {
     setPrefix(path);
@@ -27,7 +26,12 @@ function PathLink() {
     <div>
       {paths?.map((p) => (
         <span key={p.path}>
-          <span className="text-blue-700 underline cursor-pointer" onClick={() => changeDirectory(p.path)}>{p.name}</span>
+          <span
+            className="text-blue-700 underline cursor-pointer"
+            onClick={() => changeDirectory(p.path)}
+          >
+            {p.name}
+          </span>
           <span className="text-gray-500">/</span>
         </span>
       ))}

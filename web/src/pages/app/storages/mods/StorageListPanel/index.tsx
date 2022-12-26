@@ -17,7 +17,7 @@ export default function StorageListPanel() {
 
   const bucketListQuery = useBucketListQuery({
     onSuccess(data) {
-      if (data?.data?.items?.length) {        
+      if (data?.data?.items?.length) {
         if (!store.currentStorage) store.setCurrentStorage(data?.data?.items[0]);
       }
     },
@@ -43,7 +43,7 @@ export default function StorageListPanel() {
                 className="group"
                 onClick={() => {
                   store.setCurrentStorage(storage);
-                  store.setPrefix("/")
+                  store.setPrefix("/");
                 }}
               >
                 <div className="relative flex-1">
