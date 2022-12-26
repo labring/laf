@@ -1,4 +1,4 @@
-import { getHomeDir, writeYamlFile, ensureDirectory } from '../../utils/path';
+import { getWorkDir, writeYamlFile, ensureDirectory } from '../../utils/path';
 import * as path from 'node:path'
 import * as fs from 'node:fs'
 import { getApplicationByAppid, listApplication } from '../../apis/application';
@@ -8,7 +8,7 @@ import { APPLICATION_METADATA_FILE_NAME, FUNCTIONS_DIRECTORY_NAME } from '../../
 
 
 export async function handleInitApplication(appid: string, options: { sync: boolean }) { 
-  const applicationYamlPath = path.join(getHomeDir(), APPLICATION_METADATA_FILE_NAME)
+  const applicationYamlPath = path.join(getWorkDir(), APPLICATION_METADATA_FILE_NAME)
   if (fs.existsSync(applicationYamlPath)) {
     console.log('The application configuration file already exists in the current directory, unable to initialize the application')
     return
@@ -19,11 +19,12 @@ export async function handleInitApplication(appid: string, options: { sync: bool
     name: res.data.name,
     regionName: res.data.regionName,
     bundleName: res.data.bundleName,
+    runtimeName: res.data.runtimeName,
   }
   writeYamlFile(applicationYamlPath, applicationMetadata);
 
   // init directory
-  ensureDirectory(path.join(getHomeDir(), FUNCTIONS_DIRECTORY_NAME))
+  ensureDirectory(path.join(getWorkDir(), FUNCTIONS_DIRECTORY_NAME))
 
 
   // if sync is true, load remote data in local
