@@ -11,7 +11,6 @@ import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
 
 import AddDepenceModal from "./AddDepenceModal";
-import EditDepenceModal from "./EditDepenceModal";
 import { TPackage, useDelPackageMutation, usePackageQuery } from "./service";
 
 export default function DependecyList() {
@@ -21,13 +20,7 @@ export default function DependecyList() {
 
   return (
     <div>
-      <Panel
-        title="NPM 依赖"
-        actions={[
-          <AddDepenceModal key="AddDepenceModal" packageList={packageQuery?.data?.data} />,
-          <EditDepenceModal key="EditDepenceModal" packageList={packageQuery?.data?.data} />,
-        ]}
-      >
+      <Panel title="NPM 依赖" actions={[<AddDepenceModal key="AddDepenceModal" />]}>
         <SectionList style={{ height: "200px", overflowY: "auto" }}>
           {packageQuery?.data?.data?.map((packageItem: TPackage) => {
             return (
@@ -39,12 +32,14 @@ export default function DependecyList() {
               >
                 <div>
                   <FileTypeIcon type={FileType.npm} />
-                  <span className="ml-2">{packageItem?.name}</span>
+                  <span className="ml-2 w-40 inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
+                    {packageItem?.name}
+                  </span>
                 </div>
                 <div className="text-slate-500 ">
-                  {packageItem?.spec && packageItem.spec.length > 10
-                    ? packageItem.spec.slice(0, 10) + "..."
-                    : packageItem?.spec}
+                  <span className="w-20 inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
+                    {packageItem?.spec}
+                  </span>
                   <span className="ml-5 hidden group-hover:inline-block">
                     <Tooltip label={t("Delete").toString()} placement="top">
                       <CloseIcon

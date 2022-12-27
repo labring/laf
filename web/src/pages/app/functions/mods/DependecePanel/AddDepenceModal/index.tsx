@@ -1,12 +1,11 @@
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AddIcon, SearchIcon, SmallCloseIcon } from "@chakra-ui/icons";
+import { AddIcon, EditIcon, SearchIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
   Center,
   Checkbox,
-  Flex,
   Input,
   InputGroup,
   InputLeftElement,
@@ -18,12 +17,11 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
-  Spacer,
   Spinner,
   Tag,
   useDisclosure,
 } from "@chakra-ui/react";
-import loadsh from "lodash";
+import { debounce } from "lodash";
 
 import DepenceList from "@/components/DepenceList";
 import IconWrap from "@/components/IconWrap";
@@ -32,11 +30,12 @@ import {
   TDependenceItem,
   TPackage,
   useAddPackageMutation,
+  usePackageQuery,
   usePackageSearchQuery,
   usePackageVersionsQuery,
 } from "../service";
 
-const AddDepenceModal = (props: { packageList: TPackage[] }) => {
+const AddDepenceModal = () => {
   const { t } = useTranslation();
   const [checkList, setCheckList] = useState<TDependenceItem[]>([]);
   const [name, setName] = useState("");
@@ -44,7 +43,20 @@ const AddDepenceModal = (props: { packageList: TPackage[] }) => {
   const [list, setList] = useState<TDependenceItem[]>([]);
   const [isEdit, setIsEdit] = useState(false);
   const [isShowChecked, setIsShowChecked] = useState(false);
+  const [packageList, setPackageList] = useState<TDependenceItem[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  usePackageQuery((data) => {
+    const newList = (data || []).map((item: any) => {
+      return {
+        package: {
+          name: item.name,
+          version: item.spec,
+        },
+        versions: [],
+      };
+    });
+    setPackageList(newList);
+  });
 
   const packageSearchQuery = usePackageSearchQuery(name, (data) => {
     const list: TDependenceItem[] = (data || []).map((item: any) => {
@@ -57,18 +69,21 @@ const AddDepenceModal = (props: { packageList: TPackage[] }) => {
   });
 
   usePackageVersionsQuery(clickItem, (versions: string[]) => {
-    const newList: TDependenceItem[] = list.map((item: TDependenceItem) => {
-      if (item.package.name === clickItem) {
-        item.versions = versions;
-        syncDataToCheckList(clickItem, item);
-      }
-      return item;
-    });
-    setList(newList);
+    const newList: TDependenceItem[] = (isEdit ? packageList : list).map(
+      (item: TDependenceItem) => {
+        if (item.package.name === clickItem) {
+          item.versions = versions;
+          if (!isEdit) {
+            syncDataToCheckList(clickItem, item);
+          }
+        }
+        return item;
+      },
+    );
+    isEdit ? setPackageList(newList) : setList(newList);
   });
-
   const search = useCallback(
-    loadsh.debounce((val: string) => {
+    debounce((val: string) => {
       setIsShowChecked(false);
       setName(val);
     }, 1000),
@@ -80,6 +95,7 @@ const AddDepenceModal = (props: { packageList: TPackage[] }) => {
     setIsShowChecked(false);
     setName("");
     setList([]);
+    onOpen();
   };
 
   const syncDataToCheckList = (targetName: string, item: TDependenceItem) => {
@@ -94,7 +110,8 @@ const AddDepenceModal = (props: { packageList: TPackage[] }) => {
 
   const submitDependece = () => {
     const data: TPackage[] = [];
-    checkList.forEach((item: TDependenceItem) => {
+    let submitList = isEdit ? packageList : checkList;
+    submitList.forEach((item: TDependenceItem) => {
       data.push({
         name: item.package.name,
         spec: item.package.version,
@@ -104,14 +121,16 @@ const AddDepenceModal = (props: { packageList: TPackage[] }) => {
   };
 
   const setVersion = (version: string, key: string) => {
-    const data: TDependenceItem[] = list.map((item: TDependenceItem) => {
+    const data: TDependenceItem[] = (isEdit ? packageList : list).map((item: TDependenceItem) => {
       if (item.package.name === key) {
         item.package.version = version;
-        syncDataToCheckList(key, item);
+        if (!isEdit) {
+          syncDataToCheckList(key, item);
+        }
       }
       return item;
     });
-    setList(data);
+    isEdit ? setPackageList(data) : setList(data);
   };
 
   const setCheck = (dependence: TDependenceItem) => {
@@ -140,39 +159,43 @@ const AddDepenceModal = (props: { packageList: TPackage[] }) => {
               isActive={false}
               key={packageItem.package.name}
               className="group"
-              onClick={() => {}}
+              onClick={() => {
+                if (packageItem.versions.length === 0) setClickItem(packageItem.package.name);
+              }}
             >
-              <Checkbox
-                size="lg"
-                isDisabled={props.packageList.some(
-                  (item) => item.name === packageItem.package.name,
-                )}
-                onChange={() => {
-                  setCheck(packageItem);
-                }}
-                isChecked={
-                  checkList.some(
-                    (item: TDependenceItem) => item.package.name === packageItem.package.name,
-                  ) || props.packageList.some((item) => item.name === packageItem.package.name)
-                }
-              >
+              {isEdit ? (
                 <Box ml={5} width="400px">
                   <b>{packageItem.package.name}</b>
-                  <p>
-                    {packageItem.package.description &&
-                    packageItem.package.description?.length > 100
-                      ? packageItem.package.description?.slice(0, 100)
-                      : packageItem.package.description}
-                  </p>
                 </Box>
-              </Checkbox>
+              ) : (
+                <Checkbox
+                  size="lg"
+                  isDisabled={packageList.some(
+                    (item) => item.package.name === packageItem.package.name,
+                  )}
+                  onChange={() => {
+                    setCheck(packageItem);
+                  }}
+                  isChecked={
+                    checkList.some(
+                      (item: TDependenceItem) => item.package.name === packageItem.package.name,
+                    ) || packageList.some((item) => item.package.name === packageItem.package.name)
+                  }
+                >
+                  <Box ml={5} width="400px">
+                    <b>{packageItem.package.name}</b>
+                    <p>{packageItem.package.description}</p>
+                  </Box>
+                </Checkbox>
+              )}
               <Select
                 width="150px"
                 size="sm"
                 placeholder={packageItem.package.version}
-                isDisabled={props.packageList.some(
-                  (item) => item.name === packageItem.package.name,
-                )}
+                isDisabled={
+                  !isEdit &&
+                  packageList.some((item) => item.package.name === packageItem.package.name)
+                }
                 onChange={(e) => {
                   setVersion(e.target.value, packageItem.package.name);
                 }}
@@ -180,7 +203,7 @@ const AddDepenceModal = (props: { packageList: TPackage[] }) => {
                   if (packageItem.versions.length === 0) setClickItem(packageItem.package.name);
                 }}
               >
-                {packageItem.versions.map((subItem: string) => {
+                {packageItem.versions.map((subItem: string | undefined) => {
                   return (
                     <option key={subItem} value={subItem}>
                       {subItem}
@@ -200,49 +223,63 @@ const AddDepenceModal = (props: { packageList: TPackage[] }) => {
       <IconWrap
         tooltip={t("DependenceAdd").toString()}
         onClick={() => {
-          initModal();
           setIsEdit(false);
-          onOpen();
+          initModal();
         }}
       >
         <AddIcon fontSize={10} />
+      </IconWrap>
+      <IconWrap
+        tooltip={t("DependenceEdit").toString()}
+        onClick={() => {
+          setIsEdit(true);
+          initModal();
+        }}
+      >
+        <EditIcon fontSize={10} />
       </IconWrap>
 
       <Modal isOpen={isOpen} onClose={onClose} size="3xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{t("DependenceAdd")}</ModalHeader>
+          <ModalHeader>{isEdit ? t("DependenceEdit") : t("DependenceAdd")}</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            <Flex mb={6} minWidth="max-content" alignItems="center" gap="2">
-              <InputGroup>
-                <InputLeftElement pointerEvents="none" children={<SearchIcon color="gray.300" />} />
-                <Input
-                  disabled={isEdit}
-                  onChange={(e: any) => {
-                    search(e.target.value);
-                  }}
-                  placeholder={String(t("DependenceName"))}
-                />
-              </InputGroup>
-              <Spacer />
-            </Flex>
-            {packageSearchQuery.isLoading ? (
-              <Center>
-                <Spinner
-                  thickness="4px"
-                  speed="0.65s"
-                  emptyColor="gray.200"
-                  color="blue.500"
-                  size="md"
-                />
-              </Center>
-            ) : isShowChecked ? (
-              renderList(checkList)
+            {isEdit ? (
+              renderList(packageList)
             ) : (
-              renderList(list)
+              <div>
+                <InputGroup mb={3}>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={<SearchIcon color="gray.300" />}
+                  />
+                  <Input
+                    onChange={(e: any) => {
+                      search(e.target.value);
+                    }}
+                    placeholder={String(t("DependenceName"))}
+                  />
+                </InputGroup>
+                {packageSearchQuery.isLoading ? (
+                  <Center>
+                    <Spinner
+                      thickness="4px"
+                      speed="0.65s"
+                      emptyColor="gray.200"
+                      color="blue.500"
+                      size="md"
+                    />
+                  </Center>
+                ) : isShowChecked ? (
+                  renderList(checkList)
+                ) : (
+                  renderList(list)
+                )}
+              </div>
             )}
           </ModalBody>
+
           <ModalFooter>
             <Tag
               mr={3}
@@ -251,16 +288,17 @@ const AddDepenceModal = (props: { packageList: TPackage[] }) => {
               colorScheme="blue"
               className="hover:cursor-pointer"
               onClick={() => {
-                setIsShowChecked((pre) => !pre);
+                if (!isEdit) {
+                  setIsShowChecked((pre) => !pre);
+                }
               }}
             >
-              {isShowChecked ? <SmallCloseIcon /> : checkList.length}
+              {isEdit ? packageList.length : isShowChecked ? <SmallCloseIcon /> : checkList.length}
             </Tag>
             <Button
               mr={3}
               onClick={() => {
                 onClose();
-                initModal();
               }}
             >
               {t("Common.Dialog.Cancel")}

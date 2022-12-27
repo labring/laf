@@ -5,10 +5,10 @@ import {
   DependencyControllerGetDependencies,
   DependencyControllerRemove,
 } from "@/apis/v1/apps";
-import { DependencySearch, GetDependencyVersions } from "@/apis/v2/dependence";
+import { DependencySearch, GetDependencyVersions } from "@/apis/v1/dependence";
 import useGlobalStore from "@/pages/globalStore";
 export type TDependenceItem = {
-  versions: string[];
+  versions: (string | undefined)[];
   package: {
     name: string;
     version: string;
@@ -28,10 +28,18 @@ const queryKeys = {
   usePackageVersionsQuery: (q: string) => ["usePackageVersionsQuery", q],
 };
 
-export const usePackageQuery = () => {
-  return useQuery(queryKeys.usePackageQuery, () => {
-    return DependencyControllerGetDependencies({});
-  });
+export const usePackageQuery = (callback?: (data: any) => void) => {
+  return useQuery(
+    queryKeys.usePackageQuery,
+    () => {
+      return DependencyControllerGetDependencies({});
+    },
+    {
+      onSuccess: (data) => {
+        callback && callback(data?.data);
+      },
+    },
+  );
 };
 
 export const useAddPackageMutation = (callback?: () => void) => {
