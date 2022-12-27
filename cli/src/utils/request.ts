@@ -18,7 +18,7 @@ request.interceptors.request.use(
         Authorization: `Bearer ${token}`
       };
     } else {
-      console.error("please login first: `laf login -u username -p password`")
+      console.error("please login first: `laf login <token>`")
       process.exit(1)
     }
     return config
