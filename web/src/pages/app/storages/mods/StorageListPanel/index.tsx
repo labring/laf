@@ -19,6 +19,8 @@ export default function StorageListPanel() {
     onSuccess(data) {
       if (data?.data?.items?.length) {
         if (!store.currentStorage) store.setCurrentStorage(data?.data?.items[0]);
+      } else {
+        store.setCurrentStorage(undefined);
       }
     },
   });
