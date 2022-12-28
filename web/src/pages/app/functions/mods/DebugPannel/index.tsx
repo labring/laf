@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import {
   Button,
   Center,
   Input,
+  InputGroup,
+  InputRightElement,
+  Select,
   Spinner,
   Tab,
   TabList,
@@ -14,6 +17,7 @@ import {
 import axios from "axios";
 import { t } from "i18next";
 
+import CopyText from "@/components/CopyText";
 import JsonEditor from "@/components/Editor/JsonEditor";
 import PanelHeader from "@/components/Panel/Header";
 import { Pages } from "@/constants";
@@ -34,6 +38,7 @@ export default function DebugPanel() {
 
   const [runningResData, setRunningResData] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [runningMethod, setRunningMethod] = useState<string>("");
 
   const compileMutation = useCompileMutation();
 
@@ -58,6 +63,11 @@ export default function DebugPanel() {
       enabled: globalStore.currentPageId === Pages.function,
     },
   );
+  useEffect(() => {
+    if (currentFunction?.methods) {
+      setRunningMethod(currentFunction.methods[0]);
+    }
+  }, [setRunningMethod, currentFunction]);
 
   const runningCode = async () => {
     if (isLoading || !currentFunction?.id) return;
@@ -70,7 +80,7 @@ export default function DebugPanel() {
       if (!compileRes.error) {
         const res = await axios({
           url: getFunctionDebugUrl(),
-          method: "post",
+          method: runningMethod,
           data: {
             func: compileRes.data || "",
             param: JSON.parse(params),
@@ -101,10 +111,29 @@ export default function DebugPanel() {
             <div className="flex flex-col h-full">
               <div className="flex-1 border-r-slate-300 flex flex-col">
                 <div className="flex py-4 px-2 items-center">
-                  <Button size="sm" className="mr-2">
-                    GET
-                  </Button>
-                  <Input size="sm" readOnly rounded={4} value={getFunctionDebugUrl()} />
+                  <Select
+                    width="150px"
+                    size="sm"
+                    value={runningMethod}
+                    disabled={getFunctionDebugUrl() === ""}
+                    onChange={(e) => {
+                      setRunningMethod(e.target.value);
+                    }}
+                  >
+                    {currentFunction.methods?.map((item: string) => {
+                      return (
+                        <option value={item} key={item}>
+                          {item}
+                        </option>
+                      );
+                    })}
+                  </Select>
+                  <InputGroup className="ml-2">
+                    <Input size="sm" readOnly rounded={4} value={getFunctionDebugUrl()} />
+                    <InputRightElement>
+                      <CopyText text={getFunctionDebugUrl()} className="mb-2" />
+                    </InputRightElement>
+                  </InputGroup>
                   <Button
                     style={{ borderRadius: 2 }}
                     size="sm"

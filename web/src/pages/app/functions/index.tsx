@@ -5,7 +5,6 @@
 import { Badge, Button, Center, HStack } from "@chakra-ui/react";
 import { t } from "i18next";
 
-import CopyText from "@/components/CopyText";
 import FunctionEditor from "@/components/Editor/FunctionEditor";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import PanelHeader from "@/components/Panel/Header";
@@ -75,12 +74,6 @@ function FunctionPage() {
                 </div>
 
                 <HStack spacing="4">
-                  {store.getFunctionUrl() !== "" && (
-                    <span>
-                      <span className=" text-slate-500">调用地址：{store.getFunctionUrl()}</span>
-                      <CopyText text={store.getFunctionUrl()} />
-                    </span>
-                  )}
                   <DeployButton />
                   <Button
                     size="sm"

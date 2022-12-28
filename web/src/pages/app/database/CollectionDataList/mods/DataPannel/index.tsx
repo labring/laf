@@ -10,13 +10,14 @@ import Pagination from "@/components/Pagination";
 import getPageInfo from "@/utils/getPageInfo";
 
 import { useAddDataMutation, useEntryDataQuery, useUpdateDataMutation } from "../../../service";
+import useDBMStore from "../../../store";
 
 import DeleteButton from "./DeleteButton";
 export default function DataPannel() {
   const [currentData, setCurrentData] = useState<any>(undefined);
 
   const [record, setRecord] = useState("");
-
+  const store = useDBMStore((state) => state);
   type FormData = {
     _id: string;
   };
@@ -71,9 +72,16 @@ export default function DataPannel() {
                   pointerEvents="none"
                   children={<Search2Icon color="gray.300" />}
                 />
-                <Input borderRadius="4" placeholder="_id" bg="white" {...register("_id")} />
+                <Input
+                  disabled={store.currentDB === undefined}
+                  borderRadius="4"
+                  placeholder="_id"
+                  bg="white"
+                  {...register("_id")}
+                />
               </InputGroup>
               <Button
+                disabled={store.currentDB === undefined}
                 px={9}
                 type={"submit"}
                 colorScheme={"green"}
@@ -86,6 +94,7 @@ export default function DataPannel() {
           </div>
         </form>
         <Button
+          disabled={store.currentDB === undefined}
           colorScheme={"primary"}
           size="sm"
           onClick={() => {

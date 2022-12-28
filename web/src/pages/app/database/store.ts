@@ -5,8 +5,8 @@ import { immer } from "zustand/middleware/immer";
 import { TDB } from "@/apis/typing";
 
 type State = {
-  currentDB?: TDB;
-  setCurrentDB: (currentDB: TDB) => void;
+  currentDB?: TDB | undefined;
+  setCurrentDB: (currentDB: TDB | undefined) => void;
 };
 
 const useDBMStore = create<State>()(
