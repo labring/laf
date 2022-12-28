@@ -16,11 +16,11 @@ import {
 } from "@chakra-ui/react";
 import { t } from "i18next";
 
-import useStorageStore, { TFile } from "../../store";
+import useStorageStore from "../../store";
 
 function CreateModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { prefix, setPrefix } = useStorageStore();
+  const { prefix, setPrefix, currentStorage } = useStorageStore();
 
   const { register, setFocus, handleSubmit } = useForm<{ prefix: string }>();
 
@@ -28,6 +28,7 @@ function CreateModal() {
     <>
       <Button
         size="xs"
+        disabled={currentStorage === undefined}
         onClick={() => {
           onOpen();
           setTimeout(() => {
