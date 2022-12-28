@@ -1,14 +1,14 @@
 .depenceList {
-  max-height: 50vh;
+  max-height: 60vh;
   overflow: auto;
 
   li {
     cursor: pointer;
     display: flex;
-    height: 80px;
+    min-height: 80px;
     align-items: center;
     justify-content: space-between;
-    padding: 2px 8px;
+    padding: 5px 8px;
 
     span {
       vertical-align: middle;
