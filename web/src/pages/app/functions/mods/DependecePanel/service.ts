@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+import { DependencySearch, GetDependencyVersions } from "@/apis/dependence";
 import {
   DependencyControllerAdd,
   DependencyControllerGetDependencies,
   DependencyControllerRemove,
 } from "@/apis/v1/apps";
-import { DependencySearch, GetDependencyVersions } from "@/apis/v1/dependence";
 import useGlobalStore from "@/pages/globalStore";
 export type TDependenceItem = {
   versions: (string | undefined)[];
