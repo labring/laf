@@ -20,21 +20,13 @@ request.interceptors.request.use(
 
     let _headers: AxiosRequestHeaders | any = {
       Authorization: "Bearer " + localStorage.getItem("token"),
+      "Content-Type": "application/json",
     };
 
-    // const session = useSessionStore.getState().session;
-    // if (session?.token?.access_token) {
-    //   const token = session.token.access_token;
-    //   if (token) {
-    //     _headers["Authorization"] = `Bearer ${token}`;
-    //   }
-    // }
-
-    if (!config.headers || config.headers["Content-Type"] === "") {
-      _headers["Content-Type"] = "application/json";
-    }
-
-    config.headers = _headers;
+    config.headers = {
+      ..._headers,
+      ...config.headers,
+    };
     return config;
   },
   (error) => {
