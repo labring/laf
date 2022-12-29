@@ -1,51 +1,54 @@
-import Editor from "@monaco-editor/react";
+import { useEffect, useRef } from "react";
+import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
-export default function JsonEditor(props: {
-  value: string;
-  height?: string;
-  onChange?: (value: string | undefined) => void;
-}) {
-  let value = "{\n\t\n}";
-  let objValue = {};
-  try {
-    objValue = JSON.parse(props.value || "{}");
-  } catch (error) {}
+import "./userWorker";
 
-  value = Object.keys(objValue).length ? JSON.stringify(objValue, null, 2) : value;
+monaco?.editor.defineTheme("JsonEditorTheme", {
+  base: "vs",
+  inherit: true,
+  rules: [],
+  colors: {
+    "editorLineNumber.foreground": "#aaa",
+    "editorOverviewRuler.border": "#fff",
+    "editor.lineHighlightBackground": "#fff",
+    "scrollbarSlider.background": "#E8EAEC",
+    "editorIndentGuide.activeBackground": "#ddd",
+    "editorIndentGuide.background": "#eee",
+  },
+});
 
-  function handleEditorWillMount(monaco: any) {
-    monaco?.editor.defineTheme("jsonEditorTheme", {
-      base: "vs",
-      inherit: true,
-      rules: [],
-      colors: {
-        "editorLineNumber.foreground": "#aaa",
-        "editorOverviewRuler.border": "#fff",
-        "editor.lineHighlightBackground": "#fff",
-        "scrollbarSlider.background": "#E8EAEC",
-        "editorIndentGuide.activeBackground": "#ddd",
-        "editorIndentGuide.background": "#eee",
-      },
-    });
-  }
+function JsonEditor(props: { value: string; onChange?: (value: string | undefined) => void }) {
+  const { value, onChange } = props;
 
-  return (
-    <Editor
-      defaultLanguage="json"
-      value={value}
-      height={props.height || "100%"}
-      onChange={(value, event) => {
-        props.onChange && props.onChange(value);
-      }}
-      onMount={(editor, monaco) => {
-        monaco.editor.setTheme("jsonEditorTheme");
-      }}
-      beforeMount={handleEditorWillMount}
-      options={{
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
+  const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
+  const monacoEl = useRef(null);
+
+  // onChange
+  useEffect(() => {
+    subscriptionRef.current?.dispose();
+
+    if (onChange) {
+      subscriptionRef.current = editorRef.current?.onDidChangeModelContent((event) => {
+        onChange(editorRef.current?.getValue());
+      });
+    }
+  }, [onChange]);
+
+  useEffect(() => {
+    if (monacoEl && editorRef.current) {
+      editorRef.current?.getModel()?.setValue(value);
+    }
+  }, [value]);
+
+  useEffect(() => {
+    if (monacoEl && !editorRef.current) {
+      editorRef.current = monaco.editor.create(monacoEl.current!, {
         lineNumbers: "off",
         guides: {
           indentation: false,
         },
+        automaticLayout: true,
         minimap: {
           enabled: false,
         },
@@ -58,8 +61,16 @@ export default function JsonEditor(props: {
         scrollBeyondLastLine: false,
         folding: false,
         overviewRulerBorder: false,
+        theme: "JsonEditorTheme",
         tabSize: 2, // tab 缩进长度
-      }}
-    />
-  );
+        model: monaco.editor.createModel(value, "json"),
+      });
+    }
+
+    return () => {};
+  }, [value]);
+
+  return <div style={{ height: "95%", width: "100%" }} ref={monacoEl}></div>;
 }
+
+export default JsonEditor;
