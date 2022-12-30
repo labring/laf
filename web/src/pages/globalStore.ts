@@ -3,7 +3,7 @@ import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
-import { APP_PHASE_STATUS, Pages } from "@/constants";
+import { APP_PHASE_STATUS } from "@/constants";
 
 import { TApplication } from "@/apis/typing";
 import { ApplicationControllerUpdate } from "@/apis/v1/applications";
@@ -27,7 +27,7 @@ type State = {
 
   restartCurrentApp(): void;
 
-  currentPageId: string;
+  currentPageId: string | undefined;
   setCurrentPage: (pageId: string) => void;
 
   visitedViews: string[];
@@ -46,7 +46,10 @@ const useGlobalStore = create<State>()(
 
       loading: true,
 
-      currentPageId: Pages.function,
+      currentPageId: undefined,
+
+      visitedViews: [],
+
       setCurrentPage(pageId) {
         set((state) => {
           state.currentPageId = pageId;
@@ -105,8 +108,6 @@ const useGlobalStore = create<State>()(
       login: async () => {
         await AuthControllerGetSigninUrl({});
       },
-
-      visitedViews: [Pages.function],
 
       showSuccess: (text: string | React.ReactNode) => {
         toast({

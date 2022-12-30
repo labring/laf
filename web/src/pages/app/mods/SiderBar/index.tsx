@@ -5,6 +5,7 @@
 import React from "react";
 import { AiFillDatabase, AiOutlineFunction } from "react-icons/ai";
 import { GrCatalogOption, GrStorage } from "react-icons/gr";
+import { useNavigate, useParams } from "react-router-dom";
 import { Center } from "@chakra-ui/react";
 import clsx from "clsx";
 
@@ -12,8 +13,13 @@ import { Pages, SiderBarWidth } from "@/constants/index";
 
 import styles from "./index.module.scss";
 
-export default function SiderBar(props: { pageId: string; setPageId: (pageId: string) => void }) {
-  const { pageId, setPageId } = props;
+import useGlobalStore from "@/pages/globalStore";
+
+export default function SiderBar() {
+  const { pageId } = useParams();
+  const navigate = useNavigate();
+  const { currentApp, setCurrentPage } = useGlobalStore();
+
   const ICONS = [
     { pageId: Pages.function, component: <AiOutlineFunction size="24" /> },
     { pageId: Pages.database, component: <AiFillDatabase size="22" /> },
@@ -35,7 +41,10 @@ export default function SiderBar(props: { pageId: string; setPageId: (pageId: st
             style={{
               height: SiderBarWidth,
             }}
-            onClick={() => setPageId(item.pageId)}
+            onClick={() => {
+              setCurrentPage(item.pageId);
+              navigate(`/app/${currentApp?.appid}/${item.pageId}`);
+            }}
           >
             {item.component}
           </Center>

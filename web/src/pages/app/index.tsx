@@ -9,16 +9,11 @@ import LogsPage from "./logs";
 import StoragePage from "./storages";
 
 function AppDetail() {
-  const { visitedViews, currentPageId, setCurrentPage } = useGlobalStore();
+  const { visitedViews, currentPageId } = useGlobalStore();
 
   return (
     <>
-      <SiderBar
-        pageId={currentPageId}
-        setPageId={(pageId: string) => {
-          setCurrentPage(pageId);
-        }}
-      />
+      <SiderBar />
       <div className="h-full" style={{ marginLeft: SiderBarWidth }}>
         {[
           {
