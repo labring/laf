@@ -14,7 +14,6 @@ import LeftPanel from "@/pages/app/mods/LeftPanel";
 
 export default function StorageListPanel() {
   const store = useStorageStore((store) => store);
-
   const bucketListQuery = useBucketListQuery({
     onSuccess(data) {
       if (data?.data?.items?.length) {
@@ -62,7 +61,14 @@ export default function StorageListPanel() {
                 </div>
                 <div className="invisible flex group-hover:visible">
                   <CreateBucketModal storage={storage} />
-                  <DeleteBucketModal storage={storage} />
+                  <DeleteBucketModal
+                    storage={storage}
+                    onSuccessAction={() => {
+                      if (storage.metadata.name === store.currentStorage?.metadata.name) {
+                        store.setCurrentStorage(bucketListQuery?.data?.data?.items[0]);
+                      }
+                    }}
+                  />
                 </div>
               </SectionList.Item>
             );

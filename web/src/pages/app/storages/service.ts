@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+import useStorageStore from "./store";
+
 import {
   BucketControllerCreate,
   BucketControllerFindAll,
@@ -7,20 +9,33 @@ import {
   BucketControllerUpdate,
 } from "@/apis/v1/apps";
 import useGlobalStore from "@/pages/globalStore";
-
 const queryKeys = {
   useBucketListQuery: ["useBucketListQuery"],
   useFileListQuery: ["useFileListQuery"],
 };
 
 export const useBucketListQuery = (config?: { onSuccess: (data: any) => void }) => {
+  const globalStore = useGlobalStore();
+  const store = useStorageStore();
   return useQuery(
     queryKeys.useBucketListQuery,
     () => {
       return BucketControllerFindAll({});
     },
     {
-      onSuccess: config?.onSuccess,
+      onSuccess: (data) => {
+        let number = parseInt(
+          globalStore.currentApp?.oss.spec.capacity.storage.split("Gi")[0] || "",
+          10,
+        );
+        if (data?.data?.items?.length) {
+          data?.data?.items.forEach((item: any) => {
+            number -= parseInt(item.spec.storage.split("Gi")[0], 10);
+          });
+        }
+        store.setMaxStorage(number);
+        config?.onSuccess(data);
+      },
     },
   );
 };

@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { DeleteIcon } from "@chakra-ui/icons";
 import {
   Button,
@@ -19,14 +20,12 @@ import {
 import IconWrap from "@/components/IconWrap";
 
 import { useBucketDeleteMutation } from "../../service";
-
-function DeleteBucketModal(props: { storage: any }) {
-  const { storage } = props;
+function DeleteBucketModal(props: { storage: any; onSuccessAction?: () => void }) {
+  const { storage, onSuccessAction } = props;
 
   const bucketDeleteMutation = useBucketDeleteMutation();
-
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const { t } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -58,14 +57,14 @@ function DeleteBucketModal(props: { storage: any }) {
           <ModalCloseButton />
           <ModalBody pb={6}>
             <p className="mb-2">
-              This action cannot be undone. This will permanently delete the{" "}
+              当前操作将会永久删除云存储{" "}
               <span className=" text-black mr-1 font-bold">{storage.metadata.name}</span>
-              storage,
+              ,无法撤销。
             </p>
             <p className="mb-4">
-              Please type{" "}
-              <span className=" text-red-500 mr-1 font-bold">{storage.metadata.name}</span> to
-              confirm.
+              请输入云存储名称{" "}
+              <span className=" text-red-500 mr-1 font-bold">{storage.metadata.name}</span>
+              进行确定。
             </p>
             <FormControl>
               <Input
@@ -81,9 +80,11 @@ function DeleteBucketModal(props: { storage: any }) {
           </ModalBody>
 
           <ModalFooter>
+            <Button mr={3} onClick={onClose}>
+              {t("Common.Dialog.Cancel")}
+            </Button>
             <Button
               colorScheme="red"
-              mr={3}
               onClick={handleSubmit(async (data) => {
                 if (data.name === storage.metadata.name) {
                   const res = await bucketDeleteMutation.mutateAsync({
@@ -91,14 +92,14 @@ function DeleteBucketModal(props: { storage: any }) {
                     ...storage,
                   });
                   if (!res.error) {
+                    onSuccessAction && onSuccessAction();
                     onClose();
                   }
                 }
               })}
             >
-              Save
+              {t("Common.Dialog.Confirm")}
             </Button>
-            <Button onClick={onClose}>Cancel</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

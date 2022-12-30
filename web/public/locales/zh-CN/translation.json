@@ -19,6 +19,9 @@
     "Deploy": "发布",
     "EmptyText": "请先选择函数"
   },
+  "CollectionPanel": {
+    "CollectionAdd": "添加集合"
+  },
   "Message": {
     "DeploySuccess": "发布成功"
   },

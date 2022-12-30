@@ -23,11 +23,11 @@ import IconWrap from "@/components/IconWrap";
 
 import { useCreateDBMutation } from "../../service";
 
-const CreateCollectionModal = (props: { collection?: any }) => {
+const CreateCollectionModal = (props: { collection?: any; showText?: boolean }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { t } = useTranslation();
 
-  const { collection } = props;
+  const { collection, showText } = props;
 
   const isEdit = !!collection;
 
@@ -53,21 +53,37 @@ const CreateCollectionModal = (props: { collection?: any }) => {
 
   return (
     <>
-      <IconWrap
-        size={20}
-        onClick={() => {
-          onOpen();
-          reset({});
-          setTimeout(() => setFocus("name"), 0);
-        }}
-      >
-        <AddIcon fontSize={10} />
-      </IconWrap>
+      {showText ? (
+        <Button
+          size="lg"
+          variant="ghost"
+          leftIcon={<AddIcon />}
+          onClick={() => {
+            onOpen();
+            reset({});
+            setTimeout(() => setFocus("name"), 0);
+          }}
+        >
+          {t("CollectionPanel.CollectionAdd")}
+        </Button>
+      ) : (
+        <IconWrap
+          tooltip={t("CollectionPanel.CollectionAdd").toString()}
+          size={20}
+          onClick={() => {
+            onOpen();
+            reset({});
+            setTimeout(() => setFocus("name"), 0);
+          }}
+        >
+          <AddIcon fontSize={10} />
+        </IconWrap>
+      )}
 
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>添加集合</ModalHeader>
+          <ModalHeader>{t("CollectionPanel.CollectionAdd")}</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">

@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { DeleteIcon } from "@chakra-ui/icons";
 import {
   Button,
@@ -22,7 +23,7 @@ import { useDeleteDBMutation } from "../../service";
 
 function DeleteCollectionModal(props: { database: any }) {
   const { database } = props;
-
+  const { t } = useTranslation();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const deleteDBMutation = useDeleteDBMutation({
@@ -63,13 +64,13 @@ function DeleteCollectionModal(props: { database: any }) {
           <ModalCloseButton />
           <ModalBody pb={6}>
             <p className="mb-2">
-              This action cannot be undone. This will permanently delete the{" "}
+              当前操作将永久删除集合{" "}
               <span className=" text-black mr-1 font-bold">{database.name}</span>
-              storage,
+              ,无法撤销。
             </p>
             <p className="mb-4">
-              Please type <span className=" text-red-500 mr-1 font-bold">{database.name}</span> to
-              confirm.
+              请输入集合名称 <span className=" text-red-500 mr-1 font-bold">{database.name}</span>
+              进行确定。
             </p>
             <FormControl>
               <Input
@@ -86,7 +87,7 @@ function DeleteCollectionModal(props: { database: any }) {
 
           <ModalFooter>
             <Button mr={3} onClick={onClose}>
-              Cancel
+              {t("Common.Dialog.Cancel")}
             </Button>
             <Button
               colorScheme="red"
@@ -96,7 +97,7 @@ function DeleteCollectionModal(props: { database: any }) {
                 }
               })}
             >
-              Confirm
+              {t("Common.Dialog.Confirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

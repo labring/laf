@@ -17,13 +17,13 @@ import {
 import { t } from "i18next";
 
 import useStorageStore from "../../store";
+// import useAwsS3 from "@/hooks/useAwsS3";
 
 function CreateModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { prefix, setPrefix, currentStorage } = useStorageStore();
-
   const { register, setFocus, handleSubmit } = useForm<{ prefix: string }>();
-
+  // const { uploadFile } = useAwsS3();
   return (
     <>
       <Button
@@ -66,7 +66,9 @@ function CreateModal() {
             <Button
               colorScheme="primary"
               type="submit"
-              onClick={handleSubmit((value) => {
+              onClick={handleSubmit(async (value) => {
+                //await uploadFile(currentStorage?.metadata.name!, prefix + value.prefix + "/", '', { contentType: "folder" });
+                // query.refetch();
                 setPrefix(prefix + value.prefix + "/");
                 onClose();
               })}
