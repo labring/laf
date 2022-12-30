@@ -31,7 +31,12 @@ function UploadButton({ onUploadSuccess }: { onUploadSuccess: () => void }) {
   return (
     <div>
       <Menu placement="bottom-start">
-        <MenuButton size="xs" as={Button} rightIcon={<ChevronDownIcon />}>
+        <MenuButton
+          size="xs"
+          as={Button}
+          rightIcon={<ChevronDownIcon />}
+          disabled={currentStorage === undefined}
+        >
           上传
         </MenuButton>
         <MenuList>

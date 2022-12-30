@@ -19,8 +19,8 @@ export type TFile = {
 };
 
 type State = {
-  currentStorage?: TBucket;
-  setCurrentStorage: (currentStorage: TBucket) => void;
+  currentStorage?: TBucket | undefined;
+  setCurrentStorage: (currentStorage: TBucket | undefined) => void;
   prefix?: string;
   setPrefix: (prefix: string) => void;
 };

@@ -12,7 +12,6 @@ async function loadPackageTypings(packageName: string) {
     url: `${url}/typing/package?packageName=${packageName}`,
     method: "GET",
   });
-
   return res.data;
 }
 
