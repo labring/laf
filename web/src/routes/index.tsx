@@ -40,7 +40,7 @@ const routes = [
         element: <FunctionLayout />,
         children: [
           {
-            path: "/app/:appid",
+            path: "/app/:appid/:pageId/:id?",
             element: () => import("@/pages/app/index"),
           },
         ],
