@@ -1,7 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { AddIcon, EditIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
@@ -21,21 +20,18 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
-import IconWrap from "@/components/IconWrap";
-
 import { useBucketCreateMutation, useBucketUpdateMutation } from "../../service";
 import useStorageStore from "../../store";
 
 import { TBucket } from "@/apis/typing";
 import useGlobalStore from "@/pages/globalStore";
 
-function CreateBucketModal(props: { storage?: TBucket }) {
+function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElement }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { t } = useTranslation();
   const store = useStorageStore((store) => store);
 
-  const { storage } = props;
-
+  const { storage, children } = props;
   const bucketCreateMutation = useBucketCreateMutation();
   const bucketUpdateMutation = useBucketUpdateMutation();
 
@@ -84,20 +80,15 @@ function CreateBucketModal(props: { storage?: TBucket }) {
 
   return (
     <>
-      <IconWrap
-        size={20}
-        onClick={() => {
+      {React.cloneElement(children, {
+        onClick: () => {
           onOpen();
           reset(defaultValues);
           setTimeout(() => {
             setFocus("shortName");
           }, 0);
-        }}
-        tooltip={isEdit ? "编辑 Bucket" : "创建 Bucket"}
-      >
-        {isEdit ? <EditIcon fontSize={13} /> : <AddIcon fontSize={10} />}
-      </IconWrap>
-
+        },
+      })}
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
@@ -106,7 +97,7 @@ function CreateBucketModal(props: { storage?: TBucket }) {
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
-              <FormControl>
+              <FormControl isRequired>
                 <FormLabel htmlFor="shortName">Bucket名称</FormLabel>
                 <Input
                   {...register("shortName", { required: true })}
@@ -124,12 +115,30 @@ function CreateBucketModal(props: { storage?: TBucket }) {
                 </Select>
               </FormControl>
 
-              <FormControl>
-                <FormLabel htmlFor="storage">容量</FormLabel>
+              <FormControl isRequired>
+                <FormLabel htmlFor="storage">
+                  容量（最大容量
+                  {defaultValues.storage
+                    ? store.maxStorage + defaultValues.storage
+                    : store.maxStorage}
+                  GB）
+                </FormLabel>
                 <InputGroup>
                   <Input
-                    {...register("storage", { required: true })}
+                    {...register("storage", {
+                      required: true,
+                      max: defaultValues.storage
+                        ? store.maxStorage + defaultValues.storage
+                        : store.maxStorage,
+                      min: 0,
+                    })}
                     type="number"
+                    min="0"
+                    max={
+                      defaultValues.storage
+                        ? store.maxStorage + defaultValues.storage
+                        : store.maxStorage
+                    }
                     variant="filled"
                     className="w-1"
                   />
@@ -143,7 +152,16 @@ function CreateBucketModal(props: { storage?: TBucket }) {
             <Button mr={3} onClick={onClose}>
               {t("Common.Dialog.Cancel")}
             </Button>
-            <Button colorScheme="primary" type="submit" onClick={handleSubmit(onSubmit)}>
+            <Button
+              disabled={
+                (defaultValues.storage
+                  ? store.maxStorage + defaultValues.storage
+                  : store.maxStorage) === 0
+              }
+              colorScheme="blue"
+              type="submit"
+              onClick={handleSubmit(onSubmit)}
+            >
               {t("Common.Dialog.Confirm")}
             </Button>
           </ModalFooter>

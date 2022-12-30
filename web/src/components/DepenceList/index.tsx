@@ -15,12 +15,14 @@ function Item(props: {
   children: React.ReactNode;
   isActive: boolean;
   className?: string;
+  style?: React.CSSProperties;
   key: string;
   onClick: () => void;
 }) {
-  const { children, isActive, onClick, className } = props;
+  const { children, isActive, onClick, className, style } = props;
   return (
     <li
+      style={style || {}}
       className={clsx(className, {
         [styles.active]: isActive,
       })}

@@ -156,6 +156,7 @@ const AddDepenceModal = () => {
         {(list || []).map((packageItem: TDependenceItem) => {
           return (
             <DepenceList.Item
+              style={{ minHeight: "45px" }}
               isActive={false}
               key={packageItem.package.name}
               className="group"

@@ -23,6 +23,8 @@ type State = {
   setCurrentStorage: (currentStorage: TBucket | undefined) => void;
   prefix?: string;
   setPrefix: (prefix: string) => void;
+  maxStorage: number;
+  setMaxStorage: (number: number) => void;
 };
 
 const useStorageStore = create<State>()(
@@ -37,6 +39,11 @@ const useStorageStore = create<State>()(
       setPrefix: (prefix) =>
         set((state) => {
           state.prefix = prefix;
+        }),
+      maxStorage: 0,
+      setMaxStorage: (number) =>
+        set((state) => {
+          state.maxStorage = number;
         }),
     })),
   ),

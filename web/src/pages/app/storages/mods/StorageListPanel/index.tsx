@@ -1,6 +1,8 @@
+import { AddIcon, EditIcon } from "@chakra-ui/icons";
 import { Tag } from "@chakra-ui/react";
 
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
+import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
 
@@ -14,7 +16,6 @@ import LeftPanel from "@/pages/app/mods/LeftPanel";
 
 export default function StorageListPanel() {
   const store = useStorageStore((store) => store);
-
   const bucketListQuery = useBucketListQuery({
     onSuccess(data) {
       if (data?.data?.items?.length) {
@@ -30,7 +31,11 @@ export default function StorageListPanel() {
       <Panel
         title="云存储"
         actions={[
-          <CreateBucketModal key="create_modal" />,
+          <CreateBucketModal key="create_modal">
+            <IconWrap size={20} tooltip="创建 Bucket">
+              <AddIcon fontSize={10} />
+            </IconWrap>
+          </CreateBucketModal>,
           // <IconWrap key="options" onClick={() => {}}>
           //   <HamburgerIcon fontSize={12} />
           // </IconWrap>,
@@ -61,8 +66,19 @@ export default function StorageListPanel() {
                   </div>
                 </div>
                 <div className="invisible flex group-hover:visible">
-                  <CreateBucketModal storage={storage} />
-                  <DeleteBucketModal storage={storage} />
+                  <CreateBucketModal storage={storage}>
+                    <IconWrap size={20} tooltip="编辑Bucket">
+                      <EditIcon fontSize={10} />
+                    </IconWrap>
+                  </CreateBucketModal>
+                  <DeleteBucketModal
+                    storage={storage}
+                    onSuccessAction={() => {
+                      if (storage.metadata.name === store.currentStorage?.metadata.name) {
+                        store.setCurrentStorage(bucketListQuery?.data?.data?.items[0]);
+                      }
+                    }}
+                  />
                 </div>
               </SectionList.Item>
             );
