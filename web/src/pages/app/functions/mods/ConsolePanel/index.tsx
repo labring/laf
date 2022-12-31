@@ -1,0 +1,48 @@
+import { useQuery } from "@tanstack/react-query";
+
+import CopyText from "@/components/CopyText";
+import PanelHeader from "@/components/Panel/Header";
+import { formatDate } from "@/utils/format";
+
+import useFunctionStore from "../../store";
+
+import { LogControllerGetLogs } from "@/apis/v1/apps";
+
+function ConsolePanel() {
+  const { currentRequestId } = useFunctionStore();
+
+  const logControllerGetLogsQuery = useQuery(
+    ["LogControllerGetLogs", currentRequestId],
+    () => {
+      return LogControllerGetLogs({ requestId: currentRequestId, limit: 100 });
+    },
+    {
+      enabled: typeof currentRequestId !== "undefined",
+    },
+  );
+
+  return (
+    <div className="flex-1 ">
+      <PanelHeader className="bg-slate-100 !mb-1">Console</PanelHeader>
+      <div className="relative overflow-y-auto px-2 font-mono text-sm" style={{ height: "200px" }}>
+        {currentRequestId && (
+          <p className="mb-1 ml-1">
+            ReqeustID: {currentRequestId} <CopyText text={String(currentRequestId)} />
+          </p>
+        )}
+        {(logControllerGetLogsQuery.data?.data?.list || []).map((item: any) => {
+          return (
+            <div key={item._id} className="flex ">
+              <span className=" text-slate-500 min-w-[160px]">
+                [{formatDate(item.created_at, "YYYY-MM-DD hh:mm:ss")}]
+              </span>
+              <pre className="flex-1">{item.data}</pre>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export default ConsolePanel;

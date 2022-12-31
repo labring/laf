@@ -8,10 +8,12 @@ import useGlobalStore from "@/pages/globalStore";
 type State = {
   allFunctionList: TFunction[];
   currentFunction: TFunction | { [key: string]: any };
+  currentRequestId: string | undefined;
   functionCodes: { [key: string]: string };
   getFunctionUrl: () => string;
   getFunctionDebugUrl: () => string;
 
+  setCurrentRequestId: (requestId: string | undefined) => void;
   setAllFunctionList: (funcionList: TFunction[]) => void;
   setCurrentFunction: (currentFunction: TFunction | { [key: string]: any }) => void;
   updateFunctionCode: (current: TFunction | { [key: string]: any }, codes: string) => void;
@@ -21,10 +23,9 @@ const useFunctionStore = create<State>()(
   devtools(
     immer((set, get) => ({
       allFunctionList: [],
-
       currentFunction: {},
-
       functionCodes: {},
+      currentRequestId: undefined,
 
       getFunctionUrl: () => {
         const currentApp = useGlobalStore.getState().currentApp;
@@ -42,6 +43,12 @@ const useFunctionStore = create<State>()(
         return currentFunction?.name
           ? `http://${currentApp?.gateway.status.appRoute.domain}/${currentFunction?.name}`
           : "";
+      },
+
+      setCurrentRequestId: (requestId) => {
+        set((state) => {
+          state.currentRequestId = requestId;
+        });
       },
 
       setAllFunctionList: (allFunctionList) => {

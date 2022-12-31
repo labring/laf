@@ -23,7 +23,7 @@ export default function CopyText(props: {
   return (
     <Tooltip label={t("ToolTip.Copy")} placement="top">
       {React.cloneElement(children, {
-        className: "ml-2 " + (className || ""),
+        className: className || "",
         onClick: () => {
           onCopy();
           showSuccess(tip || t("ToolTip.Copied"));

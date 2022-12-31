@@ -2,7 +2,7 @@
  * cloud functions index page
  ***************************/
 
-import { Badge, Button, Center, HStack } from "@chakra-ui/react";
+import { Badge, Center, HStack } from "@chakra-ui/react";
 import { t } from "i18next";
 
 import FunctionEditor from "@/components/Editor/FunctionEditor";
@@ -13,6 +13,7 @@ import { Pages } from "@/constants";
 import LeftPanel from "../mods/LeftPanel";
 import RightPanel from "../mods/RightPanel";
 
+import ConsolePanel from "./mods/ConsolePanel";
 import DebugPanel from "./mods/DebugPannel";
 import DependecyPanel from "./mods/DependecePanel";
 import DeployButton from "./mods/DeployButton";
@@ -75,14 +76,6 @@ function FunctionPage() {
 
                 <HStack spacing="4">
                   <DeployButton />
-                  <Button
-                    size="sm"
-                    onClick={() => {
-                      globalStore.restartCurrentApp();
-                    }}
-                  >
-                    Restart
-                  </Button>
                 </HStack>
               </PanelHeader>
             </div>
@@ -98,6 +91,8 @@ function FunctionPage() {
             ) : (
               <Center className="h-full">{t("FunctionPanel.EmptyText")}</Center>
             )}
+
+            <ConsolePanel />
           </div>
           <div style={{ width: "30%" }}>
             {/* <div className="h-full border bg-black">1</div> */}
