@@ -5,6 +5,7 @@ import { User } from '@prisma/client'
 import { UserService } from '../user/user.service'
 import { ServerConfig } from '../constants'
 import * as assert from 'node:assert'
+import { PatService } from 'src/user/pat.service'
 
 @Injectable()
 export class AuthService {
@@ -13,6 +14,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly casdoorService: CasdoorService,
     private readonly userService: UserService,
+    private readonly patService: PatService,
   ) {}
 
   /**
@@ -68,6 +70,22 @@ export class AuthService {
       this.logger.error(error)
       return null
     }
+  }
+
+  /**
+   * Get token by PAT
+   * @param user
+   * @param token
+   * @returns
+   */
+  async pat2token(token: string): Promise<string> {
+    const pat = await this.patService.findOne(token)
+    if (!pat) return null
+
+    // check pat expired
+    if (pat.expiredAt < new Date()) return null
+
+    return this.getAccessTokenByUser(pat.user)
   }
 
   /**
