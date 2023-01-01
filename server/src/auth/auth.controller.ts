@@ -1,4 +1,13 @@
-import { Controller, Get, Query, Req, Res, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common'
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -11,6 +20,7 @@ import { IRequest } from '../utils/types'
 import { UserDto } from '../user/dto/user.response'
 import { AuthService } from './auth.service'
 import { JwtAuthGuard } from './jwt.auth.guard'
+import { Pat2TokenDto } from './dto/pat2token.dto'
 
 @ApiTags('Authentication')
 @Controller()
@@ -53,6 +63,23 @@ export class AuthController {
     const token = await this.authService.code2token(code)
     if (!token) {
       return ResponseUtil.error('invalid code')
+    }
+
+    return ResponseUtil.ok(token)
+  }
+
+  /**
+   * Get user token by PAT
+   * @param pat
+   * @returns
+   */
+  @ApiOperation({ summary: 'Get user token by PAT' })
+  @ApiResponse({ type: ResponseUtil })
+  @Post('pat2token')
+  async pat2token(@Body() dto: Pat2TokenDto) {
+    const token = await this.authService.pat2token(dto.pat)
+    if (!token) {
+      return ResponseUtil.error('invalid pat')
     }
 
     return ResponseUtil.ok(token)

@@ -21,7 +21,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  profile UserProfile?
+  profile              UserProfile?
+  personalAccessTokens PersonalAccessToken[]
 }
 
 model UserProfile {
@@ -188,4 +189,15 @@ model CronTrigger {
   updatedAt DateTime @updatedAt
 
   cloudFunction CloudFunction @relation(fields: [appid, target], references: [appid, name])
+}
+
+model PersonalAccessToken {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  uid       String   @db.ObjectId
+  name      String
+  token     String   @unique
+  expiredAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [uid], references: [id])
 }
