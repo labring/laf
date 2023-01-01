@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import SyntaxHighlighter from "react-syntax-highlighter";
 import { Search2Icon } from "@chakra-ui/icons";
 import {
   Button,
@@ -8,6 +9,13 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Spinner,
   Table,
   TableContainer,
@@ -16,6 +24,7 @@ import {
   Th,
   Thead,
   Tr,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 
@@ -30,6 +39,11 @@ import { LogControllerGetLogs } from "@/apis/v1/apps";
 
 const DEFAULT_LIMIT = 20;
 
+type TLog = {
+  data: string;
+  request_id: string;
+};
+
 export default function LogsPage() {
   type FormData = {
     requestId: string;
@@ -40,6 +54,9 @@ export default function LogsPage() {
   const { handleSubmit, register, getValues } = useForm<FormData>({
     defaultValues,
   });
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [detail, setDetail] = useState<TLog | undefined>(undefined);
 
   const [queryData, setQueryData] = useState({
     ...defaultValues,
@@ -63,7 +80,7 @@ export default function LogsPage() {
   };
 
   return (
-    <div className="px-4 pb-4 flex-1 bg-slate-200 flex flex-col h-full ">
+    <div className="px-4 pb-4 flex-1 flex flex-col h-full ">
       <form
         onSubmit={(event) => {
           event?.preventDefault();
@@ -109,13 +126,13 @@ export default function LogsPage() {
           />
         </div>
       </form>
-      <div className="bg-white px-4 py-1 rounded-md h-full relative">
+      <div className="px-4 py-1 rounded-md h-full relative border " style={{ paddingBottom: 100 }}>
         {logListQuery.isFetching ? (
           <Center className="opacity-60 bg-white absolute left-0 right-0 top-0 bottom-0 z-10">
             <Spinner size={"lg"} />
           </Center>
         ) : null}
-        <div className="overflow-y-auto h-full">
+        <div className="overflow-y-auto h-full mb-4">
           <TableContainer minH={"400px"}>
             <Table variant="simple">
               <Thead>
@@ -128,12 +145,12 @@ export default function LogsPage() {
                 </Tr>
               </Thead>
 
-              <Tbody className="relative">
+              <Tbody className="relative font-mono">
                 {logListQuery.data?.data?.list.map((item: any) => {
                   return (
                     <Tr key={item._id} _hover={{ bgColor: "#efefef" }}>
-                      <Td width={"200px"} className=" text-black-600 ">
-                        {formatDate(item.created_at, "YYYY-MM-DD HH:mm:ss")}
+                      <Td width={"180px"} className="text-slate-500 ">
+                        [{formatDate(item.created_at, "YYYY-MM-DD HH:mm:ss")}]
                       </Td>
                       <Td width={"200px"}>
                         <CopyText text={item.request_id}>
@@ -145,11 +162,21 @@ export default function LogsPage() {
                           <span>{item.func}</span>
                         </CopyText>
                       </Td>
-                      <Td>
-                        <span className="text-green-700">{item.data}</span>
+                      <Td maxWidth={"300px"}>
+                        <pre className="text-green-700 max-h-[20px] overflow-hidden">
+                          {item.data}
+                        </pre>
                       </Td>
-                      <Td isNumeric>
-                        <Button variant={"link"} size="xs" colorScheme={"blue"}>
+                      <Td width={"100px"}>
+                        <Button
+                          variant={"link"}
+                          size="xs"
+                          colorScheme={"blue"}
+                          onClick={() => {
+                            setDetail(item);
+                            onOpen();
+                          }}
+                        >
                           查看
                         </Button>
                       </Td>
@@ -161,6 +188,24 @@ export default function LogsPage() {
           </TableContainer>
         </div>
       </div>
+
+      <Modal onClose={onClose} isOpen={isOpen} scrollBehavior={"inside"} size="4xl">
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>
+            <span className="font-normal font-mono">Request ID: {detail?.request_id}</span>
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <SyntaxHighlighter language="json" customStyle={{ background: "#fff" }}>
+              {detail?.data || ""}
+            </SyntaxHighlighter>
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={onClose}>关闭</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 }

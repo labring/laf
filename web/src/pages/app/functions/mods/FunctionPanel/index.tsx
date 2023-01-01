@@ -4,8 +4,8 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { DeleteIcon, Search2Icon } from "@chakra-ui/icons";
-import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
+import { DeleteIcon } from "@chakra-ui/icons";
+import { Input } from "@chakra-ui/react";
 import { t } from "i18next";
 
 import ConfirmButton from "@/components/ConfirmButton";
@@ -61,23 +61,14 @@ export default function FunctionList() {
     <Panel title={t`FunctionList`} actions={[<CreateModal key="create_modal" />]}>
       <div className="border-b border-slate-300">
         <div className="flex items-center ml-2 mb-3">
-          <InputGroup>
-            <InputLeftElement
-              height={"8"}
-              width="12"
-              pointerEvents="none"
-              children={<Search2Icon bgSize="sm" color="gray.300" />}
-            />
-            <Input
-              size="sm"
-              className="mr-2"
-              variant="filled"
-              placeholder={String(t("SearchPlacehoder"))}
-              onChange={(event) => {
-                setKeywords(event.target.value);
-              }}
-            />
-          </InputGroup>
+          <Input
+            size="sm"
+            className="mr-2"
+            placeholder={String(t("SearchPlacehoder"))}
+            onChange={(event) => {
+              setKeywords(event.target.value);
+            }}
+          />
         </div>
 
         <SectionList style={{ height: "calc(100vh - 400px)", overflowY: "auto" }}>

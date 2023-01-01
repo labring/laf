@@ -24,7 +24,7 @@ monaco?.editor.defineTheme("lafEditorTheme", {
   colors: {
     "editorLineNumber.foreground": "#aaa",
     "editorOverviewRuler.border": "#fff",
-    "editor.lineHighlightBackground": "#F5F6F8",
+    "editor.lineHighlightBackground": "#F7F8FA",
     "scrollbarSlider.background": "#E8EAEC",
     "editorIndentGuide.activeBackground": "#ddd",
     "editorIndentGuide.background": "#eee",
@@ -96,7 +96,7 @@ function FunctionEditor(props: {
     return () => {};
   }, [path, value]);
 
-  return <div style={{ height: "95%" }} ref={monacoEl}></div>;
+  return <div style={{ height: "calc(100% - 294px)" }} ref={monacoEl}></div>;
 }
 
 export default FunctionEditor;

@@ -35,8 +35,11 @@ import {
   usePackageVersionsQuery,
 } from "../service";
 
+import useGlobalStore from "@/pages/globalStore";
+
 const AddDepenceModal = () => {
   const { t } = useTranslation();
+  const globalStore = useGlobalStore((state) => state);
   const [checkList, setCheckList] = useState<TDependenceItem[]>([]);
   const [name, setName] = useState("");
   const [clickItem, setClickItem] = useState("");
@@ -82,6 +85,7 @@ const AddDepenceModal = () => {
     );
     isEdit ? setPackageList(newList) : setList(newList);
   });
+
   const search = useCallback(
     debounce((val: string) => {
       setIsShowChecked(false);
@@ -148,6 +152,7 @@ const AddDepenceModal = () => {
 
   const addPackageMutation = useAddPackageMutation(() => {
     onClose();
+    globalStore.restartCurrentApp();
   });
 
   const renderList = (list: TDependenceItem[]) => {

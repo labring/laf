@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import {
   Button,
@@ -30,7 +30,9 @@ import useHotKey from "@/hooks/useHotKey";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function DebugPanel() {
-  const { getFunctionDebugUrl, currentFunction } = useFunctionStore((state) => state);
+  const { getFunctionDebugUrl, currentFunction, setCurrentRequestId } = useFunctionStore(
+    (state) => state,
+  );
 
   const globalStore = useGlobalStore((state) => state);
 
@@ -42,7 +44,7 @@ export default function DebugPanel() {
 
   const compileMutation = useCompileMutation();
 
-  const [params, setParams] = useState(JSON.stringify({ name: "test" }));
+  const [params, setParams] = useState(JSON.stringify({ name: "test" }, null, 2));
 
   useHotKey(
     "r",
@@ -89,6 +91,9 @@ export default function DebugPanel() {
             "x-laf-debug-token": `${globalStore.currentApp?.function_debug_token}`,
           },
         });
+
+        setCurrentRequestId(res.headers["request-id"]);
+
         setRunningResData(res.data);
       }
     } catch (error: any) {
