@@ -1,6 +1,5 @@
 import { HttpService } from '@nestjs/axios'
 import { Injectable, Logger } from '@nestjs/common'
-import { SDK, Config } from 'casdoor-nodejs-sdk'
 import * as querystring from 'node:querystring'
 import { ServerConfig } from '../constants'
 
@@ -8,30 +7,6 @@ import { ServerConfig } from '../constants'
 export class CasdoorService {
   private logger = new Logger()
   constructor(private readonly httpService: HttpService) {}
-
-  /**
-   * Get auth config of casdoor
-   * @returns
-   */
-  getCasdoorConfig() {
-    const authCfg: Config = {
-      endpoint: ServerConfig.CASDOOR_ENDPOINT,
-      clientId: ServerConfig.CASDOOR_CLIENT_ID,
-      clientSecret: ServerConfig.CASDOOR_CLIENT_SECRET,
-      certificate: ServerConfig.CASDOOR_PUBLIC_CERT,
-      orgName: ServerConfig.CASDOOR_ORG_NAME,
-    }
-    return authCfg
-  }
-
-  /**
-   * Create casdoor SDK instance
-   * @returns
-   */
-  getCasdoorSDK() {
-    const sdk = new SDK(this.getCasdoorConfig())
-    return sdk
-  }
 
   /**
    * Get user from code directly
@@ -51,8 +26,24 @@ export class CasdoorService {
    */
   async code2token(code: string): Promise<string> {
     try {
-      const token = await this.getCasdoorSDK().getAuthToken(code)
-      return token
+      const url = `${ServerConfig.CASDOOR_ENDPOINT}/api/login/oauth/access_token`
+      const res = await this.httpService.axiosRef.post(url, {
+        client_id: ServerConfig.CASDOOR_CLIENT_ID,
+        client_secret: ServerConfig.CASDOOR_CLIENT_SECRET,
+        grant_type: 'authorization_code',
+        code,
+      })
+
+      const data = res.data as {
+        access_token: string
+        refresh_token: string
+        id_token: string
+        token_type: string
+        expires_in: number
+        scope: string
+      }
+
+      return data?.access_token
     } catch (error) {
       return null
     }
@@ -93,16 +84,16 @@ export class CasdoorService {
    * @returns
    */
   getSignInUrl(): string {
-    const authCfg = this.getCasdoorConfig()
+    const endpoint = ServerConfig.CASDOOR_ENDPOINT
     const query = {
-      client_id: authCfg.clientId,
+      client_id: ServerConfig.CASDOOR_CLIENT_ID,
       redirect_uri: process.env.CASDOOR_REDIRECT_URI,
       response_type: 'code',
       scope: 'openid,profile,phone,email',
       state: 'casdoor',
     }
     const encoded_query = querystring.encode(query)
-    const base_api = `${authCfg.endpoint}/login/oauth/authorize`
+    const base_api = `${endpoint}/login/oauth/authorize`
     const url = `${base_api}?${encoded_query}`
     return url
   }
@@ -112,9 +103,9 @@ export class CasdoorService {
    * @returns
    */
   getSignUpUrl(): string {
-    const authCfg = this.getCasdoorConfig()
+    const endpoint = ServerConfig.CASDOOR_ENDPOINT
     const app_name = ServerConfig.CASDOOR_APP_NAME
-    const url = `${authCfg.endpoint}/signup/${app_name}`
+    const url = `${endpoint}/signup/${app_name}`
     return url
   }
 }
