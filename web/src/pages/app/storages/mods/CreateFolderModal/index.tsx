@@ -18,9 +18,7 @@ import {
 
 import useStorageStore from "../../store";
 
-// import useAwsS3 from "@/hooks/useAwsS3";
 import useAwsS3 from "@/hooks/useAwsS3";
-// import useAwsS3 from "@/hooks/useAwsS3";
 
 function CreateModal({ onCreateSuccess }: { onCreateSuccess: () => void }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
