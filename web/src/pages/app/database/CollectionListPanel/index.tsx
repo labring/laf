@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { AddIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 import { Input } from "@chakra-ui/react";
 
@@ -15,7 +17,7 @@ import useDBMStore from "../store";
 
 export default function CollectionListPanel() {
   const store = useDBMStore((store) => store);
-
+  const { t } = useTranslation();
   const collectionListQuery = useCollectionListQuery({
     onSuccess: (data) => {
       if (data.data.length > 0) {
@@ -30,7 +32,16 @@ export default function CollectionListPanel() {
 
   return (
     <LeftPanel>
-      <Panel title="集合列表" actions={[<CreateCollectionModal key={"create_database"} />]}>
+      <Panel
+        title="集合列表"
+        actions={[
+          <CreateCollectionModal key={"create_database"}>
+            <IconWrap tooltip={t("CollectionPanel.CollectionAdd").toString()} size={20}>
+              <AddIcon fontSize={10} />
+            </IconWrap>
+          </CreateCollectionModal>,
+        ]}
+      >
         <div className="flex items-center m-2 mr-0 mb-3">
           <Input
             size="sm"

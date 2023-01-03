@@ -57,7 +57,17 @@ export default function DataPannel() {
 
   return (
     <>
-      <div className="flex pb-4 shadow-sm justify-between items-center">
+      <div className="flex pb-4 justify-between items-center">
+        <Button
+          disabled={store.currentDB === undefined}
+          colorScheme={"primary"}
+          onClick={() => {
+            setCurrentData({});
+          }}
+        >
+          <AddIcon color="white" className="mr-2" />
+          新增记录
+        </Button>
         <form
           onSubmit={(event) => {
             event?.preventDefault();
@@ -93,17 +103,6 @@ export default function DataPannel() {
             </HStack>
           </div>
         </form>
-        <Button
-          disabled={store.currentDB === undefined}
-          colorScheme={"primary"}
-          size="sm"
-          onClick={() => {
-            setCurrentData({});
-          }}
-        >
-          <AddIcon color="white" className="mr-2" />
-          新增记录
-        </Button>
         <Pagination
           values={getPageInfo(entryDataQuery.data as any)}
           onChange={(values) => {

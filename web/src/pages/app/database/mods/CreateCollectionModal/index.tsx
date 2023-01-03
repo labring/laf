@@ -1,7 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { AddIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
@@ -19,15 +18,13 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
-import IconWrap from "@/components/IconWrap";
-
 import { useCreateDBMutation } from "../../service";
 
-const CreateCollectionModal = (props: { collection?: any }) => {
+const CreateCollectionModal = (props: { collection?: any; children: React.ReactElement }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { t } = useTranslation();
 
-  const { collection } = props;
+  const { collection, children } = props;
 
   const isEdit = !!collection;
 
@@ -53,21 +50,17 @@ const CreateCollectionModal = (props: { collection?: any }) => {
 
   return (
     <>
-      <IconWrap
-        size={20}
-        onClick={() => {
+      {React.cloneElement(children, {
+        onClick: () => {
           onOpen();
           reset({});
           setTimeout(() => setFocus("name"), 0);
-        }}
-      >
-        <AddIcon fontSize={10} />
-      </IconWrap>
-
+        },
+      })}
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>添加集合</ModalHeader>
+          <ModalHeader>{t("CollectionPanel.CollectionAdd")}</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">

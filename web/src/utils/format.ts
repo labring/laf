@@ -16,3 +16,8 @@ export function formatSize(size: number) {
   }
   return size.toFixed(2) + " " + units[i];
 }
+
+export function formatCapacity(capacity: string) {
+  const num = capacity.split("Gi")[0];
+  return parseInt(num, 10);
+}

@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import clsx from "clsx";
 
 import styles from "./index.module.scss";
@@ -10,7 +11,7 @@ function FileUpload(props: { onUpload: (files: any) => void; uploadType: "file" 
   const [dragActive, setDragActive] = React.useState(false);
   // ref
   const inputRef = React.useRef<any>(null);
-
+  const { t } = useTranslation();
   useEffect(() => {
     if (uploadType === "folder") {
       inputRef.current.setAttribute("webkitdirectory", "");
@@ -77,9 +78,13 @@ function FileUpload(props: { onUpload: (files: any) => void; uploadType: "file" 
         htmlFor="input-file-upload"
       >
         <div>
-          <p>Drag and drop your {uploadType} here or</p>
+          <p>
+            将{uploadType === "file" ? t("StoragePanel.File") : t("StoragePanel.Folder")}
+            拖放到此处或者
+          </p>
           <button className={styles.uploadButton} onClick={onButtonClick}>
-            {uploadType === "file" ? "Upload File" : "Upload Folder"}
+            {t("StoragePanel.Upload") +
+              (uploadType === "file" ? t("StoragePanel.File") : t("StoragePanel.Folder"))}
           </button>
         </div>
       </label>

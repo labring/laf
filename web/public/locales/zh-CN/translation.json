@@ -19,6 +19,15 @@
     "Deploy": "发布",
     "EmptyText": "请先选择函数"
   },
+  "CollectionPanel": {
+    "CollectionAdd": "添加集合"
+  },
+  "StoragePanel": {
+    "Upload": "上传",
+    "File": "文件",
+    "Folder": "文件夹",
+    "Create": "新建"
+  },
   "Message": {
     "DeploySuccess": "发布成功"
   },

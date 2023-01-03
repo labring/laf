@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import {
   Button,
   FormControl,
@@ -14,16 +15,17 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import { t } from "i18next";
 
 import useStorageStore from "../../store";
 
-function CreateModal() {
+import useAwsS3 from "@/hooks/useAwsS3";
+
+function CreateModal({ onCreateSuccess }: { onCreateSuccess: () => void }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { prefix, setPrefix, currentStorage } = useStorageStore();
-
-  const { register, setFocus, handleSubmit } = useForm<{ prefix: string }>();
-
+  const { prefix, currentStorage } = useStorageStore();
+  const { register, setFocus, handleSubmit, reset } = useForm<{ prefix: string }>();
+  const { uploadFile } = useAwsS3();
+  const { t } = useTranslation();
   return (
     <>
       <Button
@@ -31,18 +33,19 @@ function CreateModal() {
         disabled={currentStorage === undefined}
         onClick={() => {
           onOpen();
+          reset({});
           setTimeout(() => {
             setFocus("prefix");
           }, 0);
         }}
       >
-        新建文件夹
+        {t("StoragePanel.Create") + t("StoragePanel.Folder")}
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Create Folder</ModalHeader>
+          <ModalHeader> {t("StoragePanel.Create") + t("StoragePanel.Folder")}</ModalHeader>
           <ModalCloseButton />
 
           <ModalBody pb={6}>
@@ -64,10 +67,17 @@ function CreateModal() {
               {t("Common.Dialog.Cancel")}
             </Button>
             <Button
-              colorScheme="primary"
+              colorScheme="blue"
               type="submit"
-              onClick={handleSubmit((value) => {
-                setPrefix(prefix + value.prefix + "/");
+              onClick={handleSubmit(async (value) => {
+                await uploadFile(
+                  currentStorage?.metadata.name!,
+                  prefix + value.prefix + "/",
+                  null,
+                  { contentType: "folder" },
+                );
+                onCreateSuccess();
+                // setPrefix(prefix + value.prefix + "/");
                 onClose();
               })}
             >
