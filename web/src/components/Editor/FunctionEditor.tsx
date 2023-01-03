@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { debounce } from "lodash";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
 import "./userWorker";
@@ -6,6 +7,7 @@ import "./userWorker";
 import { AutoImportTypings } from "./typesResolve";
 
 const autoImportTypings = new AutoImportTypings();
+const parseImports = debounce(autoImportTypings.parse, 1500).bind(autoImportTypings);
 
 monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
   target: monaco.languages.typescript.ScriptTarget.ES2016,
@@ -26,7 +28,7 @@ monaco?.editor.defineTheme("lafEditorTheme", {
     "editorOverviewRuler.border": "#fff",
     "editor.lineHighlightBackground": "#F7F8FA",
     "scrollbarSlider.background": "#E8EAEC",
-    "editorIndentGuide.activeBackground": "#ddd",
+    "editorIndentGuide.activeBackground": "#fff",
     "editorIndentGuide.background": "#eee",
   },
 });
@@ -38,6 +40,7 @@ const updateModel = (path: string, value: string, editorRef: any) => {
 
   if (editorRef.current?.getModel() !== newModel) {
     editorRef.current?.setModel(newModel);
+    autoImportTypings.parse(editorRef.current?.getValue() || "");
   }
 };
 
@@ -55,10 +58,10 @@ function FunctionEditor(props: {
   // onChange
   useEffect(() => {
     subscriptionRef.current?.dispose();
-
     if (onChange) {
       subscriptionRef.current = editorRef.current?.onDidChangeModelContent((event) => {
         onChange(editorRef.current?.getValue());
+        parseImports(editorRef.current?.getValue() || "");
       });
     }
   }, [onChange]);
@@ -80,6 +83,7 @@ function FunctionEditor(props: {
         scrollbar: {
           verticalScrollbarSize: 6,
         },
+        overviewRulerLanes: 0,
         lineNumbersMinChars: 4,
         fontSize: 14,
         theme: "lafEditorTheme",

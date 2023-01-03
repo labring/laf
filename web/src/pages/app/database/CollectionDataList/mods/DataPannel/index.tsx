@@ -57,52 +57,55 @@ export default function DataPannel() {
 
   return (
     <>
-      <div className="flex pb-4 justify-between items-center">
-        <Button
-          disabled={store.currentDB === undefined}
-          colorScheme={"primary"}
-          onClick={() => {
-            setCurrentData({});
-          }}
-        >
-          <AddIcon color="white" className="mr-2" />
-          新增记录
-        </Button>
-        <form
-          onSubmit={(event) => {
-            event?.preventDefault();
-            entryDataQuery.refetch();
-          }}
-        >
-          <div className="flex justify-between my-4">
-            <HStack spacing={2}>
-              <InputGroup width={400}>
-                <InputLeftElement
-                  height={"10"}
-                  pointerEvents="none"
-                  children={<Search2Icon color="gray.300" />}
-                />
-                <Input
+      <div className="flex justify-between items-center">
+        <div className="flex items-center">
+          <Button
+            disabled={store.currentDB === undefined}
+            colorScheme={"primary"}
+            className="mr-2"
+            onClick={() => {
+              setCurrentData({});
+            }}
+          >
+            <AddIcon color="white" className="mr-2" />
+            新增记录
+          </Button>
+          <form
+            onSubmit={(event) => {
+              event?.preventDefault();
+              entryDataQuery.refetch();
+            }}
+          >
+            <div className="flex justify-between my-4">
+              <HStack spacing={2}>
+                <InputGroup width={400}>
+                  <InputLeftElement
+                    height={"10"}
+                    pointerEvents="none"
+                    children={<Search2Icon color="gray.300" />}
+                  />
+                  <Input
+                    disabled={store.currentDB === undefined}
+                    borderRadius="4"
+                    placeholder="_id"
+                    bg="white"
+                    {...register("_id")}
+                  />
+                </InputGroup>
+                <Button
                   disabled={store.currentDB === undefined}
-                  borderRadius="4"
-                  placeholder="_id"
-                  bg="white"
-                  {...register("_id")}
-                />
-              </InputGroup>
-              <Button
-                disabled={store.currentDB === undefined}
-                px={9}
-                type={"submit"}
-                colorScheme={"green"}
-                onClick={handleSubmit(submit)}
-                isLoading={entryDataQuery.isFetching}
-              >
-                搜索
-              </Button>
-            </HStack>
-          </div>
-        </form>
+                  px={9}
+                  type={"submit"}
+                  colorScheme={"green"}
+                  onClick={handleSubmit(submit)}
+                  isLoading={entryDataQuery.isFetching}
+                >
+                  搜索
+                </Button>
+              </HStack>
+            </div>
+          </form>
+        </div>
         <Pagination
           values={getPageInfo(entryDataQuery.data as any)}
           onChange={(values) => {
