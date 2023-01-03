@@ -41,6 +41,7 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
     storage: parseInt(storage?.spec.storage || "", 10),
   };
 
+  const maxStorage = store.maxStorage + (defaultValues.storage || 0);
   const { register, handleSubmit, reset, setFocus } = useForm<{
     shortName: string;
     policy: string;
@@ -116,29 +117,17 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
               </FormControl>
 
               <FormControl isRequired>
-                <FormLabel htmlFor="storage">
-                  容量（最大容量
-                  {defaultValues.storage
-                    ? store.maxStorage + defaultValues.storage
-                    : store.maxStorage}
-                  GB）
-                </FormLabel>
+                <FormLabel htmlFor="storage">容量（最大容量{maxStorage}GB）</FormLabel>
                 <InputGroup>
                   <Input
                     {...register("storage", {
                       required: true,
-                      max: defaultValues.storage
-                        ? store.maxStorage + defaultValues.storage
-                        : store.maxStorage,
+                      max: maxStorage,
                       min: 0,
                     })}
                     type="number"
                     min="0"
-                    max={
-                      defaultValues.storage
-                        ? store.maxStorage + defaultValues.storage
-                        : store.maxStorage
-                    }
+                    max={maxStorage}
                     variant="filled"
                     className="w-1"
                   />
@@ -153,11 +142,7 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
               {t("Common.Dialog.Cancel")}
             </Button>
             <Button
-              disabled={
-                (defaultValues.storage
-                  ? store.maxStorage + defaultValues.storage
-                  : store.maxStorage) === 0
-              }
+              disabled={maxStorage === 0}
               colorScheme="blue"
               type="submit"
               onClick={handleSubmit(onSubmit)}
