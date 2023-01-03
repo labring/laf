@@ -9,7 +9,7 @@ import ConfirmButton from "@/components/ConfirmButton";
 import CopyText from "@/components/CopyText";
 import { formatDate } from "@/utils/format";
 
-import { APP_PHASE_STATUS } from "../../constants";
+import { APP_PHASE_STATUS, Pages } from "../../constants";
 import useGlobalStore from "../globalStore";
 
 import CreateAppModal from "./mods/CreateAppModal";
@@ -114,7 +114,7 @@ function HomePage() {
                         onClick={(event) => {
                           event?.preventDefault();
                           setCurrentApp(item?.appid);
-                          navigate(`/app/${item?.appid}`);
+                          navigate(`/app/${item?.appid}/${Pages.function}`);
                         }}
                       >
                         进入开发

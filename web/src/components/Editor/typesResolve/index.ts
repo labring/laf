@@ -3,9 +3,13 @@ import * as monaco from "monaco-editor";
 
 import { globalDeclare } from "./globals";
 
+import useGlobalStore from "@/pages/globalStore";
+
 async function loadPackageTypings(packageName: string) {
+  const { currentApp } = useGlobalStore.getState();
+  const url = `//${currentApp?.gateway.status.appRoute.domain}`;
   const res = await axios({
-    url: `/api/typing/package?packageName=${packageName}`,
+    url: `${url}/typing/package?packageName=${packageName}`,
     method: "GET",
   });
 

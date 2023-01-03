@@ -1,4 +1,30 @@
-# [](https://github.com/maslow/laf/compare/v1.0.0-alpha.2...v) (2022-12-24)
+# [](https://github.com/maslow/laf/compare/v1.0.0-alpha.4...v) (2023-01-01)
+
+
+
+# [1.0.0-alpha.4](https://github.com/maslow/laf/compare/v1.0.0-alpha.3...v1.0.0-alpha.4) (2023-01-01)
+
+
+### Bug Fixes
+
+* **runtime:** add func data header for debug api, support multiple-method for debug request ([#594](https://github.com/maslow/laf/issues/594)) ([db9eacd](https://github.com/maslow/laf/commit/db9eacd8015a2a4b428230456588e11f51fdcf09))
+
+
+### Features
+
+* **cli:** init cli project ([#488](https://github.com/maslow/laf/issues/488)) ([90b177f](https://github.com/maslow/laf/commit/90b177ff63697bc76591ebfbd40577adf0959acb))
+* **cli:** login and logout & update work dir ([#587](https://github.com/maslow/laf/issues/587)) ([792a0f3](https://github.com/maslow/laf/commit/792a0f31794cb44d5d3489456237080571edc50e))
+* **server:** implement pat schema & apis ([#597](https://github.com/maslow/laf/issues/597)) ([d4da55a](https://github.com/maslow/laf/commit/d4da55a9305547496a64c64e1c7c9ddbff68a36d))
+* **web:** add custom url for page ([#592](https://github.com/maslow/laf/issues/592)) ([41916f9](https://github.com/maslow/laf/commit/41916f973078926ee1556c839a8cdf9707b9cc76))
+* **web:** add function ide console panel ([#593](https://github.com/maslow/laf/issues/593)) ([03846e7](https://github.com/maslow/laf/commit/03846e759430192f86174cec6a78a29705717043))
+* **web:** adjust dependence add、remove、get interface ([#582](https://github.com/maslow/laf/issues/582)) ([7795fb1](https://github.com/maslow/laf/commit/7795fb1a739b027c53161b86612d37944b9406e0))
+* **web:** disabled upload button when fileList is empty ([#589](https://github.com/maslow/laf/issues/589)) ([5de333c](https://github.com/maslow/laf/commit/5de333c76513783b911a0094bc52a652a586a40b))
+* **web:** fix functionPannel & dataPannel ([#586](https://github.com/maslow/laf/issues/586)) ([7dcc72a](https://github.com/maslow/laf/commit/7dcc72a31745ddf47e5c47c30d59a92c243a4365))
+* **web:** impl storage page ([5c42bc6](https://github.com/maslow/laf/commit/5c42bc6e4c967a526547ac6bfb0284c658768209))
+
+
+
+# [1.0.0-alpha.3](https://github.com/maslow/laf/compare/v1.0.0-alpha.2...v1.0.0-alpha.3) (2022-12-24)
 
 
 ### Bug Fixes

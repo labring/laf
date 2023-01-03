@@ -3,7 +3,7 @@ import { Outlet, useParams } from "react-router-dom";
 import { Badge, Center, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 
-import { APP_PHASE_STATUS, SmallNavHeight } from "@/constants/index";
+import { APP_PHASE_STATUS, Pages, SmallNavHeight } from "@/constants/index";
 
 import Header from "./Header";
 
@@ -11,11 +11,13 @@ import { ApplicationControllerFindOne } from "@/apis/v1/applications";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function FunctionLayout() {
-  const { init, loading, setCurrentApp, currentApp } = useGlobalStore((state) => state);
+  const { init, loading, setCurrentApp, currentApp, setCurrentPage } = useGlobalStore(
+    (state) => state,
+  );
 
   const params = useParams();
 
-  const { appid } = params;
+  const { appid, pageId = Pages.function } = params;
 
   useQuery(
     ["getAppDetailQuery", appid],
@@ -34,8 +36,9 @@ export default function FunctionLayout() {
   useEffect(() => {
     if (currentApp?.appid) {
       init();
+      setCurrentPage(pageId);
     }
-  }, [currentApp, init]);
+  }, [currentApp, init, pageId, setCurrentPage]);
 
   return (
     <div>

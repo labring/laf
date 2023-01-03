@@ -3,8 +3,9 @@
  ***************************/
 
 import { useEffect, useState } from "react";
-import { DeleteIcon, Search2Icon } from "@chakra-ui/icons";
-import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
+import { useNavigate, useParams } from "react-router-dom";
+import { DeleteIcon } from "@chakra-ui/icons";
+import { Input } from "@chakra-ui/react";
 import { t } from "i18next";
 
 import ConfirmButton from "@/components/ConfirmButton";
@@ -12,6 +13,7 @@ import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
+import { Pages } from "@/constants";
 
 import { useDeleteFunctionMutation, useFunctionListQuery } from "../../service";
 import useFunctionStore from "../../store";
@@ -19,24 +21,36 @@ import useFunctionStore from "../../store";
 import CreateModal from "./CreateModal";
 
 import { TFunction } from "@/apis/typing";
+import useGlobalStore from "@/pages/globalStore";
 
 export default function FunctionList() {
-  const store = useFunctionStore((store) => store);
-  const { setCurrentFunction } = store;
+  const { setCurrentFunction, currentFunction, setAllFunctionList, allFunctionList } =
+    useFunctionStore((store) => store);
 
   const [keywords, setKeywords] = useState("");
 
+  const { currentApp } = useGlobalStore();
+
+  const { id: functionId } = useParams();
+  const navigate = useNavigate();
+
   useFunctionListQuery({
     onSuccess: (data) => {
-      store.setAllFunctionList(data.data);
-      if (!store.currentFunction?.id && data.data.length > 0) {
-        store.setCurrentFunction(data.data[0]);
+      setAllFunctionList(data.data);
+      if (!currentFunction?.id && data.data.length > 0) {
+        const currentFunction =
+          data.data.find((item: TFunction) => item.id === functionId) || data.data[0];
+        setCurrentFunction(currentFunction);
+        navigate(`/app/${currentApp?.appid}/${Pages.function}/${currentFunction?.name}`, {
+          replace: true,
+        });
       }
     },
   });
 
   useEffect(() => {
     return () => {
+      // clear current function
       setCurrentFunction({});
     };
   }, [setCurrentFunction]);
@@ -47,36 +61,28 @@ export default function FunctionList() {
     <Panel title={t`FunctionList`} actions={[<CreateModal key="create_modal" />]}>
       <div className="border-b border-slate-300">
         <div className="flex items-center ml-2 mb-3">
-          <InputGroup>
-            <InputLeftElement
-              height={"8"}
-              width="12"
-              pointerEvents="none"
-              children={<Search2Icon bgSize="sm" color="gray.300" />}
-            />
-            <Input
-              size="sm"
-              className="mr-2"
-              variant="filled"
-              placeholder={String(t("SearchPlacehoder"))}
-              onChange={(event) => {
-                setKeywords(event.target.value);
-              }}
-            />
-          </InputGroup>
+          <Input
+            size="sm"
+            className="mr-2"
+            placeholder={String(t("SearchPlacehoder"))}
+            onChange={(event) => {
+              setKeywords(event.target.value);
+            }}
+          />
         </div>
 
         <SectionList style={{ height: "calc(100vh - 400px)", overflowY: "auto" }}>
-          {(store.allFunctionList || [])
+          {(allFunctionList || [])
             .filter((item: TFunction) => item?.name.includes(keywords))
             .map((func: any) => {
               return (
                 <SectionList.Item
-                  isActive={func?.name === store.currentFunction?.name}
+                  isActive={func?.name === currentFunction?.name}
                   key={func?.name || ""}
                   className="group"
                   onClick={() => {
-                    store.setCurrentFunction(func);
+                    setCurrentFunction(func);
+                    navigate(`/app/${currentApp?.appid}/${Pages.function}/${func?.name}`);
                   }}
                 >
                   <div>
