@@ -269,7 +269,6 @@ func (r *GatewayReconciler) addBuckets(ctx context.Context, gateway *gatewayv1.G
 					ServiceName: user.Status.Endpoint,
 					ServicePort: 0, // If set to 0, the port is not used
 				},
-				PassHost: bucketName + "." + user.Status.Endpoint,
 			},
 		}
 
