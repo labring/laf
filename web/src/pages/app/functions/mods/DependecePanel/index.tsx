@@ -32,24 +32,31 @@ export default function DependecyList() {
               >
                 <div>
                   <FileTypeIcon type={FileType.npm} />
-                  <span className="ml-2 w-40 inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
-                    {packageItem?.name}
-                  </span>
+                  <Tooltip
+                    label={packageItem?.builtin ? "内置依赖，不可更改" : null}
+                    placement="top"
+                  >
+                    <span className="ml-2 w-40 inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
+                      {packageItem?.name}
+                    </span>
+                  </Tooltip>
                 </div>
                 <div className="text-slate-500 ">
                   <span className="w-20 inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
                     {packageItem?.spec}
                   </span>
-                  <span className="ml-5 hidden group-hover:inline-block">
-                    <Tooltip label={t("Delete").toString()} placement="top">
-                      <CloseIcon
-                        fontSize={10}
-                        onClick={() => {
-                          delPackageMutation.mutate({ name: packageItem?.name });
-                        }}
-                      />
-                    </Tooltip>
-                  </span>
+                  {!packageItem?.builtin ? (
+                    <span className="ml-5 hidden group-hover:inline-block">
+                      <Tooltip label={t("Delete").toString()} placement="top">
+                        <CloseIcon
+                          fontSize={10}
+                          onClick={() => {
+                            delPackageMutation.mutate({ name: packageItem?.name });
+                          }}
+                        />
+                      </Tooltip>
+                    </span>
+                  ) : null}
                 </div>
               </SectionList.Item>
             );

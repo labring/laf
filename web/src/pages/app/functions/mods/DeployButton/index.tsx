@@ -31,8 +31,8 @@ export default function DeployButton() {
 
   const updateFunctionMutation = useUpdateFunctionMutation();
 
-  useHotKey(
-    "p",
+  const hotKeyP = useHotKey(
+    ["p"],
     async () => {
       onOpen();
     },
@@ -70,7 +70,7 @@ export default function DeployButton() {
           onOpen();
         }}
       >
-        {t("FunctionPanel.Deploy")} (⌘ + P)
+        {t("FunctionPanel.Deploy")} ({hotKeyP})
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose} size="6xl" isCentered>

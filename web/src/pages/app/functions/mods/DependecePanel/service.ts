@@ -20,6 +20,7 @@ export type TDependenceItem = {
 export type TPackage = {
   name: string;
   spec: string;
+  builtin?: boolean;
 };
 
 const queryKeys = {

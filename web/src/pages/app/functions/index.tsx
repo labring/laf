@@ -8,8 +8,8 @@ import { t } from "i18next";
 import FunctionEditor from "@/components/Editor/FunctionEditor";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import PanelHeader from "@/components/Panel/Header";
-import { Pages } from "@/constants";
 
+// import { Pages } from "@/constants";
 import LeftPanel from "../mods/LeftPanel";
 import RightPanel from "../mods/RightPanel";
 
@@ -22,25 +22,25 @@ import FunctionPanel from "./mods/FunctionPanel";
 import useFunctionStore from "./store";
 
 import useFunctionCache from "@/hooks/useFuncitonCache";
-import useHotKey from "@/hooks/useHotKey";
-import useGlobalStore from "@/pages/globalStore";
+// import useHotKey from "@/hooks/useHotKey";
+// import useGlobalStore from "@/pages/globalStore";
 
 function FunctionPage() {
-  const globalStore = useGlobalStore((state) => state);
+  // const globalStore = useGlobalStore((state) => state);
   const store = useFunctionStore((store) => store);
   const { currentFunction, updateFunctionCode } = store;
 
   const functionCache = useFunctionCache();
 
-  useHotKey(
-    "s",
-    async () => {
-      // showInfo("已开启自动保存");
-    },
-    {
-      enabled: globalStore.currentPageId === Pages.function,
-    },
-  );
+  // useHotKey(
+  //   "s",
+  //   async () => {
+  //     // showInfo("已开启自动保存");
+  //   },
+  //   {
+  //     enabled: globalStore.currentPageId === Pages.function,
+  //   },
+  // );
 
   return (
     <>
