@@ -49,15 +49,17 @@ const AddDepenceModal = () => {
   const [packageList, setPackageList] = useState<TDependenceItem[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   usePackageQuery((data) => {
-    const newList = (data || []).map((item: any) => {
-      return {
-        package: {
-          name: item.name,
-          version: item.spec,
-        },
-        versions: [],
-      };
-    });
+    const newList = (data || [])
+      .filter((item: any) => !item.builtin)
+      .map((item: any) => {
+        return {
+          package: {
+            name: item.name,
+            version: item.spec,
+          },
+          versions: [],
+        };
+      });
     setPackageList(newList);
   });
 
@@ -91,7 +93,7 @@ const AddDepenceModal = () => {
       setIsShowChecked(false);
       setName(val);
     }, 1000),
-    [],
+    [setIsShowChecked, setName],
   );
 
   const initModal = () => {

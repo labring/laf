@@ -21,6 +21,7 @@ export default function FileList() {
   const { getList, getFileUrl, deleteFile } = useAwsS3();
   const { currentStorage, prefix, setPrefix } = useStorageStore();
   const bucketName = currentStorage?.metadata.name;
+  // const bucketType = currentStorage?.spec.policy;
 
   const query = useQuery(
     ["fileList", bucketName],
@@ -32,15 +33,16 @@ export default function FileList() {
 
   useEffect(() => {
     query.refetch();
-  }, [bucketName, prefix]);
+  }, [bucketName, prefix, query]);
 
   const viewAppFile = (file: TFile) => {
     if (file.Prefix) {
       changeDirectory(file);
       return;
     }
-
-    window.open(getFileUrl(bucketName!, file.Key), "_blank");
+    // const fileUrl = bucketType === 'private' ? getFileUrl(bucketName!, file.Key) : `http://${bucketName}.oss.dev.laf.run/${file.Key}`;
+    const fileUrl = getFileUrl(bucketName!, file.Key);
+    window.open(fileUrl, "_blank");
   };
 
   const changeDirectory = (file: TFile) => {
@@ -59,7 +61,7 @@ export default function FileList() {
         <HStack spacing={12}>
           <span>容量： {currentStorage?.spec.storage} </span>
           <span>已用： {currentStorage?.status?.capacity?.storage} </span>
-          <span>文件数： {currentStorage?.status?.capacity?.objectCount} </span>
+          {/* <span>文件数： {currentStorage?.status?.capacity?.objectCount} </span> */}
         </HStack>
       </PanelHeader>
       <div className="px-2 pb-20 h-full overflow-auto">
@@ -98,12 +100,12 @@ export default function FileList() {
                           }}
                         >
                           {file.Prefix ? (
-                            <a
+                            <span
                               className="cursor-pointer text-blue-700 underline"
                               onClick={() => changeDirectory(file)}
                             >
                               {dirName[dirName.length - 2]}
-                            </a>
+                            </span>
                           ) : (
                             fileName[fileName.length - 1]
                           )}
@@ -114,7 +116,12 @@ export default function FileList() {
                           {file.LastModified ? formatDate(file.LastModified) : "--"}
                         </Td>
                         <Td isNumeric className="flex justify-end">
-                          <IconWrap onClick={() => viewAppFile(file)}>
+                          <IconWrap
+                            placement="left"
+                            // tooltip={bucketType === 'private' && file.Key ? '临时链接,有效期15分钟' : undefined}
+                            tooltip="临时链接,有效期15分钟"
+                            onClick={() => viewAppFile(file)}
+                          >
                             <ViewIcon fontSize={12} />
                           </IconWrap>
                           {!file.Prefix ? (

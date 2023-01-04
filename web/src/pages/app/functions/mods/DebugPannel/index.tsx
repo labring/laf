@@ -4,8 +4,6 @@ import {
   Button,
   Center,
   Input,
-  InputGroup,
-  InputRightElement,
   Select,
   Spinner,
   Tab,
@@ -21,6 +19,7 @@ import CopyText from "@/components/CopyText";
 import JsonEditor from "@/components/Editor/JsonEditor";
 import PanelHeader from "@/components/Panel/Header";
 import { Pages } from "@/constants";
+import { formatHotKeyModifier } from "@/utils/format";
 
 import { useCompileMutation } from "../../service";
 import useFunctionStore from "../../store";
@@ -47,17 +46,7 @@ export default function DebugPanel() {
   const [params, setParams] = useState(JSON.stringify({ name: "test" }, null, 2));
 
   useHotKey(
-    "r",
-    () => {
-      runningCode();
-    },
-    {
-      enabled: globalStore.currentPageId === Pages.function,
-    },
-  );
-
-  useHotKey(
-    "s",
+    ["r", "s"],
     () => {
       runningCode();
     },
@@ -108,7 +97,7 @@ export default function DebugPanel() {
       <Tabs width="100%">
         <TabList>
           <Tab>接口调试</Tab>
-          <Tab>历史请求</Tab>
+          {/* <Tab>历史请求</Tab> */}
         </TabList>
 
         <TabPanels h="full">
@@ -133,12 +122,9 @@ export default function DebugPanel() {
                       );
                     })}
                   </Select>
-                  <InputGroup className="ml-2">
+                  <CopyText className="ml-2" text={getFunctionDebugUrl()}>
                     <Input size="sm" readOnly rounded={4} value={getFunctionDebugUrl()} />
-                    <InputRightElement>
-                      <CopyText text={getFunctionDebugUrl()} className="mb-2" />
-                    </InputRightElement>
-                  </InputGroup>
+                  </CopyText>
                   <Button
                     style={{ borderRadius: 2 }}
                     size="sm"
@@ -149,7 +135,7 @@ export default function DebugPanel() {
                     colorScheme="green"
                     isLoading={isLoading}
                   >
-                    {t("FunctionPanel.Debug")} (⌘ + R)
+                    {t("FunctionPanel.Debug")} ({formatHotKeyModifier()}+R)
                   </Button>
                 </div>
                 <div className="mx-2 pb-2 mb-2">调用参数:</div>
@@ -179,7 +165,7 @@ export default function DebugPanel() {
               </div>
             </div>
           </TabPanel>
-          <TabPanel padding={0}>to be continued...</TabPanel>
+          {/* <TabPanel padding={0}>to be continued...</TabPanel> */}
         </TabPanels>
       </Tabs>
     </div>
