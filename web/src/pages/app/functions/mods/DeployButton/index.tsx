@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Button,
   Modal,
@@ -73,33 +72,35 @@ export default function DeployButton() {
         {t("FunctionPanel.Deploy")} ({hotKeyP})
       </Button>
 
-      <Modal isOpen={isOpen} onClose={onClose} size="6xl" isCentered>
-        <ModalOverlay />
-        <ModalContent maxW={"80%"}>
-          <ModalHeader>Code Diff</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody borderBottom={"1px"} borderBottomColor="gray.200">
-            <CommonDiffEditor
-              original={store.currentFunction.source?.code}
-              modified={functionCache.getCache(store.currentFunction.id)}
-            />
-          </ModalBody>
+      {isOpen ? (
+        <Modal isOpen={isOpen} onClose={onClose} size="6xl" isCentered>
+          <ModalOverlay />
+          <ModalContent maxW={"80%"}>
+            <ModalHeader>Code Diff</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody borderBottom={"1px"} borderBottomColor="gray.200">
+              <CommonDiffEditor
+                original={store.currentFunction?.source?.code}
+                modified={functionCache.getCache(store.currentFunction?.id)}
+              />
+            </ModalBody>
 
-          <ModalFooter>
-            <Button mr={3} onClick={onClose}>
-              {t("Cancel")}
-            </Button>
-            <Button
-              colorScheme={"blue"}
-              onClick={() => {
-                deploy();
-              }}
-            >
-              {t("Common.Dialog.ConfirmDeploy")}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+            <ModalFooter>
+              <Button mr={3} onClick={onClose}>
+                {t("Cancel")}
+              </Button>
+              <Button
+                colorScheme={"blue"}
+                onClick={() => {
+                  deploy();
+                }}
+              >
+                {t("Common.Dialog.ConfirmDeploy")}
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      ) : null}
     </>
   );
 }

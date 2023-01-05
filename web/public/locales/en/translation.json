@@ -9,5 +9,16 @@
   "Cancel": "Cancel",
   "Edit": "Edit",
   "Delete": "Delete",
-  "CreateTime": "CreateTime"
+  "CreateTime": "CreateTime",
+  "Common": {
+    "Dialog": {
+      "ConfirmDeploy": "Confirm Deploy"
+    }
+  },
+  "FunctionPanel": {
+    "Deploy": "Deploy"
+  },
+  "Message": {
+    "DeploySuccess": "Published successfully"
+  }
 }
