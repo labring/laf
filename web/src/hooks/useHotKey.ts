@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 
-import { formatHotKeyModifier } from "@/utils/format";
+import { getWhiteList, stringToCode } from "@/utils/hotKeyMap";
 function useHotKey(
   keyMap: string[],
   trigger: () => void,
@@ -10,54 +10,60 @@ function useHotKey(
     enabled: true,
   },
 ) {
-  const pressKey = useRef<any>(null);
-  const timeout = useRef<any>(null);
+  const downKeys = useRef<Set<Number>>(new Set());
+  const upKeys = useRef<Set<Number>>(new Set());
 
   const handleKeyDown = useCallback(
     (event: any) => {
       if (event.repeat) {
         return;
       }
-      if (keyMap.indexOf(event.key) > -1 && (event.ctrlKey || event.metaKey)) {
+      if ((event.ctrlKey || event.metaKey) && getWhiteList().indexOf(event.keyCode) !== -1) {
         event.preventDefault();
-        pressKey.current = event.key;
-        if (timeout.current === null) {
-          timeout.current = setTimeout(() => {
-            // trigger the event if there is no change within 100ms
-            if (pressKey.current === event.key) {
-              trigger();
-            }
-            clearTimeout(timeout.current);
-            timeout.current = null;
-            pressKey.current = null;
-          }, 100);
+      }
+      downKeys.current.add(event.keyCode);
+    },
+    [downKeys],
+  );
+
+  const handleKeyUp = useCallback(
+    (event: any) => {
+      upKeys.current.add(event.keyCode);
+      const size = downKeys.current.size;
+      if (upKeys.current.size >= size) {
+        let isMatch = false;
+        for (let i = 0; i < keyMap.length && !isMatch; i++) {
+          const targetKey = keyMap[i].split("+").map((item) => stringToCode(item));
+          if (targetKey.length !== size) continue;
+          let count = size;
+          for (let item of targetKey) {
+            if (downKeys.current.has(item)) count--;
+          }
+          isMatch = count === 0;
         }
+        if (isMatch) {
+          trigger();
+        }
+        downKeys.current.clear();
+        upKeys.current.clear();
       }
     },
-    [keyMap, trigger],
+    [keyMap, trigger, downKeys, upKeys],
   );
 
   useEffect(() => {
     // attach the event listener
     if (config?.enabled) {
       document.addEventListener("keydown", handleKeyDown);
+      document.addEventListener("keyup", handleKeyUp);
     }
 
     // remove the event listener
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keyup", handleKeyUp);
     };
-  }, [config?.enabled, handleKeyDown]);
-
-  // return shortcut key text ,if keyMap has more than two items will format [../..]
-  const res = `${formatHotKeyModifier()} + 
-      ${
-        keyMap.length > 1
-          ? "[" + keyMap.map((item) => item.toUpperCase()).join("/") + "]"
-          : keyMap[0].toUpperCase()
-      }`;
-
-  return res;
+  }, [config?.enabled, handleKeyDown, handleKeyUp]);
 }
 
 export default useHotKey;
