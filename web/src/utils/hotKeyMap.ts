@@ -83,6 +83,6 @@ export function stringToCode(x: string) {
 }
 
 export function getWhiteList() {
-  const whiteList = ["c", "v"];
+  const whiteList = ["s", "r", "p"];
   return whiteList.map((item: string) => stringToCode(item));
 }

@@ -18,7 +18,7 @@ function useHotKey(
       if (event.repeat) {
         return;
       }
-      if ((event.ctrlKey || event.metaKey) && getWhiteList().indexOf(event.keyCode) === -1) {
+      if ((event.ctrlKey || event.metaKey) && getWhiteList().indexOf(event.keyCode) !== -1) {
         event.preventDefault();
       }
       downKeys.current.add(event.keyCode);
