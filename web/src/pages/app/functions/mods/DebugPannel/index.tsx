@@ -46,7 +46,7 @@ export default function DebugPanel() {
   const [params, setParams] = useState(JSON.stringify({ name: "test" }, null, 2));
 
   useHotKey(
-    ["r", "s"],
+    [`${formatHotKeyModifier()}+r`, `${formatHotKeyModifier()}+s`],
     () => {
       runningCode();
     },

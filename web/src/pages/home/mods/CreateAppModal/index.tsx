@@ -100,7 +100,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>新建应用</ModalHeader>
+          <ModalHeader>{isEdit ? "编辑应用" : "新建应用"}</ModalHeader>
           <ModalCloseButton />
 
           <ModalBody pb={6}>

@@ -13,6 +13,7 @@ import { t } from "i18next";
 
 import CommonDiffEditor from "@/components/Editor/CommonDiffEditor";
 import { Pages } from "@/constants";
+import { formatHotKeyModifier } from "@/utils/format";
 
 import { useUpdateFunctionMutation } from "../../service";
 import useFunctionStore from "../../store";
@@ -30,8 +31,8 @@ export default function DeployButton() {
 
   const updateFunctionMutation = useUpdateFunctionMutation();
 
-  const hotKeyP = useHotKey(
-    ["p"],
+  useHotKey(
+    [`${formatHotKeyModifier()}+p`],
     async () => {
       onOpen();
     },
@@ -69,7 +70,7 @@ export default function DeployButton() {
           onOpen();
         }}
       >
-        {t("FunctionPanel.Deploy")} ({hotKeyP})
+        {t("FunctionPanel.Deploy")} ({`${formatHotKeyModifier()}+P`})
       </Button>
 
       {isOpen ? (
