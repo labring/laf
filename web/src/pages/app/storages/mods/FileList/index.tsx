@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { DeleteIcon, ViewIcon } from "@chakra-ui/icons";
 import { HStack, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
@@ -24,16 +23,12 @@ export default function FileList() {
   // const bucketType = currentStorage?.spec.policy;
 
   const query = useQuery(
-    ["fileList", bucketName],
+    ["fileList", bucketName, prefix],
     () => getList(bucketName, { marker: "", prefix }),
     {
       enabled: !!bucketName,
     },
   );
-
-  useEffect(() => {
-    query.refetch();
-  }, [bucketName, prefix, query]);
 
   const viewAppFile = (file: TFile) => {
     if (file.Prefix) {

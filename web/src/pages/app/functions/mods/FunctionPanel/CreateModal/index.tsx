@@ -73,15 +73,14 @@ const CreateModal = (props: { functionItem?: any }) => {
     let res: any = {};
     if (isEdit) {
       res = await updateFunctionMutation.mutateAsync(data);
-      store.setCurrentFunction(res.data);
     } else {
       res = await createFuncitonMutation.mutateAsync(data);
-      store.setCurrentFunction(res.data);
     }
 
     if (!res.error) {
       showSuccess(isEdit ? "update success" : "create success");
       onClose();
+      store.setCurrentFunction(res.data);
       reset(defaultValues);
     }
   };
@@ -126,7 +125,12 @@ const CreateModal = (props: { functionItem?: any }) => {
 
               <FormControl>
                 <FormLabel htmlFor="description">函数描述</FormLabel>
-                <Input id="description" placeholder="函数描述" variant="filled" />
+                <Input
+                  {...register("description")}
+                  id="description"
+                  placeholder="函数描述"
+                  variant="filled"
+                />
               </FormControl>
 
               <FormControl isInvalid={!!errors?.websocket}>
