@@ -27,7 +27,7 @@ export class ApplicationService {
         name: APPLICATION_SECRET_KEY,
         value: GenerateAlphaNumericPassword(64),
       }
-      const appid = this.generateAppID(ServerConfig.APPID_LENGTH)
+      const appid = await this.tryGenerateUniqueAppid()
 
       const data: Prisma.ApplicationCreateInput = {
         name: dto.name,
@@ -145,7 +145,7 @@ export class ApplicationService {
     }
   }
 
-  generateAppID(len: number) {
+  private generateAppID(len: number) {
     len = len || 6
 
     // ensure prefixed with letter
@@ -154,5 +154,24 @@ export class ApplicationService {
     const prefix = nanoid.customAlphabet(only_alpha, 1)()
     const nano = nanoid.customAlphabet(alphanumeric, len - 1)
     return prefix + nano()
+  }
+
+  /**
+   * Generate unique application id
+   * @returns
+   */
+  async tryGenerateUniqueAppid() {
+    for (let i = 0; i < 10; i++) {
+      const appid = this.generateAppID(ServerConfig.APPID_LENGTH)
+      const existed = await this.prisma.application.findUnique({
+        where: { appid },
+        select: { appid: true },
+      })
+      if (!existed) {
+        return appid
+      }
+    }
+
+    throw new Error('Generate appid failed')
   }
 }

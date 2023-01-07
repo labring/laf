@@ -8,10 +8,12 @@ import { InstanceService } from '../instance/instance.service'
 import { JwtService } from '@nestjs/jwt'
 import { FunctionService } from '../function/function.service'
 import { StorageService } from '../storage/storage.service'
+import { EnvironmentVariableService } from './environment.service'
+import { EnvironmentVariableController } from './environment.controller'
 
 @Module({
   imports: [CoreModule],
-  controllers: [ApplicationController],
+  controllers: [ApplicationController, EnvironmentVariableController],
   providers: [
     ApplicationService,
     PrismaService,
@@ -20,6 +22,7 @@ import { StorageService } from '../storage/storage.service'
     JwtService,
     FunctionService,
     StorageService,
+    EnvironmentVariableService,
   ],
   exports: [ApplicationService],
 })
