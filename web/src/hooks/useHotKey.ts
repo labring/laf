@@ -1,6 +1,30 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect } from "react";
 
-import { getWhiteList, stringToCode } from "@/utils/hotKeyMap";
+const isWin = /windows/i.test(navigator.userAgent.toLowerCase());
+const MODIFY_KEY = {
+  // common meta key, support win & mac
+  metaKey: isWin ? "Control" : "Meta",
+  // shift key
+  shiftKey: "Shift",
+  // alt key
+  altKey: "Alt",
+  // control key
+  ctrlKey: "Control",
+};
+
+export function getDispalyString(str: string) {
+  return str.replace(/Meta/g, "⌘").replaceAll("Control", "Ctrl");
+}
+
+export const DEFAULT_SHORTCUTS = {
+  send_request: [`${MODIFY_KEY.metaKey}+s`, `${MODIFY_KEY.metaKey}+r`],
+  deploy: [`${MODIFY_KEY.metaKey}+p`],
+};
+
+export function getWhiteListKeys() {
+  return ["s", "r", "p"];
+}
+
 function useHotKey(
   keyMap: string[],
   trigger: () => void,
@@ -9,61 +33,43 @@ function useHotKey(
   } = {
     enabled: true,
   },
-) {
-  const downKeys = useRef<Set<Number>>(new Set());
-  const upKeys = useRef<Set<Number>>(new Set());
-
+): { displayName: string } {
   const handleKeyDown = useCallback(
     (event: any) => {
-      if (event.repeat) {
+      if (getWhiteListKeys().indexOf(event.key) < 0) {
         return;
       }
-      if ((event.ctrlKey || event.metaKey) && getWhiteList().indexOf(event.keyCode) !== -1) {
-        event.preventDefault();
-      }
-      downKeys.current.add(event.keyCode);
-    },
-    [downKeys],
-  );
 
-  const handleKeyUp = useCallback(
-    (event: any) => {
-      upKeys.current.add(event.keyCode);
-      const size = downKeys.current.size;
-      if (upKeys.current.size >= size) {
-        let isMatch = false;
-        for (let i = 0; i < keyMap.length && !isMatch; i++) {
-          const targetKey = keyMap[i].split("+").map((item) => stringToCode(item));
-          if (targetKey.length !== size) continue;
-          let count = size;
-          for (let item of targetKey) {
-            if (downKeys.current.has(item)) count--;
-          }
-          isMatch = count === 0;
-        }
-        if (isMatch) {
-          trigger();
-        }
-        downKeys.current.clear();
-        upKeys.current.clear();
+      let _k: string[] = [];
+      event.metaKey && _k.push(MODIFY_KEY.metaKey);
+      event.ctrlKey && _k.push(MODIFY_KEY.ctrlKey);
+      event.shiftKey && _k.push(MODIFY_KEY.shiftKey);
+      event.altKey && _k.push(MODIFY_KEY.altKey);
+      _k.push(event.key);
+
+      if (keyMap.indexOf(_k.join("+")) >= 0) {
+        event.preventDefault();
+        trigger();
       }
     },
-    [keyMap, trigger, downKeys, upKeys],
+    [keyMap, trigger],
   );
 
   useEffect(() => {
     // attach the event listener
     if (config?.enabled) {
       document.addEventListener("keydown", handleKeyDown);
-      document.addEventListener("keyup", handleKeyUp);
     }
 
     // remove the event listener
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      document.removeEventListener("keyup", handleKeyUp);
     };
-  }, [config?.enabled, handleKeyDown, handleKeyUp]);
+  }, [config?.enabled, handleKeyDown]);
+
+  return {
+    displayName: getDispalyString(keyMap[0]),
+  };
 }
 
 export default useHotKey;

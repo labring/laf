@@ -32,16 +32,6 @@ function FunctionPage() {
 
   const functionCache = useFunctionCache();
 
-  // useHotKey(
-  //   "s",
-  //   async () => {
-  //     // showInfo("已开启自动保存");
-  //   },
-  //   {
-  //     enabled: globalStore.currentPageId === Pages.function,
-  //   },
-  // );
-
   return (
     <>
       <LeftPanel>

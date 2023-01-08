@@ -13,13 +13,12 @@ import { t } from "i18next";
 
 import CommonDiffEditor from "@/components/Editor/CommonDiffEditor";
 import { Pages } from "@/constants";
-import { formatHotKeyModifier } from "@/utils/format";
 
 import { useUpdateFunctionMutation } from "../../service";
 import useFunctionStore from "../../store";
 
 import useFunctionCache from "@/hooks/useFuncitonCache";
-import useHotKey from "@/hooks/useHotKey";
+import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function DeployButton() {
@@ -31,8 +30,8 @@ export default function DeployButton() {
 
   const updateFunctionMutation = useUpdateFunctionMutation();
 
-  useHotKey(
-    [`${formatHotKeyModifier()}+p`],
+  const { displayName } = useHotKey(
+    DEFAULT_SHORTCUTS.deploy,
     async () => {
       onOpen();
     },
@@ -70,7 +69,7 @@ export default function DeployButton() {
           onOpen();
         }}
       >
-        {t("FunctionPanel.Deploy")} ({`${formatHotKeyModifier()}+P`})
+        {t("FunctionPanel.Deploy")} ({displayName.toUpperCase()})
       </Button>
 
       {isOpen ? (
