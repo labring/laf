@@ -19,13 +19,12 @@ import CopyText from "@/components/CopyText";
 import JsonEditor from "@/components/Editor/JsonEditor";
 import PanelHeader from "@/components/Panel/Header";
 import { Pages } from "@/constants";
-import { formatHotKeyModifier } from "@/utils/format";
 
 import { useCompileMutation } from "../../service";
 import useFunctionStore from "../../store";
 
 import useFunctionCache from "@/hooks/useFuncitonCache";
-import useHotKey from "@/hooks/useHotKey";
+import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function DebugPanel() {
@@ -45,8 +44,8 @@ export default function DebugPanel() {
 
   const [params, setParams] = useState(JSON.stringify({ name: "test" }, null, 2));
 
-  useHotKey(
-    [`${formatHotKeyModifier()}+r`, `${formatHotKeyModifier()}+s`],
+  const { displayName } = useHotKey(
+    DEFAULT_SHORTCUTS.send_request,
     () => {
       runningCode();
     },
@@ -135,7 +134,7 @@ export default function DebugPanel() {
                     colorScheme="green"
                     isLoading={isLoading}
                   >
-                    {t("FunctionPanel.Debug")} ({formatHotKeyModifier()}+R)
+                    {t("FunctionPanel.Debug")} ({displayName.toUpperCase()})
                   </Button>
                 </div>
                 <div className="mx-2 pb-2 mb-2">调用参数:</div>

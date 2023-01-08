@@ -21,8 +21,3 @@ export function formatCapacity(capacity: string) {
   const num = capacity.split("Gi")[0];
   return parseInt(num, 10);
 }
-
-export function formatHotKeyModifier() {
-  const isWin = /windows/i.test(navigator.userAgent.toLowerCase());
-  return isWin ? "Ctrl" : "⌘";
-}
