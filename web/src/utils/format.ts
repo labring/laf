@@ -21,3 +21,31 @@ export function formatCapacity(capacity: string) {
   const num = capacity.split("Gi")[0];
   return parseInt(num, 10);
 }
+
+export function formatDateOption(): { label: string; value: number | string }[] {
+  const optionDay = [7, 30, 60, 90];
+  const option: { label: string; value: string | number }[] = optionDay.map((item) => {
+    return {
+      label: `${item}天`,
+      value: item * 24 * 60 * 60,
+    };
+  });
+  option.push({ label: "自定义", value: "custom" });
+  return option;
+}
+
+// value : Second
+export function addDateByValue(date: Date, value: number) {
+  let newNum = date.setTime(date.getTime() + value * 1000);
+  return new Date(newNum);
+}
+
+export function isExitInList(targetKey: string, targetValue: any, list: any[] | undefined) {
+  const indexList: number[] = [];
+  (list || []).forEach((item: any, index: number) => {
+    if (item[targetKey] === targetValue) {
+      indexList.push(index);
+    }
+  });
+  return indexList;
+}

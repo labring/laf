@@ -46,7 +46,7 @@ const ConfirmButton = ({ onSuccessAction, headerText, bodyText, children }: Conf
 
           <AlertDialogFooter>
             <Button ref={cancelRef} onClick={onClose} className="mr-3">
-              Cancel
+              取消
             </Button>
             <Button colorScheme={"red"} onClick={onSubmit}>
               删除
