@@ -33,10 +33,11 @@ function JsonEditor(props: { value: string; onChange?: (value: string | undefine
         onChange(editorRef.current?.getValue());
       });
     }
-  }, [onChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
-    if (monacoEl && editorRef.current) {
+    if (monacoEl && editorRef.current && value !== editorRef.current?.getValue()) {
       editorRef.current?.getModel()?.setValue(value);
     }
   }, [value]);
