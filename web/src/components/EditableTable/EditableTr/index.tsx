@@ -7,6 +7,8 @@ import styles from "../index.module.scss";
 
 export type TConfiguration = {
   key: string;
+  tableHeight?: string;
+  hiddenEditButton?: boolean;
   addButtonText?: string;
   editButtonText?: string;
   deleteButtonText?: string;

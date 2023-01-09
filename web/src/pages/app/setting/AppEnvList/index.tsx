@@ -1,3 +1,5 @@
+import { Button } from "@chakra-ui/react";
+
 import EditableTable from "@/components/EditableTable";
 import { isExitInList } from "@/utils/format";
 
@@ -8,7 +10,10 @@ import {
   useEnvironmentQuery,
 } from "./service";
 
-const AppEnvList = () => {
+import useGlobalStore from "@/pages/globalStore";
+
+const AppEnvList = (props: { onClose?: () => {} }) => {
+  const globalStore = useGlobalStore((state) => state);
   const environmentQuery = useEnvironmentQuery();
   const delEnvironmentMutation = useDelEnvironmentMutation();
   const addEnvironmentMutation = useAddEnvironmentMutation();
@@ -22,6 +27,7 @@ const AppEnvList = () => {
               key: "name",
               width: "200px",
               textWidth: "40",
+              editable: false,
               valiate: [
                 (data: any) => {
                   return {
@@ -59,6 +65,7 @@ const AppEnvList = () => {
             },
           ]}
           configuration={{
+            tableHeight: "200px",
             key: "name",
             addButtonText: "新增环境变量",
           }}
@@ -67,6 +74,17 @@ const AppEnvList = () => {
           onDelete={(data) => delEnvironmentMutation.mutateAsync({ name: data })}
           onCreate={(data) => addEnvironmentMutation.mutateAsync(data)}
         />
+        <Button
+          className="w-28 h-8 self-end mt-4"
+          colorScheme="blue"
+          type="submit"
+          onClick={() => {
+            globalStore.restartCurrentApp();
+            props.onClose && props.onClose();
+          }}
+        >
+          应用环境变量
+        </Button>
       </div>
     </>
   );

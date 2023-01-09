@@ -31,13 +31,13 @@ export const usePATQuery = (callback?: (data: any) => void) => {
   );
 };
 
-export const useAddPATMutation = (callback?: () => void) => {
+export const useAddPATMutation = (callback?: (data: any) => void) => {
   const queryClient = useQueryClient();
   return useMutation((params: TPAT) => AuthControllerPATsCreate(params), {
-    onSuccess: async () => {
+    onSuccess: async (data) => {
       useGlobalStore.getState().showSuccess("update PAT success");
       await queryClient.invalidateQueries(queryKeys.usePATQuery);
-      callback && callback();
+      callback && callback(data?.data);
     },
   });
 };

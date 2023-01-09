@@ -2,7 +2,6 @@ import { Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 
 import SettingModal from "@/pages/app/setting";
 import PATList from "@/pages/app/setting/PATList";
-
 export default function UserSetting(props: { avator: string; width: number }) {
   return (
     <Menu>
@@ -22,7 +21,15 @@ export default function UserSetting(props: { avator: string; width: number }) {
         >
           <MenuItem>用户设置</MenuItem>
         </SettingModal>
-        <MenuItem>Logout</MenuItem>
+        <MenuItem
+          onClick={() => {
+            localStorage.clear();
+            (window as any).location.href = (import.meta.env.VITE_SERVER_URL +
+              "/v1/login") as string;
+          }}
+        >
+          Logout
+        </MenuItem>
       </MenuList>
     </Menu>
   );

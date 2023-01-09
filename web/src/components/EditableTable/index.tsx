@@ -66,7 +66,7 @@ const EditableTable = function (props: {
   return (
     <>
       <div className="px-4 py-1 mb-2 rounded-md relative border">
-        <TableContainer h={"250px"} overflowY="auto" ref={tableRef}>
+        <TableContainer h={configuration?.tableHeight || "250px"} overflowY="auto" ref={tableRef}>
           <Table variant="simple">
             <Thead>
               <Tr>
