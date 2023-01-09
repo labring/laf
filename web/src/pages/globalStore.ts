@@ -24,7 +24,6 @@ type State = {
   currentApp: TApplication | undefined;
   setCurrentApp(app: TApplication): void;
   init(appid?: string): void;
-
   restartCurrentApp(): void;
 
   currentPageId: string | undefined;

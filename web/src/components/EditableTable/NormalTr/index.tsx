@@ -29,11 +29,13 @@ const NormalTr = function (props: {
           {configuration?.operationButtonsRender
             ? configuration.operationButtonsRender(data)
             : null}
-          <TextButton
-            className="ml-4"
-            text={configuration?.editButtonText ? configuration.editButtonText : "编辑"}
-            onClick={() => onEdit(data[configuration.key])}
-          />
+          {!configuration?.hiddenEditButton ? (
+            <TextButton
+              className="mr-4"
+              text={configuration?.editButtonText ? configuration.editButtonText : "编辑"}
+              onClick={() => onEdit(data[configuration.key])}
+            />
+          ) : null}
           <ConfirmButton
             onSuccessAction={() => onDelete(data[configuration.key])}
             headerText={
@@ -42,7 +44,6 @@ const NormalTr = function (props: {
             bodyText={`确定删除该行数据吗?`}
           >
             <TextButton
-              className="ml-4"
               text={
                 configuration?.deleteButtonText
                   ? configuration.deleteButtonText

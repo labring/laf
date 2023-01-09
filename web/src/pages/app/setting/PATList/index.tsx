@@ -10,7 +10,7 @@ import { TPAT, useAddPATMutation, useDelPATMutation, usePATQuery } from "./servi
 
 const PATList = () => {
   const [formatPATList, setFormatPATList] = useState<TPAT[]>();
-
+  const [tokenList, setTokenList] = useState<{ id: string; token: string }[]>([]);
   usePATQuery((data) => {
     const newPATList = (data || []).map((item: any) => {
       return {
@@ -21,8 +21,20 @@ const PATList = () => {
     setFormatPATList(newPATList);
   });
 
-  const delPATMutation = useDelPATMutation();
-  const addPATMutation = useAddPATMutation();
+  const delPATMutation = useDelPATMutation(() => {
+    // const newTokenList = newTokenList.map((token) => {
+    //   return token.id !==
+    // });
+    // setTokenList(newTokenList);
+  });
+  const addPATMutation = useAddPATMutation((data: any) => {
+    const newTokenList = [...tokenList];
+    newTokenList.push({
+      id: data.id,
+      token: data.token,
+    });
+    setTokenList(newTokenList);
+  });
 
   const now = new Date();
   const dateList = formatDateOption();
@@ -64,21 +76,29 @@ const PATList = () => {
           ]}
           configuration={{
             key: "id",
+            hiddenEditButton: true,
             addButtonText: "新增Token",
             saveButtonText: "生成Token",
             operationButtonsRender: (data: any) => {
-              return (
-                <CopyText text={data.name} tip="name复制成功">
+              const tokenItem = tokenList?.filter((item) => item.id === data.id);
+              return tokenItem?.length === 1 ? (
+                <CopyText className="mr-4" text={tokenItem[0].token} tip="token复制成功">
                   <Button variant={"link"} size="xs" colorScheme={"blue"}>
-                    复制name
+                    复制Token
                   </Button>
                 </CopyText>
-              );
+              ) : null;
             },
           }}
           tableData={formatPATList}
-          onEdit={(data) => addPATMutation.mutateAsync(data)}
-          onDelete={(data) => delPATMutation.mutateAsync({ id: data })}
+          onEdit={async () => {}}
+          onDelete={async (data) => {
+            await delPATMutation.mutateAsync({ id: data });
+            const newTokenList = tokenList.filter((token) => {
+              return token.id !== data;
+            });
+            setTokenList(newTokenList);
+          }}
           onCreate={(data) =>
             addPATMutation.mutateAsync({ ...data, expiresIn: Number(data.expiresIn) })
           }

@@ -61,7 +61,9 @@ const SettingModal = (props: {
                 <h3 className="ml-2 pb-2 mb-4 font-bold border-gray-200 border-b border-solid">
                   {item?.name}
                 </h3>
-                {item?.component}
+                {React.cloneElement(item?.component || <></>, {
+                  onClose,
+                })}
               </div>
             </div>
           </ModalBody>
