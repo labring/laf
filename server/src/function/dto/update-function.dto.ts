@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { HttpMethod } from '@prisma/client'
 import {
+  IsArray,
   IsBoolean,
   IsIn,
   IsNotEmpty,
@@ -27,6 +28,13 @@ export class UpdateFunctionDto {
   @IsString()
   @MaxLength(1024 * 512)
   code: string
+
+  @ApiPropertyOptional({ type: [String] })
+  @IsString({ each: true })
+  @IsArray()
+  @MaxLength(16, { each: true })
+  @IsNotEmpty({ each: true })
+  tags: string[]
 
   validate() {
     return null
