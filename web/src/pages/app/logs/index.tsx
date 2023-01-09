@@ -30,6 +30,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import CopyText from "@/components/CopyText";
 import Pagination from "@/components/Pagination";
+import TextButton from "@/components/TextButton";
 import { formatDate } from "@/utils/format";
 import getPageInfo from "@/utils/getPageInfo";
 
@@ -168,17 +169,13 @@ export default function LogsPage() {
                         </pre>
                       </Td>
                       <Td width={"100px"}>
-                        <Button
-                          variant={"link"}
-                          size="xs"
-                          colorScheme={"blue"}
+                        <TextButton
+                          text="查看"
                           onClick={() => {
                             setDetail(item);
                             onOpen();
                           }}
-                        >
-                          查看
-                        </Button>
+                        />
                       </Td>
                     </Tr>
                   );

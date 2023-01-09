@@ -7,6 +7,7 @@ export const Pages = {
   storage: "storage",
   database: "database",
   logs: "logs",
+  setting: "setting",
 };
 
 export enum APP_STATUS {

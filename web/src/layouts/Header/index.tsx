@@ -11,6 +11,8 @@ import { SmallNavHeight } from "@/constants/index";
 
 import IconWrap from "../../components/IconWrap";
 
+import UserSetting from "./UserSetting";
+
 import useGlobalStore from "@/pages/globalStore";
 
 export default function Header(props: { size: "sm" | "lg" }) {
@@ -49,7 +51,7 @@ export default function Header(props: { size: "sm" | "lg" }) {
         >
           <GrGithub fontSize={18} className="cursor-pointer" />
         </IconWrap>
-        <img src={userInfo.profile?.avatar} className="rounded-full" width={20} alt="avatar" />
+        <UserSetting avator={userInfo.profile?.avatar} width={20} />
       </HStack>
     </div>
   ) : (
@@ -62,9 +64,7 @@ export default function Header(props: { size: "sm" | "lg" }) {
       </div>
 
       <div>
-        {userInfo.profile ? (
-          <img src={userInfo.profile?.avatar} className="rounded-full" width={30} alt="avatar" />
-        ) : null}
+        {userInfo.profile ? <UserSetting avator={userInfo.profile?.avatar} width={30} /> : null}
       </div>
     </div>
   );

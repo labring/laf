@@ -569,3 +569,45 @@ export async function TriggerControllerRemove(
     data: params,
   });
 }
+
+export async function EnvironmentsControllerAdd(
+  params: any,
+): Promise<Paths.DependencyControllerAdd.Responses> {
+  // /v1/apps/{appid}/dependencies
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/environments`, {
+    method: "POST",
+    data: params,
+  });
+}
+
+export async function EnvironmentsControllerGetEnvironments(
+  params: any,
+): Promise<Paths.DependencyControllerGetDependencies.Responses> {
+  // /v1/apps/{appid}/dependencies
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/environments`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+export async function EnvironmentsControllerRemove(
+  params: any,
+): Promise<Paths.DependencyControllerRemove.Responses> {
+  // /v1/apps/{appid}/dependencies/{name}
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/environments/${_params.name}`, {
+    method: "DELETE",
+    data: params,
+  });
+}

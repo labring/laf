@@ -3,7 +3,7 @@
  ***************************/
 
 import { AiFillDatabase, AiOutlineFunction } from "react-icons/ai";
-import { GrCatalogOption, GrStorage } from "react-icons/gr";
+import { GrCatalogOption, GrSettingsOption, GrStorage } from "react-icons/gr";
 import { useNavigate, useParams } from "react-router-dom";
 import { Center } from "@chakra-ui/react";
 import clsx from "clsx";
@@ -13,6 +13,8 @@ import { Pages, SiderBarWidth } from "@/constants/index";
 
 import styles from "./index.module.scss";
 
+import AppEnvList from "@/pages/app/setting/AppEnvList/index";
+import SettingModal from "@/pages/app/setting/index";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function SiderBar() {
@@ -53,6 +55,25 @@ export default function SiderBar() {
         </IconWrap>
       ),
     },
+    {
+      pageId: Pages.setting,
+      component: (
+        <SettingModal
+          headerTitle="应用设置"
+          tabMatch={[
+            {
+              key: "env",
+              name: "环境变量",
+              component: <AppEnvList />,
+            },
+          ]}
+        >
+          <IconWrap tooltip="设置" placement="right" onClick={() => {}}>
+            <GrSettingsOption size="18" />
+          </IconWrap>
+        </SettingModal>
+      ),
+    },
   ];
   return (
     <div
@@ -65,13 +86,16 @@ export default function SiderBar() {
             key={index}
             className={clsx(styles.icon, {
               [styles.current]: pageId === item.pageId,
+              [styles.bottom]: Pages.setting === item.pageId,
             })}
             style={{
               height: SiderBarWidth,
             }}
             onClick={() => {
-              setCurrentPage(item.pageId);
-              navigate(`/app/${currentApp?.appid}/${item.pageId}`);
+              if (item.pageId !== Pages.setting) {
+                setCurrentPage(item.pageId);
+                navigate(`/app/${currentApp?.appid}/${item.pageId}`);
+              }
             }}
           >
             {item.component}
