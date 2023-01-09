@@ -32,9 +32,10 @@ export class FunctionService {
         version: 0,
       },
       desc: dto.description,
-      websocket: false,
+      websocket: dto.websocket,
       createdBy: userid,
       methods: dto.methods,
+      tags: dto.tags || [],
     }
     const res = await this.prisma.cloudFunction.create({ data })
     await this.publish(res)
@@ -46,6 +47,11 @@ export class FunctionService {
       where: { appid },
     })
 
+    return res
+  }
+
+  async count(appid: string) {
+    const res = await this.prisma.cloudFunction.count({ where: { appid } })
     return res
   }
 
@@ -64,8 +70,9 @@ export class FunctionService {
         version: func.source.version + 1,
       },
       desc: dto.description,
-      websocket: false,
+      websocket: dto.websocket,
       methods: dto.methods,
+      tags: dto.tags || [],
     }
     const res = await this.prisma.cloudFunction.update({
       where: { appid_name: { appid: func.appid, name: func.name } },

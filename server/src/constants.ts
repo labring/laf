@@ -115,3 +115,5 @@ export const MB = 1024 * 1024
 export const GB = 1024 * MB
 
 export const APPLICATION_SECRET_KEY = 'SERVER_SECRET'
+
+export const MAX_FUNCTION_COUNT = 1000

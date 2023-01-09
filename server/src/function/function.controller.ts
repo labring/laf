@@ -25,6 +25,7 @@ import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import { FunctionService } from './function.service'
 import { IRequest } from '../utils/types'
 import { CompileFunctionDto } from './dto/compile-function.dto.ts'
+import { MAX_FUNCTION_COUNT } from 'src/constants'
 
 @ApiTags('Function')
 @ApiBearerAuth('Authorization')
@@ -55,6 +56,12 @@ export class FunctionController {
     const found = await this.functionsService.findOne(appid, dto.name)
     if (found) {
       return ResponseUtil.error('function name is already existed')
+    }
+
+    // check if meet the count limit
+    const count = await this.functionsService.count(appid)
+    if (count > MAX_FUNCTION_COUNT) {
+      return ResponseUtil.error(`function count limit is ${MAX_FUNCTION_COUNT}`)
     }
 
     const res = await this.functionsService.create(appid, req.user.id, dto)
