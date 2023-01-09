@@ -20,7 +20,7 @@ export default function FileList() {
   const { getList, getFileUrl, deleteFile } = useAwsS3();
   const { currentStorage, prefix, setPrefix } = useStorageStore();
   const bucketName = currentStorage?.metadata.name;
-  // const bucketType = currentStorage?.spec.policy;
+  const bucketType = currentStorage?.spec.policy;
 
   const query = useQuery(
     ["fileList", bucketName, prefix],
@@ -35,8 +35,11 @@ export default function FileList() {
       changeDirectory(file);
       return;
     }
-    // const fileUrl = bucketType === 'private' ? getFileUrl(bucketName!, file.Key) : `http://${bucketName}.oss.dev.laf.run/${file.Key}`;
-    const fileUrl = getFileUrl(bucketName!, file.Key);
+    const fileUrl =
+      bucketType === "private"
+        ? getFileUrl(bucketName!, file.Key)
+        : `http://${bucketName}.${(window as any).location.host.replace("www", "oss")}/${file.Key}`;
+
     window.open(fileUrl, "_blank");
   };
 
@@ -113,8 +116,11 @@ export default function FileList() {
                         <Td isNumeric className="flex justify-end">
                           <IconWrap
                             placement="left"
-                            // tooltip={bucketType === 'private' && file.Key ? '临时链接,有效期15分钟' : undefined}
-                            tooltip="临时链接,有效期15分钟"
+                            tooltip={
+                              bucketType === "private" && file.Key
+                                ? "临时链接,有效期15分钟"
+                                : undefined
+                            }
                             onClick={() => viewAppFile(file)}
                           >
                             <ViewIcon fontSize={12} />
