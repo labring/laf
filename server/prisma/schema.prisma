@@ -132,15 +132,29 @@ model ApplicationConfiguration {
 }
 
 model DatabasePolicy {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String               @id @default(auto()) @map("_id") @db.ObjectId
   appid     String
   name      String
-  rules     String
   injector  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+  rules     DatabasePolicyRule[]
 
   @@unique([appid, name])
+}
+
+model DatabasePolicyRule {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  appid          String
+  policyName     String
+  collectionName String
+  value          Json
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  policy DatabasePolicy @relation(fields: [appid, policyName], references: [appid, name])
+
+  @@unique([appid, policyName, collectionName])
 }
 
 enum HttpMethod {

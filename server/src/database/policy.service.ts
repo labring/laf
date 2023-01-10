@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { DatabasePolicy } from '@prisma/client'
+import { DatabasePolicy, DatabasePolicyRule } from '@prisma/client'
 import { CN_PUBLISHED_POLICIES } from 'src/constants'
 import { DatabaseCoreService } from 'src/core/database.cr.service'
 import { PrismaService } from 'src/prisma.service'
@@ -18,7 +18,9 @@ export class PolicyService {
       data: {
         appid,
         name: createPolicyDto.name,
-        rules: createPolicyDto.rules,
+      },
+      include: {
+        rules: true,
       },
     })
 
@@ -31,6 +33,9 @@ export class PolicyService {
       where: {
         appid,
       },
+      include: {
+        rules: true,
+      },
     })
     return res
   }
@@ -42,6 +47,9 @@ export class PolicyService {
           appid,
           name,
         },
+      },
+      include: {
+        rules: true,
       },
     })
     return res
@@ -56,7 +64,10 @@ export class PolicyService {
         },
       },
       data: {
-        rules: dto.rules,
+        injector: dto.injector,
+      },
+      include: {
+        rules: true,
       },
     })
 
@@ -72,19 +83,29 @@ export class PolicyService {
           name,
         },
       },
+      include: {
+        rules: true,
+      },
     })
     await this.unpublish(appid, name)
     return res
   }
 
-  async publish(policy: DatabasePolicy) {
+  async publish(policy: DatabasePolicy & { rules: DatabasePolicyRule[] }) {
     const { db, client } = await this.db.findAndConnect(policy.appid)
     const session = client.startSession()
+
+    const rules = {}
+    for (const rule of policy.rules) {
+      rules[rule.collectionName] = rule.value
+    }
+
     try {
       await session.withTransaction(async () => {
         const coll = db.collection(CN_PUBLISHED_POLICIES)
         await coll.deleteOne({ name: policy.name }, { session })
-        await coll.insertOne(policy, { session })
+        const data = { ...policy, rules }
+        await coll.insertOne(data, { session })
       })
     } finally {
       await client.close()
