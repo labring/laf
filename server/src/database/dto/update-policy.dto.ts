@@ -3,5 +3,5 @@ import { IsNotEmpty } from 'class-validator'
 export class UpdatePolicyDto {
   @ApiProperty()
   @IsNotEmpty()
-  rules: string
+  injector: string
 }

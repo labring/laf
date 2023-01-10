@@ -5,8 +5,4 @@ export class CreatePolicyDto {
   @ApiProperty()
   @IsNotEmpty()
   name: string
-
-  @ApiProperty()
-  @IsNotEmpty()
-  rules: string
 }

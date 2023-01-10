@@ -51,7 +51,7 @@ export class PolicyController {
   }
 
   @Patch(':name')
-  @ApiOperation({ summary: 'Update policy rules' })
+  @ApiOperation({ summary: 'Update database policy' })
   @ApiResponse({ type: ResponseUtil })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   async update(
