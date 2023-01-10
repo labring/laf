@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma.service'
 import { RUNTIME_BUILTIN_DEPENDENCIES } from 'src/runtime-builtin-deps'
 import * as npa from 'npm-package-arg'
 import { CreateDependencyDto } from './dto/create-dependency.dto'
+import { UpdateDependencyDto } from './dto/update-dependency.dto'
 
 export class Dependency {
   name: string
@@ -58,6 +59,34 @@ export class DependencyService {
     // add
     const new_deps = dto.map((dep) => `${dep.name}@${dep.spec}`)
     const deps = extras.concat(new_deps)
+    await this.prisma.applicationConfiguration.update({
+      where: { appid },
+      data: { dependencies: deps },
+    })
+
+    return true
+  }
+
+  /**
+   * Update the dependencies' version
+   */
+  async update(appid: string, dto: UpdateDependencyDto[]) {
+    const extras = await this.getExtras(appid)
+
+    // check if the dependency name all valid
+    const names = extras.map((dep) => npa(dep).name)
+    const input_names = dto.map((dep) => npa(dep.name).name)
+    const has_invalid = input_names.some((name) => !names.includes(name))
+    if (has_invalid) return false
+
+    // update
+    const new_deps = dto.map((dep) => `${dep.name}@${dep.spec}`)
+    const filtered = extras.filter((dep) => {
+      const { name } = npa(dep)
+      return !input_names.includes(name)
+    })
+
+    const deps = filtered.concat(new_deps)
     await this.prisma.applicationConfiguration.update({
       where: { appid },
       data: { dependencies: deps },
