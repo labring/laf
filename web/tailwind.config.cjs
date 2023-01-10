@@ -3,7 +3,19 @@ module.exports = {
   darkMode: "class",
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
-    extend: {},
+    fontSize: {
+      base: "12px",
+      lg: "14px",
+      xl: "16px",
+      "2xl": "18px",
+      "3xl": "22px",
+    },
+    extend: {
+      colors: {
+        primary: "#00A99D",
+        second: "#717D8A",
+      },
+    },
   },
   plugins: [],
 };

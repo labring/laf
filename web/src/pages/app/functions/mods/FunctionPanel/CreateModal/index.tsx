@@ -45,6 +45,7 @@ const CreateModal = (props: { functionItem?: any }) => {
     websocket: !!functionItem?.websocket,
     methods: functionItem?.methods || ["GET", "POST"],
     code: functionItem?.source.code || defaultString,
+    tags: [],
   };
 
   type FormData = {
@@ -70,6 +71,7 @@ const CreateModal = (props: { functionItem?: any }) => {
   const updateFunctionMutation = useUpdateFunctionMutation();
 
   const onSubmit = async (data: any) => {
+    data.tags = [];
     let res: any = {};
     if (isEdit) {
       res = await updateFunctionMutation.mutateAsync(data);

@@ -31,7 +31,10 @@ const ConfirmButton = ({ onSuccessAction, headerText, bodyText, children }: Conf
   return (
     <>
       {React.cloneElement(children, {
-        onClick: onOpen,
+        onClick: (event: any) => {
+          event?.preventDefault();
+          onOpen();
+        },
       })}
 
       <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>

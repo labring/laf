@@ -4,7 +4,6 @@
 
 :root {
   --bg-color: #fafafa;
-  font-size: 14px;
 }
 
 /* 设置滚动条的样式 */
@@ -25,12 +24,15 @@
 
 html,
 body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell,
-    Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-  background-color: var(--bg-color) !important;
   height: 100%;
+}
+
+body {
+  background-color: #eaedef !important;
+  background-image: url("/bg.png") !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  font-size: 12px;
 }
 
 a {

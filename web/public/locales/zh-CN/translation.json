@@ -15,7 +15,7 @@
   "CreateTime": "创建时间",
   "Editting...": "已编辑",
   "FunctionPanel": {
-    "Debug": "调试",
+    "Debug": "运行",
     "Deploy": "发布",
     "EmptyText": "请先选择函数"
   },
@@ -39,7 +39,8 @@
     "Dialog": {
       "Confirm": "确定",
       "ConfirmDeploy": "确认发布",
-      "Cancel": "取消"
+      "Cancel": "取消",
+      "AppCreate": "立即创建"
     }
   }
 }

@@ -1,5 +1,6 @@
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
+import { CheckIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
@@ -88,7 +89,8 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
   return (
     <>
       {React.cloneElement(props.children, {
-        onClick: () => {
+        onClick: (event?: any) => {
+          event?.preventDefault();
           reset(defaultValues);
           onOpen();
           setTimeout(() => {
@@ -116,7 +118,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
               </FormControl>
 
               <FormControl isRequired>
-                <FormLabel htmlFor="region">Region</FormLabel>
+                <FormLabel htmlFor="region">可用区</FormLabel>
                 <HStack spacing={6}>
                   <Controller
                     name="region"
@@ -126,13 +128,17 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                         <div>
                           {regions.map((region: any) => {
                             return (
-                              <Button
-                                variant={"solid"}
-                                colorScheme={rest.value === region.name ? "green" : "gray"}
-                                key={region.name}
-                              >
-                                {region.name}
-                              </Button>
+                              <div className="flex items-center">
+                                <Button
+                                  variant={"ghost"}
+                                  size="sm"
+                                  colorScheme={rest.value === region.name ? "green" : "gray"}
+                                  key={region.name}
+                                >
+                                  <CheckIcon className="mr-2" />
+                                  {region.name}
+                                </Button>
+                              </div>
                             );
                           })}
                         </div>
@@ -146,7 +152,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
               </FormControl>
 
               <FormControl isRequired isInvalid={!!errors?.bundleName}>
-                <FormLabel htmlFor="bundleName">Bundle Name</FormLabel>
+                <FormLabel htmlFor="bundleName">应用规格</FormLabel>
                 <Select
                   {...register("bundleName", {
                     required: "bundleName is required",
@@ -165,7 +171,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
               </FormControl>
 
               <FormControl isRequired isInvalid={!!errors?.runtimeName}>
-                <FormLabel htmlFor="runtimeName">Runtime Name</FormLabel>
+                <FormLabel htmlFor="runtimeName">运行时</FormLabel>
                 <Select
                   {...register("runtimeName", {
                     required: "runtimeName is required",
@@ -187,20 +193,12 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
 
           <ModalFooter>
             <Button
-              mr={3}
-              onClick={() => {
-                onClose();
-              }}
-            >
-              {t("Common.Dialog.Cancel")}
-            </Button>
-            <Button
               colorScheme="blue"
               isLoading={appCreateMutaion.isLoading}
               type="submit"
               onClick={handleSubmit(onSubmit)}
             >
-              {t("Common.Dialog.Confirm")}
+              {t("Common.Dialog.AppCreate")}
             </Button>
           </ModalFooter>
         </ModalContent>
