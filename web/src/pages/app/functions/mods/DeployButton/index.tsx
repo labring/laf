@@ -47,6 +47,7 @@ export default function DeployButton() {
       methods: store.currentFunction?.methods,
       websocket: store.currentFunction?.websocket,
       name: store.currentFunction?.name,
+      tags: store.currentFunction?.tags,
     });
     if (!res.error) {
       store.setCurrentFunction(res.data);

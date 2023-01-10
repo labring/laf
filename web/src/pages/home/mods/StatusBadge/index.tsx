@@ -8,10 +8,9 @@ export default function StatusBadge(props: { statusConditions: APP_PHASE_STATUS 
 
   return (
     <div className="flex items-center">
-      状态:
       <Badge
         className="ml-2 mr-2"
-        colorScheme={statusConditions === APP_PHASE_STATUS.Started ? "green" : "blue"}
+        colorScheme={statusConditions === APP_PHASE_STATUS.Started ? "whatsapp" : "blue"}
       >
         {statusConditions}
       </Badge>

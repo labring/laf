@@ -1,11 +1,11 @@
 import { BrowserRouter, useRoutes } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
-import { extendTheme } from "@chakra-ui/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ClickToComponent } from "click-to-react-component";
 
 import "@/utils/i18n";
 
+import theme from "./chakraTheme";
 import routes from "./routes";
 
 import "./App.css";
@@ -14,24 +14,6 @@ function RouteElement() {
   const element = useRoutes(routes as any);
   return element;
 }
-
-const Button = {};
-
-const Modal = {
-  defaultProps: {},
-};
-
-const theme = extendTheme({
-  colors: {
-    primary: {
-      500: "#000",
-    },
-  },
-  components: {
-    Button,
-    Modal,
-  },
-});
 
 // Create a client
 const queryClient = new QueryClient({

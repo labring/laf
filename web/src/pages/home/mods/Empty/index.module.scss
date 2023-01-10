@@ -1,0 +1,20 @@
+.emptyItem {
+  width: 230px;
+  height: 78px;
+  background: rgb(255, 255, 255);
+  box-shadow: rgb(196 206 216 / 25%) 0px 4px 8px;
+  border-radius: 24px 0px;
+  margin-bottom: 24px;
+  position: relative;
+
+  &::before {
+    content: " ";
+    height: 10px;
+    position: absolute;
+    left: 20px;
+    width: 4px;
+    height: 16px;
+    background: #00a99d;
+    border-radius: 24px;
+  }
+}

@@ -1,5 +1,4 @@
 import { lazy, Suspense } from "react";
-import { Center, Spinner } from "@chakra-ui/react";
 
 import BasicLayout from "@/layouts/Basic";
 import FunctionLayout from "@/layouts/Function";
@@ -54,13 +53,7 @@ function LazyElement(props: any) {
   const { importFunc } = props;
   const LazyComponent = lazy(importFunc);
   return (
-    <Suspense
-      fallback={
-        <Center height={200}>
-          <Spinner />
-        </Center>
-      }
-    >
+    <Suspense fallback={null}>
       <LazyComponent />
     </Suspense>
   );

@@ -4,6 +4,7 @@
 
 import { BiHelpCircle } from "react-icons/bi";
 import { GrGithub, GrLanguage } from "react-icons/gr";
+import { RiCodeBoxFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { HStack } from "@chakra-ui/react";
 
@@ -33,7 +34,7 @@ export default function Header(props: { size: "sm" | "lg" }) {
             navigate("/");
           }}
         >
-          <img src="/logo.png" alt="logo" className="mr-2 rounded-full" width={24} />
+          <RiCodeBoxFill size={32} className="mr-2" />
         </div>
         <span className="mr-4 font-bold text-gray-500 text-lg">{userInfo.username}</span>
       </div>
@@ -55,12 +56,10 @@ export default function Header(props: { size: "sm" | "lg" }) {
       </HStack>
     </div>
   ) : (
-    <div className="flex justify-between p-4 bg-white	border-b">
+    <div className="flex justify-between px-10 py-4">
       <div className="flex items-center">
-        <img src="/logo.png" alt="logo" className="mr-2 rounded-full" width={30} />
-        <span className=" font-bold text-lg">laf 云开发</span>
-        <span className="ml-4 mr-4"> / </span>
-        <span>{userInfo.username}</span>
+        <RiCodeBoxFill size={32} className="mr-2" />
+        <span className="text-2xl font-semibold">LaF</span>
       </div>
 
       <div>
