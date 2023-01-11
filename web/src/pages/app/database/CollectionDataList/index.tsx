@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { AddIcon } from "@chakra-ui/icons";
-import { Button, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 
 import RightPanel from "../../mods/RightPanel";
 import CreateCollectionModal from "../mods/CreateCollectionModal";
@@ -15,11 +15,22 @@ export default function CollectionDataList() {
   const store = useDBMStore((state) => state);
   return (
     <RightPanel>
-      <Tabs className="h-full">
+      {store.currentDB === undefined ? (
+        <div className="h-full flex items-center justify-center">
+          <CreateCollectionModal>
+            <Button size="lg" variant="ghost" leftIcon={<AddIcon />}>
+              {t("CollectionPanel.CollectionAdd")}
+            </Button>
+          </CreateCollectionModal>
+        </div>
+      ) : (
+        <DataPannel />
+      )}
+      {/* <Tabs className="h-full">
         <TabList>
           <Tab>数据管理</Tab>
-          {/* <Tab>索引管理</Tab>
-          <Tab>集合结构</Tab> */}
+          <Tab>索引管理</Tab>
+          <Tab>集合结构</Tab>
         </TabList>
         <TabPanels className="h-full">
           <TabPanel
@@ -38,14 +49,14 @@ export default function CollectionDataList() {
               <DataPannel />
             )}
           </TabPanel>
-          {/* <TabPanel>
+          <TabPanel>
             <IndexPannel />
           </TabPanel>
           <TabPanel className="overflow-hidden relative" style={{ height: "calc(100% - 35px)" }}>
             <ColPannel />
-          </TabPanel> */}
+          </TabPanel>
         </TabPanels>
-      </Tabs>
+      </Tabs > */}
     </RightPanel>
   );
 }

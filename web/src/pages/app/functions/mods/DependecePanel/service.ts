@@ -5,6 +5,7 @@ import {
   DependencyControllerAdd,
   DependencyControllerGetDependencies,
   DependencyControllerRemove,
+  DependencyControllerUpdate,
 } from "@/apis/v1/apps";
 import useGlobalStore from "@/pages/globalStore";
 export type TDependenceItem = {
@@ -54,6 +55,17 @@ export const useAddPackageMutation = (callback?: () => void) => {
   });
 };
 
+export const useEditPackageMutation = (callback?: () => void) => {
+  const queryClient = useQueryClient();
+  return useMutation((params: TPackage[]) => DependencyControllerUpdate(params), {
+    onSuccess: async () => {
+      useGlobalStore.getState().showSuccess("edit package success");
+      await queryClient.invalidateQueries(queryKeys.usePackageQuery);
+      callback && callback();
+    },
+  });
+};
+
 export const useDelPackageMutation = (callback?: () => void) => {
   const queryClient = useQueryClient();
   return useMutation((params: { name: string | undefined }) => DependencyControllerRemove(params), {
@@ -64,6 +76,7 @@ export const useDelPackageMutation = (callback?: () => void) => {
     },
   });
 };
+
 export const usePackageSearchQuery = (q: string, callback?: (data: any) => void) => {
   return useQuery(
     queryKeys.usePackageSearchQuery(q),

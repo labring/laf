@@ -73,6 +73,7 @@ const CreateCollectionModal = (props: { collection?: any; children: React.ReactE
                   id="name"
                   variant="filled"
                   readOnly={isEdit}
+                  placeholder="请输入集合名称"
                 />
                 <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
               </FormControl>
@@ -81,20 +82,11 @@ const CreateCollectionModal = (props: { collection?: any; children: React.ReactE
 
           <ModalFooter>
             <Button
-              mr={3}
-              onClick={() => {
-                onClose();
-              }}
-            >
-              {t("Common.Dialog.Cancel")}
-            </Button>
-            <Button
               isLoading={createDBMutation.isLoading}
-              colorScheme="blue"
               type="submit"
               onClick={handleSubmit(onSubmit)}
             >
-              {t("Common.Dialog.Confirm")}
+              新建
             </Button>
           </ModalFooter>
         </ModalContent>

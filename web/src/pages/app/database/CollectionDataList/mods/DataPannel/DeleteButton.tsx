@@ -1,3 +1,4 @@
+import { DeleteIcon } from "@chakra-ui/icons";
 import {
   Button,
   ButtonGroup,
@@ -6,6 +7,8 @@ import {
   PopoverTrigger,
   useDisclosure,
 } from "@chakra-ui/react";
+
+import IconWrap from "@/components/IconWrap";
 
 import { useDeleteDataMutation } from "../../../service";
 
@@ -26,18 +29,19 @@ export default function DeleteButton(props: { data: any; fn: any }) {
         closeOnBlur={true}
         placement="left"
       >
-        <PopoverTrigger>
-          <Button
-            size="xs"
-            px="2"
-            className="mr-2 w-16"
-            onClick={(event) => {
-              event?.stopPropagation();
-            }}
-          >
-            Delete
-          </Button>
-        </PopoverTrigger>
+        <IconWrap
+          className="hover:bg-third-100 group/icon"
+          showBg
+          tooltip="删除"
+          size={32}
+          onClick={(event: any) => {
+            event?.stopPropagation();
+          }}
+        >
+          <PopoverTrigger>
+            <DeleteIcon fontSize={12} className="align-middle group-hover/icon:text-third-500" />
+          </PopoverTrigger>
+        </IconWrap>
         <PopoverContent p="2" maxWidth={130}>
           <ButtonGroup size="xs">
             <Button

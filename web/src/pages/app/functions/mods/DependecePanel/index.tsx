@@ -36,7 +36,7 @@ export default function DependecyList() {
                     label={packageItem?.builtin ? "内置依赖，不可更改" : null}
                     placement="top"
                   >
-                    <span className="ml-2 w-40 inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
+                    <span className="ml-2 w-20 inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
                       {packageItem?.name}
                     </span>
                   </Tooltip>
