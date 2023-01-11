@@ -1,4 +1,29 @@
-# [](https://github.com/labring/laf/compare/v1.0.0-alpha.4...v) (2023-01-01)
+# [](https://github.com/labring/laf/compare/v1.0.0-alpha.5...v) (2023-01-11)
+
+
+
+# [1.0.0-alpha.5](https://github.com/labring/laf/compare/v1.0.0-alpha.4...v1.0.0-alpha.5) (2023-01-10)
+
+
+### Bug Fixes
+
+* **core:** remove bucket route pass host ([#600](https://github.com/labring/laf/issues/600)) ([a75a61f](https://github.com/labring/laf/commit/a75a61f467b33321d3c419bcca85af7c4fdfeba0))
+* default load typedefiniiton ([#606](https://github.com/labring/laf/issues/606)) ([e2d0967](https://github.com/labring/laf/commit/e2d09673d4a1a27afc0b81a66dea04c91a7da1f4))
+* **server:** fix function websocket error; add tags for function ([#611](https://github.com/labring/laf/issues/611)) ([6abee36](https://github.com/labring/laf/commit/6abee366d85d6396137fd4bdbaf79838c696d2c1))
+* **web:** create same function cause page error ([#603](https://github.com/labring/laf/issues/603)) ([caa2a5d](https://github.com/labring/laf/commit/caa2a5d04d833ec701cdb4575a45dbb8fd1c1b00))
+
+
+### Features
+
+* **server:** add enviroments apis ([#605](https://github.com/labring/laf/issues/605)) ([acf5d34](https://github.com/labring/laf/commit/acf5d34f23bb6958ca61c0b52e19532459283aa5))
+* **server:** add update-deps api ([#613](https://github.com/labring/laf/issues/613)) ([a1f67ae](https://github.com/labring/laf/commit/a1f67aefaab8bd1a80b70f573cbe910dcee404d5))
+* **server:** implement policy rule schema & crud ([#612](https://github.com/labring/laf/issues/612)) ([5e3789c](https://github.com/labring/laf/commit/5e3789c30f6caf50459a9aaeaccb64261d019ee7))
+* **web:** add AppEnvList and PATList ([#608](https://github.com/labring/laf/issues/608)) ([7d9cd82](https://github.com/labring/laf/commit/7d9cd8250aed493a820415fbac6fe87b8b86efc5))
+* **web:** fix database & storage bug ([#595](https://github.com/labring/laf/issues/595)) ([4ff0d9b](https://github.com/labring/laf/commit/4ff0d9ba85cfa588f2a7bd0a4b2e5ea0d9a6e8b1))
+* **web:** fix hotKey bug & hidden some buttons ([#602](https://github.com/labring/laf/issues/602)) ([f0bcbe6](https://github.com/labring/laf/commit/f0bcbe69709ceaac8e72378346fb502dcf35d095))
+* **web:** hide patList edit button & show copy token button ([#609](https://github.com/labring/laf/issues/609)) ([8772314](https://github.com/labring/laf/commit/8772314b493cb79f1ba8772ecd792b3d3beb9858))
+* **web:** new ui application page ([#614](https://github.com/labring/laf/issues/614)) ([e4c524a](https://github.com/labring/laf/commit/e4c524a769f85e39b692b081561687b3d4d6208d))
+* **web:** optimize hotkey function ([#604](https://github.com/labring/laf/issues/604)) ([f429c2a](https://github.com/labring/laf/commit/f429c2a299743d2e85e23f5c8d2a734d8d0ec1ae))
 
 
 
