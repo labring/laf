@@ -10,38 +10,52 @@
 import request from "@/utils/request";
 
 /**
- * Get current user profile
+ * Create a PAT
  */
-export async function AuthControllerGetPATs(
-  params: any,
-): Promise<Paths.AuthControllerGetProfile.Responses> {
-  // /v1/profile
+export async function PatControllerCreate(
+  params: Definitions.CreatePATDto | any,
+): Promise<Paths.PatControllerCreate.Responses> {
+  // /v1/pats
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/pats`, {
+    method: "POST",
+    data: params,
+  });
+}
+
+/**
+ * List PATs
+ */
+export async function PatControllerFindAll(
+  params: Paths.PatControllerFindAll.BodyParameters | any,
+): Promise<Paths.PatControllerFindAll.Responses> {
+  // /v1/pats
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
   return request(`/v1/pats`, {
     method: "GET",
     params: params,
   });
 }
 
-export async function AuthControllerPATsRemove(
-  params: any,
-): Promise<Paths.AuthControllerGetProfile.Responses> {
-  // /v1/profile
+/**
+ * Delete a PAT
+ */
+export async function PatControllerRemove(
+  params: Paths.PatControllerRemove.BodyParameters | any,
+): Promise<Paths.PatControllerRemove.Responses> {
+  // /v1/pats/{id}
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
     ...params,
   };
   return request(`/v1/pats/${_params.id}`, {
     method: "DELETE",
-    data: params,
-  });
-}
-
-export async function AuthControllerPATsCreate(
-  params: any,
-): Promise<Paths.AuthControllerGetProfile.Responses> {
-  // /v1/profile
-  return request(`/v1/pats`, {
-    method: "POST",
     data: params,
   });
 }

@@ -56,8 +56,8 @@ const Modal = {
 const theme = extendTheme({
   fontSizes: {
     sm: "12px",
+    base: "12px",
     md: "14px",
-    base: "14px",
     lg: "16px",
     xl: "16px",
     "2xl": "18px",
