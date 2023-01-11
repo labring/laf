@@ -2,6 +2,7 @@ import { AddIcon, EditIcon } from "@chakra-ui/icons";
 import { Tag } from "@chakra-ui/react";
 
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
+import { Col } from "@/components/Grid";
 import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
@@ -12,7 +13,6 @@ import CreateBucketModal from "../CreateBucketModal";
 import DeleteBucketModal from "../DeleteBucketModal";
 
 import { TBucket } from "@/apis/typing";
-import LeftPanel from "@/pages/app/mods/LeftPanel";
 
 export default function StorageListPanel() {
   const store = useStorageStore((store) => store);
@@ -27,7 +27,7 @@ export default function StorageListPanel() {
   });
 
   return (
-    <LeftPanel>
+    <Col className=" max-w-[300px]">
       <Panel>
         <Panel.Header
           title="云存储"
@@ -86,6 +86,6 @@ export default function StorageListPanel() {
           })}
         </SectionList>
       </Panel>
-    </LeftPanel>
+    </Col>
   );
 }

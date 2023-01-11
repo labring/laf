@@ -6,11 +6,11 @@ import clsx from "clsx";
 
 // import CopyText from "@/components/CopyText";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
+import { Col } from "@/components/Grid";
 import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
 
-import LeftPanel from "../../mods/LeftPanel";
 import CreateCollectionModal from "../mods/CreateCollectionModal";
 // import DeleteCollectionModal from "../mods/DeleteCollectionModal";
 import { useCollectionListQuery } from "../service";
@@ -34,7 +34,7 @@ export default function CollectionListPanel(props: { isHidden?: boolean }) {
   const [search, setSearch] = useState("");
 
   return (
-    <LeftPanel>
+    <Col className=" max-w-[300px]">
       <Panel>
         <Panel.Header
           title="集合列表"
@@ -93,6 +93,6 @@ export default function CollectionListPanel(props: { isHidden?: boolean }) {
             })}
         </SectionList>
       </Panel>
-    </LeftPanel>
+    </Col>
   );
 }
