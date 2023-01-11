@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AddIcon, EditIcon, SearchIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import {
@@ -30,6 +30,7 @@ import {
   TDependenceItem,
   TPackage,
   useAddPackageMutation,
+  useEditPackageMutation,
   usePackageQuery,
   usePackageSearchQuery,
   usePackageVersionsQuery,
@@ -63,6 +64,16 @@ const AddDepenceModal = () => {
     setPackageList(newList);
   });
 
+  const addPackageMutation = useAddPackageMutation(() => {
+    onClose();
+    globalStore.restartCurrentApp();
+  });
+
+  const editPackageMutation = useEditPackageMutation(() => {
+    onClose();
+    globalStore.restartCurrentApp();
+  });
+
   const packageSearchQuery = usePackageSearchQuery(name, (data) => {
     const list: TDependenceItem[] = (data || []).map((item: any) => {
       const existItem = checkList.find((checkItem: TDependenceItem) => {
@@ -88,11 +99,12 @@ const AddDepenceModal = () => {
     isEdit ? setPackageList(newList) : setList(newList);
   });
 
-  const search = useCallback(
-    debounce((val: string) => {
-      setIsShowChecked(false);
-      setName(val);
-    }, 1000),
+  const search = useMemo(
+    () =>
+      debounce((val: string) => {
+        setIsShowChecked(false);
+        setName(val);
+      }, 1000),
     [setIsShowChecked, setName],
   );
 
@@ -123,7 +135,7 @@ const AddDepenceModal = () => {
         spec: item.package.version,
       });
     });
-    addPackageMutation.mutate(data);
+    isEdit ? editPackageMutation.mutate(data) : addPackageMutation.mutate(data);
   };
 
   const setVersion = (version: string, key: string) => {
@@ -151,11 +163,6 @@ const AddDepenceModal = () => {
     }
     setCheckList(list);
   };
-
-  const addPackageMutation = useAddPackageMutation(() => {
-    onClose();
-    globalStore.restartCurrentApp();
-  });
 
   const renderList = (list: TDependenceItem[]) => {
     return (
@@ -293,7 +300,7 @@ const AddDepenceModal = () => {
               mr={3}
               size="lg"
               variant="solid"
-              colorScheme="blue"
+              colorScheme="primary"
               className="hover:cursor-pointer"
               onClick={() => {
                 if (!isEdit) {
@@ -303,14 +310,6 @@ const AddDepenceModal = () => {
             >
               {isEdit ? packageList.length : isShowChecked ? <SmallCloseIcon /> : checkList.length}
             </Tag>
-            <Button
-              mr={3}
-              onClick={() => {
-                onClose();
-              }}
-            >
-              {t("Common.Dialog.Cancel")}
-            </Button>
             <Button
               colorScheme="blue"
               onClick={() => {

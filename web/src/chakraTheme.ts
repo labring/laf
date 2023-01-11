@@ -20,10 +20,19 @@ const Button = defineStyleConfig({
       borderRadius: "100px",
       px: 6,
       py: 4,
+      height: "32px",
     },
   },
-  // Two variants: outline and solid
+
   variants: {
+    plain: {
+      bg: "gray.200",
+      color: "gray.500",
+      _hover: {
+        bg: "gray.300",
+      },
+    },
+
     solid: {
       bg: "primary.500",
       color: "white",

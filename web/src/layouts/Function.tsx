@@ -44,7 +44,6 @@ export default function FunctionLayout() {
     <div>
       <Header size="sm" />
       <div
-        className="bg-white"
         style={{
           height: `calc(100vh - ${SmallNavHeight}px)`,
           overflow: "hidden",

@@ -20,7 +20,7 @@
     "EmptyText": "请先选择函数"
   },
   "CollectionPanel": {
-    "CollectionAdd": "添加集合"
+    "CollectionAdd": "新建集合"
   },
   "StoragePanel": {
     "Upload": "上传",

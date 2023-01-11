@@ -27,7 +27,7 @@ export const useCollectionListQuery = (config?: { onSuccess: (data: any) => void
   );
 };
 
-export const useEntryDataQuery = (params: any) => {
+export const useEntryDataQuery = (params: any, onSuccess: () => void) => {
   const { currentDB } = useDBMStore();
   const { db } = useDB();
   return useQuery(
@@ -48,6 +48,7 @@ export const useEntryDataQuery = (params: any) => {
 
       // 获取数据总数
       const { total } = await db.collection(currentDB?.name).where(query).count();
+      onSuccess && onSuccess();
       return { list: res.data, total, page, limit };
     },
     {

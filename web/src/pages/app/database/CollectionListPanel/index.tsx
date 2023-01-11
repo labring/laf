@@ -1,9 +1,10 @@
-import { useTranslation } from "react-i18next";
-import { AddIcon } from "@chakra-ui/icons";
 import { useState } from "react";
-import { Input } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
+import { AddIcon, Search2Icon } from "@chakra-ui/icons";
+import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
+import clsx from "clsx";
 
-import CopyText from "@/components/CopyText";
+// import CopyText from "@/components/CopyText";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
@@ -11,11 +12,13 @@ import SectionList from "@/components/SectionList";
 
 import LeftPanel from "../../mods/LeftPanel";
 import CreateCollectionModal from "../mods/CreateCollectionModal";
-import DeleteCollectionModal from "../mods/DeleteCollectionModal";
+// import DeleteCollectionModal from "../mods/DeleteCollectionModal";
 import { useCollectionListQuery } from "../service";
 import useDBMStore from "../store";
 
-export default function CollectionListPanel() {
+import MoreButton from "./MoreButton";
+
+export default function CollectionListPanel(props: { isHidden?: boolean }) {
   const store = useDBMStore((store) => store);
   const { t } = useTranslation();
   const collectionListQuery = useCollectionListQuery({
@@ -31,7 +34,7 @@ export default function CollectionListPanel() {
   const [search, setSearch] = useState("");
 
   return (
-    <LeftPanel>
+    <LeftPanel isHidden={props.isHidden}>
       <Panel
         title="集合列表"
         actions={[
@@ -42,13 +45,21 @@ export default function CollectionListPanel() {
           </CreateCollectionModal>,
         ]}
       >
-        <div className="flex items-center m-2 mr-0 mb-3">
-          <Input
-            size="sm"
-            className="mr-2"
-            placeholder="输入集合 ID 搜索"
-            onChange={(e) => setSearch(e.target.value)}
-          />
+        <div className="flex items-center mb-3 w-full">
+          <InputGroup>
+            <InputLeftElement
+              height={"8"}
+              pointerEvents="none"
+              children={<Search2Icon color="gray.300" />}
+            />
+            <Input
+              rounded={"full"}
+              placeholder="输入集合ID搜索"
+              size="sm"
+              bg={"gray.100"}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </InputGroup>
         </div>
 
         <SectionList>
@@ -64,15 +75,16 @@ export default function CollectionListPanel() {
                   }}
                 >
                   <div className="w-full flex justify-between group">
-                    <div>
+                    <div className="leading-loose">
                       <FileTypeIcon type={FileType.db} />
                       <span className="ml-2 text-base">{db.name}</span>
                     </div>
-                    <div className="invisible flex group-hover:visible">
-                      <IconWrap>
-                        <CopyText text={db.name} tip="名称复制成功" />
-                      </IconWrap>
-                      <DeleteCollectionModal database={db} />
+                    <div
+                      className={clsx("flex group-hover:inline ", {
+                        hidden: db.name !== store.currentDB?.name,
+                      })}
+                    >
+                      <MoreButton data={db} />
                     </div>
                   </div>
                 </SectionList.Item>
