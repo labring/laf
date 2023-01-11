@@ -5,6 +5,7 @@ declare namespace Definitions {
     websocket?: boolean;
     methods?: string[];
     code?: string /* The source code of the function */;
+    tags?: string[];
   };
 
   export type UpdateFunctionDto = {
@@ -12,6 +13,7 @@ declare namespace Definitions {
     websocket?: boolean;
     methods?: string[];
     code?: string /* The source code of the function */;
+    tags?: string[];
   };
 
   export type CompileFunctionDto = {
@@ -31,9 +33,23 @@ declare namespace Definitions {
     state?: string;
   };
 
+  export type CreateEnvironmentDto = {
+    name?: string;
+    value?: string;
+  };
+
   export type CreateWebsiteDto = {};
 
   export type UpdateWebsiteDto = {};
+
+  export type Pat2TokenDto = {
+    pat?: string /* PAT */;
+  };
+
+  export type CreatePATDto = {
+    name?: string;
+    expiresIn?: number;
+  };
 
   export type CreateCollectionDto = {
     name?: string;
@@ -46,11 +62,19 @@ declare namespace Definitions {
 
   export type CreatePolicyDto = {
     name?: string;
-    rules?: string;
   };
 
   export type UpdatePolicyDto = {
-    rules?: string;
+    injector?: string;
+  };
+
+  export type CreatePolicyRuleDto = {
+    collectionName?: string;
+    value?: string;
+  };
+
+  export type UpdatePolicyRuleDto = {
+    value?: string;
   };
 
   export type CreateBucketDto = {
@@ -184,6 +208,30 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace EnvironmentVariableControllerAdd {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.CreateEnvironmentDto;
+
+    export type Responses = any;
+  }
+
+  namespace EnvironmentVariableControllerGet {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace EnvironmentVariableControllerDelete {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace WebsitesControllerCreate {
     export type QueryParameters = any;
 
@@ -248,7 +296,39 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace AuthControllerPat2token {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.Pat2TokenDto;
+
+    export type Responses = any;
+  }
+
   namespace AuthControllerGetProfile {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace PatControllerCreate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.CreatePATDto;
+
+    export type Responses = any;
+  }
+
+  namespace PatControllerFindAll {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace PatControllerRemove {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -336,6 +416,38 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace PolicyRuleControllerCreate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.CreatePolicyRuleDto;
+
+    export type Responses = any;
+  }
+
+  namespace PolicyRuleControllerFindAll {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace PolicyRuleControllerUpdate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.UpdatePolicyRuleDto;
+
+    export type Responses = any;
+  }
+
+  namespace PolicyRuleControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace BucketControllerCreate {
     export type QueryParameters = any;
 
@@ -385,6 +497,14 @@ declare namespace Paths {
   }
 
   namespace DependencyControllerAdd {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace DependencyControllerUpdate {
     export type QueryParameters = any;
 
     export type BodyParameters = any;

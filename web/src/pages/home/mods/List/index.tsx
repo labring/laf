@@ -78,10 +78,10 @@ function List(props: { appListQuery: any }) {
         <div className="flex bg-white rounded-lg h-12 items-center px-6 mb-3">
           <div className="w-2/12 text-second ">应用名称</div>
           <div className="w-2/12 text-second ">App ID</div>
-          <div className="w-2/12 text-second  pl-2">State</div>
+          <div className="w-2/12 text-second pl-2">State</div>
           <div className="w-2/12 text-second ">Region</div>
           <div className="w-3/12 text-second ">创建时间</div>
-          <div className="w-1/12 text-second  pl-2">操作</div>
+          <div className="w-1/12 text-second pl-2 min-w-[100px]">操作</div>
         </div>
         {(appListQuery.data?.data || [])
           .filter((item: any) => item?.name.indexOf(searchKey) >= 0)
@@ -98,7 +98,7 @@ function List(props: { appListQuery: any }) {
                 </div>
                 <div className="w-2/12 ">{item.regionName}</div>
                 <div className="w-3/12 ">{formatDate(item.createdAt)}</div>
-                <div className="w-1/12 flex">
+                <div className="w-1/12 flex min-w-[100px]">
                   <Button
                     className="mr-2 font-semibold"
                     size={"sm"}
@@ -109,7 +109,7 @@ function List(props: { appListQuery: any }) {
                       navigate(`/app/${item?.appid}/${Pages.function}`);
                     }}
                   >
-                    <RiCodeBoxFill size={14} className="mr-2" />
+                    <RiCodeBoxFill size={20} className="mr-2" />
                     开发
                   </Button>
                   <Menu>

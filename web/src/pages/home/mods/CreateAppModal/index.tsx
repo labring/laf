@@ -128,7 +128,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                         <div>
                           {regions.map((region: any) => {
                             return (
-                              <div className="flex items-center">
+                              <div className="flex items-center" key={region.name}>
                                 <Button
                                   variant={"ghost"}
                                   size="sm"

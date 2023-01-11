@@ -26,7 +26,10 @@ function Empty() {
         <div className="grid grid-cols-3 w-[722px]">
           {messageList.map((item, index) => {
             return (
-              <div className={clsx("flex items-center pl-9 font-medium text-xl", styles.emptyItem)}>
+              <div
+                key={index}
+                className={clsx("flex items-center pl-9 font-medium text-xl", styles.emptyItem)}
+              >
                 {item}
               </div>
             );

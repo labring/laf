@@ -112,6 +112,57 @@ export async function FunctionControllerCompile(
 }
 
 /**
+ * Set a environment variable (create/update)
+ */
+export async function EnvironmentVariableControllerAdd(
+  params: Definitions.CreateEnvironmentDto | any,
+): Promise<Paths.EnvironmentVariableControllerAdd.Responses> {
+  // /v1/apps/{appid}/environments
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/environments`, {
+    method: "POST",
+    data: params,
+  });
+}
+
+/**
+ * Get environment variables
+ */
+export async function EnvironmentVariableControllerGet(
+  params: Paths.EnvironmentVariableControllerGet.BodyParameters | any,
+): Promise<Paths.EnvironmentVariableControllerGet.Responses> {
+  // /v1/apps/{appid}/environments
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/environments`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+/**
+ * Delete an environment variable by name
+ */
+export async function EnvironmentVariableControllerDelete(
+  params: Paths.EnvironmentVariableControllerDelete.BodyParameters | any,
+): Promise<Paths.EnvironmentVariableControllerDelete.Responses> {
+  // /v1/apps/{appid}/environments/{name}
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/environments/${_params.name}`, {
+    method: "DELETE",
+    data: params,
+  });
+}
+
+/**
  * TODO - ⌛️
  */
 export async function WebsitesControllerCreate(
@@ -316,7 +367,7 @@ export async function PolicyControllerFindAll(
 }
 
 /**
- * Update policy rules
+ * Update database policy
  */
 export async function PolicyControllerUpdate(
   params: Definitions.UpdatePolicyDto | any,
@@ -362,6 +413,74 @@ export async function DatabaseControllerProxy(
   };
   return request(`/v1/apps/${_params.appid}/databases/proxy`, {
     method: "POST",
+    data: params,
+  });
+}
+
+/**
+ * Create database policy rule
+ */
+export async function PolicyRuleControllerCreate(
+  params: Definitions.CreatePolicyRuleDto | any,
+): Promise<Paths.PolicyRuleControllerCreate.Responses> {
+  // /v1/apps/{appid}/policies/{name}/rules
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/policies/${_params.name}/rules`, {
+    method: "POST",
+    data: params,
+  });
+}
+
+/**
+ * Get database policy rules
+ */
+export async function PolicyRuleControllerFindAll(
+  params: Paths.PolicyRuleControllerFindAll.BodyParameters | any,
+): Promise<Paths.PolicyRuleControllerFindAll.Responses> {
+  // /v1/apps/{appid}/policies/{name}/rules
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/policies/${_params.name}/rules`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+/**
+ * Update database policy rule by collection name
+ */
+export async function PolicyRuleControllerUpdate(
+  params: Definitions.UpdatePolicyRuleDto | any,
+): Promise<Paths.PolicyRuleControllerUpdate.Responses> {
+  // /v1/apps/{appid}/policies/{name}/rules/{collection}
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/policies/${_params.name}/rules/${_params.collection}`, {
+    method: "PATCH",
+    data: params,
+  });
+}
+
+/**
+ * Remove a database policy rule by collection name
+ */
+export async function PolicyRuleControllerRemove(
+  params: Paths.PolicyRuleControllerRemove.BodyParameters | any,
+): Promise<Paths.PolicyRuleControllerRemove.Responses> {
+  // /v1/apps/{appid}/policies/{name}/rules/{collection}
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/policies/${_params.name}/rules/${_params.collection}`, {
+    method: "DELETE",
     data: params,
   });
 }
@@ -469,7 +588,7 @@ export async function LogControllerGetLogs(
 }
 
 /**
- * Add a dependency
+ * Add application dependencies
  */
 export async function DependencyControllerAdd(
   params: Paths.DependencyControllerAdd.BodyParameters | any,
@@ -481,6 +600,23 @@ export async function DependencyControllerAdd(
   };
   return request(`/v1/apps/${_params.appid}/dependencies`, {
     method: "POST",
+    data: params,
+  });
+}
+
+/**
+ * Update application dependencies
+ */
+export async function DependencyControllerUpdate(
+  params: Paths.DependencyControllerUpdate.BodyParameters | any,
+): Promise<Paths.DependencyControllerUpdate.Responses> {
+  // /v1/apps/{appid}/dependencies
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/dependencies`, {
+    method: "PATCH",
     data: params,
   });
 }
@@ -565,48 +701,6 @@ export async function TriggerControllerRemove(
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/triggers/${_params.id}`, {
-    method: "DELETE",
-    data: params,
-  });
-}
-
-export async function EnvironmentsControllerAdd(
-  params: any,
-): Promise<Paths.DependencyControllerAdd.Responses> {
-  // /v1/apps/{appid}/dependencies
-  let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
-    ...params,
-  };
-  return request(`/v1/apps/${_params.appid}/environments`, {
-    method: "POST",
-    data: params,
-  });
-}
-
-export async function EnvironmentsControllerGetEnvironments(
-  params: any,
-): Promise<Paths.DependencyControllerGetDependencies.Responses> {
-  // /v1/apps/{appid}/dependencies
-  let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
-    ...params,
-  };
-  return request(`/v1/apps/${_params.appid}/environments`, {
-    method: "GET",
-    params: params,
-  });
-}
-
-export async function EnvironmentsControllerRemove(
-  params: any,
-): Promise<Paths.DependencyControllerRemove.Responses> {
-  // /v1/apps/{appid}/dependencies/{name}
-  let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
-    ...params,
-  };
-  return request(`/v1/apps/${_params.appid}/environments/${_params.name}`, {
     method: "DELETE",
     data: params,
   });

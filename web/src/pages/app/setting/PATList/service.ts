@@ -1,10 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import {
-  AuthControllerGetPATs,
-  AuthControllerPATsCreate,
-  AuthControllerPATsRemove,
-} from "@/apis/v1/pats";
+import { PatControllerCreate, PatControllerFindAll, PatControllerRemove } from "@/apis/v1/pats";
 import useGlobalStore from "@/pages/globalStore";
 
 export type TPAT = {
@@ -21,7 +17,7 @@ export const usePATQuery = (callback?: (data: any) => void) => {
   return useQuery(
     queryKeys.usePATQuery,
     () => {
-      return AuthControllerGetPATs({});
+      return PatControllerFindAll({});
     },
     {
       onSuccess: (data) => {
@@ -33,7 +29,7 @@ export const usePATQuery = (callback?: (data: any) => void) => {
 
 export const useAddPATMutation = (callback?: (data: any) => void) => {
   const queryClient = useQueryClient();
-  return useMutation((params: TPAT) => AuthControllerPATsCreate(params), {
+  return useMutation((params: TPAT) => PatControllerCreate(params), {
     onSuccess: async (data) => {
       useGlobalStore.getState().showSuccess("update PAT success");
       await queryClient.invalidateQueries(queryKeys.usePATQuery);
@@ -44,7 +40,7 @@ export const useAddPATMutation = (callback?: (data: any) => void) => {
 
 export const useDelPATMutation = (callback?: () => void) => {
   const queryClient = useQueryClient();
-  return useMutation((params: { id: string | undefined }) => AuthControllerPATsRemove(params), {
+  return useMutation((params: { id: string | undefined }) => PatControllerRemove(params), {
     onSuccess: async () => {
       useGlobalStore.getState().showSuccess("delete PAT success");
       await queryClient.invalidateQueries(queryKeys.usePATQuery);
