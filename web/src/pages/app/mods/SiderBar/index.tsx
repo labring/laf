@@ -4,6 +4,7 @@
 
 import { AiFillDatabase, AiOutlineFunction } from "react-icons/ai";
 import { GrCatalogOption, GrSettingsOption, GrStorage } from "react-icons/gr";
+import { RiCodeBoxFill } from "react-icons/ri";
 import { useNavigate, useParams } from "react-router-dom";
 import { Center } from "@chakra-ui/react";
 import clsx from "clsx";
@@ -24,37 +25,44 @@ export default function SiderBar() {
 
   const ICONS = [
     {
+      pageId: "nav",
+      componet: <RiCodeBoxFill size={32} />,
+    },
+    {
       pageId: Pages.function,
       component: (
-        <IconWrap tooltip="函数" placement="right">
-          <AiOutlineFunction size="24" />
+        <IconWrap tooltip="函数" placement="right" size={32}>
+          <AiOutlineFunction size="32" />
         </IconWrap>
       ),
     },
     {
       pageId: Pages.database,
       component: (
-        <IconWrap tooltip="数据库" placement="right">
-          <AiFillDatabase size="22" />
+        <IconWrap tooltip="数据库" placement="right" size={32}>
+          <AiFillDatabase size="28" />
         </IconWrap>
       ),
     },
     {
       pageId: Pages.storage,
       component: (
-        <IconWrap tooltip="云存储" placement="right">
-          <GrStorage size="20" />
+        <IconWrap tooltip="云存储" placement="right" size={32}>
+          <GrStorage size="26" />
         </IconWrap>
       ),
     },
     {
       pageId: Pages.logs,
       component: (
-        <IconWrap tooltip="日志" placement="right">
-          <GrCatalogOption size="18" />
+        <IconWrap tooltip="日志" placement="right" size={32}>
+          <GrCatalogOption size="26" />
         </IconWrap>
       ),
     },
+  ];
+
+  const BOTTOM_ICONS = [
     {
       pageId: Pages.setting,
       component: (
@@ -68,8 +76,8 @@ export default function SiderBar() {
             },
           ]}
         >
-          <IconWrap tooltip="设置" placement="right" onClick={() => {}}>
-            <GrSettingsOption size="18" />
+          <IconWrap tooltip="设置" placement="right" size={32}>
+            <GrSettingsOption size="26" />
           </IconWrap>
         </SettingModal>
       ),
@@ -77,29 +85,46 @@ export default function SiderBar() {
   ];
   return (
     <div
-      style={{ width: SiderBarWidth, background: "#f2f3f9" }}
-      className="absolute top-0 bottom-0 "
+      style={{ width: SiderBarWidth }}
+      className="absolute top-0 bottom-0 flex flex-col justify-between"
     >
-      {ICONS.map((item, index) => {
+      {[ICONS, BOTTOM_ICONS].map((icons, index) => {
         return (
-          <Center
-            key={index}
-            className={clsx(styles.icon, {
-              [styles.current]: pageId === item.pageId,
-              [styles.bottom]: Pages.setting === item.pageId,
-            })}
-            style={{
-              height: SiderBarWidth,
-            }}
-            onClick={() => {
-              if (item.pageId !== Pages.setting) {
-                setCurrentPage(item.pageId);
-                navigate(`/app/${currentApp?.appid}/${item.pageId}`);
+          <div key={index}>
+            {icons.map((item) => {
+              if (item.pageId === "nav") {
+                return (
+                  <Center
+                    key={item.pageId}
+                    style={{
+                      height: 48,
+                    }}
+                    onClick={() => {
+                      navigate("/");
+                    }}
+                  >
+                    <RiCodeBoxFill size={32} />
+                  </Center>
+                );
               }
-            }}
-          >
-            {item.component}
-          </Center>
+              return (
+                <Center
+                  key={item.pageId}
+                  className={clsx(styles.icon, "m-2", {
+                    [styles.current]: pageId === item.pageId,
+                  })}
+                  onClick={() => {
+                    if (item.pageId !== Pages.setting) {
+                      setCurrentPage(item.pageId);
+                      navigate(`/app/${currentApp?.appid}/${item.pageId}`);
+                    }
+                  }}
+                >
+                  {item.component}
+                </Center>
+              );
+            })}
+          </div>
         );
       })}
     </div>

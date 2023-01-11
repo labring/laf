@@ -28,19 +28,20 @@ export default function StorageListPanel() {
 
   return (
     <LeftPanel>
-      <Panel
-        title="云存储"
-        actions={[
-          <CreateBucketModal key="create_modal">
-            <IconWrap size={20} tooltip="创建 Bucket">
-              <AddIcon fontSize={10} />
-            </IconWrap>
-          </CreateBucketModal>,
-          // <IconWrap key="options" onClick={() => {}}>
-          //   <HamburgerIcon fontSize={12} />
-          // </IconWrap>,
-        ]}
-      >
+      <Panel>
+        <Panel.Header
+          title="云存储"
+          actions={[
+            <CreateBucketModal key="create_modal">
+              <IconWrap size={20} tooltip="创建 Bucket">
+                <AddIcon fontSize={10} />
+              </IconWrap>
+            </CreateBucketModal>,
+            // <IconWrap key="options" onClick={() => {}}>
+            //   <HamburgerIcon fontSize={12} />
+            // </IconWrap>,
+          ]}
+        />
         <SectionList>
           {(bucketListQuery?.data?.data?.items || []).map((storage: TBucket) => {
             return (

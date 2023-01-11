@@ -58,12 +58,13 @@ export default function FunctionList() {
   const deleteFunctionMutaion = useDeleteFunctionMutation();
 
   return (
-    <Panel title={t`FunctionList`} actions={[<CreateModal key="create_modal" />]}>
-      <div className="border-b border-slate-300">
-        <div className="flex items-center ml-2 mb-3">
+    <Panel style={{ minHeight: "calc(100vh - 320px)" }}>
+      <Panel.Header title={t`FunctionList`} actions={[<CreateModal key="create_modal" />]} />
+      <div>
+        <div className="flex items-center mb-3">
           <Input
             size="sm"
-            className="mr-2"
+            rounded={"full"}
             placeholder={String(t("SearchPlacehoder"))}
             onChange={(event) => {
               setKeywords(event.target.value);

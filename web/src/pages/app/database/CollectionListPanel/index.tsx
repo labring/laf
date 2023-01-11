@@ -34,17 +34,18 @@ export default function CollectionListPanel(props: { isHidden?: boolean }) {
   const [search, setSearch] = useState("");
 
   return (
-    <LeftPanel isHidden={props.isHidden}>
-      <Panel
-        title="集合列表"
-        actions={[
-          <CreateCollectionModal key={"create_database"}>
-            <IconWrap tooltip={t("CollectionPanel.CollectionAdd").toString()} size={20}>
-              <AddIcon fontSize={10} />
-            </IconWrap>
-          </CreateCollectionModal>,
-        ]}
-      >
+    <LeftPanel>
+      <Panel>
+        <Panel.Header
+          title="集合列表"
+          actions={[
+            <CreateCollectionModal key={"create_database"}>
+              <IconWrap tooltip={t("CollectionPanel.CollectionAdd").toString()} size={20}>
+                <AddIcon fontSize={10} />
+              </IconWrap>
+            </CreateCollectionModal>,
+          ]}
+        />
         <div className="flex items-center mb-3 w-full">
           <InputGroup>
             <InputLeftElement

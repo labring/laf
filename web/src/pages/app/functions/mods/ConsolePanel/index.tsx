@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import CopyText from "@/components/CopyText";
-import PanelHeader from "@/components/Panel/Header";
+import Panel from "@/components/Panel";
 import { formatDate } from "@/utils/format";
 
 import useFunctionStore from "../../store";
@@ -22,9 +22,9 @@ function ConsolePanel() {
   );
 
   return (
-    <div className="flex-1 ">
-      <PanelHeader className="bg-slate-100 !mb-1">Console</PanelHeader>
-      <div className="relative overflow-y-auto px-2 font-mono text-sm" style={{ height: "200px" }}>
+    <Panel className="flex-1 ">
+      <Panel.Header title="Console"></Panel.Header>
+      <div className="relative overflow-y-auto px-2 font-mono text-sm " style={{ height: 160 }}>
         {currentRequestId && (
           <p className="mb-1 ml-1">
             ReqeustID: {currentRequestId} <CopyText text={String(currentRequestId)} />
@@ -41,7 +41,7 @@ function ConsolePanel() {
           );
         })}
       </div>
-    </div>
+    </Panel>
   );
 }
 

@@ -8,6 +8,7 @@ import { debounce } from "lodash";
 import JsonEditor from "@/components/Editor/JsonEditor";
 import IconWrap from "@/components/IconWrap";
 import Pagination from "@/components/Pagination";
+import Panel from "@/components/Panel";
 import getPageInfo from "@/utils/getPageInfo";
 
 import { useAddDataMutation, useEntryDataQuery, useUpdateDataMutation } from "../../../service";
@@ -59,8 +60,8 @@ export default function DataPannel() {
   };
 
   return (
-    <>
-      <div className="flex justify-between items-center">
+    <Panel>
+      <Panel.Header>
         <div className="flex items-center">
           <Button
             disabled={store.currentDB === undefined}
@@ -112,7 +113,7 @@ export default function DataPannel() {
           }}
         />
         {/* <span>总数: {entryDataQuery.data?.total}</span> */}
-      </div>
+      </Panel.Header>
 
       <div className="flex" style={{ height: "calc(100% - 60px)" }}>
         <div className="overflow-y-auto flex-1 overflow-x-hidden">
@@ -197,6 +198,6 @@ export default function DataPannel() {
           </div>
         </div>
       </div>
-    </>
+    </Panel>
   );
 }

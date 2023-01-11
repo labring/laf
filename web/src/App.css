@@ -28,10 +28,11 @@ body {
 }
 
 body {
-  background-color: #eaedef !important;
+  background-color: #f1f3f5 !important;
   background-image: url("/bg.png") !important;
   background-repeat: no-repeat !important;
   background-size: cover !important;
+  background-position: center !important;
   font-size: 12px;
 }
 

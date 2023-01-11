@@ -48,8 +48,9 @@ function FunctionEditor(props: {
   value: string;
   onChange: (value: string | undefined) => void;
   path: string;
+  height: string;
 }) {
-  const { value, onChange, path } = props;
+  const { value, onChange, path, height = "100%" } = props;
 
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
@@ -100,7 +101,7 @@ function FunctionEditor(props: {
     return () => {};
   }, [path, value]);
 
-  return <div style={{ height: "calc(100% - 294px)" }} ref={monacoEl}></div>;
+  return <div style={{ height: height }} ref={monacoEl}></div>;
 }
 
 export default FunctionEditor;
