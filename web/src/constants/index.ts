@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-export const SiderBarWidth = 60;
+export const SiderBarWidth = 64;
 export const SmallNavHeight = 42;
 
 export const Pages = {

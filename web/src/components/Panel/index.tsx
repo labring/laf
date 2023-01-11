@@ -1,26 +1,24 @@
 import React from "react";
-import { ChevronDownIcon } from "@chakra-ui/icons";
-import { HStack } from "@chakra-ui/react";
+import clsx from "clsx";
 
-import styles from "./index.module.scss";
+import PanelHeader from "./Header";
 
-export default function Panel(props: {
-  actions: React.ReactNode[];
-  title: React.ReactNode | string;
+const Panel = (props: {
+  className?: string;
+  style?: React.CSSProperties;
   children: React.ReactNode;
-}) {
-  const { title, actions } = props;
+}) => {
+  const { className, style = {} } = props;
   return (
-    <div>
-      <div className={styles.sectionHeader + " flex justify-between bg-white"}>
-        <h4>
-          <ChevronDownIcon fontSize={16} />
-          {title}
-        </h4>
-        <HStack spacing="2">{actions}</HStack>
-      </div>
-
-      <div>{props.children}</div>
+    <div
+      style={style}
+      className={clsx("bg-white rounded m-2 px-4 flex flex-col flex-1", className)}
+    >
+      {props.children}
     </div>
   );
-}
+};
+
+Panel.Header = PanelHeader;
+
+export default Panel;

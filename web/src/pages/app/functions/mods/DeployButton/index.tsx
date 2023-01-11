@@ -61,11 +61,9 @@ export default function DeployButton() {
   return (
     <>
       <Button
-        size="sm"
-        borderRadius={4}
+        px={8}
         disabled={store.getFunctionUrl() === ""}
         colorScheme="blue"
-        padding="0 12px"
         onClick={() => {
           onOpen();
         }}

@@ -3,7 +3,7 @@ import { Outlet, useParams } from "react-router-dom";
 import { Badge, Center, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 
-import { APP_PHASE_STATUS, Pages, SmallNavHeight } from "@/constants/index";
+import { APP_PHASE_STATUS, Pages } from "@/constants/index";
 
 import Header from "./Header";
 
@@ -45,7 +45,7 @@ export default function FunctionLayout() {
       <Header size="sm" />
       <div
         style={{
-          height: `calc(100vh - ${SmallNavHeight}px)`,
+          height: "100vh",
           overflow: "hidden",
           position: "relative",
         }}

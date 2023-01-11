@@ -10,8 +10,8 @@ import CollectionListPanel from "./CollectionListPanel";
 function DatabasePage() {
   const [hideList, setHideList] = useState<boolean>(false);
   return (
-    <>
-      <div style={{ height: "calc(100% - 50px)" }}>
+    <div className="flex flex-col flex-1">
+      <div className="flex" style={{ height: "calc(100% - 50px)" }}>
         <CollectionListPanel isHidden={hideList} />
         <CollectionDataList />
       </div>
@@ -30,7 +30,7 @@ function DatabasePage() {
           集合列表
         </Button>
       </div>
-    </>
+    </div>
   );
 }
 

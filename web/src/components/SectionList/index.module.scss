@@ -3,10 +3,12 @@
   li {
     cursor: pointer;
     display: flex;
-    height: 38px;
+    height: 40px;
+    border-radius: 8px;
     align-items: center;
     justify-content: space-between;
-    padding: 2px 8px;
+    padding: 2px 12px;
+    margin-bottom: 2px;
 
     span {
       vertical-align: middle;
@@ -14,14 +16,14 @@
 
     &:hover,
     &.active {
-      background-color: var(--chakra-colors-gray-100);
+      background-color: #eff9fa;
       span {
         color: #000 !important;
       }
     }
 
     &.active {
-      background-color: var(--chakra-colors-gray-200);
+      background-color: #eff9fa;
     }
   }
 }

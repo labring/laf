@@ -30,6 +30,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import CopyText from "@/components/CopyText";
 import Pagination from "@/components/Pagination";
+import Panel from "@/components/Panel";
 import TextButton from "@/components/TextButton";
 import { formatDate } from "@/utils/format";
 import getPageInfo from "@/utils/getPageInfo";
@@ -81,14 +82,14 @@ export default function LogsPage() {
   };
 
   return (
-    <div className="px-4 pb-4 flex-1 flex flex-col h-full ">
+    <Panel>
       <form
         onSubmit={(event) => {
           event?.preventDefault();
           logListQuery.refetch();
         }}
       >
-        <div className="flex justify-between my-4">
+        <Panel.Header>
           <HStack spacing={2}>
             <InputGroup width={400}>
               <InputLeftElement
@@ -96,12 +97,7 @@ export default function LogsPage() {
                 pointerEvents="none"
                 children={<Search2Icon color="gray.300" />}
               />
-              <Input
-                borderRadius="4"
-                placeholder="Request ID"
-                bg="white"
-                {...register("requestId")}
-              />
+              <Input borderRadius="4" placeholder="Request ID" {...register("requestId")} />
             </InputGroup>
 
             <Input width={200} placeholder="函数名" bg="white" {...register("functionName")} />
@@ -125,7 +121,7 @@ export default function LogsPage() {
               });
             }}
           />
-        </div>
+        </Panel.Header>
       </form>
       <div className="px-4 py-1 rounded-md h-full relative border " style={{ paddingBottom: 100 }}>
         {logListQuery.isFetching ? (
@@ -203,6 +199,6 @@ export default function LogsPage() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </div>
+    </Panel>
   );
 }

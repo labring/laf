@@ -1,13 +1,26 @@
 .sectionHeader {
-  height: 36px;
+  min-height: 36px;
   display: flex;
   align-items: center;
   margin-bottom: 4px;
-  padding: 0 8px;
-  justify-content: space-between;
 
   h4 {
-    font-weight: bold;
+    padding-left: 16px;
+    font-weight: 500;
+    font-size: 14px;
+    position: relative;
+
+    &::before {
+      content: " ";
+      height: 10px;
+      position: absolute;
+      left: 0;
+      top: 2px;
+      width: 3px;
+      height: 16px;
+      background: #00a99d;
+      border-radius: 24px;
+    }
   }
 
   h4 svg {

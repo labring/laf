@@ -38,7 +38,7 @@ function AppDetail() {
               key={item.pageId}
               className={
                 currentPageId === item.pageId && visitedViews.includes(currentPageId)
-                  ? "block h-full"
+                  ? "flex h-full"
                   : "hidden"
               }
             >

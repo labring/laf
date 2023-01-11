@@ -3,7 +3,6 @@ import SyntaxHighlighter from "react-syntax-highlighter";
 import {
   Button,
   Center,
-  Input,
   Select,
   Spinner,
   Tab,
@@ -15,9 +14,8 @@ import {
 import axios from "axios";
 import { t } from "i18next";
 
-import CopyText from "@/components/CopyText";
 import JsonEditor from "@/components/Editor/JsonEditor";
-import PanelHeader from "@/components/Panel/Header";
+import Panel from "@/components/Panel";
 import { Pages } from "@/constants";
 
 import { useCompileMutation } from "../../service";
@@ -92,18 +90,21 @@ export default function DebugPanel() {
   };
 
   return (
-    <div className="flex h-full">
-      <Tabs width="100%">
-        <TabList>
-          <Tab>接口调试</Tab>
-          {/* <Tab>历史请求</Tab> */}
-        </TabList>
+    <>
+      <Panel className="flex-1">
+        <Tabs width="100%" colorScheme={"green"} display="flex" flexDirection={"column"} h="full">
+          <TabList>
+            <Tab px="0">
+              <span className="text-black font-semibold">接口调试</span>
+            </Tab>
+            {/* <Tab>历史请求</Tab> */}
+          </TabList>
 
-        <TabPanels h="full">
-          <TabPanel padding={0} h="full">
-            <div className="flex flex-col h-full">
-              <div className="flex-1 border-r-slate-300 flex flex-col">
+          <TabPanels flex={1}>
+            <TabPanel padding={0} h="full">
+              <div className="flex flex-col h-full">
                 <div className="flex py-4 px-2 items-center">
+                  <span className="mr-3">请求类型</span>
                   <Select
                     width="150px"
                     size="sm"
@@ -121,13 +122,7 @@ export default function DebugPanel() {
                       );
                     })}
                   </Select>
-                  <CopyText className="ml-2" text={getFunctionDebugUrl()}>
-                    <Input size="sm" readOnly rounded={4} value={getFunctionDebugUrl()} />
-                  </CopyText>
                   <Button
-                    style={{ borderRadius: 2 }}
-                    size="sm"
-                    px="6"
                     disabled={getFunctionDebugUrl() === ""}
                     className="ml-2"
                     onClick={() => runningCode()}
@@ -142,31 +137,35 @@ export default function DebugPanel() {
                   onChange={(values) => {
                     setParams(values || "{}");
                   }}
+                  height="calc(100vh - 400px)"
                   value={params}
                 />
               </div>
-              <div className="flex-1 ">
-                <PanelHeader className="bg-slate-100">运行结果</PanelHeader>
-                <div className="relative">
-                  {isLoading ? (
-                    <div className="absolute left-0 right-0">
-                      <Center>
-                        <Spinner />
-                      </Center>
-                    </div>
-                  ) : null}
-                  {runningResData ? (
-                    <SyntaxHighlighter language="json" customStyle={{ background: "#fff" }}>
-                      {JSON.stringify(runningResData, null, 2)}
-                    </SyntaxHighlighter>
-                  ) : null}
-                </div>
-              </div>
+            </TabPanel>
+            {/* <TabPanel padding={0}>to be continued...</TabPanel> */}
+          </TabPanels>
+        </Tabs>
+      </Panel>
+      <Panel className="flex-1 " style={{ height: "40%" }}>
+        <Panel.Header title="运行结果" />
+        <div className="relative flex-1 overflow-auto">
+          {isLoading ? (
+            <div className="absolute left-0 right-0">
+              <Center>
+                <Spinner />
+              </Center>
             </div>
-          </TabPanel>
-          {/* <TabPanel padding={0}>to be continued...</TabPanel> */}
-        </TabPanels>
-      </Tabs>
-    </div>
+          ) : null}
+          {runningResData ? (
+            <SyntaxHighlighter
+              language="json"
+              customStyle={{ background: "#fff", height: "180px" }}
+            >
+              {JSON.stringify(runningResData, null, 2)}
+            </SyntaxHighlighter>
+          ) : null}
+        </div>
+      </Panel>
+    </>
   );
 }
