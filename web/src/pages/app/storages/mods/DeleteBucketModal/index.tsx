@@ -80,9 +80,6 @@ function DeleteBucketModal(props: { storage: any; onSuccessAction?: () => void }
           </ModalBody>
 
           <ModalFooter>
-            <Button mr={3} onClick={onClose}>
-              {t("Common.Dialog.Cancel")}
-            </Button>
             <Button
               colorScheme="red"
               onClick={handleSubmit(async (data) => {

@@ -1,6 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { CheckCircleIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { BiCloudUpload } from "react-icons/bi";
+import { CheckCircleIcon } from "@chakra-ui/icons";
 import {
   Button,
   Menu,
@@ -38,14 +39,15 @@ function UploadButton({ onUploadSuccess }: { onUploadSuccess: () => void }) {
     <div>
       <Menu placement="bottom-start">
         <MenuButton
-          size="xs"
+          size="sm"
+          variant="textGhost"
           as={Button}
-          rightIcon={<ChevronDownIcon />}
+          leftIcon={<BiCloudUpload fontSize={22} className="text-gray-600" />}
           disabled={currentStorage === undefined}
         >
           {t("StoragePanel.Upload")}
         </MenuButton>
-        <MenuList>
+        <MenuList minW={24}>
           <MenuItem
             onClick={() => {
               setUploadType("file");
@@ -53,7 +55,7 @@ function UploadButton({ onUploadSuccess }: { onUploadSuccess: () => void }) {
               onOpen();
             }}
           >
-            {t("StoragePanel.Upload") + t("StoragePanel.File")}
+            {t("StoragePanel.File")}
           </MenuItem>
           <MenuItem
             onClick={() => {
@@ -62,7 +64,7 @@ function UploadButton({ onUploadSuccess }: { onUploadSuccess: () => void }) {
               onOpen();
             }}
           >
-            {t("StoragePanel.Upload") + t("StoragePanel.Folder")}
+            {t("StoragePanel.Folder")}
           </MenuItem>
         </MenuList>
       </Menu>
