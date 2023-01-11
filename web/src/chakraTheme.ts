@@ -1,4 +1,41 @@
-import { defineStyleConfig, extendTheme } from "@chakra-ui/react";
+import { tagAnatomy } from "@chakra-ui/anatomy";
+import { createMultiStyleConfigHelpers, defineStyleConfig, extendTheme } from "@chakra-ui/react";
+const { definePartsStyle, defineMultiStyleConfig } = createMultiStyleConfigHelpers(tagAnatomy.keys);
+
+export const Tag = defineMultiStyleConfig({
+  sizes: {
+    sm: definePartsStyle({
+      container: {
+        px: "1",
+        py: "1",
+        fontSize: "10",
+      },
+    }),
+  },
+  variants: {
+    private: definePartsStyle({
+      container: {
+        borderColor: "blue.500",
+        borderWidth: 1,
+        color: "blue.700",
+      },
+    }),
+    readonly: definePartsStyle({
+      container: {
+        borderColor: "purper.500",
+        borderWidth: 1,
+        color: "purper.700",
+      },
+    }),
+    readwrite: definePartsStyle({
+      container: {
+        borderColor: "brown.500",
+        borderWidth: 1,
+        color: "brown.700",
+      },
+    }),
+  },
+});
 
 const Button = defineStyleConfig({
   // The styles all button have in common
@@ -50,6 +87,10 @@ const Button = defineStyleConfig({
         borderRadius: 2,
       },
     },
+
+    grayGhost: {
+      color: "#000",
+    },
   },
   // The default size and variant values
   defaultProps: {
@@ -77,10 +118,23 @@ const theme = extendTheme({
       500: "#00A99D",
       700: "#04756D",
     },
+    blue: {
+      500: "#0C74AE80",
+      700: "#0C74AE",
+    },
+    purper: {
+      500: "#A55AC980",
+      700: "#A55AC9",
+    },
+    brown: {
+      500: "#BE704580",
+      700: "#BE7045",
+    },
   },
   components: {
     Button,
     Modal,
+    Tag,
   },
 });
 export default theme;

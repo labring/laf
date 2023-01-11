@@ -8,7 +8,7 @@ export default function UserSetting(props: { avator: string; width: number }) {
       <MenuButton>
         <img src={props.avator} className="rounded-full" width={props.width} alt="avatar" />
       </MenuButton>
-      <MenuList>
+      <MenuList minW={24}>
         <SettingModal
           headerTitle="用户设置"
           tabMatch={[

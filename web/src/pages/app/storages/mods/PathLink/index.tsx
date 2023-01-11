@@ -24,15 +24,15 @@ function PathLink() {
 
   return (
     <div>
-      {paths?.map((p) => (
-        <span key={p.path}>
-          <span
-            className="text-blue-700 underline cursor-pointer"
-            onClick={() => changeDirectory(p.path)}
-          >
+      {paths?.map((p, index) => (
+        <span
+          key={p.path}
+          className={index === paths?.length - 1 ? "text-black-500" : "text-gray-500"}
+        >
+          <span className="cursor-pointer" onClick={() => changeDirectory(p.path)}>
             {p.name}
           </span>
-          <span className="text-gray-500">/</span>
+          <span className="mx-1">/</span>
         </span>
       ))}
     </div>

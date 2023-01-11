@@ -34,7 +34,7 @@ export default function CollectionListPanel(props: { isHidden?: boolean }) {
   const [search, setSearch] = useState("");
 
   return (
-    <LeftPanel>
+    <LeftPanel style={{ display: props.isHidden ? "none" : "flex" }}>
       <Panel>
         <Panel.Header
           title="集合列表"

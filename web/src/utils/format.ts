@@ -17,6 +17,15 @@ export function formatSize(size: number) {
   return size.toFixed(2) + " " + units[i];
 }
 
+export function formateType(name: string | undefined) {
+  const nameList = name?.split(".");
+  if (nameList?.length && nameList.length === 2) {
+    return nameList[1];
+  } else {
+    return "file";
+  }
+}
+
 export function formatCapacity(capacity: string) {
   const num = capacity.split("Gi")[0];
   return parseInt(num, 10);
