@@ -39,7 +39,7 @@ const useCustomSettingStore = create<State>()(
 
           RightPanel: {
             style: {
-              width: 500,
+              width: "350px",
             },
           },
 

@@ -27,7 +27,7 @@ import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function DebugPanel() {
-  const { getFunctionDebugUrl, currentFunction, setCurrentRequestId } = useFunctionStore(
+  const { getFunctionUrl, currentFunction, setCurrentRequestId } = useFunctionStore(
     (state) => state,
   );
 
@@ -71,7 +71,7 @@ export default function DebugPanel() {
         const func_data = JSON.stringify(compileRes.data);
         const body_params = JSON.parse(params);
         const res = await axios({
-          url: getFunctionDebugUrl(),
+          url: getFunctionUrl(),
           method: runningMethod,
           data: body_params,
           headers: {
@@ -112,7 +112,7 @@ export default function DebugPanel() {
                       width="150px"
                       size="sm"
                       value={runningMethod}
-                      disabled={getFunctionDebugUrl() === ""}
+                      disabled={getFunctionUrl() === ""}
                       onChange={(e) => {
                         setRunningMethod(e.target.value);
                       }}
@@ -126,7 +126,7 @@ export default function DebugPanel() {
                       })}
                     </Select>
                     <Button
-                      disabled={getFunctionDebugUrl() === ""}
+                      disabled={getFunctionUrl() === ""}
                       className="ml-2"
                       onClick={() => runningCode()}
                       bg="#E0F6F4"

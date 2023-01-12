@@ -12,7 +12,7 @@ import useFunctionCache from "@/hooks/useFuncitonCache";
 
 function EditorPanel() {
   const store = useFunctionStore((store) => store);
-  const { currentFunction, updateFunctionCode, getFunctionDebugUrl } = store;
+  const { currentFunction, updateFunctionCode, getFunctionUrl } = store;
 
   const functionCache = useFunctionCache();
 
@@ -39,14 +39,14 @@ function EditorPanel() {
         </div>
 
         <HStack>
-          <CopyText className="ml-2" text={getFunctionDebugUrl()}>
+          <CopyText className="ml-2" text={getFunctionUrl()}>
             <Input
               size="sm"
               bg="#F1F4F6"
               border="none"
               readOnly
               rounded={4}
-              value={getFunctionDebugUrl()}
+              value={getFunctionUrl()}
             />
           </CopyText>
 
