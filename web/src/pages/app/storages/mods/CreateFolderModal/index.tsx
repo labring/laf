@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { AiOutlineFolderAdd } from "react-icons/ai";
 import {
   Button,
   FormControl,
@@ -30,6 +31,8 @@ function CreateModal({ onCreateSuccess }: { onCreateSuccess: () => void }) {
     <>
       <Button
         size="xs"
+        variant="textGhost"
+        leftIcon={<AiOutlineFolderAdd fontSize={22} className="text-gray-600" />}
         disabled={currentStorage === undefined}
         onClick={() => {
           onOpen();
@@ -57,15 +60,13 @@ function CreateModal({ onCreateSuccess }: { onCreateSuccess: () => void }) {
                     required: true,
                   })}
                   variant="filled"
+                  placeholder="请输入文件夹名称"
                 />
               </FormControl>
             </VStack>
           </ModalBody>
 
           <ModalFooter>
-            <Button mr={3} onClick={onClose}>
-              {t("Common.Dialog.Cancel")}
-            </Button>
             <Button
               colorScheme="blue"
               type="submit"

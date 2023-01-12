@@ -1,5 +1,6 @@
 .sectionList {
   overflow-y: hidden;
+
   li {
     cursor: pointer;
     display: flex;
@@ -17,9 +18,6 @@
     &:hover,
     &.active {
       background-color: #eff9fa;
-      span {
-        color: #000 !important;
-      }
     }
 
     &.active {

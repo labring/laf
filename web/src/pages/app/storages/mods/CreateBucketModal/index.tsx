@@ -1,13 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
 import {
   Button,
   FormControl,
   FormLabel,
   Input,
-  InputGroup,
-  InputRightElement,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -28,7 +25,6 @@ import useGlobalStore from "@/pages/globalStore";
 
 function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElement }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { t } = useTranslation();
   const store = useStorageStore((store) => store);
 
   const { storage, children } = props;
@@ -38,14 +34,11 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
   const defaultValues = {
     shortName: storage?.metadata.name,
     policy: storage?.spec.policy,
-    storage: parseInt(storage?.spec.storage || "", 10),
   };
 
-  const maxStorage = store.maxStorage + (defaultValues.storage || 0);
   const { register, handleSubmit, reset, setFocus } = useForm<{
     shortName: string;
     policy: string;
-    storage: number;
   }>({
     defaultValues,
   });
@@ -56,11 +49,11 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
 
   const onSubmit = async (values: any) => {
     let res: any = {};
-    values.storage = values.storage + "Gi";
     if (isEdit) {
       res = await bucketUpdateMutation.mutateAsync({
         name: values.shortName,
         ...values,
+        storage: "1Gi",
       });
 
       if (!res.error) {
@@ -69,8 +62,7 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
         onClose();
       }
     } else {
-      res = await bucketCreateMutation.mutateAsync(values);
-
+      res = await bucketCreateMutation.mutateAsync({ ...values, storage: "1Gi" });
       if (!res.error) {
         store.setCurrentStorage(res.data);
         showSuccess("create success.");
@@ -93,7 +85,7 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{isEdit ? "编辑 Bucket" : "创建 Bucket"}</ModalHeader>
+          <ModalHeader>{isEdit ? "编辑 Bucket" : "新建 Bucket"}</ModalHeader>
           <ModalCloseButton />
 
           <ModalBody pb={6}>
@@ -115,39 +107,12 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
                   <option value="readwrite">公共读写</option>
                 </Select>
               </FormControl>
-
-              <FormControl isRequired>
-                <FormLabel htmlFor="storage">容量（最大容量{maxStorage}GB）</FormLabel>
-                <InputGroup>
-                  <Input
-                    {...register("storage", {
-                      required: true,
-                      max: maxStorage,
-                      min: 0,
-                    })}
-                    type="number"
-                    min="0"
-                    max={maxStorage}
-                    variant="filled"
-                    className="w-1"
-                  />
-                  <InputRightElement children="GB" />
-                </InputGroup>
-              </FormControl>
             </VStack>
           </ModalBody>
 
           <ModalFooter>
-            <Button mr={3} onClick={onClose}>
-              {t("Common.Dialog.Cancel")}
-            </Button>
-            <Button
-              disabled={maxStorage === 0}
-              colorScheme="blue"
-              type="submit"
-              onClick={handleSubmit(onSubmit)}
-            >
-              {t("Common.Dialog.Confirm")}
+            <Button type="submit" onClick={handleSubmit(onSubmit)}>
+              {isEdit ? "确定更新" : "确定创建"}
             </Button>
           </ModalFooter>
         </ModalContent>
