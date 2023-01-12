@@ -17,7 +17,37 @@ export class InitializerService {
 
     // create default region
     const res = await this.prisma.region.create({
-      data: { name: 'default' },
+      data: {
+        name: 'default',
+        displayName: 'Default',
+        clusterConf: {
+          driver: 'kubernetes',
+        },
+        databaseConf: {
+          set: {
+            driver: 'mongodb',
+            connectionUri: ServerConfig.DATABASE_URL,
+          },
+        },
+        storageConf: {
+          set: {
+            driver: 'minio',
+            externalEndpoint: process.env.MINIO_EXTERNAL_ENDPOINT,
+            internalEndpoint: process.env.MINIO_INTERNAL_ENDPOINT,
+            accessKey: process.env.MINIO_ROOT_ACCESS_KEY,
+            secretKey: process.env.MINIO_ROOT_SECRET_KEY,
+          },
+        },
+        gatewayConf: {
+          set: {
+            driver: 'apisix',
+            domain: process.env.DOMAIN,
+            tls: false,
+            apiUrl: process.env.APISIX_API_URL,
+            apiKey: process.env.APISIX_API_KEY,
+          },
+        },
+      },
     })
     this.logger.verbose(`Created default region: ${res.name}`)
     return res
@@ -44,6 +74,11 @@ export class InitializerService {
         storageCapacity: 1024 * 5,
         networkTrafficOutbound: 1024 * 5,
         priority: 0,
+        region: {
+          connect: {
+            name: 'default',
+          },
+        },
       },
     })
     this.logger.verbose('Created default bundle: ' + res.name)

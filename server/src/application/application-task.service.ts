@@ -68,7 +68,12 @@ export class ApplicationTaskService {
     const appid = app.appid
     // get app bundle
     const bundle = await this.prisma.bundle.findUnique({
-      where: { name: app.bundleName },
+      where: {
+        regionName_name: {
+          regionName: app.regionName,
+          name: app.bundleName,
+        },
+      },
     })
     assert(bundle, `Bundle ${app.bundleName} not found`)
 

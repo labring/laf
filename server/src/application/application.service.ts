@@ -43,7 +43,10 @@ export class ApplicationService {
         },
         bundle: {
           connect: {
-            name: dto.bundleName,
+            regionName_name: {
+              regionName: dto.region,
+              name: dto.bundleName,
+            },
           },
         },
         runtime: {
