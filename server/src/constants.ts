@@ -81,8 +81,8 @@ export class ServerConfig {
   /**
    * The external endpoint of oss server
    */
-  static get OSS_ENDPOINT() {
-    return process.env.OSS_ENDPOINT
+  static get MINIO_EXTERNAL_ENDPOINT() {
+    return process.env.MINIO_EXTERNAL_ENDPOINT
   }
 }
 

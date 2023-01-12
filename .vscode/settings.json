@@ -53,6 +53,7 @@
     "hostpath",
     "Kube",
     "kubebuilder",
+    "kubeconfig",
     "Kubefile",
     "Kubernetes",
     "Kustomization",

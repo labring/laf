@@ -47,8 +47,8 @@ async function bootstrap() {
   })
 
   const initService = app.get(InitializerService)
-  await initService.createDefaultBundle()
   await initService.createDefaultRegion()
+  await initService.createDefaultBundle()
   await initService.createDefaultRuntime()
 
   await app.listen(3000)

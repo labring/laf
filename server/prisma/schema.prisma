@@ -38,27 +38,70 @@ model UserProfile {
   user User @relation(fields: [uid], references: [id])
 }
 
+type RegionClusterConf {
+  driver     String // kubernetes
+  kubeconfig String?
+}
+
+type RegionDatabaseConf {
+  driver        String // mongodb
+  connectionUri String
+}
+
+type RegionGatewayConf {
+  driver String // apisix
+  domain String
+  tls    Boolean
+  apiUrl String
+  apiKey String
+}
+
+type RegionStorageConf {
+  driver           String // minio
+  externalEndpoint String
+  internalEndpoint String
+  accessKey        String
+  secretKey        String
+}
+
 model Region {
-  id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  name        String        @unique
-  desc        String?
-  Application Application[]
+  id           String             @id @default(auto()) @map("_id") @db.ObjectId
+  name         String             @unique
+  displayName  String
+  clusterConf  RegionClusterConf
+  databaseConf RegionDatabaseConf
+  gatewayConf  RegionGatewayConf
+  storageConf  RegionStorageConf
+  state        String             @default("active") // active, inactive
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  applications Application[]
+  bundles      Bundle[]
 }
 
 model Bundle {
-  id                     String        @id @default(auto()) @map("_id") @db.ObjectId
-  name                   String        @unique
+  id                     String @id @default(auto()) @map("_id") @db.ObjectId
+  name                   String
   displayName            String
-  limitCPU               Int
-  limitMemory            Int
-  requestCPU             Int
-  requestMemory          Int
-  databaseCapacity       Int
-  storageCapacity        Int
-  networkTrafficOutbound Int
-  networkTrafficInbound  Int?
-  priority               Int
-  Application            Application[]
+  regionName             String
+  limitCPU               Int // 1000 = 1 core
+  limitMemory            Int // in MB
+  requestCPU             Int // 1000 = 1 core
+  requestMemory          Int // in MB
+  databaseCapacity       Int // in MB
+  storageCapacity        Int // in MB
+  networkTrafficOutbound Int // in MB
+  priority               Int    @default(0)
+  state                  String @default("active") // active, inactive
+  price                  Int    @default(0)
+
+  region Region @relation(fields: [regionName], references: [name])
+
+  applications Application[]
+
+  @@unique([regionName, name])
 }
 
 type RuntimeImageGroup {
@@ -108,9 +151,10 @@ model Application {
   updatedAt   DateTime         @updatedAt
   createdBy   String           @db.ObjectId
 
-  region        Region                    @relation(fields: [regionName], references: [name])
-  runtime       Runtime                   @relation(fields: [runtimeName], references: [name])
-  bundle        Bundle                    @relation(fields: [bundleName], references: [name])
+  region  Region  @relation(fields: [regionName], references: [name])
+  runtime Runtime @relation(fields: [runtimeName], references: [name])
+  bundle  Bundle  @relation(fields: [regionName, bundleName], references: [regionName, name])
+
   configuration ApplicationConfiguration?
 }
 

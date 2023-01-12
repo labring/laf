@@ -12,7 +12,7 @@ export class StorageService {
    */
   private getSTSClient(oss: OSSUser) {
     return new STSClient({
-      endpoint: ServerConfig.OSS_ENDPOINT,
+      endpoint: ServerConfig.MINIO_EXTERNAL_ENDPOINT,
       credentials: {
         accessKeyId: oss.status?.accessKey,
         secretAccessKey: oss.status?.secretKey,
