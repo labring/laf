@@ -58,7 +58,7 @@ export default function FunctionList() {
   const deleteFunctionMutaion = useDeleteFunctionMutation();
 
   return (
-    <Panel style={{ minHeight: "calc(100vh - 320px)" }}>
+    <Panel className="flex-grow">
       <Panel.Header title={t`FunctionList`} actions={[<CreateModal key="create_modal" />]} />
       <div>
         <div className="flex items-center mb-3">
@@ -72,7 +72,7 @@ export default function FunctionList() {
           />
         </div>
 
-        <SectionList style={{ height: "calc(100vh - 400px)", overflowY: "auto" }}>
+        <SectionList style={{ height: "calc(100vh - 380px)", overflowY: "auto" }}>
           {(allFunctionList || [])
             .filter((item: TFunction) => item?.name.includes(keywords))
             .map((func: any) => {

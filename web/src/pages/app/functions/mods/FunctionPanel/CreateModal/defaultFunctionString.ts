@@ -1,5 +1,4 @@
-const defaultString = `
-import cloud from '@lafjs/cloud'
+const defaultString = `import cloud from '@lafjs/cloud'
 
 exports.main = async function (ctx: FunctionContext) {
 

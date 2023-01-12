@@ -28,6 +28,7 @@ import {
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 
+import Content from "@/components/Content";
 import CopyText from "@/components/CopyText";
 import Pagination from "@/components/Pagination";
 import Panel from "@/components/Panel";
@@ -82,123 +83,125 @@ export default function LogsPage() {
   };
 
   return (
-    <Panel>
-      <form
-        onSubmit={(event) => {
-          event?.preventDefault();
-          logListQuery.refetch();
-        }}
-      >
-        <Panel.Header>
-          <HStack spacing={2}>
-            <InputGroup width={400}>
-              <InputLeftElement
-                height={"10"}
-                pointerEvents="none"
-                children={<Search2Icon color="gray.300" />}
-              />
-              <Input borderRadius="4" placeholder="Request ID" {...register("requestId")} />
-            </InputGroup>
+    <Content>
+      <Panel>
+        <form
+          onSubmit={(event) => {
+            event?.preventDefault();
+            logListQuery.refetch();
+          }}
+        >
+          <Panel.Header>
+            <HStack spacing={2}>
+              <InputGroup width={400}>
+                <InputLeftElement
+                  height={"10"}
+                  pointerEvents="none"
+                  children={<Search2Icon color="gray.300" />}
+                />
+                <Input borderRadius="4" placeholder="Request ID" {...register("requestId")} />
+              </InputGroup>
 
-            <Input width={200} placeholder="函数名" bg="white" {...register("functionName")} />
+              <Input width={200} placeholder="函数名" bg="white" {...register("functionName")} />
 
-            <Button
-              px={9}
-              type={"submit"}
-              colorScheme={"green"}
-              onClick={handleSubmit(submit)}
-              isLoading={logListQuery.isFetching}
-            >
-              搜索
-            </Button>
-          </HStack>
-          <Pagination
-            values={getPageInfo(logListQuery.data?.data)}
-            onChange={(values) => {
-              setQueryData({
-                ...values,
-                ...getValues(),
-              });
-            }}
-          />
-        </Panel.Header>
-      </form>
-      <div className="px-4 py-1 rounded-md h-full relative border " style={{ paddingBottom: 100 }}>
-        {logListQuery.isFetching ? (
-          <Center className="opacity-60 bg-white absolute left-0 right-0 top-0 bottom-0 z-10">
-            <Spinner size={"lg"} />
-          </Center>
-        ) : null}
-        <div className="overflow-y-auto h-full mb-4">
-          <TableContainer minH={"400px"}>
-            <Table variant="simple">
-              <Thead>
-                <Tr>
-                  <Th width={"200px"}>时间</Th>
-                  <Th width={"200px"}>Request ID</Th>
-                  <Th>函数名</Th>
-                  <Th>Content</Th>
-                  <Th>操作</Th>
-                </Tr>
-              </Thead>
+              <Button
+                px={9}
+                type={"submit"}
+                colorScheme={"green"}
+                onClick={handleSubmit(submit)}
+                isLoading={logListQuery.isFetching}
+              >
+                搜索
+              </Button>
+            </HStack>
+            <Pagination
+              values={getPageInfo(logListQuery.data?.data)}
+              onChange={(values) => {
+                setQueryData({
+                  ...values,
+                  ...getValues(),
+                });
+              }}
+            />
+          </Panel.Header>
+        </form>
+        <div className="px-4 py-1 rounded-md h-full relative" style={{ paddingBottom: 100 }}>
+          {logListQuery.isFetching ? (
+            <Center className="opacity-60 bg-white absolute left-0 right-0 top-0 bottom-0 z-10">
+              <Spinner size={"lg"} />
+            </Center>
+          ) : null}
+          <div className="overflow-y-auto h-full mb-4">
+            <TableContainer minH={"400px"}>
+              <Table variant="simple">
+                <Thead>
+                  <Tr>
+                    <Th width={"200px"}>时间</Th>
+                    <Th width={"200px"}>Request ID</Th>
+                    <Th>函数名</Th>
+                    <Th>Content</Th>
+                    <Th>操作</Th>
+                  </Tr>
+                </Thead>
 
-              <Tbody className="relative font-mono">
-                {logListQuery.data?.data?.list.map((item: any) => {
-                  return (
-                    <Tr key={item._id} _hover={{ bgColor: "#efefef" }}>
-                      <Td width={"180px"} className="text-slate-500 ">
-                        [{formatDate(item.created_at, "YYYY-MM-DD HH:mm:ss")}]
-                      </Td>
-                      <Td width={"200px"}>
-                        <CopyText text={item.request_id}>
-                          <span>{item.request_id}</span>
-                        </CopyText>
-                      </Td>
-                      <Td>
-                        <CopyText text={item.func}>
-                          <span>{item.func}</span>
-                        </CopyText>
-                      </Td>
-                      <Td maxWidth={"300px"}>
-                        <pre className="text-green-700 max-h-[20px] overflow-hidden">
-                          {item.data}
-                        </pre>
-                      </Td>
-                      <Td width={"100px"}>
-                        <TextButton
-                          text="查看"
-                          onClick={() => {
-                            setDetail(item);
-                            onOpen();
-                          }}
-                        />
-                      </Td>
-                    </Tr>
-                  );
-                })}
-              </Tbody>
-            </Table>
-          </TableContainer>
+                <Tbody className="relative font-mono">
+                  {logListQuery.data?.data?.list.map((item: any) => {
+                    return (
+                      <Tr key={item._id} _hover={{ bgColor: "#efefef" }}>
+                        <Td width={"180px"} className="text-slate-500 ">
+                          [{formatDate(item.created_at, "YYYY-MM-DD HH:mm:ss")}]
+                        </Td>
+                        <Td width={"200px"}>
+                          <CopyText text={item.request_id}>
+                            <span>{item.request_id}</span>
+                          </CopyText>
+                        </Td>
+                        <Td>
+                          <CopyText text={item.func}>
+                            <span>{item.func}</span>
+                          </CopyText>
+                        </Td>
+                        <Td maxWidth={"300px"}>
+                          <pre className="text-green-700 max-h-[20px] overflow-hidden">
+                            {item.data}
+                          </pre>
+                        </Td>
+                        <Td width={"100px"}>
+                          <TextButton
+                            text="查看"
+                            onClick={() => {
+                              setDetail(item);
+                              onOpen();
+                            }}
+                          />
+                        </Td>
+                      </Tr>
+                    );
+                  })}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </div>
         </div>
-      </div>
 
-      <Modal onClose={onClose} isOpen={isOpen} scrollBehavior={"inside"} size="4xl">
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>
-            <span className="font-normal font-mono">Request ID: {detail?.request_id}</span>
-          </ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <SyntaxHighlighter language="json" customStyle={{ background: "#fff" }}>
-              {detail?.data || ""}
-            </SyntaxHighlighter>
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={onClose}>关闭</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </Panel>
+        <Modal onClose={onClose} isOpen={isOpen} scrollBehavior={"inside"} size="4xl">
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>
+              <span className="font-normal font-mono">Request ID: {detail?.request_id}</span>
+            </ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <SyntaxHighlighter language="json" customStyle={{ background: "#fff" }}>
+                {detail?.data || ""}
+              </SyntaxHighlighter>
+            </ModalBody>
+            <ModalFooter>
+              <Button onClick={onClose}>关闭</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </Panel>
+    </Content>
   );
 }

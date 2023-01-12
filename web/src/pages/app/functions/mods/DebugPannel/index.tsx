@@ -42,7 +42,7 @@ export default function DebugPanel() {
 
   const [params, setParams] = useState(JSON.stringify({ name: "test" }, null, 2));
 
-  const { displayName } = useHotKey(
+  useHotKey(
     DEFAULT_SHORTCUTS.send_request,
     () => {
       runningCode();
@@ -51,6 +51,7 @@ export default function DebugPanel() {
       enabled: globalStore.currentPageId === Pages.function,
     },
   );
+
   useEffect(() => {
     if (currentFunction?.methods) {
       setRunningMethod(currentFunction.methods[0]);
@@ -104,7 +105,7 @@ export default function DebugPanel() {
             <TabPanel padding={0} h="full">
               <div className="flex flex-col h-full">
                 <div className="flex py-4 px-2 items-center">
-                  <span className="mr-3">请求类型</span>
+                  <span className="mr-3 whitespace-nowrap">请求类型</span>
                   <Select
                     width="150px"
                     size="sm"
@@ -126,10 +127,11 @@ export default function DebugPanel() {
                     disabled={getFunctionDebugUrl() === ""}
                     className="ml-2"
                     onClick={() => runningCode()}
-                    colorScheme="green"
+                    bg="#E0F6F4"
+                    color="primary.500"
                     isLoading={isLoading}
                   >
-                    {t("FunctionPanel.Debug")} ({displayName.toUpperCase()})
+                    {t("FunctionPanel.Debug")}
                   </Button>
                 </div>
                 <div className="mx-2 pb-2 mb-2">调用参数:</div>
@@ -137,7 +139,7 @@ export default function DebugPanel() {
                   onChange={(values) => {
                     setParams(values || "{}");
                   }}
-                  height="calc(100vh - 400px)"
+                  height="calc(100vh - 500px)"
                   value={params}
                 />
               </div>
@@ -146,7 +148,7 @@ export default function DebugPanel() {
           </TabPanels>
         </Tabs>
       </Panel>
-      <Panel className="flex-1 " style={{ height: "40%" }}>
+      <Panel>
         <Panel.Header title="运行结果" />
         <div className="relative flex-1 overflow-auto">
           {isLoading ? (
@@ -159,7 +161,7 @@ export default function DebugPanel() {
           {runningResData ? (
             <SyntaxHighlighter
               language="json"
-              customStyle={{ background: "#fff", height: "180px" }}
+              customStyle={{ background: "#fff", height: "280px" }}
             >
               {JSON.stringify(runningResData, null, 2)}
             </SyntaxHighlighter>

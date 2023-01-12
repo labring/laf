@@ -14,7 +14,7 @@ function AppDetail() {
   return (
     <>
       <SiderBar />
-      <div className="h-full" style={{ marginLeft: SiderBarWidth }}>
+      <div className="m-2" style={{ marginLeft: SiderBarWidth, height: "calc(100vh - 1rem)" }}>
         {[
           {
             pageId: Pages.function,

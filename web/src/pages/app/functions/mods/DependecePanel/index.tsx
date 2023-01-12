@@ -18,7 +18,7 @@ export default function DependecyList() {
   const { t } = useTranslation();
 
   return (
-    <Panel className="flex-1">
+    <Panel className=" h-[250px]">
       <Panel.Header title="NPM 依赖" actions={[<AddDepenceModal key="AddDepenceModal" />]} />
       <SectionList style={{ height: "200px", overflowY: "auto", overflowX: "hidden" }}>
         {packageQuery?.data?.data?.map((packageItem: TPackage) => {

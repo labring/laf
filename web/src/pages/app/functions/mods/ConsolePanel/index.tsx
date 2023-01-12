@@ -22,7 +22,7 @@ function ConsolePanel() {
   );
 
   return (
-    <Panel className="flex-1 ">
+    <Panel className="flex-1 max-h-[200px]">
       <Panel.Header title="Console"></Panel.Header>
       <div className="relative overflow-y-auto px-2 font-mono text-sm " style={{ height: 160 }}>
         {currentRequestId && (

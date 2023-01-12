@@ -4,33 +4,38 @@
 import { useState } from "react";
 import { Button } from "@chakra-ui/react";
 
+import Content from "@/components/Content";
+import { Row } from "@/components/Grid";
+import Panel from "@/components/Panel";
+
 import CollectionDataList from "./CollectionDataList";
 import CollectionListPanel from "./CollectionListPanel";
 
 function DatabasePage() {
   const [hideList, setHideList] = useState<boolean>(false);
   return (
-    <div className="flex flex-col flex-1">
-      <div className="flex" style={{ height: "calc(100% - 50px)" }}>
+    <Content>
+      <Row className="flex-grow">
         <CollectionListPanel isHidden={hideList} />
+
         <CollectionDataList />
-      </div>
-      <div
-        className="bg-white w-full mt-2 ml-2 pl-2 rounded-md flex justify-start items-center"
-        style={{ height: "40px" }}
-      >
-        <Button
-          size="xs"
-          variant="plain"
-          style={{ fontWeight: 500 }}
-          onClick={() => {
-            setHideList((pre) => !pre);
-          }}
-        >
-          集合列表
-        </Button>
-      </div>
-    </div>
+      </Row>
+      <Row className="!flex-none">
+        <Panel className="w-full h-[40px]">
+          <Panel.Header>
+            <Button
+              size="xs"
+              variant="plain"
+              onClick={() => {
+                setHideList((pre) => !pre);
+              }}
+            >
+              集合列表
+            </Button>
+          </Panel.Header>
+        </Panel>
+      </Row>
+    </Content>
   );
 }
 
