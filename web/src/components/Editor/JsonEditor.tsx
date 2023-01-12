@@ -37,8 +37,7 @@ function JsonEditor(props: {
         onChange(editorRef.current?.getValue());
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [onChange]);
 
   useEffect(() => {
     if (monacoEl && editorRef.current && value !== editorRef.current?.getValue()) {

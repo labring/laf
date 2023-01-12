@@ -31,7 +31,7 @@ export default function FunctionList() {
 
   const { currentApp } = useGlobalStore();
 
-  const { id: functionId } = useParams();
+  const { id: functionName } = useParams();
   const navigate = useNavigate();
 
   useFunctionListQuery({
@@ -39,7 +39,7 @@ export default function FunctionList() {
       setAllFunctionList(data.data);
       if (!currentFunction?.id && data.data.length > 0) {
         const currentFunction =
-          data.data.find((item: TFunction) => item.id === functionId) || data.data[0];
+          data.data.find((item: TFunction) => item.name === functionName) || data.data[0];
         setCurrentFunction(currentFunction);
         navigate(`/app/${currentApp?.appid}/${Pages.function}/${currentFunction?.name}`, {
           replace: true,
@@ -72,7 +72,7 @@ export default function FunctionList() {
           />
         </div>
 
-        <SectionList style={{ height: "calc(100vh - 380px)", overflowY: "auto" }}>
+        <SectionList style={{ height: "calc(100vh - 420px)", overflowY: "auto" }}>
           {(allFunctionList || [])
             .filter((item: TFunction) => item?.name.includes(keywords))
             .map((func: any) => {

@@ -1,39 +1,31 @@
 /****************************
  * cloud functions database page
  ***************************/
-import { useState } from "react";
-import { Button } from "@chakra-ui/react";
 
 import Content from "@/components/Content";
-import { Row } from "@/components/Grid";
-import Panel from "@/components/Panel";
+import { Col, Row } from "@/components/Grid";
 
+import BottomPanel from "./BottomPanel";
 import CollectionDataList from "./CollectionDataList";
 import CollectionListPanel from "./CollectionListPanel";
 
+import useCustomSettingStore from "@/pages/customSetting";
+
 function DatabasePage() {
-  const [hideList, setHideList] = useState<boolean>(false);
+  const collectionPageConfig = useCustomSettingStore((store) => store.layoutInfo.collectionPage);
   return (
     <Content>
-      <Row className="flex-grow">
-        <CollectionListPanel isHidden={hideList} />
+      <Row>
+        <Col {...collectionPageConfig.SiderBar}>
+          <CollectionListPanel />
+        </Col>
 
-        <CollectionDataList />
+        <Col>
+          <CollectionDataList />
+        </Col>
       </Row>
-      <Row className="!flex-none">
-        <Panel className="w-full h-[40px]">
-          <Panel.Header>
-            <Button
-              size="xs"
-              variant="plain"
-              onClick={() => {
-                setHideList((pre) => !pre);
-              }}
-            >
-              集合列表
-            </Button>
-          </Panel.Header>
-        </Panel>
+      <Row {...collectionPageConfig.Bottom}>
+        <BottomPanel />
       </Row>
     </Content>
   );

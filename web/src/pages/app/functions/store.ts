@@ -11,7 +11,6 @@ type State = {
   currentRequestId: string | undefined;
   functionCodes: { [key: string]: string };
   getFunctionUrl: () => string;
-  getFunctionDebugUrl: () => string;
 
   setCurrentRequestId: (requestId: string | undefined) => void;
   setAllFunctionList: (funcionList: TFunction[]) => void;
@@ -28,15 +27,6 @@ const useFunctionStore = create<State>()(
       currentRequestId: undefined,
 
       getFunctionUrl: () => {
-        const currentApp = useGlobalStore.getState().currentApp;
-        const currentFunction = get().currentFunction;
-
-        return currentFunction?.name
-          ? `http://${currentApp?.gateway.status.appRoute.domain}/${currentFunction?.name}`
-          : "";
-      },
-
-      getFunctionDebugUrl: () => {
         const currentApp = useGlobalStore.getState().currentApp;
         const currentFunction = get().currentFunction;
 

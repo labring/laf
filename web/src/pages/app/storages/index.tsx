@@ -19,7 +19,9 @@ export default function StoragePage() {
   return (
     <Content>
       <Row>
-        <StorageListPanel />
+        <Col className="max-w-[300px]">
+          <StorageListPanel />
+        </Col>
         <Col>
           {currentStorage === undefined ? (
             <div className="h-full flex items-center  justify-center">

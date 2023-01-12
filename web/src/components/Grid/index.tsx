@@ -5,15 +5,43 @@ function Grid() {
   return <div>Grid</div>;
 }
 
-function Row(props: { className?: string; children: React.ReactNode }) {
-  const { className } = props;
-  return <div className={clsx(className, "flex flex-1 space-x-2 w-full")}>{props.children}</div>;
+function Row(props: {
+  className?: string;
+  style?: React.CSSProperties;
+  children: React.ReactNode;
+}) {
+  const { className, style } = props;
+  return (
+    <div
+      className={clsx(
+        "flex space-x-2 w-full",
+        style?.height ? "flex-none" : "flex-grow",
+        className,
+      )}
+      style={style}
+    >
+      {props.children}
+    </div>
+  );
 }
 
-function Col(props: { className?: string; children: React.ReactNode }) {
-  const { className } = props;
+function Col(props: {
+  className?: string;
+  style?: React.CSSProperties;
+  children: React.ReactNode;
+}) {
+  const { className, style } = props;
   return (
-    <div className={clsx(className, "flex flex-col space-y-2 flex-1 h-full")}>{props.children}</div>
+    <div
+      className={clsx(
+        "flex flex-col space-y-2 h-full",
+        style?.width ? "flex-none" : "flex-grow",
+        className,
+      )}
+      style={style}
+    >
+      {props.children}
+    </div>
   );
 }
 

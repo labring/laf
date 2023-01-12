@@ -163,7 +163,7 @@ export default function LogsPage() {
                         </Td>
                         <Td maxWidth={"300px"}>
                           <pre className="text-green-700 max-h-[20px] overflow-hidden">
-                            {item.data}
+                            {(item.data as string).substring(0, 50)}
                           </pre>
                         </Td>
                         <Td width={"100px"}>

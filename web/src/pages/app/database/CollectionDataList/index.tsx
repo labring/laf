@@ -2,8 +2,6 @@ import { useTranslation } from "react-i18next";
 import { AddIcon } from "@chakra-ui/icons";
 import { Button } from "@chakra-ui/react";
 
-import { Col } from "@/components/Grid";
-
 import CreateCollectionModal from "../mods/CreateCollectionModal";
 import useDBMStore from "../store";
 
@@ -15,7 +13,7 @@ export default function CollectionDataList() {
   const { t } = useTranslation();
   const store = useDBMStore((state) => state);
   return (
-    <Col>
+    <>
       {store.currentDB === undefined ? (
         <div className="h-full flex items-center justify-center">
           <CreateCollectionModal>
@@ -58,6 +56,6 @@ export default function CollectionDataList() {
           </TabPanel>
         </TabPanels>
       </Tabs > */}
-    </Col>
+    </>
   );
 }
