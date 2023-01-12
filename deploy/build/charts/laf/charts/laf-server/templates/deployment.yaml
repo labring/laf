@@ -57,14 +57,16 @@ spec:
               value: http://api.{{ .Values.global.domain }}
             - name: JWT_EXPIRES_IN
               value: {{ .Values.jwt.expires_in | quote}}
-            - name: OSS_ENDPOINT
+            - name: MINIO_EXTERNAL_ENDPOINT
               value: http://oss.{{ .Values.global.domain }}
-            - name: OSS_ACCESS_KEY
+            - name: MINIO_INTERNAL_ENDPOINT
+              value: http://oss.{{ .Values.global.domain }}
+            - name: MINIO_ROOT_ACCESS_KEY
               value: {{ .Values.global.oss.access_key | quote}}
-            - name: OSS_SECRET_KEY
+            - name: MINIO_ROOT_SECRET_KEY
               value: {{ .Values.global.oss.secret_key | quote}}
-            - name: OSS_REGION
-              value: {{ .Values.global.oss.region | quote}}
+            - name: DOMAIN
+              value: {{ .Values.global.domain }}
             - name: CASDOOR_ENDPOINT
               value: http://casdoor.{{ .Values.global.domain }}
             - name: CASDOOR_ORG_NAME

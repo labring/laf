@@ -89,7 +89,7 @@ export class ApplicationController {
     const data = await this.appService.findOne(appid, { configuration: true })
     const sts = await this.storageService.getOssSTS(appid, resources.oss)
     const credentials = {
-      endpoint: ServerConfig.OSS_ENDPOINT,
+      endpoint: ServerConfig.MINIO_EXTERNAL_ENDPOINT,
       accessKeyId: sts.Credentials?.AccessKeyId,
       secretAccessKey: sts.Credentials?.SecretAccessKey,
       sessionToken: sts.Credentials?.SessionToken,

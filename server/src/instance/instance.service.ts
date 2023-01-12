@@ -59,7 +59,10 @@ export class InstanceService {
       { name: 'OSS_ACCESS_KEY', value: oss.status?.accessKey },
       { name: 'OSS_ACCESS_SECRET', value: oss.status?.secretKey },
       { name: 'OSS_INTERNAL_ENDPOINT', value: oss.status?.endpoint },
-      { name: 'OSS_EXTERNAL_ENDPOINT', value: ServerConfig.OSS_ENDPOINT },
+      {
+        name: 'OSS_EXTERNAL_ENDPOINT',
+        value: ServerConfig.MINIO_EXTERNAL_ENDPOINT,
+      },
       { name: 'OSS_REGION', value: oss.status?.region },
       { name: 'FLAGS', value: `--max_old_space_size=${max_old_space_size}` },
       { name: 'DEPENDENCIES', value: dependencies_string },
