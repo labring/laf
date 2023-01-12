@@ -90,16 +90,17 @@ export const useDeleteFunctionMutation = () => {
 
 export const useCompileMutation = () => {
   const globalStore = useGlobalStore();
-  return useMutation(
-    (values: { code: string; name: string }) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["compileMutation"],
+    mutationFn: (values: { code: string; name: string }) => {
       return FunctionControllerCompile(values);
     },
-    {
-      onSuccess(data) {
-        if (data.error) {
-          globalStore.showError(data.error);
-        }
-      },
+    onSuccess(data) {
+      if (data.error) {
+        globalStore.showError(data.error);
+      }
+      queryClient.setQueryData(["compileMutation"], data);
     },
-  );
+  });
 };

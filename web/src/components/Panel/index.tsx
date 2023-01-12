@@ -10,7 +10,10 @@ const Panel = (props: {
 }) => {
   const { className, style = {} } = props;
   return (
-    <div style={style} className={clsx("bg-white rounded px-4 flex flex-col h-full", className)}>
+    <div
+      style={style}
+      className={clsx("bg-white rounded px-4 flex flex-col h-full w-full", className)}
+    >
       {props.children}
     </div>
   );

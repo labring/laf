@@ -72,7 +72,7 @@ export default function FunctionList() {
           />
         </div>
 
-        <SectionList style={{ height: "calc(100vh - 380px)", overflowY: "auto" }}>
+        <SectionList style={{ height: "calc(100vh - 420px)", overflowY: "auto" }}>
           {(allFunctionList || [])
             .filter((item: TFunction) => item?.name.includes(keywords))
             .map((func: any) => {
