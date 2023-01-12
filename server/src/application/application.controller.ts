@@ -23,9 +23,8 @@ import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import { CreateApplicationDto } from './dto/create-application.dto'
 import { UpdateApplicationDto } from './dto/update-application.dto'
 import { ApplicationService } from './application.service'
-import { ServerConfig } from '../constants'
 import { FunctionService } from '../function/function.service'
-import { StorageService } from '../storage/storage.service'
+import { StorageService } from 'src/storage/storage.service'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -86,10 +85,17 @@ export class ApplicationController {
     // get sub resources
     const resources = await this.appService.getSubResources(appid)
 
-    const data = await this.appService.findOne(appid, { configuration: true })
-    const sts = await this.storageService.getOssSTS(appid, resources.oss)
+    const data = await this.appService.findOne(appid, {
+      configuration: true,
+      region: true,
+    })
+    const sts = await this.storageService.getOssSTS(
+      data.region,
+      appid,
+      resources.storageUser,
+    )
     const credentials = {
-      endpoint: ServerConfig.MINIO_EXTERNAL_ENDPOINT,
+      endpoint: data.region.storageConf.externalEndpoint,
       accessKeyId: sts.Credentials?.AccessKeyId,
       secretAccessKey: sts.Credentials?.SecretAccessKey,
       sessionToken: sts.Credentials?.SessionToken,
@@ -102,7 +108,7 @@ export class ApplicationController {
       gateway: resources.gateway,
       database: resources.database,
       oss: {
-        ...resources.oss,
+        ...resources.storageUser,
         credentials,
       },
       function_debug_token: debug_token,

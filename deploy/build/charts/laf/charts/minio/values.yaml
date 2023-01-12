@@ -84,8 +84,8 @@ runtimeClassName: ""
 ## AccessKey and secretKey is generated when not set
 ## Distributed MinIO ref: https://min.io/docs/minio/linux/operations/install-deploy-manage/deploy-minio-multi-node-multi-drive.html
 ##
-rootUser: ""
-rootPassword: ""
+rootUser: minio-root
+rootPassword: passw0rd
 
 ## Use existing Secret that store following variables:
 ##
@@ -112,9 +112,9 @@ mountPath: "/export"
 bucketRoot: ""
 
 # Number of drives attached to a node
-drivesPerNode: 1
+drivesPerNode: 4
 # Number of MinIO containers running
-replicas: 16
+replicas: 1
 # Number of expanded MinIO clusters
 pools: 1
 
@@ -153,10 +153,10 @@ persistence:
   ##
   ## Storage class of PV to bind. By default it looks for standard storage class.
   ## If the PV uses a different storage class, specify that here.
-  storageClass: ""
+  storageClass: local-hostpath
   VolumeName: ""
   accessMode: ReadWriteOnce
-  size: 500Gi
+  size: 20Gi
 
   ## If subPath is set mount a sub folder of a volume instead of the root of the volume.
   ## This is especially handy for volume plugins that don't natively support sub mounting (like glusterfs).
@@ -254,34 +254,31 @@ podLabels: {}
 ##
 resources:
   requests:
-    memory: 16Gi
+    memory: 100Mi
 
 ## List of policies to be created after minio install
 ##
 ## In addition to default policies [readonly|readwrite|writeonly|consoleAdmin|diagnostics]
 ## you can define additional policies with custom supported actions and resources
-policies: []
+policies:
 ## writeexamplepolicy policy grants creation or deletion of buckets with name
 ## starting with example. In addition, grants objects write permissions on buckets starting with
 ## example.
-# - name: writeexamplepolicy
-#   statements:
-#     - resources:
-#         - 'arn:aws:s3:::example*/*'
-#       actions:
-#         - "s3:AbortMultipartUpload"
-#         - "s3:GetObject"
-#         - "s3:DeleteObject"
-#         - "s3:PutObject"
-#         - "s3:ListMultipartUploadParts"
-#     - resources:
-#         - 'arn:aws:s3:::example*'
-#       actions:
-#         - "s3:CreateBucket"
-#         - "s3:DeleteBucket"
-#         - "s3:GetBucketLocation"
-#         - "s3:ListBucket"
-#         - "s3:ListBucketMultipartUploads"
+- name: laf_owner_by_prefix
+  statements:
+    - resources:
+        - 'arn:aws:s3:::${aws:username}-*'
+      effect: Allow
+      actions:
+        - "s3:GetBucketPolicy"
+        - "s3:GetObject"
+        - "s3:ListBucket"
+        - "s3:ListBucketMultipartUploads"
+        - "s3:ListMultipartUploadParts"
+        - "s3:PutObject"
+        - "s3:DeleteObject"
+        - "s3:GetBucketLocation"
+
 ## readonlyexamplepolicy policy grants access to buckets with name starting with example.
 ## In addition, grants objects read permissions on buckets starting with example.
 # - name: readonlyexamplepolicy
@@ -339,9 +336,9 @@ users:
   ## Add new policies as explained here https://min.io/docs/minio/kubernetes/upstream/administration/identity-access-management.html#access-management
   ## NOTE: this will fail if LDAP is enabled in your MinIO deployment
   ## make sure to disable this if you are using LDAP.
-  - accessKey: console
-    secretKey: console123
-    policy: consoleAdmin
+  - accessKey: temp-user
+    secretKey: abc123456
+    # policy: consoleAdmin
   # Or you can refer to specific secret
   #- accessKey: externalSecret
   #  existingSecret: my-secret
@@ -417,6 +414,8 @@ makeBucketJob:
 ## NOTE: the mc command TARGET is always "myminio"
 customCommands:
   # - command: "admin policy set myminio consoleAdmin group='cn=ops,cn=groups,dc=example,dc=com'"
+  - command: "admin group add myminio laf_owner_by_prefix_group temp-user"
+  - command: "admin policy set myminio laf_owner_by_prefix group=laf_owner_by_prefix_group"
 
 ## Additional Annotations for the Kubernetes Job customCommandJob
 customCommandJob:

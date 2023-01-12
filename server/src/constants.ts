@@ -117,3 +117,6 @@ export const GB = 1024 * MB
 export const APPLICATION_SECRET_KEY = 'SERVER_SECRET'
 
 export const MAX_FUNCTION_COUNT = 1000
+
+export const MINIO_COMMON_USER_GROUP = 'laf_owner_by_prefix_group'
+export const MINIO_COMMON_USER_POLICY = 'laf_owner_by_prefix'

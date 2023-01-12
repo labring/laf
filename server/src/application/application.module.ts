@@ -7,12 +7,12 @@ import { ApplicationTaskService } from './application-task.service'
 import { InstanceService } from '../instance/instance.service'
 import { JwtService } from '@nestjs/jwt'
 import { FunctionService } from '../function/function.service'
-import { StorageService } from '../storage/storage.service'
 import { EnvironmentVariableService } from './environment.service'
 import { EnvironmentVariableController } from './environment.controller'
+import { StorageModule } from 'src/storage/storage.module'
 
 @Module({
-  imports: [CoreModule],
+  imports: [CoreModule, StorageModule],
   controllers: [ApplicationController, EnvironmentVariableController],
   providers: [
     ApplicationService,
@@ -21,7 +21,6 @@ import { EnvironmentVariableController } from './environment.controller'
     InstanceService,
     JwtService,
     FunctionService,
-    StorageService,
     EnvironmentVariableService,
   ],
   exports: [ApplicationService],

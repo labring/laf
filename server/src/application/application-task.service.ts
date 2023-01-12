@@ -1,13 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { Application, ApplicationPhase } from '@prisma/client'
+import { Application, ApplicationPhase, Region } from '@prisma/client'
 import { isConditionTrue } from '../utils/getter'
 import { DatabaseCoreService } from '../core/database.cr.service'
 import { GatewayCoreService } from '../core/gateway.cr.service'
-import { OSSUserCoreService } from '../core/oss-user.cr.service'
 import { PrismaService } from '../prisma.service'
 import * as assert from 'node:assert'
 import { ApplicationCoreService } from '../core/application.cr.service'
+import { StorageService } from 'src/storage/storage.service'
 
 @Injectable()
 export class ApplicationTaskService {
@@ -17,7 +17,7 @@ export class ApplicationTaskService {
     private readonly appCore: ApplicationCoreService,
     private readonly databaseCore: DatabaseCoreService,
     private readonly gatewayCore: GatewayCoreService,
-    private readonly ossCore: OSSUserCoreService,
+    private readonly storageService: StorageService,
     private readonly prisma: PrismaService,
   ) {}
 
@@ -77,6 +77,13 @@ export class ApplicationTaskService {
     })
     assert(bundle, `Bundle ${app.bundleName} not found`)
 
+    // get app region
+    const region = await this.prisma.region.findUnique({
+      where: {
+        name: app.regionName,
+      },
+    })
+
     // reconcile resources
     const namespace = await this.appCore.getAppNamespace(appid)
     if (!namespace) {
@@ -85,18 +92,22 @@ export class ApplicationTaskService {
       return
     }
 
-    let database = await this.databaseCore.findOne(appid)
-    let oss = await this.ossCore.findOne(appid)
-    let gateway = await this.gatewayCore.findOne(appid)
+    let storage = await this.storageService.findOne(appid)
+    if (!storage) {
+      this.logger.debug(`Creating storage for application ${appid}`)
+      const res = await this.storageService.create(app, region)
+      if (res) {
+        storage = res
+      }
+    }
 
+    let database = await this.databaseCore.findOne(appid)
     if (!database) {
       this.logger.debug(`Creating database for application ${appid}`)
       database = await this.databaseCore.create(app, bundle)
     }
-    if (!oss) {
-      this.logger.debug(`Creating oss for application ${appid}`)
-      oss = await this.ossCore.create(app, bundle)
-    }
+
+    let gateway = await this.gatewayCore.findOne(appid)
     if (!gateway) {
       this.logger.debug(`Creating gateway for application ${appid}`)
       gateway = await this.gatewayCore.create(app.appid)
@@ -105,7 +116,7 @@ export class ApplicationTaskService {
     // reconcile state
     if (!isConditionTrue('Ready', database?.status?.conditions)) return
     if (!isConditionTrue('Ready', gateway?.status?.conditions)) return
-    if (!isConditionTrue('Ready', oss?.status?.conditions)) return
+    if (!storage) return
 
     // update phase
     await this.prisma.application.updateMany({

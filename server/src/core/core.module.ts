@@ -4,7 +4,6 @@ import { BucketCoreService } from './bucket.cr.service'
 import { DatabaseCoreService } from './database.cr.service'
 import { GatewayCoreService } from './gateway.cr.service'
 import { KubernetesService } from './kubernetes.service'
-import { OSSUserCoreService } from './oss-user.cr.service'
 
 @Global()
 @Module({
@@ -13,7 +12,6 @@ import { OSSUserCoreService } from './oss-user.cr.service'
     ApplicationCoreService,
     BucketCoreService,
     DatabaseCoreService,
-    OSSUserCoreService,
     GatewayCoreService,
   ],
   exports: [
@@ -21,7 +19,6 @@ import { OSSUserCoreService } from './oss-user.cr.service'
     ApplicationCoreService,
     BucketCoreService,
     DatabaseCoreService,
-    OSSUserCoreService,
     GatewayCoreService,
   ],
 })

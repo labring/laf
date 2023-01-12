@@ -6,6 +6,9 @@ RUN apt-get install -y openssl
 
 ARG TARGETARCH
 
+ENV MINIO_CLIENT_PATH /usr/local/bin/mc
+RUN wget https://dl.min.io/client/mc/release/linux-$TARGETARCH/mc -O $MINIO_CLIENT_PATH && chmod +x $MINIO_CLIENT_PATH
+
 WORKDIR /app
 
 EXPOSE 3000

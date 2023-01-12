@@ -13,6 +13,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// user schemas
+
 model User {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   username  String   @unique
@@ -37,6 +39,19 @@ model UserProfile {
 
   user User @relation(fields: [uid], references: [id])
 }
+
+model PersonalAccessToken {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  uid       String   @db.ObjectId
+  name      String
+  token     String   @unique
+  expiredAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [uid], references: [id])
+}
+
+// region schemas 
 
 type RegionClusterConf {
   driver     String // kubernetes
@@ -120,6 +135,8 @@ model Runtime {
   Application Application[]
 }
 
+// application schemas
+
 enum ApplicationState {
   Running
   Stopped
@@ -156,6 +173,7 @@ model Application {
   bundle  Bundle  @relation(fields: [regionName, bundleName], references: [regionName, name])
 
   configuration ApplicationConfiguration?
+  storageUser   StorageUser?
 }
 
 type EnvironmentVariable {
@@ -174,6 +192,36 @@ model ApplicationConfiguration {
 
   application Application @relation(fields: [appid], references: [appid])
 }
+
+// storage schemas
+
+model StorageUser {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  appid     String   @unique
+  accessKey String
+  secretKey String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  application Application @relation(fields: [appid], references: [appid])
+}
+
+enum BucketPolicy {
+  readwrite
+  readonly
+  private
+}
+
+model StorageBucket {
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  appid     String
+  name      String       @unique
+  policy    BucketPolicy
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+// database schemas
 
 model DatabasePolicy {
   id        String               @id @default(auto()) @map("_id") @db.ObjectId
@@ -200,6 +248,8 @@ model DatabasePolicyRule {
 
   @@unique([appid, policyName, collectionName])
 }
+
+// cloud function schemas
 
 enum HttpMethod {
   GET
@@ -247,15 +297,4 @@ model CronTrigger {
   updatedAt DateTime @updatedAt
 
   cloudFunction CloudFunction @relation(fields: [appid, target], references: [appid, name])
-}
-
-model PersonalAccessToken {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  uid       String   @db.ObjectId
-  name      String
-  token     String   @unique
-  expiredAt DateTime
-  createdAt DateTime @default(now())
-
-  user User @relation(fields: [uid], references: [id])
 }

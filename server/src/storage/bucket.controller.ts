@@ -26,7 +26,6 @@ import { BucketCoreService } from '../core/bucket.cr.service'
 import { CreateBucketDto } from './dto/create-bucket.dto'
 import { UpdateBucketDto } from './dto/update-bucket.dto'
 import { Bucket, BucketList } from '../core/api/bucket.cr'
-import { GatewayCoreService } from 'src/core/gateway.cr.service'
 import * as assert from 'node:assert'
 
 @ApiTags('Storage')
@@ -35,10 +34,7 @@ import * as assert from 'node:assert'
 export class BucketController {
   private readonly logger = new Logger(BucketController.name)
 
-  constructor(
-    private readonly bucketsService: BucketCoreService,
-    private readonly gatewayCore: GatewayCoreService,
-  ) {}
+  constructor(private readonly bucketsService: BucketCoreService) {}
 
   /**
    * Create a new bucket
@@ -163,5 +159,20 @@ export class BucketController {
     // remove bucket in gateway
     await this.bucketsService.reconcileGateway(appid)
     return ResponseUtil.ok(res)
+  }
+
+  async getSTSPolicy() {
+    const policy = {
+      Version: '2012-10-17',
+      Statement: [
+        {
+          Sid: `app-sts-full-grant`,
+          Effect: 'Allow',
+          Action: 's3:*',
+          Resource: 'arn:aws:s3:::*',
+        },
+      ],
+    }
+    return JSON.stringify(policy)
   }
 }

@@ -6,9 +6,9 @@ import { PrismaService } from '../prisma.service'
 import { UpdateApplicationDto } from './dto/update-application.dto'
 import { DatabaseCoreService } from '../core/database.cr.service'
 import { GatewayCoreService } from '../core/gateway.cr.service'
-import { OSSUserCoreService } from '../core/oss-user.cr.service'
 import { APPLICATION_SECRET_KEY, ServerConfig } from '../constants'
 import { GenerateAlphaNumericPassword } from '../utils/random'
+import { StorageService } from '../storage/storage.service'
 
 @Injectable()
 export class ApplicationService {
@@ -17,7 +17,7 @@ export class ApplicationService {
     private readonly prisma: PrismaService,
     private readonly databaseCore: DatabaseCoreService,
     private readonly gatewayCore: GatewayCoreService,
-    private readonly ossCore: OSSUserCoreService,
+    private readonly storageService: StorageService,
   ) {}
 
   async create(userid: string, dto: CreateApplicationDto) {
@@ -101,10 +101,10 @@ export class ApplicationService {
 
   async getSubResources(appid: string) {
     const database = await this.databaseCore.findOne(appid)
-    const oss = await this.ossCore.findOne(appid)
     const gateway = await this.gatewayCore.findOne(appid)
+    const storageUser = await this.storageService.findOne(appid)
 
-    return { database, oss, gateway }
+    return { database, storageUser, gateway }
   }
 
   async update(appid: string, dto: UpdateApplicationDto) {
