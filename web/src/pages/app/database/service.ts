@@ -6,6 +6,14 @@ import {
   CollectionControllerCreate,
   CollectionControllerFindAll,
   CollectionControllerRemove,
+  PolicyControllerCreate,
+  PolicyControllerFindAll,
+  PolicyControllerRemove,
+  PolicyControllerUpdate,
+  PolicyRuleControllerCreate,
+  PolicyRuleControllerFindAll,
+  PolicyRuleControllerRemove,
+  PolicyRuleControllerUpdate,
 } from "@/apis/v1/apps";
 import useDB from "@/hooks/useDB";
 import useGlobalStore from "@/pages/globalStore";
@@ -13,6 +21,8 @@ import useGlobalStore from "@/pages/globalStore";
 const queryKeys = {
   useCollectionListQuery: ["useCollectionListQuery"],
   useEntryDataQuery: (db: string) => ["useEntryDataQuery", db],
+  usePolicyListQuery: ["usePolicyListQuery"],
+  useRulesListQuery: (name: string) => ["useRulesListQuery", name],
 };
 
 export const useCollectionListQuery = (config?: { onSuccess: (data: any) => void }) => {
@@ -171,6 +181,147 @@ export const useDeleteDataMutation = (config?: { onSuccess: (data: any) => void 
           config && config.onSuccess(data);
         } else {
           globalStore.showError(data.error);
+        }
+      },
+    },
+  );
+};
+
+export const usePolicyListQuery = (onSuccess?: (data: any) => void) => {
+  return useQuery(
+    queryKeys.usePolicyListQuery,
+    () => {
+      return PolicyControllerFindAll({});
+    },
+    {
+      onSuccess: onSuccess,
+    },
+  );
+};
+
+export const useCreatePolicyMutation = () => {
+  const globalStore = useGlobalStore();
+  const queryClient = useQueryClient();
+  return useMutation(
+    (values: any) => {
+      return PolicyControllerCreate(values);
+    },
+    {
+      onSuccess(data) {
+        if (data.error) {
+          globalStore.showError(data.error);
+        } else {
+          queryClient.invalidateQueries(queryKeys.usePolicyListQuery);
+        }
+      },
+    },
+  );
+};
+
+export const useUpdatePolicyMutation = () => {
+  const globalStore = useGlobalStore();
+  const queryClient = useQueryClient();
+  return useMutation(
+    (values: any) => {
+      return PolicyControllerUpdate(values);
+    },
+    {
+      onSuccess(data) {
+        if (data.error) {
+          globalStore.showError(data.error);
+        } else {
+          queryClient.invalidateQueries(queryKeys.usePolicyListQuery);
+        }
+      },
+    },
+  );
+};
+
+export const useDeletePolicyMutation = () => {
+  const globalStore = useGlobalStore();
+  const queryClient = useQueryClient();
+  return useMutation(
+    (values: any) => {
+      return PolicyControllerRemove({ name: values });
+    },
+    {
+      onSuccess(data) {
+        if (data.error) {
+          globalStore.showError(data.error);
+        } else {
+          queryClient.invalidateQueries(queryKeys.usePolicyListQuery);
+        }
+      },
+    },
+  );
+};
+
+export const useRulesListQuery = (onSuccess?: (data: any) => void) => {
+  const { currentPolicy } = useDBMStore();
+  return useQuery(
+    [queryKeys.useRulesListQuery(currentPolicy?.name || "")],
+    () => {
+      return PolicyRuleControllerFindAll({ name: currentPolicy?.name || "" });
+    },
+    {
+      onSuccess(data) {
+        onSuccess && onSuccess(data);
+      },
+    },
+  );
+};
+
+export const useCreateRulesMutation = (onSuccess?: () => void) => {
+  const { currentPolicy } = useDBMStore();
+  const globalStore = useGlobalStore();
+  return useMutation(
+    (values: any) => {
+      return PolicyRuleControllerCreate({ ...values, name: currentPolicy?.name || "" });
+    },
+    {
+      onSuccess(data) {
+        if (data.error) {
+          globalStore.showError(data.error);
+        } else {
+          onSuccess && onSuccess();
+        }
+      },
+    },
+  );
+};
+
+export const useUpdateRulesMutation = (onSuccess?: () => void) => {
+  const { currentPolicy } = useDBMStore();
+  const globalStore = useGlobalStore();
+  return useMutation(
+    (values: any) => {
+      return PolicyRuleControllerUpdate({ ...values, name: currentPolicy?.name || "" });
+    },
+    {
+      onSuccess(data) {
+        if (data.error) {
+          globalStore.showError(data.error);
+        } else {
+          onSuccess && onSuccess();
+        }
+      },
+    },
+  );
+};
+
+export const useDeleteRuleMutation = (onSuccess?: () => void) => {
+  const { currentPolicy } = useDBMStore();
+  const globalStore = useGlobalStore();
+  return useMutation(
+    (values: any) => {
+      return PolicyRuleControllerRemove({ ...values, name: currentPolicy?.name || "" });
+    },
+    {
+      onSuccess(data) {
+        if (data.error) {
+          globalStore.showError(data.error);
+        } else {
+          onSuccess && onSuccess();
         }
       },
     },

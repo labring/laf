@@ -10,16 +10,8 @@ import {
 
 import IconWrap from "@/components/IconWrap";
 
-import { useDeleteDataMutation } from "../../../service";
-
-export default function DeleteButton(props: { data: any; fn: any }) {
+export default function DeleteButton(props: { data: any; deleteMethod: any }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const deleteDataMutation = useDeleteDataMutation({
-    onSuccess(data) {
-      props.fn(undefined);
-    },
-  });
-
   return (
     <>
       <Popover
@@ -55,10 +47,10 @@ export default function DeleteButton(props: { data: any; fn: any }) {
             </Button>
             <Button
               colorScheme="red"
-              isLoading={deleteDataMutation.isLoading}
+              isLoading={props.deleteMethod.isLoading}
               onClick={async (event) => {
                 event?.stopPropagation();
-                await deleteDataMutation.mutateAsync(props.data);
+                await props.deleteMethod.mutateAsync(props.data);
               }}
             >
               Apply
