@@ -27,7 +27,7 @@ export const useFunctionListQuery = ({ onSuccess }: { onSuccess: (data: any) => 
   );
 };
 
-export const useCreateFuncitonMutation = () => {
+export const useCreateFunctionMutation = () => {
   const store = useFunctionStore();
   const globalStore = useGlobalStore();
   const queryClient = useQueryClient();

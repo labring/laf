@@ -27,9 +27,9 @@ const Tag = defineMultiStyleConfig({
     }),
     readonly: definePartsStyle({
       container: {
-        borderColor: "purper.500",
+        borderColor: "purple.500",
         borderWidth: 1,
-        color: "purper.700",
+        color: "purple.700",
       },
     }),
     readwrite: definePartsStyle({
@@ -221,6 +221,10 @@ const theme = extendTheme({
   },
   colors: {
     primary: {
+      100: "#E6F6F5",
+      200: "#CCEEEB",
+      300: "#99DDD8",
+      400: "#66CBC4",
       500: "#00A99D",
       700: "#04756D",
     },
@@ -228,7 +232,7 @@ const theme = extendTheme({
       500: "#0C74AE80",
       700: "#0C74AE",
     },
-    purper: {
+    purple: {
       500: "#A55AC980",
       700: "#A55AC9",
     },

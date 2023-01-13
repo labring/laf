@@ -2,9 +2,6 @@ import { useEffect, useState } from "react";
 import { FormControl, FormErrorMessage, Input, Td } from "@chakra-ui/react";
 
 import TextButton from "../../TextButton";
-
-import styles from "../index.module.scss";
-
 export type TConfiguration = {
   key: string;
   tableHeight?: string;
@@ -21,14 +18,13 @@ export type TColumnItem = {
   name: string;
   key: string;
   width?: string;
-  textWidth?: string;
   editable?: boolean;
   defaultValue?: string | number | any;
-  valiate?: ((
+  validate?: ((
     data: any,
     index: number,
   ) => {
-    isValiate: boolean;
+    isValidate: boolean;
     errorInfo: string;
   })[];
   editComponent?: (data: {
@@ -51,7 +47,7 @@ const EditableTr = function (props: {
   const { index, isCreate, data, column, configuration, onSave, onCancel } = props;
   const [formData, setFormData] = useState(data);
   const [invalidData, setInvalidData] = useState<{
-    [key: string]: { isValiate: boolean; errorInfo: string };
+    [key: string]: { isValidate: boolean; errorInfo: string };
   }>();
 
   useEffect(() => {
@@ -62,80 +58,78 @@ const EditableTr = function (props: {
     const newData: any = {};
     column.forEach((item: TColumnItem) => {
       newData[item.key] = {
-        isValiate: true,
+        isValidate: true,
         errorInfo: "",
       };
     });
     setInvalidData(newData);
   }, [column]);
 
-  const handleValiate = function (
+  const handleValidate = function (
     key: string,
     value: any,
-    valiate:
+    validate:
       | undefined
       | ((
           data: any,
           index: number,
         ) => {
-          isValiate: boolean;
+          isValidate: boolean;
           errorInfo: string;
         })[],
   ) {
     const newData = { ...invalidData };
     newData[key] = {
-      isValiate: true,
+      isValidate: true,
       errorInfo: "",
     };
-    for (let method of valiate || []) {
+    for (let method of validate || []) {
       //  parameter Index: In order to judge whether the new added data
       //  is duplicated with the data in the list
-      const { isValiate, errorInfo } = method(value, index);
-      if (!isValiate) {
+      const { isValidate, errorInfo } = method(value, index);
+      if (!isValidate) {
         newData[key] = {
-          isValiate,
+          isValidate: isValidate,
           errorInfo,
         };
         break;
       }
     }
     setInvalidData(newData);
-    return newData[key].isValiate;
+    return newData[key].isValidate;
   };
 
   const handleChange = function (
     e: any,
     key: string,
-    valiate:
+    validate:
       | undefined
       | ((
           data: any,
           index: number,
         ) => {
-          isValiate: boolean;
+          isValidate: boolean;
           errorInfo: string;
         })[],
   ) {
     const newData = { ...formData };
     newData[key] = e.target.value;
     setFormData(newData);
-    handleValiate(key, e.target.value, valiate);
+    handleValidate(key, e.target.value, validate);
   };
 
   return (
     <>
       {column.map((item: TColumnItem) => {
-        const { width, key, editable = true, valiate, editComponent } = item;
+        const { width, key, editable = true, validate, editComponent } = item;
         return (
-          <Td width={width || undefined} key={key}>
-            <FormControl isInvalid={invalidData && !invalidData[key].isValiate}>
-              {!editable && !isCreate ? (
-                <span className={`w-${item?.textWidth || 40} ${styles.text}`}>{formData[key]}</span>
-              ) : editComponent ? (
+          <Td maxWidth={width || undefined} key={key}>
+            <FormControl isInvalid={invalidData && !invalidData[key].isValidate}>
+              {editComponent ? (
                 editComponent({
                   value: formData[key],
-                  onBlur: (e: any) => handleChange(e, key, valiate),
-                  onChange: (e: any) => handleChange(e, key, valiate),
+                  onBlur: (e: any) => handleChange(e, key, validate),
+                  onChange: (e: any) => handleChange(e, key, validate),
                   disabled: !editable && !isCreate,
                 })
               ) : (
@@ -143,8 +137,8 @@ const EditableTr = function (props: {
                   resize="vertical"
                   size="sm"
                   value={formData[key]}
-                  onBlur={(e: any) => handleChange(e, key, valiate)}
-                  onChange={(e: any) => handleChange(e, key, valiate)}
+                  onBlur={(e: any) => handleChange(e, key, validate)}
+                  onChange={(e: any) => handleChange(e, key, validate)}
                   disabled={!editable && !isCreate}
                   placeholder={`请输入${key}`}
                 />
@@ -154,15 +148,15 @@ const EditableTr = function (props: {
           </Td>
         );
       })}
-      <Td width={"200px"}>
+      <Td maxWidth="150px">
         <>
           <TextButton
             text={configuration?.saveButtonText ? configuration.saveButtonText : "确定"}
             type="submit"
             onClick={() => {
               let flag = true;
-              for (let { valiate, key } of column) {
-                flag = valiate && !handleValiate(key, formData[key], valiate) ? false : flag;
+              for (let { validate, key } of column) {
+                flag = validate && !handleValidate(key, formData[key], validate) ? false : flag;
                 if (!flag) {
                   break;
                 }

@@ -19,7 +19,7 @@ import {
 } from "../../../service";
 import useDBMStore from "../../../store";
 
-export default function DataPannel() {
+export default function DataPanel() {
   const [currentData, setCurrentData] = useState<any>(undefined);
 
   const [record, setRecord] = useState("");
@@ -69,7 +69,7 @@ export default function DataPannel() {
 
   return (
     <>
-      <Panel.Header className="w-full h-[55px]">
+      <Panel.Header className="w-full h-[60px] flex-shrink-0">
         <div className="flex items-center">
           <Button
             disabled={store.currentDB === undefined}
@@ -121,7 +121,7 @@ export default function DataPannel() {
           }}
         />
       </Panel.Header>
-      <div className="w-full flex overflow-hidden" style={{ height: "calc(100vh - 130px)" }}>
+      <div className="w-full flex flex-grow overflow-hidden">
         <RightPanelList
           ListQuery={entryDataQuery?.data?.list}
           setKey="_id"

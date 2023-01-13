@@ -18,12 +18,12 @@ import {
   ModalOverlay,
   Select,
   Spinner,
-  Tag,
+  Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import { debounce } from "lodash";
 
-import DepenceList from "@/components/DepenceList";
+import DependenceList from "@/components/DependenceList";
 import IconWrap from "@/components/IconWrap";
 
 import {
@@ -38,7 +38,7 @@ import {
 
 import useGlobalStore from "@/pages/globalStore";
 
-const AddDepenceModal = () => {
+const AddDependenceModal = () => {
   const { t } = useTranslation();
   const globalStore = useGlobalStore((state) => state);
   const [checkList, setCheckList] = useState<TDependenceItem[]>([]);
@@ -126,7 +126,7 @@ const AddDepenceModal = () => {
     setCheckList(newCheckList);
   };
 
-  const submitDependece = () => {
+  const submitDependence = () => {
     const data: TPackage[] = [];
     let submitList = isEdit ? packageList : checkList;
     submitList.forEach((item: TDependenceItem) => {
@@ -166,10 +166,10 @@ const AddDepenceModal = () => {
 
   const renderList = (list: TDependenceItem[]) => {
     return (
-      <DepenceList>
+      <DependenceList>
         {(list || []).map((packageItem: TDependenceItem) => {
           return (
-            <DepenceList.Item
+            <DependenceList.Item
               style={{ minHeight: "45px" }}
               isActive={false}
               key={packageItem.package.name}
@@ -179,11 +179,10 @@ const AddDepenceModal = () => {
               }}
             >
               {isEdit ? (
-                <Box ml={5} width="400px">
-                  <b>{packageItem.package.name}</b>
-                </Box>
+                <Text fontSize="lg">{packageItem.package.name}</Text>
               ) : (
                 <Checkbox
+                  colorScheme="primary"
                   size="lg"
                   isDisabled={packageList.some(
                     (item) => item.package.name === packageItem.package.name,
@@ -226,10 +225,10 @@ const AddDepenceModal = () => {
                   );
                 })}
               </Select>
-            </DepenceList.Item>
+            </DependenceList.Item>
           );
         })}
-      </DepenceList>
+      </DependenceList>
     );
   };
 
@@ -257,7 +256,21 @@ const AddDepenceModal = () => {
       <Modal isOpen={isOpen} onClose={onClose} size="3xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{isEdit ? t("DependenceEdit") : t("DependenceAdd")}</ModalHeader>
+          <ModalHeader>
+            {isEdit ? t("DependenceEdit") : t("DependenceAdd")}
+            <span
+              className="ml-2 hover:cursor-pointer"
+              onClick={() => {
+                if (!isEdit) {
+                  setIsShowChecked((pre) => !pre);
+                }
+              }}
+            >
+              ({" "}
+              {isEdit ? packageList.length : isShowChecked ? <SmallCloseIcon /> : checkList.length}{" "}
+              )
+            </span>
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             {isEdit ? (
@@ -270,10 +283,12 @@ const AddDepenceModal = () => {
                     children={<SearchIcon color="gray.300" />}
                   />
                   <Input
+                    rounded={"full"}
+                    bg={"gray.100"}
                     onChange={(e: any) => {
                       search(e.target.value);
                     }}
-                    placeholder={String(t("DependenceName"))}
+                    placeholder="请输入依赖包名"
                   />
                 </InputGroup>
                 {packageSearchQuery.isLoading ? (
@@ -296,24 +311,10 @@ const AddDepenceModal = () => {
           </ModalBody>
 
           <ModalFooter>
-            <Tag
-              mr={3}
-              size="lg"
-              variant="solid"
-              colorScheme="primary"
-              className="hover:cursor-pointer"
-              onClick={() => {
-                if (!isEdit) {
-                  setIsShowChecked((pre) => !pre);
-                }
-              }}
-            >
-              {isEdit ? packageList.length : isShowChecked ? <SmallCloseIcon /> : checkList.length}
-            </Tag>
             <Button
               colorScheme="blue"
               onClick={() => {
-                submitDependece();
+                submitDependence();
               }}
             >
               {t("Common.Dialog.Confirm")}
@@ -325,6 +326,6 @@ const AddDepenceModal = () => {
   );
 };
 
-AddDepenceModal.displayName = "AddDepenceModal";
+AddDependenceModal.displayName = "AddDependenceModal";
 
-export default AddDepenceModal;
+export default AddDependenceModal;

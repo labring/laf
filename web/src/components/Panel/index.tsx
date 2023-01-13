@@ -14,7 +14,7 @@ const Panel = (props: {
     <div
       style={style}
       onClick={onClick}
-      className={clsx("bg-white rounded px-4 flex flex-col h-full w-full", className)}
+      className={clsx("bg-white rounded px-4 flex flex-col w-full", className)}
     >
       {props.children}
     </div>

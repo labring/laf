@@ -17,7 +17,7 @@ import { Pages } from "@/constants";
 import { useUpdateFunctionMutation } from "../../service";
 import useFunctionStore from "../../store";
 
-import useFunctionCache from "@/hooks/useFuncitonCache";
+import useFunctionCache from "@/hooks/useFunctionCache";
 import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
 import useGlobalStore from "@/pages/globalStore";
 

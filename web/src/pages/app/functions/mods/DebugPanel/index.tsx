@@ -26,7 +26,7 @@ import BodyParamsTab from "./BodyParamsTab";
 import QueryParamsTab from "./QueryParamsTab";
 import HeaderParamsTab from "./QueryParamsTab";
 
-import useFunctionCache from "@/hooks/useFuncitonCache";
+import useFunctionCache from "@/hooks/useFunctionCache";
 import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
 import useGlobalStore from "@/pages/globalStore";
 

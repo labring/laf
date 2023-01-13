@@ -73,7 +73,9 @@ const useCustomSettingStore = create<State>()(
             },
 
             PolicyPanel: {
-              style: {},
+              style: {
+                height: 200,
+              },
             },
             Bottom: {
               style: {
@@ -87,7 +89,7 @@ const useCustomSettingStore = create<State>()(
           set((state: any) => {
             const display = state.layoutInfo[pageId];
             state.layoutInfo[pageId][panelId].style.display =
-              display[panelId].style.display === "none" ? "block" : "none";
+              display[panelId].style.display === "none" ? "flex" : "none";
           });
         },
       })),

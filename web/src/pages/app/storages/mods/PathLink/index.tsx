@@ -4,12 +4,12 @@ function PathLink() {
   const { currentStorage, prefix, setPrefix } = useStorageStore();
   const bucketName = currentStorage?.metadata.name || "";
 
-  const strs = prefix?.split("/").filter((s) => s !== "");
+  const str = prefix?.split("/").filter((s) => s !== "");
 
-  const paths = strs?.map((s, i) => {
+  const paths = str?.map((s, i) => {
     return {
       name: s,
-      path: strs[i - 1] ? `${strs[i - 1]}/${s}/` : `/${s}/`,
+      path: str[i - 1] ? `${str[i - 1]}/${s}/` : `/${s}/`,
     };
   });
 

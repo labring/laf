@@ -55,7 +55,7 @@ export default function FunctionList() {
     };
   }, [setCurrentFunction]);
 
-  const deleteFunctionMutaion = useDeleteFunctionMutation();
+  const deleteFunctionMutation = useDeleteFunctionMutation();
 
   return (
     <Panel className="flex-grow">
@@ -65,7 +65,7 @@ export default function FunctionList() {
           <Input
             size="sm"
             rounded={"full"}
-            placeholder={String(t("SearchPlacehoder"))}
+            placeholder={String(t("SearchPlaceholder"))}
             onChange={(event) => {
               setKeywords(event.target.value);
             }}
@@ -95,7 +95,7 @@ export default function FunctionList() {
 
                     <ConfirmButton
                       onSuccessAction={async () => {
-                        await deleteFunctionMutaion.mutateAsync(func);
+                        await deleteFunctionMutation.mutateAsync(func);
                       }}
                       headerText={String(t("Delete"))}
                       bodyText={String(t("DeleteConfirm"))}
