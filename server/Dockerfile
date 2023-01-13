@@ -1,5 +1,5 @@
-# FROM node:18-slim
-FROM ghcr.io/labring/laf-server:1.0.0-alpha.5
+FROM node:18-slim
+# FROM ghcr.io/labring/laf-server:1.0.0-alpha.5
 
 RUN apt-get update
 RUN apt-get install -y openssl wget
@@ -13,7 +13,7 @@ WORKDIR /app
 
 EXPOSE 3000
 
-RUN rm -rf /app
+
 COPY . /app
 
 RUN npm install
