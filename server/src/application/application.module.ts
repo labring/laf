@@ -9,10 +9,11 @@ import { JwtService } from '@nestjs/jwt'
 import { FunctionService } from '../function/function.service'
 import { EnvironmentVariableService } from './environment.service'
 import { EnvironmentVariableController } from './environment.controller'
-import { StorageModule } from 'src/storage/storage.module'
+import { StorageModule } from '../storage/storage.module'
+import { RegionModule } from '../region/region.module'
 
 @Module({
-  imports: [CoreModule, StorageModule],
+  imports: [CoreModule, StorageModule, RegionModule],
   controllers: [ApplicationController, EnvironmentVariableController],
   providers: [
     ApplicationService,

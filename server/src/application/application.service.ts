@@ -4,21 +4,13 @@ import { CreateApplicationDto } from './dto/create-application.dto'
 import { ApplicationPhase, ApplicationState, Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma.service'
 import { UpdateApplicationDto } from './dto/update-application.dto'
-import { DatabaseCoreService } from '../core/database.cr.service'
-import { GatewayCoreService } from '../core/gateway.cr.service'
 import { APPLICATION_SECRET_KEY, ServerConfig } from '../constants'
 import { GenerateAlphaNumericPassword } from '../utils/random'
-import { StorageService } from '../storage/storage.service'
 
 @Injectable()
 export class ApplicationService {
   private readonly logger = new Logger(ApplicationService.name)
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly databaseCore: DatabaseCoreService,
-    private readonly gatewayCore: GatewayCoreService,
-    private readonly storageService: StorageService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(userid: string, dto: CreateApplicationDto) {
     try {
@@ -89,7 +81,7 @@ export class ApplicationService {
     const application = await this.prisma.application.findUnique({
       where: { appid },
       include: {
-        region: include?.region,
+        region: false,
         bundle: include?.bundle,
         runtime: include?.runtime,
         configuration: include?.configuration,
@@ -97,14 +89,6 @@ export class ApplicationService {
     })
 
     return application
-  }
-
-  async getSubResources(appid: string) {
-    const database = await this.databaseCore.findOne(appid)
-    const gateway = await this.gatewayCore.findOne(appid)
-    const storageUser = await this.storageService.findOne(appid)
-
-    return { database, storageUser, gateway }
   }
 
   async update(appid: string, dto: UpdateApplicationDto) {

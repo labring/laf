@@ -25,6 +25,9 @@ import { UpdateApplicationDto } from './dto/update-application.dto'
 import { ApplicationService } from './application.service'
 import { FunctionService } from '../function/function.service'
 import { StorageService } from 'src/storage/storage.service'
+import { DatabaseCoreService } from 'src/core/database.cr.service'
+import { GatewayCoreService } from 'src/core/gateway.cr.service'
+import { RegionService } from 'src/region/region.service'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -34,6 +37,9 @@ export class ApplicationController {
   constructor(
     private readonly appService: ApplicationService,
     private readonly funcService: FunctionService,
+    private readonly regionService: RegionService,
+    private readonly databaseCore: DatabaseCoreService,
+    private readonly gatewayCore: GatewayCoreService,
     private readonly storageService: StorageService,
   ) {}
 
@@ -83,19 +89,20 @@ export class ApplicationController {
   @Get(':appid')
   async findOne(@Param('appid') appid: string) {
     // get sub resources
-    const resources = await this.appService.getSubResources(appid)
+    const database = await this.databaseCore.findOne(appid)
+    const gateway = await this.gatewayCore.findOne(appid)
+    const storage = await this.storageService.findOne(appid)
 
     const data = await this.appService.findOne(appid, {
       configuration: true,
-      region: true,
     })
-    const sts = await this.storageService.getOssSTS(
-      data.region,
-      appid,
-      resources.storageUser,
-    )
+
+    // Security Warning: Do not response this region object to client since it contains sensitive information
+    const region = await this.regionService.findOne(data.regionName)
+
+    const sts = await this.storageService.getOssSTS(region, appid, storage)
     const credentials = {
-      endpoint: data.region.storageConf.externalEndpoint,
+      endpoint: region.storageConf.externalEndpoint,
       accessKeyId: sts.Credentials?.AccessKeyId,
       secretAccessKey: sts.Credentials?.SecretAccessKey,
       sessionToken: sts.Credentials?.SessionToken,
@@ -103,12 +110,13 @@ export class ApplicationController {
     }
 
     const debug_token = await this.funcService.getDebugFunctionToken(appid)
+
     const res = {
       ...data,
-      gateway: resources.gateway,
-      database: resources.database,
-      oss: {
-        ...resources.storageUser,
+      gateway,
+      database,
+      storage: {
+        ...storage,
         credentials,
       },
       function_debug_token: debug_token,

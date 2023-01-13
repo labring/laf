@@ -13,7 +13,7 @@ import * as cp from 'child_process'
 import { promisify } from 'util'
 import { MinioCommandExecOutput } from './types'
 import { MINIO_COMMON_USER_GROUP } from 'src/constants'
-import { PrismaService } from 'src/prisma.service'
+import { RegionService } from 'src/region/region.service'
 
 const exec = promisify(cp.exec)
 
@@ -21,13 +21,13 @@ const exec = promisify(cp.exec)
 export class MinioService {
   private readonly logger = new Logger(MinioService.name)
 
-  constructor(private readonly prisma: PrismaService) {
+  constructor(private readonly regionService: RegionService) {
     this.init()
   }
 
   async init() {
     this.logger.verbose('MinioService init')
-    const regions = await this.prisma.region.findMany({})
+    const regions = await this.regionService.findAll()
 
     for (const region of regions) {
       await this.setMinioClientTarget(region)

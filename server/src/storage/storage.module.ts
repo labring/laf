@@ -6,9 +6,10 @@ import { StorageService } from './storage.service'
 import { PrismaService } from 'src/prisma.service'
 import { ApplicationService } from 'src/application/application.service'
 import { BucketService } from './bucket.service'
+import { RegionModule } from 'src/region/region.module'
 
 @Module({
-  imports: [CoreModule],
+  imports: [CoreModule, RegionModule],
   controllers: [BucketController],
   providers: [
     MinioService,

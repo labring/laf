@@ -216,6 +216,7 @@ model StorageBucket {
   id        String       @id @default(auto()) @map("_id") @db.ObjectId
   appid     String
   name      String       @unique
+  shortName String
   policy    BucketPolicy
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
