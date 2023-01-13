@@ -100,7 +100,7 @@ const CreateModal = (props: { functionItem?: any }) => {
           }, 0);
         }}
       >
-        {isEdit ? <EditIcon /> : <AddIcon fontSize={10} />}
+        {isEdit ? <EditIcon fontSize={13} /> : <AddIcon fontSize={12} />}
       </IconWrap>
 
       <Modal isOpen={isOpen} onClose={onClose} size="xl">

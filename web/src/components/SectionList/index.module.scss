@@ -15,10 +15,14 @@
       vertical-align: middle;
     }
 
+    &.small {
+      height: 32px;
+    }
+
     &:hover,
     &.active {
       background-color: #eff9fa;
-      color: #008C7F;
+      color: #008c7f;
     }
 
     &.active {

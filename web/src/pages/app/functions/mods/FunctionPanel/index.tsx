@@ -87,8 +87,8 @@ export default function FunctionList() {
                   }}
                 >
                   <div>
-                    <FileTypeIcon type={FileType.js} />
-                    <span className="ml-2 text-black">{func?.name}</span>
+                    <FileTypeIcon type={FileType.ts} />
+                    <span className="ml-2 font-medium text-black">{func?.name}</span>
                   </div>
                   <div className="invisible flex items-center group-hover:visible">
                     <CreateModal functionItem={func} />

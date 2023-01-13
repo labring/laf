@@ -1,0 +1,101 @@
+import { useEffect } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { CloseIcon } from "@chakra-ui/icons";
+import { Input, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+
+type Params = {
+  name: string;
+  value: string;
+};
+
+type FormValues = {
+  params: Params[];
+};
+
+function HeaderParamsTab(props: { onChange(values: Params[]): void }) {
+  const { onChange } = props;
+  const { register, control, handleSubmit, watch } = useForm<FormValues>({
+    defaultValues: {
+      params: [{ name: "", value: "" }],
+    },
+    mode: "onBlur",
+  });
+  const { fields, append, remove } = useFieldArray({
+    name: "params",
+    control,
+  });
+  const onSubmit = (data: FormValues) => console.log(data);
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      onChange && onChange(value?.params as Params[]);
+    });
+    return () => subscription.unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watch]);
+
+  return (
+    <div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <TableContainer>
+          <Table size="sm" className="border">
+            <Thead>
+              <Tr>
+                <Th>参数名</Th>
+                <Th>值</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {fields.map((field, index) => {
+                return (
+                  <Tr key={field.id}>
+                    <Td>
+                      <Input
+                        width={"40px"}
+                        size="sm"
+                        variant={"unstyled"}
+                        placeholder="key"
+                        {...register(`params.${index}.name` as const, {
+                          required: true,
+                        })}
+                      />
+                    </Td>
+                    <Td className="relative">
+                      <Input
+                        size="sm"
+                        width={"80px"}
+                        variant={"unstyled"}
+                        placeholder="value"
+                        {...register(`params.${index}.value` as const, {
+                          required: true,
+                        })}
+                      />
+                      <CloseIcon
+                        fontSize={9}
+                        className="absolute right-2 top-3 cursor-pointer hover:text-red-500"
+                        onClick={() => remove(index)}
+                      />
+                    </Td>
+                  </Tr>
+                );
+              })}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      </form>
+      <button
+        type="button"
+        onClick={() =>
+          append({
+            name: "",
+            value: "",
+          })
+        }
+      >
+        APPEND
+      </button>
+    </div>
+  );
+}
+
+export default HeaderParamsTab;
