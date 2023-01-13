@@ -13,7 +13,9 @@ WORKDIR /app
 
 EXPOSE 3000
 
-
+# quirks
+RUN rm -rf /app/src/*
+RUN rm -rf /app/test/*
 COPY . /app
 
 RUN npm install
