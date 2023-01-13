@@ -18,7 +18,7 @@ export default function MoreButton(props: { data?: any; fn?: any }) {
         closeOnBlur={true}
         placement="bottom"
       >
-        <IconWrap size={28} tooltip="更多操作">
+        <IconWrap size={25} tooltip="更多操作">
           <PopoverTrigger>
             <MoreIcon
               fontSize={10}
@@ -29,12 +29,18 @@ export default function MoreButton(props: { data?: any; fn?: any }) {
             />
           </PopoverTrigger>
         </IconWrap>
-        <PopoverContent p="2" maxWidth={100}>
-          <div className="flex">
-            <IconWrap>
-              <CopyText text={data.name} tip="名称复制成功" />
-            </IconWrap>
-            <DeleteCollectionModal database={data} />
+        <PopoverContent p="2" maxWidth="100px">
+          <div className="flex justify-around">
+            <div>
+              <IconWrap>
+                <CopyText text={data.name} className="w-[28px]" tip="名称复制成功" />
+              </IconWrap>
+              复制
+            </div>
+            <div>
+              <DeleteCollectionModal database={data} />
+              删除
+            </div>
           </div>
         </PopoverContent>
       </Popover>

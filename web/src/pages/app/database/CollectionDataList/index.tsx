@@ -5,9 +5,7 @@ import { Button } from "@chakra-ui/react";
 import CreateCollectionModal from "../mods/CreateCollectionModal";
 import useDBMStore from "../store";
 
-// import ColPannel from "./mods/ColPannel";
 import DataPannel from "./mods/DataPannel";
-// import IndexPannel from "./mods/IndexPannel";
 
 export default function CollectionDataList() {
   const { t } = useTranslation();
@@ -15,9 +13,9 @@ export default function CollectionDataList() {
   return (
     <>
       {store.currentDB === undefined ? (
-        <div className="h-full flex items-center justify-center">
+        <div className="flex h-full justify-center items-center">
           <CreateCollectionModal>
-            <Button size="lg" variant="ghost" leftIcon={<AddIcon />}>
+            <Button size="md" className="w-40" variant="ghost" leftIcon={<AddIcon />}>
               {t("CollectionPanel.CollectionAdd")}
             </Button>
           </CreateCollectionModal>

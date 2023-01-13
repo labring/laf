@@ -8,7 +8,7 @@ type TLayoutConfig = {
 };
 
 type functionPanel = "SiderBar" | "RightPanel" | "DependencePanel" | "ConsolePanel" | "Bottom";
-type collectionPanel = "SiderBar" | "Bottom";
+type collectionPanel = "SiderBar" | "Bottom" | "CollectionPanel" | "PolicyPanel";
 type page = "functionPage" | "collectionPage";
 
 type State = {
@@ -23,12 +23,12 @@ type State = {
     };
   };
 
-  togglePanel: (pageId: page, panelId: functionPanel) => void;
+  togglePanel: (pageId: page, panelId: functionPanel | collectionPanel) => void;
 };
 
 const useCustomSettingStore = create<State>()(
   devtools(
-    immer((set, get) => ({
+    immer((set) => ({
       layoutInfo: {
         functionPage: {
           SiderBar: {
@@ -39,7 +39,7 @@ const useCustomSettingStore = create<State>()(
 
           RightPanel: {
             style: {
-              width: "350px",
+              width: 350,
             },
           },
 
@@ -67,6 +67,15 @@ const useCustomSettingStore = create<State>()(
               width: 300,
             },
           },
+
+          CollectionPanel: {
+            style: {},
+          },
+
+          PolicyPanel: {
+            style: {},
+          },
+
           Bottom: {
             style: {
               height: 40,

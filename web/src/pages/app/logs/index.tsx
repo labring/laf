@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import { Search2Icon } from "@chakra-ui/icons";
 import {
   Button,
   Center,
   HStack,
   Input,
   InputGroup,
-  InputLeftElement,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -21,8 +19,6 @@ import {
   TableContainer,
   Tbody,
   Td,
-  Th,
-  Thead,
   Tr,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -32,11 +28,12 @@ import Content from "@/components/Content";
 import CopyText from "@/components/CopyText";
 import Pagination from "@/components/Pagination";
 import Panel from "@/components/Panel";
-import TextButton from "@/components/TextButton";
 import { formatDate } from "@/utils/format";
 import getPageInfo from "@/utils/getPageInfo";
 
 import { queryKeys } from "./service";
+
+import styles from "./index.module.scss";
 
 import { LogControllerGetLogs } from "@/apis/v1/apps";
 
@@ -45,6 +42,8 @@ const DEFAULT_LIMIT = 20;
 type TLog = {
   data: string;
   request_id: string;
+  func: string;
+  created_at: Date;
 };
 
 export default function LogsPage() {
@@ -94,20 +93,14 @@ export default function LogsPage() {
           <Panel.Header>
             <HStack spacing={2}>
               <InputGroup width={400}>
-                <InputLeftElement
-                  height={"10"}
-                  pointerEvents="none"
-                  children={<Search2Icon color="gray.300" />}
-                />
                 <Input borderRadius="4" placeholder="Request ID" {...register("requestId")} />
               </InputGroup>
 
               <Input width={200} placeholder="函数名" bg="white" {...register("functionName")} />
 
               <Button
-                px={9}
+                py={4}
                 type={"submit"}
-                colorScheme={"green"}
                 onClick={handleSubmit(submit)}
                 isLoading={logListQuery.isFetching}
               >
@@ -133,47 +126,34 @@ export default function LogsPage() {
           ) : null}
           <div className="overflow-y-auto h-full mb-4">
             <TableContainer minH={"400px"}>
-              <Table variant="simple">
-                <Thead>
-                  <Tr>
-                    <Th width={"200px"}>时间</Th>
-                    <Th width={"200px"}>Request ID</Th>
-                    <Th>函数名</Th>
-                    <Th>Content</Th>
-                    <Th>操作</Th>
-                  </Tr>
-                </Thead>
-
+              <Table variant="unstyle">
                 <Tbody className="relative font-mono">
                   {logListQuery.data?.data?.list.map((item: any) => {
                     return (
                       <Tr key={item._id} _hover={{ bgColor: "#efefef" }}>
-                        <Td width={"180px"} className="text-slate-500 ">
+                        <Td className="text-slate-500" maxWidth="5rem">
                           [{formatDate(item.created_at, "YYYY-MM-DD HH:mm:ss")}]
                         </Td>
-                        <Td width={"200px"}>
+                        <Td maxWidth="5rem" className={styles.text + " text-primary"}>
                           <CopyText text={item.request_id}>
                             <span>{item.request_id}</span>
                           </CopyText>
                         </Td>
-                        <Td>
+                        <Td maxWidth="5rem" className={styles.text + " text-purper-500"}>
                           <CopyText text={item.func}>
                             <span>{item.func}</span>
                           </CopyText>
                         </Td>
-                        <Td maxWidth={"300px"}>
-                          <pre className="text-green-700 max-h-[20px] overflow-hidden">
-                            {(item.data as string).substring(0, 50)}
+                        <Td
+                          maxWidth={"300px"}
+                          onClick={() => {
+                            setDetail(item);
+                            onOpen();
+                          }}
+                        >
+                          <pre className="hover:text-blue-700 hover:underline max-h-[20px] overflow-hidden cursor-pointer">
+                            {item.data}
                           </pre>
-                        </Td>
-                        <Td width={"100px"}>
-                          <TextButton
-                            text="查看"
-                            onClick={() => {
-                              setDetail(item);
-                              onOpen();
-                            }}
-                          />
                         </Td>
                       </Tr>
                     );
@@ -187,11 +167,22 @@ export default function LogsPage() {
         <Modal onClose={onClose} isOpen={isOpen} scrollBehavior={"inside"} size="4xl">
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>
-              <span className="font-normal font-mono">Request ID: {detail?.request_id}</span>
-            </ModalHeader>
+            <ModalHeader>日志详情</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
+              <div>
+                <span className={styles.primaryText}>Time: </span>
+                {formatDate(detail?.created_at, "YYYY-MM-DD HH:mm:ss")}
+              </div>
+              <div>
+                <span className={styles.primaryText}>Request ID: </span>
+                {detail?.request_id}
+              </div>
+              <div>
+                <span className={styles.primaryText}>Function: </span>
+                {detail?.func}
+              </div>
+              <span className={styles.primaryText}>Conetent: </span>
               <SyntaxHighlighter language="json" customStyle={{ background: "#fff" }}>
                 {detail?.data || ""}
               </SyntaxHighlighter>

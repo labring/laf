@@ -33,7 +33,12 @@ export default function CollectionListPanel() {
   const [search, setSearch] = useState("");
 
   return (
-    <Panel>
+    <Panel
+      className="flex-grow"
+      onClick={() => {
+        store.setCurrentShow("DB");
+      }}
+    >
       <Panel.Header
         title="集合列表"
         actions={[
@@ -61,13 +66,13 @@ export default function CollectionListPanel() {
         </InputGroup>
       </div>
 
-      <SectionList>
+      <SectionList style={{ height: "calc(100vh - 380px)", overflowY: "auto" }}>
         {(collectionListQuery?.data?.data || [])
           .filter((db: any) => db.name.indexOf(search) >= 0)
           .map((db: any) => {
             return (
               <SectionList.Item
-                isActive={db.name === store.currentDB?.name}
+                isActive={store.currentShow === "DB" && db.name === store.currentDB?.name}
                 key={db.name}
                 onClick={() => {
                   store.setCurrentDB(db);
@@ -80,7 +85,7 @@ export default function CollectionListPanel() {
                   </div>
                   <div
                     className={clsx("flex group-hover:inline ", {
-                      hidden: db.name !== store.currentDB?.name,
+                      hidden: db.name !== store.currentDB?.name || store.currentShow !== "DB",
                     })}
                   >
                     <MoreButton data={db} />

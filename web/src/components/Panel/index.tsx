@@ -7,11 +7,13 @@ const Panel = (props: {
   className?: string;
   style?: React.CSSProperties;
   children: React.ReactNode;
+  onClick?: () => void;
 }) => {
-  const { className, style = {} } = props;
+  const { className, style = {}, onClick } = props;
   return (
     <div
       style={style}
+      onClick={onClick}
       className={clsx("bg-white rounded px-4 flex flex-col h-full w-full", className)}
     >
       {props.children}
