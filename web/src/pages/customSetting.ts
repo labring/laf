@@ -1,6 +1,6 @@
 import React from "react";
 import create from "zustand";
-import { devtools } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
 type TLayoutConfig = {
@@ -8,7 +8,7 @@ type TLayoutConfig = {
 };
 
 type functionPanel = "SiderBar" | "RightPanel" | "DependencePanel" | "ConsolePanel" | "Bottom";
-type collectionPanel = "SiderBar" | "Bottom" | "CollectionPanel" | "PolicyPanel";
+type collectionPanel = "SiderBar" | "Bottom" | "PolicyPanel";
 type page = "functionPage" | "collectionPage";
 
 type State = {
@@ -28,70 +28,71 @@ type State = {
 
 const useCustomSettingStore = create<State>()(
   devtools(
-    immer((set) => ({
-      layoutInfo: {
-        functionPage: {
-          SiderBar: {
-            style: {
-              width: 300,
+    persist(
+      immer((set, get) => ({
+        layoutInfo: {
+          functionPage: {
+            SiderBar: {
+              style: {
+                width: 300,
+              },
+            },
+
+            RightPanel: {
+              style: {
+                width: "350px",
+              },
+            },
+
+            DependencePanel: {
+              style: {
+                height: 300,
+              },
+            },
+
+            ConsolePanel: {
+              style: {
+                height: 200,
+              },
+            },
+            Bottom: {
+              style: {
+                height: 40,
+              },
             },
           },
 
-          RightPanel: {
-            style: {
-              width: 350,
+          collectionPage: {
+            SiderBar: {
+              style: {
+                width: 300,
+              },
             },
-          },
+            CollectionPanel: {
+              style: {},
+            },
 
-          DependencePanel: {
-            style: {
-              width: 300,
+            PolicyPanel: {
+              style: {},
             },
-          },
-
-          ConsolePanel: {
-            style: {
-              height: 200,
-            },
-          },
-          Bottom: {
-            style: {
-              height: 40,
+            Bottom: {
+              style: {
+                height: 40,
+              },
             },
           },
         },
 
-        collectionPage: {
-          SiderBar: {
-            style: {
-              width: 300,
-            },
-          },
-
-          CollectionPanel: {
-            style: {},
-          },
-
-          PolicyPanel: {
-            style: {},
-          },
-
-          Bottom: {
-            style: {
-              height: 40,
-            },
-          },
+        togglePanel: (pageId, panelId) => {
+          set((state: any) => {
+            const display = state.layoutInfo[pageId];
+            state.layoutInfo[pageId][panelId].style.display =
+              display[panelId].style.display === "none" ? "block" : "none";
+          });
         },
-      },
-
-      togglePanel: (pageId, panelId) => {
-        set((state: any) => {
-          const display = state.layoutInfo[pageId];
-          state.layoutInfo[pageId][panelId].style.display =
-            display[panelId].style.display === "none" ? "block" : "none";
-        });
-      },
-    })),
+      })),
+      { name: "laf_custome_setting" },
+    ),
   ),
 );
 

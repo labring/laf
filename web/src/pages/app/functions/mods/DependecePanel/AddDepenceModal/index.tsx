@@ -236,22 +236,22 @@ const AddDepenceModal = () => {
   return (
     <>
       <IconWrap
-        tooltip={t("DependenceAdd").toString()}
-        onClick={() => {
-          setIsEdit(false);
-          initModal();
-        }}
-      >
-        <AddIcon fontSize={10} />
-      </IconWrap>
-      <IconWrap
         tooltip={t("DependenceEdit").toString()}
         onClick={() => {
           setIsEdit(true);
           initModal();
         }}
       >
-        <EditIcon fontSize={10} />
+        <EditIcon fontSize={12} />
+      </IconWrap>
+      <IconWrap
+        tooltip={t("DependenceAdd").toString()}
+        onClick={() => {
+          setIsEdit(false);
+          initModal();
+        }}
+      >
+        <AddIcon fontSize={12} />
       </IconWrap>
 
       <Modal isOpen={isOpen} onClose={onClose} size="3xl">
