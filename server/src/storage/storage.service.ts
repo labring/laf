@@ -1,23 +1,88 @@
-import { STSClient, AssumeRoleCommand } from '@aws-sdk/client-sts'
-import { Injectable } from '@nestjs/common'
-import { ServerConfig } from '../constants'
-import { OSSUser } from '../core/api/oss-user.cr'
+import { Injectable, Logger } from '@nestjs/common'
+import { Application, Region, StorageUser } from '@prisma/client'
+import { PrismaService } from 'src/prisma.service'
+import { GenerateAlphaNumericPassword } from 'src/utils/random'
+import { MinioService } from './minio/minio.service'
+import { AssumeRoleCommand, STSClient } from '@aws-sdk/client-sts'
 
 @Injectable()
 export class StorageService {
+  private readonly logger = new Logger(StorageService.name)
+
+  constructor(
+    private readonly minioService: MinioService,
+    private readonly prisma: PrismaService,
+  ) {}
+
+  async create(app: Application, region: Region) {
+    const accessKey = app.appid
+    const secretKey = GenerateAlphaNumericPassword(64)
+
+    // create storage user in minio
+    const r0 = await this.minioService.createUser(region, accessKey, secretKey)
+    if (r0.error) {
+      this.logger.error(r0.error)
+      return false
+    }
+
+    // add storage user to common user group in minio
+    const r1 = await this.minioService.addUserToGroup(region, accessKey)
+    if (r1.error) {
+      this.logger.error(r1.error)
+      return false
+    }
+
+    // create storage user in database
+    const user = await this.prisma.storageUser.create({
+      data: {
+        accessKey,
+        secretKey,
+        application: {
+          connect: {
+            appid: app.appid,
+          },
+        },
+      },
+    })
+
+    return user
+  }
+
+  async findOne(appid: string) {
+    const user = await this.prisma.storageUser.findUnique({
+      where: {
+        appid,
+      },
+    })
+
+    return user
+  }
+
+  async delete(appid: string) {
+    // TODO: delete user in minio
+
+    const user = await this.prisma.storageUser.delete({
+      where: {
+        appid,
+      },
+    })
+
+    return user
+  }
+
   /**
    * Create s3 client of application
    * @param app
    * @returns
    */
-  private getSTSClient(oss: OSSUser) {
+  private getSTSClient(region: Region, user: StorageUser) {
     return new STSClient({
-      endpoint: ServerConfig.MINIO_EXTERNAL_ENDPOINT,
+      endpoint: region.storageConf.externalEndpoint,
       credentials: {
-        accessKeyId: oss.status?.accessKey,
-        secretAccessKey: oss.status?.secretKey,
+        accessKeyId: user.accessKey,
+        secretAccessKey: user.secretKey,
       },
-      region: oss.status?.region,
+      region: region.name,
     })
   }
 
@@ -28,12 +93,13 @@ export class StorageService {
    * @returns
    */
   public async getOssSTS(
+    region: Region,
     appid: string,
-    user: OSSUser,
+    user: StorageUser,
     duration_seconds?: number,
   ) {
     const exp = duration_seconds || 3600 * 24 * 7
-    const s3 = this.getSTSClient(user)
+    const s3 = this.getSTSClient(region, user)
     const policy = await this.getSTSPolicy()
     const cmd = new AssumeRoleCommand({
       DurationSeconds: exp,

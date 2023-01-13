@@ -23,9 +23,11 @@ import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import { CreateApplicationDto } from './dto/create-application.dto'
 import { UpdateApplicationDto } from './dto/update-application.dto'
 import { ApplicationService } from './application.service'
-import { ServerConfig } from '../constants'
 import { FunctionService } from '../function/function.service'
-import { StorageService } from '../storage/storage.service'
+import { StorageService } from 'src/storage/storage.service'
+import { DatabaseCoreService } from 'src/core/database.cr.service'
+import { GatewayCoreService } from 'src/core/gateway.cr.service'
+import { RegionService } from 'src/region/region.service'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -35,6 +37,9 @@ export class ApplicationController {
   constructor(
     private readonly appService: ApplicationService,
     private readonly funcService: FunctionService,
+    private readonly regionService: RegionService,
+    private readonly databaseCore: DatabaseCoreService,
+    private readonly gatewayCore: GatewayCoreService,
     private readonly storageService: StorageService,
   ) {}
 
@@ -84,12 +89,20 @@ export class ApplicationController {
   @Get(':appid')
   async findOne(@Param('appid') appid: string) {
     // get sub resources
-    const resources = await this.appService.getSubResources(appid)
+    const database = await this.databaseCore.findOne(appid)
+    const gateway = await this.gatewayCore.findOne(appid)
+    const storage = await this.storageService.findOne(appid)
 
-    const data = await this.appService.findOne(appid, { configuration: true })
-    const sts = await this.storageService.getOssSTS(appid, resources.oss)
+    const data = await this.appService.findOne(appid, {
+      configuration: true,
+    })
+
+    // Security Warning: Do not response this region object to client since it contains sensitive information
+    const region = await this.regionService.findOne(data.regionName)
+
+    const sts = await this.storageService.getOssSTS(region, appid, storage)
     const credentials = {
-      endpoint: ServerConfig.MINIO_EXTERNAL_ENDPOINT,
+      endpoint: region.storageConf.externalEndpoint,
       accessKeyId: sts.Credentials?.AccessKeyId,
       secretAccessKey: sts.Credentials?.SecretAccessKey,
       sessionToken: sts.Credentials?.SessionToken,
@@ -97,12 +110,13 @@ export class ApplicationController {
     }
 
     const debug_token = await this.funcService.getDebugFunctionToken(appid)
+
     const res = {
       ...data,
-      gateway: resources.gateway,
-      database: resources.database,
-      oss: {
-        ...resources.oss,
+      gateway,
+      database,
+      storage: {
+        ...storage,
         credentials,
       },
       function_debug_token: debug_token,

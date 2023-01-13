@@ -21,13 +21,11 @@ import {
 import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import { IRequest } from '../utils/types'
 import { JwtAuthGuard } from '../auth/jwt.auth.guard'
-import { ApiResponseUtil, ResponseUtil } from '../utils/response'
-import { BucketCoreService } from '../core/bucket.cr.service'
+import { ResponseUtil } from '../utils/response'
 import { CreateBucketDto } from './dto/create-bucket.dto'
 import { UpdateBucketDto } from './dto/update-bucket.dto'
-import { Bucket, BucketList } from '../core/api/bucket.cr'
-import { GatewayCoreService } from 'src/core/gateway.cr.service'
 import * as assert from 'node:assert'
+import { BucketService } from './bucket.service'
 
 @ApiTags('Storage')
 @ApiBearerAuth('Authorization')
@@ -35,10 +33,7 @@ import * as assert from 'node:assert'
 export class BucketController {
   private readonly logger = new Logger(BucketController.name)
 
-  constructor(
-    private readonly bucketsService: BucketCoreService,
-    private readonly gatewayCore: GatewayCoreService,
-  ) {}
+  constructor(private readonly bucketService: BucketService) {}
 
   /**
    * Create a new bucket
@@ -46,7 +41,7 @@ export class BucketController {
    * @param req
    * @returns
    */
-  @ApiResponseUtil(Bucket)
+  @ApiResponse({ type: ResponseUtil })
   @ApiOperation({ summary: 'Create a new bucket' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post()
@@ -55,24 +50,19 @@ export class BucketController {
     @Body() dto: CreateBucketDto,
     @Req() req: IRequest,
   ) {
+    const app = req.application
+
     // check if the bucket name is unique
-    const found = await this.bucketsService.findOne(appid, dto.fullname(appid))
+    const found = await this.bucketService.findOne(appid, dto.fullname(appid))
     if (found) {
       return ResponseUtil.error('bucket name is already existed')
     }
 
-    // TODO: check the storage capacity of the app
-    const app = req.application
-    this.logger.warn('TODO: check the storage capacity of the app: ', app.appid)
-
     // create bucket
-    const bucket = await this.bucketsService.create(appid, dto)
+    const bucket = await this.bucketService.create(app, dto)
     if (!bucket) {
       return ResponseUtil.error('create bucket failed')
     }
-
-    // create bucket in gateway
-    await this.bucketsService.reconcileGateway(appid)
 
     return ResponseUtil.ok(bucket)
   }
@@ -82,13 +72,13 @@ export class BucketController {
    * @param appid
    * @returns
    */
-  @ApiResponseUtil(BucketList)
+  @ApiResponse({ type: ResponseUtil })
   @ApiOperation({ summary: 'Get bucket list of an app' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get()
   async findAll(@Param('appid') appid: string) {
-    const data = await this.bucketsService.findAll(appid)
-    return ResponseUtil.ok<BucketList>(data)
+    const data = await this.bucketService.findAll(appid)
+    return ResponseUtil.ok(data)
   }
 
   /**
@@ -97,12 +87,12 @@ export class BucketController {
    * @param name
    * @returns
    */
-  @ApiResponseUtil(Bucket)
+  @ApiResponse({ type: ResponseUtil })
   @ApiOperation({ summary: 'Get a bucket by name' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get(':name')
   async findOne(@Param('appid') appid: string, @Param('name') name: string) {
-    const data = await this.bucketsService.findOne(appid, name)
+    const data = await this.bucketService.findOne(appid, name)
     if (null === data) {
       throw new HttpException('bucket not found', HttpStatus.NOT_FOUND)
     }
@@ -117,7 +107,7 @@ export class BucketController {
    * @returns
    */
   @ApiOperation({ summary: 'Update a bucket' })
-  @ApiResponseUtil(Bucket)
+  @ApiResponse({ type: ResponseUtil })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Patch(':name')
   async update(
@@ -125,14 +115,14 @@ export class BucketController {
     @Param('name') name: string,
     @Body() dto: UpdateBucketDto,
   ) {
-    const bucket = await this.bucketsService.findOne(appid, name)
+    const bucket = await this.bucketService.findOne(appid, name)
     if (!bucket) {
       throw new HttpException('bucket not found', HttpStatus.NOT_FOUND)
     }
 
     // TODO check the storage capacity of the app
 
-    const res = await this.bucketsService.update(bucket, dto)
+    const res = await this.bucketService.update(bucket, dto)
     if (null === res) {
       return ResponseUtil.error('update bucket failed')
     }
@@ -150,18 +140,31 @@ export class BucketController {
   @ApiOperation({ summary: 'Delete a bucket' })
   @Delete(':name')
   async remove(@Param('appid') appid: string, @Param('name') name: string) {
-    const bucket = await this.bucketsService.findOne(appid, name)
+    const bucket = await this.bucketService.findOne(appid, name)
     if (!bucket) {
       throw new HttpException('bucket not found', HttpStatus.NOT_FOUND)
     }
 
-    const res = await this.bucketsService.remove(bucket)
+    const res = await this.bucketService.delete(bucket)
     if (null === res) {
       return ResponseUtil.error('delete bucket failed')
     }
 
-    // remove bucket in gateway
-    await this.bucketsService.reconcileGateway(appid)
     return ResponseUtil.ok(res)
+  }
+
+  async getSTSPolicy() {
+    const policy = {
+      Version: '2012-10-17',
+      Statement: [
+        {
+          Sid: `app-sts-full-grant`,
+          Effect: 'Allow',
+          Action: 's3:*',
+          Resource: 'arn:aws:s3:::*',
+        },
+      ],
+    }
+    return JSON.stringify(policy)
   }
 }

@@ -2,9 +2,6 @@ import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { ApplicationPhase, ApplicationState } from '@prisma/client'
 import { isConditionTrue } from '../utils/getter'
-import { DatabaseCoreService } from '../core/database.cr.service'
-import { GatewayCoreService } from '../core/gateway.cr.service'
-import { OSSUserCoreService } from '../core/oss-user.cr.service'
 import { PrismaService } from '../prisma.service'
 import { InstanceService } from './instance.service'
 
@@ -14,9 +11,6 @@ export class InstanceTaskService {
 
   constructor(
     private readonly instanceService: InstanceService,
-    private readonly databaseCore: DatabaseCoreService,
-    private readonly gatewayCore: GatewayCoreService,
-    private readonly ossCore: OSSUserCoreService,
     private readonly prisma: PrismaService,
   ) {}
 

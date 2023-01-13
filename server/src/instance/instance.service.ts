@@ -1,11 +1,11 @@
 import { V1Deployment } from '@kubernetes/client-node'
 import { Injectable, Logger } from '@nestjs/common'
 import { GetApplicationNamespaceById } from '../utils/getter'
-import { ResourceLabels, ServerConfig } from '../constants'
+import { ResourceLabels } from '../constants'
 import { DatabaseCoreService } from '../core/database.cr.service'
 import { KubernetesService } from '../core/kubernetes.service'
-import { OSSUserCoreService } from '../core/oss-user.cr.service'
 import { PrismaService } from '../prisma.service'
+import { StorageService } from '../storage/storage.service'
 
 @Injectable()
 export class InstanceService {
@@ -13,7 +13,7 @@ export class InstanceService {
   constructor(
     private readonly k8sService: KubernetesService,
     private readonly databaseCore: DatabaseCoreService,
-    private readonly ossCore: OSSUserCoreService,
+    private readonly storageService: StorageService,
     private readonly prisma: PrismaService,
   ) {}
 
@@ -42,7 +42,7 @@ export class InstanceService {
       },
     })
     const database = await this.databaseCore.findOne(appid)
-    const oss = await this.ossCore.findOne(appid)
+    const storage = await this.storageService.findOne(appid)
 
     // prepare params
     const limitMemory = app.bundle.limitMemory
@@ -56,14 +56,17 @@ export class InstanceService {
     const env = [
       { name: 'DB_URI', value: database.status?.connectionUri },
       { name: 'APP_ID', value: app.appid },
-      { name: 'OSS_ACCESS_KEY', value: oss.status?.accessKey },
-      { name: 'OSS_ACCESS_SECRET', value: oss.status?.secretKey },
-      { name: 'OSS_INTERNAL_ENDPOINT', value: oss.status?.endpoint },
+      { name: 'OSS_ACCESS_KEY', value: storage.accessKey },
+      { name: 'OSS_ACCESS_SECRET', value: storage.secretKey },
+      {
+        name: 'OSS_INTERNAL_ENDPOINT',
+        value: app.region.storageConf.internalEndpoint,
+      },
       {
         name: 'OSS_EXTERNAL_ENDPOINT',
-        value: ServerConfig.MINIO_EXTERNAL_ENDPOINT,
+        value: app.region.storageConf.externalEndpoint,
       },
-      { name: 'OSS_REGION', value: oss.status?.region },
+      { name: 'OSS_REGION', value: app.region.name },
       { name: 'FLAGS', value: `--max_old_space_size=${max_old_space_size}` },
       { name: 'DEPENDENCIES', value: dependencies_string },
     ]
