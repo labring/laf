@@ -1,8 +1,10 @@
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { Td } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import IconWrap from "@/components/IconWrap";
+
 import ConfirmButton from "../../ConfirmButton";
-import TextButton from "../../TextButton";
 import { TColumnItem, TConfiguration } from "../EditableTr";
 
 import styles from "../index.module.scss";
@@ -19,22 +21,24 @@ const NormalTr = function (props: {
     <>
       {column.map((item: TColumnItem) => {
         return (
-          <Td width={item?.width} key={item.key}>
-            <span className={`w-${item.textWidth} ${styles.text}`}>{data[item.key]}</span>
+          <Td maxWidth={item?.width} key={item.key} className={`${styles.text}`}>
+            <span>{data[item.key]}</span>
           </Td>
         );
       })}
-      <Td width={"200px"}>
+      <Td maxWidth="150px" className="flex">
         <>
           {configuration?.operationButtonsRender
             ? configuration.operationButtonsRender(data)
             : null}
           {!configuration?.hiddenEditButton ? (
-            <TextButton
-              className="mr-4"
-              text={configuration?.editButtonText ? configuration.editButtonText : "编辑"}
-              onClick={() => onEdit(data[configuration.key])}
-            />
+            <IconWrap
+              className="mr-2"
+              tooltip={configuration?.editButtonText ? configuration.editButtonText : "编辑"}
+              size={20}
+            >
+              <EditIcon fontSize={15} onClick={() => onEdit(data[configuration.key])} />
+            </IconWrap>
           ) : null}
           <ConfirmButton
             onSuccessAction={() => onDelete(data[configuration.key])}
@@ -43,13 +47,15 @@ const NormalTr = function (props: {
             }
             bodyText={`确定删除该行数据吗?`}
           >
-            <TextButton
-              text={
+            <IconWrap
+              tooltip={
                 configuration?.deleteButtonText
                   ? configuration.deleteButtonText
                   : String(t("Delete"))
               }
-            />
+            >
+              <DeleteIcon fontSize={15} />
+            </IconWrap>
           </ConfirmButton>
         </>
       </Td>

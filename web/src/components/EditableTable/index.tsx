@@ -15,7 +15,7 @@ const EditableTable = function (props: {
 }) {
   const { column, tableData, configuration, onEdit, onCreate, onDelete } = props;
   const [columnList, setColumnList] = useState<TColumnItem[]>(column);
-  const [tabelList, setTableList] = useState<any[]>([]);
+  const [tableList, setTableList] = useState<any[]>([]);
   const [isCreate, setIsCreate] = useState<boolean>(false);
   const [createData, setCreateData] = useState<any>({});
   const tableRef = useRef<any>(null);
@@ -35,7 +35,7 @@ const EditableTable = function (props: {
   }, [tableData, setTableList]);
 
   const handleSwitchEdit = function (key: string, status: boolean) {
-    const newList = tabelList?.map((item: any) => {
+    const newList = tableList?.map((item: any) => {
       return {
         ...item,
         isEdit: item[configuration.key] === key ? status : item.isEdit,
@@ -65,25 +65,19 @@ const EditableTable = function (props: {
 
   return (
     <>
-      <div className="px-4 py-1 mb-2 rounded-md relative border">
+      <div className="px-4 py-1 rounded-t-md relative border border-b-0">
         <TableContainer h={configuration?.tableHeight || "250px"} overflowY="auto" ref={tableRef}>
           <Table variant="simple">
             <Thead>
               <Tr>
                 {columnList.map((item: TColumnItem) => {
-                  return (
-                    <Th width={item.width || ""} key={item.key}>
-                      {item.name}
-                    </Th>
-                  );
+                  return <Th key={item.key}>{item.name}</Th>;
                 })}
-                <Th width={200} key="operation">
-                  操作
-                </Th>
+                <Th key="operation">操作</Th>
               </Tr>
             </Thead>
             <Tbody className="font-mono">
-              {(tabelList || []).map((item: any, index: number) => {
+              {(tableList || []).map((item: any, index: number) => {
                 const generalParameters = {
                   configuration,
                   column: columnList,
@@ -137,10 +131,10 @@ const EditableTable = function (props: {
       </div>
       <Button
         leftIcon={<AddIcon />}
-        style={{ borderStyle: "dashed" }}
+        style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0 }}
         size="m"
         px="6"
-        className="h-10 rounded-md"
+        className="h-10"
         onClick={handleAdd}
         variant="outline"
       >

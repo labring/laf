@@ -1,7 +1,7 @@
 import { Button } from "@chakra-ui/react";
 
 import JsonEditor from "@/components/Editor/JsonEditor";
-export default function ColPannel() {
+export default function ColPanel() {
   return (
     <div className="h-full  relative group">
       <div className="mb-2 justify-end flex">

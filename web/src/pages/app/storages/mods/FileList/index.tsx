@@ -5,7 +5,6 @@ import { t } from "i18next";
 
 import ConfirmButton from "@/components/ConfirmButton";
 import FileTypeIcon from "@/components/FileTypeIcon";
-import { Col } from "@/components/Grid";
 import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
 import { formatDate, formateType, formatSize } from "@/utils/format";
@@ -51,8 +50,8 @@ export default function FileList() {
   };
 
   return (
-    <Col>
-      <Panel style={{ maxHeight: 40 }}>
+    <>
+      <Panel style={{ flexBasis: 40, flexShrink: 0 }}>
         <Panel.Header>
           <HStack spacing={2}>
             <UploadButton onUploadSuccess={() => query.refetch()} />
@@ -60,20 +59,20 @@ export default function FileList() {
           </HStack>
         </Panel.Header>
       </Panel>
-      <Panel>
-        <Panel.Header className="border-b-2">
+      <Panel className="flex-grow overflow-hidden">
+        <Panel.Header className="border-b-2 flex-none">
           <PathLink />
           <span className={"before:bg-purple-500 " + styles.circle}>
             文件数： {currentStorage?.status?.capacity?.objectCount}{" "}
           </span>
         </Panel.Header>
-        <div className="px-2 pb-20 h-full overflow-auto">
+        <div className="px-2 pb-2 flex-grow overflow-hidden">
           {!query.data ||
           query.data.length === 0 ||
           (query.data.length === 1 && query.data[0].Key === prefix) ? (
             <div className="h-full flex items-center  justify-center">请选择文件或者文件夹上传</div>
           ) : (
-            <TableContainer>
+            <TableContainer className="h-full" style={{ overflowY: "auto" }}>
               <Table variant="simple" size="sm">
                 <Thead className="h-8 bg-gray-100 text-gray-300">
                   <Tr>
@@ -158,6 +157,6 @@ export default function FileList() {
           )}
         </div>
       </Panel>
-    </Col>
+    </>
   );
 }

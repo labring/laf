@@ -22,15 +22,15 @@ function DatabasePage() {
   const settingStore = useCustomSettingStore();
   return (
     <Content>
-      <Row className="flex-grow">
+      <Row className="flex-grow overflow-hidden">
         <Col {...settingStore.layoutInfo.collectionPage.SiderBar}>
           <CollectionListPanel />
-          <Row {...settingStore.layoutInfo.collectionPage.PolicyPanel}>
+          <Row className="!flex-none" {...settingStore.layoutInfo.collectionPage.PolicyPanel}>
             <PolicyListPanel />
           </Row>
         </Col>
         <Col>
-          <Panel className="items-center">
+          <Panel className="items-center h-full">
             {store.currentShow === "DB" ? (
               <CollectionDataList />
             ) : store.currentPolicy === undefined ? (

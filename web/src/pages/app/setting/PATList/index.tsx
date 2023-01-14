@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Button } from "@chakra-ui/react";
 
 import CopyText from "@/components/CopyText";
 import EditableTable from "@/components/EditableTable";
+import TextButton from "@/components/TextButton";
 import { formatDate, formatDateOption } from "@/utils/format";
 
 import DateSelector from "./DateSelector";
@@ -21,12 +21,7 @@ const PATList = () => {
     setFormatPATList(newPATList);
   });
 
-  const delPATMutation = useDelPATMutation(() => {
-    // const newTokenList = newTokenList.map((token) => {
-    //   return token.id !==
-    // });
-    // setTokenList(newTokenList);
-  });
+  const delPATMutation = useDelPATMutation(() => {});
   const addPATMutation = useAddPATMutation((data: any) => {
     const newTokenList = [...tokenList];
     newTokenList.push({
@@ -46,12 +41,11 @@ const PATList = () => {
             {
               name: "name",
               key: "name",
-              width: "200px",
-              textWidth: "60",
-              valiate: [
+              width: "150px",
+              validate: [
                 (data: any) => {
                   return {
-                    isValiate: data !== "",
+                    isValidate: data !== "",
                     errorInfo: "name不能为空",
                   };
                 },
@@ -59,8 +53,8 @@ const PATList = () => {
             },
             {
               name: "过期时间",
+              width: "290px",
               key: "expiresIn",
-              textWidth: "40",
               editable: false,
               defaultValue: dateList[0].value,
               editComponent: (props: any) => {
@@ -83,9 +77,7 @@ const PATList = () => {
               const tokenItem = tokenList?.filter((item) => item.id === data.id);
               return tokenItem?.length === 1 ? (
                 <CopyText className="mr-4" text={tokenItem[0].token} tip="token复制成功">
-                  <Button variant={"link"} size="xs" colorScheme={"blue"}>
-                    复制Token
-                  </Button>
+                  <TextButton text="复制Token" />
                 </CopyText>
               ) : null;
             },

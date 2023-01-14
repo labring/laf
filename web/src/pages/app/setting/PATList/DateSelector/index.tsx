@@ -1,10 +1,12 @@
 import { forwardRef, useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { Input, Select } from "@chakra-ui/react";
+import clsx from "clsx";
 
 import { addDateByValue } from "@/utils/format";
 
 import "react-datepicker/dist/react-datepicker.css";
+import styles from "./index.module.scss";
 
 const DateSelector = function (props: {
   setting: { now: Date; dateList: any[] };
@@ -15,7 +17,7 @@ const DateSelector = function (props: {
   const [isShow, setIsShow] = useState(false);
   const [startDate, setStartDate] = useState<Date>();
   const [optionSelect, setOptionSelect] = useState<number | string>(setting.dateList[0].value);
-  const ExampleCustomInput = forwardRef(
+  const CustomInput = forwardRef(
     (
       props: {
         value?: any;
@@ -25,7 +27,8 @@ const DateSelector = function (props: {
     ) => {
       return (
         <Input
-          className="ml-4 w-4"
+          className="ml-4"
+          style={{ width: "130px" }}
           ref={ref}
           resize="vertical"
           size="sm"
@@ -37,7 +40,7 @@ const DateSelector = function (props: {
     },
   );
 
-  const isValiateDay = (date: Date) => {
+  const isValidateDay = (date: Date) => {
     const now = new Date();
     const day = date.getTime() - now.getTime();
     return day > 0 && day < 31536000000;
@@ -49,7 +52,7 @@ const DateSelector = function (props: {
     } else {
       setOptionSelect(value);
     }
-  }, [value]);
+  }, [value, setStartDate, setOptionSelect]);
 
   const handleDateChange = function (date: Date) {
     const timeGap = (date.getTime() - setting.now.getTime()) / 1000;
@@ -63,16 +66,21 @@ const DateSelector = function (props: {
       onChange(e);
     } else {
       setOptionSelect("custom");
-      const initalDate = addDateByValue(setting.now, 120);
-      setStartDate(initalDate);
+      const initialDate = addDateByValue(setting.now, 120);
+      setStartDate(initialDate);
       onChange({ target: { value: 120 } });
       setIsShow(true);
     }
   };
 
   return (
-    <div className="flex">
-      <Select width="100px" size="sm" value={optionSelect} onChange={handleSelectChange}>
+    <div className={clsx(styles.customStyleDateSelector, " flex")}>
+      <Select
+        width={isShow ? "120px" : "190px"}
+        size="sm"
+        value={optionSelect}
+        onChange={handleSelectChange}
+      >
         {setting.dateList.map((date: any) => (
           <option key={date.value} value={date.value}>
             {date.label}
@@ -81,10 +89,11 @@ const DateSelector = function (props: {
       </Select>
       {isShow ? (
         <DatePicker
-          dateFormat="yyyy-MM-dd HH:mm"
+          calendarClassName="customStyle"
+          dateFormat="yyyy/MM/dd HH:mm"
           selected={startDate}
-          customInput={<ExampleCustomInput />}
-          filterDate={isValiateDay}
+          customInput={<CustomInput />}
+          filterDate={isValidateDay}
           onChange={handleDateChange}
         />
       ) : null}

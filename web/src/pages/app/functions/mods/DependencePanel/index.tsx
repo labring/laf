@@ -9,10 +9,10 @@ import { Badge, Tab, TabList, TabPanel, TabPanels, Tabs, Tooltip } from "@chakra
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
 
-import AddDepenceModal from "./AddDepenceModal";
+import AddDependenceModal from "./AddDependenceModal";
 import { TPackage, useDelPackageMutation, usePackageQuery } from "./service";
 
-export default function DependecyList() {
+export default function DependenceList() {
   const packageQuery = usePackageQuery();
   const delPackageMutation = useDelPackageMutation();
   const { t } = useTranslation();
@@ -32,7 +32,7 @@ export default function DependecyList() {
 
   return (
     <Panel>
-      <Panel.Header title="NPM 依赖" actions={[<AddDepenceModal key="AddDepenceModal" />]} />
+      <Panel.Header title="NPM 依赖" actions={[<AddDependenceModal key="AddDependenceModal" />]} />
       <Tabs variant="soft-rounded" colorScheme={"gray"} size={"sm"}>
         <TabList>
           <Tab>

@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 
 import SectionList from "@/components/SectionList";
-export type TtabItem = {
+export type TTabItem = {
   key: string;
   name: string;
   component: React.ReactElement;
@@ -19,11 +19,11 @@ export type TtabItem = {
 const SettingModal = (props: {
   headerTitle: string;
   children: React.ReactElement;
-  tabMatch: TtabItem[];
+  tabMatch: TTabItem[];
 }) => {
   const { headerTitle, tabMatch, children } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [item, setItem] = useState<TtabItem>();
+  const [item, setItem] = useState<TTabItem>();
 
   return (
     <>
@@ -34,7 +34,7 @@ const SettingModal = (props: {
         },
       })}
 
-      <Modal isOpen={isOpen} onClose={onClose} size="5xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="4xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{headerTitle || "设置"}</ModalHeader>
@@ -58,9 +58,6 @@ const SettingModal = (props: {
                 })}
               </SectionList>
               <div className="w-full">
-                <h3 className="ml-2 pb-2 mb-4 font-bold border-gray-200 border-b border-solid">
-                  {item?.name}
-                </h3>
                 {React.cloneElement(item?.component || <></>, {
                   onClose,
                 })}
