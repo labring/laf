@@ -140,7 +140,7 @@ spec:
               containerPort: {{ .Values.minioConsolePort }}
           env:
             - name: MINIO_DOMAIN
-              value: oss.{{ .Values.global.domain}}
+              value: {{ .Values.domain }}
             - name: MINIO_ROOT_USER
               valueFrom:
                 secretKeyRef:

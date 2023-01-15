@@ -10,7 +10,7 @@ db:
   replicaSetName: rs0
 
 storage:
-  size: 5G
+  size: 10Gi
   class: database-mongodb
 
 # k8s resource config

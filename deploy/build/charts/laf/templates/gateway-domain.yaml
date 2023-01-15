@@ -5,7 +5,7 @@ metadata:
 spec:
   backendType: app
   cluster:
-    key: {{ .Values.apisix.admin.credentials.admin }}
+    key: {{ .Values.global.apisix_key }}
     url: http://apisix-admin.{{ .Release.Namespace }}.svc.cluster.local:9180/apisix/admin
   domain: {{ .Values.global.domain }}
   region: {{ .Values.global.region }}
@@ -18,7 +18,7 @@ metadata:
 spec:
   backendType: bucket
   cluster:
-    key: {{ .Values.apisix.admin.credentials.admin }}
+    key: {{ .Values.global.apisix_key }}
     url: http://apisix-admin.{{ .Release.Namespace }}.svc.cluster.local:9180/apisix/admin
   domain: oss.{{ .Values.global.domain }}
   region: {{ .Values.global.region }}

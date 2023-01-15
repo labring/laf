@@ -4,8 +4,7 @@
 
 
 storage:
-  size: 1G
-  # class: database-postgresql
+  size: 3G
   class: local-hostpath
   createClass: false
 
