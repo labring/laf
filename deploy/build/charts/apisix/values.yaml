@@ -162,11 +162,11 @@ gateway:
   http:
     enabled: true
     servicePort: 80
-    containerPort: 9080
+    containerPort: 80
   tls:
     enabled: true
     servicePort: 443
-    containerPort: 9443
+    containerPort: 443
     existingCASecret: ""
     certCAFilename: ""
     http2:
@@ -442,7 +442,7 @@ serviceMonitor:
 # use the FQDN address or the IP of the etcd
 etcd:
   # install etcd(v3) by default, set false if do not want to install etcd(v3) together
-  enabled: true
+  enabled: false
   clusterDomain: "cluster.local"
   host:
     # host or ip e.g. http://172.20.128.89:2379
