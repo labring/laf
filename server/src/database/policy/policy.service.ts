@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common'
 import { DatabasePolicy, DatabasePolicyRule } from '@prisma/client'
 import { CN_PUBLISHED_POLICIES } from 'src/constants'
-import { DatabaseCoreService } from 'src/core/database.cr.service'
 import { PrismaService } from 'src/prisma.service'
-import { CreatePolicyDto } from './dto/create-policy.dto'
-import { UpdatePolicyDto } from './dto/update-policy.dto'
+import { DatabaseService } from '../database.service'
+import { CreatePolicyDto } from '../dto/create-policy.dto'
+import { UpdatePolicyDto } from '../dto/update-policy.dto'
 
 @Injectable()
 export class PolicyService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly db: DatabaseCoreService,
+    private readonly databaseService: DatabaseService,
   ) {}
 
   async create(appid: string, createPolicyDto: CreatePolicyDto) {
@@ -92,7 +92,9 @@ export class PolicyService {
   }
 
   async publish(policy: DatabasePolicy & { rules: DatabasePolicyRule[] }) {
-    const { db, client } = await this.db.findAndConnect(policy.appid)
+    const { db, client } = await this.databaseService.findAndConnect(
+      policy.appid,
+    )
     const session = client.startSession()
 
     const rules = {}
@@ -113,7 +115,7 @@ export class PolicyService {
   }
 
   async unpublish(appid: string, name: string) {
-    const { db, client } = await this.db.findAndConnect(appid)
+    const { db, client } = await this.databaseService.findAndConnect(appid)
     try {
       const coll = db.collection(CN_PUBLISHED_POLICIES)
       await coll.deleteOne({ name })

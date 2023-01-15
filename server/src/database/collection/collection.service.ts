@@ -1,13 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { DatabaseCoreService } from '../core/database.cr.service'
-import { CreateCollectionDto } from './dto/create-collection.dto'
-import { UpdateCollectionDto } from './dto/update-collection.dto'
+import { CreateCollectionDto } from '../dto/create-collection.dto'
+import { UpdateCollectionDto } from '../dto/update-collection.dto'
 import * as assert from 'node:assert'
+import { DatabaseService } from '../database.service'
 
 @Injectable()
 export class CollectionService {
   private readonly logger = new Logger(CollectionService.name)
-  constructor(private readonly databaseService: DatabaseCoreService) {}
+  constructor(private readonly databaseService: DatabaseService) {}
 
   /**
    * Create collection in database

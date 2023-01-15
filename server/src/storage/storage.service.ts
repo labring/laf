@@ -1,9 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Application, Region, StorageUser } from '@prisma/client'
+import { Region, StorageUser } from '@prisma/client'
 import { PrismaService } from 'src/prisma.service'
 import { GenerateAlphaNumericPassword } from 'src/utils/random'
 import { MinioService } from './minio/minio.service'
 import { AssumeRoleCommand, STSClient } from '@aws-sdk/client-sts'
+import { RegionService } from 'src/region/region.service'
 
 @Injectable()
 export class StorageService {
@@ -11,11 +12,13 @@ export class StorageService {
 
   constructor(
     private readonly minioService: MinioService,
+    private readonly regionService: RegionService,
     private readonly prisma: PrismaService,
   ) {}
 
-  async create(app: Application, region: Region) {
-    const accessKey = app.appid
+  async create(appid: string) {
+    const region = await this.regionService.findByAppId(appid)
+    const accessKey = appid
     const secretKey = GenerateAlphaNumericPassword(64)
 
     // create storage user in minio
@@ -39,7 +42,7 @@ export class StorageService {
         secretKey,
         application: {
           connect: {
-            appid: app.appid,
+            appid: appid,
           },
         },
       },

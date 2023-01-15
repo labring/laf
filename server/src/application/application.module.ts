@@ -11,9 +11,10 @@ import { EnvironmentVariableService } from './environment.service'
 import { EnvironmentVariableController } from './environment.controller'
 import { StorageModule } from '../storage/storage.module'
 import { RegionModule } from '../region/region.module'
+import { DatabaseModule } from 'src/database/database.module'
 
 @Module({
-  imports: [CoreModule, StorageModule, RegionModule],
+  imports: [CoreModule, StorageModule, RegionModule, DatabaseModule],
   controllers: [ApplicationController, EnvironmentVariableController],
   providers: [
     ApplicationService,
