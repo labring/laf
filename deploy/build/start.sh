@@ -99,4 +99,5 @@ helm install server -n ${NAMESPACE} \
 helm install laf -n ${NAMESPACE} \
     --set global.domain=${DOMAIN} \
     --set global.region=${REGION} \
+    --set global.apisix_key=${APISIX_API_KEY} \
     ./charts/laf

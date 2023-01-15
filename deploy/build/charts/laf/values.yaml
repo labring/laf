@@ -5,3 +5,4 @@
 global:
   region: default
   domain: 127.0.0.1.nip.io
+  apisix_key: ""
