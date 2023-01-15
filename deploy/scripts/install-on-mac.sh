@@ -107,12 +107,3 @@ set +x
 
 echo "k8s cluster is ready."
 echo "ip: $vm_ip"
-
-
-# Optional installations
-
-# arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/)
-#vm_root_exec echo "download buildah in https://github.com/labring/cluster-image/releases/download/depend/buildah.linux.${arch}"
-#vm_root_exec wget -qO "buildah" "https://github.com/labring/cluster-image/releases/download/depend/buildah.linux.${arch}"
-#vm_root_exec chmod a+x buildah
-#vm_root_exec mv buildah /usr/bin
