@@ -42,16 +42,6 @@ type DomainReconciler struct {
 //+kubebuilder:rbac:groups=gateway.laf.dev,resources=domains/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=gateway.laf.dev,resources=domains/finalizers,verbs=update
 
-//+kubebuilder:rbac:groups=oss.laf.dev,resources=buckets,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=oss.laf.dev,resources=buckets/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=oss.laf.dev,resources=buckets/finalizers,verbs=update
-//+kubebuilder:rbac:groups=oss.laf.dev,resources=users,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=oss.laf.dev,resources=users/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=oss.laf.dev,resources=users/finalizers,verbs=update
-//+kubebuilder:rbac:groups=oss.laf.dev,resources=stores,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=oss.laf.dev,resources=stores/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=oss.laf.dev,resources=stores/finalizers,verbs=update
-
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
 // TODO(user): Modify the Reconcile function to compare the state specified by

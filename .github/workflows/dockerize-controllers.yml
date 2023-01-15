@@ -24,7 +24,7 @@ jobs:
     strategy:
       max-parallel: 2
       matrix:
-        module: [database, gateway, oss]
+        module: [database, gateway]
     steps:
       - name: Checkout
         uses: actions/checkout@v3

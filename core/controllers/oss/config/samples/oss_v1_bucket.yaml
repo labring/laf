@@ -1,9 +1,0 @@
-apiVersion: oss.laf.dev/v1
-kind: Bucket
-metadata:
-  name: app1-sample
-  labels:
-    appid: app1
-spec:
-  policy: readonly
-  storage: 100Mi
