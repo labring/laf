@@ -1,5 +1,5 @@
 # FROM node:18-slim
-FROM ghcr.io/labring/laf-server:1.0.0-alpha.5
+FROM docker.io/lafyun/laf-server:dev
 
 RUN apt-get update
 RUN apt-get install -y openssl wget
@@ -13,7 +13,9 @@ WORKDIR /app
 
 EXPOSE 3000
 
-RUN rm -rf /app
+# quirks
+RUN rm -rf /app/src/*
+RUN rm -rf /app/test/*
 COPY . /app
 
 RUN npm install
