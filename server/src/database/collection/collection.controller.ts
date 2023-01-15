@@ -15,13 +15,13 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
-import { ApplicationAuthGuard } from '../auth/application.auth.guard'
-import { JwtAuthGuard } from '../auth/jwt.auth.guard'
-import { ApiResponseUtil, ResponseUtil } from '../utils/response'
+import { ApplicationAuthGuard } from '../../auth/application.auth.guard'
+import { JwtAuthGuard } from '../../auth/jwt.auth.guard'
+import { ApiResponseUtil, ResponseUtil } from '../../utils/response'
 import { CollectionService } from './collection.service'
-import { CreateCollectionDto } from './dto/create-collection.dto'
-import { UpdateCollectionDto } from './dto/update-collection.dto'
-import { Collection } from './entities/collection.entity'
+import { CreateCollectionDto } from '../dto/create-collection.dto'
+import { UpdateCollectionDto } from '../dto/update-collection.dto'
+import { Collection } from '../entities/collection.entity'
 
 @ApiTags('Database')
 @ApiBearerAuth('Authorization')

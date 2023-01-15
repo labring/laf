@@ -5,6 +5,17 @@ import { PrismaService } from '../prisma.service'
 export class RegionService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findByAppId(appid: string) {
+    const app = await this.prisma.application.findUnique({
+      where: { appid },
+      select: {
+        region: true,
+      },
+    })
+
+    return app.region
+  }
+
   async findOne(name: string) {
     const region = await this.prisma.region.findUnique({
       where: { name },

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import * as assert from 'node:assert'
 import { PrismaService } from 'src/prisma.service'
-import { CreatePolicyRuleDto } from './dto/create-rule.dto'
-import { UpdatePolicyRuleDto } from './dto/update-rule.dto'
+import { CreatePolicyRuleDto } from '../dto/create-rule.dto'
+import { UpdatePolicyRuleDto } from '../dto/update-rule.dto'
 import { PolicyService } from './policy.service'
 
 @Injectable()

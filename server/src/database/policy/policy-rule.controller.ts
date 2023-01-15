@@ -17,9 +17,9 @@ import {
 import { ResponseUtil } from 'src/utils/response'
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
 import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
-import { CreatePolicyRuleDto } from './dto/create-rule.dto'
+import { CreatePolicyRuleDto } from '../dto/create-rule.dto'
 import { PolicyRuleService } from './policy-rule.service'
-import { UpdatePolicyRuleDto } from './dto/update-rule.dto'
+import { UpdatePolicyRuleDto } from '../dto/update-rule.dto'
 
 @ApiTags('Database')
 @ApiBearerAuth('Authorization')

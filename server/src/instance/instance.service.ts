@@ -2,18 +2,18 @@ import { V1Deployment } from '@kubernetes/client-node'
 import { Injectable, Logger } from '@nestjs/common'
 import { GetApplicationNamespaceById } from '../utils/getter'
 import { ResourceLabels } from '../constants'
-import { DatabaseCoreService } from '../core/database.cr.service'
 import { KubernetesService } from '../core/kubernetes.service'
 import { PrismaService } from '../prisma.service'
 import { StorageService } from '../storage/storage.service'
+import { DatabaseService } from 'src/database/database.service'
 
 @Injectable()
 export class InstanceService {
   private logger = new Logger('InstanceService')
   constructor(
     private readonly k8sService: KubernetesService,
-    private readonly databaseCore: DatabaseCoreService,
     private readonly storageService: StorageService,
+    private readonly databaseService: DatabaseService,
     private readonly prisma: PrismaService,
   ) {}
 
@@ -41,8 +41,6 @@ export class InstanceService {
         region: true,
       },
     })
-    const database = await this.databaseCore.findOne(appid)
-    const storage = await this.storageService.findOne(appid)
 
     // prepare params
     const limitMemory = app.bundle.limitMemory
@@ -53,8 +51,17 @@ export class InstanceService {
     const dependencies = app.configuration?.dependencies || []
     const dependencies_string = dependencies.join(' ')
 
+    // db connection uri
+    const database = await this.databaseService.findOne(appid)
+    const dbConnectionUri = this.databaseService.getConnectionUri(
+      app.region,
+      database,
+    )
+
+    const storage = await this.storageService.findOne(appid)
+
     const env = [
-      { name: 'DB_URI', value: database.status?.connectionUri },
+      { name: 'DB_URI', value: dbConnectionUri },
       { name: 'APP_ID', value: app.appid },
       { name: 'OSS_ACCESS_KEY', value: storage.accessKey },
       { name: 'OSS_ACCESS_SECRET', value: storage.secretKey },

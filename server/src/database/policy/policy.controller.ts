@@ -9,14 +9,14 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import { PolicyService } from './policy.service'
-import { CreatePolicyDto } from './dto/create-policy.dto'
+import { CreatePolicyDto } from '../dto/create-policy.dto'
 import {
   ApiBearerAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
-import { UpdatePolicyDto } from './dto/update-policy.dto'
+import { UpdatePolicyDto } from '../dto/update-policy.dto'
 import { ResponseUtil } from 'src/utils/response'
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
 import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
