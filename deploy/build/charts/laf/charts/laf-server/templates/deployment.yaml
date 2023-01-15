@@ -67,6 +67,10 @@ spec:
               value: {{ .Values.global.oss.secret_key | quote}}
             - name: DOMAIN
               value: {{ .Values.global.domain }}
+            - name: APISIX_API_URL
+              value: http://apisix-admin.{{ .Release.Namespace}}.svc.cluster.local:9180/apisix/admin
+            - name: APISIX_API_KEY
+              value: 4054f7cf07e344346cd3f287985e7c8f1
             - name: CASDOOR_ENDPOINT
               value: http://casdoor.{{ .Values.global.domain }}
             - name: CASDOOR_ORG_NAME
