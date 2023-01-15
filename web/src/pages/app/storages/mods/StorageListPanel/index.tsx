@@ -39,7 +39,7 @@ export default function StorageListPanel() {
   });
 
   return (
-    <Panel>
+    <Panel className="h-full">
       <Panel.Header
         title="云存储"
         actions={[
@@ -50,7 +50,7 @@ export default function StorageListPanel() {
           </CreateBucketModal>,
         ]}
       />
-      <div className="w-full">
+      <div className="w-full flex flex-col" style={{ height: "calc(100% - 36px)" }}>
         <InputGroup className="mb-4">
           <InputLeftElement
             height={"8"}
@@ -65,7 +65,7 @@ export default function StorageListPanel() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </InputGroup>
-        <SectionList style={{ height: "calc(100vh - 260px)", overflow: "auto" }}>
+        <SectionList style={{ flexGrow: 1, overflow: "auto" }}>
           {(bucketListQuery?.data?.data?.items || [])
             .filter((storage: any) => storage?.metadata?.name.indexOf(search) >= 0)
             .map((storage: TBucket) => {
@@ -114,7 +114,7 @@ export default function StorageListPanel() {
               );
             })}
         </SectionList>
-        <div className="bg-gray-100 w-full rounded-md flex p-4 justify-around h-32">
+        <div className="bg-gray-100 w-full rounded-md flex px-4 mb-4 justify-around  items-center h-[100px] flex-none">
           <div>
             <CircularProgress color="primary.500" value={30} size="90px">
               <CircularProgressLabel>20%</CircularProgressLabel>

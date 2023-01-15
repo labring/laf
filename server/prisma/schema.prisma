@@ -174,6 +174,7 @@ model Application {
 
   configuration ApplicationConfiguration?
   storageUser   StorageUser?
+  database      Database?
 }
 
 type EnvironmentVariable {
@@ -223,6 +224,19 @@ model StorageBucket {
 }
 
 // database schemas
+
+model Database {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  appid    String @unique
+  name     String
+  user     String
+  password String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  application Application @relation(fields: [appid], references: [appid])
+}
 
 model DatabasePolicy {
   id        String               @id @default(auto()) @map("_id") @db.ObjectId

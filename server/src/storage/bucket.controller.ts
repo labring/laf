@@ -24,7 +24,6 @@ import { JwtAuthGuard } from '../auth/jwt.auth.guard'
 import { ResponseUtil } from '../utils/response'
 import { CreateBucketDto } from './dto/create-bucket.dto'
 import { UpdateBucketDto } from './dto/update-bucket.dto'
-import * as assert from 'node:assert'
 import { BucketService } from './bucket.service'
 
 @ApiTags('Storage')

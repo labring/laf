@@ -5,7 +5,6 @@
     "christian-kohler.npm-intellisense",
     "streetsidesoftware.code-spell-checker",
     "pomdtr.excalidraw-editor",
-    "golang.go",
-    "Tim-Koehler.helm-intellisense"
+     "Tim-Koehler.helm-intellisense"
   ]
 }

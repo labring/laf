@@ -1,0 +1,26 @@
+.dependenceList {
+  max-height: 60vh;
+  overflow: auto;
+
+  li {
+    cursor: pointer;
+    display: flex;
+    min-height: 80px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 8px;
+
+    span {
+      vertical-align: middle;
+    }
+
+    &:hover,
+    &.active {
+      background-color: var(--chakra-colors-primary-100);
+    }
+
+    &.active {
+      background-color: var(--chakra-colors-primary-300);
+    }
+  }
+}

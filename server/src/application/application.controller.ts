@@ -25,7 +25,6 @@ import { UpdateApplicationDto } from './dto/update-application.dto'
 import { ApplicationService } from './application.service'
 import { FunctionService } from '../function/function.service'
 import { StorageService } from 'src/storage/storage.service'
-import { DatabaseCoreService } from 'src/core/database.cr.service'
 import { GatewayCoreService } from 'src/core/gateway.cr.service'
 import { RegionService } from 'src/region/region.service'
 
@@ -38,7 +37,6 @@ export class ApplicationController {
     private readonly appService: ApplicationService,
     private readonly funcService: FunctionService,
     private readonly regionService: RegionService,
-    private readonly databaseCore: DatabaseCoreService,
     private readonly gatewayCore: GatewayCoreService,
     private readonly storageService: StorageService,
   ) {}
@@ -88,14 +86,12 @@ export class ApplicationController {
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get(':appid')
   async findOne(@Param('appid') appid: string) {
-    // get sub resources
-    const database = await this.databaseCore.findOne(appid)
-    const gateway = await this.gatewayCore.findOne(appid)
-    const storage = await this.storageService.findOne(appid)
-
     const data = await this.appService.findOne(appid, {
       configuration: true,
     })
+
+    const gateway = await this.gatewayCore.findOne(appid)
+    const storage = await this.storageService.findOne(appid)
 
     // Security Warning: Do not response this region object to client since it contains sensitive information
     const region = await this.regionService.findOne(data.regionName)
@@ -114,7 +110,6 @@ export class ApplicationController {
     const res = {
       ...data,
       gateway,
-      database,
       storage: {
         ...storage,
         credentials,

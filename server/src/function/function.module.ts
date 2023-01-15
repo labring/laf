@@ -5,10 +5,12 @@ import { PrismaService } from '../prisma.service'
 import { CoreModule } from '../core/core.module'
 import { FunctionController } from './function.controller'
 import { FunctionService } from './function.service'
+import { DatabaseModule } from 'src/database/database.module'
 
 @Module({
-  imports: [CoreModule, ApplicationModule],
+  imports: [CoreModule, ApplicationModule, DatabaseModule],
   controllers: [FunctionController],
   providers: [FunctionService, PrismaService, JwtService],
+  exports: [FunctionService],
 })
 export class FunctionModule {}

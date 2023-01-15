@@ -7,8 +7,8 @@ import { Col, Row } from "@/components/Grid";
 
 import BottomPanel from "./mods/BottomPanel";
 import ConsolePanel from "./mods/ConsolePanel";
-import DebugPanel from "./mods/DebugPannel";
-import DependecyPanel from "./mods/DependecePanel";
+import DebugPanel from "./mods/DebugPanel";
+import DependencePanel from "./mods/DependencePanel";
 import EditorPanel from "./mods/EditorPanel";
 import FunctionPanel from "./mods/FunctionPanel";
 
@@ -22,7 +22,7 @@ function FunctionPage() {
         <Col {...functionPageConfig.SiderBar}>
           <FunctionPanel />
           <Row {...functionPageConfig.DependencePanel}>
-            <DependecyPanel />
+            <DependencePanel />
           </Row>
         </Col>
         <Col className="overflow-hidden">

@@ -8,7 +8,7 @@ import Panel from "@/components/Panel";
 import useFunctionStore from "../../store";
 import DeployButton from "../DeployButton";
 
-import useFunctionCache from "@/hooks/useFuncitonCache";
+import useFunctionCache from "@/hooks/useFunctionCache";
 
 function EditorPanel() {
   const store = useFunctionStore((store) => store);
@@ -30,7 +30,7 @@ function EditorPanel() {
             {/* {currentFunction?.id &&
           functionCache.getCache(currentFunction?.id) !== currentFunction?.source?.code && (
             <div>
-              <Badge colorScheme="purple">{t("Editting...")}</Badge>
+              <Badge colorScheme="purple">{t("Editing...")}</Badge>
             </div>
           )} */}
 

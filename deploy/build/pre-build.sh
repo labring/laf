@@ -6,7 +6,7 @@ controllers_dir=$abs_dir/../../core/controllers
 
 mkdir -p $abs_dir/manifests
 
-matrix=(database gateway oss)
+matrix=(gateway)
 
 for i in "${matrix[@]}"
 do

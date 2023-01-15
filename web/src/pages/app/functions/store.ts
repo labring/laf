@@ -13,7 +13,7 @@ type State = {
   getFunctionUrl: () => string;
 
   setCurrentRequestId: (requestId: string | undefined) => void;
-  setAllFunctionList: (funcionList: TFunction[]) => void;
+  setAllFunctionList: (functionList: TFunction[]) => void;
   setCurrentFunction: (currentFunction: TFunction | { [key: string]: any }) => void;
   updateFunctionCode: (current: TFunction | { [key: string]: any }, codes: string) => void;
 };

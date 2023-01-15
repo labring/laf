@@ -24,7 +24,7 @@ import { t } from "i18next";
 
 import IconWrap from "@/components/IconWrap";
 
-import { useCreateFuncitonMutation, useUpdateFunctionMutation } from "../../../service";
+import { useCreateFunctionMutation, useUpdateFunctionMutation } from "../../../service";
 import useFunctionStore from "../../../store";
 
 import defaultString from "./defaultFunctionString";
@@ -67,7 +67,7 @@ const CreateModal = (props: { functionItem?: any }) => {
     defaultValues,
   });
 
-  const createFuncitonMutation = useCreateFuncitonMutation();
+  const createFunctionMutation = useCreateFunctionMutation();
   const updateFunctionMutation = useUpdateFunctionMutation();
 
   const onSubmit = async (data: any) => {
@@ -76,7 +76,7 @@ const CreateModal = (props: { functionItem?: any }) => {
     if (isEdit) {
       res = await updateFunctionMutation.mutateAsync(data);
     } else {
-      res = await createFuncitonMutation.mutateAsync(data);
+      res = await createFunctionMutation.mutateAsync(data);
     }
 
     if (!res.error) {
@@ -100,7 +100,7 @@ const CreateModal = (props: { functionItem?: any }) => {
           }, 0);
         }}
       >
-        {isEdit ? <EditIcon /> : <AddIcon fontSize={10} />}
+        {isEdit ? <EditIcon fontSize={13} /> : <AddIcon fontSize={12} />}
       </IconWrap>
 
       <Modal isOpen={isOpen} onClose={onClose} size="xl">

@@ -2,7 +2,5 @@ go 1.18
 
 use (
 	.
-	./controllers/database
-	./controllers/oss
 	./controllers/gateway
 )

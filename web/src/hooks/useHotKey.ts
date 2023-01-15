@@ -12,7 +12,7 @@ const MODIFY_KEY = {
   ctrlKey: "Control",
 };
 
-export function getDispalyString(str: string) {
+export function getDisplayString(str: string) {
   return str.replace(/Meta/g, "⌘").replaceAll("Control", "Ctrl");
 }
 
@@ -68,7 +68,7 @@ function useHotKey(
   }, [config?.enabled, handleKeyDown]);
 
   return {
-    displayName: getDispalyString(keyMap[0]),
+    displayName: getDisplayString(keyMap[0]),
   };
 }
 

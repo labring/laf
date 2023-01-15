@@ -6,19 +6,19 @@ import {
   CN_FUNCTION_LOGS,
   CN_PUBLISHED_FUNCTIONS,
 } from '../constants'
-import { DatabaseCoreService } from '../core/database.cr.service'
 import { PrismaService } from '../prisma.service'
 import { CreateFunctionDto } from './dto/create-function.dto'
 import { UpdateFunctionDto } from './dto/update-function.dto'
 import * as assert from 'node:assert'
 import { JwtService } from '@nestjs/jwt'
 import { CompileFunctionDto } from './dto/compile-function.dto.ts'
+import { DatabaseService } from 'src/database/database.service'
 
 @Injectable()
 export class FunctionService {
   private readonly logger = new Logger(FunctionService.name)
   constructor(
-    private readonly db: DatabaseCoreService,
+    private readonly databaseService: DatabaseService,
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
   ) {}
@@ -93,7 +93,7 @@ export class FunctionService {
   }
 
   async publish(func: CloudFunction) {
-    const { db, client } = await this.db.findAndConnect(func.appid)
+    const { db, client } = await this.databaseService.findAndConnect(func.appid)
     const session = client.startSession()
     try {
       await session.withTransaction(async () => {
@@ -107,7 +107,7 @@ export class FunctionService {
   }
 
   async unpublish(appid: string, name: string) {
-    const { db, client } = await this.db.findAndConnect(appid)
+    const { db, client } = await this.databaseService.findAndConnect(appid)
     try {
       const coll = db.collection(CN_PUBLISHED_FUNCTIONS)
       await coll.deleteOne({ name })
@@ -161,7 +161,7 @@ export class FunctionService {
     },
   ) {
     const { page, limit, requestId, functionName } = params
-    const { db, client } = await this.db.findAndConnect(appid)
+    const { db, client } = await this.databaseService.findAndConnect(appid)
 
     try {
       const coll = db.collection(CN_FUNCTION_LOGS)

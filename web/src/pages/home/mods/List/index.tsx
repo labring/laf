@@ -41,9 +41,7 @@ function List(props: { appListQuery: any }) {
       appListQuery.refetch();
       showSuccess("delete success.");
     },
-    onError: () => {
-      // debugger;
-    },
+    onError: () => {},
   });
 
   return (
@@ -55,14 +53,17 @@ function List(props: { appListQuery: any }) {
         <div className="flex">
           <InputGroup className="mr-4">
             <InputLeftElement
-              height={"10"}
+              height={"8"}
+              left="2"
               pointerEvents="none"
-              children={<Search2Icon color="gray.300" />}
+              children={<Search2Icon color="gray.300" fontSize={12} />}
             />
             <Input
               rounded={"full"}
               placeholder={"搜索"}
-              bg={"white"}
+              variant="outline"
+              size={"sm"}
+              bg="white"
               onChange={(e) => setSearchKey(e.target.value)}
             />
           </InputGroup>
@@ -100,7 +101,8 @@ function List(props: { appListQuery: any }) {
                 <div className="w-3/12 ">{formatDate(item.createdAt)}</div>
                 <div className="w-1/12 flex min-w-[100px]">
                   <Button
-                    className="mr-2 font-semibold"
+                    className="mr-2"
+                    fontWeight={"semibold"}
                     size={"sm"}
                     variant={"ghost"}
                     onClick={(event) => {

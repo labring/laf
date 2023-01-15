@@ -1,16 +1,20 @@
+import { forwardRef } from "react";
 import { Button } from "@chakra-ui/react";
-const TextButton = function (props: {
-  text: string;
-  onClick?: () => void;
-  className?: string;
-  type?: "submit" | undefined;
-}) {
+const TextButton = function (
+  props: {
+    text: string;
+    onClick?: () => void;
+    className?: string;
+    type?: "submit" | undefined;
+  },
+  ref: any,
+) {
   const { text, type, onClick, className } = props;
   return (
     <Button
       variant={"link"}
       size="xs"
-      colorScheme={"blue"}
+      colorScheme={"primary"}
       className={className}
       type={type}
       onClick={() => {
@@ -21,4 +25,4 @@ const TextButton = function (props: {
     </Button>
   );
 };
-export default TextButton;
+export default forwardRef(TextButton);
