@@ -25,20 +25,19 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
             {
               name: "name",
               key: "name",
-              width: "200px",
-              textWidth: "40",
+              width: "150px",
               editable: false,
-              valiate: [
+              validate: [
                 (data: any) => {
                   return {
-                    isValiate: data !== "",
+                    isValidate: data !== "",
                     errorInfo: "name不能为空",
                   };
                 },
                 (data: any, index: number) => {
                   const IndexList = isExitInList("name", data, environmentQuery?.data?.data);
                   return {
-                    isValiate: IndexList.length === 0 || IndexList.indexOf(index) !== -1,
+                    isValidate: IndexList.length === 0 || IndexList.indexOf(index) !== -1,
                     errorInfo: "name不能重复",
                   };
                 },
@@ -50,11 +49,11 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
             {
               name: "value",
               key: "value",
-              textWidth: "40",
-              valiate: [
+              width: "200px",
+              validate: [
                 (data: any) => {
                   return {
-                    isValiate: data !== "",
+                    isValidate: data !== "",
                     errorInfo: "value不能为空",
                   };
                 },
@@ -76,14 +75,13 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
         />
         <Button
           className="w-28 h-8 self-end mt-4"
-          colorScheme="blue"
           type="submit"
           onClick={() => {
             globalStore.restartCurrentApp();
             props.onClose && props.onClose();
           }}
         >
-          应用环境变量
+          更新
         </Button>
       </div>
     </>

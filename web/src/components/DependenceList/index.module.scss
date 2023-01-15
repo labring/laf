@@ -1,4 +1,4 @@
-.depenceList {
+.dependenceList {
   max-height: 60vh;
   overflow: auto;
 
@@ -16,15 +16,11 @@
 
     &:hover,
     &.active {
-      background-color: var(--chakra-colors-gray-100);
-
-      span {
-        color: #000 !important;
-      }
+      background-color: var(--chakra-colors-primary-100);
     }
 
     &.active {
-      background-color: var(--chakra-colors-gray-200);
+      background-color: var(--chakra-colors-primary-300);
     }
   }
 }

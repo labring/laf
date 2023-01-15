@@ -27,7 +27,7 @@ function ConsolePanel() {
       <div className="relative overflow-y-auto px-2 font-mono text-sm " style={{ height: 160 }}>
         {currentRequestId && (
           <p className="mb-1 ml-1">
-            ReqeustID: {currentRequestId} <CopyText text={String(currentRequestId)} />
+            RequestID: {currentRequestId} <CopyText text={String(currentRequestId)} />
           </p>
         )}
         {(logControllerGetLogsQuery.data?.data?.list || []).map((item: any) => {

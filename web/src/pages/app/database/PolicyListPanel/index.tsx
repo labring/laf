@@ -40,7 +40,7 @@ export default function PolicyListPanel() {
           </AddPolicyModal>,
         ]}
       />
-      <SectionList style={{ height: "160px", overflowY: "auto", overflowX: "hidden" }}>
+      <SectionList style={{ flexGrow: 1, overflowY: "auto", overflowX: "hidden" }}>
         {policyQuery?.data?.data.map((item: any) => {
           return (
             <SectionList.Item

@@ -26,7 +26,7 @@ export default function SiderBar() {
   const ICONS = [
     {
       pageId: "nav",
-      componet: <RiCodeBoxFill size={32} />,
+      component: <RiCodeBoxFill size={32} />,
     },
     {
       pageId: Pages.function,

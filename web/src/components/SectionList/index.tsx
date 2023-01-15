@@ -16,15 +16,17 @@ function Item(props: {
   isActive: boolean;
   className?: string;
   key: string;
-  onClick: () => void;
+  size?: "small" | "default";
+  onClick?: () => void;
 }) {
-  const { children, isActive, onClick, className } = props;
+  const { children, isActive, onClick, className, size = "default" } = props;
   return (
     <li
       className={clsx(className, {
         [styles.active]: isActive,
+        [styles.small]: size === "small",
       })}
-      onClick={onClick}
+      onClick={onClick && onClick}
     >
       {children}
     </li>

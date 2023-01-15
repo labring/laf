@@ -11,7 +11,6 @@ import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
 
 import CreateCollectionModal from "../mods/CreateCollectionModal";
-// import DeleteCollectionModal from "../mods/DeleteCollectionModal";
 import { useCollectionListQuery } from "../service";
 import useDBMStore from "../store";
 
@@ -34,7 +33,7 @@ export default function CollectionListPanel() {
 
   return (
     <Panel
-      className="flex-grow"
+      className="flex-grow overflow-hidden"
       onClick={() => {
         store.setCurrentShow("DB");
       }}
@@ -66,7 +65,7 @@ export default function CollectionListPanel() {
         </InputGroup>
       </div>
 
-      <SectionList style={{ height: "calc(100vh - 380px)", overflowY: "auto" }}>
+      <SectionList style={{ overflowY: "auto", flexGrow: 1 }}>
         {(collectionListQuery?.data?.data || [])
           .filter((db: any) => db.name.indexOf(search) >= 0)
           .map((db: any) => {

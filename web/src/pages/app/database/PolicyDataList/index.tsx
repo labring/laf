@@ -48,7 +48,7 @@ export default function PolicyDataList() {
 
   return (
     <>
-      <Panel.Header className="w-full h-[55px] pr-2">
+      <Panel.Header className="w-full pr-2 h-[60px] flex-shrink-0">
         <Button
           disabled={store.currentPolicy === undefined}
           colorScheme="primary"
@@ -64,7 +64,7 @@ export default function PolicyDataList() {
         </Button>
         <span>规则数：{rulesListQuery?.data?.data?.length || 0}</span>
       </Panel.Header>
-      <div className="w-full flex overflow-hidden" style={{ height: "calc(100vh - 130px)" }}>
+      <div className="w-full flex-grow flex overflow-hidden">
         <RightPanelList
           ListQuery={rulesListQuery?.data?.data}
           setKey="id"

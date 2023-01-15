@@ -71,6 +71,9 @@ export default function LogsPage() {
     },
     {
       keepPreviousData: true,
+      onSuccess(data: any) {
+        console.log(data);
+      },
     },
   );
 
@@ -79,6 +82,9 @@ export default function LogsPage() {
       page: 1,
       ...getValues(),
     });
+    setTimeout(() => {
+      logListQuery.refetch();
+    }, 100);
   };
 
   return (
@@ -139,7 +145,7 @@ export default function LogsPage() {
                             <span>{item.request_id}</span>
                           </CopyText>
                         </Td>
-                        <Td maxWidth="5rem" className={styles.text + " text-purper-500"}>
+                        <Td maxWidth="5rem" className={styles.text + " text-purple-500"}>
                           <CopyText text={item.func}>
                             <span>{item.func}</span>
                           </CopyText>
@@ -182,7 +188,7 @@ export default function LogsPage() {
                 <span className={styles.primaryText}>Function: </span>
                 {detail?.func}
               </div>
-              <span className={styles.primaryText}>Conetent: </span>
+              <span className={styles.primaryText}>Content: </span>
               <SyntaxHighlighter language="json" customStyle={{ background: "#fff" }}>
                 {detail?.data || ""}
               </SyntaxHighlighter>

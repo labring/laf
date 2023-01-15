@@ -13,8 +13,8 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { t } from "i18next";
+import { keyBy, mapValues } from "lodash";
 
-import JsonEditor from "@/components/Editor/JsonEditor";
 import { Row } from "@/components/Grid";
 import Panel from "@/components/Panel";
 import { Pages } from "@/constants";
@@ -22,9 +22,15 @@ import { Pages } from "@/constants";
 import { useCompileMutation } from "../../service";
 import useFunctionStore from "../../store";
 
-import useFunctionCache from "@/hooks/useFuncitonCache";
+import BodyParamsTab from "./BodyParamsTab";
+import QueryParamsTab from "./QueryParamsTab";
+import HeaderParamsTab from "./QueryParamsTab";
+
+import useFunctionCache from "@/hooks/useFunctionCache";
 import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
 import useGlobalStore from "@/pages/globalStore";
+
+const PANEL_HEIGHT = "calc(100vh - 500px)";
 
 export default function DebugPanel() {
   const { getFunctionUrl, currentFunction, setCurrentRequestId } = useFunctionStore(
@@ -41,7 +47,9 @@ export default function DebugPanel() {
 
   const compileMutation = useCompileMutation();
 
-  const [params, setParams] = useState(JSON.stringify({ name: "test" }, null, 2));
+  const [queryParams, setQueryParams] = useState([]);
+  const [bodyParams, setBodyParams] = useState({});
+  const [headerParams, setHeaderParams] = useState([]);
 
   useHotKey(
     DEFAULT_SHORTCUTS.send_request,
@@ -67,17 +75,18 @@ export default function DebugPanel() {
         code: functionCache.getCache(currentFunction!.id),
         name: currentFunction!.name,
       });
+
       if (!compileRes.error) {
-        const func_data = JSON.stringify(compileRes.data);
-        const body_params = JSON.parse(params);
+        const _funcData = JSON.stringify(compileRes.data);
         const res = await axios({
           url: getFunctionUrl(),
           method: runningMethod,
-          data: body_params,
-          headers: {
+          params: mapValues(keyBy(queryParams, "name"), "value"),
+          data: bodyParams,
+          headers: Object.assign(mapValues(keyBy(headerParams, "name"), "value"), {
             "x-laf-debug-token": `${globalStore.currentApp?.function_debug_token}`,
-            "x-laf-func-data": func_data,
-          },
+            "x-laf-func-data": _funcData,
+          }),
         });
 
         setCurrentRequestId(res.headers["request-id"]);
@@ -136,14 +145,69 @@ export default function DebugPanel() {
                       {t("FunctionPanel.Debug")}
                     </Button>
                   </div>
-                  <div className="mx-2 pb-2 mb-2">调用参数:</div>
-                  <JsonEditor
-                    onChange={(values) => {
-                      setParams(values || "{}");
-                    }}
-                    height="calc(100vh - 500px)"
-                    value={params}
-                  />
+                  <div>
+                    <Tabs p="0" variant="soft-rounded" colorScheme={"gray"} size={"sm"}>
+                      <TabList className="mb-2">
+                        <Tab>
+                          Parameters
+                          {queryParams.length > 0 && (
+                            <span className="ml-1">({queryParams.length})</span>
+                          )}
+                        </Tab>
+                        <Tab>
+                          Body
+                          {Object.keys(bodyParams).length > 0 && (
+                            <span className="ml-1">({Object.keys(bodyParams).length})</span>
+                          )}
+                        </Tab>
+                        <Tab>
+                          Headers
+                          {headerParams.length > 0 && (
+                            <span className="ml-1">({headerParams.length})</span>
+                          )}
+                        </Tab>
+                      </TabList>
+                      <TabPanels>
+                        <TabPanel
+                          px={0}
+                          py={1}
+                          className="overflow-y-auto"
+                          style={{
+                            height: PANEL_HEIGHT,
+                          }}
+                        >
+                          <QueryParamsTab
+                            key={"QueryParamsTab"}
+                            onChange={(values: any) => {
+                              setQueryParams(values);
+                            }}
+                          />
+                        </TabPanel>
+                        <TabPanel px={2} py={3}>
+                          <BodyParamsTab
+                            onChange={(values) => {
+                              setBodyParams(values);
+                            }}
+                          />
+                        </TabPanel>
+                        <TabPanel
+                          px={0}
+                          py={1}
+                          className="overflow-y-auto"
+                          style={{
+                            height: PANEL_HEIGHT,
+                          }}
+                        >
+                          <HeaderParamsTab
+                            key={"HeaderParamsTab"}
+                            onChange={(values: any) => {
+                              setHeaderParams(values);
+                            }}
+                          />
+                        </TabPanel>
+                      </TabPanels>
+                    </Tabs>
+                  </div>
                 </div>
               </TabPanel>
               {/* <TabPanel padding={0}>to be continued...</TabPanel> */}

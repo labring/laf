@@ -16,7 +16,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
-import FileUpload from "@/components/FileUplaod";
+import FileUpload from "@/components/FileUpload";
 
 import useStorageStore from "../../store";
 

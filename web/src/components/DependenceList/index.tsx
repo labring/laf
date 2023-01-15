@@ -3,9 +3,9 @@ import clsx from "clsx";
 
 import styles from "./index.module.scss";
 
-function DepenceList(props: { children: React.ReactNode; style?: React.CSSProperties }) {
+function DependenceList(props: { children: React.ReactNode; style?: React.CSSProperties }) {
   return (
-    <ul className={styles.depenceList + " ml-4"} style={props.style || {}}>
+    <ul className={styles.dependenceList + " ml-4"} style={props.style || {}}>
       {props.children}
     </ul>
   );
@@ -33,6 +33,6 @@ function Item(props: {
   );
 }
 
-DepenceList.Item = Item;
+DependenceList.Item = Item;
 
-export default DepenceList;
+export default DependenceList;

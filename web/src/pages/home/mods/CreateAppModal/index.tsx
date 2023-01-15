@@ -65,7 +65,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
 
   const { showSuccess, showError } = useGlobalStore();
 
-  const appCreateMutaion = useMutation((params: any) => ApplicationControllerCreate(params));
+  const appCreateMutation = useMutation((params: any) => ApplicationControllerCreate(params));
 
   const updateAppMutation = useMutation((params: any) => ApplicationControllerUpdate(params));
 
@@ -74,7 +74,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
     if (isEdit) {
       res = await updateAppMutation.mutateAsync(data);
     } else {
-      res = await appCreateMutaion.mutateAsync(data);
+      res = await appCreateMutation.mutateAsync(data);
     }
 
     if (!res.error) {
@@ -194,7 +194,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
           <ModalFooter>
             <Button
               colorScheme="blue"
-              isLoading={appCreateMutaion.isLoading}
+              isLoading={appCreateMutation.isLoading}
               type="submit"
               onClick={handleSubmit(onSubmit)}
             >

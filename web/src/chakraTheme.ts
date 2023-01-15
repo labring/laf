@@ -1,8 +1,13 @@
 import { tagAnatomy } from "@chakra-ui/anatomy";
-import { createMultiStyleConfigHelpers, defineStyleConfig, extendTheme } from "@chakra-ui/react";
+import {
+  ComponentStyleConfig,
+  createMultiStyleConfigHelpers,
+  defineStyleConfig,
+  extendTheme,
+} from "@chakra-ui/react";
 const { definePartsStyle, defineMultiStyleConfig } = createMultiStyleConfigHelpers(tagAnatomy.keys);
 
-export const Tag = defineMultiStyleConfig({
+const Tag = defineMultiStyleConfig({
   sizes: {
     sm: definePartsStyle({
       container: {
@@ -22,9 +27,9 @@ export const Tag = defineMultiStyleConfig({
     }),
     readonly: definePartsStyle({
       container: {
-        borderColor: "purper.500",
+        borderColor: "purple.500",
         borderWidth: 1,
-        color: "purper.700",
+        color: "purple.700",
       },
     }),
     readwrite: definePartsStyle({
@@ -38,12 +43,7 @@ export const Tag = defineMultiStyleConfig({
 });
 
 const Button = defineStyleConfig({
-  // The styles all button have in common
-  baseStyle: {
-    fontWeight: "bold",
-    textTransform: "uppercase",
-    // <-- border radius is same for all variants and sizes
-  },
+  baseStyle: {},
   // Two sizes: sm and md
   sizes: {
     sm: {
@@ -51,6 +51,7 @@ const Button = defineStyleConfig({
       px: 2,
       py: 0,
       height: "24px",
+      fontWeight: "normal",
     },
     md: {
       fontSize: "md",
@@ -103,6 +104,111 @@ const Modal = {
   defaultProps: {},
 };
 
+const Input: ComponentStyleConfig = {
+  baseStyle: {
+    field: {},
+  },
+  sizes: {
+    xs: {
+      field: {
+        borderRadius: "sm",
+        fontSize: "xs",
+        height: 6,
+        paddingX: 2,
+      },
+    },
+    sm: {
+      field: {
+        borderRadius: "sm",
+        fontSize: "sm",
+        height: 8,
+        paddingX: 3,
+      },
+    },
+    md: {
+      field: {
+        borderRadius: "md",
+        fontSize: "md",
+        height: 10,
+        paddingX: 4,
+      },
+    },
+    lg: {
+      field: {
+        borderRadius: "md",
+        fontSize: "lg",
+        height: 12,
+        paddingX: 4,
+      },
+    },
+  },
+  variants: {
+    outline: {
+      field: {
+        background: "#fff",
+        border: "1px solid",
+        borderColor: "transparent",
+        _focus: {
+          background: "transparent",
+          borderColor: "#3182ce",
+        },
+      },
+    },
+    filled: {
+      field: {
+        background: "gray.100",
+        border: "1px solid",
+        borderColor: "transparent",
+        _focus: {
+          background: "transparent",
+          borderColor: "#3182ce",
+        },
+      },
+    },
+
+    unstyled: {
+      field: {
+        background: "transparent",
+        borderRadius: "md",
+        height: "auto",
+        paddingX: 0,
+      },
+    },
+  },
+  defaultProps: {
+    size: "md",
+    variant: "filled",
+  },
+};
+
+const Tabs = {
+  variants: {
+    "soft-rounded": {
+      tab: {
+        borderRadius: "4px",
+        color: "gray.500",
+        _selected: {
+          color: "gray.800",
+          bg: "gray.100",
+          borderRadius: "4px",
+        },
+      },
+    },
+  },
+};
+
+const Table = {
+  parts: ["th", "td"],
+  baseStyle: {
+    th: {
+      border: "1px solid #dddddd",
+    },
+    td: {
+      border: "1px solid #dddddd",
+    },
+  },
+};
+
 const theme = extendTheme({
   fontSizes: {
     sm: "12px",
@@ -115,6 +221,10 @@ const theme = extendTheme({
   },
   colors: {
     primary: {
+      100: "#E6F6F5",
+      200: "#CCEEEB",
+      300: "#99DDD8",
+      400: "#66CBC4",
       500: "#00A99D",
       700: "#04756D",
     },
@@ -122,7 +232,7 @@ const theme = extendTheme({
       500: "#0C74AE80",
       700: "#0C74AE",
     },
-    purper: {
+    purple: {
       500: "#A55AC980",
       700: "#A55AC9",
     },
@@ -135,6 +245,9 @@ const theme = extendTheme({
     Button,
     Modal,
     Tag,
+    Input,
+    Tabs,
+    Table,
   },
 });
 export default theme;

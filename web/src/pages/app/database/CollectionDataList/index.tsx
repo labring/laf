@@ -5,7 +5,7 @@ import { Button } from "@chakra-ui/react";
 import CreateCollectionModal from "../mods/CreateCollectionModal";
 import useDBMStore from "../store";
 
-import DataPannel from "./mods/DataPannel";
+import DataPanel from "./mods/DataPanel";
 
 export default function CollectionDataList() {
   const { t } = useTranslation();
@@ -21,7 +21,7 @@ export default function CollectionDataList() {
           </CreateCollectionModal>
         </div>
       ) : (
-        <DataPannel />
+        <DataPanel />
       )}
       {/* <Tabs className="h-full">
         <TabList>
@@ -43,14 +43,14 @@ export default function CollectionDataList() {
                 </CreateCollectionModal>
               </div>
             ) : (
-              <DataPannel />
+              <DataPanel />
             )}
           </TabPanel>
           <TabPanel>
-            <IndexPannel />
+            <IndexPanel />
           </TabPanel>
           <TabPanel className="overflow-hidden relative" style={{ height: "calc(100% - 35px)" }}>
-            <ColPannel />
+            <ColPanel />
           </TabPanel>
         </TabPanels>
       </Tabs > */}

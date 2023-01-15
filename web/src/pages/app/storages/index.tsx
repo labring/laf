@@ -5,7 +5,6 @@
 import { AddIcon } from "@chakra-ui/icons";
 import { Button } from "@chakra-ui/react";
 
-import Content from "@/components/Content";
 import { Col, Row } from "@/components/Grid";
 
 import CreateBucketModal from "./mods/CreateBucketModal";
@@ -17,25 +16,23 @@ import useStorageStore from "./store";
 export default function StoragePage() {
   const { currentStorage } = useStorageStore();
   return (
-    <Content>
-      <Row>
-        <Col className="max-w-[300px]">
-          <StorageListPanel />
-        </Col>
-        <Col>
-          {currentStorage === undefined ? (
-            <div className="h-full flex items-center  justify-center">
-              <CreateBucketModal>
-                <Button size="lg" variant="ghost" leftIcon={<AddIcon />}>
-                  创建 Bucket
-                </Button>
-              </CreateBucketModal>
-            </div>
-          ) : (
-            <FileList />
-          )}
-        </Col>
-      </Row>
-    </Content>
+    <Row>
+      <Col className="max-w-[300px] flex-none">
+        <StorageListPanel />
+      </Col>
+      <Col>
+        {currentStorage === undefined ? (
+          <div className="h-full flex items-center  justify-center">
+            <CreateBucketModal>
+              <Button size="lg" variant="ghost" leftIcon={<AddIcon />}>
+                创建 Bucket
+              </Button>
+            </CreateBucketModal>
+          </div>
+        ) : (
+          <FileList />
+        )}
+      </Col>
+    </Row>
   );
 }

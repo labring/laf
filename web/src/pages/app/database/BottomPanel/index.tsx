@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, HStack } from "@chakra-ui/react";
 
 import Panel from "@/components/Panel";

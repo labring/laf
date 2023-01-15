@@ -2,7 +2,7 @@ import { Button, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra
 
 import AddIndexModal from "./addIndexModal";
 
-export default function IndexPannel() {
+export default function IndexPanel() {
   return (
     <div>
       <div className="flex mt-2">
@@ -26,7 +26,7 @@ export default function IndexPannel() {
                 <Tr key={i}>
                   <Td>Mark Chandler</Td>
                   <Td>Mark Chandler</Td>
-                  <Td>devolper</Td>
+                  <Td>developer</Td>
                   <Td isNumeric>
                     <Button size="sm" variant={"ghost"} colorScheme={"red"}>
                       删除
