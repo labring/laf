@@ -6,9 +6,4 @@ controllers_dir=$abs_dir/../../core/controllers
 
 mkdir -p $abs_dir/manifests
 
-matrix=(gateway)
-
-for i in "${matrix[@]}"
-do
-    cp ${controllers_dir}/${i}/deploy/manifests/deploy.yaml ${abs_dir}/manifests/laf-${i}-controller.yaml
-done
+cp ${controllers_dir}/gateway/deploy/manifests/deploy.yaml ${abs_dir}/manifests/laf-gateway-controller.yaml
