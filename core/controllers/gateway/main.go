@@ -20,8 +20,6 @@ import (
 	"flag"
 	"os"
 
-	v1 "github.com/labring/laf/core/controllers/oss/api/v1"
-
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
@@ -48,8 +46,6 @@ func init() {
 
 	utilruntime.Must(gatewayv1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
-
-	utilruntime.Must(v1.AddToScheme(scheme))
 }
 
 func main() {

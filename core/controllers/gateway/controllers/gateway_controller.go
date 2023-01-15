@@ -21,14 +21,12 @@ import (
 	"errors"
 	"time"
 
-	v1 "github.com/labring/laf/core/controllers/oss/api/v1"
 	"github.com/labring/laf/core/pkg/util"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/util/retry"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -79,12 +77,6 @@ func (r *GatewayReconciler) apply(ctx context.Context, gateway *gatewayv1.Gatewa
 		if err != nil {
 			return result, err
 		}
-	}
-
-	// apply bucket route
-	result, err := r.applyBucket(ctx, gateway)
-	if err != nil {
-		return result, err
 	}
 
 	// update ready condition
@@ -167,160 +159,6 @@ func (r *GatewayReconciler) applyApp(ctx context.Context, gateway *gatewayv1.Gat
 	if err = r.updateStatus(ctx, types.NamespacedName{Name: gateway.Name, Namespace: gateway.Namespace}, gateway.Status.DeepCopy()); err != nil {
 		return ctrl.Result{}, err
 	}
-	return ctrl.Result{}, nil
-}
-
-// applyBucket apply bucket
-func (r *GatewayReconciler) applyBucket(ctx context.Context, gateway *gatewayv1.Gateway) (ctrl.Result, error) {
-
-	// create bucket route
-	createBuckets := make([]string, 0)
-	for _, bucketName := range gateway.Spec.Buckets {
-		if _, ok := gateway.Status.BucketRoutes[bucketName]; !ok {
-			createBuckets = append(createBuckets, bucketName)
-		}
-	}
-	if len(createBuckets) != 0 {
-		result, err := r.addBuckets(ctx, gateway, createBuckets)
-		if err != nil {
-			return result, err
-		}
-	}
-
-	// delete bucket route
-	deleteBuckets := make([]string, 0)
-	for bucketName := range gateway.Status.BucketRoutes {
-		if !util.ContainsString(gateway.Spec.Buckets, bucketName) {
-			deleteBuckets = append(deleteBuckets, bucketName)
-		}
-	}
-	if len(deleteBuckets) != 0 {
-		result, err := r.deleteBuckets(ctx, gateway, deleteBuckets)
-		if err != nil {
-			return result, err
-		}
-	}
-
-	return ctrl.Result{}, nil
-}
-
-// addBuckets add buckets
-func (r *GatewayReconciler) addBuckets(ctx context.Context, gateway *gatewayv1.Gateway, buckets []string) (ctrl.Result, error) {
-	_log := log.FromContext(ctx)
-
-	// if gateway status bucketRoutes is nil, init it
-	if gateway.Status.BucketRoutes == nil {
-		gateway.Status.BucketRoutes = make(map[string]*gatewayv1.GatewayRoute, 0)
-	}
-
-	// select bucket domain
-	for _, bucketName := range buckets {
-
-		// if bucket route is not exist, create it
-		if _, ok := gateway.Status.BucketRoutes[bucketName]; ok {
-			continue
-		}
-
-		// get bucket
-		bucket := v1.Bucket{}
-		err := r.Get(ctx, client.ObjectKey{Namespace: gateway.Namespace, Name: bucketName}, &bucket)
-		if err != nil {
-			return ctrl.Result{}, err
-		}
-		// get user
-		user := v1.User{}
-		err = r.Get(ctx, client.ObjectKey{Namespace: gateway.Namespace, Name: bucket.Status.User}, &user)
-		if err != nil {
-			return ctrl.Result{}, err
-		}
-		// get store
-		store := v1.Store{}
-		err = r.Get(ctx, client.ObjectKey{Namespace: user.Status.StoreNamespace, Name: user.Status.StoreName}, &store)
-		if err != nil {
-			return ctrl.Result{}, err
-		}
-		// select bucket domain
-		bucketDomain, err := r.selectDomain(ctx, gatewayv1.BUCKET, store.Spec.Region)
-		if err != nil {
-			return ctrl.Result{}, err
-		}
-		if bucketDomain == nil {
-			_log.Info("no bucket domain found")
-			continue
-		}
-
-		routeStatus := &gatewayv1.GatewayRoute{
-			DomainName:      bucketDomain.Name,
-			DomainNamespace: bucketDomain.Namespace,
-			Domain:          bucketName + "." + bucketDomain.Spec.Domain,
-		}
-
-		// create bucket route
-		bucketRoute := &gatewayv1.Route{
-			ObjectMeta: ctrl.ObjectMeta{
-				Name:      "bucket-" + bucketName,
-				Namespace: gateway.Namespace,
-			},
-			Spec: gatewayv1.RouteSpec{
-				Domain:          routeStatus.Domain,
-				DomainName:      bucketDomain.Name,
-				DomainNamespace: bucketDomain.Namespace,
-				Backend: gatewayv1.Backend{
-					ServiceName: user.Status.Endpoint,
-					ServicePort: 0, // If set to 0, the port is not used
-				},
-			},
-		}
-
-		if _, err := controllerutil.CreateOrUpdate(ctx, r.Client, bucketRoute, func() error {
-			if err := controllerutil.SetControllerReference(gateway, bucketRoute, r.Scheme); err != nil {
-				return err
-			}
-			return nil
-		}); err != nil {
-			return ctrl.Result{}, err
-		}
-		gateway.Status.BucketRoutes[bucketName] = routeStatus
-
-		if err = r.updateStatus(ctx, types.NamespacedName{Name: gateway.Name, Namespace: gateway.Namespace}, gateway.Status.DeepCopy()); err != nil {
-			return ctrl.Result{}, err
-		}
-	}
-
-	return ctrl.Result{}, nil
-}
-
-// deleteBuckets delete buckets
-func (r *GatewayReconciler) deleteBuckets(ctx context.Context, gateway *gatewayv1.Gateway, buckets []string) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
-
-	// find deleted bucket, remote route and finalizer
-	for _, bucketName := range buckets {
-		// delete route
-		route := &gatewayv1.Route{}
-
-		// 删除名称为test的route
-		if err := r.Get(ctx, client.ObjectKey{Namespace: gateway.Namespace, Name: "bucket-" + bucketName}, route); err != nil {
-			if apierrors.IsNotFound(err) {
-				continue
-			}
-			return ctrl.Result{}, err
-		}
-
-		if err := r.Delete(ctx, route); err != nil {
-			if apierrors.IsNotFound(err) {
-				continue
-			}
-			return ctrl.Result{}, err
-		}
-
-		// delete bucket route
-		delete(gateway.Status.BucketRoutes, bucketName)
-		if err := r.updateStatus(ctx, types.NamespacedName{Name: gateway.Name, Namespace: gateway.Namespace}, gateway.Status.DeepCopy()); err != nil {
-			return ctrl.Result{}, err
-		}
-	}
-
 	return ctrl.Result{}, nil
 }
 
