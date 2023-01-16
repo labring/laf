@@ -86,7 +86,7 @@ export class BucketService {
       bucket.name,
       dto.policy,
     )
-    if (out.$metadata.httpStatusCode !== 200) {
+    if (out.$metadata.httpStatusCode !== 204) {
       this.logger.error('update bucket in minio failed: ', out)
       return false
     }
