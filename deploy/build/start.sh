@@ -25,7 +25,7 @@ DATABASE_URL="mongodb://${DB_USERNAME}:${DB_PASSWORD}@mongo.${NAMESPACE}.svc.clu
 MINIO_ROOT_ACCESS_KEY=$(tr -cd 'a-z0-9' </dev/urandom |head -c16)
 MINIO_ROOT_SECRET_KEY=$(tr -cd 'a-z0-9' </dev/urandom |head -c64)
 MINIO_EXTERNAL_ENDPOINT="${HTTP_SCHEMA}://oss.${DOMAIN}"
-MINIO_INTERNAL_ENDPOINT=minio.${NAMESPACE}.svc.cluster.local:9000
+MINIO_INTERNAL_ENDPOINT="${HTTP_SCHEMA}://minio.${NAMESPACE}.svc.cluster.local:9000"
 MINIO_DOMAIN=oss.${DOMAIN}
 
 ## envs - apisix
@@ -93,11 +93,12 @@ helm install web -n ${NAMESPACE} \
 
 ## 6. install laf-server
 SERVER_JWT_SECRET=$(tr -cd 'a-f0-9' </dev/urandom |head -c64)
-echo 'DATABASE_URL: ' ${DATABASE_URL}
+API_SERVER_URL=${HTTP_SCHEMA}://api.${DOMAIN}
 helm install server -n ${NAMESPACE} \
-    --set domain=${DOMAIN} \
     --set databaseUrl=${DATABASE_URL} \
     --set jwt.secret=${SERVER_JWT_SECRET} \
+    --set apiServerUrl=${API_SERVER_URL} \
+    --set minio.domain=${MINIO_DOMAIN} \
     --set minio.external_endpoint=${MINIO_EXTERNAL_ENDPOINT} \
     --set minio.internal_endpoint=${MINIO_INTERNAL_ENDPOINT} \
     --set minio.access_key=${MINIO_ROOT_ACCESS_KEY} \
@@ -106,6 +107,7 @@ helm install server -n ${NAMESPACE} \
     --set casdoor.client_id=${CASDOOR_CLIENT_ID} \
     --set casdoor.client_secret=${CASDOOR_CLIENT_SECRET} \
     --set casdoor.redirect_uri=${CASDOOR_REDIRECT_URI} \
+    --set domain=${DOMAIN} \
     --set apisix.admin_api_url=${APISIX_API_URL} \
     --set apisix.admin_api_key=${APISIX_API_KEY} \
     ./charts/laf-server

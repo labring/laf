@@ -30,7 +30,7 @@ async function bootstrap() {
     .setTitle('Open API Documentation of laf')
     .setDescription('`The APIs of laf server`')
     .setVersion('1.0.alpha')
-    .addServer(ServerConfig.SERVER, 'current server')
+    .addServer(ServerConfig.API_SERVER_URL, 'current server')
     .addServer('http://dev.server:3000', 'dev server')
     .addBearerAuth(
       { type: 'http', scheme: 'bearer', bearerFormat: 'JWT', in: 'header' },

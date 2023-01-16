@@ -4,7 +4,9 @@
 
 domain: ""
 databaseUrl: ""
+apiServerUrl: ""
 minio:
+  domain: ""
   external_endpoint: ""
   internal_endpoint: ""
   access_key: ""

@@ -119,8 +119,6 @@ export class BucketController {
       throw new HttpException('bucket not found', HttpStatus.NOT_FOUND)
     }
 
-    // TODO check the storage capacity of the app
-
     const res = await this.bucketService.update(bucket, dto)
     if (null === res) {
       return ResponseUtil.error('update bucket failed')

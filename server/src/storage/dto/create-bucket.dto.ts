@@ -1,6 +1,6 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiProperty } from '@nestjs/swagger'
 import { BucketPolicy } from '@prisma/client'
-import { IsEnum, IsNotEmpty, IsString, Length } from 'class-validator'
+import { IsEnum, IsNotEmpty, Length } from 'class-validator'
 
 export class CreateBucketDto {
   @ApiProperty({

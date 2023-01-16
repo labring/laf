@@ -39,19 +39,20 @@ export class InitializerService {
         storageConf: {
           set: {
             driver: 'minio',
-            externalEndpoint: process.env.MINIO_EXTERNAL_ENDPOINT,
-            internalEndpoint: process.env.MINIO_INTERNAL_ENDPOINT,
-            accessKey: process.env.MINIO_ROOT_ACCESS_KEY,
-            secretKey: process.env.MINIO_ROOT_SECRET_KEY,
+            domain: ServerConfig.MINIO_DOMAIN,
+            externalEndpoint: ServerConfig.MINIO_EXTERNAL_ENDPOINT,
+            internalEndpoint: ServerConfig.MINIO_INTERNAL_ENDPOINT,
+            accessKey: ServerConfig.MINIO_ROOT_ACCESS_KEY,
+            secretKey: ServerConfig.MINIO_ROOT_SECRET_KEY,
           },
         },
         gatewayConf: {
           set: {
             driver: 'apisix',
-            domain: process.env.DOMAIN,
+            domain: ServerConfig.DOMAIN,
             tls: false,
-            apiUrl: process.env.APISIX_API_URL,
-            apiKey: process.env.APISIX_API_KEY,
+            apiUrl: ServerConfig.APISIX_API_URL,
+            apiKey: ServerConfig.APISIX_API_KEY,
           },
         },
       },

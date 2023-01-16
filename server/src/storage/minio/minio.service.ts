@@ -131,6 +131,7 @@ export class MinioService {
     bucket: string,
     policy: BucketPolicy,
   ) {
+    assert.ok(region, 'empty region got')
     assert.ok(bucket, 'empty bucket name got')
 
     const s3 = this.getClient(region)
