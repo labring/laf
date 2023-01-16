@@ -8,6 +8,8 @@ if ! host $DOMAIN; then
 fi
 
 # *************** Environment Variables ************** #
+DB_PV_SIZE=${DB_PV_SIZE:-5Gi}
+OSS_PV_SIZE=${OSS_PV_SIZE:-3Gi}
 
 ## envs - global
 HTTP_SCHEMA=${HTTP_SCHEMA:-http}
@@ -17,24 +19,24 @@ NAMESPACE=${NAMESPACE:-laf-system}
 ## envs - mongodb
 DB_USERNAME=admin
 DB_PASSWORD=$(tr -cd 'a-z0-9' </dev/urandom |head -c64)
-DATABASE_URL=mongodb://${DB_USERNAME}:${DB_PASSWORD}@mongo.${NAMESPACE}.svc.cluster.local:27017/sys_db?authSource=admin&replicaSet=rs0&w=majority
+DATABASE_URL="mongodb://${DB_USERNAME}:${DB_PASSWORD}@mongo.${NAMESPACE}.svc.cluster.local:27017/sys_db?authSource=admin&replicaSet=rs0&w=majority"
 
 ## envs - minio
 MINIO_ROOT_ACCESS_KEY=$(tr -cd 'a-z0-9' </dev/urandom |head -c16)
 MINIO_ROOT_SECRET_KEY=$(tr -cd 'a-z0-9' </dev/urandom |head -c64)
-MINIO_EXTERNAL_ENDPOINT=${HTTP_SCHEMA}://oss.${DOMAIN}
+MINIO_EXTERNAL_ENDPOINT="${HTTP_SCHEMA}://oss.${DOMAIN}"
 MINIO_INTERNAL_ENDPOINT=laf-minio.${NAMESPACE}.svc.cluster.local:9000
 MINIO_DOMAIN=oss.${DOMAIN}
 
 ## envs - apisix
-APISIX_API_URL=http://apisix-admin.${NAMESPACE}.svc.cluster.local:9180/apisix/admin
-APISIX_API_KEY=$(tr -cd 'a-z0-9' </dev/urandom |head -c64)
+APISIX_API_URL="http://apisix-admin.${NAMESPACE}.svc.cluster.local:9180/apisix/admin"
+APISIX_API_KEY=$(tr -cd 'a-f0-9' </dev/urandom |head -c32)
 
 ## envs - casdoor
-CASDOOR_ENDPOINT=${HTTP_SCHEMA}://casdoor.${DOMAIN}
+CASDOOR_ENDPOINT="${HTTP_SCHEMA}://casdoor.${DOMAIN}"
 CASDOOR_CLIENT_ID=$(tr -cd 'a-f0-9' </dev/urandom |head -c21)
 CASDOOR_CLIENT_SECRET=$(tr -cd 'a-f0-9' </dev/urandom |head -c64)
-CASDOOR_REDIRECT_URI=${HTTP_SCHEMA}://www.${DOMAIN}/login_callback
+CASDOOR_REDIRECT_URI="${HTTP_SCHEMA}://www.${DOMAIN}/login_callback"
 
 
 # *************** Deployments **************** #
@@ -44,6 +46,9 @@ kubectl create namespace ${NAMESPACE} || true
 kubectl apply -f manifests/
 
 ## 1. install mongodb
+set -e
+set -x
+
 helm install mongodb -n ${NAMESPACE} \
     --set db.username=${DB_USERNAME} \
     --set db.password=${DB_PASSWORD} \
@@ -60,14 +65,16 @@ helm install minio -n ${NAMESPACE} \
     ./charts/minio
 
 
-## 3. deploy apisix
+# 3. deploy apisix
 helm install apisix -n ${NAMESPACE} \
     --set apisix.kind=DaemonSet \
     --set apisix.hostNetwork=true \
-    --set credentials.admin=${APISIX_API_KEY} \
-    --set etcd.enabled=false \
-    --set etcd.host[0]=http://apisix-etcd:2379 \
-    --set apisix-ingress-controller.config.apisix.adminKey=${APISIX_API_KEY} \
+    --set admin.credentials.admin=${APISIX_API_KEY} \
+    --set etcd.enabled=true \
+    --set etcd.host[0]="http://apisix-etcd:2379" \
+    --set dashboard.enabled=true    \
+    --set ingress-controller.enabled=true   \
+    --set ingress-controller.config.apisix.adminKey="${APISIX_API_KEY}" \
     ./charts/apisix
 
 
@@ -86,13 +93,21 @@ helm install web -n ${NAMESPACE} \
 
 ## 6. install laf-server
 SERVER_JWT_SECRET=$(tr -cd 'a-f0-9' </dev/urandom |head -c64)
+echo 'DATABASE_URL: ' ${DATABASE_URL}
 helm install server -n ${NAMESPACE} \
+    --set domain=${DOMAIN} \
     --set databaseUrl=${DATABASE_URL} \
     --set jwt.secret=${SERVER_JWT_SECRET} \
+    --set minio.external_endpoint=${MINIO_EXTERNAL_ENDPOINT} \
+    --set minio.internal_endpoint=${MINIO_INTERNAL_ENDPOINT} \
+    --set minio.access_key=${MINIO_ROOT_ACCESS_KEY} \
+    --set minio.secret_key=${MINIO_ROOT_SECRET_KEY} \
     --set casdoor.endpoint=${CASDOOR_ENDPOINT} \
     --set casdoor.client_id=${CASDOOR_CLIENT_ID} \
     --set casdoor.client_secret=${CASDOOR_CLIENT_SECRET} \
     --set casdoor.redirect_uri=${CASDOOR_REDIRECT_URI} \
+    --set apisix.admin_api_url=${APISIX_API_URL} \
+    --set apisix.admin_api_key=${APISIX_API_KEY} \
     ./charts/laf-server
 
 ## 7. others
