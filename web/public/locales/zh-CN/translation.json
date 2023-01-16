@@ -20,7 +20,9 @@
     "EmptyText": "暂无函数信息,"
   },
   "CollectionPanel": {
-    "CollectionAdd": "新建集合"
+    "CollectionAdd": "新建集合",
+    "EmptyCollectionText": "暂无集合信息,",
+    "EmptyPolicyText": "暂无策略信息,"
   },
   "StoragePanel": {
     "Upload": "上传",

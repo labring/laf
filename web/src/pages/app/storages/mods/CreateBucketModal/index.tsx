@@ -48,7 +48,7 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
   const isEdit = !!storage;
 
   const onSubmit = async (values: any) => {
-    debugger;
+    // debugger;
     let res: any = {};
     if (isEdit) {
       res = await bucketUpdateMutation.mutateAsync(values);
@@ -59,7 +59,10 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
         onClose();
       }
     } else {
-      res = await bucketCreateMutation.mutateAsync(values);
+      res = await bucketCreateMutation.mutateAsync({
+        shortName: values.name,
+        policy: values.policy,
+      });
       if (!res.error) {
         store.setCurrentStorage(res.data);
         showSuccess("create success.");

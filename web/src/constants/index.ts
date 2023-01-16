@@ -4,6 +4,7 @@ export const SmallNavHeight = 42;
 
 export const Pages = {
   function: "function",
+  trigger: "trigger",
   storage: "storage",
   database: "database",
   logs: "logs",
