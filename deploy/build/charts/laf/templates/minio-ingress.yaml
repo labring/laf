@@ -14,7 +14,7 @@ spec:
       paths:
       - backend:
           service:
-            name: {{ .Release.Name }}-minio
+            name: minio
             port:
               number: 9000
         path: /

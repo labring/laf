@@ -46,10 +46,16 @@ async function bootstrap() {
     },
   })
 
-  const initService = app.get(InitializerService)
-  await initService.createDefaultRegion()
-  await initService.createDefaultBundle()
-  await initService.createDefaultRuntime()
+  try {
+    const initService = app.get(InitializerService)
+    await initService.createDefaultRegion()
+    await initService.createDefaultBundle()
+    await initService.createDefaultRuntime()
+    await initService.initMinioAlias()
+  } catch (error) {
+    console.error(error)
+    process.exit(1)
+  }
 
   await app.listen(3000)
 }

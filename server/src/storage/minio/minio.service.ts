@@ -13,26 +13,12 @@ import * as cp from 'child_process'
 import { promisify } from 'util'
 import { MinioCommandExecOutput } from './types'
 import { MINIO_COMMON_USER_GROUP } from 'src/constants'
-import { RegionService } from 'src/region/region.service'
 
 const exec = promisify(cp.exec)
 
 @Injectable()
 export class MinioService {
   private readonly logger = new Logger(MinioService.name)
-
-  constructor(private readonly regionService: RegionService) {
-    this.init()
-  }
-
-  async init() {
-    this.logger.verbose('MinioService init')
-    const regions = await this.regionService.findAll()
-
-    for (const region of regions) {
-      await this.setMinioClientTarget(region)
-    }
-  }
 
   /**
    * Create s3 client
