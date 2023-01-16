@@ -92,7 +92,7 @@ export class BucketController {
   @Get(':name')
   async findOne(@Param('appid') appid: string, @Param('name') name: string) {
     const data = await this.bucketService.findOne(appid, name)
-    if (null === data) {
+    if (!data) {
       throw new HttpException('bucket not found', HttpStatus.NOT_FOUND)
     }
     return ResponseUtil.ok(data)
@@ -120,7 +120,7 @@ export class BucketController {
     }
 
     const res = await this.bucketService.update(bucket, dto)
-    if (null === res) {
+    if (!res) {
       return ResponseUtil.error('update bucket failed')
     }
     return ResponseUtil.ok(res)
@@ -143,7 +143,7 @@ export class BucketController {
     }
 
     const res = await this.bucketService.delete(bucket)
-    if (null === res) {
+    if (!res) {
       return ResponseUtil.error('delete bucket failed')
     }
 

@@ -59,7 +59,6 @@ spec:
               value: {{ .Values.jwt.expires_in | quote}}
             - name: MINIO_DOMAIN
               value: {{ .Values.minio.domain }}
-            - name: MINIO_INTERNAL_ENDPOINT
             - name: MINIO_EXTERNAL_ENDPOINT
               value: {{ .Values.minio.external_endpoint }}
             - name: MINIO_INTERNAL_ENDPOINT
