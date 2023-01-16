@@ -144,11 +144,6 @@ serviceAccount:
 
 rbac:
   create: false
-
-apisix-ingress-controller:
-  config:
-    apisix:
-       adminKey: "edd1c9f034335f136f87ad84b625c8f1"
  
 gateway:
   type: NodePort
@@ -442,7 +437,7 @@ serviceMonitor:
 # use the FQDN address or the IP of the etcd
 etcd:
   # install etcd(v3) by default, set false if do not want to install etcd(v3) together
-  enabled: false
+  enabled: true
   clusterDomain: "cluster.local"
   host:
     # host or ip e.g. http://172.20.128.89:2379
@@ -476,6 +471,9 @@ dashboard:
 
 ingress-controller:
   enabled: false
+  config:
+    apisix:
+      adminKey: "edd1c9f034335f136f87ad84b625c8f1"
 
 vault:
   enabled: false
