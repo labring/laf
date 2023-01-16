@@ -53,10 +53,13 @@ spec:
               value: {{ .Values.databaseUrl | quote}}
             - name: JWT_SECRET
               value: {{ .Values.jwt.secret | quote}}
-            - name: SERVER
-              value: http://api.{{ .Values.domain }}
+            - name: API_SERVER_URL
+              value: {{ .Values.apiServerUrl | quote}}
             - name: JWT_EXPIRES_IN
               value: {{ .Values.jwt.expires_in | quote}}
+            - name: MINIO_DOMAIN
+              value: {{ .Values.minio.domain }}
+            - name: MINIO_INTERNAL_ENDPOINT
             - name: MINIO_EXTERNAL_ENDPOINT
               value: {{ .Values.minio.external_endpoint }}
             - name: MINIO_INTERNAL_ENDPOINT

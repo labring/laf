@@ -80,7 +80,7 @@ export class BucketService {
 
   async update(bucket: StorageBucket, dto: UpdateBucketDto) {
     // update bucket in minio
-    const region = await this.regionService.findOne(bucket.appid)
+    const region = await this.regionService.findByAppId(bucket.appid)
     const out = await this.minioService.updateBucketPolicy(
       region,
       bucket.name,

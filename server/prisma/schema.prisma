@@ -73,6 +73,7 @@ type RegionGatewayConf {
 
 type RegionStorageConf {
   driver           String // minio
+  domain           String
   externalEndpoint String
   internalEndpoint String
   accessKey        String
