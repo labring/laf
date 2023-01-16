@@ -25,7 +25,7 @@ DATABASE_URL="mongodb://${DB_USERNAME}:${DB_PASSWORD}@mongo.${NAMESPACE}.svc.clu
 MINIO_ROOT_ACCESS_KEY=$(tr -cd 'a-z0-9' </dev/urandom |head -c16)
 MINIO_ROOT_SECRET_KEY=$(tr -cd 'a-z0-9' </dev/urandom |head -c64)
 MINIO_EXTERNAL_ENDPOINT="${HTTP_SCHEMA}://oss.${DOMAIN}"
-MINIO_INTERNAL_ENDPOINT=laf-minio.${NAMESPACE}.svc.cluster.local:9000
+MINIO_INTERNAL_ENDPOINT=minio.${NAMESPACE}.svc.cluster.local:9000
 MINIO_DOMAIN=oss.${DOMAIN}
 
 ## envs - apisix

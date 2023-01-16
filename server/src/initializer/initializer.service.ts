@@ -1,11 +1,18 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { RegionService } from 'src/region/region.service'
+import { MinioService } from 'src/storage/minio/minio.service'
 import { CPU_UNIT, ServerConfig } from '../constants'
 import { PrismaService } from '../prisma.service'
+import * as assert from 'assert'
 
 @Injectable()
 export class InitializerService {
   private readonly logger = new Logger(InitializerService.name)
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly minioService: MinioService,
+    private readonly regionService: RegionService,
+  ) {}
 
   async createDefaultRegion() {
     // check if exists
@@ -108,5 +115,19 @@ export class InitializerService {
     })
     this.logger.verbose('Created default runtime: ' + res.name)
     return res
+  }
+
+  async initMinioAlias() {
+    const regions = await this.regionService.findAll()
+
+    for (const region of regions) {
+      this.logger.verbose('MinioService init - ' + region.name)
+
+      const res = await this.minioService.setMinioClientTarget(region)
+      assert.ok(
+        res.status === 'success',
+        'set minio client target failed: ' + region.name,
+      )
+    }
   }
 }
