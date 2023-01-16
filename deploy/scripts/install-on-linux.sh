@@ -20,7 +20,7 @@ if [ -x "$(command -v apt)" ]; then
   apt install sealos -y
   
   # fix /etc/hosts overwrite bug in ubuntu while restarting
-  sed -i \"/update_etc_hosts/c \\ - ['update_etc_hosts', 'once-per-instance']\" /etc/cloud/cloud.cfg && touch /var/lib/cloud/instance/sem/config_update_etc_hosts
+  sed -i "/update_etc_hosts/c \\ - ['update_etc_hosts', 'once-per-instance']" /etc/cloud/cloud.cfg && touch /var/lib/cloud/instance/sem/config_update_etc_hosts
 fi
 
 # if yum installed, use `yum` to install

@@ -39,7 +39,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: {{ .Release.Name }}-minio
+            name: minio
             port:
               number: 9000
 
@@ -60,7 +60,7 @@ spec:
       paths:
       - backend:
           service:
-            name: {{ .Release.Name }}-minio-console
+            name: minio-console
             port:
               number: 9001
         path: /

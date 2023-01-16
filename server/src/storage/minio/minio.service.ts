@@ -42,7 +42,7 @@ export class MinioService {
     const conf = region.storageConf
 
     return new S3({
-      endpoint: conf.internalEndpoint,
+      endpoint: conf.externalEndpoint,
       credentials: {
         accessKeyId: conf.accessKey,
         secretAccessKey: conf.secretKey,
@@ -227,7 +227,7 @@ export class MinioService {
     const conf = region.storageConf
     const access_key = conf.accessKey
     const access_secret = conf.secretKey
-    const endpoint = conf.internalEndpoint
+    const endpoint = conf.externalEndpoint
     const target = region.name
 
     const cmd = `alias set ${target} ${endpoint} ${access_key} ${access_secret}`
