@@ -1,8 +1,8 @@
 /****************************
  * cloud functions database page
  ***************************/
-import { AddIcon } from "@chakra-ui/icons";
-import { Button } from "@chakra-ui/react";
+import { Button, Center } from "@chakra-ui/react";
+import { t } from "i18next";
 
 import Content from "@/components/Content";
 import { Col, Row } from "@/components/Grid";
@@ -25,7 +25,7 @@ function DatabasePage() {
       <Row className="flex-grow overflow-hidden">
         <Col {...settingStore.layoutInfo.collectionPage.SideBar}>
           <CollectionListPanel />
-          <Row className="!flex-none" {...settingStore.layoutInfo.collectionPage.PolicyPanel}>
+          <Row {...settingStore.layoutInfo.collectionPage.PolicyPanel}>
             <PolicyListPanel />
           </Row>
         </Col>
@@ -34,13 +34,12 @@ function DatabasePage() {
             {store.currentShow === "DB" ? (
               <CollectionDataList />
             ) : store.currentPolicy === undefined ? (
-              <div className="flex h-full justify-center items-center">
+              <Center className="h-full">
+                {t("CollectionPanel.EmptyPolicyText")}
                 <AddPolicyModal>
-                  <Button size="md" className="w-40" variant="ghost" leftIcon={<AddIcon />}>
-                    添加策略
-                  </Button>
+                  <span className="ml-2 text-blue-500 cursor-pointer">立即添加</span>
                 </AddPolicyModal>
-              </div>
+              </Center>
             ) : (
               <PolicyDataList />
             )}

@@ -9,6 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Center } from "@chakra-ui/react";
 import clsx from "clsx";
 
+import { TriggerIcon } from "@/components/CommonIcon";
 import IconWrap from "@/components/IconWrap";
 import { Pages, SideBarWidth } from "@/constants/index";
 
@@ -34,6 +35,14 @@ export default function SideBar() {
       component: (
         <IconWrap tooltip="函数" placement="right" size={32}>
           <AiOutlineFunction size="32" />
+        </IconWrap>
+      ),
+    },
+    {
+      pageId: Pages.trigger,
+      component: (
+        <IconWrap tooltip="触发器" placement="right" size={32}>
+          <TriggerIcon fontSize={32} />
         </IconWrap>
       ),
     },

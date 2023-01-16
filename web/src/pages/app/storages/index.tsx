@@ -1,11 +1,10 @@
 /****************************
  * cloud functions storage page
  ***************************/
-
-import { AddIcon } from "@chakra-ui/icons";
-import { Button } from "@chakra-ui/react";
+import { Center } from "@chakra-ui/react";
 
 import { Col, Row } from "@/components/Grid";
+import Panel from "@/components/Panel";
 
 import CreateBucketModal from "./mods/CreateBucketModal";
 import FileList from "./mods/FileList";
@@ -22,13 +21,14 @@ export default function StoragePage() {
       </Col>
       <Col>
         {currentStorage === undefined ? (
-          <div className="h-full flex items-center  justify-center">
-            <CreateBucketModal>
-              <Button size="lg" variant="ghost" leftIcon={<AddIcon />}>
-                创建 Bucket
-              </Button>
-            </CreateBucketModal>
-          </div>
+          <Panel className="items-center h-full">
+            <Center className="h-full">
+              暂无Bucket数据
+              <CreateBucketModal>
+                <span className="ml-2 text-blue-500 cursor-pointer">立即创建</span>
+              </CreateBucketModal>
+            </Center>
+          </Panel>
         ) : (
           <FileList />
         )}

@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { AddIcon } from "@chakra-ui/icons";
-import { Button } from "@chakra-ui/react";
+import { Center } from "@chakra-ui/react";
 
 import CreateCollectionModal from "../mods/CreateCollectionModal";
 import useDBMStore from "../store";
@@ -13,13 +12,12 @@ export default function CollectionDataList() {
   return (
     <>
       {store.currentDB === undefined ? (
-        <div className="flex h-full justify-center items-center">
+        <Center className="h-full">
+          {t("CollectionPanel.EmptyCollectionText")}
           <CreateCollectionModal>
-            <Button size="md" className="w-40" variant="ghost" leftIcon={<AddIcon />}>
-              {t("CollectionPanel.CollectionAdd")}
-            </Button>
+            <span className="ml-2 text-blue-500 cursor-pointer">立即创建</span>
           </CreateCollectionModal>
-        </div>
+        </Center>
       ) : (
         <DataPanel />
       )}

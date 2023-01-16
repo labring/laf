@@ -8,6 +8,7 @@ import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { Input } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import { TriggerIcon } from "@/components/CommonIcon";
 import ConfirmButton from "@/components/ConfirmButton";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
@@ -21,6 +22,7 @@ import useFunctionStore from "../../store";
 import CreateModal from "./CreateModal";
 
 import { TFunction } from "@/apis/typing";
+import AddTriggerModal from "@/pages/app/trigger/AddTriggerModal";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function FunctionList() {
@@ -100,6 +102,11 @@ export default function FunctionList() {
                     <span className="ml-2 font-medium text-black">{func?.name}</span>
                   </div>
                   <div className="invisible flex items-center group-hover:visible">
+                    <AddTriggerModal targetFunc={func.name}>
+                      <IconWrap size={20} tooltip={"新建触发器"}>
+                        <TriggerIcon fontSize={13} />
+                      </IconWrap>
+                    </AddTriggerModal>
                     <CreateModal functionItem={func}>
                       <IconWrap size={20} tooltip={"编辑函数"}>
                         <EditIcon fontSize={13} />
