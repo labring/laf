@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-export const SiderBarWidth = 64;
+export const SideBarWidth = 64;
 export const SmallNavHeight = 42;
 
 export const Pages = {
@@ -8,6 +8,7 @@ export const Pages = {
   database: "database",
   logs: "logs",
   setting: "setting",
+  userSetting: "userSetting",
 };
 
 export enum APP_STATUS {

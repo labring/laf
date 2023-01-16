@@ -12,9 +12,9 @@ import request from "@/utils/request";
 /**
  * Get region list
  */
-export async function AppControllerGetRegions(
-  params: Paths.AppControllerGetRegions.BodyParameters | any,
-): Promise<Paths.AppControllerGetRegions.Responses> {
+export async function RegionControllerGetRegions(
+  params: Paths.RegionControllerGetRegions.BodyParameters | any,
+): Promise<Paths.RegionControllerGetRegions.Responses> {
   // /v1/regions
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),

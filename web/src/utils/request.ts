@@ -50,7 +50,7 @@ request.interceptors.response.use(
       const { data } = error.response;
       if (data.statusCode === 401) {
         // eslint-disable-next-line no-restricted-globals
-        (window as any).location.href = (import.meta.env.VITE_SERVER_URL + "/v1/login") as string;
+        // (window as any).location.href = (import.meta.env.VITE_SERVER_URL + "/v1/login") as string;
         return;
       }
       toast({

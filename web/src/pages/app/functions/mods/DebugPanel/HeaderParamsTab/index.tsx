@@ -38,7 +38,7 @@ function HeaderParamsTab(props: { onChange(values: Params[]): void }) {
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <TableContainer>
-          <Table size="sm" className="border">
+          <Table size="sm" className="border" variant={"unstyled"}>
             <Thead>
               <Tr>
                 <Th>参数名</Th>
@@ -53,7 +53,6 @@ function HeaderParamsTab(props: { onChange(values: Params[]): void }) {
                       <Input
                         width={"40px"}
                         size="sm"
-                        variant={"unstyled"}
                         placeholder="key"
                         {...register(`params.${index}.name` as const, {
                           required: true,
@@ -64,7 +63,6 @@ function HeaderParamsTab(props: { onChange(values: Params[]): void }) {
                       <Input
                         size="sm"
                         width={"80px"}
-                        variant={"unstyled"}
                         placeholder="value"
                         {...register(`params.${index}.value` as const, {
                           required: true,

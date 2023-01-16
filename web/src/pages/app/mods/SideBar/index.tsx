@@ -1,5 +1,5 @@
 /****************************
- * cloud functions siderbar menu
+ * cloud functions SideBar menu
  ***************************/
 
 import { AiFillDatabase, AiOutlineFunction } from "react-icons/ai";
@@ -10,18 +10,19 @@ import { Center } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import IconWrap from "@/components/IconWrap";
-import { Pages, SiderBarWidth } from "@/constants/index";
+import { Pages, SideBarWidth } from "@/constants/index";
 
 import styles from "./index.module.scss";
 
+import UserSetting from "@/layouts/Header/UserSetting";
 import AppEnvList from "@/pages/app/setting/AppEnvList/index";
 import SettingModal from "@/pages/app/setting/index";
 import useGlobalStore from "@/pages/globalStore";
 
-export default function SiderBar() {
+export default function SideBar() {
   const { pageId } = useParams();
   const navigate = useNavigate();
-  const { currentApp, setCurrentPage } = useGlobalStore();
+  const { currentApp, setCurrentPage, userInfo } = useGlobalStore();
 
   const ICONS = [
     {
@@ -64,6 +65,10 @@ export default function SiderBar() {
 
   const BOTTOM_ICONS = [
     {
+      pageId: Pages.userSetting,
+      component: <UserSetting avatar={userInfo.profile?.avatar} width={28} />,
+    },
+    {
       pageId: Pages.setting,
       component: (
         <SettingModal
@@ -85,7 +90,7 @@ export default function SiderBar() {
   ];
   return (
     <div
-      style={{ width: SiderBarWidth }}
+      style={{ width: SideBarWidth }}
       className="absolute top-0 bottom-0 flex flex-col justify-between"
     >
       {[ICONS, BOTTOM_ICONS].map((icons, index) => {
@@ -114,7 +119,7 @@ export default function SiderBar() {
                     [styles.current]: pageId === item.pageId,
                   })}
                   onClick={() => {
-                    if (item.pageId !== Pages.setting) {
+                    if (item.pageId !== Pages.setting && item.pageId !== Pages.userSetting) {
                       setCurrentPage(item.pageId);
                       navigate(`/app/${currentApp?.appid}/${item.pageId}`);
                     }

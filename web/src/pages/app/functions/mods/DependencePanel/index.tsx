@@ -4,7 +4,7 @@
 
 import { useTranslation } from "react-i18next";
 import { CloseIcon } from "@chakra-ui/icons";
-import { Badge, Tab, TabList, TabPanel, TabPanels, Tabs, Tooltip } from "@chakra-ui/react";
+import { Badge, Center, Tab, TabList, TabPanel, TabPanels, Tabs, Tooltip } from "@chakra-ui/react";
 
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
@@ -17,14 +17,14 @@ export default function DependenceList() {
   const delPackageMutation = useDelPackageMutation();
   const { t } = useTranslation();
 
-  const buildinPackage: TPackage[] = [];
+  const builtinPackage: TPackage[] = [];
   const customPackage: TPackage[] = [];
 
   const SECTION_HEIGHT = 180;
 
   packageQuery?.data?.data?.forEach((packageItem: TPackage) => {
     if (packageItem.builtin) {
-      buildinPackage.push(packageItem);
+      builtinPackage.push(packageItem);
     } else {
       customPackage.push(packageItem);
     }
@@ -46,56 +46,62 @@ export default function DependenceList() {
           <Tab>
             内置依赖
             <Badge rounded={"full"} ml="1">
-              {buildinPackage.length}
+              {builtinPackage.length}
             </Badge>
           </Tab>
         </TabList>
         <TabPanels>
           <TabPanel px={0} py={1}>
-            <SectionList style={{ height: SECTION_HEIGHT, overflowY: "auto", overflowX: "hidden" }}>
-              {customPackage.map((packageItem: TPackage) => {
-                return (
-                  <SectionList.Item
-                    size="small"
-                    isActive={false}
-                    key={packageItem?.name!}
-                    onClick={() => {}}
-                    className="group"
-                  >
-                    <div>
-                      <Tooltip
-                        label={packageItem?.builtin ? "内置依赖，不可更改" : null}
-                        placement="top"
-                      >
-                        <span className="w-40 inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
-                          {packageItem?.name}
-                        </span>
-                      </Tooltip>
-                    </div>
-                    <div className=" w-20 inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
-                      <span>{packageItem?.spec}</span>
-                      {!packageItem?.builtin ? (
-                        <span className="ml-2 hidden group-hover:inline-block">
-                          <Tooltip label={t("Delete").toString()} placement="top">
-                            <CloseIcon
-                              fontSize={10}
-                              onClick={() => {
-                                delPackageMutation.mutate({ name: packageItem?.name });
-                              }}
-                            />
-                          </Tooltip>
-                        </span>
-                      ) : null}
-                    </div>
-                  </SectionList.Item>
-                );
-              })}
-            </SectionList>
+            {customPackage.length > 0 ? (
+              <SectionList
+                style={{ height: SECTION_HEIGHT, overflowY: "auto", overflowX: "hidden" }}
+              >
+                {customPackage.map((packageItem: TPackage) => {
+                  return (
+                    <SectionList.Item
+                      size="small"
+                      isActive={false}
+                      key={packageItem?.name!}
+                      onClick={() => {}}
+                      className="group"
+                    >
+                      <div>
+                        <Tooltip
+                          label={packageItem?.builtin ? "内置依赖，不可更改" : null}
+                          placement="top"
+                        >
+                          <span className="w-40 inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
+                            {packageItem?.name}
+                          </span>
+                        </Tooltip>
+                      </div>
+                      <div className=" w-20 inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
+                        <span>{packageItem?.spec}</span>
+                        {!packageItem?.builtin ? (
+                          <span className="ml-2 hidden group-hover:inline-block">
+                            <Tooltip label={t("Delete").toString()} placement="top">
+                              <CloseIcon
+                                fontSize={10}
+                                onClick={() => {
+                                  delPackageMutation.mutate({ name: packageItem?.name });
+                                }}
+                              />
+                            </Tooltip>
+                          </span>
+                        ) : null}
+                      </div>
+                    </SectionList.Item>
+                  );
+                })}
+              </SectionList>
+            ) : (
+              <Center minH={140}>暂无自定义依赖</Center>
+            )}
           </TabPanel>
           <TabPanel px={0} py={1}>
             {/* build in packages */}
             <SectionList style={{ height: SECTION_HEIGHT, overflowY: "auto", overflowX: "hidden" }}>
-              {buildinPackage.map((packageItem: TPackage) => {
+              {builtinPackage.map((packageItem: TPackage) => {
                 return (
                   <SectionList.Item
                     size="small"

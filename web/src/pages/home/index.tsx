@@ -26,7 +26,11 @@ function HomePage() {
     },
   );
 
-  return (appListQuery.data?.data || []).length === 0 && !appListQuery.isLoading ? (
+  if (appListQuery.isLoading) {
+    return null;
+  }
+
+  return (appListQuery.data?.data || []).length === 0 ? (
     <Empty />
   ) : (
     <div className="w-8/12 mt-10 mx-auto">

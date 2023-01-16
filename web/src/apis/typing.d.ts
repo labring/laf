@@ -11,26 +11,18 @@ export interface TApplication {
   createdAt: string;
   updatedAt: string;
   createdBy: string;
-  region: Region;
   bundle: Bundle;
   runtime: Runtime;
   configuration: Configuration;
   gateway: Gateway;
-  database: Database;
-  oss: Oss;
+  storage: Storage;
   function_debug_token: string;
 }
-
-export interface Region {
-  id: string;
-  name: string;
-  desc: any;
-}
-
 export interface Bundle {
   id: string;
   name: string;
   displayName: string;
+  regionName: string;
   limitCPU: number;
   limitMemory: number;
   requestCPU: number;
@@ -38,8 +30,9 @@ export interface Bundle {
   databaseCapacity: number;
   storageCapacity: number;
   networkTrafficOutbound: number;
-  networkTrafficInbound: any;
   priority: number;
+  state: string;
+  price: number;
 }
 
 export interface Runtime {
@@ -61,6 +54,7 @@ export interface Configuration {
   id: string;
   appid: string;
   environments: Environment[];
+  dependencies: any[];
   createdAt: string;
   updatedAt: string;
 }
@@ -94,26 +88,15 @@ export interface Labels {
 
 export interface Spec {
   appid: string;
-  buckets: string[];
+  buckets: any[];
 }
 
 export interface Status {
   appRoute: AppRoute;
-  bucketRoutes: BucketRoutes;
   conditions: Condition[];
 }
 
 export interface AppRoute {
-  domain: string;
-  domainName: string;
-  domainNamespace: string;
-}
-
-export interface BucketRoutes {
-  "ymactc-site": YmactcSite;
-}
-
-export interface YmactcSite {
   domain: string;
   domainName: string;
   domainNamespace: string;
@@ -127,126 +110,14 @@ export interface Condition {
   type: string;
 }
 
-export interface Database {
-  apiVersion: string;
-  kind: string;
-  metadata: Metadata2;
-  spec: Spec2;
-  status: Status2;
-}
-
-export interface Metadata2 {
-  creationTimestamp: string;
-  finalizers: string[];
-  generation: number;
-  labels: Labels2;
-  name: string;
-  namespace: string;
-  resourceVersion: string;
-  uid: string;
-}
-
-export interface Labels2 {
-  "laf.dev/appid": string;
-  "laf.dev/database.store.name": string;
-  "laf.dev/database.store.namespace": string;
-}
-
-export interface Spec2 {
-  capacity: Capacity;
-  password: string;
-  provider: string;
-  region: string;
-  username: string;
-}
-
-export interface Capacity {
-  storage: string;
-}
-
-export interface Status2 {
-  capacity: Capacity2;
-  conditions: Condition2[];
-  connectionUri: string;
-  storeName: string;
-  storeNamespace: string;
-}
-
-export interface Capacity2 {
-  storage: string;
-}
-
-export interface Condition2 {
-  lastTransitionTime: string;
-  message: string;
-  reason: string;
-  status: string;
-  type: string;
-}
-
-export interface Oss {
-  apiVersion: string;
-  kind: string;
-  metadata: Metadata3;
-  spec: Spec3;
-  status: Status3;
-  credentials: Credentials;
-}
-
-export interface Metadata3 {
-  creationTimestamp: string;
-  finalizers: string[];
-  generation: number;
-  labels: Labels3;
-  name: string;
-  namespace: string;
-  resourceVersion: string;
-  uid: string;
-}
-
-export interface Labels3 {
-  "laf.dev/appid": string;
-  "laf.dev/oss.store.name": string;
-  "laf.dev/oss.store.namespace": string;
-}
-
-export interface Spec3 {
+export interface Storage {
+  id: string;
   appid: string;
-  capacity: Capacity3;
-  password: string;
-  provider: string;
-  region: string;
-}
-
-export interface Capacity3 {
-  bucketCount: number;
-  objectCount: number;
-  storage: string;
-}
-
-export interface Status3 {
   accessKey: string;
-  capacity: Capacity4;
-  conditions: Condition3[];
-  endpoint: string;
-  region: string;
   secretKey: string;
-  storeName: string;
-  storeNamespace: string;
-}
-
-export interface Capacity4 {
-  bucketCount: number;
-  objectCount: number;
-  storage: string;
-}
-
-export interface Condition3 {
-  lastTransitionTime: string;
-  message: string;
-  reason: string;
-  status: string;
-  type: string;
+  createdAt: string;
+  updatedAt: string;
+  credentials: Credentials;
 }
 
 export interface Credentials {
@@ -258,21 +129,13 @@ export interface Credentials {
 }
 
 export interface TBucket {
-  apiVersion: string;
-  kind: string;
-  metadata: Metadata;
-  spec: Spec;
-  status: Status;
-}
-
-export interface Metadata {
-  creationTimestamp: string;
-  finalizers: string[];
-  generation: number;
+  id: string;
+  appid: string;
   name: string;
-  namespace: string;
-  resourceVersion: string;
-  uid: string;
+  shortName: string;
+  policy: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Spec {
@@ -348,4 +211,12 @@ export interface Source {
   version: number;
   hash: any;
   lang: any;
+}
+
+export interface TLogItem {
+  _id: string;
+  request_id: string;
+  func: string;
+  data: string;
+  created_at: string;
 }

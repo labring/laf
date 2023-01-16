@@ -163,85 +163,85 @@ export async function EnvironmentVariableControllerDelete(
 }
 
 /**
- * TODO - ⌛️
+ * Create a new bucket
  */
-export async function WebsitesControllerCreate(
-  params: Definitions.CreateWebsiteDto | any,
-): Promise<Paths.WebsitesControllerCreate.Responses> {
-  // /v1/apps/{appid}/websites
+export async function BucketControllerCreate(
+  params: Definitions.CreateBucketDto | any,
+): Promise<Paths.BucketControllerCreate.Responses> {
+  // /v1/apps/{appid}/buckets
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
     ...params,
   };
-  return request(`/v1/apps/${_params.appid}/websites`, {
+  return request(`/v1/apps/${_params.appid}/buckets`, {
     method: "POST",
     data: params,
   });
 }
 
 /**
- * TODO - ⌛️
+ * Get bucket list of an app
  */
-export async function WebsitesControllerFindAll(
-  params: Paths.WebsitesControllerFindAll.BodyParameters | any,
-): Promise<Paths.WebsitesControllerFindAll.Responses> {
-  // /v1/apps/{appid}/websites
+export async function BucketControllerFindAll(
+  params: Paths.BucketControllerFindAll.BodyParameters | any,
+): Promise<Paths.BucketControllerFindAll.Responses> {
+  // /v1/apps/{appid}/buckets
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
     ...params,
   };
-  return request(`/v1/apps/${_params.appid}/websites`, {
+  return request(`/v1/apps/${_params.appid}/buckets`, {
     method: "GET",
     params: params,
   });
 }
 
 /**
- * TODO - ⌛️
+ * Get a bucket by name
  */
-export async function WebsitesControllerFindOne(
-  params: Paths.WebsitesControllerFindOne.BodyParameters | any,
-): Promise<Paths.WebsitesControllerFindOne.Responses> {
-  // /v1/apps/{appid}/websites/{id}
+export async function BucketControllerFindOne(
+  params: Paths.BucketControllerFindOne.BodyParameters | any,
+): Promise<Paths.BucketControllerFindOne.Responses> {
+  // /v1/apps/{appid}/buckets/{name}
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
     ...params,
   };
-  return request(`/v1/apps/${_params.appid}/websites/${_params.id}`, {
+  return request(`/v1/apps/${_params.appid}/buckets/${_params.name}`, {
     method: "GET",
     params: params,
   });
 }
 
 /**
- * TODO - ⌛️
+ * Update a bucket
  */
-export async function WebsitesControllerUpdate(
-  params: Definitions.UpdateWebsiteDto | any,
-): Promise<Paths.WebsitesControllerUpdate.Responses> {
-  // /v1/apps/{appid}/websites/{id}
+export async function BucketControllerUpdate(
+  params: Definitions.UpdateBucketDto | any,
+): Promise<Paths.BucketControllerUpdate.Responses> {
+  // /v1/apps/{appid}/buckets/{name}
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
     ...params,
   };
-  return request(`/v1/apps/${_params.appid}/websites/${_params.id}`, {
+  return request(`/v1/apps/${_params.appid}/buckets/${_params.name}`, {
     method: "PATCH",
     data: params,
   });
 }
 
 /**
- * TODO - ⌛️
+ * Delete a bucket
  */
-export async function WebsitesControllerRemove(
-  params: Paths.WebsitesControllerRemove.BodyParameters | any,
-): Promise<Paths.WebsitesControllerRemove.Responses> {
-  // /v1/apps/{appid}/websites/{id}
+export async function BucketControllerRemove(
+  params: Paths.BucketControllerRemove.BodyParameters | any,
+): Promise<Paths.BucketControllerRemove.Responses> {
+  // /v1/apps/{appid}/buckets/{name}
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
     ...params,
   };
-  return request(`/v1/apps/${_params.appid}/websites/${_params.id}`, {
+  return request(`/v1/apps/${_params.appid}/buckets/${_params.name}`, {
     method: "DELETE",
     data: params,
   });
@@ -486,85 +486,85 @@ export async function PolicyRuleControllerRemove(
 }
 
 /**
- * Create a new bucket
+ * TODO - ⌛️
  */
-export async function BucketControllerCreate(
-  params: Definitions.CreateBucketDto | any,
-): Promise<Paths.BucketControllerCreate.Responses> {
-  // /v1/apps/{appid}/buckets
+export async function WebsitesControllerCreate(
+  params: Definitions.CreateWebsiteDto | any,
+): Promise<Paths.WebsitesControllerCreate.Responses> {
+  // /v1/apps/{appid}/websites
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
     ...params,
   };
-  return request(`/v1/apps/${_params.appid}/buckets`, {
+  return request(`/v1/apps/${_params.appid}/websites`, {
     method: "POST",
     data: params,
   });
 }
 
 /**
- * Get bucket list of an app
+ * TODO - ⌛️
  */
-export async function BucketControllerFindAll(
-  params: Paths.BucketControllerFindAll.BodyParameters | any,
-): Promise<Paths.BucketControllerFindAll.Responses> {
-  // /v1/apps/{appid}/buckets
+export async function WebsitesControllerFindAll(
+  params: Paths.WebsitesControllerFindAll.BodyParameters | any,
+): Promise<Paths.WebsitesControllerFindAll.Responses> {
+  // /v1/apps/{appid}/websites
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
     ...params,
   };
-  return request(`/v1/apps/${_params.appid}/buckets`, {
+  return request(`/v1/apps/${_params.appid}/websites`, {
     method: "GET",
     params: params,
   });
 }
 
 /**
- * Get a bucket by name
+ * TODO - ⌛️
  */
-export async function BucketControllerFindOne(
-  params: Paths.BucketControllerFindOne.BodyParameters | any,
-): Promise<Paths.BucketControllerFindOne.Responses> {
-  // /v1/apps/{appid}/buckets/{name}
+export async function WebsitesControllerFindOne(
+  params: Paths.WebsitesControllerFindOne.BodyParameters | any,
+): Promise<Paths.WebsitesControllerFindOne.Responses> {
+  // /v1/apps/{appid}/websites/{id}
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
     ...params,
   };
-  return request(`/v1/apps/${_params.appid}/buckets/${_params.name}`, {
+  return request(`/v1/apps/${_params.appid}/websites/${_params.id}`, {
     method: "GET",
     params: params,
   });
 }
 
 /**
- * Update a bucket
+ * TODO - ⌛️
  */
-export async function BucketControllerUpdate(
-  params: Definitions.UpdateBucketDto | any,
-): Promise<Paths.BucketControllerUpdate.Responses> {
-  // /v1/apps/{appid}/buckets/{name}
+export async function WebsitesControllerUpdate(
+  params: Definitions.UpdateWebsiteDto | any,
+): Promise<Paths.WebsitesControllerUpdate.Responses> {
+  // /v1/apps/{appid}/websites/{id}
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
     ...params,
   };
-  return request(`/v1/apps/${_params.appid}/buckets/${_params.name}`, {
+  return request(`/v1/apps/${_params.appid}/websites/${_params.id}`, {
     method: "PATCH",
     data: params,
   });
 }
 
 /**
- * Delete a bucket
+ * TODO - ⌛️
  */
-export async function BucketControllerRemove(
-  params: Paths.BucketControllerRemove.BodyParameters | any,
-): Promise<Paths.BucketControllerRemove.Responses> {
-  // /v1/apps/{appid}/buckets/{name}
+export async function WebsitesControllerRemove(
+  params: Paths.WebsitesControllerRemove.BodyParameters | any,
+): Promise<Paths.WebsitesControllerRemove.Responses> {
+  // /v1/apps/{appid}/websites/{id}
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
     ...params,
   };
-  return request(`/v1/apps/${_params.appid}/buckets/${_params.name}`, {
+  return request(`/v1/apps/${_params.appid}/websites/${_params.id}`, {
     method: "DELETE",
     data: params,
   });

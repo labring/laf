@@ -13,7 +13,7 @@ function BottomPanel() {
         <Button
           size="xs"
           variant="plain"
-          onClick={() => store.togglePanel("collectionPage", "SiderBar")}
+          onClick={() => store.togglePanel("collectionPage", "SideBar")}
         >
           集合列表
         </Button>

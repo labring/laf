@@ -30,8 +30,8 @@ export default function StorageListPanel() {
   const store = useStorageStore((store) => store);
   const bucketListQuery = useBucketListQuery({
     onSuccess(data) {
-      if (data?.data?.items?.length) {
-        if (!store.currentStorage) store.setCurrentStorage(data?.data?.items[0]);
+      if (data?.data?.length) {
+        if (!store.currentStorage) store.setCurrentStorage(data?.data[0]);
       } else {
         store.setCurrentStorage(undefined);
       }
@@ -66,13 +66,13 @@ export default function StorageListPanel() {
           />
         </InputGroup>
         <SectionList style={{ flexGrow: 1, overflow: "auto" }}>
-          {(bucketListQuery?.data?.data?.items || [])
-            .filter((storage: any) => storage?.metadata?.name.indexOf(search) >= 0)
+          {(bucketListQuery?.data?.data || [])
+            .filter((storage: TBucket) => storage?.name.indexOf(search) >= 0)
             .map((storage: TBucket) => {
               return (
                 <SectionList.Item
-                  isActive={storage?.metadata?.name === store.currentStorage?.metadata?.name}
-                  key={storage?.metadata?.name}
+                  isActive={storage?.name === store.currentStorage?.name}
+                  key={storage?.name}
                   className="group"
                   onClick={() => {
                     store.setCurrentStorage(storage);
@@ -83,15 +83,11 @@ export default function StorageListPanel() {
                     <div className="flex justify-between">
                       <div>
                         <FileTypeIcon type={FileType.bucket} />
-                        <span className="ml-2 text-base">{storage.metadata?.name}</span>
+                        <span className="ml-2 text-base">{storage.name}</span>
                       </div>
 
-                      <Tag
-                        size="sm"
-                        className="w-16 justify-center"
-                        variant={storage?.spec?.policy}
-                      >
-                        {storage?.spec?.policy}
+                      <Tag size="sm" className="w-16 justify-center" variant={storage?.policy}>
+                        {storage?.policy}
                       </Tag>
                     </div>
                   </div>
@@ -104,8 +100,8 @@ export default function StorageListPanel() {
                     <DeleteBucketModal
                       storage={storage}
                       onSuccessAction={() => {
-                        if (storage.metadata.name === store.currentStorage?.metadata.name) {
-                          store.setCurrentStorage(bucketListQuery?.data?.data?.items[0]);
+                        if (storage.name === store.currentStorage?.name) {
+                          store.setCurrentStorage(bucketListQuery?.data?.data[0]);
                         }
                       }}
                     />
@@ -123,7 +119,7 @@ export default function StorageListPanel() {
           <div>
             <div>
               <span className={"before:bg-error " + styles.circle}>总容量</span>
-              <p className="text-lg">{globalStore.currentApp?.oss.spec.capacity.storage}</p>
+              <p className="text-lg">{globalStore.currentApp?.bundle.storageCapacity}</p>
             </div>
             <div className="mt-4">
               <span className={"before:bg-primary " + styles.circle}>已使用</span>

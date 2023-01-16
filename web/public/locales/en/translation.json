@@ -20,5 +20,6 @@
   },
   "Message": {
     "DeploySuccess": "Published successfully"
-  }
+  },
+  "SearchPlaceholder": ""
 }

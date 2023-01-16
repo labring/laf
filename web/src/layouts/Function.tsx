@@ -5,8 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 
 import { APP_PHASE_STATUS, Pages } from "@/constants/index";
 
-import Header from "./Header";
-
 import { ApplicationControllerFindOne } from "@/apis/v1/applications";
 import useGlobalStore from "@/pages/globalStore";
 
@@ -42,7 +40,6 @@ export default function FunctionLayout() {
 
   return (
     <div>
-      <Header size="sm" />
       <div
         style={{
           height: "100vh",

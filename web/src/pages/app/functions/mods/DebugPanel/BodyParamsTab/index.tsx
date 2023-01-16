@@ -12,7 +12,7 @@ function BodyParamsTab(props: { onChange(values: string): void }) {
           onChange && onChange(jsonValues);
         } catch (e) {}
       }}
-      value={JSON.stringify({ name: "test" }, null, 2)}
+      value={JSON.stringify({}, null, 2)}
     />
   );
 }

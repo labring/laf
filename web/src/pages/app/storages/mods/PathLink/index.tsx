@@ -2,7 +2,7 @@ import useStorageStore from "../../store";
 
 function PathLink() {
   const { currentStorage, prefix, setPrefix } = useStorageStore();
-  const bucketName = currentStorage?.metadata.name || "";
+  const bucketName = currentStorage?.name || "";
 
   const str = prefix?.split("/").filter((s) => s !== "");
 

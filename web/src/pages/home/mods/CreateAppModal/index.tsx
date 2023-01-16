@@ -22,7 +22,7 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { t } from "i18next";
 
-import { APP_STATUS, DEFAULT_REGION } from "@/constants/index";
+import { APP_STATUS } from "@/constants/index";
 
 import { ApplicationControllerCreate, ApplicationControllerUpdate } from "@/apis/v1/applications";
 import useGlobalStore from "@/pages/globalStore";
@@ -34,7 +34,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
   const { application = {} } = props;
   const isEdit = !!application.name;
 
-  const { bundles = [], runtimes = [], regions = [] } = useGlobalStore();
+  const { runtimes = [], regions = [] } = useGlobalStore();
 
   type FormData = {
     name: string;
@@ -47,10 +47,11 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
   const defaultValues = {
     name: application.name,
     state: application.state || APP_STATUS.Running,
-    region: application.regionName || DEFAULT_REGION,
-    bundleName: bundles[0].name,
+    region: application.regionName || regions[0].name,
     runtimeName: runtimes[0].name,
   };
+
+  const bundles = regions[0].bundles;
 
   const {
     register,
@@ -136,7 +137,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                                   key={region.name}
                                 >
                                   <CheckIcon className="mr-2" />
-                                  {region.name}
+                                  {region.displayName}
                                 </Button>
                               </div>
                             );
