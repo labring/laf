@@ -23,7 +23,7 @@ function DatabasePage() {
   return (
     <Content>
       <Row className="flex-grow overflow-hidden">
-        <Col {...settingStore.layoutInfo.collectionPage.SiderBar}>
+        <Col {...settingStore.layoutInfo.collectionPage.SideBar}>
           <CollectionListPanel />
           <Row className="!flex-none" {...settingStore.layoutInfo.collectionPage.PolicyPanel}>
             <PolicyListPanel />

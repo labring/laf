@@ -13,5 +13,6 @@
       "Confirm": "确定",
       "Cancel": "取消"
     }
-  }
+  },
+  "SearchPlaceholder": ""
 }

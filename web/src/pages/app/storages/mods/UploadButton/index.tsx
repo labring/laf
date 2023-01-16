@@ -92,7 +92,7 @@ function UploadButton({ onUploadSuccess }: { onUploadSuccess: () => void }) {
                 for (let i = 0; i < files.length; i++) {
                   const file = files[i];
                   const fileName = file.webkitRelativePath ? file.webkitRelativePath : file.name;
-                  await uploadFile(currentStorage?.metadata.name!, prefix + fileName, file, {
+                  await uploadFile(currentStorage?.name!, prefix + fileName, file, {
                     contentType: file.type,
                   });
                   setFileList((pre) => {

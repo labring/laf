@@ -1,5 +1,5 @@
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { AddIcon, EditIcon } from "@chakra-ui/icons";
 import {
   Button,
   Checkbox,
@@ -16,27 +16,26 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Select,
   Switch,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
 import { t } from "i18next";
 
-import IconWrap from "@/components/IconWrap";
-
 import { useCreateFunctionMutation, useUpdateFunctionMutation } from "../../../service";
 import useFunctionStore from "../../../store";
 
-import defaultString from "./defaultFunctionString";
+import functionTemplates from "./functionTemplates";
 
 import useGlobalStore from "@/pages/globalStore";
 
-const CreateModal = (props: { functionItem?: any }) => {
+const CreateModal = (props: { functionItem?: any; children?: React.ReactElement }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const store = useFunctionStore();
   const { showSuccess } = useGlobalStore();
 
-  const { functionItem } = props;
+  const { functionItem, children = null } = props;
   const isEdit = !!functionItem;
 
   const defaultValues = {
@@ -44,7 +43,7 @@ const CreateModal = (props: { functionItem?: any }) => {
     description: functionItem?.desc || "",
     websocket: !!functionItem?.websocket,
     methods: functionItem?.methods || ["GET", "POST"],
-    code: functionItem?.source.code || defaultString,
+    code: functionItem?.source.code || functionTemplates[0].value,
     tags: [],
   };
 
@@ -89,19 +88,16 @@ const CreateModal = (props: { functionItem?: any }) => {
 
   return (
     <>
-      <IconWrap
-        size={20}
-        tooltip={isEdit ? "编辑函数" : "添加函数"}
-        onClick={() => {
-          onOpen();
-          reset(defaultValues);
-          setTimeout(() => {
-            setFocus("name");
-          }, 0);
-        }}
-      >
-        {isEdit ? <EditIcon fontSize={13} /> : <AddIcon fontSize={12} />}
-      </IconWrap>
+      {children &&
+        React.cloneElement(children, {
+          onClick: () => {
+            onOpen();
+            reset(defaultValues);
+            setTimeout(() => {
+              setFocus("name");
+            }, 0);
+          },
+        })}
 
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
@@ -125,24 +121,6 @@ const CreateModal = (props: { functionItem?: any }) => {
                 <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
               </FormControl>
 
-              <FormControl>
-                <FormLabel htmlFor="description">函数描述</FormLabel>
-                <Input
-                  {...register("description")}
-                  id="description"
-                  placeholder="函数描述"
-                  variant="filled"
-                />
-              </FormControl>
-
-              <FormControl isInvalid={!!errors?.websocket}>
-                <FormLabel htmlFor="websocket">是否支持 websocket</FormLabel>
-                <Switch {...register("websocket")} id="websocket" variant="filled" />
-                <FormErrorMessage>
-                  {errors.websocket && errors.websocket.message}
-                </FormErrorMessage>{" "}
-              </FormControl>
-
               <FormControl isInvalid={!!errors?.methods}>
                 <FormLabel htmlFor="methods">请求方法</FormLabel>
                 <HStack spacing={6}>
@@ -164,6 +142,39 @@ const CreateModal = (props: { functionItem?: any }) => {
                   />
                 </HStack>
                 <FormErrorMessage>{errors.methods?.message}</FormErrorMessage>
+              </FormControl>
+
+              <FormControl>
+                <FormLabel htmlFor="description">函数描述</FormLabel>
+                <Input
+                  {...register("description")}
+                  id="description"
+                  placeholder="函数描述"
+                  variant="filled"
+                />
+              </FormControl>
+
+              {isEdit ? null : (
+                <FormControl>
+                  <FormLabel htmlFor="description">函数模板</FormLabel>
+                  <Select {...register("code")} id="code" placeholder="" variant="filled">
+                    {functionTemplates.map((item) => {
+                      return (
+                        <option value={item.value.trim()} key={item.label}>
+                          {item.label}
+                        </option>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+              )}
+
+              <FormControl isInvalid={!!errors?.websocket} hidden>
+                <FormLabel htmlFor="websocket">是否支持 websocket</FormLabel>
+                <Switch {...register("websocket")} id="websocket" variant="filled" />
+                <FormErrorMessage>
+                  {errors.websocket && errors.websocket.message}
+                </FormErrorMessage>{" "}
               </FormControl>
             </VStack>
           </ModalBody>

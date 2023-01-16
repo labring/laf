@@ -165,6 +165,7 @@ const AddDependenceModal = () => {
   };
 
   const renderList = (list: TDependenceItem[]) => {
+    if (list.length === 0) return <Center minH={200}>{t("noData")}</Center>;
     return (
       <DependenceList>
         {(list || []).map((packageItem: TDependenceItem) => {
@@ -196,9 +197,11 @@ const AddDependenceModal = () => {
                     ) || packageList.some((item) => item.package.name === packageItem.package.name)
                   }
                 >
-                  <Box ml={5} width="400px">
+                  <Box ml={5} width="350px">
                     <b>{packageItem.package.name}</b>
-                    <p>{packageItem.package.description}</p>
+                    <p className="text-second text-base whitespace-nowrap overflow-hidden text-ellipsis ">
+                      {packageItem.package.description}
+                    </p>
                   </Box>
                 </Checkbox>
               )}
@@ -253,26 +256,12 @@ const AddDependenceModal = () => {
         <AddIcon fontSize={12} />
       </IconWrap>
 
-      <Modal isOpen={isOpen} onClose={onClose} size="3xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="2xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>
-            {isEdit ? t("DependenceEdit") : t("DependenceAdd")}
-            <span
-              className="ml-2 hover:cursor-pointer"
-              onClick={() => {
-                if (!isEdit) {
-                  setIsShowChecked((pre) => !pre);
-                }
-              }}
-            >
-              ({" "}
-              {isEdit ? packageList.length : isShowChecked ? <SmallCloseIcon /> : checkList.length}{" "}
-              )
-            </span>
-          </ModalHeader>
+          <ModalHeader>{isEdit ? t("DependenceEdit") : t("DependenceAdd")}</ModalHeader>
           <ModalCloseButton />
-          <ModalBody pb={6}>
+          <ModalBody pb={6} minH="260px">
             {isEdit ? (
               renderList(packageList)
             ) : (
@@ -311,6 +300,28 @@ const AddDependenceModal = () => {
           </ModalBody>
 
           <ModalFooter>
+            {checkList.length > 0 && (
+              <span
+                className="mr-2 hover:cursor-pointer text-lg "
+                onClick={() => {
+                  if (!isEdit) {
+                    setIsShowChecked((pre) => !pre);
+                  }
+                }}
+              >
+                已选择:
+                <span className="mx-2 text-blue-500 ">
+                  {isEdit ? (
+                    packageList.length
+                  ) : isShowChecked ? (
+                    <SmallCloseIcon fontSize={16} className="align-middle" />
+                  ) : (
+                    checkList.length
+                  )}
+                </span>
+              </span>
+            )}
+
             <Button
               colorScheme="blue"
               onClick={() => {

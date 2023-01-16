@@ -4,7 +4,7 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { DeleteIcon } from "@chakra-ui/icons";
+import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { Input } from "@chakra-ui/react";
 import { t } from "i18next";
 
@@ -59,7 +59,16 @@ export default function FunctionList() {
 
   return (
     <Panel className="flex-grow">
-      <Panel.Header title={t`FunctionList`} actions={[<CreateModal key="create_modal" />]} />
+      <Panel.Header
+        title={t`FunctionList`}
+        actions={[
+          <CreateModal key="create_modal">
+            <IconWrap size={20} tooltip={"添加函数"}>
+              <AddIcon fontSize={12} />
+            </IconWrap>
+          </CreateModal>,
+        ]}
+      />
       <div>
         <div className="flex items-center mb-3">
           <Input
@@ -91,7 +100,11 @@ export default function FunctionList() {
                     <span className="ml-2 font-medium text-black">{func?.name}</span>
                   </div>
                   <div className="invisible flex items-center group-hover:visible">
-                    <CreateModal functionItem={func} />
+                    <CreateModal functionItem={func}>
+                      <IconWrap size={20} tooltip={"编辑函数"}>
+                        <EditIcon fontSize={13} />
+                      </IconWrap>
+                    </CreateModal>
 
                     <ConfirmButton
                       onSuccessAction={async () => {

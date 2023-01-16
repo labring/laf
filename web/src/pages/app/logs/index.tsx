@@ -15,11 +15,6 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Tr,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
@@ -35,16 +30,10 @@ import { queryKeys } from "./service";
 
 import styles from "./index.module.scss";
 
+import { TLogItem } from "@/apis/typing";
 import { LogControllerGetLogs } from "@/apis/v1/apps";
 
-const DEFAULT_LIMIT = 20;
-
-type TLog = {
-  data: string;
-  request_id: string;
-  func: string;
-  created_at: Date;
-};
+const DEFAULT_LIMIT = 100;
 
 export default function LogsPage() {
   type FormData = {
@@ -58,7 +47,7 @@ export default function LogsPage() {
   });
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [detail, setDetail] = useState<TLog | undefined>(undefined);
+  const [detail, setDetail] = useState<TLogItem | undefined>(undefined);
 
   const [queryData, setQueryData] = useState({
     ...defaultValues,
@@ -89,7 +78,7 @@ export default function LogsPage() {
 
   return (
     <Content>
-      <Panel>
+      <Panel className="h-full">
         <form
           onSubmit={(event) => {
             event?.preventDefault();
@@ -99,13 +88,26 @@ export default function LogsPage() {
           <Panel.Header>
             <HStack spacing={2}>
               <InputGroup width={400}>
-                <Input borderRadius="4" placeholder="Request ID" {...register("requestId")} />
+                <Input
+                  borderRadius="4"
+                  size="sm"
+                  placeholder="Request ID"
+                  {...register("requestId")}
+                />
               </InputGroup>
 
-              <Input width={200} placeholder="函数名" bg="white" {...register("functionName")} />
+              <Input
+                width={200}
+                size="sm"
+                placeholder="函数名"
+                bg="white"
+                {...register("functionName")}
+              />
 
               <Button
+                size="sm"
                 py={4}
+                px={6}
                 type={"submit"}
                 onClick={handleSubmit(submit)}
                 isLoading={logListQuery.isFetching}
@@ -124,49 +126,40 @@ export default function LogsPage() {
             />
           </Panel.Header>
         </form>
-        <div className="px-4 py-1 rounded-md h-full relative" style={{ paddingBottom: 100 }}>
+        <div className="py-1 rounded-md h-full relative" style={{ paddingBottom: 100 }}>
           {logListQuery.isFetching ? (
             <Center className="opacity-60 bg-white absolute left-0 right-0 top-0 bottom-0 z-10">
               <Spinner size={"lg"} />
             </Center>
           ) : null}
-          <div className="overflow-y-auto h-full mb-4">
-            <TableContainer minH={"400px"}>
-              <Table variant="unstyle">
-                <Tbody className="relative font-mono">
-                  {logListQuery.data?.data?.list.map((item: any) => {
-                    return (
-                      <Tr key={item._id} _hover={{ bgColor: "#efefef" }}>
-                        <Td className="text-slate-500" maxWidth="5rem">
-                          [{formatDate(item.created_at, "YYYY-MM-DD HH:mm:ss")}]
-                        </Td>
-                        <Td maxWidth="5rem" className={styles.text + " text-primary"}>
-                          <CopyText text={item.request_id}>
-                            <span>{item.request_id}</span>
-                          </CopyText>
-                        </Td>
-                        <Td maxWidth="5rem" className={styles.text + " text-purple-500"}>
-                          <CopyText text={item.func}>
-                            <span>{item.func}</span>
-                          </CopyText>
-                        </Td>
-                        <Td
-                          maxWidth={"300px"}
-                          onClick={() => {
-                            setDetail(item);
-                            onOpen();
-                          }}
-                        >
-                          <pre className="hover:text-blue-700 hover:underline max-h-[20px] overflow-hidden cursor-pointer">
-                            {item.data}
-                          </pre>
-                        </Td>
-                      </Tr>
-                    );
-                  })}
-                </Tbody>
-              </Table>
-            </TableContainer>
+          <div className="overflow-y-auto h-full mb-4 ">
+            {logListQuery.data?.data?.list.map((item: TLogItem) => {
+              return (
+                <div className=" h-[22px] font-mono overflow-hidden">
+                  <span className="mr-2 text-gray-500 float-left">
+                    [{formatDate(item.created_at, "YYYY-MM-DD HH:mm:ss")}]
+                  </span>
+
+                  <CopyText text={item.request_id} className="mr-2 text-primary float-left">
+                    <span>{item.request_id.substring(0, 8)}</span>
+                  </CopyText>
+                  <CopyText text={item.func} className="mr-2 w-[100px] text-purple-500 float-left">
+                    <span>{item.func}</span>
+                  </CopyText>
+                  <div
+                    className=" overflow-hidden mr-4"
+                    onClick={() => {
+                      setDetail(item);
+                      onOpen();
+                    }}
+                  >
+                    <pre className="hover:text-blue-700 hover:underline max-h-[20px] overflow-hidden cursor-pointer whitespace-nowrap text-ellipsis">
+                      {item.data.substring(0, 200)}
+                    </pre>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 

@@ -32,12 +32,12 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
   const bucketUpdateMutation = useBucketUpdateMutation();
 
   const defaultValues = {
-    shortName: storage?.metadata.name,
-    policy: storage?.spec.policy,
+    name: storage?.name,
+    policy: storage?.policy,
   };
 
   const { register, handleSubmit, reset, setFocus } = useForm<{
-    shortName: string;
+    name: string;
     policy: string;
   }>({
     defaultValues,
@@ -48,13 +48,10 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
   const isEdit = !!storage;
 
   const onSubmit = async (values: any) => {
+    debugger;
     let res: any = {};
     if (isEdit) {
-      res = await bucketUpdateMutation.mutateAsync({
-        name: values.shortName,
-        ...values,
-        storage: "1Gi",
-      });
+      res = await bucketUpdateMutation.mutateAsync(values);
 
       if (!res.error) {
         store.setCurrentStorage(res.data);
@@ -62,7 +59,7 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
         onClose();
       }
     } else {
-      res = await bucketCreateMutation.mutateAsync({ ...values, storage: "1Gi" });
+      res = await bucketCreateMutation.mutateAsync(values);
       if (!res.error) {
         store.setCurrentStorage(res.data);
         showSuccess("create success.");
@@ -78,7 +75,7 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
           onOpen();
           reset(defaultValues);
           setTimeout(() => {
-            setFocus("shortName");
+            setFocus("name");
           }, 0);
         },
       })}
@@ -91,9 +88,9 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
               <FormControl isRequired>
-                <FormLabel htmlFor="shortName">Bucket名称</FormLabel>
+                <FormLabel htmlFor="name">Bucket名称</FormLabel>
                 <Input
-                  {...register("shortName", { required: true })}
+                  {...register("name", { required: true })}
                   variant="filled"
                   disabled={isEdit}
                 />

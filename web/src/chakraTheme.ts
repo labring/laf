@@ -198,14 +198,20 @@ const Tabs = {
 };
 
 const Table = {
-  parts: ["th", "td"],
-  baseStyle: {
-    th: {
-      border: "1px solid #dddddd",
+  baseStyle: {},
+  variants: {
+    unstyled: {
+      parts: ["th", "td"],
+      th: {
+        border: "1px solid #dddddd",
+      },
+      td: {
+        border: "1px solid #dddddd",
+      },
     },
-    td: {
-      border: "1px solid #dddddd",
-    },
+  },
+  defaultProps: {
+    variant: "unstyled",
   },
 };
 

@@ -2,11 +2,11 @@ import { Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 
 import SettingModal from "@/pages/app/setting";
 import PATList from "@/pages/app/setting/PATList";
-export default function UserSetting(props: { avator: string; width: number }) {
+export default function UserSetting(props: { avatar: string; width: number }) {
   return (
     <Menu>
       <MenuButton>
-        <img src={props.avator} className="rounded-full" width={props.width} alt="avatar" />
+        <img src={props.avatar} className="rounded-full" width={props.width} alt="avatar" />
       </MenuButton>
       <MenuList minW={24}>
         <SettingModal

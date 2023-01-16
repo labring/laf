@@ -71,12 +71,9 @@ function CreateModal({ onCreateSuccess }: { onCreateSuccess: () => void }) {
               colorScheme="blue"
               type="submit"
               onClick={handleSubmit(async (value) => {
-                await uploadFile(
-                  currentStorage?.metadata.name!,
-                  prefix + value.prefix + "/",
-                  null,
-                  { contentType: "folder" },
-                );
+                await uploadFile(currentStorage?.name!, prefix + value.prefix + "/", null, {
+                  contentType: "folder",
+                });
                 onCreateSuccess();
                 // setPrefix(prefix + value.prefix + "/");
                 onClose();

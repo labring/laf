@@ -7,8 +7,8 @@ type TLayoutConfig = {
   style: React.CSSProperties;
 };
 
-type functionPanel = "SiderBar" | "RightPanel" | "DependencePanel" | "ConsolePanel" | "Bottom";
-type collectionPanel = "SiderBar" | "Bottom" | "PolicyPanel";
+type functionPanel = "SideBar" | "RightPanel" | "DependencePanel" | "ConsolePanel" | "Bottom";
+type collectionPanel = "SideBar" | "Bottom" | "PolicyPanel";
 type page = "functionPage" | "collectionPage";
 
 type State = {
@@ -32,7 +32,7 @@ const useCustomSettingStore = create<State>()(
       immer((set, get) => ({
         layoutInfo: {
           functionPage: {
-            SiderBar: {
+            SideBar: {
               style: {
                 width: 300,
               },
@@ -63,7 +63,7 @@ const useCustomSettingStore = create<State>()(
           },
 
           collectionPage: {
-            SiderBar: {
+            SideBar: {
               style: {
                 width: 300,
               },

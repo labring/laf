@@ -17,7 +17,7 @@
   "FunctionPanel": {
     "Debug": "运行",
     "Deploy": "发布",
-    "EmptyText": "请先选择函数"
+    "EmptyText": "暂无函数信息,"
   },
   "CollectionPanel": {
     "CollectionAdd": "新建集合"
@@ -42,5 +42,7 @@
       "Cancel": "取消",
       "AppCreate": "立即创建"
     }
-  }
+  },
+  "SearchPlaceholder": "请输入函数名查询",
+  "noData": "暂无数据"
 }

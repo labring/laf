@@ -1,8 +1,8 @@
-import { Pages, SiderBarWidth } from "@/constants/index";
+import { Pages, SideBarWidth } from "@/constants/index";
 
 import useGlobalStore from "../globalStore";
 
-import SiderBar from "./mods/SiderBar";
+import SideBar from "./mods/SideBar";
 import DatabasePage from "./database";
 import FunctionPage from "./functions";
 import LogsPage from "./logs";
@@ -13,8 +13,8 @@ function AppDetail() {
 
   return (
     <>
-      <SiderBar />
-      <div className="m-2" style={{ marginLeft: SiderBarWidth, height: "calc(100vh - 1rem)" }}>
+      <SideBar />
+      <div className="m-2" style={{ marginLeft: SideBarWidth, height: "calc(100vh - 1rem)" }}>
         {[
           {
             pageId: Pages.function,

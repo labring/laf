@@ -19,7 +19,9 @@ import {
 import IconWrap from "@/components/IconWrap";
 
 import { useBucketDeleteMutation } from "../../service";
-function DeleteBucketModal(props: { storage: any; onSuccessAction?: () => void }) {
+
+import { TBucket } from "@/apis/typing";
+function DeleteBucketModal(props: { storage: TBucket; onSuccessAction?: () => void }) {
   const { storage, onSuccessAction } = props;
 
   const bucketDeleteMutation = useBucketDeleteMutation();
@@ -58,12 +60,12 @@ function DeleteBucketModal(props: { storage: any; onSuccessAction?: () => void }
           <ModalBody pb={6}>
             <p className="mb-2">
               当前操作将会永久删除云存储
-              <span className=" text-black mr-1 font-bold">{storage.metadata.name}</span>
+              <span className=" text-black mr-1 font-bold">{storage.name}</span>
               ,无法撤销。
             </p>
             <p className="mb-4">
               请输入云存储名称
-              <span className=" text-red-500 mr-1 font-bold">{storage.metadata.name}</span>
+              <span className=" text-red-500 mr-1 font-bold">{storage.name}</span>
               进行确定。
             </p>
             <FormControl>
@@ -72,7 +74,7 @@ function DeleteBucketModal(props: { storage: any; onSuccessAction?: () => void }
                   required: "name is required",
                 })}
                 id="name"
-                placeholder={storage?.metadata.name}
+                placeholder={storage?.name}
                 variant="filled"
               />
               <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
@@ -83,11 +85,8 @@ function DeleteBucketModal(props: { storage: any; onSuccessAction?: () => void }
             <Button
               colorScheme="red"
               onClick={handleSubmit(async (data) => {
-                if (data.name === storage.metadata.name) {
-                  const res = await bucketDeleteMutation.mutateAsync({
-                    name: storage.metadata.name,
-                    ...storage,
-                  });
+                if (data.name === storage.name) {
+                  const res = await bucketDeleteMutation.mutateAsync(storage);
                   if (!res.error) {
                     onSuccessAction && onSuccessAction();
                     onClose();

@@ -21,8 +21,8 @@ import useAwsS3 from "@/hooks/useAwsS3";
 export default function FileList() {
   const { getList, getFileUrl, deleteFile } = useAwsS3();
   const { currentStorage, prefix, setPrefix } = useStorageStore();
-  const bucketName = currentStorage?.metadata.name;
-  const bucketType = currentStorage?.spec.policy;
+  const bucketName = currentStorage?.name;
+  const bucketType = currentStorage?.policy;
 
   const query = useQuery(
     ["fileList", bucketName, prefix],
@@ -63,7 +63,7 @@ export default function FileList() {
         <Panel.Header className="border-b-2 flex-none">
           <PathLink />
           <span className={"before:bg-purple-500 " + styles.circle}>
-            文件数： {currentStorage?.status?.capacity?.objectCount}{" "}
+            {/* TODO: 文件数： {currentStorage?.name} */}
           </span>
         </Panel.Header>
         <div className="px-2 pb-2 flex-grow overflow-hidden">

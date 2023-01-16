@@ -19,7 +19,7 @@ export default function Header(props: { size: "sm" | "lg" }) {
       </div>
 
       <div>
-        {userInfo.profile ? <UserSetting avator={userInfo.profile?.avatar} width={30} /> : null}
+        {userInfo.profile ? <UserSetting avatar={userInfo.profile?.avatar} width={30} /> : null}
       </div>
     </div>
   );

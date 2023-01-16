@@ -19,7 +19,7 @@ function FunctionPage() {
   return (
     <Content>
       <Row className="overflow-hidden">
-        <Col {...functionPageConfig.SiderBar}>
+        <Col {...functionPageConfig.SideBar}>
           <FunctionPanel />
           <Row {...functionPageConfig.DependencePanel}>
             <DependencePanel />
