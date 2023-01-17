@@ -1,4 +1,3 @@
-import React from "react";
 import { Badge, Spinner } from "@chakra-ui/react";
 
 import { APP_PHASE_STATUS } from "@/constants/index";

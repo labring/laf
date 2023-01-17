@@ -2,6 +2,7 @@ import { useState } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { AddIcon } from "@chakra-ui/icons";
 import { Button, Select, Text } from "@chakra-ui/react";
+import { t } from "i18next";
 
 import JsonEditor from "@/components/Editor/JsonEditor";
 import Panel from "@/components/Panel";
@@ -60,9 +61,11 @@ export default function PolicyDataList() {
             setCollectionName(collectionListQuery?.data?.data[0]?.name);
           }}
         >
-          添加规则
+          {t("CollectionPanel.AddRules")}
         </Button>
-        <span>规则数：{rulesListQuery?.data?.data?.length || 0}</span>
+        <span>
+          {t("CollectionPanel.RulesNum")}：{rulesListQuery?.data?.data?.length || 0}
+        </span>
       </Panel.Header>
       <div className="w-full flex-grow flex overflow-hidden">
         <RightPanelList
@@ -79,7 +82,7 @@ export default function PolicyDataList() {
               <>
                 <div className="border-b-2 mb-4 p-2">
                   <Text fontSize="md" className="leading-loose font-semibold">
-                    集合：{item.collectionName}
+                    {t("CollectionPanel.Collection")}：{item.collectionName}
                   </Text>
                 </div>
                 <SyntaxHighlighter language="json" customStyle={{ background: "#fff" }}>
@@ -90,14 +93,14 @@ export default function PolicyDataList() {
           }}
         />
         <RightPanelEditBox
-          title={currentData?.id ? "编辑" : "新增"}
+          title={currentData?.id ? t("Common.Edit") : t("Common.Add")}
           isLoading={
             currentData?.id ? updateRulesMutation.isLoading : createRulesMutation.isLoading
           }
           onSave={handleData}
         >
           <Text fontSize="md" className="leading-loose font-semibold mb-2">
-            选择集合
+            {t("CollectionPanel.SelectCollection")}
           </Text>
           <Select
             variant="filled"
@@ -116,7 +119,7 @@ export default function PolicyDataList() {
             })}
           </Select>
           <Text fontSize="md" className="leading-loose font-semibold mt-4 mb-2">
-            规则内容
+            {t("CollectionPanel.RulesContent")}
           </Text>
           <div className=" flex-1">
             <JsonEditor

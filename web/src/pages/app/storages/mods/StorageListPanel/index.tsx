@@ -8,6 +8,7 @@ import {
   InputLeftElement,
   Tag,
 } from "@chakra-ui/react";
+import { t } from "i18next";
 
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
@@ -41,10 +42,10 @@ export default function StorageListPanel() {
   return (
     <Panel className="h-full">
       <Panel.Header
-        title="云存储"
+        title={t("StoragePanel.Storage")}
         actions={[
           <CreateBucketModal key="create_modal">
-            <IconWrap size={20} tooltip="创建 Bucket">
+            <IconWrap size={20} tooltip={t("Common.Create") + " Bucket"}>
               <AddIcon fontSize={10} />
             </IconWrap>
           </CreateBucketModal>,
@@ -59,7 +60,7 @@ export default function StorageListPanel() {
           />
           <Input
             rounded={"full"}
-            placeholder="输入bucket名进行搜索"
+            placeholder={t("StoragePanel.SearchBucket").toString()}
             size="sm"
             bg={"gray.100"}
             onChange={(e) => setSearch(e.target.value)}
@@ -93,7 +94,7 @@ export default function StorageListPanel() {
                   </div>
                   <div className="invisible flex group-hover:visible">
                     <CreateBucketModal storage={storage}>
-                      <IconWrap size={20} tooltip="编辑Bucket">
+                      <IconWrap size={20} tooltip={t("Common.Edit") + " Bucket"}>
                         <EditIcon fontSize={10} />
                       </IconWrap>
                     </CreateBucketModal>
@@ -118,11 +119,11 @@ export default function StorageListPanel() {
           </div>
           <div>
             <div>
-              <span className={"before:bg-error " + styles.circle}>总容量</span>
+              <span className={"before:bg-error " + styles.circle}>{t("StoragePanel.All")}</span>
               <p className="text-lg">{globalStore.currentApp?.bundle.storageCapacity}</p>
             </div>
             <div className="mt-4">
-              <span className={"before:bg-primary " + styles.circle}>已使用</span>
+              <span className={"before:bg-primary " + styles.circle}>{t("StoragePanel.Used")}</span>
               <p className="text-lg">1Gi</p>
             </div>
           </div>

@@ -48,7 +48,8 @@ function List(props: { appListQuery: any }) {
     <>
       <div className="flex items-center justify-between mb-5">
         <h2 className="font-semibold text-xl flex items-center">
-          <RiApps2Fill className="mr-1 text-second" size={18} /> 我的应用
+          <RiApps2Fill className="mr-1 text-second" size={18} />
+          {t("HomePanel.MyApp")}
         </h2>
         <div className="flex">
           <InputGroup className="mr-4">
@@ -60,7 +61,7 @@ function List(props: { appListQuery: any }) {
             />
             <Input
               rounded={"full"}
-              placeholder={"搜索"}
+              placeholder={t("Common.Search").toString()}
               variant="outline"
               size={"sm"}
               bg="white"
@@ -69,7 +70,7 @@ function List(props: { appListQuery: any }) {
           </InputGroup>
           <CreateAppModal>
             <Button colorScheme="primary" style={{ padding: "0 40px" }} leftIcon={<AddIcon />}>
-              {t("NewApplication")}
+              {t("Common.Create") + t("HomePanel.Application")}
             </Button>
           </CreateAppModal>
         </div>
@@ -77,12 +78,12 @@ function List(props: { appListQuery: any }) {
 
       <div>
         <div className="flex bg-white rounded-lg h-12 items-center px-6 mb-3">
-          <div className="w-2/12 text-second ">应用名称</div>
+          <div className="w-2/12 text-second ">{t("HomePanel.Application") + t("Common.Name")}</div>
           <div className="w-2/12 text-second ">App ID</div>
-          <div className="w-2/12 text-second pl-2">State</div>
-          <div className="w-2/12 text-second ">Region</div>
-          <div className="w-3/12 text-second ">创建时间</div>
-          <div className="w-1/12 text-second pl-2 min-w-[100px]">操作</div>
+          <div className="w-2/12 text-second pl-2">{t("HomePanel.State")}</div>
+          <div className="w-2/12 text-second ">{t("HomePanel.Region")}</div>
+          <div className="w-3/12 text-second ">{t("Common.CreateTime")}</div>
+          <div className="w-1/12 text-second pl-2 min-w-[100px]">{t("Common.Operation")}</div>
         </div>
         {(appListQuery.data?.data || [])
           .filter((item: any) => item?.name.indexOf(searchKey) >= 0)
@@ -112,7 +113,7 @@ function List(props: { appListQuery: any }) {
                     }}
                   >
                     <RiCodeBoxFill size={20} className="mr-2" />
-                    开发
+                    {t("HomePanel.Develop")}
                   </Button>
                   <Menu>
                     <MenuButton>
@@ -124,7 +125,7 @@ function List(props: { appListQuery: any }) {
                       <MenuItem minH="40px">
                         <CreateAppModal application={item}>
                           <a className="text-primary" href="/edit">
-                            编辑
+                            {t("Common.Edit")}
                           </a>
                         </CreateAppModal>
                       </MenuItem>
@@ -137,7 +138,7 @@ function List(props: { appListQuery: any }) {
                           }}
                         >
                           <a className="text-danger" href="/delete">
-                            删除
+                            {t("Common.Delete")}
                           </a>
                         </ConfirmButton>
                       </MenuItem>

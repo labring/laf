@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { AddIcon, Search2Icon } from "@chakra-ui/icons";
 import { Button, HStack, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
+import { t } from "i18next";
 import { debounce } from "lodash";
 
 import JsonEditor from "@/components/Editor/JsonEditor";
@@ -79,7 +80,7 @@ export default function DataPanel() {
             }}
             leftIcon={<AddIcon />}
           >
-            添加数据
+            {t("CollectionPanel.AddData")}
           </Button>
           <form
             onSubmit={(event) => {
@@ -98,7 +99,7 @@ export default function DataPanel() {
                   <Input
                     rounded={"full"}
                     disabled={store.currentDB === undefined}
-                    placeholder="请输入ID进行查询"
+                    placeholder={t("CollectionPanel.Search").toString()}
                     bg={"gray.100"}
                     size="sm"
                     onChange={(e) => search(e.target.value)}
@@ -137,7 +138,7 @@ export default function DataPanel() {
           }}
         />
         <RightPanelEditBox
-          title={currentData?._id ? "编辑" : "新增"}
+          title={currentData?._id ? t("Common.Edit") : t("Common.Create")}
           isLoading={currentData?._id ? updateDataMutation.isLoading : addDataMutation.isLoading}
           onSave={handleData}
         >

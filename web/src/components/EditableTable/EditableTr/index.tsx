@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { FormControl, FormErrorMessage, Input, Td } from "@chakra-ui/react";
+import { t } from "i18next";
 
 import TextButton from "../../TextButton";
 export type TConfiguration = {
@@ -151,7 +152,9 @@ const EditableTr = function (props: {
       <Td maxWidth="150px">
         <>
           <TextButton
-            text={configuration?.saveButtonText ? configuration.saveButtonText : "确定"}
+            text={
+              configuration?.saveButtonText ? configuration.saveButtonText : t("Common.Confirm")
+            }
             type="submit"
             onClick={() => {
               let flag = true;

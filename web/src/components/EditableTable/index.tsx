@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AddIcon } from "@chakra-ui/icons";
 import { Button, Table, TableContainer, Tbody, Th, Thead, Tr } from "@chakra-ui/react";
+import { t } from "i18next";
 
 import EditableTr, { TColumnItem, TConfiguration } from "./EditableTr";
 import NormalTr from "./NormalTr";
@@ -73,7 +74,7 @@ const EditableTable = function (props: {
                 {columnList.map((item: TColumnItem) => {
                   return <Th key={item.key}>{item.name}</Th>;
                 })}
-                <Th key="operation">操作</Th>
+                <Th key="operation">{t("Common.Operation")}</Th>
               </Tr>
             </Thead>
             <Tbody className="font-mono">
@@ -138,7 +139,7 @@ const EditableTable = function (props: {
         onClick={handleAdd}
         variant="outline"
       >
-        {configuration?.addButtonText ? configuration.addButtonText : "新增数据"}
+        {configuration?.addButtonText ? configuration.addButtonText : t("Common.AddData")}
       </Button>
     </>
   );

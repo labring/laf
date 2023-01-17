@@ -103,23 +103,27 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{isEdit ? "编辑应用" : "新建应用"}</ModalHeader>
+          <ModalHeader>
+            {(isEdit ? t("Common.Edit") : t("Common.Create")) + t("HomePanel.Application")}
+          </ModalHeader>
           <ModalCloseButton />
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
               <FormControl isRequired isInvalid={!!errors?.name}>
-                <FormLabel htmlFor="name">应用名称</FormLabel>
+                <FormLabel htmlFor="name">
+                  {t("HomePanel.Application") + t("Common.Name")}
+                </FormLabel>
                 <Input
                   {...register("name", {
-                    required: "name is required",
+                    required: `${t("HomePanel.Application")}${t("Common.IsRequired")}`,
                   })}
                 />
                 <FormErrorMessage>{errors?.name && errors?.name?.message}</FormErrorMessage>
               </FormControl>
 
               <FormControl isRequired>
-                <FormLabel htmlFor="region">可用区</FormLabel>
+                <FormLabel htmlFor="region">{t("HomePanel.Region")}</FormLabel>
                 <HStack spacing={6}>
                   <Controller
                     name="region"
@@ -146,17 +150,19 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                       );
                     }}
                     rules={{
-                      required: { value: true, message: "Please select at least one" },
+                      required: { value: true, message: t("Common.LimitSelect") },
                     }}
                   />
                 </HStack>
               </FormControl>
 
               <FormControl isRequired isInvalid={!!errors?.bundleName}>
-                <FormLabel htmlFor="bundleName">应用规格</FormLabel>
+                <FormLabel htmlFor="bundleName">
+                  {t("HomePanel.Application") + t("HomePanel.BundleName")}
+                </FormLabel>
                 <Select
                   {...register("bundleName", {
-                    required: "bundleName is required",
+                    required: `${t("HomePanel.BundleName")}${t("Common.IsRequired")}`,
                   })}
                   disabled={isEdit}
                 >
@@ -172,10 +178,10 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
               </FormControl>
 
               <FormControl isRequired isInvalid={!!errors?.runtimeName}>
-                <FormLabel htmlFor="runtimeName">运行时</FormLabel>
+                <FormLabel htmlFor="runtimeName">{t("HomePanel.RuntimeName")}</FormLabel>
                 <Select
                   {...register("runtimeName", {
-                    required: "runtimeName is required",
+                    required: `${t("HomePanel.RuntimeName")}${t("Common.IsRequired")}`,
                   })}
                   disabled={isEdit}
                 >
@@ -199,7 +205,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
               type="submit"
               onClick={handleSubmit(onSubmit)}
             >
-              {t("Common.Dialog.AppCreate")}
+              {t("Common.Confirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

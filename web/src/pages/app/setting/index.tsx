@@ -9,6 +9,7 @@ import {
   ModalOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
+import { t } from "i18next";
 
 import SectionList from "@/components/SectionList";
 export type TTabItem = {
@@ -37,7 +38,7 @@ const SettingModal = (props: {
       <Modal isOpen={isOpen} onClose={onClose} size="4xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{headerTitle || "设置"}</ModalHeader>
+          <ModalHeader>{headerTitle || t("SettingPanel.Setting")}</ModalHeader>
           <ModalCloseButton />
           <ModalBody p={6}>
             <div className="flex">

@@ -238,7 +238,7 @@ const AddDependenceModal = () => {
   return (
     <>
       <IconWrap
-        tooltip={t("DependenceEdit").toString()}
+        tooltip={t("FunctionPanel.DependenceEdit").toString()}
         onClick={() => {
           setIsEdit(true);
           initModal();
@@ -247,7 +247,7 @@ const AddDependenceModal = () => {
         <EditIcon fontSize={12} />
       </IconWrap>
       <IconWrap
-        tooltip={t("DependenceAdd").toString()}
+        tooltip={t("FunctionPanel.DependenceAdd").toString()}
         onClick={() => {
           setIsEdit(false);
           initModal();
@@ -259,7 +259,9 @@ const AddDependenceModal = () => {
       <Modal isOpen={isOpen} onClose={onClose} size="2xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{isEdit ? t("DependenceEdit") : t("DependenceAdd")}</ModalHeader>
+          <ModalHeader>
+            {isEdit ? t("FunctionPanel.DependenceEdit") : t("FunctionPanel.DependenceAdd")}
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6} minH="260px">
             {isEdit ? (
@@ -277,7 +279,7 @@ const AddDependenceModal = () => {
                     onChange={(e: any) => {
                       search(e.target.value);
                     }}
-                    placeholder="请输入依赖包名"
+                    placeholder={t("FunctionPanel.DependenceTip").toString()}
                   />
                 </InputGroup>
                 {packageSearchQuery.isLoading ? (
@@ -309,7 +311,7 @@ const AddDependenceModal = () => {
                   }
                 }}
               >
-                已选择:
+                {t("FunctionPanel.Select")}:
                 <span className="mx-2 text-blue-500 ">
                   {isEdit ? (
                     packageList.length
@@ -328,7 +330,7 @@ const AddDependenceModal = () => {
                 submitDependence();
               }}
             >
-              {t("Common.Dialog.Confirm")}
+              {t("Common.Confirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

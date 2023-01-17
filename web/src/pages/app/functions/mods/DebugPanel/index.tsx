@@ -107,7 +107,9 @@ export default function DebugPanel() {
           <Tabs width="100%" colorScheme={"green"} display="flex" flexDirection={"column"} h="full">
             <TabList>
               <Tab px="0">
-                <span className="text-black font-semibold">接口调试</span>
+                <span className="text-black font-semibold">
+                  {t("FunctionPanel.InterfaceDebug")}
+                </span>
               </Tab>
               {/* <Tab>历史请求</Tab> */}
             </TabList>
@@ -116,7 +118,7 @@ export default function DebugPanel() {
               <TabPanel padding={0} h="full">
                 <div className="flex flex-col h-full">
                   <div className="flex py-4 px-2 items-center">
-                    <span className="mr-3 whitespace-nowrap">请求类型</span>
+                    <span className="mr-3 whitespace-nowrap">{t("FunctionPanel.Methods")}</span>
                     <Select
                       width="150px"
                       size="sm"
@@ -217,7 +219,7 @@ export default function DebugPanel() {
       </Row>
       <Row style={{ height: 500 }}>
         <Panel>
-          <Panel.Header title="运行结果" />
+          <Panel.Header title={t("FunctionPanel.DebugResult")} />
           <div className="relative flex-1 overflow-auto">
             {isLoading ? (
               <div className="absolute left-0 right-0">

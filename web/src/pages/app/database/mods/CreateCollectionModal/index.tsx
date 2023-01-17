@@ -60,12 +60,12 @@ const CreateCollectionModal = (props: { collection?: any; children: React.ReactE
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{t("CollectionPanel.CollectionAdd")}</ModalHeader>
+          <ModalHeader>{t("CollectionPanel.AddCollection")}</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
               <FormControl isInvalid={!!errors?.name}>
-                <FormLabel htmlFor="name">集合名称</FormLabel>
+                <FormLabel htmlFor="name">{t("CollectionPanel.CollectionName")}</FormLabel>
                 <Input
                   {...register("name", {
                     required: "name is required",
@@ -73,7 +73,7 @@ const CreateCollectionModal = (props: { collection?: any; children: React.ReactE
                   id="name"
                   variant="filled"
                   readOnly={isEdit}
-                  placeholder="请输入集合名称"
+                  placeholder={t("CollectionPanel.CollectionPlaceholder").toString()}
                 />
                 <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
               </FormControl>
@@ -86,7 +86,7 @@ const CreateCollectionModal = (props: { collection?: any; children: React.ReactE
               type="submit"
               onClick={handleSubmit(onSubmit)}
             >
-              新建
+              {t("Common.Confirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

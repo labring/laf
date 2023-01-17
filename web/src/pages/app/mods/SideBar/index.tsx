@@ -6,8 +6,9 @@ import { AiFillDatabase, AiOutlineFunction } from "react-icons/ai";
 import { GrCatalogOption, GrSettingsOption, GrStorage } from "react-icons/gr";
 import { RiCodeBoxFill } from "react-icons/ri";
 import { useNavigate, useParams } from "react-router-dom";
-import { Center } from "@chakra-ui/react";
+import { Button, Center } from "@chakra-ui/react";
 import clsx from "clsx";
+import i18next, { t } from "i18next";
 
 import { TriggerIcon } from "@/components/CommonIcon";
 import IconWrap from "@/components/IconWrap";
@@ -33,7 +34,7 @@ export default function SideBar() {
     {
       pageId: Pages.function,
       component: (
-        <IconWrap tooltip="函数" placement="right" size={32}>
+        <IconWrap tooltip={t("FunctionPanel.Function").toString()} placement="right" size={32}>
           <AiOutlineFunction size="32" />
         </IconWrap>
       ),
@@ -41,7 +42,7 @@ export default function SideBar() {
     {
       pageId: Pages.trigger,
       component: (
-        <IconWrap tooltip="触发器" placement="right" size={32}>
+        <IconWrap tooltip={t("TriggerPanel.Trigger").toString()} placement="right" size={32}>
           <TriggerIcon fontSize={32} />
         </IconWrap>
       ),
@@ -49,7 +50,7 @@ export default function SideBar() {
     {
       pageId: Pages.database,
       component: (
-        <IconWrap tooltip="数据库" placement="right" size={32}>
+        <IconWrap tooltip={t("CollectionPanel.Collection").toString()} placement="right" size={32}>
           <AiFillDatabase size="28" />
         </IconWrap>
       ),
@@ -57,7 +58,7 @@ export default function SideBar() {
     {
       pageId: Pages.storage,
       component: (
-        <IconWrap tooltip="云存储" placement="right" size={32}>
+        <IconWrap tooltip={t("StoragePanel.Storage").toString()} placement="right" size={32}>
           <GrStorage size="26" />
         </IconWrap>
       ),
@@ -65,7 +66,7 @@ export default function SideBar() {
     {
       pageId: Pages.logs,
       component: (
-        <IconWrap tooltip="日志" placement="right" size={32}>
+        <IconWrap tooltip={t("LogPanel.Log").toString()} placement="right" size={32}>
           <GrCatalogOption size="26" />
         </IconWrap>
       ),
@@ -74,6 +75,19 @@ export default function SideBar() {
 
   const BOTTOM_ICONS = [
     {
+      pageId: "lan",
+      component: (
+        <Button
+          onClick={() => {
+            i18next.changeLanguage("en", (err, t) => {
+              if (err) return console.log("something went wrong loading", err);
+              t("key"); // -> same as i18next.t
+            });
+          }}
+        ></Button>
+      ),
+    },
+    {
       pageId: Pages.userSetting,
       component: <UserSetting avatar={userInfo.profile?.avatar} width={28} />,
     },
@@ -81,16 +95,16 @@ export default function SideBar() {
       pageId: Pages.setting,
       component: (
         <SettingModal
-          headerTitle="应用设置"
+          headerTitle={t("SettingPanel.SystemSetting")}
           tabMatch={[
             {
               key: "env",
-              name: "环境变量",
+              name: t("SettingPanel.AppEnv"),
               component: <AppEnvList />,
             },
           ]}
         >
-          <IconWrap tooltip="设置" placement="right" size={32}>
+          <IconWrap tooltip={t("SettingPanel.Setting").toString()} placement="right" size={32}>
             <GrSettingsOption size="26" />
           </IconWrap>
         </SettingModal>
@@ -128,7 +142,11 @@ export default function SideBar() {
                     [styles.current]: pageId === item.pageId,
                   })}
                   onClick={() => {
-                    if (item.pageId !== Pages.setting && item.pageId !== Pages.userSetting) {
+                    if (
+                      item.pageId !== Pages.setting &&
+                      item.pageId !== Pages.userSetting &&
+                      item.pageId !== "lan"
+                    ) {
                       setCurrentPage(item.pageId);
                       navigate(`/app/${currentApp?.appid}/${item.pageId}`);
                     }

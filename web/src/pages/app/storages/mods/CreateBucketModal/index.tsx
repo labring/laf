@@ -16,6 +16,7 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
+import { t } from "i18next";
 
 import { useBucketCreateMutation, useBucketUpdateMutation } from "../../service";
 import useStorageStore from "../../store";
@@ -85,13 +86,13 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{isEdit ? "编辑 Bucket" : "新建 Bucket"}</ModalHeader>
+          <ModalHeader>{isEdit ? t("Common.Edit") : t("Common.Create")}Bucket</ModalHeader>
           <ModalCloseButton />
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
               <FormControl isRequired>
-                <FormLabel htmlFor="name">Bucket名称</FormLabel>
+                <FormLabel htmlFor="name">Bucket {t("Common.Name")}</FormLabel>
                 <Input
                   {...register("name", { required: true })}
                   variant="filled"
@@ -100,11 +101,11 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
               </FormControl>
 
               <FormControl>
-                <FormLabel htmlFor="policy">权限</FormLabel>
+                <FormLabel htmlFor="policy">{t("StoragePanel.Policy")}</FormLabel>
                 <Select {...register("policy", { required: true })} variant="filled">
-                  <option value="private">私有</option>
-                  <option value="readonly">公共读</option>
-                  <option value="readwrite">公共读写</option>
+                  <option value="private">{t("StoragePanel.Private")}</option>
+                  <option value="readonly">{t("StoragePanel.Readonly")}</option>
+                  <option value="readwrite">{t("StoragePanel.Readwrite")}</option>
                 </Select>
               </FormControl>
             </VStack>
@@ -112,7 +113,7 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
 
           <ModalFooter>
             <Button type="submit" onClick={handleSubmit(onSubmit)}>
-              {isEdit ? "确定更新" : "确定创建"}
+              {t("Common.Confirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

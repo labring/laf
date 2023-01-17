@@ -1,4 +1,5 @@
 import { Button, HStack } from "@chakra-ui/react";
+import { t } from "i18next";
 
 import Panel from "@/components/Panel";
 
@@ -15,7 +16,7 @@ function BottomPanel() {
           variant="plain"
           onClick={() => store.togglePanel("collectionPage", "SideBar")}
         >
-          集合列表
+          {t("CollectionPanel.CollectionList")}
         </Button>
       </HStack>
     </Panel>

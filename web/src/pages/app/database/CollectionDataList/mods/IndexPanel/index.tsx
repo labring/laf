@@ -1,4 +1,5 @@
 import { Button, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { t } from "i18next";
 
 import AddIndexModal from "./addIndexModal";
 
@@ -29,7 +30,7 @@ export default function IndexPanel() {
                   <Td>developer</Td>
                   <Td isNumeric>
                     <Button size="sm" variant={"ghost"} colorScheme={"red"}>
-                      删除
+                      {t("Common.Delete")}
                     </Button>
                   </Td>
                 </Tr>

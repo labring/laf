@@ -7,6 +7,7 @@ import {
   PopoverTrigger,
   useDisclosure,
 } from "@chakra-ui/react";
+import { t } from "i18next";
 
 import IconWrap from "@/components/IconWrap";
 
@@ -24,7 +25,7 @@ export default function DeleteButton(props: { data: any; deleteMethod: any }) {
         <IconWrap
           className="hover:bg-third-100 group/icon"
           showBg
-          tooltip="删除"
+          tooltip={t("Common.Delete").toString()}
           size={32}
           onClick={(event: any) => {
             event?.stopPropagation();
@@ -43,7 +44,7 @@ export default function DeleteButton(props: { data: any; deleteMethod: any }) {
                 onClose();
               }}
             >
-              Cancel
+              {t("Common.Cancel")}
             </Button>
             <Button
               colorScheme="red"
@@ -53,7 +54,7 @@ export default function DeleteButton(props: { data: any; deleteMethod: any }) {
                 await props.deleteMethod.mutateAsync(props.data);
               }}
             >
-              Apply
+              {t("Common.Confirm")}
             </Button>
           </ButtonGroup>
         </PopoverContent>

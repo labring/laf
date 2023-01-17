@@ -1,4 +1,5 @@
 import { Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import { t } from "i18next";
 
 import SettingModal from "@/pages/app/setting";
 import PATList from "@/pages/app/setting/PATList";
@@ -10,7 +11,7 @@ export default function UserSetting(props: { avatar: string; width: number }) {
       </MenuButton>
       <MenuList minW={24}>
         <SettingModal
-          headerTitle="用户设置"
+          headerTitle={t("SettingPanel.UserSetting")}
           tabMatch={[
             {
               key: "pat",
@@ -19,7 +20,7 @@ export default function UserSetting(props: { avatar: string; width: number }) {
             },
           ]}
         >
-          <MenuItem>用户设置</MenuItem>
+          <MenuItem>{t("SettingPanel.UserSetting")}</MenuItem>
         </SettingModal>
         <MenuItem
           onClick={() => {
@@ -28,7 +29,7 @@ export default function UserSetting(props: { avatar: string; width: number }) {
               "/v1/login") as string;
           }}
         >
-          Logout
+          {t("Common.Logout")}
         </MenuItem>
       </MenuList>
     </Menu>

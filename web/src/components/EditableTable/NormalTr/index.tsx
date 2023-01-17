@@ -45,13 +45,13 @@ const NormalTr = function (props: {
             headerText={
               configuration?.deleteButtonText ? configuration.deleteButtonText : String(t("Delete"))
             }
-            bodyText={`确定删除该行数据吗?`}
+            bodyText={t("Common.DeleteConfirm")}
           >
             <IconWrap
               tooltip={
                 configuration?.deleteButtonText
                   ? configuration.deleteButtonText
-                  : String(t("Delete"))
+                  : String(t("Common.Delete"))
               }
             >
               <DeleteIcon fontSize={15} />

@@ -1,4 +1,5 @@
 import { Textarea } from "@chakra-ui/react";
+import { t } from "i18next";
 
 const EditTextarea = function (props: {
   text: string;
@@ -16,7 +17,7 @@ const EditTextarea = function (props: {
       disabled={disabled}
       resize="vertical"
       size="sm"
-      placeholder={`请输入${text}`}
+      placeholder={`${t("Common.InputTip")}${text}`}
     />
   );
 };

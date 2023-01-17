@@ -65,7 +65,7 @@ export default function FunctionList() {
         title={t`FunctionList`}
         actions={[
           <CreateModal key="create_modal">
-            <IconWrap size={20} tooltip={"添加函数"}>
+            <IconWrap size={20} tooltip={t("FunctionPanel.AddFunction").toString()}>
               <AddIcon fontSize={12} />
             </IconWrap>
           </CreateModal>,
@@ -76,7 +76,7 @@ export default function FunctionList() {
           <Input
             size="sm"
             rounded={"full"}
-            placeholder={String(t("SearchPlaceholder"))}
+            placeholder={String(t("FunctionPanel.SearchPlaceholder"))}
             onChange={(event) => {
               setKeywords(event.target.value);
             }}
@@ -103,12 +103,12 @@ export default function FunctionList() {
                   </div>
                   <div className="invisible flex items-center group-hover:visible">
                     <AddTriggerModal targetFunc={func.name}>
-                      <IconWrap size={20} tooltip={"新建触发器"}>
+                      <IconWrap size={20} tooltip={t("TriggerPanel.AddTrigger").toString()}>
                         <TriggerIcon fontSize={13} />
                       </IconWrap>
                     </AddTriggerModal>
                     <CreateModal functionItem={func}>
-                      <IconWrap size={20} tooltip={"编辑函数"}>
+                      <IconWrap size={20} tooltip={t("Common.Edit").toString()}>
                         <EditIcon fontSize={13} />
                       </IconWrap>
                     </CreateModal>
@@ -117,10 +117,10 @@ export default function FunctionList() {
                       onSuccessAction={async () => {
                         await deleteFunctionMutation.mutateAsync(func);
                       }}
-                      headerText={String(t("Delete"))}
-                      bodyText={String(t("DeleteConfirm"))}
+                      headerText={String(t("Common.Delete"))}
+                      bodyText={String(t("FunctionPanel.DeleteConfirm"))}
                     >
-                      <IconWrap tooltip={String(t("Delete"))}>
+                      <IconWrap tooltip={String(t("Common.Delete"))}>
                         <DeleteIcon
                           className="ml-2"
                           fontSize={14}

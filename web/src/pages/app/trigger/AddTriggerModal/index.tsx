@@ -17,6 +17,7 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
+import { t } from "i18next";
 
 import { useCreateTriggerMutation } from "../service";
 import {} from "../service";
@@ -68,24 +69,24 @@ const AddTriggerModal = (props: { children: React.ReactElement; targetFunc?: str
       <Modal isOpen={isOpen} onClose={onClose} size="md">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>添加触发器</ModalHeader>
+          <ModalHeader>{t("TriggerPanel.AddTrigger")}</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
               <FormControl isInvalid={!!errors?.desc}>
-                <FormLabel htmlFor="desc">触发器名称</FormLabel>
+                <FormLabel htmlFor="desc">{t("TriggerPanel.Name")}</FormLabel>
                 <Input
                   {...register("desc", {
                     required: "desc is required",
                   })}
                   id="desc"
                   variant="filled"
-                  placeholder="请输入触发器名称"
+                  placeholder={t("TriggerPanel.NameTip").toString()}
                 />
                 <FormErrorMessage>{errors.desc && errors.desc.message}</FormErrorMessage>
               </FormControl>
               <FormControl>
-                <FormLabel htmlFor="target">关联函数</FormLabel>
+                <FormLabel htmlFor="target">{t("TriggerPanel.Function")}</FormLabel>
                 <Select
                   {...register("target", {
                     required: "target is required",
@@ -93,7 +94,7 @@ const AddTriggerModal = (props: { children: React.ReactElement; targetFunc?: str
                   id="target"
                   disabled={!!targetFunc}
                   variant="filled"
-                  placeholder="请选择关联的云函数"
+                  placeholder={t("TriggerPanel.FunctionTip").toString()}
                 >
                   {(functionListQuery?.data?.data || []).map((item: any) => {
                     return (
@@ -105,18 +106,18 @@ const AddTriggerModal = (props: { children: React.ReactElement; targetFunc?: str
                 </Select>
               </FormControl>
               <FormControl>
-                <FormLabel htmlFor="name">类型</FormLabel>
-                <Input value="定时任务" variant="filled" readOnly />
+                <FormLabel htmlFor="name">{t("TriggerPanel.Type")}</FormLabel>
+                <Input value={t("TriggerPanel.SetTimeout").toString()} variant="filled" readOnly />
               </FormControl>
               <FormControl isInvalid={!!errors?.cron}>
-                <FormLabel htmlFor="cron">Cron表达式</FormLabel>
+                <FormLabel htmlFor="cron">Cron {t("TriggerPanel.Express")}</FormLabel>
                 <Input
                   {...register("cron", {
                     required: "cron is required",
                   })}
                   id="desc"
                   variant="filled"
-                  placeholder="例:0/1 * * * * ？表示每 1 秒执行任务"
+                  placeholder={t("TriggerPanel.CornTip").toString()}
                 />
                 <FormErrorMessage>{errors.cron && errors.cron.message}</FormErrorMessage>
               </FormControl>
@@ -129,7 +130,7 @@ const AddTriggerModal = (props: { children: React.ReactElement; targetFunc?: str
               type="submit"
               onClick={handleSubmit(onSubmit)}
             >
-              新建
+              {t("Common.Create")}
             </Button>
           </ModalFooter>
         </ModalContent>

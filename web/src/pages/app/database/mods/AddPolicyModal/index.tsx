@@ -18,6 +18,7 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
+import { t } from "i18next";
 
 import { useCreatePolicyMutation, useUpdatePolicyMutation } from "../../service";
 
@@ -81,12 +82,14 @@ const AddPolicyModal = (props: {
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{isEdit ? "编辑策略" : "添加策略"}</ModalHeader>
+          <ModalHeader>
+            {(isEdit ? t("Common.Edit") : t("Common.Add")) + t("CollectionPanel.Policy")}
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
               <FormControl isInvalid={!!errors?.name}>
-                <FormLabel htmlFor="name">策略标识</FormLabel>
+                <FormLabel htmlFor="name">{t("CollectionPanel.PolicyName")}</FormLabel>
                 <Input
                   {...register("name", {
                     required: "name is required",
@@ -94,13 +97,13 @@ const AddPolicyModal = (props: {
                   id="name"
                   variant="filled"
                   readOnly={isEdit}
-                  placeholder="请输入策略标识"
+                  placeholder={t("CollectionPanel.PolicyNameTip").toString()}
                 />
                 <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
               </FormControl>
 
               <FormControl>
-                <FormLabel htmlFor="name">入口地址</FormLabel>
+                <FormLabel htmlFor="address">{t("CollectionPanel.PolicyAddress")}</FormLabel>
                 <Input value={address} variant="filled" readOnly />
               </FormControl>
 
@@ -113,7 +116,7 @@ const AddPolicyModal = (props: {
                     })}
                     id="injector"
                     variant="filled"
-                    placeholder="请选择云函数"
+                    placeholder={t("CollectionPanel.SelectFunction").toString()}
                   >
                     {(functionListQuery?.data?.data || []).map((item: any) => {
                       return (
@@ -133,7 +136,7 @@ const AddPolicyModal = (props: {
               type="submit"
               onClick={handleSubmit(onSubmit)}
             >
-              {isEdit ? "更新" : "新建"}
+              {t("Common.Confirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

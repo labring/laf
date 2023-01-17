@@ -1,5 +1,6 @@
 import { ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { Button, Flex, Select, Text } from "@chakra-ui/react";
+import { t } from "i18next";
 
 import IconWrap from "../IconWrap";
 
@@ -29,7 +30,7 @@ export default function Pagination(props: {
           display="inline-block"
           textAlign={"center"}
         >
-          总数: {total}
+          {t("Common.Total")}: {total}
         </Text>
         <IconWrap showBg tooltip="First Page" size={32} className="ml-4">
           <Button
@@ -130,7 +131,7 @@ export default function Pagination(props: {
           {(options || [10, 20, 30]).map((data: any) => (
             <option key={data} value={data}>
               {data}
-              <Text> / 页</Text>
+              <Text> / {t("Common.Page")}</Text>
             </option>
           ))}
         </Select>

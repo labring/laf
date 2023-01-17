@@ -44,7 +44,7 @@ function DeleteCollectionModal(props: { database: any }) {
   return (
     <>
       <IconWrap
-        tooltip="删除"
+        tooltip={t("Common.Delete").toString()}
         onClick={() => {
           reset();
           onOpen();
@@ -59,17 +59,18 @@ function DeleteCollectionModal(props: { database: any }) {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>删除集合</ModalHeader>
+          <ModalHeader>{t("CollectionPanel.DeleteCollection")}</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <p className="mb-2">
-              当前操作将永久删除集合
-              <span className=" text-black mr-1 font-bold">{database.name}</span>
-              ,无法撤销。
+              {t("CollectionPanel.DeleteCollectionTip")}
+              <span className=" text-black mr-1 font-bold">{database.name}</span>,
+              {t("Common.DeleteTip")}。
             </p>
             <p className="mb-4">
-              请输入集合名称 <span className=" text-red-500 mr-1 font-bold">{database.name}</span>
-              进行确定。
+              {t("CollectionPanel.InputName")}
+              <span className=" text-red-500 mr-1 font-bold">{database.name}</span>
+              {t("Common.ToConfirm")}。
             </p>
             <FormControl>
               <Input
@@ -93,7 +94,7 @@ function DeleteCollectionModal(props: { database: any }) {
                 }
               })}
             >
-              {t("Common.Dialog.Confirm")}
+              {t("Common.Confirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

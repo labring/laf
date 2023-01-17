@@ -1,6 +1,7 @@
 import React from "react";
 import { EditIcon } from "@chakra-ui/icons";
 import clsx from "clsx";
+import { t } from "i18next";
 
 import IconWrap from "@/components/IconWrap";
 
@@ -42,7 +43,7 @@ const RightPanelList: React.FC<{
                 />
                 <IconWrap
                   showBg
-                  tooltip="编辑"
+                  tooltip={t("Common.Edit").toString()}
                   size={32}
                   className="ml-2 hover:bg-third-100 group/icon"
                 >

@@ -76,12 +76,12 @@ export default function FileList() {
               <Table variant="simple" size="sm">
                 <Thead className="h-8 bg-gray-100 text-gray-300">
                   <Tr>
-                    <Th>文件名</Th>
-                    <Th>文件类型</Th>
-                    <Th isNumeric>大小</Th>
-                    <Th isNumeric>更新时间</Th>
+                    <Th>{t("StoragePanel.FileName")}</Th>
+                    <Th>{t("StoragePanel.FileType")}</Th>
+                    <Th isNumeric>{t("StoragePanel.Size")}</Th>
+                    <Th isNumeric>{t("StoragePanel.Time")}</Th>
                     <Th isNumeric>
-                      <span className="mr-2">操作</span>
+                      <span className="mr-2">{t("Common.Operation")}</span>
                     </Th>
                   </Tr>
                 </Thead>
@@ -126,7 +126,7 @@ export default function FileList() {
                               placement="left"
                               tooltip={
                                 bucketType === "private" && file.Key
-                                  ? "临时链接,有效期15分钟"
+                                  ? t("StoragePanel.TimeTip").toString()
                                   : undefined
                               }
                               onClick={() => viewAppFile(file)}
@@ -139,10 +139,10 @@ export default function FileList() {
                                   await deleteFile(bucketName!, file.Key);
                                   query.refetch();
                                 }}
-                                headerText={String(t("Delete"))}
-                                bodyText={"确认要删除文件吗？"}
+                                headerText={String(t("Common.Delete"))}
+                                bodyText={t("StoragePanel.DeleteFileTip")}
                               >
-                                <IconWrap tooltip={String(t("Delete"))}>
+                                <IconWrap tooltip={String(t("Common.Delete"))}>
                                   <DeleteIcon fontSize={14} />
                                 </IconWrap>
                               </ConfirmButton>

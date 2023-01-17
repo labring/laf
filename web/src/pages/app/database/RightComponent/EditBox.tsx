@@ -1,5 +1,6 @@
 import React from "react";
 import { Button, Text } from "@chakra-ui/react";
+import { t } from "i18next";
 const RightPanelEditBox: React.FC<{
   children?: React.ReactNode;
   className?: string;
@@ -27,7 +28,7 @@ const RightPanelEditBox: React.FC<{
           isLoading={isLoading}
           onClick={onSave}
         >
-          保存
+          {t("Common.Save")}
         </Button>
       </div>
       {children}

@@ -18,6 +18,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
+import { t } from "i18next";
 
 import Content from "@/components/Content";
 import CopyText from "@/components/CopyText";
@@ -101,7 +102,7 @@ export default function LogsPage() {
               <Input
                 width={200}
                 size="sm"
-                placeholder="函数名"
+                placeholder={t("FunctionPanel.FunctionName").toString()}
                 bg="white"
                 {...register("functionName")}
               />
@@ -114,7 +115,7 @@ export default function LogsPage() {
                 onClick={handleSubmit(submit)}
                 isLoading={logListQuery.isFetching}
               >
-                搜索
+                {t("Common.Search")}
               </Button>
             </HStack>
             <Pagination
@@ -169,7 +170,7 @@ export default function LogsPage() {
         <Modal onClose={onClose} isOpen={isOpen} scrollBehavior={"inside"} size="4xl">
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>日志详情</ModalHeader>
+            <ModalHeader>{t("LogPanel.Detail")}</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               <div>
@@ -190,7 +191,7 @@ export default function LogsPage() {
               </SyntaxHighlighter>
             </ModalBody>
             <ModalFooter>
-              <Button onClick={onClose}>关闭</Button>
+              <Button onClick={onClose}>{t("Common.Close")}</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>

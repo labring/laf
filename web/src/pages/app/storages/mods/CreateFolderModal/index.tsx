@@ -42,25 +42,25 @@ function CreateModal({ onCreateSuccess }: { onCreateSuccess: () => void }) {
           }, 0);
         }}
       >
-        {t("StoragePanel.Create") + t("StoragePanel.Folder")}
+        {t("Common.Create") + t("StoragePanel.Folder")}
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader> {t("StoragePanel.Create") + t("StoragePanel.Folder")}</ModalHeader>
+          <ModalHeader> {t("Common.Create") + t("StoragePanel.Folder")}</ModalHeader>
           <ModalCloseButton />
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
               <FormControl>
-                <FormLabel htmlFor="prefix">文件夹名称</FormLabel>
+                <FormLabel htmlFor="prefix">{t("StoragePanel.FolderName")}</FormLabel>
                 <Input
                   {...register("prefix", {
                     required: true,
                   })}
                   variant="filled"
-                  placeholder="请输入文件夹名称"
+                  placeholder={t("StoragePanel.NameTip").toString()}
                 />
               </FormControl>
             </VStack>
@@ -79,7 +79,7 @@ function CreateModal({ onCreateSuccess }: { onCreateSuccess: () => void }) {
                 onClose();
               })}
             >
-              {t("Common.Dialog.Confirm")}
+              {t("Common.Confirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

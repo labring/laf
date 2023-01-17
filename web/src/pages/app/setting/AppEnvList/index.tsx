@@ -1,4 +1,5 @@
 import { Button } from "@chakra-ui/react";
+import { t } from "i18next";
 
 import EditableTable from "@/components/EditableTable";
 import { isExitInList } from "@/utils/format";
@@ -66,7 +67,7 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
           configuration={{
             tableHeight: "200px",
             key: "name",
-            addButtonText: "新增环境变量",
+            addButtonText: t("SettingPanel.AddAppEnv").toString(),
           }}
           tableData={environmentQuery?.data?.data}
           onEdit={(data) => addEnvironmentMutation.mutateAsync(data)}
@@ -81,7 +82,7 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
             props.onClose && props.onClose();
           }}
         >
-          更新
+          {t("Common.Update")}
         </Button>
       </div>
     </>

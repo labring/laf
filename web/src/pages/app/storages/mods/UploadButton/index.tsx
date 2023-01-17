@@ -103,7 +103,7 @@ function UploadButton({ onUploadSuccess }: { onUploadSuccess: () => void }) {
                 }
                 onUploadSuccess();
                 onClose();
-                showSuccess("上传成功");
+                showSuccess(t("StoragePanel.Success"));
               }}
             />
             <div className="mt-2 max-h-40 overflow-auto">
