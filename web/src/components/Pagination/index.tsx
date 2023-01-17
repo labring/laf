@@ -1,5 +1,7 @@
 import { ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import { Flex, IconButton, Text, Tooltip } from "@chakra-ui/react";
+import { Button, Flex, Select, Text } from "@chakra-ui/react";
+
+import IconWrap from "../IconWrap";
 
 export type PageValues = {
   page?: number;
@@ -9,42 +11,54 @@ export type PageValues = {
 
 export default function Pagination(props: {
   values: PageValues;
+  options?: number[];
   onChange: (values: PageValues) => void;
 }) {
-  const { values, onChange } = props;
+  const { values, onChange, options } = props;
   const { page, total, limit } = values;
   const maxPage = total && limit ? Math.ceil(total / limit) : -1;
 
   return (
     <Flex justifyContent="end" m={4} alignItems="center">
-      <Flex>
-        <Tooltip label="First Page">
-          <IconButton
+      <Flex alignItems="center">
+        <Text
+          fontWeight="bold"
+          as="p"
+          minWidth={"36px"}
+          px="8px"
+          display="inline-block"
+          textAlign={"center"}
+        >
+          总数: {total}
+        </Text>
+        <IconWrap showBg tooltip="First Page" size={32} className="ml-4">
+          <Button
+            variant="link"
             onClick={() => {
-              props.onChange({
+              onChange({
                 ...values,
                 page: 1,
               });
             }}
-            isDisabled={page === 1}
-            icon={<ArrowLeftIcon h={3} w={3} />}
-            mr={4}
-            aria-label={""}
-          />
-        </Tooltip>
-        <Tooltip label="Previous Page">
-          <IconButton
+            isDisabled={page === 1 || maxPage === -1}
+          >
+            <ArrowLeftIcon h={3} w={3} />
+          </Button>
+        </IconWrap>
+        <IconWrap showBg tooltip="Previous Page" size={32} className="ml-4">
+          <Button
+            variant="link"
             onClick={() =>
               onChange({
                 ...values,
                 page: page! - 1,
               })
             }
-            isDisabled={page === 1}
-            icon={<ChevronLeftIcon h={6} w={6} />}
-            aria-label={""}
-          />
-        </Tooltip>
+            isDisabled={page === 1 || maxPage === -1}
+          >
+            <ChevronLeftIcon h={6} w={6} />
+          </Button>
+        </IconWrap>
       </Flex>
 
       <Flex alignItems="center">
@@ -67,38 +81,59 @@ export default function Pagination(props: {
           display="inline-block"
           textAlign={"center"}
         >
-          {maxPage < 0 ? "" : maxPage}
+          {maxPage < 0 ? "-" : maxPage}
         </Text>
       </Flex>
 
-      <Flex>
-        <Tooltip label="Next Page">
-          <IconButton
-            isDisabled={maxPage === page}
-            icon={<ChevronRightIcon h={6} w={6} />}
-            aria-label={""}
+      <Flex alignItems="center">
+        <IconWrap showBg tooltip="Next Page" size={32}>
+          <Button
+            variant="link"
+            isDisabled={maxPage === page || maxPage === -1}
             onClick={() => {
-              props.onChange({
+              onChange({
                 ...values,
                 page: page! + 1,
               });
             }}
-          />
-        </Tooltip>
-        <Tooltip label="Last Page">
-          <IconButton
+          >
+            <ChevronRightIcon h={6} w={6} />
+          </Button>
+        </IconWrap>
+        <IconWrap showBg tooltip="Last Page" size={32} className="ml-4">
+          <Button
+            variant="link"
             onClick={() => {
-              props.onChange({
+              onChange({
                 ...values,
                 page: maxPage,
               });
             }}
-            isDisabled={maxPage === page}
-            icon={<ArrowRightIcon h={3} w={3} />}
-            ml={4}
-            aria-label={""}
-          />
-        </Tooltip>
+            isDisabled={maxPage === page || maxPage === -1}
+          >
+            <ArrowRightIcon h={3} w={3} />
+          </Button>
+        </IconWrap>
+        <Select
+          size="sm"
+          className="ml-4"
+          style={{ borderWidth: 0 }}
+          value={limit}
+          onChange={(e: any) => {
+            onChange({
+              ...values,
+              limit: parseInt(e.target.value),
+              page: 1,
+            });
+          }}
+        >
+          {(options || [10, 20, 30]).map((data: any) => (
+            <option key={data} value={data}>
+              {data}
+              <Text> / 页</Text>
+            </option>
+          ))}
+        </Select>
       </Flex>
     </Flex>
   );

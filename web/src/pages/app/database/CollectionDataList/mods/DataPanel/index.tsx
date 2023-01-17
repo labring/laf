@@ -44,9 +44,7 @@ export default function DataPanel() {
     [setQueryData],
   );
 
-  const DEFAULT_LIMIT = 10;
-
-  const entryDataQuery = useEntryDataQuery({ ...queryData, limit: DEFAULT_LIMIT }, () => {
+  const entryDataQuery = useEntryDataQuery({ ...queryData }, () => {
     setCurrentData({});
   });
   const addDataMutation = useAddDataMutation();

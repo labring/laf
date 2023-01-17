@@ -33,15 +33,17 @@ import styles from "./index.module.scss";
 import { TLogItem } from "@/apis/typing";
 import { LogControllerGetLogs } from "@/apis/v1/apps";
 
-const DEFAULT_LIMIT = 100;
+const LIMIT_OPTIONS = [100, 150, 200];
 
 export default function LogsPage() {
   type FormData = {
     requestId: string;
     functionName: string;
+    limit: number;
+    page: number;
   };
 
-  const defaultValues = {};
+  const defaultValues = { limit: 100, page: 1 };
   const { handleSubmit, register, getValues } = useForm<FormData>({
     defaultValues,
   });
@@ -56,7 +58,7 @@ export default function LogsPage() {
   const logListQuery = useQuery(
     [queryKeys.useLogsQuery, queryData],
     () => {
-      return LogControllerGetLogs({ ...queryData, limit: DEFAULT_LIMIT });
+      return LogControllerGetLogs({ ...queryData });
     },
     {
       keepPreviousData: true,
@@ -68,8 +70,8 @@ export default function LogsPage() {
 
   const submit = () => {
     setQueryData({
-      page: 1,
       ...getValues(),
+      page: 1,
     });
     setTimeout(() => {
       logListQuery.refetch();
@@ -116,6 +118,7 @@ export default function LogsPage() {
               </Button>
             </HStack>
             <Pagination
+              options={LIMIT_OPTIONS}
               values={getPageInfo(logListQuery.data?.data)}
               onChange={(values) => {
                 setQueryData({
