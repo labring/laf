@@ -1,8 +1,27 @@
-# [](https://github.com/labring/laf/compare/v1.0.0-alpha.5...v) (2023-01-11)
+# [](https://github.com/labring/laf/compare/v1.0.0-alpha.6...v) (2023-01-17)
 
 
 
-# [1.0.0-alpha.5](https://github.com/labring/laf/compare/v1.0.0-alpha.4...v1.0.0-alpha.5) (2023-01-10)
+# [1.0.0-alpha.6](https://github.com/labring/laf/compare/v1.0.0-alpha.5...v1.0.0-alpha.6) (2023-01-16)
+
+
+### Bug Fixes
+
+* **server:** fix bucket-udpate bug & server deploy issue ([#641](https://github.com/labring/laf/issues/641)) ([f6e2c35](https://github.com/labring/laf/commit/f6e2c3572d9fd22cc00a18b4302a4b361788a8ee))
+* **server:** fix response check error in bucket-updating ([#642](https://github.com/labring/laf/issues/642)) ([c4d994e](https://github.com/labring/laf/commit/c4d994e89fbf74483aae3f78750d2c5d0b82abea))
+* **server:** fix storage endpoint & ingress error ([#638](https://github.com/labring/laf/issues/638)) ([5506965](https://github.com/labring/laf/commit/5506965d942fb91358f6aa698ec85a2d906eee58))
+
+
+### Features
+
+* **web:** add row & col layout ([#619](https://github.com/labring/laf/issues/619)) ([a016f4e](https://github.com/labring/laf/commit/a016f4e7044bff8159581b3eae9141aef27fd41a))
+* **web:** add trigger panel ([#643](https://github.com/labring/laf/issues/643)) ([fbf850f](https://github.com/labring/laf/commit/fbf850f9e5be11517a6c3412a778d62f600d2bd7))
+* **web:** policy panel & log new UI ([#624](https://github.com/labring/laf/issues/624)) ([dc5df96](https://github.com/labring/laf/commit/dc5df96e82bed00918fac31e8c56a20f50365d1f))
+* **web:** support toggle panels in function page ([#623](https://github.com/labring/laf/issues/623)) ([fda7b0d](https://github.com/labring/laf/commit/fda7b0d3e5c0a89ea78abcff3deb538d4749de56))
+
+
+
+# [1.0.0-alpha.5](https://github.com/labring/laf/compare/v1.0.0-alpha.4...v1.0.0-alpha.5) (2023-01-11)
 
 
 ### Bug Fixes
@@ -23,6 +42,7 @@
 * **web:** fix hotKey bug & hidden some buttons ([#602](https://github.com/labring/laf/issues/602)) ([f0bcbe6](https://github.com/labring/laf/commit/f0bcbe69709ceaac8e72378346fb502dcf35d095))
 * **web:** hide patList edit button & show copy token button ([#609](https://github.com/labring/laf/issues/609)) ([8772314](https://github.com/labring/laf/commit/8772314b493cb79f1ba8772ecd792b3d3beb9858))
 * **web:** new ui application page ([#614](https://github.com/labring/laf/issues/614)) ([e4c524a](https://github.com/labring/laf/commit/e4c524a769f85e39b692b081561687b3d4d6208d))
+* **web:** new ui function page ([#615](https://github.com/labring/laf/issues/615)) ([593481a](https://github.com/labring/laf/commit/593481a06598991dc780053a1aedb6d4c78165dd))
 * **web:** optimize hotkey function ([#604](https://github.com/labring/laf/issues/604)) ([f429c2a](https://github.com/labring/laf/commit/f429c2a299743d2e85e23f5c8d2a734d8d0ec1ae))
 
 
