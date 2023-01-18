@@ -1,11 +1,11 @@
 import { Global, Module } from '@nestjs/common'
-import { ApplicationCoreService } from './application.cr.service'
+import { RegionModule } from 'src/region/region.module'
 import { GatewayCoreService } from './gateway.cr.service'
-import { KubernetesService } from './kubernetes.service'
 
 @Global()
 @Module({
-  providers: [KubernetesService, ApplicationCoreService, GatewayCoreService],
-  exports: [KubernetesService, ApplicationCoreService, GatewayCoreService],
+  imports: [RegionModule],
+  providers: [GatewayCoreService],
+  exports: [GatewayCoreService],
 })
 export class CoreModule {}

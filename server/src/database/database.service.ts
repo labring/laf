@@ -34,6 +34,7 @@ export class DatabaseService {
     )
 
     this.logger.debug('Create database result: ', res)
+    assert.equal(res.ok, 1, 'Create app database failed: ' + appid)
 
     // create app database in database
     const database = await this.prisma.database.create({

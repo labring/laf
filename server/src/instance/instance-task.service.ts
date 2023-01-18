@@ -33,8 +33,7 @@ export class InstanceTaskService {
 
     for (const app of apps) {
       try {
-        const appid = app.appid
-        await this.instanceService.create(appid)
+        await this.instanceService.create(app)
 
         await this.prisma.application.updateMany({
           where: {
@@ -73,7 +72,7 @@ export class InstanceTaskService {
     for (const app of apps) {
       try {
         const appid = app.appid
-        const instance = await this.instanceService.get(appid)
+        const instance = await this.instanceService.get(app)
         const available = isConditionTrue(
           'Available',
           instance.deployment.status?.conditions,
@@ -123,8 +122,7 @@ export class InstanceTaskService {
 
     for (const app of apps) {
       try {
-        const appid = app.appid
-        await this.instanceService.remove(appid)
+        await this.instanceService.remove(app)
 
         await this.prisma.application.updateMany({
           where: {
@@ -161,7 +159,7 @@ export class InstanceTaskService {
     for (const app of apps) {
       try {
         const appid = app.appid
-        const instance = await this.instanceService.get(appid)
+        const instance = await this.instanceService.get(app)
         if (instance.deployment) continue
 
         // update application state
@@ -198,8 +196,7 @@ export class InstanceTaskService {
 
     for (const app of apps) {
       try {
-        const appid = app.appid
-        await this.instanceService.remove(appid)
+        await this.instanceService.remove(app)
 
         await this.prisma.application.updateMany({
           where: {
@@ -238,8 +235,7 @@ export class InstanceTaskService {
 
     for (const app of apps) {
       try {
-        const appid = app.appid
-        await this.instanceService.create(appid)
+        await this.instanceService.create(app)
 
         await this.prisma.application.updateMany({
           where: {
