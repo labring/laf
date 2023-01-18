@@ -40,7 +40,7 @@ function DeleteBucketModal(props: { storage: TBucket; onSuccessAction?: () => vo
   return (
     <>
       <IconWrap
-        tooltip={t("Common.Delete") + " Bucket"}
+        tooltip={t("Delete") + " Bucket"}
         onClick={() => {
           reset();
           onOpen();
@@ -55,18 +55,17 @@ function DeleteBucketModal(props: { storage: TBucket; onSuccessAction?: () => vo
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{t("Common.Delete")} storage</ModalHeader>
+          <ModalHeader>{t("Delete")} storage</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <p className="mb-2">
               {t("StoragePanel.DeleteConfirm")}
-              <span className=" text-black mr-1 font-bold">{storage.name}</span>,
-              {t("Common.DeleteTip")}。
+              <span className=" text-black mr-1 font-bold">{storage.name}</span>,{t("DeleteTip")}。
             </p>
             <p className="mb-4">
               {t("StoragePanel.StorageNameTip")}
               <span className=" text-red-500 mr-1 font-bold">{storage.name}</span>
-              {t("Common.ToConfirm")}。
+              {t("ToConfirm")}。
             </p>
             <FormControl>
               <Input
@@ -94,7 +93,7 @@ function DeleteBucketModal(props: { storage: TBucket; onSuccessAction?: () => vo
                 }
               })}
             >
-              {t("Common.Confirm")}
+              {t("Confirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

@@ -21,12 +21,12 @@ export default function CopyText(props: {
   }, [setValue, text]);
 
   return (
-    <Tooltip label={t("Common.Copy")} placement="top">
+    <Tooltip label={t("Copy")} placement="top">
       {React.cloneElement(children, {
         className: className || "",
         onClick: () => {
           onCopy();
-          showSuccess(tip || t("Common.Copied"));
+          showSuccess(tip || t("Copied"));
         },
       })}
     </Tooltip>

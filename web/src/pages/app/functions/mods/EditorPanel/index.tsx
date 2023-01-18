@@ -71,7 +71,7 @@ function EditorPanel() {
         <Center className="h-full">
           {t("FunctionPanel.EmptyText")}
           <CreateModal key="create_modal_new">
-            <span className="ml-2 text-blue-500 cursor-pointer">{t("Common.CreateNow")}</span>
+            <span className="ml-2 text-blue-500 cursor-pointer">{t("CreateNow")}</span>
           </CreateModal>
         </Center>
       )}

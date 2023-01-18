@@ -102,7 +102,7 @@ export const useDeleteDBMutation = (config?: { onSuccess: (data: any) => void })
           globalStore.showError(data.error);
         } else {
           queryClient.invalidateQueries(queryKeys.useCollectionListQuery);
-          globalStore.showSuccess(t("Common.DeleteSuccess"));
+          globalStore.showSuccess(t("DeleteSuccess"));
           config && config.onSuccess(data);
         }
       },
@@ -124,7 +124,7 @@ export const useAddDataMutation = (config?: { onSuccess: (data: any) => void }) 
     {
       onSuccess(data) {
         if (data.ok) {
-          globalStore.showSuccess(t("Common.AddSuccess"));
+          globalStore.showSuccess(t("AddSuccess"));
           queryClient.invalidateQueries([queryKeys.useEntryDataQuery(currentDB?.name || "")]);
           //config && config.onSuccess(data);
         } else {
@@ -152,7 +152,7 @@ export const useUpdateDataMutation = (config?: { onSuccess: (data: any) => void 
       onSuccess(data) {
         console.log(data);
         if (data.ok) {
-          globalStore.showSuccess(t("Common.UpdateSuccess"));
+          globalStore.showSuccess(t("UpdateSuccess"));
           queryClient.invalidateQueries([queryKeys.useEntryDataQuery(currentDB?.name || "")]);
           //config && config.onSuccess(data);
         } else {
@@ -177,7 +177,7 @@ export const useDeleteDataMutation = (config?: { onSuccess: (data: any) => void 
     {
       onSuccess(data) {
         if (data.ok) {
-          globalStore.showSuccess(t("Common.DeleteSuccess"));
+          globalStore.showSuccess(t("DeleteSuccess"));
           queryClient.invalidateQueries([queryKeys.useEntryDataQuery(currentDB?.name || "")]);
           config && config.onSuccess(data);
         } else {

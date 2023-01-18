@@ -17,7 +17,7 @@ const EditTextarea = function (props: {
       disabled={disabled}
       resize="vertical"
       size="sm"
-      placeholder={`${t("Common.InputTip")}${text}`}
+      placeholder={`${t("InputTip")} ${text}`}
     />
   );
 };

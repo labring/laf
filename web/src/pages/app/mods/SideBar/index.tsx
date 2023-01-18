@@ -6,9 +6,9 @@ import { AiFillDatabase, AiOutlineFunction } from "react-icons/ai";
 import { GrCatalogOption, GrSettingsOption, GrStorage } from "react-icons/gr";
 import { RiCodeBoxFill } from "react-icons/ri";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Center } from "@chakra-ui/react";
+import { Center } from "@chakra-ui/react";
 import clsx from "clsx";
-import i18next, { t } from "i18next";
+import { t } from "i18next";
 
 import { TriggerIcon } from "@/components/CommonIcon";
 import IconWrap from "@/components/IconWrap";
@@ -74,19 +74,19 @@ export default function SideBar() {
   ];
 
   const BOTTOM_ICONS = [
-    {
-      pageId: "lan",
-      component: (
-        <Button
-          onClick={() => {
-            i18next.changeLanguage("en", (err, t) => {
-              if (err) return console.log("something went wrong loading", err);
-              t("key"); // -> same as i18next.t
-            });
-          }}
-        ></Button>
-      ),
-    },
+    // {
+    //   pageId: "lan",
+    //   component: (
+    //     <Button
+    //       onClick={() => {
+    //         i18next.changeLanguage("en", (err, t) => {
+    //           if (err) return console.log("something went wrong loading", err);
+    //           t("key"); // -> same as i18next.t
+    //         });
+    //       }}
+    //     ></Button>
+    //   ),
+    // },
     {
       pageId: Pages.userSetting,
       component: <UserSetting avatar={userInfo.profile?.avatar} width={28} />,

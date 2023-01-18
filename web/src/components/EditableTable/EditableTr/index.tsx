@@ -141,7 +141,7 @@ const EditableTr = function (props: {
                   onBlur={(e: any) => handleChange(e, key, validate)}
                   onChange={(e: any) => handleChange(e, key, validate)}
                   disabled={!editable && !isCreate}
-                  placeholder={`请输入${key}`}
+                  placeholder={`${t("InputTip").toString()} ${key}`}
                 />
               )}
               <FormErrorMessage>{invalidData && invalidData[key].errorInfo}</FormErrorMessage>
@@ -152,9 +152,7 @@ const EditableTr = function (props: {
       <Td maxWidth="150px">
         <>
           <TextButton
-            text={
-              configuration?.saveButtonText ? configuration.saveButtonText : t("Common.Confirm")
-            }
+            text={configuration?.saveButtonText ? configuration.saveButtonText : t("Confirm")}
             type="submit"
             onClick={() => {
               let flag = true;
@@ -170,7 +168,7 @@ const EditableTr = function (props: {
             }}
           />
           <TextButton
-            text={configuration?.cancelButtonText ? configuration.cancelButtonText : "取消"}
+            text={configuration?.cancelButtonText ? configuration.cancelButtonText : t("Cancel")}
             className="ml-4"
             onClick={() => {
               onCancel(formData[configuration.key]);

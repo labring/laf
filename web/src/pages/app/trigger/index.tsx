@@ -75,7 +75,7 @@ export default function TriggerPage() {
                     <Th>{t("TriggerPanel.Function")}</Th>
                     <Th>{t("TriggerPanel.Type")}</Th>
                     <Th>{t("TriggerPanel.Time")}</Th>
-                    <Th>{t("Common.Operation")}</Th>
+                    <Th>{t("Operation")}</Th>
                   </Tr>
                 </Thead>
                 <Tbody className="relative font-mono">
@@ -101,10 +101,10 @@ export default function TriggerPage() {
                           <Td maxWidth={"300px"}>
                             <ConfirmButton
                               onSuccessAction={() => deleteTriggerMutation.mutate({ id: item.id })}
-                              headerText={String(t("Common.Delete"))}
+                              headerText={String(t("Delete"))}
                               bodyText={t("TriggerPanel.DeleteConfirm")}
                             >
-                              <IconWrap tooltip={String(t("Common.Delete"))}>
+                              <IconWrap tooltip={String(t("Delete"))}>
                                 <DeleteIcon fontSize={15} />
                               </IconWrap>
                             </ConfirmButton>

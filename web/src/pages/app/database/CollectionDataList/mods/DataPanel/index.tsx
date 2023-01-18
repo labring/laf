@@ -138,7 +138,7 @@ export default function DataPanel() {
           }}
         />
         <RightPanelEditBox
-          title={currentData?._id ? t("Common.Edit") : t("Common.Create")}
+          title={currentData?._id ? t("Edit") : t("Create")}
           isLoading={currentData?._id ? updateDataMutation.isLoading : addDataMutation.isLoading}
           onSave={handleData}
         >

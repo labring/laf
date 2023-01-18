@@ -74,7 +74,7 @@ const EditableTable = function (props: {
                 {columnList.map((item: TColumnItem) => {
                   return <Th key={item.key}>{item.name}</Th>;
                 })}
-                <Th key="operation">{t("Common.Operation")}</Th>
+                <Th key="operation">{t("Operation")}</Th>
               </Tr>
             </Thead>
             <Tbody className="font-mono">
@@ -139,7 +139,7 @@ const EditableTable = function (props: {
         onClick={handleAdd}
         variant="outline"
       >
-        {configuration?.addButtonText ? configuration.addButtonText : t("Common.AddData")}
+        {configuration?.addButtonText ? configuration.addButtonText : t("AddData")}
       </Button>
     </>
   );

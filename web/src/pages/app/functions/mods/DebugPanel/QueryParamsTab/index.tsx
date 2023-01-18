@@ -95,7 +95,7 @@ function HeaderParamsTab(props: { onChange(values: Params[]): void }) {
           })
         }
       >
-        + 添加一行
+        {t("Add")}
       </Button>
     </div>
   );

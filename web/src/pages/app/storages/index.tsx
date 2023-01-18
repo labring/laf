@@ -26,7 +26,7 @@ export default function StoragePage() {
             <Center className="h-full">
               {t("StoragePanel.EmptyText")}
               <CreateBucketModal>
-                <span className="ml-2 text-blue-500 cursor-pointer">{t("Common.CreateNow")}</span>
+                <span className="ml-2 text-blue-500 cursor-pointer">{t("CreateNow")}</span>
               </CreateBucketModal>
             </Center>
           </Panel>

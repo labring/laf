@@ -82,9 +82,7 @@ const AddPolicyModal = (props: {
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>
-            {(isEdit ? t("Common.Edit") : t("Common.Add")) + t("CollectionPanel.Policy")}
-          </ModalHeader>
+          <ModalHeader>{(isEdit ? t("Edit") : t("Add")) + t("CollectionPanel.Policy")}</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
@@ -136,7 +134,7 @@ const AddPolicyModal = (props: {
               type="submit"
               onClick={handleSubmit(onSubmit)}
             >
-              {t("Common.Confirm")}
+              {t("Confirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

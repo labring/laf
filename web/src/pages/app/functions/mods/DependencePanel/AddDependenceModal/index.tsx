@@ -165,7 +165,7 @@ const AddDependenceModal = () => {
   };
 
   const renderList = (list: TDependenceItem[]) => {
-    if (list.length === 0) return <Center minH={200}>{t("noData")}</Center>;
+    if (list.length === 0) return <Center minH={200}>{t("NoData")}</Center>;
     return (
       <DependenceList>
         {(list || []).map((packageItem: TDependenceItem) => {
@@ -330,7 +330,7 @@ const AddDependenceModal = () => {
                 submitDependence();
               }}
             >
-              {t("Common.Confirm")}
+              {t("Confirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

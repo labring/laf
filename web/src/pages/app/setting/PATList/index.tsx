@@ -72,13 +72,13 @@ const PATList = () => {
           configuration={{
             key: "id",
             hiddenEditButton: true,
-            addButtonText: t("Common.Add") + "Token",
-            saveButtonText: t("Common.Generate") + "Token",
+            addButtonText: t("Add") + "Token",
+            saveButtonText: t("Generate") + "Token",
             operationButtonsRender: (data: any) => {
               const tokenItem = tokenList?.filter((item) => item.id === data.id);
               return tokenItem?.length === 1 ? (
-                <CopyText className="mr-4" text={tokenItem[0].token} tip="token复制成功">
-                  <TextButton text={t("Common.Copy") + "Token"} />
+                <CopyText className="mr-4" text={tokenItem[0].token} tip={t("Copied").toString()}>
+                  <TextButton text={t("Copy") + "Token"} />
                 </CopyText>
               ) : null;
             },

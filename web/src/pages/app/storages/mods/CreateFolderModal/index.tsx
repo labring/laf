@@ -42,13 +42,13 @@ function CreateModal({ onCreateSuccess }: { onCreateSuccess: () => void }) {
           }, 0);
         }}
       >
-        {t("Common.Create") + t("StoragePanel.Folder")}
+        {t("Create") + t("StoragePanel.Folder")}
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader> {t("Common.Create") + t("StoragePanel.Folder")}</ModalHeader>
+          <ModalHeader> {t("Create") + t("StoragePanel.Folder")}</ModalHeader>
           <ModalCloseButton />
 
           <ModalBody pb={6}>
@@ -79,7 +79,7 @@ function CreateModal({ onCreateSuccess }: { onCreateSuccess: () => void }) {
                 onClose();
               })}
             >
-              {t("Common.Confirm")}
+              {t("Confirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

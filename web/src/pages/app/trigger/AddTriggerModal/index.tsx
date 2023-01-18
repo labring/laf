@@ -130,7 +130,7 @@ const AddTriggerModal = (props: { children: React.ReactElement; targetFunc?: str
               type="submit"
               onClick={handleSubmit(onSubmit)}
             >
-              {t("Common.Create")}
+              {t("Create")}
             </Button>
           </ModalFooter>
         </ModalContent>

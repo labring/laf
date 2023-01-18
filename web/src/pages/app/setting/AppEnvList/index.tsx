@@ -82,7 +82,7 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
             props.onClose && props.onClose();
           }}
         >
-          {t("Common.Update")}
+          {t("Update")}
         </Button>
       </div>
     </>

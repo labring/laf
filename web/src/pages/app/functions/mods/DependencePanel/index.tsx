@@ -33,7 +33,7 @@ export default function DependenceList() {
   return (
     <Panel>
       <Panel.Header
-        title={"NPM" + t("FunctionPanel.Dependence")}
+        title={"NPM " + t("FunctionPanel.Dependence")}
         actions={[<AddDependenceModal key="AddDependenceModal" />]}
       />
       <Tabs variant="soft-rounded" colorScheme={"gray"} size={"sm"}>
@@ -82,7 +82,7 @@ export default function DependenceList() {
                         <span>{packageItem?.spec}</span>
                         {!packageItem?.builtin ? (
                           <span className="ml-2 hidden group-hover:inline-block">
-                            <Tooltip label={t("Common.Delete").toString()} placement="top">
+                            <Tooltip label={t("Delete").toString()} placement="top">
                               <CloseIcon
                                 fontSize={10}
                                 onClick={() => {

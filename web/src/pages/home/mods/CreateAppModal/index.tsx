@@ -104,19 +104,17 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>
-            {(isEdit ? t("Common.Edit") : t("Common.Create")) + t("HomePanel.Application")}
+            {(isEdit ? t("Edit") : t("Create")) + t("HomePanel.Application")}
           </ModalHeader>
           <ModalCloseButton />
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
               <FormControl isRequired isInvalid={!!errors?.name}>
-                <FormLabel htmlFor="name">
-                  {t("HomePanel.Application") + t("Common.Name")}
-                </FormLabel>
+                <FormLabel htmlFor="name">{t("HomePanel.Application") + t("Name")}</FormLabel>
                 <Input
                   {...register("name", {
-                    required: `${t("HomePanel.Application")}${t("Common.IsRequired")}`,
+                    required: `${t("HomePanel.Application")} ${t("IsRequired")}`,
                   })}
                 />
                 <FormErrorMessage>{errors?.name && errors?.name?.message}</FormErrorMessage>
@@ -150,7 +148,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                       );
                     }}
                     rules={{
-                      required: { value: true, message: t("Common.LimitSelect") },
+                      required: { value: true, message: t("LimitSelect") },
                     }}
                   />
                 </HStack>
@@ -162,7 +160,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                 </FormLabel>
                 <Select
                   {...register("bundleName", {
-                    required: `${t("HomePanel.BundleName")}${t("Common.IsRequired")}`,
+                    required: `${t("HomePanel.BundleName")}${t(" IsRequired")}`,
                   })}
                   disabled={isEdit}
                 >
@@ -181,7 +179,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                 <FormLabel htmlFor="runtimeName">{t("HomePanel.RuntimeName")}</FormLabel>
                 <Select
                   {...register("runtimeName", {
-                    required: `${t("HomePanel.RuntimeName")}${t("Common.IsRequired")}`,
+                    required: `${t("HomePanel.RuntimeName")} ${t("IsRequired")}`,
                   })}
                   disabled={isEdit}
                 >
@@ -205,7 +203,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
               type="submit"
               onClick={handleSubmit(onSubmit)}
             >
-              {t("Common.Confirm")}
+              {t("Confirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

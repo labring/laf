@@ -15,7 +15,7 @@ export default function CollectionDataList() {
         <Center className="h-full">
           {t("CollectionPanel.EmptyCollectionText")}
           <CreateCollectionModal>
-            <span className="ml-2 text-blue-500 cursor-pointer">{t("Common.CreateNow")}</span>
+            <span className="ml-2 text-blue-500 cursor-pointer">{t("CreateNow")}</span>
           </CreateCollectionModal>
         </Center>
       ) : (

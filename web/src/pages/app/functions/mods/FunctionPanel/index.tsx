@@ -62,7 +62,7 @@ export default function FunctionList() {
   return (
     <Panel className="flex-grow">
       <Panel.Header
-        title={t`FunctionList`}
+        title={t`FunctionPanel.FunctionList`}
         actions={[
           <CreateModal key="create_modal">
             <IconWrap size={20} tooltip={t("FunctionPanel.AddFunction").toString()}>
@@ -108,7 +108,7 @@ export default function FunctionList() {
                       </IconWrap>
                     </AddTriggerModal>
                     <CreateModal functionItem={func}>
-                      <IconWrap size={20} tooltip={t("Common.Edit").toString()}>
+                      <IconWrap size={20} tooltip={t("Edit").toString()}>
                         <EditIcon fontSize={13} />
                       </IconWrap>
                     </CreateModal>
@@ -117,10 +117,10 @@ export default function FunctionList() {
                       onSuccessAction={async () => {
                         await deleteFunctionMutation.mutateAsync(func);
                       }}
-                      headerText={String(t("Common.Delete"))}
+                      headerText={String(t("Delete"))}
                       bodyText={String(t("FunctionPanel.DeleteConfirm"))}
                     >
-                      <IconWrap tooltip={String(t("Common.Delete"))}>
+                      <IconWrap tooltip={String(t("Delete"))}>
                         <DeleteIcon
                           className="ml-2"
                           fontSize={14}

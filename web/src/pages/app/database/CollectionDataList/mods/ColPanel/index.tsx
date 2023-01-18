@@ -7,7 +7,7 @@ export default function ColPanel() {
     <div className="h-full  relative group">
       <div className="mb-2 justify-end flex">
         <Button size={"sm"} px="5" colorScheme="primary">
-          {t("Common.Save")}
+          {t("Save")}
         </Button>
       </div>
       <div className="border p-2 rounded absolute top-12 bottom-0 left-0 right-0">

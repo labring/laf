@@ -37,7 +37,7 @@ function DatabasePage() {
               <Center className="h-full">
                 {t("CollectionPanel.EmptyPolicyText")}
                 <AddPolicyModal>
-                  <span className="ml-2 text-blue-500 cursor-pointer">{t("Common.CreateNow")}</span>
+                  <span className="ml-2 text-blue-500 cursor-pointer">{t("CreateNow")}</span>
                 </AddPolicyModal>
               </Center>
             ) : (

@@ -86,7 +86,7 @@ export default function DeployButton() {
 
             <ModalFooter>
               <Button mr={3} onClick={onClose}>
-                {t("Common.Cancel")}
+                {t(" Cancel")}
               </Button>
               <Button
                 colorScheme={"blue"}

@@ -43,7 +43,7 @@ const RightPanelList: React.FC<{
                 />
                 <IconWrap
                   showBg
-                  tooltip={t("Common.Edit").toString()}
+                  tooltip={t("Edit").toString()}
                   size={32}
                   className="ml-2 hover:bg-third-100 group/icon"
                 >

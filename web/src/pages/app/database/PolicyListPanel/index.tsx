@@ -65,10 +65,10 @@ export default function PolicyListPanel() {
                     onSuccessAction={async () => {
                       await deletePolicyMutation.mutateAsync(item.name);
                     }}
-                    headerText={String(t("Common.Delete"))}
+                    headerText={String(t("Delete"))}
                     bodyText={t("CollectionPanel.ConformDelete")}
                   >
-                    <IconWrap tooltip={String(t("Common.Delete"))}>
+                    <IconWrap tooltip={String(t("Delete"))}>
                       <DeleteIcon
                         className="ml-2"
                         fontSize={14}

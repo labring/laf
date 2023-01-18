@@ -93,7 +93,7 @@ export default function PolicyDataList() {
           }}
         />
         <RightPanelEditBox
-          title={currentData?.id ? t("Common.Edit") : t("Common.Add")}
+          title={currentData?.id ? t(" Edit") : t(" Add")}
           isLoading={
             currentData?.id ? updateRulesMutation.isLoading : createRulesMutation.isLoading
           }

@@ -19,7 +19,7 @@ export default function MoreButton(props: { data?: any; fn?: any }) {
         closeOnBlur={true}
         placement="bottom"
       >
-        <IconWrap size={25} tooltip={t("Common.moreOperations").toString()}>
+        <IconWrap size={25} tooltip={t("moreOperations").toString()}>
           <PopoverTrigger>
             <MoreIcon
               fontSize={10}
@@ -36,11 +36,11 @@ export default function MoreButton(props: { data?: any; fn?: any }) {
               <IconWrap>
                 <CopyText text={data.name} className="w-[28px]" tip="名称复制成功" />
               </IconWrap>
-              {t("Common.Copy")}
+              {t("Copy")}
             </div>
             <div>
               <DeleteCollectionModal database={data} />
-              {t("Common.Delete")}
+              {t("Delete")}
             </div>
           </div>
         </PopoverContent>

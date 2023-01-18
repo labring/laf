@@ -30,7 +30,7 @@ export default function Pagination(props: {
           display="inline-block"
           textAlign={"center"}
         >
-          {t("Common.Total")}: {total}
+          {t("Total")}: {total}
         </Text>
         <IconWrap showBg tooltip="First Page" size={32} className="ml-4">
           <Button
@@ -131,7 +131,7 @@ export default function Pagination(props: {
           {(options || [10, 20, 30]).map((data: any) => (
             <option key={data} value={data}>
               {data}
-              <Text> / {t("Common.Page")}</Text>
+              <Text> / {t("Page")}</Text>
             </option>
           ))}
         </Select>

@@ -86,13 +86,13 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{isEdit ? t("Common.Edit") : t("Common.Create")}Bucket</ModalHeader>
+          <ModalHeader>{isEdit ? t("Edit") : t("Create")}Bucket</ModalHeader>
           <ModalCloseButton />
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
               <FormControl isRequired>
-                <FormLabel htmlFor="name">Bucket {t("Common.Name")}</FormLabel>
+                <FormLabel htmlFor="name">Bucket {t("Name")}</FormLabel>
                 <Input
                   {...register("name", { required: true })}
                   variant="filled"
@@ -113,7 +113,7 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
 
           <ModalFooter>
             <Button type="submit" onClick={handleSubmit(onSubmit)}>
-              {t("Common.Confirm")}
+              {t("Confirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

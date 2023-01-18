@@ -30,7 +30,7 @@ export default function IndexPanel() {
                   <Td>developer</Td>
                   <Td isNumeric>
                     <Button size="sm" variant={"ghost"} colorScheme={"red"}>
-                      {t("Common.Delete")}
+                      {t("Delete")}
                     </Button>
                   </Td>
                 </Tr>

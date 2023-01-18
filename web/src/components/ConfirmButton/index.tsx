@@ -52,7 +52,7 @@ const ConfirmButton = ({ onSuccessAction, headerText, bodyText, children }: Conf
 
           <AlertDialogFooter>
             <Button colorScheme={"red"} onClick={onSubmit}>
-              {t("Common.Delete")}
+              {t("Delete")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

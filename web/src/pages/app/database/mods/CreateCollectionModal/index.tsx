@@ -86,7 +86,7 @@ const CreateCollectionModal = (props: { collection?: any; children: React.ReactE
               type="submit"
               onClick={handleSubmit(onSubmit)}
             >
-              {t("Common.Confirm")}
+              {t("Confirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

@@ -70,7 +70,9 @@ export default function FileList() {
           {!query.data ||
           query.data.length === 0 ||
           (query.data.length === 1 && query.data[0].Key === prefix) ? (
-            <div className="h-full flex items-center  justify-center">请选择文件或者文件夹上传</div>
+            <div className="h-full flex items-center  justify-center">
+              {t("StoragePanel.UploadTip")}
+            </div>
           ) : (
             <TableContainer className="h-full" style={{ overflowY: "auto" }}>
               <Table variant="simple" size="sm">
@@ -81,7 +83,7 @@ export default function FileList() {
                     <Th isNumeric>{t("StoragePanel.Size")}</Th>
                     <Th isNumeric>{t("StoragePanel.Time")}</Th>
                     <Th isNumeric>
-                      <span className="mr-2">{t("Common.Operation")}</span>
+                      <span className="mr-2">{t("Operation")}</span>
                     </Th>
                   </Tr>
                 </Thead>
@@ -139,10 +141,10 @@ export default function FileList() {
                                   await deleteFile(bucketName!, file.Key);
                                   query.refetch();
                                 }}
-                                headerText={String(t("Common.Delete"))}
+                                headerText={String(t("Delete"))}
                                 bodyText={t("StoragePanel.DeleteFileTip")}
                               >
-                                <IconWrap tooltip={String(t("Common.Delete"))}>
+                                <IconWrap tooltip={String(t("Delete"))}>
                                   <DeleteIcon fontSize={14} />
                                 </IconWrap>
                               </ConfirmButton>

@@ -45,7 +45,7 @@ export default function StorageListPanel() {
         title={t("StoragePanel.Storage")}
         actions={[
           <CreateBucketModal key="create_modal">
-            <IconWrap size={20} tooltip={t("Common.Create") + " Bucket"}>
+            <IconWrap size={20} tooltip={t("Create") + " Bucket"}>
               <AddIcon fontSize={10} />
             </IconWrap>
           </CreateBucketModal>,
@@ -94,7 +94,7 @@ export default function StorageListPanel() {
                   </div>
                   <div className="invisible flex group-hover:visible">
                     <CreateBucketModal storage={storage}>
-                      <IconWrap size={20} tooltip={t("Common.Edit") + " Bucket"}>
+                      <IconWrap size={20} tooltip={t("Edit") + " Bucket"}>
                         <EditIcon fontSize={10} />
                       </IconWrap>
                     </CreateBucketModal>

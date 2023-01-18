@@ -29,7 +29,7 @@ export default function UserSetting(props: { avatar: string; width: number }) {
               "/v1/login") as string;
           }}
         >
-          {t("Common.Logout")}
+          {t("Logout")}
         </MenuItem>
       </MenuList>
     </Menu>

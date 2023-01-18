@@ -83,10 +83,10 @@ function DrawerExample() {
 
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={onClose}>
-              {t("Common.Cancel")}
+              {t(" Cancel")}
             </Button>
             <Button colorScheme="blue" onClick={handleSubmit(() => {})}>
-              {t("Common.Confirm")}
+              {t(" Confirm")}
             </Button>
           </DrawerFooter>
         </DrawerContent>

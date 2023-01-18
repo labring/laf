@@ -115,7 +115,7 @@ export default function LogsPage() {
                 onClick={handleSubmit(submit)}
                 isLoading={logListQuery.isFetching}
               >
-                {t("Common.Search")}
+                {t("Search")}
               </Button>
             </HStack>
             <Pagination
@@ -191,7 +191,7 @@ export default function LogsPage() {
               </SyntaxHighlighter>
             </ModalBody>
             <ModalFooter>
-              <Button onClick={onClose}>{t("Common.Close")}</Button>
+              <Button onClick={onClose}>{t(" Close")}</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>

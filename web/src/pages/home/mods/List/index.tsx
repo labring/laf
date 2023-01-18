@@ -61,7 +61,7 @@ function List(props: { appListQuery: any }) {
             />
             <Input
               rounded={"full"}
-              placeholder={t("Common.Search").toString()}
+              placeholder={t("Search").toString()}
               variant="outline"
               size={"sm"}
               bg="white"
@@ -70,7 +70,7 @@ function List(props: { appListQuery: any }) {
           </InputGroup>
           <CreateAppModal>
             <Button colorScheme="primary" style={{ padding: "0 40px" }} leftIcon={<AddIcon />}>
-              {t("Common.Create") + t("HomePanel.Application")}
+              {t("Create") + t("HomePanel.Application")}
             </Button>
           </CreateAppModal>
         </div>
@@ -78,12 +78,12 @@ function List(props: { appListQuery: any }) {
 
       <div>
         <div className="flex bg-white rounded-lg h-12 items-center px-6 mb-3">
-          <div className="w-2/12 text-second ">{t("HomePanel.Application") + t("Common.Name")}</div>
+          <div className="w-2/12 text-second ">{t("HomePanel.Application") + t("Name")}</div>
           <div className="w-2/12 text-second ">App ID</div>
           <div className="w-2/12 text-second pl-2">{t("HomePanel.State")}</div>
           <div className="w-2/12 text-second ">{t("HomePanel.Region")}</div>
-          <div className="w-3/12 text-second ">{t("Common.CreateTime")}</div>
-          <div className="w-1/12 text-second pl-2 min-w-[100px]">{t("Common.Operation")}</div>
+          <div className="w-3/12 text-second ">{t("CreateTime")}</div>
+          <div className="w-1/12 text-second pl-2 min-w-[100px]">{t("Operation")}</div>
         </div>
         {(appListQuery.data?.data || [])
           .filter((item: any) => item?.name.indexOf(searchKey) >= 0)
@@ -125,20 +125,20 @@ function List(props: { appListQuery: any }) {
                       <MenuItem minH="40px">
                         <CreateAppModal application={item}>
                           <a className="text-primary" href="/edit">
-                            {t("Common.Edit")}
+                            {t("Edit")}
                           </a>
                         </CreateAppModal>
                       </MenuItem>
                       <MenuItem minH="40px">
                         <ConfirmButton
-                          headerText="Delete App?"
-                          bodyText="Are you sure you want to delete this app."
+                          headerText={t("HomePanel.DeleteApp")}
+                          bodyText={t("HomePanel.DeleteTip")}
                           onSuccessAction={() => {
                             deleteAppMutation.mutate({ appid: item?.appid });
                           }}
                         >
                           <a className="text-danger" href="/delete">
-                            {t("Common.Delete")}
+                            {t("Delete")}
                           </a>
                         </ConfirmButton>
                       </MenuItem>

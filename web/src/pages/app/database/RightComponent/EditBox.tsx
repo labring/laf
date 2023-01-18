@@ -28,7 +28,7 @@ const RightPanelEditBox: React.FC<{
           isLoading={isLoading}
           onClick={onSave}
         >
-          {t("Common.Save")}
+          {t("Save")}
         </Button>
       </div>
       {children}

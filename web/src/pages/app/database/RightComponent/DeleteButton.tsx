@@ -25,7 +25,7 @@ export default function DeleteButton(props: { data: any; deleteMethod: any }) {
         <IconWrap
           className="hover:bg-third-100 group/icon"
           showBg
-          tooltip={t("Common.Delete").toString()}
+          tooltip={t("Delete").toString()}
           size={32}
           onClick={(event: any) => {
             event?.stopPropagation();
@@ -44,7 +44,7 @@ export default function DeleteButton(props: { data: any; deleteMethod: any }) {
                 onClose();
               }}
             >
-              {t("Common.Cancel")}
+              {t("Cancel")}
             </Button>
             <Button
               colorScheme="red"
@@ -54,7 +54,7 @@ export default function DeleteButton(props: { data: any; deleteMethod: any }) {
                 await props.deleteMethod.mutateAsync(props.data);
               }}
             >
-              {t("Common.Confirm")}
+              {t("Confirm")}
             </Button>
           </ButtonGroup>
         </PopoverContent>

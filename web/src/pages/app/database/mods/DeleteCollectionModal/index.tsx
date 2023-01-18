@@ -44,7 +44,7 @@ function DeleteCollectionModal(props: { database: any }) {
   return (
     <>
       <IconWrap
-        tooltip={t("Common.Delete").toString()}
+        tooltip={t("Delete").toString()}
         onClick={() => {
           reset();
           onOpen();
@@ -64,13 +64,12 @@ function DeleteCollectionModal(props: { database: any }) {
           <ModalBody pb={6}>
             <p className="mb-2">
               {t("CollectionPanel.DeleteCollectionTip")}
-              <span className=" text-black mr-1 font-bold">{database.name}</span>,
-              {t("Common.DeleteTip")}。
+              <span className=" text-black mr-1 font-bold">{database.name}</span>,{t("DeleteTip")}。
             </p>
             <p className="mb-4">
               {t("CollectionPanel.InputName")}
               <span className=" text-red-500 mr-1 font-bold">{database.name}</span>
-              {t("Common.ToConfirm")}。
+              {t("ToConfirm")}。
             </p>
             <FormControl>
               <Input
@@ -94,7 +93,7 @@ function DeleteCollectionModal(props: { database: any }) {
                 }
               })}
             >
-              {t("Common.Confirm")}
+              {t(" Confirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

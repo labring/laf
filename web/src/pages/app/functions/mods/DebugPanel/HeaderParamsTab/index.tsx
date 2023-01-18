@@ -91,7 +91,7 @@ function HeaderParamsTab(props: { onChange(values: Params[]): void }) {
           })
         }
       >
-        {t("Common.Add")}
+        {t("Add")}
       </button>
     </div>
   );
