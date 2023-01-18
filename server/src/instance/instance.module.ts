@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common'
 import { InstanceService } from './instance.service'
 import { InstanceTaskService } from './instance-task.service'
-import { CoreModule } from '../core/core.module'
 import { PrismaService } from '../prisma.service'
-import { StorageModule } from 'src/storage/storage.module'
-import { DatabaseModule } from 'src/database/database.module'
+import { StorageModule } from '../storage/storage.module'
+import { DatabaseModule } from '../database/database.module'
+import { RegionModule } from '../region/region.module'
 
 @Module({
-  imports: [CoreModule, StorageModule, DatabaseModule],
+  imports: [StorageModule, DatabaseModule, RegionModule],
   providers: [InstanceService, InstanceTaskService, PrismaService],
 })
 export class InstanceModule {}

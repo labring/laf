@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common'
 import { CollectionService } from './collection/collection.service'
 import { CollectionController } from './collection/collection.controller'
-import { CoreModule } from '../core/core.module'
-import { ApplicationModule } from '../application/application.module'
 import { PolicyController } from './policy/policy.controller'
 import { PolicyService } from './policy/policy.service'
 import { DatabaseService } from './database.service'
@@ -15,7 +13,7 @@ import { RegionModule } from 'src/region/region.module'
 import { ApplicationService } from 'src/application/application.service'
 
 @Module({
-  imports: [CoreModule, RegionModule],
+  imports: [RegionModule],
   controllers: [
     CollectionController,
     PolicyController,

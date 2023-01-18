@@ -5,16 +5,18 @@ import { isConditionTrue } from '../utils/getter'
 import { GatewayCoreService } from '../core/gateway.cr.service'
 import { PrismaService } from '../prisma.service'
 import * as assert from 'node:assert'
-import { ApplicationCoreService } from '../core/application.cr.service'
-import { StorageService } from 'src/storage/storage.service'
-import { DatabaseService } from 'src/database/database.service'
+import { StorageService } from '../storage/storage.service'
+import { DatabaseService } from '../database/database.service'
+import { ClusterService } from 'src/region/cluster/cluster.service'
+import { RegionService } from 'src/region/region.service'
 
 @Injectable()
 export class ApplicationTaskService {
   private readonly logger = new Logger(ApplicationTaskService.name)
 
   constructor(
-    private readonly appCore: ApplicationCoreService,
+    private readonly regionService: RegionService,
+    private readonly clusterService: ClusterService,
     private readonly gatewayCore: GatewayCoreService,
     private readonly storageService: StorageService,
     private readonly databaseService: DatabaseService,
@@ -66,6 +68,10 @@ export class ApplicationTaskService {
    */
   private async reconcileCreatingPhase(app: Application) {
     const appid = app.appid
+    // get app region
+    const region = await this.regionService.findByAppId(appid)
+    assert(region, `Region ${app.regionName} not found`)
+
     // get app bundle
     const bundle = await this.prisma.bundle.findUnique({
       where: {
@@ -77,10 +83,10 @@ export class ApplicationTaskService {
     })
     assert(bundle, `Bundle ${app.bundleName} not found`)
 
-    const namespace = await this.appCore.getAppNamespace(appid)
+    const namespace = await this.clusterService.getAppNamespace(region, appid)
     if (!namespace) {
       this.logger.debug(`Creating namespace for application ${appid}`)
-      await this.appCore.createAppNamespace(appid, app.createdBy)
+      await this.clusterService.createAppNamespace(region, appid, app.createdBy)
       return
     }
 
@@ -132,11 +138,14 @@ export class ApplicationTaskService {
    */
   private async reconcileDeletingPhase(app: Application) {
     const appid = app.appid
+    // get app region
+    const region = await this.regionService.findByAppId(appid)
+    assert(region, `Region ${app.regionName} not found`)
 
     // delete namespace
-    const namespace = await this.appCore.getAppNamespace(appid)
+    const namespace = await this.clusterService.getAppNamespace(region, appid)
     if (namespace) {
-      await this.appCore.removeAppNamespace(appid)
+      await this.clusterService.removeAppNamespace(region, appid)
       return
     }
 
