@@ -30,7 +30,7 @@ export default function DeployButton() {
 
   const updateFunctionMutation = useUpdateFunctionMutation();
 
-  const { displayName } = useHotKey(
+  useHotKey(
     DEFAULT_SHORTCUTS.deploy,
     async () => {
       onOpen();
@@ -61,14 +61,13 @@ export default function DeployButton() {
   return (
     <>
       <Button
-        px={8}
+        variant="text"
         disabled={store.getFunctionUrl() === ""}
-        colorScheme="blue"
         onClick={() => {
           onOpen();
         }}
       >
-        {t("FunctionPanel.Deploy")} ({displayName.toUpperCase()})
+        {t("FunctionPanel.Deploy")}
       </Button>
 
       {isOpen ? (
@@ -85,11 +84,11 @@ export default function DeployButton() {
             </ModalBody>
 
             <ModalFooter>
-              <Button mr={3} onClick={onClose}>
-                {t(" Cancel")}
+              <Button variant="ghost" mr={3} onClick={onClose}>
+                {t("Cancel")}
               </Button>
               <Button
-                colorScheme={"blue"}
+                variant="primary"
                 onClick={() => {
                   deploy();
                 }}

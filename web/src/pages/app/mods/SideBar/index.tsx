@@ -4,7 +4,6 @@
 
 import { AiFillDatabase, AiOutlineFunction } from "react-icons/ai";
 import { GrCatalogOption, GrSettingsOption, GrStorage } from "react-icons/gr";
-import { RiCodeBoxFill } from "react-icons/ri";
 import { useNavigate, useParams } from "react-router-dom";
 import { Center } from "@chakra-ui/react";
 import clsx from "clsx";
@@ -29,7 +28,7 @@ export default function SideBar() {
   const ICONS = [
     {
       pageId: "nav",
-      component: <RiCodeBoxFill size={32} />,
+      component: <img src="/logo.png" alt="logo" width={24} />,
     },
     {
       pageId: Pages.function,
@@ -89,7 +88,13 @@ export default function SideBar() {
     // },
     {
       pageId: Pages.userSetting,
-      component: <UserSetting avatar={userInfo.profile?.avatar} width={28} />,
+      component: (
+        <UserSetting
+          name={userInfo?.profile.name || ""}
+          avatar={userInfo?.profile?.avatar}
+          width={"28px"}
+        />
+      ),
     },
     {
       pageId: Pages.setting,
@@ -127,11 +132,12 @@ export default function SideBar() {
                     style={{
                       height: 48,
                     }}
+                    className="cursor-pointer"
                     onClick={() => {
                       navigate("/");
                     }}
                   >
-                    <RiCodeBoxFill size={32} />
+                    {item.component}
                   </Center>
                 );
               }

@@ -63,6 +63,22 @@ const Button = defineStyleConfig({
   },
 
   variants: {
+    primary: {
+      bg: "primary.500",
+      color: "white",
+      _hover: {
+        bg: "primary.700",
+      },
+    },
+
+    secondary: {
+      color: "primary.500",
+      bg: "primary.100",
+      _hover: {
+        bg: "primary.200",
+      },
+    },
+
     plain: {
       bg: "gray.200",
       color: "gray.500",
@@ -71,32 +87,17 @@ const Button = defineStyleConfig({
       },
     },
 
-    solid: {
-      bg: "primary.500",
-      color: "white",
-      _hover: {
-        bg: "primary.700",
-      },
-    },
-
-    ghost: {
+    text: {
       color: "primary.500",
-      borderRadius: 2,
       _hover: {
-        bg: "primary.500",
-        color: "white",
-        borderRadius: 2,
+        bg: "primary.100",
       },
-    },
-
-    grayGhost: {
-      color: "#000",
     },
   },
   // The default size and variant values
   defaultProps: {
     size: "md",
-    variant: "solid",
+    variant: "primary",
   },
 });
 

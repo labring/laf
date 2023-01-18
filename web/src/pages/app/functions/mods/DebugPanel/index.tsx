@@ -10,6 +10,7 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  Tooltip,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { t } from "i18next";
@@ -51,7 +52,7 @@ export default function DebugPanel() {
   const [bodyParams, setBodyParams] = useState({});
   const [headerParams, setHeaderParams] = useState([]);
 
-  useHotKey(
+  const { displayName } = useHotKey(
     DEFAULT_SHORTCUTS.send_request,
     () => {
       runningCode();
@@ -85,7 +86,7 @@ export default function DebugPanel() {
           data: bodyParams,
           headers: Object.assign(mapValues(keyBy(headerParams, "name"), "value"), {
             "x-laf-debug-token": `${globalStore.currentApp?.function_debug_token}`,
-            "x-laf-func-data": _funcData,
+            "x-laf-func-data": encodeURIComponent(_funcData),
           }),
         });
 
@@ -105,7 +106,7 @@ export default function DebugPanel() {
       <Row>
         <Panel className="flex-1">
           <Tabs width="100%" colorScheme={"green"} display="flex" flexDirection={"column"} h="full">
-            <TabList>
+            <TabList h={"50px"}>
               <Tab px="0">
                 <span className="text-black font-semibold">
                   {t("FunctionPanel.InterfaceDebug")}
@@ -136,16 +137,17 @@ export default function DebugPanel() {
                         );
                       })}
                     </Select>
-                    <Button
-                      disabled={getFunctionUrl() === ""}
-                      className="ml-2"
-                      onClick={() => runningCode()}
-                      bg="#E0F6F4"
-                      color="primary.500"
-                      isLoading={isLoading}
-                    >
-                      {t("FunctionPanel.Debug")}
-                    </Button>
+                    <Tooltip label={`快捷键: ${displayName.toUpperCase()}`}>
+                      <Button
+                        variant={"secondary"}
+                        disabled={getFunctionUrl() === ""}
+                        className="ml-2"
+                        onClick={() => runningCode()}
+                        isLoading={isLoading}
+                      >
+                        {t("FunctionPanel.Debug")}
+                      </Button>
+                    </Tooltip>
                   </div>
                   <div>
                     <Tabs p="0" variant="soft-rounded" colorScheme={"gray"} size={"sm"}>

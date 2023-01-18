@@ -66,7 +66,7 @@ function AddIndexModal() {
             </FormControl>
           </ModalBody>
           <ModalFooter className="mt-20">
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
+            <Button mr={3} onClick={onClose}>
               {t("Cancel")}
             </Button>
             <Button variant="ghost">{t("Confirm")}</Button>

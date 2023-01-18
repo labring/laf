@@ -105,7 +105,7 @@ function List(props: { appListQuery: any }) {
                     className="mr-2"
                     fontWeight={"semibold"}
                     size={"sm"}
-                    variant={"ghost"}
+                    variant={"text"}
                     onClick={(event) => {
                       event?.preventDefault();
                       setCurrentApp(item?.appid);

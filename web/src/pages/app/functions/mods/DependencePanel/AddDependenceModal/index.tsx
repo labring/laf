@@ -325,12 +325,11 @@ const AddDependenceModal = () => {
             )}
 
             <Button
-              colorScheme="blue"
               onClick={() => {
                 submitDependence();
               }}
             >
-              {t("Confirm")}
+              {t("SaveAndRestart")}
             </Button>
           </ModalFooter>
         </ModalContent>

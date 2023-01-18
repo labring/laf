@@ -1,8 +1,7 @@
 const functionTemplates = [
   {
     label: "hello laf",
-    value: `
-import cloud from '@lafjs/cloud'
+    value: `import cloud from '@lafjs/cloud'
 
 exports.main = async function (ctx: FunctionContext) {
   console.log('Hello World')
@@ -12,8 +11,7 @@ exports.main = async function (ctx: FunctionContext) {
   },
   {
     label: "database 示例",
-    value: `
-import cloud from '@lafjs/cloud'
+    value: `import cloud from '@lafjs/cloud'
 
 exports.main = async function (ctx: FunctionContext) {
 
