@@ -7,8 +7,3 @@ export interface IRequest extends Request {
 }
 
 export type IResponse = Response
-
-export function toQuantityString(value: number) {
-  const m = Math.floor(value / 1024 / 1024)
-  return `${m}Mi`
-}

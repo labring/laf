@@ -23,7 +23,7 @@ import {
 import { JwtAuthGuard } from '../auth/jwt.auth.guard'
 import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import { FunctionService } from './function.service'
-import { IRequest } from '../utils/types'
+import { IRequest } from '../utils/interface'
 import { CompileFunctionDto } from './dto/compile-function.dto.ts'
 import { MAX_FUNCTION_COUNT } from 'src/constants'
 

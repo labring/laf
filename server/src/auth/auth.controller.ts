@@ -16,7 +16,7 @@ import {
 } from '@nestjs/swagger'
 import { Response } from 'express'
 import { ApiResponseUtil, ResponseUtil } from '../utils/response'
-import { IRequest } from '../utils/types'
+import { IRequest } from '../utils/interface'
 import { UserDto } from '../user/dto/user.response'
 import { AuthService } from './auth.service'
 import { JwtAuthGuard } from './jwt.auth.guard'

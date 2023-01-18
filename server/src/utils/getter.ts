@@ -1,4 +1,4 @@
-import { Condition } from 'src/core/api/types'
+import { Condition } from 'src/region/cluster/types'
 import { ServerConfig } from '../constants'
 
 /**

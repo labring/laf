@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common'
 import { User } from '@prisma/client'
 import { ApplicationService } from '../application/application.service'
-import { IRequest } from '../utils/types'
+import { IRequest } from '../utils/interface'
 
 @Injectable()
 export class ApplicationAuthGuard implements CanActivate {

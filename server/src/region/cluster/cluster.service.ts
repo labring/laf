@@ -5,7 +5,7 @@ import { Region } from '@prisma/client'
 import { GetApplicationNamespaceById } from 'src/utils/getter'
 import { ResourceLabels } from 'src/constants'
 import { compare } from 'fast-json-patch'
-import { GroupVersionKind } from 'src/core/api/types'
+import { GroupVersionKind } from 'src/region/cluster/types'
 
 @Injectable()
 export class ClusterService {

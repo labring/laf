@@ -19,7 +19,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import { ApplicationAuthGuard } from '../auth/application.auth.guard'
-import { IRequest } from '../utils/types'
+import { IRequest } from '../utils/interface'
 import { JwtAuthGuard } from '../auth/jwt.auth.guard'
 import { ResponseUtil } from '../utils/response'
 import { CreateBucketDto } from './dto/create-bucket.dto'

@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Policy, Proxy } from 'database-proxy/dist'
 import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
-import { IRequest } from 'src/utils/types'
+import { IRequest } from 'src/utils/interface'
 import { DatabaseService } from './database.service'
 
 @ApiTags('Database')
