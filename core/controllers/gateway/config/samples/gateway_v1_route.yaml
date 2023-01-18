@@ -1,6 +1,0 @@
-apiVersion: gateway.laf.dev/v1
-kind: Route
-metadata:
-  name: route-sample
-spec:
-  # TODO(user): Add fields here
