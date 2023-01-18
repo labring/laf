@@ -1,6 +1,7 @@
 import { Command } from 'commander'
-import { applicationCommand } from './commands/application/application'
-import { loginCommand, logoutCommand } from './commands/auth/auth'
+import { command as applicationCommand } from './command/application/'
+import { command as functionCommand } from './command/function/'
+import { loginCommand, logoutCommand } from './command/auth'
 
 
 const program = new Command()
@@ -11,8 +12,13 @@ program
     console.log(version)
   })
 
-program.addCommand(applicationCommand())
 program.addCommand(loginCommand())
 program.addCommand(logoutCommand())
+program.addCommand(applicationCommand())
+program.addCommand(functionCommand())
 
 program.parse(process.argv)
+
+
+
+

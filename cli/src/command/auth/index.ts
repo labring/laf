@@ -1,21 +1,21 @@
 import { program, Command } from 'commander'
-import { handleLogin, handleLogout } from '../../actions/auth/auth'
+import { login, logout } from '../../action/auth'
 
 export function loginCommand(): Command {
-  const login = program.command('login <token>')
+  const cmd = program.command('login <pat>')
     .description('login client')
     .option('-r, --remote [value]', 'remote server address', '')
-    .action((token, options) => {
-      handleLogin(token, options)
+    .action((pat, options) => {
+      login(pat, options)
     })
-  return login
+  return cmd
 }
 
 export function logoutCommand(): Command {
-  const logout = program.command('logout')
+  const cmd = program.command('logout')
     .description('logout client')
     .action(() => {
-      handleLogout()
+      logout()
     })
-  return logout
+  return cmd
 }
