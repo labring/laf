@@ -43,7 +43,6 @@ CASDOOR_REDIRECT_URI="${HTTP_SCHEMA}://www.${DOMAIN}/login_callback"
 
 ## 0. create namespace
 kubectl create namespace ${NAMESPACE} || true
-kubectl apply -f manifests/
 
 ## 1. install mongodb
 set -e

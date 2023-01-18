@@ -23,19 +23,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # - name: Use Node
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 18.x
-
-      # - name: Install Package
-      #   working-directory: server
-      #   run: npm cache clean --force && npm install
-
-      # - name: Build Server
-      #   working-directory: server
-      #   run: npm run build
-
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
