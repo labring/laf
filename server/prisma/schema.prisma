@@ -176,6 +176,7 @@ model Application {
   configuration ApplicationConfiguration?
   storageUser   StorageUser?
   database      Database?
+  domain        ApplicationDomain?
 }
 
 type EnvironmentVariable {
@@ -215,13 +216,14 @@ enum BucketPolicy {
 }
 
 model StorageBucket {
-  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  id        String        @id @default(auto()) @map("_id") @db.ObjectId
   appid     String
-  name      String       @unique
+  name      String        @unique
   shortName String
   policy    BucketPolicy
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  domain    BucketDomain?
 }
 
 // database schemas
@@ -313,4 +315,34 @@ model CronTrigger {
   updatedAt DateTime @updatedAt
 
   cloudFunction CloudFunction @relation(fields: [appid, target], references: [appid, name])
+}
+
+// gateway schemas
+
+enum DomainState {
+  Active
+  Inactive
+}
+
+model ApplicationDomain {
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  appid     String      @unique
+  domain    String      @unique
+  state     DomainState @default(Active)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  application Application @relation(fields: [appid], references: [appid])
+}
+
+model BucketDomain {
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  appid      String
+  bucketName String      @unique
+  domain     String      @unique
+  state      DomainState @default(Active)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  bucket StorageBucket @relation(fields: [bucketName], references: [name])
 }

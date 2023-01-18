@@ -17,7 +17,7 @@ import {
 } from '@nestjs/swagger'
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
 import { ResponseUtil } from 'src/utils/response'
-import { IRequest } from 'src/utils/types'
+import { IRequest } from 'src/utils/interface'
 import { CreatePATDto } from './dto/create-pat.dto'
 import { PatService } from './pat.service'
 

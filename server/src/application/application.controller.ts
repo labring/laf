@@ -16,7 +16,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
-import { IRequest } from '../utils/types'
+import { IRequest } from '../utils/interface'
 import { JwtAuthGuard } from '../auth/jwt.auth.guard'
 import { ResponseUtil } from '../utils/response'
 import { ApplicationAuthGuard } from '../auth/application.auth.guard'
@@ -25,8 +25,8 @@ import { UpdateApplicationDto } from './dto/update-application.dto'
 import { ApplicationService } from './application.service'
 import { FunctionService } from '../function/function.service'
 import { StorageService } from 'src/storage/storage.service'
-import { GatewayCoreService } from 'src/core/gateway.cr.service'
 import { RegionService } from 'src/region/region.service'
+import { GatewayService } from 'src/gateway/gateway.service'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -37,7 +37,7 @@ export class ApplicationController {
     private readonly appService: ApplicationService,
     private readonly funcService: FunctionService,
     private readonly regionService: RegionService,
-    private readonly gatewayCore: GatewayCoreService,
+    private readonly gatewayService: GatewayService,
     private readonly storageService: StorageService,
   ) {}
 
@@ -88,9 +88,9 @@ export class ApplicationController {
   async findOne(@Param('appid') appid: string) {
     const data = await this.appService.findOne(appid, {
       configuration: true,
+      domain: true,
     })
 
-    const gateway = await this.gatewayCore.findOne(appid)
     const storage = await this.storageService.findOne(appid)
 
     // Security Warning: Do not response this region object to client since it contains sensitive information
@@ -109,7 +109,6 @@ export class ApplicationController {
 
     const res = {
       ...data,
-      gateway,
       storage: {
         ...storage,
         credentials,

@@ -1,14 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { Application, ApplicationPhase } from '@prisma/client'
-import { isConditionTrue } from '../utils/getter'
-import { GatewayCoreService } from '../core/gateway.cr.service'
-import { PrismaService } from '../prisma.service'
 import * as assert from 'node:assert'
+import { PrismaService } from '../prisma.service'
 import { StorageService } from '../storage/storage.service'
 import { DatabaseService } from '../database/database.service'
 import { ClusterService } from 'src/region/cluster/cluster.service'
 import { RegionService } from 'src/region/region.service'
+import { GatewayService } from 'src/gateway/gateway.service'
 
 @Injectable()
 export class ApplicationTaskService {
@@ -17,9 +16,9 @@ export class ApplicationTaskService {
   constructor(
     private readonly regionService: RegionService,
     private readonly clusterService: ClusterService,
-    private readonly gatewayCore: GatewayCoreService,
     private readonly storageService: StorageService,
     private readonly databaseService: DatabaseService,
+    private readonly gatewayService: GatewayService,
     private readonly prisma: PrismaService,
   ) {}
 
@@ -108,13 +107,13 @@ export class ApplicationTaskService {
     }
 
     // reconcile gateway
-    let gateway = await this.gatewayCore.findOne(appid)
+    let gateway = await this.gatewayService.findOne(appid)
     if (!gateway) {
       this.logger.debug(`Creating gateway for application ${appid}`)
-      gateway = await this.gatewayCore.create(app.appid)
+      gateway = await this.gatewayService.create(appid)
     }
 
-    if (!isConditionTrue('Ready', gateway?.status?.conditions)) return
+    if (!gateway) return
     if (!storage) return
     if (!database) return
 
@@ -160,6 +159,13 @@ export class ApplicationTaskService {
     const database = await this.databaseService.findOne(appid)
     if (database) {
       await this.databaseService.delete(database)
+      return
+    }
+
+    // delete gateway
+    const gateway = await this.gatewayService.findOne(appid)
+    if (gateway) {
+      await this.gatewayService.delete(appid)
       return
     }
 

@@ -85,6 +85,7 @@ export class ApplicationService {
         bundle: include?.bundle,
         runtime: include?.runtime,
         configuration: include?.configuration,
+        domain: include?.domain,
       },
     })
 
