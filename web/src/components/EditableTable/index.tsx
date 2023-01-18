@@ -133,7 +133,6 @@ const EditableTable = function (props: {
       <Button
         leftIcon={<AddIcon />}
         style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0 }}
-        size="m"
         px="6"
         className="h-10"
         onClick={handleAdd}

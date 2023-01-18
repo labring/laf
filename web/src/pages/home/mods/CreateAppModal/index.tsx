@@ -198,7 +198,6 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
 
           <ModalFooter>
             <Button
-              colorScheme="blue"
               isLoading={appCreateMutation.isLoading}
               type="submit"
               onClick={handleSubmit(onSubmit)}

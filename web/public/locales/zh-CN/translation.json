@@ -168,5 +168,6 @@
   "Total": "总数",
   "Page": "页",
   "NoData": "当前无数据",
-  "Logout": "退出登录"
+  "Logout": "退出登录",
+  "SaveAndRestart": "保存并重启"
 }

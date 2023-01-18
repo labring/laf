@@ -182,8 +182,15 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" type="submit" onClick={handleSubmit(onSubmit)}>
-              {t("Confirm")}
+            <Button
+              variant="ghost"
+              mr={3}
+              onClick={() => {
+                onClose();
+              }}
+            >{t`Cancel`}</Button>
+            <Button type="submit" onClick={handleSubmit(onSubmit)}>
+              {t`Confirm`}
             </Button>
           </ModalFooter>
         </ModalContent>

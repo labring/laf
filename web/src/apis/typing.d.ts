@@ -220,3 +220,25 @@ export interface TLogItem {
   data: string;
   created_at: string;
 }
+
+// user data
+export interface TUserInfo {
+  id: string;
+  username: string;
+  email: any;
+  phone: any;
+  createdAt: string;
+  updatedAt: string;
+  profile: TProfile;
+}
+
+export interface TProfile {
+  id: string;
+  uid: string;
+  openid: string;
+  from: string;
+  avatar: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}

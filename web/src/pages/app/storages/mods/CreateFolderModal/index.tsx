@@ -68,7 +68,6 @@ function CreateModal({ onCreateSuccess }: { onCreateSuccess: () => void }) {
 
           <ModalFooter>
             <Button
-              colorScheme="blue"
               type="submit"
               onClick={handleSubmit(async (value) => {
                 await uploadFile(currentStorage?.name!, prefix + value.prefix + "/", null, {

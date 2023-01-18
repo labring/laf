@@ -9,6 +9,8 @@ import useFunctionStore from "../../store";
 import DeployButton from "../DeployButton";
 import CreateModal from "../FunctionPanel/CreateModal";
 
+import FunctionDetailPopOver from "./FunctionDetailPopOver";
+
 import useFunctionCache from "@/hooks/useFunctionCache";
 
 function EditorPanel() {
@@ -20,36 +22,24 @@ function EditorPanel() {
   return (
     <Panel className="flex-1 flex-grow">
       {currentFunction?.name ? (
-        <Panel.Header style={{ borderBottom: "2px solid #F4F6F8" }} className="!mb-3">
-          <div className="flex items-center h-[50px]">
-            <span className="font-bold text-lg ml-2">
-              {currentFunction?.name}
-              <span className="ml-2 text-slate-400 font-normal">
-                {currentFunction?.desc ? currentFunction?.desc : ""}
+        <Panel.Header style={{ borderBottom: "2px solid #F4F6F8" }} className="!mb-3 h-[50px]">
+          <HStack maxW={"60%"} spacing={2}>
+            <span className="font-bold text-lg">{currentFunction?.name}</span>
+            <FunctionDetailPopOver />
+            {currentFunction?.id &&
+              functionCache.getCache(currentFunction?.id) !== currentFunction?.source?.code && (
+                <span className="flex-none inline-block w-2 h-2 rounded-full bg-yellow-600"></span>
+              )}
+            {currentFunction?.desc ? (
+              <span className="text-slate-400 font-normal whitespace-nowrap overflow-hidden">
+                {currentFunction?.desc}
               </span>
-            </span>
-            <span className="ml-4 ">
-              {/* {currentFunction?.id &&
-          functionCache.getCache(currentFunction?.id) !== currentFunction?.source?.code && (
-            <div>
-              <Badge colorScheme="purple">{t("Editing...")}</Badge>
-            </div>
-          )} */}
+            ) : null}
+          </HStack>
 
-              {/* <FileStatusIcon status={FileStatus.deleted} /> */}
-            </span>
-          </div>
-
-          <HStack>
-            <CopyText className="ml-2" text={getFunctionUrl()}>
-              <Input
-                size="sm"
-                bg="#F1F4F6"
-                border="none"
-                readOnly
-                rounded={4}
-                value={getFunctionUrl()}
-              />
+          <HStack spacing={1}>
+            <CopyText text={getFunctionUrl()}>
+              <Input minW={"200px"} size="sm" readOnly value={getFunctionUrl()} />
             </CopyText>
 
             <DeployButton />
@@ -68,7 +58,7 @@ function EditorPanel() {
           }}
         />
       ) : (
-        <Center className="h-full">
+        <Center className="h-full text-lg">
           {t("FunctionPanel.EmptyText")}
           <CreateModal key="create_modal_new">
             <span className="ml-2 text-blue-500 cursor-pointer">{t("CreateNow")}</span>

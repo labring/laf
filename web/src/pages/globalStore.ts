@@ -5,7 +5,7 @@ import { immer } from "zustand/middleware/immer";
 
 import { APP_PHASE_STATUS } from "@/constants";
 
-import { TApplication } from "@/apis/typing";
+import { TApplication, TUserInfo } from "@/apis/typing";
 import { ApplicationControllerUpdate } from "@/apis/v1/applications";
 import { AuthControllerGetSigninUrl } from "@/apis/v1/login";
 import { AuthControllerGetProfile } from "@/apis/v1/profile";
@@ -15,7 +15,7 @@ import { AppControllerGetRuntimes } from "@/apis/v1/runtimes";
 const { toast } = createStandaloneToast();
 
 type State = {
-  userInfo: any;
+  userInfo: TUserInfo | undefined;
   loading: boolean;
   runtimes?: any[];
   regions?: any[];
@@ -37,7 +37,7 @@ type State = {
 const useGlobalStore = create<State>()(
   devtools(
     immer((set, get) => ({
-      userInfo: {},
+      userInfo: undefined,
 
       currentApp: undefined,
 
@@ -58,7 +58,7 @@ const useGlobalStore = create<State>()(
 
       init: async () => {
         const userInfo = get().userInfo;
-        if (userInfo.id) {
+        if (userInfo?.id) {
           return;
         }
 
