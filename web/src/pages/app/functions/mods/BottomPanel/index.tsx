@@ -1,4 +1,5 @@
 import { Button, HStack } from "@chakra-ui/react";
+import { t } from "i18next";
 
 import Panel from "@/components/Panel";
 
@@ -15,7 +16,7 @@ function BottomPanel() {
           variant="plain"
           onClick={() => store.togglePanel("functionPage", "DependencePanel")}
         >
-          NPM 依赖
+          NPM{t("FunctionPanel.Dependence")}
         </Button>
         <Button
           size="xs"
@@ -31,7 +32,7 @@ function BottomPanel() {
           variant="plain"
           onClick={() => store.togglePanel("functionPage", "RightPanel")}
         >
-          接口调试
+          {t("FunctionPanel.InterfaceDebug")}
         </Button>
       </HStack>
     </Panel>

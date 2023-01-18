@@ -54,7 +54,7 @@ export default function DeployButton() {
       // delete cache after deploy
       functionCache.removeCache(store.currentFunction!.id);
       onClose();
-      showSuccess(t("Message.DeploySuccess"));
+      showSuccess(t("FunctionPanel.DeploySuccess"));
     }
   };
 
@@ -86,7 +86,7 @@ export default function DeployButton() {
 
             <ModalFooter>
               <Button mr={3} onClick={onClose}>
-                {t("Cancel")}
+                {t(" Cancel")}
               </Button>
               <Button
                 colorScheme={"blue"}
@@ -94,7 +94,7 @@ export default function DeployButton() {
                   deploy();
                 }}
               >
-                {t("Common.Dialog.ConfirmDeploy")}
+                {t("FunctionPanel.ConfirmDeploy")}
               </Button>
             </ModalFooter>
           </ModalContent>

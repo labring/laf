@@ -15,7 +15,7 @@ export default function CollectionDataList() {
         <Center className="h-full">
           {t("CollectionPanel.EmptyCollectionText")}
           <CreateCollectionModal>
-            <span className="ml-2 text-blue-500 cursor-pointer">立即创建</span>
+            <span className="ml-2 text-blue-500 cursor-pointer">{t("CreateNow")}</span>
           </CreateCollectionModal>
         </Center>
       ) : (
@@ -36,7 +36,7 @@ export default function CollectionDataList() {
               <div className="h-full flex items-center  justify-center">
                 <CreateCollectionModal>
                   <Button size="lg" variant="ghost" leftIcon={<AddIcon />}>
-                    {t("CollectionPanel.CollectionAdd")}
+                    {t("CollectionPanel.AddCollection")}
                   </Button>
                 </CreateCollectionModal>
               </div>

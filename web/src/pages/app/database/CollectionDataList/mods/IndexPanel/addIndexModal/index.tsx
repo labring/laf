@@ -17,6 +17,7 @@ import {
   Stack,
   useDisclosure,
 } from "@chakra-ui/react";
+import { t } from "i18next";
 
 function AddIndexModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -27,16 +28,16 @@ function AddIndexModal() {
     <>
       <Button onClick={onOpen} colorScheme="primary" size="sm">
         <AddIcon color="white" className="mr-2" />
-        添加索引
+        {t("CollectionPanel.AddIndex")}
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>创建索引</ModalHeader>
+          <ModalHeader>{t("CollectionPanel.AddIndex")}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl>
-              <FormLabel>索引名称</FormLabel>
+              <FormLabel>{t("CollectionPanel.IndexName")}</FormLabel>
               <Input
                 className="h-14"
                 value={indexName}
@@ -66,9 +67,9 @@ function AddIndexModal() {
           </ModalBody>
           <ModalFooter className="mt-20">
             <Button colorScheme="blue" mr={3} onClick={onClose}>
-              取消
+              {t("Cancel")}
             </Button>
-            <Button variant="ghost">创建</Button>
+            <Button variant="ghost">{t("Confirm")}</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

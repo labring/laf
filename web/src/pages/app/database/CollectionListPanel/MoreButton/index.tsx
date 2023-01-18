@@ -1,4 +1,5 @@
 import { Popover, PopoverContent, PopoverTrigger, useDisclosure } from "@chakra-ui/react";
+import { t } from "i18next";
 
 import { MoreIcon } from "@/components/CommonIcon/index";
 import CopyText from "@/components/CopyText";
@@ -18,7 +19,7 @@ export default function MoreButton(props: { data?: any; fn?: any }) {
         closeOnBlur={true}
         placement="bottom"
       >
-        <IconWrap size={25} tooltip="更多操作">
+        <IconWrap size={25} tooltip={t("moreOperations").toString()}>
           <PopoverTrigger>
             <MoreIcon
               fontSize={10}
@@ -35,11 +36,11 @@ export default function MoreButton(props: { data?: any; fn?: any }) {
               <IconWrap>
                 <CopyText text={data.name} className="w-[28px]" tip="名称复制成功" />
               </IconWrap>
-              复制
+              {t("Copy")}
             </div>
             <div>
               <DeleteCollectionModal database={data} />
-              删除
+              {t("Delete")}
             </div>
           </div>
         </PopoverContent>

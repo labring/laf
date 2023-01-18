@@ -102,19 +102,21 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{isEdit ? "编辑函数" : "添加函数"}</ModalHeader>
+          <ModalHeader>
+            {isEdit ? t("FunctionPanel.EditFunction") : t("FunctionPanel.AddFunction")}
+          </ModalHeader>
           <ModalCloseButton />
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
               <FormControl isInvalid={!!errors?.name}>
-                <FormLabel htmlFor="name">函数名</FormLabel>
+                <FormLabel htmlFor="name">{t("FunctionPanel.FunctionName")}</FormLabel>
                 <Input
                   {...register("name", {
                     required: "name is required",
                   })}
                   id="name"
-                  placeholder="函数唯一标识, 如 get-user "
+                  placeholder={t("FunctionPanel.FunctionNameTip") + "get-user "}
                   disabled={isEdit}
                   variant="filled"
                 />
@@ -122,7 +124,7 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
               </FormControl>
 
               <FormControl isInvalid={!!errors?.methods}>
-                <FormLabel htmlFor="methods">请求方法</FormLabel>
+                <FormLabel htmlFor="methods">{t("FunctionPanel.Methods")}</FormLabel>
                 <HStack spacing={6}>
                   <Controller
                     name="methods"
@@ -145,18 +147,18 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
               </FormControl>
 
               <FormControl>
-                <FormLabel htmlFor="description">函数描述</FormLabel>
+                <FormLabel htmlFor="description">{t("FunctionPanel.Description")}</FormLabel>
                 <Input
                   {...register("description")}
                   id="description"
-                  placeholder="函数描述"
+                  placeholder={t("FunctionPanel.Description").toString()}
                   variant="filled"
                 />
               </FormControl>
 
               {isEdit ? null : (
                 <FormControl>
-                  <FormLabel htmlFor="description">函数模板</FormLabel>
+                  <FormLabel htmlFor="code">{t("FunctionPanel.Code")}</FormLabel>
                   <Select {...register("code")} id="code" placeholder="" variant="filled">
                     {functionTemplates.map((item) => {
                       return (
@@ -170,7 +172,7 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
               )}
 
               <FormControl isInvalid={!!errors?.websocket} hidden>
-                <FormLabel htmlFor="websocket">是否支持 websocket</FormLabel>
+                <FormLabel htmlFor="websocket">{t("FunctionPanel.isSupport")} websocket</FormLabel>
                 <Switch {...register("websocket")} id="websocket" variant="filled" />
                 <FormErrorMessage>
                   {errors.websocket && errors.websocket.message}
@@ -180,14 +182,8 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
           </ModalBody>
 
           <ModalFooter>
-            <Button
-              mr={3}
-              onClick={() => {
-                onClose();
-              }}
-            >{t`Cancel`}</Button>
             <Button colorScheme="blue" type="submit" onClick={handleSubmit(onSubmit)}>
-              {t`Confirm`}
+              {t("Confirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

@@ -40,7 +40,7 @@ export default function TriggerPage() {
           <div className="flex py-4 px-2">
             <AddTriggerModal>
               <Button colorScheme="primary" style={{ padding: "0 40px" }} leftIcon={<AddIcon />}>
-                新建触发器
+                {t("TriggerPanel.AddTrigger")}
               </Button>
             </AddTriggerModal>
             <InputGroup className="ml-4">
@@ -52,7 +52,7 @@ export default function TriggerPage() {
               />
               <Input
                 rounded={"full"}
-                placeholder={"输入触发器名称查找"}
+                placeholder={t("TriggerPanel.SearchTip").toString()}
                 size={"sm"}
                 bg={"gray.100"}
                 onChange={(e) => setSearchKey(e.target.value)}
@@ -71,11 +71,11 @@ export default function TriggerPage() {
               <Table variant="unstyle">
                 <Thead>
                   <Tr>
-                    <Th>触发器名称</Th>
-                    <Th>相关函数</Th>
-                    <Th>类型</Th>
-                    <Th>创建/更新时间</Th>
-                    <Th>操作</Th>
+                    <Th>{t("TriggerPanel.Name")}</Th>
+                    <Th>{t("TriggerPanel.Function")}</Th>
+                    <Th>{t("TriggerPanel.Type")}</Th>
+                    <Th>{t("TriggerPanel.Time")}</Th>
+                    <Th>{t("Operation")}</Th>
                   </Tr>
                 </Thead>
                 <Tbody className="relative font-mono">
@@ -93,7 +93,7 @@ export default function TriggerPage() {
                             <span>{item.target}</span>
                           </Td>
                           <Td>
-                            <span>定时任务</span>
+                            <span>{t("TriggerPanel.SetTimeout")}</span>
                           </Td>
                           <Td className="text-slate-500" maxWidth="5rem">
                             {formatDate(item.updatedAt, "YYYY-MM-DD HH:mm:ss")}
@@ -102,7 +102,7 @@ export default function TriggerPage() {
                             <ConfirmButton
                               onSuccessAction={() => deleteTriggerMutation.mutate({ id: item.id })}
                               headerText={String(t("Delete"))}
-                              bodyText={`确定删除该触发器吗?`}
+                              bodyText={t("TriggerPanel.DeleteConfirm")}
                             >
                               <IconWrap tooltip={String(t("Delete"))}>
                                 <DeleteIcon fontSize={15} />

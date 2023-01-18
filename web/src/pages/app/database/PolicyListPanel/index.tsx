@@ -31,10 +31,10 @@ export default function PolicyListPanel() {
       }}
     >
       <Panel.Header
-        title="访问策略"
+        title={t("CollectionPanel.Policy").toString()}
         actions={[
           <AddPolicyModal key="AddPolicyModal">
-            <IconWrap tooltip="添加访问策略" size={20}>
+            <IconWrap tooltip={t("CollectionPanel.AddPolicy").toString()} size={20}>
               <AddIcon fontSize={10} />
             </IconWrap>
           </AddPolicyModal>,
@@ -57,7 +57,7 @@ export default function PolicyListPanel() {
                 </div>
                 <div className="invisible flex items-center group-hover:visible">
                   <AddPolicyModal key="AddPolicyModal" isEdit defaultData={item}>
-                    <IconWrap tooltip="编辑访问策略" size={20}>
+                    <IconWrap tooltip={t("CollectionPanel.EditPolicy").toString()} size={20}>
                       <EditIcon fontSize={10} />
                     </IconWrap>
                   </AddPolicyModal>
@@ -66,7 +66,7 @@ export default function PolicyListPanel() {
                       await deletePolicyMutation.mutateAsync(item.name);
                     }}
                     headerText={String(t("Delete"))}
-                    bodyText="确定删除该策略?"
+                    bodyText={t("CollectionPanel.ConformDelete")}
                   >
                     <IconWrap tooltip={String(t("Delete"))}>
                       <DeleteIcon

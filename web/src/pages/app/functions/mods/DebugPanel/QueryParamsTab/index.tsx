@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { CloseIcon } from "@chakra-ui/icons";
 import { Button, Input, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { t } from "i18next";
 
 type Params = {
   name: string;
@@ -41,8 +42,8 @@ function HeaderParamsTab(props: { onChange(values: Params[]): void }) {
           <Table size="sm" className="border">
             <Thead>
               <Tr>
-                <Th>参数名</Th>
-                <Th>值</Th>
+                <Th>{t("FunctionPanel.Name")}</Th>
+                <Th>{t("FunctionPanel.Value")}</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -94,7 +95,7 @@ function HeaderParamsTab(props: { onChange(values: Params[]): void }) {
           })
         }
       >
-        + 添加一行
+        {t("Add")}
       </Button>
     </div>
   );

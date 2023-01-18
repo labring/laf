@@ -32,11 +32,14 @@ export default function DependenceList() {
 
   return (
     <Panel>
-      <Panel.Header title="NPM 依赖" actions={[<AddDependenceModal key="AddDependenceModal" />]} />
+      <Panel.Header
+        title={"NPM " + t("FunctionPanel.Dependence")}
+        actions={[<AddDependenceModal key="AddDependenceModal" />]}
+      />
       <Tabs variant="soft-rounded" colorScheme={"gray"} size={"sm"}>
         <TabList>
           <Tab>
-            自定义依赖
+            {t("FunctionPanel.CustomDependence")}
             {customPackage.length > 0 && (
               <Badge rounded={"full"} ml="1">
                 {customPackage.length}
@@ -44,7 +47,7 @@ export default function DependenceList() {
             )}
           </Tab>
           <Tab>
-            内置依赖
+            {t("FunctionPanel.SystemDependence")}
             <Badge rounded={"full"} ml="1">
               {builtinPackage.length}
             </Badge>
@@ -95,7 +98,7 @@ export default function DependenceList() {
                 })}
               </SectionList>
             ) : (
-              <Center minH={140}>暂无自定义依赖</Center>
+              <Center minH={140}>{t("FunctionPanel.CustomDependenceTip")}</Center>
             )}
           </TabPanel>
           <TabPanel px={0} py={1}>

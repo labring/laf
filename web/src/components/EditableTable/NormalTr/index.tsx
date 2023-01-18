@@ -34,7 +34,9 @@ const NormalTr = function (props: {
           {!configuration?.hiddenEditButton ? (
             <IconWrap
               className="mr-2"
-              tooltip={configuration?.editButtonText ? configuration.editButtonText : "编辑"}
+              tooltip={
+                configuration?.editButtonText ? configuration.editButtonText : t("Edit").toString()
+              }
               size={20}
             >
               <EditIcon fontSize={15} onClick={() => onEdit(data[configuration.key])} />
@@ -45,7 +47,7 @@ const NormalTr = function (props: {
             headerText={
               configuration?.deleteButtonText ? configuration.deleteButtonText : String(t("Delete"))
             }
-            bodyText={`确定删除该行数据吗?`}
+            bodyText={t("DeleteConfirm")}
           >
             <IconWrap
               tooltip={

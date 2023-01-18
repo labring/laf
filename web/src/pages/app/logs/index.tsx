@@ -18,6 +18,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
+import { t } from "i18next";
 
 import Content from "@/components/Content";
 import CopyText from "@/components/CopyText";
@@ -33,15 +34,17 @@ import styles from "./index.module.scss";
 import { TLogItem } from "@/apis/typing";
 import { LogControllerGetLogs } from "@/apis/v1/apps";
 
-const DEFAULT_LIMIT = 100;
+const LIMIT_OPTIONS = [100, 150, 200];
 
 export default function LogsPage() {
   type FormData = {
     requestId: string;
     functionName: string;
+    limit: number;
+    page: number;
   };
 
-  const defaultValues = {};
+  const defaultValues = { limit: 100, page: 1 };
   const { handleSubmit, register, getValues } = useForm<FormData>({
     defaultValues,
   });
@@ -56,7 +59,7 @@ export default function LogsPage() {
   const logListQuery = useQuery(
     [queryKeys.useLogsQuery, queryData],
     () => {
-      return LogControllerGetLogs({ ...queryData, limit: DEFAULT_LIMIT });
+      return LogControllerGetLogs({ ...queryData });
     },
     {
       keepPreviousData: true,
@@ -68,8 +71,8 @@ export default function LogsPage() {
 
   const submit = () => {
     setQueryData({
-      page: 1,
       ...getValues(),
+      page: 1,
     });
     setTimeout(() => {
       logListQuery.refetch();
@@ -99,7 +102,7 @@ export default function LogsPage() {
               <Input
                 width={200}
                 size="sm"
-                placeholder="函数名"
+                placeholder={t("FunctionPanel.FunctionName").toString()}
                 bg="white"
                 {...register("functionName")}
               />
@@ -112,10 +115,11 @@ export default function LogsPage() {
                 onClick={handleSubmit(submit)}
                 isLoading={logListQuery.isFetching}
               >
-                搜索
+                {t("Search")}
               </Button>
             </HStack>
             <Pagination
+              options={LIMIT_OPTIONS}
               values={getPageInfo(logListQuery.data?.data)}
               onChange={(values) => {
                 setQueryData({
@@ -166,7 +170,7 @@ export default function LogsPage() {
         <Modal onClose={onClose} isOpen={isOpen} scrollBehavior={"inside"} size="4xl">
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>日志详情</ModalHeader>
+            <ModalHeader>{t("LogPanel.Detail")}</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               <div>
@@ -187,7 +191,7 @@ export default function LogsPage() {
               </SyntaxHighlighter>
             </ModalBody>
             <ModalFooter>
-              <Button onClick={onClose}>关闭</Button>
+              <Button onClick={onClose}>{t(" Close")}</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>

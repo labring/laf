@@ -79,8 +79,8 @@ function FileUpload(props: { onUpload: (files: any) => void; uploadType: "file" 
       >
         <div>
           <p>
-            将{uploadType === "file" ? t("StoragePanel.File") : t("StoragePanel.Folder")}
-            拖放到此处或者
+            {uploadType === "file" ? t("StoragePanel.File") : t("StoragePanel.Folder")}
+            {t("StoragePanel.Drag")}
           </p>
           <button className={styles.uploadButton} onClick={onButtonClick}>
             {t("StoragePanel.Upload") +

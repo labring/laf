@@ -39,10 +39,10 @@ export default function CollectionListPanel() {
       }}
     >
       <Panel.Header
-        title="集合列表"
+        title={t("CollectionPanel.CollectionList").toString()}
         actions={[
           <CreateCollectionModal key={"create_database"}>
-            <IconWrap tooltip={t("CollectionPanel.CollectionAdd").toString()} size={20}>
+            <IconWrap tooltip={t("CollectionPanel.AddCollection").toString()} size={20}>
               <AddIcon fontSize={10} />
             </IconWrap>
           </CreateCollectionModal>,
@@ -57,7 +57,7 @@ export default function CollectionListPanel() {
           />
           <Input
             rounded={"full"}
-            placeholder="输入集合ID搜索"
+            placeholder={t("CollectionPanel.Search").toString()}
             size="sm"
             bg={"gray.100"}
             onChange={(e) => setSearch(e.target.value)}

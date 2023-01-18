@@ -2,6 +2,7 @@
  * cloud functions storage page
  ***************************/
 import { Center } from "@chakra-ui/react";
+import { t } from "i18next";
 
 import { Col, Row } from "@/components/Grid";
 import Panel from "@/components/Panel";
@@ -23,9 +24,9 @@ export default function StoragePage() {
         {currentStorage === undefined ? (
           <Panel className="items-center h-full">
             <Center className="h-full">
-              暂无Bucket数据
+              {t("StoragePanel.EmptyText")}
               <CreateBucketModal>
-                <span className="ml-2 text-blue-500 cursor-pointer">立即创建</span>
+                <span className="ml-2 text-blue-500 cursor-pointer">{t("CreateNow")}</span>
               </CreateBucketModal>
             </Center>
           </Panel>

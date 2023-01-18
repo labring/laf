@@ -11,6 +11,7 @@ import {
   Button,
   useDisclosure,
 } from "@chakra-ui/react";
+import { t } from "i18next";
 
 interface ConfirmButtonProps {
   onSuccessAction: () => void;
@@ -51,7 +52,7 @@ const ConfirmButton = ({ onSuccessAction, headerText, bodyText, children }: Conf
 
           <AlertDialogFooter>
             <Button colorScheme={"red"} onClick={onSubmit}>
-              删除
+              {t("Delete")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

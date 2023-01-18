@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { t } from "i18next";
 
 import CopyText from "@/components/CopyText";
 import EditableTable from "@/components/EditableTable";
@@ -52,7 +53,7 @@ const PATList = () => {
               ],
             },
             {
-              name: "过期时间",
+              name: t("SettingPanel.Expire").toString(),
               width: "290px",
               key: "expiresIn",
               editable: false,
@@ -71,13 +72,13 @@ const PATList = () => {
           configuration={{
             key: "id",
             hiddenEditButton: true,
-            addButtonText: "新增Token",
-            saveButtonText: "生成Token",
+            addButtonText: t("Add") + "Token",
+            saveButtonText: t("Generate") + "Token",
             operationButtonsRender: (data: any) => {
               const tokenItem = tokenList?.filter((item) => item.id === data.id);
               return tokenItem?.length === 1 ? (
-                <CopyText className="mr-4" text={tokenItem[0].token} tip="token复制成功">
-                  <TextButton text="复制Token" />
+                <CopyText className="mr-4" text={tokenItem[0].token} tip={t("Copied").toString()}>
+                  <TextButton text={t("Copy") + "Token"} />
                 </CopyText>
               ) : null;
             },

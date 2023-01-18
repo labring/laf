@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { t } from "i18next";
 
 export function formatDate(
   date?: string | number | Date | dayjs.Dayjs | null | undefined,
@@ -35,11 +36,11 @@ export function formatDateOption(): { label: string; value: number | string }[] 
   const optionDay = [7, 30, 60, 90];
   const option: { label: string; value: string | number }[] = optionDay.map((item) => {
     return {
-      label: `${item}天`,
+      label: `${item} ${t(" Days")}`,
       value: item * 24 * 60 * 60,
     };
   });
-  option.push({ label: "自定义", value: "custom" });
+  option.push({ label: t(" Custom"), value: "custom" });
   return option;
 }
 

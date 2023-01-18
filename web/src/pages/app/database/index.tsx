@@ -37,7 +37,7 @@ function DatabasePage() {
               <Center className="h-full">
                 {t("CollectionPanel.EmptyPolicyText")}
                 <AddPolicyModal>
-                  <span className="ml-2 text-blue-500 cursor-pointer">立即添加</span>
+                  <span className="ml-2 text-blue-500 cursor-pointer">{t("CreateNow")}</span>
                 </AddPolicyModal>
               </Center>
             ) : (
@@ -54,7 +54,7 @@ function DatabasePage() {
               variant="plain"
               onClick={() => settingStore.togglePanel("collectionPage", "PolicyPanel")}
             >
-              访问策略
+              {t("CollectionPanel.Policy")}
             </Button>
           </Panel.Header>
         </Panel>

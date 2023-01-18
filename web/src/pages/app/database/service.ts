@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { t } from "i18next";
 
 import useDBMStore from "./store";
 
@@ -101,7 +102,7 @@ export const useDeleteDBMutation = (config?: { onSuccess: (data: any) => void })
           globalStore.showError(data.error);
         } else {
           queryClient.invalidateQueries(queryKeys.useCollectionListQuery);
-          globalStore.showSuccess("delete success");
+          globalStore.showSuccess(t("DeleteSuccess"));
           config && config.onSuccess(data);
         }
       },
@@ -123,7 +124,7 @@ export const useAddDataMutation = (config?: { onSuccess: (data: any) => void }) 
     {
       onSuccess(data) {
         if (data.ok) {
-          globalStore.showSuccess("add success");
+          globalStore.showSuccess(t("AddSuccess"));
           queryClient.invalidateQueries([queryKeys.useEntryDataQuery(currentDB?.name || "")]);
           //config && config.onSuccess(data);
         } else {
@@ -151,7 +152,7 @@ export const useUpdateDataMutation = (config?: { onSuccess: (data: any) => void 
       onSuccess(data) {
         console.log(data);
         if (data.ok) {
-          globalStore.showSuccess("update success");
+          globalStore.showSuccess(t("UpdateSuccess"));
           queryClient.invalidateQueries([queryKeys.useEntryDataQuery(currentDB?.name || "")]);
           //config && config.onSuccess(data);
         } else {
@@ -176,7 +177,7 @@ export const useDeleteDataMutation = (config?: { onSuccess: (data: any) => void 
     {
       onSuccess(data) {
         if (data.ok) {
-          globalStore.showSuccess("delete success");
+          globalStore.showSuccess(t("DeleteSuccess"));
           queryClient.invalidateQueries([queryKeys.useEntryDataQuery(currentDB?.name || "")]);
           config && config.onSuccess(data);
         } else {
