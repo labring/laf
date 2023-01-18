@@ -20,9 +20,10 @@ import useGlobalStore from "@/pages/globalStore";
 export default function FileList() {
   const { getList, getFileUrl, deleteFile } = useAwsS3();
   const { currentStorage, prefix, setPrefix } = useStorageStore();
-  const { currentApp } = useGlobalStore();
   const bucketName = currentStorage?.name;
   const bucketType = currentStorage?.policy;
+  const { currentApp } = useGlobalStore();
+  const address = currentApp?.storage?.credentials?.endpoint.split("//");
 
   const query = useQuery(
     ["fileList", bucketName, prefix],
@@ -41,7 +42,9 @@ export default function FileList() {
     const fileUrl =
       bucketType === "private"
         ? getFileUrl(bucketName!, file.Key)
-        : `http://${bucketName}.${(window as any).location.host.replace("www", "oss")}/${file.Key}`;
+        : `${(address && address[0]) || "http"}//${bucketName}.${(address && address[1]) || ""}/${
+            file.Key
+          }`;
 
     window.open(fileUrl, "_blank");
   };
