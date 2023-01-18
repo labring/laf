@@ -9,6 +9,7 @@ import { formatDate } from "../../util/format"
 import { readSecretConfig } from "../../config/secret"
 import { invokeFunction } from "../../api/debug"
 import { exist } from "../../util/file"
+import { getEmoji } from "../../util/print"
 
 
 
@@ -24,7 +25,7 @@ export async function create(funcName: string, options: { websocket: boolean, me
   }
   await functionControllerCreate(appConfig.appid, createDto)
   pullOne(funcName)
-  console.log(`function ${funcName} created`)
+  console.log(`${getEmoji('✅')} function ${funcName} created`)
 }
 
 
@@ -60,14 +61,14 @@ export async function pullAll() {
   const funcs = await functionControllerFindAll(appConfig.appid)
   for (let func of funcs) {
     await pull(func.name)
-    console.log(`function ${func.name} pulled`)
+    console.log(`${getEmoji('✅')} function ${func.name} pulled`)
   }
 }
 
 
 export async function pullOne(funcName: string) {
   await pull(funcName)
-  console.log(`function ${funcName} pulled`)
+  console.log(`${getEmoji('✅')} function ${funcName} pulled`)
 }
 
 async function push(funcName: string) {
@@ -91,20 +92,20 @@ export async function pushAll() {
   const funcs = await functionControllerFindAll(appConfig.appid)
   for (let func of funcs) {
     await push(func.name)
-    console.log(`Function ${func.name} pushed`)
+    console.log(`${getEmoji('✅')} function ${func.name} pushed`)
   }
 }
 
 export async function pushOne(funcName: string) {
   await push(funcName)
-  console.log(`function ${funcName} pushed`)
+  console.log(`${getEmoji('✅')} function ${funcName} pushed`)
 }
 
 export async function exec(funcName: string, options: {log: string, requestId: boolean}) {
   // compile code
   const codePath = path.join(process.cwd(), 'functions', funcName + '.ts')
   if (!exist(codePath)) {
-    console.error(`function ${funcName} not found, please pull or create it!`)
+    console.error(`${getEmoji('❌')} function ${funcName} not found, please pull or create it!`)
     process.exit(1)
   }
   const code = fs.readFileSync(codePath, 'utf-8')

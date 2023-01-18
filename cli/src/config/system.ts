@@ -6,10 +6,10 @@ import { loadYamlFile, writeYamlFile, exist, remove, ensureDirectory } from "../
 
 //SystemConfig is the configuration for the config file
 export interface SystemConfig {
-  remoteServer: string
-  token: string
-  tokenExpire: number
-  pat: string
+  remoteServer?: string
+  token?: string
+  tokenExpire?: number
+  pat?: string
 }
 
 export function readSystemConfig(): SystemConfig {

@@ -34,6 +34,7 @@
     "cli-table3": "^0.6.3",
     "commander": "^9.3.0",
     "dayjs": "^1.11.7",
+    "node-emoji": "^1.11.0",
     "reflect-metadata": "^0.1.13",
     "typescript": "^4.7.4",
     "yaml": "^2.1.3"

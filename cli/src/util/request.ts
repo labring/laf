@@ -58,6 +58,7 @@ request.interceptors.response.use(
       process.exit(1)
     } else {
       // handle error code
+      console.log(error)
       const { status, data } = error.response;
       if (status === 400) {
         console.log("Bad request!")

@@ -7,7 +7,10 @@ import { FUNCTIONS_DIRECTORY_NAME, GLOBAL_FILE, PACKAGE_FILE, RESPONSE_FILE, TEM
 import { ensureDirectory } from "../../util/file"
 import { readSystemConfig } from "../../config/system"
 import { update as dependencyUpdate } from "../dependency"
-import { refreshSecretConfig } from "../../config/secret";
+import { refreshSecretConfig } from "../../config/secret"
+import { getEmoji } from "../../util/print";
+
+
 
 
 export async function list() { 
@@ -23,7 +26,7 @@ export async function list() {
 
 export async function init(appid: string, options: { sync: boolean }) {
   if (existApplicationConfig()) {
-    console.log('The laf.yaml file already exists in the current directory. Please change the directory or delete the laf.yaml file')
+    console.log(`${getEmoji('❌')} The laf.yaml file already exists in the current directory. Please change the directory or delete the laf.yaml file`)
     return
   }
 
@@ -53,8 +56,8 @@ export async function init(appid: string, options: { sync: boolean }) {
   if (options.sync) {
     // TODO: sync
   }
-  console.log(`application ${data.name} init success`)
-  console.log(`please run 'npm install' install dependencies`)
+  console.log(`${getEmoji('🚀')} application ${data.name} init success`)
+  console.log(`${getEmoji('👉')} please run 'npm install' install dependencies`)
 }
 
 function initFunction() {
