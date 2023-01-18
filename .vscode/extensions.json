@@ -5,6 +5,7 @@
     "christian-kohler.npm-intellisense",
     "streetsidesoftware.code-spell-checker",
     "pomdtr.excalidraw-editor",
-     "Tim-Koehler.helm-intellisense"
+    "Tim-Koehler.helm-intellisense",
+    "lokalise.i18n-ally"
   ]
 }
