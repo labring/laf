@@ -56,11 +56,6 @@ jobs:
           echo "run: buildah login -u ${{ github.repository_owner }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io" 
           sudo buildah login -u ${{ github.repository_owner }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
 
-      - name: Prepare cluster image
-        working-directory: deploy/build
-        run: |
-          bash pre-build.sh
-
       - name: Build cluster image
         env:
           IMAGE: ghcr.io/${{ github.repository_owner }}/${{ env.image }}
