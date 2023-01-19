@@ -18,7 +18,7 @@ const RightPanelList: React.FC<{
 }> = (props) => {
   const { ListQuery, setKey, component, isActive, onClick, deleteRuleMutation, deleteData } = props;
   return (
-    <div className="overflow-y-auto flex-1 overflow-x-hidden">
+    <div className="overflow-y-auto flex-1 overflow-x-hidden pr-1">
       {(ListQuery || [])?.map((item: any, index: number) => {
         return (
           <div

@@ -17,6 +17,7 @@ const Tag = defineMultiStyleConfig({
         py: "1",
         fontSize: "10px",
         fontWeight: "400",
+        borderRadius: "4px",
       },
     }),
   },

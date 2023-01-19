@@ -11,7 +11,7 @@ const RightPanelEditBox: React.FC<{
   const { title, isLoading, children, onSave } = props;
   return (
     <div
-      className="border-2 border-lafWhite-600 flex-col ml-2 mb-3 flex rounded-xl px-4"
+      className="border-2 border-lafWhite-600 flex-col ml-1 mb-3 flex rounded-xl px-4"
       style={{
         flexBasis: "421px",
       }}
