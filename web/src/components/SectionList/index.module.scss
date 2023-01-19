@@ -21,12 +21,13 @@
 
     &:hover,
     &.active {
-      background-color: #eff9fa;
+      background-color: rgba(0, 169, 157, 0.05);
       color: #008c7f;
     }
 
     &.active {
-      background-color: #eff9fa;
+      background-color: rgba(0, 169, 157, 0.05);
+      ;
     }
   }
 }

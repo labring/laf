@@ -23,8 +23,8 @@ const RightPanelList: React.FC<{
         return (
           <div
             key={item[setKey]}
-            className={clsx("border-2 p-2 rounded-xl relative group/item", {
-              "shadow-lg": isActive(item),
+            className={clsx("border-2 border-lafWhite-600 p-2 rounded-xl relative group/item", {
+              shadow: isActive(item),
               "mb-2": index !== (ListQuery?.data?.data || []).length - 1,
             })}
             onClick={() => {
@@ -45,9 +45,9 @@ const RightPanelList: React.FC<{
                   showBg
                   tooltip={t("Edit").toString()}
                   size={32}
-                  className="ml-2 hover:bg-third-100 group/icon"
+                  className="ml-2 hover:bg-rose-100 group/icon"
                 >
-                  <EditIcon className="group-hover/icon:text-third-500" />
+                  <EditIcon className="group-hover/icon:text-error-500" />
                 </IconWrap>
               </div>
             </div>

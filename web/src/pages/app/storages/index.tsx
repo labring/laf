@@ -17,7 +17,7 @@ export default function StoragePage() {
   const { currentStorage } = useStorageStore();
   return (
     <Row>
-      <Col className="max-w-[300px] flex-none">
+      <Col className="flex-none" style={{ width: 300 }}>
         <StorageListPanel />
       </Col>
       <Col>

@@ -2,19 +2,19 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AddIcon, Search2Icon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
-import clsx from "clsx";
 
+import CopyText from "@/components/CopyText";
 // import CopyText from "@/components/CopyText";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
+import MoreButton from "@/components/MoreButton";
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
 
 import CreateCollectionModal from "../mods/CreateCollectionModal";
+import DeleteCollectionModal from "../mods/DeleteCollectionModal";
 import { useCollectionListQuery } from "../service";
 import useDBMStore from "../store";
-
-import MoreButton from "./MoreButton";
 
 export default function CollectionListPanel() {
   const store = useDBMStore((store) => store);
@@ -82,13 +82,27 @@ export default function CollectionListPanel() {
                     <FileTypeIcon type={FileType.db} />
                     <span className="ml-2 text-base">{db.name}</span>
                   </div>
-                  <div
-                    className={clsx("flex group-hover:inline ", {
-                      hidden: db.name !== store.currentDB?.name || store.currentShow !== "DB",
-                    })}
+                  <MoreButton
+                    isHidden={db.name !== store.currentDB?.name || store.currentShow !== "DB"}
                   >
-                    <MoreButton data={db} />
-                  </div>
+                    <>
+                      <div className="text-grayIron-600">
+                        <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
+                          <CopyText
+                            hideToolTip
+                            text={db.name}
+                            className="w-[28px]"
+                            tip="名称复制成功"
+                          />
+                        </div>
+                        {t("Copy")}
+                      </div>
+                      <div className="text-grayIron-600">
+                        <DeleteCollectionModal database={db} />
+                        {t("Delete")}
+                      </div>
+                    </>
+                  </MoreButton>
                 </div>
               </SectionList.Item>
             );

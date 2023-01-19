@@ -32,7 +32,7 @@ function CreateModal({ onCreateSuccess }: { onCreateSuccess: () => void }) {
       <Button
         size="xs"
         variant="textGhost"
-        leftIcon={<AiOutlineFolderAdd fontSize={22} className="text-gray-600" />}
+        leftIcon={<AiOutlineFolderAdd fontSize={22} className="text-grayModern-500" />}
         disabled={currentStorage === undefined}
         onClick={() => {
           onOpen();

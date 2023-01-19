@@ -23,7 +23,7 @@ export default function DeleteButton(props: { data: any; deleteMethod: any }) {
         placement="left"
       >
         <IconWrap
-          className="hover:bg-third-100 group/icon"
+          className="hover:bg-rose-100 group/icon"
           showBg
           tooltip={t("Delete").toString()}
           size={32}
@@ -32,7 +32,7 @@ export default function DeleteButton(props: { data: any; deleteMethod: any }) {
           }}
         >
           <PopoverTrigger>
-            <DeleteIcon fontSize={12} className="align-middle group-hover/icon:text-third-500" />
+            <DeleteIcon fontSize={12} className="align-middle group-hover/icon:text-error-500" />
           </PopoverTrigger>
         </IconWrap>
         <PopoverContent p="2" maxWidth={130}>
@@ -47,7 +47,6 @@ export default function DeleteButton(props: { data: any; deleteMethod: any }) {
               {t("Cancel")}
             </Button>
             <Button
-              colorScheme="red"
               isLoading={props.deleteMethod.isLoading}
               onClick={async (event) => {
                 event?.stopPropagation();

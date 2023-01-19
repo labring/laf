@@ -16,8 +16,6 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
-import IconWrap from "@/components/IconWrap";
-
 import { useBucketDeleteMutation } from "../../service";
 
 import { TBucket } from "@/apis/typing";
@@ -39,8 +37,8 @@ function DeleteBucketModal(props: { storage: TBucket; onSuccessAction?: () => vo
 
   return (
     <>
-      <IconWrap
-        tooltip={t("Delete") + " Bucket"}
+      <div
+        className="text-grayModern-900 w-[20px] h-[20px] text-center"
         onClick={() => {
           reset();
           onOpen();
@@ -50,7 +48,7 @@ function DeleteBucketModal(props: { storage: TBucket; onSuccessAction?: () => vo
         }}
       >
         <DeleteIcon fontSize={12} />
-      </IconWrap>
+      </div>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

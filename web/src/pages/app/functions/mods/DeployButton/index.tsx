@@ -7,6 +7,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
 import { t } from "i18next";
@@ -30,7 +31,7 @@ export default function DeployButton() {
 
   const updateFunctionMutation = useUpdateFunctionMutation();
 
-  useHotKey(
+  const { displayName } = useHotKey(
     DEFAULT_SHORTCUTS.deploy,
     async () => {
       onOpen();
@@ -60,15 +61,17 @@ export default function DeployButton() {
 
   return (
     <>
-      <Button
-        variant="text"
-        disabled={store.getFunctionUrl() === ""}
-        onClick={() => {
-          onOpen();
-        }}
-      >
-        {t("FunctionPanel.Deploy")}
-      </Button>
+      <Tooltip label={`快捷键: ${displayName.toUpperCase()}`}>
+        <Button
+          variant="text"
+          disabled={store.getFunctionUrl() === ""}
+          onClick={() => {
+            onOpen();
+          }}
+        >
+          {t("FunctionPanel.Deploy")}
+        </Button>
+      </Tooltip>
 
       {isOpen ? (
         <Modal isOpen={isOpen} onClose={onClose} size="6xl" isCentered>

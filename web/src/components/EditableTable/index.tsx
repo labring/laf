@@ -66,10 +66,10 @@ const EditableTable = function (props: {
 
   return (
     <>
-      <div className="px-4 py-1 rounded-t-md relative border border-b-0">
+      <div className="rounded-t-md relative border border-frostyNightfall-200 border-b-0">
         <TableContainer h={configuration?.tableHeight || "250px"} overflowY="auto" ref={tableRef}>
           <Table variant="simple">
-            <Thead>
+            <Thead className="bg-lafWhite-300 text-grayModern-500 ">
               <Tr>
                 {columnList.map((item: TColumnItem) => {
                   return <Th key={item.key}>{item.name}</Th>;
@@ -85,7 +85,7 @@ const EditableTable = function (props: {
                   data: item,
                 };
                 return (
-                  <Tr key={item[configuration.key]} _hover={{ bgColor: "#efefef" }}>
+                  <Tr key={item[configuration.key]} className="hover:bg-lafWhite-300">
                     {item.isEdit ? (
                       <EditableTr
                         index={index}
@@ -107,7 +107,7 @@ const EditableTable = function (props: {
                   </Tr>
                 );
               })}
-              <Tr key="create" _hover={{ bgColor: "#efefef" }}>
+              <Tr key="create" className="hover:bg-lafWhite-300">
                 {isCreate ? (
                   <EditableTr
                     index={-1}
@@ -132,9 +132,15 @@ const EditableTable = function (props: {
       </div>
       <Button
         leftIcon={<AddIcon />}
-        style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0 }}
-        px="6"
-        className="h-10"
+        style={{
+          borderTopLeftRadius: 0,
+          borderTopRightRadius: 0,
+          borderBottomRightRadius: "10px",
+          borderBottomLeftRadius: "10px",
+          color: "#7B838B",
+          fontWeight: 400,
+        }}
+        py="6"
         onClick={handleAdd}
         variant="outline"
       >

@@ -44,17 +44,12 @@ export default function LogsPage() {
     page: number;
   };
 
-  const defaultValues = { limit: 100, page: 1 };
-  const { handleSubmit, register, getValues } = useForm<FormData>({
-    defaultValues,
-  });
+  const { handleSubmit, register, getValues } = useForm<FormData>({});
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [detail, setDetail] = useState<TLogItem | undefined>(undefined);
 
-  const [queryData, setQueryData] = useState({
-    ...defaultValues,
-  });
+  const [queryData, setQueryData] = useState({});
 
   const logListQuery = useQuery(
     [queryKeys.useLogsQuery, queryData],
@@ -132,22 +127,22 @@ export default function LogsPage() {
         </form>
         <div className="py-1 rounded-md h-full relative" style={{ paddingBottom: 100 }}>
           {logListQuery.isFetching ? (
-            <Center className="opacity-60 bg-white absolute left-0 right-0 top-0 bottom-0 z-10">
+            <Center className="opacity-60 bg-white-200 absolute left-0 right-0 top-0 bottom-0 z-10">
               <Spinner size={"lg"} />
             </Center>
           ) : null}
           <div className="overflow-y-auto h-full mb-4 ">
             {logListQuery.data?.data?.list.map((item: TLogItem) => {
               return (
-                <div className=" h-[22px] font-mono overflow-hidden">
-                  <span className="mr-2 text-gray-500 float-left">
+                <div key={item._id} className=" h-[22px] font-mono overflow-hidden">
+                  <span className="mr-2 text-grayIron-600 float-left">
                     [{formatDate(item.created_at, "YYYY-MM-DD HH:mm:ss")}]
                   </span>
 
-                  <CopyText text={item.request_id} className="mr-2 text-primary float-left">
+                  <CopyText text={item.request_id} className="mr-2 text-primary-600 float-left">
                     <span>{item.request_id.substring(0, 8)}</span>
                   </CopyText>
-                  <CopyText text={item.func} className="mr-2 w-[100px] text-purple-500 float-left">
+                  <CopyText text={item.func} className="mr-2 w-[100px] text-purple-600 float-left">
                     <span>{item.func}</span>
                   </CopyText>
                   <div
@@ -191,7 +186,7 @@ export default function LogsPage() {
               </SyntaxHighlighter>
             </ModalBody>
             <ModalFooter>
-              <Button onClick={onClose}>{t(" Close")}</Button>
+              <Button onClick={onClose}>{t("Close")}</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>

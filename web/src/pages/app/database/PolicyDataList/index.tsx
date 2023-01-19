@@ -18,10 +18,12 @@ import {
 } from "../service";
 import useDBMStore from "../store";
 
+import policyTemplate from "./policyTemplate";
+
 export default function PolicyDataList() {
   const collectionListQuery = useCollectionListQuery();
   const [currentData, setCurrentData] = useState<any>(undefined);
-  const [record, setRecord] = useState("");
+  const [record, setRecord] = useState(JSON.stringify(policyTemplate));
   const [collectionName, setCollectionName] = useState(collectionListQuery?.data?.data[0]?.name);
 
   const store = useDBMStore((state) => state);
@@ -80,7 +82,7 @@ export default function PolicyDataList() {
           component={(item: any) => {
             return (
               <>
-                <div className="border-b-2 mb-4 p-2">
+                <div className="border-b-2 border-lafWhite-600 mb-4 p-2">
                   <Text fontSize="md" className="leading-loose font-semibold">
                     {t("CollectionPanel.Collection")}：{item.collectionName}
                   </Text>
@@ -93,7 +95,7 @@ export default function PolicyDataList() {
           }}
         />
         <RightPanelEditBox
-          title={currentData?.id ? t(" Edit") : t(" Add")}
+          title={currentData?.id ? t("Edit") : t("Add")}
           isLoading={
             currentData?.id ? updateRulesMutation.isLoading : createRulesMutation.isLoading
           }
@@ -123,7 +125,7 @@ export default function PolicyDataList() {
           </Text>
           <div className=" flex-1">
             <JsonEditor
-              value={JSON.stringify(currentData?.value || {}, null, 2)}
+              value={JSON.stringify(currentData?.id ? currentData?.value : policyTemplate, null, 2)}
               onChange={(values) => {
                 setRecord(values!);
               }}

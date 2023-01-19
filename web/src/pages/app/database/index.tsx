@@ -1,7 +1,7 @@
 /****************************
  * cloud functions database page
  ***************************/
-import { Button, Center } from "@chakra-ui/react";
+import { Center } from "@chakra-ui/react";
 import { t } from "i18next";
 
 import Content from "@/components/Content";
@@ -9,6 +9,7 @@ import { Col, Row } from "@/components/Grid";
 import Panel from "@/components/Panel";
 
 import AddPolicyModal from "./mods/AddPolicyModal";
+import BottomPanel from "./BottomPanel";
 import CollectionDataList from "./CollectionDataList";
 import CollectionListPanel from "./CollectionListPanel";
 import PolicyDataList from "./PolicyDataList";
@@ -46,18 +47,8 @@ function DatabasePage() {
           </Panel>
         </Col>
       </Row>
-      <Row className="!flex-none" {...settingStore.layoutInfo.collectionPage.Bottom}>
-        <Panel className="w-full">
-          <Panel.Header>
-            <Button
-              size="xs"
-              variant="plain"
-              onClick={() => settingStore.togglePanel("collectionPage", "PolicyPanel")}
-            >
-              {t("CollectionPanel.Policy")}
-            </Button>
-          </Panel.Header>
-        </Panel>
+      <Row {...settingStore.layoutInfo.collectionPage.Bottom}>
+        <BottomPanel />
       </Row>
     </Content>
   );

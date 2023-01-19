@@ -3,9 +3,16 @@ import clsx from "clsx";
 
 import styles from "./index.module.scss";
 
-function SectionList(props: { children: React.ReactNode; style?: React.CSSProperties }) {
+function SectionList(props: {
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+  className?: string;
+}) {
   return (
-    <ul className={styles.sectionList + " mb-4"} style={props.style || {}}>
+    <ul
+      className={styles.sectionList + " mb-4 text-grayIron-600 " + props.className}
+      style={props.style || {}}
+    >
       {props.children}
     </ul>
   );

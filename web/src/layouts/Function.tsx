@@ -54,7 +54,7 @@ export default function FunctionLayout() {
         ) : (
           <>
             {currentApp?.phase !== APP_PHASE_STATUS.Started ? (
-              <div className="absolute top-0 bottom-0 left-0 right-0 z-[999] flex flex-col justify-center items-center bg-white opacity-70 ">
+              <div className="absolute top-0 bottom-0 left-0 right-0 z-[999] flex flex-col justify-center items-center bg-lafWhite-200 opacity-70 ">
                 <Spinner
                   thickness="4px"
                   speed="0.65s"

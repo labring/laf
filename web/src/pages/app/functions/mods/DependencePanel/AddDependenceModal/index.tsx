@@ -208,6 +208,7 @@ const AddDependenceModal = () => {
               <Select
                 width="150px"
                 size="sm"
+                variant="filled"
                 placeholder={packageItem.package.version}
                 isDisabled={
                   !isEdit &&

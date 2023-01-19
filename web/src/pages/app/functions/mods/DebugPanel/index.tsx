@@ -106,7 +106,13 @@ export default function DebugPanel() {
     <>
       <Row>
         <Panel className="flex-1">
-          <Tabs width="100%" colorScheme={"green"} display="flex" flexDirection={"column"} h="full">
+          <Tabs
+            width="100%"
+            colorScheme={"primary"}
+            display="flex"
+            flexDirection={"column"}
+            h="full"
+          >
             <TabList h={"50px"}>
               <Tab px="0">
                 <span className="text-black font-semibold">
@@ -123,6 +129,7 @@ export default function DebugPanel() {
                     <span className="mr-3 whitespace-nowrap">{t("FunctionPanel.Methods")}</span>
                     <Select
                       width="150px"
+                      variant="filled"
                       size="sm"
                       value={runningMethod}
                       disabled={getFunctionUrl() === ""}

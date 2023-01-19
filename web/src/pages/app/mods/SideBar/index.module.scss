@@ -1,5 +1,5 @@
 .icon {
-  color: "#888D97";
+  color: #888D97;
   cursor: pointer;
   border-radius: 4px;
   height: 48px;
@@ -11,10 +11,10 @@
 
 .icon:hover,
 .icon.current {
-  background-color: #d3ecec;
+  background-color: var(--chakra-colors-primary-200);
 
   svg {
-    fill: #00a99d;
+    fill: var(--chakra-colors-primary-600);
   }
 }
 
