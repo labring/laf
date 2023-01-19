@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios'
 import { Injectable, Logger } from '@nestjs/common'
 import { Region } from '@prisma/client'
-import { GetApplicationNamespaceById } from 'src/utils/getter'
+import { GetApplicationNamespaceById } from '../utils/getter'
 
 @Injectable()
 export class ApisixService {
@@ -27,7 +27,7 @@ export class ApisixService {
         },
       },
       timeout: {
-        connect: 600,
+        connect: 60,
         send: 600,
         read: 600,
       },
@@ -43,6 +43,44 @@ export class ApisixService {
 
   async deleteAppRoute(region: Region, appid: string) {
     const id = `app-${appid}`
+    const res = await this.deleteRoute(region, id)
+    return res
+  }
+
+  async createBucketRoute(region: Region, bucketName: string, domain: string) {
+    const host = domain
+
+    const minioUrl = new URL(region.storageConf.internalEndpoint)
+    const upstreamNode = minioUrl.host
+
+    const id = `bucket-${bucketName}`
+    const data = {
+      name: id,
+      uri: '/*',
+      hosts: [host],
+      priority: 9,
+      upstream: {
+        type: 'roundrobin',
+        nodes: {
+          [upstreamNode]: 1,
+        },
+      },
+      timeout: {
+        connect: 60,
+        send: 600,
+        read: 600,
+      },
+      plugins: {
+        cors: {},
+      },
+    }
+
+    const res = await this.putRoute(region, id, data)
+    return res
+  }
+
+  async deleteBucketRoute(region: Region, bucketName: string) {
+    const id = `bucket-${bucketName}`
     const res = await this.deleteRoute(region, id)
     return res
   }

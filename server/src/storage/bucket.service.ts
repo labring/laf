@@ -1,7 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Application, StorageBucket } from '@prisma/client'
-import { PrismaService } from 'src/prisma.service'
-import { RegionService } from 'src/region/region.service'
+import { BucketDomainService } from 'src/gateway/bucket-domain.service'
+import { PrismaService } from '../prisma.service'
+import { RegionService } from '../region/region.service'
 import { CreateBucketDto } from './dto/create-bucket.dto'
 import { UpdateBucketDto } from './dto/update-bucket.dto'
 import { MinioService } from './minio/minio.service'
@@ -14,6 +15,7 @@ export class BucketService {
     private readonly minioService: MinioService,
     private readonly regionService: RegionService,
     private readonly prisma: PrismaService,
+    private readonly domainService: BucketDomainService,
   ) {}
 
   /**
@@ -45,6 +47,10 @@ export class BucketService {
           shortName: dto.shortName,
         },
       })
+
+      // create domain for bucket
+      await this.domainService.create(bucket)
+
       return bucket
     } catch (error) {
       this.logger.error('create bucket in db failed: ', error)
@@ -63,6 +69,9 @@ export class BucketService {
         appid,
         name,
       },
+      include: {
+        domain: true,
+      },
     })
 
     return bucket
@@ -72,6 +81,9 @@ export class BucketService {
     const buckets = await this.prisma.storageBucket.findMany({
       where: {
         appid,
+      },
+      include: {
+        domain: true,
       },
     })
 
@@ -108,6 +120,13 @@ export class BucketService {
    * @todo delete gateway route if exists
    */
   async delete(bucket: StorageBucket) {
+    // delete bucket in minio
+    const region = await this.regionService.findByAppId(bucket.appid)
+    await this.minioService.deleteBucket(region, bucket.name)
+
+    // delete bucket domain
+    await this.domainService.delete(bucket)
+
     const res = await this.prisma.storageBucket.delete({
       where: {
         name: bucket.name,
