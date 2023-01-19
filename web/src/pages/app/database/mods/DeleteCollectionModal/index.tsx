@@ -64,11 +64,12 @@ function DeleteCollectionModal(props: { database: any }) {
           <ModalBody pb={6}>
             <p className="mb-2">
               {t("CollectionPanel.DeleteCollectionTip")}
-              <span className=" text-black mr-1 font-bold">{database.name}</span>,{t("DeleteTip")}。
+              <span className=" text-black mx-1 font-bold">{database.name}</span>
+              {t("DeleteTip")}。
             </p>
             <p className="mb-4">
               {t("CollectionPanel.InputName")}
-              <span className=" text-red-500 mr-1 font-bold">{database.name}</span>
+              <span className=" text-red-500 mx-1 font-bold">{database.name}</span>
               {t("ToConfirm")}。
             </p>
             <FormControl>

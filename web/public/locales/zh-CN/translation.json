@@ -46,7 +46,8 @@
     "SelectFunction": "请选择云函数",
     "AddRules": "添加规则",
     "RulesNum": "规则数",
-    "RulesContent": "规则内容"
+    "RulesContent": "规则内容",
+    "CollectionNameRule": "集合名称只能包含英文, _ 或者 -"
   },
   "FunctionPanel": {
     "Debug": "运行",
@@ -136,7 +137,8 @@
     "All": "总容量",
     "Used": "已使用",
     "Success": "上传成功",
-    "EmptyText": "暂无Bucket数据"
+    "EmptyText": "暂无Bucket数据",
+    "BucketNameRule": "只能包含英文或数字"
   },
   "Search": "搜索",
   "Close": "关闭",

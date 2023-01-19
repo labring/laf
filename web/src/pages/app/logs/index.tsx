@@ -90,7 +90,7 @@ export default function LogsPage() {
         >
           <Panel.Header>
             <HStack spacing={2}>
-              <InputGroup width={400}>
+              <InputGroup width={300}>
                 <Input
                   borderRadius="4"
                   size="sm"

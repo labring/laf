@@ -25,7 +25,8 @@
     "RulesNum": "Number of Rules",
     "Search": "Please enter ID to query",
     "SelectCollection": "Select Collection",
-    "SelectFunction": "Please select a cloud function"
+    "SelectFunction": "Please select a cloud function",
+    "CollectionNameRule": "The collection name can only contain English, _ or -"
   },
   "Add": "Add ",
   "AddData": "new data",
@@ -152,7 +153,8 @@
     "TimeTip": "Temporary link, valid for 15 minutes",
     "Upload": "Upload",
     "Used": "Used",
-    "UploadTip": "Please select a file or folder to upload"
+    "UploadTip": "Please select a file or folder to upload",
+    "BucketNameRule": "Can only contain English or numbers"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",

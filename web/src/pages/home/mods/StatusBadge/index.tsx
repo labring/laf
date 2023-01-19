@@ -9,13 +9,13 @@ export default function StatusBadge(props: { statusConditions: APP_PHASE_STATUS 
   return (
     <div className="flex items-center">
       <Badge
-        className="p-2 w-[80px] text-center text-primary-600"
+        className="py-1 px-4 w-[80px] text-center text-primary-700 mr-2"
         colorScheme={statusConditions === APP_PHASE_STATUS.Started ? "primary" : "blue"}
       >
         <span
           className={`${
             statusConditions === APP_PHASE_STATUS.Started
-              ? "before:bg-primary-600"
+              ? "before:bg-primary-700"
               : "before:bg-blue-600"
           } ${styles.circle}`}
         >

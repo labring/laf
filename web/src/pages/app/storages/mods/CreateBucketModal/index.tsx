@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import {
   Button,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
   Modal,
@@ -37,7 +38,13 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
     policy: storage?.policy,
   };
 
-  const { register, handleSubmit, reset, setFocus } = useForm<{
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setFocus,
+    formState: { errors },
+  } = useForm<{
     name: string;
     policy: string;
   }>({
@@ -91,13 +98,20 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
-              <FormControl isRequired>
+              <FormControl isInvalid={!!errors?.name}>
                 <FormLabel htmlFor="name">Bucket {t("Name")}</FormLabel>
                 <Input
-                  {...register("name", { required: true })}
+                  {...register("name", {
+                    required: true,
+                    pattern: {
+                      value: /^[A-Za-z][A-Za-z0-9]+$/,
+                      message: t("StoragePanel.BucketNameRule"),
+                    },
+                  })}
                   variant="filled"
                   disabled={isEdit}
                 />
+                <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
               </FormControl>
 
               <FormControl>
