@@ -1,5 +1,4 @@
-# FROM node:18-slim
-FROM docker.io/lafyun/laf-server:dev
+FROM node:18-slim
 
 RUN apt-get update
 RUN apt-get install -y openssl wget
@@ -13,12 +12,14 @@ WORKDIR /app
 
 EXPOSE 3000
 
-# quirks
-RUN rm -rf /app/src/*
-RUN rm -rf /app/test/*
 COPY . /app
 
-RUN npm install
-RUN npm run build
+# All commands in one line will reduce the size of the image
+RUN npm install @nestjs/cli@9.0.0 prisma@4.9.0 -g && npm install --omit=dev && npm run build && npm remove @nestjs/cli prisma -g && npm cache clean --force && rm -rf /app/src/*
+
+# RUN npm install --omit=dev
+# RUN npm run build
+# RUN npm remove @nestjs/cli prisma -g
+# RUN npm cache clean --force
 
 CMD [ "node", "dist/main" ]

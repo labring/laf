@@ -38,12 +38,8 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/schedule": "^2.1.0",
     "@nestjs/swagger": "^6.1.3",
-    "@nestjs/terminus": "^9.1.2",
     "@nestjs/throttler": "^3.1.0",
-    "@prisma/client": "^4.7.1",
-    "axios": "^1.2.3",
-    "bson": "^4.7.0",
-    "class-transformer": "^0.5.1",
+    "@prisma/client": "^4.9.0",
     "class-validator": "^0.13.2",
     "compression": "^1.7.4",
     "database-proxy": "^0.8.2",
@@ -51,15 +47,11 @@
     "fast-json-patch": "^3.1.1",
     "mongodb": "^4.12.1",
     "mongodb-uri": "^0.9.7",
-    "ms": "^2.1.3",
     "nanoid": "^3.3.4",
     "npm-package-arg": "^10.1.0",
-    "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
-    "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.13",
-    "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "typescript": "^4.9.3"
   },
   "devDependencies": {
     "@compodoc/compodoc": "^1.1.19",
@@ -84,14 +76,13 @@
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "28.1.3",
     "prettier": "^2.3.2",
-    "prisma": "^4.8.1",
+    "prisma": "^4.9.0",
     "source-map-support": "^0.5.20",
     "supertest": "^6.1.3",
     "ts-jest": "28.0.8",
     "ts-loader": "^9.2.3",
     "ts-node": "^10.0.0",
-    "tsconfig-paths": "4.1.0",
-    "typescript": "^4.9.3"
+    "tsconfig-paths": "4.1.0"
   },
   "jest": {
     "moduleFileExtensions": [

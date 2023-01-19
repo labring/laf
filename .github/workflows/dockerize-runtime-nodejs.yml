@@ -32,7 +32,7 @@ jobs:
 
       - name: Install Package
         working-directory: runtimes/nodejs
-        run: npm cache clean --force && npm install
+        run: npm cache clean --force && npm install typescript -g && npm install --omit=dev
 
       - name: Build Packages
         working-directory: runtimes/nodejs
@@ -95,7 +95,7 @@ jobs:
 
       - name: Install Package
         working-directory: runtimes/nodejs
-        run: npm cache clean --force && npm install
+        run: npm cache clean --force && npm install typescript -g && npm install --omit=dev
 
       - name: Build Packages
         working-directory: runtimes/nodejs
