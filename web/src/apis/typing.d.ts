@@ -14,10 +14,11 @@ export interface TApplication {
   bundle: Bundle;
   runtime: Runtime;
   configuration: Configuration;
-  gateway: Gateway;
+  domain: Domain;
   storage: Storage;
   function_debug_token: string;
 }
+
 export interface Bundle {
   id: string;
   name: string;
@@ -64,50 +65,13 @@ export interface Environment {
   value: string;
 }
 
-export interface Gateway {
-  apiVersion: string;
-  kind: string;
-  metadata: Metadata;
-  spec: Spec;
-  status: Status;
-}
-
-export interface Metadata {
-  creationTimestamp: string;
-  generation: number;
-  labels: Labels;
-  name: string;
-  namespace: string;
-  resourceVersion: string;
-  uid: string;
-}
-
-export interface Labels {
-  "laf.dev/appid": string;
-}
-
-export interface Spec {
+export interface Domain {
+  id: string;
   appid: string;
-  buckets: any[];
-}
-
-export interface Status {
-  appRoute: AppRoute;
-  conditions: Condition[];
-}
-
-export interface AppRoute {
   domain: string;
-  domainName: string;
-  domainNamespace: string;
-}
-
-export interface Condition {
-  lastTransitionTime: string;
-  message: string;
-  reason: string;
-  status: string;
-  type: string;
+  state: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Storage {

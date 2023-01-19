@@ -61,7 +61,6 @@ const Button = defineStyleConfig({
       fontSize: "md",
       borderRadius: "100px",
       px: 6,
-      py: 4,
       height: "32px",
     },
   },
