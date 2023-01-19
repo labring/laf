@@ -62,28 +62,28 @@ export default function PolicyListPanel() {
                   }
                 >
                   <>
-                    <div className="text-grayIron-600">
-                      <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
-                        <AddPolicyModal key="AddPolicyModal" isEdit defaultData={item}>
-                          <EditIcon fontSize={10} />
-                        </AddPolicyModal>
-                      </div>
-                      {t("Edit")}
-                    </div>
-                    <div className="text-grayIron-600">
-                      <ConfirmButton
-                        onSuccessAction={async () => {
-                          await deletePolicyMutation.mutateAsync(item.name);
-                        }}
-                        headerText={String(t("Delete"))}
-                        bodyText={t("CollectionPanel.ConformDelete")}
-                      >
+                    <AddPolicyModal key="AddPolicyModal" isEdit defaultData={item}>
+                      <div className="text-grayIron-600">
                         <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
-                          <DeleteIcon fontSize={14} />
+                          <EditIcon />
                         </div>
-                      </ConfirmButton>
-                      {t("Delete")}
-                    </div>
+                        {t("Edit")}
+                      </div>
+                    </AddPolicyModal>
+                    <ConfirmButton
+                      onSuccessAction={async () => {
+                        await deletePolicyMutation.mutateAsync(item.name);
+                      }}
+                      headerText={String(t("Delete"))}
+                      bodyText={t("CollectionPanel.ConformDelete")}
+                    >
+                      <div className="text-grayIron-600">
+                        <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
+                          <DeleteIcon />
+                        </div>
+                        {t("Delete")}
+                      </div>
+                    </ConfirmButton>
                   </>
                 </MoreButton>
               </div>

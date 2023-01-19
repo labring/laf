@@ -38,7 +38,6 @@ function DeleteBucketModal(props: { storage: TBucket; onSuccessAction?: () => vo
   return (
     <>
       <div
-        className="text-grayModern-900 w-[20px] h-[20px] text-center"
         onClick={() => {
           reset();
           onOpen();
@@ -47,7 +46,12 @@ function DeleteBucketModal(props: { storage: TBucket; onSuccessAction?: () => vo
           }, 0);
         }}
       >
-        <DeleteIcon fontSize={12} />
+        <div className="text-grayIron-600">
+          <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
+            <DeleteIcon fontSize={12} />
+          </div>
+          {t("Delete")}
+        </div>
       </div>
 
       <Modal isOpen={isOpen} onClose={onClose}>

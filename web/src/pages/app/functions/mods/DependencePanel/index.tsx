@@ -68,20 +68,22 @@ export default function DependenceList() {
                       onClick={() => {}}
                       className="group"
                     >
-                      <div>
+                      <div className="w-[200px] overflow-hidden">
                         <Tooltip
                           label={packageItem?.builtin ? "内置依赖，不可更改" : null}
                           placement="top"
                         >
-                          <span className="w-40 inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
+                          <span className="w-full inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
                             {packageItem?.name}
                           </span>
                         </Tooltip>
                       </div>
-                      <div className=" w-20 inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
-                        <span>{packageItem?.spec}</span>
+                      <div className=" w-[100px] flex">
+                        <span className="flex-grow inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
+                          {packageItem?.spec}
+                        </span>
                         {!packageItem?.builtin ? (
-                          <span className="ml-2 hidden group-hover:inline-block">
+                          <span className=" w-[10px] ml-2 hidden group-hover:inline-block">
                             <Tooltip label={t("Delete").toString()} placement="top">
                               <CloseIcon
                                 fontSize={10}

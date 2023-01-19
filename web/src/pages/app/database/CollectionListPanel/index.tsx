@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AddIcon, Search2Icon } from "@chakra-ui/icons";
+import { AddIcon, CopyIcon, Search2Icon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 
 import CopyText from "@/components/CopyText";
@@ -86,21 +86,15 @@ export default function CollectionListPanel() {
                     isHidden={db.name !== store.currentDB?.name || store.currentShow !== "DB"}
                   >
                     <>
-                      <div className="text-grayIron-600">
-                        <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
-                          <CopyText
-                            hideToolTip
-                            text={db.name}
-                            className="w-[28px]"
-                            tip="名称复制成功"
-                          />
+                      <CopyText hideToolTip text={db.name} tip="名称复制成功">
+                        <div>
+                          <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
+                            <CopyIcon />
+                          </div>
+                          <div className="text-grayIron-600">{t("Copy")}</div>
                         </div>
-                        {t("Copy")}
-                      </div>
-                      <div className="text-grayIron-600">
-                        <DeleteCollectionModal database={db} />
-                        {t("Delete")}
-                      </div>
+                      </CopyText>
+                      <DeleteCollectionModal database={db} />
                     </>
                   </MoreButton>
                 </div>

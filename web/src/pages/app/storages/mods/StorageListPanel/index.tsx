@@ -84,25 +84,22 @@ export default function StorageListPanel() {
                       </Tag>
                       <MoreButton isHidden={storage?.name !== store.currentStorage?.name}>
                         <>
-                          <div className="text-grayIron-600">
-                            <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
-                              <CreateBucketModal storage={storage}>
+                          <CreateBucketModal storage={storage}>
+                            <div className="text-grayIron-600">
+                              <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
                                 <EditIcon fontSize={10} />
-                              </CreateBucketModal>
+                              </div>
+                              {t("Edit")}
                             </div>
-                            {t("Edit")}
-                          </div>
-                          <div className="text-grayIron-600">
-                            <DeleteBucketModal
-                              storage={storage}
-                              onSuccessAction={() => {
-                                if (storage.name === store.currentStorage?.name) {
-                                  store.setCurrentStorage(bucketListQuery?.data?.data[0]);
-                                }
-                              }}
-                            />
-                            {t("Delete")}
-                          </div>
+                          </CreateBucketModal>
+                          <DeleteBucketModal
+                            storage={storage}
+                            onSuccessAction={() => {
+                              if (storage.name === store.currentStorage?.name) {
+                                store.setCurrentStorage(bucketListQuery?.data?.data[0]);
+                              }
+                            }}
+                          />
                         </>
                       </MoreButton>
                     </div>

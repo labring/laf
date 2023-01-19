@@ -26,7 +26,7 @@ function FunctionPage() {
           </Row>
         </Col>
         <Col className="overflow-hidden">
-          <Row>
+          <Row className="overflow-hidden">
             <EditorPanel />
           </Row>
           <Row {...functionPageConfig.ConsolePanel}>

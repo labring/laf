@@ -42,7 +42,6 @@ function DeleteCollectionModal(props: { database: any }) {
   return (
     <>
       <div
-        className="text-grayModern-900 w-[20px] h-[20px] text-center"
         onClick={() => {
           reset();
           onOpen();
@@ -51,7 +50,10 @@ function DeleteCollectionModal(props: { database: any }) {
           }, 0);
         }}
       >
-        <DeleteIcon fontSize={12} />
+        <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
+          <DeleteIcon fontSize={12} />
+        </div>
+        <div className="text-grayIron-600">{t("Delete")}</div>
       </div>
 
       <Modal isOpen={isOpen} onClose={onClose}>
