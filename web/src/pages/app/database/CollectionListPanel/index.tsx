@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { BsTable } from "react-icons/bs";
 import { AddIcon, CopyIcon, Search2Icon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 
 import CopyText from "@/components/CopyText";
-// import CopyText from "@/components/CopyText";
-import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
 import MoreButton from "@/components/MoreButton";
 import Panel from "@/components/Panel";
@@ -78,9 +77,9 @@ export default function CollectionListPanel() {
                 }}
               >
                 <div className="w-full flex justify-between group">
-                  <div className="leading-loose">
-                    <FileTypeIcon type={FileType.db} />
-                    <span className="ml-2 text-base">{db.name}</span>
+                  <div className="leading-loose font-semibold">
+                    <BsTable className="inline" />
+                    <span className="ml-2 text-base text-black">{db.name}</span>
                   </div>
                   <MoreButton
                     isHidden={db.name !== store.currentDB?.name || store.currentShow !== "DB"}

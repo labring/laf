@@ -25,7 +25,8 @@
     "RulesNum": "规则数",
     "Search": "请输入ID进行查询",
     "SelectCollection": "选择集合",
-    "SelectFunction": "请选择云函数"
+    "SelectFunction": "请选择云函数",
+    "CollectionNameRule": "集合名称只能包含英文, _ 或者 -"
   },
   "Add": "添加",
   "AddData": "新增数据",
@@ -152,7 +153,8 @@
     "TimeTip": "临时链接,有效期15分钟",
     "Upload": "上传",
     "Used": "已使用",
-    "UploadTip": "请选择文件或者文件夹上传"
+    "UploadTip": "请选择文件或者文件夹上传",
+    "BucketNameRule": "只能包含英文或数字"
   },
   "TriggerPanel": {
     "AddTrigger": "新建触发器",

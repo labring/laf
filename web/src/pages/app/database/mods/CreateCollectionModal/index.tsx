@@ -57,7 +57,7 @@ const CreateCollectionModal = (props: { collection?: any; children: React.ReactE
           setTimeout(() => setFocus("name"), 0);
         },
       })}
-      <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{t("CollectionPanel.AddCollection")}</ModalHeader>
@@ -69,6 +69,10 @@ const CreateCollectionModal = (props: { collection?: any; children: React.ReactE
                 <Input
                   {...register("name", {
                     required: "name is required",
+                    pattern: {
+                      value: /^[A-Za-z][A-Za-z0-9-_]+$/,
+                      message: t("CollectionPanel.CollectionNameRule"),
+                    },
                   })}
                   id="name"
                   variant="filled"

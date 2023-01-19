@@ -36,6 +36,11 @@ import { LogControllerGetLogs } from "@/apis/v1/apps";
 
 const LIMIT_OPTIONS = [100, 150, 200];
 
+const DEFAULT_PAGE_INFO = {
+  page: 1,
+  limit: 100,
+};
+
 export default function LogsPage() {
   type FormData = {
     requestId: string;
@@ -49,7 +54,7 @@ export default function LogsPage() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [detail, setDetail] = useState<TLogItem | undefined>(undefined);
 
-  const [queryData, setQueryData] = useState({});
+  const [queryData, setQueryData] = useState(DEFAULT_PAGE_INFO);
 
   const logListQuery = useQuery(
     [queryKeys.useLogsQuery, queryData],
@@ -67,7 +72,7 @@ export default function LogsPage() {
   const submit = () => {
     setQueryData({
       ...getValues(),
-      page: 1,
+      ...DEFAULT_PAGE_INFO,
     });
     setTimeout(() => {
       logListQuery.refetch();
@@ -85,7 +90,7 @@ export default function LogsPage() {
         >
           <Panel.Header>
             <HStack spacing={2}>
-              <InputGroup width={400}>
+              <InputGroup width={300}>
                 <Input
                   borderRadius="4"
                   size="sm"
@@ -142,7 +147,7 @@ export default function LogsPage() {
                   <CopyText text={item.request_id} className="mr-2 text-primary-600 float-left">
                     <span>{item.request_id.substring(0, 8)}</span>
                   </CopyText>
-                  <CopyText text={item.func} className="mr-2 w-[100px] text-purple-600 float-left">
+                  <CopyText text={item.func} className="mr-2 w-[100px] text-purple-700 float-left">
                     <span>{item.func}</span>
                   </CopyText>
                   <div

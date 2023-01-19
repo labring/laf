@@ -112,7 +112,6 @@ export default function DataPanel() {
         <Pagination
           values={getPageInfo(entryDataQuery.data as any)}
           onChange={(values) => {
-            console.log(values);
             setQueryData((pre: any) => {
               const newQuery = { ...pre, ...values };
               return newQuery;
