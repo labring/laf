@@ -157,7 +157,8 @@
     "Bucket": "bucket",
     "BucketName": "Bucket name",
     "CreateBucket": "Create buckets",
-    "EditBucket": "Edit Bucket"
+    "EditBucket": "Edit Bucket",
+    "BucketNameRule": "Can only contain English or numbers"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",
