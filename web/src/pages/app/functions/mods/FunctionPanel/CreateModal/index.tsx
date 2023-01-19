@@ -23,11 +23,14 @@ import {
 } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import { SUPPORTED_METHODS } from "@/constants";
+
 import { useCreateFunctionMutation, useUpdateFunctionMutation } from "../../../service";
 import useFunctionStore from "../../../store";
 
 import functionTemplates from "./functionTemplates";
 
+import { TMethod } from "@/apis/typing";
 import useGlobalStore from "@/pages/globalStore";
 
 const CreateModal = (props: { functionItem?: any; children?: React.ReactElement }) => {
@@ -51,7 +54,7 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
     name: string;
     description: string;
     websocket: boolean;
-    methods: string[];
+    methods: TMethod[];
     code: string;
   };
 
@@ -113,10 +116,13 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
                 <FormLabel htmlFor="name">{t("FunctionPanel.FunctionName")}</FormLabel>
                 <Input
                   {...register("name", {
-                    required: "name is required",
+                    pattern: {
+                      value: /^[A-Za-z][A-Za-z0-9-_]+$/,
+                      message: t("FunctionPanel.FunctionNameRule"),
+                    },
                   })}
                   id="name"
-                  placeholder={t("FunctionPanel.FunctionNameTip") + "get-user "}
+                  placeholder={String(t("FunctionPanel.FunctionNameTip"))}
                   disabled={isEdit}
                   variant="filled"
                 />
@@ -131,11 +137,13 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
                     control={control}
                     render={({ field: { ref, ...rest } }) => (
                       <CheckboxGroup {...rest}>
-                        <Checkbox value="GET">GET</Checkbox>
-                        <Checkbox value="POST">POST</Checkbox>
-                        <Checkbox value="HEAD">HEAD</Checkbox>
-                        <Checkbox value="PATCH">PATCH</Checkbox>
-                        <Checkbox value="DELETE">DELETE</Checkbox>
+                        {Object.keys(SUPPORTED_METHODS).map((item) => {
+                          return (
+                            <Checkbox value={item} key={item}>
+                              {item}
+                            </Checkbox>
+                          );
+                        })}
                       </CheckboxGroup>
                     )}
                     rules={{

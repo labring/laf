@@ -2,16 +2,14 @@
  * cloud functions SideBar menu
  ***************************/
 
-import { AiFillDatabase, AiOutlineFunction } from "react-icons/ai";
-import { GrCatalogOption, GrSettingsOption, GrStorage } from "react-icons/gr";
 import { useNavigate, useParams } from "react-router-dom";
 import { Center } from "@chakra-ui/react";
 import clsx from "clsx";
 import { t } from "i18next";
 
-import { TriggerIcon } from "@/components/CommonIcon";
-import IconWrap from "@/components/IconWrap";
 import { Pages, SideBarWidth } from "@/constants/index";
+
+import Icons from "./Icons";
 
 import styles from "./index.module.scss";
 
@@ -32,43 +30,19 @@ export default function SideBar() {
     },
     {
       pageId: Pages.function,
-      component: (
-        <IconWrap tooltip={t("FunctionPanel.Function").toString()} placement="right" size={32}>
-          <AiOutlineFunction size="32" />
-        </IconWrap>
-      ),
-    },
-    {
-      pageId: Pages.trigger,
-      component: (
-        <IconWrap tooltip={t("TriggerPanel.Trigger").toString()} placement="right" size={32}>
-          <TriggerIcon fontSize={32} />
-        </IconWrap>
-      ),
+      component: <Icons type="function" />,
     },
     {
       pageId: Pages.database,
-      component: (
-        <IconWrap tooltip={t("CollectionPanel.Collection").toString()} placement="right" size={32}>
-          <AiFillDatabase size="28" />
-        </IconWrap>
-      ),
+      component: <Icons type="database" />,
     },
     {
       pageId: Pages.storage,
-      component: (
-        <IconWrap tooltip={t("StoragePanel.Storage").toString()} placement="right" size={32}>
-          <GrStorage size="26" />
-        </IconWrap>
-      ),
+      component: <Icons type="storage" />,
     },
     {
       pageId: Pages.logs,
-      component: (
-        <IconWrap tooltip={t("LogPanel.Log").toString()} placement="right" size={32}>
-          <GrCatalogOption size="26" />
-        </IconWrap>
-      ),
+      component: <Icons type="logs" />,
     },
   ];
 
@@ -109,9 +83,9 @@ export default function SideBar() {
             },
           ]}
         >
-          <IconWrap tooltip={t("SettingPanel.Setting").toString()} placement="right" size={32}>
-            <GrSettingsOption size="26" />
-          </IconWrap>
+          <div>
+            <Icons type="setting" />
+          </div>
         </SettingModal>
       ),
     },

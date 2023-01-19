@@ -83,7 +83,7 @@
     "Function": "函数",
     "FunctionList": "函数列表",
     "FunctionName": "函数名",
-    "FunctionNameTip": "函数唯一标识, 如",
+    "FunctionNameTip": "函数唯一标识, 如 get-user",
     "InterfaceDebug": "接口调试",
     "Methods": "请求方法",
     "Name": "参数名",
@@ -91,7 +91,8 @@
     "Select": "已选择",
     "SystemDependence": "内置依赖",
     "Value": "值",
-    "isSupport": "是否支持"
+    "isSupport": "是否支持",
+    "FunctionNameRule": "函数名只能是英文"
   },
   "HomePanel": {
     "APP": "Android or iOS 应用",
@@ -166,7 +167,8 @@
     "SetTimeout": "定时任务",
     "Time": "创建/更新时间",
     "Trigger": "触发器",
-    "Type": "类型"
+    "Type": "类型",
+    "CronHelp": "更多示例"
   },
   "NoData": "当前无数据"
 }

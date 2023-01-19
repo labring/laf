@@ -3,15 +3,19 @@
   cursor: pointer;
   border-radius: 4px;
   height: 48px;
+
+  svg {
+    fill: #9ca2a8;
+  }
 }
 
 .icon:hover,
 .icon.current {
-  background-color: #f0fff4;
-}
+  background-color: #d3ecec;
 
-.icon.current {
-  color: #38a169;
+  svg {
+    fill: #00a99d;
+  }
 }
 
 .icon.bottom {

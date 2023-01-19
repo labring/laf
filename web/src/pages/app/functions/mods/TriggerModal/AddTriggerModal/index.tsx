@@ -5,7 +5,9 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  HStack,
   Input,
+  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -24,6 +26,21 @@ import {} from "../service";
 
 import { useFunctionListQuery } from "@/pages/app/functions/service";
 
+const CRON_TEMPLATE = [
+  {
+    label: "每5分钟",
+    value: "*/5 * * * *",
+  },
+  {
+    label: "每小时",
+    value: "0 * * * *",
+  },
+  {
+    label: "每天上午8点",
+    value: "0 8 * * *",
+  },
+];
+
 const AddTriggerModal = (props: { children: React.ReactElement; targetFunc?: string }) => {
   type FormData = {
     desc: string;
@@ -34,6 +51,7 @@ const AddTriggerModal = (props: { children: React.ReactElement; targetFunc?: str
     register,
     handleSubmit,
     setFocus,
+    setValue,
     reset,
     formState: { errors },
   } = useForm<FormData>();
@@ -110,7 +128,7 @@ const AddTriggerModal = (props: { children: React.ReactElement; targetFunc?: str
                 <Input value={t("TriggerPanel.SetTimeout").toString()} variant="filled" readOnly />
               </FormControl>
               <FormControl isInvalid={!!errors?.cron}>
-                <FormLabel htmlFor="cron">Cron {t("TriggerPanel.Express")}</FormLabel>
+                <FormLabel htmlFor="cron">Cron {t("TriggerPanel.Express")} </FormLabel>
                 <Input
                   {...register("cron", {
                     required: "cron is required",
@@ -120,6 +138,28 @@ const AddTriggerModal = (props: { children: React.ReactElement; targetFunc?: str
                   placeholder={t("TriggerPanel.CornTip").toString()}
                 />
                 <FormErrorMessage>{errors.cron && errors.cron.message}</FormErrorMessage>
+                <HStack className="mt-2" spacing="2">
+                  {CRON_TEMPLATE.map((item) => (
+                    <span
+                      key={item.label}
+                      className="text-blue-500 cursor-pointer ml-2"
+                      onClick={() => {
+                        setValue("cron", item.value);
+                      }}
+                    >
+                      {item.label}
+                    </span>
+                  ))}
+                  <Link
+                    isExternal
+                    target="_blank"
+                    href="https://crontab.guru/examples.html"
+                    rel="noreferrer"
+                    className="text-blue-500"
+                  >
+                    {t("TriggerPanel.CronHelp")}
+                  </Link>
+                </HStack>
               </FormControl>
             </VStack>
           </ModalBody>

@@ -4,7 +4,6 @@ export const SmallNavHeight = 42;
 
 export const Pages = {
   function: "function",
-  trigger: "trigger",
   storage: "storage",
   database: "database",
   logs: "logs",
@@ -23,6 +22,14 @@ export enum APP_STATUS {
 }
 
 export const DEFAULT_REGION = "default";
+
+export enum SUPPORTED_METHODS {
+  GET = "GET",
+  POST = "POST",
+  PUT = "PUT",
+  PATCH = "PATCH",
+  DELETE = "DELETE",
+}
 
 export enum APP_PHASE_STATUS {
   Creating = "Creating",

@@ -59,7 +59,7 @@
     "AddFunction": "添加函数",
     "EditFunction": "编辑函数",
     "FunctionName": "函数名",
-    "FunctionNameTip": "函数唯一标识, 如",
+    "FunctionNameTip": "函数唯一标识, 如 get-user",
     "Methods": "请求方法",
     "Description": "函数描述",
     "Code": "函数模板",
@@ -79,7 +79,8 @@
     "DependenceName": "依赖包名",
     "DependenceVersion": "依赖版本",
     "DependenceTip": "请输入依赖包名",
-    "Select": "已选择"
+    "Select": "已选择",
+    "FunctionNameRule": "函数名只能是英文"
   },
   "TriggerPanel": {
     "Trigger": "触发器",
@@ -90,11 +91,13 @@
     "Function": "关联函数",
     "FunctionTip": "请选择关联的云函数",
     "Type": "类型",
+    "Cron": "表达式",
     "SetTimeout": "定时任务",
-    "Time": "创建/更新时间",
+    "Time": "更新时间",
     "Express": "表达式",
     "CornTip": "例:0/1 * * * * ？表示每 1 秒执行任务",
-    "DeleteConfirm": "确定删除该触发器吗"
+    "DeleteConfirm": "确定删除该触发器吗",
+    "CronHelp": "更多示例"
   },
   "LogPanel": {
     "Log": "日志",
