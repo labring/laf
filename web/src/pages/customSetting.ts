@@ -34,13 +34,13 @@ const useCustomSettingStore = create<State>()(
           functionPage: {
             SideBar: {
               style: {
-                width: 300,
+                width: 252,
               },
             },
 
             RightPanel: {
               style: {
-                width: "350px",
+                width: 252,
               },
             },
 
@@ -65,7 +65,7 @@ const useCustomSettingStore = create<State>()(
           collectionPage: {
             SideBar: {
               style: {
-                width: 300,
+                width: 252,
               },
             },
             CollectionPanel: {

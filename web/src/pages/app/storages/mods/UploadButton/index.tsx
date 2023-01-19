@@ -42,7 +42,7 @@ function UploadButton({ onUploadSuccess }: { onUploadSuccess: () => void }) {
           size="sm"
           variant="textGhost"
           as={Button}
-          leftIcon={<BiCloudUpload fontSize={22} className="text-gray-600" />}
+          leftIcon={<BiCloudUpload fontSize={22} className="text-grayModern-500" />}
           disabled={currentStorage === undefined}
         >
           {t("StoragePanel.Upload")}

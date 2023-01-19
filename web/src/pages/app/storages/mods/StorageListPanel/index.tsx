@@ -1,17 +1,11 @@
 import { useState } from "react";
 import { AddIcon, EditIcon, Search2Icon } from "@chakra-ui/icons";
-import {
-  CircularProgress,
-  CircularProgressLabel,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Tag,
-} from "@chakra-ui/react";
+import { Input, InputGroup, InputLeftElement, Tag } from "@chakra-ui/react";
 import { t } from "i18next";
 
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
+import MoreButton from "@/components/MoreButton";
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
 
@@ -20,14 +14,13 @@ import useStorageStore from "../../store";
 import CreateBucketModal from "../CreateBucketModal";
 import DeleteBucketModal from "../DeleteBucketModal";
 
-import styles from "../index.module.scss";
-
+// import styles from "../index.module.scss";
 import { TBucket } from "@/apis/typing";
-import useGlobalStore from "@/pages/globalStore";
+// import useGlobalStore from "@/pages/globalStore";
 
 export default function StorageListPanel() {
   const [search, setSearch] = useState("");
-  const globalStore = useGlobalStore();
+  // const globalStore = useGlobalStore();
   const store = useStorageStore((store) => store);
   const bucketListQuery = useBucketListQuery({
     onSuccess(data) {
@@ -80,54 +73,61 @@ export default function StorageListPanel() {
                     store.setPrefix("/");
                   }}
                 >
-                  <div className="relative flex-1">
+                  <>
+                    <div>
+                      <FileTypeIcon type={FileType.bucket} />
+                      <span className="ml-2 text-base">{storage.name}</span>
+                    </div>
                     <div className="flex justify-between">
-                      <div>
-                        <FileTypeIcon type={FileType.bucket} />
-                        <span className="ml-2 text-base">{storage.name}</span>
-                      </div>
-
                       <Tag size="sm" className="w-16 justify-center" variant={storage?.policy}>
                         {storage?.policy}
                       </Tag>
+                      <MoreButton isHidden={storage?.name !== store.currentStorage?.name}>
+                        <>
+                          <div className="text-grayIron-600">
+                            <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
+                              <CreateBucketModal storage={storage}>
+                                <EditIcon fontSize={10} />
+                              </CreateBucketModal>
+                            </div>
+                            {t("Edit")}
+                          </div>
+                          <div className="text-grayIron-600">
+                            <DeleteBucketModal
+                              storage={storage}
+                              onSuccessAction={() => {
+                                if (storage.name === store.currentStorage?.name) {
+                                  store.setCurrentStorage(bucketListQuery?.data?.data[0]);
+                                }
+                              }}
+                            />
+                            {t("Delete")}
+                          </div>
+                        </>
+                      </MoreButton>
                     </div>
-                  </div>
-                  <div className="invisible flex group-hover:visible">
-                    <CreateBucketModal storage={storage}>
-                      <IconWrap size={20} tooltip={t("Edit") + " Bucket"}>
-                        <EditIcon fontSize={10} />
-                      </IconWrap>
-                    </CreateBucketModal>
-                    <DeleteBucketModal
-                      storage={storage}
-                      onSuccessAction={() => {
-                        if (storage.name === store.currentStorage?.name) {
-                          store.setCurrentStorage(bucketListQuery?.data?.data[0]);
-                        }
-                      }}
-                    />
-                  </div>
+                  </>
                 </SectionList.Item>
               );
             })}
         </SectionList>
-        <div className="bg-gray-100 w-full rounded-md flex px-4 mb-4 justify-around  items-center h-[100px] flex-none">
+        {/* <div className="bg-lafWhite-400 w-full rounded-md flex px-4 mb-4 justify-around  items-center h-[139px] flex-none">
           <div>
-            <CircularProgress color="primary.500" value={30} size="90px">
+            <CircularProgress color="primary.500" value={30} thickness="7px" size="90px">
               <CircularProgressLabel>20%</CircularProgressLabel>
             </CircularProgress>
           </div>
           <div>
             <div>
-              <span className={"before:bg-error " + styles.circle}>{t("StoragePanel.All")}</span>
+              <span className={"before:bg-error-500 " + styles.circle}>{t("StoragePanel.All")}</span>
               <p className="text-lg">{globalStore.currentApp?.bundle.storageCapacity}</p>
             </div>
             <div className="mt-4">
-              <span className={"before:bg-primary " + styles.circle}>{t("StoragePanel.Used")}</span>
+              <span className={"before:bg-primary-500 " + styles.circle}>{t("StoragePanel.Used")}</span>
               <p className="text-lg">1Gi</p>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </Panel>
   );

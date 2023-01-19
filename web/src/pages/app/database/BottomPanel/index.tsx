@@ -14,9 +14,9 @@ function BottomPanel() {
         <Button
           size="xs"
           variant="plain"
-          onClick={() => store.togglePanel("collectionPage", "SideBar")}
+          onClick={() => store.togglePanel("collectionPage", "PolicyPanel")}
         >
-          {t("CollectionPanel.CollectionList")}
+          {t("CollectionPanel.Policy")}
         </Button>
       </HStack>
     </Panel>

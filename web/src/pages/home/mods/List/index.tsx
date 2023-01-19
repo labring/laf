@@ -48,7 +48,7 @@ function List(props: { appListQuery: any }) {
     <>
       <div className="flex items-center justify-between mb-5">
         <h2 className="font-semibold text-xl flex items-center">
-          <RiApps2Fill className="mr-1 text-second" size={18} />
+          <RiApps2Fill className="mr-1 text-primary-600" size={18} />
           {t("HomePanel.MyApp")}
         </h2>
         <div className="flex">
@@ -77,7 +77,7 @@ function List(props: { appListQuery: any }) {
       </div>
 
       <div>
-        <div className="flex bg-white rounded-lg h-12 items-center px-6 mb-3">
+        <div className="flex bg-lafWhite-200 rounded-lg h-12 items-center px-6 mb-3">
           <div className="w-2/12 text-second ">{t("HomePanel.Application") + t("Name")}</div>
           <div className="w-2/12 text-second ">App ID</div>
           <div className="w-2/12 text-second pl-2">{t("HomePanel.State")}</div>
@@ -91,7 +91,7 @@ function List(props: { appListQuery: any }) {
             return (
               <div
                 key={item?.appid}
-                className="flex bg-white rounded-lg h-16 items-center px-6 mb-3"
+                className="flex bg-lafWhite-200 rounded-lg h-16 items-center px-6 mb-3"
               >
                 <div className="w-2/12 font-bold text-lg">{item?.name}</div>
                 <div className="w-2/12 ">{item?.appid}</div>

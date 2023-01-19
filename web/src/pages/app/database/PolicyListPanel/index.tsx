@@ -7,6 +7,7 @@ import { t } from "i18next";
 import ConfirmButton from "@/components/ConfirmButton";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
+import MoreButton from "@/components/MoreButton";
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
 
@@ -55,29 +56,36 @@ export default function PolicyListPanel() {
                   <FileTypeIcon type="policy" />
                   <span className="ml-2 text-base">{item.name}</span>
                 </div>
-                <div className="invisible flex items-center group-hover:visible">
-                  <AddPolicyModal key="AddPolicyModal" isEdit defaultData={item}>
-                    <IconWrap tooltip={t("CollectionPanel.EditPolicy").toString()} size={20}>
-                      <EditIcon fontSize={10} />
-                    </IconWrap>
-                  </AddPolicyModal>
-                  <ConfirmButton
-                    onSuccessAction={async () => {
-                      await deletePolicyMutation.mutateAsync(item.name);
-                    }}
-                    headerText={String(t("Delete"))}
-                    bodyText={t("CollectionPanel.ConformDelete")}
-                  >
-                    <IconWrap tooltip={String(t("Delete"))}>
-                      <DeleteIcon
-                        className="ml-2"
-                        fontSize={14}
-                        color="gray.500"
-                        _hover={{ color: "black" }}
-                      />
-                    </IconWrap>
-                  </ConfirmButton>
-                </div>
+                <MoreButton
+                  isHidden={
+                    item.name !== store.currentPolicy?.name || store.currentShow !== "Policy"
+                  }
+                >
+                  <>
+                    <div className="text-grayIron-600">
+                      <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
+                        <AddPolicyModal key="AddPolicyModal" isEdit defaultData={item}>
+                          <EditIcon fontSize={10} />
+                        </AddPolicyModal>
+                      </div>
+                      {t("Edit")}
+                    </div>
+                    <div className="text-grayIron-600">
+                      <ConfirmButton
+                        onSuccessAction={async () => {
+                          await deletePolicyMutation.mutateAsync(item.name);
+                        }}
+                        headerText={String(t("Delete"))}
+                        bodyText={t("CollectionPanel.ConformDelete")}
+                      >
+                        <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
+                          <DeleteIcon fontSize={14} />
+                        </div>
+                      </ConfirmButton>
+                      {t("Delete")}
+                    </div>
+                  </>
+                </MoreButton>
               </div>
             </SectionList.Item>
           );

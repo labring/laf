@@ -17,8 +17,8 @@ export default function IconWrap(props: {
       <Center
         onClick={props.onClick}
         className={clsx("rounded-full inline-block cursor-pointer", className, {
-          "hover:bg-slate-100": !showBg,
-          "bg-slate-100": showBg,
+          "hover:bg-lafWhite-600": !showBg,
+          "bg-lafWhite-600": showBg,
         })}
         style={{ width: size, height: size }}
       >

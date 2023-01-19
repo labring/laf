@@ -80,7 +80,7 @@ export default function PolicyDataList() {
           component={(item: any) => {
             return (
               <>
-                <div className="border-b-2 mb-4 p-2">
+                <div className="border-b-2 border-lafWhite-600 mb-4 p-2">
                   <Text fontSize="md" className="leading-loose font-semibold">
                     {t("CollectionPanel.Collection")}：{item.collectionName}
                   </Text>

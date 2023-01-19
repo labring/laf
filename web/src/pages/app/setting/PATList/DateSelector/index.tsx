@@ -52,7 +52,7 @@ const DateSelector = function (props: {
     } else {
       setOptionSelect(value);
     }
-  }, [value, setStartDate, setOptionSelect]);
+  }, [value, isShow, setting, setStartDate, setOptionSelect]);
 
   const handleDateChange = function (date: Date) {
     const timeGap = (date.getTime() - setting.now.getTime()) / 1000;
@@ -76,6 +76,7 @@ const DateSelector = function (props: {
   return (
     <div className={clsx(styles.customStyleDateSelector, " flex")}>
       <Select
+        variant="filled"
         width={isShow ? "120px" : "190px"}
         size="sm"
         value={optionSelect}

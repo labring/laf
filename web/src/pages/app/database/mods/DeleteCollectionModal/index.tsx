@@ -16,8 +16,6 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
-import IconWrap from "@/components/IconWrap";
-
 import { useDeleteDBMutation } from "../../service";
 
 function DeleteCollectionModal(props: { database: any }) {
@@ -43,8 +41,8 @@ function DeleteCollectionModal(props: { database: any }) {
 
   return (
     <>
-      <IconWrap
-        tooltip={t("Delete").toString()}
+      <div
+        className="text-grayModern-900 w-[20px] h-[20px] text-center"
         onClick={() => {
           reset();
           onOpen();
@@ -54,7 +52,7 @@ function DeleteCollectionModal(props: { database: any }) {
         }}
       >
         <DeleteIcon fontSize={12} />
-      </IconWrap>
+      </div>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -93,7 +91,7 @@ function DeleteCollectionModal(props: { database: any }) {
                 }
               })}
             >
-              {t(" Confirm")}
+              {t("Confirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

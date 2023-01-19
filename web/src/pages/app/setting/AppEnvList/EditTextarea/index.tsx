@@ -11,6 +11,7 @@ const EditTextarea = function (props: {
   const { text, value, onBlur, onChange, disabled } = props;
   return (
     <Textarea
+      className="focus-visible:border-0 bg-lafWhite-600"
       value={value}
       onBlur={onBlur}
       onChange={onChange}

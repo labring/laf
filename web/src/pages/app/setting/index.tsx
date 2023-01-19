@@ -42,7 +42,7 @@ const SettingModal = (props: {
           <ModalCloseButton />
           <ModalBody p={6}>
             <div className="flex">
-              <SectionList style={{ width: "200px", marginRight: "15px" }}>
+              <SectionList className="w-[250px] mr-4 border-r-2 border-lafWhite-600 pr-4">
                 {tabMatch.map((tab) => {
                   return (
                     <SectionList.Item

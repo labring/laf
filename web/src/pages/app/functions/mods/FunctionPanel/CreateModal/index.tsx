@@ -136,7 +136,7 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
                     name="methods"
                     control={control}
                     render={({ field: { ref, ...rest } }) => (
-                      <CheckboxGroup {...rest}>
+                      <CheckboxGroup {...rest} colorScheme="primary">
                         {Object.keys(SUPPORTED_METHODS).map((item) => {
                           return (
                             <Checkbox value={item} key={item}>

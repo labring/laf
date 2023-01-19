@@ -14,13 +14,13 @@ import CreateFolderModal from "../CreateFolderModal";
 import PathLink from "../PathLink";
 import UploadButton from "../UploadButton";
 
-import styles from "../index.module.scss";
-
+// import styles from "../index.module.scss";
 import useAwsS3 from "@/hooks/useAwsS3";
-
+import useGlobalStore from "@/pages/globalStore";
 export default function FileList() {
   const { getList, getFileUrl, deleteFile } = useAwsS3();
   const { currentStorage, prefix, setPrefix } = useStorageStore();
+  const { currentApp } = useGlobalStore();
   const bucketName = currentStorage?.name;
   const bucketType = currentStorage?.policy;
 
@@ -37,6 +37,7 @@ export default function FileList() {
       changeDirectory(file);
       return;
     }
+    console.log(currentApp);
     const fileUrl =
       bucketType === "private"
         ? getFileUrl(bucketName!, file.Key)
@@ -60,11 +61,11 @@ export default function FileList() {
         </Panel.Header>
       </Panel>
       <Panel className="flex-grow overflow-hidden">
-        <Panel.Header className="border-b-2 flex-none">
+        <Panel.Header className="border-b-2 border-lafWhite-400 flex-none mb-4 ml-4">
           <PathLink />
-          <span className={"before:bg-purple-500 " + styles.circle}>
-            {/* TODO: 文件数： {currentStorage?.name} */}
-          </span>
+          {/* <span className={"before:bg-purple-600 " + styles.circle}>
+            TODO: 文件数： {currentStorage?.name}
+          </span> */}
         </Panel.Header>
         <div className="px-2 pb-2 flex-grow overflow-hidden">
           {!query.data ||
@@ -76,7 +77,7 @@ export default function FileList() {
           ) : (
             <TableContainer className="h-full" style={{ overflowY: "auto" }}>
               <Table variant="simple" size="sm">
-                <Thead className="h-8 bg-gray-100 text-gray-300">
+                <Thead className="h-8 bg-lafWhite-400 text-grayModern-500">
                   <Tr>
                     <Th>{t("StoragePanel.FileName")}</Th>
                     <Th>{t("StoragePanel.FileType")}</Th>
@@ -87,7 +88,7 @@ export default function FileList() {
                     </Th>
                   </Tr>
                 </Thead>
-                <Tbody>
+                <Tbody className="text-grayModern-500">
                   {query.data
                     .filter((file) => file.Key !== prefix)
                     .map((file: TFile) => {
@@ -97,7 +98,7 @@ export default function FileList() {
                         ? "folder"
                         : formateType(fileName[fileName.length - 1]);
                       return (
-                        <Tr _hover={{ bgColor: "#efefef" }} key={file.Key || file.Prefix}>
+                        <Tr className="hover:bg-lafWhite-600" key={file.Key || file.Prefix}>
                           <Td
                             style={{
                               maxWidth: 200,
@@ -105,6 +106,7 @@ export default function FileList() {
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
                             }}
+                            className="text-grayModern-900 font-medium"
                           >
                             <FileTypeIcon type={fileType} />
                             {file.Prefix ? (
@@ -123,7 +125,7 @@ export default function FileList() {
                           <Td isNumeric>
                             {file.LastModified ? formatDate(file.LastModified) : "--"}
                           </Td>
-                          <Td isNumeric className="flex justify-end">
+                          <Td isNumeric className="flex justify-end text-grayModern-900">
                             <IconWrap
                               placement="left"
                               tooltip={

@@ -10,18 +10,19 @@ export default function CopyText(props: {
   tip?: string;
   className?: string;
   children?: React.ReactElement;
+  hideToolTip?: boolean;
 }) {
   const { onCopy, setValue } = useClipboard("");
   const { showSuccess } = useGlobalStore();
 
-  const { children = <CopyIcon />, text, tip, className } = props;
+  const { children = <CopyIcon />, text, tip, className, hideToolTip } = props;
 
   useEffect(() => {
     setValue(text);
   }, [setValue, text]);
 
   return (
-    <Tooltip label={t("Copy")} placement="top">
+    <Tooltip label={hideToolTip ? "" : t("Copy")} placement="top">
       {React.cloneElement(children, {
         className: className || "",
         onClick: () => {

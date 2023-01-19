@@ -135,7 +135,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                                 <Button
                                   variant={"ghost"}
                                   size="sm"
-                                  colorScheme={rest.value === region.name ? "green" : "gray"}
+                                  colorScheme={rest.value === region.name ? "primary" : "gray"}
                                   key={region.name}
                                 >
                                   <CheckIcon className="mr-2" />
@@ -159,8 +159,9 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                   {t("HomePanel.Application") + t("HomePanel.BundleName")}
                 </FormLabel>
                 <Select
+                  variant="filled"
                   {...register("bundleName", {
-                    required: `${t("HomePanel.BundleName")}${t(" IsRequired")}`,
+                    required: `${t("HomePanel.BundleName")} ${t("IsRequired")}`,
                   })}
                   disabled={isEdit}
                 >
@@ -178,6 +179,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
               <FormControl isRequired isInvalid={!!errors?.runtimeName}>
                 <FormLabel htmlFor="runtimeName">{t("HomePanel.RuntimeName")}</FormLabel>
                 <Select
+                  variant="filled"
                   {...register("runtimeName", {
                     required: `${t("HomePanel.RuntimeName")} ${t("IsRequired")}`,
                   })}

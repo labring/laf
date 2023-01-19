@@ -12,6 +12,7 @@ import { TriggerIcon } from "@/components/CommonIcon";
 import ConfirmButton from "@/components/ConfirmButton";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
+import MoreButton from "@/components/MoreButton";
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
 import { Pages } from "@/constants";
@@ -106,30 +107,32 @@ export default function FunctionList() {
                     <FileTypeIcon type={FileType.ts} />
                     <span className="ml-2 font-medium text-black">{func?.name}</span>
                   </div>
-                  <div className="invisible flex items-center group-hover:visible">
-                    <CreateModal functionItem={func}>
-                      <IconWrap size={20} tooltip={t("Edit").toString()}>
-                        <EditIcon fontSize={13} />
-                      </IconWrap>
-                    </CreateModal>
-
-                    <ConfirmButton
-                      onSuccessAction={async () => {
-                        await deleteFunctionMutation.mutateAsync(func);
-                      }}
-                      headerText={String(t("Delete"))}
-                      bodyText={String(t("FunctionPanel.DeleteConfirm"))}
-                    >
-                      <IconWrap tooltip={String(t("Delete"))}>
-                        <DeleteIcon
-                          className="ml-2"
-                          fontSize={14}
-                          color="gray.500"
-                          _hover={{ color: "black" }}
-                        />
-                      </IconWrap>
-                    </ConfirmButton>
-                  </div>
+                  <MoreButton isHidden={func.name !== currentFunction?.name}>
+                    <>
+                      <div className="text-grayIron-600">
+                        <div className="text-grayModern-900 w-[30px] h-[20px] text-center">
+                          <CreateModal functionItem={func}>
+                            <EditIcon fontSize={13} />
+                          </CreateModal>
+                        </div>
+                        {t("Edit")}
+                      </div>
+                      <div className="text-grayIron-600">
+                        <ConfirmButton
+                          onSuccessAction={async () => {
+                            await deleteFunctionMutation.mutateAsync(func);
+                          }}
+                          headerText={String(t("Delete"))}
+                          bodyText={String(t("FunctionPanel.DeleteConfirm"))}
+                        >
+                          <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
+                            <DeleteIcon fontSize={14} />
+                          </div>
+                        </ConfirmButton>
+                        {t("Delete")}
+                      </div>
+                    </>
+                  </MoreButton>
                 </SectionList.Item>
               );
             })}

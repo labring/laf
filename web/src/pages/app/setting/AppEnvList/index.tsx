@@ -77,6 +77,7 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
         <Button
           className="w-28 h-8 self-end mt-4"
           type="submit"
+          variant={"secondary"}
           onClick={() => {
             globalStore.restartCurrentApp();
             props.onClose && props.onClose();
