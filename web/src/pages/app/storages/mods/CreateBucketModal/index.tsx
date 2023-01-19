@@ -93,13 +93,15 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{isEdit ? t("Edit") : t("Create")}Bucket</ModalHeader>
+          <ModalHeader>
+            {isEdit ? t("StoragePanel.EditBucket") : t("StoragePanel.CreateBucket")}
+          </ModalHeader>
           <ModalCloseButton />
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
-              <FormControl isInvalid={!!errors?.name}>
-                <FormLabel htmlFor="name">Bucket {t("Name")}</FormLabel>
+              <FormControl isRequired>
+                <FormLabel htmlFor="name"> {t("StoragePanel.BucketName")}</FormLabel>
                 <Input
                   {...register("name", {
                     required: true,

@@ -42,6 +42,7 @@ export const useBucketListQuery = (config?: { onSuccess: (data: any) => void }) 
 export const useBucketCreateMutation = (config?: { onSuccess: (data: any) => void }) => {
   const globalStore = useGlobalStore();
   const queryClient = useQueryClient();
+  const store = useStorageStore();
   return useMutation(
     (values: any) => {
       return BucketControllerCreate(values);
@@ -52,6 +53,7 @@ export const useBucketCreateMutation = (config?: { onSuccess: (data: any) => voi
           globalStore.showError(data.error);
         } else {
           await queryClient.invalidateQueries(queryKeys.useBucketListQuery);
+          store.setCurrentStorage(data.data);
         }
       },
     },

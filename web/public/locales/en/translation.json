@@ -154,7 +154,10 @@
     "Upload": "Upload",
     "Used": "Used",
     "UploadTip": "Please select a file or folder to upload",
-    "BucketNameRule": "Can only contain English or numbers"
+    "Bucket": "bucket",
+    "BucketName": "Bucket name",
+    "CreateBucket": "Create buckets",
+    "EditBucket": "Edit Bucket"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",
@@ -170,7 +173,9 @@
     "Time": "Creation/update time",
     "Trigger": "Trigger",
     "Type": "Type",
-    "CronHelp": "more examples"
+    "CronHelp": "more examples",
+    "Cron": "expression"
   },
-  "NoData": "Currently no data"
+  "NoData": "Currently no data",
+  "SaveAndRestart": "save and restart"
 }

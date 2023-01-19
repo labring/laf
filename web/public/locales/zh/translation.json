@@ -154,7 +154,11 @@
     "Upload": "上传",
     "Used": "已使用",
     "UploadTip": "请选择文件或者文件夹上传",
-    "BucketNameRule": "只能包含英文或数字"
+    "BucketNameRule": "只能包含英文或数字",
+    "Bucket": "桶",
+    "BucketName": "Bucket名称",
+    "CreateBucket": "创建Bucket",
+    "EditBucket": "编辑Bucket"
   },
   "TriggerPanel": {
     "AddTrigger": "新建触发器",
@@ -170,7 +174,9 @@
     "Time": "创建/更新时间",
     "Trigger": "触发器",
     "Type": "类型",
-    "CronHelp": "更多示例"
+    "CronHelp": "更多示例",
+    "Cron": "表达式"
   },
-  "NoData": "当前无数据"
+  "NoData": "当前无数据",
+  "SaveAndRestart": "保存并重启"
 }

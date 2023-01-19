@@ -16,10 +16,10 @@ import { useDeletePolicyMutation, usePolicyListQuery } from "../service";
 import useDBMStore from "../store";
 export default function PolicyListPanel() {
   const policyQuery = usePolicyListQuery((data) => {
-    if (data.data.length > 0) {
-      store.setCurrentPolicy(data.data[0]);
-    } else {
+    if (data.data.length === 0) {
       store.setCurrentPolicy(undefined);
+    } else if (store.currentPolicy === undefined) {
+      store.setCurrentPolicy(data?.data[0]);
     }
   });
 
@@ -45,7 +45,7 @@ export default function PolicyListPanel() {
         {policyQuery?.data?.data.map((item: any) => {
           return (
             <SectionList.Item
-              isActive={store.currentShow === "Policy" && item?.id === store.currentPolicy.id}
+              isActive={store.currentShow === "Policy" && item?.id === store.currentPolicy?.id}
               key={item?.id}
               onClick={() => {
                 store.setCurrentPolicy(item);

@@ -19,11 +19,11 @@ import {
 } from "@chakra-ui/react";
 
 import { useCreateDBMutation } from "../../service";
-
+import useDBMStore from "../../store";
 const CreateCollectionModal = (props: { collection?: any; children: React.ReactElement }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { t } = useTranslation();
-
+  const store = useDBMStore();
   const { collection, children } = props;
 
   const isEdit = !!collection;
@@ -44,6 +44,7 @@ const CreateCollectionModal = (props: { collection?: any; children: React.ReactE
 
   const onSubmit = async (data: any) => {
     await createDBMutation.mutateAsync({ name: data.name });
+    store.setCurrentDB(data);
     onClose();
     reset({});
   };

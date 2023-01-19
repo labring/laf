@@ -20,10 +20,10 @@ export default function CollectionListPanel() {
   const { t } = useTranslation();
   const collectionListQuery = useCollectionListQuery({
     onSuccess: (data) => {
-      if (data.data.length > 0) {
-        store.setCurrentDB(data.data[0]);
-      } else {
+      if (data.data.length === 0) {
         store.setCurrentDB(undefined);
+      } else if (store.currentDB === undefined) {
+        store.setCurrentDB(data?.data[0]);
       }
     },
   });
