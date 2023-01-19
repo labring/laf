@@ -100,7 +100,7 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
-              <FormControl isRequired>
+              <FormControl isInvalid={!!errors?.name}>
                 <FormLabel htmlFor="name"> {t("StoragePanel.BucketName")}</FormLabel>
                 <Input
                   {...register("name", {

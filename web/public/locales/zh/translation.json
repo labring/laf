@@ -158,7 +158,8 @@
     "Bucket": "桶",
     "BucketName": "Bucket名称",
     "CreateBucket": "创建Bucket",
-    "EditBucket": "编辑Bucket"
+    "EditBucket": "编辑Bucket",
+    "DeleteBucket": "删除Bucket"
   },
   "TriggerPanel": {
     "AddTrigger": "新建触发器",
