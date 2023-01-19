@@ -20,30 +20,6 @@ spec:
         path: /
         pathType: Prefix
 
-
-# ingress-oss-subdomain.yml
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: oss-ingress-subdomain
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: 4096m
-spec:
-  ingressClassName: apisix
-  rules:
-  - host: "*.oss.{{ .Values.global.domain }}"
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: minio
-            port:
-              number: 9000
-
-
 # minio console ingress
 apiVersion: networking.k8s.io/v1
 kind: Ingress
