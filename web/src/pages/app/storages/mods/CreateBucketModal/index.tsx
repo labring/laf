@@ -104,7 +104,7 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
                   {...register("name", {
                     required: true,
                     pattern: {
-                      value: /^[A-Za-z][A-Za-z0-9]+$/,
+                      value: /^[A-Za-z][A-Za-z0-9-]+[A-Za-z]$/,
                       message: t("StoragePanel.BucketNameRule"),
                     },
                   })}

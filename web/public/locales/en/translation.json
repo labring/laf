@@ -154,7 +154,7 @@
     "Upload": "Upload",
     "Used": "Used",
     "UploadTip": "Please select a file or folder to upload",
-    "BucketNameRule": "Can only contain English or numbers"
+    "BucketNameRule": "Can only contain English or numbers or -, and cannot end with -"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",
