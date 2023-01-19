@@ -7,7 +7,7 @@ import { StorageService } from '../storage/storage.service'
 import { DatabaseService } from '../database/database.service'
 import { ClusterService } from 'src/region/cluster/cluster.service'
 import { RegionService } from 'src/region/region.service'
-import { GatewayService } from 'src/gateway/gateway.service'
+import { FunctionDomainService } from 'src/gateway/function-domain.service'
 
 @Injectable()
 export class ApplicationTaskService {
@@ -18,7 +18,7 @@ export class ApplicationTaskService {
     private readonly clusterService: ClusterService,
     private readonly storageService: StorageService,
     private readonly databaseService: DatabaseService,
-    private readonly gatewayService: GatewayService,
+    private readonly gatewayService: FunctionDomainService,
     private readonly prisma: PrismaService,
   ) {}
 

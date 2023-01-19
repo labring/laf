@@ -5,8 +5,8 @@ import { RegionService } from '../region/region.service'
 import { ApisixService } from './apisix.service'
 
 @Injectable()
-export class GatewayService {
-  private readonly logger = new Logger(GatewayService.name)
+export class FunctionDomainService {
+  private readonly logger = new Logger(FunctionDomainService.name)
 
   constructor(
     private readonly prisma: PrismaService,
