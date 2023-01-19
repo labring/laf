@@ -1,11 +1,13 @@
+import { HttpService } from '@nestjs/axios'
 import { Injectable, Logger } from '@nestjs/common'
 import { Region } from '@prisma/client'
-import axios from 'axios'
 import { GetApplicationNamespaceById } from 'src/utils/getter'
 
 @Injectable()
 export class ApisixService {
   private readonly logger = new Logger(ApisixService.name)
+
+  constructor(private readonly httpService: HttpService) {}
 
   async createAppRoute(region: Region, appid: string, domain: string) {
     const host = domain
@@ -49,7 +51,7 @@ export class ApisixService {
     const conf = region.gatewayConf
     const api_url = `${conf.apiUrl}/routes/${id}`
 
-    const res = await axios.put(api_url, data, {
+    const res = await this.httpService.axiosRef.put(api_url, data, {
       headers: {
         'X-API-KEY': conf.apiKey,
         'Content-Type': 'application/json',
@@ -63,7 +65,7 @@ export class ApisixService {
     const conf = region.gatewayConf
     const api_url = `${conf.apiUrl}/routes/${id}`
 
-    const res = await axios.delete(api_url, {
+    const res = await this.httpService.axiosRef.delete(api_url, {
       headers: {
         'X-API-KEY': conf.apiKey,
         'Content-Type': 'application/json',

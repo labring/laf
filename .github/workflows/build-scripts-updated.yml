@@ -9,6 +9,7 @@ on:
       - "deploy/build/**"
       - "deploy/scripts/**"
       - ".github/workflows/build-scripts-updated.yml"
+      - ".github/workflows/build-sealos-cluster-image.yml"
       - "!**/*.md"
 
 concurrency:
