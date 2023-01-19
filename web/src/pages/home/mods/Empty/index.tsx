@@ -7,6 +7,8 @@ import CreateAppModal from "../CreateAppModal";
 
 import styles from "./index.module.scss";
 
+import useGlobalStore from "@/pages/globalStore";
+
 function Empty() {
   const messageList = [
     t("HomePanel.WX"),
@@ -16,11 +18,14 @@ function Empty() {
     t("HomePanel.Personal"),
     t("HomePanel.Explore"),
   ];
+
+  const { userInfo } = useGlobalStore();
+
   return (
     <div style={{ height: "75vh", minHeight: "500px" }}>
       <div className="flex flex-col items-center justify-center h-full">
         <h2 className="text-3xl font-bold">
-          {t("HomePanel.Hello")} 👋 ，Violetjam，{t("HomePanel.Welcome")}
+          {t("HomePanel.Hello")} 👋 ， {userInfo?.profile.name} ， {t("HomePanel.Welcome")}
         </h2>
         <p className="mt-10 text-xl w-[460px] mx-auto mb-8">{t("HomePanel.Introduction")}</p>
         <div className="grid grid-cols-3 w-[722px]">

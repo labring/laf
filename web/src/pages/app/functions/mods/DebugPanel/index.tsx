@@ -18,7 +18,7 @@ import { keyBy, mapValues } from "lodash";
 
 import { Row } from "@/components/Grid";
 import Panel from "@/components/Panel";
-import { Pages } from "@/constants";
+import { Pages, SUPPORTED_METHODS } from "@/constants";
 
 import { useCompileMutation } from "../../service";
 import useFunctionStore from "../../store";
@@ -27,6 +27,7 @@ import BodyParamsTab from "./BodyParamsTab";
 import QueryParamsTab from "./QueryParamsTab";
 import HeaderParamsTab from "./QueryParamsTab";
 
+import { TMethod } from "@/apis/typing";
 import useFunctionCache from "@/hooks/useFunctionCache";
 import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
 import useGlobalStore from "@/pages/globalStore";
@@ -44,7 +45,7 @@ export default function DebugPanel() {
 
   const [runningResData, setRunningResData] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  const [runningMethod, setRunningMethod] = useState<string>("");
+  const [runningMethod, setRunningMethod] = useState<TMethod>();
 
   const compileMutation = useCompileMutation();
 
@@ -126,7 +127,7 @@ export default function DebugPanel() {
                       value={runningMethod}
                       disabled={getFunctionUrl() === ""}
                       onChange={(e) => {
-                        setRunningMethod(e.target.value);
+                        setRunningMethod(e.target.value as TMethod);
                       }}
                     >
                       {currentFunction.methods?.map((item: string) => {
@@ -158,12 +159,15 @@ export default function DebugPanel() {
                             <span className="ml-1">({queryParams.length})</span>
                           )}
                         </Tab>
-                        <Tab>
-                          Body
-                          {Object.keys(bodyParams).length > 0 && (
-                            <span className="ml-1">({Object.keys(bodyParams).length})</span>
-                          )}
-                        </Tab>
+                        {runningMethod === SUPPORTED_METHODS.POST && (
+                          <Tab>
+                            Body
+                            {Object.keys(bodyParams).length > 0 && (
+                              <span className="ml-1">({Object.keys(bodyParams).length})</span>
+                            )}
+                          </Tab>
+                        )}
+
                         <Tab>
                           Headers
                           {headerParams.length > 0 && (
@@ -187,13 +191,17 @@ export default function DebugPanel() {
                             }}
                           />
                         </TabPanel>
-                        <TabPanel px={2} py={3}>
-                          <BodyParamsTab
-                            onChange={(values) => {
-                              setBodyParams(values);
-                            }}
-                          />
-                        </TabPanel>
+
+                        {runningMethod === SUPPORTED_METHODS.POST && (
+                          <TabPanel px={2} py={3}>
+                            <BodyParamsTab
+                              onChange={(values) => {
+                                setBodyParams(values);
+                              }}
+                            />
+                          </TabPanel>
+                        )}
+
                         <TabPanel
                           px={0}
                           py={1}

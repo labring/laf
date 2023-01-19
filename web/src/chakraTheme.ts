@@ -201,7 +201,16 @@ const Tabs = {
 const Table = {
   baseStyle: {},
   variants: {
-    unstyled: {
+    simple: {
+      parts: ["th", "td"],
+      th: {
+        border: "none",
+      },
+      td: {
+        border: "none",
+      },
+    },
+    border: {
       parts: ["th", "td"],
       th: {
         border: "1px solid #dddddd",
@@ -212,7 +221,7 @@ const Table = {
     },
   },
   defaultProps: {
-    variant: "unstyled",
+    variant: "border",
   },
 };
 

@@ -7,7 +7,6 @@ import DatabasePage from "./database";
 import FunctionPage from "./functions";
 import LogsPage from "./logs";
 import StoragePage from "./storages";
-import TriggerPage from "./trigger";
 
 function AppDetail() {
   const { visitedViews, currentPageId } = useGlobalStore();
@@ -20,10 +19,6 @@ function AppDetail() {
           {
             pageId: Pages.function,
             component: FunctionPage,
-          },
-          {
-            pageId: Pages.trigger,
-            component: TriggerPage,
           },
           {
             pageId: Pages.database,

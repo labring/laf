@@ -83,7 +83,7 @@
     "Function": "Function",
     "FunctionList": "Function List",
     "FunctionName": "Function Name",
-    "FunctionNameTip": "The unique identifier of the function, such as",
+    "FunctionNameTip": "The unique identifier of the function, such as get-user",
     "InterfaceDebug": "Interface Debugging",
     "Methods": "Request Method",
     "Name": "Parameter Name",
@@ -91,7 +91,8 @@
     "Select": "chosen",
     "SystemDependence": "Built-In",
     "Value": "Value",
-    "isSupport": "Whether to support"
+    "isSupport": "Whether to support",
+    "FunctionNameRule": "Function names can only be in letters"
   },
   "HomePanel": {
     "APP": "Android or iOS app",
@@ -166,7 +167,8 @@
     "SetTimeout": "timed task",
     "Time": "Creation/update time",
     "Trigger": "Trigger",
-    "Type": "Type"
+    "Type": "Type",
+    "CronHelp": "more examples"
   },
   "NoData": "Currently no data"
 }

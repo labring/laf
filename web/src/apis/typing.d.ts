@@ -198,11 +198,13 @@ export interface TFunction {
   desc: string;
   tags: any[];
   websocket: boolean;
-  methods: string[];
+  methods: TMethod[];
   createdAt: string;
   updatedAt: string;
   createdBy: string;
 }
+
+export type TMethod = "GET" | "POST" | "PUT" | "DELETE" | "HEAD" | "OPTIONS" | "PATCH";
 
 export interface Source {
   code: string;

@@ -18,11 +18,11 @@ import { Pages } from "@/constants";
 
 import { useDeleteFunctionMutation, useFunctionListQuery } from "../../service";
 import useFunctionStore from "../../store";
+import TriggerModal from "../TriggerModal";
 
 import CreateModal from "./CreateModal";
 
 import { TFunction } from "@/apis/typing";
-import AddTriggerModal from "@/pages/app/trigger/AddTriggerModal";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function FunctionList() {
@@ -64,6 +64,11 @@ export default function FunctionList() {
       <Panel.Header
         title={t`FunctionPanel.FunctionList`}
         actions={[
+          <TriggerModal key="trigger_modal">
+            <IconWrap size={20} tooltip={t("TriggerPanel.Trigger").toString()}>
+              <TriggerIcon fontSize={13} />
+            </IconWrap>
+          </TriggerModal>,
           <CreateModal key="create_modal">
             <IconWrap size={20} tooltip={t("FunctionPanel.AddFunction").toString()}>
               <AddIcon fontSize={12} />
@@ -102,11 +107,6 @@ export default function FunctionList() {
                     <span className="ml-2 font-medium text-black">{func?.name}</span>
                   </div>
                   <div className="invisible flex items-center group-hover:visible">
-                    <AddTriggerModal targetFunc={func.name}>
-                      <IconWrap size={20} tooltip={t("TriggerPanel.AddTrigger").toString()}>
-                        <TriggerIcon fontSize={13} />
-                      </IconWrap>
-                    </AddTriggerModal>
                     <CreateModal functionItem={func}>
                       <IconWrap size={20} tooltip={t("Edit").toString()}>
                         <EditIcon fontSize={13} />
