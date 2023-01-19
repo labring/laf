@@ -61,7 +61,7 @@ export default function FunctionList() {
   const deleteFunctionMutation = useDeleteFunctionMutation();
 
   return (
-    <Panel className="flex-grow">
+    <Panel className="flex-grow overflow-hidden">
       <Panel.Header
         title={t`FunctionPanel.FunctionList`}
         actions={[
@@ -77,67 +77,64 @@ export default function FunctionList() {
           </CreateModal>,
         ]}
       />
-      <div>
-        <div className="flex items-center mb-3">
-          <Input
-            size="sm"
-            rounded={"full"}
-            placeholder={String(t("FunctionPanel.SearchPlaceholder"))}
-            onChange={(event) => {
-              setKeywords(event.target.value);
-            }}
-          />
-        </div>
-
-        <SectionList style={{ height: "calc(100vh - 420px)", overflowY: "auto" }}>
-          {(allFunctionList || [])
-            .filter((item: TFunction) => item?.name.includes(keywords))
-            .map((func: any) => {
-              return (
-                <SectionList.Item
-                  isActive={func?.name === currentFunction?.name}
-                  key={func?.name || ""}
-                  className="group"
-                  onClick={() => {
-                    setCurrentFunction(func);
-                    navigate(`/app/${currentApp?.appid}/${Pages.function}/${func?.name}`);
-                  }}
-                >
-                  <div>
-                    <FileTypeIcon type={FileType.ts} />
-                    <span className="ml-2 font-medium text-black">{func?.name}</span>
-                  </div>
-                  <MoreButton isHidden={func.name !== currentFunction?.name}>
-                    <>
+      <div className="flex items-center mb-3">
+        <Input
+          size="sm"
+          rounded={"full"}
+          placeholder={String(t("FunctionPanel.SearchPlaceholder"))}
+          onChange={(event) => {
+            setKeywords(event.target.value);
+          }}
+        />
+      </div>
+      <SectionList className="flex-grow" style={{ overflowY: "auto" }}>
+        {(allFunctionList || [])
+          .filter((item: TFunction) => item?.name.includes(keywords))
+          .map((func: any) => {
+            return (
+              <SectionList.Item
+                isActive={func?.name === currentFunction?.name}
+                key={func?.name || ""}
+                className="group"
+                onClick={() => {
+                  setCurrentFunction(func);
+                  navigate(`/app/${currentApp?.appid}/${Pages.function}/${func?.name}`);
+                }}
+              >
+                <div>
+                  <FileTypeIcon type={FileType.ts} />
+                  <span className="ml-2 font-medium text-black">{func?.name}</span>
+                </div>
+                <MoreButton isHidden={func.name !== currentFunction?.name}>
+                  <>
+                    <CreateModal functionItem={func}>
                       <div className="text-grayIron-600">
-                        <div className="text-grayModern-900 w-[30px] h-[20px] text-center">
-                          <CreateModal functionItem={func}>
-                            <EditIcon fontSize={13} />
-                          </CreateModal>
+                        <div className="text-grayModern-900 w-[20px] h-[20px] text-center pl-1">
+                          <EditIcon />
                         </div>
                         {t("Edit")}
                       </div>
+                    </CreateModal>
+                    <ConfirmButton
+                      onSuccessAction={async () => {
+                        await deleteFunctionMutation.mutateAsync(func);
+                      }}
+                      headerText={String(t("Delete"))}
+                      bodyText={String(t("FunctionPanel.DeleteConfirm"))}
+                    >
                       <div className="text-grayIron-600">
-                        <ConfirmButton
-                          onSuccessAction={async () => {
-                            await deleteFunctionMutation.mutateAsync(func);
-                          }}
-                          headerText={String(t("Delete"))}
-                          bodyText={String(t("FunctionPanel.DeleteConfirm"))}
-                        >
-                          <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
-                            <DeleteIcon fontSize={14} />
-                          </div>
-                        </ConfirmButton>
+                        <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
+                          <DeleteIcon />
+                        </div>
                         {t("Delete")}
                       </div>
-                    </>
-                  </MoreButton>
-                </SectionList.Item>
-              );
-            })}
-        </SectionList>
-      </div>
+                    </ConfirmButton>
+                  </>
+                </MoreButton>
+              </SectionList.Item>
+            );
+          })}
+      </SectionList>
     </Panel>
   );
 }

@@ -28,7 +28,7 @@ function EditorPanel() {
             <FunctionDetailPopOver />
             {currentFunction?.id &&
               functionCache.getCache(currentFunction?.id) !== currentFunction?.source?.code && (
-                <span className="flex-none inline-block w-2 h-2 rounded-full bg-yellow-600"></span>
+                <span className="flex-none inline-block w-2 h-2 rounded-full bg-warn-700"></span>
               )}
             {currentFunction?.desc ? (
               <span className="text-slate-400 font-normal whitespace-nowrap overflow-hidden">
@@ -49,7 +49,7 @@ function EditorPanel() {
 
       {currentFunction?.name ? (
         <FunctionEditor
-          height="calc(100vh - 300px)"
+          className="flex-grow"
           path={currentFunction?.name || ""}
           value={functionCache.getCache(currentFunction!.id)}
           onChange={(value) => {

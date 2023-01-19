@@ -83,10 +83,10 @@ const Button = defineStyleConfig({
     },
 
     plain: {
-      bg: "gray.200",
-      color: "gray.500",
+      bg: "grayModern.100",
+      color: "grayModern.500",
       _hover: {
-        bg: "gray.300",
+        bg: "grayModern.200",
       },
     },
 
