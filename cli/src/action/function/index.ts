@@ -1,14 +1,14 @@
 import { CompileFunctionDto, CreateFunctionDto, UpdateFunctionDto } from "../../api/v1/data-contracts"
-import { functionControllerCompile, functionControllerCreate, functionControllerFindAll, functionControllerFindOne, functionControllerUpdate, logControllerGetLogs } from "../../api/v1/function"
+import { functionControllerCompile, functionControllerCreate, functionControllerFindAll, functionControllerFindOne, functionControllerRemove, functionControllerUpdate, logControllerGetLogs } from "../../api/v1/function"
 import { readApplicationConfig } from "../../config/application"
-import { FunctionConfig, readFunctionConfig, writeFunctionConfig } from "../../config/function"
+import { existFunctionConfig, FunctionConfig, readFunctionConfig, removeFunctionConfig, writeFunctionConfig } from "../../config/function"
 import * as path from "node:path"
 import * as fs from "node:fs"
 import * as Table from 'cli-table3'
 import { formatDate } from "../../util/format"
 import { readSecretConfig } from "../../config/secret"
 import { invokeFunction } from "../../api/debug"
-import { exist } from "../../util/file"
+import { exist, remove } from "../../util/file"
 import { getEmoji } from "../../util/print"
 
 
@@ -39,6 +39,19 @@ export async function list() {
     table.push([func.name, func.description, func.websocket, func.methods.join(','), func.tags.join(','), formatDate(func.updatedAt)])
   }
   console.log(table.toString())
+}
+
+export async function del(funcName: string) {
+  const appConfig = readApplicationConfig()
+  await functionControllerRemove(appConfig.appid, funcName)
+  if (existFunctionConfig(funcName)) {
+    removeFunctionConfig(funcName)
+  }
+  const funcPath = path.join(process.cwd(), 'functions', funcName + '.ts')
+  if (exist(funcPath)) {
+    remove(funcPath)
+  }
+  console.log(`${getEmoji('✅')} function ${funcName} deleted`)
 }
 
 async function pull(funcName: string) {
@@ -101,7 +114,7 @@ export async function pushOne(funcName: string) {
   console.log(`${getEmoji('✅')} function ${funcName} pushed`)
 }
 
-export async function exec(funcName: string, options: {log: string, requestId: boolean}) {
+export async function exec(funcName: string, options: { log: string, requestId: boolean }) {
   // compile code
   const codePath = path.join(process.cwd(), 'functions', funcName + '.ts')
   if (!exist(codePath)) {
