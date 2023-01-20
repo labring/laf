@@ -135,7 +135,7 @@ jobs:
           platforms: linux/amd64, linux/arm64
 
   trigger-workflow-build-cluster-image:
-    needs: [dockerize-controllers, dockerize-server, dockerize-web]
+    needs: [dockerize-server, dockerize-web]
     runs-on: ubuntu-latest
     steps:
       - name: Set env
