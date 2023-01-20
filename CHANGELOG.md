@@ -1,21 +1,34 @@
-# [](https://github.com/labring/laf/compare/v1.0.0-alpha.6...v) (2023-01-17)
+# [](https://github.com/labring/laf/compare/v1.0.0-beta.0...v) (2023-01-20)
 
 
 
-# [1.0.0-alpha.6](https://github.com/labring/laf/compare/v1.0.0-alpha.5...v1.0.0-alpha.6) (2023-01-16)
+# [1.0.0-beta.0](https://github.com/labring/laf/compare/v1.0.0-alpha.5...v1.0.0-beta.0) (2023-01-20)
 
 
 ### Bug Fixes
 
+* **deploy:** fix minio ingress in build charts ([#658](https://github.com/labring/laf/issues/658)) ([de0a86b](https://github.com/labring/laf/commit/de0a86ba84be39a911f647fa1117aa15c24413db))
 * **server:** fix bucket-udpate bug & server deploy issue ([#641](https://github.com/labring/laf/issues/641)) ([f6e2c35](https://github.com/labring/laf/commit/f6e2c3572d9fd22cc00a18b4302a4b361788a8ee))
 * **server:** fix response check error in bucket-updating ([#642](https://github.com/labring/laf/issues/642)) ([c4d994e](https://github.com/labring/laf/commit/c4d994e89fbf74483aae3f78750d2c5d0b82abea))
 * **server:** fix storage endpoint & ingress error ([#638](https://github.com/labring/laf/issues/638)) ([5506965](https://github.com/labring/laf/commit/5506965d942fb91358f6aa698ec85a2d906eee58))
+* **web:** encode function debug header & button theme ([#646](https://github.com/labring/laf/issues/646)) ([a0a2497](https://github.com/labring/laf/commit/a0a2497dc5e28d45411772de0f74ff49b159742d))
+* **web:** fix bucket name pattern ([#662](https://github.com/labring/laf/issues/662)) ([1f58446](https://github.com/labring/laf/commit/1f5844637fe3f88a375a900fe706bfcdeca624bb))
+* **web:** fix function page ui, update triger modal ([#652](https://github.com/labring/laf/issues/652)) ([a7fcfa5](https://github.com/labring/laf/commit/a7fcfa5f11d1dfb615e409b945eb220b42afa688))
+* **web:** fix pagination & favcon, optimize the ui styles ([#656](https://github.com/labring/laf/issues/656)) ([56cd541](https://github.com/labring/laf/commit/56cd541d8cd04448fc03e1040629bb0032cb5055))
+* **web:** replace gateway crd data with app domain object ([#660](https://github.com/labring/laf/issues/660)) ([5d411bb](https://github.com/labring/laf/commit/5d411bb315b3695cbe7c1d5306583bf94d2330e7))
 
 
 ### Features
 
+* **cli:** add function delete ([#664](https://github.com/labring/laf/issues/664)) ([b4002ba](https://github.com/labring/laf/commit/b4002ba1c703bcbccc9d6cc2ad026ac44e6f7b31))
+* **cli:** refactor and impl function actions([#647](https://github.com/labring/laf/issues/647)) ([d49b15e](https://github.com/labring/laf/commit/d49b15e1e7cc4705316d49271f3744cf415b9ee4))
+* **cli:** support dependency install ([#663](https://github.com/labring/laf/issues/663)) ([ac0be96](https://github.com/labring/laf/commit/ac0be967795d22f12d9f87be2f162473ed6bbf68))
+* **gateway:** refactor gateway in server instead of crd ([#649](https://github.com/labring/laf/issues/649)) ([5207aa4](https://github.com/labring/laf/commit/5207aa45291cbecf4059fa995f4a4cbb4fae0890))
+* **server:** impl bucket domain service ([#661](https://github.com/labring/laf/issues/661)) ([aa8a3af](https://github.com/labring/laf/commit/aa8a3af2e566163882056634cfd58111f6df0056))
+* **server:** support multi-region cluster ([#648](https://github.com/labring/laf/issues/648)) ([ba5698c](https://github.com/labring/laf/commit/ba5698c04d2af69fccca8a6e8433379091da3bf8))
 * **web:** add row & col layout ([#619](https://github.com/labring/laf/issues/619)) ([a016f4e](https://github.com/labring/laf/commit/a016f4e7044bff8159581b3eae9141aef27fd41a))
 * **web:** add trigger panel ([#643](https://github.com/labring/laf/issues/643)) ([fbf850f](https://github.com/labring/laf/commit/fbf850f9e5be11517a6c3412a778d62f600d2bd7))
+* **web:** fix function layout & more button ([#655](https://github.com/labring/laf/issues/655)) ([9813ca3](https://github.com/labring/laf/commit/9813ca3c467b377f54bb63a49e1e645b39770d31))
 * **web:** policy panel & log new UI ([#624](https://github.com/labring/laf/issues/624)) ([dc5df96](https://github.com/labring/laf/commit/dc5df96e82bed00918fac31e8c56a20f50365d1f))
 * **web:** support toggle panels in function page ([#623](https://github.com/labring/laf/issues/623)) ([fda7b0d](https://github.com/labring/laf/commit/fda7b0d3e5c0a89ea78abcff3deb538d4749de56))
 
