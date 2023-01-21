@@ -166,7 +166,7 @@ Independent domain names and HTTPS licenses can be applied to your applications 
 
 ## 🎉 Self-hosting
 
-[self-hosting](./deploy/docker-compose/README.md)
+[self-hosting](./deploy/scripts/README.md)
 
 ## 🏘️ Community
 

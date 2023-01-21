@@ -90,15 +90,6 @@ const guideSiderbarConfig = [
     ]
   },
   {
-    text: '私有化部署',
-    items: [
-      {
-        text: '在Docker上部署',
-        link: '/guide/deploy/docker',
-      }
-    ]
-  },
-  {
     text: 'FAQ',
     items: [
       {
