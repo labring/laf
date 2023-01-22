@@ -113,6 +113,10 @@
     "UserSetting": "用户设置"
   },
   "StoragePanel": {
+    "CreateBucket": "创建Bucket",
+    "EditBucket": "编辑Bucket",
+    "DeleteBucket": "删除Bucket",
+    "BucketName": "Bucket名称",
     "Storage": "云存储",
     "Policy": "权限",
     "Private": "私有",
