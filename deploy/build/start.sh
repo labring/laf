@@ -24,9 +24,9 @@ DATABASE_URL="mongodb://${DB_USERNAME}:${DB_PASSWORD}@mongo.${NAMESPACE}.svc.clu
 ## envs - minio
 MINIO_ROOT_ACCESS_KEY=$(tr -cd 'a-z0-9' </dev/urandom |head -c16)
 MINIO_ROOT_SECRET_KEY=$(tr -cd 'a-z0-9' </dev/urandom |head -c64)
-MINIO_EXTERNAL_ENDPOINT="${HTTP_SCHEMA}://oss.${DOMAIN}"
-MINIO_INTERNAL_ENDPOINT="${HTTP_SCHEMA}://minio.${NAMESPACE}.svc.cluster.local:9000"
 MINIO_DOMAIN=oss.${DOMAIN}
+MINIO_EXTERNAL_ENDPOINT="${HTTP_SCHEMA}://${MINIO_DOMAIN}"
+MINIO_INTERNAL_ENDPOINT="${HTTP_SCHEMA}://minio.${NAMESPACE}.svc.cluster.local:9000"
 
 ## envs - apisix
 APISIX_API_URL="http://apisix-admin.${NAMESPACE}.svc.cluster.local:9180/apisix/admin"
@@ -78,10 +78,23 @@ helm install apisix -n ${NAMESPACE} \
 
 
 ## 4. install casdoor
+PG_USERNAME=adm1n
+PG_PASSWORD=$(tr -cd 'a-z0-9' </dev/urandom |head -c64)
+PG_DATABASE=casdoor
+helm install postgresql -n ${NAMESPACE} \
+    --set postgresql.username=${PG_USERNAME} \
+    --set postgresql.password=${PG_PASSWORD} \
+    --set postgresql.database=${PG_DATABASE} \
+    ./charts/postgresql
+
 helm install casdoor -n ${NAMESPACE} \
     --set init.client_id=${CASDOOR_CLIENT_ID} \
     --set init.client_secret=${CASDOOR_CLIENT_SECRET} \
     --set init.redirect_uri=${CASDOOR_REDIRECT_URI} \
+    --set postgresql.host=postgresql \
+    --set postgresql.username=${PG_USERNAME} \
+    --set postgresql.password=${PG_PASSWORD} \
+    --set postgresql.database=${PG_DATABASE} \
     ./charts/casdoor
 
 
