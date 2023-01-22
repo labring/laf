@@ -1,12 +1,12 @@
 {
   "packages": [
-    "../../packages/*",
-    "../../docs",
-    "../../server",
-    "../../web",
-    "../../runtimes/nodejs"
+    "./packages/*",
+    "./docs",
+    "./server",
+    "./web",
+    "./runtimes/nodejs"
   ],
-  "version": "0.8.13",
+  "version": "1.0.0-beta.0",
   "command": {
     "publish": {
       "ignoreChanges": [
