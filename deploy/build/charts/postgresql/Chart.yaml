@@ -1,0 +1,15 @@
+apiVersion: v2
+appVersion: 11.5.0
+description: PostgreSQL is an open-source object-relational database management system
+  (ORDBMS) emphasizing extensibility and technical standards compliance.
+home: https://www.postgresql.org/
+icon: https://en.wikipedia.org/wiki/PostgreSQL#/media/File:Postgresql_elephant.svg
+keywords:
+- postgresql
+- postgres
+- database
+maintainers:
+- name: alexnuttinck
+- name: AyadiAmen
+name: postgresql
+version: 0.2.3
