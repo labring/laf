@@ -36,7 +36,7 @@ function createCloudSdk() {
       OSS_INTERNAL_ENDPOINT: process.env.OSS_INTERNAL_ENDPOINT,
       OSS_EXTERNAL_ENDPOINT: process.env.OSS_EXTERNAL_ENDPOINT,
       NPM_INSTALL_FLAGS: process.env.NPM_INSTALL_FLAGS || '',
-      RUNTIME_IMAGE: process.env.RUNTIME_IMAGE,
+      RUNTIME_IMAGE: Config.RUNTIME_IMAGE,
     },
   }
 
