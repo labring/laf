@@ -7,7 +7,7 @@ export class CreateBucketDto {
     description: 'The short name of the bucket which not contain the appid',
   })
   @IsNotEmpty()
-  @Length(3, 32)
+  @Length(1, 32)
   shortName: string
 
   @ApiProperty({

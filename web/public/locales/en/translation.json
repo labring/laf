@@ -158,8 +158,8 @@
     "BucketName": "Bucket name",
     "CreateBucket": "Create buckets",
     "EditBucket": "Edit Bucket",
-    "BucketNameRule": "Can only contain English or numbers",
     "DeleteBucket": "Delete Buckets"
+    "BucketNameRule": "Can only contain English or numbers or -, and cannot end with -"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",

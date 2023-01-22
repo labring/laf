@@ -1,0 +1,54 @@
+---
+{{- if and (or (.Files.Glob "configs/postgresql.conf") (.Files.Glob "configs/pg_hba.conf") (.Files.Glob "configs/initdbscripts.sh") .Values.postgresql.config .Values.postgresql.pghba .Values.postgresql.initdbscripts) (not .Values.postgresql.configMap) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "postgresql.fullname" . }}-configuration
+  labels:
+    app: {{ template "postgresql.name" . }}
+    chart: {{ template "postgresql.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+data:
+{{- if (.Files.Glob "configs/postgresql.conf") }}
+{{ (.Files.Glob "configs/postgresql.conf").AsConfig | indent 2 }}
+{{- else if .Values.postgresql.config }}
+  postgresql.conf: |
+{{- range $key, $value := default dict .Values.postgresql.config }}
+    {{ $key | snakecase }}={{ $value }}
+{{- end }}
+{{- end }}
+{{- if (.Files.Glob "configs/pg_hba.conf") }}
+{{ (.Files.Glob "configs/pg_hba.conf").AsConfig | indent 2 }}
+{{- else if .Values.postgresql.pghba }}
+  pg_hba.conf: |
+{{ .Values.postgresql.pghba  | indent 4 }}
+{{- end }}
+{{- if (.Files.Glob "configs/initdbscripts.sh") }}
+{{ (.Files.Glob "configs/initdbscripts.sh").AsConfig | indent 2 }}
+{{- else if .Values.postgresql.initdbscripts }}
+  initdbscripts.sh: |
+{{ .Values.postgresql.initdbscripts  | indent 4 }}
+{{- end }}
+{{- end }}
+#
+# A ConfigMap spec for pgldap-config.yaml 
+# /var/lib/pglda-config.yaml
+#
+{{- if and .Values.ldap.enabled .Values.ldap.pgldapconfig }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "postgresql.fullname" . }}-pgldap-config
+  labels:
+    app: {{ template "postgresql.name" . }}
+    chart: {{ template "postgresql.chart" . }}
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+data:
+  pgldap-config.yaml: |
+{{ .Values.ldap.pgldapconfig | indent 4}}
+{{- end }}
+
+

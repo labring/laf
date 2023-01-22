@@ -1,0 +1,4 @@
+docker.io/lafyun/runtime-node-init:latest
+docker.io/lafyun/runtime-node:latest
+docker.io/apache/apisix-dashboard:2.13-alpine
+docker.io/apache/apisix-ingress-controller:1.5.0

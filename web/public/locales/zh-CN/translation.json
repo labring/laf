@@ -142,7 +142,7 @@
     "Used": "已使用",
     "Success": "上传成功",
     "EmptyText": "暂无Bucket数据",
-    "BucketNameRule": "只能包含英文或数字"
+    "BucketNameRule": "只能包含英文或数字或 -,且不能以 - 结尾"
   },
   "Search": "搜索",
   "Close": "关闭",
