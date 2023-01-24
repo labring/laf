@@ -31,6 +31,7 @@
   "dependencies": {
     "axios": "^1.2.1",
     "class-transformer": "^0.5.1",
+    "cli": "^1.0.1",
     "cli-table3": "^0.6.3",
     "commander": "^9.3.0",
     "dayjs": "^1.11.7",

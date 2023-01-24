@@ -57,7 +57,7 @@ function DeleteBucketModal(props: { storage: TBucket; onSuccessAction?: () => vo
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{t("Delete")} storage</ModalHeader>
+          <ModalHeader>{t("StoragePanel.DeleteBucket")}</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <p className="mb-2">

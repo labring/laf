@@ -16,7 +16,6 @@ export const DEBUG_TOKEN_EXPIRE = 3600 * 24 * 7
 
 // remote server config
 export const DEFAULT_REMOTE_SERVER = 'http://api.dev.laf.run'
-// export const DEFAULT_REMOTE_SERVER = 'http://api.dev.cloudrun.top'
 
 // template file
 export const TEMPLATE_DIR = 'template'

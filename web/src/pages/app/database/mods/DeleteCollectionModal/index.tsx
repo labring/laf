@@ -17,12 +17,10 @@ import {
 } from "@chakra-ui/react";
 
 import { useDeleteDBMutation } from "../../service";
-
 function DeleteCollectionModal(props: { database: any }) {
   const { database } = props;
   const { t } = useTranslation();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
   const deleteDBMutation = useDeleteDBMutation({
     onSuccess() {
       onClose();

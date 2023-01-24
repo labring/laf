@@ -81,7 +81,6 @@ export const useCreateDBMutation = (config?: { onSuccess: (data: any) => void })
           globalStore.showError(data.error);
         } else {
           await queryClient.invalidateQueries(queryKeys.useCollectionListQuery);
-
           config?.onSuccess && config.onSuccess(data);
         }
       },
@@ -92,16 +91,18 @@ export const useCreateDBMutation = (config?: { onSuccess: (data: any) => void })
 export const useDeleteDBMutation = (config?: { onSuccess: (data: any) => void }) => {
   const globalStore = useGlobalStore();
   const queryClient = useQueryClient();
+  const store = useDBMStore();
   return useMutation(
     (values: any) => {
       return CollectionControllerRemove(values);
     },
     {
-      onSuccess(data) {
+      onSuccess: async (data) => {
         if (data.error) {
           globalStore.showError(data.error);
         } else {
-          queryClient.invalidateQueries(queryKeys.useCollectionListQuery);
+          store.setCurrentDB(undefined);
+          await queryClient.invalidateQueries(queryKeys.useCollectionListQuery);
           globalStore.showSuccess(t("DeleteSuccess"));
           config && config.onSuccess(data);
         }
@@ -203,16 +204,18 @@ export const usePolicyListQuery = (onSuccess?: (data: any) => void) => {
 export const useCreatePolicyMutation = () => {
   const globalStore = useGlobalStore();
   const queryClient = useQueryClient();
+  const store = useDBMStore();
   return useMutation(
     (values: any) => {
       return PolicyControllerCreate(values);
     },
     {
-      onSuccess(data) {
+      onSuccess: async (data) => {
         if (data.error) {
           globalStore.showError(data.error);
         } else {
-          queryClient.invalidateQueries(queryKeys.usePolicyListQuery);
+          await queryClient.invalidateQueries(queryKeys.usePolicyListQuery);
+          store.setCurrentPolicy(data.data);
         }
       },
     },
@@ -241,16 +244,18 @@ export const useUpdatePolicyMutation = () => {
 export const useDeletePolicyMutation = () => {
   const globalStore = useGlobalStore();
   const queryClient = useQueryClient();
+  const store = useDBMStore();
   return useMutation(
     (values: any) => {
       return PolicyControllerRemove({ name: values });
     },
     {
-      onSuccess(data) {
+      onSuccess: async (data) => {
         if (data.error) {
           globalStore.showError(data.error);
         } else {
-          queryClient.invalidateQueries(queryKeys.usePolicyListQuery);
+          store.setCurrentPolicy(undefined);
+          await queryClient.invalidateQueries(queryKeys.usePolicyListQuery);
         }
       },
     },

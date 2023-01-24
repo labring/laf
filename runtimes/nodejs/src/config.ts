@@ -1,4 +1,3 @@
-import * as path from "path";
 import * as dotenv from "dotenv";
 
 /**
@@ -32,14 +31,6 @@ export default class Config {
   }
 
   /**
-   * the `temp path`
-   */
-  static get TMP_PATH(): string {
-    const tmp_path = process.env["TMP_PATH"] ?? path.join(process.cwd(), "tmp");
-    return tmp_path;
-  }
-
-  /**
    * the logger level : 'fatal', 'error', 'warning', 'info', 'debug', 'trace'
    */
   static get LOG_LEVEL():
@@ -59,16 +50,6 @@ export default class Config {
    */
   static get PORT(): number {
     return (process.env.PORT ?? 8000) as number;
-  }
-
-  /**
-   * enable cloud function logging, default is `always`
-   * - `always` means that all cloud functions' execution will be logged
-   * - `debug` means that only logging for debug invokes
-   * - `never` no logging any case
-   */
-  static get ENABLE_CLOUD_FUNCTION_LOG(): "always" | "debug" | "never" {
-    return (process.env.ENABLE_CLOUD_FUNCTION_LOG as any) ?? "always";
   }
 
   /**
