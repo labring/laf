@@ -1,9 +1,10 @@
 import axios, { AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse } from "axios";
+import * as urlencode from 'urlencode'
 
 export async function invokeFunction(invokeUrl: string, token: string, funcName: string, data: any): Promise<{ res: any; requestId: string; }> {
   const header: AxiosRequestHeaders | any = {
     'x-laf-debug-token': token,
-    'x-laf-func-data': JSON.stringify(data),
+    'x-laf-func-data': urlencode(JSON.stringify(data)),
   };
   const res = await request({ url: invokeUrl + '/' + funcName, method: "GET", headers: header })
   return {
