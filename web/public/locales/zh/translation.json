@@ -93,7 +93,7 @@
     "SystemDependence": "内置依赖",
     "Value": "值",
     "isSupport": "是否支持",
-    "FunctionNameRule": "函数名只能是英文"
+    "FunctionNameRule": "函数名只能以 _ 或英文开头"
   },
   "HomePanel": {
     "APP": "Android or iOS 应用",
@@ -143,7 +143,7 @@
     "Policy": "权限",
     "Private": "私有",
     "Readonly": "公共读",
-    "Readwrite": "公共读写",
+    "ReadWrite": "公共读写",
     "SearchBucket": "输入bucket名进行搜索",
     "Size": "大小",
     "Storage": "云存储",
@@ -154,12 +154,13 @@
     "Upload": "上传",
     "Used": "已使用",
     "UploadTip": "请选择文件或者文件夹上传",
-    "BucketNameRule": "只能包含英文或数字或 -,且不能以 - 结尾",
+    "BucketNameRule": "只能包含小写英文、数字，开头和结尾不能是数字或 -",
     "Bucket": "桶",
     "BucketName": "Bucket名称",
     "CreateBucket": "创建Bucket",
     "EditBucket": "编辑Bucket",
-    "DeleteBucket": "删除Bucket"
+    "DeleteBucket": "删除Bucket",
+    "BucketNamePlaceholder": "bucket-name"
   },
   "TriggerPanel": {
     "AddTrigger": "新建触发器",
@@ -179,5 +180,8 @@
     "Cron": "表达式"
   },
   "NoData": "当前无数据",
-  "SaveAndRestart": "保存并重启"
+  "SaveAndRestart": "保存并重启",
+  "DataEntry": {
+    "CreateError": "字段不能为空"
+  }
 }

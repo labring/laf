@@ -20,10 +20,13 @@ import {
 } from "../../../service";
 import useDBMStore from "../../../store";
 
+import useGlobalStore from "@/pages/globalStore";
+
 export default function DataPanel() {
   const [currentData, setCurrentData] = useState<any>(undefined);
+  const globalStore = useGlobalStore();
 
-  const [record, setRecord] = useState("");
+  const [record, setRecord] = useState("{}");
   const store = useDBMStore((state) => state);
   type QueryData = {
     _id: string;
@@ -57,12 +60,21 @@ export default function DataPanel() {
   });
 
   const handleData = async () => {
-    if (currentData?._id) {
-      const params = JSON.parse(record);
-      await updateDataMutation.mutateAsync(params);
-    } else {
-      const params = JSON.parse(record);
-      await addDataMutation.mutateAsync(params);
+    let params = {};
+    try {
+      params = JSON.parse(record);
+      if (Object.keys(params).length === 0) {
+        globalStore.showError(t("DataEntry.CreateError"));
+        return;
+      }
+      if (currentData?._id) {
+        await updateDataMutation.mutateAsync(params);
+      } else {
+        await addDataMutation.mutateAsync(params);
+      }
+    } catch (error) {
+      globalStore.showError(error?.toString());
+      return;
     }
   };
 

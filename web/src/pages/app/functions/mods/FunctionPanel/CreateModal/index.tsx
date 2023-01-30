@@ -46,7 +46,7 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
     description: functionItem?.desc || "",
     websocket: !!functionItem?.websocket,
     methods: functionItem?.methods || ["GET", "POST"],
-    code: functionItem?.source.code || functionTemplates[0].value,
+    code: functionItem?.source.code || functionTemplates[0].value.trim(),
     tags: [],
   };
 
@@ -117,7 +117,7 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
                 <Input
                   {...register("name", {
                     pattern: {
-                      value: /^[A-Za-z][A-Za-z0-9-_]+$/,
+                      value: /^[_A-Za-z][A-Za-z0-9-_]+$/,
                       message: t("FunctionPanel.FunctionNameRule"),
                     },
                   })}

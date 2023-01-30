@@ -93,7 +93,7 @@
     "SystemDependence": "Built-In",
     "Value": "Value",
     "isSupport": "Whether to support",
-    "FunctionNameRule": "Function names can only be in letters"
+    "FunctionNameRule": "Function names can only start with _ or English"
   },
   "HomePanel": {
     "APP": "Android or iOS app",
@@ -143,7 +143,7 @@
     "Policy": "Permissions",
     "Private": "Private",
     "Readonly": "Readonly",
-    "Readwrite": "Readwrite",
+    "ReadWrite": "ReadWrite",
     "SearchBucket": "Enter the bucket name to search",
     "Size": "Size",
     "Storage": "Cloud Storage",
@@ -158,8 +158,9 @@
     "BucketName": "Bucket name",
     "CreateBucket": "Create buckets",
     "EditBucket": "Edit Bucket",
-    "DeleteBucket": "Delete Buckets"
-    "BucketNameRule": "Can only contain English or numbers or -, and cannot end with -"
+    "DeleteBucket": "Delete Buckets",
+    "BucketNameRule": "Can only contain lowercase English, numbers, and the beginning and end cannot be numbers or -",
+    "BucketNamePlaceholder": "bucket-name"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",
@@ -179,5 +180,8 @@
     "Cron": "expression"
   },
   "NoData": "Currently no data",
-  "SaveAndRestart": "save and restart"
+  "SaveAndRestart": "save and restart",
+  "DataEntry": {
+    "CreateError": "field cannot be empty"
+  }
 }

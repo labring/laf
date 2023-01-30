@@ -106,10 +106,11 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
                   {...register("name", {
                     required: true,
                     pattern: {
-                      value: /^[A-Za-z][A-Za-z0-9-]+[A-Za-z]$/,
+                      value: /^[a-z][a-z0-9-]+[a-z]$/,
                       message: t("StoragePanel.BucketNameRule"),
                     },
                   })}
+                  placeholder={String(t("StoragePanel.BucketNamePlaceholder"))}
                   variant="filled"
                   disabled={isEdit}
                 />
@@ -121,7 +122,7 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
                 <Select {...register("policy", { required: true })} variant="filled">
                   <option value="private">{t("StoragePanel.Private")}</option>
                   <option value="readonly">{t("StoragePanel.Readonly")}</option>
-                  <option value="readwrite">{t("StoragePanel.Readwrite")}</option>
+                  <option value="readwrite">{t("StoragePanel.ReadWrite")}</option>
                 </Select>
               </FormControl>
             </VStack>
