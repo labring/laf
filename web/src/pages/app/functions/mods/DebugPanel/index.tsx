@@ -32,15 +32,12 @@ import useFunctionCache from "@/hooks/useFunctionCache";
 import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
 import useGlobalStore from "@/pages/globalStore";
 
-const PANEL_HEIGHT = "calc(100vh - 500px)";
-
 const HAS_BODY_PARAMS_METHODS: (TMethod | undefined)[] = ["POST", "PUT", "PATCH", "DELETE"];
 
 export default function DebugPanel() {
   const { getFunctionUrl, currentFunction, setCurrentRequestId } = useFunctionStore(
     (state) => state,
   );
-
   const globalStore = useGlobalStore((state) => state);
 
   const functionCache = useFunctionCache();
@@ -106,137 +103,120 @@ export default function DebugPanel() {
 
   return (
     <>
-      <Row>
-        <Panel className="flex-1">
-          <Tabs
-            width="100%"
-            colorScheme={"primary"}
-            display="flex"
-            flexDirection={"column"}
-            h="full"
-          >
-            <TabList h={"50px"}>
-              <Tab px="0">
-                <span className="text-black font-semibold">
-                  {t("FunctionPanel.InterfaceDebug")}
-                </span>
-              </Tab>
-              {/* <Tab>历史请求</Tab> */}
-            </TabList>
+      <Panel className="flex-grow overflow-hidden">
+        <Tabs width="100%" colorScheme={"primary"} display="flex" flexDirection={"column"} h="full">
+          <TabList h={"50px"}>
+            <Tab px="0">
+              <span className="text-black font-semibold">{t("FunctionPanel.InterfaceDebug")}</span>
+            </Tab>
+            {/* <Tab>历史请求</Tab> */}
+          </TabList>
 
-            <TabPanels flex={1}>
-              <TabPanel padding={0} h="full">
-                <div className="flex flex-col h-full">
-                  <div className="flex py-4 px-2 items-center">
-                    <span className="mr-3 whitespace-nowrap">{t("FunctionPanel.Methods")}</span>
-                    <Select
-                      width="150px"
-                      variant="filled"
-                      size="sm"
-                      value={runningMethod}
+          <TabPanels flex={1} className="overflow-hidden">
+            <TabPanel padding={0} h="full">
+              <div className="flex flex-col h-full">
+                <div className="flex-none flex py-4 px-2 items-center">
+                  <span className="mr-3 whitespace-nowrap">{t("FunctionPanel.Methods")}</span>
+                  <Select
+                    width="150px"
+                    variant="filled"
+                    size="sm"
+                    value={runningMethod}
+                    disabled={getFunctionUrl() === ""}
+                    onChange={(e) => {
+                      setRunningMethod(e.target.value as TMethod);
+                    }}
+                  >
+                    {currentFunction.methods?.map((item: string) => {
+                      return (
+                        <option value={item} key={item}>
+                          {item}
+                        </option>
+                      );
+                    })}
+                  </Select>
+                  <Tooltip label={`快捷键: ${displayName.toUpperCase()}`}>
+                    <Button
+                      variant={"secondary"}
                       disabled={getFunctionUrl() === ""}
-                      onChange={(e) => {
-                        setRunningMethod(e.target.value as TMethod);
-                      }}
+                      className="ml-2"
+                      onClick={() => runningCode()}
+                      isLoading={isLoading}
                     >
-                      {currentFunction.methods?.map((item: string) => {
-                        return (
-                          <option value={item} key={item}>
-                            {item}
-                          </option>
-                        );
-                      })}
-                    </Select>
-                    <Tooltip label={`快捷键: ${displayName.toUpperCase()}`}>
-                      <Button
-                        variant={"secondary"}
-                        disabled={getFunctionUrl() === ""}
-                        className="ml-2"
-                        onClick={() => runningCode()}
-                        isLoading={isLoading}
-                      >
-                        {t("FunctionPanel.Debug")}
-                      </Button>
-                    </Tooltip>
-                  </div>
-                  <div>
-                    <Tabs p="0" variant="soft-rounded" colorScheme={"gray"} size={"sm"}>
-                      <TabList className="mb-2">
-                        <Tab>
-                          Parameters
-                          {queryParams.length > 0 && (
-                            <span className="ml-1">({queryParams.length})</span>
-                          )}
-                        </Tab>
-                        {HAS_BODY_PARAMS_METHODS.includes(runningMethod) && (
-                          <Tab>
-                            Body
-                            {Object.keys(bodyParams).length > 0 && (
-                              <span className="ml-1">({Object.keys(bodyParams).length})</span>
-                            )}
-                          </Tab>
-                        )}
-
-                        <Tab>
-                          Headers
-                          {headerParams.length > 0 && (
-                            <span className="ml-1">({headerParams.length})</span>
-                          )}
-                        </Tab>
-                      </TabList>
-                      <TabPanels>
-                        <TabPanel
-                          px={0}
-                          py={1}
-                          className="overflow-y-auto"
-                          style={{
-                            height: PANEL_HEIGHT,
-                          }}
-                        >
-                          <QueryParamsTab
-                            key={"QueryParamsTab"}
-                            onChange={(values: any) => {
-                              setQueryParams(values);
-                            }}
-                          />
-                        </TabPanel>
-
-                        {HAS_BODY_PARAMS_METHODS.includes(runningMethod) && (
-                          <TabPanel px={2} py={3}>
-                            <BodyParamsTab
-                              onChange={(values) => {
-                                setBodyParams(values);
-                              }}
-                            />
-                          </TabPanel>
-                        )}
-
-                        <TabPanel
-                          px={0}
-                          py={1}
-                          className="overflow-y-auto"
-                          style={{
-                            height: PANEL_HEIGHT,
-                          }}
-                        >
-                          <HeaderParamsTab
-                            key={"HeaderParamsTab"}
-                            onChange={(values: any) => {
-                              setHeaderParams(values);
-                            }}
-                          />
-                        </TabPanel>
-                      </TabPanels>
-                    </Tabs>
-                  </div>
+                      {t("FunctionPanel.Debug")}
+                    </Button>
+                  </Tooltip>
                 </div>
-              </TabPanel>
-              {/* <TabPanel padding={0}>to be continued...</TabPanel> */}
-            </TabPanels>
-          </Tabs>
-        </Panel>
-      </Row>
-      <Row style={{ height: 500 }}>
+                <div className="flex-grow overflow-hidden">
+                  <Tabs
+                    p="0"
+                    variant="soft-rounded"
+                    colorScheme={"gray"}
+                    size={"sm"}
+                    className="h-full flex-col"
+                    style={{ display: "flex" }}
+                  >
+                    <TabList className="mb-2 flex-none">
+                      <Tab>
+                        Parameters
+                        {queryParams.length > 0 && (
+                          <span className="ml-1">({queryParams.length})</span>
+                        )}
+                      </Tab>
+                      {HAS_BODY_PARAMS_METHODS.includes(runningMethod) && (
+                        <Tab>
+                          Body
+                          {Object.keys(bodyParams).length > 0 && (
+                            <span className="ml-1">({Object.keys(bodyParams).length})</span>
+                          )}
+                        </Tab>
+                      )}
+
+                      <Tab>
+                        Headers
+                        {headerParams.length > 0 && (
+                          <span className="ml-1">({headerParams.length})</span>
+                        )}
+                      </Tab>
+                    </TabList>
+                    <TabPanels className="flex-grow overflow-auto">
+                      <TabPanel px={0} py={1}>
+                        <QueryParamsTab
+                          key={"QueryParamsTab"}
+                          onChange={(values: any) => {
+                            setQueryParams(values);
+                          }}
+                        />
+                      </TabPanel>
+
+                      {HAS_BODY_PARAMS_METHODS.includes(runningMethod) && (
+                        <TabPanel px={0} py={1} style={{ height: "100%", overflow: "auto" }}>
+                          <BodyParamsTab
+                            onChange={(values) => {
+                              setBodyParams(values);
+                            }}
+                          />
+                        </TabPanel>
+                      )}
+
+                      <TabPanel px={0} py={1}>
+                        <HeaderParamsTab
+                          key={"HeaderParamsTab"}
+                          onChange={(values: any) => {
+                            setHeaderParams(values);
+                          }}
+                        />
+                      </TabPanel>
+                    </TabPanels>
+                  </Tabs>
+                </div>
+              </div>
+            </TabPanel>
+            {/* <TabPanel padding={0}>to be continued...</TabPanel> */}
+          </TabPanels>
+        </Tabs>
+      </Panel>
+      <Row style={{ height: "300px", overflow: "auto" }}>
         <Panel>
           <Panel.Header title={t("FunctionPanel.DebugResult")} />
           <div className="relative flex-1 overflow-auto">
@@ -248,10 +228,7 @@ export default function DebugPanel() {
               </div>
             ) : null}
             {runningResData ? (
-              <SyntaxHighlighter
-                language="json"
-                customStyle={{ background: "#fff", height: "280px" }}
-              >
+              <SyntaxHighlighter language="json" customStyle={{ background: "#fdfdfe" }}>
                 {JSON.stringify(runningResData, null, 2)}
               </SyntaxHighlighter>
             ) : null}

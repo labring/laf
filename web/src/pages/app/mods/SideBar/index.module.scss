@@ -2,7 +2,9 @@
   color: #888D97;
   cursor: pointer;
   border-radius: 4px;
-  height: 48px;
+  height: 52px;
+  display: flex;
+  flex-direction: column;
 
   svg {
     fill: #9ca2a8;
@@ -12,6 +14,7 @@
 .icon:hover,
 .icon.current {
   background-color: var(--chakra-colors-primary-200);
+  color: var(--chakra-colors-primary-700);
 
   svg {
     fill: var(--chakra-colors-primary-600);

@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { CloseIcon } from "@chakra-ui/icons";
 import { Badge, Center, Tab, TabList, TabPanel, TabPanels, Tabs, Tooltip } from "@chakra-ui/react";
 
+import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
 
@@ -68,7 +69,8 @@ export default function DependenceList() {
                       onClick={() => {}}
                       className="group"
                     >
-                      <div className="w-[200px] overflow-hidden">
+                      <FileTypeIcon type={FileType.npm} />
+                      <div className="w-[200px] overflow-hidden ml-2">
                         <Tooltip
                           label={packageItem?.builtin ? "内置依赖，不可更改" : null}
                           placement="top"

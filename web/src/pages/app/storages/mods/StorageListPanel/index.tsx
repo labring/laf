@@ -76,13 +76,13 @@ export default function StorageListPanel() {
                   <>
                     <div className="font-semibold">
                       <FileTypeIcon type={FileType.bucket} />
-                      <span className="ml-2 text-base text-black">{storage.name}</span>
+                      <span className="ml-2 text-base">{storage.name}</span>
                     </div>
                     <div className="flex items-center">
                       <Tag size="sm" className="w-16 justify-center" variant={storage?.policy}>
                         {storage?.policy}
                       </Tag>
-                      <MoreButton isHidden={storage?.name !== store.currentStorage?.name}>
+                      <MoreButton isHidden={false}>
                         <>
                           <CreateBucketModal storage={storage}>
                             <div className="text-grayIron-600">

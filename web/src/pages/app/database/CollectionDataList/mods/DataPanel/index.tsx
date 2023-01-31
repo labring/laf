@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import { AddIcon, Search2Icon } from "@chakra-ui/icons";
-import { Button, HStack, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
+import { Search2Icon } from "@chakra-ui/icons";
+import { HStack, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { t } from "i18next";
 import { debounce } from "lodash";
 
@@ -10,14 +10,10 @@ import Pagination from "@/components/Pagination";
 import Panel from "@/components/Panel";
 import getPageInfo from "@/utils/getPageInfo";
 
+import AddDataModal from "../../../mods/AddDataModal";
 import RightPanelEditBox from "../../../RightComponent/EditBox";
 import RightPanelList from "../../../RightComponent/List";
-import {
-  useAddDataMutation,
-  useDeleteDataMutation,
-  useEntryDataQuery,
-  useUpdateDataMutation,
-} from "../../../service";
+import { useDeleteDataMutation, useEntryDataQuery, useUpdateDataMutation } from "../../../service";
 import useDBMStore from "../../../store";
 
 import useGlobalStore from "@/pages/globalStore";
@@ -48,14 +44,23 @@ export default function DataPanel() {
     [setQueryData],
   );
 
-  const entryDataQuery = useEntryDataQuery({ ...queryData }, () => {
-    setCurrentData({});
+  const entryDataQuery = useEntryDataQuery({ ...queryData }, (data: any) => {
+    if (data?.data.length > 0) {
+      setCurrentData(data.data[0]);
+    } else {
+      setCurrentData(undefined);
+    }
   });
-  const addDataMutation = useAddDataMutation();
+
   const updateDataMutation = useUpdateDataMutation();
   const deleteDataMutation = useDeleteDataMutation({
     onSuccess() {
-      setCurrentData(undefined);
+      setQueryData((pre: any) => {
+        return {
+          ...pre,
+          page: 1,
+        };
+      });
     },
   });
 
@@ -67,11 +72,7 @@ export default function DataPanel() {
         globalStore.showError(t("DataEntry.CreateError"));
         return;
       }
-      if (currentData?._id) {
-        await updateDataMutation.mutateAsync(params);
-      } else {
-        await addDataMutation.mutateAsync(params);
-      }
+      await updateDataMutation.mutateAsync(params);
     } catch (error) {
       globalStore.showError(error?.toString());
       return;
@@ -82,18 +83,7 @@ export default function DataPanel() {
     <>
       <Panel.Header className="w-full h-[60px] flex-shrink-0">
         <div className="flex items-center">
-          <Button
-            disabled={store.currentDB === undefined}
-            colorScheme="primary"
-            className="mr-2"
-            style={{ width: "114px" }}
-            onClick={() => {
-              setCurrentData({});
-            }}
-            leftIcon={<AddIcon />}
-          >
-            {t("CollectionPanel.AddData")}
-          </Button>
+          <AddDataModal onSuccessSubmit={() => {}} />
           <form
             onSubmit={(event) => {
               event?.preventDefault();
@@ -142,15 +132,16 @@ export default function DataPanel() {
           deleteRuleMutation={deleteDataMutation}
           component={(item: any) => {
             return (
-              <SyntaxHighlighter language="json" customStyle={{ background: "#fff" }}>
+              <SyntaxHighlighter language="json" customStyle={{ background: "#fdfdfe" }}>
                 {JSON.stringify(item, null, 2)}
               </SyntaxHighlighter>
             );
           }}
         />
         <RightPanelEditBox
-          title={currentData?._id ? t("Edit") : t("Create")}
-          isLoading={currentData?._id ? updateDataMutation.isLoading : addDataMutation.isLoading}
+          show={currentData?._id}
+          title={t("Edit")}
+          isLoading={updateDataMutation.isLoading}
           onSave={handleData}
         >
           <div className=" flex-1" style={{}}>
