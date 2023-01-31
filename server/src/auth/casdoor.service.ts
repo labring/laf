@@ -87,7 +87,7 @@ export class CasdoorService {
     const endpoint = ServerConfig.CASDOOR_ENDPOINT
     const query = {
       client_id: ServerConfig.CASDOOR_CLIENT_ID,
-      redirect_uri: process.env.CASDOOR_REDIRECT_URI,
+      redirect_uri: ServerConfig.CASDOOR_REDIRECT_URI,
       response_type: 'code',
       scope: 'openid,profile,phone,email',
       state: 'casdoor',
