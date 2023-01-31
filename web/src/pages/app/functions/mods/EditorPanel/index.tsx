@@ -50,7 +50,7 @@ function EditorPanel() {
       {currentFunction?.name ? (
         <FunctionEditor
           className="flex-grow"
-          path={currentFunction?.name || ""}
+          path={currentFunction?.id || ""}
           value={functionCache.getCache(currentFunction!.id)}
           onChange={(value) => {
             updateFunctionCode(currentFunction, value || "");

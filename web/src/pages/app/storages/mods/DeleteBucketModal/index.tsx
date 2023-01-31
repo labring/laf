@@ -66,7 +66,7 @@ function DeleteBucketModal(props: { storage: TBucket; onSuccessAction?: () => vo
             </p>
             <p className="mb-4">
               {t("StoragePanel.StorageNameTip")}
-              <span className=" text-red-500 mr-1 font-bold">{storage.name}</span>
+              <span className=" text-red-500 mx-1 font-bold">{storage.name}</span>
               {t("ToConfirm")}。
             </p>
             <FormControl>

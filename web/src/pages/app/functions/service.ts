@@ -9,6 +9,7 @@ import {
   FunctionControllerRemove,
   FunctionControllerUpdate,
 } from "@/apis/v1/apps";
+import useFunctionCache from "@/hooks/useFunctionCache";
 import useGlobalStore from "@/pages/globalStore";
 
 const queryKeys = {
@@ -70,6 +71,7 @@ export const useUpdateFunctionMutation = () => {
 export const useDeleteFunctionMutation = () => {
   const globalStore = useGlobalStore();
   const store = useFunctionStore();
+  const functionCache = useFunctionCache();
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
@@ -82,6 +84,7 @@ export const useDeleteFunctionMutation = () => {
         } else {
           queryClient.invalidateQueries(queryKeys.useFunctionListQuery);
           store.setCurrentFunction({});
+          functionCache.removeCache(data?.data?.id);
         }
       },
     },

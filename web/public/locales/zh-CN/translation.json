@@ -81,7 +81,7 @@
     "DependenceVersion": "依赖版本",
     "DependenceTip": "请输入依赖包名",
     "Select": "已选择",
-    "FunctionNameRule": "函数名只能是英文"
+    "FunctionNameRule": "函数名只能以 _ 或英文开头"
   },
   "TriggerPanel": {
     "Trigger": "触发器",
@@ -121,7 +121,7 @@
     "Policy": "权限",
     "Private": "私有",
     "Readonly": "公共读",
-    "Readwrite": "公共读写",
+    "ReadWrite": "公共读写",
     "Upload": "上传",
     "Drag": "拖放到此处或者",
     "File": "文件",
@@ -142,7 +142,8 @@
     "Used": "已使用",
     "Success": "上传成功",
     "EmptyText": "暂无Bucket数据",
-    "BucketNameRule": "只能包含英文或数字或 -,且不能以 - 结尾"
+    "BucketNameRule": "只能包含小写英文、数字，开头和结尾不能是数字或 -",
+    "BucketNamePlaceholder": "bucket-name"
   },
   "Search": "搜索",
   "Close": "关闭",
@@ -178,5 +179,8 @@
   "Page": "页",
   "NoData": "当前无数据",
   "Logout": "退出登录",
-  "SaveAndRestart": "保存并重启"
+  "SaveAndRestart": "保存并重启",
+  "DataEntry": {
+    "CreateError": "字段不能为空"
+  }
 }

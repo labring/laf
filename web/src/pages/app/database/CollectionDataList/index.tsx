@@ -12,7 +12,7 @@ export default function CollectionDataList() {
   return (
     <>
       {store.currentDB === undefined ? (
-        <Center className="h-full">
+        <Center className="h-full text-lg">
           {t("CollectionPanel.EmptyCollectionText")}
           <CreateCollectionModal>
             <span className="ml-2 text-blue-500 cursor-pointer">{t("CreateNow")}</span>

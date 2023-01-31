@@ -23,7 +23,7 @@ export default function StoragePage() {
       <Col>
         {currentStorage === undefined ? (
           <Panel className="items-center h-full">
-            <Center className="h-full">
+            <Center className="h-full text-lg">
               {t("StoragePanel.EmptyText")}
               <CreateBucketModal>
                 <span className="ml-2 text-blue-500 cursor-pointer">{t("CreateNow")}</span>
