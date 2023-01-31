@@ -1,44 +1,54 @@
+# Intro
 
+`laf server` is responsible for laf http api:
 
-## Description
+- auth & user
+- region cluster
+- app management
+- app cloud function management
+- app database management
+- app storage management
+- app log management
+- app instance management
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+# Development
 
-## Installation
+## You should know
+
+- [Node.js](https://nodejs.org/en/docs)
+- [Nest](https://github.com/nestjs/nest) web framework
+- [Kubernetes](https://kubernetes.io) basic use
+- [Telepresence](https://www.telepresence.io) for local development
+- [MongoDb](https://docs.mongodb.com) basic use
+- [Prisma](https://www.prisma.io)
+- [MinIO](https://min.io) object storage
+- [APISIX](https://apisix.apache.org) gateway
+- [Casdoor](https://casdoor.org/)
+
+## Prerequisites
+
+- laf cluster installed locally or remotely (~/.kube/config)
+- telepresence installed (see https://www.telepresence.io/reference/install)
+
+## Start service locally
 
 ```bash
+cd server/
+
+# proxy laf server cluster traffic to local
+telepresence connect
+# view the available services
+telepresence list -n laf-system
+telepresence intercept server-laf-server -n laf-system -p 3000:3000 -e $(pwd)/.env
+
 npm install
 npx prisma generate
 npx prisma db push
-```
 
-## Debug the app
-
-```bash
-# Forward service in cluster to localhost, run this command in another terminal separately
-kubectl port-forward deployment/mongodb 27017:27017 -n laf-system
-kubectl port-forward statefulset/laf-minio 9000:9000 -n laf-system
-kubectl port-forward deployments/casdoor 30070:8000 -n laf-system
-
-# Run these in first time or when someone change the schema.
-cd server
-npm install
-npx prisma db push
-npx prisma generate
-
-# run dev
 npm run watch
 ```
 
-## Test
-
+> Clean up
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+telepresence leave server-laf-server-laf-system
 ```
