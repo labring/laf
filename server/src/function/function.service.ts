@@ -11,7 +11,7 @@ import { CreateFunctionDto } from './dto/create-function.dto'
 import { UpdateFunctionDto } from './dto/update-function.dto'
 import * as assert from 'node:assert'
 import { JwtService } from '@nestjs/jwt'
-import { CompileFunctionDto } from './dto/compile-function.dto.ts'
+import { CompileFunctionDto } from './dto/compile-function.dto'
 import { DatabaseService } from 'src/database/database.service'
 
 @Injectable()

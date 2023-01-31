@@ -1,7 +1,7 @@
 import { V1Deployment } from '@kubernetes/client-node'
 import { Injectable, Logger } from '@nestjs/common'
 import { GetApplicationNamespaceById } from '../utils/getter'
-import { ResourceLabels } from '../constants'
+import { MB, ResourceLabels } from '../constants'
 import { PrismaService } from '../prisma.service'
 import { StorageService } from '../storage/storage.service'
 import { DatabaseService } from 'src/database/database.service'
@@ -56,6 +56,7 @@ export class InstanceService {
     const requestMemory = app.bundle.requestMemory
     const requestCpu = app.bundle.requestCPU
     const max_old_space_size = ~~(limitMemory * 0.8)
+    const max_http_header_size = 1 * MB
     const dependencies = app.configuration?.dependencies || []
     const dependencies_string = dependencies.join(' ')
 
@@ -82,7 +83,10 @@ export class InstanceService {
         value: app.region.storageConf.externalEndpoint,
       },
       { name: 'OSS_REGION', value: app.region.name },
-      { name: 'FLAGS', value: `--max_old_space_size=${max_old_space_size}` },
+      {
+        name: 'FLAGS',
+        value: `--max_old_space_size=${max_old_space_size} --max-http-header-size=${max_http_header_size}`,
+      },
       { name: 'DEPENDENCIES', value: dependencies_string },
     ]
 

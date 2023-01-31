@@ -48,13 +48,6 @@ data:
               "rule": "None"
             },
             {
-              "name": "Display name",
-              "visible": true,
-              "required": true,
-              "prompted": false,
-              "rule": "None"
-            },
-            {
               "name": "Password",
               "visible": true,
               "required": true,
