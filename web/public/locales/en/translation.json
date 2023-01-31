@@ -88,6 +88,7 @@
     "InterfaceDebug": "Interface Debugging",
     "Methods": "Request Method",
     "Name": "Parameter Name",
+    "Tags": "Tags",
     "SearchPlaceholder": "Please enter the function name query",
     "Select": "chosen",
     "SystemDependence": "Built-In",
@@ -146,8 +147,8 @@
     "ReadWrite": "ReadWrite",
     "SearchBucket": "Enter the bucket name to search",
     "Size": "Size",
-    "Storage": "Cloud Storage",
-    "StorageNameTip": "Please enter a cloud storage name",
+    "Storage": "Storage",
+    "StorageNameTip": "Please ensure that the current bucket has been cleared and enter the cloud storage name",
     "Success": "uploaded successfully",
     "Time": "Update Time",
     "TimeTip": "Temporary link, valid for 15 minutes",
@@ -160,7 +161,8 @@
     "EditBucket": "Edit Bucket",
     "DeleteBucket": "Delete Buckets",
     "BucketNameRule": "Can only contain lowercase English, numbers, and the beginning and end cannot be numbers or -",
-    "BucketNamePlaceholder": "bucket-name"
+    "BucketNamePlaceholder": "bucket-name",
+    "StorageList": "Cloud Storage List"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",

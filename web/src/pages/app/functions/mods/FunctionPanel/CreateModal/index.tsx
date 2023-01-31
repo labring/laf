@@ -23,6 +23,7 @@ import {
 } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import InputTag from "@/components/InputTag";
 import { SUPPORTED_METHODS } from "@/constants";
 
 import { useCreateFunctionMutation, useUpdateFunctionMutation } from "../../../service";
@@ -47,7 +48,7 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
     websocket: !!functionItem?.websocket,
     methods: functionItem?.methods || ["GET", "POST"],
     code: functionItem?.source.code || functionTemplates[0].value.trim(),
-    tags: [],
+    tags: functionItem?.tags || [],
   };
 
   type FormData = {
@@ -56,6 +57,7 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
     websocket: boolean;
     methods: TMethod[];
     code: string;
+    tags: string[];
   };
 
   const {
@@ -73,7 +75,6 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
   const updateFunctionMutation = useUpdateFunctionMutation();
 
   const onSubmit = async (data: any) => {
-    data.tags = [];
     let res: any = {};
     if (isEdit) {
       res = await updateFunctionMutation.mutateAsync(data);
@@ -127,6 +128,18 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
                   variant="filled"
                 />
                 <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
+              </FormControl>
+
+              <FormControl isInvalid={!!errors?.tags}>
+                <FormLabel htmlFor="tags">{t("FunctionPanel.Tags")}</FormLabel>
+                <Controller
+                  name="tags"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <InputTag value={value} onChange={onChange} />
+                  )}
+                />
+                <FormErrorMessage>{errors.tags && errors.tags.message}</FormErrorMessage>
               </FormControl>
 
               <FormControl isInvalid={!!errors?.methods}>

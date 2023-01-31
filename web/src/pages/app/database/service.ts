@@ -38,7 +38,7 @@ export const useCollectionListQuery = (config?: { onSuccess: (data: any) => void
   );
 };
 
-export const useEntryDataQuery = (params: any, onSuccess: () => void) => {
+export const useEntryDataQuery = (params: any, onSuccess: (data: any) => void) => {
   const { currentDB } = useDBMStore();
   const { db } = useDB();
   return useQuery(
@@ -59,7 +59,7 @@ export const useEntryDataQuery = (params: any, onSuccess: () => void) => {
 
       // 获取数据总数
       const { total } = await db.collection(currentDB?.name).where(query).count();
-      onSuccess && onSuccess();
+      onSuccess && onSuccess(res);
       return { list: res.data, total, page, limit };
     },
     {
@@ -296,7 +296,7 @@ export const useCreateRulesMutation = (onSuccess?: () => void) => {
   );
 };
 
-export const useUpdateRulesMutation = (onSuccess?: () => void) => {
+export const useUpdateRulesMutation = (onSuccess?: (data: any) => void) => {
   const { currentPolicy } = useDBMStore();
   const globalStore = useGlobalStore();
   return useMutation(
@@ -308,7 +308,7 @@ export const useUpdateRulesMutation = (onSuccess?: () => void) => {
         if (data.error) {
           globalStore.showError(data.error);
         } else {
-          onSuccess && onSuccess();
+          onSuccess && onSuccess(data.data);
         }
       },
     },
