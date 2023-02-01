@@ -82,7 +82,10 @@ export default function DeployButton() {
             <ModalBody borderBottom={"1px"} borderBottomColor="gray.200">
               <CommonDiffEditor
                 original={store.currentFunction?.source?.code}
-                modified={functionCache.getCache(store.currentFunction?.id)}
+                modified={functionCache.getCache(
+                  store.currentFunction?.id,
+                  store.currentFunction?.source?.code,
+                )}
               />
             </ModalBody>
 

@@ -35,7 +35,7 @@ function Col(props: {
     <div
       className={clsx(
         "flex flex-col space-y-2 h-full",
-        style?.width ? "flex-none" : "flex-grow",
+        style?.width ? "flex-none" : "flex-grow flex-1 overflow-hidden",
         className,
       )}
       style={style}

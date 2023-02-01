@@ -93,7 +93,7 @@
     "SystemDependence": "Built-In",
     "Value": "Value",
     "isSupport": "Whether to support",
-    "FunctionNameRule": "Function names can only start with _ or English"
+    "FunctionNameRule": "Function names can only contain English or _"
   },
   "HomePanel": {
     "APP": "Android or iOS app",

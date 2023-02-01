@@ -18,7 +18,7 @@ import { keyBy, mapValues } from "lodash";
 
 import { Row } from "@/components/Grid";
 import Panel from "@/components/Panel";
-import { Pages, SUPPORTED_METHODS } from "@/constants";
+import { Pages } from "@/constants";
 
 import { useCompileMutation } from "../../service";
 import useFunctionStore from "../../store";
@@ -33,6 +33,8 @@ import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
 import useGlobalStore from "@/pages/globalStore";
 
 const PANEL_HEIGHT = "calc(100vh - 500px)";
+
+const HAS_BODY_PARAMS_METHODS: (TMethod | undefined)[] = ["POST", "PUT", "PATCH", "DELETE"];
 
 export default function DebugPanel() {
   const { getFunctionUrl, currentFunction, setCurrentRequestId } = useFunctionStore(
@@ -166,7 +168,7 @@ export default function DebugPanel() {
                             <span className="ml-1">({queryParams.length})</span>
                           )}
                         </Tab>
-                        {runningMethod === SUPPORTED_METHODS.POST && (
+                        {HAS_BODY_PARAMS_METHODS.includes(runningMethod) && (
                           <Tab>
                             Body
                             {Object.keys(bodyParams).length > 0 && (
@@ -199,7 +201,7 @@ export default function DebugPanel() {
                           />
                         </TabPanel>
 
-                        {runningMethod === SUPPORTED_METHODS.POST && (
+                        {HAS_BODY_PARAMS_METHODS.includes(runningMethod) && (
                           <TabPanel px={2} py={3}>
                             <BodyParamsTab
                               onChange={(values) => {

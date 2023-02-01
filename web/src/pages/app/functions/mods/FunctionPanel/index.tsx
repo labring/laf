@@ -5,7 +5,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
-import { Input } from "@chakra-ui/react";
+import { HStack, Input } from "@chakra-ui/react";
 import { t } from "i18next";
 
 import { TriggerIcon } from "@/components/CommonIcon";
@@ -24,11 +24,14 @@ import TriggerModal from "../TriggerModal";
 import CreateModal from "./CreateModal";
 
 import { TFunction } from "@/apis/typing";
+import useFunctionCache from "@/hooks/useFunctionCache";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function FunctionList() {
   const { setCurrentFunction, currentFunction, setAllFunctionList, allFunctionList } =
     useFunctionStore((store) => store);
+
+  const functionCache = useFunctionCache();
 
   const [keywords, setKeywords] = useState("");
 
@@ -105,32 +108,37 @@ export default function FunctionList() {
                   <FileTypeIcon type={FileType.ts} />
                   <span className="ml-2 font-medium text-black">{func?.name}</span>
                 </div>
-                <MoreButton isHidden={func.name !== currentFunction?.name}>
-                  <>
-                    <CreateModal functionItem={func}>
-                      <div className="text-grayIron-600">
-                        <div className="text-grayModern-900 w-[20px] h-[20px] text-center pl-1">
-                          <EditIcon />
+                <HStack spacing={1}>
+                  {functionCache.getCache(func?.id, func?.source?.code) !== func?.source?.code && (
+                    <span className="flex-none inline-block w-1 h-1 rounded-full bg-warn-700"></span>
+                  )}
+                  <MoreButton isHidden={func.name !== currentFunction?.name}>
+                    <>
+                      <CreateModal functionItem={func}>
+                        <div className="text-grayIron-600">
+                          <div className="text-grayModern-900 w-[20px] h-[20px] text-center pl-1">
+                            <EditIcon />
+                          </div>
+                          {t("Edit")}
                         </div>
-                        {t("Edit")}
-                      </div>
-                    </CreateModal>
-                    <ConfirmButton
-                      onSuccessAction={async () => {
-                        await deleteFunctionMutation.mutateAsync(func);
-                      }}
-                      headerText={String(t("Delete"))}
-                      bodyText={String(t("FunctionPanel.DeleteConfirm"))}
-                    >
-                      <div className="text-grayIron-600">
-                        <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
-                          <DeleteIcon />
+                      </CreateModal>
+                      <ConfirmButton
+                        onSuccessAction={async () => {
+                          await deleteFunctionMutation.mutateAsync(func);
+                        }}
+                        headerText={String(t("Delete"))}
+                        bodyText={String(t("FunctionPanel.DeleteConfirm"))}
+                      >
+                        <div className="text-grayIron-600">
+                          <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
+                            <DeleteIcon />
+                          </div>
+                          {t("Delete")}
                         </div>
-                        {t("Delete")}
-                      </div>
-                    </ConfirmButton>
-                  </>
-                </MoreButton>
+                      </ConfirmButton>
+                    </>
+                  </MoreButton>
+                </HStack>
               </SectionList.Item>
             );
           })}
