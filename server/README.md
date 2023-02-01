@@ -29,16 +29,20 @@
 
 - laf cluster installed locally or remotely (~/.kube/config)
 - telepresence installed (see https://www.telepresence.io/reference/install)
+- minio client installed (see https://min.io/download#)
 
 ## Start service locally
 
 ```bash
 cd server/
 
-# proxy laf server cluster traffic to local
+# Install telepresence traffic manager
+telepresence helm install
+# Connect your computer to laf-dev cluster
 telepresence connect
-# view the available services
+# view the available services, service status needs to be Ready, `ready to intercept`
 telepresence list -n laf-system
+# Connect local server  to laf server cluster
 telepresence intercept server-laf-server -n laf-system -p 3000:3000 -e $(pwd)/.env
 
 npm install
@@ -49,6 +53,7 @@ npm run watch
 ```
 
 > Clean up
+
 ```bash
 telepresence leave server-laf-server-laf-system
 ```
