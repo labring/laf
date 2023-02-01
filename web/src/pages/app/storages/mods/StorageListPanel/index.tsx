@@ -78,7 +78,7 @@ export default function StorageListPanel() {
                       <FileTypeIcon type={FileType.bucket} />
                       <span className="ml-2 text-base text-black">{storage.name}</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex items-center">
                       <Tag size="sm" className="w-16 justify-center" variant={storage?.policy}>
                         {storage?.policy}
                       </Tag>

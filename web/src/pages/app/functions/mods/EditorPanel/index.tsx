@@ -27,7 +27,8 @@ function EditorPanel() {
             <span className="font-bold text-lg">{currentFunction?.name}</span>
             <FunctionDetailPopOver />
             {currentFunction?.id &&
-              functionCache.getCache(currentFunction?.id) !== currentFunction?.source?.code && (
+              functionCache.getCache(currentFunction?.id, currentFunction?.source?.code) !==
+                currentFunction?.source?.code && (
                 <span className="flex-none inline-block w-2 h-2 rounded-full bg-warn-700"></span>
               )}
             {currentFunction?.desc ? (
@@ -39,7 +40,7 @@ function EditorPanel() {
 
           <HStack spacing={1}>
             <CopyText text={getFunctionUrl()}>
-              <Input minW={"200px"} size="sm" readOnly value={getFunctionUrl()} />
+              <Input minW={"260px"} size="sm" readOnly value={getFunctionUrl()} />
             </CopyText>
 
             <DeployButton />
@@ -51,7 +52,7 @@ function EditorPanel() {
         <FunctionEditor
           className="flex-grow"
           path={currentFunction?.id || ""}
-          value={functionCache.getCache(currentFunction!.id)}
+          value={functionCache.getCache(currentFunction!.id, currentFunction!.source?.code)}
           onChange={(value) => {
             updateFunctionCode(currentFunction, value || "");
             functionCache.setCache(currentFunction!.id, value || "");

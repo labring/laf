@@ -119,7 +119,10 @@ export const useAddDataMutation = (config?: { onSuccess: (data: any) => void }) 
 
   return useMutation(
     async (values: any) => {
-      const result = await db.collection(currentDB?.name!).add({ ...values });
+      const result = await db.collection(currentDB?.name!).add(values, {
+        // if the input values is an array, the default is batch insertion
+        multi: Array.isArray(values),
+      });
       return result;
     },
     {

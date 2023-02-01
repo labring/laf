@@ -1,14 +1,8 @@
-import useFunctionStore from "@/pages/app/functions/store";
-
 function useFunctionCache() {
   const CACHE_KEY_PREFIX = "$cached_function@";
 
-  const currentFunction = useFunctionStore((state) => state.currentFunction);
-
-  function getCache(functionId: string): string {
-    return (
-      localStorage.getItem(CACHE_KEY_PREFIX + functionId) || currentFunction?.source?.code || ""
-    );
+  function getCache(functionId: string, _default: string = ""): string {
+    return localStorage.getItem(CACHE_KEY_PREFIX + functionId) || _default;
   }
 
   function setCache(functionId: string, value: string) {

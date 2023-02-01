@@ -12,11 +12,11 @@ const Tag = defineMultiStyleConfig({
     sm: definePartsStyle({
       container: {
         width: "60px",
-        height: "22px",
+        height: "18px",
         px: "1",
         py: "1",
-        fontSize: "10px",
-        fontWeight: "400",
+        zoom: "0.8",
+        fontWeight: "600",
         borderRadius: "4px",
       },
     }),

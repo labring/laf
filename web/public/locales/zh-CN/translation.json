@@ -81,7 +81,7 @@
     "DependenceVersion": "依赖版本",
     "DependenceTip": "请输入依赖包名",
     "Select": "已选择",
-    "FunctionNameRule": "函数名只能以 _ 或英文开头"
+    "FunctionNameRule": "函数名只能包含英文或 _"
   },
   "TriggerPanel": {
     "Trigger": "触发器",
@@ -182,5 +182,6 @@
   "SaveAndRestart": "保存并重启",
   "DataEntry": {
     "CreateError": "字段不能为空"
-  }
+  },
+  "EditTip": "已修改,未发布"
 }

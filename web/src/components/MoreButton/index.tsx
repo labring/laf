@@ -13,7 +13,7 @@ export default function MoreButton(props: {
   const { children, isHidden, maxWidth } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
-    <div className={clsx("flex group-hover:inline ", { hidden: isHidden })}>
+    <div className={clsx("flex group-hover:visible ", isHidden ? "invisible" : "visible")}>
       <Popover
         isOpen={isOpen}
         onOpen={onOpen}
@@ -23,7 +23,7 @@ export default function MoreButton(props: {
       >
         <IconWrap
           size={25}
-          className="text-grayIron-600 hover:bg-[#f0f9f9]"
+          className="text-grayIron-600 hover:bg-[#f0f9f9] -mr-2"
           tooltip={t("moreOperations").toString()}
         >
           <PopoverTrigger>

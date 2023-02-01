@@ -93,7 +93,7 @@
     "SystemDependence": "内置依赖",
     "Value": "值",
     "isSupport": "是否支持",
-    "FunctionNameRule": "函数名只能以 _ 或英文开头"
+    "FunctionNameRule": "函数名只能包含英文或 _"
   },
   "HomePanel": {
     "APP": "Android or iOS 应用",
