@@ -56,8 +56,8 @@ export function command(): Command {
     .description('Exec function')
     .option('-l --log <count>', 'print log')
     .option('-r --requestId', 'print requestId', false)
-    .hook('preAction', () => {
-      checkFunctionDebugToken()
+    .hook('preAction', async () => {
+      await checkFunctionDebugToken()
     })
     .action((funcName, options) => {
       exec(funcName, options)

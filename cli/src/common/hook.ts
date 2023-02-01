@@ -8,15 +8,28 @@ export function checkApplication() {
   }
 }
 
-export function checkFunctionDebugToken() {
+export async function checkFunctionDebugToken() {
   if (!existSecretConfig()) {
-    refreshSecretConfig()
+    await refreshSecretConfig()
     return
   }
   const secretConfig = readSecretConfig()
   const { debugToken, debugTokenExpire } = secretConfig.functionSecretConfig
   let timestamp = Date.parse(new Date().toString()) / 1000
   if (!debugToken || debugTokenExpire < timestamp) {
-    refreshSecretConfig()
+    await refreshSecretConfig()
+  }
+}
+
+export async function checkStorageToken() { 
+  if (!existSecretConfig()) {
+    await refreshSecretConfig()
+    return
+  }
+  const secretConfig = readSecretConfig()
+  const { expire } = secretConfig.storageSecretConfig
+  let timestamp = Date.parse(new Date().toString()) / 1000
+  if (expire < timestamp) {
+    await refreshSecretConfig()
   }
 }
