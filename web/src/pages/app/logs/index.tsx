@@ -186,7 +186,7 @@ export default function LogsPage() {
                 {detail?.func}
               </div>
               <span className={styles.primaryText}>Content: </span>
-              <SyntaxHighlighter language="json" customStyle={{ background: "#fff" }}>
+              <SyntaxHighlighter language="json" customStyle={{ background: "#fdfdfe" }}>
                 {detail?.data || ""}
               </SyntaxHighlighter>
             </ModalBody>

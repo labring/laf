@@ -5,7 +5,6 @@ function BodyParamsTab(props: { onChange(values: string): void }) {
 
   return (
     <JsonEditor
-      height="calc(100vh - 500px)"
       onChange={(values) => {
         try {
           const jsonValues = JSON.parse(values || "{}");

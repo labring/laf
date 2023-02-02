@@ -21,7 +21,7 @@ export default function Pagination(props: {
 
   return (
     <HStack alignItems="center" spacing={"1"} display="flex" whiteSpace={"nowrap"}>
-      <Text as="div">
+      <Text as="div" className="text-lg mr-2">
         {t("Total")}: {total}
       </Text>
       <IconWrap showBg tooltip="First Page" size={18}>

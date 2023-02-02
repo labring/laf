@@ -17,36 +17,44 @@ import UserSetting from "@/layouts/Header/UserSetting";
 import AppEnvList from "@/pages/app/setting/AppEnvList/index";
 import SettingModal from "@/pages/app/setting/index";
 import useGlobalStore from "@/pages/globalStore";
-
+type TIcon = {
+  pageId: string;
+  component: any;
+  name?: string;
+};
 export default function SideBar() {
   const { pageId } = useParams();
   const navigate = useNavigate();
   const { currentApp, setCurrentPage, userInfo } = useGlobalStore();
 
-  const ICONS = [
+  const ICONS: TIcon[] = [
     {
       pageId: "nav",
       component: <img src="/logo.png" alt="logo" width={24} />,
     },
     {
       pageId: Pages.function,
+      name: String(t("FunctionPanel.Function")),
       component: <Icons type="function" />,
     },
     {
       pageId: Pages.database,
+      name: String(t("CollectionPanel.Collection")),
       component: <Icons type="database" />,
     },
     {
       pageId: Pages.storage,
+      name: String(t("StoragePanel.Storage")),
       component: <Icons type="storage" />,
     },
     {
       pageId: Pages.logs,
+      name: String(t("LogPanel.Log")),
       component: <Icons type="logs" />,
     },
   ];
 
-  const BOTTOM_ICONS = [
+  const BOTTOM_ICONS: TIcon[] = [
     // {
     //   pageId: "lan",
     //   component: (
@@ -118,21 +126,19 @@ export default function SideBar() {
               return (
                 <Center
                   key={item.pageId}
-                  className={clsx(styles.icon, "m-2", {
+                  className={clsx(styles.icon, " mx-2 ", {
                     [styles.current]: pageId === item.pageId,
+                    "my-4": item.name !== undefined,
                   })}
                   onClick={() => {
-                    if (
-                      item.pageId !== Pages.setting &&
-                      item.pageId !== Pages.userSetting &&
-                      item.pageId !== "lan"
-                    ) {
+                    if (item.name !== undefined) {
                       setCurrentPage(item.pageId);
                       navigate(`/app/${currentApp?.appid}/${item.pageId}`);
                     }
                   }}
                 >
                   {item.component}
+                  <p>{item.name ? item.name : null}</p>
                 </Center>
               );
             })}

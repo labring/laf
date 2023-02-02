@@ -40,7 +40,7 @@ const SettingModal = (props: {
         <ModalContent>
           <ModalHeader>{headerTitle || t("SettingPanel.Setting")}</ModalHeader>
           <ModalCloseButton />
-          <ModalBody p={6}>
+          <ModalBody px={6} py={2}>
             <div className="flex">
               <SectionList className="w-[250px] mr-4 border-r-2 border-lafWhite-600 pr-4">
                 {tabMatch.map((tab) => {

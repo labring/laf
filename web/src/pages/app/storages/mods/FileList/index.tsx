@@ -1,9 +1,10 @@
 import { DeleteIcon, ViewIcon } from "@chakra-ui/icons";
-import { HStack, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { HStack, Input, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { t } from "i18next";
 
 import ConfirmButton from "@/components/ConfirmButton";
+import CopyText from "@/components/CopyText";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
@@ -11,6 +12,7 @@ import { formatDate, formateType, formatSize } from "@/utils/format";
 
 import useStorageStore, { TFile } from "../../store";
 import CreateFolderModal from "../CreateFolderModal";
+import CreateWebsiteModal from "../CreateWebsiteModal";
 import PathLink from "../PathLink";
 import UploadButton from "../UploadButton";
 
@@ -61,6 +63,12 @@ export default function FileList() {
             <UploadButton onUploadSuccess={() => query.refetch()} />
             <CreateFolderModal onCreateSuccess={() => query.refetch()} />
           </HStack>
+          <HStack spacing={4}>
+            <CreateWebsiteModal onCreateSuccess={() => query.refetch()} />
+            <CopyText text={""}>
+              <Input minW={"200px"} size="sm" readOnly value={""} />
+            </CopyText>
+          </HStack>
         </Panel.Header>
       </Panel>
       <Panel className="flex-grow overflow-hidden">
@@ -80,12 +88,12 @@ export default function FileList() {
           ) : (
             <TableContainer className="h-full" style={{ overflowY: "auto" }}>
               <Table variant="simple" size="sm">
-                <Thead className="h-8 bg-lafWhite-400 text-grayModern-500">
+                <Thead className="h-8 bg-lafWhite-400">
                   <Tr>
                     <Th>{t("StoragePanel.FileName")}</Th>
                     <Th>{t("StoragePanel.FileType")}</Th>
-                    <Th isNumeric>{t("StoragePanel.Size")}</Th>
-                    <Th isNumeric>{t("StoragePanel.Time")}</Th>
+                    <Th>{t("StoragePanel.Size")}</Th>
+                    <Th>{t("StoragePanel.Time")}</Th>
                     <Th isNumeric>
                       <span className="mr-2">{t("Operation")}</span>
                     </Th>
@@ -109,26 +117,22 @@ export default function FileList() {
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
                             }}
-                            className="text-grayModern-900 font-medium"
+                            onClick={() =>
+                              file.Prefix ? changeDirectory(file) : viewAppFile(file)
+                            }
+                            className="text-grayModern-900 font-medium cursor-pointer"
                           >
                             <FileTypeIcon type={fileType} />
                             {file.Prefix ? (
-                              <span
-                                className="ml-2 cursor-pointer"
-                                onClick={() => changeDirectory(file)}
-                              >
-                                {dirName[dirName.length - 2]}
-                              </span>
+                              <span className="ml-2">{dirName[dirName.length - 2]}</span>
                             ) : (
                               <span className="ml-2">{fileName[fileName.length - 1]}</span>
                             )}
                           </Td>
                           <Td>{fileType}</Td>
-                          <Td isNumeric>{file.Size ? formatSize(file.Size) : "--"}</Td>
-                          <Td isNumeric>
-                            {file.LastModified ? formatDate(file.LastModified) : "--"}
-                          </Td>
-                          <Td isNumeric className="flex justify-end text-grayModern-900">
+                          <Td>{file.Size ? formatSize(file.Size) : "--"}</Td>
+                          <Td>{file.LastModified ? formatDate(file.LastModified) : "--"}</Td>
+                          <Td isNumeric className="flex justify-end text-grayModern-900 space-x-2">
                             <IconWrap
                               placement="left"
                               tooltip={

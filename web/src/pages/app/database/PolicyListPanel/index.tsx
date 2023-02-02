@@ -15,6 +15,8 @@ import AddPolicyModal from "../mods/AddPolicyModal";
 import { useDeletePolicyMutation, usePolicyListQuery } from "../service";
 import useDBMStore from "../store";
 export default function PolicyListPanel() {
+  const deletePolicyMutation = useDeletePolicyMutation();
+  const store = useDBMStore((state) => state);
   const policyQuery = usePolicyListQuery((data) => {
     if (data.data.length === 0) {
       store.setCurrentPolicy(undefined);
@@ -22,9 +24,6 @@ export default function PolicyListPanel() {
       store.setCurrentPolicy(data?.data[0]);
     }
   });
-
-  const deletePolicyMutation = useDeletePolicyMutation();
-  const store = useDBMStore((state) => state);
   return (
     <Panel
       onClick={() => {
@@ -52,7 +51,7 @@ export default function PolicyListPanel() {
               }}
             >
               <div className="w-full flex justify-between group">
-                <div className="leading-loose">
+                <div className="leading-loose font-semibold">
                   <FileTypeIcon type="policy" />
                   <span className="ml-2 text-base">{item.name}</span>
                 </div>

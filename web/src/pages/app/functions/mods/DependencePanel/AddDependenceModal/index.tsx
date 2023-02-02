@@ -43,7 +43,7 @@ const AddDependenceModal = () => {
   const globalStore = useGlobalStore((state) => state);
   const [checkList, setCheckList] = useState<TDependenceItem[]>([]);
   const [name, setName] = useState("");
-  const [clickItem, setClickItem] = useState("");
+  const [clickItem, setClickItem] = useState({ package: "", loading: false });
   const [list, setList] = useState<TDependenceItem[]>([]);
   const [isEdit, setIsEdit] = useState(false);
   const [isShowChecked, setIsShowChecked] = useState(false);
@@ -84,14 +84,15 @@ const AddDependenceModal = () => {
     setList(list);
   });
 
-  usePackageVersionsQuery(clickItem, (versions: string[]) => {
+  usePackageVersionsQuery(clickItem.package, (versions: string[]) => {
     const newList: TDependenceItem[] = (isEdit ? packageList : list).map(
       (item: TDependenceItem) => {
-        if (item.package.name === clickItem) {
+        if (item.package.name === clickItem.package) {
           item.versions = versions;
           if (!isEdit) {
-            syncDataToCheckList(clickItem, item);
+            syncDataToCheckList(clickItem.package, item);
           }
+          setClickItem({ ...clickItem, loading: false });
         }
         return item;
       },
@@ -176,7 +177,9 @@ const AddDependenceModal = () => {
               key={packageItem.package.name}
               className="group"
               onClick={() => {
-                if (packageItem.versions.length === 0) setClickItem(packageItem.package.name);
+                if (packageItem.versions.length === 0 && !clickItem.loading) {
+                  setClickItem({ package: packageItem.package.name, loading: true });
+                }
               }}
             >
               {isEdit ? (
@@ -205,30 +208,37 @@ const AddDependenceModal = () => {
                   </Box>
                 </Checkbox>
               )}
-              <Select
-                width="150px"
-                size="sm"
-                variant="filled"
-                placeholder={packageItem.package.version}
-                isDisabled={
-                  !isEdit &&
-                  packageList.some((item) => item.package.name === packageItem.package.name)
-                }
-                onChange={(e) => {
-                  setVersion(e.target.value, packageItem.package.name);
-                }}
-                onClick={() => {
-                  if (packageItem.versions.length === 0) setClickItem(packageItem.package.name);
-                }}
-              >
-                {packageItem.versions.map((subItem: string | undefined) => {
-                  return (
-                    <option key={subItem} value={subItem}>
-                      {subItem}
-                    </option>
-                  );
-                })}
-              </Select>
+              <div className="flex items-center space-x-2">
+                {clickItem.package === packageItem.package.name && clickItem.loading ? (
+                  <Spinner size="xs" color="primary.500" />
+                ) : null}
+                <Select
+                  width="150px"
+                  size="sm"
+                  variant="filled"
+                  placeholder={packageItem.package.version}
+                  isDisabled={
+                    !isEdit &&
+                    packageList.some((item) => item.package.name === packageItem.package.name)
+                  }
+                  onChange={(e) => {
+                    setVersion(e.target.value, packageItem.package.name);
+                  }}
+                  onClick={() => {
+                    if (packageItem.versions.length === 0 && !clickItem.loading) {
+                      setClickItem({ package: packageItem.package.name, loading: true });
+                    }
+                  }}
+                >
+                  {packageItem.versions.map((subItem: string | undefined) => {
+                    return (
+                      <option key={subItem} value={subItem}>
+                        {subItem}
+                      </option>
+                    );
+                  })}
+                </Select>
+              </div>
             </DependenceList.Item>
           );
         })}

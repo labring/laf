@@ -63,7 +63,7 @@ export default function DeployButton() {
     <>
       <Tooltip label={`快捷键: ${displayName.toUpperCase()}，调试可直接点击右侧「运行」按扭`}>
         <Button
-          variant="text"
+          variant={"text"}
           disabled={store.getFunctionUrl() === ""}
           onClick={() => {
             onOpen();

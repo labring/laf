@@ -39,7 +39,7 @@ function HeaderParamsTab(props: { onChange(values: Params[]): void }) {
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <TableContainer>
-          <Table size="sm" className="border" variant={"unstyled"}>
+          <Table size="sm" className="border rounded  border-grayModern-600" variant={"unstyled"}>
             <Thead>
               <Tr>
                 <Th>{t("FunctionPanel.Name")}</Th>

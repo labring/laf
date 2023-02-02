@@ -43,6 +43,24 @@ const Tag = defineMultiStyleConfig({
         color: "warn.700",
       },
     }),
+    inputTag: definePartsStyle({
+      container: {
+        backgroundColor: "lafWhite.600",
+        borderColor: "lafWhite.600",
+        borderWidth: 1,
+        color: "grayModern.900",
+        height: "28px",
+      },
+    }),
+    inputTagActive: definePartsStyle({
+      container: {
+        backgroundColor: "lafWhite.600",
+        borderColor: "primary.500",
+        borderWidth: 1,
+        color: "primary.500",
+        height: "28px",
+      },
+    }),
   },
 });
 
@@ -211,6 +229,8 @@ const Table = {
       parts: ["th", "td"],
       th: {
         border: "none",
+        fontWeight: "400",
+        color: "grayModern.500",
       },
       td: {
         border: "none",
@@ -219,10 +239,14 @@ const Table = {
     border: {
       parts: ["th", "td"],
       th: {
-        border: "1px solid #dddddd",
+        borderWidth: 1,
+        borderColor: "grayModern.100",
+        background: "lafWhite.300",
       },
       td: {
-        border: "1px solid #dddddd",
+        borderWidth: 1,
+        borderColor: "grayModern.100",
+        background: "lafWhite.300",
       },
     },
   },
