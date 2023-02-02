@@ -127,7 +127,7 @@ const AddRulesModal = (props: { onSuccessSubmit: (data: any) => void }) => {
                   name="value"
                   control={control}
                   render={({ field: { onChange, value } }) => (
-                    <div className="h-[280px] bg-lafWhite-600 rounded pr-2">
+                    <div className="h-[280px] bg-lafWhite-400 rounded pr-2">
                       <JsonEditor value={value} onChange={onChange} />
                     </div>
                   )}

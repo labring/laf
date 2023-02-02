@@ -84,7 +84,7 @@ const AddDataModal = (props: { onSuccessSubmit: () => void }) => {
                   name="value"
                   control={control}
                   render={({ field: { onChange, value } }) => (
-                    <div className="h-[300px] bg-lafWhite-600 rounded">
+                    <div className="h-[300px] bg-lafWhite-400 rounded pr-2">
                       <JsonEditor value={value} onChange={onChange} />
                     </div>
                   )}

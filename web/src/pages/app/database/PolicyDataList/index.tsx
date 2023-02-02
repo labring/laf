@@ -103,7 +103,7 @@ export default function PolicyDataList() {
           <Text fontSize="md" className="leading-loose font-semibold mt-4 mb-2">
             {t("CollectionPanel.RulesContent")}
           </Text>
-          <div className=" mb-4 pr-2 flex-1 bg-lafWhite-600 rounded">
+          <div className=" mb-4 pr-2 flex-1 bg-lafWhite-400 rounded">
             <JsonEditor
               value={JSON.stringify(currentData?.value || policyTemplate, null, 2)}
               onChange={(values) => {

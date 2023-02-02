@@ -11,7 +11,7 @@ monaco?.editor.defineTheme("JsonEditorTheme", {
     "editor.background": "#ffffff00",
     "editorLineNumber.foreground": "#aaa",
     "editorOverviewRuler.border": "#ffffff00",
-    "editor.lineHighlightBackground": "#ffffff00",
+    "editor.lineHighlightBackground": "#e0f2f2",
     "scrollbarSlider.background": "#E8EAEC",
     "editorIndentGuide.activeBackground": "#ddd",
     "editorIndentGuide.background": "#eee",

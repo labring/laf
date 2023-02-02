@@ -10,7 +10,7 @@ import Pagination from "@/components/Pagination";
 import Panel from "@/components/Panel";
 import getPageInfo from "@/utils/getPageInfo";
 
-import AddDataModal from "../../../mods/AddDataModal";
+import AddDataModal from "../../../mods/AddDataModal/index";
 import RightPanelEditBox from "../../../RightComponent/EditBox";
 import RightPanelList from "../../../RightComponent/List";
 import { useDeleteDataMutation, useEntryDataQuery, useUpdateDataMutation } from "../../../service";
@@ -144,7 +144,7 @@ export default function DataPanel() {
           isLoading={updateDataMutation.isLoading}
           onSave={handleData}
         >
-          <div className=" flex-1" style={{}}>
+          <div className=" flex-1 mb-4 bg-lafWhite-400 rounded">
             <JsonEditor
               value={JSON.stringify(currentData || {}, null, 2)}
               onChange={(values) => {

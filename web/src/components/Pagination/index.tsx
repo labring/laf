@@ -24,7 +24,7 @@ export default function Pagination(props: {
       <Text as="div" className="text-lg mr-2">
         {t("Total")}: {total}
       </Text>
-      <IconWrap showBg tooltip="First Page" size={24}>
+      <IconWrap showBg tooltip="First Page" size={18}>
         <Button
           variant="link"
           onClick={() => {
@@ -38,7 +38,7 @@ export default function Pagination(props: {
           <ArrowLeftIcon fontSize={"8px"} />
         </Button>
       </IconWrap>
-      <IconWrap showBg tooltip="Previous Page" size={24}>
+      <IconWrap showBg tooltip="Previous Page" size={18}>
         <Button
           variant="link"
           onClick={() =>
@@ -59,7 +59,7 @@ export default function Pagination(props: {
       <Text fontWeight="bold" as="p" minWidth={"36px"} px="8px" textAlign={"center"}>
         {maxPage < 0 ? "-" : maxPage}
       </Text>
-      <IconWrap showBg tooltip="Next Page" size={24}>
+      <IconWrap showBg tooltip="Next Page" size={18}>
         <Button
           variant="link"
           isDisabled={maxPage === page || maxPage === -1}
@@ -73,7 +73,7 @@ export default function Pagination(props: {
           <ChevronRightIcon fontSize={"16px"} />
         </Button>
       </IconWrap>
-      <IconWrap showBg tooltip="Last Page" size={24}>
+      <IconWrap showBg tooltip="Last Page" size={18}>
         <Button
           variant="link"
           onClick={() => {
