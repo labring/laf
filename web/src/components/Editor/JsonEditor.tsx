@@ -8,9 +8,10 @@ monaco?.editor.defineTheme("JsonEditorTheme", {
   inherit: true,
   rules: [],
   colors: {
+    "editor.background": "#ffffff00",
     "editorLineNumber.foreground": "#aaa",
-    "editorOverviewRuler.border": "#fff",
-    "editor.lineHighlightBackground": "#fff",
+    "editorOverviewRuler.border": "#ffffff00",
+    "editor.lineHighlightBackground": "#ffffff00",
     "scrollbarSlider.background": "#E8EAEC",
     "editorIndentGuide.activeBackground": "#ddd",
     "editorIndentGuide.background": "#eee",

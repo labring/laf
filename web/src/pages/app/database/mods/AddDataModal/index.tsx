@@ -78,13 +78,13 @@ const AddDataModal = (props: { onSuccessSubmit: () => void }) => {
             <p>{}</p>
             <VStack spacing={6} align="flex-start">
               <FormControl isInvalid={!!error}>
-                <FormErrorMessage>{error}</FormErrorMessage>
+                <FormErrorMessage className="ml-2 mb-4">{error}</FormErrorMessage>
                 <FormLabel htmlFor="value"></FormLabel>
                 <Controller
                   name="value"
                   control={control}
                   render={({ field: { onChange, value } }) => (
-                    <div className="h-[300px]">
+                    <div className="h-[300px] bg-lafWhite-600 rounded">
                       <JsonEditor value={value} onChange={onChange} />
                     </div>
                   )}

@@ -122,12 +122,12 @@ const AddRulesModal = (props: { onSuccessSubmit: (data: any) => void }) => {
 
               <FormControl isInvalid={!!parseError}>
                 <FormLabel htmlFor="value"> {t("CollectionPanel.RulesContent")}</FormLabel>
-                <FormErrorMessage>{parseError}</FormErrorMessage>
+                <FormErrorMessage className="mb-4">{parseError}</FormErrorMessage>
                 <Controller
                   name="value"
                   control={control}
                   render={({ field: { onChange, value } }) => (
-                    <div className="h-[280px]">
+                    <div className="h-[280px] bg-lafWhite-600 rounded pr-2">
                       <JsonEditor value={value} onChange={onChange} />
                     </div>
                   )}

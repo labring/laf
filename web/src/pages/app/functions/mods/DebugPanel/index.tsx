@@ -73,7 +73,7 @@ export default function DebugPanel() {
     setIsLoading(true);
     try {
       const compileRes = await compileMutation.mutateAsync({
-        code: functionCache.getCache(currentFunction!.id),
+        code: functionCache.getCache(currentFunction!.id, currentFunction!.source?.code),
         name: currentFunction!.name,
       });
 

@@ -45,7 +45,7 @@ function UploadButton({ onUploadSuccess }: { onUploadSuccess: () => void }) {
           leftIcon={<BiCloudUpload fontSize={22} className="text-grayModern-500" />}
           disabled={currentStorage === undefined}
         >
-          {t("StoragePanel.Upload")}
+          <p className="font-semibold">{t("StoragePanel.Upload")}</p>
         </MenuButton>
         <MenuList minW={24}>
           <MenuItem

@@ -27,7 +27,9 @@ function PathLink() {
       {paths?.map((p, index) => (
         <span
           key={p.path}
-          className={index === paths?.length - 1 ? "text-black-500" : "text-grayModern-500"}
+          className={
+            index === paths?.length - 1 ? "text-black-500 font-medium" : "text-grayModern-500"
+          }
         >
           <span className="cursor-pointer" onClick={() => changeDirectory(p.path)}>
             {p.name}

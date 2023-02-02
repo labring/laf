@@ -229,6 +229,8 @@ const Table = {
       parts: ["th", "td"],
       th: {
         border: "none",
+        fontWeight: "400",
+        color: "grayModern.500",
       },
       td: {
         border: "none",

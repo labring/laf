@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { Text } from "@chakra-ui/react";
 import { t } from "i18next";
@@ -11,6 +11,7 @@ import policyTemplate from "../mods/AddRulesModal/policyTemplate";
 import RightPanelEditBox from "../RightComponent/EditBox";
 import RightPanelList from "../RightComponent/List";
 import { useDeleteRuleMutation, useRulesListQuery, useUpdateRulesMutation } from "../service";
+import useDBMStore from "../store";
 
 import useGlobalStore from "@/pages/globalStore";
 
@@ -18,13 +19,19 @@ export default function PolicyDataList() {
   const [currentData, setCurrentData] = useState<any>(undefined);
   const [record, setRecord] = useState(JSON.stringify(policyTemplate));
   const globalStore = useGlobalStore();
+  const store = useDBMStore((state) => state);
   const rulesListQuery = useRulesListQuery((data: any) => {
     if (data?.data.length === 0) {
       setCurrentData(undefined);
-    } else {
+    } else if (currentData === undefined) {
       setCurrentData(data.data[0]);
     }
   });
+
+  useEffect(() => {
+    setCurrentData(undefined);
+  }, [store.currentPolicy, setCurrentData]);
+
   const deleteRuleMutation = useDeleteRuleMutation(() => {
     setCurrentData(undefined);
     rulesListQuery.refetch();
@@ -51,11 +58,12 @@ export default function PolicyDataList() {
       <Panel.Header className="w-full pr-2 h-[60px] flex-shrink-0">
         <AddRulesModal
           onSuccessSubmit={(data) => {
+            setCurrentData(data);
             rulesListQuery.refetch();
           }}
         />
         <span>
-          {t("CollectionPanel.RulesNum")}:{rulesListQuery?.data?.data?.length || 0}
+          {t("CollectionPanel.RulesNum")} : {rulesListQuery?.data?.data?.length || 0}
         </span>
       </Panel.Header>
       <div className="w-full flex-grow flex overflow-hidden">
@@ -95,7 +103,7 @@ export default function PolicyDataList() {
           <Text fontSize="md" className="leading-loose font-semibold mt-4 mb-2">
             {t("CollectionPanel.RulesContent")}
           </Text>
-          <div className=" flex-1">
+          <div className=" mb-4 pr-2 flex-1 bg-lafWhite-600 rounded">
             <JsonEditor
               value={JSON.stringify(currentData?.value || policyTemplate, null, 2)}
               onChange={(values) => {

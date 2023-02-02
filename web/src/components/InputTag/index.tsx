@@ -27,9 +27,9 @@ export default function InputTag(props: { value: string[]; onChange: (value: str
         onChange={(e) => setInputV(e.target.value)}
       />
       {value.length > 0 ? (
-        <div className="flex items-center flex-wrap p-2 border-2 rounded border-white-700 border-dashed max-h-20 overflow-auto">
+        <div className="flex items-center flex-wrap pb-2 px-2  border-2 rounded border-white-700 border-dashed max-h-20 overflow-auto">
           {value.map((item) => (
-            <Tag className="mr-2 mb-2" key={item} variant="inputTag">
+            <Tag className="mr-2 mt-2" key={item} variant="inputTag">
               <TagLabel>{item}</TagLabel>
               <TagCloseButton
                 onClick={() => {
