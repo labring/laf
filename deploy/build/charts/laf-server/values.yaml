@@ -2,15 +2,23 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-domain: ""
 databaseUrl: ""
 apiServerUrl: ""
-minio:
-  domain: ""
-  external_endpoint: ""
-  internal_endpoint: ""
-  access_key: ""
-  secret_key: ""
+# init default region conf
+default_region:
+  # minio conf
+  minio_domain: ""
+  minio_external_endpoint: ""
+  minio_internal_endpoint: ""
+  minio_root_access_key: ""
+  minio_root_secret_key: ""
+  # apisix
+  apisix_api_url: ""
+  apisix_api_key: ""
+  apisix_public_port: 80
+  tls: false
+  function_domain: ""
+  website_domain: ""
 jwt:
   secret: laf_server_abc123
   expires_in: 7d
@@ -21,9 +29,6 @@ casdoor:
   org_name: laf
   app_name: laf
   redirect_uri: http://localhost:3001/login_callback
-apisix:
-  admin_api_url: ""
-  admin_api_key: ""
 
 replicaCount: 1
 

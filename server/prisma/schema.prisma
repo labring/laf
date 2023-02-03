@@ -64,11 +64,12 @@ type RegionDatabaseConf {
 }
 
 type RegionGatewayConf {
-  driver String // apisix
-  domain String
-  tls    Boolean
-  apiUrl String
-  apiKey String
+  driver         String // apisix
+  functionDomain String // cloud function domain
+  websiteDomain  String // website domain
+  port           Int    @default(80)
+  apiUrl         String
+  apiKey         String
 }
 
 type RegionStorageConf {
@@ -88,6 +89,7 @@ model Region {
   databaseConf RegionDatabaseConf
   gatewayConf  RegionGatewayConf
   storageConf  RegionStorageConf
+  tls          Boolean            @default(false)
   state        String             @default("active") // active, inactive
 
   createdAt DateTime @default(now())
@@ -216,14 +218,15 @@ enum BucketPolicy {
 }
 
 model StorageBucket {
-  id        String        @id @default(auto()) @map("_id") @db.ObjectId
-  appid     String
-  name      String        @unique
-  shortName String
-  policy    BucketPolicy
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  domain    BucketDomain?
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+  appid          String
+  name           String          @unique
+  shortName      String
+  policy         BucketPolicy
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  domain         BucketDomain?
+  websiteHosting WebsiteHosting?
 }
 
 // database schemas
@@ -322,6 +325,7 @@ model CronTrigger {
 enum DomainState {
   Active
   Inactive
+  Pending
 }
 
 model ApplicationDomain {
@@ -340,6 +344,20 @@ model BucketDomain {
   appid      String
   bucketName String      @unique
   domain     String      @unique
+  state      DomainState @default(Active)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  bucket StorageBucket @relation(fields: [bucketName], references: [name])
+}
+
+model WebsiteHosting {
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  appid      String
+  bucketName String      @unique
+  domain     String      @unique // auto-generated domain by default, custom domain if set
+  isCustom   Boolean     @default(false) // if true, domain is custom domain
+  isResolved Boolean     @default(false) // if true, domain is resolved to bucket domain (cname)
   state      DomainState @default(Active)
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
