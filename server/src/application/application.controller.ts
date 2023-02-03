@@ -94,9 +94,10 @@ export class ApplicationController {
     // Security Warning: Do not response this region object to client since it contains sensitive information
     const region = await this.regionService.findOne(data.regionName)
 
+    // TODO: remove these storage related code to standalone api
     let storage = {}
     const storageUser = await this.storageService.findOne(appid)
-    if (!storageUser) {
+    if (storageUser) {
       const sts = await this.storageService.getOssSTS(
         region,
         appid,
