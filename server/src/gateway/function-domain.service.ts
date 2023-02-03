@@ -18,7 +18,7 @@ export class FunctionDomainService {
     const region = await this.regionService.findByAppId(appid)
     assert(region, 'region not found')
 
-    const app_domain = `${appid}.${region.gatewayConf.domain}`
+    const app_domain = `${appid}.${region.gatewayConf.functionDomain}`
 
     // create route first
     const route = await this.apisixService.createAppRoute(

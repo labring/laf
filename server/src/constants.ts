@@ -78,36 +78,48 @@ export class ServerConfig {
     return process.env.API_SERVER_URL || 'http://localhost:3000'
   }
 
-  static get DOMAIN() {
-    return process.env.DOMAIN || 'localhost'
+  static get DEFAULT_REGION_FUNCTION_DOMAIN() {
+    return process.env.DEFAULT_REGION_FUNCTION_DOMAIN || 'localhost'
   }
 
-  static get APISIX_API_URL() {
-    return process.env.APISIX_API_URL
+  static get DEFAULT_REGION_WEBSITE_DOMAIN() {
+    return process.env.DEFAULT_REGION_WEBSITE_DOMAIN || 'localhost'
   }
 
-  static get APISIX_API_KEY() {
-    return process.env.APISIX_API_KEY
+  static get DEFAULT_REGION_TLS() {
+    return process.env.DEFAULT_REGION_TLS || 'false'
   }
 
-  static get MINIO_DOMAIN() {
-    return process.env.MINIO_DOMAIN
+  static get DEFAULT_REGION_APISIX_PUBLIC_PORT() {
+    return parseInt(process.env.DEFAULT_REGION_APISIX_PUBLIC_PORT || '80')
   }
 
-  static get MINIO_EXTERNAL_ENDPOINT() {
-    return process.env.MINIO_EXTERNAL_ENDPOINT
+  static get DEFAULT_REGION_APISIX_API_URL() {
+    return process.env.DEFAULT_REGION_APISIX_API_URL
   }
 
-  static get MINIO_INTERNAL_ENDPOINT() {
-    return process.env.MINIO_INTERNAL_ENDPOINT
+  static get DEFAULT_REGION_APISIX_API_KEY() {
+    return process.env.DEFAULT_REGION_APISIX_API_KEY
   }
 
-  static get MINIO_ROOT_ACCESS_KEY() {
-    return process.env.MINIO_ROOT_ACCESS_KEY
+  static get DEFAULT_REGION_MINIO_DOMAIN() {
+    return process.env.DEFAULT_REGION_MINIO_DOMAIN
   }
 
-  static get MINIO_ROOT_SECRET_KEY() {
-    return process.env.MINIO_ROOT_SECRET_KEY
+  static get DEFAULT_REGION_MINIO_EXTERNAL_ENDPOINT() {
+    return process.env.DEFAULT_REGION_MINIO_EXTERNAL_ENDPOINT
+  }
+
+  static get DEFAULT_REGION_MINIO_INTERNAL_ENDPOINT() {
+    return process.env.DEFAULT_REGION_MINIO_INTERNAL_ENDPOINT
+  }
+
+  static get DEFAULT_REGION_MINIO_ROOT_ACCESS_KEY() {
+    return process.env.DEFAULT_REGION_MINIO_ROOT_ACCESS_KEY
+  }
+
+  static get DEFAULT_REGION_MINIO_ROOT_SECRET_KEY() {
+    return process.env.DEFAULT_REGION_MINIO_ROOT_SECRET_KEY
   }
 }
 
@@ -118,10 +130,6 @@ export class ResourceLabels {
 
   static get APP_ID() {
     return 'laf.dev/appid'
-  }
-
-  static get DISPLAY_NAME() {
-    return 'laf.dev/display.name'
   }
 
   static get NAMESPACE_TYPE() {

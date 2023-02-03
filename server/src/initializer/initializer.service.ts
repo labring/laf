@@ -27,6 +27,7 @@ export class InitializerService {
       data: {
         name: 'default',
         displayName: 'Default',
+        tls: false,
         clusterConf: {
           driver: 'kubernetes',
         },
@@ -39,20 +40,23 @@ export class InitializerService {
         storageConf: {
           set: {
             driver: 'minio',
-            domain: ServerConfig.MINIO_DOMAIN,
-            externalEndpoint: ServerConfig.MINIO_EXTERNAL_ENDPOINT,
-            internalEndpoint: ServerConfig.MINIO_INTERNAL_ENDPOINT,
-            accessKey: ServerConfig.MINIO_ROOT_ACCESS_KEY,
-            secretKey: ServerConfig.MINIO_ROOT_SECRET_KEY,
+            domain: ServerConfig.DEFAULT_REGION_MINIO_DOMAIN,
+            externalEndpoint:
+              ServerConfig.DEFAULT_REGION_MINIO_EXTERNAL_ENDPOINT,
+            internalEndpoint:
+              ServerConfig.DEFAULT_REGION_MINIO_INTERNAL_ENDPOINT,
+            accessKey: ServerConfig.DEFAULT_REGION_MINIO_ROOT_ACCESS_KEY,
+            secretKey: ServerConfig.DEFAULT_REGION_MINIO_ROOT_SECRET_KEY,
           },
         },
         gatewayConf: {
           set: {
             driver: 'apisix',
-            domain: ServerConfig.DOMAIN,
-            tls: false,
-            apiUrl: ServerConfig.APISIX_API_URL,
-            apiKey: ServerConfig.APISIX_API_KEY,
+            functionDomain: ServerConfig.DEFAULT_REGION_FUNCTION_DOMAIN,
+            websiteDomain: ServerConfig.DEFAULT_REGION_WEBSITE_DOMAIN,
+            port: ServerConfig.DEFAULT_REGION_APISIX_PUBLIC_PORT,
+            apiUrl: ServerConfig.DEFAULT_REGION_APISIX_API_URL,
+            apiKey: ServerConfig.DEFAULT_REGION_APISIX_API_KEY,
           },
         },
       },
@@ -125,6 +129,7 @@ export class InitializerService {
       this.logger.verbose('MinioService init - ' + region.name)
 
       const res = await this.minioService.setMinioClientTarget(region)
+      this.logger.log(res)
       assert.ok(
         res.status === 'success',
         'set minio client target failed: ' + region.name,

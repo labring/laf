@@ -91,28 +91,38 @@ export class ApplicationController {
       domain: true,
     })
 
-    const storage = await this.storageService.findOne(appid)
-
     // Security Warning: Do not response this region object to client since it contains sensitive information
     const region = await this.regionService.findOne(data.regionName)
 
-    const sts = await this.storageService.getOssSTS(region, appid, storage)
-    const credentials = {
-      endpoint: region.storageConf.externalEndpoint,
-      accessKeyId: sts.Credentials?.AccessKeyId,
-      secretAccessKey: sts.Credentials?.SecretAccessKey,
-      sessionToken: sts.Credentials?.SessionToken,
-      expiration: sts.Credentials?.Expiration,
+    let storage = {}
+    const storageUser = await this.storageService.findOne(appid)
+    if (!storageUser) {
+      const sts = await this.storageService.getOssSTS(
+        region,
+        appid,
+        storageUser,
+      )
+      const credentials = {
+        endpoint: region.storageConf.externalEndpoint,
+        accessKeyId: sts.Credentials?.AccessKeyId,
+        secretAccessKey: sts.Credentials?.SecretAccessKey,
+        sessionToken: sts.Credentials?.SessionToken,
+        expiration: sts.Credentials?.Expiration,
+      }
+
+      storage = {
+        credentials,
+        ...storageUser,
+      }
     }
 
     const debug_token = await this.funcService.getDebugFunctionToken(appid)
 
     const res = {
       ...data,
-      storage: {
-        ...storage,
-        credentials,
-      },
+      storage: storage,
+      tls: region.tls,
+      port: region.gatewayConf.port,
       function_debug_token: debug_token,
     }
 

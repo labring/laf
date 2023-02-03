@@ -57,22 +57,28 @@ spec:
               value: {{ .Values.apiServerUrl | quote}}
             - name: JWT_EXPIRES_IN
               value: {{ .Values.jwt.expires_in | quote}}
-            - name: MINIO_DOMAIN
-              value: {{ .Values.minio.domain }}
-            - name: MINIO_EXTERNAL_ENDPOINT
-              value: {{ .Values.minio.external_endpoint }}
-            - name: MINIO_INTERNAL_ENDPOINT
-              value: {{ .Values.minio.internal_endpoint }}
-            - name: MINIO_ROOT_ACCESS_KEY
-              value: {{ .Values.minio.access_key | quote}}
-            - name: MINIO_ROOT_SECRET_KEY
-              value: {{ .Values.minio.secret_key | quote}}
-            - name: DOMAIN
-              value: {{ .Values.domain }}
-            - name: APISIX_API_URL
-              value: {{ .Values.apisix.admin_api_url }}
-            - name: APISIX_API_KEY
-              value: {{ .Values.apisix.admin_api_key }}
+            - name: DEFAULT_REGION_MINIO_DOMAIN
+              value: {{ .Values.default_region.minio_domain }}
+            - name: DEFAULT_REGION_MINIO_EXTERNAL_ENDPOINT
+              value: {{ .Values.default_region.minio_external_endpoint }}
+            - name: DEFAULT_REGION_MINIO_INTERNAL_ENDPOINT
+              value: {{ .Values.default_region.minio_internal_endpoint }}
+            - name: DEFAULT_REGION_MINIO_ROOT_ACCESS_KEY
+              value: {{ .Values.default_region.minio_root_access_key | quote}}
+            - name: DEFAULT_REGION_MINIO_ROOT_SECRET_KEY
+              value: {{ .Values.default_region.minio_root_secret_key | quote}}
+            - name: DEFAULT_REGION_FUNCTION_DOMAIN
+              value: {{ .Values.default_region.function_domain }}
+            - name: DEFAULT_REGION_WEBSITE_DOMAIN
+              value: {{ .Values.default_region.website_domain }}
+            - name: DEFAULT_REGION_TLS
+              value: {{ .Values.default_region.tls | quote}}
+            - name: DEFAULT_REGION_APISIX_PUBLIC_PORT
+              value: {{ .Values.default_region.apisix_public_port | quote }}
+            - name: DEFAULT_REGION_APISIX_API_URL
+              value: {{ .Values.default_region.apisix_api_url }}
+            - name: DEFAULT_REGION_APISIX_API_KEY
+              value: {{ .Values.default_region.apisix_api_key }}
             - name: CASDOOR_ENDPOINT
               value: {{ .Values.casdoor.endpoint }}
             - name: CASDOOR_ORG_NAME
