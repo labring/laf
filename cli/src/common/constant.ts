@@ -14,6 +14,9 @@ export const TOKEN_EXPIRE = 3600 * 24 * 7
 // debug token expire time 7 days
 export const DEBUG_TOKEN_EXPIRE = 3600 * 24 * 7
 
+// storage token expire time 7 days
+export const STORAGE_TOKEN_EXPIRE = 3600 * 24 * 7
+
 // remote server config
 export const DEFAULT_REMOTE_SERVER = 'http://api.dev.laf.run'
 

@@ -4,13 +4,17 @@ import { command as functionCommand } from './command/function/'
 import { command as dependencyCommand } from './command/dependency/'
 
 import { loginCommand, logoutCommand } from './command/auth'
-import { bucketCommand } from './command/stroage'
+import { bucketCommand } from './command/storage'
 
 
 const program = new Command()
 program
   .option('-v, --version', 'output version')
-  .action(() => {
+  .action((options) => {
+    if (!options.version) {
+      program.outputHelp()
+      return
+    }
     const version = require('../package.json').version
     console.log(version)
   })
