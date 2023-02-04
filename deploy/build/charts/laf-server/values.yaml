@@ -40,7 +40,7 @@ image:
 
 imagePullSecrets: []
 nameOverride: ""
-fullnameOverride: ""
+fullnameOverride: "laf-server"
 
 serviceAccount:
   # Specifies whether a service account should be created
