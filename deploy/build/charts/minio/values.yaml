@@ -1,6 +1,7 @@
 ## Provide a name in place of minio for `app:` labels
 ##
 
+consoleHost: ""
 domain: ""
 
 nameOverride: ""

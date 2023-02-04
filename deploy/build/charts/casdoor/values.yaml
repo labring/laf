@@ -3,6 +3,7 @@
 # Declare variables to be passed into your templates.
 
 ## app configurations
+host: ""
 postgresql:
   host: postgresql
   port: 5432

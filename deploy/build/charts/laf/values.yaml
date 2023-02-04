@@ -1,8 +1,0 @@
-# Default values for laf.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-global:
-  region: default
-  domain: 127.0.0.1.nip.io
-  apisix_key: ""
