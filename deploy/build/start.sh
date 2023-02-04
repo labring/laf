@@ -43,6 +43,7 @@ helm install minio -n ${NAMESPACE} \
     --set rootPassword=${MINIO_ROOT_SECRET_KEY} \
     --set persistence.size=${OSS_PV_SIZE:-3Gi} \
     --set domain=${MINIO_DOMAIN} \
+    --set consoleHohst=minio.${DOMAIN} \
     ./charts/minio
 
 
@@ -69,11 +70,13 @@ helm install postgresql -n ${NAMESPACE} \
     --set postgresql.database=${PG_DATABASE:-casdoor} \
     ./charts/postgresql
 
-CASDOOR_ENDPOINT="${HTTP_SCHEMA}://casdoor.${DOMAIN}"
+CASDOOR_HOST="login.${DOMAIN}"
+CASDOOR_ENDPOINT="${HTTP_SCHEMA}://${CASDOOR_HOST}"
 CASDOOR_CLIENT_ID=$(tr -cd 'a-f0-9' </dev/urandom |head -c21)
 CASDOOR_CLIENT_SECRET=$PASSWD_OR_SECRET
-CASDOOR_REDIRECT_URI="${HTTP_SCHEMA}://www.${DOMAIN}/login_callback"
+CASDOOR_REDIRECT_URI="${HTTP_SCHEMA}://${DOMAIN}/login_callback"
 helm install casdoor -n ${NAMESPACE} \
+    --set host=${CASDOOR_HOST} \
     --set init.client_id=${CASDOOR_CLIENT_ID} \
     --set init.client_secret=${CASDOOR_CLIENT_SECRET} \
     --set init.redirect_uri=${CASDOOR_REDIRECT_URI} \
@@ -83,19 +86,13 @@ helm install casdoor -n ${NAMESPACE} \
     --set postgresql.database=${PG_DATABASE:-casdoor} \
     ./charts/casdoor
 
-
-## 5. install laf-web
-helm install web -n ${NAMESPACE} \
-    ./charts/laf-web
-
-
-## 6. install laf-server
+## 5. install laf-server
 SERVER_JWT_SECRET=$PASSWD_OR_SECRET
-API_SERVER_URL=${HTTP_SCHEMA}://api.${DOMAIN}
 helm install server -n ${NAMESPACE} \
     --set databaseUrl=${DATABASE_URL} \
     --set jwt.secret=${SERVER_JWT_SECRET} \
-    --set apiServerUrl=${API_SERVER_URL} \
+    --set apiServerHost=api.${DOMAIN} \
+    --set apiServerUrl=${HTTP_SCHEMA}://api.${DOMAIN} \
     --set casdoor.endpoint=${CASDOOR_ENDPOINT} \
     --set casdoor.client_id=${CASDOOR_CLIENT_ID} \
     --set casdoor.client_secret=${CASDOOR_CLIENT_SECRET} \
@@ -113,9 +110,7 @@ helm install server -n ${NAMESPACE} \
     --set default_region.apisix_public_port=80 \
     ./charts/laf-server
 
-## 7. others
-helm install laf -n ${NAMESPACE} \
-    --set global.domain=${DOMAIN} \
-    --set global.region=${REGION:-default} \
-    --set global.apisix_key=${APISIX_API_KEY} \
-    ./charts/laf
+## 6. install laf-web
+helm install web -n ${NAMESPACE} \
+    --set domain=${DOMAIN} \
+    ./charts/laf-web
