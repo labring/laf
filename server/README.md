@@ -43,7 +43,7 @@ telepresence connect
 # view the available services, service status needs to be Ready, `ready to intercept`
 telepresence list -n laf-system
 # Connect local server  to laf server cluster
-telepresence intercept server-laf-server -n laf-system -p 3000:3000 -e $(pwd)/.env
+telepresence intercept laf-server -n laf-system -p 3000:3000 -e $(pwd)/.env
 
 npm install
 npx prisma generate
@@ -55,5 +55,5 @@ npm run watch
 > Clean up
 
 ```bash
-telepresence leave server-laf-server-laf-system
+telepresence leave laf-server-laf-system
 ```
