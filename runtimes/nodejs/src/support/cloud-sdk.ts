@@ -29,14 +29,8 @@ function createCloudSdk() {
     env: {
       DB_URI: Config.DB_URI,
       SERVER_SECRET: Config.SERVER_SECRET,
-      APP_ID: process.env.APP_ID,
-      OSS_ACCESS_KEY: process.env.APP_ID,
-      OSS_ACCESS_SECRET: process.env.OSS_ACCESS_SECRET,
-      OSS_REGION: process.env.OSS_REGION,
-      OSS_INTERNAL_ENDPOINT: process.env.OSS_INTERNAL_ENDPOINT,
-      OSS_EXTERNAL_ENDPOINT: process.env.OSS_EXTERNAL_ENDPOINT,
-      NPM_INSTALL_FLAGS: process.env.NPM_INSTALL_FLAGS || '',
       RUNTIME_IMAGE: Config.RUNTIME_IMAGE,
+      ...process.env,
     },
   }
 
