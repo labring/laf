@@ -29,12 +29,30 @@ cd runtimes/nodejs
 
 # proxy app cluster traffic to local, replace `APPID` with your prepared appid
 telepresence connect
-telepresence intercept APPID -n APPID -p 8000:8000 -e $(pwd)/.env
 
-# required nodejs version >= 18.0.0
+# Start local service first, required nodejs version >= 18.0.0
 npm install
 
 npm run build
 
 npm start
+# intercept
+telepresence intercept APPID -n APPID -p 8000:8000 -e $(pwd)/.env
+
+# after intercept command, you can use following command to check if intercept active
+telepresence list -n APPID
+# if success, you would see like below
+Your-APPID: intercepted
+   Intercept name         : APPID-APPID
+   State                  : ACTIVE
+   Workload kind          : Deployment
+   Destination            : 127.0.0.1:8000
+   Service Port Identifier: 8000
+   Intercepting           : all TCP requests
+```
+
+> Clean up
+
+```bash
+telepresence leave APPID-APPID
 ```
