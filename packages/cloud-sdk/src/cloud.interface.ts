@@ -4,8 +4,6 @@ import { Db } from 'database-proxy'
 import { WebSocket } from 'ws'
 import { FunctionContext } from './function.interface'
 
-
-
 export type InvokeFunctionType = (
   name: string,
   param: FunctionContext,
@@ -96,16 +94,5 @@ export interface CloudSdkInterface {
    */
   appid: string
 
-  env: {
-    DB_URI?: string
-    SERVER_SECRET?: string
-    APP_ID?: string
-    OSS_ACCESS_KEY?: string
-    OSS_ACCESS_SECRET?: string
-    OSS_REGION?: string
-    OSS_INTERNAL_ENDPOINT?: string
-    OSS_EXTERNAL_ENDPOINT?: string
-    NPM_INSTALL_FLAGS?: string
-    RUNTIME_IMAGE?: string
-  }
+  env: any
 }
