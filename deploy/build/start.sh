@@ -23,7 +23,7 @@ kubectl create namespace ${NAMESPACE} || true
 set -e
 set -x
 
-DATABASE_URL="mongodb://${DB_USERNAME:-admin}:${PASSWD_OR_SECRET}@mongo.${NAMESPACE}.svc.cluster.local:27017/sys_db?authSource=admin&replicaSet=rs0&w=majority"
+DATABASE_URL="mongodb://${DB_USERNAME:-admin}:${PASSWD_OR_SECRET}@mongodb-0.mongo.${NAMESPACE}.svc.cluster.local:27017/sys_db?authSource=admin&replicaSet=rs0&w=majority"
 helm install mongodb -n ${NAMESPACE} \
     --set db.username=${DB_USERNAME:-admin} \
     --set db.password=${PASSWD_OR_SECRET} \
@@ -43,7 +43,7 @@ helm install minio -n ${NAMESPACE} \
     --set rootPassword=${MINIO_ROOT_SECRET_KEY} \
     --set persistence.size=${OSS_PV_SIZE:-3Gi} \
     --set domain=${MINIO_DOMAIN} \
-    --set consoleHohst=minio.${DOMAIN} \
+    --set consoleHost=minio.${DOMAIN} \
     ./charts/minio
 
 
