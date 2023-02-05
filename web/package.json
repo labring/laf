@@ -1,7 +1,7 @@
 {
   "name": "web",
   "private": true,
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0-beta.1",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -26,7 +26,7 @@
     "i18next-browser-languagedetector": "7.0.1",
     "i18next-http-backend": "2.1.1",
     "immer": "^9.0.16",
-    "laf-client-sdk": "^0.8.13",
+    "laf-client-sdk": "^1.0.0-beta.1",
     "lodash": "^4.17.21",
     "make-plural": "^7.2.0",
     "monaco-editor": "^0.34.1",
