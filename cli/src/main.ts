@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { Command } from 'commander'
 import { command as applicationCommand } from './command/application/'
 import { command as functionCommand } from './command/function/'
