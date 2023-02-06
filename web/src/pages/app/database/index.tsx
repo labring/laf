@@ -5,6 +5,7 @@ import { Center } from "@chakra-ui/react";
 import { t } from "i18next";
 
 import Content from "@/components/Content";
+import EmptyBox from "@/components/EmptyBox";
 import { Col, Row } from "@/components/Grid";
 import Panel from "@/components/Panel";
 
@@ -36,10 +37,16 @@ function DatabasePage() {
               <CollectionDataList />
             ) : store.currentPolicy === undefined ? (
               <Center className="h-full">
-                {t("CollectionPanel.EmptyPolicyText")}
-                <AddPolicyModal>
-                  <span className="ml-2 text-blue-500 cursor-pointer">{t("CreateNow")}</span>
-                </AddPolicyModal>
+                <EmptyBox>
+                  <div>
+                    {t("CollectionPanel.EmptyPolicyText")}
+                    <AddPolicyModal>
+                      <span className="ml-2 text-primary-600 hover:border-b-2 hover:border-primary-600 cursor-pointer">
+                        {t("CreateNow")}
+                      </span>
+                    </AddPolicyModal>
+                  </div>
+                </EmptyBox>
               </Center>
             ) : (
               <PolicyDataList />

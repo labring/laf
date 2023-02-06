@@ -22,6 +22,7 @@ import { t } from "i18next";
 
 import { TriggerIcon } from "@/components/CommonIcon";
 import ConfirmButton from "@/components/ConfirmButton";
+import EmptyBox from "@/components/EmptyBox";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
 import MoreButton from "@/components/MoreButton";
@@ -182,70 +183,81 @@ export default function FunctionList() {
         ) : null}
       </Popover>
       {renderSelectedTags()}
-      <SectionList className="flex-grow" style={{ overflowY: "auto" }}>
-        {(allFunctionList || [])
-          .filter((item: TFunction) => {
-            const selectedTag = tagsList.filter((item) => item.selected).map((tag) => tag.tagName);
-            let flag = selectedTag.length > 0 ? false : true;
-            if (!flag) {
-              for (let i = 0; i < item.tags.length && !flag; i++) {
-                if (selectedTag.indexOf(item.tags[i]) > -1) {
-                  flag = true;
+      <div className="flex-grow" style={{ overflowY: "auto" }}>
+        {allFunctionList?.length ? (
+          <SectionList>
+            {allFunctionList
+              .filter((item: TFunction) => {
+                const selectedTag = tagsList
+                  .filter((item) => item.selected)
+                  .map((tag) => tag.tagName);
+                let flag = selectedTag.length > 0 ? false : true;
+                if (!flag) {
+                  for (let i = 0; i < item.tags.length && !flag; i++) {
+                    if (selectedTag.indexOf(item.tags[i]) > -1) {
+                      flag = true;
+                    }
+                  }
                 }
-              }
-            }
-            return item?.name.includes(keywords) && flag;
-          })
-          .map((func: any) => {
-            return (
-              <SectionList.Item
-                isActive={func?.name === currentFunction?.name}
-                key={func?.name || ""}
-                className="group"
-                onClick={() => {
-                  setCurrentFunction(func);
-                  navigate(`/app/${currentApp?.appid}/${Pages.function}/${func?.name}`);
-                }}
-              >
-                <div>
-                  <FileTypeIcon type={FileType.ts} />
-                  <span className="ml-2 font-medium">{func?.name}</span>
-                </div>
-                <HStack spacing={1}>
-                  {functionCache.getCache(func?.id, func?.source?.code) !== func?.source?.code && (
-                    <span className="flex-none inline-block w-1 h-1 rounded-full bg-warn-700"></span>
-                  )}
-                  <MoreButton isHidden={func.name !== currentFunction?.name}>
-                    <>
-                      <CreateModal functionItem={func}>
-                        <div className="text-grayIron-600">
-                          <div className="text-grayModern-900 w-[20px] h-[20px] text-center pl-1">
-                            <EditIcon />
-                          </div>
-                          {t("Edit")}
-                        </div>
-                      </CreateModal>
-                      <ConfirmButton
-                        onSuccessAction={async () => {
-                          await deleteFunctionMutation.mutateAsync(func);
-                        }}
-                        headerText={String(t("Delete"))}
-                        bodyText={String(t("FunctionPanel.DeleteConfirm"))}
-                      >
-                        <div className="text-grayIron-600">
-                          <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
-                            <DeleteIcon />
-                          </div>
-                          {t("Delete")}
-                        </div>
-                      </ConfirmButton>
-                    </>
-                  </MoreButton>
-                </HStack>
-              </SectionList.Item>
-            );
-          })}
-      </SectionList>
+                return item?.name.includes(keywords) && flag;
+              })
+              .map((func: any) => {
+                return (
+                  <SectionList.Item
+                    isActive={func?.name === currentFunction?.name}
+                    key={func?.name || ""}
+                    className="group"
+                    onClick={() => {
+                      setCurrentFunction(func);
+                      navigate(`/app/${currentApp?.appid}/${Pages.function}/${func?.name}`);
+                    }}
+                  >
+                    <div>
+                      <FileTypeIcon type={FileType.ts} />
+                      <span className="ml-2 font-medium">{func?.name}</span>
+                    </div>
+                    <HStack spacing={1}>
+                      {functionCache.getCache(func?.id, func?.source?.code) !==
+                        func?.source?.code && (
+                        <span className="flex-none inline-block w-1 h-1 rounded-full bg-warn-700"></span>
+                      )}
+                      <MoreButton isHidden={func.name !== currentFunction?.name}>
+                        <>
+                          <CreateModal functionItem={func}>
+                            <div className="text-grayIron-600">
+                              <div className="text-grayModern-900 w-[20px] h-[20px] text-center pl-1">
+                                <EditIcon />
+                              </div>
+                              {t("Edit")}
+                            </div>
+                          </CreateModal>
+                          <ConfirmButton
+                            onSuccessAction={async () => {
+                              await deleteFunctionMutation.mutateAsync(func);
+                            }}
+                            headerText={String(t("Delete"))}
+                            bodyText={String(t("FunctionPanel.DeleteConfirm"))}
+                          >
+                            <div className="text-grayIron-600">
+                              <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
+                                <DeleteIcon />
+                              </div>
+                              {t("Delete")}
+                            </div>
+                          </ConfirmButton>
+                        </>
+                      </MoreButton>
+                    </HStack>
+                  </SectionList.Item>
+                );
+              })}
+          </SectionList>
+        ) : (
+          <EmptyBox hideIcon>
+            <p>{t("FunctionPanel.EmptyFunctionTip")}</p>
+          </EmptyBox>
+        )}
+      </div>
     </Panel>
   );
 }

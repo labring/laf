@@ -30,7 +30,7 @@ export default function SideBar() {
   const ICONS: TIcon[] = [
     {
       pageId: "nav",
-      component: <img src="/logo.png" alt="logo" width={24} />,
+      component: <img src="/logo.png" alt="logo" width={34} />,
     },
     {
       pageId: Pages.function,

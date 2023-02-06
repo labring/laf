@@ -22,6 +22,7 @@ import { t } from "i18next";
 
 import Content from "@/components/Content";
 import CopyText from "@/components/CopyText";
+import EmptyBox from "@/components/EmptyBox";
 import Pagination from "@/components/Pagination";
 import Panel from "@/components/Panel";
 import { formatDate } from "@/utils/format";
@@ -133,37 +134,46 @@ export default function LogsPage() {
         <div className="py-1 rounded-md h-full relative" style={{ paddingBottom: 100 }}>
           {logListQuery.isFetching ? (
             <Center className="opacity-60 bg-white-200 absolute left-0 right-0 top-0 bottom-0 z-10">
-              <Spinner size={"lg"} />
+              <Spinner size="lg" />
             </Center>
           ) : null}
           <div className="overflow-y-auto h-full mb-4 ">
-            {logListQuery.data?.data?.list.map((item: TLogItem) => {
-              return (
-                <div key={item._id} className=" h-[22px] font-mono overflow-hidden">
-                  <span className="mr-2 text-grayIron-600 float-left">
-                    [{formatDate(item.created_at, "YYYY-MM-DD HH:mm:ss")}]
-                  </span>
+            {logListQuery.data?.data?.list?.length ? (
+              logListQuery.data?.data?.list.map((item: TLogItem) => {
+                return (
+                  <div key={item._id} className=" h-[22px] font-mono overflow-hidden">
+                    <span className="mr-2 text-grayIron-600 float-left">
+                      [{formatDate(item.created_at, "YYYY-MM-DD HH:mm:ss")}]
+                    </span>
 
-                  <CopyText text={item.request_id} className="mr-2 text-primary-600 float-left">
-                    <span>{item.request_id.substring(0, 8)}</span>
-                  </CopyText>
-                  <CopyText text={item.func} className="mr-2 w-[100px] text-purple-700 float-left">
-                    <span>{item.func}</span>
-                  </CopyText>
-                  <div
-                    className=" overflow-hidden mr-4"
-                    onClick={() => {
-                      setDetail(item);
-                      onOpen();
-                    }}
-                  >
-                    <pre className="hover:text-blue-700 hover:underline max-h-[20px] overflow-hidden cursor-pointer whitespace-nowrap text-ellipsis">
-                      {item.data.substring(0, 200)}
-                    </pre>
+                    <CopyText text={item.request_id} className="mr-2 text-primary-600 float-left">
+                      <span>{item.request_id.substring(0, 8)}</span>
+                    </CopyText>
+                    <CopyText
+                      text={item.func}
+                      className="mr-2 w-[100px] text-purple-700 float-left"
+                    >
+                      <span>{item.func}</span>
+                    </CopyText>
+                    <div
+                      className=" overflow-hidden mr-4"
+                      onClick={() => {
+                        setDetail(item);
+                        onOpen();
+                      }}
+                    >
+                      <pre className="hover:text-blue-700 hover:underline max-h-[20px] overflow-hidden cursor-pointer whitespace-nowrap text-ellipsis">
+                        {item.data.substring(0, 200)}
+                      </pre>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              <EmptyBox>
+                <p>{t("LogPanel.EmptyLogTip")}</p>
+              </EmptyBox>
+            )}
           </div>
         </div>
 

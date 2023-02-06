@@ -1,6 +1,6 @@
 import { useState } from "react";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { AddIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
@@ -21,13 +21,11 @@ import { t } from "i18next";
 import JsonEditor from "@/components/Editor/JsonEditor";
 
 import { useAddDataMutation } from "../../service";
-import useDBMStore from "../../store";
 
-const AddDataModal = (props: { onSuccessSubmit: () => void }) => {
+const AddDataModal = (props: { children: React.ReactElement; onSuccessSubmit: () => void }) => {
   type FormData = {
     value: string;
   };
-  const store = useDBMStore((state) => state);
   const { handleSubmit, control, reset } = useForm<FormData>({});
 
   const addDataMutation = useAddDataMutation();
@@ -54,21 +52,13 @@ const AddDataModal = (props: { onSuccessSubmit: () => void }) => {
 
   return (
     <>
-      <Button
-        disabled={store.currentDB === undefined}
-        colorScheme="primary"
-        className="mr-2"
-        style={{ width: "114px" }}
-        leftIcon={<AddIcon />}
-        onClick={() => {
+      {React.cloneElement(props.children, {
+        onClick: () => {
           onOpen();
           setError("");
           reset({ value: JSON.stringify({}, null, 2) });
-        }}
-      >
-        {t("CollectionPanel.AddData")}
-      </Button>
-
+        },
+      })}
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>

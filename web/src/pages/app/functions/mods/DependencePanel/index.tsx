@@ -13,9 +13,14 @@ import SectionList from "@/components/SectionList";
 import AddDependenceModal from "./AddDependenceModal";
 import { TPackage, useDelPackageMutation, usePackageQuery } from "./service";
 
+import useGlobalStore from "@/pages/globalStore";
+
 export default function DependenceList() {
   const packageQuery = usePackageQuery();
-  const delPackageMutation = useDelPackageMutation();
+  const globalStore = useGlobalStore((state) => state);
+  const delPackageMutation = useDelPackageMutation(() => {
+    globalStore.restartCurrentApp();
+  });
   const { t } = useTranslation();
 
   const builtinPackage: TPackage[] = [];
@@ -71,14 +76,9 @@ export default function DependenceList() {
                     >
                       <FileTypeIcon type={FileType.npm} />
                       <div className="w-[200px] overflow-hidden ml-2">
-                        <Tooltip
-                          label={packageItem?.builtin ? "内置依赖，不可更改" : null}
-                          placement="top"
-                        >
-                          <span className="w-full inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
-                            {packageItem?.name}
-                          </span>
-                        </Tooltip>
+                        <span className="w-full inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
+                          {packageItem?.name}
+                        </span>
                       </div>
                       <div className=" w-[100px] flex">
                         <span className="flex-grow inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
@@ -102,7 +102,9 @@ export default function DependenceList() {
                 })}
               </SectionList>
             ) : (
-              <Center minH={140}>{t("FunctionPanel.CustomDependenceTip")}</Center>
+              <Center minH={140} className="text-grayIron-600">
+                {t("FunctionPanel.CustomDependenceTip")}
+              </Center>
             )}
           </TabPanel>
           <TabPanel px={0} py={1}>

@@ -166,8 +166,11 @@ const AddDependenceModal = () => {
   };
 
   const renderList = (list: TDependenceItem[]) => {
-    if (list.length === 0) return <Center minH={200}>{t("NoData")}</Center>;
-    return (
+    return list.length === 0 ? (
+      <Center minH={200} className="text-grayIron-600">
+        {t("NoData")}
+      </Center>
+    ) : (
       <DependenceList>
         {(list || []).map((packageItem: TDependenceItem) => {
           return (
@@ -248,15 +251,17 @@ const AddDependenceModal = () => {
 
   return (
     <>
-      <IconWrap
-        tooltip={t("FunctionPanel.DependenceEdit").toString()}
-        onClick={() => {
-          setIsEdit(true);
-          initModal();
-        }}
-      >
-        <EditIcon fontSize={12} />
-      </IconWrap>
+      {packageList?.length > 0 ? (
+        <IconWrap
+          tooltip={t("FunctionPanel.DependenceEdit").toString()}
+          onClick={() => {
+            setIsEdit(true);
+            initModal();
+          }}
+        >
+          <EditIcon fontSize={12} />
+        </IconWrap>
+      ) : null}
       <IconWrap
         tooltip={t("FunctionPanel.DependenceAdd").toString()}
         onClick={() => {
@@ -293,15 +298,9 @@ const AddDependenceModal = () => {
                     placeholder={t("FunctionPanel.DependenceTip").toString()}
                   />
                 </InputGroup>
-                {packageSearchQuery.isLoading ? (
-                  <Center>
-                    <Spinner
-                      thickness="4px"
-                      speed="0.65s"
-                      emptyColor="gray.200"
-                      color="blue.500"
-                      size="md"
-                    />
+                {packageSearchQuery.isFetching ? (
+                  <Center className="min-h-[200px]">
+                    <Spinner size="lg" />
                   </Center>
                 ) : isShowChecked ? (
                   renderList(checkList)

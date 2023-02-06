@@ -44,7 +44,7 @@ export default function DeployButton() {
   const deploy = async () => {
     const res = await updateFunctionMutation.mutateAsync({
       description: store.currentFunction?.desc,
-      code: functionCache.getCache(store.currentFunction!.id),
+      code: functionCache.getCache(store.currentFunction!.id, store.currentFunction!.source?.code),
       methods: store.currentFunction?.methods,
       websocket: store.currentFunction?.websocket,
       name: store.currentFunction?.name,

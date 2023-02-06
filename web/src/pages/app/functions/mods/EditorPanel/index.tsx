@@ -1,8 +1,9 @@
-import { Center, HStack, Input } from "@chakra-ui/react";
+import { HStack, Input } from "@chakra-ui/react";
 import { t } from "i18next";
 
 import CopyText from "@/components/CopyText";
 import FunctionEditor from "@/components/Editor/FunctionEditor";
+import EmptyBox from "@/components/EmptyBox";
 import Panel from "@/components/Panel";
 
 import useFunctionStore from "../../store";
@@ -59,12 +60,16 @@ function EditorPanel() {
           }}
         />
       ) : (
-        <Center className="h-full text-lg">
-          {t("FunctionPanel.EmptyText")}
-          <CreateModal key="create_modal_new">
-            <span className="ml-2 text-blue-700 cursor-pointer">{t("CreateNow")}</span>
-          </CreateModal>
-        </Center>
+        <EmptyBox>
+          <div>
+            {t("FunctionPanel.EmptyText")}
+            <CreateModal key="create_modal_new">
+              <span className="ml-2 text-primary-600 hover:border-b-2 hover:border-primary-600 cursor-pointer">
+                {t("CreateNow")}
+              </span>
+            </CreateModal>
+          </div>
+        </EmptyBox>
       )}
     </Panel>
   );

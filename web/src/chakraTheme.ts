@@ -2,6 +2,7 @@ import { tagAnatomy } from "@chakra-ui/anatomy";
 import {
   ComponentStyleConfig,
   createMultiStyleConfigHelpers,
+  defineStyle,
   defineStyleConfig,
   extendTheme,
 } from "@chakra-ui/react";
@@ -276,6 +277,43 @@ const Select = {
   },
 };
 
+const Badge = {
+  baseStyle: defineStyle({
+    borderRadius: "50px",
+    textTransform: "none",
+    fontWeight: "medium",
+  }),
+  variants: {
+    Started: {
+      background: "primary.100",
+      color: "primary.600",
+      _before: {
+        background: "primary.600",
+      },
+    },
+    Creating: {
+      background: "warn.100",
+      color: "warn.600",
+      _before: {
+        background: "primary.600",
+      },
+    },
+    Starting: {
+      background: "blue.100",
+      color: "blue.600",
+      _before: {
+        background: "primary.600",
+      },
+    },
+    Deleting: {
+      background: "error.100",
+      color: "error.600",
+      _before: {
+        background: "primary.600",
+      },
+    },
+  },
+};
 const theme = extendTheme({
   fontSizes: {
     sm: "12px",
@@ -336,18 +374,24 @@ const theme = extendTheme({
       1000: "#1A1A1B",
     },
     error: {
+      100: "#FDECEE",
       500: "#F16979",
+      600: "#ED4458",
     },
     warn: {
+      100: "#FFF2EC",
       400: "#FDB08A",
+      600: "#FB7C3C",
       700: "#C96330",
     },
     rose: {
       100: "#FDEAF1",
     },
     blue: {
+      100: "#EBF7FD",
       400: "#86CEF5",
       500: "#5EBDF2",
+      600: "#36ADEF",
       700: "#2B8ABF",
     },
     purple: {
@@ -368,6 +412,7 @@ const theme = extendTheme({
     Tabs,
     Table,
     Select,
+    Badge,
   },
 });
 export default theme;
