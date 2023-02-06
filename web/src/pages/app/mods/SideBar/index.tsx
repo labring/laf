@@ -138,7 +138,7 @@ export default function SideBar() {
                   }}
                 >
                   {item.component}
-                  <p>{item.name ? item.name : null}</p>
+                  <p className="scale-90">{item.name ? item.name : null}</p>
                 </Center>
               );
             })}

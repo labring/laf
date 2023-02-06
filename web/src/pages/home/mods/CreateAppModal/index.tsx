@@ -44,15 +44,15 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
     runtimeName: string;
   };
 
+  const bundles = regions[0].bundles;
+
   const defaultValues = {
     name: application.name,
     state: application.state || APP_STATUS.Running,
     region: application.regionName || regions[0].name,
-    bundleName: application.bundleName,
+    bundleName: application.bundleName || bundles[0].name,
     runtimeName: runtimes[0].name,
   };
-
-  const bundles = regions[0].bundles;
 
   const {
     register,
