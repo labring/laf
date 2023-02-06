@@ -48,6 +48,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
     name: application.name,
     state: application.state || APP_STATUS.Running,
     region: application.regionName || regions[0].name,
+    bundleName: application.bundleName,
     runtimeName: runtimes[0].name,
   };
 
@@ -73,7 +74,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
   const onSubmit = async (data: any) => {
     let res: any = {};
     if (isEdit) {
-      res = await updateAppMutation.mutateAsync(data);
+      res = await updateAppMutation.mutateAsync({ ...data, appid: application.appid });
     } else {
       res = await appCreateMutation.mutateAsync(data);
     }

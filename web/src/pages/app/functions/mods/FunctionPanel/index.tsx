@@ -163,21 +163,23 @@ export default function FunctionList() {
             />
           </InputGroup>
         </PopoverTrigger>
-        <PopoverContent borderColor="lafWhite.100" width="260px" padding="4px">
-          <PopoverBody>
-            <p className="text-grayModern-500 pb-4"> {t("FunctionPanel.Tags")}</p>
-            {tagsList.map((item) => (
-              <Tag
-                className="mr-2 mb-2 cursor-pointer"
-                key={item.tagName}
-                variant={item.selected ? "inputTagActive" : "inputTag"}
-                onClick={() => handleClick(item.tagName, !item.selected)}
-              >
-                <TagLabel>{item.tagName}</TagLabel>
-              </Tag>
-            ))}
-          </PopoverBody>
-        </PopoverContent>
+        {tagsList.length > 0 ? (
+          <PopoverContent borderColor="lafWhite.100" width="260px" padding="4px">
+            <PopoverBody>
+              <p className="text-grayModern-500 pb-4"> {t("FunctionPanel.Tags")}</p>
+              {tagsList.map((item) => (
+                <Tag
+                  className="mr-2 mb-2 cursor-pointer"
+                  key={item.tagName}
+                  variant={item.selected ? "inputTagActive" : "inputTag"}
+                  onClick={() => handleClick(item.tagName, !item.selected)}
+                >
+                  <TagLabel>{item.tagName}</TagLabel>
+                </Tag>
+              ))}
+            </PopoverBody>
+          </PopoverContent>
+        ) : null}
       </Popover>
       {renderSelectedTags()}
       <SectionList className="flex-grow" style={{ overflowY: "auto" }}>

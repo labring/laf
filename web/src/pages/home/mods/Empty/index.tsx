@@ -25,7 +25,8 @@ function Empty() {
     <div style={{ height: "75vh", minHeight: "500px" }}>
       <div className="flex flex-col items-center justify-center h-full">
         <h2 className="text-3xl font-bold">
-          {t("HomePanel.Hello")} 👋 ， {userInfo?.profile.name} ， {t("HomePanel.Welcome")}
+          {t("HomePanel.Hello")} 👋 ， {userInfo?.profile?.name || userInfo?.username} ，{" "}
+          {t("HomePanel.Welcome")}
         </h2>
         <p className="mt-10 text-xl w-[460px] mx-auto mb-8">{t("HomePanel.Introduction")}</p>
         <div className="grid grid-cols-3 w-[722px]">

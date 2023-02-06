@@ -7,8 +7,8 @@ export default function InputTag(props: { value: string[]; onChange: (value: str
   const handleEnter = (e: any) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      const input = inputV.trim();
-      if (input.trim() !== "" && !value.some((x) => x === input)) {
+      const input = inputV.trim().slice(0, 16);
+      if (input !== "" && !value.some((x) => x === input)) {
         onChange([...value, input]);
       }
       setInputV("");

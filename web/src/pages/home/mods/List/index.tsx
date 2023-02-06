@@ -76,8 +76,8 @@ function List(props: { appListQuery: any }) {
         </div>
       </div>
 
-      <div>
-        <div className="flex bg-lafWhite-200 rounded-lg h-12 items-center px-6 mb-3">
+      <div className="flex flex-col overflow-auto">
+        <div className="flex-none flex bg-lafWhite-200 rounded-lg h-12 items-center px-6 mb-3">
           <div className="w-2/12 text-second ">{t("HomePanel.Application") + t("Name")}</div>
           <div className="w-2/12 text-second ">App ID</div>
           <div className="w-2/12 text-second pl-2">{t("HomePanel.State")}</div>
@@ -85,69 +85,71 @@ function List(props: { appListQuery: any }) {
           <div className="w-3/12 text-second ">{t("CreateTime")}</div>
           <div className="w-1/12 text-second pl-2 min-w-[100px]">{t("Operation")}</div>
         </div>
-        {(appListQuery.data?.data || [])
-          .filter((item: any) => item?.name.indexOf(searchKey) >= 0)
-          .map((item: any) => {
-            return (
-              <div
-                key={item?.appid}
-                className="flex bg-lafWhite-200 rounded-lg h-16 items-center px-6 mb-3"
-              >
-                <div className="w-2/12 font-bold text-lg">{item?.name}</div>
-                <div className="w-2/12 ">{item?.appid}</div>
-                <div className="w-2/12 ">
-                  <StatusBadge statusConditions={item?.phase} />
+        <div className="flex-grow overflow-auto">
+          {(appListQuery.data?.data || [])
+            .filter((item: any) => item?.name.indexOf(searchKey) >= 0)
+            .map((item: any) => {
+              return (
+                <div
+                  key={item?.appid}
+                  className="flex bg-lafWhite-200 rounded-lg h-16 items-center px-6 mb-3"
+                >
+                  <div className="w-2/12 font-bold text-lg">{item?.name}</div>
+                  <div className="w-2/12 ">{item?.appid}</div>
+                  <div className="w-2/12 ">
+                    <StatusBadge statusConditions={item?.phase} />
+                  </div>
+                  <div className="w-2/12 ">{item.regionName}</div>
+                  <div className="w-3/12 ">{formatDate(item.createdAt)}</div>
+                  <div className="w-1/12 flex min-w-[100px]">
+                    <Button
+                      className="mr-2"
+                      fontWeight={"semibold"}
+                      size={"sm"}
+                      variant={"text"}
+                      onClick={(event) => {
+                        event?.preventDefault();
+                        setCurrentApp(item?.appid);
+                        navigate(`/app/${item?.appid}/${Pages.function}`);
+                      }}
+                    >
+                      <RiCodeBoxFill size={20} className="mr-2" />
+                      {t("HomePanel.Develop")}
+                    </Button>
+                    <Menu>
+                      <MenuButton>
+                        <IconWrap>
+                          <BsThreeDotsVertical size={16} />
+                        </IconWrap>
+                      </MenuButton>
+                      <MenuList width={12} minW={24}>
+                        <MenuItem minH="40px" display={"block"}>
+                          <CreateAppModal application={item}>
+                            <a className="text-primary block " href="/edit">
+                              {t("Edit")}
+                            </a>
+                          </CreateAppModal>
+                        </MenuItem>
+                        <MenuItem minH="40px" display={"block"}>
+                          <ConfirmButton
+                            headerText={t("HomePanel.DeleteApp")}
+                            bodyText={t("HomePanel.DeleteTip")}
+                            onSuccessAction={() => {
+                              deleteAppMutation.mutate({ appid: item?.appid });
+                            }}
+                          >
+                            <a className="text-danger block" href="/delete">
+                              {t("Delete")}
+                            </a>
+                          </ConfirmButton>
+                        </MenuItem>
+                      </MenuList>
+                    </Menu>
+                  </div>
                 </div>
-                <div className="w-2/12 ">{item.regionName}</div>
-                <div className="w-3/12 ">{formatDate(item.createdAt)}</div>
-                <div className="w-1/12 flex min-w-[100px]">
-                  <Button
-                    className="mr-2"
-                    fontWeight={"semibold"}
-                    size={"sm"}
-                    variant={"text"}
-                    onClick={(event) => {
-                      event?.preventDefault();
-                      setCurrentApp(item?.appid);
-                      navigate(`/app/${item?.appid}/${Pages.function}`);
-                    }}
-                  >
-                    <RiCodeBoxFill size={20} className="mr-2" />
-                    {t("HomePanel.Develop")}
-                  </Button>
-                  <Menu>
-                    <MenuButton>
-                      <IconWrap>
-                        <BsThreeDotsVertical size={16} />
-                      </IconWrap>
-                    </MenuButton>
-                    <MenuList width={12} minW={24}>
-                      <MenuItem minH="40px" display={"block"}>
-                        <CreateAppModal application={item}>
-                          <a className="text-primary block " href="/edit">
-                            {t("Edit")}
-                          </a>
-                        </CreateAppModal>
-                      </MenuItem>
-                      <MenuItem minH="40px" display={"block"}>
-                        <ConfirmButton
-                          headerText={t("HomePanel.DeleteApp")}
-                          bodyText={t("HomePanel.DeleteTip")}
-                          onSuccessAction={() => {
-                            deleteAppMutation.mutate({ appid: item?.appid });
-                          }}
-                        >
-                          <a className="text-danger block" href="/delete">
-                            {t("Delete")}
-                          </a>
-                        </ConfirmButton>
-                      </MenuItem>
-                    </MenuList>
-                  </Menu>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+        </div>
       </div>
     </>
   );

@@ -159,9 +159,6 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
                         })}
                       </CheckboxGroup>
                     )}
-                    rules={{
-                      required: { value: true, message: "Please select at least one" },
-                    }}
                   />
                 </HStack>
                 <FormErrorMessage>{errors.methods?.message}</FormErrorMessage>

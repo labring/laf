@@ -35,7 +35,7 @@ export default function StorageListPanel() {
   return (
     <Panel className="h-full">
       <Panel.Header
-        title={t("StoragePanel.Storage")}
+        title={t("StoragePanel.StorageList")}
         actions={[
           <CreateBucketModal key="create_modal">
             <IconWrap size={20} tooltip={t("Create") + " Bucket"}>
