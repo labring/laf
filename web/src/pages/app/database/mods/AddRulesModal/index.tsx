@@ -104,6 +104,7 @@ const AddRulesModal = (props: { onSuccessSubmit: (data: any) => void }) => {
                   {...register("collectionName", {
                     required: "collectionName is required",
                   })}
+                  placeholder={collectionListQuery?.data?.data?.length ? undefined : "暂无可选集合"}
                   id="collectionName"
                   variant="filled"
                 >

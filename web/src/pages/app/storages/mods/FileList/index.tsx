@@ -1,10 +1,10 @@
 import { DeleteIcon, ViewIcon } from "@chakra-ui/icons";
-import { HStack, Input, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { HStack, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { t } from "i18next";
 
 import ConfirmButton from "@/components/ConfirmButton";
-import CopyText from "@/components/CopyText";
+// import CopyText from "@/components/CopyText";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
@@ -12,7 +12,7 @@ import { formatDate, formateType, formatSize } from "@/utils/format";
 
 import useStorageStore, { TFile } from "../../store";
 import CreateFolderModal from "../CreateFolderModal";
-import CreateWebsiteModal from "../CreateWebsiteModal";
+// import CreateWebsiteModal from "../CreateWebsiteModal";
 import PathLink from "../PathLink";
 import UploadButton from "../UploadButton";
 
@@ -63,12 +63,12 @@ export default function FileList() {
             <UploadButton onUploadSuccess={() => query.refetch()} />
             <CreateFolderModal onCreateSuccess={() => query.refetch()} />
           </HStack>
-          <HStack spacing={4}>
+          {/* <HStack spacing={4}>
             <CreateWebsiteModal onCreateSuccess={() => query.refetch()} />
             <CopyText text={""}>
               <Input minW={"200px"} size="sm" readOnly value={""} />
             </CopyText>
-          </HStack>
+          </HStack> */}
         </Panel.Header>
       </Panel>
       <Panel className="flex-grow overflow-hidden">

@@ -122,7 +122,7 @@ export default function DebugPanel() {
                     variant="filled"
                     size="sm"
                     value={runningMethod}
-                    disabled={getFunctionUrl() === ""}
+                    disabled={getFunctionUrl() === "" || !currentFunction.methods?.length}
                     onChange={(e) => {
                       setRunningMethod(e.target.value as TMethod);
                     }}
