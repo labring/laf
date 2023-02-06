@@ -9,11 +9,11 @@ export function command(): Command {
     })
 
   cmd.command('create <funcName>')
-    .description('create function')
+    .description('Create function')
     .option('-w --websocket', 'enable websocket', true)
     .option('-m --methods <items...>', 'http methods', ['GET', 'POST'])
     .option('-t --tags <items...>', 'tags', [])
-    .option('-d --description <description>', 'description', '')
+    .option('-d --description <description>', 'function description', '')
     .action((funcName, options) => {
       create(funcName, options)
     })
@@ -25,14 +25,14 @@ export function command(): Command {
     })
 
   cmd.command('list')
-    .description('List application')
+    .description('list application')
     .action(() => {
       list()
     })
 
   cmd.command('pull')
     .argument('[funcName]', 'funcName')
-    .description('Pull function, if funcName does not exist, pull all')
+    .description('pull function, if funcName does not exist, pull all')
     .action((funcName) => {
       if (funcName) {
         pullOne(funcName)
@@ -42,7 +42,7 @@ export function command(): Command {
     })
 
   cmd.command('push')
-    .argument('[FuncName]', 'funcName')
+    .argument('[funcName]', 'funcName')
     .description('push function, if funcName does not exist, push all')
     .action((funcName) => {
       if (funcName) {
@@ -53,7 +53,7 @@ export function command(): Command {
     })
 
   cmd.command('exec <funcName>')
-    .description('Exec function')
+    .description('exec function')
     .option('-l --log <count>', 'print log')
     .option('-r --requestId', 'print requestId', false)
     .hook('preAction', async () => {

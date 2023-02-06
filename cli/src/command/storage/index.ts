@@ -34,7 +34,7 @@ export function bucketCommand(): Command {
   
   cmd.command('pull <bucketName> <outPath>')
     .description('pull file from bucket')
-    .option('-f, --force', 'force pull', false)
+    .option('-f, --force', 'force pull', false) //TODO
     .option('-d, --detail', 'print detail', false)
     .hook('preAction', async () => {
       await checkStorageToken()
@@ -44,8 +44,8 @@ export function bucketCommand(): Command {
     })
   
     cmd.command('push <bucketName> <inPath>')
-    .description('push file to bucket')
-    .option('-f, --force', 'force push', false)
+    .description('Push file to bucket')
+    .option('-f, --force', 'force push', false) //TODO
     .option('-d, --detail', 'print detail', false)
     .hook('preAction', async () => {
       await checkStorageToken()
