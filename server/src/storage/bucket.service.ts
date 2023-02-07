@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Application, StorageBucket } from '@prisma/client'
-import { BucketDomainService } from 'src/gateway/bucket-domain.service'
+import { BucketDomainService } from '../gateway/bucket-domain.service'
 import { PrismaService } from '../prisma.service'
 import { RegionService } from '../region/region.service'
 import { CreateBucketDto } from './dto/create-bucket.dto'
@@ -45,6 +45,7 @@ export class BucketService {
           name: bucketName,
           policy: dto.policy,
           shortName: dto.shortName,
+          lockedAt: null,
         },
       })
 

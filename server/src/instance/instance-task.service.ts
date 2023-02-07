@@ -1,259 +1,434 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { ApplicationPhase, ApplicationState } from '@prisma/client'
+import { Application, ApplicationPhase, ApplicationState } from '@prisma/client'
 import { isConditionTrue } from '../utils/getter'
-import { PrismaService } from '../prisma.service'
 import { InstanceService } from './instance.service'
+import { MongoService } from 'src/database/mongo.service'
+import { times } from 'lodash'
 
 @Injectable()
 export class InstanceTaskService {
+  readonly lockTimeout = 60 // in second
+  readonly concurrency = 5 // concurrency count
   private readonly logger = new Logger(InstanceTaskService.name)
 
   constructor(
+    private readonly mongoService: MongoService,
     private readonly instanceService: InstanceService,
-    private readonly prisma: PrismaService,
   ) {}
 
-  /**
-   * State `Running` with phase `Created` or `Stopped` - create instance
-   *
-   * -> Phase `Starting`
-   */
   @Cron(CronExpression.EVERY_SECOND)
-  async handlePreparedStart() {
-    const apps = await this.prisma.application.findMany({
-      where: {
-        state: ApplicationState.Running,
-        phase: {
-          in: [ApplicationPhase.Created, ApplicationPhase.Stopped],
+  async tick() {
+    // Phase `Created` | `Stopped` ->  `Starting`
+    times(this.concurrency, () => this.handleRunningState())
+
+    // Phase `Starting` -> `Started`
+    times(this.concurrency, () => this.handleStartingPhase())
+
+    // Phase `Started` -> `Stopping`
+    times(this.concurrency, () => this.handleStoppedState())
+
+    // Phase `Stopping` -> `Stopped`
+    times(this.concurrency, () => this.handleStoppingPhase())
+
+    // Phase `Started` -> `Stopping`
+    times(this.concurrency, () => this.handleRestartingStateDown())
+
+    // Phase `Stopped` -> `Starting`
+    times(this.concurrency, () => this.handleRestartingStateUp())
+
+    // Clear timeout locks
+    this.clearTimeoutLocks()
+  }
+
+  /**
+   * State `Running`:
+   * - create instance
+   * - move phase `Created` or `Stopped` to `Starting`
+   */
+  async handleRunningState() {
+    const client = await this.mongoService.getSystemDbClient()
+    const db = client.db()
+
+    const res = await db
+      .collection<Application>('Application')
+      .findOneAndUpdate(
+        {
+          state: ApplicationState.Running,
+          phase: {
+            $in: [ApplicationPhase.Created, ApplicationPhase.Stopped],
+          },
+          lockedAt: {
+            $lt: new Date(Date.now() - 1000 * this.lockTimeout),
+          },
         },
-      },
-      take: 5,
-    })
-
-    for (const app of apps) {
-      try {
-        await this.instanceService.create(app)
-
-        await this.prisma.application.updateMany({
-          where: {
-            appid: app.appid,
-            state: ApplicationState.Running,
-            phase: {
-              in: [ApplicationPhase.Created, ApplicationPhase.Stopped],
-            },
+        {
+          $set: {
+            lockedAt: new Date(),
           },
-          data: {
+        },
+      )
+
+    if (!res.value) return
+    const app = res.value
+
+    try {
+      // create instance
+      await this.instanceService.create(app)
+
+      // update phase to `Starting`
+      const updated = await db.collection<Application>('Application').updateOne(
+        {
+          appid: app.appid,
+          phase: {
+            in: [ApplicationPhase.Created, ApplicationPhase.Stopped],
+          },
+        },
+        {
+          $set: {
             phase: ApplicationPhase.Starting,
+            lockedAt: null,
           },
-        })
+        },
+      )
 
+      if (updated.modifiedCount > 0)
         this.logger.debug(`Application ${app.appid} updated to phase starting`)
-      } catch (error) {
-        this.logger.error(error, error.response?.body)
-      }
+    } catch (error) {
+      this.logger.error(error, error.response?.body)
     }
   }
 
   /**
-   * Phase `Starting` - waiting for instance to be available
-   *
-   * -> Phase `Started`
+   * Phase `Starting`:
+   * - waiting for instance to be available
+   * - move phase to `Started`
    */
-  @Cron(CronExpression.EVERY_SECOND)
-  async handleStarting() {
-    const apps = await this.prisma.application.findMany({
-      where: {
-        phase: ApplicationPhase.Starting,
-      },
-      take: 5,
-    })
+  async handleStartingPhase() {
+    const client = await this.mongoService.getSystemDbClient()
+    const db = client.db()
 
-    for (const app of apps) {
-      try {
-        const appid = app.appid
-        const instance = await this.instanceService.get(app)
-        const available = isConditionTrue(
-          'Available',
-          instance.deployment.status?.conditions,
-        )
-        if (!available) continue
-
-        if (!instance.service) continue
-
-        // if state is `Restarting`, update state to `Running` with phase `Started`
-        let toState = app.state
-        if (app.state === ApplicationState.Restarting) {
-          toState = ApplicationState.Running
-        }
-
-        // update application state
-        await this.prisma.application.updateMany({
-          where: {
-            appid,
-            phase: ApplicationPhase.Starting,
+    const res = await db
+      .collection<Application>('Application')
+      .findOneAndUpdate(
+        {
+          phase: ApplicationPhase.Starting,
+          lockedAt: {
+            $lt: new Date(Date.now() - 1000 * this.lockTimeout),
           },
-          data: {
+        },
+        {
+          $set: {
+            lockedAt: new Date(),
+          },
+        },
+      )
+
+    if (!res.value) return
+    const app = res.value
+
+    try {
+      const appid = app.appid
+      const instance = await this.instanceService.get(app)
+      const available = isConditionTrue(
+        'Available',
+        instance.deployment.status?.conditions,
+      )
+      if (!available) {
+        await this.unlock(appid)
+        return
+      }
+
+      if (!instance.service) {
+        await this.unlock(appid)
+        return
+      }
+
+      // if state is `Restarting`, update state to `Running` with phase `Started`
+      let toState = app.state
+      if (app.state === ApplicationState.Restarting) {
+        toState = ApplicationState.Running
+      }
+
+      // update application state
+      const updated = await db.collection<Application>('Application').updateOne(
+        {
+          appid,
+          phase: ApplicationPhase.Starting,
+        },
+        {
+          $set: {
             state: toState,
             phase: ApplicationPhase.Started,
+            lockedAt: null,
           },
-        })
+        },
+      )
+
+      if (updated.modifiedCount > 0)
         this.logger.debug(`Application ${app.appid} updated to phase started`)
-      } catch (error) {
-        this.logger.error(error)
-      }
+    } catch (error) {
+      this.logger.error(error)
     }
   }
 
   /**
-   * State `Stopped` with phase `Started` - remove instance
-   *
-   * -> Phase `Stopping`
+   * State `Stopped`:
+   * - remove instance
+   * - move phase `Started` to `Stopping`
    */
-  @Cron(CronExpression.EVERY_SECOND)
-  async handlePreparedStop() {
-    const apps = await this.prisma.application.findMany({
-      where: {
-        state: ApplicationState.Stopped,
-        phase: ApplicationPhase.Started,
-      },
-      take: 5,
-    })
+  async handleStoppedState() {
+    const client = await this.mongoService.getSystemDbClient()
+    const db = client.db()
 
-    for (const app of apps) {
-      try {
-        await this.instanceService.remove(app)
-
-        await this.prisma.application.updateMany({
-          where: {
-            appid: app.appid,
-            state: ApplicationState.Stopped,
-            phase: ApplicationPhase.Started,
+    const res = await db
+      .collection<Application>('Application')
+      .findOneAndUpdate(
+        {
+          state: ApplicationState.Stopped,
+          phase: ApplicationPhase.Started,
+          lockedAt: {
+            $lt: new Date(Date.now() - 1000 * this.lockTimeout),
           },
-          data: {
+        },
+        {
+          $set: {
+            lockedAt: new Date(),
+          },
+        },
+      )
+
+    if (!res.value) return
+    const app = res.value
+
+    try {
+      // remove instance
+      await this.instanceService.remove(app)
+
+      // update phase to `Stopping`
+      const updated = await db.collection<Application>('Application').updateOne(
+        {
+          appid: app.appid,
+          phase: ApplicationPhase.Started,
+        },
+        {
+          $set: {
             phase: ApplicationPhase.Stopping,
+            lockedAt: null,
           },
-        })
+        },
+      )
 
+      if (updated.modifiedCount > 0)
         this.logger.debug(`Application ${app.appid} updated to phase stopping`)
-      } catch (error) {
-        this.logger.error(error)
-      }
+    } catch (error) {
+      this.logger.error(error)
     }
   }
 
   /**
-   * Phase `Stopping` - waiting for deployment to be removed.
-   *
-   * -> Phase `Stopped`
+   * Phase `Stopping`:
+   * - waiting for instance to be removed
+   * - move phase `Stopping` to `Stopped`
    */
-  @Cron(CronExpression.EVERY_SECOND)
-  async handleStopping() {
-    const apps = await this.prisma.application.findMany({
-      where: {
-        phase: ApplicationPhase.Stopping,
-      },
-      take: 5,
-    })
+  async handleStoppingPhase() {
+    const client = await this.mongoService.getSystemDbClient()
+    const db = client.db()
 
-    for (const app of apps) {
-      try {
-        const appid = app.appid
-        const instance = await this.instanceService.get(app)
-        if (instance.deployment) continue
-
-        // update application state
-        await this.prisma.application.updateMany({
-          where: {
-            appid,
-            phase: ApplicationPhase.Stopping,
+    const res = await db
+      .collection<Application>('Application')
+      .findOneAndUpdate(
+        {
+          phase: ApplicationPhase.Stopping,
+          lockedAt: {
+            $lt: new Date(Date.now() - 1000 * this.lockTimeout),
           },
-          data: {
+        },
+        {
+          $set: {
+            lockedAt: new Date(),
+          },
+        },
+      )
+
+    if (!res.value) return
+    const app = res.value
+    const appid = app.appid
+
+    try {
+      // check if the instance is removed
+      const instance = await this.instanceService.get(app)
+      if (instance.deployment) {
+        await this.unlock(appid)
+        return
+      }
+
+      // update application phase to `Stopped`
+      const updated = await db.collection<Application>('Application').updateOne(
+        {
+          appid,
+          phase: ApplicationPhase.Stopping,
+        },
+        {
+          $set: {
             phase: ApplicationPhase.Stopped,
+            lockedAt: null,
           },
-        })
+        },
+      )
+
+      if (updated.modifiedCount > 0)
         this.logger.debug(`Application ${app.appid} updated to phase stopped`)
-      } catch (error) {
-        this.logger.error(error)
-      }
+    } catch (error) {
+      this.logger.error(error)
     }
   }
 
   /**
-   * State `Restarting` with phase `Started` - remove instance
-   *
-   * -> Phase `Stopping`
+   * State `Restarting`:
+   * - remove instance
+   * - move phase `Started` to `Stopping`
    */
-  @Cron(CronExpression.EVERY_SECOND)
-  async handlePreparedRestart() {
-    const apps = await this.prisma.application.findMany({
-      where: {
-        state: ApplicationState.Restarting,
-        phase: ApplicationPhase.Started,
-      },
-      take: 5,
-    })
+  async handleRestartingStateDown() {
+    const client = await this.mongoService.getSystemDbClient()
+    const db = client.db()
 
-    for (const app of apps) {
-      try {
-        await this.instanceService.remove(app)
-
-        await this.prisma.application.updateMany({
-          where: {
-            appid: app.appid,
-            state: ApplicationState.Restarting,
-            phase: ApplicationPhase.Started,
+    const res = await db
+      .collection<Application>('Application')
+      .findOneAndUpdate(
+        {
+          state: ApplicationState.Restarting,
+          phase: ApplicationPhase.Started,
+          lockedAt: {
+            $lt: new Date(Date.now() - 1000 * this.lockTimeout),
           },
-          data: {
+        },
+        {
+          $set: {
+            lockedAt: new Date(),
+          },
+        },
+      )
+
+    if (!res.value) return
+    const app = res.value
+
+    try {
+      // remove instance
+      await this.instanceService.remove(app)
+
+      // update phase to `Stopping`
+      const updated = await db.collection<Application>('Application').updateOne(
+        {
+          appid: app.appid,
+          phase: ApplicationPhase.Started,
+        },
+        {
+          $set: {
             phase: ApplicationPhase.Stopping,
+            lockedAt: null,
           },
-        })
+        },
+      )
 
-        this.logger.debug(
-          `Application ${app.appid} updated to phase stopping for restart`,
-        )
-      } catch (error) {
-        this.logger.error(error)
-      }
+      if (updated.modifiedCount > 0)
+        this.logger.debug(`${app.appid} updated to stopping for restarting`)
+    } catch (error) {
+      this.logger.error(error)
     }
   }
 
   /**
-   * State `Restarting` with phase `Stopped` - create instance
-   *
-   * -> Phase `Starting`
+   * State `Restarting`:
+   * - create instance
+   * - move phase `Stopped` to `Starting`
    */
-  @Cron(CronExpression.EVERY_SECOND)
-  async handleRestarting() {
-    const apps = await this.prisma.application.findMany({
-      where: {
-        state: ApplicationState.Restarting,
-        phase: ApplicationPhase.Stopped,
-      },
-      take: 5,
-    })
+  async handleRestartingStateUp() {
+    const client = await this.mongoService.getSystemDbClient()
+    const db = client.db()
 
-    for (const app of apps) {
-      try {
-        await this.instanceService.create(app)
-
-        await this.prisma.application.updateMany({
-          where: {
-            appid: app.appid,
-            state: ApplicationState.Restarting,
-            phase: ApplicationPhase.Stopped,
+    const res = await db
+      .collection<Application>('Application')
+      .findOneAndUpdate(
+        {
+          state: ApplicationState.Restarting,
+          phase: ApplicationPhase.Stopped,
+          lockedAt: {
+            $lt: new Date(Date.now() - 1000 * this.lockTimeout),
           },
-          data: {
+        },
+        {
+          $set: {
+            lockedAt: new Date(),
+          },
+        },
+      )
+
+    if (!res.value) return
+    const app = res.value
+
+    try {
+      // create instance
+      await this.instanceService.create(app)
+
+      // update phase to `Starting`
+      const updated = await db.collection<Application>('Application').updateOne(
+        {
+          appid: app.appid,
+          phase: ApplicationPhase.Stopped,
+        },
+        {
+          $set: {
             phase: ApplicationPhase.Starting,
+            lockedAt: null,
           },
-        })
+        },
+      )
 
-        this.logger.debug(
-          `Application ${app.appid} updated to phase starting for restart`,
-        )
-      } catch (error) {
-        this.logger.error(error)
-      }
+      if (updated.modifiedCount > 0)
+        this.logger.debug(`${app.appid} updated starting for restarting`)
+    } catch (error) {
+      this.logger.error(error)
     }
+  }
+
+  /**
+   * Unlock application by appid
+   */
+  async unlock(appid: string) {
+    const client = await this.mongoService.getSystemDbClient()
+    const db = client.db()
+    const updated = await db.collection<Application>('Application').updateOne(
+      {
+        appid: appid,
+      },
+      {
+        $set: {
+          lockedAt: null,
+        },
+      },
+    )
+    if (updated.modifiedCount > 0) this.logger.debug('unlock app:', appid)
+  }
+
+  /**
+   * Clear timeout locks
+   */
+  async clearTimeoutLocks() {
+    const client = await this.mongoService.getSystemDbClient()
+    const db = client.db()
+
+    await db.collection<Application>('Application').updateMany(
+      {
+        lockedAt: {
+          $lt: new Date(Date.now() - 1000 * this.lockTimeout),
+        },
+      },
+      {
+        $set: {
+          lockedAt: null,
+        },
+      },
+    )
   }
 }

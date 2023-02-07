@@ -1,8 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { StorageBucket } from '@prisma/client'
+import { DomainPhase, DomainState, StorageBucket } from '@prisma/client'
 import { PrismaService } from '../prisma.service'
 import { RegionService } from '../region/region.service'
-import { ApisixService } from './apisix.service'
 import * as assert from 'node:assert'
 
 @Injectable()
@@ -12,25 +11,17 @@ export class BucketDomainService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly regionService: RegionService,
-    private readonly apisixService: ApisixService,
   ) {}
 
+  /**
+   *  Create app domain in database
+   */
   async create(bucket: StorageBucket) {
     const region = await this.regionService.findByAppId(bucket.appid)
     assert(region, 'region not found')
 
-    const bucket_domain = `${bucket.name}.${region.storageConf.domain}`
-
-    // create route first
-    const route = await this.apisixService.createBucketRoute(
-      region,
-      bucket.name,
-      bucket_domain,
-    )
-
-    this.logger.debug('route created:', route)
-
     // create domain in db
+    const bucket_domain = `${bucket.name}.${region.storageConf.domain}`
     const doc = await this.prisma.bucketDomain.create({
       data: {
         appid: bucket.appid,
@@ -40,13 +31,18 @@ export class BucketDomainService {
             name: bucket.name,
           },
         },
-        state: 'Active',
+        state: DomainState.Active,
+        phase: DomainPhase.Creating,
+        lockedAt: null,
       },
     })
 
     return doc
   }
 
+  /**
+   * Find an app domain in database
+   */
   async findOne(bucket: StorageBucket) {
     const doc = await this.prisma.bucketDomain.findFirst({
       where: {
@@ -59,18 +55,18 @@ export class BucketDomainService {
     return doc
   }
 
+  /**
+   * Delete app domain in database:
+   * - turn to `Deleted` state
+   */
   async delete(bucket: StorageBucket) {
-    // delete route first
-    const region = await this.regionService.findByAppId(bucket.appid)
-    assert(region, 'region not found')
-
-    const res = await this.apisixService.deleteBucketRoute(region, bucket.name)
-    this.logger.debug('route deleted:', res)
-
-    // delete domain in db
-    const doc = await this.prisma.bucketDomain.delete({
+    const doc = await this.prisma.bucketDomain.update({
       where: {
+        id: bucket.id,
         bucketName: bucket.name,
+      },
+      data: {
+        state: DomainState.Deleted,
       },
     })
 

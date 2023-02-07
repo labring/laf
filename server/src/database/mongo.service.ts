@@ -2,10 +2,13 @@ import { Injectable, Logger } from '@nestjs/common'
 import { Region } from '@prisma/client'
 import { MongoClient } from 'mongodb'
 import * as assert from 'node:assert'
+import { ServerConfig } from 'src/constants'
 
 @Injectable()
 export class MongoService {
   private readonly logger = new Logger(MongoService.name)
+
+  static systemDbClient: MongoClient
 
   /**
    * Create mongodb database in region
@@ -75,5 +78,18 @@ export class MongoService {
       await client.close()
       return null
     }
+  }
+
+  /**
+   * Get system database mongo client
+   * @returns
+   */
+  async getSystemDbClient() {
+    if (!MongoService.systemDbClient) {
+      const connectionUri = ServerConfig.DATABASE_URL
+      MongoService.systemDbClient = await this.connectDatabase(connectionUri)
+    }
+
+    return MongoService.systemDbClient
   }
 }

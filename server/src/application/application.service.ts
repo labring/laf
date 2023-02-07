@@ -24,10 +24,11 @@ export class ApplicationService {
       const data: Prisma.ApplicationCreateInput = {
         name: dto.name,
         appid,
-        state: ApplicationState.Running,
+        state: dto.state || ApplicationState.Running,
         phase: ApplicationPhase.Creating,
         tags: [],
         createdBy: userid,
+        lockedAt: null,
         region: {
           connect: {
             name: dto.region,

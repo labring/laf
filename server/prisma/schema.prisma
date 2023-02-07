@@ -140,21 +140,24 @@ model Runtime {
 
 // application schemas
 
+// desired state of application
 enum ApplicationState {
   Running
   Stopped
   Restarting
+  Deleted
 }
 
+// actual state of application
 enum ApplicationPhase {
-  Creating
-  Created
-  Starting
-  Started
-  Stopping
-  Stopped
-  Deleting
-  Deleted
+  Creating // app resources creating
+  Created // app resources created
+  Starting // instance starting
+  Started // instance started (Running, Ready)
+  Stopping // instance stopping
+  Stopped // instance stopped
+  Deleting // app resources deleting
+  Deleted // app resources deleted
 }
 
 model Application {
@@ -164,11 +167,12 @@ model Application {
   regionName  String
   bundleName  String
   runtimeName String
-  state       ApplicationState
-  phase       ApplicationPhase
   tags        String[]
+  state       ApplicationState @default(Running)
+  phase       ApplicationPhase @default(Creating)
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
+  lockedAt    DateTime
   createdBy   String           @db.ObjectId
 
   region  Region  @relation(fields: [regionName], references: [name])
@@ -200,13 +204,29 @@ model ApplicationConfiguration {
 
 // storage schemas
 
+enum StorageState {
+  Active
+  Inactive
+  Deleted
+}
+
+enum StoragePhase {
+  Creating
+  Created
+  Deleting
+  Deleted
+}
+
 model StorageUser {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  appid     String   @unique
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  appid     String       @unique
   accessKey String
   secretKey String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  state     StorageState @default(Active)
+  phase     StoragePhase @default(Created)
+  lockedAt  DateTime
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 
   application Application @relation(fields: [appid], references: [appid])
 }
@@ -218,18 +238,35 @@ enum BucketPolicy {
 }
 
 model StorageBucket {
-  id             String          @id @default(auto()) @map("_id") @db.ObjectId
-  appid          String
-  name           String          @unique
-  shortName      String
-  policy         BucketPolicy
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  appid     String
+  name      String       @unique
+  shortName String
+  policy    BucketPolicy
+  state     StorageState @default(Active)
+  phase     StoragePhase @default(Created)
+  lockedAt  DateTime
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
   domain         BucketDomain?
   websiteHosting WebsiteHosting?
 }
 
 // database schemas
+
+enum DatabaseState {
+  Active
+  Inactive
+  Deleted
+}
+
+enum DatabasePhase {
+  Creating
+  Created
+  Deleting
+  Deleted
+}
 
 model Database {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
@@ -237,7 +274,9 @@ model Database {
   name     String
   user     String
   password String
-
+  state     DatabaseState @default(Active)
+  phase     DatabasePhase @default(Created)
+  lockedAt  DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -322,10 +361,19 @@ model CronTrigger {
 
 // gateway schemas
 
+// diresired state of resource
 enum DomainState {
   Active
   Inactive
-  Pending
+  Deleted
+}
+
+// actual state of resource
+enum DomainPhase {
+  Creating
+  Created
+  Deleting
+  Deleted
 }
 
 model ApplicationDomain {
@@ -333,8 +381,10 @@ model ApplicationDomain {
   appid     String      @unique
   domain    String      @unique
   state     DomainState @default(Active)
+  phase     DomainPhase @default(Creating)
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
+  lockedAt  DateTime
 
   application Application @relation(fields: [appid], references: [appid])
 }
@@ -345,8 +395,10 @@ model BucketDomain {
   bucketName String      @unique
   domain     String      @unique
   state      DomainState @default(Active)
+  phase      DomainPhase @default(Creating)
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
+  lockedAt   DateTime
 
   bucket StorageBucket @relation(fields: [bucketName], references: [name])
 }
@@ -359,8 +411,10 @@ model WebsiteHosting {
   isCustom   Boolean     @default(false) // if true, domain is custom domain
   isResolved Boolean     @default(false) // if true, domain is resolved to bucket domain (cname)
   state      DomainState @default(Active)
+  phase      DomainPhase @default(Creating)
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
+  lockedAt   DateTime
 
   bucket StorageBucket @relation(fields: [bucketName], references: [name])
 }

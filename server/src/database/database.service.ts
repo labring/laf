@@ -43,6 +43,7 @@ export class DatabaseService {
         name: dbName,
         user: username,
         password: password,
+        lockedAt: null,
       },
     })
 

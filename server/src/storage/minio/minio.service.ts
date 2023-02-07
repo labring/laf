@@ -197,6 +197,7 @@ export class MinioService {
     try {
       const { stdout } = await exec(cmd)
       const json: MinioCommandExecOutput = JSON.parse(stdout)
+      this.logger.debug(`exec command: {${cmd}}: `, json)
       return json
     } catch (error) {
       this.logger.error(`failed to exec command: {${cmd}}`, error)

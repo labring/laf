@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Region, StorageUser } from '@prisma/client'
+import { Region, StoragePhase, StorageState, StorageUser } from '@prisma/client'
 import { PrismaService } from 'src/prisma.service'
 import { GenerateAlphaNumericPassword } from 'src/utils/random'
 import { MinioService } from './minio/minio.service'
@@ -40,6 +40,7 @@ export class StorageService {
       data: {
         accessKey,
         secretKey,
+        lockedAt: null,
         application: {
           connect: {
             appid: appid,
@@ -63,6 +64,7 @@ export class StorageService {
 
   async delete(appid: string) {
     // TODO: delete user in minio
+    // TODO: delete buckets & files in minio
 
     const user = await this.prisma.storageUser.delete({
       where: {
