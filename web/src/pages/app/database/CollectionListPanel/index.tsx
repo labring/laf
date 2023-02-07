@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { BiRefresh } from "react-icons/bi";
 import { AddIcon, CopyIcon, Search2Icon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 
 import CopyText from "@/components/CopyText";
+import EmptyBox from "@/components/EmptyBox";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
 import MoreButton from "@/components/MoreButton";
@@ -40,6 +42,15 @@ export default function CollectionListPanel() {
       <Panel.Header
         title={t("CollectionPanel.CollectionList").toString()}
         actions={[
+          <IconWrap
+            key="refresh_database"
+            tooltip={t("Refresh").toString()}
+            onClick={() => {
+              collectionListQuery.refetch();
+            }}
+          >
+            <BiRefresh size={16} />
+          </IconWrap>,
           <CreateCollectionModal key={"create_database"}>
             <IconWrap tooltip={t("CollectionPanel.AddCollection").toString()} size={20}>
               <AddIcon fontSize={10} />
@@ -64,43 +75,51 @@ export default function CollectionListPanel() {
         </InputGroup>
       </div>
 
-      <SectionList style={{ overflowY: "auto", flexGrow: 1 }}>
-        {(collectionListQuery?.data?.data || [])
-          .filter((db: any) => db.name.indexOf(search) >= 0)
-          .map((db: any) => {
-            return (
-              <SectionList.Item
-                isActive={store.currentShow === "DB" && db.name === store.currentDB?.name}
-                key={db.name}
-                onClick={() => {
-                  store.setCurrentDB(db);
-                }}
-              >
-                <div className="w-full flex justify-between group">
-                  <div className="leading-loose font-semibold">
-                    <FileTypeIcon type="db" />
-                    <span className="ml-2 text-base">{db.name}</span>
-                  </div>
-                  <MoreButton
-                    isHidden={db.name !== store.currentDB?.name || store.currentShow !== "DB"}
+      <div style={{ overflowY: "auto", flexGrow: 1 }}>
+        {collectionListQuery?.data?.data?.length ? (
+          <SectionList>
+            {collectionListQuery?.data?.data
+              .filter((db: any) => db.name.indexOf(search) >= 0)
+              .map((db: any) => {
+                return (
+                  <SectionList.Item
+                    isActive={store.currentShow === "DB" && db.name === store.currentDB?.name}
+                    key={db.name}
+                    onClick={() => {
+                      store.setCurrentDB(db);
+                    }}
                   >
-                    <>
-                      <CopyText hideToolTip text={db.name} tip="名称复制成功">
-                        <div>
-                          <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
-                            <CopyIcon />
-                          </div>
-                          <div className="text-grayIron-600">{t("Copy")}</div>
-                        </div>
-                      </CopyText>
-                      <DeleteCollectionModal database={db} />
-                    </>
-                  </MoreButton>
-                </div>
-              </SectionList.Item>
-            );
-          })}
-      </SectionList>
+                    <div className="w-full flex justify-between group">
+                      <div className="leading-loose font-semibold">
+                        <FileTypeIcon type="db" />
+                        <span className="ml-2 text-base">{db.name}</span>
+                      </div>
+                      <MoreButton
+                        isHidden={db.name !== store.currentDB?.name || store.currentShow !== "DB"}
+                      >
+                        <>
+                          <CopyText hideToolTip text={db.name} tip="名称复制成功">
+                            <div>
+                              <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
+                                <CopyIcon />
+                              </div>
+                              <div className="text-grayIron-600">{t("Copy")}</div>
+                            </div>
+                          </CopyText>
+                          <DeleteCollectionModal database={db} />
+                        </>
+                      </MoreButton>
+                    </div>
+                  </SectionList.Item>
+                );
+              })}
+          </SectionList>
+        ) : (
+          <EmptyBox hideIcon>
+            <p>{t("CollectionPanel.EmptyCollectionTip")}</p>
+          </EmptyBox>
+        )}
+      </div>
     </Panel>
   );
 }

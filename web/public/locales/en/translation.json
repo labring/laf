@@ -13,8 +13,8 @@
     "DeleteCollection": "Delete Collection",
     "DeleteCollectionTip": "The current operation will permanently delete the collection",
     "EditPolicy": "Edit Access Policy",
-    "EmptyCollectionText": "There is no collection information,",
-    "EmptyPolicyText": "No strategy information,",
+    "EmptyCollectionText": "No collection information yet,",
+    "EmptyPolicyText": "No strategy information yet,",
     "IndexName": "Index Name",
     "InputName": "Please enter a collection name",
     "Policy": "Access Policy",
@@ -26,7 +26,10 @@
     "Search": "Please enter ID to query",
     "SelectCollection": "Select Collection",
     "SelectFunction": "Please select a cloud function",
-    "CollectionNameRule": "The collection name can only contain English, _ or -"
+    "CollectionNameRule": "The collection name can only contain English, _ or -",
+    "EmptyCollectionTip": "You have not created a collection",
+    "EmptyDataText": "No data information,",
+    "EmptyPolicyTip": "You have not created a policy"
   },
   "Add": "Add ",
   "AddData": "new data",
@@ -94,7 +97,9 @@
     "SystemDependence": "Built-In",
     "Value": "Value",
     "isSupport": "Whether to support",
-    "FunctionNameRule": "Function names can only contain English or _"
+    "FunctionNameRule": "Function names can only contain English or _",
+    "EmptyDebugTip": "No results yet",
+    "EmptyFunctionTip": "You have not created the function"
   },
   "HomePanel": {
     "APP": "Android or iOS app",
@@ -119,7 +124,8 @@
   },
   "LogPanel": {
     "Detail": "Log Details",
-    "Log": "Log"
+    "Log": "Log",
+    "EmptyLogTip": "No log information"
   },
   "SettingPanel": {
     "AddAppEnv": "Add Environment Variables",
@@ -134,7 +140,7 @@
     "DeleteConfirm": "The current operation will permanently delete the cloud storage",
     "DeleteFileTip": "Are you sure you want to delete the file?",
     "Drag": "Drag and drop here or",
-    "EmptyText": "No Bucket data yet",
+    "EmptyText": "No Bucket data yet ,",
     "File": "File",
     "FileName": "File Name",
     "FileType": "File Type",
@@ -162,7 +168,8 @@
     "DeleteBucket": "Delete Buckets",
     "BucketNameRule": "Can only contain lowercase English, numbers, and the beginning and end cannot be numbers or -",
     "BucketNamePlaceholder": "bucket-name",
-    "StorageList": "Cloud Storage List"
+    "StorageList": "Cloud Storage List",
+    "EmptyStorageTip": "You have not created a Bucket"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",
@@ -179,11 +186,16 @@
     "Trigger": "Trigger",
     "Type": "Type",
     "CronHelp": "more examples",
-    "Cron": "expression"
+    "Cron": "expression",
+    "EmptyTriggerTip": "You have not created a trigger,"
   },
   "NoData": "Currently no data",
   "SaveAndRestart": "save and restart",
   "DataEntry": {
     "CreateError": "field cannot be empty"
-  }
+  },
+  "Refresh": "Refresh",
+  "RefreshData": "Refresh Data",
+  "EditTip": "modified, unpublished",
+  "NoInfo": "No information"
 }

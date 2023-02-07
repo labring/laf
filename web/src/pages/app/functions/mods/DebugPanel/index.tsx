@@ -231,7 +231,11 @@ export default function DebugPanel() {
               <SyntaxHighlighter language="json" customStyle={{ background: "#fdfdfe" }}>
                 {JSON.stringify(runningResData, null, 2)}
               </SyntaxHighlighter>
-            ) : null}
+            ) : (
+              <Center minH={140} className="text-grayIron-600">
+                {t("FunctionPanel.EmptyDebugTip")}
+              </Center>
+            )}
           </div>
         </Panel>
       </Row>

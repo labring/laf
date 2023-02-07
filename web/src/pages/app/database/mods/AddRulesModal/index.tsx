@@ -1,6 +1,6 @@
 import { useState } from "react";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { AddIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
@@ -22,16 +22,17 @@ import { t } from "i18next";
 import JsonEditor from "@/components/Editor/JsonEditor";
 
 import { useCollectionListQuery, useCreateRulesMutation } from "../../service";
-import useDBMStore from "../../store";
 
 import policyTemplate from "./policyTemplate";
 
-const AddRulesModal = (props: { onSuccessSubmit: (data: any) => void }) => {
+const AddRulesModal = (props: {
+  children: React.ReactElement;
+  onSuccessSubmit: (data: any) => void;
+}) => {
   type FormData = {
     collectionName: string;
     value: string;
   };
-  const store = useDBMStore((state) => state);
   const {
     register,
     handleSubmit,
@@ -68,13 +69,8 @@ const AddRulesModal = (props: { onSuccessSubmit: (data: any) => void }) => {
 
   return (
     <>
-      <Button
-        disabled={store.currentPolicy === undefined}
-        colorScheme="primary"
-        className="mr-2"
-        style={{ width: "114px" }}
-        leftIcon={<AddIcon />}
-        onClick={() => {
+      {React.cloneElement(props.children, {
+        onClick: () => {
           onOpen();
           setError("");
           setParseError("");
@@ -83,10 +79,8 @@ const AddRulesModal = (props: { onSuccessSubmit: (data: any) => void }) => {
             value: JSON.stringify(policyTemplate, null, 2),
           });
           setTimeout(() => setFocus("collectionName"), 0);
-        }}
-      >
-        {t("CollectionPanel.AddRules")}
-      </Button>
+        },
+      })}
 
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />

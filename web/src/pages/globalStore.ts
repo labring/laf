@@ -122,7 +122,7 @@ const useGlobalStore = create<State>()(
           position: "top",
           title: text,
           status: "error",
-          duration: 1000,
+          duration: 100000,
           containerStyle: {
             maxWidth: "100%",
             minWidth: "100px",

@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
-import { Center } from "@chakra-ui/react";
+
+import EmptyBox from "@/components/EmptyBox";
 
 import CreateCollectionModal from "../mods/CreateCollectionModal";
 import useDBMStore from "../store";
@@ -12,12 +13,16 @@ export default function CollectionDataList() {
   return (
     <>
       {store.currentDB === undefined ? (
-        <Center className="h-full text-lg">
-          {t("CollectionPanel.EmptyCollectionText")}
-          <CreateCollectionModal>
-            <span className="ml-2 text-blue-500 cursor-pointer">{t("CreateNow")}</span>
-          </CreateCollectionModal>
-        </Center>
+        <EmptyBox>
+          <div>
+            {t("CollectionPanel.EmptyCollectionText")}
+            <CreateCollectionModal>
+              <span className="ml-2 text-primary-600 hover:border-b-2 hover:border-primary-600 cursor-pointer">
+                {t("CreateNow")}
+              </span>
+            </CreateCollectionModal>
+          </div>
+        </EmptyBox>
       ) : (
         <DataPanel />
       )}

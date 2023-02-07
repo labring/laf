@@ -69,11 +69,15 @@ module.exports = {
           1000: "#1A1A1B"
         },
         error: {
-          500: "#F16979"
+          100: "#FDECEE",
+          500: "#F16979",
+          600: "#ED4458",
         },
         warn: {
+          100: "#FFF2EC",
           400: "#FDB08A",
-          700: "#C96330"
+          600: "#FB7C3C",
+          700: "#C96330",
         },
         rose: {
           100: "#FDEAF1"
@@ -85,9 +89,11 @@ module.exports = {
           700: "#7167AA",
         },
         blue: {
+          100: "#EBF7FD",
           400: "#86CEF5",
           500: "#5EBDF2",
-          700: "#2B8ABF"
+          600: "#36ADEF",
+          700: "#2B8ABF",
         },
         frostyNightfall: {
           200: "#EAEBF0"

@@ -27,6 +27,7 @@ import {
 import { t } from "i18next";
 
 import ConfirmButton from "@/components/ConfirmButton";
+import EmptyBox from "@/components/EmptyBox";
 import IconWrap from "@/components/IconWrap";
 import { formatDate } from "@/utils/format";
 
@@ -84,64 +85,77 @@ export default function TriggerModal(props: { children: React.ReactElement }) {
                 </Center>
               ) : null}
               <div className="overflow-y-auto h-full mb-4">
-                <TableContainer minH={"400px"}>
-                  <Table variant="simple">
-                    <Thead>
-                      <Tr bgColor={"#fbfbfc"}>
-                        <Th borderTopLeftRadius={"10px"} borderBottomLeftRadius={"10px"}>
-                          {t("TriggerPanel.Name")}
-                        </Th>
-                        <Th>{t("TriggerPanel.Function")}</Th>
-                        <Th>{t("TriggerPanel.Type")}</Th>
-                        <Th>{t("TriggerPanel.Cron")}</Th>
-                        <Th>{t("TriggerPanel.Time")}</Th>
-                        <Th borderTopRightRadius={"10px"} borderBottomRightRadius={"10px"}>
-                          {t("Operation")}
-                        </Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody className="relative font-mono">
-                      {(triggerListQuery.data?.data || [])
-                        .filter((item: any) => {
-                          return item.desc.indexOf(searchKey) > -1;
-                        })
-                        .map((item: any) => (
-                          <Tr key={item.id} _hover={{ bgColor: "#FBFBFC" }}>
-                            <Td borderTopLeftRadius={"10px"} borderBottomLeftRadius={"10px"}>
-                              <span>{item.desc}</span>
-                            </Td>
-                            <Td>
-                              <span>{item.target}</span>
-                            </Td>
-                            <Td>
-                              <span>{t("TriggerPanel.SetTimeout")}</span>
-                            </Td>
-                            <Td>
-                              <span>{item.cron}</span>
-                            </Td>
-                            <Td className="text-slate-500" maxWidth="5rem">
-                              {formatDate(item.updatedAt, "YYYY-MM-DD HH:mm")}
-                            </Td>
-                            <Td borderTopRightRadius={"10px"} borderBottomRightRadius={"10px"}>
-                              <HStack spacing={1}>
-                                <ConfirmButton
-                                  onSuccessAction={() =>
-                                    deleteTriggerMutation.mutate({ id: item.id })
-                                  }
-                                  headerText={String(t("Delete"))}
-                                  bodyText={t("TriggerPanel.DeleteConfirm")}
-                                >
-                                  <IconWrap tooltip={String(t("Delete"))}>
-                                    <DeleteIcon fontSize={15} />
-                                  </IconWrap>
-                                </ConfirmButton>
-                              </HStack>
-                            </Td>
-                          </Tr>
-                        ))}
-                    </Tbody>
-                  </Table>
-                </TableContainer>
+                {triggerListQuery.data?.data?.length ? (
+                  <TableContainer minH={"400px"}>
+                    <Table variant="simple">
+                      <Thead>
+                        <Tr bgColor={"#fbfbfc"}>
+                          <Th borderTopLeftRadius={"10px"} borderBottomLeftRadius={"10px"}>
+                            {t("TriggerPanel.Name")}
+                          </Th>
+                          <Th>{t("TriggerPanel.Function")}</Th>
+                          <Th>{t("TriggerPanel.Type")}</Th>
+                          <Th>{t("TriggerPanel.Cron")}</Th>
+                          <Th>{t("TriggerPanel.Time")}</Th>
+                          <Th borderTopRightRadius={"10px"} borderBottomRightRadius={"10px"}>
+                            {t("Operation")}
+                          </Th>
+                        </Tr>
+                      </Thead>
+                      <Tbody className="relative font-mono">
+                        {triggerListQuery.data?.data
+                          .filter((item: any) => {
+                            return item.desc.indexOf(searchKey) > -1;
+                          })
+                          .map((item: any) => (
+                            <Tr key={item.id} _hover={{ bgColor: "#FBFBFC" }}>
+                              <Td borderTopLeftRadius={"10px"} borderBottomLeftRadius={"10px"}>
+                                <span>{item.desc}</span>
+                              </Td>
+                              <Td>
+                                <span>{item.target}</span>
+                              </Td>
+                              <Td>
+                                <span>{t("TriggerPanel.SetTimeout")}</span>
+                              </Td>
+                              <Td>
+                                <span>{item.cron}</span>
+                              </Td>
+                              <Td className="text-slate-500" maxWidth="5rem">
+                                {formatDate(item.updatedAt, "YYYY-MM-DD HH:mm")}
+                              </Td>
+                              <Td borderTopRightRadius={"10px"} borderBottomRightRadius={"10px"}>
+                                <HStack spacing={1}>
+                                  <ConfirmButton
+                                    onSuccessAction={() =>
+                                      deleteTriggerMutation.mutate({ id: item.id })
+                                    }
+                                    headerText={String(t("Delete"))}
+                                    bodyText={t("TriggerPanel.DeleteConfirm")}
+                                  >
+                                    <IconWrap tooltip={String(t("Delete"))}>
+                                      <DeleteIcon fontSize={15} />
+                                    </IconWrap>
+                                  </ConfirmButton>
+                                </HStack>
+                              </Td>
+                            </Tr>
+                          ))}
+                      </Tbody>
+                    </Table>
+                  </TableContainer>
+                ) : (
+                  <EmptyBox className="min-h-[400px]">
+                    <div>
+                      <span>{t("TriggerPanel.EmptyTriggerTip")}</span>
+                      <AddTriggerModal>
+                        <span className="ml-2 text-primary-600 hover:border-b-2 hover:border-primary-600 cursor-pointer">
+                          {t("CreateNow")}
+                        </span>
+                      </AddTriggerModal>
+                    </div>
+                  </EmptyBox>
+                )}
               </div>
             </div>
           </ModalBody>

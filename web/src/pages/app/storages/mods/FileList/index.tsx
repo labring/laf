@@ -1,9 +1,21 @@
 import { DeleteIcon, ViewIcon } from "@chakra-ui/icons";
-import { HStack, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import {
+  Center,
+  HStack,
+  Spinner,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { t } from "i18next";
 
 import ConfirmButton from "@/components/ConfirmButton";
+import EmptyBox from "@/components/EmptyBox";
 // import CopyText from "@/components/CopyText";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
@@ -79,12 +91,16 @@ export default function FileList() {
           </span> */}
         </Panel.Header>
         <div className="px-2 pb-2 flex-grow overflow-hidden">
-          {!query.data ||
-          query.data.length === 0 ||
-          (query.data.length === 1 && query.data[0].Key === prefix) ? (
-            <div className="h-full flex items-center  justify-center">
-              {t("StoragePanel.UploadTip")}
-            </div>
+          {query.isFetching ? (
+            <Center className="h-full opacity-60 bg-white-200">
+              <Spinner size="lg" />
+            </Center>
+          ) : !query.data ||
+            query.data.length === 0 ||
+            (query.data.length === 1 && query.data[0].Key === prefix) ? (
+            <EmptyBox>
+              <p>{t("StoragePanel.UploadTip")}</p>
+            </EmptyBox>
           ) : (
             <TableContainer className="h-full" style={{ overflowY: "auto" }}>
               <Table variant="simple" size="sm">

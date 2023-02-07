@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { RiApps2Fill, RiCodeBoxFill } from "react-icons/ri";
+import { RiCodeBoxFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { AddIcon, Search2Icon } from "@chakra-ui/icons";
 import {
@@ -17,8 +17,11 @@ import { useMutation } from "@tanstack/react-query";
 import { t } from "i18next";
 
 import ConfirmButton from "@/components/ConfirmButton";
+import CopyText from "@/components/CopyText";
+import FileTypeIcon from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
 import { Pages } from "@/constants";
+import { APP_PHASE_STATUS } from "@/constants/index";
 import { formatDate } from "@/utils/format";
 
 import CreateAppModal from "../CreateAppModal";
@@ -47,8 +50,8 @@ function List(props: { appListQuery: any }) {
   return (
     <>
       <div className="flex items-center justify-between mb-5">
-        <h2 className="font-semibold text-xl flex items-center">
-          <RiApps2Fill className="mr-1 text-primary-600" size={18} />
+        <h2 className="font-semibold text-2xl flex items-center">
+          <FileTypeIcon type="app" className="mr-1 pt-1" />
           {t("HomePanel.MyApp")}
         </h2>
         <div className="flex">
@@ -95,7 +98,9 @@ function List(props: { appListQuery: any }) {
                   className="flex bg-lafWhite-200 rounded-lg h-16 items-center px-6 mb-3"
                 >
                   <div className="w-2/12 font-bold text-lg">{item?.name}</div>
-                  <div className="w-2/12 ">{item?.appid}</div>
+                  <div className="w-2/12 ">
+                    {item?.appid} <CopyText text={item?.appid} />
+                  </div>
                   <div className="w-2/12 ">
                     <StatusBadge statusConditions={item?.phase} />
                   </div>
@@ -107,17 +112,18 @@ function List(props: { appListQuery: any }) {
                       fontWeight={"semibold"}
                       size={"sm"}
                       variant={"text"}
+                      disabled={item?.phase === APP_PHASE_STATUS.Deleting}
                       onClick={(event) => {
                         event?.preventDefault();
                         setCurrentApp(item?.appid);
                         navigate(`/app/${item?.appid}/${Pages.function}`);
                       }}
                     >
-                      <RiCodeBoxFill size={20} className="mr-2" />
+                      <RiCodeBoxFill size={25} className="mr-2" />
                       {t("HomePanel.Develop")}
                     </Button>
                     <Menu>
-                      <MenuButton>
+                      <MenuButton disabled={item?.phase !== APP_PHASE_STATUS.Started}>
                         <IconWrap>
                           <BsThreeDotsVertical size={16} />
                         </IconWrap>

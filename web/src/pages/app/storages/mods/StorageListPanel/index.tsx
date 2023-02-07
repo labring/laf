@@ -3,6 +3,7 @@ import { AddIcon, EditIcon, Search2Icon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftElement, Tag } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import EmptyBox from "@/components/EmptyBox";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
 import MoreButton from "@/components/MoreButton";
@@ -59,55 +60,63 @@ export default function StorageListPanel() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </InputGroup>
-        <SectionList style={{ flexGrow: 1, overflow: "auto" }}>
-          {(bucketListQuery?.data?.data || [])
-            .filter((storage: TBucket) => storage?.name.indexOf(search) >= 0)
-            .map((storage: TBucket) => {
-              return (
-                <SectionList.Item
-                  isActive={storage?.name === store.currentStorage?.name}
-                  key={storage?.name}
-                  className="group"
-                  onClick={() => {
-                    store.setCurrentStorage(storage);
-                    store.setPrefix("/");
-                  }}
-                >
-                  <>
-                    <div className="font-semibold">
-                      <FileTypeIcon type={FileType.bucket} />
-                      <span className="ml-2 text-base">{storage.name}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <Tag size="sm" className="w-16 justify-center" variant={storage?.policy}>
-                        {storage?.policy}
-                      </Tag>
-                      <MoreButton isHidden={false}>
-                        <>
-                          <CreateBucketModal storage={storage}>
-                            <div className="text-grayIron-600">
-                              <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
-                                <EditIcon fontSize={10} />
-                              </div>
-                              {t("Edit")}
-                            </div>
-                          </CreateBucketModal>
-                          <DeleteBucketModal
-                            storage={storage}
-                            onSuccessAction={() => {
-                              if (storage.name === store.currentStorage?.name) {
-                                store.setCurrentStorage(bucketListQuery?.data?.data[0]);
-                              }
-                            }}
-                          />
-                        </>
-                      </MoreButton>
-                    </div>
-                  </>
-                </SectionList.Item>
-              );
-            })}
-        </SectionList>
+        <div style={{ flexGrow: 1, overflow: "auto" }}>
+          {bucketListQuery?.data?.data?.length ? (
+            <SectionList>
+              {bucketListQuery?.data?.data
+                .filter((storage: TBucket) => storage?.name.indexOf(search) >= 0)
+                .map((storage: TBucket) => {
+                  return (
+                    <SectionList.Item
+                      isActive={storage?.name === store.currentStorage?.name}
+                      key={storage?.name}
+                      className="group"
+                      onClick={() => {
+                        store.setCurrentStorage(storage);
+                        store.setPrefix("/");
+                      }}
+                    >
+                      <>
+                        <div className="font-semibold">
+                          <FileTypeIcon type={FileType.bucket} />
+                          <span className="ml-2 text-base">{storage.name}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <Tag size="sm" className="w-16 justify-center" variant={storage?.policy}>
+                            {storage?.policy}
+                          </Tag>
+                          <MoreButton isHidden={false}>
+                            <>
+                              <CreateBucketModal storage={storage}>
+                                <div className="text-grayIron-600">
+                                  <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
+                                    <EditIcon fontSize={10} />
+                                  </div>
+                                  {t("Edit")}
+                                </div>
+                              </CreateBucketModal>
+                              <DeleteBucketModal
+                                storage={storage}
+                                onSuccessAction={() => {
+                                  if (storage.name === store.currentStorage?.name) {
+                                    store.setCurrentStorage(bucketListQuery?.data?.data[0]);
+                                  }
+                                }}
+                              />
+                            </>
+                          </MoreButton>
+                        </div>
+                      </>
+                    </SectionList.Item>
+                  );
+                })}
+            </SectionList>
+          ) : (
+            <EmptyBox hideIcon>
+              <p>{t("StoragePanel.EmptyStorageTip")}</p>
+            </EmptyBox>
+          )}
+        </div>
         {/* <div className="bg-lafWhite-400 w-full rounded-md flex px-4 mb-4 justify-around  items-center h-[139px] flex-none">
           <div>
             <CircularProgress color="primary.500" value={30} thickness="7px" size="90px">

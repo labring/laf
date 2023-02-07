@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
+import { t } from "i18next";
 
 import CopyText from "@/components/CopyText";
+import EmptyBox from "@/components/EmptyBox";
 import Panel from "@/components/Panel";
 import { formatDate } from "@/utils/format";
 
@@ -30,16 +32,22 @@ function ConsolePanel() {
             RequestID: {currentRequestId} <CopyText text={String(currentRequestId)} />
           </p>
         )}
-        {(logControllerGetLogsQuery.data?.data?.list || []).map((item: any) => {
-          return (
-            <div key={item._id} className="flex ">
-              <span className=" text-slate-500 min-w-[160px]">
-                [{formatDate(item.created_at, "YYYY-MM-DD hh:mm:ss")}]
-              </span>
-              <pre className="flex-1">{item.data}</pre>
-            </div>
-          );
-        })}
+        {logControllerGetLogsQuery.data?.data?.list?.length ? (
+          logControllerGetLogsQuery.data?.data?.list.map((item: any) => {
+            return (
+              <div key={item._id} className="flex ">
+                <span className=" text-slate-500 min-w-[160px]">
+                  [{formatDate(item.created_at, "YYYY-MM-DD hh:mm:ss")}]
+                </span>
+                <pre className="flex-1">{item.data}</pre>
+              </div>
+            );
+          })
+        ) : (
+          <EmptyBox hideIcon>
+            <span>{t("NoInfo")}</span>
+          </EmptyBox>
+        )}
       </div>
     </Panel>
   );

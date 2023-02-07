@@ -35,11 +35,14 @@
     "IndexName": "索引名称",
     "Search": "请输入ID进行查询",
     "EmptyCollectionText": "暂无集合信息,",
+    "EmptyDataText": "暂无数据信息,",
+    "EmptyCollectionTip": "您还没有创建集合",
     "Policy": "访问策略",
     "PolicyName": "策略标识",
     "PolicyNameTip": "请输入策略标识",
     "PolicyAddress": "入口地址",
     "EmptyPolicyText": "暂无策略信息,",
+    "EmptyPolicyTip": "您还没有创建策略",
     "AddPolicy": "添加访问策略",
     "EditPolicy": "编辑访问策略",
     "ConformDelete": "确定删除该策略吗?",
@@ -52,6 +55,7 @@
   "FunctionPanel": {
     "Debug": "运行",
     "DebugResult": "运行结果",
+    "EmptyDebugTip": "暂无运行结果",
     "Deploy": "发布",
     "ConfirmDeploy": "确认发布",
     "DeploySuccess": "发布成功",
@@ -82,12 +86,14 @@
     "DependenceVersion": "依赖版本",
     "DependenceTip": "请输入依赖包名",
     "Select": "已选择",
-    "FunctionNameRule": "函数名只能包含英文或 _"
+    "FunctionNameRule": "函数名只能包含英文或 _",
+    "EmptyFunctionTip": "您还没有创建函数"
   },
   "TriggerPanel": {
     "Trigger": "触发器",
     "Name": "触发器名称",
     "AddTrigger": "新建触发器",
+    "EmptyTriggerTip": "您还没有创建触发器,",
     "NameTip": "请输入触发器名称",
     "SearchTip": "输入触发器名称查找",
     "Function": "关联函数",
@@ -103,7 +109,8 @@
   },
   "LogPanel": {
     "Log": "日志",
-    "Detail": "日志详情"
+    "Detail": "日志详情",
+    "EmptyLogTip": "暂无日志信息"
   },
   "SettingPanel": {
     "Setting": "设置",
@@ -115,6 +122,7 @@
   },
   "StoragePanel": {
     "CreateBucket": "创建Bucket",
+    "EmptyStorageTip": "您还没有创建Bucket",
     "EditBucket": "编辑Bucket",
     "DeleteBucket": "删除Bucket",
     "BucketName": "Bucket名称",
@@ -143,7 +151,7 @@
     "All": "总容量",
     "Used": "已使用",
     "Success": "上传成功",
-    "EmptyText": "暂无Bucket数据",
+    "EmptyText": "暂无Bucket数据,",
     "BucketNameRule": "只能包含小写英文、数字，开头和结尾不能是数字或 -",
     "BucketNamePlaceholder": "bucket-name"
   },
@@ -185,5 +193,8 @@
   "DataEntry": {
     "CreateError": "字段不能为空"
   },
-  "EditTip": "已修改,未发布"
+  "EditTip": "已修改,未发布",
+  "Refresh": "刷新",
+  "RefreshData": "刷新数据",
+  "NoInfo": "暂无信息"
 }

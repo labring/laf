@@ -217,6 +217,7 @@ export const useCreatePolicyMutation = () => {
         if (data.error) {
           globalStore.showError(data.error);
         } else {
+          globalStore.showSuccess(t("AddSuccess"));
           await queryClient.invalidateQueries(queryKeys.usePolicyListQuery);
           store.setCurrentPolicy(data.data);
         }
@@ -237,6 +238,7 @@ export const useUpdatePolicyMutation = () => {
         if (data.error) {
           globalStore.showError(data.error);
         } else {
+          globalStore.showSuccess(t("UpdateSuccess"));
           queryClient.invalidateQueries(queryKeys.usePolicyListQuery);
         }
       },
@@ -258,6 +260,7 @@ export const useDeletePolicyMutation = () => {
           globalStore.showError(data.error);
         } else {
           store.setCurrentPolicy(undefined);
+          globalStore.showSuccess(t("DeleteSuccess"));
           await queryClient.invalidateQueries(queryKeys.usePolicyListQuery);
         }
       },
@@ -292,6 +295,7 @@ export const useCreateRulesMutation = (onSuccess?: () => void) => {
         if (data.error) {
           globalStore.showError(data.error);
         } else {
+          globalStore.showSuccess(t("AddSuccess"));
           onSuccess && onSuccess();
         }
       },
@@ -311,6 +315,7 @@ export const useUpdateRulesMutation = (onSuccess?: (data: any) => void) => {
         if (data.error) {
           globalStore.showError(data.error);
         } else {
+          globalStore.showSuccess(t("UpdateSuccess"));
           onSuccess && onSuccess(data.data);
         }
       },
@@ -330,6 +335,7 @@ export const useDeleteRuleMutation = (onSuccess?: () => void) => {
         if (data.error) {
           globalStore.showError(data.error);
         } else {
+          globalStore.showSuccess(t("DeleteSuccess"));
           onSuccess && onSuccess();
         }
       },
