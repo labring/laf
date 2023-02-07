@@ -54,6 +54,5 @@ export async function refreshSecretConfig() {
       expire: timestamp + STORAGE_TOKEN_EXPIRE,
     }
   }
-  console.log(secretConfig)
   writeSecretConfig(secretConfig)
 }
