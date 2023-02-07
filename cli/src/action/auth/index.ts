@@ -6,9 +6,10 @@ import { getEmoji } from "../../util/print"
 
 
 export async function login(pat, options) {
+  let remoteServer = options.remote || DEFAULT_REMOTE_SERVER
 
   let systemConfig: SystemConfig = {
-    remoteServer: DEFAULT_REMOTE_SERVER,
+    remoteServer: remoteServer,
   }
   writeSystemConfig(systemConfig)
 
@@ -21,10 +22,7 @@ export async function login(pat, options) {
     token: token,
     tokenExpire: timestamp + TOKEN_EXPIRE,
     pat: pat,
-    remoteServer: DEFAULT_REMOTE_SERVER,
-  }
-  if (options.remote) {
-    systemConfig.remoteServer = options.remote
+    remoteServer: remoteServer,
   }
   writeSystemConfig(systemConfig)
   console.log(`${getEmoji('🎉')} login success`)
