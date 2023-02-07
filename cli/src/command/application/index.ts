@@ -5,14 +5,14 @@ export function command(): Command {
   const cmd = program.command('app')
 
   cmd.command('init <appid>')
-    .description('Initialize application')
-    .option('-s, --sync', 'Sync application data', false)
+    .description('initialize application')
+    .option('-s, --sync', 'sync application data', false)
     .action((appid, options) => {
       init(appid, options)
     })
   
   cmd.command('list')
-    .description('List application')
+    .description('list application')
     .action(() => {
       list()
     })
