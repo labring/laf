@@ -1,6 +1,6 @@
 import React from "react";
 import { useToast } from "@chakra-ui/react";
-import { useThrottle } from "@/utils/other";
+import { throttle as useThrottle } from "lodash";
 
 function useCustomToast() {
   const toast = useToast();
