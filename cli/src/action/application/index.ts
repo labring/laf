@@ -3,8 +3,8 @@ import * as Table from 'cli-table3';
 import { ApplicationConfig, existApplicationConfig, writeApplicationConfig } from "../../config/application"
 import * as path from 'node:path'
 import * as fs from 'node:fs'
-import { FUNCTIONS_DIRECTORY_NAME, GLOBAL_FILE, PACKAGE_FILE, RESPONSE_FILE, TEMPLATE_DIR, TSCONFIG_FILE, TYPE_DIR } from "../../common/constant"
-import { ensureDirectory } from "../../util/file"
+import { FUNCTIONS_DIRECTORY_NAME, GITIGNORE_FILE, GLOBAL_FILE, PACKAGE_FILE, RESPONSE_FILE, TEMPLATE_DIR, TSCONFIG_FILE, TYPE_DIR } from "../../common/constant"
+import { ensureDirectory, exist } from "../../util/file"
 import { update as dependencyUpdate } from "../dependency"
 import { refreshSecretConfig } from "../../config/secret"
 import { getEmoji } from "../../util/print";
@@ -87,4 +87,12 @@ function initFunction() {
   const fromTsConfigFile = path.resolve(templateDir, TSCONFIG_FILE)
   const outTsConfigFile = path.resolve(process.cwd(), TSCONFIG_FILE)
   fs.writeFileSync(outTsConfigFile, fs.readFileSync(fromTsConfigFile, 'utf-8'))
+
+  // generate .gitignore
+  const fromGitIgnoreFile = path.resolve(templateDir, GITIGNORE_FILE)
+  const outGitIgnoreFile = path.resolve(process.cwd(), GITIGNORE_FILE)
+  if (!exist(outGitIgnoreFile)) {
+    fs.writeFileSync(outGitIgnoreFile, fs.readFileSync(fromGitIgnoreFile, 'utf-8'))
+  }
+
 }
