@@ -1,5 +1,5 @@
 import { Command, program } from "commander"
-import { list, pull, push, pullAll, pushAll } from "../../action/policy"
+import { list, pullOne, pushOne, pullAll, pushAll } from "../../action/policy"
 import { checkApplication } from "../../common/hook"
 
 export function policyCommand(): Command {
@@ -18,7 +18,7 @@ export function policyCommand(): Command {
     .description('pull police from server')
     .action((policyName) => {
       if (policyName) {
-        pull(policyName)
+        pullOne(policyName)
       } else {
         pullAll()
       }
@@ -29,7 +29,7 @@ export function policyCommand(): Command {
     .option('-f, --force', 'force to overwrite the server', false)
     .action((policyName, options) => {
       if (policyName) {
-        push(policyName)
+        pushOne(policyName)
       } else {
         pushAll(options)
       }
