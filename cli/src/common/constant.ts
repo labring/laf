@@ -2,6 +2,7 @@
 // directory and metadata file name
 export const CONFIG_FILE_NAME = 'config.yaml'
 export const SECRET_FILE_NAME = '.secret.yaml'
+export const DEPENDENCY_FILE_NAME = 'dependency.yaml'
 export const APPLICATION_CONFIG_FILE_NAME = 'laf.yaml'
 export const FUNCTIONS_DIRECTORY_NAME = 'functions'
 export const FUNCTIONS_CONFIG_FILE_SUFFIX_NAME = '.meta.yaml'
