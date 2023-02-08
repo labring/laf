@@ -42,6 +42,19 @@ const guideSiderbarConfig = [
         link: '/guide/function/'
       },
       {
+        text: '调用云函数',
+        items: [
+          {
+            text: '在云函数中调用',
+            link: '/guide/function/call-function'
+          },
+          {
+            text: '在客户端中调用',
+            link: '/guide/function/call-function-in-client'
+          }
+        ]
+      },
+      {
         text: '依赖管理',
         link: '/guide/function/depend'
       },
