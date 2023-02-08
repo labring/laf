@@ -10,7 +10,7 @@ export function command(): Command {
 
   cmd.command('create <funcName>')
     .description('Create function')
-    .option('-w --websocket', 'enable websocket', true)
+    .option('-w --websocket', 'enable websocket', false)
     .option('-m --methods <items...>', 'http methods', ['GET', 'POST'])
     .option('-t --tags <items...>', 'tags', [])
     .option('-d --description <description>', 'function description', '')
@@ -43,12 +43,13 @@ export function command(): Command {
 
   cmd.command('push')
     .argument('[funcName]', 'funcName')
+    .option('-f, --force', 'force to overwrite the server', false)
     .description('push function, if funcName does not exist, push all')
-    .action((funcName) => {
+    .action((funcName, options) => {
       if (funcName) {
         pushOne(funcName)
       } else {
-        pushAll()
+        pushAll(options)
       }
     })
 
