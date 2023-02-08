@@ -43,12 +43,13 @@ export function command(): Command {
 
   cmd.command('push')
     .argument('[funcName]', 'funcName')
+    .option('-f, --force', 'force to overwrite the server', false)
     .description('push function, if funcName does not exist, push all')
-    .action((funcName) => {
+    .action((funcName, options) => {
       if (funcName) {
         pushOne(funcName)
       } else {
-        pushAll()
+        pushAll(options)
       }
     })
 
