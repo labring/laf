@@ -23,8 +23,8 @@ export async function list() {
   console.log(table.toString());
 }
 
-export async function pull(policyName: string) {
-  await pullOne(policyName)
+export async function pullOne(policyName: string) {
+  await pull(policyName)
   console.log(`${getEmoji('✅')} pull policy ${policyName} success`)
 }
 
@@ -33,7 +33,7 @@ export async function pullAll() {
   const policies = await policyControllerFindAll(appConfig.appid)
 
   for (let item of policies) {
-    await pullOne(item.name)
+    await pull(item.name)
   }
 
   console.log(`${getEmoji('✅')} pull all policies success`)
@@ -41,7 +41,7 @@ export async function pullAll() {
 
 
 
-async function pullOne(policyName: string) {
+async function pull(policyName: string) {
   const appConfig = readApplicationConfig()
   const rules= await policyRuleControllerFindAll(appConfig.appid, policyName)
   const rulePath = path.join(process.cwd(), POLICIES_DIRECTORY_NAME, policyName + '.yaml')
@@ -63,7 +63,7 @@ async function pullOne(policyName: string) {
 
 
 
-export async function push(policyName: string) {
+export async function pushOne(policyName: string) {
   const appConfig = readApplicationConfig()
   const policies = await policyControllerFindAll(appConfig.appid)
   let isCreate = true
@@ -73,7 +73,7 @@ export async function push(policyName: string) {
       break
     }
   }
-  await pushOne(policyName, isCreate)
+  await push(policyName, isCreate)
   console.log(`${getEmoji('✅')} push policy ${policyName} success`)
 }
 
@@ -96,7 +96,7 @@ export async function pushAll(options: { force: boolean}) {
 
   // push local policies
   for (let item of localPolicies) {
-    await pushOne(item, !serverPoliciesMap.has(item))
+    await push(item, !serverPoliciesMap.has(item))
   } 
 
   // delete server policies
@@ -117,7 +117,7 @@ export async function pushAll(options: { force: boolean}) {
   console.log(`${getEmoji('✅')} push all policies success`)
 }
 
-async function pushOne(policyName: string, isCreate: boolean){ 
+async function push(policyName: string, isCreate: boolean){ 
   const appConfig = readApplicationConfig()
   if (isCreate) {
     const createPolicyDto: CreatePolicyDto = {
