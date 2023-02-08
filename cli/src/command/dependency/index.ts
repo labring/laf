@@ -1,5 +1,5 @@
 import { Command, program } from "commander"
-import { add } from "../../action/dependency"
+import { add, pull, push } from "../../action/dependency"
 import { checkApplication } from "../../common/hook"
 
 export function command(): Command {
@@ -10,10 +10,24 @@ export function command(): Command {
 
   cmd.command('add <dependencyName>')
     .description('add dependency')
-    .option('-v --version', 'dependency version', '')
+    .option('-t, --targetVersion <type>', 'dependency target version')
     .action((dependencyName, options) => {
       add(dependencyName, options)
     })
+  
+    cmd.command('pull')
+    .description('pull dependency')
+    .action(() => {
+      pull()
+    })
+
+  
+    cmd.command('push')
+    .description('push dependency')
+    .action(() => {
+      push()
+    })
+
 
 
   return cmd
