@@ -4,6 +4,7 @@ import * as assert from 'assert'
 import { RegionService } from '../region/region.service'
 import { ApisixService } from './apisix.service'
 import { DomainPhase, DomainState } from '@prisma/client'
+import { TASK_LOCK_INIT_TIME } from 'src/constants'
 
 @Injectable()
 export class FunctionDomainService {
@@ -30,7 +31,7 @@ export class FunctionDomainService {
         domain: app_domain,
         state: DomainState.Active,
         phase: DomainPhase.Creating,
-        lockedAt: null,
+        lockedAt: TASK_LOCK_INIT_TIME,
       },
     })
 

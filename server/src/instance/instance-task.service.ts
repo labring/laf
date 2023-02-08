@@ -3,17 +3,19 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import { Application, ApplicationPhase, ApplicationState } from '@prisma/client'
 import { isConditionTrue } from '../utils/getter'
 import { InstanceService } from './instance.service'
-import { MongoService } from 'src/database/mongo.service'
 import { times } from 'lodash'
+import { TASK_LOCK_INIT_TIME } from 'src/constants'
+import { SystemDatabase } from 'src/database/system-database'
+import { ClusterService } from 'src/region/cluster/cluster.service'
 
 @Injectable()
 export class InstanceTaskService {
   readonly lockTimeout = 60 // in second
-  readonly concurrency = 5 // concurrency count
+  readonly concurrency = 1 // concurrency count
   private readonly logger = new Logger(InstanceTaskService.name)
 
   constructor(
-    private readonly mongoService: MongoService,
+    private readonly clusterService: ClusterService,
     private readonly instanceService: InstanceService,
   ) {}
 
@@ -47,8 +49,7 @@ export class InstanceTaskService {
    * - move phase `Created` or `Stopped` to `Starting`
    */
   async handleRunningState() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
     const res = await db
       .collection<Application>('Application')
@@ -87,7 +88,7 @@ export class InstanceTaskService {
         {
           $set: {
             phase: ApplicationPhase.Starting,
-            lockedAt: null,
+            lockedAt: TASK_LOCK_INIT_TIME,
           },
         },
       )
@@ -105,8 +106,7 @@ export class InstanceTaskService {
    * - move phase to `Started`
    */
   async handleStartingPhase() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
     const res = await db
       .collection<Application>('Application')
@@ -160,7 +160,7 @@ export class InstanceTaskService {
           $set: {
             state: toState,
             phase: ApplicationPhase.Started,
-            lockedAt: null,
+            lockedAt: TASK_LOCK_INIT_TIME,
           },
         },
       )
@@ -178,8 +178,7 @@ export class InstanceTaskService {
    * - move phase `Started` to `Stopping`
    */
   async handleStoppedState() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
     const res = await db
       .collection<Application>('Application')
@@ -214,7 +213,7 @@ export class InstanceTaskService {
         {
           $set: {
             phase: ApplicationPhase.Stopping,
-            lockedAt: null,
+            lockedAt: TASK_LOCK_INIT_TIME,
           },
         },
       )
@@ -232,8 +231,7 @@ export class InstanceTaskService {
    * - move phase `Stopping` to `Stopped`
    */
   async handleStoppingPhase() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
     const res = await db
       .collection<Application>('Application')
@@ -272,7 +270,7 @@ export class InstanceTaskService {
         {
           $set: {
             phase: ApplicationPhase.Stopped,
-            lockedAt: null,
+            lockedAt: TASK_LOCK_INIT_TIME,
           },
         },
       )
@@ -290,8 +288,7 @@ export class InstanceTaskService {
    * - move phase `Started` to `Stopping`
    */
   async handleRestartingStateDown() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
     const res = await db
       .collection<Application>('Application')
@@ -326,7 +323,7 @@ export class InstanceTaskService {
         {
           $set: {
             phase: ApplicationPhase.Stopping,
-            lockedAt: null,
+            lockedAt: TASK_LOCK_INIT_TIME,
           },
         },
       )
@@ -344,8 +341,7 @@ export class InstanceTaskService {
    * - move phase `Stopped` to `Starting`
    */
   async handleRestartingStateUp() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
     const res = await db
       .collection<Application>('Application')
@@ -380,7 +376,7 @@ export class InstanceTaskService {
         {
           $set: {
             phase: ApplicationPhase.Starting,
-            lockedAt: null,
+            lockedAt: TASK_LOCK_INIT_TIME,
           },
         },
       )
@@ -396,15 +392,14 @@ export class InstanceTaskService {
    * Unlock application by appid
    */
   async unlock(appid: string) {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
     const updated = await db.collection<Application>('Application').updateOne(
       {
         appid: appid,
       },
       {
         $set: {
-          lockedAt: null,
+          lockedAt: TASK_LOCK_INIT_TIME,
         },
       },
     )
@@ -415,8 +410,7 @@ export class InstanceTaskService {
    * Clear timeout locks
    */
   async clearTimeoutLocks() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
     await db.collection<Application>('Application').updateMany(
       {
@@ -426,7 +420,7 @@ export class InstanceTaskService {
       },
       {
         $set: {
-          lockedAt: null,
+          lockedAt: TASK_LOCK_INIT_TIME,
         },
       },
     )

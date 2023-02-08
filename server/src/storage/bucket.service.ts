@@ -1,6 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Application, StorageBucket } from '@prisma/client'
-import { BucketDomainService } from '../gateway/bucket-domain.service'
+import {
+  Application,
+  StorageBucket,
+  StoragePhase,
+  StorageState,
+} from '@prisma/client'
+import { TASK_LOCK_INIT_TIME } from 'src/constants'
 import { PrismaService } from '../prisma.service'
 import { RegionService } from '../region/region.service'
 import { CreateBucketDto } from './dto/create-bucket.dto'
@@ -15,53 +20,25 @@ export class BucketService {
     private readonly minioService: MinioService,
     private readonly regionService: RegionService,
     private readonly prisma: PrismaService,
-    private readonly domainService: BucketDomainService,
   ) {}
 
-  /**
-   * @todo create gateway route for bucket
-   */
   async create(app: Application, dto: CreateBucketDto) {
     const bucketName = dto.fullname(app.appid)
 
-    // create bucket in minio
-    const region = await this.regionService.findOne(app.regionName)
-    const res = await this.minioService.createBucket(
-      region,
-      bucketName,
-      dto.policy,
-    )
-
-    if (res.$metadata.httpStatusCode !== 200) {
-      this.logger.error('create bucket in minio failed: ', res)
-      return false
-    }
-
     // create bucket in db
-    try {
-      const bucket = await this.prisma.storageBucket.create({
-        data: {
-          appid: app.appid,
-          name: bucketName,
-          policy: dto.policy,
-          shortName: dto.shortName,
-          lockedAt: null,
-        },
-      })
+    const bucket = await this.prisma.storageBucket.create({
+      data: {
+        appid: app.appid,
+        name: bucketName,
+        policy: dto.policy,
+        shortName: dto.shortName,
+        state: StorageState.Active,
+        phase: StoragePhase.Creating,
+        lockedAt: TASK_LOCK_INIT_TIME,
+      },
+    })
 
-      // create domain for bucket
-      await this.domainService.create(bucket)
-
-      return bucket
-    } catch (error) {
-      this.logger.error('create bucket in db failed: ', error)
-      this.logger.log('deleting bucket in minio: ', bucketName)
-
-      // delete bucket in minio
-      await this.minioService.deleteBucket(region, bucketName)
-
-      return false
-    }
+    return bucket
   }
 
   async findOne(appid: string, name: string) {
@@ -117,20 +94,13 @@ export class BucketService {
     return res
   }
 
-  /**
-   * @todo delete gateway route if exists
-   */
   async delete(bucket: StorageBucket) {
-    // delete bucket in minio
-    const region = await this.regionService.findByAppId(bucket.appid)
-    await this.minioService.deleteBucket(region, bucket.name)
-
-    // delete bucket domain
-    await this.domainService.delete(bucket)
-
-    const res = await this.prisma.storageBucket.delete({
+    const res = await this.prisma.storageBucket.update({
       where: {
         name: bucket.name,
+      },
+      data: {
+        state: StorageState.Deleted,
       },
     })
 

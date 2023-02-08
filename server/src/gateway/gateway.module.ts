@@ -7,6 +7,7 @@ import { HttpModule } from '@nestjs/axios'
 import { BucketDomainService } from './bucket-domain.service'
 import { WebsiteTaskService } from './website-task.service'
 import { BucketDomainTaskService } from './bucket-domain-task.service'
+import { FunctionDomainTaskService } from './function-domain-task.service'
 
 @Module({
   imports: [RegionModule, HttpModule],
@@ -17,6 +18,7 @@ import { BucketDomainTaskService } from './bucket-domain-task.service'
     BucketDomainService,
     WebsiteTaskService,
     BucketDomainTaskService,
+    FunctionDomainTaskService,
   ],
   exports: [FunctionDomainService, BucketDomainService],
 })

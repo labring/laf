@@ -1,20 +1,18 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ApplicationDomain, DomainPhase, DomainState } from '@prisma/client'
-import { MongoService } from 'src/database/mongo.service'
-import { RegionService } from 'src/region/region.service'
+import { RegionService } from '../region/region.service'
 import { ApisixService } from './apisix.service'
 import * as assert from 'node:assert'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { times } from 'lodash'
+import { TASK_LOCK_INIT_TIME } from '../constants'
+import { SystemDatabase } from '../database/system-database'
 
 @Injectable()
 export class FunctionDomainTaskService {
   readonly lockTimeout = 30 // in second
-  readonly concurrency = 5 // concurrency count
   private readonly logger = new Logger(FunctionDomainTaskService.name)
 
   constructor(
-    private readonly mongoService: MongoService,
     private readonly apisixService: ApisixService,
     private readonly regionService: RegionService,
   ) {}
@@ -22,10 +20,10 @@ export class FunctionDomainTaskService {
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
     // Phase `Creating` -> `Created`
-    times(this.concurrency, () => this.handleCreatingPhase())
+    this.handleCreatingPhase()
 
     // Phase `Deleting` -> `Deleted`
-    times(this.concurrency, () => this.handleDeletingPhase())
+    this.handleDeletingPhase()
 
     // Phase `Created` -> `Deleting`
     this.handleInactiveState()
@@ -46,8 +44,7 @@ export class FunctionDomainTaskService {
    * - move phase `Creating` to `Created`
    */
   async handleCreatingPhase() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
     const res = await db
       .collection<ApplicationDomain>('ApplicationDomain')
@@ -64,10 +61,13 @@ export class FunctionDomainTaskService {
           },
         },
       )
+
     if (!res.value) return
 
     // get region by appid
     const doc = res.value
+    this.logger.log('handleCreatingPhase matched function domain', doc.appid)
+
     const region = await this.regionService.findByAppId(doc.appid)
     assert(region, 'region not found')
 
@@ -91,13 +91,13 @@ export class FunctionDomainTaskService {
         {
           $set: {
             phase: DomainPhase.Created,
-            lockedAt: null,
+            lockedAt: TASK_LOCK_INIT_TIME,
           },
         },
       )
 
     if (updated.modifiedCount > 0)
-      this.logger.debug('app domain phase updated to Created', doc)
+      this.logger.debug('app domain phase updated to Created', doc.domain)
   }
 
   /**
@@ -106,8 +106,7 @@ export class FunctionDomainTaskService {
    * - move phase `Deleting` to `Deleted`
    */
   async handleDeletingPhase() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
     const res = await db
       .collection<ApplicationDomain>('ApplicationDomain')
@@ -146,7 +145,7 @@ export class FunctionDomainTaskService {
         {
           $set: {
             phase: DomainPhase.Deleted,
-            lockedAt: null,
+            lockedAt: TASK_LOCK_INIT_TIME,
           },
         },
       )
@@ -160,8 +159,7 @@ export class FunctionDomainTaskService {
    * - move phase `Deleted` to `Creating`
    */
   async handleActiveState() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
     await db.collection<ApplicationDomain>('ApplicationDomain').updateMany(
       {
@@ -171,7 +169,7 @@ export class FunctionDomainTaskService {
       {
         $set: {
           phase: DomainPhase.Creating,
-          lockedAt: null,
+          lockedAt: TASK_LOCK_INIT_TIME,
         },
       },
     )
@@ -182,8 +180,7 @@ export class FunctionDomainTaskService {
    * - move `Created` to `Deleting`
    */
   async handleInactiveState() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
     await db.collection<ApplicationDomain>('ApplicationDomain').updateMany(
       {
@@ -193,7 +190,7 @@ export class FunctionDomainTaskService {
       {
         $set: {
           phase: DomainPhase.Deleting,
-          lockedAt: null,
+          lockedAt: TASK_LOCK_INIT_TIME,
         },
       },
     )
@@ -205,8 +202,7 @@ export class FunctionDomainTaskService {
    * - delete `Deleted` documents
    */
   async handleDeletedState() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
     await db.collection<ApplicationDomain>('ApplicationDomain').updateMany(
       {
@@ -216,7 +212,7 @@ export class FunctionDomainTaskService {
       {
         $set: {
           phase: DomainPhase.Deleting,
-          lockedAt: null,
+          lockedAt: TASK_LOCK_INIT_TIME,
         },
       },
     )
@@ -231,8 +227,7 @@ export class FunctionDomainTaskService {
    * Clear timeout locks
    */
   async clearTimeoutLocks() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
     await db.collection<ApplicationDomain>('ApplicationDomain').updateMany(
       {
@@ -242,7 +237,7 @@ export class FunctionDomainTaskService {
       },
       {
         $set: {
-          lockedAt: null,
+          lockedAt: TASK_LOCK_INIT_TIME,
         },
       },
     )

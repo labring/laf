@@ -3,6 +3,7 @@ import { DomainPhase, DomainState, StorageBucket } from '@prisma/client'
 import { PrismaService } from '../prisma.service'
 import { RegionService } from '../region/region.service'
 import * as assert from 'node:assert'
+import { TASK_LOCK_INIT_TIME } from 'src/constants'
 
 @Injectable()
 export class BucketDomainService {
@@ -33,7 +34,7 @@ export class BucketDomainService {
         },
         state: DomainState.Active,
         phase: DomainPhase.Creating,
-        lockedAt: null,
+        lockedAt: TASK_LOCK_INIT_TIME,
       },
     })
 

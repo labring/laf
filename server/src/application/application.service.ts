@@ -4,7 +4,11 @@ import { CreateApplicationDto } from './dto/create-application.dto'
 import { ApplicationPhase, ApplicationState, Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma.service'
 import { UpdateApplicationDto } from './dto/update-application.dto'
-import { APPLICATION_SECRET_KEY, ServerConfig } from '../constants'
+import {
+  APPLICATION_SECRET_KEY,
+  ServerConfig,
+  TASK_LOCK_INIT_TIME,
+} from '../constants'
 import { GenerateAlphaNumericPassword } from '../utils/random'
 
 @Injectable()
@@ -28,7 +32,7 @@ export class ApplicationService {
         phase: ApplicationPhase.Creating,
         tags: [],
         createdBy: userid,
-        lockedAt: null,
+        lockedAt: TASK_LOCK_INIT_TIME,
         region: {
           connect: {
             name: dto.region,
@@ -123,7 +127,7 @@ export class ApplicationService {
       const res = await this.prisma.application.update({
         where: { appid },
         data: {
-          phase: ApplicationPhase.Deleting,
+          state: ApplicationState.Deleted,
         },
       })
 

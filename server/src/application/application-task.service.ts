@@ -7,17 +7,15 @@ import { DatabaseService } from '../database/database.service'
 import { ClusterService } from 'src/region/cluster/cluster.service'
 import { RegionService } from 'src/region/region.service'
 import { FunctionDomainService } from 'src/gateway/function-domain.service'
-import { MongoService } from 'src/database/mongo.service'
-import { times } from 'lodash'
+import { TASK_LOCK_INIT_TIME } from 'src/constants'
+import { SystemDatabase } from 'src/database/system-database'
 
 @Injectable()
 export class ApplicationTaskService {
   readonly lockTimeout = 60 // in second
-  readonly concurrency = 5 // concurrency count
   private readonly logger = new Logger(ApplicationTaskService.name)
 
   constructor(
-    private readonly mongoService: MongoService,
     private readonly regionService: RegionService,
     private readonly clusterService: ClusterService,
     private readonly storageService: StorageService,
@@ -28,10 +26,13 @@ export class ApplicationTaskService {
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
     // Phase `Creating` -> `Created`
-    times(this.concurrency, () => this.handleCreatingPhase())
+    this.handleCreatingPhase()
 
     // Phase `Deleting` -> `Deleted`
-    times(this.concurrency, () => this.handleDeletingPhase())
+    this.handleDeletingPhase()
+
+    // State `Deleted`
+    this.handleDeletedState()
 
     this.clearTimeoutLocks()
   }
@@ -45,8 +46,7 @@ export class ApplicationTaskService {
    * - move phase `Creating` to `Created`
    */
   async handleCreatingPhase() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
     const res = await db
       .collection<Application>('Application')
@@ -63,11 +63,17 @@ export class ApplicationTaskService {
           },
         },
       )
-    if (!res.value) return
 
-    // get region by appid
+    if (!res.value) {
+      return
+    }
+
     const app = res.value
     const appid = app.appid
+
+    this.logger.log(`handleCreatingPhase matched app ${appid}, locked it`)
+
+    // get region by appid
     const region = await this.regionService.findByAppId(appid)
     assert(region, `Region ${app.regionName} not found`)
 
@@ -82,7 +88,7 @@ export class ApplicationTaskService {
     // reconcile storage
     let storage = await this.storageService.findOne(appid)
     if (!storage) {
-      this.logger.debug(`Creating storage for application ${appid}`)
+      this.logger.log(`Creating storage for application ${appid}`)
       const res = await this.storageService.create(app.appid)
       if (res) {
         storage = res
@@ -92,14 +98,14 @@ export class ApplicationTaskService {
     // reconcile database
     let database = await this.databaseService.findOne(appid)
     if (!database) {
-      this.logger.debug(`Creating database for application ${appid}`)
+      this.logger.log(`Creating database for application ${appid}`)
       database = await this.databaseService.create(app.appid)
     }
 
     // reconcile gateway
     let gateway = await this.gatewayService.findOne(appid)
     if (!gateway) {
-      this.logger.debug(`Creating gateway for application ${appid}`)
+      this.logger.log(`Creating gateway for application ${appid}`)
       gateway = await this.gatewayService.create(appid)
     }
 
@@ -116,7 +122,7 @@ export class ApplicationTaskService {
       {
         $set: {
           phase: ApplicationPhase.Created,
-          lockedAt: null,
+          lockedAt: TASK_LOCK_INIT_TIME,
         },
       },
     )
@@ -130,8 +136,7 @@ export class ApplicationTaskService {
    * - move phase `Deleting` to `Deleted`
    */
   async handleDeletingPhase() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
     const res = await db
       .collection<Application>('Application')
@@ -184,6 +189,8 @@ export class ApplicationTaskService {
       return await this.unlock(appid)
     }
 
+    // TODO: delete app configuration
+
     // update phase to `Deleted`
     const updated = await db.collection<Application>('Application').updateOne(
       {
@@ -193,7 +200,7 @@ export class ApplicationTaskService {
       {
         $set: {
           phase: ApplicationPhase.Deleted,
-          lockedAt: null,
+          lockedAt: TASK_LOCK_INIT_TIME,
         },
       },
     )
@@ -207,10 +214,9 @@ export class ApplicationTaskService {
    * - delete phase `Deleted` documents
    */
   async handleDeletedState() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
-    await db.collection<Application>('Application').findOneAndUpdate(
+    await db.collection<Application>('Application').updateMany(
       {
         state: ApplicationState.Deleted,
         phase: {
@@ -224,7 +230,7 @@ export class ApplicationTaskService {
       {
         $set: {
           phase: ApplicationPhase.Deleting,
-          lockedAt: null,
+          lockedAt: TASK_LOCK_INIT_TIME,
         },
       },
     )
@@ -240,27 +246,25 @@ export class ApplicationTaskService {
    * Unlock application by appid
    */
   async unlock(appid: string) {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
     const updated = await db.collection<Application>('Application').updateOne(
       {
         appid: appid,
       },
       {
         $set: {
-          lockedAt: null,
+          lockedAt: TASK_LOCK_INIT_TIME,
         },
       },
     )
-    if (updated.modifiedCount > 0) this.logger.debug('unlock app:', appid)
+    if (updated.modifiedCount > 0) this.logger.debug('unlocked app: ' + appid)
   }
 
   /**
    * Clear timeout locks
    */
   async clearTimeoutLocks() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
     await db.collection<Application>('Application').updateMany(
       {
@@ -270,7 +274,7 @@ export class ApplicationTaskService {
       },
       {
         $set: {
-          lockedAt: null,
+          lockedAt: TASK_LOCK_INIT_TIME,
         },
       },
     )

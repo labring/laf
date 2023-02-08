@@ -1,19 +1,19 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { DomainPhase, DomainState, WebsiteHosting } from '@prisma/client'
-import { MongoService } from 'src/database/mongo.service'
 import { times } from 'lodash'
+import { TASK_LOCK_INIT_TIME } from 'src/constants'
+import { SystemDatabase } from 'src/database/system-database'
 
 @Injectable()
 export class WebsiteTaskService {
   readonly lockTimeout = 30 // in second
-  readonly concurrency = 5 // concurrency count
+  readonly concurrency = 1 // concurrency count
   private readonly logger = new Logger(WebsiteTaskService.name)
-
-  constructor(private readonly mongoService: MongoService) {}
 
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
+    return
     // Phase `Creating` -> `Created`
     times(this.concurrency, () => this.handleCreatingPhase())
 
@@ -39,8 +39,7 @@ export class WebsiteTaskService {
    * - move phase `Creating` to `Created`
    */
   async handleCreatingPhase() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
     const doc = await db
       .collection<WebsiteHosting>('WebsiteHosting')
@@ -71,8 +70,7 @@ export class WebsiteTaskService {
    * - move phase `Deleting` to `Deleted`
    */
   async handleDeletingPhase() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
     const doc = await db
       .collection<WebsiteHosting>('WebsiteHosting')
@@ -102,8 +100,7 @@ export class WebsiteTaskService {
    * - move phase `Created` to `Deleting`
    */
   async handleInactiveState() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
     await db.collection<WebsiteHosting>('WebsiteHosting').updateMany(
       {
@@ -113,7 +110,7 @@ export class WebsiteTaskService {
       {
         $set: {
           phase: DomainPhase.Deleting,
-          lockedAt: null,
+          lockedAt: TASK_LOCK_INIT_TIME,
         },
       },
     )
@@ -124,8 +121,7 @@ export class WebsiteTaskService {
    * - move phase `Deleted` to `Creating`
    */
   async handleActiveState() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
     await db.collection<WebsiteHosting>('WebsiteHosting').updateMany(
       {
@@ -135,7 +131,7 @@ export class WebsiteTaskService {
       {
         $set: {
           phase: DomainPhase.Creating,
-          lockedAt: null,
+          lockedAt: TASK_LOCK_INIT_TIME,
         },
       },
     )
@@ -147,8 +143,7 @@ export class WebsiteTaskService {
    * - delete `Deleted` documents
    */
   async handleDeletedState() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
+    const db = SystemDatabase.db
 
     await db.collection<WebsiteHosting>('WebsiteHosting').updateMany(
       {
@@ -158,7 +153,7 @@ export class WebsiteTaskService {
       {
         $set: {
           phase: DomainPhase.Deleting,
-          lockedAt: null,
+          lockedAt: TASK_LOCK_INIT_TIME,
         },
       },
     )
@@ -173,9 +168,7 @@ export class WebsiteTaskService {
    * Clear timeout locks
    */
   async clearTimeoutLocks() {
-    const client = await this.mongoService.getSystemDbClient()
-    const db = client.db()
-
+    const db = SystemDatabase.db
     await db.collection<WebsiteHosting>('WebsiteHosting').updateMany(
       {
         lockedAt: {
@@ -184,7 +177,7 @@ export class WebsiteTaskService {
       },
       {
         $set: {
-          lockedAt: null,
+          lockedAt: TASK_LOCK_INIT_TIME,
         },
       },
     )

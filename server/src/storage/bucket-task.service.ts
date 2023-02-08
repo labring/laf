@@ -1,21 +1,27 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { BucketDomain, DomainPhase, DomainState } from '@prisma/client'
+import {
+  DomainPhase,
+  DomainState,
+  StorageBucket,
+} from '@prisma/client'
 import { RegionService } from 'src/region/region.service'
-import { ApisixService } from './apisix.service'
 import * as assert from 'node:assert'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { times } from 'lodash'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/database/system-database'
+import { MinioService } from './minio/minio.service'
+import { BucketDomainService } from 'src/gateway/bucket-domain.service'
 
 @Injectable()
-export class BucketDomainTaskService {
+export class BucketTaskService {
   readonly lockTimeout = 30 // in second
   readonly concurrency = 1 // concurrency count
-  private readonly logger = new Logger(BucketDomainTaskService.name)
+  private readonly logger = new Logger(BucketTaskService.name)
 
   constructor(
-    private readonly apisixService: ApisixService,
+    private readonly bucketDomainService: BucketDomainService,
+    private readonly minioService: MinioService,
     private readonly regionService: RegionService,
   ) {}
 
@@ -42,14 +48,14 @@ export class BucketDomainTaskService {
 
   /**
    * Phase `Creating`:
-   * - create bucket route
+   * - create bucket
    * - move phase `Creating` to `Created`
    */
   async handleCreatingPhase() {
     const db = SystemDatabase.db
 
     const res = await db
-      .collection<BucketDomain>('BucketDomain')
+      .collection<StorageBucket>('StorageBucket')
       .findOneAndUpdate(
         {
           phase: DomainPhase.Creating,
@@ -70,43 +76,61 @@ export class BucketDomainTaskService {
     const region = await this.regionService.findByAppId(doc.appid)
     assert(region, 'region not found')
 
-    // create route first
-    const route = await this.apisixService.createBucketRoute(
-      region,
-      doc.bucketName,
-      doc.domain,
-    )
+    // create bucket in minio if not exists
+    const out = await this.minioService.headBucket(region, doc.name)
+    if (!out) {
+      // create bucket in minio
+      const out = await this.minioService.createBucket(
+        region,
+        doc.name,
+        doc.policy,
+      )
 
-    this.logger.debug('bucket route created:', route)
+      if (out.$metadata.httpStatusCode !== 200) {
+        this.logger.error('create bucket in minio failed: ', out)
+        return
+      }
+
+      this.logger.debug('minio bucket created:', doc.name)
+    }
+
+    // create bucket domain if not exists
+    let domain = await this.bucketDomainService.findOne(doc)
+    if (!domain) {
+      domain = await this.bucketDomainService.create(doc)
+      this.logger.debug('bucket domain created:', domain)
+    }
 
     // update phase to `Created`
-    const updated = await db.collection<BucketDomain>('BucketDomain').updateOne(
-      {
-        _id: doc._id,
-        phase: DomainPhase.Creating,
-      },
-      {
-        $set: {
-          phase: DomainPhase.Created,
-          lockedAt: TASK_LOCK_INIT_TIME,
+    const updated = await db
+      .collection<StorageBucket>('StorageBucket')
+      .updateOne(
+        {
+          _id: doc._id,
+          phase: DomainPhase.Creating,
         },
-      },
-    )
+        {
+          $set: {
+            phase: DomainPhase.Created,
+            lockedAt: TASK_LOCK_INIT_TIME,
+          },
+        },
+      )
 
     if (updated.modifiedCount > 0)
-      this.logger.debug('bucket domain phase updated to Created', doc)
+      this.logger.debug('bucket phase updated to Created', doc)
   }
 
   /**
    * Phase `Deleting`:
-   * - delete bucket route
+   * - delete bucket
    * - move phase `Deleting` to `Deleted`
    */
   async handleDeletingPhase() {
     const db = SystemDatabase.db
 
     const res = await db
-      .collection<BucketDomain>('BucketDomain')
+      .collection<StorageBucket>('StorageBucket')
       .findOneAndUpdate(
         {
           phase: DomainPhase.Deleting,
@@ -127,30 +151,43 @@ export class BucketDomainTaskService {
     const region = await this.regionService.findByAppId(doc.appid)
     assert(region, 'region not found')
 
-    // delete route first
-    const route = await this.apisixService.deleteBucketRoute(
-      region,
-      doc.bucketName,
-    )
+    // delete bucket in minio
+    const exists = await this.minioService.headBucket(region, doc.name)
+    if (exists) {
+      const out = await this.minioService.forceDeleteBucket(region, doc.name)
 
-    this.logger.debug('bucket route deleted:', route)
+      if (out.status === 'error') {
+        this.logger.error('delete bucket in minio failed: ', out)
+        return
+      }
+      this.logger.debug('minio bucket deleted:', doc.name)
+    }
+
+    // delete bucket domain
+    const domain = await this.bucketDomainService.findOne(doc)
+    if (domain) {
+      await this.bucketDomainService.delete(doc)
+      this.logger.debug('bucket domain deleted:', domain)
+    }
 
     // update phase to `Deleted`
-    const updated = await db.collection<BucketDomain>('BucketDomain').updateOne(
-      {
-        _id: doc._id,
-        phase: DomainPhase.Deleting,
-      },
-      {
-        $set: {
-          phase: DomainPhase.Deleted,
-          lockedAt: TASK_LOCK_INIT_TIME,
+    const updated = await db
+      .collection<StorageBucket>('StorageBucket')
+      .updateOne(
+        {
+          _id: doc._id,
+          phase: DomainPhase.Deleting,
         },
-      },
-    )
+        {
+          $set: {
+            phase: DomainPhase.Deleted,
+            lockedAt: TASK_LOCK_INIT_TIME,
+          },
+        },
+      )
 
     if (updated.modifiedCount > 0)
-      this.logger.debug('bucket domain phase updated to Deleted', doc)
+      this.logger.debug('bucket phase updated to Deleted', doc)
   }
 
   /**
@@ -160,7 +197,7 @@ export class BucketDomainTaskService {
   async handleActiveState() {
     const db = SystemDatabase.db
 
-    await db.collection<BucketDomain>('BucketDomain').updateMany(
+    await db.collection<StorageBucket>('StorageBucket').updateMany(
       {
         state: DomainState.Active,
         phase: DomainPhase.Deleted,
@@ -181,7 +218,7 @@ export class BucketDomainTaskService {
   async handleInactiveState() {
     const db = SystemDatabase.db
 
-    await db.collection<BucketDomain>('BucketDomain').updateMany(
+    await db.collection<StorageBucket>('StorageBucket').updateMany(
       {
         state: DomainState.Inactive,
         phase: DomainPhase.Created,
@@ -203,7 +240,7 @@ export class BucketDomainTaskService {
   async handleDeletedState() {
     const db = SystemDatabase.db
 
-    await db.collection<BucketDomain>('BucketDomain').updateMany(
+    await db.collection<StorageBucket>('StorageBucket').updateMany(
       {
         state: DomainState.Deleted,
         phase: DomainPhase.Created,
@@ -216,7 +253,7 @@ export class BucketDomainTaskService {
       },
     )
 
-    await db.collection<BucketDomain>('BucketDomain').deleteMany({
+    await db.collection<StorageBucket>('StorageBucket').deleteMany({
       state: DomainState.Deleted,
       phase: DomainPhase.Deleted,
     })
@@ -228,7 +265,7 @@ export class BucketDomainTaskService {
   async clearTimeoutLocks() {
     const db = SystemDatabase.db
 
-    await db.collection<BucketDomain>('BucketDomain').updateMany(
+    await db.collection<StorageBucket>('StorageBucket').updateMany(
       {
         lockedAt: {
           $lt: new Date(Date.now() - 1000 * this.lockTimeout),
