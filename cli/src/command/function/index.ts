@@ -10,7 +10,7 @@ export function command(): Command {
 
   cmd.command('create <funcName>')
     .description('Create function')
-    .option('-w --websocket', 'enable websocket', true)
+    .option('-w --websocket', 'enable websocket', false)
     .option('-m --methods <items...>', 'http methods', ['GET', 'POST'])
     .option('-t --tags <items...>', 'tags', [])
     .option('-d --description <description>', 'function description', '')
