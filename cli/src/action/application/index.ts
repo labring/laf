@@ -47,6 +47,9 @@ export async function init(appid: string, options: { sync: boolean }) {
   // init function
   initFunction()
 
+  // init policy
+  initPolicy()
+
   // init secret
   refreshSecretConfig()
 
@@ -87,4 +90,8 @@ function initFunction() {
   const fromTsConfigFile = path.resolve(templateDir, TSCONFIG_FILE)
   const outTsConfigFile = path.resolve(process.cwd(), TSCONFIG_FILE)
   fs.writeFileSync(outTsConfigFile, fs.readFileSync(fromTsConfigFile, 'utf-8'))
+}
+
+function initPolicy() {
+  ensureDirectory(path.join(process.cwd(), 'policies'))
 }

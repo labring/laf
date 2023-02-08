@@ -7,6 +7,7 @@ export const FUNCTIONS_DIRECTORY_NAME = 'functions'
 export const FUNCTIONS_CONFIG_FILE_SUFFIX_NAME = '.meta.yaml'
 export const COLLECTIONS_DIRECTORY_NAME = 'collections'
 export const COLLECTIONS_CONFIG_FILE_SUFFIX_NAME = '.meta.yaml'
+export const POLICIES_DIRECTORY_NAME = 'policies'
 
 // token expire time 7 days
 export const TOKEN_EXPIRE = 3600 * 24 * 7

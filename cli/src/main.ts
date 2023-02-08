@@ -7,6 +7,7 @@ import { command as dependencyCommand } from './command/dependency/'
 
 import { loginCommand, logoutCommand } from './command/auth'
 import { bucketCommand } from './command/storage'
+import { policyCommand } from './command/policy'
 
 
 const program = new Command()
@@ -27,6 +28,7 @@ program.addCommand(applicationCommand())
 program.addCommand(functionCommand())
 program.addCommand(bucketCommand())
 program.addCommand(dependencyCommand())
+program.addCommand(policyCommand())
 
 program.parse(process.argv)
 
