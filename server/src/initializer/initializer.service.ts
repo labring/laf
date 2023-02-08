@@ -126,14 +126,13 @@ export class InitializerService {
     const regions = await this.regionService.findAll()
 
     for (const region of regions) {
-      this.logger.verbose('MinioService init - ' + region.name)
-
       const res = await this.minioService.setMinioClientTarget(region)
-      this.logger.log(res)
-      assert.ok(
-        res.status === 'success',
-        'set minio client target failed: ' + region.name,
-      )
+      if (res.status === 'success') {
+        this.logger.verbose('MinioService init - ' + region.name + ' success')
+      } else {
+        this.logger.error('MinioService init - ' + region.name + ' failed', res)
+        throw new Error('set minio client target failed ' + region.name)
+      }
     }
   }
 }

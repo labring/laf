@@ -34,6 +34,9 @@ export class MongoService {
         ],
       })
       return result
+    } catch (error) {
+      this.logger.error(`Create database (${name}) error : `, error)
+      throw error
     } finally {
       await client.close()
     }

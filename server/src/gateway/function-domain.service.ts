@@ -3,6 +3,8 @@ import { PrismaService } from '../prisma.service'
 import * as assert from 'assert'
 import { RegionService } from '../region/region.service'
 import { ApisixService } from './apisix.service'
+import { DomainPhase, DomainState } from '@prisma/client'
+import { TASK_LOCK_INIT_TIME } from 'src/constants'
 
 @Injectable()
 export class FunctionDomainService {
@@ -14,33 +16,31 @@ export class FunctionDomainService {
     private readonly apisixService: ApisixService,
   ) {}
 
+  /**
+   * Create app domain in database
+   */
   async create(appid: string) {
     const region = await this.regionService.findByAppId(appid)
     assert(region, 'region not found')
 
-    const app_domain = `${appid}.${region.gatewayConf.functionDomain}`
-
-    // create route first
-    const route = await this.apisixService.createAppRoute(
-      region,
-      appid,
-      app_domain,
-    )
-
-    this.logger.debug('route created:', route)
-
     // create domain in db
+    const app_domain = `${appid}.${region.gatewayConf.functionDomain}`
     const doc = await this.prisma.applicationDomain.create({
       data: {
         appid: appid,
         domain: app_domain,
-        state: 'Active',
+        state: DomainState.Active,
+        phase: DomainPhase.Creating,
+        lockedAt: TASK_LOCK_INIT_TIME,
       },
     })
 
     return doc
   }
 
+  /**
+   * Find an app domain in database
+   */
   async findOne(appid: string) {
     const doc = await this.prisma.applicationDomain.findFirst({
       where: {
@@ -51,18 +51,17 @@ export class FunctionDomainService {
     return doc
   }
 
+  /**
+   * Delete app domain in database:
+   * - turn to `Deleted` state
+   */
   async delete(appid: string) {
-    // delete route first
-    const region = await this.regionService.findByAppId(appid)
-    assert(region, 'region not found')
-
-    const res = await this.apisixService.deleteAppRoute(region, appid)
-    this.logger.debug('route deleted:', res)
-
-    // delete domain in db
-    const doc = await this.prisma.applicationDomain.delete({
+    const doc = await this.prisma.applicationDomain.update({
       where: {
         appid: appid,
+      },
+      data: {
+        state: DomainState.Deleted,
       },
     })
 

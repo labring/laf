@@ -1,10 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Region, StorageUser } from '@prisma/client'
+import { Region, StoragePhase, StorageState, StorageUser } from '@prisma/client'
 import { PrismaService } from 'src/prisma.service'
 import { GenerateAlphaNumericPassword } from 'src/utils/random'
 import { MinioService } from './minio/minio.service'
 import { AssumeRoleCommand, STSClient } from '@aws-sdk/client-sts'
 import { RegionService } from 'src/region/region.service'
+import { TASK_LOCK_INIT_TIME } from 'src/constants'
 
 @Injectable()
 export class StorageService {
@@ -40,6 +41,9 @@ export class StorageService {
       data: {
         accessKey,
         secretKey,
+        state: StorageState.Active,
+        phase: StoragePhase.Created,
+        lockedAt: TASK_LOCK_INIT_TIME,
         application: {
           connect: {
             appid: appid,
@@ -62,7 +66,30 @@ export class StorageService {
   }
 
   async delete(appid: string) {
-    // TODO: delete user in minio
+    // delete user in minio
+    const region = await this.regionService.findByAppId(appid)
+
+    // delete buckets & files in minio
+    const count = await this.prisma.storageBucket.count({
+      where: { appid },
+    })
+    if (count > 0) {
+      await this.prisma.storageBucket.updateMany({
+        where: {
+          appid,
+          state: {
+            not: StorageState.Deleted,
+          },
+        },
+        data: {
+          state: StorageState.Deleted,
+        },
+      })
+
+      return
+    }
+
+    await this.minioService.deleteUser(region, appid)
 
     const user = await this.prisma.storageUser.delete({
       where: {

@@ -7,6 +7,7 @@ import { ApplicationService } from 'src/application/application.service'
 import { BucketService } from './bucket.service'
 import { RegionModule } from 'src/region/region.module'
 import { GatewayModule } from 'src/gateway/gateway.module'
+import { BucketTaskService } from './bucket-task.service'
 
 @Module({
   imports: [RegionModule, GatewayModule],
@@ -17,6 +18,7 @@ import { GatewayModule } from 'src/gateway/gateway.module'
     PrismaService,
     ApplicationService,
     BucketService,
+    BucketTaskService,
   ],
   exports: [StorageService, MinioService],
 })

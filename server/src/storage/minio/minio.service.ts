@@ -3,6 +3,7 @@ import {
   CreateBucketCommand,
   DeleteBucketCommand,
   DeleteBucketPolicyCommand,
+  HeadBucketCommand,
   PutBucketPolicyCommand,
   PutBucketVersioningCommand,
   S3,
@@ -177,12 +178,39 @@ export class MinioService {
   /**
    * Delete bucket
    */
+  public async forceDeleteBucket(region: Region, bucket: string) {
+    assert.ok(bucket, 'empty bucket name got')
+
+    const target = region.name
+    const sub_cmd = `rb --force ${target}/${bucket}`
+    return await this.executeMinioClientCmd(sub_cmd)
+  }
+
+  /**
+   * Delete bucket
+   */
   public async deleteBucket(region: Region, bucket: string) {
     assert.ok(bucket, 'empty bucket name got')
 
     const s3 = this.getClient(region)
     const cmd = new DeleteBucketCommand({ Bucket: bucket })
     return await s3.send(cmd)
+  }
+
+  /**
+   * Head bucket, check if bucket exists
+   */
+  public async headBucket(region: Region, bucket: string) {
+    assert.ok(bucket, 'empty bucket name got')
+    const s3 = this.getClient(region)
+    const cmd = new HeadBucketCommand({ Bucket: bucket })
+    try {
+      await s3.send(cmd)
+      return true
+    } catch (error) {
+      if (error.name === 'NotFound') return false
+      throw error
+    }
   }
 
   /**
