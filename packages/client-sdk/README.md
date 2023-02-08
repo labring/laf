@@ -695,7 +695,7 @@ collection
   .get()
   .then((res) => {
     const promiseList = res.data.map((document) => {
-      return collection.doc(document.id).remove();
+      return collection.doc(document._id).remove();
     });
     Promise.all(promiseList);
   })
