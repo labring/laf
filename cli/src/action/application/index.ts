@@ -5,7 +5,6 @@ import * as path from 'node:path'
 import * as fs from 'node:fs'
 import { FUNCTIONS_DIRECTORY_NAME, GLOBAL_FILE, PACKAGE_FILE, RESPONSE_FILE, TEMPLATE_DIR, TSCONFIG_FILE, TYPE_DIR } from "../../common/constant"
 import { ensureDirectory } from "../../util/file"
-import { pull as dependencyPull } from "../dependency"
 import { refreshSecretConfig } from "../../config/secret"
 import { getEmoji } from "../../util/print";
 
@@ -54,7 +53,6 @@ export async function init(appid: string, options: { sync: boolean }) {
     // TODO: sync
   }
   console.log(`${getEmoji('🚀')} application ${data.name} init success`)
-  console.log(`${getEmoji('👉')} please run 'npm install' install dependencies`)
 }
 
 function initFunction() {
@@ -81,8 +79,6 @@ function initFunction() {
   const fromPackageFile = path.resolve(templateDir, PACKAGE_FILE)
   const outPackageFile = path.resolve(process.cwd(), PACKAGE_FILE)
   fs.writeFileSync(outPackageFile, fs.readFileSync(fromPackageFile, 'utf-8'))
-
-  dependencyPull()
 
   // generate tsconfig.json
   const fromTsConfigFile = path.resolve(templateDir, TSCONFIG_FILE)

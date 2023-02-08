@@ -9,31 +9,35 @@ import { getEmoji } from "../../util/print"
 import { loadYamlFile, writeYamlFile } from "../../util/file"
 
 
-export async function add(dependencyName: string, options: { version: string }) {
+export async function add(dependencyName: string, options: { targetVersion: string }) {
   const appConfig = readApplicationConfig()
   const dependencyDto: CreateDependencyDto = {
     name: dependencyName,
     spec: 'latest',
   }
-  if (options.version) {
-    dependencyDto.spec = options.version
+  if (options.targetVersion) {
+    dependencyDto.spec = options.targetVersion
   }
   await dependencyControllerAdd(appConfig.appid, [dependencyDto])
   await waitApplicationState('Running')
 
-  await pull()
+  await pullOne()
 
   console.log(`${getEmoji('✅')} dependency ${dependencyDto.name}:${dependencyDto.spec} installed`)
   console.log(`${getEmoji('👉')} please run \`npm install\` to install dependency`)
-
 }
 
 
 export async function pull() {
+  await pullOne()
+  console.log(`${getEmoji('✅')} dependency pulled`)
+  console.log(`${getEmoji('👉')} please run 'npm install' install dependencies`)
+}
+
+async function pullOne(updateYaml: boolean = true) {
   const appConfig = readApplicationConfig()
   const dependencies = await dependencyControllerGetDependencies(appConfig.appid)
 
-  // TODO: update dependencies to package.json
   const packagePath = path.resolve(process.cwd(), PACKAGE_FILE)
   let packageJson = JSON.parse(fs.readFileSync(packagePath, "utf-8"))
   const devDependencies = {}
@@ -50,8 +54,10 @@ export async function pull() {
   fs.writeFileSync(packagePath, JSON.stringify(packageJson, null, 2))
 
   // write to config
-  const filePath = path.resolve(process.cwd(), DEPENDENCY_FILE_NAME)
-  writeYamlFile(filePath, localDependencies)
+  if (updateYaml) {
+    const filePath = path.resolve(process.cwd(), DEPENDENCY_FILE_NAME)
+    writeYamlFile(filePath, localDependencies)
+  }
 }
 
 export async function push() {
@@ -78,5 +84,8 @@ export async function push() {
       await dependencyControllerUpdate(appConfig.appid, [updateDependencyDto])
     }
   }
+  // update package.json
+  await pullOne(false)
   console.log(`${getEmoji('✅')} dependency pushed`)
+  console.log(`${getEmoji('👉')} please run 'npm install' install dependencies`)
 }

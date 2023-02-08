@@ -10,7 +10,7 @@ export function command(): Command {
 
   cmd.command('add <dependencyName>')
     .description('add dependency')
-    .option('-v --version', 'dependency version', '')
+    .option('-t, --targetVersion <type>', 'dependency target version')
     .action((dependencyName, options) => {
       add(dependencyName, options)
     })
