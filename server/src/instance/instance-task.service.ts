@@ -82,7 +82,7 @@ export class InstanceTaskService {
         {
           appid: app.appid,
           phase: {
-            in: [ApplicationPhase.Created, ApplicationPhase.Stopped],
+            $in: [ApplicationPhase.Created, ApplicationPhase.Stopped],
           },
         },
         {
@@ -94,7 +94,7 @@ export class InstanceTaskService {
       )
 
       if (updated.modifiedCount > 0)
-        this.logger.debug(`Application ${app.appid} updated to phase starting`)
+        this.logger.log(`Application ${app.appid} updated to phase starting`)
     } catch (error) {
       this.logger.error(error, error.response?.body)
     }
