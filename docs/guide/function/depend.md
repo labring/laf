@@ -10,7 +10,7 @@ title: 依赖管理
 
 ![](https://oss.lafyun.com/bstqua-images/add-packages.png)
 
-如上图所示，我们依次点击屏幕左下方的 `Npm依赖`、 添加按钮, 搜索想要安装的包名（此处以 [moment](https://www.npmjs.com/package/moment) 为例），勾选后点击 `保存并重启` 按钮即可。
+如上图所示，我们依次点击屏幕左下方的 `NPM 依赖`、 添加按钮, 搜索想要安装的包名（此处以 [moment](https://www.npmjs.com/package/moment) 为例），勾选后点击 `保存并重启` 按钮即可。
 
 > 安装的持续时间会根据包的大小和网络情况而不同，请耐心等待完成。
 

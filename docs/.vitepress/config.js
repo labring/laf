@@ -63,6 +63,10 @@ const guideSiderbarConfig = [
         link: '/guide/function/trigger',
       },
       {
+        text: '环境变量',
+        link: '/guide/function/env',
+      },
+      {
         text: 'WebSocket 连接',
         link: '/guide/function/websocket',
       },
