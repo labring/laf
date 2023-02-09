@@ -9,12 +9,12 @@ title: 在云函数中使用环境变量
 
 1. 首先点击页面左下角的小齿轮按钮，打开应用设置页面
 
-![](https://oss.lafyun.com/bstqua-images/add-env-step1.png)
+![](/doc-images/add-env-step1.png)
 
 
 2. 其次在弹出的应用设置界面，点击 新增环境变量按钮，输入环境变量的 `key` 和 `value`, 并点击确定
 
-![](https://oss.lafyun.com/bstqua-images/add-env-step2.png)
+![](/doc-images/add-env-step2.png)
 
 3. 确认更新环境变量
 
@@ -25,7 +25,7 @@ title: 在云函数中使用环境变量
 
 这里我们添加一个 `name` 为 `MY_ENV_KEY`, `value` 为 `MY_ENV_VALUE` 的环境变量，并等待应用重启完成。
 
-![](https://oss.lafyun.com/bstqua-images/add-env-step3.png)
+![](/doc-images/add-env-step3.png)
 
 
 ## 使用环境变量

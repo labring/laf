@@ -12,7 +12,7 @@ title: 云函数触发器
 
 ## 创建触发器
 
-![](https://oss.lafyun.com/bstqua-images/create-injector.png)
+![](/doc-images/create-injector.png)
 
 第一步： 点击函数列表右侧的触发器按钮
 
@@ -64,11 +64,11 @@ export async function main(ctx: FunctionContext) {
 }
 ```
 
-上述代码中，我们遵循微信开放文档中的 [接口调用请求说明](https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_access_token.html) 来请求 `access_token`, 并将其存入 [cloud.shared](cloud-shared.md) 中， 其他业务函数可以随时进行读取。
+上述代码中，我们遵循微信开放文档中的 [接口调用请求说明](https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_access_token.html) 来请求 `access_token`, 并将其存入 `cloud.shared` 中， 其他业务函数可以随时进行读取。
 
 2. 使用触发器
 
-![](https://oss.lafyun.com/bstqua-images/use-injector.png)
+![](/doc-images/use-injector.png)
 
 还记得刚才创建触发器的过程吗，我们只需选择关联的函数为 `get-access-token`, 并将 Cron 表达式设为 2小时，即可实现每两小时去请求微信的接口，来刷新 access_token 以保证有效。
 

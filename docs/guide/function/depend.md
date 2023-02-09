@@ -8,20 +8,20 @@ title: 依赖管理
 
 ## 添加依赖
 
-![](https://oss.lafyun.com/bstqua-images/add-packages.png)
+![](/doc-images/add-packages.png)
 
 如上图所示，我们依次点击屏幕左下方的 `NPM 依赖`、 添加按钮, 搜索想要安装的包名（此处以 [moment](https://www.npmjs.com/package/moment) 为例），勾选后点击 `保存并重启` 按钮即可。
 
 > 安装的持续时间会根据包的大小和网络情况而不同，请耐心等待完成。
 
-![](https://oss.lafyun.com/bstqua-images/package-list.png)
+![](/doc-images/package-list.png)
 
 
 安装完成后用户可在界面左下方 `依赖管理` 中查看已安装的依赖和版本。
 
 ## 版本
 
-![](https://oss.lafyun.com/bstqua-images/select-package-version.png)
+![](/doc-images/select-package-version.png)
 
 为保证用户应用稳定性，`Laf` 不会自动更新应用的 `Npm package` 版本。
 
