@@ -5,8 +5,11 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { ValidationPipe, VersioningType } from '@nestjs/common'
 import { HTTP_METHODS, ServerConfig } from './constants'
 import { InitializerService } from './initializer/initializer.service'
+import { SystemDatabase } from './database/system-database'
 
 async function bootstrap() {
+  await SystemDatabase.ready
+
   const app = await NestFactory.create(AppModule)
 
   app.enableCors({

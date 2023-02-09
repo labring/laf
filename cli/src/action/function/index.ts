@@ -10,6 +10,9 @@ import { readSecretConfig } from "../../config/secret"
 import { invokeFunction } from "../../api/debug"
 import { exist, remove } from "../../util/file"
 import { getEmoji } from "../../util/print"
+import { getApplicationPath } from "../../util/sys"
+import { FUNCTIONS_DIRECTORY_NAME } from "../../common/constant"
+import { confirm } from "../../common/prompts"
 
 
 
@@ -84,33 +87,85 @@ export async function pullOne(funcName: string) {
   console.log(`${getEmoji('✅')} function ${funcName} pulled`)
 }
 
-async function push(funcName: string) {
+async function push(funcName: string, isCreate: boolean) {
   const appConfig = readApplicationConfig()
   const funcConfig = readFunctionConfig(funcName)
   const codePath = path.join(process.cwd(), 'functions', funcName + '.ts')
   const code = fs.readFileSync(codePath, 'utf-8')
-
-  const updateDto: UpdateFunctionDto = {
-    description: funcConfig.description || '',
-    websocket: funcConfig.websocket,
-    methods: funcConfig.methods as any,
-    code,
-    tags: funcConfig.tags,
+  if (isCreate) {
+    const createDto: CreateFunctionDto = {
+      name: funcName,
+      description: funcConfig.description || '',
+      websocket: funcConfig.websocket,
+      methods: funcConfig.methods as any,
+      code,
+      tags: funcConfig.tags,
+    }
+    await functionControllerCreate(appConfig.appid, createDto)
+  } else {
+    const updateDto: UpdateFunctionDto = {
+      description: funcConfig.description || '',
+      websocket: funcConfig.websocket,
+      methods: funcConfig.methods as any,
+      code,
+      tags: funcConfig.tags,
+    }
+    await functionControllerUpdate(appConfig.appid, funcName, updateDto)
   }
-  await functionControllerUpdate(appConfig.appid, funcName, updateDto)
 }
 
-export async function pushAll() {
+export async function pushAll(options: { force: boolean }) {
   const appConfig = readApplicationConfig()
-  const funcs = await functionControllerFindAll(appConfig.appid)
-  for (let func of funcs) {
-    await push(func.name)
-    console.log(`${getEmoji('✅')} function ${func.name} pushed`)
+  const serverFuncs = await functionControllerFindAll(appConfig.appid)
+  const serverFuncMap = new Map<string, FunctionConfig>()
+  for (let func of serverFuncs) {
+    serverFuncMap.set(func.name, func)
   }
+  const localFuncs = getLocalFuncs()
+  for (let item of localFuncs) {
+    await push(item, !serverFuncMap.has(item))
+    console.log(`${getEmoji('✅')} function ${item} pushed`)
+  }
+
+
+  const localFuncMap = new Map<string, boolean>()
+  for (let item of localFuncs) {
+    localFuncMap.set(item, true)
+  }
+
+  // delete server functions
+  for (let item of serverFuncs) {
+    if (!localFuncMap.has(item.name)) {
+      if (options.force) {
+        await functionControllerRemove(appConfig.appid, item.name)
+        console.log(`${getEmoji('✅')} function ${item.name} deleted`)
+      } else {
+        const res = await confirm('confirm remove policy ' + item.name + '?')
+        if (res.value) {
+          await functionControllerRemove(appConfig.appid, item.name)
+          console.log(`${getEmoji('✅')} function ${item.name} deleted`)
+        } else {
+          console.log(`${getEmoji('🎃')} cancel remove function ${item.name}`)
+        }
+      }
+
+    }
+  }
+
+  console.log(`${getEmoji('✅')} all functions pushed`)
 }
 
 export async function pushOne(funcName: string) {
-  await push(funcName)
+  const appConfig = readApplicationConfig()
+  const serverFuncs = await functionControllerFindAll(appConfig.appid)
+  let isCreate = true
+  for (let func of serverFuncs) {
+    if (func.name === funcName) {
+      isCreate = false
+      break
+    }
+  }
+  await push(funcName, isCreate)
   console.log(`${getEmoji('✅')} function ${funcName} pushed`)
 }
 
@@ -157,3 +212,10 @@ async function printLog(appid: string, requestId: string, limit: string) {
   }
 }
 
+
+function getLocalFuncs() {
+  const funcDir = path.join(getApplicationPath(), FUNCTIONS_DIRECTORY_NAME)
+  const files = fs.readdirSync(funcDir)
+  const funcs = files.filter(file => file.endsWith('.ts')).map(file => file.replace('.ts', ''))
+  return funcs
+}

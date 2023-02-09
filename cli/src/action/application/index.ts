@@ -3,9 +3,10 @@ import * as Table from 'cli-table3';
 import { ApplicationConfig, existApplicationConfig, writeApplicationConfig } from "../../config/application"
 import * as path from 'node:path'
 import * as fs from 'node:fs'
+
 import { FUNCTIONS_DIRECTORY_NAME, GITIGNORE_FILE, GLOBAL_FILE, PACKAGE_FILE, RESPONSE_FILE, TEMPLATE_DIR, TSCONFIG_FILE, TYPE_DIR } from "../../common/constant"
-import { ensureDirectory, exist } from "../../util/file"
-import { update as dependencyUpdate } from "../dependency"
+import { ensureDirectory } from "../../util/file"
+
 import { refreshSecretConfig } from "../../config/secret"
 import { getEmoji } from "../../util/print";
 
@@ -47,6 +48,9 @@ export async function init(appid: string, options: { sync: boolean }) {
   // init function
   initFunction()
 
+  // init policy
+  initPolicy()
+
   // init secret
   refreshSecretConfig()
 
@@ -54,7 +58,6 @@ export async function init(appid: string, options: { sync: boolean }) {
     // TODO: sync
   }
   console.log(`${getEmoji('🚀')} application ${data.name} init success`)
-  console.log(`${getEmoji('👉')} please run 'npm install' install dependencies`)
 }
 
 function initFunction() {
@@ -81,7 +84,6 @@ function initFunction() {
   const fromPackageFile = path.resolve(templateDir, PACKAGE_FILE)
   const outPackageFile = path.resolve(process.cwd(), PACKAGE_FILE)
   fs.writeFileSync(outPackageFile, fs.readFileSync(fromPackageFile, 'utf-8'))
-  dependencyUpdate()
 
   // generate tsconfig.json
   const fromTsConfigFile = path.resolve(templateDir, TSCONFIG_FILE)
@@ -95,4 +97,8 @@ function initFunction() {
     fs.writeFileSync(outGitIgnoreFile, fs.readFileSync(fromGitIgnoreFile, 'utf-8'))
   }
 
+}
+
+function initPolicy() {
+  ensureDirectory(path.join(process.cwd(), 'policies'))
 }

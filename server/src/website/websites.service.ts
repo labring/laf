@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common'
+import { PrismaService } from 'src/prisma.service'
 import { CreateWebsiteDto } from './dto/create-website.dto'
 import { UpdateWebsiteDto } from './dto/update-website.dto'
 
 @Injectable()
 export class WebsitesService {
-  create(createWebsiteDto: CreateWebsiteDto) {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(createWebsiteDto: CreateWebsiteDto) {
     return 'This action adds a new website'
   }
 

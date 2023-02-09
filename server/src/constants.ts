@@ -153,3 +153,4 @@ export const MAX_FUNCTION_COUNT = 1000
 
 export const MINIO_COMMON_USER_GROUP = 'laf_owner_by_prefix_group'
 export const MINIO_COMMON_USER_POLICY = 'laf_owner_by_prefix'
+export const TASK_LOCK_INIT_TIME = new Date(0) // 1970-01-01 00:00:00

@@ -2,11 +2,12 @@ import { Injectable, Logger } from '@nestjs/common'
 import * as assert from 'node:assert'
 import { MongoAccessor } from 'database-proxy'
 import { PrismaService } from '../prisma.service'
-import { Database, Region } from '@prisma/client'
+import { Database, DatabasePhase, DatabaseState, Region } from '@prisma/client'
 import { GenerateAlphaNumericPassword } from 'src/utils/random'
 import { MongoService } from './mongo.service'
 import * as mongodb_uri from 'mongodb-uri'
 import { RegionService } from 'src/region/region.service'
+import { TASK_LOCK_INIT_TIME } from 'src/constants'
 
 @Injectable()
 export class DatabaseService {
@@ -43,6 +44,9 @@ export class DatabaseService {
         name: dbName,
         user: username,
         password: password,
+        state: DatabaseState.Active,
+        phase: DatabasePhase.Created,
+        lockedAt: TASK_LOCK_INIT_TIME,
       },
     })
 
