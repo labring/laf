@@ -4,7 +4,6 @@ title: 云函数处理 WebSocket 长连接
 
 # {{ $frontmatter.title }}
 
-`laf.js` 于 `v0.6.11` 新增支持了 WebSocket 能力。
 
 ## WebSocket 触发器
 
