@@ -1,9 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import {
-  DomainPhase,
-  DomainState,
-  StorageBucket,
-} from '@prisma/client'
+import { DomainPhase, DomainState, StorageBucket } from '@prisma/client'
 import { RegionService } from 'src/region/region.service'
 import * as assert from 'node:assert'
 import { Cron, CronExpression } from '@nestjs/schedule'

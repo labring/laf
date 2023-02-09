@@ -409,7 +409,6 @@ model WebsiteHosting {
   bucketName String      @unique
   domain     String      @unique // auto-generated domain by default, custom domain if set
   isCustom   Boolean     @default(false) // if true, domain is custom domain
-  isResolved Boolean     @default(false) // if true, domain is resolved to bucket domain (cname)
   state      DomainState @default(Active)
   phase      DomainPhase @default(Creating)
   createdAt  DateTime    @default(now())

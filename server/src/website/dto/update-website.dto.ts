@@ -1,4 +1,9 @@
-import { PartialType } from '@nestjs/mapped-types'
-import { CreateWebsiteDto } from './create-website.dto'
+import { ApiProperty } from '@nestjs/swagger'
+import { IsNotEmpty, IsString } from 'class-validator'
 
-export class UpdateWebsiteDto extends PartialType(CreateWebsiteDto) {}
+export class BindCustomDomainDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  domain: string
+}

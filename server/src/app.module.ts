@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
-import { WebsitesModule } from './website/websites.module'
+import { WebsiteModule } from './website/website.module'
 import { FunctionModule } from './function/function.module'
 import { HttpModule } from '@nestjs/axios'
 import { ApplicationModule } from './application/application.module'
@@ -27,7 +27,7 @@ import { GatewayModule } from './gateway/gateway.module'
       limit: 10,
     }),
     FunctionModule,
-    WebsitesModule,
+    WebsiteModule,
     HttpModule,
     AuthModule,
     ApplicationModule,
