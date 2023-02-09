@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BiRefresh } from "react-icons/bi";
 import { AddIcon, CopyIcon, Search2Icon } from "@chakra-ui/icons";
-import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
+import { Center, Input, InputGroup, InputLeftElement, Spinner } from "@chakra-ui/react";
 
 import CopyText from "@/components/CopyText";
 import EmptyBox from "@/components/EmptyBox";
@@ -75,7 +75,12 @@ export default function CollectionListPanel() {
         </InputGroup>
       </div>
 
-      <div style={{ overflowY: "auto", flexGrow: 1 }}>
+      <div className="overflow-auto flex-grow relative">
+        {collectionListQuery.isFetching ? (
+          <Center className="opacity-60 bg-white-200 absolute left-0 right-0 top-0 bottom-0 z-10">
+            <Spinner />
+          </Center>
+        ) : null}
         {collectionListQuery?.data?.data?.length ? (
           <SectionList>
             {collectionListQuery?.data?.data

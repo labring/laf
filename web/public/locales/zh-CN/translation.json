@@ -33,7 +33,8 @@
     "AddData": "添加数据",
     "AddIndex": "添加索引",
     "IndexName": "索引名称",
-    "Search": "请输入ID进行查询",
+    "Search": "请输入ID进行搜索",
+    "Query": "请输入ID按回车进行查询",
     "EmptyCollectionText": "暂无集合信息,",
     "EmptyDataText": "暂无数据信息,",
     "EmptyCollectionTip": "您还没有创建集合",
@@ -50,7 +51,9 @@
     "AddRules": "添加规则",
     "RulesNum": "规则数",
     "RulesContent": "规则内容",
-    "CollectionNameRule": "集合名称只能包含英文, _ 或者 -"
+    "CollectionNameRule": "集合名称只能由字母开头,包含字母, _ 或者 - 的3至32个字符组成",
+    "EmptyRuleTip": "此策略还没有规则,",
+    "CreateTagTip": "按「回车键」或「空格键」分隔标签,每个标签最多由16个字符组成"
   },
   "FunctionPanel": {
     "Debug": "运行",

@@ -84,6 +84,7 @@ function FileUpload(props: { onUpload: (files: any) => void; uploadType: "file" 
           </p>
           <button className={styles.uploadButton} onClick={onButtonClick}>
             {t("StoragePanel.Upload") +
+              " " +
               (uploadType === "file" ? t("StoragePanel.File") : t("StoragePanel.Folder"))}
           </button>
         </div>

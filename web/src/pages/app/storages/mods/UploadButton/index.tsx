@@ -74,6 +74,7 @@ function UploadButton({ onUploadSuccess }: { onUploadSuccess: () => void }) {
         <ModalContent>
           <ModalHeader>
             {t("StoragePanel.Upload") +
+              " " +
               (uploadType === "file" ? t("StoragePanel.File") : t("StoragePanel.Folder"))}
           </ModalHeader>
           <ModalCloseButton />
