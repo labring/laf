@@ -1,15 +1,23 @@
-import { readApplicationConfig } from "../../config/application";
+import { readApplicationConfig } from '../../config/application'
 import * as Table from 'cli-table3'
-import { policyControllerCreate, policyControllerFindAll, policyControllerRemove, policyRuleControllerCreate, policyRuleControllerFindAll, policyRuleControllerRemove, policyRuleControllerUpdate } from "../../api/v1/database";
-import { formatDate } from "../../util/format";
-import * as path from "node:path";
-import * as fs from "node:fs";
-import { POLICIES_DIRECTORY_NAME } from "../../common/constant";
-import { writeYamlFile, loadYamlFile } from "../../util/file";
-import { CreatePolicyDto, CreatePolicyRuleDto, UpdatePolicyRuleDto } from "../../api/v1/data-contracts";
-import { getEmoji } from "../../util/print";
-import { getApplicationPath } from "../../util/sys";
-import { confirm } from "../../common/prompts";
+import {
+  policyControllerCreate,
+  policyControllerFindAll,
+  policyControllerRemove,
+  policyRuleControllerCreate,
+  policyRuleControllerFindAll,
+  policyRuleControllerRemove,
+  policyRuleControllerUpdate,
+} from '../../api/v1/database'
+import { formatDate } from '../../util/format'
+import * as path from 'node:path'
+import * as fs from 'node:fs'
+import { POLICIES_DIRECTORY_NAME } from '../../common/constant'
+import { writeYamlFile, loadYamlFile } from '../../util/file'
+import { CreatePolicyDto, CreatePolicyRuleDto, UpdatePolicyRuleDto } from '../../api/v1/data-contracts'
+import { getEmoji } from '../../util/print'
+import { getApplicationPath } from '../../util/sys'
+import { confirm } from '../../common/prompts'
 
 export async function list() {
   const appConfig = readApplicationConfig()
@@ -20,7 +28,7 @@ export async function list() {
   for (let item of policies) {
     table.push([item.name, item.rules?.length, formatDate(item.createdAt)])
   }
-  console.log(table.toString());
+  console.log(table.toString())
 }
 
 export async function pullOne(policyName: string) {
@@ -39,11 +47,9 @@ export async function pullAll() {
   console.log(`${getEmoji('✅')} pull all policies success`)
 }
 
-
-
 async function pull(policyName: string) {
   const appConfig = readApplicationConfig()
-  const rules= await policyRuleControllerFindAll(appConfig.appid, policyName)
+  const rules = await policyRuleControllerFindAll(appConfig.appid, policyName)
   const rulePath = path.join(process.cwd(), POLICIES_DIRECTORY_NAME, policyName + '.yaml')
   const ruleList: PolicyRule[] = []
   for (let item of rules) {
@@ -54,14 +60,12 @@ async function pull(policyName: string) {
         count: item.value.count,
         update: item.value.update,
         remove: item.value.remove,
-        add: item.value.add
-      }
+        add: item.value.add,
+      },
     })
   }
   writeYamlFile(rulePath, ruleList)
 }
-
-
 
 export async function pushOne(policyName: string) {
   const appConfig = readApplicationConfig()
@@ -77,9 +81,9 @@ export async function pushOne(policyName: string) {
   console.log(`${getEmoji('✅')} push policy ${policyName} success`)
 }
 
-export async function pushAll(options: { force: boolean}) {
+export async function pushAll(options: { force: boolean }) {
   const appConfig = readApplicationConfig()
-  
+
   // get server policies
   const serverPolicies = await policyControllerFindAll(appConfig.appid)
   const serverPoliciesMap = new Map<string, boolean>()
@@ -97,7 +101,7 @@ export async function pushAll(options: { force: boolean}) {
   // push local policies
   for (let item of localPolicies) {
     await push(item, !serverPoliciesMap.has(item))
-  } 
+  }
 
   // delete server policies
   for (let item of serverPolicies) {
@@ -117,11 +121,11 @@ export async function pushAll(options: { force: boolean}) {
   console.log(`${getEmoji('✅')} push all policies success`)
 }
 
-async function push(policyName: string, isCreate: boolean){ 
+async function push(policyName: string, isCreate: boolean) {
   const appConfig = readApplicationConfig()
   if (isCreate) {
     const createPolicyDto: CreatePolicyDto = {
-      name: policyName
+      name: policyName,
     }
     await policyControllerCreate(appConfig.appid, createPolicyDto)
   }
@@ -136,15 +140,17 @@ async function push(policyName: string, isCreate: boolean){
 
   // update or create rule
   for (let item of localRules) {
-    if (serverRulesMap.has(item.collectionName)) { // rule exist, update
+    if (serverRulesMap.has(item.collectionName)) {
+      // rule exist, update
       const updateRuleDto: UpdatePolicyRuleDto = {
-        value: JSON.stringify(item.rules)
+        value: JSON.stringify(item.rules),
       }
       await policyRuleControllerUpdate(appConfig.appid, policyName, item.collectionName, updateRuleDto)
-    } else { // rule not exist, create
+    } else {
+      // rule not exist, create
       const createRuleDto: CreatePolicyRuleDto = {
         collectionName: item.collectionName,
-        value: JSON.stringify(item.rules)
+        value: JSON.stringify(item.rules),
       }
       await policyRuleControllerCreate(appConfig.appid, policyName, createRuleDto)
     }
@@ -158,7 +164,6 @@ async function push(policyName: string, isCreate: boolean){
     }
   }
 }
-
 
 function getLocalPolicies(): string[] {
   const dir = path.join(getApplicationPath(), POLICIES_DIRECTORY_NAME)

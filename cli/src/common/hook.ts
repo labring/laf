@@ -1,5 +1,5 @@
-import { existApplicationConfig } from "../config/application"
-import { existSecretConfig, readSecretConfig, refreshSecretConfig } from "../config/secret"
+import { existApplicationConfig } from '../config/application'
+import { existSecretConfig, readSecretConfig, refreshSecretConfig } from '../config/secret'
 
 export function checkApplication() {
   if (!existApplicationConfig()) {
@@ -21,7 +21,7 @@ export async function checkFunctionDebugToken() {
   }
 }
 
-export async function checkStorageToken() { 
+export async function checkStorageToken() {
   if (!existSecretConfig()) {
     await refreshSecretConfig()
     return

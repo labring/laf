@@ -9,18 +9,15 @@ import { loginCommand, logoutCommand } from './command/auth'
 import { bucketCommand } from './command/storage'
 import { policyCommand } from './command/policy'
 
-
 const program = new Command()
-program
-  .option('-v, --version', 'output version')
-  .action((options) => {
-    if (!options.version) {
-      program.outputHelp()
-      return
-    }
-    const version = require('../package.json').version
-    console.log(version)
-  })
+program.option('-v, --version', 'output version').action((options) => {
+  if (!options.version) {
+    program.outputHelp()
+    return
+  }
+  const version = require('../package.json').version
+  console.log(version)
+})
 
 program.addCommand(loginCommand())
 program.addCommand(logoutCommand())
@@ -31,7 +28,3 @@ program.addCommand(dependencyCommand())
 program.addCommand(policyCommand())
 
 program.parse(process.argv)
-
-
-
-

@@ -1,8 +1,8 @@
-import * as path from "path"
-import { authControllerPat2Token } from "../api/v1/authentication"
-import { Pat2TokenDto } from "../api/v1/data-contracts"
-import { CONFIG_FILE_NAME, TOKEN_EXPIRE } from "../common/constant"
-import { loadYamlFile, writeYamlFile, exist, remove, ensureDirectory } from "../util/file"
+import * as path from 'path'
+import { authControllerPat2Token } from '../api/v1/authentication'
+import { Pat2TokenDto } from '../api/v1/data-contracts'
+import { CONFIG_FILE_NAME, TOKEN_EXPIRE } from '../common/constant'
+import { loadYamlFile, writeYamlFile, exist, remove, ensureDirectory } from '../util/file'
 
 //SystemConfig is the configuration for the config file
 export interface SystemConfig {

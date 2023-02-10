@@ -1,5 +1,5 @@
-import { request, RequestParams } from "../../util/request";
-import { AuthControllerCode2TokenParams, CreatePATDto, Pat2TokenDto } from "./data-contracts";
+import { request, RequestParams } from '../../util/request'
+import { AuthControllerCode2TokenParams, CreatePATDto, Pat2TokenDto } from './data-contracts'
 
 /**
  * No description
@@ -12,9 +12,9 @@ import { AuthControllerCode2TokenParams, CreatePATDto, Pat2TokenDto } from "./da
 export async function authControllerGetSigninUrl(configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/login`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -27,9 +27,9 @@ export async function authControllerGetSigninUrl(configParams: RequestParams = {
 export async function authControllerGetSignupUrl(configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/register`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -45,10 +45,10 @@ export async function authControllerCode2Token(
 ): Promise<any> {
   return request({
     url: `/v1/code2token`,
-    method: "GET",
+    method: 'GET',
     params: query,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -61,10 +61,10 @@ export async function authControllerCode2Token(
 export async function authControllerPat2Token(data: Pat2TokenDto, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/pat2token`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -78,9 +78,9 @@ export async function authControllerPat2Token(data: Pat2TokenDto, configParams: 
 export async function authControllerGetProfile(configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/profile`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -94,10 +94,10 @@ export async function authControllerGetProfile(configParams: RequestParams = {})
 export async function patControllerCreate(data: CreatePATDto, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/pats`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -111,9 +111,9 @@ export async function patControllerCreate(data: CreatePATDto, configParams: Requ
 export async function patControllerFindAll(configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/pats`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -127,7 +127,7 @@ export async function patControllerFindAll(configParams: RequestParams = {}): Pr
 export async function patControllerRemove(id: string, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/pats/${id}`,
-    method: "DELETE",
+    method: 'DELETE',
     ...configParams,
-  });
+  })
 }
