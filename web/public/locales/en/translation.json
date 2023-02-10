@@ -23,13 +23,16 @@
     "PolicyNameTip": "Please enter a policy ID",
     "RulesContent": "Rule content",
     "RulesNum": "Number of Rules",
-    "Search": "Please enter ID to query",
     "SelectCollection": "Select Collection",
     "SelectFunction": "Please select a cloud function",
-    "CollectionNameRule": "The collection name can only contain English, _ or -",
     "EmptyCollectionTip": "You have not created a collection",
     "EmptyDataText": "No data information,",
-    "EmptyPolicyTip": "You have not created a policy"
+    "EmptyPolicyTip": "You have not created a policy",
+    "EmptyRuleTip": "This policy has no rules yet,",
+    "Query": "Please enter the ID and press Enter to query",
+    "Search": "Please enter ID to search",
+    "CreateTagTip": "Press \"Enter\" or \"Space\" to separate tags, each tag can be up to 16 characters",
+    "CollectionNameRule": "The collection name can only start with a letter and consist of 3 to 32 characters including letters, _ or -"
   },
   "Add": "Add ",
   "AddData": "new data",
@@ -57,23 +60,23 @@
   "Name": "name",
   "Operation": "Operation",
   "Page": "Page",
-  "Save": "save",
+  "Save": "Save",
   "Search": "Search",
   "ToConfirm": "to determine",
   "Total": "Total",
   "Update": "Update ",
-  "UpdateSuccess": "update success",
-  "moreOperations": "more operations",
+  "UpdateSuccess": "Update Success",
+  "moreOperations": "More Operations",
   "FunctionPanel": {
     "AddFunction": "Add Function",
     "Code": "Function Template",
-    "ConfirmDeploy": "Confirm release",
+    "ConfirmDeploy": "Confirm Release",
     "CustomDependence": "Custom",
     "CustomDependenceTip": "No custom dependencies yet",
     "Debug": "Run",
     "DebugResult": "Run Result",
     "DeleteConfirm": "Are you sure you want to delete the function?",
-    "Dependence": "Dependence",
+    "Dependence": "NPM Dependence",
     "DependenceAdd": "Add Dependencies",
     "DependenceEdit": "Edit Dependencies",
     "DependenceName": "Dependency Package Name",
@@ -169,7 +172,9 @@
     "BucketNameRule": "Can only contain lowercase English, numbers, and the beginning and end cannot be numbers or -",
     "BucketNamePlaceholder": "bucket-name",
     "StorageList": "Cloud Storage List",
-    "EmptyStorageTip": "You have not created a Bucket"
+    "EmptyStorageTip": "You have not created a Bucket",
+    "UploadFile": "Upload File",
+    "UploadFolder": "Upload Folder"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",
@@ -195,7 +200,7 @@
     "CreateError": "field cannot be empty"
   },
   "Refresh": "Refresh",
-  "RefreshData": "Refresh Data",
+  "RefreshData": "Refresh",
   "EditTip": "modified, unpublished",
   "NoInfo": "No information"
 }

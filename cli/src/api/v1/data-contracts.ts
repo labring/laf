@@ -1,189 +1,189 @@
 export interface CreateFunctionDto {
   /** Function name is unique in the application */
-  name: string;
-  description?: string;
-  websocket: boolean;
-  methods: ("GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "HEAD")[];
+  name: string
+  description?: string
+  websocket: boolean
+  methods: ('GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'HEAD')[]
   /** The source code of the function */
-  code: string;
-  tags?: string[];
+  code: string
+  tags?: string[]
 }
 
 export interface ResponseUtil {
-  error?: string;
-  data?: object;
+  error?: string
+  data?: object
 }
 
 export interface UpdateFunctionDto {
-  description?: string;
-  websocket: boolean;
-  methods: ("GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "HEAD")[];
+  description?: string
+  websocket: boolean
+  methods: ('GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'HEAD')[]
   /** The source code of the function */
-  code: string;
-  tags?: string[];
+  code: string
+  tags?: string[]
 }
 
 export interface CompileFunctionDto {
   /** The source code of the function */
-  code: string;
+  code: string
 }
 
 export interface CreateApplicationDto {
-  name: string;
+  name: string
   /** @default "Running" */
-  state?: "Running" | "Stopped";
-  region: string;
-  bundleName: string;
-  runtimeName: string;
+  state?: 'Running' | 'Stopped'
+  region: string
+  bundleName: string
+  runtimeName: string
 }
 
 export interface UpdateApplicationDto {
-  name?: string;
-  state?: "Running" | "Stopped" | "Restarting";
+  name?: string
+  state?: 'Running' | 'Stopped' | 'Restarting'
 }
 
 export interface CreateEnvironmentDto {
-  name: string;
-  value: string;
+  name: string
+  value: string
 }
 
 export interface CreateBucketDto {
   /** The short name of the bucket which not contain the appid */
-  shortName: string;
-  policy: "readwrite" | "readonly" | "private";
+  shortName: string
+  policy: 'readwrite' | 'readonly' | 'private'
 }
 
 export interface UpdateBucketDto {
-  policy: "readwrite" | "readonly" | "private";
+  policy: 'readwrite' | 'readonly' | 'private'
 }
 
 export interface CreateCollectionDto {
-  name: string;
+  name: string
 }
 
 export interface Collection {
-  name: string;
-  type: string;
-  options: object;
-  info: object;
-  idIndex: object;
+  name: string
+  type: string
+  options: object
+  info: object
+  idIndex: object
 }
 
 export interface UpdateCollectionDto {
-  validatorSchema?: object;
-  validationLevel?: string;
+  validatorSchema?: object
+  validationLevel?: string
 }
 
 export interface CreatePolicyDto {
-  name: string;
+  name: string
 }
 
 export interface UpdatePolicyDto {
-  injector: string;
+  injector: string
 }
 
 export interface CreatePolicyRuleDto {
-  collectionName: string;
-  value: string;
+  collectionName: string
+  value: string
 }
 
 export interface UpdatePolicyRuleDto {
-  value: string;
+  value: string
 }
 
-export type CreateWebsiteDto = object;
+export type CreateWebsiteDto = object
 
-export type UpdateWebsiteDto = object;
+export type UpdateWebsiteDto = object
 
 export interface Pat2TokenDto {
   /**
    * PAT
    * @example "laf_1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
    */
-  pat: string;
+  pat: string
 }
 
 export interface UserProfileDto {
-  uid: string;
-  openid: string;
-  avatar: string;
-  name: string;
+  uid: string
+  openid: string
+  avatar: string
+  name: string
   /** @format date-time */
-  createdAt: string;
+  createdAt: string
   /** @format date-time */
-  updatedAt: string;
+  updatedAt: string
 }
 
 export interface UserDto {
-  id: string;
-  email: string;
-  username: string;
-  phone: string;
-  profile: UserProfileDto;
+  id: string
+  email: string
+  username: string
+  phone: string
+  profile: UserProfileDto
   /** @format date-time */
-  createdAt: string;
+  createdAt: string
   /** @format date-time */
-  updatedAt: string;
+  updatedAt: string
 }
 
 export interface CreatePATDto {
-  name: string;
+  name: string
   /** @min 60 */
-  expiresIn: number;
+  expiresIn: number
 }
 
 export interface CreateDependencyDto {
-  name: string;
-  spec: string;
+  name: string
+  spec: string
 }
 
 export interface UpdateDependencyDto {
-  name: string;
-  spec: string;
+  name: string
+  spec: string
 }
 
 export interface CreateTriggerDto {
-  desc: string;
-  cron: string;
-  target: string;
+  desc: string
+  cron: string
+  target: string
 }
 
-export type AppControllerGetRuntimesData = any;
+export type AppControllerGetRuntimesData = any
 
-export type ApplicationControllerCreateData = any;
+export type ApplicationControllerCreateData = any
 
-export type ApplicationControllerFindAllData = any;
+export type ApplicationControllerFindAllData = any
 
-export type ApplicationControllerFindOneData = any;
+export type ApplicationControllerFindOneData = any
 
-export type ApplicationControllerUpdateData = any;
+export type ApplicationControllerUpdateData = any
 
-export type RegionControllerGetRegionsData = any;
+export type RegionControllerGetRegionsData = any
 
-export type DatabaseControllerProxyData = any;
+export type DatabaseControllerProxyData = any
 
-export type WebsitesControllerCreateData = any;
+export type WebsitesControllerCreateData = any
 
-export type WebsitesControllerFindAllData = any;
+export type WebsitesControllerFindAllData = any
 
-export type WebsitesControllerFindOneData = any;
+export type WebsitesControllerFindOneData = any
 
-export type WebsitesControllerUpdateData = any;
+export type WebsitesControllerUpdateData = any
 
-export type WebsitesControllerRemoveData = any;
+export type WebsitesControllerRemoveData = any
 
 export interface AuthControllerCode2TokenParams {
-  code: string;
+  code: string
 }
 
 export interface LogControllerGetLogsParams {
   /** The request id. Optional */
-  requestId?: string;
+  requestId?: string
   /** The function name. Optional */
-  functionName?: string;
+  functionName?: string
   /** The limit number, default is 10 */
-  limit?: string;
+  limit?: string
   /** The page number, default is 1 */
-  page?: string;
-  appid: string;
+  page?: string
+  appid: string
 }

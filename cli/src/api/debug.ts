@@ -1,21 +1,25 @@
-import axios, { AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse } from "axios";
+import axios, { AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse } from 'axios'
 import * as urlencode from 'urlencode'
 
-export async function invokeFunction(invokeUrl: string, token: string, funcName: string, data: any): Promise<{ res: any; requestId: string; }> {
+export async function invokeFunction(
+  invokeUrl: string,
+  token: string,
+  funcName: string,
+  data: any,
+): Promise<{ res: any; requestId: string }> {
   const header: AxiosRequestHeaders | any = {
     'x-laf-debug-token': token,
     'x-laf-func-data': urlencode(JSON.stringify(data)),
-  };
-  const res = await request({ url: invokeUrl + '/' + funcName, method: "GET", headers: header })
+  }
+  const res = await request({ url: invokeUrl + '/' + funcName, method: 'GET', headers: header })
   return {
     res: res.data,
     requestId: res.headers['request-id'],
   }
 }
 
-
 const request = axios.create({
-  baseURL: "/",
+  baseURL: '/',
   withCredentials: true,
   timeout: 30000,
 })
@@ -23,21 +27,19 @@ const request = axios.create({
 // request interceptor
 request.interceptors.request.use(
   (config: AxiosRequestConfig) => {
-
     let _headers: AxiosRequestHeaders | any = {
-      "Content-Type": "application/json",
-    };
+      'Content-Type': 'application/json',
+    }
     config.headers = {
       ..._headers,
       ...config.headers,
-    };
-    return config;
+    }
+    return config
   },
   (error) => {
-    console.log("exec error", error);
+    console.log('exec error', error)
   },
 )
-
 
 // response interceptor
 request.interceptors.response.use(
@@ -46,10 +48,10 @@ request.interceptors.response.use(
   },
   (error) => {
     if (axios.isCancel(error)) {
-      console.log("repeated request: " + error.message);
+      console.log('repeated request: ' + error.message)
       process.exit(1)
     } else {
-      return Promise.reject(error);
+      return Promise.reject(error)
     }
   },
 )

@@ -33,7 +33,8 @@
     "AddData": "添加数据",
     "AddIndex": "添加索引",
     "IndexName": "索引名称",
-    "Search": "请输入ID进行查询",
+    "Search": "请输入ID进行搜索",
+    "Query": "请输入ID按回车进行查询",
     "EmptyCollectionText": "暂无集合信息,",
     "EmptyDataText": "暂无数据信息,",
     "EmptyCollectionTip": "您还没有创建集合",
@@ -50,7 +51,9 @@
     "AddRules": "添加规则",
     "RulesNum": "规则数",
     "RulesContent": "规则内容",
-    "CollectionNameRule": "集合名称只能包含英文, _ 或者 -"
+    "CollectionNameRule": "集合名称只能由字母开头,包含字母, _ 或者 - 的3至32个字符组成",
+    "EmptyRuleTip": "此策略还没有规则,",
+    "CreateTagTip": "按「回车键」或「空格键」分隔标签,每个标签最多由16个字符组成"
   },
   "FunctionPanel": {
     "Debug": "运行",
@@ -70,7 +73,7 @@
     "Description": "函数描述",
     "Code": "函数模板",
     "isSupport": "是否支持",
-    "Dependence": "依赖",
+    "Dependence": "NPM依赖",
     "CustomDependence": "自定义依赖",
     "CustomDependenceTip": "暂无自定义依赖",
     "SystemDependence": "内置依赖",
@@ -153,7 +156,10 @@
     "Success": "上传成功",
     "EmptyText": "暂无Bucket数据,",
     "BucketNameRule": "只能包含小写英文、数字，开头和结尾不能是数字或 -",
-    "BucketNamePlaceholder": "bucket-name"
+    "BucketNamePlaceholder": "bucket-name",
+    "UploadFile": "上传文件",
+    "UploadFolder": "上传文件夹",
+    "Bucket": "Bucket"
   },
   "Search": "搜索",
   "Close": "关闭",

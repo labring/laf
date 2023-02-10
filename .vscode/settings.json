@@ -34,11 +34,15 @@
     "Builtins",
     "casbin",
     "casdoor",
+    "chakra",
+    "Chakra",
+    "clsx",
     "coll",
     "compat",
     "containerd",
     "creationforms",
     "datasource",
+    "datepicker",
     "dockerode",
     "EJSON",
     "entrypoint",
@@ -48,6 +52,7 @@
     "healthz",
     "hokify",
     "hostpath",
+    "immer",
     "Kube",
     "kubeconfig",
     "Kubefile",
@@ -55,6 +60,7 @@
     "labring",
     "lafjs",
     "lafyun",
+    "languagedetector",
     "logtostderr",
     "millicores",
     "MINIO",
@@ -78,32 +84,28 @@
     "signin",
     "statefulset",
     "storageclass",
+    "tailwindcss",
+    "tanstack",
     "telepresence",
     "tolerations",
     "uids",
     "upsert",
     "upserted",
+    "urlencode",
     "userid",
     "vitepress",
     "withs",
     "xmlparser",
-    "zcube"
+    "zcube",
+    "zustand"
   ],
   "i18n-ally.localesPaths": "web/public/locales",
-  "i18n-ally.enabledParsers": [
-    "json"
-  ],
-  "i18n-ally.enabledFrameworks": [
-    "react",
-    "i18next",
-    "general"
-  ],
+  "i18n-ally.enabledParsers": ["json"],
+  "i18n-ally.enabledFrameworks": ["react", "i18next", "general"],
   "i18n-ally.sourceLanguage": "zh-CN",
   "i18n-ally.displayLanguage": "en,zh",
   "i18n-ally.namespace": false,
   "i18n-ally.pathMatcher": "{locale}/translation.json",
   "i18n-ally.keystyle": "nested",
-  "i18n-ally.keysInUse": [
-    "description.part2_whatever"
-  ]
+  "i18n-ally.keysInUse": ["description.part2_whatever"]
 }

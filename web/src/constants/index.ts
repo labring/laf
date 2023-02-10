@@ -33,6 +33,7 @@ export enum SUPPORTED_METHODS {
 
 export enum APP_PHASE_STATUS {
   Creating = "Creating",
+  Created = "Created",
   Started = "Started",
   Starting = "Starting",
   Restarting = "Restarting",

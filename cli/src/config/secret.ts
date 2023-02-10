@@ -1,8 +1,8 @@
-import * as path from "path"
-import { applicationControllerFindOne } from "../api/v1/application"
-import { DEBUG_TOKEN_EXPIRE, SECRET_FILE_NAME, STORAGE_TOKEN_EXPIRE } from "../common/constant"
-import { exist, loadYamlFile, writeYamlFile } from "../util/file"
-import { readApplicationConfig } from "./application"
+import * as path from 'path'
+import { applicationControllerFindOne } from '../api/v1/application'
+import { DEBUG_TOKEN_EXPIRE, SECRET_FILE_NAME, STORAGE_TOKEN_EXPIRE } from '../common/constant'
+import { exist, loadYamlFile, writeYamlFile } from '../util/file'
+import { readApplicationConfig } from './application'
 
 export interface SecretConfig {
   functionSecretConfig: FunctionSecretConfig
@@ -52,7 +52,7 @@ export async function refreshSecretConfig() {
       accessKeySecret: app.storage.credentials.secretAccessKey,
       sessionToken: app.storage.credentials.sessionToken,
       expire: timestamp + STORAGE_TOKEN_EXPIRE,
-    }
+    },
   }
   writeSecretConfig(secretConfig)
 }

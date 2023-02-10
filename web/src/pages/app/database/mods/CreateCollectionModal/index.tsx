@@ -71,7 +71,7 @@ const CreateCollectionModal = (props: { collection?: any; children: React.ReactE
                   {...register("name", {
                     required: "name is required",
                     pattern: {
-                      value: /^[A-Za-z][A-Za-z0-9-_]+$/,
+                      value: /^[A-Za-z][A-Za-z0-9-_]{2,31}$/,
                       message: t("CollectionPanel.CollectionNameRule"),
                     },
                   })}

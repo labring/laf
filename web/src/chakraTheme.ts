@@ -282,6 +282,9 @@ const Badge = {
     borderRadius: "50px",
     textTransform: "none",
     fontWeight: "medium",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   }),
   variants: {
     Started: {

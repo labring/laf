@@ -1,3 +1,4 @@
+import { Center, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { t } from "i18next";
 
@@ -32,8 +33,12 @@ function ConsolePanel() {
             RequestID: {currentRequestId} <CopyText text={String(currentRequestId)} />
           </p>
         )}
-        {logControllerGetLogsQuery.data?.data?.list?.length ? (
-          logControllerGetLogsQuery.data?.data?.list.map((item: any) => {
+        {logControllerGetLogsQuery.isFetching ? (
+          <Center>
+            <Spinner />
+          </Center>
+        ) : logControllerGetLogsQuery.data?.data?.list?.length ? (
+          logControllerGetLogsQuery.data?.data?.list?.reverse().map((item: any) => {
             return (
               <div key={item._id} className="flex ">
                 <span className=" text-slate-500 min-w-[160px]">

@@ -1,4 +1,4 @@
-import { request, RequestParams } from "../../util/request";
+import { request, RequestParams } from '../../util/request'
 import {
   CreateWebsiteDto,
   UpdateWebsiteDto,
@@ -7,7 +7,7 @@ import {
   WebsitesControllerFindOneData,
   WebsitesControllerRemoveData,
   WebsitesControllerUpdateData,
-} from "./data-contracts";
+} from './data-contracts'
 
 /**
  * No description
@@ -25,10 +25,10 @@ export async function websitesControllerCreate(
 ): Promise<WebsitesControllerCreateData> {
   return request({
     url: `/v1/apps/${appid}/websites`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -45,9 +45,9 @@ export async function websitesControllerFindAll(
 ): Promise<WebsitesControllerFindAllData> {
   return request({
     url: `/v1/apps/${appid}/websites`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -65,9 +65,9 @@ export async function websitesControllerFindOne(
 ): Promise<WebsitesControllerFindOneData> {
   return request({
     url: `/v1/apps/${appid}/websites/${id}`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -86,10 +86,10 @@ export async function websitesControllerUpdate(
 ): Promise<WebsitesControllerUpdateData> {
   return request({
     url: `/v1/apps/${appid}/websites/${id}`,
-    method: "PATCH",
+    method: 'PATCH',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -107,7 +107,7 @@ export async function websitesControllerRemove(
 ): Promise<WebsitesControllerRemoveData> {
   return request({
     url: `/v1/apps/${appid}/websites/${id}`,
-    method: "DELETE",
+    method: 'DELETE',
     ...configParams,
-  });
+  })
 }

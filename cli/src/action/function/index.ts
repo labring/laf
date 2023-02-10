@@ -1,22 +1,42 @@
-import { CompileFunctionDto, CreateFunctionDto, UpdateFunctionDto } from "../../api/v1/data-contracts"
-import { functionControllerCompile, functionControllerCreate, functionControllerFindAll, functionControllerFindOne, functionControllerRemove, functionControllerUpdate, logControllerGetLogs } from "../../api/v1/function"
-import { readApplicationConfig } from "../../config/application"
-import { existFunctionConfig, FunctionConfig, readFunctionConfig, removeFunctionConfig, writeFunctionConfig } from "../../config/function"
-import * as path from "node:path"
-import * as fs from "node:fs"
+import { CompileFunctionDto, CreateFunctionDto, UpdateFunctionDto } from '../../api/v1/data-contracts'
+import {
+  functionControllerCompile,
+  functionControllerCreate,
+  functionControllerFindAll,
+  functionControllerFindOne,
+  functionControllerRemove,
+  functionControllerUpdate,
+  logControllerGetLogs,
+} from '../../api/v1/function'
+import { readApplicationConfig } from '../../config/application'
+import {
+  existFunctionConfig,
+  FunctionConfig,
+  readFunctionConfig,
+  removeFunctionConfig,
+  writeFunctionConfig,
+} from '../../config/function'
+import * as path from 'node:path'
+import * as fs from 'node:fs'
 import * as Table from 'cli-table3'
-import { formatDate } from "../../util/format"
-import { readSecretConfig } from "../../config/secret"
-import { invokeFunction } from "../../api/debug"
-import { exist, remove } from "../../util/file"
-import { getEmoji } from "../../util/print"
-import { getApplicationPath } from "../../util/sys"
-import { FUNCTIONS_DIRECTORY_NAME } from "../../common/constant"
-import { confirm } from "../../common/prompts"
+import { formatDate } from '../../util/format'
+import { readSecretConfig } from '../../config/secret'
+import { invokeFunction } from '../../api/debug'
+import { exist, remove } from '../../util/file'
+import { getEmoji } from '../../util/print'
+import { getApplicationPath } from '../../util/sys'
+import { FUNCTIONS_DIRECTORY_NAME } from '../../common/constant'
+import { confirm } from '../../common/prompts'
 
-
-
-export async function create(funcName: string, options: { websocket: boolean, methods: ("GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "HEAD")[], tags: string[], description: string }) {
+export async function create(
+  funcName: string,
+  options: {
+    websocket: boolean
+    methods: ('GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'HEAD')[]
+    tags: string[]
+    description: string
+  },
+) {
   const appConfig = readApplicationConfig()
   const createDto: CreateFunctionDto = {
     name: funcName,
@@ -31,7 +51,6 @@ export async function create(funcName: string, options: { websocket: boolean, me
   console.log(`${getEmoji('✅')} function ${funcName} created`)
 }
 
-
 export async function list() {
   const appConfig = readApplicationConfig()
   const funcs = await functionControllerFindAll(appConfig.appid)
@@ -39,7 +58,14 @@ export async function list() {
     head: ['name', 'desc', 'websocket', 'methods', 'tags', 'updatedAt'],
   })
   for (let func of funcs) {
-    table.push([func.name, func.description, func.websocket, func.methods.join(','), func.tags.join(','), formatDate(func.updatedAt)])
+    table.push([
+      func.name,
+      func.description,
+      func.websocket,
+      func.methods.join(','),
+      func.tags.join(','),
+      formatDate(func.updatedAt),
+    ])
   }
   console.log(table.toString())
 }
@@ -80,7 +106,6 @@ export async function pullAll() {
     console.log(`${getEmoji('✅')} function ${func.name} pulled`)
   }
 }
-
 
 export async function pullOne(funcName: string) {
   await pull(funcName)
@@ -127,7 +152,6 @@ export async function pushAll(options: { force: boolean }) {
     console.log(`${getEmoji('✅')} function ${item} pushed`)
   }
 
-
   const localFuncMap = new Map<string, boolean>()
   for (let item of localFuncs) {
     localFuncMap.set(item, true)
@@ -140,7 +164,7 @@ export async function pushAll(options: { force: boolean }) {
         await functionControllerRemove(appConfig.appid, item.name)
         console.log(`${getEmoji('✅')} function ${item.name} deleted`)
       } else {
-        const res = await confirm('confirm remove policy ' + item.name + '?')
+        const res = await confirm('confirm remove function ' + item.name + '?')
         if (res.value) {
           await functionControllerRemove(appConfig.appid, item.name)
           console.log(`${getEmoji('✅')} function ${item.name} deleted`)
@@ -148,7 +172,6 @@ export async function pushAll(options: { force: boolean }) {
           console.log(`${getEmoji('🎃')} cancel remove function ${item.name}`)
         }
       }
-
     }
   }
 
@@ -169,7 +192,7 @@ export async function pushOne(funcName: string) {
   console.log(`${getEmoji('✅')} function ${funcName} pushed`)
 }
 
-export async function exec(funcName: string, options: { log: string, requestId: boolean }) {
+export async function exec(funcName: string, options: { log: string; requestId: boolean }) {
   // compile code
   const codePath = path.join(process.cwd(), 'functions', funcName + '.ts')
   if (!exist(codePath)) {
@@ -200,7 +223,6 @@ export async function exec(funcName: string, options: { log: string, requestId: 
   }
 }
 
-
 async function printLog(appid: string, requestId: string, limit: string) {
   const data = await logControllerGetLogs({
     appid,
@@ -212,10 +234,9 @@ async function printLog(appid: string, requestId: string, limit: string) {
   }
 }
 
-
 function getLocalFuncs() {
   const funcDir = path.join(getApplicationPath(), FUNCTIONS_DIRECTORY_NAME)
   const files = fs.readdirSync(funcDir)
-  const funcs = files.filter(file => file.endsWith('.ts')).map(file => file.replace('.ts', ''))
+  const funcs = files.filter((file) => file.endsWith('.ts')).map((file) => file.replace('.ts', ''))
   return funcs
 }

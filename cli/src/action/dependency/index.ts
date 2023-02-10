@@ -1,13 +1,16 @@
-import * as path from "node:path"
-import * as fs from "node:fs"
-import { dependencyControllerAdd, dependencyControllerGetDependencies, dependencyControllerUpdate } from "../../api/v1/application"
-import { DEPENDENCY_FILE_NAME, PACKAGE_FILE } from "../../common/constant"
-import { readApplicationConfig } from "../../config/application"
-import { CreateDependencyDto, UpdateDependencyDto } from "../../api/v1/data-contracts"
-import { waitApplicationState } from "../../common/wait"
-import { getEmoji } from "../../util/print"
-import { loadYamlFile, writeYamlFile } from "../../util/file"
-
+import * as path from 'node:path'
+import * as fs from 'node:fs'
+import {
+  dependencyControllerAdd,
+  dependencyControllerGetDependencies,
+  dependencyControllerUpdate,
+} from '../../api/v1/application'
+import { DEPENDENCY_FILE_NAME, PACKAGE_FILE } from '../../common/constant'
+import { readApplicationConfig } from '../../config/application'
+import { CreateDependencyDto, UpdateDependencyDto } from '../../api/v1/data-contracts'
+import { waitApplicationState } from '../../common/wait'
+import { getEmoji } from '../../util/print'
+import { loadYamlFile, writeYamlFile } from '../../util/file'
 
 export async function add(dependencyName: string, options: { targetVersion: string }) {
   const appConfig = readApplicationConfig()
@@ -27,7 +30,6 @@ export async function add(dependencyName: string, options: { targetVersion: stri
   console.log(`${getEmoji('👉')} please run \`npm install\` to install dependency`)
 }
 
-
 export async function pull() {
   await pullOne()
   console.log(`${getEmoji('✅')} dependency pulled`)
@@ -39,13 +41,13 @@ async function pullOne(updateYaml: boolean = true) {
   const dependencies = await dependencyControllerGetDependencies(appConfig.appid)
 
   const packagePath = path.resolve(process.cwd(), PACKAGE_FILE)
-  let packageJson = JSON.parse(fs.readFileSync(packagePath, "utf-8"))
+  let packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'))
   const devDependencies = {}
   const localDependencies = {}
   for (let dependency of dependencies) {
     devDependencies[dependency.name] = dependency.spec
 
-    // add a non-built-in dependency 
+    // add a non-built-in dependency
     if (!dependency.builtin) {
       localDependencies[dependency.name] = dependency.spec
     }

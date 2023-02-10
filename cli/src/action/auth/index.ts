@@ -1,9 +1,8 @@
-import { authControllerPat2Token } from "../../api/v1/authentication"
-import { Pat2TokenDto } from "../../api/v1/data-contracts"
-import { DEFAULT_REMOTE_SERVER, TOKEN_EXPIRE } from "../../common/constant"
-import { removeSystemConfig, SystemConfig, writeSystemConfig } from "../../config/system"
-import { getEmoji } from "../../util/print"
-
+import { authControllerPat2Token } from '../../api/v1/authentication'
+import { Pat2TokenDto } from '../../api/v1/data-contracts'
+import { DEFAULT_REMOTE_SERVER, TOKEN_EXPIRE } from '../../common/constant'
+import { removeSystemConfig, SystemConfig, writeSystemConfig } from '../../config/system'
+import { getEmoji } from '../../util/print'
 
 export async function login(pat, options) {
   let remoteServer = options.remote || DEFAULT_REMOTE_SERVER

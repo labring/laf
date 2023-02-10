@@ -19,6 +19,18 @@ export default function Pagination(props: {
   const { page, total, limit } = values;
   const maxPage = total && limit ? Math.ceil(total / limit) : -1;
 
+  if (maxPage > 0 && page && page > maxPage) {
+    onChange({
+      ...values,
+      page: maxPage,
+    });
+  } else if (page && page < 1) {
+    onChange({
+      ...values,
+      page: 1,
+    });
+  }
+
   return (
     <HStack alignItems="center" spacing={"1"} display="flex" whiteSpace={"nowrap"}>
       <Text as="div" className="text-lg mr-2">

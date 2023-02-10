@@ -16,7 +16,7 @@ function BottomPanel() {
           variant="plain"
           onClick={() => store.togglePanel("functionPage", "DependencePanel")}
         >
-          NPM{t("FunctionPanel.Dependence")}
+          NPM {t("FunctionPanel.Dependence")}
         </Button>
         <Button
           size="xs"

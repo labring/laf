@@ -1,20 +1,21 @@
-import { Command, program } from "commander"
-import { list, pullOne, pushOne, pullAll, pushAll } from "../../action/policy"
-import { checkApplication } from "../../common/hook"
+import { Command, program } from 'commander'
+import { list, pullOne, pushOne, pullAll, pushAll } from '../../action/policy'
+import { checkApplication } from '../../common/hook'
 
 export function policyCommand(): Command {
-  const cmd = program.command('policy')
-    .hook('preAction', () => {
-      checkApplication()
-    })
+  const cmd = program.command('policy').hook('preAction', () => {
+    checkApplication()
+  })
 
-  cmd.command('list')
+  cmd
+    .command('list')
     .description('policy list')
     .action(() => {
       list()
     })
-  
-  cmd.command('pull [policyName]')
+
+  cmd
+    .command('pull [policyName]')
     .description('pull police from server')
     .action((policyName) => {
       if (policyName) {
@@ -23,8 +24,9 @@ export function policyCommand(): Command {
         pullAll()
       }
     })
-  
-  cmd.command('push [policyName]')
+
+  cmd
+    .command('push [policyName]')
     .description('push police to server')
     .option('-f, --force', 'force to overwrite the server', false)
     .action((policyName, options) => {
@@ -34,9 +36,6 @@ export function policyCommand(): Command {
         pushAll(options)
       }
     })
-  
-  
-  
-  
+
   return cmd
 }

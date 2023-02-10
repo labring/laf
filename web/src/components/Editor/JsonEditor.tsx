@@ -29,23 +29,6 @@ function JsonEditor(props: {
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
   const monacoEl = useRef(null);
 
-  // onChange
-  useEffect(() => {
-    subscriptionRef.current?.dispose();
-
-    if (onChange) {
-      subscriptionRef.current = editorRef.current?.onDidChangeModelContent((event) => {
-        onChange(editorRef.current?.getValue());
-      });
-    }
-  }, [onChange]);
-
-  useEffect(() => {
-    if (monacoEl && editorRef.current && value !== editorRef.current?.getValue()) {
-      editorRef.current?.getModel()?.setValue(value);
-    }
-  }, [value]);
-
   useEffect(() => {
     if (monacoEl && !editorRef.current) {
       editorRef.current = monaco.editor.create(monacoEl.current!, {
@@ -75,6 +58,22 @@ function JsonEditor(props: {
     return () => {};
   }, [value]);
 
+  // onChange
+  useEffect(() => {
+    subscriptionRef.current?.dispose();
+
+    if (onChange) {
+      subscriptionRef.current = editorRef.current?.onDidChangeModelContent((event) => {
+        onChange(editorRef.current?.getValue());
+      });
+    }
+  }, [onChange]);
+
+  useEffect(() => {
+    if (monacoEl && editorRef.current && value !== editorRef.current?.getValue()) {
+      editorRef.current?.getModel()?.setValue(value);
+    }
+  }, [value]);
   return <div style={{ height: height, width: "100%" }} ref={monacoEl}></div>;
 }
 

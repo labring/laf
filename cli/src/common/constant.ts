@@ -1,4 +1,3 @@
-
 // directory and metadata file name
 export const CONFIG_FILE_NAME = 'config.yaml'
 export const SECRET_FILE_NAME = '.secret.yaml'
@@ -10,7 +9,6 @@ export const COLLECTIONS_DIRECTORY_NAME = 'collections'
 export const COLLECTIONS_CONFIG_FILE_SUFFIX_NAME = '.meta.yaml'
 export const IGNORE_FILE_NAME = '.gitignore'
 export const POLICIES_DIRECTORY_NAME = 'policies'
-
 
 // token expire time 7 days
 export const TOKEN_EXPIRE = 3600 * 24 * 7

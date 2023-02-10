@@ -1,13 +1,13 @@
-import * as path from "path";
-import { FUNCTIONS_CONFIG_FILE_SUFFIX_NAME } from "../common/constant";
-import { exist, loadYamlFile, remove, writeYamlFile } from "../util/file";
+import * as path from 'path'
+import { FUNCTIONS_CONFIG_FILE_SUFFIX_NAME } from '../common/constant'
+import { exist, loadYamlFile, remove, writeYamlFile } from '../util/file'
 
 export interface FunctionConfig {
-  name: string;
-  description?: string;
-  tags?: string[];
-  websocket?: boolean;
-  methods: string[];
+  name: string
+  description?: string
+  tags?: string[]
+  websocket?: boolean
+  methods: string[]
 }
 
 export function readFunctionConfig(funcName: string): FunctionConfig {
