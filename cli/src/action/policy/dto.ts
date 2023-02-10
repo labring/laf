@@ -4,9 +4,9 @@ interface PolicyRule {
 }
 
 interface Rules {
-  read: boolean,
-  count: boolean,
-  update: boolean,
-  remove: boolean,
+  read: boolean
+  count: boolean
+  update: boolean
+  remove: boolean
   add: boolean
 }

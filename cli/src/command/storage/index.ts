@@ -1,38 +1,42 @@
-import { Command, program } from "commander"
-import { create, del, list, pull, push, update } from "../../action/storage"
-import { checkApplication, checkStorageToken } from "../../common/hook"
+import { Command, program } from 'commander'
+import { create, del, list, pull, push, update } from '../../action/storage'
+import { checkApplication, checkStorageToken } from '../../common/hook'
 
 export function bucketCommand(): Command {
-  const cmd = program.command('storage')
-    .hook('preAction', () => {
-      checkApplication()
-    })
+  const cmd = program.command('storage').hook('preAction', () => {
+    checkApplication()
+  })
 
-  cmd.command('list')
+  cmd
+    .command('list')
     .description('bucket list')
     .action(() => {
       list()
     })
 
-  cmd.command('create <bucketName>')
+  cmd
+    .command('create <bucketName>')
     .description('create a bucket')
     .action((bucketName, options) => {
       create(bucketName, options)
     })
 
-  cmd.command('update <bucketName>')
+  cmd
+    .command('update <bucketName>')
     .description('update bucket')
     .action((bucketName, options) => {
       update(bucketName, options)
     })
 
-  cmd.command('del <bucketName>')
+  cmd
+    .command('del <bucketName>')
     .description('delete bucket')
     .action((bucketName, options) => {
       del(bucketName, options)
     })
-  
-  cmd.command('pull <bucketName> <outPath>')
+
+  cmd
+    .command('pull <bucketName> <outPath>')
     .description('pull file from bucket')
     .option('-f, --force', 'force pull', false) //TODO
     .option('-d, --detail', 'print detail', false)
@@ -42,8 +46,9 @@ export function bucketCommand(): Command {
     .action((bucketName, outPath, options) => {
       pull(bucketName, outPath, options)
     })
-  
-    cmd.command('push <bucketName> <inPath>')
+
+  cmd
+    .command('push <bucketName> <inPath>')
     .description('Push file to bucket')
     .option('-f, --force', 'force push', false) //TODO
     .option('-d, --detail', 'print detail', false)
@@ -56,4 +61,3 @@ export function bucketCommand(): Command {
 
   return cmd
 }
-

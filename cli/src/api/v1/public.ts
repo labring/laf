@@ -1,5 +1,5 @@
-import { request, RequestParams } from "../../util/request";
-import { AppControllerGetRuntimesData, RegionControllerGetRegionsData } from "./data-contracts";
+import { request, RequestParams } from '../../util/request'
+import { AppControllerGetRuntimesData, RegionControllerGetRegionsData } from './data-contracts'
 
 /**
  * No description
@@ -14,9 +14,9 @@ export async function appControllerGetRuntimes(
 ): Promise<AppControllerGetRuntimesData> {
   return request({
     url: `/v1/runtimes`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -31,7 +31,7 @@ export async function regionControllerGetRegions(
 ): Promise<RegionControllerGetRegionsData> {
   return request({
     url: `/v1/regions`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }

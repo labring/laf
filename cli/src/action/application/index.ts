@@ -1,36 +1,46 @@
-import { applicationControllerFindAll, applicationControllerFindOne } from "../../api/v1/application"
-import * as Table from 'cli-table3';
-import { ApplicationConfig, existApplicationConfig, writeApplicationConfig } from "../../config/application"
+import { applicationControllerFindAll, applicationControllerFindOne } from '../../api/v1/application'
+import * as Table from 'cli-table3'
+import { ApplicationConfig, existApplicationConfig, writeApplicationConfig } from '../../config/application'
 import * as path from 'node:path'
 import * as fs from 'node:fs'
 
-import { FUNCTIONS_DIRECTORY_NAME, GITIGNORE_FILE, GLOBAL_FILE, PACKAGE_FILE, RESPONSE_FILE, TEMPLATE_DIR, TSCONFIG_FILE, TYPE_DIR } from "../../common/constant"
-import { ensureDirectory } from "../../util/file"
+import {
+  FUNCTIONS_DIRECTORY_NAME,
+  GITIGNORE_FILE,
+  GLOBAL_FILE,
+  PACKAGE_FILE,
+  RESPONSE_FILE,
+  TEMPLATE_DIR,
+  TSCONFIG_FILE,
+  TYPE_DIR,
+} from '../../common/constant'
+import { ensureDirectory, exist } from '../../util/file'
 
-import { refreshSecretConfig } from "../../config/secret"
-import { getEmoji } from "../../util/print";
+import { refreshSecretConfig } from '../../config/secret'
+import { getEmoji } from '../../util/print'
 
-
-
-
-export async function list() { 
+export async function list() {
   const table = new Table({
     head: ['appid', 'name', 'region', 'bundle', 'runtime', 'phase'],
   })
-  const data = await applicationControllerFindAll();
+  const data = await applicationControllerFindAll()
   for (let item of data) {
     table.push([item.appid, item.name, item.regionName, item.bundleName, item.runtimeName, item.phase])
   }
-  console.log(table.toString());
+  console.log(table.toString())
 }
 
 export async function init(appid: string, options: { sync: boolean }) {
   if (existApplicationConfig()) {
-    console.log(`${getEmoji('❌')} The laf.yaml file already exists in the current directory. Please change the directory or delete the laf.yaml file`)
+    console.log(
+      `${getEmoji(
+        '❌',
+      )} The laf.yaml file already exists in the current directory. Please change the directory or delete the laf.yaml file`,
+    )
     return
   }
 
-  const data = await applicationControllerFindOne(appid);
+  const data = await applicationControllerFindOne(appid)
 
   const config: ApplicationConfig = {
     name: data.name,
@@ -96,7 +106,6 @@ function initFunction() {
   if (!exist(outGitIgnoreFile)) {
     fs.writeFileSync(outGitIgnoreFile, fs.readFileSync(fromGitIgnoreFile, 'utf-8'))
   }
-
 }
 
 function initPolicy() {
