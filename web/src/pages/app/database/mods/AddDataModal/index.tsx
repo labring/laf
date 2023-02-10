@@ -47,13 +47,13 @@ const AddDataModal = (props: {
     onSuccess: (data) => {
       const { insertedCount, id } = data;
       let lastId = undefined;
-      if (insertedCount > 1) {
+      if (typeof id !== "string") {
         const keys = Object.keys(id);
         lastId = id[keys[keys.length - 1]];
       } else {
         lastId = id;
       }
-      onSuccessSubmit && onSuccessSubmit(lastId, insertedCount);
+      onSuccessSubmit && onSuccessSubmit(lastId, insertedCount > 1 ? insertedCount : 1);
     },
   });
   const [error, setError] = useState<string | undefined>("");

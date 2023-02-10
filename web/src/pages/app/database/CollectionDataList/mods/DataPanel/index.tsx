@@ -31,10 +31,8 @@ import useDBMStore from "../../../store";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function DataPanel() {
-  const [currentData, setCurrentData] = useState<any>(undefined);
+  const [currentData, setCurrentData] = useState<any>({ data: undefined, record: "{}" });
   const globalStore = useGlobalStore();
-
-  const [record, setRecord] = useState("{}");
   const [search, setSearch] = useState("");
   const [isAdd, setIsAdd] = useState({ status: false, count: 0 });
   const store = useDBMStore((state) => state);
@@ -47,57 +45,71 @@ export default function DataPanel() {
 
   const [queryData, setQueryData] = useState<QueryData>();
 
-  // 当前集合发生变化就把currentData置空
   useEffect(() => {
     if (store.currentDB !== undefined) {
-      setCurrentData(undefined);
-      setRecord("{}");
+      setQueryData((pre: any) => {
+        return {
+          ...pre,
+          page: 1,
+        };
+      });
+      setCurrentData({
+        data: undefined,
+        record: "{}",
+      });
     }
-  }, [store.currentDB, setRecord, setCurrentData]);
+  }, [store.currentDB, setCurrentData]);
 
   const entryDataQuery = useEntryDataQuery({ ...queryData }, (data: any) => {});
-  const updateDataMutation = useUpdateDataMutation({
-    onSuccess: (data) => {},
-  });
+  const updateDataMutation = useUpdateDataMutation();
   const deleteDataMutation = useDeleteDataMutation({
     onSuccess() {
-      setCurrentData(undefined);
-      setRecord("{}");
+      setCurrentData({
+        data: undefined,
+        record: "{}",
+      });
     },
   });
-
-  useEffect(() => {
-    if (entryDataQuery.isFetched) {
-      const data = entryDataQuery?.data?.list || [];
-      if (data?.length > 0 && currentData === undefined) {
-        setCurrentData(data[0]);
-        setRecord(JSON.stringify(data[0]));
-      } else if (data?.length === 0) {
-        setCurrentData(undefined);
-        setRecord("{}");
-      } else {
-        const newData = data.filter((item) => item._id === currentData._id)[0];
-        setCurrentData(newData);
-        setRecord(JSON.stringify(newData));
-      }
-    }
-  }, [entryDataQuery?.data?.list, setCurrentData, setRecord]);
-  // 这里的依赖缺currentData和entryDataQuery.isFetched，但是如果加上会一直循环
 
   useEffect(() => {
     if (entryDataQuery.isFetched && isAdd.status) {
       const { total, page, limit } = getPageInfo(entryDataQuery.data);
       const newTotal = (total || 0) + isAdd.count;
       const maxPage = limit ? Math.ceil(newTotal / limit) : -1;
+      // Calculate and jump to the maxPage after adding
       if (maxPage > 0 && page !== maxPage) {
         setQueryData((pre: any) => {
           const newQuery = { ...pre, page: maxPage };
           return newQuery;
         });
-        setIsAdd({ status: false, count: 0 });
       }
+      setIsAdd({ status: false, count: 0 });
     }
   }, [entryDataQuery, isAdd]);
+
+  useEffect(() => {
+    if (entryDataQuery.isFetched) {
+      const data = entryDataQuery?.data?.list || [];
+      if (data?.length > 0 && currentData.data === undefined) {
+        setCurrentData({
+          data: data[0],
+          record: JSON.stringify(data[0]),
+        });
+      } else if (data?.length === 0) {
+        setCurrentData({
+          data: undefined,
+          record: "{}",
+        });
+      } else {
+        const newData = data.filter((item: any) => item._id === currentData.data._id)[0];
+        setCurrentData({
+          data: newData,
+          record: JSON.stringify(newData),
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [entryDataQuery?.data?.list]);
 
   const refresh = useMemo(
     () =>
@@ -116,7 +128,7 @@ export default function DataPanel() {
   const handleData = async () => {
     let params = {};
     try {
-      params = JSON.parse(record);
+      params = JSON.parse(currentData.record);
       if (Object.keys(params).length === 0) {
         globalStore.showError(t("DataEntry.CreateError"));
         return;
@@ -133,14 +145,17 @@ export default function DataPanel() {
       <Panel.Header className="w-full h-[60px] flex-shrink-0">
         <div className="flex items-center">
           <AddDataModal
-            schema={currentData ? currentData : {}}
+            schema={currentData.data ? currentData.data : {}}
             onSuccessSubmit={(id: string, count: number) => {
               setIsAdd({
                 status: true,
                 count,
               });
-              setCurrentData({
-                _id: id,
+              setCurrentData((pre: any) => {
+                return {
+                  ...pre,
+                  data: { _id: id },
+                };
               });
             }}
           >
@@ -195,12 +210,14 @@ export default function DataPanel() {
         <Pagination
           values={getPageInfo(entryDataQuery.data as any)}
           onChange={(values) => {
+            setCurrentData({
+              data: undefined,
+              record: "{}",
+            });
             setQueryData((pre: any) => {
               const newQuery = { ...pre, ...values };
               return newQuery;
             });
-            setCurrentData(undefined);
-            setRecord("{}");
           }}
         />
       </Panel.Header>
@@ -214,10 +231,12 @@ export default function DataPanel() {
             <RightPanelList
               ListQuery={entryDataQuery?.data?.list}
               setKey="_id"
-              isActive={(item: any) => currentData?._id === item._id}
+              isActive={(item: any) => currentData.data?._id === item._id}
               onClick={(data: any) => {
-                setCurrentData(data);
-                setRecord(JSON.stringify(data));
+                setCurrentData({
+                  data: data,
+                  record: JSON.stringify(data),
+                });
               }}
               deleteRuleMutation={deleteDataMutation}
               component={(item: any) => {
@@ -250,16 +269,21 @@ export default function DataPanel() {
               }}
             />
             <RightPanelEditBox
-              show={currentData?._id}
+              show={currentData.data?._id}
               title={t("Edit")}
               isLoading={updateDataMutation.isLoading}
               onSave={handleData}
             >
               <div className=" flex-1 mb-4 bg-lafWhite-400 rounded">
                 <JsonEditor
-                  value={JSON.stringify(currentData || {}, null, 2)}
+                  value={JSON.stringify(currentData.data || {}, null, 2)}
                   onChange={(values) => {
-                    setRecord(values!);
+                    setCurrentData((pre: any) => {
+                      return {
+                        ...pre,
+                        record: values!,
+                      };
+                    });
                   }}
                 />
               </div>

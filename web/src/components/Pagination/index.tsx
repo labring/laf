@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { Button, HStack, Select, Text } from "@chakra-ui/react";
 import { t } from "i18next";
@@ -20,19 +19,17 @@ export default function Pagination(props: {
   const { page, total, limit } = values;
   const maxPage = total && limit ? Math.ceil(total / limit) : -1;
 
-  useEffect(() => {
-    if (maxPage > 0 && page && page > maxPage) {
-      onChange({
-        ...values,
-        page: maxPage,
-      });
-    } else if (page && page < 1) {
-      onChange({
-        ...values,
-        page: 1,
-      });
-    }
-  }, [maxPage, onChange, page, values]);
+  if (maxPage > 0 && page && page > maxPage) {
+    onChange({
+      ...values,
+      page: maxPage,
+    });
+  } else if (page && page < 1) {
+    onChange({
+      ...values,
+      page: 1,
+    });
+  }
 
   return (
     <HStack alignItems="center" spacing={"1"} display="flex" whiteSpace={"nowrap"}>

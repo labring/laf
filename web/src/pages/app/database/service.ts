@@ -59,11 +59,7 @@ export const useEntryDataQuery = (params: any, onSuccess: (data: any) => void) =
 
       // 获取数据总数
       const { total } = await db.collection(currentDB?.name).where(query).count();
-      console.log("查询");
-      Promise.resolve().then(() => {
-        onSuccess && onSuccess(res);
-      });
-
+      onSuccess && onSuccess(res);
       return { list: res.data, total, page, limit };
     },
     {
@@ -161,7 +157,6 @@ export const useUpdateDataMutation = (config?: { onSuccess: (data: any) => void 
         if (data.ok) {
           globalStore.showSuccess(t("UpdateSuccess"));
           queryClient.invalidateQueries([queryKeys.useEntryDataQuery(currentDB?.name || "")]);
-          console.log("更新成功");
           config && config.onSuccess(data);
         } else {
           globalStore.showError(data.error);
@@ -296,9 +291,7 @@ export const useCreateRulesMutation = (onSuccess?: () => void) => {
     },
     {
       onSuccess(data) {
-        if (data.error) {
-          // globalStore.showError(data.error);
-        } else {
+        if (!data.error) {
           globalStore.showSuccess(t("AddSuccess"));
           onSuccess && onSuccess();
         }

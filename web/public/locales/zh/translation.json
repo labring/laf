@@ -76,7 +76,7 @@
     "Debug": "运行",
     "DebugResult": "运行结果",
     "DeleteConfirm": "确认要删除函数吗？",
-    "Dependence": "依赖",
+    "Dependence": "NPM依赖",
     "DependenceAdd": "添加依赖",
     "DependenceEdit": "编辑依赖",
     "DependenceName": "依赖包名",
@@ -172,7 +172,9 @@
     "EditBucket": "编辑Bucket",
     "DeleteBucket": "删除Bucket",
     "BucketNamePlaceholder": "bucket-name",
-    "EmptyStorageTip": "您还没有创建Bucket"
+    "EmptyStorageTip": "您还没有创建Bucket",
+    "UploadFile": "上传文件",
+    "UploadFolder": "上传文件夹"
   },
   "TriggerPanel": {
     "AddTrigger": "新建触发器",

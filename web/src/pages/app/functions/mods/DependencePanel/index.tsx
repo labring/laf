@@ -39,7 +39,7 @@ export default function DependenceList() {
   return (
     <Panel>
       <Panel.Header
-        title={"NPM " + t("FunctionPanel.Dependence")}
+        title={t("FunctionPanel.Dependence")}
         actions={[<AddDependenceModal key="AddDependenceModal" />]}
       />
       <Tabs variant="soft-rounded" colorScheme={"gray"} size={"sm"}>

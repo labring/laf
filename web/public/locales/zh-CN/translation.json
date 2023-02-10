@@ -73,7 +73,7 @@
     "Description": "函数描述",
     "Code": "函数模板",
     "isSupport": "是否支持",
-    "Dependence": "依赖",
+    "Dependence": "NPM依赖",
     "CustomDependence": "自定义依赖",
     "CustomDependenceTip": "暂无自定义依赖",
     "SystemDependence": "内置依赖",
@@ -156,7 +156,10 @@
     "Success": "上传成功",
     "EmptyText": "暂无Bucket数据,",
     "BucketNameRule": "只能包含小写英文、数字，开头和结尾不能是数字或 -",
-    "BucketNamePlaceholder": "bucket-name"
+    "BucketNamePlaceholder": "bucket-name",
+    "UploadFile": "上传文件",
+    "UploadFolder": "上传文件夹",
+    "Bucket": "Bucket"
   },
   "Search": "搜索",
   "Close": "关闭",

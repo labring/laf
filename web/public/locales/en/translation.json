@@ -76,7 +76,7 @@
     "Debug": "Run",
     "DebugResult": "Run Result",
     "DeleteConfirm": "Are you sure you want to delete the function?",
-    "Dependence": "Dependence",
+    "Dependence": "NPM Dependence",
     "DependenceAdd": "Add Dependencies",
     "DependenceEdit": "Edit Dependencies",
     "DependenceName": "Dependency Package Name",
@@ -172,7 +172,9 @@
     "BucketNameRule": "Can only contain lowercase English, numbers, and the beginning and end cannot be numbers or -",
     "BucketNamePlaceholder": "bucket-name",
     "StorageList": "Cloud Storage List",
-    "EmptyStorageTip": "You have not created a Bucket"
+    "EmptyStorageTip": "You have not created a Bucket",
+    "UploadFile": "Upload File",
+    "UploadFolder": "Upload Folder"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",

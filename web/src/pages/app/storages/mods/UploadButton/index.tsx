@@ -73,9 +73,7 @@ function UploadButton({ onUploadSuccess }: { onUploadSuccess: () => void }) {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>
-            {t("StoragePanel.Upload") +
-              " " +
-              (uploadType === "file" ? t("StoragePanel.File") : t("StoragePanel.Folder"))}
+            {uploadType === "file" ? t("StoragePanel.UploadFile") : t("StoragePanel.UploadFolder")}
           </ModalHeader>
           <ModalCloseButton />
           <div className="p-6">
