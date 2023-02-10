@@ -163,7 +163,7 @@ const examplesSideBarConfig = [
   }, {
     text: '前端应用',
     items: [
-      { text: 'ToDo Lost', link: '/examples/todo-list', },
+      { text: 'Todo List', link: '/examples/todo-list', },
     ]
   }
 ]
