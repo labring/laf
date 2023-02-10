@@ -31,7 +31,7 @@ export class Cloud implements CloudSdkInterface {
     return this.cloud.database()
   }
 
-  invoke: InvokeFunctionType = (name: string, param: any) => {
+  invoke: InvokeFunctionType = (name: string, param?: any) => {
     return this.cloud.invoke(name, param)
   }
 
