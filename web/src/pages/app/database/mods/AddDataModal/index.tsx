@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -22,13 +22,40 @@ import JsonEditor from "@/components/Editor/JsonEditor";
 
 import { useAddDataMutation } from "../../service";
 
-const AddDataModal = (props: { children: React.ReactElement; onSuccessSubmit: () => void }) => {
+const AddDataModal = (props: {
+  children: React.ReactElement;
+  onSuccessSubmit?: (id: string, count: number) => void;
+  schema: Object;
+}) => {
   type FormData = {
     value: string;
   };
   const { handleSubmit, control, reset } = useForm<FormData>({});
+  const { children, onSuccessSubmit, schema } = props;
+  const [template, setTemplate] = useState({});
 
-  const addDataMutation = useAddDataMutation();
+  useEffect(() => {
+    const keys = Object.keys(schema).filter((key) => key !== "_id");
+    const newTemplate: { [key: string]: any } = {};
+    for (let key of keys) {
+      newTemplate[key] = "";
+    }
+    setTemplate(newTemplate);
+  }, [schema, setTemplate]);
+
+  const addDataMutation = useAddDataMutation({
+    onSuccess: (data) => {
+      const { insertedCount, id } = data;
+      let lastId = undefined;
+      if (typeof id !== "string") {
+        const keys = Object.keys(id);
+        lastId = id[keys[keys.length - 1]];
+      } else {
+        lastId = id;
+      }
+      onSuccessSubmit && onSuccessSubmit(lastId, insertedCount > 1 ? insertedCount : 1);
+    },
+  });
   const [error, setError] = useState<string | undefined>("");
   const onSubmit = async (data: any) => {
     let params = {};
@@ -40,7 +67,6 @@ const AddDataModal = (props: { children: React.ReactElement; onSuccessSubmit: ()
       }
       setError("");
       await addDataMutation.mutateAsync(params);
-      props.onSuccessSubmit();
       onClose();
     } catch (errors) {
       setError(errors?.toString());
@@ -52,29 +78,31 @@ const AddDataModal = (props: { children: React.ReactElement; onSuccessSubmit: ()
 
   return (
     <>
-      {React.cloneElement(props.children, {
+      {React.cloneElement(children, {
         onClick: () => {
           onOpen();
           setError("");
-          reset({ value: JSON.stringify({}, null, 2) });
+          reset({ value: JSON.stringify(template, null, 2) });
         },
       })}
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent className="h-[80vh]">
           <ModalHeader> {t("CollectionPanel.AddData")}</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            <p>{}</p>
-            <VStack spacing={6} align="flex-start">
-              <FormControl isInvalid={!!error}>
-                <FormErrorMessage className="ml-2 mb-4">{error}</FormErrorMessage>
+            <VStack spacing={6} align="flex-start" className="h-full">
+              <FormControl isInvalid={!!error} className="h-full ">
+                <FormErrorMessage className="ml-2 mb-1 ">{error}</FormErrorMessage>
                 <FormLabel htmlFor="value"></FormLabel>
                 <Controller
                   name="value"
                   control={control}
                   render={({ field: { onChange, value } }) => (
-                    <div className="h-[300px] bg-lafWhite-400 rounded pr-2">
+                    <div
+                      className="bg-lafWhite-400 rounded pr-2"
+                      style={{ height: "calc(100% - 1rem)" }}
+                    >
                       <JsonEditor value={value} onChange={onChange} />
                     </div>
                   )}

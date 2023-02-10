@@ -23,13 +23,16 @@
     "PolicyNameTip": "请输入策略标识",
     "RulesContent": "规则内容",
     "RulesNum": "规则数",
-    "Search": "请输入ID进行查询",
+    "Search": "请输入ID进行搜索",
+    "Query": "请输入ID按回车进行查询",
     "SelectCollection": "选择集合",
     "SelectFunction": "请选择云函数",
-    "CollectionNameRule": "集合名称只能包含英文, _ 或者 -",
+    "CollectionNameRule": "集合名称只能由字母开头,包含字母, _ 或者 - 的3至32个字符组成",
     "EmptyCollectionTip": "您还没有创建集合",
     "EmptyDataText": "暂无数据信息,",
-    "EmptyPolicyTip": "您还没有创建策略"
+    "EmptyPolicyTip": "您还没有创建策略",
+    "EmptyRuleTip": "此策略还没有规则,",
+    "CreateTagTip": "按「回车键」或「空格键」分隔标签，每个标签最多由16个字符组成"
   },
   "Add": "添加",
   "AddData": "新增数据",
@@ -73,7 +76,7 @@
     "Debug": "运行",
     "DebugResult": "运行结果",
     "DeleteConfirm": "确认要删除函数吗？",
-    "Dependence": "依赖",
+    "Dependence": "NPM依赖",
     "DependenceAdd": "添加依赖",
     "DependenceEdit": "编辑依赖",
     "DependenceName": "依赖包名",
@@ -169,7 +172,9 @@
     "EditBucket": "编辑Bucket",
     "DeleteBucket": "删除Bucket",
     "BucketNamePlaceholder": "bucket-name",
-    "EmptyStorageTip": "您还没有创建Bucket"
+    "EmptyStorageTip": "您还没有创建Bucket",
+    "UploadFile": "上传文件",
+    "UploadFolder": "上传文件夹"
   },
   "TriggerPanel": {
     "AddTrigger": "新建触发器",

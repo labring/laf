@@ -1,5 +1,7 @@
+import { BiRefresh } from "react-icons/bi";
 import { DeleteIcon, ViewIcon } from "@chakra-ui/icons";
 import {
+  Button,
   Center,
   HStack,
   Spinner,
@@ -74,6 +76,17 @@ export default function FileList() {
           <HStack spacing={2}>
             <UploadButton onUploadSuccess={() => query.refetch()} />
             <CreateFolderModal onCreateSuccess={() => query.refetch()} />
+            <Button
+              size="xs"
+              variant="textGhost"
+              leftIcon={<BiRefresh fontSize={22} className="text-grayModern-500" />}
+              disabled={currentStorage === undefined}
+              onClick={() => {
+                query.refetch();
+              }}
+            >
+              {t("RefreshData")}
+            </Button>
           </HStack>
           {/* <HStack spacing={4}>
             <CreateWebsiteModal onCreateSuccess={() => query.refetch()} />

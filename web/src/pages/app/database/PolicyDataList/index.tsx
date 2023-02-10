@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, CopyIcon } from "@chakra-ui/icons";
 import { Button, Center, Spinner, Text } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import CopyText from "@/components/CopyText";
 import JsonEditor from "@/components/Editor/JsonEditor";
 import EmptyBox from "@/components/EmptyBox";
+import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
 
 import AddRulesModal from "../mods/AddRulesModal";
@@ -19,7 +21,7 @@ import useGlobalStore from "@/pages/globalStore";
 
 export default function PolicyDataList() {
   const [currentData, setCurrentData] = useState<any>(undefined);
-  const [record, setRecord] = useState(JSON.stringify(policyTemplate));
+  const [record, setRecord] = useState(JSON.stringify(policyTemplate, null, 2));
   const globalStore = useGlobalStore();
   const store = useDBMStore((state) => state);
   const rulesListQuery = useRulesListQuery((data: any) => {
@@ -27,15 +29,18 @@ export default function PolicyDataList() {
       setCurrentData(undefined);
     } else if (currentData === undefined) {
       setCurrentData(data.data[0]);
+      setRecord(JSON.stringify(data.data[0].value, null, 2));
     }
   });
 
   useEffect(() => {
     setCurrentData(undefined);
+    setRecord(JSON.stringify(policyTemplate, null, 2));
   }, [store.currentPolicy, setCurrentData]);
 
   const deleteRuleMutation = useDeleteRuleMutation(() => {
     setCurrentData(undefined);
+    setRecord(JSON.stringify(policyTemplate, null, 2));
     rulesListQuery.refetch();
   });
   const updateRulesMutation = useUpdateRulesMutation((data) => {
@@ -61,6 +66,7 @@ export default function PolicyDataList() {
         <AddRulesModal
           onSuccessSubmit={(data) => {
             setCurrentData(data);
+            setRecord(JSON.stringify(data?.value, null, 2));
             rulesListQuery.refetch();
           }}
         >
@@ -91,6 +97,7 @@ export default function PolicyDataList() {
               isActive={(item: any) => currentData?.id === item.id}
               onClick={(data: any) => {
                 setCurrentData(data);
+                setRecord(JSON.stringify(data.value, null, 2));
               }}
               deleteRuleMutation={deleteRuleMutation}
               deleteData={(item) => ({ collection: item.collectionName })}
@@ -108,6 +115,25 @@ export default function PolicyDataList() {
                   </>
                 );
               }}
+              toolComponent={(item: any) => {
+                return (
+                  <IconWrap
+                    showBg
+                    tooltip={t("Copy").toString()}
+                    size={32}
+                    className="ml-2 hover:bg-rose-100 group/icon"
+                  >
+                    <CopyText
+                      hideToolTip
+                      text={JSON.stringify(item.value, null, 2)}
+                      tip={String(t("Copied"))}
+                      className="group-hover/icon:text-error-500"
+                    >
+                      <CopyIcon />
+                    </CopyText>
+                  </IconWrap>
+                );
+              }}
             />
             <RightPanelEditBox
               show={currentData?.id}
@@ -123,7 +149,7 @@ export default function PolicyDataList() {
               </Text>
               <div className=" mb-4 pr-2 flex-1 bg-lafWhite-400 rounded">
                 <JsonEditor
-                  value={JSON.stringify(currentData?.value || policyTemplate, null, 2)}
+                  value={record}
                   onChange={(values) => {
                     setRecord(values!);
                   }}
@@ -134,10 +160,11 @@ export default function PolicyDataList() {
         ) : (
           <EmptyBox>
             <div>
-              <span>此策略还没有规则 ,</span>
+              <span>{t("CollectionPanel.EmptyRuleTip")}</span>
               <AddRulesModal
                 onSuccessSubmit={(data) => {
                   setCurrentData(data);
+                  setRecord(JSON.stringify(data.value, null, 2));
                   rulesListQuery.refetch();
                 }}
               >

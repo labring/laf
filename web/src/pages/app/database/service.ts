@@ -130,7 +130,7 @@ export const useAddDataMutation = (config?: { onSuccess: (data: any) => void }) 
         if (data.ok) {
           globalStore.showSuccess(t("AddSuccess"));
           queryClient.invalidateQueries([queryKeys.useEntryDataQuery(currentDB?.name || "")]);
-          //config && config.onSuccess(data);
+          config && config.onSuccess(data);
         } else {
           globalStore.showError(data.error);
         }
@@ -154,11 +154,10 @@ export const useUpdateDataMutation = (config?: { onSuccess: (data: any) => void 
     },
     {
       onSuccess(data) {
-        console.log(data);
         if (data.ok) {
           globalStore.showSuccess(t("UpdateSuccess"));
           queryClient.invalidateQueries([queryKeys.useEntryDataQuery(currentDB?.name || "")]);
-          //config && config.onSuccess(data);
+          config && config.onSuccess(data);
         } else {
           globalStore.showError(data.error);
         }
@@ -292,9 +291,7 @@ export const useCreateRulesMutation = (onSuccess?: () => void) => {
     },
     {
       onSuccess(data) {
-        if (data.error) {
-          globalStore.showError(data.error);
-        } else {
+        if (!data.error) {
           globalStore.showSuccess(t("AddSuccess"));
           onSuccess && onSuccess();
         }

@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { BiRefresh } from "react-icons/bi";
 import { AddIcon, EditIcon, Search2Icon } from "@chakra-ui/icons";
-import { Input, InputGroup, InputLeftElement, Tag } from "@chakra-ui/react";
+import { Center, Input, InputGroup, InputLeftElement, Spinner, Tag } from "@chakra-ui/react";
 import { t } from "i18next";
 
 import EmptyBox from "@/components/EmptyBox";
@@ -38,6 +39,15 @@ export default function StorageListPanel() {
       <Panel.Header
         title={t("StoragePanel.StorageList")}
         actions={[
+          <IconWrap
+            key="refresh_storage"
+            tooltip={t("Refresh").toString()}
+            onClick={() => {
+              bucketListQuery.refetch();
+            }}
+          >
+            <BiRefresh size={16} />
+          </IconWrap>,
           <CreateBucketModal key="create_modal">
             <IconWrap size={20} tooltip={t("Create") + " Bucket"}>
               <AddIcon fontSize={10} />
@@ -60,7 +70,12 @@ export default function StorageListPanel() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </InputGroup>
-        <div style={{ flexGrow: 1, overflow: "auto" }}>
+        <div className="overflow-auto flex-grow relative">
+          {bucketListQuery.isFetching ? (
+            <Center className="opacity-60 bg-white-200 absolute left-0 right-0 top-0 bottom-0 z-10">
+              <Spinner />
+            </Center>
+          ) : null}
           {bucketListQuery?.data?.data?.length ? (
             <SectionList>
               {bucketListQuery?.data?.data

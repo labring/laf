@@ -51,7 +51,7 @@ function List(props: { appListQuery: any }) {
     <>
       <div className="flex items-center justify-between mb-5">
         <h2 className="font-semibold text-2xl flex items-center">
-          <FileTypeIcon type="app" className="mr-1 pt-1" />
+          <FileTypeIcon type="app" className="mr-1 " />
           {t("HomePanel.MyApp")}
         </h2>
         <div className="flex">
