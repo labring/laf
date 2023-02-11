@@ -2,15 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { BiRefresh } from "react-icons/bi";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { AddIcon, CopyIcon, Search2Icon } from "@chakra-ui/icons";
-import {
-  Button,
-  Center,
-  HStack,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Spinner,
-} from "@chakra-ui/react";
+import { Button, HStack, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { t } from "i18next";
 import { throttle } from "lodash";
 
@@ -121,8 +113,9 @@ export default function DataPanel() {
           };
         });
         entryDataQuery.refetch();
+        globalStore.showSuccess(t("RefreshDataSuccess"));
       }, 1000),
-    [setQueryData, entryDataQuery],
+    [setQueryData, entryDataQuery, globalStore],
   );
 
   const handleData = async () => {
@@ -174,6 +167,7 @@ export default function DataPanel() {
             colorScheme="primary"
             className="mr-2"
             style={{ width: "114px" }}
+            isLoading={entryDataQuery.isFetching}
             leftIcon={<BiRefresh fontSize={20} />}
             onClick={() => refresh(search)}
           >
@@ -222,74 +216,7 @@ export default function DataPanel() {
         />
       </Panel.Header>
       <div className="w-full flex flex-grow overflow-hidden">
-        {entryDataQuery.isFetching ? (
-          <Center className="h-full w-full opacity-60 bg-white-200">
-            <Spinner size="lg" />
-          </Center>
-        ) : entryDataQuery?.data?.list?.length ? (
-          <>
-            <RightPanelList
-              ListQuery={entryDataQuery?.data?.list}
-              setKey="_id"
-              isActive={(item: any) => currentData.data?._id === item._id}
-              onClick={(data: any) => {
-                setCurrentData({
-                  data: data,
-                  record: JSON.stringify(data),
-                });
-              }}
-              deleteRuleMutation={deleteDataMutation}
-              component={(item: any) => {
-                return (
-                  <SyntaxHighlighter language="json" customStyle={{ background: "#fdfdfe" }}>
-                    {JSON.stringify(item, null, 2)}
-                  </SyntaxHighlighter>
-                );
-              }}
-              toolComponent={(item: any) => {
-                const newData = { ...item };
-                delete newData._id;
-                return (
-                  <IconWrap
-                    showBg
-                    tooltip={t("Copy").toString()}
-                    size={32}
-                    className="ml-2 hover:bg-rose-100 group/icon"
-                  >
-                    <CopyText
-                      hideToolTip
-                      text={JSON.stringify(newData, null, 2)}
-                      tip={String(t("Copied"))}
-                      className="group-hover/icon:text-error-500"
-                    >
-                      <CopyIcon />
-                    </CopyText>
-                  </IconWrap>
-                );
-              }}
-            />
-            <RightPanelEditBox
-              show={currentData.data?._id}
-              title={t("Edit")}
-              isLoading={updateDataMutation.isLoading}
-              onSave={handleData}
-            >
-              <div className=" flex-1 mb-4 bg-lafWhite-400 rounded">
-                <JsonEditor
-                  value={JSON.stringify(currentData.data || {}, null, 2)}
-                  onChange={(values) => {
-                    setCurrentData((pre: any) => {
-                      return {
-                        ...pre,
-                        record: values!,
-                      };
-                    });
-                  }}
-                />
-              </div>
-            </RightPanelEditBox>
-          </>
-        ) : (
+        {entryDataQuery.status !== "loading" && entryDataQuery?.data?.list?.length! === 0 && (
           <EmptyBox>
             <div>
               <span>{t("CollectionPanel.EmptyDataText")}</span>
@@ -301,6 +228,69 @@ export default function DataPanel() {
             </div>
           </EmptyBox>
         )}
+
+        <>
+          <RightPanelList
+            ListQuery={entryDataQuery?.data?.list}
+            setKey="_id"
+            isActive={(item: any) => currentData.data?._id === item._id}
+            onClick={(data: any) => {
+              setCurrentData({
+                data: data,
+                record: JSON.stringify(data),
+              });
+            }}
+            deleteRuleMutation={deleteDataMutation}
+            component={(item: any) => {
+              return (
+                <SyntaxHighlighter language="json" customStyle={{ background: "#fdfdfe" }}>
+                  {JSON.stringify(item, null, 2)}
+                </SyntaxHighlighter>
+              );
+            }}
+            toolComponent={(item: any) => {
+              const newData = { ...item };
+              delete newData._id;
+              return (
+                <IconWrap
+                  showBg
+                  tooltip={t("Copy").toString()}
+                  size={32}
+                  className="ml-2 hover:bg-rose-100 group/icon"
+                >
+                  <CopyText
+                    hideToolTip
+                    text={JSON.stringify(newData, null, 2)}
+                    tip={String(t("Copied"))}
+                    className="group-hover/icon:text-error-500"
+                  >
+                    <CopyIcon />
+                  </CopyText>
+                </IconWrap>
+              );
+            }}
+          />
+          <RightPanelEditBox
+            show={currentData.data?._id}
+            title={t("Edit")}
+            isLoading={updateDataMutation.isLoading}
+            onSave={handleData}
+          >
+            <div className=" flex-1 mb-4 bg-lafWhite-400 rounded">
+              <JsonEditor
+                value={JSON.stringify(currentData.data || {}, null, 2)}
+                onChange={(values) => {
+                  setCurrentData((pre: any) => {
+                    return {
+                      ...pre,
+                      record: values!,
+                    };
+                  });
+                }}
+              />
+            </div>
+          </RightPanelEditBox>
+        </>
       </div>
     </>
   );

@@ -20,7 +20,7 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
   const addEnvironmentMutation = useAddEnvironmentMutation();
   return (
     <>
-      <div className="flex-grow h-320 flex flex-col">
+      <div className="flex-grow  flex flex-col">
         <EditableTable
           column={[
             {
