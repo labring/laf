@@ -6,6 +6,7 @@ import FunctionEditor from "@/components/Editor/FunctionEditor";
 import EmptyBox from "@/components/EmptyBox";
 import Panel from "@/components/Panel";
 
+import { useFunctionListQuery } from "../../service";
 import useFunctionStore from "../../store";
 import DeployButton from "../DeployButton";
 import CreateModal from "../FunctionPanel/CreateModal";
@@ -19,6 +20,8 @@ function EditorPanel() {
   const { currentFunction, updateFunctionCode, getFunctionUrl } = store;
 
   const functionCache = useFunctionCache();
+
+  const functionListQuery = useFunctionListQuery();
 
   return (
     <Panel className="flex-1 flex-grow">
@@ -49,17 +52,7 @@ function EditorPanel() {
         </Panel.Header>
       ) : null}
 
-      {currentFunction?.name ? (
-        <FunctionEditor
-          className="flex-grow"
-          path={currentFunction?.id || ""}
-          value={functionCache.getCache(currentFunction!.id, currentFunction!.source?.code)}
-          onChange={(value) => {
-            updateFunctionCode(currentFunction, value || "");
-            functionCache.setCache(currentFunction!.id, value || "");
-          }}
-        />
-      ) : (
+      {!functionListQuery.isFetching && functionListQuery.data?.data?.length === 0 && (
         <EmptyBox>
           <div>
             {t("FunctionPanel.EmptyText")}
@@ -70,6 +63,18 @@ function EditorPanel() {
             </CreateModal>
           </div>
         </EmptyBox>
+      )}
+
+      {currentFunction?.name && (
+        <FunctionEditor
+          className="flex-grow"
+          path={currentFunction?.id || ""}
+          value={functionCache.getCache(currentFunction!.id, currentFunction!.source?.code)}
+          onChange={(value) => {
+            updateFunctionCode(currentFunction, value || "");
+            functionCache.setCache(currentFunction!.id, value || "");
+          }}
+        />
       )}
     </Panel>
   );

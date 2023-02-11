@@ -57,23 +57,6 @@ function FunctionEditor(props: {
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
   const monacoEl = useRef(null);
 
-  // onChange
-  useEffect(() => {
-    subscriptionRef.current?.dispose();
-    if (onChange) {
-      subscriptionRef.current = editorRef.current?.onDidChangeModelContent((event) => {
-        onChange(editorRef.current?.getValue());
-        parseImports(editorRef.current?.getValue() || "");
-      });
-    }
-  }, [onChange]);
-
-  useEffect(() => {
-    if (monacoEl && editorRef.current) {
-      updateModel(path, value, editorRef);
-    }
-  }, [path, value]);
-
   useEffect(() => {
     if (monacoEl && !editorRef.current) {
       editorRef.current = monaco.editor.create(monacoEl.current!, {
@@ -101,6 +84,23 @@ function FunctionEditor(props: {
 
     return () => {};
   }, [path, value]);
+
+  useEffect(() => {
+    if (monacoEl && editorRef.current) {
+      updateModel(path, value, editorRef);
+    }
+  }, [path, value]);
+
+  // onChange
+  useEffect(() => {
+    subscriptionRef.current?.dispose();
+    if (onChange) {
+      subscriptionRef.current = editorRef.current?.onDidChangeModelContent((event) => {
+        onChange(editorRef.current?.getValue());
+        parseImports(editorRef.current?.getValue() || "");
+      });
+    }
+  }, [onChange]);
 
   return <div style={{ height: height }} className={className} ref={monacoEl}></div>;
 }

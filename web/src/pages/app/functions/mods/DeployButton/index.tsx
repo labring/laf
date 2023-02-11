@@ -95,6 +95,7 @@ export default function DeployButton() {
               </Button>
               <Button
                 variant="primary"
+                isLoading={updateFunctionMutation.isLoading}
                 onClick={() => {
                   deploy();
                 }}

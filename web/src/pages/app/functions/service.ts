@@ -16,14 +16,14 @@ const queryKeys = {
   useFunctionListQuery: ["useFunctionListQuery"],
 };
 
-export const useFunctionListQuery = ({ onSuccess }: { onSuccess: (data: any) => void }) => {
+export const useFunctionListQuery = (config?: { onSuccess?: (data: any) => void }) => {
   return useQuery(
     queryKeys.useFunctionListQuery,
     () => {
       return FunctionControllerFindAll({});
     },
     {
-      onSuccess,
+      onSuccess: config?.onSuccess,
     },
   );
 };

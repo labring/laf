@@ -202,5 +202,6 @@
   "EditTip": "已修改,未发布",
   "Refresh": "刷新",
   "RefreshData": "刷新数据",
-  "NoInfo": "暂无信息"
+  "NoInfo": "暂无信息",
+  "RefreshDataSuccess": "数据刷新成功"
 }

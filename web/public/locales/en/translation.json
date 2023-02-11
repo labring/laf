@@ -93,7 +93,7 @@
     "FunctionNameTip": "The unique identifier of the function, such as get-user",
     "InterfaceDebug": "Interface Debugging",
     "Methods": "Request Method",
-    "Name": "Parameter Name",
+    "Name": "KEY",
     "Tags": "Tags",
     "SearchPlaceholder": "Please enter the function name query",
     "Select": "chosen",
@@ -202,5 +202,6 @@
   "Refresh": "Refresh",
   "RefreshData": "Refresh",
   "EditTip": "modified, unpublished",
-  "NoInfo": "No information"
+  "NoInfo": "No information",
+  "RefreshDataSuccess": "data refreshed"
 }
