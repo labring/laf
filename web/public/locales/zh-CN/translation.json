@@ -159,7 +159,14 @@
     "BucketNamePlaceholder": "bucket-name",
     "UploadFile": "上传文件",
     "UploadFolder": "上传文件夹",
-    "Bucket": "Bucket"
+    "Bucket": "Bucket",
+    "nowDomain": "当前域名",
+    "isResolved": "已生效",
+    "parsing": "解析中",
+    "websiteHost": "开启网站托管",
+    "bind": "绑定自定义域名",
+    "domain": "域名",
+    "domainTip": "请输入Domain"
   },
   "Search": "搜索",
   "Close": "关闭",

@@ -174,7 +174,14 @@
     "StorageList": "Cloud Storage List",
     "EmptyStorageTip": "You have not created a Bucket",
     "UploadFile": "Upload File",
-    "UploadFolder": "Upload Folder"
+    "UploadFolder": "Upload Folder",
+    "domain": "Domain",
+    "bind": "Bind custom domain name",
+    "domainTip": "please input domain",
+    "nowDomain": "Current domain name",
+    "websiteHost": "Enable website hosting",
+    "parsing": "Parsing",
+    "isResolved": "Effective"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",

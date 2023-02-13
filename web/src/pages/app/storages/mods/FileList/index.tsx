@@ -26,6 +26,7 @@ import { formatDate, formateType, formatSize } from "@/utils/format";
 
 import useStorageStore, { TFile } from "../../store";
 import CreateFolderModal from "../CreateFolderModal";
+import CreateWebsiteModal from "../CreateWebsiteModal";
 // import CreateWebsiteModal from "../CreateWebsiteModal";
 import PathLink from "../PathLink";
 import UploadButton from "../UploadButton";
@@ -54,7 +55,6 @@ export default function FileList() {
       changeDirectory(file);
       return;
     }
-    console.log(currentApp);
     const fileUrl =
       bucketType === "private"
         ? getFileUrl(bucketName!, file.Key)
@@ -88,12 +88,9 @@ export default function FileList() {
               {t("RefreshData")}
             </Button>
           </HStack>
-          {/* <HStack spacing={4}>
-            <CreateWebsiteModal onCreateSuccess={() => query.refetch()} />
-            <CopyText text={""}>
-              <Input minW={"200px"} size="sm" readOnly value={""} />
-            </CopyText>
-          </HStack> */}
+          <HStack spacing={4}>
+            <CreateWebsiteModal />
+          </HStack>
         </Panel.Header>
       </Panel>
       <Panel className="flex-grow overflow-hidden">

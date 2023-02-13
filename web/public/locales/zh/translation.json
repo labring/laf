@@ -174,7 +174,14 @@
     "BucketNamePlaceholder": "bucket-name",
     "EmptyStorageTip": "您还没有创建Bucket",
     "UploadFile": "上传文件",
-    "UploadFolder": "上传文件夹"
+    "UploadFolder": "上传文件夹",
+    "domain": "域名",
+    "domainTip": "请输入Domain",
+    "bind": "绑定自定义域名",
+    "isResolved": "已生效",
+    "nowDomain": "当前域名",
+    "parsing": "解析中",
+    "websiteHost": "开启网站托管"
   },
   "TriggerPanel": {
     "AddTrigger": "新建触发器",
