@@ -275,7 +275,7 @@ model Database {
   user     String
   password String
   state     DatabaseState @default(Active)
-  phase     DatabasePhase @default(Created)
+  phase     DatabasePhase @default(Creating)
   lockedAt  DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
