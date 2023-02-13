@@ -49,6 +49,7 @@ export class BucketService {
       },
       include: {
         domain: true,
+        websiteHosting: true,
       },
     })
 
@@ -62,6 +63,7 @@ export class BucketService {
       },
       include: {
         domain: true,
+        websiteHosting: true,
       },
     })
 
