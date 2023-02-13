@@ -107,6 +107,9 @@
     "Time": "更新时间",
     "Express": "表达式",
     "CornTip": "例:0/1 * * * * ？表示每 1 秒执行任务",
+    "fiveMinutes": "每五分钟",
+    "hours": "每小时",
+    "timeout": "每天上午8点",
     "DeleteConfirm": "确定删除该触发器吗",
     "CronHelp": "更多示例"
   },
@@ -149,7 +152,7 @@
     "FolderName": "文件夹名称",
     "NameTip": "请输入文件夹名称",
     "DeleteConfirm": "当前操作将会永久删除云存储",
-    "StorageNameTip": "请确保当前Bucket已经清空,并输入云存储名称",
+    "StorageNameTip": "请输入云存储名称",
     "SearchBucket": "输入bucket名进行搜索",
     "All": "总容量",
     "Used": "已使用",
@@ -166,7 +169,10 @@
     "websiteHost": "开启网站托管",
     "bind": "绑定自定义域名",
     "domain": "域名",
-    "domainTip": "请输入Domain"
+    "domainTip": "请输入Domain",
+    "editHostTip": "开启网站托管需要 oss-bucket 是 read 模式",
+    "cnameHostPreTip": "请到您的域名服务商处，添加该域名的\"CNAME\" 解析到",
+    "cnameHostSuffixTip": "解析生效后即可绑定自定义域名。"
   },
   "Search": "搜索",
   "Close": "关闭",

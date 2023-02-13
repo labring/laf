@@ -88,7 +88,7 @@ export default function FileList() {
               {t("RefreshData")}
             </Button>
           </HStack>
-          <HStack spacing={4}>
+          <HStack spacing={2}>
             <CreateWebsiteModal />
           </HStack>
         </Panel.Header>

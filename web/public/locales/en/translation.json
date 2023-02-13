@@ -157,7 +157,7 @@
     "SearchBucket": "Enter the bucket name to search",
     "Size": "Size",
     "Storage": "Storage",
-    "StorageNameTip": "Please ensure that the current bucket has been cleared and enter the cloud storage name",
+    "StorageNameTip": "Please enter the cloud storage name",
     "Success": "uploaded successfully",
     "Time": "Update Time",
     "TimeTip": "Temporary link, valid for 15 minutes",
@@ -181,7 +181,10 @@
     "nowDomain": "Current domain name",
     "websiteHost": "Enable website hosting",
     "parsing": "Parsing",
-    "isResolved": "Effective"
+    "isResolved": "Effective",
+    "cnameHostPreTip": "Please go to your domain name service provider and add the \"CNAME\" of the domain name to resolve to",
+    "cnameHostSuffixTip": "After the resolution takes effect, the custom domain name can be bound.",
+    "editHostTip": "oss-bucket needs to be in read mode to enable website hosting"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",
@@ -199,7 +202,10 @@
     "Type": "Type",
     "CronHelp": "more examples",
     "Cron": "expression",
-    "EmptyTriggerTip": "You have not created a trigger,"
+    "EmptyTriggerTip": "You have not created a trigger,",
+    "fiveMinutes": "every five minutes",
+    "hours": "per hour",
+    "timeout": "8 am every day"
   },
   "NoData": "Currently no data",
   "SaveAndRestart": "save and restart",

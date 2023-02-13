@@ -195,6 +195,9 @@ const Input: ComponentStyleConfig = {
           borderColor: "primary.400",
         },
       },
+      addon: {
+        background: "lafWhite.600",
+      },
     },
 
     unstyled: {

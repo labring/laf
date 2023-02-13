@@ -42,8 +42,9 @@ function CreateWebsiteModal() {
     <>
       {currentStorage?.websiteHosting && currentStorage.websiteHosting.state === "Active" ? (
         <>
-          <span>{t("StoragePanel.nowDomain")}</span>
+          <span className="font-semibold w-16">{t("StoragePanel.nowDomain")}</span>
           <InputGroup
+            size="sm"
             onClick={() => {
               if (currentStorage?.websiteHosting?.state === "Active") {
                 onOpen();
@@ -57,7 +58,7 @@ function CreateWebsiteModal() {
             <InputLeftAddon
               children={
                 <>
-                  <span className="inline-block w-[6px] h-[6px]  rounded-full mr-1 bg-primary-600"></span>
+                  <span className="inline-block w-[6px] h-[6px] rounded-full mr-1 bg-primary-600"></span>
                   <span className="text-primary-600">
                     {currentStorage?.websiteHosting?.state === "Active"
                       ? t("StoragePanel.isResolved")
@@ -66,17 +67,24 @@ function CreateWebsiteModal() {
                 </>
               }
             />
-            <Input value={currentStorage?.websiteHosting?.domain} readOnly />
+            <Input
+              className="w-36 cursor-pointer"
+              value={currentStorage?.websiteHosting?.domain}
+              readOnly
+            />
             <InputRightAddon
               onClick={(e) => {
                 e.stopPropagation();
               }}
               children={
                 <>
-                  <CopyText text={currentStorage?.websiteHosting?.domain} />
+                  <CopyText
+                    className="cursor-pointer"
+                    text={currentStorage?.websiteHosting?.domain}
+                  />
                   <IconWrap tooltip={String(t("Delete"))}>
                     <DeleteIcon
-                      fontSize={15}
+                      fontSize={13}
                       onClick={() => {
                         deleteWebsiteMutation.mutateAsync({
                           id: currentStorage?.websiteHosting?.id,
@@ -93,6 +101,7 @@ function CreateWebsiteModal() {
         <Button
           size="xs"
           variant={"secondary"}
+          style={{ borderRadius: "1rem" }}
           disabled={currentStorage === undefined}
           onClick={() => {
             createWebsiteMutation.mutateAsync({
@@ -113,9 +122,22 @@ function CreateWebsiteModal() {
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
+              {currentStorage?.policy === "private" ? (
+                <p className="text-error-500 font-semibold">{t("StoragePanel.editHostTip")}</p>
+              ) : null}
               <FormControl>
                 <FormLabel>CNAME</FormLabel>
-                <Input variant="filled" value={currentStorage?.websiteHosting?.domain} readOnly />
+                <InputGroup size="sm">
+                  <Input variant="filled" value={currentStorage?.websiteHosting?.domain} readOnly />
+                  <InputRightAddon
+                    children={
+                      <CopyText
+                        text={currentStorage?.websiteHosting?.domain}
+                        className="cursor-pointer"
+                      />
+                    }
+                  />
+                </InputGroup>
               </FormControl>
               <FormControl>
                 <FormLabel htmlFor="domain">{t("StoragePanel.domain")}</FormLabel>
@@ -126,6 +148,12 @@ function CreateWebsiteModal() {
                   variant="filled"
                   placeholder={String(t("StoragePanel.domainTip"))}
                 />
+                <p className="mt-2 text-grayModern-600">
+                  {t("StoragePanel.cnameHostPreTip") +
+                    currentStorage?.websiteHosting?.domain +
+                    t("StoragePanel.cnameHostSuffixTip")}
+                  ,
+                </p>
               </FormControl>
             </VStack>
           </ModalBody>

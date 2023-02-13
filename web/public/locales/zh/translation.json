@@ -158,7 +158,7 @@
     "Size": "大小",
     "Storage": "存储",
     "StorageList": "云存储列表",
-    "StorageNameTip": "请确保当前Bucket已经清空,并输入云存储名称",
+    "StorageNameTip": "请输入云存储名称",
     "Success": "上传成功",
     "Time": "更新时间",
     "TimeTip": "临时链接,有效期15分钟",
@@ -181,7 +181,10 @@
     "isResolved": "已生效",
     "nowDomain": "当前域名",
     "parsing": "解析中",
-    "websiteHost": "开启网站托管"
+    "websiteHost": "开启网站托管",
+    "cnameHostPreTip": "请到您的域名服务商处，添加该域名的\"CNAME\" 解析到",
+    "cnameHostSuffixTip": "解析生效后即可绑定自定义域名。",
+    "editHostTip": "开启网站托管需要 oss-bucket 是 read 模式"
   },
   "TriggerPanel": {
     "AddTrigger": "新建触发器",
@@ -199,7 +202,10 @@
     "Type": "类型",
     "CronHelp": "更多示例",
     "Cron": "表达式",
-    "EmptyTriggerTip": "您还没有创建触发器,"
+    "EmptyTriggerTip": "您还没有创建触发器,",
+    "fiveMinutes": "每五分钟",
+    "hours": "每小时",
+    "timeout": "每天上午8点"
   },
   "NoData": "当前无数据",
   "SaveAndRestart": "保存并重启",
