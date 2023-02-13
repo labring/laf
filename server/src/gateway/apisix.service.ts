@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios'
 import { Injectable, Logger } from '@nestjs/common'
-import { Region } from '@prisma/client'
+import { Region, WebsiteHosting } from '@prisma/client'
 import { GetApplicationNamespaceById } from '../utils/getter'
 
 @Injectable()
@@ -17,6 +17,10 @@ export class ApisixService {
     const id = `app-${appid}`
     const data = {
       name: id,
+      labels: {
+        type: 'runtime',
+        appid: appid,
+      },
       uri: '/*',
       hosts: [host],
       priority: 9,
@@ -56,6 +60,10 @@ export class ApisixService {
     const id = `bucket-${bucketName}`
     const data = {
       name: id,
+      labels: {
+        type: 'bucket',
+        bucket: bucketName,
+      },
       uri: '/*',
       hosts: [host],
       priority: 9,
@@ -85,18 +93,73 @@ export class ApisixService {
     return res
   }
 
+  async createWebsiteRoute(
+    region: Region,
+    website: WebsiteHosting,
+    bucketDomain: string,
+  ) {
+    const host = website.domain
+    const minioUrl = new URL(region.storageConf.internalEndpoint)
+    const upstreamNode = minioUrl.host
+    const upstreamHost = bucketDomain
+
+    const id = `${website['_id']}`
+    const name = `website-${id}`
+    const data = {
+      name: name,
+      labels: {
+        customDomain: website.isCustom ? 'true' : 'false',
+        type: 'website',
+      },
+      uri: '/*',
+      hosts: [host],
+      priority: 20,
+      upstream: {
+        type: 'roundrobin',
+        pass_host: 'rewrite',
+        upstream_host: upstreamHost,
+        nodes: {
+          [upstreamNode]: 1,
+        },
+      },
+      timeout: {
+        connect: 60,
+        send: 60,
+        read: 60,
+      },
+      plugins: {
+        'proxy-rewrite': {
+          regex_uri: ['/$', '/index.html'],
+        },
+      },
+    }
+
+    const res = await this.putRoute(region, id, data)
+    return res
+  }
+
+  async deleteWebsiteRoute(region: Region, website: WebsiteHosting) {
+    const id = `${website['_id']}`
+    const res = await this.deleteRoute(region, id)
+    return res
+  }
+
   async putRoute(region: Region, id: string, data: any) {
     const conf = region.gatewayConf
     const api_url = `${conf.apiUrl}/routes/${id}`
 
-    const res = await this.httpService.axiosRef.put(api_url, data, {
-      headers: {
-        'X-API-KEY': conf.apiKey,
-        'Content-Type': 'application/json',
-      },
-    })
-
-    return res.data
+    try {
+      const res = await this.httpService.axiosRef.put(api_url, data, {
+        headers: {
+          'X-API-KEY': conf.apiKey,
+          'Content-Type': 'application/json',
+        },
+      })
+      return res.data
+    } catch (error) {
+      this.logger.error(error, error.response.data)
+      return null
+    }
   }
 
   async deleteRoute(region: Region, id: string) {

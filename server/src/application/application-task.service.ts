@@ -1,6 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { Application, ApplicationPhase, ApplicationState } from '@prisma/client'
+import {
+  Application,
+  ApplicationPhase,
+  ApplicationState,
+  DatabasePhase,
+  DomainPhase,
+  StoragePhase,
+} from '@prisma/client'
 import * as assert from 'node:assert'
 import { StorageService } from '../storage/storage.service'
 import { DatabaseService } from '../database/database.service'
@@ -89,10 +96,7 @@ export class ApplicationTaskService {
     let storage = await this.storageService.findOne(appid)
     if (!storage) {
       this.logger.log(`Creating storage for application ${appid}`)
-      const res = await this.storageService.create(app.appid)
-      if (res) {
-        storage = res
-      }
+      storage = await this.storageService.create(app.appid)
     }
 
     // reconcile database
@@ -109,9 +113,18 @@ export class ApplicationTaskService {
       gateway = await this.gatewayService.create(appid)
     }
 
-    if (!gateway) return await this.unlock(appid)
-    if (!storage) return await this.unlock(appid)
-    if (!database) return await this.unlock(appid)
+    // waiting resources' phase to be `Created`
+    if (gateway?.phase !== DomainPhase.Created) {
+      return await this.unlock(appid)
+    }
+
+    if (storage?.phase !== StoragePhase.Created) {
+      return await this.unlock(appid)
+    }
+
+    if (database?.phase !== DatabasePhase.Created) {
+      return await this.unlock(appid)
+    }
 
     // update application phase to `Created`
     const updated = await db.collection<Application>('Application').updateOne(
@@ -257,7 +270,7 @@ export class ApplicationTaskService {
         },
       },
     )
-    if (updated.modifiedCount > 0) this.logger.debug('unlocked app: ' + appid)
+    if (updated.modifiedCount > 0) this.logger.debug(`unlocked app: ${appid}`)
   }
 
   /**
