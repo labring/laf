@@ -7,6 +7,7 @@ import { t } from "i18next";
 import ConfirmButton from "@/components/ConfirmButton";
 import EmptyBox from "@/components/EmptyBox";
 import FileTypeIcon from "@/components/FileTypeIcon";
+import IconText from "@/components/IconText";
 import IconWrap from "@/components/IconWrap";
 import MoreButton from "@/components/MoreButton";
 import Panel from "@/components/Panel";
@@ -65,14 +66,6 @@ export default function PolicyListPanel() {
                       }
                     >
                       <>
-                        {/* <AddPolicyModal key="AddPolicyModal" isEdit defaultData={item}>
-                          <div className="text-grayIron-600">
-                            <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
-                              <EditIcon />
-                            </div>
-                            {t("Edit")}
-                          </div>
-                        </AddPolicyModal> */}
                         <ConfirmButton
                           onSuccessAction={async () => {
                             await deletePolicyMutation.mutateAsync(item.name);
@@ -80,12 +73,7 @@ export default function PolicyListPanel() {
                           headerText={String(t("Delete"))}
                           bodyText={t("CollectionPanel.ConformDelete")}
                         >
-                          <div className="text-grayIron-600">
-                            <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
-                              <DeleteIcon />
-                            </div>
-                            {t("Delete")}
-                          </div>
+                          <IconText icon={<DeleteIcon />} text={t("Delete")} />
                         </ConfirmButton>
                       </>
                     </MoreButton>

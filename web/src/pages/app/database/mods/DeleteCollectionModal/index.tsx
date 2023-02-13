@@ -16,6 +16,8 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
+import IconText from "@/components/IconText";
+
 import { useDeleteDBMutation } from "../../service";
 function DeleteCollectionModal(props: { database: any }) {
   const { database } = props;
@@ -39,7 +41,7 @@ function DeleteCollectionModal(props: { database: any }) {
 
   return (
     <>
-      <div
+      <IconText
         onClick={() => {
           reset();
           onOpen();
@@ -47,12 +49,9 @@ function DeleteCollectionModal(props: { database: any }) {
             setFocus("name");
           }, 0);
         }}
-      >
-        <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
-          <DeleteIcon fontSize={12} />
-        </div>
-        <div className="text-grayIron-600">{t("Delete")}</div>
-      </div>
+        icon={<DeleteIcon />}
+        text={t("Delete")}
+      />
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -85,6 +84,7 @@ function DeleteCollectionModal(props: { database: any }) {
 
           <ModalFooter>
             <Button
+              isLoading={deleteDBMutation.isLoading}
               colorScheme="red"
               onClick={handleSubmit(async (data) => {
                 if (data.name === database.name) {

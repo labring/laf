@@ -6,6 +6,7 @@ import { t } from "i18next";
 
 import EmptyBox from "@/components/EmptyBox";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
+import IconText from "@/components/IconText";
 import IconWrap from "@/components/IconWrap";
 import MoreButton from "@/components/MoreButton";
 import Panel from "@/components/Panel";
@@ -103,12 +104,7 @@ export default function StorageListPanel() {
                           <MoreButton isHidden={false}>
                             <>
                               <CreateBucketModal storage={storage}>
-                                <div className="text-grayIron-600">
-                                  <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
-                                    <EditIcon fontSize={10} />
-                                  </div>
-                                  {t("Edit")}
-                                </div>
+                                <IconText icon={<EditIcon />} text={t("Edit")} />
                               </CreateBucketModal>
                               <DeleteBucketModal
                                 storage={storage}
