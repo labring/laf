@@ -203,5 +203,6 @@
   "RefreshData": "刷新数据",
   "EditTip": "已修改,未发布",
   "NoInfo": "暂无信息",
-  "RefreshDataSuccess": "数据刷新成功"
+  "RefreshDataSuccess": "数据刷新成功",
+  "Language": "语言"
 }

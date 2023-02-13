@@ -203,5 +203,6 @@
   "RefreshData": "Refresh",
   "EditTip": "modified, unpublished",
   "NoInfo": "No information",
-  "RefreshDataSuccess": "data refreshed"
+  "RefreshDataSuccess": "data refreshed",
+  "Language": "Language"
 }
