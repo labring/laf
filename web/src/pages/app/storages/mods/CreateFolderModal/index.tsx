@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { AiOutlineFolderAdd } from "react-icons/ai";
@@ -23,6 +24,7 @@ import useAwsS3 from "@/hooks/useAwsS3";
 
 function CreateModal({ onCreateSuccess }: { onCreateSuccess: () => void }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isUploading, setIsUploading] = useState(false);
   const { prefix, currentStorage } = useStorageStore();
   const { register, setFocus, handleSubmit, reset } = useForm<{ prefix: string }>();
   const { uploadFile } = useAwsS3();
@@ -69,13 +71,20 @@ function CreateModal({ onCreateSuccess }: { onCreateSuccess: () => void }) {
           <ModalFooter>
             <Button
               type="submit"
+              isLoading={isUploading}
               onClick={handleSubmit(async (value) => {
-                await uploadFile(currentStorage?.name!, prefix + value.prefix + "/", null, {
-                  contentType: "folder",
-                });
-                onCreateSuccess();
-                // setPrefix(prefix + value.prefix + "/");
-                onClose();
+                try {
+                  setIsUploading(true);
+                  await uploadFile(currentStorage?.name!, prefix + value.prefix + "/", null, {
+                    contentType: "folder",
+                  });
+                  setIsUploading(false);
+                  onCreateSuccess();
+                  // setPrefix(prefix + value.prefix + "/");
+                  onClose();
+                } catch (error) {
+                  setIsUploading(false);
+                }
               })}
             >
               {t("Confirm")}

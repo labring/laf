@@ -70,7 +70,7 @@
   "FunctionPanel": {
     "AddFunction": "Add Function",
     "Code": "Function Template",
-    "ConfirmDeploy": "Confirm Release",
+    "ConfirmDeploy": "Confirm Deploy",
     "CustomDependence": "Custom",
     "CustomDependenceTip": "No custom dependencies yet",
     "Debug": "Run",
@@ -203,5 +203,6 @@
   "RefreshData": "Refresh",
   "EditTip": "modified, unpublished",
   "NoInfo": "No information",
-  "RefreshDataSuccess": "data refreshed"
+  "RefreshDataSuccess": "data refreshed",
+  "Language": "Language"
 }

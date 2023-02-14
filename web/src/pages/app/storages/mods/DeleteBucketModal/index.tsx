@@ -16,6 +16,8 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
+import IconText from "@/components/IconText";
+
 import { useBucketDeleteMutation } from "../../service";
 
 import { TBucket } from "@/apis/typing";
@@ -37,7 +39,9 @@ function DeleteBucketModal(props: { storage: TBucket; onSuccessAction?: () => vo
 
   return (
     <>
-      <div
+      <IconText
+        icon={<DeleteIcon />}
+        text={t("Delete")}
         onClick={() => {
           reset();
           onOpen();
@@ -45,14 +49,7 @@ function DeleteBucketModal(props: { storage: TBucket; onSuccessAction?: () => vo
             setFocus("name");
           }, 0);
         }}
-      >
-        <div className="text-grayIron-600">
-          <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
-            <DeleteIcon fontSize={12} />
-          </div>
-          {t("Delete")}
-        </div>
-      </div>
+      />
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -85,6 +82,7 @@ function DeleteBucketModal(props: { storage: TBucket; onSuccessAction?: () => vo
 
           <ModalFooter>
             <Button
+              isLoading={bucketDeleteMutation.isLoading}
               colorScheme="red"
               onClick={handleSubmit(async (data) => {
                 if (data.name === storage.name) {

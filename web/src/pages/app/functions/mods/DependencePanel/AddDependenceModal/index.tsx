@@ -335,6 +335,7 @@ const AddDependenceModal = () => {
             )}
 
             <Button
+              isLoading={editPackageMutation.isLoading || addPackageMutation.isLoading}
               onClick={() => {
                 submitDependence();
               }}

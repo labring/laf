@@ -3,6 +3,7 @@ import { t } from "i18next";
 
 import SettingModal from "@/pages/app/setting";
 import PATList from "@/pages/app/setting/PATList";
+import ProfileSetting from "@/pages/app/setting/Profile";
 export default function UserSetting(props: { name: string; avatar?: string; width: string }) {
   return (
     <Menu>
@@ -20,6 +21,11 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
         <SettingModal
           headerTitle={t("SettingPanel.UserSetting")}
           tabMatch={[
+            {
+              key: "user-profile",
+              name: "Profile",
+              component: <ProfileSetting />,
+            },
             {
               key: "pat",
               name: "Personal Access Token",
