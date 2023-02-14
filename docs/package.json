@@ -12,6 +12,7 @@
     "docker-build": "docker build --platform linux/amd64 -t lafyun/docs:latest ."
   },
   "dependencies": {
+    "markdown-it-custom-attrs": "^1.0.2",
     "vitepress": "^1.0.0-alpha.29"
   }
 }
