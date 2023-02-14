@@ -204,5 +204,9 @@
   "EditTip": "modified, unpublished",
   "NoInfo": "No information",
   "RefreshDataSuccess": "data refreshed",
-  "Language": "Language"
+  "Language": "Language",
+  "update success": "update completed",
+  "Take me home": "Take me home",
+  "404Message": "We can't find that page",
+  "403Message": "You don't have permission to access this page"
 }

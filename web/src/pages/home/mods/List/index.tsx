@@ -33,7 +33,7 @@ import useGlobalStore from "@/pages/globalStore";
 function List(props: { appListQuery: any }) {
   const navigate = useNavigate();
 
-  const { showSuccess, setCurrentApp } = useGlobalStore();
+  const { setCurrentApp } = useGlobalStore();
 
   const [searchKey, setSearchKey] = useState("");
 
@@ -42,7 +42,6 @@ function List(props: { appListQuery: any }) {
   const deleteAppMutation = useMutation((params: any) => ApplicationControllerRemove(params), {
     onSuccess: () => {
       appListQuery.refetch();
-      showSuccess("delete success.");
     },
     onError: () => {},
   });
@@ -123,7 +122,7 @@ function List(props: { appListQuery: any }) {
                       {t("HomePanel.Develop")}
                     </Button>
                     <Menu>
-                      <MenuButton disabled={item?.phase !== APP_PHASE_STATUS.Started}>
+                      <MenuButton>
                         <IconWrap>
                           <BsThreeDotsVertical size={16} />
                         </IconWrap>
