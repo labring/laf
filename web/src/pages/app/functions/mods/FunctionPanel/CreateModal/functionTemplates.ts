@@ -1,3 +1,5 @@
+import { t } from "i18next";
+
 const functionTemplates = [
   {
     label: "hello laf",
@@ -10,7 +12,7 @@ export async function main(ctx: FunctionContext) {
 `,
   },
   {
-    label: "database 示例",
+    label: t("database example"),
     value: `import cloud from '@lafjs/cloud'
 
 const db = cloud.database()

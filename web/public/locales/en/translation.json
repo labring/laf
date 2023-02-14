@@ -204,5 +204,6 @@
   "EditTip": "modified, unpublished",
   "NoInfo": "No information",
   "RefreshDataSuccess": "data refreshed",
-  "Language": "Language"
+  "Language": "Language",
+  "database example": "database example"
 }
