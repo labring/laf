@@ -52,6 +52,8 @@ request.interceptors.response.use(
         // eslint-disable-next-line no-restricted-globals
         (window as any).location.href = (import.meta.env.VITE_SERVER_URL + "/v1/login") as string;
         return;
+      } else if (data.statusCode === 403) {
+        (window as any).location.href = "/403";
       }
       toast({
         title: data.message,

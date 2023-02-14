@@ -81,7 +81,9 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
 
     if (!res.error) {
       onClose();
-      showSuccess(isEdit ? "update success." : "create success.");
+      if (isEdit) {
+        showSuccess(t("update success"));
+      }
       queryClient.invalidateQueries(["appListQuery"]);
     } else {
       showError(res.error);
