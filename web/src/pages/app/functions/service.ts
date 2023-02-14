@@ -6,6 +6,7 @@ import {
   FunctionControllerCompile,
   FunctionControllerCreate,
   FunctionControllerFindAll,
+  FunctionControllerFindOne,
   FunctionControllerRemove,
   FunctionControllerUpdate,
 } from "@/apis/v1/apps";
@@ -14,17 +15,30 @@ import useGlobalStore from "@/pages/globalStore";
 
 const queryKeys = {
   useFunctionListQuery: ["useFunctionListQuery"],
+  useFunctionDetailQuery: (name: string) => ["useFunctionDetailQuery", name],
 };
 
-export const useFunctionListQuery = ({ onSuccess }: { onSuccess: (data: any) => void }) => {
+export const useFunctionListQuery = (config?: { onSuccess?: (data: any) => void }) => {
   return useQuery(
     queryKeys.useFunctionListQuery,
     () => {
       return FunctionControllerFindAll({});
     },
     {
-      onSuccess,
+      onSuccess: config?.onSuccess,
     },
+  );
+};
+
+export const useFunctionDetailQuery = (name: string, config: any) => {
+  return useQuery(
+    queryKeys.useFunctionDetailQuery(name),
+    () => {
+      return FunctionControllerFindOne({
+        name,
+      });
+    },
+    config,
   );
 };
 

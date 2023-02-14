@@ -15,7 +15,7 @@ type FormValues = {
 
 function HeaderParamsTab(props: { onChange(values: Params[]): void }) {
   const { onChange } = props;
-  const { register, control, handleSubmit, watch } = useForm<FormValues>({
+  const { register, control, watch } = useForm<FormValues>({
     defaultValues: {
       params: [{ name: "", value: "" }],
     },
@@ -25,7 +25,6 @@ function HeaderParamsTab(props: { onChange(values: Params[]): void }) {
     name: "params",
     control,
   });
-  const onSubmit = (data: FormValues) => console.log(data);
 
   useEffect(() => {
     const subscription = watch((value) => {
@@ -37,7 +36,7 @@ function HeaderParamsTab(props: { onChange(values: Params[]): void }) {
 
   return (
     <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form>
         <TableContainer>
           <Table size="sm" className="border rounded border-grayModern-600">
             <Thead>

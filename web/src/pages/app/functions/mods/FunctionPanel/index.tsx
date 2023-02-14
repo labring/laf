@@ -24,6 +24,7 @@ import { TriggerIcon } from "@/components/CommonIcon";
 import ConfirmButton from "@/components/ConfirmButton";
 import EmptyBox from "@/components/EmptyBox";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
+import IconText from "@/components/IconText";
 import IconWrap from "@/components/IconWrap";
 import MoreButton from "@/components/MoreButton";
 import Panel from "@/components/Panel";
@@ -224,12 +225,7 @@ export default function FunctionList() {
                       <MoreButton isHidden={func.name !== currentFunction?.name}>
                         <>
                           <CreateModal functionItem={func}>
-                            <div className="text-grayIron-600">
-                              <div className="text-grayModern-900 w-[20px] h-[20px] text-center pl-1">
-                                <EditIcon />
-                              </div>
-                              {t("Edit")}
-                            </div>
+                            <IconText icon={<EditIcon />} text={t("Edit")} />
                           </CreateModal>
                           <ConfirmButton
                             onSuccessAction={async () => {
@@ -238,12 +234,7 @@ export default function FunctionList() {
                             headerText={String(t("Delete"))}
                             bodyText={String(t("FunctionPanel.DeleteConfirm"))}
                           >
-                            <div className="text-grayIron-600">
-                              <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
-                                <DeleteIcon />
-                              </div>
-                              {t("Delete")}
-                            </div>
+                            <IconText icon={<DeleteIcon />} text={t("Delete")} />
                           </ConfirmButton>
                         </>
                       </MoreButton>

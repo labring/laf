@@ -6,6 +6,7 @@ import FunctionEditor from "@/components/Editor/FunctionEditor";
 import EmptyBox from "@/components/EmptyBox";
 import Panel from "@/components/Panel";
 
+import { useFunctionListQuery } from "../../service";
 import useFunctionStore from "../../store";
 import DeployButton from "../DeployButton";
 import CreateModal from "../FunctionPanel/CreateModal";
@@ -20,12 +21,16 @@ function EditorPanel() {
 
   const functionCache = useFunctionCache();
 
+  const functionListQuery = useFunctionListQuery();
+
   return (
     <Panel className="flex-1 flex-grow">
       {currentFunction?.name ? (
         <Panel.Header style={{ borderBottom: "2px solid #F4F6F8" }} className="!mb-3 h-[50px]">
           <HStack maxW={"60%"} spacing={2}>
-            <span className="font-bold text-lg">{currentFunction?.name}</span>
+            <CopyText className="font-bold text-lg" text={currentFunction?.name}>
+              <span>{currentFunction?.name}</span>
+            </CopyText>
             <FunctionDetailPopOver />
             {currentFunction?.id &&
               functionCache.getCache(currentFunction?.id, currentFunction?.source?.code) !==
@@ -49,17 +54,7 @@ function EditorPanel() {
         </Panel.Header>
       ) : null}
 
-      {currentFunction?.name ? (
-        <FunctionEditor
-          className="flex-grow"
-          path={currentFunction?.id || ""}
-          value={functionCache.getCache(currentFunction!.id, currentFunction!.source?.code)}
-          onChange={(value) => {
-            updateFunctionCode(currentFunction, value || "");
-            functionCache.setCache(currentFunction!.id, value || "");
-          }}
-        />
-      ) : (
+      {!functionListQuery.isFetching && functionListQuery.data?.data?.length === 0 && (
         <EmptyBox>
           <div>
             {t("FunctionPanel.EmptyText")}
@@ -70,6 +65,18 @@ function EditorPanel() {
             </CreateModal>
           </div>
         </EmptyBox>
+      )}
+
+      {currentFunction?.name && (
+        <FunctionEditor
+          className="flex-grow"
+          path={currentFunction?.id || ""}
+          value={functionCache.getCache(currentFunction!.id, currentFunction!.source?.code)}
+          onChange={(value) => {
+            updateFunctionCode(currentFunction, value || "");
+            functionCache.setCache(currentFunction!.id, value || "");
+          }}
+        />
       )}
     </Panel>
   );

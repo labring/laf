@@ -158,7 +158,7 @@ export default function DebugPanel() {
                   >
                     <TabList className="mb-2 flex-none">
                       <Tab>
-                        Parameters
+                        Params
                         {queryParams.length > 0 && (
                           <span className="ml-1">({queryParams.length})</span>
                         )}

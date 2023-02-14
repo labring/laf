@@ -64,9 +64,6 @@ export default function LogsPage() {
     },
     {
       keepPreviousData: true,
-      onSuccess(data: any) {
-        console.log(data);
-      },
     },
   );
 

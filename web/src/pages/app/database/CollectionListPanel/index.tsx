@@ -7,6 +7,7 @@ import { Center, Input, InputGroup, InputLeftElement, Spinner } from "@chakra-ui
 import CopyText from "@/components/CopyText";
 import EmptyBox from "@/components/EmptyBox";
 import FileTypeIcon from "@/components/FileTypeIcon";
+import IconText from "@/components/IconText";
 import IconWrap from "@/components/IconWrap";
 import MoreButton from "@/components/MoreButton";
 import Panel from "@/components/Panel";
@@ -104,12 +105,7 @@ export default function CollectionListPanel() {
                       >
                         <>
                           <CopyText hideToolTip text={db.name} tip="名称复制成功">
-                            <div>
-                              <div className="text-grayModern-900 w-[20px] h-[20px] text-center">
-                                <CopyIcon />
-                              </div>
-                              <div className="text-grayIron-600">{t("Copy")}</div>
-                            </div>
+                            <IconText icon={<CopyIcon />} text={t("Copy")} />
                           </CopyText>
                           <DeleteCollectionModal database={db} />
                         </>

@@ -129,7 +129,11 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
           </ModalBody>
 
           <ModalFooter>
-            <Button type="submit" onClick={handleSubmit(onSubmit)}>
+            <Button
+              type="submit"
+              onClick={handleSubmit(onSubmit)}
+              isLoading={bucketUpdateMutation.isLoading || bucketCreateMutation.isLoading}
+            >
               {t("Confirm")}
             </Button>
           </ModalFooter>

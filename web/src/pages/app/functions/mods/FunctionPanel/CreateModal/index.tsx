@@ -207,7 +207,11 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
                 onClose();
               }}
             >{t`Cancel`}</Button>
-            <Button type="submit" onClick={handleSubmit(onSubmit)}>
+            <Button
+              type="submit"
+              onClick={handleSubmit(onSubmit)}
+              isLoading={updateFunctionMutation.isLoading || createFunctionMutation.isLoading}
+            >
               {t`Confirm`}
             </Button>
           </ModalFooter>

@@ -10,6 +10,7 @@ import EmptyBox from "@/components/EmptyBox";
 import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
 
+import AddPolicyModal from "../mods/AddPolicyModal";
 import AddRulesModal from "../mods/AddRulesModal";
 import policyTemplate from "../mods/AddRulesModal/policyTemplate";
 import RightPanelEditBox from "../RightComponent/EditBox";
@@ -59,6 +60,23 @@ export default function PolicyDataList() {
       globalStore.showError(error?.toString());
     }
   };
+
+  if (store.currentPolicy === undefined) {
+    return (
+      <Center className="h-full">
+        <EmptyBox>
+          <div>
+            {t("CollectionPanel.EmptyPolicyText")}
+            <AddPolicyModal>
+              <span className="ml-2 text-primary-600 hover:border-b-2 hover:border-primary-600 cursor-pointer">
+                {t("CreateNow")}
+              </span>
+            </AddPolicyModal>
+          </div>
+        </EmptyBox>
+      </Center>
+    );
+  }
 
   return (
     <>

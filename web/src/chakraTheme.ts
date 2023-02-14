@@ -91,6 +91,11 @@ const Button = defineStyleConfig({
       _hover: {
         bg: "primary.700",
       },
+      _disabled: {
+        _hover: {
+          bg: "primary.500 !important",
+        },
+      },
     },
 
     secondary: {

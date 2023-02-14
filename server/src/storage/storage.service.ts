@@ -22,18 +22,25 @@ export class StorageService {
     const accessKey = appid
     const secretKey = GenerateAlphaNumericPassword(64)
 
-    // create storage user in minio
-    const r0 = await this.minioService.createUser(region, accessKey, secretKey)
-    if (r0.error) {
-      this.logger.error(r0.error)
-      return false
+    // create storage user in minio if not exists
+    const minioUser = await this.minioService.getUser(region, accessKey)
+    if (!minioUser) {
+      const r0 = await this.minioService.createUser(
+        region,
+        accessKey,
+        secretKey,
+      )
+      if (r0.error) {
+        this.logger.error(r0.error)
+        return null
+      }
     }
 
     // add storage user to common user group in minio
     const r1 = await this.minioService.addUserToGroup(region, accessKey)
     if (r1.error) {
       this.logger.error(r1.error)
-      return false
+      return null
     }
 
     // create storage user in database

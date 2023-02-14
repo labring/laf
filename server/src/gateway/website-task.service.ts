@@ -1,9 +1,17 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { DomainPhase, DomainState, WebsiteHosting } from '@prisma/client'
+import {
+  BucketDomain,
+  DomainPhase,
+  DomainState,
+  WebsiteHosting,
+} from '@prisma/client'
 import { times } from 'lodash'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/database/system-database'
+import { RegionService } from 'src/region/region.service'
+import * as assert from 'node:assert'
+import { ApisixService } from './apisix.service'
 
 @Injectable()
 export class WebsiteTaskService {
@@ -11,9 +19,13 @@ export class WebsiteTaskService {
   readonly concurrency = 1 // concurrency count
   private readonly logger = new Logger(WebsiteTaskService.name)
 
+  constructor(
+    private readonly regionService: RegionService,
+    private readonly apisixService: ApisixService,
+  ) {}
+
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
-    return
     // Phase `Creating` -> `Created`
     times(this.concurrency, () => this.handleCreatingPhase())
 
@@ -41,7 +53,7 @@ export class WebsiteTaskService {
   async handleCreatingPhase() {
     const db = SystemDatabase.db
 
-    const doc = await db
+    const res = await db
       .collection<WebsiteHosting>('WebsiteHosting')
       .findOneAndUpdate(
         {
@@ -57,10 +69,50 @@ export class WebsiteTaskService {
         },
       )
 
-    if (doc.value) {
-      // TODO
-      // create website route
-      // update phase to `Created`
+    if (!res.value) return
+
+    this.logger.debug(res.value)
+    // get region by appid
+    const site = res.value
+    const region = await this.regionService.findByAppId(site.appid)
+    assert(region, 'region not found')
+
+    // get bucket domain
+    const bucketDomain = await db
+      .collection<BucketDomain>('BucketDomain')
+      .findOne({
+        appid: site.appid,
+        bucketName: site.bucketName,
+      })
+
+    assert(bucketDomain, 'bucket domain not found')
+
+    // create website route
+    const route = await this.apisixService.createWebsiteRoute(
+      region,
+      site,
+      bucketDomain.domain,
+    )
+    this.logger.debug(`create website route: `, route)
+
+    // update phase to `Created`
+    const updated = await db
+      .collection<WebsiteHosting>('WebsiteHosting')
+      .updateOne(
+        {
+          _id: site._id,
+          phase: DomainPhase.Creating,
+        },
+        {
+          $set: {
+            phase: DomainPhase.Created,
+            lockedAt: TASK_LOCK_INIT_TIME,
+          },
+        },
+      )
+
+    if (updated.modifiedCount !== 1) {
+      this.logger.error(`update website hosting phase failed: ${site._id}`)
     }
   }
 
@@ -72,7 +124,7 @@ export class WebsiteTaskService {
   async handleDeletingPhase() {
     const db = SystemDatabase.db
 
-    const doc = await db
+    const res = await db
       .collection<WebsiteHosting>('WebsiteHosting')
       .findOneAndUpdate(
         {
@@ -88,10 +140,36 @@ export class WebsiteTaskService {
         },
       )
 
-    if (doc.value) {
-      // TODO
-      // delete website route
-      // update phase to `Deleted`
+    if (!res.value) return
+
+    // get region by appid
+    const site = res.value
+    const region = await this.regionService.findByAppId(site.appid)
+    assert(region, 'region not found')
+
+    // delete website route
+    const route = await this.apisixService.deleteWebsiteRoute(region, site)
+
+    this.logger.debug(`delete website route: `, route)
+
+    // update phase to `Deleted`
+    const updated = await db
+      .collection<WebsiteHosting>('WebsiteHosting')
+      .updateOne(
+        {
+          _id: site._id,
+          phase: DomainPhase.Deleting,
+        },
+        {
+          $set: {
+            phase: DomainPhase.Deleted,
+            lockedAt: TASK_LOCK_INIT_TIME,
+          },
+        },
+      )
+
+    if (updated.modifiedCount > 1) {
+      this.logger.error(`update website hosting phase failed: ${site._id}`)
     }
   }
 

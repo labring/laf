@@ -160,13 +160,14 @@ const examplesSideBarConfig = [
         text: "使用 SMTP 服务发送邮件",
         link: "/examples/send-mail",
       },
-    ],
-  },
-  {
-    text: "前端应用",
-    items: [{ text: "ToDo Lost", link: "/examples/todo-list" }],
-  },
-];
+    ]
+  }, {
+    text: '前端应用',
+    items: [
+      { text: 'Todo List', link: '/examples/todo-list', },
+    ]
+  }
+]
 
 export default defineConfig({
   lang: "zh-CN",

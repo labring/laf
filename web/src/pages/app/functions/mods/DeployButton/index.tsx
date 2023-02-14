@@ -15,7 +15,7 @@ import { t } from "i18next";
 import CommonDiffEditor from "@/components/Editor/CommonDiffEditor";
 import { Pages } from "@/constants";
 
-import { useUpdateFunctionMutation } from "../../service";
+import { useFunctionDetailQuery, useUpdateFunctionMutation } from "../../service";
 import useFunctionStore from "../../store";
 
 import useFunctionCache from "@/hooks/useFunctionCache";
@@ -30,6 +30,10 @@ export default function DeployButton() {
   const { showSuccess, currentPageId } = useGlobalStore((state) => state);
 
   const updateFunctionMutation = useUpdateFunctionMutation();
+
+  const functionDetailQuery = useFunctionDetailQuery(store.currentFunction.name, {
+    enabled: isOpen,
+  });
 
   const { displayName } = useHotKey(
     DEFAULT_SHORTCUTS.deploy,
@@ -64,6 +68,7 @@ export default function DeployButton() {
       <Tooltip label={`快捷键: ${displayName.toUpperCase()}，调试可直接点击右侧「运行」按扭`}>
         <Button
           variant={"text"}
+          isLoading={functionDetailQuery.isFetching}
           disabled={store.getFunctionUrl() === ""}
           onClick={() => {
             onOpen();
@@ -73,7 +78,7 @@ export default function DeployButton() {
         </Button>
       </Tooltip>
 
-      {isOpen ? (
+      {isOpen && !functionDetailQuery.isFetching ? (
         <Modal isOpen={isOpen} onClose={onClose} size="6xl" isCentered>
           <ModalOverlay />
           <ModalContent maxW={"80%"}>
@@ -81,7 +86,7 @@ export default function DeployButton() {
             <ModalCloseButton />
             <ModalBody borderBottom={"1px"} borderBottomColor="gray.200">
               <CommonDiffEditor
-                original={store.currentFunction?.source?.code}
+                original={functionDetailQuery.data?.data?.source?.code}
                 modified={functionCache.getCache(
                   store.currentFunction?.id,
                   store.currentFunction?.source?.code,
@@ -95,6 +100,7 @@ export default function DeployButton() {
               </Button>
               <Button
                 variant="primary"
+                isLoading={updateFunctionMutation.isLoading}
                 onClick={() => {
                   deploy();
                 }}
