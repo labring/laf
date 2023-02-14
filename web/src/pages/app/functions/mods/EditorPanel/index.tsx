@@ -28,7 +28,9 @@ function EditorPanel() {
       {currentFunction?.name ? (
         <Panel.Header style={{ borderBottom: "2px solid #F4F6F8" }} className="!mb-3 h-[50px]">
           <HStack maxW={"60%"} spacing={2}>
-            <span className="font-bold text-lg">{currentFunction?.name}</span>
+            <CopyText className="font-bold text-lg" text={currentFunction?.name}>
+              <span>{currentFunction?.name}</span>
+            </CopyText>
             <FunctionDetailPopOver />
             {currentFunction?.id &&
               functionCache.getCache(currentFunction?.id, currentFunction?.source?.code) !==
