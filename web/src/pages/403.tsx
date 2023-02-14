@@ -8,9 +8,9 @@ export default function Index() {
   return (
     <div className=" bg-white h-screen">
       <Center h="80vh" w="80vw" className="flex-col !items-start m-auto">
-        <h1 style={{ fontSize: 38 }}>404</h1>
-        <p className="font-semibold mb-8" style={{ fontSize: 60 }}>
-          {t(`404Message`)}
+        <h1 style={{ fontSize: 38 }}>403</h1>
+        <p className="font-semibold mb-8" style={{ fontSize: 50 }}>
+          {t(`403Message`)}
         </p>
         <HStack spacing={6}>
           <Button

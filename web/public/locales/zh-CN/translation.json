@@ -206,4 +206,8 @@
   "RefreshDataSuccess": "数据刷新成功",
   "Language": "语言",
   "database example": "database 示例"
+  "update success": "更新成功",
+  "Take me home": "返回首页",
+  "404Message": "找不到当前内容",
+  "403Message": "当前用户没有权限"
 }
