@@ -6,9 +6,13 @@ import { PrismaService } from 'src/prisma.service'
 import { JwtService } from '@nestjs/jwt'
 import { ApplicationService } from 'src/application/application.service'
 import { StorageModule } from 'src/storage/storage.module'
+import { HttpModule } from '@nestjs/axios'
+import { CronJobService } from './cron-job.service'
+import { TriggerTaskService } from './trigger-task.service'
+import { RegionModule } from 'src/region/region.module'
 
 @Module({
-  imports: [StorageModule],
+  imports: [StorageModule, HttpModule, RegionModule],
   controllers: [TriggerController],
   providers: [
     TriggerService,
@@ -16,6 +20,8 @@ import { StorageModule } from 'src/storage/storage.module'
     PrismaService,
     JwtService,
     ApplicationService,
+    CronJobService,
+    TriggerTaskService,
   ],
 })
 export class TriggerModule {}

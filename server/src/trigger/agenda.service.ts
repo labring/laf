@@ -7,6 +7,7 @@ import * as assert from 'node:assert'
 import { APPLICATION_SECRET_KEY } from 'src/constants'
 import { JwtService } from '@nestjs/jwt'
 import { PrismaService } from 'src/prisma.service'
+import { HttpService } from '@nestjs/axios'
 
 @Injectable()
 export class AgendaService {
@@ -17,6 +18,7 @@ export class AgendaService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly prisma: PrismaService,
+    private readonly httpService: HttpService,
   ) {
     this.agenda = new Agenda({
       db: {
@@ -37,12 +39,10 @@ export class AgendaService {
 
   async createJob(trigger: CronTrigger) {
     const { cron } = trigger
-    const job = await this.agenda.schedule(
-      cron,
-      AgendaService.JOB_NAME,
-      trigger,
-    )
-
+    // const job = await this.agenda.every(cron, AgendaService.JOB_NAME, trigger)
+    const job = this.agenda.create(AgendaService.JOB_NAME, trigger)
+    job.repeatEvery(cron)
+    await job.save()
     return job
   }
 
@@ -60,20 +60,19 @@ export class AgendaService {
 
   async processor(job: Job<CronTrigger>, done: (error?: Error) => void) {
     const { appid, target } = job.attrs.data
-    this.logger.debug(`Triggering ${target} by cron job`)
+    this.logger.debug(`Triggering ${target} by cron job ${job.attrs._id}`)
 
-    // generate trigger token
-    const token = this.getTriggerToken(appid)
+    // get runtime url
     const serviceName = appid
     const namespace = GetApplicationNamespaceById(appid)
     const appAddress = `${serviceName}.${namespace}:8000`
     const url = `http://${appAddress}/${target}`
 
-    await fetch(url, {
-      method: 'POST',
-      headers: {
-        'x-laf-trigger-token': `${token}`,
-      },
+    // generate trigger token
+    const token = this.getTriggerToken(appid)
+    const headers = { 'x-laf-trigger-token': `${token}` }
+    this.httpService.axiosRef.post(url, {}, { headers }).catch(() => {
+      // do nothing
     })
     done()
   }
