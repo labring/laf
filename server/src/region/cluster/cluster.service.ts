@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common'
 import { KubernetesObject } from '@kubernetes/client-node'
 import * as k8s from '@kubernetes/client-node'
 import { Region } from '@prisma/client'
-import { GetApplicationNamespaceById } from 'src/utils/getter'
+import { GetApplicationNamespaceByAppId } from 'src/utils/getter'
 import { ResourceLabels } from 'src/constants'
 import { compare } from 'fast-json-patch'
 import { GroupVersionKind } from 'src/region/cluster/types'
@@ -36,7 +36,7 @@ export class ClusterService {
     try {
       const namespace = new k8s.V1Namespace()
       namespace.metadata = new k8s.V1ObjectMeta()
-      namespace.metadata.name = GetApplicationNamespaceById(appid)
+      namespace.metadata.name = GetApplicationNamespaceByAppId(appid)
       namespace.metadata.labels = {
         [ResourceLabels.APP_ID]: appid,
         [ResourceLabels.NAMESPACE_TYPE]: 'app',
@@ -57,7 +57,7 @@ export class ClusterService {
   async getAppNamespace(region: Region, appid: string) {
     try {
       const coreV1Api = this.makeCoreV1Api(region)
-      const namespace = GetApplicationNamespaceById(appid)
+      const namespace = GetApplicationNamespaceByAppId(appid)
       const res = await coreV1Api.readNamespace(namespace)
       return res.body
     } catch (err) {
@@ -72,7 +72,7 @@ export class ClusterService {
   async removeAppNamespace(region: Region, appid: string) {
     try {
       const coreV1Api = this.makeCoreV1Api(region)
-      const namespace = GetApplicationNamespaceById(appid)
+      const namespace = GetApplicationNamespaceByAppId(appid)
       const res = await coreV1Api.deleteNamespace(namespace)
       return res
     } catch (err) {
@@ -144,6 +144,11 @@ export class ClusterService {
   makeAppsV1Api(region: Region) {
     const kc = this.loadKubeConfig(region)
     return kc.makeApiClient(k8s.AppsV1Api)
+  }
+
+  makeBatchV1Api(region: Region) {
+    const kc = this.loadKubeConfig(region)
+    return kc.makeApiClient(k8s.BatchV1Api)
   }
 
   makeObjectApi(region: Region) {

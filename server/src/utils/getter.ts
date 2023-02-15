@@ -14,7 +14,7 @@ export function GetSystemNamespace(): string {
  * @param appid
  * @returns
  */
-export function GetApplicationNamespaceById(appid: string): string {
+export function GetApplicationNamespaceByAppId(appid: string): string {
   return appid
 }
 

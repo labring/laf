@@ -9,7 +9,7 @@ metadata:
 spec:
   containers:
     - name: wget
-      image: busybox
+      image: "busybox:1.28"
       command: ['wget']
       args: ['{{ include "mongodb.fullname" . }}:{{ .Values.service.port }}']
   restartPolicy: Never
