@@ -85,7 +85,7 @@ export default function DebugPanel() {
           params: mapValues(keyBy(queryParams, "name"), "value"),
           data: bodyParams,
           headers: Object.assign(mapValues(keyBy(headerParams, "name"), "value"), {
-            "x-laf-debug-token": `${globalStore.currentApp?.function_debug_token}`,
+            "x-laf-develop-token": `${globalStore.currentApp?.develop_token}`,
             "x-laf-func-data": encodeURIComponent(_funcData),
           }),
         });

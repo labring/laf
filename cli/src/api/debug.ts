@@ -8,7 +8,7 @@ export async function invokeFunction(
   data: any,
 ): Promise<{ res: any; requestId: string }> {
   const header: AxiosRequestHeaders | any = {
-    'x-laf-debug-token': token,
+    'x-laf-develop-token': token,
     'x-laf-func-data': urlencode(JSON.stringify(data)),
   }
   const res = await request({ url: invokeUrl + '/' + funcName, method: 'GET', headers: header })

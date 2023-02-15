@@ -27,7 +27,7 @@ export async function handleInvokeFunction(req: IRequest, res: Response) {
   }
 
   // debug mode
-  if (req.get('x-laf-debug-token')) {
+  if (req.get('x-laf-develop-token')) {
     return await handleDebugFunction(req, res)
   }
 

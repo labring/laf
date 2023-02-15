@@ -16,7 +16,7 @@ export interface TApplication {
   configuration: Configuration;
   domain: Domain;
   storage: Storage;
-  function_debug_token: string;
+  develop_token: string;
 }
 
 export interface Bundle {

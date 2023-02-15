@@ -91,7 +91,7 @@ export class ApplicationController {
       domain: true,
     })
 
-    // Security Warning: Do not response this region object to client since it contains sensitive information
+    // [SECURITY ALERT] Do NOT response this region object to client since it contains sensitive information
     const region = await this.regionService.findOne(data.regionName)
 
     // TODO: remove these storage related code to standalone api
@@ -117,14 +117,25 @@ export class ApplicationController {
       }
     }
 
-    const debug_token = await this.funcService.getDebugFunctionToken(appid)
+    // Generate the develop token, it's provided to the client when debugging function
+    const expires = 60 * 60 * 24 * 7
+    const develop_token = await this.funcService.generateRuntimeToken(
+      appid,
+      'develop',
+      expires,
+    )
 
     const res = {
       ...data,
       storage: storage,
-      tls: region.tls,
       port: region.gatewayConf.port,
-      function_debug_token: debug_token,
+      develop_token: develop_token,
+
+      /** This is the redundant field of Region */
+      tls: region.tls,
+
+      /** @deprecated alias of develop token, will be remove in future  */
+      function_debug_token: develop_token,
     }
 
     return ResponseUtil.ok(res)
