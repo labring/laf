@@ -1,16 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { TriggerPhase, TriggerState } from '@prisma/client'
+import { TASK_LOCK_INIT_TIME } from 'src/constants'
 import { PrismaService } from 'src/prisma.service'
-import { AgendaService } from './agenda.service'
 import { CreateTriggerDto } from './dto/create-trigger.dto'
 
 @Injectable()
 export class TriggerService {
   private readonly logger = new Logger(TriggerService.name)
 
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly agenda: AgendaService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(appid: string, dto: CreateTriggerDto) {
     const { desc, cron, target } = dto
@@ -18,6 +16,9 @@ export class TriggerService {
       data: {
         desc,
         cron,
+        state: TriggerState.Active,
+        phase: TriggerPhase.Creating,
+        lockedAt: TASK_LOCK_INIT_TIME,
         cloudFunction: {
           connect: {
             appid_name: {
@@ -29,7 +30,6 @@ export class TriggerService {
       },
     })
 
-    await this.agenda.createJob(trigger)
     return trigger
   }
 
@@ -42,8 +42,6 @@ export class TriggerService {
   }
 
   async remove(appid: string, id: string) {
-    await this.agenda.removeJob(id)
-
     const res = await this.prisma.cronTrigger.deleteMany({
       where: { appid, id },
     })

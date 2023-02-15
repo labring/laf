@@ -137,20 +137,30 @@ export class ResourceLabels {
   }
 }
 
+// Runtime constants
 export const HTTP_METHODS = ['HEAD', 'GET', 'POST', 'PUT', 'DELETE', 'PATCH']
 
 export const CN_PUBLISHED_FUNCTIONS = '__functions__'
 export const CN_PUBLISHED_POLICIES = '__policies__'
 export const CN_FUNCTION_LOGS = '__function_logs__'
 
+export const X_LAF_TRIGGER_TOKEN_KEY = 'x-laf-trigger-token'
+export const X_LAF_DEVELOP_TOKEN_KEY = 'x-laf-develop-token'
+export const APPLICATION_SECRET_KEY = 'SERVER_SECRET'
+
+// Cluster constants
+export const MINIO_COMMON_USER_GROUP = 'laf_owner_by_prefix_group'
+export const MINIO_COMMON_USER_POLICY = 'laf_owner_by_prefix'
+
+// Date & times
+export const SEVEN_DAYS_IN_SECONDS = 60 * 60 * 24 * 7 // 7 days in seconds
+export const FOREVER_IN_SECONDS = 60 * 60 * 24 * 365 * 1000 // 1000 years in seconds
+export const TASK_LOCK_INIT_TIME = new Date(0) // 1970-01-01 00:00:00
+
+// Resource units
 export const CPU_UNIT = 1000
 export const MB = 1024 * 1024
 export const GB = 1024 * MB
 
-export const APPLICATION_SECRET_KEY = 'SERVER_SECRET'
-
+// Resource limits
 export const MAX_FUNCTION_COUNT = 1000
-
-export const MINIO_COMMON_USER_GROUP = 'laf_owner_by_prefix_group'
-export const MINIO_COMMON_USER_POLICY = 'laf_owner_by_prefix'
-export const TASK_LOCK_INIT_TIME = new Date(0) // 1970-01-01 00:00:00

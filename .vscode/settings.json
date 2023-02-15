@@ -41,6 +41,7 @@
     "compat",
     "containerd",
     "creationforms",
+    "curlimages",
     "datasource",
     "datepicker",
     "dockerode",

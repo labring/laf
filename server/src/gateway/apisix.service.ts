@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios'
 import { Injectable, Logger } from '@nestjs/common'
 import { Region, WebsiteHosting } from '@prisma/client'
-import { GetApplicationNamespaceById } from '../utils/getter'
+import { GetApplicationNamespaceByAppId } from '../utils/getter'
 
 @Injectable()
 export class ApisixService {
@@ -11,7 +11,7 @@ export class ApisixService {
 
   async createAppRoute(region: Region, appid: string, domain: string) {
     const host = domain
-    const namespace = GetApplicationNamespaceById(appid)
+    const namespace = GetApplicationNamespaceByAppId(appid)
     const upstreamNode = `${appid}.${namespace}:8000`
 
     const id = `app-${appid}`

@@ -269,16 +269,16 @@ enum DatabasePhase {
 }
 
 model Database {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  appid    String @unique
-  name     String
-  user     String
-  password String
+  id        String        @id @default(auto()) @map("_id") @db.ObjectId
+  appid     String        @unique
+  name      String
+  user      String
+  password  String
   state     DatabaseState @default(Active)
   phase     DatabasePhase @default(Creating)
   lockedAt  DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 
   application Application @relation(fields: [appid], references: [appid])
 }
@@ -347,14 +347,32 @@ model CloudFunction {
   @@unique([appid, name])
 }
 
+// diresired state of resource
+enum TriggerState {
+  Active
+  Inactive
+  Deleted
+}
+
+// actual state of resource
+enum TriggerPhase {
+  Creating
+  Created
+  Deleting
+  Deleted
+}
+
 model CronTrigger {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
   appid     String
   desc      String
   cron      String
   target    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  state     TriggerState @default(Active)
+  phase     TriggerPhase @default(Creating)
+  lockedAt  DateTime
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 
   cloudFunction CloudFunction @relation(fields: [appid, target], references: [appid, name])
 }
@@ -382,9 +400,9 @@ model ApplicationDomain {
   domain    String      @unique
   state     DomainState @default(Active)
   phase     DomainPhase @default(Creating)
+  lockedAt  DateTime
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
-  lockedAt  DateTime
 
   application Application @relation(fields: [appid], references: [appid])
 }
