@@ -23,13 +23,21 @@ import { TBucket } from "@/apis/typing";
 
 export default function StorageListPanel() {
   const [search, setSearch] = useState("");
+  const [storageList, setStorageList] = useState<any>([]);
   // const globalStore = useGlobalStore();
   const store = useStorageStore((store) => store);
   const bucketListQuery = useBucketListQuery({
     onSuccess(data) {
       if (data?.data?.length) {
-        if (!store.currentStorage) store.setCurrentStorage(data?.data[0]);
+        setStorageList(data.data);
+        if (store?.currentStorage === undefined) store.setCurrentStorage(data?.data[0]);
+        else {
+          store.setCurrentStorage(
+            data?.data?.filter((item: any) => item.id === store?.currentStorage?.id)[0],
+          );
+        }
       } else {
+        setStorageList([]);
         store.setCurrentStorage(undefined);
       }
     },
@@ -77,10 +85,10 @@ export default function StorageListPanel() {
               <Spinner />
             </Center>
           ) : null}
-          {bucketListQuery?.data?.data?.length ? (
+          {storageList?.length ? (
             <SectionList>
-              {bucketListQuery?.data?.data
-                .filter((storage: TBucket) => storage?.name.indexOf(search) >= 0)
+              {storageList
+                ?.filter((storage: TBucket) => storage?.name.indexOf(search) >= 0)
                 .map((storage: TBucket) => {
                   return (
                     <SectionList.Item
@@ -106,14 +114,7 @@ export default function StorageListPanel() {
                               <CreateBucketModal storage={storage}>
                                 <IconText icon={<EditIcon />} text={t("Edit")} />
                               </CreateBucketModal>
-                              <DeleteBucketModal
-                                storage={storage}
-                                onSuccessAction={() => {
-                                  if (storage.name === store.currentStorage?.name) {
-                                    store.setCurrentStorage(bucketListQuery?.data?.data[0]);
-                                  }
-                                }}
-                              />
+                              <DeleteBucketModal storage={storage} onSuccessAction={() => {}} />
                             </>
                           </MoreButton>
                         </div>

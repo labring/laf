@@ -86,7 +86,7 @@ function DeleteBucketModal(props: { storage: TBucket; onSuccessAction?: () => vo
               colorScheme="red"
               onClick={handleSubmit(async (data) => {
                 if (data.name === storage.name) {
-                  const res = await bucketDeleteMutation.mutateAsync(storage);
+                  const res = await bucketDeleteMutation.mutateAsync({ name: storage.name });
                   if (!res.error) {
                     onSuccessAction && onSuccessAction();
                     onClose();

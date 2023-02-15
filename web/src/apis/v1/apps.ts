@@ -504,6 +504,7 @@ export async function WebsitesControllerCreate(
 
 /**
  * TODO - ⌛️
+ *
  */
 export async function WebsitesControllerFindAll(
   params: Paths.WebsitesControllerFindAll.BodyParameters | any,
@@ -549,6 +550,20 @@ export async function WebsitesControllerUpdate(
   };
   return request(`/v1/apps/${_params.appid}/websites/${_params.id}`, {
     method: "PATCH",
+    data: params,
+  });
+}
+
+export async function WebsitesControllerResolved(
+  params: Definitions.UpdateWebsiteDto | any,
+): Promise<Paths.WebsitesControllerUpdate.Responses> {
+  // /v1/apps/{appid}/websites/{id}
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/websites/${_params.id}/resolved`, {
+    method: "POST",
     data: params,
   });
 }
