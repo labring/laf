@@ -42,11 +42,11 @@ export class TriggerService {
   }
 
   async remove(appid: string, id: string) {
+    await this.agenda.removeJob(id)
+
     const res = await this.prisma.cronTrigger.deleteMany({
       where: { appid, id },
     })
-
-    await this.agenda.removeJob(id)
     return res
   }
 }
