@@ -90,7 +90,8 @@
     "DependenceTip": "请输入依赖包名",
     "Select": "已选择",
     "FunctionNameRule": "函数名只能包含英文或 _",
-    "EmptyFunctionTip": "您还没有创建函数"
+    "EmptyFunctionTip": "您还没有创建函数",
+    "UploadButton": "上传"
   },
   "TriggerPanel": {
     "Trigger": "触发器",

@@ -102,7 +102,8 @@
     "isSupport": "Whether to support",
     "FunctionNameRule": "Function names can only contain English or _",
     "EmptyDebugTip": "No results yet",
-    "EmptyFunctionTip": "You have not created the function"
+    "EmptyFunctionTip": "You have not created the function",
+    "UploadButton": "upload"
   },
   "HomePanel": {
     "APP": "Android or iOS app",
