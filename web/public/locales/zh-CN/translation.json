@@ -90,7 +90,8 @@
     "DependenceTip": "请输入依赖包名",
     "Select": "已选择",
     "FunctionNameRule": "函数名只能包含英文或 _",
-    "EmptyFunctionTip": "您还没有创建函数"
+    "EmptyFunctionTip": "您还没有创建函数",
+    "UploadButton": "上传"
   },
   "TriggerPanel": {
     "Trigger": "触发器",
@@ -107,6 +108,9 @@
     "Time": "更新时间",
     "Express": "表达式",
     "CornTip": "例:0/1 * * * * ？表示每 1 秒执行任务",
+    "fiveMinutes": "每五分钟",
+    "hours": "每小时",
+    "timeout": "每天上午8点",
     "DeleteConfirm": "确定删除该触发器吗",
     "CronHelp": "更多示例"
   },
@@ -159,7 +163,17 @@
     "BucketNamePlaceholder": "bucket-name",
     "UploadFile": "上传文件",
     "UploadFolder": "上传文件夹",
-    "Bucket": "Bucket"
+    "Bucket": "Bucket",
+    "nowDomain": "当前域名",
+    "isResolved": "已生效",
+    "parsing": "解析中",
+    "websiteHost": "开启网站托管",
+    "bind": "绑定自定义域名",
+    "domain": "域名",
+    "domainTip": "请输入Domain",
+    "editHostTip": "开启网站托管需要 oss-bucket 是 read 模式",
+    "cnameHostPreTip": "请到您的域名服务商处，添加该域名的\"CNAME\" 解析到",
+    "cnameHostSuffixTip": "解析生效后即可绑定自定义域名。"
   },
   "Search": "搜索",
   "Close": "关闭",

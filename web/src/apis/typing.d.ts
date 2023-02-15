@@ -101,6 +101,7 @@ export interface TBucket {
   policy: string;
   createdAt: string;
   updatedAt: string;
+  websiteHosting?: any;
 }
 
 export interface Spec {

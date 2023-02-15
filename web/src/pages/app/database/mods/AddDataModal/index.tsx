@@ -85,7 +85,7 @@ const AddDataModal = (props: {
           reset({ value: JSON.stringify(template, null, 2) });
         },
       })}
-      <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="2xl">
         <ModalOverlay />
         <ModalContent className="h-[80vh]">
           <ModalHeader> {t("CollectionPanel.AddData")}</ModalHeader>

@@ -28,15 +28,15 @@ import { useFunctionListQuery } from "@/pages/app/functions/service";
 
 const CRON_TEMPLATE = [
   {
-    label: "每5分钟",
+    label: t("TriggerPanel.fiveMinutes"),
     value: "*/5 * * * *",
   },
   {
-    label: "每小时",
+    label: t("TriggerPanel.hours"),
     value: "0 * * * *",
   },
   {
-    label: "每天上午8点",
+    label: t("TriggerPanel.timeout"),
     value: "0 8 * * *",
   },
 ];
