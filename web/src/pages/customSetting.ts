@@ -40,7 +40,7 @@ const useCustomSettingStore = create<State>()(
 
             RightPanel: {
               style: {
-                width: 300,
+                width: 320,
               },
             },
 
@@ -93,7 +93,7 @@ const useCustomSettingStore = create<State>()(
           });
         },
       })),
-      { name: "laf_custome_setting" },
+      { name: "laf_custom_setting" },
     ),
   ),
 );

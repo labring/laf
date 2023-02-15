@@ -102,7 +102,8 @@
     "isSupport": "是否支持",
     "FunctionNameRule": "函数名只能包含英文或 _",
     "EmptyDebugTip": "暂无运行结果",
-    "EmptyFunctionTip": "您还没有创建函数"
+    "EmptyFunctionTip": "您还没有创建函数",
+    "UploadButton": "上传"
   },
   "HomePanel": {
     "APP": "Android or iOS 应用",
