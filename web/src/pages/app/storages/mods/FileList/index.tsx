@@ -55,11 +55,11 @@ export default function FileList() {
       return;
     }
 
-    const mode = currentApp?.tls ? "https" : "http";
+    const protocol = currentApp?.tls ? "https" : "http";
     const fileUrl =
       bucketType === "private"
         ? getFileUrl(bucketName!, file.Key)
-        : `${(address && address[0]) || mode}//${bucketName}.${(address && address[1]) || ""}/${
+        : `${(address && address[0]) || protocol}//${bucketName}.${(address && address[1]) || ""}/${
             file.Key
           }`;
 
