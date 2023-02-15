@@ -56,3 +56,11 @@ Your-APPID: intercepted
 ```bash
 telepresence leave APPID-APPID
 ```
+
+## Troubleshooting
+
+- `telepresence helm install` failed for `arm64/Apple Chip` cluster:
+  
+  ```bash
+  telepresence helm install --set image.name=pentusha/telepresence-ubuntu-multiarch --set image.registry=docker.io --set image.tag=2.10.4
+  ```

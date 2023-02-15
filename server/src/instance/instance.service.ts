@@ -1,6 +1,6 @@
 import { V1Deployment } from '@kubernetes/client-node'
 import { Injectable, Logger } from '@nestjs/common'
-import { GetApplicationNamespaceById } from '../utils/getter'
+import { GetApplicationNamespaceByAppId } from '../utils/getter'
 import { MB, ResourceLabels } from '../constants'
 import { PrismaService } from '../prisma.service'
 import { StorageService } from '../storage/storage.service'
@@ -39,7 +39,7 @@ export class InstanceService {
   }
 
   async createDeployment(appid: string, labels: any) {
-    const namespace = GetApplicationNamespaceById(appid)
+    const namespace = GetApplicationNamespaceByAppId(appid)
     const app = await this.prisma.application.findUnique({
       where: { appid },
       include: {
@@ -194,7 +194,7 @@ export class InstanceService {
   }
 
   async createService(app: ApplicationWithRegion, labels: any) {
-    const namespace = GetApplicationNamespaceById(app.appid)
+    const namespace = GetApplicationNamespaceByAppId(app.appid)
     const serviceName = app.appid
     const coreV1Api = this.clusterService.makeCoreV1Api(app.region)
     const res = await coreV1Api.createNamespacedService(namespace, {
@@ -216,7 +216,7 @@ export class InstanceService {
     const appsV1Api = this.clusterService.makeAppsV1Api(region)
     const coreV1Api = this.clusterService.makeCoreV1Api(region)
 
-    const namespace = GetApplicationNamespaceById(appid)
+    const namespace = GetApplicationNamespaceByAppId(appid)
     if (deployment) {
       await appsV1Api.deleteNamespacedDeployment(appid, namespace)
     }
@@ -238,7 +238,7 @@ export class InstanceService {
     const appid = app.appid
     const appsV1Api = this.clusterService.makeAppsV1Api(app.region)
     try {
-      const namespace = GetApplicationNamespaceById(appid)
+      const namespace = GetApplicationNamespaceByAppId(appid)
       const res = await appsV1Api.readNamespacedDeployment(appid, namespace)
       return res.body
     } catch (error) {
@@ -253,7 +253,7 @@ export class InstanceService {
 
     try {
       const serviceName = appid
-      const namespace = GetApplicationNamespaceById(appid)
+      const namespace = GetApplicationNamespaceByAppId(appid)
       const res = await coreV1Api.readNamespacedService(serviceName, namespace)
       return res.body
     } catch (error) {

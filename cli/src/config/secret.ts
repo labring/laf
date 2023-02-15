@@ -43,7 +43,7 @@ export async function refreshSecretConfig() {
   let timestamp = Date.parse(new Date().toString()) / 1000
   const secretConfig = {
     functionSecretConfig: {
-      debugToken: app.function_debug_token,
+      debugToken: app.develop_token,
       debugTokenExpire: timestamp + DEBUG_TOKEN_EXPIRE,
     },
     storageSecretConfig: {
