@@ -73,7 +73,7 @@ export function moduleExists(mod: string) {
  */
 export async function ensureCollectionIndexes(): Promise<any> {
   // init.ts should not import db globally, because init.ts would be referenced in build time
-  const { DatabaseAgent } = require('../db')
+  const { DatabaseAgent } = require('./db')
   await DatabaseAgent.accessor.ready
   const db = DatabaseAgent.db
   await db.collection(Constants.function_log_collection).createIndexes([
