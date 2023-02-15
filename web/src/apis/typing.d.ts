@@ -17,6 +17,7 @@ export interface TApplication {
   domain: Domain;
   storage: Storage;
   function_debug_token: string;
+  tls: boolean;
 }
 
 export interface Bundle {
