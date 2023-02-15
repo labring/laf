@@ -17,8 +17,8 @@
     "Welcome": "欢迎来到 LAF 云开发平台！",
     "Introduction": " 在这里，你可以作为全栈、后端、云开发用户、Node.js开发者、独立开发者等，开发出任何应用，例如：",
     "Use": "快来创建一个属于自己的应用吧～",
-    "DeleteApp": "删除APP",
-    "DeleteTip": "你确定想要删除这个App?"
+    "DeleteApp": "删除 APP",
+    "DeleteTip": "你确定想要删除这个 App?"
   },
   "CollectionPanel": {
     "Collection": "集合",
@@ -33,8 +33,8 @@
     "AddData": "添加数据",
     "AddIndex": "添加索引",
     "IndexName": "索引名称",
-    "Search": "请输入ID进行搜索",
-    "Query": "请输入ID按回车进行查询",
+    "Search": "请输入 ID 进行搜索",
+    "Query": "请输入 ID 按回车进行查询",
     "EmptyCollectionText": "暂无集合信息,",
     "EmptyDataText": "暂无数据信息,",
     "EmptyCollectionTip": "您还没有创建集合",
@@ -73,7 +73,7 @@
     "Description": "函数描述",
     "Code": "函数模板",
     "isSupport": "是否支持",
-    "Dependence": "NPM依赖",
+    "Dependence": "NPM 依赖",
     "CustomDependence": "自定义依赖",
     "CustomDependenceTip": "暂无自定义依赖",
     "SystemDependence": "内置依赖",
@@ -90,7 +90,8 @@
     "DependenceTip": "请输入依赖包名",
     "Select": "已选择",
     "FunctionNameRule": "函数名只能包含英文或 _",
-    "EmptyFunctionTip": "您还没有创建函数"
+    "EmptyFunctionTip": "您还没有创建函数",
+    "UploadButton": "上传"
   },
   "TriggerPanel": {
     "Trigger": "触发器",
@@ -127,11 +128,11 @@
     "UserSetting": "用户设置"
   },
   "StoragePanel": {
-    "CreateBucket": "创建Bucket",
-    "EmptyStorageTip": "您还没有创建Bucket",
-    "EditBucket": "编辑Bucket",
-    "DeleteBucket": "删除Bucket",
-    "BucketName": "Bucket名称",
+    "CreateBucket": "创建 Bucket",
+    "EmptyStorageTip": "您还没有创建 Bucket",
+    "EditBucket": "编辑 Bucket",
+    "DeleteBucket": "删除 Bucket",
+    "BucketName": "Bucket 名称",
     "Storage": "存储",
     "StorageList": "云存储列表",
     "Policy": "权限",
@@ -153,11 +154,11 @@
     "NameTip": "请输入文件夹名称",
     "DeleteConfirm": "当前操作将会永久删除云存储",
     "StorageNameTip": "请输入云存储名称",
-    "SearchBucket": "输入bucket名进行搜索",
+    "SearchBucket": "输入 bucket 名进行搜索",
     "All": "总容量",
     "Used": "已使用",
     "Success": "上传成功",
-    "EmptyText": "暂无Bucket数据,",
+    "EmptyText": "暂无 Bucket 数据,",
     "BucketNameRule": "只能包含小写英文、数字，开头和结尾不能是数字或 -",
     "BucketNamePlaceholder": "bucket-name",
     "UploadFile": "上传文件",
@@ -216,5 +217,11 @@
   "Refresh": "刷新",
   "RefreshData": "刷新数据",
   "NoInfo": "暂无信息",
-  "RefreshDataSuccess": "数据刷新成功"
+  "RefreshDataSuccess": "数据刷新成功",
+  "Language": "语言",
+  "database example": "database 示例",
+  "update success": "更新成功",
+  "Take me home": "返回首页",
+  "404Message": "找不到当前内容",
+  "403Message": "当前用户没有权限"
 }

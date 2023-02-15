@@ -278,6 +278,7 @@ export const useRulesListQuery = (onSuccess?: (data: any) => void) => {
       onSuccess(data) {
         onSuccess && onSuccess(data);
       },
+      enabled: !!currentPolicy,
     },
   );
 };

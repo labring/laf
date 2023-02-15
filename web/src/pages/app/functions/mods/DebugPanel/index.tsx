@@ -49,7 +49,7 @@ export default function DebugPanel() {
   const compileMutation = useCompileMutation();
 
   const [queryParams, setQueryParams] = useState([]);
-  const [bodyParams, setBodyParams] = useState({});
+  const [bodyParams, setBodyParams] = useState<{ contentType: string; data: any }>();
   const [headerParams, setHeaderParams] = useState([]);
 
   const { displayName } = useHotKey(
@@ -83,10 +83,11 @@ export default function DebugPanel() {
           url: getFunctionUrl(),
           method: runningMethod,
           params: mapValues(keyBy(queryParams, "name"), "value"),
-          data: bodyParams,
+          data: bodyParams?.data,
           headers: Object.assign(mapValues(keyBy(headerParams, "name"), "value"), {
             "x-laf-debug-token": `${globalStore.currentApp?.function_debug_token}`,
             "x-laf-func-data": encodeURIComponent(_funcData),
+            "Content-Type": bodyParams?.contentType || "application/json",
           }),
         });
 
@@ -156,9 +157,9 @@ export default function DebugPanel() {
                     className="h-full flex-col"
                     style={{ display: "flex" }}
                   >
-                    <TabList className="mb-2 flex-none">
+                    <TabList className="mb-1 flex-none">
                       <Tab>
-                        Parameters
+                        Params
                         {queryParams.length > 0 && (
                           <span className="ml-1">({queryParams.length})</span>
                         )}
@@ -166,8 +167,8 @@ export default function DebugPanel() {
                       {HAS_BODY_PARAMS_METHODS.includes(runningMethod) && (
                         <Tab>
                           Body
-                          {Object.keys(bodyParams).length > 0 && (
-                            <span className="ml-1">({Object.keys(bodyParams).length})</span>
+                          {Object.keys(bodyParams?.data || {}).length > 0 && (
+                            <span className="ml-1">({Object.keys(bodyParams?.data).length})</span>
                           )}
                         </Tab>
                       )}

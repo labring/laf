@@ -44,6 +44,10 @@ const routes = [
           },
         ],
       },
+      {
+        path: "/403",
+        element: () => import("@/pages/403"),
+      },
       route404,
     ],
   },

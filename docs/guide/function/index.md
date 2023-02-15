@@ -10,31 +10,41 @@ title: 云函数入门
 
 在你的应用中，大多数数据的获取都可在客户端直接操作数据库，但是通常业务中会使用到「非数据库操作」，如注册、登录、文件操作、事务、第三方接口等，可直接使用云函数实现。
 
-## 第一个云函数
+## 创建云函数
 
-一个最简单的云函数只需要在模块中导出一个名为 `main` 的函数，如下面代码所示:
+点击页面左上角「函数」按钮,点击加号,添加云函数
 
-```js
-exports.main = function () {
-  return "hello world!";
-};
-```
+![](/doc-images/create-function.jpg)
 
-当然，使用 ESModule 的语法也是可以的：
+## 编辑云函数
 
-```js
-export function main() {
-  return "hello world!";
-}
-```
+可直接在线编辑代码
+
+![](/doc-images/edit-cloudfunction.png)
+
+## 运行云函数
+
+云函数可直接运行调试,未发布的云函数也可以在此进行运行调试
+
+![](/doc-images/run-cloudfunction.png)
+
+## 发布云函数
+
+云函数发布后,才可正式使用
+
+::: warning
+云函数不会自动保存,发布后才会保存并生效
+:::
+
+![](/doc-images/publish-cloudfunction.png)
 
 ## 访问云函数
 
 ### 通过 URL 访问云函数
 
-发布云函数后，可以在云函数列表中的"调用地址"获得云函数的访问地址。
+发布云函数后，可以在发布按钮右边找到该云函数的访问地址。
 
-使用浏览器或者 PostMan 等工具访问该地址，即可得到 `hello world!`字符串。
+使用浏览器或者 PostMan 等工具访问该地址，即可得到 `hello laf`字符串。
 ::: warning
 暂不能设置云函数url化的path
 :::
@@ -61,15 +71,17 @@ import { Cloud } from "laf-client-sdk";
 const cloud = new Cloud({
   baseUrl: "xxx", // 这个地址可以在欢迎页面中的“服务地址”中找到
   getAccessToken: () => "", // 这里不需要授权，先填空
+  //environment: "wxmp", // 微信小程序中使用
+  //environment: "uniapp", // UNI-APP中使用
 });
 ```
 
 然后，就可以调用云函数了：
 
 ```js
-const ret = await cloud.invokeFunction("helloworld");
+const ret = await cloud.invokeFunction("hello-laf");
 
-console.log(ret); // hello world!
+console.log(ret); // hello laf
 ```
 
 ## 获取用户传递的参数
@@ -91,6 +103,7 @@ console.log(ret); // hello world!
 | `ctx.response`  | HTTP 响应，和`express`的`Response`实例保持一致                                      |
 | `ctx.socket`    | [WebSocket](https://developer.mozilla.org/zh-CN/docs/Web/API/WebSocket) 实例        |
 | `ctx.files`     | 上传的文件 ([File](https://developer.mozilla.org/zh-CN/docs/Web/API/File) 对象数组) |
+| `ctx.env`       | 自定义的环境变量 ([env](env.md)) |
 
 下面的例子可以读取用户传递的 Query 参数`username`：
 
@@ -118,9 +131,27 @@ laf 现有对 `request` 请求体和请求流的大小限制是 10M(后期会做
 const ret = await cloud.invokeFunction("函数名", { name: "test" });
 ```
 
+## 同步云函数
+
+如下面代码所示:
+
+```js
+exports.main = function () {
+  return "hello world!";
+};
+```
+
+当然，使用 ESModule 的语法也是可以的：
+
+```js
+export function main() {
+  return "hello world!";
+}
+```
+
 ## 异步的云函数
 
-刚刚我们提到的云函数都是同步函数。但是，在实际应用中，云函数需要执行的异步操作（如网络请求）。
+在实际应用中，云函数需要执行的异步操作（如网络请求）。
 
 幸运的是，云函数本身是支持异步调用的，你只需要在函数的前面加上 `async` ，就能轻松的让函数支持异步操作：
 
@@ -327,7 +358,7 @@ const { username } = ctx.body;
       {
         ...ctx, // 如果函数内部需要使用ctx中的某些属性，可按此方法传入
         body: {
-        	id: ret?.insertId
+         id: ret?.insertId
         }
       }
     )
@@ -337,6 +368,7 @@ const { username } = ctx.body;
   return ret.ok;
 };
 ```
+
 之后可在[触发器](trigger.md)处使用
 ![image](https://user-images.githubusercontent.com/27558572/191404414-7d69811e-b192-4d55-9a26-59829d9932aa.png)
 
@@ -344,7 +376,6 @@ const { username } = ctx.body;
 ![image](https://user-images.githubusercontent.com/27558572/191404535-700c43b4-3e1c-427a-a36d-4198e10dcc7d.png)
 
 > 新建触发器后需要点击`新建函数`旁的`发布函数`发布后才会应用触发器。
-
 
 ### 生成 JWT token
 
@@ -394,10 +425,12 @@ exports.main = async function (ctx) {
 `cloud.shared`是JS中标准的Map对象，可参照MDN文档学习使用：[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
 
 使用场景：
+
 1. 可将一些全局配置初始化到 shared 中，如微信开发信息、短信发送配置
 2. 可共享一些常用方法，如 checkPermission 等，以提升云函数性能
 3. 可做热数据的缓存。如：缓存微信access_token。（建议少量使用，此对象是在 node vm 堆中分配，因为 node vm 堆内存限制）
 :::
+
 ```ts
 import cloud from "@/cloud-sdk";
 

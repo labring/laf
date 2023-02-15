@@ -24,6 +24,10 @@ function ConsolePanel() {
     },
   );
 
+  const list = logControllerGetLogsQuery.data?.data?.list || [];
+  // reverse will change the original array, so we need to clone it first
+  const cloneReverseArray = [...list].reverse();
+
   return (
     <Panel className="flex-1 max-h-[200px]">
       <Panel.Header title="Console"></Panel.Header>
@@ -37,8 +41,8 @@ function ConsolePanel() {
           <Center>
             <Spinner />
           </Center>
-        ) : logControllerGetLogsQuery.data?.data?.list?.length ? (
-          logControllerGetLogsQuery.data?.data?.list?.reverse().map((item: any) => {
+        ) : cloneReverseArray.length > 0 ? (
+          cloneReverseArray.map((item: any) => {
             return (
               <div key={item._id} className="flex ">
                 <span className=" text-slate-500 min-w-[160px]">

@@ -70,7 +70,7 @@
   "FunctionPanel": {
     "AddFunction": "Add Function",
     "Code": "Function Template",
-    "ConfirmDeploy": "Confirm Release",
+    "ConfirmDeploy": "Confirm Deploy",
     "CustomDependence": "Custom",
     "CustomDependenceTip": "No custom dependencies yet",
     "Debug": "Run",
@@ -102,7 +102,8 @@
     "isSupport": "Whether to support",
     "FunctionNameRule": "Function names can only contain English or _",
     "EmptyDebugTip": "No results yet",
-    "EmptyFunctionTip": "You have not created the function"
+    "EmptyFunctionTip": "You have not created the function",
+    "UploadButton": "upload"
   },
   "HomePanel": {
     "APP": "Android or iOS app",
@@ -216,5 +217,11 @@
   "RefreshData": "Refresh",
   "EditTip": "modified, unpublished",
   "NoInfo": "No information",
-  "RefreshDataSuccess": "data refreshed"
+  "RefreshDataSuccess": "data refreshed",
+  "Language": "Language",
+  "database example": "database example",
+  "update success": "update completed",
+  "Take me home": "Take me home",
+  "404Message": "We can't find that page",
+  "403Message": "You don't have permission to access this page"
 }

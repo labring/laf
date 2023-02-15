@@ -74,7 +74,7 @@ function JsonEditor(props: {
       editorRef.current?.getModel()?.setValue(value);
     }
   }, [value]);
-  return <div style={{ height: height, width: "100%" }} ref={monacoEl}></div>;
+  return <div style={{ height: height, width: "100%", padding: "12px 2px" }} ref={monacoEl}></div>;
 }
 
 export default JsonEditor;

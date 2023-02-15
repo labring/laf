@@ -46,6 +46,8 @@ if [ ! -x "$(command -v sealos)" ]; then
     exit 1
 fi
 
+set -e
+
 # install k8s cluster
 sealos run labring/kubernetes:v1.24.9 labring/flannel:v0.19.0 labring/helm:v3.8.2 --single
 
