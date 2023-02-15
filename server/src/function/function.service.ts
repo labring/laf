@@ -13,6 +13,7 @@ import * as assert from 'node:assert'
 import { JwtService } from '@nestjs/jwt'
 import { CompileFunctionDto } from './dto/compile-function.dto'
 import { DatabaseService } from 'src/database/database.service'
+import { GetApplicationNamespaceByAppId } from 'src/utils/getter'
 
 @Injectable()
 export class FunctionService {
@@ -130,7 +131,14 @@ export class FunctionService {
     return data
   }
 
-  async getDebugFunctionToken(appid: string) {
+  async generateRuntimeToken(
+    appid: string,
+    type: 'trigger' | 'develop',
+    expireSeconds = 60,
+  ) {
+    assert(appid, 'appid is required')
+    assert(type, 'type is required')
+
     const conf = await this.prisma.applicationConfiguration.findUnique({
       where: { appid },
     })
@@ -142,13 +150,26 @@ export class FunctionService {
     assert(secret?.value, 'application secret not found')
 
     // generate token
-    const exp = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7 // 7 days
+    const exp = Math.floor(Date.now() / 1000) + expireSeconds
 
     const token = this.jwtService.sign(
-      { appid, type: 'debug', exp },
+      { appid, type, exp },
       { secret: secret.value },
     )
     return token
+  }
+
+  /**
+   * Get the in-cluster url of runtime
+   * @param appid
+   * @returns
+   */
+  getInClusterRuntimeUrl(appid: string) {
+    const serviceName = appid
+    const namespace = GetApplicationNamespaceByAppId(appid)
+    const appAddress = `${serviceName}.${namespace}:8000`
+    const url = `http://${appAddress}`
+    return url
   }
 
   async getLogs(

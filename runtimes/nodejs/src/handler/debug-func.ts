@@ -18,9 +18,9 @@ import { ICloudFunctionData } from '@lafjs/cloud'
  */
 export async function handleDebugFunction(req: IRequest, res: Response) {
   // verify the debug token
-  const token = req.get('x-laf-debug-token')
+  const token = req.get('x-laf-develop-token')
   if (!token) {
-    return res.status(400).send('x-laf-debug-token is required')
+    return res.status(400).send('x-laf-develop-token is required')
   }
   const auth = parseToken(token) || null
   if (auth?.type !== 'debug') {
