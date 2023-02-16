@@ -16,6 +16,7 @@ export interface TApplication {
   configuration: Configuration;
   domain: Domain;
   storage: Storage;
+  tls: boolean;
   develop_token: string;
 }
 

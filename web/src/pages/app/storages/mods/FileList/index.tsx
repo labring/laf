@@ -55,12 +55,15 @@ export default function FileList() {
       changeDirectory(file);
       return;
     }
-    const fileUrl =
-      bucketType === "private"
-        ? getFileUrl(bucketName!, file.Key)
-        : `${(address && address[0]) || "http"}//${bucketName}.${(address && address[1]) || ""}/${
-            file.Key
-          }`;
+    const protocol = address && address[0];
+    const ossUrl = address && address[1];
+    let fileUrl = "";
+
+    if (bucketType === "private") {
+      fileUrl = getFileUrl(bucketName!, file.Key);
+    } else {
+      fileUrl = protocol + "//" + bucketName + "." + ossUrl + "/" + file.Key;
+    }
 
     window.open(fileUrl, "_blank");
   };

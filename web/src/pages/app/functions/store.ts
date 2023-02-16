@@ -29,9 +29,10 @@ const useFunctionStore = create<State>()(
       getFunctionUrl: () => {
         const currentApp = useGlobalStore.getState().currentApp;
         const currentFunction = get().currentFunction;
+        const protocol = currentApp?.tls ? "https://" : "http://";
 
         return currentFunction?.name
-          ? `http://${currentApp?.domain?.domain}/${currentFunction?.name}`
+          ? `${protocol}${currentApp?.domain?.domain}/${currentFunction?.name}`
           : "";
       },
 
