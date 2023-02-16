@@ -23,7 +23,7 @@ export async function handleDebugFunction(req: IRequest, res: Response) {
     return res.status(400).send('x-laf-develop-token is required')
   }
   const auth = parseToken(token) || null
-  if (auth?.type !== 'debug') {
+  if (auth?.type !== 'develop') {
     return res.status(403).send('permission denied: invalid debug token')
   }
 
