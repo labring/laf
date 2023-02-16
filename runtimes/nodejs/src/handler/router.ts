@@ -12,7 +12,7 @@ import { handleDatabaseProxy } from './db-proxy'
 import { handlePackageTypings } from './typings'
 import { generateUUID } from '../support/utils'
 import { handleInvokeFunction } from './invoke-func'
-import { handlePublishPolicies } from './publish'
+
 
 /**
  * multer uploader config
@@ -23,17 +23,20 @@ const uploader = multer({
       const { ext } = path.parse(file.originalname)
       cb(null, generateUUID() + ext)
     }
-  })
+  }),
+  fileFilter(_req, file, callback) {
+    // solve the problem of garbled unicode names
+    file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8')
+    callback(null, true)
+  },
 })
 
 export const router = Router()
 
 
 router.post('/proxy/:policy', handleDatabaseProxy)
-router.get('/typing/package', handlePackageTypings)
+router.get('/_/typing/package', handlePackageTypings)
 router.get('/_/healthz', (_req, res) => res.status(200).send('ok'))
-router.post('/_/publish/functions', (_req, res) => res.status(400).send('TODO'))
-router.post('/_/publish/policies', handlePublishPolicies)
 
 /**
  * Invoke cloud function through HTTP request.

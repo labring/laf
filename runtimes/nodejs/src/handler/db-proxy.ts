@@ -21,7 +21,7 @@ export async function handleDatabaseProxy(req: IRequest, res: Response) {
   const policy_name = req.params?.policy
 
   // get corresponding policy
-  const policy_comp = PolicyAgent.get(policy_name)
+  const policy_comp = await PolicyAgent.get(policy_name)
   if (!policy_comp) {
     return res.status(404).send('Policy Not Found')
   }

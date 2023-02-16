@@ -6,6 +6,7 @@
  */
 
 import * as express from 'express'
+import * as cors from 'cors'
 
 import { parseToken, splitBearerToken } from './support/token'
 import Config from './config'
@@ -21,6 +22,10 @@ import './support/function-log'
 import './support/cloud-sdk'
 
 const app = express()
+
+if (process.env.NODE_ENV === 'development') {
+  app.use(cors())
+}
 
 app.use(express.json({ limit: Config.REQUEST_LIMIT_SIZE }) as any)
 app.use(

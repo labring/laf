@@ -24,7 +24,7 @@ export async function handleDebugFunction(req: IRequest, res: Response) {
   }
   const auth = parseToken(token) || null
   if (auth?.type !== 'develop') {
-    return res.status(403).send('permission denied: invalid debug token')
+    return res.status(403).send('permission denied: invalid develop token')
   }
 
   // get func_data from header
