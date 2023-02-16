@@ -325,6 +325,23 @@ const Badge = {
     },
   },
 };
+
+const Menu = {
+  variants: {
+    default: {
+      list: {
+        py: "4px",
+        borderRadius: "4px",
+        border: "none",
+        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+      },
+    },
+  },
+  defaultProps: {
+    variant: "default",
+  },
+};
+
 const theme = extendTheme({
   fontSizes: {
     sm: "12px",
@@ -424,6 +441,7 @@ const theme = extendTheme({
     Table,
     Select,
     Badge,
+    Menu,
   },
 });
 export default theme;

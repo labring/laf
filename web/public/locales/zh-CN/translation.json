@@ -108,11 +108,11 @@
     "Time": "更新时间",
     "Express": "表达式",
     "CornTip": "例:0/1 * * * * ？表示每 1 秒执行任务",
-    "fiveMinutes": "每五分钟",
-    "hours": "每小时",
-    "timeout": "每天上午8点",
     "DeleteConfirm": "确定删除该触发器吗",
-    "CronHelp": "更多示例"
+    "CronHelp": "更多示例",
+    "Every8AM": "每天上午8点",
+    "EveryHour": "每小时",
+    "EveryFiveMinutes": "每五分钟"
   },
   "LogPanel": {
     "Log": "日志",
@@ -164,16 +164,20 @@
     "UploadFile": "上传文件",
     "UploadFolder": "上传文件夹",
     "Bucket": "Bucket",
-    "nowDomain": "当前域名",
     "isResolved": "已生效",
     "parsing": "解析中",
     "websiteHost": "开启网站托管",
-    "bind": "绑定自定义域名",
     "domain": "域名",
     "domainTip": "请输入Domain",
-    "editHostTip": "开启网站托管需要 oss-bucket 是 read 模式",
-    "cnameHostPreTip": "请到您的域名服务商处，添加该域名的\"CNAME\" 解析到",
-    "cnameHostSuffixTip": "解析生效后即可绑定自定义域名。"
+    "editHostTip": "开启网站托管需要 bucket 权限是 readonly 模式",
+    "cnameHostPreTip": "添加该域名的\"CNAME\" 解析到",
+    "cnameHostSuffixTip": "解析生效后即可绑定自定义域名。",
+    "CreateWebHosting": "绑定自定义域名",
+    "CustomDomain": "自定义域名",
+    "CurrentDomain": "当前域名: ",
+    "RemoveHost": "取消静态托管",
+    "CancelHost": "取消托管",
+    "Inaccessible": "无法访问"
   },
   "Search": "搜索",
   "Close": "关闭",
@@ -223,5 +227,8 @@
   "update success": "更新成功",
   "Take me home": "返回首页",
   "404Message": "找不到当前内容",
-  "403Message": "当前用户没有权限"
+  "403Message": "当前用户没有权限",
+  "Bucket": {
+    "StatusTip": "外部访问需要将 bucket 权限设置为 readonly"
+  }
 }

@@ -1,14 +1,17 @@
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { DeleteIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
   FormLabel,
   Input,
   InputGroup,
-  InputLeftAddon,
   InputRightAddon,
+  Link,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -17,11 +20,13 @@ import {
   ModalHeader,
   ModalOverlay,
   useDisclosure,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
 
+import { MoreIcon } from "@/components/CommonIcon";
 import CopyText from "@/components/CopyText";
-import IconWrap from "@/components/IconWrap";
+import { BUCKET_POLICY_TYPE, BUCKET_STATUS } from "@/constants";
 
 import {
   useWebsiteCreateMutation,
@@ -29,6 +34,8 @@ import {
   useWebSiteUpdateMutation,
 } from "../../service";
 import useStorageStore from "../../store";
+
+import SiteStatus from "./SiteStatus";
 
 function CreateWebsiteModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -38,64 +45,53 @@ function CreateWebsiteModal() {
   const createWebsiteMutation = useWebsiteCreateMutation();
   const deleteWebsiteMutation = useWebsiteDeleteMutation();
   const updateWebsiteMutation = useWebSiteUpdateMutation();
+  const toast = useToast();
   return (
     <>
-      {currentStorage?.websiteHosting && currentStorage.websiteHosting.state === "Active" ? (
+      {currentStorage?.websiteHosting &&
+      currentStorage.websiteHosting.state === BUCKET_STATUS.Active ? (
         <>
-          <span className="font-semibold w-16">{t("StoragePanel.nowDomain")}</span>
-          <InputGroup
-            size="sm"
-            onClick={() => {
-              if (currentStorage?.websiteHosting?.state === "Active") {
-                onOpen();
-                reset({});
-                setTimeout(() => {
-                  setFocus("domain");
-                }, 0);
-              }
-            }}
+          <span className="font-semibold">{t("StoragePanel.CurrentDomain")}</span>
+
+          <Link
+            className="cursor-pointer"
+            href={`//${currentStorage?.websiteHosting?.domain}`}
+            isExternal
           >
-            <InputLeftAddon
-              children={
-                <>
-                  <span className="inline-block w-[6px] h-[6px] rounded-full mr-1 bg-primary-600"></span>
-                  <span className="text-primary-600">
-                    {currentStorage?.websiteHosting?.state === "Active"
-                      ? t("StoragePanel.isResolved")
-                      : t("StoragePanel.parsing")}
-                  </span>
-                </>
-              }
-            />
-            <Input
-              className="w-36 cursor-pointer"
-              value={currentStorage?.websiteHosting?.domain}
-              readOnly
-            />
-            <InputRightAddon
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              children={
-                <>
-                  <CopyText
-                    className="cursor-pointer"
-                    text={currentStorage?.websiteHosting?.domain}
-                  />
-                  <IconWrap tooltip={String(t("Delete"))}>
-                    <DeleteIcon
-                      fontSize={13}
-                      onClick={() => {
-                        deleteWebsiteMutation.mutateAsync({
-                          id: currentStorage?.websiteHosting?.id,
-                        });
-                      }}
-                    />
-                  </IconWrap>
-                </>
-              }
-            />
-          </InputGroup>
+            {currentStorage?.websiteHosting?.domain}
+          </Link>
+
+          <SiteStatus />
+
+          <Menu>
+            <MenuButton>
+              <MoreIcon fontSize={10} mt="-3px" />
+            </MenuButton>
+            <MenuList minWidth="100px">
+              <MenuItem
+                onClick={() => {
+                  if (currentStorage?.websiteHosting?.state === BUCKET_STATUS.Active) {
+                    onOpen();
+                    reset({});
+                    setTimeout(() => {
+                      setFocus("domain");
+                    }, 0);
+                  }
+                }}
+              >
+                {t("StoragePanel.CustomDomain")}
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  deleteWebsiteMutation.mutateAsync({
+                    id: currentStorage?.websiteHosting?.id,
+                  });
+                }}
+              >
+                {t("StoragePanel.CancelHost")}
+              </MenuItem>
+            </MenuList>
+          </Menu>
         </>
       ) : (
         <Button
@@ -104,9 +100,17 @@ function CreateWebsiteModal() {
           style={{ borderRadius: "1rem" }}
           disabled={currentStorage === undefined}
           onClick={() => {
+            if (currentStorage?.policy === BUCKET_POLICY_TYPE.private) {
+              toast({
+                status: "warning",
+                position: "top",
+                title: t("StoragePanel.editHostTip"),
+              });
+              return;
+            }
             createWebsiteMutation.mutateAsync({
               bucketName: currentStorage && currentStorage.name,
-              state: "Active",
+              state: BUCKET_STATUS.Active,
             });
           }}
         >
@@ -117,12 +121,12 @@ function CreateWebsiteModal() {
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{t("StoragePanel.bind")}</ModalHeader>
+          <ModalHeader>{t("StoragePanel.CustomDomain")}</ModalHeader>
           <ModalCloseButton />
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
-              {currentStorage?.policy === "private" ? (
+              {currentStorage?.policy === BUCKET_POLICY_TYPE.private ? (
                 <p className="text-error-500 font-semibold">{t("StoragePanel.editHostTip")}</p>
               ) : null}
               <FormControl>
@@ -149,10 +153,11 @@ function CreateWebsiteModal() {
                   placeholder={String(t("StoragePanel.domainTip"))}
                 />
                 <p className="mt-2 text-grayModern-600">
-                  {t("StoragePanel.cnameHostPreTip") +
-                    currentStorage?.websiteHosting?.domain +
-                    t("StoragePanel.cnameHostSuffixTip")}
-                  ,
+                  {t("StoragePanel.cnameHostPreTip")}
+                  <span className="mx-2 whitespace-nowrap">
+                    {currentStorage?.websiteHosting?.domain}
+                  </span>
+                  ,{t("StoragePanel.cnameHostSuffixTip")}
                 </p>
               </FormControl>
             </VStack>
@@ -161,12 +166,15 @@ function CreateWebsiteModal() {
           <ModalFooter>
             <Button
               type="submit"
+              isLoading={updateWebsiteMutation.isLoading}
               onClick={handleSubmit(async (value) => {
-                await updateWebsiteMutation.mutateAsync({
+                const res = await updateWebsiteMutation.mutateAsync({
                   id: currentStorage?.websiteHosting.id,
                   domain: value.domain,
                 });
-                onClose();
+                if (res.data) {
+                  onClose();
+                }
               })}
             >
               {t("Confirm")}

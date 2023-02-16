@@ -39,3 +39,13 @@ export enum APP_PHASE_STATUS {
   Restarting = "Restarting",
   Deleting = "Deleting",
 }
+
+export enum BUCKET_POLICY_TYPE {
+  private = "private",
+  readonly = "readonly",
+  readwrite = "readwrite",
+}
+
+export enum BUCKET_STATUS {
+  Active = "Active",
+}

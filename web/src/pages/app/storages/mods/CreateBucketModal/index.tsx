@@ -19,6 +19,8 @@ import {
 } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import { BUCKET_POLICY_TYPE } from "@/constants";
+
 import { useBucketCreateMutation, useBucketUpdateMutation } from "../../service";
 import useStorageStore from "../../store";
 
@@ -117,9 +119,11 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
               <FormControl>
                 <FormLabel htmlFor="policy">{t("StoragePanel.Policy")}</FormLabel>
                 <Select {...register("policy", { required: true })} variant="filled">
-                  <option value="private">{t("StoragePanel.Private")}</option>
-                  <option value="readonly">{t("StoragePanel.Readonly")}</option>
-                  <option value="readwrite">{t("StoragePanel.ReadWrite")}</option>
+                  <option value={BUCKET_POLICY_TYPE.private}>{t("StoragePanel.Private")}</option>
+                  <option value={BUCKET_POLICY_TYPE.readonly}>{t("StoragePanel.Readonly")}</option>
+                  <option value={BUCKET_POLICY_TYPE.readwrite}>
+                    {t("StoragePanel.ReadWrite")}
+                  </option>
                 </Select>
               </FormControl>
             </VStack>
