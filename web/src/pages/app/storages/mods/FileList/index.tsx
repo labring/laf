@@ -22,6 +22,7 @@ import EmptyBox from "@/components/EmptyBox";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
+import { BUCKET_POLICY_TYPE } from "@/constants";
 import { formatDate, formateType, formatSize } from "@/utils/format";
 
 import useStorageStore, { TFile } from "../../store";
@@ -165,7 +166,7 @@ export default function FileList() {
                             <IconWrap
                               placement="left"
                               tooltip={
-                                bucketType === "private" && file.Key
+                                bucketType === BUCKET_POLICY_TYPE.private && file.Key
                                   ? t("StoragePanel.TimeTip").toString()
                                   : undefined
                               }

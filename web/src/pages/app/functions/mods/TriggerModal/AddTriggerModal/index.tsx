@@ -28,15 +28,15 @@ import { useFunctionListQuery } from "@/pages/app/functions/service";
 
 const CRON_TEMPLATE = [
   {
-    label: t("TriggerPanel.fiveMinutes"),
+    label: t("TriggerPanel.EveryFiveMinutes"),
     value: "*/5 * * * *",
   },
   {
-    label: t("TriggerPanel.hours"),
+    label: t("TriggerPanel.EveryHour"),
     value: "0 * * * *",
   },
   {
-    label: t("TriggerPanel.timeout"),
+    label: t("TriggerPanel.Every8AM"),
     value: "0 8 * * *",
   },
 ];

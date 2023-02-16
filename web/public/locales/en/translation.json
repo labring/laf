@@ -177,15 +177,18 @@
     "UploadFile": "Upload File",
     "UploadFolder": "Upload Folder",
     "domain": "Domain",
-    "bind": "Bind custom domain name",
     "domainTip": "please input domain",
-    "nowDomain": "Current domain name",
     "websiteHost": "Enable website hosting",
-    "parsing": "Parsing",
+    "Inaccessible": "Inaccessible",
     "isResolved": "Effective",
-    "cnameHostPreTip": "Please go to your domain name service provider and add the \"CNAME\" of the domain name to resolve to",
+    "cnameHostPreTip": "add the \"CNAME\" of the domain name to resolve to",
     "cnameHostSuffixTip": "After the resolution takes effect, the custom domain name can be bound.",
-    "editHostTip": "oss-bucket needs to be in read mode to enable website hosting"
+    "editHostTip": "oss-bucket needs to be in read mode to enable website hosting",
+    "CreateWebHosting": "Bind custom domain name",
+    "CustomDomain": "CustomDomain",
+    "CurrentDomain": "Current domain: ",
+    "RemoveHost": "Remove Host",
+    "CancelHost": "Cancel Host"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",
@@ -204,9 +207,9 @@
     "CronHelp": "more examples",
     "Cron": "expression",
     "EmptyTriggerTip": "You have not created a trigger,",
-    "fiveMinutes": "every five minutes",
-    "hours": "per hour",
-    "timeout": "8 am every day"
+    "Every8AM": "8 am every day",
+    "EveryHour": "per hour",
+    "EveryFiveMinutes": "every five minutes"
   },
   "NoData": "Currently no data",
   "SaveAndRestart": "save and restart",
@@ -223,5 +226,8 @@
   "update success": "update completed",
   "Take me home": "Take me home",
   "404Message": "We can't find that page",
-  "403Message": "You don't have permission to access this page"
+  "403Message": "You don't have permission to access this page",
+  "Bucket": {
+    "StatusTip": "External access needs to set the bucket permission to readonly"
+  }
 }

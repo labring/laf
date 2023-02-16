@@ -30,8 +30,9 @@ export default function StorageListPanel() {
     onSuccess(data) {
       if (data?.data?.length) {
         setStorageList(data.data);
-        if (store?.currentStorage === undefined) store.setCurrentStorage(data?.data[0]);
-        else {
+        if (store?.currentStorage === undefined) {
+          store.setCurrentStorage(data?.data[0]);
+        } else {
           store.setCurrentStorage(
             data?.data?.filter((item: any) => item.id === store?.currentStorage?.id)[0],
           );

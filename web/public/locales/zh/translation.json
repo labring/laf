@@ -178,14 +178,17 @@
     "UploadFolder": "上传文件夹",
     "domain": "域名",
     "domainTip": "请输入Domain",
-    "bind": "绑定自定义域名",
     "isResolved": "已生效",
-    "nowDomain": "当前域名",
     "parsing": "解析中",
     "websiteHost": "开启网站托管",
-    "cnameHostPreTip": "请到您的域名服务商处，添加该域名的\"CNAME\" 解析到",
+    "cnameHostPreTip": "添加该域名的\"CNAME\" 解析到",
     "cnameHostSuffixTip": "解析生效后即可绑定自定义域名。",
-    "editHostTip": "开启网站托管需要 oss-bucket 是 read 模式"
+    "editHostTip": "开启网站托管需要 bucket 权限是 readonly 模式",
+    "CreateWebHosting": "绑定自定义域名",
+    "CustomDomain": "自定义域名",
+    "CurrentDomain": "当前域名: ",
+    "CancelHost": "取消托管",
+    "Inaccessible": "无法访问"
   },
   "TriggerPanel": {
     "AddTrigger": "新建触发器",
@@ -204,9 +207,9 @@
     "CronHelp": "更多示例",
     "Cron": "表达式",
     "EmptyTriggerTip": "您还没有创建触发器,",
-    "fiveMinutes": "每五分钟",
-    "hours": "每小时",
-    "timeout": "每天上午8点"
+    "Every8AM": "每天上午8点",
+    "EveryHour": "每小时",
+    "EveryFiveMinutes": "每五分钟"
   },
   "NoData": "当前无数据",
   "SaveAndRestart": "保存并重启",
@@ -223,5 +226,8 @@
   "update success": "更新成功",
   "Take me home": "返回首页",
   "404Message": "找不到当前内容",
-  "403Message": "当前用户没有权限"
+  "403Message": "当前用户没有权限",
+  "Bucket": {
+    "StatusTip": "外部访问需要将 bucket 权限设置为 readonly"
+  }
 }
