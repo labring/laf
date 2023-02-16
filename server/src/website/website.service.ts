@@ -106,6 +106,7 @@ export class WebsiteService {
       data: {
         domain: domain,
         isCustom: true,
+        phase: DomainPhase.Deleting,
       },
     })
 
