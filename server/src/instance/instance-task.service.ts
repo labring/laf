@@ -403,7 +403,6 @@ export class InstanceTaskService {
         },
       },
     )
-    if (updated.modifiedCount > 0) this.logger.debug('unlock app:', appid)
   }
 
   /**
