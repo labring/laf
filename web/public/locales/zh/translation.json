@@ -188,7 +188,8 @@
     "CustomDomain": "自定义域名",
     "CurrentDomain": "当前域名: ",
     "CancelHost": "取消托管",
-    "Inaccessible": "无法访问"
+    "Inaccessible": "无法访问",
+    "instantUpload": "立即上传"
   },
   "TriggerPanel": {
     "AddTrigger": "新建触发器",
