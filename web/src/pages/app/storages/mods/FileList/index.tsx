@@ -31,6 +31,7 @@ import CreateWebsiteModal from "../CreateWebsiteModal";
 // import CreateWebsiteModal from "../CreateWebsiteModal";
 import PathLink from "../PathLink";
 import UploadButton from "../UploadButton";
+import UploadText from "../UploadText";
 
 // import styles from "../index.module.scss";
 import useAwsS3 from "@/hooks/useAwsS3";
@@ -113,7 +114,10 @@ export default function FileList() {
             query.data.length === 0 ||
             (query.data.length === 1 && query.data[0].Key === prefix) ? (
             <EmptyBox>
-              <p>{t("StoragePanel.UploadTip")}</p>
+              <div style={{ display: "flex" }}>
+                <p>{t("StoragePanel.UploadTip")}</p>
+                <UploadText onUploadSuccess={() => query.refetch()} />
+              </div>
             </EmptyBox>
           ) : (
             <TableContainer className="h-full" style={{ overflowY: "auto" }}>

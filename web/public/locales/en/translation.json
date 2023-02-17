@@ -188,7 +188,8 @@
     "CustomDomain": "CustomDomain",
     "CurrentDomain": "Current domain: ",
     "RemoveHost": "Remove Host",
-    "CancelHost": "Cancel Host"
+    "CancelHost": "Cancel Host",
+    "instantUpload": "Instant Upload"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",
