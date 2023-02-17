@@ -42,16 +42,16 @@
   "Confirm": "确定",
   "Copied": "已复制",
   "Copy": "复制",
-  "Create": "新建",
+  "Create": "新建应用",
   "CreateNow": "立即创建",
   "CreateTime": "创建时间",
   "Custom": "自定义",
   "Days": "天",
-  "Delete": "删除",
+  "Delete": "删除应用",
   "DeleteConfirm": "确定删除该行数据吗?",
   "DeleteSuccess": "删除成功",
   "DeleteTip": "无法撤销",
-  "Edit": "编辑",
+  "Edit": "编辑应用",
   "Generate": "生成",
   "InputTip": "请输入",
   "IsRequired": "是必须的",
@@ -124,7 +124,8 @@
     "WX": "微信小程序/公众号",
     "Welcome": "欢迎来到 LAF 云开发平台！",
     "DeleteApp": "删除 APP",
-    "DeleteTip": "你确定想要删除这个 App?"
+    "DeleteTip": "你确定想要删除这个 App?",
+    "Duration": "购买时长"
   },
   "LogPanel": {
     "Detail": "日志详情",
@@ -229,5 +230,7 @@
   "403Message": "当前用户没有权限",
   "Bucket": {
     "StatusTip": "外部访问需要将 bucket 权限设置为 readonly"
-  }
+  },
+  "Restart": "重启应用",
+  "ShutDown": "关闭应用"
 }

@@ -1,6 +1,6 @@
 // http.ts
 import { createStandaloneToast } from "@chakra-ui/react";
-import axios, { AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse } from "axios";
+import axios, { AxiosRequestHeaders, AxiosResponse } from "axios";
 
 const { toast } = createStandaloneToast();
 
@@ -12,7 +12,7 @@ const request = axios.create({
 
 // request interceptor
 request.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config: any) => {
     // auto append service prefix
     if (config.url && config.url?.startsWith("/v1/")) {
       config.url = import.meta.env.VITE_SERVER_URL + config.url;
@@ -50,7 +50,7 @@ request.interceptors.response.use(
       const { data } = error.response;
       if (data.statusCode === 401) {
         // eslint-disable-next-line no-restricted-globals
-        (window as any).location.href = (import.meta.env.VITE_SERVER_URL + "/v1/login") as string;
+        // (window as any).location.href = (import.meta.env.VITE_SERVER_URL + "/v1/login") as string;
         return;
       } else if (data.statusCode === 403) {
         (window as any).location.href = "/403";

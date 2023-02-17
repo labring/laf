@@ -335,6 +335,9 @@ const Menu = {
         border: "none",
         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
       },
+      item: {
+        minHeight: "36px",
+      },
     },
   },
   defaultProps: {
