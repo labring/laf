@@ -34,14 +34,11 @@ import UploadButton from "../UploadButton";
 
 // import styles from "../index.module.scss";
 import useAwsS3 from "@/hooks/useAwsS3";
-import useGlobalStore from "@/pages/globalStore";
 export default function FileList() {
   const { getList, getFileUrl, deleteFile } = useAwsS3();
-  const { currentStorage, prefix, setPrefix } = useStorageStore();
+  const { currentStorage, prefix, setPrefix, getCurrentBucketDomain } = useStorageStore();
   const bucketName = currentStorage?.name;
   const bucketType = currentStorage?.policy;
-  const { currentApp } = useGlobalStore();
-  const address = currentApp?.storage?.credentials?.endpoint.split("//");
 
   const query = useQuery(
     ["fileList", bucketName, prefix],
@@ -56,14 +53,13 @@ export default function FileList() {
       changeDirectory(file);
       return;
     }
-    const protocol = address && address[0];
-    const ossUrl = address && address[1];
+
     let fileUrl = "";
 
     if (bucketType === "private") {
       fileUrl = getFileUrl(bucketName!, file.Key);
     } else {
-      fileUrl = protocol + "//" + bucketName + "." + ossUrl + "/" + file.Key;
+      fileUrl = getCurrentBucketDomain() + `/${file.Key}` || "";
     }
 
     window.open(fileUrl, "_blank");

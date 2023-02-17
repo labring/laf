@@ -1,4 +1,4 @@
-export interface TApplication {
+export type TApplication = {
   id: string;
   name: string;
   appid: string;
@@ -11,16 +11,16 @@ export interface TApplication {
   createdAt: string;
   updatedAt: string;
   createdBy: string;
-  bundle: Bundle;
+  bundle: TBundle;
   runtime: Runtime;
   configuration: Configuration;
   domain: Domain;
   storage: Storage;
   tls: boolean;
   develop_token: string;
-}
+};
 
-export interface Bundle {
+export type TBundle = {
   id: string;
   name: string;
   displayName: string;
@@ -35,47 +35,50 @@ export interface Bundle {
   priority: number;
   state: string;
   price: number;
-}
+};
 
-export interface Runtime {
+export type Runtime = {
   id: string;
   name: string;
   type: string;
   image: Image;
   version: string;
   latest: boolean;
-}
+};
 
-export interface Image {
+export type Image = {
   main: string;
   init: string;
   sidecar: any;
-}
+};
 
-export interface Configuration {
+export type Configuration = {
   id: string;
   appid: string;
   environments: Environment[];
   dependencies: any[];
   createdAt: string;
   updatedAt: string;
-}
+};
 
-export interface Environment {
+export type Environment = {
   name: string;
   value: string;
-}
+};
 
-export interface Domain {
+export type Domain = {
   id: string;
   appid: string;
+  bucketName: string;
   domain: string;
   state: string;
+  phase: string;
   createdAt: string;
   updatedAt: string;
-}
+  lockedAt: string;
+};
 
-export interface Storage {
+export type Storage = {
   id: string;
   appid: string;
   accessKey: string;
@@ -83,80 +86,97 @@ export interface Storage {
   createdAt: string;
   updatedAt: string;
   credentials: Credentials;
-}
+};
 
-export interface Credentials {
+export type Credentials = {
   endpoint: string;
   accessKeyId: string;
   secretAccessKey: string;
   sessionToken: string;
   expiration: string;
-}
+};
 
-export interface TBucket {
+export type TBucket = {
   id: string;
   appid: string;
   name: string;
   shortName: string;
   policy: string;
+  state: string;
+  phase: string;
+  lockedAt: string;
   createdAt: string;
   updatedAt: string;
-  websiteHosting?: any;
-}
+  domain: Domain;
+  websiteHosting: TWebsiteHosting;
+};
 
-export interface Spec {
+export type TWebsiteHosting = {
+  id: string;
+  appid: string;
+  bucketName: string;
+  domain: string;
+  isCustom: boolean;
+  state: string;
+  phase: string;
+  createdAt: string;
+  updatedAt: string;
+  lockedAt: string;
+};
+
+export type Spec = {
   policy: string;
   storage: string;
-}
+};
 
-export interface Status {
+export type Status = {
   capacity: Capacity;
   conditions: Condition[];
   policy: string;
   user: string;
   versioning: boolean;
-}
+};
 
-export interface Capacity {
+export type Capacity = {
   maxStorage: string;
   objectCount: number;
   storage: string;
-}
+};
 
-export interface Condition {
+export type Condition = {
   lastTransitionTime: string;
   message: string;
   reason: string;
   status: string;
   type: string;
-}
+};
 
-export interface TDB {
+export type TDB = {
   name: string;
   type: string;
   options: Options;
   info: Info;
   idIndex: IdIndex;
-}
+};
 
-export interface Options {}
+export type Options = {};
 
-export interface Info {
+export type Info = {
   readOnly: boolean;
   uuid: string;
-}
+};
 
-export interface IdIndex {
+export type IdIndex = {
   v: number;
   key: Key;
   name: string;
-}
+};
 
-export interface Key {
+export type Key = {
   _id: number;
-}
+};
 
-export interface TFunction {
+export type TFunction = {
   id: string;
   appid: string;
   name: string;
@@ -168,29 +188,29 @@ export interface TFunction {
   createdAt: string;
   updatedAt: string;
   createdBy: string;
-}
+};
 
 export type TMethod = "GET" | "POST" | "PUT" | "DELETE" | "HEAD" | "OPTIONS" | "PATCH";
 
-export interface Source {
+export type Source = {
   code: string;
   compiled: string;
   uri: any;
   version: number;
   hash: any;
   lang: any;
-}
+};
 
-export interface TLogItem {
+export type TLogItem = {
   _id: string;
   request_id: string;
   func: string;
   data: string;
   created_at: string;
-}
+};
 
 // user data
-export interface TUserInfo {
+export type TUserInfo = {
   id: string;
   username: string;
   email: any;
@@ -198,9 +218,9 @@ export interface TUserInfo {
   createdAt: string;
   updatedAt: string;
   profile: TProfile;
-}
+};
 
-export interface TProfile {
+export type TProfile = {
   id: string;
   uid: string;
   openid: string;
@@ -209,4 +229,4 @@ export interface TProfile {
   name: string;
   createdAt: string;
   updatedAt: string;
-}
+};

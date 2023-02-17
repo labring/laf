@@ -1,6 +1,6 @@
 // http.ts
 import { createStandaloneToast } from "@chakra-ui/react";
-import axios, { AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse } from "axios";
+import axios, { AxiosRequestHeaders, AxiosResponse } from "axios";
 
 const { toast } = createStandaloneToast();
 
@@ -12,7 +12,7 @@ const request = axios.create({
 
 // request interceptor
 request.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config: any) => {
     // auto append service prefix
     if (config.url && config.url?.startsWith("/v1/")) {
       config.url = import.meta.env.VITE_SERVER_URL + config.url;

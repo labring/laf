@@ -39,22 +39,22 @@ import SiteStatus from "./SiteStatus";
 
 function CreateWebsiteModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { currentStorage } = useStorageStore();
+  const { currentStorage, getCurrentBucketDomain } = useStorageStore();
   const { register, setFocus, handleSubmit, reset } = useForm<{ domain: string }>();
   const { t } = useTranslation();
   const createWebsiteMutation = useWebsiteCreateMutation();
   const deleteWebsiteMutation = useWebsiteDeleteMutation();
   const updateWebsiteMutation = useWebSiteUpdateMutation();
   const toast = useToast();
+  const cnameDomain = getCurrentBucketDomain(false);
   return (
     <>
       {currentStorage?.websiteHosting &&
       currentStorage.websiteHosting.state === BUCKET_STATUS.Active ? (
-        <>
-          <span className="font-semibold">{t("StoragePanel.CurrentDomain")}</span>
-
+        <div className="flex">
+          <span className="font-semibold mr-2">{t("StoragePanel.CurrentDomain")}</span>
           <Link
-            className="cursor-pointer"
+            className="cursor-pointer mr-2"
             href={`//${currentStorage?.websiteHosting?.domain}`}
             isExternal
           >
@@ -64,8 +64,8 @@ function CreateWebsiteModal() {
           <SiteStatus />
 
           <Menu>
-            <MenuButton>
-              <MoreIcon fontSize={10} mt="-3px" />
+            <MenuButton className="ml-2 -mt-[2px]">
+              <MoreIcon fontSize={10} />
             </MenuButton>
             <MenuList minWidth="100px">
               <MenuItem
@@ -92,7 +92,7 @@ function CreateWebsiteModal() {
               </MenuItem>
             </MenuList>
           </Menu>
-        </>
+        </div>
       ) : (
         <Button
           size="xs"
@@ -132,14 +132,9 @@ function CreateWebsiteModal() {
               <FormControl>
                 <FormLabel>CNAME</FormLabel>
                 <InputGroup size="sm">
-                  <Input variant="filled" value={currentStorage?.websiteHosting?.domain} readOnly />
+                  <Input variant="filled" value={cnameDomain} readOnly />
                   <InputRightAddon
-                    children={
-                      <CopyText
-                        text={currentStorage?.websiteHosting?.domain}
-                        className="cursor-pointer"
-                      />
-                    }
+                    children={<CopyText text={cnameDomain} className="cursor-pointer" />}
                   />
                 </InputGroup>
               </FormControl>
@@ -154,10 +149,8 @@ function CreateWebsiteModal() {
                 />
                 <p className="mt-2 text-grayModern-600">
                   {t("StoragePanel.cnameHostPreTip")}
-                  <span className="mx-2 whitespace-nowrap">
-                    {currentStorage?.websiteHosting?.domain}
-                  </span>
-                  ,{t("StoragePanel.cnameHostSuffixTip")}
+                  <span className="mx-2 whitespace-nowrap">{cnameDomain}</span>,
+                  {t("StoragePanel.cnameHostSuffixTip")}
                 </p>
               </FormControl>
             </VStack>
