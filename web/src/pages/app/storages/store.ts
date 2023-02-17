@@ -53,12 +53,7 @@ const useStorageStore = create<State>()(
       getCurrentBucketDomain: (withProtocol: boolean = true) => {
         const { currentStorage } = get();
         const currentApp = useGlobalStore.getState().currentApp;
-        const endpoint = currentApp?.storage?.credentials?.endpoint;
-        let domain = "";
-        if (currentStorage) {
-          domain = endpoint?.replace("//", `//${currentStorage.name}.`) || "";
-        }
-        return withProtocol ? domain : domain.replace(/^https?:\/\//, "");
+        return (currentApp?.tls ? "https://" : "http://") + currentStorage?.domain?.domain;
       },
     })),
   ),

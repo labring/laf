@@ -6,7 +6,7 @@ import { t } from "i18next";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function CopyText(props: {
-  text: string;
+  text?: string;
   tip?: string;
   className?: string;
   children?: React.ReactElement;
@@ -18,7 +18,7 @@ export default function CopyText(props: {
   const { children = <CopyIcon />, text, tip, className, hideToolTip } = props;
 
   useEffect(() => {
-    setValue(text);
+    setValue(text || "");
   }, [setValue, text]);
 
   return (
