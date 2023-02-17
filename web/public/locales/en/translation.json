@@ -185,7 +185,7 @@
     "cnameHostSuffixTip": "After the resolution takes effect, the custom domain name can be bound.",
     "editHostTip": "oss-bucket needs to be in read mode to enable website hosting",
     "CreateWebHosting": "Bind custom domain name",
-    "CustomDomain": "CustomDomain",
+    "CustomDomain": "Custom Domain",
     "CurrentDomain": "Current domain: ",
     "RemoveHost": "Remove Host",
     "CancelHost": "Cancel Host"
