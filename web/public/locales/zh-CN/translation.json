@@ -18,7 +18,8 @@
     "Introduction": " 在这里，你可以作为全栈、后端、云开发用户、Node.js开发者、独立开发者等，开发出任何应用，例如：",
     "Use": "快来创建一个属于自己的应用吧～",
     "DeleteApp": "删除 APP",
-    "DeleteTip": "你确定想要删除这个 App?"
+    "DeleteTip": "你确定想要删除这个 App?",
+    "Duration": "购买时长"
   },
   "CollectionPanel": {
     "Collection": "集合",
@@ -207,14 +208,14 @@
   },
   "Search": "搜索",
   "Close": "关闭",
-  "Create": "新建",
+  "Create": "新建应用",
   "AddData": "新增数据",
   "Add": "添加",
   "Generate": "生成",
   "CreateNow": "立即创建",
   "Update": "更新",
-  "Edit": "编辑",
-  "Delete": "删除",
+  "Edit": "编辑应用",
+  "Delete": "删除应用",
   "Copy": "复制",
   "Copied": "已复制",
   "Confirm": "确定",
