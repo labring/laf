@@ -49,7 +49,7 @@ function Empty() {
             style={{ padding: "0 80px" }}
             leftIcon={<AddIcon />}
           >
-            {t("Create") + t("HomePanel.Application")}
+            {t("Create")}
           </Button>
         </CreateAppModal>
       </div>

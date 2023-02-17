@@ -72,7 +72,7 @@ function List(props: { appListQuery: any }) {
           </InputGroup>
           <CreateAppModal>
             <Button colorScheme="primary" style={{ padding: "0 40px" }} leftIcon={<AddIcon />}>
-              {t("Create") + t("HomePanel.Application")}
+              {t("Create")}
             </Button>
           </CreateAppModal>
         </div>
@@ -96,7 +96,15 @@ function List(props: { appListQuery: any }) {
                   key={item?.appid}
                   className="flex bg-lafWhite-200 rounded-lg h-16 items-center px-6 mb-3"
                 >
-                  <div className="w-2/12 font-bold text-lg">{item?.name}</div>
+                  <div className="w-2/12 ">
+                    <div className="font-bold text-lg">
+                      {item?.name}{" "}
+                      <Button variant="outline" size="sm">
+                        基础版
+                      </Button>
+                    </div>
+                    <div>CPU: 0.1 核 | RAM: 24 G</div>
+                  </div>
                   <div className="w-2/12 ">
                     {item?.appid} <CopyText text={item?.appid} />
                   </div>
@@ -104,7 +112,10 @@ function List(props: { appListQuery: any }) {
                     <StatusBadge statusConditions={item?.phase} state={item?.state} />
                   </div>
                   <div className="w-2/12 ">{item.regionName}</div>
-                  <div className="w-3/12 ">{formatDate(item.createdAt)}</div>
+                  <div className="w-3/12 ">
+                    start: {formatDate(item.createdAt)} <br />
+                    end: {formatDate(item.createdAt)} <Button variant={"link"}>续费</Button>
+                  </div>
                   <div className="w-1/12 flex min-w-[100px]">
                     <Button
                       className="mr-2"
@@ -121,7 +132,7 @@ function List(props: { appListQuery: any }) {
                       <RiCodeBoxFill size={25} className="mr-2" />
                       {t("HomePanel.Develop")}
                     </Button>
-                    <Menu>
+                    <Menu placement="bottom-end">
                       <MenuButton>
                         <IconWrap>
                           <BsThreeDotsVertical size={16} />

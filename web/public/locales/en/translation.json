@@ -42,7 +42,7 @@
   "Confirm": "Confirm",
   "Copied": "copied",
   "Copy": "copy",
-  "Create": "Create ",
+  "Create": "new application",
   "CreateNow": "create now",
   "CreateTime": "creation time",
   "Custom": "customize",
@@ -51,7 +51,7 @@
   "DeleteConfirm": "Are you sure to delete this row of data?",
   "DeleteSuccess": "successfully deleted",
   "DeleteTip": "cannot be undone",
-  "Edit": "Edit ",
+  "Edit": "edit application",
   "Generate": "generate",
   "InputTip": "please enter",
   "IsRequired": " is required",
@@ -124,7 +124,8 @@
     "WX": "WeChat Mini Program/Public Account",
     "Welcome": "Welcome to the LAF cloud development platform!",
     "DeleteApp": "delete apps",
-    "DeleteTip": "Are you sure you want to delete this app?"
+    "DeleteTip": "Are you sure you want to delete this app?",
+    "Duration": "Duration"
   },
   "LogPanel": {
     "Detail": "Log Details",
