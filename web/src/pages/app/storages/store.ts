@@ -3,6 +3,7 @@ import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
 import { TBucket } from "@/apis/typing";
+import useGlobalStore from "@/pages/globalStore";
 
 export type TFile = {
   Key: string;
@@ -25,6 +26,8 @@ type State = {
   setPrefix: (prefix: string) => void;
   maxStorage: number;
   setMaxStorage: (number: number) => void;
+
+  getCurrentBucketDomain: (withProtocol?: boolean) => string;
 };
 
 const useStorageStore = create<State>()(
@@ -45,6 +48,18 @@ const useStorageStore = create<State>()(
         set((state) => {
           state.maxStorage = number;
         }),
+
+      // get current bucket domain
+      getCurrentBucketDomain: (withProtocol: boolean = true) => {
+        const { currentStorage } = get();
+        const currentApp = useGlobalStore.getState().currentApp;
+        const endpoint = currentApp?.storage?.credentials?.endpoint;
+        let domain = "";
+        if (currentStorage) {
+          domain = endpoint?.replace("//", `//${currentStorage.name}.`) || "";
+        }
+        return withProtocol ? domain : domain.replace(/^https?:\/\//, "");
+      },
     })),
   ),
 );
