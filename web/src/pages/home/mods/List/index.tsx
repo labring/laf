@@ -128,14 +128,14 @@ function List(props: { appListQuery: any }) {
                         </IconWrap>
                       </MenuButton>
                       <MenuList width={12} minW={24}>
-                        <MenuItem minH="40px" display={"block"}>
+                        <MenuItem minH="40px" display={"block"} padding={"0"}>
                           <CreateAppModal application={item}>
-                            <a className="text-primary block " href="/edit">
+                            <a className="text-primary block  h-10 leading-10 pl-3" href="/edit">
                               {t("Edit")}
                             </a>
                           </CreateAppModal>
                         </MenuItem>
-                        <MenuItem minH="40px" display={"block"}>
+                        <MenuItem minH="40px" display={"block"} padding={"0"}>
                           <ConfirmButton
                             headerText={t("HomePanel.DeleteApp")}
                             bodyText={t("HomePanel.DeleteTip")}
@@ -143,7 +143,7 @@ function List(props: { appListQuery: any }) {
                               deleteAppMutation.mutate({ appid: item?.appid });
                             }}
                           >
-                            <a className="text-danger block" href="/delete">
+                            <a className="text-danger block  h-10 leading-10 pl-3" href="/delete">
                               {t("Delete")}
                             </a>
                           </ConfirmButton>
