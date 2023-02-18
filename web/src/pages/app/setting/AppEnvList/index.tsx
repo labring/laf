@@ -1,6 +1,7 @@
 import { Button } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import ConfirmButton from "@/components/ConfirmButton";
 import EditableTable from "@/components/EditableTable";
 import { isExitInList } from "@/utils/format";
 
@@ -74,17 +75,17 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
           onDelete={(data) => delEnvironmentMutation.mutateAsync({ name: data })}
           onCreate={(data) => addEnvironmentMutation.mutateAsync(data)}
         />
-        <Button
-          className="w-28 h-8 self-end mt-4"
-          type="submit"
-          variant={"secondary"}
-          onClick={() => {
+        <ConfirmButton
+          onSuccessAction={() => {
             globalStore.restartCurrentApp();
             props.onClose && props.onClose();
           }}
+          headerText={String(t("Update"))}
+          bodyText={String(t("SettingPanel.UpdateConfirm"))}
+          confirmButtonText={String(t("Update"))}
         >
-          {t("Update")}
-        </Button>
+          <Button className="w-28 h-8 self-end mt-4">{t("Update")}</Button>
+        </ConfirmButton>
       </div>
     </>
   );

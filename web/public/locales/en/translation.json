@@ -137,7 +137,8 @@
     "Expire": "Expiration",
     "Setting": "Setting",
     "SystemSetting": "Application Settings",
-    "UserSetting": "User Settings"
+    "UserSetting": "User Settings",
+    "UpdateConfirm": "Update env will restart application, are you sure?"
   },
   "StoragePanel": {
     "All": "Total Capacity",
