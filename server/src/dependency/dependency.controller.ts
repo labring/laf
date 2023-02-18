@@ -5,6 +5,7 @@ import {
   Get,
   Logger,
   Param,
+  Query,
   Patch,
   Post,
   UseGuards,
@@ -89,8 +90,8 @@ export class DependencyController {
   @ApiResponse({ type: ResponseUtil })
   @ApiOperation({ summary: 'Remove a dependency' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
-  @Delete(':name')
-  async remove(@Param('appid') appid: string, @Param('name') name: string) {
+  @Delete()
+  async remove(@Param('appid') appid: string, @Query('name') name?: string) {
     const res = await this.depsService.remove(appid, name)
     return ResponseUtil.ok(res)
   }
