@@ -664,7 +664,7 @@ export async function DependencyControllerRemove(
     appid: localStorage.getItem("app"),
     ...params,
   };
-  return request(`/v1/apps/${_params.appid}/dependencies?name=${_params.name}`, {
+  return request(`/v1/apps/${_params.appid}/dependencies`, {
     method: "DELETE",
     data: params,
   });
