@@ -1,9 +1,10 @@
-import { BiRefresh } from "react-icons/bi";
+import { BiCloudUpload, BiRefresh } from "react-icons/bi";
 import { DeleteIcon, ViewIcon } from "@chakra-ui/icons";
 import {
   Button,
   Center,
   HStack,
+  MenuButton,
   Spinner,
   Table,
   TableContainer,
@@ -74,7 +75,17 @@ export default function FileList() {
       <Panel style={{ flexBasis: 40, flexShrink: 0 }}>
         <Panel.Header>
           <HStack spacing={2}>
-            <UploadButton onUploadSuccess={() => query.refetch()} />
+            <UploadButton onUploadSuccess={() => query.refetch()}>
+              <MenuButton
+                size="sm"
+                variant="textGhost"
+                as={Button}
+                leftIcon={<BiCloudUpload fontSize={22} className="text-grayModern-500" />}
+                disabled={currentStorage === undefined}
+              >
+                <p className="font-semibold">{t("StoragePanel.Upload")}</p>
+              </MenuButton>
+            </UploadButton>
             <CreateFolderModal onCreateSuccess={() => query.refetch()} />
             <Button
               size="xs"
@@ -109,7 +120,16 @@ export default function FileList() {
             query.data.length === 0 ||
             (query.data.length === 1 && query.data[0].Key === prefix) ? (
             <EmptyBox>
-              <p>{t("StoragePanel.UploadTip")}</p>
+              <UploadButton onUploadSuccess={() => query.refetch()}>
+                <div>
+                  <span>{t("StoragePanel.UploadTip")}</span>
+                  <MenuButton disabled={currentStorage === undefined}>
+                    <span className="ml-2 text-primary-600 hover:border-b-2 hover:border-primary-600 cursor-pointer">
+                      {t("StoragePanel.InstantUpload")}
+                    </span>
+                  </MenuButton>
+                </div>
+              </UploadButton>
             </EmptyBox>
           ) : (
             <TableContainer className="h-full" style={{ overflowY: "auto" }}>

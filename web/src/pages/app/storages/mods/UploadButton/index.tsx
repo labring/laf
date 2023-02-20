@@ -1,11 +1,8 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { BiCloudUpload } from "react-icons/bi";
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import {
-  Button,
   Menu,
-  MenuButton,
   MenuItem,
   MenuList,
   Modal,
@@ -27,7 +24,7 @@ export type TFileItem = {
   status: boolean;
   fileName: string;
 };
-function UploadButton({ onUploadSuccess }: { onUploadSuccess: () => void }) {
+function UploadButton(props: { onUploadSuccess: Function; children: React.ReactElement }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { currentStorage, prefix } = useStorageStore();
   const { showSuccess } = useGlobalStore();
@@ -35,18 +32,11 @@ function UploadButton({ onUploadSuccess }: { onUploadSuccess: () => void }) {
   const [uploadType, setUploadType] = React.useState<"file" | "folder">("file");
   const [fileList, setFileList] = React.useState<TFileItem[]>([]);
   const { t } = useTranslation();
+  const { onUploadSuccess, children } = props;
   return (
     <div>
       <Menu placement="bottom-start">
-        <MenuButton
-          size="sm"
-          variant="textGhost"
-          as={Button}
-          leftIcon={<BiCloudUpload fontSize={22} className="text-grayModern-500" />}
-          disabled={currentStorage === undefined}
-        >
-          <p className="font-semibold">{t("StoragePanel.Upload")}</p>
-        </MenuButton>
+        {React.cloneElement(children)}
         <MenuList minW={24}>
           <MenuItem
             onClick={() => {
