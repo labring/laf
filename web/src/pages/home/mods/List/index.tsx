@@ -128,26 +128,26 @@ function List(props: { appListQuery: any }) {
                         </IconWrap>
                       </MenuButton>
                       <MenuList width={12} minW={24}>
-                        <MenuItem minH="40px" display={"block"}>
-                          <CreateAppModal application={item}>
-                            <a className="text-primary block " href="/edit">
+                        <CreateAppModal application={item}>
+                          <MenuItem minH="40px" display={"block"}>
+                            <a className="text-primary block" href="/edit">
                               {t("Edit")}
                             </a>
-                          </CreateAppModal>
-                        </MenuItem>
-                        <MenuItem minH="40px" display={"block"}>
-                          <ConfirmButton
-                            headerText={t("HomePanel.DeleteApp")}
-                            bodyText={t("HomePanel.DeleteTip")}
-                            onSuccessAction={() => {
-                              deleteAppMutation.mutate({ appid: item?.appid });
-                            }}
-                          >
+                          </MenuItem>
+                        </CreateAppModal>
+                        <ConfirmButton
+                          headerText={t("HomePanel.DeleteApp")}
+                          bodyText={t("HomePanel.DeleteTip")}
+                          onSuccessAction={() => {
+                            deleteAppMutation.mutate({ appid: item?.appid });
+                          }}
+                        >
+                          <MenuItem minH="40px" display={"block"}>
                             <a className="text-danger block" href="/delete">
                               {t("Delete")}
                             </a>
-                          </ConfirmButton>
-                        </MenuItem>
+                          </MenuItem>
+                        </ConfirmButton>
                       </MenuList>
                     </Menu>
                   </div>
