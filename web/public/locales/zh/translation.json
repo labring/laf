@@ -42,16 +42,16 @@
   "Confirm": "确定",
   "Copied": "已复制",
   "Copy": "复制",
-  "Create": "新建应用",
+  "Create": "新建",
   "CreateNow": "立即创建",
   "CreateTime": "创建时间",
   "Custom": "自定义",
   "Days": "天",
-  "Delete": "删除应用",
+  "Delete": "删除",
   "DeleteConfirm": "确定删除该行数据吗?",
   "DeleteSuccess": "删除成功",
   "DeleteTip": "无法撤销",
-  "Edit": "编辑应用",
+  "Edit": "编辑",
   "Generate": "生成",
   "InputTip": "请输入",
   "IsRequired": "是必须的",
@@ -264,5 +264,19 @@
   "Personal Access Token": "访问凭证 (PAT)",
   "SwitchLanguage": "切换语言",
   "Storage": "云存储",
-  "upload example": "文件上传示例"
+  "upload example": "文件上传示例",
+  "Unit": {
+    "CPU": "核",
+    "GB": "GB",
+    "MB": "MB"
+  },
+  "Spec": {
+    "RAM": "内存",
+    "Database": "数据库",
+    "Storage": "云存储",
+    "NetworkTraffic": "出网流量"
+  },
+  "Price": {
+    "Free": "免费"
+  }
 }

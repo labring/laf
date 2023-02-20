@@ -24,6 +24,7 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { t } from "i18next";
 
+// import ChargeButton from "@/components/ChargeButton";
 import { APP_STATUS } from "@/constants/index";
 
 import BundleItem from "./BundleItem";
@@ -108,6 +109,9 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
     }
   };
 
+  const currentBundle = bundles.find((item: TBundle) => item.name === bundleName) || bundles[0];
+  const totalPrice = parseInt(duration, 10) * currentBundle.price;
+
   return (
     <>
       {React.cloneElement(props.children, {
@@ -139,7 +143,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                 <FormErrorMessage>{errors?.name && errors?.name?.message}</FormErrorMessage>
               </FormControl>
 
-              <FormControl isRequired>
+              <FormControl isRequired hidden={isEdit}>
                 <FormLabel htmlFor="region">{t("HomePanel.Region")}</FormLabel>
                 <HStack spacing={6}>
                   <Controller
@@ -173,7 +177,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                 </HStack>
               </FormControl>
 
-              <FormControl isRequired isInvalid={!!errors?.bundleName}>
+              <FormControl isRequired isInvalid={!!errors?.bundleName} hidden={isEdit}>
                 <FormLabel htmlFor="bundleName">
                   {t("HomePanel.Application") + t("HomePanel.BundleName")}
                 </FormLabel>
@@ -232,7 +236,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                 <Controller
                   name="duration"
                   control={control}
-                  render={({}) => {
+                  render={() => {
                     return (
                       <HStack spacing={"2"}>
                         {(runtimes || []).map((runtime: any) => {
@@ -247,25 +251,27 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
           </ModalBody>
 
           <ModalFooter>
-            {bundleName === "standard" ? (
+            {/* {bundleName === "standard" ? (
               <div className="mr-2">
-                <span className="ml-6 text-red-500 font-semibold text-xl">Free</span>
+                <span className="ml-6 text-red-500 font-semibold text-xl">{t("Price.Free")}</span>
               </div>
             ) : (
               <div className="mr-2">
-                账户余额: ¥ 0 立即充值
-                <span className="ml-6 text-red-500 font-semibold text-xl">
-                  {parseInt(duration, 10) * 15}
-                </span>
+                账户余额: ¥ 0
+                <ChargeButton>
+                  <span>立即充值</span>
+                </ChargeButton>
+                <span className="ml-6 text-red-500 font-semibold text-xl">{totalPrice}</span>
               </div>
-            )}
+            )} */}
 
             <Button
               isLoading={appCreateMutation.isLoading}
               type="submit"
               onClick={handleSubmit(onSubmit)}
+              disabled={totalPrice > 0}
             >
-              {t("Confirm")}
+              {isEdit ? t("Confirm") : t("CreateNow")}
             </Button>
           </ModalFooter>
         </ModalContent>

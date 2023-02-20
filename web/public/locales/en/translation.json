@@ -44,14 +44,14 @@
   "Copy": "copy",
   "Create": "new application",
   "CreateNow": "create now",
-  "CreateTime": "creation time",
+  "CreateTime": "Created time",
   "Custom": "customize",
   "Days": "days",
   "Delete": "Delete ",
   "DeleteConfirm": "Are you sure to delete this row of data?",
   "DeleteSuccess": "successfully deleted",
   "DeleteTip": "cannot be undone",
-  "Edit": "edit application",
+  "Edit": "Edit",
   "Generate": "generate",
   "InputTip": "please enter",
   "IsRequired": " is required",
@@ -264,5 +264,19 @@
   "Personal Access Token": "Personal Access Token",
   "SwitchLanguage": "Switch Language",
   "Storage": "Storage",
-  "upload example": "file upload"
+  "upload example": "file upload",
+  "Unit": {
+    "CPU": "Core",
+    "GB": "GB",
+    "MB": "MB"
+  },
+  "Spec": {
+    "RAM": "RAM",
+    "Database": "Database",
+    "Storage": "Storage",
+    "NetworkTraffic": "NetworkTraffic"
+  },
+  "Price": {
+    "Free": "Free"
+  }
 }
