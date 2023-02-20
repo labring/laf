@@ -178,7 +178,7 @@
     "RemoveHost": "取消静态托管",
     "CancelHost": "取消托管",
     "Inaccessible": "无法访问",
-    "instantUpload": "立即上传"
+    "InstantUpload": "立即上传"
   },
   "Search": "搜索",
   "Close": "关闭",

@@ -189,7 +189,7 @@
     "CurrentDomain": "Current domain: ",
     "RemoveHost": "Remove Host",
     "CancelHost": "Cancel Host",
-    "instantUpload": "Instant Upload"
+    "InstantUpload": "Instant Upload"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",

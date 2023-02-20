@@ -129,7 +129,7 @@ export default function FileList() {
                   <span>{t("StoragePanel.UploadTip")}</span>
                   <MenuButton disabled={currentStorage === undefined}>
                     <span className="ml-2 text-primary-600 hover:border-b-2 hover:border-primary-600 cursor-pointer">
-                      {t("StoragePanel.instantUpload")}
+                      {t("StoragePanel.InstantUpload")}
                     </span>
                   </MenuButton>
                 </div>

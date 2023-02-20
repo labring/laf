@@ -24,7 +24,7 @@ export type TFileItem = {
   status: boolean;
   fileName: string;
 };
-function UploadButton(props: { onUploadSuccess: any; children: React.ReactElement }) {
+function UploadButton(props: { onUploadSuccess: Function; children: React.ReactElement }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { currentStorage, prefix } = useStorageStore();
   const { showSuccess } = useGlobalStore();
