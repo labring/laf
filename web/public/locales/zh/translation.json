@@ -234,5 +234,6 @@
     "StatusTip": "外部访问需要将 bucket 权限设置为 readonly"
   },
   "Restart": "重启应用",
-  "ShutDown": "关闭应用"
+  "ShutDown": "关闭应用",
+  "Charge": "余额充值"
 }

@@ -51,7 +51,7 @@
   "DeleteConfirm": "Are you sure to delete this row of data?",
   "DeleteSuccess": "successfully deleted",
   "DeleteTip": "cannot be undone",
-  "Edit": "edit application",
+  "Edit": "Edit",
   "Generate": "generate",
   "InputTip": "please enter",
   "IsRequired": "is required",
@@ -234,5 +234,6 @@
     "StatusTip": "External access needs to set the bucket permission to readonly"
   },
   "Restart": "Restart",
-  "ShutDown": "ShutDown"
+  "ShutDown": "ShutDown",
+  "Charge": "Charge"
 }

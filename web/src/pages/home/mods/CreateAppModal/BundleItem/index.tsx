@@ -3,7 +3,7 @@ import clsx from "clsx";
 
 import { TBundle } from "@/apis/typing";
 
-const ListItem = (props: { item: { key: string; value: string } }) => {
+const ListItem = (props: { item: { key: string; value: string | number } }) => {
   const { item } = props;
   return (
     <div className="flex justify-between text-second mb-1">
@@ -18,10 +18,10 @@ export default function BundleItem(props: {
   bundle: TBundle;
   isActive: boolean;
 }) {
-  const { bundle, isActive = true, onChange } = props;
+  const { bundle, isActive, onChange } = props;
   return (
     <div
-      onClick={onChange}
+      onClick={() => onChange(bundle.name)}
       key={bundle.name}
       className={clsx("min-w-[170px] border p-2 rounded-md", {
         "border-primary-500 bg-primary-100": isActive,
@@ -32,15 +32,15 @@ export default function BundleItem(props: {
           "border-primary-500": isActive,
         })}
       >
-        <h1 className="mb-1">体验版</h1>
-        <p className="text-lg font-semibold">免费</p>
+        <h1 className="mb-1">{bundle.displayName}</h1>
+        <p className="text-lg font-semibold">{bundle.price}</p>
       </div>
       <div>
-        <ListItem item={{ key: "CPU", value: "0.5核" }} />
-        <ListItem item={{ key: "内存", value: "512 M" }} />
+        <ListItem item={{ key: "CPU", value: bundle.limitCPU }} />
+        <ListItem item={{ key: "内存", value: bundle.limitMemory }} />
         <ListItem item={{ key: "硬盘", value: "5 G" }} />
-        <ListItem item={{ key: "数据库", value: "10 G" }} />
-        <ListItem item={{ key: "OSS", value: "5G" }} />
+        <ListItem item={{ key: "数据库", value: bundle.databaseCapacity }} />
+        <ListItem item={{ key: "OSS", value: bundle.storageCapacity }} />
         <ListItem item={{ key: "出网容量", value: "1Mb/s" }} />
       </div>
     </div>
