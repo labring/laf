@@ -22,6 +22,7 @@ import { ResponseUtil } from '../utils/response'
 import { DependencyService } from './dependency.service'
 import { CreateDependencyDto } from './dto/create-dependency.dto'
 import { UpdateDependencyDto } from './dto/update-dependency.dto'
+import { DeleteDependencyDto } from './dto/delete-dependency.dto'
 
 @ApiTags('Application')
 @ApiBearerAuth('Authorization')
@@ -89,9 +90,13 @@ export class DependencyController {
   @ApiResponse({ type: ResponseUtil })
   @ApiOperation({ summary: 'Remove a dependency' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
-  @Delete(':name')
-  async remove(@Param('appid') appid: string, @Param('name') name: string) {
-    const res = await this.depsService.remove(appid, name)
+  @Delete()
+  @ApiBody({ type: DeleteDependencyDto })
+  async remove(
+    @Param('appid') appid: string,
+    @Body() dto: DeleteDependencyDto,
+  ) {
+    const res = await this.depsService.remove(appid, dto.name)
     return ResponseUtil.ok(res)
   }
 }
