@@ -2,7 +2,7 @@
 echo "DOMAIN: $DOMAIN"
 
 # check $DOMAIN is available
-if ! host $DOMAIN; then
+if ! hostname $DOMAIN; then
     echo "Domain $DOMAIN is not available"
     exit 1
 fi
