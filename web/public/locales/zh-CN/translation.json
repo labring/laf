@@ -263,5 +263,19 @@
   "Back": "返回",
   "Personal Access Token": "访问凭证 (PAT)",
   "SwitchLanguage": "切换语言",
-  "Storage": "云存储"
+  "Storage": "云存储",
+  "Unit": {
+    "CPU": "核",
+    "GB": "GB",
+    "MB": "MB"
+  },
+  "Spec": {
+    "RAM": "内存",
+    "Database": "数据库",
+    "Storage": "云存储",
+    "NetworkTraffic": "出网流量"
+  },
+  "Price": {
+    "Free": "免费"
+  }
 }

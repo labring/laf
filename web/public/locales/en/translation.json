@@ -51,7 +51,7 @@
   "DeleteConfirm": "Are you sure to delete this row of data?",
   "DeleteSuccess": "successfully deleted",
   "DeleteTip": "cannot be undone",
-  "Edit": "edit application",
+  "Edit": "Edit",
   "Generate": "generate",
   "InputTip": "please enter",
   "IsRequired": " is required",
@@ -263,5 +263,19 @@
   "Back": "Return",
   "Personal Access Token": "Personal Access Token",
   "SwitchLanguage": "Switch Language",
-  "Storage": "Storage"
+  "Storage": "Storage",
+  "Unit": {
+    "CPU": "Core",
+    "GB": "GB",
+    "MB": "MB"
+  },
+  "Spec": {
+    "RAM": "RAM",
+    "Database": "Database",
+    "Storage": "Storage",
+    "NetworkTraffic": "NetworkTraffic"
+  },
+  "Price": {
+    "Free": "Free"
+  }
 }

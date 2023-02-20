@@ -1,9 +1,10 @@
 import React from "react";
 import clsx from "clsx";
+import { t } from "i18next";
 
 import { TBundle } from "@/apis/typing";
 
-const ListItem = (props: { item: { key: string; value: string } }) => {
+const ListItem = (props: { item: { key: string; value: string | number } }) => {
   const { item } = props;
   return (
     <div className="flex justify-between text-second mb-1">
@@ -18,12 +19,12 @@ export default function BundleItem(props: {
   bundle: TBundle;
   isActive: boolean;
 }) {
-  const { bundle, isActive = true, onChange } = props;
+  const { bundle, isActive, onChange } = props;
   return (
     <div
-      onClick={onChange}
+      onClick={() => onChange(bundle.name)}
       key={bundle.name}
-      className={clsx("min-w-[170px] border p-2 rounded-md", {
+      className={clsx("min-w-[170px] border p-2 rounded-md cursor-pointer", {
         "border-primary-500 bg-primary-100": isActive,
       })}
     >
@@ -32,16 +33,36 @@ export default function BundleItem(props: {
           "border-primary-500": isActive,
         })}
       >
-        <h1 className="mb-1">体验版</h1>
-        <p className="text-lg font-semibold">免费</p>
+        <h1 className="mb-1">{bundle.displayName}</h1>
+        <p className="text-lg font-semibold">
+          {bundle.price === 0 ? t("Price.Free") : bundle.price}
+        </p>
       </div>
       <div>
-        <ListItem item={{ key: "CPU", value: "0.5核" }} />
-        <ListItem item={{ key: "内存", value: "512 M" }} />
-        <ListItem item={{ key: "硬盘", value: "5 G" }} />
-        <ListItem item={{ key: "数据库", value: "10 G" }} />
-        <ListItem item={{ key: "OSS", value: "5G" }} />
-        <ListItem item={{ key: "出网容量", value: "1Mb/s" }} />
+        <ListItem
+          item={{ key: "CPU", value: `${bundle.resource.limitCPU / 1000} ${t("Unit.CPU")}` }}
+        />
+        <ListItem
+          item={{ key: t("Spec.RAM"), value: `${bundle.resource.limitMemory} ${t("Unit.MB")}` }}
+        />
+        <ListItem
+          item={{
+            key: t("Spec.Database"),
+            value: `${bundle.resource.databaseCapacity / 1024} ${t("Unit.GB")}`,
+          }}
+        />
+        <ListItem
+          item={{
+            key: t("Spec.Storage"),
+            value: `${bundle.resource.storageCapacity / 1024} ${t("Unit.GB")}`,
+          }}
+        />
+        <ListItem
+          item={{
+            key: t("Spec.NetworkTraffic"),
+            value: `${bundle.resource.networkTrafficOutbound / 1024} ${t("Unit.GB")}`,
+          }}
+        />
       </div>
     </div>
   );

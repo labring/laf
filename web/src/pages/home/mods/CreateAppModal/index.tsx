@@ -24,6 +24,7 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { t } from "i18next";
 
+// import ChargeButton from "@/components/ChargeButton";
 import { APP_STATUS } from "@/constants/index";
 
 import BundleItem from "./BundleItem";
@@ -107,6 +108,9 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
       showError(res.error);
     }
   };
+
+  const currentBundle = bundles.find((item: TBundle) => item.name === bundleName) || bundles[0];
+  const totalPrice = parseInt(duration, 10) * currentBundle.price;
 
   return (
     <>
@@ -247,25 +251,27 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
           </ModalBody>
 
           <ModalFooter>
-            {bundleName === "standard" ? (
+            {/* {bundleName === "standard" ? (
               <div className="mr-2">
-                <span className="ml-6 text-red-500 font-semibold text-xl">Free</span>
+                <span className="ml-6 text-red-500 font-semibold text-xl">{t("Price.Free")}</span>
               </div>
             ) : (
               <div className="mr-2">
-                账户余额: ¥ 0 立即充值
-                <span className="ml-6 text-red-500 font-semibold text-xl">
-                  {parseInt(duration, 10) * 15}
-                </span>
+                账户余额: ¥ 0
+                <ChargeButton>
+                  <span>立即充值</span>
+                </ChargeButton>
+                <span className="ml-6 text-red-500 font-semibold text-xl">{totalPrice}</span>
               </div>
-            )}
+            )} */}
 
             <Button
               isLoading={appCreateMutation.isLoading}
               type="submit"
               onClick={handleSubmit(onSubmit)}
+              disabled={totalPrice > 0}
             >
-              {t("Confirm")}
+              {t("CreateNow")}
             </Button>
           </ModalFooter>
         </ModalContent>

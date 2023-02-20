@@ -83,7 +83,7 @@ function List(props: { appListQuery: any }) {
           <div className="w-2/12 text-second ">{t("HomePanel.Application") + t("Name")}</div>
           <div className="w-2/12 text-second ">App ID</div>
           <div className="w-2/12 text-second pl-2">{t("HomePanel.State")}</div>
-          <div className="w-2/12 text-second ">{t("HomePanel.Region")}</div>
+          {/* <div className="w-2/12 text-second ">{t("HomePanel.Region")}</div> */}
           <div className="w-3/12 text-second ">{t("CreateTime")}</div>
           <div className="w-1/12 text-second pl-2 min-w-[100px]">{t("Operation")}</div>
         </div>
@@ -98,12 +98,12 @@ function List(props: { appListQuery: any }) {
                 >
                   <div className="w-2/12 ">
                     <div className="font-bold text-lg">
-                      {item?.name}{" "}
-                      <Button variant="outline" size="sm">
+                      {item?.name}
+                      {/* <Button variant="outline" size="sm">
                         基础版
-                      </Button>
+                      </Button> */}
                     </div>
-                    <div>CPU: 0.1 核 | RAM: 24 G</div>
+                    {/* <div>CPU: 0.1 核 | RAM: 24 G</div> */}
                   </div>
                   <div className="w-2/12 ">
                     {item?.appid} <CopyText text={item?.appid} />
@@ -111,10 +111,10 @@ function List(props: { appListQuery: any }) {
                   <div className="w-2/12 ">
                     <StatusBadge statusConditions={item?.phase} state={item?.state} />
                   </div>
-                  <div className="w-2/12 ">{item.regionName}</div>
+                  {/* <div className="w-2/12 ">{item.regionName}</div> */}
                   <div className="w-3/12 ">
-                    start: {formatDate(item.createdAt)} <br />
-                    end: {formatDate(item.createdAt)} <Button variant={"link"}>续费</Button>
+                    {formatDate(item.createdAt)} <br />
+                    {/* end: {formatDate(item.createdAt)} */}
                   </div>
                   <div className="w-1/12 flex min-w-[100px]">
                     <Button
