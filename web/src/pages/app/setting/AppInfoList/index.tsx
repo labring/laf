@@ -1,0 +1,117 @@
+import { MdRestartAlt } from "react-icons/md";
+import { RiDeleteBin6Line, RiShutDownLine } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
+import { Button, HStack } from "@chakra-ui/react";
+import { t } from "i18next";
+
+import ConfirmButton from "@/components/ConfirmButton";
+import { APP_PHASE_STATUS } from "@/constants/index";
+
+import InfoDetail from "./InfoDetail";
+
+import useGlobalStore from "@/pages/globalStore";
+import StatusBadge from "@/pages/home/mods/StatusBadge";
+const AppEnvList = () => {
+  const navigate = useNavigate();
+  const { currentApp, updateCurrentApp, deleteCurrentApp } = useGlobalStore((state) => state);
+  if (currentApp?.state === APP_PHASE_STATUS.Deleted) {
+    navigate("/");
+    return <></>;
+  }
+  return (
+    <>
+      <div className="h-full flex flex-col">
+        <div className="flex h-[50px] flex-none justify-between">
+          <HStack spacing={2}>
+            <span className="text-xl text-grayModern-900 font-medium">{currentApp?.name}</span>
+            <StatusBadge statusConditions={currentApp?.phase} state={currentApp?.state} />
+          </HStack>
+          <HStack
+            spacing={2}
+            divider={
+              <span className="inline-block mr-2 rounded h-[12px] border border-grayModern-500"></span>
+            }
+          >
+            <Button
+              className="mr-2"
+              fontWeight={"semibold"}
+              size={"sm"}
+              isDisabled={currentApp?.state === APP_PHASE_STATUS.Restarting}
+              variant={"text"}
+              onClick={() => {
+                updateCurrentApp();
+              }}
+            >
+              <MdRestartAlt size={16} className="mr-2" />
+              {t("SettingPanel.Restart")}
+            </Button>
+            <Button
+              className="mr-2"
+              fontWeight={"semibold"}
+              size={"sm"}
+              variant={"text"}
+              isDisabled={currentApp?.state === APP_PHASE_STATUS.Stopped}
+              onClick={(event: any) => {
+                event?.preventDefault();
+                updateCurrentApp(APP_PHASE_STATUS.Stopped);
+              }}
+            >
+              <RiShutDownLine size={16} className="mr-2" />
+              {t("SettingPanel.Close")}
+            </Button>
+            <ConfirmButton
+              headerText={t("HomePanel.DeleteApp")}
+              bodyText={t("HomePanel.DeleteTip")}
+              onSuccessAction={async () => {
+                deleteCurrentApp();
+              }}
+            >
+              <Button
+                className="mr-2"
+                fontWeight={"semibold"}
+                size={"sm"}
+                variant={"warnText"}
+                isDisabled={currentApp?.phase === APP_PHASE_STATUS.Deleting}
+                onClick={(event: any) => {
+                  event?.preventDefault();
+                }}
+              >
+                <RiDeleteBin6Line size={16} className="mr-2" />
+                {t("SettingPanel.Delete")}
+              </Button>
+            </ConfirmButton>
+          </HStack>
+        </div>
+        <div className="flex-grow flex overflow-auto flex-col">
+          <InfoDetail
+            title={t("SettingPanel.BaseInfo")}
+            leftData={[
+              { key: "APPID", value: currentApp?.appid },
+              { key: t("HomePanel.Region"), value: currentApp?.regionName },
+            ]}
+            rightData={[
+              { key: t("HomePanel.BundleName"), value: currentApp?.bundleName },
+              { key: t("HomePanel.RuntimeName"), value: currentApp?.runtimeName },
+            ]}
+          />
+          <InfoDetail
+            className="mt-6"
+            title={t("SettingPanel.Detail")}
+            leftData={[
+              { key: "CPU", value: currentApp?.bundle?.limitCPU },
+              { key: t("SettingPanel.Memory"), value: currentApp?.bundle?.limitMemory },
+              { key: t("SettingPanel.Disk"), value: "5 G" },
+            ]}
+            rightData={[
+              { key: t("SettingPanel.DB"), value: currentApp?.bundle?.databaseCapacity },
+              { key: "OSS", value: currentApp?.bundle?.storageCapacity },
+              { key: t("SettingPanel.network"), value: currentApp?.bundle?.networkTrafficOutbound },
+            ]}
+          />
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default AppEnvList;

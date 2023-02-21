@@ -1,12 +1,12 @@
 import { createStandaloneToast } from "@chakra-ui/react";
-import create from "zustand";
+import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
 import { APP_PHASE_STATUS } from "@/constants";
 
 import { TApplication, TUserInfo } from "@/apis/typing";
-import { ApplicationControllerUpdate } from "@/apis/v1/applications";
+import { ApplicationControllerRemove, ApplicationControllerUpdate } from "@/apis/v1/applications";
 import { AuthControllerGetSigninUrl } from "@/apis/v1/login";
 import { AuthControllerGetProfile } from "@/apis/v1/profile";
 import { RegionControllerGetRegions } from "@/apis/v1/regions";
@@ -20,10 +20,10 @@ type State = {
   runtimes?: any[];
   regions?: any[];
   currentApp: TApplication | undefined;
-  setCurrentApp(app: TApplication): void;
+  setCurrentApp(app: TApplication | undefined): void;
   init(appid?: string): void;
-  restartCurrentApp(): void;
-
+  updateCurrentApp(state?: APP_PHASE_STATUS): void;
+  deleteCurrentApp(): void;
   currentPageId: string | undefined;
   setCurrentPage: (pageId: string) => void;
 
@@ -75,26 +75,44 @@ const useGlobalStore = create<State>()(
         });
       },
 
-      restartCurrentApp: async () => {
+      updateCurrentApp: async (newState: APP_PHASE_STATUS = APP_PHASE_STATUS.Restarting) => {
         const app = get().currentApp;
         if (!app) {
           return;
         }
         const restartRes = await ApplicationControllerUpdate({
           name: app.name,
-          state: APP_PHASE_STATUS.Restarting,
+          state: newState,
         });
         if (!restartRes.error) {
           set((state) => {
             if (state.currentApp) {
-              state.currentApp.phase = APP_PHASE_STATUS.Restarting;
+              state.currentApp.phase =
+                newState === APP_PHASE_STATUS.Restarting ? "Restarting" : "Stopping";
+            }
+          });
+        }
+      },
+
+      deleteCurrentApp: async () => {
+        const app = get().currentApp;
+        if (!app) {
+          return;
+        }
+        const deleteRes = await ApplicationControllerRemove({
+          appid: app.appid,
+        });
+        if (!deleteRes.error) {
+          set((state) => {
+            if (state.currentApp) {
+              state.currentApp.phase = APP_PHASE_STATUS.Deleting;
             }
           });
         }
       },
 
       setCurrentApp: (app) => {
-        localStorage.setItem("app", app.appid);
+        localStorage.setItem("app", app?.appid || "");
         set((state) => {
           state.currentApp = app;
         });

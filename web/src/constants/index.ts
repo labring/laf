@@ -40,6 +40,9 @@ export enum APP_PHASE_STATUS {
   Starting = "Starting",
   Restarting = "Restarting",
   Deleting = "Deleting",
+  Deleted = "Deleted",
+  Stopping = "Stopping",
+  Stopped = "Stopped",
 }
 
 export enum BUCKET_POLICY_TYPE {

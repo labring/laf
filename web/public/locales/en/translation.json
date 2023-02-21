@@ -139,7 +139,17 @@
     "Setting": "Setting",
     "SystemSetting": "Application Settings",
     "UserSetting": "User Settings",
-    "UpdateConfirm": "Update env will restart application, are you sure?"
+    "UpdateConfirm": "Update env will restart application, are you sure?",
+    "BaseInfo": "basic information",
+    "DB": "database",
+    "Delete": "delete app",
+    "Detail": "Rules details (experimental version)",
+    "Disk": "hard disk",
+    "Memory": "Memory",
+    "Restart": "Restart the application",
+    "network": "Outgoing capacity",
+    "Close": "close application",
+    "AppInfo": "application information"
   },
   "StoragePanel": {
     "All": "Total Capacity",
@@ -191,7 +201,8 @@
     "CurrentDomain": "Current domain: ",
     "RemoveHost": "Remove Host",
     "CancelHost": "Cancel Host",
-    "InstantUpload": "Instant Upload"
+    "InstantUpload": "Instant Upload",
+    "parsing": "parsing"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",
