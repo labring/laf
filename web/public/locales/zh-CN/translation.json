@@ -126,7 +126,17 @@
     "AddAppEnv": "新增环境变量",
     "Expire": "过期时间",
     "UserSetting": "用户设置",
-    "UpdateConfirm": "更新环境变量将重新启动应用，是否继续？"
+    "UpdateConfirm": "更新环境变量将重新启动应用，是否继续？",
+    "AppInfo": "应用信息",
+    "Restart": "重启应用",
+    "Delete": "删除应用",
+    "Close": "关闭应用",
+    "BaseInfo": "基础信息",
+    "Detail": "规则详情(体验版)",
+    "Memory": "内存",
+    "Disk": "硬盘",
+    "DB": "数据库",
+    "network": "出网容量"
   },
   "StoragePanel": {
     "CreateBucket": "创建 Bucket",

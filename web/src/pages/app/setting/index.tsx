@@ -12,6 +12,9 @@ import {
 import { t } from "i18next";
 
 import SectionList from "@/components/SectionList";
+
+import { TApplication } from "@/apis/typing";
+import useGlobalStore from "@/pages/globalStore";
 export type TTabItem = {
   key: string;
   name: string;
@@ -21,15 +24,19 @@ const SettingModal = (props: {
   headerTitle: string;
   children: React.ReactElement;
   tabMatch: TTabItem[];
+  setApp?: TApplication;
 }) => {
-  const { headerTitle, tabMatch, children } = props;
+  const { headerTitle, tabMatch, children, setApp } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [item, setItem] = useState<TTabItem>();
-
+  const { setCurrentApp } = useGlobalStore((state) => state);
   return (
     <>
       {React.cloneElement(children, {
         onClick: () => {
+          if (setApp) {
+            setCurrentApp(setApp);
+          }
           setItem(tabMatch[0]);
           onOpen();
         },

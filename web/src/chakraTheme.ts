@@ -120,6 +120,13 @@ const Button = defineStyleConfig({
         bg: "primary.100",
       },
     },
+
+    warnText: {
+      color: "error.500",
+      _hover: {
+        bg: "error.100",
+      },
+    },
   },
   // The default size and variant values
   defaultProps: {
@@ -294,36 +301,6 @@ const Badge = {
     justifyContent: "center",
     alignItems: "center",
   }),
-  variants: {
-    Started: {
-      background: "primary.100",
-      color: "primary.600",
-      _before: {
-        background: "primary.600",
-      },
-    },
-    Creating: {
-      background: "warn.100",
-      color: "warn.600",
-      _before: {
-        background: "primary.600",
-      },
-    },
-    Starting: {
-      background: "blue.100",
-      color: "blue.600",
-      _before: {
-        background: "primary.600",
-      },
-    },
-    Deleting: {
-      background: "error.100",
-      color: "error.600",
-      _before: {
-        background: "primary.600",
-      },
-    },
-  },
 };
 
 const Menu = {

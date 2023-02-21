@@ -67,7 +67,7 @@ function List(props: { appListQuery: any }) {
               variant="outline"
               size={"sm"}
               bg="white"
-              onChange={(e) => setSearchKey(e.target.value)}
+              onChange={(e: any) => setSearchKey(e.target.value)}
             />
           </InputGroup>
           <CreateAppModal>
@@ -101,7 +101,7 @@ function List(props: { appListQuery: any }) {
                     {item?.appid} <CopyText text={item?.appid} />
                   </div>
                   <div className="w-2/12 ">
-                    <StatusBadge statusConditions={item?.phase} />
+                    <StatusBadge statusConditions={item?.phase} state={item?.state} />
                   </div>
                   <div className="w-2/12 ">{item.regionName}</div>
                   <div className="w-3/12 ">{formatDate(item.createdAt)}</div>
@@ -112,9 +112,9 @@ function List(props: { appListQuery: any }) {
                       size={"sm"}
                       variant={"text"}
                       disabled={item?.phase === APP_PHASE_STATUS.Deleting}
-                      onClick={(event) => {
+                      onClick={(event: any) => {
                         event?.preventDefault();
-                        setCurrentApp(item?.appid);
+                        setCurrentApp(item);
                         navigate(`/app/${item?.appid}/${Pages.function}`);
                       }}
                     >

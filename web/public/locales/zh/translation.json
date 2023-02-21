@@ -138,7 +138,17 @@
     "Setting": "设置",
     "SystemSetting": "应用设置",
     "UserSetting": "用户设置",
-    "UpdateConfirm": "更新环境变量将重新启动应用，是否继续？"
+    "UpdateConfirm": "更新环境变量将重新启动应用，是否继续？",
+    "AppInfo": "应用信息",
+    "BaseInfo": "基础信息",
+    "Detail": "规则详情(体验版)",
+    "Memory": "内存",
+    "Disk": "硬盘",
+    "DB": "数据库",
+    "network": "出网容量",
+    "Close": "关闭应用",
+    "Delete": "删除应用",
+    "Restart": "重启应用"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -190,7 +200,8 @@
     "CurrentDomain": "当前域名: ",
     "CancelHost": "取消托管",
     "Inaccessible": "无法访问",
-    "InstantUpload": "立即上传"
+    "InstantUpload": "立即上传",
+    "RemoveHost": "取消静态托管"
   },
   "TriggerPanel": {
     "AddTrigger": "新建触发器",

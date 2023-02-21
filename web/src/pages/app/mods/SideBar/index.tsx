@@ -9,13 +9,13 @@ import { t } from "i18next";
 
 import { Pages, SideBarWidth } from "@/constants/index";
 
+import SysSetting from "../../setting/SysSetting";
+
 import Icons from "./Icons";
 
 import styles from "./index.module.scss";
 
 import UserSetting from "@/layouts/Header/UserSetting";
-import AppEnvList from "@/pages/app/setting/AppEnvList/index";
-import SettingModal from "@/pages/app/setting/index";
 import useGlobalStore from "@/pages/globalStore";
 type TIcon = {
   pageId: string;
@@ -55,19 +55,6 @@ export default function SideBar() {
   ];
 
   const BOTTOM_ICONS: TIcon[] = [
-    // {
-    //   pageId: "lan",
-    //   component: (
-    //     <Button
-    //       onClick={() => {
-    //         i18next.changeLanguage("en", (err, t) => {
-    //           if (err) return console.log("something went wrong loading", err);
-    //           t("key"); // -> same as i18next.t
-    //         });
-    //       }}
-    //     ></Button>
-    //   ),
-    // },
     {
       pageId: Pages.userSetting,
       component: (
@@ -81,20 +68,11 @@ export default function SideBar() {
     {
       pageId: Pages.setting,
       component: (
-        <SettingModal
-          headerTitle={t("SettingPanel.SystemSetting")}
-          tabMatch={[
-            {
-              key: "env",
-              name: t("SettingPanel.AppEnv"),
-              component: <AppEnvList />,
-            },
-          ]}
-        >
+        <SysSetting>
           <div>
             <Icons type="setting" />
           </div>
-        </SettingModal>
+        </SysSetting>
       ),
     },
   ];
