@@ -52,7 +52,7 @@ export class InitializerService {
         gatewayConf: {
           set: {
             driver: 'apisix',
-            functionDomain: ServerConfig.DEFAULT_REGION_FUNCTION_DOMAIN,
+            runtimeDomain: ServerConfig.DEFAULT_REGION_RUNTIME_DOMAIN,
             websiteDomain: ServerConfig.DEFAULT_REGION_WEBSITE_DOMAIN,
             port: ServerConfig.DEFAULT_REGION_APISIX_PUBLIC_PORT,
             apiUrl: ServerConfig.DEFAULT_REGION_APISIX_API_URL,
@@ -78,13 +78,15 @@ export class InitializerService {
       data: {
         name: 'standard',
         displayName: 'Standard',
-        limitCPU: 0.5 * CPU_UNIT,
-        limitMemory: 256,
-        requestCPU: 0.05 * CPU_UNIT,
-        requestMemory: 128,
-        databaseCapacity: 1024,
-        storageCapacity: 1024 * 5,
-        networkTrafficOutbound: 1024 * 5,
+        resource: {
+          limitCPU: 0.5 * CPU_UNIT,
+          limitMemory: 256,
+          requestCPU: 0.05 * CPU_UNIT,
+          requestMemory: 128,
+          databaseCapacity: 1024,
+          storageCapacity: 1024 * 5,
+          networkTrafficOutbound: 1024 * 5,
+        },
         priority: 0,
         region: {
           connect: {

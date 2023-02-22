@@ -67,8 +67,8 @@ spec:
               value: {{ .Values.default_region.minio_root_access_key | quote}}
             - name: DEFAULT_REGION_MINIO_ROOT_SECRET_KEY
               value: {{ .Values.default_region.minio_root_secret_key | quote}}
-            - name: DEFAULT_REGION_FUNCTION_DOMAIN
-              value: {{ .Values.default_region.function_domain }}
+            - name: DEFAULT_REGION_RUNTIME_DOMAIN
+              value: {{ .Values.default_region.runtime_domain }}
             - name: DEFAULT_REGION_WEBSITE_DOMAIN
               value: {{ .Values.default_region.website_domain }}
             - name: DEFAULT_REGION_TLS

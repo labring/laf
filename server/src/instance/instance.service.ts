@@ -1,7 +1,7 @@
 import { V1Deployment } from '@kubernetes/client-node'
 import { Injectable, Logger } from '@nestjs/common'
 import { GetApplicationNamespaceByAppId } from '../utils/getter'
-import { MB, ResourceLabels } from '../constants'
+import { MB, ResourceLabelKey } from '../constants'
 import { PrismaService } from '../prisma.service'
 import { StorageService } from '../storage/storage.service'
 import { DatabaseService } from 'src/database/database.service'
@@ -24,7 +24,7 @@ export class InstanceService {
 
   async create(app: Application) {
     const appid = app.appid
-    const labels = { [ResourceLabels.APP_ID]: appid }
+    const labels = { [ResourceLabelKey.APP_ID]: appid }
     const region = await this.regionService.findByAppId(appid)
     const appWithRegion = { ...app, region } as ApplicationWithRegion
 
@@ -50,11 +50,14 @@ export class InstanceService {
       },
     })
 
+    // add bundle label
+    labels[ResourceLabelKey.BUNDLE] = app.bundle.name
+
     // prepare params
-    const limitMemory = app.bundle.limitMemory
-    const limitCpu = app.bundle.limitCPU
-    const requestMemory = app.bundle.requestMemory
-    const requestCpu = app.bundle.requestCPU
+    const limitMemory = app.bundle.resource.limitMemory
+    const limitCpu = app.bundle.resource.limitCPU
+    const requestMemory = app.bundle.resource.requestMemory
+    const requestCpu = app.bundle.resource.requestCPU
     const max_old_space_size = ~~(limitMemory * 0.8)
     const max_http_header_size = 1 * MB
     const dependencies = app.configuration?.dependencies || []

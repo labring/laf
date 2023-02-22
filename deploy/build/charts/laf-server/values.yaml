@@ -18,7 +18,7 @@ default_region:
   apisix_api_key: ""
   apisix_public_port: 80
   tls: false
-  function_domain: ""
+  runtime_domain: ""
   website_domain: ""
 jwt:
   secret: laf_server_abc123

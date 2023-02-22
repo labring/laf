@@ -13,7 +13,7 @@ import { StorageService } from '../storage/storage.service'
 import { DatabaseService } from '../database/database.service'
 import { ClusterService } from 'src/region/cluster/cluster.service'
 import { RegionService } from 'src/region/region.service'
-import { FunctionDomainService } from 'src/gateway/function-domain.service'
+import { RuntimeDomainService } from 'src/gateway/runtime-domain.service'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/database/system-database'
 
@@ -27,7 +27,7 @@ export class ApplicationTaskService {
     private readonly clusterService: ClusterService,
     private readonly storageService: StorageService,
     private readonly databaseService: DatabaseService,
-    private readonly gatewayService: FunctionDomainService,
+    private readonly gatewayService: RuntimeDomainService,
   ) {}
 
   @Cron(CronExpression.EVERY_SECOND)
@@ -82,7 +82,7 @@ export class ApplicationTaskService {
 
     // get region by appid
     const region = await this.regionService.findByAppId(appid)
-    assert(region, `Region ${app.regionName} not found`)
+    assert(region, `Region ${region.name} not found`)
 
     // reconcile namespace
     const namespace = await this.clusterService.getAppNamespace(region, appid)
@@ -172,7 +172,7 @@ export class ApplicationTaskService {
     const app = res.value
     const appid = app.appid
     const region = await this.regionService.findByAppId(appid)
-    assert(region, `Region ${app.regionName} not found`)
+    assert(region, `Region ${region.name} not found`)
 
     // delete namespace (include the instance)
     const namespace = await this.clusterService.getAppNamespace(region, appid)
@@ -202,7 +202,7 @@ export class ApplicationTaskService {
       return await this.unlock(appid)
     }
 
-    // TODO: delete app configuration
+    // TODO: delete app configuration & bundle
 
     // update phase to `Deleted`
     const updated = await db.collection<Application>('Application').updateOne(
@@ -260,7 +260,7 @@ export class ApplicationTaskService {
    */
   async unlock(appid: string) {
     const db = SystemDatabase.db
-    const updated = await db.collection<Application>('Application').updateOne(
+    await db.collection<Application>('Application').updateOne(
       {
         appid: appid,
       },
@@ -270,7 +270,6 @@ export class ApplicationTaskService {
         },
       },
     )
-    if (updated.modifiedCount > 0) this.logger.debug(`unlocked app: ${appid}`)
   }
 
   /**

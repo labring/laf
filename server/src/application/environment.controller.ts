@@ -19,6 +19,7 @@ import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
 import { ResponseUtil } from 'src/utils/response'
 import { EnvironmentVariableService } from './environment.service'
 import { CreateEnvironmentDto } from './dto/create-env.dto'
+import { APPLICATION_SECRET_KEY } from 'src/constants'
 
 @ApiTags('Application')
 @ApiBearerAuth('Authorization')
@@ -39,6 +40,11 @@ export class EnvironmentVariableController {
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post()
   async add(@Param('appid') appid: string, @Body() dto: CreateEnvironmentDto) {
+    // can not set empty app secret
+    if (dto.name === APPLICATION_SECRET_KEY && !dto.value) {
+      return ResponseUtil.error(APPLICATION_SECRET_KEY + ' can not be empty')
+    }
+
     const res = await this.confService.set(appid, dto)
     return ResponseUtil.ok(res)
   }
@@ -68,6 +74,11 @@ export class EnvironmentVariableController {
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Delete(':name')
   async delete(@Param('appid') appid: string, @Param('name') name: string) {
+    // can not delete secret key
+    if (name === APPLICATION_SECRET_KEY) {
+      return ResponseUtil.error(APPLICATION_SECRET_KEY + ' can not be deleted')
+    }
+
     const res = await this.confService.delete(appid, name)
     return ResponseUtil.ok(res)
   }

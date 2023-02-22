@@ -22,18 +22,26 @@ interface File {
 
 
 /**
- * 云函数调用入参
+ * The input parameters of cloud function calls
  */
 interface FunctionContext {
   /**
-   * auth 对象解析自 JWT Token Payload
+   * This object is parsed from JWT Token Payload
+   * @deprecated use user instead 
    */
   auth?: {
     uid?: string
   }
 
   /**
-   * 上传到云函数的文件
+   * This object is parsed from JWT Token Payload
+   */
+  user?: {
+    [key: string]: any
+  }
+
+  /**
+   * Uploaded file, the file object array
    */
   files?: File[];
 
@@ -43,17 +51,17 @@ interface FunctionContext {
   headers?: IncomingHttpHeaders;
 
   /**
-   * HTTP Query 参数 （URL 参数），JSON 对象
+   * HTTP Query parameter (URL parameter), JSON object
    */
   query?: any;
 
   /**
-   * HTTP Body 参数， JSON 对象
+   * HTTP Body
    */
   body?: any;
 
   /**
-   * Trigger 调用时为触发器所带参数
+   *
    */
   params?: any;
 
@@ -63,17 +71,17 @@ interface FunctionContext {
   requestId?: string;
 
   /**
-   * 调用方法：GET | POST | PUT | DELETE | TRIGGER
+   * HTTP Method
    */
   method?: string;
 
   /**
-   * Express Response 对象
+   * Express response object
    */
   response: HttpResponse
 
   /**
-   * WebSocket 对象
+   * WebSocket object
    */
   socket?: WebSocket
 }
@@ -84,7 +92,7 @@ interface IModule {
 
 interface IExports {
   /**
-   * 主函数，云函数的入口函数
+   * The main function, entry of the cloud function
    */
   main: (ctx: FunctionContext) => any
 }
@@ -95,7 +103,7 @@ declare const console: FunctionConsole
 declare const global: typeof globalThis
 
 /**
- * 主函数，云函数的入口函数
+ *  The main function, entry of the cloud function
  */
 declare function main(ctx: FunctionContext): any;
 `;
