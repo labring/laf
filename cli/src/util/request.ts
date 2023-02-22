@@ -1,6 +1,7 @@
-// http.ts
+// request.ts
 import axios, { AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse } from 'axios'
 import { existSystemConfig, readSystemConfig, refreshToken } from '../config/system'
+import { DEFAULT_REMOTE_SERVER } from '../common/constant'
 
 export const request = axios.create({
   baseURL: '/',
@@ -26,6 +27,8 @@ request.interceptors.request.use(
       }
       config.url = remoteServer + config.url
       _headers.Authorization = 'Bearer ' + token
+    } else {
+      config.url = DEFAULT_REMOTE_SERVER + config.url
     }
 
     config.headers = {
@@ -48,7 +51,7 @@ request.interceptors.response.use(
     if (data.error == null) {
       return data.data
     }
-    console.error(data.error)
+    // console.error(data.error)
     process.exit(1)
   },
   (error) => {
@@ -57,19 +60,18 @@ request.interceptors.response.use(
       process.exit(1)
     } else {
       // handle error code
-      console.log(error)
-      const { status, data } = error.response
-      if (status === 400) {
+      const { statusCode, data } = error.response.data
+      if (statusCode === 400) {
         console.log('Bad request!')
         console.log(data.message)
         process.exit(1)
-      } else if (status === 401) {
+      } else if (statusCode === 401) {
         console.log('please first login')
         process.exit(1)
-      } else if (status == 403) {
+      } else if (statusCode == 403) {
         console.log('Forbidden resource!')
         process.exit(1)
-      } else if (status === 503) {
+      } else if (statusCode === 503) {
         console.log('The server is abnormal, please contact the administrator!')
         process.exit(1)
       }
