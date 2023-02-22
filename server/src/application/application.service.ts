@@ -18,6 +18,16 @@ export class ApplicationService {
 
   async create(userid: string, dto: CreateApplicationDto) {
     try {
+      // get bundle
+      const bundle = await this.prisma.bundle.findFirstOrThrow({
+        where: {
+          name: dto.bundleName,
+          region: {
+            name: dto.region,
+          },
+        },
+      })
+
       // create app in db
       const appSecret = {
         name: APPLICATION_SECRET_KEY,
@@ -39,10 +49,18 @@ export class ApplicationService {
           },
         },
         bundle: {
-          connect: {
-            regionName_name: {
-              regionName: dto.region,
-              name: dto.bundleName,
+          create: {
+            name: bundle.name,
+            displayName: bundle.displayName,
+            price: bundle.price,
+            resource: {
+              limitCPU: bundle.resource.limitCPU,
+              limitMemory: bundle.resource.limitMemory,
+              requestCPU: bundle.resource.requestCPU,
+              requestMemory: bundle.resource.requestMemory,
+              databaseCapacity: bundle.resource.databaseCapacity,
+              storageCapacity: bundle.resource.storageCapacity,
+              networkTrafficOutbound: bundle.resource.networkTrafficOutbound,
             },
           },
         },

@@ -45,7 +45,7 @@ const db = cloud.database();
 
 ### 在客户端中访问数据库
 
-前端可使用 [laf-client-sdk](https://github.com/lafjs/laf/tree/main/packages/client-sdk) “直连”数据库，无需与服务端对接口。
+前端可使用 [laf-client-sdk](https://github.com/labring/laf/tree/main/packages/client-sdk) “直连”数据库，无需与服务端对接口。
 
 在访问数据库之前，需要先设置一个访问策略。在 云数据库-访问策略 中创建一个新的策略，策略内容如下：
 

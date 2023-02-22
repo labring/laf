@@ -3,7 +3,7 @@ import * as compression from 'compression'
 import { AppModule } from './app.module'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { ValidationPipe, VersioningType } from '@nestjs/common'
-import { HTTP_METHODS, ServerConfig } from './constants'
+import { ServerConfig } from './constants'
 import { InitializerService } from './initializer/initializer.service'
 import { SystemDatabase } from './database/system-database'
 
@@ -12,12 +12,7 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule)
 
-  app.enableCors({
-    origin: '*',
-    methods: HTTP_METHODS,
-    credentials: false,
-    allowedHeaders: ['Content-Type', 'Authorization'],
-  })
+  app.enableCors()
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }))
 
@@ -32,7 +27,8 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Open API Documentation of laf')
     .setDescription('`The APIs of laf server`')
-    .setVersion('1.0.alpha')
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    .setVersion(require('../package.json').version)
     .addServer(ServerConfig.API_SERVER_URL, 'current server')
     .addServer('http://dev.server:3000', 'dev server')
     .addBearerAuth(
@@ -42,7 +38,7 @@ async function bootstrap() {
     .build()
 
   const document = SwaggerModule.createDocument(app, config)
-  SwaggerModule.setup('api', app, document, {
+  SwaggerModule.setup('', app, document, {
     swaggerOptions: {
       persistAuthorization: true,
       tagsSorter: 'alpha',

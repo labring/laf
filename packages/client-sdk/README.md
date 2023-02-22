@@ -1,6 +1,6 @@
 ### 介绍
 
-Javascript client sdk of [`LaF`](https://github.com/lafjs/laf).
+Javascript client sdk of [`laf`](https://github.com/labring/laf).
 
 ### 安装
 
@@ -11,7 +11,7 @@ Javascript client sdk of [`LaF`](https://github.com/lafjs/laf).
 ### 使用示例
 
 ```js
-import { Cloud } from 'laf-client-sdk'
+import { Cloud } from "laf-client-sdk";
 
 const cloud = new Cloud({
   // the laf app server base url
@@ -451,8 +451,8 @@ collection.field()
 
 参数说明
 
-| 参数 | 类型   | 必填 | 说明                                      |
-| ---- | ------ | ---- | ----------------------------------------- |
+| 参数 | 类型   | 必填 | 说明                               |
+| ---- | ------ | ---- | ---------------------------------- |
 | -    | object | 是   | 要过滤的字段，不返回传 0，返回传 1 |
 
 使用示例

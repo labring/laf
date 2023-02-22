@@ -16,9 +16,9 @@ export class RegionService {
     return app.region
   }
 
-  async findOne(name: string) {
+  async findOne(id: string) {
     const region = await this.prisma.region.findUnique({
-      where: { name },
+      where: { id },
     })
 
     return region
@@ -65,16 +65,10 @@ export class RegionService {
             id: true,
             name: true,
             displayName: true,
-            limitCPU: true,
-            limitMemory: true,
-            regionName: false,
-            requestCPU: false,
-            requestMemory: true,
-            databaseCapacity: true,
-            storageCapacity: true,
             price: true,
             priority: true,
             state: true,
+            resource: true,
           },
         },
       },

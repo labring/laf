@@ -7,8 +7,8 @@ import { DomainPhase, DomainState } from '@prisma/client'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
 
 @Injectable()
-export class FunctionDomainService {
-  private readonly logger = new Logger(FunctionDomainService.name)
+export class RuntimeDomainService {
+  private readonly logger = new Logger(RuntimeDomainService.name)
 
   constructor(
     private readonly prisma: PrismaService,
@@ -24,8 +24,8 @@ export class FunctionDomainService {
     assert(region, 'region not found')
 
     // create domain in db
-    const app_domain = `${appid}.${region.gatewayConf.functionDomain}`
-    const doc = await this.prisma.applicationDomain.create({
+    const app_domain = `${appid}.${region.gatewayConf.runtimeDomain}`
+    const doc = await this.prisma.runtimeDomain.create({
       data: {
         appid: appid,
         domain: app_domain,
@@ -42,7 +42,7 @@ export class FunctionDomainService {
    * Find an app domain in database
    */
   async findOne(appid: string) {
-    const doc = await this.prisma.applicationDomain.findFirst({
+    const doc = await this.prisma.runtimeDomain.findFirst({
       where: {
         appid: appid,
       },
@@ -56,7 +56,7 @@ export class FunctionDomainService {
    * - turn to `Deleted` state
    */
   async delete(appid: string) {
-    const doc = await this.prisma.applicationDomain.update({
+    const doc = await this.prisma.runtimeDomain.update({
       where: {
         appid: appid,
       },

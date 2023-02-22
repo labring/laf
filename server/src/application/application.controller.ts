@@ -26,7 +26,7 @@ import { ApplicationService } from './application.service'
 import { FunctionService } from '../function/function.service'
 import { StorageService } from 'src/storage/storage.service'
 import { RegionService } from 'src/region/region.service'
-import { FunctionDomainService } from 'src/gateway/function-domain.service'
+import { RuntimeDomainService } from 'src/gateway/runtime-domain.service'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -37,7 +37,7 @@ export class ApplicationController {
     private readonly appService: ApplicationService,
     private readonly funcService: FunctionService,
     private readonly regionService: RegionService,
-    private readonly gatewayService: FunctionDomainService,
+    private readonly gatewayService: RuntimeDomainService,
     private readonly storageService: StorageService,
   ) {}
 
@@ -92,7 +92,7 @@ export class ApplicationController {
     })
 
     // [SECURITY ALERT] Do NOT response this region object to client since it contains sensitive information
-    const region = await this.regionService.findOne(data.regionName)
+    const region = await this.regionService.findOne(data.regionId)
 
     // TODO: remove these storage related code to standalone api
     let storage = {}

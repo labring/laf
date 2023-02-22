@@ -78,8 +78,8 @@ export class ServerConfig {
     return process.env.API_SERVER_URL || 'http://localhost:3000'
   }
 
-  static get DEFAULT_REGION_FUNCTION_DOMAIN() {
-    return process.env.DEFAULT_REGION_FUNCTION_DOMAIN || 'localhost'
+  static get DEFAULT_REGION_RUNTIME_DOMAIN() {
+    return process.env.DEFAULT_REGION_RUNTIME_DOMAIN || 'localhost'
   }
 
   static get DEFAULT_REGION_WEBSITE_DOMAIN() {
@@ -123,7 +123,7 @@ export class ServerConfig {
   }
 }
 
-export class ResourceLabels {
+export class ResourceLabelKey {
   static get USER_ID() {
     return 'laf.dev/user.id'
   }
@@ -134,6 +134,10 @@ export class ResourceLabels {
 
   static get NAMESPACE_TYPE() {
     return 'laf.dev/namespace.type'
+  }
+
+  static get BUNDLE() {
+    return 'laf.dev/bundle'
   }
 }
 

@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { ApplicationDomain, DomainPhase, DomainState } from '@prisma/client'
+import { RuntimeDomain, DomainPhase, DomainState } from '@prisma/client'
 import { RegionService } from '../region/region.service'
 import { ApisixService } from './apisix.service'
 import * as assert from 'node:assert'
@@ -8,9 +8,9 @@ import { TASK_LOCK_INIT_TIME } from '../constants'
 import { SystemDatabase } from '../database/system-database'
 
 @Injectable()
-export class FunctionDomainTaskService {
+export class RuntimeDomainTaskService {
   readonly lockTimeout = 30 // in second
-  private readonly logger = new Logger(FunctionDomainTaskService.name)
+  private readonly logger = new Logger(RuntimeDomainTaskService.name)
 
   constructor(
     private readonly apisixService: ApisixService,
@@ -47,7 +47,7 @@ export class FunctionDomainTaskService {
     const db = SystemDatabase.db
 
     const res = await db
-      .collection<ApplicationDomain>('ApplicationDomain')
+      .collection<RuntimeDomain>('RuntimeDomain')
       .findOneAndUpdate(
         {
           phase: DomainPhase.Creating,
@@ -66,7 +66,7 @@ export class FunctionDomainTaskService {
 
     // get region by appid
     const doc = res.value
-    this.logger.log('handleCreatingPhase matched function domain', doc.appid)
+    this.logger.log('handleCreatingPhase matched function domain ' + doc.appid)
 
     const region = await this.regionService.findByAppId(doc.appid)
     assert(region, 'region not found')
@@ -82,7 +82,7 @@ export class FunctionDomainTaskService {
 
     // update phase to `Created`
     const updated = await db
-      .collection<ApplicationDomain>('ApplicationDomain')
+      .collection<RuntimeDomain>('RuntimeDomain')
       .updateOne(
         {
           _id: doc._id,
@@ -97,7 +97,7 @@ export class FunctionDomainTaskService {
       )
 
     if (updated.modifiedCount > 0)
-      this.logger.debug('app domain phase updated to Created', doc.domain)
+      this.logger.debug('app domain phase updated to Created ' + doc.domain)
   }
 
   /**
@@ -109,7 +109,7 @@ export class FunctionDomainTaskService {
     const db = SystemDatabase.db
 
     const res = await db
-      .collection<ApplicationDomain>('ApplicationDomain')
+      .collection<RuntimeDomain>('RuntimeDomain')
       .findOneAndUpdate(
         {
           phase: DomainPhase.Deleting,
@@ -136,7 +136,7 @@ export class FunctionDomainTaskService {
 
     // update phase to `Deleted`
     const updated = await db
-      .collection<ApplicationDomain>('ApplicationDomain')
+      .collection<RuntimeDomain>('RuntimeDomain')
       .updateOne(
         {
           _id: doc._id,
@@ -161,7 +161,7 @@ export class FunctionDomainTaskService {
   async handleActiveState() {
     const db = SystemDatabase.db
 
-    await db.collection<ApplicationDomain>('ApplicationDomain').updateMany(
+    await db.collection<RuntimeDomain>('RuntimeDomain').updateMany(
       {
         state: DomainState.Active,
         phase: DomainPhase.Deleted,
@@ -182,7 +182,7 @@ export class FunctionDomainTaskService {
   async handleInactiveState() {
     const db = SystemDatabase.db
 
-    await db.collection<ApplicationDomain>('ApplicationDomain').updateMany(
+    await db.collection<RuntimeDomain>('RuntimeDomain').updateMany(
       {
         state: DomainState.Inactive,
         phase: DomainPhase.Created,
@@ -204,7 +204,7 @@ export class FunctionDomainTaskService {
   async handleDeletedState() {
     const db = SystemDatabase.db
 
-    await db.collection<ApplicationDomain>('ApplicationDomain').updateMany(
+    await db.collection<RuntimeDomain>('RuntimeDomain').updateMany(
       {
         state: DomainState.Deleted,
         phase: DomainPhase.Created,
@@ -217,7 +217,7 @@ export class FunctionDomainTaskService {
       },
     )
 
-    await db.collection<ApplicationDomain>('ApplicationDomain').deleteMany({
+    await db.collection<RuntimeDomain>('RuntimeDomain').deleteMany({
       state: DomainState.Deleted,
       phase: DomainPhase.Deleted,
     })
@@ -229,7 +229,7 @@ export class FunctionDomainTaskService {
   async clearTimeoutLocks() {
     const db = SystemDatabase.db
 
-    await db.collection<ApplicationDomain>('ApplicationDomain').updateMany(
+    await db.collection<RuntimeDomain>('RuntimeDomain').updateMany(
       {
         lockedAt: {
           $lt: new Date(Date.now() - 1000 * this.lockTimeout),

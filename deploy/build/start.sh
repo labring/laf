@@ -102,7 +102,7 @@ helm install server -n ${NAMESPACE} \
     --set default_region.minio_internal_endpoint=${MINIO_INTERNAL_ENDPOINT} \
     --set default_region.minio_root_access_key=${MINIO_ROOT_ACCESS_KEY} \
     --set default_region.minio_root_secret_key=${MINIO_ROOT_SECRET_KEY} \
-    --set default_region.function_domain=${DOMAIN} \
+    --set default_region.runtime_domain=${DOMAIN} \
     --set default_region.website_domain=site.${DOMAIN} \
     --set default_region.tls=false \
     --set default_region.apisix_api_url=${APISIX_API_URL} \

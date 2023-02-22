@@ -80,7 +80,7 @@
 ## 👨‍💻 Who is `laf` for?
 
 1. **Front-end Developer** + `laf` = Full Stack Developer
-   - `laf` privided [laf-client-sdk](https://github.com/labring/laf/tree/main/packages/client-sdk) for front-end which can be used in any JS runtime.
+   - `laf` provided [laf-client-sdk](https://github.com/labring/laf/tree/main/packages/client-sdk) for front-end which can be used in any JS runtime.
    - `laf` cloud function are developed using JS/TS, no need to learn any other languages.
    - `laf` provides static site hosting in one click, no more worries about server config, nginx, domain name, etc.
    - `laf` will provides more SDK in the future (Flutter/Android/iOS) to give you a unified experience on any platforms.
@@ -98,7 +98,7 @@
    - You can provide full source code to your clients which enables them to deploy the application in **any** environment.
    - You can modify/customize your cloud platform, `laf` is open-sourced and built with customization in mind.
 
-4. **Node.js Developer**，`laf` is developed using `Node.js`, you can treat it as another **Node.js** framwork/platform.
+4. **Node.js Developer**，`laf` is developed using `Node.js`, you can treat it as another **Node.js** framework/platform.
 
    - You can write/debug/deploy your cloud functions in the browser with minimal effort.
    - You can inspect/search logs with no configuration needed.
@@ -170,10 +170,10 @@ Independent domain names and HTTPS licenses can be applied to your applications 
 
 ## 🏘️ Community
 
-- [Wechat Group](https://oss.lafyun.com/wofnib-image/2022-04-22-14-21-MRJH9o.png)
+- [WeChat Group](https://oss.lafyun.com/wofnib-image/2022-04-22-14-21-MRJH9o.png)
 - [QQ Group：603059673](https://jq.qq.com/?_wv=1027&k=DdRCCiuz)
 - _More community resources will be added soon!_
 
 ## 🌟 Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=lafjs/laf&type=Date)](https://star-history.com/#lafjs/laf&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=labring/laf&type=Date)](https://star-history.com/#labring/laf&Date)
