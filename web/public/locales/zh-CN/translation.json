@@ -125,7 +125,8 @@
     "AppEnv": "环境变量",
     "AddAppEnv": "新增环境变量",
     "Expire": "过期时间",
-    "UserSetting": "用户设置"
+    "UserSetting": "用户设置",
+    "UpdateConfirm": "更新环境变量将重新启动应用，是否继续？"
   },
   "StoragePanel": {
     "CreateBucket": "创建 Bucket",

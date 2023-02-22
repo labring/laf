@@ -17,11 +17,17 @@ interface ConfirmButtonProps {
   onSuccessAction: () => void;
   headerText: string;
   bodyText: string;
-
+  confirmButtonText?: string;
   children: React.ReactElement;
 }
 
-const ConfirmButton = ({ onSuccessAction, headerText, bodyText, children }: ConfirmButtonProps) => {
+const ConfirmButton = ({
+  onSuccessAction,
+  headerText,
+  bodyText,
+  confirmButtonText,
+  children,
+}: ConfirmButtonProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef<any>();
 
@@ -52,7 +58,9 @@ const ConfirmButton = ({ onSuccessAction, headerText, bodyText, children }: Conf
 
           <AlertDialogFooter>
             <Button colorScheme={"red"} onClick={onSubmit}>
-              {t("Delete")}
+              {confirmButtonText && confirmButtonText.length !== 0
+                ? confirmButtonText
+                : t("Delete")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

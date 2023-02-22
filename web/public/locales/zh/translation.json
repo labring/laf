@@ -137,7 +137,8 @@
     "Expire": "过期时间",
     "Setting": "设置",
     "SystemSetting": "应用设置",
-    "UserSetting": "用户设置"
+    "UserSetting": "用户设置",
+    "UpdateConfirm": "更新环境变量将重新启动应用，是否继续？"
   },
   "StoragePanel": {
     "All": "总容量",
