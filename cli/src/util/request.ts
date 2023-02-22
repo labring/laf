@@ -51,7 +51,7 @@ request.interceptors.response.use(
     if (data.error == null) {
       return data.data
     }
-    // console.error(data.error)
+    console.error(data.error)
     process.exit(1)
   },
   (error) => {
