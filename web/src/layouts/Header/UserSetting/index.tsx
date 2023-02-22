@@ -6,6 +6,7 @@ import { VITE_SERVER_BASE_URL } from "@/constants";
 import SettingModal from "@/pages/app/setting";
 import PATList from "@/pages/app/setting/PATList";
 import ProfileSetting from "@/pages/app/setting/Profile";
+import UserInfo from "@/pages/app/setting/UserInfo";
 export default function UserSetting(props: { name: string; avatar?: string; width: string }) {
   return (
     <Menu>
@@ -27,6 +28,11 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
               key: "user-profile",
               name: "Profile",
               component: <ProfileSetting />,
+            },
+            {
+              key: "user-info",
+              name: t("SettingPanel.UserInfo"),
+              component: <UserInfo />,
             },
             {
               key: "pat",

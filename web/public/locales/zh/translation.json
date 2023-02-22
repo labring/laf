@@ -149,7 +149,21 @@
     "network": "出网容量",
     "Close": "关闭应用",
     "Delete": "删除应用",
-    "Restart": "重启应用"
+    "Restart": "重启应用",
+    "UserInfo": "用户信息",
+    "Auth": "实名认证",
+    "Tel": "手机号",
+    "SendCode": "发送验证码",
+    "Code": "验证码",
+    "Name": "真实姓名",
+    "ID": "身份证号",
+    "ToAuth": "立即认证",
+    "showAuth": "去认证",
+    "noAuth": "未实名",
+    "IDTip": "请输入有效的身份证号码",
+    "CodeTip": "请输入四位数字验证码",
+    "TelTip": "请输入有效的手机号码",
+    "Registered": "注册于"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -246,5 +260,6 @@
   },
   "Restart": "重启应用",
   "ShutDown": "关闭应用",
-  "Charge": "余额充值"
+  "Charge": "余额充值",
+  "Back": "返回"
 }
