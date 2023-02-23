@@ -3,6 +3,7 @@ import { TriggerPhase, TriggerState } from '@prisma/client'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
 import { PrismaService } from 'src/prisma.service'
 import { CreateTriggerDto } from './dto/create-trigger.dto'
+import CronValidate from 'cron-validate'
 
 @Injectable()
 export class TriggerService {
@@ -46,5 +47,14 @@ export class TriggerService {
       where: { appid, id },
     })
     return res
+  }
+
+  isValidCronExpression(cron: string) {
+    const ret = CronValidate(cron)
+    if (ret.isValid()) {
+      return true
+    }
+
+    return false
   }
 }
