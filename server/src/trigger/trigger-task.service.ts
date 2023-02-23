@@ -1,12 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { RegionService } from 'src/region/region.service'
-import * as assert from 'node:assert'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { times } from 'lodash'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/database/system-database'
 import { CronJobService } from './cron-job.service'
 import { CronTrigger, TriggerPhase, TriggerState } from '@prisma/client'
+import * as assert from 'node:assert'
 
 @Injectable()
 export class TriggerTaskService {
@@ -125,7 +124,7 @@ export class TriggerTaskService {
 
     // delete cron job
     const ret = await this.cronService.delete(doc)
-    if (ret.status !== 'Success') return
+    if (ret?.status !== 'Success') return
 
     this.logger.debug('cron job deleted:', doc._id)
 

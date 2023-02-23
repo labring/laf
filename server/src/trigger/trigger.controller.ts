@@ -38,6 +38,12 @@ export class TriggerController {
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post()
   async create(@Param('appid') appid: string, @Body() dto: CreateTriggerDto) {
+    // check cron expression
+    const valid = this.triggerService.isValidCronExpression(dto.cron)
+    if (!valid) {
+      return ResponseUtil.error('Invalid cron expression')
+    }
+
     const res = await this.triggerService.create(appid, dto)
     return ResponseUtil.ok(res)
   }
