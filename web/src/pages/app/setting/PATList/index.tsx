@@ -74,7 +74,7 @@ const PATList = () => {
             tableHeight: "40vh",
             hiddenEditButton: true,
             addButtonText: t("Add") + "Token",
-            saveButtonText: t("Generate") + "Token",
+            saveButtonText: String(t("Generate")),
             operationButtonsRender: (data: any) => {
               const tokenItem = tokenList?.filter((item) => item.id === data.id);
               return tokenItem?.length === 1 ? (

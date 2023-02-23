@@ -1,6 +1,7 @@
 import { useState } from "react";
 import React from "react";
 import {
+  HStack,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -13,11 +14,14 @@ import { t } from "i18next";
 
 import SectionList from "@/components/SectionList";
 
+import styles from "./index.module.scss";
+
 import { TApplication } from "@/apis/typing";
 import useGlobalStore from "@/pages/globalStore";
 export type TTabItem = {
   key: string;
   name: string;
+  icon?: React.ReactElement;
   component: React.ReactElement;
 };
 const SettingModal = (props: {
@@ -44,7 +48,7 @@ const SettingModal = (props: {
 
       <Modal isOpen={isOpen} onClose={onClose} size="4xl">
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent className={styles.modal}>
           <ModalHeader>{headerTitle || t("SettingPanel.Setting")}</ModalHeader>
           <ModalCloseButton />
           <ModalBody px={6} py={2} h="60vh" maxH="70vh" flex="none">
@@ -60,7 +64,10 @@ const SettingModal = (props: {
                         setItem(tab);
                       }}
                     >
-                      {tab.name}
+                      <HStack spacing={2}>
+                        {tab?.icon}
+                        <span>{tab.name}</span>
+                      </HStack>
                     </SectionList.Item>
                   );
                 })}

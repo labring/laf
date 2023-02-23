@@ -77,7 +77,7 @@ const EditableTable = function (props: {
                 <Th key="operation">{t("Operation")}</Th>
               </Tr>
             </Thead>
-            <Tbody className="font-mono">
+            <Tbody className="font-mono bg-white">
               {(tableList || []).map((item: any, index: number) => {
                 const generalParameters = {
                   configuration,

@@ -231,3 +231,11 @@ export type TProfile = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type TBillItem = {
+  id: string;
+  name: string;
+  time: string;
+  money: number;
+  type: number;
+};

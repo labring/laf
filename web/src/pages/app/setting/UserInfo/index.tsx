@@ -13,7 +13,6 @@ export default function UserInfo() {
   const [showAuth, setShowAuth] = useState(false);
 
   const { userInfo } = useGlobalStore((state) => state);
-
   return (
     <div className="h-full flex flex-col items-center justify-center">
       {showAuth ? (

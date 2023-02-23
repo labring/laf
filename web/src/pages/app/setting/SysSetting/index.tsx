@@ -1,5 +1,8 @@
 import React from "react";
+import { MdOutlineArticle } from "react-icons/md";
 import { t } from "i18next";
+
+import FileTypeIcon from "@/components/FileTypeIcon";
 
 import AppEnvList from "../AppEnvList";
 import AppInfoList from "../AppInfoList";
@@ -15,11 +18,13 @@ export default function SysSetting(props: { children: React.ReactElement; setApp
         {
           key: "info",
           name: t("SettingPanel.AppInfo"),
+          icon: <MdOutlineArticle />,
           component: <AppInfoList />,
         },
         {
           key: "env",
           name: t("SettingPanel.AppEnv"),
+          icon: <FileTypeIcon type="locked" />,
           component: <AppEnvList />,
         },
       ]}

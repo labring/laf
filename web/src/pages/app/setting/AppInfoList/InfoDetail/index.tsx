@@ -12,7 +12,7 @@ const InfoDetail = function (props: {
 }) {
   const { title, leftData, rightData, className } = props;
   return (
-    <div className={clsx("border border-grayModern-100 rounded px-4 py-4", className)}>
+    <div className={clsx("bg-white border border-grayModern-100 rounded px-4 py-4", className)}>
       <Content>
         <Row className="h-[20px] flex-none mb-2">
           <span
@@ -21,7 +21,7 @@ const InfoDetail = function (props: {
               styles.detailTitle,
             )}
           >
-            {title}
+            <span className="relative">{title}</span>
           </span>
         </Row>
         <Row className="flex">
