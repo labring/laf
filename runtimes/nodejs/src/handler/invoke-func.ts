@@ -95,7 +95,11 @@ export async function handleInvokeFunction(req: IRequest, res: Response) {
     )
 
     if (res.writableEnded === false) {
-      return res.send(result.data)
+      let data = result.data
+      if (typeof result.data === 'number') {
+        data = Number(result.data).toString()
+      }
+      return res.send(data)
     }
   } catch (error) {
     logger.error(requestId, 'failed to invoke error', error)
