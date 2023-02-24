@@ -5,8 +5,8 @@
  * @Description:
  */
 
-import * as express from 'express'
-import * as cors from 'cors'
+import express from 'express'
+import cors from 'cors'
 
 import { parseToken, splitBearerToken } from './support/token'
 import Config from './config'
@@ -15,7 +15,7 @@ import { logger } from './support/logger'
 import { generateUUID } from './support/utils'
 import { WebSocketAgent } from './support/ws'
 import { DatabaseAgent } from './db'
-import * as xmlparser from 'express-xml-bodyparser'
+import xmlparser from 'express-xml-bodyparser'
 
 // init static method of class
 import './support/function-log'

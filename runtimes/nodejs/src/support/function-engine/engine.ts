@@ -43,7 +43,17 @@ export class FunctionEngine {
 
     const _start_time = process.hrtime.bigint()
     try {
-      const script = new vm.Script(wrapped, options)
+      const script = new vm.Script(wrapped, {
+        ...options,
+        importModuleDynamically: async (
+          specifier: string,
+          _: vm.Script,
+          _importAssertions: any,
+        ) => {
+          return await import(specifier)
+        },
+      } as any)
+
       const result = script.runInNewContext(sandbox, options)
 
       let data = result

@@ -30,12 +30,20 @@ export class ImportParser {
    */
   parseDependencies(source: string) {
     const cleaned = source;
-    return [...cleaned.matchAll(this.REGEX_DETECT_IMPORT)]
+    const DYNAMIC_IMPORT = /import\((['"])(.*?)\1\)/g;
+
+    // parse dynamic imports
+    const dynamicImports = [...cleaned.matchAll(DYNAMIC_IMPORT)].map((x) => x[2]);
+
+    // parse static imports
+    const staticImports = [...cleaned.matchAll(this.REGEX_DETECT_IMPORT)]
       .map((x) => x[1] ?? x[2])
       .filter((x) => !!x)
       .map((imp) => {
         return imp;
       });
+
+    return [...new Set([...dynamicImports, ...staticImports])];
   }
 }
 
