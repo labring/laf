@@ -18,7 +18,7 @@ import { DependencyModule } from './dependency/dependency.module'
 import { TriggerModule } from './trigger/trigger.module'
 import { RegionModule } from './region/region.module'
 import { GatewayModule } from './gateway/gateway.module'
-
+import { SmsModule } from './sms/sms.module'
 @Module({
   imports: [
     ScheduleModule.forRoot(),
@@ -40,6 +40,7 @@ import { GatewayModule } from './gateway/gateway.module'
     TriggerModule,
     RegionModule,
     GatewayModule,
+    SmsModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

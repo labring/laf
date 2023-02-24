@@ -8,3 +8,16 @@ export interface IRequest extends Request {
 }
 
 export type IResponse = Response
+
+export interface AlismsConfig {
+  accessKeyId: string
+  accessKeySecret: string
+  endpoint: string
+  signName: string
+  templateCode: string
+}
+
+export interface ServiceResponse {
+  code: string
+  error?: string
+}
