@@ -1,4 +1,57 @@
-# [](https://github.com/labring/laf/compare/v1.0.0-beta.1...v) (2023-02-05)
+# [](https://github.com/labring/laf/compare/v1.0.0-beta.2...v) (2023-02-24)
+
+
+
+# [1.0.0-beta.2](https://github.com/labring/laf/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2023-02-24)
+
+
+### Bug Fixes
+
+* **cli:** fix cli command error & release cli ([#734](https://github.com/labring/laf/issues/734)) ([cd5336d](https://github.com/labring/laf/commit/cd5336dd26e98d725e43edfa5c1cb0e4902bb485))
+* **cli:** fix invoke url error ([#743](https://github.com/labring/laf/issues/743)) ([31ce3f1](https://github.com/labring/laf/commit/31ce3f18ac4959055305727cad29dfebce688d29))
+* **cli:** fix login error ([#741](https://github.com/labring/laf/issues/741)) ([c02c42c](https://github.com/labring/laf/commit/c02c42cf9ba95c75b807852864dba23ac1325711))
+* **cli:** fix some word case ([#742](https://github.com/labring/laf/issues/742)) ([27290d4](https://github.com/labring/laf/commit/27290d40e7462c1bfe652830d3107c7bfddd496e))
+* fix init error in runtime, add set -e for shell scripts ([893ddcf](https://github.com/labring/laf/commit/893ddcf4b7ccbde894d36d3aeec33b00d9a6e5b7))
+* **runtime:** cors package missing ([#795](https://github.com/labring/laf/issues/795)) ([18375b5](https://github.com/labring/laf/commit/18375b54a009d9bd266af8d64f24d2e366190c17))
+* **runtime:** express cannot send number directly [#816](https://github.com/labring/laf/issues/816) ([#817](https://github.com/labring/laf/issues/817)) ([c856fd8](https://github.com/labring/laf/commit/c856fd8e39c9d1aa24f91e0cc67c9e21691feb1a))
+* **runtime:** fix debug token error ([#793](https://github.com/labring/laf/issues/793)) ([f24db6f](https://github.com/labring/laf/commit/f24db6fa682c170fed0c53810e44e1ff4b539c48))
+* **runtime:** fix proxy policy loading problem ([8127519](https://github.com/labring/laf/commit/81275190454aab72da42df45a5341e269e39b86f))
+* **runtime:** rename debug token to develop token ([746f08d](https://github.com/labring/laf/commit/746f08dc1b9f9d4c95ae6dd4a3478f0c1a33d38b))
+* **server:** add validation for cron expression ([#815](https://github.com/labring/laf/issues/815)) ([5245473](https://github.com/labring/laf/commit/5245473824f953408e157c9519fcb228c6852e5d))
+* **server:** add website info in bucket-get api ([#775](https://github.com/labring/laf/issues/775)) ([60c55ed](https://github.com/labring/laf/commit/60c55ed370e0f7f9449e55b22051a04a0e4f1190))
+* **server:** bind custom domain not working ([7a27533](https://github.com/labring/laf/commit/7a2753322c808ea90a12600b7a34f852c7d3955f))
+* **server:** fix instance state error in task ([#762](https://github.com/labring/laf/issues/762)) ([e11b7ae](https://github.com/labring/laf/commit/e11b7ae028e5104232dc79a2ae0157fd5c278ffb))
+* **server:** fix trigger job of agenda implement ([69aecf1](https://github.com/labring/laf/commit/69aecf1356a122d5f2835677ac2709dec5a694b4))
+* **server:** fix unable to delete dependency name with splash [#786](https://github.com/labring/laf/issues/786) ([#805](https://github.com/labring/laf/issues/805)) ([0472a65](https://github.com/labring/laf/commit/0472a656e529f8b3befc9a646e2bc27d0e82d14b))
+* **web:** database example internationalization ([#782](https://github.com/labring/laf/issues/782)) ([80a03be](https://github.com/labring/laf/commit/80a03becf3c6117800efe57f243ddf5ecc2712c3))
+* **web:** fix [#718](https://github.com/labring/laf/issues/718) app info edit bug ([#738](https://github.com/labring/laf/issues/738)) ([3381884](https://github.com/labring/laf/commit/3381884df2f0b7f6cb9f0d0b3b3be2e38e015303))
+* **web:** fix database page bugs & add storage refresh ([#761](https://github.com/labring/laf/issues/761)) ([857805a](https://github.com/labring/laf/commit/857805aa54a5be0c483fd45318778cb7e7aef4d8))
+* **web:** fix missing comma in the translation file ([#784](https://github.com/labring/laf/issues/784)) ([c81d9e5](https://github.com/labring/laf/commit/c81d9e5bde69c5d18131f0f9d4bfadbae6b8f5f9))
+* **web:** function data cannot be stored in local storage ([#769](https://github.com/labring/laf/issues/769)) ([bd983a0](https://github.com/labring/laf/commit/bd983a0d49c9abd9a689c2b24becf3cd36bfe618))
+* **web:** get domain from bucket info ([#803](https://github.com/labring/laf/issues/803)) ([7ed542c](https://github.com/labring/laf/commit/7ed542c3fc4b4fc78f11125fffbc05167da82a4a))
+* **web:** reverse array bug ([#776](https://github.com/labring/laf/issues/776)) ([dc34c2a](https://github.com/labring/laf/commit/dc34c2a89d88e7d3b16ccdb89550967a8929bf5a))
+* **web:** support tls conf in [#767](https://github.com/labring/laf/issues/767) ([#790](https://github.com/labring/laf/issues/790)) ([efdf4ea](https://github.com/labring/laf/commit/efdf4ea9215fcc2af29aa2e1ce79ec032ea3106d))
+
+
+### Features
+
+* **cli:** auto create and delete fn ([#757](https://github.com/labring/laf/issues/757)) ([e7866fc](https://github.com/labring/laf/commit/e7866fc8c7dcca8c727026040f6fa283bf60a7c6))
+* **cli:** generate .gitignore file ([#758](https://github.com/labring/laf/issues/758)) ([be1d88e](https://github.com/labring/laf/commit/be1d88e2e50edf14e14ced997fd1dc5c1c9655b6))
+* **cli:** impl policy cmd ([#756](https://github.com/labring/laf/issues/756)) ([b85f8e0](https://github.com/labring/laf/commit/b85f8e02b4f5c5095a4ab04a905b072c11ef8334))
+* **cli:** opt dependency cmd ([#759](https://github.com/labring/laf/issues/759)) ([df9692b](https://github.com/labring/laf/commit/df9692b8666abedb092d755c19e8b8bc81c3ceae))
+* **runtime:** support dynamic import() in runtime ([#819](https://github.com/labring/laf/issues/819)) ([eabd39f](https://github.com/labring/laf/commit/eabd39fa49d6110ac9bf00a0b63d1cf2e399f736))
+* **server:** implement website hosting module ([#763](https://github.com/labring/laf/issues/763)) ([41da999](https://github.com/labring/laf/commit/41da999318184a21f127230271b45f96a51f15a2))
+* **server:** implement website hosting task ([#774](https://github.com/labring/laf/issues/774)) ([e1e597d](https://github.com/labring/laf/commit/e1e597dc20de6b13fdbbbca7162d8b813a294cec))
+* **server:** refactor bundle and other data schemas ([#811](https://github.com/labring/laf/issues/811)) ([809d1de](https://github.com/labring/laf/commit/809d1def836f2a12ce8d853f4c81badf578baf39))
+* **web:** add 403 page ([#781](https://github.com/labring/laf/issues/781)) ([50a7b79](https://github.com/labring/laf/commit/50a7b7945f262867842d5aad19487d605ebf80eb))
+* **web:** add confirm update env modal ([#806](https://github.com/labring/laf/issues/806)) ([bf81496](https://github.com/labring/laf/commit/bf81496f301be7086751fe32bf5936049c06ce0e))
+* **web:** add empty status & fix UI [#745](https://github.com/labring/laf/issues/745) ([#748](https://github.com/labring/laf/issues/748)) ([d88dd7e](https://github.com/labring/laf/commit/d88dd7ea7917362921321d2760ba3bfc6d01f435))
+* **web:** add form-data option for debug panel ([#789](https://github.com/labring/laf/issues/789)) ([b59053b](https://github.com/labring/laf/commit/b59053b68c8523ab3c9ab42fe22591ab181e75db))
+* **web:** add function name copy([#783](https://github.com/labring/laf/issues/783)) ([c808c1e](https://github.com/labring/laf/commit/c808c1e4e0715185fb3739018fc3b7ba6564d6b8))
+* **web:** add i18n language switch, refact loading state ([#777](https://github.com/labring/laf/issues/777)) ([2de068b](https://github.com/labring/laf/commit/2de068b745251e3c6bf53f6b9504bf0658b78a87))
+* **web:** add website hosting ([#780](https://github.com/labring/laf/issues/780)) ([7dadeba](https://github.com/labring/laf/commit/7dadeba0a1c1b0ba7f05e6818c50450665c4239c))
+* **web:** add website hosting custom domain ([#796](https://github.com/labring/laf/issues/796)) ([a2ea24c](https://github.com/labring/laf/commit/a2ea24c0fb42e7045e98cb83dc3f49f692929e34))
+* **web:** fix home page & function page bugs ([#735](https://github.com/labring/laf/issues/735)) ([f468748](https://github.com/labring/laf/commit/f468748c33aa049c1bd78f21829d9757b3ca6268))
 
 
 
@@ -1502,8 +1555,8 @@
 
 ### Bug Fixes
 
-* add node package `util` support; ([be9c373](https://github.com/labring/laf/commit/be9c373b2505ae34d3ed8a4186d0d279403be745))
 * 修复获取依赖包类型接口报错无捕获； ([43582a5](https://github.com/labring/laf/commit/43582a5697cb1a7c524798efe5779e80b034c5fb))
+* add node package `util` support; ([be9c373](https://github.com/labring/laf/commit/be9c373b2505ae34d3ed8a4186d0d279403be745))
 
 
 ### Features
@@ -1565,9 +1618,9 @@
 
 ### Bug Fixes
 
+* 修复菜单权限显示；优化体验； ([cf3eefb](https://github.com/labring/laf/commit/cf3eefb0485db9e73676249e21c077f0e612a5ea))
 * 修复发布、部署资源时事务使用错误； ([b1c350a](https://github.com/labring/laf/commit/b1c350a72e9705012ba427739b553be7fe973c5a))
 * 修复开发控制台 IDE 默认无 mongodb 类型提供的问题； ([e75ae8c](https://github.com/labring/laf/commit/e75ae8cf95b1275e74f7e580910fdb20879f1552))
-* 修复菜单权限显示；优化体验； ([cf3eefb](https://github.com/labring/laf/commit/cf3eefb0485db9e73676249e21c077f0e612a5ea))
 
 
 
@@ -1576,8 +1629,8 @@
 
 ### Bug Fixes
 
-* 修复部署时 _id 未转为 ObjectId 的问题； ([0483301](https://github.com/labring/laf/commit/04833012d03efa691042aa0ff6ff5f013cbb8dd1))
 * 修复部署面板内容多时无法滚动的问题； ([0cf8d83](https://github.com/labring/laf/commit/0cf8d8378942e2f96614aaafbcdea2691d683cb1))
+* 修复部署时 _id 未转为 ObjectId 的问题； ([0483301](https://github.com/labring/laf/commit/04833012d03efa691042aa0ff6ff5f013cbb8dd1))
 
 
 
@@ -1586,8 +1639,8 @@
 
 ### Features
 
-* **fix:** 新增触发器远程推送部署，远程推送改为保持 _id 一致的方式； ([655792c](https://github.com/labring/laf/commit/655792c9a6262a79fe3b69369a26ac1a582ba48a))
 * 新增触发器远程推送部署； ([99f027b](https://github.com/labring/laf/commit/99f027b0c64aecfdb1927cb87c23ef54dc3d1c97))
+* **fix:** 新增触发器远程推送部署，远程推送改为保持 _id 一致的方式； ([655792c](https://github.com/labring/laf/commit/655792c9a6262a79fe3b69369a26ac1a582ba48a))
 
 
 
@@ -1606,9 +1659,9 @@
 
 ### Bug Fixes
 
-* 优化 devops 控制台交互体验、样式、延长请求超时时间到 60秒； ([b3ea99f](https://github.com/labring/laf/commit/b3ea99f8a452a8a0849a849823e724772ec897f7))
-* 修复IDE快捷键监听未销毁的问题； ([cacb1c0](https://github.com/labring/laf/commit/cacb1c05f70eb3caf48c27b13d696a9a4c95277d))
 * 修复预置函数 admin-edit 的标识错误； ([96f588e](https://github.com/labring/laf/commit/96f588e87c7d079cd255dca28c4f84f3b97a9d2a))
+* 修复IDE快捷键监听未销毁的问题； ([cacb1c0](https://github.com/labring/laf/commit/cacb1c05f70eb3caf48c27b13d696a9a4c95277d))
+* 优化 devops 控制台交互体验、样式、延长请求超时时间到 60秒； ([b3ea99f](https://github.com/labring/laf/commit/b3ea99f8a452a8a0849a849823e724772ec897f7))
 
 
 
@@ -1617,9 +1670,9 @@
 
 ### Bug Fixes
 
-* 优化页面布局，去除面包屑，腾出更多页面空间等； ([55c3a44](https://github.com/labring/laf/commit/55c3a447873c40568027ef7fceed05f18c976aea))
 * 修复 tag 页面缓存不生效；去除页面切换动画； ([f8a94c8](https://github.com/labring/laf/commit/f8a94c8f800ff2726c3d510593b070b1c9d2f38d))
 * 修复页面缓存时，函数调试页快捷键重复绑定问题； ([1a26cf3](https://github.com/labring/laf/commit/1a26cf3d10c183339e3bbe0746ceda5e6eecfd92))
+* 优化页面布局，去除面包屑，腾出更多页面空间等； ([55c3a44](https://github.com/labring/laf/commit/55c3a447873c40568027ef7fceed05f18c976aea))
 
 
 
@@ -1640,9 +1693,9 @@
 
 ### Features
 
-* 支持云函数调试请求令牌 ([57dedc9](https://github.com/labring/laf/commit/57dedc9d41bc0e9c5d7cf0d4dce2ab4d6970f5e4))
 * 支持保存和使用云函数调试令牌 ([ac237ef](https://github.com/labring/laf/commit/ac237efd8827ad91b441588dbf98116e1211add9))
 * 支持登陆时发放云函数调试令牌；支持配置 token 过期时间； ([2b33cc4](https://github.com/labring/laf/commit/2b33cc4f3fcd7eb3c806ed26f5e6929e6f96e78e))
+* 支持云函数调试请求令牌 ([57dedc9](https://github.com/labring/laf/commit/57dedc9d41bc0e9c5d7cf0d4dce2ab4d6970f5e4))
 
 
 
@@ -1651,8 +1704,8 @@
 
 ### Bug Fixes
 
-* rename the client title; ([cf49d40](https://github.com/labring/laf/commit/cf49d4037dc8d845d9c821d28cab6daaa38f1bd3))
 * 修复无法删除函数的问题； ([ff0d855](https://github.com/labring/laf/commit/ff0d855d21ceb65f5b734be58882d79fb2d37bc8))
+* rename the client title; ([cf49d40](https://github.com/labring/laf/commit/cf49d4037dc8d845d9c821d28cab6daaa38f1bd3))
 
 
 
@@ -1662,6 +1715,19 @@
 ### Bug Fixes
 
 *  cloud-function 包名不给发布，重命名； ([2c955c5](https://github.com/labring/laf/commit/2c955c57f2fd9330a35f773d7be910a3955253a6))
+* 补提交，去除 dbm router 的引用； ([696ed7f](https://github.com/labring/laf/commit/696ed7f80932c0f2bcacb7a59ffefdfab8227bab))
+* 处理数据操作触发器参数中 _id 类型不为 string 的问题； ([9360fa8](https://github.com/labring/laf/commit/9360fa8a6a02d70cca0a3218b14c1523b5e15f6b))
+* 更新 less-api 版本，增加云函数变量 cloud 代替 less； ([b420bfa](https://github.com/labring/laf/commit/b420bfa7ad8cbe730560e49b98420404a46b868f))
+* 恢复函数调试调用、增加触发器调用编译功能； ([0eb8163](https://github.com/labring/laf/commit/0eb81631d6624f2b1e3e292bc400bf733500f3ce))
+* 将‘创建内部SDK包’的命令分离出来，在构建 docker 镜像时要单独用到； ([321b2f0](https://github.com/labring/laf/commit/321b2f0051c552451b2bc70869ca69c3f5ad1d48))
+* 修复 policy 为不存在时错误，返回404 ([f00ddba](https://github.com/labring/laf/commit/f00ddbaae6fb007df8646d5221d9414ae9841e7d))
+* 修复 trigger 函数日志 _id 类型问题；导出 编译函数； ([e0fab5b](https://github.com/labring/laf/commit/e0fab5b1addb3f9f45e93b6842193548bdb0ddc8))
+* 修复获取触发器时未控制状态的问题； ([6dca01a](https://github.com/labring/laf/commit/6dca01a39df3154886b6d67a52d9b2e7c8af933f))
+* 修复引用 cloud-functin-engine 路径错误； ([a8e49cc](https://github.com/labring/laf/commit/a8e49cc11aaf0748652f4e0fa5f8e19dffe84cbf))
+* 修复云函数调用错误返回状态码； ([145fdcd](https://github.com/labring/laf/commit/145fdcd98cb8469a424d7e9a1a65e626db86da0b))
+* 修改 policy injector_func 函数入参； ([4b80766](https://github.com/labring/laf/commit/4b80766823ef0c18b1bf0d806d89f44354834143))
+* 已暂时恢复云函数的调试接口（未做鉴权） ([23d359e](https://github.com/labring/laf/commit/23d359ea368af0559a4bfbcdb823d1f8b5d1bbde))
+* 增加 cloud-function-engine 包默认类型加载； ([315f7e9](https://github.com/labring/laf/commit/315f7e9f4598d134475db03855f71bfbcb3fa587))
 * add default tag for builtin cloud functions ([fdf297b](https://github.com/labring/laf/commit/fdf297bbb7692a91566d18c35db46b83f6389a91))
 * fix deploy apis' result data; ([e9c0aac](https://github.com/labring/laf/commit/e9c0aac9f153f34acf607a57d2d15e181e4b85e8))
 * fix docker-build.js bugs; ([ca12167](https://github.com/labring/laf/commit/ca121672d7a1f848affb2003f51934618d61ee85))
@@ -1673,42 +1739,29 @@
 * update app rules; ([4167cab](https://github.com/labring/laf/commit/4167cabac7f897dcc79eb118498abb018c836a3e))
 * update sys rules; ([a3f4a9a](https://github.com/labring/laf/commit/a3f4a9a158f08ca2b6284b6729eca40e91059fb6))
 * update token split method ([c43ecee](https://github.com/labring/laf/commit/c43ecee26551b2778599662c98690c52138793a0))
-* 修复 policy 为不存在时错误，返回404 ([f00ddba](https://github.com/labring/laf/commit/f00ddbaae6fb007df8646d5221d9414ae9841e7d))
-* 修复 trigger 函数日志 _id 类型问题；导出 编译函数； ([e0fab5b](https://github.com/labring/laf/commit/e0fab5b1addb3f9f45e93b6842193548bdb0ddc8))
-* 修复云函数调用错误返回状态码； ([145fdcd](https://github.com/labring/laf/commit/145fdcd98cb8469a424d7e9a1a65e626db86da0b))
-* 修复引用 cloud-functin-engine 路径错误； ([a8e49cc](https://github.com/labring/laf/commit/a8e49cc11aaf0748652f4e0fa5f8e19dffe84cbf))
-* 修复获取触发器时未控制状态的问题； ([6dca01a](https://github.com/labring/laf/commit/6dca01a39df3154886b6d67a52d9b2e7c8af933f))
-* 修改 policy injector_func 函数入参； ([4b80766](https://github.com/labring/laf/commit/4b80766823ef0c18b1bf0d806d89f44354834143))
-* 增加 cloud-function-engine 包默认类型加载； ([315f7e9](https://github.com/labring/laf/commit/315f7e9f4598d134475db03855f71bfbcb3fa587))
-* 处理数据操作触发器参数中 _id 类型不为 string 的问题； ([9360fa8](https://github.com/labring/laf/commit/9360fa8a6a02d70cca0a3218b14c1523b5e15f6b))
-* 将‘创建内部SDK包’的命令分离出来，在构建 docker 镜像时要单独用到； ([321b2f0](https://github.com/labring/laf/commit/321b2f0051c552451b2bc70869ca69c3f5ad1d48))
-* 已暂时恢复云函数的调试接口（未做鉴权） ([23d359e](https://github.com/labring/laf/commit/23d359ea368af0559a4bfbcdb823d1f8b5d1bbde))
-* 恢复函数调试调用、增加触发器调用编译功能； ([0eb8163](https://github.com/labring/laf/commit/0eb81631d6624f2b1e3e292bc400bf733500f3ce))
-* 更新 less-api 版本，增加云函数变量 cloud 代替 less； ([b420bfa](https://github.com/labring/laf/commit/b420bfa7ad8cbe730560e49b98420404a46b868f))
-* 补提交，去除 dbm router 的引用； ([696ed7f](https://github.com/labring/laf/commit/696ed7f80932c0f2bcacb7a59ffefdfab8227bab))
 
 
 ### Features
 
+* 实现 通用 db proxy entry，重构 policy 加载方式；实现 policy agent； ([b8f64aa](https://github.com/labring/laf/commit/b8f64aa77a3151df401a5fe3fdebe1ee26d6ca7a))
+* 实现 npm 包类型声明解析、服务接口；重构项目结构，使用 lerna 管理； ([1dc91d2](https://github.com/labring/laf/commit/1dc91d2cd9934cc17abf5748304f4485a7621f53))
+* 实现触发器配置变更时，更新调度器任务； ([1d8dbe5](https://github.com/labring/laf/commit/1d8dbe5f1624fd69f703f587e80dd7ad0b386219))
+* 实现云函数 SDK 单独依赖包； ([e3d89b1](https://github.com/labring/laf/commit/e3d89b196c10c72e3b08aa5a04fc1f52c169a7e9))
+* 实现云函数的部署； ([82b0783](https://github.com/labring/laf/commit/82b0783653f11f79dabab43816a934f3205e1417))
+* 实现云函数与触发器的部署脚本； ([0a8ef9e](https://github.com/labring/laf/commit/0a8ef9ee23dcb8ac4ceb41b0d20b4968fb35f970))
+* 实现云函数与触发器自动部署到 app db；修改文档； ([3ea4713](https://github.com/labring/laf/commit/3ea471394fa60e99eb947d926b758c1a6fc4e7ef))
+* 新增 dbm entry，负责 app db 的数据管理； ([f7ddae3](https://github.com/labring/laf/commit/f7ddae3cbc68b3f2b3416bf700acc38b794778b7))
+* 新增部署访问策略接口, 修改 http 测试用例； ([fbcdb90](https://github.com/labring/laf/commit/fbcdb90d7992c29fbd273b9c9ba4df417184da34))
+* 新增发布函数、触发器接口；取消 watch 监听发布；支持发布时编译云函数； ([ba2e538](https://github.com/labring/laf/commit/ba2e538c19b1298b774196a9911f83545506e2f5))
+* 新增访问策略管理页面，修复访问规则添加和删除的bug； ([06f0a2a](https://github.com/labring/laf/commit/06f0a2a44a8316cb54c7abfefeb23bfa863aa478))
+* 修改初始化脚本，增加部署访问策略初始脚本； ([3840270](https://github.com/labring/laf/commit/38402704a9d1dc0e742b92288961e90e1336fad8))
+* 用 mongodb watch 实现数据监听机制；实现访问策略部署后自动应用； ([0650d2e](https://github.com/labring/laf/commit/0650d2e2749e012bd7eca394bd6e661ac914f982))
+* 增加 create 函数； ([cdafdb1](https://github.com/labring/laf/commit/cdafdb13aa38bbace1e315e10eb7a5938296acb7))
+* 增加与平台无关的构建命令脚本；修改 nmutils 包，支持 fs/promises ([68615ff](https://github.com/labring/laf/commit/68615ff37db6eeae9c4d66939c5cc0702eee26ed))
+* 支持 devops 初始化时创建云函数预置触发器 ([c1b1dde](https://github.com/labring/laf/commit/c1b1dde30f5192266c56d4f1779cad6634255298))
 * add builtin function: injector-admin; ([de48feb](https://github.com/labring/laf/commit/de48feba7a71c65a4989bc177052557b886b38c8))
 * add laf-devops-admin packages; ([4f95a45](https://github.com/labring/laf/commit/4f95a4540ec234287556d7684b3762ea2574e8ba))
 * add query params to trigger ctx ([1280817](https://github.com/labring/laf/commit/128081748a9506324c32b37e867ce1f3a337d276))
-* 修改初始化脚本，增加部署访问策略初始脚本； ([3840270](https://github.com/labring/laf/commit/38402704a9d1dc0e742b92288961e90e1336fad8))
-* 增加 create 函数； ([cdafdb1](https://github.com/labring/laf/commit/cdafdb13aa38bbace1e315e10eb7a5938296acb7))
-* 增加与平台无关的构建命令脚本；修改 nmutils 包，支持 fs/promises ([68615ff](https://github.com/labring/laf/commit/68615ff37db6eeae9c4d66939c5cc0702eee26ed))
-* 实现 npm 包类型声明解析、服务接口；重构项目结构，使用 lerna 管理； ([1dc91d2](https://github.com/labring/laf/commit/1dc91d2cd9934cc17abf5748304f4485a7621f53))
-* 实现 通用 db proxy entry，重构 policy 加载方式；实现 policy agent； ([b8f64aa](https://github.com/labring/laf/commit/b8f64aa77a3151df401a5fe3fdebe1ee26d6ca7a))
-* 实现云函数 SDK 单独依赖包； ([e3d89b1](https://github.com/labring/laf/commit/e3d89b196c10c72e3b08aa5a04fc1f52c169a7e9))
-* 实现云函数与触发器的部署脚本； ([0a8ef9e](https://github.com/labring/laf/commit/0a8ef9ee23dcb8ac4ceb41b0d20b4968fb35f970))
-* 实现云函数与触发器自动部署到 app db；修改文档； ([3ea4713](https://github.com/labring/laf/commit/3ea471394fa60e99eb947d926b758c1a6fc4e7ef))
-* 实现云函数的部署； ([82b0783](https://github.com/labring/laf/commit/82b0783653f11f79dabab43816a934f3205e1417))
-* 实现触发器配置变更时，更新调度器任务； ([1d8dbe5](https://github.com/labring/laf/commit/1d8dbe5f1624fd69f703f587e80dd7ad0b386219))
-* 支持 devops 初始化时创建云函数预置触发器 ([c1b1dde](https://github.com/labring/laf/commit/c1b1dde30f5192266c56d4f1779cad6634255298))
-* 新增 dbm entry，负责 app db 的数据管理； ([f7ddae3](https://github.com/labring/laf/commit/f7ddae3cbc68b3f2b3416bf700acc38b794778b7))
-* 新增发布函数、触发器接口；取消 watch 监听发布；支持发布时编译云函数； ([ba2e538](https://github.com/labring/laf/commit/ba2e538c19b1298b774196a9911f83545506e2f5))
-* 新增访问策略管理页面，修复访问规则添加和删除的bug； ([06f0a2a](https://github.com/labring/laf/commit/06f0a2a44a8316cb54c7abfefeb23bfa863aa478))
-* 新增部署访问策略接口, 修改 http 测试用例； ([fbcdb90](https://github.com/labring/laf/commit/fbcdb90d7992c29fbd273b9c9ba4df417184da34))
-* 用 mongodb watch 实现数据监听机制；实现访问策略部署后自动应用； ([0650d2e](https://github.com/labring/laf/commit/0650d2e2749e012bd7eca394bd6e661ac914f982))
 
 
 
@@ -1718,39 +1771,39 @@
 ### Bug Fixes
 
 *  remove useless log; ([11f2988](https://github.com/labring/laf/commit/11f2988cf281ade3f8275ceed17cef2969c25061))
+* 补充 less-api 依赖； ([ebbeb8c](https://github.com/labring/laf/commit/ebbeb8cc41d99c61820722d66426e861d49cf337))
+* 去除 function_logs.requestId 的唯一索引； ([68ce1e8](https://github.com/labring/laf/commit/68ce1e8a0a6702627008dbb6d7b9e2c638e0438f))
+* 完善 admin rules 中删除相关表的规则 ([83e8818](https://github.com/labring/laf/commit/83e881828b540df5f3d35f0692311229b9ffbfe8))
+* 完善 trigger.delete 访问规则； ([502d6f1](https://github.com/labring/laf/commit/502d6f1047fbd5a6e0ed9090cf132467e449a240))
+* 修复 init 指令修复错误的问题； ([6f1b466](https://github.com/labring/laf/commit/6f1b466268b09ede0cd36d7f5d7c54a93542eec1))
+* 修复触发器 last_exec_time 字段为空时的问题； ([f3b5ada](https://github.com/labring/laf/commit/f3b5ada637cad656fcd59762c783917dd0e10efe))
+* 修复登陆注册 token 过期时间错误；更新 http 用例； ([3cd5277](https://github.com/labring/laf/commit/3cd5277cc34a6ae6f38e16d94be14caad1db071e))
+* 修改 builtin cloudfunction sig ([f379369](https://github.com/labring/laf/commit/f379369406fa3b9f67d86e1a10df857860ef3fbd))
+* 优化云函数调用返回结构； ([ea8e4a1](https://github.com/labring/laf/commit/ea8e4a1d7cdb54a35607595643d32108d46e6912))
 * **deps:** add typescript package to dev env ([ce3ed49](https://github.com/labring/laf/commit/ce3ed496350cef4ed8dd4cf559d57a93a4e10f4d))
 * **init:** add rules & permission to init.js ([0107f03](https://github.com/labring/laf/commit/0107f03ec1cc491c138b343d688a295c63c91933))
 * remove ali secrets ([82a47d6](https://github.com/labring/laf/commit/82a47d6e20a5510862d553180a23931ecc928f99))
 * remove wxmp app secret ([4671c36](https://github.com/labring/laf/commit/4671c3676ea13e0cee5f9115f810389f8952db90))
-* 优化云函数调用返回结构； ([ea8e4a1](https://github.com/labring/laf/commit/ea8e4a1d7cdb54a35607595643d32108d46e6912))
-* 修复 init 指令修复错误的问题； ([6f1b466](https://github.com/labring/laf/commit/6f1b466268b09ede0cd36d7f5d7c54a93542eec1))
-* 修复登陆注册 token 过期时间错误；更新 http 用例； ([3cd5277](https://github.com/labring/laf/commit/3cd5277cc34a6ae6f38e16d94be14caad1db071e))
-* 修复触发器 last_exec_time 字段为空时的问题； ([f3b5ada](https://github.com/labring/laf/commit/f3b5ada637cad656fcd59762c783917dd0e10efe))
-* 修改 builtin cloudfunction sig ([f379369](https://github.com/labring/laf/commit/f379369406fa3b9f67d86e1a10df857860ef3fbd))
-* 去除 function_logs.requestId 的唯一索引； ([68ce1e8](https://github.com/labring/laf/commit/68ce1e8a0a6702627008dbb6d7b9e2c638e0438f))
-* 完善 admin rules 中删除相关表的规则 ([83e8818](https://github.com/labring/laf/commit/83e881828b540df5f3d35f0692311229b9ffbfe8))
-* 完善 trigger.delete 访问规则； ([502d6f1](https://github.com/labring/laf/commit/502d6f1047fbd5a6e0ed9090cf132467e449a240))
-* 补充 less-api 依赖； ([ebbeb8c](https://github.com/labring/laf/commit/ebbeb8cc41d99c61820722d66426e861d49cf337))
 
 
 ### Features
 
 * **:sip:** add dotenv , add .env file； ([098ba91](https://github.com/labring/laf/commit/098ba91f4b7d745866d226640ddd2909cb7981b9))
+* 去除 上传文件到 public 时的验证；增加 mongodb 对象到云函数环境； ([f266655](https://github.com/labring/laf/commit/f26665521f9a84016ca41a744829dfa4f0033ebb))
+* 新增实现指定一个触发器的调度更新（接口和功能）； ([8e3dbcf](https://github.com/labring/laf/commit/8e3dbcf5b48124aacd62e4c4c39ec3e0c9f6c4c9))
+* 新增文件上传 built-in 云函数； ([9834018](https://github.com/labring/laf/commit/98340185fcd249ab92ab3b5709e2c8ba1a0e0b0c))
+* 优化简化 entry 和 trigger 配置代码；忽略读取数据事件； ([fe06c74](https://github.com/labring/laf/commit/fe06c74abe1be3d0fbdbc93b24f9aca6a12b9b28))
+* 云函数支持 http和停启控制；新增函数编辑历史规则； ([56cfa8e](https://github.com/labring/laf/commit/56cfa8e30952fe2ee7553be8581476760e966dec))
+* 云函数支持 method 参数； ([560f4e8](https://github.com/labring/laf/commit/560f4e834f141ae52893f940845f3198d94bfcb7))
+* 云函数支持文件上传，支持 headers 参数传入； ([f0c04ab](https://github.com/labring/laf/commit/f0c04ab1315bfd0701472c15951ff627bc7ed8ba))
+* 增加跨云函数的全局配置对象； ([8f753b8](https://github.com/labring/laf/commit/8f753b8f5e6e95f128e9d617dda46bc8aea2df76))
+* 增加dbm 获取集合列表； ([20693c7](https://github.com/labring/laf/commit/20693c7352a9ead0fb6baaa5a4e30f5c2ebb0162))
 * dbm 实现删除与创建集合索引接口； ([405dfce](https://github.com/labring/laf/commit/405dfced1bf3c1ec4d49b15df68101b484895d0e))
 * dbm 新增获取集合索引信息； ([fd1d96c](https://github.com/labring/laf/commit/fd1d96c263a426e7324e6ef6a25ddb01fcfa08ef))
 * **enhance:** cloud function enhance less object ([19648ac](https://github.com/labring/laf/commit/19648acace83afe9e45c2345964b03894e8629aa))
 * **file:** 重构LSF 文件管理方式；新增文件访问令牌云函数；修复文件API安全漏洞； ([164ab59](https://github.com/labring/laf/commit/164ab5995994a8e81882ef36e9a06799db1c3899))
 * **fix:** 修复云函数上传文件bug；引入 jwt 库；增加云函数参数; ([c28db5d](https://github.com/labring/laf/commit/c28db5dab38c5e812d030536cebd5744b82aad79))
 * **init:** 支持内置云函数的导入；增加用户登陆注册、小程序授权、阿里云发短信等内置云函数 ([8c4b0ec](https://github.com/labring/laf/commit/8c4b0ecc67e64e6f56f8bf9f8e3d6fc2d3e3983d))
-* 云函数支持 http和停启控制；新增函数编辑历史规则； ([56cfa8e](https://github.com/labring/laf/commit/56cfa8e30952fe2ee7553be8581476760e966dec))
-* 云函数支持 method 参数； ([560f4e8](https://github.com/labring/laf/commit/560f4e834f141ae52893f940845f3198d94bfcb7))
-* 云函数支持文件上传，支持 headers 参数传入； ([f0c04ab](https://github.com/labring/laf/commit/f0c04ab1315bfd0701472c15951ff627bc7ed8ba))
-* 优化简化 entry 和 trigger 配置代码；忽略读取数据事件； ([fe06c74](https://github.com/labring/laf/commit/fe06c74abe1be3d0fbdbc93b24f9aca6a12b9b28))
-* 去除 上传文件到 public 时的验证；增加 mongodb 对象到云函数环境； ([f266655](https://github.com/labring/laf/commit/f26665521f9a84016ca41a744829dfa4f0033ebb))
-* 增加dbm 获取集合列表； ([20693c7](https://github.com/labring/laf/commit/20693c7352a9ead0fb6baaa5a4e30f5c2ebb0162))
-* 增加跨云函数的全局配置对象； ([8f753b8](https://github.com/labring/laf/commit/8f753b8f5e6e95f128e9d617dda46bc8aea2df76))
-* 新增实现指定一个触发器的调度更新（接口和功能）； ([8e3dbcf](https://github.com/labring/laf/commit/8e3dbcf5b48124aacd62e4c4c39ec3e0c9f6c4c9))
-* 新增文件上传 built-in 云函数； ([9834018](https://github.com/labring/laf/commit/98340185fcd249ab92ab3b5709e2c8ba1a0e0b0c))
 
 
 
