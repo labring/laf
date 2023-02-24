@@ -168,3 +168,5 @@ export const GB = 1024 * MB
 
 // Resource limits
 export const MAX_FUNCTION_COUNT = 1000
+
+export const ALISMS_KEY = 'alisms'

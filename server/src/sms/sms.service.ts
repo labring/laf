@@ -7,6 +7,7 @@ import * as OpenApi from '@alicloud/openapi-client'
 import * as Util from '@alicloud/tea-util'
 import { SmsLoginCodeDto } from './dto/sms-code.dto'
 import { AlismsConfig, ServiceResponse } from 'src/utils/interface'
+import { ALISMS_KEY } from 'src/constants'
 
 @Injectable()
 export default class SmsService {
@@ -59,7 +60,8 @@ export default class SmsService {
       }
 
       // 4. Send sms code
-      const code = Math.floor(Math.random() * 9000) + 1000
+      const code = Math.floor(Math.random() * 900000) + 100000
+      this.logger.debug(`send sms code: ${code} to ${dto.phone}`)
       const res = await this._sendAlismsCode(dto.phone, code.toString())
       if (res.body.code !== 'OK') {
         return {
@@ -110,7 +112,7 @@ export default class SmsService {
 
   // load alisms config from database
   private async _loadAlismsConfig(): Promise<AlismsConfig> {
-    const configString = await this.configService.getConfig('alisms')
+    const configString = await this.configService.getConfig(ALISMS_KEY)
     return JSON.parse(configString)
   }
 }
