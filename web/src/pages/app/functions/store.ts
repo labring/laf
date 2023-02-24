@@ -28,12 +28,19 @@ const useFunctionStore = create<State>()(
 
       getFunctionUrl: () => {
         const currentApp = useGlobalStore.getState().currentApp;
-        const currentFunction = get().currentFunction;
-        const protocol = currentApp?.tls ? "https://" : "http://";
+        const currentFunctionName = get().currentFunction?.name;
 
-        return currentFunction?.name
-          ? `${protocol}${currentApp?.domain?.domain}/${currentFunction?.name}`
-          : "";
+        if (!currentFunctionName) return "";
+
+        const protocol = currentApp?.tls ? "https://" : "http://";
+        const port = currentApp?.port;
+
+        let host = currentApp?.domain?.domain;
+        if (port !== 80 && port !== 443) {
+          host = `${host}:${port}`;
+        }
+
+        return `${protocol}${host}/${currentFunctionName}`;
       },
 
       setCurrentRequestId: (requestId) => {

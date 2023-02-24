@@ -35,6 +35,7 @@ import UploadButton from "../UploadButton";
 
 // import styles from "../index.module.scss";
 import useAwsS3 from "@/hooks/useAwsS3";
+import useGlobalStore from "@/pages/globalStore";
 export default function FileList() {
   const { getList, getFileUrl, deleteFile } = useAwsS3();
   const { currentStorage, prefix, setPrefix, getCurrentBucketDomain } = useStorageStore();
@@ -55,12 +56,27 @@ export default function FileList() {
       return;
     }
 
+    const port = useGlobalStore.getState().currentApp?.port;
     let fileUrl = "";
 
     if (bucketType === "private") {
       fileUrl = getFileUrl(bucketName!, file.Key);
-    } else {
+
+      if (port !== 80 && port !== 443) {
+        const tempUrl = fileUrl.split("/");
+        const protocol = tempUrl[0];
+        const host = tempUrl[2];
+        const path = tempUrl.slice(3).join("/");
+        fileUrl = `${protocol}//${host}:${port}/${path}`;
+      }
+    }
+
+    if (bucketType !== "private") {
       fileUrl = getCurrentBucketDomain() + `/${file.Key}` || "";
+
+      if (port !== 80 && port !== 443) {
+        fileUrl = getCurrentBucketDomain() + ":" + port + `/${file.Key}` || "";
+      }
     }
 
     window.open(fileUrl, "_blank");
