@@ -8,8 +8,10 @@
     "declaration": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "importHelpers": false,
-    "module": "commonjs",
+    "importHelpers": true,
+    "module": "Node16",
+    "target": "ES2022",
+    "moduleResolution": "node16",
     "declarationMap": true,
     // "declarationDir": "types",
     "noEmitOnError": false,
@@ -23,11 +25,9 @@
     "stripInternal": true,
     "skipDefaultLibCheck": true,
     "skipLibCheck": true,
-    "target": "es2017",
     "alwaysStrict": true,
     "lib": [
-      "es2015",
-      "es6"
+      "ES2022"
     ]
   },
   "include": [
