@@ -21,6 +21,7 @@ import { UserDto } from '../user/dto/user.response'
 import { AuthService } from './auth.service'
 import { JwtAuthGuard } from './jwt.auth.guard'
 import { Pat2TokenDto } from './dto/pat2token.dto'
+import { LoginDto } from './dto/login.dto'
 
 @ApiTags('Authentication')
 @Controller()
@@ -36,6 +37,27 @@ export class AuthController {
   async getSigninUrl(@Res() res: Response): Promise<any> {
     const url = this.authService.getSignInUrl()
     return res.redirect(url)
+  }
+
+  /**
+   * Get user token by verify code
+   * @param LoginDto { phone, type, code | password }
+   * @returns code
+   */
+  @ApiResponse({ type: ResponseUtil })
+  @ApiOperation({ summary: 'Login: 1. By verify code; 2. By password' })
+  @Post('login')
+  async login(@Body() dto: LoginDto) {
+    // login by verify code
+    if (dto.type === 'verify_code') {
+      const token = await this.authService.verifyCode2Token(dto)
+      if (!token) {
+        return ResponseUtil.error('invalid code')
+      }
+      return ResponseUtil.ok(token)
+    }
+    // login by password
+    // dto.type === 'password', todo
   }
 
   /**

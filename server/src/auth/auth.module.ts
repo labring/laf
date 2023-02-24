@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
 import { PassportModule } from '@nestjs/passport'
 import { ServerConfig } from '../constants'
+import { SmsModule } from 'src/sms/sms.module'
 import { UserModule } from '../user/user.module'
 import { AuthService } from './auth.service'
 import { CasdoorService } from './casdoor.service'
@@ -10,6 +11,7 @@ import { AuthController } from './auth.controller'
 import { HttpModule } from '@nestjs/axios'
 import { PatService } from 'src/user/pat.service'
 import { PrismaService } from 'src/prisma.service'
+import SMSservice from 'src/sms/sms.service'
 
 @Module({
   imports: [
@@ -20,6 +22,7 @@ import { PrismaService } from 'src/prisma.service'
     }),
     UserModule,
     HttpModule,
+    SmsModule,
   ],
   providers: [
     AuthService,
@@ -27,6 +30,7 @@ import { PrismaService } from 'src/prisma.service'
     CasdoorService,
     PatService,
     PrismaService,
+    SMSservice,
   ],
   exports: [AuthService],
   controllers: [AuthController],

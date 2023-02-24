@@ -6,6 +6,8 @@ import { UserService } from '../user/user.service'
 import { ServerConfig } from '../constants'
 import * as assert from 'node:assert'
 import { PatService } from 'src/user/pat.service'
+import { LoginDto } from './dto/login.dto'
+import SmsService from 'src/sms/sms.service'
 
 @Injectable()
 export class AuthService {
@@ -15,6 +17,7 @@ export class AuthService {
     private readonly casdoorService: CasdoorService,
     private readonly userService: UserService,
     private readonly patService: PatService,
+    private readonly smsService: SmsService,
   ) {}
 
   /**
@@ -70,6 +73,29 @@ export class AuthService {
       this.logger.error(error)
       return null
     }
+  }
+
+  async verifyCode2Token(dto: LoginDto): Promise<string> {
+    const { phone, code } = dto
+    const isValid = await this.smsService.isVerifyCodeValid(phone, code)
+    // verify code is not valid
+    if (!isValid) return null
+    await this.smsService.disableVerifyCode(phone, code)
+    const user = await this.userService.user({ username: phone })
+    if (!user) {
+      const newUser = await this.userService.create({
+        username: phone,
+        phone: phone,
+        profile: {
+          create: {
+            name: phone,
+          },
+        },
+      })
+      return this.getAccessTokenByUser(newUser)
+    }
+
+    return this.getAccessTokenByUser(user)
   }
 
   /**

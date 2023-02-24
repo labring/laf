@@ -17,6 +17,12 @@ export default class SmsService {
     private readonly prisma: PrismaService,
   ) {}
 
+  /**
+   * send sms login code to given phone number
+   * @param dto phone number
+   * @param ip client ip
+   * @returns { code, error }
+   */
   async getSmsLoginCode(
     dto: SmsLoginCodeDto,
     ip: string,
@@ -84,6 +90,57 @@ export default class SmsService {
     } catch (error) {
       this.logger.error(error, error.response?.body)
       return { code: 'INTERNAL_ERROR', error: error.message }
+    }
+  }
+
+  /**
+   * Check if given phone and code is valid
+   * @param phone phone number
+   * @param code verify code provided by client
+   * @returns is valid
+   */
+  async isVerifyCodeValid(phone: string, code: string): Promise<boolean> {
+    try {
+      const total = await this.prisma.smsVerifyCode.count({
+        where: {
+          phone,
+          code,
+          type: SmsVerifyCodeType.Login,
+          state: 0,
+          createdAt: { gte: new Date(Date.now() - 10 * 60 * 1000) },
+        },
+      })
+
+      if (total === 0) return false
+
+      return true
+    } catch (error) {
+      this.logger.error(error)
+      return false
+    }
+  }
+
+  /**
+   * Disable verify code
+   * @param phone phone number
+   * @param code verify code
+   * @returns void
+   */
+  async disableVerifyCode(phone: string, code: string) {
+    try {
+      await this.prisma.smsVerifyCode.updateMany({
+        where: {
+          phone,
+          code,
+          type: SmsVerifyCodeType.Login,
+          state: 0,
+        },
+        data: {
+          state: 1,
+        },
+      })
+    } catch (error) {
+      this.logger.error(error)
     }
   }
 
