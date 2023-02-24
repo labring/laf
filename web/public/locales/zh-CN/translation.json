@@ -262,5 +262,6 @@
   "Back": "返回",
   "Personal Access Token": "访问凭证 (PAT)",
   "SwitchLanguage": "切换语言",
-  "Storage": "云存储"
+  "Storage": "云存储",
+  "upload example": "文件上传示例"
 }
