@@ -4,7 +4,6 @@ title: 云函数处理 WebSocket 长连接
 
 # {{ $frontmatter.title }}
 
-
 ## WebSocket 触发器
 
 提示：在使用 WebSocket 之前一定要建立触发器，详见触发器章节
@@ -35,7 +34,7 @@ exports.main = async function (ctx) {
 以下是通过云函数向所有 WebSocket 连接发送消息示例：
 
 ```ts
-import cloud from "@/cloud-sdk";
+import cloud from "@lafjs/cloud";
 
 exports.main = async function (ctx) {
   const sockets: Set<WebSocket> = cloud.sockets;
@@ -58,7 +57,7 @@ wss.onopen = (socket) => {
 };
 
 wss.onmessage = (res) => {
-  console.log("收到了新的信息......")
+  console.log("收到了新的信息......");
   console.log(res.data);
 };
 

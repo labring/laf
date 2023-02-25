@@ -9,7 +9,7 @@ export default defineConfig({
     host: "0.0.0.0",
     proxy: {
       "/v1": {
-        target: "http://preview.laf.run",
+        target: "http://dev.laf.run",
         changeOrigin: true,
       },
     },
