@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common'
 import { RegionService } from 'src/region/region.service'
 import { MinioService } from 'src/storage/minio/minio.service'
 import { CPU_UNIT, ServerConfig } from '../constants'
-import { PrismaService } from '../prisma.service'
+import { PrismaService } from '../prisma/prisma.service'
 import * as assert from 'assert'
 
 @Injectable()

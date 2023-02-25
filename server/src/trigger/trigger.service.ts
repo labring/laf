@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { TriggerPhase, TriggerState } from '@prisma/client'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
-import { PrismaService } from 'src/prisma.service'
+import { PrismaService } from 'src/prisma/prisma.service'
 import { CreateTriggerDto } from './dto/create-trigger.dto'
 import CronValidate from 'cron-validate'
 

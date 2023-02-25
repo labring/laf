@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { DomainPhase, DomainState, StorageBucket } from '@prisma/client'
-import { PrismaService } from '../prisma.service'
+import { PrismaService } from '../prisma/prisma.service'
 import { RegionService } from '../region/region.service'
 import * as assert from 'node:assert'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'

@@ -11,13 +11,14 @@ import { InitializerModule } from './initializer/initializer.module'
 import { InstanceModule } from './instance/instance.module'
 import { ScheduleModule } from '@nestjs/schedule'
 import { DatabaseModule } from './database/database.module'
-import { PrismaService } from './prisma.service'
+import { PrismaService } from './prisma/prisma.service'
 import { StorageModule } from './storage/storage.module'
 import { LogModule } from './log/log.module'
 import { DependencyModule } from './dependency/dependency.module'
 import { TriggerModule } from './trigger/trigger.module'
 import { RegionModule } from './region/region.module'
 import { GatewayModule } from './gateway/gateway.module'
+import { PrismaModule } from './prisma/prisma.module'
 
 @Module({
   imports: [
@@ -40,8 +41,9 @@ import { GatewayModule } from './gateway/gateway.module'
     TriggerModule,
     RegionModule,
     GatewayModule,
+    PrismaModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService],
 })
 export class AppModule {}

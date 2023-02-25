@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common'
 import { TriggerService } from './trigger.service'
 import { TriggerController } from './trigger.controller'
-import { PrismaService } from 'src/prisma.service'
 import { JwtService } from '@nestjs/jwt'
 import { ApplicationService } from 'src/application/application.service'
 import { StorageModule } from 'src/storage/storage.module'
@@ -18,7 +17,6 @@ import { MongoService } from 'src/database/mongo.service'
   controllers: [TriggerController],
   providers: [
     TriggerService,
-    PrismaService,
     JwtService,
     ApplicationService,
     CronJobService,
