@@ -28,10 +28,7 @@ export class SystemDatabase {
 
   private static connect() {
     const connectionUri = ServerConfig.DATABASE_URL
-    const client = new MongoClient(connectionUri, {
-      minPoolSize: 20,
-      maxPoolSize: 100,
-    })
+    const client = new MongoClient(connectionUri)
     this._ready = client.connect()
 
     this._ready
