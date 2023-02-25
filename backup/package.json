@@ -1,0 +1,38 @@
+{
+  "name": "backup",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "tsc -b ./src/tsconfig.json",
+    "clean": "rm -rf ./build",
+    "rebuild": "npm run clean && npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "set -a; . ./env.sh && node --enable-source-maps ./build/gateway",
+    "capture": "node ./build/tasks/capture/script",
+    "restore": "node ./build/tasks/restore/script"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "author": "Zim",
+  "dependencies": {
+    "@koa/router": "^12.0.0",
+    "@types/koa": "^2.13.5",
+    "@types/koa__router": "^12.0.0",
+    "@types/node": "^16.18.12",
+    "@types/ws": "^8.5.4",
+    "@zimtsui/coroutine-locks": "^0.0.6",
+    "@zimtsui/koa-ws-filter": "^0.0.5",
+    "koa": "^2.14.1",
+    "koa-body": "^6.0.1",
+    "mongodb": "^5.0.1",
+    "node-time-engine": "github:zimtsui/node-time-engine",
+    "pollerloop": "github:zimtsui/pollerloop",
+    "startable": "github:zimtsui/startable",
+    "startable-adaptor": "github:zimtsui/startable-adaptor",
+    "ws": "^8.12.0"
+  },
+  "description": "- Node.js >= 18 - `bash` - MinIO Client `mc` - MongoDB Database Tools `mongodump` and `mongorestore`",
+  "main": "index.js",
+  "devDependencies": {},
+  "license": "ISC"
+}

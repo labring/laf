@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+## 为什么不直接 `#!/usr/bash`？
+# 因为 bash 不在 POSIX 标准中，不能默认用户有 bash，只能把 bash 作为显式依赖。
+
+set -o pipefail # Not supported by POSIX shell
+set -o errexit
+
+# trap "trap - HUP && kill -s SIGHUP -$$" INT HUP TERM EXIT
+## 为什么不需要转发信号？
+# 进程组的语义就是一个不可分割的 job，因此应该在发送信号时直接发给整个进程组，而不是只发给组长然后让组长转发。
+
+APPNAME=mongo-backup
+VERSION=0.0.1
+
+# mc alias set $BACKUP_S3_HOST_ALIAS $BACKUP_S3_HOSTNAME $BACKUP_S3_USERNAME $BACKUP_S3_PASSWORD
+
+SUBCMD=$1
+case $SUBCMD in
+	capture)
+		BACKUP_MONGO_DB=$2
+		BACKUP_S3_BUCKET=$3
+		BACKUP_S3_OBJECT=$4
+		mongodump --archive --gzip --uri=$BACKUP_MONGO_HOST_URI --db=$BACKUP_MONGO_DB | mc pipe "$BACKUP_S3_HOST_ALIAS/$BACKUP_S3_BUCKET/$BACKUP_S3_OBJECT"
+	;;
+	restore)
+		BACKUP_S3_BUCKET=$2
+		BACKUP_S3_OBJECT=$3
+		BACKUP_MONGO_DB=$4
+		mc cat "$BACKUP_S3_HOST_ALIAS/$BACKUP_S3_BUCKET/$BACKUP_S3_OBJECT" | mongorestore --archive --gzip --uri=$BACKUP_MONGO_HOST_URI --db=$BACKUP_MONGO_DB
+    ;;
+	--version)
+		echo "$APPNAME $VERSION"
+	;;
+	*)
+		echo "Invalid subcommand."
+		exit 1
+	;;
+esac

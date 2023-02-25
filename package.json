@@ -37,5 +37,8 @@
   "dependencies": {
     "commander": "^9.2.0",
     "dotenv": "^10.0.0"
-  }
+  },
+  "workspaces": [
+    "backup"
+  ]
 }
