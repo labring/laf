@@ -9,7 +9,7 @@ title: 发送邮件
 创建 `sendmail` 云函数，添加依赖 `nodemailer`，编写以下代码：
 
 ```ts
-import * as nodemailer from 'nodemailer'
+import from 'nodemailer'
 
 // 邮件服务器配置
 const transportConfig = {

@@ -34,10 +34,10 @@ title: 云数据库介绍
 
 ### 在云函数中访问数据库
 
-云函数需要使用 `@/cloud-sdk` 来获取数据库访问器。
+云函数需要使用 `@lafjs/cloud` 来获取数据库访问器。
 
 ```js
-import cloud from "@/cloud-sdk";
+import cloud from "@lafjs/cloud";
 
 // 数据库对象
 const db = cloud.database();

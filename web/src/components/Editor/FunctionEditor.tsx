@@ -10,13 +10,20 @@ const autoImportTypings = new AutoImportTypings();
 const parseImports = debounce(autoImportTypings.parse, 1500).bind(autoImportTypings);
 
 monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-  target: monaco.languages.typescript.ScriptTarget.ES2016,
+  target: monaco.languages.typescript.ScriptTarget.ESNext,
   allowNonTsExtensions: true,
   moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
   module: monaco.languages.typescript.ModuleKind.CommonJS,
+  /**
+   * This option is required to enable the synthetic default imports.
+   * Support for `import dayjs from 'dayjs'` instead of `import * as dayjs from 'dayjs'`.
+   * This only affects the editor, not the actual compilation.
+   */
+  allowSyntheticDefaultImports: true,
   noEmit: true,
   allowJs: false,
-  // typeRoots: ['node_modules/@types']
+  sourceMap: true,
+  noImplicitAny: false,
 });
 
 monaco?.editor.defineTheme("lafEditorTheme", {
