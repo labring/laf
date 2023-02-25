@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { DatabasePolicy, DatabasePolicyRule } from '@prisma/client'
 import { CN_PUBLISHED_POLICIES } from 'src/constants'
-import { PrismaService } from 'src/prisma.service'
+import { PrismaService } from 'src/prisma/prisma.service'
 import { DatabaseService } from '../database.service'
 import { CreatePolicyDto } from '../dto/create-policy.dto'
 import { UpdatePolicyDto } from '../dto/update-policy.dto'

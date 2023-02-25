@@ -9,7 +9,6 @@ import { JwtStrategy } from './jwt.strategy'
 import { AuthController } from './auth.controller'
 import { HttpModule } from '@nestjs/axios'
 import { PatService } from 'src/user/pat.service'
-import { PrismaService } from 'src/prisma.service'
 
 @Module({
   imports: [
@@ -21,13 +20,7 @@ import { PrismaService } from 'src/prisma.service'
     UserModule,
     HttpModule,
   ],
-  providers: [
-    AuthService,
-    JwtStrategy,
-    CasdoorService,
-    PatService,
-    PrismaService,
-  ],
+  providers: [AuthService, JwtStrategy, CasdoorService, PatService],
   exports: [AuthService],
   controllers: [AuthController],
 })

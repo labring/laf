@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import * as assert from 'node:assert'
 import { MongoAccessor } from 'database-proxy'
-import { PrismaService } from '../prisma.service'
+import { PrismaService } from '../prisma/prisma.service'
 import { Database, DatabasePhase, DatabaseState, Region } from '@prisma/client'
 import { GenerateAlphaNumericPassword } from 'src/utils/random'
 import { MongoService } from './mongo.service'

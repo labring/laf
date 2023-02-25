@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { DomainPhase, DomainState, WebsiteHosting } from '@prisma/client'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
-import { PrismaService } from 'src/prisma.service'
+import { PrismaService } from 'src/prisma/prisma.service'
 import { RegionService } from 'src/region/region.service'
 import { CreateWebsiteDto } from './dto/create-website.dto'
 import * as assert from 'node:assert'

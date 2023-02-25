@@ -6,7 +6,7 @@ import {
   StorageState,
 } from '@prisma/client'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
-import { PrismaService } from '../prisma.service'
+import { PrismaService } from '../prisma/prisma.service'
 import { RegionService } from '../region/region.service'
 import { CreateBucketDto } from './dto/create-bucket.dto'
 import { UpdateBucketDto } from './dto/update-bucket.dto'

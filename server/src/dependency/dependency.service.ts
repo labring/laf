@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { PrismaService } from 'src/prisma.service'
+import { PrismaService } from 'src/prisma/prisma.service'
 import { RUNTIME_BUILTIN_DEPENDENCIES } from 'src/runtime-builtin-deps'
 import * as npa from 'npm-package-arg'
 import { CreateDependencyDto } from './dto/create-dependency.dto'

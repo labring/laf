@@ -6,7 +6,7 @@ import {
   CN_FUNCTION_LOGS,
   CN_PUBLISHED_FUNCTIONS,
 } from '../constants'
-import { PrismaService } from '../prisma.service'
+import { PrismaService } from '../prisma/prisma.service'
 import { CreateFunctionDto } from './dto/create-function.dto'
 import { UpdateFunctionDto } from './dto/update-function.dto'
 import * as assert from 'node:assert'
