@@ -53,7 +53,7 @@ export namespace Document {
 			params extends readonly unknown[],
 		> extends Orphan.Detail<method, params> {
 			readonly adoptTime: number;
-			readonly heartbeatTime: number;
+			readonly adoptor: string;
 		}
 	}
 

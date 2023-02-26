@@ -27,7 +27,7 @@ export class Adoption {
 				$set: {
 					'state': Document.State.ADOPTED,
 					'adoptTime': Date.now(),
-					'heartbeatTime': Date.now(),
+					'adoptor': 'unknown',
 				}
 			}, {
 				session,
