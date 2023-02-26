@@ -22,7 +22,7 @@ export namespace Res {
 	export interface Succ<
 		id extends string | number,
 		result,
-	> {
+	> extends Obj {
 		readonly id: id;
 		readonly result: result;
 		readonly error: undefined;
@@ -31,7 +31,7 @@ export namespace Res {
 	export interface Fail<
 		id extends string | number,
 		errorData,
-	> {
+	> extends Obj {
 		readonly id: id;
 		readonly result: undefined;
 		readonly error: Fail.Error<errorData>;
