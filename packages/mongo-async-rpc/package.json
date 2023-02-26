@@ -1,0 +1,12 @@
+{
+  "name": "mongo-async-rpc",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Zim",
+  "license": "LGPL-3.0"
+}
