@@ -4,7 +4,7 @@ export import Obj = Generic.Obj;
 
 export type Req<
 	method extends string,
-	params extends {} | readonly unknown[],
+	params extends readonly unknown[],
 > = Generic.Req<string, method, params>;
 
 
