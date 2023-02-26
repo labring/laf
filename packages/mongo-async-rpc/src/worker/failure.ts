@@ -1,6 +1,7 @@
 import assert = require("assert");
 import { Collection, Db, MongoClient } from "mongodb";
-import { Req, Res, Document } from "../interfaces";
+import { Document } from "../interfaces";
+import * as JsonRpc from 'node-json-rpc';
 
 
 export class Failure {
@@ -13,10 +14,10 @@ export class Failure {
 	public async fail<
 		method extends string,
 		params extends readonly unknown[],
-		errDesc,
+		errorData,
 	>(
 		doc: Document.Adopted<method, params>,
-		errDesc: errDesc,
+		err: Error,
 	) {
 		let modifiedCount: number;
 
@@ -24,10 +25,16 @@ export class Failure {
 		try {
 			session.startTransaction();
 
-			const res: Res.Fail<errDesc> = {
+			const res: JsonRpc.Res.Fail<errorData> = {
 				jsonrpc: '2.0',
 				id: doc.request.id,
-				error: errDesc,
+				error: {
+					code: 0,
+					message: err.message,
+					data: {
+
+					},
+				},
 			};
 			({ modifiedCount } = await this.coll.updateOne({
 				_id: doc._id,
