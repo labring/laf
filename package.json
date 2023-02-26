@@ -39,6 +39,7 @@
     "dotenv": "^10.0.0"
   },
   "workspaces": [
-    "backup"
+    "backup",
+    "packages/node-json-rpc"
   ]
 }

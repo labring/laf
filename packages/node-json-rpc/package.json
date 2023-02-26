@@ -1,0 +1,16 @@
+{
+  "name": "node-json-rpc",
+  "version": "0.0.1",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "scripts": {
+    "build": "tsc -b ./src/tsconfig.json",
+    "clean": "rm -rf ./build",
+    "rebuild": "npm run clean && npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Zim",
+  "license": "Unlicense",
+  "devDependencies": {},
+  "description": ""
+}
