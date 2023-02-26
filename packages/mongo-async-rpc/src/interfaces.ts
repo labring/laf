@@ -93,17 +93,15 @@ export namespace Document {
 	export interface Failed<
 		method extends string = any,
 		params extends readonly unknown[] = readonly any[],
-		errorData = any,
-	> extends Base<method, params>, Failed.Detail<method, params, errorData> {
+	> extends Base<method, params>, Failed.Detail<method, params> {
 		readonly state: State.FAILED;
 	}
 	export namespace Failed {
 		export interface Detail<
 			method extends string,
 			params extends readonly unknown[],
-			errorData,
 		> extends Adopted.Detail<method, params> {
-			readonly response: JsonRpc.Res.Fail<errorData>;
+			readonly response: JsonRpc.Res.Fail;
 			readonly failTime: number;
 		}
 	}
@@ -113,10 +111,9 @@ export type Document<
 	method extends string = any,
 	params extends readonly unknown[] = readonly any[],
 	result = any,
-	errorData = any,
 > =
 	Document.Orphan<method, params> |
 	Document.Adopted<method, params> |
 	Document.Cancelled<method, params> |
 	Document.Succeeded<method, params, result> |
-	Document.Failed<method, params, errorData>;
+	Document.Failed<method, params>;

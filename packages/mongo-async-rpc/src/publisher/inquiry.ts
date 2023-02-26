@@ -35,13 +35,12 @@ export class Inquiry {
 		method extends string,
 		params extends readonly unknown[],
 		result,
-		errDesc,
 	>(
 		id: string,
-	): Promise<Document<method, params, result, errDesc>> {
+	): Promise<Document<method, params, result>> {
 		const doc = await this.coll.findOne({
 			_id: ObjectId.createFromHexString(id),
-		}) as Document<method, params, result, errDesc> | null;
+		}) as Document<method, params, result> | null;
 		assert(doc !== null, new NotFound());
 		return doc;
 	}
@@ -50,10 +49,9 @@ export class Inquiry {
 		method extends string,
 		params extends readonly unknown[],
 		result,
-		errDesc,
 	>(
 		id: string,
-	): DeltaStream<Document<method, params, result, errDesc>> {
+	): DeltaStream<Document<method, params, result>> {
 		return new DeltaStream(
 			this.find(id).then(doc => [doc]),
 			this.broadcast,

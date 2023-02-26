@@ -1,5 +1,5 @@
 import { ChangeStream, ChangeStreamDocument } from "mongodb";
-import { Document, Req, Res } from "../interfaces";
+import { Document } from "../interfaces";
 import { Adoption } from "./adoption";
 import { Failure } from "./failure";
 import { Success } from "./success";
@@ -19,7 +19,6 @@ export class Executor<
 	method extends string,
 	params extends readonly unknown[],
 	result,
-	errDesc,
 >  {
 	private pollerloop: Pollerloop;
 
@@ -42,7 +41,7 @@ export class Executor<
 		const doc = await this.adoption.adopt<method, params>(this.method);
 		await this.execute(...doc.request.params).then(
 			result => void this.success.succeed(doc, result),
-			(err: errDesc) => void this.failure.fail(doc, err),
+			(err: Error) => void this.failure.fail(doc, err),
 		);
 	}
 
@@ -52,7 +51,7 @@ export class Executor<
 				const doc = await this.adoption.adopt<method, params>(this.method);
 				this.execute(...doc.request.params).then(
 					result => void this.success.succeed(doc, result),
-					(err: errDesc) => void this.failure.fail(doc, err),
+					(err: Error) => void this.failure.fail(doc, err),
 				);
 			}
 		} catch (err) {

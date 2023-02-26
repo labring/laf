@@ -14,7 +14,6 @@ export class Failure {
 	public async fail<
 		method extends string,
 		params extends readonly unknown[],
-		errorData,
 	>(
 		doc: Document.Adopted<method, params>,
 		err: Error,
@@ -25,14 +24,15 @@ export class Failure {
 		try {
 			session.startTransaction();
 
-			const res: JsonRpc.Res.Fail<errorData> = {
+			const res: JsonRpc.Res.Fail = {
 				jsonrpc: '2.0',
 				id: doc.request.id,
 				error: {
 					code: 0,
 					message: err.message,
 					data: {
-
+						name: err.name,
+						stack: err.stack!,
 					},
 				},
 			};

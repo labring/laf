@@ -2,13 +2,20 @@
   "name": "mongo-async-rpc",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -b ./src/tsconfig.json",
+    "clean": "rm -rf ./build",
+    "rebuild": "npm run clean && npm run build"
   },
   "author": "Zim",
   "license": "LGPL-3.0",
   "dependencies": {
-    "@zimtsui/delta-stream": "^0.0.2"
+    "@zimtsui/delta-stream": "^0.0.2",
+    "@zimtsui/node-time-engine": "^0.0.3",
+    "@zimtsui/pollerloop": "^0.0.5",
+    "@zimtsui/startable": "^0.0.4"
   }
 }
