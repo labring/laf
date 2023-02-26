@@ -19,10 +19,10 @@ export declare namespace Res {
         readonly error: Fail.Error<errorData>;
     }
     namespace Fail {
-        interface Error<Data> {
+        interface Error<errorData> {
             readonly code: number;
             readonly message: string;
-            readonly data: Data;
+            readonly data: errorData;
         }
     }
 }

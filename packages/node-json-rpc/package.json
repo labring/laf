@@ -1,8 +1,8 @@
 {
   "name": "node-json-rpc",
   "version": "0.0.1",
-  "main": "./build/index.js",
-  "types": "./build/index.d.ts",
+  "main": "./build/node-json-rpc.js",
+  "types": "./build/node-json-rpc.d.ts",
   "scripts": {
     "build": "tsc -b ./src/tsconfig.json",
     "clean": "rm -rf ./build",

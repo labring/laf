@@ -37,10 +37,10 @@ export namespace Res {
 		readonly error: Fail.Error<errorData>;
 	}
 	export namespace Fail {
-		export interface Error<Data> {
+		export interface Error<errorData> {
 			readonly code: number;
 			readonly message: string;
-			readonly data: Data;
+			readonly data: errorData;
 		}
 	}
 }
