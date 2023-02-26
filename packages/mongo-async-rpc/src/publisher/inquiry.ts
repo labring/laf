@@ -1,8 +1,8 @@
 import { Collection, Db, MongoClient, ObjectId, ChangeStream, ChangeStreamDocument } from 'mongodb';
-import { Document } from './interfaces';
+import { Document } from '../interfaces';
 import EventEmitter = require('events');
 import { TypedEventEmitter } from 'mongodb';
-import { StateStream } from '../state-stream';
+import { DeltaStream } from '@zimtsui/delta-stream';
 import assert = require('assert');
 
 
@@ -53,12 +53,12 @@ export class Inquiry {
 		errDesc,
 	>(
 		id: string,
-	): StateStream<Document<method, params, result, errDesc>> {
-		return new StateStream(
-			this.find(id),
+	): DeltaStream<Document<method, params, result, errDesc>> {
+		return new DeltaStream(
+			this.find(id).then(doc => [doc]),
 			this.broadcast,
 			id,
-			(doc0, doc) => doc0.state < doc.state,
+			([doc0], doc) => doc0.state < doc.state,
 		);
 	}
 }

@@ -2,19 +2,6 @@ import { ObjectId } from "mongodb";
 import * as JsonRpc from 'node-json-rpc';
 
 
-export type Req<
-	method extends string = string,
-	params extends readonly unknown[] = readonly unknown[],
-> = JsonRpc.Req<string, method, params>;
-export namespace Res {
-	export type Succ<
-		result = unknown,
-	> = JsonRpc.Res.Succ<string, result>;
-	export type Fail<
-		errDesc = unknown,
-	> = JsonRpc.Res.Fail<string, errDesc>;
-}
-
 
 export namespace Document {
 	export const enum State {
@@ -26,8 +13,8 @@ export namespace Document {
 	}
 
 	interface Base<
-		method extends string = string,
-		params extends readonly unknown[] = readonly unknown[],
+		method extends string = any,
+		params extends readonly unknown[] = readonly any[],
 	> {
 		readonly _id: ObjectId;
 		readonly state: State;
@@ -37,8 +24,8 @@ export namespace Document {
 	}
 
 	export interface Orphan<
-		method extends string = string,
-		params extends readonly unknown[] = readonly unknown[],
+		method extends string = any,
+		params extends readonly unknown[] = readonly any[],
 	> extends Base<method, params>, Orphan.Detail<method, params> {
 		readonly _id: ObjectId;
 		readonly state: State.ORPHAN;
@@ -48,15 +35,15 @@ export namespace Document {
 			method extends string,
 			params extends readonly unknown[],
 		> extends Base.Detail {
-			readonly request: Req<method, params>;
+			readonly request: JsonRpc.Req<method, params>;
 			readonly lock: string;
 			readonly submitTime: number;
 		}
 	}
 
 	export interface Adopted<
-		method extends string = string,
-		params extends readonly unknown[] = readonly unknown[],
+		method extends string = any,
+		params extends readonly unknown[] = readonly any[],
 	> extends Base<method, params>, Adopted.Detail<method, params> {
 		readonly state: State.ADOPTED;
 	}
@@ -66,12 +53,13 @@ export namespace Document {
 			params extends readonly unknown[],
 		> extends Orphan.Detail<method, params> {
 			readonly adoptTime: number;
+			readonly heartbeatTime: number;
 		}
 	}
 
 	export interface Cancelled<
-		method extends string = string,
-		params extends readonly unknown[] = readonly unknown[],
+		method extends string = any,
+		params extends readonly unknown[] = readonly any[],
 	> extends Base<method, params>, Cancelled.Detail<method, params> {
 		readonly state: State.CANCELLED;
 	}
@@ -85,9 +73,9 @@ export namespace Document {
 	}
 
 	export interface Succeeded<
-		method extends string = string,
-		params extends readonly unknown[] = readonly unknown[],
-		result = unknown,
+		method extends string = any,
+		params extends readonly unknown[] = readonly any[],
+		result = any,
 	> extends Base<method, params>, Succeeded.Detail<method, params, result> {
 		readonly state: State.SUCCEEDED;
 	}
@@ -97,38 +85,38 @@ export namespace Document {
 			params extends readonly unknown[],
 			result,
 		> extends Adopted.Detail<method, params> {
-			readonly response: Res.Succ<result>;
+			readonly response: JsonRpc.Res.Succ<result>;
 			readonly succeedTime: number;
 		}
 	}
 
 	export interface Failed<
-		method extends string = string,
-		params extends readonly unknown[] = readonly unknown[],
-		errDesc = unknown,
-	> extends Base<method, params>, Failed.Detail<method, params, errDesc> {
+		method extends string = any,
+		params extends readonly unknown[] = readonly any[],
+		errorData = any,
+	> extends Base<method, params>, Failed.Detail<method, params, errorData> {
 		readonly state: State.FAILED;
 	}
 	export namespace Failed {
 		export interface Detail<
 			method extends string,
 			params extends readonly unknown[],
-			errDesc,
+			errorData,
 		> extends Adopted.Detail<method, params> {
-			readonly response: Res.Fail<errDesc>;
+			readonly response: JsonRpc.Res.Fail<errorData>;
 			readonly failTime: number;
 		}
 	}
 }
 
 export type Document<
-	method extends string = string,
-	params extends readonly unknown[] = readonly unknown[],
-	result = unknown,
-	errDesc = unknown,
+	method extends string = any,
+	params extends readonly unknown[] = readonly any[],
+	result = any,
+	errorData = any,
 > =
 	Document.Orphan<method, params> |
 	Document.Adopted<method, params> |
 	Document.Cancelled<method, params> |
 	Document.Succeeded<method, params, result> |
-	Document.Failed<method, params, errDesc>;
+	Document.Failed<method, params, errorData>;

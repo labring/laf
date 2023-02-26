@@ -1,5 +1,5 @@
 import { Collection, Db, ModifyResult, MongoClient, ObjectId } from 'mongodb';
-import { Document } from './interfaces';
+import { Document } from '../interfaces';
 
 
 export class Cancellation {

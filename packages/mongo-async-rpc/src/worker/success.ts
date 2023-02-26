@@ -1,6 +1,7 @@
 import assert = require("assert");
 import { Collection, Db, MongoClient } from "mongodb";
-import { Res, Document } from "../interfaces";
+import { Document } from "../interfaces";
+import * as JsonRpc from 'node-json-rpc';
 
 
 export class Success {
@@ -24,7 +25,7 @@ export class Success {
 		try {
 			session.startTransaction();
 
-			const res: Res.Succ<result> = {
+			const res: JsonRpc.Res.Succ<result> = {
 				jsonrpc: '2.0',
 				id: doc.request.id,
 				result,
