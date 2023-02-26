@@ -25,7 +25,7 @@ export namespace Res {
 	> extends Obj {
 		readonly id: id;
 		readonly result: result;
-		readonly error: undefined;
+		readonly error?: undefined;
 	}
 
 	export interface Fail<
@@ -33,7 +33,7 @@ export namespace Res {
 		errorData,
 	> extends Obj {
 		readonly id: id;
-		readonly result: undefined;
+		readonly result?: undefined;
 		readonly error: Fail.Error<errorData>;
 	}
 	export namespace Fail {
