@@ -11,11 +11,11 @@ export declare namespace Res {
     interface Succ<id extends string | number, result> extends Obj {
         readonly id: id;
         readonly result: result;
-        readonly error: undefined;
+        readonly error?: undefined;
     }
     interface Fail<id extends string | number, errorData> extends Obj {
         readonly id: id;
-        readonly result: undefined;
+        readonly result?: undefined;
         readonly error: Fail.Error<errorData>;
     }
     namespace Fail {
