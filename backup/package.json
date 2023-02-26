@@ -20,19 +20,16 @@
     "@types/koa__router": "^12.0.0",
     "@types/node": "^16.18.12",
     "@types/ws": "^8.5.4",
-    "@zimtsui/coroutine-locks": "^0.0.6",
+    "@zimtsui/delta-stream": "file:../../delta-stream",
     "@zimtsui/koa-ws-filter": "^0.0.5",
+    "@zimtsui/node-time-engine": "^0.0.3",
+    "@zimtsui/pollerloop": "^0.0.5",
+    "@zimtsui/startable": "^0.0.4",
     "koa": "^2.14.1",
     "koa-body": "^6.0.1",
     "mongodb": "^5.0.1",
-    "node-time-engine": "github:zimtsui/node-time-engine",
-    "pollerloop": "github:zimtsui/pollerloop",
-    "startable": "github:zimtsui/startable",
-    "startable-adaptor": "github:zimtsui/startable-adaptor",
     "ws": "^8.12.0"
   },
-  "description": "- Node.js >= 18 - `bash` - MinIO Client `mc` - MongoDB Database Tools `mongodump` and `mongorestore`",
   "main": "index.js",
-  "devDependencies": {},
   "license": "ISC"
 }

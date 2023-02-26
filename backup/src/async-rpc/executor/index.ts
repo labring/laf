@@ -3,9 +3,9 @@ import { Document, Req, Res } from "../interfaces";
 import { Adoption } from "./adoption";
 import { Failure } from "./failure";
 import { Success } from "./success";
-import { createStartable, Startable } from "startable";
-import { Loop, Pollerloop } from "pollerloop";
-import { nodeTimeEngine } from "node-time-engine";
+import { $, AsRawStart, AsRawStop } from "@zimtsui/startable";
+import { Pollerloop } from "@zimtsui/pollerloop";
+import { nodeTimeEngine } from "@zimtsui/node-time-engine";
 
 
 interface Execute<
@@ -21,11 +21,6 @@ export class Executor<
 	result,
 	errDesc,
 >  {
-	public $s = createStartable(
-		this.rawStart.bind(this),
-		this.rawStop.bind(this),
-	);
-
 	private pollerloop: Pollerloop;
 
 	public constructor(
@@ -43,6 +38,7 @@ export class Executor<
 		if (notif.operationType !== 'insert') return;
 		if (notif.fullDocument.request.method !== this.method) return;
 
+		// TODO catch
 		const doc = await this.adoption.adopt<method, params>(this.method);
 		await this.execute(...doc.request.params).then(
 			result => void this.success.succeed(doc, result),
@@ -50,7 +46,7 @@ export class Executor<
 		);
 	}
 
-	private loop: Loop = async sleep => {
+	private loop: Pollerloop.Loop = async sleep => {
 		try {
 			for (; ; await sleep(0)) {
 				const doc = await this.adoption.adopt<method, params>(this.method);
@@ -65,13 +61,15 @@ export class Executor<
 		}
 	}
 
+	@AsRawStart()
 	private async rawStart() {
 		this.stream.on('change', this.listener);
-		await this.pollerloop.$s.start(this.$s.stop);
+		await $(this.pollerloop).start($(this).stop);
 	}
 
+	@AsRawStop()
 	private async rawStop() {
 		this.stream.off('change', this.listener);
-		await this.pollerloop.$s.stop();
+		await $(this.pollerloop).stop();
 	}
 }
