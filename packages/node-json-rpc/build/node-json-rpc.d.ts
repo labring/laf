@@ -1,15 +1,17 @@
 import * as Generic from './json-rpc';
 export import Obj = Generic.Obj;
 export declare type Req<method extends string, params extends readonly unknown[]> = Generic.Req<string, method, params>;
-export declare type Res<id extends string | number, result, errorData> = Generic.Res<string, result, errorData>;
+export declare type Res<result> = Generic.Res<string, result, Res.Fail.Error.Data>;
 export declare namespace Res {
     type Succ<result> = Generic.Res.Succ<string, result>;
-    type Fail<errorData> = Generic.Res.Fail<string, errorData>;
+    type Fail = Generic.Res.Fail<string, Fail.Error.Data>;
     namespace Fail {
-        interface ErrorData {
-            name: string;
-            stack: string;
+        type Error = Generic.Res.Fail.Error<Error.Data>;
+        namespace Error {
+            interface Data {
+                name: string;
+                stack: string;
+            }
         }
-        type Error = Generic.Res.Fail.Error<ErrorData>;
     }
 }

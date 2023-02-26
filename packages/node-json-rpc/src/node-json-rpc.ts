@@ -9,23 +9,21 @@ export type Req<
 
 
 export type Res<
-	id extends string | number,
 	result,
-	errorData,
-> = Generic.Res<string, result, errorData>;
+> = Generic.Res<string, result, Res.Fail.Error.Data>;
 export namespace Res {
 	export type Succ<
 		result,
 	> = Generic.Res.Succ<string, result>;
 
-	export type Fail<
-		errorData,
-	> = Generic.Res.Fail<string, errorData>;
+	export type Fail = Generic.Res.Fail<string, Fail.Error.Data>;
 	export namespace Fail {
-		export interface ErrorData {
-			name: string;
-			stack: string;
+		export type Error = Generic.Res.Fail.Error<Error.Data>;
+		export namespace Error {
+			export interface Data {
+				name: string;
+				stack: string;
+			}
 		}
-		export type Error = Generic.Res.Fail.Error<ErrorData>;
 	}
 }
