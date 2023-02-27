@@ -1,5 +1,5 @@
 import { Collection, Db, ModifyResult, MongoClient, ObjectId } from 'mongodb';
-import { Document } from '../interfaces';
+import { Document } from '../document';
 
 
 export class Cancellation {
@@ -20,12 +20,12 @@ export class Cancellation {
 			session.startTransaction();
 			({ value: newDoc } = await this.coll.findOneAndUpdate({
 				_id,
-				'state': {
-					$in: [
-						Document.State.ORPHAN,
-						Document.State.ADOPTED,
-					],
-				},
+				$or: [{
+					'state': Document.State.ORPHAN,
+				}, {
+					'state': Document.State.ADOPTED,
+					'cancellable': true,
+				}],
 			}, {
 				$set: {
 					'state': Document.State.CANCELLED,

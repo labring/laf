@@ -1,6 +1,6 @@
 import assert = require('assert');
 import { Collection, Db, ModifyResult, MongoClient, ObjectId } from 'mongodb';
-import { Document } from '../interfaces';
+import { Document } from '../document';
 
 
 

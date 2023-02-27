@@ -1,6 +1,6 @@
 import assert = require("assert");
 import { Collection, Db, ModifyResult, MongoClient } from "mongodb";
-import { Document } from "../interfaces";
+import { Document } from "../document";
 
 
 export class Adoption {
@@ -13,7 +13,10 @@ export class Adoption {
 	public async adopt<
 		method extends string,
 		params extends readonly unknown[],
-	>(method: method): Promise<Document.Adopted<method, params>> {
+	>(
+		method: method,
+		cancellable: boolean,
+	): Promise<Document.Adopted<method, params>> {
 		type adopted = Document.Adopted<method, params>;
 		let newDoc: Document.Adopted<method, params> | null;
 
@@ -28,6 +31,7 @@ export class Adoption {
 					'state': Document.State.ADOPTED,
 					'adoptTime': Date.now(),
 					'adoptor': 'unknown',
+					'cancellable': cancellable,
 				}
 			}, {
 				session,

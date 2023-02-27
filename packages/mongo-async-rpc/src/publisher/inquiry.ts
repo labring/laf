@@ -1,5 +1,5 @@
 import { Collection, Db, MongoClient, ObjectId, ChangeStream, ChangeStreamDocument } from 'mongodb';
-import { Document } from '../interfaces';
+import { Document } from '../document';
 import EventEmitter = require('events');
 import { TypedEventEmitter } from 'mongodb';
 import { DeltaStream } from '@zimtsui/delta-stream';

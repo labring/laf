@@ -1,26 +1,28 @@
 import { ChangeStream, ChangeStreamDocument } from "mongodb";
-import { Document } from "../interfaces";
+import { Document } from "../document";
 import { Adoption } from "./adoption";
 import { Failure } from "./failure";
 import { Success } from "./success";
-import { $, AsRawStart, AsRawStop } from "@zimtsui/startable";
+import { $, AsRawStart, AsRawStop, Startable } from "@zimtsui/startable";
 import { Pollerloop } from "@zimtsui/pollerloop";
 import { nodeTimeEngine } from "@zimtsui/node-time-engine";
+import { __ASSERT } from "../meta";
 
 
-interface Execute<
+interface RemoteProcedureMaker<
 	params extends readonly unknown[],
 	result,
 > {
-	(...params: params): Promise<result>;
+	(...params: params): Startable;
 }
 
-export class Executor<
+export class Worker<
 	method extends string,
 	params extends readonly unknown[],
 	result,
 >  {
 	private pollerloop: Pollerloop;
+	private rpcInstances = new Map<string, Startable>();
 
 	public constructor(
 		private stream: ChangeStream<Document, ChangeStreamDocument<Document>>,
@@ -28,31 +30,65 @@ export class Executor<
 		private success: Success,
 		private failure: Failure,
 		private method: method,
-		private execute: Execute<params, result>,
+		private rpMaker: RemoteProcedureMaker<params, result>,
+		private cancellable = false,
 	) {
 		this.pollerloop = new Pollerloop(this.loop, nodeTimeEngine);
+		this.stream.on('error', $(this).stop);
+	}
+
+	private async callRemoteProcedure(
+		doc: Document.Adopted<method, params>,
+	) {
+		const rp = this.rpMaker(...doc.request.params);
+		try {
+			await rp.start();
+
+			this.rpcInstances.set(doc.request.id, rp);
+			this.stream.on('change', this.cancellationListener);
+
+			await rp.getRunning();
+		} catch (err) {
+			if (!(err instanceof Error)) throw new ExceptionNotAnError();
+			if (err instanceof Successful) {
+				this.success.succeed(doc, (<Successful<result>>err).result);
+			} else if (!(err instanceof Cancelled)) {
+				this.failure.fail(doc, err);
+			};
+		} finally {
+			this.stream.off('change', this.cancellationListener);
+			this.rpcInstances.delete(doc.request.id);
+			await rp.stop();
+		}
+	}
+
+	private cancellationListener = async (notif: ChangeStreamDocument<Document>) => {
+		if (notif.operationType === 'update') {
+			if (!this.rpcInstances.has(notif.fullDocument!.request.id)) return;
+			const rp = this.rpcInstances.get(notif.fullDocument!.request.id)!;
+			await rp.stop();
+		}
 	}
 
 	private listener = async (notif: ChangeStreamDocument<Document>) => {
 		if (notif.operationType !== 'insert') return;
 		if (notif.fullDocument.request.method !== this.method) return;
 
-		// TODO catch
-		const doc = await this.adoption.adopt<method, params>(this.method);
-		await this.execute(...doc.request.params).then(
-			result => void this.success.succeed(doc, result),
-			(err: Error) => void this.failure.fail(doc, err),
-		);
+		let doc: Document.Adopted<method, params>;
+		try {
+			doc = await this.adoption.adopt<method, params>(this.method, this.cancellable);
+		} catch (err) {
+			if (err instanceof Adoption.OrphanNotFound) return;
+			throw err;
+		}
+		await this.callRemoteProcedure(doc);
 	}
 
 	private loop: Pollerloop.Loop = async sleep => {
 		try {
 			for (; ; await sleep(0)) {
-				const doc = await this.adoption.adopt<method, params>(this.method);
-				this.execute(...doc.request.params).then(
-					result => void this.success.succeed(doc, result),
-					(err: Error) => void this.failure.fail(doc, err),
-				);
+				const doc = await this.adoption.adopt<method, params>(this.method, this.cancellable);
+				this.callRemoteProcedure(doc);
 			}
 		} catch (err) {
 			if (err instanceof Adoption.OrphanNotFound) { }
@@ -72,3 +108,13 @@ export class Executor<
 		await $(this.pollerloop).stop();
 	}
 }
+
+
+export class Cancelled extends Error { }
+export class Successful<result> extends Error {
+	public constructor(
+		public result: result,
+	) { super(); }
+}
+
+export class ExceptionNotAnError extends Error { }

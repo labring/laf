@@ -1,6 +1,6 @@
 import assert = require("assert");
 import { Collection, Db, MongoClient } from "mongodb";
-import { Document } from "../interfaces";
+import { Document } from "../document";
 import * as JsonRpc from 'node-json-rpc';
 
 

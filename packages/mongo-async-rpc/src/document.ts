@@ -54,6 +54,7 @@ export namespace Document {
 		> extends Orphan.Detail<method, params> {
 			readonly adoptTime: number;
 			readonly adoptor: string;
+			readonly cancellable: boolean;
 		}
 	}
 
