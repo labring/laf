@@ -10,6 +10,9 @@ export class Adoption {
 		private coll: Collection<Document>,
 	) { }
 
+	/**
+	 *  @throws {@link Adoption.OrphanNotFound}
+	 */
 	public async adopt<
 		method extends string,
 		params extends readonly unknown[],

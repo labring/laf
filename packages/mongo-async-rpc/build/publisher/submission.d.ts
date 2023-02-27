@@ -5,6 +5,9 @@ export declare class Submission {
     private db;
     private coll;
     constructor(host: MongoClient, db: Db, coll: Collection<Document>);
+    /**
+     *  @throws {@link Submission.Locked}
+     */
     submit<method extends string, params extends readonly unknown[]>(method: method, params: params, lock?: string): Promise<Document.Orphan<method, params>>;
 }
 export declare namespace Submission {

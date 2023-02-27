@@ -11,6 +11,9 @@ export class Submission {
 		private coll: Collection<Document>,
 	) { }
 
+	/**
+	 *  @throws {@link Submission.Locked}
+	 */
 	public async submit<
 		method extends string,
 		params extends readonly unknown[],

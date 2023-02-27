@@ -30,6 +30,9 @@ class Inquiry {
         assert(doc !== null, new NotFound());
         return doc;
     }
+    /**
+     *  @throws {@link Inquiry.NotFound}
+     */
     inquire(id) {
         return new delta_stream_1.DeltaStream(this.find(id).then(doc => [doc]), this.broadcast, id, ([doc0], doc) => doc0.state < doc.state);
     }

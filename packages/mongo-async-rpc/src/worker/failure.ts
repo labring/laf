@@ -11,6 +11,9 @@ export class Failure {
 		private coll: Collection<Document>,
 	) { }
 
+	/**
+	 *  @throws {@link Failure.AdoptedTaskNotFound}
+	 */
 	public async fail<
 		method extends string,
 		params extends readonly unknown[],

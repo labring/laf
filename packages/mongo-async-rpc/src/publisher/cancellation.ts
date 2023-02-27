@@ -9,6 +9,11 @@ export class Cancellation {
 		private coll: Collection<Document>,
 	) { }
 
+	/**
+	 *  @throws {@link Cancellation.AlreadyExits}
+	 *  @throws {@link Cancellation.NotFound}
+	 *  @throws {@link Cancellation.CancellationNotAllowed}
+	 */
 	public async cancel(
 		id: string,
 	): Promise<Document> {

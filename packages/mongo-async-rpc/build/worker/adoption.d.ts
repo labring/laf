@@ -5,6 +5,9 @@ export declare class Adoption {
     private db;
     private coll;
     constructor(host: MongoClient, db: Db, coll: Collection<Document>);
+    /**
+     *  @throws {@link Adoption.OrphanNotFound}
+     */
     adopt<method extends string, params extends readonly unknown[]>(method: method, cancellable: boolean): Promise<Document.Adopted<method, params>>;
 }
 export declare namespace Adoption {

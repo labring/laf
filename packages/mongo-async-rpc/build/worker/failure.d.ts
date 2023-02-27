@@ -5,6 +5,9 @@ export declare class Failure {
     private db;
     private coll;
     constructor(host: MongoClient, db: Db, coll: Collection<Document>);
+    /**
+     *  @throws {@link Failure.AdoptedTaskNotFound}
+     */
     fail<method extends string, params extends readonly unknown[]>(doc: Document.Adopted<method, params>, err: Error): Promise<void>;
 }
 export declare namespace Failure {

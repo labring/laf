@@ -32,7 +32,7 @@ class WorkerNode {
 		this.host.on('close', () => void $(this).stop());
 		this.db = this.host.db(process.env.TASKLIST_DB!);
 		this.coll = this.db.collection<Document>(process.env.TASKLIST_COLL!);
-		this.stream = this.coll.watch();
+		this.stream = this.coll.watch([], { fullDocument: 'updateLookup' });
 		this.stream.on('close', () => void $(this).stop());
 
 		this.adoption = new Worker.Adoption(this.host, this.db, this.coll);

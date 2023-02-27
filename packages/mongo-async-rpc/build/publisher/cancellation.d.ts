@@ -5,6 +5,11 @@ export declare class Cancellation {
     private db;
     private coll;
     constructor(host: MongoClient, db: Db, coll: Collection<Document>);
+    /**
+     *  @throws {@link Cancellation.AlreadyExits}
+     *  @throws {@link Cancellation.NotFound}
+     *  @throws {@link Cancellation.CancellationNotAllowed}
+     */
     cancel(id: string): Promise<Document>;
 }
 export declare namespace Cancellation {

@@ -8,6 +8,9 @@ class Success {
         this.db = db;
         this.coll = coll;
     }
+    /**
+     *  @throws {@link Success.AdoptedTaskNotFound}
+     */
     async succeed(doc, result) {
         let modifiedCount;
         const session = this.host.startSession();

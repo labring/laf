@@ -8,6 +8,11 @@ class Cancellation {
         this.db = db;
         this.coll = coll;
     }
+    /**
+     *  @throws {@link Cancellation.AlreadyExits}
+     *  @throws {@link Cancellation.NotFound}
+     *  @throws {@link Cancellation.CancellationNotAllowed}
+     */
     async cancel(id) {
         const _id = mongodb_1.ObjectId.createFromHexString(id);
         let newDoc;

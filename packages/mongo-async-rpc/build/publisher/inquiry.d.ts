@@ -9,6 +9,9 @@ export declare class Inquiry {
     private broadcast;
     constructor(host: MongoClient, db: Db, coll: Collection<Document>, stream: ChangeStream<Document, ChangeStreamDocument<Document>>);
     private find;
+    /**
+     *  @throws {@link Inquiry.NotFound}
+     */
     inquire<method extends string, params extends readonly unknown[], result>(id: string): DeltaStream<Document<method, params, result>>;
 }
 export declare namespace Inquiry {

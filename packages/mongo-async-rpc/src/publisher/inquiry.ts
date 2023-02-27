@@ -45,6 +45,9 @@ export class Inquiry {
 		return doc;
 	}
 
+	/**
+	 *  @throws {@link Inquiry.NotFound}
+	 */
 	public inquire<
 		method extends string,
 		params extends readonly unknown[],

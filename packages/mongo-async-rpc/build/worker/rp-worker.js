@@ -6,50 +6,55 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ExceptionNotAnError = exports.RpMaker = exports.RpWorker = void 0;
+exports.RpWorker = void 0;
 const adoption_1 = require("./adoption");
+const failure_1 = require("./failure");
+const success_1 = require("./success");
 const startable_1 = require("@zimtsui/startable");
 const pollerloop_1 = require("@zimtsui/pollerloop");
 const node_time_engine_1 = require("@zimtsui/node-time-engine");
+const rp_manager_1 = require("./rp-manager");
+const rp_factory_like_1 = require("./rp-factory-like");
 class RpWorker {
-    constructor(stream, adoption, success, failure, method, rpMaker, cancellable = false) {
+    /**
+    *  @param stream `coll.watch([], { fullDocument: 'updateLookup' })`
+    */
+    constructor(coll, stream, adoption, success, failure, method, rpFactory, cancellable = false) {
+        this.coll = coll;
         this.stream = stream;
         this.adoption = adoption;
         this.success = success;
         this.failure = failure;
         this.method = method;
-        this.rpMaker = rpMaker;
+        this.rpFactory = rpFactory;
         this.cancellable = cancellable;
-        this.rpcInstances = new Map();
-        this.cancellationListener = async (notif) => {
-            if (notif.operationType === 'update') {
-                if (!this.rpcInstances.has(notif.fullDocument.request.id))
-                    return;
-                const rp = this.rpcInstances.get(notif.fullDocument.request.id);
-                await rp.stop(new Cancelled());
-            }
-        };
-        this.listener = async (notif) => {
-            if (notif.operationType !== 'insert')
-                return;
-            if (notif.fullDocument.request.method !== this.method)
-                return;
-            let doc;
+        this.rpManager = new rp_manager_1.RpManager(this.stream, this.coll, this.rpFactory);
+        this.onInsert = async (notif) => {
             try {
-                doc = await this.adoption.adopt(this.method, this.cancellable);
+                if (notif.operationType !== 'insert')
+                    return;
+                if (notif.fullDocument.request.method !== this.method)
+                    return;
+                let doc;
+                try {
+                    doc = await this.adoption.adopt(this.method, this.cancellable);
+                }
+                catch (err) {
+                    if (err instanceof adoption_1.Adoption.OrphanNotFound)
+                        return;
+                    throw err;
+                }
+                await this.handleDoc(doc);
             }
             catch (err) {
-                if (err instanceof adoption_1.Adoption.OrphanNotFound)
-                    return;
-                throw err;
+                (0, startable_1.$)(this).stop(err);
             }
-            await this.callRemoteProcedure(doc);
         };
         this.loop = async (sleep) => {
             try {
                 for (;; await sleep(0)) {
                     const doc = await this.adoption.adopt(this.method, this.cancellable);
-                    this.callRemoteProcedure(doc);
+                    this.handleDoc(doc).catch((0, startable_1.$)(this).stop);
                 }
             }
             catch (err) {
@@ -61,38 +66,42 @@ class RpWorker {
         this.pollerloop = new pollerloop_1.Pollerloop(this.loop, node_time_engine_1.nodeTimeEngine);
         this.stream.on('error', (0, startable_1.$)(this).stop);
     }
-    async callRemoteProcedure(doc) {
-        const rp = this.rpMaker(...doc.request.params);
+    async handleDoc(doc) {
         try {
-            await rp.start();
-            this.rpcInstances.set(doc.request.id, rp);
-            this.stream.on('change', this.cancellationListener);
-            await rp.getRunning();
+            let result;
+            try {
+                result = await this.rpManager.call(doc);
+            }
+            catch (err) {
+                if (err instanceof rp_manager_1.RpManager.ResultNotThrown) {
+                    (0, startable_1.$)(this).stop(err);
+                    return;
+                }
+                else if (err instanceof rp_factory_like_1.RpFactoryLike.Cancelled)
+                    return;
+                else
+                    return void await this.failure.fail(doc, err);
+            }
+            await this.success.succeed(doc, result);
         }
         catch (err) {
-            if (!(err instanceof Error))
-                throw new ExceptionNotAnError();
-            if (err instanceof Successful) {
-                this.success.succeed(doc, err.result);
-            }
-            else if (!(err instanceof Cancelled)) {
-                this.failure.fail(doc, err);
-            }
-            ;
-        }
-        finally {
-            this.stream.off('change', this.cancellationListener);
-            this.rpcInstances.delete(doc.request.id);
-            await rp.stop();
+            if (err instanceof success_1.Success.AdoptedTaskNotFound)
+                return;
+            else if (err instanceof failure_1.Failure.AdoptedTaskNotFound)
+                return;
+            else
+                throw err;
         }
     }
     async rawStart() {
-        this.stream.on('change', this.listener);
+        await (0, startable_1.$)(this.rpManager).start((0, startable_1.$)(this).stop);
+        this.stream.on('change', this.onInsert);
         await (0, startable_1.$)(this.pollerloop).start((0, startable_1.$)(this).stop);
     }
     async rawStop() {
-        this.stream.off('change', this.listener);
         await (0, startable_1.$)(this.pollerloop).stop();
+        this.stream.off('change', this.onInsert);
+        await (0, startable_1.$)(this.rpManager).start();
     }
 }
 __decorate([
@@ -102,22 +111,4 @@ __decorate([
     (0, startable_1.AsRawStop)()
 ], RpWorker.prototype, "rawStop", null);
 exports.RpWorker = RpWorker;
-var RpMaker;
-(function (RpMaker) {
-    class Cancelled extends Error {
-    }
-    RpMaker.Cancelled = Cancelled;
-    class Successful extends Error {
-        constructor(result) {
-            super();
-            this.result = result;
-        }
-    }
-    RpMaker.Successful = Successful;
-})(RpMaker = exports.RpMaker || (exports.RpMaker = {}));
-var Cancelled = RpMaker.Cancelled;
-var Successful = RpMaker.Successful;
-class ExceptionNotAnError extends Error {
-}
-exports.ExceptionNotAnError = ExceptionNotAnError;
 //# sourceMappingURL=rp-worker.js.map

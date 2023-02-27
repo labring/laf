@@ -9,6 +9,9 @@ class Submission {
         this.db = db;
         this.coll = coll;
     }
+    /**
+     *  @throws {@link Submission.Locked}
+     */
     async submit(method, params, lock) {
         const _id = new mongodb_1.ObjectId();
         const id = _id.toHexString();

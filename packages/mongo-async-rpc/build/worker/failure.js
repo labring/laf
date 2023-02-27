@@ -8,6 +8,9 @@ class Failure {
         this.db = db;
         this.coll = coll;
     }
+    /**
+     *  @throws {@link Failure.AdoptedTaskNotFound}
+     */
     async fail(doc, err) {
         let modifiedCount;
         const session = this.host.startSession();

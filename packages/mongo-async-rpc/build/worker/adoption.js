@@ -8,6 +8,9 @@ class Adoption {
         this.db = db;
         this.coll = coll;
     }
+    /**
+     *  @throws {@link Adoption.OrphanNotFound}
+     */
     async adopt(method, cancellable) {
         let newDoc;
         const session = this.host.startSession();

@@ -11,6 +11,9 @@ export class Success {
 		private coll: Collection<Document>,
 	) { }
 
+	/**
+	 *  @throws {@link Success.AdoptedTaskNotFound}
+	 */
 	public async succeed<
 		method extends string,
 		params extends readonly unknown[],
