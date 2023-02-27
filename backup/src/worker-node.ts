@@ -5,7 +5,6 @@ import * as Capture from "./tasks/capture";
 import * as Restore from './tasks/restore';
 // import { adapt } from "startable-adaptor";
 import { $, AsRawStart, AsRawStop } from "@zimtsui/startable";
-import { RpWorker } from "mongo-async-rpc/build/worker";
 
 
 
@@ -23,8 +22,8 @@ class WorkerNode {
 	private success?: Worker.Success;
 	private failure?: Worker.Failure;
 
-	private captureWorker?: RpWorker<Capture.Method, Capture.Params, Capture.Result>;
-	private restoreWorker?: RpWorker<Restore.Method, Restore.Params, Restore.Result>;
+	private captureWorker?: Worker.RpWorker<Capture.Method, Capture.Params, Capture.Result>;
+	private restoreWorker?: Worker.RpWorker<Restore.Method, Restore.Params, Restore.Result>;
 
 	@AsRawStart()
 	private async rawStart() {
@@ -39,7 +38,8 @@ class WorkerNode {
 		this.success = new Worker.Success(this.host, this.db, this.coll);
 		this.failure = new Worker.Failure(this.host, this.db, this.coll);
 
-		this.captureWorker = new RpWorker(
+		this.captureWorker = new Worker.RpWorker(
+			this.coll,
 			this.stream,
 			this.adoption,
 			this.success,
@@ -47,7 +47,8 @@ class WorkerNode {
 			'capture',
 			(db, bucket, object) => $(new Capture.Rp(db, bucket, object)),
 		);
-		this.restoreWorker = new RpWorker(
+		this.restoreWorker = new Worker.RpWorker(
+			this.coll,
 			this.stream,
 			this.adoption,
 			this.success,

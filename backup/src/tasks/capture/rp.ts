@@ -37,10 +37,10 @@ export class Rp {
 		);
 		this.cp.once('exit', async (code, signal) => {
 			if (code === 0)
-				$(this).stop(new Worker.RpMaker.Successful<null>(null));
+				$(this).stop(new Worker.RpFactoryLike.Successful<Result>(null));
 			else {
 				const stderr = await this.stderrPromise!;
-				$(this).stop(new ChildExit(code, signal, stderr));
+				$(this).stop(new Rp.Failed(code, signal, stderr));
 			}
 		});
 
@@ -61,10 +61,12 @@ export class Rp {
 	}
 }
 
-class ChildExit extends Error {
-	public constructor(
-		public code: number | null,
-		public signal: string | null,
-		message: string,
-	) { super(message); }
+export namespace Rp {
+	export class Failed extends Error {
+		public constructor(
+			public code: number | null,
+			public signal: string | null,
+			message: string,
+		) { super(message); }
+	}
 }

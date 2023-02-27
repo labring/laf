@@ -1,18 +1,17 @@
-import * as AsyncRpc from "../../async-rpc/interfaces";
-export type Method = 'capture';
-export type Params = [Params.Db, Params.Bucket, Params.Object];
+import * as MongoAsyncRpc from "mongo-async-rpc";
+export declare type Method = 'capture';
+export declare type Params = [Params.Db, Params.Bucket, Params.Object];
 export declare namespace Params {
     type Db = string;
     type Bucket = string;
     type Object = string;
 }
-export type Result = null;
-export type ErrDesc = string;
+export declare type Result = null;
 export declare namespace Document {
-    type Orphan = AsyncRpc.Document.Orphan<Method, Params>;
-    type Adopted = AsyncRpc.Document.Adopted<Method, Params>;
-    type Cancelled = AsyncRpc.Document.Cancelled<Method, Params>;
-    type Succeeded = AsyncRpc.Document.Succeeded<Method, Params, Result>;
-    type Failed = AsyncRpc.Document.Failed<Method, Params, ErrDesc>;
+    type Orphan = MongoAsyncRpc.Document.Orphan<Method, Params>;
+    type Adopted = MongoAsyncRpc.Document.Adopted<Method, Params>;
+    type Cancelled = MongoAsyncRpc.Document.Cancelled<Method, Params>;
+    type Succeeded = MongoAsyncRpc.Document.Succeeded<Method, Params, Result>;
+    type Failed = MongoAsyncRpc.Document.Failed<Method, Params>;
 }
-export type Document = AsyncRpc.Document<Method, Params, Result, ErrDesc>;
+export declare type Document = MongoAsyncRpc.Document<Method, Params, Result>;

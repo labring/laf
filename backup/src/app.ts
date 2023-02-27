@@ -26,11 +26,11 @@ const inquiry = new Publisher.Inquiry(host, db, coll, stream);
 const router = new Router();
 const filter = new KoaWsFilter();
 
-filter.ws(async (ctx, next) => {
-	assert(typeof ctx.query.id === 'string');
+filter.ws(async (ctx: Router.RouterContext, next) => {
+	assert(typeof ctx.params.id === 'string');
 
 	try {
-		const stream = inquiry.inquire(ctx.query.id);
+		const stream = inquiry.inquire(ctx.params.id);
 		stream.on('error', () => void stream.close());
 
 		const [doc0] = <[Document]>await once(stream, 'delta');
@@ -48,7 +48,7 @@ filter.ws(async (ctx, next) => {
 	}
 });
 
-router.get('/', filter.protocols());
+router.get('/:id', filter.protocols());
 
 router.post('/capture', async (ctx, next) => {
 	assert(typeof ctx.query.db === 'string');
@@ -76,10 +76,10 @@ router.post('/capture', async (ctx, next) => {
 });
 
 
-router.delete('/', async (ctx, next) => {
-	assert(typeof ctx.query.id === 'string');
+router.delete('/:id', async (ctx, next) => {
+	assert(typeof ctx.params.id === 'string');
 	try {
-		const doc = await cancellation.cancel(ctx.query.id);
+		const doc = await cancellation.cancel(ctx.params.id);
 		ctx.status = 200;
 		ctx.body = doc;
 	} catch (err) {
