@@ -8,7 +8,7 @@ class Adoption {
         this.db = db;
         this.coll = coll;
     }
-    async adopt(method) {
+    async adopt(method, cancellable) {
         let newDoc;
         const session = this.host.startSession();
         try {
@@ -20,7 +20,8 @@ class Adoption {
                 $set: {
                     'state': 1 /* ADOPTED */,
                     'adoptTime': Date.now(),
-                    'heartbeatTime': Date.now(),
+                    'adoptor': 'unknown',
+                    'cancellable': cancellable,
                 }
             }, {
                 session,

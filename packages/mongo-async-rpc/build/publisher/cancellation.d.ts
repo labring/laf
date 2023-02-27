@@ -1,5 +1,5 @@
 import { Collection, Db, MongoClient } from 'mongodb';
-import { Document } from '../interfaces';
+import { Document } from '../document';
 export declare class Cancellation {
     private host;
     private db;
@@ -13,5 +13,9 @@ export declare namespace Cancellation {
         constructor(doc: Document.Cancelled | Document.Succeeded | Document.Failed);
     }
     class NotFound extends Error {
+    }
+    class CancellationNotAllowed extends Error {
+        doc: Document.Adopted;
+        constructor(doc: Document.Adopted);
     }
 }

@@ -16,12 +16,12 @@ class Cancellation {
             session.startTransaction();
             ({ value: newDoc } = await this.coll.findOneAndUpdate({
                 _id,
-                'state': {
-                    $in: [
-                        0 /* ORPHAN */,
-                        1 /* ADOPTED */,
-                    ],
-                },
+                $or: [{
+                        'state': 0 /* ORPHAN */,
+                    }, {
+                        'state': 1 /* ADOPTED */,
+                        'cancellable': true,
+                    }],
             }, {
                 $set: {
                     'state': 2 /* CANCELLED */,
@@ -53,6 +53,8 @@ class Cancellation {
             4 /* FAILED */,
         ].includes(doc.state))
             throw new AlreadyExits(doc);
+        if (doc.state === 1 /* ADOPTED */ && !doc.cancellable)
+            throw new CancellationNotAllowed(doc);
         throw new Error();
     }
 }
@@ -68,7 +70,15 @@ exports.Cancellation = Cancellation;
     class NotFound extends Error {
     }
     Cancellation.NotFound = NotFound;
+    class CancellationNotAllowed extends Error {
+        constructor(doc) {
+            super();
+            this.doc = doc;
+        }
+    }
+    Cancellation.CancellationNotAllowed = CancellationNotAllowed;
 })(Cancellation = exports.Cancellation || (exports.Cancellation = {}));
 var AlreadyExits = Cancellation.AlreadyExits;
 var NotFound = Cancellation.NotFound;
+var CancellationNotAllowed = Cancellation.CancellationNotAllowed;
 //# sourceMappingURL=cancellation.js.map

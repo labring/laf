@@ -9,12 +9,6 @@ import { nodeTimeEngine } from "@zimtsui/node-time-engine";
 import { __ASSERT } from "../meta";
 
 
-interface RemoteProcedureMaker<
-	params extends readonly unknown[],
-	result,
-> {
-	(...params: params): Startable;
-}
 
 export class Worker<
 	method extends string,
@@ -66,7 +60,7 @@ export class Worker<
 		if (notif.operationType === 'update') {
 			if (!this.rpcInstances.has(notif.fullDocument!.request.id)) return;
 			const rp = this.rpcInstances.get(notif.fullDocument!.request.id)!;
-			await rp.stop();
+			await rp.stop(new Cancelled());
 		}
 	}
 
@@ -110,11 +104,22 @@ export class Worker<
 }
 
 
-export class Cancelled extends Error { }
-export class Successful<result> extends Error {
-	public constructor(
-		public result: result,
-	) { super(); }
+
+export interface RemoteProcedureMaker<
+	params extends readonly unknown[],
+	result,
+> {
+	(...params: params): Startable;
 }
+export namespace RemoteProcedureMaker {
+	export class Cancelled extends Error { }
+	export class Successful<result> extends Error {
+		public constructor(
+			public result: result,
+		) { super(); }
+	}
+}
+import Cancelled = RemoteProcedureMaker.Cancelled;
+import Successful = RemoteProcedureMaker.Successful;
 
 export class ExceptionNotAnError extends Error { }

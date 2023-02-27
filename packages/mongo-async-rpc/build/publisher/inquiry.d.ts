@@ -1,5 +1,5 @@
 import { Collection, Db, MongoClient, ChangeStream, ChangeStreamDocument } from 'mongodb';
-import { Document } from '../interfaces';
+import { Document } from '../document';
 import { DeltaStream } from '@zimtsui/delta-stream';
 export declare class Inquiry {
     private host;

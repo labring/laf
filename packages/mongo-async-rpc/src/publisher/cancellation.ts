@@ -55,6 +55,8 @@ export class Cancellation {
 			Document.State.FAILED,
 		].includes(doc.state))
 			throw new AlreadyExits(doc as Document.Cancelled | Document.Succeeded | Document.Failed);
+		if (doc.state === Document.State.ADOPTED && !doc.cancellable)
+			throw new CancellationNotAllowed(doc);
 		throw new Error();
 	}
 }
@@ -67,7 +69,13 @@ export namespace Cancellation {
 		) { super(); }
 	}
 	export class NotFound extends Error { }
+	export class CancellationNotAllowed extends Error {
+		public constructor(
+			public doc: Document.Adopted,
+		) { super(); }
+	}
 }
 
 import AlreadyExits = Cancellation.AlreadyExits;
 import NotFound = Cancellation.NotFound;
+import CancellationNotAllowed = Cancellation.CancellationNotAllowed;

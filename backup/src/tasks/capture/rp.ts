@@ -3,13 +3,14 @@ import { resolve } from "path";
 import { Params, Result } from "./interfaces";
 import assert = require("assert");
 import { $, AsRawStart, AsRawStop } from "@zimtsui/startable";
+import { RemoteProcedureMaker } from 'mongo-async-rpc';
 
 
 assert(process.env.BACKUP_MONGO_HOST_URI);
 assert(process.env.BACKUP_S3_HOST_ALIAS);
 
 
-class Child {
+export class RP {
 	private cp?: ChildProcess;
 	private stderrPromise?: Promise<string>;
 
@@ -34,7 +35,14 @@ class Child {
 				stdio: ['ignore', 'ignore', 'pipe'],
 			},
 		);
-		this.cp.once('exit', (code, signal) => $(this).stop(new ChildExit(code, signal)));
+		this.cp.once('exit', async (code, signal) => {
+			if (code === 0)
+				$(this).stop(new RemoteProcedureMaker.Successful<null>(null));
+			else {
+				const stderr = await this.stderrPromise!;
+				$(this).stop(new ChildExit(code, signal, stderr));
+			}
+		});
 
 		this.stderrPromise = (async () => {
 			const fragments: string[] = [];
@@ -53,26 +61,10 @@ class Child {
 	}
 }
 
-
-export async function execute(
-	db: Params.Db,
-	bucket: Params.Bucket,
-	object: Params.Object,
-): Promise<Result> {
-	const child = new Child(db, bucket, object);
-	await $(child).start();
-	const err = await (<Promise<never>>$(child).getRunning())
-		.catch((err: Error) => {
-			if (err instanceof ChildExit) return err;
-			else throw err;
-		});
-	if (err.code === 0) return null;
-	throw err;
-}
-
 class ChildExit extends Error {
 	public constructor(
 		public code: number | null,
 		public signal: string | null,
-	) { super(); }
+		message: string,
+	) { super(message); }
 }

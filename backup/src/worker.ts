@@ -5,7 +5,7 @@ import { Document } from "./async-rpc/interfaces";
 import { Adoption } from "./async-rpc/executor/adoption";
 import { Success } from "./async-rpc/executor/success";
 import { Failure } from "./async-rpc/executor/failure";
-import { execute } from "./tasks/capture/execute";
+import { execute } from "./tasks/capture/rp";
 import * as Capture from "./tasks/capture/interfaces";
 import * as Restore from './tasks/restore/interfaces';
 import { adapt } from "startable-adaptor";

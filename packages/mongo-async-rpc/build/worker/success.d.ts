@@ -1,5 +1,5 @@
 import { Collection, Db, MongoClient } from "mongodb";
-import { Document } from "../interfaces";
+import { Document } from "../document";
 export declare class Success {
     private host;
     private db;
