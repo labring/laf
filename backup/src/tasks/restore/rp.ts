@@ -3,14 +3,14 @@ import { resolve } from "path";
 import { Params, Result } from "./interfaces";
 import assert = require("assert");
 import { $, AsRawStart, AsRawStop } from "@zimtsui/startable";
-import { RemoteProcedureMaker } from 'mongo-async-rpc';
+import { Worker } from 'mongo-async-rpc';
 
 
 assert(process.env.BACKUP_MONGO_HOST_URI);
 assert(process.env.BACKUP_S3_HOST_ALIAS);
 
 
-export class RP {
+export class Rp {
 	private cp?: ChildProcess;
 	private stderrPromise?: Promise<string>;
 
@@ -37,7 +37,7 @@ export class RP {
 		);
 		this.cp.once('exit', async (code, signal) => {
 			if (code === 0)
-				$(this).stop(new RemoteProcedureMaker.Successful<null>(null));
+				$(this).stop(new Worker.RpMaker.Successful<null>(null));
 			else {
 				const stderr = await this.stderrPromise!;
 				$(this).stop(new ChildExit(code, signal, stderr));

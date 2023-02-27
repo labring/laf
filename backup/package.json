@@ -20,7 +20,7 @@
     "@types/koa__router": "^12.0.0",
     "@types/node": "^16.18.12",
     "@types/ws": "^8.5.4",
-    "@zimtsui/delta-stream": "file:../../delta-stream",
+    "@zimtsui/delta-stream": "^0.0.2",
     "@zimtsui/koa-ws-filter": "^0.0.5",
     "@zimtsui/node-time-engine": "^0.0.3",
     "@zimtsui/pollerloop": "^0.0.5",
