@@ -11,6 +11,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./rp-worker"), exports);
+__exportStar(require("./rp-factory-like"), exports);
 __exportStar(require("./adoption"), exports);
 __exportStar(require("./success"), exports);
 __exportStar(require("./failure"), exports);

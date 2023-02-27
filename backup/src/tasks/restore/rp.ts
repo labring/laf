@@ -37,7 +37,7 @@ export class Rp {
 		);
 		this.cp.once('exit', async (code, signal) => {
 			if (code === 0)
-				$(this).stop(new Worker.RpMaker.Successful<null>(null));
+				$(this).stop(new Worker.Successful<null>(null));
 			else {
 				const stderr = await this.stderrPromise!;
 				$(this).stop(new ChildExit(code, signal, stderr));
