@@ -32,12 +32,13 @@ import CreateWebsiteModal from "../CreateWebsiteModal";
 // import CreateWebsiteModal from "../CreateWebsiteModal";
 import PathLink from "../PathLink";
 import UploadButton from "../UploadButton";
-
+import useGlobalStore from "@/pages/globalStore";
 // import styles from "../index.module.scss";
 import useAwsS3 from "@/hooks/useAwsS3";
 export default function FileList() {
   const { getList, getFileUrl, deleteFile } = useAwsS3();
   const { currentStorage, prefix, setPrefix, getCurrentBucketDomain } = useStorageStore();
+  const port = useGlobalStore.getState().currentApp?.port;
   const bucketName = currentStorage?.name;
   const bucketType = currentStorage?.policy;
 
@@ -61,6 +62,9 @@ export default function FileList() {
       fileUrl = getFileUrl(bucketName!, file.Key);
     } else {
       fileUrl = getCurrentBucketDomain() + `/${file.Key}` || "";
+      if (port !== 80 && port !== 443) {
+        fileUrl = getCurrentBucketDomain() + ":" + port + `/${file.Key}` || "";
+      }
     }
 
     window.open(fileUrl, "_blank");
