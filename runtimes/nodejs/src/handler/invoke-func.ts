@@ -1,10 +1,3 @@
-/*
- * @Author: Maslow<wangfugen@126.com>
- * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2022-02-03 00:59:07
- * @Description:
- */
-
 import { Response } from 'express'
 import { FunctionContext } from '../support/function-engine'
 import { logger } from '../support/logger'
@@ -12,16 +5,14 @@ import { CloudFunction } from '../support/function-engine'
 import { IRequest } from '../support/types'
 import { handleDebugFunction } from './debug-func'
 import { parseToken } from '../support/token'
-
-const DEFAULT_FUNCTION_NAME = '__default__'
-const INTERCEPTOR_FUNCTION_NAME = '__interceptor__'
+import { DEFAULT_FUNCTION_NAME, INTERCEPTOR_FUNCTION_NAME } from '../constants'
 
 /**
  * Handler of invoking cloud function
  */
 export async function handleInvokeFunction(req: IRequest, res: Response) {
   // intercept the request, skip websocket request
-  if (false === req.method.startsWith('WebSocket')) {
+  if (false === req.method.startsWith('WebSocket:')) {
     const passed = await invokeInterceptor(req, res)
     if (passed === false) return
   }
@@ -112,7 +103,7 @@ async function invokeInterceptor(req: IRequest, res: Response) {
   const func_name = INTERCEPTOR_FUNCTION_NAME
 
   // load function data from db
-  let funcData = await CloudFunction.getFunctionByName(func_name)
+  const funcData = await CloudFunction.getFunctionByName(func_name)
   // pass if no interceptor
   if (!funcData) {
     return true

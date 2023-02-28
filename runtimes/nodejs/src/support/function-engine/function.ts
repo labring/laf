@@ -7,7 +7,7 @@ import {
 } from './types'
 import * as assert from 'assert'
 import { DatabaseAgent } from '../../db'
-import { Constants } from '../../constants'
+import { CLOUD_FUNCTION_COLLECTION } from '../../constants'
 
 /**
  * CloudFunction Class
@@ -120,7 +120,7 @@ export class CloudFunction {
     const db = DatabaseAgent.db
 
     const doc = await db
-      .collection<ICloudFunctionData>(Constants.function_collection)
+      .collection<ICloudFunctionData>(CLOUD_FUNCTION_COLLECTION)
       .findOne({ name: func_name })
 
     return doc
@@ -135,7 +135,7 @@ export class CloudFunction {
     const db = DatabaseAgent.db
 
     const doc = await db
-      .collection<ICloudFunctionData>(Constants.function_collection)
+      .collection<ICloudFunctionData>(CLOUD_FUNCTION_COLLECTION)
       .findOne({
         // _id: new ObjectId(func_id)
         id: func_id,

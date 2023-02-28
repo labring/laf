@@ -1,6 +1,9 @@
 import { IncomingMessage } from 'http'
-import { RawData, WebSocket, WebSocketServer } from 'ws'
-import { Constants } from '../constants'
+import { WebSocket, WebSocketServer } from 'ws'
+import {
+  CLOUD_FUNCTION_COLLECTION,
+  WEBSOCKET_FUNCTION_NAME,
+} from '../constants'
 import { DatabaseAgent } from '../db'
 import { CloudFunction, ICloudFunctionData } from './function-engine'
 import { logger } from './logger'
@@ -32,54 +35,26 @@ export class WebSocketAgent {
  * @param request
  */
 function handleSocketConnection(socket: WebSocket, request: IncomingMessage) {
-  // logger.debug(`socket connected`, request.headers)
+  // handle connection event
+  handleWebSocketEvent('WebSocket:connection', null, socket, request)
 
+  // handle message event
   socket.on('message', (data, isBinary) => {
-    handleSocketMessage(socket, data, isBinary)
+    const param = { data, isBinary }
+    handleWebSocketEvent('WebSocket:message', param, socket)
   })
 
-  socket.on('error', (err) => handleSocketError(socket, err))
-  socket.on('close', (code, reason) => handleSocketClose(socket, code, reason))
+  // handle error event
+  socket.on('error', (error) => {
+    const param = error
+    handleWebSocketEvent('WebSocket:error', param, socket)
+  })
 
-  handleWebSocketEvent('WebSocket:connection', null, socket, request)
-}
-
-/**
- * Handle socket message
- * @param _socket
- * @param _data
- * @param _isBinary
- */
-async function handleSocketMessage(
-  socket: WebSocket,
-  data: RawData,
-  isBinary: boolean,
-) {
-  const param = { data, isBinary }
-  await handleWebSocketEvent('WebSocket:message', param, socket)
-}
-
-/**
- * Handle socket close
- * @param _socket
- * @param _code
- * @param _reason
- */
-function handleSocketClose(socket: WebSocket, code: number, reason: Buffer) {
-  const param = { code, reason }
-  handleWebSocketEvent('WebSocket:close', param, socket)
-}
-
-/**
- * Handle socket error
- * @param _socket
- * @param error
- */
-function handleSocketError(socket: WebSocket, error: Error) {
-  logger.error('websocket got err', error)
-
-  const param = error
-  handleWebSocketEvent('WebSocket:error', param, socket)
+  // handle close event
+  socket.on('close', (code, reason) => {
+    const param = { code, reason }
+    handleWebSocketEvent('WebSocket:close', param, socket)
+  })
 }
 
 /**
@@ -95,36 +70,37 @@ async function handleWebSocketEvent(
   socket: WebSocket,
   request?: IncomingMessage,
 ) {
-  const funcs = await getWebsocketCloudFunctions()
-
-  for (const func of funcs) {
-    const param: any = {
-      params: data,
-      method: event,
-      requestId: generateUUID(),
-      socket,
-      __function_name: func.name,
-      headers: request?.headers,
-    }
-
-    const cf = new CloudFunction(func)
-    await cf.invoke(param)
+  const func = await getWebsocketCloudFunction()
+  if (!func) {
+    logger.error('WebSocket function not found')
+    return 'WebSocket handler not found'
   }
+
+  const param: any = {
+    params: data,
+    method: event,
+    requestId: generateUUID(),
+    socket,
+    __function_name: func.name,
+    headers: request?.headers,
+  }
+
+  const cf = new CloudFunction(func)
+  await cf.invoke(param)
 }
 
 /**
- * Get cloud functions with websocket on
+ * Get websocket handler cloud function
  * @returns
  */
-async function getWebsocketCloudFunctions() {
+async function getWebsocketCloudFunction() {
   const db = DatabaseAgent.db
 
-  const docs = await db
-    .collection<ICloudFunctionData>(Constants.function_collection)
-    .find({
-      websocket: true,
+  const doc = await db
+    .collection<ICloudFunctionData>(CLOUD_FUNCTION_COLLECTION)
+    .findOne({
+      name: WEBSOCKET_FUNCTION_NAME,
     })
-    .toArray()
 
-  return docs
+  return doc
 }

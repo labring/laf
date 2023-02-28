@@ -1,10 +1,8 @@
-import fse = require('fs-extra')
-import path = require('path')
-import { Constants } from './constants'
 import { execSync } from 'child_process'
 import Config from './config'
 
 import { logger } from './support/logger'
+import { FUNCTION_LOG_COLLECTION } from './constants'
 
 async function main() {
   try {
@@ -27,13 +25,6 @@ main()
     logger.error(err)
     process.exit(2)
   })
-
-
-export function isCloudSdkPackageExists() {
-  const target = path.resolve(__dirname, '../../../node_modules/@')
-  const pkgJsonPath = path.join(target, 'package.json')
-  return fse.existsSync(pkgJsonPath)
-}
 
 /**
  * Install packages
@@ -76,7 +67,7 @@ export async function ensureCollectionIndexes(): Promise<any> {
   const { DatabaseAgent } = require('./db')
   await DatabaseAgent.accessor.ready
   const db = DatabaseAgent.db
-  await db.collection(Constants.function_log_collection).createIndexes([
+  await db.collection(FUNCTION_LOG_COLLECTION).createIndexes([
     {
       key: { created_at: 1 },
       expireAfterSeconds: Config.FUNCTION_LOG_EXPIRED_TIME,

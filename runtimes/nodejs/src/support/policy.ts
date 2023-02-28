@@ -10,8 +10,8 @@ import { Params, Policy } from 'database-proxy'
 import { logger } from './logger'
 import { CloudFunction } from './function-engine'
 import { DatabaseAgent } from '../db'
-import { Constants } from '../constants'
 import { generateUUID } from './utils'
+import { POLICY_COLLECTION } from '../constants'
 
 export type InjectionGetter = (payload: any, params: Params) => Promise<any>
 
@@ -62,7 +62,7 @@ export class PolicyAgent {
   public static async get(name: string) {
     // get from cache
     const cached = this._data.get(name)
-    
+
     // TODO: consider a better cache policy ?
     if (cached && Date.now() - cached.cached_at < 1000 * 5) {
       return cached
@@ -121,7 +121,7 @@ export class PolicyAgent {
   public static async loadPolicies() {
     const db = DatabaseAgent.db
     const docs = await db
-      .collection(Constants.policy_collection)
+      .collection(POLICY_COLLECTION)
       .find<PolicyDataStruct>({})
       .toArray()
 
@@ -136,7 +136,7 @@ export class PolicyAgent {
   public static async loadPolicy(name: string) {
     const db = DatabaseAgent.db
     const doc = await db
-      .collection(Constants.policy_collection)
+      .collection(POLICY_COLLECTION)
       .findOne<PolicyDataStruct>({ name })
 
     return doc

@@ -1,10 +1,3 @@
-/*
- * @Author: Maslow<wangfugen@126.com>
- * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2022-02-03 00:59:03
- * @Description:
- */
-
 import { Response } from 'express'
 import { FunctionContext } from '../support/function-engine'
 import { logger } from '../support/logger'

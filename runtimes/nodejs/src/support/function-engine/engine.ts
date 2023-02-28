@@ -1,6 +1,4 @@
-// import fetch from 'node-fetch'
 import { URL } from 'node:url'
-
 import * as vm from 'vm'
 import { nanosecond2ms } from '../utils'
 import { FunctionConsole } from './console'
