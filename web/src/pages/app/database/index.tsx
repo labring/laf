@@ -4,6 +4,7 @@
 import Content from "@/components/Content";
 import { Col, Row } from "@/components/Grid";
 import Panel from "@/components/Panel";
+import Resize from "@/components/Resize";
 
 import BottomPanel from "./BottomPanel";
 import CollectionDataList from "./CollectionDataList";
@@ -22,10 +23,12 @@ function DatabasePage() {
       <Row className="flex-grow overflow-hidden">
         <Col {...settingStore.layoutInfo.collectionPage.SideBar}>
           <CollectionListPanel />
+          <Resize type="row" pageId="collectionPage" panelId="PolicyPanel" reverse />
           <Row {...settingStore.layoutInfo.collectionPage.PolicyPanel}>
             <PolicyListPanel />
           </Row>
         </Col>
+        <Resize type="col" pageId="collectionPage" panelId="SideBar" />
         <Col>
           <Panel className="items-center h-full">
             {store.currentShow === "DB" ? <CollectionDataList /> : <PolicyDataList />}

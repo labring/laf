@@ -13,11 +13,7 @@ function Row(props: {
   const { className, style } = props;
   return (
     <div
-      className={clsx(
-        "flex space-x-2 w-full",
-        style?.height ? "flex-none" : "flex-grow",
-        className,
-      )}
+      className={clsx("flex w-full", style?.height ? "flex-none" : "flex-grow", className)}
       style={style}
     >
       {props.children}
@@ -34,7 +30,7 @@ function Col(props: {
   return (
     <div
       className={clsx(
-        "flex flex-col space-y-2 h-full",
+        "flex flex-col h-full",
         style?.width ? "flex-none" : "flex-grow flex-1 overflow-hidden",
         className,
       )}

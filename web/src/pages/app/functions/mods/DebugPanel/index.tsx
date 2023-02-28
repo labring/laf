@@ -18,6 +18,7 @@ import { keyBy, mapValues } from "lodash";
 
 import { Row } from "@/components/Grid";
 import Panel from "@/components/Panel";
+import Resize from "@/components/Resize";
 import { Pages } from "@/constants";
 
 import { useCompileMutation } from "../../service";
@@ -30,6 +31,7 @@ import HeaderParamsTab from "./QueryParamsTab";
 import { TMethod } from "@/apis/typing";
 import useFunctionCache from "@/hooks/useFunctionCache";
 import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
+import useCustomSettingStore from "@/pages/customSetting";
 import useGlobalStore from "@/pages/globalStore";
 
 const HAS_BODY_PARAMS_METHODS: (TMethod | undefined)[] = ["POST", "PUT", "PATCH", "DELETE"];
@@ -41,6 +43,7 @@ export default function DebugPanel() {
   const globalStore = useGlobalStore((state) => state);
 
   const functionCache = useFunctionCache();
+  const functionPageConfig = useCustomSettingStore((store) => store.layoutInfo.functionPage);
 
   const [runningResData, setRunningResData] = useState();
   const [isLoading, setIsLoading] = useState(false);
@@ -217,7 +220,8 @@ export default function DebugPanel() {
           </TabPanels>
         </Tabs>
       </Panel>
-      <Row style={{ height: "300px", overflow: "auto" }}>
+      <Resize type="row" pageId="functionPage" panelId="RunningPanel" reverse />
+      <Row {...functionPageConfig.RunningPanel}>
         <Panel>
           <Panel.Header title={t("FunctionPanel.DebugResult")} />
           <div className="relative flex-1 overflow-auto">

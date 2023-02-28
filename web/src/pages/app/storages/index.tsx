@@ -6,6 +6,7 @@ import { t } from "i18next";
 import EmptyBox from "@/components/EmptyBox";
 import { Col, Row } from "@/components/Grid";
 import Panel from "@/components/Panel";
+import Resize from "@/components/Resize";
 
 import CreateBucketModal from "./mods/CreateBucketModal";
 import FileList from "./mods/FileList";
@@ -13,13 +14,17 @@ import StorageListPanel from "./mods/StorageListPanel";
 
 import useStorageStore from "./store";
 
+import useCustomSettingStore from "@/pages/customSetting";
+
 export default function StoragePage() {
+  const settingStore = useCustomSettingStore();
   const { currentStorage } = useStorageStore();
   return (
     <Row>
-      <Col className="flex-none" style={{ width: 300 }}>
+      <Col {...settingStore.layoutInfo.storagePage.SideBar}>
         <StorageListPanel />
       </Col>
+      <Resize type="col" pageId="storagePage" panelId="SideBar" />
       <Col>
         {currentStorage === undefined ? (
           <Panel className="items-center h-full">
