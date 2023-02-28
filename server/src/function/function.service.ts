@@ -33,7 +33,6 @@ export class FunctionService {
         version: 0,
       },
       desc: dto.description,
-      websocket: dto.websocket,
       createdBy: userid,
       methods: dto.methods,
       tags: dto.tags || [],
@@ -71,7 +70,6 @@ export class FunctionService {
         version: func.source.version + 1,
       },
       desc: dto.description,
-      websocket: dto.websocket,
       methods: dto.methods,
       tags: dto.tags || [],
     }

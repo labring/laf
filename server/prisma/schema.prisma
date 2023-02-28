@@ -352,7 +352,6 @@ model CloudFunction {
   source    CloudFunctionSource
   desc      String
   tags      String[]
-  websocket Boolean
   methods   HttpMethod[]
   createdAt DateTime            @default(now())
   updatedAt DateTime            @updatedAt
