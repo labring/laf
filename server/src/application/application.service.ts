@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common'
 import * as nanoid from 'nanoid'
 import { CreateApplicationDto } from './dto/create-application.dto'
 import { ApplicationPhase, ApplicationState, Prisma } from '@prisma/client'
-import { PrismaService } from '../prisma.service'
+import { PrismaService } from '../prisma/prisma.service'
 import { UpdateApplicationDto } from './dto/update-application.dto'
 import {
   APPLICATION_SECRET_KEY,

@@ -6,8 +6,8 @@ import * as ts from 'typescript'
  */
 export function compileTs2js(source: string) {
   const jscode = ts.transpile(source, {
-    module: ts.ModuleKind.CommonJS,
-    target: ts.ScriptTarget.ES2017,
+    module: ts.ModuleKind.Node16,
+    target: ts.ScriptTarget.ES2022,
     removeComments: true,
   })
 

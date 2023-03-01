@@ -352,7 +352,6 @@ model CloudFunction {
   source    CloudFunctionSource
   desc      String
   tags      String[]
-  websocket Boolean
   methods   HttpMethod[]
   createdAt DateTime            @default(now())
   updatedAt DateTime            @updatedAt
@@ -452,7 +451,6 @@ model WebsiteHosting {
   bucket StorageBucket @relation(fields: [bucketName], references: [name])
 }
 
-// Settings schemas
 model Settings {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   key   String @unique

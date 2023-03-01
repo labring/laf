@@ -30,9 +30,8 @@
     "@types/node": "^17.0.31"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.86.0",
-    "axios": "^1.2.1",
     "aws-sdk": "^2.1167.0",
+    "axios": "^1.2.1",
     "class-transformer": "^0.5.1",
     "cli": "^1.0.1",
     "cli-table3": "^0.6.3",

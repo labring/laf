@@ -18,6 +18,7 @@ export type TApplication = {
   storage: Storage;
   tls: boolean;
   develop_token: string;
+  port: number;
 };
 
 export type TBundle = {

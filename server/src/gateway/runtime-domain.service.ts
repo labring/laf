@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { PrismaService } from '../prisma.service'
+import { PrismaService } from '../prisma/prisma.service'
 import * as assert from 'assert'
 import { RegionService } from '../region/region.service'
 import { ApisixService } from './apisix.service'

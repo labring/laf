@@ -6,7 +6,7 @@ import {
   CN_FUNCTION_LOGS,
   CN_PUBLISHED_FUNCTIONS,
 } from '../constants'
-import { PrismaService } from '../prisma.service'
+import { PrismaService } from '../prisma/prisma.service'
 import { CreateFunctionDto } from './dto/create-function.dto'
 import { UpdateFunctionDto } from './dto/update-function.dto'
 import * as assert from 'node:assert'
@@ -33,7 +33,6 @@ export class FunctionService {
         version: 0,
       },
       desc: dto.description,
-      websocket: dto.websocket,
       createdBy: userid,
       methods: dto.methods,
       tags: dto.tags || [],
@@ -71,7 +70,6 @@ export class FunctionService {
         version: func.source.version + 1,
       },
       desc: dto.description,
-      websocket: dto.websocket,
       methods: dto.methods,
       tags: dto.tags || [],
     }

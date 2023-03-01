@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
 import SettingsService from '../settings/settings.service'
-import { PrismaService } from '../prisma.service'
 import { SmsVerifyCodeType } from '@prisma/client'
 import Dysmsapi, * as dysmsapi from '@alicloud/dysmsapi20170525'
 import * as OpenApi from '@alicloud/openapi-client'
@@ -8,6 +7,7 @@ import * as Util from '@alicloud/tea-util'
 import { SmsLoginCodeDto } from './dto/sms-code.dto'
 import { AlismsConfig, ServiceResponse } from 'src/utils/interface'
 import { ALISMS_KEY } from 'src/constants'
+import { PrismaService } from 'src/prisma/prisma.service'
 
 @Injectable()
 export default class SmsService {

@@ -1,11 +1,4 @@
-/*
- * @Author: Maslow<wangfugen@126.com>
- * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2022-02-03 00:58:33
- * @Description:
- */
-
-import { Constants } from '../constants'
+import { FUNCTION_LOG_COLLECTION } from '../constants'
 import { DatabaseAgent } from '../db'
 import { FunctionConsole, FunctionContext } from './function-engine'
 
@@ -20,9 +13,7 @@ FunctionConsole.write = async (message: string, ctx: FunctionContext) => {
   const db = DatabaseAgent.db
   if (!db) return
 
-  const collection = db.collection<IFunctionLog>(
-    Constants.function_log_collection,
-  )
+  const collection = db.collection<IFunctionLog>(FUNCTION_LOG_COLLECTION)
   const doc = {
     request_id: ctx.requestId,
     func: ctx.__function_name,

@@ -10,7 +10,6 @@ import { JwtStrategy } from './jwt.strategy'
 import { AuthController } from './auth.controller'
 import { HttpModule } from '@nestjs/axios'
 import { PatService } from 'src/user/pat.service'
-import { PrismaService } from 'src/prisma.service'
 import SMSservice from 'src/sms/sms.service'
 import SettingsService from 'src/settings/settings.service'
 
@@ -30,7 +29,6 @@ import SettingsService from 'src/settings/settings.service'
     JwtStrategy,
     CasdoorService,
     PatService,
-    PrismaService,
     SMSservice,
     SettingsService,
   ],

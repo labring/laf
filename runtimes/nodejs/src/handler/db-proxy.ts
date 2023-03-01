@@ -1,9 +1,4 @@
-/*
- * @Author: Maslow<wangfugen@126.com>
- * @Date: 2021-07-30 10:30:29
- * @LastEditTime: 2022-02-03 00:39:18
- * @Description: 
- */
+
 import { Response } from 'express'
 import { Proxy } from 'database-proxy'
 import Config from '../config'

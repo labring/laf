@@ -5,7 +5,6 @@ import { PolicyController } from './policy/policy.controller'
 import { PolicyService } from './policy/policy.service'
 import { DatabaseService } from './database.service'
 import { DatabaseController } from './database.controller'
-import { PrismaService } from 'src/prisma.service'
 import { PolicyRuleService } from './policy/policy-rule.service'
 import { PolicyRuleController } from './policy/policy-rule.controller'
 import { MongoService } from './mongo.service'
@@ -24,7 +23,6 @@ import { ApplicationService } from 'src/application/application.service'
     CollectionService,
     PolicyService,
     DatabaseService,
-    PrismaService,
     PolicyRuleService,
     MongoService,
     ApplicationService,
@@ -33,7 +31,6 @@ import { ApplicationService } from 'src/application/application.service'
     CollectionService,
     PolicyService,
     DatabaseService,
-    PrismaService,
     PolicyRuleService,
     MongoService,
   ],

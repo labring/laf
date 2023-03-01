@@ -6,7 +6,7 @@
  */
 
 import { Router } from 'express'
-import * as multer from 'multer'
+import multer from 'multer'
 import * as path from 'path'
 import { handleDatabaseProxy } from './db-proxy'
 import { handlePackageTypings } from './typings'

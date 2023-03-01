@@ -1,28 +1,14 @@
-import { deepFreeze } from "./support/utils"
 
 /**
- * Constants collection
+ * Collection names
  */
-export const Constants = {
-  /**
-   * collection name of cloud functions
-   */
-  function_collection: '__functions__',
+export const CLOUD_FUNCTION_COLLECTION = '__functions__'
+export const POLICY_COLLECTION = '__policies__'
+export const FUNCTION_LOG_COLLECTION = '__function_logs__'
+export const CONFIG_COLLECTION = '__config__'
 
-  /**
-   * collection name of policy which used for authenticating `client-access-database` requests
-   */
-  policy_collection: '__policies__',
 
-  /**
-   * collection name of cloud functions' log
-   */
-  function_log_collection: "__function_logs__",
-
-  /**
-   * collection name of application configuration
-   */
-  config_collection: '__config__'
-}
-
-deepFreeze(Constants)
+export const WEBSOCKET_FUNCTION_NAME = '__websocket__'
+export const INTERCEPTOR_FUNCTION_NAME = '__interceptor__'
+export const DEFAULT_FUNCTION_NAME = '__default__'
+export const INIT_FUNCTION_NAME = '__init__'

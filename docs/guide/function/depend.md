@@ -34,7 +34,7 @@ title: 依赖管理
 
 ```typescript
 import cloud from '@lafjs/cloud'
-import * as moment from 'moment'
+import moment from 'moment'
 
 export async function main(ctx: FunctionContext) {
   const momentVersion = moment.version

@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Region, StoragePhase, StorageState, StorageUser } from '@prisma/client'
-import { PrismaService } from 'src/prisma.service'
+import { PrismaService } from 'src/prisma/prisma.service'
 import { GenerateAlphaNumericPassword } from 'src/utils/random'
 import { MinioService } from './minio/minio.service'
 import { AssumeRoleCommand, STSClient } from '@aws-sdk/client-sts'

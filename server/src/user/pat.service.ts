@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { GenerateAlphaNumericPassword } from 'src/utils/random'
-import { PrismaService } from '../prisma.service'
+import { PrismaService } from '../prisma/prisma.service'
 import { CreatePATDto } from './dto/create-pat.dto'
 
 @Injectable()

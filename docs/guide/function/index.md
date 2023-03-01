@@ -46,7 +46,7 @@ title: 云函数入门
 
 使用浏览器或者 PostMan 等工具访问该地址，即可得到 `hello laf`字符串。
 ::: warning
-暂不能设置云函数url化的path
+暂不能设置云函数 url 化的 path
 :::
 
 ### 通过 SDK 访问云函数
@@ -103,7 +103,7 @@ console.log(ret); // hello laf
 | `ctx.response`  | HTTP 响应，和`express`的`Response`实例保持一致                                      |
 | `ctx.socket`    | [WebSocket](https://developer.mozilla.org/zh-CN/docs/Web/API/WebSocket) 实例        |
 | `ctx.files`     | 上传的文件 ([File](https://developer.mozilla.org/zh-CN/docs/Web/API/File) 对象数组) |
-| `ctx.env`       | 自定义的环境变量 ([env](env.md)) |
+| `ctx.env`       | 自定义的环境变量 ([env](env.md))                                                    |
 
 下面的例子可以读取用户传递的 Query 参数`username`：
 
@@ -194,8 +194,8 @@ ctx.response.status(403); // 发送403状态码
 下面的例子使用了 Node.js 内置的包 `crypto`，来对密码进行哈希：
 
 ```ts
-import cloud from "@/cloud-sdk";
-import * as crypto from "crypto";
+import cloud from "@lafjs/cloud";
+import crypto from "crypto";
 
 exports.main = async function (ctx) {
   const { password } = await ctx.body;
@@ -214,8 +214,8 @@ exports.main = async function (ctx) {
 在使用 npm 包之前，需要在 _依赖管理_ 处安装对应的包。
 
 ```ts
-import cloud from "@/cloud-sdk";
-import * as dayjs from "dayjs";
+import cloud from "@lafjs/cloud";
+import dayjs from "dayjs";
 
 exports.main = function () {
   return dayjs().format();
@@ -234,10 +234,10 @@ exports.main = function () {
 
 刚刚编写的一些云函数都是比较基础的一些功能，但并没有和 Laf 的其他功能连接起来。
 
-在云函数上，Laf 提供了云 SDK `@/cloud-sdk` 让云函数支持访问网络、数据库、对象存储等。
+在云函数上，Laf 提供了云 SDK `@lafjs/cloud` 让云函数支持访问网络、数据库、对象存储等。
 
 ::: warning
-`@/cloud-sdk` 是一个专有的模块，只能在云函数上使用，不支持通过 npm 安装到其他位置。
+`@lafjs/cloud` 是一个专有的模块，只能在云函数上使用，不支持通过 npm 安装到其他位置。
 :::
 
 ### 导入 SDK
@@ -245,7 +245,7 @@ exports.main = function () {
 SDK 的所有内容通过它的默认导出来访问。
 
 ```js
-import cloud from "@/cloud-sdk";
+import cloud from "@lafjs/cloud";
 ```
 
 ### 发送网络请求
@@ -255,7 +255,7 @@ import cloud from "@/cloud-sdk";
 该接口是对 `axios` 请求库的封装，其调用方法与 `axios` 完全一致。
 
 ```ts
-import cloud from "@/cloud-sdk";
+import cloud from "@lafjs/cloud";
 
 exports.main = async function (ctx) {
   const ret = await cloud.fetch({
@@ -279,7 +279,7 @@ exports.main = async function (ctx) {
 下面的例子可以获取数据库中的用户信息：
 
 ```ts
-import cloud from "@/cloud-sdk";
+import cloud from "@lafjs/cloud";
 
 exports.main = async function (ctx) {
   const { username } = ctx.body;
@@ -299,32 +299,29 @@ exports.main = async function (ctx) {
 下方例子演示了创建用户成功后为用户发送邀请邮件（`send_mail`函数需自行实现）：
 
 ```ts
-import cloud from "@/cloud-sdk";
+import cloud from "@lafjs/cloud";
 
 // invoke方法模型
 
 exports.main = async function (ctx) {
-const { username } = ctx.body;
+  const { username } = ctx.body;
   // 数据库操作
   const db = cloud.database();
   const ret = await db.collection("users").add({
-    name: 'jack',
-    password: '*******'
+    name: "jack",
+    password: "*******",
   });
   if (ret?.ok) {
-    await cloud.invoke(
-      'send_mail', 
-      {
-        ...ctx, // 如果函数内部需要使用ctx中的某些属性，可按此方法传入
-        body: {
-          title: 'xxx',
-          content: 'xxx',
-          date: 'xxx'
-        }
-      }
-    )
+    await cloud.invoke("send_mail", {
+      ...ctx, // 如果函数内部需要使用ctx中的某些属性，可按此方法传入
+      body: {
+        title: "xxx",
+        content: "xxx",
+        date: "xxx",
+      },
+    });
   }
-  
+
   console.log(ret);
   return ret.ok;
 };
@@ -339,31 +336,28 @@ const { username } = ctx.body;
 > 本例仅做`emit`示例使用，业务开发中可直接使用触发器监听`DatabaseChange:users#add`事件实现此功能。[查看详情](trigger.md)
 
 ```ts
-import cloud from "@/cloud-sdk";
+import cloud from "@lafjs/cloud";
 
 // invoke方法模型
 // invoke<T>(name: string, ctx: FunctionContext): Promise<T>
 
 exports.main = async function (ctx) {
-const { username } = ctx.body;
+  const { username } = ctx.body;
   // 数据库操作
   const db = cloud.database();
   const ret = await db.collection("users").add({
-    name: 'jack',
-    password: '*******'
+    name: "jack",
+    password: "*******",
   });
   if (ret?.ok) {
-    await cloud.emit(
-      'user_created', 
-      {
-        ...ctx, // 如果函数内部需要使用ctx中的某些属性，可按此方法传入
-        body: {
-         id: ret?.insertId
-        }
-      }
-    )
+    await cloud.emit("user_created", {
+      ...ctx, // 如果函数内部需要使用ctx中的某些属性，可按此方法传入
+      body: {
+        id: ret?.insertId,
+      },
+    });
   }
-  
+
   console.log(ret);
   return ret.ok;
 };
@@ -386,7 +380,7 @@ const { username } = ctx.body;
 > 注意：出于演示目的，对 password 以明文方式查询，并未做 hash 处理考虑，不建议实际开发过程中如此使用。
 
 ```ts
-import cloud from "@/cloud-sdk";
+import cloud from "@lafjs/cloud";
 
 exports.main = async function (ctx) {
   const { username, password } = ctx.body;
@@ -422,24 +416,24 @@ exports.main = async function (ctx) {
 
 ::: info
 云函数全局内存单例对象，可跨多次调用、不同云函数之间共享数据
-`cloud.shared`是JS中标准的Map对象，可参照MDN文档学习使用：[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
+`cloud.shared`是 JS 中标准的 Map 对象，可参照 MDN 文档学习使用：[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
 
 使用场景：
 
 1. 可将一些全局配置初始化到 shared 中，如微信开发信息、短信发送配置
 2. 可共享一些常用方法，如 checkPermission 等，以提升云函数性能
-3. 可做热数据的缓存。如：缓存微信access_token。（建议少量使用，此对象是在 node vm 堆中分配，因为 node vm 堆内存限制）
-:::
+3. 可做热数据的缓存。如：缓存微信 access_token。（建议少量使用，此对象是在 node vm 堆中分配，因为 node vm 堆内存限制）
+   :::
 
 ```ts
-import cloud from "@/cloud-sdk";
+import cloud from "@lafjs/cloud";
 
 exports.main = async function (ctx) {
-  await cloud.shared.set(key, val) // 设置一个缓存
-  await cloud.shared.get(key) // 获取缓存的值
-  await cloud.shared.has(key) // 判断缓存是否存在
-  await cloud.shared.delete(key) // 删除缓存
-  await cloud.shared.clear() // 清空所有缓存
+  await cloud.shared.set(key, val); // 设置一个缓存
+  await cloud.shared.get(key); // 获取缓存的值
+  await cloud.shared.has(key); // 判断缓存是否存在
+  await cloud.shared.delete(key); // 删除缓存
+  await cloud.shared.clear(); // 清空所有缓存
   // ... 其他方法可访问上方MDN的Map文档查看
 };
 ```

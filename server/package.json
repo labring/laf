@@ -1,6 +1,6 @@
 {
   "name": "laf-server",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "",
   "author": "maslow(wangfugen@126.com)",
   "private": true,
@@ -24,9 +24,6 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@alicloud/dysmsapi20170525": "^2.0.23",
-    "@alicloud/openapi-client": "^0.4.5",
-    "@alicloud/tea-util": "^1.4.5",
     "@aws-sdk/client-s3": "^3.245.0",
     "@aws-sdk/client-sts": "^3.226.0",
     "@hokify/agenda": "^6.3.0",
@@ -46,7 +43,7 @@
     "class-validator": "^0.14.0",
     "compression": "^1.7.4",
     "cron-validate": "^1.4.5",
-    "database-proxy": "^0.8.2",
+    "database-proxy": "^1.0.0-beta.2",
     "dotenv": "^16.0.3",
     "fast-json-patch": "^3.1.1",
     "lodash": "^4.17.21",
@@ -58,7 +55,10 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "typescript": "^4.9.3"
+    "typescript": "^4.9.3",
+    "@alicloud/dysmsapi20170525": "^2.0.23",
+    "@alicloud/openapi-client": "^0.4.5",
+    "@alicloud/tea-util": "^1.4.5"
   },
   "devDependencies": {
     "@compodoc/compodoc": "^1.1.19",

@@ -7,7 +7,13 @@ import useGlobalStore from "@/pages/globalStore";
 
 async function loadPackageTypings(packageName: string) {
   const { currentApp } = useGlobalStore.getState();
-  const url = `//${currentApp?.domain?.domain}`;
+  const port = currentApp?.port;
+
+  let url = `//${currentApp?.domain?.domain}`;
+  if (port !== 80 && port !== 443) {
+    url = `${url}:${port}`;
+  }
+
   const res = await axios({
     url: `${url}/_/typing/package?packageName=${packageName}`,
     method: "GET",
@@ -30,12 +36,20 @@ export class ImportParser {
    */
   parseDependencies(source: string) {
     const cleaned = source;
-    return [...cleaned.matchAll(this.REGEX_DETECT_IMPORT)]
+    const DYNAMIC_IMPORT = /import\((['"])(.*?)\1\)/g;
+
+    // parse dynamic imports
+    const dynamicImports = [...cleaned.matchAll(DYNAMIC_IMPORT)].map((x) => x[2]);
+
+    // parse static imports
+    const staticImports = [...cleaned.matchAll(this.REGEX_DETECT_IMPORT)]
       .map((x) => x[1] ?? x[2])
       .filter((x) => !!x)
       .map((imp) => {
         return imp;
       });
+
+    return [...new Set([...dynamicImports, ...staticImports])];
   }
 }
 
