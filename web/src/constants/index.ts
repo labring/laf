@@ -2,6 +2,8 @@
 export const SideBarWidth = 64;
 export const SmallNavHeight = 42;
 
+export const VITE_SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL || "";
+
 export const Pages = {
   function: "function",
   storage: "storage",
