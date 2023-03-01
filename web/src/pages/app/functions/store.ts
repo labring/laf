@@ -33,12 +33,7 @@ const useFunctionStore = create<State>()(
         if (!currentFunctionName) return "";
 
         const protocol = currentApp?.tls ? "https://" : "http://";
-        const port = currentApp?.port;
-
-        let host = currentApp?.domain?.domain;
-        if (port !== 80 && port !== 443) {
-          host = `${host}:${port}`;
-        }
+        const host = currentApp?.host;
 
         return `${protocol}${host}/${currentFunctionName}`;
       },
