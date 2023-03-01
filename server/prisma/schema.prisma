@@ -474,3 +474,456 @@ model SmsVerifyCode {
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
 }
+=======
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  // previewFeatures = ["interactiveTransactions"]
+  // binaryTargets = ["native", "linux-arm64-openssl-1.1.x"]
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// user schemas
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String   @unique
+  email     String?
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profile              UserProfile?
+  personalAccessTokens PersonalAccessToken[]
+}
+
+model UserProfile {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  uid       String   @unique @db.ObjectId
+  openid    String?
+  from      String?
+  avatar    String?
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [uid], references: [id])
+}
+
+model PersonalAccessToken {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  uid       String   @db.ObjectId
+  name      String
+  token     String   @unique
+  expiredAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [uid], references: [id])
+}
+
+// region schemas 
+
+type RegionClusterConf {
+  driver     String // kubernetes
+  kubeconfig String?
+}
+
+type RegionDatabaseConf {
+  driver        String // mongodb
+  connectionUri String
+}
+
+type RegionGatewayConf {
+  driver        String // apisix
+  runtimeDomain String // runtime domain (cloud function)
+  websiteDomain String // website domain
+  port          Int    @default(80)
+  apiUrl        String
+  apiKey        String
+}
+
+type RegionStorageConf {
+  driver           String // minio
+  domain           String
+  externalEndpoint String
+  internalEndpoint String
+  accessKey        String
+  secretKey        String
+}
+
+model Region {
+  id           String             @id @default(auto()) @map("_id") @db.ObjectId
+  name         String             @unique
+  displayName  String
+  clusterConf  RegionClusterConf
+  databaseConf RegionDatabaseConf
+  gatewayConf  RegionGatewayConf
+  storageConf  RegionStorageConf
+  tls          Boolean            @default(false)
+  state        String             @default("Active") // Active, Inactive
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  applications Application[]
+  bundles      Bundle[]
+}
+
+type BundleResource {
+  limitCPU               Int // 1000 = 1 core
+  limitMemory            Int // in MB
+  requestCPU             Int // 1000 = 1 core
+  requestMemory          Int // in MB
+  databaseCapacity       Int // in MB
+  storageCapacity        Int // in MB
+  networkTrafficOutbound Int // in MB
+}
+
+model Bundle {
+  id          String         @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  displayName String
+  regionId    String         @db.ObjectId
+  resource    BundleResource
+  priority    Int            @default(0)
+  state       String         @default("Active") // Active, Inactive
+  price       Int            @default(0)
+
+  region Region @relation(fields: [regionId], references: [id])
+
+  @@unique([regionId, name])
+}
+
+model ApplicationBundle {
+  id          String         @id @default(auto()) @map("_id") @db.ObjectId
+  appid       String         @unique
+  name        String
+  displayName String
+  resource    BundleResource
+  price       Int            @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  application Application @relation(fields: [appid], references: [appid])
+}
+
+type RuntimeImageGroup {
+  main    String
+  init    String?
+  sidecar String?
+}
+
+model Runtime {
+  id          String            @id @default(auto()) @map("_id") @db.ObjectId
+  name        String            @unique
+  type        String
+  image       RuntimeImageGroup
+  state       String            @default("Active") // Active, Inactive
+  version     String
+  latest      Boolean
+  Application Application[]
+}
+
+// application schemas
+
+// desired state of application
+enum ApplicationState {
+  Running
+  Stopped
+  Restarting
+  Deleted
+}
+
+// actual state of application
+enum ApplicationPhase {
+  Creating // app resources creating
+  Created // app resources created
+  Starting // instance starting
+  Started // instance started (Running, Ready)
+  Stopping // instance stopping
+  Stopped // instance stopped
+  Deleting // app resources deleting
+  Deleted // app resources deleted
+}
+
+model Application {
+  id        String           @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  appid     String           @unique
+  regionId  String           @db.ObjectId
+  runtimeId String           @db.ObjectId
+  tags      String[]
+  state     ApplicationState @default(Running)
+  phase     ApplicationPhase @default(Creating)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  lockedAt  DateTime
+  createdBy String           @db.ObjectId
+
+  region  Region  @relation(fields: [regionId], references: [id])
+  runtime Runtime @relation(fields: [runtimeId], references: [id])
+
+  configuration ApplicationConfiguration?
+  storageUser   StorageUser?
+  database      Database?
+  domain        RuntimeDomain?
+  bundle        ApplicationBundle?
+}
+
+type EnvironmentVariable {
+  name  String
+  value String
+}
+
+model ApplicationConfiguration {
+  id           String                @id @default(auto()) @map("_id") @db.ObjectId
+  appid        String                @unique
+  environments EnvironmentVariable[]
+  dependencies String[]              @default([])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  application Application @relation(fields: [appid], references: [appid])
+}
+
+// storage schemas
+
+enum StorageState {
+  Active
+  Inactive
+  Deleted
+}
+
+enum StoragePhase {
+  Creating
+  Created
+  Deleting
+  Deleted
+}
+
+model StorageUser {
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  appid     String       @unique
+  accessKey String
+  secretKey String
+  state     StorageState @default(Active)
+  phase     StoragePhase @default(Creating)
+  lockedAt  DateTime
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  application Application @relation(fields: [appid], references: [appid])
+}
+
+enum BucketPolicy {
+  readwrite
+  readonly
+  private
+}
+
+model StorageBucket {
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  appid     String
+  name      String       @unique
+  shortName String
+  policy    BucketPolicy
+  state     StorageState @default(Active)
+  phase     StoragePhase @default(Creating)
+  lockedAt  DateTime
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  domain         BucketDomain?
+  websiteHosting WebsiteHosting?
+}
+
+// database schemas
+
+enum DatabaseState {
+  Active
+  Inactive
+  Deleted
+}
+
+enum DatabasePhase {
+  Creating
+  Created
+  Deleting
+  Deleted
+}
+
+model Database {
+  id        String        @id @default(auto()) @map("_id") @db.ObjectId
+  appid     String        @unique
+  name      String
+  user      String
+  password  String
+  state     DatabaseState @default(Active)
+  phase     DatabasePhase @default(Creating)
+  lockedAt  DateTime
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  application Application @relation(fields: [appid], references: [appid])
+}
+
+model DatabasePolicy {
+  id        String               @id @default(auto()) @map("_id") @db.ObjectId
+  appid     String
+  name      String
+  injector  String?
+  rules     DatabasePolicyRule[]
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+
+  @@unique([appid, name])
+}
+
+model DatabasePolicyRule {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  appid          String
+  policyName     String
+  collectionName String
+  value          Json
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  policy DatabasePolicy @relation(fields: [appid, policyName], references: [appid, name])
+
+  @@unique([appid, policyName, collectionName])
+}
+
+// cloud function schemas
+
+enum HttpMethod {
+  GET
+  POST
+  PUT
+  DELETE
+  PATCH
+  HEAD
+}
+
+type CloudFunctionSource {
+  code     String
+  compiled String?
+  uri      String?
+  version  Int     @default(0)
+  hash     String?
+  lang     String?
+}
+
+model CloudFunction {
+  id        String              @id @default(auto()) @map("_id") @db.ObjectId
+  appid     String
+  name      String
+  source    CloudFunctionSource
+  desc      String
+  tags      String[]
+  methods   HttpMethod[]
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  createdBy String              @db.ObjectId
+
+  cronTriggers CronTrigger[]
+
+  @@unique([appid, name])
+}
+
+// diresired state of resource
+enum TriggerState {
+  Active
+  Inactive
+  Deleted
+}
+
+// actual state of resource
+enum TriggerPhase {
+  Creating
+  Created
+  Deleting
+  Deleted
+}
+
+model CronTrigger {
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  appid     String
+  desc      String
+  cron      String
+  target    String
+  state     TriggerState @default(Active)
+  phase     TriggerPhase @default(Creating)
+  lockedAt  DateTime
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  cloudFunction CloudFunction @relation(fields: [appid, target], references: [appid, name])
+}
+
+// gateway schemas
+
+// diresired state of resource
+enum DomainState {
+  Active
+  Inactive
+  Deleted
+}
+
+// actual state of resource
+enum DomainPhase {
+  Creating
+  Created
+  Deleting
+  Deleted
+}
+
+model RuntimeDomain {
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  appid     String      @unique
+  domain    String      @unique
+  state     DomainState @default(Active)
+  phase     DomainPhase @default(Creating)
+  lockedAt  DateTime
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  application Application @relation(fields: [appid], references: [appid])
+}
+
+model BucketDomain {
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  appid      String
+  bucketName String      @unique
+  domain     String      @unique
+  state      DomainState @default(Active)
+  phase      DomainPhase @default(Creating)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  lockedAt   DateTime
+
+  bucket StorageBucket @relation(fields: [bucketName], references: [name])
+}
+
+model WebsiteHosting {
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  appid      String
+  bucketName String      @unique
+  domain     String      @unique // auto-generated domain by default, custom domain if set
+  isCustom   Boolean     @default(false) // if true, domain is custom domain
+  state      DomainState @default(Active)
+  phase      DomainPhase @default(Creating)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  lockedAt   DateTime
+
+  bucket StorageBucket @relation(fields: [bucketName], references: [name])
+}
