@@ -1,6 +1,8 @@
 import { Avatar, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import { VITE_SERVER_BASE_URL } from "@/constants";
+
 import SettingModal from "@/pages/app/setting";
 import PATList from "@/pages/app/setting/PATList";
 import ProfileSetting from "@/pages/app/setting/Profile";
@@ -38,8 +40,7 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
         <MenuItem
           onClick={() => {
             localStorage.clear();
-            (window as any).location.href = (import.meta.env.VITE_SERVER_URL +
-              "/v1/login") as string;
+            (window as any).location.href = (VITE_SERVER_BASE_URL + "/v1/login") as string;
           }}
         >
           {t("Logout")}
