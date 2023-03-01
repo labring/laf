@@ -1,3 +1,4 @@
+import { IRequest } from 'src/utils/interface'
 import { Body, Controller, Logger, Post, Req } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import SmsService from './sms.service'
@@ -13,8 +14,9 @@ export default class SmsModule {
   @ApiResponse({ type: ResponseUtil })
   @ApiOperation({ summary: 'Send sms code for login' })
   @Post('code/login')
-  async getSmsLoginCode(@Req() req, @Body() dto: SmsLoginCodeDto) {
-    const { code, error } = await this.smsService.getSmsLoginCode(dto, req.ip)
+  async getSmsLoginCode(@Req() req: IRequest, @Body() dto: SmsLoginCodeDto) {
+    const ip = req.headers['x-real-ip'] as string
+    const { code, error } = await this.smsService.getSmsLoginCode(dto, ip)
     if (code === 'SUCCESS') {
       return ResponseUtil.ok(code)
     }

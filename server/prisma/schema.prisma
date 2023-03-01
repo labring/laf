@@ -51,7 +51,7 @@ model PersonalAccessToken {
   user User @relation(fields: [uid], references: [id])
 }
 
-// region schemas 
+// region schemas
 
 type RegionClusterConf {
   driver     String // kubernetes
@@ -454,9 +454,9 @@ model WebsiteHosting {
 
 // Settings schemas
 model Settings {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  key       String   @unique
-  value     String
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  key   String @unique
+  value String
 }
 
 enum SmsVerifyCodeType {
@@ -467,12 +467,12 @@ enum SmsVerifyCodeType {
 
 // Sms schemas
 model SmsVerifyCode {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String            @id @default(auto()) @map("_id") @db.ObjectId
   phone     String
   code      String
   ip        String
   type      SmsVerifyCodeType
-  state     Int @default(0) // 0: created, 1: used
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  state     Int               @default(0) // 0: created, 1: used
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
 }

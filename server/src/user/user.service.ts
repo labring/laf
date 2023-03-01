@@ -34,6 +34,14 @@ export class UserService {
     })
   }
 
+  async getByPhone(phone: string): Promise<User> {
+    return await this.prisma.user.findFirst({
+      where: {
+        phone,
+      },
+    })
+  }
+
   async profile(input: Prisma.UserProfileWhereInput, withUser = true) {
     return this.prisma.userProfile.findFirst({
       where: input,

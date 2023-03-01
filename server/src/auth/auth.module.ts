@@ -12,6 +12,7 @@ import { HttpModule } from '@nestjs/axios'
 import { PatService } from 'src/user/pat.service'
 import { PrismaService } from 'src/prisma.service'
 import SMSservice from 'src/sms/sms.service'
+import SettingsService from 'src/settings/settings.service'
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import SMSservice from 'src/sms/sms.service'
     PatService,
     PrismaService,
     SMSservice,
+    SettingsService,
   ],
   exports: [AuthService],
   controllers: [AuthController],

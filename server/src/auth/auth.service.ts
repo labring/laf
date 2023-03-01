@@ -81,7 +81,7 @@ export class AuthService {
     // verify code is not valid
     if (!isValid) return null
     await this.smsService.disableVerifyCode(phone, code)
-    const user = await this.userService.user({ username: phone })
+    const user = await this.userService.getByPhone(phone)
     if (!user) {
       const newUser = await this.userService.create({
         username: phone,

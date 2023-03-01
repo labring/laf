@@ -1,5 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty, IsString, Length, IsOptional } from 'class-validator'
+import {
+  IsNotEmpty,
+  IsString,
+  Length,
+  IsOptional,
+  IsEnum,
+} from 'class-validator'
+
+enum LoginType {
+  verify_code = 'verify_code',
+  password = 'password',
+}
 
 export class LoginDto {
   @ApiProperty({
@@ -15,9 +26,9 @@ export class LoginDto {
     description: 'login type',
     example: 'verify_code | password',
   })
-  @IsString()
   @IsNotEmpty()
-  type: string
+  @IsEnum(LoginType)
+  type: LoginType
 
   @ApiProperty({
     description: 'verify code',
