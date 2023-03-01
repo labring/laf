@@ -9,6 +9,7 @@ on:
       - "server/**"
       - ".github/workflows/dockerize-server.yml"
       - "!**/*.md"
+      - "!server/package-lock.json"
 
 concurrency:
   group: dockerize-server-${{ github.ref }}

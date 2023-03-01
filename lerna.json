@@ -4,7 +4,8 @@
     "./docs",
     "./server",
     "./web",
-    "./runtimes/nodejs"
+    "./runtimes/nodejs",
+    "./cli"
   ],
   "version": "1.0.0-beta.2",
   "command": {

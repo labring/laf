@@ -11,6 +11,7 @@ on:
       - "runtimes/nodejs/**"
       - ".github/workflows/dockerize-runtime-nodejs.yml"
       - "!**/*.md"
+      - "!runtimes/nodejs/package-lock.json"
 
 concurrency:
   group: dockerize-runtime-nodejs-${{ github.ref }}
