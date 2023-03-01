@@ -9,7 +9,7 @@ pnpm run dev
 
 ### 登陆重定向不到本地的问题
 
-d此外，由于 `laf` 的登录认证是接入的 `casdoor`, 登录后的回跳地址是固定的，需要我们手动修改为 `localhost:3001`, 也即我们本地的服务器。修改完后回车，再进行登录即可跳回 `localhost:3001`
+由于 `laf` 的登录认证是接入的 `casdoor`, 登录后的回跳地址是固定的，需要我们手动修改为 `localhost:3001`, 也即我们本地的服务器。修改完后回车，再进行登录即可跳回 `localhost:3001`
 
 ![](./images/change-redirect-uri.png)
 
@@ -25,7 +25,7 @@ d此外，由于 `laf` 的登录认证是接入的 `casdoor`, 登录后的回跳
 
 [Overview | TanStack Query Docs](https://tanstack.com/query/v4/docs/react/overview)
 
-1. 为什么使用react-query?
+1. 为什么使用 react-query?
 
 [refactor: react query best practice  by LeezQ · Pull Request #496 · labring/laf](https://github.com/labring/laf/pull/496#issue-1482332711)
 
@@ -47,7 +47,7 @@ d此外，由于 `laf` 的登录认证是接入的 `casdoor`, 登录后的回跳
     每个页面的状态管理：存放在对应的store.ts中
 
 
-## UI库：chakra
+## UI 库：chakra
 
 1. 链接：
 
@@ -88,7 +88,7 @@ d此外，由于 `laf` 的登录认证是接入的 `casdoor`, 登录后的回跳
 
 [React Icons](https://react-icons.github.io/react-icons/)
 
-1. 自定义ICON使用@chakra-ui/icons
+1. 自定义 ICON 使用 @chakra-ui/icons
 
 # 提PR流程
 
