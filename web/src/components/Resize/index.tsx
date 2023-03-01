@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import clsx from "clsx";
 
 import { page, panel } from "@/pages/customSetting";
@@ -23,30 +23,17 @@ export default function Resize(props: {
     setIsResizing(false);
   }, []);
 
-  const handleResize = useCallback(
-    (e: any) => {
-      if (!isResizing) return;
-      const { clientX, clientY } = client.current;
-      const offset = {
-        x: reverse ? clientX - e.clientX : e.clientX - clientX,
-        y: reverse ? clientY - e.clientY : e.clientY - clientY,
-      };
-      client.current = { clientX: e.clientX, clientY: e.clientY };
-
-      store.setLayoutInfo(pageId, panelId, offset);
-    },
-    [isResizing, reverse, store, pageId, panelId],
-  );
-
-  useEffect(() => {
-    document.addEventListener("mouseup", handleStopResize);
-    document.addEventListener("mousemove", handleResize);
-    return () => {
-      document.removeEventListener("mouseup", handleStopResize);
-      document.removeEventListener("mousemove", handleResize);
+  const handleResize = (e: any) => {
+    if (!isResizing) return;
+    const { clientX, clientY } = client.current;
+    const offset = {
+      x: reverse ? clientX - e.clientX : e.clientX - clientX,
+      y: reverse ? clientY - e.clientY : e.clientY - clientY,
     };
-  }, [handleStopResize, handleResize]);
+    client.current = { clientX: e.clientX, clientY: e.clientY };
 
+    store.setLayoutInfo(pageId, panelId, offset);
+  };
   return (
     <>
       {type === "col" ? (
@@ -56,6 +43,8 @@ export default function Resize(props: {
       )}
       {isResizing && (
         <div
+          onMouseMove={handleResize}
+          onMouseUp={handleStopResize}
           className={clsx(
             "fixed top-0 left-0 right-0 bottom-0 z-50 ",
             type === "col" ? " cursor-col-resize" : " cursor-row-resize",
