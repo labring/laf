@@ -66,7 +66,7 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
             },
           ]}
           configuration={{
-            tableHeight: "200px",
+            tableHeight: "40vh",
             key: "name",
             addButtonText: t("SettingPanel.AddAppEnv").toString(),
           }}
@@ -77,7 +77,7 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
         />
         <ConfirmButton
           onSuccessAction={() => {
-            globalStore.restartCurrentApp();
+            globalStore.updateCurrentApp();
             props.onClose && props.onClose();
           }}
           headerText={String(t("Update"))}

@@ -54,7 +54,7 @@
   "Edit": "Edit ",
   "Generate": "generate",
   "InputTip": "please enter",
-  "IsRequired": "is required",
+  "IsRequired": " is required",
   "LimitSelect": "Please select at least one",
   "Logout": "Logout",
   "Name": "name",
@@ -137,8 +137,32 @@
     "Expire": "Expiration",
     "Setting": "Setting",
     "SystemSetting": "Application Settings",
-    "UserSetting": "User Settings",
-    "UpdateConfirm": "Update env will restart application, are you sure?"
+    "UserSetting": "User Info",
+    "UpdateConfirm": "Update env will restart application, are you sure?",
+    "BaseInfo": "Basic Information",
+    "DB": "Database",
+    "Delete": "Delete",
+    "Detail": "Rules details (experimental version)",
+    "Disk": "Hard Disk",
+    "Memory": "Memory",
+    "Restart": "Restart",
+    "network": "Outgoing capacity",
+    "Close": "Close",
+    "AppInfo": "Application Information",
+    "Auth": "Real-name Authentication",
+    "Code": "Code",
+    "CodeTip": "Please enter a four-digit verification code",
+    "ID": "ID",
+    "IDTip": "Please enter a valid ID number",
+    "Name": "Real name",
+    "Registered": "Registered Time",
+    "SendCode": "Send Code",
+    "Tel": "Mobile number",
+    "TelTip": "Please enter a valid Mobile phone number",
+    "ToAuth": "Authenticate Now",
+    "UserInfo": "User Information",
+    "noAuth": "Not Authenticated",
+    "showAuth": "Go to Auth"
   },
   "StoragePanel": {
     "All": "Total Capacity",
@@ -190,7 +214,8 @@
     "CurrentDomain": "Current domain: ",
     "RemoveHost": "Remove Host",
     "CancelHost": "Cancel Host",
-    "InstantUpload": "Instant Upload"
+    "InstantUpload": "Instant Upload",
+    "parsing": "parsing"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",
@@ -223,7 +248,6 @@
   "EditTip": "modified, unpublished",
   "NoInfo": "No information",
   "RefreshDataSuccess": "data refreshed",
-  "Language": "Language",
   "database example": "database example",
   "update success": "update completed",
   "Take me home": "Take me home",
@@ -231,5 +255,12 @@
   "403Message": "You don't have permission to access this page",
   "Bucket": {
     "StatusTip": "External access needs to set the bucket permission to readonly"
-  }
+  },
+  "Restart": "Restart",
+  "ShutDown": "ShutDown",
+  "Charge": "Charge",
+  "Back": "Return",
+  "Personal Access Token": "Personal Access Token",
+  "SwitchLanguage": "Switch Language",
+  "Storage": "Storage"
 }

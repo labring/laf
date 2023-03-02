@@ -20,7 +20,12 @@ function HomePage() {
       refetchInterval: shouldRefetch ? 1000 : false,
       onSuccess(data) {
         setShouldRefetch(
-          data?.data?.filter((item: any) => item?.phase !== APP_PHASE_STATUS.Started).length > 0,
+          data?.data?.filter(
+            (item: any) =>
+              !(
+                item?.phase === APP_PHASE_STATUS.Started || item?.phase === APP_PHASE_STATUS.Stopped
+              ),
+          ).length > 0,
         );
       },
     },

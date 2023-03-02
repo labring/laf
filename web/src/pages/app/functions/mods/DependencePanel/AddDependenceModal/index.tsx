@@ -66,12 +66,12 @@ const AddDependenceModal = () => {
 
   const addPackageMutation = useAddPackageMutation(() => {
     onClose();
-    globalStore.restartCurrentApp();
+    globalStore.updateCurrentApp();
   });
 
   const editPackageMutation = useEditPackageMutation(() => {
     onClose();
-    globalStore.restartCurrentApp();
+    globalStore.updateCurrentApp();
   });
 
   const packageSearchQuery = usePackageSearchQuery(name, (data) => {

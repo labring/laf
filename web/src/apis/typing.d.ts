@@ -2,32 +2,40 @@ export type TApplication = {
   id: string;
   name: string;
   appid: string;
-  regionName: string;
-  bundleName: string;
-  runtimeName: string;
+  regionId: string;
+  runtimeId: string;
+  tags: any[];
   state: string;
   phase: string;
-  tags: any[];
   createdAt: string;
   updatedAt: string;
+  lockedAt: string;
   createdBy: string;
   bundle: TBundle;
-  runtime: Runtime;
-  configuration: Configuration;
-  domain: Domain;
-  storage: Storage;
-  tls: boolean;
-  develop_token: string;
+  runtime: TRuntime;
+  configuration: TConfiguration;
+  domain: TDomain;
+  storage: TStorage;
   port: number;
+  develop_token: string;
+  tls: boolean;
+  function_debug_token: string;
   host: string;
   origin: string;
 };
 
 export type TBundle = {
   id: string;
+  appid: string;
   name: string;
   displayName: string;
-  regionName: string;
+  resource: TResource;
+  price: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TResource = {
   limitCPU: number;
   limitMemory: number;
   requestCPU: number;
@@ -35,68 +43,96 @@ export type TBundle = {
   databaseCapacity: number;
   storageCapacity: number;
   networkTrafficOutbound: number;
-  priority: number;
-  state: string;
-  price: number;
 };
 
-export type Runtime = {
+export type TRuntime = {
   id: string;
   name: string;
   type: string;
-  image: Image;
+  image: TImage;
+  state: string;
   version: string;
   latest: boolean;
 };
 
-export type Image = {
+export type TImage = {
   main: string;
   init: string;
   sidecar: any;
 };
 
-export type Configuration = {
+export type TConfiguration = {
   id: string;
   appid: string;
-  environments: Environment[];
+  environments: TEnvironment[];
   dependencies: any[];
   createdAt: string;
   updatedAt: string;
 };
 
-export type Environment = {
+export type TEnvironment = {
   name: string;
   value: string;
 };
 
-export type Domain = {
+export type TDomain = {
   id: string;
   appid: string;
-  bucketName: string;
   domain: string;
   state: string;
   phase: string;
+  lockedAt: string;
   createdAt: string;
   updatedAt: string;
-  lockedAt: string;
 };
 
-export type Storage = {
+export type TStorage = {
+  credentials: TCredentials;
   id: string;
   appid: string;
   accessKey: string;
   secretKey: string;
+  state: string;
+  phase: string;
+  lockedAt: string;
   createdAt: string;
   updatedAt: string;
-  credentials: Credentials;
 };
 
-export type Credentials = {
+export type TCredentials = {
   endpoint: string;
   accessKeyId: string;
   secretAccessKey: string;
   sessionToken: string;
   expiration: string;
+};
+
+export type TRegion = {
+  id: string;
+  name: string;
+  displayName: string;
+  state: string;
+  bundles: TBundle[];
+};
+
+export type TBundle = {
+  id: string;
+  name: string;
+  displayName: string;
+  price: number;
+  priority: number;
+  state: string;
+  resource: TResource;
+};
+
+export type TResource = {
+  limitCPU: number;
+  limitMemory: number;
+  requestCPU: number;
+  requestMemory: number;
+  databaseCapacity: number;
+  storageCapacity: number;
+  networkTrafficOutbound: number;
 };
 
 export type TBucket = {
@@ -110,7 +146,7 @@ export type TBucket = {
   lockedAt: string;
   createdAt: string;
   updatedAt: string;
-  domain: Domain;
+  domain: TDomain;
   websiteHosting: TWebsiteHosting;
 };
 
