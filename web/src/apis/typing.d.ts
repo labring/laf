@@ -20,6 +20,7 @@ export type TApplication = {
   develop_token: string;
   port: number;
   host: string;
+  origin: string;
 };
 
 export type TBundle = {

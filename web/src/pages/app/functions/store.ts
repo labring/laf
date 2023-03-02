@@ -32,7 +32,7 @@ const useFunctionStore = create<State>()(
 
         if (!currentFunctionName) return "";
 
-        const protocol = currentApp?.tls ? "https://" : "http://";
+        const protocol = currentApp?.origin;
         const host = currentApp?.host;
 
         return `${protocol}${host}/${currentFunctionName}`;

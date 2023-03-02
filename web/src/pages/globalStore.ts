@@ -101,6 +101,9 @@ const useGlobalStore = create<State>()(
           if (typeof state.currentApp === "object") {
             const domain = state.currentApp?.domain?.domain;
             const port = state.currentApp?.port;
+            const protocol = state.currentApp?.tls ? "https://" : "http://";
+
+            state.currentApp.origin = protocol;
 
             if (port === 80 || port === 443) {
               state.currentApp.host = domain;
