@@ -34,13 +34,15 @@ import {
   useWebSiteUpdateMutation,
 } from "../../service";
 import useStorageStore from "../../store";
-
+import { formatDomain } from "@/utils/format";
+import useGlobalStore from "@/pages/globalStore";
 import SiteStatus from "./SiteStatus";
 
 function CreateWebsiteModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { currentStorage, getCurrentBucketDomain } = useStorageStore();
   const { register, setFocus, handleSubmit, reset } = useForm<{ domain: string }>();
+  const port = useGlobalStore.getState().currentApp?.port;
   const { t } = useTranslation();
   const createWebsiteMutation = useWebsiteCreateMutation();
   const deleteWebsiteMutation = useWebsiteDeleteMutation();
@@ -55,7 +57,9 @@ function CreateWebsiteModal() {
           <span className="font-semibold mr-2">{t("StoragePanel.CurrentDomain")}</span>
           <Link
             className="cursor-pointer mr-2"
-            href={`//${currentStorage?.websiteHosting?.domain}`}
+            href={`//${
+              formatDomain(currentStorage?.websiteHosting?.domain, port)
+            }`}
             isExternal
           >
             {currentStorage?.websiteHosting?.domain}
