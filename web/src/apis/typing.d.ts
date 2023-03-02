@@ -19,6 +19,8 @@ export type TApplication = {
   tls: boolean;
   develop_token: string;
   port: number;
+  host: string;
+  origin: string;
 };
 
 export type TBundle = {
