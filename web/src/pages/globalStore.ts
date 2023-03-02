@@ -97,6 +97,20 @@ const useGlobalStore = create<State>()(
         localStorage.setItem("app", app.appid);
         set((state) => {
           state.currentApp = app;
+
+          if (typeof state.currentApp === "object") {
+            const protocol = state.currentApp?.tls ? "https://" : "http://";
+            const domain = state.currentApp?.domain?.domain;
+            const port = state.currentApp?.port;
+
+            if (port === 80 || port === 443) {
+              state.currentApp.host = domain;
+            } else {
+              state.currentApp.host = `${domain}:${port}`;
+            }
+
+            state.currentApp.origin = protocol + state.currentApp.host;
+          }
         });
       },
 
