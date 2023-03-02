@@ -2,6 +2,8 @@ import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
+import { formatDomain } from "@/utils/format";
+
 import { TBucket } from "@/apis/typing";
 import useGlobalStore from "@/pages/globalStore";
 
@@ -53,7 +55,13 @@ const useStorageStore = create<State>()(
       getCurrentBucketDomain: (withProtocol: boolean = true) => {
         const { currentStorage } = get();
         const currentApp = useGlobalStore.getState().currentApp;
-        return (currentApp?.tls ? "https://" : "http://") + currentStorage?.domain?.domain;
+        if(withProtocol){
+          const port = currentApp?.port;
+          const protocol = currentApp?.tls ? "https" : "http";
+          const currentBucketDomain = formatDomain(currentStorage?.domain?.domain, port) || "";
+          return `${protocol}://${currentBucketDomain}`;
+        }
+        return currentStorage?.domain?.domain || "";
       },
     })),
   ),

@@ -20,6 +20,8 @@ export type TApplication = {
   develop_token: string;
   tls: boolean;
   function_debug_token: string;
+  host: string;
+  origin: string;
 };
 
 export type TBundle = {

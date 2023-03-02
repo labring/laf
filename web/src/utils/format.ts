@@ -59,3 +59,11 @@ export function isExitInList(targetKey: string, targetValue: any, list: any[] | 
   });
   return indexList;
 }
+
+
+export function formatDomain(domain: string | undefined, port: number | undefined) {
+  if (port === 80 || port === 443) {
+    return domain;
+  }
+  return `${domain}:${port}`;
+}
