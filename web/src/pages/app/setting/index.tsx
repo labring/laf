@@ -20,16 +20,25 @@ export type TTabItem = {
   name: string;
   component: React.ReactElement;
 };
+
+export const TabKeys = {
+  UserInfo: "user-info",
+  PAT: "pat",
+};
+
 const SettingModal = (props: {
   headerTitle: string;
   children: React.ReactElement;
-  tabMatch: TTabItem[];
   setApp?: TApplication;
+  tabMatch?: TTabItem[];
+  currentTab: string;
 }) => {
-  const { headerTitle, tabMatch, children, setApp } = props;
+  const { headerTitle, children, setApp, tabMatch = [] } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [item, setItem] = useState<TTabItem>();
+  const currentIndex = tabMatch.findIndex((tab) => tab.key === props.currentTab);
+  const [item, setItem] = useState<TTabItem>(tabMatch[currentIndex]);
   const { setCurrentApp } = useGlobalStore((state) => state);
+
   return (
     <>
       {React.cloneElement(children, {
@@ -37,7 +46,6 @@ const SettingModal = (props: {
           if (setApp) {
             setCurrentApp(setApp);
           }
-          setItem(tabMatch[0]);
           onOpen();
         },
       })}

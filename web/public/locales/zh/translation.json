@@ -248,7 +248,6 @@
   "EditTip": "已修改,未发布",
   "NoInfo": "暂无信息",
   "RefreshDataSuccess": "数据刷新成功",
-  "Language": "语言",
   "database example": "database 示例",
   "update success": "更新成功",
   "Take me home": "返回首页",
@@ -260,5 +259,7 @@
   "Restart": "重启应用",
   "ShutDown": "关闭应用",
   "Charge": "余额充值",
-  "Back": "返回"
+  "Back": "返回",
+  "Personal Access Token": "访问凭证 (PAT)",
+  "SwitchLanguage": "切换语言"
 }

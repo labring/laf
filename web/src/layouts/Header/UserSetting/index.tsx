@@ -1,13 +1,14 @@
+import { useTranslation } from "react-i18next";
 import { Avatar, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
-import { t } from "i18next";
 
 import { VITE_SERVER_BASE_URL } from "@/constants";
+import i18n from "@/utils/i18n";
 
-import SettingModal from "@/pages/app/setting";
+import SettingModal, { TabKeys } from "@/pages/app/setting";
 import PATList from "@/pages/app/setting/PATList";
-import ProfileSetting from "@/pages/app/setting/Profile";
 import UserInfo from "@/pages/app/setting/UserInfo";
 export default function UserSetting(props: { name: string; avatar?: string; width: string }) {
+  const { t } = useTranslation();
   return (
     <Menu>
       <MenuButton>
@@ -22,27 +23,33 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
       </MenuButton>
       <MenuList minW={"150px"}>
         <SettingModal
-          headerTitle={t("SettingPanel.UserSetting")}
           tabMatch={[
             {
-              key: "user-profile",
-              name: "Profile",
-              component: <ProfileSetting />,
-            },
-            {
               key: "user-info",
-              name: t("SettingPanel.UserInfo"),
+              name: String(t("SettingPanel.UserInfo")),
               component: <UserInfo />,
             },
             {
               key: "pat",
-              name: "Personal Access Token",
+              name: t("Personal Access Token"),
               component: <PATList />,
             },
           ]}
+          headerTitle={t("SettingPanel.UserSetting")}
+          currentTab={TabKeys.UserInfo}
         >
-          <MenuItem>{t("SettingPanel.UserSetting")}</MenuItem>
+          <MenuItem minH="40px">{t("SettingPanel.UserSetting")}</MenuItem>
         </SettingModal>
+
+        <MenuItem
+          minH="40px"
+          onClick={() => {
+            i18n.changeLanguage(i18n.language === "en" ? "zh" : "en");
+          }}
+        >
+          {t("SwitchLanguage")}
+        </MenuItem>
+
         <MenuItem
           onClick={() => {
             localStorage.clear();

@@ -11,6 +11,7 @@ export default function SysSetting(props: { children: React.ReactElement; setApp
     <SettingModal
       setApp={props.setApp}
       headerTitle={t("SettingPanel.SystemSetting")}
+      currentTab="info"
       tabMatch={[
         {
           key: "info",

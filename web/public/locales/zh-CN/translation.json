@@ -125,7 +125,7 @@
     "AppEnv": "环境变量",
     "AddAppEnv": "新增环境变量",
     "Expire": "过期时间",
-    "UserSetting": "用户设置",
+    "UserSetting": "用户信息",
     "UpdateConfirm": "更新环境变量将重新启动应用，是否继续？",
     "AppInfo": "应用信息",
     "Restart": "重启应用",
@@ -248,7 +248,6 @@
   "RefreshData": "刷新数据",
   "NoInfo": "暂无信息",
   "RefreshDataSuccess": "数据刷新成功",
-  "Language": "语言",
   "database example": "database 示例",
   "update success": "更新成功",
   "Take me home": "返回首页",
@@ -260,5 +259,7 @@
   "Restart": "重启应用",
   "ShutDown": "关闭应用",
   "Charge": "余额充值",
-  "Back": "返回"
+  "Back": "返回",
+  "Personal Access Token": "访问凭证 (PAT)",
+  "SwitchLanguage": "切换语言"
 }

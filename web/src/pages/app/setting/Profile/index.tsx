@@ -6,7 +6,7 @@ export default function ProfileSetting() {
 
   return (
     <div className="flex items-center">
-      <span className="w-[80px] text-lg font-bold ">{t("Language")}</span>
+      <span className="w-[80px] text-lg font-bold ">{t("SwitchLanguage")}</span>
       <Box w="250px">
         <Select
           defaultValue={i18n.language}
