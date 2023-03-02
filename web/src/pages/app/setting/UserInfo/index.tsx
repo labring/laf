@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { HiOutlineDeviceMobile } from "react-icons/hi";
-import { TbCalendarTime } from "react-icons/tb";
 import { Avatar, Box, HStack } from "@chakra-ui/react";
 import { t } from "i18next";
 
@@ -35,7 +33,7 @@ export default function UserInfo() {
             <p className="text-center text-3xl font-medium text-grayModern-900 mb-2">
               {userInfo?.username}
             </p>
-            <span className="inline-block px-2 h-[24px]  rounded-full border border-grayModern-400 text-grayModern-400 pt-[1px]">
+            {/* <span className="inline-block px-2 h-[24px]  rounded-full border border-grayModern-400 text-grayModern-400 pt-[1px]">
               {t("SettingPanel.noAuth")}
             </span>
             <span
@@ -45,21 +43,15 @@ export default function UserInfo() {
               }}
             >
               {t("SettingPanel.showAuth")}
-            </span>
+            </span> */}
           </Box>
           <Box className="text-lg mt-8 mb-20">
             <HStack spacing={8}>
-              <span className="text-grayModern-500">
-                <HiOutlineDeviceMobile className="inline-block" />
-                {t("SettingPanel.Tel")}:
-              </span>
+              <span className="text-grayModern-500 w-[80px]">{t("SettingPanel.Tel")}:</span>
               <span>{userInfo?.phone ? userInfo.phone : t("NoInfo")}</span>
             </HStack>
             <HStack spacing={8} className="mt-2">
-              <span className="text-grayModern-500">
-                <TbCalendarTime className="inline-block mr-[2px]" />
-                {t("SettingPanel.Registered")}:
-              </span>
+              <span className="text-grayModern-500 w-[80px]">{t("SettingPanel.Registered")}:</span>
               <span>{formatDate(userInfo?.createdAt)}</span>
             </HStack>
           </Box>

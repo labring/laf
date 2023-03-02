@@ -13,11 +13,19 @@ import useGlobalStore from "@/pages/globalStore";
 import StatusBadge from "@/pages/home/mods/StatusBadge";
 const AppEnvList = () => {
   const navigate = useNavigate();
-  const { currentApp, updateCurrentApp, deleteCurrentApp } = useGlobalStore((state) => state);
+  const {
+    currentApp,
+    updateCurrentApp,
+    deleteCurrentApp,
+    regions = [],
+  } = useGlobalStore((state) => state);
   if (currentApp?.state === APP_PHASE_STATUS.Deleted) {
     navigate("/");
     return <></>;
   }
+
+  const currentRegion = regions.find((item) => item.id === currentApp?.regionId);
+
   return (
     <>
       <div className="h-full flex flex-col">
@@ -87,25 +95,36 @@ const AppEnvList = () => {
             title={t("SettingPanel.BaseInfo")}
             leftData={[
               { key: "APPID", value: currentApp?.appid },
-              { key: t("HomePanel.Region"), value: currentApp?.regionName },
+              { key: t("HomePanel.Region"), value: currentRegion?.displayName },
             ]}
             rightData={[
-              { key: t("HomePanel.BundleName"), value: currentApp?.bundleName },
-              { key: t("HomePanel.RuntimeName"), value: currentApp?.runtimeName },
+              { key: t("HomePanel.BundleName"), value: currentApp?.bundle.name },
+              { key: t("HomePanel.RuntimeName"), value: currentApp?.runtime.name },
             ]}
           />
           <InfoDetail
             className="mt-6"
             title={t("SettingPanel.Detail")}
             leftData={[
-              { key: "CPU", value: currentApp?.bundle?.limitCPU },
-              { key: t("SettingPanel.Memory"), value: currentApp?.bundle?.limitMemory },
-              { key: t("SettingPanel.Disk"), value: "5 G" },
+              { key: "CPU", value: currentApp?.bundle?.resource?.limitCPU! / 1000 + " 核" },
+              {
+                key: t("SettingPanel.Memory"),
+                value: currentApp?.bundle?.resource.limitMemory + " MB",
+              },
+              {
+                key: t("SettingPanel.DB"),
+                value: currentApp?.bundle?.resource.databaseCapacity! / 1024 + " GB",
+              },
             ]}
             rightData={[
-              { key: t("SettingPanel.DB"), value: currentApp?.bundle?.databaseCapacity },
-              { key: "OSS", value: currentApp?.bundle?.storageCapacity },
-              { key: t("SettingPanel.network"), value: currentApp?.bundle?.networkTrafficOutbound },
+              {
+                key: t("Storage"),
+                value: currentApp?.bundle?.resource.storageCapacity! / 1024 + " GB",
+              },
+              {
+                key: t("SettingPanel.network"),
+                value: currentApp?.bundle?.resource.networkTrafficOutbound! / 1024 + " GB",
+              },
             ]}
           />
         </div>

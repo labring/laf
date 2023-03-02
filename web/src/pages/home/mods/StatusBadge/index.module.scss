@@ -1,17 +1,17 @@
 .badgeStyle {
   padding: 4px 8px;
-  width: 6rem;
+  min-width: 100px;
   text-align: center;
   margin-right: 2px;
   border-radius: 50px;
 
   span::before {
-    content: '';
+    content: "";
     display: inline-block;
     margin-bottom: 1px;
     width: 6px;
     height: 6px;
-    margin-right: 1rem;
+    margin-right: 4px;
     border-radius: 50%;
   }
 

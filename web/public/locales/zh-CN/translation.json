@@ -132,7 +132,7 @@
     "Delete": "删除应用",
     "Close": "关闭应用",
     "BaseInfo": "基础信息",
-    "Detail": "规则详情(体验版)",
+    "Detail": "规则详情",
     "Memory": "内存",
     "Disk": "硬盘",
     "DB": "数据库",
@@ -150,7 +150,7 @@
     "IDTip": "请输入有效的身份证号码",
     "CodeTip": "请输入四位数字验证码",
     "TelTip": "请输入有效的手机号码",
-    "Registered": "注册于"
+    "Registered": "注册时间"
   },
   "StoragePanel": {
     "CreateBucket": "创建 Bucket",
@@ -261,5 +261,6 @@
   "Charge": "余额充值",
   "Back": "返回",
   "Personal Access Token": "访问凭证 (PAT)",
-  "SwitchLanguage": "切换语言"
+  "SwitchLanguage": "切换语言",
+  "Storage": "云存储"
 }

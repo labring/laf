@@ -5,7 +5,7 @@ import { immer } from "zustand/middleware/immer";
 
 import { APP_PHASE_STATUS } from "@/constants";
 
-import { TApplication, TUserInfo } from "@/apis/typing";
+import { TApplication, TRegion, TRuntime, TUserInfo } from "@/apis/typing";
 import { ApplicationControllerRemove, ApplicationControllerUpdate } from "@/apis/v1/applications";
 import { AuthControllerGetSigninUrl } from "@/apis/v1/login";
 import { AuthControllerGetProfile } from "@/apis/v1/profile";
@@ -17,8 +17,8 @@ const { toast } = createStandaloneToast();
 type State = {
   userInfo: TUserInfo | undefined;
   loading: boolean;
-  runtimes?: any[];
-  regions?: any[];
+  runtimes?: TRuntime[];
+  regions?: TRegion[];
   currentApp: TApplication | undefined;
   setCurrentApp(app: TApplication | undefined): void;
   init(appid?: string): void;
