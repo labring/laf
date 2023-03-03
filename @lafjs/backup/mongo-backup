@@ -27,7 +27,7 @@ case $SUBCMD in
 		BACKUP_S3_BUCKET=$2
 		BACKUP_S3_OBJECT=$3
 		BACKUP_MONGO_DB=$4
-		mc cat "$BACKUP_S3_HOST_ALIAS/$BACKUP_S3_BUCKET/$BACKUP_S3_OBJECT" | mongorestore --archive --gzip --uri=$BACKUP_MONGO_HOST_URI --db=$BACKUP_MONGO_DB
+		mc cat "$BACKUP_S3_HOST_ALIAS/$BACKUP_S3_BUCKET/$BACKUP_S3_OBJECT" | mongorestore --drop --archive --gzip --uri=$BACKUP_MONGO_HOST_URI --db=$BACKUP_MONGO_DB
     ;;
 	--version)
 		echo "$APPNAME $VERSION"
