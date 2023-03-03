@@ -1,6 +1,6 @@
 import assert = require("assert");
 import { ChangeStream, Collection, Db, MongoClient } from "mongodb";
-import { Document, Worker } from "mongo-async-rpc";
+import { Document, Worker } from "@lafjs/mongo-async-rpc";
 import * as Capture from "./tasks/capture";
 import * as Restore from './tasks/restore';
 // import { adapt } from "startable-adaptor";
