@@ -1,4 +1,30 @@
-# [](https://github.com/labring/laf/compare/v1.0.0-beta.2...v) (2023-02-24)
+# [](https://github.com/labring/laf/compare/v1.0.0-beta.3...v) (2023-03-03)
+
+
+### Features
+
+* **server:** support runtime pod affinity, add task switcher env ([#846](https://github.com/labring/laf/issues/846)) ([f0c5d18](https://github.com/labring/laf/commit/f0c5d18c3f36c059c234e27f5d2de80beb4f3073))
+* **web:** add app detail info dialog ([#843](https://github.com/labring/laf/issues/843)) ([378936b](https://github.com/labring/laf/commit/378936b7f4306f2047f0bb66f4937ebb017769c3))
+
+
+
+# [1.0.0-beta.3](https://github.com/labring/laf/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2023-03-01)
+
+
+### Bug Fixes
+
+* fix [#824](https://github.com/labring/laf/issues/824) win not cannot upload files normally ([#831](https://github.com/labring/laf/issues/831)) ([bb90765](https://github.com/labring/laf/commit/bb9076538743537ac3793e56639934c84a8925b3))
+* multi-level path and s3 upgrade warn ([#834](https://github.com/labring/laf/issues/834)) ([dd0b4e4](https://github.com/labring/laf/commit/dd0b4e48d39c9cfd8b14d6d710e27ac2d6ab9c12))
+* **server:** make prisma as global module ([#825](https://github.com/labring/laf/issues/825)) ([06adbd0](https://github.com/labring/laf/commit/06adbd0b01816cc51bcd128010e8dbf8212900c2))
+* **server:** too many connections on mongo connection pool ([#827](https://github.com/labring/laf/issues/827)) ([07486b3](https://github.com/labring/laf/commit/07486b3c2401807b2e6dc098329dbefeabaa2494))
+* **web:** enable allowSyntheticDefaultImports for web ide ([#826](https://github.com/labring/laf/issues/826)) ([c13ee1b](https://github.com/labring/laf/commit/c13ee1b0422150285c084cf50ea6bedf165c13d1))
+* **web:** opt web contrib doc, opt local dev flow ([#837](https://github.com/labring/laf/issues/837)) ([65d0615](https://github.com/labring/laf/commit/65d0615f971b58e1aa6752514d4c1baec55aaeb9))
+* **web:** unable to redirect to login page ([#821](https://github.com/labring/laf/issues/821)) ([33f7cb1](https://github.com/labring/laf/commit/33f7cb1f47fd4851283960e833aa747b9d94a5db))
+
+
+### Features
+
+* **runtime:** support __websocket__ builtin function ([#832](https://github.com/labring/laf/issues/832)) ([24d8731](https://github.com/labring/laf/commit/24d8731b223d78eeea7c4f0f7515f3613f053c96))
 
 
 

@@ -57,7 +57,7 @@ kubectl taint node $NODENAME node-role.kubernetes.io/master-
 kubectl taint node $NODENAME node-role.kubernetes.io/control-plane-
 
 # label master node as a app node
-kubectl label node $NODENAME laf.dev/node.type=app
+kubectl label node $NODENAME laf.dev/node.type=runtime
 
 # install required components
 sealos run labring/openebs:v1.9.0
