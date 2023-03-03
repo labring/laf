@@ -1,6 +1,6 @@
 {
   "name": "@laf/backup",
-  "version": "0.0.1",
+  "version": "1.0.0-beta.4",
   "scripts": {
     "build": "tsc -b ./src/tsconfig.json",
     "clean": "rm -rf ./build",

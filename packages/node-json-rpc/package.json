@@ -1,6 +1,6 @@
 {
   "name": "@laf/node-json-rpc",
-  "version": "0.0.1",
+  "version": "1.0.0-beta.4",
   "main": "./build/node-json-rpc.js",
   "types": "./build/node-json-rpc.d.ts",
   "scripts": {
@@ -11,6 +11,5 @@
   },
   "author": "Zim",
   "license": "Unlicense",
-  "devDependencies": {},
   "description": ""
 }
