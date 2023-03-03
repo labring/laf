@@ -8,7 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -b ./src/tsconfig.json",
     "clean": "rm -rf ./build",
-    "rebuild": "npm run clean && npm run build"
+    "rebuild": "npm run clean && npm run build",
+    "prepublishOnly": "npm run rebuild"
   },
   "author": "Zim",
   "license": "LGPL-3.0",

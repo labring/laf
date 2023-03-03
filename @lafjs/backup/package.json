@@ -8,7 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "set -a; . ./env.sh && node --enable-source-maps ./build/gateway",
     "capture": "node ./build/tasks/capture/script",
-    "restore": "node ./build/tasks/restore/script"
+    "restore": "node ./build/tasks/restore/script",
+    "prepublishOnly": "npm run rebuild"
   },
   "engines": {
     "node": ">=16"
@@ -28,6 +29,5 @@
     "ws": "^8.12.0"
   },
   "main": "index.js",
-  "license": "LGPL-3.0",
-  "peerDependencies": {}
+  "license": "LGPL-3.0"
 }
