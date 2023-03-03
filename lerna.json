@@ -1,11 +1,13 @@
 {
   "packages": [
     "./packages/*",
+    "./packages/@lafjs/node-json-rpc",
+    "./packages/@lafjs/mongo-async-rpc",
     "./docs",
     "./server",
     "./web",
     "./runtimes/nodejs",
-    "./backup",
+    "./@lafjs/backup",
     "./cli"
   ],
   "version": "1.0.0-beta.4",
