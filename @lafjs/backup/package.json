@@ -16,6 +16,7 @@
   "author": "Zim",
   "dependencies": {
     "@koa/router": "^12.0.0",
+    "@lafjs/mongo-async-rpc": "^1.0.0-beta.4",
     "@types/koa": "^2.13.5",
     "@types/koa__router": "^12.0.0",
     "@types/node": "^16.18.12",
@@ -24,8 +25,7 @@
     "@zimtsui/startable": "^0.0.4",
     "koa": "^2.14.1",
     "mongodb": "^5.0.1",
-    "ws": "^8.12.0",
-    "@lafjs/mongo-async-rpc": "*"
+    "ws": "^8.12.0"
   },
   "main": "index.js",
   "license": "LGPL-3.0"
