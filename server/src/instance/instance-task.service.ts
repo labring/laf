@@ -4,7 +4,7 @@ import { Application, ApplicationPhase, ApplicationState } from '@prisma/client'
 import { isConditionTrue } from '../utils/getter'
 import { InstanceService } from './instance.service'
 import { times } from 'lodash'
-import { TASK_LOCK_INIT_TIME } from 'src/constants'
+import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/database/system-database'
 import { ClusterService } from 'src/region/cluster/cluster.service'
 
@@ -21,6 +21,10 @@ export class InstanceTaskService {
 
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
+    if (ServerConfig.DISABLED_INSTANCE_TASK) {
+      return
+    }
+
     // Phase `Created` | `Stopped` ->  `Starting`
     times(this.concurrency, () => this.handleRunningState())
 
