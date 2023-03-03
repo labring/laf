@@ -1,5 +1,5 @@
 {
-  "name": "@laf/mongo-async-rpc",
+  "name": "@lafjs/mongo-async-rpc",
   "version": "0.0.1",
   "description": "",
   "main": "./build/index.js",
@@ -13,13 +13,14 @@
   "author": "Zim",
   "license": "LGPL-3.0",
   "dependencies": {
+    "@lafjs/node-json-rpc": "^0.0.1",
     "@types/node": "^14.18.36",
     "@zimtsui/delta-stream": "^0.0.2",
     "@zimtsui/node-time-engine": "^0.0.3",
-    "@zimtsui/pollerloop": "^0.0.5",
-    "mongodb": "^5.1.0"
+    "@zimtsui/pollerloop": "^0.0.5"
   },
   "peerDependencies": {
-    "@zimtsui/startable": "^0.0.4"
+    "@zimtsui/startable": "^0.0.4",
+    "mongodb": "^5.1.0"
   }
 }

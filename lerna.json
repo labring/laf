@@ -5,8 +5,9 @@
     "./server",
     "./web",
     "./runtimes/nodejs",
-    "./backup",
-    "./cli"
+    "./cli",
+    "./packages/@lafjs/*",
+    "./@lafjs/*"
   ],
   "version": "1.0.0-beta.3",
   "command": {
