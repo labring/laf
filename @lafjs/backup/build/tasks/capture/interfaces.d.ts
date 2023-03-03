@@ -1,12 +1,12 @@
-import * as MongoAsyncRpc from "mongo-async-rpc";
-export declare type Method = 'capture';
-export declare type Params = [Params.Db, Params.Bucket, Params.Object];
+import * as MongoAsyncRpc from "@lafjs/mongo-async-rpc";
+export type Method = 'capture';
+export type Params = [Params.Db, Params.Bucket, Params.Object];
 export declare namespace Params {
     type Db = string;
     type Bucket = string;
     type Object = string;
 }
-export declare type Result = null;
+export type Result = null;
 export declare namespace Document {
     type Orphan = MongoAsyncRpc.Document.Orphan<Method, Params>;
     type Adopted = MongoAsyncRpc.Document.Adopted<Method, Params>;
@@ -14,4 +14,4 @@ export declare namespace Document {
     type Succeeded = MongoAsyncRpc.Document.Succeeded<Method, Params, Result>;
     type Failed = MongoAsyncRpc.Document.Failed<Method, Params>;
 }
-export declare type Document = MongoAsyncRpc.Document<Method, Params, Result>;
+export type Document = MongoAsyncRpc.Document<Method, Params, Result>;

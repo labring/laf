@@ -8,12 +8,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
 const mongodb_1 = require("mongodb");
-const mongo_async_rpc_1 = require("mongo-async-rpc");
+const mongo_async_rpc_1 = require("@lafjs/mongo-async-rpc");
 const Capture = require("./tasks/capture");
 const Restore = require("./tasks/restore");
 // import { adapt } from "startable-adaptor";
 const startable_1 = require("@zimtsui/startable");
-const worker_1 = require("mongo-async-rpc/build/worker");
 assert(process.env.TASKLIST_HOST_URI);
 assert(process.env.TASKLIST_DB);
 assert(process.env.TASKLIST_COLL);
@@ -28,8 +27,8 @@ class WorkerNode {
         this.adoption = new mongo_async_rpc_1.Worker.Adoption(this.host, this.db, this.coll);
         this.success = new mongo_async_rpc_1.Worker.Success(this.host, this.db, this.coll);
         this.failure = new mongo_async_rpc_1.Worker.Failure(this.host, this.db, this.coll);
-        this.captureWorker = new worker_1.RpWorker(this.coll, this.stream, this.adoption, this.success, this.failure, 'capture', (db, bucket, object) => (0, startable_1.$)(new Capture.Rp(db, bucket, object)));
-        this.restoreWorker = new worker_1.RpWorker(this.coll, this.stream, this.adoption, this.success, this.failure, 'restore', (bucket, object, db) => (0, startable_1.$)(new Restore.Rp(bucket, object, db)));
+        this.captureWorker = new mongo_async_rpc_1.Worker.RpWorker(this.coll, this.stream, this.adoption, this.success, this.failure, 'capture', (db, bucket, object) => (0, startable_1.$)(new Capture.Rp(db, bucket, object)));
+        this.restoreWorker = new mongo_async_rpc_1.Worker.RpWorker(this.coll, this.stream, this.adoption, this.success, this.failure, 'restore', (bucket, object, db) => (0, startable_1.$)(new Restore.Rp(bucket, object, db)));
         await (0, startable_1.$)(this.captureWorker).start((0, startable_1.$)(this).stop);
         await (0, startable_1.$)(this.restoreWorker).start((0, startable_1.$)(this).stop);
     }

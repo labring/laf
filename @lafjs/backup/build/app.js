@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Koa = require("koa");
 const Router = require("@koa/router");
 const mongodb_1 = require("mongodb");
-const mongo_async_rpc_1 = require("mongo-async-rpc");
+const mongo_async_rpc_1 = require("@lafjs/mongo-async-rpc");
 const assert = require("assert");
 const koa_ws_filter_1 = require("@zimtsui/koa-ws-filter");
 const events_1 = require("events");

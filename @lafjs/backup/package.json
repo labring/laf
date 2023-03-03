@@ -24,12 +24,10 @@
     "@zimtsui/koa-ws-filter": "^0.0.5",
     "@zimtsui/startable": "^0.0.4",
     "koa": "^2.14.1",
-    "mongodb": "^5.0.1",
+    "mongodb": "^5.1.0",
     "ws": "^8.12.0"
   },
   "main": "index.js",
   "license": "LGPL-3.0",
-  "peerDependencies": {
-    "mongodb": "^5.1.0"
-  }
+  "peerDependencies": {}
 }

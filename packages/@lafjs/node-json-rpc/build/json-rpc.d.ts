@@ -6,7 +6,7 @@ export interface Req<id extends string | number, method extends string, params e
     readonly method: method;
     readonly params: params;
 }
-export declare type Res<id extends string | number, result, errorData> = Res.Succ<id, result> | Res.Fail<id, errorData>;
+export type Res<id extends string | number, result, errorData> = Res.Succ<id, result> | Res.Fail<id, errorData>;
 export declare namespace Res {
     interface Succ<id extends string | number, result> extends Obj {
         readonly id: id;

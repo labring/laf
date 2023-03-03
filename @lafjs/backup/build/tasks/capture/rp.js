@@ -11,7 +11,7 @@ const child_process_1 = require("child_process");
 const path_1 = require("path");
 const assert = require("assert");
 const startable_1 = require("@zimtsui/startable");
-const mongo_async_rpc_1 = require("mongo-async-rpc");
+const mongo_async_rpc_1 = require("@lafjs/mongo-async-rpc");
 assert(process.env.BACKUP_MONGO_HOST_URI);
 assert(process.env.BACKUP_S3_HOST_ALIAS);
 class Rp {

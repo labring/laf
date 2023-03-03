@@ -1,4 +1,4 @@
-import * as MongoAsyncRpc from "@laf/mongo-async-rpc";
+import * as MongoAsyncRpc from "@lafjs/mongo-async-rpc";
 
 export type Method = 'capture';
 
