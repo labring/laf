@@ -1,5 +1,5 @@
 {
-  "name": "mongo-async-rpc",
+  "name": "@laf/mongo-async-rpc",
   "version": "0.0.1",
   "description": "",
   "main": "./build/index.js",
