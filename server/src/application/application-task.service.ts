@@ -14,7 +14,7 @@ import { DatabaseService } from '../database/database.service'
 import { ClusterService } from 'src/region/cluster/cluster.service'
 import { RegionService } from 'src/region/region.service'
 import { RuntimeDomainService } from 'src/gateway/runtime-domain.service'
-import { TASK_LOCK_INIT_TIME } from 'src/constants'
+import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/database/system-database'
 
 @Injectable()
@@ -32,6 +32,10 @@ export class ApplicationTaskService {
 
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
+    if (ServerConfig.DISABLED_APPLICATION_TASK) {
+      return
+    }
+
     // Phase `Creating` -> `Created`
     this.handleCreatingPhase()
 

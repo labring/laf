@@ -1,7 +1,13 @@
 import { V1Deployment } from '@kubernetes/client-node'
 import { Injectable, Logger } from '@nestjs/common'
 import { GetApplicationNamespaceByAppId } from '../utils/getter'
-import { MB, ResourceLabelKey } from '../constants'
+import {
+  LABEL_KEY_APP_ID,
+  LABEL_KEY_BUNDLE,
+  LABEL_KEY_NODE_TYPE,
+  MB,
+  NodeType,
+} from '../constants'
 import { PrismaService } from '../prisma/prisma.service'
 import { StorageService } from '../storage/storage.service'
 import { DatabaseService } from 'src/database/database.service'
@@ -24,7 +30,7 @@ export class InstanceService {
 
   async create(app: Application) {
     const appid = app.appid
-    const labels = { [ResourceLabelKey.APP_ID]: appid }
+    const labels = { [LABEL_KEY_APP_ID]: appid }
     const region = await this.regionService.findByAppId(appid)
     const appWithRegion = { ...app, region } as ApplicationWithRegion
 
@@ -51,7 +57,7 @@ export class InstanceService {
     })
 
     // add bundle label
-    labels[ResourceLabelKey.BUNDLE] = app.bundle.name
+    labels[LABEL_KEY_BUNDLE] = app.bundle.name
 
     // prepare params
     const limitMemory = app.bundle.resource.limitMemory
@@ -184,8 +190,41 @@ export class InstanceService {
               emptyDir: {},
             },
           ],
-        },
-      },
+          affinity: {
+            nodeAffinity: {
+              // required to schedule on runtime node
+              requiredDuringSchedulingIgnoredDuringExecution: {
+                nodeSelectorTerms: [
+                  {
+                    matchExpressions: [
+                      {
+                        key: LABEL_KEY_NODE_TYPE,
+                        operator: 'In',
+                        values: [NodeType.Runtime],
+                      },
+                    ],
+                  },
+                ],
+              },
+              // preferred to schedule on bundle matched node
+              preferredDuringSchedulingIgnoredDuringExecution: [
+                {
+                  weight: 10,
+                  preference: {
+                    matchExpressions: [
+                      {
+                        key: LABEL_KEY_BUNDLE,
+                        operator: 'In',
+                        values: [app.bundle.name],
+                      },
+                    ],
+                  },
+                },
+              ],
+            }, // end of nodeAffinity {}
+          }, // end of affinity {}
+        }, // end of spec {}
+      }, // end of template {}
     }
 
     const appsV1Api = this.clusterService.makeAppsV1Api(app.region)
