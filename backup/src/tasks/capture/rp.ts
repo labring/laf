@@ -3,7 +3,7 @@ import { resolve } from "path";
 import { Params, Result } from "./interfaces";
 import assert = require("assert");
 import { $, AsRawStart, AsRawStop } from "@zimtsui/startable";
-import { Worker } from 'mongo-async-rpc';
+import { Worker } from '@lafjs/mongo-async-rpc';
 
 
 assert(process.env.BACKUP_MONGO_HOST_URI);

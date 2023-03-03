@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import * as JsonRpc from 'node-json-rpc';
+import * as JsonRpc from '@lafjs/node-json-rpc';
 
 
 

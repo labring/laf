@@ -1,5 +1,5 @@
 {
-  "name": "@laf/mongo-async-rpc",
+  "name": "@lafjs/mongo-async-rpc",
   "version": "1.0.0-beta.4",
   "description": "",
   "main": "./build/index.js",
@@ -17,7 +17,8 @@
     "@zimtsui/delta-stream": "^0.0.2",
     "@zimtsui/node-time-engine": "^0.0.3",
     "@zimtsui/pollerloop": "^0.0.5",
-    "mongodb": "^5.1.0"
+    "mongodb": "^5.1.0",
+    "@lafjs/node-json-rpc": "*"
   },
   "peerDependencies": {
     "@zimtsui/startable": "^0.0.4"

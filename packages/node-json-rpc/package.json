@@ -1,5 +1,5 @@
 {
-  "name": "@laf/node-json-rpc",
+  "name": "@lafjs/node-json-rpc",
   "version": "1.0.0-beta.4",
   "main": "./build/node-json-rpc.js",
   "types": "./build/node-json-rpc.d.ts",

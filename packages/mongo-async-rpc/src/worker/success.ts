@@ -1,7 +1,7 @@
 import assert = require("assert");
 import { Collection, Db, MongoClient } from "mongodb";
 import { Document } from "../document";
-import * as JsonRpc from 'node-json-rpc';
+import * as JsonRpc from '@lafjs/node-json-rpc';
 
 
 export class Success {
