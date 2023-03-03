@@ -7,7 +7,8 @@
     "build": "tsc -b ./src/tsconfig.json",
     "clean": "rm -rf ./build",
     "rebuild": "npm run clean && npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublishOnly": "npm run rebuild"
   },
   "author": "Zim",
   "license": "Unlicense",
