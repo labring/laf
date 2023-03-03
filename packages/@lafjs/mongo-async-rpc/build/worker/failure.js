@@ -30,10 +30,10 @@ class Failure {
             };
             ({ modifiedCount } = await this.coll.updateOne({
                 _id: doc._id,
-                state: 1 /* ADOPTED */,
+                state: 1 /* Document.State.ADOPTED */,
             }, {
                 $set: {
-                    'state': 4 /* FAILED */,
+                    'state': 4 /* Document.State.FAILED */,
                     'failTime': Date.now(),
                     'response': res,
                 }

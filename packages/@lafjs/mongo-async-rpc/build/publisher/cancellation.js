@@ -22,14 +22,14 @@ class Cancellation {
             ({ value: newDoc } = await this.coll.findOneAndUpdate({
                 _id,
                 $or: [{
-                        'state': 0 /* ORPHAN */,
+                        'state': 0 /* Document.State.ORPHAN */,
                     }, {
-                        'state': 1 /* ADOPTED */,
+                        'state': 1 /* Document.State.ADOPTED */,
                         'cancellable': true,
                     }],
             }, {
                 $set: {
-                    'state': 2 /* CANCELLED */,
+                    'state': 2 /* Document.State.CANCELLED */,
                     'cancelTime': Date.now(),
                 },
             }, {
@@ -53,12 +53,12 @@ class Cancellation {
         if (doc === null)
             throw new NotFound();
         if ([
-            2 /* CANCELLED */,
-            3 /* SUCCEEDED */,
-            4 /* FAILED */,
+            2 /* Document.State.CANCELLED */,
+            3 /* Document.State.SUCCEEDED */,
+            4 /* Document.State.FAILED */,
         ].includes(doc.state))
             throw new AlreadyExits(doc);
-        if (doc.state === 1 /* ADOPTED */ && !doc.cancellable)
+        if (doc.state === 1 /* Document.State.ADOPTED */ && !doc.cancellable)
             throw new CancellationNotAllowed(doc);
         throw new Error();
     }

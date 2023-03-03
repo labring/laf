@@ -72,5 +72,8 @@
       "http/*"
     ],
     "delay": 1000
+  },
+  "peerDependencies": {
+    "mongodb": "^5.1.0"
   }
 }

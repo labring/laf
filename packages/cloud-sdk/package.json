@@ -34,5 +34,8 @@
     "database-proxy": "^1.0.0-beta.2",
     "mongodb": "^4.12.1",
     "ws": "^8.11.0"
+  },
+  "peerDependencies": {
+    "mongodb": "^5.1.0"
   }
 }

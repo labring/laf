@@ -19,7 +19,7 @@ class RpManager {
         this.broadcast = new EventEmitter();
         this.onChange = (notif) => {
             if (notif.operationType === 'update' &&
-                notif.fullDocument.state === 2 /* CANCELLED */)
+                notif.fullDocument.state === 2 /* Document.State.CANCELLED */)
                 this.broadcast.emit(notif.fullDocument.request.id);
         };
     }
@@ -40,7 +40,7 @@ class RpManager {
             await rp.start();
             ee = new delta_stream_1.DeltaStream(this.coll.findOne({
                 _id: doc._id,
-                'state': 2 /* CANCELLED */,
+                'state': 2 /* Document.State.CANCELLED */,
             }).then(doc => {
                 if (doc === null)
                     return [];

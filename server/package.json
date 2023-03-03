@@ -105,5 +105,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "peerDependencies": {
+    "mongodb": "^5.1.0"
   }
 }

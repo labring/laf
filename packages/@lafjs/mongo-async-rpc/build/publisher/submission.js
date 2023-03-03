@@ -24,7 +24,7 @@ class Submission {
             session.startTransaction();
             newDoc = {
                 _id,
-                state: 0 /* ORPHAN */,
+                state: 0 /* Document.State.ORPHAN */,
                 request: {
                     jsonrpc: '2.0',
                     id,
@@ -38,8 +38,8 @@ class Submission {
                 'lock': lock,
                 'state': {
                     $in: [
-                        0 /* ORPHAN */,
-                        1 /* ADOPTED */,
+                        0 /* Document.State.ORPHAN */,
+                        1 /* Document.State.ADOPTED */,
                     ],
                 },
             }, {

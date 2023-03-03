@@ -18,10 +18,10 @@ class Adoption {
             session.startTransaction();
             ({ value: newDoc } = await this.coll.findOneAndUpdate({
                 'request.method': method,
-                'state': 0 /* ORPHAN */,
+                'state': 0 /* Document.State.ORPHAN */,
             }, {
                 $set: {
-                    'state': 1 /* ADOPTED */,
+                    'state': 1 /* Document.State.ADOPTED */,
                     'adoptTime': Date.now(),
                     'adoptor': 'unknown',
                     'cancellable': cancellable,

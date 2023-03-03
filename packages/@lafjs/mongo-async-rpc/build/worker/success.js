@@ -23,10 +23,10 @@ class Success {
             };
             ({ modifiedCount } = await this.coll.updateOne({
                 _id: doc._id,
-                state: 1 /* ADOPTED */,
+                state: 1 /* Document.State.ADOPTED */,
             }, {
                 $set: {
-                    'state': 3 /* SUCCEEDED */,
+                    'state': 3 /* Document.State.SUCCEEDED */,
                     'succeedTime': Date.now(),
                     'response': res,
                 }

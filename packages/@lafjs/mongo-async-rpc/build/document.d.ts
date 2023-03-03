@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import * as JsonRpc from 'node-json-rpc';
+import * as JsonRpc from '@lafjs/node-json-rpc';
 export declare namespace Document {
     export const enum State {
         ORPHAN = 0,
@@ -65,4 +65,4 @@ export declare namespace Document {
     }
     export {};
 }
-export declare type Document<method extends string = any, params extends readonly unknown[] = readonly any[], result = any> = Document.Orphan<method, params> | Document.Adopted<method, params> | Document.Cancelled<method, params> | Document.Succeeded<method, params, result> | Document.Failed<method, params>;
+export type Document<method extends string = any, params extends readonly unknown[] = readonly any[], result = any> = Document.Orphan<method, params> | Document.Adopted<method, params> | Document.Cancelled<method, params> | Document.Succeeded<method, params, result> | Document.Failed<method, params>;

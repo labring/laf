@@ -11,5 +11,8 @@
   },
   "author": "Zim",
   "license": "Unlicense",
-  "description": ""
+  "description": "",
+  "peerDependencies": {
+    "mongodb": "^5.1.0"
+  }
 }
