@@ -4,7 +4,7 @@ import { RegionService } from '../region/region.service'
 import { ApisixService } from './apisix.service'
 import * as assert from 'node:assert'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { TASK_LOCK_INIT_TIME } from '../constants'
+import { ServerConfig, TASK_LOCK_INIT_TIME } from '../constants'
 import { SystemDatabase } from '../database/system-database'
 
 @Injectable()
@@ -19,6 +19,10 @@ export class RuntimeDomainTaskService {
 
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
+    if (ServerConfig.DISABLED_GATEWAY_TASK) {
+      return
+    }
+
     // Phase `Creating` -> `Created`
     this.handleCreatingPhase()
 

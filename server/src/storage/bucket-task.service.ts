@@ -4,7 +4,7 @@ import { RegionService } from 'src/region/region.service'
 import * as assert from 'node:assert'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { times } from 'lodash'
-import { TASK_LOCK_INIT_TIME } from 'src/constants'
+import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/database/system-database'
 import { MinioService } from './minio/minio.service'
 import { BucketDomainService } from 'src/gateway/bucket-domain.service'
@@ -23,6 +23,10 @@ export class BucketTaskService {
 
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
+    if (ServerConfig.DISABLED_STORAGE_TASK) {
+      return
+    }
+
     // Phase `Creating` -> `Created`
     times(this.concurrency, () => this.handleCreatingPhase())
 

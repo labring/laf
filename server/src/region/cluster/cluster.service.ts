@@ -3,9 +3,13 @@ import { KubernetesObject } from '@kubernetes/client-node'
 import * as k8s from '@kubernetes/client-node'
 import { Region } from '@prisma/client'
 import { GetApplicationNamespaceByAppId } from 'src/utils/getter'
-import { ResourceLabelKey } from 'src/constants'
 import { compare } from 'fast-json-patch'
 import { GroupVersionKind } from 'src/region/cluster/types'
+import {
+  LABEL_KEY_APP_ID,
+  LABEL_KEY_NAMESPACE_TYPE,
+  LABEL_KEY_USER_ID,
+} from 'src/constants'
 
 @Injectable()
 export class ClusterService {
@@ -38,9 +42,9 @@ export class ClusterService {
       namespace.metadata = new k8s.V1ObjectMeta()
       namespace.metadata.name = GetApplicationNamespaceByAppId(appid)
       namespace.metadata.labels = {
-        [ResourceLabelKey.APP_ID]: appid,
-        [ResourceLabelKey.NAMESPACE_TYPE]: 'app',
-        [ResourceLabelKey.USER_ID]: userid,
+        [LABEL_KEY_APP_ID]: appid,
+        [LABEL_KEY_NAMESPACE_TYPE]: 'app',
+        [LABEL_KEY_USER_ID]: userid,
       }
       const coreV1Api = this.makeCoreV1Api(region)
 

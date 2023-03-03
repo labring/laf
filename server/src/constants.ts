@@ -53,6 +53,24 @@ export class ServerConfig {
     return process.env.SYSTEM_NAMESPACE || 'laf-system'
   }
 
+  /* switcher of task controllers */
+
+  static get DISABLED_INSTANCE_TASK() {
+    return process.env.DISABLED_INSTANCE_TASK || false
+  }
+
+  static get DISABLED_APPLICATION_TASK() {
+    return process.env.DISABLED_APPLICATION_TASK || false
+  }
+
+  static get DISABLED_GATEWAY_TASK() {
+    return process.env.DISABLED_GATEWAY_TASK || false
+  }
+
+  static get DISABLED_STORAGE_TASK() {
+    return process.env.DISABLED_STORAGE_TASK || false
+  }
+
   static get APPID_LENGTH(): number {
     return parseInt(process.env.APPID_LENGTH || '6')
   }
@@ -123,22 +141,15 @@ export class ServerConfig {
   }
 }
 
-export class ResourceLabelKey {
-  static get USER_ID() {
-    return 'laf.dev/user.id'
-  }
-
-  static get APP_ID() {
-    return 'laf.dev/appid'
-  }
-
-  static get NAMESPACE_TYPE() {
-    return 'laf.dev/namespace.type'
-  }
-
-  static get BUNDLE() {
-    return 'laf.dev/bundle'
-  }
+export const LABEL_KEY_USER_ID = 'laf.dev/user.id'
+export const LABEL_KEY_APP_ID = 'laf.dev/appid'
+export const LABEL_KEY_NAMESPACE_TYPE = 'laf.dev/namespace.type'
+export const LABEL_KEY_BUNDLE = 'laf.dev/bundle'
+export const LABEL_KEY_NODE_TYPE = 'laf.dev/node.type'
+export enum NodeType {
+  Runtime = 'runtime',
+  Database = 'database',
+  Storage = 'storage',
 }
 
 // Runtime constants
