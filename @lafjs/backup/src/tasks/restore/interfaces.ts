@@ -1,4 +1,4 @@
-import * as MongoAsyncRpc from "mongo-async-rpc";
+import * as MongoAsyncRpc from "@lafjs/mongo-async-rpc";
 
 export type Method = 'restore';
 

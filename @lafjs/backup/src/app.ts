@@ -2,7 +2,7 @@ import Koa = require('koa');
 import Router = require('@koa/router');
 import * as Capture from './tasks/capture/interfaces';
 import { MongoClient } from 'mongodb';
-import { Document, Publisher } from 'mongo-async-rpc';
+import { Document, Publisher } from '@lafjs/mongo-async-rpc';
 import assert = require('assert');
 import { KoaWsFilter } from '@zimtsui/koa-ws-filter';
 import { once } from 'events';
