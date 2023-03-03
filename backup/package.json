@@ -27,5 +27,5 @@
     "ws": "^8.12.0"
   },
   "main": "index.js",
-  "license": "ISC"
+  "license": "LGPL-3.0"
 }
