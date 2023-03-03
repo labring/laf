@@ -97,7 +97,7 @@ export async function pull(bucketName: string, outPath: string, options: { force
   // get local files
   const localFiles = readDirectoryRecursive(absPath).map((file) => {
     return {
-      key: path.relative(absPath, file),
+      key: path.relative(absPath, file).replace(/\\/g, '/'),
       absPath: path.resolve(file),
     }
   })
@@ -146,7 +146,7 @@ export async function push(bucketName: string, inPath: string, options: { force:
   // get local files
   const localFiles = readDirectoryRecursive(absPath).map((file) => {
     return {
-      key: path.relative(absPath, file),
+      key: path.relative(absPath, file).replace(/\\/g, '/'),
       absPath: path.resolve(file),
     }
   })

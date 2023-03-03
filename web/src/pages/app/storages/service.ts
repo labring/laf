@@ -32,7 +32,9 @@ export const useBucketListQuery = (config?: { onSuccess: (data: any) => void }) 
     {
       onSuccess: (data) => {
         data.data = data.data.filter((item: any) => item.state === "Active");
-        let number = formatCapacity(String(globalStore.currentApp?.bundle.storageCapacity));
+        let number = formatCapacity(
+          String(globalStore.currentApp?.bundle.resource.storageCapacity),
+        );
         if (data?.data?.items?.length) {
           data?.data?.items.forEach((item: any) => {
             number -= formatCapacity(item.spec.storage);

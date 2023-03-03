@@ -12,25 +12,40 @@ import {
 import { t } from "i18next";
 
 import SectionList from "@/components/SectionList";
+
+import { TApplication } from "@/apis/typing";
+import useGlobalStore from "@/pages/globalStore";
 export type TTabItem = {
   key: string;
   name: string;
   component: React.ReactElement;
 };
+
+export const TabKeys = {
+  UserInfo: "user-info",
+  PAT: "pat",
+};
+
 const SettingModal = (props: {
   headerTitle: string;
   children: React.ReactElement;
-  tabMatch: TTabItem[];
+  setApp?: TApplication;
+  tabMatch?: TTabItem[];
+  currentTab: string;
 }) => {
-  const { headerTitle, tabMatch, children } = props;
+  const { headerTitle, children, setApp, tabMatch = [] } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [item, setItem] = useState<TTabItem>();
+  const currentIndex = tabMatch.findIndex((tab) => tab.key === props.currentTab);
+  const [item, setItem] = useState<TTabItem>(tabMatch[currentIndex]);
+  const { setCurrentApp } = useGlobalStore((state) => state);
 
   return (
     <>
       {React.cloneElement(children, {
         onClick: () => {
-          setItem(tabMatch[0]);
+          if (setApp) {
+            setCurrentApp(setApp);
+          }
           onOpen();
         },
       })}

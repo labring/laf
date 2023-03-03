@@ -36,7 +36,7 @@ const PATList = () => {
   const dateList = formatDateOption();
   return (
     <>
-      <div className="flex-grow h-320 flex flex-col">
+      <div className="flex-grow flex flex-col">
         <EditableTable
           column={[
             {
@@ -71,6 +71,7 @@ const PATList = () => {
           ]}
           configuration={{
             key: "id",
+            tableHeight: "40vh",
             hiddenEditButton: true,
             addButtonText: t("Add") + "Token",
             saveButtonText: t("Generate") + "Token",

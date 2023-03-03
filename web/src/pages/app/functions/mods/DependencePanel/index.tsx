@@ -19,7 +19,7 @@ export default function DependenceList() {
   const packageQuery = usePackageQuery();
   const globalStore = useGlobalStore((state) => state);
   const delPackageMutation = useDelPackageMutation(() => {
-    globalStore.restartCurrentApp();
+    globalStore.updateCurrentApp();
   });
   const { t } = useTranslation();
 

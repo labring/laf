@@ -9,6 +9,7 @@ on:
       - "web/**"
       - ".github/workflows/dockerize-web.yml"
       - "!**/*.md"
+      - "!web/package-lock.json"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

@@ -87,7 +87,6 @@ export interface ICloudFunctionData {
   source: CloudFunctionSource
   desc: string
   tags: string[]
-  websocket: boolean
   methods: string[]
   createdAt: Date
   updatedAt: Date

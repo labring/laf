@@ -1,30 +1,35 @@
-import { Badge, Spinner } from "@chakra-ui/react";
+import { Spinner } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import { APP_PHASE_STATUS } from "@/constants/index";
-const bgColor = {
-  [APP_PHASE_STATUS.Started]: "bg-primary-600",
-  [APP_PHASE_STATUS.Creating]: "bg-warn-600",
-  [APP_PHASE_STATUS.Starting]: "bg-blue-600",
-  [APP_PHASE_STATUS.Deleting]: "bg-error-600",
-  [APP_PHASE_STATUS.Restarting]: "bg-blue-600",
-  [APP_PHASE_STATUS.Created]: "bg-blue-600",
-};
-export default function StatusBadge(props: { statusConditions: APP_PHASE_STATUS }) {
-  const { statusConditions } = props;
 
+import styles from "./index.module.scss";
+const colorScheme: {
+  [key: string]: string;
+} = {
+  Started: "primary",
+  Creating: "warn",
+  Starting: "blue",
+  Deleting: "error",
+  Deleted: "error",
+  Stopping: "error",
+  Stopped: "error",
+  Restarting: "blue",
+  Created: "blue",
+};
+export default function StatusBadge(props: { statusConditions?: string; state?: string }) {
+  const { statusConditions = APP_PHASE_STATUS.Started, state } = props;
   return (
     <div className="flex items-center">
-      <Badge className="py-1 px-4 w-[80px] text-center mr-2" variant={statusConditions}>
-        <span
-          className={clsx(
-            bgColor[statusConditions],
-            " inline-block w-[6px] h-[6px] rounded-full mr-1",
-          )}
-        ></span>
-        {statusConditions}
-      </Badge>
-      {statusConditions === APP_PHASE_STATUS.Started ? "" : <Spinner size="sm" />}
+      <div className={clsx(styles.badgeStyle, styles[colorScheme[statusConditions]])}>
+        <span>{statusConditions}</span>
+      </div>
+      {statusConditions === APP_PHASE_STATUS.Started ||
+      (state !== APP_PHASE_STATUS.Restarting && statusConditions === APP_PHASE_STATUS.Stopped) ? (
+        ""
+      ) : (
+        <Spinner size="sm" />
+      )}
     </div>
   );
 }

@@ -27,8 +27,16 @@
 ```sh
 cd runtimes/nodejs
 
-# proxy app cluster traffic to local, replace `APPID` with your prepared appid
+# connect the cluster if not connected
 telepresence connect
+
+export APPID=your-app-id
+
+# proxy app cluster traffic to local, replace `APPID` with your prepared appid
+telepresence intercept $APPID -n $APPID -p 8000:8000 -e $(pwd)/.env
+
+# after intercept command, you can use following command to check if intercept active
+telepresence list -n $APPID
 
 # Start local service first, required nodejs version >= 18.0.0
 npm install
@@ -36,34 +44,15 @@ npm install
 npm run build
 
 npm start
-# intercept
-telepresence intercept APPID -n APPID -p 8000:8000 -e $(pwd)/.env
 
-# after intercept command, you can use following command to check if intercept active
-telepresence list -n APPID
-# if success, you would see like below
-Your-APPID: intercepted
-   Intercept name         : APPID-APPID
-   State                  : ACTIVE
-   Workload kind          : Deployment
-   Destination            : 127.0.0.1:8000
-   Service Port Identifier: 8000
-   Intercepting           : all TCP requests
 ```
 
 > Clean up
 
 ```bash
-telepresence leave APPID-APPID
+telepresence leave $APPID-$APPID
 ```
 
 ## Troubleshooting
 
-- `telepresence helm install` failed for `arm64/Apple Chip` cluster:
-  
-  ```bash
-  telepresence helm install \
-   --set image.name=pentusha/telepresence-ubuntu-multiarch \
-   --set image.registry=docker.io \
-   --set image.tag=2.10.4 
- ```
+- `telepresence helm install` failed for `arm64 / Apple Chip` cluster, please upgrade your telepresence to `v2.11.1` or later.

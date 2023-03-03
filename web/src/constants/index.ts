@@ -2,6 +2,8 @@
 export const SideBarWidth = 64;
 export const SmallNavHeight = 42;
 
+export const VITE_SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL || "";
+
 export const Pages = {
   function: "function",
   storage: "storage",
@@ -38,6 +40,9 @@ export enum APP_PHASE_STATUS {
   Starting = "Starting",
   Restarting = "Restarting",
   Deleting = "Deleting",
+  Deleted = "Deleted",
+  Stopping = "Stopping",
+  Stopped = "Stopped",
 }
 
 export enum BUCKET_POLICY_TYPE {

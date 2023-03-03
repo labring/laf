@@ -24,7 +24,13 @@ export default function FunctionLayout() {
     },
     {
       enabled: !!appid,
-      refetchInterval: currentApp?.phase !== APP_PHASE_STATUS.Started ? 1000 : false,
+      refetchInterval:
+        currentApp?.phase === APP_PHASE_STATUS.Started ||
+        (currentApp?.state === APP_PHASE_STATUS.Stopped &&
+          currentApp?.phase === APP_PHASE_STATUS.Stopped) ||
+        currentApp?.state === APP_PHASE_STATUS.Deleted
+          ? false
+          : 1000,
       onSuccess(data) {
         setCurrentApp(data?.data);
       },
@@ -53,7 +59,9 @@ export default function FunctionLayout() {
           </Center>
         ) : (
           <>
-            {currentApp?.phase !== APP_PHASE_STATUS.Started ? (
+            {currentApp?.phase !== APP_PHASE_STATUS.Started &&
+            currentApp?.phase !== APP_PHASE_STATUS.Stopped &&
+            currentApp?.phase !== APP_PHASE_STATUS.Deleted ? (
               <div className="absolute top-0 bottom-0 left-0 right-0 z-[999] flex flex-col justify-center items-center bg-lafWhite-200 opacity-70 ">
                 <Spinner
                   thickness="4px"

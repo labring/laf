@@ -138,7 +138,31 @@
     "Setting": "设置",
     "SystemSetting": "应用设置",
     "UserSetting": "用户设置",
-    "UpdateConfirm": "更新环境变量将重新启动应用，是否继续？"
+    "UpdateConfirm": "更新环境变量将重新启动应用，是否继续？",
+    "AppInfo": "应用信息",
+    "BaseInfo": "基础信息",
+    "Detail": "规则详情",
+    "Memory": "内存",
+    "Disk": "硬盘",
+    "DB": "数据库",
+    "network": "出网容量",
+    "Close": "关闭应用",
+    "Delete": "删除应用",
+    "Restart": "重启应用",
+    "UserInfo": "用户信息",
+    "Auth": "实名认证",
+    "Tel": "手机号",
+    "SendCode": "发送验证码",
+    "Code": "验证码",
+    "Name": "真实姓名",
+    "ID": "身份证号",
+    "ToAuth": "立即认证",
+    "showAuth": "去认证",
+    "noAuth": "未实名",
+    "IDTip": "请输入有效的身份证号码",
+    "CodeTip": "请输入四位数字验证码",
+    "TelTip": "请输入有效的手机号码",
+    "Registered": "注册时间"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -190,7 +214,8 @@
     "CurrentDomain": "当前域名: ",
     "CancelHost": "取消托管",
     "Inaccessible": "无法访问",
-    "InstantUpload": "立即上传"
+    "InstantUpload": "立即上传",
+    "RemoveHost": "取消静态托管"
   },
   "TriggerPanel": {
     "AddTrigger": "新建触发器",
@@ -223,7 +248,6 @@
   "EditTip": "已修改,未发布",
   "NoInfo": "暂无信息",
   "RefreshDataSuccess": "数据刷新成功",
-  "Language": "语言",
   "database example": "database 示例",
   "update success": "更新成功",
   "Take me home": "返回首页",
@@ -231,5 +255,12 @@
   "403Message": "当前用户没有权限",
   "Bucket": {
     "StatusTip": "外部访问需要将 bucket 权限设置为 readonly"
-  }
+  },
+  "Restart": "重启应用",
+  "ShutDown": "关闭应用",
+  "Charge": "余额充值",
+  "Back": "返回",
+  "Personal Access Token": "访问凭证 (PAT)",
+  "SwitchLanguage": "切换语言",
+  "Storage": "云存储"
 }

@@ -28,7 +28,7 @@ title: 快速开始
 点击 `register` 函数右侧的 「开发」按钮，进入 WebIDE，编写以下代码：
 
 ```ts
-import cloud from "@/cloud-sdk";
+import cloud from "@lafjs/cloud";
 import { createHash } from "crypto";
 
 exports.main = async function (ctx: FunctionContext) {
@@ -67,7 +67,7 @@ exports.main = async function (ctx: FunctionContext) {
 同上，创建 `login` 云函数，编写以下代码：
 
 ```ts
-import cloud from "@/cloud-sdk";
+import cloud from "@lafjs/cloud";
 import { createHash } from "crypto";
 
 exports.main = async function (ctx: FunctionContext) {

@@ -7,7 +7,9 @@ import useGlobalStore from "@/pages/globalStore";
 
 async function loadPackageTypings(packageName: string) {
   const { currentApp } = useGlobalStore.getState();
-  const url = `//${currentApp?.domain?.domain}`;
+
+  const url = `//${currentApp?.host}`;
+
   const res = await axios({
     url: `${url}/_/typing/package?packageName=${packageName}`,
     method: "GET",

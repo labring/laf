@@ -3,14 +3,12 @@ import useGlobalStore from "@/pages/globalStore";
 function useAwsS3() {
   const currentApp = useGlobalStore((state) => state.currentApp);
   const credentials = currentApp?.storage.credentials!;
-  const region = currentApp?.regionName;
 
   const s3 = new (window as any).AWS.S3({
     accessKeyId: credentials.accessKeyId,
     secretAccessKey: credentials.secretAccessKey,
     sessionToken: credentials.sessionToken,
     endpoint: credentials.endpoint,
-    region: region,
     s3ForcePathStyle: true,
     signatureVersion: "v4",
   });
