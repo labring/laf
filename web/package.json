@@ -67,8 +67,5 @@
       "eslint --fix",
       "prettier --write"
     ]
-  },
-  "peerDependencies": {
-    "mongodb": "^5.1.0"
   }
 }

@@ -18,10 +18,10 @@
     "@types/node": "^14.18.36",
     "@zimtsui/delta-stream": "^0.0.2",
     "@zimtsui/node-time-engine": "^0.0.3",
-    "@zimtsui/pollerloop": "^0.0.5"
+    "@zimtsui/pollerloop": "^0.0.5",
+    "mongodb": "^5.1.0"
   },
   "peerDependencies": {
-    "@zimtsui/startable": "^0.0.4",
-    "mongodb": "^5.1.0"
+    "@zimtsui/startable": "^0.0.4"
   }
 }

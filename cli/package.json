@@ -44,8 +44,5 @@
     "typescript": "^4.7.4",
     "urlencode": "^1.1.0",
     "yaml": "^2.1.3"
-  },
-  "peerDependencies": {
-    "mongodb": "^5.1.0"
   }
 }

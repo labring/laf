@@ -14,8 +14,5 @@
   "dependencies": {
     "markdown-it-custom-attrs": "^1.0.2",
     "vitepress": "^1.0.0-alpha.29"
-  },
-  "peerDependencies": {
-    "mongodb": "^5.1.0"
   }
 }
