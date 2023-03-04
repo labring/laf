@@ -7,6 +7,7 @@ import {
   CreateApplicationDto,
   CreateDependencyDto,
   CreateEnvironmentDto,
+  DeleteDependencyDto,
   UpdateApplicationDto,
   UpdateDependencyDto,
 } from './data-contracts'
@@ -229,17 +230,18 @@ export async function dependencyControllerGetDependencies(
  * @tags Application
  * @name DependencyControllerRemove
  * @summary Remove a dependency
- * @request DELETE:/v1/apps/{appid}/dependencies/{name}
+ * @request DELETE:/v1/apps/{appid}/dependencies
  * @secure
  */
 export async function dependencyControllerRemove(
   appid: string,
-  name: string,
+  data: DeleteDependencyDto,
   configParams: RequestParams = {},
 ): Promise<any> {
   return request({
-    url: `/v1/apps/${appid}/dependencies/${name}`,
+    url: `/v1/apps/${appid}/dependencies`,
     method: 'DELETE',
+    data: data,
     ...configParams,
   })
 }
