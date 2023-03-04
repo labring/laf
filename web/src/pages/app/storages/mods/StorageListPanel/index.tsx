@@ -45,7 +45,7 @@ export default function StorageListPanel() {
   });
 
   return (
-    <Panel className="h-full">
+    <Panel className="h-full min-w-[250px]">
       <Panel.Header
         title={t("StoragePanel.StorageList")}
         actions={[

@@ -103,7 +103,8 @@
     "FunctionNameRule": "Function names can only contain English or _",
     "EmptyDebugTip": "No results yet",
     "EmptyFunctionTip": "You have not created the function",
-    "UploadButton": "upload"
+    "UploadButton": "upload",
+    "LeaveFunctionPage": "About to leave the function edit page"
   },
   "HomePanel": {
     "APP": "Android or iOS app",

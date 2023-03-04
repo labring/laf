@@ -91,7 +91,8 @@
     "Select": "已选择",
     "FunctionNameRule": "函数名只能包含英文或 _",
     "EmptyFunctionTip": "您还没有创建函数",
-    "UploadButton": "上传"
+    "UploadButton": "上传",
+    "LeaveFunctionPage": "即将离开函数编辑页面"
   },
   "TriggerPanel": {
     "Trigger": "触发器",
