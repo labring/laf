@@ -106,24 +106,29 @@ const AppEnvList = () => {
             className="mt-6"
             title={t("SettingPanel.Detail")}
             leftData={[
-              { key: "CPU", value: currentApp?.bundle?.resource?.limitCPU! / 1000 + " 核" },
               {
-                key: t("SettingPanel.Memory"),
-                value: currentApp?.bundle?.resource.limitMemory + " MB",
+                key: "CPU",
+                value: `${currentApp?.bundle?.resource?.limitCPU! / 1000} ${t("Unit.CPU")}`,
               },
               {
-                key: t("SettingPanel.DB"),
-                value: currentApp?.bundle?.resource.databaseCapacity! / 1024 + " GB",
+                key: t("Spec.RAM"),
+                value: `${currentApp?.bundle?.resource.limitMemory} ${t("Unit.MB")}`,
+              },
+              {
+                key: t("Spec.Database"),
+                value: `${currentApp?.bundle?.resource.databaseCapacity! / 1024} ${t("Unit.GB")}`,
               },
             ]}
             rightData={[
               {
-                key: t("Storage"),
-                value: currentApp?.bundle?.resource.storageCapacity! / 1024 + " GB",
+                key: t("Spec.Storage"),
+                value: `${currentApp?.bundle?.resource.storageCapacity! / 1024} ${t("Unit.GB")}`,
               },
               {
-                key: t("SettingPanel.network"),
-                value: currentApp?.bundle?.resource.networkTrafficOutbound! / 1024 + " GB",
+                key: t("Spec.NetworkTraffic"),
+                value: `${currentApp?.bundle?.resource.networkTrafficOutbound! / 1024} ${t(
+                  "Unit.GB",
+                )}`,
               },
             ]}
           />

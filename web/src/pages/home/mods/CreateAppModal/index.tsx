@@ -1,5 +1,5 @@
 import React from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { CheckIcon } from "@chakra-ui/icons";
 import {
   Button,
@@ -15,15 +15,22 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Select,
+  Radio,
+  RadioGroup,
+  Stack,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { t } from "i18next";
 
+// import ChargeButton from "@/components/ChargeButton";
 import { APP_STATUS } from "@/constants/index";
 
+import BundleItem from "./BundleItem";
+import RuntimeItem from "./RuntimeItem";
+
+import { TBundle } from "@/apis/typing";
 import { ApplicationControllerCreate, ApplicationControllerUpdate } from "@/apis/v1/applications";
 import useGlobalStore from "@/pages/globalStore";
 
@@ -42,6 +49,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
     region: string;
     bundleName: string;
     runtimeName: string;
+    duration: string;
   };
 
   const bundles = regions[0].bundles;
@@ -51,6 +59,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
     state: application.state || APP_STATUS.Running,
     region: application.regionName || regions[0].name,
     bundleName: application.bundleName || bundles[0].name,
+    duration: "1",
     runtimeName: runtimes[0].name,
   };
 
@@ -63,6 +72,16 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
     formState: { errors },
   } = useForm<FormData>({
     defaultValues,
+  });
+
+  const duration = useWatch({
+    control,
+    name: "duration", // without supply name will watch the entire form, or ['firstName', 'lastName'] to watch both
+  });
+
+  const bundleName = useWatch({
+    control,
+    name: "bundleName", // without supply name will watch the entire form, or ['firstName', 'lastName'] to watch both
   });
 
   const { showSuccess, showError } = useGlobalStore();
@@ -90,6 +109,9 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
     }
   };
 
+  const currentBundle = bundles.find((item: TBundle) => item.name === bundleName) || bundles[0];
+  const totalPrice = parseInt(duration, 10) * currentBundle.price;
+
   return (
     <>
       {React.cloneElement(props.children, {
@@ -106,9 +128,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>
-            {(isEdit ? t("Edit") : t("Create")) + t("HomePanel.Application")}
-          </ModalHeader>
+          <ModalHeader>{isEdit ? t("Edit") : t("Create")}</ModalHeader>
           <ModalCloseButton />
 
           <ModalBody pb={6}>
@@ -123,7 +143,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                 <FormErrorMessage>{errors?.name && errors?.name?.message}</FormErrorMessage>
               </FormControl>
 
-              <FormControl isRequired>
+              <FormControl isRequired hidden={isEdit}>
                 <FormLabel htmlFor="region">{t("HomePanel.Region")}</FormLabel>
                 <HStack spacing={6}>
                   <Controller
@@ -157,57 +177,101 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                 </HStack>
               </FormControl>
 
-              <FormControl isRequired isInvalid={!!errors?.bundleName}>
+              <FormControl isRequired isInvalid={!!errors?.bundleName} hidden={isEdit}>
                 <FormLabel htmlFor="bundleName">
                   {t("HomePanel.Application") + t("HomePanel.BundleName")}
                 </FormLabel>
-                <Select
-                  variant="filled"
-                  {...register("bundleName", {
-                    required: `${t("HomePanel.BundleName")} ${t("IsRequired")}`,
-                  })}
-                  disabled={isEdit}
-                >
-                  {(bundles || []).map((bundle: any) => {
-                    return (
-                      <option value={bundle.name} key={bundle.name}>
-                        {bundle.displayName}
-                      </option>
-                    );
-                  })}
-                </Select>
+                <HStack spacing={"12px"}>
+                  <Controller
+                    name="bundleName"
+                    control={control}
+                    render={({ field: { onChange, value } }) => {
+                      return (
+                        <>
+                          {(bundles || []).map((bundle: TBundle) => {
+                            return (
+                              <BundleItem
+                                onChange={onChange}
+                                bundle={bundle}
+                                isActive={bundle.name === value}
+                                key={bundle.name}
+                              />
+                            );
+                          })}
+                        </>
+                      );
+                    }}
+                    rules={{
+                      required: { value: true, message: t("LimitSelect") },
+                    }}
+                  />
+                </HStack>
                 <FormErrorMessage>{errors?.bundleName?.message}</FormErrorMessage>
               </FormControl>
 
+              {bundleName !== "standard" ? (
+                <FormControl isRequired isInvalid={!!errors?.duration}>
+                  <FormLabel htmlFor="duration">{t("HomePanel.Duration")}</FormLabel>
+                  <Controller
+                    name="duration"
+                    control={control}
+                    render={({ field: { onChange, value } }) => (
+                      <RadioGroup onChange={onChange} value={value}>
+                        <Stack direction="row" spacing={8}>
+                          <Radio value="1">1个月</Radio>
+                          <Radio value="3">3个月</Radio>
+                          <Radio value="6">半年</Radio>
+                          <Radio value="12">1年</Radio>
+                        </Stack>
+                      </RadioGroup>
+                    )}
+                  />
+
+                  <FormErrorMessage>{errors?.duration?.message}</FormErrorMessage>
+                </FormControl>
+              ) : null}
+
               <FormControl isRequired isInvalid={!!errors?.runtimeName}>
                 <FormLabel htmlFor="runtimeName">{t("HomePanel.RuntimeName")}</FormLabel>
-                <Select
-                  variant="filled"
-                  {...register("runtimeName", {
-                    required: `${t("HomePanel.RuntimeName")} ${t("IsRequired")}`,
-                  })}
-                  disabled={isEdit}
-                >
-                  {(runtimes || []).map((runtime: any) => {
+                <Controller
+                  name="duration"
+                  control={control}
+                  render={() => {
                     return (
-                      <option value={runtime.name} key={runtime.name}>
-                        {runtime.name} - {runtime.version}
-                      </option>
+                      <HStack spacing={"2"}>
+                        {(runtimes || []).map((runtime: any) => {
+                          return <RuntimeItem key={runtime.name} />;
+                        })}
+                      </HStack>
                     );
-                  })}
-                </Select>
-                <FormErrorMessage>{errors?.runtimeName?.message}</FormErrorMessage>
+                  }}
+                />
               </FormControl>
             </VStack>
           </ModalBody>
 
           <ModalFooter>
+            {/* {bundleName === "standard" ? (
+              <div className="mr-2">
+                <span className="ml-6 text-red-500 font-semibold text-xl">{t("Price.Free")}</span>
+              </div>
+            ) : (
+              <div className="mr-2">
+                账户余额: ¥ 0
+                <ChargeButton>
+                  <span>立即充值</span>
+                </ChargeButton>
+                <span className="ml-6 text-red-500 font-semibold text-xl">{totalPrice}</span>
+              </div>
+            )} */}
+
             <Button
               isLoading={appCreateMutation.isLoading}
               type="submit"
               onClick={handleSubmit(onSubmit)}
+              disabled={totalPrice > 0}
             >
-              {t("Confirm")}
+              {isEdit ? t("Confirm") : t("CreateNow")}
             </Button>
           </ModalFooter>
         </ModalContent>
