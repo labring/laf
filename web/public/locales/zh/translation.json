@@ -177,9 +177,9 @@
     "FolderName": "文件夹名称",
     "NameTip": "请输入文件夹名称",
     "Policy": "权限",
-    "Private": "私有",
-    "Readonly": "公共读",
-    "ReadWrite": "公共读写",
+    "Private": "私有 (private)",
+    "Readonly": "公共读 (readonly)",
+    "ReadWrite": "公共读写 (readwrite)",
     "SearchBucket": "输入 bucket 名进行搜索",
     "Size": "大小",
     "Storage": "存储",
@@ -262,5 +262,6 @@
   "Back": "返回",
   "Personal Access Token": "访问凭证 (PAT)",
   "SwitchLanguage": "切换语言",
-  "Storage": "云存储"
+  "Storage": "云存储",
+  "upload example": "文件上传示例"
 }
