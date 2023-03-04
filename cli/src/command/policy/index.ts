@@ -2,7 +2,7 @@ import { Command, program } from 'commander'
 import { list, pullOne, pushOne, pullAll, pushAll } from '../../action/policy'
 import { checkApplication } from '../../common/hook'
 
-export function policyCommand(): Command {
+export function command(): Command {
   const cmd = program.command('policy').hook('preAction', () => {
     checkApplication()
   })

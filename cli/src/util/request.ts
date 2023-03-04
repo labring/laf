@@ -71,7 +71,10 @@ request.interceptors.response.use(
       } else if (statusCode == 403) {
         console.log('Forbidden resource!')
         process.exit(1)
-      } else if (statusCode === 503) {
+      } else if (statusCode === 500) {
+        console.log('Internal server error!')
+        process.exit(1)
+      }else if (statusCode === 503) {
         console.log('The server is abnormal, please contact the administrator!')
         process.exit(1)
       }

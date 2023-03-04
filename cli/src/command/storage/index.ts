@@ -2,7 +2,7 @@ import { Command, program } from 'commander'
 import { create, del, list, pull, push, update } from '../../action/storage'
 import { checkApplication, checkStorageToken } from '../../common/hook'
 
-export function bucketCommand(): Command {
+export function command(): Command {
   const cmd = program.command('storage').hook('preAction', () => {
     checkApplication()
   })
