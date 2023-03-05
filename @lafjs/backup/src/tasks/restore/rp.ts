@@ -6,8 +6,11 @@ import { $, AsRawStart, AsRawStop } from "@zimtsui/startable";
 import { Worker } from '@lafjs/mongo-async-rpc';
 
 
-assert(process.env.BACKUP_MONGO_HOST_URI);
-assert(process.env.BACKUP_S3_HOST_ALIAS);
+assert(process.env.MC_ALIAS);
+assert(process.env.MC_BUCKET);
+assert(process.env.MONGO_USERNAME);
+assert(process.env.MONGO_PASSWORD);
+
 
 
 export class Rp {
@@ -15,9 +18,9 @@ export class Rp {
 	private stderrPromise?: Promise<string>;
 
 	public constructor(
-		private bucket: Params.Bucket,
-		private object: Params.Object,
-		private db: Params.Db,
+		private fileName: Params[0]['fileName'],
+		private dbUri: Params[0]['dbUri'],
+		private appid: Params[0]['appid'],
 	) { }
 
 	@AsRawStart()
@@ -26,9 +29,9 @@ export class Rp {
 			resolve(__dirname, '../../../mongo-backup'),
 			[
 				'restore',
-				this.bucket,
-				this.object,
-				this.db,
+				process.env.MC_BUCKET!,
+				this.fileName,
+				this.dbUri,
 			],
 			{
 				detached: true,

@@ -28,6 +28,5 @@
     "mongodb": "^5.1.0",
     "ws": "^8.12.0"
   },
-  "main": "index.js",
   "license": "LGPL-3.0"
 }

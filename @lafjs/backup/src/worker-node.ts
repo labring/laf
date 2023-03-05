@@ -45,7 +45,7 @@ class WorkerNode {
 			this.success,
 			this.failure,
 			'capture',
-			(db, bucket, object) => $(new Capture.Rp(db, bucket, object)),
+			({ dbUri, collNames, appid }) => $(new Capture.Rp(dbUri, collNames, appid)),
 		);
 		this.restoreWorker = new Worker.RpWorker(
 			this.coll,
@@ -54,7 +54,7 @@ class WorkerNode {
 			this.success,
 			this.failure,
 			'restore',
-			(bucket, object, db) => $(new Restore.Rp(bucket, object, db)),
+			({ fileName, dbUri, appid }) => $(new Restore.Rp(fileName, dbUri, appid)),
 		);
 		await $(this.captureWorker).start($(this).stop);
 		await $(this.restoreWorker).start($(this).stop);

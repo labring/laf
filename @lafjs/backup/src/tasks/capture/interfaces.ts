@@ -2,14 +2,15 @@ import * as MongoAsyncRpc from "@lafjs/mongo-async-rpc";
 
 export type Method = 'capture';
 
-export type Params = [Params.Db, Params.Bucket, Params.Object];
-export namespace Params {
-	export type Db = string;
-	export type Bucket = string;
-	export type Object = string;
-}
+export type Params = [{
+	readonly dbUri: string;
+	readonly collNames: string[];
+	readonly appid: string;
+}];
 
-export type Result = null;
+export interface Result {
+	readonly fileName: string;
+}
 
 export namespace Document {
 	export type Orphan = MongoAsyncRpc.Document.Orphan<Method, Params>;

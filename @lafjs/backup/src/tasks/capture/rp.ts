@@ -6,8 +6,10 @@ import { $, AsRawStart, AsRawStop } from "@zimtsui/startable";
 import { Worker } from '@lafjs/mongo-async-rpc';
 
 
-assert(process.env.BACKUP_MONGO_HOST_URI);
-assert(process.env.BACKUP_S3_HOST_ALIAS);
+assert(process.env.MC_ALIAS);
+assert(process.env.MC_BUCKET);
+assert(process.env.MONGO_USERNAME);
+assert(process.env.MONGO_PASSWORD);
 
 
 export class Rp {
@@ -15,20 +17,22 @@ export class Rp {
 	private stderrPromise?: Promise<string>;
 
 	public constructor(
-		private db: Params.Db,
-		private bucket: Params.Bucket,
-		private object: Params.Object,
+		private dbUri: Params[0]['dbUri'],
+		private collNames: Params[0]['collNames'],
+		private appid: Params[0]['appid'],
 	) { }
 
 	@AsRawStart()
 	private rawStart() {
+		const fileName = `${this.appid}/${Date.now()}`;
 		this.cp = spawn(
 			resolve(__dirname, '../../../mongo-backup'),
 			[
 				'capture',
-				this.db,
-				this.bucket,
-				this.object,
+				this.dbUri,
+				process.env.MC_BUCKET!,
+				fileName,
+				...this.collNames,
 			],
 			{
 				detached: true,
@@ -37,7 +41,7 @@ export class Rp {
 		);
 		this.cp.once('exit', async (code, signal) => {
 			if (code === 0)
-				$(this).stop(new Worker.RpFactoryLike.Successful<Result>(null));
+				$(this).stop(new Worker.RpFactoryLike.Successful<Result>({ fileName }));
 			else {
 				const stderr = await this.stderrPromise!;
 				$(this).stop(new Rp.Failed(code, signal, stderr));

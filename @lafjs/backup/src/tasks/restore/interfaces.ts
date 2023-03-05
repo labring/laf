@@ -2,14 +2,14 @@ import * as MongoAsyncRpc from "@lafjs/mongo-async-rpc";
 
 export type Method = 'restore';
 
-export type Params = [Params.Bucket, Params.Object, Params.Db];
-export namespace Params {
-	export type Db = string;
-	export type Bucket = string;
-	export type Object = string;
-}
+export type Params = [{
+	readonly fileName: string;
+	readonly dbUri: string;
+	readonly appid: string;
+}];
 
 export type Result = null;
+
 
 export namespace Document {
 	export type Orphan = MongoAsyncRpc.Document.Orphan<Method, Params>;
