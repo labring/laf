@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import { useResizable } from "react-resizable-layout";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { Center } from "@chakra-ui/react";
 import clsx from "clsx";
 
+import useResizable from "@/hooks/useResizable";
 import { page, panel } from "@/pages/customSetting";
 import useCustomSettingStore from "@/pages/customSetting";
 export default function Resize(props: {

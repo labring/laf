@@ -2,7 +2,7 @@
  * cloud functions SideBar menu
  ***************************/
 
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Center } from "@chakra-ui/react";
 import clsx from "clsx";
@@ -31,11 +31,24 @@ export default function SideBar() {
   const blockLeavePage = useCallback((pageId: any) => {
     if (window.location.pathname.includes("/function") && pageId !== "function") {
       // eslint-disable-next-line no-alert
-      return !window.confirm(String(t("FunctionPanel.LeaveFunctionPage")));
+      return pageId === "" ? true : !window.confirm(String(t("FunctionPanel.LeaveFunctionPage")));
     } else {
       return false;
     }
   }, []);
+
+  useEffect(() => {
+    const handleTabClose = (event: any) => {
+      if (blockLeavePage("")) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handleTabClose);
+    return () => {
+      window.removeEventListener("beforeunload", handleTabClose);
+    };
+  }, [blockLeavePage]);
 
   const ICONS: TIcon[] = [
     {
