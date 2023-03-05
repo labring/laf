@@ -8,11 +8,10 @@ import { DatabaseController } from './database.controller'
 import { PolicyRuleService } from './policy/policy-rule.service'
 import { PolicyRuleController } from './policy/policy-rule.controller'
 import { MongoService } from './mongo.service'
-import { RegionModule } from 'src/region/region.module'
 import { ApplicationService } from 'src/application/application.service'
 
 @Module({
-  imports: [RegionModule],
+  imports: [],
   controllers: [
     CollectionController,
     PolicyController,

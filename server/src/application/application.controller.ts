@@ -26,7 +26,8 @@ import { ApplicationService } from './application.service'
 import { FunctionService } from '../function/function.service'
 import { StorageService } from 'src/storage/storage.service'
 import { RegionService } from 'src/region/region.service'
-import { RuntimeDomainService } from 'src/gateway/runtime-domain.service'
+import { BundleService } from 'src/region/bundle.service'
+import { PrismaService } from 'src/prisma/prisma.service'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -37,8 +38,9 @@ export class ApplicationController {
     private readonly appService: ApplicationService,
     private readonly funcService: FunctionService,
     private readonly regionService: RegionService,
-    private readonly gatewayService: RuntimeDomainService,
     private readonly storageService: StorageService,
+    private readonly bundleService: BundleService,
+    private readonly prisma: PrismaService,
   ) {}
 
   /**
@@ -53,6 +55,26 @@ export class ApplicationController {
     const error = dto.validate()
     if (error) {
       return ResponseUtil.error(error)
+    }
+
+    // check app count limit
+    const bundle = await this.bundleService.findOneByName(
+      dto.bundleName,
+      dto.region,
+    )
+    const LIMIT_COUNT = bundle?.resource?.limitCountPerUser || 0
+    const count = await this.prisma.application.count({
+      where: {
+        createdBy: user.id,
+        bundle: {
+          name: dto.bundleName,
+        },
+      },
+    })
+    if (count >= LIMIT_COUNT) {
+      return ResponseUtil.error(
+        `application count limit is ${LIMIT_COUNT} for bundle ${dto.bundleName}`,
+      )
     }
 
     // create app
