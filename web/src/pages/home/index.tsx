@@ -42,7 +42,7 @@ function HomePage() {
       className="w-8/12 mt-10 mx-auto overflow-hidden flex flex-col"
       style={{ height: "calc(100vh - 150px)" }}
     >
-      <List appListQuery={appListQuery} />
+      <List appListQuery={appListQuery} setShouldRefetch={setShouldRefetch} />
     </div>
   );
 }

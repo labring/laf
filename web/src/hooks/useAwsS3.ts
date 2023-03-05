@@ -2,7 +2,7 @@ import useGlobalStore from "@/pages/globalStore";
 
 function useAwsS3() {
   const currentApp = useGlobalStore((state) => state.currentApp);
-  const credentials = currentApp?.storage.credentials!;
+  const credentials = currentApp?.storage?.credentials!;
 
   const s3 = new (window as any).AWS.S3({
     accessKeyId: credentials.accessKeyId,

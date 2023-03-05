@@ -1,5 +1,5 @@
 import * as AWS from 'aws-sdk'
-require("aws-sdk/lib/maintenance_mode_message").suppress = true;
+require('aws-sdk/lib/maintenance_mode_message').suppress = true
 
 export function getS3Client(credentials: any) {
   return new AWS.S3({

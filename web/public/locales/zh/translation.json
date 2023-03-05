@@ -125,7 +125,8 @@
     "WX": "微信小程序/公众号",
     "Welcome": "欢迎来到 LAF 云开发平台！",
     "DeleteApp": "删除 APP",
-    "DeleteTip": "你确定想要删除这个 App?"
+    "DeleteTip": "你确定想要删除这个 App?",
+    "Duration": "购买时长"
   },
   "LogPanel": {
     "Detail": "日志详情",
@@ -264,5 +265,19 @@
   "Personal Access Token": "访问凭证 (PAT)",
   "SwitchLanguage": "切换语言",
   "Storage": "云存储",
-  "upload example": "文件上传示例"
+  "upload example": "文件上传示例",
+  "Unit": {
+    "CPU": "核",
+    "GB": "GB",
+    "MB": "MB"
+  },
+  "Spec": {
+    "RAM": "内存",
+    "Database": "数据库",
+    "Storage": "云存储",
+    "NetworkTraffic": "出网流量"
+  },
+  "Price": {
+    "Free": "免费"
+  }
 }
