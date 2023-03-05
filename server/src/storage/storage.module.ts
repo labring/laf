@@ -4,12 +4,11 @@ import { MinioService } from './minio/minio.service'
 import { StorageService } from './storage.service'
 import { ApplicationService } from 'src/application/application.service'
 import { BucketService } from './bucket.service'
-import { RegionModule } from 'src/region/region.module'
 import { GatewayModule } from 'src/gateway/gateway.module'
 import { BucketTaskService } from './bucket-task.service'
 
 @Module({
-  imports: [RegionModule, GatewayModule],
+  imports: [GatewayModule],
   controllers: [BucketController],
   providers: [
     MinioService,

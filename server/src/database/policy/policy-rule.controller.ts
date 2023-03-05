@@ -36,6 +36,13 @@ export class PolicyRuleController {
     @Param('name') policyName: string,
     @Body() dto: CreatePolicyRuleDto,
   ) {
+    // check rule count limit
+    const LIMIT_COUNT = 100
+    const count = await this.ruleService.count(appid, policyName)
+    if (count >= LIMIT_COUNT) {
+      return ResponseUtil.error(`rule count limit reached: ${LIMIT_COUNT}`)
+    }
+
     // check if exists
     const exists = await this.ruleService.findOne(
       appid,

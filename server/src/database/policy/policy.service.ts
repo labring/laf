@@ -28,6 +28,15 @@ export class PolicyService {
     return res
   }
 
+  async count(appid: string) {
+    const res = await this.prisma.databasePolicy.count({
+      where: {
+        appid,
+      },
+    })
+    return res
+  }
+
   async findAll(appid: string) {
     const res = await this.prisma.databasePolicy.findMany({
       where: {

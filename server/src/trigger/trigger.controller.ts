@@ -19,13 +19,17 @@ import {
 } from '@nestjs/swagger'
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
 import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
+import { BundleService } from 'src/region/bundle.service'
 
 @ApiTags('Trigger')
 @Controller('apps/:appid/triggers')
 @ApiBearerAuth('Authorization')
 export class TriggerController {
   private readonly logger = new Logger(TriggerController.name)
-  constructor(private readonly triggerService: TriggerService) {}
+  constructor(
+    private readonly triggerService: TriggerService,
+    private readonly bundleService: BundleService,
+  ) {}
 
   /**
    * Create a cron trigger
@@ -38,6 +42,14 @@ export class TriggerController {
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post()
   async create(@Param('appid') appid: string, @Body() dto: CreateTriggerDto) {
+    // check trigger count limit
+    const bundle = await this.bundleService.findApplicationBundle(appid)
+    const LIMIT_COUNT = bundle?.resource?.limitCountOfTrigger || 0
+    const count = await this.triggerService.count(appid)
+    if (count >= LIMIT_COUNT) {
+      return ResponseUtil.error('Trigger count limit exceeded')
+    }
+
     // check cron expression
     const valid = this.triggerService.isValidCronExpression(dto.cron)
     if (!valid) {

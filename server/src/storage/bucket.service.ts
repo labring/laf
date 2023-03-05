@@ -41,6 +41,16 @@ export class BucketService {
     return bucket
   }
 
+  async count(appid: string) {
+    const count = await this.prisma.storageBucket.count({
+      where: {
+        appid,
+      },
+    })
+
+    return count
+  }
+
   async findOne(appid: string, name: string) {
     const bucket = await this.prisma.storageBucket.findFirst({
       where: {
