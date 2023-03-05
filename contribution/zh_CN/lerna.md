@@ -81,7 +81,7 @@ npm v7 及以后的版本，原生支持 monorepo。npm 将整个 laf 软件看�
 1. 顺着当前目录 `laf/a` 往上找，一直找到 `laf` 目录，发现这个目录里的 `package.json` 中声明了 laf 是一个母包，确定了母包范围。
 1. 然后检查这个母包的子包目录 `laf/a` 和 `laf/b` 进去看看这几个子包都叫什么名字，发现一个叫 `@lafjs/a` 另一个叫 `@lafjs/b`。
 
-于是 npm 知道了 `@lafjs/a` 和 `@lafjs/b` 都是母包 laf 的子包，然后就在 a 的 `node_modules` 中创建指向本地 b 目录的符号链接。
+于是 npm 知道了 `@lafjs/a` 和 `@lafjs/b` 都是母包 laf 的子包，然后就在母包的 `node_modules` 中创建指向本地 b 目录的符号链接，这样  `@lafjs/a` 就能能导入 b。并且由于符号链接位于母包的 `node_modules` 中而不是 a 的 `node_modules` 中，你可以在母包目录范围内随意复制或移动 a 和 b 的目录。
 
 整个过程都是 npm 原生支持的，解决了上文中的蛋疼问题 1：
 
