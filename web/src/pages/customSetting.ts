@@ -154,7 +154,11 @@ const useCustomSettingStore = create<State>()(
           });
         },
       })),
-      { name: "laf_custom_setting" },
+
+      {
+        name: "laf_custom_setting",
+        version: 1,
+      },
     ),
   ),
 );
