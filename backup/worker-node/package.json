@@ -1,0 +1,27 @@
+{
+  "name": "@lafjs/backup-worker-node",
+  "version": "0.0.1",
+  "main": "./build/worker-node.js",
+  "scripts": {
+    "build": "tsc -b ./src/tsconfig.json",
+    "clean": "rm -rf ./build",
+    "rebuild": "npm run clean && npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "set -a; . ./env.sh && node --enable-source-maps ./build/gateway",
+    "capture": "node ./build/tasks/capture/script",
+    "restore": "node ./build/tasks/restore/script",
+    "prepublishOnly": "npm run rebuild"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "author": "Zim",
+  "dependencies": {
+    "@lafjs/backup-interfaces": "^0.0.1",
+    "@lafjs/mongo-async-rpc": "^0.0.1",
+    "@types/node": "^14.18.37",
+    "@zimtsui/startable": "^0.0.4",
+    "mongodb": "^5.1.0"
+  },
+  "license": "LGPL-3.0"
+}
