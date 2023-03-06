@@ -7,7 +7,6 @@
     "url": "git+https://github.com/labring/laf.git"
   },
   "scripts": {
-    "install": "lerna exec npm install --parallel",
     "build": "lerna run build --parallel",
     "watch": "lerna run watch --parallel",
     "prepublishOnly": "npm run build",
@@ -37,5 +36,13 @@
   "dependencies": {
     "commander": "^9.2.0",
     "dotenv": "^10.0.0"
-  }
+  },
+  "workspaces": [
+    "./packages/*",
+    "./docs",
+    "./server",
+    "./web",
+    "./runtimes/nodejs",
+    "./cli"
+  ]
 }
