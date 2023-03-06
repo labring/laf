@@ -129,3 +129,64 @@ npm v6 及以前版本不原生支持 monorepo。因此两个蛋疼问题都得 
 
 - Lerna 连个删除依赖的命令都没有，必须手动修改 `package.json` 然后 `lerna bootstrap` 刷新。
 - 给子包安装依赖必须用 `--scope` 参数显式指定给哪个子包安装，即使你的当前目录是子包目录。而 npm 可以直接 cd 进子包目录和平时一样安装。
+
+## Migration
+
+由 Lerna 旧机制迁移至 Lerna 新机制很简单
+
+- 将 repo 根目录 `lerna.json` 中的 `packages` 字段内容移动到 repo 根目录 `packages.json` 中的 `workspaces` 字段中。
+- 在 repo 根目录 `lerna.json` 新增字段 `"useWorkspaces": true`
+
+迁移之后，如果要给子包安装依赖，直接 cd 进子包目录，然后用 `npm install` 像平时一样安装。
+
+但更新版本号时，不再像平时一样使用 `npm version` 而是使用 `lerna version`。
+
+同时，给整个项目所有子包安装依赖，也不再使用 `lerna exec --parallel npm install`，因为 npm 将各个子包的很多公共第三方依赖安装在母包根目录的 `node_modules`，并行安装可能造成一致性问题。
+
+### TSC
+
+如果某个子包使用 TypeScript 开发并使用 TSC 编译的话，在这个子包的 `tsconfig.json` 中新增字段 `"skipLibCheck": true`。
+
+这是因为 npm 将各个子包的很多公共第三方依赖安装在母包根目录的 `node_modules`，TSC 在编译某个你的子包时，发现某个 import 语句的 specifier 被 resolved 到母包的 `node_modules` 中，于是会顺便检查母包的 `node_modules` 中的所有声明文件，然而这些声明文件很多都是被其他子包依赖的，跟你这个子包一点关系都没有。
+
+举一个例子，假设母包 laf 下有两个子包 `@lafjs/a` 和 `@lafjs/b`。其中 a 是前端项目，b 是后端项目。
+
+```jsonc
+// tsconfig.json of `@lafjs/a`
+{
+	"compilerOptions": {
+		"lib": [
+			"dom"
+		]
+	}
+}
+```
+
+```jsonc
+// tsconfig.json of `@lafjs/b`
+{
+	"compilerOptions": {
+		"lib": [
+			"es2022"
+		]
+	}
+}
+```
+
+此时目录结构是
+
+```
+laf
+├── node_modules/
+├── a/
+└── b/
+```
+
+当你在 b 目录中运行 tsc 时，tsc 发现 b import 了某个 laf/node_modules 中的内容，于是检查 laf/node_modules 中的所有声明文件，发现某个被 a 依赖的包 `some-dependency-of-a` 的声明文件涉及了浏览器环境的全局对象 `Window`：
+
+```ts
+// laf/node_modules/some-dependency-of-a/build/index.d.ts
+export declare const abc: Window;
+```
+
+但 tsc 现在正在编译的是 b，tsc 发现 b 的 tsconfig.json 中没有 `"compilerOptions": { "lib": ["dom"] }`，于是编译报错。
