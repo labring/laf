@@ -91,7 +91,7 @@ npm v7 及以后的版本，原生支持 monorepo。npm 将整个 laf 软件看�
 
 	2. a 在更新对 b 的依赖版本时，得用 `npm install @lafjs/a@latest` 手动修改自己的依赖声明。
 
-于是 Lerna 专门用来解决 2。一旦你提交了 commit 修改了 b，然后在母包内任意目录运行 `lerna version patch`，Lerna 就会
+于是 Lerna 专门用来解决 2。一旦你提交了 commit 修改了 b，然后在母包内任意目录运行 `lerna version`，Lerna 就会
 
 1. 从当前目录往上找，确定母包范围。
 1. 检查母包所在 git repo，发现你提交的 commit 与上一次运行 `lerna version` 时相比修改了 b。
