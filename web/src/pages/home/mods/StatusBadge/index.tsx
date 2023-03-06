@@ -15,7 +15,7 @@ const colorScheme: {
   Stopping: "error",
   Stopped: "error",
   Restarting: "blue",
-  Created: "blue",
+  Created: "warn",
 };
 export default function StatusBadge(props: { statusConditions?: string; state?: string }) {
   const { statusConditions = APP_PHASE_STATUS.Started, state } = props;

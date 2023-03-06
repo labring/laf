@@ -65,7 +65,10 @@ export default function DeployButton() {
 
   return (
     <>
-      <Tooltip label={`快捷键: ${displayName.toUpperCase()}，调试可直接点击右侧「运行」按扭`}>
+      <Tooltip
+        label={`快捷键: ${displayName.toUpperCase()}，调试可直接点击右侧「运行」按扭`}
+        placement="bottom-end"
+      >
         <Button
           variant={"text"}
           isLoading={functionDetailQuery.isFetching}

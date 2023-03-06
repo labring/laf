@@ -31,5 +31,3 @@ docs/.vitepress/.temp
 
 update-changelog.sh
 runtimes/nodejs-esm
-
-/.vscode

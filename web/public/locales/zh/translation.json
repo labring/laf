@@ -103,7 +103,8 @@
     "FunctionNameRule": "函数名只能包含英文或 _",
     "EmptyDebugTip": "暂无运行结果",
     "EmptyFunctionTip": "您还没有创建函数",
-    "UploadButton": "上传"
+    "UploadButton": "上传",
+    "LeaveFunctionPage": "即将离开函数编辑页面"
   },
   "HomePanel": {
     "APP": "Android or iOS 应用",
@@ -124,7 +125,8 @@
     "WX": "微信小程序/公众号",
     "Welcome": "欢迎来到 LAF 云开发平台！",
     "DeleteApp": "删除 APP",
-    "DeleteTip": "你确定想要删除这个 App?"
+    "DeleteTip": "你确定想要删除这个 App?",
+    "Duration": "购买时长"
   },
   "LogPanel": {
     "Detail": "日志详情",
@@ -177,9 +179,9 @@
     "FolderName": "文件夹名称",
     "NameTip": "请输入文件夹名称",
     "Policy": "权限",
-    "Private": "私有",
-    "Readonly": "公共读",
-    "ReadWrite": "公共读写",
+    "Private": "私有 (private)",
+    "Readonly": "公共读 (readonly)",
+    "ReadWrite": "公共读写 (readwrite)",
     "SearchBucket": "输入 bucket 名进行搜索",
     "Size": "大小",
     "Storage": "存储",
@@ -262,5 +264,20 @@
   "Back": "返回",
   "Personal Access Token": "访问凭证 (PAT)",
   "SwitchLanguage": "切换语言",
-  "Storage": "云存储"
+  "Storage": "云存储",
+  "upload example": "文件上传示例",
+  "Unit": {
+    "CPU": "核",
+    "GB": "GB",
+    "MB": "MB"
+  },
+  "Spec": {
+    "RAM": "内存",
+    "Database": "数据库",
+    "Storage": "云存储",
+    "NetworkTraffic": "出网流量"
+  },
+  "Price": {
+    "Free": "免费"
+  }
 }

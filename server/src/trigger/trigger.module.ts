@@ -7,13 +7,12 @@ import { StorageModule } from 'src/storage/storage.module'
 import { HttpModule } from '@nestjs/axios'
 import { CronJobService } from './cron-job.service'
 import { TriggerTaskService } from './trigger-task.service'
-import { RegionModule } from 'src/region/region.module'
 import { FunctionService } from 'src/function/function.service'
 import { DatabaseService } from 'src/database/database.service'
 import { MongoService } from 'src/database/mongo.service'
 
 @Module({
-  imports: [StorageModule, HttpModule, RegionModule],
+  imports: [StorageModule, HttpModule],
   controllers: [TriggerController],
   providers: [
     TriggerService,

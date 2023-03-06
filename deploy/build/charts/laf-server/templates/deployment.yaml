@@ -57,6 +57,8 @@ spec:
               value: {{ .Values.apiServerUrl | quote}}
             - name: JWT_EXPIRES_IN
               value: {{ .Values.jwt.expires_in | quote}}
+            - name: DEFAULT_REGION_DATABASE_URL
+              value: {{ .Values.default_region.database_url | quote}}
             - name: DEFAULT_REGION_MINIO_DOMAIN
               value: {{ .Values.default_region.minio_domain }}
             - name: DEFAULT_REGION_MINIO_EXTERNAL_ENDPOINT

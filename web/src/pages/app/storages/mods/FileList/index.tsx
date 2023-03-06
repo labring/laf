@@ -4,7 +4,6 @@ import {
   Button,
   Center,
   HStack,
-  MenuButton,
   Spinner,
   Table,
   TableContainer,
@@ -76,15 +75,14 @@ export default function FileList() {
         <Panel.Header>
           <HStack spacing={2}>
             <UploadButton onUploadSuccess={() => query.refetch()}>
-              <MenuButton
+              <Button
                 size="sm"
                 variant="textGhost"
-                as={Button}
                 leftIcon={<BiCloudUpload fontSize={22} className="text-grayModern-500" />}
                 disabled={currentStorage === undefined}
               >
                 <p className="font-semibold">{t("StoragePanel.Upload")}</p>
-              </MenuButton>
+              </Button>
             </UploadButton>
             <CreateFolderModal onCreateSuccess={() => query.refetch()} />
             <Button
@@ -121,13 +119,11 @@ export default function FileList() {
             (query.data.length === 1 && query.data[0].Key === prefix) ? (
             <EmptyBox>
               <UploadButton onUploadSuccess={() => query.refetch()}>
-                <div>
+                <div className="text-lg">
                   <span>{t("StoragePanel.UploadTip")}</span>
-                  <MenuButton disabled={currentStorage === undefined}>
-                    <span className="ml-2 text-primary-600 hover:border-b-2 hover:border-primary-600 cursor-pointer">
-                      {t("StoragePanel.InstantUpload")}
-                    </span>
-                  </MenuButton>
+                  <span className="ml-2 text-primary-600 hover:border-b-2 hover:border-primary-600 cursor-pointer">
+                    {t("StoragePanel.InstantUpload")}
+                  </span>
                 </div>
               </UploadButton>
             </EmptyBox>

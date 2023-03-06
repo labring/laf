@@ -15,6 +15,7 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
         <Avatar
           size="sm"
           name={props.name}
+          src={props.avatar}
           bgColor="primary.500"
           color="white"
           boxShadow="base"

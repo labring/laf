@@ -7,12 +7,25 @@ type TLayoutConfig = {
   style: React.CSSProperties;
 };
 
-type functionPanel = "SideBar" | "RightPanel" | "DependencePanel" | "ConsolePanel" | "Bottom";
-type collectionPanel = "SideBar" | "Bottom" | "PolicyPanel";
-type page = "functionPage" | "collectionPage";
+type functionPanel =
+  | "SideBar"
+  | "RightPanel"
+  | "DependencePanel"
+  | "ConsolePanel"
+  | "Bottom"
+  | "RunningPanel"
+  | string;
+type collectionPanel = "SideBar" | "Bottom" | "PolicyPanel" | string;
+type storagePanel = "SideBar" | string;
+export type panel = functionPanel | collectionPanel | storagePanel;
+export type page = "functionPage" | "collectionPage" | "storagePage";
 
 type State = {
   layoutInfo: {
+    storagePage: {
+      // eslint-disable-next-line no-unused-vars
+      [K in storagePanel]: TLayoutConfig;
+    };
     functionPage: {
       // eslint-disable-next-line no-unused-vars
       [K in functionPanel]: TLayoutConfig;
@@ -22,8 +35,13 @@ type State = {
       [K in collectionPanel]: TLayoutConfig;
     };
   };
-
-  togglePanel: (pageId: page, panelId: functionPanel | collectionPanel) => void;
+  getLayoutInfo: (pageId: page, panelId: panel) => any;
+  setLayoutInfo: (
+    pageId: page,
+    panelId: panel,
+    position: { width: number; height: number },
+  ) => void;
+  togglePanel: (pageId: page, panelId: panel) => void;
 };
 
 const useCustomSettingStore = create<State>()(
@@ -35,26 +53,43 @@ const useCustomSettingStore = create<State>()(
             SideBar: {
               style: {
                 width: 300,
+                minWidth: 0,
+                maxWidth: 500,
               },
             },
 
             RightPanel: {
               style: {
                 width: 320,
+                minWidth: 0,
+                maxWidth: 500,
               },
             },
 
             DependencePanel: {
               style: {
                 height: 300,
+                minHeight: 45,
+                maxHeight: 500,
               },
             },
 
             ConsolePanel: {
               style: {
                 height: 200,
+                minHeight: 45,
+                maxHeight: 500,
               },
             },
+
+            RunningPanel: {
+              style: {
+                height: 200,
+                minHeight: 45,
+                maxHeight: 500,
+              },
+            },
+
             Bottom: {
               style: {
                 height: 40,
@@ -66,6 +101,8 @@ const useCustomSettingStore = create<State>()(
             SideBar: {
               style: {
                 width: 300,
+                minWidth: 0,
+                maxWidth: 500,
               },
             },
             CollectionPanel: {
@@ -75,11 +112,23 @@ const useCustomSettingStore = create<State>()(
             PolicyPanel: {
               style: {
                 height: 200,
+                minHeight: 45,
+                maxHeight: 500,
               },
             },
             Bottom: {
               style: {
                 height: 40,
+              },
+            },
+          },
+
+          storagePage: {
+            SideBar: {
+              style: {
+                width: 300,
+                minWidth: 0,
+                maxWidth: 800,
               },
             },
           },
@@ -90,6 +139,18 @@ const useCustomSettingStore = create<State>()(
             const display = state.layoutInfo[pageId];
             state.layoutInfo[pageId][panelId].style.display =
               display[panelId].style.display === "none" ? "flex" : "none";
+          });
+        },
+        getLayoutInfo: (pageId, panelId) => get().layoutInfo[pageId][panelId].style,
+        setLayoutInfo: (pageId, panelId, position: { width: number; height: number }) => {
+          set((state: any) => {
+            const { display, width } = state.layoutInfo[pageId][panelId].style;
+            if (display === "none") return;
+            if (width) {
+              state.layoutInfo[pageId][panelId].style.width = position.width;
+            } else {
+              state.layoutInfo[pageId][panelId].style.height = position.height;
+            }
           });
         },
       })),

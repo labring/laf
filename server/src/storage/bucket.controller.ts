@@ -25,6 +25,7 @@ import { ResponseUtil } from '../utils/response'
 import { CreateBucketDto } from './dto/create-bucket.dto'
 import { UpdateBucketDto } from './dto/update-bucket.dto'
 import { BucketService } from './bucket.service'
+import { BundleService } from 'src/region/bundle.service'
 
 @ApiTags('Storage')
 @ApiBearerAuth('Authorization')
@@ -32,7 +33,10 @@ import { BucketService } from './bucket.service'
 export class BucketController {
   private readonly logger = new Logger(BucketController.name)
 
-  constructor(private readonly bucketService: BucketService) {}
+  constructor(
+    private readonly bucketService: BucketService,
+    private readonly bundleService: BundleService,
+  ) {}
 
   /**
    * Create a new bucket
@@ -50,6 +54,16 @@ export class BucketController {
     @Req() req: IRequest,
   ) {
     const app = req.application
+
+    // check bucket count limit
+    const bundle = await this.bundleService.findApplicationBundle(appid)
+    const LIMIT_COUNT = bundle?.resource?.limitCountOfBucket || 0
+    const count = await this.bucketService.count(appid)
+    if (count >= LIMIT_COUNT) {
+      return ResponseUtil.error(
+        `bucket count limit exceeded, limit: ${LIMIT_COUNT}`,
+      )
+    }
 
     // check if the bucket name is unique
     const found = await this.bucketService.findOne(appid, dto.fullname(appid))

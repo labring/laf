@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "packages": [
     "./packages/*",
     "./backup/*",
@@ -10,7 +11,10 @@
     "./packages/@lafjs/*",
     "./@lafjs/*"
   ],
+=======
+>>>>>>> upstream/main
   "version": "1.0.0-beta.3",
+  "useWorkspaces": true,
   "command": {
     "publish": {
       "ignoreChanges": [

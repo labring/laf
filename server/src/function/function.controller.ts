@@ -25,13 +25,16 @@ import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import { FunctionService } from './function.service'
 import { IRequest } from '../utils/interface'
 import { CompileFunctionDto } from './dto/compile-function.dto'
-import { MAX_FUNCTION_COUNT } from 'src/constants'
+import { BundleService } from 'src/region/bundle.service'
 
 @ApiTags('Function')
 @ApiBearerAuth('Authorization')
 @Controller('apps/:appid/functions')
 export class FunctionController {
-  constructor(private readonly functionsService: FunctionService) {}
+  constructor(
+    private readonly functionsService: FunctionService,
+    private readonly bundleService: BundleService,
+  ) {}
 
   /**
    * Create a new function
@@ -59,8 +62,10 @@ export class FunctionController {
     }
 
     // check if meet the count limit
+    const bundle = await this.bundleService.findApplicationBundle(appid)
+    const MAX_FUNCTION_COUNT = bundle?.resource?.limitCountOfCloudFunction || 0
     const count = await this.functionsService.count(appid)
-    if (count > MAX_FUNCTION_COUNT) {
+    if (count >= MAX_FUNCTION_COUNT) {
       return ResponseUtil.error(`function count limit is ${MAX_FUNCTION_COUNT}`)
     }
 

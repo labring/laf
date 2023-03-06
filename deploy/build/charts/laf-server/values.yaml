@@ -7,6 +7,8 @@ databaseUrl: ""
 apiServerUrl: ""
 # init default region conf
 default_region:
+  # db conf
+  database_url: ""
   # minio conf
   minio_domain: ""
   minio_external_endpoint: ""

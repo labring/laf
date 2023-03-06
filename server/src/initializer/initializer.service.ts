@@ -34,7 +34,7 @@ export class InitializerService {
         databaseConf: {
           set: {
             driver: 'mongodb',
-            connectionUri: ServerConfig.DATABASE_URL,
+            connectionUri: ServerConfig.DEFAULT_REGION_DATABASE_URL,
           },
         },
         storageConf: {
@@ -79,13 +79,23 @@ export class InitializerService {
         name: 'standard',
         displayName: 'Standard',
         resource: {
-          limitCPU: 0.5 * CPU_UNIT,
-          limitMemory: 256,
+          limitCPU: 1 * CPU_UNIT,
+          limitMemory: 512,
           requestCPU: 0.05 * CPU_UNIT,
           requestMemory: 128,
+
           databaseCapacity: 1024,
           storageCapacity: 1024 * 5,
           networkTrafficOutbound: 1024 * 5,
+
+          limitCountPerUser: 50,
+          limitCountOfCloudFunction: 500,
+          limitCountOfBucket: 10,
+          limitCountOfDatabasePolicy: 10,
+          limitCountOfTrigger: 10,
+
+          limitDatabaseTPS: 100,
+          limitStorageTPS: 1000,
         },
         priority: 0,
         region: {

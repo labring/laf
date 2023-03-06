@@ -100,13 +100,23 @@ model Region {
 }
 
 type BundleResource {
-  limitCPU               Int // 1000 = 1 core
-  limitMemory            Int // in MB
-  requestCPU             Int // 1000 = 1 core
-  requestMemory          Int // in MB
+  limitCPU      Int // 1000 = 1 core
+  limitMemory   Int // in MB
+  requestCPU    Int // 1000 = 1 core
+  requestMemory Int // in MB
+
   databaseCapacity       Int // in MB
   storageCapacity        Int // in MB
   networkTrafficOutbound Int // in MB
+
+  limitCountPerUser          Int // limit count of application per user could create
+  limitCountOfCloudFunction  Int // limit count of cloud function per application
+  limitCountOfBucket         Int // limit count of bucket per application
+  limitCountOfDatabasePolicy Int // limit count of database policy per application
+  limitCountOfTrigger        Int // limit count of trigger per application
+
+  limitDatabaseTPS Int // limit count of database TPS per application
+  limitStorageTPS  Int // limit count of storage TPS per application
 }
 
 model Bundle {

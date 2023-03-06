@@ -2,9 +2,6 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import {
-  Menu,
-  MenuItem,
-  MenuList,
   Modal,
   ModalCloseButton,
   ModalContent,
@@ -29,46 +26,25 @@ function UploadButton(props: { onUploadSuccess: Function; children: React.ReactE
   const { currentStorage, prefix } = useStorageStore();
   const { showSuccess } = useGlobalStore();
   const { uploadFile } = useAwsS3();
-  const [uploadType, setUploadType] = React.useState<"file" | "folder">("file");
   const [fileList, setFileList] = React.useState<TFileItem[]>([]);
   const { t } = useTranslation();
   const { onUploadSuccess, children } = props;
   return (
     <div>
-      <Menu placement="bottom-start">
-        {React.cloneElement(children)}
-        <MenuList minW={24}>
-          <MenuItem
-            onClick={() => {
-              setUploadType("file");
-              setFileList([]);
-              onOpen();
-            }}
-          >
-            {t("StoragePanel.File")}
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              setUploadType("folder");
-              setFileList([]);
-              onOpen();
-            }}
-          >
-            {t("StoragePanel.Folder")}
-          </MenuItem>
-        </MenuList>
-      </Menu>
+      {React.cloneElement(children, {
+        onClick: () => {
+          setFileList([]);
+          onOpen();
+        },
+      })}
 
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>
-            {uploadType === "file" ? t("StoragePanel.UploadFile") : t("StoragePanel.UploadFolder")}
-          </ModalHeader>
+          <ModalHeader>{t("StoragePanel.UploadFile")}</ModalHeader>
           <ModalCloseButton />
           <div className="p-6">
             <FileUpload
-              uploadType={uploadType}
               onUpload={async (files) => {
                 console.log(files);
                 const newFileList = Array.from(files).map((item: any) => {

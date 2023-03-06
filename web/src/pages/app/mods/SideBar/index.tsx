@@ -2,6 +2,7 @@
  * cloud functions SideBar menu
  ***************************/
 
+import { useCallback, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Center } from "@chakra-ui/react";
 import clsx from "clsx";
@@ -26,6 +27,28 @@ export default function SideBar() {
   const { pageId } = useParams();
   const navigate = useNavigate();
   const { currentApp, setCurrentPage, userInfo } = useGlobalStore();
+
+  const blockLeavePage = useCallback((pageId: any) => {
+    if (window.location.pathname.includes("/function") && pageId !== "function") {
+      // eslint-disable-next-line no-alert
+      return pageId === "" ? true : !window.confirm(String(t("FunctionPanel.LeaveFunctionPage")));
+    } else {
+      return false;
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleTabClose = (event: any) => {
+      if (blockLeavePage("")) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handleTabClose);
+    return () => {
+      window.removeEventListener("beforeunload", handleTabClose);
+    };
+  }, [blockLeavePage]);
 
   const ICONS: TIcon[] = [
     {
@@ -94,7 +117,9 @@ export default function SideBar() {
                     }}
                     className="cursor-pointer"
                     onClick={() => {
-                      navigate("/");
+                      if (!blockLeavePage(item.pageId)) {
+                        navigate("/");
+                      }
                     }}
                   >
                     {item.component}
@@ -110,8 +135,10 @@ export default function SideBar() {
                   })}
                   onClick={() => {
                     if (item.name !== undefined) {
-                      setCurrentPage(item.pageId);
-                      navigate(`/app/${currentApp?.appid}/${item.pageId}`);
+                      if (!blockLeavePage(item.pageId)) {
+                        setCurrentPage(item.pageId);
+                        navigate(`/app/${currentApp?.appid}/${item.pageId}`);
+                      }
                     }
                   }}
                 >
