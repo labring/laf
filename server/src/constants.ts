@@ -109,8 +109,8 @@ export class ServerConfig {
     return process.env.DEFAULT_REGION_WEBSITE_DOMAIN || 'localhost'
   }
 
-  static get DEFAULT_REGION_TLS() {
-    return process.env.DEFAULT_REGION_TLS || 'false'
+  static get DEFAULT_REGION_TLS(): boolean {
+    return process.env.DEFAULT_REGION_TLS === 'true'
   }
 
   static get DEFAULT_REGION_APISIX_PUBLIC_PORT() {

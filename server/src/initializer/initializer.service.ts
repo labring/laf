@@ -27,7 +27,7 @@ export class InitializerService {
       data: {
         name: 'default',
         displayName: 'Default',
-        tls: false,
+        tls: ServerConfig.DEFAULT_REGION_TLS,
         clusterConf: {
           driver: 'kubernetes',
         },
