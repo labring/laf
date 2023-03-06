@@ -1,6 +1,7 @@
 {
   "packages": [
     "./packages/*",
+    "./backup/*",
     "./docs",
     "./server",
     "./web",
