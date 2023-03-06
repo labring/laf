@@ -7,6 +7,7 @@
 		],
 		"sourceMap": true,
 		"strict": true,
-		"experimentalDecorators": true
+		"experimentalDecorators": true,
+		"skipLibCheck": true
 	}
 }

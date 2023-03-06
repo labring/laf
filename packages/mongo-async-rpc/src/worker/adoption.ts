@@ -14,20 +14,20 @@ export class Adoption {
 	 *  @throws {@link Adoption.OrphanNotFound}
 	 */
 	public async adopt<
-		method extends string,
+		methodName extends string,
 		params extends readonly unknown[],
 	>(
-		method: method,
+		methodName: methodName,
 		cancellable: boolean,
-	): Promise<Document.Adopted<method, params>> {
-		type adopted = Document.Adopted<method, params>;
-		let newDoc: Document.Adopted<method, params> | null;
+	): Promise<Document.Adopted<methodName, params>> {
+		type adopted = Document.Adopted<methodName, params>;
+		let newDoc: Document.Adopted<methodName, params> | null;
 
 		const session = this.host.startSession();
 		try {
 			session.startTransaction();
 			({ value: newDoc } = await this.coll.findOneAndUpdate({
-				'request.method': method,
+				'request.method': methodName,
 				'state': Document.State.ORPHAN,
 			}, {
 				$set: {

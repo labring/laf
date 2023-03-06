@@ -8,15 +8,15 @@ import { RpFactoryLike } from "./rp-factory-like";
 
 
 export class RpManager<
-	method extends string,
+	methodName extends string,
 	params extends readonly unknown[],
 	result,
 > {
 	private broadcast = new EventEmitter();
 
 	public constructor(
-		private stream: ChangeStream<Document, ChangeStreamDocument<Document>>,
 		private coll: Collection<Document>,
+		private stream: ChangeStream<Document, ChangeStreamDocument<Document>>,
 		private rpFactory: RpFactoryLike<params, result>,
 	) { }
 
@@ -42,9 +42,9 @@ export class RpManager<
 	 *  @throws {@link RpManager.ResultNotThrown}
 	 */
 	public async call(
-		doc: Document.Adopted<method, params>,
+		doc: Document.Adopted<methodName, params>,
 	): Promise<result> {
-		let ee: DeltaStream<Document.Cancelled<method, params>> | null = null;
+		let ee: DeltaStream<Document.Cancelled<methodName, params>> | null = null;
 		const rp = this.rpFactory(...doc.request.params);
 		try {
 			await rp.start();

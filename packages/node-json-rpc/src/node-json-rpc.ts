@@ -3,9 +3,9 @@ import * as Generic from './json-rpc';
 export import Obj = Generic.Obj;
 
 export type Req<
-	method extends string,
+	methodName extends string,
 	params extends readonly unknown[],
-> = Generic.Req<string, method, params>;
+> = Generic.Req<string, methodName, params>;
 
 
 export type Res<

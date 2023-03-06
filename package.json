@@ -43,6 +43,7 @@
     "./server",
     "./web",
     "./runtimes/nodejs",
-    "./cli"
+    "./cli",
+    "./backup/*"
   ]
 }

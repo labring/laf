@@ -15,14 +15,14 @@ export class Submission {
 	 *  @throws {@link Submission.Locked}
 	 */
 	public async submit<
-		method extends string,
+		methodName extends string,
 		params extends readonly unknown[],
 	>(
-		method: method,
+		methodName: methodName,
 		params: params,
 		lock?: string,
-	): Promise<Document.Orphan<method, params>> {
-		type orphan = Document.Orphan<method, params>;
+	): Promise<Document.Orphan<methodName, params>> {
+		type orphan = Document.Orphan<methodName, params>;
 
 		const _id = new ObjectId();
 		const id = _id.toHexString();
@@ -40,7 +40,7 @@ export class Submission {
 				request: {
 					jsonrpc: '2.0',
 					id,
-					method,
+					method: methodName,
 					params,
 				},
 				lock,

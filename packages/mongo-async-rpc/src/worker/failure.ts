@@ -4,7 +4,7 @@ import { Document } from "../document";
 import * as JsonRpc from '@lafjs/node-json-rpc';
 
 
-export class Success {
+export class Failure {
 	public constructor(
 		private host: MongoClient,
 		private db: Db,
@@ -12,15 +12,14 @@ export class Success {
 	) { }
 
 	/**
-	 *  @throws {@link Success.AdoptedTaskNotFound}
+	 *  @throws {@link Failure.AdoptedTaskNotFound}
 	 */
-	public async succeed<
-		method extends string,
+	public async fail<
+		methodName extends string,
 		params extends readonly unknown[],
-		result,
 	>(
-		doc: Document.Adopted<method, params>,
-		result: result,
+		doc: Document.Adopted<methodName, params>,
+		err: Error,
 	) {
 		let modifiedCount: number;
 
@@ -28,18 +27,25 @@ export class Success {
 		try {
 			session.startTransaction();
 
-			const res: JsonRpc.Res.Succ<result> = {
+			const res: JsonRpc.Res.Fail = {
 				jsonrpc: '2.0',
 				id: doc.request.id,
-				result,
+				error: {
+					code: 0,
+					message: err.message,
+					data: {
+						name: err.name,
+						stack: err.stack!,
+					},
+				},
 			};
 			({ modifiedCount } = await this.coll.updateOne({
 				_id: doc._id,
 				state: Document.State.ADOPTED,
 			}, {
 				$set: {
-					'state': Document.State.SUCCEEDED,
-					'succeedTime': Date.now(),
+					'state': Document.State.FAILED,
+					'failTime': Date.now(),
 					'response': res,
 				}
 			}, { session }));
@@ -56,8 +62,8 @@ export class Success {
 	}
 }
 
-export namespace Success {
+export namespace Failure {
 	export class AdoptedTaskNotFound extends Error { }
 }
 
-import AdoptedTaskNotFound = Success.AdoptedTaskNotFound;
+import AdoptedTaskNotFound = Failure.AdoptedTaskNotFound;

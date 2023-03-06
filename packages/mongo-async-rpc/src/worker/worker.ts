@@ -1,4 +1,4 @@
-import { ChangeStream, ChangeStreamDocument, Collection } from "mongodb";
+import { ChangeStream, ChangeStreamDocument, Collection, Db, MongoClient } from "mongodb";
 import { Document } from "../document";
 import { Adoption } from "./adoption";
 import { Failure } from "./failure";
@@ -10,27 +10,33 @@ import { RpManager } from "./rp-manager";
 import { RpFactoryLike } from "./rp-factory-like";
 
 
-export class RpWorker<
-	method extends string,
+export class Worker<
+	methodName extends string,
 	params extends readonly unknown[],
 	result,
 >  {
+	private adoption: Adoption;
+	private success: Success;
+	private failure: Failure;
 	private pollerloop: Pollerloop;
-	private rpManager = new RpManager(this.stream, this.coll, this.rpFactory);
+	private rpManager = new RpManager(this.coll, this.stream, this.rpFactory);
 
 	/**
 	*  @param stream `coll.watch([], { fullDocument: 'updateLookup' })`
 	*/
 	public constructor(
+		private host: MongoClient,
+		private db: Db,
 		private coll: Collection<Document>,
 		private stream: ChangeStream<Document, ChangeStreamDocument<Document>>,
-		private adoption: Adoption,
-		private success: Success,
-		private failure: Failure,
-		private method: method,
+		private methodName: methodName,
 		private rpFactory: RpFactoryLike<params, result>,
 		private cancellable = false,
 	) {
+		this.adoption = new Adoption(this.host, this.db, this.coll);
+		this.success = new Success(this.host, this.db, this.coll);
+		this.failure = new Failure(this.host, this.db, this.coll);
+
 		this.pollerloop = new Pollerloop(this.loop, nodeTimeEngine);
 		this.stream.on('error', $(this).stop);
 	}
@@ -38,11 +44,11 @@ export class RpWorker<
 	private onInsert = async (notif: ChangeStreamDocument<Document>) => {
 		try {
 			if (notif.operationType !== 'insert') return;
-			if (notif.fullDocument.request.method !== this.method) return;
+			if (notif.fullDocument.request.method !== this.methodName) return;
 
-			let doc: Document.Adopted<method, params>;
+			let doc: Document.Adopted<methodName, params>;
 			try {
-				doc = await this.adoption.adopt<method, params>(this.method, this.cancellable);
+				doc = await this.adoption.adopt<methodName, params>(this.methodName, this.cancellable);
 			} catch (err) {
 				if (err instanceof Adoption.OrphanNotFound) return;
 				throw err;
@@ -54,7 +60,7 @@ export class RpWorker<
 	}
 
 	private async handleDoc(
-		doc: Document.Adopted<method, params>,
+		doc: Document.Adopted<methodName, params>,
 	) {
 		try {
 			let result: result;
@@ -80,7 +86,7 @@ export class RpWorker<
 	private loop: Pollerloop.Loop = async sleep => {
 		try {
 			for (; ; await sleep(0)) {
-				const doc = await this.adoption.adopt<method, params>(this.method, this.cancellable);
+				const doc = await this.adoption.adopt<methodName, params>(this.methodName, this.cancellable);
 				this.handleDoc(doc).catch($(this).stop);
 			}
 		} catch (err) {

@@ -32,15 +32,15 @@ export class Inquiry {
 	}
 
 	private async find<
-		method extends string,
+		methodName extends string,
 		params extends readonly unknown[],
 		result,
 	>(
 		id: string,
-	): Promise<Document<method, params, result>> {
+	): Promise<Document<methodName, params, result>> {
 		const doc = await this.coll.findOne({
 			_id: ObjectId.createFromHexString(id),
-		}) as Document<method, params, result> | null;
+		}) as Document<methodName, params, result> | null;
 		assert(doc !== null, new NotFound());
 		return doc;
 	}
@@ -49,12 +49,12 @@ export class Inquiry {
 	 *  @throws {@link Inquiry.NotFound}
 	 */
 	public inquire<
-		method extends string,
+		methodName extends string,
 		params extends readonly unknown[],
 		result,
 	>(
 		id: string,
-	): DeltaStream<Document<method, params, result>> {
+	): DeltaStream<Document<methodName, params, result>> {
 		return new DeltaStream(
 			this.find(id).then(doc => [doc]),
 			this.broadcast,

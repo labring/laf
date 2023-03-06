@@ -3,10 +3,11 @@
 		"target": "es2020",
 		"module": "CommonJS",
 		"lib": [
-			"esnext"
+			"esnext",
 		],
 		"sourceMap": true,
 		"strict": true,
-		"experimentalDecorators": true
+		"experimentalDecorators": true,
+		"skipLibCheck": true
 	}
 }
