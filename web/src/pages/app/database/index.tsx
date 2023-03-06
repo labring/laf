@@ -8,7 +8,6 @@ import { Col, Row } from "@/components/Grid";
 import Panel from "@/components/Panel";
 import Resize from "@/components/Resize";
 
-import BottomPanel from "./BottomPanel";
 import CollectionDataList from "./CollectionDataList";
 import CollectionListPanel from "./CollectionListPanel";
 import PolicyDataList from "./PolicyDataList";
@@ -43,9 +42,6 @@ function DatabasePage() {
             {store.currentShow === "DB" ? <CollectionDataList /> : <PolicyDataList />}
           </Panel>
         </Col>
-      </Row>
-      <Row {...settingStore.layoutInfo.collectionPage.Bottom}>
-        <BottomPanel />
       </Row>
     </Content>
   );

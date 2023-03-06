@@ -2,7 +2,7 @@
  * cloud functions SideBar menu
  ***************************/
 
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Center } from "@chakra-ui/react";
 import clsx from "clsx";
@@ -28,18 +28,9 @@ export default function SideBar() {
   const navigate = useNavigate();
   const { currentApp, setCurrentPage, userInfo } = useGlobalStore();
 
-  const blockLeavePage = useCallback((pageId: any) => {
-    if (window.location.pathname.includes("/function") && pageId !== "function") {
-      // eslint-disable-next-line no-alert
-      return pageId === "" ? true : !window.confirm(String(t("FunctionPanel.LeaveFunctionPage")));
-    } else {
-      return false;
-    }
-  }, []);
-
   useEffect(() => {
     const handleTabClose = (event: any) => {
-      if (blockLeavePage("")) {
+      if (pageId === Pages.function) {
         event.preventDefault();
         event.returnValue = "";
       }
@@ -48,7 +39,7 @@ export default function SideBar() {
     return () => {
       window.removeEventListener("beforeunload", handleTabClose);
     };
-  }, [blockLeavePage]);
+  }, [pageId]);
 
   const ICONS: TIcon[] = [
     {
@@ -117,9 +108,7 @@ export default function SideBar() {
                     }}
                     className="cursor-pointer"
                     onClick={() => {
-                      if (!blockLeavePage(item.pageId)) {
-                        navigate("/");
-                      }
+                      navigate("/");
                     }}
                   >
                     {item.component}
@@ -135,10 +124,8 @@ export default function SideBar() {
                   })}
                   onClick={() => {
                     if (item.name !== undefined) {
-                      if (!blockLeavePage(item.pageId)) {
-                        setCurrentPage(item.pageId);
-                        navigate(`/app/${currentApp?.appid}/${item.pageId}`);
-                      }
+                      setCurrentPage(item.pageId);
+                      navigate(`/app/${currentApp?.appid}/${item.pageId}`);
                     }
                   }}
                 >
