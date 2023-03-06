@@ -145,7 +145,15 @@ npm v6 及以前版本不原生支持 monorepo。因此两个蛋疼问题都得 
 
 ### TSC
 
-如果某个子包使用 TypeScript 开发并使用 TSC 编译的话，在这个子包的 `tsconfig.json` 中新增字段 `"skipLibCheck": true`。
+如果某个子包使用 TypeScript 开发并使用 TSC 编译的话，在这个子包的 `tsconfig.json` 中新增字段
+
+```jsonc
+{
+	"compilerOptions": {
+		"skipLibCheck": true
+	}
+}
+```
 
 这是因为 npm 将各个子包的很多公共第三方依赖安装在母包根目录的 `node_modules`，TSC 在编译某个你的子包时，发现某个 import 语句的 specifier 被 resolved 到母包的 `node_modules` 中，于是会顺便检查母包的 `node_modules` 中的所有声明文件，然而这些声明文件很多都是被其他子包依赖的，跟你这个子包一点关系都没有。
 
