@@ -9,17 +9,16 @@
 /* 设置滚动条的样式 */
 ::-webkit-scrollbar {
   width: 4px;
+  height: 6px;
 }
 /* 滚动槽 */
 ::-webkit-scrollbar-track {
-  box-shadow: inset006pxrgba(0, 0, 0, 0.3);
   border-radius: 2px;
 }
 /* 滚动条滑块 */
 ::-webkit-scrollbar-thumb {
   border-radius: 4px;
   background: rgba(0, 0, 0, 0.5);
-  box-shadow: inset006pxrgba(0, 0, 0, 0.5);
 }
 
 html,

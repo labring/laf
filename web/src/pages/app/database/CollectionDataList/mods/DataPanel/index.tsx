@@ -257,13 +257,12 @@ export default function DataPanel() {
                   showBg
                   tooltip={t("Copy").toString()}
                   size={32}
-                  className="ml-2 hover:bg-rose-100 group/icon"
+                  className="ml-2 hover:bg-gray-200 group/icon"
                 >
                   <CopyText
                     hideToolTip
                     text={JSON.stringify(newData, null, 2)}
                     tip={String(t("Copied"))}
-                    className="group-hover/icon:text-error-500"
                   >
                     <CopyIcon />
                   </CopyText>

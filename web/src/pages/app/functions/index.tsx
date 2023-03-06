@@ -8,7 +8,6 @@ import Content from "@/components/Content";
 import { Col, Row } from "@/components/Grid";
 import Resize from "@/components/Resize";
 
-import BottomPanel from "./mods/BottomPanel";
 import ConsolePanel from "./mods/ConsolePanel";
 import DebugPanel from "./mods/DebugPanel";
 import DependencePanel from "./mods/DependencePanel";
@@ -61,9 +60,6 @@ function FunctionPage() {
         <Col {...functionPageConfig.RightPanel}>
           <DebugPanel containerRef={containerRef} />
         </Col>
-      </Row>
-      <Row {...functionPageConfig.Bottom}>
-        <BottomPanel />
       </Row>
     </Content>
   );

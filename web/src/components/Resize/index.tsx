@@ -44,7 +44,7 @@ export default function Resize(props: {
           }
           {...separatorProps}
         >
-          <Center className="w-full h-full">
+          <Center className="w-full h-full relative">
             {type === "x" && width <= 20 ? (
               <div
                 className={clsx(
@@ -55,14 +55,22 @@ export default function Resize(props: {
                 {reverse ? <ChevronLeftIcon fontSize={10} /> : <ChevronRightIcon fontSize={10} />}
               </div>
             ) : (
-              <div
-                className={clsx(
-                  type === "x" && isDragging ? "h-full " : "h-0",
-                  type === "y" && isDragging ? "w-full " : "w-0",
-                  isDragging ? " border-primary-400 " : "",
-                  "border-l-2 border-t-2 transition-all",
-                )}
-              ></div>
+              <>
+                <div
+                  className={clsx(
+                    type === "x" && isDragging ? "h-full " : "h-0",
+                    type === "y" && isDragging ? "w-full " : "w-0",
+                    isDragging ? " border-primary-400 border" : "",
+                    "transition-all absolute z-10 overflow-hidden",
+                  )}
+                ></div>
+                <div
+                  className={clsx(
+                    type === "x" ? "h-[18px]" : "w-[18px]",
+                    " border rounded border-slate-300 absolute",
+                  )}
+                ></div>
+              </>
             )}
           </Center>
         </div>

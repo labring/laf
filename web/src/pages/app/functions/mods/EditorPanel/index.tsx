@@ -24,9 +24,9 @@ function EditorPanel() {
   const functionListQuery = useFunctionListQuery();
 
   return (
-    <Panel className="flex-1 flex-grow">
+    <Panel className="flex-1 flex-grow px-0">
       {currentFunction?.name ? (
-        <Panel.Header style={{ borderBottom: "2px solid #F4F6F8" }} className="!mb-3 h-[50px]">
+        <Panel.Header style={{ borderBottom: "2px solid #F4F6F8" }} className="!mb-3 h-[50px] px-2">
           <HStack maxW={"60%"} spacing={2}>
             <CopyText className="font-bold text-lg" text={currentFunction?.name}>
               <span>{currentFunction?.name}</span>
