@@ -18,14 +18,15 @@ import { ensureDirectory, exist } from '../../util/file'
 
 import { refreshSecretConfig } from '../../config/secret'
 import { getEmoji } from '../../util/print'
+import { formatDate } from '../../util/format'
 
 export async function list() {
   const table = new Table({
-    head: ['appid', 'name', 'region', 'bundle', 'runtime', 'phase'],
+    head: ['appid', 'name', 'state', 'createdAt'],
   })
   const data = await applicationControllerFindAll()
   for (let item of data) {
-    table.push([item.appid, item.name, item.regionName, item.bundleName, item.runtimeName, item.phase])
+    table.push([item.appid, item.name, item.state, formatDate(item.createdAt)])
   }
   console.log(table.toString())
 }
