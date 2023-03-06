@@ -35,7 +35,7 @@ export default function CollectionListPanel() {
 
   return (
     <Panel
-      className="flex-grow overflow-hidden"
+      className="flex-grow overflow-hidden min-w-[200px]"
       onClick={() => {
         store.setCurrentShow("DB");
       }}

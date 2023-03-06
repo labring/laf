@@ -28,6 +28,7 @@ export default function PolicyListPanel() {
   });
   return (
     <Panel
+      className="min-w-[200px]"
       onClick={() => {
         store.setCurrentShow("Policy");
       }}

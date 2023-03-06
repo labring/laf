@@ -18,6 +18,7 @@ import { keyBy, mapValues } from "lodash";
 
 import { Row } from "@/components/Grid";
 import Panel from "@/components/Panel";
+import Resize from "@/components/Resize";
 import { Pages } from "@/constants";
 
 import { useCompileMutation } from "../../service";
@@ -30,11 +31,12 @@ import HeaderParamsTab from "./QueryParamsTab";
 import { TMethod } from "@/apis/typing";
 import useFunctionCache from "@/hooks/useFunctionCache";
 import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
+import useCustomSettingStore from "@/pages/customSetting";
 import useGlobalStore from "@/pages/globalStore";
 
 const HAS_BODY_PARAMS_METHODS: (TMethod | undefined)[] = ["POST", "PUT", "PATCH", "DELETE"];
 
-export default function DebugPanel() {
+export default function DebugPanel(props: { containerRef: any }) {
   const { getFunctionUrl, currentFunction, setCurrentRequestId } = useFunctionStore(
     (state) => state,
   );
@@ -51,7 +53,7 @@ export default function DebugPanel() {
   const [queryParams, setQueryParams] = useState([]);
   const [bodyParams, setBodyParams] = useState<{ contentType: string; data: any }>();
   const [headerParams, setHeaderParams] = useState([]);
-
+  const functionPageConfig = useCustomSettingStore((store) => store.layoutInfo.functionPage);
   const { displayName } = useHotKey(
     DEFAULT_SHORTCUTS.send_request,
     () => {
@@ -104,7 +106,7 @@ export default function DebugPanel() {
 
   return (
     <>
-      <Panel className="flex-grow overflow-hidden">
+      <Panel className="flex-grow overflow-hidden min-w-[200px]">
         <Tabs width="100%" colorScheme={"primary"} display="flex" flexDirection={"column"} h="full">
           <TabList h={"50px"}>
             <Tab px="0">
@@ -217,8 +219,15 @@ export default function DebugPanel() {
           </TabPanels>
         </Tabs>
       </Panel>
-      <Row style={{ height: "300px", overflow: "auto" }}>
-        <Panel>
+      <Resize
+        type="y"
+        pageId="functionPage"
+        panelId="RunningPanel"
+        reverse
+        containerRef={props.containerRef}
+      />
+      <Row {...functionPageConfig.RunningPanel}>
+        <Panel className="min-w-[200px]">
           <Panel.Header title={t("FunctionPanel.DebugResult")} />
           <div className="relative flex-1 overflow-auto">
             {isLoading ? (

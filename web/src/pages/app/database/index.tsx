@@ -1,9 +1,12 @@
 /****************************
  * cloud functions database page
  ***************************/
+import { useRef } from "react";
+
 import Content from "@/components/Content";
 import { Col, Row } from "@/components/Grid";
 import Panel from "@/components/Panel";
+import Resize from "@/components/Resize";
 
 import BottomPanel from "./BottomPanel";
 import CollectionDataList from "./CollectionDataList";
@@ -15,17 +18,26 @@ import useDBMStore from "./store";
 
 import useCustomSettingStore from "@/pages/customSetting";
 function DatabasePage() {
+  const containerRef = useRef<HTMLDivElement>(null);
   const store = useDBMStore((state) => state);
   const settingStore = useCustomSettingStore();
   return (
     <Content>
-      <Row className="flex-grow overflow-hidden">
+      <Row className="flex-grow" ref={containerRef}>
         <Col {...settingStore.layoutInfo.collectionPage.SideBar}>
           <CollectionListPanel />
+          <Resize
+            type="y"
+            pageId="collectionPage"
+            panelId="PolicyPanel"
+            reverse
+            containerRef={containerRef}
+          />
           <Row {...settingStore.layoutInfo.collectionPage.PolicyPanel}>
             <PolicyListPanel />
           </Row>
         </Col>
+        <Resize type="x" pageId="collectionPage" panelId="SideBar" containerRef={containerRef} />
         <Col>
           <Panel className="items-center h-full">
             {store.currentShow === "DB" ? <CollectionDataList /> : <PolicyDataList />}

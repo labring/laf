@@ -114,7 +114,7 @@ export default function FunctionList() {
       setTagsList(newTagsList);
     };
     return (
-      <div className="w-full mt-2 flex flex-wrap justify-start items-center">
+      <div className="w-full mt-2 flex flex-wrap justify-start items-center min-w-[200px]">
         {selectTags.map((item) => (
           <Tag className="mr-2 mb-2 cursor-pointer" key={item.tagName} variant="inputTag">
             <TagLabel>{item.tagName}</TagLabel>
@@ -131,7 +131,7 @@ export default function FunctionList() {
   };
 
   return (
-    <Panel className="flex-grow overflow-hidden">
+    <Panel className="flex-grow overflow-hidden min-w-[250px]">
       <Panel.Header
         title={t`FunctionPanel.FunctionList`}
         actions={[

@@ -37,7 +37,7 @@ export default function DependenceList() {
   });
 
   return (
-    <Panel>
+    <Panel className="min-w-[250px]">
       <Panel.Header
         title={t("FunctionPanel.Dependence")}
         actions={[<AddDependenceModal key="AddDependenceModal" />]}
