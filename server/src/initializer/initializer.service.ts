@@ -34,7 +34,7 @@ export class InitializerService {
         databaseConf: {
           set: {
             driver: 'mongodb',
-            connectionUri: ServerConfig.DATABASE_URL,
+            connectionUri: ServerConfig.DEFAULT_REGION_DATABASE_URL,
           },
         },
         storageConf: {

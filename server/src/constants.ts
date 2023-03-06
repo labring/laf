@@ -96,6 +96,11 @@ export class ServerConfig {
     return process.env.API_SERVER_URL || 'http://localhost:3000'
   }
 
+  /** default region conf */
+  static get DEFAULT_REGION_DATABASE_URL() {
+    return process.env.DEFAULT_REGION_DATABASE_URL
+  }
+
   static get DEFAULT_REGION_RUNTIME_DOMAIN() {
     return process.env.DEFAULT_REGION_RUNTIME_DOMAIN || 'localhost'
   }
