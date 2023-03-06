@@ -1,26 +1,19 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import clsx from "clsx";
 
 import styles from "./index.module.scss";
 
+type UploadType = "file" | "folder";
+
 // drag drop file component
-function FileUpload(props: { onUpload: (files: any) => void; uploadType: "file" | "folder" }) {
-  const { onUpload = () => {}, uploadType } = props;
+function FileUpload(props: { onUpload: (files: any) => void }) {
+  const { onUpload = () => {} } = props;
   // drag state
   const [dragActive, setDragActive] = React.useState(false);
   // ref
   const inputRef = React.useRef<any>(null);
   const { t } = useTranslation();
-  useEffect(() => {
-    if (uploadType === "folder") {
-      inputRef.current.setAttribute("webkitdirectory", "");
-      inputRef.current.setAttribute("directory", "");
-    } else {
-      inputRef.current.removeAttribute("webkitdirectory");
-      inputRef.current.removeAttribute("directory");
-    }
-  }, [uploadType]);
 
   // handle drag events
   const handleDrag = function (e: any) {
@@ -53,7 +46,14 @@ function FileUpload(props: { onUpload: (files: any) => void; uploadType: "file" 
   };
 
   // triggers the input when the button is clicked
-  const onButtonClick = () => {
+  const onButtonClick = (uploadType: UploadType) => {
+    if (uploadType === "folder") {
+      inputRef.current.setAttribute("webkitdirectory", "");
+      inputRef.current.setAttribute("directory", "");
+    } else {
+      inputRef.current.removeAttribute("webkitdirectory");
+      inputRef.current.removeAttribute("directory");
+    }
     inputRef?.current?.click();
   };
 
@@ -78,12 +78,12 @@ function FileUpload(props: { onUpload: (files: any) => void; uploadType: "file" 
         htmlFor="input-file-upload"
       >
         <div>
-          <p>
-            {uploadType === "file" ? t("StoragePanel.File") : t("StoragePanel.Folder")}
-            {t("StoragePanel.Drag")}
-          </p>
-          <button className={styles.uploadButton} onClick={onButtonClick}>
-            {uploadType === "file" ? t("StoragePanel.UploadFile") : t("StoragePanel.UploadFolder")}
+          <button className={styles.uploadButton} onClick={() => onButtonClick("file")}>
+            {t("StoragePanel.UploadFile")}
+          </button>
+          <span className="mx-2 text-xl">或</span>
+          <button className={styles.uploadButton} onClick={() => onButtonClick("folder")}>
+            {t("StoragePanel.UploadFolder")}
           </button>
         </div>
       </label>

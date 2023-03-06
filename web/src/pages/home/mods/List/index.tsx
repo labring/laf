@@ -23,25 +23,27 @@ import IconWrap from "@/components/IconWrap";
 import { Pages } from "@/constants";
 import { APP_PHASE_STATUS } from "@/constants/index";
 import { formatDate } from "@/utils/format";
+import getRegionById from "@/utils/getRegionById";
 
 import CreateAppModal from "../CreateAppModal";
 import StatusBadge from "../StatusBadge";
 
+import { TApplication } from "@/apis/typing";
 import { ApplicationControllerRemove } from "@/apis/v1/applications";
 import useGlobalStore from "@/pages/globalStore";
 
-function List(props: { appListQuery: any }) {
+function List(props: { appListQuery: any; setShouldRefetch: any }) {
   const navigate = useNavigate();
 
-  const { setCurrentApp } = useGlobalStore();
+  const { setCurrentApp, regions } = useGlobalStore();
 
   const [searchKey, setSearchKey] = useState("");
 
-  const { appListQuery } = props;
+  const { appListQuery, setShouldRefetch } = props;
 
   const deleteAppMutation = useMutation((params: any) => ApplicationControllerRemove(params), {
     onSuccess: () => {
-      appListQuery.refetch();
+      setShouldRefetch(true);
     },
     onError: () => {},
   });
@@ -72,7 +74,7 @@ function List(props: { appListQuery: any }) {
           </InputGroup>
           <CreateAppModal>
             <Button colorScheme="primary" style={{ padding: "0 40px" }} leftIcon={<AddIcon />}>
-              {t("Create") + t("HomePanel.Application")}
+              {t("Create")}
             </Button>
           </CreateAppModal>
         </div>
@@ -90,21 +92,34 @@ function List(props: { appListQuery: any }) {
         <div className="flex-grow overflow-auto">
           {(appListQuery.data?.data || [])
             .filter((item: any) => item?.name.indexOf(searchKey) >= 0)
-            .map((item: any) => {
+            .map((item: TApplication) => {
               return (
                 <div
                   key={item?.appid}
                   className="flex bg-lafWhite-200 rounded-lg h-16 items-center px-6 mb-3"
                 >
-                  <div className="w-2/12 font-bold text-lg">{item?.name}</div>
+                  <div className="w-2/12 ">
+                    <div className="font-bold text-lg">
+                      {item?.name}
+                      {/* <Button variant="outline" size="sm">
+                        基础版
+                      </Button> */}
+                    </div>
+                    {/* <div>CPU: 0.1 核 | RAM: 24 G</div> */}
+                  </div>
                   <div className="w-2/12 ">
                     {item?.appid} <CopyText text={item?.appid} />
                   </div>
                   <div className="w-2/12 ">
                     <StatusBadge statusConditions={item?.phase} state={item?.state} />
                   </div>
-                  <div className="w-2/12 ">{item.regionName}</div>
-                  <div className="w-3/12 ">{formatDate(item.createdAt)}</div>
+                  <div className="w-2/12 ">
+                    {getRegionById(regions, item.regionId)?.displayName}
+                  </div>
+                  <div className="w-3/12 ">
+                    {formatDate(item.createdAt)} <br />
+                    {/* end: {formatDate(item.createdAt)} */}
+                  </div>
                   <div className="w-1/12 flex min-w-[100px]">
                     <Button
                       className="mr-2"
@@ -121,7 +136,7 @@ function List(props: { appListQuery: any }) {
                       <RiCodeBoxFill size={25} className="mr-2" />
                       {t("HomePanel.Develop")}
                     </Button>
-                    <Menu>
+                    <Menu placement="bottom-end">
                       <MenuButton>
                         <IconWrap>
                           <BsThreeDotsVertical size={16} />

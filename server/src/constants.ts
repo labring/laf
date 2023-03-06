@@ -96,6 +96,11 @@ export class ServerConfig {
     return process.env.API_SERVER_URL || 'http://localhost:3000'
   }
 
+  /** default region conf */
+  static get DEFAULT_REGION_DATABASE_URL() {
+    return process.env.DEFAULT_REGION_DATABASE_URL
+  }
+
   static get DEFAULT_REGION_RUNTIME_DOMAIN() {
     return process.env.DEFAULT_REGION_RUNTIME_DOMAIN || 'localhost'
   }
@@ -176,6 +181,3 @@ export const TASK_LOCK_INIT_TIME = new Date(0) // 1970-01-01 00:00:00
 export const CPU_UNIT = 1000
 export const MB = 1024 * 1024
 export const GB = 1024 * MB
-
-// Resource limits
-export const MAX_FUNCTION_COUNT = 1000

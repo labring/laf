@@ -34,6 +34,14 @@ export class TriggerService {
     return trigger
   }
 
+  async count(appid: string) {
+    const res = await this.prisma.cronTrigger.count({
+      where: { appid },
+    })
+
+    return res
+  }
+
   async findAll(appid: string) {
     const res = await this.prisma.cronTrigger.findMany({
       where: { appid },

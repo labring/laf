@@ -135,7 +135,7 @@ export default function DataPanel() {
 
   return (
     <>
-      <Panel.Header className="w-full h-[60px] flex-shrink-0">
+      <Panel.Header className="w-full h-[40px] flex-shrink-0">
         <div className="flex items-center">
           <AddDataModal
             schema={currentData.data ? currentData.data : {}}
@@ -153,20 +153,21 @@ export default function DataPanel() {
             }}
           >
             <Button
+              size="xs"
+              variant="textGhost"
+              leftIcon={<AddIcon fontSize={10} className="text-grayModern-500" />}
               disabled={store.currentDB === undefined}
-              colorScheme="primary"
-              className="mr-2"
-              style={{ width: "114px" }}
-              leftIcon={<AddIcon />}
+              className="mr-2 font-bold"
             >
               {t("CollectionPanel.AddData")}
             </Button>
           </AddDataModal>
+
           <Button
+            size="xs"
+            variant="textGhost"
             disabled={store.currentDB === undefined}
-            colorScheme="primary"
             className="mr-2"
-            style={{ width: "114px" }}
             isLoading={entryDataQuery.isFetching}
             leftIcon={<BiRefresh fontSize={20} />}
             onClick={() => refresh(search)}

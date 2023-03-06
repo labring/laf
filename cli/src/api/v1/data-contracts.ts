@@ -39,7 +39,7 @@ export interface CreateApplicationDto {
 
 export interface UpdateApplicationDto {
   name?: string
-  state?: 'Running' | 'Stopped' | 'Restarting'
+  state?: 'Running' | 'Stopped' | 'Restarting' | 'Deleted'
 }
 
 export interface CreateEnvironmentDto {
@@ -91,9 +91,14 @@ export interface UpdatePolicyRuleDto {
   value: string
 }
 
-export type CreateWebsiteDto = object
+export interface CreateWebsiteDto {
+  bucketName: string
+  state: string
+}
 
-export type UpdateWebsiteDto = object
+export interface BindCustomDomainDto {
+  domain: string
+}
 
 export interface Pat2TokenDto {
   /**
@@ -142,6 +147,10 @@ export interface UpdateDependencyDto {
   spec: string
 }
 
+export interface DeleteDependencyDto {
+  name: string
+}
+
 export interface CreateTriggerDto {
   desc: string
   cron: string
@@ -161,16 +170,6 @@ export type ApplicationControllerUpdateData = any
 export type RegionControllerGetRegionsData = any
 
 export type DatabaseControllerProxyData = any
-
-export type WebsitesControllerCreateData = any
-
-export type WebsitesControllerFindAllData = any
-
-export type WebsitesControllerFindOneData = any
-
-export type WebsitesControllerUpdateData = any
-
-export type WebsitesControllerRemoveData = any
 
 export interface AuthControllerCode2TokenParams {
   code: string

@@ -97,6 +97,7 @@ helm install server -n ${NAMESPACE} \
     --set casdoor.client_id=${CASDOOR_CLIENT_ID} \
     --set casdoor.client_secret=${CASDOOR_CLIENT_SECRET} \
     --set casdoor.redirect_uri=${CASDOOR_REDIRECT_URI} \
+    --set default_region.database_url=${DATABASE_URL} \
     --set default_region.minio_domain=${MINIO_DOMAIN} \
     --set default_region.minio_external_endpoint=${MINIO_EXTERNAL_ENDPOINT} \
     --set default_region.minio_internal_endpoint=${MINIO_INTERNAL_ENDPOINT} \

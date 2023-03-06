@@ -1,5 +1,5 @@
 // request.ts
-import axios, { AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse } from 'axios'
+import axios, { InternalAxiosRequestConfig, AxiosRequestHeaders, AxiosResponse } from 'axios'
 import { existSystemConfig, readSystemConfig, refreshToken } from '../config/system'
 import { DEFAULT_REMOTE_SERVER } from '../common/constant'
 
@@ -11,7 +11,7 @@ export const request = axios.create({
 
 // request interceptor
 request.interceptors.request.use(
-  async (config: AxiosRequestConfig) => {
+  async (config: InternalAxiosRequestConfig) => {
     let _headers: AxiosRequestHeaders | any = {
       'Content-Type': 'application/json',
     }

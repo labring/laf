@@ -53,15 +53,7 @@ export class ApplicationService {
             name: bundle.name,
             displayName: bundle.displayName,
             price: bundle.price,
-            resource: {
-              limitCPU: bundle.resource.limitCPU,
-              limitMemory: bundle.resource.limitMemory,
-              requestCPU: bundle.resource.requestCPU,
-              requestMemory: bundle.resource.requestMemory,
-              databaseCapacity: bundle.resource.databaseCapacity,
-              storageCapacity: bundle.resource.storageCapacity,
-              networkTrafficOutbound: bundle.resource.networkTrafficOutbound,
-            },
+            resource: { ...bundle.resource },
           },
         },
         runtime: {
