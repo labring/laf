@@ -21,7 +21,7 @@ export class ApplicationService {
       // get bundle
       const bundle = await this.prisma.bundle.findFirstOrThrow({
         where: {
-          name: dto.bundleName,
+          id: dto.bundleId,
           region: {
             name: dto.region,
           },

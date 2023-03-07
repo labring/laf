@@ -58,22 +58,19 @@ export class ApplicationController {
     }
 
     // check app count limit
-    const bundle = await this.bundleService.findOneByName(
-      dto.bundleName,
-      dto.region,
-    )
+    const bundle = await this.bundleService.findOne(dto.bundleId)
     const LIMIT_COUNT = bundle?.resource?.limitCountPerUser || 0
     const count = await this.prisma.application.count({
       where: {
         createdBy: user.id,
         bundle: {
-          name: dto.bundleName,
+          id: dto.bundleId,
         },
       },
     })
     if (count >= LIMIT_COUNT) {
       return ResponseUtil.error(
-        `application count limit is ${LIMIT_COUNT} for bundle ${dto.bundleName}`,
+        `application count limit is ${LIMIT_COUNT} for bundle ${bundle.name}`,
       )
     }
 

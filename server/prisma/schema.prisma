@@ -120,14 +120,15 @@ type BundleResource {
 }
 
 model Bundle {
-  id          String         @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  displayName String
-  regionId    String         @db.ObjectId
-  resource    BundleResource
-  priority    Int            @default(0)
-  state       String         @default("Active") // Active, Inactive
-  price       Int            @default(0)
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  displayName  String
+  regionId     String         @db.ObjectId
+  resource     BundleResource
+  priority     Int            @default(0)
+  state        String         @default("Active") // Active, Inactive
+  price        Int            @default(0)
+  specialPrice Int            @default(0)
 
   region Region @relation(fields: [regionId], references: [id])
 
@@ -135,12 +136,13 @@ model Bundle {
 }
 
 model ApplicationBundle {
-  id          String         @id @default(auto()) @map("_id") @db.ObjectId
-  appid       String         @unique
-  name        String
-  displayName String
-  resource    BundleResource
-  price       Int            @default(0)
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  appid        String         @unique
+  name         String
+  displayName  String
+  resource     BundleResource
+  price        Int            @default(0)
+  specialPrice Int            @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
