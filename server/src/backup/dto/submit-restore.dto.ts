@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { BucketPolicy } from '@prisma/client'
 import { IsEnum, IsNotEmpty, Length, IsString } from 'class-validator'
-import * as Restore from '@lafjs/backup/build/tasks/restore';
+import { Restore } from '@lafjs/backup-interfaces';
+
 
 export class ReqBody {
 	@IsString()
