@@ -30,7 +30,7 @@ pnpm run dev
     配置如下规则 (这一步主要是把 127.0.0.1:3001 [映射到preview.laf.run](http://映射到preview.laf.run) ，可以保证接口不会跨域 ，且共享登录态。
 
 ```jsx
-http://dev.laf.run/ http://localhost:3001/ excludeFilter://http://dev.laf.run/v1/
+http://dev.laf.run/ http://127.0.0.1:3001/ excludeFilter://http://dev.laf.run/v1/
 ```
 
 4. 在whistle开启模式下访问http://dev.laf.run即可
@@ -53,15 +53,15 @@ pnpm install
 pnpm run dev
 ```
 
-3. 访问[http://localhost:3001/](http://localhost:3001/) ，由于此域名下没有登录态，会跳转到登录页
+3. 访问http://127.0.0.1:3001/ ，由于此域名下没有登录态，会跳转到登录页
 
 ```jsx
 http://login.dev.laf.run/login/oauth/authorize?client_id=c3f4dfefc8b0f912cf8d2&redirect_uri=http%3A%2F%2Fdev.laf.run%2Flogin_callback ...
 ```
 
-4. 需要把地址中的redirect_uri改为 [http://localhost:3001/](http://localhost:3001/) 刷新登录页后输入用户名密码进行登录
+4. 需要把地址中的redirect_uri改为http://127.0.0.1:3001/刷新登录页后输入用户名密码进行登录
 
-登录成功后就会重定向到 [http://localhost:3001/](http://localhost:3001/)。
+登录成功后就会重定向到http://127.0.0.1:3001/。
 
 # 项目结构简介
 
