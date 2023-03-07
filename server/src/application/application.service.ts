@@ -23,7 +23,7 @@ export class ApplicationService {
         where: {
           id: dto.bundleId,
           region: {
-            name: dto.region,
+            id: dto.regionId,
           },
         },
       })
@@ -45,7 +45,7 @@ export class ApplicationService {
         lockedAt: TASK_LOCK_INIT_TIME,
         region: {
           connect: {
-            name: dto.region,
+            id: dto.regionId,
           },
         },
         bundle: {
@@ -58,7 +58,7 @@ export class ApplicationService {
         },
         runtime: {
           connect: {
-            name: dto.runtimeName,
+            id: dto.runtimeId,
           },
         },
         configuration: {
