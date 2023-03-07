@@ -136,8 +136,9 @@ model Bundle {
 }
 
 model ApplicationBundle {
-  id           String         @id @default(auto()) @map("_id") @db.ObjectId
-  appid        String         @unique
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  appid    String @unique
+  bundleId String @db.ObjectId
   name         String
   displayName  String
   resource     BundleResource
