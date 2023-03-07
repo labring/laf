@@ -4,21 +4,17 @@
 
 [LaF 云开发](http://preview.laf.run/)
 
-### UI设计
-
-[https://www.figma.com/file/XFmpUhwq82pSVIDC19jUTB/LAF?node-id=442%3A1970&t=BvmMMQaqjSsK7ypW-0](https://www.figma.com/file/XFmpUhwq82pSVIDC19jUTB/LAF?node-id=442%3A1970&t=BvmMMQaqjSsK7ypW-0)
-
 # 本地启动（只启动web项目的情况）
 
 ### 方法一：
 
-1. 在web根目录下建立.env.local文件,配置接口地址
+1. 在web根目录下建立```.env.local```文件,配置接口地址
 
 ```jsx
 VITE_SERVER_URL=http://dev.laf.run
 ```
 
-2. 安装依赖，启动项目（项目会启动在[http://127.0.0.1:3001/](http://127.0.0.1:3001/)）
+2. 安装依赖，启动项目（项目会启动在```http://127.0.0.1:3001/ ```）
 
 ```markdown
 pnpm install
@@ -27,20 +23,20 @@ pnpm run dev
 
 3.  安装whistle, 以及其在浏览器的插件，启动, 
 
-    配置如下规则 (这一步主要是把 127.0.0.1:3001 [映射到preview.laf.run](http://映射到preview.laf.run) ，可以保证接口不会跨域 ，且共享登录态。
+    配置如下规则, 这一步主要是把 ```127.0.0.1:3001``` 映射到```dev.laf.run``` ，可以保证接口不会跨域 ，且共享登录态。
 
 ```jsx
 http://dev.laf.run/ http://127.0.0.1:3001/ excludeFilter://http://dev.laf.run/v1/
 ```
 
-4. 在whistle开启模式下访问http://dev.laf.run即可
+4. 在whistle开启模式下访问 ```http://dev.laf.run ```即可
 ![](/doc-images/whistle-proxy.png)
 
 ### 方法二：
 
  如果不想安装whistle，可以采用以下方法：
 
-1. 由于vite.config已经配置了接口的转发地址，所以将.env.local文件设置为空，即可正常转发到dev的后端接口
+1. 由于```vite.config```已经配置了接口的转发地址，所以将```.env.local```文件设置为空，即可正常转发到dev的后端接口
 
 ```jsx
 VITE_SERVER_URL=
@@ -53,15 +49,15 @@ pnpm install
 pnpm run dev
 ```
 
-3. 访问http://127.0.0.1:3001/ ，由于此域名下没有登录态，会跳转到登录页
+3. 访问```http://127.0.0.1:3001/``` ，由于此域名下没有登录态，会跳转到登录页
 
 ```jsx
 http://login.dev.laf.run/login/oauth/authorize?client_id=c3f4dfefc8b0f912cf8d2&redirect_uri=http%3A%2F%2Fdev.laf.run%2Flogin_callback ...
 ```
 
-4. 需要把地址中的redirect_uri改为http://127.0.0.1:3001/刷新登录页后输入用户名密码进行登录
+4. 需要把地址中的redirect_uri改为```http://127.0.0.1:3001/```刷新登录页后输入用户名密码进行登录
 
-登录成功后就会重定向到http://127.0.0.1:3001/。
+登录成功后就会重定向到```http://127.0.0.1:3001/```。
 
 # 项目结构简介
 
@@ -75,7 +71,7 @@ http://login.dev.laf.run/login/oauth/authorize?client_id=c3f4dfefc8b0f912cf8d2&r
     - src
         - apis： 接口文件
             
-            v1:  根据[http://api.dev.laf.run/api/](http://api.dev.laf.run/api/)自动生成，**不要手动修改**
+            v1:  根据```http://api.dev.laf.run/api/```自动生成，**不要手动修改**
             
             dependence.ts: 获取依赖列表的接口 (使用npm官方提供的接口)
             
@@ -158,7 +154,7 @@ http://login.dev.laf.run/login/oauth/authorize?client_id=c3f4dfefc8b0f912cf8d2&r
 
 [refactor: react query best practice  by LeezQ · Pull Request #496 · labring/laf](https://github.com/labring/laf/pull/496#issue-1482332711)
 
-3. 用法参考： web\src\pages\app\functions\service.ts
+3. 用法参考： ```web\src\pages\app\functions\service.ts```
     
     在本项目中对于每个页面都会存在service.ts文件用于管理当前页面内的请求
     
@@ -167,9 +163,9 @@ http://login.dev.laf.run/login/oauth/authorize?client_id=c3f4dfefc8b0f912cf8d2&r
 
 1. 链接： [Zustand](https://zustand-demo.pmnd.rs/)
 
-2. 用法参考: web\src\pages\app\functions\store.ts
+2. 用法参考: ```web\src\pages\app\functions\store.ts```
     
-    项目的全局状态管理： web\src\pages\globalStore.ts
+    项目的全局状态管理： ```web\src\pages\globalStore.ts```
     
     每个页面的状态管理：存放在对应的store.ts中
     
@@ -178,22 +174,22 @@ http://login.dev.laf.run/login/oauth/authorize?client_id=c3f4dfefc8b0f912cf8d2&r
 
 1. 链接： [Installation](https://chakra-ui.com/getting-started)
 
-2. 自定义样式要修改：web/src/chakraTheme.ts
+2. 自定义样式要修改：```web/src/chakraTheme.ts```
 
 ## 样式: tailwind (主要)+ sass
 
 1. 链接： [Tailwind CSS - Rapidly build modern websites without ever leaving your HTML.](https://tailwindcss.com/)
 
-2. 自定义样式要修改：web/tailwind.config.cjs
+2. 自定义样式要修改：```web/tailwind.config.cjs```
 
 ## 国际化:i18next
 
 1. 链接： [Introduction](https://www.i18next.com/)
 
-2. 国际化文案: web/public/locales
+2. 国际化文案: ```web/public/locales```
 3. 使用方法：
     
-    3.1 直接写t(”test”),鼠标hover上去后会出现如下提示框
+    3.1 直接写```t("test")```,鼠标hover上去后会出现如下提示框
     
     ![](/doc-images/web-i181.png)
 
