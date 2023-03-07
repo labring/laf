@@ -64,7 +64,7 @@ export class ApplicationController {
       where: {
         createdBy: user.id,
         bundle: {
-          id: dto.bundleId,
+          bundleId: dto.bundleId,
         },
       },
     })

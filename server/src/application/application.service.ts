@@ -50,6 +50,7 @@ export class ApplicationService {
         },
         bundle: {
           create: {
+            bundleId: bundle.id,
             name: bundle.name,
             displayName: bundle.displayName,
             price: bundle.price,
