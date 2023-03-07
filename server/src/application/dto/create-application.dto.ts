@@ -23,7 +23,8 @@ export class CreateApplicationDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  region: string
+  @IsString()
+  regionId: string
 
   @ApiProperty()
   @IsNotEmpty()
@@ -32,7 +33,8 @@ export class CreateApplicationDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  runtimeName: string
+  @IsString()
+  runtimeId: string
 
   validate(): string | null {
     return null
