@@ -2,7 +2,7 @@ import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
-import { formatDomain } from "@/utils/format";
+import { formatPort } from "@/utils/format";
 
 import { TBucket } from "@/apis/typing";
 import useGlobalStore from "@/pages/globalStore";
@@ -28,8 +28,7 @@ type State = {
   setPrefix: (prefix: string) => void;
   maxStorage: number;
   setMaxStorage: (number: number) => void;
-
-  getCurrentBucketDomain: (withProtocol?: boolean) => string;
+  getOrigin: (origin: string) => string;
 };
 
 const useStorageStore = create<State>()(
@@ -51,17 +50,9 @@ const useStorageStore = create<State>()(
           state.maxStorage = number;
         }),
 
-      // get current bucket domain
-      getCurrentBucketDomain: (withProtocol: boolean = true) => {
-        const { currentStorage } = get();
+      getOrigin: (domain: string) => {
         const currentApp = useGlobalStore.getState().currentApp;
-        if(withProtocol){
-          const port = currentApp?.port;
-          const protocol = currentApp?.tls ? "https" : "http";
-          const currentBucketDomain = formatDomain(currentStorage?.domain?.domain, port) || "";
-          return `${protocol}://${currentBucketDomain}`;
-        }
-        return currentStorage?.domain?.domain || "";
+        return `${currentApp?.tls ? "https" : "http"}://${domain}:${formatPort(currentApp?.port)}`;
       },
     })),
   ),

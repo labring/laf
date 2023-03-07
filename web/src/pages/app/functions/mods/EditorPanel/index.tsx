@@ -28,7 +28,7 @@ function EditorPanel() {
       {currentFunction?.name ? (
         <Panel.Header style={{ borderBottom: "2px solid #F4F6F8" }} className="!mb-3 h-[50px] px-2">
           <HStack maxW={"60%"} spacing={2}>
-            <CopyText className="font-bold text-lg" text={currentFunction?.name}>
+            <CopyText className="font-bold text-xl" text={currentFunction?.name}>
               <span>{currentFunction?.name}</span>
             </CopyText>
             <FunctionDetailPopOver />
