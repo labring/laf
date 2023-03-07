@@ -9,10 +9,10 @@ import {
   BucketControllerFindAll,
   BucketControllerRemove,
   BucketControllerUpdate,
-  WebsitesControllerCreate,
-  WebsitesControllerFindAll,
-  WebsitesControllerRemove,
-  WebsitesControllerUpdate,
+  WebsiteControllerBindDomain,
+  WebsiteControllerCreate,
+  WebsiteControllerFindAll,
+  WebsiteControllerRemove,
 } from "@/apis/v1/apps";
 import useGlobalStore from "@/pages/globalStore";
 const queryKeys = {
@@ -118,7 +118,7 @@ export const useWebsiteListQuery = (config?: { onSuccess: (data: any) => void })
   return useQuery(
     queryKeys.useWebsiteListQuery,
     () => {
-      return WebsitesControllerFindAll({});
+      return WebsiteControllerFindAll({});
     },
     {
       onSuccess: (data) => {
@@ -133,7 +133,7 @@ export const useWebsiteCreateMutation = (config?: { onSuccess: (data: any) => vo
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
-      return WebsitesControllerCreate(values);
+      return WebsiteControllerCreate(values);
     },
     {
       onSuccess: async (data) => {
@@ -152,7 +152,7 @@ export const useWebsiteDeleteMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
-      return WebsitesControllerRemove(values);
+      return WebsiteControllerRemove(values);
     },
     {
       onSuccess: async (data) => {
@@ -172,7 +172,7 @@ export const useWebSiteUpdateMutation = (config?: { onSuccess: (data: any) => vo
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
-      return WebsitesControllerUpdate(values);
+      return WebsiteControllerBindDomain(values);
     },
     {
       onSuccess: async (data) => {

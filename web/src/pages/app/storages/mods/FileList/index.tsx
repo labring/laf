@@ -36,7 +36,7 @@ import UploadButton from "../UploadButton";
 import useAwsS3 from "@/hooks/useAwsS3";
 export default function FileList() {
   const { getList, getFileUrl, deleteFile } = useAwsS3();
-  const { currentStorage, prefix, setPrefix, getCurrentBucketDomain } = useStorageStore();
+  const { currentStorage, prefix, setPrefix, getOrigin } = useStorageStore();
   const bucketName = currentStorage?.name;
   const bucketType = currentStorage?.policy;
 
@@ -59,7 +59,7 @@ export default function FileList() {
     if (bucketType === "private") {
       fileUrl = getFileUrl(bucketName!, file.Key);
     } else {
-      fileUrl = getCurrentBucketDomain() + `/${file.Key}` || "";
+      fileUrl = getOrigin(currentStorage?.domain?.domain || "") + `/${file.Key}` || "";
     }
 
     window.open(fileUrl, "_blank");

@@ -486,11 +486,11 @@ export async function PolicyRuleControllerRemove(
 }
 
 /**
- * TODO - ⌛️
+ * Create a new website
  */
-export async function WebsitesControllerCreate(
+export async function WebsiteControllerCreate(
   params: Definitions.CreateWebsiteDto | any,
-): Promise<Paths.WebsitesControllerCreate.Responses> {
+): Promise<Paths.WebsiteControllerCreate.Responses> {
   // /v1/apps/{appid}/websites
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
@@ -503,12 +503,11 @@ export async function WebsitesControllerCreate(
 }
 
 /**
- * TODO - ⌛️
- *
+ * Get all websites of an app
  */
-export async function WebsitesControllerFindAll(
-  params: Paths.WebsitesControllerFindAll.BodyParameters | any,
-): Promise<Paths.WebsitesControllerFindAll.Responses> {
+export async function WebsiteControllerFindAll(
+  params: Paths.WebsiteControllerFindAll.BodyParameters | any,
+): Promise<Paths.WebsiteControllerFindAll.Responses> {
   // /v1/apps/{appid}/websites
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
@@ -521,11 +520,11 @@ export async function WebsitesControllerFindAll(
 }
 
 /**
- * TODO - ⌛️
+ * Get a website hosting of an app
  */
-export async function WebsitesControllerFindOne(
-  params: Paths.WebsitesControllerFindOne.BodyParameters | any,
-): Promise<Paths.WebsitesControllerFindOne.Responses> {
+export async function WebsiteControllerFindOne(
+  params: Paths.WebsiteControllerFindOne.BodyParameters | any,
+): Promise<Paths.WebsiteControllerFindOne.Responses> {
   // /v1/apps/{appid}/websites/{id}
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
@@ -538,11 +537,11 @@ export async function WebsitesControllerFindOne(
 }
 
 /**
- * TODO - ⌛️
+ * Bind custom domain to website
  */
-export async function WebsitesControllerUpdate(
-  params: Definitions.UpdateWebsiteDto | any,
-): Promise<Paths.WebsitesControllerUpdate.Responses> {
+export async function WebsiteControllerBindDomain(
+  params: Definitions.BindCustomDomainDto | any,
+): Promise<Paths.WebsiteControllerBindDomain.Responses> {
   // /v1/apps/{appid}/websites/{id}
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
@@ -554,26 +553,12 @@ export async function WebsitesControllerUpdate(
   });
 }
 
-export async function WebsitesControllerResolved(
-  params: Definitions.UpdateWebsiteDto | any,
-): Promise<Paths.WebsitesControllerUpdate.Responses> {
-  // /v1/apps/{appid}/websites/{id}
-  let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
-    ...params,
-  };
-  return request(`/v1/apps/${_params.appid}/websites/${_params.id}/resolved`, {
-    method: "POST",
-    data: params,
-  });
-}
-
 /**
- * TODO - ⌛️
+ * Delete a website hosting
  */
-export async function WebsitesControllerRemove(
-  params: Paths.WebsitesControllerRemove.BodyParameters | any,
-): Promise<Paths.WebsitesControllerRemove.Responses> {
+export async function WebsiteControllerRemove(
+  params: Paths.WebsiteControllerRemove.BodyParameters | any,
+): Promise<Paths.WebsiteControllerRemove.Responses> {
   // /v1/apps/{appid}/websites/{id}
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
@@ -581,6 +566,23 @@ export async function WebsitesControllerRemove(
   };
   return request(`/v1/apps/${_params.appid}/websites/${_params.id}`, {
     method: "DELETE",
+    data: params,
+  });
+}
+
+/**
+ * Check if domain is resolved
+ */
+export async function WebsiteControllerCheckResolved(
+  params: Definitions.BindCustomDomainDto | any,
+): Promise<Paths.WebsiteControllerCheckResolved.Responses> {
+  // /v1/apps/{appid}/websites/{id}/resolved
+  let _params: { [key: string]: any } = {
+    appid: localStorage.getItem("app"),
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/websites/${_params.id}/resolved`, {
+    method: "POST",
     data: params,
   });
 }
@@ -657,9 +659,9 @@ export async function DependencyControllerGetDependencies(
  * Remove a dependency
  */
 export async function DependencyControllerRemove(
-  params: Paths.DependencyControllerRemove.BodyParameters | any,
+  params: Definitions.DeleteDependencyDto | any,
 ): Promise<Paths.DependencyControllerRemove.Responses> {
-  // /v1/apps/{appid}/dependencies/{name}
+  // /v1/apps/{appid}/dependencies
   let _params: { [key: string]: any } = {
     appid: localStorage.getItem("app"),
     ...params,

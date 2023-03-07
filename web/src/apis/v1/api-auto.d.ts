@@ -2,7 +2,6 @@ declare namespace Definitions {
   export type CreateFunctionDto = {
     name?: string /* Function name is unique in the application */;
     description?: string;
-    websocket?: boolean;
     methods?: string[];
     code?: string /* The source code of the function */;
     tags?: string[];
@@ -10,7 +9,6 @@ declare namespace Definitions {
 
   export type UpdateFunctionDto = {
     description?: string;
-    websocket?: boolean;
     methods?: string[];
     code?: string /* The source code of the function */;
     tags?: string[];
@@ -23,9 +21,9 @@ declare namespace Definitions {
   export type CreateApplicationDto = {
     name?: string;
     state?: string;
-    region?: string;
-    bundleName?: string;
-    runtimeName?: string;
+    regionId?: string;
+    bundleId?: string;
+    runtimeId?: string;
   };
 
   export type UpdateApplicationDto = {
@@ -73,9 +71,14 @@ declare namespace Definitions {
     value?: string;
   };
 
-  export type CreateWebsiteDto = {};
+  export type CreateWebsiteDto = {
+    bucketName?: string;
+    state?: string;
+  };
 
-  export type UpdateWebsiteDto = {};
+  export type BindCustomDomainDto = {
+    domain?: string;
+  };
 
   export type Pat2TokenDto = {
     pat?: string /* PAT */;
@@ -84,6 +87,10 @@ declare namespace Definitions {
   export type CreatePATDto = {
     name?: string;
     expiresIn?: number;
+  };
+
+  export type DeleteDependencyDto = {
+    name?: string;
   };
 
   export type CreateTriggerDto = {
@@ -254,14 +261,6 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace RegionControllerGetRegions {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
   namespace CollectionControllerCreate {
     export type QueryParameters = any;
 
@@ -374,7 +373,7 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace WebsitesControllerCreate {
+  namespace WebsiteControllerCreate {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.CreateWebsiteDto;
@@ -382,7 +381,7 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace WebsitesControllerFindAll {
+  namespace WebsiteControllerFindAll {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -390,7 +389,7 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace WebsitesControllerFindOne {
+  namespace WebsiteControllerFindOne {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -398,18 +397,26 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace WebsitesControllerUpdate {
+  namespace WebsiteControllerBindDomain {
     export type QueryParameters = any;
 
-    export type BodyParameters = Definitions.UpdateWebsiteDto;
+    export type BodyParameters = Definitions.BindCustomDomainDto;
 
     export type Responses = any;
   }
 
-  namespace WebsitesControllerRemove {
+  namespace WebsiteControllerRemove {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace WebsiteControllerCheckResolved {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.BindCustomDomainDto;
 
     export type Responses = any;
   }
@@ -513,7 +520,7 @@ declare namespace Paths {
   namespace DependencyControllerRemove {
     export type QueryParameters = any;
 
-    export type BodyParameters = any;
+    export type BodyParameters = Definitions.DeleteDependencyDto;
 
     export type Responses = any;
   }
@@ -535,6 +542,14 @@ declare namespace Paths {
   }
 
   namespace TriggerControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace RegionControllerGetRegions {
     export type QueryParameters = any;
 
     export type BodyParameters = any;

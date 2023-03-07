@@ -1,6 +1,6 @@
 module.exports = [
   {
-    swaggerPath: "http://api.192.168.64.11.nip.io/api-json",
+    swaggerPath: "http://api.dev.laf.run/-json",
     typingFileName: "api-auto.d.ts",
 
     outDir: "src/apis/v1",

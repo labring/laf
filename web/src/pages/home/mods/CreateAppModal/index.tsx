@@ -46,9 +46,9 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
   type FormData = {
     name: string;
     state: APP_STATUS;
-    region: string;
-    bundleName: string;
-    runtimeName: string;
+    regionId: string;
+    bundleId: string;
+    runtimeId: string;
     duration: string;
   };
 
@@ -57,10 +57,10 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
   const defaultValues = {
     name: application.name,
     state: application.state || APP_STATUS.Running,
-    region: application.regionName || regions[0].name,
-    bundleName: application.bundleName || bundles[0].name,
+    regionId: application.regionId || regions[0].id,
+    bundleId: application.bundleId || bundles[0].id,
     duration: "1",
-    runtimeName: runtimes[0].name,
+    runtimeId: runtimes[0].id,
   };
 
   const {
@@ -79,9 +79,9 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
     name: "duration", // without supply name will watch the entire form, or ['firstName', 'lastName'] to watch both
   });
 
-  const bundleName = useWatch({
+  const bundleId = useWatch({
     control,
-    name: "bundleName", // without supply name will watch the entire form, or ['firstName', 'lastName'] to watch both
+    name: "bundleId", // without supply name will watch the entire form, or ['firstName', 'lastName'] to watch both
   });
 
   const { showSuccess, showError } = useGlobalStore();
@@ -109,7 +109,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
     }
   };
 
-  const currentBundle = bundles.find((item: TBundle) => item.name === bundleName) || bundles[0];
+  const currentBundle = bundles.find((item: TBundle) => item.id === bundleId) || bundles[0];
   const totalPrice = parseInt(duration, 10) * currentBundle.price;
 
   return (
@@ -144,10 +144,10 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
               </FormControl>
 
               <FormControl isRequired hidden={isEdit}>
-                <FormLabel htmlFor="region">{t("HomePanel.Region")}</FormLabel>
+                <FormLabel htmlFor="regionId">{t("HomePanel.Region")}</FormLabel>
                 <HStack spacing={6}>
                   <Controller
-                    name="region"
+                    name="regionId"
                     control={control}
                     render={({ field: { ref, ...rest } }) => {
                       return (
@@ -177,13 +177,13 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                 </HStack>
               </FormControl>
 
-              <FormControl isRequired isInvalid={!!errors?.bundleName} hidden={isEdit}>
-                <FormLabel htmlFor="bundleName">
+              <FormControl isRequired isInvalid={!!errors?.bundleId} hidden={isEdit}>
+                <FormLabel htmlFor="bundleId">
                   {t("HomePanel.Application") + t("HomePanel.BundleName")}
                 </FormLabel>
                 <HStack spacing={"12px"}>
                   <Controller
-                    name="bundleName"
+                    name="bundleId"
                     control={control}
                     render={({ field: { onChange, value } }) => {
                       return (
@@ -193,8 +193,8 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                               <BundleItem
                                 onChange={onChange}
                                 bundle={bundle}
-                                isActive={bundle.name === value}
-                                key={bundle.name}
+                                isActive={bundle.id === value}
+                                key={bundle.id}
                               />
                             );
                           })}
@@ -206,10 +206,10 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                     }}
                   />
                 </HStack>
-                <FormErrorMessage>{errors?.bundleName?.message}</FormErrorMessage>
+                <FormErrorMessage>{errors?.bundleId?.message}</FormErrorMessage>
               </FormControl>
 
-              {bundleName !== "standard" ? (
+              {currentBundle.price > 0 ? (
                 <FormControl isRequired isInvalid={!!errors?.duration}>
                   <FormLabel htmlFor="duration">{t("HomePanel.Duration")}</FormLabel>
                   <Controller
@@ -231,10 +231,10 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                 </FormControl>
               ) : null}
 
-              <FormControl isRequired isInvalid={!!errors?.runtimeName}>
-                <FormLabel htmlFor="runtimeName">{t("HomePanel.RuntimeName")}</FormLabel>
+              <FormControl isRequired isInvalid={!!errors?.runtimeId}>
+                <FormLabel htmlFor="runtimeId">{t("HomePanel.RuntimeName")}</FormLabel>
                 <Controller
-                  name="duration"
+                  name="runtimeId"
                   control={control}
                   render={() => {
                     return (

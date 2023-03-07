@@ -20,8 +20,8 @@ export type TApplication = {
   develop_token: string;
   tls: boolean;
   function_debug_token: string;
-  host: string;
-  origin: string;
+  host?: string;
+  origin?: string;
 };
 
 export type TBundle = {
@@ -31,6 +31,7 @@ export type TBundle = {
   displayName: string;
   resource: TResource;
   price: number;
+  specialPrice: number;
   createdAt: string;
   updatedAt: string;
 };
@@ -43,6 +44,13 @@ export type TResource = {
   databaseCapacity: number;
   storageCapacity: number;
   networkTrafficOutbound: number;
+  limitCountPerUser: number;
+  limitCountOfCloudFunction: number;
+  limitCountOfBucket: number;
+  limitCountOfDatabasePolicy: number;
+  limitCountOfTrigger: number;
+  limitDatabaseTPS: number;
+  limitStorageTPS: number;
 };
 
 export type TRuntime = {
@@ -113,26 +121,6 @@ export type TRegion = {
   displayName: string;
   state: string;
   bundles: TBundle[];
-};
-
-export type TBundle = {
-  id: string;
-  name: string;
-  displayName: string;
-  price: number;
-  priority: number;
-  state: string;
-  resource: TResource;
-};
-
-export type TResource = {
-  limitCPU: number;
-  limitMemory: number;
-  requestCPU: number;
-  requestMemory: number;
-  databaseCapacity: number;
-  storageCapacity: number;
-  networkTrafficOutbound: number;
 };
 
 export type TBucket = {

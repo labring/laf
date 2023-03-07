@@ -34,21 +34,20 @@ import {
   useWebSiteUpdateMutation,
 } from "../../service";
 import useStorageStore from "../../store";
-import { formatDomain } from "@/utils/format";
-import useGlobalStore from "@/pages/globalStore";
+
 import SiteStatus from "./SiteStatus";
 
 function CreateWebsiteModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { currentStorage, getCurrentBucketDomain } = useStorageStore();
+  const { currentStorage, getOrigin } = useStorageStore();
   const { register, setFocus, handleSubmit, reset } = useForm<{ domain: string }>();
-  const port = useGlobalStore.getState().currentApp?.port;
   const { t } = useTranslation();
   const createWebsiteMutation = useWebsiteCreateMutation();
   const deleteWebsiteMutation = useWebsiteDeleteMutation();
   const updateWebsiteMutation = useWebSiteUpdateMutation();
   const toast = useToast();
-  const cnameDomain = getCurrentBucketDomain(false);
+  const cnameDomain = currentStorage?.websiteHosting?.domain;
+
   return (
     <>
       {currentStorage?.websiteHosting &&
@@ -57,9 +56,7 @@ function CreateWebsiteModal() {
           <span className="font-semibold mr-2">{t("StoragePanel.CurrentDomain")}</span>
           <Link
             className="cursor-pointer mr-2"
-            href={`//${
-              formatDomain(currentStorage?.websiteHosting?.domain, port)
-            }`}
+            href={getOrigin(currentStorage?.websiteHosting?.domain)}
             isExternal
           >
             {currentStorage?.websiteHosting?.domain}
@@ -165,7 +162,7 @@ function CreateWebsiteModal() {
               type="submit"
               isLoading={updateWebsiteMutation.isLoading}
               onClick={handleSubmit(async (value) => {
-                const res = await updateWebsiteMutation.mutateAsync({
+                const res: any = await updateWebsiteMutation.mutateAsync({
                   id: currentStorage?.websiteHosting.id,
                   domain: value.domain,
                 });

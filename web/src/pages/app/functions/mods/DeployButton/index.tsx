@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Button,
   Modal,
@@ -26,6 +27,8 @@ export default function DeployButton() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const store = useFunctionStore((state) => state);
   const functionCache = useFunctionCache();
+
+  const headerRef = React.useRef(null);
 
   const { showSuccess, currentPageId } = useGlobalStore((state) => state);
 
@@ -82,7 +85,7 @@ export default function DeployButton() {
       </Tooltip>
 
       {isOpen && !functionDetailQuery.isFetching ? (
-        <Modal isOpen={isOpen} onClose={onClose} size="6xl" isCentered>
+        <Modal isOpen={isOpen} onClose={onClose} size="6xl" isCentered initialFocusRef={headerRef}>
           <ModalOverlay />
           <ModalContent maxW={"80%"}>
             <ModalHeader>Code Diff</ModalHeader>
@@ -102,6 +105,7 @@ export default function DeployButton() {
                 {t("Cancel")}
               </Button>
               <Button
+                ref={headerRef}
                 variant="primary"
                 isLoading={updateFunctionMutation.isLoading}
                 onClick={() => {
