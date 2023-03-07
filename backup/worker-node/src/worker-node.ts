@@ -9,8 +9,8 @@ import { $, AsRawStart, AsRawStop } from "@zimtsui/startable";
 
 
 assert(process.env.TASKLIST_HOST_URI);
-assert(process.env.TASKLIST_DB);
-assert(process.env.TASKLIST_COLL);
+assert(process.env.TASKLIST_DB_NAME);
+assert(process.env.TASKLIST_COLL_NAME);
 
 class WorkerNode {
 	private host?: MongoClient;
@@ -25,8 +25,8 @@ class WorkerNode {
 	private async rawStart() {
 		this.host = new MongoClient(process.env.TASKLIST_HOST_URI!);
 		this.host.on('close', () => void $(this).stop());
-		this.db = this.host.db(process.env.TASKLIST_DB!);
-		this.coll = this.db.collection<Document>(process.env.TASKLIST_COLL!);
+		this.db = this.host.db(process.env.TASKLIST_DB_NAME!);
+		this.coll = this.db.collection<Document>(process.env.TASKLIST_COLL_NAME!);
 		this.stream = this.coll.watch([], { fullDocument: 'updateLookup' });
 		this.stream.on('close', () => void $(this).stop());
 
