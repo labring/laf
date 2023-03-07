@@ -7,8 +7,8 @@ import { Publisher } from '@lafjs/mongo-async-rpc';
 
 
 assert(process.env.TASKLIST_HOST_URI);
-assert(process.env.TASKLIST_DB);
-assert(process.env.TASKLIST_COLL);
+assert(process.env.TASKLIST_DB_NAME);
+assert(process.env.TASKLIST_COLL_NAME);
 
 
 @Module({
@@ -18,8 +18,8 @@ assert(process.env.TASKLIST_COLL);
 		provide: 'publisher',
 		useValue: new Publisher(
 			process.env.TASKLIST_HOST_URI,
-			process.env.TASKLIST_DB,
-			process.env.TASKLIST_COLL,
+			process.env.TASKLIST_DB_NAME,
+			process.env.TASKLIST_COLL_NAME,
 		),
 	}],
 })

@@ -18,6 +18,7 @@ import { TriggerModule } from './trigger/trigger.module'
 import { RegionModule } from './region/region.module'
 import { GatewayModule } from './gateway/gateway.module'
 import { PrismaModule } from './prisma/prisma.module'
+import { BackupModule } from './backup/backup.module'
 
 @Module({
   imports: [
@@ -41,8 +42,9 @@ import { PrismaModule } from './prisma/prisma.module'
     RegionModule,
     GatewayModule,
     PrismaModule,
+    BackupModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

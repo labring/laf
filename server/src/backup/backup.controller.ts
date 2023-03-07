@@ -1,5 +1,5 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Inject, Logger, Param, Post, Req, UnauthorizedException, UseGuards } from '@nestjs/common'
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiConflictResponse, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
 import { RegionService } from 'src/region/region.service'
@@ -15,7 +15,7 @@ import assert from 'assert';
 
 
 @ApiTags('Backup')
-@ApiBearerAuth('Authorization')
+@ApiBearerAuth()
 @Controller('apps/:appid/backup')
 export class BackupController {
 	private readonly logger = new Logger(BackupController.name)
@@ -27,6 +27,8 @@ export class BackupController {
 		private readonly publisher: Publisher,
 	) { }
 
+	@ApiCreatedResponse()
+	@ApiConflictResponse()
 	@UseGuards(JwtAuthGuard, ApplicationAuthGuard)
 	@HttpCode(201)
 	@Post('capture')
@@ -57,6 +59,8 @@ export class BackupController {
 		}
 	}
 
+	@ApiCreatedResponse()
+	@ApiConflictResponse()
 	@UseGuards(JwtAuthGuard, ApplicationAuthGuard)
 	@HttpCode(201)
 	@Post('restore')
@@ -68,13 +72,14 @@ export class BackupController {
 		const region = await this.regionService.findByAppId(appid);
 		const dbUri = this.dbService.getConnectionUri(region, database);
 
-		assert(body.fileName.startsWith(appid), new UnauthorizedException());
+		// TODO
+		assert(body.objectName.startsWith(`${appid}/`), new UnauthorizedException());
 
 		try {
 			const doc = await this.publisher.submit<Restore.Method, Restore.Params>(
 				'restore',
 				[{
-					fileName: body.fileName,
+					fileName: body.objectName,
 					dbUri,
 					appid,
 				}],
@@ -89,6 +94,7 @@ export class BackupController {
 		}
 	}
 
+	@ApiOkResponse()
 	@UseGuards(JwtAuthGuard, ApplicationAuthGuard)
 	@Get()
 	async list(
