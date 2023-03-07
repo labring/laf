@@ -47,7 +47,7 @@ export interface FunctionContext {
   socket?: WebSocket
   request?: Request
   response?: Response
-  __function_name: string
+  __function_name?: string
 }
 
 /**

@@ -78,7 +78,7 @@ interface FunctionContext {
   /**
    * Express response object
    */
-  response: HttpResponse
+  response?: HttpResponse
 
   /**
    * WebSocket object

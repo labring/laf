@@ -18,12 +18,12 @@ export interface FunctionContext {
    */
   auth?: any
   user?: any
-  requestId: string
+  requestId?: string
   method?: string
   socket?: WebSocket
   request?: Request
   response?: Response
-  __function_name: string
+  __function_name?: string
 }
 
 /**
