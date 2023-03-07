@@ -5,9 +5,9 @@ import { Document } from "../document";
 
 export class Adoption {
 	public constructor(
-		private host: MongoClient,
-		private db: Db,
-		private coll: Collection<Document>,
+		private readonly host: MongoClient,
+		private readonly db: Db,
+		private readonly coll: Collection<Document>,
 	) { }
 
 	/**

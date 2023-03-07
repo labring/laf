@@ -1,18 +1,19 @@
 import { Collection, Db, ModifyResult, MongoClient, ObjectId } from 'mongodb';
 import { Document } from '../document';
+import * as Exceptions from './exceptions';
 
 
 export class Cancellation {
 	public constructor(
-		private host: MongoClient,
-		private db: Db,
-		private coll: Collection<Document>,
+		private readonly host: MongoClient,
+		private readonly db: Db,
+		private readonly coll: Collection<Document>,
 	) { }
 
 	/**
-	 *  @throws {@link Cancellation.AlreadyExits}
-	 *  @throws {@link Cancellation.NotFound}
-	 *  @throws {@link Cancellation.CancellationNotAllowed}
+	 *  @throws {@link Exceptions.AlreadyExits}
+	 *  @throws {@link Exceptions.NotFound}
+	 *  @throws {@link Exceptions.CancellationNotAllowed}
 	 */
 	public async cancel(
 		id: string,
@@ -53,34 +54,15 @@ export class Cancellation {
 		const doc = await this.coll.findOne({
 			_id,
 		});
-		if (doc === null) throw new NotFound();
+		if (doc === null) throw new Exceptions.NotFound();
 		if ([
 			Document.State.CANCELLED,
 			Document.State.SUCCEEDED,
 			Document.State.FAILED,
 		].includes(doc.state))
-			throw new AlreadyExits(doc as Document.Cancelled | Document.Succeeded | Document.Failed);
+			throw new Exceptions.AlreadyExits(doc as Document.Cancelled | Document.Succeeded | Document.Failed);
 		if (doc.state === Document.State.ADOPTED && !doc.cancellable)
-			throw new CancellationNotAllowed(doc);
+			throw new Exceptions.CancellationNotAllowed(doc);
 		throw new Error();
 	}
 }
-
-
-export namespace Cancellation {
-	export class AlreadyExits extends Error {
-		public constructor(
-			public doc: Document.Cancelled | Document.Succeeded | Document.Failed,
-		) { super(); }
-	}
-	export class NotFound extends Error { }
-	export class CancellationNotAllowed extends Error {
-		public constructor(
-			public doc: Document.Adopted,
-		) { super(); }
-	}
-}
-
-import AlreadyExits = Cancellation.AlreadyExits;
-import NotFound = Cancellation.NotFound;
-import CancellationNotAllowed = Cancellation.CancellationNotAllowed;

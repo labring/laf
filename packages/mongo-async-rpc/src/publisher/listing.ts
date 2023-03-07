@@ -3,11 +3,11 @@ import { Document } from '../document';
 
 
 
-export class List {
+export class Listing {
 	public constructor(
-		private host: MongoClient,
-		private db: Db,
-		private coll: Collection<Document>,
+		private readonly host: MongoClient,
+		private readonly db: Db,
+		private readonly coll: Collection<Document>,
 	) { }
 
 	public async list<

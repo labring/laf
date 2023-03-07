@@ -12,12 +12,12 @@ export class RpManager<
 	params extends readonly unknown[],
 	result,
 > {
-	private broadcast = new EventEmitter();
+	private readonly broadcast = new EventEmitter();
 
 	public constructor(
-		private coll: Collection<Document>,
-		private stream: ChangeStream<Document, ChangeStreamDocument<Document>>,
-		private rpFactory: RpFactoryLike<params, result>,
+		private readonly coll: Collection<Document>,
+		private readonly stream: ChangeStream<Document, ChangeStreamDocument<Document>>,
+		private readonly rpFactory: RpFactoryLike<params, result>,
 	) { }
 
 	private onChange = (notif: ChangeStreamDocument<Document>) => {

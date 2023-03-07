@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Logger, Param, Post, Req, UnauthorizedException, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, HttpCode, HttpStatus, Inject, Logger, Param, Post, Req, UnauthorizedException, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
@@ -9,14 +9,10 @@ import * as SubmitRestore from './dto/submit-restore.dto';
 import { Publisher } from '@lafjs/mongo-async-rpc';
 import { Capture, Restore } from '@lafjs/backup-interfaces';
 import { ConflictException } from '@nestjs/common'
-import { MongoClient } from 'mongodb';
 import assert from 'assert';
 
 
 
-assert(process.env.TASKLIST_HOST_URI);
-assert(process.env.TASKLIST_DB);
-assert(process.env.TASKLIST_COLL);
 
 @ApiTags('Backup')
 @ApiBearerAuth('Authorization')
@@ -27,7 +23,8 @@ export class BackupController {
 	public constructor(
 		private readonly dbService: DatabaseService,
 		private readonly regionService: RegionService,
-		private readonly submission: Publisher.Submission,
+		@Inject('publisher')
+		private readonly publisher: Publisher,
 	) { }
 
 	@UseGuards(JwtAuthGuard, ApplicationAuthGuard)
@@ -42,7 +39,7 @@ export class BackupController {
 		const dbUri = this.dbService.getConnectionUri(region, database);
 
 		try {
-			const doc = await this.submission.submit<Capture.Method, Capture.Params>(
+			const doc = await this.publisher.submit<Capture.Method, Capture.Params>(
 				'capture',
 				[{
 					dbUri,
@@ -53,7 +50,7 @@ export class BackupController {
 			);
 			return doc;
 		} catch (err) {
-			if (err instanceof Publisher.Submission.Locked)
+			if (err instanceof Publisher.Locked)
 				throw new ConflictException();
 			else
 				throw err;
@@ -74,7 +71,7 @@ export class BackupController {
 		assert(body.fileName.startsWith(appid), new UnauthorizedException());
 
 		try {
-			const doc = await this.submission.submit<Restore.Method, Restore.Params>(
+			const doc = await this.publisher.submit<Restore.Method, Restore.Params>(
 				'restore',
 				[{
 					fileName: body.fileName,
@@ -85,7 +82,7 @@ export class BackupController {
 			);
 			return doc;
 		} catch (err) {
-			if (err instanceof Publisher.Submission.Locked)
+			if (err instanceof Publisher.Locked)
 				throw new ConflictException();
 			else
 				throw err;
@@ -97,13 +94,8 @@ export class BackupController {
 	async list(
 		@Param('appid') appid: string,
 	): Promise<(Capture.Document | Restore.Document)[]> {
-		const host = new MongoClient(process.env.TASKLIST_HOST_URI);
-		const db = host.db(process.env.TASKLIST_DB);
-		const coll = db.collection<Capture.Document>(process.env.TASKLIST_COLL);
-
-		const docs = coll.find<Capture.Document | Restore.Document>({
+		return await this.publisher.list({
 			'request.params.0.appid': appid,
-		}).toArray();
-		return docs;
+		}) as (Capture.Document | Restore.Document)[];
 	}
 }

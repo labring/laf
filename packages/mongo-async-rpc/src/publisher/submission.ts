@@ -1,18 +1,19 @@
 import assert = require('assert');
 import { Collection, Db, ModifyResult, MongoClient, ObjectId } from 'mongodb';
 import { Document } from '../document';
+import * as Exceptions from './exceptions';
 
 
 
 export class Submission {
 	public constructor(
-		private host: MongoClient,
-		private db: Db,
-		private coll: Collection<Document>,
+		private readonly host: MongoClient,
+		private readonly db: Db,
+		private readonly coll: Collection<Document>,
 	) { }
 
 	/**
-	 *  @throws {@link Submission.Locked}
+	 *  @throws {@link Exceptions.Locked}
 	 */
 	public async submit<
 		methodName extends string,
@@ -70,17 +71,7 @@ export class Submission {
 			await session.endSession();
 		}
 
-		assert(oldDoc === null, new Locked(oldDoc!));
+		assert(oldDoc === null, new Exceptions.Locked(oldDoc!));
 		return newDoc;
 	}
 }
-
-export namespace Submission {
-	export class Locked extends Error {
-		public constructor(
-			public doc: Document.Orphan | Document.Adopted,
-		) { super(); }
-	}
-}
-
-import Locked = Submission.Locked;

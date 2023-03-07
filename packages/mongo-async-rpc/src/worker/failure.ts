@@ -6,9 +6,9 @@ import * as JsonRpc from '@lafjs/node-json-rpc';
 
 export class Failure {
 	public constructor(
-		private host: MongoClient,
-		private db: Db,
-		private coll: Collection<Document>,
+		private readonly host: MongoClient,
+		private readonly db: Db,
+		private readonly coll: Collection<Document>,
 	) { }
 
 	/**

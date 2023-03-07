@@ -4,17 +4,21 @@ import EventEmitter = require('events');
 import { TypedEventEmitter } from 'mongodb';
 import { DeltaStream } from '@zimtsui/delta-stream';
 import assert = require('assert');
+import * as Exceptions from './exceptions';
 
 
 
 export class Inquiry {
-	private broadcast = new EventEmitter() as TypedEventEmitter<Record<string, (doc: Document) => void>>;
+	private readonly broadcast = new EventEmitter() as TypedEventEmitter<Record<string, (doc: Document) => void>>;
 
+	/**
+	*  @param stream `coll.watch([], { fullDocument: 'updateLookup' })`
+	*/
 	public constructor(
-		private host: MongoClient,
-		private db: Db,
-		private coll: Collection<Document>,
-		private stream: ChangeStream<Document, ChangeStreamDocument<Document>>,
+		private readonly host: MongoClient,
+		private readonly db: Db,
+		private readonly coll: Collection<Document>,
+		private readonly stream: ChangeStream<Document, ChangeStreamDocument<Document>>,
 	) {
 		this.broadcast.setMaxListeners(Number.POSITIVE_INFINITY);
 		this.stream.on('error', err => {
@@ -41,12 +45,12 @@ export class Inquiry {
 		const doc = await this.coll.findOne({
 			_id: ObjectId.createFromHexString(id),
 		}) as Document<methodName, params, result> | null;
-		assert(doc !== null, new NotFound());
+		assert(doc !== null, new Exceptions.NotFound());
 		return doc;
 	}
 
 	/**
-	 *  @throws {@link Inquiry.NotFound}
+	 *  @throws {@link Exceptions.NotFound}
 	 */
 	public inquire<
 		methodName extends string,
@@ -63,9 +67,3 @@ export class Inquiry {
 		);
 	}
 }
-
-export namespace Inquiry {
-	export class NotFound extends Error { }
-}
-
-import NotFound = Inquiry.NotFound;

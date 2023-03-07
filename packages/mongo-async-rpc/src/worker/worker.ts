@@ -15,23 +15,23 @@ export class Worker<
 	params extends readonly unknown[],
 	result,
 >  {
-	private adoption: Adoption;
-	private success: Success;
-	private failure: Failure;
-	private pollerloop: Pollerloop;
-	private rpManager = new RpManager(this.coll, this.stream, this.rpFactory);
+	private readonly adoption: Adoption;
+	private readonly success: Success;
+	private readonly failure: Failure;
+	private readonly pollerloop: Pollerloop;
+	private readonly rpManager = new RpManager(this.coll, this.stream, this.rpFactory);
 
 	/**
 	*  @param stream `coll.watch([], { fullDocument: 'updateLookup' })`
 	*/
 	public constructor(
-		private host: MongoClient,
-		private db: Db,
-		private coll: Collection<Document>,
-		private stream: ChangeStream<Document, ChangeStreamDocument<Document>>,
-		private methodName: methodName,
-		private rpFactory: RpFactoryLike<params, result>,
-		private cancellable = false,
+		private readonly host: MongoClient,
+		private readonly db: Db,
+		private readonly coll: Collection<Document>,
+		private readonly stream: ChangeStream<Document, ChangeStreamDocument<Document>>,
+		private readonly methodName: methodName,
+		private readonly rpFactory: RpFactoryLike<params, result>,
+		private readonly cancellable = false,
 	) {
 		this.adoption = new Adoption(this.host, this.db, this.coll);
 		this.success = new Success(this.host, this.db, this.coll);
