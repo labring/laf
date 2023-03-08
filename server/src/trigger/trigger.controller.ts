@@ -85,8 +85,8 @@ export class TriggerController {
   @ApiResponse({ type: ResponseUtil })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Delete(':id')
-  async remove(@Param('appid') appid: string, @Param('id') id: string) {
-    const res = await this.triggerService.remove(appid, id)
+  async remove(@Param('id') id: string) {
+    const res = await this.triggerService.remove(id)
     return ResponseUtil.ok(res)
   }
 }
