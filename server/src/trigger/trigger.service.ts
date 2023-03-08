@@ -50,9 +50,12 @@ export class TriggerService {
     return res
   }
 
-  async remove(appid: string, id: string) {
-    const res = await this.prisma.cronTrigger.deleteMany({
-      where: { appid, id },
+  async remove(id: string) {
+    const res = await this.prisma.cronTrigger.update({
+      where: { id },
+      data: {
+        state: TriggerState.Deleted,
+      },
     })
     return res
   }
