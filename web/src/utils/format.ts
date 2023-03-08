@@ -36,11 +36,11 @@ export function formatDateOption(): { label: string; value: number | string }[] 
   const optionDay = [7, 30, 60, 90];
   const option: { label: string; value: string | number }[] = optionDay.map((item) => {
     return {
-      label: `${item} ${t(" Days")}`,
+      label: `${item} ${t("Days")}`,
       value: item * 24 * 60 * 60,
     };
   });
-  option.push({ label: t(" Custom"), value: "custom" });
+  option.push({ label: t("Custom"), value: "custom" });
   return option;
 }
 

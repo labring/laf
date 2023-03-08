@@ -101,7 +101,6 @@ export default function LogsPage() {
                 width={200}
                 size="sm"
                 placeholder={t("FunctionPanel.FunctionName").toString()}
-                bg="white"
                 {...register("functionName")}
               />
 
