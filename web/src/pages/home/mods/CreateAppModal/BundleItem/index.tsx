@@ -22,7 +22,7 @@ export default function BundleItem(props: {
   const { bundle, isActive, onChange } = props;
   return (
     <div
-      onClick={() => onChange(bundle.name)}
+      onClick={() => onChange(bundle.id)}
       key={bundle.name}
       className={clsx("min-w-[170px] border p-2 rounded-md cursor-pointer", {
         "border-primary-500 bg-primary-100": isActive,
