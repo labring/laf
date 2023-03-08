@@ -72,6 +72,7 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
         policy: values.policy,
       });
       if (!res.error) {
+        store.setCurrentStorage(res.data);
         showSuccess("create success.");
         onClose();
       }
