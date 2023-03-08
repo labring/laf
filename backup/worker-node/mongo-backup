@@ -12,7 +12,7 @@ set -o errexit
 
 VERSION='0.0.1'
 
-# mc alias set $MC_ALIAS $BACKUP_S3_HOSTNAME $BACKUP_S3_USERNAME $BACKUP_S3_PASSWORD
+# mc alias set $MC_ALIAS $S3_URL $S3_USERNAME $S3_PASSWORD
 
 SUBCMD="$1"
 case $SUBCMD in
