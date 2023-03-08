@@ -52,7 +52,7 @@ const useStorageStore = create<State>()(
 
       getOrigin: (domain: string) => {
         const currentApp = useGlobalStore.getState().currentApp;
-        return `${currentApp?.tls ? "https" : "http"}://${domain}:${formatPort(currentApp?.port)}`;
+        return `${currentApp?.tls ? "https" : "http"}://${domain}${formatPort(currentApp?.port)}`;
       },
     })),
   ),

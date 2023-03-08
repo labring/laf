@@ -4,6 +4,7 @@ import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
 import { APP_PHASE_STATUS } from "@/constants";
+import { formatPort } from "@/utils/format";
 
 import { TApplication, TRegion, TRuntime, TUserInfo } from "@/apis/typing";
 import { ApplicationControllerRemove, ApplicationControllerUpdate } from "@/apis/v1/applications";
@@ -117,7 +118,7 @@ const useGlobalStore = create<State>()(
           state.currentApp = app;
 
           if (typeof state.currentApp === "object") {
-            const host = `${state.currentApp?.domain?.domain}:${state.currentApp.port}`;
+            const host = `${state.currentApp?.domain?.domain}${formatPort(state.currentApp.port)}`;
             state.currentApp.host = host;
             state.currentApp.origin = `${state.currentApp?.tls ? "https://" : "http://"}${host}`;
           }
