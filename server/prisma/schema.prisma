@@ -136,9 +136,9 @@ model Bundle {
 }
 
 model ApplicationBundle {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  appid    String @unique
-  bundleId String @db.ObjectId
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  appid        String         @unique
+  bundleId     String         @db.ObjectId
   name         String
   displayName  String
   resource     BundleResource
@@ -333,7 +333,7 @@ model DatabasePolicyRule {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  policy DatabasePolicy @relation(fields: [appid, policyName], references: [appid, name])
+  policy DatabasePolicy @relation(fields: [appid, policyName], references: [appid, name], onDelete: Cascade)
 
   @@unique([appid, policyName, collectionName])
 }

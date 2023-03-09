@@ -121,8 +121,13 @@ export class ApplicationService {
         data.state = dto.state
       }
 
-      const application = await this.prisma.application.update({
-        where: { appid },
+      const application = await this.prisma.application.updateMany({
+        where: {
+          appid,
+          phase: {
+            notIn: [ApplicationPhase.Deleting, ApplicationPhase.Deleted],
+          },
+        },
         data,
       })
 
@@ -135,8 +140,13 @@ export class ApplicationService {
 
   async remove(appid: string) {
     try {
-      const res = await this.prisma.application.update({
-        where: { appid },
+      const res = await this.prisma.application.updateMany({
+        where: {
+          appid,
+          phase: {
+            in: [ApplicationPhase.Started, ApplicationPhase.Stopped],
+          },
+        },
         data: {
           state: ApplicationState.Deleted,
         },

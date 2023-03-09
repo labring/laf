@@ -13,12 +13,6 @@ export class BundleService {
     })
   }
 
-  async findApplicationBundle(appid: string) {
-    return this.prisma.applicationBundle.findUnique({
-      where: { appid },
-    })
-  }
-
   async findOneByName(name: string, regionName: string) {
     return this.prisma.bundle.findFirst({
       where: {
@@ -27,6 +21,18 @@ export class BundleService {
           name: regionName,
         },
       },
+    })
+  }
+
+  async findApplicationBundle(appid: string) {
+    return this.prisma.applicationBundle.findUnique({
+      where: { appid },
+    })
+  }
+
+  async deleteApplicationBundle(appid: string) {
+    return this.prisma.applicationBundle.delete({
+      where: { appid },
     })
   }
 }

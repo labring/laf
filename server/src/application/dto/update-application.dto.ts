@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
 import { ApplicationState } from '@prisma/client'
-import { IsIn } from 'class-validator'
+import { IsIn, IsString, Length } from 'class-validator'
 
 const STATES = [
   ApplicationState.Running,
@@ -12,6 +12,8 @@ export class UpdateApplicationDto {
    * Application name
    */
   @ApiPropertyOptional()
+  @IsString()
+  @Length(1, 64)
   name?: string
 
   @ApiPropertyOptional({

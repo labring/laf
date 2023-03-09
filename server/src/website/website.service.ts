@@ -42,6 +42,16 @@ export class WebsiteService {
     return website
   }
 
+  async count(appid: string) {
+    const count = await this.prisma.websiteHosting.count({
+      where: {
+        appid: appid,
+      },
+    })
+
+    return count
+  }
+
   async findAll(appid: string) {
     const websites = await this.prisma.websiteHosting.findMany({
       where: {
@@ -124,5 +134,18 @@ export class WebsiteService {
     })
 
     return website
+  }
+
+  async removeAll(appid: string) {
+    const websites = await this.prisma.websiteHosting.updateMany({
+      where: {
+        appid,
+      },
+      data: {
+        state: DomainState.Deleted,
+      },
+    })
+
+    return websites
   }
 }

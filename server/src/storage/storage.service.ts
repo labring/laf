@@ -72,7 +72,7 @@ export class StorageService {
     return user
   }
 
-  async delete(appid: string) {
+  async deleteUsersAndBuckets(appid: string) {
     // delete user in minio
     const region = await this.regionService.findByAppId(appid)
 

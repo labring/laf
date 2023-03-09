@@ -56,19 +56,19 @@ export class ServerConfig {
   /* switcher of task controllers */
 
   static get DISABLED_INSTANCE_TASK() {
-    return process.env.DISABLED_INSTANCE_TASK || false
+    return process.env.DISABLED_INSTANCE_TASK === 'true'
   }
 
   static get DISABLED_APPLICATION_TASK() {
-    return process.env.DISABLED_APPLICATION_TASK || false
+    return process.env.DISABLED_APPLICATION_TASK === 'true'
   }
 
   static get DISABLED_GATEWAY_TASK() {
-    return process.env.DISABLED_GATEWAY_TASK || false
+    return process.env.DISABLED_GATEWAY_TASK === 'true'
   }
 
   static get DISABLED_STORAGE_TASK() {
-    return process.env.DISABLED_STORAGE_TASK || false
+    return process.env.DISABLED_STORAGE_TASK === 'true'
   }
 
   static get APPID_LENGTH(): number {

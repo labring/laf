@@ -60,6 +60,16 @@ export class TriggerService {
     return res
   }
 
+  async removeAll(appid: string) {
+    const res = await this.prisma.cronTrigger.updateMany({
+      where: { appid },
+      data: {
+        state: TriggerState.Deleted,
+      },
+    })
+    return res
+  }
+
   isValidCronExpression(cron: string) {
     const ret = CronValidate(cron)
     if (ret.isValid()) {
