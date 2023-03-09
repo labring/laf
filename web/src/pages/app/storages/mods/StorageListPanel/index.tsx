@@ -110,7 +110,7 @@ export default function StorageListPanel() {
                           <Tag size="sm" className="w-16 justify-center" variant={storage?.policy}>
                             {storage?.policy}
                           </Tag>
-                          <MoreButton isHidden={false}>
+                          <MoreButton isHidden={false} label={t("Operation")}>
                             <>
                               <CreateBucketModal storage={storage}>
                                 <IconText icon={<EditIcon />} text={t("Edit")} />

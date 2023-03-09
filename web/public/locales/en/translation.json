@@ -52,6 +52,7 @@
   "DeleteSuccess": "successfully deleted",
   "DeleteTip": "cannot be undone",
   "Edit": "Edit",
+  "Empty": "Empty",
   "Generate": "generate",
   "InputTip": "please enter",
   "IsRequired": " is required",

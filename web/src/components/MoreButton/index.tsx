@@ -13,9 +13,10 @@ import { MoreIcon } from "@/components/CommonIcon/index";
 export default function MoreButton(props: {
   children: React.ReactElement;
   isHidden: boolean;
+  label: string;
   maxWidth?: string;
 }) {
-  const { children, isHidden, maxWidth } = props;
+  const { children, isHidden, maxWidth, label = "Click here to open a popover" } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <div className={clsx("flex group-hover:visible ", isHidden ? "invisible" : "visible")}>
@@ -26,7 +27,7 @@ export default function MoreButton(props: {
         closeOnBlur={true}
         placement="bottom"
       >
-        <Tooltip aria-label="tooltip" placement="bottom" label="Click here to open a popover">
+        <Tooltip aria-label="tooltip" placement="bottom" label={label}>
           <Box display="inline-block">
             <PopoverTrigger>
               <div className="px-1">
