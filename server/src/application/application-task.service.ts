@@ -16,6 +16,13 @@ import { RegionService } from 'src/region/region.service'
 import { RuntimeDomainService } from 'src/gateway/runtime-domain.service'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/database/system-database'
+import { TriggerService } from 'src/trigger/trigger.service'
+import { FunctionService } from 'src/function/function.service'
+import { ApplicationConfigurationService } from './configuration.service'
+import { BundleService } from 'src/region/bundle.service'
+import { WebsiteService } from 'src/website/website.service'
+import { PolicyService } from 'src/database/policy/policy.service'
+import { BucketDomainService } from 'src/gateway/bucket-domain.service'
 
 @Injectable()
 export class ApplicationTaskService {
@@ -27,7 +34,14 @@ export class ApplicationTaskService {
     private readonly clusterService: ClusterService,
     private readonly storageService: StorageService,
     private readonly databaseService: DatabaseService,
-    private readonly gatewayService: RuntimeDomainService,
+    private readonly runtimeDomainService: RuntimeDomainService,
+    private readonly bucketDomainService: BucketDomainService,
+    private readonly triggerService: TriggerService,
+    private readonly functionService: FunctionService,
+    private readonly configurationService: ApplicationConfigurationService,
+    private readonly bundleService: BundleService,
+    private readonly websiteService: WebsiteService,
+    private readonly policyService: PolicyService,
   ) {}
 
   @Cron(CronExpression.EVERY_SECOND)
@@ -52,7 +66,7 @@ export class ApplicationTaskService {
    * Phase `Creating`:
    * - create namespace
    * - create storage user
-   * - create gateway domain
+   * - create runtime domain
    * - create database & user
    * - move phase `Creating` to `Created`
    */
@@ -110,15 +124,15 @@ export class ApplicationTaskService {
       database = await this.databaseService.create(app.appid)
     }
 
-    // reconcile gateway
-    let gateway = await this.gatewayService.findOne(appid)
-    if (!gateway) {
+    // reconcile runtime domain
+    let runtimeDomain = await this.runtimeDomainService.findOne(appid)
+    if (!runtimeDomain) {
       this.logger.log(`Creating gateway for application ${appid}`)
-      gateway = await this.gatewayService.create(appid)
+      runtimeDomain = await this.runtimeDomainService.create(appid)
     }
 
     // waiting resources' phase to be `Created`
-    if (gateway?.phase !== DomainPhase.Created) {
+    if (runtimeDomain?.phase !== DomainPhase.Created) {
       return await this.unlock(appid)
     }
 
@@ -149,7 +163,17 @@ export class ApplicationTaskService {
 
   /**
    * Phase `Deleting`:
-   * - delete namespace, storage, database, gateway
+   * - delete triggers (k8s cronjob)
+   * - delete cloud functions
+   * - delete policies
+   * - delete application configuration
+   * - delete application bundle
+   * - delete website
+   * - delete runtime domain (apisix route)
+   * - delete bucket domain (apisix route)
+   * - delete database (mongo db)
+   * - delete storage (minio buckets & user)
+   * - delete namespace
    * - move phase `Deleting` to `Deleted`
    */
   async handleDeletingPhase() {
@@ -178,35 +202,82 @@ export class ApplicationTaskService {
     const region = await this.regionService.findByAppId(appid)
     assert(region, `Region ${region.name} not found`)
 
-    // delete namespace (include the instance)
-    const namespace = await this.clusterService.getAppNamespace(region, appid)
-    if (namespace) {
-      await this.clusterService.removeAppNamespace(region, appid)
+    // delete triggers
+    const hadTriggers = await this.triggerService.count(appid)
+    if (hadTriggers > 0) {
+      await this.triggerService.removeAll(appid)
       return await this.unlock(appid)
     }
 
-    // delete storage
-    const storage = await this.storageService.findOne(appid)
-    if (storage) {
-      await this.storageService.delete(appid)
+    // delete cloud functions
+    const hadFunctions = await this.functionService.count(appid)
+    if (hadFunctions > 0) {
+      await this.functionService.removeAll(appid)
       return await this.unlock(appid)
     }
 
-    // delete database
+    // delete database proxy policies
+    const hadPolicies = await this.policyService.count(appid)
+    if (hadPolicies > 0) {
+      await this.policyService.removeAll(appid)
+      return await this.unlock(appid)
+    }
+
+    // delete application configuration
+    const hadConfigurations = await this.configurationService.count(appid)
+    if (hadConfigurations > 0) {
+      await this.configurationService.remove(appid)
+      return await this.unlock(appid)
+    }
+
+    // delete application bundle
+    const bundle = await this.bundleService.findApplicationBundle(appid)
+    if (bundle) {
+      await this.bundleService.deleteApplicationBundle(appid)
+      return await this.unlock(appid)
+    }
+
+    // delete website
+    const hadWebsites = await this.websiteService.count(appid)
+    if (hadWebsites > 0) {
+      await this.websiteService.removeAll(appid)
+      return await this.unlock(appid)
+    }
+
+    // delete runtime domain
+    const runtimeDomain = await this.runtimeDomainService.findOne(appid)
+    if (runtimeDomain) {
+      await this.runtimeDomainService.delete(appid)
+      return await this.unlock(appid)
+    }
+
+    // delete bucket domains
+    const hadBucketDomains = await this.bucketDomainService.count(appid)
+    if (hadBucketDomains > 0) {
+      await this.bucketDomainService.deleteAll(appid)
+      return await this.unlock(appid)
+    }
+
+    // delete application database
     const database = await this.databaseService.findOne(appid)
     if (database) {
       await this.databaseService.delete(database)
       return await this.unlock(appid)
     }
 
-    // delete gateway
-    const gateway = await this.gatewayService.findOne(appid)
-    if (gateway) {
-      await this.gatewayService.delete(appid)
+    // delete application storage
+    const storage = await this.storageService.findOne(appid)
+    if (storage) {
+      await this.storageService.deleteUsersAndBuckets(appid)
       return await this.unlock(appid)
     }
 
-    // TODO: delete app configuration & bundle
+    // delete application namespace (include the instance)
+    const namespace = await this.clusterService.getAppNamespace(region, appid)
+    if (namespace) {
+      await this.clusterService.removeAppNamespace(region, appid)
+      return await this.unlock(appid)
+    }
 
     // update phase to `Deleted`
     const updated = await db.collection<Application>('Application').updateOne(

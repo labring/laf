@@ -10,6 +10,9 @@ import { EnvironmentVariableController } from './environment.controller'
 import { StorageModule } from '../storage/storage.module'
 import { DatabaseModule } from 'src/database/database.module'
 import { GatewayModule } from 'src/gateway/gateway.module'
+import { ApplicationConfigurationService } from './configuration.service'
+import { TriggerService } from 'src/trigger/trigger.service'
+import { WebsiteService } from 'src/website/website.service'
 
 @Module({
   imports: [StorageModule, DatabaseModule, GatewayModule],
@@ -21,6 +24,9 @@ import { GatewayModule } from 'src/gateway/gateway.module'
     JwtService,
     FunctionService,
     EnvironmentVariableService,
+    ApplicationConfigurationService,
+    TriggerService,
+    WebsiteService,
   ],
   exports: [ApplicationService],
 })

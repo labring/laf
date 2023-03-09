@@ -91,6 +91,13 @@ export class FunctionService {
     return res
   }
 
+  async removeAll(appid: string) {
+    const res = await this.prisma.cloudFunction.deleteMany({
+      where: { appid },
+    })
+    return res
+  }
+
   async publish(func: CloudFunction) {
     const { db, client } = await this.databaseService.findAndConnect(func.appid)
     const session = client.startSession()

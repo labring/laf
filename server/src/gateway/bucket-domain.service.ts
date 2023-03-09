@@ -56,6 +56,16 @@ export class BucketDomainService {
     return doc
   }
 
+  async count(appid: string) {
+    const count = await this.prisma.bucketDomain.count({
+      where: {
+        appid,
+      },
+    })
+
+    return count
+  }
+
   /**
    * Delete app domain in database:
    * - turn to `Deleted` state
@@ -72,5 +82,18 @@ export class BucketDomainService {
     })
 
     return doc
+  }
+
+  async deleteAll(appid: string) {
+    const docs = await this.prisma.bucketDomain.updateMany({
+      where: {
+        appid,
+      },
+      data: {
+        state: DomainState.Deleted,
+      },
+    })
+
+    return docs
   }
 }

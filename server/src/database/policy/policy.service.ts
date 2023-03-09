@@ -100,6 +100,22 @@ export class PolicyService {
     return res
   }
 
+  async removeAll(appid: string) {
+    // delete rules first
+    await this.prisma.databasePolicyRule.deleteMany({
+      where: {
+        appid,
+      },
+    })
+
+    const res = await this.prisma.databasePolicy.deleteMany({
+      where: {
+        appid,
+      },
+    })
+    return res
+  }
+
   async publish(policy: DatabasePolicy & { rules: DatabasePolicyRule[] }) {
     const { db, client } = await this.databaseService.findAndConnect(
       policy.appid,
