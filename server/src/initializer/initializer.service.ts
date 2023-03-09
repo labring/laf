@@ -3,7 +3,6 @@ import { RegionService } from 'src/region/region.service'
 import { MinioService } from 'src/storage/minio/minio.service'
 import { CPU_UNIT, ServerConfig } from '../constants'
 import { PrismaService } from '../prisma/prisma.service'
-import * as assert from 'assert'
 
 @Injectable()
 export class InitializerService {
@@ -93,6 +92,7 @@ export class InitializerService {
           limitCountOfBucket: 10,
           limitCountOfDatabasePolicy: 10,
           limitCountOfTrigger: 10,
+          limitCountOfWebsiteHosting: 10,
 
           limitDatabaseTPS: 100,
           limitStorageTPS: 1000,
