@@ -1,5 +1,6 @@
 {
   "name": "laf-project",
+  "version": "1.0.0-beta.4",
   "description": "laf.js serverless cloud development platform",
   "private": "true",
   "repository": {
