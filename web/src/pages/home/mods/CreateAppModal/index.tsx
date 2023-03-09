@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { CheckIcon } from "@chakra-ui/icons";
 import {
@@ -31,15 +31,36 @@ import BundleItem from "./BundleItem";
 import RuntimeItem from "./RuntimeItem";
 
 import { TBundle } from "@/apis/typing";
-import { ApplicationControllerCreate, ApplicationControllerUpdate } from "@/apis/v1/applications";
+import {
+  ApplicationControllerCreate,
+  ApplicationControllerRemove,
+  ApplicationControllerUpdate,
+} from "@/apis/v1/applications";
 import useGlobalStore from "@/pages/globalStore";
 
-const CreateAppModal = (props: { application?: any; children: React.ReactElement }) => {
+const CreateAppModal = (props: {
+  application?: any;
+  isDelete?: boolean;
+  setShouldRefetch?: any;
+  children: React.ReactElement;
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const queryClient = useQueryClient();
 
-  const { application = {} } = props;
+  const { application = {}, isDelete = false, setShouldRefetch = () => {} } = props;
   const isEdit = !!application.name;
+  // input APPID by user
+  const [inputAppId, setInputAppId] = useState<string>("");
+
+  const handleInputAppIdChange = (event: any) => {
+    setInputAppId(event.target.value);
+  };
+
+  // if is delete, reset input when close modal
+  const onCustomClose = () => {
+    isDelete && setInputAppId("");
+    onClose();
+  };
 
   const { runtimes = [], regions = [] } = useGlobalStore();
 
@@ -90,9 +111,20 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
 
   const updateAppMutation = useMutation((params: any) => ApplicationControllerUpdate(params));
 
+  const deleteAppMutation = useMutation((params: any) => ApplicationControllerRemove(params), {
+    onSuccess: () => {
+      onCustomClose();
+      setShouldRefetch(true);
+    },
+    onError: () => {},
+  });
+
   const onSubmit = async (data: any) => {
     let res: any = {};
-    if (isEdit) {
+    if (isDelete) {
+      deleteAppMutation.mutate({ appid: application.appid });
+      return;
+    } else if (isEdit) {
       res = await updateAppMutation.mutateAsync({ ...data, appid: application.appid });
     } else {
       res = await appCreateMutation.mutateAsync(data);
@@ -125,25 +157,38 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
         },
       })}
 
-      <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <Modal isOpen={isOpen} onClose={onCustomClose} size="xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{isEdit ? t("Edit") : t("Create")}</ModalHeader>
+          <ModalHeader>{isDelete ? t("Delete") : isEdit ? t("Edit") : t("Create")}</ModalHeader>
           <ModalCloseButton />
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
               <FormControl isRequired isInvalid={!!errors?.name}>
-                <FormLabel htmlFor="name">{t("HomePanel.Application") + t("Name")}</FormLabel>
-                <Input
-                  {...register("name", {
-                    required: `${t("HomePanel.Application")} ${t("IsRequired")}`,
-                  })}
-                />
+                <FormLabel htmlFor="name">
+                  {isDelete
+                    ? t("InputTip") + " APP ID " + t("Confirm")
+                    : t("HomePanel.Application") + t("Name")}
+                </FormLabel>
+                {isDelete ? (
+                  <Input
+                    value={inputAppId}
+                    {...register("name")}
+                    onChange={handleInputAppIdChange}
+                  />
+                ) : (
+                  <Input
+                    {...register("name", {
+                      required: `${t("HomePanel.Application")} ${t("IsRequired")}`,
+                    })}
+                  />
+                )}
+
                 <FormErrorMessage>{errors?.name && errors?.name?.message}</FormErrorMessage>
               </FormControl>
 
-              <FormControl isRequired hidden={isEdit}>
+              <FormControl isRequired hidden={isEdit || isDelete}>
                 <FormLabel htmlFor="regionId">{t("HomePanel.Region")}</FormLabel>
                 <HStack spacing={6}>
                   <Controller
@@ -177,7 +222,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                 </HStack>
               </FormControl>
 
-              <FormControl isRequired isInvalid={!!errors?.bundleId} hidden={isEdit}>
+              <FormControl isRequired isInvalid={!!errors?.bundleId} hidden={isEdit || isDelete}>
                 <FormLabel htmlFor="bundleId">
                   {t("HomePanel.Application") + t("HomePanel.BundleName")}
                 </FormLabel>
@@ -231,7 +276,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                 </FormControl>
               ) : null}
 
-              <FormControl isRequired isInvalid={!!errors?.runtimeId}>
+              <FormControl isRequired isInvalid={!!errors?.runtimeId} hidden={isDelete}>
                 <FormLabel htmlFor="runtimeId">{t("HomePanel.RuntimeName")}</FormLabel>
                 <Controller
                   name="runtimeId"
@@ -264,14 +309,13 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                 <span className="ml-6 text-red-500 font-semibold text-xl">{totalPrice}</span>
               </div>
             )} */}
-
             <Button
               isLoading={appCreateMutation.isLoading}
               type="submit"
               onClick={handleSubmit(onSubmit)}
-              disabled={totalPrice > 0}
+              isDisabled={totalPrice > 0 || (isDelete && inputAppId !== application.appid)}
             >
-              {isEdit ? t("Confirm") : t("CreateNow")}
+              {isEdit || isDelete ? t("Confirm") : t("CreateNow")}
             </Button>
           </ModalFooter>
         </ModalContent>

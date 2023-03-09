@@ -13,10 +13,10 @@ import {
   MenuItem,
   MenuList,
 } from "@chakra-ui/react";
-import { useMutation } from "@tanstack/react-query";
+// import { useMutation } from "@tanstack/react-query";
 import { t } from "i18next";
 
-import ConfirmButton from "@/components/ConfirmButton";
+// import ConfirmButton from "@/components/ConfirmButton";
 import CopyText from "@/components/CopyText";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
@@ -29,7 +29,7 @@ import CreateAppModal from "../CreateAppModal";
 import StatusBadge from "../StatusBadge";
 
 import { TApplication } from "@/apis/typing";
-import { ApplicationControllerRemove } from "@/apis/v1/applications";
+// import { ApplicationControllerRemove } from "@/apis/v1/applications";
 import useGlobalStore from "@/pages/globalStore";
 
 function List(props: { appListQuery: any; setShouldRefetch: any }) {
@@ -41,12 +41,13 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
 
   const { appListQuery, setShouldRefetch } = props;
 
+  /*
   const deleteAppMutation = useMutation((params: any) => ApplicationControllerRemove(params), {
     onSuccess: () => {
       setShouldRefetch(true);
     },
     onError: () => {},
-  });
+  }); */
 
   return (
     <>
@@ -150,7 +151,18 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                             </a>
                           </MenuItem>
                         </CreateAppModal>
-                        <ConfirmButton
+                        <CreateAppModal
+                          application={item}
+                          isDelete={true}
+                          setShouldRefetch={setShouldRefetch}
+                        >
+                          <MenuItem minH="40px" display={"block"}>
+                            <a className="text-danger block" href="/delete">
+                              {t("Delete")}
+                            </a>
+                          </MenuItem>
+                        </CreateAppModal>
+                        {/*<ConfirmButton
                           headerText={t("HomePanel.DeleteApp")}
                           bodyText={t("HomePanel.DeleteTip")}
                           onSuccessAction={() => {
@@ -162,7 +174,7 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                               {t("Delete")}
                             </a>
                           </MenuItem>
-                        </ConfirmButton>
+                        </ConfirmButton>*/}
                       </MenuList>
                     </Menu>
                   </div>
