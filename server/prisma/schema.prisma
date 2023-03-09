@@ -114,6 +114,7 @@ type BundleResource {
   limitCountOfBucket         Int // limit count of bucket per application
   limitCountOfDatabasePolicy Int // limit count of database policy per application
   limitCountOfTrigger        Int // limit count of trigger per application
+  limitCountOfWebsiteHosting Int // limit count of website hosting per application
 
   limitDatabaseTPS Int // limit count of database TPS per application
   limitStorageTPS  Int // limit count of storage TPS per application
