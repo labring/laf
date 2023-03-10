@@ -61,6 +61,10 @@ export function command(): Command {
     .command('exec <funcName>')
     .description('exec function')
     .option('-l --log <count>', 'print log')
+    .option('-X --method <method>', 'request method, eg -X HEAD/GET/POST/PUT/DELETE')
+    .option('-H --headers <request headers>', 'request headers, eg -H \'{"Content-Type": "application/json"}\'')
+    .option('-q --query <request query params>', 'request query params, eg -q "key1=val1&key2=val2"')
+    .option('-d --data <request body data>', 'request body data, eg -d \'{"key1": "val1"}\'')
     .option('-r --requestId', 'print requestId', false)
     .hook('preAction', async () => {
       await checkFunctionDebugToken()

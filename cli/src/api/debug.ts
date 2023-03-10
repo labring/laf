@@ -5,13 +5,24 @@ export async function invokeFunction(
   invokeUrl: string,
   token: string,
   funcName: string,
-  data: any,
+  funcData: any,
+  method: string = 'GET',
+  query: string = '',
+  data: string = '',
+  customerHeader: any = {},
 ): Promise<{ res: any; requestId: string }> {
   const header: AxiosRequestHeaders | any = {
     'x-laf-develop-token': token,
-    'x-laf-func-data': urlencode(JSON.stringify(data)),
+    'x-laf-func-data': urlencode(JSON.stringify(funcData)),
+    'Content-Type': 'application/x-www-form-urlencoded', // default content type
+    ...customerHeader,
   }
-  const res = await request({ url: invokeUrl + '/' + funcName, method: 'GET', headers: header })
+  const res = await request({
+    url: invokeUrl + '/' + funcName + (query ? '?' + query : ''),
+    method: method,
+    headers: header,
+    data: data,
+  })
   return {
     res: res.data,
     requestId: res.headers['request-id'],
