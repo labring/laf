@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common'
-import { RegionModule } from 'src/region/region.module'
-import { DatabaseModule } from 'src/database/database.module'
+import { RegionModule } from '../region/region.module'
+import { DatabaseModule } from '../database/database.module'
 import { BackupController } from './backup.controller';
-import assert from 'assert';
+import assert = require('assert');
 import { Publisher } from '@lafjs/mongo-async-rpc';
 
 
