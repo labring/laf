@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { CloseIcon } from "@chakra-ui/icons";
 import { Badge, Center, Tab, TabList, TabPanel, TabPanels, Tabs, Tooltip } from "@chakra-ui/react";
 
+import ConfirmButton from "@/components/ConfirmButton";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
@@ -87,12 +88,15 @@ export default function DependenceList() {
                         {!packageItem?.builtin ? (
                           <span className=" w-[10px] ml-2 hidden group-hover:inline-block">
                             <Tooltip label={t("Delete").toString()} placement="top">
-                              <CloseIcon
-                                fontSize={10}
-                                onClick={() => {
+                              <ConfirmButton
+                                onSuccessAction={async () => {
                                   delPackageMutation.mutate({ name: packageItem?.name });
                                 }}
-                              />
+                                headerText={String(t("Delete"))}
+                                bodyText={String(t("FunctionPanel.DeleteDependencyConfirm"))}
+                              >
+                                <CloseIcon fontSize={10} />
+                              </ConfirmButton>
                             </Tooltip>
                           </span>
                         ) : null}

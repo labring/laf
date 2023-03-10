@@ -123,7 +123,7 @@ export default function FunctionList() {
         ))}
         {selectTags.length ? (
           <p className="mr-2 mb-2 text-blue-700 cursor-pointer" onClick={handleClear}>
-            清空
+            {t("Empty")}
           </p>
         ) : null}
       </div>
@@ -222,7 +222,10 @@ export default function FunctionList() {
                         func?.source?.code && (
                         <span className="flex-none inline-block w-1 h-1 rounded-full bg-warn-700"></span>
                       )}
-                      <MoreButton isHidden={func.name !== currentFunction?.name}>
+                      <MoreButton
+                        isHidden={func.name !== currentFunction?.name}
+                        label={t("Operation")}
+                      >
                         <>
                           <CreateModal functionItem={func}>
                             <IconText icon={<EditIcon />} text={t("Edit")} />
