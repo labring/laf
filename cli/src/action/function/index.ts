@@ -192,7 +192,14 @@ export async function pushOne(funcName: string) {
   console.log(`${getEmoji('✅')} function ${funcName} pushed`)
 }
 
-export async function exec(funcName: string, options: { log: string; requestId: boolean }) {
+export async function exec(funcName: string, options: {
+  log: string;
+  requestId: boolean,
+  method: string,
+  query: string,
+  data: string,
+  headers: any,
+}) {
   // compile code
   const codePath = path.join(process.cwd(), 'functions', funcName + '.ts')
   if (!exist(codePath)) {
@@ -207,7 +214,35 @@ export async function exec(funcName: string, options: { log: string; requestId: 
   const func = await functionControllerCompile(appConfig.appid, funcName, compileDto)
   // invoke debug
   const secretConfig = readSecretConfig()
-  const res = await invokeFunction(appConfig.invokeUrl, secretConfig?.functionSecretConfig?.debugToken, funcName, func)
+
+  // transform headers json string to object. -H '{"Content-Type": "application/json"}' 
+  if (options.headers) {
+    try {
+      options.headers = JSON.parse(options.headers)
+    } catch (e) {
+      options.headers = {}
+    }
+  }
+
+  // transform data json string to object. eg -d '{"key": "val"}' or  -d 'key=val'
+  if (options.data) {
+    try {
+      options.data = JSON.parse(options.data)
+    } catch (e) {
+      options.data = options.data
+    }
+  }
+
+  const res = await invokeFunction(
+    appConfig.invokeUrl || '',
+    secretConfig?.functionSecretConfig?.debugToken,
+    funcName,
+    func,
+    options.method,
+    options.query,
+    options.data,
+    options.headers,
+  )
 
   // print requestId
   if (options.requestId) {
