@@ -12,28 +12,28 @@ set -o errexit
 
 VERSION='0.0.1'
 
-# mc alias set $MC_ALIAS $S3_URL $S3_USERNAME $S3_PASSWORD
 
 SUBCMD="$1"
 case $SUBCMD in
 	capture)
-		MONGO_DB_URI="$2"
-		S3_BUCKET="$3"
-		S3_OBJECT="$4"
-		for coll in "${@:5}"; do
-			mongodump --uri="$MONGO_DB_URI" \
+		MONGODB_HOST_URI="$2"
+		MONGODB_DB_NAME="$3"
+		S3_BUCKET_NAME="$4"
+		S3_OBJECT_NAME="$5"
+		for coll in "${@:6}"; do
+			mongodump --uri="$MONGODB_HOST_URI" --db="$MONGODB_DB_NAME"\
 				--username="$MONGO_USERNAME" --password="$MONGO_PASSWORD" \
 				--archive --gzip \
 				--collection="$coll" | \
-				mc pipe "$MC_ALIAS/$S3_BUCKET/$S3_OBJECT"
+				mc pipe "$MC_ALIAS/$S3_BUCKET_NAME/$S3_OBJECT_NAME"
 		done
 	;;
 	restore)
-		S3_BUCKET="$2"
-		S3_OBJECT="$3"
-		MONGO_DB_URI="$4"
-		mc cat "$MC_ALIAS/$S3_BUCKET/$S3_OBJECT" | \
-		mongorestore --uri="$MONGO_DB_URI" \
+		S3_BUCKET_NAME="$2"
+		S3_OBJECT_NAME="$3"
+		MONGODB_HOST_URI="$4"
+		mc cat "$MC_ALIAS/$S3_BUCKET_NAME/$S3_OBJECT_NAME" | \
+		mongorestore --uri="$MONGODB_HOST_URI" \
 		--username="$MONGO_USERNAME" --password="$MONGO_PASSWORD" \
 		--drop --archive --gzip
     ;;
