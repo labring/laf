@@ -12,6 +12,8 @@
   },
   "author": "Zim",
   "license": "Unlicense",
-  "devDependencies": {},
+  "devDependencies": {
+    "typescript": "^4.9.5"
+  },
   "description": ""
 }

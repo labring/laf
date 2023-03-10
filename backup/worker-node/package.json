@@ -23,5 +23,8 @@
     "@zimtsui/startable": "^0.0.4",
     "mongodb": "^5.1.0"
   },
-  "license": "LGPL-3.0"
+  "license": "LGPL-3.0",
+  "devDependencies": {
+    "typescript": "^4.9.5"
+  }
 }

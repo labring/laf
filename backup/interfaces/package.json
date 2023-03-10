@@ -16,5 +16,8 @@
   "license": "Unlicense",
   "peerDependencies": {
     "@lafjs/mongo-async-rpc": "^0.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.5"
   }
 }
