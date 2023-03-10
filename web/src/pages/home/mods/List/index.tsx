@@ -153,6 +153,7 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                         <ConfirmButton
                           headerText={t("HomePanel.DeleteApp")}
                           bodyText={t("HomePanel.DeleteTip")}
+                          confirmText={item?.appid}
                           onSuccessAction={() => {
                             deleteAppMutation.mutate({ appid: item?.appid });
                           }}
