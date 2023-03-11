@@ -1,6 +1,7 @@
 import { Optional } from '@nestjs/common'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsNotEmpty, IsString, Length } from 'class-validator'
+import { SmsVerifyCodeType } from '@prisma/client'
+import { IsEnum, IsNotEmpty, IsString, Length } from 'class-validator'
 
 export class PasswdSignupDto {
   @ApiProperty({
@@ -36,4 +37,11 @@ export class PasswdSignupDto {
   @IsString()
   @Length(6, 6)
   code: string
+
+  @ApiPropertyOptional({
+    description: 'type',
+    example: 'Signup',
+  })
+  @IsEnum(SmsVerifyCodeType)
+  type: SmsVerifyCodeType
 }

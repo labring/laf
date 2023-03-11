@@ -19,7 +19,7 @@ model User {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   username  String   @unique
   email     String?
-  phone     String?
+  phone     String?  @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

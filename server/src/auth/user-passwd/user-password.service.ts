@@ -91,30 +91,4 @@ export class UserPasswordService {
   reset(): any {
     throw new Error('Method not implemented.')
   }
-
-  async validateSignupPhoneCode(phone: string, code: string) {
-    return await this.validatePhoneCode(phone, code, 'Signup')
-  }
-
-  async validateSigninPhoneCode(phone: string, code: string) {
-    return await this.validatePhoneCode(phone, code, 'Signin')
-  }
-
-  /**
-   * valid phone code
-   * @param phone
-   * @param code
-   */
-  async validatePhoneCode(
-    phone: string,
-    code: string,
-    type: SmsVerifyCodeType,
-  ) {
-    if (!phone || !code) {
-      return 'phone or code is empty'
-    }
-    // check if code is correct
-    this.smsService.isCodeValid(phone, code, type)
-    return null
-  }
 }
