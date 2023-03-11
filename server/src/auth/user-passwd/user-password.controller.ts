@@ -7,6 +7,7 @@ import { UserService } from '../../user/user.service'
 import { PasswdSignupDto } from '../dto/passwd-signup.dto'
 import { PasswdSigninDto } from '../dto/passwd-signin.dto'
 import { AuthBindingType, AuthProviderBinding } from '../types'
+import { SmsService } from '../phone/sms.service'
 
 @ApiTags('Authentication - New')
 @Controller('auth')
@@ -16,6 +17,7 @@ export class UserPasswordController {
     private readonly userService: UserService,
     private readonly passwdService: UserPasswordService,
     private readonly authService: AuthenticationService,
+    private readonly smsService: SmsService,
   ) {}
 
   /**
@@ -43,8 +45,8 @@ export class UserPasswordController {
     // valid phone code if needed
     const bind = provider.bind as any as AuthProviderBinding
     if (bind.phone === AuthBindingType.Required) {
-      const { phone, code } = dto
-      const err = await this.passwdService.validateSignupPhoneCode(phone, code)
+      const { phone, code, type } = dto
+      const err = await this.smsService.validCode(phone, code, type)
       if (err) {
         return ResponseUtil.error(err)
       }

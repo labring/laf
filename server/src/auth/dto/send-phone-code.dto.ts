@@ -15,5 +15,5 @@ export class SendPhoneCodeDto {
   @ApiProperty({})
   @IsNotEmpty()
   @IsEnum(SmsVerifyCodeType)
-  type: string
+  type: SmsVerifyCodeType
 }

@@ -85,34 +85,25 @@ export class SmsService {
   }
 
   /**
-   * Check if given phone and code is valid
+   * Valid given phone and code with code type
    * @param phone phone number
    * @param code verify code provided by client
    * @returns is valid
    */
-  async isCodeValid(
-    phone: string,
-    code: string,
-    type: SmsVerifyCodeType,
-  ): Promise<boolean> {
-    try {
-      const total = await this.prisma.smsVerifyCode.count({
-        where: {
-          phone,
-          code,
-          type,
-          state: 0,
-          createdAt: { gte: new Date(Date.now() - 10 * 60 * 1000) },
-        },
-      })
+  async validCode(phone: string, code: string, type: SmsVerifyCodeType) {
+    const total = await this.prisma.smsVerifyCode.count({
+      where: {
+        phone,
+        code,
+        type,
+        state: 0,
+        createdAt: { gte: new Date(Date.now() - 10 * 60 * 1000) },
+      },
+    })
 
-      if (total === 0) return false
+    if (total === 0) return 'invalid code'
 
-      return true
-    } catch (error) {
-      this.logger.error(error)
-      return false
-    }
+    return null
   }
 
   /**

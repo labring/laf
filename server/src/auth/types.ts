@@ -5,6 +5,7 @@ export enum AuthBindingType {
 }
 
 export interface AuthProviderBinding {
+  username: AuthBindingType
   phone: AuthBindingType
   email: AuthBindingType
   github: AuthBindingType
