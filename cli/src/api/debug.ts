@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse } from 'axios'
+import axios, { AxiosRequestHeaders, AxiosResponse } from 'axios'
 import * as urlencode from 'urlencode'
 
 export async function invokeFunction(
@@ -37,7 +37,7 @@ const request = axios.create({
 
 // request interceptor
 request.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config: any) => {
     let _headers: AxiosRequestHeaders | any = {
       'Content-Type': 'application/json',
     }
