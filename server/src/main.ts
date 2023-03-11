@@ -50,6 +50,7 @@ async function bootstrap() {
     await initService.createDefaultRegion()
     await initService.createDefaultBundle()
     await initService.createDefaultRuntime()
+    await initService.createDefaultAuthProvider()
     await initService.initMinioAlias()
   } catch (error) {
     console.error(error)

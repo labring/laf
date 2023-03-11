@@ -80,4 +80,11 @@ export class UserService {
       where,
     })
   }
+
+  async createPasswd(params: {
+    where: Prisma.UserPasswordWhereInput
+    data: Prisma.UserPasswordCreateInput
+  }) {
+    const { where, data } = params
+  }
 }

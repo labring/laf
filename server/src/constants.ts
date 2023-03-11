@@ -181,3 +181,6 @@ export const TASK_LOCK_INIT_TIME = new Date(0) // 1970-01-01 00:00:00
 export const CPU_UNIT = 1000
 export const MB = 1024 * 1024
 export const GB = 1024 * MB
+
+// Sms constants
+export const ALISMS_KEY = 'alisms'
