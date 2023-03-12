@@ -75,7 +75,6 @@ export class PhoneService {
       })
       return user
     })
-
     return user
   }
 
