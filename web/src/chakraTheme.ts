@@ -106,6 +106,16 @@ const Button = defineStyleConfig({
       },
     },
 
+    thirdly: {
+      color: "primary.500",
+      bg: "primary.100",
+      _hover: {
+        bg: "primary.200",
+      },
+      border: "1px solid",
+      rounded: "md",
+    },
+
     plain: {
       bg: "grayModern.100",
       color: "grayModern.500",

@@ -280,5 +280,15 @@
   "Price": {
     "Free": "免费"
   },
-  "star-us-on-github": "在 GitHub 上支持我们"
+  "star-us-on-github": "在 GitHub 上支持我们",
+  "LoginPanel": {
+    "Phone": "手机号",
+    "PhoneTip": "请输入有效的手机号码",
+    "ValidationCode": "验证码",
+    "getValidationCode": "获取验证码",
+    "Login": "登录",
+    "LoginTip": "请输入手机号和验证码",
+    "LoginWithGithub": "GitHub 登录",
+    "ValidationCodeTip": "请输入验证码"
+  }
 }

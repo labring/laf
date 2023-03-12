@@ -1,8 +1,8 @@
 import { lazy, Suspense } from "react";
 
+import AuthLayout from "@/layouts/Auth";
 import BasicLayout from "@/layouts/Basic";
 import FunctionLayout from "@/layouts/Function";
-import LoginReg from "@/layouts/LoginReg";
 
 const route404 = {
   path: "*",
@@ -11,8 +11,17 @@ const route404 = {
 
 const routes = [
   {
+    path: "/login",
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "/login",
+        element: () => import("@/pages/auth/signin"),
+      },
+    ],
+  },
+  {
     path: "/login_callback",
-    element: <LoginReg />,
     children: [
       {
         path: "/login_callback",

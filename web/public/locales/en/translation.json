@@ -280,5 +280,15 @@
   "Price": {
     "Free": "Free"
   },
-  "star-us-on-github": "Star us on GitHub"
+  "star-us-on-github": "Star us on GitHub",
+  "LoginPanel": {
+    "Phone": "Mobile number",
+    "PhoneTip": "Please enter a valid Mobile phone number",
+    "ValidationCode": "Validation code",
+    "getValidationCode": "Get validation code",
+    "Login": "Login",
+    "LoginTip": "Please enter a valid Mobile phone number and validation code",
+    "LoginWithGithub": "Login with Github",
+    "ValidationCodeTip": "Please enter validation code"
+  }
 }
