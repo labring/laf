@@ -1,12 +1,7 @@
 import { AuthenticationService } from '../authentication.service'
 import { UserPasswordService } from './user-password.service'
-import { Body, Controller, Logger, Post, Req, UseGuards } from '@nestjs/common'
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger'
+import { Body, Controller, Logger, Post, Req } from '@nestjs/common'
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { ResponseUtil } from 'src/utils/response'
 import { UserService } from '../../user/user.service'
 import { PasswdSignupDto } from '../dto/passwd-signup.dto'
@@ -14,11 +9,9 @@ import { PasswdSigninDto } from '../dto/passwd-signin.dto'
 import { AuthBindingType, AuthProviderBinding } from '../types'
 import { SmsService } from '../phone/sms.service'
 import { PasswdResetDto } from '../dto/passwd-reset.dto'
-import { JwtAuthGuard } from '../jwt.auth.guard'
 import { IRequest } from 'src/utils/interface'
 
 @ApiTags('Authentication - New')
-@ApiBearerAuth('Authorization')
 @Controller('auth')
 export class UserPasswordController {
   private readonly logger = new Logger(UserPasswordService.name)
@@ -55,6 +48,11 @@ export class UserPasswordController {
     const bind = provider.bind as any as AuthProviderBinding
     if (bind.phone === AuthBindingType.Required) {
       const { phone, code, type } = dto
+      // valid phone has been binded
+      const user = await this.userService.findByPhone(phone)
+      if (user) {
+        return ResponseUtil.error('phone has been binded')
+      }
       const err = await this.smsService.validCode(phone, code, type)
       if (err) {
         return ResponseUtil.error(err)
@@ -86,7 +84,7 @@ export class UserPasswordController {
     }
 
     // check if password is correct
-    const err = await this.passwdService.validPasswd(user.id, dto.passwd)
+    const err = await this.passwdService.validPasswd(user.id, dto.password)
     if (err) {
       return ResponseUtil.error(err)
     }
@@ -104,7 +102,6 @@ export class UserPasswordController {
    */
   @ApiOperation({ summary: 'Reset password' })
   @ApiResponse({ type: ResponseUtil })
-  @UseGuards(JwtAuthGuard)
   @Post('passwd/reset')
   async reset(@Body() dto: PasswdResetDto, @Req() req: IRequest) {
     // valid phone code

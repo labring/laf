@@ -90,4 +90,13 @@ export class UserService {
       },
     })
   }
+
+  // find user by phone
+  async findByPhone(phone: string) {
+    return await this.prisma.user.findFirst({
+      where: {
+        phone,
+      },
+    })
+  }
 }

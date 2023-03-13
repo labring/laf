@@ -56,11 +56,14 @@ export class PhoneController {
     )
     if (err) return ResponseUtil.error(err)
 
+    // disable used code
+    await this.smsService.disableCode(phone, code, SmsVerifyCodeType.Signin)
+
     // check if user exists
-    const user = await this.userService.user({ phone })
+    const user = await this.userService.findByPhone(phone)
     if (user) {
-      const data = this.phoneService.signin(user)
-      return ResponseUtil.ok(data)
+      const token = this.phoneService.signin(user)
+      return ResponseUtil.ok(token)
     }
 
     // user not exist

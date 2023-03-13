@@ -4,8 +4,15 @@ import { Prisma, SmsVerifyCodeType } from '@prisma/client'
 import Dysmsapi, * as dysmsapi from '@alicloud/dysmsapi20170525'
 import * as OpenApi from '@alicloud/openapi-client'
 import * as Util from '@alicloud/tea-util'
-import { ALISMS_KEY } from 'src/constants'
+import {
+  ALISMS_KEY,
+  LIMIT_CODE_PER_IP_PER_DAY,
+  ONE_DAY_IN_MILLISECONDS,
+  ONE_MINUTE_IN_MILLISECONDS,
+  PHONE_AUTH_PROVIDER_NAME,
+} from 'src/constants'
 import { PrismaService } from 'src/prisma/prisma.service'
+import { SmsVerifyCodeState } from '../types'
 
 @Injectable()
 export class SmsService {
@@ -54,7 +61,7 @@ export class SmsService {
       where: {
         phone: phone,
         createdAt: {
-          gt: new Date(Date.now() - 60 * 1000),
+          gt: new Date(Date.now() - ONE_MINUTE_IN_MILLISECONDS),
         },
       },
     })
@@ -67,12 +74,12 @@ export class SmsService {
       where: {
         ip: ip,
         createdAt: {
-          gt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+          gt: new Date(Date.now() - ONE_DAY_IN_MILLISECONDS),
         },
       },
     })
-    if (countIps > 30) {
-      return 'REQUEST_OVERLIMIT: ip has been send sms code beyond 30 times in 24 hours'
+    if (countIps > LIMIT_CODE_PER_IP_PER_DAY) {
+      return `REQUEST_OVERLIMIT: ip has been send sms code beyond ${LIMIT_CODE_PER_IP_PER_DAY} times in 24 hours`
     }
 
     return null
@@ -96,7 +103,7 @@ export class SmsService {
         phone,
         code,
         type,
-        state: 0,
+        state: SmsVerifyCodeState.Active,
         createdAt: { gte: new Date(Date.now() - 10 * 60 * 1000) },
       },
     })
@@ -112,20 +119,16 @@ export class SmsService {
    * @param code verify code
    * @returns void
    */
-  async disableVerifyCode(
-    phone: string,
-    code: string,
-    type: SmsVerifyCodeType,
-  ) {
+  async disableCode(phone: string, code: string, type: SmsVerifyCodeType) {
     await this.prisma.smsVerifyCode.updateMany({
       where: {
         phone,
         code,
         type,
-        state: 0,
+        state: SmsVerifyCodeState.Active,
       },
       data: {
-        state: 1,
+        state: SmsVerifyCodeState.Used,
       },
     })
   }
@@ -155,7 +158,9 @@ export class SmsService {
 
   // load alisms config from database
   private async loadAlismsConfig() {
-    const phoneProvider = await this.authService.getProvider('phone')
+    const phoneProvider = await this.authService.getProvider(
+      PHONE_AUTH_PROVIDER_NAME,
+    )
     return phoneProvider.config[ALISMS_KEY]
   }
 }

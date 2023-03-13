@@ -59,7 +59,7 @@ export class PhoneService {
         data: {
           phone,
           username: username || phone,
-          profile: { create: { name: username } },
+          profile: { create: { name: username || phone } },
         },
       })
       if (!withUsername) {
@@ -83,7 +83,7 @@ export class PhoneService {
    * @param user user
    * @returns token and if bind password
    */
-  async signin(user: User) {
+  signin(user: User) {
     const token = this.authService.getAccessTokenByUser(user)
     return token
   }

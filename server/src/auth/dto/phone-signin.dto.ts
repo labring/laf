@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsNotEmpty, IsString, Length } from 'class-validator'
+import { IsNotEmpty, IsString, Length, IsOptional } from 'class-validator'
 
 export class PhoneSigninDto {
   @ApiProperty({
@@ -16,18 +16,20 @@ export class PhoneSigninDto {
   @Length(6, 6)
   code: string
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: 'username',
     example: 'laf-user',
   })
+  @IsOptional()
   @IsString()
   @Length(8, 16)
   username: string
 
-  @ApiPropertyOptional({
-    description: 'password, 8-16 characters',
+  @ApiProperty({
+    description: 'password, 8-32 characters',
     example: 'laf-user-password',
   })
+  @IsOptional()
   @IsString()
   @Length(8, 32)
   password: string

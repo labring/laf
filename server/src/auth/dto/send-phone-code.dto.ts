@@ -12,7 +12,10 @@ export class SendPhoneCodeDto {
   @Length(11, 11)
   phone: string
 
-  @ApiProperty({})
+  @ApiProperty({
+    description: 'verify code type',
+    example: 'Signin | Signup | ResetPassword | Bind | Unbind | ChangePhone',
+  })
   @IsNotEmpty()
   @IsEnum(SmsVerifyCodeType)
   type: SmsVerifyCodeType
