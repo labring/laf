@@ -17,6 +17,6 @@ export class PasswdSigninDto {
   })
   @IsString()
   @IsNotEmpty()
-  @Length(8, 16)
+  @Length(8, 32)
   passwd: string
 }

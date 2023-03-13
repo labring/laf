@@ -55,7 +55,8 @@ export class UserPasswordController {
     // signup user
     const user = await this.passwdService.signup(dto)
 
-    const token = this.authService.getAccessTokenByUser(user)
+    // signin for created user
+    const token = this.passwdService.signin(user)
     if (!token) {
       return ResponseUtil.error('failed to get access token')
     }
@@ -69,11 +70,24 @@ export class UserPasswordController {
   @ApiResponse({ type: ResponseUtil })
   @Post('passwd/signin')
   async signin(@Body() dto: PasswdSigninDto) {
-    const res = await this.passwdService.signin(dto)
-    if (!res.ok) {
-      return ResponseUtil.error(res.msg)
+    // check if user exists
+    const user = await this.userService.find(dto.username)
+    if (!user) {
+      return ResponseUtil.error('user not found')
     }
-    return ResponseUtil.ok(res)
+
+    // check if password is correct
+    const err = await this.passwdService.validPasswd(user.id, dto.passwd)
+    if (err) {
+      return ResponseUtil.error(err)
+    }
+
+    // signin for user
+    const token = await this.passwdService.signin(user)
+    if (!token) {
+      return ResponseUtil.error('failed to get access token')
+    }
+    return ResponseUtil.ok(token)
   }
 
   /**

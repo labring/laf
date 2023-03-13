@@ -81,10 +81,13 @@ export class UserService {
     })
   }
 
-  async createPasswd(params: {
-    where: Prisma.UserPasswordWhereInput
-    data: Prisma.UserPasswordCreateInput
-  }) {
-    const { where, data } = params
+  // find user by username | phone | email
+  async find(username: string) {
+    // match either username or phone or email
+    return await this.prisma.user.findFirst({
+      where: {
+        OR: [{ username }, { phone: username }, { email: username }],
+      },
+    })
   }
 }

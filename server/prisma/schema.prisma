@@ -18,7 +18,7 @@ datasource db {
 model User {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   username  String   @unique
-  email     String?
+  email     String?  @unique
   phone     String?  @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

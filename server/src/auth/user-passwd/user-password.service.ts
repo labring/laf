@@ -1,31 +1,16 @@
-import { SmsService } from './../phone/sms.service'
 import { Injectable, Logger } from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { hashPassword } from 'src/utils/crypto'
-import { UserService } from '../../user/user.service'
-import { PasswdSigninDto } from '../dto/passwd-signin.dto'
 import { PasswdSignupDto } from '../dto/passwd-signup.dto'
-import { SmsVerifyCodeType } from '@prisma/client'
-
-type SigninResult = {
-  ok: boolean
-  msg: string
-  data?: any
-  token?: string
-}
+import { AuthenticationService } from '../authentication.service'
+import { User } from '@prisma/client'
 
 @Injectable()
 export class UserPasswordService {
-  createPasswd(passwd: string) {
-    throw new Error('Method not implemented.')
-  }
   private readonly logger = new Logger(UserPasswordService.name)
   constructor(
     private readonly prisma: PrismaService,
-    private readonly userService: UserService,
-    private readonly jwtService: JwtService,
-    private readonly smsService: SmsService,
+    private readonly authService: AuthenticationService,
   ) {}
 
   /**
@@ -62,30 +47,25 @@ export class UserPasswordService {
 
   /**
    * Signin by username and password
+   * @returns access token
    */
-  async signin(dto: PasswdSigninDto): Promise<SigninResult> {
-    const { username, passwd } = dto
-    // check if user exists
-    const user = await this.userService.user({ username })
-    if (!user) {
-      return { ok: false, msg: 'user not exists' }
-    }
-    this.logger.debug('user: ', user)
-    // check if password is correct
+  signin(user: User) {
+    return this.authService.getAccessTokenByUser(user)
+  }
+
+  async validPasswd(uid: string, passwd: string) {
     const password = await this.prisma.userPassword.findFirst({
-      where: { uid: user.id, state: 'Active' },
+      where: { uid, state: 'Active' },
     })
     if (!password) {
-      return { ok: false, msg: 'password not exists' }
+      return 'password not exists'
     }
 
     if (password.password !== hashPassword(passwd)) {
-      return { ok: false, msg: 'password incorrect' }
+      return 'password incorrect'
     }
 
-    const token = ''
-
-    return { ok: true, msg: 'ok', data: user, token }
+    return null
   }
 
   reset(): any {
