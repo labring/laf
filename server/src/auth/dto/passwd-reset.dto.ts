@@ -1,5 +1,4 @@
-import { Optional } from '@nestjs/common'
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiProperty } from '@nestjs/swagger'
 import { SmsVerifyCodeType } from '@prisma/client'
 import { IsEnum, IsNotEmpty, IsString, Length } from 'class-validator'
 

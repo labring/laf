@@ -4,6 +4,7 @@ import { hashPassword } from 'src/utils/crypto'
 import { PasswdSignupDto } from '../dto/passwd-signup.dto'
 import { AuthenticationService } from '../authentication.service'
 import { User } from '@prisma/client'
+import { PasswdResetDto } from '../dto/passwd-reset.dto'
 
 @Injectable()
 export class UserPasswordService {
@@ -45,14 +46,12 @@ export class UserPasswordService {
     return user
   }
 
-  /**
-   * Signin by username and password
-   * @returns access token
-   */
+  // Signin for user, means get access token
   signin(user: User) {
     return this.authService.getAccessTokenByUser(user)
   }
 
+  // valid if password is correct
   async validPasswd(uid: string, passwd: string) {
     const password = await this.prisma.userPassword.findFirst({
       where: { uid, state: 'Active' },
@@ -68,7 +67,31 @@ export class UserPasswordService {
     return null
   }
 
-  reset(): any {
-    throw new Error('Method not implemented.')
+  // reset password
+  async resetPasswd(uid: string, passwd: string) {
+    // start transaction
+    const update = await this.prisma.$transaction(async (tx) => {
+      // disable old password
+      await tx.userPassword.updateMany({
+        where: { uid },
+        data: { state: 'Inactive' },
+      })
+
+      // create new password
+      const np = await tx.userPassword.create({
+        data: {
+          uid,
+          password: hashPassword(passwd),
+          state: 'Active',
+        },
+      })
+
+      return np
+    })
+    if (!update) {
+      return 'reset password failed'
+    }
+
+    return null
   }
 }
