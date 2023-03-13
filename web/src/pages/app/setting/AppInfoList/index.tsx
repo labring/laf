@@ -47,7 +47,7 @@ const AppEnvList = () => {
               isDisabled={currentApp?.state === APP_PHASE_STATUS.Restarting}
               variant={"text"}
               onClick={() => {
-                updateCurrentApp();
+                updateCurrentApp(currentApp!);
               }}
             >
               <MdRestartAlt size={16} className="mr-2" />
@@ -58,10 +58,9 @@ const AppEnvList = () => {
               fontWeight={"semibold"}
               size={"sm"}
               variant={"text"}
-              isDisabled={currentApp?.state === APP_PHASE_STATUS.Stopped}
               onClick={(event: any) => {
                 event?.preventDefault();
-                updateCurrentApp(APP_PHASE_STATUS.Stopped);
+                updateCurrentApp(currentApp!, APP_PHASE_STATUS.Stopped);
               }}
             >
               <RiShutDownLine size={16} className="mr-2" />

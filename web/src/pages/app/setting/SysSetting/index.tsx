@@ -4,9 +4,12 @@ import { t } from "i18next";
 import AppEnvList from "../AppEnvList";
 import AppInfoList from "../AppInfoList";
 
-import { TApplication } from "@/apis/typing";
+import { TApplicationDetail } from "@/apis/typing";
 import SettingModal from "@/pages/app/setting";
-export default function SysSetting(props: { children: React.ReactElement; setApp?: TApplication }) {
+export default function SysSetting(props: {
+  children: React.ReactElement;
+  setApp?: TApplicationDetail;
+}) {
   return (
     <SettingModal
       setApp={props.setApp}

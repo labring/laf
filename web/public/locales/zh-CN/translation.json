@@ -44,7 +44,6 @@
   "Copy": "复制",
   "Create": "新建",
   "CreateNow": "立即创建",
-  "CreateTime": "创建时间",
   "Custom": "自定义",
   "Days": "天",
   "Delete": "删除",
@@ -146,7 +145,7 @@
     "UpdateConfirm": "更新环境变量将重新启动应用，是否继续？",
     "AppInfo": "应用信息",
     "BaseInfo": "基础信息",
-    "Detail": "规则详情",
+    "Detail": "规格详情",
     "Memory": "内存",
     "Disk": "硬盘",
     "DB": "数据库",
@@ -284,5 +283,6 @@
   "Price": {
     "Free": "免费"
   },
-  "star-us-on-github": "在 GitHub 上支持我们"
+  "star-us-on-github": "在 GitHub 上支持我们",
+  "Time": "时间"
 }

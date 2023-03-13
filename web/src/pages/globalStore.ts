@@ -6,12 +6,13 @@ import { immer } from "zustand/middleware/immer";
 import { APP_PHASE_STATUS } from "@/constants";
 import { formatPort } from "@/utils/format";
 
-import { TApplication, TRegion, TRuntime, TUserInfo } from "@/apis/typing";
-import { ApplicationControllerRemove, ApplicationControllerUpdate } from "@/apis/v1/applications";
+import { TApplicationDetail, TRegion, TRuntime, TUserInfo } from "@/apis/typing";
+import { ApplicationControllerUpdate } from "@/apis/v1/applications";
 import { AuthControllerGetSigninUrl } from "@/apis/v1/login";
 import { AuthControllerGetProfile } from "@/apis/v1/profile";
 import { RegionControllerGetRegions } from "@/apis/v1/regions";
 import { AppControllerGetRuntimes } from "@/apis/v1/runtimes";
+import { SubscriptionControllerRemove } from "@/apis/v1/subscriptions";
 
 const { toast } = createStandaloneToast();
 
@@ -20,10 +21,10 @@ type State = {
   loading: boolean;
   runtimes?: TRuntime[];
   regions?: TRegion[];
-  currentApp: TApplication | undefined;
-  setCurrentApp(app: TApplication | undefined): void;
+  currentApp: TApplicationDetail | undefined;
+  setCurrentApp(app: TApplicationDetail | undefined): void;
   init(appid?: string): void;
-  updateCurrentApp(state?: APP_PHASE_STATUS): void;
+  updateCurrentApp(app: TApplicationDetail, state?: APP_PHASE_STATUS): void;
   deleteCurrentApp(): void;
   currentPageId: string | undefined;
   setCurrentPage: (pageId: string) => void;
@@ -76,8 +77,10 @@ const useGlobalStore = create<State>()(
         });
       },
 
-      updateCurrentApp: async (newState: APP_PHASE_STATUS = APP_PHASE_STATUS.Restarting) => {
-        const app = get().currentApp;
+      updateCurrentApp: async (
+        app: TApplicationDetail,
+        newState: APP_PHASE_STATUS = APP_PHASE_STATUS.Restarting,
+      ) => {
         if (!app) {
           return;
         }
@@ -100,7 +103,7 @@ const useGlobalStore = create<State>()(
         if (!app) {
           return;
         }
-        const deleteRes = await ApplicationControllerRemove({
+        const deleteRes = await SubscriptionControllerRemove({
           appid: app.appid,
         });
         if (!deleteRes.error) {

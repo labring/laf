@@ -36,12 +36,12 @@ body {
   font-size: 12px;
 }
 
-[data-theme=light] body {
+[data-theme="light"] body {
   background-color: #f1f3f5 !important;
   background-image: url("/bg.png") !important;
 }
 
-[data-theme=dark] ::-webkit-scrollbar-thumb {
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
   /* 滚动条滑块 */
   background: rgba(21, 22, 26, 0.4);
 }
