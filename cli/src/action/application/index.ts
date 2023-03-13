@@ -3,6 +3,9 @@ import * as Table from 'cli-table3'
 import { ApplicationConfig, existApplicationConfig, writeApplicationConfig } from '../../config/application'
 import * as path from 'node:path'
 import * as fs from 'node:fs'
+import { pull as depPull } from '../dependency'
+import { pullAll as policyPull } from '../policy'
+import { pullAll as funcPull } from '../function'
 
 import {
   FUNCTIONS_DIRECTORY_NAME,
@@ -66,7 +69,12 @@ export async function init(appid: string, options: { sync: boolean }) {
   refreshSecretConfig()
 
   if (options.sync) {
-    // TODO: sync
+    // pull dependencies
+    depPull()
+    // pull policies
+    policyPull()
+    // pull functions
+    funcPull()
   }
   console.log(`${getEmoji('🚀')} application ${data.name} init success`)
 }
