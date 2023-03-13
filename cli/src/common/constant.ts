@@ -4,9 +4,9 @@ export const SECRET_FILE_NAME = '.secret.yaml'
 export const DEPENDENCY_FILE_NAME = 'dependency.yaml'
 export const APPLICATION_CONFIG_FILE_NAME = 'laf.yaml'
 export const FUNCTIONS_DIRECTORY_NAME = 'functions'
-export const FUNCTIONS_CONFIG_FILE_SUFFIX_NAME = '.meta.yaml'
+export const FUNCTIONS_CONFIG_FILE_SUFFIX_NAME = '.yaml'
 export const COLLECTIONS_DIRECTORY_NAME = 'collections'
-export const COLLECTIONS_CONFIG_FILE_SUFFIX_NAME = '.meta.yaml'
+export const COLLECTIONS_CONFIG_FILE_SUFFIX_NAME = '.yaml'
 export const IGNORE_FILE_NAME = '.gitignore'
 export const POLICIES_DIRECTORY_NAME = 'policies'
 
@@ -20,7 +20,7 @@ export const DEBUG_TOKEN_EXPIRE = 3600 * 24 * 7
 export const STORAGE_TOKEN_EXPIRE = 3600 * 24 * 7
 
 // remote server config
-export const DEFAULT_REMOTE_SERVER = 'http://api.preview.laf.run'
+export const DEFAULT_REMOTE_SERVER = 'https://api.laf.dev'
 
 // template file
 export const TEMPLATE_DIR = 'template'
