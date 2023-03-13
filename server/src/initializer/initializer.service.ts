@@ -77,6 +77,8 @@ export class InitializerService {
       data: {
         name: 'standard',
         displayName: 'Standard',
+        limitCountPerUser: 10,
+        priority: 0,
         resource: {
           limitCPU: 1 * CPU_UNIT,
           limitMemory: 512,
@@ -87,17 +89,25 @@ export class InitializerService {
           storageCapacity: 1024 * 5,
           networkTrafficOutbound: 1024 * 5,
 
-          limitCountPerUser: 50,
           limitCountOfCloudFunction: 500,
           limitCountOfBucket: 10,
           limitCountOfDatabasePolicy: 10,
           limitCountOfTrigger: 10,
           limitCountOfWebsiteHosting: 10,
+          reservedTimeAfterExpired: 3600 * 24 * 7,
 
           limitDatabaseTPS: 100,
           limitStorageTPS: 1000,
         },
-        priority: 0,
+        subscriptionOptions: [
+          {
+            name: 'monthly',
+            displayName: 'Monthly',
+            duration: 31 * 24 * 3600,
+            price: 0,
+            specialPrice: 0,
+          },
+        ],
         region: {
           connect: {
             name: 'default',

@@ -7,7 +7,7 @@ enum CreateApplicationState {
   Stopped = 'Stopped',
 }
 
-export class CreateApplicationDto {
+export class CreateSubscriptionDto {
   @ApiProperty({ required: true })
   @Length(1, 64)
   @IsNotEmpty()
