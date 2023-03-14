@@ -1,4 +1,5 @@
 import React from "react";
+import { Box, useColorModeValue } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import PanelHeader from "./Header";
@@ -10,14 +11,16 @@ const Panel = (props: {
   onClick?: () => void;
 }) => {
   const { className, style = {}, onClick } = props;
+  const bg = useColorModeValue("lafWhite.200", "lafDark.200");
   return (
-    <div
+    <Box
       style={style}
+      bg={bg}
       onClick={onClick}
-      className={clsx("bg-lafWhite-200 rounded px-4 flex flex-col w-full", className)}
+      className={clsx("rounded px-4 flex flex-col w-full", className)}
     >
       {props.children}
-    </div>
+    </Box>
   );
 };
 

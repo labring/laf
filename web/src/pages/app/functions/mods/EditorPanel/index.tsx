@@ -1,4 +1,5 @@
-import { HStack, Input } from "@chakra-ui/react";
+import { HStack, Input, useColorMode } from "@chakra-ui/react";
+import clsx from "clsx";
 import { t } from "i18next";
 
 import CopyText from "@/components/CopyText";
@@ -18,15 +19,20 @@ import useFunctionCache from "@/hooks/useFunctionCache";
 function EditorPanel() {
   const store = useFunctionStore((store) => store);
   const { currentFunction, updateFunctionCode, getFunctionUrl } = store;
-
+  const { colorMode } = useColorMode();
   const functionCache = useFunctionCache();
 
   const functionListQuery = useFunctionListQuery();
-
+  const darkMode = colorMode === "dark";
   return (
     <Panel className="flex-1 flex-grow px-0">
       {currentFunction?.name ? (
-        <Panel.Header style={{ borderBottom: "2px solid #F4F6F8" }} className="!mb-3 h-[50px] px-2">
+        <Panel.Header
+          className={clsx("!mb-3 h-[50px] px-2", {
+            "border-b-2": !darkMode,
+            "border-lafWhite-400": !darkMode,
+          })}
+        >
           <HStack maxW={"60%"} spacing={2}>
             <CopyText className="font-bold text-xl" text={currentFunction?.name}>
               <span>{currentFunction?.name}</span>
@@ -69,6 +75,7 @@ function EditorPanel() {
 
       {currentFunction?.name && (
         <FunctionEditor
+          colorMode={colorMode}
           className="flex-grow"
           path={currentFunction?.id || ""}
           value={functionCache.getCache(currentFunction!.id, currentFunction!.source?.code)}

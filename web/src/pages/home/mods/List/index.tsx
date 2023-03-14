@@ -4,6 +4,7 @@ import { RiCodeBoxFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { AddIcon, Search2Icon } from "@chakra-ui/icons";
 import {
+  Box,
   Button,
   Input,
   InputGroup,
@@ -12,6 +13,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import { t } from "i18next";
@@ -40,7 +42,7 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
   const [searchKey, setSearchKey] = useState("");
 
   const { appListQuery, setShouldRefetch } = props;
-
+  const bg = useColorModeValue("lafWhite.200", "lafDark.200");
   const deleteAppMutation = useMutation((params: any) => ApplicationControllerRemove(params), {
     onSuccess: () => {
       setShouldRefetch(true);
@@ -68,7 +70,6 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
               placeholder={t("Search").toString()}
               variant="outline"
               size={"sm"}
-              bg="white"
               onChange={(e: any) => setSearchKey(e.target.value)}
             />
           </InputGroup>
@@ -81,22 +82,23 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
       </div>
 
       <div className="flex flex-col overflow-auto">
-        <div className="flex-none flex bg-lafWhite-200 rounded-lg h-12 items-center px-6 mb-3">
+        <Box bg={bg} className="flex-none flex rounded-lg h-12 items-center px-6 mb-3">
           <div className="w-2/12 text-second ">{t("HomePanel.Application") + t("Name")}</div>
           <div className="w-2/12 text-second ">App ID</div>
           <div className="w-2/12 text-second pl-2">{t("HomePanel.State")}</div>
           <div className="w-2/12 text-second ">{t("HomePanel.Region")}</div>
           <div className="w-3/12 text-second ">{t("CreateTime")}</div>
           <div className="w-1/12 text-second pl-2 min-w-[100px]">{t("Operation")}</div>
-        </div>
+        </Box>
         <div className="flex-grow overflow-auto">
           {(appListQuery.data?.data || [])
             .filter((item: any) => item?.name.indexOf(searchKey) >= 0)
             .map((item: TApplication) => {
               return (
-                <div
+                <Box
                   key={item?.appid}
-                  className="flex bg-lafWhite-200 rounded-lg h-16 items-center px-6 mb-3"
+                  bg={bg}
+                  className="flex rounded-lg h-16 items-center px-6 mb-3"
                 >
                   <div className="w-2/12 ">
                     <div className="font-bold text-lg">
@@ -166,7 +168,7 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                       </MenuList>
                     </Menu>
                   </div>
-                </div>
+                </Box>
               );
             })}
         </div>

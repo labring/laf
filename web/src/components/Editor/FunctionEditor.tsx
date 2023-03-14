@@ -40,6 +40,21 @@ monaco?.editor.defineTheme("lafEditorTheme", {
   },
 });
 
+monaco?.editor.defineTheme("lafEditorThemeDark", {
+  base: "vs-dark",
+  inherit: true,
+  rules: [
+    {
+      foreground: "65737e",
+      token: "punctuation.definition.comment",
+    },
+  ],
+  colors: {
+    "editor.foreground": "#ffffff",
+    "editor.background": "#202631",
+  },
+});
+
 const updateModel = (path: string, value: string, editorRef: any) => {
   const newModel =
     monaco.editor.getModel(monaco.Uri.parse(path)) ||
@@ -57,9 +72,9 @@ function FunctionEditor(props: {
   onChange: (value: string | undefined) => void;
   path: string;
   height?: string;
+  colorMode?: string;
 }) {
-  const { value, onChange, path, height = "100%", className } = props;
-
+  const { value, onChange, path, height = "100%", className, colorMode = "light" } = props;
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
   const monacoEl = useRef(null);
@@ -78,7 +93,7 @@ function FunctionEditor(props: {
         overviewRulerLanes: 0,
         lineNumbersMinChars: 4,
         fontSize: 14,
-        theme: "lafEditorTheme",
+        theme: colorMode === "dark" ? "lafEditorThemeDark" : "lafEditorTheme",
         scrollBeyondLastLine: false,
       });
 
@@ -90,13 +105,21 @@ function FunctionEditor(props: {
     }
 
     return () => {};
-  }, [path, value]);
+  }, [colorMode, path, value]);
 
   useEffect(() => {
     if (monacoEl && editorRef.current) {
       updateModel(path, value, editorRef);
     }
   }, [path, value]);
+
+  useEffect(() => {
+    if (monacoEl && editorRef.current) {
+      editorRef.current.updateOptions({
+        theme: colorMode === "dark" ? "lafEditorThemeDark" : "lafEditorTheme",
+      });
+    }
+  }, [colorMode]);
 
   // onChange
   useEffect(() => {
