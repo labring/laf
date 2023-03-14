@@ -111,7 +111,7 @@ function initFunction() {
 
   // generate .gitignore
   const fromGitIgnoreFile = path.resolve(templateDir, GITIGNORE_FILE)
-  const outGitIgnoreFile = path.resolve(process.cwd(), GITIGNORE_FILE)
+  const outGitIgnoreFile = path.resolve(process.cwd(), '.' + GITIGNORE_FILE)
   if (!exist(outGitIgnoreFile)) {
     fs.writeFileSync(outGitIgnoreFile, fs.readFileSync(fromGitIgnoreFile, 'utf-8'))
   }
