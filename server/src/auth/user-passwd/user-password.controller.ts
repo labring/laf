@@ -10,6 +10,7 @@ import { AuthBindingType, AuthProviderBinding } from '../types'
 import { SmsService } from '../phone/sms.service'
 import { PasswdResetDto } from '../dto/passwd-reset.dto'
 import { IRequest } from 'src/utils/interface'
+import { PASSWORD_AUTH_PROVIDER_NAME } from 'src/constants'
 
 @ApiTags('Authentication - New')
 @Controller('auth')
@@ -29,17 +30,15 @@ export class UserPasswordController {
   @ApiResponse({ type: ResponseUtil })
   @Post('passwd/signup')
   async signup(@Body() dto: PasswdSignupDto) {
-    const { username } = dto
+    const { username, password, phone } = dto
     // check if user exists
     const doc = await this.userService.user({ username })
     if (doc) {
       return ResponseUtil.error('user already exists')
     }
 
-    // get passwd auth provider info
-    const provider = await this.authService.getProvider('user-password')
-
     // check if register is allowed
+    const provider = await this.authService.getPasswdProvider()
     if (provider.register === false) {
       return ResponseUtil.error('register is not allowed')
     }
@@ -60,7 +59,7 @@ export class UserPasswordController {
     }
 
     // signup user
-    const user = await this.passwdService.signup(dto)
+    const user = await this.passwdService.signup(username, password, phone)
 
     // signin for created user
     const token = this.passwdService.signin(user)

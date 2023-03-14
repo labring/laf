@@ -2,6 +2,10 @@ import { JwtService } from '@nestjs/jwt'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { Injectable, Logger } from '@nestjs/common'
 import { User } from '@prisma/client'
+import {
+  PASSWORD_AUTH_PROVIDER_NAME,
+  PHONE_AUTH_PROVIDER_NAME,
+} from 'src/constants'
 
 @Injectable()
 export class AuthenticationService {
@@ -31,11 +35,15 @@ export class AuthenticationService {
     })
   }
 
-  /**
-   * Get auth provider by name
-   * @param name
-   * @returns
-   */
+  async getPhoneProvider() {
+    return await this.getProvider(PHONE_AUTH_PROVIDER_NAME)
+  }
+
+  async getPasswdProvider() {
+    return await this.getProvider(PASSWORD_AUTH_PROVIDER_NAME)
+  }
+
+  // Get auth provider by name
   async getProvider(name: string) {
     return await this.prismaService.authProvider.findUnique({
       where: { name },

@@ -1,10 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { PrismaService } from 'src/prisma/prisma.service'
-import { hashPassword } from 'src/utils/crypto'
-import { PasswdSignupDto } from '../dto/passwd-signup.dto'
-import { AuthenticationService } from '../authentication.service'
 import { User } from '@prisma/client'
-import { PasswdResetDto } from '../dto/passwd-reset.dto'
+import { hashPassword } from 'src/utils/crypto'
+import { AuthenticationService } from '../authentication.service'
+import { UserPasswordState } from '../types'
 
 @Injectable()
 export class UserPasswordService {
@@ -14,19 +13,15 @@ export class UserPasswordService {
     private readonly authService: AuthenticationService,
   ) {}
 
-  /**
-   * Singup by username and password
-   */
-  async signup(dto: PasswdSignupDto) {
-    const { username, password } = dto
-
+  // Singup by username and password
+  async signup(username: string, password: string, phone: string) {
     // start transaction
     const user = await this.prisma.$transaction(async (tx) => {
       // create user
       const user = await tx.user.create({
         data: {
           username,
-          phone: dto.phone,
+          phone,
           profile: { create: { name: username } },
         },
       })
@@ -36,7 +31,7 @@ export class UserPasswordService {
         data: {
           uid: user.id,
           password: hashPassword(password),
-          state: 'Active',
+          state: UserPasswordState.Active,
         },
       })
 
@@ -53,14 +48,14 @@ export class UserPasswordService {
 
   // valid if password is correct
   async validPasswd(uid: string, passwd: string) {
-    const password = await this.prisma.userPassword.findFirst({
-      where: { uid, state: 'Active' },
+    const userPasswd = await this.prisma.userPassword.findFirst({
+      where: { uid, state: UserPasswordState.Active },
     })
-    if (!password) {
+    if (!userPasswd) {
       return 'password not exists'
     }
 
-    if (password.password !== hashPassword(passwd)) {
+    if (userPasswd.password !== hashPassword(passwd)) {
       return 'password incorrect'
     }
 
@@ -71,19 +66,19 @@ export class UserPasswordService {
   async resetPasswd(uid: string, passwd: string) {
     // start transaction
     const update = await this.prisma.$transaction(async (tx) => {
-      // disable old password
-      await tx.userPassword.updateMany({
-        where: { uid },
-        data: { state: 'Inactive' },
-      })
-
       // create new password
       const np = await tx.userPassword.create({
         data: {
           uid,
           password: hashPassword(passwd),
-          state: 'Active',
+          state: UserPasswordState.Active,
         },
+      })
+
+      // disable old password
+      await tx.userPassword.updateMany({
+        where: { uid },
+        data: { state: UserPasswordState.Inactive },
       })
 
       return np

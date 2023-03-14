@@ -192,3 +192,4 @@ export const PASSWORD_AUTH_PROVIDER_NAME = 'user-password'
 export const ALISMS_KEY = 'alisms'
 export const LIMIT_CODE_FREQUENCY = 60 * 1000 // 60 seconds (in milliseconds)
 export const LIMIT_CODE_PER_IP_PER_DAY = 30 // 30 times
+export const CODE_VALIDITY = 10 * 60 * 1000 // 10 minutes (in milliseconds)

@@ -9,7 +9,7 @@ import {
   LIMIT_CODE_PER_IP_PER_DAY,
   ONE_DAY_IN_MILLISECONDS,
   ONE_MINUTE_IN_MILLISECONDS,
-  PHONE_AUTH_PROVIDER_NAME,
+  CODE_VALIDITY,
 } from 'src/constants'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { SmsVerifyCodeState } from '../types'
@@ -26,7 +26,6 @@ export class SmsService {
    * send sms login code to given phone number
    * @param dto phone number
    * @param ip client ip
-   * @returns { code, error }
    */
   async sendPhoneCode(phone: string, code: string) {
     try {
@@ -43,13 +42,7 @@ export class SmsService {
     }
   }
 
-  /**
-   * check if phone number satisfy the send condition
-   * @param phone phone number
-   * @param ip client ip
-   * @returns { error }
-   *
-   */
+  // check if phone number satisfy the send condition
   async checkSendable(phone: string, ip: string) {
     // Check if valid phone number
     if (!/^1[3456789]\d{9}$/.test(phone)) {
@@ -85,18 +78,14 @@ export class SmsService {
     return null
   }
 
+  // save sended code to database
   async saveSmsCode(data: Prisma.SmsVerifyCodeCreateInput) {
     await this.prisma.smsVerifyCode.create({
       data,
     })
   }
 
-  /**
-   * Valid given phone and code with code type
-   * @param phone phone number
-   * @param code verify code provided by client
-   * @returns is valid
-   */
+  // Valid given phone and code with code type
   async validCode(phone: string, code: string, type: SmsVerifyCodeType) {
     const total = await this.prisma.smsVerifyCode.count({
       where: {
@@ -104,26 +93,36 @@ export class SmsService {
         code,
         type,
         state: SmsVerifyCodeState.Active,
-        createdAt: { gte: new Date(Date.now() - 10 * 60 * 1000) },
+        createdAt: { gte: new Date(Date.now() - CODE_VALIDITY) },
       },
     })
 
     if (total === 0) return 'invalid code'
-
+    // Disable verify code after valid
+    await this.disableCode(phone, code, type)
     return null
   }
 
-  /**
-   * Disable verify code
-   * @param phone phone number
-   * @param code verify code
-   * @returns void
-   */
+  // Disable verify code
   async disableCode(phone: string, code: string, type: SmsVerifyCodeType) {
     await this.prisma.smsVerifyCode.updateMany({
       where: {
         phone,
         code,
+        type,
+        state: SmsVerifyCodeState.Active,
+      },
+      data: {
+        state: SmsVerifyCodeState.Used,
+      },
+    })
+  }
+
+  // Disable same type verify code
+  async disableSameTypeCode(phone: string, type: SmsVerifyCodeType) {
+    await this.prisma.smsVerifyCode.updateMany({
+      where: {
+        phone,
         type,
         state: SmsVerifyCodeState.Active,
       },
@@ -158,9 +157,7 @@ export class SmsService {
 
   // load alisms config from database
   private async loadAlismsConfig() {
-    const phoneProvider = await this.authService.getProvider(
-      PHONE_AUTH_PROVIDER_NAME,
-    )
+    const phoneProvider = await this.authService.getPhoneProvider()
     return phoneProvider.config[ALISMS_KEY]
   }
 }

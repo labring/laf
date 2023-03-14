@@ -6,6 +6,7 @@ import { UserService } from 'src/user/user.service'
 import { AuthenticationService } from '../authentication.service'
 import { PhoneSigninDto } from '../dto/phone-signin.dto'
 import { hashPassword } from 'src/utils/crypto'
+import { SmsVerifyCodeState } from '../types'
 
 @Injectable()
 export class PhoneService {
@@ -38,8 +39,30 @@ export class PhoneService {
       return err
     }
 
-    // Save sms code to database
-    await this.smsService.saveSmsCode({ phone, code, ip, type })
+    // save to database, start transaction
+    await this.prisma.$transaction(async (tx) => {
+      // disable previous same type code
+      await tx.smsVerifyCode.updateMany({
+        where: {
+          phone,
+          type,
+          state: SmsVerifyCodeState.Active,
+        },
+        data: {
+          state: SmsVerifyCodeState.Used,
+        },
+      })
+
+      // Save sms code to database
+      await tx.smsVerifyCode.create({
+        data: {
+          phone,
+          code,
+          type,
+          ip,
+        },
+      })
+    })
 
     return null
   }

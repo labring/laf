@@ -9,6 +9,11 @@ export enum SmsVerifyCodeState {
   Used = 1,
 }
 
+export enum UserPasswordState {
+  Active = 'Active',
+  Inactive = 'Inactive',
+}
+
 export interface AuthProviderBinding {
   username: AuthBindingType
   phone: AuthBindingType

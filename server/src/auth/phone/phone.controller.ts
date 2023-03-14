@@ -56,9 +56,6 @@ export class PhoneController {
     )
     if (err) return ResponseUtil.error(err)
 
-    // disable used code
-    await this.smsService.disableCode(phone, code, SmsVerifyCodeType.Signin)
-
     // check if user exists
     const user = await this.userService.findByPhone(phone)
     if (user) {
@@ -67,7 +64,7 @@ export class PhoneController {
     }
 
     // user not exist
-    const provider = await this.authService.getProvider('phone')
+    const provider = await this.authService.getPhoneProvider()
     if (provider.register === false) {
       return ResponseUtil.error('register is not allowed')
     }
