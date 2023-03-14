@@ -24,6 +24,9 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@alicloud/dysmsapi20170525": "^2.0.23",
+    "@alicloud/openapi-client": "^0.4.5",
+    "@alicloud/tea-util": "^1.4.5",
     "@aws-sdk/client-s3": "^3.245.0",
     "@aws-sdk/client-sts": "^3.226.0",
     "@kubernetes/client-node": "^0.17.1",

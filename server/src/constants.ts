@@ -176,8 +176,20 @@ export const MINIO_COMMON_USER_POLICY = 'laf_owner_by_prefix'
 export const SEVEN_DAYS_IN_SECONDS = 60 * 60 * 24 * 7 // 7 days in seconds
 export const FOREVER_IN_SECONDS = 60 * 60 * 24 * 365 * 1000 // 1000 years in seconds
 export const TASK_LOCK_INIT_TIME = new Date(0) // 1970-01-01 00:00:00
+export const ONE_DAY_IN_MILLISECONDS = 60 * 60 * 24 * 1000 // 1 day in milliseconds
+export const ONE_MINUTE_IN_MILLISECONDS = 60 * 1000 // 1 minute in milliseconds
 
 // Resource units
 export const CPU_UNIT = 1000
 export const MB = 1024 * 1024
 export const GB = 1024 * MB
+
+// auth constants
+export const PHONE_AUTH_PROVIDER_NAME = 'phone'
+export const PASSWORD_AUTH_PROVIDER_NAME = 'user-password'
+
+// Sms constants
+export const ALISMS_KEY = 'alisms'
+export const LIMIT_CODE_FREQUENCY = 60 * 1000 // 60 seconds (in milliseconds)
+export const LIMIT_CODE_PER_IP_PER_DAY = 30 // 30 times
+export const CODE_VALIDITY = 10 * 60 * 1000 // 10 minutes (in milliseconds)

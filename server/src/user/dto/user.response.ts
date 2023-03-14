@@ -19,6 +19,9 @@ export class UserProfileDto implements UserProfile {
   from: string
 
   @ApiProperty()
+  openData: any
+
+  @ApiProperty()
   createdAt: Date
 
   @ApiProperty()
