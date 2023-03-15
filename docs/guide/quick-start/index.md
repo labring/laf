@@ -4,14 +4,14 @@ title: 快速开始
 
 # {{ $frontmatter.title }}
 
-我们将在 [lafyun.com](https://www.lafyun.com) 上，通过开发一个简单的「用户登录/注册」的功能，快速体验 `laf` 云开发。
+我们将在 [laf.dev](https://laf.dev) 上，通过开发一个简单的「用户登录/注册」的功能，快速体验 `laf` 云开发。
 
 下面代码对于初学者来说可能难以理解，不过可以先体验一下云函数，后面再详细了解云函数的具体内容。
 
 ## 准备工作
 
-1. 你需要在 [lafyun.com](https://console.lafyun.com) 上注册一个账户
-2. 登录到 [lafyun.com 控制台](https://console.lafyun.com)，点击左上角的 `新建` 按钮，创建一个空应用
+1. 你需要在 [laf.dev](https://laf.dev) 上注册一个账户
+2. 登录到 [lafyun.com 控制台](https://laf.dev)，点击左上角的 `新建` 按钮，创建一个空应用
 3. 待应用成功启动后，点击右侧 「开发」 按钮，进入应用的「开发控制台」，接下来，我们将在「开发控制台」 进行第一个 `laf` 应用的功能开发
 
 ## 编写云函数
