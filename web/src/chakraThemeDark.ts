@@ -86,23 +86,23 @@ const Button = defineStyleConfig({
 
   variants: {
     primary: {
-      bg: "primary.600",
-      color: "lafWhite.200",
+      bg: "lafDark.300",
+      // color: "lafWhite.200",
       _hover: {
         bg: "primary.700",
       },
       _disabled: {
         _hover: {
-          bg: "primary.500 !important",
+          // bg: "primary.500 !important",
         },
       },
     },
 
     secondary: {
-      color: "primary.500",
-      bg: "primary.100",
+      color: "lafDark.1000",
+      bg: "lafDark.300",
       _hover: {
-        bg: "primary.200",
+        bg: "lafDark.400",
       },
     },
 
@@ -136,7 +136,9 @@ const Button = defineStyleConfig({
 });
 
 const Modal = {
-  defaultProps: {},
+  defaultProps: {
+    background: "gray.800",
+  },
 };
 
 const Input: ComponentStyleConfig = {
@@ -180,30 +182,30 @@ const Input: ComponentStyleConfig = {
   variants: {
     outline: {
       field: {
-        background: "#fff",
+        // background: "#fff",
         border: "1px solid",
         borderColor: "transparent",
         _focus: {
           background: "transparent",
-          borderColor: "#3182ce",
+          borderColor: "#01a99d",
         },
       },
     },
     filled: {
       field: {
-        background: "lafWhite.600",
+        // background: "lafWhite.600",
         border: "1px solid",
         borderColor: "transparent",
         _hover: {
-          background: "lafWhite.600",
+          // background: "lafWhite.600",
         },
         _focus: {
           background: "transparent",
-          borderColor: "primary.400",
+          // borderColor: "primary.400",
         },
       },
       addon: {
-        background: "lafWhite.600",
+        // background: "lafWhite.600",
       },
     },
 
@@ -227,10 +229,10 @@ const Tabs = {
     "soft-rounded": {
       tab: {
         borderRadius: "4px",
-        color: "grayModern.500",
+        color: "lafDark.500",
         _selected: {
-          color: "grayModern.900",
-          bg: "lafWhite.600",
+          color: "lafDark.1000",
+          bg: "lafDark.300",
           borderRadius: "4px",
         },
       },
@@ -256,13 +258,13 @@ const Table = {
       parts: ["th", "td"],
       th: {
         borderWidth: 1,
-        borderColor: "grayModern.100",
-        background: "lafWhite.300",
+        borderColor: "lafDark.300",
+        background: "lafDark.200",
       },
       td: {
         borderWidth: 1,
-        borderColor: "grayModern.100",
-        background: "lafWhite.300",
+        borderColor: "lafDark.300",
+        background: "lafDark.200",
       },
     },
   },
@@ -275,14 +277,14 @@ const Select = {
   variants: {
     filled: {
       field: {
-        background: "lafWhite.600",
+        background: "lafDark.300",
         borderWidth: 1,
         _hover: {
-          background: "lafWhite.600",
+          background: "lafDark.300",
         },
         _focusVisible: {
-          background: "lafWhite.200",
-          borderColor: "primary.400",
+          background: "lafDark.200",
+          borderColor: "lafDark.400",
         },
       },
       icon: {
@@ -359,6 +361,21 @@ const theme = extendTheme({
       900: "#626263",
       1000: "#313132",
     },
+    lafDark: {
+      100: "#1a202c",
+      200: "#202631",
+      300: "#303541",
+      400: "#404551",
+      500: "#505561",
+      600: "#606571",
+      700: "#707581",
+      800: "#808591",
+      900: "#9095A1",
+      1000: "#A0A5B1",
+    },
+    slate: {
+      300: "#cbd5e1",
+    },
     grayModern: {
       100: "#EFF0F1",
       200: "#DEE0E2",
@@ -396,6 +413,9 @@ const theme = extendTheme({
     },
     rose: {
       100: "#FDEAF1",
+    },
+    gray: {
+      700: "#202631",
     },
     blue: {
       100: "#EBF7FD",

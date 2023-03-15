@@ -70,7 +70,6 @@ export default function CollectionListPanel() {
             rounded={"full"}
             placeholder={t("CollectionPanel.Search").toString()}
             size="sm"
-            bg={"gray.100"}
             onChange={(e) => setSearch(e.target.value)}
           />
         </InputGroup>

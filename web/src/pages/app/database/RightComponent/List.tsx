@@ -10,6 +10,7 @@ const RightPanelList: React.FC<{
   onClick: (data: any) => void;
   deleteRuleMutation: any;
   deleteData?: (item: any) => any;
+  customStyle?: any;
   toolComponent?: (item: any) => React.ReactNode;
   component: (item: any) => React.ReactNode;
 }> = (props) => {
@@ -22,6 +23,7 @@ const RightPanelList: React.FC<{
     onClick,
     deleteRuleMutation,
     deleteData,
+    customStyle,
   } = props;
   return (
     <div className="overflow-y-auto flex-1 overflow-x-hidden pr-1">
@@ -29,7 +31,8 @@ const RightPanelList: React.FC<{
         return (
           <div
             key={item[setKey]}
-            className={clsx("border-2 border-lafWhite-600 p-2 rounded-xl relative group/item", {
+            className={clsx("border-2 p-2 rounded-xl relative group/item", {
+              ...customStyle,
               shadow: isActive(item),
               "mb-2": index !== (ListQuery?.data?.data || []).length - 1,
             })}
