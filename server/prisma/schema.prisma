@@ -126,8 +126,8 @@ type BundleSubscriptionOption {
   name         String
   displayName  String
   duration     Int // in seconds
-  price        Float
-  specialPrice Float
+  price        Int
+  specialPrice Int
 }
 
 model Bundle {
@@ -233,7 +233,7 @@ model SubscriptionRenewal {
   id             String                   @id @default(auto()) @map("_id") @db.ObjectId
   subscriptionId String                   @db.ObjectId
   duration       Int // in seconds
-  amount         Float
+  amount         Int
   phase          SubscriptionRenewalPhase @default(Pending)
   message        String?
   lockedAt       DateTime
@@ -259,18 +259,24 @@ enum AccountChargePhase {
   Failed
 }
 
+enum Currency {
+  CNY
+  USD
+}
+
 model AccountChargeOrder {
-  id          String             @id @default(auto()) @map("_id") @db.ObjectId
-  accountId   String             @db.ObjectId
-  amount      Float
-  phase       AccountChargePhase @default(Pending)
-  channel     PaymentChannelType
-  channelData Json?
-  message     String?
-  createdAt   DateTime           @default(now())
-  lockedAt    DateTime
-  updatedAt   DateTime           @updatedAt
-  createdBy   String             @db.ObjectId
+  id        String             @id @default(auto()) @map("_id") @db.ObjectId
+  accountId String             @db.ObjectId
+  amount    Int
+  currency  Currency
+  phase     AccountChargePhase @default(Pending)
+  channel   PaymentChannelType
+  result    Json?
+  message   String?
+  createdAt DateTime           @default(now())
+  lockedAt  DateTime
+  updatedAt DateTime           @updatedAt
+  createdBy String             @db.ObjectId
 }
 
 enum PaymentChannelType {

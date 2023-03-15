@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { ApplicationState } from '@prisma/client'
-import { IsEnum, IsNotEmpty, IsString, Length } from 'class-validator'
+import { IsEnum, IsInt, IsNotEmpty, IsString, Length } from 'class-validator'
 
 enum CreateApplicationState {
   Running = 'Running',
@@ -35,6 +35,11 @@ export class CreateSubscriptionDto {
   @IsNotEmpty()
   @IsString()
   runtimeId: string
+
+  @ApiProperty()
+  @IsInt()
+  @IsNotEmpty()
+  duration: number
 
   validate(): string | null {
     return null

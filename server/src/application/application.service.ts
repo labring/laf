@@ -28,6 +28,8 @@ export class ApplicationService {
         },
       })
 
+      console.log(bundle, dto.bundleId)
+
       // create app in db
       const appSecret = {
         name: APPLICATION_SECRET_KEY,
@@ -149,15 +151,8 @@ export class ApplicationService {
   async remove(appid: string) {
     try {
       const res = await this.prisma.application.updateMany({
-        where: {
-          appid,
-          phase: {
-            in: [ApplicationPhase.Started, ApplicationPhase.Stopped],
-          },
-        },
-        data: {
-          state: ApplicationState.Deleted,
-        },
+        where: { appid },
+        data: { state: ApplicationState.Deleted },
       })
 
       return res

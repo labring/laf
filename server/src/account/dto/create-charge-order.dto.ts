@@ -1,15 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { PaymentChannelType } from '@prisma/client'
-import { IsEnum, IsNumber, IsPositive, IsString } from 'class-validator'
+import { Currency, PaymentChannelType } from '@prisma/client'
+import { IsEnum, IsInt, IsPositive, IsString, Max, Min } from 'class-validator'
 
 export class CreateChargeOrderDto {
   @ApiProperty({ example: 1000 })
   @IsPositive()
-  @IsNumber()
+  @IsInt()
+  @Min(1)
+  @Max(1000000000)
   amount: number
 
   @ApiProperty({ example: PaymentChannelType.WeChat })
   @IsString()
   @IsEnum(PaymentChannelType)
-  paymentChannel: PaymentChannelType
+  channel: PaymentChannelType
+
+  @ApiProperty({ example: Currency.CNY })
+  @IsString()
+  @IsEnum(Currency)
+  currency: Currency
 }

@@ -11,7 +11,6 @@ import { SystemDatabase } from 'src/database/system-database'
 import { ObjectId } from 'mongodb'
 import { AccountService } from 'src/account/account.service'
 import { Subscription } from 'rxjs'
-import { PriceRound } from 'src/utils/number'
 
 @Injectable()
 export class SubscriptionRenewalTaskService {
@@ -60,34 +59,43 @@ export class SubscriptionRenewalTaskService {
 
     // check account balance
     const userid = renewal.createdBy
-    const account = await this.accountService.findOne(userid.toString())
-
-    if (account?.balance < renewal.amount) {
-      return
-    }
-
     const session = client.startSession()
     await session
       .withTransaction(async () => {
-        // Pay the subscription renewal order from account balance
-        const priceAmount = Math.round(renewal.amount * 100)
-        const r0 = await db.collection<Account>('Account').updateOne(
-          {
-            createdBy: userid,
-            balance: {
-              $gte: priceAmount,
-            },
-          },
-          { $inc: { balance: -priceAmount } },
-          { session },
-        )
+        const account = await db
+          .collection<Account>('Account')
+          .findOne({ createdBy: userid }, { session })
 
-        if (r0.modifiedCount === 0) {
-          throw new Error('Insufficient balance')
+        // if account balance is not enough, delete the subscription & renewal order
+        if (account?.balance < renewal.amount) {
+          await db
+            .collection<SubscriptionRenewal>('SubscriptionRenewal')
+            .deleteOne({ _id: renewal._id }, { session })
+
+          await db
+            .collection<Subscription>('Subscription')
+            .deleteOne(
+              { _id: new ObjectId(renewal.subscriptionId) },
+              { session },
+            )
+          return
+        }
+
+        // Pay the subscription renewal order from account balance
+        const priceAmount = renewal.amount
+        if (priceAmount !== 0) {
+          await db.collection<Account>('Account').updateOne(
+            {
+              createdBy: userid,
+              balance: { $gte: priceAmount },
+            },
+            { $inc: { balance: -priceAmount } },
+            { session },
+          )
         }
 
         // Update subscription 'expiredAt' time
-        const r1 = await db.collection<Subscription>('Subscription').updateOne(
+        await db.collection<Subscription>('Subscription').updateOne(
           { _id: new ObjectId(renewal.subscriptionId) },
           [
             {
@@ -99,12 +107,8 @@ export class SubscriptionRenewalTaskService {
           { session },
         )
 
-        if (r1.modifiedCount === 0) {
-          throw new Error('Subscription not found')
-        }
-
         // Update subscription renewal order phase to ‘Paid’
-        const r2 = await db
+        await db
           .collection<SubscriptionRenewal>('SubscriptionRenewal')
           .updateOne(
             { _id: renewal._id },
@@ -116,10 +120,6 @@ export class SubscriptionRenewalTaskService {
             },
             { session },
           )
-
-        if (r2.modifiedCount === 0) {
-          throw new Error('SubscriptionRenewal not found')
-        }
       })
       .catch((err) => {
         this.logger.debug(renewal._id, err.toString())

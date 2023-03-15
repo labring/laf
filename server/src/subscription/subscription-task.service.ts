@@ -80,7 +80,9 @@ export class SubscriptionTaskService {
       dto.regionId = doc.input.regionId
       dto.state = doc.input.state as ApplicationState
       dto.runtimeId = doc.input.runtimeId
-      dto.bundleId = doc.bundleId
+      // doc.bundleId is ObjectId, but prisma typed it as string, so we need to convert it
+      dto.bundleId = doc.bundleId.toString()
+      this.logger.debug(dto)
 
       await this.applicationService.create(userid, doc.appid, dto)
       return await this.unlock(doc._id)
@@ -226,6 +228,7 @@ export class SubscriptionTaskService {
       .findOneAndUpdate(
         {
           state: SubscriptionState.Deleted,
+          phase: { $not: { $eq: SubscriptionPhase.Deleted } },
           lockedAt: { $lt: new Date(Date.now() - this.lockTimeout * 1000) },
         },
         { $set: { lockedAt: new Date() } },
@@ -234,8 +237,18 @@ export class SubscriptionTaskService {
 
     const doc = res.value
 
-    // Update application state to ‘Deleted’
-    await this.applicationService.remove(doc.appid)
+    const app = await this.applicationService.findOne(doc.appid)
+    if (app && app.state !== ApplicationState.Deleted) {
+      // delete application, update application state to ‘Deleted’
+      await this.applicationService.remove(doc.appid)
+      this.logger.debug(`deleting application: ${doc.appid}`)
+    }
+
+    // wait for application to be deleted
+    if (app) {
+      this.logger.debug(`waiting for application to be deleted: ${doc.appid}`)
+      return // return directly without unlocking it
+    }
 
     // Update subscription phase to 'Deleted'
     await db.collection<Subscription>('Subscription').updateOne(
@@ -247,11 +260,12 @@ export class SubscriptionTaskService {
         },
       },
     )
+    this.logger.debug(`subscription phase updated to deleted: ${doc.appid}`)
   }
 
   @Cron(CronExpression.EVERY_MINUTE)
   async handlePendingTimeout() {
-    const timeout = 30 * 60 * 1000
+    const timeout = 10 * 60 * 1000
 
     const db = SystemDatabase.db
     await db.collection<Subscription>('Subscription').deleteMany({

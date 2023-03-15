@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common'
 import { AccountService } from './account.service'
 import { AccountController } from './account.controller'
-import { WeChatPaymentService } from './payment/wechat-pay.service'
+import { WeChatPayService } from './payment/wechat-pay.service'
 import { PaymentChannelService } from './payment/payment-channel.service'
 import { HttpModule } from '@nestjs/axios'
 
 @Module({
   imports: [HttpModule],
-  providers: [AccountService, WeChatPaymentService, PaymentChannelService],
+  providers: [AccountService, WeChatPayService, PaymentChannelService],
   controllers: [AccountController],
-  exports: [WeChatPaymentService, AccountService, PaymentChannelService],
+  exports: [WeChatPayService, AccountService, PaymentChannelService],
 })
 export class AccountModule {}

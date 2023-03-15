@@ -1,8 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { PrismaService } from 'src/prisma/prisma.service'
 import * as assert from 'assert'
-import { AccountChargePhase, PaymentChannelType } from '@prisma/client'
-import { WeChatPaymentService } from './payment/wechat-pay.service'
+import {
+  AccountChargePhase,
+  Currency,
+  PaymentChannelType,
+} from '@prisma/client'
+import { WeChatPayService } from './payment/wechat-pay.service'
 import { PaymentChannelService } from './payment/payment-channel.service'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
 
@@ -12,7 +16,7 @@ export class AccountService {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly wechatPayService: WeChatPaymentService,
+    private readonly wechatPayService: WeChatPayService,
     private readonly chanelService: PaymentChannelService,
   ) {}
 
@@ -42,8 +46,8 @@ export class AccountService {
   async createChargeOrder(
     userid: string,
     amount: number,
+    currency: Currency,
     channel: PaymentChannelType,
-    channelData: any,
   ) {
     const account = await this.findOne(userid)
     assert(account, 'Account not found')
@@ -53,9 +57,9 @@ export class AccountService {
       data: {
         accountId: account.id,
         amount,
+        currency: currency,
         phase: AccountChargePhase.Pending,
         channel: channel,
-        channelData: channelData,
         createdBy: userid,
         lockedAt: TASK_LOCK_INIT_TIME,
       },
@@ -64,15 +68,36 @@ export class AccountService {
     return order
   }
 
-  async pay(channel: PaymentChannelType, amount: number) {
+  async findOneChargeOrder(userid: string, id: string) {
+    const order = await this.prisma.accountChargeOrder.findFirst({
+      where: { id, createdBy: userid },
+    })
+
+    return order
+  }
+
+  async pay(
+    channel: PaymentChannelType,
+    orderNumber: string,
+    amount: number,
+    currency: Currency,
+    description = 'Account charge',
+  ) {
+    // webchat pay
     if (channel === PaymentChannelType.WeChat) {
-      const channelSpec = await this.chanelService.getWeChatPaySpec()
-      const channelData = await this.wechatPayService.getChannelData(
-        amount,
-        channelSpec,
-      )
-      const result = await this.wechatPayService.pay(channelData, channelSpec)
-      return { result, channelData }
+      const spec = await this.chanelService.getWeChatPaySpec()
+      const result = await this.wechatPayService.send(spec, {
+        mchid: spec.mchid,
+        appid: spec.appid,
+        description,
+        out_trade_no: orderNumber,
+        notify_url: this.wechatPayService.getNotifyUrl(),
+        amount: {
+          total: amount,
+          currency: currency,
+        },
+      })
+      return result
     }
 
     throw new Error('Unsupported payment channel')

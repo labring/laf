@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { PaymentChannelType } from '@prisma/client'
 import { PrismaService } from 'src/prisma/prisma.service'
-import { WeChatPaymentChannelSpec } from './types'
+import { WeChatPaySpec } from './types'
 
 @Injectable()
 export class PaymentChannelService {
@@ -33,11 +33,9 @@ export class PaymentChannelService {
     return res
   }
 
-  async getWeChatPaySpec(): Promise<WeChatPaymentChannelSpec> {
+  async getWeChatPaySpec(): Promise<WeChatPaySpec> {
     const res = await this.prisma.paymentChannel.findFirst({
-      where: {
-        type: PaymentChannelType.WeChat,
-      },
+      where: { type: PaymentChannelType.WeChat },
     })
 
     if (!res) {

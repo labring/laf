@@ -16,7 +16,6 @@ export class ApplicationAuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest() as IRequest
     const appid = request.params.appid
     const user = request.user as User
-    this.logger.debug(`check auth of: appid: ${appid}, user: ${user.id}`)
 
     const app = await this.appService.findOne(appid)
     if (!app) {

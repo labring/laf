@@ -9,7 +9,6 @@ import {
   Logger,
   UseGuards,
   Req,
-  Query,
 } from '@nestjs/common'
 import { SubscriptionService } from './subscription.service'
 import { CreateSubscriptionDto } from './dto/create-subscription.dto'
@@ -24,8 +23,9 @@ import { ApplicationService } from 'src/application/application.service'
 import { RegionService } from 'src/region/region.service'
 import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
 import { RenewSubscriptionDto } from './dto/renew-subscription.dto'
-import { SubscriptionPhase } from '@prisma/client'
 import * as assert from 'assert'
+import { SubscriptionPhase } from '@prisma/client'
+import { AccountService } from 'src/account/account.service'
 
 @ApiTags('Subscription')
 @Controller('subscriptions')
@@ -39,6 +39,7 @@ export class SubscriptionController {
     private readonly bundleService: BundleService,
     private readonly prisma: PrismaService,
     private readonly regionService: RegionService,
+    private readonly accountService: AccountService,
   ) {}
 
   /**
@@ -49,17 +50,6 @@ export class SubscriptionController {
   @Post()
   async create(@Body() dto: CreateSubscriptionDto, @Req() req: IRequest) {
     const user = req.user
-
-    // check if user has a pending subscription
-    const pendingCount = await this.prisma.subscription.count({
-      where: {
-        phase: SubscriptionPhase.Pending,
-        createdBy: user.id,
-      },
-    })
-    if (pendingCount > 5) {
-      return ResponseUtil.error(`you have a pending subscription`)
-    }
 
     // check regionId exists
     const region = await this.regionService.findOneDesensitized(dto.regionId)
@@ -83,10 +73,11 @@ export class SubscriptionController {
 
     // check app count limit
     const LIMIT_COUNT = bundle.limitCountPerUser || 0
-    const count = await this.prisma.application.count({
+    const count = await this.prisma.subscription.count({
       where: {
         createdBy: user.id,
-        bundle: { bundleId: dto.bundleId },
+        bundleId: dto.bundleId,
+        phase: { not: SubscriptionPhase.Deleted },
       },
     })
     if (count >= LIMIT_COUNT) {
@@ -95,10 +86,33 @@ export class SubscriptionController {
       )
     }
 
+    // check duration supported
+    const option = this.bundleService.getSubscriptionOption(
+      bundle,
+      dto.duration,
+    )
+    if (!option) {
+      return ResponseUtil.error(`duration not supported in bundle`)
+    }
+
+    // check account balance
+    const account = await this.accountService.findOne(user.id)
+    const balance = account?.balance || 0
+    const priceAmount = option.specialPrice || option.price
+    if (balance < priceAmount) {
+      return ResponseUtil.error(
+        `account balance is not enough, need ${priceAmount} but only ${account.balance}`,
+      )
+    }
+
     // create subscription
     const appid = await this.applicationService.tryGenerateUniqueAppid()
-    const subscription = await this.subscriptService.create(user.id, appid, dto)
-
+    const subscription = await this.subscriptService.create(
+      user.id,
+      appid,
+      dto,
+      option,
+    )
     return ResponseUtil.ok(subscription)
   }
 
@@ -130,31 +144,6 @@ export class SubscriptionController {
   }
 
   /**
-   * Calculate subscription renewal price
-   */
-  @ApiOperation({ summary: 'Calculate subscription renewal price' })
-  @UseGuards(JwtAuthGuard)
-  @Get('renewal/price')
-  async getRenewalPrice(
-    @Query('bundleId') bundleId: string,
-    @Query('duration') duration: number,
-  ) {
-    // get bundle
-    const bundle = await this.bundleService.findOne(bundleId)
-    if (!bundle) {
-      return ResponseUtil.error(`bundle ${bundleId} not found`)
-    }
-
-    const option = this.bundleService.getSubscriptionOption(bundle, duration)
-    if (!option) {
-      return ResponseUtil.error(`duration not supported in bundle`)
-    }
-
-    const result = await this.subscriptService.getRenewalPrice(option, duration)
-    return ResponseUtil.ok(result)
-  }
-
-  /**
    * Renew a subscription
    */
   @ApiOperation({ summary: 'Renew a subscription' })
@@ -181,11 +170,7 @@ export class SubscriptionController {
     if (!option) {
       return ResponseUtil.error(`duration not supported in bundle`)
     }
-
-    const priceAmount = await this.subscriptService.getRenewalPrice(
-      option,
-      duration,
-    )
+    const priceAmount = option.specialPrice || option.price
 
     // renew subscription
     const res = await this.subscriptService.renew(
