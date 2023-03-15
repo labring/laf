@@ -21,15 +21,25 @@ const routes = [
     ],
   },
   {
-    path: "/login_callback",
+    path: "/signup",
+    element: <AuthLayout />,
     children: [
       {
-        path: "/login_callback",
-        element: () => import("@/pages/LoginCallback"),
+        path: "/signup",
+        element: () => import("@/pages/auth/signup"),
       },
-      route404,
     ],
   },
+  // {
+  //   path: "/login_callback",
+  //   children: [
+  //     {
+  //       path: "/login_callback",
+  //       element: () => import("@/pages/LoginCallback"),
+  //     },
+  //     route404,
+  //   ],
+  // },
   {
     path: "/",
     children: [

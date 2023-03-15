@@ -281,7 +281,7 @@
     "Free": "免费"
   },
   "star-us-on-github": "在 GitHub 上支持我们",
-  "LoginPanel": {
+  "AuthPanel": {
     "Phone": "手机号",
     "PhoneTip": "请输入有效的手机号码",
     "ValidationCode": "验证码",

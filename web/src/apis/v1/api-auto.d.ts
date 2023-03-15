@@ -556,4 +556,52 @@ declare namespace Paths {
 
     export type Responses = any;
   }
+
+  namespace AuthControllerSignup {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AuthControllerSigninByPassword {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AuthControllerSigninBySmsCode {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AuthControllerSendSmsCode {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AuthControllerResetPassword {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AuthControllerGetProviders {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
 }

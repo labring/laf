@@ -281,7 +281,7 @@
     "Free": "Free"
   },
   "star-us-on-github": "Star us on GitHub",
-  "LoginPanel": {
+  "AuthPanel": {
     "Phone": "Mobile number",
     "PhoneTip": "Please enter a valid Mobile phone number",
     "ValidationCode": "Validation code",

@@ -52,7 +52,7 @@ request.interceptors.response.use(
       const { data } = error.response;
       if (data.statusCode === 401) {
         // eslint-disable-next-line no-restricted-globals
-        (window as any).location.href = (VITE_SERVER_BASE_URL + "/v1/login") as string;
+        (window as any).location.href = (VITE_SERVER_BASE_URL + "/login") as string;
         return;
       } else if (data.statusCode === 403) {
         (window as any).location.href = "/403";
