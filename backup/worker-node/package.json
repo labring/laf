@@ -10,7 +10,8 @@
     "start": "set -a; . ./env.sh && node --enable-source-maps ./build/gateway",
     "capture": "node ./build/tasks/capture/script",
     "restore": "node ./build/tasks/restore/script",
-    "prepublishOnly": "npm run rebuild"
+    "prepublishOnly": "npm run rebuild",
+    "dev": "sh ./dev/exe.sh"
   },
   "engines": {
     "node": ">=14"
@@ -20,7 +21,7 @@
     "@lafjs/backup-interfaces": "^0.0.1",
     "@lafjs/mongo-async-rpc": "^0.0.1",
     "@types/node": "^14.18.37",
-    "@zimtsui/startable": "^0.0.4",
+    "@zimtsui/startable": "^0.0.8",
     "mongodb": "^5.1.0"
   },
   "license": "LGPL-3.0",

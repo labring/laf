@@ -1,3 +1,0 @@
-TASKLIST_HOST=localhost:27017
-TASKLIST_DB=lafMeta
-TASKLIST_COLL=tasklist

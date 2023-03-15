@@ -3,7 +3,6 @@ import { ChangeStream, Collection, Db, MongoClient } from "mongodb";
 import { Document, Worker } from "@lafjs/mongo-async-rpc";
 import * as Rp from './rp';
 import { Capture, Restore } from "@lafjs/backup-interfaces";
-// import { adapt } from "startable-adaptor";
 import { $, AsRawStart, AsRawStop } from "@zimtsui/startable";
 
 
@@ -12,7 +11,7 @@ assert(process.env.TASKLIST_HOST_URI);
 assert(process.env.TASKLIST_DB_NAME);
 assert(process.env.TASKLIST_COLL_NAME);
 
-class WorkerNode {
+export class WorkerNode {
 	private host?: MongoClient;
 	private db?: Db;
 	private coll?: Collection<Document>;
@@ -58,5 +57,3 @@ class WorkerNode {
 		if (this.host) await this.host.close();
 	}
 }
-
-// adapt(new Worker().$s);
