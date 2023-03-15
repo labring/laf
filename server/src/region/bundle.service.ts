@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { Bundle } from '@prisma/client'
 import { PrismaService } from 'src/prisma/prisma.service'
 
 @Injectable()
@@ -34,5 +35,11 @@ export class BundleService {
     return this.prisma.applicationBundle.delete({
       where: { appid },
     })
+  }
+
+  getSubscriptionOption(bundle: Bundle, duration: number) {
+    const options = bundle.subscriptionOptions
+    const found = options.find((option) => option.duration === duration)
+    return found ? found : null
   }
 }

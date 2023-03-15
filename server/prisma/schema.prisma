@@ -59,8 +59,9 @@ type RegionClusterConf {
 }
 
 type RegionDatabaseConf {
-  driver        String // mongodb
-  connectionUri String
+  driver               String // mongodb
+  connectionUri        String
+  controlConnectionUri String
 }
 
 type RegionGatewayConf {
@@ -79,6 +80,7 @@ type RegionStorageConf {
   internalEndpoint String
   accessKey        String
   secretKey        String
+  controlEndpoint  String
 }
 
 model Region {
@@ -109,27 +111,36 @@ type BundleResource {
   storageCapacity        Int // in MB
   networkTrafficOutbound Int // in MB
 
-  limitCountPerUser          Int // limit count of application per user could create
   limitCountOfCloudFunction  Int // limit count of cloud function per application
   limitCountOfBucket         Int // limit count of bucket per application
   limitCountOfDatabasePolicy Int // limit count of database policy per application
   limitCountOfTrigger        Int // limit count of trigger per application
   limitCountOfWebsiteHosting Int // limit count of website hosting per application
+  reservedTimeAfterExpired   Int // in seconds
 
   limitDatabaseTPS Int // limit count of database TPS per application
   limitStorageTPS  Int // limit count of storage TPS per application
 }
 
-model Bundle {
-  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+type BundleSubscriptionOption {
   name         String
   displayName  String
-  regionId     String         @db.ObjectId
-  resource     BundleResource
-  priority     Int            @default(0)
-  state        String         @default("Active") // Active, Inactive
-  price        Int            @default(0)
-  specialPrice Int            @default(0)
+  duration     Int // in seconds
+  price        Int
+  specialPrice Int
+}
+
+model Bundle {
+  id                  String                     @id @default(auto()) @map("_id") @db.ObjectId
+  name                String
+  displayName         String
+  regionId            String                     @db.ObjectId
+  priority            Int                        @default(0)
+  state               String                     @default("Active") // Active, Inactive
+  limitCountPerUser   Int // limit count of application per user could create
+  subscriptionOptions BundleSubscriptionOption[]
+
+  resource BundleResource
 
   region Region @relation(fields: [regionId], references: [id])
 
@@ -137,14 +148,12 @@ model Bundle {
 }
 
 model ApplicationBundle {
-  id           String         @id @default(auto()) @map("_id") @db.ObjectId
-  appid        String         @unique
-  bundleId     String         @db.ObjectId
-  name         String
-  displayName  String
-  resource     BundleResource
-  price        Int            @default(0)
-  specialPrice Int            @default(0)
+  id          String         @id @default(auto()) @map("_id") @db.ObjectId
+  appid       String         @unique
+  bundleId    String         @db.ObjectId
+  name        String
+  displayName String
+  resource    BundleResource
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -167,6 +176,126 @@ model Runtime {
   version     String
   latest      Boolean
   Application Application[]
+}
+
+// subscriptions schemas
+
+enum SubscriptionState {
+  Created
+  Deleted
+}
+
+enum SubscriptionPhase {
+  Pending
+  Valid
+  Expired
+  ExpiredAndStopped
+  Deleted
+}
+
+enum SubscriptionRenewalPlan {
+  Manual
+  Monthly
+  Yearly
+}
+
+type SubscriptionApplicationCreateInput {
+  name      String
+  state     String
+  runtimeId String
+  regionId  String
+}
+
+model Subscription {
+  id          String                             @id @default(auto()) @map("_id") @db.ObjectId
+  input       SubscriptionApplicationCreateInput
+  bundleId    String                             @db.ObjectId
+  appid       String                             @unique
+  state       SubscriptionState                  @default(Created)
+  phase       SubscriptionPhase                  @default(Pending)
+  renewalPlan SubscriptionRenewalPlan            @default(Manual)
+  expiredAt   DateTime
+  lockedAt    DateTime
+  createdAt   DateTime                           @default(now())
+  updatedAt   DateTime                           @updatedAt
+  createdBy   String                             @db.ObjectId
+
+  application Application?
+}
+
+enum SubscriptionRenewalPhase {
+  Pending
+  Paid
+  Failed
+}
+
+model SubscriptionRenewal {
+  id             String                   @id @default(auto()) @map("_id") @db.ObjectId
+  subscriptionId String                   @db.ObjectId
+  duration       Int // in seconds
+  amount         Int
+  phase          SubscriptionRenewalPhase @default(Pending)
+  message        String?
+  lockedAt       DateTime
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+  createdBy      String                   @db.ObjectId
+}
+
+// accounts schemas
+
+model Account {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  balance   Int      @default(0)
+  state     String   @default("Active") // Active, Inactive
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String   @unique @db.ObjectId
+}
+
+enum AccountChargePhase {
+  Pending
+  Paid
+  Failed
+}
+
+enum Currency {
+  CNY
+  USD
+}
+
+model AccountChargeOrder {
+  id        String             @id @default(auto()) @map("_id") @db.ObjectId
+  accountId String             @db.ObjectId
+  amount    Int
+  currency  Currency
+  phase     AccountChargePhase @default(Pending)
+  channel   PaymentChannelType
+  result    Json?
+  message   String?
+  createdAt DateTime           @default(now())
+  lockedAt  DateTime
+  updatedAt DateTime           @updatedAt
+  createdBy String             @db.ObjectId
+}
+
+enum PaymentChannelType {
+  Manual
+  Alipay
+  WeChat
+  Stripe
+  Paypal
+  Google
+}
+
+model PaymentChannel {
+  id        String             @id @default(auto()) @map("_id") @db.ObjectId
+  type      PaymentChannelType
+  name      String
+  spec      Json
+  state     String             @default("Active") // Active, Inactive
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
 }
 
 // application schemas
@@ -213,6 +342,7 @@ model Application {
   database      Database?
   domain        RuntimeDomain?
   bundle        ApplicationBundle?
+  subscription  Subscription              @relation(fields: [appid], references: [appid])
 }
 
 type EnvironmentVariable {
