@@ -20,6 +20,10 @@
 
 > [English](README_en.md) | 中文
 
+## 🚀 Quick Start
+
+[三分钟体验使用 laf 写一个自己的 ChatGPT (开发到上线)](https://icloudnative.io/posts/build-chatgpt-web-using-laf/)
+
 ## 🖥 在线体验
 
 🎉 [laf.dev](https://laf.dev) 可免费体验 `laf` 云开发。
@@ -72,10 +76,6 @@ laf 是开源的云开发平台，提供云函数、云数据库、云存储等�
 
 > life is short, you need laf:)
 
-
-## 🚀 Quick Start
-
-[三分钟体验使用 laf 开发一个简单的登陆注册功能](./docs/guide/quick-start/index.md)
 
 ## 🎉 Self-hosted Deployment
 
