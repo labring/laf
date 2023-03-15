@@ -291,7 +291,6 @@ const AddDependenceModal = () => {
                   />
                   <Input
                     rounded={"full"}
-                    bg={"gray.100"}
                     onChange={(e: any) => {
                       search(e.target.value);
                     }}
