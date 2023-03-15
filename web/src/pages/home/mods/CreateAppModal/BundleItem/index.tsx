@@ -2,6 +2,14 @@ import React from "react";
 import clsx from "clsx";
 import { t } from "i18next";
 
+import {
+  formatLimitCapacity,
+  formatLimitCPU,
+  formatLimitMemory,
+  formatLimitTraffic,
+  formatPrice,
+} from "@/utils/format";
+
 import { TBundle } from "@/apis/typing";
 
 const ListItem = (props: { item: { key: string; value: string | number } }) => {
@@ -34,33 +42,41 @@ export default function BundleItem(props: {
         })}
       >
         <h1 className="mb-1">{bundle.displayName}</h1>
-        <p className="text-lg font-semibold">
-          {bundle.price === 0 ? t("Price.Free") : bundle.price}
+        <p className="text-xl font-semibold">
+          {bundle.subscriptionOptions[0].price === 0
+            ? t("Price.Free")
+            : formatPrice(bundle.subscriptionOptions[0].price)}
         </p>
       </div>
       <div>
         <ListItem
-          item={{ key: "CPU", value: `${bundle.resource.limitCPU / 1000} ${t("Unit.CPU")}` }}
+          item={{
+            key: "CPU",
+            value: `${formatLimitCPU(bundle.resource.limitCPU)} ${t("Unit.CPU")}`,
+          }}
         />
         <ListItem
-          item={{ key: t("Spec.RAM"), value: `${bundle.resource.limitMemory} ${t("Unit.MB")}` }}
+          item={{
+            key: t("Spec.RAM"),
+            value: `${formatLimitMemory(bundle.resource.limitMemory)} ${t("Unit.MB")}`,
+          }}
         />
         <ListItem
           item={{
             key: t("Spec.Database"),
-            value: `${bundle.resource.databaseCapacity / 1024} ${t("Unit.GB")}`,
+            value: `${formatLimitCapacity(bundle.resource.databaseCapacity)} ${t("Unit.GB")}`,
           }}
         />
         <ListItem
           item={{
             key: t("Spec.Storage"),
-            value: `${bundle.resource.storageCapacity / 1024} ${t("Unit.GB")}`,
+            value: `${formatLimitCapacity(bundle.resource.storageCapacity)} ${t("Unit.GB")}`,
           }}
         />
         <ListItem
           item={{
             key: t("Spec.NetworkTraffic"),
-            value: `${bundle.resource.networkTrafficOutbound / 1024} ${t("Unit.GB")}`,
+            value: `${formatLimitTraffic(bundle.resource.networkTrafficOutbound)} ${t("Unit.GB")}`,
           }}
         />
       </div>

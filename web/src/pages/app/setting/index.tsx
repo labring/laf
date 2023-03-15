@@ -15,7 +15,7 @@ import { t } from "i18next";
 
 import SectionList from "@/components/SectionList";
 
-import { TApplication } from "@/apis/typing";
+import { TApplicationDetail } from "@/apis/typing";
 import useGlobalStore from "@/pages/globalStore";
 export type TTabItem = {
   key: string;
@@ -31,7 +31,7 @@ export const TabKeys = {
 const SettingModal = (props: {
   headerTitle: string;
   children: React.ReactElement;
-  setApp?: TApplication;
+  setApp?: TApplicationDetail;
   tabMatch?: TTabItem[];
   currentTab: string;
 }) => {

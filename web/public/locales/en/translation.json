@@ -44,7 +44,6 @@
   "Copy": "copy",
   "Create": "new application",
   "CreateNow": "create now",
-  "CreateTime": "Created time",
   "Custom": "customize",
   "Days": "days",
   "Delete": "Delete ",
@@ -284,5 +283,6 @@
   "Price": {
     "Free": "Free"
   },
-  "star-us-on-github": "Star us on GitHub"
+  "star-us-on-github": "Star us on GitHub",
+  "Time": "Time"
 }

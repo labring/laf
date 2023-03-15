@@ -60,6 +60,30 @@ export function isExitInList(targetKey: string, targetValue: any, list: any[] | 
   return indexList;
 }
 
+export function formatLimitCPU(cpu: number) {
+  return cpu / 1000;
+}
+
+export function formatLimitMemory(memory: number) {
+  return memory;
+}
+
+export function formatLimitCapacity(capacity: number) {
+  return capacity / 1024;
+}
+
+export function formatLimitTraffic(traffic: number) {
+  return traffic / 1024;
+}
+
 export function formatPort(port: number | undefined) {
   return port === 80 || port === 443 ? "" : `:${port}`;
+}
+
+export function formatPrice(price: number) {
+  return price ? "¥" + (price / 100).toFixed(2) : "-";
+}
+
+export function convertMoney(money: number) {
+  return money * 100;
 }
