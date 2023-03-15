@@ -34,6 +34,7 @@ export class InitializerService {
           set: {
             driver: 'mongodb',
             connectionUri: ServerConfig.DEFAULT_REGION_DATABASE_URL,
+            controlConnectionUri: ServerConfig.DEFAULT_REGION_DATABASE_URL,
           },
         },
         storageConf: {
@@ -46,6 +47,8 @@ export class InitializerService {
               ServerConfig.DEFAULT_REGION_MINIO_INTERNAL_ENDPOINT,
             accessKey: ServerConfig.DEFAULT_REGION_MINIO_ROOT_ACCESS_KEY,
             secretKey: ServerConfig.DEFAULT_REGION_MINIO_ROOT_SECRET_KEY,
+            controlEndpoint:
+              ServerConfig.DEFAULT_REGION_MINIO_INTERNAL_ENDPOINT,
           },
         },
         gatewayConf: {

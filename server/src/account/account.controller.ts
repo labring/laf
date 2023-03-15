@@ -65,4 +65,13 @@ export class AccountController {
       result,
     })
   }
+
+  /**
+   * WeChat payment notify
+   */
+  @ApiOperation({ summary: 'WeChat payment notify' })
+  @Post('wechat-notify')
+  async wechatNotify() {
+    // todo
+  }
 }

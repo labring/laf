@@ -8,7 +8,7 @@ export class CreateChargeOrderDto {
   @IsNumber()
   amount: number
 
-  @ApiProperty()
+  @ApiProperty({ example: PaymentChannelType.WeChat })
   @IsString()
   @IsEnum(PaymentChannelType)
   paymentChannel: PaymentChannelType

@@ -1,5 +1,5 @@
 import * as nanoid from 'nanoid'
-import dayjs from 'dayjs'
+import * as dayjs from 'dayjs'
 
 export function GenerateAlphaNumericPassword(length: number) {
   const nano = nanoid.customAlphabet(

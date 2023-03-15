@@ -59,8 +59,9 @@ type RegionClusterConf {
 }
 
 type RegionDatabaseConf {
-  driver        String // mongodb
-  connectionUri String
+  driver               String // mongodb
+  connectionUri        String
+  controlConnectionUri String
 }
 
 type RegionGatewayConf {
@@ -79,6 +80,7 @@ type RegionStorageConf {
   internalEndpoint String
   accessKey        String
   secretKey        String
+  controlEndpoint  String
 }
 
 model Region {

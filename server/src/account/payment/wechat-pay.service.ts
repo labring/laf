@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common'
 import { GenerateOrderNumber, GenerateRandomString } from 'src/utils/random'
 import { WeChatPaymentChannelSpec, WeChatPaymentRequestBody } from './types'
 import * as crypto from 'crypto'
-import { PaymentChannelService } from './payment-channel.service'
 import { HttpService } from '@nestjs/axios'
 import { ServerConfig } from 'src/constants'
 
@@ -11,10 +10,7 @@ export class WeChatPaymentService {
   static readonly API_BASE_URL = 'https://api.mch.weixin.qq.com'
   static readonly API_NATIVE_PAY_URL = '/v3/pay/transactions/native'
 
-  constructor(
-    private readonly channelService: PaymentChannelService,
-    private readonly httpService: HttpService,
-  ) {}
+  constructor(private readonly httpService: HttpService) {}
 
   async pay(
     order: WeChatPaymentRequestBody,
@@ -25,12 +21,12 @@ export class WeChatPaymentService {
     const signature = this.createSign(timestamp, nonceStr, order, channelSpec)
     const serialNo = channelSpec.certificateSerialNumber
 
-    const token = `WECHATPAY2-SHA256-RSA2048 mchid="xxxx",nonce_str="${nonceStr}",timestamp="${timestamp}",signature="${signature}",serial_no="${serialNo}"`
+    const token = `WECHATPAY2-SHA256-RSA2048 mchid="${channelSpec.mchid}",nonce_str="${nonceStr}",timestamp="${timestamp}",signature="${signature}",serial_no="${serialNo}"`
     const headers = {
       Authorization: token,
     }
 
-    const apiUrl = `${WeChatPaymentService.API_BASE_URL}${WeChatPaymentService.API_NATIVE_PAY_URL}}`
+    const apiUrl = `${WeChatPaymentService.API_BASE_URL}${WeChatPaymentService.API_NATIVE_PAY_URL}`
     const res = await this.httpService.axiosRef.post(apiUrl, order, {
       headers,
     })
@@ -47,7 +43,7 @@ export class WeChatPaymentService {
       out_trade_no: orderNumber,
       notify_url: this.getNotifyUrl(),
       amount: {
-        total: amount,
+        total: amount * 100,
         currency: 'CNY',
       },
     }
@@ -56,14 +52,14 @@ export class WeChatPaymentService {
 
   createSign(
     timestamp: number,
-    nonce_str: string,
+    nonceStr: string,
     order: WeChatPaymentRequestBody,
     channelSpec: WeChatPaymentChannelSpec,
   ) {
     const method = 'POST'
     const url = WeChatPaymentService.API_NATIVE_PAY_URL
     const orderStr = JSON.stringify(order)
-    const signStr = `${method}\n${url}\n${timestamp}\n${nonce_str}\n${orderStr}\n`
+    const signStr = `${method}\n${url}\n${timestamp}\n${nonceStr}\n${orderStr}\n`
     const cert = channelSpec.privateKey
     const sign = crypto.createSign('RSA-SHA256')
     sign.update(signStr)
