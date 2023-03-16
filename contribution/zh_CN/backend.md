@@ -32,6 +32,6 @@ laf 后端的部署结构整体分为
 	- `cd ./instance` 在 Region 中启停已创建的 laf app 项目单例。
 	- `cd ./function` 管理各个 laf app 的云函数源代码。
 	- `cd ./dependency` 设置各个 laf app 的 Node.js 依赖，仅设置不安装。
-	- `cd ./gateway` 配置
+	- `cd ./gateway` 配置 Region K8s 集群的公网流量路由，将流量路由到相应的 bucket、laf app 上去。
 	- `cd ./initializer` 新部署的 laf 第一次运行的初始化工作。
 - `cd ./runtime/nodejs/src` runtime
