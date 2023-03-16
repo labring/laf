@@ -29,7 +29,12 @@ monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
 monaco?.editor.defineTheme("lafEditorTheme", {
   base: "vs",
   inherit: true,
-  rules: [],
+  rules: [
+    {
+      foreground: "#0066ff",
+      token: "keyword",
+    },
+  ],
   colors: {
     "editorLineNumber.foreground": "#aaa",
     "editorOverviewRuler.border": "#fff",

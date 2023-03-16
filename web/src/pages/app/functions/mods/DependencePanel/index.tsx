@@ -14,6 +14,7 @@ import SectionList from "@/components/SectionList";
 import AddDependenceModal from "./AddDependenceModal";
 import { TPackage, useDelPackageMutation, usePackageQuery } from "./service";
 
+import useCustomSettingStore from "@/pages/customSetting";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function DependenceList() {
@@ -24,10 +25,13 @@ export default function DependenceList() {
   });
   const { t } = useTranslation();
 
+  const store = useCustomSettingStore();
+
   const builtinPackage: TPackage[] = [];
   const customPackage: TPackage[] = [];
 
-  const SECTION_HEIGHT = 180;
+  const { height } = store.getLayoutInfo("functionPage", "DependencePanel");
+  const SECTION_HEIGHT = height - 90;
 
   packageQuery?.data?.data?.forEach((packageItem: TPackage) => {
     if (packageItem.builtin) {

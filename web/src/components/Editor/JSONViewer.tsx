@@ -1,6 +1,6 @@
 import SyntaxHighlighter from "react-syntax-highlighter";
 
-type JSONViewerProp = {
+type JSONViewerProps = {
   code: string;
   language?: string;
   showNumber?: boolean;
@@ -234,8 +234,8 @@ const JSONViewerDarkStyle: any = {
     fontWeight: "bold",
   },
 };
-export default function JSONViewer(prop: JSONViewerProp) {
-  const { code, language = "json", colorMode = "light" } = prop;
+export default function JSONViewer(props: JSONViewerProps) {
+  const { code, language = "json", colorMode = "light" } = props;
   const lightTheme = { background: "#fdfdfe" };
   const darkTheme = {
     background: "#202631",

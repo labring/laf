@@ -127,7 +127,7 @@
     "WX": "WeChat Mini Program/Public Account",
     "Welcome": "Welcome to the LAF cloud development platform!",
     "DeleteApp": "delete apps",
-    "DeleteTip": "Are you sure you want to delete this app?",
+    "DeleteTip": "The current operation will permanently delete applications, including functions, data, cloud storage, etc. related data related to the application. After deleting, <strong> will not be able to cancel </strong>,please enter <strong>{{appId}}</strong> confirm",
     "Duration": "Duration"
   },
   "LogPanel": {
@@ -151,7 +151,6 @@
     "Memory": "Memory",
     "Restart": "Restart",
     "network": "Outgoing capacity",
-    "Close": "Close",
     "AppInfo": "Application Information",
     "Auth": "Real-name Authentication",
     "Code": "Code",
@@ -166,7 +165,8 @@
     "ToAuth": "Authenticate Now",
     "UserInfo": "User Information",
     "noAuth": "Not Authenticated",
-    "showAuth": "Go to Auth"
+    "showAuth": "Go to Auth",
+    "ShutDown": "ShutDown"
   },
   "StoragePanel": {
     "All": "Total Capacity",
@@ -294,5 +294,18 @@
     "LoginWithGithub": "Login with Github",
     "ValidationCodeTip": "Please enter validation code"
   },
-  "Time": "Time"
+  "Time": "Time",
+  "CreateTime": "Created",
+  "EndTime": "Expired",
+  "Renew": "Renew",
+  "TotalPrice": "Total",
+  "Balance": "Balance",
+  "ChargeNow": "Charge",
+  "balance is insufficient": "balance is insufficient",
+  "DeleteApp": "Delete",
+  "Recharge amount": "Recharge amount",
+  "Scan with WeChat": "WeChat scan code payment",
+  "Order Number": "Order Number",
+  "payment status": "Payment status",
+  "Monthly": "Monthly"
 }

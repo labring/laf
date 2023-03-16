@@ -127,7 +127,7 @@
     "WX": "微信小程序/公众号",
     "Welcome": "欢迎来到 LAF 云开发平台！",
     "DeleteApp": "删除 APP",
-    "DeleteTip": "你确定想要删除这个 App?",
+    "DeleteTip": "当前操作将会永久删除应用, 包括函数、数据、云存储等与应用相关的数据, 删除后<strong>将无法撤消</strong>,  请输入 <strong>{{appId}}</strong> 后确认",
     "Duration": "购买时长"
   },
   "LogPanel": {
@@ -150,7 +150,6 @@
     "Disk": "硬盘",
     "DB": "数据库",
     "network": "出网容量",
-    "Close": "关闭应用",
     "Delete": "删除应用",
     "Restart": "重启应用",
     "UserInfo": "用户信息",
@@ -166,7 +165,8 @@
     "IDTip": "请输入有效的身份证号码",
     "CodeTip": "请输入四位数字验证码",
     "TelTip": "请输入有效的手机号码",
-    "Registered": "注册时间"
+    "Registered": "注册时间",
+    "ShutDown": "关闭应用"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -294,5 +294,18 @@
     "LoginWithGithub": "GitHub 登录",
     "ValidationCodeTip": "请输入验证码"
   },
-  "Time": "时间"
+  "Time": "时间",
+  "CreateTime": "创建时间",
+  "EndTime": "到期时间",
+  "Renew": "续期",
+  "TotalPrice": "共需支付",
+  "Balance": "账户余额",
+  "ChargeNow": "充值",
+  "balance is insufficient": "余额不足",
+  "DeleteApp": "删除应用",
+  "Recharge amount": "充值金额",
+  "Scan with WeChat": "微信扫码支付",
+  "Order Number": "订单号",
+  "payment status": "支付状态",
+  "Monthly": "月"
 }

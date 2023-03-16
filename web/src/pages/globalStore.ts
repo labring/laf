@@ -85,6 +85,7 @@ const useGlobalStore = create<State>()(
           return;
         }
         const restartRes = await ApplicationControllerUpdate({
+          appid: app.appid,
           name: app.name,
           state: newState,
         });

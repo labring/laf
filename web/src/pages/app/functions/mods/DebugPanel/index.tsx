@@ -172,7 +172,7 @@ export default function DebugPanel(props: { containerRef: any }) {
                   >
                     <TabList className="mb-1 flex-none">
                       <Tab>
-                        Params
+                        Query
                         {queryParams.length > 0 && (
                           <span className="ml-1">({queryParams.length})</span>
                         )}
