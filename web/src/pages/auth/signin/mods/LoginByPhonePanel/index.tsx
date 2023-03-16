@@ -19,7 +19,15 @@ type FormData = {
   validationCode: string;
 };
 
-export default function LoginByPhonePanel({ switchLoginType }: { switchLoginType: () => void }) {
+export default function LoginByPhonePanel({
+  switchLoginType,
+  showSignupBtn,
+  showPasswordSigninBtn,
+}: {
+  switchLoginType: () => void;
+  showSignupBtn: boolean;
+  showPasswordSigninBtn: boolean;
+}) {
   const navigate = useNavigate();
   const sendSmsCodeMutation = useSendSmsCodeMutation();
   const signinBySmsCodeMutation = useSigninBySmsCodeMutation();
@@ -144,12 +152,20 @@ export default function LoginByPhonePanel({ switchLoginType }: { switchLoginType
           {t("AuthPanel.Login")}
         </Button>
         <div className="mt-2 flex justify-end">
-          <Button size="xs" variant={"text"} onClick={switchLoginType}>
-            {t("AuthPanel.PasswordLogin")}
-          </Button>
-          <Button size="xs" variant={"text"} onClick={() => navigate("/signup", { replace: true })}>
-            {t("AuthPanel.ToRegister")}
-          </Button>
+          {showPasswordSigninBtn && (
+            <Button size="xs" variant={"text"} onClick={switchLoginType}>
+              {t("AuthPanel.PasswordLogin")}
+            </Button>
+          )}
+          {showSignupBtn && (
+            <Button
+              size="xs"
+              variant={"text"}
+              onClick={() => navigate("/signup", { replace: true })}
+            >
+              {t("AuthPanel.ToRegister")}
+            </Button>
+          )}
         </div>
       </div>
     </div>

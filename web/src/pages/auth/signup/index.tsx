@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
@@ -14,12 +14,17 @@ import {
 } from "@chakra-ui/react";
 import { t } from "i18next";
 
-import { useSendSmsCodeMutation, useSignupMutation } from "@/pages/auth/service";
+import {
+  useGetProvidersQuery,
+  useSendSmsCodeMutation,
+  useSignupMutation,
+} from "@/pages/auth/service";
+import useAuthStore from "@/pages/auth/store";
 import useGlobalStore from "@/pages/globalStore";
 
 type FormData = {
-  phone: string;
-  validationCode: string;
+  phone?: string;
+  validationCode?: string;
   account: string;
   password: string;
   confirmPassword: string;
@@ -28,10 +33,22 @@ type FormData = {
 export default function SignUp() {
   const signupMutation = useSignupMutation();
   const sendSmsCodeMutation = useSendSmsCodeMutation();
-  // const [providers, setProviders] = useState<any[]>([]);
-  // const getProvidersQuery = useGetProvidersQuery((data: any) => {
-  //   setProviders(data.data);
-  // });
+
+  const { providers, setProviders } = useAuthStore();
+  useGetProvidersQuery((data: any) => {
+    setProviders(data?.data || []);
+  });
+  const [isNeedPhone, setIsNeedPhone] = useState(false);
+
+  useEffect(() => {
+    if (providers.length) {
+      const passwordProvider = providers.find((provider) => provider.type === "user-password");
+      if (passwordProvider) {
+        setIsNeedPhone(passwordProvider.bind?.phone === "required");
+      }
+    }
+  }, [providers]);
+
   const { showSuccess, showError } = useGlobalStore();
   const navigate = useNavigate();
 
@@ -60,10 +77,10 @@ export default function SignUp() {
       showError("两次输入的密码不一致");
       return;
     }
-    if (!agreement) {
-      showError("请先同意用户协议");
-      return;
-    }
+    // if (!agreement) {
+    //   showError("请先同意用户协议");
+    //   return;
+    // }
     const res = await signupMutation.mutateAsync({
       phone: data.phone,
       code: data.validationCode,
@@ -83,7 +100,7 @@ export default function SignUp() {
       return;
     }
 
-    const phone = getValues("phone");
+    const phone = getValues("phone") || "";
     const isValidate = /^1[2-9]\d{9}$/.test(phone);
     if (!isValidate) {
       showError(t("AuthPanel.PhoneTip"));
@@ -177,70 +194,76 @@ export default function SignUp() {
             </InputRightElement>
           </InputGroup>
         </FormControl>
-        <FormControl isInvalid={!!errors?.phone} className="flex mb-6 items-center">
-          <FormLabel className="w-20" htmlFor="phone">
-            {t("AuthPanel.Phone")}
-          </FormLabel>
-          <InputGroup>
+        {isNeedPhone && (
+          <FormControl isInvalid={!!errors?.phone} className="flex mb-6 items-center">
+            <FormLabel className="w-20" htmlFor="phone">
+              {t("AuthPanel.Phone")}
+            </FormLabel>
+            <InputGroup>
+              <Input
+                {...register("phone", {
+                  required: true,
+                  pattern: {
+                    value: /^1[2-9]\d{9}$/,
+                    message: t("AuthPanel.PhoneTip"),
+                  },
+                })}
+                type="tel"
+                id="phone"
+                placeholder="请输入手机号"
+              />
+              <InputRightElement width="6rem">
+                <Button
+                  className="w-20"
+                  variant={isSendSmsCode ? "thirdly_disabled" : "thirdly"}
+                  onClick={handleSendSmsCode}
+                >
+                  {isSendSmsCode ? `${countdown}s后重试` : t("AuthPanel.getValidationCode")}
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+          </FormControl>
+        )}
+        {isNeedPhone && (
+          <FormControl isInvalid={!!errors.validationCode} className="flex mb-10 items-center">
+            <FormLabel className="w-20" htmlFor="validationCode">
+              {t("AuthPanel.ValidationCode")}
+            </FormLabel>
             <Input
-              {...register("phone", {
+              type="number"
+              {...register("validationCode", {
                 required: true,
                 pattern: {
-                  value: /^1[2-9]\d{9}$/,
-                  message: t("AuthPanel.PhoneTip"),
+                  value: /^\d{6}$/,
+                  message: t("AuthPanel.ValidationCodeTip"),
                 },
               })}
-              type="tel"
-              id="phone"
-              placeholder="请输入手机号"
+              id="validationCode"
+              placeholder="请输入验证码"
             />
-            <InputRightElement width="6rem">
-              <Button
-                className="w-20"
-                variant={isSendSmsCode ? "thirdly_disabled" : "thirdly"}
-                onClick={handleSendSmsCode}
-              >
-                {isSendSmsCode ? `${countdown}s后重试` : t("AuthPanel.getValidationCode")}
-              </Button>
-            </InputRightElement>
-          </InputGroup>
-        </FormControl>
-        <FormControl isInvalid={!!errors.validationCode} className="flex mb-10 items-center">
-          <FormLabel className="w-20" htmlFor="validationCode">
-            {t("AuthPanel.ValidationCode")}
-          </FormLabel>
-          <Input
-            type="number"
-            {...register("validationCode", {
-              required: true,
-              pattern: {
-                value: /^\d{6}$/,
-                message: t("AuthPanel.ValidationCodeTip"),
-              },
-            })}
-            id="validationCode"
-            placeholder="请输入验证码"
-          />
-        </FormControl>
-        <div className="flex items-center mb-6">
-          <CheckboxGroup>
-            <Checkbox
-              onChange={(e) => setAgreement(e.target.checked)}
-              isChecked={agreement}
-              colorScheme="primary"
-            />
-          </CheckboxGroup>
-          <span className="text-[14px] text-[#333333] ml-1">
-            我已阅读并同意{" "}
-            <a href="laf.dev" className="text-[#33BAB1]">
-              服务协议
-            </a>{" "}
-            和{" "}
-            <a href="laf.dev" className="text-[#33BAB1]">
-              隐私协议
-            </a>
-          </span>
-        </div>
+          </FormControl>
+        )}
+        {false && (
+          <div className="flex items-center mb-6">
+            <CheckboxGroup>
+              <Checkbox
+                onChange={(e) => setAgreement(e.target.checked)}
+                isChecked={agreement}
+                colorScheme="primary"
+              />
+            </CheckboxGroup>
+            <span className="text-[14px] text-[#333333] ml-1">
+              我已阅读并同意{" "}
+              <a href="laf.dev" className="text-[#33BAB1]">
+                服务协议
+              </a>{" "}
+              和{" "}
+              <a href="laf.dev" className="text-[#33BAB1]">
+                隐私协议
+              </a>
+            </span>
+          </div>
+        )}
         <div className="mb-6">
           <Button
             type="submit"

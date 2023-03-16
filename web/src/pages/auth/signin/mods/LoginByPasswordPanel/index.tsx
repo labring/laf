@@ -19,7 +19,15 @@ type FormData = {
   password: string;
 };
 
-export default function LoginByPasswordPanel({ switchLoginType }: { switchLoginType: () => void }) {
+export default function LoginByPasswordPanel({
+  switchLoginType,
+  showSignupBtn,
+  showPhoneSigninBtn,
+}: {
+  switchLoginType: () => void;
+  showSignupBtn: boolean;
+  showPhoneSigninBtn: boolean;
+}) {
   const signinByPasswordMutation = useSigninByPasswordMutation();
   const navigate = useNavigate();
   const [isShowPassword, setIsShowPassword] = useState(false);
@@ -86,12 +94,20 @@ export default function LoginByPasswordPanel({ switchLoginType }: { switchLoginT
           {t("AuthPanel.Login")}
         </Button>
         <div className="mt-2 flex justify-end">
-          <Button className="mr-1" size="xs" variant={"text"} onClick={switchLoginType}>
-            {t("AuthPanel.PhoneLogin")}
-          </Button>
-          <Button size="xs" variant={"text"} onClick={() => navigate("/signup", { replace: true })}>
-            {t("AuthPanel.ToRegister")}
-          </Button>
+          {showPhoneSigninBtn && (
+            <Button className="mr-1" size="xs" variant={"text"} onClick={switchLoginType}>
+              {t("AuthPanel.PhoneLogin")}
+            </Button>
+          )}
+          {showSignupBtn && (
+            <Button
+              size="xs"
+              variant={"text"}
+              onClick={() => navigate("/signup", { replace: true })}
+            >
+              {t("AuthPanel.ToRegister")}
+            </Button>
+          )}
         </div>
       </div>
     </div>

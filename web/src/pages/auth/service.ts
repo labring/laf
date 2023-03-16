@@ -101,16 +101,14 @@ export const useResetPasswordMutation = (config?: { onSuccess: (data: any) => vo
   );
 };
 
-export const useGetProvidersQuery = (config?: { onSuccess: (data: any) => void }) => {
+export const useGetProvidersQuery = (onSuccess: (data: any) => void) => {
   return useQuery(
     queryKeys.useGetProvidersQuery,
     () => {
       return AuthControllerGetProviders({});
     },
     {
-      onSuccess: (data) => {
-        config?.onSuccess(data);
-      },
+      onSuccess: onSuccess,
     },
   );
 };
