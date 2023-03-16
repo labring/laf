@@ -82,6 +82,7 @@ export class InitializerService {
         displayName: 'Standard',
         limitCountPerUser: 10,
         priority: 0,
+        maxRenewalTime: 3600 * 24 * 365 * 10,
         resource: {
           limitCPU: 1 * CPU_UNIT,
           limitMemory: 512,
@@ -105,8 +106,22 @@ export class InitializerService {
         subscriptionOptions: [
           {
             name: 'monthly',
-            displayName: 'Monthly',
+            displayName: '1 Month',
             duration: 31 * 24 * 3600,
+            price: 0,
+            specialPrice: 0,
+          },
+          {
+            name: 'half-yearly',
+            displayName: '6 Months',
+            duration: 6 * 31 * 24 * 3600,
+            price: 0,
+            specialPrice: 0,
+          },
+          {
+            name: 'yearly',
+            displayName: '12 Months',
+            duration: 12 * 31 * 24 * 3600,
             price: 0,
             specialPrice: 0,
           },

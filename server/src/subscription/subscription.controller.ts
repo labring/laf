@@ -98,7 +98,7 @@ export class SubscriptionController {
     // check account balance
     const account = await this.accountService.findOne(user.id)
     const balance = account?.balance || 0
-    const priceAmount = option.specialPrice || option.price
+    const priceAmount = option.specialPrice
     if (balance < priceAmount) {
       return ResponseUtil.error(
         `account balance is not enough, need ${priceAmount} but only ${account.balance}`,
@@ -170,14 +170,28 @@ export class SubscriptionController {
     if (!option) {
       return ResponseUtil.error(`duration not supported in bundle`)
     }
-    const priceAmount = option.specialPrice || option.price
+    const priceAmount = option.specialPrice
+
+    // check max renewal time
+    const MAX_RENEWAL_AT = Date.now() + bundle.maxRenewalTime * 1000
+    const newExpiredAt = subscription.expiredAt.getTime() + duration * 1000
+    if (newExpiredAt > MAX_RENEWAL_AT) {
+      return ResponseUtil.error(
+        `max renewal time is ${MAX_RENEWAL_AT} for bundle ${bundle.name}`,
+      )
+    }
+
+    // check account balance
+    const account = await this.accountService.findOne(user.id)
+    const balance = account?.balance || 0
+    if (balance < priceAmount) {
+      return ResponseUtil.error(
+        `account balance is not enough, need ${priceAmount} but only ${account.balance}`,
+      )
+    }
 
     // renew subscription
-    const res = await this.subscriptService.renew(
-      subscription,
-      duration,
-      priceAmount,
-    )
+    const res = await this.subscriptService.renew(subscription, option)
     return ResponseUtil.ok(res)
   }
 
