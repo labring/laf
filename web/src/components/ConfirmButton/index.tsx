@@ -16,7 +16,7 @@ import { t } from "i18next";
 interface ConfirmButtonProps {
   onSuccessAction: () => void;
   headerText: string;
-  bodyText: string;
+  bodyText: string | React.ReactElement | any;
   confirmButtonText?: string;
   children: React.ReactElement;
 }

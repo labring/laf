@@ -1,24 +1,24 @@
+import { useTranslation } from "react-i18next";
 import { MdRestartAlt } from "react-icons/md";
 import { RiDeleteBin6Line, RiShutDownLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import { Button, HStack } from "@chakra-ui/react";
-import { t } from "i18next";
+import { Box, Button, HStack, useColorMode } from "@chakra-ui/react";
+import clsx from "clsx";
 
-import ConfirmButton from "@/components/ConfirmButton";
 import { APP_PHASE_STATUS } from "@/constants/index";
 
 import InfoDetail from "./InfoDetail";
 
 import useGlobalStore from "@/pages/globalStore";
+import DeleteAppModal from "@/pages/home/mods/DeleteAppModal";
 import StatusBadge from "@/pages/home/mods/StatusBadge";
 const AppEnvList = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
-  const {
-    currentApp,
-    updateCurrentApp,
-    deleteCurrentApp,
-    regions = [],
-  } = useGlobalStore((state) => state);
+
+  const { currentApp, updateCurrentApp, regions = [] } = useGlobalStore((state) => state);
+  const darkMode = useColorMode().colorMode === "dark";
+
   if (currentApp?.state === APP_PHASE_STATUS.Deleted) {
     navigate("/");
     return <></>;
@@ -31,7 +31,13 @@ const AppEnvList = () => {
       <div className="h-full flex flex-col">
         <div className="flex h-[50px] flex-none justify-between">
           <HStack spacing={2}>
-            <span className="text-xl text-grayModern-900 font-medium">{currentApp?.name}</span>
+            <Box
+              className={clsx("text-xl text-grayModern-900 font-medium", {
+                "text-grayModern-100": darkMode,
+              })}
+            >
+              {currentApp?.name}
+            </Box>
             <StatusBadge statusConditions={currentApp?.phase} state={currentApp?.state} />
           </HStack>
           <HStack
@@ -64,29 +70,20 @@ const AppEnvList = () => {
               }}
             >
               <RiShutDownLine size={16} className="mr-2" />
-              {t("SettingPanel.Close")}
+              {t("SettingPanel.ShutDown")}
             </Button>
-            <ConfirmButton
-              headerText={t("HomePanel.DeleteApp")}
-              bodyText={t("HomePanel.DeleteTip")}
-              onSuccessAction={async () => {
-                deleteCurrentApp();
+
+            <DeleteAppModal
+              item={currentApp}
+              onSuccess={() => {
+                navigate("/");
               }}
             >
-              <Button
-                className="mr-2"
-                fontWeight={"semibold"}
-                size={"sm"}
-                variant={"warnText"}
-                isDisabled={currentApp?.phase === APP_PHASE_STATUS.Deleting}
-                onClick={(event: any) => {
-                  event?.preventDefault();
-                }}
-              >
+              <Button className="mr-2" fontWeight={"semibold"} size={"sm"} variant={"warnText"}>
                 <RiDeleteBin6Line size={16} className="mr-2" />
                 {t("SettingPanel.Delete")}
               </Button>
-            </ConfirmButton>
+            </DeleteAppModal>
           </HStack>
         </div>
         <div className="flex-grow flex overflow-auto flex-col">

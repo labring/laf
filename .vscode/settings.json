@@ -54,6 +54,7 @@
     "fullname",
     "ghaction",
     "healthz",
+    "hljs",
     "hokify",
     "hostpath",
     "immer",

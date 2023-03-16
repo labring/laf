@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { Outlet, useParams } from "react-router-dom";
-import { Badge, Center, Spinner } from "@chakra-ui/react";
+import { Badge, Center, Spinner, useColorMode } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
+import clsx from "clsx";
 
 import { APP_PHASE_STATUS, Pages } from "@/constants/index";
 
@@ -9,6 +10,8 @@ import { ApplicationControllerFindOne } from "@/apis/v1/applications";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function FunctionLayout() {
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
   const { init, loading, setCurrentApp, currentApp, setCurrentPage } = useGlobalStore(
     (state) => state,
   );
@@ -62,7 +65,12 @@ export default function FunctionLayout() {
             {currentApp?.phase !== APP_PHASE_STATUS.Started &&
             currentApp?.phase !== APP_PHASE_STATUS.Stopped &&
             currentApp?.phase !== APP_PHASE_STATUS.Deleted ? (
-              <div className="absolute top-0 bottom-0 left-0 right-0 z-[999] flex flex-col justify-center items-center bg-lafWhite-200 opacity-70 ">
+              <div
+                className={clsx(
+                  "absolute top-0 bottom-0 left-0 right-0 z-[999] flex flex-col justify-center items-center  opacity-70 ",
+                  darkMode ? "bg-lafDark-100" : "bg-lafWhite-600",
+                )}
+              >
                 <Spinner
                   thickness="4px"
                   speed="0.65s"

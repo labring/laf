@@ -22,28 +22,35 @@ import {
 } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { t } from "i18next";
+import { sortBy } from "lodash";
 
 import ChargeButton from "@/components/ChargeButton";
 // import ChargeButton from "@/components/ChargeButton";
 import { APP_STATUS } from "@/constants/index";
 import { formatPrice } from "@/utils/format";
 
+import { APP_LIST_QUERY_KEY } from "../..";
 import { useAccountQuery } from "../../service";
 
 import BundleItem from "./BundleItem";
 import RuntimeItem from "./RuntimeItem";
 
-import { TBundle, TSubscriptionOption } from "@/apis/typing";
+import { TApplicationItem, TBundle } from "@/apis/typing";
 import { ApplicationControllerUpdate } from "@/apis/v1/applications";
-import { SubscriptionControllerCreate } from "@/apis/v1/subscriptions";
+import { SubscriptionControllerCreate, SubscriptionControllerRenew } from "@/apis/v1/subscriptions";
 import useGlobalStore from "@/pages/globalStore";
 
-const CreateAppModal = (props: { application?: any; children: React.ReactElement }) => {
+const CreateAppModal = (props: {
+  type: "create" | "edit" | "renewal";
+  application?: TApplicationItem;
+  children: React.ReactElement;
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const queryClient = useQueryClient();
 
-  const { application = {} } = props;
-  const isEdit = !!application.name;
+  const { application, type } = props;
+
+  const title = type === "edit" ? t("Edit") : type === "renewal" ? t("Renew") : t("Create");
 
   const { runtimes = [], regions = [] } = useGlobalStore();
 
@@ -51,23 +58,43 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
 
   type FormData = {
     name: string;
-    state: APP_STATUS;
+    state: APP_STATUS | string;
     regionId: string;
     bundleId: string;
     runtimeId: string;
-    subscriptionOption: TSubscriptionOption;
+    subscriptionOption:
+      | {
+          id: string;
+        }
+      | any;
   };
 
-  const bundles = regions[0].bundles;
+  const currentRegion =
+    regions.find((item: any) => item.id === application?.regionId) || regions[0];
 
-  const defaultValues = {
-    name: application.name,
-    state: application.state || APP_STATUS.Running,
-    regionId: application.regionId || regions[0].id,
-    bundleId: application.bundleId || bundles[0].id,
-    subscriptionOption: (bundles[0].subscriptionOptions && bundles[0].subscriptionOptions[0]) || {},
+  const bundles = sortBy(currentRegion.bundles, (item: TBundle) => item.priority);
+
+  let defaultValues = {
+    name: application?.name,
+    state: application?.state,
+    regionId: application?.regionId,
+    bundleId: application?.bundle?.bundleId,
+    subscriptionOption: bundles.find((item: TBundle) => item.id === application?.bundle?.bundleId)
+      ?.subscriptionOptions[0],
     runtimeId: runtimes[0].id,
   };
+
+  if (type === "create") {
+    defaultValues = {
+      name: "",
+      state: APP_STATUS.Running,
+      regionId: regions[0].id,
+      bundleId: bundles[0].id,
+      subscriptionOption:
+        (bundles[0].subscriptionOptions && bundles[0].subscriptionOptions[0]) || {},
+      runtimeId: runtimes[0].id,
+    };
+  }
 
   const {
     register,
@@ -81,57 +108,66 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
     defaultValues,
   });
 
-  const subscriptionOption = useWatch({
-    control,
-    name: "subscriptionOption",
-  });
-
   const bundleId = useWatch({
     control,
     name: "bundleId",
   });
 
-  const { showSuccess, showError } = useGlobalStore();
+  const currentBundle: TBundle =
+    bundles.find((item: TBundle) => item.id === bundleId) || bundles[0];
 
-  const currentBundle = bundles.find((item: TBundle) => item.id === bundleId) || bundles[0];
-  const totalPrice = subscriptionOption.specialPrice;
+  const subscriptionOption = useWatch({
+    control,
+    name: "subscriptionOption",
+    defaultValue: currentBundle.subscriptionOptions[0],
+  });
 
   const currentSubscription = currentBundle.subscriptionOptions[0];
+
+  const { showSuccess, showError } = useGlobalStore();
+
+  const totalPrice = subscriptionOption.specialPrice;
 
   const subscriptionControllerCreate = useMutation((params: any) =>
     SubscriptionControllerCreate(params),
   );
-  // const subscriptionOptionRenew = useMutation((params: any) => SubscriptionControllerRenew(params));
+  const subscriptionOptionRenew = useMutation((params: any) => SubscriptionControllerRenew(params));
 
   const updateAppMutation = useMutation((params: any) => ApplicationControllerUpdate(params));
 
   const onSubmit = async (data: any) => {
     let res: any = {};
-    if (isEdit) {
-      res = await updateAppMutation.mutateAsync({ ...data, appid: application.appid });
-    } else {
-      res = await subscriptionControllerCreate.mutateAsync({
-        ...data,
-        duration: subscriptionOption.duration,
-      });
-      // if (res.error) {
-      //   showError(res.error);
-      //   return;
-      // } else {
-      //   const subscriptionId = res?.data?.id;
-      //   res = await subscriptionOptionRenew.mutateAsync({
-      //     id: subscriptionId,
-      //     duration: subscriptionOption.duration,
-      //   });
-      // }
+    switch (type) {
+      case "edit":
+        res = await updateAppMutation.mutateAsync({ ...data, appid: application?.appid });
+        break;
+
+      case "create":
+        res = await subscriptionControllerCreate.mutateAsync({
+          ...data,
+          duration: subscriptionOption.duration,
+        });
+        break;
+
+      case "renewal":
+        res = await subscriptionOptionRenew.mutateAsync({
+          id: application?.subscription?.id,
+          duration: subscriptionOption.duration,
+        });
+        break;
+
+      default:
+        break;
     }
 
     if (!res.error) {
       onClose();
-      if (isEdit) {
+      if (type === "edit" || type === "renewal") {
         showSuccess(t("update success"));
       }
-      queryClient.invalidateQueries(["appListQuery"]);
+      setTimeout(() => {
+        queryClient.invalidateQueries(APP_LIST_QUERY_KEY);
+      }, 2000);
     } else {
       showError(res.error);
     }
@@ -157,7 +193,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{isEdit ? t("Edit") : t("Create")}</ModalHeader>
+          <ModalHeader>{title}</ModalHeader>
           <ModalCloseButton />
 
           <ModalBody pb={6}>
@@ -171,7 +207,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                 />
                 <FormErrorMessage>{errors?.name && errors?.name?.message}</FormErrorMessage>
               </FormControl>
-              <FormControl hidden={isEdit}>
+              <FormControl hidden={type === "edit" || type === "renewal"}>
                 <FormLabel htmlFor="regionId">{t("HomePanel.Region")}</FormLabel>
                 <HStack spacing={6}>
                   <Controller
@@ -204,7 +240,10 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                   />
                 </HStack>
               </FormControl>
-              <FormControl isInvalid={!!errors?.bundleId} hidden={isEdit}>
+              <FormControl
+                isInvalid={!!errors?.bundleId}
+                hidden={type === "edit" || type === "renewal"}
+              >
                 <FormLabel htmlFor="bundleId">
                   {t("HomePanel.Application") + t("HomePanel.BundleName")}
                 </FormLabel>
@@ -218,6 +257,11 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                           {(bundles || []).map((bundle: TBundle) => {
                             return (
                               <BundleItem
+                                durationIndex={bundle.subscriptionOptions.findIndex(
+                                  (vale, index) => {
+                                    return vale.displayName === subscriptionOption.displayName;
+                                  },
+                                )}
                                 onChange={onChange}
                                 bundle={bundle}
                                 isActive={bundle.id === value}
@@ -256,7 +300,7 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
                   )}
                 />
 
-                <FormErrorMessage>{errors?.subscriptionOption?.message}</FormErrorMessage>
+                {/* <FormErrorMessage>{errors?.subscriptionOption?.message}</FormErrorMessage> */}
               </FormControl>
               )
               <FormControl isInvalid={!!errors?.runtimeId}>
@@ -278,46 +322,42 @@ const CreateAppModal = (props: { application?: any; children: React.ReactElement
             </VStack>
           </ModalBody>
 
-          <ModalFooter>
-            {totalPrice <= 0 ? (
+          <ModalFooter h={20}>
+            {type === "edit" ? null : totalPrice <= 0 ? (
               <div className="mr-2">
                 <span className="ml-6 text-red-500 font-semibold text-xl">{t("Price.Free")}</span>
               </div>
             ) : (
               <div className="mr-2">
-                共需支付:
+                {t("TotalPrice")}:
                 <span className="ml-2 text-red-500 font-semibold text-xl">
                   {formatPrice(totalPrice)}
                 </span>
                 <span className="ml-4 mr-2">
-                  账户余额:
+                  {t("Balance")}:
                   <span className="text-xl ml-2">{formatPrice(accountQuery.data?.balance)}</span>
                 </span>
                 {totalPrice > accountQuery.data?.balance ? (
-                  <ChargeButton amount={(totalPrice - accountQuery.data?.balance) / 100}>
-                    <span className="text-blue-800 cursor-pointer">立即充值</span>
-                  </ChargeButton>
+                  <span className="mr-2">{t("balance is insufficient")}</span>
                 ) : null}
+                <ChargeButton amount={(totalPrice - accountQuery.data?.balance) / 100}>
+                  <span className="text-blue-800 text-lg cursor-pointer">{t("ChargeNow")}</span>
+                </ChargeButton>
               </div>
             )}
 
-            {totalPrice > accountQuery.data?.balance ? (
+            {totalPrice <= accountQuery.data?.balance && (
               <Button
-                isLoading={subscriptionControllerCreate.isLoading}
-                type="submit"
-                onClick={handleSubmit(onSubmit)}
-                disabled={true}
-              >
-                余额不足
-              </Button>
-            ) : (
-              <Button
-                isLoading={subscriptionControllerCreate.isLoading}
+                isLoading={
+                  subscriptionControllerCreate.isLoading ||
+                  subscriptionOptionRenew.isLoading ||
+                  updateAppMutation.isLoading
+                }
                 type="submit"
                 onClick={handleSubmit(onSubmit)}
                 disabled={totalPrice > 0}
               >
-                {isEdit ? t("Confirm") : t("CreateNow")}
+                {type === "edit" || type === "renewal" ? t("Confirm") : t("CreateNow")}
               </Button>
             )}
           </ModalFooter>
