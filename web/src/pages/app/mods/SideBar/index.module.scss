@@ -21,6 +21,15 @@
   }
 }
 
+[data-theme="dark"] .icon:hover,
+[data-theme="dark"] .icon.current {
+  background: none;
+
+  svg {
+    fill: var(--chakra-colors-primary-600);
+  }
+}
+
 .icon.bottom {
   width: 100%;
   position: absolute;
