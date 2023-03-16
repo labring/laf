@@ -37,10 +37,10 @@ const guideSiderbarConfig = [
         text: "三分钟实现「Todo List」",
         link: "/guide/quick-start/Todo",
       },
-      // {
-      //   text: "三分钟实现「用户登录/注册」",
-      //   link: "/guide/quick-start/login",
-      // },
+      {
+        text: "三分钟实现「用户登录/注册」",
+        link: "/guide/quick-start/login",
+      },
     ],
   },
   {
