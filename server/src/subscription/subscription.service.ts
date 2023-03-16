@@ -53,7 +53,7 @@ export class SubscriptionService {
         data: {
           subscriptionId: subscription.id,
           duration: option.duration,
-          amount: option.price,
+          amount: option.specialPrice,
           phase: SubscriptionRenewalPhase.Pending,
           lockedAt: TASK_LOCK_INIT_TIME,
           createdBy: userid,
@@ -106,17 +106,13 @@ export class SubscriptionService {
   /**
    * Renew a subscription by creating a subscription renewal
    */
-  async renew(
-    subscription: Subscription,
-    duration: number,
-    priceAmount: number,
-  ) {
+  async renew(subscription: Subscription, option: BundleSubscriptionOption) {
     // create subscription renewal
     const res = await this.prisma.subscriptionRenewal.create({
       data: {
         subscriptionId: subscription.id,
-        duration: duration,
-        amount: priceAmount,
+        duration: option.duration,
+        amount: option.specialPrice,
         phase: SubscriptionRenewalPhase.Pending,
         lockedAt: TASK_LOCK_INIT_TIME,
         createdBy: subscription.createdBy,

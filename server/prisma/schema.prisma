@@ -139,6 +139,7 @@ model Bundle {
   state               String                     @default("Active") // Active, Inactive
   limitCountPerUser   Int // limit count of application per user could create
   subscriptionOptions BundleSubscriptionOption[]
+  maxRenewalTime      Int // in seconds
 
   resource BundleResource
 
