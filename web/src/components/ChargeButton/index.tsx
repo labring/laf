@@ -74,17 +74,17 @@ export default function ChargeButton(props: { amount?: number; children: React.R
           <ModalCloseButton />
           <ModalBody px="10" pb="10">
             <div className="flex flex-col items-center text-xl">
-              <h2 className="text-second">当前余额</h2>
+              <h2 className="text-second">{t("Balance")}</h2>
               <h3 className="text-3xl font-semibold mb-4">
                 {formatPrice(accountQuery.data?.balance)}
               </h3>
-              <p className="text-second mb-2">充值金额</p>
+              <p className="text-second mb-2">{t("Recharge amount")}</p>
               <InputGroup>
                 <InputLeftAddon children="¥" />
                 <Input
                   className="mb-4 text-3xl"
                   style={{ fontSize: "30px" }}
-                  value={amount}
+                  defaultValue={amount}
                   onChange={(event) => {
                     setAmount(Number(event.target.value));
                   }}
@@ -102,22 +102,24 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                   });
                 }}
               >
-                确定
+                {t("Confirm")}
               </Button>
             </div>
 
             {createChargeOrder.data?.data?.result?.code_url && (
               <div className="flex flex-col items-center text-xl mt-4">
-                <h2 className="mb-2">微信扫码支付</h2>
+                <h2 className="mb-2">{t("Scan with WeChat")}</h2>
                 <QRCodeSVG
                   value={createChargeOrder.data?.data?.result?.code_url}
                   width={180}
                   height={180}
                 />
                 <p className="text-base mt-4 text-second ">
-                  订单号：{createChargeOrder.data?.data?.order?.id}
+                  {t("Order Number")}：{createChargeOrder.data?.data?.order?.id}
                 </p>
-                <p className="text-base mt-1 text-second ">支付状态: {phaseStatus}</p>
+                <p className="text-base mt-1 text-second ">
+                  {t("payment status")}: {phaseStatus}
+                </p>
               </div>
             )}
           </ModalBody>

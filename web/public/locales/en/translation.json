@@ -292,6 +292,10 @@
   "Balance": "Balance",
   "ChargeNow": "Charge",
   "balance is insufficient": "balance is insufficient",
-  "nihao": "Hello, {{name}}",
-  "DeleteApp": "Delete"
+  "DeleteApp": "Delete",
+  "Recharge amount": "Recharge amount",
+  "Scan with WeChat": "WeChat scan code payment",
+  "Order Number": "Order Number",
+  "payment status": "Payment status",
+  "Monthly": "Monthly"
 }

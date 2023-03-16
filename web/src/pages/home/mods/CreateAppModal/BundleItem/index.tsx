@@ -44,7 +44,7 @@ export default function BundleItem(props: {
       onClick={() => onChange(bundle.id)}
       key={bundle.name}
       className={clsx("min-w-[170px] border p-2 rounded-md cursor-pointer", {
-        "border-primary-500 bg-primary-100": isActive && !darkMode,
+        "border-primary-500 bg-lafWhite-400": isActive && !darkMode,
         "bg-lafDark-400": isActive && darkMode,
       })}
     >
@@ -60,7 +60,7 @@ export default function BundleItem(props: {
           ) : (
             <>
               {formatPrice(bundle.subscriptionOptions[durationIndex].specialPrice / months)}
-              <span className="text-base ml-1">/ 月</span>
+              <span className="text-base ml-1">/ {t("Monthly")}</span>
             </>
           )}
         </p>

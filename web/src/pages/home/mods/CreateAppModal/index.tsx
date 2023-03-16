@@ -22,6 +22,7 @@ import {
 } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { t } from "i18next";
+import { sortBy } from "lodash";
 
 import ChargeButton from "@/components/ChargeButton";
 // import ChargeButton from "@/components/ChargeButton";
@@ -71,7 +72,7 @@ const CreateAppModal = (props: {
   const currentRegion =
     regions.find((item: any) => item.id === application?.regionId) || regions[0];
 
-  const bundles = currentRegion.bundles;
+  const bundles = sortBy(currentRegion.bundles, (item: TBundle) => item.priority);
 
   let defaultValues = {
     name: application?.name,
