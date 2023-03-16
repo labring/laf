@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   Input,
@@ -26,7 +26,9 @@ export default function ChargeButton(props: { amount?: number; children: React.R
   const { children } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [amount, setAmount] = React.useState(props.amount || 0);
+  const initialAmount = props.amount && props.amount > 0 ? props.amount : 100;
+
+  const [amount, setAmount] = React.useState(initialAmount);
 
   const [phaseStatus, setPhaseStatus] = React.useState<"Pending" | "Paid" | undefined>();
 
@@ -57,6 +59,11 @@ export default function ChargeButton(props: { amount?: number; children: React.R
     },
   );
 
+  useEffect(() => {
+    const initialAmount = props.amount && props.amount > 0 ? props.amount : 100;
+    setAmount(initialAmount);
+  }, [props.amount]);
+
   return (
     <>
       {React.cloneElement(children, { onClick: onOpen })}
@@ -77,7 +84,7 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                 <Input
                   className="mb-4 text-3xl"
                   style={{ fontSize: "30px" }}
-                  defaultValue={amount}
+                  value={amount}
                   onChange={(event) => {
                     setAmount(Number(event.target.value));
                   }}

@@ -1,7 +1,7 @@
+import { useTranslation } from "react-i18next";
 import { AddIcon } from "@chakra-ui/icons";
 import { Button } from "@chakra-ui/react";
 import clsx from "clsx";
-import { t } from "i18next";
 
 import CreateAppModal from "../CreateAppModal";
 
@@ -10,6 +10,7 @@ import styles from "./index.module.scss";
 import useGlobalStore from "@/pages/globalStore";
 
 function Empty() {
+  const { t } = useTranslation();
   const messageList = [
     t("HomePanel.WX"),
     t("HomePanel.APP"),
@@ -42,7 +43,7 @@ function Empty() {
           })}
         </div>
         <p className="mb-9">{t("HomePanel.Use")}</p>
-        <CreateAppModal>
+        <CreateAppModal type={"create"}>
           <Button
             size={"lg"}
             colorScheme="primary"

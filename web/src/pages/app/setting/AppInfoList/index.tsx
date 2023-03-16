@@ -1,24 +1,20 @@
+import { useTranslation } from "react-i18next";
 import { MdRestartAlt } from "react-icons/md";
 import { RiDeleteBin6Line, RiShutDownLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { Button, HStack } from "@chakra-ui/react";
-import { t } from "i18next";
 
-import ConfirmButton from "@/components/ConfirmButton";
 import { APP_PHASE_STATUS } from "@/constants/index";
 
 import InfoDetail from "./InfoDetail";
 
 import useGlobalStore from "@/pages/globalStore";
+import DeleteAppModal from "@/pages/home/mods/DeleteAppModal";
 import StatusBadge from "@/pages/home/mods/StatusBadge";
 const AppEnvList = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
-  const {
-    currentApp,
-    updateCurrentApp,
-    deleteCurrentApp,
-    regions = [],
-  } = useGlobalStore((state) => state);
+  const { currentApp, updateCurrentApp, regions = [] } = useGlobalStore((state) => state);
   if (currentApp?.state === APP_PHASE_STATUS.Deleted) {
     navigate("/");
     return <></>;
@@ -66,27 +62,18 @@ const AppEnvList = () => {
               <RiShutDownLine size={16} className="mr-2" />
               {t("SettingPanel.Close")}
             </Button>
-            <ConfirmButton
-              headerText={t("HomePanel.DeleteApp")}
-              bodyText={t("HomePanel.DeleteTip")}
-              onSuccessAction={async () => {
-                deleteCurrentApp();
+
+            <DeleteAppModal
+              item={currentApp}
+              onSuccess={() => {
+                navigate("/");
               }}
             >
-              <Button
-                className="mr-2"
-                fontWeight={"semibold"}
-                size={"sm"}
-                variant={"warnText"}
-                isDisabled={currentApp?.phase === APP_PHASE_STATUS.Deleting}
-                onClick={(event: any) => {
-                  event?.preventDefault();
-                }}
-              >
+              <Button className="mr-2" fontWeight={"semibold"} size={"sm"} variant={"warnText"}>
                 <RiDeleteBin6Line size={16} className="mr-2" />
                 {t("SettingPanel.Delete")}
               </Button>
-            </ConfirmButton>
+            </DeleteAppModal>
           </HStack>
         </div>
         <div className="flex-grow flex overflow-auto flex-col">

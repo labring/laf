@@ -25,9 +25,17 @@ const ListItem = (props: { item: { key: string; value: string | number } }) => {
 export default function BundleItem(props: {
   onChange: (...event: any[]) => void;
   bundle: TBundle;
+  durationIndex: number;
   isActive: boolean;
 }) {
   const { bundle, isActive, onChange } = props;
+  let durationIndex = props.durationIndex;
+  if (durationIndex < 0) {
+    durationIndex = 0;
+  }
+
+  const months = bundle.subscriptionOptions[durationIndex].duration / (60 * 60 * 24 * 31);
+
   return (
     <div
       onClick={() => onChange(bundle.id)}
@@ -42,10 +50,15 @@ export default function BundleItem(props: {
         })}
       >
         <h1 className="mb-1">{bundle.displayName}</h1>
-        <p className="text-xl font-semibold">
-          {bundle.subscriptionOptions[0].price === 0
-            ? t("Price.Free")
-            : formatPrice(bundle.subscriptionOptions[0].price)}
+        <p className="text-2xl font-semibold">
+          {bundle.subscriptionOptions[durationIndex].specialPrice === 0 ? (
+            t("Price.Free")
+          ) : (
+            <>
+              {formatPrice(bundle.subscriptionOptions[durationIndex].specialPrice / months)}
+              <span className="text-base ml-1">/ 月</span>
+            </>
+          )}
         </p>
       </div>
       <div>

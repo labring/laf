@@ -15,10 +15,8 @@ import {
   MenuList,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { useMutation } from "@tanstack/react-query";
 import { t } from "i18next";
 
-import ConfirmButton from "@/components/ConfirmButton";
 import CopyText from "@/components/CopyText";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
@@ -28,11 +26,11 @@ import { formatDate } from "@/utils/format";
 import getRegionById from "@/utils/getRegionById";
 
 import CreateAppModal from "../CreateAppModal";
+import DeleteAppModal from "../DeleteAppModal";
 import StatusBadge from "../StatusBadge";
 
 import BundleInfo from "./BundleInfo";
 
-import { SubscriptionControllerRemove } from "@/apis/v1/subscriptions";
 import useGlobalStore from "@/pages/globalStore";
 
 function List(props: { appListQuery: any; setShouldRefetch: any }) {
@@ -44,13 +42,6 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
 
   const { appListQuery, setShouldRefetch } = props;
   const bg = useColorModeValue("lafWhite.200", "lafDark.200");
-
-  const deleteAppMutation = useMutation((params: any) => SubscriptionControllerRemove(params), {
-    onSuccess: () => {
-      setShouldRefetch(true);
-    },
-    onError: () => {},
-  });
 
   return (
     <>
@@ -75,7 +66,7 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
               onChange={(e: any) => setSearchKey(e.target.value)}
             />
           </InputGroup>
-          <CreateAppModal>
+          <CreateAppModal type="create">
             <Button colorScheme="primary" style={{ padding: "0 40px" }} leftIcon={<AddIcon />}>
               {t("Create")}
             </Button>
@@ -85,7 +76,7 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
 
       <div className="flex flex-col overflow-auto">
         <Box bg={bg} className="flex-none flex rounded-lg h-12 items-center px-6 mb-3">
-          <div className="w-2/12 text-second ">{t("HomePanel.Application") + t("Name")}</div>
+          <div className="w-3/12 text-second ">{t("HomePanel.Application") + t("Name")}</div>
           <div className="w-2/12 text-second ">App ID</div>
           <div className="w-2/12 text-second pl-2">{t("HomePanel.State")}</div>
           <div className="w-2/12 text-second ">{t("HomePanel.Region")}</div>
@@ -100,9 +91,9 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                 <Box
                   key={item?.appid}
                   bg={bg}
-                  className="flex rounded-lg h-16 items-center px-6 mb-3"
+                  className="flex rounded-lg py-4 items-center px-6 mb-3 group"
                 >
-                  <div className="w-2/12 ">
+                  <div className="w-3/12 ">
                     <div className="font-bold text-lg">
                       {item?.name}
                       <span className="text-base text-second ml-2 border px-1 rounded">
@@ -111,7 +102,7 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                     </div>
                     <BundleInfo bundle={item.bundle} />
                   </div>
-                  <div className="w-2/12 ">
+                  <div className="w-2/12 font-mono">
                     {item?.appid} <CopyText text={item?.appid} />
                   </div>
                   <div className="w-2/12 ">
@@ -121,8 +112,17 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                     {getRegionById(regions, item.regionId)?.displayName}
                   </div>
                   <div className="w-3/12 ">
-                    创建时间: {formatDate(item.createdAt)} <br />
-                    到期时间: {formatDate(item.subscription.expiredAt)} <a href="/renew">续期</a>
+                    <p>
+                      {t("CreateTime")}: {formatDate(item.createdAt)}{" "}
+                    </p>
+                    <p className="mt-1">
+                      {t("EndTime")}: {formatDate(item.subscription.expiredAt)}
+                      <CreateAppModal application={item} type="renewal">
+                        <a className="text-primary-500 hidden group-hover:inline ml-2" href="/edit">
+                          {t("Renew")}
+                        </a>
+                      </CreateAppModal>
+                    </p>
                   </div>
                   <div className="w-1/12 flex min-w-[100px]">
                     <Button
@@ -147,7 +147,7 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                         </IconWrap>
                       </MenuButton>
                       <MenuList width={12} minW={24}>
-                        <CreateAppModal application={item}>
+                        <CreateAppModal application={item} type="edit">
                           <MenuItem minH="40px" display={"block"}>
                             <a className="text-primary block" href="/edit">
                               {t("Edit")}
@@ -183,21 +183,13 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                           </a>
                         </MenuItem>
 
-                        <ConfirmButton
-                          headerText={t("HomePanel.DeleteApp")}
-                          bodyText={t("HomePanel.DeleteTip")}
-                          onSuccessAction={() => {
-                            deleteAppMutation.mutate({
-                              id: item.subscription.id,
-                            });
-                          }}
-                        >
+                        <DeleteAppModal item={item} onSuccess={() => setShouldRefetch(true)}>
                           <MenuItem minH="40px" display={"block"}>
-                            <a className="text-danger block" href="/delete">
-                              {t("Delete")}
+                            <a className="text-error-500 block" href="/delete">
+                              {t("DeleteApp")}
                             </a>
                           </MenuItem>
-                        </ConfirmButton>
+                        </DeleteAppModal>
                       </MenuList>
                     </Menu>
                   </div>

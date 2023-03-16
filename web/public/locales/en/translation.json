@@ -127,7 +127,7 @@
     "WX": "WeChat Mini Program/Public Account",
     "Welcome": "Welcome to the LAF cloud development platform!",
     "DeleteApp": "delete apps",
-    "DeleteTip": "Are you sure you want to delete this app?",
+    "DeleteTip": "The current operation will permanently delete applications, including functions, data, cloud storage, etc. related data related to the application. After deleting, <strong> will not be able to cancel </strong>,please enter <strong>{{appId}}</strong> confirm",
     "Duration": "Duration"
   },
   "LogPanel": {
@@ -284,5 +284,14 @@
     "Free": "Free"
   },
   "star-us-on-github": "Star us on GitHub",
-  "Time": "Time"
+  "Time": "Time",
+  "CreateTime": "Created",
+  "EndTime": "Expired",
+  "Renew": "Renew",
+  "TotalPrice": "Total",
+  "Balance": "Balance",
+  "ChargeNow": "Charge",
+  "balance is insufficient": "balance is insufficient",
+  "nihao": "Hello, {{name}}",
+  "DeleteApp": "Delete"
 }
