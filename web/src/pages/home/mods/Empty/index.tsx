@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { AddIcon } from "@chakra-ui/icons";
-import { Button } from "@chakra-ui/react";
+import { Button, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import CreateAppModal from "../CreateAppModal";
@@ -22,6 +22,9 @@ function Empty() {
 
   const { userInfo } = useGlobalStore();
 
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
+
   return (
     <div style={{ height: "75vh", minHeight: "500px" }}>
       <div className="flex flex-col items-center justify-center h-full">
@@ -35,7 +38,9 @@ function Empty() {
             return (
               <div
                 key={index}
-                className={clsx("flex items-center pl-9 font-medium text-xl", styles.emptyItem)}
+                className={clsx("flex items-center pl-9 font-medium text-xl", styles.emptyItem, {
+                  "bg-lafDark-300": darkMode,
+                })}
               >
                 {item}
               </div>

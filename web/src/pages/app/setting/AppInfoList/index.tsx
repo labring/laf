@@ -2,7 +2,8 @@ import { useTranslation } from "react-i18next";
 import { MdRestartAlt } from "react-icons/md";
 import { RiDeleteBin6Line, RiShutDownLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import { Button, HStack } from "@chakra-ui/react";
+import { Box, Button, HStack, useColorMode } from "@chakra-ui/react";
+import clsx from "clsx";
 
 import { APP_PHASE_STATUS } from "@/constants/index";
 
@@ -14,7 +15,10 @@ import StatusBadge from "@/pages/home/mods/StatusBadge";
 const AppEnvList = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
   const { currentApp, updateCurrentApp, regions = [] } = useGlobalStore((state) => state);
+  const darkMode = useColorMode().colorMode === "dark";
+
   if (currentApp?.state === APP_PHASE_STATUS.Deleted) {
     navigate("/");
     return <></>;
@@ -27,7 +31,13 @@ const AppEnvList = () => {
       <div className="h-full flex flex-col">
         <div className="flex h-[50px] flex-none justify-between">
           <HStack spacing={2}>
-            <span className="text-xl text-grayModern-900 font-medium">{currentApp?.name}</span>
+            <Box
+              className={clsx("text-xl text-grayModern-900 font-medium", {
+                "text-grayModern-100": darkMode,
+              })}
+            >
+              {currentApp?.name}
+            </Box>
             <StatusBadge statusConditions={currentApp?.phase} state={currentApp?.state} />
           </HStack>
           <HStack

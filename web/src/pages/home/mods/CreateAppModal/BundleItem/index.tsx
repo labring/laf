@@ -1,4 +1,5 @@
 import React from "react";
+import { useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 import { t } from "i18next";
 
@@ -29,6 +30,8 @@ export default function BundleItem(props: {
   isActive: boolean;
 }) {
   const { bundle, isActive, onChange } = props;
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
   let durationIndex = props.durationIndex;
   if (durationIndex < 0) {
     durationIndex = 0;
@@ -41,7 +44,8 @@ export default function BundleItem(props: {
       onClick={() => onChange(bundle.id)}
       key={bundle.name}
       className={clsx("min-w-[170px] border p-2 rounded-md cursor-pointer", {
-        "border-primary-500 bg-primary-100": isActive,
+        "border-primary-500 bg-primary-100": isActive && !darkMode,
+        "bg-lafDark-400": isActive && darkMode,
       })}
     >
       <div
