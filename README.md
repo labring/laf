@@ -23,7 +23,7 @@
 ## 🚀 Quick Start
 
 [三分钟体验使用 laf 写一个自己的 ChatGPT (开发到上线)](https://icloudnative.io/posts/build-chatgpt-web-using-laf/)  
-[三分钟体验使用 laf 开发一个简单的登陆注册功能](./docs/guide/quick-start/index.md)
+[三分钟体验使用 laf 开发一个简单的 「Todo List」 ](./docs/guide/quick-start/Todo.md)
 
 ## 🖥 在线体验
 
