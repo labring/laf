@@ -112,6 +112,7 @@ export class ApplicationService {
         runtime: include?.runtime,
         configuration: include?.configuration,
         domain: include?.domain,
+        subscription: include?.subscription,
       },
     })
 
