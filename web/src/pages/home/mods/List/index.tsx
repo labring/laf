@@ -15,6 +15,7 @@ import {
   MenuList,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { useMutation } from "@tanstack/react-query";
 import { t } from "i18next";
 
 import CopyText from "@/components/CopyText";
@@ -31,17 +32,20 @@ import StatusBadge from "../StatusBadge";
 
 import BundleInfo from "./BundleInfo";
 
+import { ApplicationControllerUpdate } from "@/apis/v1/applications";
 import useGlobalStore from "@/pages/globalStore";
 
 function List(props: { appListQuery: any; setShouldRefetch: any }) {
   const navigate = useNavigate();
 
-  const { setCurrentApp, updateCurrentApp, regions } = useGlobalStore();
+  const { setCurrentApp, regions } = useGlobalStore();
 
   const [searchKey, setSearchKey] = useState("");
 
   const { appListQuery, setShouldRefetch } = props;
   const bg = useColorModeValue("lafWhite.200", "lafDark.200");
+
+  const updateAppMutation = useMutation((params: any) => ApplicationControllerUpdate(params));
 
   return (
     <>
@@ -156,30 +160,37 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                         </CreateAppModal>
 
                         <MenuItem minH="40px" display={"block"}>
-                          <a
+                          <span
                             className="text-primary block"
-                            href="/restart"
-                            onClick={(event) => {
+                            onClick={async (event) => {
                               event?.preventDefault();
-                              updateCurrentApp(item);
+                              await updateAppMutation.mutateAsync({
+                                appid: item.appid,
+                                name: item.name,
+                                state: APP_PHASE_STATUS.Restarting,
+                              });
                               setShouldRefetch(true);
                             }}
                           >
                             {t("SettingPanel.Restart")}
-                          </a>
+                          </span>
                         </MenuItem>
 
                         <MenuItem
                           minH="40px"
                           display={"block"}
-                          onClick={(event: any) => {
+                          onClick={async (event: any) => {
                             event?.preventDefault();
-                            updateCurrentApp(item, APP_PHASE_STATUS.Stopped);
+                            await updateAppMutation.mutateAsync({
+                              appid: item.appid,
+                              name: item.name,
+                              state: APP_PHASE_STATUS.Stopped,
+                            });
                             setShouldRefetch(true);
                           }}
                         >
                           <a className="text-primary block" href="/stop">
-                            {t("SettingPanel.Close")}
+                            {t("SettingPanel.ShutDown")}
                           </a>
                         </MenuItem>
 

@@ -151,7 +151,6 @@
     "Memory": "Memory",
     "Restart": "Restart",
     "network": "Outgoing capacity",
-    "Close": "Close",
     "AppInfo": "Application Information",
     "Auth": "Real-name Authentication",
     "Code": "Code",
@@ -166,7 +165,8 @@
     "ToAuth": "Authenticate Now",
     "UserInfo": "User Information",
     "noAuth": "Not Authenticated",
-    "showAuth": "Go to Auth"
+    "showAuth": "Go to Auth",
+    "ShutDown": "ShutDown"
   },
   "StoragePanel": {
     "All": "Total Capacity",

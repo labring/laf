@@ -61,7 +61,7 @@ function DeleteCollectionModal(props: { database: any }) {
           <ModalBody pb={6}>
             <p className="mb-2">
               {t("CollectionPanel.DeleteCollectionTip")}
-              <span className=" text-black mx-1 font-bold">{database.name}</span>
+              <span className="mx-1 font-bold">{database.name}</span>
               {t("DeleteTip")}。
             </p>
             <p className="mb-4">

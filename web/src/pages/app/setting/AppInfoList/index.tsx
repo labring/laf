@@ -70,7 +70,7 @@ const AppEnvList = () => {
               }}
             >
               <RiShutDownLine size={16} className="mr-2" />
-              {t("SettingPanel.Close")}
+              {t("SettingPanel.ShutDown")}
             </Button>
 
             <DeleteAppModal
