@@ -58,6 +58,7 @@ export class ApplicationController {
     const data = await this.appService.findOne(appid, {
       configuration: true,
       domain: true,
+      subscription: true,
     })
 
     // SECURITY ALERT!!!
