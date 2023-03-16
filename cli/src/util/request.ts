@@ -1,5 +1,5 @@
 // request.ts
-import axios, { InternalAxiosRequestConfig, AxiosRequestHeaders, AxiosResponse } from 'axios'
+import axios, { AxiosRequestHeaders, AxiosResponse } from 'axios'
 import { existSystemConfig, readSystemConfig, refreshToken } from '../config/system'
 import { DEFAULT_REMOTE_SERVER } from '../common/constant'
 
@@ -11,7 +11,7 @@ export const request = axios.create({
 
 // request interceptor
 request.interceptors.request.use(
-  async (config: InternalAxiosRequestConfig) => {
+  async (config: any) => {
     let _headers: AxiosRequestHeaders | any = {
       'Content-Type': 'application/json',
     }
@@ -74,7 +74,7 @@ request.interceptors.response.use(
       } else if (statusCode === 500) {
         console.log('Internal server error!')
         process.exit(1)
-      }else if (statusCode === 503) {
+      } else if (statusCode === 503) {
         console.log('The server is abnormal, please contact the administrator!')
         process.exit(1)
       }

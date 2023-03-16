@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
 import * as nanoid from 'nanoid'
-import { CreateApplicationDto } from './dto/create-application.dto'
 import { ApplicationPhase, ApplicationState, Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { UpdateApplicationDto } from './dto/update-application.dto'
@@ -10,13 +9,14 @@ import {
   TASK_LOCK_INIT_TIME,
 } from '../constants'
 import { GenerateAlphaNumericPassword } from '../utils/random'
+import { CreateSubscriptionDto } from 'src/subscription/dto/create-subscription.dto'
 
 @Injectable()
 export class ApplicationService {
   private readonly logger = new Logger(ApplicationService.name)
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(userid: string, dto: CreateApplicationDto) {
+  async create(userid: string, appid: string, dto: CreateSubscriptionDto) {
     try {
       // get bundle
       const bundle = await this.prisma.bundle.findFirstOrThrow({
@@ -28,16 +28,16 @@ export class ApplicationService {
         },
       })
 
+      console.log(bundle, dto.bundleId)
+
       // create app in db
       const appSecret = {
         name: APPLICATION_SECRET_KEY,
         value: GenerateAlphaNumericPassword(64),
       }
-      const appid = await this.tryGenerateUniqueAppid()
 
       const data: Prisma.ApplicationCreateInput = {
         name: dto.name,
-        appid,
         state: dto.state || ApplicationState.Running,
         phase: ApplicationPhase.Creating,
         tags: [],
@@ -53,7 +53,6 @@ export class ApplicationService {
             bundleId: bundle.id,
             name: bundle.name,
             displayName: bundle.displayName,
-            price: bundle.price,
             resource: { ...bundle.resource },
           },
         },
@@ -66,6 +65,11 @@ export class ApplicationService {
           create: {
             environments: [appSecret],
             dependencies: [],
+          },
+        },
+        subscription: {
+          connect: {
+            appid,
           },
         },
       }
@@ -89,6 +93,12 @@ export class ApplicationService {
         phase: {
           not: ApplicationPhase.Deleted,
         },
+      },
+      include: {
+        region: false,
+        bundle: true,
+        runtime: true,
+        subscription: true,
       },
     })
   }
@@ -141,15 +151,8 @@ export class ApplicationService {
   async remove(appid: string) {
     try {
       const res = await this.prisma.application.updateMany({
-        where: {
-          appid,
-          phase: {
-            in: [ApplicationPhase.Started, ApplicationPhase.Stopped],
-          },
-        },
-        data: {
-          state: ApplicationState.Deleted,
-        },
+        where: { appid },
+        data: { state: ApplicationState.Deleted },
       })
 
       return res

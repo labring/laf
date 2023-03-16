@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import SyntaxHighlighter from "react-syntax-highlighter";
 import {
   Button,
   Center,
@@ -11,11 +10,14 @@ import {
   TabPanels,
   Tabs,
   Tooltip,
+  useColorMode,
 } from "@chakra-ui/react";
 import axios from "axios";
+import clsx from "clsx";
 import { t } from "i18next";
 import { keyBy, mapValues } from "lodash";
 
+import JSONViewer from "@/components/Editor/JSONViewer";
 import { Row } from "@/components/Grid";
 import Panel from "@/components/Panel";
 import Resize from "@/components/Resize";
@@ -49,6 +51,8 @@ export default function DebugPanel(props: { containerRef: any }) {
   const [runningMethod, setRunningMethod] = useState<TMethod>();
 
   const compileMutation = useCompileMutation();
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
 
   const [queryParams, setQueryParams] = useState([]);
   const [bodyParams, setBodyParams] = useState<{ contentType: string; data: any }>();
@@ -110,7 +114,14 @@ export default function DebugPanel(props: { containerRef: any }) {
         <Tabs width="100%" colorScheme={"primary"} display="flex" flexDirection={"column"} h="full">
           <TabList h={"50px"}>
             <Tab px="0">
-              <span className="text-black font-semibold">{t("FunctionPanel.InterfaceDebug")}</span>
+              <span
+                className={clsx("font-semibold", {
+                  "text-black": !darkMode,
+                  "text-white": darkMode,
+                })}
+              >
+                {t("FunctionPanel.InterfaceDebug")}
+              </span>
             </Tab>
             {/* <Tab>历史请求</Tab> */}
           </TabList>
@@ -238,9 +249,7 @@ export default function DebugPanel(props: { containerRef: any }) {
               </div>
             ) : null}
             {runningResData ? (
-              <SyntaxHighlighter language="json" customStyle={{ background: "#fdfdfe" }}>
-                {JSON.stringify(runningResData, null, 2)}
-              </SyntaxHighlighter>
+              <JSONViewer colorMode={colorMode} code={JSON.stringify(runningResData, null, 2)} />
             ) : (
               <Center minH={140} className="text-grayIron-600">
                 {t("FunctionPanel.EmptyDebugTip")}

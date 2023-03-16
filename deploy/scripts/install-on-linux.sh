@@ -34,7 +34,7 @@ gpgcheck=0
 EOF
   # yum update
   yum clean all
-  yum install sealos=4.1.4 -y
+  yum install sealos -y
 fi
 
 ARCH=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/)

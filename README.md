@@ -20,55 +20,30 @@
 
 > [English](README_en.md) | 中文
 
+## 🚀 Quick Start
+
+[三分钟体验使用 laf 写一个自己的 ChatGPT (开发到上线)](https://icloudnative.io/posts/build-chatgpt-web-using-laf/)  
+[三分钟体验使用 laf 开发一个简单的 「Todo List」 ](./docs/guide/quick-start/Todo.md)
+
 ## 🖥 在线体验
 
-🎉 [preview.laf.run](http://preview.laf.run) 可在线免费体验 `laf` 云开发应用服务！
-
-开发者可免费在 [preview.laf.run](http://preview.laf.run) 上快速创建自己的应用，免除服务器部署和运维工作，立即拥有应用独立域名及 HTTPS 证书，快速上线应用！
-
-> 请注意，[preview.laf.run](http://preview.laf.run) 仅为 v1.0.0-beta 预览版，数据不定期**删档**，**不适合用于生产环境！**
+🎉 [laf.dev](https://laf.dev) 可免费体验 `laf` 云开发。
 
 ## 👀 `laf` 是什么
 
-- laf 是云开发平台，可以快速的开发应用
-- laf 是一个开源的 BaaS 开发平台（Backend as a Service)
-- laf 是一个开箱即用的 serverless 开发平台
-- laf 是一个集「函数计算」、「数据库」、「对象存储」等于一身的一站式开发平台
-- laf 可以是开源版的腾讯云开发、开源版的 Google Firebase
+laf 是开源的云开发平台，提供云函数、云数据库、云存储等开箱即用的应用资源。让开发者专注于业务开发，无需折腾服务器，快速释放创意。
 
-[`laf`](https://github.com/labring/laf) 让每个开发团队都可以随时拥有一个自己的云开发平台！
 
 ## 🎉 `laf` 有什么
 
-- 多应用管理，新建、启停应用，无需折腾服务器，一分钟上线应用
-- 云函数，提供的函数计算服务，可以快速的实现后端业务
-- 云数据库，提供开箱即用的数据库服务
-- 云存储，提供专业的文件对象存储服务，兼容 S3 和其他存储服务接口
-- WebIDE，在线写代码，完善的类型提示、代码自动完成，像写博客一样写函数，随手发布上线！
-- 静态托管，支持静态网站的托管，可以快速的上线静态网站，无需折腾 nginx
-- Database Proxy，支持客户端使用 [laf-client-sdk](https://github.com/labring/laf/tree/main/packages/client-sdk) “直连”数据库，通过访问策略控制访问权限，极大程度提升应用开发效率
-- WebSocket，应用支持长连接，业务无死角
+- 云函数
+- 云数据库
+- 云存储
+- WebIDE，像写博客一样写代码
+- 网站托管
+- WebSocket 支持
 
-可以通过下面的屏幕截图进一步了解 `laf`:
-
-<table>
-  <tr>
-      <td width="50%" align="center"><b>云函数</b></td>
-      <td width="50%" align="center"><b>云存储</b></td>
-  </tr>
-  <tr>
-     <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/ide.png"/></td>
-     <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/files.png"/></td>
-  </tr>
-  <tr>
-      <td width="50%" align="center"><b>云数据库：数据管理</b></td>
-      <td width="50%" align="center"><b>应用列表</b></td>
-  </tr>
-  <tr>
-     <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/collection.png"/></td>
-     <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/apps.png"/></td>
-  </tr>
-</table>
+![](https://sif268-laf-image.oss.laf.dev/dev.png)
 
 ## 👨‍💻 谁适合使用 `laf` ?
 
@@ -102,62 +77,10 @@
 
 > life is short, you need laf:)
 
-## 💥 laf 能用来做什么
 
-> `laf` 是应用的后端开发平台，理论上可以做任何应用！
+## 🎉 Self-hosted Deployment
 
-1. 使用 laf 快速开发微信小程序/公众号： 电商、社交、工具、教育、金融、游戏、短视频、社区、企业等应用！
-
-   - 微信小程序强要求 https 访问，可直接使用 [lafyun.com](http://www.lafyun.com) 创建应用，为小程序提供 https 的接口服务
-   - 可将应用的 h5 页面和管理端(admin) 直接部署到可由 `laf` 静态托管
-   - 将 h5 直接托管到 `laf` 上，将分配的专用域名配置到公众号即可在线访问
-   - 使用云函数实现微信授权、支付等业务
-   - 使用云存储存储视频、头像等用户数据
-
-2. 开发 Android or iOS 应用
-
-   - 使用云函数、云数据库、云存储进行业务处理
-   - 应用的后端管理(admin) 直接部署到可由 `laf` 静态托管
-   - 可使用云函数实现微信授权、支付、热更新等业务
-
-3. 部署个人博客、企业官网
-
-   - 将 vuepress / hexo / hugo 等静态生成的博客，一键部署到 `laf` 静态托管上， 见 [laf-cli](https://github.com/labring/laf-cli)
-   - 可使用云函数来处理用户留言、评论、访问统计等业务
-   - 可使用云函数扩展博客的其它能力，如课程、投票、提问等
-   - 可使用云存储存储视频、图片
-   - 可使用云函数做爬虫、推送等功能
-
-4. 企业信息化建设：企业私有部署一套 `laf` 云开发平台
-
-   - 快速开发企业内部信息化系统，可快速上线、修改、迭代，降成本
-   - 支持多应用、多账户，不同部门、不同系统，即可隔离，亦可连通
-   - 可借助 `laf` 社区生态，直接使用现存的 `laf` 应用，开箱即用，降成本
-   - `laf` 开源免费，没有技术锁定的顾虑，可自由订制和使用
-
-5. 个人开发者的「手边云」
-
-   - `laf` 让开发者随手写的一段代码，瞬间具备随手上云的能力
-   - 就像在你手机的备忘录随手敲下一段文字，自动同步到云端，且可被全网访问和执行
-   - `laf` 是每个开发者的“烂笔头”，像记事一样写个函数
-   - `laf` 是每个开发者的“私人助理”，比如随时可以写一个定时发送短信、邮件通知的函数
-
-6. 其它
-   - 有用户把 `laf` 应用当成一个日志服务器，收集客户端日志数据，使用云函数做分析统计
-   - 有用户用 `laf` 来跑爬虫，抓取三方新闻和咨讯等内容
-   - 有用户使用 `laf` 云函数做 webhook，监听 Git 仓库提交消息，推送到钉钉、企业微信群
-   - 有用户使用 `laf` 云函数做拨测，定时检查线上服务的健康状态
-   - ...
-
-> 未来，`lafyun.com` 会上线一个应用市场，汇总收集这些应用，让 `laf` 用户一键即可使用海量应用!
-
-## 🚀 快速开始
-
-[三分钟体验使用 laf 开发一个简单的登陆注册功能](./docs/guide/quick-start/index.md)
-
-## 🎉 本地部署
-
-[本地部署](./deploy/scripts/README.md)
+[Deployment](./deploy/scripts/README.md)
 
 ## 🏘️ Community Groups
 
@@ -166,7 +89,6 @@
 - [QQ 群：603059673](https://jq.qq.com/?_wv=1027&k=DdRCCiuz)
 
 ## :point_right: Roadmap
-- [**laf product key**](https://github.com/labring/laf/discussions/354)
 - [**laf project roadmap**](https://github.com/orgs/labring/projects/5/views/1)
 
 

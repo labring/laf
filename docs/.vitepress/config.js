@@ -27,11 +27,20 @@ const guideSiderbarConfig = [
       {
         text: "概览",
         link: "/guide/",
-      },
+      }
+    ],
+  },
+  {
+    text: "快速开始",
+    items: [
       {
-        text: "快速开始",
-        link: "/guide/quick-start/",
+        text: "三分钟实现「Todo List」",
+        link: "/guide/quick-start/Todo",
       },
+      // {
+      //   text: "三分钟实现「用户登录/注册」",
+      //   link: "/guide/quick-start/login",
+      // },
     ],
   },
   {
@@ -191,10 +200,10 @@ export default defineConfig({
       message: "Apache License V2.0",
       copyright: "Copyright © 2021-present labring/laf",
     },
-    editLink: {
-      pattern: "https://github.com/labring/laf/edit/main/docs/:path",
-      text: "在 GitHub 上编辑此页",
-    },
+    // editLink: {
+    //   pattern: "https://github.com/labring/laf/edit/main/docs/:path",
+    //   text: "在 GitHub 上编辑此页",
+    // },
     lastUpdated: "更新于",
     nav: NavConfig,
     socialLinks: [{ icon: "github", link: "https://github.com/labring/laf" }],

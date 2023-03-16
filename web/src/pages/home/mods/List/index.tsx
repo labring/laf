@@ -4,6 +4,7 @@ import { RiCodeBoxFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { AddIcon, Search2Icon } from "@chakra-ui/icons";
 import {
+  Box,
   Button,
   Input,
   InputGroup,
@@ -12,6 +13,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import { t } from "i18next";
@@ -28,20 +30,22 @@ import getRegionById from "@/utils/getRegionById";
 import CreateAppModal from "../CreateAppModal";
 import StatusBadge from "../StatusBadge";
 
-import { TApplication } from "@/apis/typing";
-import { ApplicationControllerRemove } from "@/apis/v1/applications";
+import BundleInfo from "./BundleInfo";
+
+import { SubscriptionControllerRemove } from "@/apis/v1/subscriptions";
 import useGlobalStore from "@/pages/globalStore";
 
 function List(props: { appListQuery: any; setShouldRefetch: any }) {
   const navigate = useNavigate();
 
-  const { setCurrentApp, regions } = useGlobalStore();
+  const { setCurrentApp, updateCurrentApp, regions } = useGlobalStore();
 
   const [searchKey, setSearchKey] = useState("");
 
   const { appListQuery, setShouldRefetch } = props;
+  const bg = useColorModeValue("lafWhite.200", "lafDark.200");
 
-  const deleteAppMutation = useMutation((params: any) => ApplicationControllerRemove(params), {
+  const deleteAppMutation = useMutation((params: any) => SubscriptionControllerRemove(params), {
     onSuccess: () => {
       setShouldRefetch(true);
     },
@@ -68,7 +72,6 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
               placeholder={t("Search").toString()}
               variant="outline"
               size={"sm"}
-              bg="white"
               onChange={(e: any) => setSearchKey(e.target.value)}
             />
           </InputGroup>
@@ -81,31 +84,32 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
       </div>
 
       <div className="flex flex-col overflow-auto">
-        <div className="flex-none flex bg-lafWhite-200 rounded-lg h-12 items-center px-6 mb-3">
+        <Box bg={bg} className="flex-none flex rounded-lg h-12 items-center px-6 mb-3">
           <div className="w-2/12 text-second ">{t("HomePanel.Application") + t("Name")}</div>
           <div className="w-2/12 text-second ">App ID</div>
           <div className="w-2/12 text-second pl-2">{t("HomePanel.State")}</div>
           <div className="w-2/12 text-second ">{t("HomePanel.Region")}</div>
-          <div className="w-3/12 text-second ">{t("CreateTime")}</div>
+          <div className="w-3/12 text-second ">{t("Time")}</div>
           <div className="w-1/12 text-second pl-2 min-w-[100px]">{t("Operation")}</div>
-        </div>
+        </Box>
         <div className="flex-grow overflow-auto">
           {(appListQuery.data?.data || [])
             .filter((item: any) => item?.name.indexOf(searchKey) >= 0)
-            .map((item: TApplication) => {
+            .map((item: any) => {
               return (
-                <div
+                <Box
                   key={item?.appid}
-                  className="flex bg-lafWhite-200 rounded-lg h-16 items-center px-6 mb-3"
+                  bg={bg}
+                  className="flex rounded-lg h-16 items-center px-6 mb-3"
                 >
                   <div className="w-2/12 ">
                     <div className="font-bold text-lg">
                       {item?.name}
-                      {/* <Button variant="outline" size="sm">
-                        基础版
-                      </Button> */}
+                      <span className="text-base text-second ml-2 border px-1 rounded">
+                        {item?.bundle?.displayName}
+                      </span>
                     </div>
-                    {/* <div>CPU: 0.1 核 | RAM: 24 G</div> */}
+                    <BundleInfo bundle={item.bundle} />
                   </div>
                   <div className="w-2/12 ">
                     {item?.appid} <CopyText text={item?.appid} />
@@ -117,8 +121,8 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                     {getRegionById(regions, item.regionId)?.displayName}
                   </div>
                   <div className="w-3/12 ">
-                    {formatDate(item.createdAt)} <br />
-                    {/* end: {formatDate(item.createdAt)} */}
+                    创建时间: {formatDate(item.createdAt)} <br />
+                    到期时间: {formatDate(item.subscription.expiredAt)} <a href="/renew">续期</a>
                   </div>
                   <div className="w-1/12 flex min-w-[100px]">
                     <Button
@@ -150,11 +154,42 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                             </a>
                           </MenuItem>
                         </CreateAppModal>
+
+                        <MenuItem minH="40px" display={"block"}>
+                          <a
+                            className="text-primary block"
+                            href="/restart"
+                            onClick={(event) => {
+                              event?.preventDefault();
+                              updateCurrentApp(item);
+                              setShouldRefetch(true);
+                            }}
+                          >
+                            {t("SettingPanel.Restart")}
+                          </a>
+                        </MenuItem>
+
+                        <MenuItem
+                          minH="40px"
+                          display={"block"}
+                          onClick={(event: any) => {
+                            event?.preventDefault();
+                            updateCurrentApp(item, APP_PHASE_STATUS.Stopped);
+                            setShouldRefetch(true);
+                          }}
+                        >
+                          <a className="text-primary block" href="/stop">
+                            {t("SettingPanel.Close")}
+                          </a>
+                        </MenuItem>
+
                         <ConfirmButton
                           headerText={t("HomePanel.DeleteApp")}
                           bodyText={t("HomePanel.DeleteTip")}
                           onSuccessAction={() => {
-                            deleteAppMutation.mutate({ appid: item?.appid });
+                            deleteAppMutation.mutate({
+                              id: item.subscription.id,
+                            });
                           }}
                         >
                           <MenuItem minH="40px" display={"block"}>
@@ -166,7 +201,7 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                       </MenuList>
                     </Menu>
                   </div>
-                </div>
+                </Box>
               );
             })}
         </div>

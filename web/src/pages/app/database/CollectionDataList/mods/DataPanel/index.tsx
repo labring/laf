@@ -1,13 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
 import { BiRefresh } from "react-icons/bi";
-import SyntaxHighlighter from "react-syntax-highlighter";
 import { AddIcon, CopyIcon, Search2Icon } from "@chakra-ui/icons";
-import { Button, HStack, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
+import {
+  Button,
+  HStack,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  useColorMode,
+} from "@chakra-ui/react";
 import { t } from "i18next";
 import { throttle } from "lodash";
 
 import CopyText from "@/components/CopyText";
 import JsonEditor from "@/components/Editor/JsonEditor";
+import JSONViewer from "@/components/Editor/JSONViewer";
 import EmptyBox from "@/components/EmptyBox";
 import IconWrap from "@/components/IconWrap";
 import Pagination from "@/components/Pagination";
@@ -28,6 +35,7 @@ export default function DataPanel() {
   const [search, setSearch] = useState("");
   const [isAdd, setIsAdd] = useState({ status: false, count: 0 });
   const store = useDBMStore((state) => state);
+  const { colorMode } = useColorMode();
   type QueryData = {
     _id: string;
     page: number;
@@ -192,7 +200,6 @@ export default function DataPanel() {
                     rounded={"full"}
                     disabled={store.currentDB === undefined}
                     placeholder={t("CollectionPanel.Query").toString()}
-                    bg={"gray.100"}
                     size="sm"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
@@ -235,6 +242,9 @@ export default function DataPanel() {
             ListQuery={entryDataQuery?.data?.list}
             setKey="_id"
             isActive={(item: any) => currentData.data?._id === item._id}
+            customStyle={{
+              "border-lafWhite-600": colorMode === "light",
+            }}
             onClick={(data: any) => {
               setCurrentData({
                 data: data,
@@ -243,11 +253,7 @@ export default function DataPanel() {
             }}
             deleteRuleMutation={deleteDataMutation}
             component={(item: any) => {
-              return (
-                <SyntaxHighlighter language="json" customStyle={{ background: "#fdfdfe" }}>
-                  {JSON.stringify(item, null, 2)}
-                </SyntaxHighlighter>
-              );
+              return <JSONViewer colorMode={colorMode} code={JSON.stringify(item, null, 2)} />;
             }}
             toolComponent={(item: any) => {
               const newData = { ...item };
@@ -276,8 +282,9 @@ export default function DataPanel() {
             isLoading={updateDataMutation.isLoading}
             onSave={handleData}
           >
-            <div className=" flex-1 mb-4 bg-lafWhite-400 rounded">
+            <div className="flex-1 mb-4 rounded">
               <JsonEditor
+                colorMode={colorMode}
                 value={JSON.stringify(currentData.data || {}, null, 2)}
                 onChange={(values) => {
                   setCurrentData((pre: any) => {

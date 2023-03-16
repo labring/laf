@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Avatar, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import { Avatar, Menu, MenuButton, MenuItem, MenuList, useColorMode } from "@chakra-ui/react";
 
 import { VITE_SERVER_BASE_URL } from "@/constants";
 import i18n from "@/utils/i18n";
@@ -9,6 +9,7 @@ import PATList from "@/pages/app/setting/PATList";
 import UserInfo from "@/pages/app/setting/UserInfo";
 export default function UserSetting(props: { name: string; avatar?: string; width: string }) {
   const { t } = useTranslation();
+  const { toggleColorMode } = useColorMode();
   return (
     <Menu>
       <MenuButton>
@@ -49,6 +50,16 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
           }}
         >
           {t("SwitchLanguage")}
+        </MenuItem>
+
+        <MenuItem
+          minH="40px"
+          onClick={() => {
+            toggleColorMode();
+            window.dispatchEvent(new Event("ColorModeChange"));
+          }}
+        >
+          {t("SwitchColorMode")}
         </MenuItem>
 
         <MenuItem

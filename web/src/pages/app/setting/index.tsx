@@ -1,19 +1,21 @@
 import { useState } from "react";
 import React from "react";
 import {
+  Box,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import { t } from "i18next";
 
 import SectionList from "@/components/SectionList";
 
-import { TApplication } from "@/apis/typing";
+import { TApplicationDetail } from "@/apis/typing";
 import useGlobalStore from "@/pages/globalStore";
 export type TTabItem = {
   key: string;
@@ -29,7 +31,7 @@ export const TabKeys = {
 const SettingModal = (props: {
   headerTitle: string;
   children: React.ReactElement;
-  setApp?: TApplication;
+  setApp?: TApplicationDetail;
   tabMatch?: TTabItem[];
   currentTab: string;
 }) => {
@@ -38,7 +40,7 @@ const SettingModal = (props: {
   const currentIndex = tabMatch.findIndex((tab) => tab.key === props.currentTab);
   const [item, setItem] = useState<TTabItem>(tabMatch[currentIndex]);
   const { setCurrentApp } = useGlobalStore((state) => state);
-
+  const borderColor = useColorModeValue("lafWhite.600", "lafDark.600");
   return (
     <>
       {React.cloneElement(children, {
@@ -56,8 +58,8 @@ const SettingModal = (props: {
           <ModalHeader>{headerTitle || t("SettingPanel.Setting")}</ModalHeader>
           <ModalCloseButton />
           <ModalBody px={6} py={2} h="60vh" maxH="70vh" flex="none">
-            <div className="flex h-full">
-              <SectionList className="w-[250px] mr-4 border-r-2 border-lafWhite-600 pr-4">
+            <Box className="flex h-full" borderColor={borderColor}>
+              <SectionList className="w-[250px] mr-4 border-r-2 pr-4">
                 {tabMatch.map((tab) => {
                   return (
                     <SectionList.Item
@@ -78,7 +80,7 @@ const SettingModal = (props: {
                   onClose,
                 })}
               </div>
-            </div>
+            </Box>
           </ModalBody>
         </ModalContent>
       </Modal>

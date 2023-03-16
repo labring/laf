@@ -70,7 +70,6 @@ export default function CollectionListPanel() {
             rounded={"full"}
             placeholder={t("CollectionPanel.Search").toString()}
             size="sm"
-            bg={"gray.100"}
             onChange={(e) => setSearch(e.target.value)}
           />
         </InputGroup>
@@ -101,6 +100,7 @@ export default function CollectionListPanel() {
                         <span className="ml-2 text-base">{db.name}</span>
                       </div>
                       <MoreButton
+                        label={t("Operation")}
                         isHidden={db.name !== store.currentDB?.name || store.currentShow !== "DB"}
                       >
                         <>

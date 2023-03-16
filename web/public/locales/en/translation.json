@@ -44,7 +44,6 @@
   "Copy": "copy",
   "Create": "new application",
   "CreateNow": "create now",
-  "CreateTime": "Created time",
   "Custom": "customize",
   "Days": "days",
   "Delete": "Delete ",
@@ -52,6 +51,7 @@
   "DeleteSuccess": "successfully deleted",
   "DeleteTip": "cannot be undone",
   "Edit": "Edit",
+  "Empty": "Empty",
   "Generate": "generate",
   "InputTip": "please enter",
   "IsRequired": " is required",
@@ -67,12 +67,14 @@
   "Update": "Update ",
   "UpdateSuccess": "Update Success",
   "moreOperations": "More Operations",
+  "openPopover": "Click here to open a popover",
   "FunctionPanel": {
     "AddFunction": "Add Function",
     "Code": "Function Template",
     "ConfirmDeploy": "Confirm Deploy",
     "CustomDependence": "Custom",
     "CustomDependenceTip": "No custom dependencies yet",
+    "DeleteDependencyConfirm": "Are you sure you want to delete the npm package?",
     "Debug": "Run",
     "DebugResult": "Run Result",
     "DeleteConfirm": "Are you sure you want to delete the function?",
@@ -208,8 +210,8 @@
     "websiteHost": "Enable website hosting",
     "Inaccessible": "Inaccessible",
     "isResolved": "Effective",
-    "cnameHostPreTip": "add the \"CNAME\" of the domain name to resolve to",
-    "cnameHostSuffixTip": "After the resolution takes effect, the custom domain name can be bound.",
+    "cnameHostPreTip": "Add the \"CNAME\" record of the domain to resolve to",
+    "cnameHostSuffixTip": ", After the resolution takes effect, the custom domain name can be bound.",
     "editHostTip": "oss-bucket needs to be in read mode to enable website hosting",
     "CreateWebHosting": "Bind custom domain name",
     "CustomDomain": "Custom Domain",
@@ -264,6 +266,7 @@
   "Back": "Return",
   "Personal Access Token": "Personal Access Token",
   "SwitchLanguage": "Switch Language",
+  "SwitchColorMode": "Switch ColorMode",
   "Storage": "Storage",
   "upload example": "file upload",
   "Unit": {
@@ -290,5 +293,6 @@
     "LoginTip": "Please enter a valid Mobile phone number and validation code",
     "LoginWithGithub": "Login with Github",
     "ValidationCodeTip": "Please enter validation code"
-  }
+  },
+  "Time": "Time"
 }

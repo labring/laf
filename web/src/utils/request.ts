@@ -56,7 +56,23 @@ request.interceptors.response.use(
         return;
       } else if (data.statusCode === 403) {
         (window as any).location.href = "/403";
+      } else if (data.statusCode === 404) {
+        toast({
+          title: "404 Not Found",
+          position: "top",
+          status: "error",
+          duration: 1000,
+        });
+      } else if (data.statusCode === 500 || data.statusCode === 502) {
+        toast({
+          title: "500 Internal Server Error",
+          position: "top",
+          status: "error",
+          duration: 1000,
+        });
+        return;
       }
+
       toast({
         title: data.message,
         position: "top",

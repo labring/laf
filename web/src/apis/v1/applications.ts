@@ -10,23 +10,6 @@
 import request from "@/utils/request";
 
 /**
- * Create a new application
- */
-export async function ApplicationControllerCreate(
-  params: Definitions.CreateApplicationDto | any,
-): Promise<Paths.ApplicationControllerCreate.Responses> {
-  // /v1/applications
-  let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
-    ...params,
-  };
-  return request(`/v1/applications`, {
-    method: "POST",
-    data: params,
-  });
-}
-
-/**
  * Get user application list
  */
 export async function ApplicationControllerFindAll(
@@ -73,23 +56,6 @@ export async function ApplicationControllerUpdate(
   };
   return request(`/v1/applications/${_params.appid}`, {
     method: "PATCH",
-    data: params,
-  });
-}
-
-/**
- * Delete an application
- */
-export async function ApplicationControllerRemove(
-  params: Paths.ApplicationControllerRemove.BodyParameters | any,
-): Promise<Paths.ApplicationControllerRemove.Responses> {
-  // /v1/applications/{appid}
-  let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
-    ...params,
-  };
-  return request(`/v1/applications/${_params.appid}`, {
-    method: "DELETE",
     data: params,
   });
 }

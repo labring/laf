@@ -76,7 +76,6 @@ export default function StorageListPanel() {
             rounded={"full"}
             placeholder={t("StoragePanel.SearchBucket").toString()}
             size="sm"
-            bg={"gray.100"}
             onChange={(e) => setSearch(e.target.value)}
           />
         </InputGroup>
@@ -110,7 +109,7 @@ export default function StorageListPanel() {
                           <Tag size="sm" className="w-16 justify-center" variant={storage?.policy}>
                             {storage?.policy}
                           </Tag>
-                          <MoreButton isHidden={false}>
+                          <MoreButton isHidden={false} label={t("Operation")}>
                             <>
                               <CreateBucketModal storage={storage}>
                                 <IconText icon={<EditIcon />} text={t("Edit")} />

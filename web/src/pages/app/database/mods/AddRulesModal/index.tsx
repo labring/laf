@@ -14,9 +14,11 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  useColorMode,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
+import clsx from "clsx";
 import { t } from "i18next";
 
 import JsonEditor from "@/components/Editor/JsonEditor";
@@ -69,6 +71,8 @@ const AddRulesModal = (props: {
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
 
   return (
     <>
@@ -125,8 +129,13 @@ const AddRulesModal = (props: {
                   name="value"
                   control={control}
                   render={({ field: { onChange, value } }) => (
-                    <div className="h-[280px] bg-lafWhite-400 rounded pr-2">
-                      <JsonEditor value={value} onChange={onChange} />
+                    <div
+                      className={clsx("h-[280px]  rounded pr-2", {
+                        "bg-lafWhite-400": !darkMode,
+                        "bg-lafDark-300": darkMode,
+                      })}
+                    >
+                      <JsonEditor colorMode={colorMode} value={value} onChange={onChange} />
                     </div>
                   )}
                 />

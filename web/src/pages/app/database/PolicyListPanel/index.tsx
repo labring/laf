@@ -61,6 +61,7 @@ export default function PolicyListPanel() {
                       <span className="ml-2 text-base">{item.name}</span>
                     </div>
                     <MoreButton
+                      label={t("Operation")}
                       maxWidth="50px"
                       isHidden={
                         item.name !== store.currentPolicy?.name || store.currentShow !== "Policy"

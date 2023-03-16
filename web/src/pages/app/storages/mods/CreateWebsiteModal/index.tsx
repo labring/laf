@@ -46,7 +46,7 @@ function CreateWebsiteModal() {
   const deleteWebsiteMutation = useWebsiteDeleteMutation();
   const updateWebsiteMutation = useWebSiteUpdateMutation();
   const toast = useToast();
-  const cnameDomain = currentStorage?.websiteHosting?.domain;
+  const cnameDomain = currentStorage?.domain?.domain;
 
   return (
     <>
@@ -150,7 +150,7 @@ function CreateWebsiteModal() {
                 />
                 <p className="mt-2 text-grayModern-600">
                   {t("StoragePanel.cnameHostPreTip")}
-                  <span className="mx-2 whitespace-nowrap">{cnameDomain}</span>,
+                  <span className="mx-2 whitespace-nowrap">{cnameDomain}</span>
                   {t("StoragePanel.cnameHostSuffixTip")}
                 </p>
               </FormControl>
