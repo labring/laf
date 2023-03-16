@@ -27,11 +27,20 @@ const guideSiderbarConfig = [
       {
         text: "概览",
         link: "/guide/",
-      },
+      }
+    ],
+  },
+  {
+    text: "快速开始",
+    items: [
       {
-        text: "快速开始",
-        link: "/guide/quick-start/",
+        text: "三分钟实现「Todo List」",
+        link: "/guide/quick-start/Todo",
       },
+      // {
+      //   text: "三分钟实现「用户登录/注册」",
+      //   link: "/guide/quick-start/login",
+      // },
     ],
   },
   {
