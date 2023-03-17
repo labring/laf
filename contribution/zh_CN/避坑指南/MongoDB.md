@@ -2,11 +2,11 @@
 
 Docker Hub:
 
-- mongodb/mongodb-community-server 是 MondoDB 团队打的包。目前版本这个包打得不太好，Dockerfile 中默认用户名是 mongodb，对容器内部分目录和外挂卷没有写权限，所以运行时需要修改用户 `--user root`。
-- mongodb 是 Docker 打的包。
+- `mongodb/mongodb-community-server` 是 MondoDB 团队打的包。目前版本这个包打得不太好，Dockerfile 中默认用户名是 mongodb，对容器内部分目录和外挂卷没有写权限，所以运行时需要修改用户 `--user root`。
+- `mongo` 是 Docker 打的包。
 
 ```bash
-docker run --rm --detach --name mongod --network host -v ~/.local/share/mongodb/data:/data/db mongo
+docker run --rm --detach --name mongod --network host --volume ~/.local/share/mongodb/data:/data/db mongo
 docker run --rm --interactive --tty --network host mongo mongosh
 docker run --rm --interactive --network host mongo mongodump
 docker run --rm --interactive mongosh --network host mongo mongorestore
@@ -32,6 +32,12 @@ Mongodb 使用 RBAC，且在此基础上 role 还可以继承其他 role 的权�
 
 # 备份还原
 
-mongodump 和 mongorestore 的备份还原的 scope 是整个 MongoDB 实例。也就是说即使你只备份整个实例中某一个 db 的某一个 collection，那么备份中会记录这个 collection 在原实例中所在的 db 名，还原的时候不需要显式指定把这个 collection 还原为哪个名字的 db 的哪个名字的 collection。
+mongodump 和 mongorestore 的备份还原的 scope 是整个 MongoDB 实例。也就是说即使你只备份整个实例中某一个 db 的某一个 collection，备份中也会记录这个 collection 在原实例中所在的 db 名，还原的时候不需要显式指定把这个 collection 还原为哪个名字的 db 的哪个名字的 collection。
 
 mongdorestore 用 `--nsInclude` 来选择只还原这个 deployment 备份中的哪些部分。
+
+## 覆盖
+
+备份过程会对目标目录进行 collection 级覆盖。
+
+还原过程默认会对 MongoDB 实例进行 document 级补充，而不覆盖，如果待还原的 document 在 MongoDB 中已存在则报错。使用 `--drop` 参数进行 collection 级覆盖。
