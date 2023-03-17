@@ -4,9 +4,13 @@
 - 文件存储就是一个文件系统，树形结构。
 - 对象存储就是一个键值数据库，键是文件名，值是文件内容。
 
-块存储格式化一下就成了文件存储，文件存储安装个数据库就成了对象存储。
+块存储格式化一下就成了文件存储，文件存储安装上数据库就成了对象存储。
 
 显然对象存储的成本低于文件存储，文件存储的成本低于块存储。反证法，假设文件存储的成本高于块存储，那么云厂商就会把块存储格式化一下拿出来当文件存储卖，使得文件存储价格的价格降到和块存储一样。
+
+## S3 接口
+
+S3 是一个用 Restful API 操作块存储服务的接口，是行业事实标准。
 
 # 安装
 
@@ -14,7 +18,7 @@ docker: minio/minio
 
 ```bash
 # https://min.io/docs/minio/container/index.html
-docker run --rm --detach --network host --name minio -v ~/.local/share/minio/data:/data minio/minio server /data --console-address :9090
+docker run --rm --detach --network host --name minio --volume ~/.local/share/minio/data:/data minio/minio server /data --console-address :9090
 ```
 
 mc 没有 docker 版，直接官网下载放进 `/usr/local/bin`。
@@ -27,7 +31,7 @@ MinIO 支持多用户，根用户的用户名和密码可以在部署时自定�
 
 <https://min.io/docs/minio/container/administration/identity-access-management/minio-user-management.html>
 
-每个用户没有自己的 bucket 命名空间，整个 MinIO 实例就一个 bucket 命名空间，两个用户创建的 bucket 不可重名，不过可以设置访问权限。
+每个用户没有自己的 bucket 命名空间，两个用户创建的 bucket 不可重名，不过可以设置访问权限。
 
 MinIO 用 user group 功能实现 RBAC。
 
