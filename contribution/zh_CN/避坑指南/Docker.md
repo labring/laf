@@ -46,17 +46,17 @@ tag 作为名词，是指镜像名后面的标签。
 
 - `-d`: detach
 - `-i`: keep stdin open
-- `-t`: pseudo tty line discipline，提供回显，颜色，C-c 等特殊字符特别处理等功能。
+- `-t`: pseudo tty line discipline，提供颜色、C-c 等特殊字符特别处理等功能。
 
 > 如果你不记得什么是 line discipline，请复习《APUE》的《终端》章节。
 
-显然，没有 `-i` 时，`-t` 没有意义，因为 stdin 都关了，line discipline 始终空闲。
+显然，如果没有 `-i`，那么 `-t` 没有意义，因为 stdin 都关了，line discipline 处理不到输入。
 
-`-di` 会使得容器内 stdin 始终未就绪，如果容器内进程读 stdin，就会一直阻塞。
+`-di` 会使得容器内 stdin 保持打开但没有数据可读，即一个始终未就绪的文件描述符，如果容器内根进程读 stdin，就会一直阻塞。
 
 #### detach
 
-不管有没有 `-d`，docker 都会给容器一个新的宿主机 session。而 attach 的功能是 docker 自己用 IPC 实现的，容器根进程的 stdio 设备并不是你敲 `docker run` 命令的当前终端，因此容器根进程不会开启 line discipline。
+不管有没有 `-d`，docker 都会给容器一个新的宿主机 session。而 attach 的功能是 docker 自己用 IPC 实现的，容器内根进程的 stdio 设备并不是你敲 `docker run` 命令的当前终端，因此容器根进程不会开启 line discipline。
 
 使用选项 `-t` 使得容器根进程认为自己的 stdio 设备是 pseudo terminal。例如
 
@@ -64,7 +64,7 @@ tag 作为名词，是指镜像名后面的标签。
 docker run -it <image-name> 2> ./error.txt
 ```
 
-虽然容器根进程的 stdout 被重定向到了文件，但容器根进程仍然认为 stdout 是 tty，因此会向 `./error.txt` 中输出各种终端控制字符，比如颜色控制码。
+虽然容器根进程的 stdout 被重定向到了文件，但容器根进程仍然认为 stdout 是 tty，因此有可能会向 `./error.txt` 中输出各种终端控制字符，比如颜色控制码。
 
 detached 容器只要 stdio 没关，将来还可以再 attach 回去。
 
@@ -75,7 +75,7 @@ detached 容器只要 stdio 没关，将来还可以再 attach 回去。
 
 ## docker exec
 
-docker exec 运行的进程，与容器内根进程在进程树上同级，他们的 ppid 都是 0，都由 runtime 回收 zombie。区别在于根进程挂了之后 runtime 会把其他进程都 sigkill，而 docker exec 进程挂了就挂了。
+`docker exec` 运行的进程，与容器内根进程在进程树上同级，他们的 ppid 都是 0，都由 runtime 回收 zombie。区别在于根进程挂了之后 runtime 会把容器内其他进程都 SIGKILL，而 `docker exec` 的进程挂了就挂了。
 
 # docker volume
 
@@ -89,7 +89,7 @@ docker exec 运行的进程，与容器内根进程在进程树上同级，他�
 
 > 如果你不记得什么是虚拟网络，请复习 `man 7 network_namespaces` 和 `man 4 veth`。
 
-`--network host` 表示不给容器启动独立的 Linux network namespace，留在宿主机命名空间。
+`--network host` 表示不给容器启动独立的 Linux network namespace，而是留在宿主机命名空间。
 
 ## hostname
 
