@@ -1,15 +1,16 @@
 # 安装
 
-docker: mongodb/mongodb-community-server
+Docker Hub:
+
+- mongodb/mongodb-community-server 是 MondoDB 团队打的包。目前版本这个包打得不太好，Dockerfile 中默认用户名是 mongodb，对容器内部分目录和外挂卷没有写权限，所以运行时需要修改用户 `--user root`。
+- mongodb 是 Docker 打的包。
 
 ```bash
-docker run --rm -d --name mongodb --network host -u root -v ~/.local/share/mongodb/data:/data/db mongodb/mongodb-community-server
-docker run --rm -it --name mongosh --network host -u root mongodb/mongodb-community-server mongosh
-docker run --rm -i --name mongosh --network host -u root mongodb/mongodb-community-server mongodump
-docker run --rm -i --name mongosh --network host -u root mongodb/mongodb-community-server mongorestore
+docker run --rm --detach --name mongod --network host -v ~/.local/share/mongodb/data:/data/db mongo
+docker run --rm --interactive --tty --network host mongo mongosh
+docker run --rm --interactive --network host mongo mongodump
+docker run --rm --interactive mongosh --network host mongo mongorestore
 ```
-
-mongodb 的 Dockerfile 中默认是 mongodb 用户，对容器内部分目录和外挂卷没有写权限，所以用 `-u root`。
 
 # 访问控制
 
@@ -17,7 +18,9 @@ Mongodb 使用 RBAC，且在此基础上 role 还可以继承其他 role 的权�
 
 > 如果你不记得什么是 RBAC，请复习《计算机安全导论》。
 
-虽然所有 user 和 role 的信息都是统一保存在特殊 db `admin` 中，但每个 db 有一个独立的**用户信息**命名空间，在这个命名空间里创建 user 和 role，两个不同 db 中创建的用户名可以重名。
+每个 user 和 role 都注册在某一个 db 上，每个 db 有一个独立的 user 和 role 的命名空间，两个不同 db 中创建的 user 和 role 可以重名。
+
+各个 user 和 role 虽然注册在不同 db 里，但 user 和 role 的具体信息都是统一保存在特殊 db `admin` 中。
 
 除了特殊 db `admin` 之外，
 
@@ -25,14 +28,10 @@ Mongodb 使用 RBAC，且在此基础上 role 还可以继承其他 role 的权�
 - 一个 db 中的 role 只能涉及与本 db 有关的权限。
 - 一个 db 中的 role 只能继承本 db 的其他 role。
 
-「创建用户」本身也是一项权限，这个权限不止与一个 db 有关，因此拥有这项权限的 built-in role ` userAdminAnyDatabase` 属于特殊 db `admin` 的命名空间。首先你得在 access control 未开启时，创建一个属于这个 role 的用户作为管理员用户。
+「创建用户」本身也是一项权限，这个权限不止与一个 db 有关，因此拥有这项权限的内置 role ` userAdminAnyDatabase` 注册在特殊 db `admin` 上。首先你得在 access control 未开启时，创建一个属于这个 role 的 user 作为管理员用户。
 
 # 备份还原
 
-mongodump 和 mongorestore 的备份还原作用对象是整个 MongoDB 实例。
-
-mongodump 用 `--db` 和 `--collection` 选择整个 deployment 的哪些部分，这样的结果不是「一个完整 collection 的备份」，而是「一个不完整的 deployment 的备份」，重复备份另一些 db 或 collection 不会覆盖之前的。
+mongodump 和 mongorestore 的备份还原的 scope 是整个 MongoDB 实例。也就是说即使你只备份整个实例中某一个 db 的某一个 collection，那么备份中会记录这个 collection 在原实例中所在的 db 名，还原的时候不需要显式指定把这个 collection 还原为哪个名字的 db 的哪个名字的 collection。
 
 mongdorestore 用 `--nsInclude` 来选择只还原这个 deployment 备份中的哪些部分。
-
-因此将一个 MongoDB 实例中的一个 db 的一个 collection 备份出来后，无法还原到另一个 deployment 中的不同 db 不同 collection 中，除非使用特别选项。

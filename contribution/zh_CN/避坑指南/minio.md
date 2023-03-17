@@ -14,7 +14,7 @@ docker: minio/minio
 
 ```bash
 # https://min.io/docs/minio/container/index.html
-docker run --rm -d --network host --name minio -v ~/.local/share/minio/data:/data minio/minio server /data --console-address :9090
+docker run --rm --detach --network host --name minio -v ~/.local/share/minio/data:/data minio/minio server /data --console-address :9090
 ```
 
 mc 没有 docker 版，直接官网下载放进 `/usr/local/bin`。
@@ -27,7 +27,7 @@ MinIO 支持多用户，根用户的用户名和密码可以在部署时自定�
 
 <https://min.io/docs/minio/container/administration/identity-access-management/minio-user-management.html>
 
-每个用户没有自己的命名空间，整个 MinIO 实例就一个命名空间，两个用户创建的 bucket 不可重名，只不过可以设置访问权限。
+每个用户没有自己的 bucket 命名空间，整个 MinIO 实例就一个 bucket 命名空间，两个用户创建的 bucket 不可重名，不过可以设置访问权限。
 
 MinIO 用 user group 功能实现 RBAC。
 
