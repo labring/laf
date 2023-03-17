@@ -28,7 +28,7 @@ Deployment 只负责管理不同版本的 ReplicaSet。
 
 ### 网络插件
 
-flannel、calico 等网络插件，用于实现跨宿主机的虚拟网络。
+Linux veth 只能实现单机虚拟网络，而 flannel、calico 等网络插件用于实现跨宿主机的虚拟网络。
 
 ### Service
 

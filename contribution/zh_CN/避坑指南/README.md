@@ -6,7 +6,7 @@
 
 # 这个指南有什么用
 
-这个指南不能代替官方教程，他的目的是告诉你应该看哪些教程，以及提示一些官方教程中没讲明白的坑。
+**这个指南不能代替官方教程**，目的是告诉你应该看哪些教程，以及提示一些官方教程中没讲明白的坑。
 
 # 前置课程
 
@@ -27,6 +27,7 @@
 	- [Git](https://git-scm.com/book/en/v2)
 	- [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 	- [Node.js](https://nodejs.org/en/docs/)
+		- [npm](https://docs.npmjs.com/)
 	- [TypeScript](https://www.typescriptlang.org/docs/home.html)
 - 会搭梯子
 	- 略
@@ -42,11 +43,13 @@
 - 业务相关
 	- \*	[Express](https://expressjs.com)
 	- \**	[NestJS](https://docs.nestjs.com)
+	- \**	[OpenAPI](https://swagger.io)
 	- \**	[Prisma](https://www.prisma.io/docs)
 	- \**	[MongoDB](https://docs.mongodb.com)
 	- \**	[MinIO](https://docs.min.io)
 - 云原生相关
-	- \*	[Linux namespace](https://man7.org/linux/man-pages/man7/namespaces.7.html)
+	- \*	[Linux namespaces](https://man7.org/linux/man-pages/man7/namespaces.7.html)
+	- \*	[Linux virtual ethernet device](https://man7.org/linux/man-pages/man4/veth.4.html)
 	- \*	[Linux cgroups](https://man7.org/linux/man-pages/man7/namespaces.7.html)
 	- \**	[Docker](https://docs.docker.com)
 	- \*	[Kubernetes](https://kubernetes.io/docs/home/)
@@ -56,3 +59,10 @@
 	- \**	[Telepresence](https://www.telepresence.io)
 	- \*	[APISIX](https://apisix.apache.org/zh/)
 	- \*	[Casdoor](https://casdoor.org/zh/)
+
+# 避坑小技巧
+
+- 完善程度：知名教材 > 官方文档 > 培训机构网课 > 绝大部分学校自编野鸡教材 > 简中互联网 18 手资料。
+- 官方文档尽量看原文不看译文，原文是英文就看英文版，原文是中文就看中文版。
+
+你没有看错，官方教材的靠谱程度是低于知名教材的。这是因为官方教材的作者受到[知识的诅咒](https://zh.wikipedia.org/zh-cn/%E7%9F%A5%E8%AD%98%E7%9A%84%E8%A9%9B%E5%92%92)，而知名教材的作者通常受过专业的教育学训练，能克服知识的诅咒。
