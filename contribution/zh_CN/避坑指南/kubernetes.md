@@ -12,6 +12,10 @@ master 节点就是带集群管理功能的 worker 节点，Worker 节点能干�
 
 Master 上的 API server、etcd 等组件本身也是 static Pod。在 kubelet 眼中，API server 并无特别，与普通跑 app 的 Pod 没有区别，正如在 Linux 内核眼里，systemd 和普通进程并没有区别。可以说整个集群中，只有 kubelet 自己不是跑在 Pod 里。
 
+### 为什么需要 Pod 而不能只用容器。
+
+因为容器是单进程模型，你在容器外只能与容器内的根进程打交道。
+
 ### Replicaset
 
 一个 ReplicaSet 维护一个 Pod 的一个版本的副本数。
