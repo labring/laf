@@ -42,7 +42,7 @@ tag 作为名词，是指镜像名后面的标签。
 
 ## 参数
 
-### dit
+### Attachment
 
 - `-d`: detach
 - `-i`: keep stdin open
