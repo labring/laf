@@ -1,4 +1,5 @@
 import React from "react";
+import { useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import styles from "./index.module.scss";
@@ -20,11 +21,17 @@ function Item(props: {
   onClick: () => void;
 }) {
   const { children, isActive, onClick, className, style } = props;
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
+
   return (
     <li
       style={style || {}}
       className={clsx(className, {
-        [styles.active]: isActive,
+        "bg-primary-100": !darkMode && isActive,
+        "hover:bg-primary-100": !darkMode,
+        "hover:bg-lafDark-100": darkMode,
+        "bg-lafDark-100": darkMode && isActive,
       })}
       onClick={onClick}
     >

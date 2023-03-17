@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Avatar, Box, HStack } from "@chakra-ui/react";
+import { Avatar, Box, HStack, useColorMode } from "@chakra-ui/react";
+import clsx from "clsx";
 import { t } from "i18next";
 
 import { formatDate } from "@/utils/format";
@@ -11,6 +12,8 @@ export default function UserInfo() {
   const [showAuth, setShowAuth] = useState(false);
 
   const { userInfo } = useGlobalStore((state) => state);
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
 
   return (
     <div className="h-full flex flex-col items-center justify-center">
@@ -31,7 +34,11 @@ export default function UserInfo() {
               color="white"
               boxShadow="base"
             />
-            <p className="text-center text-3xl font-medium text-grayModern-900 mb-2">
+            <p
+              className={clsx("text-center text-3xl font-medium mb-2", {
+                "text-grayModern-900": !darkMode,
+              })}
+            >
               {userInfo?.username}
             </p>
             {/* <span className="inline-block px-2 h-[24px]  rounded-full border border-grayModern-400 text-grayModern-400 pt-[1px]">

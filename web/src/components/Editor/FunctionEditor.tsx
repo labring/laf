@@ -55,8 +55,22 @@ monaco?.editor.defineTheme("lafEditorThemeDark", {
     },
   ],
   colors: {
+    // https://github.com/microsoft/monaco-editor/discussions/3838
     "editor.foreground": "#ffffff",
     "editor.background": "#202631",
+    "editorIndentGuide.activeBackground": "#fff",
+    "editorIndentGuide.background": "#eee",
+    "editor.selectionBackground": "#101621",
+    "menu.selectionBackground": "#101621",
+    "dropdown.background": "#1a202c",
+    "dropdown.foreground": "#f0f0f0",
+    "dropdown.border": "#fff",
+    "quickInputList.focusBackground": "#1a202c",
+    "editorWidget.background": "#1a202c",
+    "editorWidget.foreground": "#f0f0f0",
+    "editorWidget.border": "#1a202c",
+    "input.background": "#1a202c",
+    "list.hoverBackground": "#2a303c",
   },
 });
 

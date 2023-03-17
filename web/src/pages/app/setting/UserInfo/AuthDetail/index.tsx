@@ -1,6 +1,15 @@
 import { useForm } from "react-hook-form";
 import { MdKeyboardArrowLeft } from "react-icons/md";
-import { Button, FormControl, FormErrorMessage, FormLabel, Input, VStack } from "@chakra-ui/react";
+import {
+  Button,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  useColorMode,
+  VStack,
+} from "@chakra-ui/react";
+import clsx from "clsx";
 import { t } from "i18next";
 
 export default function AuthDetail(props: { onBack: () => void }) {
@@ -16,6 +25,9 @@ export default function AuthDetail(props: { onBack: () => void }) {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
+
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
 
   const onSubmit = async (data: any) => {};
   return (
@@ -33,7 +45,13 @@ export default function AuthDetail(props: { onBack: () => void }) {
         </span>
       </p>
       <div className="flex-grow w-full flex flex-col justify-around">
-        <p className="text-grayModern-900 text-xl text-center mb-6">{t("SettingPanel.Auth")}</p>
+        <p
+          className={clsx("text-xl text-center mb-6", {
+            "text-grayModern-900": !darkMode,
+          })}
+        >
+          {t("SettingPanel.Auth")}
+        </p>
         <VStack spacing={6} align="flex-start" className="w-[48%] mx-auto">
           <FormControl isRequired isInvalid={!!errors?.tel} className="relative">
             <div className="flex relative">
