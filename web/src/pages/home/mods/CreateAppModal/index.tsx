@@ -198,7 +198,7 @@ const CreateAppModal = (props: {
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
-              <FormControl isRequired isInvalid={!!errors?.name}>
+              <FormControl isRequired isInvalid={!!errors?.name} isDisabled={type === "renewal"}>
                 <FormLabel htmlFor="name">{t("HomePanel.Application") + t("Name")}</FormLabel>
                 <Input
                   {...register("name", {
@@ -280,7 +280,7 @@ const CreateAppModal = (props: {
                 <FormErrorMessage>{errors?.bundleId?.message}</FormErrorMessage>
               </FormControl>
               (
-              <FormControl isInvalid={!!errors?.subscriptionOption}>
+              <FormControl isInvalid={!!errors?.subscriptionOption} hidden={type === "edit"}>
                 <FormLabel htmlFor="subscriptionOption">{t("HomePanel.Duration")}</FormLabel>
                 <Controller
                   name="subscriptionOption"

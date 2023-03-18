@@ -45,10 +45,7 @@ function HomePage() {
   return (appListQuery.data?.data || []).length === 0 ? (
     <Empty />
   ) : (
-    <div
-      className="w-8/12 mt-10 mx-auto overflow-hidden flex flex-col"
-      style={{ height: "calc(100vh - 150px)" }}
-    >
+    <div className="w-8/12 mt-10 mx-auto flex flex-col">
       <List
         appListQuery={appListQuery}
         setShouldRefetch={() => {
