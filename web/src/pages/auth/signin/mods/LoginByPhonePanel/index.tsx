@@ -76,7 +76,7 @@ export default function LoginByPhonePanel({
     });
 
     if (res?.data) {
-      showSuccess("验证码已发送");
+      showSuccess(t("AuthPanel.SmsCodeSendSuccess"));
     }
   };
 
@@ -112,7 +112,7 @@ export default function LoginByPhonePanel({
             })}
             type="tel"
             id="phone"
-            placeholder="请输入手机号"
+            placeholder={t("AuthPanel.PhonePlaceholder") || ""}
           />
           <InputRightElement width="6rem">
             <Button
@@ -120,7 +120,7 @@ export default function LoginByPhonePanel({
               variant={isSendSmsCode ? "thirdly_disabled" : "thirdly"}
               onClick={handleSendSmsCode}
             >
-              {isSendSmsCode ? `${countdown}s后重试` : t("AuthPanel.getValidationCode")}
+              {isSendSmsCode ? `${countdown}s` : t("AuthPanel.getValidationCode")}
             </Button>
           </InputRightElement>
         </InputGroup>
@@ -139,14 +139,14 @@ export default function LoginByPhonePanel({
             },
           })}
           id="validationCode"
-          placeholder="请输入验证码"
+          placeholder={t("AuthPanel.ValidationCodeTip") || ""}
         />
       </FormControl>
       <div className="mt-10">
         <Button
           type="submit"
           className="w-full pt-5 pb-5"
-          isLoading={false}
+          isLoading={signinBySmsCodeMutation.isLoading}
           onClick={handleSubmit(onSubmit)}
         >
           {t("AuthPanel.Login")}

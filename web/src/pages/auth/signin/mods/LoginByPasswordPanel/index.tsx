@@ -59,7 +59,7 @@ export default function LoginByPasswordPanel({
           {...register("account", { required: true })}
           type="text"
           id="account"
-          placeholder="请输入用户名"
+          placeholder={t("AuthPanel.AccountPlaceholder") || ""}
         />
       </FormControl>
       <FormControl isInvalid={!!errors.password} className="flex mb-10 items-center">
@@ -73,7 +73,7 @@ export default function LoginByPasswordPanel({
               required: true,
             })}
             id="password"
-            placeholder="请输入密码"
+            placeholder={t("AuthPanel.PasswordPlaceholder") || ""}
           />
           <InputRightElement width="2rem">
             {isShowPassword ? (
@@ -88,7 +88,7 @@ export default function LoginByPasswordPanel({
         <Button
           type="submit"
           className="w-full pt-5 pb-5"
-          isLoading={false}
+          isLoading={signinByPasswordMutation.isLoading}
           onClick={handleSubmit(onSubmit)}
         >
           {t("AuthPanel.Login")}

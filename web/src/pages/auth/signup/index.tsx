@@ -74,13 +74,10 @@ export default function SignUp() {
 
   const onSubmit = async (data: FormData) => {
     if (data.password !== data.confirmPassword) {
-      showError("两次输入的密码不一致");
+      showError(t("AuthPanel.PasswordNotMatch"));
       return;
     }
-    // if (!agreement) {
-    //   showError("请先同意用户协议");
-    //   return;
-    // }
+
     const res = await signupMutation.mutateAsync({
       phone: data.phone,
       code: data.validationCode,
@@ -90,7 +87,7 @@ export default function SignUp() {
     });
 
     if (res?.data) {
-      showSuccess("注册成功，请登录");
+      showSuccess(t("AuthPanel.SignupSuccess"));
       navigate("/login", { replace: true });
     }
   };
@@ -115,7 +112,7 @@ export default function SignUp() {
     });
 
     if (res?.data) {
-      showSuccess("验证码发送成功");
+      showSuccess(t("AuthPanel.SmsCodeSendSuccess"));
     }
   };
 
@@ -147,7 +144,7 @@ export default function SignUp() {
           <Input
             {...register("account", { required: true })}
             id="account"
-            placeholder="请输入用户名"
+            placeholder={t("AuthPanel.AccountPlaceholder") || ""}
           />
         </FormControl>
         <FormControl isInvalid={!!errors.password} className="flex mb-6 items-center">
@@ -161,7 +158,7 @@ export default function SignUp() {
                 required: true,
               })}
               id="password"
-              placeholder="请输入密码"
+              placeholder={t("AuthPanel.PasswordPlaceholder") || ""}
             />
             <InputRightElement width="2rem">
               {isShowPassword ? (
@@ -183,7 +180,7 @@ export default function SignUp() {
                 required: true,
               })}
               id="confirmPassword"
-              placeholder="请输入确认密码"
+              placeholder={t("AuthPanel.ConfirmPassword") || ""}
             />
             <InputRightElement width="2rem">
               {isShowPassword ? (
@@ -210,7 +207,7 @@ export default function SignUp() {
                 })}
                 type="tel"
                 id="phone"
-                placeholder="请输入手机号"
+                placeholder={t("AuthPanel.PhonePlaceholder") || ""}
               />
               <InputRightElement width="6rem">
                 <Button
@@ -218,7 +215,7 @@ export default function SignUp() {
                   variant={isSendSmsCode ? "thirdly_disabled" : "thirdly"}
                   onClick={handleSendSmsCode}
                 >
-                  {isSendSmsCode ? `${countdown}s后重试` : t("AuthPanel.getValidationCode")}
+                  {isSendSmsCode ? `${countdown}s` : t("AuthPanel.getValidationCode")}
                 </Button>
               </InputRightElement>
             </InputGroup>
@@ -235,11 +232,11 @@ export default function SignUp() {
                 required: true,
                 pattern: {
                   value: /^\d{6}$/,
-                  message: t("AuthPanel.ValidationCodeTip"),
+                  message: t("AuthPanel.ValidationCodePlaceholder"),
                 },
               })}
               id="validationCode"
-              placeholder="请输入验证码"
+              placeholder={t("AuthPanel.ValidationCodePlaceholder") || ""}
             />
           </FormControl>
         )}
@@ -268,7 +265,7 @@ export default function SignUp() {
           <Button
             type="submit"
             className="w-full pt-5 pb-5"
-            isLoading={false}
+            isLoading={signupMutation.isLoading}
             onClick={handleSubmit(onSubmit)}
           >
             {t("AuthPanel.Register")}
@@ -276,7 +273,7 @@ export default function SignUp() {
         </div>
         <div className="mt-2 flex justify-end">
           <Button size="xs" variant={"text"} onClick={() => navigate("/login", { replace: true })}>
-            去登录
+            {t("AuthPanel.ToLogin")}
           </Button>
         </div>
       </div>

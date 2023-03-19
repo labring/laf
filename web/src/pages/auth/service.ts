@@ -19,96 +19,96 @@ const queryKeys = {
   useGetProvidersQuery: ["useGetProvidersQuery"],
 };
 
-export const useSigninByPasswordMutation = (config?: { onSuccess: (data: any) => void }) => {
+export const useSigninByPasswordMutation = (config?: { onSuccess: (result: any) => void }) => {
   const globalStore = useGlobalStore();
   return useMutation(
     (values: any) => {
       return AuthControllerSigninByPassword(values);
     },
     {
-      onSuccess: async (data) => {
-        if (data.error) {
-          globalStore.showError(data.error);
+      onSuccess: async (result) => {
+        if (result.error) {
+          globalStore.showError(result.error);
         } else {
-          localStorage.setItem("token", data?.data);
-          config?.onSuccess(data);
+          localStorage.setItem("token", result?.data);
+          config?.onSuccess(result);
         }
       },
     },
   );
 };
 
-export const useSigninBySmsCodeMutation = (config?: { onSuccess: (data: any) => void }) => {
+export const useSigninBySmsCodeMutation = (config?: { onSuccess: (result: any) => void }) => {
   const globalStore = useGlobalStore();
   return useMutation(
     (values: any) => {
       return AuthControllerSigninBySmsCode(values);
     },
     {
-      onSuccess: async (data) => {
-        if (data.error) {
-          globalStore.showError(data.error);
+      onSuccess: async (result) => {
+        if (result.error) {
+          globalStore.showError(result.error);
         } else {
-          localStorage.setItem("token", data?.data);
-          config?.onSuccess(data);
+          localStorage.setItem("token", result?.data);
+          config?.onSuccess(result);
         }
       },
     },
   );
 };
 
-export const useSignupMutation = (config?: { onSuccess: (data: any) => void }) => {
+export const useSignupMutation = (config?: { onSuccess: (result: any) => void }) => {
   const globalStore = useGlobalStore();
   return useMutation(
     (values: any) => {
       return AuthControllerSignup(values);
     },
     {
-      onSuccess: async (data) => {
-        if (data.error) {
-          globalStore.showError(data.error);
+      onSuccess: async (result) => {
+        if (result.error) {
+          globalStore.showError(result.error);
         } else {
-          config?.onSuccess(data);
+          config?.onSuccess(result);
         }
       },
     },
   );
 };
 
-export const useSendSmsCodeMutation = (config?: { onSuccess: (data: any) => void }) => {
+export const useSendSmsCodeMutation = (config?: { onSuccess: (result: any) => void }) => {
   return useMutation(
     (values: any) => {
       return AuthControllerSendSmsCode(values);
     },
     {
-      onSuccess: async (data) => {
-        config?.onSuccess(data);
+      onSuccess: async (result) => {
+        config?.onSuccess(result);
       },
     },
   );
 };
 
-export const useResetPasswordMutation = (config?: { onSuccess: (data: any) => void }) => {
+export const useResetPasswordMutation = (config?: { onSuccess: (result: any) => void }) => {
   return useMutation(
     (values: any) => {
       return AuthControllerResetPassword(values);
     },
     {
-      onSuccess: async (data) => {
-        config?.onSuccess(data);
+      onSuccess: async (result) => {
+        config?.onSuccess(result);
       },
     },
   );
 };
 
-export const useGetProvidersQuery = (onSuccess: (data: any) => void) => {
+export const useGetProvidersQuery = (onSuccess: (result: any) => void) => {
   return useQuery(
     queryKeys.useGetProvidersQuery,
     () => {
       return AuthControllerGetProviders({});
     },
     {
-      onSuccess: onSuccess,
+      onSuccess,
     },
   );
 };
