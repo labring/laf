@@ -39,7 +39,7 @@ export default function SignUp() {
   useGetProvidersQuery((data: any) => {
     setProviders(data?.data || []);
     if (providers.length) {
-      const passwordProvider = providers.find((provider) => provider.type === "user-password");
+      const passwordProvider = providers.find((provider) => provider.name === "user-password");
       if (passwordProvider) {
         setIsNeedPhone(passwordProvider.bind?.phone === "required");
       }
@@ -75,13 +75,21 @@ export default function SignUp() {
       return;
     }
 
-    const res = await signupMutation.mutateAsync({
-      phone: data.phone,
-      code: data.validationCode,
-      username: data.account,
-      password: data.password,
-      type: "Signup",
-    });
+    const params = isNeedPhone
+      ? {
+          phone: data.phone,
+          code: data.validationCode,
+          username: data.account,
+          password: data.password,
+          type: "Signup",
+        }
+      : {
+          username: data.account,
+          password: data.password,
+          type: "Signup",
+        };
+
+    const res = await signupMutation.mutateAsync(params);
 
     if (res?.data) {
       showSuccess(t("AuthPanel.SignupSuccess"));
