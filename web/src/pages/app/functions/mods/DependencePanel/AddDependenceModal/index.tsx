@@ -66,12 +66,12 @@ const AddDependenceModal = () => {
 
   const addPackageMutation = useAddPackageMutation(() => {
     onClose();
-    globalStore.updateCurrentApp();
+    globalStore.updateCurrentApp(globalStore.currentApp!);
   });
 
   const editPackageMutation = useEditPackageMutation(() => {
     onClose();
-    globalStore.updateCurrentApp();
+    globalStore.updateCurrentApp(globalStore.currentApp!);
   });
 
   const packageSearchQuery = usePackageSearchQuery(name, (data) => {
@@ -291,7 +291,6 @@ const AddDependenceModal = () => {
                   />
                   <Input
                     rounded={"full"}
-                    bg={"gray.100"}
                     onChange={(e: any) => {
                       search(e.target.value);
                     }}

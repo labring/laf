@@ -4,6 +4,7 @@ import { RiCodeBoxFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { AddIcon, Search2Icon } from "@chakra-ui/icons";
 import {
+  Box,
   Button,
   Input,
   InputGroup,
@@ -12,11 +13,11 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import { t } from "i18next";
 
-import ConfirmButton from "@/components/ConfirmButton";
 import CopyText from "@/components/CopyText";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
@@ -26,10 +27,12 @@ import { formatDate } from "@/utils/format";
 import getRegionById from "@/utils/getRegionById";
 
 import CreateAppModal from "../CreateAppModal";
+import DeleteAppModal from "../DeleteAppModal";
 import StatusBadge from "../StatusBadge";
 
-import { TApplication } from "@/apis/typing";
-import { ApplicationControllerRemove } from "@/apis/v1/applications";
+import BundleInfo from "./BundleInfo";
+
+import { ApplicationControllerUpdate } from "@/apis/v1/applications";
 import useGlobalStore from "@/pages/globalStore";
 
 function List(props: { appListQuery: any; setShouldRefetch: any }) {
@@ -40,13 +43,9 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
   const [searchKey, setSearchKey] = useState("");
 
   const { appListQuery, setShouldRefetch } = props;
+  const bg = useColorModeValue("lafWhite.200", "lafDark.200");
 
-  const deleteAppMutation = useMutation((params: any) => ApplicationControllerRemove(params), {
-    onSuccess: () => {
-      setShouldRefetch(true);
-    },
-    onError: () => {},
-  });
+  const updateAppMutation = useMutation((params: any) => ApplicationControllerUpdate(params));
 
   return (
     <>
@@ -68,11 +67,10 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
               placeholder={t("Search").toString()}
               variant="outline"
               size={"sm"}
-              bg="white"
               onChange={(e: any) => setSearchKey(e.target.value)}
             />
           </InputGroup>
-          <CreateAppModal>
+          <CreateAppModal type="create">
             <Button colorScheme="primary" style={{ padding: "0 40px" }} leftIcon={<AddIcon />}>
               {t("Create")}
             </Button>
@@ -81,33 +79,34 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
       </div>
 
       <div className="flex flex-col overflow-auto">
-        <div className="flex-none flex bg-lafWhite-200 rounded-lg h-12 items-center px-6 mb-3">
-          <div className="w-2/12 text-second ">{t("HomePanel.Application") + t("Name")}</div>
+        <Box bg={bg} className="flex-none flex rounded-lg h-12 items-center px-6 mb-3">
+          <div className="w-3/12 text-second ">{t("HomePanel.Application") + t("Name")}</div>
           <div className="w-2/12 text-second ">App ID</div>
           <div className="w-2/12 text-second pl-2">{t("HomePanel.State")}</div>
           <div className="w-2/12 text-second ">{t("HomePanel.Region")}</div>
-          <div className="w-3/12 text-second ">{t("CreateTime")}</div>
+          <div className="w-3/12 text-second ">{t("Time")}</div>
           <div className="w-1/12 text-second pl-2 min-w-[100px]">{t("Operation")}</div>
-        </div>
+        </Box>
         <div className="flex-grow overflow-auto">
           {(appListQuery.data?.data || [])
             .filter((item: any) => item?.name.indexOf(searchKey) >= 0)
-            .map((item: TApplication) => {
+            .map((item: any) => {
               return (
-                <div
+                <Box
                   key={item?.appid}
-                  className="flex bg-lafWhite-200 rounded-lg h-16 items-center px-6 mb-3"
+                  bg={bg}
+                  className="flex rounded-lg py-4 items-center px-6 mb-3 group"
                 >
-                  <div className="w-2/12 ">
+                  <div className="w-3/12 ">
                     <div className="font-bold text-lg">
                       {item?.name}
-                      {/* <Button variant="outline" size="sm">
-                        基础版
-                      </Button> */}
+                      <span className="text-base text-second ml-2 border px-1 rounded">
+                        {item?.bundle?.displayName}
+                      </span>
                     </div>
-                    {/* <div>CPU: 0.1 核 | RAM: 24 G</div> */}
+                    <BundleInfo bundle={item.bundle} />
                   </div>
-                  <div className="w-2/12 ">
+                  <div className="w-2/12 font-mono">
                     {item?.appid} <CopyText text={item?.appid} />
                   </div>
                   <div className="w-2/12 ">
@@ -117,8 +116,17 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                     {getRegionById(regions, item.regionId)?.displayName}
                   </div>
                   <div className="w-3/12 ">
-                    {formatDate(item.createdAt)} <br />
-                    {/* end: {formatDate(item.createdAt)} */}
+                    <p>
+                      {t("CreateTime")}: {formatDate(item.createdAt)}{" "}
+                    </p>
+                    <p className="mt-1">
+                      {t("EndTime")}: {formatDate(item.subscription.expiredAt)}
+                      <CreateAppModal application={item} type="renewal">
+                        <a className="text-primary-500 hidden group-hover:inline ml-2" href="/edit">
+                          {t("Renew")}
+                        </a>
+                      </CreateAppModal>
+                    </p>
                   </div>
                   <div className="w-1/12 flex min-w-[100px]">
                     <Button
@@ -143,30 +151,60 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                         </IconWrap>
                       </MenuButton>
                       <MenuList width={12} minW={24}>
-                        <CreateAppModal application={item}>
+                        <CreateAppModal application={item} type="edit">
                           <MenuItem minH="40px" display={"block"}>
                             <a className="text-primary block" href="/edit">
                               {t("Edit")}
                             </a>
                           </MenuItem>
                         </CreateAppModal>
-                        <ConfirmButton
-                          headerText={t("HomePanel.DeleteApp")}
-                          bodyText={t("HomePanel.DeleteTip")}
-                          onSuccessAction={() => {
-                            deleteAppMutation.mutate({ appid: item?.appid });
+
+                        <MenuItem minH="40px" display={"block"}>
+                          <span
+                            className="text-primary block"
+                            onClick={async (event) => {
+                              event?.preventDefault();
+                              await updateAppMutation.mutateAsync({
+                                appid: item.appid,
+                                name: item.name,
+                                state: APP_PHASE_STATUS.Restarting,
+                              });
+                              setShouldRefetch(true);
+                            }}
+                          >
+                            {t("SettingPanel.Restart")}
+                          </span>
+                        </MenuItem>
+
+                        <MenuItem
+                          minH="40px"
+                          display={"block"}
+                          onClick={async (event: any) => {
+                            event?.preventDefault();
+                            await updateAppMutation.mutateAsync({
+                              appid: item.appid,
+                              name: item.name,
+                              state: APP_PHASE_STATUS.Stopped,
+                            });
+                            setShouldRefetch(true);
                           }}
                         >
+                          <a className="text-primary block" href="/stop">
+                            {t("SettingPanel.ShutDown")}
+                          </a>
+                        </MenuItem>
+
+                        <DeleteAppModal item={item} onSuccess={() => setShouldRefetch(true)}>
                           <MenuItem minH="40px" display={"block"}>
-                            <a className="text-danger block" href="/delete">
-                              {t("Delete")}
+                            <a className="text-error-500 block" href="/delete">
+                              {t("DeleteApp")}
                             </a>
                           </MenuItem>
-                        </ConfirmButton>
+                        </DeleteAppModal>
                       </MenuList>
                     </Menu>
                   </div>
-                </div>
+                </Box>
               );
             })}
         </div>

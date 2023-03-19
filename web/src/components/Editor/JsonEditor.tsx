@@ -18,12 +18,23 @@ monaco?.editor.defineTheme("JsonEditorTheme", {
   },
 });
 
+monaco?.editor.defineTheme("JsonEditorThemeDark", {
+  base: "vs-dark",
+  inherit: true,
+  rules: [],
+  colors: {
+    "editor.foreground": "#ffffff",
+    "editor.background": "#202631",
+  },
+});
+
 function JsonEditor(props: {
   value: string;
   height?: string;
+  colorMode?: string;
   onChange?: (value: string | undefined) => void;
 }) {
-  const { value, onChange, height = "95%" } = props;
+  const { value, onChange, height = "95%", colorMode = "light" } = props;
 
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
@@ -49,14 +60,14 @@ function JsonEditor(props: {
         scrollBeyondLastLine: false,
         folding: false,
         overviewRulerBorder: false,
-        theme: "JsonEditorTheme",
+        theme: colorMode === "dark" ? "JsonEditorThemeDark" : "JsonEditorTheme",
         tabSize: 2, // tab 缩进长度
         model: monaco.editor.createModel(value, "json"),
       });
     }
 
     return () => {};
-  }, [value]);
+  }, [colorMode, value]);
 
   // onChange
   useEffect(() => {
@@ -74,6 +85,15 @@ function JsonEditor(props: {
       editorRef.current?.getModel()?.setValue(value);
     }
   }, [value]);
+
+  useEffect(() => {
+    if (monacoEl && editorRef.current) {
+      editorRef.current.updateOptions({
+        theme: colorMode === "dark" ? "JsonEditorThemeDark" : "JsonEditorTheme",
+      });
+    }
+  }, [colorMode]);
+
   return <div style={{ height: height, width: "100%", padding: "12px 2px" }} ref={monacoEl}></div>;
 }
 

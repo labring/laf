@@ -72,8 +72,10 @@ function FileUpload(props: { onUpload: (files: any) => void }) {
       />
       <label
         className={clsx({
+          // border-color: #cbd5e1;
+          // background-color: #f8fafc;
           [styles.labelFileUpload]: true,
-          [styles.dragActive]: dragActive,
+          "bg-lafDark-200": dragActive,
         })}
         htmlFor="input-file-upload"
       >

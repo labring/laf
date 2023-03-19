@@ -184,16 +184,11 @@ export class ApplicationTaskService {
       .findOneAndUpdate(
         {
           phase: ApplicationPhase.Deleting,
-          lockedAt: {
-            $lt: new Date(Date.now() - 1000 * this.lockTimeout),
-          },
+          lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
-        {
-          $set: {
-            lockedAt: new Date(),
-          },
-        },
+        { $set: { lockedAt: new Date() } },
       )
+
     if (!res.value) return
 
     // get region by appid
@@ -335,16 +330,9 @@ export class ApplicationTaskService {
    */
   async unlock(appid: string) {
     const db = SystemDatabase.db
-    await db.collection<Application>('Application').updateOne(
-      {
-        appid: appid,
-      },
-      {
-        $set: {
-          lockedAt: TASK_LOCK_INIT_TIME,
-        },
-      },
-    )
+    await db
+      .collection<Application>('Application')
+      .updateOne({ appid: appid }, { $set: { lockedAt: TASK_LOCK_INIT_TIME } })
   }
 
   /**
@@ -353,17 +341,11 @@ export class ApplicationTaskService {
   async clearTimeoutLocks() {
     const db = SystemDatabase.db
 
-    await db.collection<Application>('Application').updateMany(
-      {
-        lockedAt: {
-          $lt: new Date(Date.now() - 1000 * this.lockTimeout),
-        },
-      },
-      {
-        $set: {
-          lockedAt: TASK_LOCK_INIT_TIME,
-        },
-      },
-    )
+    await db
+      .collection<Application>('Application')
+      .updateMany(
+        { lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) } },
+        { $set: { lockedAt: TASK_LOCK_INIT_TIME } },
+      )
   }
 }

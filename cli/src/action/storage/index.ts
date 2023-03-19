@@ -10,13 +10,13 @@ import * as prompts from 'prompts'
 import { CreateBucketDto, UpdateBucketDto } from '../../api/v1/data-contracts'
 import { getEmoji } from '../../util/print'
 import { readSecretConfig } from '../../config/secret'
-import { getS3Client } from './s3'
+import { getS3ClientV3 } from './s3'
 import * as path from 'node:path'
 import { ensureDirectory, readDirectoryRecursive, compareFileMD5, exist } from '../../util/file'
-import axios from 'axios'
 import * as fs from 'node:fs'
-import { pipeline } from 'node:stream/promises'
 import * as mime from 'mime'
+import { ListObjectsCommand, GetObjectCommand, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
+import { Readable } from 'node:stream'
 
 export async function list() {
   const appConfig = readApplicationConfig()
@@ -88,9 +88,11 @@ export async function pull(bucketName: string, outPath: string, options: { force
     bucketName = appConfig.appid + '-' + bucketName
   }
   const secretConfig = readSecretConfig()
-  const client = getS3Client(secretConfig.storageSecretConfig)
-  const res = await client.listObjectsV2({ Bucket: bucketName, Delimiter: '' }).promise()
+  const client = getS3ClientV3(secretConfig.storageSecretConfig)
+  const listCommand = new ListObjectsCommand({ Bucket: bucketName, Delimiter: '' })
+  const res = await client.send(listCommand)
   const bucketObjects = res.Contents || []
+
   const absPath = path.resolve(outPath)
   ensureDirectory(absPath)
 
@@ -108,22 +110,22 @@ export async function pull(bucketName: string, outPath: string, options: { force
   // download files
   if (downloadFiles?.length > 0) {
     downloadFiles.forEach(async (item) => {
-      const fileUrl = client.getSignedUrl('getObject', { Bucket: bucketName, Key: item.Key })
       const index = item.Key.lastIndexOf('/')
-
       if (index > 0) {
         const newDir = item.Key.substring(0, index)
         const newPath = path.resolve(absPath, newDir)
         ensureDirectory(newPath)
       }
 
-      const data = await axios({ url: fileUrl, method: 'GET', responseType: 'stream' })
+      const getCommand = new GetObjectCommand({ Bucket: bucketName, Key: item.Key })
+      const obj = await client.send(getCommand)
       const filepath = path.resolve(absPath, item.Key)
+      let readableStream: Readable = obj.Body as Readable
       if (options.detail) {
         console.log(`${getEmoji('📥')} download file: ${filepath}`)
       }
       const writer = fs.createWriteStream(filepath)
-      await pipeline(data.data, writer)
+      readableStream.pipe(writer)
     })
   }
 }
@@ -134,9 +136,12 @@ export async function push(bucketName: string, inPath: string, options: { force:
     bucketName = appConfig.appid + '-' + bucketName
   }
   const secretConfig = readSecretConfig()
-  const client = getS3Client(secretConfig.storageSecretConfig)
-  const res = await client.listObjectsV2({ Bucket: bucketName, Delimiter: '' }).promise()
+
+  const client = getS3ClientV3(secretConfig.storageSecretConfig)
+  const listCommand = new ListObjectsCommand({ Bucket: bucketName, Delimiter: '' })
+  const res = await client.send(listCommand)
   const bucketObjects = res.Contents || []
+
   const absPath = path.resolve(inPath)
   if (!exist(absPath)) {
     console.log(`${getEmoji('❌')} ${absPath} not exist`)
@@ -156,14 +161,14 @@ export async function push(bucketName: string, inPath: string, options: { force:
   console.log(`${getEmoji('📤')} upload files: ${uploadFiles.length}`)
   if (uploadFiles?.length > 0) {
     for (const file of uploadFiles) {
-      await client
-        .putObject({
-          Bucket: bucketName,
-          Key: file.key,
-          Body: fs.readFileSync(path.resolve(absPath, file.absPath)),
-          ContentType: mime.getType(file.key),
-        })
-        .promise()
+      const putCommand = new PutObjectCommand({
+        Bucket: bucketName,
+        Key: file.key,
+        Body: fs.readFileSync(path.resolve(absPath, file.absPath)),
+        ContentType: mime.getType(file.key),
+      })
+      await client.send(putCommand)
+
       if (options.detail) {
         console.log(`${getEmoji('📤')} upload file: ${file.absPath}`)
       }
@@ -174,12 +179,12 @@ export async function push(bucketName: string, inPath: string, options: { force:
   if (deletesFiles?.length > 0) {
     console.log(`${getEmoji('📤')} delete files: ${deletesFiles.length}`)
     for (const file of deletesFiles) {
-      await client
-        .deleteObject({
-          Bucket: bucketName,
-          Key: file.Key,
-        })
-        .promise()
+      const deleteCommand = new DeleteObjectCommand({
+        Bucket: bucketName,
+        Key: file.Key,
+      })
+      await client.send(deleteCommand)
+
       if (options.detail) {
         console.log(`${getEmoji('📤')} delete file: ${file.Key}`)
       }

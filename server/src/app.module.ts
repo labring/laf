@@ -18,6 +18,8 @@ import { TriggerModule } from './trigger/trigger.module'
 import { RegionModule } from './region/region.module'
 import { GatewayModule } from './gateway/gateway.module'
 import { PrismaModule } from './prisma/prisma.module'
+import { SubscriptionModule } from './subscription/subscription.module'
+import { AccountModule } from './account/account.module';
 
 @Module({
   imports: [
@@ -41,6 +43,8 @@ import { PrismaModule } from './prisma/prisma.module'
     RegionModule,
     GatewayModule,
     PrismaModule,
+    SubscriptionModule,
+    AccountModule,
   ],
   controllers: [AppController],
   providers: [AppService],

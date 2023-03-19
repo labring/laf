@@ -1,6 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { AddIcon } from "@chakra-ui/icons";
-import { Button, Table, TableContainer, Tbody, Th, Thead, Tr } from "@chakra-ui/react";
+import {
+  Button,
+  Table,
+  TableContainer,
+  Tbody,
+  Th,
+  Thead,
+  Tr,
+  useColorMode,
+} from "@chakra-ui/react";
+import clsx from "clsx";
 import { t } from "i18next";
 
 import EditableTr, { TColumnItem, TConfiguration } from "./EditableTr";
@@ -20,6 +30,9 @@ const EditableTable = function (props: {
   const [isCreate, setIsCreate] = useState<boolean>(false);
   const [createData, setCreateData] = useState<any>({});
   const tableRef = useRef<any>(null);
+
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
 
   useEffect(() => {
     setColumnList(column);
@@ -66,10 +79,19 @@ const EditableTable = function (props: {
 
   return (
     <>
-      <div className="rounded-t-md relative border border-frostyNightfall-200 border-b-0">
+      <div
+        className={clsx("rounded-t-md relative border border-b-0", {
+          "border-frostyNightfall-200": !darkMode,
+        })}
+      >
         <TableContainer h={configuration?.tableHeight || "250px"} overflowY="auto" ref={tableRef}>
           <Table variant="simple">
-            <Thead className="bg-lafWhite-300 text-grayModern-500 ">
+            <Thead
+              className={clsx({
+                "bg-lafWhite-300": !darkMode,
+                "text-grayModern-500": !darkMode,
+              })}
+            >
               <Tr>
                 {columnList.map((item: TColumnItem) => {
                   return <Th key={item.key}>{item.name}</Th>;
@@ -85,7 +107,12 @@ const EditableTable = function (props: {
                   data: item,
                 };
                 return (
-                  <Tr key={item[configuration.key]} className="hover:bg-lafWhite-300">
+                  <Tr
+                    key={item[configuration.key]}
+                    className={clsx({
+                      "hover:bg-lafWhite-300": !darkMode,
+                    })}
+                  >
                     {item.isEdit ? (
                       <EditableTr
                         index={index}
@@ -107,7 +134,12 @@ const EditableTable = function (props: {
                   </Tr>
                 );
               })}
-              <Tr key="create" className="hover:bg-lafWhite-300">
+              <Tr
+                key="create"
+                className={clsx({
+                  "hover:bg-lafWhite-300": !darkMode,
+                })}
+              >
                 {isCreate ? (
                   <EditableTr
                     index={-1}

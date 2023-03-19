@@ -54,3 +54,13 @@ export enum BUCKET_POLICY_TYPE {
 export enum BUCKET_STATUS {
   Active = "Active",
 }
+
+export enum CHARGE_CHANNEL {
+  WeChat = "WeChat",
+  Alipay = "Alipay",
+}
+
+export enum CURRENCY {
+  CNY = "CNY",
+  USD = "USD",
+}

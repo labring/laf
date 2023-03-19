@@ -397,7 +397,7 @@ export class InstanceTaskService {
    */
   async unlock(appid: string) {
     const db = SystemDatabase.db
-    const updated = await db.collection<Application>('Application').updateOne(
+    await db.collection<Application>('Application').updateOne(
       {
         appid: appid,
       },

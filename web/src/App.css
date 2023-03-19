@@ -11,10 +11,12 @@
   width: 4px;
   height: 6px;
 }
+
 /* 滚动槽 */
 ::-webkit-scrollbar-track {
   border-radius: 2px;
 }
+
 /* 滚动条滑块 */
 ::-webkit-scrollbar-thumb {
   border-radius: 4px;
@@ -26,13 +28,22 @@ body {
   height: 100%;
 }
 
+/* oevrrides chakra default value */
 body {
-  background-color: #f1f3f5 !important;
-  background-image: url("/bg.png") !important;
   background-repeat: no-repeat !important;
   background-size: cover !important;
   background-position: center !important;
   font-size: 12px;
+}
+
+[data-theme="light"] body {
+  background-color: #f1f3f5 !important;
+  background-image: url("/bg.png") !important;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  /* 滚动条滑块 */
+  background: rgba(21, 22, 26, 0.4);
 }
 
 a {
@@ -48,6 +59,7 @@ a {
   html {
     color-scheme: dark;
   }
+
   body {
     color: white;
     background: black;

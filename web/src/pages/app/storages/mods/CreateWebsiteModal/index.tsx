@@ -46,7 +46,7 @@ function CreateWebsiteModal() {
   const deleteWebsiteMutation = useWebsiteDeleteMutation();
   const updateWebsiteMutation = useWebSiteUpdateMutation();
   const toast = useToast();
-  const cnameDomain = currentStorage?.websiteHosting?.domain;
+  const cnameDomain = currentStorage?.domain?.domain;
 
   return (
     <>

@@ -1,5 +1,5 @@
 import { SmsService } from 'src/auth/phone/sms.service'
-import { Module } from '@nestjs/common'
+import { Global, Module } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
 import { PassportModule } from '@nestjs/passport'
 import { ServerConfig } from '../constants'
@@ -17,6 +17,7 @@ import { PhoneService } from './phone/phone.service'
 import { AuthenticationController } from './authentication.controller'
 import { AuthenticationService } from './authentication.service'
 
+@Global()
 @Module({
   imports: [
     PassportModule,

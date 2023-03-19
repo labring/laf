@@ -1,14 +1,14 @@
-import * as AWS from 'aws-sdk'
-require('aws-sdk/lib/maintenance_mode_message').suppress = true
+import { S3Client } from '@aws-sdk/client-s3'
 
-export function getS3Client(credentials: any) {
-  return new AWS.S3({
-    accessKeyId: credentials.accessKeyId,
-    secretAccessKey: credentials.accessKeySecret,
-    sessionToken: credentials.sessionToken,
+export function getS3ClientV3(credentials: any): S3Client {
+  return new S3Client({
+    credentials: {
+      accessKeyId: credentials.accessKeyId,
+      secretAccessKey: credentials.accessKeySecret,
+      sessionToken: credentials.sessionToken,
+    },
     endpoint: credentials.endpoint,
-    s3ForcePathStyle: true,
-    signatureVersion: 'v4',
+    forcePathStyle: true,
     region: 'us-east-1',
   })
 }

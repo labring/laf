@@ -29,7 +29,12 @@ monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
 monaco?.editor.defineTheme("lafEditorTheme", {
   base: "vs",
   inherit: true,
-  rules: [],
+  rules: [
+    {
+      foreground: "#0066ff",
+      token: "keyword",
+    },
+  ],
   colors: {
     "editorLineNumber.foreground": "#aaa",
     "editorOverviewRuler.border": "#fff",
@@ -37,6 +42,35 @@ monaco?.editor.defineTheme("lafEditorTheme", {
     "scrollbarSlider.background": "#E8EAEC",
     "editorIndentGuide.activeBackground": "#fff",
     "editorIndentGuide.background": "#eee",
+  },
+});
+
+monaco?.editor.defineTheme("lafEditorThemeDark", {
+  base: "vs-dark",
+  inherit: true,
+  rules: [
+    {
+      foreground: "65737e",
+      token: "punctuation.definition.comment",
+    },
+  ],
+  colors: {
+    // https://github.com/microsoft/monaco-editor/discussions/3838
+    "editor.foreground": "#ffffff",
+    "editor.background": "#202631",
+    "editorIndentGuide.activeBackground": "#fff",
+    "editorIndentGuide.background": "#eee",
+    "editor.selectionBackground": "#101621",
+    "menu.selectionBackground": "#101621",
+    "dropdown.background": "#1a202c",
+    "dropdown.foreground": "#f0f0f0",
+    "dropdown.border": "#fff",
+    "quickInputList.focusBackground": "#1a202c",
+    "editorWidget.background": "#1a202c",
+    "editorWidget.foreground": "#f0f0f0",
+    "editorWidget.border": "#1a202c",
+    "input.background": "#1a202c",
+    "list.hoverBackground": "#2a303c",
   },
 });
 
@@ -57,9 +91,9 @@ function FunctionEditor(props: {
   onChange: (value: string | undefined) => void;
   path: string;
   height?: string;
+  colorMode?: string;
 }) {
-  const { value, onChange, path, height = "100%", className } = props;
-
+  const { value, onChange, path, height = "100%", className, colorMode = "light" } = props;
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
   const monacoEl = useRef(null);
@@ -78,7 +112,7 @@ function FunctionEditor(props: {
         overviewRulerLanes: 0,
         lineNumbersMinChars: 4,
         fontSize: 14,
-        theme: "lafEditorTheme",
+        theme: colorMode === "dark" ? "lafEditorThemeDark" : "lafEditorTheme",
         scrollBeyondLastLine: false,
       });
 
@@ -90,13 +124,21 @@ function FunctionEditor(props: {
     }
 
     return () => {};
-  }, [path, value]);
+  }, [colorMode, path, value]);
 
   useEffect(() => {
     if (monacoEl && editorRef.current) {
       updateModel(path, value, editorRef);
     }
   }, [path, value]);
+
+  useEffect(() => {
+    if (monacoEl && editorRef.current) {
+      editorRef.current.updateOptions({
+        theme: colorMode === "dark" ? "lafEditorThemeDark" : "lafEditorTheme",
+      });
+    }
+  }, [colorMode]);
 
   // onChange
   useEffect(() => {

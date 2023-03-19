@@ -323,6 +323,8 @@ const Menu = {
 };
 
 const theme = extendTheme({
+  initialColorMode: "dark", // 'dark | 'light'
+  useSystemColorMode: false,
   fontSizes: {
     sm: "12px",
     base: "12px",
@@ -424,4 +426,5 @@ const theme = extendTheme({
     Menu,
   },
 });
+
 export default theme;

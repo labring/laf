@@ -18,14 +18,6 @@ declare namespace Definitions {
     code?: string /* The source code of the function */;
   };
 
-  export type CreateApplicationDto = {
-    name?: string;
-    state?: string;
-    regionId?: string;
-    bundleId?: string;
-    runtimeId?: string;
-  };
-
   export type UpdateApplicationDto = {
     name?: string;
     state?: string;
@@ -98,6 +90,27 @@ declare namespace Definitions {
     cron?: string;
     target?: string;
   };
+
+  export type CreateSubscriptionDto = {
+    name?: string;
+    state?: string;
+    regionId?: string;
+    bundleId?: string;
+    runtimeId?: string;
+    duration?: number;
+  };
+
+  export type RenewSubscriptionDto = {
+    duration?: number;
+  };
+
+  export type UpgradeSubscriptionDto = {};
+
+  export type CreateChargeOrderDto = {
+    amount?: number;
+    channel?: string;
+    currency?: string;
+  };
 }
 
 declare namespace Paths {
@@ -157,14 +170,6 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace ApplicationControllerCreate {
-    export type QueryParameters = any;
-
-    export type BodyParameters = Definitions.CreateApplicationDto;
-
-    export type Responses = any;
-  }
-
   namespace ApplicationControllerFindAll {
     export type QueryParameters = any;
 
@@ -185,14 +190,6 @@ declare namespace Paths {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.UpdateApplicationDto;
-
-    export type Responses = any;
-  }
-
-  namespace ApplicationControllerRemove {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
 
     export type Responses = any;
   }
@@ -550,6 +547,86 @@ declare namespace Paths {
   }
 
   namespace RegionControllerGetRegions {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace SubscriptionControllerCreate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.CreateSubscriptionDto;
+
+    export type Responses = any;
+  }
+
+  namespace SubscriptionControllerFindAll {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace SubscriptionControllerFindOne {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace SubscriptionControllerRenew {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.RenewSubscriptionDto;
+
+    export type Responses = any;
+  }
+
+  namespace SubscriptionControllerUpgrade {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.UpgradeSubscriptionDto;
+
+    export type Responses = any;
+  }
+
+  namespace SubscriptionControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerFindOne {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerGetChargeOrder {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerCharge {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.CreateChargeOrderDto;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerWechatNotify {
     export type QueryParameters = any;
 
     export type BodyParameters = any;

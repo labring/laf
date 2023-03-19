@@ -15,7 +15,7 @@ export default function BasicLayout() {
   return (
     <div>
       <Header size="lg" />
-      <>
+      <div className="pb-10">
         {loading ? (
           <Center style={{ minHeight: 300 }}>
             <Spinner />
@@ -23,7 +23,7 @@ export default function BasicLayout() {
         ) : (
           <Outlet />
         )}
-      </>
+      </div>
       <div className="text-center fixed -z-10 bottom-0 py-4 w-full">
         Made with <AiFillHeart className="inline text-red-500" />️ by laf team
       </div>

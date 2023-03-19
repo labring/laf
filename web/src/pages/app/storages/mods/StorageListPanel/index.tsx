@@ -76,7 +76,6 @@ export default function StorageListPanel() {
             rounded={"full"}
             placeholder={t("StoragePanel.SearchBucket").toString()}
             size="sm"
-            bg={"gray.100"}
             onChange={(e) => setSearch(e.target.value)}
           />
         </InputGroup>

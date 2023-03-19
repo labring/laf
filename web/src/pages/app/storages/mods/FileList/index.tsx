@@ -12,8 +12,10 @@ import {
   Th,
   Thead,
   Tr,
+  useColorMode,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
+import clsx from "clsx";
 import { t } from "i18next";
 
 import ConfirmButton from "@/components/ConfirmButton";
@@ -39,6 +41,9 @@ export default function FileList() {
   const { currentStorage, prefix, setPrefix, getOrigin } = useStorageStore();
   const bucketName = currentStorage?.name;
   const bucketType = currentStorage?.policy;
+
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
 
   const query = useQuery(
     ["fileList", bucketName, prefix],
@@ -103,7 +108,12 @@ export default function FileList() {
         </Panel.Header>
       </Panel>
       <Panel className="flex-grow overflow-hidden">
-        <Panel.Header className="border-b-2 border-lafWhite-400 flex-none mb-4 ml-4">
+        <Panel.Header
+          className={clsx("flex-none mb-4 ml-4", {
+            "border-b-2": !darkMode,
+            "border-lafWhite-400": !darkMode,
+          })}
+        >
           <PathLink />
           {/* <span className={"before:bg-purple-600 " + styles.circle}>
             TODO: 文件数： {currentStorage?.name}
@@ -130,7 +140,12 @@ export default function FileList() {
           ) : (
             <TableContainer className="h-full" style={{ overflowY: "auto" }}>
               <Table variant="simple" size="sm">
-                <Thead className="h-8 bg-lafWhite-400">
+                <Thead
+                  className={clsx("h-8", {
+                    "bg-lafWhite-400": !darkMode,
+                    "bg-lafDark-100": darkMode,
+                  })}
+                >
                   <Tr>
                     <Th>{t("StoragePanel.FileName")}</Th>
                     <Th>{t("StoragePanel.FileType")}</Th>
@@ -151,7 +166,13 @@ export default function FileList() {
                         ? "folder"
                         : formateType(fileName[fileName.length - 1]);
                       return (
-                        <Tr className="hover:bg-lafWhite-600" key={file.Key || file.Prefix}>
+                        <Tr
+                          className={clsx({
+                            "hover:bg-lafWhite-600": !darkMode,
+                            "hover:bg-lafDark-300": darkMode,
+                          })}
+                          key={file.Key || file.Prefix}
+                        >
                           <Td
                             style={{
                               maxWidth: 200,
@@ -162,7 +183,7 @@ export default function FileList() {
                             onClick={() =>
                               file.Prefix ? changeDirectory(file) : viewAppFile(file)
                             }
-                            className="text-grayModern-900 font-medium cursor-pointer"
+                            className="font-bold cursor-pointer"
                           >
                             <FileTypeIcon type={fileType} />
                             {file.Prefix ? (
@@ -174,7 +195,12 @@ export default function FileList() {
                           <Td>{fileType}</Td>
                           <Td>{file.Size ? formatSize(file.Size) : "--"}</Td>
                           <Td>{file.LastModified ? formatDate(file.LastModified) : "--"}</Td>
-                          <Td isNumeric className="flex justify-end text-grayModern-900 space-x-2">
+                          <Td
+                            isNumeric
+                            className={clsx("flex justify-end space-x-2", {
+                              "text-grayModern-900": !darkMode,
+                            })}
+                          >
                             <IconWrap
                               placement="left"
                               tooltip={

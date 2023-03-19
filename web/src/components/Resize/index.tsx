@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import { Center } from "@chakra-ui/react";
+import { Box, Center, useColorModeValue } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import useResizable from "@/hooks/useResizable";
@@ -34,6 +34,7 @@ export default function Resize(props: {
     };
     store.setLayoutInfo(pageId, panelId, newPosition);
   }, [position, pageId, panelId, store]);
+  const borderColor = useColorModeValue("slate.300", "lafDark.300");
 
   return (
     <>
@@ -64,12 +65,13 @@ export default function Resize(props: {
                     "transition-all absolute z-10 overflow-hidden",
                   )}
                 ></div>
-                <div
+                <Box
+                  borderColor={borderColor}
                   className={clsx(
                     type === "x" ? "h-[18px]" : "w-[18px]",
-                    " border rounded border-slate-300 absolute",
+                    "border rounded absolute",
                   )}
-                ></div>
+                ></Box>
               </>
             )}
           </Center>
