@@ -1,7 +1,7 @@
 import { JwtService } from '@nestjs/jwt'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { Injectable, Logger } from '@nestjs/common'
-import { User } from '@prisma/client'
+import { AuthProviderState, User } from '@prisma/client'
 import {
   PASSWORD_AUTH_PROVIDER_NAME,
   PHONE_AUTH_PROVIDER_NAME,
@@ -21,7 +21,7 @@ export class AuthenticationService {
    */
   async getProviders() {
     return await this.prismaService.authProvider.findMany({
-      where: { state: 'Enabled' },
+      where: { state: AuthProviderState.Enabled },
       select: {
         id: false,
         name: true,

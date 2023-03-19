@@ -66,7 +66,7 @@ export class PhoneController {
     // user not exist
     const provider = await this.authService.getPhoneProvider()
     if (provider.register === false) {
-      return ResponseUtil.error('register is not allowed')
+      return ResponseUtil.error('user not exists')
     }
 
     // check if username and password is needed

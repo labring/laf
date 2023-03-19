@@ -7,8 +7,8 @@ import * as Util from '@alicloud/tea-util'
 import {
   ALISMS_KEY,
   LIMIT_CODE_PER_IP_PER_DAY,
-  ONE_DAY_IN_MILLISECONDS,
-  ONE_MINUTE_IN_MILLISECONDS,
+  MILLISECONDS_PER_DAY,
+  MILLISECONDS_PER_MINUTE,
   CODE_VALIDITY,
 } from 'src/constants'
 import { PrismaService } from 'src/prisma/prisma.service'
@@ -54,7 +54,7 @@ export class SmsService {
       where: {
         phone: phone,
         createdAt: {
-          gt: new Date(Date.now() - ONE_MINUTE_IN_MILLISECONDS),
+          gt: new Date(Date.now() - MILLISECONDS_PER_MINUTE),
         },
       },
     })
@@ -67,7 +67,7 @@ export class SmsService {
       where: {
         ip: ip,
         createdAt: {
-          gt: new Date(Date.now() - ONE_DAY_IN_MILLISECONDS),
+          gt: new Date(Date.now() - MILLISECONDS_PER_DAY),
         },
       },
     })

@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { AuthProviderState } from '@prisma/client'
 import { RegionService } from 'src/region/region.service'
 import { MinioService } from 'src/storage/minio/minio.service'
 import { CPU_UNIT, ServerConfig } from '../constants'
@@ -195,7 +196,7 @@ export class InitializerService {
         },
         register: true,
         default: true,
-        state: 'Enabled',
+        state: AuthProviderState.Enabled,
         config: { usernameField: 'username', passwordField: 'password' },
       },
     })
@@ -211,7 +212,7 @@ export class InitializerService {
         },
         register: true,
         default: false,
-        state: 'Enabled',
+        state: AuthProviderState.Disabled,
         config: {
           alisms: {},
         },
