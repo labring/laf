@@ -31,6 +31,7 @@ body:
         - [Google Translate](https://translate.google.com/)
         - [Baidu Translate](https://fanyi.baidu.com/)
         - [YouDao Translate](https://fanyi.baidu.com/)
+        - ChatGPT
 
   - type: checkboxes
     attributes:
