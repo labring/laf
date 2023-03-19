@@ -1,15 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { SmsVerifyCodeType } from '@prisma/client'
-import { IsEnum, IsNotEmpty, IsString, Length } from 'class-validator'
+import { IsEnum, IsNotEmpty, IsString, Length, Matches } from 'class-validator'
 
 export class PasswdResetDto {
   @ApiProperty({
-    description: 'new password, 8-32 characters',
+    description: 'new password, 8-64 characters',
     example: 'laf-user-password',
   })
   @IsString()
   @IsNotEmpty()
-  @Length(8, 32)
+  @Length(8, 64)
   password: string
 
   @ApiProperty({
@@ -17,7 +17,7 @@ export class PasswdResetDto {
     example: '13805718888',
   })
   @IsString()
-  @Length(11, 11)
+  @Matches(/^1[3-9]\d{9}$/)
   phone: string
 
   @ApiProperty({

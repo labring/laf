@@ -39,29 +39,26 @@ export class PhoneService {
       return err
     }
 
-    // save to database, start transaction
-    await this.prisma.$transaction(async (tx) => {
-      // disable previous same type code
-      await tx.smsVerifyCode.updateMany({
-        where: {
-          phone,
-          type,
-          state: SmsVerifyCodeState.Active,
-        },
-        data: {
-          state: SmsVerifyCodeState.Used,
-        },
-      })
+    // disable previous sms code
+    await this.prisma.smsVerifyCode.updateMany({
+      where: {
+        phone,
+        type,
+        state: SmsVerifyCodeState.Active,
+      },
+      data: {
+        state: SmsVerifyCodeState.Used,
+      },
+    })
 
-      // Save sms code to database
-      await tx.smsVerifyCode.create({
-        data: {
-          phone,
-          code,
-          type,
-          ip,
-        },
-      })
+    // Save new sms code to database
+    await this.prisma.smsVerifyCode.create({
+      data: {
+        phone,
+        code,
+        type,
+        ip,
+      },
     })
 
     return null

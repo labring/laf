@@ -25,7 +25,6 @@ export class AuthenticationService {
       select: {
         id: false,
         name: true,
-        type: true,
         bind: true,
         register: true,
         default: true,

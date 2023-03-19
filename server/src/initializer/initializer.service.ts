@@ -160,7 +160,6 @@ export class InitializerService {
     const resPassword = await this.prisma.authProvider.create({
       data: {
         name: 'user-password',
-        type: 'user-password',
         bind: {
           password: 'optional',
           phone: 'required',
@@ -177,7 +176,6 @@ export class InitializerService {
     const resPhone = await this.prisma.authProvider.create({
       data: {
         name: 'phone',
-        type: 'phone',
         bind: {
           password: 'required',
           phone: 'optional',

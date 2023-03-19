@@ -483,7 +483,6 @@ enum AuthProviderState {
 model AuthProvider {
   id       String            @id @default(auto()) @map("_id") @db.ObjectId
   name     String            @unique
-  type     String
   bind     Json
   register Boolean
   default  Boolean

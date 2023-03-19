@@ -1,5 +1,11 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsNotEmpty, IsString, Length, IsOptional } from 'class-validator'
+import { ApiProperty } from '@nestjs/swagger'
+import {
+  IsNotEmpty,
+  IsString,
+  Length,
+  IsOptional,
+  Matches,
+} from 'class-validator'
 
 export class PhoneSigninDto {
   @ApiProperty({
@@ -8,7 +14,7 @@ export class PhoneSigninDto {
   })
   @IsString()
   @IsNotEmpty()
-  @Length(11, 11)
+  @Matches(/^1[3-9]\d{9}$/)
   phone: string
 
   @ApiProperty({})
@@ -22,15 +28,15 @@ export class PhoneSigninDto {
   })
   @IsOptional()
   @IsString()
-  @Length(8, 16)
+  @Length(3, 64)
   username: string
 
   @ApiProperty({
-    description: 'password, 8-32 characters',
+    description: 'password, 8-64 characters',
     example: 'laf-user-password',
   })
   @IsOptional()
   @IsString()
-  @Length(8, 32)
+  @Length(8, 64)
   password: string
 }

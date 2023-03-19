@@ -8,15 +8,15 @@ export class PasswdSigninDto {
   })
   @IsString()
   @IsNotEmpty()
-  @Length(8, 16)
+  @Length(3, 64)
   username: string
 
   @ApiProperty({
-    description: 'password, 8-16 characters',
+    description: 'password, 8-64 characters',
     example: 'laf-user-password',
   })
   @IsString()
   @IsNotEmpty()
-  @Length(8, 32)
+  @Length(8, 64)
   password: string
 }

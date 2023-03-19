@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { SmsVerifyCodeType } from '@prisma/client'
-import { IsEnum, IsNotEmpty, IsString, Length } from 'class-validator'
+import { IsEnum, IsNotEmpty, IsString, Matches } from 'class-validator'
 
 export class SendPhoneCodeDto {
   @ApiProperty({
@@ -9,7 +9,7 @@ export class SendPhoneCodeDto {
   })
   @IsString()
   @IsNotEmpty()
-  @Length(11, 11)
+  @Matches(/^1[3-9]\d{9}$/)
   phone: string
 
   @ApiProperty({
