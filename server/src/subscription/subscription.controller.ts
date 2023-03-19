@@ -176,8 +176,9 @@ export class SubscriptionController {
     const MAX_RENEWAL_AT = Date.now() + bundle.maxRenewalTime * 1000
     const newExpiredAt = subscription.expiredAt.getTime() + duration * 1000
     if (newExpiredAt > MAX_RENEWAL_AT) {
+      const dateStr = new Date(MAX_RENEWAL_AT).toLocaleString()
       return ResponseUtil.error(
-        `max renewal time is ${MAX_RENEWAL_AT} for bundle ${bundle.name}`,
+        `max renewal time is ${dateStr} for bundle ${bundle.name}`,
       )
     }
 

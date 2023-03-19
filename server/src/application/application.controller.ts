@@ -18,6 +18,7 @@ import { ApplicationService } from './application.service'
 import { FunctionService } from '../function/function.service'
 import { StorageService } from 'src/storage/storage.service'
 import { RegionService } from 'src/region/region.service'
+import { SubscriptionPhase } from '@prisma/client'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -128,6 +129,14 @@ export class ApplicationController {
     const error = dto.validate()
     if (error) {
       return ResponseUtil.error(error)
+    }
+
+    // check if the corresponding subscription status has expired
+    const app = await this.appService.findOne(appid, {
+      subscription: true,
+    })
+    if (app.subscription.phase !== SubscriptionPhase.Valid) {
+      return ResponseUtil.error('subscription has expired, you can not update')
     }
 
     // update app
