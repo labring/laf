@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
@@ -33,21 +33,18 @@ type FormData = {
 export default function SignUp() {
   const signupMutation = useSignupMutation();
   const sendSmsCodeMutation = useSendSmsCodeMutation();
-
+  const [isNeedPhone, setIsNeedPhone] = useState(false);
   const { providers, setProviders } = useAuthStore();
+
   useGetProvidersQuery((data: any) => {
     setProviders(data?.data || []);
-  });
-  const [isNeedPhone, setIsNeedPhone] = useState(false);
-
-  useEffect(() => {
     if (providers.length) {
-      const passwordProvider = providers.find((provider) => provider.type === "user-password");
+      const passwordProvider = providers.find((provider) => provider.name === "user-password");
       if (passwordProvider) {
         setIsNeedPhone(passwordProvider.bind?.phone === "required");
       }
     }
-  }, [providers]);
+  });
 
   const { showSuccess, showError } = useGlobalStore();
   const navigate = useNavigate();
@@ -78,13 +75,21 @@ export default function SignUp() {
       return;
     }
 
-    const res = await signupMutation.mutateAsync({
-      phone: data.phone,
-      code: data.validationCode,
-      username: data.account,
-      password: data.password,
-      type: "Signup",
-    });
+    const params = isNeedPhone
+      ? {
+          phone: data.phone,
+          code: data.validationCode,
+          username: data.account,
+          password: data.password,
+          type: "Signup",
+        }
+      : {
+          username: data.account,
+          password: data.password,
+          type: "Signup",
+        };
+
+    const res = await signupMutation.mutateAsync(params);
 
     if (res?.data) {
       showSuccess(t("AuthPanel.SignupSuccess"));
@@ -132,7 +137,7 @@ export default function SignUp() {
   };
 
   return (
-    <div className="bg-white absolute left-1/2 top-1/2 -translate-y-1/2 w-[560px] h-[644px] rounded-[10px] p-[65px]">
+    <div className="bg-white absolute left-1/2 top-1/2 -translate-y-1/2 w-[560px] rounded-[10px] p-[65px]">
       <div className="mb-[45px]">
         <img src="/logo.png" alt="logo" width={40} className="mr-4" />
       </div>
