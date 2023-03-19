@@ -191,7 +191,7 @@ export class InitializerService {
         name: 'user-password',
         bind: {
           password: 'optional',
-          phone: 'required',
+          phone: 'optional',
           email: 'optional',
         },
         register: true,
@@ -206,7 +206,7 @@ export class InitializerService {
       data: {
         name: 'phone',
         bind: {
-          password: 'required',
+          password: 'optional',
           phone: 'optional',
           email: 'optional',
         },
