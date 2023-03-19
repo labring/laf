@@ -199,7 +199,7 @@
     "CreateBucket": "Create buckets",
     "EditBucket": "Edit Bucket",
     "DeleteBucket": "Delete Buckets",
-    "BucketNameRule": "Can only contain lowercase English, numbers, and the beginning and end cannot be numbers or -",
+    "BucketNameRule": "Can only contain lowercase letters, numbers, and hyphens (-), and cannot start or end with a hyphen (-)",
     "BucketNamePlaceholder": "bucket-name",
     "StorageList": "Cloud Storage List",
     "EmptyStorageTip": "You have not created a Bucket",
