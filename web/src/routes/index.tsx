@@ -13,6 +13,7 @@ const routes = [
   {
     path: "/login",
     element: <AuthLayout />,
+    auth: false,
     children: [
       {
         path: "/login",
@@ -23,6 +24,7 @@ const routes = [
   {
     path: "/signup",
     element: <AuthLayout />,
+    auth: false,
     children: [
       {
         path: "/signup",
@@ -36,6 +38,7 @@ const routes = [
       {
         path: "/",
         element: <BasicLayout />,
+        auth: true,
         children: [
           {
             path: "/",
@@ -46,6 +49,7 @@ const routes = [
       {
         path: "/app",
         element: <FunctionLayout />,
+        auth: true,
         children: [
           {
             path: "/app/:appid/:pageId/:id?",
