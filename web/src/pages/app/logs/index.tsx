@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import SyntaxHighlighter from "react-syntax-highlighter";
 import {
   Button,
   Center,
@@ -15,6 +14,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
+  useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
@@ -22,6 +22,7 @@ import { t } from "i18next";
 
 import Content from "@/components/Content";
 import CopyText from "@/components/CopyText";
+import JSONViewer from "@/components/Editor/JSONViewer";
 import EmptyBox from "@/components/EmptyBox";
 import Pagination from "@/components/Pagination";
 import Panel from "@/components/Panel";
@@ -66,6 +67,8 @@ export default function LogsPage() {
       keepPreviousData: true,
     },
   );
+
+  const { colorMode } = useColorMode();
 
   const submit = () => {
     setQueryData({
@@ -192,9 +195,7 @@ export default function LogsPage() {
                 {detail?.func}
               </div>
               <span className={styles.primaryText}>Content: </span>
-              <SyntaxHighlighter language="json" customStyle={{ background: "#fdfdfe" }}>
-                {detail?.data || ""}
-              </SyntaxHighlighter>
+              <JSONViewer colorMode={colorMode} code={detail?.data || ""} />
             </ModalBody>
             <ModalFooter>
               <Button onClick={onClose}>{t("Close")}</Button>

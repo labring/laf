@@ -1,4 +1,4 @@
-export type TApplication = {
+export type TApplicationDetail = {
   id: string;
   name: string;
   appid: string;
@@ -26,14 +26,13 @@ export type TApplication = {
 
 export type TBundle = {
   id: string;
-  appid: string;
   name: string;
   displayName: string;
+  priority: number;
+  state: string;
   resource: TResource;
-  price: number;
-  specialPrice: number;
-  createdAt: string;
-  updatedAt: string;
+  limitCountPerUser: number;
+  subscriptionOptions: TSubscriptionOption[];
 };
 
 export type TResource = {
@@ -44,13 +43,22 @@ export type TResource = {
   databaseCapacity: number;
   storageCapacity: number;
   networkTrafficOutbound: number;
-  limitCountPerUser: number;
   limitCountOfCloudFunction: number;
   limitCountOfBucket: number;
   limitCountOfDatabasePolicy: number;
   limitCountOfTrigger: number;
+  limitCountOfWebsiteHosting: number;
+  reservedTimeAfterExpired: number;
   limitDatabaseTPS: number;
   limitStorageTPS: number;
+};
+
+export type TSubscriptionOption = {
+  name: string;
+  displayName: string;
+  duration: number;
+  price: number;
+  specialPrice: number;
 };
 
 export type TRuntime = {
@@ -256,4 +264,77 @@ export type TProfile = {
   name: string;
   createdAt: string;
   updatedAt: string;
+};
+
+export type TApplicationItem = {
+  id: string;
+  name: string;
+  appid: string;
+  regionId: string;
+  runtimeId: string;
+  tags: Array<any>;
+  state: string;
+  phase: string;
+  createdAt: string;
+  updatedAt: string;
+  lockedAt: string;
+  createdBy: string;
+  bundle: {
+    id: string;
+    appid: string;
+    bundleId: string;
+    name: string;
+    displayName: string;
+    resource: {
+      limitCPU: number;
+      limitMemory: number;
+      requestCPU: number;
+      requestMemory: number;
+      databaseCapacity: number;
+      storageCapacity: number;
+      networkTrafficOutbound: number;
+      limitCountOfCloudFunction: number;
+      limitCountOfBucket: number;
+      limitCountOfDatabasePolicy: number;
+      limitCountOfTrigger: number;
+      limitCountOfWebsiteHosting: number;
+      reservedTimeAfterExpired: number;
+      limitDatabaseTPS: number;
+      limitStorageTPS: number;
+    };
+    createdAt: string;
+    updatedAt: string;
+  };
+  runtime: {
+    id: string;
+    name: string;
+    type: string;
+    image: {
+      main: string;
+      init: string;
+      sidecar: any;
+    };
+    state: string;
+    version: string;
+    latest: boolean;
+  };
+  subscription: {
+    id: string;
+    input: {
+      name: string;
+      state: string;
+      runtimeId: string;
+      regionId: string;
+    };
+    bundleId: string;
+    appid: string;
+    state: string;
+    phase: string;
+    renewalPlan: string;
+    expiredAt: string;
+    lockedAt: string;
+    createdAt: string;
+    updatedAt: string;
+    createdBy: string;
+  };
 };

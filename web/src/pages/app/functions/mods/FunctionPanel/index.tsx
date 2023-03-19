@@ -213,9 +213,9 @@ export default function FunctionList() {
                       navigate(`/app/${currentApp?.appid}/${Pages.function}/${func?.name}`);
                     }}
                   >
-                    <div>
+                    <div className="leading-loose font-semibold">
                       <FileTypeIcon type={FileType.ts} />
-                      <span className="ml-2 font-medium">{func?.name}</span>
+                      <span className="ml-2 text-base">{func?.name}</span>
                     </div>
                     <HStack spacing={1}>
                       {functionCache.getCache(func?.id, func?.source?.code) !==

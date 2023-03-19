@@ -1,13 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { BucketPolicy } from '@prisma/client'
-import { IsEnum, IsNotEmpty, Length } from 'class-validator'
+import { IsEnum, IsNotEmpty, Matches } from 'class-validator'
 
 export class CreateBucketDto {
   @ApiProperty({
     description: 'The short name of the bucket which not contain the appid',
   })
   @IsNotEmpty()
-  @Length(1, 32)
+  @Matches(/^[a-z0-9][a-z0-9-]{1,30}[a-z0-9]$/)
   shortName: string
 
   @ApiProperty({

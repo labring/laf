@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import SyntaxHighlighter from "react-syntax-highlighter";
 import { AddIcon, CopyIcon } from "@chakra-ui/icons";
-import { Button, Center, Spinner, Text } from "@chakra-ui/react";
+import { Button, Center, Spinner, Text, useColorMode } from "@chakra-ui/react";
+import clsx from "clsx";
 import { t } from "i18next";
 
 import CopyText from "@/components/CopyText";
 import JsonEditor from "@/components/Editor/JsonEditor";
+import JSONViewer from "@/components/Editor/JSONViewer";
 import EmptyBox from "@/components/EmptyBox";
 import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
@@ -33,6 +34,9 @@ export default function PolicyDataList() {
       setRecord(JSON.stringify(data.data[0].value, null, 2));
     }
   });
+
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
 
   useEffect(() => {
     setCurrentData(undefined);
@@ -122,14 +126,16 @@ export default function PolicyDataList() {
               component={(item: any) => {
                 return (
                   <>
-                    <div className="border-b-2 border-lafWhite-600 mb-4 p-2">
+                    <div
+                      className={clsx("border-b-2 mb-4 p-2", {
+                        "border-lafWhite-600": !darkMode,
+                      })}
+                    >
                       <Text fontSize="md" className="leading-loose font-semibold">
                         {t("CollectionPanel.Collection")}:{item.collectionName}
                       </Text>
                     </div>
-                    <SyntaxHighlighter language="json" customStyle={{ background: "#fdfdfe" }}>
-                      {JSON.stringify(item.value, null, 2)}
-                    </SyntaxHighlighter>
+                    <JSONViewer colorMode={colorMode} code={JSON.stringify(item.value, null, 2)} />
                   </>
                 );
               }}
@@ -165,8 +171,14 @@ export default function PolicyDataList() {
               <Text fontSize="md" className="leading-loose font-semibold mt-4 mb-2">
                 {t("CollectionPanel.RulesContent")}
               </Text>
-              <div className=" mb-4 pr-2 flex-1 bg-lafWhite-400 rounded">
+              <div
+                className={clsx(" mb-4 pr-2 flex-1 rounded", {
+                  "bg-lafWhite-400": !darkMode,
+                  "bg-lafDark-200": darkMode,
+                })}
+              >
                 <JsonEditor
+                  colorMode={colorMode}
                   value={record}
                   onChange={(values) => {
                     setRecord(values!);

@@ -29,9 +29,9 @@ export class RegionService {
     return regions
   }
 
-  async findOneDesensitized(name: string) {
+  async findOneDesensitized(id: string) {
     const region = await this.prisma.region.findUnique({
-      where: { name },
+      where: { id },
       select: {
         id: true,
         name: true,
@@ -65,10 +65,11 @@ export class RegionService {
             id: true,
             name: true,
             displayName: true,
-            price: true,
             priority: true,
             state: true,
             resource: true,
+            limitCountPerUser: true,
+            subscriptionOptions: true,
           },
         },
       },

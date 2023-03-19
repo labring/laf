@@ -1,86 +1,37 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
-  Delete,
   UseGuards,
   Req,
   Logger,
 } from '@nestjs/common'
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { IRequest } from '../utils/interface'
 import { JwtAuthGuard } from '../auth/jwt.auth.guard'
 import { ResponseUtil } from '../utils/response'
 import { ApplicationAuthGuard } from '../auth/application.auth.guard'
-import { CreateApplicationDto } from './dto/create-application.dto'
 import { UpdateApplicationDto } from './dto/update-application.dto'
 import { ApplicationService } from './application.service'
 import { FunctionService } from '../function/function.service'
 import { StorageService } from 'src/storage/storage.service'
 import { RegionService } from 'src/region/region.service'
-import { BundleService } from 'src/region/bundle.service'
-import { PrismaService } from 'src/prisma/prisma.service'
+import { SubscriptionPhase } from '@prisma/client'
 
 @ApiTags('Application')
 @Controller('applications')
 @ApiBearerAuth('Authorization')
 export class ApplicationController {
   private logger = new Logger(ApplicationController.name)
+
   constructor(
     private readonly appService: ApplicationService,
     private readonly funcService: FunctionService,
     private readonly regionService: RegionService,
     private readonly storageService: StorageService,
-    private readonly bundleService: BundleService,
-    private readonly prisma: PrismaService,
   ) {}
-
-  /**
-   * Create application
-   * @returns
-   */
-  @ApiOperation({ summary: 'Create a new application' })
-  @UseGuards(JwtAuthGuard)
-  @Post()
-  async create(@Body() dto: CreateApplicationDto, @Req() req: IRequest) {
-    const user = req.user
-    const error = dto.validate()
-    if (error) {
-      return ResponseUtil.error(error)
-    }
-
-    // check app count limit
-    const bundle = await this.bundleService.findOne(dto.bundleId)
-    const LIMIT_COUNT = bundle?.resource?.limitCountPerUser || 0
-    const count = await this.prisma.application.count({
-      where: {
-        createdBy: user.id,
-        bundle: {
-          bundleId: dto.bundleId,
-        },
-      },
-    })
-    if (count >= LIMIT_COUNT) {
-      return ResponseUtil.error(
-        `application count limit is ${LIMIT_COUNT} for bundle ${bundle.name}`,
-      )
-    }
-
-    // create app
-    const app = await this.appService.create(user.id, dto)
-    if (!app) {
-      return ResponseUtil.error('create app error')
-    }
-    return ResponseUtil.ok(app)
-  }
 
   /**
    * Get user application list
@@ -108,9 +59,11 @@ export class ApplicationController {
     const data = await this.appService.findOne(appid, {
       configuration: true,
       domain: true,
+      subscription: true,
     })
 
-    // [SECURITY ALERT] Do NOT response this region object to client since it contains sensitive information
+    // SECURITY ALERT!!!
+    // DO NOT response this region object to client since it contains sensitive information
     const region = await this.regionService.findOne(data.regionId)
 
     // TODO: remove these storage related code to standalone api
@@ -178,29 +131,19 @@ export class ApplicationController {
       return ResponseUtil.error(error)
     }
 
+    // check if the corresponding subscription status has expired
+    const app = await this.appService.findOne(appid, {
+      subscription: true,
+    })
+    if (app.subscription.phase !== SubscriptionPhase.Valid) {
+      return ResponseUtil.error('subscription has expired, you can not update')
+    }
+
     // update app
     const res = await this.appService.update(appid, dto)
     if (res === null) {
       return ResponseUtil.error('update application error')
     }
-    return ResponseUtil.ok(res)
-  }
-
-  /**
-   * Delete an application
-   * @returns
-   */
-  @ApiResponse({ type: ResponseUtil })
-  @ApiOperation({ summary: 'Delete an application' })
-  @Delete(':appid')
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
-  async remove(@Param('appid') appid: string) {
-    const res = await this.appService.remove(appid)
-    if (res === null) {
-      this.logger.error('delete application error')
-      return ResponseUtil.error('delete application error')
-    }
-
     return ResponseUtil.ok(res)
   }
 }

@@ -16,6 +16,7 @@ import {
   Th,
   Thead,
   Tr,
+  useColorMode,
 } from "@chakra-ui/react";
 import { t } from "i18next";
 
@@ -40,6 +41,7 @@ const ContentType = {
 
 function BodyParamsTab(props: { onChange(values: { contentType: string; data: any }): void }) {
   const { onChange } = props;
+  const { colorMode } = useColorMode();
 
   const [dataType, setDataType] = useState<string>(ContentType.JSON);
 
@@ -92,6 +94,7 @@ function BodyParamsTab(props: { onChange(values: { contentType: string; data: an
       </RadioGroup>
       {dataType === ContentType.JSON ? (
         <JsonEditor
+          colorMode={colorMode}
           onChange={(values) => {
             try {
               const jsonValues = JSON.parse(values || "{}");

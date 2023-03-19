@@ -192,14 +192,17 @@ export async function pushOne(funcName: string) {
   console.log(`${getEmoji('✅')} function ${funcName} pushed`)
 }
 
-export async function exec(funcName: string, options: {
-  log: string;
-  requestId: boolean,
-  method: string,
-  query: string,
-  data: string,
-  headers: any,
-}) {
+export async function exec(
+  funcName: string,
+  options: {
+    log: string
+    requestId: boolean
+    method: string
+    query: string
+    data: string
+    headers: any
+  },
+) {
   // compile code
   const codePath = path.join(process.cwd(), 'functions', funcName + '.ts')
   if (!exist(codePath)) {
@@ -215,7 +218,7 @@ export async function exec(funcName: string, options: {
   // invoke debug
   const secretConfig = readSecretConfig()
 
-  // transform headers json string to object. -H '{"Content-Type": "application/json"}' 
+  // transform headers json string to object. -H '{"Content-Type": "application/json"}'
   if (options.headers) {
     try {
       options.headers = JSON.parse(options.headers)

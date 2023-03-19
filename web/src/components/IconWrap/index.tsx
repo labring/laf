@@ -1,5 +1,5 @@
 import React from "react";
-import { Center, Tooltip } from "@chakra-ui/react";
+import { Center, Tooltip, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
 export default function IconWrap(props: {
@@ -12,13 +12,17 @@ export default function IconWrap(props: {
   className?: string;
 }) {
   const { size = 20, tooltip, placement = "top", showBg = false, className } = props;
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
   return (
     <Tooltip label={tooltip} placement={placement}>
       <Center
         onClick={props.onClick}
-        className={clsx("rounded-full inline-block cursor-pointer text-gray-500", className, {
-          "hover:bg-lafWhite-600": !showBg,
-          "bg-lafWhite-600": showBg,
+        className={clsx("rounded-full inline-block cursor-pointer ", className, {
+          "hover:bg-lafWhite-600": !darkMode && !showBg,
+          "bg-lafWhite-600": !darkMode && showBg,
+          "hover:bg-lafDark-300": darkMode && !showBg,
+          "bg-lafDark-300": darkMode && showBg,
         })}
         style={{ width: size, height: size }}
       >

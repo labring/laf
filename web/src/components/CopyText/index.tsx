@@ -15,7 +15,13 @@ export default function CopyText(props: {
   const { onCopy, setValue } = useClipboard("");
   const { showSuccess } = useGlobalStore();
 
-  const { children = <CopyIcon />, text, tip, className, hideToolTip } = props;
+  const {
+    children = <CopyIcon fontSize={10} color="#999" />,
+    text,
+    tip,
+    className,
+    hideToolTip,
+  } = props;
 
   useEffect(() => {
     setValue(text || "");

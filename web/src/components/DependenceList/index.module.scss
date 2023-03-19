@@ -13,14 +13,5 @@
     span {
       vertical-align: middle;
     }
-
-    &:hover,
-    &.active {
-      background-color: var(--chakra-colors-primary-100);
-    }
-
-    &.active {
-      background-color: var(--chakra-colors-primary-300);
-    }
   }
 }

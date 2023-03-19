@@ -77,7 +77,7 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
         />
         <ConfirmButton
           onSuccessAction={() => {
-            globalStore.updateCurrentApp();
+            globalStore.updateCurrentApp(globalStore.currentApp!);
             props.onClose && props.onClose();
           }}
           headerText={String(t("Update"))}

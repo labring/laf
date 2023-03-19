@@ -34,6 +34,7 @@ export class InitializerService {
           set: {
             driver: 'mongodb',
             connectionUri: ServerConfig.DEFAULT_REGION_DATABASE_URL,
+            controlConnectionUri: ServerConfig.DEFAULT_REGION_DATABASE_URL,
           },
         },
         storageConf: {
@@ -46,6 +47,8 @@ export class InitializerService {
               ServerConfig.DEFAULT_REGION_MINIO_INTERNAL_ENDPOINT,
             accessKey: ServerConfig.DEFAULT_REGION_MINIO_ROOT_ACCESS_KEY,
             secretKey: ServerConfig.DEFAULT_REGION_MINIO_ROOT_SECRET_KEY,
+            controlEndpoint:
+              ServerConfig.DEFAULT_REGION_MINIO_INTERNAL_ENDPOINT,
           },
         },
         gatewayConf: {
@@ -77,6 +80,9 @@ export class InitializerService {
       data: {
         name: 'standard',
         displayName: 'Standard',
+        limitCountPerUser: 10,
+        priority: 0,
+        maxRenewalTime: 3600 * 24 * 365 * 10,
         resource: {
           limitCPU: 1 * CPU_UNIT,
           limitMemory: 512,
@@ -87,17 +93,39 @@ export class InitializerService {
           storageCapacity: 1024 * 5,
           networkTrafficOutbound: 1024 * 5,
 
-          limitCountPerUser: 50,
           limitCountOfCloudFunction: 500,
           limitCountOfBucket: 10,
           limitCountOfDatabasePolicy: 10,
           limitCountOfTrigger: 10,
           limitCountOfWebsiteHosting: 10,
+          reservedTimeAfterExpired: 3600 * 24 * 7,
 
           limitDatabaseTPS: 100,
           limitStorageTPS: 1000,
         },
-        priority: 0,
+        subscriptionOptions: [
+          {
+            name: 'monthly',
+            displayName: '1 Month',
+            duration: 31 * 24 * 3600,
+            price: 0,
+            specialPrice: 0,
+          },
+          {
+            name: 'half-yearly',
+            displayName: '6 Months',
+            duration: 6 * 31 * 24 * 3600,
+            price: 0,
+            specialPrice: 0,
+          },
+          {
+            name: 'yearly',
+            displayName: '12 Months',
+            duration: 12 * 31 * 24 * 3600,
+            price: 0,
+            specialPrice: 0,
+          },
+        ],
         region: {
           connect: {
             name: 'default',

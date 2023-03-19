@@ -2,18 +2,17 @@ import { Command, program } from 'commander'
 import { create, custom, del, list } from '../../action/website'
 import { checkApplication } from '../../common/hook'
 
-
 export function command(): Command {
   const cmd = program.command('website').hook('preAction', () => {
     checkApplication()
   })
 
   cmd
-  .command('list')
-  .description('website list')
-  .action(() => {
-    list()
-  })
+    .command('list')
+    .description('website list')
+    .action(() => {
+      list()
+    })
 
   cmd
     .command('create <bucketName>')
@@ -21,15 +20,14 @@ export function command(): Command {
     .action((bucketName, options) => {
       create(bucketName, options)
     })
-  
-  
-    cmd
+
+  cmd
     .command('del <bucketName>')
     .description('del website')
     .action((bucketName, options) => {
       del(bucketName, options)
     })
-  
+
   cmd
     .command('custom <bucketName> <domain>')
     .description('custom website domain')
