@@ -80,4 +80,23 @@ export class UserService {
       where,
     })
   }
+
+  // find user by username | phone | email
+  async find(username: string) {
+    // match either username or phone or email
+    return await this.prisma.user.findFirst({
+      where: {
+        OR: [{ username }, { phone: username }, { email: username }],
+      },
+    })
+  }
+
+  // find user by phone
+  async findByPhone(phone: string) {
+    return await this.prisma.user.findFirst({
+      where: {
+        phone,
+      },
+    })
+  }
 }

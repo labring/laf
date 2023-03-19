@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { AuthProviderState } from '@prisma/client'
 import { RegionService } from 'src/region/region.service'
 import { MinioService } from 'src/storage/minio/minio.service'
 import { CPU_UNIT, ServerConfig } from '../constants'
@@ -174,5 +175,56 @@ export class InitializerService {
         throw new Error('set minio client target failed ' + region.name)
       }
     }
+  }
+
+  async createDefaultAuthProvider() {
+    // check if exists
+    const existed = await this.prisma.authProvider.count()
+    if (existed) {
+      this.logger.debug('default auth provider already exists')
+      return
+    }
+
+    // create default auth provider - user-password
+    const resPassword = await this.prisma.authProvider.create({
+      data: {
+        name: 'user-password',
+        bind: {
+          password: 'optional',
+          phone: 'required',
+          email: 'optional',
+        },
+        register: true,
+        default: true,
+        state: AuthProviderState.Enabled,
+        config: { usernameField: 'username', passwordField: 'password' },
+      },
+    })
+
+    // create auth provider - phone code
+    const resPhone = await this.prisma.authProvider.create({
+      data: {
+        name: 'phone',
+        bind: {
+          password: 'required',
+          phone: 'optional',
+          email: 'optional',
+        },
+        register: true,
+        default: false,
+        state: AuthProviderState.Disabled,
+        config: {
+          alisms: {},
+        },
+      },
+    })
+
+    this.logger.verbose(
+      'Created default auth providers: ' +
+        resPassword.name +
+        '  ' +
+        resPhone.name,
+    )
+    return resPhone
   }
 }

@@ -27,11 +27,21 @@ model User {
   personalAccessTokens PersonalAccessToken[]
 }
 
+model UserPassword {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  uid       String   @db.ObjectId
+  password  String
+  state     String   @default("Active") // Active, Inactive
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model UserProfile {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   uid       String   @unique @db.ObjectId
   openid    String?
   from      String?
+  openData  Json?
   avatar    String?
   name      String?
   createdAt DateTime @default(now())
@@ -51,7 +61,7 @@ model PersonalAccessToken {
   user User @relation(fields: [uid], references: [id])
 }
 
-// region schemas 
+// region schemas
 
 type RegionClusterConf {
   driver     String // kubernetes
@@ -594,4 +604,40 @@ model WebsiteHosting {
   lockedAt   DateTime
 
   bucket StorageBucket @relation(fields: [bucketName], references: [name])
+}
+
+enum AuthProviderState {
+  Enabled
+  Disabled
+}
+
+model AuthProvider {
+  id       String            @id @default(auto()) @map("_id") @db.ObjectId
+  name     String            @unique
+  bind     Json
+  register Boolean
+  default  Boolean
+  state    AuthProviderState
+  config   Json
+}
+
+// Sms schemas
+enum SmsVerifyCodeType {
+  Signin
+  Signup
+  ResetPassword
+  Bind
+  Unbind
+  ChangePhone
+}
+
+model SmsVerifyCode {
+  id        String            @id @default(auto()) @map("_id") @db.ObjectId
+  phone     String
+  code      String
+  ip        String
+  type      SmsVerifyCodeType
+  state     Int               @default(0) // 0: created, 1: used
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
 }
