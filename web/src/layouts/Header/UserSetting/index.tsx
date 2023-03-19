@@ -65,7 +65,7 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
         <MenuItem
           onClick={() => {
             localStorage.clear();
-            (window as any).location.href = (VITE_SERVER_BASE_URL + "/v1/login") as string;
+            (window as any).location.href = (VITE_SERVER_BASE_URL + "/login") as string;
           }}
         >
           {t("Logout")}
