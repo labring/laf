@@ -1,25 +1,66 @@
-## Getting Started
+## Project Introduction
+laf-cli is a command-line tool designed to help developers quickly create, deploy, and manage applications on laf.
 
-First, run the development:
+## Quick Start
 
+### Installation
+
+To install laf-cli, use npm:
 ```bash
-cd cli
-
-npm install
-// or
-npm i --registry=https://registry.npmmirror.com
-
-// then
-npm run watch
-
-// then, new terminal
-npm link
-
+npm install -g laf-cli
 ```
 
-Run `laf -v`
+Once installation is complete, verify the installation using:
+```bash
+laf -v
+```
 
-### File Tree:
+To log in, use the login command with your personal access token (PAT), which can be obtained from User Settings -> Personal Access Tokens:
+```bash
+laf login <pat>
+```
+
+View the list of applications and initialize an application:
+```bash
+laf app list
+laf app init <appId>
+```
+
+For more commands and usage:
+```bash
+laf -h
+```
+
+## Development
+
+To begin development, follow the steps below:
+
+1. Navigate to the cli directory in the terminal:
+```bash
+cd cli
+```
+
+2. Install the required dependencies: 
+```bash
+npm install
+```
+
+3. Run the watch command:
+```bash
+npm run watch
+```
+
+4. Open a new terminal and run link command:
+```bash
+npm link
+```
+
+5. Finally, verify that everything is working as expected:
+```bash
+laf -v
+```
+
+## File Tree
 
 ```
 ├── src
