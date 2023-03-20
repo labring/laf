@@ -3,8 +3,6 @@ laf-cli is a command-line tool designed to help developers quickly create, deplo
 
 ## Quick Start
 
-### Installation
-
 To install laf-cli, use npm:
 ```bash
 npm install -g laf-cli
