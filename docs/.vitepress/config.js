@@ -51,15 +51,19 @@ const guideSiderbarConfig = [
         link: "/guide/function/",
       },
       {
+        text: "云函数参数 返回值",
+        link: "/guide/function/function-param",
+      },
+      {
         text: "调用云函数",
         items: [
           {
-            text: "在云函数中调用",
-            link: "/guide/function/call-function",
-          },
-          {
             text: "在客户端中调用",
             link: "/guide/function/call-function-in-client",
+          },
+          {
+            text: "在云函数中调用",
+            link: "/guide/function/call-function",
           },
         ],
       },

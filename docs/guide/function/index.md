@@ -14,7 +14,7 @@ title: 云函数入门
 
 点击页面左上角「函数」按钮,点击加号,添加云函数
 
-![](/doc-images/create-function.jpg)
+![](/doc-images/create-function.png)
 
 ## 编辑云函数
 
@@ -38,7 +38,7 @@ title: 云函数入门
 
 ![](/doc-images/publish-cloudfunction.png)
 
-## 访问云函数
+<!-- ## 访问云函数
 
 ### 通过 URL 访问云函数
 
@@ -436,4 +436,4 @@ exports.main = async function (ctx) {
   await cloud.shared.clear(); // 清空所有缓存
   // ... 其他方法可访问上方MDN的Map文档查看
 };
-```
+``` -->
