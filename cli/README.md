@@ -1,4 +1,5 @@
 ## Project Introduction
+
 laf-cli is a command-line tool designed to help developers quickly create, deploy, and manage applications on laf.
 
 ## Quick Start
