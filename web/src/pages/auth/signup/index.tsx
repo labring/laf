@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
@@ -38,13 +38,16 @@ export default function SignUp() {
 
   useGetProvidersQuery((data: any) => {
     setProviders(data?.data || []);
+  });
+
+  useEffect(() => {
     if (providers.length) {
       const passwordProvider = providers.find((provider) => provider.name === "user-password");
       if (passwordProvider) {
         setIsNeedPhone(passwordProvider.bind?.phone === "required");
       }
     }
-  });
+  }, [providers]);
 
   const { showSuccess, showError } = useGlobalStore();
   const navigate = useNavigate();
