@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import {
   Button,
   FormControl,
@@ -81,6 +81,11 @@ function CreateWebsiteModal() {
                     reset({});
                     setTimeout(() => {
                       setFocus("domain");
+                      reset({
+                        domain: currentStorage?.websiteHosting?.isCustom
+                          ? currentStorage?.websiteHosting?.domain
+                          : "",
+                      });
                     }, 0);
                   }
                 }}
@@ -154,9 +159,13 @@ function CreateWebsiteModal() {
                   placeholder={String(t("StoragePanel.domainTip"))}
                 />
                 <p className="mt-2 text-grayModern-600">
-                  {t("StoragePanel.cnameHostPreTip")}
-                  <span className="mx-2 whitespace-nowrap">{cnameDomain}</span>
-                  {t("StoragePanel.cnameHostSuffixTip")}
+                  <Trans
+                    t={t}
+                    i18nKey="StoragePanel.cnameTip"
+                    values={{
+                      cnameDomain: cnameDomain,
+                    }}
+                  />
                 </p>
               </FormControl>
             </VStack>
