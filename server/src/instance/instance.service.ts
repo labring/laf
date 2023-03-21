@@ -34,6 +34,12 @@ export class InstanceService {
     const region = await this.regionService.findByAppId(appid)
     const appWithRegion = { ...app, region } as ApplicationWithRegion
 
+    const namespace = await this.clusterService.getAppNamespace(region, appid)
+    if (!namespace) {
+      this.logger.debug(`Creating namespace for application ${appid}`)
+      await this.clusterService.createAppNamespace(region, appid, app.createdBy)
+    }
+
     const res = await this.get(appWithRegion)
     if (!res.deployment) {
       await this.createDeployment(appid, labels)
@@ -255,21 +261,40 @@ export class InstanceService {
     const appid = app.appid
     const region = await this.regionService.findByAppId(appid)
     const { deployment, service } = await this.get(app)
+
+    const namespace = await this.clusterService.getAppNamespace(
+      region,
+      app.appid,
+    )
+    if (!namespace) {
+      return
+    }
+
     const appsV1Api = this.clusterService.makeAppsV1Api(region)
     const coreV1Api = this.clusterService.makeCoreV1Api(region)
 
-    const namespace = GetApplicationNamespaceByAppId(appid)
     if (deployment) {
-      await appsV1Api.deleteNamespacedDeployment(appid, namespace)
+      await appsV1Api.deleteNamespacedDeployment(appid, namespace.metadata.name)
     }
     if (service) {
       const name = appid
-      await coreV1Api.deleteNamespacedService(name, namespace)
+      await coreV1Api.deleteNamespacedService(name, namespace.metadata.name)
     }
+
+    // delete application namespace
+    await this.clusterService.removeAppNamespace(region, appid)
   }
 
   async get(app: Application) {
     const region = await this.regionService.findByAppId(app.appid)
+    const namespace = await this.clusterService.getAppNamespace(
+      region,
+      app.appid,
+    )
+    if (!namespace) {
+      return { deployment: null, service: null }
+    }
+
     const appWithRegion = { ...app, region }
     const deployment = await this.getDeployment(appWithRegion)
     const service = await this.getService(appWithRegion)
