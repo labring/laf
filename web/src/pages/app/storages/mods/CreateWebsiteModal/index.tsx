@@ -56,7 +56,12 @@ function CreateWebsiteModal() {
           <span className="font-semibold mr-2">{t("StoragePanel.CurrentDomain")}</span>
           <Link
             className="cursor-pointer mr-2"
-            href={getOrigin(currentStorage?.websiteHosting?.domain)}
+            href={
+              currentStorage?.websiteHosting?.isCustom
+                ? // custom domain don't support https currently
+                  "http://" + currentStorage?.websiteHosting?.domain
+                : getOrigin(currentStorage?.websiteHosting?.domain)
+            }
             isExternal
           >
             {currentStorage?.websiteHosting?.domain}

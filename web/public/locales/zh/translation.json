@@ -324,5 +324,6 @@
   "Scan with WeChat": "微信扫码支付",
   "Order Number": "订单号",
   "payment status": "支付状态",
-  "Monthly": "月"
+  "Monthly": "月",
+  "CreateFolder": "新建文件夹"
 }

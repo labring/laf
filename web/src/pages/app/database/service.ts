@@ -149,7 +149,7 @@ export const useUpdateDataMutation = (config?: { onSuccess: (data: any) => void 
     async (values: any) => {
       const query = db.collection(currentDB?.name!).where({ _id: values._id });
       delete values._id;
-      const result = query.update({ ...values });
+      const result = query.update({ ...values }, { merge: false });
       return result;
     },
     {
