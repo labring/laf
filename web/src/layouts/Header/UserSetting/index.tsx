@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { Avatar, Menu, MenuButton, MenuItem, MenuList, useColorMode } from "@chakra-ui/react";
 
-import { VITE_SERVER_BASE_URL } from "@/constants";
 import i18n from "@/utils/i18n";
 
 import SettingModal, { TabKeys } from "@/pages/app/setting";
@@ -10,6 +10,7 @@ import UserInfo from "@/pages/app/setting/UserInfo";
 export default function UserSetting(props: { name: string; avatar?: string; width: string }) {
   const { t } = useTranslation();
   const { toggleColorMode } = useColorMode();
+  const navigate = useNavigate();
   return (
     <Menu>
       <MenuButton>
@@ -65,7 +66,7 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
         <MenuItem
           onClick={() => {
             localStorage.clear();
-            (window as any).location.href = (VITE_SERVER_BASE_URL + "/login") as string;
+            navigate("/login", { replace: true });
           }}
         >
           {t("Logout")}

@@ -9,3 +9,27 @@
   background-position: left bottom;
   background-size: 60%;
 }
+
+.welcomeWrap {
+  position: absolute;
+  top: 120px;
+  left: 120px;
+}
+
+.welcomeText {
+  font-family: 'PingFang SC';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 36px;
+  // line-height: 20px;
+  color: #00A99D;
+}
+
+.sloganText {
+  font-family: 'PingFang SC';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  // line-height: 20px;
+  color: #787A90;
+}
