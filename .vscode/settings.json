@@ -82,6 +82,7 @@
     "qrcode",
     "readwrite",
     "Referer",
+    "relock",
     "rolebinding",
     "roundrobin",
     "runc",
