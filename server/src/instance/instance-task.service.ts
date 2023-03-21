@@ -42,9 +42,6 @@ export class InstanceTaskService {
 
     // Phase `Stopped` -> `Starting`
     times(this.concurrency, () => this.handleRestartingStateUp())
-
-    // Clear timeout locks
-    this.clearTimeoutLocks()
   }
 
   /**
@@ -93,6 +90,7 @@ export class InstanceTaskService {
           $set: {
             phase: ApplicationPhase.Starting,
             lockedAt: TASK_LOCK_INIT_TIME,
+            updatedAt: new Date(),
           },
         },
       )
@@ -122,14 +120,14 @@ export class InstanceTaskService {
           },
         },
         {
-          $set: {
-            lockedAt: new Date(),
-          },
+          $set: { lockedAt: new Date() },
         },
       )
 
     if (!res.value) return
     const app = res.value
+
+    const waitingTime = Date.now() - app.updatedAt.getTime()
 
     try {
       const appid = app.appid
@@ -139,12 +137,12 @@ export class InstanceTaskService {
         instance.deployment.status?.conditions,
       )
       if (!available) {
-        await this.unlock(appid)
+        await this.relock(appid, waitingTime)
         return
       }
 
       if (!instance.service) {
-        await this.unlock(appid)
+        await this.relock(appid, waitingTime)
         return
       }
 
@@ -165,6 +163,7 @@ export class InstanceTaskService {
             state: toState,
             phase: ApplicationPhase.Started,
             lockedAt: TASK_LOCK_INIT_TIME,
+            updatedAt: new Date(),
           },
         },
       )
@@ -218,6 +217,7 @@ export class InstanceTaskService {
           $set: {
             phase: ApplicationPhase.Stopping,
             lockedAt: TASK_LOCK_INIT_TIME,
+            updatedAt: new Date(),
           },
         },
       )
@@ -258,10 +258,12 @@ export class InstanceTaskService {
     const appid = app.appid
 
     try {
+      const waitingTime = Date.now() - app.updatedAt.getTime()
+
       // check if the instance is removed
       const instance = await this.instanceService.get(app)
       if (instance.deployment) {
-        await this.unlock(appid)
+        await this.relock(appid, waitingTime)
         return
       }
 
@@ -275,6 +277,7 @@ export class InstanceTaskService {
           $set: {
             phase: ApplicationPhase.Stopped,
             lockedAt: TASK_LOCK_INIT_TIME,
+            updatedAt: new Date(),
           },
         },
       )
@@ -328,6 +331,7 @@ export class InstanceTaskService {
           $set: {
             phase: ApplicationPhase.Stopping,
             lockedAt: TASK_LOCK_INIT_TIME,
+            updatedAt: new Date(),
           },
         },
       )
@@ -381,6 +385,7 @@ export class InstanceTaskService {
           $set: {
             phase: ApplicationPhase.Starting,
             lockedAt: TASK_LOCK_INIT_TIME,
+            updatedAt: new Date(),
           },
         },
       )
@@ -393,39 +398,13 @@ export class InstanceTaskService {
   }
 
   /**
-   * Unlock application by appid
+   * Relock application by appid, lockedTime is in milliseconds
    */
-  async unlock(appid: string) {
+  async relock(appid: string, lockedTime = 0) {
     const db = SystemDatabase.db
-    await db.collection<Application>('Application').updateOne(
-      {
-        appid: appid,
-      },
-      {
-        $set: {
-          lockedAt: TASK_LOCK_INIT_TIME,
-        },
-      },
-    )
-  }
-
-  /**
-   * Clear timeout locks
-   */
-  async clearTimeoutLocks() {
-    const db = SystemDatabase.db
-
-    await db.collection<Application>('Application').updateMany(
-      {
-        lockedAt: {
-          $lt: new Date(Date.now() - 1000 * this.lockTimeout),
-        },
-      },
-      {
-        $set: {
-          lockedAt: TASK_LOCK_INIT_TIME,
-        },
-      },
-    )
+    const lockedAt = new Date(Date.now() - 1000 * this.lockTimeout + lockedTime)
+    await db
+      .collection<Application>('Application')
+      .updateOne({ appid: appid }, { $set: { lockedAt } })
   }
 }
