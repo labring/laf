@@ -210,8 +210,7 @@
     "isResolved": "已生效",
     "parsing": "解析中",
     "websiteHost": "开启网站托管",
-    "cnameHostPreTip": "添加该域名的\"CNAME\" 解析到",
-    "cnameHostSuffixTip": "解析生效后即可绑定自定义域名。",
+    "cnameTip": "请对该域名添加 CNAME 记录，解析到 <strong>{{cnameDomain}}</strong> ，解析生效后即可绑定自定义域名。",
     "editHostTip": "开启网站托管需要 bucket 权限是 readonly 模式",
     "CreateWebHosting": "绑定自定义域名",
     "CustomDomain": "自定义域名",
@@ -319,11 +318,11 @@
   "Balance": "账户余额",
   "ChargeNow": "充值",
   "balance is insufficient": "余额不足",
-  "nihao": "你好",
   "DeleteApp": "删除应用",
   "Recharge amount": "充值金额",
   "Scan with WeChat": "微信扫码支付",
   "Order Number": "订单号",
   "payment status": "支付状态",
-  "Monthly": "月"
+  "Monthly": "月",
+  "CreateFolder": "新建文件夹"
 }

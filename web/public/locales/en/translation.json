@@ -210,8 +210,7 @@
     "websiteHost": "Enable website hosting",
     "Inaccessible": "Inaccessible",
     "isResolved": "Effective",
-    "cnameHostPreTip": "Add the \"CNAME\" record of the domain to resolve to",
-    "cnameHostSuffixTip": ", After the resolution takes effect, the custom domain name can be bound.",
+    "cnameTip": "Add the \"CNAME\" record of the domain to resolve to <strong>{{cnameDomain}}</strong>, After the resolution takes effect, the custom domain name can be bound.",
     "editHostTip": "oss-bucket needs to be in read mode to enable website hosting",
     "CreateWebHosting": "Bind custom domain name",
     "CustomDomain": "Custom Domain",
@@ -324,5 +323,6 @@
   "Scan with WeChat": "WeChat scan code payment",
   "Order Number": "Order Number",
   "payment status": "Payment status",
-  "Monthly": "Monthly"
+  "Monthly": "Monthly",
+  "CreateFolder": "New Folder"
 }

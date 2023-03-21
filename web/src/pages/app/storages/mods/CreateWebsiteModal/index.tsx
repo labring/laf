@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import {
   Button,
   FormControl,
@@ -56,7 +56,12 @@ function CreateWebsiteModal() {
           <span className="font-semibold mr-2">{t("StoragePanel.CurrentDomain")}</span>
           <Link
             className="cursor-pointer mr-2"
-            href={getOrigin(currentStorage?.websiteHosting?.domain)}
+            href={
+              currentStorage?.websiteHosting?.isCustom
+                ? // custom domain don't support https currently
+                  "http://" + currentStorage?.websiteHosting?.domain
+                : getOrigin(currentStorage?.websiteHosting?.domain)
+            }
             isExternal
           >
             {currentStorage?.websiteHosting?.domain}
@@ -76,6 +81,11 @@ function CreateWebsiteModal() {
                     reset({});
                     setTimeout(() => {
                       setFocus("domain");
+                      reset({
+                        domain: currentStorage?.websiteHosting?.isCustom
+                          ? currentStorage?.websiteHosting?.domain
+                          : "",
+                      });
                     }, 0);
                   }
                 }}
@@ -149,9 +159,13 @@ function CreateWebsiteModal() {
                   placeholder={String(t("StoragePanel.domainTip"))}
                 />
                 <p className="mt-2 text-grayModern-600">
-                  {t("StoragePanel.cnameHostPreTip")}
-                  <span className="mx-2 whitespace-nowrap">{cnameDomain}</span>
-                  {t("StoragePanel.cnameHostSuffixTip")}
+                  <Trans
+                    t={t}
+                    i18nKey="StoragePanel.cnameTip"
+                    values={{
+                      cnameDomain: cnameDomain,
+                    }}
+                  />
                 </p>
               </FormControl>
             </VStack>
