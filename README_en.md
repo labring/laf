@@ -64,16 +64,16 @@
       <td width="50%" align="center"><b>Cloud Storage</b></td>
   </tr>
   <tr>
-     <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/ide.png"/></td>
-     <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/files.png"/></td>
+     <!-- <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/ide.png"/></td>
+     <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/files.png"/></td> -->
   </tr>
   <tr>
       <td width="50%" align="center"><b>Cloud Database</b></td>
       <td width="50%" align="center"><b>Application Management</b></td>
   </tr>
   <tr>
-     <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/collection.png"/></td>
-     <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/apps.png"/></td>
+     <!-- <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/collection.png"/></td> -->
+     <!-- <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/apps.png"/></td> -->
   </tr>
 </table>
 
