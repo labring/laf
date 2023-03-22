@@ -10,7 +10,7 @@ title: 在客户端中调用
 目前 SDK 暂时只支持发送 POST 请求
 :::
 
-## 安装sdk
+## 前端项目中安装sdk
 
 ```shell
 npm i laf-client-sdk
@@ -29,9 +29,10 @@ const cloud = new Cloud({
 ## 调用云函数
 
 ```typescript
+// 这里的第一个参数就是云函数的名字，第二个参数是传入的数据，对应云函数中的 ctx.body
 const res = await cloud.invoke('get-user-info', { userid })
 
-console.log(res)     // user data find by id
+console.log(res)     // 这里的 res 是云函数中 return 的内容
 ```
 
 怎么样，是不是很方便， 只需简单的配置和一行代码即可实现对云函数的调用。

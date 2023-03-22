@@ -51,15 +51,19 @@ const guideSiderbarConfig = [
         link: "/guide/function/",
       },
       {
+        text: "云函数参数 返回值",
+        link: "/guide/function/function-param",
+      },
+      {
         text: "调用云函数",
         items: [
           {
-            text: "在云函数中调用",
-            link: "/guide/function/call-function",
-          },
-          {
             text: "在客户端中调用",
             link: "/guide/function/call-function-in-client",
+          },
+          {
+            text: "在云函数中调用",
+            link: "/guide/function/call-function",
           },
         ],
       },
@@ -85,9 +89,9 @@ const guideSiderbarConfig = [
     text: "云数据库",
     items: [
       { text: "云数据库简介", link: "/guide/db/" },
-      { text: "访问策略", link: "/guide/db/policy" },
-      { text: "数据操作", link: "/guide/db/actions" },
       { text: "数据查询", link: "/guide/db/query" },
+      { text: "数据操作", link: "/guide/db/actions" },
+      { text: "访问策略", link: "/guide/db/policy" },
       {
         text: "操作地理信息",
         link: "/guide/db/geo",

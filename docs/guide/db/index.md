@@ -30,7 +30,7 @@ title: 云数据库介绍
 
 每个 Laf 应用有且仅有一个数据库，但是一个数据库可以创建多个集合。
 
-## 访问数据库
+<!-- ## 访问数据库
 
 ### 在云函数中访问数据库
 
@@ -41,9 +41,9 @@ import cloud from "@lafjs/cloud";
 
 // 数据库对象
 const db = cloud.database();
-```
+``` -->
 
-### 在客户端中访问数据库
+<!-- ### 在客户端中访问数据库
 
 前端可使用 [laf-client-sdk](https://github.com/labring/laf/tree/main/packages/client-sdk) “直连”数据库，无需与服务端对接口。
 
@@ -88,7 +88,7 @@ const cloud = require("laf-client-sdk").init({
 
 // 获取数据库访问器
 const db = cloud.database();
-```
+``` -->
 
 ## 数据类型
 
@@ -108,7 +108,7 @@ const db = cloud.database();
 - Date：时间
 - Null
 
-### 1. Date 类型
+###  Date 类型
 
 Date 类型用于表示时间，精确到毫秒，可以用 JavaScript 内置 Date 对象创建。需要特别注意的是，用此方法创建的时间是客户端时间，不是服务端时间。如果需要使用服务端时间，应该用 API 中提供的 serverDate 对象来创建一个服务端当前时间的标记，当使用了 serverDate 对象的请求抵达服务端处理时，该字段会被转换成服务端当前的时间，更棒的是，我们在构造 serverDate 对象时还可通过传入一个有 offset 字段的对象来标记一个与当前服务端时间偏移 offset 毫秒的时间，这样我们就可以达到比如如下效果：指定一个字段为服务端时间往后一个小时。
 
