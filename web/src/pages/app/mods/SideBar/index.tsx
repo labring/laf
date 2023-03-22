@@ -2,7 +2,6 @@
  * cloud functions SideBar menu
  ***************************/
 
-import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Center } from "@chakra-ui/react";
 import clsx from "clsx";
@@ -27,19 +26,6 @@ export default function SideBar() {
   const { pageId } = useParams();
   const navigate = useNavigate();
   const { currentApp, setCurrentPage, userInfo } = useGlobalStore();
-
-  useEffect(() => {
-    const handleTabClose = (event: any) => {
-      if (pageId === Pages.function) {
-        event.preventDefault();
-        event.returnValue = "";
-      }
-    };
-    window.addEventListener("beforeunload", handleTabClose);
-    return () => {
-      window.removeEventListener("beforeunload", handleTabClose);
-    };
-  }, [pageId]);
 
   const ICONS: TIcon[] = [
     {
