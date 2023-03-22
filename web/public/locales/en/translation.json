@@ -324,5 +324,7 @@
   "Order Number": "Order Number",
   "payment status": "Payment status",
   "Monthly": "Monthly",
-  "CreateFolder": "New Folder"
+  "CreateFolder": "New Folder",
+  "Or": "or",
+  "BeforeunloadTip": "Are you sure you want to leave the current editing page?"
 }
