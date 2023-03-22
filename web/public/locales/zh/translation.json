@@ -195,7 +195,7 @@
     "Upload": "上传",
     "Used": "已使用",
     "UploadTip": "请选择文件或者文件夹上传",
-    "BucketNameRule": "只能包含小写英文、数字和中划线（-），开头和结尾不能是中划线（-）",
+    "BucketNameRule": "Bucket 名称必须由小写字母、数字和中划线（-）组成，长度在3到32个字符之间，且不能以 - 开头或结尾。",
     "Bucket": "桶",
     "BucketName": "Bucket 名称",
     "CreateBucket": "创建 Bucket",

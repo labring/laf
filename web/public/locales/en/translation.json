@@ -199,7 +199,7 @@
     "CreateBucket": "Create buckets",
     "EditBucket": "Edit Bucket",
     "DeleteBucket": "Delete Buckets",
-    "BucketNameRule": "Can only contain lowercase letters, numbers, and hyphens (-), and cannot start or end with a hyphen (-)",
+    "BucketNameRule": "The bucket name must consist of lowercase letters, numbers and hyphens (-), with a length between 3 and 32 characters, and cannot start or end with a hyphen (-).",
     "BucketNamePlaceholder": "bucket-name",
     "StorageList": "Cloud Storage List",
     "EmptyStorageTip": "You have not created a Bucket",
