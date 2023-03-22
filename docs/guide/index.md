@@ -33,16 +33,16 @@ title: 介绍
       <td width="50%" align="center"><b>云存储</b></td>
   </tr>
   <tr>
-     <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/ide.png"/></td>
-     <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/files.png"/></td>
+     <td><img src="../doc-images/function.png"/></td>
+     <td><img src="../doc-images/file.png"/></td>
   </tr>
   <tr>
       <td width="50%" align="center"><b>云数据库：数据管理</b></td>
       <td width="50%" align="center"><b>应用列表</b></td>
   </tr>
   <tr>
-     <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/collection.png"/></td>
-     <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/apps.png"/></td>
+     <td><img src="../doc-images/db.png"/></td>
+     <td><img src="../doc-images/appList.png"/></td>
   </tr>
 </table>
 
@@ -91,7 +91,7 @@ title: 介绍
 
 1. 使用 laf 快速开发微信小程序/公众号： 电商、社交、工具、教育、金融、游戏、短视频、社区、企业等应用！
 
-   - 微信小程序强要求 https 访问，可直接使用 [lafyun.com](http://www.lafyun.com) 创建应用，为小程序提供 https 的接口服务
+   - 微信小程序强要求 https 访问，可直接使用 [lafyun.dev](https://laf.dev) 创建应用，为小程序提供 https 的接口服务
    - 可将应用的 h5 页面和管理端(admin) 直接部署到可由 `laf` 静态托管
    - 将 h5 直接托管到 `laf` 上，将分配的专用域名配置到公众号即可在线访问
    - 使用云函数实现微信授权、支付等业务
@@ -105,7 +105,7 @@ title: 介绍
 
 3. 部署个人博客、企业官网
 
-   - 将 vuepress / hexo / hugo 等静态生成的博客，一键部署到 `laf` 静态托管上， 见 [laf-cli](https://github.com/labring/laf/tree/main/packages/cli)
+   - 将 vuepress / hexo / hugo 等静态生成的博客，一键部署到 `laf` 静态托管上， 见 [laf-cli](https://github.com/labring/laf/tree/main/cli)
    - 可使用云函数来处理用户留言、评论、访问统计等业务
    - 可使用云函数扩展博客的其它能力，如课程、投票、提问等
    - 可使用云存储存储视频、图片
