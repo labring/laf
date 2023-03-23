@@ -62,41 +62,13 @@ helm install apisix -n ${NAMESPACE} \
     ./charts/apisix
 
 
-## 4. install casdoor
-PG_PASSWORD=$PASSWD_OR_SECRET
-helm install postgresql -n ${NAMESPACE} \
-    --set postgresql.username=${PG_USERNAME:-adm1n} \
-    --set postgresql.password=${PG_PASSWORD} \
-    --set postgresql.database=${PG_DATABASE:-casdoor} \
-    ./charts/postgresql
-
-CASDOOR_HOST="login.${DOMAIN}"
-CASDOOR_ENDPOINT="${HTTP_SCHEMA}://${CASDOOR_HOST}"
-CASDOOR_CLIENT_ID=$(tr -cd 'a-f0-9' </dev/urandom |head -c21)
-CASDOOR_CLIENT_SECRET=$PASSWD_OR_SECRET
-CASDOOR_REDIRECT_URI="${HTTP_SCHEMA}://${DOMAIN}/login_callback"
-helm install casdoor -n ${NAMESPACE} \
-    --set host=${CASDOOR_HOST} \
-    --set init.client_id=${CASDOOR_CLIENT_ID} \
-    --set init.client_secret=${CASDOOR_CLIENT_SECRET} \
-    --set init.redirect_uri=${CASDOOR_REDIRECT_URI} \
-    --set postgresql.host=postgresql \
-    --set postgresql.username=${PG_USERNAME:-adm1n} \
-    --set postgresql.password=${PG_PASSWORD} \
-    --set postgresql.database=${PG_DATABASE:-casdoor} \
-    ./charts/casdoor
-
-## 5. install laf-server
+## 4. install laf-server
 SERVER_JWT_SECRET=$PASSWD_OR_SECRET
 helm install server -n ${NAMESPACE} \
     --set databaseUrl=${DATABASE_URL} \
     --set jwt.secret=${SERVER_JWT_SECRET} \
     --set apiServerHost=api.${DOMAIN} \
     --set apiServerUrl=${HTTP_SCHEMA}://api.${DOMAIN} \
-    --set casdoor.endpoint=${CASDOOR_ENDPOINT} \
-    --set casdoor.client_id=${CASDOOR_CLIENT_ID} \
-    --set casdoor.client_secret=${CASDOOR_CLIENT_SECRET} \
-    --set casdoor.redirect_uri=${CASDOOR_REDIRECT_URI} \
     --set default_region.database_url=${DATABASE_URL} \
     --set default_region.minio_domain=${MINIO_DOMAIN} \
     --set default_region.minio_external_endpoint=${MINIO_EXTERNAL_ENDPOINT} \
