@@ -46,8 +46,8 @@ const Tag = defineMultiStyleConfig({
     }),
     inputTag: definePartsStyle({
       container: {
-        backgroundColor: "lafWhite.600",
-        borderColor: "lafWhite.600",
+        backgroundColor: "lafWhite.100",
+        borderColor: "lafWhite.100",
         borderWidth: 1,
         color: "grayModern.900",
         height: "28px",

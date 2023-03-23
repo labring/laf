@@ -32,7 +32,7 @@
     "EmptyDataText": "暂无数据信息,",
     "EmptyPolicyTip": "您还没有创建策略",
     "EmptyRuleTip": "此策略还没有规则,",
-    "CreateTagTip": "按「回车键」或「空格键」分隔标签，每个标签最多由16个字符组成"
+    "CreateTagTip": "按「回车键」输入标签，每个标签最多由16个字符组成"
   },
   "Add": "添加",
   "AddData": "新增数据",

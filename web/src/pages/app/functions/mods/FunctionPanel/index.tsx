@@ -5,19 +5,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AddIcon, DeleteIcon, EditIcon, Search2Icon } from "@chakra-ui/icons";
-import {
-  HStack,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Popover,
-  PopoverBody,
-  PopoverContent,
-  PopoverTrigger,
-  Tag,
-  TagCloseButton,
-  TagLabel,
-} from "@chakra-ui/react";
+import { HStack, Input, InputGroup, InputLeftElement, useColorMode } from "@chakra-ui/react";
+import { clsx } from "clsx";
 import { t } from "i18next";
 
 import { TriggerIcon } from "@/components/CommonIcon";
@@ -54,17 +43,17 @@ export default function FunctionList() {
 
   const [keywords, setKeywords] = useState("");
 
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
+
   const { currentApp } = useGlobalStore();
 
   const { id: functionName } = useParams();
   const navigate = useNavigate();
   const [tagsList, setTagsList] = useState<TagItem[]>([]);
-  const handleClick = (name: string, selected: boolean) => {
-    const newSelect = tagsList.map((item) => {
-      return item.tagName === name ? { tagName: name, selected: selected } : item;
-    });
-    setTagsList(newSelect);
-  };
+
+  const [currentTag, setCurrentTag] = useState<TagItem | null>(null);
+
   useFunctionListQuery({
     onSuccess: (data) => {
       setAllFunctionList(data.data);
@@ -103,31 +92,28 @@ export default function FunctionList() {
   const deleteFunctionMutation = useDeleteFunctionMutation();
 
   const renderSelectedTags = () => {
-    const selectTags = tagsList.filter((item) => item.selected);
-    const handleClear = () => {
-      const newTagsList = tagsList.map((item) => {
-        return {
-          ...item,
-          selected: false,
-        };
-      });
-      setTagsList(newTagsList);
-    };
-    return (
-      <div className="w-full mt-2 flex flex-wrap justify-start items-center min-w-[200px]">
-        {selectTags.map((item) => (
-          <Tag className="mr-2 mb-2 cursor-pointer" key={item.tagName} variant="inputTag">
-            <TagLabel>{item.tagName}</TagLabel>
-            <TagCloseButton onClick={() => handleClick(item.tagName, false)} />
-          </Tag>
+    return tagsList.length > 0 ? (
+      <div className="w-full mt-2 mb-2 pb-1 flex flex-wrap justify-start border-b items-center min-w-[200px]">
+        <p className={clsx("mr-2 mb-1", darkMode ? "text-white-500" : "text-grayModern-500")}>
+          {t("FunctionPanel.Tags")}
+        </p>
+        {tagsList.map((item) => (
+          <span
+            className={clsx(
+              "cursor-pointer px-2 mb-1 rounded mr-1",
+              darkMode ? "bg-gray-700" : "bg-gray-100",
+              {
+                "!bg-primary-400 text-white": item.tagName === currentTag?.tagName,
+              },
+            )}
+            key={item.tagName}
+            onClick={() => setCurrentTag(currentTag?.tagName === item.tagName ? null : item)}
+          >
+            {item.tagName}
+          </span>
         ))}
-        {selectTags.length ? (
-          <p className="mr-2 mb-2 text-blue-700 cursor-pointer" onClick={handleClear}>
-            {t("Empty")}
-          </p>
-        ) : null}
       </div>
-    );
+    ) : null;
   };
 
   return (
@@ -147,60 +133,35 @@ export default function FunctionList() {
           </CreateModal>,
         ]}
       />
-      <Popover>
-        <PopoverTrigger>
-          <InputGroup>
-            <InputLeftElement
-              height={"8"}
-              pointerEvents="none"
-              children={<Search2Icon color="gray.300" fontSize={12} />}
-            />
-            <Input
-              size="sm"
-              rounded={"full"}
-              placeholder={String(t("FunctionPanel.SearchPlaceholder"))}
-              onChange={(e) => {
-                setKeywords(e.target.value);
-              }}
-            />
-          </InputGroup>
-        </PopoverTrigger>
-        {tagsList.length > 0 ? (
-          <PopoverContent borderColor="lafWhite.100" width="260px" padding="4px">
-            <PopoverBody>
-              <p className="text-grayModern-500 pb-4"> {t("FunctionPanel.Tags")}</p>
-              {tagsList.map((item) => (
-                <Tag
-                  className="mr-2 mb-2 cursor-pointer"
-                  key={item.tagName}
-                  variant={item.selected ? "inputTagActive" : "inputTag"}
-                  onClick={() => handleClick(item.tagName, !item.selected)}
-                >
-                  <TagLabel>{item.tagName}</TagLabel>
-                </Tag>
-              ))}
-            </PopoverBody>
-          </PopoverContent>
-        ) : null}
-      </Popover>
+
+      <InputGroup className="mb-2">
+        <InputLeftElement
+          height={"8"}
+          pointerEvents="none"
+          children={<Search2Icon color="gray.300" fontSize={12} />}
+        />
+        <Input
+          size="sm"
+          rounded={"full"}
+          placeholder={String(t("FunctionPanel.SearchPlaceholder"))}
+          onChange={(e) => {
+            setKeywords(e.target.value);
+          }}
+        />
+      </InputGroup>
+
       {renderSelectedTags()}
+
       <div className="flex-grow" style={{ overflowY: "auto" }}>
         {allFunctionList?.length ? (
           <SectionList>
             {allFunctionList
               .filter((item: TFunction) => {
-                const selectedTag = tagsList
-                  .filter((item) => item.selected)
-                  .map((tag) => tag.tagName);
-                let flag = selectedTag.length > 0 ? false : true;
-                if (!flag) {
-                  for (let i = 0; i < item.tags.length && !flag; i++) {
-                    if (selectedTag.indexOf(item.tags[i]) > -1) {
-                      flag = true;
-                    }
-                  }
+                let flag = item?.name.includes(keywords);
+                if (tagsList.length > 0 && currentTag) {
+                  flag = flag && item.tags.includes(currentTag?.tagName);
                 }
-                return item?.name.includes(keywords) && flag;
+                return flag;
               })
               .map((func: any) => {
                 return (
