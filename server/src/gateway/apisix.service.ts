@@ -162,6 +162,20 @@ export class ApisixService {
     }
   }
 
+  async getRoute(region: Region, id: string) {
+    const conf = region.gatewayConf
+    const api_url = `${conf.apiUrl}/routes/${id}`
+
+    const res = await this.httpService.axiosRef.get(api_url, {
+      headers: {
+        'X-API-KEY': conf.apiKey,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    return res.data
+  }
+
   async deleteRoute(region: Region, id: string) {
     const conf = region.gatewayConf
     const api_url = `${conf.apiUrl}/routes/${id}`

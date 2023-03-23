@@ -310,7 +310,7 @@ export class InstanceService {
       return res.body
     } catch (error) {
       if (error?.response?.body?.reason === 'NotFound') return null
-      return null
+      throw error
     }
   }
 
@@ -324,7 +324,8 @@ export class InstanceService {
       const res = await coreV1Api.readNamespacedService(serviceName, namespace)
       return res.body
     } catch (error) {
-      return null
+      if (error?.response?.body?.reason === 'NotFound') return null
+      throw error
     }
   }
 }
