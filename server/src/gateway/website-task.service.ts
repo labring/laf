@@ -194,7 +194,6 @@ export class WebsiteTaskService {
     // delete website route if exists
     const route = await this.apisixService.getRoute(region, site._id.toString())
     if (route) {
-      await this.apisixService.deleteWebsiteRoute(region, site)
       const res = await this.apisixService.deleteWebsiteRoute(region, site)
       this.logger.log(`delete website route: ${res?.key}`)
       this.logger.debug('delete website route', res)
