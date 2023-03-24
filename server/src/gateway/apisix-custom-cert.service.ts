@@ -7,8 +7,8 @@ import { GetApplicationNamespaceByAppId } from 'src/utils/getter'
 // This class handles the creation and deletion of website domain certificates
 // and ApisixTls resources using Kubernetes Custom Resource Definitions (CRDs).
 @Injectable()
-export class ApisixCrdService {
-  private readonly logger = new Logger(ApisixCrdService.name)
+export class ApisixCustomCertService {
+  private readonly logger = new Logger(ApisixCustomCertService.name)
   constructor(private readonly clusterService: ClusterService) {}
 
   // Read a certificate for a given website using cert-manager.io CRD
@@ -17,17 +17,17 @@ export class ApisixCrdService {
       // Get the namespace based on the application ID
       const namespace = GetApplicationNamespaceByAppId(website.appid)
       // Create a Kubernetes API client for the specified region
-      const api = this.clusterService.makeObjectApi(region)
+      const api = this.clusterService.makeCustomObjectApi(region)
 
       // Make a request to read the Certificate resource
-      const res = await api.read({
-        apiVersion: 'cert-manager.io/v1',
-        kind: 'Certificate',
-        metadata: {
-          name: website.id,
-          namespace,
-        },
-      })
+      const res = await api.getNamespacedCustomObject(
+        'cert-manager.io',
+        'v1',
+        namespace,
+        'certificates',
+        website.id,
+      )
+
       return res.body
     } catch (err) {
       if (err?.response?.body?.reason === 'NotFound') return null
@@ -96,17 +96,16 @@ export class ApisixCrdService {
       // Get the namespace based on the application ID
       const namespace = GetApplicationNamespaceByAppId(website.appid)
       // Create an API object for the specified region
-      const api = this.clusterService.makeObjectApi(region)
+      const api = this.clusterService.makeCustomObjectApi(region)
 
       // Make a request to read the ApisixTls resource
-      const res = await api.read({
-        apiVersion: 'apisix.apache.org/v2',
-        kind: 'ApisixTls',
-        metadata: {
-          name: website.id,
-          namespace,
-        },
-      })
+      const res = await api.getNamespacedCustomObject(
+        'apisix.apache.org',
+        'v2',
+        namespace,
+        'apisixtlses',
+        website.id,
+      )
       return res.body
     } catch (err) {
       if (err?.response?.body?.reason === 'NotFound') return null
