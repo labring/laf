@@ -12,6 +12,7 @@ import { SystemDatabase } from 'src/database/system-database'
 import { RegionService } from 'src/region/region.service'
 import * as assert from 'node:assert'
 import { ApisixService } from './apisix.service'
+import { ApisixCustomCertService } from './apisix-custom-cert.service'
 
 @Injectable()
 export class WebsiteTaskService {
@@ -22,6 +23,7 @@ export class WebsiteTaskService {
   constructor(
     private readonly regionService: RegionService,
     private readonly apisixService: ApisixService,
+    private readonly customCertService: ApisixCustomCertService,
   ) {}
 
   @Cron(CronExpression.EVERY_SECOND)
@@ -62,22 +64,19 @@ export class WebsiteTaskService {
       .findOneAndUpdate(
         {
           phase: DomainPhase.Creating,
-          lockedAt: {
-            $lt: new Date(Date.now() - 1000 * this.lockTimeout),
-          },
+          lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
-        {
-          $set: {
-            lockedAt: new Date(),
-          },
-        },
+        { $set: { lockedAt: new Date() } },
       )
 
     if (!res.value) return
 
     this.logger.debug(res.value)
     // get region by appid
-    const site = res.value
+    const site = {
+      ...res.value,
+      id: res.value._id.toString(),
+    }
     const region = await this.regionService.findByAppId(site.appid)
     assert(region, 'region not found')
 
@@ -97,7 +96,48 @@ export class WebsiteTaskService {
       site,
       bucketDomain.domain,
     )
-    this.logger.debug(`create website route: `, route)
+    this.logger.log(`create website route: ${route?.node?.key}`)
+
+    // create website custom certificate if custom domain is set
+    if (site.isCustom) {
+      // create custom domain  certificate
+      let cert = await this.customCertService.readWebsiteDomainCert(
+        region,
+        site,
+      )
+      if (!cert) {
+        cert = await this.customCertService.createWebsiteDomainCert(
+          region,
+          site,
+        )
+        this.logger.log(`create website cert: ${site._id}`)
+      }
+
+      // return to try to create cert again in next tick if cert is not found
+      if (!cert) {
+        this.logger.error(`create website cert failed: ${site._id}`)
+        return
+      }
+
+      // config custom domain certificate to apisix
+      let apisixTls = await this.customCertService.readWebsiteDomainApisixTls(
+        region,
+        site,
+      )
+      if (!apisixTls) {
+        apisixTls = await this.customCertService.createWebsiteDomainApisixTls(
+          region,
+          site,
+        )
+        this.logger.log(`create website apisix tls: ${site._id}`)
+      }
+
+      // return to try to create cert again in next tick if cert is not found
+      if (!apisixTls) {
+        this.logger.error(`create website apisix tls failed: ${site._id}`)
+        return
+      }
+    }
 
     // update phase to `Created`
     const updated = await db
@@ -117,7 +157,10 @@ export class WebsiteTaskService {
 
     if (updated.modifiedCount !== 1) {
       this.logger.error(`update website hosting phase failed: ${site._id}`)
+      return
     }
+
+    this.logger.log(`update website phase to 'Created': ${site._id}`)
   }
 
   /**
@@ -133,28 +176,54 @@ export class WebsiteTaskService {
       .findOneAndUpdate(
         {
           phase: DomainPhase.Deleting,
-          lockedAt: {
-            $lt: new Date(Date.now() - 1000 * this.lockTimeout),
-          },
+          lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
-        {
-          $set: {
-            lockedAt: new Date(),
-          },
-        },
+        { $set: { lockedAt: new Date() } },
       )
 
     if (!res.value) return
 
     // get region by appid
-    const site = res.value
+    const site = {
+      ...res.value,
+      id: res.value._id.toString(),
+    }
     const region = await this.regionService.findByAppId(site.appid)
     assert(region, 'region not found')
 
-    // delete website route
-    const route = await this.apisixService.deleteWebsiteRoute(region, site)
+    // delete website route if exists
+    const route = await this.apisixService.getRoute(region, site._id.toString())
+    if (route) {
+      const res = await this.apisixService.deleteWebsiteRoute(region, site)
+      this.logger.log(`delete website route: ${res?.key}`)
+      this.logger.debug('delete website route', res)
+    }
+    // delete website custom certificate if custom domain is set
+    if (site.isCustom) {
+      // delete custom domain  certificate
+      const cert = await this.customCertService.readWebsiteDomainCert(
+        region,
+        site,
+      )
+      if (cert) {
+        await this.customCertService.deleteWebsiteDomainCert(region, site)
+        this.logger.log(`delete website cert: ${site._id}`)
+        // return to wait for cert to be deleted
+        return
+      }
 
-    this.logger.debug(`delete website route: `, route)
+      // delete custom domain certificate from apisix
+      const apisixTls = await this.customCertService.readWebsiteDomainApisixTls(
+        region,
+        site,
+      )
+      if (apisixTls) {
+        await this.customCertService.deleteWebsiteDomainApisixTls(region, site)
+        this.logger.log(`delete website apisix tls: ${site._id}`)
+        // return to wait for cert to be deleted
+        return
+      }
+    }
 
     // update phase to `Deleted`
     const updated = await db
@@ -174,7 +243,10 @@ export class WebsiteTaskService {
 
     if (updated.modifiedCount > 1) {
       this.logger.error(`update website hosting phase failed: ${site._id}`)
+      return
     }
+
+    this.logger.log(`update website phase to 'Deleted': ${site._id}`)
   }
 
   /**

@@ -32,7 +32,7 @@
     "EmptyDataText": "暂无数据信息,",
     "EmptyPolicyTip": "您还没有创建策略",
     "EmptyRuleTip": "此策略还没有规则,",
-    "CreateTagTip": "按「回车键」或「空格键」分隔标签，每个标签最多由16个字符组成"
+    "CreateTagTip": "按「回车键」输入标签，每个标签最多由16个字符组成"
   },
   "Add": "添加",
   "AddData": "新增数据",
@@ -195,7 +195,7 @@
     "Upload": "上传",
     "Used": "已使用",
     "UploadTip": "请选择文件或者文件夹上传",
-    "BucketNameRule": "只能包含小写英文、数字和中划线（-），开头和结尾不能是中划线（-）",
+    "BucketNameRule": "Bucket 名称必须由小写字母、数字和中划线（-）组成，长度在3到32个字符之间，且不能以 - 开头或结尾。",
     "Bucket": "桶",
     "BucketName": "Bucket 名称",
     "CreateBucket": "创建 Bucket",
@@ -324,5 +324,7 @@
   "Order Number": "订单号",
   "payment status": "支付状态",
   "Monthly": "月",
-  "CreateFolder": "新建文件夹"
+  "CreateFolder": "新建文件夹",
+  "Or": "或",
+  "BeforeunloadTip": "确定要离开当前编辑页面吗?"
 }

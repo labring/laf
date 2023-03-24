@@ -17,7 +17,7 @@ export async function main(ctx: FunctionContext) {
   // get 方法发起查询请求
   const res = await db.collection('user').get()
   console.log(res) 
-}
+
 ```
 如果我们查询的数据只有一条，我们也可以使用 getOne 方法，它和 get 方法不同的是它只能获取一条数据，并且 data 的格式为对象。
 ```js
@@ -43,7 +43,6 @@ export async function main(ctx: FunctionContext) {
 //   requestId: undefined,
 //   ok: true
 // }
-}
 ```
 
 支持 `where()`、`limit()`、`skip()`、`orderBy()`、`get()`、`update()`、`field()`、`count()` 等操作，下面我们来一一介绍。

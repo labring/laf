@@ -1,12 +1,15 @@
 import { useState } from "react";
-import { Input, Tag, TagCloseButton, TagLabel } from "@chakra-ui/react";
+import { Input, Tag, TagCloseButton, TagLabel, useColorMode } from "@chakra-ui/react";
+import clsx from "clsx";
 import { t } from "i18next";
 
 export default function InputTag(props: { value: string[]; onChange: (value: string[]) => any }) {
   const { value, onChange } = props;
   const [inputV, setInputV] = useState("");
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
   const handleEnter = (e: any) => {
-    if (e.key === "Enter" || e.key === " ") {
+    if (e.key === "Enter") {
       e.preventDefault();
       const input = inputV.trim().slice(0, 16);
       if (input !== "" && !value.some((x) => x === input)) {
@@ -19,18 +22,15 @@ export default function InputTag(props: { value: string[]; onChange: (value: str
     onChange(value.filter((name) => name !== item));
   };
   return (
-    <>
-      <Input
-        placeholder={String(t("CollectionPanel.CreateTagTip"))}
-        className="mb-2"
-        value={inputV}
-        onKeyDown={(e) => handleEnter(e)}
-        onChange={(e) => setInputV(e.target.value)}
-      />
-      {value.length > 0 ? (
-        <div className="flex items-center flex-wrap pb-2 px-2  border-2 rounded border-white-700 border-dashed max-h-20 overflow-auto">
-          {value.map((item) => (
-            <Tag className="mr-2 mt-2" key={item} variant="inputTag">
+    <div
+      className={clsx(
+        "flex items-center p-2 rounded-md ",
+        darkMode ? "bg-gray-800" : "bg-gray-100",
+      )}
+    >
+      {value.length > 0
+        ? value.map((item) => (
+            <Tag className="mr-2 bg-white " key={item} variant="inputTag">
               <TagLabel>{item}</TagLabel>
               <TagCloseButton
                 onClick={() => {
@@ -38,9 +38,19 @@ export default function InputTag(props: { value: string[]; onChange: (value: str
                 }}
               />
             </Tag>
-          ))}
-        </div>
-      ) : null}
-    </>
+          ))
+        : null}
+      <Input
+        className="flex-1"
+        minWidth={{ base: "150px", md: "150px" }}
+        placeholder={String(t("CollectionPanel.CreateTagTip"))}
+        value={inputV}
+        onKeyDown={(e) => handleEnter(e)}
+        onChange={(e) => {
+          // onChange([e.target.value]);
+          setInputV(e.target.value);
+        }}
+      />
+    </div>
   );
 }

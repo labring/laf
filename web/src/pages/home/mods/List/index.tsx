@@ -84,7 +84,7 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
           <div className="w-2/12 text-second ">App ID</div>
           <div className="w-2/12 text-second pl-2">{t("HomePanel.State")}</div>
           <div className="w-2/12 text-second ">{t("HomePanel.Region")}</div>
-          <div className="w-3/12 text-second ">{t("Time")}</div>
+          <div className="w-4/12 text-second ">{t("Time")}</div>
           <div className="w-1/12 text-second pl-2 min-w-[100px]">{t("Operation")}</div>
         </Box>
         <div className="flex-grow overflow-auto">
@@ -115,7 +115,7 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                   <div className="w-2/12 ">
                     {getRegionById(regions, item.regionId)?.displayName}
                   </div>
-                  <div className="w-3/12 ">
+                  <div className="w-4/12 ">
                     <p>
                       {t("CreateTime")}: {formatDate(item.createdAt)}{" "}
                     </p>

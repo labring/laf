@@ -100,6 +100,10 @@ export class ServerConfig {
     return process.env.API_SERVER_URL || 'http://localhost:3000'
   }
 
+  static get certManagerIssuerName() {
+    return process.env.CERT_MANAGER_ISSUER_NAME || 'laf-issuer'
+  }
+
   /** default region conf */
   static get DEFAULT_REGION_DATABASE_URL() {
     return process.env.DEFAULT_REGION_DATABASE_URL

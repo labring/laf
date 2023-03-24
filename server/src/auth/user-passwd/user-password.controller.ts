@@ -9,8 +9,7 @@ import { PasswdSigninDto } from '../dto/passwd-signin.dto'
 import { AuthBindingType, AuthProviderBinding } from '../types'
 import { SmsService } from '../phone/sms.service'
 import { PasswdResetDto } from '../dto/passwd-reset.dto'
-import { IRequest } from 'src/utils/interface'
-import { PASSWORD_AUTH_PROVIDER_NAME } from 'src/constants'
+import { PasswdCheckDto } from '../dto/passwd-check.dto'
 
 @ApiTags('Authentication - New')
 @Controller('auth')
@@ -102,7 +101,7 @@ export class UserPasswordController {
   @ApiOperation({ summary: 'Reset password' })
   @ApiResponse({ type: ResponseUtil })
   @Post('passwd/reset')
-  async reset(@Body() dto: PasswdResetDto, @Req() req: IRequest) {
+  async reset(@Body() dto: PasswdResetDto) {
     // valid phone code
     const { phone, code, type } = dto
     let err = await this.smsService.validCode(phone, code, type)
@@ -110,12 +109,37 @@ export class UserPasswordController {
       return ResponseUtil.error(err)
     }
 
+    // find user by phone
+    const user = await this.userService.findByPhone(phone)
+    if (!user) {
+      return ResponseUtil.error('user not found')
+    }
+
     // reset password
-    err = await this.passwdService.resetPasswd(req.user.id, dto.password)
+    err = await this.passwdService.resetPasswd(user.id, dto.password)
     if (err) {
       return ResponseUtil.error(err)
     }
 
     return ResponseUtil.ok('success')
+  }
+
+  /**
+   * Check if user-password is set
+   */
+  @ApiOperation({ summary: 'Check if user-password is set' })
+  @ApiResponse({ type: ResponseUtil })
+  @Post('passwd/check')
+  async check(@Body() dto: PasswdCheckDto) {
+    const { username } = dto
+    // check if user exists
+    const user = await this.userService.find(username)
+    if (!user) {
+      return ResponseUtil.error('user not found')
+    }
+    // find if set password
+    const hasPasswd = await this.passwdService.hasPasswd(user.id)
+
+    return ResponseUtil.ok(hasPasswd)
   }
 }

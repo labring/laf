@@ -14,6 +14,7 @@ export class ApisixService {
     const namespace = GetApplicationNamespaceByAppId(appid)
     const upstreamNode = `${appid}.${namespace}:8000`
 
+    // TODO: use appid as route id instead of `app-{appid}
     const id = `app-${appid}`
     const data = {
       name: id,
@@ -46,6 +47,7 @@ export class ApisixService {
   }
 
   async deleteAppRoute(region: Region, appid: string) {
+    // TODO: use appid as route id instead of `app-{appid}`
     const id = `app-${appid}`
     const res = await this.deleteRoute(region, id)
     return res
@@ -57,6 +59,7 @@ export class ApisixService {
     const minioUrl = new URL(region.storageConf.internalEndpoint)
     const upstreamNode = minioUrl.host
 
+    // TODO: use bucket object id as route id instead of bucket name
     const id = `bucket-${bucketName}`
     const data = {
       name: id,
@@ -88,6 +91,7 @@ export class ApisixService {
   }
 
   async deleteBucketRoute(region: Region, bucketName: string) {
+    // TODO: use bucket object id as route id instead of bucket name
     const id = `bucket-${bucketName}`
     const res = await this.deleteRoute(region, id)
     return res
@@ -159,6 +163,27 @@ export class ApisixService {
     } catch (error) {
       this.logger.error(error, error.response.data)
       return null
+    }
+  }
+
+  async getRoute(region: Region, id: string) {
+    const conf = region.gatewayConf
+    const api_url = `${conf.apiUrl}/routes/${id}`
+
+    try {
+      const res = await this.httpService.axiosRef.get(api_url, {
+        headers: {
+          'X-API-KEY': conf.apiKey,
+          'Content-Type': 'application/json',
+        },
+      })
+      return res.data
+    } catch (error) {
+      if (error?.response?.status === 404) {
+        return null
+      }
+      this.logger.error(error, error.response?.data)
+      return error
     }
   }
 

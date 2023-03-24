@@ -50,7 +50,6 @@ const Tag = defineMultiStyleConfig({
         borderColor: "lafWhite.600",
         borderWidth: 1,
         color: "grayModern.900",
-        height: "28px",
       },
     }),
     inputTagActive: definePartsStyle({
@@ -59,7 +58,6 @@ const Tag = defineMultiStyleConfig({
         borderColor: "primary.500",
         borderWidth: 1,
         color: "primary.500",
-        height: "28px",
       },
     }),
   },
@@ -104,6 +102,16 @@ const Button = defineStyleConfig({
       _hover: {
         bg: "lafDark.400",
       },
+    },
+
+    thirdly: {
+      color: "lafDark.1000",
+      bg: "lafDark.300",
+      _hover: {
+        bg: "lafDark.400",
+      },
+      border: "1px solid",
+      rounded: "md",
     },
 
     plain: {

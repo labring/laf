@@ -66,6 +66,12 @@ export class UserPasswordService {
   async resetPasswd(uid: string, passwd: string) {
     // start transaction
     const update = await this.prisma.$transaction(async (tx) => {
+      // disable old password
+      await tx.userPassword.updateMany({
+        where: { uid },
+        data: { state: UserPasswordState.Inactive },
+      })
+
       // create new password
       const np = await tx.userPassword.create({
         data: {
@@ -75,12 +81,6 @@ export class UserPasswordService {
         },
       })
 
-      // disable old password
-      await tx.userPassword.updateMany({
-        where: { uid },
-        data: { state: UserPasswordState.Inactive },
-      })
-
       return np
     })
     if (!update) {
@@ -88,5 +88,13 @@ export class UserPasswordService {
     }
 
     return null
+  }
+
+  // check if set password
+  async hasPasswd(uid: string) {
+    const userPasswd = await this.prisma.userPassword.findFirst({
+      where: { uid, state: UserPasswordState.Active },
+    })
+    return userPasswd ? true : false // true means has password
   }
 }

@@ -83,7 +83,7 @@ function FileUpload(props: { onUpload: (files: any) => void }) {
           <button className={styles.uploadButton} onClick={() => onButtonClick("file")}>
             {t("StoragePanel.UploadFile")}
           </button>
-          <span className="mx-2 text-xl">或</span>
+          <span className="mx-2 text-xl">{t("Or")}</span>
           <button className={styles.uploadButton} onClick={() => onButtonClick("folder")}>
             {t("StoragePanel.UploadFolder")}
           </button>
