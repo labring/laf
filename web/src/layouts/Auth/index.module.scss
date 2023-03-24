@@ -1,6 +1,4 @@
 .container {
-  display: flex;
-  flex-direction: column;
   height: 100vh;
   width: 100vw;
   background-color: #edf1f5;
@@ -8,24 +6,4 @@
   background-repeat: no-repeat;
   background-position: left bottom;
   background-size: 60%;
-}
-
-.welcomeWrap {
-  position: absolute;
-  top: 120px;
-  left: 120px;
-}
-
-.welcomeText {
-  font-family: 'PingFang SC';
-  font-style: normal;
-  font-weight: 500;
-  font-size: 36px;
-}
-
-.sloganText {
-  font-family: 'PingFang SC';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 20px;
 }
