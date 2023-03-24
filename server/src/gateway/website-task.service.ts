@@ -205,7 +205,7 @@ export class WebsiteTaskService {
       // delete custom domain tls config from apisix
       const tls = await this.certService.readWebsiteApisixTls(region, site)
       if (tls) {
-        await this.certService.deleteWebsiteDomainApisixTls(region, site)
+        await this.certService.deleteWebsiteApisixTls(region, site)
         this.logger.log(`delete website apisix tls: ${site._id}`)
         // return to wait for tls config to be deleted
         return this.relock(site._id, waitingTime)

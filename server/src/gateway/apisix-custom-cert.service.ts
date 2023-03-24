@@ -166,7 +166,7 @@ export class ApisixCustomCertService {
   }
 
   // Deletes the APISIX TLS configuration for a specific website domain
-  async deleteWebsiteDomainApisixTls(region: Region, website: WebsiteHosting) {
+  async deleteWebsiteApisixTls(region: Region, website: WebsiteHosting) {
     // Get the application namespace using the website's appid
     const namespace = GetApplicationNamespaceByAppId(website.appid)
 
