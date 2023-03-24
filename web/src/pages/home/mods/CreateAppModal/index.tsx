@@ -346,18 +346,26 @@ const CreateAppModal = (props: {
               </div>
             )}
 
-            {totalPrice <= accountQuery.data?.balance && (
+            {type !== "edit" && totalPrice <= accountQuery.data?.balance && (
               <Button
                 isLoading={
-                  subscriptionControllerCreate.isLoading ||
-                  subscriptionOptionRenew.isLoading ||
-                  updateAppMutation.isLoading
+                  subscriptionControllerCreate.isLoading || subscriptionOptionRenew.isLoading
                 }
                 type="submit"
                 onClick={handleSubmit(onSubmit)}
                 disabled={totalPrice > 0}
               >
-                {type === "edit" || type === "renewal" ? t("Confirm") : t("CreateNow")}
+                {type === "renewal" ? t("Confirm") : t("CreateNow")}
+              </Button>
+            )}
+
+            {type === "edit" && (
+              <Button
+                isLoading={updateAppMutation.isLoading}
+                type="submit"
+                onClick={handleSubmit(onSubmit)}
+              >
+                {t("Confirm")}
               </Button>
             )}
           </ModalFooter>

@@ -31,7 +31,7 @@
     "EmptyRuleTip": "This policy has no rules yet,",
     "Query": "Please enter the ID and press Enter to query",
     "Search": "Please enter ID to search",
-    "CreateTagTip": "Press \"Enter\" or \"Space\" to separate tags, each tag can be up to 16 characters",
+    "CreateTagTip": "Press \"Enter\" to separate tags, each tag can be up to 16 characters",
     "CollectionNameRule": "The collection name can only start with a letter and consist of 3 to 32 characters including letters, _ or -"
   },
   "Add": "Add ",
@@ -102,7 +102,7 @@
     "SystemDependence": "Built-In",
     "Value": "Value",
     "isSupport": "Whether to support",
-    "FunctionNameRule": "Function names can only contain English or _",
+    "FunctionNameRule": "Function names can only contain English letters or underscores (_).",
     "EmptyDebugTip": "No results yet",
     "EmptyFunctionTip": "You have not created the function",
     "UploadButton": "upload",
