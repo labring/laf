@@ -30,7 +30,7 @@ exports.main = function (ctx) {
 | `ctx.requestId` | 当前请求的唯一 ID                                                                   |
 | `ctx.method`    | 当前请求的方法，如`GET`、`POST`                                                     |
 | `ctx.headers`   | 所有请求的 headers                                                                  |
-| `ctx.auth`      | 使用 Http Bearer Token 认证时，解析出的 token 值                                    |
+| `ctx.user`      | 使用 Http Bearer Token 认证时，解析出的 token 值                                    |
 | `ctx.query`     | 当前请求的 query 参数                                                               |
 | `ctx.body`      | 当前请求的 body 参数                                                                |
 | `ctx.response`  | HTTP 响应，和`express`的`Response`实例保持一致                                      |

@@ -6,108 +6,76 @@ title: 云数据库操作
 
 ## 新增文档
 
-### 方法 1： `collection.add(data)`
+下例向 user 集合中添加了一条记录。
+```ts
+import cloud from '@lafjs/cloud'
 
-示例：
+const db = cloud.database()
 
-| 参数 | 类型   | 必填 | 说明                                       |
-| ---- | ------ | ---- | ------------------------------------------ |
-| data | object | 是   | {\_id: '10001', 'name': 'Ben'} \_id 非必填 |
+export async function main(ctx: FunctionContext) {
+  // 向 user 集合中添加一条记录
+  const res = db.collection('user').add({ name: "jack" })
+  console.log(res)
 
-```js
-//promise
-collection
-  .add({
-    name: "Ben",
-  })
-  .then((res) => {});
+}
 ```
 
-### 方法 2： `collection.doc().set(data)`
-
-也可通过 `set` 方法新增一个文档，需先取得文档引用再调用 `set` 方法。
-如果文档不存在，`set` 方法会创建一个新文档。
-
-```js
-//promise
-collection.doc().set({
-  name: "Hey",
-});
+当然我们也可以批量添加多条记录,只需要多传入一个对象`{ multi: true }`即可。
+```ts
+const list = [
+  { name: "jack" },
+  { name: "rose" }
+]
+// 向 user 集合中加入多条记录
+const res = await db.collection('user').add(list, { multi: true })
+console.log(res)
 ```
 
 ## 删除文档
 
-### 方式 1 通过指定文档 ID
-
-`collection.doc(\_id).remove()`
+### 通过指定条件删除
+我们可以配合 `where` 以及各种高级指令来使用 `remove`。
 
 ```js
-// 清理全部数据
-collection
-  .get()
-  .then((res) => {
-    const promiseList = res.data.map((document) => {
-      return collection.doc(document._id).remove();
-    });
-    Promise.all(promiseList);
-  })
-  .catch((e) => {});
+  // 删除 user 集合中，name 为 jack 的一条记录
+  const res = await db.collection('user').where({ name: "jack" }).remove()
+  console.log(res)
 ```
 
-### 方式 2 条件查找文档然后直接批量删除
+### 条件查找然后批量删除
 
-`collection.where().remove()`
+上面示例执行一次只能删除一条数据，如果想要批量删除要在 `remove()` 中添加 `{multi: true}`
 
 ```js
-// 删除字段a的值大于2的文档
-// 批量删除需要在 remove() 中添加 {multi: true}
-//promise
-collection
-  .where({
-    a: _.gt(2),
-  })
-  .remove({multi: true})
-  .then(function (res) {});
+// 删除 user 表中所有 name 为 jack 的记录
+await db.collection('user').where({ name: "jack" }).remove({ multi: true })
+```
+### 清空集合（危险操作）
+如果我们想删除一个集合中的所有数据，可以这样操作。
+```js
+// 清空 user 集合
+await db.collection('user').remove({ multi: true })
 ```
 
 ## 更新文档
 
 ### 更新指定文档
 
-`collection.doc().update()`
-
+我们这里把 jack 的名字改为 j 。
 ```js
-collection.doc("doc-id").update({
-  name: "Hey",
-});
+await db.collection('user').where({ name: 'jack' }).update({ name: "j" })
 ```
 
-### 更新文档，如果不存在则创建
-
-`collection.doc().set()`
-
+同样我们也可以一次更新多个属性，比如:更改名字的同时也更改年龄。
 ```js
-//promise
-collection
-  .doc("doc-id")
-  .set({
-    name: "Hey",
-  })
-  .then(function (res) {});
+await db.collection('user').where({ name: 'jack' }).update({ name: "j", age: "18" })
 ```
 
 ### 批量更新文档
-
-`collection.update()`
-
+这里我们没有加条件限制，直接把 user 表中的所有 name 都改成了 j ，操作和之前一样只需要多传入一个对像`{multi:true}`即可。
 ```js
-//promise
-collection
-  .where({ name: _.eq("hey") })
-  .update({
-    age: 18,
-  })
-  .then(function (res) {});
+await db.collection('user').update({ name: "j" },{multi:true})
+
 ```
 
 ## 更新指令
