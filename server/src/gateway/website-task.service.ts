@@ -13,6 +13,8 @@ import { RegionService } from 'src/region/region.service'
 import * as assert from 'node:assert'
 import { ApisixService } from './apisix.service'
 import { ApisixCustomCertService } from './apisix-custom-cert.service'
+import { ObjectId } from 'mongodb'
+import { isConditionTrue } from 'src/utils/getter'
 
 @Injectable()
 export class WebsiteTaskService {
@@ -23,7 +25,7 @@ export class WebsiteTaskService {
   constructor(
     private readonly regionService: RegionService,
     private readonly apisixService: ApisixService,
-    private readonly customCertService: ApisixCustomCertService,
+    private readonly certService: ApisixCustomCertService,
   ) {}
 
   @Cron(CronExpression.EVERY_SECOND)
@@ -46,9 +48,6 @@ export class WebsiteTaskService {
 
     // Phase `Deleting` -> `Deleted`
     this.handleDeletedState()
-
-    // Clear timeout locks
-    this.clearTimeoutLocks()
   }
 
   /**
@@ -100,65 +99,57 @@ export class WebsiteTaskService {
 
     // create website custom certificate if custom domain is set
     if (site.isCustom) {
+      const waitingTime = Date.now() - site.updatedAt.getTime()
+
       // create custom domain  certificate
-      let cert = await this.customCertService.readWebsiteDomainCert(
-        region,
-        site,
-      )
+      let cert = await this.certService.readWebsiteDomainCert(region, site)
       if (!cert) {
-        cert = await this.customCertService.createWebsiteDomainCert(
-          region,
-          site,
-        )
+        cert = await this.certService.createWebsiteDomainCert(region, site)
         this.logger.log(`create website cert: ${site._id}`)
+        // return to wait for cert to be ready
+        return await this.relock(site._id, waitingTime)
       }
 
-      // return to try to create cert again in next tick if cert is not found
-      if (!cert) {
-        this.logger.error(`create website cert failed: ${site._id}`)
-        return
+      // check if cert status is Ready
+      const conditions = (cert as any).status?.conditions || []
+      if (!isConditionTrue('Ready', conditions)) {
+        this.logger.log(`website cert is not ready: ${site._id}`)
+        // return to wait for cert to be ready
+        return await this.relock(site._id, waitingTime)
       }
 
       // config custom domain certificate to apisix
-      let apisixTls = await this.customCertService.readWebsiteDomainApisixTls(
-        region,
-        site,
-      )
+      let apisixTls = await this.certService.readWebsiteApisixTls(region, site)
       if (!apisixTls) {
-        apisixTls = await this.customCertService.createWebsiteDomainApisixTls(
-          region,
-          site,
-        )
+        apisixTls = await this.certService.createWebsiteApisixTls(region, site)
         this.logger.log(`create website apisix tls: ${site._id}`)
+        // return to wait for tls config to be ready
+        return await this.relock(site._id, waitingTime)
       }
 
-      // return to try to create cert again in next tick if cert is not found
-      if (!apisixTls) {
-        this.logger.error(`create website apisix tls failed: ${site._id}`)
-        return
+      // check if apisix tls status is Ready
+      const apisixTlsConditions = (apisixTls as any).status?.conditions || []
+      if (!isConditionTrue('ResourcesAvailable', apisixTlsConditions)) {
+        this.logger.log(`website apisix tls is not ready: ${site._id}`)
+        // return to wait for tls config to be ready
+        return await this.relock(site._id, waitingTime)
       }
     }
 
     // update phase to `Created`
-    const updated = await db
-      .collection<WebsiteHosting>('WebsiteHosting')
-      .updateOne(
-        {
-          _id: site._id,
-          phase: DomainPhase.Creating,
+    await db.collection<WebsiteHosting>('WebsiteHosting').updateOne(
+      {
+        _id: site._id,
+        phase: DomainPhase.Creating,
+      },
+      {
+        $set: {
+          phase: DomainPhase.Created,
+          lockedAt: TASK_LOCK_INIT_TIME,
+          updatedAt: new Date(),
         },
-        {
-          $set: {
-            phase: DomainPhase.Created,
-            lockedAt: TASK_LOCK_INIT_TIME,
-          },
-        },
-      )
-
-    if (updated.modifiedCount !== 1) {
-      this.logger.error(`update website hosting phase failed: ${site._id}`)
-      return
-    }
+      },
+    )
 
     this.logger.log(`update website phase to 'Created': ${site._id}`)
   }
@@ -200,51 +191,38 @@ export class WebsiteTaskService {
     }
     // delete website custom certificate if custom domain is set
     if (site.isCustom) {
-      // delete custom domain  certificate
-      const cert = await this.customCertService.readWebsiteDomainCert(
-        region,
-        site,
-      )
+      const waitingTime = Date.now() - site.updatedAt.getTime()
+
+      // delete custom domain certificate
+      const cert = await this.certService.readWebsiteDomainCert(region, site)
       if (cert) {
-        await this.customCertService.deleteWebsiteDomainCert(region, site)
+        await this.certService.deleteWebsiteDomainCert(region, site)
         this.logger.log(`delete website cert: ${site._id}`)
         // return to wait for cert to be deleted
-        return
+        return await this.relock(site._id, waitingTime)
       }
 
-      // delete custom domain certificate from apisix
-      const apisixTls = await this.customCertService.readWebsiteDomainApisixTls(
-        region,
-        site,
-      )
-      if (apisixTls) {
-        await this.customCertService.deleteWebsiteDomainApisixTls(region, site)
+      // delete custom domain tls config from apisix
+      const tls = await this.certService.readWebsiteApisixTls(region, site)
+      if (tls) {
+        await this.certService.deleteWebsiteApisixTls(region, site)
         this.logger.log(`delete website apisix tls: ${site._id}`)
-        // return to wait for cert to be deleted
-        return
+        // return to wait for tls config to be deleted
+        return this.relock(site._id, waitingTime)
       }
     }
 
     // update phase to `Deleted`
-    const updated = await db
-      .collection<WebsiteHosting>('WebsiteHosting')
-      .updateOne(
-        {
-          _id: site._id,
-          phase: DomainPhase.Deleting,
+    await db.collection<WebsiteHosting>('WebsiteHosting').updateOne(
+      { _id: site._id, phase: DomainPhase.Deleting },
+      {
+        $set: {
+          phase: DomainPhase.Deleted,
+          lockedAt: TASK_LOCK_INIT_TIME,
+          updatedAt: new Date(),
         },
-        {
-          $set: {
-            phase: DomainPhase.Deleted,
-            lockedAt: TASK_LOCK_INIT_TIME,
-          },
-        },
-      )
-
-    if (updated.modifiedCount > 1) {
-      this.logger.error(`update website hosting phase failed: ${site._id}`)
-      return
-    }
+      },
+    )
 
     this.logger.log(`update website phase to 'Deleted': ${site._id}`)
   }
@@ -265,6 +243,7 @@ export class WebsiteTaskService {
         $set: {
           phase: DomainPhase.Deleting,
           lockedAt: TASK_LOCK_INIT_TIME,
+          updatedAt: new Date(),
         },
       },
     )
@@ -286,6 +265,7 @@ export class WebsiteTaskService {
         $set: {
           phase: DomainPhase.Creating,
           lockedAt: TASK_LOCK_INIT_TIME,
+          updatedAt: new Date(),
         },
       },
     )
@@ -308,6 +288,7 @@ export class WebsiteTaskService {
         $set: {
           phase: DomainPhase.Deleting,
           lockedAt: TASK_LOCK_INIT_TIME,
+          updatedAt: new Date(),
         },
       },
     )
@@ -319,21 +300,13 @@ export class WebsiteTaskService {
   }
 
   /**
-   * Clear timeout locks
+   * Relock application by appid, lockedTime is in milliseconds
    */
-  async clearTimeoutLocks() {
+  async relock(id: ObjectId, lockedTime = 0) {
     const db = SystemDatabase.db
-    await db.collection<WebsiteHosting>('WebsiteHosting').updateMany(
-      {
-        lockedAt: {
-          $lt: new Date(Date.now() - 1000 * this.lockTimeout),
-        },
-      },
-      {
-        $set: {
-          lockedAt: TASK_LOCK_INIT_TIME,
-        },
-      },
-    )
+    const lockedAt = new Date(Date.now() - 1000 * this.lockTimeout + lockedTime)
+    await db
+      .collection<WebsiteHosting>('WebsiteHosting')
+      .updateOne({ _id: id }, { $set: { lockedAt } })
   }
 }

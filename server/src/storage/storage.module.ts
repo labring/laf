@@ -17,6 +17,6 @@ import { BucketTaskService } from './bucket-task.service'
     BucketService,
     BucketTaskService,
   ],
-  exports: [StorageService, MinioService],
+  exports: [StorageService, MinioService, BucketService],
 })
 export class StorageModule {}

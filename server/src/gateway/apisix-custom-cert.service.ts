@@ -87,11 +87,28 @@ export class ApisixCustomCertService {
         namespace,
       },
     })
+
+    // GC the secret
+    await api
+      .delete({
+        apiVersion: 'v1',
+        kind: 'Secret',
+        metadata: {
+          name: website.id,
+          namespace,
+        },
+      })
+      // Ignore errors, as the secret may not exist
+      .catch((err) => {
+        this.logger.error(err)
+        this.logger.error(err?.response?.body)
+      })
+
     return res.body
   }
 
   // Read an ApisixTls resource for a given website using apisix.apache.org CRD
-  async readWebsiteDomainApisixTls(region: Region, website: WebsiteHosting) {
+  async readWebsiteApisixTls(region: Region, website: WebsiteHosting) {
     try {
       // Get the namespace based on the application ID
       const namespace = GetApplicationNamespaceByAppId(website.appid)
@@ -116,7 +133,7 @@ export class ApisixCustomCertService {
   }
 
   // Create an ApisixTls resource for a given website using apisix.apache.org CRD
-  async createWebsiteDomainApisixTls(region: Region, website: WebsiteHosting) {
+  async createWebsiteApisixTls(region: Region, website: WebsiteHosting) {
     // Get the namespace based on the application ID
     const namespace = GetApplicationNamespaceByAppId(website.appid)
     // Create an API object for the specified region
@@ -149,7 +166,7 @@ export class ApisixCustomCertService {
   }
 
   // Deletes the APISIX TLS configuration for a specific website domain
-  async deleteWebsiteDomainApisixTls(region: Region, website: WebsiteHosting) {
+  async deleteWebsiteApisixTls(region: Region, website: WebsiteHosting) {
     // Get the application namespace using the website's appid
     const namespace = GetApplicationNamespaceByAppId(website.appid)
 

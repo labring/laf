@@ -20,12 +20,18 @@ import {
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
 import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
 import { ResponseUtil } from 'src/utils/response'
+import { BundleService } from 'src/region/bundle.service'
+import { BucketService } from 'src/storage/bucket.service'
 
 @ApiTags('WebsiteHosting')
 @ApiBearerAuth('Authorization')
 @Controller('apps/:appid/websites')
 export class WebsiteController {
-  constructor(private readonly websiteService: WebsiteService) {}
+  constructor(
+    private readonly websiteService: WebsiteService,
+    private readonly bundleService: BundleService,
+    private readonly bucketService: BucketService,
+  ) {}
 
   /**
    * Create a new website
@@ -39,8 +45,27 @@ export class WebsiteController {
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post()
   async create(@Param('appid') appid: string, @Body() dto: CreateWebsiteDto) {
-    const site = await this.websiteService.create(appid, dto)
+    // check if website hosting limit reached
+    const bundle = await this.bundleService.findApplicationBundle(appid)
+    const LIMIT_COUNT = bundle?.resource?.limitCountOfWebsiteHosting || 0
+    const count = await this.websiteService.count(appid)
+    if (count >= LIMIT_COUNT) {
+      return ResponseUtil.error(
+        `website hosting limit (${LIMIT_COUNT}) reached`,
+      )
+    }
 
+    // check if bucket already binded as website hosting
+    const bucket = await this.bucketService.findOne(appid, dto.bucketName)
+    if (!bucket) {
+      return ResponseUtil.error('bucket not found')
+    }
+
+    if (bucket.websiteHosting) {
+      return ResponseUtil.error('bucket already binded as website hosting')
+    }
+
+    const site = await this.websiteService.create(appid, dto)
     if (!site) {
       return ResponseUtil.error('failed to create website')
     }
