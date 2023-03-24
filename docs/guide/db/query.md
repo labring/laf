@@ -18,7 +18,31 @@ export async function main(ctx: FunctionContext) {
   const res = await db.collection('user').get()
   console.log(res) 
 
-}
+```
+如果我们查询的数据只有一条，我们也可以使用 getOne 方法，它和 get 方法不同的是它只能获取一条数据，并且 data 的格式为对象。
+```js
+import cloud from '@lafjs/cloud'
+// 获取数据库引用
+const db = cloud.database()
+
+export async function main(ctx: FunctionContext) {
+  const res = await db.collection('user').geOne()
+  console.log(res)  
+// getOne 获取的结果:
+// {
+//   ok: true,
+//   data: { _id: '641d21992de2b789c963e5e0', name: 'jack' },
+//   requestId: undefined
+// }
+
+  const res = await db.collection('user').get()
+  console.log(res) 
+// get 获取的结果:
+// {
+//   data: [ { _id: '641d22292de2b789c963e5fd', name: 'jack' } ],
+//   requestId: undefined,
+//   ok: true
+// }
 ```
 
 支持 `where()`、`limit()`、`skip()`、`orderBy()`、`get()`、`update()`、`field()`、`count()` 等操作，下面我们来一一介绍。

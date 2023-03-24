@@ -51,8 +51,8 @@ const guideSiderbarConfig = [
         link: "/guide/function/",
       },
       {
-        text: "云函数参数 返回值",
-        link: "/guide/function/function-param",
+        text: "云函数用法",
+        link: "/guide/function/use-function",
       },
       {
         text: "调用云函数",
@@ -79,10 +79,10 @@ const guideSiderbarConfig = [
         text: "环境变量",
         link: "/guide/function/env",
       },
-      {
-        text: "WebSocket 连接",
-        link: "/guide/function/websocket",
-      },
+      // {
+      //   text: "WebSocket 连接",
+      //   link: "/guide/function/websocket",
+      // },
     ],
   },
   {
@@ -222,13 +222,13 @@ export default defineConfig({
       "link",
       {
         rel: "stylesheet",
-        href: "/public/fancybox.css",
+        href: "/fancybox.css",
       },
     ],
     [
       "script",
       {
-        src: "/public/fancybox.umd.js",
+        src: "/fancybox.umd.js",
       },
     ],
   ],
