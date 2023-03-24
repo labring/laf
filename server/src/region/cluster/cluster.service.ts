@@ -52,8 +52,8 @@ export class ClusterService {
       return res.body
     } catch (err) {
       this.logger.error(err)
-      this.logger.debug(err?.response?.body)
-      return null
+      this.logger.error(err?.response?.body)
+      throw err
     }
   }
 
@@ -67,8 +67,8 @@ export class ClusterService {
     } catch (err) {
       if (err?.response?.body?.reason === 'NotFound') return null
       this.logger.error(err)
-      this.logger.debug(err?.response?.body)
-      return null
+      this.logger.error(err?.response?.body)
+      throw err
     }
   }
 
@@ -81,8 +81,8 @@ export class ClusterService {
       return res
     } catch (err) {
       this.logger.error(err)
-      this.logger.debug(err?.response?.body)
-      return null
+      this.logger.error(err?.response?.body)
+      throw err
     }
   }
 
