@@ -222,13 +222,13 @@ export default defineConfig({
       "link",
       {
         rel: "stylesheet",
-        href: "/public/fancybox.css",
+        href: "/fancybox.css",
       },
     ],
     [
       "script",
       {
-        src: "/public/fancybox.umd.js",
+        src: "/fancybox.umd.js",
       },
     ],
   ],
