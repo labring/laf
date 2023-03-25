@@ -42,17 +42,25 @@ export class TriggerService {
     return res
   }
 
-  async findAll(appid: string) {
-    const res = await this.prisma.cronTrigger.findMany({
-      where: { appid },
+  async findOne(appid: string, id: string) {
+    const res = await this.prisma.cronTrigger.findFirst({
+      where: { id, appid },
     })
 
     return res
   }
 
-  async remove(id: string) {
-    const res = await this.prisma.cronTrigger.update({
-      where: { id },
+  async findAll(appid: string) {
+    const res = await this.prisma.cronTrigger.findMany({
+      where: { appid, state: TriggerState.Active },
+    })
+
+    return res
+  }
+
+  async remove(appid: string, id: string) {
+    const res = await this.prisma.cronTrigger.updateMany({
+      where: { id, appid },
       data: {
         state: TriggerState.Deleted,
       },
