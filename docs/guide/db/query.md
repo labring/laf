@@ -171,8 +171,8 @@ db.collection("user").where({
 
 ```js
 const _ = db.command;
-db.collection("goods").where({
-    age: _.nin([8, 16]),
+db.collection("user").where({
+    age: _.nin([8, 20]),
 });
 ```
 
@@ -195,7 +195,7 @@ db.collection("user").where({
 
 ```js
 const _ = db.command;
-db.collection("goods").where({
+db.collection("user").where({
     age: _.and(_.gt(18), _.lt(60)),
 });
 ```
