@@ -30,47 +30,42 @@ export class CronJobService {
     const batchApi = this.clusterService.makeBatchV1Api(region)
     const name = `cron-${trigger.id}`
     const command = await this.getTriggerCommand(trigger)
-    const res = await batchApi
-      .createNamespacedCronJob(ns, {
-        metadata: {
-          name,
-          labels: {
-            appid,
-            id: trigger.id,
-          },
+    const res = await batchApi.createNamespacedCronJob(ns, {
+      metadata: {
+        name,
+        labels: {
+          appid,
+          id: trigger.id,
         },
-        spec: {
-          schedule: trigger.cron,
-          successfulJobsHistoryLimit: 1,
-          failedJobsHistoryLimit: 1,
-          concurrencyPolicy: 'Allow',
-          startingDeadlineSeconds: 60,
-          jobTemplate: {
-            spec: {
-              activeDeadlineSeconds: 60,
-              template: {
-                spec: {
-                  restartPolicy: 'Never',
-                  terminationGracePeriodSeconds: 30,
-                  automountServiceAccountToken: false,
-                  containers: [
-                    {
-                      name: name,
-                      image: 'curlimages/curl:7.87.0',
-                      command: ['sh', '-c', command],
-                      imagePullPolicy: 'IfNotPresent',
-                    },
-                  ],
-                },
+      },
+      spec: {
+        schedule: trigger.cron,
+        successfulJobsHistoryLimit: 1,
+        failedJobsHistoryLimit: 1,
+        concurrencyPolicy: 'Allow',
+        startingDeadlineSeconds: 60,
+        jobTemplate: {
+          spec: {
+            activeDeadlineSeconds: 60,
+            template: {
+              spec: {
+                restartPolicy: 'Never',
+                terminationGracePeriodSeconds: 30,
+                automountServiceAccountToken: false,
+                containers: [
+                  {
+                    name: name,
+                    image: 'curlimages/curl:7.87.0',
+                    command: ['sh', '-c', command],
+                    imagePullPolicy: 'IfNotPresent',
+                  },
+                ],
               },
             },
           },
         },
-      })
-      .catch((err) => {
-        this.logger.error(`create cronjob ${name} failed:`, err)
-        return null
-      })
+      },
+    })
 
     this.logger.debug(`create cronjob ${name} success`)
     return res.body
@@ -80,13 +75,17 @@ export class CronJobService {
     const appid = trigger.appid
     const ns = GetApplicationNamespaceByAppId(appid)
     const region = await this.regionService.findByAppId(appid)
-    const batchApi = this.clusterService.makeBatchV1Api(region)
-    const name = `cron-${trigger.id}`
-    const res = await batchApi.readNamespacedCronJob(name, ns).catch((err) => {
-      this.logger.error(`read cronjob ${name} failed:`, err)
-      return null
-    })
-    return res.body
+    try {
+      const batchApi = this.clusterService.makeBatchV1Api(region)
+      const name = `cron-${trigger.id}`
+      const res = await batchApi.readNamespacedCronJob(name, ns)
+      return res.body
+    } catch (err) {
+      if (err?.response?.body?.reason === 'NotFound') return null
+      this.logger.error(err)
+      this.logger.error(err?.response?.body)
+      throw err
+    }
   }
 
   async delete(trigger: CronTrigger) {
@@ -95,12 +94,7 @@ export class CronJobService {
     const region = await this.regionService.findByAppId(appid)
     const batchApi = this.clusterService.makeBatchV1Api(region)
     const name = `cron-${trigger.id}`
-    const res = await batchApi
-      .deleteNamespacedCronJob(name, ns)
-      .catch((err) => {
-        this.logger.error(`delete cronjob ${name} failed:`, err)
-        return null
-      })
+    const res = await batchApi.deleteNamespacedCronJob(name, ns)
     return res.body
   }
 

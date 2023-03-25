@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { times } from 'lodash'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/database/system-database'
 import { CronJobService } from './cron-job.service'
@@ -18,22 +17,29 @@ export class TriggerTaskService {
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
     // Phase `Creating` -> `Created`
-    times(this.concurrency, () => this.handleCreatingPhase())
+    this.handleCreatingPhase().catch((err) => {
+      this.logger.error('handleCreatingPhase error: ' + err)
+    })
 
     // Phase `Deleting` -> `Deleted`
-    times(this.concurrency, () => this.handleDeletingPhase())
+    this.handleDeletingPhase().catch((err) => {
+      this.logger.error('handleDeletingPhase error: ' + err)
+    })
 
     // Phase `Created` -> `Deleting`
-    this.handleInactiveState()
+    this.handleInactiveState().catch((err) => {
+      this.logger.error('handleInactiveState error: ' + err)
+    })
 
     // Phase `Deleted` -> `Creating`
-    this.handleActiveState()
+    this.handleActiveState().catch((err) => {
+      this.logger.error('handleActiveState error: ' + err)
+    })
 
     // Phase `Deleting` -> `Deleted`
-    this.handleDeletedState()
-
-    // Clear timeout locks
-    this.clearTimeoutLocks()
+    this.handleDeletedState().catch((err) => {
+      this.logger.error('handleDeletedState error: ' + err)
+    })
   }
 
   /**
@@ -49,15 +55,9 @@ export class TriggerTaskService {
       .findOneAndUpdate(
         {
           phase: TriggerPhase.Creating,
-          lockedAt: {
-            $lt: new Date(Date.now() - 1000 * this.lockTimeout),
-          },
+          lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
-        {
-          $set: {
-            lockedAt: new Date(),
-          },
-        },
+        { $set: { lockedAt: new Date() } },
       )
     if (!res.value) return
 
@@ -67,28 +67,22 @@ export class TriggerTaskService {
       id: res.value._id.toString(),
     }
 
-    // create cron job
-    const job = await this.cronService.create(doc)
-    if (!job) return
-
-    this.logger.debug('cron job created: ' + doc._id)
+    // create cron job if not exists
+    const job = await this.cronService.findOne(doc)
+    if (!job) {
+      await this.cronService.create(doc)
+      this.logger.log('cron job created: ' + doc._id)
+    }
 
     // update phase to `Created`
-    const updated = await db.collection<CronTrigger>('CronTrigger').updateOne(
+    await db.collection<CronTrigger>('CronTrigger').updateOne(
+      { _id: doc._id, phase: TriggerPhase.Creating },
       {
-        _id: doc._id,
-        phase: TriggerPhase.Creating,
-      },
-      {
-        $set: {
-          phase: TriggerPhase.Created,
-          lockedAt: TASK_LOCK_INIT_TIME,
-        },
+        $set: { phase: TriggerPhase.Created, lockedAt: TASK_LOCK_INIT_TIME },
       },
     )
 
-    if (updated.modifiedCount > 0)
-      this.logger.debug('trigger phase updated to Created ', doc._id)
+    this.logger.log('trigger phase updated to Created: ' + doc._id)
   }
 
   /**
@@ -104,15 +98,9 @@ export class TriggerTaskService {
       .findOneAndUpdate(
         {
           phase: TriggerPhase.Deleting,
-          lockedAt: {
-            $lt: new Date(Date.now() - 1000 * this.lockTimeout),
-          },
+          lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
-        {
-          $set: {
-            lockedAt: new Date(),
-          },
-        },
+        { $set: { lockedAt: new Date() } },
       )
     if (!res.value) return
 
@@ -122,28 +110,22 @@ export class TriggerTaskService {
       id: res.value._id.toString(),
     }
 
-    // delete cron job
-    const ret = await this.cronService.delete(doc)
-    if (ret?.status !== 'Success') return
-
-    this.logger.debug('cron job deleted:', doc._id)
+    // delete cron job if exists
+    const job = await this.cronService.findOne(doc)
+    if (job) {
+      await this.cronService.delete(doc)
+      this.logger.log('cron job deleted: ' + doc._id)
+    }
 
     // update phase to `Deleted`
-    const updated = await db.collection<CronTrigger>('CronTrigger').updateOne(
+    await db.collection<CronTrigger>('CronTrigger').updateOne(
+      { _id: doc._id, phase: TriggerPhase.Deleting },
       {
-        _id: doc._id,
-        phase: TriggerPhase.Deleting,
-      },
-      {
-        $set: {
-          phase: TriggerPhase.Deleted,
-          lockedAt: TASK_LOCK_INIT_TIME,
-        },
+        $set: { phase: TriggerPhase.Deleted, lockedAt: TASK_LOCK_INIT_TIME },
       },
     )
 
-    if (updated.modifiedCount > 0)
-      this.logger.debug('cron trigger phase updated to Deleted ' + doc._id)
+    this.logger.debug('cron trigger phase updated to Deleted: ' + doc._id)
   }
 
   /**
@@ -154,15 +136,9 @@ export class TriggerTaskService {
     const db = SystemDatabase.db
 
     await db.collection<CronTrigger>('CronTrigger').updateMany(
+      { state: TriggerState.Active, phase: TriggerPhase.Deleted },
       {
-        state: TriggerState.Active,
-        phase: TriggerPhase.Deleted,
-      },
-      {
-        $set: {
-          phase: TriggerPhase.Creating,
-          lockedAt: TASK_LOCK_INIT_TIME,
-        },
+        $set: { phase: TriggerPhase.Creating, lockedAt: TASK_LOCK_INIT_TIME },
       },
     )
   }
@@ -175,15 +151,9 @@ export class TriggerTaskService {
     const db = SystemDatabase.db
 
     await db.collection<CronTrigger>('CronTrigger').updateMany(
+      { state: TriggerState.Inactive, phase: TriggerPhase.Created },
       {
-        state: TriggerState.Inactive,
-        phase: TriggerPhase.Created,
-      },
-      {
-        $set: {
-          phase: TriggerPhase.Deleting,
-          lockedAt: TASK_LOCK_INIT_TIME,
-        },
+        $set: { phase: TriggerPhase.Deleting, lockedAt: TASK_LOCK_INIT_TIME },
       },
     )
   }
@@ -197,41 +167,14 @@ export class TriggerTaskService {
     const db = SystemDatabase.db
 
     await db.collection<CronTrigger>('CronTrigger').updateMany(
+      { state: TriggerState.Deleted, phase: TriggerPhase.Created },
       {
-        state: TriggerState.Deleted,
-        phase: TriggerPhase.Created,
-      },
-      {
-        $set: {
-          phase: TriggerPhase.Deleting,
-          lockedAt: TASK_LOCK_INIT_TIME,
-        },
+        $set: { phase: TriggerPhase.Deleting, lockedAt: TASK_LOCK_INIT_TIME },
       },
     )
 
-    await db.collection<CronTrigger>('CronTrigger').deleteMany({
-      state: TriggerState.Deleted,
-      phase: TriggerPhase.Deleted,
-    })
-  }
-
-  /**
-   * Clear timeout locks
-   */
-  async clearTimeoutLocks() {
-    const db = SystemDatabase.db
-
-    await db.collection<CronTrigger>('CronTrigger').updateMany(
-      {
-        lockedAt: {
-          $lt: new Date(Date.now() - 1000 * this.lockTimeout),
-        },
-      },
-      {
-        $set: {
-          lockedAt: TASK_LOCK_INIT_TIME,
-        },
-      },
-    )
+    await db
+      .collection<CronTrigger>('CronTrigger')
+      .deleteMany({ state: TriggerState.Deleted, phase: TriggerPhase.Deleted })
   }
 }
