@@ -1,6 +1,7 @@
+import { requestType } from "./requestType";
 import { responseType } from "./responseType";
-
 export const globalDeclare = `
+${requestType}
 ${responseType}
 
 declare class FunctionConsole {
@@ -74,6 +75,11 @@ interface FunctionContext {
    * HTTP Method
    */
   method?: string;
+
+  /**
+   * Express request object
+   */
+  request?: HttpRequest;
 
   /**
    * Express response object
