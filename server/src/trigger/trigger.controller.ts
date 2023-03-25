@@ -85,8 +85,14 @@ export class TriggerController {
   @ApiResponse({ type: ResponseUtil })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    const res = await this.triggerService.remove(id)
+  async remove(@Param('id') id: string, @Param('appid') appid: string) {
+    // check if trigger exists
+    const trigger = await this.triggerService.findOne(appid, id)
+    if (!trigger) {
+      return ResponseUtil.error('Trigger not found')
+    }
+
+    const res = await this.triggerService.remove(appid, id)
     return ResponseUtil.ok(res)
   }
 }
