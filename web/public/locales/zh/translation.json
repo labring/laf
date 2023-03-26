@@ -293,7 +293,7 @@
     "LoginTip": "请输入手机号和验证码",
     "LoginWithGithub": "GitHub 登录",
     "ValidationCodeTip": "请输入验证码",
-    "ForgotPassword": "忘记密码",
+    "ForgotPassword": "忘记密码？",
     "Register": "注册",
     "ToRegister": "去注册",
     "ToLogin": "去登录",
@@ -308,7 +308,10 @@
     "PasswordNotMatch": "两次输入的密码不一致",
     "SmsCodeSendSuccess": "验证码发送成功",
     "ValidationCodePlaceholder": "请输入验证码",
-    "SignupSuccess": "注册成功"
+    "SignupSuccess": "注册成功",
+    "ResetPassword": "重置密码",
+    "ResetPasswordSuccess": "重置密码成功",
+    "NewPassword": "新密码"
   },
   "Time": "时间",
   "CreateTime": "创建时间",
