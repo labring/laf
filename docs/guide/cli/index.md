@@ -111,7 +111,7 @@ laf storage create [bucketName]
 
 删除 bucket 。
 ```
-laf storage dle [bucketName]
+laf storage del [bucketName]
 ```
 
 更新 bucket 权限。
@@ -121,12 +121,12 @@ laf storage update [bucketName]
 
 下载 bucket 文件到本地。
 ```
-laf storage pull [outPath]
+laf storage pull [bucketName] [outPath]
 ```
 
 上传本地文件到 bucket 。
 ```
-laf storage push [inPath]
+laf storage push [bucketName] [inPath]
 ```
 
 ## 访问策略
