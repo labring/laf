@@ -7,136 +7,159 @@ title: laf-cli 命令行工具
 
 ## 简介
 
-`laf-cli` 提供本地开发环境相关能力的支持：
-
-- 云函数：支持在本地运行、拉取、部署云函数
-- 云存储：支持从本地上传、下载云存储文件
-- 应用：初始化、查看、启动、停止应用服务
-
+`laf-cli` 可以让你实现本地开发同步 Web 端，用你最熟悉的开发工具，更加高效。     
 
 ## 安装
 
-```bash
+```
 # 要求  node 版本 >= 16
 npm i laf-cli -g
 ```
+cli 的主要功能就是把在 laf web 上的操作集成到命令行里，下面我们根据 web 端的操作来一个个演示。
 
 
 ## 登录
+想要执行登录操作我们需要先拿到我们的 PAT（访问凭证）。
 
-```bash
-laf login -u username -p password
+![](../../doc-images/creat-token.png)
+
+生成 token 之后我们复制放在 laf login 后面执行此命令即可登录。
 ```
-
-默认登录 `lafyun.com`，如果要登录私有部署的 laf 可通过 `-r` 参数指定：
+laf login [pat]
+```
+默认登录 `laf.dev`，如果要登录私有部署的 laf 可通过 `-r` 参数指定：
   
-`laf login -u username -p password -r https://console.lafyun.com`
+`laf login [pat] -r https://laf.dev`
 
+### 退出登录
 
-## 查看应用列表
+```
+laf logout
+```
 
-```bash
-laf list
+## App 
+在 web 端登录之后我们会看到我们的 app 列表，那么在 cli 中想查看 app 列表只需要执行。
+```
+laf app list
+```
+### 初始化 app 
+初始化需要用到 appid ，我们可以在 web 端首页拿到。  
+这里稍微解释一下，初始化 app 是指在你运行这个命令的目录下生成模版文件，默认是空的，如果想把 web 端的东西同步过来需要加上 -s 。   
+::: tip
+建议在一个空的目录下尝试此命令。
+:::
+```
+laf app init [appid]
+```
+
+## 依赖
+
+我们可以通过 pull 命令把 web 端的依赖拉到本地，然后 npm i 即可。
+```
+laf dep pull
+```
+如果我们想添加依赖可以使用 add ，注意这里的 add 是在 web 端和本地同时添加这个依赖，添加之后 npm i 即可使用。
+```
+laf dep add [dependencyName]
+```
+如果我们的依赖文件，或者说整个本地文件都是从其他地方拷贝过来的，可以通过 push 命令把 dependency.yaml 文件中的所有依赖都安装到 web 端。
+```
+laf dep push
 ```
 
 
-## 启停应用
-
-```bash
-# 启动应用
-laf start APPID
-
-# 停止应用
-laf stop APPID
-
-# 重启应用
-laf restart APPID
+## 云函数 
+新建云函数，此命令是在本地和 web 同时创建云函数。
+```
+ laf func create [funcName]
+```
+删除云函数，同新建一样本地和 web 同时删除。
+```
+laf func del [funcName]
+``` 
+查看云函数列表。
+```
+laf func list
+```
+更新 web 端云函数代码到本地。
+```
+laf func pull [funcName] 
+```
+推送本地云函数代码到 web 。
+```
+laf func push [funcName] 
+```
+执行云函数，执行结果会打印在命令行，日志需要在 web 上查看。
+```
+laf func exec [funcName]
 ```
 
+## 存储
 
-## 在本地初始化应用
-
-在你的本地项目目录下执行：
-
-```bash
-laf init -s APPID
+查看 bucket 列表。
+```
+laf storage list
 ```
 
-执行后会在当前目录生成一个文件夹 `@laf`，该文件夹下包含了 laf 应用的云函数代码等文件。
-
-`-s` 参数指定初始化时从远程拉取云函数代码，如果不指定，则只会同步应用的基本信息。
-
-`APPID` 应是你已经创建应用的 ID，可通过 `laf list` 查看。
-
-
-## 拉取云函数
-
-从远程拉取云函数到本地：
-
-```bash
-
-# 拉取所有云函数
-laf fn pull 
-
-# 拉取一个云函数
-laf fn pull FUNCTION_NAME
-
+新建 bucket 。
+```
+laf storage create [bucketName]
 ```
 
-
-## 推送云函数
-
-推送本地云函数到远程：
-
-```bash
-
-# 推送所有云函数
-laf fn push
-
-# 推送一个云函数
-laf fn push FUNCTION_NAME
-
+删除 bucket 。
+```
+laf storage dle [bucketName]
 ```
 
-
-## 调试云函数
-
-用于调试「未保存」「未发布」的云函数：
-
-```bash
-
-```bash
-laf fn invoke FUNCTION_NAME --param '{"name": "laf"}'
+更新 bucket 权限。
+```
+laf storage update [bucketName]
 ```
 
-
-## 发布云函数
-
-发布云函数：
-
-```bash
-laf fn publish FUNCTION_NAME
+下载 bucket 文件到本地。
+```
+laf storage pull [outPath]
 ```
 
-## 上传云存储文件
-
-将本地目录 `./dist/` 内的文件上传到 `www` Bucket 中：
-
-```bash
-laf oss push ./dist/ www
+上传本地文件到 bucket 。
+```
+laf storage push [inPath]
 ```
 
-## 下载云存储文件
+## 访问策略
 
-下载云存储 bucket 内的文件到本地：
-
-```bash
-laf oss pull www ./dist/
+查看所有访问策略。
+```
+laf policy list
 ```
 
+拉取访问策略到本地，参数 policyName 是可选，不填代表拉取全部。
+```
+laf policy pull [policyName] 
+```
 
-## 其它说明
+推送访问策略到 web，参数 policyName 是可选，不填代表推送全部。
+```
+laf policy push [policyName]
+```
 
-1. laf cli 还不支持查看应用/云函数日志，正在开发中；
-2. laf cli 版本不稳定，以上文档可能更新并不及时，可通过  `laf -h` `laf fn pull -h` 来查看具体说明；
-3. laf cli 从 laf 0.8.5 开始支持，`system-server` 服务版本低于 0.8.5 不支持 laf cli；
+## 网站托管
+查看托管列表。
+```
+laf website list
+```
+
+开启网站托管，此命令是开启 [bucketName] 的网站托管。
+```
+laf website create [bucketName]
+```
+
+关闭网站托管，此命令是关闭 [bucketName] 的网站托管。
+```
+laf website del [bucketName]
+```
+
+自定义域名，此命令是为已开启网站托管的 [bucketName] 设置自定义域名。
+```
+laf website custom [bucketName] [domain]
+```
