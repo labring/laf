@@ -12,18 +12,18 @@ title: laf-cli 命令行工具
 ## 安装
 
 ```
-# 要求  node 版本 ]= 16
+# 要求  node 版本 >= 16
 npm i laf-cli -g
 ```
 cli 的主要功能就是把在 laf web 上的操作集成到命令行里，下面我们根据 web 端的操作来一个个演示。
 
 
 ## 登录
-想要执行登陆操作我们需要先拿到我们的 PAT（访问凭证）。
+想要执行登录操作我们需要先拿到我们的 PAT（访问凭证）。
 
 ![](../../doc-images/creat-token.png)
 
-生成 token 之后我们复制放在 laf login 后面执行此命令即可登陆。
+生成 token 之后我们复制放在 laf login 后面执行此命令即可登录。
 ```
 laf login [pat]
 ```
@@ -31,14 +31,14 @@ laf login [pat]
   
 `laf login [pat] -r https://laf.dev`
 
-### 退出登陆
+### 退出登录
 
 ```
 laf logout
 ```
 
 ## App 
-在 web 端登陆之后我们会看到我们的 app 列表，那么在 cli 中想查看 app 列表只需要执行。
+在 web 端登录之后我们会看到我们的 app 列表，那么在 cli 中想查看 app 列表只需要执行。
 ```
 laf app list
 ```
