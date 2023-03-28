@@ -9,6 +9,9 @@ title: laf-cli 命令行工具
 
 `laf-cli` 可以让你实现本地开发同步 Web 端，用你最熟悉的开发工具，更加高效。     
 
+我们先预览一下 cli 为我们提供的所有操作。   
+![](../../doc-images/cli-mind.png)
+
 ## 安装
 
 ```
