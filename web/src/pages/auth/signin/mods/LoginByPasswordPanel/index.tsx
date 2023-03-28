@@ -93,21 +93,33 @@ export default function LoginByPasswordPanel({
         >
           {t("AuthPanel.Login")}
         </Button>
-        <div className="mt-2 flex justify-end">
-          {showPhoneSigninBtn && (
-            <Button className="mr-1" size="xs" variant={"text"} onClick={switchLoginType}>
-              {t("AuthPanel.PhoneLogin")}
-            </Button>
-          )}
-          {showSignupBtn && (
+        <div className="mt-2 flex justify-between">
+          <div>
             <Button
+              className="mr-1"
               size="xs"
               variant={"text"}
-              onClick={() => navigate("/signup", { replace: true })}
+              onClick={() => navigate("/reset-password", { replace: true })}
             >
-              {t("AuthPanel.ToRegister")}
+              {t("AuthPanel.ForgotPassword")}
             </Button>
-          )}
+          </div>
+          <div>
+            {showPhoneSigninBtn && (
+              <Button className="mr-1" size="xs" variant={"text"} onClick={switchLoginType}>
+                {t("AuthPanel.PhoneLogin")}
+              </Button>
+            )}
+            {showSignupBtn && (
+              <Button
+                size="xs"
+                variant={"text"}
+                onClick={() => navigate("/signup", { replace: true })}
+              >
+                {t("AuthPanel.ToRegister")}
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>

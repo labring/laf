@@ -89,3 +89,29 @@ export async function AuthControllerGetProviders(
     params: params,
   });
 }
+
+/**
+ * bind phone
+ * @param {string} phone
+ * @param {string} code
+ */
+export async function AuthControllerBindPhone(
+  params: Paths.AuthControllerBindPhone.BodyParameters | any,
+): Promise<Paths.AuthControllerBindPhone.Responses> {
+  return request(`/v1/auth/bind/phone`, {
+    method: "POST",
+    data: params,
+  });
+}
+
+/**
+ * bind username
+ */
+export async function AuthControllerBindUsername(
+  params: Paths.AuthControllerBindUsername.BodyParameters | any,
+): Promise<Paths.AuthControllerBindUsername.Responses> {
+  return request(`/v1/auth/bind/username`, {
+    method: "POST",
+    data: params,
+  });
+}

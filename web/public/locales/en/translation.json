@@ -293,7 +293,7 @@
     "LoginTip": "Please input your phone number and verification code",
     "LoginWithGithub": "Login with GitHub",
     "ValidationCodeTip": "Please input the verification code",
-    "ForgotPassword": "Forgot Password",
+    "ForgotPassword": "Forgot Password?",
     "Register": "Register",
     "ToRegister": "Go to Register",
     "ToLogin": "Go to Login",
@@ -308,7 +308,10 @@
     "PasswordNotMatch": "The two passwords you entered do not match",
     "SmsCodeSendSuccess": "Verification code sent successfully",
     "ValidationCodePlaceholder": "Please input the verification code",
-    "SignupSuccess": "Sign up successfully"
+    "SignupSuccess": "Sign up successfully",
+    "ResetPassword": "Reset Password",
+    "ResetPasswordSuccess": "Reset password successfully",
+    "NewPassword": "New Password"
   },
   "Time": "Time",
   "CreateTime": "Created",

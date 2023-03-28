@@ -602,6 +602,22 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace AuthControllerBindPhone {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AuthControllerBindUsername {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace SubscriptionControllerCreate {
     export type QueryParameters = any;
 

@@ -33,6 +33,17 @@ const routes = [
     ],
   },
   {
+    path: "/reset-password",
+    element: <AuthLayout />,
+    auth: false,
+    children: [
+      {
+        path: "/reset-password",
+        element: () => import("@/pages/auth/reset-password"),
+      },
+    ],
+  },
+  {
     path: "/",
     children: [
       {
