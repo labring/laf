@@ -81,7 +81,7 @@ export class AccountService {
     orderNumber: string,
     amount: number,
     currency: Currency,
-    description = 'Account charge',
+    description = 'laf account charge',
   ) {
     // webchat pay
     if (channel === PaymentChannelType.WeChat) {

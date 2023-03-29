@@ -163,20 +163,6 @@ export class InitializerService {
     return res
   }
 
-  async initMinioAlias() {
-    const regions = await this.regionService.findAll()
-
-    for (const region of regions) {
-      const res = await this.minioService.setMinioClientTarget(region)
-      if (res.status === 'success') {
-        this.logger.verbose('MinioService init - ' + region.name + ' success')
-      } else {
-        this.logger.error('MinioService init - ' + region.name + ' failed', res)
-        throw new Error('set minio client target failed ' + region.name)
-      }
-    }
-  }
-
   async createDefaultAuthProvider() {
     // check if exists
     const existed = await this.prisma.authProvider.count()

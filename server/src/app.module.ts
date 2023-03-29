@@ -19,7 +19,7 @@ import { RegionModule } from './region/region.module'
 import { GatewayModule } from './gateway/gateway.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { SubscriptionModule } from './subscription/subscription.module'
-import { AccountModule } from './account/account.module';
+import { AccountModule } from './account/account.module'
 
 @Module({
   imports: [
