@@ -43,7 +43,7 @@
   "Copied": "copied",
   "Copy": "copy",
   "Create": "new application",
-  "CreateNow": "create now",
+  "CreateNow": "Create Now",
   "Custom": "customize",
   "Days": "days",
   "Delete": "Delete ",
@@ -88,7 +88,6 @@
     "DeploySuccess": "Deploy successfully",
     "Description": "Function Description",
     "EditFunction": "Edit Function",
-    "EmptyText": "No function information yet,",
     "Function": "Function",
     "FunctionList": "Function List",
     "FunctionName": "Function Name",
@@ -107,7 +106,8 @@
     "EmptyFunctionTip": "You have not created the function",
     "UploadButton": "upload",
     "LeaveFunctionPage": "About to leave the function edit page",
-    "PromptDescription": "Use natural language to describe your needs, laf will help you generate code, for example: help me write a code for addTodo"
+    "PromptDescription": "Use natural language to describe your needs, laf will help you generate code, for example: help me write a hello world, return {hello: 'laf AI'}",
+    "CreateWithAITip": "Create functions with AI assistance"
   },
   "HomePanel": {
     "APP": "Android or iOS app",
@@ -329,5 +329,8 @@
   "payment status": "Payment status",
   "Monthly": "Monthly",
   "CreateFolder": "New Folder",
-  "Or": "or"
+  "Or": "Or",
+  "Generating": "Generating",
+  "Start": "Start",
+  "TryLafAI": "Try 🎉 Laf AI !"
 }

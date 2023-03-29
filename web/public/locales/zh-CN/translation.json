@@ -88,7 +88,6 @@
     "DeploySuccess": "发布成功",
     "Description": "函数描述",
     "EditFunction": "编辑函数",
-    "EmptyText": "暂无函数信息,",
     "Function": "函数",
     "FunctionList": "函数列表",
     "FunctionName": "函数名",
@@ -107,7 +106,8 @@
     "EmptyFunctionTip": "您还没有创建函数",
     "UploadButton": "上传",
     "LeaveFunctionPage": "即将离开函数编辑页面",
-    "PromptDescription": "使用自然语言描述你的需求, laf 会帮你生成代码, 例如: 帮我写一个 addTodo 的代码"
+    "PromptDescription": "使用自然语言描述你的需求, laf 会帮你生成代码, 例如: 写一个 hello world ,返回 {hello: 'laf AI'}",
+    "CreateWithAITip": "使用 AI 辅助创建函数"
   },
   "HomePanel": {
     "APP": "Android or iOS 应用",
@@ -329,5 +329,8 @@
   "payment status": "支付状态",
   "Monthly": "月",
   "CreateFolder": "新建文件夹",
-  "Or": "或"
+  "Or": "或",
+  "Generating": "正在生成",
+  "Start": "开始生成",
+  "TryLafAI": "试试 🎉 Laf AI !"
 }
