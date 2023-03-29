@@ -261,6 +261,12 @@ export class InstanceTaskService {
       return
     }
 
+    // check if the service is removed
+    if (instance.service) {
+      await this.relock(appid, waitingTime)
+      return
+    }
+
     // update application phase to `Stopped`
     await db.collection<Application>('Application').updateOne(
       { appid, phase: ApplicationPhase.Stopping },
