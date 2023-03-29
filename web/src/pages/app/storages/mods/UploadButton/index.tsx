@@ -46,7 +46,6 @@ function UploadButton(props: { onUploadSuccess: Function; children: React.ReactE
           <div className="p-6">
             <FileUpload
               onUpload={async (files) => {
-                console.log(files);
                 const newFileList = Array.from(files).map((item: any) => {
                   return {
                     fileName: item.webkitRelativePath ? item.webkitRelativePath : item.name,

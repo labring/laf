@@ -1,6 +1,6 @@
+import { useTranslation } from "react-i18next";
 import { HStack, Input, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
-import { t } from "i18next";
 
 import CopyText from "@/components/CopyText";
 import FunctionEditor from "@/components/Editor/FunctionEditor";
@@ -11,6 +11,7 @@ import { useFunctionListQuery } from "../../service";
 import useFunctionStore from "../../store";
 import DeployButton from "../DeployButton";
 import CreateModal from "../FunctionPanel/CreateModal";
+import PromptModal from "../FunctionPanel/CreateModal/PromptModal";
 
 import FunctionDetailPopOver from "./FunctionDetailPopOver";
 
@@ -20,6 +21,7 @@ function EditorPanel() {
   const store = useFunctionStore((store) => store);
   const { currentFunction, updateFunctionCode, getFunctionUrl } = store;
   const { colorMode } = useColorMode();
+  const { t } = useTranslation();
   const functionCache = useFunctionCache();
 
   const functionListQuery = useFunctionListQuery();
@@ -33,7 +35,7 @@ function EditorPanel() {
             "border-lafWhite-400": !darkMode,
           })}
         >
-          <HStack maxW={"60%"} spacing={2}>
+          <HStack maxW={"55%"} spacing={2}>
             <CopyText className="font-bold text-xl" text={currentFunction?.name}>
               <span>{currentFunction?.name}</span>
             </CopyText>
@@ -44,7 +46,7 @@ function EditorPanel() {
                 <span className="flex-none inline-block w-2 h-2 rounded-full bg-warn-700"></span>
               )}
             {currentFunction?.desc ? (
-              <span className="text-slate-400 font-normal whitespace-nowrap overflow-hidden">
+              <span className="text-slate-400 font-normal whitespace-nowrap overflow-hidden text-ellipsis">
                 {currentFunction?.desc}
               </span>
             ) : null}
@@ -52,7 +54,7 @@ function EditorPanel() {
 
           <HStack spacing={1}>
             <CopyText text={getFunctionUrl()}>
-              <Input minW={"260px"} size="sm" readOnly value={getFunctionUrl()} />
+              <Input w={"240px"} size="sm" readOnly value={getFunctionUrl()} />
             </CopyText>
 
             <DeployButton />
@@ -62,14 +64,23 @@ function EditorPanel() {
 
       {!functionListQuery.isFetching && functionListQuery.data?.data?.length === 0 && (
         <EmptyBox>
-          <div>
-            {t("FunctionPanel.EmptyText")}
-            <CreateModal key="create_modal_new">
-              <span className="ml-2 text-primary-600 hover:border-b-2 hover:border-primary-600 cursor-pointer">
-                {t("CreateNow")}
-              </span>
-            </CreateModal>
-          </div>
+          <>
+            <div className="flex justify-center items-center">
+              <CreateModal key="create_modal_new">
+                <span className="ml-2 text-primary-600 border-b-2 border-b-transparent hover:border-primary-600 cursor-pointer">
+                  {t("CreateNow")}
+                </span>
+              </CreateModal>
+
+              <p className="mx-2 mb-[2px]">{t("Or")}</p>
+
+              <PromptModal>
+                <span className="text-primary-600 font-bold border-b-2 border-b-transparent hover:border-primary-600  cursor-pointer">
+                  {t("TryLafAI")}
+                </span>
+              </PromptModal>
+            </div>
+          </>
         </EmptyBox>
       )}
 

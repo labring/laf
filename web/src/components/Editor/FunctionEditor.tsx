@@ -88,12 +88,22 @@ const updateModel = (path: string, value: string, editorRef: any) => {
 function FunctionEditor(props: {
   value: string;
   className?: string;
-  onChange: (value: string | undefined) => void;
+  onChange?: (value: string | undefined) => void;
   path: string;
   height?: string;
   colorMode?: string;
+  readOnly?: boolean;
 }) {
-  const { value, onChange, path, height = "100%", className, colorMode = "light" } = props;
+  const {
+    value,
+    onChange,
+    path,
+    height = "100%",
+    className,
+    colorMode = "light",
+    readOnly = false,
+  } = props;
+
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
   const monacoEl = useRef(null);
@@ -104,6 +114,7 @@ function FunctionEditor(props: {
         minimap: {
           enabled: false,
         },
+        readOnly: readOnly,
         language: "typescript",
         automaticLayout: true,
         scrollbar: {
@@ -124,7 +135,7 @@ function FunctionEditor(props: {
     }
 
     return () => {};
-  }, [colorMode, path, value]);
+  }, [colorMode, path, readOnly, value]);
 
   useEffect(() => {
     if (monacoEl && editorRef.current) {

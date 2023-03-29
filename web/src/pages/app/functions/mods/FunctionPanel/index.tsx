@@ -3,6 +3,7 @@
  ***************************/
 
 import { useEffect, useState } from "react";
+import { TbBrandGithubCopilot } from "react-icons/tb";
 import { useNavigate, useParams } from "react-router-dom";
 import { AddIcon, DeleteIcon, EditIcon, Search2Icon } from "@chakra-ui/icons";
 import { HStack, Input, InputGroup, InputLeftElement, useColorMode } from "@chakra-ui/react";
@@ -24,6 +25,7 @@ import { useDeleteFunctionMutation, useFunctionListQuery } from "../../service";
 import useFunctionStore from "../../store";
 import TriggerModal from "../TriggerModal";
 
+import PromptModal from "./CreateModal/PromptModal";
 import CreateModal from "./CreateModal";
 
 import { TFunction } from "@/apis/typing";
@@ -126,6 +128,11 @@ export default function FunctionList() {
               <TriggerIcon fontSize={13} />
             </IconWrap>
           </TriggerModal>,
+          <PromptModal key="create_prompt_modal">
+            <IconWrap size={20} tooltip={t("FunctionPanel.CreateWithAITip").toString()}>
+              <TbBrandGithubCopilot fontSize={12} />
+            </IconWrap>
+          </PromptModal>,
           <CreateModal key="create_modal">
             <IconWrap size={20} tooltip={t("FunctionPanel.AddFunction").toString()}>
               <AddIcon fontSize={12} />

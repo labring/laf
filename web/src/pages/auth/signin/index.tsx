@@ -14,8 +14,6 @@ type providersTypes = "user-password" | "phone" | "github" | "wechat";
 export default function SignIn() {
   const { providers, setProviders } = useAuthStore();
   useGetProvidersQuery((data: any) => {
-    console.log("useGetProvidersQuery", data);
-
     setProviders(data?.data || []);
   });
   const [phoneProvider, setPhoneProvider] = useState<any>(null);
