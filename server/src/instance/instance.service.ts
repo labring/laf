@@ -77,7 +77,7 @@ export class InstanceService {
 
     // db connection uri
     const database = await this.databaseService.findOne(appid)
-    const dbConnectionUri = this.databaseService.getConnectionUri(
+    const dbConnectionUri = this.databaseService.getInternalConnectionUri(
       app.region,
       database,
     )

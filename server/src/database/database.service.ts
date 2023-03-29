@@ -55,9 +55,7 @@ export class DatabaseService {
 
   async findOne(appid: string) {
     const database = await this.prisma.database.findUnique({
-      where: {
-        appid,
-      },
+      where: { appid },
     })
 
     return database
@@ -72,17 +70,28 @@ export class DatabaseService {
 
     // delete app database in database
     const doc = await this.prisma.database.delete({
-      where: {
-        appid: database.appid,
-      },
+      where: { appid: database.appid },
     })
 
     return doc
   }
 
-  getConnectionUri(region: Region, database: Database) {
+  // Get application internal database connection uri
+  getInternalConnectionUri(region: Region, database: Database) {
     // build app db connection uri from config
     const parsed = mongodb_uri.parse(region.databaseConf.connectionUri)
+    parsed.database = database.name
+    parsed.username = database.user
+    parsed.password = database.password
+    parsed.options['authSource'] = database.name
+
+    return mongodb_uri.format(parsed)
+  }
+
+  // Get application control database connection uri
+  getControlConnectionUri(region: Region, database: Database) {
+    // build app db connection uri from config
+    const parsed = mongodb_uri.parse(region.databaseConf.controlConnectionUri)
     parsed.database = database.name
     parsed.username = database.user
     parsed.password = database.password
@@ -100,7 +109,7 @@ export class DatabaseService {
     assert(database, 'Database not found')
 
     const dbName = database.name
-    const connectionUri = this.getConnectionUri(region, database)
+    const connectionUri = this.getControlConnectionUri(region, database)
     assert(connectionUri, 'Database connection uri not found')
 
     const accessor = new MongoAccessor(dbName, connectionUri)
@@ -116,7 +125,7 @@ export class DatabaseService {
     const database = await this.findOne(appid)
     assert(database, 'Database not found')
 
-    const connectionUri = this.getConnectionUri(region, database)
+    const connectionUri = this.getControlConnectionUri(region, database)
 
     const client = await this.mongoService.connectDatabase(
       connectionUri,
