@@ -106,7 +106,8 @@
     "EmptyDebugTip": "No results yet",
     "EmptyFunctionTip": "You have not created the function",
     "UploadButton": "upload",
-    "LeaveFunctionPage": "About to leave the function edit page"
+    "LeaveFunctionPage": "About to leave the function edit page",
+    "PromptDescription": "Use natural language to describe your needs, laf will help you generate code, for example: help me write a code for addTodo"
   },
   "HomePanel": {
     "APP": "Android or iOS app",
@@ -308,10 +309,10 @@
     "PasswordNotMatch": "The two passwords you entered do not match",
     "SmsCodeSendSuccess": "Verification code sent successfully",
     "ValidationCodePlaceholder": "Please input the verification code",
-    "SignupSuccess": "Sign up successfully",
     "ResetPassword": "Reset Password",
     "ResetPasswordSuccess": "Reset password successfully",
-    "NewPassword": "New Password"
+    "NewPassword": "New Password",
+    "SignUpSuccess": "Sign up successfully"
   },
   "Time": "Time",
   "CreateTime": "Created",
@@ -328,6 +329,5 @@
   "payment status": "Payment status",
   "Monthly": "Monthly",
   "CreateFolder": "New Folder",
-  "Or": "or",
-  "BeforeunloadTip": "Are you sure you want to leave the current editing page?"
+  "Or": "or"
 }

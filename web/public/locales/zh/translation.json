@@ -106,7 +106,8 @@
     "EmptyDebugTip": "暂无运行结果",
     "EmptyFunctionTip": "您还没有创建函数",
     "UploadButton": "上传",
-    "LeaveFunctionPage": "即将离开函数编辑页面"
+    "LeaveFunctionPage": "即将离开函数编辑页面",
+    "PromptDescription": "使用自然语言描述你的需求, laf 会帮你生成代码, 例如: 帮我写一个 addTodo 的代码"
   },
   "HomePanel": {
     "APP": "Android or iOS 应用",
@@ -308,10 +309,10 @@
     "PasswordNotMatch": "两次输入的密码不一致",
     "SmsCodeSendSuccess": "验证码发送成功",
     "ValidationCodePlaceholder": "请输入验证码",
-    "SignupSuccess": "注册成功",
     "ResetPassword": "重置密码",
     "ResetPasswordSuccess": "重置密码成功",
-    "NewPassword": "新密码"
+    "NewPassword": "新密码",
+    "SignUpSuccess": "注册成功"
   },
   "Time": "时间",
   "CreateTime": "创建时间",
@@ -328,6 +329,5 @@
   "payment status": "支付状态",
   "Monthly": "月",
   "CreateFolder": "新建文件夹",
-  "Or": "或",
-  "BeforeunloadTip": "确定要离开当前编辑页面吗?"
+  "Or": "或"
 }

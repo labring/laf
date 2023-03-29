@@ -95,7 +95,7 @@ export default function SignUp() {
     const res = await signupMutation.mutateAsync(params);
 
     if (res?.data) {
-      showSuccess(t("AuthPanel.SignupSuccess"));
+      showSuccess(t("AuthPanel.SignUpSuccess"));
       navigate("/login", { replace: true });
     }
   };

@@ -16,7 +16,7 @@ export default function Header(props: { size: "sm" | "lg" }) {
   return (
     <div className="flex justify-between px-10 py-4 h-[60px]">
       <div className="flex items-center">
-        <img src="/logo.png" alt="logo" width={30} className="mr-4" />
+        <img src="/logo_text.png" alt="logo" width={80} className="mr-4" />
         <a
           href="https://github.com/labring/laf"
           className="flex items-center ml-2 p-2 py-1 text-base text-gray-700 hover:text-black bg-white rounded-md"
