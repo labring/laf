@@ -8,7 +8,6 @@ const { toast } = createStandaloneToast();
 
 const request = axios.create({
   baseURL: "/",
-  withCredentials: true,
   timeout: 30000,
 });
 
