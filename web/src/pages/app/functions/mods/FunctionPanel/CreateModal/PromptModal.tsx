@@ -50,6 +50,7 @@ const PromptModal = (props: { functionItem?: any; children?: React.ReactElement 
   const CancelToken = axios.CancelToken;
   let source = CancelToken.source();
   const { colorMode } = useColorMode();
+
   const { data: generateCodeRes, ...generateCode } = useMutation((params: any) => {
     return request("https://zbkzzm.laf.dev/prompt-functions", {
       method: "POST",
@@ -57,6 +58,8 @@ const PromptModal = (props: { functionItem?: any; children?: React.ReactElement 
       cancelToken: source.token,
     });
   });
+
+  let _aiGenerateCode = ((generateCodeRes as any)?.sources || [])[0]?.code;
 
   const defaultValues = {
     name: functionItem?.name || "",
@@ -96,12 +99,12 @@ const PromptModal = (props: { functionItem?: any; children?: React.ReactElement 
     if (isEdit) {
       res = await updateFunctionMutation.mutateAsync({
         ...data,
-        code: (generateCodeRes as any)?.sources[0].code,
+        code: _aiGenerateCode,
       });
     } else {
       res = await createFunctionMutation.mutateAsync({
         ...data,
-        code: (generateCodeRes as any)?.sources[0].code,
+        code: _aiGenerateCode,
       });
     }
 
@@ -209,6 +212,9 @@ const PromptModal = (props: { functionItem?: any; children?: React.ReactElement 
                 >
                   {generateCode.isLoading ? t("Generating") : t("Start")}
                 </Button>
+                <span className="ml-2 text-red-600">
+                  {typeof generateCodeRes === "string" ? generateCodeRes : null}
+                </span>
                 {generateCode.isLoading ? (
                   <a
                     href="/cancel_generate"
@@ -228,11 +234,11 @@ const PromptModal = (props: { functionItem?: any; children?: React.ReactElement 
                   <Progress size="xs" isIndeterminate />
                 </div>
               ) : null}
-              {(generateCodeRes as any)?.sources[0].code && (
+              {_aiGenerateCode && (
                 <FunctionEditor
                   className="w-full"
                   height="300px"
-                  value={(generateCodeRes as any)?.sources[0].code}
+                  value={_aiGenerateCode}
                   readOnly={true}
                   colorMode={colorMode}
                   path={Math.random().toString()}
@@ -248,7 +254,7 @@ const PromptModal = (props: { functionItem?: any; children?: React.ReactElement 
             </VStack>
           </ModalBody>
 
-          {(generateCodeRes as any)?.sources[0].code ? (
+          {_aiGenerateCode ? (
             <ModalFooter>
               <Button
                 variant="ghost"
