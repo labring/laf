@@ -130,7 +130,7 @@ export class InstanceTaskService {
     const instance = await this.instanceService.get(app)
     const available = isConditionTrue(
       'Available',
-      instance.deployment.status?.conditions,
+      instance.deployment?.status?.conditions || [],
     )
     if (!available) {
       await this.relock(appid, waitingTime)
