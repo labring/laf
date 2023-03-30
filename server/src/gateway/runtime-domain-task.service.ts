@@ -37,9 +37,6 @@ export class RuntimeDomainTaskService {
 
     // Phase `Deleting` -> `Deleted`
     this.handleDeletedState()
-
-    // Clear timeout locks
-    this.clearTimeoutLocks()
   }
 
   /**
@@ -117,15 +114,9 @@ export class RuntimeDomainTaskService {
       .findOneAndUpdate(
         {
           phase: DomainPhase.Deleting,
-          lockedAt: {
-            $lt: new Date(Date.now() - 1000 * this.lockTimeout),
-          },
+          lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
-        {
-          $set: {
-            lockedAt: new Date(),
-          },
-        },
+        { $set: { lockedAt: new Date() } },
       )
     if (!res.value) return
 
@@ -134,28 +125,24 @@ export class RuntimeDomainTaskService {
     const region = await this.regionService.findByAppId(doc.appid)
     assert(region, 'region not found')
 
-    // delete route first
-    const route = await this.apisixService.deleteAppRoute(region, doc.appid)
-    this.logger.debug('app route deleted:', route)
+    // delete route first if exists
+    const id = `app-${doc.appid}`
+    const route = await this.apisixService.getRoute(region, id)
+    if (route) {
+      await this.apisixService.deleteAppRoute(region, doc.appid)
+      this.logger.log('app route deleted: ' + doc.appid)
+      this.logger.debug(route)
+    }
 
     // update phase to `Deleted`
-    const updated = await db
-      .collection<RuntimeDomain>('RuntimeDomain')
-      .updateOne(
-        {
-          _id: doc._id,
-          phase: DomainPhase.Deleting,
-        },
-        {
-          $set: {
-            phase: DomainPhase.Deleted,
-            lockedAt: TASK_LOCK_INIT_TIME,
-          },
-        },
-      )
+    await db.collection<RuntimeDomain>('RuntimeDomain').updateOne(
+      { _id: doc._id, phase: DomainPhase.Deleting },
+      {
+        $set: { phase: DomainPhase.Deleted, lockedAt: TASK_LOCK_INIT_TIME },
+      },
+    )
 
-    if (updated.modifiedCount > 0)
-      this.logger.debug('app domain phase updated to Deleted', doc)
+    this.logger.log('app domain phase updated to Deleted: ' + doc.appid)
   }
 
   /**
@@ -169,12 +156,10 @@ export class RuntimeDomainTaskService {
       {
         state: DomainState.Active,
         phase: DomainPhase.Deleted,
+        lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
       },
       {
-        $set: {
-          phase: DomainPhase.Creating,
-          lockedAt: TASK_LOCK_INIT_TIME,
-        },
+        $set: { phase: DomainPhase.Creating, lockedAt: TASK_LOCK_INIT_TIME },
       },
     )
   }
@@ -189,13 +174,11 @@ export class RuntimeDomainTaskService {
     await db.collection<RuntimeDomain>('RuntimeDomain').updateMany(
       {
         state: DomainState.Inactive,
-        phase: DomainPhase.Created,
+        phase: { $in: [DomainPhase.Created, DomainPhase.Creating] },
+        lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
       },
       {
-        $set: {
-          phase: DomainPhase.Deleting,
-          lockedAt: TASK_LOCK_INIT_TIME,
-        },
+        $set: { phase: DomainPhase.Deleting, lockedAt: TASK_LOCK_INIT_TIME },
       },
     )
   }
@@ -212,12 +195,10 @@ export class RuntimeDomainTaskService {
       {
         state: DomainState.Deleted,
         phase: DomainPhase.Created,
+        lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
       },
       {
-        $set: {
-          phase: DomainPhase.Deleting,
-          lockedAt: TASK_LOCK_INIT_TIME,
-        },
+        $set: { phase: DomainPhase.Deleting, lockedAt: TASK_LOCK_INIT_TIME },
       },
     )
 
@@ -225,25 +206,5 @@ export class RuntimeDomainTaskService {
       state: DomainState.Deleted,
       phase: DomainPhase.Deleted,
     })
-  }
-
-  /**
-   * Clear timeout locks
-   */
-  async clearTimeoutLocks() {
-    const db = SystemDatabase.db
-
-    await db.collection<RuntimeDomain>('RuntimeDomain').updateMany(
-      {
-        lockedAt: {
-          $lt: new Date(Date.now() - 1000 * this.lockTimeout),
-        },
-      },
-      {
-        $set: {
-          lockedAt: TASK_LOCK_INIT_TIME,
-        },
-      },
-    )
   }
 }
