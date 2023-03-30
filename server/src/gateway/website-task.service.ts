@@ -237,7 +237,8 @@ export class WebsiteTaskService {
     await db.collection<WebsiteHosting>('WebsiteHosting').updateMany(
       {
         state: DomainState.Inactive,
-        phase: DomainPhase.Created,
+        phase: { $in: [DomainPhase.Created, DomainPhase.Creating] },
+        lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
       },
       {
         $set: {
@@ -260,6 +261,7 @@ export class WebsiteTaskService {
       {
         state: DomainState.Active,
         phase: DomainPhase.Deleted,
+        lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
       },
       {
         $set: {
@@ -283,6 +285,7 @@ export class WebsiteTaskService {
       {
         state: DomainState.Deleted,
         phase: DomainPhase.Created,
+        lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
       },
       {
         $set: {

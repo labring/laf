@@ -4,7 +4,6 @@ import { TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/database/system-database'
 import { CronJobService } from './cron-job.service'
 import { CronTrigger, TriggerPhase, TriggerState } from '@prisma/client'
-import * as assert from 'node:assert'
 
 @Injectable()
 export class TriggerTaskService {
@@ -151,7 +150,10 @@ export class TriggerTaskService {
     const db = SystemDatabase.db
 
     await db.collection<CronTrigger>('CronTrigger').updateMany(
-      { state: TriggerState.Inactive, phase: TriggerPhase.Created },
+      {
+        state: TriggerState.Inactive,
+        phase: { $in: [TriggerPhase.Created, TriggerPhase.Creating] },
+      },
       {
         $set: { phase: TriggerPhase.Deleting, lockedAt: TASK_LOCK_INIT_TIME },
       },

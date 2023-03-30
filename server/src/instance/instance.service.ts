@@ -268,9 +268,7 @@ export class InstanceService {
       region,
       app.appid,
     )
-    if (!namespace) {
-      return
-    }
+    if (!namespace) return
 
     const appsV1Api = this.clusterService.makeAppsV1Api(region)
     const coreV1Api = this.clusterService.makeCoreV1Api(region)
