@@ -32,7 +32,10 @@ laf login [pat]
 ```
 默认登录 `laf.dev`，如果要登录私有部署的 laf 可通过 `-r` 参数指定：
   
-`laf login [pat] -r https://laf.dev`
+`laf login [pat] -r https://api.laf.dev`
+::: tip
+这里要注意，https 后面需要加上 api
+:::
 
 ### 退出登录
 
