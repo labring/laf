@@ -32,6 +32,7 @@ export type TBundle = {
   state: string;
   resource: TResource;
   limitCountPerUser: number;
+  notes: { content: string }[];
   subscriptionOptions: TSubscriptionOption[];
 };
 
