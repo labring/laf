@@ -9,6 +9,9 @@ title: laf-cli 命令行工具
 
 `laf-cli` 可以让你实现本地开发同步 Web 端，用你最熟悉的开发工具，更加高效。     
 
+我们先预览一下 cli 为我们提供的所有操作。   
+![](../../doc-images/cli-mind.png)
+
 ## 安装
 
 ```
@@ -29,7 +32,10 @@ laf login [pat]
 ```
 默认登录 `laf.dev`，如果要登录私有部署的 laf 可通过 `-r` 参数指定：
   
-`laf login [pat] -r https://laf.dev`
+`laf login [pat] -r https://api.laf.dev`
+::: tip
+这里要注意，https 后面需要加上 api
+:::
 
 ### 退出登录
 
@@ -108,7 +114,7 @@ laf storage create [bucketName]
 
 删除 bucket 。
 ```
-laf storage dle [bucketName]
+laf storage del [bucketName]
 ```
 
 更新 bucket 权限。
@@ -118,12 +124,12 @@ laf storage update [bucketName]
 
 下载 bucket 文件到本地。
 ```
-laf storage pull [outPath]
+laf storage pull [bucketName] [outPath]
 ```
 
 上传本地文件到 bucket 。
 ```
-laf storage push [inPath]
+laf storage push [bucketName] [inPath]
 ```
 
 ## 访问策略

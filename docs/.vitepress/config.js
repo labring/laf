@@ -79,10 +79,10 @@ const guideSiderbarConfig = [
         text: "环境变量",
         link: "/guide/function/env",
       },
-      // {
-      //   text: "WebSocket 连接",
-      //   link: "/guide/function/websocket",
-      // },
+      {
+        text: "WebSocket 连接",
+        link: "/guide/function/websocket",
+      },
     ],
   },
   {
@@ -120,15 +120,7 @@ const guideSiderbarConfig = [
     text: "laf-cli 命令行工具",
     items: [{ text: "laf-cli 使用说明", link: "/guide/cli/" }],
   },
-  {
-    text: "FAQ",
-    items: [
-      {
-        text: "问答",
-        link: "/guide/faq/",
-      },
-    ],
-  },
+
 ];
 
 /**

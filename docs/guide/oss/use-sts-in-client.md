@@ -21,15 +21,12 @@ import { Cloud } from "laf-client-sdk";
 const APPID = "YOUR_APPID";
 
 const cloud = new Cloud({
-  baseUrl: `https://${appid}.lafyun.com`,
+  baseUrl: `https://${appid}.laf.dev`,
   getAccessToken: () => localStorage.getItem("access_token"),
 });
 
 // 获取云存储临时令牌
-const { credentials, endpoint, region } = await cloud.invokeFunction(
-  "get-sts",
-  {}
-);
+const { credentials, endpoint, region } = await cloud.invoke("get-sts");
 
 const s3 = new S3({
   endpoint: endpoint,
