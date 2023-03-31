@@ -64,25 +64,27 @@ export class BucketDomainTaskService {
     const region = await this.regionService.findByAppId(doc.appid)
     assert(region, 'region not found')
 
-    // create route first
-    const route = await this.apisixService.createBucketRoute(
-      region,
-      doc.bucketName,
-      doc.domain,
-    )
-
-    this.logger.debug('bucket route created:', route)
+    // create route if not exists
+    const id = `bucket-${doc.bucketName}`
+    const route = await this.apisixService.getRoute(region, id)
+    if (!route) {
+      await await this.apisixService.createBucketRoute(
+        region,
+        doc.bucketName,
+        doc.domain,
+      )
+      this.logger.log('bucket route created:' + doc.domain)
+    }
 
     // update phase to `Created`
-    const updated = await db.collection<BucketDomain>('BucketDomain').updateOne(
+    await db.collection<BucketDomain>('BucketDomain').updateOne(
       { _id: doc._id, phase: DomainPhase.Creating },
       {
         $set: { phase: DomainPhase.Created, lockedAt: TASK_LOCK_INIT_TIME },
       },
     )
 
-    if (updated.modifiedCount > 0)
-      this.logger.debug('bucket domain phase updated to Created', doc)
+    this.logger.log('bucket domain phase updated to Created: ' + doc.domain)
   }
 
   /**
