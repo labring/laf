@@ -18,7 +18,7 @@ export default function IconWrap(props: {
     <Tooltip label={tooltip} placement={placement}>
       <Center
         onClick={props.onClick}
-        className={clsx("rounded-full inline-block cursor-pointer ", className, {
+        className={clsx("inline-block cursor-pointer rounded-full ", className, {
           "hover:bg-lafWhite-600": !darkMode && !showBg,
           "bg-lafWhite-600": !darkMode && showBg,
           "hover:bg-lafDark-300": darkMode && !showBg,

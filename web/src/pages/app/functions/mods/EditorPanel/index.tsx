@@ -36,17 +36,17 @@ function EditorPanel() {
           })}
         >
           <HStack maxW={"55%"} spacing={2}>
-            <CopyText className="font-bold text-xl" text={currentFunction?.name}>
+            <CopyText className="text-xl font-bold" text={currentFunction?.name}>
               <span>{currentFunction?.name}</span>
             </CopyText>
             <FunctionDetailPopOver />
             {currentFunction?.id &&
               functionCache.getCache(currentFunction?.id, currentFunction?.source?.code) !==
                 currentFunction?.source?.code && (
-                <span className="flex-none inline-block w-2 h-2 rounded-full bg-warn-700"></span>
+                <span className="inline-block h-2 w-2 flex-none rounded-full bg-warn-700"></span>
               )}
             {currentFunction?.desc ? (
-              <span className="text-slate-400 font-normal whitespace-nowrap overflow-hidden text-ellipsis">
+              <span className="overflow-hidden text-ellipsis whitespace-nowrap font-normal text-slate-400">
                 {currentFunction?.desc}
               </span>
             ) : null}
@@ -65,9 +65,9 @@ function EditorPanel() {
       {!functionListQuery.isFetching && functionListQuery.data?.data?.length === 0 && (
         <EmptyBox>
           <>
-            <div className="flex justify-center items-center">
+            <div className="flex items-center justify-center">
               <CreateModal key="create_modal_new">
-                <span className="ml-2 text-primary-600 border-b-2 border-b-transparent hover:border-primary-600 cursor-pointer">
+                <span className="ml-2 cursor-pointer border-b-2 border-b-transparent text-primary-600 hover:border-primary-600">
                   {t("CreateNow")}
                 </span>
               </CreateModal>
@@ -75,7 +75,7 @@ function EditorPanel() {
               <p className="mx-2 mb-[2px]">{t("Or")}</p>
 
               <PromptModal>
-                <span className="text-primary-600 font-bold border-b-2 border-b-transparent hover:border-primary-600  cursor-pointer">
+                <span className="cursor-pointer border-b-2 border-b-transparent font-bold text-primary-600  hover:border-primary-600">
                   {t("TryLafAI")}
                 </span>
               </PromptModal>

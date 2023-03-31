@@ -41,16 +41,16 @@ export default function Resize(props: {
       {display === "none" ? null : (
         <div
           className={
-            type === "x" ? "h-full w-2 cursor-col-resize group" : "h-2 w-full cursor-row-resize"
+            type === "x" ? "group h-full w-2 cursor-col-resize" : "h-2 w-full cursor-row-resize"
           }
           {...separatorProps}
         >
-          <Center className="w-full h-full relative">
+          <Center className="relative h-full w-full">
             {type === "x" && width <= 20 ? (
               <div
                 className={clsx(
                   reverse ? "rounded-l-lg" : "rounded-r-lg",
-                  "w-2 h-[30px] bg-grayIron-300 group-hover:bg-grayIron-400 transition-colors leading-loose text-lafWhite-600",
+                  "h-[30px] w-2 bg-grayIron-300 leading-loose text-lafWhite-600 transition-colors group-hover:bg-grayIron-400",
                 )}
               >
                 {reverse ? <ChevronLeftIcon fontSize={10} /> : <ChevronRightIcon fontSize={10} />}
@@ -61,15 +61,15 @@ export default function Resize(props: {
                   className={clsx(
                     type === "x" && isDragging ? "h-full " : "h-0",
                     type === "y" && isDragging ? "w-full " : "w-0",
-                    isDragging ? " border-primary-400 border" : "",
-                    "transition-all absolute z-10 overflow-hidden",
+                    isDragging ? " border border-primary-400" : "",
+                    "absolute z-10 overflow-hidden transition-all",
                   )}
                 ></div>
                 <Box
                   borderColor={borderColor}
                   className={clsx(
                     type === "x" ? "h-[18px]" : "w-[18px]",
-                    "border rounded absolute",
+                    "absolute rounded border",
                   )}
                 ></Box>
               </>

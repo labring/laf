@@ -40,7 +40,7 @@ export default function SignIn() {
   }, [providers]);
 
   return (
-    <div className="bg-white absolute left-1/2 top-1/2 -translate-y-1/2 w-[560px] rounded-[10px] p-[65px] pb-[100px]">
+    <div className="absolute left-1/2 top-1/2 w-[560px] -translate-y-1/2 rounded-[10px] bg-white p-[65px] pb-[100px]">
       <div className="mb-[45px]">
         <img src="/logo.png" alt="logo" width={40} className="mr-4" />
       </div>
@@ -61,8 +61,8 @@ export default function SignIn() {
 
       {(githubProvider || wechatProvider) && (
         <div className="mt-20">
-          <div className="w-full text-center mb-5 relative before:content-[''] before:block before:w-full before:h-[1px] before:bg-slate-300 before:absolute before:top-1/2">
-            <span className="pl-5 pr-5 bg-white z-10 relative">or</span>
+          <div className="relative mb-5 w-full text-center before:absolute before:top-1/2 before:block before:h-[1px] before:w-full before:bg-slate-300 before:content-['']">
+            <span className="relative z-10 bg-white pl-5 pr-5">or</span>
           </div>
           {githubProvider && (
             <Button type="submit" className="w-full pt-5 pb-5" colorScheme="white" variant="plain">

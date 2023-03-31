@@ -28,12 +28,12 @@ export default function StoragePage() {
       <Resize type="x" pageId="storagePage" panelId="SideBar" containerRef={containerRef} />
       <Col>
         {currentStorage === undefined ? (
-          <Panel className="items-center h-full">
+          <Panel className="h-full items-center">
             <EmptyBox>
               <div>
                 {t("StoragePanel.EmptyText")}
                 <CreateBucketModal>
-                  <span className="ml-2 text-primary-600 hover:border-b-2 hover:border-primary-600 cursor-pointer">
+                  <span className="ml-2 cursor-pointer text-primary-600 hover:border-b-2 hover:border-primary-600">
                     {t("CreateNow")}
                   </span>
                 </CreateBucketModal>

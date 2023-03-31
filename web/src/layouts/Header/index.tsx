@@ -16,7 +16,7 @@ export default function Header(props: { size: "sm" | "lg" }) {
   const { colorMode } = useColorMode();
 
   return (
-    <div className="flex justify-between px-10 py-4 h-[60px]">
+    <div className="flex h-[60px] justify-between px-10 py-4">
       <div className="flex items-center">
         <img
           src={colorMode === "dark" ? "/logo_light.png" : "/logo_text.png"}
@@ -26,7 +26,7 @@ export default function Header(props: { size: "sm" | "lg" }) {
         />
         <a
           href="https://github.com/labring/laf"
-          className="flex items-center ml-2 p-2 py-1 text-base text-gray-700 hover:text-black bg-white rounded-md"
+          className="ml-2 flex items-center rounded-md bg-white p-2 py-1 text-base text-gray-700 hover:text-black"
           target={"_blank"}
           rel="noreferrer"
         >

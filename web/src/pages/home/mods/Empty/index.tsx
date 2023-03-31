@@ -27,18 +27,18 @@ function Empty() {
 
   return (
     <div style={{ height: "75vh", minHeight: "500px" }}>
-      <div className="flex flex-col items-center justify-center h-full">
+      <div className="flex h-full flex-col items-center justify-center">
         <h2 className="text-3xl font-bold">
           {t("HomePanel.Hello")} 👋 ， {userInfo?.profile?.name || userInfo?.username} ，{" "}
           {t("HomePanel.Welcome")}
         </h2>
-        <p className="mt-10 text-xl w-[460px] mx-auto mb-8">{t("HomePanel.Introduction")}</p>
-        <div className="grid grid-cols-3 w-[722px]">
+        <p className="mx-auto mt-10 mb-8 w-[460px] text-xl">{t("HomePanel.Introduction")}</p>
+        <div className="grid w-[722px] grid-cols-3">
           {messageList.map((item, index) => {
             return (
               <div
                 key={index}
-                className={clsx("flex items-center pl-9 font-medium text-xl", styles.emptyItem, {
+                className={clsx("flex items-center pl-9 text-xl font-medium", styles.emptyItem, {
                   "bg-lafDark-300": darkMode,
                 })}
               >

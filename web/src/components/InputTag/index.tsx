@@ -24,7 +24,7 @@ export default function InputTag(props: { value: string[]; onChange: (value: str
   return (
     <div
       className={clsx(
-        "flex items-center p-2 rounded-md ",
+        "flex items-center rounded-md p-2 ",
         darkMode ? "bg-gray-800" : "bg-gray-100",
       )}
     >

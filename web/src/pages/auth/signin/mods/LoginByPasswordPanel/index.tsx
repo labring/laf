@@ -51,7 +51,7 @@ export default function LoginByPasswordPanel({
 
   return (
     <div>
-      <FormControl isInvalid={!!errors?.account} className="flex mb-10 items-center">
+      <FormControl isInvalid={!!errors?.account} className="mb-10 flex items-center">
         <FormLabel className="w-20" htmlFor="account">
           {t("AuthPanel.Account")}
         </FormLabel>
@@ -62,7 +62,7 @@ export default function LoginByPasswordPanel({
           placeholder={t("AuthPanel.AccountPlaceholder") || ""}
         />
       </FormControl>
-      <FormControl isInvalid={!!errors.password} className="flex mb-10 items-center">
+      <FormControl isInvalid={!!errors.password} className="mb-10 flex items-center">
         <FormLabel className="w-20" htmlFor="phone">
           {t("AuthPanel.Password")}
         </FormLabel>

@@ -109,7 +109,7 @@ export default function FileList() {
       </Panel>
       <Panel className="flex-grow overflow-hidden">
         <Panel.Header
-          className={clsx("flex-none mb-4 ml-4", {
+          className={clsx("mb-4 ml-4 flex-none", {
             "border-b-2": !darkMode,
             "border-lafWhite-400": !darkMode,
           })}
@@ -119,9 +119,9 @@ export default function FileList() {
             TODO: 文件数： {currentStorage?.name}
           </span> */}
         </Panel.Header>
-        <div className="px-2 pb-2 flex-grow overflow-hidden">
+        <div className="flex-grow overflow-hidden px-2 pb-2">
           {query.isFetching ? (
-            <Center className="h-full opacity-60 bg-white-200">
+            <Center className="bg-white-200 h-full opacity-60">
               <Spinner size="lg" />
             </Center>
           ) : !query.data ||
@@ -131,7 +131,7 @@ export default function FileList() {
               <UploadButton onUploadSuccess={() => query.refetch()}>
                 <div className="text-lg">
                   <span>{t("StoragePanel.UploadTip")}</span>
-                  <span className="ml-2 text-primary-600 hover:border-b-2 hover:border-primary-600 cursor-pointer">
+                  <span className="ml-2 cursor-pointer text-primary-600 hover:border-b-2 hover:border-primary-600">
                     {t("StoragePanel.InstantUpload")}
                   </span>
                 </div>
@@ -183,7 +183,7 @@ export default function FileList() {
                             onClick={() =>
                               file.Prefix ? changeDirectory(file) : viewAppFile(file)
                             }
-                            className="font-bold cursor-pointer"
+                            className="cursor-pointer font-bold"
                           >
                             <FileTypeIcon type={fileType} />
                             {file.Prefix ? (

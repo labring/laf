@@ -110,7 +110,7 @@ export default function DebugPanel(props: { containerRef: any }) {
 
   return (
     <>
-      <Panel className="flex-grow overflow-hidden min-w-[200px]">
+      <Panel className="min-w-[200px] flex-grow overflow-hidden">
         <Tabs width="100%" colorScheme={"primary"} display="flex" flexDirection={"column"} h="full">
           <TabList h={"50px"}>
             <Tab px="0">
@@ -128,8 +128,8 @@ export default function DebugPanel(props: { containerRef: any }) {
 
           <TabPanels flex={1} className="overflow-hidden">
             <TabPanel padding={0} h="full">
-              <div className="flex flex-col h-full">
-                <div className="flex-none flex py-4 px-2 items-center">
+              <div className="flex h-full flex-col">
+                <div className="flex flex-none items-center py-4 px-2">
                   <span className="mr-3 whitespace-nowrap">{t("FunctionPanel.Methods")}</span>
                   <Select
                     width="150px"

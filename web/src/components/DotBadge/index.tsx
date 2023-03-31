@@ -31,7 +31,7 @@ export default function DotBadge({
   }
   return (
     <Box>
-      <span className={"inline-block w-[6px] h-[6px] rounded-full mr-1 " + bgColor}></span>
+      <span className={"mr-1 inline-block h-[6px] w-[6px] rounded-full " + bgColor}></span>
       <span className={color}>{text}</span>
     </Box>
   );

@@ -32,7 +32,7 @@ export default function AuthDetail(props: { onBack: () => void }) {
   const onSubmit = async (data: any) => {};
   return (
     <>
-      <p className="h-[40px] flex-none text-left w-full">
+      <p className="h-[40px] w-full flex-none text-left">
         <span
           className="cursor-pointer "
           onClick={() => {
@@ -44,17 +44,17 @@ export default function AuthDetail(props: { onBack: () => void }) {
           {t("Back")}
         </span>
       </p>
-      <div className="flex-grow w-full flex flex-col justify-around">
+      <div className="flex w-full flex-grow flex-col justify-around">
         <p
-          className={clsx("text-xl text-center mb-6", {
+          className={clsx("mb-6 text-center text-xl", {
             "text-grayModern-900": !darkMode,
           })}
         >
           {t("SettingPanel.Auth")}
         </p>
-        <VStack spacing={6} align="flex-start" className="w-[48%] mx-auto">
+        <VStack spacing={6} align="flex-start" className="mx-auto w-[48%]">
           <FormControl isRequired isInvalid={!!errors?.tel} className="relative">
-            <div className="flex relative">
+            <div className="relative flex">
               <FormLabel className="min-w-[120px]" htmlFor="tel">
                 {t("SettingPanel.Tel")}:
               </FormLabel>
@@ -134,7 +134,7 @@ export default function AuthDetail(props: { onBack: () => void }) {
             </FormErrorMessage>
           </FormControl>
         </VStack>
-        <div className="text-right mt-6 w-full">
+        <div className="mt-6 w-full text-right">
           <Button colorScheme="primary" type="submit" onClick={handleSubmit(onSubmit)}>
             {t("SettingPanel.ToAuth")}
           </Button>

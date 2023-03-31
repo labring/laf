@@ -97,7 +97,7 @@ export default function LoginByPhonePanel({
 
   return (
     <div>
-      <FormControl isInvalid={!!errors?.phone} className="flex mb-10 items-center">
+      <FormControl isInvalid={!!errors?.phone} className="mb-10 flex items-center">
         <FormLabel className="w-20" htmlFor="phone">
           {t("AuthPanel.Phone")}
         </FormLabel>
@@ -126,7 +126,7 @@ export default function LoginByPhonePanel({
         </InputGroup>
       </FormControl>
 
-      <FormControl isInvalid={!!errors.validationCode} className="flex mb-10 items-center">
+      <FormControl isInvalid={!!errors.validationCode} className="mb-10 flex items-center">
         <FormLabel className="w-20" htmlFor="phone">
           {t("AuthPanel.ValidationCode")}
         </FormLabel>

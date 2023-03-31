@@ -6,10 +6,10 @@ import { t } from "i18next";
 export default function Index() {
   const navigate = useNavigate();
   return (
-    <div className=" bg-white h-screen">
-      <Center h="80vh" w="80vw" className="flex-col !items-start m-auto">
+    <div className=" h-screen bg-white">
+      <Center h="80vh" w="80vw" className="m-auto flex-col !items-start">
         <h1 style={{ fontSize: 38 }}>403</h1>
-        <p className="font-semibold mb-8" style={{ fontSize: 50 }}>
+        <p className="mb-8 font-semibold" style={{ fontSize: 50 }}>
           {t(`403Message`)}
         </p>
         <HStack spacing={6}>

@@ -72,7 +72,7 @@ export default function PolicyDataList() {
           <div>
             {t("CollectionPanel.EmptyPolicyText")}
             <AddPolicyModal>
-              <span className="ml-2 text-primary-600 hover:border-b-2 hover:border-primary-600 cursor-pointer">
+              <span className="ml-2 cursor-pointer text-primary-600 hover:border-b-2 hover:border-primary-600">
                 {t("CreateNow")}
               </span>
             </AddPolicyModal>
@@ -84,7 +84,7 @@ export default function PolicyDataList() {
 
   return (
     <>
-      <Panel.Header className="w-full pr-2 h-[60px] flex-shrink-0">
+      <Panel.Header className="h-[60px] w-full flex-shrink-0 pr-2">
         <AddRulesModal
           onSuccessSubmit={(data) => {
             setCurrentData(data);
@@ -106,9 +106,9 @@ export default function PolicyDataList() {
           {t("CollectionPanel.RulesNum")} : {rulesListQuery?.data?.data?.length || 0}
         </span>
       </Panel.Header>
-      <div className="w-full flex-grow flex overflow-hidden">
+      <div className="flex w-full flex-grow overflow-hidden">
         {rulesListQuery.isFetching ? (
-          <Center className="h-full w-full opacity-60 bg-white-200">
+          <Center className="bg-white-200 h-full w-full opacity-60">
             <Spinner size="lg" />
           </Center>
         ) : rulesListQuery?.data?.data.length ? (
@@ -127,11 +127,11 @@ export default function PolicyDataList() {
                 return (
                   <>
                     <div
-                      className={clsx("border-b-2 mb-4 p-2", {
+                      className={clsx("mb-4 border-b-2 p-2", {
                         "border-lafWhite-600": !darkMode,
                       })}
                     >
-                      <Text fontSize="md" className="leading-loose font-semibold">
+                      <Text fontSize="md" className="font-semibold leading-loose">
                         {t("CollectionPanel.Collection")}:{item.collectionName}
                       </Text>
                     </div>
@@ -145,7 +145,7 @@ export default function PolicyDataList() {
                     showBg
                     tooltip={t("Copy").toString()}
                     size={32}
-                    className="ml-2 hover:bg-rose-100 group/icon"
+                    className="group/icon ml-2 hover:bg-rose-100"
                   >
                     <CopyText
                       hideToolTip
@@ -165,14 +165,14 @@ export default function PolicyDataList() {
               isLoading={updateRulesMutation.isLoading}
               onSave={handleData}
             >
-              <Text fontSize="md" className="leading-loose font-semibold mb-2">
+              <Text fontSize="md" className="mb-2 font-semibold leading-loose">
                 {t("CollectionPanel.SelectCollection")}: {currentData?.collectionName}
               </Text>
-              <Text fontSize="md" className="leading-loose font-semibold mt-4 mb-2">
+              <Text fontSize="md" className="mt-4 mb-2 font-semibold leading-loose">
                 {t("CollectionPanel.RulesContent")}
               </Text>
               <div
-                className={clsx(" mb-4 pr-2 flex-1 rounded", {
+                className={clsx(" mb-4 flex-1 rounded pr-2", {
                   "bg-lafWhite-400": !darkMode,
                   "bg-lafDark-200": darkMode,
                 })}
@@ -198,7 +198,7 @@ export default function PolicyDataList() {
                   rulesListQuery.refetch();
                 }}
               >
-                <span className="ml-2 text-primary-600 hover:border-b-2 hover:border-primary-600 cursor-pointer">
+                <span className="ml-2 cursor-pointer text-primary-600 hover:border-b-2 hover:border-primary-600">
                   {t("CreateNow")}
                 </span>
               </AddRulesModal>

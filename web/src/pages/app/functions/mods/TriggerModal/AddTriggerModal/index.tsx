@@ -142,7 +142,7 @@ const AddTriggerModal = (props: { children: React.ReactElement; targetFunc?: str
                   {CRON_TEMPLATE.map((item) => (
                     <span
                       key={item.label}
-                      className="text-blue-500 cursor-pointer ml-2"
+                      className="ml-2 cursor-pointer text-blue-500"
                       onClick={() => {
                         setValue("cron", item.value);
                       }}

@@ -17,7 +17,7 @@ export default function CollectionDataList() {
           <div>
             {t("CollectionPanel.EmptyCollectionText")}
             <CreateCollectionModal>
-              <span className="ml-2 text-primary-600 hover:border-b-2 hover:border-primary-600 cursor-pointer">
+              <span className="ml-2 cursor-pointer text-primary-600 hover:border-b-2 hover:border-primary-600">
                 {t("CreateNow")}
               </span>
             </CreateCollectionModal>

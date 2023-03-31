@@ -28,7 +28,7 @@ const AppEnvList = () => {
 
   return (
     <>
-      <div className="h-full flex flex-col">
+      <div className="flex h-full flex-col">
         <div className="flex h-[50px] flex-none justify-between">
           <HStack spacing={2}>
             <Box
@@ -43,7 +43,7 @@ const AppEnvList = () => {
           <HStack
             spacing={2}
             divider={
-              <span className="inline-block mr-2 rounded h-[12px] border border-grayModern-500"></span>
+              <span className="mr-2 inline-block h-[12px] rounded border border-grayModern-500"></span>
             }
           >
             <Button
@@ -86,7 +86,7 @@ const AppEnvList = () => {
             </DeleteAppModal>
           </HStack>
         </div>
-        <div className="flex-grow flex overflow-auto flex-col">
+        <div className="flex flex-grow flex-col overflow-auto">
           <InfoDetail
             title={t("SettingPanel.BaseInfo")}
             leftData={[

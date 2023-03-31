@@ -36,7 +36,7 @@ const PATList = () => {
   const dateList = formatDateOption();
   return (
     <>
-      <div className="flex-grow flex flex-col">
+      <div className="flex flex-grow flex-col">
         <EditableTable
           column={[
             {

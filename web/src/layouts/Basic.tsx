@@ -24,7 +24,7 @@ export default function BasicLayout() {
           <Outlet />
         )}
       </div>
-      <div className="text-center fixed -z-10 bottom-0 py-4 w-full">
+      <div className="fixed bottom-0 -z-10 w-full py-4 text-center">
         Made with <AiFillHeart className="inline text-red-500" />️ by laf team
       </div>
     </div>

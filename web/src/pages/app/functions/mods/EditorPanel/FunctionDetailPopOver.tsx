@@ -29,7 +29,7 @@ const FunctionDetailPopOver = () => {
       <Portal>
         <PopoverContent width={"400px"}>
           <PopoverBody px="6" py="4">
-            <h2 className="text-2xl mb-1">
+            <h2 className="mb-1 text-2xl">
               <span className="align-middle">{currentFunction.name}</span>{" "}
               <FileTypeIcon type="ts" />
             </h2>
@@ -37,7 +37,7 @@ const FunctionDetailPopOver = () => {
               <span>更新于 {formatDate(currentFunction.updatedAt)}</span>
               <p className="mt-2">{currentFunction.desc}</p>
             </div>
-            <div className="w-full mt-2 flex flex-wrap justify-start items-center">
+            <div className="mt-2 flex w-full flex-wrap items-center justify-start">
               {currentFunction.tags.map((item: string) => (
                 <Tag className="mr-2 mb-2 cursor-pointer" key={item} variant="inputTag">
                   <TagLabel>{item}</TagLabel>

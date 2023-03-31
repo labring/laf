@@ -199,7 +199,7 @@ const PromptModal = (props: { functionItem?: any; children?: React.ReactElement 
                 />
               </FormControl>
 
-              <div className="w-full flex items-center justify-center">
+              <div className="flex w-full items-center justify-center">
                 <Button
                   disabled={generateCode.isLoading}
                   isLoading={generateCode.isLoading}
