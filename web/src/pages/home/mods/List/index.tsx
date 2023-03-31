@@ -79,7 +79,7 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
       </div>
 
       <div className="flex flex-col overflow-auto">
-        <Box bg={bg} className="flex-none flex rounded-lg h-12 items-center px-6 mb-3">
+        <Box bg={bg} className="flex-none flex rounded-lg h-12 items-center px-3 lg:px-6 mb-3">
           <div className="w-3/12 text-second ">{t("HomePanel.Application") + t("Name")}</div>
           <div className="w-2/12 text-second ">App ID</div>
           <div className="w-2/12 text-second pl-2">{t("HomePanel.State")}</div>
@@ -95,7 +95,7 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                 <Box
                   key={item?.appid}
                   bg={bg}
-                  className="flex rounded-lg py-4 items-center px-6 mb-3 group"
+                  className="flex rounded-lg py-4 items-center px-3 lg:px-6 mb-3 group"
                 >
                   <div className="w-3/12 ">
                     <div className="font-bold text-lg">
@@ -122,7 +122,10 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                     <p className="mt-1">
                       {t("EndTime")}: {formatDate(item.subscription.expiredAt)}
                       <CreateAppModal application={item} type="renewal">
-                        <a className="text-primary-500 hidden group-hover:inline ml-2" href="/edit">
+                        <a
+                          className="text-primary-500 invisible group-hover:visible group-hover:inline-block ml-2"
+                          href="/edit"
+                        >
                           {t("Renew")}
                         </a>
                       </CreateAppModal>
