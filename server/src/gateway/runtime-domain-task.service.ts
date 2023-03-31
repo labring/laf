@@ -52,15 +52,9 @@ export class RuntimeDomainTaskService {
       .findOneAndUpdate(
         {
           phase: DomainPhase.Creating,
-          lockedAt: {
-            $lt: new Date(Date.now() - 1000 * this.lockTimeout),
-          },
+          lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
-        {
-          $set: {
-            lockedAt: new Date(),
-          },
-        },
+        { $set: { lockedAt: new Date() } },
       )
 
     if (!res.value) return
@@ -72,33 +66,24 @@ export class RuntimeDomainTaskService {
     const region = await this.regionService.findByAppId(doc.appid)
     assert(region, 'region not found')
 
-    // create route first
-    const route = await this.apisixService.createAppRoute(
-      region,
-      doc.appid,
-      doc.domain,
-    )
-
-    this.logger.debug('app route created:', route)
+    // create route if not exists
+    const id = `app-${doc.appid}`
+    const route = await this.apisixService.getRoute(region, id)
+    if (!route) {
+      await this.apisixService.createAppRoute(region, doc.appid, doc.domain)
+      this.logger.log('app route created: ' + doc.appid)
+      this.logger.debug(route)
+    }
 
     // update phase to `Created`
-    const updated = await db
-      .collection<RuntimeDomain>('RuntimeDomain')
-      .updateOne(
-        {
-          _id: doc._id,
-          phase: DomainPhase.Creating,
-        },
-        {
-          $set: {
-            phase: DomainPhase.Created,
-            lockedAt: TASK_LOCK_INIT_TIME,
-          },
-        },
-      )
+    await db.collection<RuntimeDomain>('RuntimeDomain').updateOne(
+      { _id: doc._id, phase: DomainPhase.Creating },
+      {
+        $set: { phase: DomainPhase.Created, lockedAt: TASK_LOCK_INIT_TIME },
+      },
+    )
 
-    if (updated.modifiedCount > 0)
-      this.logger.debug('app domain phase updated to Created ' + doc.domain)
+    this.logger.log('app domain phase updated to Created ' + doc.domain)
   }
 
   /**
