@@ -47,7 +47,6 @@ export default function SignIn() {
 
       {currentProvider === "phone" ? (
         <LoginByPhonePanel
-          showSignupBtn={!phoneProvider?.register}
           showPasswordSigninBtn={!!passwordProvider}
           switchLoginType={() => setCurrentProvider("user-password")}
         />
