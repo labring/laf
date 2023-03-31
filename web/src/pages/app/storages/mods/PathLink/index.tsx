@@ -7,9 +7,10 @@ function PathLink() {
   const str = prefix?.split("/").filter((s) => s !== "");
 
   const paths = str?.map((s, i) => {
+    str[i] = str[i - 1] ? `${str[i - 1]}/${s}/` : `/${s}/`;
     return {
       name: s,
-      path: str[i - 1] ? `${str[i - 1]}/${s}/` : `/${s}/`,
+      path: str[i],
     };
   });
 
