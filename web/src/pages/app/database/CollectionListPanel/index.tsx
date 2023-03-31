@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BiRefresh } from "react-icons/bi";
 import { AddIcon, CopyIcon, Search2Icon } from "@chakra-ui/icons";
-import { Center, Input, InputGroup, InputLeftElement, Spinner } from "@chakra-ui/react";
+import { Badge, Center, Input, InputGroup, InputLeftElement, Spinner } from "@chakra-ui/react";
 
 import CopyText from "@/components/CopyText";
 import EmptyBox from "@/components/EmptyBox";
@@ -21,7 +21,7 @@ import useDBMStore from "../store";
 export default function CollectionListPanel() {
   const store = useDBMStore((store) => store);
   const { t } = useTranslation();
-  const collectionListQuery = useCollectionListQuery({
+  const { data: res, ...collectionListQuery } = useCollectionListQuery({
     onSuccess: (data) => {
       if (data.data.length === 0) {
         store.setCurrentDB(undefined);
@@ -41,7 +41,16 @@ export default function CollectionListPanel() {
       }}
     >
       <Panel.Header
-        title={t("CollectionPanel.CollectionList").toString()}
+        title={
+          <div className="flex">
+            {t("CollectionPanel.CollectionList").toString()}
+            {res?.data.length >= 10 ? (
+              <Badge rounded={"full"} ml="1">
+                {res?.data.length}
+              </Badge>
+            ) : null}
+          </div>
+        }
         actions={[
           <IconWrap
             key="refresh_database"
@@ -77,13 +86,13 @@ export default function CollectionListPanel() {
 
       <div className="relative flex-grow overflow-auto">
         {collectionListQuery.isFetching ? (
-          <Center className="bg-white-200 absolute left-0 right-0 top-0 bottom-0 z-10 opacity-60">
+          <Center className="bg-white-200 absolute bottom-0 left-0 right-0 top-0 z-10 opacity-60">
             <Spinner />
           </Center>
         ) : null}
-        {collectionListQuery?.data?.data?.length ? (
+        {res?.data?.length ? (
           <SectionList>
-            {collectionListQuery?.data?.data
+            {res?.data
               .filter((db: any) => db.name.indexOf(search) >= 0)
               .map((db: any) => {
                 return (
