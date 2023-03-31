@@ -19,7 +19,7 @@ export default function Header(props: { size: "sm" | "lg" }) {
     <div className="flex h-[60px] justify-between px-10 py-4">
       <div className="flex items-center">
         <img
-          src={colorMode === "dark" ? "/logo_light.png" : "/logo_text.png"}
+          src={colorMode === "dark" ? "/logo_light.png" : "/logo_light.png"}
           alt="logo"
           width={80}
           className="mr-4"

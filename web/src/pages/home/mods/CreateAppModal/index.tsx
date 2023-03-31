@@ -279,7 +279,15 @@ const CreateAppModal = (props: {
                 </HStack>
                 <FormErrorMessage>{errors?.bundleId?.message}</FormErrorMessage>
               </FormControl>
-              (
+              {(currentBundle?.notes || []).length > 0 ? (
+                <div
+                  className="!mt-2"
+                  dangerouslySetInnerHTML={{
+                    __html: (currentBundle?.notes || []).map((note) => note.content).join(""),
+                  }}
+                />
+              ) : null}
+
               <FormControl isInvalid={!!errors?.subscriptionOption} hidden={type === "edit"}>
                 <FormLabel htmlFor="subscriptionOption">{t("HomePanel.Duration")}</FormLabel>
                 <Controller
@@ -302,7 +310,6 @@ const CreateAppModal = (props: {
 
                 {/* <FormErrorMessage>{errors?.subscriptionOption?.message}</FormErrorMessage> */}
               </FormControl>
-              )
               <FormControl isInvalid={!!errors?.runtimeId}>
                 <FormLabel htmlFor="runtimeId">{t("HomePanel.RuntimeName")}</FormLabel>
                 <Controller
