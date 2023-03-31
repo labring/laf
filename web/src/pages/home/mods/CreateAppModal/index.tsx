@@ -325,23 +325,23 @@ const CreateAppModal = (props: {
           <ModalFooter h={20}>
             {type === "edit" ? null : totalPrice <= 0 ? (
               <div className="mr-2">
-                <span className="ml-6 text-red-500 font-semibold text-xl">{t("Price.Free")}</span>
+                <span className="ml-6 text-xl font-semibold text-red-500">{t("Price.Free")}</span>
               </div>
             ) : (
               <div className="mr-2">
                 {t("TotalPrice")}:
-                <span className="ml-2 text-red-500 font-semibold text-xl">
+                <span className="ml-2 text-xl font-semibold text-red-500">
                   {formatPrice(totalPrice)}
                 </span>
                 <span className="ml-4 mr-2">
                   {t("Balance")}:
-                  <span className="text-xl ml-2">{formatPrice(accountQuery.data?.balance)}</span>
+                  <span className="ml-2 text-xl">{formatPrice(accountQuery.data?.balance)}</span>
                 </span>
                 {totalPrice > accountQuery.data?.balance ? (
                   <span className="mr-2">{t("balance is insufficient")}</span>
                 ) : null}
                 <ChargeButton amount={(totalPrice - accountQuery.data?.balance) / 100}>
-                  <span className="text-blue-800 text-lg cursor-pointer">{t("ChargeNow")}</span>
+                  <span className="cursor-pointer text-lg text-blue-800">{t("ChargeNow")}</span>
                 </ChargeButton>
               </div>
             )}

@@ -55,8 +55,8 @@ export default function PolicyListPanel() {
                     store.setCurrentPolicy(item);
                   }}
                 >
-                  <div className="w-full flex justify-between group">
-                    <div className="leading-loose font-semibold">
+                  <div className="group flex w-full justify-between">
+                    <div className="font-semibold leading-loose">
                       <FileTypeIcon type="policy" />
                       <span className="ml-2 text-base">{item.name}</span>
                     </div>

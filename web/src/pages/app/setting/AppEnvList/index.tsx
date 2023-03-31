@@ -21,7 +21,7 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
   const addEnvironmentMutation = useAddEnvironmentMutation();
   return (
     <>
-      <div className="flex-grow  flex flex-col">
+      <div className="flex  flex-grow flex-col">
         <EditableTable
           column={[
             {
@@ -84,7 +84,7 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
           bodyText={String(t("SettingPanel.UpdateConfirm"))}
           confirmButtonText={String(t("Update"))}
         >
-          <Button className="w-28 h-8 self-end mt-4">{t("Update")}</Button>
+          <Button className="mt-4 h-8 w-28 self-end">{t("Update")}</Button>
         </ConfirmButton>
       </div>
     </>

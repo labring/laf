@@ -66,7 +66,7 @@ function DeleteCollectionModal(props: { database: any }) {
             </p>
             <p className="mb-4">
               {t("CollectionPanel.InputName")}
-              <span className=" text-red-500 mx-1 font-bold">{database.name}</span>
+              <span className="mx-1 font-bold text-red-500">{database.name}</span>
               {t("ToConfirm")}。
             </p>
             <FormControl>

@@ -40,8 +40,8 @@ function Col(props: {
   return (
     <div
       className={clsx(
-        "flex flex-col h-full overflow-x-hidden",
-        style?.width ? "flex-none" : "flex-grow flex-1 overflow-hidden",
+        "flex h-full flex-col overflow-x-hidden",
+        style?.width ? "flex-none" : "flex-1 flex-grow overflow-hidden",
         className,
       )}
       style={style}

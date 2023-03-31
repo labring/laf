@@ -38,7 +38,7 @@ function DatabasePage() {
         </Col>
         <Resize type="x" pageId="collectionPage" panelId="SideBar" containerRef={containerRef} />
         <Col>
-          <Panel className="items-center h-full">
+          <Panel className="h-full items-center">
             {store.currentShow === "DB" ? <CollectionDataList /> : <PolicyDataList />}
           </Panel>
         </Col>

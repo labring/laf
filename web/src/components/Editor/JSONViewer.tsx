@@ -243,12 +243,19 @@ export default function JSONViewer(props: JSONViewerProps) {
   };
 
   return (
-    <SyntaxHighlighter
-      language={language}
-      style={colorMode === "dark" ? JSONViewerDarkStyle : JSONViewerStyle}
-      customStyle={colorMode === "dark" ? darkTheme : lightTheme}
+    <div
+      style={{
+        maxHeight: 100,
+        overflow: "hidden",
+      }}
     >
-      {code}
-    </SyntaxHighlighter>
+      <SyntaxHighlighter
+        language={language}
+        style={colorMode === "dark" ? JSONViewerDarkStyle : JSONViewerStyle}
+        customStyle={colorMode === "dark" ? darkTheme : lightTheme}
+      >
+        {code}
+      </SyntaxHighlighter>
+    </div>
   );
 }

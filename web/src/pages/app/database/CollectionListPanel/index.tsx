@@ -35,7 +35,7 @@ export default function CollectionListPanel() {
 
   return (
     <Panel
-      className="flex-grow overflow-hidden min-w-[200px]"
+      className="min-w-[200px] flex-grow overflow-hidden"
       onClick={() => {
         store.setCurrentShow("DB");
       }}
@@ -59,7 +59,7 @@ export default function CollectionListPanel() {
           </CreateCollectionModal>,
         ]}
       />
-      <div className="flex items-center mb-3 w-full">
+      <div className="mb-3 flex w-full items-center">
         <InputGroup>
           <InputLeftElement
             height={"8"}
@@ -75,9 +75,9 @@ export default function CollectionListPanel() {
         </InputGroup>
       </div>
 
-      <div className="overflow-auto flex-grow relative">
+      <div className="relative flex-grow overflow-auto">
         {collectionListQuery.isFetching ? (
-          <Center className="opacity-60 bg-white-200 absolute left-0 right-0 top-0 bottom-0 z-10">
+          <Center className="bg-white-200 absolute left-0 right-0 top-0 bottom-0 z-10 opacity-60">
             <Spinner />
           </Center>
         ) : null}
@@ -94,8 +94,8 @@ export default function CollectionListPanel() {
                       store.setCurrentDB(db);
                     }}
                   >
-                    <div className="w-full flex justify-between group">
-                      <div className="leading-loose font-semibold">
+                    <div className="group flex w-full justify-between">
+                      <div className="font-semibold leading-loose">
                         <FileTypeIcon type="db" />
                         <span className="ml-2 text-base">{db.name}</span>
                       </div>

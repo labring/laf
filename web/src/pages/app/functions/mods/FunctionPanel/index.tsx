@@ -95,14 +95,14 @@ export default function FunctionList() {
 
   const renderSelectedTags = () => {
     return tagsList.length > 0 ? (
-      <div className="w-full mt-2 mb-2 pb-1 flex flex-wrap justify-start border-b items-center min-w-[200px]">
+      <div className="mt-2 mb-2 flex w-full min-w-[200px] flex-wrap items-center justify-start border-b pb-1">
         <p className={clsx("mr-2 mb-1", darkMode ? "text-white-500" : "text-grayModern-500")}>
           {t("FunctionPanel.Tags")}
         </p>
         {tagsList.map((item) => (
           <span
             className={clsx(
-              "cursor-pointer px-2 mb-1 rounded mr-1",
+              "mb-1 mr-1 cursor-pointer rounded px-2",
               darkMode ? "bg-gray-700" : "bg-gray-100",
               {
                 "!bg-primary-400 text-white": item.tagName === currentTag?.tagName,
@@ -119,7 +119,7 @@ export default function FunctionList() {
   };
 
   return (
-    <Panel className="flex-grow overflow-hidden min-w-[250px]">
+    <Panel className="min-w-[250px] flex-grow overflow-hidden">
       <Panel.Header
         title={t`FunctionPanel.FunctionList`}
         actions={[
@@ -181,14 +181,14 @@ export default function FunctionList() {
                       navigate(`/app/${currentApp?.appid}/${Pages.function}/${func?.name}`);
                     }}
                   >
-                    <div className="leading-loose font-semibold">
+                    <div className="font-semibold leading-loose">
                       <FileTypeIcon type={FileType.ts} />
                       <span className="ml-2 text-base">{func?.name}</span>
                     </div>
                     <HStack spacing={1}>
                       {functionCache.getCache(func?.id, func?.source?.code) !==
                         func?.source?.code && (
-                        <span className="flex-none inline-block w-1 h-1 rounded-full bg-warn-700"></span>
+                        <span className="inline-block h-1 w-1 flex-none rounded-full bg-warn-700"></span>
                       )}
                       <MoreButton
                         isHidden={func.name !== currentFunction?.name}

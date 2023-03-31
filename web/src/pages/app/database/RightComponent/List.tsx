@@ -26,12 +26,12 @@ const RightPanelList: React.FC<{
     customStyle,
   } = props;
   return (
-    <div className="overflow-y-auto flex-1 overflow-x-hidden pr-1">
+    <div className="flex-1 overflow-y-auto overflow-x-hidden pr-1">
       {(ListQuery || [])?.map((item: any, index: number) => {
         return (
           <div
             key={item[setKey]}
-            className={clsx("border-2 p-2 rounded-xl relative group/item", {
+            className={clsx("group/item relative rounded-xl border-2 p-2", {
               ...customStyle,
               shadow: isActive(item),
               "mb-2": index !== (ListQuery?.data?.data || []).length - 1,
@@ -41,7 +41,7 @@ const RightPanelList: React.FC<{
             }}
           >
             <div
-              className={clsx(" absolute right-2 top-2  group-hover/item:block z-50 ", {
+              className={clsx(" absolute right-2 top-2  z-50 group-hover/item:block ", {
                 hidden: !isActive(item),
               })}
               onClick={(e) => {

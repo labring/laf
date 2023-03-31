@@ -78,13 +78,13 @@ export default function TriggerModal(props: { children: React.ReactElement }) {
                 />
               </InputGroup>
             </div>
-            <div className="mt-4 rounded-md h-full relative">
+            <div className="relative mt-4 h-full rounded-md">
               {triggerListQuery.isFetching ? (
-                <Center className="opacity-60 bg-white absolute left-0 right-0 top-0 bottom-0 z-10">
+                <Center className="absolute left-0 right-0 top-0 bottom-0 z-10 bg-white opacity-60">
                   <Spinner size={"lg"} />
                 </Center>
               ) : null}
-              <div className="overflow-y-auto h-full mb-4">
+              <div className="mb-4 h-full overflow-y-auto">
                 {triggerListQuery.data?.data?.length ? (
                   <TableContainer minH={"400px"}>
                     <Table variant="simple">
@@ -149,7 +149,7 @@ export default function TriggerModal(props: { children: React.ReactElement }) {
                     <div>
                       <span>{t("TriggerPanel.EmptyTriggerTip")}</span>
                       <AddTriggerModal>
-                        <span className="ml-2 text-primary-600 hover:border-b-2 hover:border-primary-600 cursor-pointer">
+                        <span className="ml-2 cursor-pointer text-primary-600 hover:border-b-2 hover:border-primary-600">
                           {t("CreateNow")}
                         </span>
                       </AddTriggerModal>

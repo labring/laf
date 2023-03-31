@@ -38,7 +38,7 @@ export default function FileTypeIcon(props: { type: string; className?: string }
   switch (type) {
     case FileType.app:
       return (
-        <Icon viewBox="0 0 22 22" fontSize={24} className={clsx("align-middle ", className)}>
+        <Icon viewBox="0 0 22 22" fontSize={20} className={clsx("align-middle ", className)}>
           <mask
             id="mask0_2744_5395"
             style={{ maskType: "alpha" }}

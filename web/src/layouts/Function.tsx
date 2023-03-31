@@ -67,7 +67,7 @@ export default function FunctionLayout() {
             currentApp?.phase !== APP_PHASE_STATUS.Deleted ? (
               <div
                 className={clsx(
-                  "absolute top-0 bottom-0 left-0 right-0 z-[999] flex flex-col justify-center items-center  opacity-70 ",
+                  "absolute top-0 bottom-0 left-0 right-0 z-[999] flex flex-col items-center justify-center  opacity-70 ",
                   darkMode ? "bg-lafDark-100" : "bg-lafWhite-600",
                 )}
               >
