@@ -60,6 +60,7 @@ export class RegionService {
         gatewayConf: false,
         databaseConf: false,
         clusterConf: false,
+        notes: true,
         bundles: {
           select: {
             id: true,
@@ -70,6 +71,7 @@ export class RegionService {
             resource: true,
             limitCountPerUser: true,
             subscriptionOptions: true,
+            notes: true,
           },
         },
       },
