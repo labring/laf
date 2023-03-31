@@ -5,7 +5,7 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: admin@sealos.io
+    email: laf-deploy@{{ .Values.default_region.runtime_domain }}
     privateKeySecretRef:
       name: letsencrypt-prod
     solvers:

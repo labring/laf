@@ -24,6 +24,7 @@ type Note {
   title   String?
   content String?
   link    String?
+  lang    String?
   level   NoteLevel @default(Info)
 }
 
