@@ -121,6 +121,11 @@ const guideSiderbarConfig = [
     items: [{ text: "laf-cli 使用说明", link: "/guide/cli/" }],
   },
 
+  {
+    text: "laf-client-sdk",
+    items: [{ text: "laf-client-sdk 使用说明", link: "/guide/client-sdk/" }],
+  },
+
 ];
 
 /**
