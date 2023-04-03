@@ -167,7 +167,8 @@
     "CodeTip": "请输入四位数字验证码",
     "TelTip": "请输入有效的手机号码",
     "Registered": "注册时间",
-    "ShutDown": "关闭应用"
+    "ShutDown": "关闭应用",
+    "Subscription": "订阅信息"
   },
   "StoragePanel": {
     "All": "总容量",
