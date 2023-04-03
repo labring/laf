@@ -245,8 +245,8 @@ export default function JSONViewer(props: JSONViewerProps) {
   return (
     <div
       style={{
-        maxHeight: 100,
-        overflow: "hidden",
+        maxHeight: 390,
+        overflow: "auto",
       }}
     >
       <SyntaxHighlighter

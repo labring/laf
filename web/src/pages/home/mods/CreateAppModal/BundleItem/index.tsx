@@ -1,4 +1,3 @@
-import React from "react";
 import { useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 import { t } from "i18next";
