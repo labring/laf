@@ -6,10 +6,10 @@ import AddIndexModal from "./addIndexModal";
 export default function IndexPanel() {
   return (
     <div>
-      <div className="flex mt-2">
+      <div className="mt-2 flex">
         <AddIndexModal />
       </div>
-      <div className="rounded border border-slate-200 mt-4 ">
+      <div className="mt-4 rounded border border-slate-200 ">
         <TableContainer>
           <Table variant="striped" colorScheme="gray">
             <Thead>

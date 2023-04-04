@@ -38,7 +38,7 @@ function HeaderParamsTab(props: { onChange(values: Params[]): void }) {
     <div>
       <form>
         <TableContainer>
-          <Table size="sm" className="border rounded border-grayModern-600">
+          <Table size="sm" className="rounded border border-grayModern-600">
             <Thead>
               <Tr>
                 <Th>{t("FunctionPanel.Name")}</Th>

@@ -21,11 +21,9 @@ type FormData = {
 
 export default function LoginByPhonePanel({
   switchLoginType,
-  showSignupBtn,
   showPasswordSigninBtn,
 }: {
   switchLoginType: () => void;
-  showSignupBtn: boolean;
   showPasswordSigninBtn: boolean;
 }) {
   const navigate = useNavigate();
@@ -75,8 +73,10 @@ export default function LoginByPhonePanel({
       type: "Signin",
     });
 
-    if (res?.data) {
+    if (res?.data === "success") {
       showSuccess(t("AuthPanel.SmsCodeSendSuccess"));
+    } else {
+      showError(res.error);
     }
   };
 
@@ -97,7 +97,7 @@ export default function LoginByPhonePanel({
 
   return (
     <div>
-      <FormControl isInvalid={!!errors?.phone} className="flex mb-10 items-center">
+      <FormControl isInvalid={!!errors?.phone} className="mb-10 flex items-center">
         <FormLabel className="w-20" htmlFor="phone">
           {t("AuthPanel.Phone")}
         </FormLabel>
@@ -126,7 +126,7 @@ export default function LoginByPhonePanel({
         </InputGroup>
       </FormControl>
 
-      <FormControl isInvalid={!!errors.validationCode} className="flex mb-10 items-center">
+      <FormControl isInvalid={!!errors.validationCode} className="mb-10 flex items-center">
         <FormLabel className="w-20" htmlFor="phone">
           {t("AuthPanel.ValidationCode")}
         </FormLabel>
@@ -145,7 +145,7 @@ export default function LoginByPhonePanel({
       <div className="mt-10">
         <Button
           type="submit"
-          className="w-full pt-5 pb-5"
+          className="w-full pb-5 pt-5"
           isLoading={signinBySmsCodeMutation.isLoading}
           onClick={handleSubmit(onSubmit)}
         >
@@ -155,15 +155,6 @@ export default function LoginByPhonePanel({
           {showPasswordSigninBtn && (
             <Button size="xs" variant={"text"} onClick={switchLoginType}>
               {t("AuthPanel.PasswordLogin")}
-            </Button>
-          )}
-          {showSignupBtn && (
-            <Button
-              size="xs"
-              variant={"text"}
-              onClick={() => navigate("/signup", { replace: true })}
-            >
-              {t("AuthPanel.ToRegister")}
             </Button>
           )}
         </div>

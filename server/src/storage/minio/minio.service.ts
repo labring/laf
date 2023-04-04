@@ -14,12 +14,27 @@ import * as cp from 'child_process'
 import { promisify } from 'util'
 import { MinioCommandExecOutput } from './types'
 import { MINIO_COMMON_USER_GROUP } from 'src/constants'
+import { RegionService } from 'src/region/region.service'
 
 const exec = promisify(cp.exec)
 
 @Injectable()
 export class MinioService {
   private readonly logger = new Logger(MinioService.name)
+
+  constructor(private readonly regionService: RegionService) {
+    this.regionService.findAll().then(async (regions) => {
+      for (const region of regions) {
+        const res = await this.setMinioClientTarget(region)
+        if (res.status === 'success') {
+          this.logger.log('minio alias init - ' + region.name + ' success')
+        } else {
+          this.logger.log('minio alias init ' + region.name + ' failed')
+          this.logger.debug(res)
+        }
+      }
+    })
+  }
 
   /**
    * Create s3 client
@@ -29,7 +44,7 @@ export class MinioService {
     const conf = region.storageConf
 
     return new S3({
-      endpoint: conf.externalEndpoint,
+      endpoint: conf.controlEndpoint,
       credentials: {
         accessKeyId: conf.accessKey,
         secretAccessKey: conf.secretKey,
@@ -242,7 +257,7 @@ export class MinioService {
     const conf = region.storageConf
     const access_key = conf.accessKey
     const access_secret = conf.secretKey
-    const endpoint = conf.externalEndpoint
+    const endpoint = conf.controlEndpoint
     const target = region.name
 
     const cmd = `alias set ${target} ${endpoint} ${access_key} ${access_secret}`

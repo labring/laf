@@ -75,10 +75,10 @@ export default function ChargeButton(props: { amount?: number; children: React.R
           <ModalBody px="10" pb="10">
             <div className="flex flex-col items-center text-xl">
               <h2 className="text-second">{t("Balance")}</h2>
-              <h3 className="text-3xl font-semibold mb-4">
+              <h3 className="mb-4 text-3xl font-semibold">
                 {formatPrice(accountQuery.data?.balance)}
               </h3>
-              <p className="text-second mb-2">{t("Recharge amount")}</p>
+              <p className="mb-2 text-second">{t("Recharge amount")}</p>
               <InputGroup>
                 <InputLeftAddon children="¥" />
                 <Input
@@ -107,17 +107,17 @@ export default function ChargeButton(props: { amount?: number; children: React.R
             </div>
 
             {createChargeOrder.data?.data?.result?.code_url && (
-              <div className="flex flex-col items-center text-xl mt-4">
+              <div className="mt-4 flex flex-col items-center text-xl ">
                 <h2 className="mb-2">{t("Scan with WeChat")}</h2>
                 <QRCodeSVG
                   value={createChargeOrder.data?.data?.result?.code_url}
                   width={180}
                   height={180}
                 />
-                <p className="text-base mt-4 text-second ">
+                <p className="mt-4 text-base text-second ">
                   {t("Order Number")}：{createChargeOrder.data?.data?.order?.id}
                 </p>
-                <p className="text-base mt-1 text-second ">
+                <p className="mt-1 text-base text-second ">
                   {t("payment status")}: {phaseStatus}
                 </p>
               </div>

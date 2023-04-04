@@ -11,10 +11,10 @@ const InfoDetail = function (props: {
 }) {
   const { title, leftData, rightData, className } = props;
   return (
-    <div className={clsx("border border-grayModern-100 rounded px-4 py-4", className)}>
+    <div className={clsx("rounded border border-grayModern-100 px-4 py-4", className)}>
       <Content>
-        <Row className="h-[20px] flex-none mb-2">
-          <span className={clsx("inline-block relative text-primary-700 font-medium text-lg")}>
+        <Row className="mb-2 h-[20px] flex-none">
+          <span className={clsx("relative inline-block text-lg font-medium text-primary-700")}>
             {title}
           </span>
         </Row>

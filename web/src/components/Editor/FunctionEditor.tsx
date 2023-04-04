@@ -2,9 +2,14 @@ import { useEffect, useRef } from "react";
 import { debounce } from "lodash";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
+import { Pages } from "@/constants";
+
 import "./userWorker";
 
 import { AutoImportTypings } from "./typesResolve";
+
+import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
+import useGlobalStore from "@/pages/globalStore";
 
 const autoImportTypings = new AutoImportTypings();
 const parseImports = debounce(autoImportTypings.parse, 1500).bind(autoImportTypings);
@@ -88,15 +93,38 @@ const updateModel = (path: string, value: string, editorRef: any) => {
 function FunctionEditor(props: {
   value: string;
   className?: string;
-  onChange: (value: string | undefined) => void;
+  onChange?: (value: string | undefined) => void;
   path: string;
   height?: string;
   colorMode?: string;
+  readOnly?: boolean;
 }) {
-  const { value, onChange, path, height = "100%", className, colorMode = "light" } = props;
+  const {
+    value,
+    onChange,
+    path,
+    height = "100%",
+    className,
+    colorMode = "light",
+    readOnly = false,
+  } = props;
+
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
   const monacoEl = useRef(null);
+
+  const globalStore = useGlobalStore((state) => state);
+
+  useHotKey(
+    DEFAULT_SHORTCUTS.send_request,
+    () => {
+      // format
+      editorRef.current?.trigger("keyboard", "editor.action.formatDocument", {});
+    },
+    {
+      enabled: globalStore.currentPageId === Pages.function,
+    },
+  );
 
   useEffect(() => {
     if (monacoEl && !editorRef.current) {
@@ -104,11 +132,13 @@ function FunctionEditor(props: {
         minimap: {
           enabled: false,
         },
+        readOnly: readOnly,
         language: "typescript",
         automaticLayout: true,
         scrollbar: {
           verticalScrollbarSize: 6,
         },
+        formatOnPaste: true,
         overviewRulerLanes: 0,
         lineNumbersMinChars: 4,
         fontSize: 14,
@@ -124,7 +154,7 @@ function FunctionEditor(props: {
     }
 
     return () => {};
-  }, [colorMode, path, value]);
+  }, [colorMode, path, readOnly, value]);
 
   useEffect(() => {
     if (monacoEl && editorRef.current) {

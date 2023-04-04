@@ -14,15 +14,13 @@ type providersTypes = "user-password" | "phone" | "github" | "wechat";
 export default function SignIn() {
   const { providers, setProviders } = useAuthStore();
   useGetProvidersQuery((data: any) => {
-    console.log("useGetProvidersQuery", data);
-
     setProviders(data?.data || []);
   });
   const [phoneProvider, setPhoneProvider] = useState<any>(null);
   const [passwordProvider, setPasswordProvider] = useState<any>(null);
   const [githubProvider, setGithubProvider] = useState<any>(null);
   const [wechatProvider, setWechatProvider] = useState<any>(null);
-  const [currentProvider, setCurrentProvider] = useState<providersTypes>("user-password");
+  const [currentProvider, setCurrentProvider] = useState<providersTypes>();
   useEffect(() => {
     if (providers.length) {
       const phoneProvider = providers.find((provider: any) => provider.name === "phone");
@@ -39,17 +37,16 @@ export default function SignIn() {
         }
       });
     }
-  }, [providers]);
+  }, [providers, wechatProvider]);
 
   return (
-    <div className="bg-white absolute left-1/2 top-1/2 -translate-y-1/2 w-[560px] rounded-[10px] p-[65px] pb-[100px]">
+    <div className="absolute left-1/2 top-1/2 min-h-[500px] w-[560px] -translate-y-1/2 rounded-[10px] bg-white p-[65px] pb-[100px]">
       <div className="mb-[45px]">
-        <img src="/logo.png" alt="logo" width={40} className="mr-4" />
+        <img src="/logo_light.png" alt="logo" width={80} className="mr-4" />
       </div>
 
       {currentProvider === "phone" ? (
         <LoginByPhonePanel
-          showSignupBtn={!phoneProvider?.register}
           showPasswordSigninBtn={!!passwordProvider}
           switchLoginType={() => setCurrentProvider("user-password")}
         />
@@ -63,11 +60,11 @@ export default function SignIn() {
 
       {(githubProvider || wechatProvider) && (
         <div className="mt-20">
-          <div className="w-full text-center mb-5 relative before:content-[''] before:block before:w-full before:h-[1px] before:bg-slate-300 before:absolute before:top-1/2">
-            <span className="pl-5 pr-5 bg-white z-10 relative">or</span>
+          <div className="relative mb-5 w-full text-center before:absolute before:top-1/2 before:block before:h-[1px] before:w-full before:bg-slate-300 before:content-['']">
+            <span className="relative z-10 bg-white pl-5 pr-5">or</span>
           </div>
           {githubProvider && (
-            <Button type="submit" className="w-full pt-5 pb-5" colorScheme="white" variant="plain">
+            <Button type="submit" className="w-full pb-5 pt-5" colorScheme="white" variant="plain">
               <AiFillGithub className="mr-4" />
               {t("AuthPanel.LoginWithGithub")}
             </Button>

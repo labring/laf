@@ -76,6 +76,53 @@ declare namespace Definitions {
     pat?: string /* PAT */;
   };
 
+  export type PasswdSignupDto = {
+    username?: string /* username, 3-64 characters */;
+    password?: string /* password, 8-64 characters */;
+    phone?: string /* phone */;
+    code?: string /* verify code */;
+    type?: string /* type */;
+  };
+
+  export type PasswdSigninDto = {
+    username?: string /* username */;
+    password?: string /* password, 8-64 characters */;
+  };
+
+  export type PasswdResetDto = {
+    password?: string /* new password, 8-64 characters */;
+    phone?: string /* phone */;
+    code?: string /* verify code */;
+    type?: string /* type */;
+  };
+
+  export type PasswdCheckDto = {
+    username?: string /* username | phone | email */;
+  };
+
+  export type SendPhoneCodeDto = {
+    phone?: string /* phone */;
+    type?: string /* verify code type */;
+  };
+
+  export type PhoneSigninDto = {
+    phone?: string /* phone */;
+    code?: string;
+    username?: string /* username */;
+    password?: string /* password, 8-64 characters */;
+  };
+
+  export type BindPhoneDto = {
+    phone?: string /* phone number */;
+    code?: string /* sms verify code */;
+  };
+
+  export type BindUsernameDto = {
+    username?: string /* username */;
+    phone?: string /* phone */;
+    code?: string /* sms verify code */;
+  };
+
   export type CreatePATDto = {
     name?: string;
     expiresIn?: number;
@@ -458,6 +505,78 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace UserPasswordControllerSignup {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.PasswdSignupDto;
+
+    export type Responses = any;
+  }
+
+  namespace UserPasswordControllerSignin {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.PasswdSigninDto;
+
+    export type Responses = any;
+  }
+
+  namespace UserPasswordControllerReset {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.PasswdResetDto;
+
+    export type Responses = any;
+  }
+
+  namespace UserPasswordControllerCheck {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.PasswdCheckDto;
+
+    export type Responses = any;
+  }
+
+  namespace PhoneControllerSendCode {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.SendPhoneCodeDto;
+
+    export type Responses = any;
+  }
+
+  namespace PhoneControllerSignin {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.PhoneSigninDto;
+
+    export type Responses = any;
+  }
+
+  namespace AuthenticationControllerGetProviders {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AuthenticationControllerBindPhone {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.BindPhoneDto;
+
+    export type Responses = any;
+  }
+
+  namespace AuthenticationControllerBindUsername {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.BindUsernameDto;
+
+    export type Responses = any;
+  }
+
   namespace PatControllerCreate {
     export type QueryParameters = any;
 
@@ -547,70 +666,6 @@ declare namespace Paths {
   }
 
   namespace RegionControllerGetRegions {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AuthControllerSignup {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AuthControllerSigninByPassword {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AuthControllerSigninBySmsCode {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AuthControllerSendSmsCode {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AuthControllerResetPassword {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AuthControllerGetProviders {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AuthControllerBindPhone {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AuthControllerBindUsername {
     export type QueryParameters = any;
 
     export type BodyParameters = any;

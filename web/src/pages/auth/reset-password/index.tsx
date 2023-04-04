@@ -109,12 +109,12 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="bg-white absolute left-1/2 top-1/2 -translate-y-1/2 w-[560px] rounded-[10px] p-[65px]">
+    <div className="absolute left-1/2 top-1/2 w-[560px] -translate-y-1/2 rounded-[10px] bg-white p-[65px]">
       <div className="mb-[45px]">
         <img src="/logo.png" alt="logo" width={40} className="mr-4" />
       </div>
       <div className="mb-[65px]">
-        <FormControl isInvalid={!!errors?.phone} className="flex mb-6 items-center">
+        <FormControl isInvalid={!!errors?.phone} className="mb-6 flex items-center">
           <FormLabel className="w-20" htmlFor="phone">
             {t("AuthPanel.Phone")}
           </FormLabel>
@@ -142,7 +142,7 @@ export default function ResetPassword() {
             </InputRightElement>
           </InputGroup>
         </FormControl>
-        <FormControl isInvalid={!!errors.validationCode} className="flex mb-6 items-center">
+        <FormControl isInvalid={!!errors.validationCode} className="mb-6 flex items-center">
           <FormLabel className="w-20" htmlFor="validationCode">
             {t("AuthPanel.ValidationCode")}
           </FormLabel>
@@ -159,7 +159,7 @@ export default function ResetPassword() {
             placeholder={t("AuthPanel.ValidationCodePlaceholder") || ""}
           />
         </FormControl>
-        <FormControl isInvalid={!!errors.password} className="flex mb-6 items-center">
+        <FormControl isInvalid={!!errors.password} className="mb-6 flex items-center">
           <FormLabel className="w-20" htmlFor="password">
             {t("AuthPanel.NewPassword")}
           </FormLabel>
@@ -181,7 +181,7 @@ export default function ResetPassword() {
             </InputRightElement>
           </InputGroup>
         </FormControl>
-        <FormControl isInvalid={!!errors.confirmPassword} className="flex mb-6 items-center">
+        <FormControl isInvalid={!!errors.confirmPassword} className="mb-6 flex items-center">
           <FormLabel className="w-20" htmlFor="confirmPassword">
             {t("AuthPanel.ConfirmPassword")}
           </FormLabel>

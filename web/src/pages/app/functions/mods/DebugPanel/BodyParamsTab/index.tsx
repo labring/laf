@@ -111,7 +111,7 @@ function BodyParamsTab(props: { onChange(values: { contentType: string; data: an
         <div>
           <form>
             <TableContainer>
-              <Table size="sm" className="border rounded border-grayModern-600">
+              <Table size="sm" className="rounded border border-grayModern-600">
                 <Thead>
                   <Tr>
                     <Th>{t("FunctionPanel.Name")}</Th>
@@ -153,7 +153,7 @@ function BodyParamsTab(props: { onChange(values: { contentType: string; data: an
                             <>
                               <label
                                 htmlFor={`params.${index}`}
-                                className="bg-slate-200 px-[4px] py-[2px] rounded cursor-pointer"
+                                className="cursor-pointer rounded bg-slate-200 px-[4px] py-[2px]"
                               >
                                 {t("FunctionPanel.UploadButton")}
                               </label>

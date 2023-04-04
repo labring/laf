@@ -84,7 +84,7 @@ export class AccountController {
       order.id,
       amount,
       currency,
-      'account charge',
+      'laf account charge',
     )
 
     return ResponseUtil.ok({

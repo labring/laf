@@ -80,7 +80,7 @@ const EditableTable = function (props: {
   return (
     <>
       <div
-        className={clsx("rounded-t-md relative border border-b-0", {
+        className={clsx("relative rounded-t-md border border-b-0", {
           "border-frostyNightfall-200": !darkMode,
         })}
       >

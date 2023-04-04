@@ -9,7 +9,7 @@ function BottomPanel() {
   const store = useCustomSettingStore();
 
   return (
-    <Panel className=" justify-between !flex-row">
+    <Panel className=" !flex-row justify-between">
       <HStack spacing={2}>
         <Button
           size="xs"

@@ -23,15 +23,12 @@ body:
   - type: markdown
     attributes:
       value: |
-        For better global communication, Please write in English.
-        (为了更好的国际化交流，请您使用英语描述您的问题。)
+        For better global communication, please write in English.
+        (为了更好的国际化交流，请您使用英语描述问题。)
 
-        You can use the following translation tool to translate, but please check the translation carefully after translation to avoid misinterpretation:
-        (你可以使用以下翻译工具进行翻译，但是翻译完成后请仔细检查译文，以免有错误的理解：）
-        - [Google Translate](https://translate.google.com/)
-        - [Baidu Translate](https://fanyi.baidu.com/)
-        - [YouDao Translate](https://fanyi.baidu.com/)
-        - ChatGPT
+        You can use ChatGPT to translate your native language into English:
+        (您可以使用ChatGPT将您的母语翻译成英文。）
+        - [ChatGPT](https://chat.openai.com/)
 
   - type: checkboxes
     attributes:
@@ -50,11 +47,11 @@ body:
       label: Environment
       description: Describe the environment.
       options:
-        - preview.laf.run
+        - https://laf.dev
+        - https://laf.run
+        - Linux (self-host)
         - Mac (self-host)
         - Windows (self-host)
-        - Linux (self-host)
-        - Other (self-host)
     validations:
       required: true
 

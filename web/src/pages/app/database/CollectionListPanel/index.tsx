@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BiRefresh } from "react-icons/bi";
 import { AddIcon, CopyIcon, Search2Icon } from "@chakra-ui/icons";
-import { Center, Input, InputGroup, InputLeftElement, Spinner } from "@chakra-ui/react";
+import { Badge, Center, Input, InputGroup, InputLeftElement, Spinner } from "@chakra-ui/react";
 
 import CopyText from "@/components/CopyText";
 import EmptyBox from "@/components/EmptyBox";
@@ -21,7 +21,7 @@ import useDBMStore from "../store";
 export default function CollectionListPanel() {
   const store = useDBMStore((store) => store);
   const { t } = useTranslation();
-  const collectionListQuery = useCollectionListQuery({
+  const { data: res, ...collectionListQuery } = useCollectionListQuery({
     onSuccess: (data) => {
       if (data.data.length === 0) {
         store.setCurrentDB(undefined);
@@ -35,13 +35,22 @@ export default function CollectionListPanel() {
 
   return (
     <Panel
-      className="flex-grow overflow-hidden min-w-[200px]"
+      className="min-w-[200px] flex-grow overflow-hidden"
       onClick={() => {
         store.setCurrentShow("DB");
       }}
     >
       <Panel.Header
-        title={t("CollectionPanel.CollectionList").toString()}
+        title={
+          <div className="flex">
+            {t("CollectionPanel.CollectionList").toString()}
+            {res?.data.length >= 10 ? (
+              <Badge rounded={"full"} ml="1">
+                {res?.data.length}
+              </Badge>
+            ) : null}
+          </div>
+        }
         actions={[
           <IconWrap
             key="refresh_database"
@@ -59,7 +68,7 @@ export default function CollectionListPanel() {
           </CreateCollectionModal>,
         ]}
       />
-      <div className="flex items-center mb-3 w-full">
+      <div className="mb-3 flex w-full items-center">
         <InputGroup>
           <InputLeftElement
             height={"8"}
@@ -75,15 +84,15 @@ export default function CollectionListPanel() {
         </InputGroup>
       </div>
 
-      <div className="overflow-auto flex-grow relative">
+      <div className="relative flex-grow overflow-auto">
         {collectionListQuery.isFetching ? (
-          <Center className="opacity-60 bg-white-200 absolute left-0 right-0 top-0 bottom-0 z-10">
+          <Center className="bg-white-200 absolute bottom-0 left-0 right-0 top-0 z-10 opacity-60">
             <Spinner />
           </Center>
         ) : null}
-        {collectionListQuery?.data?.data?.length ? (
+        {res?.data?.length ? (
           <SectionList>
-            {collectionListQuery?.data?.data
+            {res?.data
               .filter((db: any) => db.name.indexOf(search) >= 0)
               .map((db: any) => {
                 return (
@@ -94,8 +103,8 @@ export default function CollectionListPanel() {
                       store.setCurrentDB(db);
                     }}
                   >
-                    <div className="w-full flex justify-between group">
-                      <div className="leading-loose font-semibold">
+                    <div className="group flex w-full justify-between">
+                      <div className="font-semibold leading-loose">
                         <FileTypeIcon type="db" />
                         <span className="ml-2 text-base">{db.name}</span>
                       </div>

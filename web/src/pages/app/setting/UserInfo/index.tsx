@@ -16,7 +16,7 @@ export default function UserInfo() {
   const darkMode = colorMode === "dark";
 
   return (
-    <div className="h-full flex flex-col items-center justify-center">
+    <div className="flex h-full flex-col items-center justify-center">
       {showAuth ? (
         <AuthDetail
           onBack={() => {
@@ -25,7 +25,7 @@ export default function UserInfo() {
         />
       ) : (
         <>
-          <Box className="text-center relative">
+          <Box className="relative text-center">
             <Avatar
               size="lg"
               name={userInfo?.username}
@@ -35,7 +35,7 @@ export default function UserInfo() {
               boxShadow="base"
             />
             <p
-              className={clsx("text-center text-3xl font-medium mb-2", {
+              className={clsx("mb-2 text-center text-3xl font-medium", {
                 "text-grayModern-900": !darkMode,
               })}
             >
@@ -53,13 +53,13 @@ export default function UserInfo() {
               {t("SettingPanel.showAuth")}
             </span> */}
           </Box>
-          <Box className="text-lg mt-8 mb-20">
+          <Box className="mt-8 mb-20 text-lg">
             <HStack spacing={8}>
-              <span className="text-grayModern-500 w-[80px]">{t("SettingPanel.Tel")}:</span>
+              <span className="w-[80px] text-grayModern-500">{t("SettingPanel.Tel")}:</span>
               <span>{userInfo?.phone ? userInfo.phone : t("NoInfo")}</span>
             </HStack>
             <HStack spacing={8} className="mt-2">
-              <span className="text-grayModern-500 w-[80px]">{t("SettingPanel.Registered")}:</span>
+              <span className="w-[80px] text-grayModern-500">{t("SettingPanel.Registered")}:</span>
               <span>{formatDate(userInfo?.createdAt)}</span>
             </HStack>
           </Box>

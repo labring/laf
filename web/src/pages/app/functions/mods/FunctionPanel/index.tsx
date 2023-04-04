@@ -3,9 +3,10 @@
  ***************************/
 
 import { useEffect, useState } from "react";
+import { TbBrandGithubCopilot } from "react-icons/tb";
 import { useNavigate, useParams } from "react-router-dom";
 import { AddIcon, DeleteIcon, EditIcon, Search2Icon } from "@chakra-ui/icons";
-import { HStack, Input, InputGroup, InputLeftElement, useColorMode } from "@chakra-ui/react";
+import { Badge, HStack, Input, InputGroup, InputLeftElement, useColorMode } from "@chakra-ui/react";
 import { clsx } from "clsx";
 import { t } from "i18next";
 
@@ -24,6 +25,7 @@ import { useDeleteFunctionMutation, useFunctionListQuery } from "../../service";
 import useFunctionStore from "../../store";
 import TriggerModal from "../TriggerModal";
 
+import PromptModal from "./CreateModal/PromptModal";
 import CreateModal from "./CreateModal";
 
 import { TFunction } from "@/apis/typing";
@@ -53,6 +55,14 @@ export default function FunctionList() {
   const [tagsList, setTagsList] = useState<TagItem[]>([]);
 
   const [currentTag, setCurrentTag] = useState<TagItem | null>(null);
+
+  const filterFunctions = allFunctionList.filter((item: TFunction) => {
+    let flag = item?.name.includes(keywords);
+    if (tagsList.length > 0 && currentTag) {
+      flag = flag && item.tags.includes(currentTag?.tagName);
+    }
+    return flag;
+  });
 
   useFunctionListQuery({
     onSuccess: (data) => {
@@ -93,14 +103,14 @@ export default function FunctionList() {
 
   const renderSelectedTags = () => {
     return tagsList.length > 0 ? (
-      <div className="w-full mt-2 mb-2 pb-1 flex flex-wrap justify-start border-b items-center min-w-[200px]">
-        <p className={clsx("mr-2 mb-1", darkMode ? "text-white-500" : "text-grayModern-500")}>
+      <div className="mb-2 flex w-full min-w-[200px] flex-wrap items-center justify-start border-b pb-1">
+        <p className={clsx("mb-1 mr-2", darkMode ? "text-white-500" : "text-grayModern-500")}>
           {t("FunctionPanel.Tags")}
         </p>
         {tagsList.map((item) => (
           <span
             className={clsx(
-              "cursor-pointer px-2 mb-1 rounded mr-1",
+              "mb-1 mr-1 cursor-pointer rounded px-2",
               darkMode ? "bg-gray-700" : "bg-gray-100",
               {
                 "!bg-primary-400 text-white": item.tagName === currentTag?.tagName,
@@ -117,15 +127,29 @@ export default function FunctionList() {
   };
 
   return (
-    <Panel className="flex-grow overflow-hidden min-w-[250px]">
+    <Panel className="min-w-[250px] flex-grow overflow-hidden">
       <Panel.Header
-        title={t`FunctionPanel.FunctionList`}
+        title={
+          <div className="flex">
+            {t`FunctionPanel.FunctionList`}
+            {filterFunctions.length ? (
+              <Badge rounded={"full"} ml="1">
+                {filterFunctions.length}
+              </Badge>
+            ) : null}
+          </div>
+        }
         actions={[
           <TriggerModal key="trigger_modal">
             <IconWrap size={20} tooltip={t("TriggerPanel.Trigger").toString()}>
               <TriggerIcon fontSize={13} />
             </IconWrap>
           </TriggerModal>,
+          <PromptModal key="create_prompt_modal">
+            <IconWrap size={20} tooltip={t("FunctionPanel.CreateWithAITip").toString()}>
+              <TbBrandGithubCopilot fontSize={12} />
+            </IconWrap>
+          </PromptModal>,
           <CreateModal key="create_modal">
             <IconWrap size={20} tooltip={t("FunctionPanel.AddFunction").toString()}>
               <AddIcon fontSize={12} />
@@ -155,57 +179,49 @@ export default function FunctionList() {
       <div className="flex-grow" style={{ overflowY: "auto" }}>
         {allFunctionList?.length ? (
           <SectionList>
-            {allFunctionList
-              .filter((item: TFunction) => {
-                let flag = item?.name.includes(keywords);
-                if (tagsList.length > 0 && currentTag) {
-                  flag = flag && item.tags.includes(currentTag?.tagName);
-                }
-                return flag;
-              })
-              .map((func: any) => {
-                return (
-                  <SectionList.Item
-                    isActive={func?.name === currentFunction?.name}
-                    key={func?.name || ""}
-                    className="group"
-                    onClick={() => {
-                      setCurrentFunction(func);
-                      navigate(`/app/${currentApp?.appid}/${Pages.function}/${func?.name}`);
-                    }}
-                  >
-                    <div className="leading-loose font-semibold">
-                      <FileTypeIcon type={FileType.ts} />
-                      <span className="ml-2 text-base">{func?.name}</span>
-                    </div>
-                    <HStack spacing={1}>
-                      {functionCache.getCache(func?.id, func?.source?.code) !==
-                        func?.source?.code && (
-                        <span className="flex-none inline-block w-1 h-1 rounded-full bg-warn-700"></span>
-                      )}
-                      <MoreButton
-                        isHidden={func.name !== currentFunction?.name}
-                        label={t("Operation")}
-                      >
-                        <>
-                          <CreateModal functionItem={func}>
-                            <IconText icon={<EditIcon />} text={t("Edit")} />
-                          </CreateModal>
-                          <ConfirmButton
-                            onSuccessAction={async () => {
-                              await deleteFunctionMutation.mutateAsync(func);
-                            }}
-                            headerText={String(t("Delete"))}
-                            bodyText={String(t("FunctionPanel.DeleteConfirm"))}
-                          >
-                            <IconText icon={<DeleteIcon />} text={t("Delete")} />
-                          </ConfirmButton>
-                        </>
-                      </MoreButton>
-                    </HStack>
-                  </SectionList.Item>
-                );
-              })}
+            {filterFunctions.map((func: any) => {
+              return (
+                <SectionList.Item
+                  isActive={func?.name === currentFunction?.name}
+                  key={func?.name || ""}
+                  className="group"
+                  onClick={() => {
+                    setCurrentFunction(func);
+                    navigate(`/app/${currentApp?.appid}/${Pages.function}/${func?.name}`);
+                  }}
+                >
+                  <div className="font-semibold leading-loose">
+                    <FileTypeIcon type={FileType.ts} />
+                    <span className="ml-2 text-base">{func?.name}</span>
+                  </div>
+                  <HStack spacing={1}>
+                    {functionCache.getCache(func?.id, func?.source?.code) !==
+                      func?.source?.code && (
+                      <span className="inline-block h-1 w-1 flex-none rounded-full bg-warn-700"></span>
+                    )}
+                    <MoreButton
+                      isHidden={func.name !== currentFunction?.name}
+                      label={t("Operation")}
+                    >
+                      <>
+                        <CreateModal functionItem={func}>
+                          <IconText icon={<EditIcon />} text={t("Edit")} />
+                        </CreateModal>
+                        <ConfirmButton
+                          onSuccessAction={async () => {
+                            await deleteFunctionMutation.mutateAsync(func);
+                          }}
+                          headerText={String(t("Delete"))}
+                          bodyText={String(t("FunctionPanel.DeleteConfirm"))}
+                        >
+                          <IconText icon={<DeleteIcon />} text={t("Delete")} />
+                        </ConfirmButton>
+                      </>
+                    </MoreButton>
+                  </HStack>
+                </SectionList.Item>
+              );
+            })}
           </SectionList>
         ) : (
           <EmptyBox hideIcon>

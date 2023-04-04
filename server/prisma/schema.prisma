@@ -13,6 +13,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum NoteLevel {
+  Info
+  Warning
+  Danger
+  Error
+}
+
+type Note {
+  title   String?
+  content String?
+  link    String?
+  lang    String?
+  level   NoteLevel @default(Info)
+}
+
 // user schemas
 
 model User {
@@ -104,6 +119,8 @@ model Region {
   tls          Boolean            @default(false)
   state        String             @default("Active") // Active, Inactive
 
+  notes Note[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -152,6 +169,10 @@ model Bundle {
   maxRenewalTime      Int // in seconds
 
   resource BundleResource
+  notes    Note[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   region Region @relation(fields: [regionId], references: [id])
 
@@ -305,6 +326,7 @@ model PaymentChannel {
   name      String
   spec      Json
   state     String             @default("Active") // Active, Inactive
+  notes     Note[]
   createdAt DateTime           @default(now())
   updatedAt DateTime           @updatedAt
 }
@@ -584,9 +606,9 @@ model BucketDomain {
   domain     String      @unique
   state      DomainState @default(Active)
   phase      DomainPhase @default(Creating)
+  lockedAt   DateTime
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
-  lockedAt   DateTime
 
   bucket StorageBucket @relation(fields: [bucketName], references: [name])
 }
@@ -612,13 +634,16 @@ enum AuthProviderState {
 }
 
 model AuthProvider {
-  id       String            @id @default(auto()) @map("_id") @db.ObjectId
-  name     String            @unique
-  bind     Json
-  register Boolean
-  default  Boolean
-  state    AuthProviderState
-  config   Json
+  id        String            @id @default(auto()) @map("_id") @db.ObjectId
+  name      String            @unique
+  bind      Json
+  register  Boolean
+  default   Boolean
+  state     AuthProviderState
+  config    Json
+  notes     Note[]
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
 }
 
 // Sms schemas

@@ -62,34 +62,16 @@ export class InstanceTaskService {
 
   /**
    * State `Running`:
-   * - create instance
    * - move phase `Created` or `Stopped` to `Starting`
    */
   async handleRunningState() {
     const db = SystemDatabase.db
 
-    const res = await db
-      .collection<Application>('Application')
-      .findOneAndUpdate(
-        {
-          state: ApplicationState.Running,
-          phase: { $in: [ApplicationPhase.Created, ApplicationPhase.Stopped] },
-          lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
-        },
-        { $set: { lockedAt: new Date() } },
-      )
-
-    if (!res.value) return
-    const app = res.value
-
-    // create instance
-    await this.instanceService.create(app)
-
-    // update phase to `Starting`
-    await db.collection<Application>('Application').updateOne(
+    await db.collection<Application>('Application').updateMany(
       {
-        appid: app.appid,
+        state: ApplicationState.Running,
         phase: { $in: [ApplicationPhase.Created, ApplicationPhase.Stopped] },
+        lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
       },
       {
         $set: {
@@ -99,8 +81,6 @@ export class InstanceTaskService {
         },
       },
     )
-
-    this.logger.log(`Application ${app.appid} updated to phase starting`)
   }
 
   /**
@@ -124,15 +104,14 @@ export class InstanceTaskService {
     if (!res.value) return
     const app = res.value
 
-    const waitingTime = Date.now() - app.updatedAt.getTime()
+    // create instance
+    await this.instanceService.create(app)
 
     // if waiting time is more than 5 minutes, stop the application
+    const waitingTime = Date.now() - app.updatedAt.getTime()
     if (waitingTime > 1000 * 60 * 5) {
       await db.collection<Application>('Application').updateOne(
-        {
-          appid: app.appid,
-          phase: ApplicationPhase.Starting,
-        },
+        { appid: app.appid, phase: ApplicationPhase.Starting },
         {
           $set: {
             state: ApplicationState.Stopped,
@@ -143,9 +122,7 @@ export class InstanceTaskService {
         },
       )
 
-      this.logger.debug(
-        `Application ${app.appid} updated to state Stopped due to timeout`,
-      )
+      this.logger.log(`${app.appid} updated to state Stopped due to timeout`)
       return
     }
 
@@ -153,7 +130,7 @@ export class InstanceTaskService {
     const instance = await this.instanceService.get(app)
     const available = isConditionTrue(
       'Available',
-      instance.deployment.status?.conditions,
+      instance.deployment?.status?.conditions || [],
     )
     if (!available) {
       await this.relock(appid, waitingTime)
@@ -189,45 +166,25 @@ export class InstanceTaskService {
 
   /**
    * State `Stopped`:
-   * - remove instance
    * - move phase `Started` to `Stopping`
    */
   async handleStoppedState() {
     const db = SystemDatabase.db
 
-    const res = await db
-      .collection<Application>('Application')
-      .findOneAndUpdate(
-        {
-          state: ApplicationState.Stopped,
-          phase: ApplicationPhase.Started,
-          lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
-        },
-        { $set: { lockedAt: new Date() } },
-      )
-
-    if (!res.value) return
-    const app = res.value
-
-    // remove instance
-    await this.instanceService.remove(app)
-
-    // update phase to `Stopping`
-    await db.collection<Application>('Application').updateOne(
+    await db.collection<Application>('Application').updateMany(
       {
-        appid: app.appid,
+        state: ApplicationState.Stopped,
         phase: ApplicationPhase.Started,
+        lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
       },
       {
         $set: {
-          phase: ApplicationPhase.Stopping,
           lockedAt: TASK_LOCK_INIT_TIME,
+          phase: ApplicationPhase.Stopping,
           updatedAt: new Date(),
         },
       },
     )
-
-    this.logger.log(`Application ${app.appid} updated to phase stopping`)
   }
 
   /**
@@ -257,6 +214,14 @@ export class InstanceTaskService {
     // check if the instance is removed
     const instance = await this.instanceService.get(app)
     if (instance.deployment) {
+      await this.instanceService.remove(app)
+      await this.relock(appid, waitingTime)
+      return
+    }
+
+    // check if the service is removed
+    if (instance.service) {
+      await this.instanceService.remove(app)
       await this.relock(appid, waitingTime)
       return
     }
@@ -278,32 +243,17 @@ export class InstanceTaskService {
 
   /**
    * State `Restarting`:
-   * - remove instance
    * - move phase `Started` to `Stopping`
    */
   async handleRestartingStateDown() {
     const db = SystemDatabase.db
 
-    const res = await db
-      .collection<Application>('Application')
-      .findOneAndUpdate(
-        {
-          state: ApplicationState.Restarting,
-          phase: ApplicationPhase.Started,
-          lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
-        },
-        { $set: { lockedAt: new Date() } },
-      )
-
-    if (!res.value) return
-    const app = res.value
-
-    // remove instance
-    await this.instanceService.remove(app)
-
-    // update phase to `Stopping`
-    await db.collection<Application>('Application').updateOne(
-      { appid: app.appid, phase: ApplicationPhase.Started },
+    await db.collection<Application>('Application').updateMany(
+      {
+        state: ApplicationState.Restarting,
+        phase: ApplicationPhase.Started,
+        lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
+      },
       {
         $set: {
           phase: ApplicationPhase.Stopping,
@@ -312,38 +262,21 @@ export class InstanceTaskService {
         },
       },
     )
-
-    this.logger.debug(`${app.appid} updated to stopping for restarting`)
   }
 
   /**
    * State `Restarting`:
-   * - create instance
    * - move phase `Stopped` to `Starting`
    */
   async handleRestartingStateUp() {
     const db = SystemDatabase.db
 
-    const res = await db
-      .collection<Application>('Application')
-      .findOneAndUpdate(
-        {
-          state: ApplicationState.Restarting,
-          phase: ApplicationPhase.Stopped,
-          lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
-        },
-        { $set: { lockedAt: new Date() } },
-      )
-
-    if (!res.value) return
-    const app = res.value
-
-    // create instance
-    await this.instanceService.create(app)
-
-    // update phase to `Starting`
-    await db.collection<Application>('Application').updateOne(
-      { appid: app.appid, phase: ApplicationPhase.Stopped },
+    await db.collection<Application>('Application').updateMany(
+      {
+        state: ApplicationState.Restarting,
+        phase: ApplicationPhase.Stopped,
+        lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
+      },
       {
         $set: {
           phase: ApplicationPhase.Starting,
@@ -352,8 +285,6 @@ export class InstanceTaskService {
         },
       },
     )
-
-    this.logger.debug(`${app.appid} updated starting for restarting`)
   }
 
   /**

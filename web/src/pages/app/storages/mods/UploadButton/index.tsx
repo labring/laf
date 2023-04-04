@@ -46,7 +46,6 @@ function UploadButton(props: { onUploadSuccess: Function; children: React.ReactE
           <div className="p-6">
             <FileUpload
               onUpload={async (files) => {
-                console.log(files);
                 const newFileList = Array.from(files).map((item: any) => {
                   return {
                     fileName: item.webkitRelativePath ? item.webkitRelativePath : item.name,
@@ -76,7 +75,7 @@ function UploadButton(props: { onUploadSuccess: Function; children: React.ReactE
                 return (
                   <div
                     key={item.fileName}
-                    className="my-2 px-5 flex w-full h-10 justify-between items-center hover:bg-slate-100"
+                    className="my-2 flex h-10 w-full items-center justify-between px-5 hover:bg-slate-100"
                   >
                     <span className="text-slate-500">{item.fileName}</span>
                     {item.status ? <CheckCircleIcon color="green.500" fontSize={20} /> : ""}

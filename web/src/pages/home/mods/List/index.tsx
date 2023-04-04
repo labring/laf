@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { RiCodeBoxFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +17,8 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
-import { t } from "i18next";
+import clsx from "clsx";
+import dayjs from "dayjs";
 
 import CopyText from "@/components/CopyText";
 import FileTypeIcon from "@/components/FileTypeIcon";
@@ -37,6 +39,7 @@ import useGlobalStore from "@/pages/globalStore";
 
 function List(props: { appListQuery: any; setShouldRefetch: any }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const { setCurrentApp, regions } = useGlobalStore();
 
@@ -49,8 +52,8 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
 
   return (
     <>
-      <div className="flex items-center justify-between mb-5">
-        <h2 className="font-semibold text-2xl flex items-center">
+      <div className="mb-5 flex items-center justify-between">
+        <h2 className="flex items-center text-2xl font-semibold">
           <FileTypeIcon type="app" className="mr-1 " />
           {t("HomePanel.MyApp")}
         </h2>
@@ -79,13 +82,13 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
       </div>
 
       <div className="flex flex-col overflow-auto">
-        <Box bg={bg} className="flex-none flex rounded-lg h-12 items-center px-6 mb-3">
+        <Box bg={bg} className="mb-3 flex h-12 flex-none items-center rounded-lg px-3 lg:px-6">
           <div className="w-3/12 text-second ">{t("HomePanel.Application") + t("Name")}</div>
           <div className="w-2/12 text-second ">App ID</div>
-          <div className="w-2/12 text-second pl-2">{t("HomePanel.State")}</div>
+          <div className="w-2/12 pl-2 text-second">{t("HomePanel.State")}</div>
           <div className="w-2/12 text-second ">{t("HomePanel.Region")}</div>
           <div className="w-4/12 text-second ">{t("Time")}</div>
-          <div className="w-1/12 text-second pl-2 min-w-[100px]">{t("Operation")}</div>
+          <div className="w-1/12 min-w-[100px] pl-2 text-second">{t("Operation")}</div>
         </Box>
         <div className="flex-grow overflow-auto">
           {(appListQuery.data?.data || [])
@@ -95,12 +98,12 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                 <Box
                   key={item?.appid}
                   bg={bg}
-                  className="flex rounded-lg py-4 items-center px-6 mb-3 group"
+                  className="group mb-3 flex items-center rounded-lg px-3 py-4 lg:px-6"
                 >
                   <div className="w-3/12 ">
-                    <div className="font-bold text-lg">
+                    <div className="text-lg font-bold">
                       {item?.name}
-                      <span className="text-base text-second ml-2 border px-1 rounded">
+                      <span className="ml-2 rounded border px-1 text-base text-second">
                         {item?.bundle?.displayName}
                       </span>
                     </div>
@@ -119,16 +122,26 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                     <p>
                       {t("CreateTime")}: {formatDate(item.createdAt)}{" "}
                     </p>
-                    <p className="mt-1">
+                    <p
+                      className={clsx(
+                        "mt-1",
+                        dayjs().add(3, "day").isAfter(dayjs(item.subscription.expiredAt))
+                          ? "text-red-500"
+                          : "",
+                      )}
+                    >
                       {t("EndTime")}: {formatDate(item.subscription.expiredAt)}
                       <CreateAppModal application={item} type="renewal">
-                        <a className="text-primary-500 hidden group-hover:inline ml-2" href="/edit">
+                        <a
+                          className="invisible ml-2 text-primary-500 group-hover:visible group-hover:inline-block"
+                          href="/edit"
+                        >
                           {t("Renew")}
                         </a>
                       </CreateAppModal>
                     </p>
                   </div>
-                  <div className="w-1/12 flex min-w-[100px]">
+                  <div className="flex w-1/12 min-w-[100px]">
                     <Button
                       className="mr-2"
                       fontWeight={"semibold"}
@@ -196,7 +209,7 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
 
                         <DeleteAppModal item={item} onSuccess={() => setShouldRefetch(true)}>
                           <MenuItem minH="40px" display={"block"}>
-                            <a className="text-error-500 block" href="/delete">
+                            <a className="block text-error-500" href="/delete">
                               {t("DeleteApp")}
                             </a>
                           </MenuItem>

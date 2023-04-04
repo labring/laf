@@ -22,6 +22,7 @@ export type TApplicationDetail = {
   function_debug_token: string;
   host?: string;
   origin?: string;
+  subscription: TSubscription;
 };
 
 export type TBundle = {
@@ -32,6 +33,7 @@ export type TBundle = {
   state: string;
   resource: TResource;
   limitCountPerUser: number;
+  notes: { content: string }[];
   subscriptionOptions: TSubscriptionOption[];
 };
 

@@ -58,8 +58,6 @@ export class ApplicationTaskService {
 
     // State `Deleted`
     this.handleDeletedState()
-
-    this.clearTimeoutLocks()
   }
 
   /**
@@ -78,20 +76,12 @@ export class ApplicationTaskService {
       .findOneAndUpdate(
         {
           phase: ApplicationPhase.Creating,
-          lockedAt: {
-            $lt: new Date(Date.now() - 1000 * this.lockTimeout),
-          },
+          lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
-        {
-          $set: {
-            lockedAt: new Date(),
-          },
-        },
+        { $set: { lockedAt: new Date() } },
       )
 
-    if (!res.value) {
-      return
-    }
+    if (!res.value) return
 
     const app = res.value
     const appid = app.appid
@@ -145,11 +135,8 @@ export class ApplicationTaskService {
     }
 
     // update application phase to `Created`
-    const updated = await db.collection<Application>('Application').updateOne(
-      {
-        _id: app._id,
-        phase: ApplicationPhase.Creating,
-      },
+    await db.collection<Application>('Application').updateOne(
+      { _id: app._id, phase: ApplicationPhase.Creating },
       {
         $set: {
           phase: ApplicationPhase.Created,
@@ -157,8 +144,8 @@ export class ApplicationTaskService {
         },
       },
     )
-    if (updated.modifiedCount > 0)
-      this.logger.debug('app phase updated to `Created`:', app.appid)
+
+    this.logger.log('app phase updated to `Created`: ' + app.appid)
   }
 
   /**
@@ -275,11 +262,8 @@ export class ApplicationTaskService {
     }
 
     // update phase to `Deleted`
-    const updated = await db.collection<Application>('Application').updateOne(
-      {
-        _id: app._id,
-        phase: ApplicationPhase.Deleting,
-      },
+    await db.collection<Application>('Application').updateOne(
+      { _id: app._id, phase: ApplicationPhase.Deleting },
       {
         $set: {
           phase: ApplicationPhase.Deleted,
@@ -287,8 +271,8 @@ export class ApplicationTaskService {
         },
       },
     )
-    if (updated.modifiedCount > 0)
-      this.logger.debug('app phase updated to `Deleted`:', app.appid)
+
+    this.logger.log('app phase updated to `Deleted`: ' + app.appid)
   }
 
   /**
@@ -319,8 +303,7 @@ export class ApplicationTaskService {
     )
 
     await db.collection<Application>('Application').deleteMany({
-      // TODO: support reset app or not? keep this line now.
-      // state: ApplicationState.Deleted,
+      state: ApplicationState.Deleted,
       phase: ApplicationPhase.Deleted,
     })
   }
@@ -333,19 +316,5 @@ export class ApplicationTaskService {
     await db
       .collection<Application>('Application')
       .updateOne({ appid: appid }, { $set: { lockedAt: TASK_LOCK_INIT_TIME } })
-  }
-
-  /**
-   * Clear timeout locks
-   */
-  async clearTimeoutLocks() {
-    const db = SystemDatabase.db
-
-    await db
-      .collection<Application>('Application')
-      .updateMany(
-        { lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) } },
-        { $set: { lockedAt: TASK_LOCK_INIT_TIME } },
-      )
   }
 }

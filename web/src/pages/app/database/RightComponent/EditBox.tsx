@@ -17,7 +17,7 @@ const RightPanelEditBox: React.FC<{
 
   return (
     <div
-      className={clsx("border-2 flex-col ml-1 mb-3 rounded-xl px-4", {
+      className={clsx("ml-1 mb-3 flex-col rounded-xl border-2 px-4", {
         "border-lafWhite-600": !darkMode,
       })}
       style={{
@@ -26,11 +26,11 @@ const RightPanelEditBox: React.FC<{
       }}
     >
       <div
-        className={clsx("flex justify-between item-center border-b-2 mb-4 py-2", {
+        className={clsx("item-center mb-4 flex justify-between border-b-2 py-2", {
           "border-lafWhite-600": !darkMode,
         })}
       >
-        <Text fontSize="md" className="leading-loose font-semibold">
+        <Text fontSize="md" className="font-semibold leading-loose">
           {title}
         </Text>
         <Button
