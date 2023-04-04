@@ -20,7 +20,7 @@
 /* 滚动条滑块 */
 ::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 html,

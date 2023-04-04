@@ -2,9 +2,14 @@ import { useEffect, useRef } from "react";
 import { debounce } from "lodash";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
+import { Pages } from "@/constants";
+
 import "./userWorker";
 
 import { AutoImportTypings } from "./typesResolve";
+
+import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
+import useGlobalStore from "@/pages/globalStore";
 
 const autoImportTypings = new AutoImportTypings();
 const parseImports = debounce(autoImportTypings.parse, 1500).bind(autoImportTypings);
@@ -108,6 +113,19 @@ function FunctionEditor(props: {
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
   const monacoEl = useRef(null);
 
+  const globalStore = useGlobalStore((state) => state);
+
+  useHotKey(
+    DEFAULT_SHORTCUTS.send_request,
+    () => {
+      // format
+      editorRef.current?.trigger("keyboard", "editor.action.formatDocument", {});
+    },
+    {
+      enabled: globalStore.currentPageId === Pages.function,
+    },
+  );
+
   useEffect(() => {
     if (monacoEl && !editorRef.current) {
       editorRef.current = monaco.editor.create(monacoEl.current!, {
@@ -120,6 +138,7 @@ function FunctionEditor(props: {
         scrollbar: {
           verticalScrollbarSize: 6,
         },
+        formatOnPaste: true,
         overviewRulerLanes: 0,
         lineNumbersMinChars: 4,
         fontSize: 14,
