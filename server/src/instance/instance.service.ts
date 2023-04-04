@@ -34,6 +34,8 @@ export class InstanceService {
     const region = await this.regionService.findByAppId(appid)
     const appWithRegion = { ...app, region } as ApplicationWithRegion
 
+    // Although a namespace has already been created during application creation,
+    // we still need to check it again here in order to handle situations where the cluster is rebuilt.
     const namespace = await this.clusterService.getAppNamespace(region, appid)
     if (!namespace) {
       this.logger.debug(`Creating namespace for application ${appid}`)
@@ -77,7 +79,7 @@ export class InstanceService {
 
     // db connection uri
     const database = await this.databaseService.findOne(appid)
-    const dbConnectionUri = this.databaseService.getConnectionUri(
+    const dbConnectionUri = this.databaseService.getInternalConnectionUri(
       app.region,
       database,
     )
@@ -266,9 +268,7 @@ export class InstanceService {
       region,
       app.appid,
     )
-    if (!namespace) {
-      return
-    }
+    if (!namespace) return
 
     const appsV1Api = this.clusterService.makeAppsV1Api(region)
     const coreV1Api = this.clusterService.makeCoreV1Api(region)
@@ -280,9 +280,6 @@ export class InstanceService {
       const name = appid
       await coreV1Api.deleteNamespacedService(name, namespace.metadata.name)
     }
-
-    // delete application namespace
-    await this.clusterService.removeAppNamespace(region, appid)
   }
 
   async get(app: Application) {

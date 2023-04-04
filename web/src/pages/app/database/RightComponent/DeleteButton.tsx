@@ -23,7 +23,7 @@ export default function DeleteButton(props: { data: any; deleteMethod: any }) {
         placement="left"
       >
         <IconWrap
-          className="hover:bg-rose-100 group/icon"
+          className="group/icon hover:bg-rose-100"
           showBg
           tooltip={t("Delete").toString()}
           size={32}

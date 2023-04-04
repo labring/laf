@@ -1,4 +1,3 @@
-import React from "react";
 import { useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 import { t } from "i18next";
@@ -16,7 +15,7 @@ import { TBundle } from "@/apis/typing";
 const ListItem = (props: { item: { key: string; value: string | number } }) => {
   const { item } = props;
   return (
-    <div className="flex justify-between text-second mb-1">
+    <div className="mb-1 flex justify-between text-second">
       <div>{item.key}</div>
       <div>{item.value}</div>
     </div>
@@ -43,13 +42,13 @@ export default function BundleItem(props: {
     <div
       onClick={() => onChange(bundle.id)}
       key={bundle.name}
-      className={clsx("min-w-[170px] border p-2 rounded-md cursor-pointer", {
+      className={clsx("min-w-[170px] cursor-pointer rounded-md border p-2", {
         "border-primary-500 bg-lafWhite-400": isActive && !darkMode,
         "bg-lafDark-400": isActive && darkMode,
       })}
     >
       <div
-        className={clsx("pb-2 border-b mb-2", {
+        className={clsx("mb-2 border-b pb-2", {
           "border-primary-500": isActive,
         })}
       >
@@ -60,7 +59,7 @@ export default function BundleItem(props: {
           ) : (
             <>
               {formatPrice(bundle.subscriptionOptions[durationIndex].specialPrice / months)}
-              <span className="text-base ml-1">/ {t("Monthly")}</span>
+              <span className="ml-1 text-base">/ {t("Monthly")}</span>
             </>
           )}
         </p>

@@ -13,7 +13,7 @@ export default function IconText(props: {
   return (
     <div
       onClick={props.onClick}
-      className={clsx("text-grayIron-600 flex flex-col items-center", {
+      className={clsx("flex flex-col items-center text-grayIron-600", {
         "hover:text-black": !darkMode,
         "hover:text-white": darkMode,
       })}

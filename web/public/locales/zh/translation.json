@@ -88,7 +88,6 @@
     "DeploySuccess": "发布成功",
     "Description": "函数描述",
     "EditFunction": "编辑函数",
-    "EmptyText": "暂无函数信息,",
     "Function": "函数",
     "FunctionList": "函数列表",
     "FunctionName": "函数名",
@@ -106,7 +105,9 @@
     "EmptyDebugTip": "暂无运行结果",
     "EmptyFunctionTip": "您还没有创建函数",
     "UploadButton": "上传",
-    "LeaveFunctionPage": "即将离开函数编辑页面"
+    "LeaveFunctionPage": "即将离开函数编辑页面",
+    "PromptDescription": "使用自然语言描述你的需求, laf 会帮你生成代码, 例如: 写一个 hello world ,返回 {hello: 'laf AI'}",
+    "CreateWithAITip": "使用 AI 辅助创建函数"
   },
   "HomePanel": {
     "APP": "Android or iOS 应用",
@@ -166,7 +167,8 @@
     "CodeTip": "请输入四位数字验证码",
     "TelTip": "请输入有效的手机号码",
     "Registered": "注册时间",
-    "ShutDown": "关闭应用"
+    "ShutDown": "关闭应用",
+    "Subscription": "订阅信息"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -187,7 +189,7 @@
     "SearchBucket": "输入 bucket 名进行搜索",
     "Size": "大小",
     "Storage": "存储",
-    "StorageList": "云存储列表",
+    "StorageList": "云存储",
     "StorageNameTip": "请输入云存储名称",
     "Success": "上传成功",
     "Time": "更新时间",
@@ -308,10 +310,10 @@
     "PasswordNotMatch": "两次输入的密码不一致",
     "SmsCodeSendSuccess": "验证码发送成功",
     "ValidationCodePlaceholder": "请输入验证码",
-    "SignupSuccess": "注册成功",
     "ResetPassword": "重置密码",
     "ResetPasswordSuccess": "重置密码成功",
-    "NewPassword": "新密码"
+    "NewPassword": "新密码",
+    "SignUpSuccess": "注册成功"
   },
   "Time": "时间",
   "CreateTime": "创建时间",
@@ -329,5 +331,7 @@
   "Monthly": "月",
   "CreateFolder": "新建文件夹",
   "Or": "或",
-  "BeforeunloadTip": "确定要离开当前编辑页面吗?"
+  "Generating": "正在生成",
+  "Start": "开始生成",
+  "TryLafAI": "试试 🎉 Laf AI !"
 }

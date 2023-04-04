@@ -22,6 +22,7 @@ import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
 import { ResponseUtil } from 'src/utils/response'
 import { BundleService } from 'src/region/bundle.service'
 import { BucketService } from 'src/storage/bucket.service'
+import { DomainState } from '@prisma/client'
 
 @ApiTags('WebsiteHosting')
 @ApiBearerAuth('Authorization')
@@ -59,6 +60,12 @@ export class WebsiteController {
     const bucket = await this.bucketService.findOne(appid, dto.bucketName)
     if (!bucket) {
       return ResponseUtil.error('bucket not found')
+    }
+
+    if (bucket.websiteHosting?.state === DomainState.Deleted) {
+      return ResponseUtil.error(
+        'The previous website is deleting, please try again later.',
+      )
     }
 
     if (bucket.websiteHosting) {

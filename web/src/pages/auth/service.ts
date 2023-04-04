@@ -1,12 +1,12 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import {
-  AuthControllerGetProviders,
-  AuthControllerResetPassword,
-  AuthControllerSendSmsCode,
-  AuthControllerSigninByPassword,
-  AuthControllerSigninBySmsCode,
-  AuthControllerSignup,
+  AuthenticationControllerGetProviders,
+  PhoneControllerSendCode,
+  PhoneControllerSignin,
+  UserPasswordControllerReset,
+  UserPasswordControllerSignin,
+  UserPasswordControllerSignup,
 } from "@/apis/v1/auth";
 import useGlobalStore from "@/pages/globalStore";
 
@@ -23,7 +23,7 @@ export const useSigninByPasswordMutation = (config?: { onSuccess: (result: any) 
   const globalStore = useGlobalStore();
   return useMutation(
     (values: any) => {
-      return AuthControllerSigninByPassword(values);
+      return UserPasswordControllerSignin(values);
     },
     {
       onSuccess: async (result) => {
@@ -42,7 +42,7 @@ export const useSigninBySmsCodeMutation = (config?: { onSuccess: (result: any) =
   const globalStore = useGlobalStore();
   return useMutation(
     (values: any) => {
-      return AuthControllerSigninBySmsCode(values);
+      return PhoneControllerSignin(values);
     },
     {
       onSuccess: async (result) => {
@@ -61,7 +61,7 @@ export const useSignupMutation = (config?: { onSuccess: (result: any) => void })
   const globalStore = useGlobalStore();
   return useMutation(
     (values: any) => {
-      return AuthControllerSignup(values);
+      return UserPasswordControllerSignup(values);
     },
     {
       onSuccess: async (result) => {
@@ -78,7 +78,7 @@ export const useSignupMutation = (config?: { onSuccess: (result: any) => void })
 export const useSendSmsCodeMutation = (config?: { onSuccess: (result: any) => void }) => {
   return useMutation(
     (values: any) => {
-      return AuthControllerSendSmsCode(values);
+      return PhoneControllerSendCode(values);
     },
     {
       onSuccess: async (result) => {
@@ -91,7 +91,7 @@ export const useSendSmsCodeMutation = (config?: { onSuccess: (result: any) => vo
 export const useResetPasswordMutation = (config?: { onSuccess: (result: any) => void }) => {
   return useMutation(
     (values: any) => {
-      return AuthControllerResetPassword(values);
+      return UserPasswordControllerReset(values);
     },
     {
       onSuccess: async (result) => {
@@ -105,7 +105,7 @@ export const useGetProvidersQuery = (onSuccess: (result: any) => void) => {
   return useQuery(
     queryKeys.useGetProvidersQuery,
     () => {
-      return AuthControllerGetProviders({});
+      return AuthenticationControllerGetProviders({});
     },
     {
       onSuccess,

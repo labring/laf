@@ -59,7 +59,7 @@ const SettingModal = (props: {
           <ModalCloseButton />
           <ModalBody px={6} py={2} h="60vh" maxH="70vh" flex="none">
             <Box className="flex h-full" borderColor={borderColor}>
-              <SectionList className="w-[250px] mr-4 border-r-2 pr-4">
+              <SectionList className="mr-4 w-[250px] border-r-2 pr-4">
                 {tabMatch.map((tab) => {
                   return (
                     <SectionList.Item

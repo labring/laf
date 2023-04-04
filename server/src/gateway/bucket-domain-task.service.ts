@@ -4,7 +4,6 @@ import { RegionService } from 'src/region/region.service'
 import { ApisixService } from './apisix.service'
 import * as assert from 'node:assert'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { times } from 'lodash'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/database/system-database'
 
@@ -26,10 +25,10 @@ export class BucketDomainTaskService {
     }
 
     // Phase `Creating` -> `Created`
-    times(this.concurrency, () => this.handleCreatingPhase())
+    this.handleCreatingPhase()
 
     // Phase `Deleting` -> `Deleted`
-    times(this.concurrency, () => this.handleDeletingPhase())
+    this.handleDeletingPhase()
 
     // Phase `Created` -> `Deleting`
     this.handleInactiveState()
@@ -39,9 +38,6 @@ export class BucketDomainTaskService {
 
     // Phase `Deleting` -> `Deleted`
     this.handleDeletedState()
-
-    // Clear timeout locks
-    this.clearTimeoutLocks()
   }
 
   /**
@@ -57,15 +53,9 @@ export class BucketDomainTaskService {
       .findOneAndUpdate(
         {
           phase: DomainPhase.Creating,
-          lockedAt: {
-            $lt: new Date(Date.now() - 1000 * this.lockTimeout),
-          },
+          lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
-        {
-          $set: {
-            lockedAt: new Date(),
-          },
-        },
+        { $set: { lockedAt: new Date() } },
       )
     if (!res.value) return
 
@@ -74,31 +64,27 @@ export class BucketDomainTaskService {
     const region = await this.regionService.findByAppId(doc.appid)
     assert(region, 'region not found')
 
-    // create route first
-    const route = await this.apisixService.createBucketRoute(
-      region,
-      doc.bucketName,
-      doc.domain,
-    )
-
-    this.logger.debug('bucket route created:', route)
+    // create route if not exists
+    const id = `bucket-${doc.bucketName}`
+    const route = await this.apisixService.getRoute(region, id)
+    if (!route) {
+      await await this.apisixService.createBucketRoute(
+        region,
+        doc.bucketName,
+        doc.domain,
+      )
+      this.logger.log('bucket route created:' + doc.domain)
+    }
 
     // update phase to `Created`
-    const updated = await db.collection<BucketDomain>('BucketDomain').updateOne(
+    await db.collection<BucketDomain>('BucketDomain').updateOne(
+      { _id: doc._id, phase: DomainPhase.Creating },
       {
-        _id: doc._id,
-        phase: DomainPhase.Creating,
-      },
-      {
-        $set: {
-          phase: DomainPhase.Created,
-          lockedAt: TASK_LOCK_INIT_TIME,
-        },
+        $set: { phase: DomainPhase.Created, lockedAt: TASK_LOCK_INIT_TIME },
       },
     )
 
-    if (updated.modifiedCount > 0)
-      this.logger.debug('bucket domain phase updated to Created', doc)
+    this.logger.log('bucket domain phase updated to Created: ' + doc.domain)
   }
 
   /**
@@ -114,15 +100,9 @@ export class BucketDomainTaskService {
       .findOneAndUpdate(
         {
           phase: DomainPhase.Deleting,
-          lockedAt: {
-            $lt: new Date(Date.now() - 1000 * this.lockTimeout),
-          },
+          lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
-        {
-          $set: {
-            lockedAt: new Date(),
-          },
-        },
+        { $set: { lockedAt: new Date() } },
       )
     if (!res.value) return
 
@@ -131,25 +111,19 @@ export class BucketDomainTaskService {
     const region = await this.regionService.findByAppId(doc.appid)
     assert(region, 'region not found')
 
-    // delete route first
-    const route = await this.apisixService.deleteBucketRoute(
-      region,
-      doc.bucketName,
-    )
-
-    this.logger.debug('bucket route deleted:', route)
+    // delete route if exists
+    const id = `bucket-${doc.bucketName}`
+    const route = await this.apisixService.getRoute(region, id)
+    if (route) {
+      await this.apisixService.deleteBucketRoute(region, doc.bucketName)
+      this.logger.log('bucket route deleted: ' + doc.bucketName)
+    }
 
     // update phase to `Deleted`
     const updated = await db.collection<BucketDomain>('BucketDomain').updateOne(
+      { _id: doc._id, phase: DomainPhase.Deleting },
       {
-        _id: doc._id,
-        phase: DomainPhase.Deleting,
-      },
-      {
-        $set: {
-          phase: DomainPhase.Deleted,
-          lockedAt: TASK_LOCK_INIT_TIME,
-        },
+        $set: { phase: DomainPhase.Deleted, lockedAt: TASK_LOCK_INIT_TIME },
       },
     )
 
@@ -168,12 +142,10 @@ export class BucketDomainTaskService {
       {
         state: DomainState.Active,
         phase: DomainPhase.Deleted,
+        lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
       },
       {
-        $set: {
-          phase: DomainPhase.Creating,
-          lockedAt: TASK_LOCK_INIT_TIME,
-        },
+        $set: { phase: DomainPhase.Creating, lockedAt: TASK_LOCK_INIT_TIME },
       },
     )
   }
@@ -188,13 +160,11 @@ export class BucketDomainTaskService {
     await db.collection<BucketDomain>('BucketDomain').updateMany(
       {
         state: DomainState.Inactive,
-        phase: DomainPhase.Created,
+        phase: { $in: [DomainPhase.Created, DomainPhase.Creating] },
+        lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
       },
       {
-        $set: {
-          phase: DomainPhase.Deleting,
-          lockedAt: TASK_LOCK_INIT_TIME,
-        },
+        $set: { phase: DomainPhase.Deleting, lockedAt: TASK_LOCK_INIT_TIME },
       },
     )
   }
@@ -211,12 +181,10 @@ export class BucketDomainTaskService {
       {
         state: DomainState.Deleted,
         phase: DomainPhase.Created,
+        lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
       },
       {
-        $set: {
-          phase: DomainPhase.Deleting,
-          lockedAt: TASK_LOCK_INIT_TIME,
-        },
+        $set: { phase: DomainPhase.Deleting, lockedAt: TASK_LOCK_INIT_TIME },
       },
     )
 
@@ -224,25 +192,5 @@ export class BucketDomainTaskService {
       state: DomainState.Deleted,
       phase: DomainPhase.Deleted,
     })
-  }
-
-  /**
-   * Clear timeout locks
-   */
-  async clearTimeoutLocks() {
-    const db = SystemDatabase.db
-
-    await db.collection<BucketDomain>('BucketDomain').updateMany(
-      {
-        lockedAt: {
-          $lt: new Date(Date.now() - 1000 * this.lockTimeout),
-        },
-      },
-      {
-        $set: {
-          lockedAt: TASK_LOCK_INIT_TIME,
-        },
-      },
-    )
   }
 }

@@ -80,17 +80,17 @@ export default function DependenceList() {
                       className="group"
                     >
                       <FileTypeIcon type={FileType.npm} />
-                      <div className="w-[200px] overflow-hidden ml-2">
-                        <span className="w-full inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
+                      <div className="ml-2 w-[200px] overflow-hidden">
+                        <span className="inline-block w-full overflow-hidden overflow-ellipsis whitespace-nowrap">
                           {packageItem?.name}
                         </span>
                       </div>
-                      <div className=" w-[100px] flex">
-                        <span className="flex-grow inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
+                      <div className=" flex w-[100px]">
+                        <span className="inline-block flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap">
                           {packageItem?.spec}
                         </span>
                         {!packageItem?.builtin ? (
-                          <span className=" w-[10px] ml-2 hidden group-hover:inline-block">
+                          <span className=" ml-2 hidden w-[10px] group-hover:inline-block">
                             <ConfirmButton
                               onSuccessAction={async () => {
                                 delPackageMutation.mutate({ name: packageItem?.name });
@@ -125,11 +125,11 @@ export default function DependenceList() {
                     className="group"
                   >
                     <div className=" text-second">
-                      <span className="w-40 inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
+                      <span className="inline-block w-40 overflow-hidden overflow-ellipsis whitespace-nowrap">
                         {packageItem?.name}
                       </span>
                     </div>
-                    <div className="text-second w-20 inline-block whitespace-nowrap overflow-hidden overflow-ellipsis">
+                    <div className="inline-block w-20 overflow-hidden overflow-ellipsis whitespace-nowrap text-second">
                       <span>{packageItem?.spec}</span>
                     </div>
                   </SectionList.Item>

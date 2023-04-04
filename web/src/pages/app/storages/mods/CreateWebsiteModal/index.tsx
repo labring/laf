@@ -53,9 +53,9 @@ function CreateWebsiteModal() {
       {currentStorage?.websiteHosting &&
       currentStorage.websiteHosting.state === BUCKET_STATUS.Active ? (
         <div className="flex">
-          <span className="font-semibold mr-2">{t("StoragePanel.CurrentDomain")}</span>
+          <span className="mr-2 font-semibold">{t("StoragePanel.CurrentDomain")}</span>
           <Link
-            className="cursor-pointer mr-2"
+            className="mr-2 cursor-pointer"
             href={
               currentStorage?.websiteHosting?.isCustom
                 ? // custom domain don't support https currently
@@ -138,7 +138,7 @@ function CreateWebsiteModal() {
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
               {currentStorage?.policy === BUCKET_POLICY_TYPE.private ? (
-                <p className="text-error-500 font-semibold">{t("StoragePanel.editHostTip")}</p>
+                <p className="font-semibold text-error-500">{t("StoragePanel.editHostTip")}</p>
               ) : null}
               <FormControl>
                 <FormLabel>CNAME</FormLabel>

@@ -130,38 +130,38 @@ export default function LogsPage() {
             />
           </Panel.Header>
         </form>
-        <div className="py-1 rounded-md h-full relative" style={{ paddingBottom: 100 }}>
+        <div className="relative h-full rounded-md py-1" style={{ paddingBottom: 100 }}>
           {logListQuery.isFetching ? (
-            <Center className="opacity-60 bg-white-200 absolute left-0 right-0 top-0 bottom-0 z-10">
+            <Center className="bg-white-200 absolute left-0 right-0 top-0 bottom-0 z-10 opacity-60">
               <Spinner size="lg" />
             </Center>
           ) : null}
-          <div className="overflow-y-auto h-full mb-4 ">
+          <div className="mb-4 h-full overflow-y-auto ">
             {logListQuery.data?.data?.list?.length ? (
               logListQuery.data?.data?.list.map((item: TLogItem) => {
                 return (
-                  <div key={item._id} className=" h-[22px] font-mono overflow-hidden">
-                    <span className="mr-2 text-grayIron-600 float-left">
+                  <div key={item._id} className=" h-[22px] overflow-hidden font-mono">
+                    <span className="float-left mr-2 text-grayIron-600">
                       [{formatDate(item.created_at, "YYYY-MM-DD HH:mm:ss")}]
                     </span>
 
-                    <CopyText text={item.request_id} className="mr-2 text-primary-600 float-left">
+                    <CopyText text={item.request_id} className="float-left mr-2 text-primary-600">
                       <span>{item.request_id.substring(0, 8)}</span>
                     </CopyText>
                     <CopyText
                       text={item.func}
-                      className="mr-2 w-[100px] text-purple-700 float-left"
+                      className="float-left mr-2 w-[100px] text-purple-700"
                     >
                       <span>{item.func}</span>
                     </CopyText>
                     <div
-                      className=" overflow-hidden mr-4"
+                      className=" mr-4 overflow-hidden"
                       onClick={() => {
                         setDetail(item);
                         onOpen();
                       }}
                     >
-                      <pre className="hover:text-blue-700 hover:underline max-h-[20px] overflow-hidden cursor-pointer whitespace-nowrap text-ellipsis">
+                      <pre className="max-h-[20px] cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap hover:text-blue-700 hover:underline">
                         {item.data.substring(0, 200)}
                       </pre>
                     </div>

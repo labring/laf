@@ -6,7 +6,6 @@ import {
   DomainState,
   WebsiteHosting,
 } from '@prisma/client'
-import { times } from 'lodash'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/database/system-database'
 import { RegionService } from 'src/region/region.service'
@@ -35,10 +34,10 @@ export class WebsiteTaskService {
     }
 
     // Phase `Creating` -> `Created`
-    times(this.concurrency, () => this.handleCreatingPhase())
+    this.handleCreatingPhase()
 
     // Phase `Deleting` -> `Deleted`
-    times(this.concurrency, () => this.handleDeletingPhase())
+    this.handleDeletingPhase()
 
     // Phase `Created` -> `Deleting`
     this.handleInactiveState()
@@ -89,13 +88,17 @@ export class WebsiteTaskService {
 
     assert(bucketDomain, 'bucket domain not found')
 
-    // create website route
-    const route = await this.apisixService.createWebsiteRoute(
-      region,
-      site,
-      bucketDomain.domain,
-    )
-    this.logger.log(`create website route: ${route?.node?.key}`)
+    // create website route if not exists
+    const route = await this.apisixService.getRoute(region, site._id.toString())
+    if (!route) {
+      const res = await this.apisixService.createWebsiteRoute(
+        region,
+        site,
+        bucketDomain.domain,
+      )
+      this.logger.log(`create website route: ${site._id}`)
+      this.logger.debug(res)
+    }
 
     // create website custom certificate if custom domain is set
     if (site.isCustom) {
@@ -138,10 +141,7 @@ export class WebsiteTaskService {
 
     // update phase to `Created`
     await db.collection<WebsiteHosting>('WebsiteHosting').updateOne(
-      {
-        _id: site._id,
-        phase: DomainPhase.Creating,
-      },
+      { _id: site._id, phase: DomainPhase.Creating },
       {
         $set: {
           phase: DomainPhase.Created,
@@ -237,7 +237,8 @@ export class WebsiteTaskService {
     await db.collection<WebsiteHosting>('WebsiteHosting').updateMany(
       {
         state: DomainState.Inactive,
-        phase: DomainPhase.Created,
+        phase: { $in: [DomainPhase.Created, DomainPhase.Creating] },
+        lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
       },
       {
         $set: {
@@ -260,6 +261,7 @@ export class WebsiteTaskService {
       {
         state: DomainState.Active,
         phase: DomainPhase.Deleted,
+        lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
       },
       {
         $set: {
@@ -283,6 +285,7 @@ export class WebsiteTaskService {
       {
         state: DomainState.Deleted,
         phase: DomainPhase.Created,
+        lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
       },
       {
         $set: {

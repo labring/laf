@@ -152,18 +152,13 @@ export class ApisixService {
     const conf = region.gatewayConf
     const api_url = `${conf.apiUrl}/routes/${id}`
 
-    try {
-      const res = await this.httpService.axiosRef.put(api_url, data, {
-        headers: {
-          'X-API-KEY': conf.apiKey,
-          'Content-Type': 'application/json',
-        },
-      })
-      return res.data
-    } catch (error) {
-      this.logger.error(error, error.response.data)
-      return null
-    }
+    const res = await this.httpService.axiosRef.put(api_url, data, {
+      headers: {
+        'X-API-KEY': conf.apiKey,
+        'Content-Type': 'application/json',
+      },
+    })
+    return res.data
   }
 
   async getRoute(region: Region, id: string) {
@@ -183,7 +178,7 @@ export class ApisixService {
         return null
       }
       this.logger.error(error, error.response?.data)
-      return error
+      throw error
     }
   }
 

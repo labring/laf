@@ -205,7 +205,7 @@ const AddDependenceModal = () => {
                 >
                   <Box ml={5} width="350px">
                     <b>{packageItem.package.name}</b>
-                    <p className="text-second text-base whitespace-nowrap overflow-hidden text-ellipsis ">
+                    <p className="overflow-hidden text-ellipsis whitespace-nowrap text-base text-second ">
                       {packageItem.package.description}
                     </p>
                   </Box>
@@ -313,7 +313,7 @@ const AddDependenceModal = () => {
           <ModalFooter>
             {checkList.length > 0 && (
               <span
-                className="mr-2 hover:cursor-pointer text-lg "
+                className="mr-2 text-lg hover:cursor-pointer "
                 onClick={() => {
                   if (!isEdit) {
                     setIsShowChecked((pre) => !pre);

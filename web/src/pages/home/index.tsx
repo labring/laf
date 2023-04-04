@@ -45,7 +45,7 @@ function HomePage() {
   return (appListQuery.data?.data || []).length === 0 ? (
     <Empty />
   ) : (
-    <div className="w-8/12 mt-10 mx-auto flex flex-col">
+    <div className="mx-auto mt-10 flex w-11/12 flex-col lg:w-8/12">
       <List
         appListQuery={appListQuery}
         setShouldRefetch={() => {

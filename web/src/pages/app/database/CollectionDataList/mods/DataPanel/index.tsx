@@ -143,7 +143,7 @@ export default function DataPanel() {
 
   return (
     <>
-      <Panel.Header className="w-full h-[40px] flex-shrink-0">
+      <Panel.Header className="h-[40px] w-full flex-shrink-0">
         <div className="flex items-center">
           <AddDataModal
             schema={currentData.data ? currentData.data : {}}
@@ -188,7 +188,7 @@ export default function DataPanel() {
               refresh(search);
             }}
           >
-            <div className="flex justify-between my-4">
+            <div className="my-4 flex justify-between">
               <HStack spacing={2}>
                 <InputGroup className="mr-4" width="300px">
                   <InputLeftElement
@@ -223,13 +223,13 @@ export default function DataPanel() {
           }}
         />
       </Panel.Header>
-      <div className="w-full flex flex-grow overflow-hidden">
+      <div className="flex w-full flex-grow overflow-hidden">
         {entryDataQuery.status !== "loading" && entryDataQuery?.data?.list?.length! === 0 && (
           <EmptyBox>
             <div>
               <span>{t("CollectionPanel.EmptyDataText")}</span>
               <AddDataModal schema={{}}>
-                <span className="ml-2 text-primary-600 hover:border-b-2 hover:border-primary-600 cursor-pointer">
+                <span className="ml-2 cursor-pointer text-primary-600 hover:border-b-2 hover:border-primary-600">
                   {t("CreateNow")}
                 </span>
               </AddDataModal>
@@ -263,7 +263,7 @@ export default function DataPanel() {
                   showBg
                   tooltip={t("Copy").toString()}
                   size={32}
-                  className="ml-2 hover:bg-gray-200 group/icon"
+                  className="group/icon ml-2 hover:bg-gray-200"
                 >
                   <CopyText
                     hideToolTip
@@ -282,7 +282,7 @@ export default function DataPanel() {
             isLoading={updateDataMutation.isLoading}
             onSave={handleData}
           >
-            <div className="flex-1 mb-4 rounded">
+            <div className="mb-4 flex-1 rounded">
               <JsonEditor
                 colorMode={colorMode}
                 value={JSON.stringify(currentData.data || {}, null, 2)}

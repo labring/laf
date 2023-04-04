@@ -65,7 +65,7 @@ export default function StorageListPanel() {
           </CreateBucketModal>,
         ]}
       />
-      <div className="w-full flex flex-col" style={{ height: "calc(100% - 36px)" }}>
+      <div className="flex w-full flex-col" style={{ height: "calc(100% - 36px)" }}>
         <InputGroup className="mb-4">
           <InputLeftElement
             height={"8"}
@@ -79,9 +79,9 @@ export default function StorageListPanel() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </InputGroup>
-        <div className="overflow-auto flex-grow relative">
+        <div className="relative flex-grow overflow-auto">
           {bucketListQuery.isFetching ? (
-            <Center className="opacity-60 bg-white-200 absolute left-0 right-0 top-0 bottom-0 z-10">
+            <Center className="bg-white-200 absolute left-0 right-0 top-0 bottom-0 z-10 opacity-60">
               <Spinner />
             </Center>
           ) : null}
