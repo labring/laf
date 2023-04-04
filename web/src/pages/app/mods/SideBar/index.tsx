@@ -25,12 +25,17 @@ type TIcon = {
 export default function SideBar() {
   const { pageId } = useParams();
   const navigate = useNavigate();
-  const { currentApp, setCurrentPage, userInfo } = useGlobalStore();
-
+  const { currentApp, setCurrentPage, userInfo, regions = [] } = useGlobalStore();
+  const currentRegion = regions.find((item: any) => item.id === currentApp?.regionId) || regions[0];
   const ICONS: TIcon[] = [
     {
       pageId: "nav",
-      component: <img className="mt-2" src="/logo.png" alt="logo" width={34} />,
+      component: (
+        <div className="relative flex flex-col items-center">
+          <img className="mt-2" src="/logo.png" alt="logo" width={34} />
+          <span className="scale-[.65] text-second">{currentRegion.displayName}</span>
+        </div>
+      ),
     },
     {
       pageId: Pages.function,
@@ -79,7 +84,7 @@ export default function SideBar() {
   return (
     <div
       style={{ width: SideBarWidth }}
-      className="absolute top-0 bottom-0 flex flex-col justify-between"
+      className="absolute bottom-0 top-0 flex flex-col justify-between"
     >
       {[ICONS, BOTTOM_ICONS].map((icons, index) => {
         return (
@@ -90,7 +95,9 @@ export default function SideBar() {
                   <Center
                     key={item.pageId}
                     style={{
-                      height: 48,
+                      height: 40,
+                      marginTop: 12,
+                      marginBottom: 24,
                     }}
                     className="cursor-pointer"
                     onClick={() => {

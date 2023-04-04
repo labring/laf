@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { RiCodeBoxFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +17,8 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
-import { t } from "i18next";
+import clsx from "clsx";
+import dayjs from "dayjs";
 
 import CopyText from "@/components/CopyText";
 import FileTypeIcon from "@/components/FileTypeIcon";
@@ -37,6 +39,7 @@ import useGlobalStore from "@/pages/globalStore";
 
 function List(props: { appListQuery: any; setShouldRefetch: any }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const { setCurrentApp, regions } = useGlobalStore();
 
@@ -95,7 +98,7 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                 <Box
                   key={item?.appid}
                   bg={bg}
-                  className="group mb-3 flex items-center rounded-lg py-4 px-3 lg:px-6"
+                  className="group mb-3 flex items-center rounded-lg px-3 py-4 lg:px-6"
                 >
                   <div className="w-3/12 ">
                     <div className="text-lg font-bold">
@@ -119,7 +122,14 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                     <p>
                       {t("CreateTime")}: {formatDate(item.createdAt)}{" "}
                     </p>
-                    <p className="mt-1">
+                    <p
+                      className={clsx(
+                        "mt-1",
+                        dayjs().add(3, "day").isAfter(dayjs(item.subscription.expiredAt))
+                          ? "text-red-500"
+                          : "",
+                      )}
+                    >
                       {t("EndTime")}: {formatDate(item.subscription.expiredAt)}
                       <CreateAppModal application={item} type="renewal">
                         <a

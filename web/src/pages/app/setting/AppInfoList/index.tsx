@@ -6,6 +6,7 @@ import { Box, Button, HStack, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import { APP_PHASE_STATUS } from "@/constants/index";
+import { formatDate } from "@/utils/format";
 
 import InfoDetail from "./InfoDetail";
 
@@ -125,6 +126,23 @@ const AppEnvList = () => {
                 value: `${currentApp?.bundle?.resource.networkTrafficOutbound! / 1024} ${t(
                   "Unit.GB",
                 )}`,
+              },
+            ]}
+          />
+
+          <InfoDetail
+            className="mt-6"
+            title={t("SettingPanel.Subscription")}
+            leftData={[
+              {
+                key: "创建时间",
+                value: `${formatDate(currentApp?.subscription?.createdAt)}`,
+              },
+            ]}
+            rightData={[
+              {
+                key: "到期时间",
+                value: `${formatDate(currentApp?.subscription?.expiredAt)}`,
               },
             ]}
           />

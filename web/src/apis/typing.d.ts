@@ -22,6 +22,7 @@ export type TApplicationDetail = {
   function_debug_token: string;
   host?: string;
   origin?: string;
+  subscription: TSubscription;
 };
 
 export type TBundle = {

@@ -144,10 +144,10 @@
     "SystemSetting": "Application Settings",
     "UserSetting": "User Info",
     "UpdateConfirm": "Update env will restart application, are you sure?",
-    "BaseInfo": "Basic Information",
+    "BaseInfo": "Basic Info",
     "DB": "Database",
     "Delete": "Delete",
-    "Detail": "Rules details (experimental version)",
+    "Detail": "Spec Detail",
     "Disk": "Hard Disk",
     "Memory": "Memory",
     "Restart": "Restart",
@@ -167,7 +167,8 @@
     "UserInfo": "User Information",
     "noAuth": "Not Authenticated",
     "showAuth": "Go to Auth",
-    "ShutDown": "ShutDown"
+    "ShutDown": "ShutDown",
+    "Subscription": "Subscription Info"
   },
   "StoragePanel": {
     "All": "Total Capacity",
