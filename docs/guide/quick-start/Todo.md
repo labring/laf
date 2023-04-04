@@ -4,13 +4,13 @@ title: 快速开始
 
 # {{ $frontmatter.title }}
 
-我们将在 [laf.dev](https://laf.dev) 上，通过开发一个简单的「Todo」的功能，快速体验 `laf` 云开发。 
+我们将在 [laf.run](https://laf.run) 上，通过开发一个简单的「Todo」的功能，快速体验 `laf` 云开发。 
 ![](../../doc-images/todo-demo.png)
 
 ## 准备工作
 
-1. 你需要在 [laf.dev](https://laf.dev) 上注册一个账户。
-2. 登录到 [laf.dev](https://laf.dev)，点击 `新建` 按钮，创建一个空应用。
+1. 你需要在 [laf.run](https://laf.run) 上注册一个账户。
+2. 登录到 [laf.run](https://laf.run)，点击 `新建` 按钮，创建一个空应用。
 3. 待应用成功启动后，点击右侧 「开发」 按钮，进入应用的「开发控制台」，接下来，我们将在「开发控制台」 进行第一个 `laf` 应用的功能开发。
 
 ## 编写云函数
@@ -99,7 +99,7 @@ import { Cloud } from "laf-client-sdk"; // 引入
 
 // 创建cloud对象
 const cloud = new Cloud({
-  baseUrl: "https://<AppID>.laf.dev", // 这里的 <AppID> 需要换成自己的 AppID
+  baseUrl: "https://<AppID>.laf.run", // 这里的 <AppID> 需要换成自己的 AppID
   getAccessToken: () => '', // 这里先为空
 });
 ```

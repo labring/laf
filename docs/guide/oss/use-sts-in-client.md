@@ -21,7 +21,7 @@ import { Cloud } from "laf-client-sdk";
 const APPID = "YOUR_APPID";
 
 const cloud = new Cloud({
-  baseUrl: `https://${appid}.laf.dev`,
+  baseUrl: `https://${appid}.laf.run`,
   getAccessToken: () => localStorage.getItem("access_token"),
 });
 

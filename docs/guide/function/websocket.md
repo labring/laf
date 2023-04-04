@@ -28,7 +28,7 @@ export async function main(ctx: FunctionContext) {
 
 ## 客户端 WebSocket 连接
 ```ts
-const wss = new WebSocket("wss://your-own-appid.laf.dev/__websocket__");
+const wss = new WebSocket("wss://your-own-appid.laf.run/__websocket__");
 
 wss.onopen = (socket) => {
   console.log("connected");
