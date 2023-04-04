@@ -12,7 +12,7 @@ hero:
       link: /guide/
     - theme: alt
       text: 在线体验
-      link: https://laf.dev/
+      link: https://laf.run/
     - theme: alt
       text: GitHub仓库
       link: https://github.com/labring/laf

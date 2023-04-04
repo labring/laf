@@ -21,7 +21,7 @@ npm i laf-client-sdk
 import { Cloud } from "laf-client-sdk";
 
 const cloud = new Cloud({
-  baseUrl: "https:/<APP_ID>.laf.dev",   // <APP_ID> 在首页应用列表获取
+  baseUrl: "https:/<APP_ID>.laf.run",   // <APP_ID> 在首页应用列表获取
   getAccessToken: () => "",    // 这里不需要授权，先填空
 })
 ```

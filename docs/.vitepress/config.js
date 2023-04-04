@@ -13,7 +13,7 @@ const NavConfig = [
   {
     text: "在线体验",
     // target: "_self",
-    link: "https://laf.dev/",
+    link: "https://laf.run/",
   },
 ];
 

@@ -19,7 +19,7 @@ import { Cloud } from "laf-client-sdk";
 
 const cloud = new Cloud({
   // 这里 APPID 需要换成对应的 APPID
-  baseUrl: "https://APPID.laf.dev",
+  baseUrl: "https://APPID.laf.run",
   // 这里是访问策略的入口地址，如果没有访问策略可不填
   dbProxyUrl: "/proxy/app",
   // 请求时带的token，可空
@@ -32,7 +32,7 @@ const cloud = new Cloud({
 import { Cloud } from "laf-client-sdk";
 
 const cloud = new Cloud({
-  baseUrl: "https://APPID.laf.dev",
+  baseUrl: "https://APPID.laf.run",
   dbProxyUrl: "/proxy/app",
   getAccessToken: () => localStorage.getItem("access_token"),
   environment: "wxmp",
@@ -44,7 +44,7 @@ UNI-APP 中使用
 import { Cloud } from "laf-client-sdk";
 
 const cloud = new Cloud({
-  baseUrl: "https://APPID.laf.dev",
+  baseUrl: "https://APPID.laf.run",
   dbProxyUrl: "/proxy/app",
   getAccessToken: () => localStorage.getItem("access_token"),
   environment: "uniapp",
@@ -57,7 +57,7 @@ const cloud = new Cloud({
 import { Cloud } from "laf-client-sdk";
 
 const cloud = new Cloud({
-  baseUrl: "https://APPID.laf.dev",
+  baseUrl: "https://APPID.laf.run",
   dbProxyUrl: "/proxy/app",
   getAccessToken: () => localStorage.getItem("access_token"),
 });
@@ -72,7 +72,7 @@ const res = await cloud.invoke("getCode", { phone: phone.value });
 import { Cloud } from "laf-client-sdk";
 
 const cloud = new Cloud({
-  baseUrl: "https://APPID.laf.dev",
+  baseUrl: "https://APPID.laf.run",
   dbProxyUrl: "/proxy/app",
   getAccessToken: () => localStorage.getItem("access_token"),
 });

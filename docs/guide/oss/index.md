@@ -35,7 +35,7 @@ const AWS = require("aws-sdk");
 new AWS.S3({
   accessKeyId: cloud.env.OSS_ACCESS_KEY,
   secretAccessKey: cloud.env.OSS_ACCESS_SECRET,
-  endpoint: "https://oss.laf.dev",
+  endpoint: "https://oss.laf.run",
   s3ForcePathStyle: true,
   signatureVersion: "v4",
   region: cloud.env.OSS_REGION,
@@ -129,7 +129,7 @@ function getS3Client() {
   return new AWS.S3({
     accessKeyId: cloud.env.OSS_ACCESS_KEY,
     secretAccessKey: cloud.env.OSS_ACCESS_SECRET,
-    endpoint: "https://oss.laf.dev",
+    endpoint: "https://oss.laf.run",
     s3ForcePathStyle: true,
     signatureVersion: "v4",
     region: cloud.env.OSS_REGION,
@@ -195,7 +195,7 @@ function getS3Client() {
     accessKeyId: cloud.env.OSS_ACCESS_KEY,
     secretAccessKey: cloud.env.OSS_ACCESS_SECRET,
     // sessionToken: credentials.sessionToken,
-    endpoint: "https://oss.laf.dev",
+    endpoint: "https://oss.laf.run",
     s3ForcePathStyle: true,
     signatureVersion: "v4",
     region: cloud.env.OSS_REGION,
