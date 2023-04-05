@@ -55,7 +55,7 @@ export async function init(appid: string, options: { sync: boolean }) {
     createdAt: data.createdAt,
   }
   // generate application invoke address
-  config.invokeUrl = 'http://' + data.domain.domain
+  config.invokeUrl = data.tls ? 'https://' + data.domain.domain : 'http://' + data.domain.domain
 
   writeApplicationConfig(config)
 
