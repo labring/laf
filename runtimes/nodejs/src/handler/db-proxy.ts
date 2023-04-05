@@ -1,4 +1,3 @@
-
 import { Response } from 'express'
 import { Proxy } from 'database-proxy'
 import Config from '../config'
@@ -6,7 +5,6 @@ import { DatabaseAgent } from '../db'
 import { logger } from '../support/logger'
 import { PolicyAgent } from '../support/policy'
 import { IRequest } from '../support/types'
-
 
 export async function handleDatabaseProxy(req: IRequest, res: Response) {
   const accessor = DatabaseAgent.accessor
@@ -37,7 +35,7 @@ export async function handleDatabaseProxy(req: IRequest, res: Response) {
     return res.status(403).send({
       code: 'permission denied',
       error: result.errors,
-      injections: Config.isProd ? undefined : injections
+      injections: Config.isProd ? undefined : injections,
     })
   }
 
@@ -49,14 +47,14 @@ export async function handleDatabaseProxy(req: IRequest, res: Response) {
 
     return res.send({
       code: 0,
-      data
+      data,
     })
   } catch (error) {
     logger.error(requestId, 'execute query got error:  ', error)
     return res.send({
       code: 1,
       error: error.toString(),
-      injections: Config.isProd ? undefined : injections
+      injections: Config.isProd ? undefined : injections,
     })
   }
 }

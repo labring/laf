@@ -20,6 +20,7 @@ import xmlparser from 'express-xml-bodyparser'
 // init static method of class
 import './support/function-log'
 import './support/cloud-sdk'
+import { FunctionCache } from './support/function-engine/cache'
 
 const app = express()
 
@@ -78,6 +79,8 @@ app.use(function (req, res, next) {
 })
 
 app.use(router)
+
+FunctionCache.initialize()
 
 const server = app.listen(Config.PORT, () =>
   logger.info(`server ${process.pid} listened on ${Config.PORT}`),

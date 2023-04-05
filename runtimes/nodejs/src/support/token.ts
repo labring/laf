@@ -5,9 +5,9 @@
  * @Description:
  */
 
-import Config from "../config";
-import * as jwt from "jsonwebtoken";
-const DEFAULT_SALT = Config.SERVER_SECRET;
+import Config from '../config'
+import * as jwt from 'jsonwebtoken'
+const DEFAULT_SALT = Config.SERVER_SECRET
 
 /**
  * Generate a JWT token
@@ -16,7 +16,7 @@ const DEFAULT_SALT = Config.SERVER_SECRET;
  * @returns
  */
 export function getToken(payload: any, secret?: string): string {
-  return jwt.sign(payload, secret ?? DEFAULT_SALT);
+  return jwt.sign(payload, secret ?? DEFAULT_SALT)
 }
 
 /**
@@ -25,12 +25,12 @@ export function getToken(payload: any, secret?: string): string {
  * @returns
  */
 export function parseToken(token: string, secret?: string): any | null {
-  if (!token) return null;
+  if (!token) return null
   try {
-    const ret = jwt.verify(token, secret ?? DEFAULT_SALT);
-    return ret;
+    const ret = jwt.verify(token, secret ?? DEFAULT_SALT)
+    return ret
   } catch (error) {
-    return null;
+    return null
   }
 }
 
@@ -40,9 +40,9 @@ export function parseToken(token: string, secret?: string): any | null {
  * @returns
  */
 export function splitBearerToken(bearer: string): string | null {
-  if (!bearer) return null;
+  if (!bearer) return null
 
-  const splitted = bearer?.split(" ");
-  const token = splitted?.length === 2 ? splitted[1] : null;
-  return token;
+  const splitted = bearer?.split(' ')
+  const token = splitted?.length === 2 ? splitted[1] : null
+  return token
 }

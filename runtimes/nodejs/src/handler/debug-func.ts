@@ -26,11 +26,10 @@ export async function handleDebugFunction(req: IRequest, res: Response) {
     return res.status(400).send('x-laf-func-data is required')
   }
 
-
   // parse func_data
   let func_data: ICloudFunctionData
   try {
-    const decoded =  decodeURIComponent(func_str)
+    const decoded = decodeURIComponent(func_str)
     func_data = JSON.parse(decoded)
   } catch (error) {
     return res.status(400).send('x-laf-func-data is invalid')

@@ -12,7 +12,8 @@
     "watch": "tsc -p tsconfig.json -w",
     "prepublishOnly": "npm run build",
     "trace-gc": "node --trace_gc --trace_gc_verbose ./dist/index.js",
-    "init": "node ./dist/init.js"
+    "init": "node ./dist/init.js",
+    "prettier": "npx prettier --write ./src"
   },
   "keywords": [
     "laf",

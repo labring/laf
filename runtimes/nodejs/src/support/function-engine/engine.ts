@@ -1,13 +1,7 @@
-import { URL } from 'node:url'
 import * as vm from 'vm'
 import { nanosecond2ms } from '../utils'
-import { FunctionConsole } from './console'
-import {
-  FunctionContext,
-  FunctionResult,
-  RequireFuncType,
-  RuntimeContext,
-} from './types'
+import { FunctionContext, FunctionResult, RequireFuncType } from './types'
+import { FunctionVm } from './vm'
 
 /**
  * Default require function
@@ -20,10 +14,13 @@ const defaultRequireFunction: RequireFuncType = (module): any => {
  * Function engine
  */
 export class FunctionEngine {
-  require_func: RequireFuncType
+  requireFunc: RequireFuncType
 
-  constructor(require_func?: RequireFuncType) {
-    this.require_func = require_func ?? defaultRequireFunction
+  script: vm.Script
+
+  constructor(code: string, require_func?: RequireFuncType) {
+    this.script = FunctionVm.createVM(this.wrap(code), {})
+    this.requireFunc = require_func ?? defaultRequireFunction
   }
 
   /**
@@ -31,29 +28,15 @@ export class FunctionEngine {
    * @returns
    */
   async run(
-    code: string,
     context: FunctionContext,
     options: vm.RunningScriptOptions,
   ): Promise<FunctionResult> {
-    const sandbox = this.buildSandbox(context)
-    const wrapped = this.wrap(code)
+    const sandbox = FunctionVm.buildSandbox(context, this.requireFunc)
     const fconsole = sandbox.console
 
     const _start_time = process.hrtime.bigint()
     try {
-      const script = new vm.Script(wrapped, {
-        ...options,
-        importModuleDynamically: async (
-          specifier: string,
-          _: vm.Script,
-          _importAssertions: any,
-        ) => {
-          return await import(specifier)
-        },
-      } as any)
-
-      const result = script.runInNewContext(sandbox, options)
-
+      const result = this.script.runInNewContext(sandbox, options)
       let data = result
       if (typeof result?.then === 'function') {
         data = await result
@@ -76,40 +59,6 @@ export class FunctionEngine {
         time_usage,
       }
     }
-  }
-
-  /**
-   * build sandbox
-   * @returns
-   */
-  buildSandbox(functionContext: FunctionContext): RuntimeContext {
-    const fconsole = new FunctionConsole(functionContext)
-
-    const _module = {
-      exports: {},
-    }
-    const sandbox = {
-      __context__: functionContext,
-      __filename: functionContext.__function_name,
-      module: _module,
-      exports: _module.exports,
-      console: fconsole,
-      require: this.require_func,
-      Buffer: Buffer,
-      setImmediate: setImmediate,
-      clearImmediate: clearImmediate,
-      setInterval: setInterval,
-      clearInterval: clearInterval,
-      setTimeout: setTimeout,
-      clearTimeout: clearTimeout,
-      process: { env: {} },
-      URL: URL,
-      fetch: globalThis.fetch,
-      global: null,
-    }
-
-    sandbox.global = sandbox
-    return sandbox
   }
 
   /**

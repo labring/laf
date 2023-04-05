@@ -2,7 +2,7 @@
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-07-30 10:30:29
  * @LastEditTime: 2021-08-18 16:49:35
- * @Description: 
+ * @Description:
  */
 
 import { Response } from 'express'
@@ -35,7 +35,7 @@ export async function handlePackageTypings(req: IRequest, res: Response) {
 
     return res.send({
       code: 0,
-      data: rets
+      data: rets,
     })
   }
 
@@ -46,7 +46,7 @@ export async function handlePackageTypings(req: IRequest, res: Response) {
 
     return res.send({
       code: 0,
-      data: [r]
+      data: [r],
     })
   }
 
@@ -56,13 +56,13 @@ export async function handlePackageTypings(req: IRequest, res: Response) {
     await pkd.load()
     return res.send({
       code: 0,
-      data: pkd.declarations
+      data: pkd.declarations,
     })
   } catch (error) {
     logger.error(requestId, 'failed to get package typings', error)
     return res.send({
       code: 1,
-      error: error.toString()
+      error: error.toString(),
     })
   }
 }

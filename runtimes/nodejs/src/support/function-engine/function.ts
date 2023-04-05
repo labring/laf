@@ -1,13 +1,8 @@
-import { FunctionEngine } from '.'
-import {
-  ICloudFunctionData,
-  FunctionContext,
-  FunctionResult,
-  RequireFuncType,
-} from './types'
+import { ICloudFunctionData, FunctionContext, FunctionResult } from './types'
 import * as assert from 'assert'
 import { DatabaseAgent } from '../../db'
 import { CLOUD_FUNCTION_COLLECTION } from '../../constants'
+import { FunctionCache } from './cache'
 
 /**
  * CloudFunction Class
@@ -17,20 +12,6 @@ export class CloudFunction {
    * object shared cross all functions & requests
    */
   static _shared_preference = new Map<string, any>()
-
-  /**
-   * Custom require function in cloud function
-   * @see FunctionEngine.require_func
-   * @param module the module id. ex. `path`, `lodash`
-   * @returns
-   */
-  static require_func: RequireFuncType = (module: string): any => {
-    if (module === '@/cloud-sdk') {
-      return require('@lafjs/cloud')
-    }
-
-    return require(module) as any
-  }
 
   /**
    * execution timeout
@@ -97,9 +78,11 @@ export class CloudFunction {
   async invoke(param: FunctionContext) {
     this.param = param
 
-    const engine = new FunctionEngine(CloudFunction.require_func)
+    console.log('invoke', this.name)
 
-    this.result = await engine.run(this.compiledCode, param, {
+    const engine = FunctionCache.getFunctionEngine(this._data)
+
+    this.result = await engine.run(param, {
       filename: `CloudFunction.${this.name}`,
       timeout: this.timeout,
       displayErrors: true,
