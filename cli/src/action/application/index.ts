@@ -22,16 +22,35 @@ import { ensureDirectory, exist } from '../../util/file'
 import { refreshSecretConfig } from '../../config/secret'
 import { getEmoji } from '../../util/print'
 import { formatDate } from '../../util/format'
+import { regionControllerGetRegions } from '../../api/v1/public'
 
 export async function list() {
   const table = new Table({
-    head: ['appid', 'name', 'state', 'createdAt'],
+    head: ['appid', 'name', 'state', 'region', 'spec', 'createdAt', 'expireAt'],
   })
-  const data = await applicationControllerFindAll()
-  for (let item of data) {
-    table.push([item.appid, item.name, item.state, formatDate(item.createdAt)])
+  const apps = await applicationControllerFindAll()
+  const regionMap = await getRegionMap()
+  for (let item of apps) {
+    table.push([
+      item.appid,
+      item.name,
+      item.state,
+      regionMap.get(item.regionId)?.displayName,
+      `${parseFloat(item.bundle?.resource?.limitCPU) / 1000.0}C/${item.bundle?.resource?.limitMemory}MB`,
+      formatDate(item.subscription?.createdAt),
+      formatDate(item.subscription?.expiredAt),
+    ])
   }
   console.log(table.toString())
+}
+
+async function getRegionMap(): Promise<Map<string, any>> {
+  const regionMap = new Map<string, any>()
+  const regions = await regionControllerGetRegions()
+  for (let region of regions) {
+    regionMap.set(region.id, region)
+  }
+  return regionMap
 }
 
 export async function init(appid: string, options: { sync: boolean }) {
