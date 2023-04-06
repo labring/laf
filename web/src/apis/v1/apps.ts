@@ -8,6 +8,7 @@
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
 import request from "@/utils/request";
+import useGlobalStore from "@/pages/globalStore";
 
 /**
  * Create a new function
@@ -17,7 +18,7 @@ export async function FunctionControllerCreate(
 ): Promise<Paths.FunctionControllerCreate.Responses> {
   // /v1/apps/{appid}/functions
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/functions`, {
@@ -34,7 +35,7 @@ export async function FunctionControllerFindAll(
 ): Promise<Paths.FunctionControllerFindAll.Responses> {
   // /v1/apps/{appid}/functions
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/functions`, {
@@ -51,7 +52,7 @@ export async function FunctionControllerFindOne(
 ): Promise<Paths.FunctionControllerFindOne.Responses> {
   // /v1/apps/{appid}/functions/{name}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/functions/${_params.name}`, {
@@ -68,7 +69,7 @@ export async function FunctionControllerUpdate(
 ): Promise<Paths.FunctionControllerUpdate.Responses> {
   // /v1/apps/{appid}/functions/{name}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/functions/${_params.name}`, {
@@ -85,7 +86,7 @@ export async function FunctionControllerRemove(
 ): Promise<Paths.FunctionControllerRemove.Responses> {
   // /v1/apps/{appid}/functions/{name}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/functions/${_params.name}`, {
@@ -102,7 +103,7 @@ export async function FunctionControllerCompile(
 ): Promise<Paths.FunctionControllerCompile.Responses> {
   // /v1/apps/{appid}/functions/{name}/compile
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/functions/${_params.name}/compile`, {
@@ -119,7 +120,7 @@ export async function EnvironmentVariableControllerAdd(
 ): Promise<Paths.EnvironmentVariableControllerAdd.Responses> {
   // /v1/apps/{appid}/environments
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/environments`, {
@@ -136,7 +137,7 @@ export async function EnvironmentVariableControllerGet(
 ): Promise<Paths.EnvironmentVariableControllerGet.Responses> {
   // /v1/apps/{appid}/environments
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/environments`, {
@@ -153,7 +154,7 @@ export async function EnvironmentVariableControllerDelete(
 ): Promise<Paths.EnvironmentVariableControllerDelete.Responses> {
   // /v1/apps/{appid}/environments/{name}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/environments/${_params.name}`, {
@@ -170,7 +171,7 @@ export async function BucketControllerCreate(
 ): Promise<Paths.BucketControllerCreate.Responses> {
   // /v1/apps/{appid}/buckets
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/buckets`, {
@@ -187,7 +188,7 @@ export async function BucketControllerFindAll(
 ): Promise<Paths.BucketControllerFindAll.Responses> {
   // /v1/apps/{appid}/buckets
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/buckets`, {
@@ -204,7 +205,7 @@ export async function BucketControllerFindOne(
 ): Promise<Paths.BucketControllerFindOne.Responses> {
   // /v1/apps/{appid}/buckets/{name}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/buckets/${_params.name}`, {
@@ -221,7 +222,7 @@ export async function BucketControllerUpdate(
 ): Promise<Paths.BucketControllerUpdate.Responses> {
   // /v1/apps/{appid}/buckets/{name}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/buckets/${_params.name}`, {
@@ -238,7 +239,7 @@ export async function BucketControllerRemove(
 ): Promise<Paths.BucketControllerRemove.Responses> {
   // /v1/apps/{appid}/buckets/{name}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/buckets/${_params.name}`, {
@@ -255,7 +256,7 @@ export async function CollectionControllerCreate(
 ): Promise<Paths.CollectionControllerCreate.Responses> {
   // /v1/apps/{appid}/collections
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/collections`, {
@@ -272,7 +273,7 @@ export async function CollectionControllerFindAll(
 ): Promise<Paths.CollectionControllerFindAll.Responses> {
   // /v1/apps/{appid}/collections
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/collections`, {
@@ -289,7 +290,7 @@ export async function CollectionControllerFindOne(
 ): Promise<Paths.CollectionControllerFindOne.Responses> {
   // /v1/apps/{appid}/collections/{name}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/collections/${_params.name}`, {
@@ -306,7 +307,7 @@ export async function CollectionControllerUpdate(
 ): Promise<Paths.CollectionControllerUpdate.Responses> {
   // /v1/apps/{appid}/collections/{name}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/collections/${_params.name}`, {
@@ -323,7 +324,7 @@ export async function CollectionControllerRemove(
 ): Promise<Paths.CollectionControllerRemove.Responses> {
   // /v1/apps/{appid}/collections/{name}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/collections/${_params.name}`, {
@@ -340,7 +341,7 @@ export async function PolicyControllerCreate(
 ): Promise<Paths.PolicyControllerCreate.Responses> {
   // /v1/apps/{appid}/policies
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/policies`, {
@@ -357,7 +358,7 @@ export async function PolicyControllerFindAll(
 ): Promise<Paths.PolicyControllerFindAll.Responses> {
   // /v1/apps/{appid}/policies
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/policies`, {
@@ -374,7 +375,7 @@ export async function PolicyControllerUpdate(
 ): Promise<Paths.PolicyControllerUpdate.Responses> {
   // /v1/apps/{appid}/policies/{name}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/policies/${_params.name}`, {
@@ -391,7 +392,7 @@ export async function PolicyControllerRemove(
 ): Promise<Paths.PolicyControllerRemove.Responses> {
   // /v1/apps/{appid}/policies/{name}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/policies/${_params.name}`, {
@@ -408,7 +409,7 @@ export async function DatabaseControllerProxy(
 ): Promise<Paths.DatabaseControllerProxy.Responses> {
   // /v1/apps/{appid}/databases/proxy
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/databases/proxy`, {
@@ -425,7 +426,7 @@ export async function PolicyRuleControllerCreate(
 ): Promise<Paths.PolicyRuleControllerCreate.Responses> {
   // /v1/apps/{appid}/policies/{name}/rules
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/policies/${_params.name}/rules`, {
@@ -442,7 +443,7 @@ export async function PolicyRuleControllerFindAll(
 ): Promise<Paths.PolicyRuleControllerFindAll.Responses> {
   // /v1/apps/{appid}/policies/{name}/rules
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/policies/${_params.name}/rules`, {
@@ -459,7 +460,7 @@ export async function PolicyRuleControllerUpdate(
 ): Promise<Paths.PolicyRuleControllerUpdate.Responses> {
   // /v1/apps/{appid}/policies/{name}/rules/{collection}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/policies/${_params.name}/rules/${_params.collection}`, {
@@ -476,7 +477,7 @@ export async function PolicyRuleControllerRemove(
 ): Promise<Paths.PolicyRuleControllerRemove.Responses> {
   // /v1/apps/{appid}/policies/{name}/rules/{collection}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/policies/${_params.name}/rules/${_params.collection}`, {
@@ -493,7 +494,7 @@ export async function WebsiteControllerCreate(
 ): Promise<Paths.WebsiteControllerCreate.Responses> {
   // /v1/apps/{appid}/websites
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/websites`, {
@@ -510,7 +511,7 @@ export async function WebsiteControllerFindAll(
 ): Promise<Paths.WebsiteControllerFindAll.Responses> {
   // /v1/apps/{appid}/websites
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/websites`, {
@@ -527,7 +528,7 @@ export async function WebsiteControllerFindOne(
 ): Promise<Paths.WebsiteControllerFindOne.Responses> {
   // /v1/apps/{appid}/websites/{id}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/websites/${_params.id}`, {
@@ -544,7 +545,7 @@ export async function WebsiteControllerBindDomain(
 ): Promise<Paths.WebsiteControllerBindDomain.Responses> {
   // /v1/apps/{appid}/websites/{id}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/websites/${_params.id}`, {
@@ -561,7 +562,7 @@ export async function WebsiteControllerRemove(
 ): Promise<Paths.WebsiteControllerRemove.Responses> {
   // /v1/apps/{appid}/websites/{id}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/websites/${_params.id}`, {
@@ -578,7 +579,7 @@ export async function WebsiteControllerCheckResolved(
 ): Promise<Paths.WebsiteControllerCheckResolved.Responses> {
   // /v1/apps/{appid}/websites/{id}/resolved
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/websites/${_params.id}/resolved`, {
@@ -595,7 +596,7 @@ export async function LogControllerGetLogs(
 ): Promise<Paths.LogControllerGetLogs.Responses> {
   // /v1/apps/{appid}/logs/functions
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/logs/functions`, {
@@ -612,7 +613,7 @@ export async function DependencyControllerAdd(
 ): Promise<Paths.DependencyControllerAdd.Responses> {
   // /v1/apps/{appid}/dependencies
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/dependencies`, {
@@ -629,7 +630,7 @@ export async function DependencyControllerUpdate(
 ): Promise<Paths.DependencyControllerUpdate.Responses> {
   // /v1/apps/{appid}/dependencies
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/dependencies`, {
@@ -646,7 +647,7 @@ export async function DependencyControllerGetDependencies(
 ): Promise<Paths.DependencyControllerGetDependencies.Responses> {
   // /v1/apps/{appid}/dependencies
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/dependencies`, {
@@ -663,7 +664,7 @@ export async function DependencyControllerRemove(
 ): Promise<Paths.DependencyControllerRemove.Responses> {
   // /v1/apps/{appid}/dependencies
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/dependencies`, {
@@ -680,7 +681,7 @@ export async function TriggerControllerCreate(
 ): Promise<Paths.TriggerControllerCreate.Responses> {
   // /v1/apps/{appid}/triggers
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/triggers`, {
@@ -697,7 +698,7 @@ export async function TriggerControllerFindAll(
 ): Promise<Paths.TriggerControllerFindAll.Responses> {
   // /v1/apps/{appid}/triggers
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/triggers`, {
@@ -714,7 +715,7 @@ export async function TriggerControllerRemove(
 ): Promise<Paths.TriggerControllerRemove.Responses> {
   // /v1/apps/{appid}/triggers/{id}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/triggers/${_params.id}`, {

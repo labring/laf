@@ -17,7 +17,7 @@ const RightPanelEditBox: React.FC<{
 
   return (
     <div
-      className={clsx("ml-1 mb-3 flex-col rounded-xl border-2 px-4", {
+      className={clsx("mb-3 ml-1 flex-col rounded-xl border-2 px-4", {
         "border-lafWhite-600": !darkMode,
       })}
       style={{

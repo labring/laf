@@ -8,6 +8,7 @@
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
 import request from "@/utils/request";
+import useGlobalStore from "@/pages/globalStore";
 
 /**
  * Get user token by PAT
@@ -17,7 +18,7 @@ export async function AuthControllerPat2token(
 ): Promise<Paths.AuthControllerPat2token.Responses> {
   // /v1/pat2token
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/pat2token`, {

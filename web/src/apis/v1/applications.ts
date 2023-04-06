@@ -8,6 +8,7 @@
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
 import request from "@/utils/request";
+import useGlobalStore from "@/pages/globalStore";
 
 /**
  * Get user application list
@@ -17,7 +18,7 @@ export async function ApplicationControllerFindAll(
 ): Promise<Paths.ApplicationControllerFindAll.Responses> {
   // /v1/applications
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/applications`, {
@@ -34,7 +35,7 @@ export async function ApplicationControllerFindOne(
 ): Promise<Paths.ApplicationControllerFindOne.Responses> {
   // /v1/applications/{appid}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/applications/${_params.appid}`, {
@@ -51,7 +52,7 @@ export async function ApplicationControllerUpdate(
 ): Promise<Paths.ApplicationControllerUpdate.Responses> {
   // /v1/applications/{appid}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/applications/${_params.appid}`, {

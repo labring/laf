@@ -168,7 +168,7 @@ export default function PolicyDataList() {
               <Text fontSize="md" className="mb-2 font-semibold leading-loose">
                 {t("CollectionPanel.SelectCollection")}: {currentData?.collectionName}
               </Text>
-              <Text fontSize="md" className="mt-4 mb-2 font-semibold leading-loose">
+              <Text fontSize="md" className="mb-2 mt-4 font-semibold leading-loose">
                 {t("CollectionPanel.RulesContent")}
               </Text>
               <div

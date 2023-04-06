@@ -10,7 +10,7 @@ export default function ColPanel() {
           {t("Save")}
         </Button>
       </div>
-      <div className="absolute top-12 bottom-0 left-0 right-0 rounded border p-2">
+      <div className="absolute bottom-0 left-0 right-0 top-12 rounded border p-2">
         <JsonEditor value={JSON.stringify({ name: "hello" })} />
       </div>
     </div>

@@ -132,7 +132,7 @@ export default function LogsPage() {
         </form>
         <div className="relative h-full rounded-md py-1" style={{ paddingBottom: 100 }}>
           {logListQuery.isFetching ? (
-            <Center className="bg-white-200 absolute left-0 right-0 top-0 bottom-0 z-10 opacity-60">
+            <Center className="bg-white-200 absolute bottom-0 left-0 right-0 top-0 z-10 opacity-60">
               <Spinner size="lg" />
             </Center>
           ) : null}

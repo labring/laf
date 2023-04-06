@@ -81,7 +81,7 @@ export default function StorageListPanel() {
         </InputGroup>
         <div className="relative flex-grow overflow-auto">
           {bucketListQuery.isFetching ? (
-            <Center className="bg-white-200 absolute left-0 right-0 top-0 bottom-0 z-10 opacity-60">
+            <Center className="bg-white-200 absolute bottom-0 left-0 right-0 top-0 z-10 opacity-60">
               <Spinner />
             </Center>
           ) : null}

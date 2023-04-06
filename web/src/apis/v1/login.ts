@@ -8,6 +8,7 @@
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
 import request from "@/utils/request";
+import useGlobalStore from "@/pages/globalStore";
 
 /**
  * Redirect to login page
@@ -17,7 +18,7 @@ export async function AuthControllerGetSigninUrl(
 ): Promise<Paths.AuthControllerGetSigninUrl.Responses> {
   // /v1/login
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/login`, {

@@ -206,7 +206,7 @@ export default function ResetPassword() {
         <div className="mb-6">
           <Button
             type="submit"
-            className="w-full pt-5 pb-5"
+            className="w-full pb-5 pt-5"
             isLoading={resetPasswordMutation.isLoading}
             onClick={handleSubmit(onSubmit)}
           >

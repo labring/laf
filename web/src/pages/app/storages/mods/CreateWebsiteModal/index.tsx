@@ -70,7 +70,7 @@ function CreateWebsiteModal() {
           <SiteStatus />
 
           <Menu>
-            <MenuButton className="ml-2 -mt-[2px]">
+            <MenuButton className="-mt-[2px] ml-2">
               <MoreIcon fontSize={10} />
             </MenuButton>
             <MenuList minWidth="100px">

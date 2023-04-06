@@ -8,6 +8,7 @@
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
 import request from "@/utils/request";
+import useGlobalStore from "@/pages/globalStore";
 
 /**
  * Get account info
@@ -17,7 +18,7 @@ export async function AccountControllerFindOne(
 ): Promise<Paths.AccountControllerFindOne.Responses> {
   // /v1/accounts
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/accounts`, {
@@ -34,7 +35,7 @@ export async function AccountControllerGetChargeOrder(
 ): Promise<Paths.AccountControllerGetChargeOrder.Responses> {
   // /v1/accounts/charge-order/{id}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/accounts/charge-order/${_params.id}`, {
@@ -51,7 +52,7 @@ export async function AccountControllerCharge(
 ): Promise<Paths.AccountControllerCharge.Responses> {
   // /v1/accounts/charge-order
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/accounts/charge-order`, {
@@ -68,7 +69,7 @@ export async function AccountControllerWechatNotify(
 ): Promise<Paths.AccountControllerWechatNotify.Responses> {
   // /v1/accounts/payment/wechat-notify
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/accounts/payment/wechat-notify`, {

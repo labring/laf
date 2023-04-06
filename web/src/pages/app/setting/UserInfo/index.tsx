@@ -53,7 +53,7 @@ export default function UserInfo() {
               {t("SettingPanel.showAuth")}
             </span> */}
           </Box>
-          <Box className="mt-8 mb-20 text-lg">
+          <Box className="mb-20 mt-8 text-lg">
             <HStack spacing={8}>
               <span className="w-[80px] text-grayModern-500">{t("SettingPanel.Tel")}:</span>
               <span>{userInfo?.phone ? userInfo.phone : t("NoInfo")}</span>
