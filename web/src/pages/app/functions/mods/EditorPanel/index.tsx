@@ -87,7 +87,7 @@ function EditorPanel() {
       {currentFunction?.name && (
         <FunctionEditor
           colorMode={colorMode}
-          className="flex-grow"
+          className="flex-grow overflow-hidden"
           path={currentFunction?.id || ""}
           value={functionCache.getCache(currentFunction!.id, currentFunction!.source?.code)}
           onChange={(value) => {
