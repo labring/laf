@@ -20,7 +20,7 @@ export const DEBUG_TOKEN_EXPIRE = 3600 * 24 * 7
 export const STORAGE_TOKEN_EXPIRE = 3600 * 24 * 7
 
 // remote server config
-export const DEFAULT_REMOTE_SERVER = 'https://api.laf.dev'
+export const DEFAULT_REMOTE_SERVER = 'https://api.laf.run'
 
 // template file
 export const TEMPLATE_DIR = 'template'
