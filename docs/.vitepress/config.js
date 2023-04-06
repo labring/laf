@@ -65,6 +65,10 @@ const guideSiderbarConfig = [
             text: "在云函数中调用",
             link: "/guide/function/call-function",
           },
+          {
+            text: "HTTP调用",
+            link: "/guide/function/call-function-in-http",
+          },
         ],
       },
       {
