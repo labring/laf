@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import { Navigate } from "react-router-dom";
 
 import AuthLayout from "@/layouts/Auth";
 import BasicLayout from "@/layouts/Basic";
@@ -47,12 +48,16 @@ const routes = [
     path: "/",
     children: [
       {
-        path: "/",
+        index: true,
+        element: <Navigate to="/dashboard" />,
+      },
+      {
+        path: "/dashboard",
         element: <BasicLayout />,
         auth: true,
         children: [
           {
-            path: "/",
+            path: "/dashboard",
             element: () => import("@/pages/home/index"),
           },
         ],
