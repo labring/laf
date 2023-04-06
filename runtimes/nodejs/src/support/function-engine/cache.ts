@@ -1,6 +1,6 @@
 import { CLOUD_FUNCTION_COLLECTION } from '../../constants'
 import { DatabaseAgent } from '../../db'
-import { md5, sleep } from '../utils'
+import { md5 } from '../utils'
 import { ObjectId } from 'mongodb'
 import { ICloudFunctionData, RequireFuncType } from './types'
 import { FunctionRequire } from './require'
@@ -18,7 +18,6 @@ export class FunctionCache {
   private static engineCache: Map<string, FunctionEngine> = new Map()
 
   static async initialize() {
-    await sleep(5000)
     logger.info('initialize function cache')
     const funcDB = await DatabaseAgent.db.collection<ICloudFunctionData>(
       CLOUD_FUNCTION_COLLECTION,
@@ -139,9 +138,8 @@ export class FunctionCache {
       FunctionCache.engineCache.has(func.name) &&
       FunctionCache.functionCache.has(func.name) &&
       md5(FunctionCache.functionCache.get(func.name).source.compiled) ===
-        md5(func.source.compiled)
+      md5(func.source.compiled)
     ) {
-      logger.info(`get function engine ${func.name} from cache`)
       return FunctionCache.engineCache.get(func.name)
     }
     const functionEngine = new FunctionEngine(
@@ -149,5 +147,9 @@ export class FunctionCache {
       FunctionCache.requireFunc,
     )
     return functionEngine
+  }
+
+  static getFunctionByName(funcName: string): ICloudFunctionData {
+    return FunctionCache.functionCache.get(funcName)
   }
 }

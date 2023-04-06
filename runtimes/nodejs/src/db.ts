@@ -9,6 +9,7 @@ import { MongoAccessor } from 'database-proxy'
 import Config from './config'
 import { createLogger, logger } from './support/logger'
 import * as mongodb_uri from 'mongodb-uri'
+import { FunctionCache } from './support/function-engine/cache'
 
 /**
  * Database Management
@@ -43,6 +44,7 @@ export class DatabaseAgent {
       .init()
       .then(async () => {
         logger.info('db connected')
+        FunctionCache.initialize()
       })
       .catch((error) => {
         logger.error(error)

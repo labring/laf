@@ -78,8 +78,6 @@ export class CloudFunction {
   async invoke(param: FunctionContext) {
     this.param = param
 
-    console.log('invoke', this.name)
-
     const engine = FunctionCache.getFunctionEngine(this._data)
 
     this.result = await engine.run(param, {
@@ -100,13 +98,12 @@ export class CloudFunction {
    * @returns
    */
   static async getFunctionByName(func_name: string) {
-    const db = DatabaseAgent.db
 
-    const doc = await db
-      .collection<ICloudFunctionData>(CLOUD_FUNCTION_COLLECTION)
-      .findOne({ name: func_name })
+    const funcData = FunctionCache.getFunctionByName(func_name)
+    if (funcData) {
+      return funcData
+    }
 
-    return doc
   }
 
   /**
