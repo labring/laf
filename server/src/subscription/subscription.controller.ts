@@ -24,7 +24,7 @@ import { RegionService } from 'src/region/region.service'
 import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
 import { RenewSubscriptionDto } from './dto/renew-subscription.dto'
 import * as assert from 'assert'
-import { SubscriptionPhase } from '@prisma/client'
+import { SubscriptionState } from '@prisma/client'
 import { AccountService } from 'src/account/account.service'
 
 @ApiTags('Subscription')
@@ -66,7 +66,7 @@ export class SubscriptionController {
     }
 
     // check bundleId exists
-    const bundle = await this.bundleService.findOne(dto.bundleId)
+    const bundle = await this.bundleService.findOne(dto.bundleId, region.id)
     if (!bundle) {
       return ResponseUtil.error(`bundle ${dto.bundleId} not found`)
     }
@@ -77,7 +77,7 @@ export class SubscriptionController {
       where: {
         createdBy: user.id,
         bundleId: dto.bundleId,
-        phase: { not: SubscriptionPhase.Deleted },
+        state: { not: SubscriptionState.Deleted },
       },
     })
     if (count >= LIMIT_COUNT) {
@@ -163,7 +163,11 @@ export class SubscriptionController {
       return ResponseUtil.error(`subscription ${id} not found`)
     }
 
-    const bundle = await this.bundleService.findOne(subscription.bundleId)
+    const app = subscription.application
+    const bundle = await this.bundleService.findOne(
+      subscription.bundleId,
+      app.regionId,
+    )
     assert(bundle, `bundle ${subscription.bundleId} not found`)
 
     const option = this.bundleService.getSubscriptionOption(bundle, duration)
@@ -199,11 +203,60 @@ export class SubscriptionController {
   /**
    * TODO: Upgrade a subscription
    */
-  @ApiOperation({ summary: 'Upgrade a subscription (TODO)' })
+  @ApiOperation({ summary: 'Upgrade a subscription - TODO' })
   @UseGuards(JwtAuthGuard)
   @Patch(':id/upgrade')
-  async upgrade(@Param('id') id: string, @Body() dto: UpgradeSubscriptionDto) {
-    return 'TODO'
+  async upgrade(
+    @Param('id') id: string,
+    @Body() dto: UpgradeSubscriptionDto,
+    @Req() req: IRequest,
+  ) {
+    const { targetBundleId, restart } = dto
+
+    // get subscription
+    const user = req.user
+    const subscription = await this.subscriptService.findOne(user.id, id)
+    if (!subscription) {
+      return ResponseUtil.error(`subscription ${id} not found`)
+    }
+
+    // get target bundle
+    const app = subscription.application
+    const targetBundle = await this.bundleService.findOne(
+      targetBundleId,
+      app.regionId,
+    )
+    if (!targetBundle) {
+      return ResponseUtil.error(`bundle ${targetBundleId} not found`)
+    }
+
+    // check bundle is upgradeable
+    const bundle = await this.bundleService.findOne(
+      subscription.bundleId,
+      app.regionId,
+    )
+    assert(bundle, `bundle ${subscription.bundleId} not found`)
+
+    if (bundle.id === targetBundle.id) {
+      return ResponseUtil.error(`bundle is the same`)
+    }
+
+    // check if target bundle limit count is reached
+    const LIMIT_COUNT = targetBundle.limitCountPerUser || 0
+    const count = await this.prisma.subscription.count({
+      where: {
+        createdBy: user.id,
+        bundleId: targetBundle.id,
+        state: { not: SubscriptionState.Deleted },
+      },
+    })
+    if (count >= LIMIT_COUNT) {
+      return ResponseUtil.error(
+        `application count limit is ${LIMIT_COUNT} for bundle ${targetBundle.name}`,
+      )
+    }
+
+    return ResponseUtil.error(`not implemented`)
   }
 
   /**

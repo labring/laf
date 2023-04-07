@@ -1,10 +1,36 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// These models cover multiple aspects, such as subscriptions, accounts, applications, 
+// storage, databases, cloud functions, gateways, and SMS verification codes. 
+// Here's a brief description:
+//
+// 1. Subscription models (Subscription and SubscriptionRenewal): Represent the state 
+//    and plans of subscriptions and their renewals.
+// 2. Account models (Account and AccountChargeOrder): Track account balances and 
+//    recharge records.
+// 3. Application models (Application and ApplicationConfiguration): Represent 
+//    application configurations and states.
+// 4. Storage models (StorageUser and StorageBucket): Represent the state and policies 
+//    of storage users and buckets.
+// 5. Database models (Database, DatabasePolicy, and DatabasePolicyRule): Represent the 
+//    state, policies, and rules of databases.
+// 6. Cloud Function models (CloudFunction and CronTrigger): Represent the configuration 
+//    and state of cloud functions and scheduled triggers.
+// 7. Gateway models (RuntimeDomain, BucketDomain, and WebsiteHosting): Represent the 
+//    state and configuration of runtime domains, bucket domains, and website hosting.
+// 8. Authentication provider models (AuthProvider): Represent the configuration and state 
+//    of authentication providers.
+// 9. SMS verification code models (SmsVerifyCode): Represent the type, state, and 
+//    related information of SMS verification codes.
+//
+// These models together form a complete cloud service system, covering subscription 
+// management, account management, application deployment, storage management, database 
+// management, cloud function deployment and execution, gateway configuration, and SMS 
+// verification, among other functionalities.
+
 generator client {
   provider      = "prisma-client-js"
-  // previewFeatures = ["interactiveTransactions"]
-  // binaryTargets = ["native", "linux-arm64-openssl-1.1.x"]
   binaryTargets = ["native"]
 }
 
@@ -212,6 +238,17 @@ model Runtime {
 
 // subscriptions schemas
 
+// Subscription section mainly consists of two models: Subscription and SubscriptionRenewal.
+//
+// 1. Subscription: Represents the state, phase, and renewal plan of a subscription. It includes
+// the created, updated, and deleted states (SubscriptionState enum); the pending, valid, expired,
+// expired and stopped, and deleted phases (SubscriptionPhase enum); and manual, monthly, or
+// yearly renewal plans (SubscriptionRenewalPlan enum). This model also contains the associated
+// application (Application).
+//
+// 2. SubscriptionRenewal: Represents the state, duration, and amount of a subscription renewal.
+// It includes the pending, paid, and failed renewal phases (SubscriptionRenewalPhase enum).
+
 enum SubscriptionState {
   Created
   Deleted
@@ -274,6 +311,27 @@ model SubscriptionRenewal {
   createdBy      String                   @db.ObjectId
 }
 
+// desired state of resource
+enum SubscriptionUpgradePhase {
+  Pending
+  Completed
+  Failed
+}
+
+model SubscriptionUpgrade {
+  id               String                   @id @default(auto()) @map("_id") @db.ObjectId
+  appid            String
+  subscriptionId   String
+  originalBundleId String                   @db.ObjectId
+  targetBundleId   String                   @db.ObjectId
+  phase            SubscriptionUpgradePhase @default(Pending)
+  restart          Boolean                  @default(false)
+  message          String?
+  lockedAt         DateTime
+  createdAt        DateTime                 @default(now())
+  updatedAt        DateTime                 @updatedAt
+}
+
 // accounts schemas
 
 model Account {
@@ -283,6 +341,16 @@ model Account {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   createdBy String   @unique @db.ObjectId
+}
+
+model AccountTransaction {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  accountId String   @db.ObjectId
+  amount    Int
+  balance   Int
+  message   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum AccountChargePhase {

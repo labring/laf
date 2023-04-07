@@ -5,7 +5,6 @@ import { PassportModule } from '@nestjs/passport'
 import { ServerConfig } from '../constants'
 import { UserModule } from '../user/user.module'
 import { AuthService } from './auth.service'
-import { CasdoorService } from './casdoor.service'
 import { JwtStrategy } from './jwt.strategy'
 import { AuthController } from './auth.controller'
 import { HttpModule } from '@nestjs/axios'
@@ -31,7 +30,6 @@ import { AuthenticationService } from './authentication.service'
   providers: [
     AuthService,
     JwtStrategy,
-    CasdoorService,
     PatService,
     UserPasswordService,
     PhoneService,

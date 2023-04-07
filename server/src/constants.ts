@@ -21,34 +21,6 @@ export class ServerConfig {
     return process.env.JWT_EXPIRES_IN || '7d'
   }
 
-  static get CASDOOR_ENDPOINT() {
-    return process.env.CASDOOR_ENDPOINT
-  }
-
-  static get CASDOOR_APP_NAME() {
-    return process.env.CASDOOR_APP_NAME
-  }
-
-  static get CASDOOR_CLIENT_ID() {
-    return process.env.CASDOOR_CLIENT_ID
-  }
-
-  static get CASDOOR_CLIENT_SECRET() {
-    return process.env.CASDOOR_CLIENT_SECRET
-  }
-
-  static get CASDOOR_REDIRECT_URI() {
-    return process.env.CASDOOR_REDIRECT_URI
-  }
-
-  static get CASDOOR_PUBLIC_CERT() {
-    return process.env.CASDOOR_PUBLIC_CERT
-  }
-
-  static get CASDOOR_ORG_NAME() {
-    return process.env.CASDOOR_ORG_NAME
-  }
-
   static get SYSTEM_NAMESPACE() {
     return process.env.SYSTEM_NAMESPACE || 'laf-system'
   }
