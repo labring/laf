@@ -80,7 +80,7 @@ export default function TriggerModal(props: { children: React.ReactElement }) {
             </div>
             <div className="relative mt-4 h-full rounded-md">
               {triggerListQuery.isFetching ? (
-                <Center className="absolute left-0 right-0 top-0 bottom-0 z-10 bg-white opacity-60">
+                <Center className="absolute bottom-0 left-0 right-0 top-0 z-10 bg-white opacity-60">
                   <Spinner size={"lg"} />
                 </Center>
               ) : null}

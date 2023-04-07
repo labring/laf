@@ -87,7 +87,7 @@ export default function LoginByPasswordPanel({
       <div className="mt-10">
         <Button
           type="submit"
-          className="w-full pt-5 pb-5"
+          className="w-full pb-5 pt-5"
           isLoading={signinByPasswordMutation.isLoading}
           onClick={handleSubmit(onSubmit)}
         >

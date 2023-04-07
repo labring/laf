@@ -8,6 +8,7 @@
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
 import request from "@/utils/request";
+import useGlobalStore from "@/pages/globalStore";
 
 /**
  * Create a PAT
@@ -17,7 +18,7 @@ export async function PatControllerCreate(
 ): Promise<Paths.PatControllerCreate.Responses> {
   // /v1/pats
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/pats`, {
@@ -34,7 +35,7 @@ export async function PatControllerFindAll(
 ): Promise<Paths.PatControllerFindAll.Responses> {
   // /v1/pats
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/pats`, {
@@ -51,7 +52,7 @@ export async function PatControllerRemove(
 ): Promise<Paths.PatControllerRemove.Responses> {
   // /v1/pats/{id}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/pats/${_params.id}`, {

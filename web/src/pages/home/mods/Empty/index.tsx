@@ -32,7 +32,7 @@ function Empty() {
           {t("HomePanel.Hello")} 👋 ， {userInfo?.profile?.name || userInfo?.username} ，{" "}
           {t("HomePanel.Welcome")}
         </h2>
-        <p className="mx-auto mt-10 mb-8 w-[460px] text-xl">{t("HomePanel.Introduction")}</p>
+        <p className="mx-auto mb-8 mt-10 w-[460px] text-xl">{t("HomePanel.Introduction")}</p>
         <div className="grid w-[722px] grid-cols-3">
           {messageList.map((item, index) => {
             return (

@@ -129,7 +129,7 @@ export default function DebugPanel(props: { containerRef: any }) {
           <TabPanels flex={1} className="overflow-hidden">
             <TabPanel padding={0} h="full">
               <div className="flex h-full flex-col">
-                <div className="flex flex-none items-center py-4 px-2">
+                <div className="flex flex-none items-center px-2 py-4">
                   <span className="mr-3 whitespace-nowrap">{t("FunctionPanel.Methods")}</span>
                   <Select
                     width="150px"

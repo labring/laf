@@ -8,6 +8,7 @@
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
 import request from "@/utils/request";
+import useGlobalStore from "@/pages/globalStore";
 
 /**
  * Create a new subscription
@@ -17,7 +18,7 @@ export async function SubscriptionControllerCreate(
 ): Promise<Paths.SubscriptionControllerCreate.Responses> {
   // /v1/subscriptions
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/subscriptions`, {
@@ -34,7 +35,7 @@ export async function SubscriptionControllerFindAll(
 ): Promise<Paths.SubscriptionControllerFindAll.Responses> {
   // /v1/subscriptions
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/subscriptions`, {
@@ -51,7 +52,7 @@ export async function SubscriptionControllerFindOne(
 ): Promise<Paths.SubscriptionControllerFindOne.Responses> {
   // /v1/subscriptions/{appid}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/subscriptions/${_params.appid}`, {
@@ -68,7 +69,7 @@ export async function SubscriptionControllerRenew(
 ): Promise<Paths.SubscriptionControllerRenew.Responses> {
   // /v1/subscriptions/{id}/renewal
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/subscriptions/${_params.id}/renewal`, {
@@ -85,7 +86,7 @@ export async function SubscriptionControllerUpgrade(
 ): Promise<Paths.SubscriptionControllerUpgrade.Responses> {
   // /v1/subscriptions/{id}/upgrade
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/subscriptions/${_params.id}/upgrade`, {
@@ -102,7 +103,7 @@ export async function SubscriptionControllerRemove(
 ): Promise<Paths.SubscriptionControllerRemove.Responses> {
   // /v1/subscriptions/{id}
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/subscriptions/${_params.id}`, {

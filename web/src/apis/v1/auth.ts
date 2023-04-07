@@ -8,6 +8,7 @@
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
 import request from "@/utils/request";
+import useGlobalStore from "@/pages/globalStore";
 
 /**
  * Signup by user-password
@@ -17,7 +18,7 @@ export async function UserPasswordControllerSignup(
 ): Promise<Paths.UserPasswordControllerSignup.Responses> {
   // /v1/auth/passwd/signup
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/auth/passwd/signup`, {
@@ -34,7 +35,7 @@ export async function UserPasswordControllerSignin(
 ): Promise<Paths.UserPasswordControllerSignin.Responses> {
   // /v1/auth/passwd/signin
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/auth/passwd/signin`, {
@@ -51,7 +52,7 @@ export async function UserPasswordControllerReset(
 ): Promise<Paths.UserPasswordControllerReset.Responses> {
   // /v1/auth/passwd/reset
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/auth/passwd/reset`, {
@@ -68,7 +69,7 @@ export async function UserPasswordControllerCheck(
 ): Promise<Paths.UserPasswordControllerCheck.Responses> {
   // /v1/auth/passwd/check
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/auth/passwd/check`, {
@@ -85,7 +86,7 @@ export async function PhoneControllerSendCode(
 ): Promise<Paths.PhoneControllerSendCode.Responses> {
   // /v1/auth/phone/sms/code
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/auth/phone/sms/code`, {
@@ -102,7 +103,7 @@ export async function PhoneControllerSignin(
 ): Promise<Paths.PhoneControllerSignin.Responses> {
   // /v1/auth/phone/signin
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/auth/phone/signin`, {
@@ -119,7 +120,7 @@ export async function AuthenticationControllerGetProviders(
 ): Promise<Paths.AuthenticationControllerGetProviders.Responses> {
   // /v1/auth/providers
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/auth/providers`, {
@@ -136,7 +137,7 @@ export async function AuthenticationControllerBindPhone(
 ): Promise<Paths.AuthenticationControllerBindPhone.Responses> {
   // /v1/auth/bind/phone
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/auth/bind/phone`, {
@@ -153,7 +154,7 @@ export async function AuthenticationControllerBindUsername(
 ): Promise<Paths.AuthenticationControllerBindUsername.Responses> {
   // /v1/auth/bind/username
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/auth/bind/username`, {

@@ -8,6 +8,7 @@
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
 import request from "@/utils/request";
+import useGlobalStore from "@/pages/globalStore";
 
 /**
  * Redirect to register page
@@ -17,7 +18,7 @@ export async function AuthControllerGetSignupUrl(
 ): Promise<Paths.AuthControllerGetSignupUrl.Responses> {
   // /v1/register
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/register`, {

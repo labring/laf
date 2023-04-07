@@ -8,6 +8,7 @@
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
 import request from "@/utils/request";
+import useGlobalStore from "@/pages/globalStore";
 
 /**
  * Get application runtime list
@@ -17,7 +18,7 @@ export async function AppControllerGetRuntimes(
 ): Promise<Paths.AppControllerGetRuntimes.Responses> {
   // /v1/runtimes
   let _params: { [key: string]: any } = {
-    appid: localStorage.getItem("app"),
+    appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/runtimes`, {

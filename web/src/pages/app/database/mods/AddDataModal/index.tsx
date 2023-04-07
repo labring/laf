@@ -97,7 +97,7 @@ const AddDataModal = (props: {
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start" className="h-full">
               <FormControl isInvalid={!!error} className="h-full ">
-                <FormErrorMessage className="ml-2 mb-1 ">{error}</FormErrorMessage>
+                <FormErrorMessage className="mb-1 ml-2 ">{error}</FormErrorMessage>
                 <FormLabel htmlFor="value"></FormLabel>
                 <Controller
                   name="value"

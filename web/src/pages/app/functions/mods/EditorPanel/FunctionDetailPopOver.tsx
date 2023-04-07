@@ -39,7 +39,7 @@ const FunctionDetailPopOver = () => {
             </div>
             <div className="mt-2 flex w-full flex-wrap items-center justify-start">
               {currentFunction.tags.map((item: string) => (
-                <Tag className="mr-2 mb-2 cursor-pointer" key={item} variant="inputTag">
+                <Tag className="mb-2 mr-2 cursor-pointer" key={item} variant="inputTag">
                   <TagLabel>{item}</TagLabel>
                 </Tag>
               ))}
