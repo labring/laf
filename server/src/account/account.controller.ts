@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  HttpCode,
   Logger,
   Param,
   Post,
@@ -22,6 +21,7 @@ import { PaymentChannelService } from './payment/payment-channel.service'
 import { WeChatPayOrderResponse, WeChatPayTradeState } from './payment/types'
 import { WeChatPayService } from './payment/wechat-pay.service'
 import { Response } from 'express'
+import * as assert from 'assert'
 
 @ApiTags('Account')
 @Controller('accounts')
@@ -160,10 +160,26 @@ export class AccountController {
           return
         }
 
+        // get account
+        const account = await tx.account.findFirst({
+          where: { id: order.accountId },
+        })
+        assert(account, `account not found ${order.accountId}`)
+
         // update account balance
         await tx.account.update({
           where: { id: order.accountId },
           data: { balance: { increment: order.amount } },
+        })
+
+        // create account transaction
+        await tx.accountTransaction.create({
+          data: {
+            accountId: order.accountId,
+            amount: order.amount,
+            balance: order.amount + account.balance,
+            message: 'account charge',
+          },
         })
 
         this.logger.log(`wechatpay order success: ${tradeOrderId}`)

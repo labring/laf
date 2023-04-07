@@ -5,12 +5,11 @@ import {
 } from '.prisma/client'
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { times } from 'lodash'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/database/system-database'
 import { ObjectId } from 'mongodb'
 import { AccountService } from 'src/account/account.service'
-import { Subscription } from 'rxjs'
+import { Subscription } from '@prisma/client'
 
 @Injectable()
 export class SubscriptionRenewalTaskService {
@@ -28,7 +27,7 @@ export class SubscriptionRenewalTaskService {
     }
 
     // Phase `Pending` -> `Paid`
-    times(this.concurrency, () => this.handlePendingPhase())
+    this.handlePendingPhase()
   }
 
   /**
@@ -86,13 +85,23 @@ export class SubscriptionRenewalTaskService {
         if (priceAmount !== 0) {
           await db.collection<Account>('Account').updateOne(
             {
-              createdBy: userid,
+              _id: account._id,
               balance: { $gte: priceAmount },
             },
             { $inc: { balance: -priceAmount } },
             { session },
           )
         }
+
+        // Create account transaction
+        await db.collection('AccountTransaction').insertOne({
+          accountId: account._id,
+          amount: -priceAmount,
+          balance: account.balance - priceAmount,
+          message: `subscription renewal order ${renewal._id}`,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
 
         // Update subscription 'expiredAt' time
         await db.collection<Subscription>('Subscription').updateOne(

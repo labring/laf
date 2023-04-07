@@ -8,9 +8,9 @@ export class BundleService {
 
   constructor(private readonly prisma: PrismaService) {}
 
-  async findOne(id: string) {
-    return this.prisma.bundle.findUnique({
-      where: { id },
+  async findOne(id: string, regionId: string) {
+    return this.prisma.bundle.findFirst({
+      where: { id, regionId },
     })
   }
 
