@@ -49,7 +49,12 @@ fi
 set -e
 
 # pull sealos cluster images
-sealos pull labring/kubernetes:v1.24.9 labring/flannel:v0.19.0 labring/helm:v3.8.2 labring/openebs:v1.9.0 labring/cert-manager:v1.8.0 lafyun/laf:latest
+sealos pull labring/kubernetes:v1.24.9
+sealos pull labring/flannel:v0.19.0
+sealos pull labring/helm:v3.8.2
+sealos pull labring/openebs:v1.9.0
+sealos pull labring/cert-manager:v1.8.0
+sealos pull lafyun/laf:latest
 
 # install k8s cluster
 sealos run labring/kubernetes:v1.24.9 labring/flannel:v0.19.0 labring/helm:v3.8.2 --single
