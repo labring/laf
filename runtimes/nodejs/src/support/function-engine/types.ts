@@ -1,6 +1,7 @@
 import { FunctionConsole } from './console'
 import { IncomingHttpHeaders } from 'http'
 import { Request, Response } from 'express'
+import { ObjectId } from 'mongodb'
 import WebSocket = require('ws')
 
 export type RequireFuncType = (module: string) => any
@@ -81,6 +82,7 @@ export type CloudFunctionSource = {
  * cloud function data structure
  */
 export interface ICloudFunctionData {
+  _id?: ObjectId
   id: string
   appid: string
   name: string

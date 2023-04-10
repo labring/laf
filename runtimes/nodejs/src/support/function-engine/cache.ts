@@ -1,48 +1,24 @@
 import { CLOUD_FUNCTION_COLLECTION } from '../../constants'
 import { DatabaseAgent } from '../../db'
-import { md5 } from '../utils'
-import { ObjectId } from 'mongodb'
 import { ICloudFunctionData, RequireFuncType } from './types'
 import { FunctionRequire } from './require'
 import { logger } from '../logger'
-import { FunctionEngine } from '.'
+import assert from 'assert'
+
+
 
 export class FunctionCache {
-  // document id -> function name, use for get function name by id
-  private static idCache: Map<ObjectId, string> = new Map()
-  // function name -> function module
-  private static moduleCache: Map<string, any> = new Map()
-  // function name -> function data
-  private static functionCache: Map<string, ICloudFunctionData> = new Map()
-  // function name -> function vm.script
-  private static engineCache: Map<string, FunctionEngine> = new Map()
+  private static cache: Map<string, ICloudFunctionData> = new Map()
 
   static async initialize() {
     logger.info('initialize function cache')
-    const funcDB = await DatabaseAgent.db.collection<ICloudFunctionData>(
-      CLOUD_FUNCTION_COLLECTION,
-    )
+    const funcs = await DatabaseAgent
+      .db.collection<ICloudFunctionData>(CLOUD_FUNCTION_COLLECTION)
+      .find()
+      .toArray()
 
-    const functions = await funcDB.find().toArray()
-    for (const func of functions) {
-      FunctionCache.functionCache.set(func.name, func)
-    }
-
-    // process moudule
-    for (const func of functions) {
-      FunctionCache.idCache.set(func._id, func.name)
-      const funcRequire = new FunctionRequire(FunctionCache.requireFunc)
-      const module = funcRequire.load(func.name, func.source.compiled)
-      FunctionCache.moduleCache.set(func.name, module)
-    }
-
-    // process function engine
-    for (const func of functions) {
-      const functionEngine = new FunctionEngine(
-        func.source.compiled,
-        FunctionCache.requireFunc,
-      )
-      FunctionCache.engineCache.set(func.name, functionEngine)
+    for (const func of funcs) {
+      FunctionCache.cache.set(func.name, func)
     }
 
     this.streamChange()
@@ -54,20 +30,12 @@ export class FunctionCache {
    * @param module
    * @returns
    */
-  static requireCloudFunction(module): any {
-    const moduleCache = FunctionCache.moduleCache.get(module)
-    if (moduleCache) {
-      return moduleCache
-    } else {
-      const func = FunctionCache.functionCache.get(module)
-      if (func) {
-        const funcRequire = new FunctionRequire(this.requireCloudFunction)
-        const module = funcRequire.load(func.name, func.source.compiled)
-        FunctionCache.moduleCache.set(func.name, module)
-        return module
-      }
-      return {}
-    }
+  static requireCloudFunction(moduleName: string): any {
+    const func = FunctionCache.cache.get(moduleName)
+    assert(func, `require cloud function failed: function ${moduleName} not found`)
+    const funcRequire = new FunctionRequire(this.requireFunc)
+    const module = funcRequire.load(func.name, func.source.compiled)
+    return module
   }
 
   /**
@@ -85,34 +53,18 @@ export class FunctionCache {
         const func = await DatabaseAgent.db
           .collection<ICloudFunctionData>(CLOUD_FUNCTION_COLLECTION)
           .findOne({ _id: change.documentKey._id })
-        // set cache
-        FunctionCache.idCache.set(func._id, func.name)
-        FunctionCache.functionCache.set(func.name, func)
 
-        // load module
-        const funcRequire = new FunctionRequire(FunctionCache.requireFunc)
-        const module = funcRequire.load(
-          change.fullDocument.name,
-          change.fullDocument.source.compiled,
-        )
-        FunctionCache.moduleCache.set(change.fullDocument.name, module)
+        // add func in map
+        FunctionCache.cache.set(func.name, func)
 
-        // load engine
-        const functionEngine = new FunctionEngine(
-          change.fullDocument.source.compiled,
-          FunctionCache.requireFunc,
-        )
-        FunctionCache.engineCache.set(change.fullDocument.name, functionEngine)
       } else if (change.operationType == 'delete') {
-        if (FunctionCache.idCache.has(change.documentKey._id)) {
-          const funcName = FunctionCache.idCache.get(change.documentKey._id)
-
-          // delete cache
-          FunctionCache.engineCache.delete(funcName)
-          FunctionCache.moduleCache.delete(funcName)
-          FunctionCache.functionCache.delete(funcName)
-          FunctionCache.idCache.delete(change.documentKey._id)
+        // remove this func
+        for (const [funcName, func] of this.cache) {
+          if (change.documentKey._id.equals(func._id)) {
+            this.cache.delete(funcName)
+          }
         }
+
       }
     })
   }
@@ -133,23 +85,7 @@ export class FunctionCache {
     return require(module) as any
   }
 
-  static getFunctionEngine(func: ICloudFunctionData): FunctionEngine {
-    if (
-      FunctionCache.engineCache.has(func.name) &&
-      FunctionCache.functionCache.has(func.name) &&
-      md5(FunctionCache.functionCache.get(func.name).source.compiled) ===
-      md5(func.source.compiled)
-    ) {
-      return FunctionCache.engineCache.get(func.name)
-    }
-    const functionEngine = new FunctionEngine(
-      func.source.compiled,
-      FunctionCache.requireFunc,
-    )
-    return functionEngine
-  }
-
   static getFunctionByName(funcName: string): ICloudFunctionData {
-    return FunctionCache.functionCache.get(funcName)
+    return FunctionCache.cache.get(funcName)
   }
 }

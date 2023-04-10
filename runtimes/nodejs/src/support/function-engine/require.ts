@@ -26,13 +26,8 @@ export class FunctionRequire {
 
     const sandbox = FunctionVm.buildSandbox(context, this.requireFunc)
     const wrapped = this.warp(code)
-    try {
-      const script = FunctionVm.createVM(wrapped, {})
-      return script.runInNewContext(sandbox, {})
-    } catch (error) {
-      console.log(error.message, error.stack)
-      return null
-    }
+    const script = FunctionVm.createVM(wrapped, {})
+    return script.runInNewContext(sandbox, {})
   }
 
   /**

@@ -3,6 +3,7 @@ import * as assert from 'assert'
 import { DatabaseAgent } from '../../db'
 import { CLOUD_FUNCTION_COLLECTION } from '../../constants'
 import { FunctionCache } from './cache'
+import { FunctionEngine } from '.'
 
 /**
  * CloudFunction Class
@@ -78,7 +79,7 @@ export class CloudFunction {
   async invoke(param: FunctionContext) {
     this.param = param
 
-    const engine = FunctionCache.getFunctionEngine(this._data)
+    const engine = new FunctionEngine(this._data.source.compiled, FunctionCache.requireFunc)
 
     this.result = await engine.run(param, {
       filename: `CloudFunction.${this.name}`,
@@ -97,13 +98,8 @@ export class CloudFunction {
    * @param func_name
    * @returns
    */
-  static async getFunctionByName(func_name: string) {
-
-    const funcData = FunctionCache.getFunctionByName(func_name)
-    if (funcData) {
-      return funcData
-    }
-
+  static getFunctionByName(func_name: string) {
+    return FunctionCache.getFunctionByName(func_name)
   }
 
   /**

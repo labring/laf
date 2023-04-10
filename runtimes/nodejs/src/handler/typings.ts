@@ -10,6 +10,7 @@ import { PackageDeclaration, NodePackageDeclarations } from 'node-modules-utils'
 import path = require('path')
 import { logger } from '../support/logger'
 import { IRequest } from '../support/types'
+import { FunctionCache } from '../support/function-engine/cache'
 
 const nodeModulesRoot = path.resolve(__dirname, '../../node_modules')
 
@@ -44,6 +45,21 @@ export async function handlePackageTypings(req: IRequest, res: Response) {
     const pkr = new NodePackageDeclarations(nodeModulesRoot)
     const r = await pkr.getNodeBuiltinPackage(packageName)
 
+    return res.send({
+      code: 0,
+      data: [r],
+    })
+  }
+
+  // get cloud function types
+  if (packageName.startsWith('@/')) {
+    const func = FunctionCache.getFunctionByName(packageName.replace('@/', ''))
+    const r = {
+      packageName: packageName,
+      content: func.source.code,
+      path: `${packageName}/index.ts`,
+      from: 'node'
+    }
     return res.send({
       code: 0,
       data: [r],
