@@ -5,15 +5,13 @@ import { FunctionRequire } from './require'
 import { logger } from '../logger'
 import assert from 'assert'
 
-
-
 export class FunctionCache {
   private static cache: Map<string, ICloudFunctionData> = new Map()
 
   static async initialize() {
     logger.info('initialize function cache')
-    const funcs = await DatabaseAgent
-      .db.collection<ICloudFunctionData>(CLOUD_FUNCTION_COLLECTION)
+    const funcs = await DatabaseAgent.db
+      .collection<ICloudFunctionData>(CLOUD_FUNCTION_COLLECTION)
       .find()
       .toArray()
 
@@ -32,7 +30,10 @@ export class FunctionCache {
    */
   static requireCloudFunction(moduleName: string): any {
     const func = FunctionCache.cache.get(moduleName)
-    assert(func, `require cloud function failed: function ${moduleName} not found`)
+    assert(
+      func,
+      `require cloud function failed: function ${moduleName} not found`,
+    )
     const funcRequire = new FunctionRequire(this.requireFunc)
     const module = funcRequire.load(func.name, func.source.compiled)
     return module
@@ -56,7 +57,6 @@ export class FunctionCache {
 
         // add func in map
         FunctionCache.cache.set(func.name, func)
-
       } else if (change.operationType == 'delete') {
         // remove this func
         for (const [funcName, func] of this.cache) {
@@ -64,7 +64,6 @@ export class FunctionCache {
             this.cache.delete(funcName)
           }
         }
-
       }
     })
   }

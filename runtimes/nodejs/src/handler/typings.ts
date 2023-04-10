@@ -58,7 +58,7 @@ export async function handlePackageTypings(req: IRequest, res: Response) {
       packageName: packageName,
       content: func.source.code,
       path: `${packageName}/index.ts`,
-      from: 'node'
+      from: 'node',
     }
     return res.send({
       code: 0,

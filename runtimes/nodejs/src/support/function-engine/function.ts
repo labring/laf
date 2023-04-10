@@ -79,7 +79,10 @@ export class CloudFunction {
   async invoke(param: FunctionContext) {
     this.param = param
 
-    const engine = new FunctionEngine(this._data.source.compiled, FunctionCache.requireFunc)
+    const engine = new FunctionEngine(
+      this._data.source.compiled,
+      FunctionCache.requireFunc,
+    )
 
     this.result = await engine.run(param, {
       filename: `CloudFunction.${this.name}`,

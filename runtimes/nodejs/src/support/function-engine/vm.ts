@@ -3,12 +3,11 @@ import { FunctionContext, RuntimeContext } from './types'
 import * as vm from 'vm'
 
 export class FunctionVm {
-
   /**
    * create vm.Script
-   * @param code 
-   * @param options 
-   * @returns 
+   * @param code
+   * @param options
+   * @returns
    */
 
   static createVM(code: string, options: vm.RunningScriptOptions): vm.Script {
@@ -27,9 +26,9 @@ export class FunctionVm {
 
   /**
    * build sandbox
-   * @param functionContext 
-   * @param requireFunc 
-   * @returns 
+   * @param functionContext
+   * @param requireFunc
+   * @returns
    */
 
   static buildSandbox(
