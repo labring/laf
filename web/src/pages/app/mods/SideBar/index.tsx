@@ -101,7 +101,7 @@ export default function SideBar() {
                     }}
                     className="cursor-pointer"
                     onClick={() => {
-                      navigate("/");
+                      navigate("/dashboard");
                     }}
                   >
                     {item.component}

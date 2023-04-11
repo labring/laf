@@ -333,5 +333,82 @@
   "Or": "Or",
   "Generating": "Generating",
   "Start": "Start",
-  "TryLafAI": "Try 🎉 Laf AI !"
+  "TryLafAI": "Try 🎉 Laf AI !",
+  "HomePage": {
+    "LafLink": "https://laf.dev",
+    "DocsLink": "https://doc.laf.run/guide/",
+    "VideoLink": "https://itceb8-video.oss.laf.run/laf-website-en.mp4",
+    "WebSite": {
+      "title": "Laf - Serverless Cloud Development",
+      "description": "Laf provides cloud functions, cloud databases, object storage and other capabilities, writing code like a blog! Launch the ChatGPT app in 3 minutes!"
+    },
+    "NavBar": {
+      "title": "Laf is an open-source project, we need your Star",
+      "home": "Home",
+      "price": "Price",
+      "case": "Case",
+      "aboutUs": "About US",
+      "faq": "FAQ",
+      "docs": "Docs",
+      "forum": "Forum",
+      "contact": "Contact",
+      "start": "Start Now",
+      "stars": "3.9K"
+    },
+    "HomePage": {
+      "slogan": "Write Code as effortlessly as Blogging",
+      "start": "Free Start →",
+      "content1": "Laf is a cloud development platform integrating functions, databases and storage",
+      "content2": "Publish online anytime, anywhere"
+    },
+    "Ability": {
+      "title": "Features",
+      "learn": "Learn more",
+      "function": "Cloud function",
+      "functionSub": ", release your first function in 5 seconds.",
+      "database": "Database",
+      "databaseSub": ", no need to create a database, ready to use out of the box.",
+      "storage": "Cloud storage",
+      "storageSub": ", create your own cloud storage, and manage files is simpler."
+    },
+    "Choice": {
+      "title": "Advantage",
+      "open": "Open Source",
+      "openSub": "Laf follows the Apache License 2.0 open source protocol",
+      "fast": "More faster",
+      "fastSub": "There is no cold start time to make your request respond faster.",
+      "private": "Private Deployment",
+      "privateSub": "We support privatization deployment.",
+      "simple": "More Simple",
+      "simpleSub": "No need to care about Ops, Everything is Serverless.",
+      "cheap": "Lower Cost",
+      "cheapSub": "Million calls, only $0.01 to see more price plans",
+      "service": "Provide efficient services for all developers.",
+      "serviceSub": "Learn more"
+    },
+    "Join": {
+      "title": "Join the laf developer community",
+      "subtitle": "Grow up with us",
+      "content": "Here you can experience the latest version of Laf at the first time and keep communicating with developers and users in Discord or WeChat groups.",
+      "WeChat": "WeChat",
+      "forum": "Forum"
+    },
+    "Footer": {
+      "laf": "Laf provides ready-to-use features such as cloud functions, cloud databases, and object storage. empowers you to write code with the ease of blogging! Get your ChatGPT application up and running in a mere 3 minutes!",
+      "product": "Product",
+      "item1_1": "Laf Cloud",
+      "item1_2": "Sealos Cloud",
+      "item1_3": "ChangeLog",
+      "item1_4": "Vscode Plugin",
+      "developer": "Developer",
+      "item2_1": "How to install Laf",
+      "item2_2": "Open API",
+      "item2_3": "Contributor's Guide",
+      "item2_4": "Source Code",
+      "item2_5": "Docs",
+      "support": "Support",
+      "item3_1": "Feedback",
+      "item3_2": "Forum"
+    }
+  }
 }

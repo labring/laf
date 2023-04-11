@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.homepage {
+  -webkit-font-smoothing: auto;
+}
+
+@layer base {
+  h1 {
+    @apply text-center font-bold;
+  }
+  h2 {
+    @apply text-center text-3xl font-semibold;
+  }
+  h3 {
+    @apply text-3xl font-medium;
+  }
+}
+
+.bg-card {
+  background-color: #f9f9f9;
+}
+
+.bg-primary {
+  background-color: #00beb1;
+}
+
+a:hover {
+  opacity: 0.8;
+}
