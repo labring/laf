@@ -25,19 +25,29 @@ export class BucketDomainTaskService {
     }
 
     // Phase `Creating` -> `Created`
-    this.handleCreatingPhase()
+    this.handleCreatingPhase().catch((err) => {
+      this.logger.error(err)
+    })
 
     // Phase `Deleting` -> `Deleted`
-    this.handleDeletingPhase()
+    this.handleDeletingPhase().catch((err) => {
+      this.logger.error(err)
+    })
 
     // Phase `Created` -> `Deleting`
-    this.handleInactiveState()
+    this.handleInactiveState().catch((err) => {
+      this.logger.error(err)
+    })
 
     // Phase `Deleted` -> `Creating`
-    this.handleActiveState()
+    this.handleActiveState().catch((err) => {
+      this.logger.error(err)
+    })
 
     // Phase `Deleting` -> `Deleted`
-    this.handleDeletedState()
+    this.handleDeletedState().catch((err) => {
+      this.logger.error(err)
+    })
   }
 
   /**

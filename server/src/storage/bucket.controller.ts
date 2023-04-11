@@ -156,6 +156,12 @@ export class BucketController {
       throw new HttpException('bucket not found', HttpStatus.NOT_FOUND)
     }
 
+    if (bucket?.websiteHosting) {
+      return ResponseUtil.error(
+        'bucket has website hosting enabled, please delete it first',
+      )
+    }
+
     const res = await this.bucketService.delete(bucket)
     if (!res) {
       return ResponseUtil.error('delete bucket failed')

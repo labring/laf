@@ -84,13 +84,9 @@ export class StorageService {
       await this.prisma.storageBucket.updateMany({
         where: {
           appid,
-          state: {
-            not: StorageState.Deleted,
-          },
+          state: { not: StorageState.Deleted },
         },
-        data: {
-          state: StorageState.Deleted,
-        },
+        data: { state: StorageState.Deleted },
       })
 
       return

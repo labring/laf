@@ -51,13 +51,19 @@ export class ApplicationTaskService {
     }
 
     // Phase `Creating` -> `Created`
-    this.handleCreatingPhase()
+    this.handleCreatingPhase().catch((err) => {
+      this.logger.error(err)
+    })
 
     // Phase `Deleting` -> `Deleted`
-    this.handleDeletingPhase()
+    this.handleDeletingPhase().catch((err) => {
+      this.logger.error(err)
+    })
 
     // State `Deleted`
-    this.handleDeletedState()
+    this.handleDeletedState().catch((err) => {
+      this.logger.error(err)
+    })
   }
 
   /**
