@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
+import { Routes } from "@/constants";
+
 import Language from "./language";
 
 type Props = {};
@@ -130,7 +132,10 @@ const Navbar = (props: Props) => {
               <Language />
             </div>
             <div>
-              <Link to={"/dashboard"} className="bg-primary text-sm rounded px-5 py-2 text-white">
+              <Link
+                to={Routes.dashboard}
+                className="bg-primary text-sm rounded px-5 py-2 text-white"
+              >
                 {t("HomePage.NavBar.start")}
               </Link>
             </div>

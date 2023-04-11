@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
+import { Routes } from "@/constants";
+
 import Video from "./video";
 
 type Props = {};
@@ -22,7 +24,7 @@ const Hero = (props: Props) => {
 
         <div className="z-10 mt-8 lg:mt-6">
           <Link
-            to={"/dashboard"}
+            to={Routes.dashboard}
             className="bg-primary  z-40 flex h-[48px] w-[144px] items-center justify-center rounded-md text-[16px] text-white hover:active:bg-[#00AFA3]"
           >
             {t(`HomePage.HomePage.start`)}

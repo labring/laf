@@ -12,6 +12,8 @@ import {
 } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import { Routes } from "@/constants";
+
 import { useSigninByPasswordMutation } from "@/pages/auth/service";
 
 type FormData = {
@@ -45,7 +47,7 @@ export default function LoginByPasswordPanel({
     });
 
     if (res?.data) {
-      navigate("/", { replace: true });
+      navigate(Routes.dashboard, { replace: true });
     }
   };
 

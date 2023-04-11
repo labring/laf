@@ -3,6 +3,8 @@ import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { Button, Center, HStack } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import { Routes } from "@/constants";
+
 export default function Index() {
   const navigate = useNavigate();
   return (
@@ -16,7 +18,7 @@ export default function Index() {
           <Button
             rightIcon={<ArrowForwardIcon />}
             size={"lg"}
-            onClick={() => navigate("/", { replace: true })}
+            onClick={() => navigate(Routes.dashboard, { replace: true })}
           >
             {t("Take me home")}
           </Button>

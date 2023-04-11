@@ -128,7 +128,7 @@
     "WX": "微信小程序/公众号",
     "Welcome": "欢迎来到 LAF 云开发平台！",
     "DeleteApp": "删除 APP",
-    "DeleteTip": "当前操作将会永久删除应用, 包括函数、数据、云存储等与应用相关的数据, 删除后<strong>将无法撤消</strong>, 请输入 <strong>{{appId}}</strong> 后确认",
+    "DeleteTip": "当前操作将会永久删除应用, 包括函数、数据、云存储等与应用相关的数据, 删除后<strong>将无法撤消</strong>,  请输入 <strong>{{appId}}</strong> 后确认",
     "Duration": "购买时长"
   },
   "LogPanel": {
@@ -333,5 +333,82 @@
   "Or": "或",
   "Generating": "正在生成",
   "Start": "开始生成",
-  "TryLafAI": "试试 🎉 Laf AI !"
+  "TryLafAI": "试试 🎉 Laf AI !",
+  "HomePage": {
+    "LafLink": "/dashboard",
+    "DocsLink": "https://doc.laf.run/guide/",
+    "VideoLink": "https://itceb8-video.oss.laf.run/laf-website.mp4",
+    "WebSite": {
+      "title": "Laf 云开发官网",
+      "description": "Laf 是一个集函数、数据库、存储为一体的云开发平台，随时随地，发布上线"
+    },
+    "NavBar": {
+      "title": "如果你喜欢 Laf 的话，请在 Github 上给我们一个 Star 吧！",
+      "home": "主页",
+      "price": "价格",
+      "case": "案例",
+      "aboutUs": "关于我们",
+      "docs": "文档",
+      "contact": "联系我们",
+      "forum": "开发者社区",
+      "faq": "FAQ",
+      "start": "立即体验",
+      "stars": "3.9K"
+    },
+    "HomePage": {
+      "slogan": "像写博客一样写代码",
+      "start": "立即体验",
+      "content1": "Laf 是一个集函数、数据库、存储为一体的云开发平台",
+      "content2": "随时随地，发布上线"
+    },
+    "Ability": {
+      "title": "Laf 的能力",
+      "learn": "了解详情",
+      "function": "云函数",
+      "functionSub": "， 5秒发布你的第一个函数。",
+      "database": "数据库",
+      "databaseSub": "， 无需创建数据库， 开箱即用.",
+      "storage": "云储存",
+      "storageSub": "，创建属于你的云储存，管理文件更简单。"
+    },
+    "Choice": {
+      "title": "为什么选择 Laf",
+      "open": "更开放",
+      "openSub": "Laf 遵循 Apache License 2.0 开源协议",
+      "fast": "请求更快",
+      "fastSub": "没有冷启时间让你的请求响应更快",
+      "private": "支持私有化部署",
+      "privateSub": "担心云服务不稳定？没关系，我们支持私有化部署",
+      "simple": "开发更简单",
+      "simpleSub": "无需关心部署、运维，一切都是 Serverless",
+      "cheap": "高性价比",
+      "cheapSub": "百万次调用，最低仅需 0.01 元",
+      "service": "我们致力于为所有开发者提供敏捷高效的服务",
+      "serviceSub": "了解详情"
+    },
+    "Join": {
+      "title": "加入 Laf 开发者社区",
+      "subtitle": "和我们一起成长",
+      "content": "在这里你可以在第一时间体验 Laf 的最新版本，以及在 Discord 或微信群与开发者和用户保持沟通",
+      "WeChat": "微信",
+      "forum": "开发者社区"
+    },
+    "Footer": {
+      "laf": "Laf 是一个 Serverless 框架，提供开箱即用的云函数，云数据库，对象存储等能力，是一个干净清爽的开发平台，像写博客一样写代码！三分钟上线 ChatGPT 应用！",
+      "product": "产品",
+      "item1_1": "Laf 公有云",
+      "item1_2": "Sealos",
+      "item1_3": "更新日志",
+      "item1_4": "Vscode 插件",
+      "developer": "开发者",
+      "item2_1": "私有化部署",
+      "item2_2": "开放 API",
+      "item2_3": "贡献者指南",
+      "item2_4": "源码",
+      "item2_5": "文档",
+      "support": "支持",
+      "item3_1": "问题反馈",
+      "item3_2": "开发者社区"
+    }
+  }
 }

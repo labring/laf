@@ -11,6 +11,8 @@ import {
 } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import { Routes } from "@/constants";
+
 import { useSendSmsCodeMutation, useSigninBySmsCodeMutation } from "@/pages/auth/service";
 import useGlobalStore from "@/pages/globalStore";
 
@@ -52,7 +54,7 @@ export default function LoginByPhonePanel({
     });
 
     if (res?.data) {
-      navigate("/", { replace: true });
+      navigate(Routes.dashboard, { replace: true });
     }
   };
 

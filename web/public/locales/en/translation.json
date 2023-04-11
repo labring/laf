@@ -335,7 +335,7 @@
   "Start": "Start",
   "TryLafAI": "Try 🎉 Laf AI !",
   "HomePage": {
-    "LafLink": "https://laf.dev",
+    "LafLink": "/dashboard",
     "DocsLink": "https://doc.laf.run/guide/",
     "VideoLink": "https://itceb8-video.oss.laf.run/laf-website-en.mp4",
     "WebSite": {

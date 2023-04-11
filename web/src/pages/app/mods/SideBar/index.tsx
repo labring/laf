@@ -7,7 +7,7 @@ import { Center } from "@chakra-ui/react";
 import clsx from "clsx";
 import { t } from "i18next";
 
-import { Pages, SideBarWidth } from "@/constants/index";
+import { Pages, Routes, SideBarWidth } from "@/constants/index";
 
 import SysSetting from "../../setting/SysSetting";
 
@@ -101,7 +101,7 @@ export default function SideBar() {
                     }}
                     className="cursor-pointer"
                     onClick={() => {
-                      navigate("/dashboard");
+                      navigate(Routes.dashboard);
                     }}
                   >
                     {item.component}
