@@ -64,3 +64,7 @@ export enum CURRENCY {
   CNY = "CNY",
   USD = "USD",
 }
+
+export const Routes = {
+  dashboard: "/dashboard",
+};

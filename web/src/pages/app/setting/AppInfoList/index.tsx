@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, Button, HStack, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
-import { APP_PHASE_STATUS } from "@/constants/index";
+import { APP_PHASE_STATUS, Routes } from "@/constants/index";
 import { formatDate } from "@/utils/format";
 
 import InfoDetail from "./InfoDetail";
@@ -21,7 +21,7 @@ const AppEnvList = () => {
   const darkMode = useColorMode().colorMode === "dark";
 
   if (currentApp?.state === APP_PHASE_STATUS.Deleted) {
-    navigate("/");
+    navigate(Routes.dashboard);
     return <></>;
   }
 
@@ -77,7 +77,7 @@ const AppEnvList = () => {
             <DeleteAppModal
               item={currentApp}
               onSuccess={() => {
-                navigate("/");
+                navigate(Routes.dashboard);
               }}
             >
               <Button className="mr-2" fontWeight={"semibold"} size={"sm"} variant={"warnText"}>

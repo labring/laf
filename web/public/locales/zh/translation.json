@@ -335,7 +335,7 @@
   "Start": "开始生成",
   "TryLafAI": "试试 🎉 Laf AI !",
   "HomePage": {
-    "LafLink": "https://laf.run",
+    "LafLink": "/dashboard",
     "DocsLink": "https://doc.laf.run/guide/",
     "VideoLink": "https://itceb8-video.oss.laf.run/laf-website.mp4",
     "WebSite": {
@@ -356,7 +356,7 @@
       "stars": "3.9K"
     },
     "HomePage": {
-      "slogan": "写博客一样，写函数",
+      "slogan": "像写博客一样写代码",
       "start": "立即体验",
       "content1": "Laf 是一个集函数、数据库、存储为一体的云开发平台",
       "content2": "随时随地，发布上线"

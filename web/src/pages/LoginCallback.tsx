@@ -2,6 +2,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Center, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 
+import { Routes } from "@/constants";
+
 import { AuthControllerCode2token } from "@/apis/v1/code2token";
 
 export default function LoginCallBack() {
@@ -17,7 +19,7 @@ export default function LoginCallBack() {
 
   if (!tokenRes.isLoading && tokenRes.data?.data) {
     localStorage.setItem("token", tokenRes.data?.data);
-    navigate("/", { replace: true });
+    navigate(Routes.dashboard, { replace: true });
   }
 
   return (
