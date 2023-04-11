@@ -48,11 +48,16 @@ const routes = [
     children: [
       {
         path: "/",
+        element: () => import("@/pages/homepage"),
+        index: true,
+      },
+      {
+        path: "/dashboard",
         element: <BasicLayout />,
         auth: true,
         children: [
           {
-            path: "/",
+            path: "/dashboard",
             element: () => import("@/pages/home/index"),
           },
         ],

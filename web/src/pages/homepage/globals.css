@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  h1 {
+    @apply text-center font-bold;
+  }
+  h2 {
+    @apply text-4xl text-center font-semibold;
+  }
+  h3 {
+    @apply text-3xl font-medium;
+  }
+}
+
+a:hover {
+  opacity: 0.8;
+}

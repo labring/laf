@@ -18,12 +18,14 @@ export default function Header(props: { size: "sm" | "lg" }) {
   return (
     <div className="flex h-[60px] justify-between px-10 py-4">
       <div className="flex items-center">
-        <img
-          src={colorMode === "dark" ? "/logo_light.png" : "/logo_light.png"}
-          alt="logo"
-          width={80}
-          className="mr-4"
-        />
+        <a href="/">
+          <img
+            src={colorMode === "dark" ? "/logo_light.png" : "/logo_light.png"}
+            alt="logo"
+            width={80}
+            className="mr-4"
+          />
+        </a>
         <a
           href="https://github.com/labring/laf"
           className="ml-2 flex items-center rounded-md bg-white p-2 py-1 text-base text-gray-700 hover:text-black"
