@@ -52,7 +52,7 @@ function createCloudSdk() {
  * @returns
  */
 async function invokeInFunction(name: string, param?: FunctionContext) {
-  const data = await CloudFunction.getFunctionByName(name)
+  const data = CloudFunction.getFunctionByName(name)
   const func = new CloudFunction(data)
 
   if (!func) {

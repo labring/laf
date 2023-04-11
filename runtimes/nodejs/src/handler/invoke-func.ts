@@ -32,10 +32,10 @@ export async function handleInvokeFunction(req: IRequest, res: Response) {
   const func_name = req.params?.name
 
   // load function data from db
-  let funcData = await CloudFunction.getFunctionByName(func_name)
+  let funcData = CloudFunction.getFunctionByName(func_name)
   if (!funcData) {
     // load default function from db
-    funcData = await CloudFunction.getFunctionByName(DEFAULT_FUNCTION_NAME)
+    funcData = CloudFunction.getFunctionByName(DEFAULT_FUNCTION_NAME)
     if (!funcData) {
       return res.status(404).send('Function Not Found')
     }
@@ -103,7 +103,7 @@ async function invokeInterceptor(req: IRequest, res: Response) {
   const func_name = INTERCEPTOR_FUNCTION_NAME
 
   // load function data from db
-  const funcData = await CloudFunction.getFunctionByName(func_name)
+  const funcData = CloudFunction.getFunctionByName(func_name)
   // pass if no interceptor
   if (!funcData) {
     return true

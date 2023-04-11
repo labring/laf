@@ -2,7 +2,7 @@ import * as crypto from 'crypto'
 
 /**
  * Generate UUID v4
- * @returns 
+ * @returns
  */
 export function generateUUID() {
   return crypto.randomUUID()
@@ -13,9 +13,13 @@ export function generateUUID() {
  * @param length the length of password, default is 8
  * @param hasNumbers add numbers to password, [0-9]
  * @param hasSymbols add symbols to password, [!@#$%^&*_-=+]
- * @returns 
+ * @returns
  */
-export function generatePassword(length = 8, hasNumbers = true, hasSymbols = true) {
+export function generatePassword(
+  length = 8,
+  hasNumbers = true,
+  hasSymbols = true,
+) {
   return generateRandString(length, hasNumbers, hasSymbols)
 }
 
@@ -24,9 +28,13 @@ export function generatePassword(length = 8, hasNumbers = true, hasSymbols = tru
  * @param length the length of password, default is 8
  * @param hasNumbers add numbers to password, [0-9]
  * @param hasSymbols add symbols to password, [!@#$%^&*_-=+]
- * @returns 
+ * @returns
  */
-export function generateRandString(length = 8, hasNumbers = true, hasSymbols = true) {
+export function generateRandString(
+  length = 8,
+  hasNumbers = true,
+  hasSymbols = true,
+) {
   const alpha = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM'
   const numbers = '0123456789'
   const symbols = '!@#$%^&*_-=+'
@@ -42,19 +50,14 @@ export function generateRandString(length = 8, hasNumbers = true, hasSymbols = t
   return str
 }
 
-
 export function hashPassword(content: string) {
-  return crypto
-    .createHash('sha256')
-    .update(content)
-    .digest('hex')
+  return crypto.createHash('sha256').update(content).digest('hex')
 }
-
 
 /**
  * Recursively deeply freeze objects
- * @param object 
- * @returns 
+ * @param object
+ * @returns
  */
 export function deepFreeze(object: Object) {
   // Retrieve the property names defined on object
@@ -65,7 +68,7 @@ export function deepFreeze(object: Object) {
   for (const name of propNames) {
     const value = object[name]
 
-    if (value && typeof value === "object") {
+    if (value && typeof value === 'object') {
       deepFreeze(value)
     }
   }
@@ -73,11 +76,10 @@ export function deepFreeze(object: Object) {
   return Object.freeze(object)
 }
 
-
 /**
  * nanosecond to ms
- * @param nanoseconds 
- * @returns 
+ * @param nanoseconds
+ * @returns
  */
 export function nanosecond2ms(nanoseconds: bigint): number {
   // trim the decimal point by devide 1000
@@ -87,4 +89,20 @@ export function nanosecond2ms(nanoseconds: bigint): number {
   return ret
 }
 
+/**
+ * sleep
+ * @param ms  milliseconds
+ * @returns
+ */
+export function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
 
+/**
+ * generate md5
+ * @param content md5 content
+ * @returns
+ */
+export function md5(content: string) {
+  return crypto.createHash('md5').update(content).digest('hex')
+}

@@ -95,7 +95,7 @@ export class PolicyAgent {
     }
 
     try {
-      const func_data = await CloudFunction.getFunctionByName(injectorName)
+      const func_data = CloudFunction.getFunctionByName(injectorName)
       assert.ok(func_data, 'getFunctionByName(): function not found')
 
       const func = new CloudFunction(func_data)
