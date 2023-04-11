@@ -8,7 +8,6 @@ import {
 import { RegionService } from 'src/region/region.service'
 import * as assert from 'node:assert'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { times } from 'lodash'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/database/system-database'
 import { MinioService } from './minio/minio.service'
@@ -17,7 +16,6 @@ import { BucketDomainService } from 'src/gateway/bucket-domain.service'
 @Injectable()
 export class BucketTaskService {
   readonly lockTimeout = 30 // in second
-  readonly concurrency = 1 // concurrency count
   private readonly logger = new Logger(BucketTaskService.name)
 
   constructor(
@@ -33,19 +31,29 @@ export class BucketTaskService {
     }
 
     // Phase `Creating` -> `Created`
-    times(this.concurrency, () => this.handleCreatingPhase())
+    this.handleCreatingPhase().catch((err) => {
+      this.logger.error(err)
+    })
 
     // Phase `Deleting` -> `Deleted`
-    times(this.concurrency, () => this.handleDeletingPhase())
+    this.handleDeletingPhase().catch((err) => {
+      this.logger.error(err)
+    })
 
     // Phase `Created` -> `Deleting`
-    this.handleInactiveState()
+    this.handleInactiveState().catch((err) => {
+      this.logger.error(err)
+    })
 
     // Phase `Deleted` -> `Creating`
-    this.handleActiveState()
+    this.handleActiveState().catch((err) => {
+      this.logger.error(err)
+    })
 
     // Phase `Deleting` -> `Deleted`
-    this.handleDeletedState()
+    this.handleDeletedState().catch((err) => {
+      this.logger.error(err)
+    })
   }
 
   /**

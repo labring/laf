@@ -1,21 +1,36 @@
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
 metadata:
   name: oss-ingress
 spec:
-  # apisix-ingress-controller is only interested in Ingress
-  # resources with the matched ingressClass name, in our case,
-  # it's apisix.
-  ingressClassName: apisix
-  rules:
-  - host: {{ .Values.domain }}
-    http:
-      paths:
-      - backend:
-          service:
-            name: minio
-            port:
-              number: 9000
-        path: /
-        pathType: Prefix
+  http:
+    - backends:
+        - serviceName: minio
+          servicePort: 9000
+      match:
+        hosts:
+          - {{ .Values.domain }}
+        paths:
+          - /*
+      name: laf-oss
+      plugins:
+        - config:
+            comp_level: 5
+            min_length: 1024
+            types:
+              - text/plain
+              - text/css
+              - text/html
+              - text/xml
+              - text/javascript
+              - application/json
+              - application/x-javascript
+              - application/javascript
+              - image/bmp
+              - image/png
+              - font/ttf
+              - font/otf
+              - font/eot
+          enable: true
+          name: gzip
