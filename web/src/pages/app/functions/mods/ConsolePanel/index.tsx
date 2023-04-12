@@ -31,7 +31,10 @@ function ConsolePanel() {
   return (
     <Panel className="flex-1">
       <Panel.Header title="Console"></Panel.Header>
-      <div className="text-sm relative overflow-y-auto px-2 font-mono " style={{ height: "100%" }}>
+      <div
+        className="text-sm relative flex flex-col overflow-y-auto px-2 font-mono"
+        style={{ height: "100%" }}
+      >
         {currentRequestId && (
           <p className="mb-1 ml-1">
             RequestID: {currentRequestId} <CopyText text={String(currentRequestId)} />

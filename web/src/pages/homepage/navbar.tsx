@@ -173,14 +173,9 @@ const Navbar = (props: Props) => {
           >
             <div>
               <li>
-                <a href="/homepage/" className="block px-4 py-2 hover:bg-gray-100 ">
-                  主页
-                </a>
-              </li>
-              <li>
                 <a
                   target="_blank"
-                  href="https://docs.laf.dev"
+                  href={String(t("HomePage.DocsLink"))}
                   className="block px-4 py-2 hover:bg-gray-100"
                   rel="noreferrer"
                 >
@@ -219,9 +214,9 @@ const Navbar = (props: Props) => {
                 </a>
               ) : null}
 
-              <a href="#" className="flex px-4 py-2 hover:bg-gray-100 ">
+              <div className="flex px-4 py-2 hover:bg-gray-100 ">
                 <Language />
-              </a>
+              </div>
             </div>
           </ul>
         </div>

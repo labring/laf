@@ -5,6 +5,7 @@ type JSONViewerProps = {
   language?: string;
   showNumber?: boolean;
   colorMode?: string;
+  className?: string;
 };
 
 const JSONViewerStyle: any = {
@@ -235,7 +236,7 @@ const JSONViewerDarkStyle: any = {
   },
 };
 export default function JSONViewer(props: JSONViewerProps) {
-  const { code, language = "json", colorMode = "light" } = props;
+  const { code, language = "json", colorMode = "light", ...rest } = props;
   const lightTheme = { background: "#fdfdfe" };
   const darkTheme = {
     background: "#202631",
@@ -248,6 +249,7 @@ export default function JSONViewer(props: JSONViewerProps) {
         maxHeight: 390,
         overflow: "auto",
       }}
+      {...rest}
     >
       <SyntaxHighlighter
         language={language}
