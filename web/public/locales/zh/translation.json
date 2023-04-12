@@ -368,8 +368,8 @@
       "functionSub": "， 5秒发布你的第一个函数。",
       "database": "数据库",
       "databaseSub": "， 无需创建数据库， 开箱即用.",
-      "storage": "云储存",
-      "storageSub": "，创建属于你的云储存，管理文件更简单。"
+      "storage": "云存储",
+      "storageSub": "，创建属于你的云存储，管理文件更简单。"
     },
     "Choice": {
       "title": "为什么选择 Laf",
@@ -378,7 +378,7 @@
       "fast": "请求更快",
       "fastSub": "没有冷启时间让你的请求响应更快",
       "private": "支持私有化部署",
-      "privateSub": "担心云服务不稳定？没关系，我们支持私有化部署",
+      "privateSub": "无厂商绑定，可交付于任何环境",
       "simple": "开发更简单",
       "simpleSub": "无需关心部署、运维，一切都是 Serverless",
       "cheap": "高性价比",
