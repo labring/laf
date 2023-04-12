@@ -12,7 +12,18 @@ const NavConfig = [
   { text: "预览图", link: "/screenshots" },
   {
     text: "在线体验",
-    // target: "_self",
+    link: "https://laf.run/",
+  },
+];
+
+const EnNavConfig = [
+  { text: "Home", link: "/" },
+  { text: "Development Guide", link: "/guide/", activeMatch: "^/guide/" },
+  { text: "API", link: "/api/cloud", activeMatch: "^/api/" },
+  { text: "Examples", link: "/examples/aliyun-sms", activeMatch: "^/examples/" },
+  { text: "Preview Image", link: "/screenshots" },
+  {
+    text: "Online Experience",
     link: "https://laf.run/",
   },
 ];
@@ -231,4 +242,25 @@ export default defineConfig({
       },
     ],
   ],
+  locales: {
+    root: {
+      label: '中文',
+      lang: 'zh-CN',
+      link: '/',
+    },
+    en: {
+      title: "Laf Cloud Development",
+      label: 'English',
+      lang: 'en',
+      link: '/en',
+      themeConfig: {
+        nav: EnNavConfig,
+        sidebar: {
+          "/guide/": guideSiderbarConfig,
+          "/api/": apiSideBarConfig,
+          "/examples/": examplesSideBarConfig,
+        },
+      },
+    }
+  }
 });
