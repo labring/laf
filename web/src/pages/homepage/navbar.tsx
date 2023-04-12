@@ -180,7 +180,7 @@ const Navbar = (props: Props) => {
               <li>
                 <a
                   target="_blank"
-                  href="https://docs.laf.dev"
+                  href="https://doc.laf.dev"
                   className="block px-4 py-2 hover:bg-gray-100"
                   rel="noreferrer"
                 >
