@@ -7,7 +7,7 @@ spec:
     - name: laf-web
       match:
         hosts:
-          - { { .Values.domain } }
+          - {{ .Values.domain }}
         paths:
           - /*
       backends:
@@ -36,7 +36,7 @@ spec:
     - name: laf-web-api
       match:
         hosts:
-          - { { .Values.domain } }
+          - {{ .Values.domain }}
         paths:
           - /v1/*
       backends:

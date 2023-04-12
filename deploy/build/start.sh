@@ -31,7 +31,22 @@ helm install mongodb -n ${NAMESPACE} \
     ./charts/mongodb
 
 
-## 2. install minio
+# 2. deploy apisix
+APISIX_API_URL="http://apisix-admin.${NAMESPACE}.svc.cluster.local:9180/apisix/admin"
+APISIX_API_KEY=$PASSWD_OR_SECRET
+helm install apisix -n ${NAMESPACE} \
+    --set apisix.kind=DaemonSet \
+    --set apisix.hostNetwork=true \
+    --set admin.credentials.admin=${APISIX_API_KEY} \
+    --set etcd.enabled=true \
+    --set etcd.host[0]="http://apisix-etcd:2379" \
+    --set dashboard.enabled=true    \
+    --set ingress-controller.enabled=true   \
+    --set ingress-controller.config.apisix.adminKey="${APISIX_API_KEY}" \
+    ./charts/apisix
+
+
+## 3. install minio
 MINIO_ROOT_ACCESS_KEY=minio-root-user
 MINIO_ROOT_SECRET_KEY=$PASSWD_OR_SECRET
 MINIO_DOMAIN=oss.${DOMAIN}
@@ -45,21 +60,6 @@ helm install minio -n ${NAMESPACE} \
     --set domain=${MINIO_DOMAIN} \
     --set consoleHost=minio.${DOMAIN} \
     ./charts/minio
-
-
-# 3. deploy apisix
-APISIX_API_URL="http://apisix-admin.${NAMESPACE}.svc.cluster.local:9180/apisix/admin"
-APISIX_API_KEY=$PASSWD_OR_SECRET
-helm install apisix -n ${NAMESPACE} \
-    --set apisix.kind=DaemonSet \
-    --set apisix.hostNetwork=true \
-    --set admin.credentials.admin=${APISIX_API_KEY} \
-    --set etcd.enabled=true \
-    --set etcd.host[0]="http://apisix-etcd:2379" \
-    --set dashboard.enabled=true    \
-    --set ingress-controller.enabled=true   \
-    --set ingress-controller.config.apisix.adminKey="${APISIX_API_KEY}" \
-    ./charts/apisix
 
 
 ## 4. install laf-server
