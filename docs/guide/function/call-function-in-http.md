@@ -8,7 +8,7 @@
 
 ```ts
   const { data } = await axios({
-    url: "https://a3uvbk.laf.dev/test",
+    url: "<FunctionURL>",
     method: "get",
   });
 
