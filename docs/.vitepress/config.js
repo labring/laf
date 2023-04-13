@@ -203,10 +203,10 @@ export default defineConfig({
       message: "Apache License V2.0",
       copyright: "Copyright © 2021-present labring/laf",
     },
-    editLink: {
-      pattern: "https://github.com/labring/laf/edit/main/docs/:path",
-      text: "在 GitHub 上编辑此页",
-    },
+    // editLink: {
+    //   pattern: "https://github.com/labring/laf/edit/main/docs/:path",
+    //   text: "在 GitHub 上编辑此页",
+    // },
     lastUpdated: "更新于",
     nav: NavConfig,
     socialLinks: [{ icon: "github", link: "https://github.com/labring/laf" }],
