@@ -76,6 +76,8 @@ const cloud = new Cloud({
   dbProxyUrl: "/proxy/app",
   getAccessToken: () => localStorage.getItem("access_token"),
 });
+const db = cloud.database()
+
 // 获取用户表中的数据。
 const res = await db.collection('user').get()
 ```

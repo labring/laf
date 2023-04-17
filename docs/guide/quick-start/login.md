@@ -139,7 +139,7 @@ const cloud = new Cloud({
   getAccessToken: () => localStorage.getItem("access_token"),
 });
 
-// regiser function
+// register function
 export async function register(username: string, password: string) {
   const res = await cloud.invoke("register", {
     username: username,
