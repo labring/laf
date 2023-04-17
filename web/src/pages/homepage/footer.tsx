@@ -139,9 +139,27 @@ const Footer = (props: Props) => {
           <div className="mt-4 flex justify-between">
             <div className="w-1/2 text-lg text-[#14171F]">
               <div className="leading-8 text-[#5E6987]">{t("HomePage.Footer.product")}</div>
-              <ul className="leading-8">
+              <ul className="mb-4 leading-8">
                 <li>
                   <a href={String(t(`HomePage.LafLink`))}>{t("HomePage.Footer.item1_1")}</a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/labring/laf/releases"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {t("HomePage.Footer.item1_3")}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://marketplace.visualstudio.com/items?itemName=NightWhite.laf-assistant"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {t("HomePage.Footer.item1_4")}
+                  </a>
                 </li>
                 <li>
                   <a
@@ -198,6 +216,11 @@ const Footer = (props: Props) => {
                 <li>
                   <a href="https://github.com/labring/laf" target="_blank" rel="noreferrer">
                     {t("HomePage.Footer.item2_4")}
+                  </a>
+                </li>
+                <li>
+                  <a href={String(t("HomePage.DocsLink"))} target="_blank" rel="noreferrer">
+                    {t("HomePage.Footer.item2_5")}
                   </a>
                 </li>
               </ul>

@@ -159,7 +159,7 @@
     "ID": "ID",
     "IDTip": "Please enter a valid ID number",
     "Name": "Real name",
-    "Registered": "Regist",
+    "Registered": "RegTime",
     "SendCode": "Send Code",
     "Tel": "Mobile",
     "TelTip": "Please enter a valid Mobile phone number",

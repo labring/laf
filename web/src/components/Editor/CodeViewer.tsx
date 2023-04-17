@@ -1,14 +1,13 @@
 import SyntaxHighlighter from "react-syntax-highlighter";
 
-type JSONViewerProps = {
+type CodeViewerProps = {
   code: string;
-  language?: string;
+  language: string;
   showNumber?: boolean;
   colorMode?: string;
-  className?: string;
 };
 
-const JSONViewerStyle: any = {
+const CodeViewerStyle: any = {
   hljs: {
     display: "block",
     overflowX: "auto",
@@ -42,9 +41,7 @@ const JSONViewerStyle: any = {
   "hljs-string": {
     color: "#0451a5",
   },
-  "hljs-doctag": {
-    color: "#219161",
-  },
+
   "hljs-selector-id": {
     color: "#19469d",
   },
@@ -156,9 +153,7 @@ const JSONViewerDarkStyle: any = {
   "hljs-string": {
     color: "#ce9178",
   },
-  "hljs-doctag": {
-    color: "#219161",
-  },
+
   "hljs-selector-id": {
     color: "#19469d",
   },
@@ -235,8 +230,8 @@ const JSONViewerDarkStyle: any = {
     fontWeight: "bold",
   },
 };
-export default function JSONViewer(props: JSONViewerProps) {
-  const { code, language = "json", colorMode = "light", ...rest } = props;
+export default function CodeViewer(props: CodeViewerProps) {
+  const { code, language, colorMode = "light" } = props;
   const lightTheme = { background: "#fdfdfe" };
   const darkTheme = {
     background: "#202631",
@@ -244,16 +239,11 @@ export default function JSONViewer(props: JSONViewerProps) {
   };
 
   return (
-    <div
-      style={{
-        maxHeight: 390,
-        overflow: "auto",
-      }}
-      {...rest}
-    >
+    <div>
       <SyntaxHighlighter
+        wrapLongLines={true}
         language={language}
-        style={colorMode === "dark" ? JSONViewerDarkStyle : JSONViewerStyle}
+        style={colorMode === "dark" ? JSONViewerDarkStyle : CodeViewerStyle}
         customStyle={colorMode === "dark" ? darkTheme : lightTheme}
       >
         {code}
