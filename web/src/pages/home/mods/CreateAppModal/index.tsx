@@ -124,7 +124,7 @@ const CreateAppModal = (props: {
 
   const currentSubscription = currentBundle.subscriptionOptions[0];
 
-  const { showSuccess, showError } = useGlobalStore();
+  const { showSuccess } = useGlobalStore();
 
   const totalPrice = subscriptionOption.specialPrice;
 
@@ -168,8 +168,6 @@ const CreateAppModal = (props: {
       setTimeout(() => {
         queryClient.invalidateQueries(APP_LIST_QUERY_KEY);
       }, 2000);
-    } else {
-      showError(res.error);
     }
   };
 
@@ -257,11 +255,9 @@ const CreateAppModal = (props: {
                           {(bundles || []).map((bundle: TBundle) => {
                             return (
                               <BundleItem
-                                durationIndex={bundle.subscriptionOptions.findIndex(
-                                  (vale, index) => {
-                                    return vale.displayName === subscriptionOption.displayName;
-                                  },
-                                )}
+                                durationIndex={bundle.subscriptionOptions.findIndex((vale) => {
+                                  return vale.displayName === subscriptionOption.displayName;
+                                })}
                                 onChange={onChange}
                                 bundle={bundle}
                                 isActive={bundle.id === value}
