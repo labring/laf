@@ -172,21 +172,22 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                           </MenuItem>
                         </CreateAppModal>
 
-                        <MenuItem minH="40px" display={"block"}>
-                          <span
-                            className="text-primary block"
-                            onClick={async (event) => {
-                              event?.preventDefault();
-                              await updateAppMutation.mutateAsync({
-                                appid: item.appid,
-                                name: item.name,
-                                state: APP_PHASE_STATUS.Restarting,
-                              });
+                        <MenuItem
+                          minH="40px"
+                          display={"block"}
+                          onClick={async (event) => {
+                            event?.preventDefault();
+                            const res = await updateAppMutation.mutateAsync({
+                              appid: item.appid,
+                              name: item.name,
+                              state: APP_PHASE_STATUS.Restarting,
+                            });
+                            if (!res.error) {
                               setShouldRefetch(true);
-                            }}
-                          >
-                            {t("SettingPanel.Restart")}
-                          </span>
+                            }
+                          }}
+                        >
+                          <span className="text-primary block">{t("SettingPanel.Restart")}</span>
                         </MenuItem>
 
                         <MenuItem
