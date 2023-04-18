@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { useColorMode } from "@chakra-ui/react";
 import axios from "axios";
+import clsx from "clsx";
 
 import { Routes } from "@/constants";
 
@@ -14,6 +16,14 @@ const Navbar = (props: Props) => {
   const [toggleSidebar, setToggleSidebar] = useState(false);
   const [stars, setStars] = useState<string | null>(null);
   const { t } = useTranslation();
+  const navList = [
+    { text: t("HomePage.NavBar.home"), ref: "/" },
+    { text: t("HomePage.NavBar.docs"), ref: String(t("HomePage.DocsLink")) },
+    { text: t("HomePage.NavBar.forum"), ref: "https://forum.laf.run/" },
+    { text: t("HomePage.NavBar.contact"), ref: "https://www.wenjuan.com/s/I36ZNbl/" },
+  ];
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
 
   useEffect(() => {
     const expirationTime = 24 * 60 * 60 * 1000;
@@ -52,7 +62,7 @@ const Navbar = (props: Props) => {
   }, []);
 
   return (
-    <div className=" flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center">
       <div className={showBanner ? "fixed top-0  z-40 block" : "hidden"}>
         <div className="flex h-12 w-screen items-center justify-center bg-[url('/homepage/banner.png')] bg-center lg:px-32">
           <a
@@ -77,16 +87,26 @@ const Navbar = (props: Props) => {
       <div
         className={
           showBanner
-            ? "fixed top-12 z-40  hidden w-full justify-center bg-white px-28 py-4 lg:flex "
-            : "fixed top-0 z-40  hidden w-full justify-center bg-white px-28 py-4 lg:flex"
+            ? clsx("fixed top-12 z-40  hidden w-full justify-center px-28 py-4 lg:flex", {
+                "bg-lafDark-100": darkMode,
+                "bg-lafWhite-600": !darkMode,
+              })
+            : clsx("fixed top-0 z-40  hidden w-full justify-center px-28 py-4 lg:flex", {
+                "bg-lafDark-100": darkMode,
+                "bg-lafWhite-600": !darkMode,
+              })
         }
       >
         <div className="flex w-full max-w-[1200px] justify-between">
           <div className="flex items-center">
             <div>
-              <img src="/homepage/logo_text.png" className="h-auto w-20" alt={"logo"} />
+              <img
+                src={darkMode ? "logo_light.png" : "logo_text.png"}
+                className="h-auto w-20"
+                alt={"logo"}
+              />
             </div>
-            <a href="/" className="ml-10">
+            {/* <a href="/" className="ml-10">
               {t("HomePage.NavBar.home")}
             </a>
             <a
@@ -107,7 +127,14 @@ const Navbar = (props: Props) => {
               rel="noreferrer"
             >
               {t("HomePage.NavBar.contact")}
-            </a>
+            </a> */}
+            {navList.map((item, index) => {
+              return (
+                <a key={index} target="_blank" href={item.ref} className="ml-10" rel="noreferrer">
+                  {item.text}
+                </a>
+              );
+            })}
           </div>
           <div className="flex w-80 items-center justify-evenly">
             {stars ? (
@@ -119,7 +146,7 @@ const Navbar = (props: Props) => {
               >
                 <img
                   alt="github"
-                  src="/homepage/github.svg"
+                  src={darkMode ? "/homepage/dark/github.svg" : "/homepage/github.svg"}
                   width={24}
                   height={24}
                   className="mr-1"
@@ -142,18 +169,26 @@ const Navbar = (props: Props) => {
           </div>
         </div>
       </div>
+
       <div
         className={
           showBanner
-            ? "fixed top-12 z-40 flex w-full justify-between bg-white px-8 py-4 lg:hidden "
-            : "fixed top-0 z-40 flex w-full justify-between bg-white px-8 py-4 lg:hidden "
+            ? // ? "fixed top-12 z-40 flex w-full justify-between px-8 py-4 lg:hidden "
+              clsx("fixed top-12 z-40 flex w-full justify-between px-8 py-4 lg:hidden", {
+                "bg-lafDark-100": darkMode,
+                "bg-lafWhite-600": !darkMode,
+              })
+            : clsx("fixed top-0 z-40 flex w-full justify-between px-8 py-4 lg:hidden", {
+                "bg-lafDark-100": darkMode,
+                "bg-lafWhite-600": !darkMode,
+              })
         }
       >
-        <img className="h-10" src="/homepage/logo_text.png" alt="logo" />
+        <img className="h-10" src={darkMode ? "logo_light.png" : "logo_text.png"} alt="logo" />
 
         <img
           className="w-8 hover:cursor-pointer"
-          src="/homepage/menu.svg"
+          src={darkMode ? "/homepage/dark/menu.svg" : "/homepage/menu.svg"}
           alt="menu"
           onClick={() => setToggleSidebar(!toggleSidebar)}
         />
@@ -163,25 +198,37 @@ const Navbar = (props: Props) => {
           id="dropdown"
           className={
             showBanner
-              ? "fixed right-4 top-28 z-40 block w-28 divide-y divide-gray-100 rounded-lg bg-white shadow lg:hidden "
-              : "fixed right-4 top-16 z-40 block w-28 divide-y divide-gray-100 rounded-lg bg-white shadow lg:hidden "
+              ? clsx(
+                  "fixed right-4 top-28 z-40 block w-28 divide-y divide-gray-100 rounded-lg shadow lg:hidden",
+                  {
+                    "bg-lafDark-300 text-lafWhite-600": darkMode,
+                    "bg-lafWhite-600 text-gray-700": !darkMode,
+                  },
+                )
+              : clsx(
+                  "fixed right-4 top-16 z-40 block w-28 divide-y divide-gray-100 rounded-lg shadow lg:hidden",
+                  {
+                    "bg-lafDark-300 text-lafWhite-600": darkMode,
+                    "bg-lafWhite-600 text-gray-700": !darkMode,
+                  },
+                )
           }
         >
           <ul
-            className="text-sm  divide-y divide-gray-100 py-2 text-gray-700 "
+            className="text-sm divide-y divide-gray-100 py-2"
             aria-labelledby="dropdownDefaultButton"
           >
             <div>
-              <li>
-                <a href="/homepage/" className="block px-4 py-2 hover:bg-gray-100 ">
-                  主页
+              {/* <li>
+                <a href="/homepage/" className="block px-4 py-2">
+                  {t("HomePage.NavBar.home")}
                 </a>
               </li>
               <li>
                 <a
                   target="_blank"
                   href="https://doc.laf.dev"
-                  className="block px-4 py-2 hover:bg-gray-100"
+                  className="block px-4 py-2"
                   rel="noreferrer"
                 >
                   {t("HomePage.NavBar.docs")}
@@ -206,20 +253,53 @@ const Navbar = (props: Props) => {
                 >
                   {t("HomePage.NavBar.contact")}
                 </a>
-              </li>
+              </li> */}
+              {navList.map((item, index) => {
+                return (
+                  <li>
+                    <a
+                      key={index}
+                      href={item.ref}
+                      target="_blank"
+                      className={
+                        darkMode
+                          ? "block px-4 py-2 hover:bg-gray-900"
+                          : "block px-4 py-2 hover:bg-gray-100"
+                      }
+                      rel="noreferrer"
+                    >
+                      {item.text}
+                    </a>
+                  </li>
+                );
+              })}
             </div>
             <div>
               {stars ? (
                 <a
                   href="https://github.com/labring/laf"
-                  className="flex px-4 py-2 hover:bg-gray-100 "
+                  // className="flex px-4 py-2 hover:bg-gray-100"
+                  className={
+                    darkMode
+                      ? "flex px-4 py-2 hover:bg-gray-900"
+                      : "flex px-4 py-2 hover:bg-gray-100"
+                  }
                 >
-                  <img className="pr-2" src="/homepage/github.svg" alt="github" />
+                  <img
+                    className="pr-2"
+                    src={darkMode ? "/homepage/dark/github.svg" : "/homepage/github.svg"}
+                    alt="github"
+                  />
                   {stars}
                 </a>
               ) : null}
 
-              <a href="#" className="flex px-4 py-2 hover:bg-gray-100 ">
+              <a
+                href="#"
+                className={
+                  darkMode ? "flex px-4 py-2 hover:bg-gray-900" : "flex px-4 py-2 hover:bg-gray-100"
+                }
+              >
                 <Language />
               </a>
             </div>
