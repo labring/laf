@@ -56,7 +56,7 @@ function JsonEditor(props: {
           alwaysConsumeMouseWheel: false,
         },
         lineNumbersMinChars: 0,
-        fontSize: 13,
+        fontSize: 12,
         scrollBeyondLastLine: false,
         folding: false,
         overviewRulerBorder: false,

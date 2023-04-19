@@ -39,6 +39,7 @@
     "react-i18next": "^12.2.0",
     "react-icons": "^4.8.0",
     "react-router-dom": "^6.10.0",
+    "react-simple-code-editor": "^0.13.1",
     "react-syntax-highlighter": "^15.5.0",
     "sass": "^1.60.0",
     "zustand": "^4.3.6"
