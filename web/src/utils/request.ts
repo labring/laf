@@ -41,6 +41,15 @@ request.interceptors.request.use(
 request.interceptors.response.use(
   (response: AxiosResponse) => {
     const { data } = response;
+    if (data?.error) {
+      toast({
+        title: data?.error,
+        position: "top",
+        status: "error",
+        duration: 1500,
+      });
+    }
+
     return data;
   },
   (error) => {

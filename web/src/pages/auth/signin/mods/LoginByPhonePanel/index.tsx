@@ -77,8 +77,6 @@ export default function LoginByPhonePanel({
 
     if (res?.data === "success") {
       showSuccess(t("AuthPanel.SmsCodeSendSuccess"));
-    } else {
-      showError(res.error);
     }
   };
 

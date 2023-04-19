@@ -68,7 +68,7 @@ const cloud = new Cloud({
   baseUrl: "https://APPID.lafyun.com",
   // the database proxy entry, `app` is the policy name which response for the security of database access
   dbProxyUrl: "/proxy/app",
-  getAccessToken: () => localStorage.getItem("access_token"),
+  getAccessToken: () => wx.getStorageSync('access_token'),
   environment: "wxmp",
 });
 ```

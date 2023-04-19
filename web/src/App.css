@@ -28,7 +28,7 @@ body {
   height: 100%;
 }
 
-/* oevrrides chakra default value */
+/* overrides chakra default value */
 body {
   background-repeat: no-repeat !important;
   background-size: cover !important;

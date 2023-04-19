@@ -10,7 +10,7 @@ export default function EmptyBox(props: {
 }) {
   const { children, hideIcon, className } = props;
   return (
-    <Center className={clsx("h-full w-full flex-col", className)}>
+    <Center className={clsx("h-full w-full flex-1 flex-col", className)}>
       {hideIcon ? null : (
         <Icon
           width="150"

@@ -10,7 +10,7 @@ import "./homepage.css";
 
 export default function Home() {
   return (
-    <div style={{ fontSize: "16px" }} className="homepage bg-white">
+    <div style={{ fontSize: "16px" }} className="homepage">
       <Navbar />
       <div className="flex items-center justify-center">
         <div className="flex flex-col lg:mx-[48px] lg:max-w-[1200px]">

@@ -59,11 +59,10 @@ const AddRulesModal = (props: {
     }
     try {
       const res = await createRulesMutation.mutateAsync(data);
-      if (res.error) {
-        throw new Error(res?.error);
+      if (!res.error) {
+        props.onSuccessSubmit(res.data);
+        onClose();
       }
-      props.onSuccessSubmit(res.data);
-      onClose();
     } catch (errors) {
       setError(errors?.toString());
       return;

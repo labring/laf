@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
@@ -27,10 +27,10 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 
-import FunctionEditor from "@/components/Editor/FunctionEditor";
+import CodeViewer from "@/components/Editor/CodeViewer";
+// import FunctionEditor from "@/components/Editor/FunctionEditor";
 import InputTag from "@/components/InputTag";
 import { SUPPORTED_METHODS } from "@/constants";
-import request from "@/utils/request";
 
 import { useCreateFunctionMutation, useUpdateFunctionMutation } from "../../../service";
 import useFunctionStore from "../../../store";
@@ -51,15 +51,25 @@ const PromptModal = (props: { functionItem?: any; children?: React.ReactElement 
   let source = CancelToken.source();
   const { colorMode } = useColorMode();
 
+  const [aiGenerateCode, setAiGenerateCode] = useState("");
+
   const { data: generateCodeRes, ...generateCode } = useMutation((params: any) => {
-    return request("https://zbkzzm.laf.dev/prompt-functions", {
+    return axios({
+      url: "https://itceb8.laf.run/laf-gpt",
       method: "POST",
       data: params,
       cancelToken: source.token,
+      responseType: "stream",
+      onDownloadProgress: function (progressEvent) {
+        const xhr = progressEvent.event.target;
+
+        const { responseText } = xhr;
+        setAiGenerateCode(responseText.replace("```ts", "").replace("```", ""));
+        const ele = document.querySelector("#scroll_footer");
+        if (ele) ele.scrollIntoView();
+      },
     });
   });
-
-  let _aiGenerateCode = ((generateCodeRes as any)?.sources || [])[0]?.code;
 
   const defaultValues = {
     name: functionItem?.name || "",
@@ -95,18 +105,10 @@ const PromptModal = (props: { functionItem?: any; children?: React.ReactElement 
   const updateFunctionMutation = useUpdateFunctionMutation();
 
   const onSubmit = async (data: any) => {
-    let res: any = {};
-    if (isEdit) {
-      res = await updateFunctionMutation.mutateAsync({
-        ...data,
-        code: _aiGenerateCode,
-      });
-    } else {
-      res = await createFunctionMutation.mutateAsync({
-        ...data,
-        code: _aiGenerateCode,
-      });
-    }
+    let res: any = await createFunctionMutation.mutateAsync({
+      ...data,
+      code: aiGenerateCode,
+    });
 
     if (!res.error) {
       showSuccess(isEdit ? "update success" : "create success");
@@ -205,8 +207,9 @@ const PromptModal = (props: { functionItem?: any; children?: React.ReactElement 
                   isLoading={generateCode.isLoading}
                   onClick={async () => {
                     generateCode.reset();
+                    setAiGenerateCode("");
                     await generateCode.mutateAsync({
-                      purpose: getValues("description"),
+                      value: getValues("description"),
                     });
                   }}
                 >
@@ -234,15 +237,8 @@ const PromptModal = (props: { functionItem?: any; children?: React.ReactElement 
                   <Progress size="xs" isIndeterminate />
                 </div>
               ) : null}
-              {_aiGenerateCode && (
-                <FunctionEditor
-                  className="w-full"
-                  height="300px"
-                  value={_aiGenerateCode}
-                  readOnly={true}
-                  colorMode={colorMode}
-                  path={Math.random().toString()}
-                />
+              {aiGenerateCode !== "" && (
+                <CodeViewer colorMode={colorMode} language="javascript" code={aiGenerateCode} />
               )}
               <FormControl isInvalid={!!errors?.websocket} hidden>
                 <FormLabel htmlFor="websocket">{t("FunctionPanel.isSupport")} websocket</FormLabel>
@@ -254,8 +250,8 @@ const PromptModal = (props: { functionItem?: any; children?: React.ReactElement 
             </VStack>
           </ModalBody>
 
-          {_aiGenerateCode ? (
-            <ModalFooter>
+          {aiGenerateCode ? (
+            <ModalFooter id="scroll_footer">
               <Button
                 variant="ghost"
                 mr={3}

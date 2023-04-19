@@ -5,16 +5,16 @@ import { isConditionTrue } from '../utils/getter'
 import { InstanceService } from './instance.service'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/database/system-database'
-import { ClusterService } from 'src/region/cluster/cluster.service'
+import { CronJobService } from 'src/trigger/cron-job.service'
 
 @Injectable()
 export class InstanceTaskService {
-  readonly lockTimeout = 60 // in second
+  readonly lockTimeout = 10 // in second
   private readonly logger = new Logger(InstanceTaskService.name)
 
   constructor(
-    private readonly clusterService: ClusterService,
     private readonly instanceService: InstanceService,
+    private readonly cronService: CronJobService,
   ) {}
 
   @Cron(CronExpression.EVERY_SECOND)
@@ -26,37 +26,37 @@ export class InstanceTaskService {
     // Phase `Created` | `Stopped` ->  `Starting`
     this.handleRunningState().catch((err) => {
       this.logger.error('handleRunningState error', err)
-      err?.response && this.logger.debug(err?.response?.data || err?.response)
+      this.logger.debug(err?.response?.toJSON() || JSON.stringify(err))
     })
 
     // Phase `Starting` -> `Started`
     this.handleStartingPhase().catch((err) => {
       this.logger.error('handleStartingPhase error', err)
-      err?.response && this.logger.debug(err?.response?.data || err?.response)
+      this.logger.debug(err?.response?.toJSON() || JSON.stringify(err))
     })
 
     // Phase `Started` -> `Stopping`
     this.handleStoppedState().catch((err) => {
       this.logger.error('handleStoppedState error', err)
-      err?.response && this.logger.debug(err?.response?.data || err?.response)
+      this.logger.debug(err?.response?.toJSON() || JSON.stringify(err))
     })
 
     // Phase `Stopping` -> `Stopped`
     this.handleStoppingPhase().catch((err) => {
       this.logger.error('handleStoppingPhase error', err)
-      err?.response && this.logger.debug(err?.response?.data || err?.response)
+      this.logger.debug(err?.response?.toJSON() || JSON.stringify(err))
     })
 
     // Phase `Started` -> `Stopping`
     this.handleRestartingStateDown().catch((err) => {
       this.logger.error('handleRestartingStateDown error', err)
-      err?.response && this.logger.debug(err?.response?.data || err?.response)
+      this.logger.debug(err?.response?.toJSON() || JSON.stringify(err))
     })
 
     // Phase `Stopped` -> `Starting`
     this.handleRestartingStateUp().catch((err) => {
       this.logger.error('handleRestartingStateUp error', err)
-      err?.response && this.logger.debug(err?.response?.data || err?.response)
+      this.logger.debug(err?.response?.toJSON() || JSON.stringify(err))
     })
   }
 
@@ -133,14 +133,17 @@ export class InstanceTaskService {
       instance.deployment?.status?.conditions || [],
     )
     if (!available) {
-      await this.relock(appid, waitingTime)
+      await this.relock(appid)
       return
     }
 
     if (!instance.service) {
-      await this.relock(appid, waitingTime)
+      await this.relock(appid)
       return
     }
+
+    // resume cronjobs if any
+    await this.cronService.resumeAll(app.appid)
 
     // if state is `Restarting`, update state to `Running` with phase `Started`
     let toState = app.state
@@ -225,6 +228,9 @@ export class InstanceTaskService {
       await this.relock(appid, waitingTime)
       return
     }
+
+    // suspend cronjobs if any
+    await this.cronService.suspendAll(app.appid)
 
     // update application phase to `Stopped`
     await db.collection<Application>('Application').updateOne(

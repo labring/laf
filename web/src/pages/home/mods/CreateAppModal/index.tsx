@@ -124,7 +124,7 @@ const CreateAppModal = (props: {
 
   const currentSubscription = currentBundle.subscriptionOptions[0];
 
-  const { showSuccess, showError } = useGlobalStore();
+  const { showSuccess } = useGlobalStore();
 
   const totalPrice = subscriptionOption.specialPrice;
 
@@ -168,8 +168,6 @@ const CreateAppModal = (props: {
       setTimeout(() => {
         queryClient.invalidateQueries(APP_LIST_QUERY_KEY);
       }, 2000);
-    } else {
-      showError(res.error);
     }
   };
 
@@ -190,7 +188,7 @@ const CreateAppModal = (props: {
         },
       })}
 
-      <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="3xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{title}</ModalHeader>
@@ -247,7 +245,7 @@ const CreateAppModal = (props: {
                 <FormLabel htmlFor="bundleId">
                   {t("HomePanel.Application") + t("HomePanel.BundleName")}
                 </FormLabel>
-                <HStack spacing={"12px"}>
+                <HStack spacing={"12px"} overflowX="scroll" pb={"6px"}>
                   <Controller
                     name="bundleId"
                     control={control}
@@ -257,11 +255,9 @@ const CreateAppModal = (props: {
                           {(bundles || []).map((bundle: TBundle) => {
                             return (
                               <BundleItem
-                                durationIndex={bundle.subscriptionOptions.findIndex(
-                                  (vale, index) => {
-                                    return vale.displayName === subscriptionOption.displayName;
-                                  },
-                                )}
+                                durationIndex={bundle.subscriptionOptions.findIndex((vale) => {
+                                  return vale.displayName === subscriptionOption.displayName;
+                                })}
                                 onChange={onChange}
                                 bundle={bundle}
                                 isActive={bundle.id === value}

@@ -3,7 +3,7 @@ export const RUNTIME_BUILTIN_DEPENDENCIES = {
   '@aws-sdk/client-sts': '^3.231.0',
   '@aws-sdk/s3-request-presigner': '^3.231.0',
   '@kubernetes/client-node': '^0.18.0',
-  '@lafjs/cloud': '^0.0.2',
+  '@lafjs/cloud': '1.0.0-beta.4',
   'alipay-sdk': '^3.2.0',
   axios: '^1.2.1',
   'database-proxy': '^0.8.2',
