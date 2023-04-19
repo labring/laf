@@ -24,5 +24,6 @@ import { MongoService } from 'src/database/mongo.service'
     DatabaseService,
     MongoService,
   ],
+  exports: [TriggerService, CronJobService],
 })
 export class TriggerModule {}
