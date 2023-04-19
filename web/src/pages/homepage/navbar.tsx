@@ -5,6 +5,7 @@ import { useColorMode } from "@chakra-ui/react";
 import axios from "axios";
 import clsx from "clsx";
 
+import { GithubIcon, MenuIcon } from "@/components/CommonIcon";
 import { Routes } from "@/constants";
 
 import Language from "./language";
@@ -144,13 +145,7 @@ const Navbar = (props: Props) => {
                 className="flex"
                 rel="noreferrer"
               >
-                <img
-                  alt="github"
-                  src={darkMode ? "/homepage/dark/github.svg" : "/homepage/github.svg"}
-                  width={24}
-                  height={24}
-                  className="mr-1"
-                />
+                <GithubIcon fontSize={32} color={darkMode ? "#F6F8F9" : "#3C455D"} />
                 {stars}
               </a>
             ) : null}
@@ -186,10 +181,9 @@ const Navbar = (props: Props) => {
       >
         <img className="h-10" src={darkMode ? "logo_light.png" : "logo_text.png"} alt="logo" />
 
-        <img
-          className="w-8 hover:cursor-pointer"
-          src={darkMode ? "/homepage/dark/menu.svg" : "/homepage/menu.svg"}
-          alt="menu"
+        <MenuIcon
+          fontSize={32}
+          color={darkMode ? "#F6F8F9" : "#3C455D"}
           onClick={() => setToggleSidebar(!toggleSidebar)}
         />
       </div>
@@ -256,9 +250,8 @@ const Navbar = (props: Props) => {
               </li> */}
               {navList.map((item, index) => {
                 return (
-                  <li>
+                  <li key={index}>
                     <a
-                      key={index}
                       href={item.ref}
                       target="_blank"
                       className={
@@ -285,11 +278,7 @@ const Navbar = (props: Props) => {
                       : "flex px-4 py-2 hover:bg-gray-100"
                   }
                 >
-                  <img
-                    className="pr-2"
-                    src={darkMode ? "/homepage/dark/github.svg" : "/homepage/github.svg"}
-                    alt="github"
-                  />
+                  <GithubIcon fontSize={32} color={darkMode ? "#F6F8F9" : "#3C455D"} />
                   {stars}
                 </a>
               ) : null}

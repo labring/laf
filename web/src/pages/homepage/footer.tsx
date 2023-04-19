@@ -1,6 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { useColorMode } from "@chakra-ui/react";
 
+import { DiscordIcon, ForumIcon, WechatIcon } from "@/components/CommonIcon";
+
 type Props = {};
 
 const Footer = (props: Props) => {
@@ -166,30 +168,13 @@ const Footer = (props: Props) => {
                 target="_blank"
                 rel="noreferrer"
               >
-                <img
-                  src={darkMode ? "/homepage/dark/weixinicon.svg" : "/homepage/weixinicon.svg"}
-                  alt="weixin"
-                  width={24}
-                  height={24}
-                />
+                <WechatIcon fontSize={32} color={darkMode ? "#F6F8F9" : "#3C455D"} />
               </a>
               <a href="https://forum.laf.run" target="_blank" rel="noreferrer">
-                <img
-                  src={darkMode ? "/homepage/dark/forumicon.svg" : "/homepage/forumicon.svg"}
-                  alt="qq"
-                  width={24}
-                  height={24}
-                />
+                <ForumIcon fontSize={32} color={darkMode ? "#F6F8F9" : "#3C455D"} />
               </a>
               <a href="https://discord.gg/6VhVrsaS" target="_blank" rel="noreferrer">
-                <img
-                  src={
-                    darkMode ? "/homepage/dark/discord_hover.svg" : "/homepage/discord_hover.svg"
-                  }
-                  alt="game"
-                  width={24}
-                  height={24}
-                />
+                <DiscordIcon fontSize={32} color={darkMode ? "#F6F8F9" : "#3C455D"} />
               </a>
             </div>
           </div>
@@ -327,28 +312,13 @@ const Footer = (props: Props) => {
           </div>
           <div className="ml-[-10px] flex w-32 justify-around">
             <a href="https://w4mci7-images.oss.laf.run/wechat.png" target="_blank" rel="noreferrer">
-              <img
-                src={darkMode ? "/homepage/dark/weixinicon.svg" : "/homepage/weixinicon.svg"}
-                alt="weixin"
-                width={24}
-                height={24}
-              />
+              <WechatIcon fontSize={32} color={darkMode ? "#F6F8F9" : "#3C455D"} />
             </a>
             <a href="https://forum.laf.run" target="_blank" rel="noreferrer">
-              <img
-                src={darkMode ? "/homepage/dark/forumicon.svg" : "/homepage/forumicon.svg"}
-                alt="qq"
-                width={24}
-                height={24}
-              />
+              <ForumIcon fontSize={32} color={darkMode ? "#F6F8F9" : "#3C455D"} />
             </a>
             <a href="https://discord.gg/6VhVrsaS" target="_blank" rel="noreferrer">
-              <img
-                src={darkMode ? "/homepage/dark/discord_hover.svg" : "/homepage/discord_hover.svg"}
-                alt="game"
-                width={24}
-                height={24}
-              />
+              <DiscordIcon fontSize={32} color={darkMode ? "#F6F8F9" : "#3C455D"} />
             </a>
           </div>
         </div>

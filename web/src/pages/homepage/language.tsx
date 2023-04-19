@@ -1,6 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { useColorMode } from "@chakra-ui/react";
 
+import { LangIcon } from "@/components/CommonIcon";
+
 type Props = {};
 
 const Language = (props: Props) => {
@@ -18,11 +20,12 @@ const Language = (props: Props) => {
           i18n.changeLanguage(i18n.language === "en" ? "zh" : "en");
         }}
       >
-        <img
+        {/* <img
           className="pr-2"
           src={darkMode ? "/homepage/dark/language.svg" : "/homepage/language.svg"}
           alt="language"
-        />
+        /> */}
+        <LangIcon color={darkMode ? "#F6F8F9" : "#3C455D"} fontSize={32} />
         <p>{i18n.language === "en" ? "中文" : "English"}</p>
       </a>
     </div>
