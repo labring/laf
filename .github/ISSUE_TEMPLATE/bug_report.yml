@@ -52,6 +52,7 @@ body:
         - Linux (self-host)
         - Mac (self-host)
         - Windows (self-host)
+        - Laf-cli
     validations:
       required: true
 
