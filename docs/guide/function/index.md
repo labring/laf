@@ -4,36 +4,54 @@ title: 云函数入门
 
 # {{ $frontmatter.title }}
 
-云函数是运行在云端的 JavaScript 代码。
+## 云函数简介
 
-云函数可使用 Typescript 编写，无需管理服务器，在开发控制台在线编写、在线调试、一键保存即可运行后端代码。
+`Laf云函数`是运行在云端的 `JavaScript` 代码。
 
-在你的应用中，大多数数据的获取都可在客户端直接操作数据库，但是通常业务中会使用到「非数据库操作」，如注册、登录、文件操作、事务、第三方接口等，可直接使用云函数实现。
+云函数可使用 `Typescript/JavaScript` 编写，无需管理服务器，在Web开发控制台在线编写、在线调试、一键保存即可运行后端代码。
+
+可在无需购买和管理服务器的情况下，快速开发后端代码。并且自带数据库和对象存储，极大降低后端开发难度。
+
+每个云函数都是一个单独的 `Typescript` 文件，Laf为云函数单独封装了 `@lafjs/cloud` 模块，以便于更加方便的编写云函数。
 
 ## 创建云函数
 
-点击页面左上角「函数」按钮,点击加号,添加云函数
+创建并进入Laf应用后，点击页面左上角「函数」按钮,点击加号,添加云函数
 
-![](/doc-images/create-function.png)
+![create-function](/doc-images/create-function.png)
+
+**函数名** : 一般以字母或_开头，可使用`字母 数字 - _`四种，函数名不可重复
+
+**标签** : 用来分类管理的，可通过标签名筛选云函数，可为每个云函数设置多个标签
+
+**请求方式** : 只有被勾选的请求方式才允许请求
+
+**函数描述** : 方便后续查看云函数的功能，相当于备注
+
+**函数模板** : 选择不同的函数模板可初始化不同的代码
 
 ## 编辑云函数
 
-可直接在线编辑代码
+Laf自带 `Web IDE`，可直接在浏览器在线编辑、运行（调试）、发布云函数
 
-![](/doc-images/edit-cloudfunction.png)
+![edit-cloudfunction](/doc-images/edit-cloudfunction.png)
 
 ## 运行云函数
 
-云函数可直接运行调试,未发布的云函数也可以在此进行运行调试
+云函数编写后可直接运行调试,未发布的云函数也可以在此进行运行调试
 
-![](/doc-images/run-cloudfunction.png)
+![run-cloudfunction](/doc-images/run-cloudfunction.png)
+
+如在云函数中添加 `console.log` 打印日志的代码，运行后也会直接显示在Console控制台，同时也会将云函数的返回值打印在运行结果中。
+
+可切换请求方式以及配置请求参数，默认是 `GET` 请求，此处显示的请求方式与勾选的请求方式有关。
 
 ## 发布云函数
 
-云函数发布后,才可正式使用
+云函数发布后，才是正式生效。前端才可以进行请求。
 
 ::: warning
-云函数不会自动保存,发布后才会保存并生效
+**云函数修改的代码，会自动在当前浏览器中缓存，只有在发布后才是真正的保存以及生效！**
 :::
 
-![](/doc-images/publish-cloudfunction.png)
+![publish-cloudfunction](/doc-images/publish-cloudfunction.png)
