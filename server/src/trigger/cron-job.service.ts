@@ -1,11 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { CronTrigger } from '@prisma/client'
+import { CronTrigger, TriggerPhase } from '@prisma/client'
 import { ClusterService } from 'src/region/cluster/cluster.service'
 import * as assert from 'node:assert'
 import { RegionService } from 'src/region/region.service'
 import { GetApplicationNamespaceByAppId } from 'src/utils/getter'
 import { FunctionService } from 'src/function/function.service'
 import { FOREVER_IN_SECONDS, X_LAF_TRIGGER_TOKEN_KEY } from 'src/constants'
+import { TriggerService } from './trigger.service'
+import * as k8s from '@kubernetes/client-node'
 
 @Injectable()
 export class CronJobService {
@@ -15,6 +17,7 @@ export class CronJobService {
     private readonly clusterService: ClusterService,
     private readonly regionService: RegionService,
     private readonly funcService: FunctionService,
+    private readonly triggerService: TriggerService,
   ) {}
 
   async create(trigger: CronTrigger) {
@@ -42,6 +45,7 @@ export class CronJobService {
         schedule: trigger.cron,
         successfulJobsHistoryLimit: 1,
         failedJobsHistoryLimit: 1,
+        suspend: false,
         concurrencyPolicy: 'Allow',
         startingDeadlineSeconds: 60,
         jobTemplate: {
@@ -88,6 +92,32 @@ export class CronJobService {
     }
   }
 
+  async suspend(trigger: CronTrigger) {
+    return await this.patchSuspend(trigger, true)
+  }
+
+  async resume(trigger: CronTrigger) {
+    return await this.patchSuspend(trigger, false)
+  }
+
+  async suspendAll(appid: string) {
+    const triggers = await this.triggerService.findAll(appid)
+    for (const trigger of triggers) {
+      if (trigger.phase !== TriggerPhase.Created) continue
+      await this.suspend(trigger)
+      this.logger.log(`suspend cronjob ${trigger.id} success of ${appid}`)
+    }
+  }
+
+  async resumeAll(appid: string) {
+    const triggers = await this.triggerService.findAll(appid)
+    for (const trigger of triggers) {
+      if (trigger.phase !== TriggerPhase.Created) continue
+      await this.resume(trigger)
+      this.logger.log(`resume cronjob ${trigger.id} success of ${appid}`)
+    }
+  }
+
   async delete(trigger: CronTrigger) {
     const appid = trigger.appid
     const ns = GetApplicationNamespaceByAppId(appid)
@@ -113,5 +143,33 @@ export class CronJobService {
 
     const command = `curl -X POST -H "${X_LAF_TRIGGER_TOKEN_KEY}: ${token}" ${invokeUrl}`
     return command
+  }
+
+  private async patchSuspend(trigger: CronTrigger, suspend: boolean) {
+    const appid = trigger.appid
+    const ns = GetApplicationNamespaceByAppId(appid)
+    const region = await this.regionService.findByAppId(appid)
+    const batchApi = this.clusterService.makeBatchV1Api(region)
+    const name = `cron-${trigger.id}`
+    const body = [{ op: 'replace', path: '/spec/suspend', value: suspend }]
+    try {
+      const res = await batchApi.patchNamespacedCronJob(
+        name,
+        ns,
+        body,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        {
+          headers: { 'Content-Type': k8s.PatchUtils.PATCH_FORMAT_JSON_PATCH },
+        },
+      )
+      return res.body
+    } catch (err) {
+      if (err?.response?.body?.reason === 'NotFound') return null
+      throw err
+    }
   }
 }

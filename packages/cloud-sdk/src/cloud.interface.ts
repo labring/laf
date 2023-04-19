@@ -33,6 +33,7 @@ export interface CloudSdkInterface {
 
   /**
    * Invoke cloud function
+   * @deprecated Just import the cloud function directly, and then call it
    */
   invoke: InvokeFunctionType
 
