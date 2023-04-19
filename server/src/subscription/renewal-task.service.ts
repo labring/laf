@@ -91,17 +91,20 @@ export class SubscriptionRenewalTaskService {
             { $inc: { balance: -priceAmount } },
             { session },
           )
-        }
 
-        // Create account transaction
-        await db.collection('AccountTransaction').insertOne({
-          accountId: account._id,
-          amount: -priceAmount,
-          balance: account.balance - priceAmount,
-          message: `subscription renewal order ${renewal._id}`,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        })
+          // Create account transaction
+          await db.collection('AccountTransaction').insertOne(
+            {
+              accountId: account._id,
+              amount: -priceAmount,
+              balance: account.balance - priceAmount,
+              message: `subscription renewal order ${renewal._id}`,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
+            { session },
+          )
+        }
 
         // Update subscription 'expiredAt' time
         await db.collection<Subscription>('Subscription').updateOne(

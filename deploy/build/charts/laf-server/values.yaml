@@ -5,6 +5,7 @@
 apiServerHost: ""
 databaseUrl: ""
 apiServerUrl: ""
+siteName: "laf"
 # init default region conf
 default_region:
   # db conf
@@ -25,13 +26,6 @@ default_region:
 jwt:
   secret: laf_server_abc123
   expires_in: 7d
-casdoor:
-  endpoint: ""
-  client_id: a71f65e93723c436027e
-  client_secret: 0d7e157be08055867b81456df3c222ea7c68a097
-  org_name: laf
-  app_name: laf
-  redirect_uri: http://localhost:3001/login_callback
 
 replicaCount: 1
 

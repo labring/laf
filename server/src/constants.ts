@@ -68,11 +68,15 @@ export class ServerConfig {
     }
   }
 
+  static get SITE_NAME() {
+    return process.env.SITE_NAME || 'laf'
+  }
+
   static get API_SERVER_URL() {
     return process.env.API_SERVER_URL || 'http://localhost:3000'
   }
 
-  static get certManagerIssuerName() {
+  static get CertManagerIssuerName() {
     return process.env.CERT_MANAGER_ISSUER_NAME || 'laf-issuer'
   }
 
