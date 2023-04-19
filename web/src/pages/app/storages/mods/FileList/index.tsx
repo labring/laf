@@ -225,7 +225,20 @@ export default function FileList() {
                                   <DeleteIcon fontSize={14} />
                                 </IconWrap>
                               </ConfirmButton>
-                            ) : null}
+                            ) : (
+                              <ConfirmButton
+                                onSuccessAction={async () => {
+                                  await deleteFile(bucketName!, file.Prefix as string);
+                                  query.refetch();
+                                }}
+                                headerText={String(t("Delete"))}
+                                bodyText={t("StoragePanel.DeleteFolderTip")}
+                              >
+                                <IconWrap tooltip={String(t("Delete"))}>
+                                  <DeleteIcon fontSize={14} />
+                                </IconWrap>
+                              </ConfirmButton>
+                            )}
                           </Td>
                         </Tr>
                       );
