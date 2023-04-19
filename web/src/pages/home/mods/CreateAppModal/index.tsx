@@ -188,7 +188,7 @@ const CreateAppModal = (props: {
         },
       })}
 
-      <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="3xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{title}</ModalHeader>
@@ -245,7 +245,7 @@ const CreateAppModal = (props: {
                 <FormLabel htmlFor="bundleId">
                   {t("HomePanel.Application") + t("HomePanel.BundleName")}
                 </FormLabel>
-                <HStack spacing={"12px"}>
+                <HStack spacing={"12px"} overflowX="scroll" pb={"6px"}>
                   <Controller
                     name="bundleId"
                     control={control}
