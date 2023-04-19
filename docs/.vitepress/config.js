@@ -27,7 +27,7 @@ const guideSiderbarConfig = [
       {
         text: "概览",
         link: "/guide/",
-      }
+      },
     ],
   },
   {
@@ -86,6 +86,10 @@ const guideSiderbarConfig = [
       {
         text: "WebSocket 连接",
         link: "/guide/function/websocket",
+      },
+      {
+        text: "拦截器",
+        link: "/guide/function/interceptor",
       },
     ],
   },
@@ -172,14 +176,13 @@ const examplesSideBarConfig = [
         text: "使用 SMTP 服务发送邮件",
         link: "/examples/send-mail",
       },
-    ]
-  }, {
-    text: '前端应用',
-    items: [
-      { text: 'Todo List', link: '/examples/todo-list', },
-    ]
-  }
-]
+    ],
+  },
+  {
+    text: "前端应用",
+    items: [{ text: "Todo List", link: "/examples/todo-list" }],
+  },
+];
 
 export default defineConfig({
   lang: "zh-CN",

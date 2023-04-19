@@ -4,10 +4,12 @@ title: 云函数处理 WebSocket 长连接
 
 # {{ $frontmatter.title }}
 
-## 特殊函数名 __websocket__ 
-如果需要使用 WebSocket 需要创建一个云函数并且命名为 `__websocket__`，这个云函数并不会运行之后销毁，会一直存在，专为 WebSocket 存在的云函数！   
+## 特殊函数名 __websocket__
+
+如果需要使用 WebSocket 需要创建一个云函数并且命名为 `__websocket__`，这个云函数并不会运行之后销毁，会一直存在，专为 WebSocket 存在的云函数！
 
 以下是云函数中处理 WebSocket 示例：
+
 ```ts
 export async function main(ctx: FunctionContext) {
 
@@ -24,9 +26,10 @@ export async function main(ctx: FunctionContext) {
 }
 ```
 
-更多用法请参考： https://github.com/websockets/ws
+更多用法请参考： <https://github.com/websockets/ws>
 
 ## 客户端 WebSocket 连接
+
 ```ts
 const wss = new WebSocket("wss://your-own-appid.laf.run/__websocket__");
 
