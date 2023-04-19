@@ -45,7 +45,27 @@ function useAwsS3() {
   };
 
   const deleteFile = async (bucket: string, key: string) => {
-    const res = await s3.deleteObject({ Bucket: bucket, Key: key }).promise();
+    const { Versions } = await s3
+      .listObjectVersions({
+        Bucket: bucket,
+        Prefix: key,
+      })
+      .promise();
+    const res = await s3
+      .deleteObjects({
+        Bucket: bucket,
+        Delete: {
+          Objects: Versions.map(({ Key, VersionId }: { Key: string; VersionId: string }) => ({
+            Key,
+            VersionId,
+          })),
+          Quiet: true,
+        },
+      })
+      .promise();
+    if (res?.Errors?.length === 0 && Versions.length >= 1000) {
+      await deleteFile(bucket, key);
+    }
     return res;
   };
 
