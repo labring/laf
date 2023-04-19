@@ -63,7 +63,7 @@ export class ApisixCustomCertService {
         secretName: website.id,
         dnsNames: [website.domain],
         issuerRef: {
-          name: ServerConfig.certManagerIssuerName,
+          name: ServerConfig.CertManagerIssuerName,
           kind: 'ClusterIssuer',
         },
       },

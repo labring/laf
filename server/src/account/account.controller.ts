@@ -22,6 +22,7 @@ import { WeChatPayOrderResponse, WeChatPayTradeState } from './payment/types'
 import { WeChatPayService } from './payment/wechat-pay.service'
 import { Response } from 'express'
 import * as assert from 'assert'
+import { ServerConfig } from 'src/constants'
 
 @ApiTags('Account')
 @Controller('accounts')
@@ -84,7 +85,7 @@ export class AccountController {
       order.id,
       amount,
       currency,
-      'laf account charge',
+      `${ServerConfig.SITE_NAME} recharge`,
     )
 
     return ResponseUtil.ok({
