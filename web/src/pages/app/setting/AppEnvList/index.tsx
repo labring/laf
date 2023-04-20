@@ -1,80 +1,50 @@
-import { Button } from "@chakra-ui/react";
+import { Button, useColorMode } from "@chakra-ui/react";
+import clsx from "clsx";
+import dotenv from "dotenv";
 import { t } from "i18next";
 
 import ConfirmButton from "@/components/ConfirmButton";
-import EditableTable from "@/components/EditableTable";
-import { isExitInList } from "@/utils/format";
+import ENVEditor from "@/components/Editor/ENVEditor";
 
-import EditTextarea from "./EditTextarea";
-import {
-  useAddEnvironmentMutation,
-  useDelEnvironmentMutation,
-  useEnvironmentQuery,
-} from "./service";
+import { useEnvironmentQuery } from "./service";
 
 import useGlobalStore from "@/pages/globalStore";
+
+// convert [{name: "SERVER_SECRET", value: "demo"}, {name: "MOCK", value: "YES"}] to string like SERVER_SECRET=demo\nMOCK=YES
+const convertToEnv = (tableData: any[]) => {
+  return tableData.reduce((acc, { name, value }) => {
+    return acc + `${name}="${value}"\n`;
+  }, "");
+};
 
 const AppEnvList = (props: { onClose?: () => {} }) => {
   const globalStore = useGlobalStore((state) => state);
   const environmentQuery = useEnvironmentQuery();
-  const delEnvironmentMutation = useDelEnvironmentMutation();
-  const addEnvironmentMutation = useAddEnvironmentMutation();
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
   return (
     <>
-      <div className="flex  flex-grow flex-col">
-        <EditableTable
-          column={[
-            {
-              name: "name",
-              key: "name",
-              width: "150px",
-              editable: false,
-              validate: [
-                (data: any) => {
-                  return {
-                    isValidate: data !== "",
-                    errorInfo: "name不能为空",
-                  };
-                },
-                (data: any, index: number) => {
-                  const IndexList = isExitInList("name", data, environmentQuery?.data?.data);
-                  return {
-                    isValidate: IndexList.length === 0 || IndexList.indexOf(index) !== -1,
-                    errorInfo: "name不能重复",
-                  };
-                },
-              ],
-              editComponent: (data: any) => {
-                return <EditTextarea text="name" {...data} />;
-              },
-            },
-            {
-              name: "value",
-              key: "value",
-              width: "200px",
-              validate: [
-                (data: any) => {
-                  return {
-                    isValidate: data !== "",
-                    errorInfo: "value不能为空",
-                  };
-                },
-              ],
-              editComponent: (data: any) => {
-                return <EditTextarea text="value" {...data} />;
-              },
-            },
-          ]}
-          configuration={{
-            tableHeight: "40vh",
-            key: "name",
-            addButtonText: t("SettingPanel.AddAppEnv").toString(),
-          }}
-          tableData={environmentQuery?.data?.data}
-          onEdit={(data) => addEnvironmentMutation.mutateAsync(data)}
-          onDelete={(data) => delEnvironmentMutation.mutateAsync({ name: data })}
-          onCreate={(data) => addEnvironmentMutation.mutateAsync(data)}
-        />
+      <div className="flex h-full flex-grow flex-col">
+        <div
+          className={clsx("relative h-full flex-1 rounded border", {
+            "border-frostyNightfall-200": !darkMode,
+          })}
+        >
+          <ENVEditor
+            value={convertToEnv(environmentQuery?.data?.data)}
+            height="95%"
+            style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+            }}
+            onChange={(value) => {
+              const obj = dotenv.parse(value || "");
+
+              console.log(obj);
+            }}
+          />
+        </div>
         <ConfirmButton
           onSuccessAction={() => {
             globalStore.updateCurrentApp(globalStore.currentApp!);
