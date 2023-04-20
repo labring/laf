@@ -29,6 +29,8 @@ import Panel from "@/components/Panel";
 import { formatDate } from "@/utils/format";
 import getPageInfo from "@/utils/getPageInfo";
 
+import StatusBar from "../mods/StatusBar";
+
 import { queryKeys } from "./service";
 
 import styles from "./index.module.scss";
@@ -203,6 +205,7 @@ export default function LogsPage() {
           </ModalContent>
         </Modal>
       </Panel>
+      <StatusBar />
     </Content>
   );
 }

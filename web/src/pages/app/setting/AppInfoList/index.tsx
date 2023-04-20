@@ -135,13 +135,13 @@ const AppEnvList = () => {
             title={t("SettingPanel.Subscription")}
             leftData={[
               {
-                key: "创建时间",
+                key: t("CreateTime"),
                 value: `${formatDate(currentApp?.subscription?.createdAt)}`,
               },
             ]}
             rightData={[
               {
-                key: "到期时间",
+                key: t("EndTime"),
                 value: `${formatDate(currentApp?.subscription?.expiredAt)}`,
               },
             ]}
