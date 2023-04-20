@@ -2,7 +2,7 @@
  * cloud functions storage page
  ***************************/
 import { useRef } from "react";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 import Content from "@/components/Content";
 import EmptyBox from "@/components/EmptyBox";
@@ -20,6 +20,7 @@ import useStorageStore from "./store";
 
 import useCustomSettingStore from "@/pages/customSetting";
 export default function StoragePage() {
+  const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
   const settingStore = useCustomSettingStore();
   const { currentStorage } = useStorageStore();

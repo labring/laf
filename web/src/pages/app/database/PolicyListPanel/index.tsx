@@ -1,8 +1,8 @@
 /****************************
  * cloud functions list sidebar
  ***************************/
+import { useTranslation } from "react-i18next";
 import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
-import { t } from "i18next";
 
 import ConfirmButton from "@/components/ConfirmButton";
 import EmptyBox from "@/components/EmptyBox";
@@ -17,6 +17,7 @@ import AddPolicyModal from "../mods/AddPolicyModal";
 import { useDeletePolicyMutation, usePolicyListQuery } from "../service";
 import useDBMStore from "../store";
 export default function PolicyListPanel() {
+  const { t } = useTranslation();
   const deletePolicyMutation = useDeletePolicyMutation();
   const store = useDBMStore((state) => state);
   const policyQuery = usePolicyListQuery((data) => {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Button,
   Center,
@@ -14,7 +15,6 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import clsx from "clsx";
-import { t } from "i18next";
 import { keyBy, mapValues } from "lodash";
 
 import JSONViewer from "@/components/Editor/JSONViewer";
@@ -39,6 +39,7 @@ import useGlobalStore from "@/pages/globalStore";
 const HAS_BODY_PARAMS_METHODS: (TMethod | undefined)[] = ["POST", "PUT", "PATCH", "DELETE"];
 
 export default function DebugPanel(props: { containerRef: any }) {
+  const { t } = useTranslation();
   const { getFunctionUrl, currentFunction, setCurrentRequestId } = useFunctionStore(
     (state) => state,
   );

@@ -1,6 +1,6 @@
+import { useTranslation } from "react-i18next";
 import { Center, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
-import { t } from "i18next";
 
 import CopyText from "@/components/CopyText";
 import EmptyBox from "@/components/EmptyBox";
@@ -13,6 +13,7 @@ import { LogControllerGetLogs } from "@/apis/v1/apps";
 
 function ConsolePanel() {
   const { currentRequestId } = useFunctionStore();
+  const { t } = useTranslation();
 
   const logControllerGetLogsQuery = useQuery(
     ["LogControllerGetLogs", currentRequestId],
