@@ -1,7 +1,6 @@
-FROM node:18-alpine
+FROM node:18
 
-RUN apk add --no-cache openssl g++ build-base cairo-dev jpeg-dev pango-dev musl-dev \
-      giflib-dev pixman-dev pangomm-dev libjpeg-turbo-dev freetype-dev
+RUN apt update && apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev git -y
 
 # RUN npm install npm -g
 

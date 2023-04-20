@@ -82,6 +82,7 @@ jobs:
           platforms: linux/amd64, linux/arm64
 
   dockerize-init-image:
+    needs: [dockerize-main-image]
     runs-on: ubuntu-latest
 
     steps:
