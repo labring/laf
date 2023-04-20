@@ -4,7 +4,7 @@ title: 在客户端中调用
 
 # {{ $frontmatter.title }}
 
-云函数编写完成并发布后，客户端可通过 `sdk` 的方式进行调用。
+云函数编写完成并发布后，客户端可通过 `laf-client-sdk` 进行调用。
 
 ::: info
 目前 SDK 暂时只支持发送 POST 请求
@@ -16,7 +16,8 @@ title: 在客户端中调用
 npm i laf-client-sdk
 ```
 
-## 初始化 `cloud` 对象：
+## 初始化 `cloud` 对象
+
 ```typescript
 import { Cloud } from "laf-client-sdk";
 
@@ -37,4 +38,6 @@ console.log(res)     // 这里的 res 是云函数中 return 的内容
 
 怎么样，是不是很方便， 只需简单的配置和一行代码即可实现对云函数的调用。
 
+## laf-client-sdk 详细文档
 
+查看详细文档：[client-sdk](/guide/client-sdk/)
