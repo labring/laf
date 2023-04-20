@@ -6,11 +6,8 @@ title: 云函数处理 WebSocket 长连接
 
 ## 特殊函数名 __websocket__
 
-如果需要使用 WebSocket 需要创建一个云函数并且命名为 `__websocket__`，这个云函数并不会运行之后销毁，会一直存在，专为 WebSocket 存在的云函数！
+如果需要使用 WebSocket 需要创建一个云函数并且命名为 `__websocket__`，专为 WebSocket 存在的云函数！
 
-::: info
-`__websocket__` 为固定名称，仅有此云函数不会被销毁，会一直存在，专为 WebSocket 存在的云函数
-:::
 
 以下是云函数中处理 WebSocket 示例：
 
@@ -50,6 +47,7 @@ wss.onclose = () => {
   console.log("closed");
 };
 ```
+
 
 ## 连接演示
 
