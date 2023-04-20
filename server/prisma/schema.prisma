@@ -598,6 +598,7 @@ model CloudFunction {
   desc      String
   tags      String[]
   methods   HttpMethod[]
+  params    Json?
   createdAt DateTime            @default(now())
   updatedAt DateTime            @updatedAt
   createdBy String              @db.ObjectId
