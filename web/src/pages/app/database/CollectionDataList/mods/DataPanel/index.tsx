@@ -13,7 +13,7 @@ import { t } from "i18next";
 import { throttle } from "lodash";
 
 import CopyText from "@/components/CopyText";
-import JsonEditor from "@/components/Editor/JsonEditor";
+import JSONEditor from "@/components/Editor/JSONEditor";
 import JSONViewer from "@/components/Editor/JSONViewer";
 import EmptyBox from "@/components/EmptyBox";
 import IconWrap from "@/components/IconWrap";
@@ -283,7 +283,7 @@ export default function DataPanel() {
             onSave={handleData}
           >
             <div className="mb-4 flex-1 rounded">
-              <JsonEditor
+              <JSONEditor
                 colorMode={colorMode}
                 value={JSON.stringify(currentData.data || {}, null, 2)}
                 onChange={(values) => {

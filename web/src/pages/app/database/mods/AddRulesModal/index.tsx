@@ -21,7 +21,7 @@ import {
 import clsx from "clsx";
 import { t } from "i18next";
 
-import JsonEditor from "@/components/Editor/JsonEditor";
+import JSONEditor from "@/components/Editor/JSONEditor";
 
 import { useCollectionListQuery, useCreateRulesMutation } from "../../service";
 
@@ -134,7 +134,7 @@ const AddRulesModal = (props: {
                         "bg-lafDark-300": darkMode,
                       })}
                     >
-                      <JsonEditor colorMode={colorMode} value={value} onChange={onChange} />
+                      <JSONEditor colorMode={colorMode} value={value} onChange={onChange} />
                     </div>
                   )}
                 />

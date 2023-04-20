@@ -20,7 +20,7 @@ import {
 import clsx from "clsx";
 import { t } from "i18next";
 
-import JsonEditor from "@/components/Editor/JsonEditor";
+import JSONEditor from "@/components/Editor/JSONEditor";
 
 import { useAddDataMutation } from "../../service";
 
@@ -110,7 +110,7 @@ const AddDataModal = (props: {
                       })}
                       style={{ height: "calc(100% - 1rem)" }}
                     >
-                      <JsonEditor colorMode={colorMode} value={value} onChange={onChange} />
+                      <JSONEditor colorMode={colorMode} value={value} onChange={onChange} />
                     </div>
                   )}
                 />

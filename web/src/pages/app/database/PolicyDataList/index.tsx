@@ -5,7 +5,7 @@ import clsx from "clsx";
 import { t } from "i18next";
 
 import CopyText from "@/components/CopyText";
-import JsonEditor from "@/components/Editor/JsonEditor";
+import JSONEditor from "@/components/Editor/JSONEditor";
 import JSONViewer from "@/components/Editor/JSONViewer";
 import EmptyBox from "@/components/EmptyBox";
 import IconWrap from "@/components/IconWrap";
@@ -177,7 +177,7 @@ export default function PolicyDataList() {
                   "bg-lafDark-200": darkMode,
                 })}
               >
-                <JsonEditor
+                <JSONEditor
                   colorMode={colorMode}
                   value={record}
                   onChange={(values) => {

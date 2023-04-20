@@ -28,7 +28,7 @@ monaco?.editor.defineTheme("JsonEditorThemeDark", {
   },
 });
 
-function JsonEditor(props: {
+function JSONEditor(props: {
   value: string;
   height?: string;
   colorMode?: string;
@@ -97,4 +97,4 @@ function JsonEditor(props: {
   return <div style={{ height: height, width: "100%", padding: "12px 2px" }} ref={monacoEl}></div>;
 }
 
-export default JsonEditor;
+export default JSONEditor;
