@@ -72,6 +72,7 @@ export class FunctionService {
       desc: dto.description,
       methods: dto.methods,
       tags: dto.tags || [],
+      params: dto.params,
     }
     const res = await this.prisma.cloudFunction.update({
       where: { appid_name: { appid: func.appid, name: func.name } },
