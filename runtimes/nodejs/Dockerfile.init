@@ -1,5 +1,7 @@
 FROM node:18-alpine
-RUN apk add --no-cache openssl
+
+RUN apk add --no-cache openssl g++ build-base cairo-dev jpeg-dev pango-dev musl-dev \
+      giflib-dev pixman-dev pangomm-dev libjpeg-turbo-dev freetype-dev
 
 # RUN npm install npm -g
 
