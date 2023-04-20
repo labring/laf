@@ -1,0 +1,13 @@
+{
+  "name": "f1",
+  "description": "laf e2e function(hello-laf)",
+  "websocket": false,
+  "methods": [
+    "GET",
+    "POST"
+  ],
+  "code": "import cloud from '@lafjs/cloud'\n\nexport async function main(ctx: FunctionContext) {\n  console.log('Hello World')\n  return { data: 'hi, laf' }\n}",
+  "tags": [
+    "e2e"
+  ]
+}
