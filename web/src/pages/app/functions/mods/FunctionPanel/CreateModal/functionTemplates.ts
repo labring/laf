@@ -73,6 +73,45 @@ exports.main = async function (ctx: FunctionContext) {
 }
     `,
   },
+  {
+    label: t("ChatGPT example"),
+    value: `import cloud from '@lafjs/cloud'
+
+    export async function main(ctx: FunctionContext) {
+      const data = ctx.body
+      const { ChatGPTAPI } = await import('chatgpt')
+    
+    
+      let api = cloud.shared.get('api')
+    
+      if (!api) {
+        // 这里需要填写你的apiKey
+        api = new ChatGPTAPI({ apiKey: '' })
+        cloud.shared.set('api', api)
+      }
+    
+      ctx.response.setHeader('Content-Type', 'application/octet-stream');
+    
+      const obj = {
+        onProgress: (partialResponse => {
+          if (partialResponse && partialResponse.delta != undefined) {
+            ctx.response.write(partialResponse.delta);
+          }
+        })
+      }
+    
+      if (data.parentMessageId) {
+        obj.parentMessageId = data.parentMessageId
+      }
+    
+      const res = await api.sendMessage(data.message, obj)
+    
+      ctx.response.end("--!" + res.id)
+    
+      return res
+    }
+    `,
+  },
 ];
 
 export default functionTemplates;
