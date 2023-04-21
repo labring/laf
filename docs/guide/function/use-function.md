@@ -141,6 +141,10 @@ exports.main = async function (ctx: FunctionContext) {
 
 现可直接在云函数中引入另外一个云函数
 
+::: info
+被引入的云函数需要发布后，才可以被引入
+:::
+
 引入写法：
 
 ```js
@@ -220,7 +224,7 @@ export async function main(ctx: FunctionContext) {
 通过`cloud.database()` 可以获取数据库对象，进而对数据库进行操作。
 
 ::: info
-数据库 API 的详细操作方法可以参考 _云数据库_ 章节
+数据库 API 的详细操作方法可以参考 _[云数据库](/guide/db/)_ 章节
 :::
 
 下面的例子可以获取数据库中的用户信息：
@@ -233,9 +237,7 @@ export async function main(ctx: FunctionContext) {
   // 数据库操作
   const db = cloud.database();
   const ret = await db.collection("users").where({ username }).get();
-
   console.log(ret);
-  return ret.data;
 };
 ```
 

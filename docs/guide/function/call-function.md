@@ -6,6 +6,10 @@ title: 在云函数中调用
 
 云函数在开发完毕并发布后，可以在其他云函数中进行调用。
 
+::: info
+`cloud.invoke`方法已不推荐使用，可使用[引入云函数](/guide/function/use-function.html#云函数引入)
+:::
+
 ## 编写并发布待调用云函数
 
 比如，我们创建一个名为 `get-user-info` 的云函数，并编写如下代码:
@@ -31,10 +35,6 @@ export async function main(ctx: FunctionContext) {
 该函数接收一个名为 userid 的参数, 并通过id在数据库中查找相应用户，并将 查找到的数据返回。
 
 ## 调用已发布云函数
-
-::: info
-`cloud.invoke`方法已不推荐使用，可使用[引入云函数](/guide/function/use-function.html#云函数引入)
-:::
 
 `get-user-info` 云函数发布后， 我们可以在其他云函数调用该函数。
 

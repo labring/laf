@@ -72,6 +72,10 @@ const guideSiderbarConfig = [
         ],
       },
       {
+        text: "云函数日志",
+        link: "/guide/function/logs",
+      },
+      {
         text: "依赖管理",
         link: "/guide/function/depend",
       },
