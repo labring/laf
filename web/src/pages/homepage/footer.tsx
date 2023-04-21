@@ -2,13 +2,14 @@ import { useTranslation } from "react-i18next";
 import { useColorMode } from "@chakra-ui/react";
 
 import { DiscordIcon, ForumIcon, WechatIcon } from "@/components/CommonIcon";
+import { COLOR_MODE } from "@/constants";
 
 type Props = {};
 
 const Footer = (props: Props) => {
   const { t } = useTranslation();
   const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   return (
     <>

@@ -2,6 +2,8 @@ import React from "react";
 import { Center, Tooltip, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
+import { COLOR_MODE } from "@/constants";
+
 export default function IconWrap(props: {
   size?: number;
   children: React.ReactNode;
@@ -13,7 +15,7 @@ export default function IconWrap(props: {
 }) {
   const { size = 20, tooltip, placement = "top", showBg = false, className } = props;
   const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
   return (
     <Tooltip label={tooltip} placement={placement}>
       <Center

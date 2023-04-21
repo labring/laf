@@ -21,6 +21,7 @@ import clsx from "clsx";
 import { t } from "i18next";
 
 import JSONEditor from "@/components/Editor/JSONEditor";
+import { COLOR_MODE } from "@/constants";
 
 import { useAddDataMutation } from "../../service";
 
@@ -76,7 +77,7 @@ const AddDataModal = (props: {
     }
   };
   const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 

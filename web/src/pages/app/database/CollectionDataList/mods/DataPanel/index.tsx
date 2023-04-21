@@ -19,6 +19,7 @@ import EmptyBox from "@/components/EmptyBox";
 import IconWrap from "@/components/IconWrap";
 import Pagination from "@/components/Pagination";
 import Panel from "@/components/Panel";
+import { COLOR_MODE } from "@/constants";
 import getPageInfo from "@/utils/getPageInfo";
 
 import AddDataModal from "../../../mods/AddDataModal/index";
@@ -243,7 +244,7 @@ export default function DataPanel() {
             setKey="_id"
             isActive={(item: any) => currentData.data?._id === item._id}
             customStyle={{
-              "border-lafWhite-600": colorMode === "light",
+              "border-lafWhite-600": colorMode === COLOR_MODE.light,
             }}
             onClick={(data: any) => {
               setCurrentData({

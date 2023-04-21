@@ -3,6 +3,7 @@ import { Avatar, Box, HStack, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 import { t } from "i18next";
 
+import { COLOR_MODE } from "@/constants";
 import { formatDate } from "@/utils/format";
 
 import AuthDetail from "./AuthDetail";
@@ -13,7 +14,7 @@ export default function UserInfo() {
 
   const { userInfo } = useGlobalStore((state) => state);
   const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   return (
     <div className="flex h-full flex-col items-center justify-center">

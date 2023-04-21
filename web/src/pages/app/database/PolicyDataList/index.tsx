@@ -10,6 +10,7 @@ import JSONViewer from "@/components/Editor/JSONViewer";
 import EmptyBox from "@/components/EmptyBox";
 import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
+import { COLOR_MODE } from "@/constants";
 
 import AddPolicyModal from "../mods/AddPolicyModal";
 import AddRulesModal from "../mods/AddRulesModal";
@@ -36,7 +37,7 @@ export default function PolicyDataList() {
   });
 
   const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   useEffect(() => {
     setCurrentData(undefined);

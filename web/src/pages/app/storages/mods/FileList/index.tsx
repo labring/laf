@@ -24,7 +24,7 @@ import EmptyBox from "@/components/EmptyBox";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
-import { BUCKET_POLICY_TYPE } from "@/constants";
+import { BUCKET_POLICY_TYPE, COLOR_MODE } from "@/constants";
 import { formatDate, formateType, formatSize } from "@/utils/format";
 
 import useStorageStore, { TFile } from "../../store";
@@ -43,7 +43,7 @@ export default function FileList() {
   const bucketType = currentStorage?.policy;
 
   const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   const query = useQuery(
     ["fileList", bucketName, prefix],

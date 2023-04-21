@@ -1,5 +1,7 @@
 import SyntaxHighlighter from "react-syntax-highlighter";
 
+import { COLOR_MODE } from "@/constants";
+
 type CodeViewerProps = {
   code: string;
   language: string;
@@ -231,7 +233,7 @@ const JSONViewerDarkStyle: any = {
   },
 };
 export default function CodeViewer(props: CodeViewerProps) {
-  const { code, language, colorMode = "light" } = props;
+  const { code, language, colorMode = COLOR_MODE.light } = props;
   const lightTheme = { background: "#fdfdfe" };
   const darkTheme = {
     background: "#202631",
@@ -243,8 +245,8 @@ export default function CodeViewer(props: CodeViewerProps) {
       <SyntaxHighlighter
         wrapLongLines={true}
         language={language}
-        style={colorMode === "dark" ? JSONViewerDarkStyle : CodeViewerStyle}
-        customStyle={colorMode === "dark" ? darkTheme : lightTheme}
+        style={colorMode === COLOR_MODE.dark ? JSONViewerDarkStyle : CodeViewerStyle}
+        customStyle={colorMode === COLOR_MODE.dark ? darkTheme : lightTheme}
       >
         {code}
       </SyntaxHighlighter>

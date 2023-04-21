@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, Button, HStack, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
-import { APP_PHASE_STATUS, Routes } from "@/constants/index";
+import { APP_PHASE_STATUS, COLOR_MODE, Routes } from "@/constants/index";
 import { formatDate } from "@/utils/format";
 
 import InfoDetail from "./InfoDetail";
@@ -18,7 +18,7 @@ const AppEnvList = () => {
   const navigate = useNavigate();
 
   const { currentApp, updateCurrentApp, regions = [] } = useGlobalStore((state) => state);
-  const darkMode = useColorMode().colorMode === "dark";
+  const darkMode = useColorMode().colorMode === COLOR_MODE.dark;
 
   if (currentApp?.state === APP_PHASE_STATUS.Deleted) {
     navigate(Routes.dashboard);

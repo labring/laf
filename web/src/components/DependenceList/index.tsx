@@ -2,6 +2,8 @@ import React from "react";
 import { useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
+import { COLOR_MODE } from "@/constants";
+
 import styles from "./index.module.scss";
 
 function DependenceList(props: { children: React.ReactNode; style?: React.CSSProperties }) {
@@ -22,7 +24,7 @@ function Item(props: {
 }) {
   const { children, isActive, onClick, className, style } = props;
   const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   return (
     <li

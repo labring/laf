@@ -7,7 +7,7 @@
     @apply text-center font-bold;
   }
   h2 {
-    @apply text-4xl text-center font-semibold;
+    @apply text-center text-4xl font-semibold;
   }
   h3 {
     @apply text-3xl font-medium;

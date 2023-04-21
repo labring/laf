@@ -68,3 +68,10 @@ export enum CURRENCY {
 export const Routes = {
   dashboard: "/dashboard",
 };
+
+export const CHAKRA_UI_COLOR_MODE_KEY = "chakra-ui-color-mode";
+
+export const COLOR_MODE = {
+  light: "light",
+  dark: "dark",
+};

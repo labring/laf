@@ -1,9 +1,11 @@
 import { useEffect, useRef } from "react";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
+import { COLOR_MODE } from "@/constants";
+
 import "./userWorker";
 
-monaco?.editor.defineTheme("JsonEditorTheme", {
+monaco?.editor.defineTheme("JSONEditorTheme", {
   base: "vs",
   inherit: true,
   rules: [],
@@ -18,7 +20,7 @@ monaco?.editor.defineTheme("JsonEditorTheme", {
   },
 });
 
-monaco?.editor.defineTheme("JsonEditorThemeDark", {
+monaco?.editor.defineTheme("JSONEditorThemeDark", {
   base: "vs-dark",
   inherit: true,
   rules: [],
@@ -34,7 +36,7 @@ function JSONEditor(props: {
   colorMode?: string;
   onChange?: (value: string | undefined) => void;
 }) {
-  const { value, onChange, height = "95%", colorMode = "light" } = props;
+  const { value, onChange, height = "95%", colorMode = COLOR_MODE.light } = props;
 
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
@@ -60,7 +62,7 @@ function JSONEditor(props: {
         scrollBeyondLastLine: false,
         folding: false,
         overviewRulerBorder: false,
-        theme: colorMode === "dark" ? "JsonEditorThemeDark" : "JsonEditorTheme",
+        theme: colorMode === COLOR_MODE.dark ? "JSONEditorThemeDark" : "JSONEditorTheme",
         tabSize: 2, // tab 缩进长度
         model: monaco.editor.createModel(value, "json"),
       });
@@ -89,7 +91,7 @@ function JSONEditor(props: {
   useEffect(() => {
     if (monacoEl && editorRef.current) {
       editorRef.current.updateOptions({
-        theme: colorMode === "dark" ? "JsonEditorThemeDark" : "JsonEditorTheme",
+        theme: colorMode === COLOR_MODE.dark ? "JSONEditorThemeDark" : "JSONEditorTheme",
       });
     }
   }, [colorMode]);

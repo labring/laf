@@ -2,13 +2,14 @@ import { useTranslation } from "react-i18next";
 import { useColorMode } from "@chakra-ui/react";
 
 import { LangIcon } from "@/components/CommonIcon";
+import { COLOR_MODE } from "@/constants";
 
 type Props = {};
 
 const Language = (props: Props) => {
   const { i18n } = useTranslation();
   const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   return (
     <div className="mr-4">

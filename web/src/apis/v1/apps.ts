@@ -113,6 +113,23 @@ export async function FunctionControllerCompile(
 }
 
 /**
+ * Update environment variables (replace all)
+ */
+export async function EnvironmentVariableControllerUpdateAll(
+  params: Paths.EnvironmentVariableControllerUpdateAll.BodyParameters | any,
+): Promise<Paths.EnvironmentVariableControllerUpdateAll.Responses> {
+  // /v1/apps/{appid}/environments
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/environments`, {
+    method: "POST",
+    data: params,
+  });
+}
+
+/**
  * Set a environment variable (create/update)
  */
 export async function EnvironmentVariableControllerAdd(
@@ -124,7 +141,7 @@ export async function EnvironmentVariableControllerAdd(
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/environments`, {
-    method: "POST",
+    method: "PATCH",
     data: params,
   });
 }
@@ -589,6 +606,57 @@ export async function WebsiteControllerCheckResolved(
 }
 
 /**
+ * Create a cron trigger
+ */
+export async function TriggerControllerCreate(
+  params: Definitions.CreateTriggerDto | any,
+): Promise<Paths.TriggerControllerCreate.Responses> {
+  // /v1/apps/{appid}/triggers
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/triggers`, {
+    method: "POST",
+    data: params,
+  });
+}
+
+/**
+ * Get trigger list of an application
+ */
+export async function TriggerControllerFindAll(
+  params: Paths.TriggerControllerFindAll.BodyParameters | any,
+): Promise<Paths.TriggerControllerFindAll.Responses> {
+  // /v1/apps/{appid}/triggers
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/triggers`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+/**
+ * Remove a cron trigger
+ */
+export async function TriggerControllerRemove(
+  params: Paths.TriggerControllerRemove.BodyParameters | any,
+): Promise<Paths.TriggerControllerRemove.Responses> {
+  // /v1/apps/{appid}/triggers/{id}
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/triggers/${_params.id}`, {
+    method: "DELETE",
+    data: params,
+  });
+}
+
+/**
  * Get function logs
  */
 export async function LogControllerGetLogs(
@@ -668,57 +736,6 @@ export async function DependencyControllerRemove(
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/dependencies`, {
-    method: "DELETE",
-    data: params,
-  });
-}
-
-/**
- * Create a cron trigger
- */
-export async function TriggerControllerCreate(
-  params: Definitions.CreateTriggerDto | any,
-): Promise<Paths.TriggerControllerCreate.Responses> {
-  // /v1/apps/{appid}/triggers
-  let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
-    ...params,
-  };
-  return request(`/v1/apps/${_params.appid}/triggers`, {
-    method: "POST",
-    data: params,
-  });
-}
-
-/**
- * Get trigger list of an application
- */
-export async function TriggerControllerFindAll(
-  params: Paths.TriggerControllerFindAll.BodyParameters | any,
-): Promise<Paths.TriggerControllerFindAll.Responses> {
-  // /v1/apps/{appid}/triggers
-  let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
-    ...params,
-  };
-  return request(`/v1/apps/${_params.appid}/triggers`, {
-    method: "GET",
-    params: params,
-  });
-}
-
-/**
- * Remove a cron trigger
- */
-export async function TriggerControllerRemove(
-  params: Paths.TriggerControllerRemove.BodyParameters | any,
-): Promise<Paths.TriggerControllerRemove.Responses> {
-  // /v1/apps/{appid}/triggers/{id}
-  let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
-    ...params,
-  };
-  return request(`/v1/apps/${_params.appid}/triggers/${_params.id}`, {
     method: "DELETE",
     data: params,
   });

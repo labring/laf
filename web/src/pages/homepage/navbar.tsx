@@ -6,7 +6,7 @@ import axios from "axios";
 import clsx from "clsx";
 
 import { GithubIcon, MenuIcon } from "@/components/CommonIcon";
-import { Routes } from "@/constants";
+import { COLOR_MODE, Routes } from "@/constants";
 
 import Language from "./language";
 
@@ -24,7 +24,7 @@ const Navbar = (props: Props) => {
     { text: t("HomePage.NavBar.contact"), ref: "https://www.wenjuan.com/s/I36ZNbl/" },
   ];
   const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   useEffect(() => {
     const expirationTime = 24 * 60 * 60 * 1000;

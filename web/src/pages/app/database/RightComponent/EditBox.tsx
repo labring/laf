@@ -3,6 +3,8 @@ import { Button, Text, useColorMode } from "@chakra-ui/react";
 import { clsx } from "clsx";
 import { t } from "i18next";
 
+import { COLOR_MODE } from "@/constants";
+
 const RightPanelEditBox: React.FC<{
   show?: boolean;
   children?: React.ReactNode;
@@ -13,7 +15,7 @@ const RightPanelEditBox: React.FC<{
 }> = (props) => {
   const { title, isLoading, children, onSave, show } = props;
   const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   return (
     <div

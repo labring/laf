@@ -4,14 +4,14 @@ import { Badge, Center, Spinner, useColorMode } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 
-import { APP_PHASE_STATUS, Pages } from "@/constants/index";
+import { APP_PHASE_STATUS, COLOR_MODE, Pages } from "@/constants/index";
 
 import { ApplicationControllerFindOne } from "@/apis/v1/applications";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function FunctionLayout() {
   const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
   const { init, loading, setCurrentApp, currentApp, setCurrentPage } = useGlobalStore(
     (state) => state,
   );

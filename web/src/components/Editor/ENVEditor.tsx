@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
+import { COLOR_MODE } from "@/constants";
+
 import "./userWorker";
 
 const languageId = "dotenv";
@@ -41,6 +43,16 @@ monaco.editor.defineTheme("dotenvTheme", {
   ],
 });
 
+monaco?.editor.defineTheme("dotenvDarkTheme", {
+  base: "vs-dark",
+  inherit: true,
+  rules: [],
+  colors: {
+    "editor.foreground": "#ffffff",
+    "editor.background": "#202631",
+  },
+});
+
 function ENVEditor(props: {
   value: string;
   height?: string;
@@ -48,7 +60,7 @@ function ENVEditor(props: {
   colorMode?: string;
   onChange?: (value: string | undefined) => void;
 }) {
-  const { value, style = {}, onChange, height = "95%", colorMode = "light" } = props;
+  const { value, style = {}, onChange, height = "95%", colorMode = COLOR_MODE.light } = props;
 
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
@@ -58,7 +70,7 @@ function ENVEditor(props: {
     if (monacoEl && !editorRef.current) {
       editorRef.current = monaco.editor.create(monacoEl.current!, {
         language: languageId,
-        theme: "dotenvTheme",
+        theme: colorMode === COLOR_MODE.dark ? "dotenvDarkTheme" : "dotenvTheme",
         lineNumbers: "off",
         guides: {
           indentation: false,
@@ -105,7 +117,7 @@ function ENVEditor(props: {
   // useEffect(() => {
   //   if (monacoEl && editorRef.current) {
   //     editorRef.current.updateOptions({
-  //       theme: colorMode === "dark" ? "JSONEditorThemeDark" : "JSONEditorTheme",
+  //       theme: colorMode === COLOR_MODE.dark ? "JSONEditorThemeDark" : "JSONEditorTheme",
   //     });
   //   }
   // }, [colorMode]);
