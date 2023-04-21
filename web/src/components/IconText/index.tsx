@@ -2,13 +2,15 @@ import React from "react";
 import { useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
+import { COLOR_MODE } from "@/constants";
+
 export default function IconText(props: {
   icon: React.ReactElement;
   text: string;
   onClick?: () => void;
 }) {
   const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   return (
     <div

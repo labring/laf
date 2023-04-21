@@ -9,6 +9,7 @@ import "@/utils/i18n";
 
 import theme from "./chakraTheme";
 import darkTheme from "./chakraThemeDark";
+import { CHAKRA_UI_COLOR_MODE_KEY } from "./constants";
 import routes from "./routes";
 
 import "./App.css";
@@ -32,10 +33,10 @@ const queryClient = new QueryClient({
 function APP() {
   useTranslation();
 
-  const [colorMode, setColorMode] = useState(localStorage.getItem("chakra-ui-color-mode"));
+  const [colorMode, setColorMode] = useState(localStorage.getItem(CHAKRA_UI_COLOR_MODE_KEY));
   useEffect(() => {
     function onColorModeChange() {
-      const colorMode = localStorage.getItem("chakra-ui-color-mode");
+      const colorMode = localStorage.getItem(CHAKRA_UI_COLOR_MODE_KEY);
       setColorMode(colorMode);
     }
     window.addEventListener("ColorModeChange", onColorModeChange);

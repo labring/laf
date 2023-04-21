@@ -5,11 +5,12 @@ import clsx from "clsx";
 import { t } from "i18next";
 
 import CopyText from "@/components/CopyText";
-import JsonEditor from "@/components/Editor/JsonEditor";
+import JSONEditor from "@/components/Editor/JSONEditor";
 import JSONViewer from "@/components/Editor/JSONViewer";
 import EmptyBox from "@/components/EmptyBox";
 import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
+import { COLOR_MODE } from "@/constants";
 
 import AddPolicyModal from "../mods/AddPolicyModal";
 import AddRulesModal from "../mods/AddRulesModal";
@@ -36,7 +37,7 @@ export default function PolicyDataList() {
   });
 
   const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   useEffect(() => {
     setCurrentData(undefined);
@@ -177,7 +178,7 @@ export default function PolicyDataList() {
                   "bg-lafDark-200": darkMode,
                 })}
               >
-                <JsonEditor
+                <JSONEditor
                   colorMode={colorMode}
                   value={record}
                   onChange={(values) => {

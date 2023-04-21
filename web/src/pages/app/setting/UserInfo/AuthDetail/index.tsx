@@ -12,6 +12,8 @@ import {
 import clsx from "clsx";
 import { t } from "i18next";
 
+import { COLOR_MODE } from "@/constants";
+
 export default function AuthDetail(props: { onBack: () => void }) {
   type FormData = {
     tel: string;
@@ -27,7 +29,7 @@ export default function AuthDetail(props: { onBack: () => void }) {
   } = useForm<FormData>();
 
   const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   const onSubmit = async (data: any) => {};
   return (

@@ -19,7 +19,7 @@ import IconWrap from "@/components/IconWrap";
 import MoreButton from "@/components/MoreButton";
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
-import { Pages } from "@/constants";
+import { COLOR_MODE, Pages } from "@/constants";
 
 import { useDeleteFunctionMutation, useFunctionListQuery } from "../../service";
 import useFunctionStore from "../../store";
@@ -46,7 +46,7 @@ export default function FunctionList() {
   const [keywords, setKeywords] = useState("");
 
   const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   const { currentApp } = useGlobalStore();
 

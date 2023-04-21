@@ -21,7 +21,7 @@ import JSONViewer from "@/components/Editor/JSONViewer";
 import { Row } from "@/components/Grid";
 import Panel from "@/components/Panel";
 import Resize from "@/components/Resize";
-import { Pages } from "@/constants";
+import { COLOR_MODE, Pages } from "@/constants";
 
 import { useCompileMutation } from "../../service";
 import useFunctionStore from "../../store";
@@ -52,7 +52,7 @@ export default function DebugPanel(props: { containerRef: any }) {
 
   const compileMutation = useCompileMutation();
   const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   const [queryParams, setQueryParams] = useState([]);
   const [bodyParams, setBodyParams] = useState<{ contentType: string; data: any }>();

@@ -6,6 +6,8 @@ import { useTranslation } from "react-i18next";
 import { FiGithub } from "react-icons/fi";
 import { useColorMode } from "@chakra-ui/react";
 
+import { COLOR_MODE } from "@/constants";
+
 import UserSetting from "./UserSetting";
 
 import useGlobalStore from "@/pages/globalStore";
@@ -20,7 +22,7 @@ export default function Header(props: { size: "sm" | "lg" }) {
       <div className="flex items-center">
         <a href="/">
           <img
-            src={colorMode === "dark" ? "/logo_light.png" : "/logo_light.png"}
+            src={colorMode === COLOR_MODE.dark ? "/logo_light.png" : "/logo_light.png"}
             alt="logo"
             width={80}
             className="mr-4"

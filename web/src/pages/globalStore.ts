@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
-import { APP_PHASE_STATUS } from "@/constants";
+import { APP_PHASE_STATUS, CHAKRA_UI_COLOR_MODE_KEY } from "@/constants";
 import { formatPort } from "@/utils/format";
 
 import { TApplicationDetail, TRegion, TRuntime, TUserInfo } from "@/apis/typing";
@@ -138,7 +138,7 @@ const useGlobalStore = create<State>()(
           position: "top",
           title: text,
           status: "success",
-          variant: "subtle",
+          variant: localStorage.getItem(CHAKRA_UI_COLOR_MODE_KEY) ? "subtle" : "solid",
           duration: 1000,
           containerStyle: {
             maxWidth: "100%",

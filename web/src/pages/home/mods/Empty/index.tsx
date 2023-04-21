@@ -3,6 +3,8 @@ import { AddIcon } from "@chakra-ui/icons";
 import { Button, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
+import { COLOR_MODE } from "@/constants";
+
 import CreateAppModal from "../CreateAppModal";
 
 import styles from "./index.module.scss";
@@ -23,7 +25,7 @@ function Empty() {
   const { userInfo } = useGlobalStore();
 
   const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   return (
     <div style={{ height: "75vh", minHeight: "500px" }}>

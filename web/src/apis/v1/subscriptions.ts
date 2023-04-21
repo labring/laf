@@ -79,7 +79,7 @@ export async function SubscriptionControllerRenew(
 }
 
 /**
- * Upgrade a subscription (TODO)
+ * Upgrade a subscription - TODO
  */
 export async function SubscriptionControllerUpgrade(
   params: Definitions.UpgradeSubscriptionDto | any,

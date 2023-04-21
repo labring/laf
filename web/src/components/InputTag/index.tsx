@@ -3,11 +3,13 @@ import { Input, Tag, TagCloseButton, TagLabel, useColorMode } from "@chakra-ui/r
 import clsx from "clsx";
 import { t } from "i18next";
 
+import { COLOR_MODE } from "@/constants";
+
 export default function InputTag(props: { value: string[]; onChange: (value: string[]) => any }) {
   const { value, onChange } = props;
   const [inputV, setInputV] = useState("");
   const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
   const handleEnter = (e: any) => {
     if (e.key === "Enter") {
       e.preventDefault();

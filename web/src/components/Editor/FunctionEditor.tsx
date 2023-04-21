@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { debounce } from "lodash";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
-import { Pages } from "@/constants";
+import { COLOR_MODE, Pages } from "@/constants";
 
 import "./userWorker";
 
@@ -105,7 +105,7 @@ function FunctionEditor(props: {
     path,
     height = "100%",
     className,
-    colorMode = "light",
+    colorMode = COLOR_MODE.light,
     readOnly = false,
   } = props;
 
@@ -142,7 +142,7 @@ function FunctionEditor(props: {
         overviewRulerLanes: 0,
         lineNumbersMinChars: 4,
         fontSize: 14,
-        theme: colorMode === "dark" ? "lafEditorThemeDark" : "lafEditorTheme",
+        theme: colorMode === COLOR_MODE.dark ? "lafEditorThemeDark" : "lafEditorTheme",
         scrollBeyondLastLine: false,
       });
 
@@ -165,7 +165,7 @@ function FunctionEditor(props: {
   useEffect(() => {
     if (monacoEl && editorRef.current) {
       editorRef.current.updateOptions({
-        theme: colorMode === "dark" ? "lafEditorThemeDark" : "lafEditorTheme",
+        theme: colorMode === COLOR_MODE.dark ? "lafEditorThemeDark" : "lafEditorTheme",
       });
     }
   }, [colorMode]);

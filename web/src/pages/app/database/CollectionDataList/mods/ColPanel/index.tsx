@@ -1,7 +1,7 @@
 import { Button } from "@chakra-ui/react";
 import { t } from "i18next";
 
-import JsonEditor from "@/components/Editor/JsonEditor";
+import JSONEditor from "@/components/Editor/JSONEditor";
 export default function ColPanel() {
   return (
     <div className="group  relative h-full">
@@ -11,7 +11,7 @@ export default function ColPanel() {
         </Button>
       </div>
       <div className="absolute bottom-0 left-0 right-0 top-12 rounded border p-2">
-        <JsonEditor value={JSON.stringify({ name: "hello" })} />
+        <JSONEditor value={JSON.stringify({ name: "hello" })} />
       </div>
     </div>
   );

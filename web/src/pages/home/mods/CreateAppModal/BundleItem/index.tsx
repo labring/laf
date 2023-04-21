@@ -2,6 +2,7 @@ import { useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 import { t } from "i18next";
 
+import { COLOR_MODE } from "@/constants";
 import {
   formatLimitCapacity,
   formatLimitCPU,
@@ -30,7 +31,7 @@ export default function BundleItem(props: {
 }) {
   const { bundle, isActive, onChange } = props;
   const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
   let durationIndex = props.durationIndex;
   if (durationIndex < 0) {
     durationIndex = 0;
