@@ -4,7 +4,7 @@ title: 云数据库介绍
 
 # {{ $frontmatter.title }}
 
-Laf云数据库提供了开箱即用的数据库，无需复杂配置和连接。在云函数中可通过 `cloud.database()` 新建DB示例去操作数据库。
+Laf云数据库提供了开箱即用的数据库，无需复杂配置和连接。在云函数中可通过 `cloud.database()` 新建DB实例去操作数据库。
 
 Laf云数据库是使用的 `MongoDB` ，既保留了 `MongoDB` 原生查询数据库操作方法，也封装了更方便的操作方法。
 
