@@ -15,100 +15,82 @@ export async function main(ctx: FunctionContext) {
     label: t("database example"),
     value: `import cloud from '@lafjs/cloud'
 
-const db = cloud.database()
-
-export async function main(ctx: FunctionContext) {
-  // insert data
-  const insertRes = await db.collection('test').add({ name: "hello laf" })
-  console.log(insertRes)
-  if (insertRes.ok) {
-    // get data
-    const res = await db.collection('test').getOne()
-    console.log(res)
-    return res
-  } else {
-    return { data: insertRes.error }
-  }
-}
+    export async function main(ctx: FunctionContext) {
+      const db = cloud.database()
+    
+      // insert data
+      await db.collection('test').add({ name: "hello laf" })
+    
+      // get data
+      const res = await db.collection('test').getOne()
+      console.log(res)
+    
+      return res.data
+    }
 `,
   },
   {
     label: t("upload example"),
     value: `import cloud from '@lafjs/cloud'
-import { PutObjectCommand, S3 } from "@aws-sdk/client-s3";
-
-exports.main = async function (ctx: FunctionContext) {
-  const { auth, body, query } = ctx
-  const ENDPOINT = cloud.env.OSS_EXTERNAL_ENDPOINT;
-  const BUCKET = ""; // Create your bucket first
-
-  const s3Client = new S3({
-    region: cloud.env.OSS_REGION,
-    endpoint: ENDPOINT,
-    credentials: {
-      accessKeyId: cloud.env.OSS_ACCESS_KEY,
-      secretAccessKey: cloud.env.OSS_ACCESS_SECRET,
-    },
-    forcePathStyle: true,
-  });
-
-  const file = ctx.files[0]
-  console.log(file)
-  const stream = require('fs').createReadStream(file.path)
-  const cmd = new PutObjectCommand({
-    Bucket: BUCKET,
-    Key: ctx.files[0].filename,
-    Body: stream,
-    ContentType: file.mimetype,
-  })
-  try {
-    const data = await s3Client.send(cmd);
-    return {
-      success: true,
-      fileName: ctx.files[0].filename,
+    import { S3 } from "@aws-sdk/client-s3"
+    
+    exports.main = async function (ctx: FunctionContext) {
+      // Create your bucket first
+      const BUCKET = "kcqcau-test" 
+      const client = new S3({
+        region: cloud.env.OSS_REGION,
+        endpoint: cloud.env.OSS_EXTERNAL_ENDPOINT,
+        credentials: {
+          accessKeyId: cloud.env.OSS_ACCESS_KEY,
+          secretAccessKey: cloud.env.OSS_ACCESS_SECRET,
+        },
+        forcePathStyle: true,
+      })
+    
+      const file = ctx.files[0]
+      console.log(file)
+      const stream = require('fs').createReadStream(file.path)
+    
+      const res = await client.putObject({
+        Bucket: BUCKET,
+        Key: ctx.files[0].filename,
+        Body: stream,
+        ContentType: file.mimetype,
+      })
+      console.log(res)
+      return res
     }
-  } catch (err) {
-    return { code: 500, err: err }
-  }
-}
     `,
   },
   {
     label: t("ChatGPT example"),
     value: `import cloud from '@lafjs/cloud'
-
+    const apiKey = cloud.env.API_KEY
+    
     export async function main(ctx: FunctionContext) {
-      const data = ctx.body
       const { ChatGPTAPI } = await import('chatgpt')
+      const { body, response } = ctx
     
-    
+      // get chatgpt api
       let api = cloud.shared.get('api')
-    
       if (!api) {
-        // 这里需要填写你的apiKey
-        api = new ChatGPTAPI({ apiKey: '' })
+        api = new ChatGPTAPI({ apiKey })
         cloud.shared.set('api', api)
       }
     
-      ctx.response.setHeader('Content-Type', 'application/octet-stream');
+      // set stream response type
+      response.setHeader('Content-Type', 'application/octet-stream');
     
-      const obj = {
-        onProgress: (partialResponse => {
-          if (partialResponse && partialResponse.delta != undefined) {
-            ctx.response.write(partialResponse.delta);
-          }
-        })
-      }
+      // send message
+      const res = await api.sendMessage(body.message, {
+        onProgress: (partialResponse) => {
+          if (partialResponse?.delta != undefined)
+            response.write(partialResponse.delta)
+        },
+        parentMessageId: body.parentMessageId || ''
+      })
     
-      if (data.parentMessageId) {
-        obj.parentMessageId = data.parentMessageId
-      }
-    
-      const res = await api.sendMessage(data.message, obj)
-    
-      ctx.response.end("--!" + res.id)
-    
-      return res
+      response.end("--!" + res.id)
     }
     `,
   },

@@ -1,6 +1,11 @@
 import { requestType } from "./requestType";
 import { responseType } from "./responseType";
+import { readableStreamTypes, streamTypes, writableStreamTypes } from "./streamType";
+
 export const globalDeclare = `
+${streamTypes}
+${readableStreamTypes}
+${writableStreamTypes}
 ${requestType}
 ${responseType}
 
