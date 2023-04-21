@@ -100,7 +100,8 @@ const guideSiderbarConfig = [
   {
     text: "云数据库",
     items: [
-      { text: "云数据库简介", link: "/guide/db/" },
+      { text: "数据库简介", link: "/guide/db/" },
+      { text: "数据库入门", link: "/guide/db/quickstart" },
       { text: "数据查询", link: "/guide/db/query" },
       { text: "数据操作", link: "/guide/db/actions" },
       { text: "访问策略", link: "/guide/db/policy" },
