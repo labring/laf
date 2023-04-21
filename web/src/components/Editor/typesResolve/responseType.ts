@@ -1,6 +1,6 @@
 const outgoingMessageType = `
 
-declare class OutgoingMessage extends Stream {
+declare class OutgoingMessage extends Writable {
   readonly req: IncomingMessage;
   chunkedEncoding: boolean;
   shouldKeepAlive: boolean;
@@ -135,8 +135,7 @@ declare class OutgoingMessage extends Stream {
 export const responseType = `
 ${outgoingMessageType}
 
-// declare class ServerResponse extends OutgoingMessage{
-declare class ServerResponse {
+declare class ServerResponse extends OutgoingMessage{
   statusCode: number;
   statusMessage: string;
 

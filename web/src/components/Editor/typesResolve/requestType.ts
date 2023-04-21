@@ -1,5 +1,5 @@
 const incomingMessageType = `
-  class IncomingMessage extends Stream {
+  class IncomingMessage extends Readable {
     constructor(socket: Socket);
     /**
      * The 'message.aborted' property will be 'true' if the request has
