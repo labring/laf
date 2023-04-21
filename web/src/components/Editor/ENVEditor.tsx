@@ -80,7 +80,8 @@ function ENVEditor(props: {
           enabled: false,
         },
         scrollbar: {
-          verticalScrollbarSize: 0,
+          verticalScrollbarSize: 4,
+          horizontalScrollbarSize: 8,
           alwaysConsumeMouseWheel: false,
         },
         lineNumbersMinChars: 0,

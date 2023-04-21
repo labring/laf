@@ -136,7 +136,8 @@ function FunctionEditor(props: {
         language: "typescript",
         automaticLayout: true,
         scrollbar: {
-          verticalScrollbarSize: 6,
+          verticalScrollbarSize: 4,
+          horizontalScrollbarSize: 8,
         },
         formatOnPaste: true,
         overviewRulerLanes: 0,

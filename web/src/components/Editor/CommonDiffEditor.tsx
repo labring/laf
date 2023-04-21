@@ -1,5 +1,8 @@
 import { useEffect, useRef } from "react";
+import { useColorMode } from "@chakra-ui/react";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
+
+import { COLOR_MODE } from "@/constants";
 
 import "./userWorker";
 
@@ -9,6 +12,8 @@ function CommonDiffEditor(props: { original: string; modified: string }) {
   const editorRef = useRef<monaco.editor.IDiffEditor | null>();
 
   const monacoEl = useRef(null);
+
+  const { colorMode } = useColorMode();
 
   useEffect(() => {
     if (monacoEl && !editorRef.current) {
@@ -21,6 +26,12 @@ function CommonDiffEditor(props: { original: string; modified: string }) {
         renderOverviewRuler: false,
         fontSize: 14,
         scrollBeyondLastLine: false,
+        scrollbar: {
+          verticalScrollbarSize: 4,
+          horizontalScrollbarSize: 6,
+          alwaysConsumeMouseWheel: false,
+        },
+        theme: colorMode === COLOR_MODE.dark ? "lafEditorThemeDark" : "lafEditorTheme",
       });
 
       editorRef.current.setModel({
@@ -30,7 +41,7 @@ function CommonDiffEditor(props: { original: string; modified: string }) {
     }
 
     return () => {};
-  }, [modified, original]);
+  }, [colorMode, modified, original]);
 
   return <div className=" border-t" style={{ height: "70vh", width: "100%" }} ref={monacoEl}></div>;
 }

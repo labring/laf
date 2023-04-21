@@ -152,7 +152,7 @@ const useGlobalStore = create<State>()(
           position: "top",
           title: text,
           status: "error",
-          variant: "subtle",
+          variant: localStorage.getItem(CHAKRA_UI_COLOR_MODE_KEY) ? "subtle" : "solid",
           duration: 1500,
           containerStyle: {
             maxWidth: "100%",
@@ -165,7 +165,7 @@ const useGlobalStore = create<State>()(
         toast({
           position: "top",
           title: text,
-          variant: "subtle",
+          variant: localStorage.getItem(CHAKRA_UI_COLOR_MODE_KEY) ? "subtle" : "solid",
           duration: 1000,
           containerStyle: {
             maxWidth: "100%",

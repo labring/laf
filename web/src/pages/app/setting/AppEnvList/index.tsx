@@ -41,6 +41,7 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
             style={{
               position: "absolute",
               top: 0,
+              width: "calc(100% - 15px)",
               bottom: 0,
             }}
             colorMode={colorMode}
