@@ -144,3 +144,13 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64, linux/arm64
+
+  trigger-workflow-e2e:
+    needs: [dockerize-main-image, dockerize-init-image]
+    runs-on: ubuntu-latest
+    steps:
+      - name: trigger cluster image workflow
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          event-type: dockerize-runtime-success
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "latest"}'
