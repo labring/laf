@@ -14,27 +14,12 @@ import * as cp from 'child_process'
 import { promisify } from 'util'
 import { MinioCommandExecOutput } from './types'
 import { MINIO_COMMON_USER_GROUP } from 'src/constants'
-import { RegionService } from 'src/region/region.service'
 
 const exec = promisify(cp.exec)
 
 @Injectable()
 export class MinioService {
   private readonly logger = new Logger(MinioService.name)
-
-  constructor(private readonly regionService: RegionService) {
-    this.regionService.findAll().then(async (regions) => {
-      for (const region of regions) {
-        const res = await this.setMinioClientTarget(region)
-        if (res.status === 'success') {
-          this.logger.log('minio alias init - ' + region.name + ' success')
-        } else {
-          this.logger.log('minio alias init ' + region.name + ' failed')
-          this.logger.debug(res)
-        }
-      }
-    })
-  }
 
   /**
    * Create s3 client
@@ -64,7 +49,7 @@ export class MinioService {
     const target = region.name
 
     const sub_cmd = `admin user add ${target} ${username} ${password}`
-    return await this.executeMinioClientCmd(sub_cmd)
+    return await this.executeMinioClientCmd(region, sub_cmd)
   }
 
   /**
@@ -75,7 +60,7 @@ export class MinioService {
 
     const target = region.name
     const sub_cmd = `admin user info ${target} ${username}`
-    const res = await this.executeMinioClientCmd(sub_cmd)
+    const res = await this.executeMinioClientCmd(region, sub_cmd)
     if (res.status !== 'success') return null
     return res
   }
@@ -88,7 +73,7 @@ export class MinioService {
 
     const target = region.name
     const sub_cmd = `admin user remove ${target} ${username}`
-    return await this.executeMinioClientCmd(sub_cmd)
+    return await this.executeMinioClientCmd(region, sub_cmd)
   }
 
   /**
@@ -99,7 +84,7 @@ export class MinioService {
 
     const target = region.name
     const sub_cmd = `admin group add ${target} ${MINIO_COMMON_USER_GROUP} ${username}`
-    return await this.executeMinioClientCmd(sub_cmd)
+    return await this.executeMinioClientCmd(region, sub_cmd)
   }
 
   /**
@@ -186,7 +171,7 @@ export class MinioService {
 
     const sub_cmd = `du ${region.name}/${bucket}`
 
-    const res = await this.executeMinioClientCmd(sub_cmd)
+    const res = await this.executeMinioClientCmd(region, sub_cmd)
     return res as GetBucketUsedSizeOutput
   }
 
@@ -198,7 +183,7 @@ export class MinioService {
 
     const target = region.name
     const sub_cmd = `rb --force ${target}/${bucket}`
-    return await this.executeMinioClientCmd(sub_cmd)
+    return await this.executeMinioClientCmd(region, sub_cmd)
   }
 
   /**
@@ -232,8 +217,12 @@ export class MinioService {
    * Execute minio client shell
    */
   private async executeMinioClientCmd(
+    region: Region,
     sub_cmd: string,
   ): Promise<MinioCommandExecOutput> {
+    const res = await this.setMinioClientTarget(region)
+    assert(res.status === 'success', 'failed to set minio client target')
+
     const mc_path = process.env.MINIO_CLIENT_PATH || 'mc'
     const cmd = `${mc_path} ${sub_cmd} --json`
 
@@ -260,9 +249,20 @@ export class MinioService {
     const endpoint = conf.controlEndpoint
     const target = region.name
 
-    const cmd = `alias set ${target} ${endpoint} ${access_key} ${access_secret}`
+    const mc_path = process.env.MINIO_CLIENT_PATH || 'mc'
+    const cmd = `${mc_path} alias set ${target} ${endpoint} ${access_key} ${access_secret} --json`
 
-    return await this.executeMinioClientCmd(cmd)
+    try {
+      const { stdout } = await exec(cmd)
+      const json: MinioCommandExecOutput = JSON.parse(stdout)
+      return json
+    } catch (error) {
+      this.logger.error(`failed to exec command: {${cmd}}`, error)
+      return {
+        status: 'error',
+        error: error,
+      }
+    }
   }
 
   /**
