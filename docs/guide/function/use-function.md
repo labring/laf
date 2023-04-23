@@ -219,6 +219,17 @@ export async function main(ctx: FunctionContext) {
 };
 ```
 
+还可以这么写
+
+```ts
+// get 请求
+const getRes = await cloud.fetch.get("http://api.github.com/");
+// post 请求
+const postRes = await cloud.fetch.post("http://api.github.com/",{
+  name: 'laf'
+});
+```
+
 ### 操作数据库
 
 通过`cloud.database()` 可以获取数据库对象，进而对数据库进行操作。
