@@ -6,7 +6,7 @@ export class CreateEnvironmentDto {
   @IsNotEmpty()
   @IsString()
   @Length(1, 64)
-  @Matches(/^[a-zA-Z_][a-zA-Z0-9_]*$/)
+  @Matches(/^[a-zA-Z_][a-zA-Z0-9_]{1,64}$/)
   name: string
 
   @ApiProperty()
