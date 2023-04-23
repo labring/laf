@@ -11,7 +11,7 @@ const NavConfig = [
   { text: "范例", link: "/examples/aliyun-sms", activeMatch: "^/examples/" },
   { text: "预览图", link: "/screenshots" },
   {
-    text: "在线体验",
+    text: "立即使用",
     // target: "_self",
     link: "https://laf.run/",
   },
