@@ -4,13 +4,17 @@ title: 云数据库介绍
 
 # {{ $frontmatter.title }}
 
-云数据库是基于 MongoDB 实现的，其中的绝大多数概念、操作和 MongoDB 是一致的。
+Laf云数据库提供了开箱即用的数据库，无需复杂配置和连接。在云函数中可通过 `cloud.database()` 新建DB实例去操作数据库。
+
+Laf云数据库是使用的 `MongoDB` ，既保留了 `MongoDB` 原生查询数据库操作方法，也封装了更方便的操作方法。
+
+Laf云数据库是一个JSON格式的文档型数据库，数据库中的每条记录都是一个JSON格式的文档。因此在Laf数据库中，集合对应Mysql的数据表，文档对应Mysql的行，字段对应Mysql的列。
 
 ## 基本概念
 
 ### 文档
 
-数据库的每一条记录都是类似于 JSON 的文档：
+数据库的每条记录都是一个 JSON 格式的文档，如：
 
 ```js
 {
@@ -26,104 +30,117 @@ title: 云数据库介绍
 
 集合是一组文档的集合，每个文档都在一个集合里面。如所有的用户放在 `users` 集合里。
 
+```js
+[
+  {
+    "username": "name1",
+    "password": "123456",
+    "extraInfo": {
+      "mobile": "15912345678"
+    }
+  },
+  {
+    "username": "name2",
+    "password": "12345678",
+    "extraInfo": {
+      "mobile": "15912345679"
+    }
+  }
+  ...
+]
+```
+
 ### 数据库
 
 每个 Laf 应用有且仅有一个数据库，但是一个数据库可以创建多个集合。
 
-<!-- ## 访问数据库
+![dblist](/doc-images/dblist.jpg)
 
-### 在云函数中访问数据库
+上图代表当前Laf应用下有2个集合，分别是 `test` 集合和 `messages` 集合
 
-云函数需要使用 `@lafjs/cloud` 来获取数据库访问器。
-
-```js
-import cloud from "@lafjs/cloud";
-
-// 数据库对象
-const db = cloud.database();
-``` -->
-
-<!-- ### 在客户端中访问数据库
-
-前端可使用 [laf-client-sdk](https://github.com/labring/laf/tree/main/packages/client-sdk) “直连”数据库，无需与服务端对接口。
-
-在访问数据库之前，需要先设置一个访问策略。在 云数据库-访问策略 中创建一个新的策略，策略内容如下：
-
-```js
-{
-  "read": true,
-  "count": true,
-  "update": false,
-  "remove": false,
-  "add": false
-}
-```
-
-创建好后可以在 访问策略列表中获得入口地址。
-
-在前端项目中安装 laf-client-sdk:
-
-```shell
-npm install laf-client-sdk
-```
-
-在使用前，需要初始化 SDK：
-
-```js
-const cloud = require("laf-client-sdk").init({
-  // 应用的服务地址，在欢迎-服务地址 可找到
-  baseUrl: "http://localhost:8000",
-  // 刚刚创建的访问策略的入口地址
-  dbProxyUrl: "/proxy/app",
-  // provide your own token-get-function, a standard JWT token is expected
-  getAccessToken: () => localStorage.getItem("access_token"),
-  /**
-   * 客户端环境, 默认是 'h5':
-   * - `h5` for browsers
-   * - `wxmp` for WeChat MiniProgram
-   * - `uniapp` for uni-app
-   */
-  environment: "h5",
-});
-
-// 获取数据库访问器
-const db = cloud.database();
-``` -->
+同时在Laf的 `Web IDE` 中可以很方便的看到全部的集合列表，以及简单的管理。
 
 ## 数据类型
 
-云数据库提供了如下的类型：
+云数据库提供了以下类型:
 
-- String：字符串
-- Number：数字
-- Object：对象
-- Array：数组
-- Bool：布尔值
-- GeoPoint：地理位置点
-- GeoLineStringL: 地理路径
-- GeoPolygon: 地理多边形
-- GeoMultiPoint: 多个地理位置点
-- GeoMultiLineString: 多个地理路径
-- GeoMultiPolygon: 多个地理多边形
-- Date：时间
-- Null
+__常用数据类型__
 
-###  Date 类型
+- `String` 字符串类型，存储任意长度的UTF-8编码的字符串
+- `Number` 数字类型，包括整数和浮点数
+- `Boolean` 布尔类型，包括true和false
+- `Date` 日期类型，存储日期和时间
+- `ObjectId` 对象ID类型，用于存储文档的唯一标识符
+- `Array` 数组类型，可以包含任意数量的值，包括其他数据类型和嵌套数组
+- `Object` 对象类型，可以包含任意数量的键值对，其中值可以是任何数据类型，包括其他对象和嵌套数组
 
-Date 类型用于表示时间，精确到毫秒，可以用 JavaScript 内置 Date 对象创建。需要特别注意的是，用此方法创建的时间是客户端时间，不是服务端时间。如果需要使用服务端时间，应该用 API 中提供的 serverDate 对象来创建一个服务端当前时间的标记，当使用了 serverDate 对象的请求抵达服务端处理时，该字段会被转换成服务端当前的时间，更棒的是，我们在构造 serverDate 对象时还可通过传入一个有 offset 字段的对象来标记一个与当前服务端时间偏移 offset 毫秒的时间，这样我们就可以达到比如如下效果：指定一个字段为服务端时间往后一个小时。
+__其他数据类型__
 
-那么当我们需要使用客户端时间时，存放 Date 对象和存放毫秒数是否是一样的效果呢？不是的，我们的数据库有针对日期类型的优化，建议大家使用时都用 Date 或 serverDate 构造时间对象。
+- `Null` 相当于一个占位符，表示一个字段存在但是值为空
+- `GeoPoint` 地理位置点
+- `GeoLineStringLine` 地理路径
+- `GeoPolygon` 地理多边形
+- `GeoMultiPoint` 多个地理位置点
+- `GeoMultiLineString` 多个地理路径
+- `GeoMultiPolygon` 多个地理多边形
+
+### Date 类型
+
+Date 类型用于表示时间，精确到毫秒，可以用 JavaScript 内置 Date 对象创建。
+
+::: warning
+注意：当前服务端时间可能不是东八区时间，可以转换成东八区或者使用时间戳
+:::
+
+在云函数中，可以直接使用 `new Date()` 获取当前服务端时间
 
 ```js
 //服务端当前时间
-new db.serverDate();
+console.log(new Date())
+// 输出结果：2023-04-21T14:47:32.697Z
+
+const date = new Date();
+const timestamp = date.getTime();
+console.log(timestamp); 
+// 输出一个以毫秒为单位的时间戳，例如：1650560477427
 ```
 
+获取东八区时间
+
 ```js
-//服务端当前时间加1S
-new db.serverDate({
-  offset: 1000,
-});
+// 获取当前时间的东八区时间
+const date = new Date();
+const offset = 8; // 东八区偏移量为 +8
+
+// 计算当前时间的 UTC 时间，再加上偏移量得到东八区时间
+const utcTime = date.getTime() + (date.getTimezoneOffset() * 60 * 1000);
+const beijingTime = new Date(utcTime + (offset * 60 * 60 * 1000));
+console.log(beijingTime); // 输出东八区时间的 Date 对象
+```
+
+下面演示云函数在 `test` 集合中添加一条记录，并添加创建时间 `createTime` 和创建时间戳 `createTimestamp` 2个字段
+
+```js
+import cloud from '@lafjs/cloud'
+const db = cloud.database()
+
+export async function main(ctx: FunctionContext) {
+
+  // 获取当前时间的东八区时间
+  const date = new Date();
+  const offset = 8; // 东八区偏移量为 +8
+
+  // 计算当前时间的 UTC 时间，再加上偏移量得到东八区时间
+  const utcTime = date.getTime() + (date.getTimezoneOffset() * 60 * 1000);
+  const beijingTime = new Date(utcTime + (offset * 60 * 60 * 1000));
+  console.log(beijingTime); // 输出东八区时间的 Date 对象
+
+  await db.collection('test').add({
+    name: 'xiaoming',
+    createTime: beijingTime,
+    createTimestamp: date.getTime()
+  })
+}
 ```
 
 ### Null 类型
