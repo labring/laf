@@ -116,7 +116,6 @@ const guideSiderbarConfig = [
         text: "操作地理信息",
         link: "/guide/db/geo",
       },
-      { text: "访问策略", link: "/guide/db/policy" },
     ],
   },
   {
@@ -143,7 +142,10 @@ const guideSiderbarConfig = [
   },
   {
     text: "客户端 SDK",
-    items: [{ text: "laf-client-sdk 使用说明", link: "/guide/client-sdk/" }],
+    items: [
+      { text: "laf-client-sdk 使用说明", link: "/guide/client-sdk/" },
+      { text: "数据库访问策略", link: "/guide/db/policy" },
+    ],
   },
 ];
 
