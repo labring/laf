@@ -4,6 +4,8 @@ title: 数据库操作符
 
 # {{ $frontmatter.title }}
 
+Laf云函数支持多种不同的数据库操作符，用于执行查询、更新、删除等操作。
+
 ## 查询·逻辑操作符
 
 ### and
@@ -264,7 +266,7 @@ let res = await db.collection('articles').where({
 
 #### 使用说明
 
- 表示字段不等于某个值，和 [eq](Command.eq.html) 相反
+ 表示字段不等于某个值，和 [eq](#eq) 相反
 
 ### lt
 
