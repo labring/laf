@@ -8,7 +8,7 @@ title: 生成云存储临时令牌(STS)
 
 创建云函数 `get-oss-sts`，添加如下代码：
 
-```ts
+```typescript
 import cloud from "@lafjs/cloud";
 import { STSClient, AssumeRoleCommand } from "@aws-sdk/client-sts";
 

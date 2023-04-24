@@ -206,7 +206,7 @@ import cloud from "@lafjs/cloud";
 
 可以理解为 `cloud.fetch === axios`，可以做到互相替换。
 
-```ts
+```typescript
 import cloud from "@lafjs/cloud";
 
 export async function main(ctx: FunctionContext) {
@@ -221,7 +221,7 @@ export async function main(ctx: FunctionContext) {
 
 还可以这么写
 
-```ts
+```typescript
 // get 请求
 const getRes = await cloud.fetch.get("http://api.github.com/");
 // post 请求
@@ -240,7 +240,7 @@ const postRes = await cloud.fetch.post("http://api.github.com/",{
 
 下面的例子可以获取数据库中的用户信息：
 
-```ts
+```typescript
 import cloud from "@lafjs/cloud";
 
 export async function main(ctx: FunctionContext) {
@@ -260,7 +260,7 @@ export async function main(ctx: FunctionContext) {
 该方法已不推荐使用，现可直接[引入云函数](#云函数引入)
 :::
 
-```ts
+```typescript
 import cloud from '@lafjs/cloud'
 
 export async function main(ctx: FunctionContext) {
@@ -271,7 +271,7 @@ export async function main(ctx: FunctionContext) {
 
 如果调用的云函数需要用到 ctx 里面的东西，我们可以通过这样的方式传入。
 
-```ts
+```typescript
 import cloud from '@lafjs/cloud'
 
 export async function main(ctx: FunctionContext) {
@@ -282,7 +282,7 @@ export async function main(ctx: FunctionContext) {
 
 ### 生成和解密 JWT token
 
-```ts
+```typescript
 cloud.getToken(payload); // payload可参考下方的示例代码
 cloud.parseToken(token); // token为前端请求时header里的authorization中的token
 ```
@@ -317,7 +317,7 @@ export async function main(ctx: FunctionContext)  {
 
 > 注意：出于演示目的，对 password 以明文方式查询，并未做 hash 处理考虑，不建议实际开发过程中如此使用。
 
-```ts
+```typescript
 import cloud from "@lafjs/cloud";
 
 export async function main(ctx: FunctionContext)  {
@@ -366,7 +366,7 @@ export async function main(ctx: FunctionContext)  {
 应用重启后缓存会全部清空，不重启会一直保留
 :::
 
-```ts
+```typescript
 import cloud from "@lafjs/cloud";
 
 export async function main(ctx: FunctionContext) {
@@ -385,7 +385,7 @@ export async function main(ctx: FunctionContext) {
 
 下面是一个简单的使用实例：
 
-```ts
+```typescript
 import cloud from "@lafjs/cloud";
 
 export async function main(ctx: FunctionContext) {

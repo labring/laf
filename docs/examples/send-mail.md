@@ -8,7 +8,7 @@ title: 发送邮件
 
 创建 `sendmail` 云函数，添加依赖 `nodemailer`，编写以下代码：
 
-```ts
+```typescript
 import from 'nodemailer'
 
 // 邮件服务器配置

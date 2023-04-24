@@ -28,7 +28,7 @@ Laf云函数的运行日志都在一个隐藏的集合中：`__function_logs__`
 以下操作会删除全部历史日志，请谨慎操作
 :::
 
-```ts
+```typescript
 import cloud from '@lafjs/cloud'
 
 export async function main(ctx: FunctionContext) {

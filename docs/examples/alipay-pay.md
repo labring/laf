@@ -6,7 +6,7 @@ title: 支付宝支付云函数
 
 创建 `aliPay` 云函数，添加依赖 alipay-sdk ，编写以下代码：
 
-```ts
+```typescript
 import cloud from "@lafjs/cloud";
 import alipay from "alipay-sdk";
 const AlipayFormData = require("alipay-sdk/lib/form").default;

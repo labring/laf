@@ -95,6 +95,10 @@ const guideSiderbarConfig = [
         text: "拦截器",
         link: "/guide/function/interceptor",
       },
+      {
+        text: "云函数FAQ",
+        link: "/guide/function/faq",
+      },
     ],
   },
   {
@@ -104,12 +108,15 @@ const guideSiderbarConfig = [
       { text: "数据库入门", link: "/guide/db/quickstart" },
       { text: "新增数据", link: "/guide/db/add" },
       { text: "查询数据", link: "/guide/db/find" },
-      { text: "数据操作", link: "/guide/db/actions" },
-      { text: "访问策略", link: "/guide/db/policy" },
+      { text: "更新数据", link: "/guide/db/update" },
+      { text: "删除数据", link: "/guide/db/del" },
+      { text: "数据库操作符", link: "/guide/db/command" },
+      { text: "数据库聚合操作", link: "/guide/db/aggregate" },
       {
         text: "操作地理信息",
         link: "/guide/db/geo",
       },
+      { text: "访问策略", link: "/guide/db/policy" },
     ],
   },
   {

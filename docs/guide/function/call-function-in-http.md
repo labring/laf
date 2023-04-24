@@ -6,7 +6,7 @@
 
 下面是用前端使用 `axios` 请求云函数的简单示例。
 
-```ts
+```typescript
 const { data } = await axios({
   url: "<FunctionURL>",
   method: "get",

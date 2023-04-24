@@ -27,7 +27,7 @@ title: 快速开始
 
 点击 `register` 函数，进入 WebIDE，编写以下代码：
 
-```ts
+```typescript
 import cloud from "@lafjs/cloud";
 import { createHash } from "crypto";
 
@@ -66,7 +66,7 @@ exports.main = async function (ctx: FunctionContext) {
 
 同上，创建 `login` 云函数，编写以下代码：
 
-```ts
+```typescript
 import cloud from "@lafjs/cloud";
 import { createHash } from "crypto";
 
@@ -129,7 +129,7 @@ npm install laf-client-sdk
 
 然后填写下面的代码：
 
-```ts
+```typescript
 // user.ts
 
 import { Cloud } from "laf-client-sdk";

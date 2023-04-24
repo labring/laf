@@ -13,7 +13,7 @@ notify_url 也可以写一个 laf 云函数来接受支付结果的通知。
 
 创建 `wx-pay` 云函数，添加依赖 [wxpay-v3](https://github.com/yangfuhe/node-wxpay)，编写以下代码：
 
-```ts
+```typescript
 import cloud from "@lafjs/cloud";
 const Payment = require("wxpay-v3");
 
