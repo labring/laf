@@ -11,7 +11,6 @@ import {
   FunctionControllerUpdate,
 } from "@/apis/v1/apps";
 import useFunctionCache from "@/hooks/useFunctionCache";
-import useGlobalStore from "@/pages/globalStore";
 
 const queryKeys = {
   useFunctionListQuery: ["useFunctionListQuery"],
@@ -44,7 +43,6 @@ export const useFunctionDetailQuery = (name: string, config: any) => {
 
 export const useCreateFunctionMutation = () => {
   const store = useFunctionStore();
-  const globalStore = useGlobalStore();
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
@@ -52,9 +50,7 @@ export const useCreateFunctionMutation = () => {
     },
     {
       onSuccess(data) {
-        if (data.error) {
-          globalStore.showError(data.error);
-        } else {
+        if (!data.error) {
           queryClient.invalidateQueries(queryKeys.useFunctionListQuery);
           store.setCurrentFunction(data.data);
         }
@@ -64,7 +60,6 @@ export const useCreateFunctionMutation = () => {
 };
 
 export const useUpdateFunctionMutation = () => {
-  const globalStore = useGlobalStore();
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
@@ -72,9 +67,7 @@ export const useUpdateFunctionMutation = () => {
     },
     {
       onSuccess(data) {
-        if (data.error) {
-          globalStore.showError(data.error);
-        } else {
+        if (!data.error) {
           queryClient.invalidateQueries(queryKeys.useFunctionListQuery);
         }
       },
@@ -83,7 +76,6 @@ export const useUpdateFunctionMutation = () => {
 };
 
 export const useDeleteFunctionMutation = () => {
-  const globalStore = useGlobalStore();
   const store = useFunctionStore();
   const functionCache = useFunctionCache();
   const queryClient = useQueryClient();
@@ -93,9 +85,7 @@ export const useDeleteFunctionMutation = () => {
     },
     {
       onSuccess(data) {
-        if (data.error) {
-          globalStore.showError(data.error);
-        } else {
+        if (!data.error) {
           queryClient.invalidateQueries(queryKeys.useFunctionListQuery);
           store.setCurrentFunction({});
           functionCache.removeCache(data?.data?.id);
@@ -106,7 +96,6 @@ export const useDeleteFunctionMutation = () => {
 };
 
 export const useCompileMutation = () => {
-  const globalStore = useGlobalStore();
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["compileMutation"],
@@ -114,10 +103,9 @@ export const useCompileMutation = () => {
       return FunctionControllerCompile(values);
     },
     onSuccess(data) {
-      if (data.error) {
-        globalStore.showError(data.error);
+      if (!data.error) {
+        queryClient.setQueryData(["compileMutation"], data);
       }
-      queryClient.setQueryData(["compileMutation"], data);
     },
   });
 };

@@ -8,7 +8,6 @@ import {
   UserPasswordControllerSignin,
   UserPasswordControllerSignup,
 } from "@/apis/v1/auth";
-import useGlobalStore from "@/pages/globalStore";
 
 const queryKeys = {
   useSigninByPasswordMutation: ["useSigninByPasswordMutation"],
@@ -20,16 +19,13 @@ const queryKeys = {
 };
 
 export const useSigninByPasswordMutation = (config?: { onSuccess: (result: any) => void }) => {
-  const globalStore = useGlobalStore();
   return useMutation(
     (values: any) => {
       return UserPasswordControllerSignin(values);
     },
     {
       onSuccess: async (result) => {
-        if (result.error) {
-          globalStore.showError(result.error);
-        } else {
+        if (!result.error) {
           localStorage.setItem("token", result?.data);
           config?.onSuccess(result);
         }
@@ -39,16 +35,13 @@ export const useSigninByPasswordMutation = (config?: { onSuccess: (result: any) 
 };
 
 export const useSigninBySmsCodeMutation = (config?: { onSuccess: (result: any) => void }) => {
-  const globalStore = useGlobalStore();
   return useMutation(
     (values: any) => {
       return PhoneControllerSignin(values);
     },
     {
       onSuccess: async (result) => {
-        if (result.error) {
-          globalStore.showError(result.error);
-        } else {
+        if (!result.error) {
           localStorage.setItem("token", result?.data);
           config?.onSuccess(result);
         }
@@ -58,16 +51,13 @@ export const useSigninBySmsCodeMutation = (config?: { onSuccess: (result: any) =
 };
 
 export const useSignupMutation = (config?: { onSuccess: (result: any) => void }) => {
-  const globalStore = useGlobalStore();
   return useMutation(
     (values: any) => {
       return UserPasswordControllerSignup(values);
     },
     {
       onSuccess: async (result) => {
-        if (result.error) {
-          globalStore.showError(result.error);
-        } else {
+        if (!result.error) {
           config?.onSuccess(result);
         }
       },
