@@ -109,7 +109,7 @@ export class InstanceTaskService {
 
     // if waiting time is more than 5 minutes, stop the application
     const waitingTime = Date.now() - app.updatedAt.getTime()
-    if (waitingTime > 1000 * 60 * 5) {
+    if (waitingTime > 1000 * 60 * 3) {
       await db.collection<Application>('Application').updateOne(
         { appid: app.appid, phase: ApplicationPhase.Starting },
         {
