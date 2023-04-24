@@ -244,6 +244,9 @@
     "EveryHour": "per hour",
     "EveryFiveMinutes": "every five minutes"
   },
+  "StatusBar": {
+    "CurrentApplication": "Current App"
+  },
   "NoData": "Currently no data",
   "SaveAndRestart": "save and restart",
   "DataEntry": {

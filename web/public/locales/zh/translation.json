@@ -244,6 +244,9 @@
     "EveryHour": "每小时",
     "EveryFiveMinutes": "每五分钟"
   },
+  "StatusBar": {
+    "CurrentApplication": "当前应用"
+  },
   "NoData": "当前无数据",
   "SaveAndRestart": "保存并重启",
   "DataEntry": {

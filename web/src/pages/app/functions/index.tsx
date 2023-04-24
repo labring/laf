@@ -8,6 +8,8 @@ import Content from "@/components/Content";
 import { Col, Row } from "@/components/Grid";
 import Resize from "@/components/Resize";
 
+import StatusBar from "../mods/StatusBar";
+
 import ConsolePanel from "./mods/ConsolePanel";
 import DebugPanel from "./mods/DebugPanel";
 import DependencePanel from "./mods/DependencePanel";
@@ -61,6 +63,7 @@ function FunctionPage() {
           <DebugPanel containerRef={containerRef} />
         </Col>
       </Row>
+      <StatusBar />
     </Content>
   );
 }

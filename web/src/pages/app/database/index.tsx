@@ -8,6 +8,8 @@ import { Col, Row } from "@/components/Grid";
 import Panel from "@/components/Panel";
 import Resize from "@/components/Resize";
 
+import StatusBar from "../mods/StatusBar";
+
 import CollectionDataList from "./CollectionDataList";
 import CollectionListPanel from "./CollectionListPanel";
 import PolicyDataList from "./PolicyDataList";
@@ -43,6 +45,7 @@ function DatabasePage() {
           </Panel>
         </Col>
       </Row>
+      <StatusBar />
     </Content>
   );
 }
