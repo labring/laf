@@ -1,25 +1,51 @@
 ---
-title: 云数据库查询
+title: 查询数据
 ---
 
 # {{ $frontmatter.title }}
 
-## 查询
+Laf云数据库支持传入不同的条件来查询数据，并且对查询结果进行处理。本文档将通过示例说明如何通过 `cloud.database()` 在云函数中执行查询。
 
-下面栗子是从 user 集合中查询数据。
+查询数据操作主要支持 `where()` `limit()` `skip()` `orderBy()` `field()` `get()` `getOne()` `count()` 等
+
+包括：
+
+[[toc]]
+
+## 获取所有记录
+
+::: tip
+可通过 `where` 设置查询条件，以及通过 `limit` 设置显示数量等
+:::
+
 ```js
 import cloud from '@lafjs/cloud'
 // 获取数据库引用
 const db = cloud.database()
 
 export async function main(ctx: FunctionContext) {
-  // collection 方法接受一个字符串参数，就是要查询集合的名字。
-  // get 方法发起查询请求
-  const res = await db.collection('user').get()
-  console.log(res) 
+  // get 方法发起查询请求，不带where就是直接查询全部数据，默认最多查询100条数据
+  const result1 = await db.collection('user').get()
+  console.log(result1) 
 
+  // get 方法发起查询请求，配置where条件
+  const result2 = await db.collection('user').where({
+    name: 'laf'
+  }).get()
+  console.log(result2) 
+
+  // get 方法发起查询请求，想一次获取更多数据，最多一次获取1000条数据
+  const result3 = await db.collection('user').limit(1000).get()
+  console.log(result3) 
+}
 ```
+
+`get()` 前面支持 `where()`、`limit()`、`skip()`、`orderBy()`、`field()` 等操作。下面会逐一讲解。
+
+## 获取一条记录
+
 如果我们查询的数据只有一条，我们也可以使用 getOne 方法，它和 get 方法不同的是它只能获取一条数据，并且 data 的格式为对象。
+
 ```js
 import cloud from '@lafjs/cloud'
 // 获取数据库引用
@@ -43,81 +69,100 @@ export async function main(ctx: FunctionContext) {
 //   requestId: undefined,
 //   ok: true
 // }
+}
 ```
 
-支持 `where()`、`limit()`、`skip()`、`orderBy()`、`get()`、`update()`、`field()`、`count()` 等操作，下面我们来一一介绍。
-
+`getOne()` 前面支持 `where()`、`limit()`、`skip()`、`orderBy()`、`field()` 等操作。下面会逐一讲解。
 
 ## 添加查询条件
 
 `collection.where()`
 
 设置查询条件条件
-where 可接收对象作为参数，表示筛选出拥有和传入对象相同的 key-value 的文档。比如筛选出所有名字叫 jack 的用户：
+where 可接收对象作为参数，表示筛选出拥有和传入对象相同的 key-value 的文档。支持多个条件同时筛选。
+
+比如筛选出所有名字叫 jack 的用户：
 
 ```js
 // 查询 user 集合中 name 字段等于 jack 的记录
-db.collection("user").where({
+await db.collection("user").where({
  name:"jack"
 });
 ```
 
 :::tip
-这里注意，where 并不会发出请求，需参考我们第一个栗子加上 get
+这里注意，`where` 并不会去查询数据，需参考我们上面的栗子加上 `get()` 或者 `getOne()`
 :::
 
 ## 高级查询指令
+
 如果要表达更复杂的查询，可使用高级查询指令。
-### gt
-字段大于指定值。  
+
+### gt 字段大于指定值
+
+可用于查询数字、日期等类型的字段。如果是字符串对比，则会按照字典序进行比较。
+  
 此例子筛选出所有年龄大于 18 的用户：
-```js
+
+```ts
+const db = cloud.database()
 const _ = db.command; // 这里拿到指令
-db.collection("user").where({
+await db.collection("user").where({
     age: _.gt(18) // 表示大于 18
   },
 );
 ```
-### gte
 
-字段大于或等于指定值。
+### gte 字段大于或等于指定值
 
-### lt
+可用于查询数字、日期等类型的字段。如果是字符串对比，则会按照字典序进行比较。
 
-字段小于指定值。
+```ts
+const db = cloud.database()
+const _ = db.command; // 这里拿到指令
+await db.collection("user").where({
+    age: _.gte(18) // 表示大于或等于 18
+  },
+);
+```
 
-### lte
+### lt 字段小于指定值
 
-字段小于或等于指定值。
+可用于查询数字、日期等类型的字段。如果是字符串对比，则会按照字典序进行比较。
 
-### eq
+### lte 字段小于或等于指定值
 
-表示字段等于某个值。`eq` 指令接受一个字面量 (literal)，可以是 `number`, `boolean`, `string`, `object`, `array`。
+可用于查询数字、日期等类型的字段。如果是字符串对比，则会按照字典序进行比较。
+
+### eq 表示字段等于某个值
+
+`eq` 指令接受一个字面量 (literal)，可以是 `number`, `boolean`, `string`, `object`, `array`。
 
 比如筛选出所有自己发表的文章，除了用传对象的方式：
 
-```js
+```ts
 const myOpenID = "xxx";
-db.collection("articles").where({
+await db.collection("articles").where({
   _openid: myOpenID,
 });
 ```
 
 还可以用指令：
 
-```js
+```ts
+const db = cloud.database()
 const _ = db.command;
 const myOpenID = "xxx";
-db.collection("articles").where({
+await db.collection("articles").where({
   _openid: _.eq(openid),
 });
 ```
 
 注意 `eq` 指令比对象的方式有更大的灵活性，可以用于表示字段等于某个对象的情况，比如：
 
-```js
+```ts
 // 这种写法表示匹配 stat.publishYear == 2018 且 stat.language == 'zh-CN'
-db.collection("articles").where({
+await db.collection("articles").where({
   stat: {
     publishYear: 2018,
     language: "zh-CN",
@@ -125,7 +170,7 @@ db.collection("articles").where({
 });
 // 这种写法表示 stat 对象等于 { publishYear: 2018, language: 'zh-CN' }
 const _ = db.command;
-db.collection("articles").where({
+await db.collection("articles").where({
   stat: _.eq({
     publishYear: 2018,
     language: "zh-CN",
@@ -133,7 +178,7 @@ db.collection("articles").where({
 });
 ```
 
-### neq
+### neq 表示字段不等于某个值
 
 字段不等于。`neq` 指令接受一个字面量 (literal)，可以是 `number`, `boolean`, `string`, `object`, `array`。
 
@@ -141,7 +186,7 @@ db.collection("articles").where({
 
 ```js
 const _ = db.command;
-db.collection("goods").where({
+await db.collection("goods").where({
   category: "computer",
   type: {
     brand: _.neq("X"),
@@ -149,36 +194,29 @@ db.collection("goods").where({
 });
 ```
 
-### in
+### in 字段值在给定的数组中
 
-字段值在给定的数组中。
-
-筛选出年龄为 18 或 20 岁的用户：
+如：筛选出年龄为 18 或 20 岁的用户：
 
 ```js
 const _ = db.command;
-db.collection("user").where({
+await db.collection("user").where({
     age: _.in([18, 20]),
 });
 ```
 
-### nin
-
-字段值不在给定的数组中。
+### nin 字段值不在给定的数组中
 
 筛选出年龄不是 18 或 20 岁的用户：
 
-
 ```js
 const _ = db.command;
-db.collection("user").where({
+await db.collection("user").where({
     age: _.nin([8, 20]),
 });
 ```
 
-### and
-
-表示需同时满足指定的两个或以上的条件。
+### and 表示需同时满足指定的两个或以上的条件
 
 如筛选出年龄大于 18 小于 60 的用户：
 
@@ -186,7 +224,7 @@ db.collection("user").where({
 
 ```js
 const _ = db.command;
-db.collection("user").where({
+await db.collection("user").where({
     age: _.gt(18).and(_.lt(60)),
 });
 ```
@@ -195,20 +233,20 @@ db.collection("user").where({
 
 ```js
 const _ = db.command;
-db.collection("user").where({
+await db.collection("user").where({
     age: _.and(_.gt(18), _.lt(60)),
 });
 ```
 
-### or
+### or 表示需满足所有指定条件中的至少一个
 
-表示需满足所有指定条件中的至少一个。如筛选出用户年龄等于 18 或等于 60 的用户：
+如筛选出用户年龄等于 18 或等于 60 的用户：
 
 流式写法：
 
 ```js
 const _ = db.command;
-db.collection("user").where({
+await db.collection("user").where({
     age: _.eq(18).or(_.eq(60)),
 });
 ```
@@ -217,7 +255,7 @@ db.collection("user").where({
 
 ```js
 const _ = db.command;
-db.collection("user").where({
+await db.collection("user").where({
     age: _.or(_.eq(18),_.eq(60)),
 });
 ```
@@ -226,7 +264,7 @@ db.collection("user").where({
 
 ```js
 const _ = db.command;
-db.collection("goods").where(
+await db.collection("goods").where(
   _.or(
     {
       type: {
@@ -242,9 +280,7 @@ db.collection("goods").where(
 );
 ```
 
-## 正则表达式查询
-
-### db.RegExp
+## 正则表达式查询 `db.RegExp`
 
 根据正则表达式进行筛选
 
@@ -252,35 +288,32 @@ db.collection("goods").where(
 
 ```js
 // 可以直接使用正则表达式
-db.collection('articles').where({
+await db.collection('articles').where({
   version: /^\ds/i
 })
 
 // 或者
-db.collection('articles').where({
+await db.collection('articles').where({
   version: new db.RegExp({
     regex: '^\\ds'   // 正则表达式为 /^\ds/，转义后变成 '^\\ds'
     options: 'i'    // i表示忽略大小写
   })
 })
 ```
+
 ## 获取查询数量
 
-collection.count()
+collection.count() 查询符合条件的数量
 
 参数
 
 ```js
-//promise
-db.collection("goods")
-  .where({
-    category: "computer",
-    type: {
-      memory: 8,
-    },
-  })
-  .count()
-  .then(function (res) {});
+await db.collection("goods").where({
+  category: "computer",
+  type: {
+    memory: 8,
+  },
+}).count()
 ```
 
 响应参数
@@ -294,7 +327,7 @@ db.collection("goods")
 
 ## 设置记录数量
 
-collection.limit()
+collection.limit() 限制展示数量，最大1000
 
 参数说明
 
@@ -305,16 +338,12 @@ collection.limit()
 使用示例
 
 ```js
-//promise
-db.collection("user")
-  .limit(1)
-  .get()
-  .then(function (res) {});
+await db.collection("user").limit(1).get()
 ```
 
 ## 设置起始位置
 
-collection.skip()
+collection.skip() 跳过展示的数据
 
 参数说明
 
@@ -325,16 +354,29 @@ collection.skip()
 使用示例
 
 ```js
-//promise
-db.collection("user")
-  .skip(4)
-  .get()
-  .then(function (res) {});
+await db.collection("user").skip(4).get()
+```
+
+## 分页查询
+
+`skip()` 和 `limit()` 组合可做分页查询，这里不能用 `getOne()`
+
+```ts
+import cloud from '@lafjs/cloud'
+const db = cloud.database()
+
+export async function main(ctx: FunctionContext) {
+  // 每页显示数量
+  const pageSize = 3;
+  // 第几页
+  const page = 2;
+  const res = await db.collection('user').skip((page - 1) * pageSize).limit(pageSize).get()
+}
 ```
 
 ## 对结果排序
 
-collection.orderBy()
+collection.orderBy() 对数据排序后再展示
 
 参数说明
 
@@ -345,17 +387,14 @@ collection.orderBy()
 
 使用示例
 
-```js
-//promise
-db.collection("user")
-  .orderBy("name", "asc")
-  .get()
-  .then(function (res) {});
+```ts
+// 按照创建时间createAt 的升序排序
+await db.collection("user").orderBy("createAt", "asc").get()
 ```
 
 ## 指定返回字段
 
-collection.field()
+collection.field() 只返回指定字段
 
 参数说明
 
@@ -363,14 +402,17 @@ collection.field()
 | ---- | ------ | ---- | ----------------------------------------- |
 | -    | object | 是   | 要过滤的字段，不返回传 0，返回传 1 |
 
+::: tip
+备注：只能指定要返回的字段或者不要返回的字段。即{'a': 1, 'b': 0}是一种错误的参数格式，默认会显示id。
+:::
+
 使用示例
 
-```js
-db.collection("user")
-.field({ age: 1 });
+```ts
+await db.collection("user").field({ age: 1 });
 ```
 
-备注：只能指定要返回的字段或者不要返回的字段。即{'a': 1, 'b': 0}是一种错误的参数格式
+同样的后面也要加上 `get()` 或 `getOne()` ，才可以查询到结果
 
 ## with 关联查询
 
@@ -385,7 +427,7 @@ with / withOne 联表查询在 sdk 内部是先查询了主表后，再查询子
 主要用于「一对多」关系的子查询，可跨表查询，要求用户拥有子表的查询权限
 
 ```js
-const { data } = await db
+await const { data } = await db
   .collection("article")
   .with({
     query: db.collection("tag"),
@@ -394,7 +436,6 @@ const { data } = await db
     as: "tags", // 查询结果中字段重命名，缺省为子表名
   })
   .get();
-
 console.log(data);
 //  [ { id: 1, name: xxx, tags: [...] }  ]
 ```
@@ -439,6 +480,5 @@ const { data } = await db
     as: "tags", // 查询结果中字段重命名，缺省为子表名
   })
   .end();
-
 console.log(data);
 ```

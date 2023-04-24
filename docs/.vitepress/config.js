@@ -102,7 +102,8 @@ const guideSiderbarConfig = [
     items: [
       { text: "数据库简介", link: "/guide/db/" },
       { text: "数据库入门", link: "/guide/db/quickstart" },
-      { text: "数据查询", link: "/guide/db/query" },
+      { text: "新增数据", link: "/guide/db/add" },
+      { text: "查询数据", link: "/guide/db/find" },
       { text: "数据操作", link: "/guide/db/actions" },
       { text: "访问策略", link: "/guide/db/policy" },
       {
@@ -134,7 +135,7 @@ const guideSiderbarConfig = [
     items: [{ text: "laf-cli 使用说明", link: "/guide/cli/" }],
   },
   {
-    text: "laf-client-sdk",
+    text: "客户端 SDK",
     items: [{ text: "laf-client-sdk 使用说明", link: "/guide/client-sdk/" }],
   },
 ];
