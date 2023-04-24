@@ -109,7 +109,7 @@ export class InstanceTaskService {
 
     // if waiting time is more than 5 minutes, stop the application
     const waitingTime = Date.now() - app.updatedAt.getTime()
-    if (waitingTime > 1000 * 60 * 3) {
+    if (waitingTime > 1000 * 60 * 5) {
       await db.collection<Application>('Application').updateOne(
         { appid: app.appid, phase: ApplicationPhase.Starting },
         {
@@ -133,12 +133,12 @@ export class InstanceTaskService {
       instance.deployment?.status?.conditions || [],
     )
     if (!available) {
-      await this.relock(appid)
+      await this.relock(appid, waitingTime)
       return
     }
 
     if (!instance.service) {
-      await this.relock(appid)
+      await this.relock(appid, waitingTime)
       return
     }
 
@@ -297,9 +297,9 @@ export class InstanceTaskService {
    * Relock application by appid, lockedTime is in milliseconds
    */
   async relock(appid: string, lockedTime = 0) {
-    // if lockedTime greater than 5 minutes, set it to 10 minutes
-    if (lockedTime > 5 * 60 * 1000) {
-      lockedTime = 5 * 60 * 1000
+    // if lockedTime greater than 3 minutes, set it to 3 minutes
+    if (lockedTime > 3 * 60 * 1000) {
+      lockedTime = 3 * 60 * 1000
     }
 
     const db = SystemDatabase.db
