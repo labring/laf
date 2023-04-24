@@ -15,7 +15,7 @@ Laf云数据库更新数据，实际上就是针对集合中的文档进行修�
 ```typescript
 await db.collection('user')
 .where({ name: 'jack' })
-.update({ name: "jTom" })
+.update({ name: "Tom" })
 ```
 
 同样我们也可以一次更新同一个文档的多个属性，比如: 更改名字的同时也更改年龄。

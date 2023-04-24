@@ -6,6 +6,14 @@ title: 数据库操作符
 
 Laf云函数支持多种不同的数据库操作符，用于执行查询、更新、删除等操作。
 
+## 初始化操作符
+
+```typescript
+const db = cloud.database()
+const _ = db.command
+// 后续操作 用 _ 即可
+```
+
 ## 查询·逻辑操作符
 
 ### and
@@ -368,7 +376,7 @@ let res = await db.collection('todos').where({
 
 ### exists
 
-判断字段是否存在  
+判断字段是否存在，true为存在，false为不存在
 
 #### 示例代码
 
