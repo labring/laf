@@ -69,7 +69,6 @@ export const useEntryDataQuery = (params: any, onSuccess: (data: any) => void) =
 };
 
 export const useCreateDBMutation = (config?: { onSuccess: (data: any) => void }) => {
-  const globalStore = useGlobalStore();
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
@@ -77,9 +76,7 @@ export const useCreateDBMutation = (config?: { onSuccess: (data: any) => void })
     },
     {
       onSuccess: async (data) => {
-        if (data.error) {
-          globalStore.showError(data.error);
-        } else {
+        if (!data.error) {
           await queryClient.invalidateQueries(queryKeys.useCollectionListQuery);
           config?.onSuccess && config.onSuccess(data);
         }
@@ -98,9 +95,7 @@ export const useDeleteDBMutation = (config?: { onSuccess: (data: any) => void })
     },
     {
       onSuccess: async (data) => {
-        if (data.error) {
-          globalStore.showError(data.error);
-        } else {
+        if (!data.error) {
           store.setCurrentDB(undefined);
           await queryClient.invalidateQueries(queryKeys.useCollectionListQuery);
           globalStore.showSuccess(t("DeleteSuccess"));
@@ -131,8 +126,6 @@ export const useAddDataMutation = (config?: { onSuccess: (data: any) => void }) 
           globalStore.showSuccess(t("AddSuccess"));
           queryClient.invalidateQueries([queryKeys.useEntryDataQuery(currentDB?.name || "")]);
           config && config.onSuccess(data);
-        } else {
-          globalStore.showError(data.error);
         }
       },
     },
@@ -213,9 +206,7 @@ export const useCreatePolicyMutation = () => {
     },
     {
       onSuccess: async (data) => {
-        if (data.error) {
-          globalStore.showError(data.error);
-        } else {
+        if (!data.error) {
           globalStore.showSuccess(t("AddSuccess"));
           await queryClient.invalidateQueries(queryKeys.usePolicyListQuery);
           store.setCurrentPolicy(data.data);
@@ -234,11 +225,10 @@ export const useUpdatePolicyMutation = () => {
     },
     {
       onSuccess(data) {
-        if (data.error) {
-          globalStore.showError(data.error);
-        } else {
+        if (!data.error) {
           globalStore.showSuccess(t("UpdateSuccess"));
           queryClient.invalidateQueries(queryKeys.usePolicyListQuery);
+        } else {
         }
       },
     },
@@ -255,9 +245,7 @@ export const useDeletePolicyMutation = () => {
     },
     {
       onSuccess: async (data) => {
-        if (data.error) {
-          globalStore.showError(data.error);
-        } else {
+        if (!data.error) {
           store.setCurrentPolicy(undefined);
           globalStore.showSuccess(t("DeleteSuccess"));
           await queryClient.invalidateQueries(queryKeys.usePolicyListQuery);
@@ -310,9 +298,7 @@ export const useUpdateRulesMutation = (onSuccess?: (data: any) => void) => {
     },
     {
       onSuccess(data) {
-        if (data.error) {
-          globalStore.showError(data.error);
-        } else {
+        if (!data.error) {
           globalStore.showSuccess(t("UpdateSuccess"));
           onSuccess && onSuccess(data.data);
         }
@@ -330,9 +316,7 @@ export const useDeleteRuleMutation = (onSuccess?: () => void) => {
     },
     {
       onSuccess(data) {
-        if (data.error) {
-          globalStore.showError(data.error);
-        } else {
+        if (!data.error) {
           globalStore.showSuccess(t("DeleteSuccess"));
           onSuccess && onSuccess();
         }

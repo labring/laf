@@ -2,7 +2,7 @@
 import { createStandaloneToast } from "@chakra-ui/react";
 import axios, { AxiosRequestHeaders, AxiosResponse } from "axios";
 
-import { VITE_SERVER_BASE_URL } from "../constants";
+import { CHAKRA_UI_COLOR_MODE_KEY, VITE_SERVER_BASE_URL } from "../constants";
 
 const { toast } = createStandaloneToast();
 
@@ -45,6 +45,7 @@ request.interceptors.response.use(
       toast({
         title: data?.error,
         position: "top",
+        variant: localStorage.getItem(CHAKRA_UI_COLOR_MODE_KEY) ? "subtle" : "solid",
         status: "error",
         duration: 1500,
       });

@@ -49,7 +49,6 @@ export const useBucketListQuery = (config?: { onSuccess: (data: any) => void }) 
 };
 
 export const useBucketCreateMutation = (config?: { onSuccess: (data: any) => void }) => {
-  const globalStore = useGlobalStore();
   const queryClient = useQueryClient();
   const store = useStorageStore();
   return useMutation(
@@ -58,9 +57,7 @@ export const useBucketCreateMutation = (config?: { onSuccess: (data: any) => voi
     },
     {
       onSuccess: async (data) => {
-        if (data.error) {
-          globalStore.showError(data.error);
-        } else {
+        if (!data.error) {
           store.setCurrentStorage(data.data);
           await queryClient.invalidateQueries(queryKeys.useBucketListQuery);
         }
@@ -70,7 +67,6 @@ export const useBucketCreateMutation = (config?: { onSuccess: (data: any) => voi
 };
 
 export const useBucketUpdateMutation = (config?: { onSuccess: (data: any) => void }) => {
-  const globalStore = useGlobalStore();
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
@@ -78,11 +74,8 @@ export const useBucketUpdateMutation = (config?: { onSuccess: (data: any) => voi
     },
     {
       onSuccess: async (data) => {
-        if (data.error) {
-          globalStore.showError(data.error);
-        } else {
+        if (!data.error) {
           await queryClient.invalidateQueries(queryKeys.useBucketListQuery);
-
           config?.onSuccess && config.onSuccess(data);
         }
       },
@@ -100,9 +93,7 @@ export const useBucketDeleteMutation = () => {
     },
     {
       onSuccess: async (data) => {
-        if (data.error) {
-          globalStore.showError(data.error);
-        } else {
+        if (!data.error) {
           globalStore.showSuccess("delete success");
           store.setCurrentStorage(undefined);
           await queryClient.invalidateQueries(queryKeys.useBucketListQuery);
@@ -129,7 +120,6 @@ export const useWebsiteListQuery = (config?: { onSuccess: (data: any) => void })
 };
 
 export const useWebsiteCreateMutation = (config?: { onSuccess: (data: any) => void }) => {
-  const globalStore = useGlobalStore();
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
@@ -137,9 +127,7 @@ export const useWebsiteCreateMutation = (config?: { onSuccess: (data: any) => vo
     },
     {
       onSuccess: async (data) => {
-        if (data.error) {
-          globalStore.showError(data.error);
-        } else {
+        if (!data.error) {
           await queryClient.invalidateQueries(queryKeys.useBucketListQuery);
         }
       },
@@ -156,9 +144,7 @@ export const useWebsiteDeleteMutation = () => {
     },
     {
       onSuccess: async (data) => {
-        if (data.error) {
-          globalStore.showError(data.error);
-        } else {
+        if (!data.error) {
           globalStore.showSuccess("delete success");
           await queryClient.invalidateQueries(queryKeys.useBucketListQuery);
         }
@@ -168,7 +154,6 @@ export const useWebsiteDeleteMutation = () => {
 };
 
 export const useWebSiteUpdateMutation = (config?: { onSuccess: (data: any) => void }) => {
-  const globalStore = useGlobalStore();
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
@@ -176,11 +161,8 @@ export const useWebSiteUpdateMutation = (config?: { onSuccess: (data: any) => vo
     },
     {
       onSuccess: async (data) => {
-        if (data.error) {
-          globalStore.showError(data.error);
-        } else {
+        if (!data.error) {
           await queryClient.invalidateQueries(queryKeys.useBucketListQuery);
-
           config?.onSuccess && config.onSuccess(data);
         }
       },
