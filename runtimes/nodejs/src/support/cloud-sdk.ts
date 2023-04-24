@@ -26,12 +26,7 @@ function createCloudSdk() {
     },
     sockets: WebSocketAgent.clients,
     appid: Config.APP_ID,
-    env: {
-      DB_URI: Config.DB_URI,
-      SERVER_SECRET: Config.SERVER_SECRET,
-      RUNTIME_IMAGE: Config.RUNTIME_IMAGE,
-      ...process.env,
-    },
+    env: process.env,
   }
 
   /**
