@@ -23,7 +23,6 @@
 - [Prisma](https://www.prisma.io)
 - [MinIO](https://min.io) object storage
 - [APISIX](https://apisix.apache.org) gateway
-- [Casdoor](https://casdoor.org/)
 
 ## Prerequisites
 
