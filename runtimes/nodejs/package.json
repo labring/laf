@@ -1,6 +1,6 @@
 {
   "name": "runtime-nodejs",
-  "version": "1.0.0-beta.6",
+  "version": "1.0.0-beta.7",
   "description": "the node runtime for laf",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
@@ -27,7 +27,7 @@
     "@aws-sdk/client-sts": "^3.231.0",
     "@aws-sdk/s3-request-presigner": "^3.231.0",
     "@kubernetes/client-node": "^0.18.0",
-    "@lafjs/cloud": "^1.0.0-beta.4",
+    "@lafjs/cloud": "^1.0.0-beta.7",
     "alipay-sdk": "^2.0.2",
     "axios": "^1.2.1",
     "cors": "^2.8.5",
