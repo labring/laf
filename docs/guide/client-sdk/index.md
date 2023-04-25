@@ -31,11 +31,11 @@ const cloud = new Cloud({
 
 ## 参数
 
-`baseUrl` Laf应用链接，格式为 `https://APPID.laf.run`，APPID为你的Laf应用的appid
+`baseUrl` Laf 应用链接，格式为 `https://APPID.laf.run`，APPID 为你的 Laf 应用的appid
 
 `dbProxyUrl` 数据库访问策略入口，格式为 `/proxy/` 开头加上你新建策略名，如果不需要操作数据库，可不填此参数
 
-`getAccessToken` 请求时带的token，token为JWT token，如果不涉及权限可空
+`getAccessToken` 请求时带的 token，token 为 JWT token，如果不涉及权限可空
 
 `environment` 目前兼容三种环境 `wxmp`  `uniapp`  `h5`，`wxmp` 为微信小程序
 

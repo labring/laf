@@ -7,9 +7,27 @@
 下面是用前端使用 `axios` 请求云函数的简单示例。
 
 ```typescript
+// get 请求
+import axios from 'axios';
+
 const { data } = await axios({
   url: "<FunctionURL>",
   method: "get",
+});
+
+console.log(data);
+```
+
+```typescript
+// post 请求
+import axios from 'axios';
+
+const { data } = await axios({
+  url: "<FunctionURL>",
+  method: "post",
+  data: {
+    name: 'Jack'
+  }
 });
 
 console.log(data);

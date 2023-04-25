@@ -4,14 +4,14 @@ title: 新增数据
 
 # {{ $frontmatter.title }}
 
-Laf云函数库中，新增数据非常简单，正规说法为插入文档。以下是插入单个文档和批量插入文档的写法。
+Laf 云函数库中，新增数据非常简单，正规说法为插入文档。以下是插入单个文档和批量插入文档的写法。
 
-同时Laf云数据库是 `Schema Free` 的，意味着你可以插入任意的字段和数据类型。
+同时 Laf 云数据库是 `Schema Free` 的，意味着你可以插入任意的字段和数据类型。
 
 ::: tip
-使用 `cloud.database()` 新增数据的方法无法自定义id，所有新增的数据，都会自动生成id，生成的id类型为 `string`
+使用 `cloud.database()`新增数据的方法无法自定义 id，所有新增的数据，都会自动生成 id，生成的 id 类型为为 `string`
 
-使用 `mongodb 原生写法` ，可以自定义id，也可以自动生成id，生成的id类型为 `ObjectId`
+使用 `mongodb 原生写法` ，可以自定义 id，也可以自动生成 id，生成的 id 类型为 `ObjectId`
 :::
 
 ## 插入单个文档
@@ -31,7 +31,7 @@ export async function main(ctx: FunctionContext) {
 
 ## 批量新增文档
 
-当然我们也可以批量添加多条记录,只需要多传入一个对象`{ multi: true }`即可。
+当然我们也可以批量添加多条记录，只需要多传入一个对象`{ multi: true }`即可。
 
 ```typescript
 const list = [

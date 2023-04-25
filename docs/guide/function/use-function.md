@@ -19,7 +19,7 @@ export function main(ctx: FunctionContext) {
 };
 ```
 
-还可以读取前端HTTP请求传递的 `body` 参数`username`：
+还可以读取前端 HTTP 请求传递的 `body` 参数`username`：
 
 ![function-query](/doc-images/function-body.png)
 
@@ -43,7 +43,7 @@ export function main(ctx: FunctionContext) {
 | `ctx.body`      | 当前请求的 body 参数                                                                |
 | `ctx.request`  | HTTP 响应，和`express`的`Request`实例保持一致                                      |
 | `ctx.response`  | HTTP 响应，和`express`的`Response`实例保持一致                                      |
-| `ctx.socket`    | [WebSocket](https://developer.mozilla.org/zh-CN/docs/Web/API/WebSocket) 实例，[Laf WebSocket使用文档](/guide/function/websocket.html)      |
+| `ctx.socket`    | [WebSocket](https://developer.mozilla.org/zh-CN/docs/Web/API/WebSocket) 实例，[Laf WebSocket 使用文档](/guide/function/websocket.html)      |
 | `ctx.files`     | 上传的文件 ([File](https://developer.mozilla.org/zh-CN/docs/Web/API/File) 对象数组) |
 | `ctx.env`       | 本应用自定义的环境变量 ([env](env.md))                                                    |
 
@@ -51,7 +51,7 @@ export function main(ctx: FunctionContext) {
 
 那我们如何把数据返回出去呢？
 
-### 方法1：return
+### 方法 1：return
 
 很简单，只需要在云函数中 return 出去就可以了
 
@@ -68,21 +68,21 @@ export function main (ctx: FunctionContext) {
 return Buffer.from("whoop"); // Buffer
 return {
   some: "json";
-} // 对象，会被处理成JSON
+} // 对象，会被处理成 JSON
 return ("<p>some html</p>"); // HTML
 return ("Sorry, we cannot find that!"); // 字符串
 ```
 
-### 方法2: ctx.response设置响应头、状态码和响应体等信息
+### 方法 2: ctx.response 设置响应头、状态码和响应体等信息
 
 这里`ctx.response`对齐`express`框架的`Response`实例
 
 以下是一些常见的 res 对象方法：
 
 ```js
-ctx.response.send(body) // 发送响应体，可以是一个字符串、一个Buffer对象、一个JSON对象、一个数组等
-ctx.response.json(body) // 发送一个JSON响应
-ctx.response.status(statusCode) // 设置HTTP响应的状态码
+ctx.response.send(body) // 发送响应体，可以是一个字符串、一个 Buffer 对象、一个 JSON 对象、一个数组等
+ctx.response.json(body) // 发送一个 JSON 响应
+ctx.response.status(statusCode) // 设置 HTTP 响应的状态码
 ctx.response.setHeader(name, value) // 设置一个响应头
 ...
 ```
@@ -90,7 +90,7 @@ ctx.response.setHeader(name, value) // 设置一个响应头
 如果需要发送状态码，则需要使用 `ctx.response.status` ：
 
 ```js
-ctx.response.status(403); // 发送403状态码
+ctx.response.status(403); // 发送 403 状态码
 ```
 
 如果需要分段发送数据，则需要使用 `ctx.response.write` 和 `ctx.response.end` ：
@@ -123,7 +123,7 @@ export function main (ctx: FunctionContext) {
 在云函数中执行异步操作，尽可能的使用 `await` 去等待执行完成
 :::
 
-如下面的例子，去查询数据库中的user集合
+如下面的例子，去查询数据库中的 user 集合
 
 ```js
 import cloud from '@lafjs/cloud'
@@ -148,9 +148,9 @@ exports.main = async function (ctx: FunctionContext) {
 引入写法：
 
 ```js
-// funcName 为default函数
+// funcName 为 default 函数
 import funcName from '@/funcName'
-// 引入名为func的函数
+// 引入名为 func 的函数
 import { func } from '@/funcName'
 ```
 
@@ -172,7 +172,7 @@ export function add(a: number, b: number) {
 import util, { add } from '@/util'
 
 export async function main(ctx: FunctionContext) {
-  // 由于 util的default方法是async的，所以需要加await
+  // 由于 util 的 default 方法是 async 的，所以需要加 await
   console.log(await util())
   // 打印结果："util 已引入"
   console.log(add(1, 2))
@@ -182,9 +182,9 @@ export async function main(ctx: FunctionContext) {
 
 ## Laf 云函数 Cloud SDK
 
-上面查询数据库的部分有引入Laf的Cloud SDK
+上面查询数据库的部分有引入 Laf 的 Cloud SDK
 
-在云函数上，Laf 提供了专门的SDK `@lafjs/cloud` 让云函数支持访问网络、数据库、对象存储等。
+在云函数上，Laf 提供了专门的 SDK `@lafjs/cloud` 让云函数支持访问网络、数据库、对象存储等。
 
 ::: danger
 `@lafjs/cloud` 是一个专有的模块，只能在云函数上使用，不支持通过 npm 安装到其他位置。
@@ -192,7 +192,7 @@ export async function main(ctx: FunctionContext) {
 
 ### 导入 SDK
 
-每个Laf应用默认已经安装了SDK依赖，不需要额外安装了。直接在云函数顶部import即可。
+每个 Laf 应用默认已经安装了 SDK 依赖，不需要额外安装了。直接在云函数顶部 import 即可。
 
 ```js
 import cloud from "@lafjs/cloud";
@@ -202,7 +202,7 @@ import cloud from "@lafjs/cloud";
 
 使用 `cloud.fetch()` 可发起 HTTP 请求，调用三方接口，可完成如支付接口、短信验证码等等三方接口操作。
 
-该接口是对 `axios` 请求库的封装，其调用方法与 `axios` 完全一致。调用方法可参考：[axios文档](https://www.axios-http.cn/docs/api_intro)
+该接口是对 `axios` 请求库的封装，其调用方法与 `axios` 完全一致。调用方法可参考：[axios 文档](https://www.axios-http.cn/docs/api_intro)
 
 可以理解为 `cloud.fetch === axios`，可以做到互相替换。
 
@@ -283,11 +283,11 @@ export async function main(ctx: FunctionContext) {
 ### 生成和解密 JWT token
 
 ```typescript
-cloud.getToken(payload); // payload可参考下方的示例代码
-cloud.parseToken(token); // token为前端请求时header里的authorization中的token
+cloud.getToken(payload); // payload 可参考下方的示例代码
+cloud.parseToken(token); // token 为前端请求时 header 里的 authorization 中的 token
 ```
 
-以下实现简单的生成和解密JWT token
+以下实现简单的生成和解密 JWT token
 
 ```js
 import cloud from "@lafjs/cloud";
@@ -298,22 +298,22 @@ export async function main(ctx: FunctionContext)  {
     // 默认 token 有效期为 7 天，请务必提供此 `exp` 字段，详见 JWT 文档。
     exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
   };
-  // 生成access_token
+  // 生成 access_token
   const access_token = cloud.getToken(payload);
-  console.log("云函数生成的token：", access_token)
+  console.log("云函数生成的 token：", access_token)
   // ctx.user 会自动解密
   console.log(ctx.user)
   const authHeader = ctx.headers.authorization;
   const token = authHeader.split(' ')[1]; // 提取 JWT
-  console.log("前端请求带的token：", token)
+  console.log("前端请求带的 token：", token)
   const parseToken = cloud.parseToken(token);
-  console.log("解密token后的数据：", parseToken)
+  console.log("解密 token 后的数据：", parseToken)
 };
 ```
 
 ![getToken-parseToken](/doc-images/getToken-parseToken.png)
 
-以下实现简单登录函数，并生成JWT token
+以下实现简单登录函数，并生成 JWT token
 
 > 注意：出于演示目的，对 password 以明文方式查询，并未做 hash 处理考虑，不建议实际开发过程中如此使用。
 
@@ -375,13 +375,13 @@ export async function main(ctx: FunctionContext) {
   await cloud.shared.has(key); // 判断缓存是否存在
   await cloud.shared.delete(key); // 删除缓存
   await cloud.shared.clear(); // 清空所有缓存
-  // ... 其他方法可访问上方MDN的Map文档查看
+  // ... 其他方法可访问上方 MDN 的 Map 文档查看
 };
 ```
 
-### 云函数原生MongoDriverObject实例
+### 云函数原生 MongoDriverObject 实例
 
-可参照 mongodb 官方crud文档学习使用：[mongodb](https://www.mongodb.com/docs/mongodb-shell/crud/)
+可参照 mongodb 官方 crud 文档学习使用：[mongodb](https://www.mongodb.com/docs/mongodb-shell/crud/)
 
 下面是一个简单的使用实例：
 

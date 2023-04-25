@@ -55,20 +55,20 @@ wss.onclose = () => {
 import cloud from '@lafjs/cloud'
 
 export async function main(ctx: FunctionContext) {
-  // 初始化websocket user Map列表
-  // 也可用数据库保存，本示例代码用的Laf云函数的全局缓存
-  let wsMap = await cloud.shared.get("wsMap") // 获取wsMap
+  // 初始化 websocket user Map 列表
+  // 也可用数据库保存，本示例代码用的 Laf 云函数的全局缓存
+  let wsMap = await cloud.shared.get("wsMap") // 获取 wsMap
   if(!wsMap){
     wsMap = new Map()
-    await cloud.shared.set("wsMap", wsMap) // 设置wsMap
+    await cloud.shared.set("wsMap", wsMap) // 设置 wsMap
   }
   // websocket 连接成功
   if (ctx.method === "WebSocket:connection") {
     const userId = generateUserId()
-    wsMap = await cloud.shared.get("wsMap") // 获取wsMap
+    wsMap = await cloud.shared.get("wsMap") // 获取 wsMap
     wsMap.set(userId, ctx.socket);
-    await cloud.shared.set("wsMap", wsMap) // 设置wsMap
-    ctx.socket.send("连接成功,你的userID是："+userId);
+    await cloud.shared.set("wsMap", wsMap) // 设置 wsMap
+    ctx.socket.send("连接成功，你的 userID 是："+userId);
   }
 
   // websocket 消息事件
@@ -76,24 +76,24 @@ export async function main(ctx: FunctionContext) {
     const { data } = ctx.params;
     console.log("接收到的信息：",data.toString());
     const userId = getKeyByValue(wsMap, ctx.socket);
-    ctx.socket.send("服务端已接收到消息事件,你的userID是："+userId);
+    ctx.socket.send("服务端已接收到消息事件，你的 userID 是："+userId);
   }
 
   // websocket 关闭消息
   if (ctx.method === "WebSocket:close") {
-    wsMap = await cloud.shared.get("wsMap") // 获取wsMap 
+    wsMap = await cloud.shared.get("wsMap") // 获取 wsMap 
     const userId = getKeyByValue(wsMap, ctx.socket);
     wsMap.delete(userId);
-    await cloud.shared.set("wsMap", wsMap) // 设置wsMap
-    ctx.socket.send("服务端已接收到关闭事件消息,你的userID是："+userId);
+    await cloud.shared.set("wsMap", wsMap) // 设置 wsMap
+    ctx.socket.send("服务端已接收到关闭事件消息，你的 userID 是："+userId);
   }
 }
-// 生成随机用户ID 
+// 生成随机用户 ID 
 function generateUserId() {
   return Math.random().toString(36).substring(2, 15);
 }
 
-// 遍历userID
+// 遍历 userID
 function getKeyByValue(map, value) {
   for (const [key, val] of map.entries()) {
     if (val === value) {
@@ -103,17 +103,17 @@ function getKeyByValue(map, value) {
 }
 ```
 
-2、获得你的WebSocket链接
+2、获得你的 WebSocket 链接
 
 一般格式为：
 
-your-own-appid换成你的Laf应用appid
+your-own-appid 换成你的 Laf 应用 appid
 
 `wss://your-own-appid.laf.run/__websocket__`
 
-3、客户端链接WebSocket链接，并获得 userID
+3、客户端链接 WebSocket 链接，并获得 userID
 
-4、新建云函数通过userID去推送消息
+4、新建云函数通过 userID 去推送消息
 
 ```js
 import cloud from '@lafjs/cloud'

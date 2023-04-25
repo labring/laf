@@ -4,7 +4,7 @@ title: 数据库操作符
 
 # {{ $frontmatter.title }}
 
-Laf云函数支持多种不同的数据库操作符，用于执行查询、更新、删除等操作。
+Laf 云函数支持多种不同的数据库操作符，用于执行查询、更新、删除等操作。
 
 ## 初始化操作符
 
@@ -40,7 +40,7 @@ let res = await db.collection('todo').where(_.and([
 ])).get()
 ```
 
-但以上用 `and` 组成的查询条件是不必要的，因为传入的对象的各字段隐式组成了 “与” 的关系，上述条件等价于下方更简洁的写法：  
+但以上用 `and` 组成的查询条件是不必要的，因为传入的对象的各字段隐式组成了 "与" 的关系，上述条件等价于下方更简洁的写法：  
 
 ```js
 const _ = db.command
@@ -85,11 +85,11 @@ let res = await db.collection('todo').where({
 
 ### or
 
-查询操作符，用于表示逻辑 "或" 的关系，表示需同时满足多个查询筛选条件。或指令有两种用法，一是可以进行字段值的 “或” 操作，二是也可以进行跨字段的 “或” 操作。  
+查询操作符，用于表示逻辑 "或" 的关系，表示需同时满足多个查询筛选条件。或指令有两种用法，一是可以进行字段值的 "或" 操作，二是也可以进行跨字段的“或”操作。  
 
 #### 字段值的或操作
 
- 字段值的 “或” 操作指的是指定一个字段值为多个值之一即可。  
+ 字段值的“或”操作指的是指定一个字段值为多个值之一即可。  
 
  如筛选出进度大于 80 或小于 20 的 todo：  
 
@@ -122,7 +122,7 @@ let res = await db.collection('todo').where({
 
 #### 跨字段的或操作
 
- 跨字段的 “或” 操作指条件 “或”，相当于可以传入多个 where 语句，满足其中一个即可。  
+ 跨字段的“或”操作指条件“或”，相当于可以传入多个 where 语句，满足其中一个即可。  
 
  如筛选出进度大于 80 或已标为已完成的 todo：  
 
@@ -144,7 +144,7 @@ let res = await db.collection('todo').where(_.or([
 
 #### 示例
 
- 如筛选出进度不等于100的 todo：  
+ 如筛选出进度不等于 100 的 todo：  
 
 ```js
 const _ = db.command
@@ -168,7 +168,7 @@ let res = await db.collection('todo').where({
 
 #### 示例 1
 
- 筛选出进度既不小于20又不大于80的 todo ：  
+ 筛选出进度既不小于 20 又不大于 80 的 todo：  
 
 ```js
 const _ = db.command
@@ -376,7 +376,7 @@ let res = await db.collection('todos').where({
 
 ### exists
 
-判断字段是否存在，true为存在，false为不存在
+判断字段是否存在，true 为存在，false 为不存在
 
 #### 示例代码
 
@@ -438,7 +438,7 @@ let res = await db.collection('todos').where({
 }
 ```
 
-找出数组字段中至少同时包含一个满足 “area 大于 100 且 age 小于 2” 的元素和一个满足 “type 为 mall 且 age 大于 5” 的元素  
+找出数组字段中至少同时包含一个满足“area 大于 100 且 age 小于 2”的元素和一个满足“type 为 mall 且 age 大于 5”的元素  
 
 ```js
 const _ = db.command
@@ -481,7 +481,7 @@ let res = await db.collection('todos').where({
 }
 ```
 
-找出 `places` 数组字段中至少同时包含一个满足 “area 大于 100 且 age 小于 2” 的元素  
+找出 `places` 数组字段中至少同时包含一个满足“area 大于 100 且 age 小于 2”的元素  
 
 ```js
 const _ = db.command
@@ -518,7 +518,7 @@ let res = await db.collection('todos').where({
 }
 ```
 
-找出 `scores` 数组字段中至少同时包含一个满足 “大于 80 且小于 100” 的元素  
+找出 `scores` 数组字段中至少同时包含一个满足“大于 80 且小于 100”的元素  
 
 ```js
 const _ = db.command

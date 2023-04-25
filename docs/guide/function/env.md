@@ -15,7 +15,7 @@ title: 在云函数中使用环境变量
 2. 其次在弹出的应用设置界面，点击 新增环境变量按钮，输入环境变量的 `key` 和 `value`, 并点击确定。
 3. 确认更新环境变量。  
 
-![](/doc-images/add-env.png)
+![add-env](/doc-images/add-env.png)
 
 ## 使用环境变量
 
@@ -30,5 +30,4 @@ export async function main(ctx: FunctionContext) {
     console.log(env)
     // 所有的环境变量都在 cloud.env 里面
 }
-
 ```

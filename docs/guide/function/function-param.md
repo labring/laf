@@ -4,10 +4,9 @@ title: 云函数参数 返回值
 
 # {{ $frontmatter.title }}
 
-
 ## 参数
 
-在 `main` 函数中，可以通过第一个参数 `ctx` 来获取用户传递的请求信息。     
+在 `main` 函数中，可以通过第一个参数 `ctx` 来获取用户传递的请求信息。
 下面的例子可以读取前端传递的 Query 参数`username`：
 
 ```js
@@ -17,6 +16,7 @@ exports.main = function (ctx) {
 ```
 
 这样可以读取前端传递的 body 参数
+
 ```js
 exports.main = function (ctx) {
   return `hello, ${ctx.body}`;
@@ -40,7 +40,8 @@ exports.main = function (ctx) {
 
 ## 返回值
 
-那我们如何把数据传给前端呢？很简单，只需要在云函数中 return 出去就可以了。   
+那我们如何把数据传给前端呢？很简单，只需要在云函数中 return 出去就可以了。
+
 ```js
 exports.main = function (ctx) {
   // 这里用字符串示例，你可以返回任何数据类型。

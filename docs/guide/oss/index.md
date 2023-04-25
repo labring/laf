@@ -1,5 +1,5 @@
 ---
-title: 云存储(OSS)使用介绍
+title: 云存储 (OSS) 使用介绍
 ---
 
 # {{ $frontmatter.title }}
@@ -8,10 +8,10 @@ title: 云存储(OSS)使用介绍
 
 开发者可自由选择以下 SDK 来操作 laf oss：
 
-- 使用 aws-sdk for javascript 操作云存储示例： https://docs.min.io/docs/how-to-use-aws-sdk-for-javascript-with-minio-server.html
-- 使用 minio sdk for javascript 操作云存储示例： https://docs.min.io/docs/javascript-client-quickstart-guide.html
+- 使用 aws-sdk for javascript 操作云存储示例： <https://docs.min.io/docs/how-to-use-aws-sdk-for-javascript-with-minio-server.html>
+- 使用 minio sdk for javascript 操作云存储示例： <https://docs.min.io/docs/javascript-client-quickstart-guide.html>
 
-同时， [MinIO 文档](https://docs.min.io/docs/javascript-client-quickstart-guide.html) 还提供了 `Java` `Python` `Golang` 等多种语言的 SDK 。
+同时， [MinIO 文档](https://docs.min.io/docs/javascript-client-quickstart-guide.html) 还提供了 `Java` `Python` `Golang` 等多种语言的 SDK。
 
 在云函数里访问 Laf 云存储
 
@@ -42,12 +42,12 @@ new AWS.S3({
 });
 ```
 
-注意： endpoint 是云存储的地址，一定要和 云存储页面里的文件管理页面 上方 `OSS EndPoint` 里的值一样
+注意：endpoint 是云存储的地址，一定要和 云存储页面里的文件管理页面 上方 `OSS EndPoint` 里的值一样
 
 2. 上传文件
 
 ```javascript
-const s3 = getS3Client(); // 获取s3客户端 可参考上面的
+const s3 = getS3Client(); // 获取 s3 客户端 可参考上面的
 
 const res = s3
   .putObject({
@@ -69,7 +69,7 @@ const res = s3
 3. 获取上传文件访问 Url
 
 ```javascript
-const s3 = getS3Client(); // 获取s3客户端 可参考上面的
+const s3 = getS3Client(); // 获取 s3 客户端 可参考上面的
 
 const res = s3.getSignedUrl("getObject", {
   Bucket: bucket,
@@ -85,7 +85,7 @@ const res = s3.getSignedUrl("getObject", {
 4. 删除文件
 
 ```javascript
-const s3 = getS3Client(); // 获取s3客户端 可参考上面的
+const s3 = getS3Client(); // 获取 s3 客户端 可参考上面的
 
 const res = await s3
   .deleteObject({
@@ -124,7 +124,7 @@ import cloud from "@lafjs/cloud";
 const AWS = require("aws-sdk");
 var fs = require("fs");
 
-//获取s3客户端
+//获取 s3 客户端
 function getS3Client() {
   return new AWS.S3({
     accessKeyId: cloud.env.OSS_ACCESS_KEY,
@@ -158,7 +158,7 @@ function uploadAppFile(bucketName, key, body, contentType) {
   return res;
 }
 
-//获取文件url
+//获取文件 url
 export function getAppFileUrl(bucketName, key) {
   const s3 = getS3Client();
   const bucket = getInternalBucketName(bucketName);
@@ -189,7 +189,7 @@ exports.main = async function (ctx: FunctionContext) {
 import cloud from "@lafjs/cloud";
 const AWS = require("aws-sdk");
 
-//获取s3客户端
+//获取 s3 客户端
 function getS3Client() {
   return new AWS.S3({
     accessKeyId: cloud.env.OSS_ACCESS_KEY,
@@ -224,4 +224,4 @@ exports.main = async function (ctx: FunctionContext) {
 };
 ```
 
-参考资料 https://github.com/labring/laf/blob/v0.8/packages/app-console/src/api/oss.js
+参考资料 <https://github.com/labring/laf/blob/v0.8/packages/app-console/src/api/oss.js>
