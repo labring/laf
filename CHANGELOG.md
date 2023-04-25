@@ -1,3 +1,129 @@
+# [1.0.0-beta.7](https://github.com/labring/laf/compare/v1.0.0-beta.6...v1.0.0-beta.7) (2023-04-25)
+
+
+### Bug Fixes
+
+* **client-sdk:** optimize invoke code prompts and documents ([#1038](https://github.com/labring/laf/issues/1038)) ([0e7d812](https://github.com/labring/laf/commit/0e7d8120c9a1225be0559a10c4ae9e6703092aea))
+* **cli:** fix function name rule, add laf-cli option to issue tpl ([#1034](https://github.com/labring/laf/issues/1034)) ([#1035](https://github.com/labring/laf/issues/1035)) ([f07fecb](https://github.com/labring/laf/commit/f07fecb7e3dfd6b4ea831617aca1a57e8827489e))
+* **runtime:** add build-base libaries in docker image to support canvas library ([c191848](https://github.com/labring/laf/commit/c191848d67eb3a4b42a791d659afd49cb5ee421b))
+* **runtime:** fix func logging order ([#1072](https://github.com/labring/laf/issues/1072)) ([dd0c3d7](https://github.com/labring/laf/commit/dd0c3d7c1811897e37bd6a9dc7959f6623fa8f21))
+* **server:** avoid acct-trans addition in free order ([#1049](https://github.com/labring/laf/issues/1049)) ([b0f7e81](https://github.com/labring/laf/commit/b0f7e81b3f2d3999a5793c167e9aa1e56328b220))
+* **server:** check env name regex for batch update ([#1065](https://github.com/labring/laf/issues/1065)) ([3ddb36f](https://github.com/labring/laf/commit/3ddb36ff8682680226cca3bea5bffc6f4cb06a96))
+* **server:** fix waiting time in instance starting task ([#1075](https://github.com/labring/laf/issues/1075)) ([fa72bb9](https://github.com/labring/laf/commit/fa72bb91085209245d412716bda168ed46c707ab))
+* **server:** Modify the installation order of APISIX ([#1022](https://github.com/labring/laf/issues/1022)) ([67cc35d](https://github.com/labring/laf/commit/67cc35dfc6e2f148dcd301c7c699879302a1c1fb))
+* **server:** remove minio alias init ([#1066](https://github.com/labring/laf/issues/1066)) ([b900f90](https://github.com/labring/laf/commit/b900f906a628633444e10ddd2c3a0972a7b6b3d7))
+* **server:** suspend cronjob after instance stopped ([#1045](https://github.com/labring/laf/issues/1045)) ([8d63403](https://github.com/labring/laf/commit/8d634039430f8b0f88c39f31f8162f1130d77edb))
+* **server:** use _id to sort logs instead of created_at ([#1073](https://github.com/labring/laf/issues/1073)) ([7a87bea](https://github.com/labring/laf/commit/7a87bea87a8918d2489cf5b2e54b37f636d93d65))
+* **web:** add spec width scrollbar ([#1046](https://github.com/labring/laf/issues/1046)) ([4bbcaa0](https://github.com/labring/laf/commit/4bbcaa0212a07bb08bd71acc373a9c787f550c2f))
+* **web:** common error handler ([#1071](https://github.com/labring/laf/issues/1071)) ([c93438b](https://github.com/labring/laf/commit/c93438bd59f24701fc5da0224f180300a3b9c01a))
+* **web:** compress png images in home site ([#1019](https://github.com/labring/laf/issues/1019)) ([f2e2c4d](https://github.com/labring/laf/commit/f2e2c4dbd9d3dfae9af76129d9f2e3f45fbdf36f))
+* **web:** fix route dashboard link ([#1020](https://github.com/labring/laf/issues/1020)) ([7ad26a0](https://github.com/labring/laf/commit/7ad26a00f3a4aeff3bbe7279827ad354c95de496))
+* **web:** opt ide typings for response & request, opt function templates ([#1059](https://github.com/labring/laf/issues/1059)) ([7cb8204](https://github.com/labring/laf/commit/7cb8204a1129d738898b43efd508e09d895c8790))
+* **web:** Repair document link address ([#1027](https://github.com/labring/laf/issues/1027)) ([f171712](https://github.com/labring/laf/commit/f17171216b11894a3d21e76480c1ba97d0650b9e))
+
+
+### Features
+
+* **cli:** add ignore file ([#1030](https://github.com/labring/laf/issues/1030)) ([3c32ced](https://github.com/labring/laf/commit/3c32ceddaa7f8d3500b889a1cce17a6cc6f48e67))
+* **doc:** improved cloud function related documents ([#1050](https://github.com/labring/laf/issues/1050)) ([9ada3d2](https://github.com/labring/laf/commit/9ada3d2bb26c18ec37a618b78df44053d7f4ae7a))
+* **runtime:** add __init__ hook in runtime ([#1081](https://github.com/labring/laf/issues/1081)) ([db62f1a](https://github.com/labring/laf/commit/db62f1af6269d4975a6c17fe102891b7c842ee31))
+* **runtime:** support process.env in runtime ([#1074](https://github.com/labring/laf/issues/1074)) ([f0f1582](https://github.com/labring/laf/commit/f0f15821b27d1a0e9680cdd69b98c3fb04b21fcc))
+* **server:** add func debug params, add envs update api ([#1055](https://github.com/labring/laf/issues/1055)) ([5f88a12](https://github.com/labring/laf/commit/5f88a1220485d88649f344dc89524cdf1659285e))
+* **server:** hot load environments for runtime instead of restarting runtime ([#1077](https://github.com/labring/laf/issues/1077)) ([feb70ae](https://github.com/labring/laf/commit/feb70aee67fd717db9a2f972023165b59da78b42))
+* **web:** add ChatGPT example ([#1052](https://github.com/labring/laf/issues/1052)) ([a46ce42](https://github.com/labring/laf/commit/a46ce42a3078f65a21639e5b897cd79e8c4b50ea))
+* **web:** add homepage darkmode ([#1043](https://github.com/labring/laf/issues/1043)) ([ade2a05](https://github.com/labring/laf/commit/ade2a05bd9e36581203798047374b4e7eb91386b))
+* **web:** add laf new homepage ([#1018](https://github.com/labring/laf/issues/1018)) ([f66e2f3](https://github.com/labring/laf/commit/f66e2f3576a8bab799b046f65753980a6879b7a0))
+* **web:** add loginpage darkmode ([#1070](https://github.com/labring/laf/issues/1070)) ([9a27bcf](https://github.com/labring/laf/commit/9a27bcfca688f8a64f009b81bb4259db330b0943))
+* **web:** add status bar ([#1054](https://github.com/labring/laf/issues/1054)) ([cd31eb8](https://github.com/labring/laf/commit/cd31eb80343f4d4a6d060f34c252b8a66ac5a4ed))
+* **web:** common error handler ([#1040](https://github.com/labring/laf/issues/1040)) ([a099568](https://github.com/labring/laf/commit/a09956825b8be3e373dbf1b52d46ef46eb349a6d))
+* **web:** support folder delete in storage ([#1047](https://github.com/labring/laf/issues/1047)) ([#1048](https://github.com/labring/laf/issues/1048)) ([367dcf0](https://github.com/labring/laf/commit/367dcf0fc8120e74e9a67f9dc2e6ee5ccdad6b5c))
+* **web:** update environment variables without app restart ([#1079](https://github.com/labring/laf/issues/1079)) ([dc25ae3](https://github.com/labring/laf/commit/dc25ae3eda45543348cb4fed32d5f48cb602f24a))
+* **web:** use laf ai to generate code ([#1029](https://github.com/labring/laf/issues/1029)) ([f1eac71](https://github.com/labring/laf/commit/f1eac71d978c6a91d7fab12401d60732f79e8d9b))
+
+
+
+# [1.0.0-beta.6](https://github.com/labring/laf/compare/v1.0.0-beta.5...v1.0.0-beta.6) (2023-04-11)
+
+
+### Bug Fixes
+
+* **deploy:** upgrade minio version to fix CVE-2023-28432 ([#960](https://github.com/labring/laf/issues/960)) ([b38c288](https://github.com/labring/laf/commit/b38c288da58b0ea6dbbb834bc8b7c69f3cc21e37))
+* fix app url protocol error & update default url ([#1006](https://github.com/labring/laf/issues/1006)) ([b79f71e](https://github.com/labring/laf/commit/b79f71edac1f84d6fb524281bbe2da59bc052a27))
+* **server:** add existing check in creating phase of tasks ([#990](https://github.com/labring/laf/issues/990)) ([8444d80](https://github.com/labring/laf/commit/8444d804edd39bd0ac7fb09133f691f7e914f419))
+* **server:** add website count limit, opt website task ([#959](https://github.com/labring/laf/issues/959)) ([7ca3364](https://github.com/labring/laf/commit/7ca33643b0d1626160f62fbb23e24d36e992a0c2))
+* **server:** bucket deletion didn't remove related website ([#983](https://github.com/labring/laf/issues/983)) ([f559764](https://github.com/labring/laf/commit/f5597649ddc7ecd14e701611666823cda4fda36b))
+* **server:** cancel namespace removal while stopping app ([#980](https://github.com/labring/laf/issues/980)) ([8213bea](https://github.com/labring/laf/commit/8213beae6e3a13c8b1c42a1f980efa4509adf0c8))
+* **server:** check site deleting state in site creation ([#997](https://github.com/labring/laf/issues/997)) ([5f4d026](https://github.com/labring/laf/commit/5f4d026fa07017697a7432fabcfffac4daa48d5a))
+* **server:** check website hosting in bucket deletion, add error handle to tasks; ([#1017](https://github.com/labring/laf/issues/1017)) ([48cad2d](https://github.com/labring/laf/commit/48cad2de3c8f8e9e0fb9af4e084e7187bcdf848e))
+* **server:** error on deleting cronjob; app stucked in starting ([#964](https://github.com/labring/laf/issues/964)) ([a1e42b1](https://github.com/labring/laf/commit/a1e42b164092718b50569ca1102815a3296ac6f1))
+* **server:** fix instance task error ([#988](https://github.com/labring/laf/issues/988)) ([63cc523](https://github.com/labring/laf/commit/63cc52308fe44ab2abe276bb4e584ad3da870d35))
+* **server:** fix tasks state handler logic ([#987](https://github.com/labring/laf/issues/987)) ([d36eab9](https://github.com/labring/laf/commit/d36eab9bcc54c829ccdbf0b261538e4318e15683))
+* **server:** fixed illegal removal of unowned trigger ([#965](https://github.com/labring/laf/issues/965)) ([260b335](https://github.com/labring/laf/commit/260b335de72c32c28a3c8f7cb4b1c7b13855443d))
+* **server:** fixed the error of repeatedly deleting website routes ([#957](https://github.com/labring/laf/issues/957)) ([46d0cce](https://github.com/labring/laf/commit/46d0ccea60e1b57317d712064b1eaab4b53c5598))
+* **server:** return notes fields in region & bundles ([#993](https://github.com/labring/laf/issues/993)) ([82b8121](https://github.com/labring/laf/commit/82b8121dfd39124437f7df4ceecf4b987f9d76e6))
+* **server:** rm minio alias init in boot, fix multi region limit; ([#976](https://github.com/labring/laf/issues/976)) ([251a3c4](https://github.com/labring/laf/commit/251a3c46ff4948759b94f54a06bb02f6562fad9c))
+* **web:** add types for ctx.request ([#963](https://github.com/labring/laf/issues/963)) ([a18c27f](https://github.com/labring/laf/commit/a18c27fb47ccbdeb14b5a5141a7e0d395b534477))
+* **web:** appid confict if open 2 tabs ([#1011](https://github.com/labring/laf/issues/1011)) ([f6c39ee](https://github.com/labring/laf/commit/f6c39ee163cd115d975a6edee27ca989192dde70))
+* **web:** fixed the path issue when clicking pathlink ([3408aca](https://github.com/labring/laf/commit/3408acac82cdef9a9e6add370c3f2eeaee1f27ac))
+* **web:** hide register button while register disabled ([#994](https://github.com/labring/laf/issues/994)) ([a12f1f5](https://github.com/labring/laf/commit/a12f1f5535e43c727077aa0885724767283177ee))
+* **web:** remove withCredentials ([#979](https://github.com/labring/laf/issues/979)) ([3300953](https://github.com/labring/laf/commit/330095346954c662f85562906c7905858898ebe5))
+
+
+### Features
+
+* **cli:** opt app list display ([#1007](https://github.com/labring/laf/issues/1007)) ([13a06df](https://github.com/labring/laf/commit/13a06df5830631d726ef20f37dd79e1bca860cd0))
+* **runtime:** impl  cloud function import and cache function ([#1005](https://github.com/labring/laf/issues/1005)) ([6a96add](https://github.com/labring/laf/commit/6a96add95c83cb292f82c3fbe9339713e0ba3ecd))
+* **server:** add account transaction ([#1014](https://github.com/labring/laf/issues/1014)) ([c7e6d15](https://github.com/labring/laf/commit/c7e6d154562ac3e48e6c8c0ed5d02a6164568f3e))
+* **server:** add check if password had binded ([#951](https://github.com/labring/laf/issues/951)) ([c6b7ebc](https://github.com/labring/laf/commit/c6b7ebc57ee374bb40fc183aba448dfefb4504b9))
+* **server:** add notes field to region,bundle,pay,auth ([#986](https://github.com/labring/laf/issues/986)) ([206070a](https://github.com/labring/laf/commit/206070aed69aefe7b01c39e1b4e2894e7bd54f61))
+* **server:** support website custom domain ssl cert auto-gen ([#956](https://github.com/labring/laf/issues/956)) ([9141651](https://github.com/labring/laf/commit/914165185ebbc36eb33f0989c4aa3c635881f6f9))
+* **web:** add bundle note messages ([#992](https://github.com/labring/laf/issues/992)) ([f8adbe7](https://github.com/labring/laf/commit/f8adbe7af9e43fc4acf47f4ae57f1cf7d91f8ec8))
+* **web:** add region info on logo ([#1001](https://github.com/labring/laf/issues/1001)) ([378b0e6](https://github.com/labring/laf/commit/378b0e6c3fc7995cbd56d5a9a78f789688bf6f61))
+* **web:** fix login bg && add welcome text ([#941](https://github.com/labring/laf/issues/941)) ([6baf800](https://github.com/labring/laf/commit/6baf80037d4ccee29e9b4c7f546c5a5948f3dded))
+* **web:** format code on save ([#1002](https://github.com/labring/laf/issues/1002)) ([e970a66](https://github.com/labring/laf/commit/e970a66cdb0be1d6521a3df757f18eb62644b137))
+* **web:** generate function code with AI prompt  ([#978](https://github.com/labring/laf/issues/978)) ([c68b03b](https://github.com/labring/laf/commit/c68b03b278423202798e416cbe613a6e3dfaa211))
+* **web:** reset password ([#974](https://github.com/labring/laf/issues/974)) ([13a2a9f](https://github.com/labring/laf/commit/13a2a9f2010ac872f28160ee3b33638146c16566))
+
+
+
+# [1.0.0-beta.5](https://github.com/labring/laf/compare/v1.0.0-beta.4...v1.0.0-beta.5) (2023-03-22)
+
+
+### Bug Fixes
+
+* **cli:** fix axios type error ([#881](https://github.com/labring/laf/issues/881)) ([5f8b487](https://github.com/labring/laf/commit/5f8b487590c5e12a0dbd7c756c2c8431529394c9))
+* **cli:** fix publish package ignore file ([#899](https://github.com/labring/laf/issues/899)) ([bf9c907](https://github.com/labring/laf/commit/bf9c907ff4d083c9796f5a32533609b2da9cb0f5))
+* **cli:** remove private npm mirror and replace AxiosRequestConfig to any ([#886](https://github.com/labring/laf/issues/886)) ([561fe7f](https://github.com/labring/laf/commit/561fe7fa0dbf9b9fd1126f906791c1844e367993))
+* **server:** add max renewal time in bundle; fix subscription price ([#908](https://github.com/labring/laf/issues/908)) ([6139f74](https://github.com/labring/laf/commit/6139f743f79e23dadfa56e4b9c85429745d16483))
+* **server:** add regex for environment name ([#944](https://github.com/labring/laf/issues/944)) ([1f5c300](https://github.com/labring/laf/commit/1f5c300d5f4f7de04544afe17f303614cc9379fc))
+* **server:** change password signup phone filed to optional ([#934](https://github.com/labring/laf/issues/934)) ([c35d339](https://github.com/labring/laf/commit/c35d339906d672dba821c67add714f5615363c9b))
+* **server:** deal with existed app without namespace ([#943](https://github.com/labring/laf/issues/943)) ([5ed3be5](https://github.com/labring/laf/commit/5ed3be5cec0d7dd987a9a9043bd0440e9126f701))
+* **server:** fix bucket name regex ([#924](https://github.com/labring/laf/issues/924)) ([2c84173](https://github.com/labring/laf/commit/2c84173322e414c48cb0d17795437d5fdeb913a3))
+* **server:** fix init auth provider  params ([#937](https://github.com/labring/laf/issues/937)) ([796774f](https://github.com/labring/laf/commit/796774fc64515626461a79312d4388eaccf13e56))
+* **server:** stuck-starting instance blocked the task handler ([#945](https://github.com/labring/laf/issues/945)) ([f9a0f20](https://github.com/labring/laf/commit/f9a0f20d1154d0a88d6087ea9cf290e3da02dc5f))
+* **web:** fix MoreButton tooltip and npm package deletion confirm tip ([#879](https://github.com/labring/laf/issues/879)) ([3b30aec](https://github.com/labring/laf/commit/3b30aece63a5d52350ad085b4e974d9d73157712))
+* **web:** fix some dark mode ui bugs ([#919](https://github.com/labring/laf/issues/919)) ([f9e1781](https://github.com/labring/laf/commit/f9e17813677e64c1a578a041dcd90c52e1860247))
+* **web:** login page i18n word too long ([#936](https://github.com/labring/laf/issues/936)) ([0836e11](https://github.com/labring/laf/commit/0836e11751c2c16ba2ea4a57cd07f7a23cb93caa))
+* **web:** sign up provider err while refreshing page ([#938](https://github.com/labring/laf/issues/938)) ([4ad79c9](https://github.com/labring/laf/commit/4ad79c9a6a388d421c693b2a8b8729b02f9a7cf4))
+* **web:** update data use merge mode ([#940](https://github.com/labring/laf/issues/940)) ([d62fe96](https://github.com/labring/laf/commit/d62fe96346515a9083c7e828332098ae2b3b75f7))
+* **web:** web signup phone err ([#935](https://github.com/labring/laf/issues/935)) ([44b0699](https://github.com/labring/laf/commit/44b0699409f8085ba739aeceaf891732bda7b441))
+
+
+### Features
+
+* **cli:** cli invoke function support parameters ([#884](https://github.com/labring/laf/issues/884)) ([f0a6383](https://github.com/labring/laf/commit/f0a638367e04971faddff8303959949d5d8867fd))
+* **cli:** init app support sync data ([#895](https://github.com/labring/laf/issues/895)) ([449abde](https://github.com/labring/laf/commit/449abde959a3243ee29103d14f431a61a46698f9))
+* **cli:** rename name.meta.yaml to name.yaml ([#893](https://github.com/labring/laf/issues/893)) ([1dd12b2](https://github.com/labring/laf/commit/1dd12b2c16c37ae2f7724954d73a98909f3faa5f))
+* **cli:** upgrade s3 sdk version ([#922](https://github.com/labring/laf/issues/922)) ([8589126](https://github.com/labring/laf/commit/858912689388caaef672faa1021851d485fc4762))
+* **server:** add limit to update app state depends on subscription state ([39447d8](https://github.com/labring/laf/commit/39447d88752fe91b08ac99bb1db30bc201c1eb36))
+* **server:** new authentication implements ([#897](https://github.com/labring/laf/issues/897)) ([c4e3cf8](https://github.com/labring/laf/commit/c4e3cf81655ae7f2b2fcb029263dd5f4e4b9d0e8))
+* **subscription:** impl subscription and account ([#894](https://github.com/labring/laf/issues/894)) ([b8f2d47](https://github.com/labring/laf/commit/b8f2d4761140f2fecb0d7543d5faf48f2c9621e7))
+* **web:** add dark mode support ([#891](https://github.com/labring/laf/issues/891)) ([#900](https://github.com/labring/laf/issues/900)) ([99e1568](https://github.com/labring/laf/commit/99e156832a3c257af24aa04ca86c9518ff4d38f8))
+* **web:** add subscription and wechat pay ([#904](https://github.com/labring/laf/issues/904)) ([31c3a32](https://github.com/labring/laf/commit/31c3a324e66021c5ac83b2f60cd9819954a68744))
+* **web:** impl new signup & signin method ([#910](https://github.com/labring/laf/issues/910)) ([0832b1e](https://github.com/labring/laf/commit/0832b1e609e94d321028ea1d15a4cc7df0f893ef))
+
+
+
 # [1.0.0-beta.4](https://github.com/labring/laf/compare/v1.0.0-beta.3...v1.0.0-beta.4) (2023-03-09)
 
 
