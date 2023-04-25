@@ -8,10 +8,9 @@ title: 云函数处理 WebSocket 长连接
 
 如果需要使用 WebSocket 需要创建一个云函数并且命名为 `__websocket__`，专为 WebSocket 存在的云函数！
 
-
 以下是云函数中处理 WebSocket 示例：
 
-```ts
+```typescript
 export async function main(ctx: FunctionContext) {
 
   if (ctx.method === "WebSocket:connection") {
@@ -30,7 +29,7 @@ export async function main(ctx: FunctionContext) {
 
 ## 客户端 WebSocket 连接
 
-```ts
+```typescript
 const wss = new WebSocket("wss://your-own-appid.laf.run/__websocket__");
 
 wss.onopen = (socket) => {
@@ -47,7 +46,6 @@ wss.onclose = () => {
   console.log("closed");
 };
 ```
-
 
 ## 连接演示
 

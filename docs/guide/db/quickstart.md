@@ -8,7 +8,7 @@ Laf 为每个应用提供了一个开箱即用的数据库，并且非常易用�
 
 ## 新建数据库实例
 
-```ts
+```typescript
 import cloud from '@lafjs/cloud'
 const db = cloud.database() 
 // db为新建的数据库实例
@@ -20,7 +20,7 @@ const db = cloud.database()
 
 如下例子：往 `test` 集合中添加一个文档，`name` 为 `xiaoming` 的数据
 
-```ts
+```typescript
 import cloud from '@lafjs/cloud'
 const db = cloud.database() 
 
@@ -48,7 +48,7 @@ export async function main(ctx: FunctionContext) {
 `get` 方法一次最多能获取100条记录，如需一次查询更多请看数据查询文档
 :::
 
-```ts
+```typescript
 import cloud from '@lafjs/cloud'
 const db = cloud.database() 
 
@@ -70,7 +70,7 @@ export async function main(ctx: FunctionContext) {
 `getOne` 方法一次获取一条最新数据
 :::
 
-```ts
+```typescript
 import cloud from '@lafjs/cloud'
 const db = cloud.database() 
 
@@ -96,7 +96,7 @@ export async function main(ctx: FunctionContext) {
 `where` 可设置查询条件，`doc` 根据id查询
 :::
 
-```ts
+```typescript
 import cloud from '@lafjs/cloud'
 const db = cloud.database() 
 
@@ -129,7 +129,7 @@ export async function main(ctx: FunctionContext) {
 `remove` 默认只能删除单条数据，如需批量删除，请查看数据删除文档
 :::
 
-```ts
+```typescript
 import cloud from '@lafjs/cloud'
 const db = cloud.database() 
 

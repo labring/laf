@@ -9,7 +9,7 @@ title: 阿里云短信服务发验证码的云函数
 
 创建 `sendsms` 云函数，添加依赖 @alicloud/dysmsapi20170525，编写以下代码：
 
-```ts
+```typescript
 import Dysmsapi, * as dysmsapi from "@alicloud/dysmsapi20170525";
 import * as OpenApi from "@alicloud/openapi-client";
 import * as Util from "@alicloud/tea-util";

@@ -16,7 +16,7 @@ Laf云函数拦截器，是在所有的云函数请求之前被请求，故而�
 
 下面是一个简单的拦截器示例,如果IP是`111.111.111.111`，则可以继续访问原本的云函数
 
-```ts
+```typescript
 export async function main(ctx: FunctionContext) {
   // 获取请求的实际IP
   const ip = ctx.headers['x-real-ip']

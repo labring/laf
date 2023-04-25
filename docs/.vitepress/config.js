@@ -6,7 +6,55 @@ import mdItCustomAttrs from "markdown-it-custom-attrs";
  */
 const NavConfig = [
   { text: "主页", link: "https://laf.run" },
-  { text: "开发指南", link: "/guide/", activeMatch: "^/guide/" },
+  {
+    text: "开发指南",
+    activeMatch: "^/guide/",
+    items: [
+      {
+        text: "入门",
+        items: [
+          {
+            text: "Laf 云开发介绍",
+            link: "/guide/",
+          },
+        ],
+      },
+      {
+        text: "功能",
+        items: [
+          {
+            text: "云函数",
+            link: "/guide/function/",
+          },
+          {
+            text: "云数据库",
+            link: "/guide/db/",
+          },
+          {
+            text: "云存储",
+            link: "/guide/oss/",
+          },
+        ],
+      },
+      {
+        text: "更多",
+        items: [
+          {
+            text: "网站托管",
+            link: "/guide/website-hosting/",
+          },
+          {
+            text: "客户端SDK",
+            link: "/guide/client-sdk/",
+          },
+          {
+            text: "命令行工具",
+            link: "/guide/cli/",
+          },
+        ],
+      },
+    ],
+  },
   { text: "API", link: "/api/cloud", activeMatch: "^/api/" },
   { text: "范例", link: "/examples/aliyun-sms", activeMatch: "^/examples/" },
   { text: "预览图", link: "/screenshots" },
@@ -45,6 +93,7 @@ const guideSiderbarConfig = [
   },
   {
     text: "云函数",
+    collapsed: false,
     items: [
       {
         text: "云函数入门",
@@ -95,17 +144,24 @@ const guideSiderbarConfig = [
         text: "拦截器",
         link: "/guide/function/interceptor",
       },
+      {
+        text: "云函数FAQ",
+        link: "/guide/function/faq",
+      },
     ],
   },
   {
     text: "云数据库",
+    collapsed: false,
     items: [
       { text: "数据库简介", link: "/guide/db/" },
       { text: "数据库入门", link: "/guide/db/quickstart" },
       { text: "新增数据", link: "/guide/db/add" },
       { text: "查询数据", link: "/guide/db/find" },
-      { text: "数据操作", link: "/guide/db/actions" },
-      { text: "访问策略", link: "/guide/db/policy" },
+      { text: "更新数据", link: "/guide/db/update" },
+      { text: "删除数据", link: "/guide/db/del" },
+      { text: "数据库操作符", link: "/guide/db/command" },
+      { text: "数据库聚合操作", link: "/guide/db/aggregate" },
       {
         text: "操作地理信息",
         link: "/guide/db/geo",
@@ -114,6 +170,7 @@ const guideSiderbarConfig = [
   },
   {
     text: "云存储",
+    collapsed: false,
     items: [
       { text: "云存储简介", link: "/guide/oss/" },
       { text: "生成云存储临时令牌(STS)", link: "/guide/oss/get-sts" },
@@ -136,7 +193,10 @@ const guideSiderbarConfig = [
   },
   {
     text: "客户端 SDK",
-    items: [{ text: "laf-client-sdk 使用说明", link: "/guide/client-sdk/" }],
+    items: [
+      { text: "laf-client-sdk 使用说明", link: "/guide/client-sdk/" },
+      { text: "数据库访问策略", link: "/guide/db/policy" },
+    ],
   },
 ];
 
@@ -212,13 +272,17 @@ export default defineConfig({
       message: "Apache License V2.0",
       copyright: "Copyright © 2021-present labring/laf",
     },
-    // editLink: {
-    //   pattern: "https://github.com/labring/laf/edit/main/docs/:path",
-    //   text: "在 GitHub 上编辑此页",
-    // },
+    editLink: {
+      pattern: "https://github.com/labring/laf/edit/main/docs/:path",
+      text: "在 GitHub 上编辑此页",
+    },
     lastUpdated: "更新于",
     nav: NavConfig,
-    socialLinks: [{ icon: "github", link: "https://github.com/labring/laf" }],
+    socialLinks: [
+      { icon: "github", link: "https://github.com/labring/laf" },
+      { icon: "discord", link: "https://discord.gg/KaxHF86CcF" },
+      { icon: "twitter", link: "https://twitter.com/laf_dev" },
+    ],
     sidebar: {
       "/guide/": guideSiderbarConfig,
       "/api/": apiSideBarConfig,

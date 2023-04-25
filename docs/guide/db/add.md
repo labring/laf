@@ -18,7 +18,7 @@ Laf云函数库中，新增数据非常简单，正规说法为插入文档。�
 
 下例向 user 集合中添加了一条记录。
 
-```ts
+```typescript
 import cloud from '@lafjs/cloud'
 const db = cloud.database()
 
@@ -33,7 +33,7 @@ export async function main(ctx: FunctionContext) {
 
 当然我们也可以批量添加多条记录,只需要多传入一个对象`{ multi: true }`即可。
 
-```ts
+```typescript
 const list = [
   { name: "jack" },
   { name: "rose" }
@@ -45,7 +45,7 @@ console.log(res)
 
 ## mongodb 原生写法
 
-```ts
+```typescript
 import cloud from '@lafjs/cloud'
 const db = cloud.mongo.db
 

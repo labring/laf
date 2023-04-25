@@ -66,7 +66,7 @@ const cloud = new Cloud({
 
 setting下新增：
 
-```ts
+```typescript
 "packNpmManually": true,
 "packNpmRelationList": [
   {
@@ -122,7 +122,7 @@ const cloud = new Cloud({
 `laf-client-sdk` 调用云函数只支持POST请求云函数
 :::
 
-```ts
+```typescript
 import { Cloud } from "laf-client-sdk";
 
 const cloud = new Cloud({
@@ -142,7 +142,7 @@ const res = await cloud.invoke("getCode", { phone: phone.value });
 还有就是需要配合相对应的访问策略。
 :::
 
-```ts
+```typescript
 import { Cloud } from "laf-client-sdk";
 
 const cloud = new Cloud({

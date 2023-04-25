@@ -6,7 +6,7 @@ title: 云函数API文档
 
 ## 云函数签名
 
-```ts
+```typescript
 (ctx: FunctionContext) => any;
 ```
 

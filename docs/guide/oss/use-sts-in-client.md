@@ -14,7 +14,7 @@ npm i @aws-sdk/client-s3 laf-client-sdk
 
 2. 编写前端代码实现文件上传：
 
-```ts
+```typescript
 import { S3, PutObjectCommand } from "@aws-sdk/client-s3";
 import { Cloud } from "laf-client-sdk";
 

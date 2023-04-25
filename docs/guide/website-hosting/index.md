@@ -56,7 +56,9 @@ title: 静态网站托管介绍
 
 `API_URL` 为你当前的Laf应用的API地址，`laf.dev` 对应 `https://api.laf.dev`，`laf.run` 对应 `https://api.laf.run`
 
-`working-directory` 为你前端在当前项目的哪个路径，如果项目为单独的前端，则无需配置此项
+`WEB_PATH` 为你前端在当前项目的哪个路径，如果前端项目在根目录，则无需修改。如果在web目录下，则改成 `'web'` 即可。
+
+`DIST_PATH` 为编译后的目录名称，绝大部分项目编译后的目录名均为 dist
 
 ```yaml
 name: Build
@@ -70,7 +72,8 @@ env:
   LAF_APPID: ${{ secrets.LAF_APPID }}
   LAF_PAT: ${{ secrets.LAF_PAT }}
   API_URL: 'https://api.laf.dev'
-      
+  WEB_PATH: .
+  DIST_PATH: 'dist'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -82,27 +85,27 @@ jobs:
           node-version: '16.x'
       # 安装项目依赖
       - name: Install Dependencies
-        # working-directory: docs
+        working-directory: ${{ env.WEB_PATH }}
         run: npm install
       # 编译项目
       - name: Build 
-        # working-directory: docs
+        working-directory: ${{ env.WEB_PATH }}
         run: npm run build
       # 安装 laf-cli
       - name: Install Laf-CLI
         run: npm i laf-cli -g
       # 登录 laf api
       - name: Login laf-cli
-        # working-directory: docs          
+        working-directory: ${{ env.WEB_PATH }}          
         run: laf login -r ${{ env.API_URL }} $LAF_PAT
       # 初始化Laf应用然后将编译好的代码推送到云存储
       - name: Init appid and push
-        # working-directory: docs/.vitepress
+        working-directory: ${{ env.WEB_PATH }}
         env:
           LAF_APPID: ${{ env.LAF_APPID }}
         run: |
           laf app init ${{ env.LAF_APPID }}
-          laf storage push -f ${{ env.BUCKET_NAME }} dist/
+          laf storage push -f ${{ env.BUCKET_NAME }} ${{ env.DIST_PATH }}/
 ```
 
 2、配置一些环境变量
