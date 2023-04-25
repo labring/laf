@@ -1,12 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { CreateEnvironmentDto } from './dto/create-env.dto'
+import { ApplicationConfigurationService } from './configuration.service'
 
 @Injectable()
 export class EnvironmentVariableService {
   private readonly logger = new Logger(EnvironmentVariableService.name)
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly confService: ApplicationConfigurationService,
+  ) {}
 
   async updateAll(appid: string, dto: CreateEnvironmentDto[]) {
     const res = await this.prisma.applicationConfiguration.update({
@@ -14,6 +18,7 @@ export class EnvironmentVariableService {
       data: { environments: { set: dto } },
     })
 
+    await this.confService.publish(res)
     return res.environments
   }
 
@@ -37,6 +42,7 @@ export class EnvironmentVariableService {
       data: { environments: { set: origin } },
     })
 
+    await this.confService.publish(res)
     return res.environments
   }
 
@@ -54,6 +60,7 @@ export class EnvironmentVariableService {
       data: { environments: { deleteMany: { where: { name } } } },
     })
 
+    await this.confService.publish(res)
     return res
   }
 }

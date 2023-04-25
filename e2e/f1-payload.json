@@ -1,7 +1,6 @@
 {
   "name": "f1",
   "description": "laf e2e function(hello-laf)",
-  "websocket": false,
   "methods": [
     "GET",
     "POST"

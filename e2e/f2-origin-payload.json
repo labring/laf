@@ -1,7 +1,6 @@
 {
   "name": "f2",
   "description": "laf e2e function(db example)",
-  "websocket": false,
   "methods": [
     "GET",
     "POST"

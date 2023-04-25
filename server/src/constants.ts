@@ -147,6 +147,7 @@ export const HTTP_METHODS = ['HEAD', 'GET', 'POST', 'PUT', 'DELETE', 'PATCH']
 export const CN_PUBLISHED_FUNCTIONS = '__functions__'
 export const CN_PUBLISHED_POLICIES = '__policies__'
 export const CN_FUNCTION_LOGS = '__function_logs__'
+export const CN_PUBLISHED_CONF = '__conf__'
 
 export const X_LAF_TRIGGER_TOKEN_KEY = 'x-laf-trigger-token'
 export const X_LAF_DEVELOP_TOKEN_KEY = 'x-laf-develop-token'

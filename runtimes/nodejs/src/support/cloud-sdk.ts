@@ -26,7 +26,11 @@ function createCloudSdk() {
     },
     sockets: WebSocketAgent.clients,
     appid: Config.APP_ID,
-    env: process.env,
+    get env() {
+      return {
+        ...process.env,
+      }
+    },
   }
 
   /**
