@@ -143,7 +143,7 @@
     "Setting": "设置",
     "SystemSetting": "应用设置",
     "UserSetting": "用户设置",
-    "UpdateConfirm": "更新环境变量将重新启动应用，是否继续？",
+    "UpdateConfirm": "确认更新环境变量？",
     "AppInfo": "应用信息",
     "BaseInfo": "基础信息",
     "Detail": "规格详情",

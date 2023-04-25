@@ -143,7 +143,7 @@
     "Setting": "Setting",
     "SystemSetting": "Application Settings",
     "UserSetting": "User Info",
-    "UpdateConfirm": "Update env will restart application, are you sure?",
+    "UpdateConfirm": "Continue to update environment variables?",
     "BaseInfo": "Basic Info",
     "DB": "Database",
     "Delete": "Delete",
