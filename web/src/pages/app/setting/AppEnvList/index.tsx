@@ -10,8 +10,6 @@ import { COLOR_MODE } from "@/constants";
 
 import { useEnvironmentQuery, useUpdateEnvironmentMutation } from "./service";
 
-import useGlobalStore from "@/pages/globalStore";
-
 // convert [{name: "SERVER_SECRET", value: "demo"}, {name: "MOCK", value: "YES"}] to string like SERVER_SECRET=demo\nMOCK=YES
 const convertToEnv = (tableData: any[]) => {
   if (!tableData) return "";
@@ -21,7 +19,7 @@ const convertToEnv = (tableData: any[]) => {
 };
 
 const AppEnvList = (props: { onClose?: () => {} }) => {
-  const globalStore = useGlobalStore((state) => state);
+  // const globalStore = useGlobalStore((state) => state);
   const environmentQuery = useEnvironmentQuery();
   const updateEnvironmentMutation = useUpdateEnvironmentMutation();
 
@@ -59,13 +57,12 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
             });
             const res = await updateEnvironmentMutation.mutateAsync(arr);
             if (!res.error) {
-              globalStore.updateCurrentApp(globalStore.currentApp!);
               props.onClose && props.onClose();
             }
           }}
           headerText={String(t("Update"))}
           bodyText={String(t("SettingPanel.UpdateConfirm"))}
-          confirmButtonText={String(t("Update"))}
+          confirmButtonText={String(t("Confirm"))}
         >
           <Button className="mt-4 h-8 w-28 self-end">{t("Update")}</Button>
         </ConfirmButton>
