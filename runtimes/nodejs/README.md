@@ -52,7 +52,3 @@ npm start
 ```bash
 telepresence leave $APPID-$APPID
 ```
-
-## Troubleshooting
-
-- `telepresence helm install` failed for `arm64 / Apple Chip` cluster, please upgrade your telepresence to `v2.11.1` or later.
