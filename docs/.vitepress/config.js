@@ -173,6 +173,7 @@ const guideSiderbarConfig = [
     collapsed: false,
     items: [
       { text: "云存储简介", link: "/guide/oss/" },
+      { text: "云函数调用云存储", link: "/guide/oss/oss-by-function" },
       { text: "生成云存储临时令牌 (STS)", link: "/guide/oss/get-sts" },
       {
         text: "前端使用 STS 令牌上传文件",
