@@ -111,10 +111,10 @@ export default function DebugPanel(props: { containerRef: any }) {
 
   return (
     <>
-      <Panel className="min-w-[200px] flex-grow overflow-hidden">
+      <Panel className="min-w-[200px] flex-grow overflow-hidden !px-0">
         <Tabs width="100%" colorScheme={"primary"} display="flex" flexDirection={"column"} h="full">
           <TabList h={"50px"}>
-            <Tab px="0">
+            <Tab px="4">
               <span
                 className={clsx("font-semibold", {
                   "text-black": !darkMode,
@@ -124,12 +124,28 @@ export default function DebugPanel(props: { containerRef: any }) {
                 {t("FunctionPanel.InterfaceDebug")}
               </span>
             </Tab>
+            <Tab px="4">
+              <span
+                className={clsx("font-semibold", {
+                  "text-black": !darkMode,
+                  "text-white": darkMode,
+                })}
+              >
+                {t("HomePage.NavBar.docs")}
+              </span>
+            </Tab>
             {/* <Tab>历史请求</Tab> */}
           </TabList>
 
           <TabPanels flex={1} className="overflow-hidden">
-            <TabPanel padding={0} h="full">
-              <div className="flex h-full flex-col">
+            <TabPanel
+              padding={0}
+              h="full"
+              className={
+                darkMode ? "flex flex-col bg-lafDark-100" : "flex flex-col bg-grayModern-100"
+              }
+            >
+              <Panel className="flex-1 flex-col">
                 <div className="flex flex-none items-center px-2 py-4">
                   <span className="mr-3 whitespace-nowrap">{t("FunctionPanel.Methods")}</span>
                   <Select
@@ -225,40 +241,52 @@ export default function DebugPanel(props: { containerRef: any }) {
                     </TabPanels>
                   </Tabs>
                 </div>
-              </div>
+              </Panel>
+              <Resize
+                type="y"
+                pageId="functionPage"
+                panelId="RunningPanel"
+                reverse
+                containerRef={props.containerRef}
+              />
+              <Row {...functionPageConfig.RunningPanel} className="flex-1">
+                <Panel className="min-w-[200px]">
+                  <Panel.Header title={t("FunctionPanel.DebugResult")} />
+                  <div className="relative flex-1 overflow-auto">
+                    {isLoading ? (
+                      <div className="absolute left-0 right-0">
+                        <Center>
+                          <Spinner />
+                        </Center>
+                      </div>
+                    ) : null}
+                    {runningResData ? (
+                      <JSONViewer
+                        colorMode={colorMode}
+                        code={JSON.stringify(runningResData, null, 2)}
+                      />
+                    ) : (
+                      <Center minH={140} className="text-grayIron-600">
+                        {t("FunctionPanel.EmptyDebugTip")}
+                      </Center>
+                    )}
+                  </div>
+                </Panel>
+              </Row>
+            </TabPanel>
+
+            <TabPanel padding={0} h="full">
+              <iframe
+                title="docs"
+                height={"100%"}
+                width={"100%"}
+                src={String(t("HomePage.DocsLink"))}
+              ></iframe>
             </TabPanel>
             {/* <TabPanel padding={0}>to be continued...</TabPanel> */}
           </TabPanels>
         </Tabs>
       </Panel>
-      <Resize
-        type="y"
-        pageId="functionPage"
-        panelId="RunningPanel"
-        reverse
-        containerRef={props.containerRef}
-      />
-      <Row {...functionPageConfig.RunningPanel}>
-        <Panel className="min-w-[200px]">
-          <Panel.Header title={t("FunctionPanel.DebugResult")} />
-          <div className="relative flex-1 overflow-auto">
-            {isLoading ? (
-              <div className="absolute left-0 right-0">
-                <Center>
-                  <Spinner />
-                </Center>
-              </div>
-            ) : null}
-            {runningResData ? (
-              <JSONViewer colorMode={colorMode} code={JSON.stringify(runningResData, null, 2)} />
-            ) : (
-              <Center minH={140} className="text-grayIron-600">
-                {t("FunctionPanel.EmptyDebugTip")}
-              </Center>
-            )}
-          </div>
-        </Panel>
-      </Row>
     </>
   );
 }
