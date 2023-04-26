@@ -115,7 +115,7 @@ function toXML(payload, content) {
 
 ## 云函数合成图片
 
-需要先按照依赖 `canvas`
+需要先安装依赖 `canvas`
 
 ```typescript
 import { createCanvas } from 'canvas'
