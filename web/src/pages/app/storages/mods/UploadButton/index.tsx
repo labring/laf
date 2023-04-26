@@ -55,7 +55,9 @@ function UploadButton(props: { onUploadSuccess: Function; children: React.ReactE
                 setFileList(newFileList);
                 for (let i = 0; i < files.length; i++) {
                   const file = files[i];
-                  const fileName = file.webkitRelativePath ? file.webkitRelativePath : file.name;
+                  const fileName = file.webkitRelativePath
+                    ? file.webkitRelativePath.replace(/^[^/]*\//, "")
+                    : file.name;
                   await uploadFile(currentStorage?.name!, prefix + fileName, file, {
                     contentType: file.type,
                   });
