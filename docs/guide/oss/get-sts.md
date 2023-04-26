@@ -1,5 +1,5 @@
 ---
-title: 生成云存储临时令牌(STS)
+title: 生成云存储临时令牌 (STS)
 ---
 
 # {{ $frontmatter.title }}

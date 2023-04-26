@@ -4,15 +4,15 @@ title: 前端使用 STS 令牌访问云存储
 
 # {{ $frontmatter.title }}
 
-在前端使用 [使用云函数生成云存储临时令牌(STS)](get-sts.md) 生成的 STS 令牌信息，访问云存储。
+在前端使用 [使用云函数生成云存储临时令牌 (STS)](get-sts.md) 生成的 STS 令牌信息，访问云存储。
 
-1. 安装前端依赖
+1.安装前端依赖
 
 ```bash
 npm i @aws-sdk/client-s3 laf-client-sdk
 ```
 
-2. 编写前端代码实现文件上传：
+2.编写前端代码实现文件上传：
 
 ```typescript
 import { S3, PutObjectCommand } from "@aws-sdk/client-s3";
@@ -45,7 +45,7 @@ const bucket = `${APPID}-public`;
 const cmd = new PutObjectCommand({
   Bucket: bucket,
   Key: "index.html",
-  Body: "Hello from laf oss!", // 文件内容可以是二进制数据，也可以是文本数据， 或者是 File 对象
+  Body: "Hello from laf oss!", // 文件内容可以是二进制数据，也可以是文本数据，或者是 File 对象
   ContentType: "text/html",
 });
 

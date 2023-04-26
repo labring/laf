@@ -15,14 +15,14 @@ title: 静态网站托管介绍
 ## 如何使用？
 
 - 将开发好的项目打包。
-- 创建一个 bucket ，将打包后的项目丢进去。
+- 创建一个 bucket，将打包后的项目丢进去。
 - 点击开托管，上线成功！
 
 ## 演示
 
 ### 创建 bucket
 
-![](../../doc-images/creat-bucket.png)
+![create-bucket](../../doc-images/create-bucket.png)
 
 ### 上传文件，开启网站托管
 
@@ -32,31 +32,31 @@ title: 静态网站托管介绍
 大部分前端项目编译完的代码都在 `dist` 文件夹中，需要将 `dist` 文件夹中的文件全部上传到云存储中
 :::
 
-![](../../doc-images/open-website.png)
+![open-website](../../doc-images/open-website.png)
 
 ### 上线成功
 
 这样我们就上线成功了，点击链接即可访问，当然我们也可以点击自定义域名来绑定自己的域名。
 
 ::: tip
-绑定自己的域名后，Laf将会自动为您的域名配置 `SSL` 证书，这个过程会有30秒-2分钟，之后即可通过 `https` 进行访问
+绑定自己的域名后，Laf 将会自动为您的域名配置 `SSL` 证书，这个过程会有 30 秒 -2 分钟，之后即可通过 `https` 进行访问
 :::
 
-![](../../doc-images/website-hosting.png)
+![website-hosting](../../doc-images/website-hosting.png)
 
 ## 自动编译前端并发布
 
-利用Github Actions 即可实现自动编译前端并推送到Laf云存储中
+利用 Github Actions 即可实现自动编译前端并推送到 Laf 云存储中
 
 <!-- /guide/cli/#登录 -->
 
-1、在自己的前端项目的主分支中，新建Actions，下面是一个基础模板
+1、在自己的前端项目的主分支中，新建 Actions，下面是一个基础模板
 
-本模板效果是，如果有新代码推送到主分支，会自动触发Actions
+本模板效果是，如果有新代码推送到主分支，会自动触发 Actions
 
-`API_URL` 为你当前的Laf应用的API地址，`laf.dev` 对应 `https://api.laf.dev`，`laf.run` 对应 `https://api.laf.run`
+`API_URL` 为你当前的 Laf 应用的 API 地址，`laf.dev` 对应 `https://api.laf.dev`，`laf.run` 对应 `https://api.laf.run`
 
-`WEB_PATH` 为你前端在当前项目的哪个路径，如果前端项目在根目录，则无需修改。如果在web目录下，则改成 `'web'` 即可。
+`WEB_PATH` 为你前端在当前项目的哪个路径，如果前端项目在根目录，则无需修改。如果在 web 目录下，则改成 `'web'` 即可。
 
 `DIST_PATH` 为编译后的目录名称，绝大部分项目编译后的目录名均为 dist
 
@@ -98,7 +98,7 @@ jobs:
       - name: Login laf-cli
         working-directory: ${{ env.WEB_PATH }}          
         run: laf login -r ${{ env.API_URL }} $LAF_PAT
-      # 初始化Laf应用然后将编译好的代码推送到云存储
+      # 初始化 Laf 应用然后将编译好的代码推送到云存储
       - name: Init appid and push
         working-directory: ${{ env.WEB_PATH }}
         env:
@@ -110,13 +110,13 @@ jobs:
 
 2、配置一些环境变量
 
-`DOC_BUCKET_NAME` 为你的前端托管的bucket名称
+`DOC_BUCKET_NAME` 为你的前端托管的 bucket 名称
 
-`LAF_APPID` 为你的Laf应用 appid
+`LAF_APPID` 为你的 Laf 应用 appid
 
-`LAF_PAT` 为你的Laf应用的 PAT，获取方法可看：[获取PAT](/guide/cli/#登录)
+`LAF_PAT` 为你的 Laf 应用的 PAT，获取方法可看：[获取 PAT](/guide/cli/#登录)
 
-将上面3个参数配置到项目的密钥中
+将上面 3 个参数配置到项目的密钥中
 
 ![auto-build1](/doc-images/auto-build1.png)
 

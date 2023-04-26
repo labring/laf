@@ -16,7 +16,7 @@ title: 云函数入门
 
 ## 创建云函数
 
-创建并进入Laf应用后，点击页面左上角「函数」按钮,点击加号,添加云函数
+创建并进入 Laf 应用后，点击页面左上角「函数」按钮,点击加号,添加云函数
 
 ![create-function](/doc-images/create-function.png)
 

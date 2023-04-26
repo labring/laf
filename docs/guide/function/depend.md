@@ -4,17 +4,17 @@ title: 依赖管理
 
 # {{ $frontmatter.title }}
 
-应用开发过程中，通常有添加 `npm` 依赖的需求，`laf` 提供了在线可视化管理这些第三方包模块的方法, 用户可非常方便的进行搜索、安装、升级和卸载。
+应用开发过程中，通常有添加 `npm` 依赖的需求，`laf` 提供了在线可视化管理这些第三方包模块的方法，用户可非常方便的进行搜索、安装、升级和卸载。
 
 ::: warning
-Laf云开发可安装来自 <https://www.npmjs.com/> 的依赖，如果所需依赖无法在该网站中找到，是无法安装的
+Laf 云开发可安装来自 <https://www.npmjs.com/> 的依赖，如果所需依赖无法在该网站中找到，是无法安装的
 :::
 
 ## 添加依赖
 
 ![add-packages](/doc-images/add-packages.png)
 
-如上图所示，我们依次点击屏幕左下方的 `NPM 依赖`、 添加按钮, 搜索想要安装的包名（此处以 [moment](https://www.npmjs.com/package/moment) 为例），勾选后点击 `保存并重启` 按钮即可。
+如上图所示，我们依次点击屏幕左下方的 `NPM 依赖`、添加按钮，搜索想要安装的包名（此处以 [moment](https://www.npmjs.com/package/moment) 为例），勾选后点击 `保存并重启` 按钮即可。
 
 > 安装的持续时间会根据包的大小和网络情况而不同，请耐心等待完成。
 
@@ -32,7 +32,7 @@ Laf云开发可安装来自 <https://www.npmjs.com/> 的依赖，如果所需依
 
 ## 云函数使用
 
-安装完成后，即可在云函数中引入并使用。例如，创建一个云函数 `hello-moment`，并修改代码如下:
+安装完成后，即可在云函数中引入并使用。例如，创建一个云函数 `hello-moment`，并修改代码如下：
 
 ```typescript
 import cloud from '@lafjs/cloud'
@@ -47,7 +47,7 @@ export async function main(ctx: FunctionContext) {
 }
 ```
 
-点击界面右方运行按钮或按下 `Ctrl + S` 保存，可看到运行结果:
+点击界面右方运行按钮或按下 `Ctrl + S` 保存，可看到运行结果：
 
 ```json
 {

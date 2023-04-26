@@ -4,7 +4,7 @@ title: 云函数常见问题
 
 # {{ $frontmatter.title }}
 
-这里是云函数开发过程中可能会遇到的一些问题。欢迎Pr～
+这里是云函数开发过程中可能会遇到的一些问题。欢迎 Pr～
 
 [[toc]]
 
@@ -16,7 +16,7 @@ import cloud from '@lafjs/cloud'
 export async function main(ctx: FunctionContext) {
   const startTime = Date.now()
   console.log(startTime)
-  await sleep(5000) // 延迟5秒
+  await sleep(5000) // 延迟 5 秒
   console.log(Date.now() - startTime)
 }
 
@@ -33,8 +33,8 @@ async function sleep(ms) {
 import cloud from '@lafjs/cloud'
 
 export async function main(ctx: FunctionContext) {
-  // 如果getData的异步操作在4秒内完成并返回，则responseText为getDat的返回值
-  // 如果4秒内未完成，则responseText为''，不影响getData的实际运行
+  // 如果 getData 的异步操作在 4 秒内完成并返回，则 responseText 为 getDat 的返回值
+  // 如果 4 秒内未完成，则 responseText 为''，不影响 getData 的实际运行
   const responseText = await Promise.race([
     getData(),
     sleep(4000).then(() => ''),
@@ -49,9 +49,9 @@ async function sleep(ms) {
 }
 
 async function getData(){
-  // 某个异步操作，以下通过sleep 模拟超过4秒的情况
+  // 某个异步操作，以下通过 sleep 模拟超过 4 秒的情况
   await sleep(5000)
-  const text = "getData的返回值"
+  const text = "getData 的返回值"
   console.log(text, Date.now())
   return text
 }
@@ -67,7 +67,7 @@ import cloud from '@lafjs/cloud'
 
 export async function main(ctx: FunctionContext) {
   const { signature, timestamp, nonce, echostr } = ctx.query;
-  const token = '123456'; // 这里的token自定义，需要对应微信后台的配置的token
+  const token = '123456'; // 这里的 token 自定义，需要对应微信后台的配置的 token
 
   // 验证消息是否合法，若不合法则返回错误信息
   if (!verifySignature(signature, timestamp, nonce, token)) {
@@ -145,16 +145,16 @@ export async function main(ctx: FunctionContext) {
 
 ## 云函数防抖
 
-通过Laf云函数的全局缓存可以很方便的设置防抖
+通过 Laf 云函数的全局缓存可以很方便的设置防抖
 
-以下是一个简单的防抖例子，前端请求时，需要在 header 中带上用户token。
+以下是一个简单的防抖例子，前端请求时，需要在 header 中带上用户 token。
 
 ```typescript
-// 云函数生成Token
+// 云函数生成 Token
 const accessToken_payload = {
   // 除了示例的，还可以加别的参数
-  uid: login_user[0]._id, //一般是user表的_id
-  role: login_user[0].role, //如果没有role，可以不要
+  uid: login_user[0]._id, //一般是 user 表的_id
+  role: login_user[0].role, //如果没有 role，可以不要
   exp: (Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7) * 1000, //7天过期
 }
 const token = cloud.getToken(accessToken_payload)

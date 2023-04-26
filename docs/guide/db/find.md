@@ -4,7 +4,7 @@ title: 查询数据
 
 # {{ $frontmatter.title }}
 
-Laf云数据库支持传入不同的条件来查询数据，并且对查询结果进行处理。本文档将通过示例说明如何通过 `cloud.database()` 在云函数中执行查询。
+Laf 云数据库支持传入不同的条件来查询数据，并且对查询结果进行处理。本文档将通过示例说明如何通过 `cloud.database()` 在云函数中执行查询。
 
 查询数据操作主要支持 `where()` `limit()` `skip()` `orderBy()` `field()` `get()` `getOne()` `count()` 等
 
@@ -24,17 +24,17 @@ import cloud from '@lafjs/cloud'
 const db = cloud.database()
 
 export async function main(ctx: FunctionContext) {
-  // get 方法发起查询请求，不带where就是直接查询全部数据，默认最多查询100条数据
+  // get 方法发起查询请求，不带 where 就是直接查询全部数据，默认最多查询 100 条数据
   const result1 = await db.collection('user').get()
   console.log(result1) 
 
-  // get 方法发起查询请求，配置where条件
+  // get 方法发起查询请求，配置 where 条件
   const result2 = await db.collection('user').where({
     name: 'laf'
   }).get()
   console.log(result2) 
 
-  // get 方法发起查询请求，想一次获取更多数据，最多一次获取1000条数据
+  // get 方法发起查询请求，想一次获取更多数据，最多一次获取 1000 条数据
   const result3 = await db.collection('user').limit(1000).get()
   console.log(result3) 
 }
@@ -54,7 +54,7 @@ const db = cloud.database()
 export async function main(ctx: FunctionContext) {
   const res = await db.collection('user').geOne()
   console.log(res)  
-// getOne 获取的结果:
+// getOne 获取的结果：
 // {
 //   ok: true,
 //   data: { _id: '641d21992de2b789c963e5e0', name: 'jack' },
@@ -63,7 +63,7 @@ export async function main(ctx: FunctionContext) {
 
   const res = await db.collection('user').get()
   console.log(res) 
-// get 获取的结果:
+// get 获取的结果：
 // {
 //   data: [ { _id: '641d22292de2b789c963e5fd', name: 'jack' } ],
 //   requestId: undefined,
@@ -94,15 +94,15 @@ await db.collection("user").where({
 这里注意，`where` 并不会去查询数据，需参考我们上面的栗子加上 `get()` 或者 `getOne()`
 :::
 
-## 根据ID查询数据
+## 根据 ID 查询数据
 
 `collection.doc()`
 
-跟 `where` 的区别是，`doc` 只根据_id筛选
+跟 `where` 的区别是，`doc` 只根据_id 筛选
 
 ::: warning
 如果是用 cloud.database() 新增的文档，_id 类型为字符串
-如果是用 cloud.mongo.db 新增的文档，_id 类型一般为ObjectId
+如果是用 cloud.mongo.db 新增的文档，_id 类型一般为 ObjectId
 :::
 
 ```typescript
@@ -117,7 +117,7 @@ await db.collection("user").where({
 
 ```typescript
 // _id 的类型为 ObjectId 的情况
-import { ObjectId } from 'mongodb' // 需要在云函数顶部引入ObjectId
+import { ObjectId } from 'mongodb' // 需要在云函数顶部引入 ObjectId 类型
 
 await db.collection("user").doc(ObjectId('644148fd1eeb2b524dba499e'));
 ```
@@ -186,7 +186,7 @@ const db = cloud.database()
 const _ = db.command;
 const myOpenID = "xxx";
 await db.collection("articles").where({
-  _openid: _.eq(openid),
+  _openid: _.eq(myOpenID),
 });
 ```
 
@@ -200,6 +200,7 @@ await db.collection("articles").where({
     language: "zh-CN",
   },
 });
+
 // 这种写法表示 stat 对象等于 { publishYear: 2018, language: 'zh-CN' }
 const _ = db.command;
 await db.collection("articles").where({
@@ -292,7 +293,7 @@ await db.collection("user").where({
 });
 ```
 
-如果要跨字段 “或” 操作：(如筛选出内存 8g 或 cpu 3.2 ghz 的计算机)
+如果要跨字段“或”操作：(如筛选出内存 8g 或 cpu 3.2 ghz 的计算机)
 
 ```typescript
 const _ = db.command;
@@ -317,8 +318,8 @@ await db.collection("goods").where(
 ```typescript
 const _ = db.command;
 await db.collection("users").where(
-  name: _.exists(true), // name字段存在
-  age: _.exists(false), // age字段不存在
+  name: _.exists(true), // name 字段存在
+  age: _.exists(false), // age 字段不存在
 );
 ```
 
@@ -338,7 +339,7 @@ await db.collection('articles').where({
 await db.collection('articles').where({
   version: new db.RegExp({
     regex: '^\\ds'   // 正则表达式为 /^\ds/，转义后变成 '^\\ds'
-    options: 'i'    // i表示忽略大小写
+    options: 'i'    // i 表示忽略大小写
   })
 })
 ```
@@ -369,7 +370,7 @@ await db.collection("goods").where({
 
 ## 设置记录数量
 
-collection.limit() 限制展示数量，最大1000
+collection.limit() 限制展示数量，最大 1000
 
 参数说明
 
@@ -429,7 +430,7 @@ const db = cloud.database()
 
 export async function main(ctx: FunctionContext) {
   // 查询 userInfo.name = 'Jack' 且 userInfo.age = 10 的数据
-  // 写法1
+  // 写法 1
   const result1 = await db.collection('user')
   .where({
     userInfo: {
@@ -437,7 +438,7 @@ export async function main(ctx: FunctionContext) {
       age: 10
     }
   }).get()
-  // 写法2
+  // 写法 2
   const result2 = await db.collection('user')
   .where({
     'userInfo.name': 'Jack',
@@ -485,7 +486,7 @@ import cloud from '@lafjs/cloud'
 const db = cloud.database()
 
 export async function main(ctx: FunctionContext) {
-  // 查询arr内某个元素的name为 'item-2' 的文档
+  // 查询 arr 内某个元素的 name 为 'item-2' 的文档
   const result = await db.collection('test')
   .where({
     'arr.name': "item-2"
@@ -502,12 +503,12 @@ collection.orderBy() 对数据排序后再展示
 | 参数      | 类型   | 必填 | 说明                                |
 | --------- | ------ | ---- | ----------------------------------- |
 | field     | string | 是   | 排序的字段                          |
-| orderType | string | 是   | 排序的顺序，升序(asc) 或 降序(desc) |
+| orderType | string | 是   | 排序的顺序，升序 (asc) 或 降序 (desc) |
 
 使用示例
 
 ```typescript
-// 按照创建时间createAt 的升序排序
+// 按照创建时间 createAt 的升序排序
 await db.collection("user").orderBy("createAt", "asc").get()
 ```
 
@@ -522,7 +523,7 @@ collection.field() 只返回指定字段
 | -    | object | 是   | 要过滤的字段，不返回传 0，返回传 1 |
 
 ::: tip
-备注：只能指定要返回的字段或者不要返回的字段，即 `{'a': 1, 'b': 0}` 是一种错误的参数格式。默认会显示id。
+备注：只能指定要返回的字段或者不要返回的字段，即 `{'a': 1, 'b': 0}` 是一种错误的参数格式。默认会显示 id。
 :::
 
 使用示例
@@ -586,7 +587,7 @@ lookup 联表查询并非 `collection` 下的方法！
 事实上其为聚合 `aggregate` 下的方法，然而前文提到了 `with 联表查询` 用途与此一致，故在此先做说明，以避免开发者以为 lookup 不得使用，导致额外适配成 with 联表查询的成本。
 :::
 
-用途与 `with 联表查询` 基本一致，同 with 联表查询的示例: 查询 article 集合时，把各记录的 tag 标签一同查出。
+用途与 `with 联表查询` 基本一致，同 with 联表查询的示例：查询 article 集合时，把各记录的 tag 标签一同查出。
 
 ```typescript
 const { data } = await db
@@ -604,4 +605,4 @@ console.log(data);
 
 ## groupBy 分组查询
 
-分组查询请看 [聚合操作](/guide/db/aggregate) 文档
+分组查询请看 [聚合操作](/guide/db/aggregate.html#bucket) 文档

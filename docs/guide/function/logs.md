@@ -4,9 +4,9 @@ title: 云函数历史日志
 
 # {{ $frontmatter.title }}
 
-云函数的全部历史日志，全部都自动保存到了日志板块中，日志会保留7天
+云函数的全部历史日志，全部都自动保存到了日志板块中，日志会保留 7 天
 
-可根据请求ID `requestId` 和云函数名筛选
+可根据请求 ID `requestId` 和云函数名筛选
 
 ![function-log](/doc-images/function-log.png)
 
@@ -18,7 +18,7 @@ title: 云函数历史日志
 
 ## 手动清理日志
 
-Laf云函数的运行日志都在一个隐藏的集合中：`__function_logs__`
+Laf 云函数的运行日志都在一个隐藏的集合中：`__function_logs__`
 
 所以我们可以通过云函数操作数据库的方法，清理日志
 
@@ -33,7 +33,7 @@ import cloud from '@lafjs/cloud'
 
 export async function main(ctx: FunctionContext) {
   console.log('Hello World')
-  // 数据库,删除全部日志
+  // 数据库，删除全部日志
   const db = cloud.database();
   const res = await db.collection('__function_logs__').remove({multi:true})
   console.log(res)

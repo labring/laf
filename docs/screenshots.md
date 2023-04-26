@@ -7,21 +7,20 @@ sidebar: false
 
 ## 应用列表
 
-![](./doc-images/doc-app-list.png)
+![doc-app-list](./doc-images/doc-app-list.png)
 
 ## 云函数列表
 
-![](./doc-images/doc-function-list.png)
+![doc-function-list](./doc-images/doc-function-list.png)
 
 ## 云存储：文件管理
 
-![](./doc-images/doc-storage.png)
+![doc-storage](./doc-images/doc-storage.png)
 
 ## 云数据库：数据管理
 
-![](./doc-images/doc-db.png)
+![doc-db](./doc-images/doc-db.png)
 
 ## 云数据库：访问策略
 
-![](./doc-images/doc-policy.png)
-
+![doc-policy](./doc-images/doc-policy.png)
