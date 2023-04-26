@@ -4,6 +4,12 @@ on:
   repository_dispatch:
     types: [cluster_image_build_success, dockerize_runtime_success]
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "e2e/**"
+      - ".github/workflows/e2e.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
