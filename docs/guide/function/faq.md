@@ -115,7 +115,7 @@ function toXML(payload, content) {
 
 ## 云函数合成图片
 
-需要先按照依赖 `canvas`
+需要先安装依赖 `canvas`
 
 ```typescript
 import { createCanvas } from 'canvas'
@@ -124,20 +124,23 @@ export async function main(ctx: FunctionContext) {
   const canvas = createCanvas(200, 200)
   const context = canvas.getContext('2d')
 
-  // Write "Awesome!"
+  // Write "hello!"
   context.font = '30px Impact'
   context.rotate(0.1)
-  context.fillText('Laf!', 50, 100)
+  context.fillText('hello!', 50, 100)
 
   // Draw line under text
-  var text = context.measureText('Laf!')
+  var text = context.measureText('hello!')
   context.strokeStyle = 'rgba(0,0,0,0.5)'
   context.beginPath()
   context.lineTo(50, 102)
-  context.lineTo(50 + text.width, 102)
+  context.lineTo(30 + text.width, 102)
   context.stroke()
 
-  // Write "Awesome!"context.font = '30px Impact'context.rotate(0.1)context.fillText('Awesome!', 50， 100)
+  // Write "Laf!"
+  context.font = '30px Impact'
+  context.rotate(0.1)
+  context.fillText('Laf!', 50, 150)
   console.log(canvas.toDataURL())
   return `<img src= ${canvas.toDataURL()} />`
 }
@@ -167,16 +170,43 @@ import cloud from '@lafjs/cloud'
 export async function main(ctx: FunctionContext) {
   const FunctionName = ctx.request.params.name
   const sharedName = FunctionName + ctx.user.uid
-  let lastCallTime = await cloud.shared.get(sharedName)
+  let lastCallTime = cloud.shared.get(sharedName)
   console.log(lastCallTime)
   if (lastCallTime > Date.now()) {
     console.log("请求太快了")
     return '请求太快了'
   }
-  await cloud.shared.set(sharedName, Date.now() + 1000)
+  cloud.shared.set(sharedName, Date.now() + 1000)
   // 原有逻辑
 
   // 逻辑完毕后删除全局缓存
-  await cloud.shared.delete(sharedName)
+  cloud.shared.delete(sharedName)
 }
 ```
+
+## 云函数域名验证
+
+部分微信服务需要验证 MP 开头的 txt 文件的值，以判断域名是否有权限
+
+可以新建一个该文件名的云函数，如：`MP_123456789.txt`
+
+直接返回该文本的内容
+
+```typescript
+import cloud from '@lafjs/cloud'
+
+export async function main(ctx: FunctionContext) {
+  // 这里直接返回文本内容
+  return 'abcd...'
+}
+```
+
+## Laf 应用 IP 池
+
+下满例子为使用的是 laf.run 的情况。使用 laf.dev 或其他，下面命令需要更换域名。
+
+- Windows 可在 CMD 中执行 `nslookup laf.run`
+
+- Mac 可在终端中执行 `nslookup laf.run`
+
+可看到全部 IP 池

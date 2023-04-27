@@ -4,7 +4,13 @@ title: 生成云存储临时令牌 (STS)
 
 # {{ $frontmatter.title }}
 
-在「开发控制台」-> 「云函数」 -> 「依赖管理」，添加 `@aws-sdk/client-sts` 依赖（需重启应用生效）。
+前端或云函数环境以外的地方需要请求云存储，是需要一个 STS 临时令牌的，下面云函数可以直接请求并获取一个 STS 临时令牌。
+
+## 安装依赖
+
+安装 `@aws-sdk/client-sts` 依赖（需重启应用生效）。
+
+## 创建`get-oss-sts`云函数
 
 创建云函数 `get-oss-sts`，添加如下代码：
 
@@ -42,6 +48,6 @@ exports.main = async function (ctx: FunctionContext) {
 
 > 保存 & 发布云函数，即可访问。
 
-### 前端使用 STS 令牌访问云存储
+## 前端使用 STS 令牌访问云存储
 
 @see [前端使用 STS 令牌访问云存储](use-sts-in-client.md)
