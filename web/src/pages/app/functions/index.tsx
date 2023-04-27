@@ -20,7 +20,7 @@ import useCustomSettingStore from "@/pages/customSetting";
 function FunctionPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const functionPageConfig = useCustomSettingStore((store) => store.layoutInfo.functionPage);
-  const [showOverlay, setShowOverlay] = useState(Boolean);
+  const [showOverlay, setShowOverlay] = useState(false);
 
   useEffect(() => {
     function handleMouseUp() {
