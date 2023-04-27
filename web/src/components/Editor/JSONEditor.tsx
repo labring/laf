@@ -36,7 +36,7 @@ function JSONEditor(props: {
   colorMode?: string;
   onChange?: (value: string | undefined) => void;
 }) {
-  const { value, onChange, height = "95%", colorMode = COLOR_MODE.light } = props;
+  const { value, onChange, height = "90%", colorMode = COLOR_MODE.light } = props;
 
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
