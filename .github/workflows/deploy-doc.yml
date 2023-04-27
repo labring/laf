@@ -11,8 +11,8 @@ env:
   LAF_CI_DOCS_PAT: ${{ secrets.LAF_CI_DOCS_PAT }}
   LAF_CI_DOCS_APPID: ${{ secrets.LAF_CI_DOCS_APPID }}
   LAF_CI_DOCS_BUCKET_NAME: ${{ secrets.LAF_CI_DOCS_BUCKET_NAME }}
-  LAF_API_URL: https://api.laf.dev
-
+  LAF_API_URL: ${{ secrets.LAF_API_URL }}
+  
 jobs:
   linkCheckerAndDeploy:
     runs-on: ubuntu-latest
