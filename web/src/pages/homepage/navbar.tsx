@@ -145,7 +145,11 @@ const Navbar = (props: Props) => {
                 className="flex"
                 rel="noreferrer"
               >
-                <GithubIcon fontSize={32} color={darkMode ? "#F6F8F9" : "#3C455D"} />
+                <GithubIcon
+                  className="mr-1"
+                  fontSize={24}
+                  color={darkMode ? "#F6F8F9" : "#3C455D"}
+                />
                 {stars}
               </a>
             ) : null}
