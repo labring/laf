@@ -26,7 +26,7 @@ const Language = (props: Props) => {
           src={darkMode ? "/homepage/dark/language.svg" : "/homepage/language.svg"}
           alt="language"
         /> */}
-        <LangIcon color={darkMode ? "#F6F8F9" : "#3C455D"} fontSize={32} />
+        <LangIcon className="mr-1" color={darkMode ? "#F6F8F9" : "#3C455D"} fontSize={24} />
         <p>{i18n.language === "en" ? "中文" : "English"}</p>
       </a>
     </div>
