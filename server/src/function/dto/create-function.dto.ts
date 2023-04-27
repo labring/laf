@@ -5,7 +5,7 @@ import {
   IsIn,
   IsNotEmpty,
   IsString,
-  Length,
+  Matches,
   MaxLength,
 } from 'class-validator'
 import { HTTP_METHODS } from '../../constants'
@@ -15,7 +15,7 @@ export class CreateFunctionDto {
     description: 'Function name is unique in the application',
   })
   @IsNotEmpty()
-  @Length(1, 128)
+  @Matches(/^[a-zA-Z0-9_.-]{1,128}$/)
   name: string
 
   @ApiPropertyOptional()
