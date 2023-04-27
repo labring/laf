@@ -101,7 +101,7 @@
     "SystemDependence": "内置依赖",
     "Value": "值",
     "isSupport": "是否支持",
-    "FunctionNameRule": "函数名只能包含英文或 _",
+    "FunctionNameRule": "函数名须由字母、数字、点（.）和划线(-_)组成，匹配正则：/^[a-zA-Z0-9_.-]{1,128}$/",
     "EmptyDebugTip": "暂无运行结果",
     "EmptyFunctionTip": "您还没有创建函数",
     "UploadButton": "上传",
