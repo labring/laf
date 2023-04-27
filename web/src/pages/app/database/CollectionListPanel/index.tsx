@@ -103,8 +103,8 @@ export default function CollectionListPanel() {
                       store.setCurrentDB(db);
                     }}
                   >
-                    <div className="group flex w-full justify-between">
-                      <div className="font-semibold leading-loose">
+                    <div className="group flex w-full items-center justify-between">
+                      <div className="overflow-hidden text-ellipsis whitespace-nowrap font-semibold leading-loose">
                         <FileTypeIcon type="db" />
                         <span className="ml-2 text-base">{db.name}</span>
                       </div>

@@ -190,14 +190,14 @@ export default function FunctionList() {
                     navigate(`/app/${currentApp?.appid}/${Pages.function}/${func?.name}`);
                   }}
                 >
-                  <div className="font-semibold leading-loose">
+                  <div className="overflow-hidden text-ellipsis whitespace-nowrap font-semibold leading-loose">
                     <FileTypeIcon type={FileType.ts} />
                     <span className="ml-2 text-base">{func?.name}</span>
                   </div>
                   <HStack spacing={1}>
                     {functionCache.getCache(func?.id, func?.source?.code) !==
                       func?.source?.code && (
-                      <span className="inline-block h-1 w-1 flex-none rounded-full bg-warn-700"></span>
+                      <span className="mt-[1px] inline-block h-1 w-1 flex-none rounded-full bg-warn-700"></span>
                     )}
                     <MoreButton
                       isHidden={func.name !== currentFunction?.name}
