@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { CSSProperties, useEffect, useRef } from "react";
 import { debounce } from "lodash";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
@@ -93,6 +93,7 @@ const updateModel = (path: string, value: string, editorRef: any) => {
 function FunctionEditor(props: {
   value: string;
   className?: string;
+  style?: CSSProperties;
   onChange?: (value: string | undefined) => void;
   path: string;
   height?: string;
@@ -105,6 +106,7 @@ function FunctionEditor(props: {
     path,
     height = "100%",
     className,
+    style = {},
     colorMode = COLOR_MODE.light,
     readOnly = false,
   } = props;
@@ -182,7 +184,7 @@ function FunctionEditor(props: {
     }
   }, [onChange]);
 
-  return <div style={{ height: height }} className={className} ref={monacoEl}></div>;
+  return <div style={{ height: height, ...style }} className={className} ref={monacoEl}></div>;
 }
 
 export default FunctionEditor;
