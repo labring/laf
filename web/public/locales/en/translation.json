@@ -101,7 +101,7 @@
     "SystemDependence": "Built-In",
     "Value": "Value",
     "isSupport": "Whether to support",
-    "FunctionNameRule": "Function names can only contain English letters or underscores (_).",
+    "FunctionNameRule": "Function names must consist of letters, numbers, periods (.), and hyphens (-), matching the regex: /^[a-zA-Z0-9.-]{1,128}$/.",
     "EmptyDebugTip": "No results yet",
     "EmptyFunctionTip": "You have not created the function",
     "UploadButton": "upload",
