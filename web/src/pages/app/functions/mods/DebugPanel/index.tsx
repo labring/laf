@@ -38,7 +38,7 @@ import useGlobalStore from "@/pages/globalStore";
 
 const HAS_BODY_PARAMS_METHODS: (TMethod | undefined)[] = ["POST", "PUT", "PATCH", "DELETE"];
 
-export default function DebugPanel(props: { containerRef: any }) {
+export default function DebugPanel(props: { containerRef: any; showOverlay: any }) {
   const { t } = useTranslation();
   const { getFunctionUrl, currentFunction, setCurrentRequestId } = useFunctionStore(
     (state) => state,
@@ -276,12 +276,23 @@ export default function DebugPanel(props: { containerRef: any }) {
             </TabPanel>
 
             <TabPanel padding={0} h="full">
+              {props.showOverlay && (
+                <div
+                  style={{
+                    position: "fixed",
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(0, 0, 0, 0)",
+                    zIndex: 999,
+                  }}
+                />
+              )}
               <iframe
                 title="docs"
                 height={"100%"}
                 width={"100%"}
                 src={String(t("HomePage.DocsLink"))}
-              ></iframe>
+              />
             </TabPanel>
             {/* <TabPanel padding={0}>to be continued...</TabPanel> */}
           </TabPanels>
