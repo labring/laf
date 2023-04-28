@@ -5,6 +5,7 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "vitepress dev",
+    "preinstall": "node ./scripts/check-version.js",
     "build": "vitepress build && npm run after-build",
     "serve": "vitepress serve",
     "after-build": "sed -i -e \"s@</body>@<div style='font-size: 14px; padding-bottom: 30px; color: darkblue;text-align: center;'><a href='https://beian.miit.gov.cn/' target='_blank'>浙ICP备2022023216号</a></div></body>@g\" ./.vitepress/dist/index.html",
@@ -13,10 +14,14 @@
   },
   "dependencies": {
     "markdown-it-custom-attrs": "^1.0.2",
-    "vitepress": "^1.0.0-alpha.29"
+    "vitepress": "^1.0.0-alpha.29",
+    "semver": "^7.5.0"
   },
   "devDependencies": {
     "flexsearch": "^0.7.31",
     "vitepress-plugin-search": "^1.0.4-alpha.20"
+  },
+  "engines": {
+    "node": ">=16"
   }
 }
