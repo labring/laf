@@ -103,6 +103,45 @@ const guideSiderbarConfig = [
         link: "/guide/function/use-function",
       },
       {
+        text: "云函数 SDK",
+        collapsed: false,
+        // link: "/guide/function/function-sdk",
+        items: [
+          {
+            text: "SDK 简介",
+            link: "/guide/function/function-sdk#frontmatter-title",
+          },
+          {
+            text: "导入 SDK",
+            link: "/guide/function/function-sdk#导入-sdk",
+          },
+          {
+            text: "发送网络请求",
+            link: "/guide/function/function-sdk#发送网络请求",
+          },
+          {
+            text: "操作数据库",
+            link: "/guide/function/function-sdk#操作数据库",
+          },
+          {
+            text: "调用其他云函数",
+            link: "/guide/function/function-sdk#调用其他云函数",
+          },
+          {
+            text: "生成和解密 JWT Token",
+            link: "/guide/function/function-sdk#生成和解密-jwt-token",
+          },
+          {
+            text: "云函数全局缓存",
+            link: "/guide/function/function-sdk#云函数全局缓存",
+          },
+          {
+            text: "原生 MongoDriver 实例",
+            link: "/guide/function/function-sdk#云函数原生-mongodriverobject-实例",
+          },
+        ],
+      },
+      {
         text: "调用云函数",
         items: [
           {
@@ -144,6 +183,10 @@ const guideSiderbarConfig = [
         link: "/guide/function/interceptor",
       },
       {
+        text: "应用初始化",
+        link: "/guide/function/init",
+      },
+      {
         text: "云函数 FAQ",
         link: "/guide/function/faq",
       },
@@ -174,6 +217,7 @@ const guideSiderbarConfig = [
     items: [
       { text: "云存储简介", link: "/guide/oss/" },
       { text: "云函数调用云存储", link: "/guide/oss/oss-by-function" },
+      { text: "前端通过云函数上传文件", link: "/guide/oss/upload-by-function" },
       { text: "生成云存储临时令牌 (STS)", link: "/guide/oss/get-sts" },
       {
         text: "前端使用 STS 令牌上传文件",
