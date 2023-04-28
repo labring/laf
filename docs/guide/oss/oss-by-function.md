@@ -27,6 +27,7 @@ const s3Client = new S3({
 
 ## 上传文件
 
+
 :::tip
 如果上传文件已存在会自动覆盖之前的文件
 :::
@@ -344,3 +345,9 @@ exports.main = async function (ctx: FunctionContext) {
   })
 }
 ```
+=======
+- Key 文件存储路径
+  - 如果传入的路径不存在，会自动创建
+  - 如果传入的文件存在，会自动覆盖源文件
+- ContentType 上传文件的 `mimetype` 类型
+- Body 文件对象

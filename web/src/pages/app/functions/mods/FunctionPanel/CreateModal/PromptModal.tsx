@@ -147,7 +147,7 @@ const PromptModal = (props: { functionItem?: any; children?: React.ReactElement 
                 <Input
                   {...register("name", {
                     pattern: {
-                      value: /^[_A-Za-z][A-Za-z0-9-_]+$/,
+                      value: /^[a-zA-Z0-9_.-]{1,128}$/,
                       message: t("FunctionPanel.FunctionNameRule"),
                     },
                   })}

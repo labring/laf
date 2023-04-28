@@ -39,7 +39,7 @@ const JSONViewerStyle: any = {
     color: "#954121",
   },
   "hljs-number": {
-    color: "#b0caa4",
+    color: "#01A99D",
   },
   "hljs-string": {
     color: "#0451a5",
