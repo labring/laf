@@ -26,7 +26,7 @@ title: 静态网站托管介绍
 
 ### 上传文件，开启网站托管
 
-上传前端项目编译后的文件到刚刚新建的云存储中
+上传前端项目编译后的文件到刚刚新建的云存储中。
 
 ::: tip
 大部分前端项目编译完的代码都在 `dist` 文件夹中，需要将 `dist` 文件夹中的文件全部上传到云存储中
@@ -65,15 +65,15 @@ name: Build
 on:
   push:
     branches:
-      - '*'
-      
+      - "*"
+
 env:
   BUCKET_NAME: ${{ secrets.DOC_BUCKET_NAME }}
   LAF_APPID: ${{ secrets.LAF_APPID }}
   LAF_PAT: ${{ secrets.LAF_PAT }}
-  API_URL: 'https://api.laf.dev'
+  API_URL: "https://api.laf.dev"
   WEB_PATH: .
-  DIST_PATH: 'dist'
+  DIST_PATH: "dist"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -82,13 +82,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: "16.x"
       # 安装项目依赖
       - name: Install Dependencies
         working-directory: ${{ env.WEB_PATH }}
         run: npm install
       # 编译项目
-      - name: Build 
+      - name: Build
         working-directory: ${{ env.WEB_PATH }}
         run: npm run build
       # 安装 laf-cli
@@ -96,7 +96,7 @@ jobs:
         run: npm i laf-cli -g
       # 登录 laf api
       - name: Login laf-cli
-        working-directory: ${{ env.WEB_PATH }}          
+        working-directory: ${{ env.WEB_PATH }}
         run: laf login -r ${{ env.API_URL }} $LAF_PAT
       # 初始化 Laf 应用然后将编译好的代码推送到云存储
       - name: Init appid and push
