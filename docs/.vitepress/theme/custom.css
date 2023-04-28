@@ -1,7 +1,7 @@
 :root {
   --vp-c-brand: #646cff;
   --vp-c-brand-light: #747bff;
-  --vp-c-brand-dark: #323cf7
+  --vp-c-brand-dark: #323cf7;
 }
 
 .inline img {
@@ -27,4 +27,8 @@
 .search button:hover {
   border: 1px solid var(--vp-c-brand);
   background-color: #f6f6f7;
+}
+
+.dark .search button {
+  background-color: var(--vp-c-bg);
 }
