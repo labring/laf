@@ -4,6 +4,8 @@
 
 ![function-url](../../doc-images/function-url.png)
 
+## `axios` 调用
+
 下面是用前端使用 `axios` 请求云函数的简单示例。
 
 ```typescript
@@ -31,4 +33,24 @@ const { data } = await axios({
 });
 
 console.log(data);
+```
+
+## `curl` 调用
+
+当然也可以使用 `curl` 去调用云函数
+
+GET 请求
+
+```shell
+curl <FunctionURL>?query=hello&limit=10 \
+     -H "Authorization: Bearer abc123" \
+     -H "Content-Type: application/json"
+```
+
+POST 请求
+
+```shell
+curl -X POST <FunctionURL> \
+     -H "Content-Type: application/json" \
+     -d '{"name": "John", "age": 30}'
 ```

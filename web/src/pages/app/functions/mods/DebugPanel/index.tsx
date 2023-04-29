@@ -202,7 +202,6 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
                           )}
                         </Tab>
                       )}
-
                       <Tab>
                         Headers
                         {headerParams.length > 0 && (
@@ -210,7 +209,7 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
                         )}
                       </Tab>
                     </TabList>
-                    <TabPanels className="flex-grow overflow-auto">
+                    <TabPanels className="relative flex-1 overflow-auto">
                       <TabPanel px={0} py={1}>
                         <QueryParamsTab
                           key={"QueryParamsTab"}
@@ -221,7 +220,11 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
                       </TabPanel>
 
                       {HAS_BODY_PARAMS_METHODS.includes(runningMethod) && (
-                        <TabPanel px={0} py={1} style={{ height: "100%", overflow: "auto" }}>
+                        <TabPanel
+                          px={0}
+                          py={1}
+                          className="absolute bottom-0 left-0 right-0 top-0 overflow-auto"
+                        >
                           <BodyParamsTab
                             onChange={(values) => {
                               setBodyParams(values);

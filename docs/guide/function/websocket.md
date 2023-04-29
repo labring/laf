@@ -4,9 +4,15 @@ title: 云函数处理 WebSocket 长连接
 
 # {{ $frontmatter.title }}
 
-## 特殊函数名 __websocket__
+WebSocket 是一个长连接，可以主动给客户端推送消息，但是很可惜很多 Severless 架构不支持 WebSocket 的功能。值得开心的是，Laf 可以很轻松的使用 WebSocket，这给了我们更多的应用场景。
 
-如果需要使用 WebSocket 需要创建一个云函数并且命名为 `__websocket__`，专为 WebSocket 存在的云函数！
+## WebSocket 云函数
+
+在 Laf 使用 WebSocket 需要创建一个云函数并且命名为 `__websocket__`
+
+:::tip
+WebSocket 云函数名为固定云函数名：`__websocket__`，其他名称均不会生效
+:::
 
 以下是云函数中处理 WebSocket 示例：
 
@@ -57,17 +63,17 @@ import cloud from '@lafjs/cloud'
 export async function main(ctx: FunctionContext) {
   // 初始化 websocket user Map 列表
   // 也可用数据库保存，本示例代码用的 Laf 云函数的全局缓存
-  let wsMap = await cloud.shared.get("wsMap") // 获取 wsMap
+  let wsMap = cloud.shared.get("wsMap") // 获取 wsMap
   if(!wsMap){
     wsMap = new Map()
-    await cloud.shared.set("wsMap", wsMap) // 设置 wsMap
+    cloud.shared.set("wsMap", wsMap) // 设置 wsMap
   }
   // websocket 连接成功
   if (ctx.method === "WebSocket:connection") {
     const userId = generateUserId()
-    wsMap = await cloud.shared.get("wsMap") // 获取 wsMap
+    wsMap = cloud.shared.get("wsMap") // 获取 wsMap
     wsMap.set(userId, ctx.socket);
-    await cloud.shared.set("wsMap", wsMap) // 设置 wsMap
+    cloud.shared.set("wsMap", wsMap) // 设置 wsMap
     ctx.socket.send("连接成功，你的 userID 是："+userId);
   }
 
@@ -81,10 +87,10 @@ export async function main(ctx: FunctionContext) {
 
   // websocket 关闭消息
   if (ctx.method === "WebSocket:close") {
-    wsMap = await cloud.shared.get("wsMap") // 获取 wsMap 
+    wsMap = cloud.shared.get("wsMap") // 获取 wsMap 
     const userId = getKeyByValue(wsMap, ctx.socket);
     wsMap.delete(userId);
-    await cloud.shared.set("wsMap", wsMap) // 设置 wsMap
+    cloud.shared.set("wsMap", wsMap) // 设置 wsMap
     ctx.socket.send("服务端已接收到关闭事件消息，你的 userID 是："+userId);
   }
 }
@@ -120,7 +126,7 @@ import cloud from '@lafjs/cloud'
 
 export async function main(ctx: FunctionContext) {
   const userID = ''
-  let wsMap = await cloud.shared.get("wsMap")
+  let wsMap = cloud.shared.get("wsMap")
   ctx.socket = wsMap.get(userID)
   ctx.socket.send("消息测试");
 }
