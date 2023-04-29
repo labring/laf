@@ -25,7 +25,7 @@ const cloud = new Cloud({
   // 这里是访问策略的入口地址，如果没有访问策略可不填
   dbProxyUrl: "/proxy/app",
   // 请求时带的token，可空
-  getAccessToken: () => localStorage.getItem("access_token"),
+  getAccessToken: () => uni.getStorageSync("access_token"),
 });
 ```
 
