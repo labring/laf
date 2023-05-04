@@ -17,6 +17,10 @@ const NavConfig = [
             text: "Laf 云开发介绍",
             link: "/guide/",
           },
+          {
+            text: "Web IDE",
+            link: "/guide/web-ide/",
+          },
         ],
       },
       {
@@ -51,12 +55,19 @@ const NavConfig = [
             text: "命令行工具",
             link: "/guide/cli/",
           },
+          {
+            text: "vs Code 本地开发",
+            link: "/guide/laf-assistant/",
+          },
         ],
       },
     ],
   },
-  { text: "范例", link: "/examples/aliyun-sms", activeMatch: "^/examples/" },
-  { text: "预览图", link: "/screenshots" },
+  {
+    text: "三分钟实验室",
+    // target: "_self",
+    link: "/3min/",
+  },
   {
     text: "立即使用",
     // target: "_self",
@@ -74,6 +85,10 @@ const guideSiderbarConfig = [
       {
         text: "概览",
         link: "/guide/",
+      },
+      {
+        text: "Web IDE  在线开发",
+        link: "/guide//web-ide/",
       },
     ],
   },
@@ -105,7 +120,6 @@ const guideSiderbarConfig = [
       {
         text: "云函数 SDK",
         collapsed: false,
-        // link: "/guide/function/function-sdk",
         items: [
           {
             text: "SDK 简介",
@@ -227,10 +241,7 @@ const guideSiderbarConfig = [
   },
   {
     text: "静态网站托管",
-    items: [
-      { text: "快速开始", link: "/guide/website-hosting/" },
-      // { text: "快速开始", link: "/guide/website-hosting/quick-start" },
-    ],
+    items: [{ text: "快速托管", link: "/guide/website-hosting/" }],
   },
   {
     text: "laf-cli 命令行工具",
@@ -242,6 +253,10 @@ const guideSiderbarConfig = [
       { text: "laf-client-sdk 使用说明", link: "/guide/client-sdk/" },
       { text: "数据库访问策略", link: "/guide/db/policy" },
     ],
+  },
+  {
+    text: "vs Code 本地开发",
+    items: [{ text: "laf assistant", link: "/guide/laf-assistant/" }],
   },
 ];
 
@@ -319,6 +334,7 @@ export default defineConfig({
     },
   },
   head: [
+    ["link", { rel: "icon", href: "/logo.png" }],
     [
       "link",
       {

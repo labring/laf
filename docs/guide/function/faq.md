@@ -201,7 +201,7 @@ export async function main(ctx: FunctionContext) {
 }
 ```
 
-## Laf 应用 IP 池
+## Laf 应用 IP 池（IP 白名单）
 
 下满例子为使用的是 laf.run 的情况。使用 laf.dev 或其他，下面命令需要更换域名。
 
@@ -210,3 +210,181 @@ export async function main(ctx: FunctionContext) {
 - Mac 可在终端中执行 `nslookup laf.run`
 
 可看到全部 IP 池
+
+## 云函数发送阿里云短信验证码
+
+使用阿里云短信接口，编写发送短信验证码的云函数。
+需要你提供阿里云短信服务的 `AccessKey` 和 `SecretKey`，以及短信模板 ID。
+
+创建 `sendsms` 云函数，添加依赖 @alicloud/dysmsapi20170525，编写以下代码：
+
+```typescript
+import Dysmsapi, * as dysmsapi from "@alicloud/dysmsapi20170525";
+import * as OpenApi from "@alicloud/openapi-client";
+import * as Util from "@alicloud/tea-util";
+
+const accessKeyId = "xxxxxxxxxxxxxx";
+const accessKeySecret = "xxxxxxxxxxxxxx";
+const signName = "XXXX";
+const templateCode = "SMS_xxxxx";
+const endpoint = "dysmsapi.aliyuncs.com";
+
+exports.main = async function (ctx: FunctionContext) {
+  const { phone, code } = ctx.body;
+
+  const sendSmsRequest = new dysmsapi.SendSmsRequest({
+    phoneNumbers: phone,
+    signName,
+    templateCode,
+    templateParam: `{"code":${code}}`,
+  });
+
+  const config = new OpenApi.Config({ accessKeyId, accessKeySecret, endpoint });
+  const client = new Dysmsapi(config);
+  const runtime = new Util.RuntimeOptions({});
+  const res = await client.sendSmsWithOptions(sendSmsRequest, runtime);
+  return res.body;
+};
+```
+
+## 云函数微信 native 支付
+
+Native 支付适用于 PC 网站、实体店单品或订单、媒体广告支付等场景。[微信官方介绍](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/open/pay/chapter2_7_0.shtml)
+
+Native 支付服务端下单之后微信支付会返回一个 code-url, 然后前端接收这个返回值，直接把这个 code-url 在前端
+生成一个二维码即可用微信扫描支付。
+
+- `code-url` 结构类似：`weixin://wxpay/bizpayurl?pr=aIQrOYOzz`
+
+- `notify_url` 也可以写一个 laf 云函数来接受支付结果的通知。此处不包含 `notify_url` 代码。
+
+创建 `wx-pay` 云函数，安装依赖 [wxpay-v3](https://github.com/yangfuhe/node-wxpay)，代码如下：
+
+```typescript
+import cloud from "@lafjs/cloud";
+const Payment = require("wxpay-v3");
+
+exports.main = async function (ctx: any) {
+  const { goodsName, totalFee, payOrderId } = ctx.body;
+
+  // create payment instance
+  const payment = new Payment({
+    appid: "应用 ID",
+    mchid: "商户 id",
+    private_key: getPrivateKey(),
+    serial_no: "序列号",
+    apiv3_private_key: "api v3 密钥",
+    notify_url: "付退款结果通知的回调地址",
+  });
+
+  // 下单
+  const result = await payment.native({
+    description: goodsName,
+    out_trade_no: payOrderId,
+    amount: {
+      total: totalFee,
+    },
+  });
+  return result;
+};
+
+function getPrivateKey() {
+  const key = `-----BEGIN PRIVATE KEY-----
+HOBHEk+4cdiPcvhowhC8ii7838DP4qC+18ibL/KAySWyZjUC/keOr4MxhxQ1T+OV
+...
+...
+475J8ALCRltkgTSxicoXS7SpjLqvIH2FPpv2BI+qQ3nOmAugsRkeH9lZdC/nSC0m
+uI205SwTsTaT70/vF90AwQ==
+-----END PRIVATE KEY-----
+`;
+  return key;
+}
+```
+
+## 云函数支付宝支付
+
+创建 `aliPay` 云函数，安装依赖 `alipay-sdk`，编写以下代码：
+
+```typescript
+import cloud from "@lafjs/cloud";
+import alipay from "alipay-sdk";
+const AlipayFormData = require("alipay-sdk/lib/form").default;
+
+exports.main = async function (ctx) {
+  const { totalFee, goodsName, goodsDetail, payOrderId } = ctx.body;
+
+  const ali = new alipay({
+    appId: "2016091800536572",
+    signType: "RSA2",
+    privateKey: "MIIEow......Yf2Mlz6xqG/Aq",
+    alipayPublicKey: "MIIBI......IDAQAB",
+    gateway: "https://openapi.alipaydev.com/gateway.do", //沙箱测试网关
+  });
+
+  const formData = new AlipayFormData();
+  formData.setMethod("get");
+  formData.addField(
+    "notifyUrl",
+    "https://APPID.lafyun.com/alipay_notify_callback"
+  );
+  formData.addField("bizContent", {
+    subject: goodsName,
+    body: goodsDetail,
+    outTradeNo: payOrderId,
+    totalAmount: totalFee,
+  });
+
+  const result = await ali.exec(
+    "alipay.trade.app.pay",
+    {},
+    { formData: formData }
+  );
+
+  return {
+    code: 0,
+    data: result,
+  };
+};
+```
+
+## 云函数发送邮件
+
+使用 SMTP 服务发送邮件
+
+创建 `sendmail` 云函数，安装依赖 `nodemailer`，代码如下：
+
+```typescript
+import from 'nodemailer'
+
+// 邮件服务器配置
+const transportConfig = {
+  host: 'smtp.exmail.qq.com', // smtp 服务地址，示例腾讯企业邮箱地址
+  port: 465,  // smtp 服务端口，一般服务器未开此端口，需要手动开启
+  secureConnection: true, // 使用了 SSL
+  auth: {
+    user: 'sender@xx.com',  // 发件人邮箱，写你的邮箱地址即可
+    pass: 'your password',  // 你设置的 smtp 专用密码或登录密码，每家服务不相同，QQ 邮箱需要开启并配置授权码，即这里的 pass
+  }
+}
+
+// 邮件配置
+const mailOptions = {
+  from: '"SenderName" <sender@xx.com>', // 发件人
+  to: 'hi@xx.com', // 收件人
+  subject: 'Hello',   // 邮件主题
+  html: '<b>Hello world?</b>'  // html 格式邮件正文
+  // text: 'hello'  // 文本格式有限正文
+}
+
+exports.main = async function (ctx) {
+  const transporter = nodemailer.createTransport(transportConfig)
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.log(error);
+    }
+    console.log('Message sent: %s', info.messageId);
+    return info.messageId
+  })
+};
+```
