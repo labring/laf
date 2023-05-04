@@ -1,11 +1,7 @@
-const { engines } = require("../package.json");
-const semver = require("semver");
-const node_version = engines.node;
-
 // Lock lockFileVersion to version 2 And resolve import error when import xxx from 'node:xxx'
-if (!semver.satisfies(process.version, node_version)) {
+if (process.version && +process.version.slice(1).split(".")[0] < 16) {
   console.log(
-    `Required node version ${node_version} not satisfied with current version ${process.version}.`
+    `Required node version >= 16 not satisfied with current version ${process.version}.`
   );
   process.exit(1);
 }

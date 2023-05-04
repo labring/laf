@@ -14,14 +14,10 @@
   },
   "dependencies": {
     "markdown-it-custom-attrs": "^1.0.2",
-    "vitepress": "^1.0.0-alpha.29",
-    "semver": "^7.5.0"
+    "vitepress": "^1.0.0-alpha.29"
   },
   "devDependencies": {
     "flexsearch": "^0.7.31",
     "vitepress-plugin-search": "^1.0.4-alpha.20"
-  },
-  "engines": {
-    "node": ">=16"
   }
 }
