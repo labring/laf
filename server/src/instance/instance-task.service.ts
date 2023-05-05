@@ -15,7 +15,7 @@ export class InstanceTaskService {
   constructor(
     private readonly clusterService: ClusterService,
     private readonly instanceService: InstanceService,
-  ) {}
+  ) { }
 
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
@@ -47,15 +47,9 @@ export class InstanceTaskService {
       err?.response && this.logger.debug(err?.response?.data || err?.response)
     })
 
-    // Phase `Started` -> `Stopping`
-    this.handleRestartingStateDown().catch((err) => {
-      this.logger.error('handleRestartingStateDown error', err)
-      err?.response && this.logger.debug(err?.response?.data || err?.response)
-    })
-
-    // Phase `Stopped` -> `Starting`
-    this.handleRestartingStateUp().catch((err) => {
-      this.logger.error('handleRestartingStateUp error', err)
+    // Phase `Started` -> `Starting`
+    this.handleRestartingState().catch((err) => {
+      this.logger.error('handleRestartingPhase error', err)
       err?.response && this.logger.debug(err?.response?.data || err?.response)
     })
   }
@@ -241,42 +235,31 @@ export class InstanceTaskService {
     this.logger.log(`Application ${app.appid} updated to phase Stopped`)
   }
 
-  /**
-   * State `Restarting`:
-   * - move phase `Started` to `Stopping`
-   */
-  async handleRestartingStateDown() {
+
+  async handleRestartingState() {
+
+
     const db = SystemDatabase.db
 
-    await db.collection<Application>('Application').updateMany(
-      {
-        state: ApplicationState.Restarting,
-        phase: ApplicationPhase.Started,
-        lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
-      },
-      {
-        $set: {
-          phase: ApplicationPhase.Stopping,
-          lockedAt: TASK_LOCK_INIT_TIME,
-          updatedAt: new Date(),
+    const res = await db
+      .collection<Application>('Application')
+      .findOneAndUpdate(
+        {
+          state: ApplicationState.Restarting,
+          phase: ApplicationPhase.Started,
+          lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
-      },
-    )
-  }
+        { $set: { lockedAt: new Date() } },
+      )
 
-  /**
-   * State `Restarting`:
-   * - move phase `Stopped` to `Starting`
-   */
-  async handleRestartingStateUp() {
-    const db = SystemDatabase.db
+    if (!res.value) return
+    const app = res.value
 
-    await db.collection<Application>('Application').updateMany(
-      {
-        state: ApplicationState.Restarting,
-        phase: ApplicationPhase.Stopped,
-        lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
-      },
+    this.instanceService.restart(app.appid)
+
+    // update application phase to `Stopped`
+    await db.collection<Application>('Application').updateOne(
+      { appid: app.appid, phase: ApplicationPhase.Started },
       {
         $set: {
           phase: ApplicationPhase.Starting,
@@ -285,6 +268,7 @@ export class InstanceTaskService {
         },
       },
     )
+    this.logger.log(`Application ${app.appid} updated to phase Starting`)
   }
 
   /**
