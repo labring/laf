@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { t } from "i18next";
 
 import { COLOR_MODE } from "@/constants";
-import { formatDate } from "@/utils/format";
+import { formatDate, hidePhoneNumber } from "@/utils/format";
 
 import AuthDetail from "./AuthDetail";
 
@@ -57,7 +57,7 @@ export default function UserInfo() {
           <Box className="mb-20 mt-8 text-lg">
             <HStack spacing={8}>
               <span className="w-[80px] text-grayModern-500">{t("SettingPanel.Tel")}:</span>
-              <span>{userInfo?.phone ? userInfo.phone : t("NoInfo")}</span>
+              <span>{userInfo?.phone ? hidePhoneNumber(userInfo.phone) : t("NoInfo")}</span>
             </HStack>
             <HStack spacing={8} className="mt-2">
               <span className="w-[80px] text-grayModern-500">{t("SettingPanel.Registered")}:</span>

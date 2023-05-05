@@ -4,6 +4,7 @@ import { Button, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import { COLOR_MODE } from "@/constants";
+import { hidePhoneNumber } from "@/utils/format";
 
 import CreateAppModal from "../CreateAppModal";
 
@@ -31,7 +32,8 @@ function Empty() {
     <div style={{ height: "75vh", minHeight: "500px" }}>
       <div className="flex h-full flex-col items-center justify-center">
         <h2 className="text-3xl font-bold">
-          {t("HomePanel.Hello")} 👋 ， {userInfo?.profile?.name || userInfo?.username} ，{" "}
+          {t("HomePanel.Hello")} 👋 ，{" "}
+          {hidePhoneNumber(userInfo?.profile?.name || userInfo?.username || "")} ，
           {t("HomePanel.Welcome")}
         </h2>
         <p className="mx-auto mb-8 mt-10 w-[460px] text-xl">{t("HomePanel.Introduction")}</p>
