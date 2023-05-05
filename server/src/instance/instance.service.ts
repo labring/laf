@@ -5,7 +5,6 @@ import {
   LABEL_KEY_APP_ID,
   LABEL_KEY_BUNDLE,
   LABEL_KEY_NODE_TYPE,
-  LABEL_KEY_RESTART_AT,
   MB,
   NodeType,
 } from '../constants'
