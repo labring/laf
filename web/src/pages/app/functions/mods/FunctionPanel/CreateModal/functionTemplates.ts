@@ -5,7 +5,7 @@ const functionTemplates = [
     label: "hello laf",
     value: `import cloud from '@lafjs/cloud'
 
-export async function main(ctx: FunctionContext) {
+export default async function (ctx: FunctionContext) {
   console.log('Hello World')
   return { data: 'hi, laf' }
 }
@@ -15,7 +15,7 @@ export async function main(ctx: FunctionContext) {
     label: t("database example"),
     value: `import cloud from '@lafjs/cloud'
 
-    export async function main(ctx: FunctionContext) {
+    export default async function (ctx: FunctionContext) {
       const db = cloud.database()
     
       // insert data
@@ -34,7 +34,7 @@ export async function main(ctx: FunctionContext) {
     value: `import cloud from '@lafjs/cloud'
     import { S3 } from "@aws-sdk/client-s3"
     
-    exports.main = async function (ctx: FunctionContext) {
+    export default async function (ctx: FunctionContext) {
       // Create your bucket first
       const BUCKET = "kcqcau-test" 
       const client = new S3({
@@ -67,7 +67,7 @@ export async function main(ctx: FunctionContext) {
     value: `import cloud from '@lafjs/cloud'
     const apiKey = cloud.env.API_KEY
     
-    export async function main(ctx: FunctionContext) {
+    export default async function (ctx: FunctionContext) {
       const { ChatGPTAPI } = await import('chatgpt')
       const { body, response } = ctx
     
