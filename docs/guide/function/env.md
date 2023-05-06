@@ -14,6 +14,10 @@ title: 在云函数中使用环境变量
 
 环境变量添加完成后，即可在任意云函数中通过访问 `cloud.env` 来使用。
 
+:::tip
+最新版已可用 `process.env`去访问环境变量
+:::
+
 ```typescript
 import cloud from '@lafjs/cloud'
 

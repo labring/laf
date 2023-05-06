@@ -35,7 +35,7 @@ Laf 静态网站托管支持绑定自己的域名，并自动生成 `SSL` 证书
 上传前端项目编译后的文件到刚刚新建的云存储中。
 
 ::: tip
-大部分前端项目编译完的代码都在 `dist` 文件夹中，需要将 `dist` 文件夹中的文件全部上传到云存储中
+大部分前端项目编译完的代码都在 `dist` 文件夹中，直接上传 `dist` 文件夹，即可将文件夹中全部文件上传到云存储中
 :::
 
 ![open-website](../../doc-images/open-website.png)
@@ -52,7 +52,7 @@ Laf 静态网站托管支持绑定自己的域名，并自动生成 `SSL` 证书
 
 ## 自动编译前端并发布
 
-利用 Github Actions 即可实现自动编译前端并推送到 Laf 云存储中
+利用 `Github Actions` 即可实现自动编译前端并推送到 Laf 云存储中
 
 <!-- /guide/cli/#登录 -->
 
@@ -60,11 +60,11 @@ Laf 静态网站托管支持绑定自己的域名，并自动生成 `SSL` 证书
 
 本模板效果是，如果有新代码推送到主分支，会自动触发 Actions
 
-`API_URL` 为你当前的 Laf 应用的 API 地址，`laf.dev` 对应 `https://api.laf.dev`，`laf.run` 对应 `https://api.laf.run`
+- `API_URL` 为你当前的 Laf 应用的 API 地址，如：`laf.dev` 对应 `https://api.laf.dev`，`laf.run` 对应 `https://api.laf.run`
 
-`WEB_PATH` 为你前端在当前项目的哪个路径，如果前端项目在根目录，则无需修改。如果在 web 目录下，则改成 `'web'` 即可。
+- `WEB_PATH` 为你前端在当前项目的哪个路径，如果前端项目在根目录，则无需修改。如果在 web 目录下，则改成 `'web'` 即可。
 
-`DIST_PATH` 为编译后的目录名称，绝大部分项目编译后的目录名均为 dist
+- `DIST_PATH` 为编译后的目录名称，绝大部分项目编译后的目录名均为 dist
 
 ```yaml
 name: Build
@@ -116,11 +116,11 @@ jobs:
 
 2、配置一些环境变量
 
-`DOC_BUCKET_NAME` 为你的前端托管的 bucket 名称
+- `DOC_BUCKET_NAME` 为你的前端托管的 bucket 名称
 
-`LAF_APPID` 为你的 Laf 应用 appid
+- `LAF_APPID` 为你的 Laf 应用 appid
 
-`LAF_PAT` 为你的 Laf 应用的 PAT，获取方法可看：[获取 PAT](/guide/cli/#登录)
+- `LAF_PAT` 为你的 Laf 应用的 PAT，获取方法可看：[获取 PAT](/guide/cli/#登录)
 
 将上面 3 个参数配置到项目的密钥中
 
