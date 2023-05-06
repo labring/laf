@@ -7,6 +7,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Spinner,
   useDisclosure,
 } from "@chakra-ui/react";
 
@@ -80,7 +81,11 @@ function UploadButton(props: { onUploadSuccess: Function; children: React.ReactE
                     className="my-2 flex h-10 w-full items-center justify-between px-5 hover:bg-slate-100"
                   >
                     <span className="text-slate-500">{item.fileName}</span>
-                    {item.status ? <CheckCircleIcon color="green.500" fontSize={20} /> : ""}
+                    {item.status ? (
+                      <CheckCircleIcon color="green.500" fontSize={20} />
+                    ) : (
+                      <Spinner size="xs" className="mr-1" />
+                    )}
                   </div>
                 );
               })}
