@@ -19,10 +19,8 @@ jobs:
         with:
           node-version: 16.x
       - name: Run Install
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: install # will run `yarn install` command in `docs` directory
-          dir: docs
+        working-directory: docs         
+        run: npm install
       - name: Run build
         uses: borales/actions-yarn@v4
         with:
