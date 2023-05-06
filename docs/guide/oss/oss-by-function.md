@@ -27,7 +27,6 @@ const s3Client = new S3({
 
 ## 上传文件
 
-
 :::tip
 如果上传文件已存在会自动覆盖之前的文件
 :::
@@ -293,7 +292,7 @@ async function getAppFileUrl(key) {
   return res;
 }
 
-exports.main = async function (ctx: FunctionContext) {
+export default async function (ctx: FunctionContext) {
   //获取上传文件的对象
   var data = await fs.readFileSync(ctx.files[0].path);
   const res = await uploadAppFile(
@@ -336,7 +335,7 @@ function getInternalBucketName() {
   return `${appid}-${bucketName}`;
 }
 
-exports.main = async function (ctx: FunctionContext) {
+export default async function (ctx: FunctionContext) {
   const key = "" // 这里填刚刚上传的文件名，可在云存储 Web 标签页中查看
   const bucket = getInternalBucketName()
   await s3Client.deleteObject({
@@ -345,7 +344,7 @@ exports.main = async function (ctx: FunctionContext) {
   })
 }
 ```
-=======
+
 - Key 文件存储路径
   - 如果传入的路径不存在，会自动创建
   - 如果传入的文件存在，会自动覆盖源文件

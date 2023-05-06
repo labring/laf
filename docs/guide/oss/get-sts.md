@@ -18,7 +18,7 @@ title: 生成云存储临时令牌 (STS)
 import cloud from "@lafjs/cloud";
 import { STSClient, AssumeRoleCommand } from "@aws-sdk/client-sts";
 
-exports.main = async function (ctx: FunctionContext) {
+export default async function (ctx: FunctionContext) {
   const sts: any = new STSClient({
     region: cloud.env.OSS_REGION,
     endpoint: cloud.env.OSS_INTERNAL_ENDPOINT,
