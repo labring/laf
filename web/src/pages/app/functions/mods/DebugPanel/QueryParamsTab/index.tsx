@@ -13,9 +13,9 @@ type FormValues = {
   params: Params[];
 };
 
-function HeaderParamsTab(props: { onChange(values: Params[]): void }) {
-  const { onChange } = props;
-  const { register, control, watch } = useForm<FormValues>({
+function HeaderParamsTab(props: { onChange(values: Params[]): void; paramsList: Params[] }) {
+  const { onChange, paramsList } = props;
+  const { register, control, watch, setValue } = useForm<FormValues>({
     defaultValues: {
       params: [{ name: "", value: "" }],
     },
@@ -33,6 +33,10 @@ function HeaderParamsTab(props: { onChange(values: Params[]): void }) {
     return () => subscription.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watch]);
+
+  useEffect(() => {
+    setValue("params", paramsList ?? []);
+  }, [setValue, paramsList]);
 
   return (
     <div>

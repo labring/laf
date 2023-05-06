@@ -23,7 +23,7 @@ import Panel from "@/components/Panel";
 import Resize from "@/components/Resize";
 import { COLOR_MODE, Pages } from "@/constants";
 
-import { useCompileMutation } from "../../service";
+import { useCompileMutation, useUpdateFunctionMutation } from "../../service";
 import useFunctionStore from "../../store";
 
 import BodyParamsTab from "./BodyParamsTab";
@@ -43,6 +43,7 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
   const { getFunctionUrl, currentFunction, setCurrentRequestId } = useFunctionStore(
     (state) => state,
   );
+  const updateFunctionMutation = useUpdateFunctionMutation();
   const globalStore = useGlobalStore((state) => state);
 
   const functionCache = useFunctionCache();
@@ -82,6 +83,22 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
       const compileRes = await compileMutation.mutateAsync({
         code: functionCache.getCache(currentFunction!.id, currentFunction!.source?.code),
         name: currentFunction!.name,
+      });
+
+      const params = {
+        queryParams: queryParams,
+        bodyParams: bodyParams,
+        headerParams: headerParams,
+      };
+
+      updateFunctionMutation.mutateAsync({
+        description: currentFunction?.desc,
+        code: functionCache.getCache(currentFunction!.id, currentFunction!.source?.code),
+        methods: currentFunction?.methods,
+        websocket: currentFunction?.websocket,
+        name: currentFunction?.name,
+        tags: currentFunction?.tags,
+        params: params,
       });
 
       if (!compileRes.error) {
@@ -216,6 +233,7 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
                           onChange={(values: any) => {
                             setQueryParams(values);
                           }}
+                          paramsList={currentFunction.params?.queryParams}
                         />
                       </TabPanel>
 
@@ -229,6 +247,7 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
                             onChange={(values) => {
                               setBodyParams(values);
                             }}
+                            paramsList={currentFunction.params?.bodyParams}
                           />
                         </TabPanel>
                       )}
@@ -239,6 +258,7 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
                           onChange={(values: any) => {
                             setHeaderParams(values);
                           }}
+                          paramsList={currentFunction.params?.headerParams}
                         />
                       </TabPanel>
                     </TabPanels>
