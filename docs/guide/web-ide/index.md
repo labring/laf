@@ -10,7 +10,7 @@ Laf 为开发者提供了非常好用的 Web IDE，在线写代码，完善的�
 
 服务器可用区
 
-- 杭州服务器：    [laf.run](https://laf.run)
+- 国内服务器：    [laf.run](https://laf.run)
 
 - 新加坡服务器：[laf.dev](https://laf.dev)
 
@@ -19,7 +19,7 @@ laf.run 为备案域名，laf.dev 为未备案域名。
 
 laf.dev 可直连 OpenAI API，请按照实际业务需求选择服务器
 
-杭州服务器和新加坡服务器数据互相独立哦～
+国内服务器和新加坡服务器数据互相独立哦～
 :::
 
 ![index](../../doc-images/index.png)

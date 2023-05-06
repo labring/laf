@@ -56,7 +56,7 @@ const NavConfig = [
             link: "/guide/cli/",
           },
           {
-            text: "vs Code 本地开发",
+            text: "VSCode 本地开发",
             link: "/guide/laf-assistant/",
           },
         ],
@@ -87,7 +87,7 @@ const guideSiderbarConfig = [
         link: "/guide/",
       },
       {
-        text: "Web IDE  在线开发",
+        text: "Web IDE 在线开发",
         link: "/guide//web-ide/",
       },
     ],
@@ -255,7 +255,7 @@ const guideSiderbarConfig = [
     ],
   },
   {
-    text: "vs Code 本地开发",
+    text: "VSCode 本地开发",
     items: [{ text: "laf assistant", link: "/guide/laf-assistant/" }],
   },
 ];
