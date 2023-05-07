@@ -25,7 +25,7 @@ db.collection('scores').aggregate()
 const db = cloud.database()
 const collection = db.collection('test')
 const aggregate = collection.aggregate() // 云函数实例复用时，此聚合实例也会复用，导致 Bug
-exports.main = async function(){
+export default async function (ctx: FunctionContext) {
   const res = await aggregate.match({a:1}).end()
   return {res}
 }
@@ -34,7 +34,7 @@ exports.main = async function(){
 ```js
 const db = cloud.database()
 const collection = db.collection('test')
-exports.main = async function(){
+export default async function (ctx: FunctionContext) {
   const aggregate = collection.aggregate() // 此聚合实例分别在两个请求内使用，导致 Bug
   const res1 = await aggregate.match({a:1}).end()
   const res2 = await aggregate.match({a:2}).end()
@@ -47,7 +47,7 @@ exports.main = async function(){
 ```js
 const db = cloud.database()
 const collection = db.collection('test')
-exports.main = async function(){
+export default async function (ctx: FunctionContext) {
   const aggregate = collection.aggregate() // 每次执行云函数会有独立的聚合实例
   const res = await aggregate.match({a:1}).end()
   return {res}
@@ -57,7 +57,7 @@ exports.main = async function(){
 ```js
 const db = cloud.database()
 const collection = db.collection('test')
-exports.main = async function(){
+export default async function (ctx: FunctionContext) {
   const res1 = await collection.aggregate().match({a:1}).end() // 两个请求分别调用 aggregate 方法产生聚合实例
   const res2 = await collection.aggregate().match({a:2}).end()
   return {res1, res2}

@@ -129,7 +129,7 @@ export function main (ctx: FunctionContext) {
 import cloud from '@lafjs/cloud'
 const db = cloud.database()
 
-exports.main = async function (ctx: FunctionContext) {
+export default async function (ctx: FunctionContext) {
   // 在数据库等异步操作前面添加 await
   const res = await db.collection('user').get()
   // 同步操作无需添加 await

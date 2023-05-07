@@ -113,7 +113,7 @@ async function getAppFileUrl(key) {
   return res;
 }
 
-exports.main = async function (ctx: FunctionContext) {
+export default async function (ctx: FunctionContext) {
   //获取上传文件的对象
   var data = await fs.readFileSync(ctx.files[0].path);
   const res = await uploadAppFile(
@@ -156,7 +156,7 @@ function getInternalBucketName() {
   return `${appid}-${bucketName}`;
 }
 
-exports.main = async function (ctx: FunctionContext) {
+export default async function (ctx: FunctionContext) {
   const key = "" // 这里填刚刚上传的文件名，可在云存储 Web 标签页中查看
   const bucket = getInternalBucketName()
   await s3Client.deleteObject({

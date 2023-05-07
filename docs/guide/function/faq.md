@@ -229,7 +229,8 @@ const signName = "XXXX";
 const templateCode = "SMS_xxxxx";
 const endpoint = "dysmsapi.aliyuncs.com";
 
-exports.main = async function (ctx: FunctionContext) {
+
+export default async function (ctx: FunctionContext) {
   const { phone, code } = ctx.body;
 
   const sendSmsRequest = new dysmsapi.SendSmsRequest({
@@ -264,7 +265,7 @@ Native 支付服务端下单之后微信支付会返回一个 code-url, 然后�
 import cloud from "@lafjs/cloud";
 const Payment = require("wxpay-v3");
 
-exports.main = async function (ctx: any) {
+export default async function (ctx: FunctionContext) {
   const { goodsName, totalFee, payOrderId } = ctx.body;
 
   // create payment instance
@@ -310,7 +311,8 @@ import cloud from "@lafjs/cloud";
 import alipay from "alipay-sdk";
 const AlipayFormData = require("alipay-sdk/lib/form").default;
 
-exports.main = async function (ctx) {
+
+export default async function (ctx: FunctionContext) {
   const { totalFee, goodsName, goodsDetail, payOrderId } = ctx.body;
 
   const ali = new alipay({
@@ -376,7 +378,7 @@ const mailOptions = {
   // text: 'hello'  // 文本格式有限正文
 }
 
-exports.main = async function (ctx) {
+export default async function (ctx: FunctionContext) {
   const transporter = nodemailer.createTransport(transportConfig)
 
   transporter.sendMail(mailOptions, (error, info) => {

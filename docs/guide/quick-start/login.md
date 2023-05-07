@@ -31,7 +31,7 @@ title: 快速开始
 import cloud from "@lafjs/cloud";
 import { createHash } from "crypto";
 
-exports.main = async function (ctx: FunctionContext) {
+export default async function (ctx: FunctionContext) {
   const username = ctx.body?.username || "";
   const password = ctx.body?.password || "";
 
@@ -70,7 +70,7 @@ exports.main = async function (ctx: FunctionContext) {
 import cloud from "@lafjs/cloud";
 import { createHash } from "crypto";
 
-exports.main = async function (ctx: FunctionContext) {
+export default async function (ctx: FunctionContext) {
   const username = ctx.body?.username || "";
   const password = ctx.body?.password || "";
 

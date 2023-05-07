@@ -22,7 +22,7 @@ Laf 云函数库中，新增数据非常简单，正规说法为插入文档。�
 import cloud from '@lafjs/cloud'
 const db = cloud.database()
 
-export async function main(ctx: FunctionContext) {
+export default async function (ctx: FunctionContext) {
   // 向 user 集合中添加一条记录
   const res = await db.collection('user').add({ name: "jack" })
   console.log(res)
