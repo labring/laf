@@ -225,6 +225,7 @@ export type TFunction = {
   createdAt: string;
   updatedAt: string;
   createdBy: string;
+  params: any;
 };
 
 export type TMethod = "GET" | "POST" | "PUT" | "DELETE" | "HEAD" | "OPTIONS" | "PATCH";

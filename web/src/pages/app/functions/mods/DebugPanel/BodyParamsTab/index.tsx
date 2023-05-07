@@ -39,8 +39,11 @@ const ContentType = {
   FORM_DATA: "multipart/form-data",
 };
 
-function BodyParamsTab(props: { onChange(values: { contentType: string; data: any }): void }) {
-  const { onChange } = props;
+function BodyParamsTab(props: {
+  onChange(values: { contentType: string; data: any }): void;
+  paramsList: { contentType: string; data: any };
+}) {
+  const { onChange, paramsList } = props;
   const { colorMode } = useColorMode();
 
   const [dataType, setDataType] = useState<string>(ContentType.JSON);
@@ -105,7 +108,7 @@ function BodyParamsTab(props: { onChange(values: { contentType: string; data: an
                 });
             } catch (e) {}
           }}
-          value={JSON.stringify({}, null, 2)}
+          value={JSON.stringify(paramsList?.data ?? {}, null, 2)}
         />
       ) : (
         <div>

@@ -19,7 +19,12 @@ class Cloud {
     if (this.config?.requestClass) {
       ret = this.config?.requestClass;
     } else if (env === EnvironmentType.UNI_APP) {
-      ret = UniRequest;
+      const { uniPlatform } = uni.getSystemInfoSync();
+      if (uniPlatform == 'mp-weixin') {
+        ret = WxmpRequest;
+      } else {
+        ret = UniRequest;
+      }
     } else if (env === EnvironmentType.WX_MP) {
       ret = WxmpRequest;
     } else {

@@ -229,6 +229,7 @@ const signName = "XXXX";
 const templateCode = "SMS_xxxxx";
 const endpoint = "dysmsapi.aliyuncs.com";
 
+
 export default async function (ctx: FunctionContext) {
   const { phone, code } = ctx.body;
 
@@ -309,6 +310,7 @@ uI205SwTsTaT70/vF90AwQ==
 import cloud from "@lafjs/cloud";
 import alipay from "alipay-sdk";
 const AlipayFormData = require("alipay-sdk/lib/form").default;
+
 
 export default async function (ctx: FunctionContext) {
   const { totalFee, goodsName, goodsDetail, payOrderId } = ctx.body;

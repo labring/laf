@@ -5,6 +5,7 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "vitepress dev",
+    "preinstall": "node ./scripts/check-version.js",
     "build": "vitepress build && npm run after-build",
     "serve": "vitepress serve",
     "after-build": "sed -i -e \"s@</body>@<div style='font-size: 14px; padding-bottom: 30px; color: darkblue;text-align: center;'><a href='https://beian.miit.gov.cn/' target='_blank'>浙ICP备2022023216号</a></div></body>@g\" ./.vitepress/dist/index.html",

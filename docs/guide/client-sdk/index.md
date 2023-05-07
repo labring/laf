@@ -24,14 +24,14 @@ const cloud = new Cloud({
   baseUrl: "https://APPID.laf.run",
   // 这里是访问策略的入口地址，如果没有访问策略可不填
   dbProxyUrl: "/proxy/app",
-  // 请求时带的token，可空
-  getAccessToken: () => uni.getStorageSync("access_token"),
+  // 请求时带的 token，可空
+  getAccessToken: () => localStorage.getItem("access_token"),
 });
 ```
 
 ## 参数
 
-`baseUrl` Laf 应用链接，格式为 `https://APPID.laf.run`，APPID 为你的 Laf 应用的appid
+`baseUrl` Laf 应用链接，格式为 `https://APPID.laf.run`，APPID 为你的 Laf 应用的 appid
 
 `dbProxyUrl` 数据库访问策略入口，格式为 `/proxy/` 开头加上你新建策略名，如果不需要操作数据库，可不填此参数
 
@@ -53,18 +53,18 @@ const cloud = new Cloud({
 ```
 
 ::: warning
-微信小程序中使用NPM依赖，需要 `构建NPM`
+微信小程序中使用 NPM 依赖，需要 `构建NPM`
 :::
 
 ### `Typescript` 版微信小程序构建方法
 
-1、终端npm初始化，在小程序项目文件夹中执行 `npm init -y`
+1、终端 npm 初始化，在小程序项目文件夹中执行 `npm init -y`
 
-2、安装客户端SDK，在小程序项目文件夹中执行 `npm i laf-client-sdk`
+2、安装客户端 SDK，在小程序项目文件夹中执行 `npm i laf-client-sdk`
 
 3、修改 project.config.json
 
-setting下新增：
+setting 下新增：
 
 ```typescript
 "packNpmManually": true,
@@ -76,19 +76,19 @@ setting下新增：
 ]
 ```
 
-4、构建NPM，微信开发者工具中，点击"工具"-"构建npm"
+4、构建 NPM，微信开发者工具中，点击"工具"-"构建 npm"
 
-5、页面中调用SDK的功能
+5、页面中调用 SDK 的功能
 
 ### `Javascript` 版微信小程序构建方法
 
-1、终端npm初始化，在小程序项目文件夹中执行 `npm init -y`
+1、终端 npm 初始化，在小程序项目文件夹中执行 `npm init -y`
 
-2、安装客户端SDK，在小程序项目文件夹中执行 `npm i laf-client-sdk`
+2、安装客户端 SDK，在小程序项目文件夹中执行 `npm i laf-client-sdk`
 
-3、构建NPM，微信开发者工具中，点击"工具"-"构建npm"
+3、构建 NPM，微信开发者工具中，点击"工具"-"构建 npm"
 
-6、页面中调用SDK的功能
+6、页面中调用 SDK 的功能
 
 ## UNI-APP 中使用
 
@@ -98,7 +98,7 @@ import { Cloud } from "laf-client-sdk";
 const cloud = new Cloud({
   baseUrl: "https://APPID.laf.run",
   dbProxyUrl: "/proxy/app",
-  getAccessToken: () => localStorage.getItem("access_token"),
+  getAccessToken: () => uni.getStorageSync("access_token"),
   environment: "uniapp",
 });
 ```
@@ -119,7 +119,7 @@ const cloud = new Cloud({
 ## 调用云函数
 
 ::: tip
-`laf-client-sdk` 调用云函数只支持POST请求云函数
+`laf-client-sdk` 调用云函数只支持 POST 请求云函数
 :::
 
 ```typescript

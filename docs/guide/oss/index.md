@@ -4,7 +4,7 @@ title: 云存储简介
 
 # {{ $frontmatter.title }}
 
-`laf` 云存储是基于 [MinIO](https://min.io/) 提供的对象存储服务，提供了完全的 MinIO 的对象存储服务，同时也是标准的 s3 接口，我们可以通过 s3 api 来控制云存储中文件的增删改查
+`laf` 云存储是基于 [MinIO](https://min.io/) 提供的对象存储服务，提供了完全的 MinIO 的对象存储服务，同时也是标准的 s3 接口，我们可以通过 s3 api 来控制云存储中文件的增删改查。
 
 ## 创建 bucket
 

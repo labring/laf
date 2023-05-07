@@ -32,13 +32,13 @@ title: 云函数入门
 
 ## 编辑云函数
 
-Laf 自带 `Web IDE`，可直接在浏览器在线编辑、运行（调试）、发布云函数
+Laf 自带 `Web IDE`，可直接在浏览器在线编辑、运行（调试）、发布云函数。
 
 ![edit-cloudfunction](/doc-images/edit-cloudfunction.png)
 
 ## 运行云函数
 
-云函数编写后可直接运行调试，未发布的云函数也可以在此进行运行调试
+云函数编写后可直接运行调试，未发布的云函数也可以在此进行运行调试。
 
 ![run-cloudfunction](/doc-images/run-cloudfunction.png)
 
