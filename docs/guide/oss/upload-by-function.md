@@ -73,11 +73,11 @@ import cloud from "@lafjs/cloud";
 import { GetObjectCommand, S3 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 const s3Client = new S3({
-  endpoint: cloud.env.OSS_EXTERNAL_ENDPOINT,
-  region: cloud.env.OSS_REGION,
+  endpoint: process.env.OSS_EXTERNAL_ENDPOINT,
+  region: process.env.OSS_REGION,
   credentials: {
-    accessKeyId: cloud.env.OSS_ACCESS_KEY,
-    secretAccessKey: cloud.env.OSS_ACCESS_SECRET
+    accessKeyId: process.env.OSS_ACCESS_KEY,
+    secretAccessKey: process.env.OSS_ACCESS_SECRET
   },
   forcePathStyle: true,
 })
@@ -86,7 +86,7 @@ const bucketName = 'bucketName' // 不带 Laf 应用 appid
 
 //拼接文件桶名字
 function getInternalBucketName() {
-  const appid = cloud.env.APP_ID;
+  const appid = process.env.APP_ID;
   return `${appid}-${bucketName}`;
 }
 
@@ -140,11 +140,11 @@ export default async function (ctx: FunctionContext) {
 import cloud from "@lafjs/cloud";
 import { S3 } from "@aws-sdk/client-s3";
 const s3Client = new S3({
-  endpoint: cloud.env.OSS_EXTERNAL_ENDPOINT,
-  region: cloud.env.OSS_REGION,
+  endpoint: process.env.OSS_EXTERNAL_ENDPOINT,
+  region: process.env.OSS_REGION,
   credentials: {
-    accessKeyId: cloud.env.OSS_ACCESS_KEY,
-    secretAccessKey: cloud.env.OSS_ACCESS_SECRET
+    accessKeyId: process.env.OSS_ACCESS_KEY,
+    secretAccessKey: process.env.OSS_ACCESS_SECRET
   },
   forcePathStyle: true,
 })
@@ -152,7 +152,7 @@ const bucketName = 'bucketName' // 不带 Laf 应用 appid
 
 //拼接文件桶名字
 function getInternalBucketName() {
-  const appid = cloud.env.APP_ID;
+  const appid = process.env.APP_ID;
   return `${appid}-${bucketName}`;
 }
 
