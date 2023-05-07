@@ -20,11 +20,11 @@ import { STSClient, AssumeRoleCommand } from "@aws-sdk/client-sts";
 
 export default async function (ctx: FunctionContext) {
   const sts: any = new STSClient({
-    region: cloud.env.OSS_REGION,
-    endpoint: cloud.env.OSS_INTERNAL_ENDPOINT,
+    region: process.env.OSS_REGION,
+    endpoint: process.env.OSS_INTERNAL_ENDPOINT,
     credentials: {
-      accessKeyId: cloud.env.OSS_ACCESS_KEY,
-      secretAccessKey: cloud.env.OSS_ACCESS_SECRET,
+      accessKeyId: process.env.OSS_ACCESS_KEY,
+      secretAccessKey: process.env.OSS_ACCESS_SECRET,
     },
   });
 
@@ -40,8 +40,8 @@ export default async function (ctx: FunctionContext) {
 
   return {
     credentials: res.Credentials,
-    endpoint: cloud.env.OSS_EXTERNAL_ENDPOINT,
-    region: cloud.env.OSS_REGION,
+    endpoint: process.env.OSS_EXTERNAL_ENDPOINT,
+    region: process.env.OSS_REGION,
   };
 };
 ```

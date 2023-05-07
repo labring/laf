@@ -24,7 +24,7 @@ laf.dev 可直连 OpenAI API，请按照实际业务需求选择服务器
 
 ![index](../../doc-images/index.png)
 
-点击首页立即「体验按钮」
+点击首页「立即体验」按钮
 
 ![register](../../doc-images/register.png)
 
