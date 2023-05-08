@@ -16,7 +16,11 @@ const JoinUs = (props: Props) => {
           <p className="mb-6 font-thin text-white">{t("HomePage.Join.content")}</p>
 
           <div className="flex justify-start gap-4">
-            <a href="https://discord.gg/6VhVrsaS" target="_blank" rel="noreferrer">
+            <a
+              href="https://discord.com/channels/1061659231599738901/1098516786170839050"
+              target="_blank"
+              rel="noreferrer"
+            >
               <div className="flex h-12 w-36 flex-row items-center	 justify-center gap-2 rounded-md border border-blue-200 border-opacity-30 bg-gradient-to-r from-[#394DFF1A] to-[#66E3FF33]">
                 <img src="/homepage/discord.svg" alt="discord" />
                 <p className="text-white">Discord</p>
@@ -91,7 +95,11 @@ const JoinUs = (props: Props) => {
           <a href="https://forum.laf.run/">
             <img className="w-6" src="/homepage/forum1.svg" alt="forum1" />
           </a>
-          <a href="https://discord.gg/6VhVrsaS" target="_blank" rel="noreferrer">
+          <a
+            href="https://discord.com/channels/1061659231599738901/1098516786170839050"
+            target="_blank"
+            rel="noreferrer"
+          >
             <img className="w-6" src="/homepage/discord_2.svg" alt="discord" />
           </a>
         </div>

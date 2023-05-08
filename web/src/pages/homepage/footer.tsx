@@ -174,7 +174,11 @@ const Footer = (props: Props) => {
               <a href="https://forum.laf.run" target="_blank" rel="noreferrer">
                 <ForumIcon fontSize={32} color={darkMode ? "#F6F8F9" : "#3C455D"} />
               </a>
-              <a href="https://discord.gg/6VhVrsaS" target="_blank" rel="noreferrer">
+              <a
+                href="https://discord.com/channels/1061659231599738901/1098516786170839050"
+                target="_blank"
+                rel="noreferrer"
+              >
                 <DiscordIcon fontSize={32} color={darkMode ? "#F6F8F9" : "#3C455D"} />
               </a>
             </div>
@@ -318,7 +322,11 @@ const Footer = (props: Props) => {
             <a href="https://forum.laf.run" target="_blank" rel="noreferrer">
               <ForumIcon fontSize={32} color={darkMode ? "#F6F8F9" : "#3C455D"} />
             </a>
-            <a href="https://discord.gg/6VhVrsaS" target="_blank" rel="noreferrer">
+            <a
+              href="https://discord.com/channels/1061659231599738901/1098516786170839050"
+              target="_blank"
+              rel="noreferrer"
+            >
               <DiscordIcon fontSize={32} color={darkMode ? "#F6F8F9" : "#3C455D"} />
             </a>
           </div>
