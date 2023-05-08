@@ -122,6 +122,12 @@ export class InstanceTaskService {
 
     const appid = app.appid
     const instance = await this.instanceService.get(app)
+    const unavailable = instance.deployment?.status?.unavailableReplicas || false
+    if (unavailable) {
+      await this.relock(appid, waitingTime)
+      return
+    }
+
     const available = isConditionTrue(
       'Available',
       instance.deployment?.status?.conditions || [],
@@ -255,9 +261,9 @@ export class InstanceTaskService {
     if (!res.value) return
     const app = res.value
 
-    this.instanceService.restart(app.appid)
+    await this.instanceService.restart(app.appid)
 
-    // update application phase to `Stopped`
+    // update application phase to `Starting`
     await db.collection<Application>('Application').updateOne(
       { appid: app.appid, phase: ApplicationPhase.Started },
       {
