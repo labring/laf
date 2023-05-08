@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { AiFillGithub } from "react-icons/ai";
-import { Button } from "@chakra-ui/react";
+import { Button, useColorMode } from "@chakra-ui/react";
+import clsx from "clsx";
 import { t } from "i18next";
+
+import { COLOR_MODE } from "@/constants";
 
 import LoginByPasswordPanel from "./mods/LoginByPasswordPanel";
 import LoginByPhonePanel from "./mods/LoginByPhonePanel";
@@ -12,6 +15,8 @@ import useAuthStore from "@/pages/auth/store";
 type providersTypes = "user-password" | "phone" | "github" | "wechat";
 
 export default function SignIn() {
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === COLOR_MODE.dark;
   const { providers, setProviders } = useAuthStore();
   useGetProvidersQuery((data: any) => {
     setProviders(data?.data || []);
@@ -40,7 +45,15 @@ export default function SignIn() {
   }, [providers, wechatProvider]);
 
   return (
-    <div className="absolute left-1/2 top-1/2 min-h-[500px] w-[560px] -translate-y-1/2 rounded-[10px] bg-white p-[65px] pb-[100px]">
+    <div
+      className={clsx(
+        "absolute left-1/2 top-1/2 min-h-[500px] w-[560px] -translate-y-1/2 rounded-[10px] p-[65px] pb-[100px]",
+        {
+          "bg-lafDark-100": darkMode,
+          "bg-white": !darkMode,
+        },
+      )}
+    >
       <div className="mb-[45px]">
         <img src="/logo_light.png" alt="logo" width={80} className="mr-4" />
       </div>

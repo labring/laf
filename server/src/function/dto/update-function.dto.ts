@@ -1,6 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { HttpMethod } from '@prisma/client'
-import { IsArray, IsIn, IsNotEmpty, IsString, MaxLength } from 'class-validator'
+import {
+  IsArray,
+  IsIn,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator'
 import { HTTP_METHODS } from '../../constants'
 
 export class UpdateFunctionDto {
@@ -24,6 +31,10 @@ export class UpdateFunctionDto {
   @MaxLength(16, { each: true })
   @IsNotEmpty({ each: true })
   tags: string[]
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  params: any
 
   validate() {
     return null

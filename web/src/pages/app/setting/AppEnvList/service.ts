@@ -4,6 +4,7 @@ import {
   EnvironmentVariableControllerAdd,
   EnvironmentVariableControllerDelete,
   EnvironmentVariableControllerGet,
+  EnvironmentVariableControllerUpdateAll,
 } from "@/apis/v1/apps";
 import useGlobalStore from "@/pages/globalStore";
 
@@ -48,6 +49,20 @@ export const useDelEnvironmentMutation = (callback?: () => void) => {
     {
       onSuccess: async () => {
         useGlobalStore.getState().showSuccess("delete environment success");
+        await queryClient.invalidateQueries(queryKeys.useEnvironmentQuery);
+        callback && callback();
+      },
+    },
+  );
+};
+
+export const useUpdateEnvironmentMutation = (callback?: () => void) => {
+  const queryClient = useQueryClient();
+  return useMutation(
+    (params: { name: string; value: string }[]) => EnvironmentVariableControllerUpdateAll(params),
+    {
+      onSuccess: async () => {
+        useGlobalStore.getState().showSuccess("update environment success");
         await queryClient.invalidateQueries(queryKeys.useEnvironmentQuery);
         callback && callback();
       },

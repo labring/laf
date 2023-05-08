@@ -13,6 +13,8 @@ import {
 import clsx from "clsx";
 import { t } from "i18next";
 
+import { COLOR_MODE } from "@/constants";
+
 import EditableTr, { TColumnItem, TConfiguration } from "./EditableTr";
 import NormalTr from "./NormalTr";
 
@@ -32,7 +34,7 @@ const EditableTable = function (props: {
   const tableRef = useRef<any>(null);
 
   const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   useEffect(() => {
     setColumnList(column);

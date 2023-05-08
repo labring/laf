@@ -81,18 +81,8 @@ spec:
               value: {{ .Values.default_region.apisix_api_url }}
             - name: DEFAULT_REGION_APISIX_API_KEY
               value: {{ .Values.default_region.apisix_api_key }}
-            - name: CASDOOR_ENDPOINT
-              value: {{ .Values.casdoor.endpoint }}
-            - name: CASDOOR_ORG_NAME
-              value: {{ .Values.casdoor.org_name | quote}}
-            - name: CASDOOR_APP_NAME
-              value: {{ .Values.casdoor.app_name | quote}}
-            - name: CASDOOR_CLIENT_ID
-              value: {{ .Values.casdoor.client_id | quote}}
-            - name: CASDOOR_CLIENT_SECRET
-              value: {{ .Values.casdoor.client_secret | quote}}
-            - name: CASDOOR_REDIRECT_URI
-              value : {{ .Values.casdoor.redirect_uri | quote}}
+            - name: SITE_NAME
+              value: {{ .Values.siteName | quote}}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

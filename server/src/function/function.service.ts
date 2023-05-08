@@ -72,6 +72,7 @@ export class FunctionService {
       desc: dto.description,
       methods: dto.methods,
       tags: dto.tags || [],
+      params: dto.params,
     }
     const res = await this.prisma.cloudFunction.update({
       where: { appid_name: { appid: func.appid, name: func.name } },
@@ -203,7 +204,7 @@ export class FunctionService {
         .find(query, {
           limit,
           skip: (page - 1) * limit,
-          sort: { created_at: -1 },
+          sort: { _id: -1 },
         })
         .toArray()
 

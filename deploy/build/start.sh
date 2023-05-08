@@ -69,6 +69,7 @@ helm install server -n ${NAMESPACE} \
     --set jwt.secret=${SERVER_JWT_SECRET} \
     --set apiServerHost=api.${DOMAIN} \
     --set apiServerUrl=${HTTP_SCHEMA}://api.${DOMAIN} \
+    --set siteName=${DOMAIN} \
     --set default_region.database_url=${DATABASE_URL} \
     --set default_region.minio_domain=${MINIO_DOMAIN} \
     --set default_region.minio_external_endpoint=${MINIO_EXTERNAL_ENDPOINT} \

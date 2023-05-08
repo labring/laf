@@ -13,12 +13,13 @@ import { t } from "i18next";
 import { throttle } from "lodash";
 
 import CopyText from "@/components/CopyText";
-import JsonEditor from "@/components/Editor/JsonEditor";
+import JSONEditor from "@/components/Editor/JSONEditor";
 import JSONViewer from "@/components/Editor/JSONViewer";
 import EmptyBox from "@/components/EmptyBox";
 import IconWrap from "@/components/IconWrap";
 import Pagination from "@/components/Pagination";
 import Panel from "@/components/Panel";
+import { COLOR_MODE } from "@/constants";
 import getPageInfo from "@/utils/getPageInfo";
 
 import AddDataModal from "../../../mods/AddDataModal/index";
@@ -243,7 +244,7 @@ export default function DataPanel() {
             setKey="_id"
             isActive={(item: any) => currentData.data?._id === item._id}
             customStyle={{
-              "border-lafWhite-600": colorMode === "light",
+              "border-lafWhite-600": colorMode === COLOR_MODE.light,
             }}
             onClick={(data: any) => {
               setCurrentData({
@@ -283,7 +284,7 @@ export default function DataPanel() {
             onSave={handleData}
           >
             <div className="mb-4 flex-1 rounded">
-              <JsonEditor
+              <JSONEditor
                 colorMode={colorMode}
                 value={JSON.stringify(currentData.data || {}, null, 2)}
                 onChange={(values) => {

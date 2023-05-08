@@ -1,8 +1,8 @@
-import { useEffect, useRef } from "react";
+import { CSSProperties, useEffect, useRef } from "react";
 import { debounce } from "lodash";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
-import { Pages } from "@/constants";
+import { COLOR_MODE, Pages } from "@/constants";
 
 import "./userWorker";
 
@@ -93,6 +93,7 @@ const updateModel = (path: string, value: string, editorRef: any) => {
 function FunctionEditor(props: {
   value: string;
   className?: string;
+  style?: CSSProperties;
   onChange?: (value: string | undefined) => void;
   path: string;
   height?: string;
@@ -105,7 +106,8 @@ function FunctionEditor(props: {
     path,
     height = "100%",
     className,
-    colorMode = "light",
+    style = {},
+    colorMode = COLOR_MODE.light,
     readOnly = false,
   } = props;
 
@@ -136,13 +138,14 @@ function FunctionEditor(props: {
         language: "typescript",
         automaticLayout: true,
         scrollbar: {
-          verticalScrollbarSize: 6,
+          verticalScrollbarSize: 4,
+          horizontalScrollbarSize: 8,
         },
         formatOnPaste: true,
         overviewRulerLanes: 0,
         lineNumbersMinChars: 4,
         fontSize: 14,
-        theme: colorMode === "dark" ? "lafEditorThemeDark" : "lafEditorTheme",
+        theme: colorMode === COLOR_MODE.dark ? "lafEditorThemeDark" : "lafEditorTheme",
         scrollBeyondLastLine: false,
       });
 
@@ -165,7 +168,7 @@ function FunctionEditor(props: {
   useEffect(() => {
     if (monacoEl && editorRef.current) {
       editorRef.current.updateOptions({
-        theme: colorMode === "dark" ? "lafEditorThemeDark" : "lafEditorTheme",
+        theme: colorMode === COLOR_MODE.dark ? "lafEditorThemeDark" : "lafEditorTheme",
       });
     }
   }, [colorMode]);
@@ -181,7 +184,7 @@ function FunctionEditor(props: {
     }
   }, [onChange]);
 
-  return <div style={{ height: height }} className={className} ref={monacoEl}></div>;
+  return <div style={{ height: height, ...style }} className={className} ref={monacoEl}></div>;
 }
 
 export default FunctionEditor;

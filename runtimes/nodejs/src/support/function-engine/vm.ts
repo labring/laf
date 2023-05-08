@@ -54,7 +54,9 @@ export class FunctionVm {
       clearInterval: clearInterval,
       setTimeout: setTimeout,
       clearTimeout: clearTimeout,
-      process: { env: {} },
+      process: {
+        env: { ...process.env },
+      },
       URL: URL,
       fetch: globalThis.fetch,
       global: null,

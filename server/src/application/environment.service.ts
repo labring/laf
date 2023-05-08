@@ -1,20 +1,34 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { CreateEnvironmentDto } from './dto/create-env.dto'
+import { ApplicationConfigurationService } from './configuration.service'
 
 @Injectable()
 export class EnvironmentVariableService {
   private readonly logger = new Logger(EnvironmentVariableService.name)
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly confService: ApplicationConfigurationService,
+  ) {}
+
+  async updateAll(appid: string, dto: CreateEnvironmentDto[]) {
+    const res = await this.prisma.applicationConfiguration.update({
+      where: { appid },
+      data: { environments: { set: dto } },
+    })
+
+    await this.confService.publish(res)
+    return res.environments
+  }
 
   /**
    * if exists, update, else create
    * @param appid
    * @param dto
    */
-  async set(appid: string, dto: CreateEnvironmentDto) {
-    const origin = await this.find(appid)
+  async setOne(appid: string, dto: CreateEnvironmentDto) {
+    const origin = await this.findAll(appid)
     // check if exists
     const exists = origin.find((item) => item.name === dto.name)
     if (exists) {
@@ -25,42 +39,28 @@ export class EnvironmentVariableService {
 
     const res = await this.prisma.applicationConfiguration.update({
       where: { appid },
-      data: {
-        environments: {
-          set: origin,
-        },
-      },
+      data: { environments: { set: origin } },
     })
 
+    await this.confService.publish(res)
     return res.environments
   }
 
-  async find(appid: string) {
+  async findAll(appid: string) {
     const res = await this.prisma.applicationConfiguration.findUnique({
-      where: {
-        appid,
-      },
+      where: { appid },
     })
 
     return res.environments
   }
 
-  async delete(appid: string, name: string) {
+  async deleteOne(appid: string, name: string) {
     const res = await this.prisma.applicationConfiguration.update({
-      where: {
-        appid,
-      },
-      data: {
-        environments: {
-          deleteMany: {
-            where: {
-              name,
-            },
-          },
-        },
-      },
+      where: { appid },
+      data: { environments: { deleteMany: { where: { name } } } },
     })
 
+    await this.confService.publish(res)
     return res
   }
 }

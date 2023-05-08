@@ -5,11 +5,13 @@ import {
   Get,
   Logger,
   Param,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common'
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -30,6 +32,47 @@ export class EnvironmentVariableController {
   constructor(private readonly confService: EnvironmentVariableService) {}
 
   /**
+   * Update environment variables (replace all)
+   * @param appid
+   * @param dto
+   * @returns
+   */
+  @ApiResponse({ type: ResponseUtil })
+  @ApiOperation({ summary: 'Update environment variables (replace all)' })
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Post()
+  @ApiBody({
+    type: [CreateEnvironmentDto],
+    description: 'The environment variables',
+  })
+  async updateAll(
+    @Param('appid') appid: string,
+    @Body() dto: CreateEnvironmentDto[],
+  ) {
+    // check env name and value (since validation decorator not work if dto is array)
+    for (const item of dto) {
+      if (/^[a-zA-Z_][a-zA-Z0-9_]{1,64}$/g.test(item.name) === false) {
+        return ResponseUtil.error(
+          'name must match /^[a-zA-Z_][a-zA-Z0-9_]{1,64}$/ : ' + item.name,
+        )
+      }
+
+      if (item.value.length > 4096) {
+        return ResponseUtil.error('value must less than 4096: ' + item.name)
+      }
+    }
+
+    // app secret can not missing or empty
+    const secret = dto.find((item) => item.name === APPLICATION_SECRET_KEY)
+    if (!secret || !secret.value) {
+      return ResponseUtil.error(APPLICATION_SECRET_KEY + ' can not be empty')
+    }
+
+    const res = await this.confService.updateAll(appid, dto)
+    return ResponseUtil.ok(res)
+  }
+
+  /**
    * Set a environment variable
    * @param appid
    * @param dto
@@ -38,14 +81,14 @@ export class EnvironmentVariableController {
   @ApiResponse({ type: ResponseUtil })
   @ApiOperation({ summary: 'Set a environment variable (create/update)' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
-  @Post()
+  @Patch()
   async add(@Param('appid') appid: string, @Body() dto: CreateEnvironmentDto) {
     // can not set empty app secret
     if (dto.name === APPLICATION_SECRET_KEY && !dto.value) {
       return ResponseUtil.error(APPLICATION_SECRET_KEY + ' can not be empty')
     }
 
-    const res = await this.confService.set(appid, dto)
+    const res = await this.confService.setOne(appid, dto)
     return ResponseUtil.ok(res)
   }
 
@@ -59,7 +102,7 @@ export class EnvironmentVariableController {
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get()
   async get(@Param('appid') appid: string) {
-    const res = await this.confService.find(appid)
+    const res = await this.confService.findAll(appid)
     return ResponseUtil.ok(res)
   }
 
@@ -79,7 +122,7 @@ export class EnvironmentVariableController {
       return ResponseUtil.error(APPLICATION_SECRET_KEY + ' can not be deleted')
     }
 
-    const res = await this.confService.delete(appid, name)
+    const res = await this.confService.deleteOne(appid, name)
     return ResponseUtil.ok(res)
   }
 }

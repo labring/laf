@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 import { t } from "i18next";
 
-import JsonEditor from "@/components/Editor/JsonEditor";
+import JSONEditor from "@/components/Editor/JSONEditor";
 
 type TContentType = "application/json" | "multipart/form-data";
 
@@ -39,8 +39,11 @@ const ContentType = {
   FORM_DATA: "multipart/form-data",
 };
 
-function BodyParamsTab(props: { onChange(values: { contentType: string; data: any }): void }) {
-  const { onChange } = props;
+function BodyParamsTab(props: {
+  onChange(values: { contentType: string; data: any }): void;
+  paramsList: { contentType: string; data: any };
+}) {
+  const { onChange, paramsList } = props;
   const { colorMode } = useColorMode();
 
   const [dataType, setDataType] = useState<string>(ContentType.JSON);
@@ -93,7 +96,7 @@ function BodyParamsTab(props: { onChange(values: { contentType: string; data: an
         </Stack>
       </RadioGroup>
       {dataType === ContentType.JSON ? (
-        <JsonEditor
+        <JSONEditor
           colorMode={colorMode}
           onChange={(values) => {
             try {
@@ -105,7 +108,7 @@ function BodyParamsTab(props: { onChange(values: { contentType: string; data: an
                 });
             } catch (e) {}
           }}
-          value={JSON.stringify({}, null, 2)}
+          value={JSON.stringify(paramsList?.data ?? {}, null, 2)}
         />
       ) : (
         <div>

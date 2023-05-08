@@ -2,11 +2,13 @@
  * cloud functions index page
  ***************************/
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Content from "@/components/Content";
 import { Col, Row } from "@/components/Grid";
 import Resize from "@/components/Resize";
+
+import StatusBar from "../mods/StatusBar";
 
 import ConsolePanel from "./mods/ConsolePanel";
 import DebugPanel from "./mods/DebugPanel";
@@ -18,6 +20,18 @@ import useCustomSettingStore from "@/pages/customSetting";
 function FunctionPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const functionPageConfig = useCustomSettingStore((store) => store.layoutInfo.functionPage);
+  const [showOverlay, setShowOverlay] = useState(false);
+
+  useEffect(() => {
+    function handleMouseUp() {
+      setShowOverlay(false);
+    }
+    document.addEventListener("mouseup", handleMouseUp);
+    return () => {
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, []);
+
   return (
     <Content>
       <Row ref={containerRef}>
@@ -50,17 +64,24 @@ function FunctionPage() {
             <ConsolePanel />
           </Row>
         </Col>
-        <Resize
-          type="x"
-          pageId="functionPage"
-          panelId="RightPanel"
-          reverse
-          containerRef={containerRef}
-        />
+        <div
+          onMouseDownCapture={() => {
+            setShowOverlay(true);
+          }}
+        >
+          <Resize
+            type="x"
+            pageId="functionPage"
+            panelId="RightPanel"
+            reverse
+            containerRef={containerRef}
+          />
+        </div>
         <Col {...functionPageConfig.RightPanel}>
-          <DebugPanel containerRef={containerRef} />
+          <DebugPanel containerRef={containerRef} showOverlay={showOverlay} />
         </Col>
       </Row>
+      <StatusBar />
     </Content>
   );
 }

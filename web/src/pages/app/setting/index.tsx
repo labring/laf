@@ -52,7 +52,7 @@ const SettingModal = (props: {
         },
       })}
 
-      <Modal isOpen={isOpen} onClose={onClose} size="4xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="4xl" closeOnOverlayClick={false}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{headerTitle || t("SettingPanel.Setting")}</ModalHeader>

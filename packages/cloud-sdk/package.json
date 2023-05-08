@@ -1,6 +1,6 @@
 {
   "name": "@lafjs/cloud",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.7",
   "description": "The cloud sdk for laf cloud function",
   "main": "dist/index.js",
   "scripts": {

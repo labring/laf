@@ -5,17 +5,17 @@ import { isConditionTrue } from '../utils/getter'
 import { InstanceService } from './instance.service'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/database/system-database'
-import { ClusterService } from 'src/region/cluster/cluster.service'
+import { CronJobService } from 'src/trigger/cron-job.service'
 
 @Injectable()
 export class InstanceTaskService {
-  readonly lockTimeout = 60 // in second
+  readonly lockTimeout = 10 // in second
   private readonly logger = new Logger(InstanceTaskService.name)
 
   constructor(
-    private readonly clusterService: ClusterService,
     private readonly instanceService: InstanceService,
   ) { }
+
 
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
@@ -26,25 +26,25 @@ export class InstanceTaskService {
     // Phase `Created` | `Stopped` ->  `Starting`
     this.handleRunningState().catch((err) => {
       this.logger.error('handleRunningState error', err)
-      err?.response && this.logger.debug(err?.response?.data || err?.response)
+      this.logger.debug(err?.response?.toJSON() || JSON.stringify(err))
     })
 
     // Phase `Starting` -> `Started`
     this.handleStartingPhase().catch((err) => {
       this.logger.error('handleStartingPhase error', err)
-      err?.response && this.logger.debug(err?.response?.data || err?.response)
+      this.logger.debug(err?.response?.toJSON() || JSON.stringify(err))
     })
 
     // Phase `Started` -> `Stopping`
     this.handleStoppedState().catch((err) => {
       this.logger.error('handleStoppedState error', err)
-      err?.response && this.logger.debug(err?.response?.data || err?.response)
+      this.logger.debug(err?.response?.toJSON() || JSON.stringify(err))
     })
 
     // Phase `Stopping` -> `Stopped`
     this.handleStoppingPhase().catch((err) => {
       this.logger.error('handleStoppingPhase error', err)
-      err?.response && this.logger.debug(err?.response?.data || err?.response)
+      this.logger.debug(err?.response?.toJSON() || JSON.stringify(err))
     })
 
     // Phase `Started` -> `Starting`
@@ -142,6 +142,9 @@ export class InstanceTaskService {
       return
     }
 
+    // resume cronjobs if any
+    await this.cronService.resumeAll(app.appid)
+
     // if state is `Restarting`, update state to `Running` with phase `Started`
     let toState = app.state
     if (app.state === ApplicationState.Restarting) {
@@ -226,6 +229,9 @@ export class InstanceTaskService {
       return
     }
 
+    // suspend cronjobs if any
+    await this.cronService.suspendAll(app.appid)
+
     // update application phase to `Stopped`
     await db.collection<Application>('Application').updateOne(
       { appid, phase: ApplicationPhase.Stopping },
@@ -281,9 +287,9 @@ export class InstanceTaskService {
    * Relock application by appid, lockedTime is in milliseconds
    */
   async relock(appid: string, lockedTime = 0) {
-    // if lockedTime greater than 5 minutes, set it to 10 minutes
-    if (lockedTime > 5 * 60 * 1000) {
-      lockedTime = 5 * 60 * 1000
+    // if lockedTime greater than 3 minutes, set it to 3 minutes
+    if (lockedTime > 3 * 60 * 1000) {
+      lockedTime = 3 * 60 * 1000
     }
 
     const db = SystemDatabase.db

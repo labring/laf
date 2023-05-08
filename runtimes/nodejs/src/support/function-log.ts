@@ -9,11 +9,10 @@ export interface IFunctionLog {
   created_at: Date
 }
 
-FunctionConsole.write = async (message: string, ctx: FunctionContext) => {
+FunctionConsole.write = (message: string, ctx: FunctionContext) => {
   const db = DatabaseAgent.db
   if (!db) return
 
-  const collection = db.collection<IFunctionLog>(FUNCTION_LOG_COLLECTION)
   const doc = {
     request_id: ctx.requestId,
     func: ctx.__function_name,
@@ -21,5 +20,5 @@ FunctionConsole.write = async (message: string, ctx: FunctionContext) => {
     created_at: new Date(),
   }
 
-  await collection.insertOne(doc)
+  db.collection<IFunctionLog>(FUNCTION_LOG_COLLECTION).insertOne(doc)
 }

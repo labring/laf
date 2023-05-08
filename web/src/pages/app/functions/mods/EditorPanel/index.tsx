@@ -6,6 +6,7 @@ import CopyText from "@/components/CopyText";
 import FunctionEditor from "@/components/Editor/FunctionEditor";
 import EmptyBox from "@/components/EmptyBox";
 import Panel from "@/components/Panel";
+import { COLOR_MODE } from "@/constants";
 
 import { useFunctionListQuery } from "../../service";
 import useFunctionStore from "../../store";
@@ -25,12 +26,12 @@ function EditorPanel() {
   const functionCache = useFunctionCache();
 
   const functionListQuery = useFunctionListQuery();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
   return (
     <Panel className="flex-1 flex-grow px-0">
       {currentFunction?.name ? (
         <Panel.Header
-          className={clsx("!mb-3 h-[50px] px-2", {
+          className={clsx("!mb-0 h-[50px] px-2", {
             "border-b-2": !darkMode,
             "border-lafWhite-400": !darkMode,
           })}
@@ -88,6 +89,10 @@ function EditorPanel() {
         <FunctionEditor
           colorMode={colorMode}
           className="flex-grow overflow-hidden"
+          style={{
+            marginLeft: -14,
+            marginRight: -14,
+          }}
           path={currentFunction?.id || ""}
           value={functionCache.getCache(currentFunction!.id, currentFunction!.source?.code)}
           onChange={(value) => {

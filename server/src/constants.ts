@@ -68,11 +68,15 @@ export class ServerConfig {
     }
   }
 
+  static get SITE_NAME() {
+    return process.env.SITE_NAME || 'laf'
+  }
+
   static get API_SERVER_URL() {
     return process.env.API_SERVER_URL || 'http://localhost:3000'
   }
 
-  static get certManagerIssuerName() {
+  static get CertManagerIssuerName() {
     return process.env.CERT_MANAGER_ISSUER_NAME || 'laf-issuer'
   }
 
@@ -143,6 +147,7 @@ export const HTTP_METHODS = ['HEAD', 'GET', 'POST', 'PUT', 'DELETE', 'PATCH']
 export const CN_PUBLISHED_FUNCTIONS = '__functions__'
 export const CN_PUBLISHED_POLICIES = '__policies__'
 export const CN_FUNCTION_LOGS = '__function_logs__'
+export const CN_PUBLISHED_CONF = '__conf__'
 
 export const X_LAF_TRIGGER_TOKEN_KEY = 'x-laf-trigger-token'
 export const X_LAF_DEVELOP_TOKEN_KEY = 'x-laf-develop-token'

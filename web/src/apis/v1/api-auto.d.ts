@@ -12,6 +12,7 @@ declare namespace Definitions {
     methods?: string[];
     code?: string /* The source code of the function */;
     tags?: string[];
+    params?: {};
   };
 
   export type CompileFunctionDto = {
@@ -128,14 +129,14 @@ declare namespace Definitions {
     expiresIn?: number;
   };
 
-  export type DeleteDependencyDto = {
-    name?: string;
-  };
-
   export type CreateTriggerDto = {
     desc?: string;
     cron?: string;
     target?: string;
+  };
+
+  export type DeleteDependencyDto = {
+    name?: string;
   };
 
   export type CreateSubscriptionDto = {
@@ -161,6 +162,30 @@ declare namespace Definitions {
 }
 
 declare namespace Paths {
+  namespace AuthControllerCode2token {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AuthControllerGetSignupUrl {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AuthControllerGetSigninUrl {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace AppControllerGetRuntimes {
     export type QueryParameters = any;
 
@@ -237,6 +262,14 @@ declare namespace Paths {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.UpdateApplicationDto;
+
+    export type Responses = any;
+  }
+
+  namespace EnvironmentVariableControllerUpdateAll {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
 
     export type Responses = any;
   }
@@ -465,30 +498,6 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace AuthControllerGetSigninUrl {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AuthControllerGetSignupUrl {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AuthControllerCode2token {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
   namespace AuthControllerPat2token {
     export type QueryParameters = any;
 
@@ -601,6 +610,30 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace TriggerControllerCreate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.CreateTriggerDto;
+
+    export type Responses = any;
+  }
+
+  namespace TriggerControllerFindAll {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace TriggerControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace LogControllerGetLogs {
     export type QueryParameters = any;
 
@@ -637,30 +670,6 @@ declare namespace Paths {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.DeleteDependencyDto;
-
-    export type Responses = any;
-  }
-
-  namespace TriggerControllerCreate {
-    export type QueryParameters = any;
-
-    export type BodyParameters = Definitions.CreateTriggerDto;
-
-    export type Responses = any;
-  }
-
-  namespace TriggerControllerFindAll {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace TriggerControllerRemove {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
 
     export type Responses = any;
   }

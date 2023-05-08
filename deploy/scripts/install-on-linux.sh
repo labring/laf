@@ -17,7 +17,7 @@ fi
 if [ -x "$(command -v apt)" ]; then
   echo "deb [trusted=yes] https://apt.fury.io/labring/ /" | tee /etc/apt/sources.list.d/labring.list
   apt update
-  apt install sealos=4.1.4 -y
+  apt install sealos -y
   
   # fix /etc/hosts overwrite bug in ubuntu while restarting
   sed -i "/update_etc_hosts/c \\ - ['update_etc_hosts', 'once-per-instance']" /etc/cloud/cloud.cfg && touch /var/lib/cloud/instance/sem/config_update_etc_hosts

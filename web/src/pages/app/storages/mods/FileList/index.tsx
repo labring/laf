@@ -1,5 +1,5 @@
 import { BiCloudUpload, BiRefresh } from "react-icons/bi";
-import { DeleteIcon, ViewIcon } from "@chakra-ui/icons";
+import { DeleteIcon, LinkIcon, ViewIcon } from "@chakra-ui/icons";
 import {
   Button,
   Center,
@@ -19,22 +19,20 @@ import clsx from "clsx";
 import { t } from "i18next";
 
 import ConfirmButton from "@/components/ConfirmButton";
+import CopyText from "@/components/CopyText";
 import EmptyBox from "@/components/EmptyBox";
-// import CopyText from "@/components/CopyText";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
-import { BUCKET_POLICY_TYPE } from "@/constants";
+import { BUCKET_POLICY_TYPE, COLOR_MODE } from "@/constants";
 import { formatDate, formateType, formatSize } from "@/utils/format";
 
 import useStorageStore, { TFile } from "../../store";
 import CreateFolderModal from "../CreateFolderModal";
 import CreateWebsiteModal from "../CreateWebsiteModal";
-// import CreateWebsiteModal from "../CreateWebsiteModal";
 import PathLink from "../PathLink";
 import UploadButton from "../UploadButton";
 
-// import styles from "../index.module.scss";
 import useAwsS3 from "@/hooks/useAwsS3";
 export default function FileList() {
   const { getList, getFileUrl, deleteFile } = useAwsS3();
@@ -43,7 +41,7 @@ export default function FileList() {
   const bucketType = currentStorage?.policy;
 
   const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   const query = useQuery(
     ["fileList", bucketName, prefix],
@@ -53,21 +51,23 @@ export default function FileList() {
     },
   );
 
-  const viewAppFile = (file: TFile) => {
-    if (file.Prefix) {
-      changeDirectory(file);
-      return;
-    }
-
+  const getLinkUrl = (file: TFile) => {
     let fileUrl = "";
-
     if (bucketType === "private") {
       fileUrl = getFileUrl(bucketName!, file.Key);
     } else {
       fileUrl = getOrigin(currentStorage?.domain?.domain || "") + `/${file.Key}` || "";
     }
 
-    window.open(fileUrl, "_blank");
+    return fileUrl;
+  };
+
+  const viewAppFile = (file: TFile) => {
+    if (file.Prefix) {
+      changeDirectory(file);
+      return;
+    }
+    window.open(getLinkUrl(file), "_blank");
   };
 
   const changeDirectory = (file: TFile) => {
@@ -213,19 +213,39 @@ export default function FileList() {
                               <ViewIcon fontSize={12} />
                             </IconWrap>
                             {!file.Prefix ? (
+                              <>
+                                <IconWrap>
+                                  <CopyText text={getLinkUrl(file)} tip={String(t("LinkCopied"))}>
+                                    <LinkIcon />
+                                  </CopyText>
+                                </IconWrap>
+                                <ConfirmButton
+                                  onSuccessAction={async () => {
+                                    await deleteFile(bucketName!, file.Key);
+                                    query.refetch();
+                                  }}
+                                  headerText={String(t("Delete"))}
+                                  bodyText={t("StoragePanel.DeleteFileTip")}
+                                >
+                                  <IconWrap tooltip={String(t("Delete"))}>
+                                    <DeleteIcon fontSize={14} />
+                                  </IconWrap>
+                                </ConfirmButton>
+                              </>
+                            ) : (
                               <ConfirmButton
                                 onSuccessAction={async () => {
-                                  await deleteFile(bucketName!, file.Key);
+                                  await deleteFile(bucketName!, file.Prefix as string);
                                   query.refetch();
                                 }}
                                 headerText={String(t("Delete"))}
-                                bodyText={t("StoragePanel.DeleteFileTip")}
+                                bodyText={t("StoragePanel.DeleteFolderTip")}
                               >
                                 <IconWrap tooltip={String(t("Delete"))}>
                                   <DeleteIcon fontSize={14} />
                                 </IconWrap>
                               </ConfirmButton>
-                            ) : null}
+                            )}
                           </Td>
                         </Tr>
                       );

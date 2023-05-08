@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import {
   Button,
   Center,
@@ -18,7 +19,6 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
-import { t } from "i18next";
 
 import Content from "@/components/Content";
 import CopyText from "@/components/CopyText";
@@ -28,6 +28,8 @@ import Pagination from "@/components/Pagination";
 import Panel from "@/components/Panel";
 import { formatDate } from "@/utils/format";
 import getPageInfo from "@/utils/getPageInfo";
+
+import StatusBar from "../mods/StatusBar";
 
 import { queryKeys } from "./service";
 
@@ -51,6 +53,7 @@ export default function LogsPage() {
     page: number;
   };
 
+  const { t } = useTranslation();
   const { handleSubmit, register, getValues } = useForm<FormData>({});
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -203,6 +206,7 @@ export default function LogsPage() {
           </ModalContent>
         </Modal>
       </Panel>
+      <StatusBar />
     </Content>
   );
 }

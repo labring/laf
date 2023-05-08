@@ -12,26 +12,26 @@ title: 快速开始
 
 1. 你需要在 [laf.run](https://laf.run) 上注册一个账户
 2. 登录到 [laf.run 控制台](https://laf.run)，点击左上角的 `新建` 按钮，创建一个空应用
-3. 待应用成功启动后，点击右侧 「开发」 按钮，进入应用的「开发控制台」，接下来，我们将在「开发控制台」 进行第一个 `laf` 应用的功能开发
+3. 待应用成功启动后，点击右侧「开发」按钮，进入应用的「开发控制台」，接下来，我们将在「开发控制台」进行第一个 `laf` 应用的功能开发
 
 ## 编写云函数
 
-本教程会编写两个云函数:
+本教程会编写两个云函数：
 
 - `register` 处理注册请求
-- `login` 处理登录请求.
+- `login` 处理登录请求。
 
 ### 用户注册云函数
 
-在「云函数」管理页面，点击 「新建函数」，创建注册云函数 `register`，
+在「云函数」管理页面，点击「新建函数」，创建注册云函数 `register`，
 
 点击 `register` 函数，进入 WebIDE，编写以下代码：
 
-```ts
+```typescript
 import cloud from "@lafjs/cloud";
 import { createHash } from "crypto";
 
-exports.main = async function (ctx: FunctionContext) {
+export default async function (ctx: FunctionContext) {
   const username = ctx.body?.username || "";
   const password = ctx.body?.password || "";
 
@@ -60,17 +60,17 @@ exports.main = async function (ctx: FunctionContext) {
 };
 ```
 
-点击右上角的「发布」 函数即发布上线！
+点击右上角的「发布」函数即发布上线！
 
 ### 用户登录云函数
 
 同上，创建 `login` 云函数，编写以下代码：
 
-```ts
+```typescript
 import cloud from "@lafjs/cloud";
 import { createHash } from "crypto";
 
-exports.main = async function (ctx: FunctionContext) {
+export default async function (ctx: FunctionContext) {
   const username = ctx.body?.username || "";
   const password = ctx.body?.password || "";
 
@@ -102,7 +102,7 @@ exports.main = async function (ctx: FunctionContext) {
 };
 ```
 
-点击右上角的 「发布」 函数即发布上线！
+点击右上角的「发布」函数即发布上线！
 
 ## 使用 curl 调用云函数
 
@@ -119,7 +119,7 @@ curl -X POST -H "Content-Type: application/json" -d '{"username": "admin", "pass
 
 ```
 
-## 在前端项目中使用云函数
+## 在前端项目中用 SDK 调用云函数
 
 在你的前端项目中安装 laf client sdk:
 
@@ -129,7 +129,7 @@ npm install laf-client-sdk
 
 然后填写下面的代码：
 
-```ts
+```typescript
 // user.ts
 
 import { Cloud } from "laf-client-sdk";
@@ -162,6 +162,40 @@ export async function login(username: string, password: string) {
   }
 
   return res;
+}
+```
+
+## 在前端项目中用 HTTP 请求调用云函数
+
+```js
+import axios from 'axios'
+
+const url = 'https://APPID.laf.run'
+
+// register
+async function register(username, password) {
+  try {
+    const response = await axios.post(url + "register", {
+      username: username,
+      password: password
+    });
+    console.log(response);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// login
+async function register(username, password) {
+  try {
+    const response = await axios.post(url + "login", {
+      username: username,
+      password: password
+    });
+    console.log(response);
+  } catch (error) {
+    console.error(error);
+  }
 }
 ```
 

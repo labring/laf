@@ -11,8 +11,12 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  useColorMode,
 } from "@chakra-ui/react";
+import clsx from "clsx";
 import { t } from "i18next";
+
+import { COLOR_MODE } from "@/constants";
 
 import {
   useGetProvidersQuery,
@@ -35,6 +39,9 @@ export default function SignUp() {
   const sendSmsCodeMutation = useSendSmsCodeMutation();
   const [isNeedPhone, setIsNeedPhone] = useState(false);
   const { providers, setProviders } = useAuthStore();
+
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   useGetProvidersQuery((data: any) => {
     setProviders(data?.data || []);
@@ -140,7 +147,12 @@ export default function SignUp() {
   };
 
   return (
-    <div className="absolute left-1/2 top-1/2 w-[560px] -translate-y-1/2 rounded-[10px] bg-white p-[65px]">
+    <div
+      className={clsx(
+        "absolute left-1/2 top-1/2 w-[560px] -translate-y-1/2 rounded-[10px] p-[65px]",
+        { "bg-white": !darkMode, "bg-lafDark-100": darkMode },
+      )}
+    >
       <div className="mb-[45px]">
         <img src="/logo.png" alt="logo" width={40} className="mr-4" />
       </div>

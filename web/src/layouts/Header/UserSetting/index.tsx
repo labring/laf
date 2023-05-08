@@ -64,7 +64,6 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
         <MenuItem
           onClick={() => {
             localStorage.removeItem("token");
-            localStorage.setItem("chakra-ui-color-mode", "light");
             window.location.href = "/login";
           }}
         >

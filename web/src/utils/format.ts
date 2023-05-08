@@ -87,3 +87,7 @@ export function formatPrice(price: number) {
 export function convertMoney(money: number) {
   return money * 100;
 }
+
+export function hidePhoneNumber(phone: string) {
+  return phone.replace(/(\d{3})\d{4}(\d{4})/, "$1****$2");
+}

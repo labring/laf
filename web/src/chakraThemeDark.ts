@@ -6,6 +6,8 @@ import {
   defineStyleConfig,
   extendTheme,
 } from "@chakra-ui/react";
+
+import { COLOR_MODE } from "./constants";
 const { definePartsStyle, defineMultiStyleConfig } = createMultiStyleConfigHelpers(tagAnatomy.keys);
 
 const Tag = defineMultiStyleConfig({
@@ -333,7 +335,7 @@ const Menu = {
 };
 
 const theme = extendTheme({
-  initialColorMode: "dark", // 'dark | 'light'
+  initialColorMode: COLOR_MODE.dark, // 'dark | 'light'
   useSystemColorMode: false,
   fontSizes: {
     sm: "12px",
