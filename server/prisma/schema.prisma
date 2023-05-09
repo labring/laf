@@ -54,6 +54,13 @@ type Note {
   level   NoteLevel @default(Info)
 }
 
+enum BaseState {
+  Active
+  Inactive
+
+  @@map("CommonState")
+}
+
 // user schemas
 
 model User {
@@ -190,7 +197,7 @@ model Bundle {
   displayName         String
   regionId            String                     @db.ObjectId
   priority            Int                        @default(0)
-  state               String                     @default("Active") // Active, Inactive
+  state               BaseState                  @default(Active)
   limitCountPerUser   Int // limit count of application per user could create
   subscriptionOptions BundleSubscriptionOption[]
   maxRenewalTime      Int // in seconds
@@ -334,14 +341,13 @@ model SubscriptionUpgrade {
 }
 
 // accounts schemas
-
 model Account {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  balance   Int      @default(0)
-  state     String   @default("Active") // Active, Inactive
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  createdBy String   @unique @db.ObjectId
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  balance   Int       @default(0)
+  state     BaseState @default(Active)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  createdBy String    @unique @db.ObjectId
 }
 
 model AccountTransaction {
@@ -394,13 +400,54 @@ model PaymentChannel {
   type      PaymentChannelType
   name      String
   spec      Json
-  state     String             @default("Active") // Active, Inactive
+  state     BaseState          @default(Active)
   notes     Note[]
   createdAt DateTime           @default(now())
   updatedAt DateTime           @updatedAt
 }
 
-// application schemas
+// Ponit account schemas
+
+model PointAccount {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  balance   Int       @default(0)
+  state     BaseState @default(Active)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  createdBy String    @unique @db.ObjectId
+}
+
+model PointAccountTransaction {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  accountId String   @db.ObjectId
+  amount    Int
+  balance   Int
+  message   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum PointAccountChargePhase {
+  Pending
+  Paid
+  Failed
+}
+
+model PointAccountChargeOrder {
+  id        String                  @id @default(auto()) @map("_id") @db.ObjectId
+  accountId String                  @db.ObjectId
+  amount    Int
+  phase     PointAccountChargePhase @default(Pending)
+  channel   PaymentChannelType
+  result    Json?
+  message   String?
+  createdAt DateTime                @default(now())
+  lockedAt  DateTime
+  updatedAt DateTime                @updatedAt
+  createdBy String                  @db.ObjectId
+}
+
+// Application schemas
 
 // desired state of application
 enum ApplicationState {
