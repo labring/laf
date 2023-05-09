@@ -14,8 +14,8 @@ export class InstanceTaskService {
 
   constructor(
     private readonly instanceService: InstanceService,
-  ) { }
-
+    private readonly cronService: CronJobService,
+  ) {}
 
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
@@ -122,7 +122,8 @@ export class InstanceTaskService {
 
     const appid = app.appid
     const instance = await this.instanceService.get(app)
-    const unavailable = instance.deployment?.status?.unavailableReplicas || false
+    const unavailable =
+      instance.deployment?.status?.unavailableReplicas || false
     if (unavailable) {
       await this.relock(appid, waitingTime)
       return
@@ -247,10 +248,11 @@ export class InstanceTaskService {
     this.logger.log(`Application ${app.appid} updated to phase Stopped`)
   }
 
-
+  /**
+   * State `Restarting`:
+   * - move phase `Started` to `Starting`
+   */
   async handleRestartingState() {
-
-
     const db = SystemDatabase.db
 
     const res = await db
