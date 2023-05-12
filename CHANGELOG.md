@@ -1,3 +1,37 @@
+
+
+# [1.0.0-beta.8](https://github.com/labring/laf/compare/v1.0.0-beta.7...v1.0.0-beta.8) (2023-05-12)
+
+
+### Bug Fixes
+
+* **client-sdk:** eslint type error ([0b5c9d1](https://github.com/labring/laf/commit/0b5c9d1ba3499c009aec2734618e08894e585296))
+* **client-sdk:** fix bugs in compiling uniapp into WeChat mini programs ([#1105](https://github.com/labring/laf/issues/1105)) ([dd86d0b](https://github.com/labring/laf/commit/dd86d0b26394ac61bb9994728e483e92efb917d3))
+* **docs:** typo ([3711363](https://github.com/labring/laf/commit/3711363df12937eb5986ae45f765783aa7e9fd8e))
+* **server:** add regex validation for function name ([#1091](https://github.com/labring/laf/issues/1091)) ([48dbfb2](https://github.com/labring/laf/commit/48dbfb2a79cbecd04eafff528bf21df7982ada5f))
+* **web:** fix bodyparams height ([#1101](https://github.com/labring/laf/issues/1101)) ([933da58](https://github.com/labring/laf/commit/933da58d44827ab0180d618c187e784ee29102e1))
+* **web:** function name regex ([#1092](https://github.com/labring/laf/issues/1092)) ([0b933c9](https://github.com/labring/laf/commit/0b933c95b7b84e8b288c5794589025f96b0f74a6))
+* **web:** text overflow ellipsis ([#1085](https://github.com/labring/laf/issues/1085)) ([99a01ed](https://github.com/labring/laf/commit/99a01ed750b370430de32ccac331249a539d3674))
+* **web:** update error prompt of function name format ([#1094](https://github.com/labring/laf/issues/1094)) ([aeaa54d](https://github.com/labring/laf/commit/aeaa54d8c29b4d00bb6d8bd77dddeed3105cd4bc))
+
+
+### Features
+
+* **server:** add site setting api ([#1125](https://github.com/labring/laf/issues/1125)) ([9911a5d](https://github.com/labring/laf/commit/9911a5d7111f16ba61e459c72c75d74932ec9b6a))
+* **server:** support deployment rolling update ([#1112](https://github.com/labring/laf/issues/1112)) ([633b2f3](https://github.com/labring/laf/commit/633b2f3f5736f16aa1083baf498a2d77fa34e704))
+* **web:** add DocsPanel ([#1086](https://github.com/labring/laf/issues/1086)) ([0e72123](https://github.com/labring/laf/commit/0e72123d1db89411d9d6c23b8b08e4306a3f3661))
+* **web:** add function params storage ([#1113](https://github.com/labring/laf/issues/1113)) ([1f75387](https://github.com/labring/laf/commit/1f753872fa323737728a37ab58f7da6f3d99b3e5))
+* **web:** add laf site setting config ([#1126](https://github.com/labring/laf/issues/1126)) ([f5ec412](https://github.com/labring/laf/commit/f5ec4127a2384da3c425a8c6645217462aa256fe))
+* **web:** add link copy in oss page ([#1108](https://github.com/labring/laf/issues/1108)) ([425b782](https://github.com/labring/laf/commit/425b782374f2866d7ad78aa1638431bc5082cd04))
+* **web:** hide phone number info ([#1111](https://github.com/labring/laf/issues/1111)) ([e4d8141](https://github.com/labring/laf/commit/e4d8141de2ee00cf4944eba7a4a0816f1fe0b6b1))
+
+
+### Performance Improvements
+
+* change upload folder to upload fold's files ([#1087](https://github.com/labring/laf/issues/1087)) ([6d20780](https://github.com/labring/laf/commit/6d207803fd05cf68e90121475b2e4bc0030d564a))
+
+
+
 # [1.0.0-beta.7](https://github.com/labring/laf/compare/v1.0.0-beta.6...v1.0.0-beta.7) (2023-04-25)
 
 

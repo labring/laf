@@ -24,8 +24,7 @@ export default function Header(props: { size: "sm" | "lg" }) {
           <img
             src={colorMode === COLOR_MODE.dark ? "/logo_light.png" : "/logo_light.png"}
             alt="logo"
-            width={80}
-            className="mr-4"
+            className="mr-4 h-[40px]"
           />
         </a>
         <a

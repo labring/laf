@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
-import { APP_PHASE_STATUS, CHAKRA_UI_COLOR_MODE_KEY } from "@/constants";
+import { APP_PHASE_STATUS, APP_STATUS, CHAKRA_UI_COLOR_MODE_KEY } from "@/constants";
 import { formatPort } from "@/utils/format";
 
 import { TApplicationDetail, TRegion, TRuntime, TUserInfo } from "@/apis/typing";
@@ -24,7 +24,7 @@ type State = {
   currentApp: TApplicationDetail | undefined;
   setCurrentApp(app: TApplicationDetail | undefined): void;
   init(appid?: string): void;
-  updateCurrentApp(app: TApplicationDetail, state?: APP_PHASE_STATUS): void;
+  updateCurrentApp(app: TApplicationDetail, state: APP_STATUS): void;
   deleteCurrentApp(): void;
   currentPageId: string | undefined;
   setCurrentPage: (pageId: string) => void;
@@ -77,10 +77,7 @@ const useGlobalStore = create<State>()(
         });
       },
 
-      updateCurrentApp: async (
-        app: TApplicationDetail,
-        newState: APP_PHASE_STATUS = APP_PHASE_STATUS.Restarting,
-      ) => {
+      updateCurrentApp: async (app: TApplicationDetail, newState: APP_STATUS) => {
         if (!app) {
           return;
         }
@@ -93,7 +90,7 @@ const useGlobalStore = create<State>()(
           set((state) => {
             if (state.currentApp) {
               state.currentApp.phase =
-                newState === APP_PHASE_STATUS.Restarting ? "Restarting" : "Stopping";
+                newState === APP_STATUS.Restarting ? "Restarting" : "Stopping";
             }
           });
         }

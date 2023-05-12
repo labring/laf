@@ -107,31 +107,16 @@ const Navbar = (props: Props) => {
                 alt={"logo"}
               />
             </div>
-            {/* <a href="/" className="ml-10">
-              {t("HomePage.NavBar.home")}
-            </a>
-            <a
-              target="_blank"
-              href={String(t("HomePage.DocsLink"))}
-              className="ml-10"
-              rel="noreferrer"
-            >
-              {t("HomePage.NavBar.docs")}
-            </a>
-            <a href="https://forum.laf.run/" target="_blank" className="ml-10" rel="noreferrer">
-              {t("HomePage.NavBar.forum")}
-            </a>
-            <a
-              target="_blank"
-              href="https://www.wenjuan.com/s/I36ZNbl/"
-              className="ml-10"
-              rel="noreferrer"
-            >
-              {t("HomePage.NavBar.contact")}
-            </a> */}
+
             {navList.map((item, index) => {
               return (
-                <a key={index} target="_blank" href={item.ref} className="ml-10" rel="noreferrer">
+                <a
+                  key={index}
+                  target={item.ref.startsWith("http") ? "_blank" : "_self"}
+                  href={item.ref}
+                  className="ml-10"
+                  rel="noreferrer"
+                >
                   {item.text}
                 </a>
               );
@@ -257,7 +242,7 @@ const Navbar = (props: Props) => {
                   <li key={index}>
                     <a
                       href={item.ref}
-                      target="_blank"
+                      target={item.ref.startsWith("http") ? "_blank" : "_self"}
                       className={
                         darkMode
                           ? "block px-4 py-2 hover:bg-gray-900"
@@ -282,7 +267,7 @@ const Navbar = (props: Props) => {
                       : "flex px-4 py-2 hover:bg-gray-100"
                   }
                 >
-                  <GithubIcon fontSize={32} color={darkMode ? "#F6F8F9" : "#3C455D"} />
+                  <GithubIcon fontSize={24} color={darkMode ? "#F6F8F9" : "#3C455D"} />
                   {stars}
                 </a>
               ) : null}
