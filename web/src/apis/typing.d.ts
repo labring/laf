@@ -161,6 +161,14 @@ export type TWebsiteHosting = {
   lockedAt: string;
 };
 
+export type TSetting = {
+  id: string;
+  key: string;
+  value: string;
+  desc: string;
+  metadata: any;
+};
+
 export type Spec = {
   policy: string;
   storage: string;

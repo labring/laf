@@ -18,7 +18,11 @@ import { ApplicationService } from './application.service'
 import { FunctionService } from '../function/function.service'
 import { StorageService } from 'src/storage/storage.service'
 import { RegionService } from 'src/region/region.service'
-import { SubscriptionPhase } from '@prisma/client'
+import {
+  ApplicationPhase,
+  ApplicationState,
+  SubscriptionPhase,
+} from '@prisma/client'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -137,6 +141,39 @@ export class ApplicationController {
     })
     if (app.subscription.phase !== SubscriptionPhase.Valid) {
       return ResponseUtil.error('subscription has expired, you can not update')
+    }
+
+    // check: only running application can restart
+    if (
+      dto.state === ApplicationState.Restarting &&
+      app.state !== ApplicationState.Running &&
+      app.phase !== ApplicationPhase.Started
+    ) {
+      return ResponseUtil.error(
+        'The application is not running, can not restart it',
+      )
+    }
+
+    // check: only running application can stop
+    if (
+      dto.state === ApplicationState.Stopped &&
+      app.state !== ApplicationState.Running &&
+      app.phase !== ApplicationPhase.Started
+    ) {
+      return ResponseUtil.error(
+        'The application is not running, can not stop it',
+      )
+    }
+
+    // check: only stopped application can start
+    if (
+      dto.state === ApplicationState.Running &&
+      app.state !== ApplicationState.Stopped &&
+      app.phase !== ApplicationPhase.Stopped
+    ) {
+      return ResponseUtil.error(
+        'The application is not stopped, can not start it',
+      )
     }
 
     // update app

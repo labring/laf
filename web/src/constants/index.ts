@@ -14,13 +14,11 @@ export const Pages = {
 };
 
 export enum APP_STATUS {
-  // [ Initializing, Initialized, Starting, Running, Stopping, Stopped ]
-  Initializing = "Initializing",
-  Initialized = "Initialized",
-  Starting = "Starting",
+  // [ "Running", "Stopped", "Restarting", "Deleted" ]
   Running = "Running",
-  Stopping = "Stopping",
   Stopped = "Stopped",
+  Restarting = "Restarting",
+  Deleted = "Deleted",
 }
 
 export const DEFAULT_REGION = "default";

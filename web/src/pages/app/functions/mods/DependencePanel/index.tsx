@@ -10,6 +10,7 @@ import ConfirmButton from "@/components/ConfirmButton";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
+import { APP_STATUS } from "@/constants";
 
 import AddDependenceModal from "./AddDependenceModal";
 import { TPackage, useDelPackageMutation, usePackageQuery } from "./service";
@@ -21,7 +22,7 @@ export default function DependenceList() {
   const packageQuery = usePackageQuery();
   const globalStore = useGlobalStore((state) => state);
   const delPackageMutation = useDelPackageMutation(() => {
-    globalStore.updateCurrentApp(globalStore.currentApp!);
+    globalStore.updateCurrentApp(globalStore.currentApp!, APP_STATUS.Restarting);
   });
   const { t } = useTranslation();
 

@@ -146,6 +146,7 @@
     "UpdateConfirm": "Continue to update environment variables?",
     "BaseInfo": "Basic Info",
     "DB": "Database",
+    "Start": "Start",
     "Delete": "Delete",
     "Detail": "Spec Detail",
     "Disk": "Hard Disk",
@@ -416,5 +417,6 @@
     }
   },
   "ChatGPT example": "ChatGPT example",
-  "LinkCopied": "Link Copied"
+  "LinkCopied": "Link Copied",
+  "ServerStatus": "STATUS"
 }
