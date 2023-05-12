@@ -17,6 +17,7 @@ fi
 if [ -x "$(command -v apt)" ]; then
   echo "deb [trusted=yes] https://apt.fury.io/labring/ /" | tee /etc/apt/sources.list.d/labring.list
   apt update
+  apt install iptables host -y
   apt install sealos -y
   
   # fix /etc/hosts overwrite bug in ubuntu while restarting
@@ -34,6 +35,7 @@ gpgcheck=0
 EOF
   # yum update
   yum clean all
+  yum install -y bind-utils iptables
   yum install sealos -y
 fi
 
