@@ -26,7 +26,7 @@ export class InstanceService {
     private readonly storageService: StorageService,
     private readonly databaseService: DatabaseService,
     private readonly prisma: PrismaService,
-  ) { }
+  ) {}
 
   async create(app: Application) {
     const appid = app.appid
@@ -176,18 +176,23 @@ export class InstanceService {
       },
     })
     const { deployment } = await this.get(app)
-    deployment.spec = await this.makeDeploymentSpec(app, deployment.spec.template.metadata.labels)
+    deployment.spec = await this.makeDeploymentSpec(
+      app,
+      deployment.spec.template.metadata.labels,
+    )
     const region = await this.regionService.findByAppId(app.appid)
     const appsV1Api = this.clusterService.makeAppsV1Api(region)
     const namespace = GetApplicationNamespaceByAppId(app.appid)
-    const res = await appsV1Api.replaceNamespacedDeployment(app.appid, namespace, deployment)
+    const res = await appsV1Api.replaceNamespacedDeployment(
+      app.appid,
+      namespace,
+      deployment,
+    )
 
     this.logger.log(`restart k8s deployment ${res.body?.metadata?.name}`)
-
   }
 
   async makeDeploymentSpec(app: any, labels: any): Promise<V1DeploymentSpec> {
-
     // prepare params
     const limitMemory = app.bundle.resource.limitMemory
     const limitCpu = app.bundle.resource.limitCPU
@@ -227,8 +232,9 @@ export class InstanceService {
       },
       { name: 'DEPENDENCIES', value: dependencies_string },
       {
-        name: 'RESTART_AT', value: new Date().getTime().toString(),
-      }
+        name: 'RESTART_AT',
+        value: new Date().getTime().toString(),
+      },
     ]
 
     // merge env from app configuration, override if exists
