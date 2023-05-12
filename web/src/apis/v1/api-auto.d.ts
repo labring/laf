@@ -761,4 +761,20 @@ declare namespace Paths {
 
     export type Responses = any;
   }
+
+  namespace SettingControllerGetSettings {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace SettingControllerGetSettingByKey {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
 }

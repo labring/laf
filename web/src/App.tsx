@@ -7,6 +7,7 @@ import { ClickToComponent } from "click-to-react-component";
 
 import "@/utils/i18n";
 
+import useSiteSettingStore from "./pages/siteSetting";
 import theme from "./chakraTheme";
 import darkTheme from "./chakraThemeDark";
 import { CHAKRA_UI_COLOR_MODE_KEY } from "./constants";
@@ -33,6 +34,8 @@ const queryClient = new QueryClient({
 function APP() {
   useTranslation();
 
+  const getSiteSettings = useSiteSettingStore((state) => state.getSiteSettings);
+
   const [colorMode, setColorMode] = useState(localStorage.getItem(CHAKRA_UI_COLOR_MODE_KEY));
   useEffect(() => {
     function onColorModeChange() {
@@ -44,6 +47,10 @@ function APP() {
       window.removeEventListener("ColorModeChange", onColorModeChange);
     };
   });
+
+  useEffect(() => {
+    getSiteSettings();
+  }, [getSiteSettings]);
 
   return (
     <>
