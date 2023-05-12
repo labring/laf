@@ -416,5 +416,6 @@
     }
   },
   "ChatGPT example": "ChatGPT example",
-  "LinkCopied": "Link Copied"
+  "LinkCopied": "Link Copied",
+  "ServerStatus": "STATUS"
 }
