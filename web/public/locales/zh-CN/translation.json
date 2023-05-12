@@ -152,6 +152,7 @@
     "DB": "数据库",
     "network": "出网容量",
     "Delete": "删除应用",
+    "Start": "启动应用",
     "Restart": "重启应用",
     "UserInfo": "用户信息",
     "Auth": "实名认证",
