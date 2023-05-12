@@ -14,7 +14,6 @@ const Footer = (props: Props) => {
   const darkMode = colorMode === COLOR_MODE.dark;
 
   const siteSettings = useSiteSettingStore((state) => state.siteSettings);
-  console.log(123, siteSettings);
 
   return (
     <>

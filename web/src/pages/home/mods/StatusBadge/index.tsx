@@ -34,7 +34,7 @@ export default function StatusBadge(props: { statusConditions?: string; state?: 
       (state !== APP_PHASE_STATUS.Restarting && statusConditions === APP_PHASE_STATUS.Stopped) ? (
         ""
       ) : (
-        <Spinner size="sm" />
+        <Spinner size="xs" />
       )}
     </div>
   );

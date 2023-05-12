@@ -1,11 +1,11 @@
 import { useTranslation } from "react-i18next";
-import { MdRestartAlt } from "react-icons/md";
+import { MdPlayCircleOutline, MdRestartAlt } from "react-icons/md";
 import { RiDeleteBin6Line, RiShutDownLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, HStack, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
-import { APP_PHASE_STATUS, COLOR_MODE, Routes } from "@/constants/index";
+import { APP_PHASE_STATUS, APP_STATUS, COLOR_MODE, Routes } from "@/constants/index";
 import { formatDate } from "@/utils/format";
 
 import InfoDetail from "./InfoDetail";
@@ -51,14 +51,31 @@ const AppEnvList = () => {
               className="mr-2"
               fontWeight={"semibold"}
               size={"sm"}
-              isDisabled={currentApp?.state === APP_PHASE_STATUS.Restarting}
+              isDisabled={
+                currentApp?.phase !== APP_PHASE_STATUS.Stopped &&
+                currentApp?.phase !== APP_PHASE_STATUS.Started
+              }
               variant={"text"}
               onClick={() => {
-                updateCurrentApp(currentApp!);
+                updateCurrentApp(
+                  currentApp!,
+                  currentApp?.state === APP_STATUS.Stopped
+                    ? APP_STATUS.Running
+                    : APP_STATUS.Restarting,
+                );
               }}
             >
-              <MdRestartAlt size={16} className="mr-2" />
-              {t("SettingPanel.Restart")}
+              {currentApp?.phase === APP_PHASE_STATUS.Stopped ? (
+                <>
+                  <MdPlayCircleOutline size={16} className="mr-1" />
+                  {t("SettingPanel.Start")}
+                </>
+              ) : (
+                <>
+                  <MdRestartAlt size={16} className="mr-1" />
+                  {t("SettingPanel.Restart")}
+                </>
+              )}
             </Button>
             <Button
               className="mr-2"
@@ -67,10 +84,10 @@ const AppEnvList = () => {
               variant={"text"}
               onClick={(event: any) => {
                 event?.preventDefault();
-                updateCurrentApp(currentApp!, APP_PHASE_STATUS.Stopped);
+                updateCurrentApp(currentApp!, APP_STATUS.Stopped);
               }}
             >
-              <RiShutDownLine size={16} className="mr-2" />
+              <RiShutDownLine size={16} className="mr-1" />
               {t("SettingPanel.ShutDown")}
             </Button>
 
@@ -81,7 +98,7 @@ const AppEnvList = () => {
               }}
             >
               <Button className="mr-2" fontWeight={"semibold"} size={"sm"} variant={"warnText"}>
-                <RiDeleteBin6Line size={16} className="mr-2" />
+                <RiDeleteBin6Line size={16} className="mr-1" />
                 {t("SettingPanel.Delete")}
               </Button>
             </DeleteAppModal>
