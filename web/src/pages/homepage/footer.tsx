@@ -4,12 +4,17 @@ import { useColorMode } from "@chakra-ui/react";
 import { DiscordIcon, ForumIcon, WechatIcon } from "@/components/CommonIcon";
 import { COLOR_MODE } from "@/constants";
 
+import useSiteSettingStore from "../siteSetting";
+
 type Props = {};
 
 const Footer = (props: Props) => {
   const { t } = useTranslation();
   const { colorMode } = useColorMode();
   const darkMode = colorMode === COLOR_MODE.dark;
+
+  const siteSettings = useSiteSettingStore((state) => state.siteSettings);
+  console.log(123, siteSettings);
 
   return (
     <>
@@ -162,6 +167,7 @@ const Footer = (props: Props) => {
               }
             >
               laf. all rights reserved. © {new Date().getFullYear()}
+              <div dangerouslySetInnerHTML={{ __html: siteSettings.site_footer?.value || "" }} />
             </div>
             <div className="flex w-36 justify-evenly">
               <a
@@ -314,6 +320,7 @@ const Footer = (props: Props) => {
         <div className="flex h-auto flex-col gap-6 py-6 ">
           <div className={darkMode ? "text-lg text-lafWhite-700" : "text-lg text-[#3C455D]"}>
             laf. all rights reserved. © {new Date().getFullYear()}
+            <div dangerouslySetInnerHTML={{ __html: siteSettings.site_footer?.value || "" }} />
           </div>
           <div className="ml-[-10px] flex w-32 justify-around">
             <a href="https://w4mci7-images.oss.laf.run/wechat.png" target="_blank" rel="noreferrer">
