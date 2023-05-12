@@ -20,6 +20,7 @@ import { GatewayModule } from './gateway/gateway.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { SubscriptionModule } from './subscription/subscription.module'
 import { AccountModule } from './account/account.module'
+import { SettingModule } from './setting/setting.module'
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { AccountModule } from './account/account.module'
     PrismaModule,
     SubscriptionModule,
     AccountModule,
+    SettingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
