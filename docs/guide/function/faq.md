@@ -469,7 +469,7 @@ async function UploadToWinxin(url) {
     responseType: 'arraybuffer'
   })
   fs.writeFileSync('/tmp/tmp.jpg', Buffer.from(res.data))
-  // 这里 getAccess_token 不做演示演示
+  // 这里 getAccess_token 不做演示
   const access_token = await getAccess_token()
   const formData = {
     media: {
