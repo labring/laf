@@ -6,6 +6,7 @@ set -e
 # skip init if $DEPENDENCIES is empty
 if [ -z "$DEPENDENCIES" ]; then
   echo "No dependencies to install."
+  cp -r /app/* /tmp/app
   exit 0
 fi
 
