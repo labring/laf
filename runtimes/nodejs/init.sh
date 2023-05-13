@@ -1,7 +1,14 @@
 #!/bin/sh
 
-# echo "****** init start ******"
 set -e
-node ./dist/init.js
+# node ./dist/init.js
+
+# skip init if $DEPENDENCIES is empty
+if [ -z "$DEPENDENCIES" ]; then
+  echo "No dependencies to install."
+  exit 0
+fi
+
+echo "npm install $DEPENDENCIES $NPM_INSTALL_FLAGS"
+npm install $DEPENDENCIES $NPM_INSTALL_FLAGS
 cp -r /app/* /tmp/app
-# echo "****** init end *******"
