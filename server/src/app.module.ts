@@ -21,6 +21,7 @@ import { PrismaModule } from './prisma/prisma.module'
 import { SubscriptionModule } from './subscription/subscription.module'
 import { AccountModule } from './account/account.module'
 import { SettingModule } from './setting/setting.module'
+import { SseClientsModule } from './sse/sse-clients.module'
 
 @Module({
   imports: [
@@ -47,8 +48,9 @@ import { SettingModule } from './setting/setting.module'
     SubscriptionModule,
     AccountModule,
     SettingModule,
+    SseClientsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

@@ -743,3 +743,12 @@ model Setting {
   desc      String
   metadata  Json? // extra meta data
 }
+
+model EventSource {
+  id        String            @id @default(auto()) @map("_id") @db.ObjectId
+  uid       String
+  appid     String
+  payload   String
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+}
