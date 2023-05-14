@@ -12,7 +12,13 @@ import { PrismaService } from '../prisma/prisma.service'
 import { StorageService } from '../storage/storage.service'
 import { DatabaseService } from 'src/database/database.service'
 import { ClusterService } from 'src/region/cluster/cluster.service'
-import { Application, Region } from '@prisma/client'
+import {
+  Application,
+  ApplicationBundle,
+  ApplicationConfiguration,
+  Region,
+  Runtime,
+} from '@prisma/client'
 import { RegionService } from 'src/region/region.service'
 
 type ApplicationWithRegion = Application & { region: Region }
@@ -164,7 +170,6 @@ export class InstanceService {
     }
   }
 
-  // 修改整个spec
   async restart(appid: string) {
     const app = await this.prisma.application.findUnique({
       where: { appid },
@@ -176,6 +181,11 @@ export class InstanceService {
       },
     })
     const { deployment } = await this.get(app)
+    if (!deployment) {
+      await this.create(app)
+      return
+    }
+
     deployment.spec = await this.makeDeploymentSpec(
       app,
       deployment.spec.template.metadata.labels,
@@ -192,7 +202,15 @@ export class InstanceService {
     this.logger.log(`restart k8s deployment ${res.body?.metadata?.name}`)
   }
 
-  async makeDeploymentSpec(app: any, labels: any): Promise<V1DeploymentSpec> {
+  async makeDeploymentSpec(
+    app: Application & {
+      region: Region
+      bundle: ApplicationBundle
+      configuration: ApplicationConfiguration
+      runtime: Runtime
+    },
+    labels: any,
+  ): Promise<V1DeploymentSpec> {
     // prepare params
     const limitMemory = app.bundle.resource.limitMemory
     const limitCpu = app.bundle.resource.limitCPU
@@ -202,6 +220,7 @@ export class InstanceService {
     const max_http_header_size = 1 * MB
     const dependencies = app.configuration?.dependencies || []
     const dependencies_string = dependencies.join(' ')
+    const npm_install_flags = app.region.clusterConf.npmInstallFlags || ''
 
     // db connection uri
     const database = await this.databaseService.findOne(app.appid)
@@ -214,7 +233,8 @@ export class InstanceService {
 
     const env = [
       { name: 'DB_URI', value: dbConnectionUri },
-      { name: 'APP_ID', value: app.appid },
+      { name: 'APP_ID', value: app.appid }, // deprecated, use `APPID` instead
+      { name: 'APPID', value: app.appid },
       { name: 'OSS_ACCESS_KEY', value: storage.accessKey },
       { name: 'OSS_ACCESS_SECRET', value: storage.secretKey },
       {
@@ -231,6 +251,7 @@ export class InstanceService {
         value: `--max_old_space_size=${max_old_space_size} --max-http-header-size=${max_http_header_size}`,
       },
       { name: 'DEPENDENCIES', value: dependencies_string },
+      { name: 'NPM_INSTALL_FLAGS', value: npm_install_flags },
       {
         name: 'RESTART_AT',
         value: new Date().getTime().toString(),
@@ -248,18 +269,18 @@ export class InstanceService {
       }
     })
 
-    const spec = {
+    const spec: V1DeploymentSpec = {
       replicas: 1,
       selector: { matchLabels: labels },
       template: {
         metadata: { labels },
         spec: {
-          terminationGracePeriodSeconds: 15,
+          terminationGracePeriodSeconds: 10,
           automountServiceAccountToken: false,
           containers: [
             {
               image: app.runtime.image.main,
-              imagePullPolicy: 'Always',
+              imagePullPolicy: 'IfNotPresent',
               command: ['sh', '/app/start.sh'],
               name: app.appid,
               env,
@@ -268,6 +289,7 @@ export class InstanceService {
                 limits: {
                   cpu: `${limitCpu}m`,
                   memory: `${limitMemory}Mi`,
+                  'ephemeral-storage': '4Gi',
                 },
                 requests: {
                   cpu: `${requestCpu}m`,
@@ -287,9 +309,9 @@ export class InstanceService {
                   httpHeaders: [{ name: 'Referer', value: 'startupProbe' }],
                 },
                 initialDelaySeconds: 0,
-                periodSeconds: 3,
-                timeoutSeconds: 3,
-                failureThreshold: 240,
+                periodSeconds: 1,
+                timeoutSeconds: 1,
+                failureThreshold: 300,
               },
               readinessProbe: {
                 httpGet: {
@@ -299,8 +321,13 @@ export class InstanceService {
                 },
                 initialDelaySeconds: 0,
                 periodSeconds: 60,
-                timeoutSeconds: 5,
-                failureThreshold: 3,
+                timeoutSeconds: 3,
+                failureThreshold: 1,
+              },
+              securityContext: {
+                allowPrivilegeEscalation: false,
+                readOnlyRootFilesystem: true,
+                privileged: false,
               },
             },
           ],
@@ -308,7 +335,7 @@ export class InstanceService {
             {
               name: 'init',
               image: app.runtime.image.init,
-              imagePullPolicy: 'Always',
+              imagePullPolicy: 'IfNotPresent',
               command: ['sh', '/app/init.sh'],
               env,
               volumeMounts: [
@@ -317,12 +344,30 @@ export class InstanceService {
                   mountPath: '/tmp/app',
                 },
               ],
+              resources: {
+                limits: {
+                  cpu: `1000m`,
+                  memory: `1024Mi`,
+                  'ephemeral-storage': '4Gi',
+                },
+                requests: {
+                  cpu: '5m',
+                  memory: '32Mi',
+                },
+              },
+              securityContext: {
+                allowPrivilegeEscalation: false,
+                // readOnlyRootFilesystem: true,
+                privileged: false,
+              },
             },
           ],
           volumes: [
             {
               name: 'app',
-              emptyDir: {},
+              emptyDir: {
+                sizeLimit: '4Gi',
+              },
             },
           ],
           affinity: {

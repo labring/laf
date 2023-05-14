@@ -2,13 +2,10 @@ import { execSync } from 'child_process'
 import Config from './config'
 
 import { logger } from './support/logger'
-import { FUNCTION_LOG_COLLECTION } from './constants'
 
 async function main() {
   try {
     installPackages()
-
-    await ensureCollectionIndexes()
   } catch (error) {
     logger.error(error)
     return 1
@@ -32,7 +29,7 @@ main()
  * @returns
  */
 export function installPackages() {
-  const deps = process.env.DEPENDENCIES || ''
+  const deps = process.env.DEPENDENCIES
   if (!deps) {
     return
   }
@@ -55,24 +52,4 @@ export function moduleExists(mod: string) {
   } catch (_err) {
     return false
   }
-}
-
-/**
- * Create necessary indexes of collections
- * @param data
- * @returns
- */
-export async function ensureCollectionIndexes(): Promise<any> {
-  // init.ts should not import db globally, because init.ts would be referenced in build time
-  const { DatabaseAgent } = require('./db')
-  await DatabaseAgent.accessor.ready
-  const db = DatabaseAgent.db
-  await db.collection(FUNCTION_LOG_COLLECTION).createIndexes([
-    {
-      key: { created_at: 1 },
-      expireAfterSeconds: Config.FUNCTION_LOG_EXPIRED_TIME,
-    },
-  ])
-
-  return true
 }

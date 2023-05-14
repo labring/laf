@@ -7,7 +7,6 @@
 
 import Config from '../config'
 import * as jwt from 'jsonwebtoken'
-const DEFAULT_SALT = Config.SERVER_SECRET
 
 /**
  * Generate a JWT token
@@ -16,7 +15,7 @@ const DEFAULT_SALT = Config.SERVER_SECRET
  * @returns
  */
 export function getToken(payload: any, secret?: string): string {
-  return jwt.sign(payload, secret ?? DEFAULT_SALT)
+  return jwt.sign(payload, secret ?? Config.SERVER_SECRET)
 }
 
 /**
@@ -27,7 +26,7 @@ export function getToken(payload: any, secret?: string): string {
 export function parseToken(token: string, secret?: string): any | null {
   if (!token) return null
   try {
-    const ret = jwt.verify(token, secret ?? DEFAULT_SALT)
+    const ret = jwt.verify(token, secret ?? Config.SERVER_SECRET)
     return ret
   } catch (error) {
     return null
