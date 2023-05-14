@@ -43,7 +43,7 @@ export async function create(
     description: options.description,
     websocket: options.websocket,
     methods: options.methods,
-    code: `\nimport cloud from '@lafjs/cloud'\n\nexports.main = async function (ctx: FunctionContext) {\n  console.log('Hello World')\n  return { data: 'hi, laf' }\n}\n`,
+    code: `\nimport cloud from '@lafjs/cloud'\n\nexport default async function (ctx: FunctionContext) {\n  console.log('Hello World')\n  return { data: 'hi, laf' }\n}\n`,
     tags: options.tags,
   }
   await functionControllerCreate(appConfig.appid, createDto)
