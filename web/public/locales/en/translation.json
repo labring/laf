@@ -226,7 +226,7 @@
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",
-    "CornTip": "Example: 0/1 * * * * ? \nIndicates that the task is executed every 1 second",
+    "CornTip": "Example: 0/1 * * * * * \nIndicates that the task is executed every 1 second",
     "DeleteConfirm": "Are you sure you want to delete this trigger",
     "Express": "expression",
     "Function": "Correlation function",

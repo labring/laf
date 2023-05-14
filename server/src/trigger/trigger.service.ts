@@ -79,11 +79,10 @@ export class TriggerService {
   }
 
   isValidCronExpression(cron: string) {
-    const ret = CronValidate(cron)
+    const ret = CronValidate(cron, { override: { useSeconds: true } })
     if (ret.isValid()) {
       return true
     }
-
     return false
   }
 }
