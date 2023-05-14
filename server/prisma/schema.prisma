@@ -57,8 +57,6 @@ type Note {
 enum BaseState {
   Active
   Inactive
-
-  @@map("CommonState")
 }
 
 // user schemas
@@ -162,6 +160,28 @@ model Region {
   bundles      Bundle[]
 }
 
+enum RegionBundleType {
+  CPU
+  Memory
+  Database
+  Storage
+  Network
+}
+
+type RegionBundleOption {
+  value Int
+}
+
+model RegionBundle {
+  id        String               @id @default(auto()) @map("_id") @db.ObjectId
+  regionId  String               @db.ObjectId
+  type      RegionBundleType     @unique
+  price     Int                  @default(0)
+  options   RegionBundleOption[]
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+}
+
 type BundleResource {
   limitCPU      Int // 1000 = 1 core
   limitMemory   Int // in MB
@@ -170,7 +190,7 @@ type BundleResource {
 
   databaseCapacity       Int // in MB
   storageCapacity        Int // in MB
-  networkTrafficOutbound Int // in MB
+  networkTrafficOutbound Int? // in MB
 
   limitCountOfCloudFunction  Int // limit count of cloud function per application
   limitCountOfBucket         Int // limit count of bucket per application
@@ -216,9 +236,9 @@ model Bundle {
 model ApplicationBundle {
   id          String         @id @default(auto()) @map("_id") @db.ObjectId
   appid       String         @unique
-  bundleId    String         @db.ObjectId
-  name        String
-  displayName String
+  bundleId    String?        @db.ObjectId
+  name        String?
+  displayName String?
   resource    BundleResource
 
   createdAt DateTime @default(now())
