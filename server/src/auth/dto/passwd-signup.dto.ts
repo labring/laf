@@ -17,6 +17,7 @@ export class PasswdSignupDto {
   @IsString()
   @IsNotEmpty()
   @Length(3, 64)
+  @Matches(/^\S+$/, { message: '不能包含空格字符' })
   username: string
 
   @ApiProperty({
@@ -26,6 +27,7 @@ export class PasswdSignupDto {
   @IsString()
   @IsNotEmpty()
   @Length(8, 64)
+  @Matches(/^\S+$/, { message: '不能包含空格字符' })
   password: string
 
   @ApiPropertyOptional({
@@ -53,4 +55,14 @@ export class PasswdSignupDto {
   @IsOptional()
   @IsEnum(SmsVerifyCodeType)
   type: SmsVerifyCodeType
+
+  @ApiPropertyOptional({
+    description: 'invite code',
+    example: 'iLeMi7x',
+  })
+  @IsOptional()
+  @IsString()
+  @Length(7, 7)
+  @Matches(/^\S+$/, { message: '不能包含空格字符' })
+  inviteCode: string
 }

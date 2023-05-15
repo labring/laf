@@ -14,7 +14,12 @@ export class UserPasswordService {
   ) {}
 
   // Singup by username and password
-  async signup(username: string, password: string, phone: string) {
+  async signup(
+    username: string,
+    password: string,
+    phone: string,
+    inviteCode: string,
+  ) {
     // start transaction
     const user = await this.prisma.$transaction(async (tx) => {
       // create user
@@ -34,6 +39,22 @@ export class UserPasswordService {
           state: UserPasswordState.Active,
         },
       })
+
+      // create invite relation
+      if (inviteCode) {
+        const res = await tx.inviteCode.findUnique({
+          where: { code: inviteCode },
+        })
+        if (res) {
+          await tx.inviteBy.create({
+            data: {
+              uidInviteBy: res.uid,
+              uid: user.id,
+              codeId: res.id,
+            },
+          })
+        }
+      }
 
       return user
     })

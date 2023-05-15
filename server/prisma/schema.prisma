@@ -54,6 +54,26 @@ type Note {
   level   NoteLevel @default(Info)
 }
 
+// user invite code schemas
+model InviteCode {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  uid         String   @db.ObjectId
+  code        String   @unique
+  name        String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// invite relationship
+model InviteBy {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  uidInviteBy String   @db.ObjectId
+  uid         String   @db.ObjectId
+  codeId      String   @db.ObjectId
+  createdAt   DateTime @default(now())
+}
+
 // user schemas
 
 model User {
