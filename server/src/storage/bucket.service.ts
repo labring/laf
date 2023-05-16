@@ -135,7 +135,7 @@ export class BucketService {
       .collection<StorageBucket>('StorageBucket')
       .findOneAndUpdate(
         { appid: bucket.appid, name: bucket.name },
-        { $set: { state: StorageState.Deleted } },
+        { $set: { state: StorageState.Deleted, updatedAt: new Date() } },
       )
 
     return res

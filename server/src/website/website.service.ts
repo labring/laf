@@ -113,7 +113,12 @@ export class WebsiteService {
       .findOneAndUpdate(
         { _id: id },
         {
-          $set: { domain: domain, isCustom: true, phase: DomainPhase.Deleting },
+          $set: {
+            domain: domain,
+            isCustom: true,
+            phase: DomainPhase.Deleting,
+            updatedAt: new Date(),
+          },
         },
       )
 
@@ -131,7 +136,10 @@ export class WebsiteService {
   async removeAll(appid: string) {
     const res = await this.db
       .collection<WebsiteHosting>('WebsiteHosting')
-      .updateMany({ appid }, { $set: { state: DomainState.Deleted } })
+      .updateMany(
+        { appid },
+        { $set: { state: DomainState.Deleted, updatedAt: new Date() } },
+      )
 
     return res
   }

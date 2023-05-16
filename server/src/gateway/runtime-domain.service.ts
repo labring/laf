@@ -58,7 +58,7 @@ export class RuntimeDomainService {
       .collection<RuntimeDomain>('RuntimeDomain')
       .findOneAndUpdate(
         { appid: appid },
-        { $set: { state: DomainState.Deleted } },
+        { $set: { state: DomainState.Deleted, updatedAt: new Date() } },
       )
 
     return doc
