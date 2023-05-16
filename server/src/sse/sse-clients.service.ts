@@ -4,7 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service'
 import { filter } from 'rxjs/operators'
 import { Response } from 'express'
 import { Readable } from 'stream'
-import { SseConnectedEvent, SsePongEvent, SseAbstractEvent, SSE_CONNECT_HEADER, SSE_CONNECTED_EVENT } from './types'
+import { SsePongEvent, SseDefaultEvent, SseAbstractEvent, SSE_CONNECT_HEADER } from './types'
 import { IResponse } from 'src/utils/interface'
 
 
@@ -29,7 +29,11 @@ export class SseClientsService {
     const newClient = { userid, response }
     this.clients.push(newClient)
 
-    // 清除定时器和客户端连接信息
+    this.initResponse(userid, response)
+  }
+
+  initResponse(userid: string, response: IResponse) {
+    // 清除客户端连接信息
     const onClientClose = () => {
       console.log(`client ${userid} disconnected`)
       response.end()
@@ -37,8 +41,8 @@ export class SseClientsService {
     }
     response.on('close', onClientClose)
     response.on('end', onClientClose)
-
     response.writeHead(200, SSE_CONNECT_HEADER)
+    response.flush()
   }
 
 
@@ -72,16 +76,28 @@ export class SseClientsService {
     response.flush()
   }
 
+
+  sendDefaultEvent(sseEvent: SseDefaultEvent) {
+    if (!sseEvent) {
+      return
+    }
+
+    let { userid } = sseEvent
+    if (userid) {
+      this.sendEvent(userid, sseEvent)
+    }
+  }
+
+
   sendPongEvent() {
+    let payload = new SsePongEvent({ msg: "hello pong..." }).parsePayload()
+
     this.clients.forEach(client => {
       let { response } = client
-      if (!response) {
-        return
+      if (response) {
+        response.write(payload)
+        response.flush()
       }
-
-      let payload = new SsePongEvent().parsePayload()
-      response.write(payload)
-      response.flush()
     })
   }
 }
