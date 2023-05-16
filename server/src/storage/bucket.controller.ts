@@ -133,7 +133,7 @@ export class BucketController {
       throw new HttpException('bucket not found', HttpStatus.NOT_FOUND)
     }
 
-    const res = await this.bucketService.update(bucket, dto)
+    const res = await this.bucketService.updateOne(bucket, dto)
     if (!res) {
       return ResponseUtil.error('update bucket failed')
     }
@@ -162,7 +162,7 @@ export class BucketController {
       )
     }
 
-    const res = await this.bucketService.delete(bucket)
+    const res = await this.bucketService.deleteOne(bucket)
     if (!res) {
       return ResponseUtil.error('delete bucket failed')
     }

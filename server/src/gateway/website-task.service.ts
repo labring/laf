@@ -1,11 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import {
-  BucketDomain,
-  DomainPhase,
-  DomainState,
-  WebsiteHosting,
-} from '@prisma/client'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/database/system-database'
 import { RegionService } from 'src/region/region.service'
@@ -14,6 +8,9 @@ import { ApisixService } from './apisix.service'
 import { ApisixCustomCertService } from './apisix-custom-cert.service'
 import { ObjectId } from 'mongodb'
 import { isConditionTrue } from 'src/utils/getter'
+import { WebsiteHosting } from 'src/website/entities/website'
+import { DomainPhase, DomainState } from './entities/runtime-domain'
+import { BucketDomain } from './entities/bucket-domain'
 
 @Injectable()
 export class WebsiteTaskService {

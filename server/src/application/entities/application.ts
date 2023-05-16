@@ -3,6 +3,7 @@ import { Region } from 'src/region/entities/region'
 import { ApplicationBundle } from './application-bundle'
 import { Runtime } from './runtime'
 import { ApplicationConfiguration } from './application-configuration'
+import { RuntimeDomain } from 'src/gateway/entities/runtime-domain'
 
 export enum ApplicationPhase {
   Creating = 'Creating',
@@ -46,4 +47,5 @@ export interface ApplicationWithRelations extends Application {
   bundle?: ApplicationBundle
   runtime?: Runtime
   configuration?: ApplicationConfiguration
+  domain?: RuntimeDomain
 }

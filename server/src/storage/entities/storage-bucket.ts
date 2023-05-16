@@ -1,22 +1,12 @@
 import { ObjectId } from 'mongodb'
+import { StoragePhase, StorageState } from './storage-user'
+import { WebsiteHosting } from 'src/website/entities/website'
+import { BucketDomain } from 'src/gateway/entities/bucket-domain'
 
 export enum BucketPolicy {
   readwrite = 'readwrite',
   readonly = 'readonly',
   private = 'private',
-}
-
-export enum StoragePhase {
-  Creating = 'Creating',
-  Created = 'Created',
-  Deleting = 'Deleting',
-  Deleted = 'Deleted',
-}
-
-export enum StorageState {
-  Active = 'Active',
-  Inactive = 'Inactive',
-  Deleted = 'Deleted',
 }
 
 export class StorageBucket {
@@ -30,4 +20,9 @@ export class StorageBucket {
   lockedAt: Date
   createdAt: Date
   updatedAt: Date
+}
+
+export type StorageWithRelations = StorageBucket & {
+  domain: BucketDomain
+  websiteHosting: WebsiteHosting
 }
