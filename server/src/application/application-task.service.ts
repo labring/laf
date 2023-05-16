@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { DomainPhase, StoragePhase } from '@prisma/client'
 import * as assert from 'node:assert'
 import { StorageService } from '../storage/storage.service'
 import { DatabaseService } from '../database/database.service'
@@ -22,6 +21,8 @@ import {
   ApplicationState,
 } from './entities/application'
 import { DatabasePhase } from 'src/database/entities/database'
+import { DomainPhase } from 'src/gateway/entities/runtime-domain'
+import { StoragePhase } from 'src/storage/entities/storage-user'
 
 @Injectable()
 export class ApplicationTaskService {
@@ -240,7 +241,7 @@ export class ApplicationTaskService {
     // delete runtime domain
     const runtimeDomain = await this.runtimeDomainService.findOne(appid)
     if (runtimeDomain) {
-      await this.runtimeDomainService.delete(appid)
+      await this.runtimeDomainService.deleteOne(appid)
       return await this.unlock(appid)
     }
 

@@ -8,13 +8,13 @@ import {
   PutBucketVersioningCommand,
   S3,
 } from '@aws-sdk/client-s3'
-import { BucketPolicy } from '@prisma/client'
 import * as assert from 'node:assert'
 import * as cp from 'child_process'
 import { promisify } from 'util'
 import { MinioCommandExecOutput } from './types'
 import { MINIO_COMMON_USER_GROUP } from 'src/constants'
 import { Region } from 'src/region/entities/region'
+import { BucketPolicy } from '../entities/storage-bucket'
 
 const exec = promisify(cp.exec)
 

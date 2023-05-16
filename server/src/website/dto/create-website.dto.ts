@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { DomainState } from '@prisma/client'
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator'
+import { DomainState } from 'src/gateway/entities/runtime-domain'
 
 export class CreateWebsiteDto {
   @ApiProperty()

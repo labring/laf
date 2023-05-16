@@ -1,20 +1,21 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { DomainPhase, DomainState, WebsiteHosting } from '@prisma/client'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
-import { PrismaService } from 'src/prisma/prisma.service'
 import { RegionService } from 'src/region/region.service'
 import { CreateWebsiteDto } from './dto/create-website.dto'
 import * as assert from 'node:assert'
 import * as dns from 'node:dns'
+import { SystemDatabase } from 'src/database/system-database'
+import { WebsiteHosting, WebsiteHostingWithBucket } from './entities/website'
+import { DomainPhase, DomainState } from 'src/gateway/entities/runtime-domain'
+import { ObjectId } from 'mongodb'
+import { BucketDomain } from 'src/gateway/entities/bucket-domain'
 
 @Injectable()
 export class WebsiteService {
   private readonly logger = new Logger(WebsiteService.name)
+  private readonly db = SystemDatabase.db
 
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly regionService: RegionService,
-  ) {}
+  constructor(private readonly regionService: RegionService) {}
 
   async create(appid: string, dto: CreateWebsiteDto) {
     const region = await this.regionService.findByAppId(appid)
@@ -23,69 +24,73 @@ export class WebsiteService {
     // generate default website domain
     const domain = `${dto.bucketName}.${region.gatewayConf.websiteDomain}`
 
-    const website = await this.prisma.websiteHosting.create({
-      data: {
+    const res = await this.db
+      .collection<WebsiteHosting>('WebsiteHosting')
+      .insertOne({
         appid: appid,
+        bucketName: dto.bucketName,
         domain: domain,
         isCustom: false,
         state: DomainState.Active,
         phase: DomainPhase.Creating,
         lockedAt: TASK_LOCK_INIT_TIME,
-        bucket: {
-          connect: {
-            name: dto.bucketName,
-          },
-        },
-      },
-    })
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
 
-    return website
+    return await this.findOne(res.insertedId)
   }
 
   async count(appid: string) {
-    const count = await this.prisma.websiteHosting.count({
-      where: {
-        appid: appid,
-      },
-    })
+    const count = await this.db
+      .collection<WebsiteHosting>('WebsiteHosting')
+      .countDocuments({ appid })
 
     return count
   }
 
   async findAll(appid: string) {
-    const websites = await this.prisma.websiteHosting.findMany({
-      where: {
-        appid: appid,
-      },
-      include: {
-        bucket: true,
-      },
-    })
+    const websites = await this.db
+      .collection<WebsiteHosting>('WebsiteHosting')
+      .aggregate<WebsiteHostingWithBucket>()
+      .match({ appid })
+      .lookup({
+        from: 'Bucket',
+        localField: 'bucketName',
+        foreignField: 'name',
+        as: 'bucket',
+      })
+      .unwind('$bucket')
+      .toArray()
 
     return websites
   }
 
-  async findOne(id: string) {
-    const website = await this.prisma.websiteHosting.findFirst({
-      where: {
-        id,
-      },
-      include: {
-        bucket: true,
-      },
-    })
+  async findOne(id: ObjectId) {
+    const website = await this.db
+      .collection<WebsiteHosting>('WebsiteHosting')
+      .aggregate<WebsiteHostingWithBucket>()
+      .match({ _id: id })
+      .lookup({
+        from: 'Bucket',
+        localField: 'bucketName',
+        foreignField: 'name',
+        as: 'bucket',
+      })
+      .unwind('$bucket')
+      .next()
 
     return website
   }
 
   async checkResolved(website: WebsiteHosting, customDomain: string) {
     // get bucket domain
-    const bucketDomain = await this.prisma.bucketDomain.findFirst({
-      where: {
+    const bucketDomain = await this.db
+      .collection<BucketDomain>('BucketDomain')
+      .findOne({
         appid: website.appid,
         bucketName: website.bucketName,
-      },
-    })
+      })
 
     const cnameTarget = bucketDomain.domain
 
@@ -97,55 +102,37 @@ export class WebsiteService {
         return
       })
 
-    if (!result) {
-      return false
-    }
-
-    if (false === (result || []).includes(cnameTarget)) {
-      return false
-    }
-
+    if (!result) return false
+    if (false === (result || []).includes(cnameTarget)) return false
     return true
   }
 
-  async bindCustomDomain(id: string, domain: string) {
-    const website = await this.prisma.websiteHosting.update({
-      where: {
-        id,
-      },
-      data: {
-        domain: domain,
-        isCustom: true,
-        phase: DomainPhase.Deleting,
-      },
-    })
+  async bindCustomDomain(id: ObjectId, domain: string) {
+    const res = await this.db
+      .collection<WebsiteHosting>('WebsiteHosting')
+      .findOneAndUpdate(
+        { _id: id },
+        {
+          $set: { domain: domain, isCustom: true, phase: DomainPhase.Deleting },
+        },
+      )
 
-    return website
+    return res.value
   }
 
-  async remove(id: string) {
-    const website = await this.prisma.websiteHosting.update({
-      where: {
-        id,
-      },
-      data: {
-        state: DomainState.Deleted,
-      },
-    })
+  async removeOne(id: ObjectId) {
+    const res = await this.db
+      .collection<WebsiteHosting>('WebsiteHosting')
+      .findOneAndUpdate({ _id: id }, { $set: { state: DomainState.Deleted } })
 
-    return website
+    return res.value
   }
 
   async removeAll(appid: string) {
-    const websites = await this.prisma.websiteHosting.updateMany({
-      where: {
-        appid,
-      },
-      data: {
-        state: DomainState.Deleted,
-      },
-    })
+    const res = await this.db
+      .collection<WebsiteHosting>('WebsiteHosting')
+      .updateMany({ appid }, { $set: { state: DomainState.Deleted } })
 
-    return websites
+    return res
   }
 }
