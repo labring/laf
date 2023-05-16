@@ -117,16 +117,6 @@ function toXML(payload, content) {
 
 需要先安装依赖 `canvas`
 
-:::tip
-`canvas`安装受限于网络，可能会出现超时无法安装的情况。
-
-建议国内用户安装前，先添加环境变量
-
-`NPM_INSTALL_FLAGS="--registry=https://registry.npmmirror.com --canvas_binary_host_mirror=https://npmmirror.com/mirrors/canvas"`
-
-可以极大的提升安装速度。
-:::
-
 ```typescript
 import { createCanvas } from 'canvas'
 
