@@ -66,7 +66,7 @@ export class BucketDomainService {
       .collection<BucketDomain>('BucketDomain')
       .findOneAndUpdate(
         { _id: bucket._id },
-        { $set: { state: DomainState.Deleted } },
+        { $set: { state: DomainState.Deleted, updatedAt: new Date() } },
       )
 
     return await this.findOne(bucket)
@@ -75,7 +75,10 @@ export class BucketDomainService {
   async deleteAll(appid: string) {
     const res = await this.db
       .collection<BucketDomain>('BucketDomain')
-      .updateMany({ appid }, { $set: { state: DomainState.Deleted } })
+      .updateMany(
+        { appid },
+        { $set: { state: DomainState.Deleted, updatedAt: new Date() } },
+      )
 
     return res
   }

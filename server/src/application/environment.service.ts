@@ -15,7 +15,10 @@ export class EnvironmentVariableService {
   async updateAll(appid: string, dto: CreateEnvironmentDto[]) {
     const res = await this.db
       .collection<ApplicationConfiguration>('ApplicationConfiguration')
-      .findOneAndUpdate({ appid }, { $set: { environments: dto } })
+      .findOneAndUpdate(
+        { appid },
+        { $set: { environments: dto, updatedAt: new Date() } },
+      )
 
     assert(res?.value, 'application configuration not found')
     await this.confService.publish(res.value)
@@ -39,7 +42,10 @@ export class EnvironmentVariableService {
 
     const res = await this.db
       .collection<ApplicationConfiguration>('ApplicationConfiguration')
-      .findOneAndUpdate({ appid }, { $set: { environments: origin } })
+      .findOneAndUpdate(
+        { appid },
+        { $set: { environments: origin, updatedAt: new Date() } },
+      )
 
     assert(res?.value, 'application configuration not found')
     await this.confService.publish(res.value)

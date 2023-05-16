@@ -85,7 +85,7 @@ export class StorageService {
         .collection<StorageBucket>('StorageBucket')
         .updateMany(
           { appid, state: { $ne: StorageState.Deleted } },
-          { $set: { state: StorageState.Deleted } },
+          { $set: { state: StorageState.Deleted, updatedAt: new Date() } },
         )
 
       // just return to wait for buckets deletion
