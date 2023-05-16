@@ -42,19 +42,6 @@ export class SseClientsController implements OnModuleInit, OnModuleDestroy {
     private readonly sseClientsService: SseClientsService,
   ) { }
 
-  // @Get()
-  // @Header('Content-Type', 'text/event-stream')
-  // streamEvents(@Param('userid') userid: string, @Req() request, @Res() response: IResponse) {
-  //   response.flushHeaders()
-  //   this.sseClientsService.addClient(userid, response)
-
-  //   request.on('close', () => {
-  //     console.log('SSE client disconnected')
-  //     // 手动释放连接
-  //     this.sseClientsService.removeClient(userid)
-  //   });
-  // }
-
 
   private clients: any[] = []
 
@@ -63,13 +50,6 @@ export class SseClientsController implements OnModuleInit, OnModuleDestroy {
   @Get('/:userid')
   connectSse(@Param('userid') userid: string, @Req() request, @Res() response: IResponse): void {
     console.log('clients add userid===>' + userid)
-    // response.writeHead(200, {
-    //   'Content-Type': 'text/event-stream',
-    //   'Cache-Control': 'no-cache',
-    //   'Connection': 'keep-alive',
-    //   'Access-Control-Allow-Origin': '*',
-    // })
-
     this.sseClientsService.addClient(userid, response)
   }
 
@@ -80,25 +60,12 @@ export class SseClientsController implements OnModuleInit, OnModuleDestroy {
   }
 
 
-  // sendEventToClients(event: any) {
-  //   const payload = `id: ${new Date().getTime().toString()}\n` +
-  //     `event: message\n` +
-  //     `data: ${JSON.stringify(event)}\n\n`
-
-  //   this.clients.forEach(client => {
-  //     client.response.write(payload)
-  //     client.response.flush()
-  //   })
-  // }
-
-
   // 在此处，我们在控制器初始化时启动一个事件处理器，以便事件可以被推送到 SSE 流中
   onModuleInit() {
     console.log('onModuleInit ..... ')
     this.eventEmitter = interval(5000).subscribe(() => {
-      // this.sendEventToClients({ message: 'Server message at 3000 loop' + new Date().toISOString() })
       this.sseClientsService.sendPongEvent()
-    });
+    })
   }
 
   // 在控制器销毁时停止事件处理器以释放资源

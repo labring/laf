@@ -1,21 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Observable, Subscriber } from 'rxjs'
 import { PrismaService } from 'src/prisma/prisma.service'
-import { filter } from 'rxjs/operators'
-import { Response } from 'express'
-import { Readable } from 'stream'
-import { SsePongEvent, SseDefaultEvent, SseAbstractEvent, SSE_CONNECT_HEADER } from './types'
+import { SsePongEvent, SseDefaultEvent, SseAbstractEvent, SSE_CONNECT_HEADER, SseResponseWrapper } from './types'
 import { IResponse } from 'src/utils/interface'
+
 
 
 @Injectable()
 export class SseClientsService {
   private readonly logger = new Logger(SseClientsService.name)
 
-
   private clients: any[] = []
-  // private readonly clients = new Map<string, IResponse>()
-
 
   constructor(
     private readonly prisma: PrismaService,
@@ -25,14 +19,14 @@ export class SseClientsService {
 
   addClient(userid: string, response: IResponse) {
     this.logger.log(`addClient new userid=`, userid)
-
-    const newClient = { userid, response }
+    const newClient = new SseResponseWrapper(userid, response)
     this.clients.push(newClient)
-
-    this.initResponse(userid, response)
+    this.initResponse(newClient)
   }
 
-  initResponse(userid: string, response: IResponse) {
+  initResponse(newClient: SseResponseWrapper) {
+    const { userid, response } = newClient
+
     // 清除客户端连接信息
     const onClientClose = () => {
       console.log(`client ${userid} disconnected`)
@@ -89,8 +83,10 @@ export class SseClientsService {
   }
 
 
-  sendPongEvent() {
-    let payload = new SsePongEvent({ msg: "hello pong..." }).parsePayload()
+  sendEventBroadcast(sseEvent: SseAbstractEvent) {
+    const payload = sseEvent.parsePayload()
+    console.log('sendEventBroadcast====size', this.clients.length)
+
 
     this.clients.forEach(client => {
       let { response } = client
@@ -99,5 +95,10 @@ export class SseClientsService {
         response.flush()
       }
     })
+  }
+
+  sendPongEvent() {
+    const ssePongEvent = new SsePongEvent({ msg: "hello pong..." })
+    this.sendEventBroadcast(ssePongEvent)
   }
 }

@@ -1,3 +1,7 @@
+import { IResponse } from 'src/utils/interface'
+import { randomUUID } from 'crypto'
+
+
 interface SseEventInterface {
   parsePayload: () => string
 }
@@ -33,10 +37,8 @@ export abstract class SseAbstractEvent implements SseEventInterface {
 
 
   parsePayload(): string {
-    // const payload = `id: ${this.id}\nevent: ${this.type}\nretry: ${this.retry || 3000}\ndata: ${JSON.stringify(this.data)}\n\n`
-
     const payload = `id: ${this.id}\n` +
-      `event: ${this.type} \n` +
+      `event: ${this.type}\n` +
       `retry: ${this.retry || 3000}\n` +
       `data: ${JSON.stringify(this.data)}\n\n`
 
@@ -55,8 +57,8 @@ export class SsePongEvent extends SseAbstractEvent {
 
 
 export class SseDefaultEvent extends SseAbstractEvent {
-  userid: string;
-  appid: string;
+  userid: string
+  appid: string
 
   public constructor(userid: string, appid: string, sseEventEnum: SseEventEnum, data: object) {
     super(Date.now().toString(), sseEventEnum, data)
@@ -68,18 +70,16 @@ export class SseDefaultEvent extends SseAbstractEvent {
 
 
 
+export class SseResponseWrapper {
+  userid: string
+  readonly response: IResponse
+
+  constructor(userid: string, response: IResponse) {
+    this.userid = `${userid}-${randomUUID()}`
+    this.response = response
+  }
 
 
-// export class SseEventFactory {
-//   static getEventInstance(sseEventEnum: SseEventEnum, data: object) {
-//     switch (sseEventEnum) {
-//       case SseEventEnum.PONG: {
-//         return new SsePongEvent(data)
-//       }
+}
 
-//       default: {
-//         return new SseDefaultEvent(data)
-//       }
-//     }
-//   }
-// }
+
