@@ -1,16 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common'
-import {
-  Application,
-  StorageBucket,
-  StoragePhase,
-  StorageState,
-} from '@prisma/client'
+import { StorageBucket, StoragePhase, StorageState } from '@prisma/client'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
 import { PrismaService } from '../prisma/prisma.service'
 import { RegionService } from '../region/region.service'
 import { CreateBucketDto } from './dto/create-bucket.dto'
 import { UpdateBucketDto } from './dto/update-bucket.dto'
 import { MinioService } from './minio/minio.service'
+import { Application } from 'src/application/entities/application'
 
 @Injectable()
 export class BucketService {

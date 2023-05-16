@@ -1,15 +1,18 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Region, StoragePhase, StorageState, StorageUser } from '@prisma/client'
+import { StoragePhase, StorageState, StorageUser } from '@prisma/client'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { GenerateAlphaNumericPassword } from 'src/utils/random'
 import { MinioService } from './minio/minio.service'
 import { AssumeRoleCommand, STSClient } from '@aws-sdk/client-sts'
 import { RegionService } from 'src/region/region.service'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
+import { Region } from 'src/region/entities/region'
+import { SystemDatabase } from 'src/database/system-database'
 
 @Injectable()
 export class StorageService {
   private readonly logger = new Logger(StorageService.name)
+  private readonly db = SystemDatabase.db
 
   constructor(
     private readonly minioService: MinioService,

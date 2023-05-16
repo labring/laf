@@ -1,5 +1,6 @@
-import { Application, User } from '@prisma/client'
+import { User } from '@prisma/client'
 import { Request, Response } from 'express'
+import { Application } from 'src/application/entities/application'
 
 export interface IRequest extends Request {
   user?: User

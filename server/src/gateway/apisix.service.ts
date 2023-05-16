@@ -1,7 +1,8 @@
 import { HttpService } from '@nestjs/axios'
 import { Injectable, Logger } from '@nestjs/common'
-import { Region, WebsiteHosting } from '@prisma/client'
+import { WebsiteHosting } from '@prisma/client'
 import { GetApplicationNamespaceByAppId } from '../utils/getter'
+import { Region } from 'src/region/entities/region'
 
 @Injectable()
 export class ApisixService {

@@ -1,7 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
 import * as nanoid from 'nanoid'
-import { ApplicationPhase, ApplicationState, Prisma } from '@prisma/client'
-import { PrismaService } from '../prisma/prisma.service'
 import { UpdateApplicationDto } from './dto/update-application.dto'
 import {
   APPLICATION_SECRET_KEY,
@@ -9,158 +7,264 @@ import {
   TASK_LOCK_INIT_TIME,
 } from '../constants'
 import { GenerateAlphaNumericPassword } from '../utils/random'
-import { CreateSubscriptionDto } from 'src/subscription/dto/create-subscription.dto'
+import { CreateApplicationDto } from './dto/create-application.dto'
+import { SystemDatabase } from 'src/database/system-database'
+import {
+  Application,
+  ApplicationPhase,
+  ApplicationState,
+  ApplicationWithRelations,
+} from './entities/application'
+import { ObjectId } from 'mongodb'
+import { ApplicationConfiguration } from './entities/application-configuration'
+import {
+  ApplicationBundle,
+  ApplicationBundleResource,
+} from './entities/application-bundle'
 
 @Injectable()
 export class ApplicationService {
   private readonly logger = new Logger(ApplicationService.name)
-  constructor(private readonly prisma: PrismaService) {}
 
-  async create(userid: string, appid: string, dto: CreateSubscriptionDto) {
+  /**
+   * Create application
+   * - create configuration
+   * - create bundle
+   * - create application
+   */
+  async create(userid: string, appid: string, dto: CreateApplicationDto) {
+    const client = SystemDatabase.client
+    const db = client.db()
+    const session = client.startSession()
+
     try {
-      // get bundle
-      const bundle = await this.prisma.bundle.findFirstOrThrow({
-        where: {
-          id: dto.bundleId,
-          region: {
-            id: dto.regionId,
-          },
-        },
-      })
+      // start transaction
+      session.startTransaction()
 
-      console.log(bundle, dto.bundleId)
-
-      // create app in db
+      // create application configuration
       const appSecret = {
         name: APPLICATION_SECRET_KEY,
         value: GenerateAlphaNumericPassword(64),
       }
-
-      const data: Prisma.ApplicationCreateInput = {
-        name: dto.name,
-        state: dto.state || ApplicationState.Running,
-        phase: ApplicationPhase.Creating,
-        tags: [],
-        createdBy: userid,
-        lockedAt: TASK_LOCK_INIT_TIME,
-        region: {
-          connect: {
-            id: dto.regionId,
-          },
-        },
-        bundle: {
-          create: {
-            bundleId: bundle.id,
-            name: bundle.name,
-            displayName: bundle.displayName,
-            resource: { ...bundle.resource },
-          },
-        },
-        runtime: {
-          connect: {
-            id: dto.runtimeId,
-          },
-        },
-        configuration: {
-          create: {
+      await db
+        .collection<ApplicationConfiguration>('ApplicationConfiguration')
+        .insertOne(
+          {
+            appid,
             environments: [appSecret],
             dependencies: [],
+            createdAt: new Date(),
+            updatedAt: new Date(),
           },
-        },
-        subscription: {
-          connect: {
-            appid,
-          },
-        },
-      }
+          { session },
+        )
 
-      const application = await this.prisma.application.create({ data })
-      if (!application) {
-        throw new Error('create application failed')
-      }
+      // create application bundle
+      await db.collection<ApplicationBundle>('ApplicationBundle').insertOne(
+        {
+          appid,
+          resource: this.buildBundleResource(dto),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        { session },
+      )
 
-      return application
+      // create application
+      await db.collection<Application>('Application').insertOne(
+        {
+          appid,
+          name: dto.name,
+          state: dto.state || ApplicationState.Running,
+          phase: ApplicationPhase.Creating,
+          tags: [],
+          createdBy: new ObjectId(userid),
+          lockedAt: TASK_LOCK_INIT_TIME,
+          regionId: new ObjectId(dto.regionId),
+          runtimeId: new ObjectId(dto.runtimeId),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        { session },
+      )
+
+      // commit transaction
+      await session.commitTransaction()
     } catch (error) {
-      this.logger.error(error, error.response?.body)
-      return null
+      await session.abortTransaction()
+      throw Error(error)
+    } finally {
+      if (session) await session.endSession()
     }
   }
 
   async findAllByUser(userid: string) {
-    return this.prisma.application.findMany({
-      where: {
-        createdBy: userid,
-        phase: {
-          not: ApplicationPhase.Deleted,
-        },
-      },
-      include: {
-        region: false,
-        bundle: true,
-        runtime: true,
-        subscription: true,
-      },
-    })
+    const db = SystemDatabase.db
+
+    const doc = await db
+      .collection('Application')
+      .aggregate<ApplicationWithRelations>()
+      .match({
+        createdBy: new ObjectId(userid),
+        phase: { $ne: ApplicationPhase.Deleted },
+      })
+      .lookup({
+        from: 'ApplicationBundle',
+        localField: 'appid',
+        foreignField: 'appid',
+        as: 'bundle',
+      })
+      .unwind('$bundle')
+      .lookup({
+        from: 'Runtime',
+        localField: 'runtimeId',
+        foreignField: '_id',
+        as: 'runtime',
+      })
+      .unwind('$runtime')
+      .project<ApplicationWithRelations>({
+        'bundle.resource.requestCPU': 0,
+        'bundle.resource.requestMemory': 0,
+      })
+      .toArray()
+
+    return doc
   }
 
-  async findOne(appid: string, include?: Prisma.ApplicationInclude) {
-    const application = await this.prisma.application.findUnique({
-      where: { appid },
-      include: {
-        region: false,
-        bundle: include?.bundle,
-        runtime: include?.runtime,
-        configuration: include?.configuration,
-        domain: include?.domain,
-        subscription: include?.subscription,
-      },
-    })
+  async findOne(appid: string) {
+    const db = SystemDatabase.db
 
-    return application
+    const doc = await db
+      .collection('Application')
+      .aggregate<ApplicationWithRelations>()
+      .match({ appid })
+      .lookup({
+        from: 'ApplicationBundle',
+        localField: 'appid',
+        foreignField: 'appid',
+        as: 'bundle',
+      })
+      .unwind('$bundle')
+      .lookup({
+        from: 'Runtime',
+        localField: 'runtimeId',
+        foreignField: '_id',
+        as: 'runtime',
+      })
+      .unwind('$runtime')
+      .lookup({
+        from: 'ApplicationConfiguration',
+        localField: 'appid',
+        foreignField: 'appid',
+        as: 'configuration',
+      })
+      .unwind('$configuration')
+      .lookup({
+        from: 'RuntimeDomain',
+        localField: 'appid',
+        foreignField: 'appid',
+        as: 'domain',
+      })
+      .unwind({ path: '$domain', preserveNullAndEmptyArrays: true })
+      .project<ApplicationWithRelations>({
+        'bundle.resource.requestCPU': 0,
+        'bundle.resource.requestMemory': 0,
+      })
+      .next()
+
+    return doc
+  }
+
+  async findOneUnsafe(appid: string) {
+    const db = SystemDatabase.db
+
+    const doc = await db
+      .collection('Application')
+      .aggregate<ApplicationWithRelations>()
+      .match({ appid })
+      .lookup({
+        from: 'Region',
+        localField: 'regionId',
+        foreignField: '_id',
+        as: 'region',
+      })
+      .unwind('$region')
+      .lookup({
+        from: 'ApplicationBundle',
+        localField: 'appid',
+        foreignField: 'appid',
+        as: 'bundle',
+      })
+      .unwind('$bundle')
+      .lookup({
+        from: 'Runtime',
+        localField: 'runtimeId',
+        foreignField: '_id',
+        as: 'runtime',
+      })
+      .unwind('$runtime')
+      .lookup({
+        from: 'ApplicationConfiguration',
+        localField: 'appid',
+        foreignField: 'appid',
+        as: 'configuration',
+      })
+      .unwind('$configuration')
+      .lookup({
+        from: 'RuntimeDomain',
+        localField: 'appid',
+        foreignField: 'appid',
+        as: 'domain',
+      })
+      .unwind({ path: '$domain', preserveNullAndEmptyArrays: true })
+      .next()
+
+    return doc
   }
 
   async update(appid: string, dto: UpdateApplicationDto) {
-    try {
-      // update app in db
-      const data: Prisma.ApplicationUpdateInput = {
-        updatedAt: new Date(),
-      }
-      if (dto.name) {
-        data.name = dto.name
-      }
-      if (dto.state) {
-        data.state = dto.state
-      }
+    const db = SystemDatabase.db
+    const data: Partial<Application> = { updatedAt: new Date() }
 
-      const application = await this.prisma.application.updateMany({
-        where: {
-          appid,
-          phase: {
-            notIn: [ApplicationPhase.Deleting, ApplicationPhase.Deleted],
-          },
-        },
-        data,
-      })
+    if (dto.name) data.name = dto.name
+    if (dto.state) data.state = dto.state
 
-      return application
-    } catch (error) {
-      this.logger.error(error, error.response?.body)
-      return null
-    }
+    const doc = await db
+      .collection<Application>('Application')
+      .findOneAndUpdate({ appid }, { $set: data })
+
+    return doc
   }
 
   async remove(appid: string) {
-    try {
-      const res = await this.prisma.application.updateMany({
-        where: { appid },
-        data: { state: ApplicationState.Deleted },
-      })
+    const db = SystemDatabase.db
+    const doc = await db
+      .collection<Application>('Application')
+      .findOneAndUpdate(
+        { appid },
+        { $set: { phase: ApplicationPhase.Deleted } },
+      )
 
-      return res
-    } catch (error) {
-      this.logger.error(error, error.response?.body)
-      return null
+    return doc.value
+  }
+
+  /**
+   * Generate unique application id
+   * @returns
+   */
+  async tryGenerateUniqueAppid() {
+    const db = SystemDatabase.db
+
+    for (let i = 0; i < 10; i++) {
+      const appid = this.generateAppID(ServerConfig.APPID_LENGTH)
+      const existed = await db
+        .collection<Application>('Application')
+        .findOne({ appid })
+
+      if (!existed) return appid
     }
+
+    throw new Error('Generate appid failed')
   }
 
   private generateAppID(len: number) {
@@ -174,22 +278,38 @@ export class ApplicationService {
     return prefix + nano()
   }
 
-  /**
-   * Generate unique application id
-   * @returns
-   */
-  async tryGenerateUniqueAppid() {
-    for (let i = 0; i < 10; i++) {
-      const appid = this.generateAppID(ServerConfig.APPID_LENGTH)
-      const existed = await this.prisma.application.findUnique({
-        where: { appid },
-        select: { appid: true },
-      })
-      if (!existed) {
-        return appid
-      }
-    }
+  private buildBundleResource(dto: CreateApplicationDto) {
+    const requestCPU = Math.floor(dto.cpu * 0.1)
+    const requestMemory = Math.floor(dto.memory * 0.5)
+    const limitCountOfCloudFunction = Math.floor(dto.cpu * 1)
 
-    throw new Error('Generate appid failed')
+    const magicNumber = Math.floor(dto.cpu * 0.01)
+    const limitCountOfBucket = Math.max(3, magicNumber)
+    const limitCountOfDatabasePolicy = Math.max(3, magicNumber)
+    const limitCountOfTrigger = Math.max(1, magicNumber)
+    const limitCountOfWebsiteHosting = Math.max(3, magicNumber)
+    const limitDatabaseTPS = Math.floor(dto.cpu * 0.1)
+    const limitStorageTPS = Math.floor(dto.cpu * 1)
+    const reservedTimeAfterExpired = 60 * 60 * 24 * 31 // 31 days
+
+    const resource = new ApplicationBundleResource({
+      limitCPU: dto.cpu,
+      limitMemory: dto.memory,
+      requestCPU,
+      requestMemory,
+      databaseCapacity: dto.databaseCapacity,
+      storageCapacity: dto.storageCapacity,
+
+      limitCountOfCloudFunction,
+      limitCountOfBucket,
+      limitCountOfDatabasePolicy,
+      limitCountOfTrigger,
+      limitCountOfWebsiteHosting,
+      limitDatabaseTPS,
+      limitStorageTPS,
+      reservedTimeAfterExpired,
+    })
+
+    return resource
   }
 }

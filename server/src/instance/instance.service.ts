@@ -16,10 +16,10 @@ import {
   Application,
   ApplicationBundle,
   ApplicationConfiguration,
-  Region,
   Runtime,
 } from '@prisma/client'
 import { RegionService } from 'src/region/region.service'
+import { Region } from 'src/region/entities/region'
 
 type ApplicationWithRegion = Application & { region: Region }
 

@@ -7,6 +7,7 @@ import {
   UseGuards,
   Req,
   Logger,
+  Post,
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { IRequest } from '../utils/interface'
@@ -18,11 +19,12 @@ import { ApplicationService } from './application.service'
 import { FunctionService } from '../function/function.service'
 import { StorageService } from 'src/storage/storage.service'
 import { RegionService } from 'src/region/region.service'
-import {
-  ApplicationPhase,
-  ApplicationState,
-  SubscriptionPhase,
-} from '@prisma/client'
+import { CreateApplicationDto } from './dto/create-application.dto'
+import { AccountService } from 'src/account/account.service'
+import { ApplicationPhase, ApplicationState } from './entities/application'
+import { SystemDatabase } from 'src/database/system-database'
+import { Runtime } from './entities/runtime'
+import { ObjectId } from 'mongodb'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -35,7 +37,48 @@ export class ApplicationController {
     private readonly funcService: FunctionService,
     private readonly regionService: RegionService,
     private readonly storageService: StorageService,
+    private readonly accountService: AccountService,
   ) {}
+
+  /**
+   * Create application
+   */
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Create application' })
+  @Post()
+  async create(@Req() req: IRequest, @Body() dto: CreateApplicationDto) {
+    const user = req.user
+
+    // check regionId exists
+    const region = await this.regionService.findOneDesensitized(
+      new ObjectId(dto.regionId),
+    )
+    if (!region) {
+      return ResponseUtil.error(`region ${dto.regionId} not found`)
+    }
+
+    // check runtimeId exists
+    const runtime = await SystemDatabase.db
+      .collection<Runtime>('Runtime')
+      .findOne({ _id: new ObjectId(dto.runtimeId) })
+    if (!runtime) {
+      return ResponseUtil.error(`runtime ${dto.runtimeId} not found`)
+    }
+
+    // check account balance
+    const account = await this.accountService.findOne(user.id)
+    const balance = account?.balance || 0
+    if (balance <= 0) {
+      return ResponseUtil.error(`account balance is not enough`)
+    }
+
+    // create application
+    const appid = await this.appService.tryGenerateUniqueAppid()
+    await this.appService.create(user.id, appid, dto)
+
+    const app = await this.appService.findOne(appid)
+    return ResponseUtil.ok(app)
+  }
 
   /**
    * Get user application list
@@ -60,11 +103,7 @@ export class ApplicationController {
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get(':appid')
   async findOne(@Param('appid') appid: string) {
-    const data = await this.appService.findOne(appid, {
-      configuration: true,
-      domain: true,
-      subscription: true,
-    })
+    const data = await this.appService.findOne(appid)
 
     // SECURITY ALERT!!!
     // DO NOT response this region object to client since it contains sensitive information
@@ -136,12 +175,7 @@ export class ApplicationController {
     }
 
     // check if the corresponding subscription status has expired
-    const app = await this.appService.findOne(appid, {
-      subscription: true,
-    })
-    if (app.subscription.phase !== SubscriptionPhase.Valid) {
-      return ResponseUtil.error('subscription has expired, you can not update')
-    }
+    const app = await this.appService.findOne(appid)
 
     // check: only running application can restart
     if (
@@ -177,10 +211,10 @@ export class ApplicationController {
     }
 
     // update app
-    const res = await this.appService.update(appid, dto)
-    if (res === null) {
+    const doc = await this.appService.update(appid, dto)
+    if (!doc) {
       return ResponseUtil.error('update application error')
     }
-    return ResponseUtil.ok(res)
+    return ResponseUtil.ok(doc)
   }
 }
