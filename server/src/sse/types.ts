@@ -30,11 +30,40 @@ export abstract class SseAbstractEvent implements SseEventInterface {
 
 
   parsePayload(): string {
-    const payload = `id: ${this.id}\n` +
-      `event: ${this.type}\n` +
-      `retry: ${this.retry || 3000}\n` +
-      `data: ${JSON.stringify(this.data)}\n\n`
 
-    return payload;
+    // const payload = `id: ${this.id}\nevent: ${this.type}\nretry: ${this.retry || 3000}\ndata: ${JSON.stringify(this.data)}\n\n`
+
+    const payload = `id: ${this.id}\n` +
+      `event: ${this.type} \n` +
+      `retry: ${this.retry || 3000}\n` +
+      `data: hello echo\n\n`
+    // `data: ${JSON.stringify(this.data)}\n\n`
+
+    // const eventObj = {
+    //   data: JSON.stringify(this.data),
+    //   id: this.id,
+    //   event: this.type
+    // }
+
+    // const payload = `data: ${JSON.stringify(eventObj)}\n\n`
+    return payload
+  }
+}
+
+
+
+export class SseConnectedEvent extends SseAbstractEvent {
+  public constructor() {
+    super(Date.now().toString(), 'message', {
+      msg: "connected success"
+    })
+  }
+}
+
+export class SsePongEvent extends SseAbstractEvent {
+  public constructor() {
+    super(Date.now().toString(), 'pong', {
+      msg: "server pong"
+    })
   }
 }

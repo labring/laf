@@ -3,15 +3,19 @@ import { Observable, Subscriber } from 'rxjs'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { filter } from 'rxjs/operators'
 import { Response } from 'express'
-import { SSE_CONNECT_HEADER, SSE_CONNECTED_EVENT, SseAbstractEvent } from './types'
+import { Readable } from 'stream'
+import { SseConnectedEvent, SsePongEvent, SseAbstractEvent, SSE_CONNECT_HEADER, SSE_CONNECTED_EVENT } from './types'
+import { IResponse } from 'src/utils/interface'
 
 
 @Injectable()
 export class SseClientsService {
   private readonly logger = new Logger(SseClientsService.name)
 
-  // private readonly clients = new Map<Response, { subscriber: Subscriber<any>, event: string }>()
-  private readonly clients = new Map<string, { subscriber: Subscriber<any>, response: Response }>()
+
+  private clients: any[] = []
+  // private readonly clients = new Map<string, IResponse>()
+
 
   constructor(
     private readonly prisma: PrismaService,
@@ -19,43 +23,37 @@ export class SseClientsService {
 
 
 
-  addClient(userid: string, response: Response): Observable<any> {
-    if (!this.clients.has(userid)) {
+  addClient(userid: string, response: IResponse) {
+    this.logger.log(`addClient new userid=`, userid)
 
-      const observable = new Observable((subscriber) => {
-        this.clients.set(userid, { subscriber, response })
+    const newClient = { userid, response }
+    this.clients.push(newClient)
 
-        response.status(200)
-          .set(SSE_CONNECT_HEADER)
-          .flushHeaders()
-        response.write(`event: ${SSE_CONNECTED_EVENT}\n\n`)
-
-        return () => {
-          this.removeClient(userid);
-        };
-      })
-
-      return observable.pipe(filter((data) => !!data))
+    // 清除定时器和客户端连接信息
+    const onClientClose = () => {
+      console.log(`client ${userid} disconnected`)
+      response.end()
+      this.removeClient(userid)
     }
+    response.on('close', onClientClose)
+    response.on('end', onClientClose)
+
+    response.writeHead(200, SSE_CONNECT_HEADER)
   }
 
 
   getClientsCount(): number {
-    return this.clients.size
+    return this.clients.length
   }
 
   removeClient(userid: string) {
-    this.clients.delete(userid)
+    console.log(`removeClient userid`, userid)
+    this.clients = this.clients.filter(client => client.userid !== userid)
   }
 
 
-  getClient(userid: string): Response {
-    if (!this.clients.has(userid)) {
-      this.logger.warn(`userid={} can not exist clients`, userid);
-      return null
-    }
-
-    return this.clients.get(userid)
+  getClient(userid: string): Record<string, any> {
+    return this.clients.find(item => item.userid == userid)
   }
 
 
@@ -64,15 +62,26 @@ export class SseClientsService {
       return
     }
 
-    let client = this.getClient(userid)
-    if (!client) {
+    let { response } = this.getClient(userid)
+    if (!response) {
       return
     }
 
-    let { subscriber, response } = client
     let payload = sseEvent.parsePayload()
     response.write(payload)
+    response.flush()
+  }
 
-    subscriber.next({ userid, sseEvent })
+  sendPongEvent() {
+    this.clients.forEach(client => {
+      let { response } = client
+      if (!response) {
+        return
+      }
+
+      let payload = new SsePongEvent().parsePayload()
+      response.write(payload)
+      response.flush()
+    })
   }
 }
