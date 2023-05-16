@@ -64,6 +64,8 @@ export default function SignUp() {
   const [countdown, setCountdown] = useState(60);
   const [isShowPassword, setIsShowPassword] = useState(false);
 
+  const inviteCode = new URLSearchParams(window.location.search).get("code");
+
   const {
     register,
     getValues,
@@ -91,11 +93,13 @@ export default function SignUp() {
           code: data.validationCode,
           username: data.account,
           password: data.password,
+          inviteCode: inviteCode,
           type: "Signup",
         }
       : {
           username: data.account,
           password: data.password,
+          inviteCode: inviteCode,
           type: "Signup",
         };
 
