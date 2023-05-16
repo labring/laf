@@ -70,9 +70,9 @@
    - `laf` saves you from tedious server admin/operation works.
    - `laf` saves you from boring `nginx` configs.
    - `laf` saves you from the hassle of manual DB deployment, security config.
-   - `laf` saves you from the torment of [10 min coding, 10 hour deploying].
+   - `laf` saves you from the torment of「10 min coding, 10 hour deploying」.
    - `laf` lets you inspect logs in the browser in any places at any time. No more SSH to the server!
-   - `laf` lets you [write functions like blog], just code and click to deploy!
+   - `laf` lets you「write functions like blog」, just code and click to deploy!
 
 3. **Cloud Native Developer**, get a more powerful, user-friendly and flexiable platform. No more contraints from **AWS** or **GCP**!
 
