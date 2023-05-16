@@ -236,8 +236,11 @@ model Bundle {
 model ApplicationBundle {
   id          String         @id @default(auto()) @map("_id") @db.ObjectId
   appid       String         @unique
+  // @decrecapted
   bundleId    String?        @db.ObjectId
+  // @decrecapted
   name        String?
+  // @decrecapted
   displayName String?
   resource    BundleResource
 
@@ -262,102 +265,6 @@ model Runtime {
   version     String
   latest      Boolean
   Application Application[]
-}
-
-// subscriptions schemas
-
-// Subscription section mainly consists of two models: Subscription and SubscriptionRenewal.
-//
-// 1. Subscription: Represents the state, phase, and renewal plan of a subscription. It includes
-// the created, updated, and deleted states (SubscriptionState enum); the pending, valid, expired,
-// expired and stopped, and deleted phases (SubscriptionPhase enum); and manual, monthly, or
-// yearly renewal plans (SubscriptionRenewalPlan enum). This model also contains the associated
-// application (Application).
-//
-// 2. SubscriptionRenewal: Represents the state, duration, and amount of a subscription renewal.
-// It includes the pending, paid, and failed renewal phases (SubscriptionRenewalPhase enum).
-
-enum SubscriptionState {
-  Created
-  Deleted
-}
-
-enum SubscriptionPhase {
-  Pending
-  Valid
-  Expired
-  ExpiredAndStopped
-  Deleted
-}
-
-enum SubscriptionRenewalPlan {
-  Manual
-  Monthly
-  Yearly
-}
-
-type SubscriptionApplicationCreateInput {
-  name      String
-  state     String
-  runtimeId String
-  regionId  String
-}
-
-model Subscription {
-  id          String                             @id @default(auto()) @map("_id") @db.ObjectId
-  input       SubscriptionApplicationCreateInput
-  bundleId    String                             @db.ObjectId
-  appid       String                             @unique
-  state       SubscriptionState                  @default(Created)
-  phase       SubscriptionPhase                  @default(Pending)
-  renewalPlan SubscriptionRenewalPlan            @default(Manual)
-  expiredAt   DateTime
-  lockedAt    DateTime
-  createdAt   DateTime                           @default(now())
-  updatedAt   DateTime                           @updatedAt
-  createdBy   String                             @db.ObjectId
-
-  application Application?
-}
-
-enum SubscriptionRenewalPhase {
-  Pending
-  Paid
-  Failed
-}
-
-model SubscriptionRenewal {
-  id             String                   @id @default(auto()) @map("_id") @db.ObjectId
-  subscriptionId String                   @db.ObjectId
-  duration       Int // in seconds
-  amount         Int
-  phase          SubscriptionRenewalPhase @default(Pending)
-  message        String?
-  lockedAt       DateTime
-  createdAt      DateTime                 @default(now())
-  updatedAt      DateTime                 @updatedAt
-  createdBy      String                   @db.ObjectId
-}
-
-// desired state of resource
-enum SubscriptionUpgradePhase {
-  Pending
-  Completed
-  Failed
-}
-
-model SubscriptionUpgrade {
-  id               String                   @id @default(auto()) @map("_id") @db.ObjectId
-  appid            String
-  subscriptionId   String
-  originalBundleId String                   @db.ObjectId
-  targetBundleId   String                   @db.ObjectId
-  phase            SubscriptionUpgradePhase @default(Pending)
-  restart          Boolean                  @default(false)
-  message          String?
-  lockedAt         DateTime
-  createdAt        DateTime                 @default(now())
-  updatedAt        DateTime                 @updatedAt
 }
 
 // accounts schemas
@@ -426,47 +333,6 @@ model PaymentChannel {
   updatedAt DateTime           @updatedAt
 }
 
-// Ponit account schemas
-
-model PointAccount {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  balance   Int       @default(0)
-  state     BaseState @default(Active)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  createdBy String    @unique @db.ObjectId
-}
-
-model PointAccountTransaction {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  accountId String   @db.ObjectId
-  amount    Int
-  balance   Int
-  message   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-enum PointAccountChargePhase {
-  Pending
-  Paid
-  Failed
-}
-
-model PointAccountChargeOrder {
-  id        String                  @id @default(auto()) @map("_id") @db.ObjectId
-  accountId String                  @db.ObjectId
-  amount    Int
-  phase     PointAccountChargePhase @default(Pending)
-  channel   PaymentChannelType
-  result    Json?
-  message   String?
-  createdAt DateTime                @default(now())
-  lockedAt  DateTime
-  updatedAt DateTime                @updatedAt
-  createdBy String                  @db.ObjectId
-}
-
 // Application schemas
 
 // desired state of application
@@ -511,7 +377,6 @@ model Application {
   database      Database?
   domain        RuntimeDomain?
   bundle        ApplicationBundle?
-  subscription  Subscription              @relation(fields: [appid], references: [appid])
 }
 
 type EnvironmentVariable {

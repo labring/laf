@@ -13,9 +13,10 @@ import { GatewayModule } from 'src/gateway/gateway.module'
 import { ApplicationConfigurationService } from './configuration.service'
 import { TriggerService } from 'src/trigger/trigger.service'
 import { WebsiteService } from 'src/website/website.service'
+import { AccountModule } from 'src/account/account.module'
 
 @Module({
-  imports: [StorageModule, DatabaseModule, GatewayModule],
+  imports: [StorageModule, DatabaseModule, GatewayModule, AccountModule],
   controllers: [ApplicationController, EnvironmentVariableController],
   providers: [
     ApplicationService,

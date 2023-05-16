@@ -76,7 +76,7 @@ export class PolicyController {
     if (!existed) {
       return ResponseUtil.error('Policy not found')
     }
-    const res = await this.policiesService.update(appid, name, dto)
+    const res = await this.policiesService.updateOne(appid, name, dto)
     return ResponseUtil.ok(res)
   }
 
@@ -91,7 +91,7 @@ export class PolicyController {
       return ResponseUtil.error('Policy not found')
     }
 
-    const res = await this.policiesService.remove(appid, name)
+    const res = await this.policiesService.removeOne(appid, name)
     return ResponseUtil.ok(res)
   }
 }

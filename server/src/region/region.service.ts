@@ -1,81 +1,66 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
+import { SystemDatabase } from 'src/database/system-database'
+import { Region } from './entities/region'
+import { Application } from 'src/application/entities/application'
+import { assert } from 'console'
+import { ObjectId } from 'mongodb'
 
 @Injectable()
 export class RegionService {
+  private readonly db = SystemDatabase.db
   constructor(private readonly prisma: PrismaService) {}
 
   async findByAppId(appid: string) {
-    const app = await this.prisma.application.findUnique({
-      where: { appid },
-      select: {
-        region: true,
-      },
-    })
+    const app = await this.db
+      .collection<Application>('Application')
+      .findOne({ appid })
 
-    return app.region
+    assert(app, `Application ${appid} not found`)
+    const doc = await this.db
+      .collection<Region>('Region')
+      .findOne({ _id: app.regionId })
+
+    return doc
   }
 
-  async findOne(id: string) {
-    const region = await this.prisma.region.findUnique({
-      where: { id },
-    })
-
-    return region
+  async findOne(id: ObjectId) {
+    const doc = await this.db.collection<Region>('Region').findOne({ _id: id })
+    return doc
   }
 
   async findAll() {
-    const regions = await this.prisma.region.findMany()
+    const regions = await this.db.collection<Region>('Region').find().toArray()
     return regions
   }
 
-  async findOneDesensitized(id: string) {
-    const region = await this.prisma.region.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        name: true,
-        displayName: true,
-        state: true,
-        storageConf: false,
-        gatewayConf: false,
-        databaseConf: false,
-        clusterConf: false,
-        createdAt: false,
-        updatedAt: false,
-      },
-    })
+  async findOneDesensitized(id: ObjectId) {
+    const projection = {
+      _id: 1,
+      name: 1,
+      displayName: 1,
+      state: 1,
+    }
+
+    const region = await this.db
+      .collection<Region>('Region')
+      .findOne({ _id: new ObjectId(id) }, { projection })
 
     return region
   }
 
   async findAllDesensitized() {
-    const regions = await this.prisma.region.findMany({
-      select: {
-        id: true,
-        name: true,
-        displayName: true,
-        state: true,
-        storageConf: false,
-        gatewayConf: false,
-        databaseConf: false,
-        clusterConf: false,
-        notes: true,
-        bundles: {
-          select: {
-            id: true,
-            name: true,
-            displayName: true,
-            priority: true,
-            state: true,
-            resource: true,
-            limitCountPerUser: true,
-            subscriptionOptions: true,
-            notes: true,
-          },
-        },
-      },
-    })
+    const projection = {
+      _id: 1,
+      name: 1,
+      displayName: 1,
+      state: 1,
+    }
+
+    const regions = await this.db
+      .collection<Region>('Region')
+      .find({}, { projection })
+      .toArray()
 
     return regions
   }

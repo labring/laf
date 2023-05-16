@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Region } from '@prisma/client'
 import { MongoClient } from 'mongodb'
 import * as assert from 'node:assert'
+import { Region } from 'src/region/entities/region'
 
 @Injectable()
 export class MongoService {

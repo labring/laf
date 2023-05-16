@@ -1,7 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Region, WebsiteHosting } from '@prisma/client'
+import { WebsiteHosting } from '@prisma/client'
 import { LABEL_KEY_APP_ID, ServerConfig } from 'src/constants'
 import { ClusterService } from 'src/region/cluster/cluster.service'
+import { Region } from 'src/region/entities/region'
 import { GetApplicationNamespaceByAppId } from 'src/utils/getter'
 
 // This class handles the creation and deletion of website domain certificates

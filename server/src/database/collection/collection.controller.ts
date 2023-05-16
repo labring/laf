@@ -21,7 +21,7 @@ import { ApiResponseUtil, ResponseUtil } from '../../utils/response'
 import { CollectionService } from './collection.service'
 import { CreateCollectionDto } from '../dto/create-collection.dto'
 import { UpdateCollectionDto } from '../dto/update-collection.dto'
-import { Collection } from '../entities/collection.entity'
+import { Collection } from '../entities/collection'
 
 @ApiTags('Database')
 @ApiBearerAuth('Authorization')

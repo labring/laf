@@ -89,7 +89,7 @@ export class PolicyRuleController {
       return ResponseUtil.error('rule not found')
     }
 
-    const res = await this.ruleService.update(
+    const res = await this.ruleService.updateOne(
       appid,
       policyName,
       collectionName,
@@ -117,7 +117,11 @@ export class PolicyRuleController {
       return ResponseUtil.error('rule not found')
     }
 
-    const res = await this.ruleService.remove(appid, policyName, collectionName)
+    const res = await this.ruleService.removeOne(
+      appid,
+      policyName,
+      collectionName,
+    )
     return ResponseUtil.ok(res)
   }
 }

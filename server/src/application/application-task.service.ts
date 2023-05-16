@@ -1,13 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import {
-  Application,
-  ApplicationPhase,
-  ApplicationState,
-  DatabasePhase,
-  DomainPhase,
-  StoragePhase,
-} from '@prisma/client'
+import { DomainPhase, StoragePhase } from '@prisma/client'
 import * as assert from 'node:assert'
 import { StorageService } from '../storage/storage.service'
 import { DatabaseService } from '../database/database.service'
@@ -23,6 +16,12 @@ import { BundleService } from 'src/region/bundle.service'
 import { WebsiteService } from 'src/website/website.service'
 import { PolicyService } from 'src/database/policy/policy.service'
 import { BucketDomainService } from 'src/gateway/bucket-domain.service'
+import {
+  Application,
+  ApplicationPhase,
+  ApplicationState,
+} from './entities/application'
+import { DatabasePhase } from 'src/database/entities/database'
 
 @Injectable()
 export class ApplicationTaskService {
@@ -103,7 +102,11 @@ export class ApplicationTaskService {
     const namespace = await this.clusterService.getAppNamespace(region, appid)
     if (!namespace) {
       this.logger.debug(`Creating namespace for application ${appid}`)
-      await this.clusterService.createAppNamespace(region, appid, app.createdBy)
+      await this.clusterService.createAppNamespace(
+        region,
+        appid,
+        app.createdBy.toString(),
+      )
       return await this.unlock(appid)
     }
 
