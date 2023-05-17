@@ -23,7 +23,7 @@ export class AccountService {
     private readonly chanelService: PaymentChannelService,
   ) {}
 
-  async create(userid: string): Promise<Account> {
+  async create(userid: ObjectId): Promise<Account> {
     await this.db.collection<Account>('Account').insertOne({
       balance: 0,
       state: BaseState.Active,
@@ -35,7 +35,7 @@ export class AccountService {
     return await this.findOne(userid)
   }
 
-  async findOne(userid: string) {
+  async findOne(userid: ObjectId) {
     const account = await this.db
       .collection<Account>('Account')
       .findOne({ createdBy: new ObjectId(userid) })
@@ -48,7 +48,7 @@ export class AccountService {
   }
 
   async createChargeOrder(
-    userid: string,
+    userid: ObjectId,
     amount: number,
     currency: Currency,
     channel: PaymentChannelType,
@@ -74,7 +74,7 @@ export class AccountService {
     return await this.findOneChargeOrder(userid, account._id)
   }
 
-  async findOneChargeOrder(userid: string, id: ObjectId) {
+  async findOneChargeOrder(userid: ObjectId, id: ObjectId) {
     const order = await this.db
       .collection<AccountChargeOrder>('AccountChargeOrder')
       .findOne({

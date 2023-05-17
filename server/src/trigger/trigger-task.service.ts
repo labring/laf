@@ -3,7 +3,11 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/database/system-database'
 import { CronJobService } from './cron-job.service'
-import { CronTrigger, TriggerPhase, TriggerState } from '@prisma/client'
+import {
+  CronTrigger,
+  TriggerPhase,
+  TriggerState,
+} from './entities/cron-trigger'
 
 @Injectable()
 export class TriggerTaskService {
@@ -60,11 +64,7 @@ export class TriggerTaskService {
       )
     if (!res.value) return
 
-    // fix id for prisma type
-    const doc = {
-      ...res.value,
-      id: res.value._id.toString(),
-    }
+    const doc = res.value
 
     // create cron job if not exists
     const job = await this.cronService.findOne(doc)
@@ -103,11 +103,7 @@ export class TriggerTaskService {
       )
     if (!res.value) return
 
-    // fix id for prisma type
-    const doc = {
-      ...res.value,
-      id: res.value._id.toString(),
-    }
+    const doc = res.value
 
     // delete cron job if exists
     const job = await this.cronService.findOne(doc)

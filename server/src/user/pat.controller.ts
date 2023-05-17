@@ -41,7 +41,7 @@ export class PatController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Req() req: IRequest, @Body() dto: CreatePATDto) {
-    const uid = new ObjectId(req.user.id)
+    const uid = req.user._id
     // check max count, 10
     const count = await this.patService.count(uid)
     if (count >= 10) {
@@ -62,7 +62,7 @@ export class PatController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(@Req() req: IRequest) {
-    const uid = new ObjectId(req.user.id)
+    const uid = req.user._id
     const pats = await this.patService.findAll(uid)
     return ResponseUtil.ok(pats)
   }
@@ -78,11 +78,8 @@ export class PatController {
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Req() req: IRequest, @Param('id') id: string) {
-    const uid = req.user.id
-    const pat = await this.patService.removeOne(
-      new ObjectId(uid),
-      new ObjectId(id),
-    )
+    const uid = req.user._id
+    const pat = await this.patService.removeOne(uid, new ObjectId(id))
     return ResponseUtil.ok(pat)
   }
 }

@@ -1,45 +1,25 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Bundle } from '@prisma/client'
-import { PrismaService } from 'src/prisma/prisma.service'
+import { ApplicationBundle } from 'src/application/entities/application-bundle'
+import { SystemDatabase } from 'src/database/system-database'
 
 @Injectable()
 export class BundleService {
   private readonly logger = new Logger(BundleService.name)
-
-  constructor(private readonly prisma: PrismaService) {}
-
-  async findOne(id: string, regionId: string) {
-    return this.prisma.bundle.findFirst({
-      where: { id, regionId },
-    })
-  }
-
-  async findOneByName(name: string, regionName: string) {
-    return this.prisma.bundle.findFirst({
-      where: {
-        name: name,
-        region: {
-          name: regionName,
-        },
-      },
-    })
-  }
+  private readonly db = SystemDatabase.db
 
   async findApplicationBundle(appid: string) {
-    return this.prisma.applicationBundle.findUnique({
-      where: { appid },
-    })
+    const bundle = await this.db
+      .collection<ApplicationBundle>('ApplicationBundle')
+      .findOne({ appid })
+
+    return bundle
   }
 
   async deleteApplicationBundle(appid: string) {
-    return this.prisma.applicationBundle.delete({
-      where: { appid },
-    })
-  }
+    const res = await this.db
+      .collection<ApplicationBundle>('ApplicationBundle')
+      .findOneAndDelete({ appid })
 
-  getSubscriptionOption(bundle: Bundle, duration: number) {
-    const options = bundle.subscriptionOptions
-    const found = options.find((option) => option.duration === duration)
-    return found ? found : null
+    return res.value
   }
 }

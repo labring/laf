@@ -20,6 +20,7 @@ import {
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
 import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
 import { BundleService } from 'src/region/bundle.service'
+import { ObjectId } from 'mongodb'
 
 @ApiTags('Trigger')
 @Controller('apps/:appid/triggers')
@@ -87,12 +88,12 @@ export class TriggerController {
   @Delete(':id')
   async remove(@Param('id') id: string, @Param('appid') appid: string) {
     // check if trigger exists
-    const trigger = await this.triggerService.findOne(appid, id)
+    const trigger = await this.triggerService.findOne(appid, new ObjectId(id))
     if (!trigger) {
       return ResponseUtil.error('Trigger not found')
     }
 
-    const res = await this.triggerService.remove(appid, id)
+    const res = await this.triggerService.removeOne(appid, new ObjectId(id))
     return ResponseUtil.ok(res)
   }
 }

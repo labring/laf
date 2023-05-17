@@ -32,7 +32,7 @@ export class ApplicationService {
    * - create bundle
    * - create application
    */
-  async create(userid: string, appid: string, dto: CreateApplicationDto) {
+  async create(userid: ObjectId, appid: string, dto: CreateApplicationDto) {
     const client = SystemDatabase.client
     const db = client.db()
     const session = client.startSession()
@@ -98,7 +98,7 @@ export class ApplicationService {
     }
   }
 
-  async findAllByUser(userid: string) {
+  async findAllByUser(userid: ObjectId) {
     const db = SystemDatabase.db
 
     const doc = await db

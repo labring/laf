@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
 import { SystemDatabase } from 'src/database/system-database'
 import { Region } from './entities/region'
 import { Application } from 'src/application/entities/application'
@@ -9,7 +8,6 @@ import { ObjectId } from 'mongodb'
 @Injectable()
 export class RegionService {
   private readonly db = SystemDatabase.db
-  constructor(private readonly prisma: PrismaService) {}
 
   async findByAppId(appid: string) {
     const app = await this.db

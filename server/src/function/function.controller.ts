@@ -69,7 +69,7 @@ export class FunctionController {
       return ResponseUtil.error(`function count limit is ${MAX_FUNCTION_COUNT}`)
     }
 
-    const res = await this.functionsService.create(appid, req.user.id, dto)
+    const res = await this.functionsService.create(appid, req.user._id, dto)
     if (!res) {
       return ResponseUtil.error('create function error')
     }
@@ -127,7 +127,7 @@ export class FunctionController {
       throw new HttpException('function not found', HttpStatus.NOT_FOUND)
     }
 
-    const res = await this.functionsService.update(func, dto)
+    const res = await this.functionsService.updateOne(func, dto)
     if (!res) {
       return ResponseUtil.error('update function error')
     }
@@ -150,7 +150,7 @@ export class FunctionController {
       throw new HttpException('function not found', HttpStatus.NOT_FOUND)
     }
 
-    const res = await this.functionsService.remove(func)
+    const res = await this.functionsService.removeOne(func)
     if (!res) {
       return ResponseUtil.error('delete function error')
     }
