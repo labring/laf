@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { Currency, PaymentChannelType } from '@prisma/client'
 import { IsEnum, IsInt, IsPositive, IsString, Max, Min } from 'class-validator'
+import { Currency, PaymentChannelType } from '../entities/account-charge-order'
 
 export class CreateChargeOrderDto {
   @ApiProperty({ example: 1000 })
