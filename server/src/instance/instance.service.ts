@@ -327,7 +327,7 @@ export class InstanceService {
               },
               securityContext: {
                 allowPrivilegeEscalation: false,
-                readOnlyRootFilesystem: true,
+                readOnlyRootFilesystem: false,
                 privileged: false,
               },
             },
