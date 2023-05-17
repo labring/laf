@@ -1,22 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { User, UserProfile } from '@prisma/client'
+import { User } from '../entities/user'
+import { UserProfile } from '../entities/user-profile'
+import { ObjectId } from 'mongodb'
 
 export class UserProfileDto implements UserProfile {
-  id: string
+  _id?: ObjectId
 
   @ApiProperty()
-  uid: string
-
-  @ApiProperty()
-  openid: string
+  uid: ObjectId
 
   @ApiProperty()
   avatar: string
 
   @ApiProperty()
   name: string
-
-  from: string
 
   @ApiProperty()
   openData: any
@@ -30,7 +27,7 @@ export class UserProfileDto implements UserProfile {
 
 export class UserDto implements User {
   @ApiProperty()
-  id: string
+  _id?: ObjectId
 
   @ApiProperty()
   email: string

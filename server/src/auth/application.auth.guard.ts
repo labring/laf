@@ -4,9 +4,9 @@ import {
   Injectable,
   Logger,
 } from '@nestjs/common'
-import { User } from '@prisma/client'
 import { ApplicationService } from '../application/application.service'
 import { IRequest } from '../utils/interface'
+import { User } from 'src/user/entities/user'
 
 @Injectable()
 export class ApplicationAuthGuard implements CanActivate {
@@ -22,9 +22,8 @@ export class ApplicationAuthGuard implements CanActivate {
       return false
     }
 
-    // Call toString() to convert to string in case it is ObjectID
     const author_id = app.createdBy?.toString()
-    if (author_id !== user.id) {
+    if (author_id !== user._id.toString()) {
       return false
     }
 

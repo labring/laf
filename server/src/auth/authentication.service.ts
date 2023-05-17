@@ -1,37 +1,32 @@
 import { JwtService } from '@nestjs/jwt'
-import { PrismaService } from 'src/prisma/prisma.service'
 import { Injectable, Logger } from '@nestjs/common'
-import { AuthProviderState, User } from '@prisma/client'
 import {
   PASSWORD_AUTH_PROVIDER_NAME,
   PHONE_AUTH_PROVIDER_NAME,
 } from 'src/constants'
+import { SystemDatabase } from 'src/database/system-database'
+import { AuthProvider, AuthProviderState } from './entities/auth-provider'
+import { User } from 'src/user/entities/user'
 
 @Injectable()
 export class AuthenticationService {
-  logger: Logger = new Logger(AuthenticationService.name)
-  constructor(
-    private readonly prismaService: PrismaService,
-    private readonly jwtService: JwtService,
-  ) {}
+  private readonly logger = new Logger(AuthenticationService.name)
+  private readonly db = SystemDatabase.db
+
+  constructor(private readonly jwtService: JwtService) {}
 
   /**
    * Get all auth provides
    * @returns
    */
   async getProviders() {
-    return await this.prismaService.authProvider.findMany({
-      where: { state: AuthProviderState.Enabled },
-      select: {
-        id: false,
-        name: true,
-        bind: true,
-        register: true,
-        default: true,
-        state: true,
-        config: false,
-      },
-    })
+    return await this.db
+      .collection<AuthProvider>('AuthProvider')
+      .find(
+        { state: AuthProviderState.Enabled },
+        { projection: { _id: 0, config: 0 } },
+      )
+      .toArray()
   }
 
   async getPhoneProvider() {
@@ -44,9 +39,9 @@ export class AuthenticationService {
 
   // Get auth provider by name
   async getProvider(name: string) {
-    return await this.prismaService.authProvider.findUnique({
-      where: { name },
-    })
+    return await this.db
+      .collection<AuthProvider>('AuthProvider')
+      .findOne({ name })
   }
 
   /**
@@ -56,7 +51,7 @@ export class AuthenticationService {
    */
   getAccessTokenByUser(user: User): string {
     const payload = {
-      sub: user.id,
+      sub: user._id.toString(),
     }
     const token = this.jwtService.sign(payload)
     return token

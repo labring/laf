@@ -1,21 +1,27 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { SmsVerifyCodeType, User } from '@prisma/client'
-import { PrismaService } from 'src/prisma/prisma.service'
 import { SmsService } from 'src/auth/phone/sms.service'
-import { UserService } from 'src/user/user.service'
 import { AuthenticationService } from '../authentication.service'
 import { PhoneSigninDto } from '../dto/phone-signin.dto'
 import { hashPassword } from 'src/utils/crypto'
-import { SmsVerifyCodeState } from '../types'
+import { SmsVerifyCodeType } from '../entities/sms-verify-code'
+import { User } from 'src/user/entities/user'
+import { SystemDatabase } from 'src/database/system-database'
+import { UserService } from 'src/user/user.service'
+import {
+  UserPassword,
+  UserPasswordState,
+} from 'src/user/entities/user-password'
+import { UserProfile } from 'src/user/entities/user-profile'
 
 @Injectable()
 export class PhoneService {
   private readonly logger = new Logger(PhoneService.name)
+  private readonly db = SystemDatabase.db
+
   constructor(
-    private readonly prisma: PrismaService,
     private readonly smsService: SmsService,
-    private readonly userService: UserService,
     private readonly authService: AuthenticationService,
+    private readonly userService: UserService,
   ) {}
 
   /**
@@ -40,26 +46,10 @@ export class PhoneService {
     }
 
     // disable previous sms code
-    await this.prisma.smsVerifyCode.updateMany({
-      where: {
-        phone,
-        type,
-        state: SmsVerifyCodeState.Active,
-      },
-      data: {
-        state: SmsVerifyCodeState.Used,
-      },
-    })
+    await this.smsService.disableSameTypeCode(phone, type)
 
     // Save new sms code to database
-    await this.prisma.smsVerifyCode.create({
-      data: {
-        phone,
-        code,
-        type,
-        ip,
-      },
-    })
+    await this.smsService.saveCode(phone, code, type, ip)
 
     return null
   }
@@ -72,30 +62,58 @@ export class PhoneService {
   async signup(dto: PhoneSigninDto, withUsername = false) {
     const { phone, username, password } = dto
 
-    // start transaction
-    const user = await this.prisma.$transaction(async (tx) => {
+    const client = SystemDatabase.client
+    const session = client.startSession()
+
+    try {
+      session.startTransaction()
+
       // create user
-      const user = await tx.user.create({
-        data: {
+      const res = await this.db.collection<User>('User').insertOne(
+        {
           phone,
           username: username || phone,
-          profile: { create: { name: username || phone } },
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
-      })
-      if (!withUsername) {
-        return user
+        { session },
+      )
+
+      const user = await this.userService.findOneById(res.insertedId)
+
+      // create profile
+      await this.db.collection<UserProfile>('UserProfile').insertOne(
+        {
+          uid: user._id,
+          name: username,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        { session },
+      )
+
+      if (withUsername) {
+        // create password
+        await this.db.collection<UserPassword>('UserPassword').insertOne(
+          {
+            uid: user._id,
+            password: hashPassword(password),
+            state: UserPasswordState.Active,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          { session },
+        )
       }
-      // create password if need
-      await tx.userPassword.create({
-        data: {
-          uid: user.id,
-          password: hashPassword(password),
-          state: 'Active',
-        },
-      })
+
+      await session.commitTransaction()
       return user
-    })
-    return user
+    } catch (err) {
+      await session.abortTransaction()
+      throw err
+    } finally {
+      await session.endSession()
+    }
   }
 
   /**
@@ -110,16 +128,13 @@ export class PhoneService {
 
   // check if current user has bind password
   async ifBindPassword(user: User) {
-    const count = await this.prisma.userPassword.count({
-      where: {
-        uid: user.id,
-        state: 'Active',
-      },
-    })
+    const count = await this.db
+      .collection<UserPassword>('UserPassword')
+      .countDocuments({
+        uid: user._id,
+        state: UserPasswordState.Active,
+      })
 
-    if (count === 0) {
-      return false
-    }
-    return true
+    return count > 0
   }
 }

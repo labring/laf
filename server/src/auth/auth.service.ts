@@ -1,12 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import { User } from '@prisma/client'
-import * as assert from 'node:assert'
+import { User } from 'src/user/entities/user'
 import { PatService } from 'src/user/pat.service'
 
 @Injectable()
 export class AuthService {
-  logger: Logger = new Logger(AuthService.name)
+  private readonly logger = new Logger(AuthService.name)
   constructor(
     private readonly jwtService: JwtService,
     private readonly patService: PatService,
@@ -19,7 +18,7 @@ export class AuthService {
    * @returns
    */
   async pat2token(token: string): Promise<string> {
-    const pat = await this.patService.findOne(token)
+    const pat = await this.patService.findOneByToken(token)
     if (!pat) return null
 
     // check pat expired
@@ -34,7 +33,7 @@ export class AuthService {
    * @returns
    */
   getAccessTokenByUser(user: User): string {
-    const payload = { sub: user.id }
+    const payload = { sub: user._id.toString() }
     const token = this.jwtService.sign(payload)
     return token
   }

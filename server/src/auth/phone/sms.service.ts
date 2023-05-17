@@ -1,6 +1,5 @@
 import { AuthenticationService } from '../authentication.service'
 import { Injectable, Logger } from '@nestjs/common'
-import { Prisma, SmsVerifyCodeType } from '@prisma/client'
 import Dysmsapi, * as dysmsapi from '@alicloud/dysmsapi20170525'
 import * as OpenApi from '@alicloud/openapi-client'
 import * as Util from '@alicloud/tea-util'
@@ -11,16 +10,19 @@ import {
   MILLISECONDS_PER_MINUTE,
   CODE_VALIDITY,
 } from 'src/constants'
-import { PrismaService } from 'src/prisma/prisma.service'
-import { SmsVerifyCodeState } from '../types'
+import { SystemDatabase } from 'src/database/system-database'
+import {
+  SmsVerifyCode,
+  SmsVerifyCodeState,
+  SmsVerifyCodeType,
+} from '../entities/sms-verify-code'
 
 @Injectable()
 export class SmsService {
-  private logger = new Logger(SmsService.name)
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly authService: AuthenticationService,
-  ) {}
+  private readonly logger = new Logger(SmsService.name)
+  private readonly db = SystemDatabase.db
+
+  constructor(private readonly authService: AuthenticationService) {}
 
   /**
    * send sms login code to given phone number
@@ -50,27 +52,25 @@ export class SmsService {
     }
 
     // Check if phone number has been send sms code in 1 minute
-    const count = await this.prisma.smsVerifyCode.count({
-      where: {
+    const count = await this.db
+      .collection<SmsVerifyCode>('SmsVerifyCode')
+      .countDocuments({
         phone: phone,
-        createdAt: {
-          gt: new Date(Date.now() - MILLISECONDS_PER_MINUTE),
-        },
-      },
-    })
+        createdAt: { $gt: new Date(Date.now() - MILLISECONDS_PER_MINUTE) },
+      })
+
     if (count > 0) {
       return 'REQUEST_OVERLIMIT: phone number has been send sms code in 1 minute'
     }
 
     // Check if ip has been send sms code beyond 30 times in 24 hours
-    const countIps = await this.prisma.smsVerifyCode.count({
-      where: {
+    const countIps = await this.db
+      .collection<SmsVerifyCode>('SmsVerifyCode')
+      .countDocuments({
         ip: ip,
-        createdAt: {
-          gt: new Date(Date.now() - MILLISECONDS_PER_DAY),
-        },
-      },
-    })
+        createdAt: { $gt: new Date(Date.now() - MILLISECONDS_PER_DAY) },
+      })
+
     if (countIps > LIMIT_CODE_PER_IP_PER_DAY) {
       return `REQUEST_OVERLIMIT: ip has been send sms code beyond ${LIMIT_CODE_PER_IP_PER_DAY} times in 24 hours`
     }
@@ -78,26 +78,36 @@ export class SmsService {
     return null
   }
 
-  // save sended code to database
-  async saveSmsCode(data: Prisma.SmsVerifyCodeCreateInput) {
-    await this.prisma.smsVerifyCode.create({
-      data,
+  async saveCode(
+    phone: string,
+    code: string,
+    type: SmsVerifyCodeType,
+    ip: string,
+  ) {
+    await this.db.collection<SmsVerifyCode>('SmsVerifyCode').insertOne({
+      phone,
+      code,
+      type,
+      ip,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      state: SmsVerifyCodeState.Unused,
     })
   }
-
   // Valid given phone and code with code type
-  async validCode(phone: string, code: string, type: SmsVerifyCodeType) {
-    const total = await this.prisma.smsVerifyCode.count({
-      where: {
+  async validateCode(phone: string, code: string, type: SmsVerifyCodeType) {
+    const total = await this.db
+      .collection<SmsVerifyCode>('SmsVerifyCode')
+      .countDocuments({
         phone,
         code,
         type,
-        state: SmsVerifyCodeState.Active,
-        createdAt: { gte: new Date(Date.now() - CODE_VALIDITY) },
-      },
-    })
+        state: SmsVerifyCodeState.Unused,
+        createdAt: { $gt: new Date(Date.now() - CODE_VALIDITY) },
+      })
 
     if (total === 0) return 'invalid code'
+
     // Disable verify code after valid
     await this.disableCode(phone, code, type)
     return null
@@ -105,31 +115,22 @@ export class SmsService {
 
   // Disable verify code
   async disableCode(phone: string, code: string, type: SmsVerifyCodeType) {
-    await this.prisma.smsVerifyCode.updateMany({
-      where: {
-        phone,
-        code,
-        type,
-        state: SmsVerifyCodeState.Active,
-      },
-      data: {
-        state: SmsVerifyCodeState.Used,
-      },
-    })
+    await this.db
+      .collection<SmsVerifyCode>('SmsVerifyCode')
+      .updateMany(
+        { phone, code, type, state: SmsVerifyCodeState.Unused },
+        { $set: { state: SmsVerifyCodeState.Used } },
+      )
   }
 
   // Disable same type verify code
   async disableSameTypeCode(phone: string, type: SmsVerifyCodeType) {
-    await this.prisma.smsVerifyCode.updateMany({
-      where: {
-        phone,
-        type,
-        state: SmsVerifyCodeState.Active,
-      },
-      data: {
-        state: SmsVerifyCodeState.Used,
-      },
-    })
+    await this.db
+      .collection<SmsVerifyCode>('SmsVerifyCode')
+      .updateMany(
+        { phone, type, state: SmsVerifyCodeState.Unused },
+        { $set: { state: SmsVerifyCodeState.Used } },
+      )
   }
 
   // send sms code to phone using alisms

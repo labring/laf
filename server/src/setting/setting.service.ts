@@ -1,19 +1,17 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { PrismaService } from 'src/prisma/prisma.service'
+import { SystemDatabase } from 'src/database/system-database'
+import { Setting } from './entities/setting'
 
 @Injectable()
 export class SettingService {
   private readonly logger = new Logger(SettingService.name)
-
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly db = SystemDatabase.db
 
   async findAll() {
-    return await this.prisma.setting.findMany()
+    return await this.db.collection<Setting>('Setting').find().toArray()
   }
 
   async findOne(key: string) {
-    return await this.prisma.setting.findUnique({
-      where: { key },
-    })
+    return await this.db.collection<Setting>('Setting').findOne({ key })
   }
 }
