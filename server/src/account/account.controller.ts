@@ -51,7 +51,7 @@ export class AccountController {
   @Get()
   async findOne(@Req() req: IRequest) {
     const user = req.user
-    const data = await this.accountService.findOne(user.id)
+    const data = await this.accountService.findOne(user._id)
     return data
   }
 
@@ -64,7 +64,7 @@ export class AccountController {
   async getChargeOrder(@Req() req: IRequest, @Param('id') id: string) {
     const user = req.user
     const data = await this.accountService.findOneChargeOrder(
-      user.id,
+      user._id,
       new ObjectId(id),
     )
     return data
@@ -82,7 +82,7 @@ export class AccountController {
 
     // create charge order
     const order = await this.accountService.createChargeOrder(
-      user.id,
+      user._id,
       amount,
       currency,
       channel,

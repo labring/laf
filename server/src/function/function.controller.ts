@@ -79,7 +79,7 @@ export class FunctionController {
       )
     }
 
-    const res = await this.functionsService.create(appid, req.user.id, dto)
+    const res = await this.functionsService.create(appid, req.user._id, dto)
     if (!res) {
       return ResponseUtil.error(i18n.t('function.create.error'))
     }
@@ -148,7 +148,7 @@ export class FunctionController {
       )
     }
 
-    const res = await this.functionsService.update(func, dto)
+    const res = await this.functionsService.updateOne(func, dto)
     if (!res) {
       return ResponseUtil.error(i18n.t('function.update.error'))
     }
@@ -178,7 +178,7 @@ export class FunctionController {
       )
     }
 
-    const res = await this.functionsService.remove(func)
+    const res = await this.functionsService.removeOne(func)
     if (!res) {
       return ResponseUtil.error(i18n.t('function.delete.error'))
     }

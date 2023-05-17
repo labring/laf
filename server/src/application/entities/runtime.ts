@@ -11,7 +11,7 @@ export class Runtime {
   name: string
   type: string
   image: RuntimeImageGroup
-  state: string
+  state: 'Active' | 'Inactive'
   version: string
   latest: boolean
 

@@ -66,7 +66,7 @@ export class ApplicationController {
     }
 
     // check account balance
-    const account = await this.accountService.findOne(user.id)
+    const account = await this.accountService.findOne(user._id)
     const balance = account?.balance || 0
     if (balance <= 0) {
       return ResponseUtil.error(`account balance is not enough`)
@@ -74,7 +74,7 @@ export class ApplicationController {
 
     // create application
     const appid = await this.appService.tryGenerateUniqueAppid()
-    await this.appService.create(user.id, appid, dto)
+    await this.appService.create(user._id, appid, dto)
 
     const app = await this.appService.findOne(appid)
     return ResponseUtil.ok(app)
@@ -90,7 +90,7 @@ export class ApplicationController {
   @ApiOperation({ summary: 'Get user application list' })
   async findAll(@Req() req: IRequest) {
     const user = req.user
-    const data = await this.appService.findAllByUser(user.id)
+    const data = await this.appService.findAllByUser(user._id)
     return ResponseUtil.ok(data)
   }
 

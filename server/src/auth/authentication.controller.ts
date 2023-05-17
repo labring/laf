@@ -57,7 +57,7 @@ export class AuthenticationController {
     }
 
     // bind phone
-    await this.userService.updateUser(new ObjectId(req.user.id), { phone })
+    await this.userService.updateUser(new ObjectId(req.user._id), { phone })
   }
 
   /**
@@ -89,6 +89,6 @@ export class AuthenticationController {
     }
 
     // bind username
-    await this.userService.updateUser(new ObjectId(req.user.id), { username })
+    await this.userService.updateUser(new ObjectId(req.user._id), { username })
   }
 }
