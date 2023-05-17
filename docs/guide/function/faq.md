@@ -390,3 +390,81 @@ export default async function (ctx: FunctionContext) {
   })
 };
 ```
+
+## Laf 云函数的鉴权，获取 token，token 过期处理
+
+原帖：<https://forum.laf.run/d/535>
+
+流程：
+1.云函数生成 token 返回给前端。
+2.前端请求时带上 token。
+3.云函数中根据 `ctx.user` 来判断是否传 `token` 是否过期。
+
+示例代码：
+1.云函数生成 token 返回给前端。
+
+```typescript
+import cloud from '@lafjs/cloud'
+
+export async function main(ctx: FunctionContext) {
+
+  const payload = {
+    // uid 一般用表里用户的 id 这里演示随便写
+    uid: 1,
+    // 这里做演示 过期时间设置为 10s 
+    // 这样写就是过期时间 7 天 exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
+    exp: Math.floor(Date.now() / 1000) + 10,
+  };
+
+  // 生成 access_token
+  const access_token = cloud.getToken(payload);
+
+  return { access_token }
+}
+```
+
+2.前端请求时带上 token。
+第一种使用 `laf-client-sdk`.
+
+```typescript
+import { Cloud } from "laf-client-sdk"; // 引入 laf-client-sdk
+import axios from "axios";
+
+// 创建 cloud 对象
+const cloud = new Cloud({
+  baseUrl: "", // 填你的云函数地址如：https://appid.laf.dev
+  // 传入 access_token 从本地缓存中取出 access_token
+  getAccessToken: () => localStorage.getItem("access_token"),
+});
+// invoke 调用云函数时会自动带上 access_token
+const res = await cloud.invoke("test");
+```
+
+第二种通过 axios
+
+```typescript
+import axios from "axios";
+
+const token = localStorage.getItem("access_token");
+axios({
+  method: "get",
+  url: "functionUrl",
+  headers: {
+    // 这里带上 token
+    Authorization: `token ${token}`,
+  },
+})
+```
+
+3.云函数中根据 ctx.user 来判断是否传 token 是否过期。  
+
+```typescript
+import cloud from '@lafjs/cloud'
+
+export async function main(ctx: FunctionContext) {
+
+  console.log(ctx.user)
+  // 如果前端传了 token 并且没过期： { uid: 1, exp: 1683861234, iat: 1683861224 }
+  // 如果前端没传 token 或者 token 不在有效期：null
+}
+```
