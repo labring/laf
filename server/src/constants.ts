@@ -133,7 +133,6 @@ export class ServerConfig {
 export const LABEL_KEY_USER_ID = 'laf.dev/user.id'
 export const LABEL_KEY_APP_ID = 'laf.dev/appid'
 export const LABEL_KEY_NAMESPACE_TYPE = 'laf.dev/namespace.type'
-export const LABEL_KEY_BUNDLE = 'laf.dev/bundle'
 export const LABEL_KEY_NODE_TYPE = 'laf.dev/node.type'
 export enum NodeType {
   Runtime = 'runtime',
