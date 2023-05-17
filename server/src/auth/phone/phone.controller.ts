@@ -1,5 +1,4 @@
 import { SmsService } from 'src/auth/phone/sms.service'
-import { SmsVerifyCodeType } from '@prisma/client'
 import { IRequest } from 'src/utils/interface'
 import { Body, Controller, Logger, Post, Req } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
@@ -10,6 +9,7 @@ import { PhoneSigninDto } from '../dto/phone-signin.dto'
 import { AuthenticationService } from '../authentication.service'
 import { UserService } from 'src/user/user.service'
 import { AuthBindingType, AuthProviderBinding } from '../types'
+import { SmsVerifyCodeType } from '../entities/sms-verify-code'
 
 @ApiTags('Authentication - New')
 @Controller('auth')
@@ -49,7 +49,7 @@ export class PhoneController {
   async signin(@Body() dto: PhoneSigninDto) {
     const { phone, code } = dto
     // check if code valid
-    const err = await this.smsService.validCode(
+    const err = await this.smsService.validateCode(
       phone,
       code,
       SmsVerifyCodeType.Signin,
@@ -57,7 +57,7 @@ export class PhoneController {
     if (err) return ResponseUtil.error(err)
 
     // check if user exists
-    const user = await this.userService.findByPhone(phone)
+    const user = await this.userService.findOneByPhone(phone)
     if (user) {
       const token = this.phoneService.signin(user)
       return ResponseUtil.ok(token)

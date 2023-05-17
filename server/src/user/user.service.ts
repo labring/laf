@@ -1,102 +1,56 @@
 import { Injectable } from '@nestjs/common'
-import { Prisma, User } from '@prisma/client'
-import { PrismaService } from '../prisma/prisma.service'
-import * as nanoid from 'nanoid'
+import { SystemDatabase } from 'src/database/system-database'
+import { User } from './entities/user'
+import { ObjectId } from 'mongodb'
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  private readonly db = SystemDatabase.db
 
-  /**
-   * @deprecated
-   * @returns
-   */
-  generateUserId() {
-    const nano = nanoid.customAlphabet(
-      '1234567890abcdefghijklmnopqrstuvwxyz',
-      12,
-    )
-    return nano()
-  }
-
-  async create(data: Prisma.UserCreateInput): Promise<User> {
-    return this.prisma.user.create({
-      data,
+  async create(data: Partial<User>) {
+    const res = await this.db.collection<User>('User').insertOne({
+      username: data.username,
+      email: data.email,
+      phone: data.phone,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     })
+
+    return await this.findOneById(res.insertedId)
   }
 
-  async user(input: Prisma.UserWhereUniqueInput, withProfile = false) {
-    return this.prisma.user.findUnique({
-      where: input,
-      include: {
-        profile: withProfile,
-      },
-    })
+  async findOneById(id: ObjectId) {
+    return this.db.collection<User>('User').findOne({ _id: id })
   }
 
-  async profile(input: Prisma.UserProfileWhereInput, withUser = true) {
-    return this.prisma.userProfile.findFirst({
-      where: input,
-      include: {
-        user: withUser,
-      },
-    })
-  }
-
-  async getProfileByOpenid(openid: string) {
-    return this.profile({ openid }, true)
-  }
-
-  async users(params: {
-    skip?: number
-    take?: number
-    cursor?: Prisma.UserWhereUniqueInput
-    where?: Prisma.UserWhereInput
-    orderBy?: Prisma.UserOrderByWithRelationInput
-  }): Promise<User[]> {
-    const { skip, take, cursor, where, orderBy } = params
-    return this.prisma.user.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-    })
-  }
-
-  async updateUser(params: {
-    where: Prisma.UserWhereUniqueInput
-    data: Prisma.UserUpdateInput
-  }) {
-    const { where, data } = params
-    return this.prisma.user.update({
-      data,
-      where,
-    })
-  }
-
-  async deleteUser(where: Prisma.UserWhereUniqueInput) {
-    return this.prisma.user.delete({
-      where,
-    })
-  }
-
-  // find user by username | phone | email
-  async find(username: string) {
-    // match either username or phone or email
-    return await this.prisma.user.findFirst({
-      where: {
-        OR: [{ username }, { phone: username }, { email: username }],
-      },
-    })
+  async findOneByUsername(username: string) {
+    return this.db.collection<User>('User').findOne({ username })
   }
 
   // find user by phone
-  async findByPhone(phone: string) {
-    return await this.prisma.user.findFirst({
-      where: {
-        phone,
-      },
+  async findOneByPhone(phone: string) {
+    const user = await this.db.collection<User>('User').findOne({
+      phone,
     })
+
+    return user
+  }
+
+  // find user by username | phone | email
+  async findOneByUsernameOrPhoneOrEmail(key: string) {
+    // match either username or phone or email
+    const user = await this.db.collection<User>('User').findOne({
+      $or: [{ username: key }, { phone: key }, { email: key }],
+    })
+
+    return user
+  }
+
+  async updateUser(id: ObjectId, data: Partial<User>) {
+    await this.db
+      .collection<User>('User')
+      .updateOne({ _id: id }, { $set: data })
+
+    return await this.findOneById(id)
   }
 }

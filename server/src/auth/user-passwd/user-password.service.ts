@@ -1,44 +1,76 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { PrismaService } from 'src/prisma/prisma.service'
-import { User } from '@prisma/client'
 import { hashPassword } from 'src/utils/crypto'
 import { AuthenticationService } from '../authentication.service'
-import { UserPasswordState } from '../types'
+import { SystemDatabase } from 'src/database/system-database'
+import { User } from 'src/user/entities/user'
+import {
+  UserPassword,
+  UserPasswordState,
+} from 'src/user/entities/user-password'
+import { UserProfile } from 'src/user/entities/user-profile'
+import { UserService } from 'src/user/user.service'
+import { ObjectId } from 'mongodb'
 
 @Injectable()
 export class UserPasswordService {
   private readonly logger = new Logger(UserPasswordService.name)
+  private readonly db = SystemDatabase.db
+
   constructor(
-    private readonly prisma: PrismaService,
     private readonly authService: AuthenticationService,
+    private readonly userService: UserService,
   ) {}
 
   // Singup by username and password
   async signup(username: string, password: string, phone: string) {
-    // start transaction
-    const user = await this.prisma.$transaction(async (tx) => {
+    const client = SystemDatabase.client
+    const session = client.startSession()
+
+    try {
+      session.startTransaction()
       // create user
-      const user = await tx.user.create({
-        data: {
+      const res = await this.db.collection<User>('User').insertOne(
+        {
           username,
           phone,
-          profile: { create: { name: username } },
+          email: null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
-      })
+        { session },
+      )
 
       // create password
-      await tx.userPassword.create({
-        data: {
-          uid: user.id,
+      await this.db.collection<UserPassword>('UserPassword').insertOne(
+        {
+          uid: res.insertedId,
           password: hashPassword(password),
           state: UserPasswordState.Active,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
-      })
+        { session },
+      )
 
-      return user
-    })
+      // create profile
+      await this.db.collection<UserProfile>('UserProfile').insertOne(
+        {
+          uid: res.insertedId,
+          name: username,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        { session },
+      )
 
-    return user
+      await session.commitTransaction()
+      return this.userService.findOneById(res.insertedId)
+    } catch (error) {
+      await session.abortTransaction()
+      throw error
+    } finally {
+      await session.endSession()
+    }
   }
 
   // Signin for user, means get access token
@@ -46,16 +78,17 @@ export class UserPasswordService {
     return this.authService.getAccessTokenByUser(user)
   }
 
-  // valid if password is correct
-  async validPasswd(uid: string, passwd: string) {
-    const userPasswd = await this.prisma.userPassword.findFirst({
-      where: { uid, state: UserPasswordState.Active },
-    })
+  // validate if password is correct
+  async validatePassword(uid: ObjectId, password: string) {
+    const userPasswd = await this.db
+      .collection<UserPassword>('UserPassword')
+      .findOne({ uid, state: UserPasswordState.Active })
+
     if (!userPasswd) {
       return 'password not exists'
     }
 
-    if (userPasswd.password !== hashPassword(passwd)) {
+    if (userPasswd.password !== hashPassword(password)) {
       return 'password incorrect'
     }
 
@@ -63,38 +96,47 @@ export class UserPasswordService {
   }
 
   // reset password
-  async resetPasswd(uid: string, passwd: string) {
-    // start transaction
-    const update = await this.prisma.$transaction(async (tx) => {
+  async resetPassword(uid: ObjectId, password: string) {
+    const client = SystemDatabase.client
+    const session = client.startSession()
+
+    try {
+      session.startTransaction()
       // disable old password
-      await tx.userPassword.updateMany({
-        where: { uid },
-        data: { state: UserPasswordState.Inactive },
-      })
+      await this.db
+        .collection<UserPassword>('UserPassword')
+        .updateMany(
+          { uid },
+          { $set: { state: UserPasswordState.Inactive } },
+          { session },
+        )
 
       // create new password
-      const np = await tx.userPassword.create({
-        data: {
+      await this.db.collection<UserPassword>('UserPassword').insertOne(
+        {
           uid,
-          password: hashPassword(passwd),
+          password: hashPassword(password),
           state: UserPasswordState.Active,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
-      })
-
-      return np
-    })
-    if (!update) {
-      return 'reset password failed'
+        { session },
+      )
+      await session.commitTransaction()
+    } catch (error) {
+      await session.abortTransaction()
+      throw error
+    } finally {
+      await session.endSession()
     }
-
-    return null
   }
 
   // check if set password
-  async hasPasswd(uid: string) {
-    const userPasswd = await this.prisma.userPassword.findFirst({
-      where: { uid, state: UserPasswordState.Active },
-    })
-    return userPasswd ? true : false // true means has password
+  async hasPassword(uid: ObjectId) {
+    const res = await this.db
+      .collection<UserPassword>('UserPassword')
+      .findOne({ uid, state: UserPasswordState.Active })
+
+    return res ? true : false
   }
 }
