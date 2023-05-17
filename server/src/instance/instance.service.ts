@@ -294,6 +294,7 @@ export class InstanceService {
                 requests: {
                   cpu: `${requestCpu}m`,
                   memory: `${requestMemory}Mi`,
+                  'ephemeral-storage': '64Mi',
                 },
               },
               volumeMounts: [
@@ -353,6 +354,7 @@ export class InstanceService {
                 requests: {
                   cpu: '5m',
                   memory: '32Mi',
+                  'ephemeral-storage': '64Mi',
                 },
               },
               securityContext: {
