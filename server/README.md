@@ -20,7 +20,6 @@
 - [Kubernetes](https://kubernetes.io) basic use
 - [Telepresence](https://www.telepresence.io) for local development
 - [MongoDb](https://docs.mongodb.com) basic use
-- [Prisma](https://www.prisma.io)
 - [MinIO](https://min.io) object storage
 - [APISIX](https://apisix.apache.org) gateway
 - [nestjs-i18n](https://nestjs-i18n.com/) i18n
@@ -46,9 +45,6 @@ telepresence list -n laf-system
 telepresence intercept laf-server -n laf-system -p 3000:3000 -e $(pwd)/.env
 
 npm install
-npx prisma generate
-npx prisma db push
-
 npm run watch
 ```
 

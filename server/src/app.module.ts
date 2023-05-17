@@ -17,7 +17,6 @@ import { DependencyModule } from './dependency/dependency.module'
 import { TriggerModule } from './trigger/trigger.module'
 import { RegionModule } from './region/region.module'
 import { GatewayModule } from './gateway/gateway.module'
-import { PrismaModule } from './prisma/prisma.module'
 import { AccountModule } from './account/account.module'
 import { SettingModule } from './setting/setting.module'
 import * as path from 'path'
@@ -44,7 +43,6 @@ import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n'
     TriggerModule,
     RegionModule,
     GatewayModule,
-    PrismaModule,
     AccountModule,
     SettingModule,
     I18nModule.forRoot({

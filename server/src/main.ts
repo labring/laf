@@ -48,7 +48,6 @@ async function bootstrap() {
   try {
     const initService = app.get(InitializerService)
     await initService.createDefaultRegion()
-    await initService.createDefaultBundle()
     await initService.createDefaultRuntime()
     await initService.createDefaultAuthProvider()
   } catch (error) {
