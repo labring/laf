@@ -22,6 +22,7 @@
 - [MongoDb](https://docs.mongodb.com) basic use
 - [MinIO](https://min.io) object storage
 - [APISIX](https://apisix.apache.org) gateway
+- [nestjs-i18n](https://nestjs-i18n.com/) i18n
 
 ## Prerequisites
 

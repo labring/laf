@@ -10,13 +10,17 @@ title: laf assistant
 
 ## 应用安装
 
-`vs Code` 应用中直接搜索 `laf assistant` 或点击链接[在线安装](https://marketplace.visualstudio.com/items?itemName=NightWhite.laf-assistant)
+`VSCode` 应用中直接搜索 `laf assistant` 或点击链接[在线安装](https://marketplace.visualstudio.com/items?itemName=NightWhite.laf-assistant)
 
 :::tip
 使用`laf assistant`需 node 版本大于等于 16
 
 node version >= 16
 :::
+
+## VSCode 设置修改
+
+设置中搜索`typescript.preferences.importModuleSpecifier`，改成`non-relative`
 
 ## 初始化
 
@@ -58,7 +62,7 @@ node version >= 16
 
 ## 操作单个云函数
 
-打开`laf-cloud/functions`，任意打开一个云函数，在编辑框右键即可 `发布/下载/运行` 当前云函数。可在 `vs Code` 设置里自定义快捷键，操作更加方便。
+打开`laf-cloud/functions`，任意打开一个云函数，在编辑框右键即可 `发布/下载/运行` 当前云函数。可在 `VSCode` 设置里自定义快捷键，操作更加方便。
 
 ## 其他功能
 

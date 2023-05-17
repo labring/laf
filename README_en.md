@@ -6,7 +6,7 @@
   </p>
 
   <p>
-    
+
   [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/labring/laf)
   [![](https://img.shields.io/docker/pulls/lafyun/system-server)](https://hub.docker.com/r/lafyun/system-server)
   ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?logo=typescript&logoColor=white)
@@ -23,7 +23,7 @@
 ## 👀 What is `laf`
 
 - laf is a cloud-native development platform
-- laf is an open-source BaaS platform（Backend as a Service)
+- laf is an open-source BaaS platform (Backend as a Service)
 - laf is an out-of-the-box serverless platform.
 - laf is an one-stop-shop for all your cloud-native development needs:
   - Cloud Function
@@ -56,26 +56,7 @@
 - **WebSocket**
   - Built-in support for WebSocket, everything you need is included!
 
-### Some Screen Shots of `laf` Dashboard:
-
-<table>
-  <tr>
-      <td width="50%" align="center"><b>Cloud Function</b></td>
-      <td width="50%" align="center"><b>Cloud Storage</b></td>
-  </tr>
-  <tr>
-     <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/ide.png"/></td>
-     <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/files.png"/></td>
-  </tr>
-  <tr>
-      <td width="50%" align="center"><b>Cloud Database</b></td>
-      <td width="50%" align="center"><b>Application Management</b></td>
-  </tr>
-  <tr>
-     <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/collection.png"/></td>
-     <td><img src="https://9b069020-06e3-4949-83d9-992a52ca99fe.lafyun.com/file/laf_preview_screens/apps.png"/></td>
-  </tr>
-</table>
+![](https://sif268-laf-image.oss.laf.dev/dev.png)
 
 ## 👨‍💻 Who is `laf` for?
 
@@ -89,7 +70,7 @@
    - `laf` saves you from tedious server admin/operation works.
    - `laf` saves you from boring `nginx` configs.
    - `laf` saves you from the hassle of manual DB deployment, security config.
-   - `laf` saves you from the torment of 「10 min coding, 10 hour deploying」.
+   - `laf` saves you from the torment of「10 min coding, 10 hour deploying」.
    - `laf` lets you inspect logs in the browser in any places at any time. No more SSH to the server!
    - `laf` lets you「write functions like blog」, just code and click to deploy!
 
@@ -171,7 +152,7 @@ Independent domain names and HTTPS licenses can be applied to your applications 
 ## 🏘️ Community
 
 - [WeChat Group](https://oss.lafyun.com/wofnib-image/2022-04-22-14-21-MRJH9o.png)
-- [QQ Group：603059673](https://jq.qq.com/?_wv=1027&k=DdRCCiuz)
+- [QQ Group: 603059673](https://jq.qq.com/?_wv=1027&k=DdRCCiuz)
 - _More community resources will be added soon!_
 
 ## 🌟 Star History
