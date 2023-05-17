@@ -15,11 +15,6 @@ EXPOSE 3000
 COPY . /app
 
 # All commands in one line will reduce the size of the image
-RUN npm install @nestjs/cli@9.0.0 prisma@4.9.0 -g && npm install --omit=dev && npm run build && npm remove @nestjs/cli prisma -g && npm cache clean --force && rm -rf /app/src/*
-
-# RUN npm install --omit=dev
-# RUN npm run build
-# RUN npm remove @nestjs/cli prisma -g
-# RUN npm cache clean --force
+RUN npm install --omit=dev && npm run build && npm cache clean --force && rm -rf /app/src/*
 
 CMD [ "node", "dist/main" ]

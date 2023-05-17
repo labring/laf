@@ -17,7 +17,6 @@ import { DependencyModule } from './dependency/dependency.module'
 import { TriggerModule } from './trigger/trigger.module'
 import { RegionModule } from './region/region.module'
 import { GatewayModule } from './gateway/gateway.module'
-import { PrismaModule } from './prisma/prisma.module'
 import { AccountModule } from './account/account.module'
 import { SettingModule } from './setting/setting.module'
 
@@ -42,7 +41,6 @@ import { SettingModule } from './setting/setting.module'
     TriggerModule,
     RegionModule,
     GatewayModule,
-    PrismaModule,
     AccountModule,
     SettingModule,
   ],

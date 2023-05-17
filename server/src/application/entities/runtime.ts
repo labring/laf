@@ -2,8 +2,8 @@ import { ObjectId } from 'mongodb'
 
 export type RuntimeImageGroup = {
   main: string
-  init: string | null
-  sidecar: string | null
+  init: string
+  sidecar?: string
 }
 
 export class Runtime {

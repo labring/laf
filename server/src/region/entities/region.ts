@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb'
 
 export type RegionClusterConf = {
   driver: string
-  kubeconfig: string | null
+  kubeconfig: string
   npmInstallFlags: string
 }
 
@@ -40,7 +40,7 @@ export class Region {
   gatewayConf: RegionGatewayConf
   storageConf: RegionStorageConf
   tls: boolean
-  state: string
+  state: 'Active' | 'Inactive'
   createdAt: Date
   updatedAt: Date
 
