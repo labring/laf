@@ -1,46 +1,50 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { PrismaService } from 'src/prisma/prisma.service'
 import * as assert from 'assert'
-import {
-  AccountChargePhase,
-  Currency,
-  PaymentChannelType,
-} from '@prisma/client'
 import { WeChatPayService } from './payment/wechat-pay.service'
 import { PaymentChannelService } from './payment/payment-channel.service'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
+import { SystemDatabase } from 'src/database/system-database'
+import { Account, BaseState } from './entities/account'
+import { ObjectId } from 'mongodb'
+import {
+  AccountChargeOrder,
+  AccountChargePhase,
+  Currency,
+  PaymentChannelType,
+} from './entities/account-charge-order'
 
 @Injectable()
 export class AccountService {
   private readonly logger = new Logger(AccountService.name)
+  private readonly db = SystemDatabase.db
 
   constructor(
-    private readonly prisma: PrismaService,
     private readonly wechatPayService: WeChatPayService,
     private readonly chanelService: PaymentChannelService,
   ) {}
 
-  async create(userid: string) {
-    const account = await this.prisma.account.create({
-      data: {
-        balance: 0,
-        createdBy: userid,
-      },
+  async create(userid: string): Promise<Account> {
+    await this.db.collection<Account>('Account').insertOne({
+      balance: 0,
+      state: BaseState.Active,
+      createdBy: new ObjectId(userid),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     })
 
-    return account
+    return await this.findOne(userid)
   }
 
   async findOne(userid: string) {
-    const account = await this.prisma.account.findUnique({
-      where: { createdBy: userid },
-    })
+    const account = await this.db
+      .collection<Account>('Account')
+      .findOne({ createdBy: new ObjectId(userid) })
 
     if (account) {
       return account
     }
 
-    return this.create(userid)
+    return await this.create(userid)
   }
 
   async createChargeOrder(
@@ -53,32 +57,37 @@ export class AccountService {
     assert(account, 'Account not found')
 
     // create charge order
-    const order = await this.prisma.accountChargeOrder.create({
-      data: {
-        accountId: account.id,
+    await this.db
+      .collection<AccountChargeOrder>('AccountChargeOrder')
+      .insertOne({
+        accountId: account._id,
         amount,
         currency: currency,
         phase: AccountChargePhase.Pending,
         channel: channel,
-        createdBy: userid,
+        createdBy: new ObjectId(userid),
         lockedAt: TASK_LOCK_INIT_TIME,
-      },
-    })
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
 
-    return order
+    return await this.findOneChargeOrder(userid, account._id)
   }
 
-  async findOneChargeOrder(userid: string, id: string) {
-    const order = await this.prisma.accountChargeOrder.findFirst({
-      where: { id, createdBy: userid },
-    })
+  async findOneChargeOrder(userid: string, id: ObjectId) {
+    const order = await this.db
+      .collection<AccountChargeOrder>('AccountChargeOrder')
+      .findOne({
+        _id: id,
+        createdBy: new ObjectId(userid),
+      })
 
     return order
   }
 
   async pay(
     channel: PaymentChannelType,
-    orderNumber: string,
+    orderNumber: ObjectId,
     amount: number,
     currency: Currency,
     description = 'laf account charge',
@@ -90,7 +99,7 @@ export class AccountService {
         mchid: spec.mchid,
         appid: spec.appid,
         description,
-        out_trade_no: orderNumber,
+        out_trade_no: orderNumber.toString(),
         notify_url: this.wechatPayService.getNotifyUrl(),
         amount: {
           total: amount,
