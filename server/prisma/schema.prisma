@@ -745,11 +745,11 @@ model Setting {
   metadata Json? // extra meta data
 }
 
-model EventSource {
+model SseEventSource {
   id        String            @id @default(auto()) @map("_id") @db.ObjectId
   uid       String
   appid     String
-  payload   String
+  payload   Json
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
 }
