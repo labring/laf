@@ -19,6 +19,10 @@ export enum SseEventEnum {
   NPMINSTALL = 'NpmInstall',
 }
 
+export const CHANGE_STREAM_PIPELINE = [
+  { fullDocument: 'updateLookup' },
+  { $match: { 'operationType': 'insert' } }
+]
 
 
 
