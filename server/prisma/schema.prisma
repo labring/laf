@@ -105,8 +105,9 @@ model PersonalAccessToken {
 // region schemas
 
 type RegionClusterConf {
-  driver     String // kubernetes
-  kubeconfig String?
+  driver          String // kubernetes
+  kubeconfig      String?
+  npmInstallFlags String  @default("")
 }
 
 type RegionDatabaseConf {
@@ -737,11 +738,11 @@ model SmsVerifyCode {
 }
 
 model Setting {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  key       String   @unique
-  value     String
-  desc      String
-  metadata  Json? // extra meta data
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  key      String @unique
+  value    String
+  desc     String
+  metadata Json? // extra meta data
 }
 
 model EventSource {
