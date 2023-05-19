@@ -53,7 +53,7 @@ export class RegionService {
       name: 1,
       displayName: 1,
       state: 1,
-      resourceTemplates: 1,
+      bundles: 1,
     }
 
     const regions = await this.db
@@ -61,10 +61,10 @@ export class RegionService {
       .aggregate()
       .match({})
       .lookup({
-        from: 'ResourceTemplate',
+        from: 'ResourceBundle',
         localField: '_id',
         foreignField: 'regionId',
-        as: 'resourceTemplates',
+        as: 'bundles',
       })
       .project(projection)
       .toArray()

@@ -2,7 +2,7 @@ import { Controller, Get, Logger, Param } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { ResponseUtil } from '../utils/response'
 import { RegionService } from './region.service'
-import { ResourceOptionService } from './resource-option.service'
+import { ResourceService } from './resource.service'
 import { ObjectId } from 'mongodb'
 
 @ApiTags('Public')
@@ -11,7 +11,7 @@ export class RegionController {
   private readonly logger = new Logger(RegionController.name)
   constructor(
     private readonly regionService: RegionService,
-    private readonly resourceService: ResourceOptionService,
+    private readonly resourceService: ResourceService,
   ) {}
 
   /**
@@ -52,9 +52,9 @@ export class RegionController {
    * @returns
    */
   @ApiOperation({ summary: 'Get resource template list' })
-  @Get('resource-templates')
-  async getResourceTemplates() {
-    const data = await this.resourceService.findAllTemplates()
+  @Get('resource-bundles')
+  async getResourceBundles() {
+    const data = await this.resourceService.findAllBundles()
     return ResponseUtil.ok(data)
   }
 }
