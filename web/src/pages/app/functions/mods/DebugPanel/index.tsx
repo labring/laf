@@ -93,7 +93,7 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
 
       updateFunctionMutation.mutateAsync({
         description: currentFunction?.desc,
-        code: functionCache.getCache(currentFunction!.id, currentFunction!.source?.code),
+        code: currentFunction?.source.code,
         methods: currentFunction?.methods,
         websocket: currentFunction?.websocket,
         name: currentFunction?.name,
