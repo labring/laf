@@ -14,6 +14,7 @@ import { ApplicationConfigurationService } from './configuration.service'
 import { TriggerService } from 'src/trigger/trigger.service'
 import { WebsiteService } from 'src/website/website.service'
 import { AccountModule } from 'src/account/account.module'
+import { BundleService } from './bundle.service'
 
 @Module({
   imports: [StorageModule, DatabaseModule, GatewayModule, AccountModule],
@@ -28,7 +29,8 @@ import { AccountModule } from 'src/account/account.module'
     ApplicationConfigurationService,
     TriggerService,
     WebsiteService,
+    BundleService,
   ],
-  exports: [ApplicationService],
+  exports: [ApplicationService, BundleService],
 })
 export class ApplicationModule {}
