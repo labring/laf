@@ -19,7 +19,7 @@ import {
 } from '@nestjs/swagger'
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
 import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
-import { BundleService } from 'src/region/bundle.service'
+import { BundleService } from 'src/application/bundle.service'
 import { ObjectId } from 'mongodb'
 
 @ApiTags('Trigger')
@@ -44,7 +44,7 @@ export class TriggerController {
   @Post()
   async create(@Param('appid') appid: string, @Body() dto: CreateTriggerDto) {
     // check trigger count limit
-    const bundle = await this.bundleService.findApplicationBundle(appid)
+    const bundle = await this.bundleService.findOne(appid)
     const LIMIT_COUNT = bundle?.resource?.limitCountOfTrigger || 0
     const count = await this.triggerService.count(appid)
     if (count >= LIMIT_COUNT) {

@@ -20,7 +20,7 @@ import {
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
 import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
 import { ResponseUtil } from 'src/utils/response'
-import { BundleService } from 'src/region/bundle.service'
+import { BundleService } from 'src/application/bundle.service'
 import { BucketService } from 'src/storage/bucket.service'
 import { ObjectId } from 'mongodb'
 import { DomainState } from 'src/gateway/entities/runtime-domain'
@@ -48,7 +48,7 @@ export class WebsiteController {
   @Post()
   async create(@Param('appid') appid: string, @Body() dto: CreateWebsiteDto) {
     // check if website hosting limit reached
-    const bundle = await this.bundleService.findApplicationBundle(appid)
+    const bundle = await this.bundleService.findOne(appid)
     const LIMIT_COUNT = bundle?.resource?.limitCountOfWebsiteHosting || 0
     const count = await this.websiteService.count(appid)
     if (count >= LIMIT_COUNT) {

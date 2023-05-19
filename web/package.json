@@ -10,6 +10,7 @@
     "lint": "eslint src --fix",
     "prettier": "prettier --write ./src",
     "prepare": "cd .. && husky install web/.husky",
+    "intercept": "telepresence intercept laf-web -n laf-system -p 3001:80",
     "lint-staged": "lint-staged"
   },
   "dependencies": {

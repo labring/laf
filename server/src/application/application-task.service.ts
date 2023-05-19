@@ -11,7 +11,7 @@ import { SystemDatabase } from 'src/database/system-database'
 import { TriggerService } from 'src/trigger/trigger.service'
 import { FunctionService } from 'src/function/function.service'
 import { ApplicationConfigurationService } from './configuration.service'
-import { BundleService } from 'src/region/bundle.service'
+import { BundleService } from 'src/application/bundle.service'
 import { WebsiteService } from 'src/website/website.service'
 import { PolicyService } from 'src/database/policy/policy.service'
 import { BucketDomainService } from 'src/gateway/bucket-domain.service'
@@ -225,9 +225,9 @@ export class ApplicationTaskService {
     }
 
     // delete application bundle
-    const bundle = await this.bundleService.findApplicationBundle(appid)
+    const bundle = await this.bundleService.findOne(appid)
     if (bundle) {
-      await this.bundleService.deleteApplicationBundle(appid)
+      await this.bundleService.deleteOne(appid)
       return await this.unlock(appid)
     }
 

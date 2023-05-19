@@ -7,7 +7,7 @@ export class BundleService {
   private readonly logger = new Logger(BundleService.name)
   private readonly db = SystemDatabase.db
 
-  async findApplicationBundle(appid: string) {
+  async findOne(appid: string) {
     const bundle = await this.db
       .collection<ApplicationBundle>('ApplicationBundle')
       .findOne({ appid })
@@ -15,7 +15,7 @@ export class BundleService {
     return bundle
   }
 
-  async deleteApplicationBundle(appid: string) {
+  async deleteOne(appid: string) {
     const res = await this.db
       .collection<ApplicationBundle>('ApplicationBundle')
       .findOneAndDelete({ appid })

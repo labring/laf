@@ -53,11 +53,20 @@ export class RegionService {
       name: 1,
       displayName: 1,
       state: 1,
+      resourceTemplates: 1,
     }
 
     const regions = await this.db
       .collection<Region>('Region')
-      .find({}, { projection })
+      .aggregate()
+      .match({})
+      .lookup({
+        from: 'ResourceTemplate',
+        localField: '_id',
+        foreignField: 'regionId',
+        as: 'resourceTemplates',
+      })
+      .project(projection)
       .toArray()
 
     return regions

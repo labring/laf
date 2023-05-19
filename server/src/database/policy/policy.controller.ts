@@ -20,7 +20,7 @@ import { UpdatePolicyDto } from '../dto/update-policy.dto'
 import { ResponseUtil } from 'src/utils/response'
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
 import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
-import { BundleService } from 'src/region/bundle.service'
+import { BundleService } from 'src/application/bundle.service'
 
 @ApiTags('Database')
 @ApiBearerAuth('Authorization')
@@ -37,7 +37,7 @@ export class PolicyController {
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   async create(@Param('appid') appid: string, @Body() dto: CreatePolicyDto) {
     // check policy count limit
-    const bundle = await this.bundleService.findApplicationBundle(appid)
+    const bundle = await this.bundleService.findOne(appid)
     const LIMIT_COUNT = bundle?.resource?.limitCountOfDatabasePolicy || 0
     const count = await this.policiesService.count(appid)
     if (count >= LIMIT_COUNT) {

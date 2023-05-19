@@ -35,12 +35,10 @@
 ```bash
 cd server/
 
-# Install telepresence traffic manager
+# Install telepresence traffic manager (only 
 telepresence helm install
 # Connect your computer to laf-dev cluster
 telepresence connect
-# view the available services, service status needs to be Ready, `ready to intercept`
-telepresence list -n laf-system
 # Connect local server  to laf server cluster
 telepresence intercept laf-server -n laf-system -p 3000:3000 -e $(pwd)/.env
 

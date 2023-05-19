@@ -47,9 +47,7 @@ async function bootstrap() {
 
   try {
     const initService = app.get(InitializerService)
-    await initService.createDefaultRegion()
-    await initService.createDefaultRuntime()
-    await initService.createDefaultAuthProvider()
+    await initService.init()
   } catch (error) {
     console.error(error)
     process.exit(1)
