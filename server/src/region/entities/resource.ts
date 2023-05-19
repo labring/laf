@@ -23,7 +23,7 @@ export class ResourceOption {
   updatedAt: Date
 }
 
-export class ResourceTemplate {
+export class ResourceBundle {
   _id?: ObjectId
   regionId: ObjectId
   name: string

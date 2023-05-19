@@ -9,7 +9,7 @@ import {
 } from 'src/auth/entities/auth-provider'
 import {
   ResourceOption,
-  ResourceTemplate,
+  ResourceBundle,
   ResourceType,
 } from 'src/region/entities/resource'
 
@@ -23,7 +23,7 @@ export class InitializerService {
     await this.createDefaultRuntime()
     await this.createDefaultAuthProvider()
     await this.createDefaultResourceOptions()
-    await this.createDefaultResourceTemplates()
+    await this.createDefaultResourceBundles()
   }
 
   async createDefaultRegion() {
@@ -233,10 +233,10 @@ export class InitializerService {
     this.logger.verbose('Created default resource options')
   }
 
-  async createDefaultResourceTemplates() {
+  async createDefaultResourceBundles() {
     // check if exists
     const existed = await this.db
-      .collection<ResourceTemplate>('ResourceTemplate')
+      .collection<ResourceBundle>('ResourceBundle')
       .countDocuments()
 
     if (existed) {
@@ -248,7 +248,7 @@ export class InitializerService {
     const region = await this.db.collection<Region>('Region').findOne({})
 
     // create default resource templates
-    await this.db.collection<ResourceTemplate>('ResourceTemplate').insertMany([
+    await this.db.collection<ResourceBundle>('ResourceBundle').insertMany([
       {
         regionId: region._id,
         name: 'trial',

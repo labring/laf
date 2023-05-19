@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import { SystemDatabase } from 'src/database/system-database'
 import { ObjectId } from 'mongodb'
-import { ResourceOption, ResourceTemplate } from './entities/resource'
+import { ResourceOption, ResourceBundle } from './entities/resource'
 
 @Injectable()
-export class ResourceOptionService {
+export class ResourceService {
   private readonly db = SystemDatabase.db
 
   async findAll() {
@@ -31,9 +31,9 @@ export class ResourceOptionService {
     return options
   }
 
-  async findAllTemplates() {
+  async findAllBundles() {
     const options = await this.db
-      .collection<ResourceTemplate>('ResourceTemplate')
+      .collection<ResourceBundle>('ResourceBundle')
       .find()
       .toArray()
 

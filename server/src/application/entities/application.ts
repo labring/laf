@@ -32,6 +32,7 @@ export class Application {
   tags: string[]
   state: ApplicationState
   phase: ApplicationPhase
+  isTrialTier?: boolean
   createdAt: Date
   updatedAt: Date
   lockedAt: Date
