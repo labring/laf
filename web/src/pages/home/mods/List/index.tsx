@@ -125,12 +125,12 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                     <p
                       className={clsx(
                         "mt-1",
-                        dayjs().add(3, "day").isAfter(dayjs(item.subscription.expiredAt))
+                        dayjs().add(3, "day").isAfter(dayjs(item.subscription?.expiredAt))
                           ? "text-red-500"
                           : "",
                       )}
                     >
-                      {t("EndTime")}: {formatDate(item.subscription.expiredAt)}
+                      {t("EndTime")}: {formatDate(item.subscription?.expiredAt)}
                       <CreateAppModal application={item} type="renewal">
                         <a
                           className="invisible ml-2 text-primary-500 group-hover:visible group-hover:inline-block"
