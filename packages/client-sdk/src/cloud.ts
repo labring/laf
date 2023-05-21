@@ -4,6 +4,11 @@ import { UniRequest } from "./request/request-uni";
 import { WxmpRequest } from "./request/request-wxmp";
 import { CloudOptions, EnvironmentType, RequestInterface } from "./types";
 
+interface GlobalObjectType {
+  getSystemInfoSync: any
+}
+declare const uni: GlobalObjectType
+
 /**
  * class Cloud provide the interface to request cloud function and cloud database.
  */

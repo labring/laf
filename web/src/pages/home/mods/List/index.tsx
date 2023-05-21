@@ -23,7 +23,7 @@ import dayjs from "dayjs";
 import CopyText from "@/components/CopyText";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
-import { Pages } from "@/constants";
+import { APP_STATUS, Pages } from "@/constants";
 import { APP_PHASE_STATUS } from "@/constants/index";
 import { formatDate } from "@/utils/format";
 import getRegionById from "@/utils/getRegionById";
@@ -180,14 +180,21 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                             const res = await updateAppMutation.mutateAsync({
                               appid: item.appid,
                               name: item.name,
-                              state: APP_PHASE_STATUS.Restarting,
+                              state:
+                                item.phase === APP_STATUS.Stopped
+                                  ? APP_STATUS.Running
+                                  : APP_STATUS.Restarting,
                             });
                             if (!res.error) {
                               setShouldRefetch(true);
                             }
                           }}
                         >
-                          <span className="text-primary block">{t("SettingPanel.Restart")}</span>
+                          <span className="text-primary block">
+                            {item.phase === APP_STATUS.Stopped
+                              ? t("SettingPanel.Start")
+                              : t("SettingPanel.Restart")}
+                          </span>
                         </MenuItem>
 
                         <MenuItem

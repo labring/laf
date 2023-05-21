@@ -26,6 +26,8 @@ import { FunctionService } from './function.service'
 import { IRequest } from '../utils/interface'
 import { CompileFunctionDto } from './dto/compile-function.dto'
 import { BundleService } from 'src/region/bundle.service'
+import { I18n, I18nContext, I18nService } from 'nestjs-i18n'
+import { I18nTranslations } from '../generated/i18n.generated'
 
 @ApiTags('Function')
 @ApiBearerAuth('Authorization')
@@ -34,6 +36,7 @@ export class FunctionController {
   constructor(
     private readonly functionsService: FunctionService,
     private readonly bundleService: BundleService,
+    private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
   /**
@@ -49,6 +52,7 @@ export class FunctionController {
     @Param('appid') appid: string,
     @Body() dto: CreateFunctionDto,
     @Req() req: IRequest,
+    @I18n() i18n: I18nContext<I18nTranslations>,
   ) {
     const error = dto.validate()
     if (error) {
@@ -58,7 +62,9 @@ export class FunctionController {
     // check name is unique
     const found = await this.functionsService.findOne(appid, dto.name)
     if (found) {
-      return ResponseUtil.error('function name is already existed')
+      return ResponseUtil.error(
+        i18n.t('function.create.nameExist', { args: { name: dto.name } }),
+      )
     }
 
     // check if meet the count limit
@@ -66,12 +72,16 @@ export class FunctionController {
     const MAX_FUNCTION_COUNT = bundle?.resource?.limitCountOfCloudFunction || 0
     const count = await this.functionsService.count(appid)
     if (count >= MAX_FUNCTION_COUNT) {
-      return ResponseUtil.error(`function count limit is ${MAX_FUNCTION_COUNT}`)
+      return ResponseUtil.error(
+        i18n.t('function.create.maxCount', {
+          args: { count: MAX_FUNCTION_COUNT },
+        }),
+      )
     }
 
     const res = await this.functionsService.create(appid, req.user.id, dto)
     if (!res) {
-      return ResponseUtil.error('create function error')
+      return ResponseUtil.error(i18n.t('function.create.error'))
     }
     return ResponseUtil.ok(res)
   }
@@ -98,10 +108,17 @@ export class FunctionController {
   @ApiOperation({ summary: 'Get a function by its name' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get(':name')
-  async findOne(@Param('appid') appid: string, @Param('name') name: string) {
+  async findOne(
+    @Param('appid') appid: string,
+    @Param('name') name: string,
+    @I18n() i18n: I18nContext<I18nTranslations>,
+  ) {
     const data = await this.functionsService.findOne(appid, name)
     if (!data) {
-      throw new HttpException('function not found', HttpStatus.NOT_FOUND)
+      throw new HttpException(
+        i18n.t('function.common.notFound', { args: { name } }),
+        HttpStatus.NOT_FOUND,
+      )
     }
     return ResponseUtil.ok(data)
   }
@@ -121,15 +138,19 @@ export class FunctionController {
     @Param('appid') appid: string,
     @Param('name') name: string,
     @Body() dto: UpdateFunctionDto,
+    @I18n() i18n: I18nContext<I18nTranslations>,
   ) {
     const func = await this.functionsService.findOne(appid, name)
     if (!func) {
-      throw new HttpException('function not found', HttpStatus.NOT_FOUND)
+      throw new HttpException(
+        i18n.t('function.common.notFound', { args: { name } }),
+        HttpStatus.NOT_FOUND,
+      )
     }
 
     const res = await this.functionsService.update(func, dto)
     if (!res) {
-      return ResponseUtil.error('update function error')
+      return ResponseUtil.error(i18n.t('function.update.error'))
     }
     return ResponseUtil.ok(res)
   }
@@ -144,15 +165,22 @@ export class FunctionController {
   @ApiOperation({ summary: 'Delete a function' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Delete(':name')
-  async remove(@Param('appid') appid: string, @Param('name') name: string) {
+  async remove(
+    @Param('appid') appid: string,
+    @Param('name') name: string,
+    @I18n() i18n: I18nContext<I18nTranslations>,
+  ) {
     const func = await this.functionsService.findOne(appid, name)
     if (!func) {
-      throw new HttpException('function not found', HttpStatus.NOT_FOUND)
+      throw new HttpException(
+        i18n.t('function.common.notFound', { args: { name } }),
+        HttpStatus.NOT_FOUND,
+      )
     }
 
     const res = await this.functionsService.remove(func)
     if (!res) {
-      return ResponseUtil.error('delete function error')
+      return ResponseUtil.error(i18n.t('function.delete.error'))
     }
     return ResponseUtil.ok(res)
   }
@@ -171,14 +199,18 @@ export class FunctionController {
     @Param('appid') appid: string,
     @Param('name') name: string,
     @Body() dto: CompileFunctionDto,
+    @I18n() i18n: I18nContext<I18nTranslations>,
   ) {
     if (!dto.code) {
-      return ResponseUtil.error('code is required')
+      return ResponseUtil.error(i18n.t('function.compile.codeRequired'))
     }
 
     const func = await this.functionsService.findOne(appid, name)
     if (!func) {
-      throw new HttpException('function not found', HttpStatus.NOT_FOUND)
+      throw new HttpException(
+        i18n.t('function.common.notFound', { args: { name } }),
+        HttpStatus.NOT_FOUND,
+      )
     }
 
     const res = await this.functionsService.compile(func, dto)

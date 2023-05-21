@@ -26,7 +26,7 @@ import { BucketDomainService } from 'src/gateway/bucket-domain.service'
 
 @Injectable()
 export class ApplicationTaskService {
-  readonly lockTimeout = 60 // in second
+  readonly lockTimeout = 15 // in second
   private readonly logger = new Logger(ApplicationTaskService.name)
 
   constructor(
@@ -85,6 +85,7 @@ export class ApplicationTaskService {
           lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
         { $set: { lockedAt: new Date() } },
+        { sort: { lockedAt: 1, updatedAt: 1 } },
       )
 
     if (!res.value) return
@@ -180,6 +181,7 @@ export class ApplicationTaskService {
           lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
         { $set: { lockedAt: new Date() } },
+        { sort: { lockedAt: 1, updatedAt: 1 } },
       )
 
     if (!res.value) return

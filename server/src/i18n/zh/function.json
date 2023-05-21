@@ -1,0 +1,20 @@
+{
+  "create": {
+    "nameExist": "函数 {name} 已存在",
+    "maxCount": "达到函数最大数量 {max}",
+    "error": "创建函数失败"
+  },
+  "get": {},
+  "update": {
+    "error": "更新函数失败"
+  },
+  "delete": {
+    "error": "删除函数失败"
+  },
+  "compile": {
+    "codeRequired": "函数代码不能为空"
+  },
+  "common": {
+    "notFound": "函数 {name} 不存在"
+  }
+}

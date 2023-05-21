@@ -25,6 +25,7 @@ import { debounce } from "lodash";
 
 import DependenceList from "@/components/DependenceList";
 import IconWrap from "@/components/IconWrap";
+import { APP_STATUS } from "@/constants";
 
 import {
   TDependenceItem,
@@ -66,12 +67,12 @@ const AddDependenceModal = () => {
 
   const addPackageMutation = useAddPackageMutation(() => {
     onClose();
-    globalStore.updateCurrentApp(globalStore.currentApp!);
+    globalStore.updateCurrentApp(globalStore.currentApp!, APP_STATUS.Restarting);
   });
 
   const editPackageMutation = useEditPackageMutation(() => {
     onClose();
-    globalStore.updateCurrentApp(globalStore.currentApp!);
+    globalStore.updateCurrentApp(globalStore.currentApp!, APP_STATUS.Restarting);
   });
 
   const packageSearchQuery = usePackageSearchQuery(name, (data) => {

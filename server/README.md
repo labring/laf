@@ -23,6 +23,7 @@
 - [Prisma](https://www.prisma.io)
 - [MinIO](https://min.io) object storage
 - [APISIX](https://apisix.apache.org) gateway
+- [nestjs-i18n](https://nestjs-i18n.com/) i18n
 
 ## Prerequisites
 

@@ -21,6 +21,8 @@ import { PrismaModule } from './prisma/prisma.module'
 import { SubscriptionModule } from './subscription/subscription.module'
 import { AccountModule } from './account/account.module'
 import { SettingModule } from './setting/setting.module'
+import * as path from 'path'
+import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n'
 
 @Module({
   imports: [
@@ -47,6 +49,21 @@ import { SettingModule } from './setting/setting.module'
     SubscriptionModule,
     AccountModule,
     SettingModule,
+    I18nModule.forRoot({
+      fallbackLanguage: 'en',
+      loaderOptions: {
+        path: path.join(__dirname, '/i18n/'),
+        watch: true,
+      },
+      resolvers: [
+        { use: QueryResolver, options: ['lang'] },
+        AcceptLanguageResolver,
+      ],
+      typesOutputPath: path.join(
+        __dirname,
+        '../src/generated/i18n.generated.ts',
+      ),
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
