@@ -164,4 +164,47 @@ export default async function (ctx: FunctionContext) {
     Key: key
   })
 }
+
+## 上传文件携带数据
+
+let obj = { id: "xxxxx" };
+
+xx.uploadFile({
+    url: '云函数地址',
+    filePath: tempFilePath,//文件路径
+    name: 'file',
+    formData: {
+        "formData": JSON.stringify(obj),//数据
+    },
+    success: (res_file) => {
+    
+        console.log("res_file:",res_file)
+
+        let res_data = JSON.parse(res_file.data);
+        
+        console.log("res_data:",res_data)
+
+    },
+    fail: (err_file) => {
+    
+        console.log("err_file:",err_file)
+            
+    }
+})
+
+云函数接收
+
+export async function main(ctx: FunctionContext) {
+
+	const { body, query } = ctx;
+
+	 let { formData } = body;
+
+      formData = JSON.parse(formData);
+
+      console.log("formData:",formData)
+
+}
+
+
 ```
