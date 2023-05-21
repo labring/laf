@@ -13,9 +13,9 @@ title: laf assistant
 `VSCode` 应用中直接搜索 `laf assistant` 或点击链接[在线安装](https://marketplace.visualstudio.com/items?itemName=NightWhite.laf-assistant)
 
 :::tip
-使用`laf assistant`需 node 版本大于等于 16
+使用`laf assistant`需 node 版本大于等于 18
 
-node version >= 16
+node version >= 18
 :::
 
 ## VSCode 设置修改
