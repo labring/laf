@@ -64,6 +64,32 @@ export default function SignUp() {
   const [countdown, setCountdown] = useState(60);
   const [isShowPassword, setIsShowPassword] = useState(false);
 
+  let inviteCode = new URLSearchParams(window.location.search).get("code");
+
+  if (inviteCode) {
+    const now = new Date();
+    const expirationDays = 7;
+    const expiration = new Date(now.getTime() + expirationDays * 24 * 60 * 60 * 1000);
+
+    const item = {
+      value: inviteCode,
+      expiration: expiration.getTime(),
+    };
+
+    localStorage.setItem("inviteCode", JSON.stringify(item));
+  } else {
+    const item = localStorage.getItem("inviteCode");
+
+    if (item) {
+      const data = JSON.parse(item);
+      if (new Date().getTime() > data.expiration) {
+        localStorage.removeItem("inviteCode");
+      } else {
+        inviteCode = data.value;
+      }
+    }
+  }
+
   const {
     register,
     getValues,
@@ -91,11 +117,13 @@ export default function SignUp() {
           code: data.validationCode,
           username: data.account,
           password: data.password,
+          inviteCode: inviteCode,
           type: "Signup",
         }
       : {
           username: data.account,
           password: data.password,
+          inviteCode: inviteCode,
           type: "Signup",
         };
 

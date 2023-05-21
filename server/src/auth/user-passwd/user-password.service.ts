@@ -46,9 +46,9 @@ export class UserPasswordService {
           where: { code: inviteCode },
         })
         if (res) {
-          await tx.inviteBy.create({
+          await tx.inviteRelation.create({
             data: {
-              uidInviteBy: res.uid,
+              inviteBy: res.uid,
               uid: user.id,
               codeId: res.id,
             },

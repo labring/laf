@@ -83,7 +83,7 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
     }
 
     if (!res.error) {
-      showSuccess(isEdit ? "update success" : "create success");
+      showSuccess(isEdit ? t("update success") : t("create success"));
       onClose();
       store.setCurrentFunction(res.data);
       reset(defaultValues);
