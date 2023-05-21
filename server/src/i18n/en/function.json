@@ -1,0 +1,20 @@
+{
+  "create": {
+    "nameExist": "function {name} is already existed",
+    "maxCount": "function count limit is {max}",
+    "error": "create function error"
+  },
+  "get": {},
+  "update": {
+    "error": "update function error"
+  },
+  "delete": {
+    "error": "delete function error"
+  },
+  "compile": {
+    "codeRequired": "code is required"
+  },
+  "common": {
+    "notFound": "function {name} is not found"
+  }
+}

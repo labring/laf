@@ -55,6 +55,7 @@
     "mongodb": "^5.1.0",
     "mongodb-uri": "^0.9.7",
     "nanoid": "^3.3.4",
+    "nestjs-i18n": "^10.2.6",
     "npm-package-arg": "^10.1.0",
     "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.13",
