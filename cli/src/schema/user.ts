@@ -21,14 +21,14 @@ export class UserSchema {
   static async refreshToken() {
     const user = this.getCurrentUser()
     const timestamp = Date.parse(new Date().toString()) / 1000
-    if (timestamp > user.tokenExpire) {
+    if (timestamp > user.expire) {
       const patDto = {
         pat: user.pat,
       }
       const token = await pat2token(user.server, patDto)
       const schema = this.read()
-      schema.user[schema.selected].token = token
-      schema.user[schema.selected].expire = timestamp + TOKEN_EXPIRE
+      schema.users[schema.selected].token = token
+      schema.users[schema.selected].expire = timestamp + TOKEN_EXPIRE
       this.write(schema)
       return token
     }
@@ -36,7 +36,7 @@ export class UserSchema {
   }
 
 
-  static read() {
+  static read(): UserSchema {
     if (!this.exist()) {
       this.write({
         users: [{

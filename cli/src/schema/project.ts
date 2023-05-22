@@ -1,9 +1,9 @@
 import * as path from 'path'
 import { getAppPath } from '../util/sys'
-import { loadYamlFile, writeYamlFile } from '../util/file'
+import { exist, loadYamlFile, writeYamlFile } from '../util/file'
 import { PROJECT_SCHEMA_NAME } from '../common/constant'
 
-class ProjectSchema {
+export class ProjectSchema {
   version: string
   name: string
   metadata?: {
@@ -15,12 +15,12 @@ class ProjectSchema {
   }
   spec: {
     runtime: string
-    dependencies?: string[]
+    dependencies?: {}
     baseDir?: string
     bucket?: string[]
   }
 
-  static read() {
+  static read(): ProjectSchema {
     const configPath = path.join(getAppPath(), PROJECT_SCHEMA_NAME)
     return loadYamlFile(configPath)
   }
@@ -29,5 +29,11 @@ class ProjectSchema {
     const configPath = path.join(getAppPath(), PROJECT_SCHEMA_NAME)
     return writeYamlFile(configPath, schema)
   }
+
+  static exist() {
+    const configPath = path.join(getAppPath(), PROJECT_SCHEMA_NAME)
+    return exist(configPath)
+  }
+
 }
 

@@ -19,7 +19,7 @@ export async function login(pat, options: { remote?: string, name?: string }) {
     if (userSchema.users[index].name === user.name) {
       userSchema.users[index].pat = pat
       userSchema.users[index].token = token
-      userSchema.users[index].tokenExpire = Date.parse(new Date().toString()) / 1000 + TOKEN_EXPIRE
+      userSchema.users[index].expire = Date.parse(new Date().toString()) / 1000 + TOKEN_EXPIRE
       UserSchema.write(userSchema)
       console.log(`${getEmoji('🎉')} login success`)
       return
@@ -33,7 +33,7 @@ export async function logout() {
   const userSchema = UserSchema.read()
   userSchema.users[userSchema.selected].pat = ''
   userSchema.users[userSchema.selected].token = ''
-  userSchema.users[userSchema.selected].tokenExpire = 0
+  userSchema.users[userSchema.selected].expire = 0
   UserSchema.write(userSchema)
 
   console.log(`${getEmoji('👋')} logout success`)
