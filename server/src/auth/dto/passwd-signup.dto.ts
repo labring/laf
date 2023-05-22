@@ -17,7 +17,7 @@ export class PasswdSignupDto {
   @IsString()
   @IsNotEmpty()
   @Length(3, 64)
-  @Matches(/^\S+$/, { message: '不能包含空格字符' })
+  @Matches(/^\S+$/, { message: 'invalid characters' })
   username: string
 
   @ApiProperty({
@@ -27,7 +27,7 @@ export class PasswdSignupDto {
   @IsString()
   @IsNotEmpty()
   @Length(8, 64)
-  @Matches(/^\S+$/, { message: '不能包含空格字符' })
+  @Matches(/^\S+$/, { message: 'invalid characters' })
   password: string
 
   @ApiPropertyOptional({
@@ -63,6 +63,6 @@ export class PasswdSignupDto {
   @IsOptional()
   @IsString()
   @Length(7, 7)
-  @Matches(/^\S+$/, { message: '不能包含空格字符' })
+  @Matches(/^\S+$/, { message: 'invalid characters' })
   inviteCode: string
 }
