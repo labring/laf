@@ -487,6 +487,7 @@ async function UploadToWinxin(url) {
   });
   return uploadResponse.body
  }
+```
 
 ## Laf 云函数的鉴权，获取 token，token 过期处理
 
