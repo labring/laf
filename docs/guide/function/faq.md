@@ -146,6 +146,62 @@ export async function main(ctx: FunctionContext) {
 }
 ```
 
+## 云函数合成带中文字体的图片
+
+先把支持中文字体的字体文件上传到云存储，获得云存储的字体下载地址，然后保存到临时文件中，再去通过 canvas 合成。
+
+:::tip
+Laf 应用重启后，临时文件会清空哦～
+:::
+
+```typescript
+import { createCanvas, registerFont } from 'canvas'
+import fs from 'fs'
+import cloud from '@lafjs/cloud'
+
+export async function main(ctx: FunctionContext) {
+
+  const url = ''  // 字体文件网址
+  const dest = '/tmp/fangzheng.ttf'  // 本地保存路径
+
+  if (fs.existsSync(dest)) {
+    console.log('File exists!')
+  } else {
+    console.log('File does not exist')
+    const res = await cloud.fetch({
+      method: 'get',
+      url,
+      responseType: 'arraybuffer'
+    })
+    fs.writeFileSync(dest, Buffer.from(res.data))
+  }
+
+  registerFont('/tmp/fangzheng.ttf', { family: 'fangzheng' })
+  const canvas = createCanvas(200, 200)
+  const context = canvas.getContext('2d')
+
+  // Write "你好！"
+  context.font = '30px fangzheng'
+  context.rotate(0.1)
+  context.fillText('你好！', 50, 100)
+
+  // Draw line under text
+  var text = context.measureText('hello!')
+  context.strokeStyle = 'rgba(0,0,0,0.5)'
+  context.beginPath()
+  context.lineTo(50, 102)
+  context.lineTo(30 + text.width, 102)
+  context.stroke()
+
+  // Write "Laf!"
+  context.font = '30px Impact'
+  context.rotate(0.1)
+  context.fillText('Laf!', 50, 150)
+  console.log(canvas.toDataURL())
+  return `<img src= ${canvas.toDataURL()} />`
+}
+```
+
 ## 云函数防抖
 
 通过 Laf 云函数的全局缓存可以很方便的设置防抖
@@ -391,6 +447,47 @@ export default async function (ctx: FunctionContext) {
 };
 ```
 
+## 云函数上传文件到微信公众号临时素材
+
+公众号回复图片或者文件，需要先把文件上传到临时素材才可以回复。
+
+以下例子为，通过文件 URL 上传到临时素材
+
+```typescript
+import fs from 'fs'
+const request = require('request');
+const util = require('util');
+const postRequest = util.promisify(request.post);
+
+export default async function (ctx: FunctionContext) {
+  const res = await UploadToWinxin(url)
+  console.log(res)
+}
+
+async function UploadToWinxin(url) {
+  const res = await cloud.fetch.get(url, {
+    responseType: 'arraybuffer'
+  })
+  fs.writeFileSync('/tmp/tmp.jpg', Buffer.from(res.data))
+  // 这里 getAccess_token 不做演示
+  const access_token = await getAccess_token()
+  const formData = {
+    media: {
+      value: fs.createReadStream('/tmp/tmp.jpg'),
+      options: {
+        filename: 'tmp.png',
+        contentType: 'image/png'
+      }
+    }
+  };
+  // 由于 axios 上传微信素材有 BUG，所以这里使用 request 封装 post 请求来上传
+  const uploadResponse = await postRequest({
+    url: `https://api.weixin.qq.com/cgi-bin/media/upload?access_token=${access_token}&type=image`,
+    formData: formData
+  });
+  return uploadResponse.body
+ }
+
 ## Laf 云函数的鉴权，获取 token，token 过期处理
 
 原帖：<https://forum.laf.run/d/535>
@@ -466,5 +563,6 @@ export async function main(ctx: FunctionContext) {
   console.log(ctx.user)
   // 如果前端传了 token 并且没过期： { uid: 1, exp: 1683861234, iat: 1683861224 }
   // 如果前端没传 token 或者 token 不在有效期：null
+
 }
 ```
