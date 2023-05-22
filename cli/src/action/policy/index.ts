@@ -16,7 +16,7 @@ import { POLICIES_DIRECTORY_NAME } from '../../common/constant'
 import { writeYamlFile, loadYamlFile } from '../../util/file'
 import { CreatePolicyDto, CreatePolicyRuleDto, UpdatePolicyRuleDto } from '../../api/v1/data-contracts'
 import { getEmoji } from '../../util/print'
-import { getApplicationPath } from '../../util/sys'
+import { getAppPath } from '../../util/sys'
 import { confirm } from '../../common/prompts'
 
 export async function list() {
@@ -166,7 +166,7 @@ async function push(policyName: string, isCreate: boolean) {
 }
 
 function getLocalPolicies(): string[] {
-  const dir = path.join(getApplicationPath(), POLICIES_DIRECTORY_NAME)
+  const dir = path.join(getAppPath(), POLICIES_DIRECTORY_NAME)
   const files = fs.readdirSync(dir)
   const policies: string[] = []
   for (let item of files) {

@@ -30,3 +30,11 @@ export const PACKAGE_FILE = 'package.json'
 export const RESPONSE_FILE = 'response.d.ts'
 export const TSCONFIG_FILE = 'tsconfig.json'
 export const GITIGNORE_FILE = 'gitignore'
+
+
+// schema path
+export const APP_SCHEMA_NAME = 'app.yaml'
+export const PROJECT_SCHEMA_NAME = 'laf.yaml'
+export const USER_SCHEMA_NAME = 'user.yaml'
+
+export const DEFAULT_SERVER = 'https://api.laf.run'

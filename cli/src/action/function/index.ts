@@ -24,7 +24,7 @@ import { readSecretConfig } from '../../config/secret'
 import { invokeFunction } from '../../api/debug'
 import { exist, remove } from '../../util/file'
 import { getEmoji } from '../../util/print'
-import { getApplicationPath } from '../../util/sys'
+import { getAppPath } from '../../util/sys'
 import { FUNCTIONS_DIRECTORY_NAME } from '../../common/constant'
 import { confirm } from '../../common/prompts'
 
@@ -273,7 +273,7 @@ async function printLog(appid: string, requestId: string, limit: string) {
 }
 
 function getLocalFuncs() {
-  const funcDir = path.join(getApplicationPath(), FUNCTIONS_DIRECTORY_NAME)
+  const funcDir = path.join(getAppPath(), FUNCTIONS_DIRECTORY_NAME)
   const files = fs.readdirSync(funcDir)
   const funcs = files.filter((file) => file.endsWith('.ts')).map((file) => file.replace('.ts', ''))
   return funcs

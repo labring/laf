@@ -2,6 +2,7 @@
 import axios, { AxiosRequestHeaders, AxiosResponse } from 'axios'
 import { existSystemConfig, readSystemConfig, refreshToken } from '../config/system'
 import { DEFAULT_REMOTE_SERVER } from '../common/constant'
+import { UserSchema } from '../schema/user'
 
 export const request = axios.create({
   baseURL: '/',
@@ -17,18 +18,20 @@ request.interceptors.request.use(
     }
 
     // load remote server and token
-    if (existSystemConfig() && config.url?.startsWith('/v1/')) {
-      let { remoteServer, token, tokenExpire } = readSystemConfig()
+    if (UserSchema.exist() && config.url?.startsWith('/v1/')) {
+      let { server, token, tokenExpire } = UserSchema.getCurrentUser()
+      if (token === undefined || token === '') {
+        console.log('please login first')
+        process.exit(1)
+      }
       if (config.url?.indexOf('pat2token') === -1) {
         const timestamp = Date.parse(new Date().toString()) / 1000
         if (tokenExpire < timestamp) {
-          token = await refreshToken()
+          token = await UserSchema.refreshToken()
         }
+        config.url = server + config.url
       }
-      config.url = remoteServer + config.url
       _headers.Authorization = 'Bearer ' + token
-    } else {
-      config.url = DEFAULT_REMOTE_SERVER + config.url
     }
 
     config.headers = {
