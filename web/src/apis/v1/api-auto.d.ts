@@ -19,6 +19,17 @@ declare namespace Definitions {
     code?: string /* The source code of the function */;
   };
 
+  export type CreateApplicationDto = {
+    name?: string;
+    state?: string;
+    regionId?: string;
+    runtimeId?: string;
+    cpu?: number;
+    memory?: number;
+    databaseCapacity?: number;
+    storageCapacity?: number;
+  };
+
   export type UpdateApplicationDto = {
     name?: string;
     state?: string;
@@ -62,6 +73,12 @@ declare namespace Definitions {
 
   export type UpdatePolicyRuleDto = {
     value?: string;
+  };
+
+  export type CreateChargeOrderDto = {
+    amount?: number;
+    channel?: string;
+    currency?: string;
   };
 
   export type CreateWebsiteDto = {
@@ -170,6 +187,30 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace RegionControllerGetResourceOptions {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace RegionControllerGetResourceOptionsByRegionId {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace RegionControllerGetResourceBundles {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace AuthControllerGetSignupUrl {
     export type QueryParameters = any;
 
@@ -238,6 +279,14 @@ declare namespace Paths {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.CompileFunctionDto;
+
+    export type Responses = any;
+  }
+
+  namespace ApplicationControllerCreate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.CreateApplicationDto;
 
     export type Responses = any;
   }
@@ -443,6 +492,38 @@ declare namespace Paths {
   }
 
   namespace PolicyRuleControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerFindOne {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerGetChargeOrder {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerCharge {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.CreateChargeOrderDto;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerWechatNotify {
     export type QueryParameters = any;
 
     export type BodyParameters = any;

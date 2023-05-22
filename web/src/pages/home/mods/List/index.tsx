@@ -17,8 +17,6 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
-import clsx from "clsx";
-import dayjs from "dayjs";
 
 import CopyText from "@/components/CopyText";
 import FileTypeIcon from "@/components/FileTypeIcon";
@@ -121,24 +119,6 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                   <div className="w-4/12 ">
                     <p>
                       {t("CreateTime")}: {formatDate(item.createdAt)}{" "}
-                    </p>
-                    <p
-                      className={clsx(
-                        "mt-1",
-                        dayjs().add(3, "day").isAfter(dayjs(item.subscription?.expiredAt))
-                          ? "text-red-500"
-                          : "",
-                      )}
-                    >
-                      {t("EndTime")}: {formatDate(item.subscription?.expiredAt)}
-                      <CreateAppModal application={item} type="renewal">
-                        <a
-                          className="invisible ml-2 text-primary-500 group-hover:visible group-hover:inline-block"
-                          href="/edit"
-                        >
-                          {t("Renew")}
-                        </a>
-                      </CreateAppModal>
                     </p>
                   </div>
                   <div className="flex w-1/12 min-w-[100px]">

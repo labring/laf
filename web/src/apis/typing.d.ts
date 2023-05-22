@@ -1,5 +1,5 @@
 export type TApplicationDetail = {
-  id: string;
+  _id: string;
   name: string;
   appid: string;
   regionId: string;
@@ -11,7 +11,7 @@ export type TApplicationDetail = {
   updatedAt: string;
   lockedAt: string;
   createdBy: string;
-  bundle: TBundle;
+  bundle: TCurrentBundle;
   runtime: TRuntime;
   configuration: TConfiguration;
   domain: TDomain;
@@ -22,26 +22,62 @@ export type TApplicationDetail = {
   function_debug_token: string;
   host?: string;
   origin?: string;
-  subscription: TSubscription;
+};
+
+export type TCurrentBundle = {
+  _id: string;
+  appid: string;
+  bundleId: string;
+  name: string;
+  displayName: string;
+  createdAt: string;
+  updatedAt: string;
+  resource: TResource;
 };
 
 export type TBundle = {
-  id: string;
+  _id: string;
+  regionId: string;
   name: string;
   displayName: string;
-  priority: number;
-  state: string;
-  resource: TResource;
-  limitCountPerUser: number;
-  notes: { content: string }[];
-  subscriptionOptions: TSubscriptionOption[];
+  spec: TSpec;
+  enableFreeTier: boolean;
+  limitCountOfFreeTierPerUser: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TSpec = {
+  cpu: Cpu;
+  memory: Memory;
+  databaseCapacity: DatabaseCapacity;
+  storageCapacity: StorageCapacity;
+  networkTraffic: NetworkTraffic;
+};
+
+export type Cpu = {
+  value: number;
+};
+
+export type Memory = {
+  value: number;
+};
+
+export type DatabaseCapacity = {
+  value: number;
+};
+
+export type StorageCapacity = {
+  value: number;
+};
+
+export type NetworkTraffic = {
+  value: number;
 };
 
 export type TResource = {
   limitCPU: number;
   limitMemory: number;
-  requestCPU: number;
-  requestMemory: number;
   databaseCapacity: number;
   storageCapacity: number;
   networkTrafficOutbound: number;
@@ -64,13 +100,13 @@ export type TSubscriptionOption = {
 };
 
 export type TRuntime = {
-  id: string;
+  _id: string;
   name: string;
   type: string;
-  image: TImage;
   state: string;
   version: string;
   latest: boolean;
+  image: TImage;
 };
 
 export type TImage = {
@@ -80,12 +116,12 @@ export type TImage = {
 };
 
 export type TConfiguration = {
-  id: string;
+  _id: string;
   appid: string;
-  environments: TEnvironment[];
   dependencies: any[];
   createdAt: string;
   updatedAt: string;
+  environments: TEnvironment[];
 };
 
 export type TEnvironment = {
@@ -94,7 +130,7 @@ export type TEnvironment = {
 };
 
 export type TDomain = {
-  id: string;
+  _id: string;
   appid: string;
   domain: string;
   state: string;
@@ -106,7 +142,7 @@ export type TDomain = {
 
 export type TStorage = {
   credentials: TCredentials;
-  id: string;
+  _id: string;
   appid: string;
   accessKey: string;
   secretKey: string;

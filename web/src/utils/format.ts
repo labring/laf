@@ -61,15 +61,16 @@ export function isExitInList(targetKey: string, targetValue: any, list: any[] | 
 }
 
 export function formatLimitCPU(cpu: number) {
-  return cpu / 1000;
+  return cpu / 1000 + t("Unit.CPU");
 }
 
 export function formatLimitMemory(memory: number) {
-  return memory;
+  // if memory > 1024, return GB, else return MB
+  return memory > 1024 ? memory / 1024 + t("Unit.GB") : memory + t("Unit.MB");
 }
 
 export function formatLimitCapacity(capacity: number) {
-  return capacity / 1024;
+  return capacity / 1024 + t("Unit.GB");
 }
 
 export function formatLimitTraffic(traffic: number) {

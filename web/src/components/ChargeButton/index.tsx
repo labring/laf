@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Button,
   Input,
@@ -26,9 +26,7 @@ export default function ChargeButton(props: { amount?: number; children: React.R
   const { children } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const initialAmount = props.amount && props.amount > 0 ? props.amount : 100;
-
-  const [amount, setAmount] = React.useState(initialAmount);
+  const [amount, setAmount] = React.useState<number>();
 
   const [phaseStatus, setPhaseStatus] = React.useState<"Pending" | "Paid" | undefined>();
 
@@ -59,11 +57,6 @@ export default function ChargeButton(props: { amount?: number; children: React.R
     },
   );
 
-  useEffect(() => {
-    const initialAmount = props.amount && props.amount > 0 ? props.amount : 100;
-    setAmount(initialAmount);
-  }, [props.amount]);
-
   return (
     <>
       {React.cloneElement(children, { onClick: onOpen })}
@@ -90,13 +83,28 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                   }}
                 />
               </InputGroup>
+              <div className="mb-8 grid grid-cols-3 gap-1">
+                {[1000, 5000, 10000, 50000, 100000, 500000].map((item) => (
+                  <Button
+                    className="!rounded-sm"
+                    variant={"outline"}
+                    key={item}
+                    onClick={() => {
+                      console.log(123, item);
+                      setAmount(item / 100);
+                    }}
+                  >
+                    {formatPrice(item)}
+                  </Button>
+                ))}
+              </div>
               <Button
                 className="w-full !rounded-full"
                 size="lg"
                 isLoading={createChargeOrder.isLoading}
                 onClick={() => {
                   createChargeOrder.mutateAsync({
-                    amount: convertMoney(amount),
+                    amount: convertMoney(amount || 0),
                     channel: CHARGE_CHANNEL.WeChat,
                     currency: CURRENCY.CNY,
                   });

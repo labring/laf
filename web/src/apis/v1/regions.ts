@@ -26,3 +26,54 @@ export async function RegionControllerGetRegions(
     params: params,
   });
 }
+
+/**
+ * Get resource option list
+ */
+export async function RegionControllerGetResourceOptions(
+  params: Paths.RegionControllerGetResourceOptions.BodyParameters | any,
+): Promise<Paths.RegionControllerGetResourceOptions.Responses> {
+  // /v1/regions/resource-options
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/regions/resource-options`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+/**
+ * Get resource option list by region id
+ */
+export async function RegionControllerGetResourceOptionsByRegionId(
+  params: Paths.RegionControllerGetResourceOptionsByRegionId.BodyParameters | any,
+): Promise<Paths.RegionControllerGetResourceOptionsByRegionId.Responses> {
+  // /v1/regions/resource-options/{regionId}
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/regions/resource-options/${_params.regionId}`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+/**
+ * Get resource template list
+ */
+export async function RegionControllerGetResourceBundles(
+  params: Paths.RegionControllerGetResourceBundles.BodyParameters | any,
+): Promise<Paths.RegionControllerGetResourceBundles.Responses> {
+  // /v1/regions/resource-bundles
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/regions/resource-bundles`, {
+    method: "GET",
+    params: params,
+  });
+}

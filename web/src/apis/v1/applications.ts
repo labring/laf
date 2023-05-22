@@ -11,6 +11,23 @@ import request from "@/utils/request";
 import useGlobalStore from "@/pages/globalStore";
 
 /**
+ * Create application
+ */
+export async function ApplicationControllerCreate(
+  params: Definitions.CreateApplicationDto | any,
+): Promise<Paths.ApplicationControllerCreate.Responses> {
+  // /v1/applications
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/applications`, {
+    method: "POST",
+    data: params,
+  });
+}
+
+/**
  * Get user application list
  */
 export async function ApplicationControllerFindAll(
