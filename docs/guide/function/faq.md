@@ -549,7 +549,7 @@ axios({
   url: "functionUrl",
   headers: {
     // 这里带上 token
-    Authorization: `token ${token}`,
+    Authorization: `Bearer ${token}`,
   },
 })
 ```
