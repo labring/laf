@@ -9,7 +9,7 @@ import { CronJobService } from 'src/trigger/cron-job.service'
 
 @Injectable()
 export class InstanceTaskService {
-  readonly lockTimeout = 10 // in second
+  readonly lockTimeout = 15 // in second
   private readonly logger = new Logger(InstanceTaskService.name)
 
   constructor(
@@ -50,7 +50,7 @@ export class InstanceTaskService {
     // Phase `Started` -> `Starting`
     this.handleRestartingState().catch((err) => {
       this.logger.error('handleRestartingPhase error', err)
-      err?.response && this.logger.debug(err?.response?.data || err?.response)
+      this.logger.debug(err?.response?.toJSON() || JSON.stringify(err))
     })
   }
 
@@ -93,6 +93,7 @@ export class InstanceTaskService {
           lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
         { $set: { lockedAt: new Date() } },
+        { sort: { lockedAt: 1, updatedAt: 1 } },
       )
 
     if (!res.value) return
@@ -207,6 +208,7 @@ export class InstanceTaskService {
           lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
         { $set: { lockedAt: new Date() } },
+        { sort: { lockedAt: 1, updatedAt: 1 } },
       )
 
     if (!res.value) return
@@ -260,10 +262,13 @@ export class InstanceTaskService {
       .findOneAndUpdate(
         {
           state: ApplicationState.Restarting,
-          phase: ApplicationPhase.Started,
+          phase: {
+            $in: [ApplicationPhase.Started, ApplicationPhase.Stopped],
+          },
           lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
         { $set: { lockedAt: new Date() } },
+        { sort: { lockedAt: 1, updatedAt: 1 } },
       )
 
     if (!res.value) return
@@ -273,7 +278,12 @@ export class InstanceTaskService {
 
     // update application phase to `Starting`
     await db.collection<Application>('Application').updateOne(
-      { appid: app.appid, phase: ApplicationPhase.Started },
+      {
+        appid: app.appid,
+        phase: {
+          $in: [ApplicationPhase.Started, ApplicationPhase.Stopped],
+        },
+      },
       {
         $set: {
           phase: ApplicationPhase.Starting,
@@ -289,9 +299,12 @@ export class InstanceTaskService {
    * Relock application by appid, lockedTime is in milliseconds
    */
   async relock(appid: string, lockedTime = 0) {
-    // if lockedTime greater than 3 minutes, set it to 3 minutes
-    if (lockedTime > 3 * 60 * 1000) {
-      lockedTime = 3 * 60 * 1000
+    if (lockedTime <= 2 * 60 * 1000) {
+      lockedTime = Math.ceil(lockedTime / 10)
+    }
+
+    if (lockedTime > 2 * 60 * 1000) {
+      lockedTime = this.lockTimeout * 1000
     }
 
     const db = SystemDatabase.db

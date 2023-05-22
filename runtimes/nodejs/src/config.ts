@@ -72,8 +72,8 @@ export default class Config {
     return require('../package.json')?.version
   }
 
-  static get APP_ID(): string {
-    return process.env.APP_ID
+  static get APPID(): string {
+    return process.env.APPID ?? process.env.APP_ID
   }
 
   static get NPM_INSTALL_FLAGS(): string {
@@ -82,9 +82,5 @@ export default class Config {
 
   static get REQUEST_LIMIT_SIZE(): string {
     return process.env.REQUEST_LIMIT_SIZE || '10mb'
-  }
-
-  static get PACKAGES(): string {
-    return process.env.PACKAGES || ''
   }
 }
