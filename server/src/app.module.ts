@@ -21,6 +21,7 @@ import { AccountModule } from './account/account.module'
 import { SettingModule } from './setting/setting.module'
 import * as path from 'path'
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n'
+import { BillingModule } from './billing/billing.module'
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n'
         '../src/generated/i18n.generated.ts',
       ),
     }),
+    BillingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
