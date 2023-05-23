@@ -68,8 +68,8 @@ model InviteCode {
 // invite relationship
 model InviteRelation {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  inviteBy    String   @db.ObjectId
   uid         String   @db.ObjectId
+  invitedBy   String   @db.ObjectId
   codeId      String   @db.ObjectId
   createdAt   DateTime @default(now())
 }

@@ -82,6 +82,7 @@ export class PhoneService {
           profile: { create: { name: username || phone } },
         },
       })
+      // TODO: add invite code feature
       if (!withUsername) {
         return user
       }
