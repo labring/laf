@@ -17,7 +17,7 @@ import {
 } from '@nestjs/swagger'
 import { ApplicationAuthGuard } from '../../auth/application.auth.guard'
 import { JwtAuthGuard } from '../../auth/jwt.auth.guard'
-import { ApiResponseUtil, ResponseUtil } from '../../utils/response'
+import { ApiResponseObject, ResponseUtil } from '../../utils/response'
 import { CollectionService } from './collection.service'
 import { CreateCollectionDto } from '../dto/create-collection.dto'
 import { UpdateCollectionDto } from '../dto/update-collection.dto'
@@ -61,7 +61,7 @@ export class CollectionController {
    * @param appid
    * @returns
    */
-  @ApiResponseUtil(Collection) // QUIRKS: should be array but swagger doesn't support it
+  @ApiResponseObject(Collection) // QUIRKS: should be array but swagger doesn't support it
   @ApiOperation({ summary: 'Get collection list of an application' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get()
@@ -79,7 +79,7 @@ export class CollectionController {
    * @param name
    * @returns
    */
-  @ApiResponseUtil(Collection)
+  @ApiResponseObject(Collection)
   @ApiOperation({ summary: 'Get collection by name' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get(':name')

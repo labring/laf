@@ -5,7 +5,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
-import { ApiResponseUtil, ResponseUtil } from '../utils/response'
+import { ApiResponseObject, ResponseUtil } from '../utils/response'
 import { IRequest } from '../utils/interface'
 import { UserDto } from '../user/dto/user.response'
 import { AuthService } from './auth.service'
@@ -41,7 +41,7 @@ export class AuthController {
    */
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  @ApiResponseUtil(UserDto)
+  @ApiResponseObject(UserDto)
   @ApiOperation({ summary: 'Get current user profile' })
   @ApiBearerAuth('Authorization')
   async getProfile(@Req() request: IRequest) {

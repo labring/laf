@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { SystemDatabase } from 'src/database/system-database'
 import { ObjectId } from 'mongodb'
-import { ResourceOption, ResourceBundle } from './entities/resource'
+import {
+  ResourceOption,
+  ResourceBundle,
+  ResourceType,
+} from './entities/resource'
 
 @Injectable()
 export class ResourceService {
@@ -22,6 +26,13 @@ export class ResourceService {
     return option
   }
 
+  async findOneByType(type: ResourceType) {
+    const option = await this.db
+      .collection<ResourceOption>('ResourceOption')
+      .findOne({ type: type })
+    return option
+  }
+
   async findAllByRegionId(regionId: ObjectId) {
     const options = await this.db
       .collection<ResourceOption>('ResourceOption')
@@ -38,5 +49,18 @@ export class ResourceService {
       .toArray()
 
     return options
+  }
+
+  groupByType(options: ResourceOption[]) {
+    type GroupedOptions = {
+      [key in ResourceType]: ResourceOption
+    }
+
+    const groupedOptions = options.reduce((acc, cur) => {
+      acc[cur.type] = cur
+      return acc
+    }, {} as GroupedOptions)
+
+    return groupedOptions
   }
 }
