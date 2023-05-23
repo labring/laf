@@ -1,11 +1,16 @@
 import { Body, Controller, Get, Logger, Param, Post } from '@nestjs/common'
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
-import { CreateApplicationDto } from 'src/application/dto/create-application.dto'
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { ResourceService } from './resource.service'
-import { ResponseUtil } from 'src/utils/response'
+import { ApiResponseArray, ResponseUtil } from 'src/utils/response'
 import { ObjectId } from 'mongodb'
 import { BillingService } from './billing.service'
 import { RegionService } from 'src/region/region.service'
+import {
+  CalculatePriceDto,
+  CalculatePriceResultDto,
+} from './dto/calculate-price.dto'
+import { ResourceBundle, ResourceOption } from './entities/resource'
+import { ApiResponseObject } from 'src/utils/response'
 
 @ApiTags('Billing')
 @Controller('billing')
@@ -24,11 +29,13 @@ export class BillingController {
    */
   @ApiOperation({ summary: 'Calculate pricing' })
   @Post('price')
-  async calculatePrice(@Body() dto: CreateApplicationDto) {
+  @ApiResponseObject(CalculatePriceResultDto)
+  async calculatePrice(@Body() dto: CalculatePriceDto) {
     // check regionId exists
     const region = await this.region.findOneDesensitized(
       new ObjectId(dto.regionId),
     )
+
     if (!region) {
       return ResponseUtil.error(`region ${dto.regionId} not found`)
     }
@@ -41,17 +48,18 @@ export class BillingController {
    * Get resource option list
    */
   @ApiOperation({ summary: 'Get resource option list' })
+  @ApiResponseArray(ResourceOption)
   @Get('resource-options')
   async getResourceOptions() {
     const options = await this.resource.findAll()
-    const grouped = this.resource.groupByType(options)
-    return ResponseUtil.ok(grouped)
+    return ResponseUtil.ok(options)
   }
 
   /**
    * Get resource option list by region id
    */
   @ApiOperation({ summary: 'Get resource option list by region id' })
+  @ApiResponseArray(ResourceOption)
   @Get('resource-options/:regionId')
   async getResourceOptionsByRegionId(@Param('regionId') regionId: string) {
     const data = await this.resource.findAllByRegionId(new ObjectId(regionId))
@@ -63,6 +71,7 @@ export class BillingController {
    * @returns
    */
   @ApiOperation({ summary: 'Get resource template list' })
+  @ApiResponseArray(ResourceBundle)
   @Get('resource-bundles')
   async getResourceBundles() {
     const data = await this.resource.findAllBundles()

@@ -47,7 +47,7 @@ export class ResponseUtil<T = any> {
   }
 }
 
-export const ApiResponseUtil = <DataDto extends Type<unknown>>(
+export const ApiResponseObject = <DataDto extends Type<unknown>>(
   dataDto: DataDto,
 ) =>
   applyDecorators(
@@ -59,6 +59,28 @@ export const ApiResponseUtil = <DataDto extends Type<unknown>>(
           {
             properties: {
               data: { $ref: getSchemaPath(dataDto) },
+            },
+          },
+        ],
+      },
+    }),
+  )
+
+export const ApiResponseArray = <DataDto extends Type<unknown>>(
+  dataDto: DataDto,
+) =>
+  applyDecorators(
+    ApiExtraModels(ResponseUtil, dataDto),
+    ApiResponse({
+      schema: {
+        allOf: [
+          { $ref: getSchemaPath(ResponseUtil) },
+          {
+            properties: {
+              data: {
+                type: 'array',
+                items: { $ref: getSchemaPath(dataDto) },
+              },
             },
           },
         ],

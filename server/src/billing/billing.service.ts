@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { CreateApplicationDto } from 'src/application/dto/create-application.dto'
 import { SystemDatabase } from 'src/database/system-database'
 import { ResourceService } from './resource.service'
 import { ObjectId } from 'mongodb'
 import { ResourceType } from './entities/resource'
 import { Decimal } from 'decimal.js'
 import * as assert from 'assert'
+import { CalculatePriceDto } from './dto/calculate-price.dto'
 
 @Injectable()
 export class BillingService {
@@ -13,7 +13,7 @@ export class BillingService {
 
   constructor(private readonly resource: ResourceService) {}
 
-  async calculatePrice(dto: CreateApplicationDto) {
+  async calculatePrice(dto: CalculatePriceDto) {
     // get options by region id
     const options = await this.resource.findAllByRegionId(
       new ObjectId(dto.regionId),
