@@ -6,15 +6,13 @@ import {
   Length,
   Max,
   Min,
+  IsEnum,
 } from 'class-validator'
+import { SseEventEnum } from '../types'
 
 
 
 export class CreateEventSourceDto {
-
-  // uid       String
-  // appid     String
-  // payload   Json
 
   @IsString()
   @IsNotEmpty()
@@ -26,11 +24,13 @@ export class CreateEventSourceDto {
   @ApiProperty()
   appid: string
 
+  @IsEnum(SseEventEnum)
+  eventType: SseEventEnum
 
-  @IsString()
+
   @IsNotEmpty()
   @ApiProperty()
-  payload: any
+  payload: object
 
 
   // @IsNumber()

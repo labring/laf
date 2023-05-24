@@ -9,7 +9,7 @@ import { IResponse } from 'src/utils/interface'
 export class SseClientsService {
   private readonly logger = new Logger(SseClientsService.name)
 
-  private clients: any[] = []
+  private clients: SseResponseWrapper[] = []
 
   constructor(
     private readonly prisma: PrismaService,
@@ -53,8 +53,9 @@ export class SseClientsService {
   }
 
 
-  getClient(userid: string): Record<string, any> {
-    return this.clients.find(item => item.userid == userid)
+  getClients(userid: string): SseResponseWrapper[] {
+    // return this.clients.find(item => item.userid == userid)
+    return this.clients.filter(item => item.userid.includes(userid))
   }
 
 
@@ -63,15 +64,24 @@ export class SseClientsService {
       return
     }
 
-    let { response } = this.getClient(userid)
-    if (!response) {
+
+    let clients = this.getClients(userid)
+    if (!clients || clients.length <= 0) {
       return
     }
 
-    // parse sse payload
-    let payload = sseEvent.parsePayload()
-    response.write(payload)
-    response.flush()
+
+    clients.forEach(client => {
+      let { response } = client
+      if (!response) {
+        return
+      }
+
+      // parse sse payload
+      let payload = sseEvent.parsePayload()
+      response.write(payload)
+      response.flush()
+    })
   }
 
 

@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { PrismaService } from 'src/prisma/prisma.service'
-import { SsePongEvent, SseDefaultEvent, SseAbstractEvent, CHANGE_STREAM_PIPELINE } from './types'
+import { SsePongEvent, SseDefaultEvent, SseAbstractEvent, CHANGE_STREAM_PIPELINE, SseEventEnum } from './types'
 import { SystemDatabase } from "../database/system-database";
 import { CreateEventSourceDto } from './dto/create-eventsource.dto';
+import { SseClientsService } from './sse-clients.service';
 
 
 
@@ -14,8 +15,10 @@ export class SseEventsourceService {
 
     constructor(
         private readonly prisma: PrismaService,
+        private readonly sseClientsService: SseClientsService,
+
     ) {
-        this.mogodb = SystemDatabase.db()
+        this.mogodb = SystemDatabase.db
         if (this.mogodb) {
             this.initSseEventChangeStreams()
         } else {
@@ -25,12 +28,10 @@ export class SseEventsourceService {
 
 
     async addSseEventSource(dto: CreateEventSourceDto) {
-        const { uid, appid, payload } = dto
+        // const { uid, appid, payload, eventType } = dto
         const sseEventSource = await this.prisma.sseEventSource.create({
             data: {
-                uid,
-                appid,
-                payload,
+                ...dto
             },
         })
 
@@ -45,10 +46,23 @@ export class SseEventsourceService {
         const changeStream = this.mogodb.collection("SseEventSource").watch(CHANGE_STREAM_PIPELINE)
 
         changeStream.on("change", changeEvent => {
-            const { fullDocument } = changeEvent
-
             // process any change event
             console.log("received a change to the collection: \t", JSON.stringify(changeEvent))
+            const { fullDocument } = changeEvent
+
+            if (fullDocument && fullDocument['_id']) {
+                const { uid, appid, eventType, payload } = fullDocument
+
+                if (uid && appid && eventType) {
+                    SseEventEnum
+                    // const sseDefaultEvent = new SseDefaultEvent(uid, appid, SseEventEnum.NPMINSTALL
+                    //     , payload)
+
+                    const sseDefaultEvent = new SseDefaultEvent(uid, appid, eventType as SseEventEnum, payload)
+
+                    this.sseClientsService.sendDefaultEvent(sseDefaultEvent)
+                }
+            }
         })
     }
 

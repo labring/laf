@@ -20,7 +20,7 @@ export enum SseEventEnum {
 }
 
 export const CHANGE_STREAM_PIPELINE = [
-  { fullDocument: 'updateLookup' },
+  // { fullDocument: 'updateLookup' },
   { $match: { 'operationType': 'insert' } }
 ]
 

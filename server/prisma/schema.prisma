@@ -749,6 +749,7 @@ model SseEventSource {
   id        String            @id @default(auto()) @map("_id") @db.ObjectId
   uid       String
   appid     String
+  eventType String
   payload   Json
   state     Int               @default(0)
   createdAt DateTime          @default(now())
