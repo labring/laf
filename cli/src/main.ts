@@ -4,7 +4,7 @@ import { Command } from 'commander'
 import { command as applicationCommand } from './command/application/'
 import { command as functionCommand } from './command/function/'
 import { command as dependencyCommand } from './command/dependency/'
-import { loginCommand, logoutCommand } from './command/auth'
+import { loginCommand, logoutCommand, command as userCommand } from './command/user'
 import { command as storageCommand } from './command/storage'
 import { command as policyCommand } from './command/policy'
 import { command as websiteCommand } from './command/website'
@@ -21,6 +21,7 @@ program.option('-v, --version', 'output version').action((options) => {
 
 program.addCommand(loginCommand())
 program.addCommand(logoutCommand())
+program.addCommand(userCommand())
 program.addCommand(applicationCommand())
 program.addCommand(functionCommand())
 program.addCommand(storageCommand())
