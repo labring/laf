@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { CreateEnvironmentDto } from './dto/create-env.dto'
 import { ApplicationConfigurationService } from './configuration.service'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import { ApplicationConfiguration } from './entities/application-configuration'
 import * as assert from 'node:assert'
 

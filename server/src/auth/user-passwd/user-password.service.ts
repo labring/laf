@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { hashPassword } from 'src/utils/crypto'
 import { AuthenticationService } from '../authentication.service'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import { User } from 'src/user/entities/user'
 import {
   UserPassword,

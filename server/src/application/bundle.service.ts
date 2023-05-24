@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ApplicationBundle } from 'src/application/entities/application-bundle'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 
 @Injectable()
 export class BundleService {

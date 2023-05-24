@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ServerConfig } from '../constants'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import { Region } from 'src/region/entities/region'
 import { Runtime } from 'src/application/entities/runtime'
 import {

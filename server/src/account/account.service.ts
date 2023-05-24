@@ -3,7 +3,7 @@ import * as assert from 'assert'
 import { WeChatPayService } from './payment/wechat-pay.service'
 import { PaymentChannelService } from './payment/payment-channel.service'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import { Account, BaseState } from './entities/account'
 import { ObjectId } from 'mongodb'
 import {

@@ -12,19 +12,34 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { IRequest } from '../utils/interface'
 import { JwtAuthGuard } from '../auth/jwt.auth.guard'
-import { ResponseUtil } from '../utils/response'
+import {
+  ApiResponseArray,
+  ApiResponseObject,
+  ResponseUtil,
+} from '../utils/response'
 import { ApplicationAuthGuard } from '../auth/application.auth.guard'
-import { UpdateApplicationDto } from './dto/update-application.dto'
+import {
+  UpdateApplicationBundleDto,
+  UpdateApplicationDto,
+  UpdateApplicationNameDto,
+  UpdateApplicationStateDto,
+} from './dto/update-application.dto'
 import { ApplicationService } from './application.service'
 import { FunctionService } from '../function/function.service'
 import { StorageService } from 'src/storage/storage.service'
 import { RegionService } from 'src/region/region.service'
 import { CreateApplicationDto } from './dto/create-application.dto'
 import { AccountService } from 'src/account/account.service'
-import { ApplicationPhase, ApplicationState } from './entities/application'
-import { SystemDatabase } from 'src/database/system-database'
+import {
+  Application,
+  ApplicationPhase,
+  ApplicationState,
+  ApplicationWithRelations,
+} from './entities/application'
+import { SystemDatabase } from 'src/system-database'
 import { Runtime } from './entities/runtime'
 import { ObjectId } from 'mongodb'
+import { ApplicationBundle } from './entities/application-bundle'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -33,11 +48,11 @@ export class ApplicationController {
   private logger = new Logger(ApplicationController.name)
 
   constructor(
-    private readonly appService: ApplicationService,
-    private readonly funcService: FunctionService,
-    private readonly regionService: RegionService,
-    private readonly storageService: StorageService,
-    private readonly accountService: AccountService,
+    private readonly application: ApplicationService,
+    private readonly fn: FunctionService,
+    private readonly region: RegionService,
+    private readonly storage: StorageService,
+    private readonly account: AccountService,
   ) {}
 
   /**
@@ -45,12 +60,13 @@ export class ApplicationController {
    */
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Create application' })
+  @ApiResponseObject(ApplicationWithRelations)
   @Post()
   async create(@Req() req: IRequest, @Body() dto: CreateApplicationDto) {
     const user = req.user
 
     // check regionId exists
-    const region = await this.regionService.findOneDesensitized(
+    const region = await this.region.findOneDesensitized(
       new ObjectId(dto.regionId),
     )
     if (!region) {
@@ -66,17 +82,17 @@ export class ApplicationController {
     }
 
     // check account balance
-    const account = await this.accountService.findOne(user._id)
+    const account = await this.account.findOne(user._id)
     const balance = account?.balance || 0
     if (balance <= 0) {
       return ResponseUtil.error(`account balance is not enough`)
     }
 
     // create application
-    const appid = await this.appService.tryGenerateUniqueAppid()
-    await this.appService.create(user._id, appid, dto)
+    const appid = await this.application.tryGenerateUniqueAppid()
+    await this.application.create(user._id, appid, dto)
 
-    const app = await this.appService.findOne(appid)
+    const app = await this.application.findOne(appid)
     return ResponseUtil.ok(app)
   }
 
@@ -88,9 +104,10 @@ export class ApplicationController {
   @UseGuards(JwtAuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get user application list' })
+  @ApiResponseArray(ApplicationWithRelations)
   async findAll(@Req() req: IRequest) {
     const user = req.user
-    const data = await this.appService.findAllByUser(user._id)
+    const data = await this.application.findAllByUser(user._id)
     return ResponseUtil.ok(data)
   }
 
@@ -103,21 +120,17 @@ export class ApplicationController {
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get(':appid')
   async findOne(@Param('appid') appid: string) {
-    const data = await this.appService.findOne(appid)
+    const data = await this.application.findOne(appid)
 
     // SECURITY ALERT!!!
     // DO NOT response this region object to client since it contains sensitive information
-    const region = await this.regionService.findOne(data.regionId)
+    const region = await this.region.findOne(data.regionId)
 
     // TODO: remove these storage related code to standalone api
     let storage = {}
-    const storageUser = await this.storageService.findOne(appid)
+    const storageUser = await this.storage.findOne(appid)
     if (storageUser) {
-      const sts = await this.storageService.getOssSTS(
-        region,
-        appid,
-        storageUser,
-      )
+      const sts = await this.storage.getOssSTS(region, appid, storageUser)
       const credentials = {
         endpoint: region.storageConf.externalEndpoint,
         accessKeyId: sts.Credentials?.AccessKeyId,
@@ -134,7 +147,7 @@ export class ApplicationController {
 
     // Generate the develop token, it's provided to the client when debugging function
     const expires = 60 * 60 * 24 * 7
-    const develop_token = await this.funcService.generateRuntimeToken(
+    const develop_token = await this.fn.generateRuntimeToken(
       appid,
       'develop',
       expires,
@@ -157,11 +170,93 @@ export class ApplicationController {
   }
 
   /**
+   * Update application name
+   */
+  @ApiOperation({ summary: 'Update application name' })
+  @ApiResponseObject(Application)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Patch(':appid/name')
+  async updateName(
+    @Param('appid') appid: string,
+    @Body() dto: UpdateApplicationNameDto,
+  ) {
+    const doc = await this.application.updateName(appid, dto.name)
+    return ResponseUtil.ok(doc)
+  }
+
+  /**
+   * Update application state
+   */
+  @ApiOperation({ summary: 'Update application state' })
+  @ApiResponseObject(Application)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Patch(':appid/state')
+  async updateState(
+    @Param('appid') appid: string,
+    @Body() dto: UpdateApplicationStateDto,
+  ) {
+    // check if the corresponding subscription status has expired
+    const app = await this.application.findOne(appid)
+
+    // check: only running application can restart
+    if (
+      dto.state === ApplicationState.Restarting &&
+      app.state !== ApplicationState.Running &&
+      app.phase !== ApplicationPhase.Started
+    ) {
+      return ResponseUtil.error(
+        'The application is not running, can not restart it',
+      )
+    }
+
+    // check: only running application can stop
+    if (
+      dto.state === ApplicationState.Stopped &&
+      app.state !== ApplicationState.Running &&
+      app.phase !== ApplicationPhase.Started
+    ) {
+      return ResponseUtil.error(
+        'The application is not running, can not stop it',
+      )
+    }
+
+    // check: only stopped application can start
+    if (
+      dto.state === ApplicationState.Running &&
+      app.state !== ApplicationState.Stopped &&
+      app.phase !== ApplicationPhase.Stopped
+    ) {
+      return ResponseUtil.error(
+        'The application is not stopped, can not start it',
+      )
+    }
+
+    const doc = await this.application.updateState(appid, dto.state)
+    return ResponseUtil.ok(doc)
+  }
+
+  /**
+   * Update application bundle
+   */
+  @ApiOperation({ summary: 'Update application bundle' })
+  @ApiResponseObject(ApplicationBundle)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Patch(':appid/bundle')
+  async updateBundle(
+    @Param('appid') appid: string,
+    @Body() dto: UpdateApplicationBundleDto,
+  ) {
+    const doc = await this.application.updateBundle(appid, dto)
+    return ResponseUtil.ok(doc)
+  }
+
+  /**
    * Update an application
+   * @deprecated use updateName and updateState instead
    * @param dto
    * @returns
    */
-  @ApiOperation({ summary: 'Update an application' })
+  @ApiOperation({ summary: 'Update an application', deprecated: true })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Patch(':appid')
   async update(
@@ -175,7 +270,7 @@ export class ApplicationController {
     }
 
     // check if the corresponding subscription status has expired
-    const app = await this.appService.findOne(appid)
+    const app = await this.application.findOne(appid)
 
     // check: only running application can restart
     if (
@@ -211,7 +306,7 @@ export class ApplicationController {
     }
 
     // update app
-    const doc = await this.appService.update(appid, dto)
+    const doc = await this.application.update(appid, dto)
     if (!doc) {
       return ResponseUtil.error('update application error')
     }

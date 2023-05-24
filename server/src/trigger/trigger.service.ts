@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
 import { CreateTriggerDto } from './dto/create-trigger.dto'
 import CronValidate from 'cron-validate'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import {
   CronTrigger,
   TriggerPhase,

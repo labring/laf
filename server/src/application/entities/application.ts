@@ -4,6 +4,7 @@ import { ApplicationBundle } from './application-bundle'
 import { Runtime } from './runtime'
 import { ApplicationConfiguration } from './application-configuration'
 import { RuntimeDomain } from 'src/gateway/entities/runtime-domain'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 export enum ApplicationPhase {
   Creating = 'Creating',
@@ -24,18 +25,42 @@ export enum ApplicationState {
 }
 
 export class Application {
+  @ApiProperty({ type: String })
   _id?: ObjectId
+
+  @ApiProperty()
   name: string
+
+  @ApiProperty()
   appid: string
+
+  @ApiProperty({ type: String })
   regionId: ObjectId
+
+  @ApiProperty({ type: String })
   runtimeId: ObjectId
+
+  @ApiProperty({ isArray: true, type: String })
   tags: string[]
+
+  @ApiProperty({ enum: ApplicationState })
   state: ApplicationState
+
+  @ApiProperty({ enum: ApplicationPhase })
   phase: ApplicationPhase
+
+  @ApiPropertyOptional()
   isTrialTier?: boolean
+
+  @ApiProperty()
   createdAt: Date
+
+  @ApiProperty()
   updatedAt: Date
+
   lockedAt: Date
+
+  @ApiProperty({ type: String })
   createdBy: ObjectId
 
   constructor(partial: Partial<Application>) {
@@ -43,10 +68,19 @@ export class Application {
   }
 }
 
-export interface ApplicationWithRelations extends Application {
+export class ApplicationWithRelations extends Application {
+  @ApiPropertyOptional()
   region?: Region
+
+  @ApiPropertyOptional()
   bundle?: ApplicationBundle
+
+  @ApiPropertyOptional()
   runtime?: Runtime
+
+  @ApiPropertyOptional()
   configuration?: ApplicationConfiguration
+
+  @ApiPropertyOptional()
   domain?: RuntimeDomain
 }

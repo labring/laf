@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import { User } from './entities/user'
 import { ObjectId } from 'mongodb'
 

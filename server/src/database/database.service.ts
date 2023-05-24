@@ -7,7 +7,7 @@ import * as mongodb_uri from 'mongodb-uri'
 import { RegionService } from 'src/region/region.service'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
 import { Region } from 'src/region/entities/region'
-import { SystemDatabase } from './system-database'
+import { SystemDatabase } from '../system-database'
 import { Database, DatabasePhase, DatabaseState } from './entities/database'
 
 @Injectable()

@@ -4,7 +4,7 @@ import {
   PASSWORD_AUTH_PROVIDER_NAME,
   PHONE_AUTH_PROVIDER_NAME,
 } from 'src/constants'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import { AuthProvider, AuthProviderState } from './entities/auth-provider'
 import { User } from 'src/user/entities/user'
 

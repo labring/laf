@@ -3,7 +3,7 @@ import { RUNTIME_BUILTIN_DEPENDENCIES } from 'src/runtime-builtin-deps'
 import * as npa from 'npm-package-arg'
 import { CreateDependencyDto } from './dto/create-dependency.dto'
 import { UpdateDependencyDto } from './dto/update-dependency.dto'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import { ApplicationConfiguration } from 'src/application/entities/application-configuration'
 
 export class Dependency {

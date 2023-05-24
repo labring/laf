@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { WeChatPaySpec } from './types'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import { PaymentChannel } from '../entities/payment-channel'
 import { BaseState } from '../entities/account'
 import { PaymentChannelType } from '../entities/account-charge-order'

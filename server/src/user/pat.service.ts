@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { GenerateAlphaNumericPassword } from 'src/utils/random'
 import { CreatePATDto } from './dto/create-pat.dto'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import {
   PersonalAccessToken,
   PersonalAccessTokenWithUser,

@@ -5,7 +5,7 @@ import { AssumeRoleCommand, STSClient } from '@aws-sdk/client-sts'
 import { RegionService } from 'src/region/region.service'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
 import { Region } from 'src/region/entities/region'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import {
   StoragePhase,
   StorageState,

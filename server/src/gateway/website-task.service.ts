@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import { RegionService } from 'src/region/region.service'
 import * as assert from 'node:assert'
 import { ApisixService } from './apisix.service'

@@ -10,7 +10,7 @@ import {
 import { StorageService } from '../storage/storage.service'
 import { DatabaseService } from 'src/database/database.service'
 import { ClusterService } from 'src/region/cluster/cluster.service'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import { ApplicationWithRelations } from 'src/application/entities/application'
 import { ApplicationService } from 'src/application/application.service'
 

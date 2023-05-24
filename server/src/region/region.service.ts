@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import { Region } from './entities/region'
 import { Application } from 'src/application/entities/application'
 import { assert } from 'console'

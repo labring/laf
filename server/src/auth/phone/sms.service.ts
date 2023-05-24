@@ -10,7 +10,7 @@ import {
   MILLISECONDS_PER_MINUTE,
   CODE_VALIDITY,
 } from 'src/constants'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import {
   SmsVerifyCode,
   SmsVerifyCodeState,

@@ -1,7 +1,7 @@
 import { Controller, Get, Logger } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { ResponseUtil } from './utils/response'
-import { SystemDatabase } from './database/system-database'
+import { SystemDatabase } from './system-database'
 import { Runtime } from './application/entities/runtime'
 
 @ApiTags('Public')

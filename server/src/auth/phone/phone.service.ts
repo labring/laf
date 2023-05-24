@@ -5,7 +5,7 @@ import { PhoneSigninDto } from '../dto/phone-signin.dto'
 import { hashPassword } from 'src/utils/crypto'
 import { SmsVerifyCodeType } from '../entities/sms-verify-code'
 import { User } from 'src/user/entities/user'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import { UserService } from 'src/user/user.service'
 import {
   UserPassword,

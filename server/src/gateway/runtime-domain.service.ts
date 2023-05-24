@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common'
 import * as assert from 'assert'
 import { RegionService } from '../region/region.service'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import {
   DomainPhase,
   DomainState,

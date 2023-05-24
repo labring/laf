@@ -27,7 +27,7 @@ import * as assert from 'assert'
 import { ServerConfig } from 'src/constants'
 import { AccountChargePhase } from './entities/account-charge-order'
 import { ObjectId } from 'mongodb'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import { Account } from './entities/account'
 import { AccountTransaction } from './entities/account-transaction'
 

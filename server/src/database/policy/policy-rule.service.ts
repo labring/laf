@@ -3,7 +3,7 @@ import * as assert from 'node:assert'
 import { CreatePolicyRuleDto } from '../dto/create-rule.dto'
 import { UpdatePolicyRuleDto } from '../dto/update-rule.dto'
 import { PolicyService } from './policy.service'
-import { SystemDatabase } from '../system-database'
+import { SystemDatabase } from '../../system-database'
 import { DatabasePolicyRule } from '../entities/database-policy'
 
 @Injectable()

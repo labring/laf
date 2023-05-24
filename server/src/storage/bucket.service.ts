@@ -5,7 +5,7 @@ import { CreateBucketDto } from './dto/create-bucket.dto'
 import { UpdateBucketDto } from './dto/update-bucket.dto'
 import { MinioService } from './minio/minio.service'
 import { Application } from 'src/application/entities/application'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import { StorageBucket, StorageWithRelations } from './entities/storage-bucket'
 import { StoragePhase, StorageState } from './entities/storage-user'
 

@@ -3,7 +3,7 @@ import { RegionService } from '../region/region.service'
 import * as assert from 'node:assert'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
 import { StorageBucket } from 'src/storage/entities/storage-bucket'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import { BucketDomain } from './entities/bucket-domain'
 import { DomainPhase, DomainState } from './entities/runtime-domain'
 

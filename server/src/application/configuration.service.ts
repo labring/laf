@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { CN_PUBLISHED_CONF } from 'src/constants'
 import { DatabaseService } from 'src/database/database.service'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import { ApplicationConfiguration } from './entities/application-configuration'
 
 @Injectable()

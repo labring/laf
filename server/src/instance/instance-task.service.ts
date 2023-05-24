@@ -3,7 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import { isConditionTrue } from '../utils/getter'
 import { InstanceService } from './instance.service'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import { CronJobService } from 'src/trigger/cron-job.service'
 import {
   Application,

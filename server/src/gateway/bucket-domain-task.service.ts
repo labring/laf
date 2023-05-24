@@ -4,7 +4,7 @@ import { ApisixService } from './apisix.service'
 import * as assert from 'node:assert'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import { BucketDomain } from './entities/bucket-domain'
 import { DomainPhase, DomainState } from './entities/runtime-domain'
 

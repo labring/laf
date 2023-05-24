@@ -1,6 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common'
 import * as nanoid from 'nanoid'
-import { UpdateApplicationDto } from './dto/update-application.dto'
+import {
+  UpdateApplicationBundleDto,
+  UpdateApplicationDto,
+} from './dto/update-application.dto'
 import {
   APPLICATION_SECRET_KEY,
   ServerConfig,
@@ -8,7 +11,7 @@ import {
 } from '../constants'
 import { GenerateAlphaNumericPassword } from '../utils/random'
 import { CreateApplicationDto } from './dto/create-application.dto'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import {
   Application,
   ApplicationPhase,
@@ -222,6 +225,43 @@ export class ApplicationService {
     return doc
   }
 
+  async updateName(appid: string, name: string) {
+    const db = SystemDatabase.db
+    const res = await db
+      .collection<Application>('Application')
+      .findOneAndUpdate({ appid }, { $set: { name, updatedAt: new Date() } })
+
+    return res.value
+  }
+
+  async updateState(appid: string, state: ApplicationState) {
+    const db = SystemDatabase.db
+    const res = await db
+      .collection<Application>('Application')
+      .findOneAndUpdate({ appid }, { $set: { state, updatedAt: new Date() } })
+
+    return res.value
+  }
+
+  async updateBundle(appid: string, dto: UpdateApplicationBundleDto) {
+    const db = SystemDatabase.db
+    const resource = this.buildBundleResource(dto)
+    const res = await db
+      .collection<ApplicationBundle>('ApplicationBundle')
+      .findOneAndUpdate(
+        { appid },
+        { $set: { resource, updatedAt: new Date() } },
+        {
+          projection: {
+            'bundle.resource.requestCPU': 0,
+            'bundle.resource.requestMemory': 0,
+          },
+        },
+      )
+
+    return res.value
+  }
+
   async update(appid: string, dto: UpdateApplicationDto) {
     const db = SystemDatabase.db
     const data: Partial<Application> = { updatedAt: new Date() }
@@ -278,7 +318,7 @@ export class ApplicationService {
     return prefix + nano()
   }
 
-  private buildBundleResource(dto: CreateApplicationDto) {
+  private buildBundleResource(dto: UpdateApplicationBundleDto) {
     const requestCPU = Math.floor(dto.cpu * 0.1)
     const requestMemory = Math.floor(dto.memory * 0.5)
     const limitCountOfCloudFunction = Math.floor(dto.cpu * 1)

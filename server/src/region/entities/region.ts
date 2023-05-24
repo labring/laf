@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger'
 import { ObjectId } from 'mongodb'
 
 export type RegionClusterConf = {
@@ -32,16 +33,30 @@ export type RegionStorageConf = {
 }
 
 export class Region {
+  @ApiProperty({ type: String })
   _id?: ObjectId
+
+  @ApiProperty()
   name: string
+
+  @ApiProperty()
   displayName: string
+
   clusterConf: RegionClusterConf
   databaseConf: RegionDatabaseConf
   gatewayConf: RegionGatewayConf
   storageConf: RegionStorageConf
+
+  @ApiProperty()
   tls: boolean
+
+  @ApiProperty()
   state: 'Active' | 'Inactive'
+
+  @ApiProperty()
   createdAt: Date
+
+  @ApiProperty()
   updatedAt: Date
 
   constructor(partial: Partial<Region>) {
