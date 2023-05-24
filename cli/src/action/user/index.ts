@@ -4,7 +4,7 @@ import { UserSchema } from '../../schema/user'
 import { pat2token } from '../../api/pat'
 import * as Table from 'cli-table3'
 
-export async function login(pat, options: { remote?: string, name?: string }) {
+export async function login(pat: string) {
   const user = UserSchema.getCurrentUser()
 
   // transfer pat to token

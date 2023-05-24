@@ -25,7 +25,6 @@ import { getEmoji } from '../../util/print'
 import { formatDate } from '../../util/format'
 import { regionControllerGetRegions } from '../../api/v1/public'
 import { ProjectSchema } from '../../schema/project'
-import { UserSchema } from '../../schema/user'
 
 export async function list() {
   const table = new Table({

@@ -5,10 +5,8 @@ export function loginCommand(): Command {
   const cmd = program
     .command('login <pat>')
     .description('login client')
-    .option('-n, --name [value]', 'user name', '')
-    .option('-r, --remote [value]', 'remote server address', '')
-    .action((pat, options) => {
-      login(pat, options)
+    .action((pat) => {
+      login(pat)
     })
   return cmd
 }
