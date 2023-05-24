@@ -54,6 +54,10 @@ export class ServerConfig {
     return process.env.DISABLED_STORAGE_TASK === 'true'
   }
 
+  static get DISABLED_BILLING_TASK() {
+    return process.env.DISABLED_BILLING_TASK === 'true'
+  }
+
   static get APPID_LENGTH(): number {
     return parseInt(process.env.APPID_LENGTH || '6')
   }

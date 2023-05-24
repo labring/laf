@@ -63,6 +63,8 @@ export class Application {
   @ApiProperty({ type: String })
   createdBy: ObjectId
 
+  billingLockedAt: Date
+
   constructor(partial: Partial<Application>) {
     Object.assign(this, partial)
   }
