@@ -1,80 +1,46 @@
-import { Body, Controller, Get, Logger, Param, Post } from '@nestjs/common'
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { ResourceService } from './resource.service'
-import { ApiResponseArray, ResponseUtil } from 'src/utils/response'
-import { ObjectId } from 'mongodb'
-import { BillingService } from './billing.service'
-import { RegionService } from 'src/region/region.service'
+import { Controller, Get, Logger, Param, UseGuards } from '@nestjs/common'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import {
-  CalculatePriceDto,
-  CalculatePriceResultDto,
-} from './dto/calculate-price.dto'
-import { ResourceBundle, ResourceOption } from './entities/resource'
-import { ApiResponseObject } from 'src/utils/response'
+  ApiResponseArray,
+  ApiResponseObject,
+  ResponseUtil,
+} from 'src/utils/response'
+import { BillingService } from './billing.service'
+
+import { ApplicationBilling } from './entities/application-billing'
+import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
+import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
+import { ObjectId } from 'mongodb'
 
 @ApiTags('Billing')
-@Controller('billing')
+@ApiBearerAuth('Authorization')
+@Controller('apps/:appid/billings')
 export class BillingController {
   private readonly logger = new Logger(BillingController.name)
 
-  constructor(
-    private readonly resource: ResourceService,
-    private readonly billing: BillingService,
-    private readonly region: RegionService,
-  ) {}
+  constructor(private readonly billing: BillingService) {}
 
   /**
-   * Calculate pricing
-   * @param dto
+   * Get all billing of application
    */
-  @ApiOperation({ summary: 'Calculate pricing' })
-  @Post('price')
-  @ApiResponseObject(CalculatePriceResultDto)
-  async calculatePrice(@Body() dto: CalculatePriceDto) {
-    // check regionId exists
-    const region = await this.region.findOneDesensitized(
-      new ObjectId(dto.regionId),
-    )
-
-    if (!region) {
-      return ResponseUtil.error(`region ${dto.regionId} not found`)
-    }
-
-    const result = await this.billing.calculatePrice(dto)
-    return ResponseUtil.ok(result)
+  @ApiOperation({ summary: 'Get billings of an application' })
+  @ApiResponseArray(ApplicationBilling)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Get()
+  async findAllByAppId(@Param('appid') appid: string) {
+    const billings = await this.billing.findAllByAppId(appid)
+    return ResponseUtil.ok(billings)
   }
 
   /**
-   * Get resource option list
+   * Get billing by id
    */
-  @ApiOperation({ summary: 'Get resource option list' })
-  @ApiResponseArray(ResourceOption)
-  @Get('resource-options')
-  async getResourceOptions() {
-    const options = await this.resource.findAll()
-    return ResponseUtil.ok(options)
-  }
-
-  /**
-   * Get resource option list by region id
-   */
-  @ApiOperation({ summary: 'Get resource option list by region id' })
-  @ApiResponseArray(ResourceOption)
-  @Get('resource-options/:regionId')
-  async getResourceOptionsByRegionId(@Param('regionId') regionId: string) {
-    const data = await this.resource.findAllByRegionId(new ObjectId(regionId))
-    return ResponseUtil.ok(data)
-  }
-
-  /**
-   * Get resource template list
-   * @returns
-   */
-  @ApiOperation({ summary: 'Get resource template list' })
-  @ApiResponseArray(ResourceBundle)
-  @Get('resource-bundles')
-  async getResourceBundles() {
-    const data = await this.resource.findAllBundles()
-    return ResponseUtil.ok(data)
+  @ApiOperation({ summary: 'Get billing by id' })
+  @ApiResponseObject(ApplicationBilling)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Get(':id')
+  async findOne(@Param('appid') appid: string, @Param('id') id: string) {
+    const billing = await this.billing.findOne(appid, new ObjectId(id))
+    return ResponseUtil.ok(billing)
   }
 }

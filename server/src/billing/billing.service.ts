@@ -6,12 +6,30 @@ import { ResourceType } from './entities/resource'
 import { Decimal } from 'decimal.js'
 import * as assert from 'assert'
 import { CalculatePriceDto } from './dto/calculate-price.dto'
+import { ApplicationBilling } from './entities/application-billing'
 
 @Injectable()
 export class BillingService {
   private readonly db = SystemDatabase.db
 
   constructor(private readonly resource: ResourceService) {}
+
+  async findAllByAppId(appid: string) {
+    const billings = await this.db
+      .collection<ApplicationBilling>('ApplicationBilling')
+      .find({ appid })
+      .toArray()
+
+    return billings
+  }
+
+  async findOne(appid: string, id: ObjectId) {
+    const billing = await this.db
+      .collection<ApplicationBilling>('ApplicationBilling')
+      .findOne({ _id: id })
+
+    return billing
+  }
 
   async calculatePrice(dto: CalculatePriceDto) {
     // get options by region id
