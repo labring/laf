@@ -7,6 +7,7 @@ import {
   Res,
   OnModuleInit,
   OnModuleDestroy,
+  Body,
 } from '@nestjs/common'
 import { IRequest, IResponse } from '../utils/interface'
 
@@ -14,7 +15,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import { SseClientsService } from './sse-clients.service'
+import { SseEventsourceService } from './sse-eventsource.service'
 import { Subscription, interval } from 'rxjs'
+import { CreateEventSourceDto } from './dto/create-eventsource.dto'
 
 
 @ApiTags('Sse Client')
@@ -24,8 +27,8 @@ export class SseClientsController implements OnModuleInit, OnModuleDestroy {
 
   constructor(
     private readonly sseClientsService: SseClientsService,
+    private readonly sseEventsourceService: SseEventsourceService
   ) { }
-
 
   private eventEmitter: Subscription
 
@@ -38,6 +41,13 @@ export class SseClientsController implements OnModuleInit, OnModuleDestroy {
   @Post('/sseClients')
   getSseClient(): number {
     return this.sseClientsService.getClientsCount()
+  }
+
+  @Post('/addEvent')
+  addEvent(
+    @Body() dto: CreateEventSourceDto
+  ) {
+    return this.sseEventsourceService.addSseEventSource(dto)
   }
 
 
