@@ -750,6 +750,7 @@ model SseEventSource {
   uid       String
   appid     String
   payload   Json
+  state     Int               @default(0)
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
 }

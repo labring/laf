@@ -1,7 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { SsePongEvent, SseDefaultEvent, SseAbstractEvent, CHANGE_STREAM_PIPELINE } from './types'
-import {SystemDatabase} from "../database/system-database";
+import { SystemDatabase } from "../database/system-database";
+import { CreateEventSourceDto } from './dto/create-eventsource.dto';
 
 
 
@@ -15,15 +16,25 @@ export class SseEventsourceService {
         private readonly prisma: PrismaService,
     ) {
         this.mogodb = SystemDatabase.db()
-        if(this.mogodb) {
+        if (this.mogodb) {
             this.initSseEventChangeStreams()
         } else {
             this.logger.warn(`mogodb not support changeStreams`)
         }
     }
 
-    addSseEventSource() {
-        // todo 写入集合操作
+
+    async addSseEventSource(dto: CreateEventSourceDto) {
+        const { uid, appid, payload } = dto
+        const sseEventSource = await this.prisma.sseEventSource.create({
+            data: {
+                uid,
+                appid,
+                payload,
+            },
+        })
+
+        return sseEventSource
     }
 
 
@@ -35,8 +46,11 @@ export class SseEventsourceService {
 
         changeStream.on("change", changeEvent => {
             const { fullDocument } = changeEvent
+
             // process any change event
             console.log("received a change to the collection: \t", JSON.stringify(changeEvent))
         })
     }
+
+
 }
