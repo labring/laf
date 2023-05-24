@@ -8,11 +8,7 @@ import Navbar from "./navbar";
 
 import "./homepage.css";
 
-import useInviteCode from "@/hooks/useInviteCode";
-
 export default function Home() {
-  useInviteCode();
-
   return (
     <div style={{ fontSize: "16px" }} className="homepage">
       <Navbar />

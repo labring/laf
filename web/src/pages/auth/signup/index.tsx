@@ -18,7 +18,6 @@ import { t } from "i18next";
 
 import { COLOR_MODE } from "@/constants";
 
-import useInviteCode from "@/hooks/useInviteCode";
 import {
   useGetProvidersQuery,
   useSendSmsCodeMutation,
@@ -64,7 +63,32 @@ export default function SignUp() {
   const [isSendSmsCode, setIsSendSmsCode] = useState(false);
   const [countdown, setCountdown] = useState(60);
   const [isShowPassword, setIsShowPassword] = useState(false);
-  const inviteCode = useInviteCode();
+
+  let inviteCode = new URLSearchParams(window.location.search).get("code");
+
+  if (inviteCode) {
+    const now = new Date();
+    const expirationDays = 7;
+    const expiration = new Date(now.getTime() + expirationDays * 24 * 60 * 60 * 1000);
+
+    const item = {
+      value: inviteCode,
+      expiration: expiration.getTime(),
+    };
+
+    localStorage.setItem("inviteCode", JSON.stringify(item));
+  } else {
+    const item = localStorage.getItem("inviteCode");
+
+    if (item) {
+      const data = JSON.parse(item);
+      if (new Date().getTime() > data.expiration) {
+        localStorage.removeItem("inviteCode");
+      } else {
+        inviteCode = data.value;
+      }
+    }
+  }
 
   const {
     register,

@@ -13,7 +13,6 @@ import { t } from "i18next";
 
 import { Routes } from "@/constants";
 
-import useInviteCode from "@/hooks/useInviteCode";
 import { useSendSmsCodeMutation, useSigninBySmsCodeMutation } from "@/pages/auth/service";
 import useGlobalStore from "@/pages/globalStore";
 
@@ -48,13 +47,10 @@ export default function LoginByPhonePanel({
     },
   });
 
-  const inviteCode = useInviteCode();
-
   const onSubmit = async (data: FormData) => {
     const res = await signinBySmsCodeMutation.mutateAsync({
       phone: data.phone,
       code: data.validationCode,
-      inviteCode: inviteCode,
     });
 
     if (res?.data) {
