@@ -74,7 +74,7 @@ export async function init(appid: string, options: { sync: boolean }) {
       version: '1.0.0',
       name: app.name,
       spec: {
-        runtime: app.runtime,
+        runtime: app.runtime.name,
       }
     }
     ProjectSchema.write(projectSchema)
