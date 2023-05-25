@@ -70,7 +70,7 @@ export class PhoneService {
    * @returns
    */
   async signup(dto: PhoneSigninDto, withUsername = false) {
-    const { phone, username, password } = dto
+    const { phone, username, password, inviteCode } = dto
 
     // start transaction
     const user = await this.prisma.$transaction(async (tx) => {
@@ -82,7 +82,21 @@ export class PhoneService {
           profile: { create: { name: username || phone } },
         },
       })
-      // TODO: add invite code feature
+      // create invite relation
+      if (inviteCode) {
+        const res = await tx.inviteCode.findUnique({
+          where: { code: inviteCode },
+        })
+        if (res) {
+          await tx.inviteRelation.create({
+            data: {
+              uid: user.id,
+              invitedBy: res.uid,
+              codeId: res.id,
+            },
+          })
+        }
+      }
       if (!withUsername) {
         return user
       }
