@@ -8,6 +8,7 @@ import {
   Req,
   Logger,
   Post,
+  Delete,
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { IRequest } from '../utils/interface'
@@ -194,9 +195,9 @@ export class ApplicationController {
   async updateState(
     @Param('appid') appid: string,
     @Body() dto: UpdateApplicationStateDto,
+    @Req() req: IRequest,
   ) {
-    // check if the corresponding subscription status has expired
-    const app = await this.application.findOne(appid)
+    const app = req.application
 
     // check: only running application can restart
     if (
@@ -247,6 +248,28 @@ export class ApplicationController {
     @Body() dto: UpdateApplicationBundleDto,
   ) {
     const doc = await this.application.updateBundle(appid, dto)
+    return ResponseUtil.ok(doc)
+  }
+
+  /**
+   * Delete an application
+   */
+  @ApiOperation({ summary: 'Delete an application' })
+  @ApiResponseObject(Application)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Delete(':appid')
+  async delete(@Param('appid') appid: string, @Req() req: IRequest) {
+    const app = req.application
+
+    // check: only stopped application can be deleted
+    if (
+      app.state !== ApplicationState.Stopped &&
+      app.phase !== ApplicationPhase.Stopped
+    ) {
+      return ResponseUtil.error('The app is not stopped, can not delete it')
+    }
+
+    const doc = await this.application.remove(appid)
     return ResponseUtil.ok(doc)
   }
 

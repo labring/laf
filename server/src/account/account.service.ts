@@ -57,7 +57,7 @@ export class AccountService {
     assert(account, 'Account not found')
 
     // create charge order
-    await this.db
+    const res = await this.db
       .collection<AccountChargeOrder>('AccountChargeOrder')
       .insertOne({
         accountId: account._id,
@@ -71,7 +71,7 @@ export class AccountService {
         updatedAt: new Date(),
       })
 
-    return await this.findOneChargeOrder(userid, account._id)
+    return await this.findOneChargeOrder(userid, res.insertedId)
   }
 
   async findOneChargeOrder(userid: ObjectId, id: ObjectId) {

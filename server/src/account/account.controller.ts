@@ -154,53 +154,38 @@ export class AccountController {
       const client = SystemDatabase.client
       const session = client.startSession()
       await session.withTransaction(async () => {
-        // get order
-        const order = await db
+        // update order to success
+        const res = await db
           .collection<WeChatPayChargeOrder>('AccountChargeOrder')
-          .findOne(
+          .findOneAndUpdate(
             { _id: tradeOrderId, phase: AccountChargePhase.Pending },
-            { session },
+            { $set: { phase: AccountChargePhase.Paid, result: result } },
+            { session, returnDocument: 'after' },
           )
+
+        const order = res.value
         if (!order) {
           this.logger.error(`wechatpay order not found: ${tradeOrderId}`)
           return
         }
 
-        // update order to success
-        const res = await db
-          .collection<WeChatPayChargeOrder>('AccountChargeOrder')
-          .updateOne(
-            { _id: tradeOrderId, phase: AccountChargePhase.Pending },
-            { $set: { phase: AccountChargePhase.Paid, result: result } },
-            { session },
-          )
-
-        if (res.modifiedCount === 0) {
-          this.logger.error(`wechatpay order not found: ${tradeOrderId}`)
-          return
-        }
-
-        // get account
-        const account = await db
+        // get & update account balance
+        const ret = await db
           .collection<Account>('Account')
-          .findOne({ _id: order.accountId }, { session })
-        assert(account, `account not found: ${order.accountId}`)
-
-        // update account balance
-        await db
-          .collection<Account>('Account')
-          .updateOne(
+          .findOneAndUpdate(
             { _id: order.accountId },
             { $inc: { balance: order.amount } },
-            { session },
+            { session, returnDocument: 'after' },
           )
+
+        assert(ret.value, `account not found: ${order.accountId}`)
 
         // create transaction
         await db.collection<AccountTransaction>('AccountTransaction').insertOne(
           {
             accountId: order.accountId,
             amount: order.amount,
-            balance: account.balance + order.amount,
+            balance: ret.value.balance,
             message: 'Recharge by WeChat Pay',
             orderId: order._id,
             createdAt: new Date(),

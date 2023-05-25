@@ -7,8 +7,8 @@ export class AccountTransaction {
   balance: number
   message: string
   orderId?: ObjectId
+  billingId?: ObjectId
   createdAt: Date
-  updatedAt?: Date
 
   constructor(partial: Partial<AccountTransaction>) {
     Object.assign(this, partial)

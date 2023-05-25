@@ -283,7 +283,7 @@ export class ApplicationService {
       .collection<Application>('Application')
       .findOneAndUpdate(
         { appid },
-        { $set: { phase: ApplicationPhase.Deleted, updatedAt: new Date() } },
+        { $set: { state: ApplicationState.Deleted, updatedAt: new Date() } },
       )
 
     return doc.value
