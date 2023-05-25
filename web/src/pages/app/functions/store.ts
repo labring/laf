@@ -57,7 +57,7 @@ const useFunctionStore = create<State>()(
 
       updateFunctionCode: async (currentFunction, codes) => {
         set((state) => {
-          state.functionCodes[currentFunction!.id] = codes;
+          state.functionCodes[currentFunction!._id] = codes;
         });
       },
     })),

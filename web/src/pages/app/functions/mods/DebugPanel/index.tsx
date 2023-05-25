@@ -25,6 +25,7 @@ import { COLOR_MODE, Pages } from "@/constants";
 
 import { useCompileMutation, useUpdateFunctionMutation } from "../../service";
 import useFunctionStore from "../../store";
+import AIChatPanel from "../AIChatPanel";
 
 import BodyParamsTab from "./BodyParamsTab";
 import QueryParamsTab from "./QueryParamsTab";
@@ -77,11 +78,11 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
   }, [setRunningMethod, currentFunction]);
 
   const runningCode = async () => {
-    if (isLoading || !currentFunction?.id) return;
+    if (isLoading || !currentFunction?._id) return;
     setIsLoading(true);
     try {
       const compileRes = await compileMutation.mutateAsync({
-        code: functionCache.getCache(currentFunction!.id, currentFunction!.source?.code),
+        code: functionCache.getCache(currentFunction!._id, currentFunction!.source?.code),
         name: currentFunction!.name,
       });
 
@@ -129,7 +130,14 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
   return (
     <>
       <Panel className="min-w-[200px] flex-grow overflow-hidden !px-0">
-        <Tabs width="100%" colorScheme={"primary"} display="flex" flexDirection={"column"} h="full">
+        <Tabs
+          width="100%"
+          colorScheme={"primary"}
+          display="flex"
+          flexDirection={"column"}
+          h="full"
+          defaultIndex={2}
+        >
           <TabList h={"50px"}>
             <Tab px="4">
               <span
@@ -151,7 +159,7 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
                 {t("HomePage.NavBar.docs")}
               </span>
             </Tab>
-            {/* <Tab>历史请求</Tab> */}
+            <Tab>Laf Pilot</Tab>
           </TabList>
 
           <TabPanels flex={1} className="overflow-hidden">
@@ -317,7 +325,9 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
                 src={String(t("HomePage.DocsLink"))}
               />
             </TabPanel>
-            {/* <TabPanel padding={0}>to be continued...</TabPanel> */}
+            <TabPanel padding={0}>
+              <AIChatPanel />
+            </TabPanel>
           </TabPanels>
         </Tabs>
       </Panel>

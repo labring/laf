@@ -324,7 +324,6 @@
   "CreateTime": "创建时间",
   "EndTime": "到期时间",
   "Renew": "续期",
-  "TotalPrice": "共需支付",
   "Balance": "账户余额",
   "ChargeNow": "充值",
   "balance is insufficient": "余额不足",
@@ -419,5 +418,6 @@
   "ChatGPT example": "ChatGPT 示例",
   "LinkCopied": "链接复制成功",
   "create success": "创建成功",
-  "ServerStatus": "服务状态"
+  "ServerStatus": "服务状态",
+  "Fee": "费用"
 }

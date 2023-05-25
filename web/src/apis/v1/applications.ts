@@ -77,3 +77,54 @@ export async function ApplicationControllerUpdate(
     data: params,
   });
 }
+
+/**
+ * Update application name
+ */
+export async function ApplicationControllerUpdateName(
+  params: Definitions.UpdateApplicationNameDto | any,
+): Promise<Paths.ApplicationControllerUpdateName.Responses> {
+  // /v1/applications/{appid}/name
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/applications/${_params.appid}/name`, {
+    method: "PATCH",
+    data: params,
+  });
+}
+
+/**
+ * Update application state
+ */
+export async function ApplicationControllerUpdateState(
+  params: Definitions.UpdateApplicationStateDto | any,
+): Promise<Paths.ApplicationControllerUpdateState.Responses> {
+  // /v1/applications/{appid}/state
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/applications/${_params.appid}/state`, {
+    method: "PATCH",
+    data: params,
+  });
+}
+
+/**
+ * Update application bundle
+ */
+export async function ApplicationControllerUpdateBundle(
+  params: Definitions.UpdateApplicationBundleDto | any,
+): Promise<Paths.ApplicationControllerUpdateBundle.Responses> {
+  // /v1/applications/{appid}/bundle
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/applications/${_params.appid}/bundle`, {
+    method: "PATCH",
+    data: params,
+  });
+}

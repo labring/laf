@@ -24,7 +24,7 @@ const AppEnvList = () => {
     return <></>;
   }
 
-  const currentRegion = regions.find((item) => item.id === currentApp?.regionId);
+  const currentRegion = regions.find((item) => item._id === currentApp?.regionId);
 
   return (
     <>

@@ -15,9 +15,6 @@ import {
   ModalOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useMutation } from "@tanstack/react-query";
-
-import { SubscriptionControllerRemove } from "@/apis/v1/subscriptions";
 
 function DeleteAppModal(props: {
   item: any;
@@ -34,16 +31,6 @@ function DeleteAppModal(props: {
   } = useForm<{
     appid: string;
   }>();
-
-  const deleteSubscriptionMutation = useMutation(
-    (params: any) => SubscriptionControllerRemove(params),
-    {
-      onSuccess: () => {
-        onSuccess && onSuccess();
-      },
-      onError: () => {},
-    },
-  );
 
   return (
     <>
@@ -87,13 +74,11 @@ function DeleteAppModal(props: {
 
           <ModalFooter>
             <Button
-              isLoading={deleteSubscriptionMutation.isLoading}
+              isLoading={false}
               colorScheme="red"
               onClick={handleSubmit(async (data) => {
                 if (item.appid === data.appid) {
-                  await deleteSubscriptionMutation.mutateAsync({
-                    id: item.subscription.id,
-                  });
+                  // TODO
                   onSuccess && onSuccess();
                   onClose();
                 }

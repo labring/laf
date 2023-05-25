@@ -740,3 +740,37 @@ export async function DependencyControllerRemove(
     data: params,
   });
 }
+
+/**
+ * Get billings of an application
+ */
+export async function BillingControllerFindAllByAppId(
+  params: Paths.BillingControllerFindAllByAppId.BodyParameters | any,
+): Promise<Paths.BillingControllerFindAllByAppId.Responses> {
+  // /v1/apps/{appid}/billings
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/billings`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+/**
+ * Get billing by id
+ */
+export async function BillingControllerFindOne(
+  params: Paths.BillingControllerFindOne.BodyParameters | any,
+): Promise<Paths.BillingControllerFindOne.Responses> {
+  // /v1/apps/{appid}/billings/{id}
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/billings/${_params.id}`, {
+    method: "GET",
+    params: params,
+  });
+}

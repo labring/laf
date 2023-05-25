@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { CheckIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
-  Divider,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -25,64 +24,27 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { t } from "i18next";
+import { debounce, find } from "lodash";
 
 import ChargeButton from "@/components/ChargeButton";
 // import ChargeButton from "@/components/ChargeButton";
 import { APP_STATUS } from "@/constants/index";
-import {
-  formatLimitCapacity,
-  formatLimitCPU,
-  formatLimitMemory,
-  formatPrice,
-} from "@/utils/format";
+import { formatPrice } from "@/utils/format";
 
 import { APP_LIST_QUERY_KEY } from "../..";
-import { useAccountQuery } from "../../service";
+import { queryKeys, useAccountQuery } from "../../service";
 
 import BundleItem from "./BundleItem";
 
 import { TApplicationItem, TBundle } from "@/apis/typing";
-import { ApplicationControllerUpdate } from "@/apis/v1/applications";
-// import { SubscriptionControllerCreate, SubscriptionControllerRenew } from "@/apis/v1/subscriptions";
+import { ApplicationControllerCreate, ApplicationControllerUpdate } from "@/apis/v1/applications";
+import {
+  ResourceControllerCalculatePrice,
+  ResourceControllerGetResourceOptions,
+} from "@/apis/v1/resources";
 import useGlobalStore from "@/pages/globalStore";
-
-const CPUSlideMarkList = [
-  // The unit of value is m
-  { label: 0.1, value: 100 },
-  { label: 0.2, value: 200 },
-  { label: 0.5, value: 500 },
-  { label: 1, value: 1000 },
-  { label: 2, value: 2000 },
-  { label: 3, value: 3000 },
-  { label: 4, value: 4000 },
-  { label: 8, value: 8000 },
-];
-
-const MemorySlideMarkList = [
-  { label: "64M", value: 64 },
-  { label: "128M", value: 128 },
-  { label: "256M", value: 256 },
-  { label: "512M", value: 512 },
-  { label: "1G", value: 1024 },
-  { label: "2G", value: 2048 },
-  { label: "4G", value: 4096 },
-  { label: "8G", value: 8192 },
-  { label: "16G", value: 16384 },
-];
-
-const StorageSlideMarkList = [
-  { label: "1G", value: 1024 },
-  { label: "4G", value: 1024 * 4 },
-  { label: "8G", value: 1024 * 8 },
-  { label: "16G", value: 1024 * 16 },
-  { label: "32G", value: 1024 * 32 },
-  { label: "64G", value: 1024 * 64 },
-  { label: "128G", value: 1024 * 128 },
-  { label: "256G", value: 1024 * 256 },
-  { label: "1T", value: 1024 * 1024 },
-];
 
 const CreateAppModal = (props: {
   type: "create" | "edit" | "renewal";
@@ -100,17 +62,22 @@ const CreateAppModal = (props: {
 
   const accountQuery = useAccountQuery();
 
+  const { data: billingResourceOptionsRes = {} } = useQuery(
+    queryKeys.useBillingResourceOptionsQuery,
+    async () => {
+      return ResourceControllerGetResourceOptions({});
+    },
+    {
+      enabled: isOpen,
+    },
+  );
+
   type FormData = {
     name: string;
     state: APP_STATUS | string;
     regionId: string;
     bundleId: string;
     runtimeId: string;
-    subscriptionOption:
-      | {
-          id: string;
-        }
-      | any;
   };
 
   const currentRegion =
@@ -123,8 +90,6 @@ const CreateAppModal = (props: {
     state: application?.state,
     regionId: application?.regionId,
     bundleId: application?.bundle?.bundleId,
-    // subscriptionOption: bundles.find((item: TBundle) => item.id === application?.bundle?.bundleId)
-    //   ?.subscriptionOptions[0],
     runtimeId: runtimes[0]._id,
   };
 
@@ -132,7 +97,7 @@ const CreateAppModal = (props: {
     defaultValues = {
       name: "",
       state: APP_STATUS.Running,
-      regionId: regions[0].id,
+      regionId: regions[0]._id,
       bundleId: bundles[0]._id,
 
       runtimeId: runtimes[0]._id,
@@ -146,6 +111,7 @@ const CreateAppModal = (props: {
     setFocus,
     reset,
     formState: { errors },
+    getValues,
   } = useForm<FormData>({
     defaultValues,
   });
@@ -155,24 +121,58 @@ const CreateAppModal = (props: {
     name: "bundleId",
   });
 
-  const currentBundle: TBundle =
+  const defaultBundle: TBundle =
     bundles.find((item: TBundle) => item._id === bundleId) || bundles[0];
 
   const [bundle, setBundle] = React.useState<{
     cpu: number;
     memory: number;
+    databaseCapacity: number;
     storageCapacity: number;
   }>({
-    cpu: currentBundle.spec.cpu.value,
-    memory: currentBundle.spec.memory.value,
-    storageCapacity: currentBundle.spec.storageCapacity.value,
+    cpu: defaultBundle.spec.cpu.value,
+    memory: defaultBundle.spec.memory.value,
+    databaseCapacity: defaultBundle.spec.databaseCapacity.value,
+    storageCapacity: defaultBundle.spec.storageCapacity.value,
   });
 
   const { showSuccess } = useGlobalStore();
 
-  const totalPrice = 10;
+  const [totalPrice, setTotalPrice] = React.useState(0);
+
+  const billingQuery = useQuery(
+    [queryKeys.useBillingPriceQuery, bundle, isOpen],
+    async () => {
+      return ResourceControllerCalculatePrice({
+        ...getValues(),
+        ...bundle,
+      });
+    },
+    {
+      enabled: false,
+      staleTime: 1000,
+      onSuccess(res) {
+        setTotalPrice(res?.data?.total || 0);
+      },
+    },
+  );
+
+  const debouncedInputChange = debounce((value) => {
+    if (isOpen) {
+      billingQuery.refetch();
+    }
+  }, 600);
+
+  useEffect(() => {
+    debouncedInputChange(bundle);
+    return () => {
+      debouncedInputChange.cancel();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bundle, isOpen]);
 
   const updateAppMutation = useMutation((params: any) => ApplicationControllerUpdate(params));
+  const createAppMutation = useMutation((params: any) => ApplicationControllerCreate(params));
 
   const onSubmit = async (data: any) => {
     let res: any = {};
@@ -182,17 +182,11 @@ const CreateAppModal = (props: {
         break;
 
       case "create":
-        // res = await subscriptionControllerCreate.mutateAsync({
-        //   ...data,
-        //   // duration: subscriptionOption.duration,
-        // });
-        break;
-
-      case "renewal":
-        // res = await subscriptionOptionRenew.mutateAsync({
-        //   id: application?.subscription?.id,
-        //   // duration: subscriptionOption.duration,
-        // });
+        res = await createAppMutation.mutateAsync({
+          ...data,
+          ...bundle,
+          // duration: subscriptionOption.duration,
+        });
         break;
 
       default:
@@ -210,9 +204,22 @@ const CreateAppModal = (props: {
     }
   };
 
-  // useEffect(() => {
-  //   setValue("subscriptionOption", currentSubscription);
-  // }, [currentSubscription, setValue]);
+  const activeBundle = find(bundles, {
+    spec: {
+      cpu: {
+        value: bundle.cpu,
+      },
+      memory: {
+        value: bundle.memory,
+      },
+      databaseCapacity: {
+        value: bundle.databaseCapacity,
+      },
+      storageCapacity: {
+        value: bundle.storageCapacity,
+      },
+    },
+  });
 
   return (
     <>
@@ -289,20 +296,22 @@ const CreateAppModal = (props: {
                       return (
                         <div className="flex">
                           <div className="flex-col pt-4">
-                            {(bundles || []).map((bundle: TBundle) => {
+                            {(bundles || []).map((item: TBundle) => {
                               return (
                                 <BundleItem
                                   onChange={() => {
-                                    onChange(bundle._id);
+                                    onChange(item._id);
+                                    // billingPriceQuery.refetch();
                                     setBundle({
-                                      cpu: bundle.spec.cpu.value,
-                                      memory: bundle.spec.memory.value,
-                                      storageCapacity: bundle.spec.storageCapacity.value,
+                                      cpu: item.spec.cpu.value,
+                                      memory: item.spec.memory.value,
+                                      databaseCapacity: item.spec.databaseCapacity.value,
+                                      storageCapacity: item.spec.storageCapacity.value,
                                     });
                                   }}
-                                  bundle={bundle}
-                                  isActive={bundle._id === value}
-                                  key={bundle._id}
+                                  bundle={item}
+                                  isActive={activeBundle?._id === item._id}
+                                  key={item._id}
                                 />
                               );
                             })}
@@ -312,123 +321,84 @@ const CreateAppModal = (props: {
                                 displayName: "Custom",
                                 _id: "custom",
                               }}
-                              isActive={value === "custom"}
+                              isActive={!activeBundle}
                             />
                           </div>
-                          <Divider orientation="vertical" h={380} mx={4} />
-                          <div className="flex-1 pl-2 pr-6">
-                            <div className="mb-12">
-                              <p className="mb-2">
-                                <span className="mr-2 text-2xl font-semibold">CPU</span>
-                                {formatLimitCPU(bundle.cpu)}
-                              </p>
-                              <Slider
-                                min={0}
-                                max={CPUSlideMarkList.length - 1}
-                                step={1}
-                                onChange={(v) => {
-                                  setBundle({
-                                    ...bundle,
-                                    cpu: CPUSlideMarkList[v].value,
-                                  });
-                                }}
-                                value={CPUSlideMarkList.findIndex(
-                                  (item) => item.value === bundle.cpu,
-                                )}
-                              >
-                                {CPUSlideMarkList.map((item, i) => (
-                                  <SliderMark key={item.value} value={i} mt={3} fontSize={"sm"}>
-                                    <Box
-                                      className="-ml-[50px] w-[100px] text-center"
-                                      cursor={"pointer "}
-                                    >
-                                      {item.label}
-                                    </Box>
-                                  </SliderMark>
-                                ))}
-                                <SliderTrack>
-                                  <SliderFilledTrack bg="primary.500" />
-                                </SliderTrack>
-                                <SliderThumb />
-                              </Slider>
-                            </div>
-
-                            <div className="mb-12">
-                              <p className="mb-2">
-                                <span className="mr-2 text-2xl font-semibold">RAM</span>
-                                {formatLimitMemory(bundle.memory)}
-                              </p>
-                              <Slider
-                                min={0}
-                                max={MemorySlideMarkList.length - 1}
-                                step={1}
-                                onChange={(v) => {
-                                  setBundle({
-                                    ...bundle,
-                                    memory: MemorySlideMarkList[v].value,
-                                  });
-                                }}
-                                value={MemorySlideMarkList.findIndex(
-                                  (item) => item.value === bundle.memory,
-                                )}
-                              >
-                                {MemorySlideMarkList.map((item, i) => (
-                                  <SliderMark key={item.value} value={i} mt={3} fontSize={"sm"}>
-                                    <Box
-                                      className="-ml-[50px] w-[100px] text-center"
-                                      cursor={"pointer"}
-                                    >
-                                      {item.label}
-                                    </Box>
-                                  </SliderMark>
-                                ))}
-                                <SliderTrack>
-                                  <SliderFilledTrack bg="primary.500" />
-                                </SliderTrack>
-                                <SliderThumb />
-                              </Slider>
-                            </div>
-
-                            <div className="mb-12">
-                              <p className="mb-2 ">
-                                <span className="mr-2 text-2xl font-semibold">Storage</span>
-                                {formatLimitCapacity(bundle.storageCapacity)}
-                              </p>
-                              <Slider
-                                min={0}
-                                max={StorageSlideMarkList.length - 1}
-                                step={1}
-                                onChange={(v) => {
-                                  setBundle({
-                                    ...bundle,
-                                    storageCapacity: StorageSlideMarkList[v].value,
-                                  });
-                                }}
-                                value={StorageSlideMarkList.findIndex(
-                                  (item) => item.value === bundle.storageCapacity,
-                                )}
-                              >
-                                {StorageSlideMarkList.map((item, i) => (
-                                  <SliderMark key={item.value} value={i} mt={3} fontSize={"sm"}>
-                                    <Box
-                                      className="-ml-[50px] w-[100px] text-center"
-                                      cursor={"pointer "}
-                                    >
-                                      {item.label}
-                                    </Box>
-                                  </SliderMark>
-                                ))}
-                                <SliderTrack>
-                                  <SliderFilledTrack bg="primary.500" />
-                                </SliderTrack>
-                                <SliderThumb />
-                              </Slider>
-                            </div>
-
-                            <div>
-                              <p className="mb-2 text-lg font-semibold ">Traffic</p>
-                              <p className="text-xl font-semibold">¥0.8 / G</p>
-                            </div>
+                          <div className="ml-6 flex-1 border-l pl-12 pr-8">
+                            {billingResourceOptionsRes.data?.map(
+                              (item: {
+                                type: "cpu" | "memory" | "databaseCapacity" | "storageCapacity";
+                                specs: { value: number; price: number }[];
+                                price: number;
+                              }) => {
+                                return (
+                                  <div className="mb-12" key={item.type}>
+                                    <p className="mb-2">
+                                      <span className="mr-2 text-2xl font-semibold">
+                                        {item.type}
+                                      </span>
+                                      {/* {item.price} */}
+                                    </p>
+                                    {/* {item.specs.map((spec: any, i: number) => (
+                                      <Button
+                                        onClick={(v) => {
+                                          setBundle({
+                                            ...bundle,
+                                            [item.type]: spec.value,
+                                          });
+                                        }}
+                                        size={"sm"}
+                                        variant={
+                                          spec.value === bundle[item.type] ? "solid" : "outline"
+                                        }
+                                        w="60px"
+                                        rounded="sm"
+                                      >
+                                        {spec.label}
+                                      </Button>
+                                    ))} */}
+                                    {item.specs.length > 0 ? (
+                                      <Slider
+                                        min={0}
+                                        max={item.specs.length - 1}
+                                        step={1}
+                                        onChange={(v) => {
+                                          setBundle({
+                                            ...bundle,
+                                            [item.type]: item.specs[v].value,
+                                          });
+                                        }}
+                                        value={item.specs.findIndex(
+                                          (spec: any) => spec.value === bundle[item.type],
+                                        )}
+                                      >
+                                        {item.specs.map((spec: any, i: number) => (
+                                          <SliderMark
+                                            key={spec.value}
+                                            value={i}
+                                            mt={3}
+                                            fontSize={"sm"}
+                                          >
+                                            <Box
+                                              className="-ml-[50px] w-[100px] scale-90 text-center"
+                                              cursor={"pointer "}
+                                            >
+                                              {spec.label}
+                                            </Box>
+                                          </SliderMark>
+                                        ))}
+                                        <SliderTrack>
+                                          <SliderFilledTrack bg="primary.500" />
+                                        </SliderTrack>
+                                        <SliderThumb bg={"primary.700"} />
+                                      </Slider>
+                                    ) : (
+                                      <span className="text-2xl font-semibold">{item.price}</span>
+                                    )}
+                                  </div>
+                                );
+                              },
+                            )}
                           </div>
                         </div>
                       );
@@ -467,10 +437,8 @@ const CreateAppModal = (props: {
               </div>
             ) : (
               <div className="mr-2">
-                {t("TotalPrice")}:
-                <span className="ml-2 text-xl font-semibold text-red-500">
-                  {formatPrice(totalPrice)}
-                </span>
+                {t("Fee")}:
+                <span className="ml-2 text-xl font-semibold text-red-500">{totalPrice} / hour</span>
                 <span className="ml-4 mr-2">
                   {t("Balance")}:
                   <span className="ml-2 text-xl">{formatPrice(accountQuery.data?.balance)}</span>
@@ -478,18 +446,15 @@ const CreateAppModal = (props: {
                 {totalPrice > accountQuery.data?.balance ? (
                   <span className="mr-2">{t("balance is insufficient")}</span>
                 ) : null}
-                <ChargeButton amount={(totalPrice - accountQuery.data?.balance) / 100}>
-                  <span className="cursor-pointer text-lg text-blue-800">{t("ChargeNow")}</span>
+                <ChargeButton>
+                  <span className="cursor-pointer text-blue-800">{t("ChargeNow")}</span>
                 </ChargeButton>
               </div>
             )}
 
             {type !== "edit" && totalPrice <= accountQuery.data?.balance && (
               <Button
-                isLoading={
-                  // subscriptionControllerCreate.isLoading || subscriptionOptionRenew.isLoading
-                  false
-                }
+                isLoading={createAppMutation.isLoading}
                 type="submit"
                 onClick={handleSubmit(onSubmit)}
                 disabled={totalPrice > 0}

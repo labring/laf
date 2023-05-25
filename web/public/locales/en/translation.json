@@ -324,7 +324,6 @@
   "CreateTime": "Created",
   "EndTime": "Expired",
   "Renew": "Renew",
-  "TotalPrice": "Total",
   "Balance": "Balance",
   "ChargeNow": "Charge",
   "balance is insufficient": "balance is insufficient",
@@ -419,5 +418,6 @@
   "ChatGPT example": "ChatGPT example",
   "LinkCopied": "Link Copied",
   "create success": "create success",
-  "ServerStatus": "STATUS"
+  "ServerStatus": "STATUS",
+  "Fee": "Fee"
 }

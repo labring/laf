@@ -94,7 +94,7 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                       setAmount(item / 100);
                     }}
                   >
-                    {formatPrice(item)}
+                    ¥{item / 100}
                   </Button>
                 ))}
               </div>
@@ -123,7 +123,7 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                   height={180}
                 />
                 <p className="mt-4 text-base text-second ">
-                  {t("Order Number")}：{createChargeOrder.data?.data?.order?.id}
+                  {t("Order Number")}：{createChargeOrder.data?.data?.order?._id}
                 </p>
                 <p className="mt-1 text-base text-second ">
                   {t("payment status")}: {phaseStatus}

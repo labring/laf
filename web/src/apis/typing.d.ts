@@ -162,7 +162,7 @@ export type TCredentials = {
 };
 
 export type TRegion = {
-  id: string;
+  _id: string;
   name: string;
   displayName: string;
   state: string;
@@ -170,7 +170,7 @@ export type TRegion = {
 };
 
 export type TBucket = {
-  id: string;
+  _id: string;
   appid: string;
   name: string;
   shortName: string;
@@ -185,7 +185,7 @@ export type TBucket = {
 };
 
 export type TWebsiteHosting = {
-  id: string;
+  _id: string;
   appid: string;
   bucketName: string;
   domain: string;
@@ -198,7 +198,7 @@ export type TWebsiteHosting = {
 };
 
 export type TSetting = {
-  id: string;
+  _id: string;
   key: string;
   value: string;
   desc: string;
@@ -258,7 +258,7 @@ export type Key = {
 };
 
 export type TFunction = {
-  id: string;
+  _id: string;
   appid: string;
   name: string;
   source: Source;
@@ -293,7 +293,7 @@ export type TLogItem = {
 
 // user data
 export type TUserInfo = {
-  id: string;
+  _id: string;
   username: string;
   email: any;
   phone: any;
@@ -303,7 +303,7 @@ export type TUserInfo = {
 };
 
 export type TProfile = {
-  id: string;
+  _id: string;
   uid: string;
   openid: string;
   from: string;
@@ -314,7 +314,7 @@ export type TProfile = {
 };
 
 export type TApplicationItem = {
-  id: string;
+  _id: string;
   name: string;
   appid: string;
   regionId: string;
@@ -327,7 +327,7 @@ export type TApplicationItem = {
   lockedAt: string;
   createdBy: string;
   bundle: {
-    id: string;
+    _id: string;
     appid: string;
     bundleId: string;
     name: string;
@@ -353,7 +353,7 @@ export type TApplicationItem = {
     updatedAt: string;
   };
   runtime: {
-    id: string;
+    _id: string;
     name: string;
     type: string;
     image: {
@@ -366,7 +366,7 @@ export type TApplicationItem = {
     latest: boolean;
   };
   subscription: {
-    id: string;
+    _id: string;
     input: {
       name: string;
       state: string;
