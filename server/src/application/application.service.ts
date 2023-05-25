@@ -257,6 +257,7 @@ export class ApplicationService {
             'bundle.resource.requestCPU': 0,
             'bundle.resource.requestMemory': 0,
           },
+          returnDocument: 'after',
         },
       )
 

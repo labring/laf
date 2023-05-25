@@ -247,7 +247,20 @@ export class ApplicationController {
     @Param('appid') appid: string,
     @Body() dto: UpdateApplicationBundleDto,
   ) {
+    const app = await this.application.findOne(appid)
+    const origin = app.bundle
     const doc = await this.application.updateBundle(appid, dto)
+
+    // restart running application if cpu or memory changed
+    const isRunning = app.phase === ApplicationPhase.Started
+    const isCpuChanged = origin.resource.limitCPU !== doc.resource.limitCPU
+    const isMemoryChanged =
+      origin.resource.limitMemory !== doc.resource.limitMemory
+
+    if (isRunning && (isCpuChanged || isMemoryChanged)) {
+      await this.application.updateState(appid, ApplicationState.Restarting)
+    }
+
     return ResponseUtil.ok(doc)
   }
 
