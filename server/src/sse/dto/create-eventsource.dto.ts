@@ -8,7 +8,7 @@ import {
   Min,
   IsEnum,
 } from 'class-validator'
-import { SseEventEnum } from '../types'
+import { SseEventEnum, SseEventPayload } from '../types'
 
 
 
@@ -30,7 +30,8 @@ export class CreateEventSourceDto {
 
   @IsNotEmpty()
   @ApiProperty()
-  payload: object
+  payload: SseEventPayload
+  // payload: object
 
 
   // @IsNumber()

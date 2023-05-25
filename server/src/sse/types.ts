@@ -88,3 +88,7 @@ export class SseResponseWrapper {
 }
 
 
+export type SseEventPayload = {
+  msg: string
+  [key: string]: any
+}
