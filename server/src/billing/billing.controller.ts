@@ -1,4 +1,11 @@
-import { Controller, Get, Logger, Param, UseGuards } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Logger,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import {
   ApiResponseArray,
@@ -27,8 +34,20 @@ export class BillingController {
   @ApiResponseArray(ApplicationBilling)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get()
-  async findAllByAppId(@Param('appid') appid: string) {
-    const billings = await this.billing.findAllByAppId(appid)
+  async findAllByAppId(
+    @Param('appid') appid: string,
+    @Query('startTime') startTime: Date,
+    @Query('endTime') endTime: Date,
+    @Query('page') page: number,
+    @Query('pageSize') pageSize: number,
+  ) {
+    const billings = await this.billing.findAllByAppId(
+      appid,
+      startTime,
+      endTime,
+      page,
+      pageSize,
+    )
     return ResponseUtil.ok(billings)
   }
 

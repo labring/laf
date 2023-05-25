@@ -4,7 +4,7 @@ import { ResourceService } from './resource.service'
 import { BillingController } from './billing.controller'
 import { BillingTaskService } from './billing-task.service'
 import { ApplicationModule } from 'src/application/application.module'
-import { ResourceController } from './resource.controller';
+import { ResourceController } from './resource.controller'
 
 @Module({
   imports: [ApplicationModule],

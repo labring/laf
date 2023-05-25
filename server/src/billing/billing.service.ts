@@ -14,10 +14,19 @@ export class BillingService {
 
   constructor(private readonly resource: ResourceService) {}
 
-  async findAllByAppId(appid: string) {
+  async findAllByAppId(
+    appid: string,
+    startTime: Date,
+    endTime: Date,
+    page: number,
+    pageSize: number,
+  ) {
     const billings = await this.db
       .collection<ApplicationBilling>('ApplicationBilling')
-      .find({ appid })
+      .find({ appid, startTime, endTime })
+      .skip((page - 1) * pageSize)
+      .limit(pageSize)
+      .sort({ startTime: -1 })
       .toArray()
 
     return billings
