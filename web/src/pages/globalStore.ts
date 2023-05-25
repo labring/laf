@@ -6,7 +6,7 @@ import { immer } from "zustand/middleware/immer";
 import { APP_STATUS, CHAKRA_UI_COLOR_MODE_KEY } from "@/constants";
 import { formatPort } from "@/utils/format";
 
-import { TApplicationDetail, TRegion, TRuntime, TUserInfo } from "@/apis/typing";
+import { TApplicationDetail, TRegion, TRuntime } from "@/apis/typing";
 import { ApplicationControllerUpdate } from "@/apis/v1/applications";
 import { AuthControllerGetProfile } from "@/apis/v1/profile";
 import { RegionControllerGetRegions } from "@/apis/v1/regions";
@@ -15,12 +15,12 @@ import { AppControllerGetRuntimes } from "@/apis/v1/runtimes";
 const { toast } = createStandaloneToast();
 
 type State = {
-  userInfo: TUserInfo | undefined;
+  userInfo: Definitions.UserWithProfile | undefined;
   loading: boolean;
   runtimes?: TRuntime[];
   regions?: TRegion[];
-  currentApp: TApplicationDetail | undefined;
-  setCurrentApp(app: TApplicationDetail | undefined): void;
+  currentApp: TApplicationDetail | any;
+  setCurrentApp(app: TApplicationDetail | any): void;
   init(appid?: string): void;
   updateCurrentApp(app: TApplicationDetail, state: APP_STATUS): void;
   deleteCurrentApp(): void;

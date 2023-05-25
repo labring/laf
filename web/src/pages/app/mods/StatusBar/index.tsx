@@ -35,7 +35,7 @@ function StatusBar() {
         </div>
         <div className={clsx("mt-1")}>
           {/* {t("EndTime")}: {formatDate(currentApp?.subscription.expiredAt)} */}
-          <CreateAppModal application={currentApp as any} type="renewal">
+          <CreateAppModal application={currentApp as any} type="change">
             <a className="ml-2 text-primary-500" href="/edit">
               {t("Renew")}
             </a>

@@ -15,7 +15,10 @@ import useGlobalStore from "@/pages/globalStore";
  */
 export async function RegionControllerGetRegions(
   params: Paths.RegionControllerGetRegions.BodyParameters | any,
-): Promise<Paths.RegionControllerGetRegions.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.RegionControllerGetRegions.Responses;
+}> {
   // /v1/regions
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",

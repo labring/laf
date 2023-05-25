@@ -43,6 +43,7 @@
   "Copied": "copied",
   "Copy": "copy",
   "Create": "New application",
+  "Change": "Change application",
   "CreateNow": "Create Now",
   "Custom": "customize",
   "Days": "days",
@@ -419,5 +420,7 @@
   "LinkCopied": "Link Copied",
   "create success": "create success",
   "ServerStatus": "STATUS",
-  "Fee": "Fee"
+  "Fee": "Fee",
+  "PleaseCloseApplicationFirst": "Please close your application first.",
+  "custom": "Custom"
 }

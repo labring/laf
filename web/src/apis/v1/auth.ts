@@ -15,7 +15,10 @@ import useGlobalStore from "@/pages/globalStore";
  */
 export async function UserPasswordControllerSignup(
   params: Definitions.PasswdSignupDto | any,
-): Promise<Paths.UserPasswordControllerSignup.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.UserPasswordControllerSignup.Responses;
+}> {
   // /v1/auth/passwd/signup
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -32,7 +35,10 @@ export async function UserPasswordControllerSignup(
  */
 export async function UserPasswordControllerSignin(
   params: Definitions.PasswdSigninDto | any,
-): Promise<Paths.UserPasswordControllerSignin.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.UserPasswordControllerSignin.Responses;
+}> {
   // /v1/auth/passwd/signin
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -49,7 +55,10 @@ export async function UserPasswordControllerSignin(
  */
 export async function UserPasswordControllerReset(
   params: Definitions.PasswdResetDto | any,
-): Promise<Paths.UserPasswordControllerReset.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.UserPasswordControllerReset.Responses;
+}> {
   // /v1/auth/passwd/reset
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -66,7 +75,10 @@ export async function UserPasswordControllerReset(
  */
 export async function UserPasswordControllerCheck(
   params: Definitions.PasswdCheckDto | any,
-): Promise<Paths.UserPasswordControllerCheck.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.UserPasswordControllerCheck.Responses;
+}> {
   // /v1/auth/passwd/check
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -81,9 +93,10 @@ export async function UserPasswordControllerCheck(
 /**
  * Send phone verify code
  */
-export async function PhoneControllerSendCode(
-  params: Definitions.SendPhoneCodeDto | any,
-): Promise<Paths.PhoneControllerSendCode.Responses> {
+export async function PhoneControllerSendCode(params: Definitions.SendPhoneCodeDto | any): Promise<{
+  error: string;
+  data: Paths.PhoneControllerSendCode.Responses;
+}> {
   // /v1/auth/phone/sms/code
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -98,9 +111,10 @@ export async function PhoneControllerSendCode(
 /**
  * Signin by phone and verify code
  */
-export async function PhoneControllerSignin(
-  params: Definitions.PhoneSigninDto | any,
-): Promise<Paths.PhoneControllerSignin.Responses> {
+export async function PhoneControllerSignin(params: Definitions.PhoneSigninDto | any): Promise<{
+  error: string;
+  data: Paths.PhoneControllerSignin.Responses;
+}> {
   // /v1/auth/phone/signin
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -117,7 +131,10 @@ export async function PhoneControllerSignin(
  */
 export async function AuthenticationControllerGetProviders(
   params: Paths.AuthenticationControllerGetProviders.BodyParameters | any,
-): Promise<Paths.AuthenticationControllerGetProviders.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.AuthenticationControllerGetProviders.Responses;
+}> {
   // /v1/auth/providers
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -134,7 +151,10 @@ export async function AuthenticationControllerGetProviders(
  */
 export async function AuthenticationControllerBindPhone(
   params: Definitions.BindPhoneDto | any,
-): Promise<Paths.AuthenticationControllerBindPhone.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.AuthenticationControllerBindPhone.Responses;
+}> {
   // /v1/auth/bind/phone
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -151,7 +171,10 @@ export async function AuthenticationControllerBindPhone(
  */
 export async function AuthenticationControllerBindUsername(
   params: Definitions.BindUsernameDto | any,
-): Promise<Paths.AuthenticationControllerBindUsername.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.AuthenticationControllerBindUsername.Responses;
+}> {
   // /v1/auth/bind/username
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",

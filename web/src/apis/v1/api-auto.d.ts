@@ -30,6 +30,41 @@ declare namespace Definitions {
     runtimeId?: string;
   };
 
+  export type ApplicationWithRelations = {
+    _id?: string;
+    name?: string;
+    appid?: string;
+    regionId?: string;
+    runtimeId?: string;
+    tags?: string[];
+    state?: string;
+    phase?: string;
+    isTrialTier?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy?: string;
+    region?: Definitions.Region;
+    bundle?: Definitions.ApplicationBundle;
+    runtime?: Definitions.Runtime;
+    configuration?: Definitions.ApplicationConfiguration;
+    domain?: Definitions.RuntimeDomain;
+  };
+
+  export type Application = {
+    _id?: string;
+    name?: string;
+    appid?: string;
+    regionId?: string;
+    runtimeId?: string;
+    tags?: string[];
+    state?: string;
+    phase?: string;
+    isTrialTier?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy?: string;
+  };
+
   export type UpdateApplicationDto = {
     name?: string;
     state?: string;
@@ -50,6 +85,14 @@ declare namespace Definitions {
     storageCapacity?: number;
   };
 
+  export type ApplicationBundle = {
+    _id?: string;
+    appid?: string;
+    resource?: Definitions.ApplicationBundleResource;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+
   export type CreateEnvironmentDto = {
     name?: string;
     value?: string;
@@ -66,6 +109,14 @@ declare namespace Definitions {
 
   export type CreateCollectionDto = {
     name?: string;
+  };
+
+  export type Collection = {
+    name?: string;
+    type?: string;
+    options?: {};
+    info?: {};
+    idIndex?: {};
   };
 
   export type UpdateCollectionDto = {
@@ -90,10 +141,38 @@ declare namespace Definitions {
     value?: string;
   };
 
+  export type Account = {
+    _id?: string;
+    balance?: number;
+    state?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy?: string;
+  };
+
+  export type AccountChargeOrder = {
+    _id?: string;
+    accountId?: string;
+    amount?: number;
+    currency?: string;
+    phase?: string;
+    channel?: string;
+    result?: {};
+    message?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy?: string;
+  };
+
   export type CreateChargeOrderDto = {
     amount?: number;
     channel?: string;
     currency?: string;
+  };
+
+  export type CreateChargeOrderOutDto = {
+    order?: Definitions.AccountChargeOrder;
+    result?: Definitions.WeChatPaymentCreateOrderResult;
   };
 
   export type CreateWebsiteDto = {
@@ -107,6 +186,16 @@ declare namespace Definitions {
 
   export type Pat2TokenDto = {
     pat?: string /* PAT */;
+  };
+
+  export type UserWithProfile = {
+    _id?: string;
+    username?: string;
+    email?: string;
+    phone?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    profile?: Definitions.UserProfile;
   };
 
   export type PasswdSignupDto = {
@@ -171,12 +260,122 @@ declare namespace Definitions {
     name?: string;
   };
 
+  export type ApplicationBilling = {
+    _id?: string;
+    appid?: string;
+    state?: string;
+    amount?: number;
+    detail?: Definitions.ApplicationBillingDetail;
+    startAt?: string;
+    endAt?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+
   export type CalculatePriceDto = {
     regionId?: string;
     cpu?: number;
     memory?: number;
     databaseCapacity?: number;
     storageCapacity?: number;
+  };
+
+  export type CalculatePriceResultDto = {
+    cpu?: number;
+    memory?: number;
+    storageCapacity?: number;
+    databaseCapacity?: number;
+    total?: number;
+  };
+
+  export type Region = {
+    _id?: string;
+    name?: string;
+    displayName?: string;
+    tls?: boolean;
+    state?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+
+  export type ApplicationBundleResource = {
+    limitCPU?: number;
+    limitMemory?: number;
+    databaseCapacity?: number;
+    storageCapacity?: number;
+    limitCountOfCloudFunction?: number;
+    limitCountOfBucket?: number;
+    limitCountOfDatabasePolicy?: number;
+    limitCountOfTrigger?: number;
+    limitCountOfWebsiteHosting?: number;
+    reservedTimeAfterExpired?: number;
+  };
+
+  export type Runtime = {
+    _id?: string;
+    name?: string;
+    type?: string;
+    image?: Definitions.RuntimeImageGroup;
+    state?: string;
+    version?: string;
+    latest?: boolean;
+  };
+
+  export type RuntimeImageGroup = {
+    main?: string;
+    init?: string;
+    sidecar?: string;
+  };
+
+  export type ApplicationConfiguration = {
+    _id?: string;
+    appid?: string;
+    environments?: Definitions.EnvironmentVariable[];
+    dependencies?: string[];
+    createdAt?: string;
+    updatedAt?: string;
+  };
+
+  export type EnvironmentVariable = {
+    name?: string;
+    value?: string;
+  };
+
+  export type RuntimeDomain = {
+    _id?: string;
+    appid?: string;
+    domain?: string;
+    state?: string;
+    phase?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+
+  export type WeChatPaymentCreateOrderResult = {
+    code_url?: string;
+  };
+
+  export type UserProfile = {
+    _id?: string;
+    uid?: string;
+    openData?: {};
+    avatar?: string;
+    name?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+
+  export type ApplicationBillingDetail = {
+    cpu?: Definitions.ApplicationBillingDetailItem;
+    memory?: Definitions.ApplicationBillingDetailItem;
+    databaseCapacity?: Definitions.ApplicationBillingDetailItem;
+    storageCapacity?: Definitions.ApplicationBillingDetailItem;
+    networkTraffic?: Definitions.ApplicationBillingDetailItem;
+  };
+
+  export type ApplicationBillingDetailItem = {
+    usage?: number;
+    amount?: number;
   };
 }
 
@@ -254,6 +453,14 @@ declare namespace Paths {
   }
 
   namespace ApplicationControllerFindOne {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace ApplicationControllerDelete {
     export type QueryParameters = any;
 
     export type BodyParameters = any;

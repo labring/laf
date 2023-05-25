@@ -14,6 +14,7 @@ import useGlobalStore from "@/pages/globalStore";
 
 export default function Header(props: { size: "sm" | "lg" }) {
   const { userInfo } = useGlobalStore((state) => state);
+
   const { t } = useTranslation();
   const { colorMode } = useColorMode();
 
@@ -39,10 +40,10 @@ export default function Header(props: { size: "sm" | "lg" }) {
       </div>
 
       <div className="flex items-center">
-        {userInfo?.profile ? (
+        {userInfo?._id ? (
           <>
             <UserSetting
-              name={userInfo?.profile?.name}
+              name={userInfo?.username!}
               avatar={userInfo?.profile?.avatar}
               width={"24px"}
             />

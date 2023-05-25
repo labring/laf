@@ -43,6 +43,7 @@
   "Copied": "已复制",
   "Copy": "复制",
   "Create": "新建",
+  "Change": "变更配置",
   "CreateNow": "立即创建",
   "Custom": "自定义",
   "Days": "天",
@@ -419,5 +420,7 @@
   "LinkCopied": "链接复制成功",
   "create success": "创建成功",
   "ServerStatus": "服务状态",
-  "Fee": "费用"
+  "Fee": "费用",
+  "PleaseCloseApplicationFirst": "请先关闭应用",
+  "custom": "自定义"
 }
