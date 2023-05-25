@@ -1,16 +1,15 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger'
-import { ApiResponseObject, ResponseUtil } from '../utils/response'
+  ApiResponseObject,
+  ApiResponseString,
+  ResponseUtil,
+} from '../utils/response'
 import { IRequest } from '../utils/interface'
-import { UserDto } from '../user/dto/user.response'
 import { AuthService } from './auth.service'
 import { JwtAuthGuard } from './jwt.auth.guard'
 import { Pat2TokenDto } from './dto/pat2token.dto'
+import { UserWithProfile } from 'src/user/entities/user'
 
 @ApiTags('Authentication')
 @Controller()
@@ -23,7 +22,7 @@ export class AuthController {
    * @returns
    */
   @ApiOperation({ summary: 'Get user token by PAT' })
-  @ApiResponse({ type: ResponseUtil })
+  @ApiResponseString()
   @Post('pat2token')
   async pat2token(@Body() dto: Pat2TokenDto) {
     const token = await this.authService.pat2token(dto.pat)
@@ -41,7 +40,7 @@ export class AuthController {
    */
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  @ApiResponseObject(UserDto)
+  @ApiResponseObject(UserWithProfile)
   @ApiOperation({ summary: 'Get current user profile' })
   @ApiBearerAuth('Authorization')
   async getProfile(@Req() request: IRequest) {

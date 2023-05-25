@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { SystemDatabase } from 'src/system-database'
-import { User } from './entities/user'
+import { User, UserWithProfile } from './entities/user'
 import { ObjectId } from 'mongodb'
 
 @Injectable()
@@ -20,7 +20,18 @@ export class UserService {
   }
 
   async findOneById(id: ObjectId) {
-    return this.db.collection<User>('User').findOne({ _id: id })
+    return this.db
+      .collection<User>('User')
+      .aggregate<UserWithProfile>()
+      .match({ _id: id })
+      .lookup({
+        from: 'UserProfile',
+        localField: '_id',
+        foreignField: 'uid',
+        as: 'profile',
+      })
+      .unwind({ path: '$profile', preserveNullAndEmptyArrays: true })
+      .next()
   }
 
   async findOneByUsername(username: string) {

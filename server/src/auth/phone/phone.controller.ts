@@ -11,7 +11,7 @@ import { UserService } from 'src/user/user.service'
 import { AuthBindingType, AuthProviderBinding } from '../types'
 import { SmsVerifyCodeType } from '../entities/sms-verify-code'
 
-@ApiTags('Authentication - New')
+@ApiTags('Authentication')
 @Controller('auth')
 export class PhoneController {
   private readonly logger = new Logger(PhoneController.name)

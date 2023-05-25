@@ -47,6 +47,23 @@ export class ResponseUtil<T = any> {
   }
 }
 
+export const ApiResponseString = () =>
+  applyDecorators(
+    ApiExtraModels(ResponseUtil),
+    ApiResponse({
+      schema: {
+        allOf: [
+          { $ref: getSchemaPath(ResponseUtil) },
+          {
+            properties: {
+              data: { type: 'string' },
+            },
+          },
+        ],
+      },
+    }),
+  )
+
 export const ApiResponseObject = <DataDto extends Type<unknown>>(
   dataDto: DataDto,
 ) =>

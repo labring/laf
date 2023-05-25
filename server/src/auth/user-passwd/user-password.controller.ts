@@ -11,7 +11,7 @@ import { SmsService } from '../phone/sms.service'
 import { PasswdResetDto } from '../dto/passwd-reset.dto'
 import { PasswdCheckDto } from '../dto/passwd-check.dto'
 
-@ApiTags('Authentication - New')
+@ApiTags('Authentication')
 @Controller('auth')
 export class UserPasswordController {
   private readonly logger = new Logger(UserPasswordService.name)

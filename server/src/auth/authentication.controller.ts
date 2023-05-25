@@ -11,7 +11,7 @@ import { UserService } from 'src/user/user.service'
 import { ObjectId } from 'mongodb'
 import { SmsVerifyCodeType } from './entities/sms-verify-code'
 
-@ApiTags('Authentication - New')
+@ApiTags('Authentication')
 @Controller('auth')
 export class AuthenticationController {
   constructor(
