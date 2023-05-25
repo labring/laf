@@ -81,7 +81,7 @@ export function formatPort(port: number | undefined) {
   return port === 80 || port === 443 ? "" : `:${port}`;
 }
 
-export function formatPrice(price: number) {
+export function formatPrice(price?: number) {
   return price ? "¥" + (price / 100).toFixed(2) : "-";
 }
 

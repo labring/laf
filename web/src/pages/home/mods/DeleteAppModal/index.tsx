@@ -15,15 +15,23 @@ import {
   ModalOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useMutation } from "@tanstack/react-query";
+
+import { APP_PHASE_STATUS } from "@/constants";
+
+import { TApplicationItem } from "@/apis/typing";
+import { ApplicationControllerDelete } from "@/apis/v1/applications";
+import useGlobalStore from "@/pages/globalStore";
 
 function DeleteAppModal(props: {
-  item: any;
+  item: TApplicationItem;
   children: React.ReactElement;
   onSuccess?: () => void;
 }) {
   const { item, onSuccess } = props;
   const { t } = useTranslation();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const showError = useGlobalStore((state) => state.showError);
   const {
     register,
     handleSubmit,
@@ -32,12 +40,26 @@ function DeleteAppModal(props: {
     appid: string;
   }>();
 
+  const deleteApplicationMutation = useMutation(
+    (params: any) => ApplicationControllerDelete(params),
+    {
+      onSuccess: () => {
+        onSuccess && onSuccess();
+      },
+      onError: () => {},
+    },
+  );
+
   return (
     <>
       {React.cloneElement(props.children, {
         onClick: (event: any) => {
           event?.preventDefault();
-          onOpen();
+          if (item.phase === APP_PHASE_STATUS.Stopped) {
+            onOpen();
+          } else {
+            showError(t("PleaseCloseApplicationFirst"));
+          }
         },
       })}
 
@@ -74,11 +96,13 @@ function DeleteAppModal(props: {
 
           <ModalFooter>
             <Button
-              isLoading={false}
+              isLoading={deleteApplicationMutation.isLoading}
               colorScheme="red"
               onClick={handleSubmit(async (data) => {
                 if (item.appid === data.appid) {
-                  // TODO
+                  await deleteApplicationMutation.mutateAsync({
+                    appid: item.appid,
+                  });
                   onSuccess && onSuccess();
                   onClose();
                 }

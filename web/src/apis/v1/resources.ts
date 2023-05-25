@@ -15,7 +15,10 @@ import useGlobalStore from "@/pages/globalStore";
  */
 export async function ResourceControllerCalculatePrice(
   params: Definitions.CalculatePriceDto | any,
-): Promise<Paths.ResourceControllerCalculatePrice.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.ResourceControllerCalculatePrice.Responses;
+}> {
   // /v1/resources/price
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -32,7 +35,10 @@ export async function ResourceControllerCalculatePrice(
  */
 export async function ResourceControllerGetResourceOptions(
   params: Paths.ResourceControllerGetResourceOptions.BodyParameters | any,
-): Promise<Paths.ResourceControllerGetResourceOptions.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.ResourceControllerGetResourceOptions.Responses;
+}> {
   // /v1/resources/resource-options
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -49,7 +55,10 @@ export async function ResourceControllerGetResourceOptions(
  */
 export async function ResourceControllerGetResourceOptionsByRegionId(
   params: Paths.ResourceControllerGetResourceOptionsByRegionId.BodyParameters | any,
-): Promise<Paths.ResourceControllerGetResourceOptionsByRegionId.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.ResourceControllerGetResourceOptionsByRegionId.Responses;
+}> {
   // /v1/resources/resource-options/{regionId}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -66,7 +75,10 @@ export async function ResourceControllerGetResourceOptionsByRegionId(
  */
 export async function ResourceControllerGetResourceBundles(
   params: Paths.ResourceControllerGetResourceBundles.BodyParameters | any,
-): Promise<Paths.ResourceControllerGetResourceBundles.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.ResourceControllerGetResourceBundles.Responses;
+}> {
   // /v1/resources/resource-bundles
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",

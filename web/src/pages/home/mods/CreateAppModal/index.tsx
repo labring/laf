@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Controller, useForm, useWatch } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { CheckIcon } from "@chakra-ui/icons";
 import {
   Box,
@@ -39,7 +39,11 @@ import { queryKeys, useAccountQuery } from "../../service";
 import BundleItem from "./BundleItem";
 
 import { TApplicationItem, TBundle } from "@/apis/typing";
-import { ApplicationControllerCreate, ApplicationControllerUpdate } from "@/apis/v1/applications";
+import {
+  ApplicationControllerCreate,
+  ApplicationControllerUpdate,
+  ApplicationControllerUpdateBundle,
+} from "@/apis/v1/applications";
 import {
   ResourceControllerCalculatePrice,
   ResourceControllerGetResourceOptions,
@@ -47,7 +51,7 @@ import {
 import useGlobalStore from "@/pages/globalStore";
 
 const CreateAppModal = (props: {
-  type: "create" | "edit" | "renewal";
+  type: "create" | "edit" | "change";
   application?: TApplicationItem;
   children: React.ReactElement;
 }) => {
@@ -56,13 +60,13 @@ const CreateAppModal = (props: {
 
   const { application, type } = props;
 
-  const title = type === "edit" ? t("Edit") : type === "renewal" ? t("Renew") : t("Create");
+  const title = type === "edit" ? t("Edit") : type === "change" ? t("Change") : t("Create");
 
   const { runtimes = [], regions = [] } = useGlobalStore();
 
-  const accountQuery = useAccountQuery();
+  const { data: accountRes } = useAccountQuery();
 
-  const { data: billingResourceOptionsRes = {} } = useQuery(
+  const { data: billingResourceOptionsRes } = useQuery(
     queryKeys.useBillingResourceOptionsQuery,
     async () => {
       return ResourceControllerGetResourceOptions({});
@@ -76,8 +80,12 @@ const CreateAppModal = (props: {
     name: string;
     state: APP_STATUS | string;
     regionId: string;
-    bundleId: string;
     runtimeId: string;
+    bundleId: string;
+    cpu: number;
+    memory: number;
+    databaseCapacity: number;
+    storageCapacity: number;
   };
 
   const currentRegion =
@@ -89,8 +97,8 @@ const CreateAppModal = (props: {
     name: application?.name,
     state: application?.state,
     regionId: application?.regionId,
-    bundleId: application?.bundle?.bundleId,
     runtimeId: runtimes[0]._id,
+    bundleId: bundles[0]._id,
   };
 
   if (type === "create") {
@@ -98,9 +106,8 @@ const CreateAppModal = (props: {
       name: "",
       state: APP_STATUS.Running,
       regionId: regions[0]._id,
-      bundleId: bundles[0]._id,
-
       runtimeId: runtimes[0]._id,
+      bundleId: bundles[0]._id,
     };
   }
 
@@ -116,25 +123,23 @@ const CreateAppModal = (props: {
     defaultValues,
   });
 
-  const bundleId = useWatch({
-    control,
-    name: "bundleId",
-  });
-
-  const defaultBundle: TBundle =
-    bundles.find((item: TBundle) => item._id === bundleId) || bundles[0];
-
-  const [bundle, setBundle] = React.useState<{
+  const defaultBundle: {
     cpu: number;
     memory: number;
     databaseCapacity: number;
     storageCapacity: number;
-  }>({
-    cpu: defaultBundle.spec.cpu.value,
-    memory: defaultBundle.spec.memory.value,
-    databaseCapacity: defaultBundle.spec.databaseCapacity.value,
-    storageCapacity: defaultBundle.spec.storageCapacity.value,
-  });
+  } = {
+    cpu: application?.bundle.resource.limitCPU || bundles[0].spec.cpu.value,
+    memory: application?.bundle.resource.limitMemory || bundles[0].spec.memory.value,
+    databaseCapacity:
+      application?.bundle.resource.databaseCapacity || bundles[0].spec.databaseCapacity.value,
+    storageCapacity:
+      application?.bundle.resource.storageCapacity || bundles[0].spec.storageCapacity.value,
+  };
+
+  const [bundle, setBundle] = React.useState(defaultBundle);
+
+  const [customActive, setCustomActive] = React.useState(false);
 
   const { showSuccess } = useGlobalStore();
 
@@ -173,12 +178,20 @@ const CreateAppModal = (props: {
 
   const updateAppMutation = useMutation((params: any) => ApplicationControllerUpdate(params));
   const createAppMutation = useMutation((params: any) => ApplicationControllerCreate(params));
+  const changeBundleMutation = useMutation((params: any) =>
+    ApplicationControllerUpdateBundle(params),
+  );
 
   const onSubmit = async (data: any) => {
     let res: any = {};
+
     switch (type) {
       case "edit":
         res = await updateAppMutation.mutateAsync({ ...data, appid: application?.appid });
+        break;
+
+      case "change":
+        res = await changeBundleMutation.mutateAsync({ ...bundle, appid: application?.appid });
         break;
 
       case "create":
@@ -242,7 +255,12 @@ const CreateAppModal = (props: {
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
-              <FormControl isRequired isInvalid={!!errors?.name} isDisabled={type === "renewal"}>
+              <FormControl
+                isRequired
+                isInvalid={!!errors?.name}
+                isDisabled={type === "change"}
+                hidden={type === "change"}
+              >
                 <FormLabel htmlFor="name">{t("HomePanel.Application") + t("Name")}</FormLabel>
                 <Input
                   {...register("name", {
@@ -251,7 +269,7 @@ const CreateAppModal = (props: {
                 />
                 <FormErrorMessage>{errors?.name && errors?.name?.message}</FormErrorMessage>
               </FormControl>
-              <FormControl hidden={type === "edit"}>
+              <FormControl hidden={type !== "create"}>
                 <FormLabel htmlFor="regionId">{t("HomePanel.Region")}</FormLabel>
                 <HStack spacing={6}>
                   <Controller
@@ -284,7 +302,7 @@ const CreateAppModal = (props: {
                   />
                 </HStack>
               </FormControl>
-              <FormControl isInvalid={!!errors?.bundleId}>
+              <FormControl>
                 <FormLabel htmlFor="bundleId">
                   {t("HomePanel.Application") + t("HomePanel.BundleName")}
                 </FormLabel>
@@ -300,8 +318,8 @@ const CreateAppModal = (props: {
                               return (
                                 <BundleItem
                                   onChange={() => {
-                                    onChange(item._id);
                                     // billingPriceQuery.refetch();
+                                    setCustomActive(false);
                                     setBundle({
                                       cpu: item.spec.cpu.value,
                                       memory: item.spec.memory.value,
@@ -310,22 +328,24 @@ const CreateAppModal = (props: {
                                     });
                                   }}
                                   bundle={item}
-                                  isActive={activeBundle?._id === item._id}
+                                  isActive={activeBundle?._id === item._id && !customActive}
                                   key={item._id}
                                 />
                               );
                             })}
                             <BundleItem
-                              onChange={onChange}
+                              onChange={() => {
+                                setCustomActive(true);
+                              }}
                               bundle={{
-                                displayName: "Custom",
+                                displayName: t("custom"),
                                 _id: "custom",
                               }}
-                              isActive={!activeBundle}
+                              isActive={!activeBundle || customActive}
                             />
                           </div>
                           <div className="ml-6 flex-1 border-l pl-12 pr-8">
-                            {billingResourceOptionsRes.data?.map(
+                            {billingResourceOptionsRes?.data?.map(
                               (item: {
                                 type: "cpu" | "memory" | "databaseCapacity" | "storageCapacity";
                                 specs: { value: number; price: number }[];
@@ -441,9 +461,9 @@ const CreateAppModal = (props: {
                 <span className="ml-2 text-xl font-semibold text-red-500">{totalPrice} / hour</span>
                 <span className="ml-4 mr-2">
                   {t("Balance")}:
-                  <span className="ml-2 text-xl">{formatPrice(accountQuery.data?.balance)}</span>
+                  <span className="ml-2 text-xl">{formatPrice(accountRes?.data?.balance)}</span>
                 </span>
-                {totalPrice > accountQuery.data?.balance ? (
+                {totalPrice > accountRes?.data?.balance! ? (
                   <span className="mr-2">{t("balance is insufficient")}</span>
                 ) : null}
                 <ChargeButton>
@@ -452,14 +472,14 @@ const CreateAppModal = (props: {
               </div>
             )}
 
-            {type !== "edit" && totalPrice <= accountQuery.data?.balance && (
+            {type !== "edit" && totalPrice <= accountRes?.data?.balance! && (
               <Button
                 isLoading={createAppMutation.isLoading}
                 type="submit"
                 onClick={handleSubmit(onSubmit)}
                 disabled={totalPrice > 0}
               >
-                {type === "renewal" ? t("Confirm") : t("CreateNow")}
+                {type === "change" ? t("Confirm") : t("CreateNow")}
               </Button>
             )}
 

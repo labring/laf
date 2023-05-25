@@ -15,7 +15,10 @@ import useGlobalStore from "@/pages/globalStore";
  */
 export async function SettingControllerGetSettings(
   params: Paths.SettingControllerGetSettings.BodyParameters | any,
-): Promise<Paths.SettingControllerGetSettings.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.SettingControllerGetSettings.Responses;
+}> {
   // /v1/settings
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -32,7 +35,10 @@ export async function SettingControllerGetSettings(
  */
 export async function SettingControllerGetSettingByKey(
   params: Paths.SettingControllerGetSettingByKey.BodyParameters | any,
-): Promise<Paths.SettingControllerGetSettingByKey.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.SettingControllerGetSettingByKey.Responses;
+}> {
   // /v1/settings/{key}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",

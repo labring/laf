@@ -291,63 +291,36 @@ export type TLogItem = {
   created_at: string;
 };
 
-// user data
-export type TUserInfo = {
-  _id: string;
-  username: string;
-  email: any;
-  phone: any;
-  createdAt: string;
-  updatedAt: string;
-  profile: TProfile;
-};
-
-export type TProfile = {
-  _id: string;
-  uid: string;
-  openid: string;
-  from: string;
-  avatar: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
 export type TApplicationItem = {
   _id: string;
-  name: string;
   appid: string;
-  regionId: string;
-  runtimeId: string;
-  tags: Array<any>;
+  name: string;
   state: string;
   phase: string;
+  tags: Array<any>;
+  createdBy: string;
+  lockedAt: string;
+  regionId: string;
+  runtimeId: string;
+  billingLockedAt: string;
   createdAt: string;
   updatedAt: string;
-  lockedAt: string;
-  createdBy: string;
   bundle: {
     _id: string;
     appid: string;
-    bundleId: string;
-    name: string;
-    displayName: string;
     resource: {
       limitCPU: number;
       limitMemory: number;
-      requestCPU: number;
-      requestMemory: number;
       databaseCapacity: number;
       storageCapacity: number;
-      networkTrafficOutbound: number;
       limitCountOfCloudFunction: number;
       limitCountOfBucket: number;
       limitCountOfDatabasePolicy: number;
       limitCountOfTrigger: number;
       limitCountOfWebsiteHosting: number;
-      reservedTimeAfterExpired: number;
       limitDatabaseTPS: number;
       limitStorageTPS: number;
+      reservedTimeAfterExpired: number;
     };
     createdAt: string;
     updatedAt: string;
@@ -356,32 +329,12 @@ export type TApplicationItem = {
     _id: string;
     name: string;
     type: string;
-    image: {
-      main: string;
-      init: string;
-      sidecar: any;
-    };
     state: string;
     version: string;
     latest: boolean;
-  };
-  subscription: {
-    _id: string;
-    input: {
-      name: string;
-      state: string;
-      runtimeId: string;
-      regionId: string;
+    image: {
+      main: string;
+      init: string;
     };
-    bundleId: string;
-    appid: string;
-    state: string;
-    phase: string;
-    renewalPlan: string;
-    expiredAt: string;
-    lockedAt: string;
-    createdAt: string;
-    updatedAt: string;
-    createdBy: string;
   };
 };

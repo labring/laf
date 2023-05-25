@@ -68,6 +68,14 @@ declare namespace Definitions {
     name?: string;
   };
 
+  export type Collection = {
+    name?: string;
+    type?: string;
+    options?: {};
+    info?: {};
+    idIndex?: {};
+  };
+
   export type UpdateCollectionDto = {
     validatorSchema?: {};
     validationLevel?: string;
@@ -90,6 +98,29 @@ declare namespace Definitions {
     value?: string;
   };
 
+  export type Account = {
+    _id?: string;
+    balance?: number;
+    state?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy?: string;
+  };
+
+  export type AccountChargeOrder = {
+    _id?: string;
+    accountId?: string;
+    amount?: number;
+    currency?: string;
+    phase?: string;
+    channel?: string;
+    result?: {};
+    message?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy?: string;
+  };
+
   export type CreateChargeOrderDto = {
     amount?: number;
     channel?: string;
@@ -107,6 +138,16 @@ declare namespace Definitions {
 
   export type Pat2TokenDto = {
     pat?: string /* PAT */;
+  };
+
+  export type UserWithProfile = {
+    _id?: string;
+    username?: string;
+    email?: string;
+    phone?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    profile?: Definitions.UserProfile;
   };
 
   export type PasswdSignupDto = {
@@ -171,12 +212,47 @@ declare namespace Definitions {
     name?: string;
   };
 
+  export type ApplicationBilling = {
+    _id?: string;
+    appid?: string;
+    state?: string;
+    amount?: number;
+    detail?: Definitions.ApplicationBillingDetail;
+    startAt?: string;
+    endAt?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+
   export type CalculatePriceDto = {
     regionId?: string;
     cpu?: number;
     memory?: number;
     databaseCapacity?: number;
     storageCapacity?: number;
+  };
+
+  export type UserProfile = {
+    _id?: string;
+    uid?: string;
+    openData?: {};
+    avatar?: string;
+    name?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+
+  export type ApplicationBillingDetail = {
+    cpu?: Definitions.ApplicationBillingDetailItem;
+    memory?: Definitions.ApplicationBillingDetailItem;
+    databaseCapacity?: Definitions.ApplicationBillingDetailItem;
+    storageCapacity?: Definitions.ApplicationBillingDetailItem;
+    networkTraffic?: Definitions.ApplicationBillingDetailItem;
+  };
+
+  export type ApplicationBillingDetailItem = {
+    usage?: number;
+    amount?: number;
   };
 }
 
@@ -254,6 +330,14 @@ declare namespace Paths {
   }
 
   namespace ApplicationControllerFindOne {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace ApplicationControllerDelete {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
