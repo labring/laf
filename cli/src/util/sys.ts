@@ -1,3 +1,3 @@
-export function getApplicationPath(): string {
+export function getAppPath(): string {
   return process.cwd()
 }
