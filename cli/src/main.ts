@@ -8,6 +8,7 @@ import { loginCommand, logoutCommand, command as userCommand } from './command/u
 import { command as storageCommand } from './command/storage'
 import { command as policyCommand } from './command/policy'
 import { command as websiteCommand } from './command/website'
+import { command as deployCommand } from './command/deploy'
 
 const program = new Command()
 program.option('-v, --version', 'output version').action((options) => {
@@ -28,5 +29,6 @@ program.addCommand(storageCommand())
 program.addCommand(dependencyCommand())
 program.addCommand(policyCommand())
 program.addCommand(websiteCommand())
+program.addCommand(deployCommand())
 
 program.parse(process.argv)

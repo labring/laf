@@ -19,13 +19,13 @@ export const RESPONSE_FILE = 'response.d.ts'
 export const TSCONFIG_FILE = 'tsconfig.json'
 export const GITIGNORE_FILE = 'gitignore'
 
-
 // schema path
 export const APP_SCHEMA_NAME = '.app.yaml'
 export const PROJECT_SCHEMA_NAME = 'laf.yaml'
 export const USER_SCHEMA_NAME = 'user.yaml'
 export const FUNCTION_SCHEMA_DIRCTORY = 'functions'
 export const FUNCTION_SCHEMA_SUFFIX = '.yaml'
+export const DEPLOY_SCHEMA_NAME = 'deploy.yaml'
 
 export const IGNORE_FILE_NAME = '.gitignore'
 export const POLICIES_DIRECTORY_NAME = 'policies'

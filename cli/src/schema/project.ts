@@ -34,6 +34,4 @@ export class ProjectSchema {
     const configPath = path.join(getAppPath(), PROJECT_SCHEMA_NAME)
     return exist(configPath)
   }
-
 }
-

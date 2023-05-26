@@ -1,5 +1,4 @@
-import { request } from "../util/request";
-
+import { request } from '../util/request'
 
 export async function pat2token(server: string, data: { pat: string }): Promise<any> {
   return request({
