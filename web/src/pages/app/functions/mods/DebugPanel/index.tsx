@@ -136,7 +136,7 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
           display="flex"
           flexDirection={"column"}
           h="full"
-          defaultIndex={2}
+          // defaultIndex={2}
         >
           <TabList h={"50px"}>
             <Tab px="4">
@@ -159,7 +159,7 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
                 {t("HomePage.NavBar.docs")}
               </span>
             </Tab>
-            <Tab>Laf Pilot</Tab>
+            {/* <Tab>Laf Pilot</Tab> */}
           </TabList>
 
           <TabPanels flex={1} className="overflow-hidden">

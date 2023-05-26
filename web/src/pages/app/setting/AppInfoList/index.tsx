@@ -111,7 +111,7 @@ const AppEnvList = () => {
               { key: t("HomePanel.Region"), value: currentRegion?.displayName },
             ]}
             rightData={[
-              { key: t("HomePanel.BundleName"), value: currentApp?.bundle.name },
+              { key: t("HomePanel.Spec"), value: currentApp?.bundle.name },
               { key: t("HomePanel.RuntimeName"), value: currentApp?.runtime.name },
             ]}
           />

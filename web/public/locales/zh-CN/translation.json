@@ -51,7 +51,7 @@
   "DeleteConfirm": "确定删除该行数据吗?",
   "DeleteSuccess": "删除成功",
   "DeleteTip": "无法撤销",
-  "Edit": "编辑",
+  "Edit": "编辑名称",
   "Empty": "清空",
   "Generate": "生成",
   "InputTip": "请输入",
@@ -114,7 +114,6 @@
     "APP": "Android or iOS 应用",
     "Application": "应用",
     "Blog": "个人博客、企业官网",
-    "BundleName": "规格",
     "Develop": "开发",
     "Enterprise": "企业信息化建设",
     "Explore": "等你探索",
@@ -130,7 +129,14 @@
     "Welcome": "欢迎来到 LAF 云开发平台！",
     "DeleteApp": "删除 APP",
     "DeleteTip": "当前操作将会永久删除应用, 包括函数、数据、云存储等与应用相关的数据, 删除后<strong>将无法撤消</strong>,  请输入 <strong>{{appId}}</strong> 后确认",
-    "Duration": "购买时长"
+    "Duration": "购买时长",
+    "Spec": "规格"
+  },
+  "SpecItem": {
+    "cpu": "CPU",
+    "memory": "内存",
+    "databaseCapacity": "数据库",
+    "storageCapacity": "云存储"
   },
   "LogPanel": {
     "Detail": "日志详情",
