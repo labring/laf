@@ -24,6 +24,7 @@ function HomePage() {
       return ApplicationControllerFindAll({});
     },
     {
+      staleTime: 2000,
       refetchInterval: shouldRefetch ? 1000 : false,
       onSuccess(data) {
         setShouldRefetch(
