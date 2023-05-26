@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { ObjectId } from 'mongodb'
 
 export class ApplicationBundleResource {
@@ -52,6 +52,9 @@ export class ApplicationBundle {
 
   @ApiProperty()
   resource: ApplicationBundleResource
+
+  @ApiPropertyOptional()
+  isTrialTier?: boolean
 
   @ApiProperty()
   createdAt: Date

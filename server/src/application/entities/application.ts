@@ -49,9 +49,6 @@ export class Application {
   @ApiProperty({ enum: ApplicationPhase })
   phase: ApplicationPhase
 
-  @ApiPropertyOptional()
-  isTrialTier?: boolean
-
   @ApiProperty()
   createdAt: Date
 

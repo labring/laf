@@ -25,10 +25,15 @@ export class CreateChargeOrderDto {
   currency: Currency
 }
 
+export class WeChatPaymentCreateOrderResult {
+  @ApiProperty()
+  code_url: string
+}
+
 export class CreateChargeOrderOutDto {
-  @ApiProperty({ type: AccountChargeOrder })
+  @ApiProperty()
   order: AccountChargeOrder
 
-  @ApiProperty({ type: Object })
-  result: any
+  @ApiProperty()
+  result: WeChatPaymentCreateOrderResult
 }
