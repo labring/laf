@@ -6,6 +6,7 @@ import {
   ResourceBundle,
   ResourceType,
 } from './entities/resource'
+import { CreateApplicationDto } from 'src/application/dto/create-application.dto'
 
 @Injectable()
 export class ResourceService {
@@ -42,15 +43,6 @@ export class ResourceService {
     return options
   }
 
-  async findAllBundles() {
-    const options = await this.db
-      .collection<ResourceBundle>('ResourceBundle')
-      .find()
-      .toArray()
-
-    return options
-  }
-
   groupByType(options: ResourceOption[]) {
     type GroupedOptions = {
       [key in ResourceType]: ResourceOption
@@ -62,5 +54,57 @@ export class ResourceService {
     }, {} as GroupedOptions)
 
     return groupedOptions
+  }
+
+  async findAllBundles() {
+    const options = await this.db
+      .collection<ResourceBundle>('ResourceBundle')
+      .find()
+      .toArray()
+
+    return options
+  }
+
+  async findAllBundlesByRegionId(regionId: ObjectId) {
+    const options = await this.db
+      .collection<ResourceBundle>('ResourceBundle')
+      .find({ regionId })
+      .toArray()
+
+    return options
+  }
+
+  async findTrialBundle(regionId: ObjectId) {
+    const bundle = await this.db
+      .collection<ResourceBundle>('ResourceBundle')
+      .findOne({ enableFreeTier: true, regionId })
+
+    return bundle
+  }
+
+  // check if input bundle is trial bundle
+  async isTrialBundle(input: CreateApplicationDto) {
+    const regionId = new ObjectId(input.regionId)
+    const bundle = await this.findTrialBundle(regionId)
+
+    if (!bundle) {
+      return false
+    }
+
+    const cpu = bundle.spec.cpu.value
+    const memory = bundle.spec.memory.value
+    const storage = bundle.spec.storageCapacity.value
+    const database = bundle.spec.databaseCapacity.value
+
+    if (
+      cpu === input.cpu &&
+      memory === input.memory &&
+      storage === input.storageCapacity &&
+      database === input.databaseCapacity
+    ) {
+      return true
+    }
+
+    return false
   }
 }

@@ -15,6 +15,7 @@ import { TriggerService } from 'src/trigger/trigger.service'
 import { WebsiteService } from 'src/website/website.service'
 import { AccountModule } from 'src/account/account.module'
 import { BundleService } from './bundle.service'
+import { ResourceService } from 'src/billing/resource.service'
 
 @Module({
   imports: [StorageModule, DatabaseModule, GatewayModule, AccountModule],
@@ -30,6 +31,7 @@ import { BundleService } from './bundle.service'
     TriggerService,
     WebsiteService,
     BundleService,
+    ResourceService,
   ],
   exports: [ApplicationService, BundleService],
 })

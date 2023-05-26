@@ -67,6 +67,7 @@ export class ApplicationService {
         {
           appid,
           resource: this.buildBundleResource(dto),
+          isTrialTier: dto.isTrialTier,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -224,6 +225,36 @@ export class ApplicationService {
       .next()
 
     return doc
+  }
+
+  async findTrialApplications(userid: ObjectId) {
+    const db = SystemDatabase.db
+
+    const apps = await db
+      .collection<Application>('Application')
+      .aggregate<Application>()
+      .match({ createdBy: userid })
+      .lookup({
+        from: 'ApplicationBundle',
+        localField: 'appid',
+        foreignField: 'appid',
+        as: 'bundle',
+      })
+      .unwind('$bundle')
+      .match({ 'bundle.isTrialTier': true })
+      .toArray()
+
+    return apps
+  }
+
+  async countByUser(userid: ObjectId) {
+    const db = SystemDatabase.db
+
+    const count = await db
+      .collection<Application>('Application')
+      .countDocuments({ createdBy: userid })
+
+    return count
   }
 
   async updateName(appid: string, name: string) {

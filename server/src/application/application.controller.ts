@@ -41,6 +41,7 @@ import { SystemDatabase } from 'src/system-database'
 import { Runtime } from './entities/runtime'
 import { ObjectId } from 'mongodb'
 import { ApplicationBundle } from './entities/application-bundle'
+import { ResourceService } from 'src/billing/resource.service'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -54,6 +55,7 @@ export class ApplicationController {
     private readonly region: RegionService,
     private readonly storage: StorageService,
     private readonly account: AccountService,
+    private readonly resource: ResourceService,
   ) {}
 
   /**
@@ -80,6 +82,27 @@ export class ApplicationController {
       .findOne({ _id: new ObjectId(dto.runtimeId) })
     if (!runtime) {
       return ResponseUtil.error(`runtime ${dto.runtimeId} not found`)
+    }
+
+    // check if trial tier
+    if (dto.isTrialTier) {
+      const isTrialTier = await this.resource.isTrialBundle(dto)
+      if (!isTrialTier) {
+        return ResponseUtil.error(`trial tier is not available`)
+      }
+
+      const regionId = new ObjectId(dto.regionId)
+      const bundle = await this.resource.findTrialBundle(regionId)
+      const trials = await this.application.findTrialApplications(user._id)
+      if (trials.length >= (bundle?.limitCountOfFreeTierPerUser || 0)) {
+        return ResponseUtil.error(`trial tier is not available`)
+      }
+    }
+
+    // one user can only have 20 applications in one region
+    const count = await this.application.countByUser(user._id)
+    if (count > 20) {
+      return ResponseUtil.error(`too many applications, limit is 20`)
     }
 
     // check account balance
