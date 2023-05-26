@@ -18,6 +18,7 @@ export class EnvironmentVariableService {
       .findOneAndUpdate(
         { appid },
         { $set: { environments: dto, updatedAt: new Date() } },
+        { returnDocument: 'after' },
       )
 
     assert(res?.value, 'application configuration not found')
@@ -45,6 +46,7 @@ export class EnvironmentVariableService {
       .findOneAndUpdate(
         { appid },
         { $set: { environments: origin, updatedAt: new Date() } },
+        { returnDocument: 'after' },
       )
 
     assert(res?.value, 'application configuration not found')
@@ -63,7 +65,11 @@ export class EnvironmentVariableService {
   async deleteOne(appid: string, name: string) {
     const res = await this.db
       .collection<ApplicationConfiguration>('ApplicationConfiguration')
-      .findOneAndUpdate({ appid }, { $pull: { environments: { name } } })
+      .findOneAndUpdate(
+        { appid },
+        { $pull: { environments: { name } } },
+        { returnDocument: 'after' },
+      )
 
     assert(res?.value, 'application configuration not found')
     await this.confService.publish(res.value)

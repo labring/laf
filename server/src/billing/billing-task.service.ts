@@ -76,7 +76,7 @@ export class BillingTaskService {
           },
         },
         { $set: { lockedAt: new Date() } },
-        { sort: { lockedAt: 1, createdAt: 1 } },
+        { sort: { lockedAt: 1, createdAt: 1 }, returnDocument: 'after' },
       )
 
     if (!res.value) {
@@ -165,7 +165,7 @@ export class BillingTaskService {
           },
         },
         { $set: { billingLockedAt: this.getHourTime() } },
-        { sort: { billingLockedAt: 1, updatedAt: 1 } },
+        { sort: { billingLockedAt: 1, updatedAt: 1 }, returnDocument: 'after' },
       )
 
     if (!res.value) {

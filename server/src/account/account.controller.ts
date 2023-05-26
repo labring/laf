@@ -9,12 +9,20 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common'
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiExcludeEndpoint,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger'
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
-import { IRequest } from 'src/utils/interface'
-import { ResponseUtil } from 'src/utils/response'
+import { IRequest, IResponse } from 'src/utils/interface'
+import { ApiResponseObject, ResponseUtil } from 'src/utils/response'
 import { AccountService } from './account.service'
-import { CreateChargeOrderDto } from './dto/create-charge-order.dto'
+import {
+  CreateChargeOrderDto,
+  CreateChargeOrderOutDto,
+} from './dto/create-charge-order.dto'
 import { PaymentChannelService } from './payment/payment-channel.service'
 import {
   WeChatPayChargeOrder,
@@ -22,10 +30,12 @@ import {
   WeChatPayTradeState,
 } from './payment/types'
 import { WeChatPayService } from './payment/wechat-pay.service'
-import { Response } from 'express'
 import * as assert from 'assert'
 import { ServerConfig } from 'src/constants'
-import { AccountChargePhase } from './entities/account-charge-order'
+import {
+  AccountChargeOrder,
+  AccountChargePhase,
+} from './entities/account-charge-order'
 import { ObjectId } from 'mongodb'
 import { SystemDatabase } from 'src/system-database'
 import { Account } from './entities/account'
@@ -47,18 +57,20 @@ export class AccountController {
    * Get account info
    */
   @ApiOperation({ summary: 'Get account info' })
+  @ApiResponseObject(Account)
   @UseGuards(JwtAuthGuard)
   @Get()
   async findOne(@Req() req: IRequest) {
     const user = req.user
     const data = await this.accountService.findOne(user._id)
-    return data
+    return ResponseUtil.ok(data)
   }
 
   /**
    * Get charge order
    */
   @ApiOperation({ summary: 'Get charge order' })
+  @ApiResponseObject(AccountChargeOrder)
   @UseGuards(JwtAuthGuard)
   @Get('charge-order/:id')
   async getChargeOrder(@Req() req: IRequest, @Param('id') id: string) {
@@ -67,13 +79,14 @@ export class AccountController {
       user._id,
       new ObjectId(id),
     )
-    return data
+    return ResponseUtil.ok(data)
   }
 
   /**
    * Create charge order
    */
   @ApiOperation({ summary: 'Create charge order' })
+  @ApiResponseObject(CreateChargeOrderOutDto)
   @UseGuards(JwtAuthGuard)
   @Post('charge-order')
   async charge(@Req() req: IRequest, @Body() dto: CreateChargeOrderDto) {
@@ -107,7 +120,7 @@ export class AccountController {
    * WeChat payment notify
    */
   @Post('payment/wechat-notify')
-  async wechatNotify(@Req() req: IRequest, @Res() res: Response) {
+  async wechatNotify(@Req() req: IRequest, @Res() res: IResponse) {
     try {
       // get headers
       const headers = req.headers

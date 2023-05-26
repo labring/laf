@@ -162,9 +162,6 @@ export class ApplicationController {
 
       /** This is the redundant field of Region */
       tls: region.tls,
-
-      /** @deprecated alias of develop token, will be remove in future  */
-      function_debug_token: develop_token,
     }
 
     return ResponseUtil.ok(res)

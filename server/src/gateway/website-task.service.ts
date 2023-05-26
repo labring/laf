@@ -72,6 +72,7 @@ export class WebsiteTaskService {
           lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
         { $set: { lockedAt: new Date() } },
+        { returnDocument: 'after' },
       )
 
     if (!res.value) return
@@ -177,6 +178,7 @@ export class WebsiteTaskService {
           lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
         { $set: { lockedAt: new Date() } },
+        { returnDocument: 'after' },
       )
 
     if (!res.value) return

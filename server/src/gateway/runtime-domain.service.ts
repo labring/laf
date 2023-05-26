@@ -59,6 +59,7 @@ export class RuntimeDomainService {
       .findOneAndUpdate(
         { appid: appid },
         { $set: { state: DomainState.Deleted, updatedAt: new Date() } },
+        { returnDocument: 'after' },
       )
 
     return doc

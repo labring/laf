@@ -65,6 +65,7 @@ export class PolicyRuleService {
       .findOneAndUpdate(
         { appid, policyName, collectionName },
         { $set: { value: JSON.parse(dto.value), updatedAt: new Date() } },
+        { returnDocument: 'after' },
       )
 
     const policy = await this.policyService.findOne(appid, policyName)

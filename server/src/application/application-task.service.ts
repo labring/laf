@@ -85,7 +85,7 @@ export class ApplicationTaskService {
           lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
         { $set: { lockedAt: new Date() } },
-        { sort: { lockedAt: 1, updatedAt: 1 } },
+        { sort: { lockedAt: 1, updatedAt: 1 }, returnDocument: 'after' },
       )
 
     if (!res.value) return
@@ -185,7 +185,7 @@ export class ApplicationTaskService {
           lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
         { $set: { lockedAt: new Date() } },
-        { sort: { lockedAt: 1, updatedAt: 1 } },
+        { sort: { lockedAt: 1, updatedAt: 1 }, returnDocument: 'after' },
       )
 
     if (!res.value) return

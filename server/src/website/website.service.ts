@@ -120,6 +120,7 @@ export class WebsiteService {
             updatedAt: new Date(),
           },
         },
+        { returnDocument: 'after' },
       )
 
     return res.value
@@ -128,7 +129,11 @@ export class WebsiteService {
   async removeOne(id: ObjectId) {
     const res = await this.db
       .collection<WebsiteHosting>('WebsiteHosting')
-      .findOneAndUpdate({ _id: id }, { $set: { state: DomainState.Deleted } })
+      .findOneAndUpdate(
+        { _id: id },
+        { $set: { state: DomainState.Deleted } },
+        { returnDocument: 'after' },
+      )
 
     return res.value
   }

@@ -1,6 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsEnum, IsInt, IsPositive, IsString, Max, Min } from 'class-validator'
-import { Currency, PaymentChannelType } from '../entities/account-charge-order'
+import {
+  AccountChargeOrder,
+  Currency,
+  PaymentChannelType,
+} from '../entities/account-charge-order'
 
 export class CreateChargeOrderDto {
   @ApiProperty({ example: 1000 })
@@ -19,4 +23,12 @@ export class CreateChargeOrderDto {
   @IsString()
   @IsEnum(Currency)
   currency: Currency
+}
+
+export class CreateChargeOrderOutDto {
+  @ApiProperty({ type: AccountChargeOrder })
+  order: AccountChargeOrder
+
+  @ApiProperty({ type: Object })
+  result: any
 }

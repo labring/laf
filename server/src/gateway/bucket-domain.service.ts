@@ -67,6 +67,7 @@ export class BucketDomainService {
       .findOneAndUpdate(
         { _id: bucket._id },
         { $set: { state: DomainState.Deleted, updatedAt: new Date() } },
+        { returnDocument: 'after' },
       )
 
     return await this.findOne(bucket)

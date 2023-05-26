@@ -92,6 +92,7 @@ export class PolicyService {
       .findOneAndUpdate(
         { appid, name },
         { $set: { injector: dto.injector, updatedAt: new Date() } },
+        { returnDocument: 'after' },
       )
 
     const doc = await this.findOne(appid, name)

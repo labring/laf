@@ -230,7 +230,11 @@ export class ApplicationService {
     const db = SystemDatabase.db
     const res = await db
       .collection<Application>('Application')
-      .findOneAndUpdate({ appid }, { $set: { name, updatedAt: new Date() } })
+      .findOneAndUpdate(
+        { appid },
+        { $set: { name, updatedAt: new Date() } },
+        { returnDocument: 'after' },
+      )
 
     return res.value
   }
@@ -239,7 +243,11 @@ export class ApplicationService {
     const db = SystemDatabase.db
     const res = await db
       .collection<Application>('Application')
-      .findOneAndUpdate({ appid }, { $set: { state, updatedAt: new Date() } })
+      .findOneAndUpdate(
+        { appid },
+        { $set: { state, updatedAt: new Date() } },
+        { returnDocument: 'after' },
+      )
 
     return res.value
   }
@@ -273,7 +281,7 @@ export class ApplicationService {
 
     const doc = await db
       .collection<Application>('Application')
-      .findOneAndUpdate({ appid }, { $set: data })
+      .findOneAndUpdate({ appid }, { $set: data }, { returnDocument: 'after' })
 
     return doc
   }
@@ -285,6 +293,7 @@ export class ApplicationService {
       .findOneAndUpdate(
         { appid },
         { $set: { state: ApplicationState.Deleted, updatedAt: new Date() } },
+        { returnDocument: 'after' },
       )
 
     return doc.value

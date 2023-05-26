@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger'
 import { ObjectId } from 'mongodb'
 
 export enum Currency {
@@ -21,17 +22,39 @@ export enum PaymentChannelType {
 }
 
 export class AccountChargeOrder<R = any> {
+  @ApiProperty({ type: String })
   _id?: ObjectId
+
+  @ApiProperty({ type: String })
   accountId: ObjectId
+
+  @ApiProperty()
   amount: number
+
+  @ApiProperty({ enum: Currency })
   currency: Currency
+
+  @ApiProperty({ enum: AccountChargePhase })
   phase: AccountChargePhase
+
+  @ApiProperty({ enum: PaymentChannelType })
   channel: PaymentChannelType
+
+  @ApiProperty()
   result?: R
+
+  @ApiProperty()
   message?: string
-  createdAt: Date
+
   lockedAt: Date
+
+  @ApiProperty()
+  createdAt: Date
+
+  @ApiProperty()
   updatedAt: Date
+
+  @ApiProperty({ type: String })
   createdBy: ObjectId
 
   constructor(partial: Partial<AccountChargeOrder<R>>) {

@@ -125,6 +125,7 @@ export class BucketService {
       .findOneAndUpdate(
         { appid: bucket.appid, name: bucket.name },
         { $set: { policy: dto.policy, updatedAt: new Date() } },
+        { returnDocument: 'after' },
       )
 
     return res
@@ -136,6 +137,7 @@ export class BucketService {
       .findOneAndUpdate(
         { appid: bucket.appid, name: bucket.name },
         { $set: { state: StorageState.Deleted, updatedAt: new Date() } },
+        { returnDocument: 'after' },
       )
 
     return res
