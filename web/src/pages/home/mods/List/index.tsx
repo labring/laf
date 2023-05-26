@@ -97,15 +97,10 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                 <Box
                   key={item?.appid}
                   bg={bg}
-                  className="group mb-3 flex items-center rounded-lg px-3 py-4 lg:px-6"
+                  className="group mb-3 flex items-center rounded-xl px-3 py-5 lg:px-6"
                 >
                   <div className="w-3/12 ">
-                    <div className="text-lg font-bold">
-                      {item?.name}
-                      {/* <span className="ml-2 rounded border px-1 text-base text-second">
-                        {item?.bundle?.displayName}
-                      </span> */}
-                    </div>
+                    <div className="text-lg font-bold">{item?.name}</div>
                     <BundleInfo bundle={item.bundle} />
                   </div>
                   <div className="w-2/12 font-mono">

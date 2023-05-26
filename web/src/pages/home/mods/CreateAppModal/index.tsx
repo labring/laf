@@ -247,13 +247,13 @@ const CreateAppModal = (props: {
         },
       })}
 
-      <Modal isOpen={isOpen} onClose={onClose} size={type === "edit" ? "xl" : "4xl"}>
+      <Modal isOpen={isOpen} onClose={onClose} size={type === "edit" ? "xl" : "4xl"} isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{title}</ModalHeader>
           <ModalCloseButton />
 
-          <ModalBody pb={6}>
+          <ModalBody>
             <VStack spacing={6} align="flex-start">
               <FormControl
                 isRequired
@@ -378,44 +378,6 @@ const CreateAppModal = (props: {
                                         {spec.label}
                                       </Button>
                                     ))}
-                                    {/* {item.specs.length > 0 ? (
-                                        <Slider
-                                          min={0}
-                                          max={item.specs.length - 1}
-                                          step={1}
-                                          onChange={(v) => {
-                                            setBundle({
-                                              ...bundle,
-                                              [item.type]: item.specs[v].value,
-                                            });
-                                          }}
-                                          value={item.specs.findIndex(
-                                            (spec: any) => spec.value === bundle[item.type],
-                                          )}
-                                        >
-                                          {item.specs.map((spec: any, i: number) => (
-                                            <SliderMark
-                                              key={spec.value}
-                                              value={i}
-                                              mt={3}
-                                              fontSize={"sm"}
-                                            >
-                                              <Box
-                                                className="-ml-[50px] w-[100px] scale-90 text-center"
-                                                cursor={"pointer "}
-                                              >
-                                                {spec.label}
-                                              </Box>
-                                            </SliderMark>
-                                          ))}
-                                          <SliderTrack>
-                                            <SliderFilledTrack bg="primary.500" />
-                                          </SliderTrack>
-                                          <SliderThumb bg={"primary.700"} />
-                                        </Slider>
-                                      ) : (
-                                        <span className="text-2xl font-semibold">{item.price}</span>
-                                      )} */}
                                   </div>
                                 ) : null;
                               },
