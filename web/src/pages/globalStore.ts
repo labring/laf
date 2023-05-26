@@ -3,26 +3,24 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
-import { APP_PHASE_STATUS, APP_STATUS, CHAKRA_UI_COLOR_MODE_KEY } from "@/constants";
+import { APP_STATUS, CHAKRA_UI_COLOR_MODE_KEY } from "@/constants";
 import { formatPort } from "@/utils/format";
 
-import { TApplicationDetail, TRegion, TRuntime, TUserInfo } from "@/apis/typing";
+import { TApplicationDetail, TRegion, TRuntime } from "@/apis/typing";
 import { ApplicationControllerUpdate } from "@/apis/v1/applications";
-import { AuthControllerGetSigninUrl } from "@/apis/v1/login";
 import { AuthControllerGetProfile } from "@/apis/v1/profile";
 import { RegionControllerGetRegions } from "@/apis/v1/regions";
 import { AppControllerGetRuntimes } from "@/apis/v1/runtimes";
-import { SubscriptionControllerRemove } from "@/apis/v1/subscriptions";
 
 const { toast } = createStandaloneToast();
 
 type State = {
-  userInfo: TUserInfo | undefined;
+  userInfo: Definitions.UserWithProfile | undefined;
   loading: boolean;
   runtimes?: TRuntime[];
   regions?: TRegion[];
-  currentApp: TApplicationDetail | undefined;
-  setCurrentApp(app: TApplicationDetail | undefined): void;
+  currentApp: TApplicationDetail | any;
+  setCurrentApp(app: TApplicationDetail | any): void;
   init(appid?: string): void;
   updateCurrentApp(app: TApplicationDetail, state: APP_STATUS): void;
   deleteCurrentApp(): void;
@@ -60,7 +58,7 @@ const useGlobalStore = create<State>()(
 
       init: async () => {
         const userInfo = get().userInfo;
-        if (userInfo?.id) {
+        if (userInfo?._id) {
           return;
         }
 
@@ -101,16 +99,16 @@ const useGlobalStore = create<State>()(
         if (!app) {
           return;
         }
-        const deleteRes = await SubscriptionControllerRemove({
-          appid: app.appid,
-        });
-        if (!deleteRes.error) {
-          set((state) => {
-            if (state.currentApp) {
-              state.currentApp.phase = APP_PHASE_STATUS.Deleting;
-            }
-          });
-        }
+        // const deleteRes = await SubscriptionControllerRemove({
+        //   appid: app.appid,
+        // });
+        // if (!deleteRes.error) {
+        //   set((state) => {
+        //     if (state.currentApp) {
+        //       state.currentApp.phase = APP_PHASE_STATUS.Deleting;
+        //     }
+        //   });
+        // }
       },
 
       setCurrentApp: (app) => {
@@ -124,10 +122,6 @@ const useGlobalStore = create<State>()(
             state.currentApp.origin = `${state.currentApp?.tls ? "https://" : "http://"}${host}`;
           }
         });
-      },
-
-      login: async () => {
-        await AuthControllerGetSigninUrl({});
       },
 
       showSuccess: (text: string | React.ReactNode) => {

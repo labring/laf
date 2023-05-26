@@ -15,7 +15,10 @@ import useGlobalStore from "@/pages/globalStore";
  */
 export async function AuthControllerGetProfile(
   params: Paths.AuthControllerGetProfile.BodyParameters | any,
-): Promise<Paths.AuthControllerGetProfile.Responses> {
+): Promise<{
+  error: string;
+  data: Definitions.UserWithProfile;
+}> {
   // /v1/profile
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",

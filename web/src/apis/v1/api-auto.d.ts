@@ -19,9 +19,35 @@ declare namespace Definitions {
     code?: string /* The source code of the function */;
   };
 
+  export type CreateApplicationDto = {
+    cpu?: number;
+    memory?: number;
+    databaseCapacity?: number;
+    storageCapacity?: number;
+    name?: string;
+    state?: string;
+    regionId?: string;
+    runtimeId?: string;
+  };
+
   export type UpdateApplicationDto = {
     name?: string;
     state?: string;
+  };
+
+  export type UpdateApplicationNameDto = {
+    name?: string;
+  };
+
+  export type UpdateApplicationStateDto = {
+    state?: string;
+  };
+
+  export type UpdateApplicationBundleDto = {
+    cpu?: number;
+    memory?: number;
+    databaseCapacity?: number;
+    storageCapacity?: number;
   };
 
   export type CreateEnvironmentDto = {
@@ -40,6 +66,14 @@ declare namespace Definitions {
 
   export type CreateCollectionDto = {
     name?: string;
+  };
+
+  export type Collection = {
+    name?: string;
+    type?: string;
+    options?: {};
+    info?: {};
+    idIndex?: {};
   };
 
   export type UpdateCollectionDto = {
@@ -64,6 +98,35 @@ declare namespace Definitions {
     value?: string;
   };
 
+  export type Account = {
+    _id?: string;
+    balance?: number;
+    state?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy?: string;
+  };
+
+  export type AccountChargeOrder = {
+    _id?: string;
+    accountId?: string;
+    amount?: number;
+    currency?: string;
+    phase?: string;
+    channel?: string;
+    result?: {};
+    message?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy?: string;
+  };
+
+  export type CreateChargeOrderDto = {
+    amount?: number;
+    channel?: string;
+    currency?: string;
+  };
+
   export type CreateWebsiteDto = {
     bucketName?: string;
     state?: string;
@@ -75,6 +138,16 @@ declare namespace Definitions {
 
   export type Pat2TokenDto = {
     pat?: string /* PAT */;
+  };
+
+  export type UserWithProfile = {
+    _id?: string;
+    username?: string;
+    email?: string;
+    phone?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    profile?: Definitions.UserProfile;
   };
 
   export type PasswdSignupDto = {
@@ -139,53 +212,51 @@ declare namespace Definitions {
     name?: string;
   };
 
-  export type CreateSubscriptionDto = {
-    name?: string;
+  export type ApplicationBilling = {
+    _id?: string;
+    appid?: string;
     state?: string;
-    regionId?: string;
-    bundleId?: string;
-    runtimeId?: string;
-    duration?: number;
-  };
-
-  export type RenewSubscriptionDto = {
-    duration?: number;
-  };
-
-  export type UpgradeSubscriptionDto = {};
-
-  export type CreateChargeOrderDto = {
     amount?: number;
-    channel?: string;
-    currency?: string;
+    detail?: Definitions.ApplicationBillingDetail;
+    startAt?: string;
+    endAt?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+
+  export type CalculatePriceDto = {
+    regionId?: string;
+    cpu?: number;
+    memory?: number;
+    databaseCapacity?: number;
+    storageCapacity?: number;
+  };
+
+  export type UserProfile = {
+    _id?: string;
+    uid?: string;
+    openData?: {};
+    avatar?: string;
+    name?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+
+  export type ApplicationBillingDetail = {
+    cpu?: Definitions.ApplicationBillingDetailItem;
+    memory?: Definitions.ApplicationBillingDetailItem;
+    databaseCapacity?: Definitions.ApplicationBillingDetailItem;
+    storageCapacity?: Definitions.ApplicationBillingDetailItem;
+    networkTraffic?: Definitions.ApplicationBillingDetailItem;
+  };
+
+  export type ApplicationBillingDetailItem = {
+    usage?: number;
+    amount?: number;
   };
 }
 
 declare namespace Paths {
-  namespace AuthControllerCode2token {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AuthControllerGetSignupUrl {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AuthControllerGetSigninUrl {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
   namespace AppControllerGetRuntimes {
     export type QueryParameters = any;
 
@@ -242,6 +313,14 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace ApplicationControllerCreate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.CreateApplicationDto;
+
+    export type Responses = any;
+  }
+
   namespace ApplicationControllerFindAll {
     export type QueryParameters = any;
 
@@ -258,10 +337,42 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace ApplicationControllerDelete {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace ApplicationControllerUpdate {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.UpdateApplicationDto;
+
+    export type Responses = any;
+  }
+
+  namespace ApplicationControllerUpdateName {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.UpdateApplicationNameDto;
+
+    export type Responses = any;
+  }
+
+  namespace ApplicationControllerUpdateState {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.UpdateApplicationStateDto;
+
+    export type Responses = any;
+  }
+
+  namespace ApplicationControllerUpdateBundle {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.UpdateApplicationBundleDto;
 
     export type Responses = any;
   }
@@ -443,6 +554,38 @@ declare namespace Paths {
   }
 
   namespace PolicyRuleControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerFindOne {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerGetChargeOrder {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerCharge {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.CreateChargeOrderDto;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerWechatNotify {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -682,86 +825,6 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace SubscriptionControllerCreate {
-    export type QueryParameters = any;
-
-    export type BodyParameters = Definitions.CreateSubscriptionDto;
-
-    export type Responses = any;
-  }
-
-  namespace SubscriptionControllerFindAll {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace SubscriptionControllerFindOne {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace SubscriptionControllerRenew {
-    export type QueryParameters = any;
-
-    export type BodyParameters = Definitions.RenewSubscriptionDto;
-
-    export type Responses = any;
-  }
-
-  namespace SubscriptionControllerUpgrade {
-    export type QueryParameters = any;
-
-    export type BodyParameters = Definitions.UpgradeSubscriptionDto;
-
-    export type Responses = any;
-  }
-
-  namespace SubscriptionControllerRemove {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AccountControllerFindOne {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AccountControllerGetChargeOrder {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AccountControllerCharge {
-    export type QueryParameters = any;
-
-    export type BodyParameters = Definitions.CreateChargeOrderDto;
-
-    export type Responses = any;
-  }
-
-  namespace AccountControllerWechatNotify {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
   namespace SettingControllerGetSettings {
     export type QueryParameters = any;
 
@@ -771,6 +834,54 @@ declare namespace Paths {
   }
 
   namespace SettingControllerGetSettingByKey {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace BillingControllerFindAllByAppId {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace BillingControllerFindOne {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace ResourceControllerCalculatePrice {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.CalculatePriceDto;
+
+    export type Responses = any;
+  }
+
+  namespace ResourceControllerGetResourceOptions {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace ResourceControllerGetResourceOptionsByRegionId {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace ResourceControllerGetResourceBundles {
     export type QueryParameters = any;
 
     export type BodyParameters = any;

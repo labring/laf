@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
-import { Controller, useForm, useWatch } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { CheckIcon } from "@chakra-ui/icons";
 import {
+  Box,
   Button,
   FormControl,
   FormErrorMessage,
@@ -15,14 +16,17 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Radio,
-  Stack,
+  Slider,
+  SliderFilledTrack,
+  SliderMark,
+  SliderThumb,
+  SliderTrack,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { t } from "i18next";
-import { sortBy } from "lodash";
+import { debounce, find } from "lodash";
 
 import ChargeButton from "@/components/ChargeButton";
 // import ChargeButton from "@/components/ChargeButton";
@@ -30,18 +34,24 @@ import { APP_STATUS } from "@/constants/index";
 import { formatPrice } from "@/utils/format";
 
 import { APP_LIST_QUERY_KEY } from "../..";
-import { useAccountQuery } from "../../service";
+import { queryKeys, useAccountQuery } from "../../service";
 
 import BundleItem from "./BundleItem";
-import RuntimeItem from "./RuntimeItem";
 
 import { TApplicationItem, TBundle } from "@/apis/typing";
-import { ApplicationControllerUpdate } from "@/apis/v1/applications";
-import { SubscriptionControllerCreate, SubscriptionControllerRenew } from "@/apis/v1/subscriptions";
+import {
+  ApplicationControllerCreate,
+  ApplicationControllerUpdate,
+  ApplicationControllerUpdateBundle,
+} from "@/apis/v1/applications";
+import {
+  ResourceControllerCalculatePrice,
+  ResourceControllerGetResourceOptions,
+} from "@/apis/v1/resources";
 import useGlobalStore from "@/pages/globalStore";
 
 const CreateAppModal = (props: {
-  type: "create" | "edit" | "renewal";
+  type: "create" | "edit" | "change";
   application?: TApplicationItem;
   children: React.ReactElement;
 }) => {
@@ -50,49 +60,54 @@ const CreateAppModal = (props: {
 
   const { application, type } = props;
 
-  const title = type === "edit" ? t("Edit") : type === "renewal" ? t("Renew") : t("Create");
+  const title = type === "edit" ? t("Edit") : type === "change" ? t("Change") : t("Create");
 
   const { runtimes = [], regions = [] } = useGlobalStore();
 
-  const accountQuery = useAccountQuery();
+  const { data: accountRes } = useAccountQuery();
+
+  const { data: billingResourceOptionsRes } = useQuery(
+    queryKeys.useBillingResourceOptionsQuery,
+    async () => {
+      return ResourceControllerGetResourceOptions({});
+    },
+    {
+      enabled: isOpen,
+    },
+  );
 
   type FormData = {
     name: string;
     state: APP_STATUS | string;
     regionId: string;
-    bundleId: string;
     runtimeId: string;
-    subscriptionOption:
-      | {
-          id: string;
-        }
-      | any;
+    bundleId: string;
+    cpu: number;
+    memory: number;
+    databaseCapacity: number;
+    storageCapacity: number;
   };
 
   const currentRegion =
     regions.find((item: any) => item.id === application?.regionId) || regions[0];
 
-  const bundles = sortBy(currentRegion.bundles, (item: TBundle) => item.priority);
+  const bundles = currentRegion.bundles;
 
   let defaultValues = {
     name: application?.name,
     state: application?.state,
     regionId: application?.regionId,
-    bundleId: application?.bundle?.bundleId,
-    subscriptionOption: bundles.find((item: TBundle) => item.id === application?.bundle?.bundleId)
-      ?.subscriptionOptions[0],
-    runtimeId: runtimes[0].id,
+    runtimeId: runtimes[0]._id,
+    bundleId: bundles[0]._id,
   };
 
   if (type === "create") {
     defaultValues = {
       name: "",
       state: APP_STATUS.Running,
-      regionId: regions[0].id,
-      bundleId: bundles[0].id,
-      subscriptionOption:
-        (bundles[0].subscriptionOptions && bundles[0].subscriptionOptions[0]) || {},
-      runtimeId: runtimes[0].id,
+      regionId: regions[0]._id,
+      runtimeId: runtimes[0]._id,
+      bundleId: bundles[0]._id,
     };
   }
 
@@ -102,57 +117,88 @@ const CreateAppModal = (props: {
     control,
     setFocus,
     reset,
-    setValue,
     formState: { errors },
+    getValues,
   } = useForm<FormData>({
     defaultValues,
   });
 
-  const bundleId = useWatch({
-    control,
-    name: "bundleId",
-  });
+  const defaultBundle: {
+    cpu: number;
+    memory: number;
+    databaseCapacity: number;
+    storageCapacity: number;
+  } = {
+    cpu: application?.bundle.resource.limitCPU || bundles[0].spec.cpu.value,
+    memory: application?.bundle.resource.limitMemory || bundles[0].spec.memory.value,
+    databaseCapacity:
+      application?.bundle.resource.databaseCapacity || bundles[0].spec.databaseCapacity.value,
+    storageCapacity:
+      application?.bundle.resource.storageCapacity || bundles[0].spec.storageCapacity.value,
+  };
 
-  const currentBundle: TBundle =
-    bundles.find((item: TBundle) => item.id === bundleId) || bundles[0];
+  const [bundle, setBundle] = React.useState(defaultBundle);
 
-  const subscriptionOption = useWatch({
-    control,
-    name: "subscriptionOption",
-    defaultValue: currentBundle.subscriptionOptions[0],
-  });
-
-  const currentSubscription = currentBundle.subscriptionOptions[0];
+  const [customActive, setCustomActive] = React.useState(false);
 
   const { showSuccess } = useGlobalStore();
 
-  const totalPrice = subscriptionOption.specialPrice;
+  const [totalPrice, setTotalPrice] = React.useState(0);
 
-  const subscriptionControllerCreate = useMutation((params: any) =>
-    SubscriptionControllerCreate(params),
+  const billingQuery = useQuery(
+    [queryKeys.useBillingPriceQuery, bundle, isOpen],
+    async () => {
+      return ResourceControllerCalculatePrice({
+        ...getValues(),
+        ...bundle,
+      });
+    },
+    {
+      enabled: false,
+      staleTime: 1000,
+      onSuccess(res) {
+        setTotalPrice(res?.data?.total || 0);
+      },
+    },
   );
-  const subscriptionOptionRenew = useMutation((params: any) => SubscriptionControllerRenew(params));
+
+  const debouncedInputChange = debounce((value) => {
+    if (isOpen) {
+      billingQuery.refetch();
+    }
+  }, 600);
+
+  useEffect(() => {
+    debouncedInputChange(bundle);
+    return () => {
+      debouncedInputChange.cancel();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bundle, isOpen]);
 
   const updateAppMutation = useMutation((params: any) => ApplicationControllerUpdate(params));
+  const createAppMutation = useMutation((params: any) => ApplicationControllerCreate(params));
+  const changeBundleMutation = useMutation((params: any) =>
+    ApplicationControllerUpdateBundle(params),
+  );
 
   const onSubmit = async (data: any) => {
     let res: any = {};
+
     switch (type) {
       case "edit":
         res = await updateAppMutation.mutateAsync({ ...data, appid: application?.appid });
         break;
 
-      case "create":
-        res = await subscriptionControllerCreate.mutateAsync({
-          ...data,
-          duration: subscriptionOption.duration,
-        });
+      case "change":
+        res = await changeBundleMutation.mutateAsync({ ...bundle, appid: application?.appid });
         break;
 
-      case "renewal":
-        res = await subscriptionOptionRenew.mutateAsync({
-          id: application?.subscription?.id,
-          duration: subscriptionOption.duration,
+      case "create":
+        res = await createAppMutation.mutateAsync({
+          ...data,
+          ...bundle,
+          // duration: subscriptionOption.duration,
         });
         break;
 
@@ -162,7 +208,7 @@ const CreateAppModal = (props: {
 
     if (!res.error) {
       onClose();
-      if (type === "edit" || type === "renewal") {
+      if (type === "edit") {
         showSuccess(t("update success"));
       }
       setTimeout(() => {
@@ -171,9 +217,22 @@ const CreateAppModal = (props: {
     }
   };
 
-  useEffect(() => {
-    setValue("subscriptionOption", currentSubscription);
-  }, [currentSubscription, setValue]);
+  const activeBundle = find(bundles, {
+    spec: {
+      cpu: {
+        value: bundle.cpu,
+      },
+      memory: {
+        value: bundle.memory,
+      },
+      databaseCapacity: {
+        value: bundle.databaseCapacity,
+      },
+      storageCapacity: {
+        value: bundle.storageCapacity,
+      },
+    },
+  });
 
   return (
     <>
@@ -188,7 +247,7 @@ const CreateAppModal = (props: {
         },
       })}
 
-      <Modal isOpen={isOpen} onClose={onClose} size="3xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="4xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{title}</ModalHeader>
@@ -196,7 +255,12 @@ const CreateAppModal = (props: {
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
-              <FormControl isRequired isInvalid={!!errors?.name} isDisabled={type === "renewal"}>
+              <FormControl
+                isRequired
+                isInvalid={!!errors?.name}
+                isDisabled={type === "change"}
+                hidden={type === "change"}
+              >
                 <FormLabel htmlFor="name">{t("HomePanel.Application") + t("Name")}</FormLabel>
                 <Input
                   {...register("name", {
@@ -205,7 +269,7 @@ const CreateAppModal = (props: {
                 />
                 <FormErrorMessage>{errors?.name && errors?.name?.message}</FormErrorMessage>
               </FormControl>
-              <FormControl hidden={type === "edit" || type === "renewal"}>
+              <FormControl hidden={type !== "create"}>
                 <FormLabel htmlFor="regionId">{t("HomePanel.Region")}</FormLabel>
                 <HStack spacing={6}>
                   <Controller
@@ -238,75 +302,136 @@ const CreateAppModal = (props: {
                   />
                 </HStack>
               </FormControl>
-              <FormControl
-                isInvalid={!!errors?.bundleId}
-                hidden={type === "edit" || type === "renewal"}
-              >
+              <FormControl>
                 <FormLabel htmlFor="bundleId">
                   {t("HomePanel.Application") + t("HomePanel.BundleName")}
                 </FormLabel>
-                <HStack spacing={"12px"} overflowX="scroll" pb={"6px"}>
+                <div>
                   <Controller
                     name="bundleId"
                     control={control}
                     render={({ field: { onChange, value } }) => {
                       return (
-                        <>
-                          {(bundles || []).map((bundle: TBundle) => {
-                            return (
-                              <BundleItem
-                                durationIndex={bundle.subscriptionOptions.findIndex((vale) => {
-                                  return vale.displayName === subscriptionOption.displayName;
-                                })}
-                                onChange={onChange}
-                                bundle={bundle}
-                                isActive={bundle.id === value}
-                                key={bundle.id}
-                              />
-                            );
-                          })}
-                        </>
+                        <div className="flex">
+                          <div className="flex-col pt-4">
+                            {(bundles || []).map((item: TBundle) => {
+                              return (
+                                <BundleItem
+                                  onChange={() => {
+                                    // billingPriceQuery.refetch();
+                                    setCustomActive(false);
+                                    setBundle({
+                                      cpu: item.spec.cpu.value,
+                                      memory: item.spec.memory.value,
+                                      databaseCapacity: item.spec.databaseCapacity.value,
+                                      storageCapacity: item.spec.storageCapacity.value,
+                                    });
+                                  }}
+                                  bundle={item}
+                                  isActive={activeBundle?._id === item._id && !customActive}
+                                  key={item._id}
+                                />
+                              );
+                            })}
+                            <BundleItem
+                              onChange={() => {
+                                setCustomActive(true);
+                              }}
+                              bundle={{
+                                displayName: t("custom"),
+                                _id: "custom",
+                              }}
+                              isActive={!activeBundle || customActive}
+                            />
+                          </div>
+                          <div className="ml-6 flex-1 border-l pl-12 pr-8">
+                            {billingResourceOptionsRes?.data?.map(
+                              (item: {
+                                type: "cpu" | "memory" | "databaseCapacity" | "storageCapacity";
+                                specs: { value: number; price: number }[];
+                                price: number;
+                              }) => {
+                                return (
+                                  <div className="mb-12" key={item.type}>
+                                    <p className="mb-2">
+                                      <span className="mr-2 text-2xl font-semibold">
+                                        {item.type}
+                                      </span>
+                                      {/* {item.price} */}
+                                    </p>
+                                    {/* {item.specs.map((spec: any, i: number) => (
+                                      <Button
+                                        onClick={(v) => {
+                                          setBundle({
+                                            ...bundle,
+                                            [item.type]: spec.value,
+                                          });
+                                        }}
+                                        size={"sm"}
+                                        variant={
+                                          spec.value === bundle[item.type] ? "solid" : "outline"
+                                        }
+                                        w="60px"
+                                        rounded="sm"
+                                      >
+                                        {spec.label}
+                                      </Button>
+                                    ))} */}
+                                    {item.specs.length > 0 ? (
+                                      <Slider
+                                        min={0}
+                                        max={item.specs.length - 1}
+                                        step={1}
+                                        onChange={(v) => {
+                                          setBundle({
+                                            ...bundle,
+                                            [item.type]: item.specs[v].value,
+                                          });
+                                        }}
+                                        value={item.specs.findIndex(
+                                          (spec: any) => spec.value === bundle[item.type],
+                                        )}
+                                      >
+                                        {item.specs.map((spec: any, i: number) => (
+                                          <SliderMark
+                                            key={spec.value}
+                                            value={i}
+                                            mt={3}
+                                            fontSize={"sm"}
+                                          >
+                                            <Box
+                                              className="-ml-[50px] w-[100px] scale-90 text-center"
+                                              cursor={"pointer "}
+                                            >
+                                              {spec.label}
+                                            </Box>
+                                          </SliderMark>
+                                        ))}
+                                        <SliderTrack>
+                                          <SliderFilledTrack bg="primary.500" />
+                                        </SliderTrack>
+                                        <SliderThumb bg={"primary.700"} />
+                                      </Slider>
+                                    ) : (
+                                      <span className="text-2xl font-semibold">{item.price}</span>
+                                    )}
+                                  </div>
+                                );
+                              },
+                            )}
+                          </div>
+                        </div>
                       );
                     }}
                     rules={{
                       required: { value: true, message: t("LimitSelect") },
                     }}
                   />
-                </HStack>
+                </div>
                 <FormErrorMessage>{errors?.bundleId?.message}</FormErrorMessage>
               </FormControl>
-              {(currentBundle?.notes || []).length > 0 ? (
-                <div
-                  className="!mt-2"
-                  dangerouslySetInnerHTML={{
-                    __html: (currentBundle?.notes || []).map((note) => note.content).join(""),
-                  }}
-                />
-              ) : null}
 
-              <FormControl isInvalid={!!errors?.subscriptionOption} hidden={type === "edit"}>
-                <FormLabel htmlFor="subscriptionOption">{t("HomePanel.Duration")}</FormLabel>
-                <Controller
-                  name="subscriptionOption"
-                  control={control}
-                  render={({ field: { onChange, value } }) => (
-                    <Stack direction="row" spacing={8}>
-                      {(currentBundle.subscriptionOptions || []).map((option) => {
-                        return (
-                          <span onClick={() => onChange(option)} key={option.displayName}>
-                            <Radio isChecked={option.displayName === value.displayName}>
-                              {option.displayName}
-                            </Radio>
-                          </span>
-                        );
-                      })}
-                    </Stack>
-                  )}
-                />
-
-                {/* <FormErrorMessage>{errors?.subscriptionOption?.message}</FormErrorMessage> */}
-              </FormControl>
-              <FormControl isInvalid={!!errors?.runtimeId}>
+              {/* <FormControl isInvalid={!!errors?.runtimeId}>
                 <FormLabel htmlFor="runtimeId">{t("HomePanel.RuntimeName")}</FormLabel>
                 <Controller
                   name="runtimeId"
@@ -321,7 +446,7 @@ const CreateAppModal = (props: {
                     );
                   }}
                 />
-              </FormControl>
+              </FormControl> */}
             </VStack>
           </ModalBody>
 
@@ -332,33 +457,29 @@ const CreateAppModal = (props: {
               </div>
             ) : (
               <div className="mr-2">
-                {t("TotalPrice")}:
-                <span className="ml-2 text-xl font-semibold text-red-500">
-                  {formatPrice(totalPrice)}
-                </span>
+                {t("Fee")}:
+                <span className="ml-2 text-xl font-semibold text-red-500">{totalPrice} / hour</span>
                 <span className="ml-4 mr-2">
                   {t("Balance")}:
-                  <span className="ml-2 text-xl">{formatPrice(accountQuery.data?.balance)}</span>
+                  <span className="ml-2 text-xl">{formatPrice(accountRes?.data?.balance)}</span>
                 </span>
-                {totalPrice > accountQuery.data?.balance ? (
+                {totalPrice > accountRes?.data?.balance! ? (
                   <span className="mr-2">{t("balance is insufficient")}</span>
                 ) : null}
-                <ChargeButton amount={(totalPrice - accountQuery.data?.balance) / 100}>
-                  <span className="cursor-pointer text-lg text-blue-800">{t("ChargeNow")}</span>
+                <ChargeButton>
+                  <span className="cursor-pointer text-blue-800">{t("ChargeNow")}</span>
                 </ChargeButton>
               </div>
             )}
 
-            {type !== "edit" && totalPrice <= accountQuery.data?.balance && (
+            {type !== "edit" && totalPrice <= accountRes?.data?.balance! && (
               <Button
-                isLoading={
-                  subscriptionControllerCreate.isLoading || subscriptionOptionRenew.isLoading
-                }
+                isLoading={createAppMutation.isLoading}
                 type="submit"
                 onClick={handleSubmit(onSubmit)}
                 disabled={totalPrice > 0}
               >
-                {type === "renewal" ? t("Confirm") : t("CreateNow")}
+                {type === "change" ? t("Confirm") : t("CreateNow")}
               </Button>
             )}
 

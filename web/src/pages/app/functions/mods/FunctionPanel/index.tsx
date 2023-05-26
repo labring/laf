@@ -81,7 +81,7 @@ export default function FunctionList() {
       });
       setTagsList(newTags);
 
-      if (!currentFunction?.id && data.data.length > 0) {
+      if (!currentFunction?._id && data.data.length > 0) {
         const currentFunction =
           data.data.find((item: TFunction) => item.name === functionName) || data.data[0];
         setCurrentFunction(currentFunction);

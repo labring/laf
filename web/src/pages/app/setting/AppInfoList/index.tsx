@@ -6,7 +6,6 @@ import { Box, Button, HStack, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import { APP_PHASE_STATUS, APP_STATUS, COLOR_MODE, Routes } from "@/constants/index";
-import { formatDate } from "@/utils/format";
 
 import InfoDetail from "./InfoDetail";
 
@@ -25,7 +24,7 @@ const AppEnvList = () => {
     return <></>;
   }
 
-  const currentRegion = regions.find((item) => item.id === currentApp?.regionId);
+  const currentRegion = regions.find((item) => item._id === currentApp?.regionId);
 
   return (
     <>
@@ -147,7 +146,7 @@ const AppEnvList = () => {
             ]}
           />
 
-          <InfoDetail
+          {/* <InfoDetail
             className="mt-6"
             title={t("SettingPanel.Subscription")}
             leftData={[
@@ -162,7 +161,7 @@ const AppEnvList = () => {
                 value: `${formatDate(currentApp?.subscription?.expiredAt)}`,
               },
             ]}
-          />
+          /> */}
         </div>
       </div>
     </>

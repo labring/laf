@@ -1,10 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { HStack } from "@chakra-ui/react";
 import clsx from "clsx";
-import dayjs from "dayjs";
 
 import Panel from "@/components/Panel";
-import { formatDate } from "@/utils/format";
 
 import Icons from "../SideBar/Icons";
 
@@ -35,16 +33,9 @@ function StatusBar() {
         <div>
           {t("Spec.RAM")}: {`${currentApp?.bundle?.resource.limitMemory} ${t("Unit.MB")}`}
         </div>
-        <div
-          className={clsx(
-            "mt-1",
-            dayjs().add(3, "day").isAfter(dayjs(currentApp?.subscription.expiredAt))
-              ? "text-red-500"
-              : "",
-          )}
-        >
-          {t("EndTime")}: {formatDate(currentApp?.subscription.expiredAt)}
-          <CreateAppModal application={currentApp as any} type="renewal">
+        <div className={clsx("mt-1")}>
+          {/* {t("EndTime")}: {formatDate(currentApp?.subscription.expiredAt)} */}
+          <CreateAppModal application={currentApp as any} type="change">
             <a className="ml-2 text-primary-500" href="/edit">
               {t("Renew")}
             </a>

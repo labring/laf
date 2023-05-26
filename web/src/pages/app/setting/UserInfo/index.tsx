@@ -30,7 +30,7 @@ export default function UserInfo() {
             <Avatar
               size="lg"
               name={userInfo?.username}
-              src={userInfo?.profile.avatar}
+              src={userInfo?.profile?.avatar}
               bgColor="primary.500"
               color="white"
               boxShadow="base"

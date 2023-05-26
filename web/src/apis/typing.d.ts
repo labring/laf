@@ -1,5 +1,5 @@
 export type TApplicationDetail = {
-  id: string;
+  _id: string;
   name: string;
   appid: string;
   regionId: string;
@@ -11,7 +11,7 @@ export type TApplicationDetail = {
   updatedAt: string;
   lockedAt: string;
   createdBy: string;
-  bundle: TBundle;
+  bundle: TCurrentBundle;
   runtime: TRuntime;
   configuration: TConfiguration;
   domain: TDomain;
@@ -22,26 +22,62 @@ export type TApplicationDetail = {
   function_debug_token: string;
   host?: string;
   origin?: string;
-  subscription: TSubscription;
+};
+
+export type TCurrentBundle = {
+  _id: string;
+  appid: string;
+  bundleId: string;
+  name: string;
+  displayName: string;
+  createdAt: string;
+  updatedAt: string;
+  resource: TResource;
 };
 
 export type TBundle = {
-  id: string;
+  _id: string;
+  regionId: string;
   name: string;
   displayName: string;
-  priority: number;
-  state: string;
-  resource: TResource;
-  limitCountPerUser: number;
-  notes: { content: string }[];
-  subscriptionOptions: TSubscriptionOption[];
+  spec: TSpec;
+  enableFreeTier: boolean;
+  limitCountOfFreeTierPerUser: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TSpec = {
+  cpu: Cpu;
+  memory: Memory;
+  databaseCapacity: DatabaseCapacity;
+  storageCapacity: StorageCapacity;
+  networkTraffic: NetworkTraffic;
+};
+
+export type Cpu = {
+  value: number;
+};
+
+export type Memory = {
+  value: number;
+};
+
+export type DatabaseCapacity = {
+  value: number;
+};
+
+export type StorageCapacity = {
+  value: number;
+};
+
+export type NetworkTraffic = {
+  value: number;
 };
 
 export type TResource = {
   limitCPU: number;
   limitMemory: number;
-  requestCPU: number;
-  requestMemory: number;
   databaseCapacity: number;
   storageCapacity: number;
   networkTrafficOutbound: number;
@@ -64,13 +100,13 @@ export type TSubscriptionOption = {
 };
 
 export type TRuntime = {
-  id: string;
+  _id: string;
   name: string;
   type: string;
-  image: TImage;
   state: string;
   version: string;
   latest: boolean;
+  image: TImage;
 };
 
 export type TImage = {
@@ -80,12 +116,12 @@ export type TImage = {
 };
 
 export type TConfiguration = {
-  id: string;
+  _id: string;
   appid: string;
-  environments: TEnvironment[];
   dependencies: any[];
   createdAt: string;
   updatedAt: string;
+  environments: TEnvironment[];
 };
 
 export type TEnvironment = {
@@ -94,7 +130,7 @@ export type TEnvironment = {
 };
 
 export type TDomain = {
-  id: string;
+  _id: string;
   appid: string;
   domain: string;
   state: string;
@@ -106,7 +142,7 @@ export type TDomain = {
 
 export type TStorage = {
   credentials: TCredentials;
-  id: string;
+  _id: string;
   appid: string;
   accessKey: string;
   secretKey: string;
@@ -126,7 +162,7 @@ export type TCredentials = {
 };
 
 export type TRegion = {
-  id: string;
+  _id: string;
   name: string;
   displayName: string;
   state: string;
@@ -134,7 +170,7 @@ export type TRegion = {
 };
 
 export type TBucket = {
-  id: string;
+  _id: string;
   appid: string;
   name: string;
   shortName: string;
@@ -149,7 +185,7 @@ export type TBucket = {
 };
 
 export type TWebsiteHosting = {
-  id: string;
+  _id: string;
   appid: string;
   bucketName: string;
   domain: string;
@@ -162,7 +198,7 @@ export type TWebsiteHosting = {
 };
 
 export type TSetting = {
-  id: string;
+  _id: string;
   key: string;
   value: string;
   desc: string;
@@ -222,7 +258,7 @@ export type Key = {
 };
 
 export type TFunction = {
-  id: string;
+  _id: string;
   appid: string;
   name: string;
   source: Source;
@@ -255,97 +291,50 @@ export type TLogItem = {
   created_at: string;
 };
 
-// user data
-export type TUserInfo = {
-  id: string;
-  username: string;
-  email: any;
-  phone: any;
-  createdAt: string;
-  updatedAt: string;
-  profile: TProfile;
-};
-
-export type TProfile = {
-  id: string;
-  uid: string;
-  openid: string;
-  from: string;
-  avatar: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
 export type TApplicationItem = {
-  id: string;
-  name: string;
+  _id: string;
   appid: string;
-  regionId: string;
-  runtimeId: string;
-  tags: Array<any>;
+  name: string;
   state: string;
   phase: string;
+  tags: Array<any>;
+  createdBy: string;
+  lockedAt: string;
+  regionId: string;
+  runtimeId: string;
+  billingLockedAt: string;
   createdAt: string;
   updatedAt: string;
-  lockedAt: string;
-  createdBy: string;
   bundle: {
-    id: string;
+    _id: string;
     appid: string;
-    bundleId: string;
-    name: string;
-    displayName: string;
     resource: {
       limitCPU: number;
       limitMemory: number;
-      requestCPU: number;
-      requestMemory: number;
       databaseCapacity: number;
       storageCapacity: number;
-      networkTrafficOutbound: number;
       limitCountOfCloudFunction: number;
       limitCountOfBucket: number;
       limitCountOfDatabasePolicy: number;
       limitCountOfTrigger: number;
       limitCountOfWebsiteHosting: number;
-      reservedTimeAfterExpired: number;
       limitDatabaseTPS: number;
       limitStorageTPS: number;
+      reservedTimeAfterExpired: number;
     };
     createdAt: string;
     updatedAt: string;
   };
   runtime: {
-    id: string;
+    _id: string;
     name: string;
     type: string;
-    image: {
-      main: string;
-      init: string;
-      sidecar: any;
-    };
     state: string;
     version: string;
     latest: boolean;
-  };
-  subscription: {
-    id: string;
-    input: {
-      name: string;
-      state: string;
-      runtimeId: string;
-      regionId: string;
+    image: {
+      main: string;
+      init: string;
     };
-    bundleId: string;
-    appid: string;
-    state: string;
-    phase: string;
-    renewalPlan: string;
-    expiredAt: string;
-    lockedAt: string;
-    createdAt: string;
-    updatedAt: string;
-    createdBy: string;
   };
 };

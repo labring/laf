@@ -15,7 +15,10 @@ import useGlobalStore from "@/pages/globalStore";
  */
 export async function FunctionControllerCreate(
   params: Definitions.CreateFunctionDto | any,
-): Promise<Paths.FunctionControllerCreate.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.FunctionControllerCreate.Responses;
+}> {
   // /v1/apps/{appid}/functions
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -32,7 +35,10 @@ export async function FunctionControllerCreate(
  */
 export async function FunctionControllerFindAll(
   params: Paths.FunctionControllerFindAll.BodyParameters | any,
-): Promise<Paths.FunctionControllerFindAll.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.FunctionControllerFindAll.Responses;
+}> {
   // /v1/apps/{appid}/functions
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -49,7 +55,10 @@ export async function FunctionControllerFindAll(
  */
 export async function FunctionControllerFindOne(
   params: Paths.FunctionControllerFindOne.BodyParameters | any,
-): Promise<Paths.FunctionControllerFindOne.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.FunctionControllerFindOne.Responses;
+}> {
   // /v1/apps/{appid}/functions/{name}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -66,7 +75,10 @@ export async function FunctionControllerFindOne(
  */
 export async function FunctionControllerUpdate(
   params: Definitions.UpdateFunctionDto | any,
-): Promise<Paths.FunctionControllerUpdate.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.FunctionControllerUpdate.Responses;
+}> {
   // /v1/apps/{appid}/functions/{name}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -83,7 +95,10 @@ export async function FunctionControllerUpdate(
  */
 export async function FunctionControllerRemove(
   params: Paths.FunctionControllerRemove.BodyParameters | any,
-): Promise<Paths.FunctionControllerRemove.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.FunctionControllerRemove.Responses;
+}> {
   // /v1/apps/{appid}/functions/{name}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -100,7 +115,10 @@ export async function FunctionControllerRemove(
  */
 export async function FunctionControllerCompile(
   params: Definitions.CompileFunctionDto | any,
-): Promise<Paths.FunctionControllerCompile.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.FunctionControllerCompile.Responses;
+}> {
   // /v1/apps/{appid}/functions/{name}/compile
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -117,7 +135,10 @@ export async function FunctionControllerCompile(
  */
 export async function EnvironmentVariableControllerUpdateAll(
   params: Paths.EnvironmentVariableControllerUpdateAll.BodyParameters | any,
-): Promise<Paths.EnvironmentVariableControllerUpdateAll.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.EnvironmentVariableControllerUpdateAll.Responses;
+}> {
   // /v1/apps/{appid}/environments
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -134,7 +155,10 @@ export async function EnvironmentVariableControllerUpdateAll(
  */
 export async function EnvironmentVariableControllerAdd(
   params: Definitions.CreateEnvironmentDto | any,
-): Promise<Paths.EnvironmentVariableControllerAdd.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.EnvironmentVariableControllerAdd.Responses;
+}> {
   // /v1/apps/{appid}/environments
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -151,7 +175,10 @@ export async function EnvironmentVariableControllerAdd(
  */
 export async function EnvironmentVariableControllerGet(
   params: Paths.EnvironmentVariableControllerGet.BodyParameters | any,
-): Promise<Paths.EnvironmentVariableControllerGet.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.EnvironmentVariableControllerGet.Responses;
+}> {
   // /v1/apps/{appid}/environments
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -168,7 +195,10 @@ export async function EnvironmentVariableControllerGet(
  */
 export async function EnvironmentVariableControllerDelete(
   params: Paths.EnvironmentVariableControllerDelete.BodyParameters | any,
-): Promise<Paths.EnvironmentVariableControllerDelete.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.EnvironmentVariableControllerDelete.Responses;
+}> {
   // /v1/apps/{appid}/environments/{name}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -183,9 +213,10 @@ export async function EnvironmentVariableControllerDelete(
 /**
  * Create a new bucket
  */
-export async function BucketControllerCreate(
-  params: Definitions.CreateBucketDto | any,
-): Promise<Paths.BucketControllerCreate.Responses> {
+export async function BucketControllerCreate(params: Definitions.CreateBucketDto | any): Promise<{
+  error: string;
+  data: Paths.BucketControllerCreate.Responses;
+}> {
   // /v1/apps/{appid}/buckets
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -202,7 +233,10 @@ export async function BucketControllerCreate(
  */
 export async function BucketControllerFindAll(
   params: Paths.BucketControllerFindAll.BodyParameters | any,
-): Promise<Paths.BucketControllerFindAll.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.BucketControllerFindAll.Responses;
+}> {
   // /v1/apps/{appid}/buckets
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -219,7 +253,10 @@ export async function BucketControllerFindAll(
  */
 export async function BucketControllerFindOne(
   params: Paths.BucketControllerFindOne.BodyParameters | any,
-): Promise<Paths.BucketControllerFindOne.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.BucketControllerFindOne.Responses;
+}> {
   // /v1/apps/{appid}/buckets/{name}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -234,9 +271,10 @@ export async function BucketControllerFindOne(
 /**
  * Update a bucket
  */
-export async function BucketControllerUpdate(
-  params: Definitions.UpdateBucketDto | any,
-): Promise<Paths.BucketControllerUpdate.Responses> {
+export async function BucketControllerUpdate(params: Definitions.UpdateBucketDto | any): Promise<{
+  error: string;
+  data: Paths.BucketControllerUpdate.Responses;
+}> {
   // /v1/apps/{appid}/buckets/{name}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -253,7 +291,10 @@ export async function BucketControllerUpdate(
  */
 export async function BucketControllerRemove(
   params: Paths.BucketControllerRemove.BodyParameters | any,
-): Promise<Paths.BucketControllerRemove.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.BucketControllerRemove.Responses;
+}> {
   // /v1/apps/{appid}/buckets/{name}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -270,7 +311,10 @@ export async function BucketControllerRemove(
  */
 export async function CollectionControllerCreate(
   params: Definitions.CreateCollectionDto | any,
-): Promise<Paths.CollectionControllerCreate.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.CollectionControllerCreate.Responses;
+}> {
   // /v1/apps/{appid}/collections
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -287,7 +331,10 @@ export async function CollectionControllerCreate(
  */
 export async function CollectionControllerFindAll(
   params: Paths.CollectionControllerFindAll.BodyParameters | any,
-): Promise<Paths.CollectionControllerFindAll.Responses> {
+): Promise<{
+  error: string;
+  data: Definitions.Collection;
+}> {
   // /v1/apps/{appid}/collections
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -304,7 +351,10 @@ export async function CollectionControllerFindAll(
  */
 export async function CollectionControllerFindOne(
   params: Paths.CollectionControllerFindOne.BodyParameters | any,
-): Promise<Paths.CollectionControllerFindOne.Responses> {
+): Promise<{
+  error: string;
+  data: Definitions.Collection;
+}> {
   // /v1/apps/{appid}/collections/{name}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -321,7 +371,10 @@ export async function CollectionControllerFindOne(
  */
 export async function CollectionControllerUpdate(
   params: Definitions.UpdateCollectionDto | any,
-): Promise<Paths.CollectionControllerUpdate.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.CollectionControllerUpdate.Responses;
+}> {
   // /v1/apps/{appid}/collections/{name}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -338,7 +391,10 @@ export async function CollectionControllerUpdate(
  */
 export async function CollectionControllerRemove(
   params: Paths.CollectionControllerRemove.BodyParameters | any,
-): Promise<Paths.CollectionControllerRemove.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.CollectionControllerRemove.Responses;
+}> {
   // /v1/apps/{appid}/collections/{name}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -353,9 +409,10 @@ export async function CollectionControllerRemove(
 /**
  * Create database policy
  */
-export async function PolicyControllerCreate(
-  params: Definitions.CreatePolicyDto | any,
-): Promise<Paths.PolicyControllerCreate.Responses> {
+export async function PolicyControllerCreate(params: Definitions.CreatePolicyDto | any): Promise<{
+  error: string;
+  data: Paths.PolicyControllerCreate.Responses;
+}> {
   // /v1/apps/{appid}/policies
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -372,7 +429,10 @@ export async function PolicyControllerCreate(
  */
 export async function PolicyControllerFindAll(
   params: Paths.PolicyControllerFindAll.BodyParameters | any,
-): Promise<Paths.PolicyControllerFindAll.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.PolicyControllerFindAll.Responses;
+}> {
   // /v1/apps/{appid}/policies
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -387,9 +447,10 @@ export async function PolicyControllerFindAll(
 /**
  * Update database policy
  */
-export async function PolicyControllerUpdate(
-  params: Definitions.UpdatePolicyDto | any,
-): Promise<Paths.PolicyControllerUpdate.Responses> {
+export async function PolicyControllerUpdate(params: Definitions.UpdatePolicyDto | any): Promise<{
+  error: string;
+  data: Paths.PolicyControllerUpdate.Responses;
+}> {
   // /v1/apps/{appid}/policies/{name}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -406,7 +467,10 @@ export async function PolicyControllerUpdate(
  */
 export async function PolicyControllerRemove(
   params: Paths.PolicyControllerRemove.BodyParameters | any,
-): Promise<Paths.PolicyControllerRemove.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.PolicyControllerRemove.Responses;
+}> {
   // /v1/apps/{appid}/policies/{name}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -423,7 +487,10 @@ export async function PolicyControllerRemove(
  */
 export async function DatabaseControllerProxy(
   params: Paths.DatabaseControllerProxy.BodyParameters | any,
-): Promise<Paths.DatabaseControllerProxy.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.DatabaseControllerProxy.Responses;
+}> {
   // /v1/apps/{appid}/databases/proxy
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -440,7 +507,10 @@ export async function DatabaseControllerProxy(
  */
 export async function PolicyRuleControllerCreate(
   params: Definitions.CreatePolicyRuleDto | any,
-): Promise<Paths.PolicyRuleControllerCreate.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.PolicyRuleControllerCreate.Responses;
+}> {
   // /v1/apps/{appid}/policies/{name}/rules
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -457,7 +527,10 @@ export async function PolicyRuleControllerCreate(
  */
 export async function PolicyRuleControllerFindAll(
   params: Paths.PolicyRuleControllerFindAll.BodyParameters | any,
-): Promise<Paths.PolicyRuleControllerFindAll.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.PolicyRuleControllerFindAll.Responses;
+}> {
   // /v1/apps/{appid}/policies/{name}/rules
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -474,7 +547,10 @@ export async function PolicyRuleControllerFindAll(
  */
 export async function PolicyRuleControllerUpdate(
   params: Definitions.UpdatePolicyRuleDto | any,
-): Promise<Paths.PolicyRuleControllerUpdate.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.PolicyRuleControllerUpdate.Responses;
+}> {
   // /v1/apps/{appid}/policies/{name}/rules/{collection}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -491,7 +567,10 @@ export async function PolicyRuleControllerUpdate(
  */
 export async function PolicyRuleControllerRemove(
   params: Paths.PolicyRuleControllerRemove.BodyParameters | any,
-): Promise<Paths.PolicyRuleControllerRemove.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.PolicyRuleControllerRemove.Responses;
+}> {
   // /v1/apps/{appid}/policies/{name}/rules/{collection}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -506,9 +585,10 @@ export async function PolicyRuleControllerRemove(
 /**
  * Create a new website
  */
-export async function WebsiteControllerCreate(
-  params: Definitions.CreateWebsiteDto | any,
-): Promise<Paths.WebsiteControllerCreate.Responses> {
+export async function WebsiteControllerCreate(params: Definitions.CreateWebsiteDto | any): Promise<{
+  error: string;
+  data: Paths.WebsiteControllerCreate.Responses;
+}> {
   // /v1/apps/{appid}/websites
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -525,7 +605,10 @@ export async function WebsiteControllerCreate(
  */
 export async function WebsiteControllerFindAll(
   params: Paths.WebsiteControllerFindAll.BodyParameters | any,
-): Promise<Paths.WebsiteControllerFindAll.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.WebsiteControllerFindAll.Responses;
+}> {
   // /v1/apps/{appid}/websites
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -542,7 +625,10 @@ export async function WebsiteControllerFindAll(
  */
 export async function WebsiteControllerFindOne(
   params: Paths.WebsiteControllerFindOne.BodyParameters | any,
-): Promise<Paths.WebsiteControllerFindOne.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.WebsiteControllerFindOne.Responses;
+}> {
   // /v1/apps/{appid}/websites/{id}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -559,7 +645,10 @@ export async function WebsiteControllerFindOne(
  */
 export async function WebsiteControllerBindDomain(
   params: Definitions.BindCustomDomainDto | any,
-): Promise<Paths.WebsiteControllerBindDomain.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.WebsiteControllerBindDomain.Responses;
+}> {
   // /v1/apps/{appid}/websites/{id}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -576,7 +665,10 @@ export async function WebsiteControllerBindDomain(
  */
 export async function WebsiteControllerRemove(
   params: Paths.WebsiteControllerRemove.BodyParameters | any,
-): Promise<Paths.WebsiteControllerRemove.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.WebsiteControllerRemove.Responses;
+}> {
   // /v1/apps/{appid}/websites/{id}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -593,7 +685,10 @@ export async function WebsiteControllerRemove(
  */
 export async function WebsiteControllerCheckResolved(
   params: Definitions.BindCustomDomainDto | any,
-): Promise<Paths.WebsiteControllerCheckResolved.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.WebsiteControllerCheckResolved.Responses;
+}> {
   // /v1/apps/{appid}/websites/{id}/resolved
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -608,9 +703,10 @@ export async function WebsiteControllerCheckResolved(
 /**
  * Create a cron trigger
  */
-export async function TriggerControllerCreate(
-  params: Definitions.CreateTriggerDto | any,
-): Promise<Paths.TriggerControllerCreate.Responses> {
+export async function TriggerControllerCreate(params: Definitions.CreateTriggerDto | any): Promise<{
+  error: string;
+  data: Paths.TriggerControllerCreate.Responses;
+}> {
   // /v1/apps/{appid}/triggers
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -627,7 +723,10 @@ export async function TriggerControllerCreate(
  */
 export async function TriggerControllerFindAll(
   params: Paths.TriggerControllerFindAll.BodyParameters | any,
-): Promise<Paths.TriggerControllerFindAll.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.TriggerControllerFindAll.Responses;
+}> {
   // /v1/apps/{appid}/triggers
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -644,7 +743,10 @@ export async function TriggerControllerFindAll(
  */
 export async function TriggerControllerRemove(
   params: Paths.TriggerControllerRemove.BodyParameters | any,
-): Promise<Paths.TriggerControllerRemove.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.TriggerControllerRemove.Responses;
+}> {
   // /v1/apps/{appid}/triggers/{id}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -661,7 +763,10 @@ export async function TriggerControllerRemove(
  */
 export async function LogControllerGetLogs(
   params: Paths.LogControllerGetLogs.BodyParameters | any,
-): Promise<Paths.LogControllerGetLogs.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.LogControllerGetLogs.Responses;
+}> {
   // /v1/apps/{appid}/logs/functions
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -678,7 +783,10 @@ export async function LogControllerGetLogs(
  */
 export async function DependencyControllerAdd(
   params: Paths.DependencyControllerAdd.BodyParameters | any,
-): Promise<Paths.DependencyControllerAdd.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.DependencyControllerAdd.Responses;
+}> {
   // /v1/apps/{appid}/dependencies
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -695,7 +803,10 @@ export async function DependencyControllerAdd(
  */
 export async function DependencyControllerUpdate(
   params: Paths.DependencyControllerUpdate.BodyParameters | any,
-): Promise<Paths.DependencyControllerUpdate.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.DependencyControllerUpdate.Responses;
+}> {
   // /v1/apps/{appid}/dependencies
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -712,7 +823,10 @@ export async function DependencyControllerUpdate(
  */
 export async function DependencyControllerGetDependencies(
   params: Paths.DependencyControllerGetDependencies.BodyParameters | any,
-): Promise<Paths.DependencyControllerGetDependencies.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.DependencyControllerGetDependencies.Responses;
+}> {
   // /v1/apps/{appid}/dependencies
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -729,7 +843,10 @@ export async function DependencyControllerGetDependencies(
  */
 export async function DependencyControllerRemove(
   params: Definitions.DeleteDependencyDto | any,
-): Promise<Paths.DependencyControllerRemove.Responses> {
+): Promise<{
+  error: string;
+  data: Paths.DependencyControllerRemove.Responses;
+}> {
   // /v1/apps/{appid}/dependencies
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -738,5 +855,45 @@ export async function DependencyControllerRemove(
   return request(`/v1/apps/${_params.appid}/dependencies`, {
     method: "DELETE",
     data: params,
+  });
+}
+
+/**
+ * Get billings of an application
+ */
+export async function BillingControllerFindAllByAppId(
+  params: Paths.BillingControllerFindAllByAppId.BodyParameters | any,
+): Promise<{
+  error: string;
+  data: Paths.BillingControllerFindAllByAppId.Responses;
+}> {
+  // /v1/apps/{appid}/billings
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/billings`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+/**
+ * Get billing by id
+ */
+export async function BillingControllerFindOne(
+  params: Paths.BillingControllerFindOne.BodyParameters | any,
+): Promise<{
+  error: string;
+  data: Definitions.ApplicationBilling;
+}> {
+  // /v1/apps/{appid}/billings/{id}
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/billings/${_params.id}`, {
+    method: "GET",
+    params: params,
   });
 }
