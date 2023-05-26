@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { CheckIcon } from "@chakra-ui/icons";
 import {
-  Box,
   Button,
   FormControl,
   FormErrorMessage,
@@ -16,11 +15,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Slider,
-  SliderFilledTrack,
-  SliderMark,
-  SliderThumb,
-  SliderTrack,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
@@ -41,8 +35,8 @@ import BundleItem from "./BundleItem";
 import { TApplicationItem, TBundle } from "@/apis/typing";
 import {
   ApplicationControllerCreate,
-  ApplicationControllerUpdate,
   ApplicationControllerUpdateBundle,
+  ApplicationControllerUpdateName,
 } from "@/apis/v1/applications";
 import {
   ResourceControllerCalculatePrice,
@@ -176,18 +170,18 @@ const CreateAppModal = (props: {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bundle, isOpen]);
 
-  const updateAppMutation = useMutation((params: any) => ApplicationControllerUpdate(params));
+  const updateAppMutation = useMutation((params: any) => ApplicationControllerUpdateName(params));
   const createAppMutation = useMutation((params: any) => ApplicationControllerCreate(params));
   const changeBundleMutation = useMutation((params: any) =>
     ApplicationControllerUpdateBundle(params),
   );
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: FormData) => {
     let res: any = {};
 
     switch (type) {
       case "edit":
-        res = await updateAppMutation.mutateAsync({ ...data, appid: application?.appid });
+        res = await updateAppMutation.mutateAsync({ name: data.name, appid: application?.appid });
         break;
 
       case "change":
@@ -208,12 +202,18 @@ const CreateAppModal = (props: {
 
     if (!res.error) {
       onClose();
-      if (type === "edit") {
+      if (type !== "create") {
         showSuccess(t("update success"));
       }
-      setTimeout(() => {
+
+      // Run every 2 seconds, 2 times in total
+      queryClient.invalidateQueries(APP_LIST_QUERY_KEY);
+      const interval = setInterval(() => {
         queryClient.invalidateQueries(APP_LIST_QUERY_KEY);
       }, 2000);
+      setTimeout(() => {
+        clearInterval(interval);
+      }, 4000);
     }
   };
 
@@ -247,7 +247,7 @@ const CreateAppModal = (props: {
         },
       })}
 
-      <Modal isOpen={isOpen} onClose={onClose} size="4xl">
+      <Modal isOpen={isOpen} onClose={onClose} size={type === "edit" ? "xl" : "4xl"}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{title}</ModalHeader>
@@ -302,10 +302,8 @@ const CreateAppModal = (props: {
                   />
                 </HStack>
               </FormControl>
-              <FormControl>
-                <FormLabel htmlFor="bundleId">
-                  {t("HomePanel.Application") + t("HomePanel.BundleName")}
-                </FormLabel>
+              <FormControl hidden={type === "edit"}>
+                <FormLabel htmlFor="bundleId">{t("HomePanel.Spec")}</FormLabel>
                 <div>
                   <Controller
                     name="bundleId"
@@ -344,23 +342,24 @@ const CreateAppModal = (props: {
                               isActive={!activeBundle || customActive}
                             />
                           </div>
-                          <div className="ml-6 flex-1 border-l pl-12 pr-8">
+                          <div className="ml-6 flex-1 border-l pl-6 pr-2">
                             {billingResourceOptionsRes?.data?.map(
                               (item: {
                                 type: "cpu" | "memory" | "databaseCapacity" | "storageCapacity";
                                 specs: { value: number; price: number }[];
                                 price: number;
                               }) => {
-                                return (
-                                  <div className="mb-12" key={item.type}>
+                                return item.specs.length > 0 ? (
+                                  <div className="mb-8" key={item.type}>
                                     <p className="mb-2">
-                                      <span className="mr-2 text-2xl font-semibold">
-                                        {item.type}
+                                      <span className="mr-2 text-lg font-semibold  ">
+                                        {t(`SpecItem.${item.type}`)}
                                       </span>
                                       {/* {item.price} */}
                                     </p>
-                                    {/* {item.specs.map((spec: any, i: number) => (
+                                    {item.specs.map((spec: any, i: number) => (
                                       <Button
+                                        key={`${item.type}-${i}`}
                                         onClick={(v) => {
                                           setBundle({
                                             ...bundle,
@@ -369,54 +368,56 @@ const CreateAppModal = (props: {
                                         }}
                                         size={"sm"}
                                         variant={
-                                          spec.value === bundle[item.type] ? "solid" : "outline"
+                                          spec.value === bundle[item.type] ? "thirdly" : "outline"
                                         }
-                                        w="60px"
+                                        minW={"64px"}
+                                        mr={1}
+                                        mb={1}
                                         rounded="sm"
                                       >
                                         {spec.label}
                                       </Button>
-                                    ))} */}
-                                    {item.specs.length > 0 ? (
-                                      <Slider
-                                        min={0}
-                                        max={item.specs.length - 1}
-                                        step={1}
-                                        onChange={(v) => {
-                                          setBundle({
-                                            ...bundle,
-                                            [item.type]: item.specs[v].value,
-                                          });
-                                        }}
-                                        value={item.specs.findIndex(
-                                          (spec: any) => spec.value === bundle[item.type],
-                                        )}
-                                      >
-                                        {item.specs.map((spec: any, i: number) => (
-                                          <SliderMark
-                                            key={spec.value}
-                                            value={i}
-                                            mt={3}
-                                            fontSize={"sm"}
-                                          >
-                                            <Box
-                                              className="-ml-[50px] w-[100px] scale-90 text-center"
-                                              cursor={"pointer "}
+                                    ))}
+                                    {/* {item.specs.length > 0 ? (
+                                        <Slider
+                                          min={0}
+                                          max={item.specs.length - 1}
+                                          step={1}
+                                          onChange={(v) => {
+                                            setBundle({
+                                              ...bundle,
+                                              [item.type]: item.specs[v].value,
+                                            });
+                                          }}
+                                          value={item.specs.findIndex(
+                                            (spec: any) => spec.value === bundle[item.type],
+                                          )}
+                                        >
+                                          {item.specs.map((spec: any, i: number) => (
+                                            <SliderMark
+                                              key={spec.value}
+                                              value={i}
+                                              mt={3}
+                                              fontSize={"sm"}
                                             >
-                                              {spec.label}
-                                            </Box>
-                                          </SliderMark>
-                                        ))}
-                                        <SliderTrack>
-                                          <SliderFilledTrack bg="primary.500" />
-                                        </SliderTrack>
-                                        <SliderThumb bg={"primary.700"} />
-                                      </Slider>
-                                    ) : (
-                                      <span className="text-2xl font-semibold">{item.price}</span>
-                                    )}
+                                              <Box
+                                                className="-ml-[50px] w-[100px] scale-90 text-center"
+                                                cursor={"pointer "}
+                                              >
+                                                {spec.label}
+                                              </Box>
+                                            </SliderMark>
+                                          ))}
+                                          <SliderTrack>
+                                            <SliderFilledTrack bg="primary.500" />
+                                          </SliderTrack>
+                                          <SliderThumb bg={"primary.700"} />
+                                        </Slider>
+                                      ) : (
+                                        <span className="text-2xl font-semibold">{item.price}</span>
+                                      )} */}
                                   </div>
-                                );
+                                ) : null;
                               },
                             )}
                           </div>
