@@ -59,6 +59,7 @@ model InviteCode {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   uid         String   @db.ObjectId
   code        String   @unique
+  state       String   @default("Active") // Active, Inactive
   name        String?
   description String?
   createdAt   DateTime @default(now())
