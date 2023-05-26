@@ -2,6 +2,5 @@ package.json
 tsconfig.json
 types
 node_modules
-.secret.yaml
-laf.yaml
+.app.yaml
 package-lock.json
