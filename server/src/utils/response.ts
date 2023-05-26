@@ -104,3 +104,33 @@ export const ApiResponseArray = <DataDto extends Type<unknown>>(
       },
     }),
   )
+
+export const ApiResponsePagination = <DataDto extends Type<unknown>>(
+  dataDto: DataDto,
+) =>
+  applyDecorators(
+    ApiExtraModels(ResponseUtil, dataDto),
+    ApiResponse({
+      schema: {
+        allOf: [
+          { $ref: getSchemaPath(ResponseUtil) },
+          {
+            properties: {
+              data: {
+                type: 'object',
+                properties: {
+                  list: {
+                    type: 'array',
+                    items: { $ref: getSchemaPath(dataDto) },
+                  },
+                  total: { type: 'number' },
+                  page: { type: 'number' },
+                  pageSize: { type: 'number' },
+                },
+              },
+            },
+          },
+        ],
+      },
+    }),
+  )

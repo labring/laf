@@ -6,17 +6,12 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common'
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
 import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import { JwtAuthGuard } from '../auth/jwt.auth.guard'
 import { FunctionService } from '../function/function.service'
-import { ResponseUtil } from '../utils/response'
+import { ApiResponsePagination, ResponseUtil } from '../utils/response'
+import { FunctionLog } from './entities/function-log'
 
 @ApiBearerAuth('Authorization')
 @Controller('apps/:appid/logs')
@@ -32,8 +27,8 @@ export class LogController {
    * @returns
    */
   @ApiTags('Function')
-  @ApiResponse({ type: ResponseUtil })
   @ApiOperation({ summary: 'Get function logs' })
+  @ApiResponsePagination(FunctionLog)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @ApiQuery({
     name: 'functionName',
@@ -81,7 +76,8 @@ export class LogController {
       list: res.data,
       total: res.total,
       page,
-      limit,
+      limit, // @deprecated use pageSize instead
+      pageSize: limit,
     })
   }
 }

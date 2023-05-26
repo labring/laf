@@ -16,6 +16,7 @@ import { SystemDatabase } from 'src/system-database'
 import { ObjectId } from 'mongodb'
 import { CloudFunction } from './entities/cloud-function'
 import { ApplicationConfiguration } from 'src/application/entities/application-configuration'
+import { FunctionLog } from 'src/log/entities/function-log'
 
 @Injectable()
 export class FunctionService {
@@ -210,7 +211,7 @@ export class FunctionService {
     const { db, client } = await this.databaseService.findAndConnect(appid)
 
     try {
-      const coll = db.collection(CN_FUNCTION_LOGS)
+      const coll = db.collection<FunctionLog>(CN_FUNCTION_LOGS)
       const query: any = {}
       if (requestId) {
         query.request_id = requestId
