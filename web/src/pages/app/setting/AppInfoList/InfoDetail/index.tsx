@@ -11,7 +11,7 @@ const InfoDetail = function (props: {
 }) {
   const { title, leftData, rightData, className } = props;
   return (
-    <div className={clsx("rounded border border-grayModern-100 px-4 py-4", className)}>
+    <div className={clsx("rounded border px-4 py-4", className)}>
       <Content>
         <Row className="mb-2 h-[20px] flex-none">
           <span className={clsx("relative inline-block text-lg font-medium text-primary-700")}>
@@ -19,7 +19,7 @@ const InfoDetail = function (props: {
           </span>
         </Row>
         <Row className="flex">
-          <Col className="border-r-2 border-grayModern-200">
+          <Col className="border-r-2">
             {leftData.map((item) => (
               <div key={item.key} className="flex justify-between">
                 <span className="flex-1 text-grayModern-500">{item.key} :</span>
