@@ -22,31 +22,32 @@ export function logoutCommand(): Command {
 }
 
 export function command(): Command {
-  const cmd = program
-    .command('user')
-    .description('user management')
+  const cmd = program.command('user').description('user management')
 
-  cmd.command('list')
+  cmd
+    .command('list')
     .description('list user')
     .action(() => {
       list()
     })
 
-
-  cmd.command('switch <name>')
+  cmd
+    .command('switch <name>')
     .description('switch user')
     .action((name) => {
       switchUser(name)
     })
 
-  cmd.command('add <name>')
+  cmd
+    .command('add <name>')
     .description('add user')
     .option('-r, --remote [value]', 'remote server address', '')
     .action((name, options) => {
       add(name, options)
     })
 
-  cmd.command('del <name>')
+  cmd
+    .command('del <name>')
     .description('delete user')
     .action((name) => {
       del(name)

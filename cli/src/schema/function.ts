@@ -28,5 +28,4 @@ export class FunctionSchema {
     const funcConfigPath = path.join(process.cwd(), FUNCTION_SCHEMA_DIRCTORY, name + FUNCTION_SCHEMA_SUFFIX)
     remove(funcConfigPath)
   }
-
 }
