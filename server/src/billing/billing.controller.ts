@@ -6,10 +6,10 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common'
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
 import {
-  ApiResponseArray,
   ApiResponseObject,
+  ApiResponsePagination,
   ResponseUtil,
 } from 'src/utils/response'
 import { BillingService } from './billing.service'
@@ -31,20 +31,44 @@ export class BillingController {
    * Get all billing of application
    */
   @ApiOperation({ summary: 'Get billings of an application' })
-  @ApiResponseArray(ApplicationBilling)
+  @ApiResponsePagination(ApplicationBilling)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @ApiQuery({
+    name: 'startTime',
+    type: String,
+    description: 'pagination start time',
+    required: true,
+  })
+  @ApiQuery({
+    name: 'endTime',
+    type: String,
+    description: 'pagination end time',
+    required: true,
+  })
+  @ApiQuery({
+    name: 'page',
+    type: Number,
+    description: 'page number',
+    required: true,
+  })
+  @ApiQuery({
+    name: 'pageSize',
+    type: Number,
+    description: 'page size',
+    required: true,
+  })
   @Get()
   async findAllByAppId(
     @Param('appid') appid: string,
-    @Query('startTime') startTime: Date,
-    @Query('endTime') endTime: Date,
+    @Query('startTime') startTime: string,
+    @Query('endTime') endTime: string,
     @Query('page') page: number,
     @Query('pageSize') pageSize: number,
   ) {
     const billings = await this.billing.findAllByAppId(
       appid,
-      startTime,
-      endTime,
+      new Date(startTime),
+      new Date(endTime),
       page,
       pageSize,
     )

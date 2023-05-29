@@ -29,7 +29,7 @@ export class UserPasswordController {
   @ApiResponse({ type: ResponseUtil })
   @Post('passwd/signup')
   async signup(@Body() dto: PasswdSignupDto) {
-    const { username, password, phone } = dto
+    const { username, password, phone, inviteCode } = dto
     // check if user exists
     const doc = await this.userService.findOneByUsername(username)
     if (doc) {
@@ -58,7 +58,12 @@ export class UserPasswordController {
     }
 
     // signup user
-    const user = await this.passwdService.signup(username, password, phone)
+    const user = await this.passwdService.signup(
+      username,
+      password,
+      phone,
+      inviteCode,
+    )
 
     // signin for created user
     const token = this.passwdService.signin(user)
