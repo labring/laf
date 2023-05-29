@@ -423,29 +423,32 @@ const CreateAppModal = (props: {
             </ModalBody>
 
             <ModalFooter h={20}>
-              {type === "edit" ? null : totalPrice <= 0 && isLoading ? (
-                <div className="mr-2">
-                  <span className="ml-6 text-xl font-semibold text-red-500">{t("Price.Free")}</span>
-                </div>
-              ) : (
-                <div className="mr-2">
+              {type === "edit" || isLoading ? null : (
+                <div className="flex items-center">
                   {t("Fee")}:
-                  <span className="ml-2 text-xl font-semibold text-red-500">
-                    {totalPrice} / hour
-                  </span>
-                  <span className="ml-4 mr-2">
-                    {t("Balance")}:
-                    <span className="ml-2 text-xl">{formatPrice(accountRes?.data?.balance)}</span>
-                  </span>
-                  {totalPrice > accountRes?.data?.balance! ? (
-                    <span className="mr-2">{t("balance is insufficient")}</span>
-                  ) : null}
-                  <ChargeButton>
-                    <span className="cursor-pointer text-blue-800">{t("ChargeNow")}</span>
-                  </ChargeButton>
+                  {totalPrice <= 0 ? (
+                    <span className="ml-2 text-xl font-semibold text-red-500">
+                      {t("Price.Free")}
+                    </span>
+                  ) : (
+                    <span className="ml-2 text-xl font-semibold text-red-500">
+                      {totalPrice} / hour
+                    </span>
+                  )}
                 </div>
               )}
-
+              <div className="mr-2 flex items-center">
+                <span className="ml-4 mr-2">
+                  {t("Balance")}:
+                  <span className="ml-2 text-xl">{formatPrice(accountRes?.data?.balance)}</span>
+                </span>
+                {totalPrice > accountRes?.data?.balance! ? (
+                  <span className="mr-2">{t("balance is insufficient")}</span>
+                ) : null}
+                <ChargeButton>
+                  <span className="cursor-pointer text-blue-800">{t("ChargeNow")}</span>
+                </ChargeButton>
+              </div>
               {type !== "edit" && totalPrice <= accountRes?.data?.balance! && (
                 <Button
                   isLoading={createAppMutation.isLoading}
@@ -456,7 +459,6 @@ const CreateAppModal = (props: {
                   {type === "change" ? t("Confirm") : t("CreateNow")}
                 </Button>
               )}
-
               {type === "edit" && (
                 <Button
                   isLoading={updateAppMutation.isLoading}
