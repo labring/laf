@@ -32,7 +32,12 @@ export class ApplicationService {
    * - create bundle
    * - create application
    */
-  async create(userid: ObjectId, appid: string, dto: CreateApplicationDto) {
+  async create(
+    userid: ObjectId,
+    appid: string,
+    dto: CreateApplicationDto,
+    isTrialTier: boolean,
+  ) {
     const client = SystemDatabase.client
     const db = client.db()
     const session = client.startSession()
@@ -64,7 +69,7 @@ export class ApplicationService {
         {
           appid,
           resource: this.buildBundleResource(dto),
-          isTrialTier: dto.isTrialTier,
+          isTrialTier: isTrialTier,
           createdAt: new Date(),
           updatedAt: new Date(),
         },

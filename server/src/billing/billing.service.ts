@@ -21,8 +21,6 @@ export class BillingService {
     page: number,
     pageSize: number,
   ) {
-    // startTime = new Date(startTime)
-    // endTime = new Date(endTime)
     const total = await this.db
       .collection<ApplicationBilling>('ApplicationBilling')
       .countDocuments({ appid, createdAt: { $gte: startTime, $lte: endTime } })

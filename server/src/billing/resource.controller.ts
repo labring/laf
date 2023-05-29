@@ -42,6 +42,12 @@ export class ResourceController {
     }
 
     const result = await this.billing.calculatePrice(dto)
+
+    // check if trial tier
+    const isTrialTier = await this.resource.isTrialBundle(dto)
+    if (isTrialTier) {
+      result.total = 0
+    }
     return ResponseUtil.ok(result)
   }
 

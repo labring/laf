@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiProperty } from '@nestjs/swagger'
 import { IsIn, IsNotEmpty, IsString, Length } from 'class-validator'
 import { ApplicationState } from '../entities/application'
 import { UpdateApplicationBundleDto } from './update-application.dto'
@@ -27,9 +27,6 @@ export class CreateApplicationDto extends UpdateApplicationBundleDto {
   @IsNotEmpty()
   @IsString()
   runtimeId: string
-
-  @ApiPropertyOptional()
-  isTrialTier?: boolean
 
   validate() {
     return null

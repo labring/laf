@@ -84,12 +84,8 @@ export class ApplicationController {
     }
 
     // check if trial tier
-    if (dto.isTrialTier) {
-      const isTrialTier = await this.resource.isTrialBundle(dto)
-      if (!isTrialTier) {
-        return ResponseUtil.error(`trial tier is not available`)
-      }
-
+    const isTrialTier = await this.resource.isTrialBundle(dto)
+    if (isTrialTier) {
       const regionId = new ObjectId(dto.regionId)
       const bundle = await this.resource.findTrialBundle(regionId)
       const trials = await this.application.findTrialApplications(user._id)
@@ -113,7 +109,7 @@ export class ApplicationController {
 
     // create application
     const appid = await this.application.tryGenerateUniqueAppid()
-    await this.application.create(user._id, appid, dto)
+    await this.application.create(user._id, appid, dto, isTrialTier)
 
     const app = await this.application.findOne(appid)
     return ResponseUtil.ok(app)
