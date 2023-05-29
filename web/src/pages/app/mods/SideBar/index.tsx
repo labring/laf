@@ -26,7 +26,9 @@ export default function SideBar() {
   const { pageId } = useParams();
   const navigate = useNavigate();
   const { currentApp, setCurrentPage, userInfo, regions = [] } = useGlobalStore();
-  const currentRegion = regions.find((item: any) => item.id === currentApp?.regionId) || regions[0];
+  const currentRegion =
+    regions.find((item: any) => item._id === currentApp?.regionId) || regions[0];
+
   const ICONS: TIcon[] = [
     {
       pageId: "nav",
@@ -64,7 +66,7 @@ export default function SideBar() {
       pageId: Pages.userSetting,
       component: (
         <UserSetting
-          name={userInfo?.profile.name || ""}
+          name={userInfo?.profile?.name || ""}
           avatar={userInfo?.profile?.avatar}
           width={"28px"}
         />

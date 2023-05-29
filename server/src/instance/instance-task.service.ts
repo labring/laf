@@ -1,11 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { Application, ApplicationPhase, ApplicationState } from '@prisma/client'
 import { isConditionTrue } from '../utils/getter'
 import { InstanceService } from './instance.service'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import { CronJobService } from 'src/trigger/cron-job.service'
+import {
+  Application,
+  ApplicationPhase,
+  ApplicationState,
+} from 'src/application/entities/application'
 
 @Injectable()
 export class InstanceTaskService {
@@ -93,14 +97,14 @@ export class InstanceTaskService {
           lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
         { $set: { lockedAt: new Date() } },
-        { sort: { lockedAt: 1, updatedAt: 1 } },
+        { sort: { lockedAt: 1, updatedAt: 1 }, returnDocument: 'after' },
       )
 
     if (!res.value) return
     const app = res.value
 
     // create instance
-    await this.instanceService.create(app)
+    await this.instanceService.create(app.appid)
 
     // if waiting time is more than 5 minutes, stop the application
     const waitingTime = Date.now() - app.updatedAt.getTime()
@@ -122,7 +126,7 @@ export class InstanceTaskService {
     }
 
     const appid = app.appid
-    const instance = await this.instanceService.get(app)
+    const instance = await this.instanceService.get(appid)
     const unavailable =
       instance.deployment?.status?.unavailableReplicas || false
     if (unavailable) {
@@ -208,7 +212,7 @@ export class InstanceTaskService {
           lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
         { $set: { lockedAt: new Date() } },
-        { sort: { lockedAt: 1, updatedAt: 1 } },
+        { sort: { lockedAt: 1, updatedAt: 1 }, returnDocument: 'after' },
       )
 
     if (!res.value) return
@@ -218,16 +222,16 @@ export class InstanceTaskService {
     const waitingTime = Date.now() - app.updatedAt.getTime()
 
     // check if the instance is removed
-    const instance = await this.instanceService.get(app)
+    const instance = await this.instanceService.get(app.appid)
     if (instance.deployment) {
-      await this.instanceService.remove(app)
+      await this.instanceService.remove(app.appid)
       await this.relock(appid, waitingTime)
       return
     }
 
     // check if the service is removed
     if (instance.service) {
-      await this.instanceService.remove(app)
+      await this.instanceService.remove(app.appid)
       await this.relock(appid, waitingTime)
       return
     }
@@ -268,7 +272,7 @@ export class InstanceTaskService {
           lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
         { $set: { lockedAt: new Date() } },
-        { sort: { lockedAt: 1, updatedAt: 1 } },
+        { sort: { lockedAt: 1, updatedAt: 1 }, returnDocument: 'after' },
       )
 
     if (!res.value) return

@@ -1,3 +1,5 @@
+import { AccountChargeOrder } from '../entities/account-charge-order'
+
 export interface WeChatPaySpec {
   mchid: string
   appid: string
@@ -63,3 +65,5 @@ export interface WeChatPayDecryptedResult {
     payer_currency: string
   }
 }
+
+export type WeChatPayChargeOrder = AccountChargeOrder<WeChatPayDecryptedResult>

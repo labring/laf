@@ -17,8 +17,6 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
-import clsx from "clsx";
-import dayjs from "dayjs";
 
 import CopyText from "@/components/CopyText";
 import FileTypeIcon from "@/components/FileTypeIcon";
@@ -34,7 +32,8 @@ import StatusBadge from "../StatusBadge";
 
 import BundleInfo from "./BundleInfo";
 
-import { ApplicationControllerUpdate } from "@/apis/v1/applications";
+import { TApplicationItem } from "@/apis/typing";
+import { ApplicationControllerUpdateState } from "@/apis/v1/applications";
 import useGlobalStore from "@/pages/globalStore";
 
 function List(props: { appListQuery: any; setShouldRefetch: any }) {
@@ -48,7 +47,9 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
   const { appListQuery, setShouldRefetch } = props;
   const bg = useColorModeValue("lafWhite.200", "lafDark.200");
 
-  const updateAppMutation = useMutation((params: any) => ApplicationControllerUpdate(params));
+  const updateAppStateMutation = useMutation((params: any) =>
+    ApplicationControllerUpdateState(params),
+  );
 
   return (
     <>
@@ -92,21 +93,16 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
         </Box>
         <div className="flex-grow overflow-auto">
           {(appListQuery.data?.data || [])
-            .filter((item: any) => item?.name.indexOf(searchKey) >= 0)
-            .map((item: any) => {
+            .filter((item: TApplicationItem) => item?.name.indexOf(searchKey) >= 0)
+            .map((item: TApplicationItem) => {
               return (
                 <Box
                   key={item?.appid}
                   bg={bg}
-                  className="group mb-3 flex items-center rounded-lg px-3 py-4 lg:px-6"
+                  className="group mb-3 flex items-center rounded-xl px-3 py-5 lg:px-6"
                 >
                   <div className="w-3/12 ">
-                    <div className="text-lg font-bold">
-                      {item?.name}
-                      <span className="ml-2 rounded border px-1 text-base text-second">
-                        {item?.bundle?.displayName}
-                      </span>
-                    </div>
+                    <div className="text-lg font-bold">{item?.name}</div>
                     <BundleInfo bundle={item.bundle} />
                   </div>
                   <div className="w-2/12 font-mono">
@@ -121,24 +117,6 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                   <div className="w-4/12 ">
                     <p>
                       {t("CreateTime")}: {formatDate(item.createdAt)}{" "}
-                    </p>
-                    <p
-                      className={clsx(
-                        "mt-1",
-                        dayjs().add(3, "day").isAfter(dayjs(item.subscription?.expiredAt))
-                          ? "text-red-500"
-                          : "",
-                      )}
-                    >
-                      {t("EndTime")}: {formatDate(item.subscription?.expiredAt)}
-                      <CreateAppModal application={item} type="renewal">
-                        <a
-                          className="invisible ml-2 text-primary-500 group-hover:visible group-hover:inline-block"
-                          href="/edit"
-                        >
-                          {t("Renew")}
-                        </a>
-                      </CreateAppModal>
                     </p>
                   </div>
                   <div className="flex w-1/12 min-w-[100px]">
@@ -172,14 +150,21 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                           </MenuItem>
                         </CreateAppModal>
 
+                        <CreateAppModal application={item} type="change">
+                          <MenuItem minH="40px" display={"block"}>
+                            <a className="text-primary block" href="/edit">
+                              {t("Change")}
+                            </a>
+                          </MenuItem>
+                        </CreateAppModal>
+
                         <MenuItem
                           minH="40px"
                           display={"block"}
                           onClick={async (event) => {
                             event?.preventDefault();
-                            const res = await updateAppMutation.mutateAsync({
+                            const res = await updateAppStateMutation.mutateAsync({
                               appid: item.appid,
-                              name: item.name,
                               state:
                                 item.phase === APP_STATUS.Stopped
                                   ? APP_STATUS.Running
@@ -197,23 +182,24 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                           </span>
                         </MenuItem>
 
-                        <MenuItem
-                          minH="40px"
-                          display={"block"}
-                          onClick={async (event: any) => {
-                            event?.preventDefault();
-                            await updateAppMutation.mutateAsync({
-                              appid: item.appid,
-                              name: item.name,
-                              state: APP_PHASE_STATUS.Stopped,
-                            });
-                            setShouldRefetch(true);
-                          }}
-                        >
-                          <a className="text-primary block" href="/stop">
-                            {t("SettingPanel.ShutDown")}
-                          </a>
-                        </MenuItem>
+                        {item.phase === APP_PHASE_STATUS.Started && (
+                          <MenuItem
+                            minH="40px"
+                            display={"block"}
+                            onClick={async (event: any) => {
+                              event?.preventDefault();
+                              await updateAppStateMutation.mutateAsync({
+                                appid: item.appid,
+                                state: APP_PHASE_STATUS.Stopped,
+                              });
+                              setShouldRefetch(true);
+                            }}
+                          >
+                            <a className="text-primary block" href="/stop">
+                              {t("SettingPanel.ShutDown")}
+                            </a>
+                          </MenuItem>
+                        )}
 
                         <DeleteAppModal item={item} onSuccess={() => setShouldRefetch(true)}>
                           <MenuItem minH="40px" display={"block"}>

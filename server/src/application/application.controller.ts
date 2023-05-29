@@ -7,22 +7,40 @@ import {
   UseGuards,
   Req,
   Logger,
+  Post,
+  Delete,
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { IRequest } from '../utils/interface'
 import { JwtAuthGuard } from '../auth/jwt.auth.guard'
-import { ResponseUtil } from '../utils/response'
+import {
+  ApiResponseArray,
+  ApiResponseObject,
+  ResponseUtil,
+} from '../utils/response'
 import { ApplicationAuthGuard } from '../auth/application.auth.guard'
-import { UpdateApplicationDto } from './dto/update-application.dto'
+import {
+  UpdateApplicationBundleDto,
+  UpdateApplicationNameDto,
+  UpdateApplicationStateDto,
+} from './dto/update-application.dto'
 import { ApplicationService } from './application.service'
 import { FunctionService } from '../function/function.service'
 import { StorageService } from 'src/storage/storage.service'
 import { RegionService } from 'src/region/region.service'
+import { CreateApplicationDto } from './dto/create-application.dto'
+import { AccountService } from 'src/account/account.service'
 import {
+  Application,
   ApplicationPhase,
   ApplicationState,
-  SubscriptionPhase,
-} from '@prisma/client'
+  ApplicationWithRelations,
+} from './entities/application'
+import { SystemDatabase } from 'src/system-database'
+import { Runtime } from './entities/runtime'
+import { ObjectId } from 'mongodb'
+import { ApplicationBundle } from './entities/application-bundle'
+import { ResourceService } from 'src/billing/resource.service'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -31,11 +49,71 @@ export class ApplicationController {
   private logger = new Logger(ApplicationController.name)
 
   constructor(
-    private readonly appService: ApplicationService,
-    private readonly funcService: FunctionService,
-    private readonly regionService: RegionService,
-    private readonly storageService: StorageService,
+    private readonly application: ApplicationService,
+    private readonly fn: FunctionService,
+    private readonly region: RegionService,
+    private readonly storage: StorageService,
+    private readonly account: AccountService,
+    private readonly resource: ResourceService,
   ) {}
+
+  /**
+   * Create application
+   */
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Create application' })
+  @ApiResponseObject(ApplicationWithRelations)
+  @Post()
+  async create(@Req() req: IRequest, @Body() dto: CreateApplicationDto) {
+    const user = req.user
+
+    // check regionId exists
+    const region = await this.region.findOneDesensitized(
+      new ObjectId(dto.regionId),
+    )
+    if (!region) {
+      return ResponseUtil.error(`region ${dto.regionId} not found`)
+    }
+
+    // check runtimeId exists
+    const runtime = await SystemDatabase.db
+      .collection<Runtime>('Runtime')
+      .findOne({ _id: new ObjectId(dto.runtimeId) })
+    if (!runtime) {
+      return ResponseUtil.error(`runtime ${dto.runtimeId} not found`)
+    }
+
+    // check if trial tier
+    const isTrialTier = await this.resource.isTrialBundle(dto)
+    if (isTrialTier) {
+      const regionId = new ObjectId(dto.regionId)
+      const bundle = await this.resource.findTrialBundle(regionId)
+      const trials = await this.application.findTrialApplications(user._id)
+      if (trials.length >= (bundle?.limitCountOfFreeTierPerUser || 0)) {
+        return ResponseUtil.error(`trial tier is not available`)
+      }
+    }
+
+    // one user can only have 20 applications in one region
+    const count = await this.application.countByUser(user._id)
+    if (count > 20) {
+      return ResponseUtil.error(`too many applications, limit is 20`)
+    }
+
+    // check account balance
+    const account = await this.account.findOne(user._id)
+    const balance = account?.balance || 0
+    if (balance <= 0) {
+      return ResponseUtil.error(`account balance is not enough`)
+    }
+
+    // create application
+    const appid = await this.application.tryGenerateUniqueAppid()
+    await this.application.create(user._id, appid, dto, isTrialTier)
+
+    const app = await this.application.findOne(appid)
+    return ResponseUtil.ok(app)
+  }
 
   /**
    * Get user application list
@@ -45,9 +123,10 @@ export class ApplicationController {
   @UseGuards(JwtAuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get user application list' })
+  @ApiResponseArray(ApplicationWithRelations)
   async findAll(@Req() req: IRequest) {
     const user = req.user
-    const data = await this.appService.findAllByUser(user.id)
+    const data = await this.application.findAllByUser(user._id)
     return ResponseUtil.ok(data)
   }
 
@@ -60,25 +139,17 @@ export class ApplicationController {
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get(':appid')
   async findOne(@Param('appid') appid: string) {
-    const data = await this.appService.findOne(appid, {
-      configuration: true,
-      domain: true,
-      subscription: true,
-    })
+    const data = await this.application.findOne(appid)
 
     // SECURITY ALERT!!!
     // DO NOT response this region object to client since it contains sensitive information
-    const region = await this.regionService.findOne(data.regionId)
+    const region = await this.region.findOne(data.regionId)
 
     // TODO: remove these storage related code to standalone api
     let storage = {}
-    const storageUser = await this.storageService.findOne(appid)
+    const storageUser = await this.storage.findOne(appid)
     if (storageUser) {
-      const sts = await this.storageService.getOssSTS(
-        region,
-        appid,
-        storageUser,
-      )
+      const sts = await this.storage.getOssSTS(region, appid, storageUser)
       const credentials = {
         endpoint: region.storageConf.externalEndpoint,
         accessKeyId: sts.Credentials?.AccessKeyId,
@@ -95,7 +166,7 @@ export class ApplicationController {
 
     // Generate the develop token, it's provided to the client when debugging function
     const expires = 60 * 60 * 24 * 7
-    const develop_token = await this.funcService.generateRuntimeToken(
+    const develop_token = await this.fn.generateRuntimeToken(
       appid,
       'develop',
       expires,
@@ -109,38 +180,46 @@ export class ApplicationController {
 
       /** This is the redundant field of Region */
       tls: region.tls,
-
-      /** @deprecated alias of develop token, will be remove in future  */
-      function_debug_token: develop_token,
     }
 
     return ResponseUtil.ok(res)
   }
 
   /**
-   * Update an application
-   * @param dto
-   * @returns
+   * Update application name
    */
-  @ApiOperation({ summary: 'Update an application' })
+  @ApiOperation({ summary: 'Update application name' })
+  @ApiResponseObject(Application)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
-  @Patch(':appid')
-  async update(
+  @Patch(':appid/name')
+  async updateName(
     @Param('appid') appid: string,
-    @Body() dto: UpdateApplicationDto,
+    @Body() dto: UpdateApplicationNameDto,
   ) {
-    // check dto
-    const error = dto.validate()
-    if (error) {
-      return ResponseUtil.error(error)
-    }
+    const doc = await this.application.updateName(appid, dto.name)
+    return ResponseUtil.ok(doc)
+  }
 
-    // check if the corresponding subscription status has expired
-    const app = await this.appService.findOne(appid, {
-      subscription: true,
-    })
-    if (app.subscription.phase !== SubscriptionPhase.Valid) {
-      return ResponseUtil.error('subscription has expired, you can not update')
+  /**
+   * Update application state
+   */
+  @ApiOperation({ summary: 'Update application state' })
+  @ApiResponseObject(Application)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Patch(':appid/state')
+  async updateState(
+    @Param('appid') appid: string,
+    @Body() dto: UpdateApplicationStateDto,
+    @Req() req: IRequest,
+  ) {
+    const app = req.application
+    const user = req.user
+
+    // check account balance
+    const account = await this.account.findOne(user._id)
+    const balance = account?.balance || 0
+    if (balance <= 0) {
+      return ResponseUtil.error(`account balance is not enough`)
     }
 
     // check: only running application can restart
@@ -176,11 +255,57 @@ export class ApplicationController {
       )
     }
 
-    // update app
-    const res = await this.appService.update(appid, dto)
-    if (res === null) {
-      return ResponseUtil.error('update application error')
+    const doc = await this.application.updateState(appid, dto.state)
+    return ResponseUtil.ok(doc)
+  }
+
+  /**
+   * Update application bundle
+   */
+  @ApiOperation({ summary: 'Update application bundle' })
+  @ApiResponseObject(ApplicationBundle)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Patch(':appid/bundle')
+  async updateBundle(
+    @Param('appid') appid: string,
+    @Body() dto: UpdateApplicationBundleDto,
+  ) {
+    const app = await this.application.findOne(appid)
+    const origin = app.bundle
+    const doc = await this.application.updateBundle(appid, dto)
+
+    // restart running application if cpu or memory changed
+    const isRunning = app.phase === ApplicationPhase.Started
+    const isCpuChanged = origin.resource.limitCPU !== doc.resource.limitCPU
+    const isMemoryChanged =
+      origin.resource.limitMemory !== doc.resource.limitMemory
+
+    if (isRunning && (isCpuChanged || isMemoryChanged)) {
+      await this.application.updateState(appid, ApplicationState.Restarting)
     }
-    return ResponseUtil.ok(res)
+
+    return ResponseUtil.ok(doc)
+  }
+
+  /**
+   * Delete an application
+   */
+  @ApiOperation({ summary: 'Delete an application' })
+  @ApiResponseObject(Application)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Delete(':appid')
+  async delete(@Param('appid') appid: string, @Req() req: IRequest) {
+    const app = req.application
+
+    // check: only stopped application can be deleted
+    if (
+      app.state !== ApplicationState.Stopped &&
+      app.phase !== ApplicationPhase.Stopped
+    ) {
+      return ResponseUtil.error('The app is not stopped, can not delete it')
+    }
+
+    const doc = await this.application.remove(appid)
+    return ResponseUtil.ok(doc)
   }
 }

@@ -33,13 +33,16 @@ export const useEnvironmentQuery = (callback?: (data: any) => void) => {
 
 export const useAddEnvironmentMutation = (callback?: () => void) => {
   const queryClient = useQueryClient();
-  return useMutation((params: TEnvironment[]) => EnvironmentVariableControllerAdd(params), {
-    onSuccess: async () => {
-      useGlobalStore.getState().showSuccess("update environment success");
-      await queryClient.invalidateQueries(queryKeys.useEnvironmentQuery);
-      callback && callback();
+  return useMutation(
+    (params: Definitions.CreateEnvironmentDto) => EnvironmentVariableControllerAdd(params),
+    {
+      onSuccess: async () => {
+        useGlobalStore.getState().showSuccess("update environment success");
+        await queryClient.invalidateQueries(queryKeys.useEnvironmentQuery);
+        callback && callback();
+      },
     },
-  });
+  );
 };
 
 export const useDelEnvironmentMutation = (callback?: () => void) => {

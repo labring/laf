@@ -3,82 +3,129 @@ import { Injectable, Logger } from '@nestjs/common'
 import { GetApplicationNamespaceByAppId } from '../utils/getter'
 import {
   LABEL_KEY_APP_ID,
-  LABEL_KEY_BUNDLE,
   LABEL_KEY_NODE_TYPE,
   MB,
   NodeType,
 } from '../constants'
-import { PrismaService } from '../prisma/prisma.service'
 import { StorageService } from '../storage/storage.service'
 import { DatabaseService } from 'src/database/database.service'
 import { ClusterService } from 'src/region/cluster/cluster.service'
-import {
-  Application,
-  ApplicationBundle,
-  ApplicationConfiguration,
-  Region,
-  Runtime,
-} from '@prisma/client'
-import { RegionService } from 'src/region/region.service'
-
-type ApplicationWithRegion = Application & { region: Region }
+import { SystemDatabase } from 'src/system-database'
+import { ApplicationWithRelations } from 'src/application/entities/application'
+import { ApplicationService } from 'src/application/application.service'
 
 @Injectable()
 export class InstanceService {
-  private logger = new Logger('InstanceService')
+  private readonly logger = new Logger('InstanceService')
+  private readonly db = SystemDatabase.db
+
   constructor(
-    private readonly clusterService: ClusterService,
-    private readonly regionService: RegionService,
+    private readonly cluster: ClusterService,
     private readonly storageService: StorageService,
     private readonly databaseService: DatabaseService,
-    private readonly prisma: PrismaService,
+    private readonly applicationService: ApplicationService,
   ) {}
 
-  async create(app: Application) {
-    const appid = app.appid
+  public async create(appid: string) {
+    const app = await this.applicationService.findOneUnsafe(appid)
     const labels = { [LABEL_KEY_APP_ID]: appid }
-    const region = await this.regionService.findByAppId(appid)
-    const appWithRegion = { ...app, region } as ApplicationWithRegion
+    const region = app.region
 
     // Although a namespace has already been created during application creation,
     // we still need to check it again here in order to handle situations where the cluster is rebuilt.
-    const namespace = await this.clusterService.getAppNamespace(region, appid)
+    const namespace = await this.cluster.getAppNamespace(region, appid)
     if (!namespace) {
       this.logger.debug(`Creating namespace for application ${appid}`)
-      await this.clusterService.createAppNamespace(region, appid, app.createdBy)
+      await this.cluster.createAppNamespace(
+        region,
+        appid,
+        app.createdBy.toString(),
+      )
     }
 
-    const res = await this.get(appWithRegion)
+    // ensure deployment created
+    const res = await this.get(app.appid)
     if (!res.deployment) {
-      await this.createDeployment(appid, labels)
+      await this.createDeployment(app, labels)
     }
 
+    // ensure service created
     if (!res.service) {
-      await this.createService(appWithRegion, labels)
+      await this.createService(app, labels)
     }
   }
 
-  async createDeployment(appid: string, labels: any) {
-    const namespace = GetApplicationNamespaceByAppId(appid)
-    const app = await this.prisma.application.findUnique({
-      where: { appid },
-      include: {
-        configuration: true,
-        bundle: true,
-        runtime: true,
-        region: true,
-      },
-    })
+  public async remove(appid: string) {
+    const app = await this.applicationService.findOneUnsafe(appid)
+    const region = app.region
+    const { deployment, service } = await this.get(appid)
 
-    // add bundle label
-    labels[LABEL_KEY_BUNDLE] = app.bundle.name
+    const namespace = await this.cluster.getAppNamespace(region, app.appid)
+    if (!namespace) return // namespace not found, nothing to do
+
+    const appsV1Api = this.cluster.makeAppsV1Api(region)
+    const coreV1Api = this.cluster.makeCoreV1Api(region)
+
+    // ensure deployment deleted
+    if (deployment) {
+      await appsV1Api.deleteNamespacedDeployment(appid, namespace.metadata.name)
+    }
+
+    // ensure service deleted
+    if (service) {
+      const name = appid
+      await coreV1Api.deleteNamespacedService(name, namespace.metadata.name)
+    }
+    this.logger.log(`remove k8s deployment ${deployment?.metadata?.name}`)
+  }
+
+  public async get(appid: string) {
+    const app = await this.applicationService.findOneUnsafe(appid)
+    const region = app.region
+    const namespace = await this.cluster.getAppNamespace(region, app.appid)
+    if (!namespace) {
+      return { deployment: null, service: null }
+    }
+
+    const deployment = await this.getDeployment(app)
+    const service = await this.getService(app)
+    return { deployment, service }
+  }
+
+  public async restart(appid: string) {
+    const app = await this.applicationService.findOneUnsafe(appid)
+    const region = app.region
+    const { deployment } = await this.get(appid)
+    if (!deployment) {
+      await this.create(appid)
+      return
+    }
+
+    deployment.spec = await this.makeDeploymentSpec(
+      app,
+      deployment.spec.template.metadata.labels,
+    )
+    const appsV1Api = this.cluster.makeAppsV1Api(region)
+    const namespace = GetApplicationNamespaceByAppId(appid)
+    const res = await appsV1Api.replaceNamespacedDeployment(
+      app.appid,
+      namespace,
+      deployment,
+    )
+
+    this.logger.log(`restart k8s deployment ${res.body?.metadata?.name}`)
+  }
+
+  private async createDeployment(app: ApplicationWithRelations, labels: any) {
+    const appid = app.appid
+    const namespace = GetApplicationNamespaceByAppId(appid)
 
     // create deployment
     const data = new V1Deployment()
     data.metadata = { name: app.appid, labels }
     data.spec = await this.makeDeploymentSpec(app, labels)
 
-    const appsV1Api = this.clusterService.makeAppsV1Api(app.region)
+    const appsV1Api = this.cluster.makeAppsV1Api(app.region)
     const res = await appsV1Api.createNamespacedDeployment(namespace, data)
 
     this.logger.log(`create k8s deployment ${res.body?.metadata?.name}`)
@@ -86,10 +133,10 @@ export class InstanceService {
     return res.body
   }
 
-  async createService(app: ApplicationWithRegion, labels: any) {
+  private async createService(app: ApplicationWithRelations, labels: any) {
     const namespace = GetApplicationNamespaceByAppId(app.appid)
     const serviceName = app.appid
-    const coreV1Api = this.clusterService.makeCoreV1Api(app.region)
+    const coreV1Api = this.cluster.makeCoreV1Api(app.region)
     const res = await coreV1Api.createNamespacedService(namespace, {
       metadata: { name: serviceName, labels },
       spec: {
@@ -102,49 +149,9 @@ export class InstanceService {
     return res.body
   }
 
-  async remove(app: Application) {
+  private async getDeployment(app: ApplicationWithRelations) {
     const appid = app.appid
-    const region = await this.regionService.findByAppId(appid)
-    const { deployment, service } = await this.get(app)
-
-    const namespace = await this.clusterService.getAppNamespace(
-      region,
-      app.appid,
-    )
-    if (!namespace) return
-
-    const appsV1Api = this.clusterService.makeAppsV1Api(region)
-    const coreV1Api = this.clusterService.makeCoreV1Api(region)
-
-    if (deployment) {
-      await appsV1Api.deleteNamespacedDeployment(appid, namespace.metadata.name)
-    }
-    if (service) {
-      const name = appid
-      await coreV1Api.deleteNamespacedService(name, namespace.metadata.name)
-    }
-    this.logger.log(`remove k8s deployment ${deployment?.metadata?.name}`)
-  }
-
-  async get(app: Application) {
-    const region = await this.regionService.findByAppId(app.appid)
-    const namespace = await this.clusterService.getAppNamespace(
-      region,
-      app.appid,
-    )
-    if (!namespace) {
-      return { deployment: null, service: null }
-    }
-
-    const appWithRegion = { ...app, region }
-    const deployment = await this.getDeployment(appWithRegion)
-    const service = await this.getService(appWithRegion)
-    return { deployment, service }
-  }
-
-  async getDeployment(app: ApplicationWithRegion) {
-    const appid = app.appid
-    const appsV1Api = this.clusterService.makeAppsV1Api(app.region)
+    const appsV1Api = this.cluster.makeAppsV1Api(app.region)
     try {
       const namespace = GetApplicationNamespaceByAppId(appid)
       const res = await appsV1Api.readNamespacedDeployment(appid, namespace)
@@ -155,9 +162,9 @@ export class InstanceService {
     }
   }
 
-  async getService(app: ApplicationWithRegion) {
+  private async getService(app: ApplicationWithRelations) {
     const appid = app.appid
-    const coreV1Api = this.clusterService.makeCoreV1Api(app.region)
+    const coreV1Api = this.cluster.makeCoreV1Api(app.region)
 
     try {
       const serviceName = appid
@@ -170,45 +177,8 @@ export class InstanceService {
     }
   }
 
-  async restart(appid: string) {
-    const app = await this.prisma.application.findUnique({
-      where: { appid },
-      include: {
-        configuration: true,
-        bundle: true,
-        runtime: true,
-        region: true,
-      },
-    })
-    const { deployment } = await this.get(app)
-    if (!deployment) {
-      await this.create(app)
-      return
-    }
-
-    deployment.spec = await this.makeDeploymentSpec(
-      app,
-      deployment.spec.template.metadata.labels,
-    )
-    const region = await this.regionService.findByAppId(app.appid)
-    const appsV1Api = this.clusterService.makeAppsV1Api(region)
-    const namespace = GetApplicationNamespaceByAppId(app.appid)
-    const res = await appsV1Api.replaceNamespacedDeployment(
-      app.appid,
-      namespace,
-      deployment,
-    )
-
-    this.logger.log(`restart k8s deployment ${res.body?.metadata?.name}`)
-  }
-
-  async makeDeploymentSpec(
-    app: Application & {
-      region: Region
-      bundle: ApplicationBundle
-      configuration: ApplicationConfiguration
-      runtime: Runtime
-    },
+  private async makeDeploymentSpec(
+    app: ApplicationWithRelations,
     labels: any,
   ): Promise<V1DeploymentSpec> {
     // prepare params
@@ -388,21 +358,6 @@ export class InstanceService {
                   },
                 ],
               },
-              // preferred to schedule on bundle matched node
-              preferredDuringSchedulingIgnoredDuringExecution: [
-                {
-                  weight: 10,
-                  preference: {
-                    matchExpressions: [
-                      {
-                        key: LABEL_KEY_BUNDLE,
-                        operator: 'In',
-                        values: [app.bundle.name],
-                      },
-                    ],
-                  },
-                },
-              ],
             }, // end of nodeAffinity {}
           }, // end of affinity {}
         }, // end of spec {}

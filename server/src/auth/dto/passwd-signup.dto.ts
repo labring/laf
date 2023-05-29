@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { SmsVerifyCodeType } from '@prisma/client'
 import {
   IsEnum,
   IsNotEmpty,
@@ -8,6 +7,7 @@ import {
   Length,
   Matches,
 } from 'class-validator'
+import { SmsVerifyCodeType } from '../entities/sms-verify-code'
 
 export class PasswdSignupDto {
   @ApiProperty({
@@ -17,6 +17,7 @@ export class PasswdSignupDto {
   @IsString()
   @IsNotEmpty()
   @Length(3, 64)
+  @Matches(/^\S+$/, { message: 'invalid characters' })
   username: string
 
   @ApiProperty({
@@ -26,6 +27,7 @@ export class PasswdSignupDto {
   @IsString()
   @IsNotEmpty()
   @Length(8, 64)
+  @Matches(/^\S+$/, { message: 'invalid characters' })
   password: string
 
   @ApiPropertyOptional({
@@ -53,4 +55,14 @@ export class PasswdSignupDto {
   @IsOptional()
   @IsEnum(SmsVerifyCodeType)
   type: SmsVerifyCodeType
+
+  @ApiPropertyOptional({
+    description: 'invite code',
+    example: 'iLeMi7x',
+  })
+  @IsOptional()
+  @IsString()
+  @Length(7, 7)
+  @Matches(/^\S+$/, { message: 'invalid characters' })
+  inviteCode: string
 }

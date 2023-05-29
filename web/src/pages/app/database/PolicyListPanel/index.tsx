@@ -50,8 +50,10 @@ export default function PolicyListPanel() {
             {policyQuery?.data?.data.map((item: any) => {
               return (
                 <SectionList.Item
-                  isActive={store.currentShow === "Policy" && item?.id === store.currentPolicy?.id}
-                  key={item?.id}
+                  isActive={
+                    store.currentShow === "Policy" && item?._id === store.currentPolicy?._id
+                  }
+                  key={item?._id}
                   onClick={() => {
                     store.setCurrentPolicy(item);
                   }}

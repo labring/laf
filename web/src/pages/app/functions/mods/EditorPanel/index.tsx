@@ -42,8 +42,8 @@ function EditorPanel() {
               <span>{currentFunction?.name}</span>
             </CopyText>
             <FunctionDetailPopOver />
-            {currentFunction?.id &&
-              functionCache.getCache(currentFunction?.id, currentFunction?.source?.code) !==
+            {currentFunction?._id &&
+              functionCache.getCache(currentFunction?._id, currentFunction?.source?.code) !==
                 currentFunction?.source?.code && (
                 <span className="inline-block h-2 w-2 flex-none rounded-full bg-warn-700"></span>
               )}
@@ -95,11 +95,11 @@ function EditorPanel() {
             marginLeft: -14,
             marginRight: -14,
           }}
-          path={currentFunction?.id || ""}
-          value={functionCache.getCache(currentFunction!.id, currentFunction!.source?.code)}
+          path={currentFunction?._id || ""}
+          value={functionCache.getCache(currentFunction!._id, currentFunction!.source?.code)}
           onChange={(value) => {
             updateFunctionCode(currentFunction, value || "");
-            functionCache.setCache(currentFunction!.id, value || "");
+            functionCache.setCache(currentFunction!._id, value || "");
           }}
         />
       )}

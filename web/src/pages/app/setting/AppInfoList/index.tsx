@@ -6,7 +6,6 @@ import { Box, Button, HStack, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import { APP_PHASE_STATUS, APP_STATUS, COLOR_MODE, Routes } from "@/constants/index";
-import { formatDate } from "@/utils/format";
 
 import InfoDetail from "./InfoDetail";
 
@@ -25,7 +24,7 @@ const AppEnvList = () => {
     return <></>;
   }
 
-  const currentRegion = regions.find((item) => item.id === currentApp?.regionId);
+  const currentRegion = regions.find((item) => item._id === currentApp?.regionId);
 
   return (
     <>
@@ -77,19 +76,21 @@ const AppEnvList = () => {
                 </>
               )}
             </Button>
-            <Button
-              className="mr-2"
-              fontWeight={"semibold"}
-              size={"sm"}
-              variant={"text"}
-              onClick={(event: any) => {
-                event?.preventDefault();
-                updateCurrentApp(currentApp!, APP_STATUS.Stopped);
-              }}
-            >
-              <RiShutDownLine size={16} className="mr-1" />
-              {t("SettingPanel.ShutDown")}
-            </Button>
+            {currentApp?.phase === APP_PHASE_STATUS.Started ? (
+              <Button
+                className="mr-2"
+                fontWeight={"semibold"}
+                size={"sm"}
+                variant={"text"}
+                onClick={(event: any) => {
+                  event?.preventDefault();
+                  updateCurrentApp(currentApp!, APP_STATUS.Stopped);
+                }}
+              >
+                <RiShutDownLine size={16} className="mr-1" />
+                {t("SettingPanel.ShutDown")}
+              </Button>
+            ) : null}
 
             <DeleteAppModal
               item={currentApp}
@@ -104,20 +105,16 @@ const AppEnvList = () => {
             </DeleteAppModal>
           </HStack>
         </div>
-        <div className="flex flex-grow flex-col overflow-auto">
+        <div className="mt-4 flex flex-grow flex-col overflow-auto">
           <InfoDetail
             title={t("SettingPanel.BaseInfo")}
             leftData={[
               { key: "APPID", value: currentApp?.appid },
               { key: t("HomePanel.Region"), value: currentRegion?.displayName },
             ]}
-            rightData={[
-              { key: t("HomePanel.BundleName"), value: currentApp?.bundle.name },
-              { key: t("HomePanel.RuntimeName"), value: currentApp?.runtime.name },
-            ]}
+            rightData={[{ key: t("HomePanel.RuntimeName"), value: currentApp?.runtime.name }]}
           />
           <InfoDetail
-            className="mt-6"
             title={t("SettingPanel.Detail")}
             leftData={[
               {
@@ -128,26 +125,20 @@ const AppEnvList = () => {
                 key: t("Spec.RAM"),
                 value: `${currentApp?.bundle?.resource.limitMemory} ${t("Unit.MB")}`,
               },
+            ]}
+            rightData={[
               {
                 key: t("Spec.Database"),
                 value: `${currentApp?.bundle?.resource.databaseCapacity! / 1024} ${t("Unit.GB")}`,
               },
-            ]}
-            rightData={[
               {
                 key: t("Spec.Storage"),
                 value: `${currentApp?.bundle?.resource.storageCapacity! / 1024} ${t("Unit.GB")}`,
               },
-              {
-                key: t("Spec.NetworkTraffic"),
-                value: `${currentApp?.bundle?.resource.networkTrafficOutbound! / 1024} ${t(
-                  "Unit.GB",
-                )}`,
-              },
             ]}
           />
 
-          <InfoDetail
+          {/* <InfoDetail
             className="mt-6"
             title={t("SettingPanel.Subscription")}
             leftData={[
@@ -162,7 +153,7 @@ const AppEnvList = () => {
                 value: `${formatDate(currentApp?.subscription?.expiredAt)}`,
               },
             ]}
-          />
+          /> */}
         </div>
       </div>
     </>

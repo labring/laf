@@ -14,8 +14,11 @@ import useGlobalStore from "@/pages/globalStore";
  * Get account info
  */
 export async function AccountControllerFindOne(
-  params: Paths.AccountControllerFindOne.BodyParameters | any,
-): Promise<Paths.AccountControllerFindOne.Responses> {
+  params: Paths.AccountControllerFindOne.BodyParameters,
+): Promise<{
+  error: string;
+  data: Definitions.Account;
+}> {
   // /v1/accounts
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -31,8 +34,11 @@ export async function AccountControllerFindOne(
  * Get charge order
  */
 export async function AccountControllerGetChargeOrder(
-  params: Paths.AccountControllerGetChargeOrder.BodyParameters | any,
-): Promise<Paths.AccountControllerGetChargeOrder.Responses> {
+  params: Paths.AccountControllerGetChargeOrder.BodyParameters,
+): Promise<{
+  error: string;
+  data: Definitions.AccountChargeOrder;
+}> {
   // /v1/accounts/charge-order/{id}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -47,9 +53,10 @@ export async function AccountControllerGetChargeOrder(
 /**
  * Create charge order
  */
-export async function AccountControllerCharge(
-  params: Definitions.CreateChargeOrderDto | any,
-): Promise<Paths.AccountControllerCharge.Responses> {
+export async function AccountControllerCharge(params: Definitions.CreateChargeOrderDto): Promise<{
+  error: string;
+  data: Definitions.CreateChargeOrderOutDto;
+}> {
   // /v1/accounts/charge-order
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -65,8 +72,11 @@ export async function AccountControllerCharge(
  *
  */
 export async function AccountControllerWechatNotify(
-  params: Paths.AccountControllerWechatNotify.BodyParameters | any,
-): Promise<Paths.AccountControllerWechatNotify.Responses> {
+  params: Paths.AccountControllerWechatNotify.BodyParameters,
+): Promise<{
+  error: string;
+  data: Paths.AccountControllerWechatNotify.Responses;
+}> {
   // /v1/accounts/payment/wechat-notify
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",

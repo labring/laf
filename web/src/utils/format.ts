@@ -61,15 +61,16 @@ export function isExitInList(targetKey: string, targetValue: any, list: any[] | 
 }
 
 export function formatLimitCPU(cpu: number) {
-  return cpu / 1000;
+  return cpu / 1000 + t("Unit.CPU");
 }
 
 export function formatLimitMemory(memory: number) {
-  return memory;
+  // if memory > 1024, return GB, else return MB
+  return memory > 1024 ? memory / 1024 + t("Unit.GB") : memory + t("Unit.MB");
 }
 
 export function formatLimitCapacity(capacity: number) {
-  return capacity / 1024;
+  return capacity / 1024 + t("Unit.GB");
 }
 
 export function formatLimitTraffic(traffic: number) {
@@ -80,7 +81,7 @@ export function formatPort(port: number | undefined) {
   return port === 80 || port === 443 ? "" : `:${port}`;
 }
 
-export function formatPrice(price: number) {
+export function formatPrice(price?: number) {
   return price ? "¥" + (price / 100).toFixed(2) : "-";
 }
 

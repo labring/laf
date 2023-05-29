@@ -53,7 +53,7 @@ export default function FetchButton() {
               <CommonDiffEditor
                 modified={data}
                 original={functionCache.getCache(
-                  currentFunction?.id,
+                  currentFunction?._id,
                   currentFunction?.source?.code,
                 )}
               />
@@ -67,7 +67,7 @@ export default function FetchButton() {
                 variant="primary"
                 onClick={() => {
                   updateFunctionCode(currentFunction, data || "");
-                  functionCache.setCache(currentFunction!.id, data || "");
+                  functionCache.setCache(currentFunction!._id, data || "");
                   setIsFetchButtonClicked();
                   onClose();
                   showSuccess(t("FunctionPanel.FetchSuccess"));

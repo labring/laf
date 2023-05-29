@@ -51,7 +51,7 @@ export default function DeployButton() {
   const deploy = async () => {
     const res = await updateFunctionMutation.mutateAsync({
       description: store.currentFunction?.desc,
-      code: functionCache.getCache(store.currentFunction!.id, store.currentFunction!.source?.code),
+      code: functionCache.getCache(store.currentFunction!._id, store.currentFunction!.source?.code),
       methods: store.currentFunction?.methods,
       websocket: store.currentFunction?.websocket,
       name: store.currentFunction?.name,
@@ -60,7 +60,7 @@ export default function DeployButton() {
     if (!res.error) {
       store.setCurrentFunction(res.data);
       // delete cache after deploy
-      functionCache.removeCache(store.currentFunction!.id);
+      functionCache.removeCache(store.currentFunction!._id);
       onClose();
       showSuccess(t("FunctionPanel.DeploySuccess"));
     }
@@ -94,7 +94,7 @@ export default function DeployButton() {
               <CommonDiffEditor
                 original={functionDetailQuery.data?.data?.source?.code}
                 modified={functionCache.getCache(
-                  store.currentFunction?.id,
+                  store.currentFunction?._id,
                   store.currentFunction?.source?.code,
                 )}
               />

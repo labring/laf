@@ -1,21 +1,22 @@
 import { Injectable, Logger } from '@nestjs/common'
 import * as assert from 'node:assert'
 import { MongoAccessor } from 'database-proxy'
-import { PrismaService } from '../prisma/prisma.service'
-import { Database, DatabasePhase, DatabaseState, Region } from '@prisma/client'
 import { GenerateAlphaNumericPassword } from 'src/utils/random'
 import { MongoService } from './mongo.service'
 import * as mongodb_uri from 'mongodb-uri'
 import { RegionService } from 'src/region/region.service'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
+import { Region } from 'src/region/entities/region'
+import { SystemDatabase } from '../system-database'
+import { Database, DatabasePhase, DatabaseState } from './entities/database'
 
 @Injectable()
 export class DatabaseService {
+  private readonly db = SystemDatabase.db
   private readonly logger = new Logger(DatabaseService.name)
 
   constructor(
     private readonly mongoService: MongoService,
-    private readonly prisma: PrismaService,
     private readonly regionService: RegionService,
   ) {}
 
@@ -34,29 +35,29 @@ export class DatabaseService {
       password,
     )
 
-    this.logger.debug('Create database result: ', res)
     assert.equal(res.ok, 1, 'Create app database failed: ' + appid)
 
     // create app database in database
-    const database = await this.prisma.database.create({
-      data: {
-        appid: appid,
-        name: dbName,
-        user: username,
-        password: password,
-        state: DatabaseState.Active,
-        phase: DatabasePhase.Created,
-        lockedAt: TASK_LOCK_INIT_TIME,
-      },
+    await this.db.collection<Database>('Database').insertOne({
+      appid: appid,
+      name: dbName,
+      user: username,
+      password: password,
+      state: DatabaseState.Active,
+      phase: DatabasePhase.Created,
+      lockedAt: TASK_LOCK_INIT_TIME,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     })
 
+    const database = await this.findOne(appid)
     return database
   }
 
   async findOne(appid: string) {
-    const database = await this.prisma.database.findUnique({
-      where: { appid },
-    })
+    const database = await this.db
+      .collection<Database>('Database')
+      .findOne({ appid })
 
     return database
   }
@@ -69,9 +70,9 @@ export class DatabaseService {
     if (!res) return false
 
     // delete app database in database
-    const doc = await this.prisma.database.delete({
-      where: { appid: database.appid },
-    })
+    const doc = await this.db
+      .collection<Database>('Database')
+      .deleteOne({ appid: database.appid })
 
     return doc
   }

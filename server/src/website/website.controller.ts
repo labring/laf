@@ -20,9 +20,10 @@ import {
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
 import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
 import { ResponseUtil } from 'src/utils/response'
-import { BundleService } from 'src/region/bundle.service'
+import { BundleService } from 'src/application/bundle.service'
 import { BucketService } from 'src/storage/bucket.service'
-import { DomainState } from '@prisma/client'
+import { ObjectId } from 'mongodb'
+import { DomainState } from 'src/gateway/entities/runtime-domain'
 
 @ApiTags('WebsiteHosting')
 @ApiBearerAuth('Authorization')
@@ -47,7 +48,7 @@ export class WebsiteController {
   @Post()
   async create(@Param('appid') appid: string, @Body() dto: CreateWebsiteDto) {
     // check if website hosting limit reached
-    const bundle = await this.bundleService.findApplicationBundle(appid)
+    const bundle = await this.bundleService.findOne(appid)
     const LIMIT_COUNT = bundle?.resource?.limitCountOfWebsiteHosting || 0
     const count = await this.websiteService.count(appid)
     if (count >= LIMIT_COUNT) {
@@ -104,7 +105,7 @@ export class WebsiteController {
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get(':id')
   async findOne(@Param('appid') _appid: string, @Param('id') id: string) {
-    const site = await this.websiteService.findOne(id)
+    const site = await this.websiteService.findOne(new ObjectId(id))
     if (!site) {
       return ResponseUtil.error('website hosting not found')
     }
@@ -129,7 +130,7 @@ export class WebsiteController {
     @Body() dto: BindCustomDomainDto,
   ) {
     // get website
-    const site = await this.websiteService.findOne(id)
+    const site = await this.websiteService.findOne(new ObjectId(id))
     if (!site) {
       return ResponseUtil.error('website hosting not found')
     }
@@ -144,7 +145,7 @@ export class WebsiteController {
 
     // bind domain
     const binded = await this.websiteService.bindCustomDomain(
-      site.id,
+      site._id,
       dto.domain,
     )
     if (!binded) {
@@ -170,7 +171,7 @@ export class WebsiteController {
     @Body() dto: BindCustomDomainDto,
   ) {
     // get website
-    const site = await this.websiteService.findOne(id)
+    const site = await this.websiteService.findOne(new ObjectId(id))
     if (!site) {
       return ResponseUtil.error('website hosting not found')
     }
@@ -194,12 +195,12 @@ export class WebsiteController {
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Delete(':id')
   async remove(@Param('appid') _appid: string, @Param('id') id: string) {
-    const site = await this.websiteService.findOne(id)
+    const site = await this.websiteService.findOne(new ObjectId(id))
     if (!site) {
       return ResponseUtil.error('website hosting not found')
     }
 
-    const deleted = await this.websiteService.remove(site.id)
+    const deleted = await this.websiteService.removeOne(site._id)
     if (!deleted) {
       return ResponseUtil.error('failed to delete website hosting')
     }

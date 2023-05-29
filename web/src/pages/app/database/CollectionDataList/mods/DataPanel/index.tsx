@@ -225,7 +225,7 @@ export default function DataPanel() {
         />
       </Panel.Header>
       <div className="flex w-full flex-grow overflow-hidden">
-        {entryDataQuery.status !== "loading" && entryDataQuery?.data?.list?.length! === 0 && (
+        {entryDataQuery.status !== "loading" && entryDataQuery?.data?.list?.length === 0 && (
           <EmptyBox>
             <div>
               <span>{t("CollectionPanel.EmptyDataText")}</span>
@@ -238,67 +238,69 @@ export default function DataPanel() {
           </EmptyBox>
         )}
 
-        <>
-          <RightPanelList
-            ListQuery={entryDataQuery?.data?.list}
-            setKey="_id"
-            isActive={(item: any) => currentData.data?._id === item._id}
-            customStyle={{
-              "border-lafWhite-600": colorMode === COLOR_MODE.light,
-            }}
-            onClick={(data: any) => {
-              setCurrentData({
-                data: data,
-                record: JSON.stringify(data),
-              });
-            }}
-            deleteRuleMutation={deleteDataMutation}
-            component={(item: any) => {
-              return <JSONViewer colorMode={colorMode} code={JSON.stringify(item, null, 2)} />;
-            }}
-            toolComponent={(item: any) => {
-              const newData = { ...item };
-              delete newData._id;
-              return (
-                <IconWrap
-                  showBg
-                  tooltip={t("Copy").toString()}
-                  size={32}
-                  className="group/icon ml-2 hover:bg-gray-200"
-                >
-                  <CopyText
-                    hideToolTip
-                    text={JSON.stringify(newData, null, 2)}
-                    tip={String(t("Copied"))}
+        {entryDataQuery?.data?.list?.length !== 0 && (
+          <>
+            <RightPanelList
+              ListQuery={entryDataQuery?.data?.list}
+              setKey="_id"
+              isActive={(item: any) => currentData.data?._id === item._id}
+              customStyle={{
+                "border-lafWhite-600": colorMode === COLOR_MODE.light,
+              }}
+              onClick={(data: any) => {
+                setCurrentData({
+                  data: data,
+                  record: JSON.stringify(data),
+                });
+              }}
+              deleteRuleMutation={deleteDataMutation}
+              component={(item: any) => {
+                return <JSONViewer colorMode={colorMode} code={JSON.stringify(item, null, 2)} />;
+              }}
+              toolComponent={(item: any) => {
+                const newData = { ...item };
+                delete newData._id;
+                return (
+                  <IconWrap
+                    showBg
+                    tooltip={t("Copy").toString()}
+                    size={32}
+                    className="group/icon ml-2 hover:bg-gray-200"
                   >
-                    <CopyIcon />
-                  </CopyText>
-                </IconWrap>
-              );
-            }}
-          />
-          <RightPanelEditBox
-            show={currentData.data?._id}
-            title={t("Edit")}
-            isLoading={updateDataMutation.isLoading}
-            onSave={handleData}
-          >
-            <div className="mb-4 flex-1 rounded">
-              <JSONEditor
-                colorMode={colorMode}
-                value={JSON.stringify(currentData.data || {}, null, 2)}
-                onChange={(values) => {
-                  setCurrentData((pre: any) => {
-                    return {
-                      ...pre,
-                      record: values!,
-                    };
-                  });
-                }}
-              />
-            </div>
-          </RightPanelEditBox>
-        </>
+                    <CopyText
+                      hideToolTip
+                      text={JSON.stringify(newData, null, 2)}
+                      tip={String(t("Copied"))}
+                    >
+                      <CopyIcon />
+                    </CopyText>
+                  </IconWrap>
+                );
+              }}
+            />
+            <RightPanelEditBox
+              show={currentData.data?._id}
+              title={t("Edit")}
+              isLoading={updateDataMutation.isLoading}
+              onSave={handleData}
+            >
+              <div className="mb-4 flex-1 rounded">
+                <JSONEditor
+                  colorMode={colorMode}
+                  value={JSON.stringify(currentData.data || {}, null, 2)}
+                  onChange={(values) => {
+                    setCurrentData((pre: any) => {
+                      return {
+                        ...pre,
+                        record: values!,
+                      };
+                    });
+                  }}
+                />
+              </div>
+            </RightPanelEditBox>
+          </>
+        )}
       </div>
     </>
   );

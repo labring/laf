@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { KubernetesObject } from '@kubernetes/client-node'
 import * as k8s from '@kubernetes/client-node'
-import { Region } from '@prisma/client'
 import { GetApplicationNamespaceByAppId } from 'src/utils/getter'
 import { compare } from 'fast-json-patch'
 import { GroupVersionKind } from 'src/region/cluster/types'
@@ -10,6 +9,7 @@ import {
   LABEL_KEY_NAMESPACE_TYPE,
   LABEL_KEY_USER_ID,
 } from 'src/constants'
+import { Region } from '../entities/region'
 
 @Injectable()
 export class ClusterService {
