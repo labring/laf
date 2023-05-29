@@ -1,9 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import * as nanoid from 'nanoid'
-import {
-  UpdateApplicationBundleDto,
-  UpdateApplicationDto,
-} from './dto/update-application.dto'
+import { UpdateApplicationBundleDto } from './dto/update-application.dto'
 import {
   APPLICATION_SECRET_KEY,
   ServerConfig,
@@ -290,7 +287,10 @@ export class ApplicationService {
       .collection<ApplicationBundle>('ApplicationBundle')
       .findOneAndUpdate(
         { appid },
-        { $set: { resource, updatedAt: new Date() } },
+        {
+          $set: { resource, updatedAt: new Date() },
+          $unset: { isTrialTier: '' },
+        },
         {
           projection: {
             'bundle.resource.requestCPU': 0,
@@ -301,20 +301,6 @@ export class ApplicationService {
       )
 
     return res.value
-  }
-
-  async update(appid: string, dto: UpdateApplicationDto) {
-    const db = SystemDatabase.db
-    const data: Partial<Application> = { updatedAt: new Date() }
-
-    if (dto.name) data.name = dto.name
-    if (dto.state) data.state = dto.state
-
-    const doc = await db
-      .collection<Application>('Application')
-      .findOneAndUpdate({ appid }, { $set: data }, { returnDocument: 'after' })
-
-    return doc
   }
 
   async remove(appid: string) {

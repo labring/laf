@@ -21,7 +21,6 @@ import {
 import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import {
   UpdateApplicationBundleDto,
-  UpdateApplicationDto,
   UpdateApplicationNameDto,
   UpdateApplicationStateDto,
 } from './dto/update-application.dto'
@@ -218,6 +217,14 @@ export class ApplicationController {
     @Req() req: IRequest,
   ) {
     const app = req.application
+    const user = req.user
+
+    // check account balance
+    const account = await this.account.findOne(user._id)
+    const balance = account?.balance || 0
+    if (balance <= 0) {
+      return ResponseUtil.error(`account balance is not enough`)
+    }
 
     // check: only running application can restart
     if (
@@ -303,69 +310,6 @@ export class ApplicationController {
     }
 
     const doc = await this.application.remove(appid)
-    return ResponseUtil.ok(doc)
-  }
-
-  /**
-   * Update an application
-   * @deprecated use updateName and updateState instead
-   * @param dto
-   * @returns
-   */
-  @ApiOperation({ summary: 'Update an application', deprecated: true })
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
-  @Patch(':appid')
-  async update(
-    @Param('appid') appid: string,
-    @Body() dto: UpdateApplicationDto,
-  ) {
-    // check dto
-    const error = dto.validate()
-    if (error) {
-      return ResponseUtil.error(error)
-    }
-
-    // check if the corresponding subscription status has expired
-    const app = await this.application.findOne(appid)
-
-    // check: only running application can restart
-    if (
-      dto.state === ApplicationState.Restarting &&
-      app.state !== ApplicationState.Running &&
-      app.phase !== ApplicationPhase.Started
-    ) {
-      return ResponseUtil.error(
-        'The application is not running, can not restart it',
-      )
-    }
-
-    // check: only running application can stop
-    if (
-      dto.state === ApplicationState.Stopped &&
-      app.state !== ApplicationState.Running &&
-      app.phase !== ApplicationPhase.Started
-    ) {
-      return ResponseUtil.error(
-        'The application is not running, can not stop it',
-      )
-    }
-
-    // check: only stopped application can start
-    if (
-      dto.state === ApplicationState.Running &&
-      app.state !== ApplicationState.Stopped &&
-      app.phase !== ApplicationPhase.Stopped
-    ) {
-      return ResponseUtil.error(
-        'The application is not stopped, can not start it',
-      )
-    }
-
-    // update app
-    const doc = await this.application.update(appid, dto)
-    if (!doc) {
-      return ResponseUtil.error('update application error')
-    }
     return ResponseUtil.ok(doc)
   }
 }

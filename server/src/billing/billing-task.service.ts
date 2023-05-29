@@ -18,6 +18,7 @@ import { ApplicationBundle } from 'src/application/entities/application-bundle'
 import * as assert from 'assert'
 import { Account } from 'src/account/entities/account'
 import { AccountTransaction } from 'src/account/entities/account-transaction'
+import Decimal from 'decimal.js'
 
 @Injectable()
 export class BillingTaskService {
@@ -105,11 +106,12 @@ export class BillingTaskService {
     try {
       await session.withTransaction(async () => {
         // update the account balance
+        const amount = new Decimal(billing.amount).mul(100).toNumber()
         const res = await db
           .collection<Account>('Account')
           .findOneAndUpdate(
             { _id: account._id },
-            { $inc: { balance: -billing.amount } },
+            { $inc: { balance: -amount } },
             { session, returnDocument: 'after' },
           )
 
@@ -119,7 +121,7 @@ export class BillingTaskService {
         await db.collection<AccountTransaction>('AccountTransaction').insertOne(
           {
             accountId: account._id,
-            amount: -billing.amount,
+            amount: -amount,
             balance: res.value.balance,
             message: `Application ${app.appid} billing`,
             billingId: billing._id,
@@ -215,14 +217,33 @@ export class BillingTaskService {
       return
     }
 
+    // get application bundle
+    const bundle = await db
+      .collection<ApplicationBundle>('ApplicationBundle')
+      .findOne({ appid: app.appid })
+
+    assert(bundle, `bundle not found ${app.appid}`)
+
     // calculate billing price
-    const priceInput = await this.buildCalculatePriceInput(app, meteringData)
+    const priceInput = await this.buildCalculatePriceInput(
+      app,
+      meteringData,
+      bundle,
+    )
     const priceResult = await this.billing.calculatePrice(priceInput)
+
+    // free trial
+    if (bundle.isTrialTier) {
+      priceResult.total = 0
+    }
 
     // create billing
     await db.collection<ApplicationBilling>('ApplicationBilling').insertOne({
       appid,
-      state: ApplicationBillingState.Pending,
+      state:
+        priceResult.total === 0
+          ? ApplicationBillingState.Done
+          : ApplicationBillingState.Pending,
       amount: priceResult.total,
       detail: {
         cpu: {
@@ -255,6 +276,7 @@ export class BillingTaskService {
   private async buildCalculatePriceInput(
     app: Application,
     meteringData: any[],
+    bundle: ApplicationBundle,
   ) {
     const dto = new CalculatePriceDto()
     dto.regionId = app.regionId.toString()
@@ -267,14 +289,6 @@ export class BillingTaskService {
       if (item.property === 'cpu') dto.cpu = item.value
       if (item.property === 'memory') dto.memory = item.value
     }
-
-    // get application bundle
-    const db = SystemDatabase.db
-    const bundle = await db
-      .collection<ApplicationBundle>('ApplicationBundle')
-      .findOne({ appid: app.appid })
-
-    assert(bundle, `bundle not found ${app.appid}`)
 
     dto.storageCapacity = bundle.resource.storageCapacity
     dto.databaseCapacity = bundle.resource.databaseCapacity
