@@ -14,7 +14,7 @@ import useGlobalStore from "@/pages/globalStore";
  * Get region list
  */
 export async function RegionControllerGetRegions(
-  params: Paths.RegionControllerGetRegions.BodyParameters | any,
+  params: Paths.RegionControllerGetRegions.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.RegionControllerGetRegions.Responses;

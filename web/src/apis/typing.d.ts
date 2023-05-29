@@ -38,6 +38,7 @@ export type TCurrentBundle = {
 export type TBundle = {
   _id: string;
   regionId: string;
+  message?: string;
   name: string;
   displayName: string;
   spec: TSpec;

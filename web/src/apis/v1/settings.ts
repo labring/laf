@@ -14,7 +14,7 @@ import useGlobalStore from "@/pages/globalStore";
  * Get site settings
  */
 export async function SettingControllerGetSettings(
-  params: Paths.SettingControllerGetSettings.BodyParameters | any,
+  params: Paths.SettingControllerGetSettings.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.SettingControllerGetSettings.Responses;
@@ -34,7 +34,7 @@ export async function SettingControllerGetSettings(
  * Get one site setting by key
  */
 export async function SettingControllerGetSettingByKey(
-  params: Paths.SettingControllerGetSettingByKey.BodyParameters | any,
+  params: Paths.SettingControllerGetSettingByKey.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.SettingControllerGetSettingByKey.Responses;

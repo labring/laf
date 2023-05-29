@@ -380,44 +380,6 @@ const CreateAppModal = (props: {
                                           {spec.label}
                                         </Button>
                                       ))}
-                                      {/* {item.specs.length > 0 ? (
-                                        <Slider
-                                          min={0}
-                                          max={item.specs.length - 1}
-                                          step={1}
-                                          onChange={(v) => {
-                                            setBundle({
-                                              ...bundle,
-                                              [item.type]: item.specs[v].value,
-                                            });
-                                          }}
-                                          value={item.specs.findIndex(
-                                            (spec: any) => spec.value === bundle[item.type],
-                                          )}
-                                        >
-                                          {item.specs.map((spec: any, i: number) => (
-                                            <SliderMark
-                                              key={spec.value}
-                                              value={i}
-                                              mt={3}
-                                              fontSize={"sm"}
-                                            >
-                                              <Box
-                                                className="-ml-[50px] w-[100px] scale-90 text-center"
-                                                cursor={"pointer "}
-                                              >
-                                                {spec.label}
-                                              </Box>
-                                            </SliderMark>
-                                          ))}
-                                          <SliderTrack>
-                                            <SliderFilledTrack bg="primary.500" />
-                                          </SliderTrack>
-                                          <SliderThumb bg={"primary.700"} />
-                                        </Slider>
-                                      ) : (
-                                        <span className="text-2xl font-semibold">{item.price}</span>
-                                      )} */}
                                     </div>
                                   ) : null;
                                 },
@@ -433,6 +395,13 @@ const CreateAppModal = (props: {
                   </div>
                   <FormErrorMessage>{errors?.bundleId?.message}</FormErrorMessage>
                 </FormControl>
+                {activeBundle?.message && (
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: activeBundle?.message,
+                    }}
+                  ></div>
+                )}
 
                 {/* <FormControl isInvalid={!!errors?.runtimeId}>
                 <FormLabel htmlFor="runtimeId">{t("HomePanel.RuntimeName")}</FormLabel>
@@ -454,7 +423,7 @@ const CreateAppModal = (props: {
             </ModalBody>
 
             <ModalFooter h={20}>
-              {type === "edit" ? null : totalPrice <= 0 ? (
+              {type === "edit" ? null : totalPrice <= 0 && isLoading ? (
                 <div className="mr-2">
                   <span className="ml-6 text-xl font-semibold text-red-500">{t("Price.Free")}</span>
                 </div>
