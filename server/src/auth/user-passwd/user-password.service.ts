@@ -7,6 +7,11 @@ import {
   UserPassword,
   UserPasswordState,
 } from 'src/user/entities/user-password'
+import {
+  InviteCode,
+  InviteRelation,
+  InviteCodeState,
+} from '../entities/invite-code'
 import { UserProfile } from 'src/user/entities/user-profile'
 import { UserService } from 'src/user/user.service'
 import { ObjectId } from 'mongodb'
@@ -22,7 +27,12 @@ export class UserPasswordService {
   ) {}
 
   // Singup by username and password
-  async signup(username: string, password: string, phone: string) {
+  async signup(
+    username: string,
+    password: string,
+    phone: string,
+    inviteCode: string,
+  ) {
     const client = SystemDatabase.client
     const session = client.startSession()
 
@@ -51,6 +61,27 @@ export class UserPasswordService {
         },
         { session },
       )
+
+      // create invite relation
+      if (inviteCode && inviteCode.length === 7) {
+        const result = await this.db
+          .collection<InviteCode>('InviteCode')
+          .findOne({
+            code: inviteCode,
+            state: InviteCodeState.Enabled,
+          })
+        if (result) {
+          await this.db.collection<InviteRelation>('InviteRelation').insertOne(
+            {
+              uid: res.insertedId,
+              invitedBy: result.uid,
+              codeId: result._id,
+              createdAt: new Date(),
+            },
+            { session },
+          )
+        }
+      }
 
       // create profile
       await this.db.collection<UserProfile>('UserProfile').insertOne(

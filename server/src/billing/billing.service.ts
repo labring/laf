@@ -5,8 +5,8 @@ import { ObjectId } from 'mongodb'
 import { ResourceType } from './entities/resource'
 import { Decimal } from 'decimal.js'
 import * as assert from 'assert'
-import { CalculatePriceDto } from './dto/calculate-price.dto'
 import { ApplicationBilling } from './entities/application-billing'
+import { CalculatePriceDto } from './dto/calculate-price.dto'
 
 @Injectable()
 export class BillingService {
@@ -14,13 +14,41 @@ export class BillingService {
 
   constructor(private readonly resource: ResourceService) {}
 
-  async findAllByAppId(appid: string) {
+  async findAllByAppId(
+    appid: string,
+    startTime: Date,
+    endTime: Date,
+    page: number,
+    pageSize: number,
+  ) {
+    // startTime = new Date(startTime)
+    // endTime = new Date(endTime)
+    const total = await this.db
+      .collection<ApplicationBilling>('ApplicationBilling')
+      .countDocuments({ appid, createdAt: { $gte: startTime, $lte: endTime } })
+
     const billings = await this.db
       .collection<ApplicationBilling>('ApplicationBilling')
-      .find({ appid })
+      .find({
+        appid,
+        createdAt: {
+          $gte: startTime,
+          $lte: endTime,
+        },
+      })
+      .skip((page - 1) * pageSize)
+      .limit(pageSize)
+      .sort({ startTime: -1 })
       .toArray()
 
-    return billings
+    const res = {
+      list: billings,
+      total: total,
+      page,
+      pageSize,
+    }
+
+    return res
   }
 
   async findOne(appid: string, id: ObjectId) {

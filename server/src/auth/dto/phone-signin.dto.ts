@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
   IsNotEmpty,
   IsString,
@@ -39,4 +39,14 @@ export class PhoneSigninDto {
   @IsString()
   @Length(8, 64)
   password: string
+
+  @ApiPropertyOptional({
+    description: 'invite code',
+    example: 'iLeMi7x',
+  })
+  @IsOptional()
+  @IsString()
+  @Length(7, 7)
+  @Matches(/^\S+$/, { message: 'invalid characters' })
+  inviteCode: string
 }

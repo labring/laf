@@ -5,6 +5,11 @@ import { PhoneSigninDto } from '../dto/phone-signin.dto'
 import { hashPassword } from 'src/utils/crypto'
 import { SmsVerifyCodeType } from '../entities/sms-verify-code'
 import { User } from 'src/user/entities/user'
+import {
+  InviteRelation,
+  InviteCode,
+  InviteCodeState,
+} from '../entities/invite-code'
 import { SystemDatabase } from 'src/system-database'
 import { UserService } from 'src/user/user.service'
 import {
@@ -60,7 +65,7 @@ export class PhoneService {
    * @returns
    */
   async signup(dto: PhoneSigninDto, withUsername = false) {
-    const { phone, username, password } = dto
+    const { phone, username, password, inviteCode } = dto
 
     const client = SystemDatabase.client
     const session = client.startSession()
@@ -79,12 +84,32 @@ export class PhoneService {
         { session },
       )
 
-      const user = await this.userService.findOneById(res.insertedId)
+      // create invite relation
+      if (inviteCode && inviteCode.length === 7) {
+        const result = await this.db
+          .collection<InviteCode>('InviteCode')
+          .findOne({
+            code: inviteCode,
+            state: InviteCodeState.Enabled,
+          })
+
+        if (result) {
+          await this.db.collection<InviteRelation>('InviteRelation').insertOne(
+            {
+              uid: res.insertedId,
+              invitedBy: result.uid,
+              codeId: result._id,
+              createdAt: new Date(),
+            },
+            { session },
+          )
+        }
+      }
 
       // create profile
       await this.db.collection<UserProfile>('UserProfile').insertOne(
         {
-          uid: user._id,
+          uid: res.insertedId,
           name: username,
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -96,7 +121,7 @@ export class PhoneService {
         // create password
         await this.db.collection<UserPassword>('UserPassword').insertOne(
           {
-            uid: user._id,
+            uid: res.insertedId,
             password: hashPassword(password),
             state: UserPasswordState.Active,
             createdAt: new Date(),
@@ -107,7 +132,7 @@ export class PhoneService {
       }
 
       await session.commitTransaction()
-      return user
+      return await this.userService.findOneById(res.insertedId)
     } catch (err) {
       await session.abortTransaction()
       throw err
