@@ -89,8 +89,11 @@ export class ApplicationController {
       const regionId = new ObjectId(dto.regionId)
       const bundle = await this.resource.findTrialBundle(regionId)
       const trials = await this.application.findTrialApplications(user._id)
-      if (trials.length >= (bundle?.limitCountOfFreeTierPerUser || 0)) {
-        return ResponseUtil.error(`trial tier is not available`)
+      const limitOfFreeTier = bundle?.limitCountOfFreeTierPerUser || 0
+      if (trials.length >= (limitOfFreeTier || 0)) {
+        return ResponseUtil.error(
+          `you can only create ${limitOfFreeTier} trial applications`,
+        )
       }
     }
 
@@ -103,7 +106,7 @@ export class ApplicationController {
     // check account balance
     const account = await this.account.findOne(user._id)
     const balance = account?.balance || 0
-    if (balance <= 0) {
+    if (!isTrialTier && balance <= 0) {
       return ResponseUtil.error(`account balance is not enough`)
     }
 
@@ -269,12 +272,32 @@ export class ApplicationController {
   async updateBundle(
     @Param('appid') appid: string,
     @Body() dto: UpdateApplicationBundleDto,
+    @Req() req: IRequest,
   ) {
     const app = await this.application.findOne(appid)
-    const origin = app.bundle
-    const doc = await this.application.updateBundle(appid, dto)
+    const user = req.user
+    const regionId = app.regionId
+
+    // check if trial tier
+    const isTrialTier = await this.resource.isTrialBundle({
+      ...dto,
+      regionId: regionId.toString(),
+    })
+    if (isTrialTier) {
+      const bundle = await this.resource.findTrialBundle(regionId)
+      const trials = await this.application.findTrialApplications(user._id)
+      const limitOfFreeTier = bundle?.limitCountOfFreeTierPerUser || 0
+      if (trials.length >= (limitOfFreeTier || 0)) {
+        return ResponseUtil.error(
+          `you can only create ${limitOfFreeTier} trial applications`,
+        )
+      }
+    }
+
+    const doc = await this.application.updateBundle(appid, dto, isTrialTier)
 
     // restart running application if cpu or memory changed
+    const origin = app.bundle
     const isRunning = app.phase === ApplicationPhase.Started
     const isCpuChanged = origin.resource.limitCPU !== doc.resource.limitCPU
     const isMemoryChanged =
