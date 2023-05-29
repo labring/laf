@@ -14,7 +14,7 @@ import useGlobalStore from "@/pages/globalStore";
  * Create application
  */
 export async function ApplicationControllerCreate(
-  params: Definitions.CreateApplicationDto | any,
+  params: Definitions.CreateApplicationDto,
 ): Promise<{
   error: string;
   data: Definitions.ApplicationWithRelations;
@@ -34,7 +34,7 @@ export async function ApplicationControllerCreate(
  * Get user application list
  */
 export async function ApplicationControllerFindAll(
-  params: Paths.ApplicationControllerFindAll.BodyParameters | any,
+  params: Paths.ApplicationControllerFindAll.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.ApplicationControllerFindAll.Responses;
@@ -54,7 +54,7 @@ export async function ApplicationControllerFindAll(
  * Get an application by appid
  */
 export async function ApplicationControllerFindOne(
-  params: Paths.ApplicationControllerFindOne.BodyParameters | any,
+  params: Paths.ApplicationControllerFindOne.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.ApplicationControllerFindOne.Responses;
@@ -74,7 +74,7 @@ export async function ApplicationControllerFindOne(
  * Delete an application
  */
 export async function ApplicationControllerDelete(
-  params: Paths.ApplicationControllerDelete.BodyParameters | any,
+  params: Paths.ApplicationControllerDelete.BodyParameters,
 ): Promise<{
   error: string;
   data: Definitions.Application;
@@ -94,7 +94,7 @@ export async function ApplicationControllerDelete(
  * Update application name
  */
 export async function ApplicationControllerUpdateName(
-  params: Definitions.UpdateApplicationNameDto | any,
+  params: Definitions.UpdateApplicationNameDto,
 ): Promise<{
   error: string;
   data: Definitions.Application;
@@ -114,7 +114,7 @@ export async function ApplicationControllerUpdateName(
  * Update application state
  */
 export async function ApplicationControllerUpdateState(
-  params: Definitions.UpdateApplicationStateDto | any,
+  params: Definitions.UpdateApplicationStateDto,
 ): Promise<{
   error: string;
   data: Definitions.Application;
@@ -134,7 +134,7 @@ export async function ApplicationControllerUpdateState(
  * Update application bundle
  */
 export async function ApplicationControllerUpdateBundle(
-  params: Definitions.UpdateApplicationBundleDto | any,
+  params: Definitions.UpdateApplicationBundleDto,
 ): Promise<{
   error: string;
   data: Definitions.ApplicationBundle;

@@ -13,7 +13,7 @@ import useGlobalStore from "@/pages/globalStore";
 /**
  * Create a PAT
  */
-export async function PatControllerCreate(params: Definitions.CreatePATDto | any): Promise<{
+export async function PatControllerCreate(params: Definitions.CreatePATDto): Promise<{
   error: string;
   data: Paths.PatControllerCreate.Responses;
 }> {
@@ -32,7 +32,7 @@ export async function PatControllerCreate(params: Definitions.CreatePATDto | any
  * List PATs
  */
 export async function PatControllerFindAll(
-  params: Paths.PatControllerFindAll.BodyParameters | any,
+  params: Paths.PatControllerFindAll.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.PatControllerFindAll.Responses;
@@ -52,7 +52,7 @@ export async function PatControllerFindAll(
  * Delete a PAT
  */
 export async function PatControllerRemove(
-  params: Paths.PatControllerRemove.BodyParameters | any,
+  params: Paths.PatControllerRemove.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.PatControllerRemove.Responses;

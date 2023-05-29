@@ -14,7 +14,7 @@ import useGlobalStore from "@/pages/globalStore";
  * Calculate pricing
  */
 export async function ResourceControllerCalculatePrice(
-  params: Definitions.CalculatePriceDto | any,
+  params: Definitions.CalculatePriceDto,
 ): Promise<{
   error: string;
   data: Definitions.CalculatePriceResultDto;
@@ -34,7 +34,7 @@ export async function ResourceControllerCalculatePrice(
  * Get resource option list
  */
 export async function ResourceControllerGetResourceOptions(
-  params: Paths.ResourceControllerGetResourceOptions.BodyParameters | any,
+  params: Paths.ResourceControllerGetResourceOptions.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.ResourceControllerGetResourceOptions.Responses;
@@ -54,7 +54,7 @@ export async function ResourceControllerGetResourceOptions(
  * Get resource option list by region id
  */
 export async function ResourceControllerGetResourceOptionsByRegionId(
-  params: Paths.ResourceControllerGetResourceOptionsByRegionId.BodyParameters | any,
+  params: Paths.ResourceControllerGetResourceOptionsByRegionId.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.ResourceControllerGetResourceOptionsByRegionId.Responses;
@@ -74,7 +74,7 @@ export async function ResourceControllerGetResourceOptionsByRegionId(
  * Get resource template list
  */
 export async function ResourceControllerGetResourceBundles(
-  params: Paths.ResourceControllerGetResourceBundles.BodyParameters | any,
+  params: Paths.ResourceControllerGetResourceBundles.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.ResourceControllerGetResourceBundles.Responses;

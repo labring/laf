@@ -14,7 +14,7 @@ import useGlobalStore from "@/pages/globalStore";
  * Get account info
  */
 export async function AccountControllerFindOne(
-  params: Paths.AccountControllerFindOne.BodyParameters | any,
+  params: Paths.AccountControllerFindOne.BodyParameters,
 ): Promise<{
   error: string;
   data: Definitions.Account;
@@ -34,7 +34,7 @@ export async function AccountControllerFindOne(
  * Get charge order
  */
 export async function AccountControllerGetChargeOrder(
-  params: Paths.AccountControllerGetChargeOrder.BodyParameters | any,
+  params: Paths.AccountControllerGetChargeOrder.BodyParameters,
 ): Promise<{
   error: string;
   data: Definitions.AccountChargeOrder;
@@ -53,9 +53,7 @@ export async function AccountControllerGetChargeOrder(
 /**
  * Create charge order
  */
-export async function AccountControllerCharge(
-  params: Definitions.CreateChargeOrderDto | any,
-): Promise<{
+export async function AccountControllerCharge(params: Definitions.CreateChargeOrderDto): Promise<{
   error: string;
   data: Definitions.CreateChargeOrderOutDto;
 }> {
@@ -74,7 +72,7 @@ export async function AccountControllerCharge(
  *
  */
 export async function AccountControllerWechatNotify(
-  params: Paths.AccountControllerWechatNotify.BodyParameters | any,
+  params: Paths.AccountControllerWechatNotify.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.AccountControllerWechatNotify.Responses;

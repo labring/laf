@@ -14,7 +14,7 @@ import useGlobalStore from "@/pages/globalStore";
  * Get current user profile
  */
 export async function AuthControllerGetProfile(
-  params: Paths.AuthControllerGetProfile.BodyParameters | any,
+  params: Paths.AuthControllerGetProfile.BodyParameters,
 ): Promise<{
   error: string;
   data: Definitions.UserWithProfile;

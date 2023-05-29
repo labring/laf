@@ -24,11 +24,11 @@ declare namespace Definitions {
     memory?: number;
     databaseCapacity?: number;
     storageCapacity?: number;
+    isTrialTier?: boolean;
     name?: string;
     state?: string;
     regionId?: string;
     runtimeId?: string;
-    isTrialTier?: boolean;
   };
 
   export type ApplicationWithRelations = {
@@ -77,6 +77,7 @@ declare namespace Definitions {
     memory?: number;
     databaseCapacity?: number;
     storageCapacity?: number;
+    isTrialTier?: boolean;
   };
 
   export type ApplicationBundle = {
@@ -123,13 +124,42 @@ declare namespace Definitions {
     name?: string;
   };
 
+  export type DatabasePolicyWithRules = {
+    _id?: string;
+    appid?: string;
+    name?: string;
+    injector?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    rules?: Definitions.DatabasePolicyRule[];
+  };
+
   export type UpdatePolicyDto = {
     injector?: string;
+  };
+
+  export type DatabasePolicy = {
+    _id?: string;
+    appid?: string;
+    name?: string;
+    injector?: string;
+    createdAt?: string;
+    updatedAt?: string;
   };
 
   export type CreatePolicyRuleDto = {
     collectionName?: string;
     value?: string;
+  };
+
+  export type DatabasePolicyRule = {
+    _id?: string;
+    appid?: string;
+    policyName?: string;
+    collectionName?: string;
+    value?: {};
+    createdAt?: string;
+    updatedAt?: string;
   };
 
   export type UpdatePolicyRuleDto = {
@@ -199,6 +229,7 @@ declare namespace Definitions {
     phone?: string /* phone */;
     code?: string /* verify code */;
     type?: string /* type */;
+    inviteCode?: string /* invite code */;
   };
 
   export type PasswdSigninDto = {
@@ -227,6 +258,7 @@ declare namespace Definitions {
     code?: string;
     username?: string /* username */;
     password?: string /* password, 8-64 characters */;
+    inviteCode?: string /* invite code */;
   };
 
   export type BindPhoneDto = {
@@ -273,6 +305,7 @@ declare namespace Definitions {
     memory?: number;
     databaseCapacity?: number;
     storageCapacity?: number;
+    isTrialTier?: boolean;
   };
 
   export type CalculatePriceResultDto = {
