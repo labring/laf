@@ -1,32 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsInt, IsNotEmpty, IsString } from 'class-validator'
+import { IsNotEmpty, IsString } from 'class-validator'
+import { UpdateApplicationBundleDto } from 'src/application/dto/update-application.dto'
 
-export class CalculatePriceDto {
+export class CalculatePriceDto extends UpdateApplicationBundleDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
   regionId: string
-
-  // build resources
-  @ApiProperty({ example: 200 })
-  @IsNotEmpty()
-  @IsInt()
-  cpu: number
-
-  @ApiProperty({ example: 256 })
-  @IsNotEmpty()
-  @IsInt()
-  memory: number
-
-  @ApiProperty({ example: 2048 })
-  @IsNotEmpty()
-  @IsInt()
-  databaseCapacity: number
-
-  @ApiProperty({ example: 4096 })
-  @IsNotEmpty()
-  @IsInt()
-  storageCapacity: number
 
   validate() {
     return null

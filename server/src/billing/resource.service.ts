@@ -6,7 +6,7 @@ import {
   ResourceBundle,
   ResourceType,
 } from './entities/resource'
-import { CreateApplicationDto } from 'src/application/dto/create-application.dto'
+import { CalculatePriceDto } from './dto/calculate-price.dto'
 
 @Injectable()
 export class ResourceService {
@@ -83,7 +83,7 @@ export class ResourceService {
   }
 
   // check if input bundle is trial bundle
-  async isTrialBundle(input: CreateApplicationDto) {
+  async isTrialBundle(input: CalculatePriceDto) {
     const regionId = new ObjectId(input.regionId)
     const bundle = await this.findTrialBundle(regionId)
 
