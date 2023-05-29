@@ -195,7 +195,7 @@ export default function FunctionList() {
                     <span className="ml-2 text-base">{func?.name}</span>
                   </div>
                   <HStack spacing={1}>
-                    {functionCache.getCache(func?.id, func?.source?.code) !==
+                    {functionCache.getCache(func?._id, func?.source?.code) !==
                       func?.source?.code && (
                       <span className="mt-[1px] inline-block h-1 w-1 flex-none rounded-full bg-warn-700"></span>
                     )}

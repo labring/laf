@@ -44,6 +44,13 @@ import {
 } from "@/apis/v1/resources";
 import useGlobalStore from "@/pages/globalStore";
 
+type TypeBundle = {
+  cpu: number;
+  memory: number;
+  databaseCapacity: number;
+  storageCapacity: number;
+};
+
 const CreateAppModal = (props: {
   type: "create" | "edit" | "change";
   application?: TApplicationItem;
@@ -60,7 +67,7 @@ const CreateAppModal = (props: {
 
   const { data: accountRes } = useAccountQuery();
 
-  const { data: billingResourceOptionsRes } = useQuery(
+  const { data: billingResourceOptionsRes, isLoading } = useQuery(
     queryKeys.useBillingResourceOptionsQuery,
     async () => {
       return ResourceControllerGetResourceOptions({});
@@ -83,7 +90,7 @@ const CreateAppModal = (props: {
   };
 
   const currentRegion =
-    regions.find((item: any) => item.id === application?.regionId) || regions[0];
+    regions.find((item: any) => item._id === application?.regionId) || regions[0];
 
   const bundles = currentRegion.bundles;
 
@@ -117,12 +124,7 @@ const CreateAppModal = (props: {
     defaultValues,
   });
 
-  const defaultBundle: {
-    cpu: number;
-    memory: number;
-    databaseCapacity: number;
-    storageCapacity: number;
-  } = {
+  const defaultBundle: TypeBundle = {
     cpu: application?.bundle.resource.limitCPU || bundles[0].spec.cpu.value,
     memory: application?.bundle.resource.limitMemory || bundles[0].spec.memory.value,
     databaseCapacity:
@@ -156,14 +158,14 @@ const CreateAppModal = (props: {
     },
   );
 
-  const debouncedInputChange = debounce((value) => {
+  const debouncedInputChange = debounce(() => {
     if (isOpen) {
       billingQuery.refetch();
     }
   }, 600);
 
   useEffect(() => {
-    debouncedInputChange(bundle);
+    debouncedInputChange();
     return () => {
       debouncedInputChange.cancel();
     };
@@ -246,155 +248,193 @@ const CreateAppModal = (props: {
           }, 0);
         },
       })}
+      {isOpen && !isLoading ? (
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent maxW={"80%"} width={"auto"} minW={"500px"}>
+            <ModalHeader>{title}</ModalHeader>
+            <ModalCloseButton />
 
-      <Modal isOpen={isOpen} onClose={onClose} size={type === "edit" ? "xl" : "4xl"} isCentered>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>{title}</ModalHeader>
-          <ModalCloseButton />
-
-          <ModalBody>
-            <VStack spacing={6} align="flex-start">
-              <FormControl
-                isRequired
-                isInvalid={!!errors?.name}
-                isDisabled={type === "change"}
-                hidden={type === "change"}
-              >
-                <FormLabel htmlFor="name">{t("HomePanel.Application") + t("Name")}</FormLabel>
-                <Input
-                  {...register("name", {
-                    required: `${t("HomePanel.Application")} ${t("IsRequired")}`,
-                  })}
-                />
-                <FormErrorMessage>{errors?.name && errors?.name?.message}</FormErrorMessage>
-              </FormControl>
-              <FormControl hidden={type !== "create"}>
-                <FormLabel htmlFor="regionId">{t("HomePanel.Region")}</FormLabel>
-                <HStack spacing={6}>
-                  <Controller
-                    name="regionId"
-                    control={control}
-                    render={({ field: { ref, ...rest } }) => {
-                      return (
-                        <div>
-                          {regions.map((region: any) => {
-                            return (
-                              <div className="flex items-center" key={region.name}>
-                                <Button
-                                  variant={"ghost"}
-                                  size="sm"
-                                  colorScheme={rest.value === region.name ? "primary" : "gray"}
-                                  key={region.name}
-                                >
-                                  <CheckIcon className="mr-2" />
-                                  {region.displayName}
-                                </Button>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      );
-                    }}
-                    rules={{
-                      required: { value: true, message: t("LimitSelect") },
-                    }}
+            <ModalBody pb={6}>
+              <VStack spacing={6} align="flex-start">
+                <FormControl
+                  isRequired
+                  isInvalid={!!errors?.name}
+                  isDisabled={type === "change"}
+                  hidden={type === "change"}
+                >
+                  <FormLabel htmlFor="name">{t("HomePanel.Application") + t("Name")}</FormLabel>
+                  <Input
+                    {...register("name", {
+                      required: `${t("HomePanel.Application")} ${t("IsRequired")}`,
+                    })}
                   />
-                </HStack>
-              </FormControl>
-              <FormControl hidden={type === "edit"}>
-                <FormLabel htmlFor="bundleId">{t("HomePanel.Spec")}</FormLabel>
-                <div>
-                  <Controller
-                    name="bundleId"
-                    control={control}
-                    render={({ field: { onChange, value } }) => {
-                      return (
-                        <div className="flex">
-                          <div className="flex-col pt-4">
-                            {(bundles || []).map((item: TBundle) => {
+                  <FormErrorMessage>{errors?.name && errors?.name?.message}</FormErrorMessage>
+                </FormControl>
+                <FormControl hidden={type !== "create"}>
+                  <FormLabel htmlFor="regionId">{t("HomePanel.Region")}</FormLabel>
+                  <HStack spacing={6}>
+                    <Controller
+                      name="regionId"
+                      control={control}
+                      render={({ field: { ref, ...rest } }) => {
+                        return (
+                          <div>
+                            {regions.map((region: any) => {
                               return (
-                                <BundleItem
-                                  onChange={() => {
-                                    // billingPriceQuery.refetch();
-                                    setCustomActive(false);
-                                    setBundle({
-                                      cpu: item.spec.cpu.value,
-                                      memory: item.spec.memory.value,
-                                      databaseCapacity: item.spec.databaseCapacity.value,
-                                      storageCapacity: item.spec.storageCapacity.value,
-                                    });
-                                  }}
-                                  bundle={item}
-                                  isActive={activeBundle?._id === item._id && !customActive}
-                                  key={item._id}
-                                />
+                                <div className="flex items-center" key={region.name}>
+                                  <Button
+                                    variant={"ghost"}
+                                    size="sm"
+                                    colorScheme={rest.value === region.name ? "primary" : "gray"}
+                                    key={region.name}
+                                  >
+                                    <CheckIcon className="mr-2" />
+                                    {region.displayName}
+                                  </Button>
+                                </div>
                               );
                             })}
-                            <BundleItem
-                              onChange={() => {
-                                setCustomActive(true);
-                              }}
-                              bundle={{
-                                displayName: t("custom"),
-                                _id: "custom",
-                              }}
-                              isActive={!activeBundle || customActive}
-                            />
                           </div>
-                          <div className="ml-6 flex-1 border-l pl-6 pr-2">
-                            {billingResourceOptionsRes?.data?.map(
-                              (item: {
-                                type: "cpu" | "memory" | "databaseCapacity" | "storageCapacity";
-                                specs: { value: number; price: number }[];
-                                price: number;
-                              }) => {
-                                return item.specs.length > 0 ? (
-                                  <div className="mb-8" key={item.type}>
-                                    <p className="mb-2">
-                                      <span className="mr-2 text-lg font-semibold  ">
-                                        {t(`SpecItem.${item.type}`)}
-                                      </span>
-                                      {/* {item.price} */}
-                                    </p>
-                                    {item.specs.map((spec: any, i: number) => (
-                                      <Button
-                                        key={`${item.type}-${i}`}
-                                        onClick={(v) => {
-                                          setBundle({
-                                            ...bundle,
-                                            [item.type]: spec.value,
-                                          });
-                                        }}
-                                        size={"sm"}
-                                        variant={
-                                          spec.value === bundle[item.type] ? "thirdly" : "outline"
-                                        }
-                                        minW={"64px"}
-                                        mr={1}
-                                        mb={1}
-                                        rounded="sm"
-                                      >
-                                        {spec.label}
-                                      </Button>
-                                    ))}
-                                  </div>
-                                ) : null;
-                              },
-                            )}
+                        );
+                      }}
+                      rules={{
+                        required: { value: true, message: t("LimitSelect") },
+                      }}
+                    />
+                  </HStack>
+                </FormControl>
+                <FormControl hidden={type === "edit"}>
+                  <FormLabel htmlFor="bundleId">{t("HomePanel.Spec")}</FormLabel>
+                  <div>
+                    <Controller
+                      name="bundleId"
+                      control={control}
+                      render={({ field: { onChange, value } }) => {
+                        return (
+                          <div className="flex">
+                            <div className="flex-col pt-4">
+                              {(bundles || []).map((item: TBundle) => {
+                                return (
+                                  <BundleItem
+                                    onChange={() => {
+                                      // billingPriceQuery.refetch();
+                                      setCustomActive(false);
+                                      setBundle({
+                                        cpu: item.spec.cpu.value,
+                                        memory: item.spec.memory.value,
+                                        databaseCapacity: item.spec.databaseCapacity.value,
+                                        storageCapacity: item.spec.storageCapacity.value,
+                                      });
+                                    }}
+                                    bundle={item}
+                                    isActive={activeBundle?._id === item._id && !customActive}
+                                    key={item._id}
+                                  />
+                                );
+                              })}
+                              <BundleItem
+                                onChange={() => {
+                                  setCustomActive(true);
+                                }}
+                                bundle={{
+                                  displayName: t("custom"),
+                                  _id: "custom",
+                                }}
+                                isActive={!activeBundle || customActive}
+                              />
+                            </div>
+                            <div className="ml-6 flex-1 border-l pl-6 pr-2">
+                              {billingResourceOptionsRes?.data?.map(
+                                (item: {
+                                  type: "cpu" | "memory" | "databaseCapacity" | "storageCapacity";
+                                  specs: { value: number; price: number }[];
+                                  price: number;
+                                }) => {
+                                  return item.specs.length > 0 ? (
+                                    <div className="mb-8" key={item.type}>
+                                      <p className="mb-2">
+                                        <span className="mr-2 text-lg font-semibold  ">
+                                          {t(`SpecItem.${item.type}`)}
+                                        </span>
+                                        {/* {item.price} */}
+                                      </p>
+                                      {item.specs.map((spec: any, i: number) => (
+                                        <Button
+                                          key={`${item.type}-${i}`}
+                                          onClick={(v) => {
+                                            setBundle({
+                                              ...bundle,
+                                              [item.type]: spec.value,
+                                            });
+                                          }}
+                                          size={"sm"}
+                                          variant={
+                                            spec.value === bundle[item.type] ? "thirdly" : "outline"
+                                          }
+                                          minW={"64px"}
+                                          mr={1}
+                                          mb={1}
+                                          rounded="sm"
+                                        >
+                                          {spec.label}
+                                        </Button>
+                                      ))}
+                                      {/* {item.specs.length > 0 ? (
+                                        <Slider
+                                          min={0}
+                                          max={item.specs.length - 1}
+                                          step={1}
+                                          onChange={(v) => {
+                                            setBundle({
+                                              ...bundle,
+                                              [item.type]: item.specs[v].value,
+                                            });
+                                          }}
+                                          value={item.specs.findIndex(
+                                            (spec: any) => spec.value === bundle[item.type],
+                                          )}
+                                        >
+                                          {item.specs.map((spec: any, i: number) => (
+                                            <SliderMark
+                                              key={spec.value}
+                                              value={i}
+                                              mt={3}
+                                              fontSize={"sm"}
+                                            >
+                                              <Box
+                                                className="-ml-[50px] w-[100px] scale-90 text-center"
+                                                cursor={"pointer "}
+                                              >
+                                                {spec.label}
+                                              </Box>
+                                            </SliderMark>
+                                          ))}
+                                          <SliderTrack>
+                                            <SliderFilledTrack bg="primary.500" />
+                                          </SliderTrack>
+                                          <SliderThumb bg={"primary.700"} />
+                                        </Slider>
+                                      ) : (
+                                        <span className="text-2xl font-semibold">{item.price}</span>
+                                      )} */}
+                                    </div>
+                                  ) : null;
+                                },
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      );
-                    }}
-                    rules={{
-                      required: { value: true, message: t("LimitSelect") },
-                    }}
-                  />
-                </div>
-                <FormErrorMessage>{errors?.bundleId?.message}</FormErrorMessage>
-              </FormControl>
+                        );
+                      }}
+                      rules={{
+                        required: { value: true, message: t("LimitSelect") },
+                      }}
+                    />
+                  </div>
+                  <FormErrorMessage>{errors?.bundleId?.message}</FormErrorMessage>
+                </FormControl>
 
-              {/* <FormControl isInvalid={!!errors?.runtimeId}>
+                {/* <FormControl isInvalid={!!errors?.runtimeId}>
                 <FormLabel htmlFor="runtimeId">{t("HomePanel.RuntimeName")}</FormLabel>
                 <Controller
                   name="runtimeId"
@@ -410,54 +450,57 @@ const CreateAppModal = (props: {
                   }}
                 />
               </FormControl> */}
-            </VStack>
-          </ModalBody>
+              </VStack>
+            </ModalBody>
 
-          <ModalFooter h={20}>
-            {type === "edit" ? null : totalPrice <= 0 ? (
-              <div className="mr-2">
-                <span className="ml-6 text-xl font-semibold text-red-500">{t("Price.Free")}</span>
-              </div>
-            ) : (
-              <div className="mr-2">
-                {t("Fee")}:
-                <span className="ml-2 text-xl font-semibold text-red-500">{totalPrice} / hour</span>
-                <span className="ml-4 mr-2">
-                  {t("Balance")}:
-                  <span className="ml-2 text-xl">{formatPrice(accountRes?.data?.balance)}</span>
-                </span>
-                {totalPrice > accountRes?.data?.balance! ? (
-                  <span className="mr-2">{t("balance is insufficient")}</span>
-                ) : null}
-                <ChargeButton>
-                  <span className="cursor-pointer text-blue-800">{t("ChargeNow")}</span>
-                </ChargeButton>
-              </div>
-            )}
+            <ModalFooter h={20}>
+              {type === "edit" ? null : totalPrice <= 0 ? (
+                <div className="mr-2">
+                  <span className="ml-6 text-xl font-semibold text-red-500">{t("Price.Free")}</span>
+                </div>
+              ) : (
+                <div className="mr-2">
+                  {t("Fee")}:
+                  <span className="ml-2 text-xl font-semibold text-red-500">
+                    {totalPrice} / hour
+                  </span>
+                  <span className="ml-4 mr-2">
+                    {t("Balance")}:
+                    <span className="ml-2 text-xl">{formatPrice(accountRes?.data?.balance)}</span>
+                  </span>
+                  {totalPrice > accountRes?.data?.balance! ? (
+                    <span className="mr-2">{t("balance is insufficient")}</span>
+                  ) : null}
+                  <ChargeButton>
+                    <span className="cursor-pointer text-blue-800">{t("ChargeNow")}</span>
+                  </ChargeButton>
+                </div>
+              )}
 
-            {type !== "edit" && totalPrice <= accountRes?.data?.balance! && (
-              <Button
-                isLoading={createAppMutation.isLoading}
-                type="submit"
-                onClick={handleSubmit(onSubmit)}
-                disabled={totalPrice > 0}
-              >
-                {type === "change" ? t("Confirm") : t("CreateNow")}
-              </Button>
-            )}
+              {type !== "edit" && totalPrice <= accountRes?.data?.balance! && (
+                <Button
+                  isLoading={createAppMutation.isLoading}
+                  type="submit"
+                  onClick={handleSubmit(onSubmit)}
+                  disabled={totalPrice > 0}
+                >
+                  {type === "change" ? t("Confirm") : t("CreateNow")}
+                </Button>
+              )}
 
-            {type === "edit" && (
-              <Button
-                isLoading={updateAppMutation.isLoading}
-                type="submit"
-                onClick={handleSubmit(onSubmit)}
-              >
-                {t("Confirm")}
-              </Button>
-            )}
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+              {type === "edit" && (
+                <Button
+                  isLoading={updateAppMutation.isLoading}
+                  type="submit"
+                  onClick={handleSubmit(onSubmit)}
+                >
+                  {t("Confirm")}
+                </Button>
+              )}
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      ) : null}
     </>
   );
 };

@@ -42,10 +42,10 @@ export default function ChargeButton(props: { amount?: number; children: React.R
     ["AccountControllerGetChargeOrder"],
     () =>
       AccountControllerGetChargeOrder({
-        id: createOrderRes?.data?.order?.id,
+        id: createOrderRes?.data?.order?._id,
       }),
     {
-      enabled: !!createOrderRes?.data?.order?.id && isOpen,
+      enabled: !!createOrderRes?.data?.order?._id && isOpen,
       refetchInterval: phaseStatus === "Pending" && isOpen ? 1000 : false,
       onSuccess: (res) => {
         setPhaseStatus(res?.data?.phase);

@@ -17,7 +17,7 @@ export async function ResourceControllerCalculatePrice(
   params: Definitions.CalculatePriceDto | any,
 ): Promise<{
   error: string;
-  data: Paths.ResourceControllerCalculatePrice.Responses;
+  data: Definitions.CalculatePriceResultDto;
 }> {
   // /v1/resources/price
   let _params: { [key: string]: any } = {
