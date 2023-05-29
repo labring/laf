@@ -80,7 +80,6 @@ const useGlobalStore = create<State>()(
           return;
         }
         const restartRes = await ApplicationControllerUpdateState({
-          appid: app.appid,
           state: newState,
         });
         if (!restartRes.error) {

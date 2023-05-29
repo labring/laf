@@ -201,7 +201,7 @@ export const useCreatePolicyMutation = () => {
   const queryClient = useQueryClient();
   const store = useDBMStore();
   return useMutation(
-    (values: any) => {
+    (values: Definitions.CreatePolicyDto) => {
       return PolicyControllerCreate(values);
     },
     {
@@ -240,7 +240,7 @@ export const useDeletePolicyMutation = () => {
   const queryClient = useQueryClient();
   const store = useDBMStore();
   return useMutation(
-    (values: any) => {
+    (values) => {
       return PolicyControllerRemove({ name: values });
     },
     {

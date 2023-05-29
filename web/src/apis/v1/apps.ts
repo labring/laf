@@ -13,9 +13,7 @@ import useGlobalStore from "@/pages/globalStore";
 /**
  * Create a new function
  */
-export async function FunctionControllerCreate(
-  params: Definitions.CreateFunctionDto | any,
-): Promise<{
+export async function FunctionControllerCreate(params: Definitions.CreateFunctionDto): Promise<{
   error: string;
   data: Paths.FunctionControllerCreate.Responses;
 }> {
@@ -34,7 +32,7 @@ export async function FunctionControllerCreate(
  * Query function list of an app
  */
 export async function FunctionControllerFindAll(
-  params: Paths.FunctionControllerFindAll.BodyParameters | any,
+  params: Paths.FunctionControllerFindAll.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.FunctionControllerFindAll.Responses;
@@ -54,7 +52,7 @@ export async function FunctionControllerFindAll(
  * Get a function by its name
  */
 export async function FunctionControllerFindOne(
-  params: Paths.FunctionControllerFindOne.BodyParameters | any,
+  params: Paths.FunctionControllerFindOne.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.FunctionControllerFindOne.Responses;
@@ -73,9 +71,7 @@ export async function FunctionControllerFindOne(
 /**
  * Update a function
  */
-export async function FunctionControllerUpdate(
-  params: Definitions.UpdateFunctionDto | any,
-): Promise<{
+export async function FunctionControllerUpdate(params: Definitions.UpdateFunctionDto): Promise<{
   error: string;
   data: Paths.FunctionControllerUpdate.Responses;
 }> {
@@ -94,7 +90,7 @@ export async function FunctionControllerUpdate(
  * Delete a function
  */
 export async function FunctionControllerRemove(
-  params: Paths.FunctionControllerRemove.BodyParameters | any,
+  params: Paths.FunctionControllerRemove.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.FunctionControllerRemove.Responses;
@@ -113,9 +109,7 @@ export async function FunctionControllerRemove(
 /**
  * Compile a function
  */
-export async function FunctionControllerCompile(
-  params: Definitions.CompileFunctionDto | any,
-): Promise<{
+export async function FunctionControllerCompile(params: Definitions.CompileFunctionDto): Promise<{
   error: string;
   data: Paths.FunctionControllerCompile.Responses;
 }> {
@@ -134,7 +128,7 @@ export async function FunctionControllerCompile(
  * Update environment variables (replace all)
  */
 export async function EnvironmentVariableControllerUpdateAll(
-  params: Paths.EnvironmentVariableControllerUpdateAll.BodyParameters | any,
+  params: Paths.EnvironmentVariableControllerUpdateAll.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.EnvironmentVariableControllerUpdateAll.Responses;
@@ -154,7 +148,7 @@ export async function EnvironmentVariableControllerUpdateAll(
  * Set a environment variable (create/update)
  */
 export async function EnvironmentVariableControllerAdd(
-  params: Definitions.CreateEnvironmentDto | any,
+  params: Definitions.CreateEnvironmentDto,
 ): Promise<{
   error: string;
   data: Paths.EnvironmentVariableControllerAdd.Responses;
@@ -174,7 +168,7 @@ export async function EnvironmentVariableControllerAdd(
  * Get environment variables
  */
 export async function EnvironmentVariableControllerGet(
-  params: Paths.EnvironmentVariableControllerGet.BodyParameters | any,
+  params: Paths.EnvironmentVariableControllerGet.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.EnvironmentVariableControllerGet.Responses;
@@ -194,7 +188,7 @@ export async function EnvironmentVariableControllerGet(
  * Delete an environment variable by name
  */
 export async function EnvironmentVariableControllerDelete(
-  params: Paths.EnvironmentVariableControllerDelete.BodyParameters | any,
+  params: Paths.EnvironmentVariableControllerDelete.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.EnvironmentVariableControllerDelete.Responses;
@@ -213,7 +207,7 @@ export async function EnvironmentVariableControllerDelete(
 /**
  * Create a new bucket
  */
-export async function BucketControllerCreate(params: Definitions.CreateBucketDto | any): Promise<{
+export async function BucketControllerCreate(params: Definitions.CreateBucketDto): Promise<{
   error: string;
   data: Paths.BucketControllerCreate.Responses;
 }> {
@@ -232,7 +226,7 @@ export async function BucketControllerCreate(params: Definitions.CreateBucketDto
  * Get bucket list of an app
  */
 export async function BucketControllerFindAll(
-  params: Paths.BucketControllerFindAll.BodyParameters | any,
+  params: Paths.BucketControllerFindAll.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.BucketControllerFindAll.Responses;
@@ -252,7 +246,7 @@ export async function BucketControllerFindAll(
  * Get a bucket by name
  */
 export async function BucketControllerFindOne(
-  params: Paths.BucketControllerFindOne.BodyParameters | any,
+  params: Paths.BucketControllerFindOne.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.BucketControllerFindOne.Responses;
@@ -271,7 +265,7 @@ export async function BucketControllerFindOne(
 /**
  * Update a bucket
  */
-export async function BucketControllerUpdate(params: Definitions.UpdateBucketDto | any): Promise<{
+export async function BucketControllerUpdate(params: Definitions.UpdateBucketDto): Promise<{
   error: string;
   data: Paths.BucketControllerUpdate.Responses;
 }> {
@@ -290,7 +284,7 @@ export async function BucketControllerUpdate(params: Definitions.UpdateBucketDto
  * Delete a bucket
  */
 export async function BucketControllerRemove(
-  params: Paths.BucketControllerRemove.BodyParameters | any,
+  params: Paths.BucketControllerRemove.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.BucketControllerRemove.Responses;
@@ -309,9 +303,7 @@ export async function BucketControllerRemove(
 /**
  * Create a new collection in database
  */
-export async function CollectionControllerCreate(
-  params: Definitions.CreateCollectionDto | any,
-): Promise<{
+export async function CollectionControllerCreate(params: Definitions.CreateCollectionDto): Promise<{
   error: string;
   data: Paths.CollectionControllerCreate.Responses;
 }> {
@@ -330,7 +322,7 @@ export async function CollectionControllerCreate(
  * Get collection list of an application
  */
 export async function CollectionControllerFindAll(
-  params: Paths.CollectionControllerFindAll.BodyParameters | any,
+  params: Paths.CollectionControllerFindAll.BodyParameters,
 ): Promise<{
   error: string;
   data: Definitions.Collection;
@@ -350,7 +342,7 @@ export async function CollectionControllerFindAll(
  * Get collection by name
  */
 export async function CollectionControllerFindOne(
-  params: Paths.CollectionControllerFindOne.BodyParameters | any,
+  params: Paths.CollectionControllerFindOne.BodyParameters,
 ): Promise<{
   error: string;
   data: Definitions.Collection;
@@ -369,9 +361,7 @@ export async function CollectionControllerFindOne(
 /**
  * Update a collection
  */
-export async function CollectionControllerUpdate(
-  params: Definitions.UpdateCollectionDto | any,
-): Promise<{
+export async function CollectionControllerUpdate(params: Definitions.UpdateCollectionDto): Promise<{
   error: string;
   data: Paths.CollectionControllerUpdate.Responses;
 }> {
@@ -390,7 +380,7 @@ export async function CollectionControllerUpdate(
  * Delete a collection by its name
  */
 export async function CollectionControllerRemove(
-  params: Paths.CollectionControllerRemove.BodyParameters | any,
+  params: Paths.CollectionControllerRemove.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.CollectionControllerRemove.Responses;
@@ -409,9 +399,9 @@ export async function CollectionControllerRemove(
 /**
  * Create database policy
  */
-export async function PolicyControllerCreate(params: Definitions.CreatePolicyDto | any): Promise<{
+export async function PolicyControllerCreate(params: Definitions.CreatePolicyDto): Promise<{
   error: string;
-  data: Paths.PolicyControllerCreate.Responses;
+  data: Definitions.DatabasePolicyWithRules;
 }> {
   // /v1/apps/{appid}/policies
   let _params: { [key: string]: any } = {
@@ -428,7 +418,7 @@ export async function PolicyControllerCreate(params: Definitions.CreatePolicyDto
  * Get database policy list
  */
 export async function PolicyControllerFindAll(
-  params: Paths.PolicyControllerFindAll.BodyParameters | any,
+  params: Paths.PolicyControllerFindAll.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.PolicyControllerFindAll.Responses;
@@ -447,9 +437,9 @@ export async function PolicyControllerFindAll(
 /**
  * Update database policy
  */
-export async function PolicyControllerUpdate(params: Definitions.UpdatePolicyDto | any): Promise<{
+export async function PolicyControllerUpdate(params: Definitions.UpdatePolicyDto): Promise<{
   error: string;
-  data: Paths.PolicyControllerUpdate.Responses;
+  data: Definitions.DatabasePolicy;
 }> {
   // /v1/apps/{appid}/policies/{name}
   let _params: { [key: string]: any } = {
@@ -466,7 +456,7 @@ export async function PolicyControllerUpdate(params: Definitions.UpdatePolicyDto
  * Remove a database policy
  */
 export async function PolicyControllerRemove(
-  params: Paths.PolicyControllerRemove.BodyParameters | any,
+  params: Paths.PolicyControllerRemove.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.PolicyControllerRemove.Responses;
@@ -486,7 +476,7 @@ export async function PolicyControllerRemove(
  * The database proxy for database management
  */
 export async function DatabaseControllerProxy(
-  params: Paths.DatabaseControllerProxy.BodyParameters | any,
+  params: Paths.DatabaseControllerProxy.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.DatabaseControllerProxy.Responses;
@@ -505,11 +495,9 @@ export async function DatabaseControllerProxy(
 /**
  * Create database policy rule
  */
-export async function PolicyRuleControllerCreate(
-  params: Definitions.CreatePolicyRuleDto | any,
-): Promise<{
+export async function PolicyRuleControllerCreate(params: Definitions.CreatePolicyRuleDto): Promise<{
   error: string;
-  data: Paths.PolicyRuleControllerCreate.Responses;
+  data: Definitions.DatabasePolicyRule;
 }> {
   // /v1/apps/{appid}/policies/{name}/rules
   let _params: { [key: string]: any } = {
@@ -526,7 +514,7 @@ export async function PolicyRuleControllerCreate(
  * Get database policy rules
  */
 export async function PolicyRuleControllerFindAll(
-  params: Paths.PolicyRuleControllerFindAll.BodyParameters | any,
+  params: Paths.PolicyRuleControllerFindAll.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.PolicyRuleControllerFindAll.Responses;
@@ -545,11 +533,9 @@ export async function PolicyRuleControllerFindAll(
 /**
  * Update database policy rule by collection name
  */
-export async function PolicyRuleControllerUpdate(
-  params: Definitions.UpdatePolicyRuleDto | any,
-): Promise<{
+export async function PolicyRuleControllerUpdate(params: Definitions.UpdatePolicyRuleDto): Promise<{
   error: string;
-  data: Paths.PolicyRuleControllerUpdate.Responses;
+  data: Definitions.DatabasePolicyRule;
 }> {
   // /v1/apps/{appid}/policies/{name}/rules/{collection}
   let _params: { [key: string]: any } = {
@@ -566,10 +552,10 @@ export async function PolicyRuleControllerUpdate(
  * Remove a database policy rule by collection name
  */
 export async function PolicyRuleControllerRemove(
-  params: Paths.PolicyRuleControllerRemove.BodyParameters | any,
+  params: Paths.PolicyRuleControllerRemove.BodyParameters,
 ): Promise<{
   error: string;
-  data: Paths.PolicyRuleControllerRemove.Responses;
+  data: Definitions.DatabasePolicyRule;
 }> {
   // /v1/apps/{appid}/policies/{name}/rules/{collection}
   let _params: { [key: string]: any } = {
@@ -585,7 +571,7 @@ export async function PolicyRuleControllerRemove(
 /**
  * Create a new website
  */
-export async function WebsiteControllerCreate(params: Definitions.CreateWebsiteDto | any): Promise<{
+export async function WebsiteControllerCreate(params: Definitions.CreateWebsiteDto): Promise<{
   error: string;
   data: Paths.WebsiteControllerCreate.Responses;
 }> {
@@ -604,7 +590,7 @@ export async function WebsiteControllerCreate(params: Definitions.CreateWebsiteD
  * Get all websites of an app
  */
 export async function WebsiteControllerFindAll(
-  params: Paths.WebsiteControllerFindAll.BodyParameters | any,
+  params: Paths.WebsiteControllerFindAll.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.WebsiteControllerFindAll.Responses;
@@ -624,7 +610,7 @@ export async function WebsiteControllerFindAll(
  * Get a website hosting of an app
  */
 export async function WebsiteControllerFindOne(
-  params: Paths.WebsiteControllerFindOne.BodyParameters | any,
+  params: Paths.WebsiteControllerFindOne.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.WebsiteControllerFindOne.Responses;
@@ -644,7 +630,7 @@ export async function WebsiteControllerFindOne(
  * Bind custom domain to website
  */
 export async function WebsiteControllerBindDomain(
-  params: Definitions.BindCustomDomainDto | any,
+  params: Definitions.BindCustomDomainDto,
 ): Promise<{
   error: string;
   data: Paths.WebsiteControllerBindDomain.Responses;
@@ -664,7 +650,7 @@ export async function WebsiteControllerBindDomain(
  * Delete a website hosting
  */
 export async function WebsiteControllerRemove(
-  params: Paths.WebsiteControllerRemove.BodyParameters | any,
+  params: Paths.WebsiteControllerRemove.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.WebsiteControllerRemove.Responses;
@@ -684,7 +670,7 @@ export async function WebsiteControllerRemove(
  * Check if domain is resolved
  */
 export async function WebsiteControllerCheckResolved(
-  params: Definitions.BindCustomDomainDto | any,
+  params: Definitions.BindCustomDomainDto,
 ): Promise<{
   error: string;
   data: Paths.WebsiteControllerCheckResolved.Responses;
@@ -703,7 +689,7 @@ export async function WebsiteControllerCheckResolved(
 /**
  * Create a cron trigger
  */
-export async function TriggerControllerCreate(params: Definitions.CreateTriggerDto | any): Promise<{
+export async function TriggerControllerCreate(params: Definitions.CreateTriggerDto): Promise<{
   error: string;
   data: Paths.TriggerControllerCreate.Responses;
 }> {
@@ -722,7 +708,7 @@ export async function TriggerControllerCreate(params: Definitions.CreateTriggerD
  * Get trigger list of an application
  */
 export async function TriggerControllerFindAll(
-  params: Paths.TriggerControllerFindAll.BodyParameters | any,
+  params: Paths.TriggerControllerFindAll.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.TriggerControllerFindAll.Responses;
@@ -742,7 +728,7 @@ export async function TriggerControllerFindAll(
  * Remove a cron trigger
  */
 export async function TriggerControllerRemove(
-  params: Paths.TriggerControllerRemove.BodyParameters | any,
+  params: Paths.TriggerControllerRemove.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.TriggerControllerRemove.Responses;
@@ -762,7 +748,7 @@ export async function TriggerControllerRemove(
  * Get function logs
  */
 export async function LogControllerGetLogs(
-  params: Paths.LogControllerGetLogs.BodyParameters | any,
+  params: Paths.LogControllerGetLogs.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.LogControllerGetLogs.Responses;
@@ -782,7 +768,7 @@ export async function LogControllerGetLogs(
  * Add application dependencies
  */
 export async function DependencyControllerAdd(
-  params: Paths.DependencyControllerAdd.BodyParameters | any,
+  params: Paths.DependencyControllerAdd.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.DependencyControllerAdd.Responses;
@@ -802,7 +788,7 @@ export async function DependencyControllerAdd(
  * Update application dependencies
  */
 export async function DependencyControllerUpdate(
-  params: Paths.DependencyControllerUpdate.BodyParameters | any,
+  params: Paths.DependencyControllerUpdate.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.DependencyControllerUpdate.Responses;
@@ -822,7 +808,7 @@ export async function DependencyControllerUpdate(
  * Get application dependencies
  */
 export async function DependencyControllerGetDependencies(
-  params: Paths.DependencyControllerGetDependencies.BodyParameters | any,
+  params: Paths.DependencyControllerGetDependencies.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.DependencyControllerGetDependencies.Responses;
@@ -841,9 +827,7 @@ export async function DependencyControllerGetDependencies(
 /**
  * Remove a dependency
  */
-export async function DependencyControllerRemove(
-  params: Definitions.DeleteDependencyDto | any,
-): Promise<{
+export async function DependencyControllerRemove(params: Definitions.DeleteDependencyDto): Promise<{
   error: string;
   data: Paths.DependencyControllerRemove.Responses;
 }> {
@@ -862,7 +846,7 @@ export async function DependencyControllerRemove(
  * Get billings of an application
  */
 export async function BillingControllerFindAllByAppId(
-  params: Paths.BillingControllerFindAllByAppId.BodyParameters | any,
+  params: Paths.BillingControllerFindAllByAppId.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.BillingControllerFindAllByAppId.Responses;
@@ -882,7 +866,7 @@ export async function BillingControllerFindAllByAppId(
  * Get billing by id
  */
 export async function BillingControllerFindOne(
-  params: Paths.BillingControllerFindOne.BodyParameters | any,
+  params: Paths.BillingControllerFindOne.BodyParameters,
 ): Promise<{
   error: string;
   data: Definitions.ApplicationBilling;

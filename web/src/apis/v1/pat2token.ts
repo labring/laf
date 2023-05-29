@@ -13,7 +13,7 @@ import useGlobalStore from "@/pages/globalStore";
 /**
  * Get user token by PAT
  */
-export async function AuthControllerPat2token(params: Definitions.Pat2TokenDto | any): Promise<{
+export async function AuthControllerPat2token(params: Definitions.Pat2TokenDto): Promise<{
   error: string;
   data: Paths.AuthControllerPat2token.Responses;
 }> {

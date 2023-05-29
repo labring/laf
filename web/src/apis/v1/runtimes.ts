@@ -14,7 +14,7 @@ import useGlobalStore from "@/pages/globalStore";
  * Get application runtime list
  */
 export async function AppControllerGetRuntimes(
-  params: Paths.AppControllerGetRuntimes.BodyParameters | any,
+  params: Paths.AppControllerGetRuntimes.BodyParameters,
 ): Promise<{
   error: string;
   data: Paths.AppControllerGetRuntimes.Responses;
