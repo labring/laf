@@ -28,11 +28,40 @@ declare namespace Definitions {
     state?: string;
     regionId?: string;
     runtimeId?: string;
+    isTrialTier?: boolean;
   };
 
-  export type UpdateApplicationDto = {
+  export type ApplicationWithRelations = {
+    _id?: string;
     name?: string;
+    appid?: string;
+    regionId?: string;
+    runtimeId?: string;
+    tags?: string[];
     state?: string;
+    phase?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy?: string;
+    region?: Definitions.Region;
+    bundle?: Definitions.ApplicationBundle;
+    runtime?: Definitions.Runtime;
+    configuration?: Definitions.ApplicationConfiguration;
+    domain?: Definitions.RuntimeDomain;
+  };
+
+  export type Application = {
+    _id?: string;
+    name?: string;
+    appid?: string;
+    regionId?: string;
+    runtimeId?: string;
+    tags?: string[];
+    state?: string;
+    phase?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy?: string;
   };
 
   export type UpdateApplicationNameDto = {
@@ -48,6 +77,15 @@ declare namespace Definitions {
     memory?: number;
     databaseCapacity?: number;
     storageCapacity?: number;
+  };
+
+  export type ApplicationBundle = {
+    _id?: string;
+    appid?: string;
+    resource?: Definitions.ApplicationBundleResource;
+    isTrialTier?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
   };
 
   export type CreateEnvironmentDto = {
@@ -125,6 +163,11 @@ declare namespace Definitions {
     amount?: number;
     channel?: string;
     currency?: string;
+  };
+
+  export type CreateChargeOrderOutDto = {
+    order?: Definitions.AccountChargeOrder;
+    result?: Definitions.WeChatPaymentCreateOrderResult;
   };
 
   export type CreateWebsiteDto = {
@@ -230,6 +273,81 @@ declare namespace Definitions {
     memory?: number;
     databaseCapacity?: number;
     storageCapacity?: number;
+  };
+
+  export type CalculatePriceResultDto = {
+    cpu?: number;
+    memory?: number;
+    storageCapacity?: number;
+    databaseCapacity?: number;
+    total?: number;
+  };
+
+  export type Region = {
+    _id?: string;
+    name?: string;
+    displayName?: string;
+    tls?: boolean;
+    state?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+
+  export type ApplicationBundleResource = {
+    limitCPU?: number;
+    limitMemory?: number;
+    databaseCapacity?: number;
+    storageCapacity?: number;
+    limitCountOfCloudFunction?: number;
+    limitCountOfBucket?: number;
+    limitCountOfDatabasePolicy?: number;
+    limitCountOfTrigger?: number;
+    limitCountOfWebsiteHosting?: number;
+    reservedTimeAfterExpired?: number;
+  };
+
+  export type Runtime = {
+    _id?: string;
+    name?: string;
+    type?: string;
+    image?: Definitions.RuntimeImageGroup;
+    state?: string;
+    version?: string;
+    latest?: boolean;
+  };
+
+  export type RuntimeImageGroup = {
+    main?: string;
+    init?: string;
+    sidecar?: string;
+  };
+
+  export type ApplicationConfiguration = {
+    _id?: string;
+    appid?: string;
+    environments?: Definitions.EnvironmentVariable[];
+    dependencies?: string[];
+    createdAt?: string;
+    updatedAt?: string;
+  };
+
+  export type EnvironmentVariable = {
+    name?: string;
+    value?: string;
+  };
+
+  export type RuntimeDomain = {
+    _id?: string;
+    appid?: string;
+    domain?: string;
+    state?: string;
+    phase?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+
+  export type WeChatPaymentCreateOrderResult = {
+    code_url?: string;
   };
 
   export type UserProfile = {
@@ -341,14 +459,6 @@ declare namespace Paths {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace ApplicationControllerUpdate {
-    export type QueryParameters = any;
-
-    export type BodyParameters = Definitions.UpdateApplicationDto;
 
     export type Responses = any;
   }
