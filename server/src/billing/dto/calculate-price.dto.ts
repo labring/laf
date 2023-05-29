@@ -7,10 +7,6 @@ export class CalculatePriceDto extends UpdateApplicationBundleDto {
   @IsNotEmpty()
   @IsString()
   regionId: string
-
-  validate() {
-    return null
-  }
 }
 
 export class CalculatePriceResultDto {

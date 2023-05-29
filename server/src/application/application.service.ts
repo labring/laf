@@ -285,17 +285,18 @@ export class ApplicationService {
     return res.value
   }
 
-  async updateBundle(appid: string, dto: UpdateApplicationBundleDto) {
+  async updateBundle(
+    appid: string,
+    dto: UpdateApplicationBundleDto,
+    isTrialTier: boolean,
+  ) {
     const db = SystemDatabase.db
     const resource = this.buildBundleResource(dto)
     const res = await db
       .collection<ApplicationBundle>('ApplicationBundle')
       .findOneAndUpdate(
         { appid },
-        {
-          $set: { resource, updatedAt: new Date() },
-          $unset: { isTrialTier: '' },
-        },
+        { $set: { resource, updatedAt: new Date(), isTrialTier } },
         {
           projection: {
             'bundle.resource.requestCPU': 0,
