@@ -88,7 +88,7 @@ export const useDeleteFunctionMutation = () => {
         if (!data.error) {
           queryClient.invalidateQueries(queryKeys.useFunctionListQuery);
           store.setCurrentFunction({});
-          functionCache.removeCache(data?.data?.id);
+          functionCache.removeCache(data?.data?._id);
         }
       },
     },

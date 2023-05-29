@@ -57,7 +57,7 @@ export async function AccountControllerCharge(
   params: Definitions.CreateChargeOrderDto | any,
 ): Promise<{
   error: string;
-  data: Paths.AccountControllerCharge.Responses;
+  data: Definitions.CreateChargeOrderOutDto;
 }> {
   // /v1/accounts/charge-order
   let _params: { [key: string]: any } = {

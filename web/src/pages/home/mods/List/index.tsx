@@ -33,7 +33,7 @@ import StatusBadge from "../StatusBadge";
 import BundleInfo from "./BundleInfo";
 
 import { TApplicationItem } from "@/apis/typing";
-import { ApplicationControllerUpdate } from "@/apis/v1/applications";
+import { ApplicationControllerUpdateState } from "@/apis/v1/applications";
 import useGlobalStore from "@/pages/globalStore";
 
 function List(props: { appListQuery: any; setShouldRefetch: any }) {
@@ -47,7 +47,9 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
   const { appListQuery, setShouldRefetch } = props;
   const bg = useColorModeValue("lafWhite.200", "lafDark.200");
 
-  const updateAppMutation = useMutation((params: any) => ApplicationControllerUpdate(params));
+  const updateAppStateMutation = useMutation((params: any) =>
+    ApplicationControllerUpdateState(params),
+  );
 
   return (
     <>
@@ -161,9 +163,8 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                           display={"block"}
                           onClick={async (event) => {
                             event?.preventDefault();
-                            const res = await updateAppMutation.mutateAsync({
+                            const res = await updateAppStateMutation.mutateAsync({
                               appid: item.appid,
-                              name: item.name,
                               state:
                                 item.phase === APP_STATUS.Stopped
                                   ? APP_STATUS.Running
@@ -187,9 +188,8 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                             display={"block"}
                             onClick={async (event: any) => {
                               event?.preventDefault();
-                              await updateAppMutation.mutateAsync({
+                              await updateAppStateMutation.mutateAsync({
                                 appid: item.appid,
-                                name: item.name,
                                 state: APP_PHASE_STATUS.Stopped,
                               });
                               setShouldRefetch(true);

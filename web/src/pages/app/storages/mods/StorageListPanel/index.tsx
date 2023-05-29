@@ -34,7 +34,7 @@ export default function StorageListPanel() {
           store.setCurrentStorage(data?.data[0]);
         } else {
           store.setCurrentStorage(
-            data?.data?.filter((item: any) => item.id === store?.currentStorage?._id)[0],
+            data?.data?.filter((item: any) => item._id === store?.currentStorage?._id)[0],
           );
         }
       } else {

@@ -17,7 +17,7 @@ export async function ApplicationControllerCreate(
   params: Definitions.CreateApplicationDto | any,
 ): Promise<{
   error: string;
-  data: Paths.ApplicationControllerCreate.Responses;
+  data: Definitions.ApplicationWithRelations;
 }> {
   // /v1/applications
   let _params: { [key: string]: any } = {
@@ -77,7 +77,7 @@ export async function ApplicationControllerDelete(
   params: Paths.ApplicationControllerDelete.BodyParameters | any,
 ): Promise<{
   error: string;
-  data: Paths.ApplicationControllerDelete.Responses;
+  data: Definitions.Application;
 }> {
   // /v1/applications/{appid}
   let _params: { [key: string]: any } = {
@@ -91,33 +91,13 @@ export async function ApplicationControllerDelete(
 }
 
 /**
- * Update an application
- */
-export async function ApplicationControllerUpdate(
-  params: Definitions.UpdateApplicationDto | any,
-): Promise<{
-  error: string;
-  data: Paths.ApplicationControllerUpdate.Responses;
-}> {
-  // /v1/applications/{appid}
-  let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
-    ...params,
-  };
-  return request(`/v1/applications/${_params.appid}`, {
-    method: "PATCH",
-    data: params,
-  });
-}
-
-/**
  * Update application name
  */
 export async function ApplicationControllerUpdateName(
   params: Definitions.UpdateApplicationNameDto | any,
 ): Promise<{
   error: string;
-  data: Paths.ApplicationControllerUpdateName.Responses;
+  data: Definitions.Application;
 }> {
   // /v1/applications/{appid}/name
   let _params: { [key: string]: any } = {
@@ -137,7 +117,7 @@ export async function ApplicationControllerUpdateState(
   params: Definitions.UpdateApplicationStateDto | any,
 ): Promise<{
   error: string;
-  data: Paths.ApplicationControllerUpdateState.Responses;
+  data: Definitions.Application;
 }> {
   // /v1/applications/{appid}/state
   let _params: { [key: string]: any } = {
@@ -157,7 +137,7 @@ export async function ApplicationControllerUpdateBundle(
   params: Definitions.UpdateApplicationBundleDto | any,
 ): Promise<{
   error: string;
-  data: Paths.ApplicationControllerUpdateBundle.Responses;
+  data: Definitions.ApplicationBundle;
 }> {
   // /v1/applications/{appid}/bundle
   let _params: { [key: string]: any } = {

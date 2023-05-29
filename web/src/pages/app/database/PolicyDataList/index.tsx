@@ -116,8 +116,8 @@ export default function PolicyDataList() {
           <>
             <RightPanelList
               ListQuery={rulesListQuery?.data?.data}
-              setKey="id"
-              isActive={(item: any) => currentData?.id === item.id}
+              setKey="_id"
+              isActive={(item: any) => currentData?._id === item._id}
               onClick={(data: any) => {
                 setCurrentData(data);
                 setRecord(JSON.stringify(data.value, null, 2));
@@ -161,7 +161,7 @@ export default function PolicyDataList() {
               }}
             />
             <RightPanelEditBox
-              show={currentData?.id}
+              show={currentData?._id}
               title={t("Edit")}
               isLoading={updateRulesMutation.isLoading}
               onSave={handleData}
