@@ -90,7 +90,7 @@ const CreateAppModal = (props: {
   };
 
   const currentRegion =
-    regions.find((item: any) => item.id === application?.regionId) || regions[0];
+    regions.find((item: any) => item._id === application?.regionId) || regions[0];
 
   const bundles = currentRegion.bundles;
 

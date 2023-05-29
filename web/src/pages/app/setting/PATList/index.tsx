@@ -26,7 +26,7 @@ const PATList = () => {
   const addPATMutation = useAddPATMutation((data: any) => {
     const newTokenList = [...tokenList];
     newTokenList.push({
-      id: data.id,
+      id: data._id,
       token: data.token,
     });
     setTokenList(newTokenList);
@@ -70,13 +70,13 @@ const PATList = () => {
             },
           ]}
           configuration={{
-            key: "id",
+            key: "_id",
             tableHeight: "40vh",
             hiddenEditButton: true,
             addButtonText: t("Add") + "Token",
             saveButtonText: t("Generate") + "Token",
             operationButtonsRender: (data: any) => {
-              const tokenItem = tokenList?.filter((item) => item.id === data.id);
+              const tokenItem = tokenList?.filter((item: any) => item._id === data._id);
               return tokenItem?.length === 1 ? (
                 <CopyText className="mr-4" text={tokenItem[0].token} tip={t("Copied").toString()}>
                   <TextButton text={t("Copy") + "Token"} />
@@ -88,8 +88,8 @@ const PATList = () => {
           onEdit={async () => {}}
           onDelete={async (data) => {
             await delPATMutation.mutateAsync({ id: data });
-            const newTokenList = tokenList.filter((token) => {
-              return token.id !== data;
+            const newTokenList = tokenList.filter((token: any) => {
+              return token._id !== data;
             });
             setTokenList(newTokenList);
           }}

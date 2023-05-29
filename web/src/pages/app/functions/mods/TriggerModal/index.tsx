@@ -108,7 +108,7 @@ export default function TriggerModal(props: { children: React.ReactElement }) {
                             return item.desc.indexOf(searchKey) > -1;
                           })
                           .map((item: any) => (
-                            <Tr key={item.id} _hover={{ bgColor: "#FBFBFC" }}>
+                            <Tr key={item._id} _hover={{ bgColor: "#FBFBFC" }}>
                               <Td borderTopLeftRadius={"10px"} borderBottomLeftRadius={"10px"}>
                                 <span>{item.desc}</span>
                               </Td>
@@ -128,7 +128,7 @@ export default function TriggerModal(props: { children: React.ReactElement }) {
                                 <HStack spacing={1}>
                                   <ConfirmButton
                                     onSuccessAction={() =>
-                                      deleteTriggerMutation.mutate({ id: item.id })
+                                      deleteTriggerMutation.mutate({ id: item._id })
                                     }
                                     headerText={String(t("Delete"))}
                                     bodyText={t("TriggerPanel.DeleteConfirm")}
