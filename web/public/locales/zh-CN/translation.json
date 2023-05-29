@@ -360,12 +360,12 @@
       "contact": "联系我们",
       "forum": "开发者社区",
       "faq": "FAQ",
-      "start": "立即体验",
+      "start": "立即开发",
       "stars": "3.9K"
     },
     "HomePage": {
       "slogan": "像写博客一样写代码",
-      "start": "立即体验",
+      "start": "立即开发",
       "content1": "Laf 是一个集函数、数据库、存储为一体的云开发平台",
       "content2": "随时随地，发布上线"
     },
