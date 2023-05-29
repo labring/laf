@@ -68,6 +68,12 @@ const useFunctionStore = create<State>()(
           state.isFetchButtonClicked = !state.isFetchButtonClicked;
         });
       },
+
+      setIsFetchButtonClicked: async () => {
+        set((state) => {
+          state.isFetchButtonClicked = !state.isFetchButtonClicked;
+        });
+      },
     })),
   ),
 );
