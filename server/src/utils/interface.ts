@@ -8,4 +8,6 @@ export interface IRequest extends Request {
   [key: string]: any
 }
 
-export type IResponse = Response
+export interface IResponse extends Response {
+  [key: string]: any
+}

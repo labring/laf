@@ -11,6 +11,7 @@
     "prettier": "prettier --write ./src",
     "prepare": "cd .. && husky install web/.husky",
     "intercept": "telepresence intercept laf-web -n laf-system -p 3001:80",
+    "leave": "telepresence leave laf-web-laf-system",
     "lint-staged": "lint-staged"
   },
   "dependencies": {
