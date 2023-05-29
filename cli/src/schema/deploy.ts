@@ -1,13 +1,14 @@
 import { DEPLOY_SCHEMA_NAME } from '../common/constant'
 import { exist, loadYamlFile } from '../util/file'
 import { getAppPath } from '../util/sys'
-import path = require('path')
+import * as path from 'node:path'
 
 export class DeploySchema {
   name: string
 
   resources?: {
     buckets?: BucketResource[]
+    websites?: WebsiteResource[]
   }
 
   actions?: {
@@ -28,6 +29,11 @@ export class DeploySchema {
 export class BucketResource {
   name: string
   policy: 'private' | 'readonly' | 'readwrite'
+}
+
+export class WebsiteResource {
+  name: string
+  bucketName: string
 }
 
 export class BucketAction {
