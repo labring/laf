@@ -112,6 +112,8 @@
     "LeaveFunctionPage": "即将离开函数编辑页面",
     "PromptDescription": "使用自然语言描述你的需求, laf 会帮你生成代码, 例如: 写一个 hello world ,返回 {hello: 'laf AI'}",
     "CreateWithAITip": "使用 AI 辅助创建函数",
+    "CreateNow": "立即创建",
+    "CreateFromTemplate": "通过模板创建",
     "getCodeOnline": "获取线上最新发布的代码"
   },
   "HomePanel": {
@@ -434,6 +436,29 @@
   "LinkCopied": "链接复制成功",
   "create success": "创建成功",
   "ServerStatus": "服务状态",
+  "market": {
+    "explore": "探索",
+    "category": "分类",
+    "appTemplate": "应用模板",
+    "funcTemplate": "函数模板",
+    "all": "全部",
+    "market": "模板市场"
+  },
+  "Template": {
+    "useTemplate": "使用模板",
+    "DeveloperInformation": "开发者信息",
+    "Sponsor": "支持",
+    "Function": "函数",
+    "Dependency": "依赖",
+    "EnvironmentVariables": "环境变量",
+    "public": "公开",
+    "private": "私有",
+    "MyTemplate": "我的模板",
+    "SortOrd": "排序：",
+    "CreateTemplate": "新建模板",
+    "Details": "函数详情",
+    "My": "我的"
+  },
   "Fee": "费用",
   "PleaseCloseApplicationFirst": "请先关闭应用",
   "custom": "自定义",

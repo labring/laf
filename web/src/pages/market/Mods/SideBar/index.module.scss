@@ -1,0 +1,60 @@
+.explore_item {
+  color: #5A646E;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.75rem;
+  margin-bottom: 0.625rem;
+  width: 11.25rem;
+  height: 2rem;
+  background: #F4F6F8;
+  border-radius: 4px;
+}
+
+.explore_item:hover,
+.explore_item.current {
+  background-color: var(--chakra-colors-primary-200);
+  color: var(--chakra-colors-primary-700);
+}
+
+.category_item {
+  color: #5A646E;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.75rem;
+  margin-bottom: 0.625rem;
+  width: 11.25rem;
+  height: 2rem;
+  border-radius: 4px;
+}
+
+.category_item:hover,
+.category_item.current {
+  background-color: var(--chakra-colors-primary-200);
+  color: var(--chakra-colors-primary-700);
+}
+
+.title {
+  color: #24282C;
+  font-size: 1.25rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.title::first-letter {
+  font-size: 2rem;
+}
+
+.title_dark {
+  color: white;
+  font-size: 1.25rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.title_dark::first-letter {
+  font-size: 2rem;
+}

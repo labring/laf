@@ -1,6 +1,7 @@
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
+  Box,
   Button,
   Checkbox,
   CheckboxGroup,
@@ -28,6 +29,7 @@ import { SUPPORTED_METHODS } from "@/constants";
 
 import { useCreateFunctionMutation, useUpdateFunctionMutation } from "../../../service";
 import useFunctionStore from "../../../store";
+import FunctionTemplate from "../FunctionTemplate";
 
 import functionTemplates from "./functionTemplates";
 
@@ -117,6 +119,16 @@ const CreateModal = (props: {
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
+              {isEdit ? null : (
+                <Box className="flex w-full justify-between text-lg">
+                  <div className="border-b-2 border-black">{t("FunctionPanel.CreateNow")}</div>
+                  <FunctionTemplate>
+                    <span className="cursor-pointer text-blue-500">
+                      {t("FunctionPanel.CreateFromTemplate")}
+                    </span>
+                  </FunctionTemplate>
+                </Box>
+              )}
               <FormControl isInvalid={!!errors?.name}>
                 <FormLabel htmlFor="name">{t("FunctionPanel.FunctionName")}</FormLabel>
                 <Input

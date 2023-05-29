@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { FiGithub } from "react-icons/fi";
 import { useColorMode } from "@chakra-ui/react";
 
+import { MarketIcon } from "@/components/CommonIcon";
 import { COLOR_MODE } from "@/constants";
 
 import UserSetting from "./UserSetting";
@@ -40,6 +41,13 @@ export default function Header(props: { size: "sm" | "lg" }) {
       </div>
 
       <div className="flex items-center">
+        <a
+          href="/market"
+          className="mx-4 flex items-center border-r-2 border-grayModern-400 px-4 text-xl"
+        >
+          <MarketIcon color={"#5A646E"} />
+          <span className="pl-2 text-grayModern-600">{t("market.market")}</span>
+        </a>
         {userInfo?._id ? (
           <>
             <UserSetting

@@ -74,6 +74,22 @@ const routes = [
         ],
       },
       {
+        path: "/market",
+        element: () => import("@/pages/market"),
+      },
+      {
+        path: "/funcTemplate/:templateId",
+        element: () => import("@/pages/market/FunctionTemplate/funcTemplateItem"),
+      },
+      {
+        path: "/market/mine",
+        element: () => import("@/pages/market/Mine"),
+      },
+      {
+        path: "/market/mine/new",
+        element: () => import("@/pages/market/Mine/CreateFuncTemplate"),
+      },
+      {
         path: "/403",
         element: () => import("@/pages/403"),
       },
