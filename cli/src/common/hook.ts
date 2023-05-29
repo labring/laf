@@ -1,35 +1,26 @@
-import { existApplicationConfig } from '../config/application'
-import { existSecretConfig, readSecretConfig, refreshSecretConfig } from '../config/secret'
+import { AppSchema } from '../schema/app'
 
 export function checkApplication() {
-  if (!existApplicationConfig()) {
+  if (!AppSchema.exist()) {
     console.error('Please run "laf app init" to initialize the application first')
     process.exit(1)
   }
 }
 
 export async function checkFunctionDebugToken() {
-  if (!existSecretConfig()) {
-    await refreshSecretConfig()
-    return
-  }
-  const secretConfig = readSecretConfig()
-  const { debugToken, debugTokenExpire } = secretConfig.functionSecretConfig
+  const appSchema = AppSchema.read()
+  const { debugToken, debugTokenExpire } = appSchema.function
   let timestamp = Date.parse(new Date().toString()) / 1000
   if (!debugToken || debugTokenExpire < timestamp) {
-    await refreshSecretConfig()
+    await AppSchema.refresh()
   }
 }
 
 export async function checkStorageToken() {
-  if (!existSecretConfig()) {
-    await refreshSecretConfig()
-    return
-  }
-  const secretConfig = readSecretConfig()
-  const { expire } = secretConfig.storageSecretConfig
+  const appSchema = AppSchema.read()
+  const { expire } = appSchema.storage
   let timestamp = Date.parse(new Date().toString()) / 1000
   if (expire < timestamp) {
-    await refreshSecretConfig()
+    await AppSchema.refresh()
   }
 }

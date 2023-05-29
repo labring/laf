@@ -150,7 +150,7 @@ export default function FunctionList() {
               <TbBrandGithubCopilot fontSize={12} />
             </IconWrap>
           </PromptModal>,
-          <CreateModal key="create_modal">
+          <CreateModal key="create_modal" tagList={tagsList}>
             <IconWrap size={20} tooltip={t("FunctionPanel.AddFunction").toString()}>
               <AddIcon fontSize={12} />
             </IconWrap>
@@ -204,7 +204,7 @@ export default function FunctionList() {
                       label={t("Operation")}
                     >
                       <>
-                        <CreateModal functionItem={func}>
+                        <CreateModal functionItem={func} tagList={tagsList}>
                           <IconText icon={<EditIcon />} text={t("Edit")} />
                         </CreateModal>
                         <ConfirmButton

@@ -1,28 +1,30 @@
 import { applicationControllerFindAll, applicationControllerFindOne } from '../../api/v1/application'
 import * as Table from 'cli-table3'
-import { ApplicationConfig, existApplicationConfig, writeApplicationConfig } from '../../config/application'
 import * as path from 'node:path'
 import * as fs from 'node:fs'
 import { pull as depPull } from '../dependency'
 import { pullAll as policyPull } from '../policy'
 import { pullAll as funcPull } from '../function'
+import { AppSchema } from '../../schema/app'
 
 import {
-  FUNCTIONS_DIRECTORY_NAME,
+  DEBUG_TOKEN_EXPIRE,
+  FUNCTION_SCHEMA_DIRCTORY,
   GITIGNORE_FILE,
   GLOBAL_FILE,
   PACKAGE_FILE,
   RESPONSE_FILE,
+  STORAGE_TOKEN_EXPIRE,
   TEMPLATE_DIR,
   TSCONFIG_FILE,
   TYPE_DIR,
 } from '../../common/constant'
 import { ensureDirectory, exist } from '../../util/file'
 
-import { refreshSecretConfig } from '../../config/secret'
 import { getEmoji } from '../../util/print'
 import { formatDate } from '../../util/format'
 import { regionControllerGetRegions } from '../../api/v1/public'
+import { ProjectSchema } from '../../schema/project'
 
 export async function list() {
   const table = new Table({
@@ -54,7 +56,7 @@ async function getRegionMap(): Promise<Map<string, any>> {
 }
 
 export async function init(appid: string, options: { sync: boolean }) {
-  if (existApplicationConfig()) {
+  if (AppSchema.exist()) {
     console.log(
       `${getEmoji(
         '❌',
@@ -63,29 +65,45 @@ export async function init(appid: string, options: { sync: boolean }) {
     return
   }
 
-  const data = await applicationControllerFindOne(appid)
+  const app = await applicationControllerFindOne(appid)
 
-  const config: ApplicationConfig = {
-    name: data.name,
-    appid: data.appid,
-    regionName: data.regionName,
-    bundleName: data.bundleName,
-    runtimeName: data.runtimeName,
-    createdAt: data.createdAt,
+  // init project schema
+  if (!ProjectSchema.exist()) {
+    const projectSchema: ProjectSchema = {
+      version: '1.0.0',
+      name: app.name,
+      spec: {
+        runtime: app.runtime.name,
+      },
+    }
+    ProjectSchema.write(projectSchema)
   }
-  // generate application invoke address
-  config.invokeUrl = data.tls ? 'https://' + data.domain.domain : 'http://' + data.domain.domain
 
-  writeApplicationConfig(config)
+  // init app schema
+  let timestamp = Date.parse(new Date().toString()) / 1000
+  const appSchema: AppSchema = {
+    name: app.name,
+    appid: app.appid,
+    invokeUrl: app.tls ? 'https://' + app.domain.domain : 'http://' + app.domain.domain,
+    function: {
+      debugToken: app.function_debug_token,
+      debugTokenExpire: timestamp + DEBUG_TOKEN_EXPIRE,
+    },
+    storage: {
+      endpoint: app.storage.credentials.endpoint,
+      accessKeyId: app.storage.credentials.accessKeyId,
+      accessKeySecret: app.storage.credentials.secretAccessKey,
+      sessionToken: app.storage.credentials.sessionToken,
+      expire: timestamp + STORAGE_TOKEN_EXPIRE,
+    },
+  }
+  AppSchema.write(appSchema)
 
   // init function
   initFunction()
 
   // init policy
   initPolicy()
-
-  // init secret
-  refreshSecretConfig()
 
   if (options.sync) {
     // pull dependencies
@@ -95,12 +113,12 @@ export async function init(appid: string, options: { sync: boolean }) {
     // pull functions
     funcPull()
   }
-  console.log(`${getEmoji('🚀')} application ${data.name} init success`)
+  console.log(`${getEmoji('🚀')} application ${app.name} init success`)
 }
 
 function initFunction() {
   // if not exist，create functions directory
-  ensureDirectory(path.join(process.cwd(), FUNCTIONS_DIRECTORY_NAME))
+  ensureDirectory(path.join(process.cwd(), FUNCTION_SCHEMA_DIRCTORY))
 
   const typeDir = path.resolve(process.cwd(), TYPE_DIR)
   ensureDirectory(typeDir)

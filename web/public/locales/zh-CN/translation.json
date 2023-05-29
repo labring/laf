@@ -73,6 +73,7 @@
     "AddFunction": "添加函数",
     "Code": "函数模板",
     "ConfirmDeploy": "确认发布",
+    "ConfirmFetch": "确认同步",
     "CustomDependence": "自定义依赖",
     "CustomDependenceTip": "暂无自定义依赖",
     "DeleteDependencyConfirm": "确认要删除该依赖吗？删除依赖后会立即重启应用。",
@@ -87,6 +88,8 @@
     "DependenceVersion": "依赖版本",
     "Deploy": "发布",
     "DeploySuccess": "发布成功",
+    "Fetch": "同步",
+    "FetchSuccess": "同步成功",
     "Description": "函数描述",
     "EditFunction": "编辑函数",
     "Function": "函数",
@@ -363,12 +366,12 @@
       "contact": "联系我们",
       "forum": "开发者社区",
       "faq": "FAQ",
-      "start": "立即体验",
+      "start": "立即开发",
       "stars": "3.9K"
     },
     "HomePage": {
       "slogan": "像写博客一样写代码",
-      "start": "立即体验",
+      "start": "立即开发",
       "content1": "Laf 是一个集函数、数据库、存储为一体的云开发平台",
       "content2": "随时随地，发布上线"
     },

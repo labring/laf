@@ -73,7 +73,7 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
 
   useEffect(() => {
     if (currentFunction?.methods) {
-      setRunningMethod(currentFunction.methods[0]);
+      setRunningMethod(currentFunction.params?.runningMethod || currentFunction.methods[0]);
     }
   }, [setRunningMethod, currentFunction]);
 
@@ -90,6 +90,7 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
         queryParams: queryParams,
         bodyParams: bodyParams,
         headerParams: headerParams,
+        runningMethod: runningMethod,
       };
 
       updateFunctionMutation.mutateAsync({

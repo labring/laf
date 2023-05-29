@@ -4,12 +4,10 @@ import {
   bucketControllerRemove,
   bucketControllerUpdate,
 } from '../../api/v1/storage'
-import { readApplicationConfig } from '../../config/application'
 import * as Table from 'cli-table3'
 import * as prompts from 'prompts'
 import { CreateBucketDto, UpdateBucketDto } from '../../api/v1/data-contracts'
 import { getEmoji } from '../../util/print'
-import { readSecretConfig } from '../../config/secret'
 import { getS3ClientV3 } from './s3'
 import * as path from 'node:path'
 import { ensureDirectory, readDirectoryRecursive, compareFileMD5, exist } from '../../util/file'
@@ -17,10 +15,11 @@ import * as fs from 'node:fs'
 import * as mime from 'mime'
 import { ListObjectsCommand, GetObjectCommand, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
 import { Readable } from 'node:stream'
+import { AppSchema } from '../../schema/app'
 
 export async function list() {
-  const appConfig = readApplicationConfig()
-  const buckets = await bucketControllerFindAll(appConfig.appid)
+  const appSchema = AppSchema.read()
+  const buckets = await bucketControllerFindAll(appSchema.appid)
   const table = new Table({
     head: ['name', 'shortName', 'policy', 'updatedAt'],
   })
@@ -41,54 +40,59 @@ const policySelect = {
   ],
 }
 
-export async function create(bucketName, options) {
-  if (options) {
+export async function create(bucketName, options: { policy: string }) {
+  const appSchema = AppSchema.read()
+  let policy = options.policy
+  if (!policy) {
+    console.log('please select bucket storage policy')
+    const policyResult = await prompts(policySelect)
+    policy = policyResult.policy
   }
-  const appConfig = readApplicationConfig()
-  console.log('please select bucket storage policy')
-  const policyResult = await prompts(policySelect)
   const bucketDto: CreateBucketDto = {
     shortName: bucketName,
-    policy: policyResult.policy,
+    policy: policy as any,
   }
-  await bucketControllerCreate(appConfig.appid, bucketDto)
+
+  await bucketControllerCreate(appSchema.appid, bucketDto)
   console.log(`${getEmoji('✅')} bucket ${bucketName} created`)
 }
 
-export async function update(bucketName, options) {
-  if (options) {
+export async function update(bucketName, options: { policy: string }) {
+  const appSchema = AppSchema.read()
+  let policy = options.policy
+  if (!policy) {
+    console.log('please select the storage policy to be replaced')
+    const policyResult = await prompts(policySelect)
+    policy = policyResult.policy
   }
-  const appConfig = readApplicationConfig()
-  if (!bucketName.startsWith(appConfig.appid + '-')) {
-    bucketName = appConfig.appid + '-' + bucketName
+  if (!bucketName.startsWith(appSchema.appid + '-')) {
+    bucketName = appSchema.appid + '-' + bucketName
   }
-  console.log('please select the storage policy to be replaced')
-  const policyResult = await prompts(policySelect)
+
   const bucketDto: UpdateBucketDto = {
-    policy: policyResult.policy,
+    policy: policy as any,
   }
-  await bucketControllerUpdate(appConfig.appid, bucketName, bucketDto)
+  await bucketControllerUpdate(appSchema.appid, bucketName, bucketDto)
   console.log(`${getEmoji('✅')} bucket ${bucketName} updated`)
 }
 
 export async function del(bucketName, options) {
   if (options) {
   }
-  const appConfig = readApplicationConfig()
-  if (!bucketName.startsWith(appConfig.appid + '-')) {
-    bucketName = appConfig.appid + '-' + bucketName
+  const appSchema = AppSchema.read()
+  if (!bucketName.startsWith(appSchema.appid + '-')) {
+    bucketName = appSchema.appid + '-' + bucketName
   }
-  await bucketControllerRemove(appConfig.appid, bucketName)
+  await bucketControllerRemove(appSchema.appid, bucketName)
   console.log(`${getEmoji('✅')} bucket ${bucketName} deleted`)
 }
 
 export async function pull(bucketName: string, outPath: string, options: { force: boolean; detail: boolean }) {
-  const appConfig = readApplicationConfig()
-  if (!bucketName.startsWith(appConfig.appid + '-')) {
-    bucketName = appConfig.appid + '-' + bucketName
+  const appSchema = AppSchema.read()
+  if (!bucketName.startsWith(appSchema.appid + '-')) {
+    bucketName = appSchema.appid + '-' + bucketName
   }
-  const secretConfig = readSecretConfig()
-  const client = getS3ClientV3(secretConfig.storageSecretConfig)
+  const client = getS3ClientV3(appSchema.storage)
   const listCommand = new ListObjectsCommand({ Bucket: bucketName, Delimiter: '' })
   const res = await client.send(listCommand)
   const bucketObjects = res.Contents || []
@@ -131,13 +135,12 @@ export async function pull(bucketName: string, outPath: string, options: { force
 }
 
 export async function push(bucketName: string, inPath: string, options: { force: boolean; detail: boolean }) {
-  const appConfig = readApplicationConfig()
-  if (!bucketName.startsWith(appConfig.appid + '-')) {
-    bucketName = appConfig.appid + '-' + bucketName
+  const appSchema = AppSchema.read()
+  if (!bucketName.startsWith(appSchema.appid + '-')) {
+    bucketName = appSchema.appid + '-' + bucketName
   }
-  const secretConfig = readSecretConfig()
 
-  const client = getS3ClientV3(secretConfig.storageSecretConfig)
+  const client = getS3ClientV3(appSchema.storage)
   const listCommand = new ListObjectsCommand({ Bucket: bucketName, Delimiter: '' })
   const res = await client.send(listCommand)
   const bucketObjects = res.Contents || []
