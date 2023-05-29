@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import * as assert from 'node:assert'
 import { CreatePolicyRuleDto } from '../dto/create-rule.dto'
 import { UpdatePolicyRuleDto } from '../dto/update-rule.dto'
 import { PolicyService } from './policy.service'
@@ -23,10 +22,8 @@ export class PolicyRuleService {
         updatedAt: new Date(),
       })
 
-    const policy = await this.policyService.findOne(appid, policyName)
-    assert(policy, 'policy not found')
-    await this.policyService.publish(policy)
-    return policy
+    await this.policyService.publish(appid, policyName)
+    return await this.findOne(appid, policyName, dto.collectionName)
   }
 
   async count(appid: string, policyName: string) {
@@ -60,7 +57,7 @@ export class PolicyRuleService {
     collectionName: string,
     dto: UpdatePolicyRuleDto,
   ) {
-    await this.db
+    const res = await this.db
       .collection<DatabasePolicyRule>('DatabasePolicyRule')
       .findOneAndUpdate(
         { appid, policyName, collectionName },
@@ -68,20 +65,16 @@ export class PolicyRuleService {
         { returnDocument: 'after' },
       )
 
-    const policy = await this.policyService.findOne(appid, policyName)
-    assert(policy, 'policy not found')
-    await this.policyService.publish(policy)
-    return policy
+    await this.policyService.publish(appid, policyName)
+    return res.value
   }
 
   async removeOne(appid: string, policyName: string, collectionName: string) {
-    await this.db
+    const res = await this.db
       .collection<DatabasePolicyRule>('DatabasePolicyRule')
-      .deleteOne({ appid, policyName, collectionName })
+      .findOneAndDelete({ appid, policyName, collectionName })
 
-    const policy = await this.policyService.findOne(appid, policyName)
-    assert(policy, 'policy not found')
-    await this.policyService.publish(policy)
-    return policy
+    await this.policyService.publish(appid, policyName)
+    return res.value
   }
 }

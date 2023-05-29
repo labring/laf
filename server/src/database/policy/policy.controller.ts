@@ -17,10 +17,19 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import { UpdatePolicyDto } from '../dto/update-policy.dto'
-import { ResponseUtil } from 'src/utils/response'
+import {
+  ApiResponseArray,
+  ApiResponseObject,
+  ApiResponseString,
+  ResponseUtil,
+} from 'src/utils/response'
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
 import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
 import { BundleService } from 'src/application/bundle.service'
+import {
+  DatabasePolicy,
+  DatabasePolicyWithRules,
+} from '../entities/database-policy'
 
 @ApiTags('Database')
 @ApiBearerAuth('Authorization')
@@ -33,7 +42,7 @@ export class PolicyController {
 
   @Post()
   @ApiOperation({ summary: 'Create database policy' })
-  @ApiResponse({ type: ResponseUtil })
+  @ApiResponseObject(DatabasePolicyWithRules)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   async create(@Param('appid') appid: string, @Body() dto: CreatePolicyDto) {
     // check policy count limit
@@ -55,7 +64,7 @@ export class PolicyController {
 
   @Get()
   @ApiOperation({ summary: 'Get database policy list' })
-  @ApiResponse({ type: ResponseUtil })
+  @ApiResponseArray(DatabasePolicyWithRules)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   async findAll(@Param('appid') appid: string) {
     const docs = await this.policiesService.findAll(appid)
@@ -64,7 +73,7 @@ export class PolicyController {
 
   @Patch(':name')
   @ApiOperation({ summary: 'Update database policy' })
-  @ApiResponse({ type: ResponseUtil })
+  @ApiResponseObject(DatabasePolicy)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   async update(
     @Param('appid') appid: string,
@@ -82,7 +91,7 @@ export class PolicyController {
 
   @Delete(':name')
   @ApiOperation({ summary: 'Remove a database policy' })
-  @ApiResponse({ type: ResponseUtil })
+  @ApiResponseString()
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   async remove(@Param('appid') appid: string, @Param('name') name: string) {
     // check policy exists
@@ -91,7 +100,7 @@ export class PolicyController {
       return ResponseUtil.error('Policy not found')
     }
 
-    const res = await this.policiesService.removeOne(appid, name)
-    return ResponseUtil.ok(res)
+    await this.policiesService.removeOne(appid, name)
+    return ResponseUtil.ok('ok')
   }
 }

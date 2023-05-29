@@ -1,11 +1,23 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { ObjectId } from 'mongodb'
 
 export class DatabasePolicy {
+  @ApiProperty({ type: String })
   _id?: ObjectId
+
+  @ApiProperty()
   appid: string
+
+  @ApiProperty()
   name: string
+
+  @ApiPropertyOptional()
   injector?: string
+
+  @ApiProperty()
   createdAt: Date
+
+  @ApiProperty()
   updatedAt: Date
 
   constructor(partial: Partial<DatabasePolicy>) {
@@ -14,12 +26,25 @@ export class DatabasePolicy {
 }
 
 export class DatabasePolicyRule {
+  @ApiProperty({ type: String })
   _id?: ObjectId
+
+  @ApiProperty()
   appid: string
+
+  @ApiProperty()
   policyName: string
+
+  @ApiProperty()
   collectionName: string
+
+  @ApiProperty()
   value: any
+
+  @ApiProperty()
   createdAt: Date
+
+  @ApiProperty()
   updatedAt: Date
 
   constructor(partial: Partial<DatabasePolicyRule>) {
@@ -27,6 +52,7 @@ export class DatabasePolicyRule {
   }
 }
 
-export type DatabasePolicyWithRules = DatabasePolicy & {
+export class DatabasePolicyWithRules extends DatabasePolicy {
+  @ApiProperty({ type: [DatabasePolicyRule] })
   rules: DatabasePolicyRule[]
 }

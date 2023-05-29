@@ -9,6 +9,7 @@ import {
   DatabasePolicyRule,
   DatabasePolicyWithRules,
 } from '../entities/database-policy'
+import * as assert from 'assert'
 
 @Injectable()
 export class PolicyService {
@@ -17,18 +18,15 @@ export class PolicyService {
 
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async create(appid: string, createPolicyDto: CreatePolicyDto) {
+  async create(appid: string, dto: CreatePolicyDto) {
     await this.db.collection<DatabasePolicy>('DatabasePolicy').insertOne({
       appid,
-      name: createPolicyDto.name,
+      name: dto.name,
       createdAt: new Date(),
       updatedAt: new Date(),
     })
 
-    const doc = await this.findOne(appid, createPolicyDto.name)
-
-    await this.publish(doc)
-    return doc
+    return await this.publish(appid, dto.name)
   }
 
   async count(appid: string) {
@@ -87,7 +85,7 @@ export class PolicyService {
   }
 
   async updateOne(appid: string, name: string, dto: UpdatePolicyDto) {
-    await this.db
+    const res = await this.db
       .collection<DatabasePolicy>('DatabasePolicy')
       .findOneAndUpdate(
         { appid, name },
@@ -95,9 +93,8 @@ export class PolicyService {
         { returnDocument: 'after' },
       )
 
-    const doc = await this.findOne(appid, name)
-    await this.publish(doc)
-    return doc
+    await this.publish(appid, name)
+    return res.value
   }
 
   async removeOne(appid: string, name: string) {
@@ -140,7 +137,10 @@ export class PolicyService {
     }
   }
 
-  async publish(policy: DatabasePolicy & { rules: DatabasePolicyRule[] }) {
+  async publish(appid: string, name: string) {
+    const policy = await this.findOne(appid, name)
+    assert(policy, `policy ${name} not found`)
+
     const { db, client } = await this.databaseService.findAndConnect(
       policy.appid,
     )
@@ -159,7 +159,9 @@ export class PolicyService {
         await coll.insertOne(data, { session })
       })
     } finally {
+      await session.endSession()
       await client.close()
+      return policy
     }
   }
 
