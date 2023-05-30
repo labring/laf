@@ -167,7 +167,7 @@ export class InitializerService {
       {
         regionId: region._id,
         type: ResourceType.CPU,
-        price: 0.000072,
+        price: 0.0,
         specs: [
           { label: '0.2 Core', value: 200 },
           { label: '0.5 Core', value: 500 },
@@ -180,7 +180,7 @@ export class InitializerService {
       {
         regionId: region._id,
         type: ResourceType.Memory,
-        price: 0.000036,
+        price: 0.0,
         specs: [
           { label: '256 MB', value: 256 },
           { label: '512 MB', value: 512 },
@@ -194,7 +194,7 @@ export class InitializerService {
       {
         regionId: region._id,
         type: ResourceType.DatabaseCapacity,
-        price: 0.0000072,
+        price: 0.0,
         specs: [
           { label: '1 GB', value: 1024 },
           { label: '4 GB', value: 4096 },
@@ -208,7 +208,7 @@ export class InitializerService {
       {
         regionId: region._id,
         type: ResourceType.StorageCapacity,
-        price: 0.000002,
+        price: 0.0,
         specs: [
           { label: '1 GB', value: 1024 },
           { label: '4 GB', value: 4096 },
@@ -261,7 +261,7 @@ export class InitializerService {
           [ResourceType.NetworkTraffic]: { value: 0 },
         },
         enableFreeTier: true,
-        limitCountOfFreeTierPerUser: 1,
+        limitCountOfFreeTierPerUser: 20,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
