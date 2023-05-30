@@ -24,7 +24,6 @@ declare namespace Definitions {
     memory?: number;
     databaseCapacity?: number;
     storageCapacity?: number;
-    isTrialTier?: boolean;
     name?: string;
     state?: string;
     regionId?: string;
@@ -77,7 +76,6 @@ declare namespace Definitions {
     memory?: number;
     databaseCapacity?: number;
     storageCapacity?: number;
-    isTrialTier?: boolean;
   };
 
   export type ApplicationBundle = {
@@ -300,12 +298,11 @@ declare namespace Definitions {
   };
 
   export type CalculatePriceDto = {
-    regionId?: string;
     cpu?: number;
     memory?: number;
     databaseCapacity?: number;
     storageCapacity?: number;
-    isTrialTier?: boolean;
+    regionId?: string;
   };
 
   export type CalculatePriceResultDto = {
@@ -984,15 +981,7 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace BillingControllerFindAllByAppId {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace BillingControllerFindOne {
+  namespace BillingControllerFindAll {
     export type QueryParameters = any;
 
     export type BodyParameters = any;

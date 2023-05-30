@@ -179,7 +179,11 @@
     "TelTip": "请输入有效的手机号码",
     "Registered": "注册时间",
     "ShutDown": "关闭应用",
-    "Subscription": "订阅信息"
+    "Subscription": "订阅信息",
+    "Usage": "费用中心",
+    "Avatar": "头像",
+    "UserName": "用户名",
+    "Email": "邮箱"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -431,5 +435,9 @@
   "ServerStatus": "服务状态",
   "Fee": "费用",
   "PleaseCloseApplicationFirst": "请先关闭应用",
-  "custom": "自定义"
+  "custom": "自定义",
+  "CostTime": "扣费时间",
+  "Duration": "计费周期",
+  "State": "状态",
+  "TotalAmount": "总费用"
 }

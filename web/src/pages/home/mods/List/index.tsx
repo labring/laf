@@ -21,8 +21,7 @@ import { useMutation } from "@tanstack/react-query";
 import CopyText from "@/components/CopyText";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
-import { APP_STATUS, Pages } from "@/constants";
-import { APP_PHASE_STATUS } from "@/constants/index";
+import { APP_PHASE_STATUS, APP_STATUS, Pages } from "@/constants";
 import { formatDate } from "@/utils/format";
 import getRegionById from "@/utils/getRegionById";
 

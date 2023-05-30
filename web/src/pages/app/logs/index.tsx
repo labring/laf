@@ -42,14 +42,14 @@ const LIMIT_OPTIONS = [100, 150, 200];
 
 const DEFAULT_PAGE_INFO = {
   page: 1,
-  limit: 100,
+  pageSize: 100,
 };
 
 export default function LogsPage() {
   type FormData = {
     requestId: string;
     functionName: string;
-    limit: number;
+    pageSize: number;
     page: number;
   };
 
