@@ -11,7 +11,7 @@ import { TPAT, useAddPATMutation, useDelPATMutation, usePATQuery } from "./servi
 
 const PATList = () => {
   const [formatPATList, setFormatPATList] = useState<TPAT[]>();
-  const [tokenList, setTokenList] = useState<{ id: string; token: string }[]>([]);
+  const [tokenList, setTokenList] = useState<{ _id: string; token: string }[]>([]);
   usePATQuery((data) => {
     const newPATList = (data || []).map((item: any) => {
       return {
@@ -26,7 +26,7 @@ const PATList = () => {
   const addPATMutation = useAddPATMutation((data: any) => {
     const newTokenList = [...tokenList];
     newTokenList.push({
-      id: data._id,
+      _id: data._id,
       token: data.token,
     });
     setTokenList(newTokenList);
