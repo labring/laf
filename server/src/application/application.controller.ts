@@ -106,7 +106,7 @@ export class ApplicationController {
     // check account balance
     const account = await this.account.findOne(user._id)
     const balance = account?.balance || 0
-    if (!isTrialTier && balance <= 0) {
+    if (!isTrialTier && balance < 0) {
       return ResponseUtil.error(`account balance is not enough`)
     }
 
@@ -221,7 +221,7 @@ export class ApplicationController {
     // check account balance
     const account = await this.account.findOne(user._id)
     const balance = account?.balance || 0
-    if (balance <= 0) {
+    if (balance < 0) {
       return ResponseUtil.error(`account balance is not enough`)
     }
 
