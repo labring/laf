@@ -8,32 +8,44 @@ import * as assert from 'assert'
 import { ApplicationBilling } from './entities/application-billing'
 import { CalculatePriceDto } from './dto/calculate-price.dto'
 
+export interface BillingQuery {
+  appid?: string
+  startTime?: Date
+  endTime?: Date
+  page: number
+  pageSize: number
+}
+
 @Injectable()
 export class BillingService {
   private readonly db = SystemDatabase.db
 
   constructor(private readonly resource: ResourceService) {}
 
-  async findAllByAppId(
-    appid: string,
-    startTime: Date,
-    endTime: Date,
-    page: number,
-    pageSize: number,
-  ) {
+  async query(userId: ObjectId, condition?: BillingQuery) {
+    const query = { createdBy: userId }
+
+    if (condition.endTime) {
+      query['endAt'] = { $lte: condition.endTime }
+    }
+
+    if (condition.startTime) {
+      query['startAt'] = { $gte: condition.startTime }
+    }
+
+    if (condition.appid) {
+      query['appid'] = condition.appid
+    }
+
+    const { page, pageSize } = condition
+
     const total = await this.db
       .collection<ApplicationBilling>('ApplicationBilling')
-      .countDocuments({ appid, createdAt: { $gte: startTime, $lte: endTime } })
+      .countDocuments(query)
 
     const billings = await this.db
       .collection<ApplicationBilling>('ApplicationBilling')
-      .find({
-        appid,
-        createdAt: {
-          $gte: startTime,
-          $lte: endTime,
-        },
-      })
+      .find(query)
       .skip((page - 1) * pageSize)
       .limit(pageSize)
       .sort({ startTime: -1 })

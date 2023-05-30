@@ -86,19 +86,12 @@ export class BillingTaskService {
 
     const billing = res.value
 
-    // get application
-    const app = await db
-      .collection<Application>('Application')
-      .findOne({ appid: billing.appid })
-
-    assert(app, `Application ${billing.appid} not found`)
-
     // get account
     const account = await db
       .collection<Account>('Account')
-      .findOne({ createdBy: app.createdBy })
+      .findOne({ createdBy: billing.createdBy })
 
-    assert(account, `Account ${app.createdBy} not found`)
+    assert(account, `Account ${billing.createdBy} not found`)
 
     // pay billing
     const session = SystemDatabase.client.startSession()
@@ -123,7 +116,7 @@ export class BillingTaskService {
             accountId: account._id,
             amount: -amount,
             balance: res.value.balance,
-            message: `Application ${app.appid} billing`,
+            message: `Application ${billing.appid} billing`,
             billingId: billing._id,
             createdAt: new Date(),
           },
@@ -144,7 +137,7 @@ export class BillingTaskService {
           await db
             .collection<Application>('Application')
             .updateOne(
-              { appid: app.appid, state: ApplicationState.Running },
+              { appid: billing.appid, state: ApplicationState.Running },
               { $set: { state: ApplicationState.Stopped } },
               { session },
             )
@@ -191,8 +184,6 @@ export class BillingTaskService {
   }
 
   private async createApplicationBilling(app: Application) {
-    this.logger.debug(`processApplicationBilling ${app.appid}`)
-
     const appid = app.appid
     const db = SystemDatabase.db
 
@@ -268,6 +259,7 @@ export class BillingTaskService {
       lockedAt: TASK_LOCK_INIT_TIME,
       createdAt: new Date(),
       updatedAt: new Date(),
+      createdBy: app.createdBy,
     })
 
     return nextMeteringTime
