@@ -55,7 +55,7 @@ export class WebsiteService {
       .aggregate<WebsiteHostingWithBucket>()
       .match({ appid })
       .lookup({
-        from: 'Bucket',
+        from: 'StorageBucket',
         localField: 'bucketName',
         foreignField: 'name',
         as: 'bucket',
@@ -72,7 +72,7 @@ export class WebsiteService {
       .aggregate<WebsiteHostingWithBucket>()
       .match({ _id: id })
       .lookup({
-        from: 'Bucket',
+        from: 'StorageBucket',
         localField: 'bucketName',
         foreignField: 'name',
         as: 'bucket',
