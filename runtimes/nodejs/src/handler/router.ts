@@ -42,4 +42,20 @@ router.get('/_/healthz', (_req, res) => res.status(200).send('ok'))
  * Invoke cloud function through HTTP request.
  * @method *
  */
-router.all('/:name', uploader.any(), handleInvokeFunction)
+// router.all('/:name', uploader.any(), handleInvokeFunction)
+router.all('*', uploader.any(), (req, res) => {
+  let func_name = req.path
+
+  // remove the leading slash
+  if (func_name.startsWith('/')) {
+    func_name = func_name.slice(1)
+  }
+
+  // check length
+  if (func_name.length > 256) {
+    return res.status(500).send('function name is too long')
+  }
+
+  req.params['name'] = func_name
+  handleInvokeFunction(req, res)
+})

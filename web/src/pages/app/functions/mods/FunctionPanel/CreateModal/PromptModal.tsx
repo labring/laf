@@ -151,7 +151,7 @@ const PromptModal = (props: {
                 <Input
                   {...register("name", {
                     pattern: {
-                      value: /^[a-zA-Z0-9_.-]{1,128}$/,
+                      value: /^[a-zA-Z0-9_.-\/]{1,256}$/,
                       message: t("FunctionPanel.FunctionNameRule"),
                     },
                   })}

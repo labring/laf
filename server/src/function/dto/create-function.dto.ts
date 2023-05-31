@@ -15,7 +15,7 @@ export class CreateFunctionDto {
     description: 'Function name is unique in the application',
   })
   @IsNotEmpty()
-  @Matches(/^[a-zA-Z0-9_.-]{1,128}$/)
+  @Matches(/^[a-zA-Z0-9_.-\/]{1,256}$/)
   name: string
 
   @ApiPropertyOptional()
