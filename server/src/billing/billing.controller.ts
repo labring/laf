@@ -4,6 +4,7 @@ import {
   Logger,
   Param,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
@@ -12,78 +13,95 @@ import {
   ApiResponsePagination,
   ResponseUtil,
 } from 'src/utils/response'
-import { BillingService } from './billing.service'
+import { BillingQuery, BillingService } from './billing.service'
 
 import { ApplicationBilling } from './entities/application-billing'
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
 import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
 import { ObjectId } from 'mongodb'
+import { IRequest } from 'src/utils/interface'
 
 @ApiTags('Billing')
 @ApiBearerAuth('Authorization')
-@Controller('apps/:appid/billings')
+@Controller('billings')
 export class BillingController {
   private readonly logger = new Logger(BillingController.name)
 
   constructor(private readonly billing: BillingService) {}
 
   /**
-   * Get all billing of application
+   * Get my billings
    */
   @ApiOperation({ summary: 'Get billings of an application' })
   @ApiResponsePagination(ApplicationBilling)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @UseGuards(JwtAuthGuard)
+  @ApiQuery({
+    name: 'appid',
+    type: String,
+    description: 'appid',
+    required: false,
+  })
   @ApiQuery({
     name: 'startTime',
     type: String,
     description: 'pagination start time',
-    required: true,
+    required: false,
+    example: '2021-01-01T00:00:00.000Z',
   })
   @ApiQuery({
     name: 'endTime',
     type: String,
     description: 'pagination end time',
-    required: true,
+    required: false,
+    example: '2022-01-01T00:00:00.000Z',
   })
   @ApiQuery({
     name: 'page',
     type: Number,
     description: 'page number',
-    required: true,
+    required: false,
+    example: 1,
   })
   @ApiQuery({
     name: 'pageSize',
     type: Number,
     description: 'page size',
-    required: true,
+    required: false,
+    example: 10,
   })
   @Get()
-  async findAllByAppId(
-    @Param('appid') appid: string,
-    @Query('startTime') startTime: string,
-    @Query('endTime') endTime: string,
-    @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
+  async findAll(
+    @Req() req: IRequest,
+    @Query('appid') appid?: string,
+    @Query('startTime') startTime?: string,
+    @Query('endTime') endTime?: string,
+    @Query('page') page?: number,
+    @Query('pageSize') pageSize?: number,
   ) {
-    const billings = await this.billing.findAllByAppId(
-      appid,
-      new Date(startTime),
-      new Date(endTime),
-      page,
-      pageSize,
-    )
-    return ResponseUtil.ok(billings)
-  }
+    const query: BillingQuery = {
+      page: page || 1,
+      pageSize: pageSize || 10,
+    }
 
-  /**
-   * Get billing by id
-   */
-  @ApiOperation({ summary: 'Get billing by id' })
-  @ApiResponseObject(ApplicationBilling)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
-  @Get(':id')
-  async findOne(@Param('appid') appid: string, @Param('id') id: string) {
-    const billing = await this.billing.findOne(appid, new ObjectId(id))
-    return ResponseUtil.ok(billing)
+    if (query.pageSize > 100) {
+      query.pageSize = 100
+    }
+
+    if (appid) {
+      query.appid = appid
+    }
+
+    if (startTime) {
+      query.startTime = new Date(startTime)
+    }
+
+    if (endTime) {
+      query.endTime = new Date(endTime)
+    }
+
+    const user = req.user
+
+    const billings = await this.billing.query(user._id, query)
+    return ResponseUtil.ok(billings)
   }
 }

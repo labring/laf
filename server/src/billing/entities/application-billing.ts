@@ -56,6 +56,9 @@ export class ApplicationBilling {
 
   lockedAt: Date
 
+  @ApiProperty({ type: String })
+  createdBy: ObjectId
+
   @ApiProperty()
   createdAt: Date
 
