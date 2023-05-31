@@ -58,6 +58,7 @@ export class AccountController {
   async findOne(@Req() req: IRequest) {
     const user = req.user
     const data = await this.accountService.findOne(user._id)
+    data.balance = Math.floor(data.balance)
     return ResponseUtil.ok(data)
   }
 
