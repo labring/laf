@@ -202,12 +202,12 @@ export class FunctionService {
     appid: string,
     params: {
       page: number
-      limit: number
+      pageSize: number
       requestId?: string
       functionName?: string
     },
   ) {
-    const { page, limit, requestId, functionName } = params
+    const { page, pageSize, requestId, functionName } = params
     const { db, client } = await this.databaseService.findAndConnect(appid)
 
     try {
@@ -222,8 +222,8 @@ export class FunctionService {
 
       const data = await coll
         .find(query, {
-          limit,
-          skip: (page - 1) * limit,
+          limit: pageSize,
+          skip: (page - 1) * pageSize,
           sort: { _id: -1 },
         })
         .toArray()

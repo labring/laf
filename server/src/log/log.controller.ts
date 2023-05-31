@@ -49,9 +49,9 @@ export class LogController {
     required: false,
   })
   @ApiQuery({
-    name: 'limit',
+    name: 'pageSize',
     type: String,
-    description: 'The limit number, default is 10',
+    description: 'The page size, default is 10',
     required: false,
   })
   @Get('functions')
@@ -59,16 +59,16 @@ export class LogController {
     @Param('appid') appid: string,
     @Query('requestId') requestId?: string,
     @Query('functionName') functionName?: string,
-    @Query('limit') limit?: number,
+    @Query('pageSize') pageSize?: number,
     @Query('page') page?: number,
   ) {
     page = page || 1
-    limit = limit || 10
+    pageSize = pageSize || 10
 
     const res = await this.funcService.getLogs(appid, {
       requestId,
       functionName,
-      limit,
+      pageSize: pageSize,
       page,
     })
 
@@ -76,8 +76,8 @@ export class LogController {
       list: res.data,
       total: res.total,
       page,
-      limit, // @deprecated use pageSize instead
-      pageSize: limit,
+      limit: pageSize, // @deprecated use pageSize instead
+      pageSize: pageSize,
     })
   }
 }
