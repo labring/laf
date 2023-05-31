@@ -34,7 +34,7 @@ export default function Usage() {
       <h1 className="mb-4 text-2xl font-bold">Usage</h1>
       <HStack className="mt-4">
         <span className=" text-grayModern-500">{t("Balance")}:</span>
-        <span>{accountRes?.data?.balance}</span>
+        <span>{(accountRes?.data?.balance ?? 0) / 100}</span>
         <ChargeButton>
           <span className="cursor-pointer text-blue-800">{t("ChargeNow")}</span>
         </ChargeButton>

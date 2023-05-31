@@ -48,7 +48,7 @@ export class BillingService {
       .find(query)
       .skip((page - 1) * pageSize)
       .limit(pageSize)
-      .sort({ startTime: -1 })
+      .sort({ startAt: -1 })
       .toArray()
 
     const res = {
