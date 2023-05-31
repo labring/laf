@@ -28,7 +28,7 @@ export class BillingTaskService {
   constructor(private readonly billing: BillingService) {}
 
   @Cron(CronExpression.EVERY_5_MINUTES)
-  async tick() {
+  async createBillingScheduler() {
     const db = SystemDatabase.db
     if (ServerConfig.DISABLED_BILLING_TASK) {
       return
@@ -42,14 +42,10 @@ export class BillingTaskService {
         },
       })
 
-    if (total === 0) {
-      return
-    }
-
     const concurrency = total > 30 ? 30 : total
     if (total > 30) {
       setTimeout(() => {
-        this.tick()
+        this.createBillingScheduler()
       }, 3000)
     }
 
@@ -57,7 +53,31 @@ export class BillingTaskService {
       this.handleApplicationBillingCreating().catch((err) => {
         this.logger.error('handleApplicationBillingCreating error', err)
       })
+    })
+  }
 
+  @Cron(CronExpression.EVERY_SECOND)
+  async payBillingScheduler() {
+    const db = SystemDatabase.db
+    if (ServerConfig.DISABLED_BILLING_TASK) {
+      return
+    }
+
+    const total = await db
+      .collection<ApplicationBilling>('ApplicationBilling')
+      .countDocuments({
+        state: ApplicationBillingState.Pending,
+        lockedAt: { $lt: new Date(Date.now() - 1000 * 60) },
+      })
+
+    const concurrency = total > 30 ? 30 : total
+    if (total > 30) {
+      setTimeout(() => {
+        this.payBillingScheduler()
+      }, 3000)
+    }
+
+    times(concurrency, () => {
       this.handlePendingApplicationBilling().catch((err) => {
         this.logger.error('handlePendingApplicationBilling error', err)
       })
@@ -73,7 +93,7 @@ export class BillingTaskService {
         {
           state: ApplicationBillingState.Pending,
           lockedAt: {
-            $lt: new Date(Date.now() - 1000 * this.lockTimeout),
+            $lt: new Date(Date.now() - 1000 * 60),
           },
         },
         { $set: { lockedAt: new Date() } },
