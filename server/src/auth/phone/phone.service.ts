@@ -85,7 +85,7 @@ export class PhoneService {
       )
 
       // create invite relation
-      if (inviteCode && inviteCode.length === 7) {
+      if (inviteCode) {
         const result = await this.db
           .collection<InviteCode>('InviteCode')
           .findOne({

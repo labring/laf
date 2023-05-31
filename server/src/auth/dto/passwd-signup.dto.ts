@@ -62,7 +62,6 @@ export class PasswdSignupDto {
   })
   @IsOptional()
   @IsString()
-  @Length(7, 7)
   @Matches(/^\S+$/, { message: 'invalid characters' })
   inviteCode: string
 }
