@@ -26,40 +26,34 @@ const NormalTr = function (props: {
           </Td>
         );
       })}
-      <Td maxWidth="150px" className="flex">
-        <>
-          {configuration?.operationButtonsRender
-            ? configuration.operationButtonsRender(data)
-            : null}
-          {!configuration?.hiddenEditButton ? (
-            <IconWrap
-              className="mr-2"
-              tooltip={
-                configuration?.editButtonText ? configuration.editButtonText : t("Edit").toString()
-              }
-              size={20}
-            >
-              <EditIcon fontSize={15} onClick={() => onEdit(data[configuration.key])} />
-            </IconWrap>
-          ) : null}
-          <ConfirmButton
-            onSuccessAction={() => onDelete(data[configuration.key])}
-            headerText={
+      <Td className="mr-2 flex items-end justify-end">
+        {configuration?.operationButtonsRender ? configuration.operationButtonsRender(data) : null}
+        {!configuration?.hiddenEditButton ? (
+          <IconWrap
+            className="mr-2"
+            tooltip={
+              configuration?.editButtonText ? configuration.editButtonText : t("Edit").toString()
+            }
+            size={20}
+          >
+            <EditIcon fontSize={15} onClick={() => onEdit(data[configuration.key])} />
+          </IconWrap>
+        ) : null}
+        <ConfirmButton
+          onSuccessAction={() => onDelete(data[configuration.key])}
+          headerText={
+            configuration?.deleteButtonText ? configuration.deleteButtonText : String(t("Delete"))
+          }
+          bodyText={t("DeleteConfirm")}
+        >
+          <IconWrap
+            tooltip={
               configuration?.deleteButtonText ? configuration.deleteButtonText : String(t("Delete"))
             }
-            bodyText={t("DeleteConfirm")}
           >
-            <IconWrap
-              tooltip={
-                configuration?.deleteButtonText
-                  ? configuration.deleteButtonText
-                  : String(t("Delete"))
-              }
-            >
-              <DeleteIcon fontSize={15} />
-            </IconWrap>
-          </ConfirmButton>
-        </>
+            <DeleteIcon fontSize={15} />
+          </IconWrap>
+        </ConfirmButton>
       </Td>
     </>
   );

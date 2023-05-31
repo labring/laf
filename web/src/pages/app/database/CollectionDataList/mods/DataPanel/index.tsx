@@ -40,7 +40,7 @@ export default function DataPanel() {
   type QueryData = {
     _id: string;
     page: number;
-    limit?: number;
+    pageSize?: number;
     total?: number;
   };
 
@@ -74,9 +74,9 @@ export default function DataPanel() {
 
   useEffect(() => {
     if (entryDataQuery.isFetched && isAdd.status) {
-      const { total, page, limit } = getPageInfo(entryDataQuery.data);
+      const { total, page, pageSize } = getPageInfo(entryDataQuery.data);
       const newTotal = (total || 0) + isAdd.count;
-      const maxPage = limit ? Math.ceil(newTotal / limit) : -1;
+      const maxPage = pageSize ? Math.ceil(newTotal / pageSize) : -1;
       // Calculate and jump to the maxPage after adding
       if (maxPage > 0 && page !== maxPage) {
         setQueryData((pre: any) => {

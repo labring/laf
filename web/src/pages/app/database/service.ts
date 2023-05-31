@@ -45,7 +45,8 @@ export const useEntryDataQuery = (params: any, onSuccess: (data: any) => void) =
     [queryKeys.useEntryDataQuery(currentDB?.name || ""), params],
     async () => {
       if (!currentDB) return;
-      const { limit = 10, page = 1, _id } = params;
+      const { pageSize = 10, page = 1, _id } = params;
+      debugger;
 
       const query = _id ? { _id } : {};
 
@@ -53,14 +54,14 @@ export const useEntryDataQuery = (params: any, onSuccess: (data: any) => void) =
       const res = await db
         .collection(currentDB?.name)
         .where(query)
-        .limit(limit)
-        .skip((page - 1) * limit)
+        .limit(pageSize)
+        .skip((page - 1) * pageSize)
         .get();
 
       // 获取数据总数
       const { total } = await db.collection(currentDB?.name).where(query).count();
       onSuccess && onSuccess(res);
-      return { list: res.data, total, page, limit };
+      return { list: res.data, total, page, pageSize: pageSize };
     },
     {
       enabled: !!currentDB,
