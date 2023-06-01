@@ -161,7 +161,8 @@ const CreateAppModal = (props: {
     if (isOpen) {
       billingQuery.refetch();
     }
-  }, [isOpen, bundle, billingQuery]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, bundle]);
 
   const updateAppMutation = useMutation((params: any) => ApplicationControllerUpdateName(params));
   const createAppMutation = useMutation((params: any) => ApplicationControllerCreate(params));
