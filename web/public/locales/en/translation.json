@@ -111,7 +111,8 @@
     "UploadButton": "upload",
     "LeaveFunctionPage": "About to leave the function edit page",
     "PromptDescription": "Use natural language to describe your needs, laf will help you generate code, for example: help me write a hello world, return {hello: 'laf AI'}",
-    "CreateWithAITip": "Create functions with AI assistance"
+    "CreateWithAITip": "Create functions with AI assistance",
+    "getCodeOnline": "Retrieve the latest released online code"
   },
   "HomePanel": {
     "APP": "Android or iOS app",
