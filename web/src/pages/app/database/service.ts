@@ -46,7 +46,6 @@ export const useEntryDataQuery = (params: any, onSuccess: (data: any) => void) =
     async () => {
       if (!currentDB) return;
       const { pageSize = 10, page = 1, _id } = params;
-      debugger;
 
       const query = _id ? { _id } : {};
 

@@ -29,7 +29,7 @@ const AppEnvList = () => {
   return (
     <>
       <div className="flex h-full flex-col">
-        <div className="flex h-[50px] flex-none justify-between">
+        <div className="flex flex-none justify-between">
           <HStack spacing={2}>
             <Box
               className={clsx("text-xl font-medium", {

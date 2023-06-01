@@ -58,9 +58,9 @@ const SettingModal = (props: {
         <ModalContent maxW={"80%"} width={"auto"} minW={"1000px"}>
           <ModalHeader>{headerTitle || t("SettingPanel.Setting")}</ModalHeader>
           <ModalCloseButton />
-          <ModalBody py={2} flex="none">
+          <ModalBody py={2} flex="none" minH="60vh" className="relative">
             <Box className="flex h-full" borderColor={borderColor}>
-              <SectionList className="mr-4 min-w-[200px] border-r pr-4">
+              <SectionList className="absolute bottom-0 top-0 mr-4 min-w-[200px] border-r pr-4">
                 {tabMatch.map((tab) => {
                   return (
                     <SectionList.Item
@@ -76,7 +76,7 @@ const SettingModal = (props: {
                   );
                 })}
               </SectionList>
-              <div className="w-full p-2">
+              <div className="ml-[210px] w-full overflow-hidden p-2">
                 {React.cloneElement(item?.component || <></>, {
                   onClose,
                 })}

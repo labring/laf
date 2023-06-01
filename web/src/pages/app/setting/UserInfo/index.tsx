@@ -3,7 +3,7 @@ import { Avatar, Box, HStack } from "@chakra-ui/react";
 import { t } from "i18next";
 
 import ChargeButton from "@/components/ChargeButton";
-import { formatDate, hidePhoneNumber } from "@/utils/format";
+import { formatDate, formatPrice, hidePhoneNumber } from "@/utils/format";
 
 import AuthDetail from "./AuthDetail";
 
@@ -54,7 +54,7 @@ export default function UserInfo() {
 
             <HStack className="mt-4">
               <span className=" text-grayModern-500">{t("Balance")}:</span>
-              <span>{accountRes?.data?.balance}</span>
+              <span>{formatPrice(accountRes?.data?.balance)}</span>
               <ChargeButton>
                 <span className="cursor-pointer text-blue-800">{t("ChargeNow")}</span>
               </ChargeButton>
