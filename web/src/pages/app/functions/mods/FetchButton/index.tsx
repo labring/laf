@@ -7,10 +7,12 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import { SynchronizeDownIcon } from "@/components/CommonIcon";
 import CommonDiffEditor from "@/components/Editor/CommonDiffEditor";
 
 import { useFunctionDetailQuery } from "../../service";
@@ -32,16 +34,19 @@ export default function FetchButton() {
 
   return (
     <>
-      <Button
-        variant={"text"}
-        isLoading={functionDetailQuery.isFetching}
-        disabled={store.getFunctionUrl() === ""}
-        onClick={() => {
-          onOpen();
-        }}
-      >
-        {t("FunctionPanel.Fetch")}
-      </Button>
+      <Tooltip label={t("FunctionPanel.getCodeOnline")} placement="bottom">
+        <Button
+          variant={"text"}
+          isLoading={functionDetailQuery.isFetching}
+          disabled={store.getFunctionUrl() === ""}
+          onClick={() => {
+            onOpen();
+          }}
+          leftIcon={<SynchronizeDownIcon />}
+        >
+          {t("FunctionPanel.Fetch")}
+        </Button>
+      </Tooltip>
 
       {isOpen && !functionDetailQuery.isFetching ? (
         <Modal isOpen={isOpen} onClose={onClose} size="6xl" isCentered>

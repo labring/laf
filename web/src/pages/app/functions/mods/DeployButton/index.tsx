@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import { SynchronizeUpIcon } from "@/components/CommonIcon";
 import CommonDiffEditor from "@/components/Editor/CommonDiffEditor";
 import { Pages } from "@/constants";
 
@@ -79,6 +80,7 @@ export default function DeployButton() {
           onClick={() => {
             onOpen();
           }}
+          leftIcon={<SynchronizeUpIcon />}
         >
           {t("FunctionPanel.Deploy")}
         </Button>

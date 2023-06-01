@@ -105,13 +105,14 @@
     "SystemDependence": "内置依赖",
     "Value": "值",
     "isSupport": "是否支持",
-    "FunctionNameRule": "函数名须由字母、数字、点（.）和划线(-_)组成，匹配正则：/^[a-zA-Z0-9_.-\/]{1,256}$/",
+    "FunctionNameRule": "函数名须由字母、数字、点（.）和划线(-_)组成，匹配正则：/^[a-zA-Z0-9_.-/]{1,256}$/",
     "EmptyDebugTip": "暂无运行结果",
     "EmptyFunctionTip": "您还没有创建函数",
     "UploadButton": "上传",
     "LeaveFunctionPage": "即将离开函数编辑页面",
     "PromptDescription": "使用自然语言描述你的需求, laf 会帮你生成代码, 例如: 写一个 hello world ,返回 {hello: 'laf AI'}",
-    "CreateWithAITip": "使用 AI 辅助创建函数"
+    "CreateWithAITip": "使用 AI 辅助创建函数",
+    "getCodeOnline": "获取线上最新发布的代码"
   },
   "HomePanel": {
     "APP": "Android or iOS 应用",
