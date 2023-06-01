@@ -276,8 +276,8 @@ stream_plugins:
 pluginAttrs: {}
 
 extPlugin:
-  enabled: false
-  cmd: ["/path/to/apisix-plugin-runner/runner", "run"]
+  enabled: true
+  cmd: ["/runner/go-plugins", "run"]
 
 wasmPlugins:
   enabled: false
