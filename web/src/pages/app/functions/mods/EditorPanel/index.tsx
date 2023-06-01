@@ -54,8 +54,8 @@ function EditorPanel() {
             ) : null}
           </HStack>
 
-          <HStack>
-            <CopyText text={getFunctionUrl()} className="mr-6">
+          <HStack spacing={0}>
+            <CopyText text={getFunctionUrl()} className="mr-4">
               <Input w={"240px"} size="sm" readOnly value={getFunctionUrl()} />
             </CopyText>
 

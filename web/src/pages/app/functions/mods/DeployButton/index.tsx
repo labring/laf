@@ -84,6 +84,7 @@ export default function DeployButton() {
             onOpen();
           }}
           leftIcon={<SynchronizeUpIcon />}
+          className="w-16"
         >
           {t("FunctionPanel.Deploy")}
         </Button>
