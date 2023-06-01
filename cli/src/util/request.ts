@@ -79,7 +79,7 @@ request.interceptors.response.use(
         console.log('The server is abnormal, please contact the administrator!')
         process.exit(1)
       }
-      return Promise.reject(error)
+      return Promise.reject(error.message)
     }
   },
 )

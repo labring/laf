@@ -50,7 +50,7 @@ async function getRegionMap(): Promise<Map<string, any>> {
   const regionMap = new Map<string, any>()
   const regions = await regionControllerGetRegions()
   for (let region of regions) {
-    regionMap.set(region.id, region)
+    regionMap.set(region._id, region)
   }
   return regionMap
 }
