@@ -20,10 +20,9 @@ import {
 } from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { t } from "i18next";
-import { debounce, find } from "lodash";
+import { find } from "lodash";
 
 import ChargeButton from "@/components/ChargeButton";
-// import ChargeButton from "@/components/ChargeButton";
 import { APP_STATUS } from "@/constants/index";
 import { formatPrice } from "@/utils/format";
 
@@ -158,19 +157,11 @@ const CreateAppModal = (props: {
     },
   );
 
-  const debouncedInputChange = debounce(() => {
+  useEffect(() => {
     if (isOpen) {
       billingQuery.refetch();
     }
-  }, 600);
-
-  useEffect(() => {
-    debouncedInputChange();
-    return () => {
-      debouncedInputChange.cancel();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bundle, isOpen]);
+  }, [isOpen, bundle, billingQuery]);
 
   const updateAppMutation = useMutation((params: any) => ApplicationControllerUpdateName(params));
   const createAppMutation = useMutation((params: any) => ApplicationControllerCreate(params));
@@ -266,7 +257,7 @@ const CreateAppModal = (props: {
                   <FormLabel htmlFor="name">{t("HomePanel.Application") + t("Name")}</FormLabel>
                   <Input
                     {...register("name", {
-                      required: `${t("HomePanel.Application")} ${t("IsRequired")}`,
+                      required: `${t("HomePanel.Application") + t("Name") + t("IsRequired")}`,
                     })}
                   />
                   <FormErrorMessage>{errors?.name && errors?.name?.message}</FormErrorMessage>

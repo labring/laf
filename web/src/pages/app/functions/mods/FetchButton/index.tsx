@@ -46,6 +46,7 @@ export default function FetchButton() {
             onOpen();
           }}
           leftIcon={<SynchronizeDownIcon />}
+          className="w-16"
         >
           {t("FunctionPanel.Fetch")}
         </Button>
