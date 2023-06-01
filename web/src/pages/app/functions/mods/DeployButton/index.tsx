@@ -35,9 +35,12 @@ export default function DeployButton() {
 
   const updateFunctionMutation = useUpdateFunctionMutation();
 
-  const functionDetailQuery = useFunctionDetailQuery(store.currentFunction.name, {
-    enabled: isOpen,
-  });
+  const functionDetailQuery = useFunctionDetailQuery(
+    encodeURIComponent(store.currentFunction.name),
+    {
+      enabled: isOpen,
+    },
+  );
 
   const { displayName } = useHotKey(
     DEFAULT_SHORTCUTS.deploy,
