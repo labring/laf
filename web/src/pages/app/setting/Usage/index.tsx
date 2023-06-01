@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import ChargeButton from "@/components/ChargeButton";
 import Pagination from "@/components/Pagination";
-import { formatDate } from "@/utils/format";
+import { formatDate, formatPrice } from "@/utils/format";
 import getPageInfo from "@/utils/getPageInfo";
 
 import { BillingControllerFindAll } from "@/apis/v1/billings";
@@ -34,7 +34,7 @@ export default function Usage() {
       <h1 className="mb-4 text-2xl font-bold">Usage</h1>
       <HStack className="mt-4">
         <span className=" text-grayModern-500">{t("Balance")}:</span>
-        <span>{(accountRes?.data?.balance ?? 0) / 100}</span>
+        <span>{formatPrice(accountRes?.data?.balance)}</span>
         <ChargeButton>
           <span className="cursor-pointer text-blue-800">{t("ChargeNow")}</span>
         </ChargeButton>
