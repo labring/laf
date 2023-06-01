@@ -251,7 +251,7 @@ const CreateAppModal = (props: {
       {isOpen && !isLoading ? (
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
-          <ModalContent maxW={"80%"} width={"auto"} minW={"500px"}>
+          <ModalContent maxW={"80%"} width={"auto"} minW={"500px"} m={"auto"}>
             <ModalHeader>{title}</ModalHeader>
             <ModalCloseButton />
 
