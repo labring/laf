@@ -26,9 +26,12 @@ export default function FetchButton() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const store = useFunctionStore((state) => state);
   const { currentFunction, updateFunctionCode, setIsFetchButtonClicked } = store;
-  const functionDetailQuery = useFunctionDetailQuery(store.currentFunction.name, {
-    enabled: isOpen,
-  });
+  const functionDetailQuery = useFunctionDetailQuery(
+    encodeURIComponent(store.currentFunction.name),
+    {
+      enabled: isOpen,
+    },
+  );
   const data = functionDetailQuery.data?.data?.source?.code;
   const { showSuccess } = useGlobalStore((state) => state);
 
