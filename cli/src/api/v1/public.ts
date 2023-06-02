@@ -1,5 +1,10 @@
-import { request, RequestParams } from '../../util/request'
-import { AppControllerGetRuntimesData, RegionControllerGetRegionsData } from './data-contracts'
+import { request, RequestParams } from "../../util/request";
+import {
+  AppControllerGetRuntimesData,
+  RegionControllerGetRegionsData,
+  SettingControllerGetSettingByKeyData,
+  SettingControllerGetSettingsData,
+} from "./data-contracts";
 
 /**
  * No description
@@ -14,9 +19,9 @@ export async function appControllerGetRuntimes(
 ): Promise<AppControllerGetRuntimesData> {
   return request({
     url: `/v1/runtimes`,
-    method: 'GET',
+    method: "GET",
     ...configParams,
-  })
+  });
 }
 /**
  * No description
@@ -31,7 +36,42 @@ export async function regionControllerGetRegions(
 ): Promise<RegionControllerGetRegionsData> {
   return request({
     url: `/v1/regions`,
-    method: 'GET',
+    method: "GET",
     ...configParams,
-  })
+  });
+}
+/**
+ * No description
+ *
+ * @tags Public
+ * @name SettingControllerGetSettings
+ * @summary Get site settings
+ * @request GET:/v1/settings
+ */
+export async function settingControllerGetSettings(
+  configParams: RequestParams = {},
+): Promise<SettingControllerGetSettingsData> {
+  return request({
+    url: `/v1/settings`,
+    method: "GET",
+    ...configParams,
+  });
+}
+/**
+ * No description
+ *
+ * @tags Public
+ * @name SettingControllerGetSettingByKey
+ * @summary Get one site setting by key
+ * @request GET:/v1/settings/{key}
+ */
+export async function settingControllerGetSettingByKey(
+  key: string,
+  configParams: RequestParams = {},
+): Promise<SettingControllerGetSettingByKeyData> {
+  return request({
+    url: `/v1/settings/${key}`,
+    method: "GET",
+    ...configParams,
+  });
 }

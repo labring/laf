@@ -6,7 +6,6 @@ export class FunctionSchema {
   name: string
   description?: string
   tags?: string[]
-  websocket?: boolean
   methods: string[]
 
   static read(name: string): FunctionSchema {
