@@ -418,15 +418,9 @@ const CreateAppModal = (props: {
               {type === "edit" || isLoading ? null : (
                 <div className="flex items-center">
                   {t("Fee")}:
-                  {totalPrice <= 0 ? (
-                    <span className="ml-2 text-xl font-semibold text-red-500">
-                      {t("Price.Free")}
-                    </span>
-                  ) : (
-                    <span className="ml-2 text-xl font-semibold text-red-500">
-                      {totalPrice} / hour
-                    </span>
-                  )}
+                  <span className="ml-2 text-xl font-semibold text-red-500">
+                    {totalPrice} / hour
+                  </span>
                 </div>
               )}
               <div className="mr-2 flex items-center">
