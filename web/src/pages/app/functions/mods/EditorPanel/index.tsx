@@ -90,7 +90,7 @@ function EditorPanel() {
       {currentFunction?.name && (
         <FunctionEditor
           colorMode={colorMode}
-          className="flex-grow overflow-hidden"
+          className="flex-grow"
           style={{
             marginLeft: -14,
             marginRight: -14,

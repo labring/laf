@@ -2,7 +2,7 @@
  * cloud functions SideBar menu
  ***************************/
 
-import { useNavigate, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { Center } from "@chakra-ui/react";
 import clsx from "clsx";
 import { t } from "i18next";
@@ -19,7 +19,8 @@ import UserSetting from "@/layouts/Header/UserSetting";
 import useGlobalStore from "@/pages/globalStore";
 type TIcon = {
   pageId: string;
-  component: any;
+  component?: React.ReactNode;
+  icon?: React.ReactNode;
   name?: string;
 };
 export default function SideBar() {
@@ -32,7 +33,7 @@ export default function SideBar() {
   const ICONS: TIcon[] = [
     {
       pageId: "nav",
-      component: (
+      icon: (
         <div className="relative flex flex-col items-center">
           <img className="mt-2" src="/logo.png" alt="logo" width={34} />
           <span className="scale-[.65] text-second">{currentRegion.displayName}</span>
@@ -42,22 +43,22 @@ export default function SideBar() {
     {
       pageId: Pages.function,
       name: String(t("FunctionPanel.Function")),
-      component: <Icons type="function" />,
+      icon: <Icons type="function" />,
     },
     {
       pageId: Pages.database,
       name: String(t("CollectionPanel.Collection")),
-      component: <Icons type="database" />,
+      icon: <Icons type="database" />,
     },
     {
       pageId: Pages.storage,
       name: String(t("StoragePanel.Storage")),
-      component: <Icons type="storage" />,
+      icon: <Icons type="storage" />,
     },
     {
       pageId: Pages.logs,
       name: String(t("LogPanel.Log")),
-      component: <Icons type="logs" />,
+      icon: <Icons type="logs" />,
     },
   ];
 
@@ -106,23 +107,37 @@ export default function SideBar() {
                       navigate(Routes.dashboard);
                     }}
                   >
-                    {item.component}
+                    {item.icon}
                   </Center>
+                );
+              }
+              if (item.icon) {
+                return (
+                  <NavLink
+                    to={`/app/${currentApp?.appid}/${item.pageId}`}
+                    key={item.pageId}
+                    className={clsx(styles.icon, " mx-2 items-center ", {
+                      [styles.current]: pageId === item.pageId,
+                      "my-4": item.name !== undefined,
+                    })}
+                    onClick={() => {
+                      if (item.name !== undefined) {
+                        setCurrentPage(item.pageId);
+                      }
+                    }}
+                  >
+                    {item.icon}
+                    <p className="scale-90">{item.name ? item.name : null}</p>
+                  </NavLink>
                 );
               }
               return (
                 <Center
                   key={item.pageId}
-                  className={clsx(styles.icon, " mx-2 ", {
+                  className={clsx(styles.icon, " mx-2 items-center ", {
                     [styles.current]: pageId === item.pageId,
                     "my-4": item.name !== undefined,
                   })}
-                  onClick={() => {
-                    if (item.name !== undefined) {
-                      setCurrentPage(item.pageId);
-                      navigate(`/app/${currentApp?.appid}/${item.pageId}`);
-                    }
-                  }}
                 >
                   {item.component}
                   <p className="scale-90">{item.name ? item.name : null}</p>
