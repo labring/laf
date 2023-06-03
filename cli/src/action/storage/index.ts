@@ -40,31 +40,37 @@ const policySelect = {
   ],
 }
 
-export async function create(bucketName, options) {
-  if (options) {
-  }
+export async function create(bucketName, options: { policy: string }) {
   const appSchema = AppSchema.read()
-  console.log('please select bucket storage policy')
-  const policyResult = await prompts(policySelect)
+  let policy = options.policy
+  if (!policy) {
+    console.log('please select bucket storage policy')
+    const policyResult = await prompts(policySelect)
+    policy = policyResult.policy
+  }
   const bucketDto: CreateBucketDto = {
     shortName: bucketName,
-    policy: policyResult.policy,
+    policy: policy as any,
   }
+
   await bucketControllerCreate(appSchema.appid, bucketDto)
   console.log(`${getEmoji('✅')} bucket ${bucketName} created`)
 }
 
-export async function update(bucketName, options) {
-  if (options) {
-  }
+export async function update(bucketName, options: { policy: string }) {
   const appSchema = AppSchema.read()
+  let policy = options.policy
+  if (!policy) {
+    console.log('please select the storage policy to be replaced')
+    const policyResult = await prompts(policySelect)
+    policy = policyResult.policy
+  }
   if (!bucketName.startsWith(appSchema.appid + '-')) {
     bucketName = appSchema.appid + '-' + bucketName
   }
-  console.log('please select the storage policy to be replaced')
-  const policyResult = await prompts(policySelect)
+
   const bucketDto: UpdateBucketDto = {
-    policy: policyResult.policy,
+    policy: policy as any,
   }
   await bucketControllerUpdate(appSchema.appid, bucketName, bucketDto)
   console.log(`${getEmoji('✅')} bucket ${bucketName} updated`)

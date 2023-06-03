@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Button,
   Input,
@@ -26,43 +26,36 @@ export default function ChargeButton(props: { amount?: number; children: React.R
   const { children } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const initialAmount = props.amount && props.amount > 0 ? props.amount : 100;
+  const [amount, setAmount] = React.useState<number>();
 
-  const [amount, setAmount] = React.useState(initialAmount);
+  const [phaseStatus, setPhaseStatus] = React.useState<string | undefined>();
 
-  const [phaseStatus, setPhaseStatus] = React.useState<"Pending" | "Paid" | undefined>();
-
-  const createChargeOrder = useMutation(
+  const { data: createOrderRes, ...createChargeOrder } = useMutation(
     ["AccountControllerCharge"],
     (params: any) => AccountControllerCharge(params),
     {},
   );
 
-  const accountQuery = useAccountQuery();
+  const { data: accountRes, refetch: accountRefetch } = useAccountQuery();
 
   useQuery(
     ["AccountControllerGetChargeOrder"],
     () =>
       AccountControllerGetChargeOrder({
-        id: createChargeOrder.data?.data?.order?.id,
+        id: createOrderRes?.data?.order?._id,
       }),
     {
-      enabled: !!createChargeOrder.data?.data?.order?.id && isOpen,
+      enabled: !!createOrderRes?.data?.order?._id && isOpen,
       refetchInterval: phaseStatus === "Pending" && isOpen ? 1000 : false,
-      onSuccess: (data) => {
-        setPhaseStatus(data.phase);
-        if (data.phase === "Paid") {
-          accountQuery.refetch();
+      onSuccess: (res) => {
+        setPhaseStatus(res?.data?.phase);
+        if (res?.data?.phase === "Paid") {
+          accountRefetch();
           onClose();
         }
       },
     },
   );
-
-  useEffect(() => {
-    const initialAmount = props.amount && props.amount > 0 ? props.amount : 100;
-    setAmount(initialAmount);
-  }, [props.amount]);
 
   return (
     <>
@@ -76,7 +69,7 @@ export default function ChargeButton(props: { amount?: number; children: React.R
             <div className="flex flex-col items-center text-xl">
               <h2 className="text-second">{t("Balance")}</h2>
               <h3 className="mb-4 text-3xl font-semibold">
-                {formatPrice(accountQuery.data?.balance)}
+                {formatPrice(accountRes?.data?.balance)}
               </h3>
               <p className="mb-2 text-second">{t("Recharge amount")}</p>
               <InputGroup>
@@ -90,13 +83,28 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                   }}
                 />
               </InputGroup>
+              <div className="mb-8 grid grid-cols-3 gap-1">
+                {[1000, 5000, 10000, 50000, 100000, 500000].map((item) => (
+                  <Button
+                    className="!rounded-sm"
+                    variant={"outline"}
+                    key={item}
+                    onClick={() => {
+                      console.log(123, item);
+                      setAmount(item / 100);
+                    }}
+                  >
+                    ¥{item / 100}
+                  </Button>
+                ))}
+              </div>
               <Button
                 className="w-full !rounded-full"
                 size="lg"
                 isLoading={createChargeOrder.isLoading}
                 onClick={() => {
                   createChargeOrder.mutateAsync({
-                    amount: convertMoney(amount),
+                    amount: convertMoney(amount || 0),
                     channel: CHARGE_CHANNEL.WeChat,
                     currency: CURRENCY.CNY,
                   });
@@ -106,16 +114,16 @@ export default function ChargeButton(props: { amount?: number; children: React.R
               </Button>
             </div>
 
-            {createChargeOrder.data?.data?.result?.code_url && (
+            {createOrderRes?.data?.result?.code_url && (
               <div className="mt-4 flex flex-col items-center text-xl ">
                 <h2 className="mb-2">{t("Scan with WeChat")}</h2>
                 <QRCodeSVG
-                  value={createChargeOrder.data?.data?.result?.code_url}
+                  value={createOrderRes?.data?.result?.code_url}
                   width={180}
                   height={180}
                 />
                 <p className="mt-4 text-base text-second ">
-                  {t("Order Number")}：{createChargeOrder.data?.data?.order?.id}
+                  {t("Order Number")}：{createOrderRes?.data?.order?._id}
                 </p>
                 <p className="mt-1 text-base text-second ">
                   {t("payment status")}: {phaseStatus}

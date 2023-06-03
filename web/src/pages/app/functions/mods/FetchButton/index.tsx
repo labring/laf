@@ -7,10 +7,12 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import { SynchronizeDownIcon } from "@/components/CommonIcon";
 import CommonDiffEditor from "@/components/Editor/CommonDiffEditor";
 
 import { useFunctionDetailQuery } from "../../service";
@@ -24,24 +26,31 @@ export default function FetchButton() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const store = useFunctionStore((state) => state);
   const { currentFunction, updateFunctionCode, setIsFetchButtonClicked } = store;
-  const functionDetailQuery = useFunctionDetailQuery(store.currentFunction.name, {
-    enabled: isOpen,
-  });
+  const functionDetailQuery = useFunctionDetailQuery(
+    encodeURIComponent(store.currentFunction.name),
+    {
+      enabled: isOpen,
+    },
+  );
   const data = functionDetailQuery.data?.data?.source?.code;
   const { showSuccess } = useGlobalStore((state) => state);
 
   return (
     <>
-      <Button
-        variant={"text"}
-        isLoading={functionDetailQuery.isFetching}
-        disabled={store.getFunctionUrl() === ""}
-        onClick={() => {
-          onOpen();
-        }}
-      >
-        {t("FunctionPanel.Fetch")}
-      </Button>
+      <Tooltip label={t("FunctionPanel.getCodeOnline")} placement="bottom">
+        <Button
+          variant={"text"}
+          isLoading={functionDetailQuery.isFetching}
+          disabled={store.getFunctionUrl() === ""}
+          onClick={() => {
+            onOpen();
+          }}
+          leftIcon={<SynchronizeDownIcon />}
+          className="w-16"
+        >
+          {t("FunctionPanel.Fetch")}
+        </Button>
+      </Tooltip>
 
       {isOpen && !functionDetailQuery.isFetching ? (
         <Modal isOpen={isOpen} onClose={onClose} size="6xl" isCentered>
@@ -53,7 +62,7 @@ export default function FetchButton() {
               <CommonDiffEditor
                 modified={data}
                 original={functionCache.getCache(
-                  currentFunction?.id,
+                  currentFunction?._id,
                   currentFunction?.source?.code,
                 )}
               />
@@ -67,7 +76,7 @@ export default function FetchButton() {
                 variant="primary"
                 onClick={() => {
                   updateFunctionCode(currentFunction, data || "");
-                  functionCache.setCache(currentFunction!.id, data || "");
+                  functionCache.setCache(currentFunction!._id, data || "");
                   setIsFetchButtonClicked();
                   onClose();
                   showSuccess(t("FunctionPanel.FetchSuccess"));

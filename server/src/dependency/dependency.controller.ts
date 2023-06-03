@@ -96,7 +96,7 @@ export class DependencyController {
     @Param('appid') appid: string,
     @Body() dto: DeleteDependencyDto,
   ) {
-    const res = await this.depsService.remove(appid, dto.name)
+    const res = await this.depsService.removeOne(appid, dto.name)
     return ResponseUtil.ok(res)
   }
 }

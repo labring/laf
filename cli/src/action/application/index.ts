@@ -50,7 +50,7 @@ async function getRegionMap(): Promise<Map<string, any>> {
   const regionMap = new Map<string, any>()
   const regions = await regionControllerGetRegions()
   for (let region of regions) {
-    regionMap.set(region.id, region)
+    regionMap.set(region._id, region)
   }
   return regionMap
 }
@@ -74,7 +74,7 @@ export async function init(appid: string, options: { sync: boolean }) {
       name: app.name,
       spec: {
         runtime: app.runtime.name,
-      }
+      },
     }
     ProjectSchema.write(projectSchema)
   }
@@ -95,7 +95,7 @@ export async function init(appid: string, options: { sync: boolean }) {
       accessKeySecret: app.storage.credentials.secretAccessKey,
       sessionToken: app.storage.credentials.sessionToken,
       expire: timestamp + STORAGE_TOKEN_EXPIRE,
-    }
+    },
   }
   AppSchema.write(appSchema)
 

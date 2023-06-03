@@ -24,6 +24,7 @@ export type TTabItem = {
 };
 
 export const TabKeys = {
+  Usage: "usage",
   UserInfo: "user-info",
   PAT: "pat",
 };
@@ -52,14 +53,14 @@ const SettingModal = (props: {
         },
       })}
 
-      <Modal isOpen={isOpen} onClose={onClose} size="4xl" closeOnOverlayClick={false}>
+      <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent maxW={"80%"} width={"auto"} minW={"1000px"}>
           <ModalHeader>{headerTitle || t("SettingPanel.Setting")}</ModalHeader>
           <ModalCloseButton />
-          <ModalBody px={6} py={2} h="60vh" maxH="70vh" flex="none">
+          <ModalBody py={2} flex="none" minH="60vh" className="relative">
             <Box className="flex h-full" borderColor={borderColor}>
-              <SectionList className="mr-4 w-[250px] border-r-2 pr-4">
+              <SectionList className="absolute bottom-0 top-0 mr-4 min-w-[200px] border-r pr-4">
                 {tabMatch.map((tab) => {
                   return (
                     <SectionList.Item
@@ -75,7 +76,7 @@ const SettingModal = (props: {
                   );
                 })}
               </SectionList>
-              <div className="w-full">
+              <div className="ml-[210px] w-full overflow-hidden p-2">
                 {React.cloneElement(item?.component || <></>, {
                   onClose,
                 })}

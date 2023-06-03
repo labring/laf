@@ -34,7 +34,6 @@ export async function create(
   const createDto: CreateFunctionDto = {
     name: funcName,
     description: options.description,
-    websocket: options.websocket,
     methods: options.methods,
     code: `\nimport cloud from '@lafjs/cloud'\n\nexport default async function (ctx: FunctionContext) {\n  console.log('Hello World')\n  return { data: 'hi, laf' }\n}\n`,
     tags: options.tags,
@@ -114,7 +113,6 @@ async function push(funcName: string, isCreate: boolean) {
     const createDto: CreateFunctionDto = {
       name: funcName,
       description: funcSchema.description || '',
-      websocket: funcSchema.websocket,
       methods: funcSchema.methods as any,
       code,
       tags: funcSchema.tags,
@@ -123,7 +121,6 @@ async function push(funcName: string, isCreate: boolean) {
   } else {
     const updateDto: UpdateFunctionDto = {
       description: funcSchema.description || '',
-      websocket: funcSchema.websocket,
       methods: funcSchema.methods as any,
       code,
       tags: funcSchema.tags,
@@ -248,15 +245,16 @@ export async function exec(
 
   // print log
   if (options.log) {
-    await printLog(appSchema.appid, res.requestId, options.log)
+    await printLog(appSchema.appid, res.requestId)
   }
 }
 
-async function printLog(appid: string, requestId: string, limit: string) {
+async function printLog(appid: string, requestId: string) {
   const data = await logControllerGetLogs({
     appid,
     requestId,
-    limit: limit,
+    page: '1',
+    pageSize: '100',
   })
   for (let log of data.list) {
     console.log(`[${formatDate(log.createdAt)}] ${log.data}`)

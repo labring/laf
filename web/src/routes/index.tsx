@@ -68,7 +68,7 @@ const routes = [
         auth: true,
         children: [
           {
-            path: "/app/:appid/:pageId/:id?",
+            path: "/app/:appid/:pageId/:id?/*",
             element: () => import("@/pages/app/index"),
           },
         ],

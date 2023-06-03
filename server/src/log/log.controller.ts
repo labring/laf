@@ -6,17 +6,12 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common'
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
 import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import { JwtAuthGuard } from '../auth/jwt.auth.guard'
 import { FunctionService } from '../function/function.service'
-import { ResponseUtil } from '../utils/response'
+import { ApiResponsePagination, ResponseUtil } from '../utils/response'
+import { FunctionLog } from './entities/function-log'
 
 @ApiBearerAuth('Authorization')
 @Controller('apps/:appid/logs')
@@ -32,8 +27,8 @@ export class LogController {
    * @returns
    */
   @ApiTags('Function')
-  @ApiResponse({ type: ResponseUtil })
   @ApiOperation({ summary: 'Get function logs' })
+  @ApiResponsePagination(FunctionLog)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @ApiQuery({
     name: 'functionName',
@@ -54,9 +49,9 @@ export class LogController {
     required: false,
   })
   @ApiQuery({
-    name: 'limit',
+    name: 'pageSize',
     type: String,
-    description: 'The limit number, default is 10',
+    description: 'The page size, default is 10',
     required: false,
   })
   @Get('functions')
@@ -64,16 +59,16 @@ export class LogController {
     @Param('appid') appid: string,
     @Query('requestId') requestId?: string,
     @Query('functionName') functionName?: string,
-    @Query('limit') limit?: number,
+    @Query('pageSize') pageSize?: number,
     @Query('page') page?: number,
   ) {
     page = page || 1
-    limit = limit || 10
+    pageSize = pageSize || 10
 
     const res = await this.funcService.getLogs(appid, {
       requestId,
       functionName,
-      limit,
+      pageSize: pageSize,
       page,
     })
 
@@ -81,7 +76,8 @@ export class LogController {
       list: res.data,
       total: res.total,
       page,
-      limit,
+      limit: pageSize, // @deprecated use pageSize instead
+      pageSize: pageSize,
     })
   }
 }

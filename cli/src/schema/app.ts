@@ -1,7 +1,7 @@
 import * as path from 'path'
-import { APP_SCHEMA_NAME, DEBUG_TOKEN_EXPIRE, STORAGE_TOKEN_EXPIRE } from "../common/constant"
-import { getAppPath } from "../util/sys"
-import { exist, loadYamlFile, writeYamlFile } from "../util/file"
+import { APP_SCHEMA_NAME, DEBUG_TOKEN_EXPIRE, STORAGE_TOKEN_EXPIRE } from '../common/constant'
+import { getAppPath } from '../util/sys'
+import { exist, loadYamlFile, writeYamlFile } from '../util/file'
 import { applicationControllerFindOne } from '../api/v1/application'
 
 export class AppSchema {

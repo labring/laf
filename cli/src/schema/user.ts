@@ -1,7 +1,7 @@
-import path = require("path")
-import { ensureDirectory, exist, loadYamlFile, writeYamlFile } from "../util/file"
-import { DEFAULT_SERVER, TOKEN_EXPIRE, USER_SCHEMA_NAME } from "../common/constant"
-import { pat2token } from "../api/pat"
+import path = require('path')
+import { ensureDirectory, exist, loadYamlFile, writeYamlFile } from '../util/file'
+import { DEFAULT_SERVER, TOKEN_EXPIRE, USER_SCHEMA_NAME } from '../common/constant'
+import { pat2token } from '../api/pat'
 
 export class UserSchema {
   users: {
@@ -35,15 +35,16 @@ export class UserSchema {
     return user.token
   }
 
-
   static read(): UserSchema {
     if (!this.exist()) {
       this.write({
-        users: [{
-          name: 'default',
-          server: DEFAULT_SERVER,
-        }],
-        selected: 0
+        users: [
+          {
+            name: 'default',
+            server: DEFAULT_SERVER,
+          },
+        ],
+        selected: 0,
       })
     }
     const configPath = path.join(process.env.HOME || process.env.USERPROFILE, '.laf', USER_SCHEMA_NAME)

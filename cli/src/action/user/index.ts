@@ -50,7 +50,6 @@ export async function list() {
   console.log(table.toString())
 }
 
-
 export async function add(name, options: { remote?: string }) {
   const userSchema = UserSchema.read()
   for (let index = 0; index < userSchema.users.length; index++) {
@@ -81,8 +80,6 @@ export async function del(name: string) {
   userSchema.users = newUsers
   UserSchema.write(userSchema)
 }
-
-
 
 export async function switchUser(name: string) {
   const userSchema = UserSchema.read()

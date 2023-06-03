@@ -24,6 +24,7 @@ set -e
 set -x
 
 DATABASE_URL="mongodb://${DB_USERNAME:-admin}:${PASSWD_OR_SECRET}@mongodb-0.mongo.${NAMESPACE}.svc.cluster.local:27017/sys_db?authSource=admin&replicaSet=rs0&w=majority"
+METERING_DATABASE_URL="mongodb://${DB_USERNAME:-admin}:${PASSWD_OR_SECRET}@mongodb-0.mongo.${NAMESPACE}.svc.cluster.local:27017/sealos-resources?authSource=admin&replicaSet=rs0&w=majority"
 helm install mongodb -n ${NAMESPACE} \
     --set db.username=${DB_USERNAME:-admin} \
     --set db.password=${PASSWD_OR_SECRET} \
@@ -66,6 +67,7 @@ helm install minio -n ${NAMESPACE} \
 SERVER_JWT_SECRET=$PASSWD_OR_SECRET
 helm install server -n ${NAMESPACE} \
     --set databaseUrl=${DATABASE_URL} \
+    --set meteringDatabaseUrl=${METERING_DATABASE_URL} \
     --set jwt.secret=${SERVER_JWT_SECRET} \
     --set apiServerHost=api.${DOMAIN} \
     --set apiServerUrl=${HTTP_SCHEMA}://api.${DOMAIN} \

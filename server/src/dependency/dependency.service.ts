@@ -1,9 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { PrismaService } from 'src/prisma/prisma.service'
 import { RUNTIME_BUILTIN_DEPENDENCIES } from 'src/runtime-builtin-deps'
 import * as npa from 'npm-package-arg'
 import { CreateDependencyDto } from './dto/create-dependency.dto'
 import { UpdateDependencyDto } from './dto/update-dependency.dto'
+import { SystemDatabase } from 'src/system-database'
+import { ApplicationConfiguration } from 'src/application/entities/application-configuration'
 
 export class Dependency {
   name: string
@@ -15,8 +16,7 @@ export class Dependency {
 @Injectable()
 export class DependencyService {
   private readonly logger = new Logger(DependencyService.name)
-
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly db = SystemDatabase.db
 
   /**
    * Get app merged dependencies in `Dependency` array
@@ -59,10 +59,13 @@ export class DependencyService {
     // add
     const new_deps = dto.map((dep) => `${dep.name}@${dep.spec}`)
     const deps = extras.concat(new_deps)
-    await this.prisma.applicationConfiguration.update({
-      where: { appid },
-      data: { dependencies: deps },
-    })
+
+    await this.db
+      .collection<ApplicationConfiguration>('ApplicationConfiguration')
+      .updateOne(
+        { appid },
+        { $set: { dependencies: deps, updatedAt: new Date() } },
+      )
 
     return true
   }
@@ -87,15 +90,18 @@ export class DependencyService {
     })
 
     const deps = filtered.concat(new_deps)
-    await this.prisma.applicationConfiguration.update({
-      where: { appid },
-      data: { dependencies: deps },
-    })
+
+    await this.db
+      .collection<ApplicationConfiguration>('ApplicationConfiguration')
+      .updateOne(
+        { appid },
+        { $set: { dependencies: deps, updatedAt: new Date() } },
+      )
 
     return true
   }
 
-  async remove(appid: string, name: string) {
+  async removeOne(appid: string, name: string) {
     const deps = await this.getExtras(appid)
     const filtered = deps.filter((dep) => {
       const r = npa(dep)
@@ -104,10 +110,13 @@ export class DependencyService {
 
     if (filtered.length === deps.length) return false
 
-    await this.prisma.applicationConfiguration.update({
-      where: { appid },
-      data: { dependencies: filtered },
-    })
+    await this.db
+      .collection<ApplicationConfiguration>('ApplicationConfiguration')
+      .updateOne(
+        { appid },
+        { $set: { dependencies: filtered, updatedAt: new Date() } },
+      )
+
     return true
   }
 
@@ -117,9 +126,9 @@ export class DependencyService {
    * @returns
    */
   private async getExtras(appid: string) {
-    const conf = await this.prisma.applicationConfiguration.findUnique({
-      where: { appid },
-    })
+    const conf = await this.db
+      .collection<ApplicationConfiguration>('ApplicationConfiguration')
+      .findOne({ appid })
 
     const deps = conf?.dependencies ?? []
     return deps

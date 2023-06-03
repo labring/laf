@@ -10,19 +10,31 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { AccountChargePhase } from '@prisma/client'
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
-import { PrismaService } from 'src/prisma/prisma.service'
-import { IRequest } from 'src/utils/interface'
-import { ResponseUtil } from 'src/utils/response'
+import { IRequest, IResponse } from 'src/utils/interface'
+import { ApiResponseObject, ResponseUtil } from 'src/utils/response'
 import { AccountService } from './account.service'
-import { CreateChargeOrderDto } from './dto/create-charge-order.dto'
+import {
+  CreateChargeOrderDto,
+  CreateChargeOrderOutDto,
+} from './dto/create-charge-order.dto'
 import { PaymentChannelService } from './payment/payment-channel.service'
-import { WeChatPayOrderResponse, WeChatPayTradeState } from './payment/types'
+import {
+  WeChatPayChargeOrder,
+  WeChatPayOrderResponse,
+  WeChatPayTradeState,
+} from './payment/types'
 import { WeChatPayService } from './payment/wechat-pay.service'
-import { Response } from 'express'
 import * as assert from 'assert'
 import { ServerConfig } from 'src/constants'
+import {
+  AccountChargeOrder,
+  AccountChargePhase,
+} from './entities/account-charge-order'
+import { ObjectId } from 'mongodb'
+import { SystemDatabase } from 'src/system-database'
+import { Account } from './entities/account'
+import { AccountTransaction } from './entities/account-transaction'
 
 @ApiTags('Account')
 @Controller('accounts')
@@ -34,37 +46,43 @@ export class AccountController {
     private readonly accountService: AccountService,
     private readonly paymentService: PaymentChannelService,
     private readonly wechatPayService: WeChatPayService,
-    private readonly prisma: PrismaService,
   ) {}
 
   /**
    * Get account info
    */
   @ApiOperation({ summary: 'Get account info' })
+  @ApiResponseObject(Account)
   @UseGuards(JwtAuthGuard)
   @Get()
   async findOne(@Req() req: IRequest) {
     const user = req.user
-    const data = await this.accountService.findOne(user.id)
-    return data
+    const data = await this.accountService.findOne(user._id)
+    data.balance = Math.floor(data.balance)
+    return ResponseUtil.ok(data)
   }
 
   /**
    * Get charge order
    */
   @ApiOperation({ summary: 'Get charge order' })
+  @ApiResponseObject(AccountChargeOrder)
   @UseGuards(JwtAuthGuard)
   @Get('charge-order/:id')
   async getChargeOrder(@Req() req: IRequest, @Param('id') id: string) {
     const user = req.user
-    const data = await this.accountService.findOneChargeOrder(user.id, id)
-    return data
+    const data = await this.accountService.findOneChargeOrder(
+      user._id,
+      new ObjectId(id),
+    )
+    return ResponseUtil.ok(data)
   }
 
   /**
    * Create charge order
    */
   @ApiOperation({ summary: 'Create charge order' })
+  @ApiResponseObject(CreateChargeOrderOutDto)
   @UseGuards(JwtAuthGuard)
   @Post('charge-order')
   async charge(@Req() req: IRequest, @Body() dto: CreateChargeOrderDto) {
@@ -73,7 +91,7 @@ export class AccountController {
 
     // create charge order
     const order = await this.accountService.createChargeOrder(
-      user.id,
+      user._id,
       amount,
       currency,
       channel,
@@ -82,7 +100,7 @@ export class AccountController {
     // invoke payment
     const result = await this.accountService.pay(
       channel,
-      order.id,
+      order._id,
       amount,
       currency,
       `${ServerConfig.SITE_NAME} recharge`,
@@ -98,7 +116,7 @@ export class AccountController {
    * WeChat payment notify
    */
   @Post('payment/wechat-notify')
-  async wechatNotify(@Req() req: IRequest, @Res() res: Response) {
+  async wechatNotify(@Req() req: IRequest, @Res() res: IResponse) {
     try {
       // get headers
       const headers = req.headers
@@ -124,15 +142,17 @@ export class AccountController {
 
       this.logger.debug(result)
 
-      const tradeOrderId = result.out_trade_no
+      const db = SystemDatabase.db
+
+      const tradeOrderId = new ObjectId(result.out_trade_no)
       if (result.trade_state !== WeChatPayTradeState.SUCCESS) {
-        await this.prisma.accountChargeOrder.update({
-          where: { id: tradeOrderId },
-          data: {
-            phase: AccountChargePhase.Failed,
-            result: result as any,
-          },
-        })
+        await db
+          .collection<WeChatPayChargeOrder>('AccountChargeOrder')
+          .updateOne(
+            { _id: tradeOrderId },
+            { $set: { phase: AccountChargePhase.Failed, result: result } },
+          )
+
         this.logger.log(
           `wechatpay order failed: ${tradeOrderId} ${result.trade_state}`,
         )
@@ -140,48 +160,47 @@ export class AccountController {
       }
 
       // start transaction
-      await this.prisma.$transaction(async (tx) => {
-        // get order
-        const order = await tx.accountChargeOrder.findFirst({
-          where: { id: tradeOrderId, phase: AccountChargePhase.Pending },
-        })
+      const client = SystemDatabase.client
+      const session = client.startSession()
+      await session.withTransaction(async () => {
+        // update order to success
+        const res = await db
+          .collection<WeChatPayChargeOrder>('AccountChargeOrder')
+          .findOneAndUpdate(
+            { _id: tradeOrderId, phase: AccountChargePhase.Pending },
+            { $set: { phase: AccountChargePhase.Paid, result: result } },
+            { session, returnDocument: 'after' },
+          )
+
+        const order = res.value
         if (!order) {
           this.logger.error(`wechatpay order not found: ${tradeOrderId}`)
           return
         }
 
-        // update order to success
-        const res = await tx.accountChargeOrder.updateMany({
-          where: { id: tradeOrderId, phase: AccountChargePhase.Pending },
-          data: { phase: AccountChargePhase.Paid, result: result as any },
-        })
+        // get & update account balance
+        const ret = await db
+          .collection<Account>('Account')
+          .findOneAndUpdate(
+            { _id: order.accountId },
+            { $inc: { balance: order.amount } },
+            { session, returnDocument: 'after' },
+          )
 
-        if (res.count === 0) {
-          this.logger.error(`wechatpay order not found: ${tradeOrderId}`)
-          return
-        }
+        assert(ret.value, `account not found: ${order.accountId}`)
 
-        // get account
-        const account = await tx.account.findFirst({
-          where: { id: order.accountId },
-        })
-        assert(account, `account not found ${order.accountId}`)
-
-        // update account balance
-        await tx.account.update({
-          where: { id: order.accountId },
-          data: { balance: { increment: order.amount } },
-        })
-
-        // create account transaction
-        await tx.accountTransaction.create({
-          data: {
+        // create transaction
+        await db.collection<AccountTransaction>('AccountTransaction').insertOne(
+          {
             accountId: order.accountId,
             amount: order.amount,
-            balance: order.amount + account.balance,
-            message: 'account charge',
+            balance: ret.value.balance,
+            message: 'Recharge by WeChat Pay',
+            orderId: order._id,
+            createdAt: new Date(),
           },
-        })
+          { session },
+        )
 
         this.logger.log(`wechatpay order success: ${tradeOrderId}`)
       })

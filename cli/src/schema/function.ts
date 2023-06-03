@@ -6,7 +6,6 @@ export class FunctionSchema {
   name: string
   description?: string
   tags?: string[]
-  websocket?: boolean
   methods: string[]
 
   static read(name: string): FunctionSchema {
@@ -28,5 +27,4 @@ export class FunctionSchema {
     const funcConfigPath = path.join(process.cwd(), FUNCTION_SCHEMA_DIRCTORY, name + FUNCTION_SCHEMA_SUFFIX)
     remove(funcConfigPath)
   }
-
 }

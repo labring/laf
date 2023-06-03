@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
-import { APP_PHASE_STATUS } from "../../constants";
+import { APP_PHASE_STATUS } from "@/constants";
 
 import Empty from "./mods/Empty";
 import List from "./mods/List";
@@ -24,6 +24,7 @@ function HomePage() {
       return ApplicationControllerFindAll({});
     },
     {
+      staleTime: 2000,
       refetchInterval: shouldRefetch ? 1000 : false,
       onSuccess(data) {
         setShouldRefetch(

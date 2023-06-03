@@ -13,6 +13,7 @@ spec:
       backends:
         - serviceName: laf-web
           servicePort: 80
+      websocket: true
       plugins:
         - name: gzip
           enable: true
