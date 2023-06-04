@@ -65,12 +65,7 @@ const NavConfig = [
   },
   {
     text: "三分钟实验室",
-    items: [
-      {
-        text: "接入微信",
-        link: "/3min/wechat/",
-      },
-    ],
+    link: "/3min/",
   },
   {
     text: "立即使用",
@@ -282,7 +277,6 @@ const examplesSideBarConfig = [
     items: [
       {
         text: "微信公众号",
-        link: "/3min/wechat/MediaPlatform/",
         items: [
           {
             text: "服务器对接及文本消息",
@@ -305,6 +299,23 @@ const examplesSideBarConfig = [
       {
         text: "企业微信",
         link: "/3min/wechat/CorporateWeChat/",
+      },
+    ],
+  },
+  {
+    text: "接入 AI",
+    items: [
+      {
+        text: "接入 ChatGPT",
+        link: "/3min/ChatGPT/",
+      },
+      {
+        text: "接入 Claude",
+        link: "/3min/Claude/",
+      },
+      {
+        text: "接入 Midjourney",
+        link: "/3min/midjourney/",
       },
     ],
   },
