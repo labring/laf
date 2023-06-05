@@ -326,7 +326,7 @@ spec:
           env:
             - name: MONGO_URI
               value: {{ .Values.meteringDatabaseUrl | quote }}
-          image: docker.io/bxy4543/laf-resources-controller:v0.0.1
+          image: docker.io/bxy4543/laf-resources-controller:v0.0.2
           imagePullPolicy: Always
           livenessProbe:
             httpGet:

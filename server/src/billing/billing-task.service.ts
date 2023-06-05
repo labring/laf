@@ -27,7 +27,7 @@ export class BillingTaskService {
 
   constructor(private readonly billing: BillingService) {}
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async createBillingScheduler() {
     const db = SystemDatabase.db
     if (ServerConfig.DISABLED_BILLING_TASK) {
@@ -42,11 +42,11 @@ export class BillingTaskService {
         },
       })
 
-    const concurrency = total > 30 ? 30 : total
-    if (total > 30) {
+    const concurrency = total > 10 ? 10 : total
+    if (total > 10) {
       setTimeout(() => {
         this.createBillingScheduler()
-      }, 3000)
+      }, 2000)
     }
 
     times(concurrency, () => {
@@ -56,7 +56,7 @@ export class BillingTaskService {
     })
   }
 
-  @Cron(CronExpression.EVERY_SECOND)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async payBillingScheduler() {
     const db = SystemDatabase.db
     if (ServerConfig.DISABLED_BILLING_TASK) {
@@ -70,11 +70,11 @@ export class BillingTaskService {
         lockedAt: { $lt: new Date(Date.now() - 1000 * 60) },
       })
 
-    const concurrency = total > 30 ? 30 : total
-    if (total > 30) {
+    const concurrency = total > 10 ? 10 : total
+    if (total > 10) {
       setTimeout(() => {
         this.payBillingScheduler()
-      }, 3000)
+      }, 2000)
     }
 
     times(concurrency, () => {
