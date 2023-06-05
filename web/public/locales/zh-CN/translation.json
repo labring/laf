@@ -439,5 +439,9 @@
   "custom": "自定义",
   "CostTime": "扣费时间",
   "Duration": "计费周期",
-  "TotalAmount": "总费用"
+  "TotalAmount": "总费用",
+  "AIWelcomeMessage": "你好，我是 Laf AI 开发助理，请问有什么可以帮助您的吗？",
+  "Send": "发送",
+  "Stop": "停止",
+  "SendMessagePlaceHolder": "提问"
 }

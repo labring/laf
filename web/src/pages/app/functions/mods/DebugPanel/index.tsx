@@ -131,15 +131,8 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
   return (
     <>
       <Panel className="min-w-[200px] flex-grow overflow-hidden !px-0">
-        <Tabs
-          width="100%"
-          colorScheme={"primary"}
-          display="flex"
-          flexDirection={"column"}
-          h="full"
-          // defaultIndex={2}
-        >
-          <TabList h={"50px"}>
+        <Tabs width="100%" colorScheme={"primary"} display="flex" flexDirection={"column"} h="full">
+          <TabList>
             <Tab px="4">
               <span
                 className={clsx("font-semibold", {
@@ -150,7 +143,7 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
                 {t("FunctionPanel.InterfaceDebug")}
               </span>
             </Tab>
-            <Tab px="4">
+            {/* <Tab px="4">
               <span
                 className={clsx("font-semibold", {
                   "text-black": !darkMode,
@@ -159,8 +152,8 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
               >
                 {t("HomePage.NavBar.docs")}
               </span>
-            </Tab>
-            {/* <Tab>Laf Pilot</Tab> */}
+            </Tab> */}
+            <Tab>Laf Pilot</Tab>
           </TabList>
 
           <TabPanels flex={1} className="overflow-hidden">
@@ -307,7 +300,7 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
               </Row>
             </TabPanel>
 
-            <TabPanel padding={0} h="full">
+            {/* <TabPanel padding={0} h="full">
               {props.showOverlay && (
                 <div
                   style={{
@@ -325,8 +318,8 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
                 width={"100%"}
                 src={String(t("HomePage.DocsLink"))}
               />
-            </TabPanel>
-            <TabPanel padding={0}>
+            </TabPanel> */}
+            <TabPanel padding={0} h="full">
               <AIChatPanel />
             </TabPanel>
           </TabPanels>

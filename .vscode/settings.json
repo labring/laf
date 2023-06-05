@@ -62,6 +62,7 @@
     "hokify",
     "hostpath",
     "immer",
+    "Katex",
     "Kube",
     "kubeconfig",
     "Kubefile",
@@ -87,6 +88,7 @@
     "qrcode",
     "readwrite",
     "Referer",
+    "rehype",
     "relock",
     "rolebinding",
     "roundrobin",
@@ -108,6 +110,7 @@
     "upserted",
     "urlencode",
     "userid",
+    "uuidv",
     "videobg",
     "videomobile",
     "vitepress",
@@ -120,20 +123,12 @@
     "zustand"
   ],
   "i18n-ally.localesPaths": "web/public/locales",
-  "i18n-ally.enabledParsers": [
-    "json"
-  ],
-  "i18n-ally.enabledFrameworks": [
-    "react",
-    "i18next",
-    "general"
-  ],
+  "i18n-ally.enabledParsers": ["json"],
+  "i18n-ally.enabledFrameworks": ["react", "i18next", "general"],
   "i18n-ally.sourceLanguage": "zh-CN",
   "i18n-ally.displayLanguage": "en,zh",
   "i18n-ally.namespace": false,
   "i18n-ally.pathMatcher": "{locale}/translation.json",
   "i18n-ally.keystyle": "nested",
-  "i18n-ally.keysInUse": [
-    "description.part2_whatever"
-  ]
+  "i18n-ally.keysInUse": ["description.part2_whatever"]
 }

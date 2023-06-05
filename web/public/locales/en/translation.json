@@ -440,5 +440,9 @@
   "CostTime": "CostTime",
   "Duration": "Duration",
   "State": "State",
-  "TotalAmount": "Total"
+  "TotalAmount": "Total",
+  "AIWelcomeMessage": "Hello, I am Laf AI Development Assistant, how can I help you?",
+  "Send": "Send",
+  "Stop": "Stop",
+  "SendMessagePlaceHolder": "Send a message"
 }
