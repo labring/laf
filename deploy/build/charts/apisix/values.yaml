@@ -67,10 +67,10 @@ apisix:
   customizedConfig: {}
 
   image:
-    repository: apache/apisix
+    repository: docker.io/lafyun/apisix-with-plugins
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: 2.15.0-alpine
+    tag: v0.0.1
 
   # Use a `DaemonSet` or `Deployment`
   kind: Deployment
@@ -276,8 +276,8 @@ stream_plugins:
 pluginAttrs: {}
 
 extPlugin:
-  enabled: false
-  cmd: ["/path/to/apisix-plugin-runner/runner", "run"]
+  enabled: true
+  cmd: ["/runner/go-plugins", "run"]
 
 wasmPlugins:
   enabled: false

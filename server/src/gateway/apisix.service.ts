@@ -8,7 +8,7 @@ import { WebsiteHosting } from 'src/website/entities/website'
 export class ApisixService {
   private readonly logger = new Logger(ApisixService.name)
 
-  constructor(private readonly httpService: HttpService) {}
+  constructor(private readonly httpService: HttpService) { }
 
   async createAppRoute(region: Region, appid: string, domain: string) {
     const host = domain
@@ -133,9 +133,14 @@ export class ApisixService {
         read: 60,
       },
       plugins: {
-        'proxy-rewrite': {
-          regex_uri: ['/$', '/index.html'],
-        },
+        "ext-plugin-post-req": {
+          "conf": [
+            {
+              "name": "try-path",
+              "value": `{\"paths\":[\"$uri\", \"$uri/\", \"/index.html\"], \"host\": \"http://${upstreamNode}/${website.bucketName}\"}`
+            }
+          ]
+        }
       },
     }
 
