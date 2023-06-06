@@ -2,7 +2,7 @@
 # Intro: start laf with sealos in linux
 # Usage: sh ./install-on-linux.sh <domain>
 
-# TIP: use `sh -x scripts/bare_run.sh` to debug
+# TIP: use `sh -x install-on-linux.sh` to debug
 
 # set the first param as domain
 DOMAIN="$1"
