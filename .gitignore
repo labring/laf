@@ -21,11 +21,11 @@ kubernetes-local/
 
 .kube/
 
-deploy/build/*/manifests
-deploy/build/*/registry
-deploy/build/*/charts
-deploy/build/registry
-deploy/build-dev
+build/*/manifests
+build/*/registry
+build/*/charts
+build/registry
+build-dev
 docs/.vitepress/.temp
 .idea/
 
