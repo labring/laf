@@ -60,6 +60,7 @@ export default function DeployButton() {
       websocket: store.currentFunction?.websocket,
       name: store.currentFunction?.name,
       tags: store.currentFunction?.tags,
+      params: store.currentFunction?.params,
     });
     if (!res.error) {
       store.setCurrentFunction(res.data);
