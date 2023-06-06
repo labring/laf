@@ -78,7 +78,7 @@ vm_ip=$(multipass info "$NAME" | grep IPv4: | awk '{print $2}')
 # install k8s cluster
 echo "Installing k8s cluster"
 DOMAIN="$vm_ip.nip.io"
-vm_root_exec sh /laf/deploy/scripts/install-on-linux.sh $DOMAIN
+vm_root_exec sh /laf/deploy/install-on-linux.sh $DOMAIN
 
 # waiting for k8s cluster to be ready
 i=0

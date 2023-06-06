@@ -8,7 +8,7 @@
 ## Create development environment on Linux
 
 ```bash
-cd deploy/scripts
+cd deploy
 
 # replace with your domain here.
 export DOMAIN=127.0.0.1.nip.io
@@ -30,7 +30,7 @@ brew install --cask multipass
 2. Create vm & deploy in it
 
 ```bash
-cd deploy/scripts
+cd deploy
 sh install-on-mac.sh  # create vm & setup in it
 ```
 ## Create development environment on Windows
@@ -62,7 +62,7 @@ File EOF will end by CRLF on windows by default, you need change back to ensure 
 # Get VM ip
 multipass info laf-dev | Where-Object{$_ -match "IPv4"} | ForEach-Object{ ($_ -split "\s+")[1] }
 #eg. 172.27.x.y -> 172.27.x.y.nip.io
-multipass exec laf-dev -- sudo -u root sh /laf/deploy/scripts/install-on-linux.sh $VM_IP_GOT_ABOVE.nip.io
+multipass exec laf-dev -- sudo -u root sh /laf/deploy/install-on-linux.sh $VM_IP_GOT_ABOVE.nip.io
 ```
 
 
