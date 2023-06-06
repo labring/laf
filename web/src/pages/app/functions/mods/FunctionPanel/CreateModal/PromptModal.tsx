@@ -30,7 +30,7 @@ import axios from "axios";
 import CodeViewer from "@/components/Editor/CodeViewer";
 // import FunctionEditor from "@/components/Editor/FunctionEditor";
 import InputTag from "@/components/InputTag";
-import { SUPPORTED_METHODS } from "@/constants";
+import { LAF_AI_URL, SUPPORTED_METHODS } from "@/constants";
 
 import { useCreateFunctionMutation, useUpdateFunctionMutation } from "../../../service";
 import useFunctionStore from "../../../store";
@@ -59,7 +59,7 @@ const PromptModal = (props: {
 
   const { data: generateCodeRes, ...generateCode } = useMutation((params: any) => {
     return axios({
-      url: "https://itceb8.laf.run/laf-gpt",
+      url: LAF_AI_URL,
       method: "POST",
       data: params,
       cancelToken: source.token,

@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { LafAILogoIcon } from "@/components/CommonIcon";
 import Markdown from "@/components/Markdown";
+import { LAF_AI_URL } from "@/constants";
 
 export default function AIChatPanel() {
   const { t } = useTranslation();
@@ -75,7 +76,7 @@ export default function AIChatPanel() {
   const { data: generateCodeRes, ...generateCode } = useMutation((params: any) => {
     inputRef.current?.focus();
     return axios({
-      url: "https://itceb8.laf.run/laf-gpt",
+      url: LAF_AI_URL,
       method: "POST",
       data: params,
       cancelToken: source.token,
