@@ -90,7 +90,6 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                     variant={"outline"}
                     key={item}
                     onClick={() => {
-                      console.log(123, item);
                       setAmount(item / 100);
                     }}
                   >
