@@ -82,7 +82,7 @@ laf 是开源的云开发平台，提供云函数、云数据库、云存储等�
 
 ## 🎉 Self-hosted Deployment
 
-[Deployment](./deploy/scripts/README.md)
+[Deployment](./deploy/README.md)
 
 ## 🏘️ Community Groups
 

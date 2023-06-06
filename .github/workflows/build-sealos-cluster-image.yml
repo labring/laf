@@ -2,7 +2,7 @@ name: build-sealos-cluster-image
 
 on:
   repository_dispatch:
-    types: [docker_build_success,build-scripts-updated]
+    types: [docker_build_success, build-scripts-updated]
   workflow_dispatch:
 
 env:
@@ -60,7 +60,7 @@ jobs:
         env:
           IMAGE: ghcr.io/${{ github.repository_owner }}/${{ env.image }}
           VERSION: ${{ env.tag }}
-        working-directory: deploy/build
+        working-directory: build
         run: |
           echo $IMAGE:$VERSION
           sudo sealos build -t $IMAGE:$VERSION-arm64 --platform linux/arm64 -f Kubefile  .
