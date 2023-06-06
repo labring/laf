@@ -41,9 +41,8 @@ const HAS_BODY_PARAMS_METHODS: (TMethod | undefined)[] = ["POST", "PUT", "PATCH"
 
 export default function DebugPanel(props: { containerRef: any; showOverlay: boolean }) {
   const { t } = useTranslation();
-  const { getFunctionUrl, currentFunction, setCurrentRequestId } = useFunctionStore(
-    (state) => state,
-  );
+  const { getFunctionUrl, currentFunction, setCurrentFunction, setCurrentRequestId } =
+    useFunctionStore((state) => state);
   const updateFunctionMutation = useUpdateFunctionMutation();
   const globalStore = useGlobalStore((state) => state);
 
@@ -102,6 +101,8 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
         tags: currentFunction?.tags,
         params: params,
       });
+
+      setCurrentFunction({ ...currentFunction, params: params });
 
       if (!compileRes.error) {
         const _funcData = JSON.stringify(compileRes.data);
