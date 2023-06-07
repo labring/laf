@@ -81,7 +81,6 @@ async function pull(funcName: string) {
   const functionSchema: FunctionSchema = {
     name: func.name,
     description: func.description,
-    websocket: func.websocket,
     methods: func.methods,
     tags: func.tags,
   }
