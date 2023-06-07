@@ -20,9 +20,10 @@ export enum SseEventEnum {
 }
 
 export const CHANGE_STREAM_PIPELINE = [
-  // { fullDocument: 'updateLookup' },
   { $match: { 'operationType': 'insert' } }
 ]
+
+export const COLLECTION_SSEEVENTSOURCE = "SseEventSource"
 
 
 
@@ -81,7 +82,7 @@ export class SseResponseWrapper {
 
   constructor(userid: string, response: IResponse) {
     this.useridRaw = userid
-    this.userid = `${userid} ${randomUUID()}`
+    this.userid = `${userid}#${randomUUID()}`
     this.response = response
   }
 
