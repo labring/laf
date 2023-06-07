@@ -5,7 +5,6 @@ import { WebsiteModule } from './website/website.module'
 import { FunctionModule } from './function/function.module'
 import { HttpModule } from '@nestjs/axios'
 import { ApplicationModule } from './application/application.module'
-import { AuthModule } from './auth/auth.module'
 import { ThrottlerModule } from '@nestjs/throttler'
 import { InitializerModule } from './initializer/initializer.module'
 import { InstanceModule } from './instance/instance.module'
@@ -22,6 +21,7 @@ import { SettingModule } from './setting/setting.module'
 import * as path from 'path'
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n'
 import { BillingModule } from './billing/billing.module'
+import { AuthenticationModule } from './authentication/authentication.module'
 
 @Module({
   imports: [
@@ -33,7 +33,7 @@ import { BillingModule } from './billing/billing.module'
     FunctionModule,
     WebsiteModule,
     HttpModule,
-    AuthModule,
+    AuthenticationModule,
     ApplicationModule,
     InitializerModule,
     InstanceModule,

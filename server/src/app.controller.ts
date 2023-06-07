@@ -1,6 +1,6 @@
 import { Controller, Get, Logger } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
-import { ResponseUtil } from './utils/response'
+import { ApiResponseArray, ResponseUtil } from './utils/response'
 import { SystemDatabase } from './system-database'
 import { Runtime } from './application/entities/runtime'
 
@@ -15,6 +15,7 @@ export class AppController {
    * @returns
    */
   @ApiOperation({ summary: 'Get application runtime list' })
+  @ApiResponseArray(Runtime)
   @Get('runtimes')
   async getRuntimes() {
     const data = await this.db.collection<Runtime>('Runtime').find({}).toArray()

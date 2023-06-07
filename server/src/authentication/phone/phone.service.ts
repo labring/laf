@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { SmsService } from 'src/auth/phone/sms.service'
 import { AuthenticationService } from '../authentication.service'
 import { PhoneSigninDto } from '../dto/phone-signin.dto'
 import { hashPassword } from 'src/utils/crypto'
@@ -17,6 +16,7 @@ import {
   UserPasswordState,
 } from 'src/user/entities/user-password'
 import { UserProfile } from 'src/user/entities/user-profile'
+import { SmsService } from './sms.service'
 
 @Injectable()
 export class PhoneService {

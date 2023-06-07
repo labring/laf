@@ -23,13 +23,13 @@ import {
   ApiResponseString,
   ResponseUtil,
 } from 'src/utils/response'
-import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
-import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
 import { BundleService } from 'src/application/bundle.service'
 import {
   DatabasePolicy,
   DatabasePolicyWithRules,
 } from '../entities/database-policy'
+import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
+import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
 
 @ApiTags('Database')
 @ApiBearerAuth('Authorization')

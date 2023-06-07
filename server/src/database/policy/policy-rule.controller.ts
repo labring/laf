@@ -14,8 +14,8 @@ import {
   ApiResponseObject,
   ResponseUtil,
 } from 'src/utils/response'
-import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
-import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
+import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
+import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
 import { CreatePolicyRuleDto } from '../dto/create-rule.dto'
 import { PolicyRuleService } from './policy-rule.service'
 import { UpdatePolicyRuleDto } from '../dto/update-rule.dto'

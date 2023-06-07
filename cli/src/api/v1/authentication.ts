@@ -18,11 +18,11 @@ import {
  * @tags Authentication
  * @name AuthControllerPat2Token
  * @summary Get user token by PAT
- * @request POST:/v1/pat2token
+ * @request POST:/v1/auth/pat2token
  */
 export async function authControllerPat2Token(data: Pat2TokenDto, configParams: RequestParams = {}): Promise<any> {
   return request({
-    url: `/v1/pat2token`,
+    url: `/v1/auth/pat2token`,
     method: "POST",
     data: data,
     ...configParams,

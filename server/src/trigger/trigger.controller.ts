@@ -17,10 +17,10 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
-import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
-import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
 import { BundleService } from 'src/application/bundle.service'
 import { ObjectId } from 'mongodb'
+import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
+import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
 
 @ApiTags('Trigger')
 @Controller('apps/:appid/triggers')

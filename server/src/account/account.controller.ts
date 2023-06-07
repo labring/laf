@@ -10,7 +10,6 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
 import { IRequest, IResponse } from 'src/utils/interface'
 import { ApiResponseObject, ResponseUtil } from 'src/utils/response'
 import { AccountService } from './account.service'
@@ -35,6 +34,7 @@ import { ObjectId } from 'mongodb'
 import { SystemDatabase } from 'src/system-database'
 import { Account } from './entities/account'
 import { AccountTransaction } from './entities/account-transaction'
+import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
 
 @ApiTags('Account')
 @Controller('accounts')

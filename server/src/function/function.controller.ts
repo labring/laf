@@ -20,14 +20,14 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
-import { JwtAuthGuard } from '../auth/jwt.auth.guard'
-import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import { FunctionService } from './function.service'
 import { IRequest } from '../utils/interface'
 import { CompileFunctionDto } from './dto/compile-function.dto'
 import { BundleService } from 'src/application/bundle.service'
 import { I18n, I18nContext, I18nService } from 'nestjs-i18n'
 import { I18nTranslations } from '../generated/i18n.generated'
+import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
+import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
 
 @ApiTags('Function')
 @ApiBearerAuth('Authorization')

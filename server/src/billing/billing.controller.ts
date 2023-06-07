@@ -16,8 +16,8 @@ import {
 import { BillingQuery, BillingService } from './billing.service'
 
 import { ApplicationBilling } from './entities/application-billing'
-import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
-import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
+import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
+import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
 import { ObjectId } from 'mongodb'
 import { IRequest } from 'src/utils/interface'
 

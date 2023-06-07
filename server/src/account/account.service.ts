@@ -5,13 +5,14 @@ import { PaymentChannelService } from './payment/payment-channel.service'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/system-database'
 import { Account, BaseState } from './entities/account'
-import { ObjectId } from 'mongodb'
+import { ObjectId, ClientSession } from 'mongodb'
 import {
   AccountChargeOrder,
   AccountChargePhase,
   Currency,
   PaymentChannelType,
 } from './entities/account-charge-order'
+import { AccountTransaction } from './entities/account-transaction'
 
 @Injectable()
 export class AccountService {
@@ -45,6 +46,66 @@ export class AccountService {
     }
 
     return await this.create(userid)
+  }
+
+  async chargeWithTransaction(
+    accountId: ObjectId,
+    amount: number,
+    message: string,
+  ) {
+    const client = SystemDatabase.client
+    const session = client.startSession()
+    session.startTransaction()
+
+    try {
+      const result = await this.chargeWithSession(
+        accountId,
+        amount,
+        message,
+        session,
+      )
+      await session.commitTransaction()
+      return result
+    } catch (error) {
+      await session.abortTransaction()
+      throw error
+    } finally {
+      session.endSession()
+    }
+  }
+
+  async chargeWithSession(
+    accountId: ObjectId,
+    amount: number,
+    message: string,
+    session: ClientSession,
+  ) {
+    const _amount = Math.round(amount * 100)
+
+    // update account balance
+    const res = await this.db
+      .collection<Account>('Account')
+      .findOneAndUpdate(
+        { _id: accountId },
+        { $inc: { balance: _amount }, $set: { updatedAt: new Date() } },
+        { session, returnDocument: 'after' },
+      )
+
+    // add transaction record
+    await this.db
+      .collection<AccountTransaction>('AccountTransaction')
+      .insertOne(
+        {
+          accountId: accountId,
+          amount: _amount,
+          balance: res.value.balance,
+          message: message,
+          createdAt: new Date(),
+        },
+        { session },
+      )
+
+    return res.value
   }
 
   async createChargeOrder(

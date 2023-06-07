@@ -15,8 +15,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
-import { ApplicationAuthGuard } from '../../auth/application.auth.guard'
-import { JwtAuthGuard } from '../../auth/jwt.auth.guard'
+import { ApplicationAuthGuard } from '../../authentication/application.auth.guard'
+import { JwtAuthGuard } from '../../authentication/jwt.auth.guard'
 import { ApiResponseObject, ResponseUtil } from '../../utils/response'
 import { CollectionService } from './collection.service'
 import { CreateCollectionDto } from '../dto/create-collection.dto'

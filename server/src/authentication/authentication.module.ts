@@ -1,12 +1,9 @@
-import { SmsService } from 'src/auth/phone/sms.service'
 import { Global, Module } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
 import { PassportModule } from '@nestjs/passport'
 import { ServerConfig } from '../constants'
 import { UserModule } from '../user/user.module'
-import { AuthService } from './auth.service'
 import { JwtStrategy } from './jwt.strategy'
-import { AuthController } from './auth.controller'
 import { HttpModule } from '@nestjs/axios'
 import { PatService } from 'src/user/pat.service'
 import { UserPasswordController } from './user-passwd/user-password.controller'
@@ -15,6 +12,7 @@ import { PhoneController } from './phone/phone.controller'
 import { PhoneService } from './phone/phone.service'
 import { AuthenticationController } from './authentication.controller'
 import { AuthenticationService } from './authentication.service'
+import { SmsService } from './phone/sms.service'
 
 @Global()
 @Module({
@@ -28,7 +26,6 @@ import { AuthenticationService } from './authentication.service'
     HttpModule,
   ],
   providers: [
-    AuthService,
     JwtStrategy,
     PatService,
     UserPasswordService,
@@ -36,12 +33,11 @@ import { AuthenticationService } from './authentication.service'
     SmsService,
     AuthenticationService,
   ],
-  exports: [AuthService],
+  exports: [],
   controllers: [
-    AuthController,
     UserPasswordController,
     PhoneController,
     AuthenticationController,
   ],
 })
-export class AuthModule {}
+export class AuthenticationModule {}

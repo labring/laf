@@ -7,11 +7,11 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
-import { ApplicationAuthGuard } from '../auth/application.auth.guard'
-import { JwtAuthGuard } from '../auth/jwt.auth.guard'
 import { FunctionService } from '../function/function.service'
 import { ApiResponsePagination, ResponseUtil } from '../utils/response'
 import { FunctionLog } from './entities/function-log'
+import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
+import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
 
 @ApiBearerAuth('Authorization')
 @Controller('apps/:appid/logs')

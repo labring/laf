@@ -4,14 +4,14 @@ import { SystemDatabase } from 'src/system-database'
 import { Region } from 'src/region/entities/region'
 import { Runtime } from 'src/application/entities/runtime'
 import {
-  AuthProvider,
-  AuthProviderState,
-} from 'src/auth/entities/auth-provider'
-import {
   ResourceOption,
   ResourceBundle,
   ResourceType,
 } from 'src/billing/entities/resource'
+import {
+  AuthProvider,
+  AuthProviderState,
+} from 'src/authentication/entities/auth-provider'
 
 @Injectable()
 export class InitializerService {
