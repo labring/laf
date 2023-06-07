@@ -44,10 +44,8 @@ export class SseClientsController implements OnModuleInit, OnModuleDestroy {
   }
 
   @Post('/addEvent')
-  addEvent(
-    @Body() dto: CreateEventSourceDto
-  ) {
-    return this.sseEventsourceService.addSseEventSource(dto)
+  addEvent(@Body() dto: CreateEventSourceDto) {
+    return this.sseEventsourceService.create(dto)
   }
 
 

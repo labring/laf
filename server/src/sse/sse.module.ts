@@ -12,4 +12,4 @@ import { SseEventsourceService } from './sse-eventsource.service'
   providers: [SseClientsService, SseEventsourceService, JwtService],
   exports: [SseClientsService, SseEventsourceService],
 })
-export class SseClientsModule { }
+export class SseModule { }

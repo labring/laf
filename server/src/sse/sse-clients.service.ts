@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { PrismaService } from 'src/prisma/prisma.service'
 import { SsePongEvent, SseDefaultEvent, SseAbstractEvent, SSE_CONNECT_HEADER, SseResponseWrapper } from './types'
 import { IResponse } from 'src/utils/interface'
 
@@ -11,9 +10,7 @@ export class SseClientsService {
 
   private clients: SseResponseWrapper[] = []
 
-  constructor(
-    private readonly prisma: PrismaService,
-  ) { }
+  constructor() {}
 
 
 
@@ -54,7 +51,6 @@ export class SseClientsService {
 
 
   getClients(userid: string): SseResponseWrapper[] {
-    // return this.clients.find(item => item.userid == userid)
     return this.clients.filter(item => item.userid.includes(userid))
   }
 
@@ -118,6 +114,7 @@ export class SseClientsService {
   destroyClients() {
     this.clients.forEach(client => {
       let { response } = client
+
       if (response) {
         response.end()
         client = null

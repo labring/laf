@@ -19,7 +19,7 @@ import { RegionModule } from './region/region.module'
 import { GatewayModule } from './gateway/gateway.module'
 import { AccountModule } from './account/account.module'
 import { SettingModule } from './setting/setting.module'
-import { SseClientsModule } from './sse/sse-clients.module'
+import { SseModule } from './sse/sse.module'
 import * as path from 'path'
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n'
 import { BillingModule } from './billing/billing.module'
@@ -47,7 +47,7 @@ import { BillingModule } from './billing/billing.module'
     GatewayModule,
     AccountModule,
     SettingModule,
-    SseClientsModule,
+    SseModule,
     I18nModule.forRoot({
       fallbackLanguage: 'en',
       loaderOptions: {
