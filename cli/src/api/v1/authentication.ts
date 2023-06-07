@@ -34,12 +34,12 @@ export async function authControllerPat2Token(data: Pat2TokenDto, configParams: 
  * @tags Authentication
  * @name AuthControllerGetProfile
  * @summary Get current user profile
- * @request GET:/v1/profile
+ * @request GET:/v1/auth/profile
  * @secure
  */
 export async function authControllerGetProfile(configParams: RequestParams = {}): Promise<any> {
   return request({
-    url: `/v1/profile`,
+    url: `/v1/auth/profile`,
     method: "GET",
     ...configParams,
   });
