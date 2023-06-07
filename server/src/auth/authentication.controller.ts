@@ -7,10 +7,11 @@ import { BindUsernameDto } from './dto/bind-username.dto'
 import { IRequest } from 'src/utils/interface'
 import { BindPhoneDto } from './dto/bind-phone.dto'
 import { SmsService } from './phone/sms.service'
-import { SmsVerifyCodeType } from '@prisma/client'
 import { UserService } from 'src/user/user.service'
+import { ObjectId } from 'mongodb'
+import { SmsVerifyCodeType } from './entities/sms-verify-code'
 
-@ApiTags('Authentication - New')
+@ApiTags('Authentication')
 @Controller('auth')
 export class AuthenticationController {
   constructor(
@@ -40,7 +41,7 @@ export class AuthenticationController {
   async bindPhone(@Body() dto: BindPhoneDto, @Req() req: IRequest) {
     const { phone, code } = dto
     // check code valid
-    const err = await this.smsService.validCode(
+    const err = await this.smsService.validateCode(
       phone,
       code,
       SmsVerifyCodeType.Bind,
@@ -50,20 +51,13 @@ export class AuthenticationController {
     }
 
     // check phone if have already been bound
-    const user = await this.userService.find(phone)
+    const user = await this.userService.findOneByUsernameOrPhoneOrEmail(phone)
     if (user) {
       return ResponseUtil.error('phone already been bound')
     }
 
     // bind phone
-    await this.userService.updateUser({
-      where: {
-        id: req.user.id,
-      },
-      data: {
-        phone,
-      },
-    })
+    await this.userService.updateUser(new ObjectId(req.user._id), { phone })
   }
 
   /**
@@ -77,7 +71,7 @@ export class AuthenticationController {
     const { username, phone, code } = dto
 
     // check code valid
-    const err = await this.smsService.validCode(
+    const err = await this.smsService.validateCode(
       phone,
       code,
       SmsVerifyCodeType.Bind,
@@ -87,19 +81,14 @@ export class AuthenticationController {
     }
 
     // check username if have already been bound
-    const user = await this.userService.find(username)
+    const user = await this.userService.findOneByUsernameOrPhoneOrEmail(
+      username,
+    )
     if (user) {
       return ResponseUtil.error('username already been bound')
     }
 
     // bind username
-    await this.userService.updateUser({
-      where: {
-        id: req.user.id,
-      },
-      data: {
-        username,
-      },
-    })
+    await this.userService.updateUser(new ObjectId(req.user._id), { username })
   }
 }

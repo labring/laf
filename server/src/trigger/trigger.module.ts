@@ -10,6 +10,7 @@ import { TriggerTaskService } from './trigger-task.service'
 import { FunctionService } from 'src/function/function.service'
 import { DatabaseService } from 'src/database/database.service'
 import { MongoService } from 'src/database/mongo.service'
+import { BundleService } from 'src/application/bundle.service'
 
 @Module({
   imports: [StorageModule, HttpModule],
@@ -23,6 +24,7 @@ import { MongoService } from 'src/database/mongo.service'
     FunctionService,
     DatabaseService,
     MongoService,
+    BundleService,
   ],
   exports: [TriggerService, CronJobService],
 })

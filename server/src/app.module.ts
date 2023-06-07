@@ -17,13 +17,12 @@ import { DependencyModule } from './dependency/dependency.module'
 import { TriggerModule } from './trigger/trigger.module'
 import { RegionModule } from './region/region.module'
 import { GatewayModule } from './gateway/gateway.module'
-import { PrismaModule } from './prisma/prisma.module'
-import { SubscriptionModule } from './subscription/subscription.module'
 import { AccountModule } from './account/account.module'
 import { SettingModule } from './setting/setting.module'
 import { SseClientsModule } from './sse/sse-clients.module'
 import * as path from 'path'
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n'
+import { BillingModule } from './billing/billing.module'
 
 @Module({
   imports: [
@@ -46,8 +45,6 @@ import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n'
     TriggerModule,
     RegionModule,
     GatewayModule,
-    PrismaModule,
-    SubscriptionModule,
     AccountModule,
     SettingModule,
     SseClientsModule,
@@ -66,6 +63,7 @@ import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n'
         '../src/generated/i18n.generated.ts',
       ),
     }),
+    BillingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

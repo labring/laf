@@ -9,6 +9,7 @@ import { PolicyRuleService } from './policy/policy-rule.service'
 import { PolicyRuleController } from './policy/policy-rule.controller'
 import { MongoService } from './mongo.service'
 import { ApplicationService } from 'src/application/application.service'
+import { BundleService } from 'src/application/bundle.service'
 
 @Module({
   imports: [],
@@ -25,6 +26,7 @@ import { ApplicationService } from 'src/application/application.service'
     PolicyRuleService,
     MongoService,
     ApplicationService,
+    BundleService,
   ],
   exports: [
     CollectionService,

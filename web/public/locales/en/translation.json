@@ -43,6 +43,7 @@
   "Copied": "copied",
   "Copy": "copy",
   "Create": "New application",
+  "Change": "Change",
   "CreateNow": "Create Now",
   "Custom": "customize",
   "Days": "days",
@@ -72,6 +73,7 @@
     "AddFunction": "New Function",
     "Code": "Function Template",
     "ConfirmDeploy": "Confirm Deploy",
+    "ConfirmFetch": "Confirm Fetch",
     "CustomDependence": "Custom",
     "CustomDependenceTip": "No custom dependencies yet",
     "DeleteDependencyConfirm": "Are you sure you want to delete the npm package?",
@@ -86,6 +88,8 @@
     "DependenceVersion": "Dependency Version",
     "Deploy": "Deploy",
     "DeploySuccess": "Deploy successfully",
+    "Fetch": "Fetch",
+    "FetchSuccess": "Fetch successfully",
     "Description": "Function Description",
     "EditFunction": "Edit Function",
     "Function": "Function",
@@ -107,13 +111,13 @@
     "UploadButton": "upload",
     "LeaveFunctionPage": "About to leave the function edit page",
     "PromptDescription": "Use natural language to describe your needs, laf will help you generate code, for example: help me write a hello world, return {hello: 'laf AI'}",
-    "CreateWithAITip": "Create functions with AI assistance"
+    "CreateWithAITip": "Create functions with AI assistance",
+    "getCodeOnline": "Retrieve the latest released online code"
   },
   "HomePanel": {
     "APP": "Android or iOS app",
     "Application": "Application ",
     "Blog": "Personal blog, corporate official website",
-    "BundleName": "Specification",
     "Develop": "Develop",
     "Enterprise": "Enterprise information construction",
     "Explore": "waiting for you to explore",
@@ -129,7 +133,14 @@
     "Welcome": "Welcome to the LAF cloud development platform!",
     "DeleteApp": "delete apps",
     "DeleteTip": "The current operation will permanently delete applications, including functions, data, cloud storage, etc. related data related to the application. After deleting, <strong> will not be able to cancel </strong>,please enter <strong>{{appId}}</strong> confirm",
-    "Duration": "Duration"
+    "Duration": "Duration",
+    "Spec": "Spec"
+  },
+  "SpecItem": {
+    "cpu": "CPU",
+    "memory": "Memory",
+    "databaseCapacity": "Database",
+    "storageCapacity": "Storage"
   },
   "LogPanel": {
     "Detail": "Log Details",
@@ -165,11 +176,15 @@
     "Tel": "Mobile",
     "TelTip": "Please enter a valid Mobile phone number",
     "ToAuth": "Authenticate Now",
-    "UserInfo": "User Information",
+    "UserInfo": "UserInfo",
     "noAuth": "Not Authenticated",
     "showAuth": "Go to Auth",
     "ShutDown": "ShutDown",
-    "Subscription": "Subscription Info"
+    "Subscription": "Subscription Info",
+    "Usage": "Usage",
+    "Avatar": "Avatar",
+    "UserName": "UserName",
+    "Email": "Email"
   },
   "StoragePanel": {
     "All": "Total Capacity",
@@ -324,7 +339,6 @@
   "CreateTime": "Created",
   "EndTime": "Expired",
   "Renew": "Renew",
-  "TotalPrice": "Total",
   "Balance": "Balance",
   "ChargeNow": "Charge",
   "balance is insufficient": "balance is insufficient",
@@ -418,5 +432,17 @@
   },
   "ChatGPT example": "ChatGPT example",
   "LinkCopied": "Link Copied",
-  "ServerStatus": "STATUS"
+  "create success": "create success",
+  "ServerStatus": "STATUS",
+  "Fee": "Fee",
+  "PleaseCloseApplicationFirst": "Please close your application first.",
+  "custom": "Custom",
+  "CostTime": "CostTime",
+  "Duration": "Duration",
+  "State": "State",
+  "TotalAmount": "Total",
+  "AIWelcomeMessage": "Hello, I am Laf AI Development Assistant, how can I help you?",
+  "Send": "Send",
+  "Stop": "Stop",
+  "SendMessagePlaceHolder": "Send a message"
 }

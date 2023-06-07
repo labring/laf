@@ -1,23 +1,22 @@
 import { useState } from "react";
-import { Avatar, Box, HStack, useColorMode } from "@chakra-ui/react";
-import clsx from "clsx";
+import { Avatar, Box, HStack } from "@chakra-ui/react";
 import { t } from "i18next";
 
-import { COLOR_MODE } from "@/constants";
-import { formatDate, hidePhoneNumber } from "@/utils/format";
+import ChargeButton from "@/components/ChargeButton";
+import { formatDate, formatPrice, hidePhoneNumber } from "@/utils/format";
 
 import AuthDetail from "./AuthDetail";
 
 import useGlobalStore from "@/pages/globalStore";
+import { useAccountQuery } from "@/pages/home/service";
 export default function UserInfo() {
   const [showAuth, setShowAuth] = useState(false);
 
   const { userInfo } = useGlobalStore((state) => state);
-  const { colorMode } = useColorMode();
-  const darkMode = colorMode === COLOR_MODE.dark;
+  const { data: accountRes } = useAccountQuery();
 
   return (
-    <div className="flex h-full flex-col items-center justify-center">
+    <div className="flex min-h-[400px] flex-col">
       {showAuth ? (
         <AuthDetail
           onBack={() => {
@@ -26,23 +25,9 @@ export default function UserInfo() {
         />
       ) : (
         <>
-          <Box className="relative text-center">
-            <Avatar
-              size="lg"
-              name={userInfo?.username}
-              src={userInfo?.profile.avatar}
-              bgColor="primary.500"
-              color="white"
-              boxShadow="base"
-            />
-            <p
-              className={clsx("mb-2 text-center text-3xl font-medium", {
-                "text-grayModern-900": !darkMode,
-              })}
-            >
-              {userInfo?.username}
-            </p>
-            {/* <span className="inline-block px-2 h-[24px]  rounded-full border border-grayModern-400 text-grayModern-400 pt-[1px]">
+          <h1 className="mb-4 text-2xl font-bold">{t("SettingPanel.UserInfo")}</h1>
+          {/*  <div className="relative flex items-center">
+            <span className="inline-block px-2 h-[24px]  rounded-full border border-grayModern-400 text-grayModern-400 pt-[1px]">
               {t("SettingPanel.noAuth")}
             </span>
             <span
@@ -52,15 +37,46 @@ export default function UserInfo() {
               }}
             >
               {t("SettingPanel.showAuth")}
-            </span> */}
-          </Box>
-          <Box className="mb-20 mt-8 text-lg">
-            <HStack spacing={8}>
-              <span className="w-[80px] text-grayModern-500">{t("SettingPanel.Tel")}:</span>
+            </span>
+          </div> */}
+          <Box className="text-lg">
+            <HStack>
+              <span className=" text-grayModern-500">{t("SettingPanel.Avatar")}:</span>
+              <Avatar
+                size={"xs"}
+                name={userInfo?.username}
+                src={userInfo?.profile?.avatar}
+                bgColor="primary.500"
+                color="white"
+                boxShadow="base"
+              />
+            </HStack>
+
+            <HStack className="mt-4">
+              <span className=" text-grayModern-500">{t("Balance")}:</span>
+              <span>{formatPrice(accountRes?.data?.balance)}</span>
+              <ChargeButton>
+                <span className="cursor-pointer text-blue-800">{t("ChargeNow")}</span>
+              </ChargeButton>
+            </HStack>
+
+            <HStack className="mt-4">
+              <span className=" text-grayModern-500">{t("SettingPanel.UserName")}:</span>
+              <span>{userInfo?.username}</span>
+            </HStack>
+
+            <HStack className="mt-4">
+              <span className=" text-grayModern-500">{t("SettingPanel.Email")}:</span>
+              <span>{userInfo?.email ? userInfo?.email : "-"}</span>
+            </HStack>
+
+            <HStack className="mt-4">
+              <span className=" text-grayModern-500">{t("SettingPanel.Tel")}:</span>
               <span>{userInfo?.phone ? hidePhoneNumber(userInfo.phone) : t("NoInfo")}</span>
             </HStack>
-            <HStack spacing={8} className="mt-2">
-              <span className="w-[80px] text-grayModern-500">{t("SettingPanel.Registered")}:</span>
+
+            <HStack className="mt-4">
+              <span className=" text-grayModern-500">{t("SettingPanel.Registered")}:</span>
               <span>{formatDate(userInfo?.createdAt)}</span>
             </HStack>
           </Box>

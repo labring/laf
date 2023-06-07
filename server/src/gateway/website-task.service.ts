@@ -1,19 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import {
-  BucketDomain,
-  DomainPhase,
-  DomainState,
-  WebsiteHosting,
-} from '@prisma/client'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import { RegionService } from 'src/region/region.service'
 import * as assert from 'node:assert'
 import { ApisixService } from './apisix.service'
 import { ApisixCustomCertService } from './apisix-custom-cert.service'
 import { ObjectId } from 'mongodb'
 import { isConditionTrue } from 'src/utils/getter'
+import { WebsiteHosting } from 'src/website/entities/website'
+import { DomainPhase, DomainState } from './entities/runtime-domain'
+import { BucketDomain } from './entities/bucket-domain'
 
 @Injectable()
 export class WebsiteTaskService {
@@ -25,7 +22,7 @@ export class WebsiteTaskService {
     private readonly regionService: RegionService,
     private readonly apisixService: ApisixService,
     private readonly certService: ApisixCustomCertService,
-  ) {}
+  ) { }
 
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
@@ -75,6 +72,7 @@ export class WebsiteTaskService {
           lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
         { $set: { lockedAt: new Date() } },
+        { returnDocument: 'after' },
       )
 
     if (!res.value) return
@@ -180,6 +178,7 @@ export class WebsiteTaskService {
           lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
         { $set: { lockedAt: new Date() } },
+        { returnDocument: 'after' },
       )
 
     if (!res.value) return

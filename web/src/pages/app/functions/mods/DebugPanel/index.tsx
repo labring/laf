@@ -25,6 +25,7 @@ import { COLOR_MODE, Pages } from "@/constants";
 
 import { useCompileMutation, useUpdateFunctionMutation } from "../../service";
 import useFunctionStore from "../../store";
+import AIChatPanel from "../AIChatPanel";
 
 import BodyParamsTab from "./BodyParamsTab";
 import QueryParamsTab from "./QueryParamsTab";
@@ -40,9 +41,8 @@ const HAS_BODY_PARAMS_METHODS: (TMethod | undefined)[] = ["POST", "PUT", "PATCH"
 
 export default function DebugPanel(props: { containerRef: any; showOverlay: boolean }) {
   const { t } = useTranslation();
-  const { getFunctionUrl, currentFunction, setCurrentRequestId } = useFunctionStore(
-    (state) => state,
-  );
+  const { getFunctionUrl, currentFunction, setCurrentFunction, setCurrentRequestId } =
+    useFunctionStore((state) => state);
   const updateFunctionMutation = useUpdateFunctionMutation();
   const globalStore = useGlobalStore((state) => state);
 
@@ -72,16 +72,16 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
 
   useEffect(() => {
     if (currentFunction?.methods) {
-      setRunningMethod(currentFunction.methods[0]);
+      setRunningMethod(currentFunction.params?.runningMethod || currentFunction.methods[0]);
     }
   }, [setRunningMethod, currentFunction]);
 
   const runningCode = async () => {
-    if (isLoading || !currentFunction?.id) return;
+    if (isLoading || !currentFunction?._id) return;
     setIsLoading(true);
     try {
       const compileRes = await compileMutation.mutateAsync({
-        code: functionCache.getCache(currentFunction!.id, currentFunction!.source?.code),
+        code: functionCache.getCache(currentFunction!._id, currentFunction!.source?.code),
         name: currentFunction!.name,
       });
 
@@ -89,17 +89,20 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
         queryParams: queryParams,
         bodyParams: bodyParams,
         headerParams: headerParams,
+        runningMethod: runningMethod,
       };
 
       updateFunctionMutation.mutateAsync({
         description: currentFunction?.desc,
-        code: functionCache.getCache(currentFunction!.id, currentFunction!.source?.code),
+        code: currentFunction?.source.code,
         methods: currentFunction?.methods,
         websocket: currentFunction?.websocket,
         name: currentFunction?.name,
         tags: currentFunction?.tags,
         params: params,
       });
+
+      setCurrentFunction({ ...currentFunction, params: params });
 
       if (!compileRes.error) {
         const _funcData = JSON.stringify(compileRes.data);
@@ -130,7 +133,7 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
     <>
       <Panel className="min-w-[200px] flex-grow overflow-hidden !px-0">
         <Tabs width="100%" colorScheme={"primary"} display="flex" flexDirection={"column"} h="full">
-          <TabList h={"50px"}>
+          <TabList>
             <Tab px="4">
               <span
                 className={clsx("font-semibold", {
@@ -141,7 +144,7 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
                 {t("FunctionPanel.InterfaceDebug")}
               </span>
             </Tab>
-            <Tab px="4">
+            {/* <Tab px="4">
               <span
                 className={clsx("font-semibold", {
                   "text-black": !darkMode,
@@ -150,8 +153,8 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
               >
                 {t("HomePage.NavBar.docs")}
               </span>
-            </Tab>
-            {/* <Tab>历史请求</Tab> */}
+            </Tab> */}
+            <Tab>Laf Pilot</Tab>
           </TabList>
 
           <TabPanels flex={1} className="overflow-hidden">
@@ -298,7 +301,7 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
               </Row>
             </TabPanel>
 
-            <TabPanel padding={0} h="full">
+            {/* <TabPanel padding={0} h="full">
               {props.showOverlay && (
                 <div
                   style={{
@@ -316,8 +319,10 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
                 width={"100%"}
                 src={String(t("HomePage.DocsLink"))}
               />
+            </TabPanel> */}
+            <TabPanel padding={0} h="full">
+              <AIChatPanel />
             </TabPanel>
-            {/* <TabPanel padding={0}>to be continued...</TabPanel> */}
           </TabPanels>
         </Tabs>
       </Panel>

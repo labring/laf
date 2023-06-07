@@ -14,8 +14,11 @@ import useGlobalStore from "@/pages/globalStore";
  * Get application runtime list
  */
 export async function AppControllerGetRuntimes(
-  params: Paths.AppControllerGetRuntimes.BodyParameters | any,
-): Promise<Paths.AppControllerGetRuntimes.Responses> {
+  params: Paths.AppControllerGetRuntimes.BodyParameters,
+): Promise<{
+  error: string;
+  data: Paths.AppControllerGetRuntimes.Responses;
+}> {
   // /v1/runtimes
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",

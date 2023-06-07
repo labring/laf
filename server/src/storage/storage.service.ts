@@ -1,20 +1,26 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Region, StoragePhase, StorageState, StorageUser } from '@prisma/client'
-import { PrismaService } from 'src/prisma/prisma.service'
 import { GenerateAlphaNumericPassword } from 'src/utils/random'
 import { MinioService } from './minio/minio.service'
 import { AssumeRoleCommand, STSClient } from '@aws-sdk/client-sts'
 import { RegionService } from 'src/region/region.service'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
+import { Region } from 'src/region/entities/region'
+import { SystemDatabase } from 'src/system-database'
+import {
+  StoragePhase,
+  StorageState,
+  StorageUser,
+} from './entities/storage-user'
+import { StorageBucket } from './entities/storage-bucket'
 
 @Injectable()
 export class StorageService {
   private readonly logger = new Logger(StorageService.name)
+  private readonly db = SystemDatabase.db
 
   constructor(
     private readonly minioService: MinioService,
     private readonly regionService: RegionService,
-    private readonly prisma: PrismaService,
   ) {}
 
   async create(appid: string) {
@@ -25,49 +31,43 @@ export class StorageService {
     // create storage user in minio if not exists
     const minioUser = await this.minioService.getUser(region, accessKey)
     if (!minioUser) {
-      const r0 = await this.minioService.createUser(
+      const res = await this.minioService.createUser(
         region,
         accessKey,
         secretKey,
       )
-      if (r0.error) {
-        this.logger.error(r0.error)
+      if (res.error) {
+        this.logger.error(res.error)
         return null
       }
     }
 
     // add storage user to common user group in minio
-    const r1 = await this.minioService.addUserToGroup(region, accessKey)
-    if (r1.error) {
-      this.logger.error(r1.error)
+    const res = await this.minioService.addUserToGroup(region, accessKey)
+    if (res.error) {
+      this.logger.error(res.error)
       return null
     }
 
     // create storage user in database
-    const user = await this.prisma.storageUser.create({
-      data: {
-        accessKey,
-        secretKey,
-        state: StorageState.Active,
-        phase: StoragePhase.Created,
-        lockedAt: TASK_LOCK_INIT_TIME,
-        application: {
-          connect: {
-            appid: appid,
-          },
-        },
-      },
+    await this.db.collection<StorageUser>('StorageUser').insertOne({
+      appid,
+      accessKey,
+      secretKey,
+      state: StorageState.Active,
+      phase: StoragePhase.Created,
+      lockedAt: TASK_LOCK_INIT_TIME,
+      updatedAt: new Date(),
+      createdAt: new Date(),
     })
 
-    return user
+    return await this.findOne(appid)
   }
 
   async findOne(appid: string) {
-    const user = await this.prisma.storageUser.findUnique({
-      where: {
-        appid,
-      },
-    })
+    const user = await this.db
+      .collection<StorageUser>('StorageUser')
+      .findOne({ appid })
 
     return user
   }
@@ -76,31 +76,31 @@ export class StorageService {
     // delete user in minio
     const region = await this.regionService.findByAppId(appid)
 
-    // delete buckets & files in minio
-    const count = await this.prisma.storageBucket.count({
-      where: { appid },
-    })
+    // delete buckets & files
+    const count = await this.db
+      .collection<StorageBucket>('StorageBucket')
+      .countDocuments({ appid })
     if (count > 0) {
-      await this.prisma.storageBucket.updateMany({
-        where: {
-          appid,
-          state: { not: StorageState.Deleted },
-        },
-        data: { state: StorageState.Deleted },
-      })
+      await this.db
+        .collection<StorageBucket>('StorageBucket')
+        .updateMany(
+          { appid, state: { $ne: StorageState.Deleted } },
+          { $set: { state: StorageState.Deleted, updatedAt: new Date() } },
+        )
 
+      // just return to wait for buckets deletion
       return
     }
 
+    // delete user in minio
     await this.minioService.deleteUser(region, appid)
 
-    const user = await this.prisma.storageUser.delete({
-      where: {
-        appid,
-      },
-    })
+    // delete user in database
+    const res = await this.db
+      .collection<StorageUser>('StorageUser')
+      .findOneAndDelete({ appid })
 
-    return user
+    return res.value
   }
 
   /**

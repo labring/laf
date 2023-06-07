@@ -1,80 +1,75 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { TriggerPhase, TriggerState } from '@prisma/client'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
-import { PrismaService } from 'src/prisma/prisma.service'
 import { CreateTriggerDto } from './dto/create-trigger.dto'
 import CronValidate from 'cron-validate'
+import { SystemDatabase } from 'src/system-database'
+import {
+  CronTrigger,
+  TriggerPhase,
+  TriggerState,
+} from './entities/cron-trigger'
+import { ObjectId } from 'mongodb'
 
 @Injectable()
 export class TriggerService {
   private readonly logger = new Logger(TriggerService.name)
-
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly db = SystemDatabase.db
 
   async create(appid: string, dto: CreateTriggerDto) {
     const { desc, cron, target } = dto
-    const trigger = await this.prisma.cronTrigger.create({
-      data: {
-        desc,
-        cron,
-        state: TriggerState.Active,
-        phase: TriggerPhase.Creating,
-        lockedAt: TASK_LOCK_INIT_TIME,
-        cloudFunction: {
-          connect: {
-            appid_name: {
-              appid,
-              name: target,
-            },
-          },
-        },
-      },
+    const res = await this.db.collection<CronTrigger>('CronTrigger').insertOne({
+      appid,
+      desc,
+      cron,
+      target,
+      state: TriggerState.Active,
+      phase: TriggerPhase.Creating,
+      lockedAt: TASK_LOCK_INIT_TIME,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     })
 
-    return trigger
+    return this.findOne(appid, res.insertedId)
   }
 
   async count(appid: string) {
-    const res = await this.prisma.cronTrigger.count({
-      where: { appid },
-    })
+    const count = await this.db
+      .collection<CronTrigger>('CronTrigger')
+      .countDocuments({ appid })
 
-    return res
+    return count
   }
 
-  async findOne(appid: string, id: string) {
-    const res = await this.prisma.cronTrigger.findFirst({
-      where: { id, appid },
-    })
+  async findOne(appid: string, id: ObjectId) {
+    const doc = await this.db
+      .collection<CronTrigger>('CronTrigger')
+      .findOne({ appid, _id: id })
 
-    return res
+    return doc
   }
 
   async findAll(appid: string) {
-    const res = await this.prisma.cronTrigger.findMany({
-      where: { appid, state: TriggerState.Active },
-    })
+    const docs = await this.db
+      .collection<CronTrigger>('CronTrigger')
+      .find({ appid, state: TriggerState.Active })
+      .toArray()
 
-    return res
+    return docs
   }
 
-  async remove(appid: string, id: string) {
-    const res = await this.prisma.cronTrigger.updateMany({
-      where: { id, appid },
-      data: {
-        state: TriggerState.Deleted,
-      },
-    })
-    return res
+  async removeOne(appid: string, id: ObjectId) {
+    await this.db
+      .collection<CronTrigger>('CronTrigger')
+      .updateOne({ appid, _id: id }, { $set: { state: TriggerState.Deleted } })
+
+    return this.findOne(appid, id)
   }
 
   async removeAll(appid: string) {
-    const res = await this.prisma.cronTrigger.updateMany({
-      where: { appid },
-      data: {
-        state: TriggerState.Deleted,
-      },
-    })
+    const res = await this.db
+      .collection<CronTrigger>('CronTrigger')
+      .updateMany({ appid }, { $set: { state: TriggerState.Deleted } })
+
     return res
   }
 

@@ -1,13 +1,13 @@
 import { applicationControllerFindOne } from '../api/v1/application'
-import { readApplicationConfig } from '../config/application'
+import { AppSchema } from '../schema/app'
 
 const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
 
 const interval: number = 2000 // interval 1000ms
 export async function waitApplicationState(targetState: string) {
-  const appConfig = readApplicationConfig()
+  const appSchema = AppSchema.read()
   while (true) {
-    const app = await applicationControllerFindOne(appConfig.appid)
+    const app = await applicationControllerFindOne(appSchema.appid)
     if (app.state === targetState) {
       return
     }

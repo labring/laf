@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import { SynchronizeUpIcon } from "@/components/CommonIcon";
 import CommonDiffEditor from "@/components/Editor/CommonDiffEditor";
 import { Pages } from "@/constants";
 
@@ -34,9 +35,12 @@ export default function DeployButton() {
 
   const updateFunctionMutation = useUpdateFunctionMutation();
 
-  const functionDetailQuery = useFunctionDetailQuery(store.currentFunction.name, {
-    enabled: isOpen,
-  });
+  const functionDetailQuery = useFunctionDetailQuery(
+    encodeURIComponent(store.currentFunction.name),
+    {
+      enabled: isOpen,
+    },
+  );
 
   const { displayName } = useHotKey(
     DEFAULT_SHORTCUTS.deploy,
@@ -51,16 +55,17 @@ export default function DeployButton() {
   const deploy = async () => {
     const res = await updateFunctionMutation.mutateAsync({
       description: store.currentFunction?.desc,
-      code: functionCache.getCache(store.currentFunction!.id, store.currentFunction!.source?.code),
+      code: functionCache.getCache(store.currentFunction!._id, store.currentFunction!.source?.code),
       methods: store.currentFunction?.methods,
       websocket: store.currentFunction?.websocket,
       name: store.currentFunction?.name,
       tags: store.currentFunction?.tags,
+      params: store.currentFunction?.params,
     });
     if (!res.error) {
       store.setCurrentFunction(res.data);
       // delete cache after deploy
-      functionCache.removeCache(store.currentFunction!.id);
+      functionCache.removeCache(store.currentFunction!._id);
       onClose();
       showSuccess(t("FunctionPanel.DeploySuccess"));
     }
@@ -79,6 +84,8 @@ export default function DeployButton() {
           onClick={() => {
             onOpen();
           }}
+          leftIcon={<SynchronizeUpIcon />}
+          className="w-20"
         >
           {t("FunctionPanel.Deploy")}
         </Button>
@@ -94,7 +101,7 @@ export default function DeployButton() {
               <CommonDiffEditor
                 original={functionDetailQuery.data?.data?.source?.code}
                 modified={functionCache.getCache(
-                  store.currentFunction?.id,
+                  store.currentFunction?._id,
                   store.currentFunction?.source?.code,
                 )}
               />

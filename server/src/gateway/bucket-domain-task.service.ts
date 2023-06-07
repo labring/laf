@@ -1,11 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { BucketDomain, DomainPhase, DomainState } from '@prisma/client'
 import { RegionService } from 'src/region/region.service'
 import { ApisixService } from './apisix.service'
 import * as assert from 'node:assert'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
+import { BucketDomain } from './entities/bucket-domain'
+import { DomainPhase, DomainState } from './entities/runtime-domain'
 
 @Injectable()
 export class BucketDomainTaskService {
@@ -66,6 +67,7 @@ export class BucketDomainTaskService {
           lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
         { $set: { lockedAt: new Date() } },
+        { returnDocument: 'after' },
       )
     if (!res.value) return
 
@@ -113,6 +115,7 @@ export class BucketDomainTaskService {
           lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
         { $set: { lockedAt: new Date() } },
+        { returnDocument: 'after' },
       )
     if (!res.value) return
 

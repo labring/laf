@@ -9,6 +9,7 @@ import "./userWorker";
 import { AutoImportTypings } from "./typesResolve";
 
 import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
+import useFunctionStore from "@/pages/app/functions/store";
 import useGlobalStore from "@/pages/globalStore";
 
 const autoImportTypings = new AutoImportTypings();
@@ -90,6 +91,19 @@ const updateModel = (path: string, value: string, editorRef: any) => {
   }
 };
 
+const updateFetchModel = (path: string, value: string, editorRef: any) => {
+  const newModel =
+    monaco.editor.getModel(monaco.Uri.parse(path)) ||
+    monaco.editor.createModel(value, "typescript", monaco.Uri.parse(path));
+
+  newModel.setValue(value);
+
+  if (editorRef.current?.getModel() !== newModel) {
+    editorRef.current?.setModel(newModel);
+    autoImportTypings.parse(editorRef.current?.getValue() || "");
+  }
+};
+
 function FunctionEditor(props: {
   value: string;
   className?: string;
@@ -116,6 +130,7 @@ function FunctionEditor(props: {
   const monacoEl = useRef(null);
 
   const globalStore = useGlobalStore((state) => state);
+  const { isFetchButtonClicked, setIsFetchButtonClicked } = useFunctionStore((state) => state);
 
   useHotKey(
     DEFAULT_SHORTCUTS.send_request,
@@ -161,9 +176,14 @@ function FunctionEditor(props: {
 
   useEffect(() => {
     if (monacoEl && editorRef.current) {
-      updateModel(path, value, editorRef);
+      if (isFetchButtonClicked) {
+        updateFetchModel(path, value, editorRef);
+        setIsFetchButtonClicked();
+      } else {
+        updateModel(path, value, editorRef);
+      }
     }
-  }, [path, value]);
+  }, [path, value, isFetchButtonClicked, setIsFetchButtonClicked]);
 
   useEffect(() => {
     if (monacoEl && editorRef.current) {

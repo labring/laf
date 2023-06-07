@@ -10,12 +10,13 @@ type State = {
   currentFunction: TFunction | { [key: string]: any };
   currentRequestId: string | undefined;
   functionCodes: { [key: string]: string };
+  isFetchButtonClicked: Boolean;
   getFunctionUrl: () => string;
-
   setCurrentRequestId: (requestId: string | undefined) => void;
   setAllFunctionList: (functionList: TFunction[]) => void;
   setCurrentFunction: (currentFunction: TFunction | { [key: string]: any }) => void;
   updateFunctionCode: (current: TFunction | { [key: string]: any }, codes: string) => void;
+  setIsFetchButtonClicked: () => void;
 };
 
 const useFunctionStore = create<State>()(
@@ -25,6 +26,7 @@ const useFunctionStore = create<State>()(
       currentFunction: {},
       functionCodes: {},
       currentRequestId: undefined,
+      isFetchButtonClicked: false,
 
       getFunctionUrl: () => {
         const currentApp = useGlobalStore.getState().currentApp;
@@ -57,7 +59,13 @@ const useFunctionStore = create<State>()(
 
       updateFunctionCode: async (currentFunction, codes) => {
         set((state) => {
-          state.functionCodes[currentFunction!.id] = codes;
+          state.functionCodes[currentFunction!._id] = codes;
+        });
+      },
+
+      setIsFetchButtonClicked: async () => {
+        set((state) => {
+          state.isFetchButtonClicked = !state.isFetchButtonClicked;
         });
       },
     })),

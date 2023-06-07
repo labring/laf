@@ -63,7 +63,7 @@ export function command(): Command {
   cmd
     .command('exec <funcName>')
     .description('exec function')
-    .option('-l --log <count>', 'print log')
+    .option('-l --log', 'print log')
     .option('-X --method <method>', 'request method, eg -X HEAD/GET/POST/PUT/DELETE')
     .option('-H --headers <request headers>', 'request headers, eg -H \'{"Content-Type": "application/json"}\'')
     .option('-q --query <request query params>', 'request query params, eg -q "key1=val1&key2=val2"')

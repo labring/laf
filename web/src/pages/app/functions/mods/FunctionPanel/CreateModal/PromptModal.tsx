@@ -30,7 +30,7 @@ import axios from "axios";
 import CodeViewer from "@/components/Editor/CodeViewer";
 // import FunctionEditor from "@/components/Editor/FunctionEditor";
 import InputTag from "@/components/InputTag";
-import { SUPPORTED_METHODS } from "@/constants";
+import { LAF_AI_URL, SUPPORTED_METHODS } from "@/constants";
 
 import { useCreateFunctionMutation, useUpdateFunctionMutation } from "../../../service";
 import useFunctionStore from "../../../store";
@@ -38,13 +38,17 @@ import useFunctionStore from "../../../store";
 import { TMethod } from "@/apis/typing";
 import useGlobalStore from "@/pages/globalStore";
 
-const PromptModal = (props: { functionItem?: any; children?: React.ReactElement }) => {
+const PromptModal = (props: {
+  functionItem?: any;
+  children?: React.ReactElement;
+  tagList?: any;
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const store = useFunctionStore();
   const { showSuccess } = useGlobalStore();
   const { t } = useTranslation();
 
-  const { functionItem, children = null } = props;
+  const { functionItem, children = null, tagList } = props;
   const isEdit = !!functionItem;
 
   const CancelToken = axios.CancelToken;
@@ -55,7 +59,7 @@ const PromptModal = (props: { functionItem?: any; children?: React.ReactElement 
 
   const { data: generateCodeRes, ...generateCode } = useMutation((params: any) => {
     return axios({
-      url: "https://itceb8.laf.run/laf-gpt",
+      url: LAF_AI_URL,
       method: "POST",
       data: params,
       cancelToken: source.token,
@@ -147,7 +151,7 @@ const PromptModal = (props: { functionItem?: any; children?: React.ReactElement 
                 <Input
                   {...register("name", {
                     pattern: {
-                      value: /^[a-zA-Z0-9_.-]{1,128}$/,
+                      value: /^[a-zA-Z0-9_.\-\/]{1,256}$/,
                       message: t("FunctionPanel.FunctionNameRule"),
                     },
                   })}
@@ -164,7 +168,7 @@ const PromptModal = (props: { functionItem?: any; children?: React.ReactElement 
                   name="tags"
                   control={control}
                   render={({ field: { onChange, value } }) => (
-                    <InputTag value={value} onChange={onChange} />
+                    <InputTag value={value} onChange={onChange} tagList={tagList} />
                   )}
                 />
                 <FormErrorMessage>{errors.tags && errors.tags.message}</FormErrorMessage>

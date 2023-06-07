@@ -6,8 +6,8 @@ on:
     branches:
       - main
     paths:
-      - "deploy/build/**"
-      - "deploy/scripts/**"
+      - "build/**"
+      - "deploy/**"
       - ".github/workflows/build-scripts-updated.yml"
       - ".github/workflows/build-sealos-cluster-image.yml"
       - "!**/*.md"

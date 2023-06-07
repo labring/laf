@@ -25,7 +25,7 @@ import { ResponseUtil } from '../utils/response'
 import { CreateBucketDto } from './dto/create-bucket.dto'
 import { UpdateBucketDto } from './dto/update-bucket.dto'
 import { BucketService } from './bucket.service'
-import { BundleService } from 'src/region/bundle.service'
+import { BundleService } from 'src/application/bundle.service'
 
 @ApiTags('Storage')
 @ApiBearerAuth('Authorization')
@@ -56,7 +56,7 @@ export class BucketController {
     const app = req.application
 
     // check bucket count limit
-    const bundle = await this.bundleService.findApplicationBundle(appid)
+    const bundle = await this.bundleService.findOne(appid)
     const LIMIT_COUNT = bundle?.resource?.limitCountOfBucket || 0
     const count = await this.bucketService.count(appid)
     if (count >= LIMIT_COUNT) {
@@ -133,7 +133,7 @@ export class BucketController {
       throw new HttpException('bucket not found', HttpStatus.NOT_FOUND)
     }
 
-    const res = await this.bucketService.update(bucket, dto)
+    const res = await this.bucketService.updateOne(bucket, dto)
     if (!res) {
       return ResponseUtil.error('update bucket failed')
     }
@@ -162,7 +162,7 @@ export class BucketController {
       )
     }
 
-    const res = await this.bucketService.delete(bucket)
+    const res = await this.bucketService.deleteOne(bucket)
     if (!res) {
       return ResponseUtil.error('delete bucket failed')
     }

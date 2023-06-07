@@ -1,6 +1,6 @@
 import { AuthenticationService } from '../authentication.service'
 import { UserPasswordService } from './user-password.service'
-import { Body, Controller, Logger, Post, Req } from '@nestjs/common'
+import { Body, Controller, Logger, Post } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { ResponseUtil } from 'src/utils/response'
 import { UserService } from '../../user/user.service'
@@ -11,7 +11,7 @@ import { SmsService } from '../phone/sms.service'
 import { PasswdResetDto } from '../dto/passwd-reset.dto'
 import { PasswdCheckDto } from '../dto/passwd-check.dto'
 
-@ApiTags('Authentication - New')
+@ApiTags('Authentication')
 @Controller('auth')
 export class UserPasswordController {
   private readonly logger = new Logger(UserPasswordService.name)
@@ -29,9 +29,9 @@ export class UserPasswordController {
   @ApiResponse({ type: ResponseUtil })
   @Post('passwd/signup')
   async signup(@Body() dto: PasswdSignupDto) {
-    const { username, password, phone } = dto
+    const { username, password, phone, inviteCode } = dto
     // check if user exists
-    const doc = await this.userService.user({ username })
+    const doc = await this.userService.findOneByUsername(username)
     if (doc) {
       return ResponseUtil.error('user already exists')
     }
@@ -47,18 +47,23 @@ export class UserPasswordController {
     if (bind.phone === AuthBindingType.Required) {
       const { phone, code, type } = dto
       // valid phone has been binded
-      const user = await this.userService.findByPhone(phone)
+      const user = await this.userService.findOneByPhone(phone)
       if (user) {
         return ResponseUtil.error('phone has been binded')
       }
-      const err = await this.smsService.validCode(phone, code, type)
+      const err = await this.smsService.validateCode(phone, code, type)
       if (err) {
         return ResponseUtil.error(err)
       }
     }
 
     // signup user
-    const user = await this.passwdService.signup(username, password, phone)
+    const user = await this.passwdService.signup(
+      username,
+      password,
+      phone,
+      inviteCode,
+    )
 
     // signin for created user
     const token = this.passwdService.signin(user)
@@ -76,13 +81,18 @@ export class UserPasswordController {
   @Post('passwd/signin')
   async signin(@Body() dto: PasswdSigninDto) {
     // check if user exists
-    const user = await this.userService.find(dto.username)
+    const user = await this.userService.findOneByUsernameOrPhoneOrEmail(
+      dto.username,
+    )
     if (!user) {
       return ResponseUtil.error('user not found')
     }
 
     // check if password is correct
-    const err = await this.passwdService.validPasswd(user.id, dto.password)
+    const err = await this.passwdService.validatePassword(
+      user._id,
+      dto.password,
+    )
     if (err) {
       return ResponseUtil.error(err)
     }
@@ -104,23 +114,19 @@ export class UserPasswordController {
   async reset(@Body() dto: PasswdResetDto) {
     // valid phone code
     const { phone, code, type } = dto
-    let err = await this.smsService.validCode(phone, code, type)
+    const err = await this.smsService.validateCode(phone, code, type)
     if (err) {
       return ResponseUtil.error(err)
     }
 
     // find user by phone
-    const user = await this.userService.findByPhone(phone)
+    const user = await this.userService.findOneByPhone(phone)
     if (!user) {
       return ResponseUtil.error('user not found')
     }
 
     // reset password
-    err = await this.passwdService.resetPasswd(user.id, dto.password)
-    if (err) {
-      return ResponseUtil.error(err)
-    }
-
+    await this.passwdService.resetPassword(user._id, dto.password)
     return ResponseUtil.ok('success')
   }
 
@@ -133,12 +139,14 @@ export class UserPasswordController {
   async check(@Body() dto: PasswdCheckDto) {
     const { username } = dto
     // check if user exists
-    const user = await this.userService.find(username)
+    const user = await this.userService.findOneByUsernameOrPhoneOrEmail(
+      username,
+    )
     if (!user) {
       return ResponseUtil.error('user not found')
     }
     // find if set password
-    const hasPasswd = await this.passwdService.hasPasswd(user.id)
+    const hasPasswd = await this.passwdService.hasPassword(user._id)
 
     return ResponseUtil.ok(hasPasswd)
   }

@@ -18,6 +18,7 @@ import { t } from "i18next";
 
 import { COLOR_MODE } from "@/constants";
 
+import useInviteCode from "@/hooks/useInviteCode";
 import {
   useGetProvidersQuery,
   useSendSmsCodeMutation,
@@ -63,6 +64,7 @@ export default function SignUp() {
   const [isSendSmsCode, setIsSendSmsCode] = useState(false);
   const [countdown, setCountdown] = useState(60);
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const inviteCode = useInviteCode();
 
   const {
     register,
@@ -91,11 +93,13 @@ export default function SignUp() {
           code: data.validationCode,
           username: data.account,
           password: data.password,
+          inviteCode: inviteCode,
           type: "Signup",
         }
       : {
           username: data.account,
           password: data.password,
+          inviteCode: inviteCode,
           type: "Signup",
         };
 

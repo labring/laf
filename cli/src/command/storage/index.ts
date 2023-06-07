@@ -17,6 +17,7 @@ export function command(): Command {
   cmd
     .command('create <bucketName>')
     .description('create a bucket')
+    .option('-p, --policy <policy>', 'bucket policy(private, readonly, readwrite)')
     .action((bucketName, options) => {
       create(bucketName, options)
     })
@@ -24,6 +25,7 @@ export function command(): Command {
   cmd
     .command('update <bucketName>')
     .description('update bucket')
+    .option('-p, --policy <policy>', 'bucket policy(private, readonly, readwrite)')
     .action((bucketName, options) => {
       update(bucketName, options)
     })

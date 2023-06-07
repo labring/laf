@@ -73,3 +73,5 @@ export const COLOR_MODE = {
   light: "light",
   dark: "dark",
 };
+
+export const LAF_AI_URL = "https://htr4n1.laf.run/laf-gpt";
