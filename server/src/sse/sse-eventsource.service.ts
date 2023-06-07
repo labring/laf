@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { SystemDatabase } from "../database/system-database";
 import { CreateEventSourceDto } from './dto/create-eventsource.dto';
-import {User} from "../user/entities/user";
 import {COLLECTION_SSEEVENTSOURCE} from "./types";
+import {SseEventSource} from "./entities/sse";
 
 
 @Injectable()
@@ -14,7 +14,7 @@ export class SseEventsourceService {
 
     async create(dto: CreateEventSourceDto) {
 
-        const res = await this.db.collection<User>(COLLECTION_SSEEVENTSOURCE).insertOne({
+        const res = await this.db.collection<SseEventSource>(COLLECTION_SSEEVENTSOURCE).insertOne({
             ...dto,
             createdAt: new Date(),
             updatedAt: new Date(),
