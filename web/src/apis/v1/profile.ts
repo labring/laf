@@ -19,12 +19,12 @@ export async function AuthControllerGetProfile(
   error: string;
   data: Definitions.UserWithProfile;
 }> {
-  // /v1/profile
+  // /v1/auth/profile
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
-  return request(`/v1/profile`, {
+  return request(`/v1/auth/profile`, {
     method: "GET",
     params: params,
   });
