@@ -1,6 +1,6 @@
 {
   "name": "runtime-nodejs",
-  "version": "1.0.0-beta.7",
+  "version": "1.0.0-beta.9",
   "description": "the node runtime for laf",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
