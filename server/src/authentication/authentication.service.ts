@@ -7,13 +7,17 @@ import {
 import { SystemDatabase } from 'src/system-database'
 import { AuthProvider, AuthProviderState } from './entities/auth-provider'
 import { User } from 'src/user/entities/user'
+import { PatService } from 'src/user/pat.service'
 
 @Injectable()
 export class AuthenticationService {
   private readonly logger = new Logger(AuthenticationService.name)
   private readonly db = SystemDatabase.db
 
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly patService: PatService,
+  ) {}
 
   /**
    * Get all auth provides
@@ -45,14 +49,28 @@ export class AuthenticationService {
   }
 
   /**
+   * Get token by PAT
+   * @param user
+   * @param token
+   * @returns
+   */
+  async pat2token(token: string): Promise<string> {
+    const pat = await this.patService.findOneByToken(token)
+    if (!pat) return null
+
+    // check pat expired
+    if (pat.expiredAt < new Date()) return null
+
+    return this.getAccessTokenByUser(pat.user)
+  }
+
+  /**
    * Get access token by user
    * @param user
    * @returns
    */
   getAccessTokenByUser(user: User): string {
-    const payload = {
-      sub: user._id.toString(),
-    }
+    const payload = { sub: user._id.toString() }
     const token = this.jwtService.sign(payload)
     return token
   }

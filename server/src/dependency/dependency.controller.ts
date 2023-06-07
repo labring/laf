@@ -16,13 +16,13 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
-import { ApplicationAuthGuard } from '../auth/application.auth.guard'
-import { JwtAuthGuard } from '../auth/jwt.auth.guard'
 import { ResponseUtil } from '../utils/response'
 import { DependencyService } from './dependency.service'
 import { CreateDependencyDto } from './dto/create-dependency.dto'
 import { UpdateDependencyDto } from './dto/update-dependency.dto'
 import { DeleteDependencyDto } from './dto/delete-dependency.dto'
+import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
+import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
 
 @ApiTags('Application')
 @ApiBearerAuth('Authorization')

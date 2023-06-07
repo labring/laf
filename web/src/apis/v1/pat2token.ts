@@ -17,12 +17,12 @@ export async function AuthControllerPat2token(params: Definitions.Pat2TokenDto):
   error: string;
   data: Paths.AuthControllerPat2token.Responses;
 }> {
-  // /v1/pat2token
+  // /v1/auth/pat2token
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
-  return request(`/v1/pat2token`, {
+  return request(`/v1/auth/pat2token`, {
     method: "POST",
     data: params,
   });

@@ -17,13 +17,13 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
-import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
-import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
 import { ResponseUtil } from 'src/utils/response'
 import { BundleService } from 'src/application/bundle.service'
 import { BucketService } from 'src/storage/bucket.service'
 import { ObjectId } from 'mongodb'
 import { DomainState } from 'src/gateway/entities/runtime-domain'
+import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
+import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
 
 @ApiTags('WebsiteHosting')
 @ApiBearerAuth('Authorization')

@@ -1,4 +1,3 @@
-import { SmsService } from 'src/auth/phone/sms.service'
 import { IRequest } from 'src/utils/interface'
 import { Body, Controller, Logger, Post, Req } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
@@ -8,8 +7,9 @@ import { PhoneService } from './phone.service'
 import { PhoneSigninDto } from '../dto/phone-signin.dto'
 import { AuthenticationService } from '../authentication.service'
 import { UserService } from 'src/user/user.service'
-import { AuthBindingType, AuthProviderBinding } from '../types'
+import { AuthBindingType, AuthProviderBinding } from '../entities/types'
 import { SmsVerifyCodeType } from '../entities/sms-verify-code'
+import { SmsService } from './sms.service'
 
 @ApiTags('Authentication')
 @Controller('auth')

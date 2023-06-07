@@ -1,8 +1,8 @@
 import { Controller, Logger, Param, Post, Req, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Policy, Proxy } from 'database-proxy/dist'
-import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
-import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
+import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
+import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
 import { IRequest } from 'src/utils/interface'
 import { DatabaseService } from './database.service'
 

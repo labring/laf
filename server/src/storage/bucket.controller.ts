@@ -18,14 +18,14 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
-import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import { IRequest } from '../utils/interface'
-import { JwtAuthGuard } from '../auth/jwt.auth.guard'
 import { ResponseUtil } from '../utils/response'
 import { CreateBucketDto } from './dto/create-bucket.dto'
 import { UpdateBucketDto } from './dto/update-bucket.dto'
 import { BucketService } from './bucket.service'
 import { BundleService } from 'src/application/bundle.service'
+import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
+import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
 
 @ApiTags('Storage')
 @ApiBearerAuth('Authorization')

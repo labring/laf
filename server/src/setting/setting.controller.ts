@@ -16,7 +16,7 @@ export class SettingController {
   @ApiOperation({ summary: 'Get site settings' })
   @Get()
   async getSettings() {
-    const data = await this.settingService.findAll()
+    const data = await this.settingService.findAllPublic()
     return ResponseUtil.ok(data)
   }
 
@@ -26,7 +26,7 @@ export class SettingController {
   @ApiOperation({ summary: 'Get one site setting by key' })
   @Get(':key')
   async getSettingByKey(@Param('key') key: string) {
-    const data = await this.settingService.findOne(key)
+    const data = await this.settingService.findOnePublic(key)
     if (!data) {
       return ResponseUtil.error('Setting not found')
     }

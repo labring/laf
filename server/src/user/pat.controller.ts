@@ -15,12 +15,12 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
-import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
 import { ResponseUtil } from 'src/utils/response'
 import { IRequest } from 'src/utils/interface'
 import { CreatePATDto } from './dto/create-pat.dto'
 import { PatService } from './pat.service'
 import { ObjectId } from 'mongodb'
+import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
 
 @ApiTags('Authentication')
 @ApiBearerAuth('Authorization')

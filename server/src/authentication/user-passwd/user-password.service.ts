@@ -26,7 +26,7 @@ export class UserPasswordService {
     private readonly userService: UserService,
   ) {}
 
-  // Singup by username and password
+  // Signup by username and password
   async signup(
     username: string,
     password: string,

@@ -12,13 +12,13 @@ import {
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { IRequest } from '../utils/interface'
-import { JwtAuthGuard } from '../auth/jwt.auth.guard'
+import { JwtAuthGuard } from '../authentication/jwt.auth.guard'
 import {
   ApiResponseArray,
   ApiResponseObject,
   ResponseUtil,
 } from '../utils/response'
-import { ApplicationAuthGuard } from '../auth/application.auth.guard'
+import { ApplicationAuthGuard } from '../authentication/application.auth.guard'
 import {
   UpdateApplicationBundleDto,
   UpdateApplicationNameDto,
