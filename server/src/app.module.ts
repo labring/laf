@@ -23,6 +23,7 @@ import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n'
 import { BillingModule } from './billing/billing.module'
 import { AuthenticationModule } from './authentication/authentication.module'
 import { FunctionTemplateModule } from './function-template/function-template.module'
+import { AuthenticationModule } from './authentication/authentication.module'
 
 @Module({
   imports: [
