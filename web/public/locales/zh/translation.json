@@ -374,7 +374,9 @@
       "forum": "开发者社区",
       "faq": "FAQ",
       "start": "立即开发",
-      "stars": "3.9K"
+      "stars": "3.9K",
+      "funcTemplate": "函数模板",
+      "appMarket": "应用市场"
     },
     "HomePage": {
       "slogan": "像写博客一样写代码",
@@ -457,7 +459,8 @@
     "SortOrd": "排序：",
     "CreateTemplate": "新建模板",
     "Details": "函数详情",
-    "My": "我的"
+    "My": "我的",
+    "Edit": "编辑"
   },
   "Fee": "费用",
   "PleaseCloseApplicationFirst": "请先关闭应用",
@@ -469,5 +472,7 @@
   "AIWelcomeMessage": "你好，我是 Laf AI 开发助理，请问有什么可以帮助您的吗？",
   "Send": "发送",
   "Stop": "停止",
-  "SendMessagePlaceHolder": "提问"
+  "SendMessagePlaceHolder": "提问",
+  "Publish": "发布",
+  "MyTemplate": "我的模板"
 }

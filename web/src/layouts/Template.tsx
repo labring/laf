@@ -1,25 +1,34 @@
-// import { Outlet } from "react-router-dom";
-// import { Center, Spinner } from "@chakra-ui/react";
+import React, { useEffect } from "react";
+import { Outlet } from "react-router-dom";
+import { useColorMode } from "@chakra-ui/react";
+import { Center, Spinner } from "@chakra-ui/react";
+import clsx from "clsx";
 
-// // import useGlobalStore from "@/pages/globalStore";
-// import Header from "@/pages/market/Mods/HeadBar";
-// import SideBar from "@/pages/market/Mods/SideBar";
+import Header from "./Header";
 
-// export default function TemplateLayout() {
-//   // const { loading } = useGlobalStore((state) => state);
-//   return (
-//     <div>
-//       <Header />
-//       <SideBar />
-//       <div>
-//         {/* {loading ? (
-//           <Center style={{ minHeight: 300 }}>
-//             <Spinner />
-//           </Center>
-//         ) : ( */}
-//           <Outlet />
-//         {/* // )} */}
-//       </div>
-//     </div>
-//   )
-// }
+import useGlobalStore from "@/pages/globalStore";
+
+export default function TemplateLayout() {
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
+
+  const { init, loading } = useGlobalStore((state) => state);
+  useEffect(() => {
+    init();
+  }, [init]);
+
+  return (
+    <div className={clsx("h-screen", darkMode ? "" : "bg-white")}>
+      <Header bg="bg-gray-100" />
+      <div className="pb-10">
+        {loading ? (
+          <Center style={{ minHeight: 300 }}>
+            <Spinner />
+          </Center>
+        ) : (
+          <Outlet />
+        )}
+      </div>
+    </div>
+  );
+}

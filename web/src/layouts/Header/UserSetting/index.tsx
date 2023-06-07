@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { Avatar, Menu, MenuButton, MenuItem, MenuList, useColorMode } from "@chakra-ui/react";
 
 import i18n from "@/utils/i18n";
@@ -10,6 +11,7 @@ import UserInfo from "@/pages/app/setting/UserInfo";
 export default function UserSetting(props: { name: string; avatar?: string; width: string }) {
   const { t } = useTranslation();
   const { toggleColorMode } = useColorMode();
+  const navigate = useNavigate();
   return (
     <Menu>
       <MenuButton>
@@ -71,6 +73,15 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
         >
           <MenuItem minH="40px">{t("SettingPanel.Usage")}</MenuItem>
         </SettingModal>
+
+        <MenuItem
+          minH="40px"
+          onClick={() => {
+            navigate("/my");
+          }}
+        >
+          {t("MyTemplate")}
+        </MenuItem>
 
         <MenuItem
           minH="40px"

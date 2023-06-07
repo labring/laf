@@ -3,6 +3,7 @@ import { lazy, Suspense } from "react";
 import AuthLayout from "@/layouts/Auth";
 import BasicLayout from "@/layouts/Basic";
 import FunctionLayout from "@/layouts/Function";
+import TemplateLayout from "@/layouts/Template";
 
 const route404 = {
   path: "*",
@@ -74,20 +75,59 @@ const routes = [
         ],
       },
       {
-        path: "/market",
-        element: () => import("@/pages/market"),
+        path: "/function-templates",
+        element: <TemplateLayout />,
+        auth: true,
+        children: [
+          {
+            path: "/function-templates",
+            element: () => import("@/pages/functionTemplate"),
+          },
+        ],
       },
       {
-        path: "/funcTemplate/:templateId",
-        element: () => import("@/pages/market/FunctionTemplate/funcTemplateItem"),
+        path: "/function-templates/:templateId",
+        element: <TemplateLayout />,
+        auth: true,
+        children: [
+          {
+            path: "/function-templates/:templateId",
+            element: () => import("@/pages/functionTemplate/Mods/funcTemplateItem"),
+          },
+        ],
       },
       {
-        path: "/market/mine",
-        element: () => import("@/pages/market/Mine"),
+        path: "/my",
+        element: <TemplateLayout />,
+        auth: true,
+        children: [
+          {
+            path: "/my",
+            element: () => import("@/pages/my"),
+          },
+        ],
       },
       {
-        path: "/market/mine/new",
-        element: () => import("@/pages/market/Mine/CreateFuncTemplate"),
+        path: "/my/create",
+        element: <TemplateLayout />,
+        auth: true,
+        children: [
+          {
+            path: "/my/create",
+            element: () => import("@/pages/my/CreateFuncTemplate"),
+          },
+        ],
+      },
+      {
+        path: "/my/edit/:templateId",
+        element: <TemplateLayout />,
+        auth: true,
+        children: [
+          {
+            path: "/my/edit/:templateId",
+            element: () => import("@/pages/my/CreateFuncTemplate"),
+          },
+        ],
       },
       {
         path: "/403",

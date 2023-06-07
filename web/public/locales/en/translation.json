@@ -374,7 +374,9 @@
       "forum": "Forum",
       "contact": "Contact",
       "start": "Start Now",
-      "stars": "3.9K"
+      "stars": "3.9K",
+      "funcTemplate": "Function Template",
+      "appMarket": "Application Market"
     },
     "HomePage": {
       "slogan": "Write Code as effortlessly as Blogging",
@@ -454,10 +456,11 @@
     "public": "public",
     "private": "private",
     "MyTemplate": "MyTemplate",
-    "SortOrd": "SortOrd: ",
+    "SortOrd": "Sorting: ",
     "CreateTemplate": "Create Template",
     "Details": "Details",
-    "My": "My Template"
+    "My": "My Template",
+    "Edit": "Edit"
   },
   "Fee": "Fee",
   "PleaseCloseApplicationFirst": "Please close your application first.",
@@ -469,5 +472,7 @@
   "AIWelcomeMessage": "Hello, I am Laf AI Development Assistant, how can I help you?",
   "Send": "Send",
   "Stop": "Stop",
-  "SendMessagePlaceHolder": "Send a message"
+  "SendMessagePlaceHolder": "Send a message",
+  "Publish": "Publish",
+  "MyTemplate": "My Template"
 }

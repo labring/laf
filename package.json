@@ -28,6 +28,7 @@
     "cloudbase"
   ],
   "devDependencies": {
+    "@types/uuid": "^9.0.1",
     "conventional-changelog-cli": "^2.1.1",
     "cross-env": "^7.0.3",
     "lerna": "^6.4.1",
@@ -37,6 +38,10 @@
   },
   "dependencies": {
     "commander": "^9.2.0",
-    "dotenv": "^10.0.0"
+    "dotenv": "^10.0.0",
+    "react-markdown": "^8.0.7",
+    "remark-gfm": "^3.0.1",
+    "remark-math": "^5.1.1",
+    "uuid": "^9.0.0"
   }
 }
