@@ -92,7 +92,7 @@ export default function LogsPage() {
             logListQuery.refetch();
           }}
         >
-          <Panel.Header>
+          <Panel.Header className="my-2">
             <HStack spacing={2}>
               <InputGroup width={300}>
                 <Input

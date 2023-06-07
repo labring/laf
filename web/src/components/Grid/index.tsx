@@ -11,12 +11,15 @@ const Row = forwardRef(
       className?: string;
       style?: React.CSSProperties;
       children: React.ReactNode;
+      id?: string;
     },
     ref: any,
   ) => {
-    const { className, style } = props;
+    const { className, style, id } = props;
+
     return (
       <div
+        id={id}
         ref={ref}
         className={clsx(
           "flex w-full overflow-hidden",

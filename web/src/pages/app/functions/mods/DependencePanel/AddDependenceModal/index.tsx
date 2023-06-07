@@ -212,7 +212,7 @@ const AddDependenceModal = () => {
                   </Box>
                 </Checkbox>
               )}
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1">
                 {clickItem.package === packageItem.package.name && clickItem.loading ? (
                   <Spinner size="xs" color="primary.500" />
                 ) : null}

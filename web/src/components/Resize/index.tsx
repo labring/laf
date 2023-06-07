@@ -15,10 +15,8 @@ export default function Resize(props: {
 }) {
   const { type, pageId, panelId, reverse, containerRef } = props;
   const store = useCustomSettingStore();
-  const { width, height, minWidth, maxWidth, minHeight, maxHeight, display } = store.getLayoutInfo(
-    pageId,
-    panelId,
-  );
+  const { width, height, minWidth, maxWidth, minHeight, maxHeight, display } =
+    store.getLayoutInfoStyle(pageId, panelId);
   const { isDragging, position, separatorProps } = useResizable({
     axis: type,
     initial: type === "x" ? width : height,
@@ -32,6 +30,7 @@ export default function Resize(props: {
       width: position,
       height: position,
     };
+
     store.setLayoutInfo(pageId, panelId, newPosition);
   }, [position, pageId, panelId, store]);
   const borderColor = useColorModeValue("slate.300", "lafDark.300");
@@ -41,7 +40,7 @@ export default function Resize(props: {
       {display === "none" ? null : (
         <div
           className={
-            type === "x" ? "group h-full w-2 cursor-col-resize" : "h-2 w-full cursor-row-resize"
+            type === "x" ? "group h-full w-1 cursor-col-resize" : "h-1 w-full cursor-row-resize"
           }
           {...separatorProps}
         >
@@ -49,6 +48,7 @@ export default function Resize(props: {
             {type === "x" && width <= 20 ? (
               <div
                 className={clsx(
+                  "z-50",
                   reverse ? "rounded-l-lg" : "rounded-r-lg",
                   "h-[30px] w-2 bg-grayIron-300 leading-loose text-lafWhite-600 transition-colors group-hover:bg-grayIron-400",
                 )}

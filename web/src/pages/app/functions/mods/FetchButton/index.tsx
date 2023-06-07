@@ -40,13 +40,13 @@ export default function FetchButton() {
       <Tooltip label={t("FunctionPanel.getCodeOnline")} placement="bottom">
         <Button
           variant={"text"}
+          size={"xs"}
           isLoading={functionDetailQuery.isFetching}
           disabled={store.getFunctionUrl() === ""}
           onClick={() => {
             onOpen();
           }}
           leftIcon={<SynchronizeDownIcon />}
-          className="w-20"
         >
           {t("FunctionPanel.Fetch")}
         </Button>

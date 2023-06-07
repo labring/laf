@@ -144,7 +144,7 @@ export default function DataPanel() {
 
   return (
     <>
-      <Panel.Header className="h-[40px] w-full flex-shrink-0">
+      <Panel.Header className="my-1 w-full flex-shrink-0">
         <div className="flex items-center">
           <AddDataModal
             schema={currentData.data ? currentData.data : {}}

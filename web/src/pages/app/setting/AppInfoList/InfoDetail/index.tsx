@@ -11,7 +11,7 @@ const InfoDetail = function (props: {
 }) {
   const { title, leftData, rightData, className } = props;
   return (
-    <div className={clsx("rounded border px-4 py-4", className)}>
+    <div className={clsx("mb-4 rounded border px-4 py-4", className)}>
       <Content>
         <Row className="mb-2">
           <span className={clsx("relative inline-block text-2xl font-semibold text-primary-700")}>

@@ -38,7 +38,10 @@ function EditorPanel() {
           })}
         >
           <HStack maxW={"55%"} spacing={2}>
-            <CopyText className="text-xl font-bold" text={currentFunction?.name}>
+            <CopyText
+              className="whitespace-nowrap text-xl font-semibold"
+              text={currentFunction?.name}
+            >
               <span>{currentFunction?.name}</span>
             </CopyText>
             <FunctionDetailPopOver />
@@ -54,9 +57,9 @@ function EditorPanel() {
             ) : null}
           </HStack>
 
-          <HStack spacing={0}>
-            <CopyText text={getFunctionUrl()} className="mr-4">
-              <Input w={"240px"} size="sm" readOnly value={getFunctionUrl()} />
+          <HStack spacing={1}>
+            <CopyText text={getFunctionUrl()}>
+              <Input w={"220px"} size="xs" readOnly value={getFunctionUrl()} />
             </CopyText>
 
             <FetchButton />

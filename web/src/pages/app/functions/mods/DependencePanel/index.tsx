@@ -31,7 +31,7 @@ export default function DependenceList() {
   const builtinPackage: TPackage[] = [];
   const customPackage: TPackage[] = [];
 
-  const { height } = store.getLayoutInfo("functionPage", "DependencePanel");
+  const { height } = store.getLayoutInfoStyle("functionPage", "DependencePanel");
   const SECTION_HEIGHT = height - 90;
 
   packageQuery?.data?.data?.forEach((packageItem: TPackage) => {
@@ -43,14 +43,14 @@ export default function DependenceList() {
   });
 
   return (
-    <Panel className="min-w-[250px]">
+    <Panel className="min-w-[215px]">
       <Panel.Header
         title={t("FunctionPanel.Dependence")}
         actions={[<AddDependenceModal key="AddDependenceModal" />]}
       />
-      <Tabs variant="soft-rounded" colorScheme={"gray"} size={"sm"}>
+      <Tabs variant="soft-rounded" colorScheme={"gray"} size={"xs"}>
         <TabList>
-          <Tab>
+          <Tab className="mr-2 px-2">
             {t("FunctionPanel.CustomDependence")}
             {customPackage.length > 0 && (
               <Badge rounded={"full"} ml="1">
