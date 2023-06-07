@@ -11,11 +11,34 @@ import request from "@/utils/request";
 import useGlobalStore from "@/pages/globalStore";
 
 /**
+ * Create application
+ */
+export async function ApplicationControllerCreate(
+  params: Definitions.CreateApplicationDto,
+): Promise<{
+  error: string;
+  data: Definitions.ApplicationWithRelations;
+}> {
+  // /v1/applications
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/applications`, {
+    method: "POST",
+    data: params,
+  });
+}
+
+/**
  * Get user application list
  */
 export async function ApplicationControllerFindAll(
-  params: Paths.ApplicationControllerFindAll.BodyParameters | any,
-): Promise<Paths.ApplicationControllerFindAll.Responses> {
+  params: Paths.ApplicationControllerFindAll.BodyParameters,
+): Promise<{
+  error: string;
+  data: Paths.ApplicationControllerFindAll.Responses;
+}> {
   // /v1/applications
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -31,8 +54,11 @@ export async function ApplicationControllerFindAll(
  * Get an application by appid
  */
 export async function ApplicationControllerFindOne(
-  params: Paths.ApplicationControllerFindOne.BodyParameters | any,
-): Promise<Paths.ApplicationControllerFindOne.Responses> {
+  params: Paths.ApplicationControllerFindOne.BodyParameters,
+): Promise<{
+  error: string;
+  data: Paths.ApplicationControllerFindOne.Responses;
+}> {
   // /v1/applications/{appid}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -45,17 +71,80 @@ export async function ApplicationControllerFindOne(
 }
 
 /**
- * Update an application
+ * Delete an application
  */
-export async function ApplicationControllerUpdate(
-  params: Definitions.UpdateApplicationDto | any,
-): Promise<Paths.ApplicationControllerUpdate.Responses> {
+export async function ApplicationControllerDelete(
+  params: Paths.ApplicationControllerDelete.BodyParameters,
+): Promise<{
+  error: string;
+  data: Definitions.Application;
+}> {
   // /v1/applications/{appid}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
   return request(`/v1/applications/${_params.appid}`, {
+    method: "DELETE",
+    data: params,
+  });
+}
+
+/**
+ * Update application name
+ */
+export async function ApplicationControllerUpdateName(
+  params: Definitions.UpdateApplicationNameDto,
+): Promise<{
+  error: string;
+  data: Definitions.Application;
+}> {
+  // /v1/applications/{appid}/name
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/applications/${_params.appid}/name`, {
+    method: "PATCH",
+    data: params,
+  });
+}
+
+/**
+ * Update application state
+ */
+export async function ApplicationControllerUpdateState(
+  params: Definitions.UpdateApplicationStateDto,
+): Promise<{
+  error: string;
+  data: Definitions.Application;
+}> {
+  // /v1/applications/{appid}/state
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/applications/${_params.appid}/state`, {
+    method: "PATCH",
+    data: params,
+  });
+}
+
+/**
+ * Update application bundle
+ */
+export async function ApplicationControllerUpdateBundle(
+  params: Definitions.UpdateApplicationBundleDto,
+): Promise<{
+  error: string;
+  data: Definitions.ApplicationBundle;
+}> {
+  // /v1/applications/{appid}/bundle
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/applications/${_params.appid}/bundle`, {
     method: "PATCH",
     data: params,
   });

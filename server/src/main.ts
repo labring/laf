@@ -5,7 +5,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { ValidationPipe, VersioningType } from '@nestjs/common'
 import { ServerConfig } from './constants'
 import { InitializerService } from './initializer/initializer.service'
-import { SystemDatabase } from './database/system-database'
+import { SystemDatabase } from './system-database'
 
 async function bootstrap() {
   await SystemDatabase.ready
@@ -47,10 +47,7 @@ async function bootstrap() {
 
   try {
     const initService = app.get(InitializerService)
-    await initService.createDefaultRegion()
-    await initService.createDefaultBundle()
-    await initService.createDefaultRuntime()
-    await initService.createDefaultAuthProvider()
+    await initService.init()
   } catch (error) {
     console.error(error)
     process.exit(1)

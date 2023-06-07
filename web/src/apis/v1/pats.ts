@@ -13,9 +13,10 @@ import useGlobalStore from "@/pages/globalStore";
 /**
  * Create a PAT
  */
-export async function PatControllerCreate(
-  params: Definitions.CreatePATDto | any,
-): Promise<Paths.PatControllerCreate.Responses> {
+export async function PatControllerCreate(params: Definitions.CreatePATDto): Promise<{
+  error: string;
+  data: Paths.PatControllerCreate.Responses;
+}> {
   // /v1/pats
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -31,8 +32,11 @@ export async function PatControllerCreate(
  * List PATs
  */
 export async function PatControllerFindAll(
-  params: Paths.PatControllerFindAll.BodyParameters | any,
-): Promise<Paths.PatControllerFindAll.Responses> {
+  params: Paths.PatControllerFindAll.BodyParameters,
+): Promise<{
+  error: string;
+  data: Paths.PatControllerFindAll.Responses;
+}> {
   // /v1/pats
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
@@ -48,8 +52,11 @@ export async function PatControllerFindAll(
  * Delete a PAT
  */
 export async function PatControllerRemove(
-  params: Paths.PatControllerRemove.BodyParameters | any,
-): Promise<Paths.PatControllerRemove.Responses> {
+  params: Paths.PatControllerRemove.BodyParameters,
+): Promise<{
+  error: string;
+  data: Paths.PatControllerRemove.Responses;
+}> {
   // /v1/pats/{id}
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",

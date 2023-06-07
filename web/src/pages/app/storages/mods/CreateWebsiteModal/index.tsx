@@ -95,7 +95,7 @@ function CreateWebsiteModal() {
               <MenuItem
                 onClick={() => {
                   deleteWebsiteMutation.mutateAsync({
-                    id: currentStorage?.websiteHosting?.id,
+                    id: currentStorage?.websiteHosting?._id,
                   });
                 }}
               >
@@ -177,7 +177,7 @@ function CreateWebsiteModal() {
               isLoading={updateWebsiteMutation.isLoading}
               onClick={handleSubmit(async (value) => {
                 const res: any = await updateWebsiteMutation.mutateAsync({
-                  id: currentStorage?.websiteHosting.id,
+                  id: currentStorage?.websiteHosting._id,
                   domain: value.domain,
                 });
                 if (res.data) {

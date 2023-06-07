@@ -55,7 +55,7 @@ fi
 
 # echo "================= Deploy laf ================="
 
-# sudo sh ../deploy/scripts/install-on-linux.sh $DOMAIN
+# sudo sh ../deploy/install-on-linux.sh $DOMAIN
 
 ############## Check Laf Deployment ##############
 

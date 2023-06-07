@@ -98,7 +98,9 @@ const EditableTable = function (props: {
                 {columnList.map((item: TColumnItem) => {
                   return <Th key={item.key}>{item.name}</Th>;
                 })}
-                <Th key="operation">{t("Operation")}</Th>
+                <Th key="operation" isNumeric>
+                  {t("Operation")}
+                </Th>
               </Tr>
             </Thead>
             <Tbody className="font-mono">

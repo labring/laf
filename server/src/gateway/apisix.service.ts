@@ -1,13 +1,14 @@
 import { HttpService } from '@nestjs/axios'
 import { Injectable, Logger } from '@nestjs/common'
-import { Region, WebsiteHosting } from '@prisma/client'
 import { GetApplicationNamespaceByAppId } from '../utils/getter'
+import { Region } from 'src/region/entities/region'
+import { WebsiteHosting } from 'src/website/entities/website'
 
 @Injectable()
 export class ApisixService {
   private readonly logger = new Logger(ApisixService.name)
 
-  constructor(private readonly httpService: HttpService) {}
+  constructor(private readonly httpService: HttpService) { }
 
   async createAppRoute(region: Region, appid: string, domain: string) {
     const host = domain
@@ -132,9 +133,14 @@ export class ApisixService {
         read: 60,
       },
       plugins: {
-        'proxy-rewrite': {
-          regex_uri: ['/$', '/index.html'],
-        },
+        "ext-plugin-post-req": {
+          "conf": [
+            {
+              "name": "try-path",
+              "value": `{\"paths\":[\"$uri\", \"$uri/\", \"/index.html\"], \"host\": \"http://${upstreamNode}/${website.bucketName}\"}`
+            }
+          ]
+        }
       },
     }
 

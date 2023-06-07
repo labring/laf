@@ -1,122 +1,146 @@
-import { Injectable } from '@nestjs/common'
-import { DatabasePolicy, DatabasePolicyRule } from '@prisma/client'
+import { Injectable, Logger } from '@nestjs/common'
 import { CN_PUBLISHED_POLICIES } from 'src/constants'
-import { PrismaService } from 'src/prisma/prisma.service'
 import { DatabaseService } from '../database.service'
 import { CreatePolicyDto } from '../dto/create-policy.dto'
 import { UpdatePolicyDto } from '../dto/update-policy.dto'
+import { SystemDatabase } from '../../system-database'
+import {
+  DatabasePolicy,
+  DatabasePolicyRule,
+  DatabasePolicyWithRules,
+} from '../entities/database-policy'
+import * as assert from 'assert'
 
 @Injectable()
 export class PolicyService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly databaseService: DatabaseService,
-  ) {}
+  private readonly logger = new Logger(PolicyService.name)
+  private readonly db = SystemDatabase.db
 
-  async create(appid: string, createPolicyDto: CreatePolicyDto) {
-    const res = await this.prisma.databasePolicy.create({
-      data: {
-        appid,
-        name: createPolicyDto.name,
-      },
-      include: {
-        rules: true,
-      },
+  constructor(private readonly databaseService: DatabaseService) {}
+
+  async create(appid: string, dto: CreatePolicyDto) {
+    await this.db.collection<DatabasePolicy>('DatabasePolicy').insertOne({
+      appid,
+      name: dto.name,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     })
 
-    await this.publish(res)
-    return res
+    return await this.publish(appid, dto.name)
   }
 
   async count(appid: string) {
-    const res = await this.prisma.databasePolicy.count({
-      where: {
-        appid,
-      },
-    })
+    const res = await this.db
+      .collection<DatabasePolicy>('DatabasePolicy')
+      .countDocuments({ appid })
+
     return res
   }
 
   async findAll(appid: string) {
-    const res = await this.prisma.databasePolicy.findMany({
-      where: {
-        appid,
-      },
-      include: {
-        rules: true,
-      },
-    })
+    const res = await this.db
+      .collection('DatabasePolicy')
+      .aggregate<DatabasePolicyWithRules>()
+      .match({ appid })
+      .lookup({
+        from: 'DatabasePolicyRule',
+        let: { name: '$name', appid: '$appid' },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ['$appid', '$$appid'] },
+                  { $eq: ['$policyName', '$$name'] },
+                ],
+              },
+            },
+          },
+        ],
+        as: 'rules',
+      })
+      .toArray()
+
     return res
   }
 
   async findOne(appid: string, name: string) {
-    const res = await this.prisma.databasePolicy.findUnique({
-      where: {
-        appid_name: {
-          appid,
-          name,
-        },
-      },
-      include: {
-        rules: true,
-      },
-    })
-    return res
+    const policy = await this.db
+      .collection<DatabasePolicy>('DatabasePolicy')
+      .findOne({ appid, name })
+
+    if (!policy) {
+      return null
+    }
+
+    const rules = await this.db
+      .collection<DatabasePolicyRule>('DatabasePolicyRule')
+      .find({ appid, policyName: name })
+      .toArray()
+
+    return {
+      ...policy,
+      rules,
+    } as DatabasePolicyWithRules
   }
 
-  async update(appid: string, name: string, dto: UpdatePolicyDto) {
-    const res = await this.prisma.databasePolicy.update({
-      where: {
-        appid_name: {
-          appid,
-          name,
-        },
-      },
-      data: {
-        injector: dto.injector,
-      },
-      include: {
-        rules: true,
-      },
-    })
+  async updateOne(appid: string, name: string, dto: UpdatePolicyDto) {
+    const res = await this.db
+      .collection<DatabasePolicy>('DatabasePolicy')
+      .findOneAndUpdate(
+        { appid, name },
+        { $set: { injector: dto.injector, updatedAt: new Date() } },
+        { returnDocument: 'after' },
+      )
 
-    await this.publish(res)
-    return res
+    await this.publish(appid, name)
+    return res.value
   }
 
-  async remove(appid: string, name: string) {
-    const res = await this.prisma.databasePolicy.delete({
-      where: {
-        appid_name: {
-          appid,
-          name,
-        },
-      },
-      include: {
-        rules: true,
-      },
-    })
-    await this.unpublish(appid, name)
-    return res
+  async removeOne(appid: string, name: string) {
+    const client = SystemDatabase.client
+    const session = client.startSession()
+
+    try {
+      await session.withTransaction(async () => {
+        await this.db
+          .collection<DatabasePolicy>('DatabasePolicy')
+          .deleteOne({ appid, name }, { session })
+
+        await this.db
+          .collection<DatabasePolicyRule>('DatabasePolicyRule')
+          .deleteMany({ appid, policyName: name }, { session })
+
+        await this.unpublish(appid, name)
+      })
+    } finally {
+      await session.endSession()
+    }
   }
 
   async removeAll(appid: string) {
-    // delete rules first
-    await this.prisma.databasePolicyRule.deleteMany({
-      where: {
-        appid,
-      },
-    })
+    const client = SystemDatabase.client
+    const session = client.startSession()
 
-    const res = await this.prisma.databasePolicy.deleteMany({
-      where: {
-        appid,
-      },
-    })
-    return res
+    try {
+      await session.withTransaction(async () => {
+        await this.db
+          .collection<DatabasePolicy>('DatabasePolicy')
+          .deleteMany({ appid }, { session })
+
+        await this.db
+          .collection<DatabasePolicyRule>('DatabasePolicyRule')
+          .deleteMany({ appid }, { session })
+      })
+    } finally {
+      await session.endSession()
+    }
   }
 
-  async publish(policy: DatabasePolicy & { rules: DatabasePolicyRule[] }) {
+  async publish(appid: string, name: string) {
+    const policy = await this.findOne(appid, name)
+    assert(policy, `policy ${name} not found`)
+
     const { db, client } = await this.databaseService.findAndConnect(
       policy.appid,
     )
@@ -135,7 +159,9 @@ export class PolicyService {
         await coll.insertOne(data, { session })
       })
     } finally {
+      await session.endSession()
       await client.close()
+      return policy
     }
   }
 

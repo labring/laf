@@ -13,9 +13,10 @@ import useGlobalStore from "@/pages/globalStore";
 /**
  * Get user token by PAT
  */
-export async function AuthControllerPat2token(
-  params: Definitions.Pat2TokenDto | any,
-): Promise<Paths.AuthControllerPat2token.Responses> {
+export async function AuthControllerPat2token(params: Definitions.Pat2TokenDto): Promise<{
+  error: string;
+  data: Paths.AuthControllerPat2token.Responses;
+}> {
   // /v1/pat2token
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",

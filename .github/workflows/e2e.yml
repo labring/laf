@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        
+
       - name: Remove builtin docker
         run: |
           sudo apt-get remove -y moby-engine moby-cli moby-buildx moby-compose
@@ -31,12 +31,10 @@ jobs:
       - name: Deploy laf
         env:
           DOMAIN: ${{ env.DOMAIN }}
-        working-directory: deploy/scripts
+        working-directory: deploy
         run: sudo sh install-on-linux.sh $DOMAIN # this script will install sealos and laf
 
       - name: Run E2E Test
         working-directory: e2e
         run: |
           sudo sh e2e.sh
-
-          

@@ -27,21 +27,15 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
   const envValue = useRef(convertToEnv(environmentQuery?.data?.data));
   return (
     <>
-      <div className="flex h-full flex-grow flex-col pb-4">
+      <div className="absolute bottom-0 left-[240px] right-6 top-0 flex h-full flex-grow flex-col pb-4">
         <div
-          className={clsx("relative h-full flex-1 rounded border", {
+          className={clsx("relative min-h-[200px] flex-1 rounded border", {
             "border-frostyNightfall-200": !(colorMode === COLOR_MODE.dark),
           })}
         >
           <ENVEditor
             value={convertToEnv(environmentQuery?.data?.data)}
-            height="95%"
-            style={{
-              position: "absolute",
-              top: 0,
-              width: "calc(100% - 15px)",
-              bottom: 0,
-            }}
+            height="98%"
             colorMode={colorMode}
             onChange={(value) => {
               envValue.current = value;

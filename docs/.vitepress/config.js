@@ -65,8 +65,12 @@ const NavConfig = [
   },
   {
     text: "三分钟实验室",
-    // target: "_self",
-    link: "/3min/",
+    items: [
+      {
+        text: "接入微信",
+        link: "/3min/wechat/",
+      },
+    ],
   },
   {
     text: "立即使用",
@@ -265,33 +269,44 @@ const guideSiderbarConfig = [
  */
 const examplesSideBarConfig = [
   {
-    text: "云函数",
+    text: "3 分钟实验室",
     items: [
       {
-        text: "阿里云短信发送函数",
-        link: "/examples/aliyun-sms",
-      },
-      {
-        text: "实现微信支付功能",
-        link: "/examples/wechat-pay",
-      },
-      {
-        text: "实现支付宝支付功能",
-        link: "/examples/alipay-pay",
-      },
-      {
-        text: "使用 WebSocket 长连接",
-        link: "/examples/websocket",
-      },
-      {
-        text: "使用 SMTP 服务发送邮件",
-        link: "/examples/send-mail",
+        text: "介绍",
+        link: "/3min/",
       },
     ],
   },
   {
-    text: "前端应用",
-    items: [{ text: "Todo List", link: "/examples/todo-list" }],
+    text: "接入微信",
+    items: [
+      {
+        text: "微信公众号",
+        link: "/3min/wechat/MediaPlatform/",
+        items: [
+          {
+            text: "服务器对接及文本消息",
+            link: "/3min/wechat/MediaPlatform/ServerDocking.md",
+          },
+          {
+            text: "自定义菜单",
+            link: "/3min/wechat/MediaPlatform/Menu.md",
+          },
+          {
+            text: "H5 开发",
+            link: "/3min/wechat/MediaPlatform/H5.md",
+          },
+        ],
+      },
+      {
+        text: "微信小程序",
+        link: "/3min/wechat/MiniProgram/",
+      },
+      {
+        text: "企业微信",
+        link: "/3min/wechat/CorporateWeChat/",
+      },
+    ],
   },
 ];
 
@@ -330,7 +345,7 @@ export default defineConfig({
     ],
     sidebar: {
       "/guide/": guideSiderbarConfig,
-      "/examples/": examplesSideBarConfig,
+      "/3min/": examplesSideBarConfig,
     },
   },
   head: [

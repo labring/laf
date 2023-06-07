@@ -1,12 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { CloudFunction, Prisma } from '@prisma/client'
 import { compileTs2js } from '../utils/lang'
 import {
   APPLICATION_SECRET_KEY,
   CN_FUNCTION_LOGS,
   CN_PUBLISHED_FUNCTIONS,
 } from '../constants'
-import { PrismaService } from '../prisma/prisma.service'
 import { CreateFunctionDto } from './dto/create-function.dto'
 import { UpdateFunctionDto } from './dto/update-function.dto'
 import * as assert from 'node:assert'
@@ -14,17 +12,23 @@ import { JwtService } from '@nestjs/jwt'
 import { CompileFunctionDto } from './dto/compile-function.dto'
 import { DatabaseService } from 'src/database/database.service'
 import { GetApplicationNamespaceByAppId } from 'src/utils/getter'
+import { SystemDatabase } from 'src/system-database'
+import { ObjectId } from 'mongodb'
+import { CloudFunction } from './entities/cloud-function'
+import { ApplicationConfiguration } from 'src/application/entities/application-configuration'
+import { FunctionLog } from 'src/log/entities/function-log'
 
 @Injectable()
 export class FunctionService {
   private readonly logger = new Logger(FunctionService.name)
+  private readonly db = SystemDatabase.db
+
   constructor(
     private readonly databaseService: DatabaseService,
-    private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
   ) {}
-  async create(appid: string, userid: string, dto: CreateFunctionDto) {
-    const data: Prisma.CloudFunctionCreateInput = {
+  async create(appid: string, userid: ObjectId, dto: CreateFunctionDto) {
+    await this.db.collection<CloudFunction>('CloudFunction').insertOne({
       appid,
       name: dto.name,
       source: {
@@ -36,66 +40,79 @@ export class FunctionService {
       createdBy: userid,
       methods: dto.methods,
       tags: dto.tags || [],
-    }
-    const res = await this.prisma.cloudFunction.create({ data })
-    await this.publish(res)
-    return res
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+
+    const fn = await this.findOne(appid, dto.name)
+    await this.publish(fn)
+    return fn
   }
 
   async findAll(appid: string) {
-    const res = await this.prisma.cloudFunction.findMany({
-      where: { appid },
-    })
+    const res = await this.db
+      .collection<CloudFunction>('CloudFunction')
+      .find({ appid })
+      .toArray()
 
     return res
   }
 
   async count(appid: string) {
-    const res = await this.prisma.cloudFunction.count({ where: { appid } })
+    const res = await this.db
+      .collection<CloudFunction>('CloudFunction')
+      .countDocuments({ appid })
+
     return res
   }
 
   async findOne(appid: string, name: string) {
-    const res = await this.prisma.cloudFunction.findUnique({
-      where: { appid_name: { appid, name } },
-    })
+    const res = await this.db
+      .collection<CloudFunction>('CloudFunction')
+      .findOne({ appid, name })
+
     return res
   }
 
-  async update(func: CloudFunction, dto: UpdateFunctionDto) {
-    const data: Prisma.CloudFunctionUpdateInput = {
-      source: {
-        code: dto.code,
-        compiled: compileTs2js(dto.code),
-        version: func.source.version + 1,
+  async updateOne(func: CloudFunction, dto: UpdateFunctionDto) {
+    await this.db.collection<CloudFunction>('CloudFunction').updateOne(
+      { appid: func.appid, name: func.name },
+      {
+        $set: {
+          source: {
+            code: dto.code,
+            compiled: compileTs2js(dto.code),
+            version: func.source.version + 1,
+          },
+          desc: dto.description,
+          methods: dto.methods,
+          tags: dto.tags || [],
+          params: dto.params,
+          updatedAt: new Date(),
+        },
       },
-      desc: dto.description,
-      methods: dto.methods,
-      tags: dto.tags || [],
-      params: dto.params,
-    }
-    const res = await this.prisma.cloudFunction.update({
-      where: { appid_name: { appid: func.appid, name: func.name } },
-      data,
-    })
+    )
 
-    await this.publish(res)
-    return res
+    const fn = await this.findOne(func.appid, func.name)
+    await this.publish(fn)
+    return fn
   }
 
-  async remove(func: CloudFunction) {
+  async removeOne(func: CloudFunction) {
     const { appid, name } = func
-    const res = await this.prisma.cloudFunction.delete({
-      where: { appid_name: { appid, name } },
-    })
+    const res = await this.db
+      .collection<CloudFunction>('CloudFunction')
+      .findOneAndDelete({ appid, name })
+
     await this.unpublish(appid, name)
-    return res
+    return res.value
   }
 
   async removeAll(appid: string) {
-    const res = await this.prisma.cloudFunction.deleteMany({
-      where: { appid },
-    })
+    const res = await this.db
+      .collection<CloudFunction>('CloudFunction')
+      .deleteMany({ appid })
+
     return res
   }
 
@@ -109,6 +126,7 @@ export class FunctionService {
         await coll.insertOne(func, { session })
       })
     } finally {
+      await session.endSession()
       await client.close()
     }
   }
@@ -145,12 +163,14 @@ export class FunctionService {
     assert(appid, 'appid is required')
     assert(type, 'type is required')
 
-    const conf = await this.prisma.applicationConfiguration.findUnique({
-      where: { appid },
-    })
+    const conf = await this.db
+      .collection<ApplicationConfiguration>('ApplicationConfiguration')
+      .findOne({ appid })
+
+    assert(conf, 'ApplicationConfiguration not found')
 
     // get secret from envs
-    const secret = conf?.environments.find(
+    const secret = conf?.environments?.find(
       (env) => env.name === APPLICATION_SECRET_KEY,
     )
     assert(secret?.value, 'application secret not found')
@@ -182,16 +202,16 @@ export class FunctionService {
     appid: string,
     params: {
       page: number
-      limit: number
+      pageSize: number
       requestId?: string
       functionName?: string
     },
   ) {
-    const { page, limit, requestId, functionName } = params
+    const { page, pageSize, requestId, functionName } = params
     const { db, client } = await this.databaseService.findAndConnect(appid)
 
     try {
-      const coll = db.collection(CN_FUNCTION_LOGS)
+      const coll = db.collection<FunctionLog>(CN_FUNCTION_LOGS)
       const query: any = {}
       if (requestId) {
         query.request_id = requestId
@@ -202,17 +222,14 @@ export class FunctionService {
 
       const data = await coll
         .find(query, {
-          limit,
-          skip: (page - 1) * limit,
+          limit: pageSize,
+          skip: (page - 1) * pageSize,
           sort: { _id: -1 },
         })
         .toArray()
 
       const total = await coll.countDocuments(query)
-      return {
-        data,
-        total,
-      }
+      return { data, total }
     } finally {
       await client.close()
     }

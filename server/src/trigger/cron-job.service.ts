@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { CronTrigger, TriggerPhase } from '@prisma/client'
 import { ClusterService } from 'src/region/cluster/cluster.service'
 import * as assert from 'node:assert'
 import { RegionService } from 'src/region/region.service'
@@ -8,6 +7,7 @@ import { FunctionService } from 'src/function/function.service'
 import { FOREVER_IN_SECONDS, X_LAF_TRIGGER_TOKEN_KEY } from 'src/constants'
 import { TriggerService } from './trigger.service'
 import * as k8s from '@kubernetes/client-node'
+import { CronTrigger, TriggerPhase } from './entities/cron-trigger'
 
 @Injectable()
 export class CronJobService {
@@ -31,14 +31,14 @@ export class CronJobService {
     // create cronjob
     const ns = GetApplicationNamespaceByAppId(appid)
     const batchApi = this.clusterService.makeBatchV1Api(region)
-    const name = `cron-${trigger.id}`
+    const name = `cron-${trigger._id}`
     const command = await this.getTriggerCommand(trigger)
     const res = await batchApi.createNamespacedCronJob(ns, {
       metadata: {
         name,
         labels: {
           appid,
-          id: trigger.id,
+          id: trigger._id.toString(),
         },
       },
       spec: {
@@ -81,7 +81,7 @@ export class CronJobService {
     const region = await this.regionService.findByAppId(appid)
     try {
       const batchApi = this.clusterService.makeBatchV1Api(region)
-      const name = `cron-${trigger.id}`
+      const name = `cron-${trigger._id}`
       const res = await batchApi.readNamespacedCronJob(name, ns)
       return res.body
     } catch (err) {
@@ -105,7 +105,7 @@ export class CronJobService {
     for (const trigger of triggers) {
       if (trigger.phase !== TriggerPhase.Created) continue
       await this.suspend(trigger)
-      this.logger.log(`suspend cronjob ${trigger.id} success of ${appid}`)
+      this.logger.log(`suspend cronjob ${trigger._id} success of ${appid}`)
     }
   }
 
@@ -114,7 +114,7 @@ export class CronJobService {
     for (const trigger of triggers) {
       if (trigger.phase !== TriggerPhase.Created) continue
       await this.resume(trigger)
-      this.logger.log(`resume cronjob ${trigger.id} success of ${appid}`)
+      this.logger.log(`resume cronjob ${trigger._id} success of ${appid}`)
     }
   }
 
@@ -123,7 +123,7 @@ export class CronJobService {
     const ns = GetApplicationNamespaceByAppId(appid)
     const region = await this.regionService.findByAppId(appid)
     const batchApi = this.clusterService.makeBatchV1Api(region)
-    const name = `cron-${trigger.id}`
+    const name = `cron-${trigger._id}`
     const res = await batchApi.deleteNamespacedCronJob(name, ns)
     return res.body
   }
@@ -150,7 +150,7 @@ export class CronJobService {
     const ns = GetApplicationNamespaceByAppId(appid)
     const region = await this.regionService.findByAppId(appid)
     const batchApi = this.clusterService.makeBatchV1Api(region)
-    const name = `cron-${trigger.id}`
+    const name = `cron-${trigger._id}`
     const body = [{ op: 'replace', path: '/spec/suspend', value: suspend }]
     try {
       const res = await batchApi.patchNamespacedCronJob(

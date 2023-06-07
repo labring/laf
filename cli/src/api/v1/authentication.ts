@@ -1,55 +1,17 @@
-import { request, RequestParams } from '../../util/request'
-import { AuthControllerCode2TokenParams, CreatePATDto, Pat2TokenDto } from './data-contracts'
+import { request, RequestParams } from "../../util/request";
+import {
+  BindPhoneDto,
+  BindUsernameDto,
+  CreatePATDto,
+  PasswdCheckDto,
+  PasswdResetDto,
+  PasswdSigninDto,
+  PasswdSignupDto,
+  Pat2TokenDto,
+  PhoneSigninDto,
+  SendPhoneCodeDto,
+} from "./data-contracts";
 
-/**
- * No description
- *
- * @tags Authentication
- * @name AuthControllerGetSigninUrl
- * @summary Redirect to login page
- * @request GET:/v1/login
- */
-export async function authControllerGetSigninUrl(configParams: RequestParams = {}): Promise<any> {
-  return request({
-    url: `/v1/login`,
-    method: 'GET',
-    ...configParams,
-  })
-}
-/**
- * No description
- *
- * @tags Authentication
- * @name AuthControllerGetSignupUrl
- * @summary Redirect to register page
- * @request GET:/v1/register
- */
-export async function authControllerGetSignupUrl(configParams: RequestParams = {}): Promise<any> {
-  return request({
-    url: `/v1/register`,
-    method: 'GET',
-    ...configParams,
-  })
-}
-/**
- * No description
- *
- * @tags Authentication
- * @name AuthControllerCode2Token
- * @summary Get user token by auth code
- * @request GET:/v1/code2token
- */
-export async function authControllerCode2Token(
-  query: AuthControllerCode2TokenParams,
-  configParams: RequestParams = {},
-): Promise<any> {
-  return request({
-    url: `/v1/code2token`,
-    method: 'GET',
-    params: query,
-    ...configParams,
-  })
-}
 /**
  * No description
  *
@@ -61,10 +23,10 @@ export async function authControllerCode2Token(
 export async function authControllerPat2Token(data: Pat2TokenDto, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/pat2token`,
-    method: 'POST',
+    method: "POST",
     data: data,
     ...configParams,
-  })
+  });
 }
 /**
  * No description
@@ -78,9 +40,170 @@ export async function authControllerPat2Token(data: Pat2TokenDto, configParams: 
 export async function authControllerGetProfile(configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/profile`,
-    method: 'GET',
+    method: "GET",
     ...configParams,
-  })
+  });
+}
+/**
+ * No description
+ *
+ * @tags Authentication
+ * @name UserPasswordControllerSignup
+ * @summary Signup by user-password
+ * @request POST:/v1/auth/passwd/signup
+ */
+export async function userPasswordControllerSignup(
+  data: PasswdSignupDto,
+  configParams: RequestParams = {},
+): Promise<any> {
+  return request({
+    url: `/v1/auth/passwd/signup`,
+    method: "POST",
+    data: data,
+    ...configParams,
+  });
+}
+/**
+ * No description
+ *
+ * @tags Authentication
+ * @name UserPasswordControllerSignin
+ * @summary Signin by user-password
+ * @request POST:/v1/auth/passwd/signin
+ */
+export async function userPasswordControllerSignin(
+  data: PasswdSigninDto,
+  configParams: RequestParams = {},
+): Promise<any> {
+  return request({
+    url: `/v1/auth/passwd/signin`,
+    method: "POST",
+    data: data,
+    ...configParams,
+  });
+}
+/**
+ * No description
+ *
+ * @tags Authentication
+ * @name UserPasswordControllerReset
+ * @summary Reset password
+ * @request POST:/v1/auth/passwd/reset
+ */
+export async function userPasswordControllerReset(
+  data: PasswdResetDto,
+  configParams: RequestParams = {},
+): Promise<any> {
+  return request({
+    url: `/v1/auth/passwd/reset`,
+    method: "POST",
+    data: data,
+    ...configParams,
+  });
+}
+/**
+ * No description
+ *
+ * @tags Authentication
+ * @name UserPasswordControllerCheck
+ * @summary Check if user-password is set
+ * @request POST:/v1/auth/passwd/check
+ */
+export async function userPasswordControllerCheck(
+  data: PasswdCheckDto,
+  configParams: RequestParams = {},
+): Promise<any> {
+  return request({
+    url: `/v1/auth/passwd/check`,
+    method: "POST",
+    data: data,
+    ...configParams,
+  });
+}
+/**
+ * No description
+ *
+ * @tags Authentication
+ * @name PhoneControllerSendCode
+ * @summary Send phone verify code
+ * @request POST:/v1/auth/phone/sms/code
+ */
+export async function phoneControllerSendCode(data: SendPhoneCodeDto, configParams: RequestParams = {}): Promise<any> {
+  return request({
+    url: `/v1/auth/phone/sms/code`,
+    method: "POST",
+    data: data,
+    ...configParams,
+  });
+}
+/**
+ * No description
+ *
+ * @tags Authentication
+ * @name PhoneControllerSignin
+ * @summary Signin by phone and verify code
+ * @request POST:/v1/auth/phone/signin
+ */
+export async function phoneControllerSignin(data: PhoneSigninDto, configParams: RequestParams = {}): Promise<any> {
+  return request({
+    url: `/v1/auth/phone/signin`,
+    method: "POST",
+    data: data,
+    ...configParams,
+  });
+}
+/**
+ * No description
+ *
+ * @tags Authentication
+ * @name AuthenticationControllerGetProviders
+ * @summary Auth providers
+ * @request GET:/v1/auth/providers
+ */
+export async function authenticationControllerGetProviders(configParams: RequestParams = {}): Promise<any> {
+  return request({
+    url: `/v1/auth/providers`,
+    method: "GET",
+    ...configParams,
+  });
+}
+/**
+ * No description
+ *
+ * @tags Authentication
+ * @name AuthenticationControllerBindPhone
+ * @summary Bind username
+ * @request POST:/v1/auth/bind/phone
+ */
+export async function authenticationControllerBindPhone(
+  data: BindPhoneDto,
+  configParams: RequestParams = {},
+): Promise<any> {
+  return request({
+    url: `/v1/auth/bind/phone`,
+    method: "POST",
+    data: data,
+    ...configParams,
+  });
+}
+/**
+ * No description
+ *
+ * @tags Authentication
+ * @name AuthenticationControllerBindUsername
+ * @summary Bind username
+ * @request POST:/v1/auth/bind/username
+ */
+export async function authenticationControllerBindUsername(
+  data: BindUsernameDto,
+  configParams: RequestParams = {},
+): Promise<any> {
+  return request({
+    url: `/v1/auth/bind/username`,
+    method: "POST",
+    data: data,
+    ...configParams,
+  });
 }
 /**
  * No description
@@ -94,10 +217,10 @@ export async function authControllerGetProfile(configParams: RequestParams = {})
 export async function patControllerCreate(data: CreatePATDto, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/pats`,
-    method: 'POST',
+    method: "POST",
     data: data,
     ...configParams,
-  })
+  });
 }
 /**
  * No description
@@ -111,9 +234,9 @@ export async function patControllerCreate(data: CreatePATDto, configParams: Requ
 export async function patControllerFindAll(configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/pats`,
-    method: 'GET',
+    method: "GET",
     ...configParams,
-  })
+  });
 }
 /**
  * No description
@@ -127,7 +250,7 @@ export async function patControllerFindAll(configParams: RequestParams = {}): Pr
 export async function patControllerRemove(id: string, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/pats/${id}`,
-    method: 'DELETE',
+    method: "DELETE",
     ...configParams,
-  })
+  });
 }

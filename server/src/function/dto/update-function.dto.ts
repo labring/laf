@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { HttpMethod } from '@prisma/client'
 import {
   IsArray,
   IsIn,
@@ -9,6 +8,7 @@ import {
   MaxLength,
 } from 'class-validator'
 import { HTTP_METHODS } from '../../constants'
+import { HttpMethod } from '../entities/cloud-function'
 
 export class UpdateFunctionDto {
   @ApiPropertyOptional()

@@ -8,25 +8,18 @@ import {
   functionControllerUpdate,
   logControllerGetLogs,
 } from '../../api/v1/function'
-import { readApplicationConfig } from '../../config/application'
-import {
-  existFunctionConfig,
-  FunctionConfig,
-  readFunctionConfig,
-  removeFunctionConfig,
-  writeFunctionConfig,
-} from '../../config/function'
 import * as path from 'node:path'
 import * as fs from 'node:fs'
 import * as Table from 'cli-table3'
 import { formatDate } from '../../util/format'
-import { readSecretConfig } from '../../config/secret'
 import { invokeFunction } from '../../api/debug'
 import { exist, remove } from '../../util/file'
 import { getEmoji } from '../../util/print'
-import { getApplicationPath } from '../../util/sys'
-import { FUNCTIONS_DIRECTORY_NAME } from '../../common/constant'
+import { getAppPath } from '../../util/sys'
+import { FUNCTION_SCHEMA_DIRCTORY } from '../../common/constant'
 import { confirm } from '../../common/prompts'
+import { AppSchema } from '../../schema/app'
+import { FunctionSchema } from '../../schema/function'
 
 export async function create(
   funcName: string,
@@ -37,23 +30,22 @@ export async function create(
     description: string
   },
 ) {
-  const appConfig = readApplicationConfig()
+  const appSchema = AppSchema.read()
   const createDto: CreateFunctionDto = {
     name: funcName,
     description: options.description,
-    websocket: options.websocket,
     methods: options.methods,
     code: `\nimport cloud from '@lafjs/cloud'\n\nexport default async function (ctx: FunctionContext) {\n  console.log('Hello World')\n  return { data: 'hi, laf' }\n}\n`,
     tags: options.tags,
   }
-  await functionControllerCreate(appConfig.appid, createDto)
+  await functionControllerCreate(appSchema.appid, createDto)
   pullOne(funcName)
   console.log(`${getEmoji('✅')} function ${funcName} created`)
 }
 
 export async function list() {
-  const appConfig = readApplicationConfig()
-  const funcs = await functionControllerFindAll(appConfig.appid)
+  const appSchema = AppSchema.read()
+  const funcs = await functionControllerFindAll(appSchema.appid)
   const table = new Table({
     head: ['name', 'desc', 'websocket', 'methods', 'tags', 'updatedAt'],
   })
@@ -71,10 +63,10 @@ export async function list() {
 }
 
 export async function del(funcName: string) {
-  const appConfig = readApplicationConfig()
-  await functionControllerRemove(appConfig.appid, funcName)
-  if (existFunctionConfig(funcName)) {
-    removeFunctionConfig(funcName)
+  const appSchema = AppSchema.read()
+  await functionControllerRemove(appSchema.appid, funcName)
+  if (FunctionSchema.exist(funcName)) {
+    FunctionSchema.delete(funcName)
   }
   const funcPath = path.join(process.cwd(), 'functions', funcName + '.ts')
   if (exist(funcPath)) {
@@ -84,23 +76,23 @@ export async function del(funcName: string) {
 }
 
 async function pull(funcName: string) {
-  const appConfig = readApplicationConfig()
-  const func = await functionControllerFindOne(appConfig.appid, funcName)
-  const funcConfig: FunctionConfig = {
+  const appSchema = AppSchema.read()
+  const func = await functionControllerFindOne(appSchema.appid, funcName)
+  const functionSchema: FunctionSchema = {
     name: func.name,
     description: func.description,
     websocket: func.websocket,
     methods: func.methods,
     tags: func.tags,
   }
-  writeFunctionConfig(func.name, funcConfig)
+  FunctionSchema.write(func.name, functionSchema)
   const codePath = path.join(process.cwd(), 'functions', func.name + '.ts')
   fs.writeFileSync(codePath, func.source.code)
 }
 
 export async function pullAll() {
-  const appConfig = readApplicationConfig()
-  const funcs = await functionControllerFindAll(appConfig.appid)
+  const appSchema = AppSchema.read()
+  const funcs = await functionControllerFindAll(appSchema.appid)
   for (let func of funcs) {
     await pull(func.name)
     console.log(`${getEmoji('✅')} function ${func.name} pulled`)
@@ -113,36 +105,34 @@ export async function pullOne(funcName: string) {
 }
 
 async function push(funcName: string, isCreate: boolean) {
-  const appConfig = readApplicationConfig()
-  const funcConfig = readFunctionConfig(funcName)
+  const appSchema = AppSchema.read()
+  const funcSchema = FunctionSchema.read(funcName)
   const codePath = path.join(process.cwd(), 'functions', funcName + '.ts')
   const code = fs.readFileSync(codePath, 'utf-8')
   if (isCreate) {
     const createDto: CreateFunctionDto = {
       name: funcName,
-      description: funcConfig.description || '',
-      websocket: funcConfig.websocket,
-      methods: funcConfig.methods as any,
+      description: funcSchema.description || '',
+      methods: funcSchema.methods as any,
       code,
-      tags: funcConfig.tags,
+      tags: funcSchema.tags,
     }
-    await functionControllerCreate(appConfig.appid, createDto)
+    await functionControllerCreate(appSchema.appid, createDto)
   } else {
     const updateDto: UpdateFunctionDto = {
-      description: funcConfig.description || '',
-      websocket: funcConfig.websocket,
-      methods: funcConfig.methods as any,
+      description: funcSchema.description || '',
+      methods: funcSchema.methods as any,
       code,
-      tags: funcConfig.tags,
+      tags: funcSchema.tags,
     }
-    await functionControllerUpdate(appConfig.appid, funcName, updateDto)
+    await functionControllerUpdate(appSchema.appid, funcName, updateDto)
   }
 }
 
 export async function pushAll(options: { force: boolean }) {
-  const appConfig = readApplicationConfig()
-  const serverFuncs = await functionControllerFindAll(appConfig.appid)
-  const serverFuncMap = new Map<string, FunctionConfig>()
+  const appSchema = AppSchema.read()
+  const serverFuncs = await functionControllerFindAll(appSchema.appid)
+  const serverFuncMap = new Map<string, FunctionSchema>()
   for (let func of serverFuncs) {
     serverFuncMap.set(func.name, func)
   }
@@ -161,12 +151,12 @@ export async function pushAll(options: { force: boolean }) {
   for (let item of serverFuncs) {
     if (!localFuncMap.has(item.name)) {
       if (options.force) {
-        await functionControllerRemove(appConfig.appid, item.name)
+        await functionControllerRemove(appSchema.appid, item.name)
         console.log(`${getEmoji('✅')} function ${item.name} deleted`)
       } else {
         const res = await confirm('confirm remove function ' + item.name + '?')
         if (res.value) {
-          await functionControllerRemove(appConfig.appid, item.name)
+          await functionControllerRemove(appSchema.appid, item.name)
           console.log(`${getEmoji('✅')} function ${item.name} deleted`)
         } else {
           console.log(`${getEmoji('🎃')} cancel remove function ${item.name}`)
@@ -179,8 +169,8 @@ export async function pushAll(options: { force: boolean }) {
 }
 
 export async function pushOne(funcName: string) {
-  const appConfig = readApplicationConfig()
-  const serverFuncs = await functionControllerFindAll(appConfig.appid)
+  const appSchema = AppSchema.read()
+  const serverFuncs = await functionControllerFindAll(appSchema.appid)
   let isCreate = true
   for (let func of serverFuncs) {
     if (func.name === funcName) {
@@ -213,10 +203,8 @@ export async function exec(
   const compileDto: CompileFunctionDto = {
     code,
   }
-  const appConfig = readApplicationConfig()
-  const func = await functionControllerCompile(appConfig.appid, funcName, compileDto)
-  // invoke debug
-  const secretConfig = readSecretConfig()
+  const appSchema = AppSchema.read()
+  const func = await functionControllerCompile(appSchema.appid, funcName, compileDto)
 
   // transform headers json string to object. -H '{"Content-Type": "application/json"}'
   if (options.headers) {
@@ -237,8 +225,8 @@ export async function exec(
   }
 
   const res = await invokeFunction(
-    appConfig.invokeUrl || '',
-    secretConfig?.functionSecretConfig?.debugToken,
+    appSchema.invokeUrl || '',
+    appSchema?.function?.debugToken,
     funcName,
     func,
     options.method,
@@ -257,15 +245,16 @@ export async function exec(
 
   // print log
   if (options.log) {
-    await printLog(appConfig.appid, res.requestId, options.log)
+    await printLog(appSchema.appid, res.requestId)
   }
 }
 
-async function printLog(appid: string, requestId: string, limit: string) {
+async function printLog(appid: string, requestId: string) {
   const data = await logControllerGetLogs({
     appid,
     requestId,
-    limit: limit,
+    page: '1',
+    pageSize: '100',
   })
   for (let log of data.list) {
     console.log(`[${formatDate(log.createdAt)}] ${log.data}`)
@@ -273,7 +262,7 @@ async function printLog(appid: string, requestId: string, limit: string) {
 }
 
 function getLocalFuncs() {
-  const funcDir = path.join(getApplicationPath(), FUNCTIONS_DIRECTORY_NAME)
+  const funcDir = path.join(getAppPath(), FUNCTION_SCHEMA_DIRCTORY)
   const files = fs.readdirSync(funcDir)
   const funcs = files.filter((file) => file.endsWith('.ts')).map((file) => file.replace('.ts', ''))
   return funcs

@@ -1,13 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import {
-  Application,
-  ApplicationPhase,
-  ApplicationState,
-  DatabasePhase,
-  DomainPhase,
-  StoragePhase,
-} from '@prisma/client'
 import * as assert from 'node:assert'
 import { StorageService } from '../storage/storage.service'
 import { DatabaseService } from '../database/database.service'
@@ -15,14 +7,22 @@ import { ClusterService } from 'src/region/cluster/cluster.service'
 import { RegionService } from 'src/region/region.service'
 import { RuntimeDomainService } from 'src/gateway/runtime-domain.service'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
-import { SystemDatabase } from 'src/database/system-database'
+import { SystemDatabase } from 'src/system-database'
 import { TriggerService } from 'src/trigger/trigger.service'
 import { FunctionService } from 'src/function/function.service'
 import { ApplicationConfigurationService } from './configuration.service'
-import { BundleService } from 'src/region/bundle.service'
+import { BundleService } from 'src/application/bundle.service'
 import { WebsiteService } from 'src/website/website.service'
 import { PolicyService } from 'src/database/policy/policy.service'
 import { BucketDomainService } from 'src/gateway/bucket-domain.service'
+import {
+  Application,
+  ApplicationPhase,
+  ApplicationState,
+} from './entities/application'
+import { DatabasePhase } from 'src/database/entities/database'
+import { DomainPhase } from 'src/gateway/entities/runtime-domain'
+import { StoragePhase } from 'src/storage/entities/storage-user'
 
 @Injectable()
 export class ApplicationTaskService {
@@ -85,7 +85,7 @@ export class ApplicationTaskService {
           lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
         { $set: { lockedAt: new Date() } },
-        { sort: { lockedAt: 1, updatedAt: 1 } },
+        { sort: { lockedAt: 1, updatedAt: 1 }, returnDocument: 'after' },
       )
 
     if (!res.value) return
@@ -103,7 +103,11 @@ export class ApplicationTaskService {
     const namespace = await this.clusterService.getAppNamespace(region, appid)
     if (!namespace) {
       this.logger.debug(`Creating namespace for application ${appid}`)
-      await this.clusterService.createAppNamespace(region, appid, app.createdBy)
+      await this.clusterService.createAppNamespace(
+        region,
+        appid,
+        app.createdBy.toString(),
+      )
       return await this.unlock(appid)
     }
 
@@ -181,7 +185,7 @@ export class ApplicationTaskService {
           lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
         },
         { $set: { lockedAt: new Date() } },
-        { sort: { lockedAt: 1, updatedAt: 1 } },
+        { sort: { lockedAt: 1, updatedAt: 1 }, returnDocument: 'after' },
       )
 
     if (!res.value) return
@@ -221,9 +225,9 @@ export class ApplicationTaskService {
     }
 
     // delete application bundle
-    const bundle = await this.bundleService.findApplicationBundle(appid)
+    const bundle = await this.bundleService.findOne(appid)
     if (bundle) {
-      await this.bundleService.deleteApplicationBundle(appid)
+      await this.bundleService.deleteOne(appid)
       return await this.unlock(appid)
     }
 
@@ -237,7 +241,7 @@ export class ApplicationTaskService {
     // delete runtime domain
     const runtimeDomain = await this.runtimeDomainService.findOne(appid)
     if (runtimeDomain) {
-      await this.runtimeDomainService.delete(appid)
+      await this.runtimeDomainService.deleteOne(appid)
       return await this.unlock(appid)
     }
 

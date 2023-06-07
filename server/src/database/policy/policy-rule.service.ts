@@ -1,115 +1,80 @@
 import { Injectable } from '@nestjs/common'
-import * as assert from 'node:assert'
-import { PrismaService } from 'src/prisma/prisma.service'
 import { CreatePolicyRuleDto } from '../dto/create-rule.dto'
 import { UpdatePolicyRuleDto } from '../dto/update-rule.dto'
 import { PolicyService } from './policy.service'
+import { SystemDatabase } from '../../system-database'
+import { DatabasePolicyRule } from '../entities/database-policy'
 
 @Injectable()
 export class PolicyRuleService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly policyService: PolicyService,
-  ) {}
+  private readonly db = SystemDatabase.db
+  constructor(private readonly policyService: PolicyService) {}
 
   async create(appid: string, policyName: string, dto: CreatePolicyRuleDto) {
-    const res = await this.prisma.databasePolicyRule.create({
-      data: {
-        policy: {
-          connect: {
-            appid_name: {
-              appid,
-              name: policyName,
-            },
-          },
-        },
+    await this.db
+      .collection<DatabasePolicyRule>('DatabasePolicyRule')
+      .insertOne({
+        appid,
+        policyName,
         collectionName: dto.collectionName,
         value: JSON.parse(dto.value),
-      },
-    })
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
 
-    const policy = await this.policyService.findOne(appid, policyName)
-    assert(policy, 'policy not found')
-    await this.policyService.publish(policy)
-    return res
+    await this.policyService.publish(appid, policyName)
+    return await this.findOne(appid, policyName, dto.collectionName)
   }
 
   async count(appid: string, policyName: string) {
-    const res = await this.prisma.databasePolicyRule.count({
-      where: {
-        policy: {
-          appid,
-          name: policyName,
-        },
-      },
-    })
+    const res = await this.db
+      .collection<DatabasePolicyRule>('DatabasePolicyRule')
+      .countDocuments({ appid, policyName })
+
     return res
   }
 
   async findAll(appid: string, policyName: string) {
-    const res = await this.prisma.databasePolicyRule.findMany({
-      where: {
-        policy: {
-          appid,
-          name: policyName,
-        },
-      },
-    })
+    const res = await this.db
+      .collection<DatabasePolicyRule>('DatabasePolicyRule')
+      .find({ appid, policyName })
+      .toArray()
+
     return res
   }
 
   async findOne(appid: string, policyName: string, collectionName: string) {
-    const res = await this.prisma.databasePolicyRule.findUnique({
-      where: {
-        appid_policyName_collectionName: {
-          appid,
-          policyName,
-          collectionName,
-        },
-      },
-    })
-    return res
+    const doc = await this.db
+      .collection<DatabasePolicyRule>('DatabasePolicyRule')
+      .findOne({ appid, policyName, collectionName })
+
+    return doc
   }
 
-  async update(
+  async updateOne(
     appid: string,
     policyName: string,
     collectionName: string,
     dto: UpdatePolicyRuleDto,
   ) {
-    const res = await this.prisma.databasePolicyRule.update({
-      where: {
-        appid_policyName_collectionName: {
-          appid,
-          policyName,
-          collectionName: collectionName,
-        },
-      },
-      data: {
-        value: JSON.parse(dto.value),
-      },
-    })
+    const res = await this.db
+      .collection<DatabasePolicyRule>('DatabasePolicyRule')
+      .findOneAndUpdate(
+        { appid, policyName, collectionName },
+        { $set: { value: JSON.parse(dto.value), updatedAt: new Date() } },
+        { returnDocument: 'after' },
+      )
 
-    const policy = await this.policyService.findOne(appid, policyName)
-    assert(policy, 'policy not found')
-    await this.policyService.publish(policy)
-    return res
+    await this.policyService.publish(appid, policyName)
+    return res.value
   }
 
-  async remove(appid: string, policyName: string, collectionName: string) {
-    const res = await this.prisma.databasePolicyRule.delete({
-      where: {
-        appid_policyName_collectionName: {
-          appid,
-          policyName,
-          collectionName,
-        },
-      },
-    })
+  async removeOne(appid: string, policyName: string, collectionName: string) {
+    const res = await this.db
+      .collection<DatabasePolicyRule>('DatabasePolicyRule')
+      .findOneAndDelete({ appid, policyName, collectionName })
 
-    const policy = await this.policyService.findOne(appid, policyName)
-    assert(policy, 'policy not found')
-    await this.policyService.publish(policy)
-    return res
+    await this.policyService.publish(appid, policyName)
+    return res.value
   }
 }

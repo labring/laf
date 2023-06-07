@@ -10,6 +10,13 @@ export class ServerConfig {
     return process.env.DATABASE_URL
   }
 
+  static get METERING_DATABASE_URL() {
+    if (!process.env.METERING_DATABASE_URL) {
+      throw new Error('METERING_DATABASE_URL is not defined')
+    }
+    return process.env.METERING_DATABASE_URL
+  }
+
   static get JWT_SECRET() {
     if (!process.env.JWT_SECRET) {
       throw new Error('JWT_SECRET is not defined')
@@ -45,6 +52,10 @@ export class ServerConfig {
 
   static get DISABLED_STORAGE_TASK() {
     return process.env.DISABLED_STORAGE_TASK === 'true'
+  }
+
+  static get DISABLED_BILLING_TASK() {
+    return process.env.DISABLED_BILLING_TASK === 'true'
   }
 
   static get APPID_LENGTH(): number {
@@ -133,7 +144,6 @@ export class ServerConfig {
 export const LABEL_KEY_USER_ID = 'laf.dev/user.id'
 export const LABEL_KEY_APP_ID = 'laf.dev/appid'
 export const LABEL_KEY_NAMESPACE_TYPE = 'laf.dev/namespace.type'
-export const LABEL_KEY_BUNDLE = 'laf.dev/bundle'
 export const LABEL_KEY_NODE_TYPE = 'laf.dev/node.type'
 export enum NodeType {
   Runtime = 'runtime',

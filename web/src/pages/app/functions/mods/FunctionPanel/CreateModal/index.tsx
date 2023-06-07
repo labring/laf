@@ -34,12 +34,16 @@ import functionTemplates from "./functionTemplates";
 import { TMethod } from "@/apis/typing";
 import useGlobalStore from "@/pages/globalStore";
 
-const CreateModal = (props: { functionItem?: any; children?: React.ReactElement }) => {
+const CreateModal = (props: {
+  functionItem?: any;
+  children?: React.ReactElement;
+  tagList?: any;
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const store = useFunctionStore();
   const { showSuccess } = useGlobalStore();
 
-  const { functionItem, children = null } = props;
+  const { functionItem, children = null, tagList } = props;
   const isEdit = !!functionItem;
 
   const defaultValues = {
@@ -83,7 +87,7 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
     }
 
     if (!res.error) {
-      showSuccess(isEdit ? "update success" : "create success");
+      showSuccess(isEdit ? t("update success") : t("create success"));
       onClose();
       store.setCurrentFunction(res.data);
       reset(defaultValues);
@@ -118,7 +122,7 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
                 <Input
                   {...register("name", {
                     pattern: {
-                      value: /^[a-zA-Z0-9_.-]{1,128}$/,
+                      value: /^[a-zA-Z0-9_.\-\/]{1,256}$/,
                       message: t("FunctionPanel.FunctionNameRule"),
                     },
                   })}
@@ -136,7 +140,7 @@ const CreateModal = (props: { functionItem?: any; children?: React.ReactElement 
                   name="tags"
                   control={control}
                   render={({ field: { onChange, value } }) => (
-                    <InputTag value={value} onChange={onChange} />
+                    <InputTag value={value} onChange={onChange} tagList={tagList} />
                   )}
                 />
                 <FormErrorMessage>{errors.tags && errors.tags.message}</FormErrorMessage>

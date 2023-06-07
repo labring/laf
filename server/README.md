@@ -20,7 +20,6 @@
 - [Kubernetes](https://kubernetes.io) basic use
 - [Telepresence](https://www.telepresence.io) for local development
 - [MongoDb](https://docs.mongodb.com) basic use
-- [Prisma](https://www.prisma.io)
 - [MinIO](https://min.io) object storage
 - [APISIX](https://apisix.apache.org) gateway
 - [nestjs-i18n](https://nestjs-i18n.com/) i18n
@@ -36,19 +35,14 @@
 ```bash
 cd server/
 
-# Install telepresence traffic manager
+# Install telepresence traffic manager (only 
 telepresence helm install
 # Connect your computer to laf-dev cluster
 telepresence connect
-# view the available services, service status needs to be Ready, `ready to intercept`
-telepresence list -n laf-system
 # Connect local server  to laf server cluster
 telepresence intercept laf-server -n laf-system -p 3000:3000 -e $(pwd)/.env
 
 npm install
-npx prisma generate
-npx prisma db push
-
 npm run watch
 ```
 

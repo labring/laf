@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { HttpMethod } from '@prisma/client'
 import {
   IsArray,
   IsIn,
@@ -9,13 +8,14 @@ import {
   MaxLength,
 } from 'class-validator'
 import { HTTP_METHODS } from '../../constants'
+import { HttpMethod } from '../entities/cloud-function'
 
 export class CreateFunctionDto {
   @ApiProperty({
     description: 'Function name is unique in the application',
   })
   @IsNotEmpty()
-  @Matches(/^[a-zA-Z0-9_.-]{1,128}$/)
+  @Matches(/^[a-zA-Z0-9_.\-\/]{1,256}$/)
   name: string
 
   @ApiPropertyOptional()

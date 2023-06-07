@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Region, WebsiteHosting } from '@prisma/client'
 import { LABEL_KEY_APP_ID, ServerConfig } from 'src/constants'
 import { ClusterService } from 'src/region/cluster/cluster.service'
+import { Region } from 'src/region/entities/region'
 import { GetApplicationNamespaceByAppId } from 'src/utils/getter'
+import { WebsiteHosting } from 'src/website/entities/website'
 
 // This class handles the creation and deletion of website domain certificates
 // and ApisixTls resources using Kubernetes Custom Resource Definitions (CRDs).
@@ -25,7 +26,7 @@ export class ApisixCustomCertService {
         'v1',
         namespace,
         'certificates',
-        website.id,
+        website._id.toString(),
       )
 
       return res.body
@@ -50,17 +51,17 @@ export class ApisixCustomCertService {
       kind: 'Certificate',
       // Set the metadata for the Certificate resource
       metadata: {
-        name: website.id,
+        name: website._id.toString(),
         namespace,
         labels: {
-          'laf.dev/website': website.id,
+          'laf.dev/website': website._id.toString(),
           'laf.dev/website-domain': website.domain,
           [LABEL_KEY_APP_ID]: website.appid,
         },
       },
       // Define the specification for the Certificate resource
       spec: {
-        secretName: website.id,
+        secretName: website._id.toString(),
         dnsNames: [website.domain],
         issuerRef: {
           name: ServerConfig.CertManagerIssuerName,
@@ -83,7 +84,7 @@ export class ApisixCustomCertService {
       apiVersion: 'cert-manager.io/v1',
       kind: 'Certificate',
       metadata: {
-        name: website.id,
+        name: website._id.toString(),
         namespace,
       },
     })
@@ -94,7 +95,7 @@ export class ApisixCustomCertService {
         apiVersion: 'v1',
         kind: 'Secret',
         metadata: {
-          name: website.id,
+          name: website._id.toString(),
           namespace,
         },
       })
@@ -121,7 +122,7 @@ export class ApisixCustomCertService {
         'v2',
         namespace,
         'apisixtlses',
-        website.id,
+        website._id.toString(),
       )
       return res.body
     } catch (err) {
@@ -145,10 +146,10 @@ export class ApisixCustomCertService {
       kind: 'ApisixTls',
       // Set the metadata for the ApisixTls resource
       metadata: {
-        name: website.id,
+        name: website._id.toString(),
         namespace,
         labels: {
-          'laf.dev/website': website.id,
+          'laf.dev/website': website._id.toString(),
           'laf.dev/website-domain': website.domain,
           [LABEL_KEY_APP_ID]: website.appid,
         },
@@ -157,7 +158,7 @@ export class ApisixCustomCertService {
       spec: {
         hosts: [website.domain],
         secret: {
-          name: website.id,
+          name: website._id.toString(),
           namespace,
         },
       },
@@ -178,7 +179,7 @@ export class ApisixCustomCertService {
       apiVersion: 'apisix.apache.org/v2',
       kind: 'ApisixTls',
       metadata: {
-        name: website.id,
+        name: website._id.toString(),
         namespace,
       },
     })

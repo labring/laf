@@ -25,7 +25,7 @@ import { ApplicationAuthGuard } from '../auth/application.auth.guard'
 import { FunctionService } from './function.service'
 import { IRequest } from '../utils/interface'
 import { CompileFunctionDto } from './dto/compile-function.dto'
-import { BundleService } from 'src/region/bundle.service'
+import { BundleService } from 'src/application/bundle.service'
 import { I18n, I18nContext, I18nService } from 'nestjs-i18n'
 import { I18nTranslations } from '../generated/i18n.generated'
 
@@ -68,7 +68,7 @@ export class FunctionController {
     }
 
     // check if meet the count limit
-    const bundle = await this.bundleService.findApplicationBundle(appid)
+    const bundle = await this.bundleService.findOne(appid)
     const MAX_FUNCTION_COUNT = bundle?.resource?.limitCountOfCloudFunction || 0
     const count = await this.functionsService.count(appid)
     if (count >= MAX_FUNCTION_COUNT) {
@@ -79,7 +79,7 @@ export class FunctionController {
       )
     }
 
-    const res = await this.functionsService.create(appid, req.user.id, dto)
+    const res = await this.functionsService.create(appid, req.user._id, dto)
     if (!res) {
       return ResponseUtil.error(i18n.t('function.create.error'))
     }
@@ -148,7 +148,7 @@ export class FunctionController {
       )
     }
 
-    const res = await this.functionsService.update(func, dto)
+    const res = await this.functionsService.updateOne(func, dto)
     if (!res) {
       return ResponseUtil.error(i18n.t('function.update.error'))
     }
@@ -178,7 +178,7 @@ export class FunctionController {
       )
     }
 
-    const res = await this.functionsService.remove(func)
+    const res = await this.functionsService.removeOne(func)
     if (!res) {
       return ResponseUtil.error(i18n.t('function.delete.error'))
     }

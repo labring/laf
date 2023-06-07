@@ -63,7 +63,11 @@ export const useUpdateFunctionMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
-      return FunctionControllerUpdate(values);
+      const updatedValues = {
+        ...values,
+        name: encodeURIComponent(values.name),
+      };
+      return FunctionControllerUpdate(updatedValues);
     },
     {
       onSuccess(data) {
@@ -81,14 +85,18 @@ export const useDeleteFunctionMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
-      return FunctionControllerRemove(values);
+      const updatedValues = {
+        ...values,
+        name: encodeURIComponent(values.name),
+      };
+      return FunctionControllerRemove(updatedValues);
     },
     {
       onSuccess(data) {
         if (!data.error) {
           queryClient.invalidateQueries(queryKeys.useFunctionListQuery);
           store.setCurrentFunction({});
-          functionCache.removeCache(data?.data?.id);
+          functionCache.removeCache(data?.data?._id);
         }
       },
     },
@@ -100,7 +108,11 @@ export const useCompileMutation = () => {
   return useMutation({
     mutationKey: ["compileMutation"],
     mutationFn: (values: { code: string; name: string }) => {
-      return FunctionControllerCompile(values);
+      const updatedValues = {
+        ...values,
+        name: encodeURIComponent(values.name),
+      };
+      return FunctionControllerCompile(updatedValues);
     },
     onSuccess(data) {
       if (!data.error) {
