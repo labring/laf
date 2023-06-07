@@ -2,11 +2,6 @@ import { IResponse } from 'src/utils/interface'
 import { randomUUID } from 'crypto'
 
 
-interface SseEventInterface {
-  parsePayload: () => string
-}
-
-
 export const SSE_CONNECT_HEADER = {
   'Content-Type': 'text/event-stream',
   'Cache-Control': 'no-cache',
@@ -16,7 +11,7 @@ export const SSE_CONNECT_HEADER = {
 
 export enum SseEventEnum {
   PONG = 'Pong',
-  NPMINSTALL = 'NpmInstall',
+  NPM = 'Npm',
 }
 
 export const CHANGE_STREAM_PIPELINE = [
@@ -25,6 +20,11 @@ export const CHANGE_STREAM_PIPELINE = [
 
 export const COLLECTION_SSEEVENTSOURCE = "SseEventSource"
 
+
+
+interface SseEventInterface {
+  parsePayload: () => string
+}
 
 
 export abstract class SseAbstractEvent implements SseEventInterface {
@@ -37,10 +37,13 @@ export abstract class SseAbstractEvent implements SseEventInterface {
     this.id = id;
     this.type = type;
     this.data = data;
-    this.retry = retry;
+    this.retry = retry || 3000
   }
 
 
+  /**
+   * parse payload
+   */
   parsePayload(): string {
     const payload = `id: ${this.id}\n` +
       `event: ${this.type}\n` +
@@ -92,4 +95,18 @@ export class SseResponseWrapper {
 export type SseEventPayload = {
   msg: string
   [key: string]: any
+}
+
+
+export class SsePongEventPayload {
+  msg: string
+
+  constructor(msg: string) {
+    this.msg = msg
+  }
+}
+
+
+export const getSsePongEvent = () => {
+  return new SsePongEvent(new SsePongEventPayload("pong info"))
 }

@@ -19,12 +19,12 @@ export class SseEventsourceListenerService {
     constructor(
         private readonly sseClientsService: SseClientsService,
     ) {
-        this.listenSseEventChangeStreams()
+        this.handleSseEventSourceInsert()
     }
 
 
     // received a change from the collection SseEventSource
-    private listenSseEventChangeStreams() {
+    private handleSseEventSourceInsert() {
         try {
             const changeStream = this.db.collection(COLLECTION_SSEEVENTSOURCE).watch(CHANGE_STREAM_PIPELINE)
 
@@ -40,8 +40,8 @@ export class SseEventsourceListenerService {
                     }
                 }
             })
-        } catch (e) {
-            this.logger.error(`listenSseEventChangeStreams is error error=${e.msg}`)
+        } catch (err) {
+            this.logger.error(err)
         }
     }
 

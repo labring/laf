@@ -1,5 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { SsePongEvent, SseDefaultEvent, SseAbstractEvent, SSE_CONNECT_HEADER, SseResponseWrapper } from './types'
+import {
+  SseDefaultEvent,
+  SseAbstractEvent,
+  SSE_CONNECT_HEADER,
+  SseResponseWrapper,
+  getSsePongEvent
+} from './types'
 import { IResponse } from 'src/utils/interface'
 
 
@@ -68,12 +74,16 @@ export class SseClientsService {
 
 
     clients.forEach(client => {
+      if(!client) {
+        return
+      }
+
       let { response } = client
       if (!response) {
         return
       }
 
-      // parse sse payload
+      // parse sse payload and write to client
       let payload = sseEvent.parsePayload()
       response.write(payload)
       response.flush()
@@ -93,6 +103,10 @@ export class SseClientsService {
   }
 
 
+  /**
+   * send broadcast event
+   * @param sseEvent
+   */
   sendEventBroadcast(sseEvent: SseAbstractEvent) {
     const payload = sseEvent.parsePayload()
 
@@ -105,9 +119,12 @@ export class SseClientsService {
     })
   }
 
+  /**
+   * send pong event to all client to keep connect
+   */
   sendPongEvent() {
-    const ssePongEvent = new SsePongEvent({ msg: "pong info" })
-    this.sendEventBroadcast(ssePongEvent)
+    const event = getSsePongEvent()
+    this.sendEventBroadcast(event)
   }
 
 

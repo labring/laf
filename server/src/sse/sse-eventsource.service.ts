@@ -6,9 +6,9 @@ import {SseEventSource} from "./entities/sse";
 
 
 @Injectable()
-export class SseEventsourceService {
+export class SseEventSourceService {
 
-    private readonly logger = new Logger(SseEventsourceService.name)
+    private readonly logger = new Logger(SseEventSourceService.name)
     private readonly db = SystemDatabase.db
 
 

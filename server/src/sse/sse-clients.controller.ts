@@ -1,52 +1,63 @@
 import {
   Controller,
   Get,
-  Post,
-  Param,
+  UseGuards,
   Req,
   Res,
   OnModuleInit,
   OnModuleDestroy,
-  Body,
 } from '@nestjs/common'
 import { IRequest, IResponse } from '../utils/interface'
 
-import {
-  ApiTags,
-} from '@nestjs/swagger'
 import { SseClientsService } from './sse-clients.service'
-import { SseEventsourceService } from './sse-eventsource.service'
 import { Subscription, interval } from 'rxjs'
-import { CreateEventSourceDto } from './dto/create-eventsource.dto'
+import {JwtAuthGuard} from "../auth/jwt.auth.guard";
+import {ApiResponseObject, ResponseUtil} from "../utils/response";
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {QuerySseClientNumDto} from "./dto/query-sseclientnum.dto";
 
 
 @ApiTags('Sse Client')
-// @ApiBearerAuth('Authorization')
+@ApiBearerAuth('Authorization')
 @Controller('events')
 export class SseClientsController implements OnModuleInit, OnModuleDestroy {
 
   constructor(
     private readonly sseClientsService: SseClientsService,
-    private readonly sseEventsourceService: SseEventsourceService
   ) { }
 
   private eventEmitter: Subscription
 
-  @Get('/:userid')
-  connectSse(@Param('userid') userid: string, @Req() request, @Res() response: IResponse): void {
+
+  /**
+   * sse connect
+   * @param req
+   * @param response
+   */
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Sse Connect Server' })
+  @Get('/connect')
+  connectSse(@Req() req: IRequest, @Res() response: IResponse): void {
+    const user = req.user
+    const userid = user._id.toString()
     this.sseClientsService.addClient(userid, response)
   }
 
 
-  @Post('/sseClients')
-  getSseClient(): number {
-    return this.sseClientsService.getClientsCount()
+  /**
+   * get sse client number
+   */
+  @Get('/sseClients')
+  @ApiResponseObject(QuerySseClientNumDto)
+  getSseClient() {
+    const total = this.sseClientsService.getClientsCount()
+    let data: QuerySseClientNumDto = {
+      total
+    }
+
+    return ResponseUtil.ok(data)
   }
 
-  @Post('/addEvent')
-  addEvent(@Body() dto: CreateEventSourceDto) {
-    return this.sseEventsourceService.create(dto)
-  }
 
 
   // start an event trigger when the controller is initialized, pushing a Pong message to the client every 5 seconds to keep the client connected
