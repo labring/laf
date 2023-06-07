@@ -21,7 +21,6 @@ import xmlparser from 'express-xml-bodyparser'
 import './support/cloud-sdk'
 import { FunctionCache } from './support/function-engine/cache'
 import { DatabaseChangeStream } from './support/db-change-stream'
-import { InitHook } from './support/init-hook'
 import { ensureCollectionIndexes } from './support/function-log'
 
 const app = express()
@@ -30,7 +29,6 @@ DatabaseAgent.accessor.ready.then(() => {
   ensureCollectionIndexes()
   FunctionCache.initialize()
   DatabaseChangeStream.initialize()
-  InitHook.invoke()
 })
 
 if (process.env.NODE_ENV === 'development') {
@@ -73,8 +71,7 @@ app.use(function (req, res, next) {
   if (req.url !== '/_/healthz') {
     logger.info(
       requestId,
-      `${req.method} "${req.url}" - referer: ${
-        req.get('referer') || '-'
+      `${req.method} "${req.url}" - referer: ${req.get('referer') || '-'
       } ${req.get('user-agent')}`,
     )
     logger.trace(requestId, `${req.method} ${req.url}`, {

@@ -4,6 +4,7 @@ import { ICloudFunctionData, RequireFuncType } from './types'
 import { FunctionRequire } from './require'
 import { logger } from '../logger'
 import assert from 'assert'
+import { InitHook } from '../init-hook'
 
 export class FunctionCache {
   private static cache: Map<string, ICloudFunctionData> = new Map()
@@ -21,6 +22,10 @@ export class FunctionCache {
 
     this.streamChange()
     logger.info('Function cache initialized.')
+
+    // invoke init function
+    InitHook.invoke()
+
   }
 
   /**
