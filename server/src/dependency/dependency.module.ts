@@ -7,5 +7,6 @@ import { DependencyService } from './dependency.service'
   imports: [ApplicationModule],
   controllers: [DependencyController],
   providers: [DependencyService],
+  exports: [DependencyService],
 })
 export class DependencyModule {}

@@ -33,6 +33,11 @@ import { ResourceService } from 'src/billing/resource.service'
     BundleService,
     ResourceService,
   ],
-  exports: [ApplicationService, BundleService],
+  exports: [
+    ApplicationService,
+    ApplicationConfigurationService,
+    EnvironmentVariableService,
+    BundleService,
+  ],
 })
 export class ApplicationModule {}
