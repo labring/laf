@@ -18,7 +18,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Chart.Name }}-gateway
+  name: {{ include "apisix.fullname" . }}-gateway
   namespace: {{ .Release.Namespace }}
   annotations:
     {{- range $key, $value := .Values.gateway.annotations }}
@@ -57,6 +57,12 @@ spec:
   {{- end }}
     protocol: TCP
   {{- end }}
+  {{- range .Values.gateway.http.additionalContainerPorts }}
+  - name: apisix-gateway-{{ .port | toString }}
+    port: {{ .port }}
+    targetPort: {{ .port }}
+    protocol: TCP
+  {{- end }}
   {{- if or .Values.gateway.tls.enabled }}
   - name: apisix-gateway-tls
     port: {{ .Values.gateway.tls.servicePort }}
@@ -66,14 +72,25 @@ spec:
   {{- end }}
     protocol: TCP
   {{- end }}
+  {{- range .Values.gateway.tls.additionalContainerPorts }}
+  - name: apisix-gateway-tls-{{ .port | toString }}
+    port: {{ .port }}
+    targetPort: {{ .port }}
+  {{- end }}
   {{- if and .Values.gateway.stream.enabled (or (gt (len .Values.gateway.stream.tcp) 0) (gt (len .Values.gateway.stream.udp) 0)) }}
   {{- with .Values.gateway.stream }}
   {{- if (gt (len .tcp) 0) }}
   {{- range $index, $port := .tcp }}
   - name: proxy-tcp-{{ $index | toString }}
+  {{- if kindIs "map" $port }}
+    port: {{ splitList ":" ($port.addr | toString) | last }}
+    targetPort: {{ splitList ":" ($port.addr | toString) | last }}
+    protocol: TCP
+  {{- else }}
     port: {{ $port }}
     targetPort: {{ $port }}
     protocol: TCP
+  {{- end }}
   {{- end }}
   {{- end }}
   {{- if (gt (len .udp) 0) }}

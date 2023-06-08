@@ -35,7 +35,7 @@ spec:
   selector:
     matchLabels:
       {{- include "apisix.labels" . | nindent 6 }}
-      app.kubernetes.io/service: apisix-gateway
+      app.kubernetes.io/service: apisix-prometheus-metrics
   endpoints:
   - scheme: http
     targetPort: prometheus

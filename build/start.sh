@@ -37,6 +37,7 @@ APISIX_API_URL="http://apisix-admin.${NAMESPACE}.svc.cluster.local:9180/apisix/a
 APISIX_API_KEY=$PASSWD_OR_SECRET
 helm install apisix -n ${NAMESPACE} \
     --set apisix.kind=DaemonSet \
+    --set apisix.securityContext.runAsUser=0 \
     --set apisix.hostNetwork=true \
     --set admin.credentials.admin=${APISIX_API_KEY} \
     --set etcd.enabled=true \
@@ -44,6 +45,11 @@ helm install apisix -n ${NAMESPACE} \
     --set dashboard.enabled=true    \
     --set ingress-controller.enabled=true   \
     --set ingress-controller.config.apisix.adminKey="${APISIX_API_KEY}" \
+    --set ingress-controller.config.apisix.serviceNamespace=${NAMESPACE} \
+    --set gateway.http.containerPort=80 \
+	--set gateway.stream.enabled=true \
+	--set gateway.tls.enabled=true \
+    --set gateway.tls.containerPort=443 \
     ./charts/apisix
 
 
