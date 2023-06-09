@@ -71,11 +71,55 @@ await s3Client.deleteObject({
 ```
 
 - Bucket 文件桶的名字 格式是：`${appid}-${bucketName}`
-- Key 删除文件在 S3 存储桶中的唯一标识符
+- Key 文件在 S3 存储桶中的唯一标识符
   - 文件路径和名称：比如 `avatars/user1.png`
   - 文件夹名称 (以 / 结尾):比如 `avatars/` 用于删除文件夹
   - 相对路径：比如 `avatars/2021/01/`
   - 绝对路径：比如 `/avatars/2021/01/user1.png`
+
+## 下载云存储对象
+
+可删除云存储文件或者文件夹
+
+```typescript
+await s3Client.getObject({
+  Bucket: bucket,
+  Key: path
+})
+```
+
+- Bucket 文件桶的名字 格式是：`${appid}-${bucketName}`
+- Key 文件在 S3 存储桶中的唯一标识符
+  - 文件路径和名称：比如 `avatars/user1.png`
+  - 文件夹名称 (以 / 结尾):比如 `avatars/` 用于删除文件夹
+  - 相对路径：比如 `avatars/2021/01/`
+  - 绝对路径：比如 `/avatars/2021/01/user1.png`
+
+以下为获取`gen.py`的代码
+
+```typescript
+import { S3 } from "@aws-sdk/client-s3"
+
+export default async function (ctx: FunctionContext) {
+  const s3 = new S3({
+    endpoint: process.env.OSS_EXTERNAL_ENDPOINT,
+    region: process.env.OSS_REGION,
+    credentials: {
+      accessKeyId: process.env.OSS_ACCESS_KEY,
+      secretAccessKey: process.env.OSS_ACCESS_SECRET
+    },
+    forcePathStyle: true,
+  })
+
+  const res = await s3.getObject({
+    Bucket: 'c5nodm-test',
+    Key: 'gen.py',
+  })
+
+  const data = await res.Body.transformToString()
+  console.log(data)
+}
+```
 
 ## 生成文件预签名链接
 

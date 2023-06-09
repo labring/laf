@@ -8,6 +8,25 @@ title: 云函数常见问题
 
 [[toc]]
 
+## 前端跨域
+
+laf 云函数默认是没有域名限制的，但是部分同学在开发过程中发现，还是会出现跨域问题。可以将 `withCredentials` 设置为 `false`
+
+下面是 3 种常见的`withCredentials` 设置为 `false`的方法：
+
+```js
+// 方式一
+axios.defaults.withCredentials = false
+
+// 方式二
+axios.get('http://example.com', {
+  withCredentials: false 
+})
+
+// 方式三
+XMLHttpRequest.prototype.withCredentials = false
+```
+
 ## 云函数延迟执行
 
 ```typescript
