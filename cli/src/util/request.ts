@@ -61,21 +61,21 @@ request.interceptors.response.use(
       process.exit(1)
     } else {
       // handle error code
-      const { statusCode, data } = error.response.data
-      if (statusCode === 400) {
+      const { status, data } = error.response
+      if (status === 400) {
         console.log('Bad request!')
         console.log(data.message)
         process.exit(1)
-      } else if (statusCode === 401) {
-        console.log('please first login')
+      } else if (status === 401) {
+        console.log('User not logged in or expired, please log in again')
         process.exit(1)
-      } else if (statusCode == 403) {
-        console.log('Forbidden resource!')
+      } else if (status == 403) {
+        console.log('Unauthorized resource request')
         process.exit(1)
-      } else if (statusCode === 500) {
+      } else if (status === 500) {
         console.log('Internal server error!')
         process.exit(1)
-      } else if (statusCode === 503) {
+      } else if (status === 503) {
         console.log('The server is abnormal, please contact the administrator!')
         process.exit(1)
       }

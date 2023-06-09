@@ -16,7 +16,7 @@ import { invokeFunction } from '../../api/debug'
 import { exist, remove } from '../../util/file'
 import { getEmoji } from '../../util/print'
 import { getAppPath } from '../../util/sys'
-import { FUNCTION_SCHEMA_DIRCTORY } from '../../common/constant'
+import { FUNCTION_SCHEMA_DIRECTORY } from '../../common/constant'
 import { confirm } from '../../common/prompts'
 import { AppSchema } from '../../schema/app'
 import { FunctionSchema } from '../../schema/function'
@@ -261,7 +261,7 @@ async function printLog(appid: string, requestId: string) {
 }
 
 function getLocalFuncs() {
-  const funcDir = path.join(getAppPath(), FUNCTION_SCHEMA_DIRCTORY)
+  const funcDir = path.join(getAppPath(), FUNCTION_SCHEMA_DIRECTORY)
   const files = fs.readdirSync(funcDir)
   const funcs = files.filter((file) => file.endsWith('.ts')).map((file) => file.replace('.ts', ''))
   return funcs

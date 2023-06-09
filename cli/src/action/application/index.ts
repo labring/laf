@@ -9,7 +9,7 @@ import { AppSchema } from '../../schema/app'
 
 import {
   DEBUG_TOKEN_EXPIRE,
-  FUNCTION_SCHEMA_DIRCTORY,
+  FUNCTION_SCHEMA_DIRECTORY,
   GITIGNORE_FILE,
   GLOBAL_FILE,
   PACKAGE_FILE,
@@ -60,24 +60,12 @@ export async function init(appid: string, options: { sync: boolean }) {
     console.log(
       `${getEmoji(
         '❌',
-      )} The laf.yaml file already exists in the current directory. Please change the directory or delete the laf.yaml file`,
+      )} The .app.yaml file already exists in the current directory. Please change the directory or delete the .app.yaml file`,
     )
     return
   }
 
   const app = await applicationControllerFindOne(appid)
-
-  // init project schema
-  if (!ProjectSchema.exist()) {
-    const projectSchema: ProjectSchema = {
-      version: '1.0.0',
-      name: app.name,
-      spec: {
-        runtime: app.runtime.name,
-      },
-    }
-    ProjectSchema.write(projectSchema)
-  }
 
   // init app schema
   let timestamp = Date.parse(new Date().toString()) / 1000
@@ -99,11 +87,23 @@ export async function init(appid: string, options: { sync: boolean }) {
   }
   AppSchema.write(appSchema)
 
-  // init function
-  initFunction()
+  if (!ProjectSchema.exist()) {
+  // init project schema
+    const projectSchema: ProjectSchema = {
+      version: '1.0.0',
+      name: app.name,
+      spec: {
+        runtime: app.runtime.name,
+      },
+    }
+    ProjectSchema.write(projectSchema)
 
-  // init policy
-  initPolicy()
+    // init function
+    initFunction()
+
+    // init policy
+    initPolicy()
+  }
 
   if (options.sync) {
     // pull dependencies
@@ -118,7 +118,7 @@ export async function init(appid: string, options: { sync: boolean }) {
 
 function initFunction() {
   // if not exist，create functions directory
-  ensureDirectory(path.join(process.cwd(), FUNCTION_SCHEMA_DIRCTORY))
+  ensureDirectory(path.join(process.cwd(), FUNCTION_SCHEMA_DIRECTORY))
 
   const typeDir = path.resolve(process.cwd(), TYPE_DIR)
   ensureDirectory(typeDir)
