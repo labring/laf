@@ -22,7 +22,7 @@ import FunctionTemplate from "./FunctionTemplate";
 import styles from "../functionTemplate/Mods/SideBar/index.module.scss";
 
 export default function Mine() {
-  const sortList = ["按时间", "按收藏数", "按点赞数"];
+  const sortList = ["按时间", "按收藏数", "按使用数"];
   // const explore_data = ["应用模板", "函数模板"];
   const navigate = useNavigate();
   const { colorMode } = useColorMode();

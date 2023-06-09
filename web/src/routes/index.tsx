@@ -92,7 +92,7 @@ const routes = [
         children: [
           {
             path: "/function-templates/:templateId",
-            element: () => import("@/pages/functionTemplate/Mods/funcTemplateItem"),
+            element: () => import("@/pages/functionTemplate/funcTemplateItem"),
           },
         ],
       },

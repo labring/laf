@@ -10,7 +10,7 @@ const Language = () => {
   const darkMode = colorMode === COLOR_MODE.dark;
 
   return (
-    <div className="mr-4">
+    <div className="mr-7">
       <a
         className="flex items-center text-lg"
         href={"/language"}

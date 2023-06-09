@@ -460,7 +460,16 @@
     "CreateTemplate": "新建模板",
     "Details": "函数详情",
     "My": "我的",
-    "Edit": "编辑"
+    "Edit": "编辑",
+    "Create": "新建",
+    "CreatedAt": "创建于",
+    "byTime": "按时间",
+    "byFavorites": "按收藏数",
+    "byLikes": "按点赞数",
+    "Description": "请输入函数模板介绍信息",
+    "updatedAt": "更新于",
+    "UsedBy": "应用者",
+    "Draft": "草稿"
   },
   "Fee": "费用",
   "PleaseCloseApplicationFirst": "请先关闭应用",

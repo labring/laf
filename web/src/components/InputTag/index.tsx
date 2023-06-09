@@ -51,7 +51,7 @@ export default function InputTag(props: {
     <div className={clsx("flex w-full items-center rounded-md text-lg")}>
       {value.length > 0
         ? value.map((item) => (
-            <Tag className="mr-2 bg-white" key={item}>
+            <Tag className="mr-2" key={item}>
               <TagLabel>{item}</TagLabel>
               <TagCloseButton
                 onClick={() => {

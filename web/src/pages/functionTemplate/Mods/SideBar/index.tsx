@@ -8,19 +8,22 @@ export default function SideBar() {
   const { colorMode } = useColorMode();
   const darkMode = colorMode === "dark";
 
-  const category_data = [t("market.all"), "热门", "最新"];
+  // const category_data = [t("market.all"), "热门", "最新"];
 
   return (
     <div className="absolute bottom-0 top-[60px] flex flex-col justify-between">
       <Box className="pl-16">
-        <div className={darkMode ? styles.title_dark : styles.title}>{t("market.category")}</div>
-        {category_data.map((item) => {
+        {/* <div className={darkMode ? styles.title_dark : styles.title}>{t("market.category")}</div> */}
+        <div className={darkMode ? styles.title_dark : styles.title}>
+          {t("market.funcTemplate")}
+        </div>
+        {/* {category_data.map((item) => {
           return (
             <div key={item} className={styles.category_item}>
               {item}
             </div>
           );
-        })}
+        })} */}
       </Box>
     </div>
   );

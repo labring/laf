@@ -1,5 +1,5 @@
 // import { useState } from "react";
-// import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import {
   // ArrowLeftIcon,
@@ -11,7 +11,7 @@ import {
 import { Avatar, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
-import { FileIcon, LikeIcon, UserIcon } from "@/components/CommonIcon";
+import { DraftIcon, FileIcon, LikeIcon, UserIcon } from "@/components/CommonIcon";
 import FileTypeIcon from "@/components/FileTypeIcon";
 
 export default function FunctionTemplate() {
@@ -107,7 +107,7 @@ export default function FunctionTemplate() {
       id: 3,
     },
   ];
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
   // const [page, setPage] = useState(1);
   const navigate = useNavigate();
   const { colorMode } = useColorMode();
@@ -131,7 +131,9 @@ export default function FunctionTemplate() {
                   <div className="flex items-center justify-between text-second">
                     <div>
                       <RepeatClockIcon />
-                      <span className="pl-2">创建于 {item.created_at}</span>
+                      <span className="pl-2">
+                        {t("Template.CreatedAt")} {item.created_at}
+                      </span>
                     </div>
                     <span
                       className={clsx(
@@ -167,7 +169,11 @@ export default function FunctionTemplate() {
                 <div className="flex items-center justify-between px-4 pb-2">
                   <div className="flex items-center">
                     <Avatar name={item.author} size={"xs"} src={item.avatar} />
-                    <span className="pl-2 text-second">更新于 {item.updated_at}</span>
+                    <span className="pl-2 pr-2 text-second">
+                      {t("Template.updatedAt")} {item.updated_at}
+                    </span>
+                    <DraftIcon />
+                    <span className="pl-1 text-second">{t("Template.Draft")}</span>
                   </div>
                   <div className="flex flex-col pl-2">
                     <div className="flex items-center text-base">

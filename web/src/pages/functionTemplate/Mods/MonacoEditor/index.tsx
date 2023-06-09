@@ -7,6 +7,54 @@ import { COLOR_MODE } from "@/constants";
 
 import "@/components/Editor/userWorker";
 
+monaco?.editor.defineTheme("lafEditorTheme", {
+  base: "vs",
+  inherit: true,
+  rules: [
+    {
+      foreground: "#0066ff",
+      token: "keyword",
+    },
+  ],
+  colors: {
+    "editorLineNumber.foreground": "#aaa",
+    "editorOverviewRuler.border": "#fff",
+    "editor.lineHighlightBackground": "#F7F8FA",
+    "scrollbarSlider.background": "#E8EAEC",
+    "editorIndentGuide.activeBackground": "#fff",
+    "editorIndentGuide.background": "#eee",
+  },
+});
+
+monaco?.editor.defineTheme("lafEditorThemeDark", {
+  base: "vs-dark",
+  inherit: true,
+  rules: [
+    {
+      foreground: "65737e",
+      token: "punctuation.definition.comment",
+    },
+  ],
+  colors: {
+    // https://github.com/microsoft/monaco-editor/discussions/3838
+    "editor.foreground": "#ffffff",
+    "editor.background": "#202631",
+    "editorIndentGuide.activeBackground": "#fff",
+    "editorIndentGuide.background": "#eee",
+    "editor.selectionBackground": "#101621",
+    "menu.selectionBackground": "#101621",
+    "dropdown.background": "#1a202c",
+    "dropdown.foreground": "#f0f0f0",
+    "dropdown.border": "#fff",
+    "quickInputList.focusBackground": "#1a202c",
+    "editorWidget.background": "#1a202c",
+    "editorWidget.foreground": "#f0f0f0",
+    "editorWidget.border": "#1a202c",
+    "input.background": "#1a202c",
+    "list.hoverBackground": "#2a303c",
+  },
+});
+
 const updateModel = (value: string, editorRef: any) => {
   const newModel = monaco.editor.createModel(value, "typescript");
   if (editorRef.current?.getModel() !== newModel) {
@@ -46,7 +94,7 @@ const MonacoEditor = (props: {
         lineNumbersMinChars: 4,
         fontSize: 14,
         scrollBeyondLastLine: false,
-        theme: colorMode === COLOR_MODE.dark ? "" : "lafEditorTheme",
+        theme: colorMode === COLOR_MODE.dark ? "vs-dark" : "lafEditorTheme",
       });
     }
 
@@ -64,6 +112,14 @@ const MonacoEditor = (props: {
     }
   }, [onChange]);
 
+  useEffect(() => {
+    if (monacoEl && editorRef.current) {
+      editorRef.current.updateOptions({
+        theme: colorMode === COLOR_MODE.dark ? "lafEditorThemeDark" : "lafEditorTheme",
+      });
+    }
+  }, [colorMode]);
+
   return (
     <div
       className={clsx(
@@ -73,7 +129,7 @@ const MonacoEditor = (props: {
     >
       <span
         className={clsx(
-          "mb-1 flex h-8 w-full items-center rounded-t-md px-6 text-lg font-semibold",
+          "flex h-8 w-full items-center rounded-t-md px-6 text-lg font-semibold",
           colorMode === COLOR_MODE.dark ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-800",
         )}
         placeholder="Function Name"
@@ -81,7 +137,7 @@ const MonacoEditor = (props: {
       >
         {title}
       </span>
-      <div ref={monacoEl} className="mb-2 rounded" style={{ width: "100%", height: "90%" }} />
+      <div ref={monacoEl} className="mb-2 rounded pt-1" style={{ width: "100%", height: "90%" }} />
     </div>
   );
 };

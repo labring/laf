@@ -29,7 +29,7 @@ import FileTypeIcon from "@/components/FileTypeIcon";
 import SideBar from "./Mods/SideBar";
 
 export default function FunctionTemplate() {
-  const sortList = ["按时间", "按收藏数", "按点赞数"];
+  const sortList = ["按时间", "按收藏数", "按使用数"];
 
   const data = [
     {
@@ -196,15 +196,17 @@ export default function FunctionTemplate() {
                     navigate(`/function-templates/${item.id}`);
                   }}
                 >
-                  <div className="flex items-center text-second">
+                  <div className="flex items-center pb-1 text-second">
                     <RepeatClockIcon />
-                    <span className="pl-2">创建于 {item.created_at}</span>
+                    <span className="pl-2">
+                      {t("Template.CreatedAt")} {item.created_at}
+                    </span>
                   </div>
-                  <div className="pb-1 text-xl font-semibold">
-                    <FileTypeIcon type="ts" />
+                  <div className="pb-2 text-xl font-semibold">
+                    <FileTypeIcon type="ts" fontSize={20} />
                     <span className="pl-2">{item.function}</span>
                   </div>
-                  <div className="pb-1 text-second">{item.description}</div>
+                  <div className="pb-2 text-second">{item.description}</div>
                   <div className="flex">
                     {item.tags.map((tag) => {
                       return (
@@ -245,7 +247,7 @@ export default function FunctionTemplate() {
           );
         })}
       </div>
-      <div className="flex w-full items-center justify-end pr-16 pt-4 text-lg">
+      <div className="absolute bottom-8 right-0 flex w-full flex-wrap-reverse items-center justify-end pr-16 text-lg">
         <span className="mr-4">总数：{total} </span>
         <div
           className="cursor-pointer rounded-full px-2 py-1 hover:bg-gray-100"

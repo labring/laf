@@ -49,11 +49,17 @@ const Header = (props: { bg: string }) => {
   }, []);
 
   return (
-    <div className={clsx("flex w-full justify-between py-2", darkMode ? "" : { [bg]: !!bg })}>
-      <div className="flex items-center pl-8">
+    <div
+      className={clsx(
+        "flex h-16 w-full justify-between font-medium",
+        darkMode ? "" : { [bg]: !!bg },
+        darkMode ? "" : "text-grayModern-600",
+      )}
+    >
+      <div className="flex items-center pl-9">
         <img
           src={darkMode ? "/logo_light.png" : "/logo_text.png"}
-          className="h-auto w-20"
+          className="mr-9 h-auto w-20"
           alt={"logo"}
         />
 
@@ -63,7 +69,7 @@ const Header = (props: { bg: string }) => {
               key={index}
               target={item.ref.startsWith("http") ? "_blank" : "_self"}
               href={item.ref}
-              className="ml-10 text-lg"
+              className="mr-6 text-lg"
               rel="noreferrer"
             >
               {item.text}
@@ -72,12 +78,12 @@ const Header = (props: { bg: string }) => {
         })}
       </div>
 
-      <div className="flex items-center pr-8">
+      <div className="flex items-center pr-9">
         {stars ? (
           <a
             href="https://github.com/labring/laf"
             target="_blank"
-            className="flex cursor-pointer items-center pr-4 text-lg"
+            className="flex cursor-pointer items-center pr-7 text-lg"
             rel="noreferrer"
           >
             <GithubIcon className="mr-1" fontSize={24} color={darkMode ? "#F6F8F9" : "#3C455D"} />
@@ -85,15 +91,20 @@ const Header = (props: { bg: string }) => {
           </a>
         ) : null}
         <Language />
-        <a target="_blank" href="https://forum.laf.run/" rel="noreferrer">
+        <a
+          target="_blank"
+          href="https://forum.laf.run/"
+          rel="noreferrer"
+          className="flex items-center"
+        >
           <ChatIcon className="mr-1" fontSize={20} color={darkMode ? "#F6F8F9" : "#3C455D"} />
-          <span className="pl-1 pr-4 text-lg">{t("HomePage.NavBar.forum")}</span>
+          <span className="pl-1 pr-7 text-lg">{t("HomePage.NavBar.forum")}</span>
         </a>
         <a
           target="_blank"
           href="https://www.wenjuan.com/s/I36ZNbl/"
           rel="noreferrer"
-          className="mr-4"
+          className="mr-7"
         >
           <ContactIcon className="mr-1" fontSize={20} color={darkMode ? "#F6F8F9" : "#3C455D"} />
           <span className="pl-1 text-lg">{t("HomePage.NavBar.contact")}</span>
@@ -103,7 +114,7 @@ const Header = (props: { bg: string }) => {
             <UserSetting
               name={userInfo?.username!}
               avatar={userInfo?.profile?.avatar}
-              width={"24px"}
+              width={"28px"}
             />
           </>
         ) : null}

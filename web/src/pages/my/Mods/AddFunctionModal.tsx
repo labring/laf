@@ -15,6 +15,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import clsx from "clsx";
+import { t } from "i18next";
 
 import { TextIcon } from "@/components/CommonIcon";
 import InputTag from "@/components/InputTag";
@@ -22,18 +23,33 @@ import { SUPPORTED_METHODS } from "@/constants";
 
 const AddFunctionModal = (props: {
   children?: React.ReactElement;
-  functionList: any[];
-  setFunctionList: React.Dispatch<React.SetStateAction<any[]>>;
+  functionList?: any[];
+  setFunctionList?: React.Dispatch<React.SetStateAction<any[]>>;
+  setCurrentFunction?: React.Dispatch<React.SetStateAction<any>>;
 }) => {
-  const { children = null, functionList, setFunctionList } = props;
+  const { children = null, functionList, setFunctionList, setCurrentFunction } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { handleSubmit, register, reset, setFocus, control } = useForm();
-
-  const defaultValues = {};
+  const defaultValues = {
+    name: "",
+    methods: ["GET"],
+    tags: [],
+    description: "",
+  };
+  const {
+    handleSubmit,
+    register,
+    reset,
+    setFocus,
+    control,
+    formState: { errors },
+  } = useForm();
 
   const onSubmit = (data: any) => {
-    setFunctionList([...functionList, { ...data, code: "" }]);
-    onClose();
+    if (setFunctionList && setCurrentFunction) {
+      setFunctionList([...(functionList || []), { ...data, code: "" }]);
+      setCurrentFunction({ ...data, code: "" });
+      onClose();
+    }
   };
 
   return (
@@ -51,18 +67,28 @@ const AddFunctionModal = (props: {
       <Modal isOpen={isOpen} onClose={onClose} size="2xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>添加函数</ModalHeader>
+          <ModalHeader>{t("FunctionPanel.AddFunction")}</ModalHeader>
           <ModalCloseButton />
 
-          <ModalBody>
+          <ModalBody className="">
             <div className="mb-3 flex h-12 w-full items-center border-b-2">
               <input
-                {...register("name", { required: true })}
-                className="h-8 w-full border-l-2 border-primary-600 bg-transparent pl-4 text-2xl font-medium"
+                {...register("name", {
+                  required: true,
+                  pattern: {
+                    value: /^[a-zA-Z0-9_.\-/]{1,256}$/,
+                    message: t("FunctionPanel.FunctionNameRule"),
+                  },
+                })}
+                id="name"
+                placeholder={String(t("FunctionPanel.FunctionNameTip"))}
+                className="h-8 w-10/12 border-l-2 border-primary-600 bg-transparent pl-4 text-2xl font-medium"
                 style={{ outline: "none", boxShadow: "none" }}
-                placeholder="Title"
               />
             </div>
+            {errors.name && (
+              <span className="text-red-500">{t("FunctionPanel.FunctionNameRule")}</span>
+            )}
             <HStack spacing={6} className="mb-3">
               <Controller
                 name="methods"
@@ -89,10 +115,11 @@ const AddFunctionModal = (props: {
                 )}
               />
             </HStack>
-            <div className={clsx("flex w-full items-center rounded-md focus-within:bg-[#F4F6F8]")}>
+            <div className={clsx("flex w-full items-center focus-within:border-b-2")}>
               <TextIcon fontSize={18} color={"#D9D9D9"} />
               <input
-                placeholder="输入函数模板介绍信息"
+                id="description"
+                placeholder={t("FunctionPanel.Description").toString()}
                 className="w-full bg-transparent py-2 pl-2 text-lg text-second"
                 style={{ outline: "none", boxShadow: "none" }}
                 {...register("description")}
@@ -100,7 +127,7 @@ const AddFunctionModal = (props: {
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={handleSubmit(onSubmit)}>确认</Button>
+            <Button onClick={handleSubmit(onSubmit)}>{t("Confirm")}</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

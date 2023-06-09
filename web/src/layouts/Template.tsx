@@ -20,15 +20,13 @@ export default function TemplateLayout() {
   return (
     <div className={clsx("h-screen", darkMode ? "" : "bg-white")}>
       <Header bg="bg-gray-100" />
-      <div className="pb-10">
-        {loading ? (
-          <Center style={{ minHeight: 300 }}>
-            <Spinner />
-          </Center>
-        ) : (
-          <Outlet />
-        )}
-      </div>
+      {loading ? (
+        <Center style={{ minHeight: 300 }}>
+          <Spinner />
+        </Center>
+      ) : (
+        <Outlet />
+      )}
     </div>
   );
 }
