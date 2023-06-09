@@ -40,13 +40,37 @@ spec:
       {{- if .Values.apisix.extraEnvVars }}
       {{- include "apisix.tplvalues.render" (dict "value" .Values.apisix.extraEnvVars "context" $) | nindent 8 }}
       {{- end }}
+
+      {{- if .Values.admin.credentials.secretName }}
+        - name: APISIX_ADMIN_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.admin.credentials.secretName }}
+              key: admin
+        - name: APISIX_VIEWER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.admin.credentials.secretName }}
+              key: viewer
+      {{- end }}
+
       ports:
         - name: http
           containerPort: {{ .Values.gateway.http.containerPort }}
           protocol: TCP
+        {{- range .Values.gateway.http.additionalContainerPorts }}
+        - name: http-{{ .port | toString }}
+          containerPort: {{ .port }}
+          protocol: TCP
+        {{- end }}     
         - name: tls
           containerPort: {{ .Values.gateway.tls.containerPort }}
           protocol: TCP
+        {{- range .Values.gateway.tls.additionalContainerPorts }}
+        - name: tls-{{ .port | toString }}
+          containerPort: {{ .port }}
+          protocol: TCP
+        {{- end }}     
         {{- if .Values.admin.enabled }}
         - name: admin
           containerPort: {{ .Values.admin.port }}
@@ -62,7 +86,11 @@ spec:
         {{- if (gt (len .tcp) 0) }}
         {{- range $index, $port := .tcp }}
         - name: proxy-tcp-{{ $index | toString }}
+        {{- if kindIs "map" $port }}
+          containerPort: {{ splitList ":" ($port.addr | toString) | last }}
+        {{- else }}
           containerPort: {{ $port }}
+        {{- end }}
           protocol: TCP
         {{- end }}
         {{- end }}
@@ -75,6 +103,8 @@ spec:
         {{- end }}
         {{- end }}
         {{- end }}
+
+      {{- if ne .Values.deployment.role "control_plane" }}
       readinessProbe:
         failureThreshold: 6
         initialDelaySeconds: 10
@@ -83,6 +113,7 @@ spec:
         tcpSocket:
           port: {{ .Values.gateway.http.containerPort }}
         timeoutSeconds: 1
+      {{- end }}
       lifecycle:
         preStop:
           exec:
@@ -104,6 +135,22 @@ spec:
           name: ssl
           subPath: {{ .Values.gateway.tls.certCAFilename }}
       {{- end }}
+
+      {{- if and (eq .Values.deployment.role "control_plane") .Values.deployment.controlPlane.certsSecret }}
+        - mountPath: /conf-server-ssl
+          name: conf-server-ssl
+      {{- end }}
+
+      {{- if and (eq .Values.deployment.mode "decoupled") .Values.deployment.certs.mTLSCACertSecret }}
+        - mountPath: /conf-ca-ssl
+          name: conf-ca-ssl
+      {{- end }}
+
+      {{- if and (eq .Values.deployment.mode "decoupled") .Values.deployment.certs.certsSecret }}
+        - mountPath: /conf-client-ssl
+          name: conf-client-ssl
+      {{- end }}
+
       {{- if .Values.etcd.auth.tls.enabled }}
         - mountPath: /etcd-ssl
           name: etcd-ssl
@@ -111,9 +158,11 @@ spec:
       {{- if .Values.customPlugins.enabled }}
       {{- range $plugin := .Values.customPlugins.plugins }}
       {{- range $mount := $plugin.configMap.mounts }}
+      {{- if ne $plugin.configMap.name "" }}
         - mountPath: {{ $mount.path }}
           name: plugin-{{ $plugin.configMap.name }}
           subPath: {{ $mount.key }}
+      {{- end }}
       {{- end }}
       {{- end }}
       {{- end }}
@@ -161,6 +210,23 @@ spec:
         secretName: {{ .Values.etcd.auth.tls.existingSecret | quote }}
       name: etcd-ssl
     {{- end }}
+    {{- if and (eq .Values.deployment.role "control_plane") .Values.deployment.controlPlane.certsSecret }}
+    - secret:
+        secretName: {{ .Values.deployment.controlPlane.certsSecret | quote }}
+      name: conf-server-ssl
+    {{- end }}
+
+    {{- if and (eq .Values.deployment.mode "decoupled") .Values.deployment.certs.mTLSCACertSecret }}
+    - secret:
+        secretName: {{ .Values.deployment.certs.mTLSCACertSecret | quote }}
+      name: conf-ca-ssl
+    {{- end }}
+
+    {{- if and (eq .Values.deployment.mode "decoupled") .Values.deployment.certs.certsSecret }}
+    - secret:
+        secretName: {{ .Values.deployment.certs.certsSecret | quote }}
+      name: conf-client-ssl
+    {{- end }}
     {{- if .Values.apisix.setIDFromPodUID }}
     - downwardAPI:
         items:
@@ -171,9 +237,11 @@ spec:
     {{- end }}
     {{- if .Values.customPlugins.enabled }}
     {{- range $plugin := .Values.customPlugins.plugins }}
+    {{- if ne $plugin.configMap.name "" }}
     - name: plugin-{{ $plugin.configMap.name }}
       configMap:
         name: {{ $plugin.configMap.name }}
+    {{- end }}
     {{- end }}
     {{- end }}
     {{- if .Values.apisix.luaModuleHook.enabled }}

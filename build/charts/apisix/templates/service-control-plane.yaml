@@ -13,20 +13,26 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+{{- if and (eq .Values.deployment.mode "decoupled") (eq .Values.deployment.role "control_plane") }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "apisix-dashboard.fullname" . }}
+  name: {{ include "apisix.fullname" . }}-control-plane
   namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- range $key, $value := .Values.admin.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
   labels:
-    {{- include "apisix-dashboard.labels" . | nindent 4 }}
+    {{- include "apisix.labels" . | nindent 4 }}
+    app.kubernetes.io/service: apisix-control-plane
 spec:
-  type: {{ .Values.service.type }}
+  type: "ClusterIP"
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
+  - name: apisix-control-plane
+    port: {{ .Values.deployment.controlPlane.confServerPort }}
+    targetPort: {{ .Values.deployment.controlPlane.confServerPort }}
+    protocol: TCP
   selector:
-    {{- include "apisix-dashboard.selectorLabels" . | nindent 4 }}
+    {{- include "apisix.selectorLabels" . | nindent 4 }}
+{{ end }}
