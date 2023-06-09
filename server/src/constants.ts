@@ -62,6 +62,14 @@ export class ServerConfig {
     return process.env.DISABLED_BILLING_PAYMENT_TASK === 'true'
   }
 
+  static get DISABLED_RESOURCE_USAGE_TASK() {
+    return process.env.DISABLED_RESOURCE_USAGE_TASK === 'true'
+  }
+
+  static get DISABLED_RESOURCE_OVERUSE_DETECTION_TASK() {
+    return process.env.DISABLED_RESOURCE_OVERUSE_DETECTION_TASK === 'true'
+  }
+
   static get APPID_LENGTH(): number {
     return parseInt(process.env.APPID_LENGTH || '6')
   }
@@ -170,7 +178,8 @@ export const APPLICATION_SECRET_KEY = 'SERVER_SECRET'
 // Cluster constants
 export const MINIO_COMMON_USER_GROUP = 'laf_owner_by_prefix_group'
 export const MINIO_COMMON_USER_POLICY = 'laf_owner_by_prefix'
-
+export const MINIO_READONLY_USER_GROUP = 'laf_owner_readonly_by_prefix_group'
+export const MINIO_READONLY_USER_POLICY = 'laf_owner_readonly_by_prefix'
 // Date & times
 export const ONE_DAY_IN_SECONDS = 60 * 60 * 24 // 1 day in seconds
 export const SEVEN_DAYS_IN_SECONDS = 60 * 60 * 24 * 7 // 7 days in seconds

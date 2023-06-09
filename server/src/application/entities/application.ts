@@ -62,6 +62,10 @@ export class Application {
 
   billingLockedAt: Date
 
+  resourceUsageLockedAt: Date
+
+  resourceOveruseDetectionLockedAt: Date
+
   constructor(partial: Partial<Application>) {
     Object.assign(this, partial)
   }

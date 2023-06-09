@@ -12,9 +12,13 @@ import * as assert from 'node:assert'
 import * as cp from 'child_process'
 import { promisify } from 'util'
 import { MinioCommandExecOutput } from './types'
-import { MINIO_COMMON_USER_GROUP } from 'src/constants'
+import {
+  MINIO_COMMON_USER_GROUP,
+  MINIO_READONLY_USER_GROUP,
+} from 'src/constants'
 import { Region } from 'src/region/entities/region'
 import { BucketPolicy } from '../entities/storage-bucket'
+import { MinioUser } from '../entities/minio'
 
 const exec = promisify(cp.exec)
 
@@ -63,7 +67,7 @@ export class MinioService {
     const sub_cmd = `admin user info ${target} ${username}`
     const res = await this.executeMinioClientCmd(region, sub_cmd)
     if (res.status !== 'success') return null
-    return res
+    return res as unknown as MinioUser
   }
 
   /**
@@ -84,7 +88,66 @@ export class MinioService {
     assert.ok(username, 'empty username got')
 
     const target = region.name
+
+    // try to leave readonly group
+    const user = await this.getUser(region, username)
+
+    if (user.memberOf.some((v) => v.name === MINIO_COMMON_USER_GROUP)) {
+      return
+    }
+
+    if (user.memberOf.some((v) => v.name === MINIO_READONLY_USER_GROUP)) {
+      await this.removeUserFromReadonlyGroup(region, username)
+    }
+
     const sub_cmd = `admin group add ${target} ${MINIO_COMMON_USER_GROUP} ${username}`
+    return await this.executeMinioClientCmd(region, sub_cmd)
+  }
+
+  /**
+   * Add user to readonly group
+   */
+  public async addUserToReadonlyGroup(region: Region, username: string) {
+    assert.ok(username, 'empty username got')
+
+    const target = region.name
+
+    // try to leave group
+    const user = await this.getUser(region, username)
+
+    if (user.memberOf.some((v) => v.name === MINIO_READONLY_USER_GROUP)) {
+      return
+    }
+
+    if (user.memberOf.some((v) => v.name === MINIO_COMMON_USER_GROUP)) {
+      await this.removeUserFromGroup(region, username)
+    }
+
+    const sub_cmd = `admin group add ${target} ${MINIO_READONLY_USER_GROUP} ${username}`
+    return await this.executeMinioClientCmd(region, sub_cmd)
+  }
+
+  /**
+   * Remove user from group
+   */
+  public async removeUserFromGroup(region: Region, username: string) {
+    assert.ok(username, 'empty username got')
+
+    const target = region.name
+
+    const sub_cmd = `admin group remove ${target} ${MINIO_COMMON_USER_GROUP} ${username}`
+    return await this.executeMinioClientCmd(region, sub_cmd)
+  }
+
+  /**
+   * Remove user from readonly group
+   */
+  public async removeUserFromReadonlyGroup(region: Region, username: string) {
+    assert.ok(username, 'empty username got')
+
+    const target = region.name
+
+    const sub_cmd = `admin group remove ${target} ${MINIO_READONLY_USER_GROUP} ${username}`
     return await this.executeMinioClientCmd(region, sub_cmd)
   }
 

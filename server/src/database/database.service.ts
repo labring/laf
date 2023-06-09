@@ -8,7 +8,12 @@ import { RegionService } from 'src/region/region.service'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
 import { Region } from 'src/region/entities/region'
 import { SystemDatabase } from '../system-database'
-import { Database, DatabasePhase, DatabaseState } from './entities/database'
+import {
+  Database,
+  DatabasePermission,
+  DatabasePhase,
+  DatabaseState,
+} from './entities/database'
 
 @Injectable()
 export class DatabaseService {
@@ -45,6 +50,7 @@ export class DatabaseService {
       password: password,
       state: DatabaseState.Active,
       phase: DatabasePhase.Created,
+      dataSize: 0,
       lockedAt: TASK_LOCK_INIT_TIME,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -134,5 +140,64 @@ export class DatabaseService {
     )
     const db = client.db(database.name)
     return { db, client }
+  }
+
+  async revokeWritePermission(name: string, username: string) {
+    try {
+      const result = await this.db.command({
+        updateUser: username,
+        roles: [
+          { role: DatabasePermission.Read, db: name },
+          { role: 'dbAdmin', db: name },
+        ],
+      })
+      return result
+    } catch (error) {
+      this.logger.error(
+        `Revoke write permission of ${username} on ${name} error : `,
+        error,
+      )
+      throw error
+    }
+  }
+
+  async grantWritePermission(name: string, username: string) {
+    try {
+      const result = await this.db.command({
+        updateUser: username,
+        roles: [
+          { role: DatabasePermission.ReadWrite, db: name },
+          { role: 'dbAdmin', db: name },
+        ],
+      })
+      return result
+    } catch (error) {
+      this.logger.error(
+        `Grant write permission to ${username} on ${name} error : `,
+        error,
+      )
+      throw error
+    }
+  }
+
+  async getUserPermission(name: string, username: string) {
+    try {
+      const result = await this.db.command({
+        usersInfo: { user: username, db: name },
+      })
+      const permission =
+        result?.users?.[0].roles.findIndex(
+          (v) => v.role === DatabasePermission.ReadWrite,
+        ) !== -1
+          ? DatabasePermission.ReadWrite
+          : DatabasePermission.Read
+      return permission
+    } catch (error) {
+      this.logger.error(
+        `Get user permission of ${username} on ${name} error : `,
+        error,
+      )
+      throw error
+    }
   }
 }

@@ -283,6 +283,20 @@ policies:
         - "s3:DeleteObject"
         - "s3:GetBucketLocation"
 
+- name: laf_owner_readonly_by_prefix
+  statements:
+    - resources:
+        - 'arn:aws:s3:::${aws:username}-*'
+      effect: Allow
+      actions:
+        - "s3:GetBucketPolicy"
+        - "s3:GetObject"
+        - "s3:ListBucket"
+        - "s3:ListBucketMultipartUploads"
+        - "s3:ListMultipartUploadParts"
+        - "s3:DeleteObject"
+        - "s3:GetBucketLocation"
+
 ## readonlyexamplepolicy policy grants access to buckets with name starting with example.
 ## In addition, grants objects read permissions on buckets starting with example.
 # - name: readonlyexamplepolicy
@@ -420,9 +434,11 @@ customCommands:
   # - command: "admin policy set myminio consoleAdmin group='cn=ops,cn=groups,dc=example,dc=com'"
   - command: "alias ls && ls /config"
   - command: "admin user add myminio temp-user abcd123456"
-  - command: "admin group add myminio laf_owner_by_prefix_group temp-user"
+  - command: "admin group add myminio laf_owner_by_prefix_group laf_owner_readonly_by_prefix_group temp-user"
   - command: "admin policy add myminio laf_owner_by_prefix /config/policy_0.json"
   - command: "admin policy set myminio laf_owner_by_prefix group=laf_owner_by_prefix_group"
+  - command: "admin policy add myminio laf_owner_readonly_by_prefix /config/policy_1.json"
+  - command: "admin policy set myminio laf_owner_readonly_by_prefix group=laf_owner_readonly_by_prefix_group"
 
 ## Additional Annotations for the Kubernetes Job customCommandJob
 customCommandJob:

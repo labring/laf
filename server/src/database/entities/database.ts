@@ -14,6 +14,11 @@ export enum DatabaseState {
   Deleted = 'Deleted',
 }
 
+export enum DatabasePermission {
+  Read = 'read',
+  ReadWrite = 'readWrite',
+}
+
 export class Database {
   @ApiProperty({ type: String })
   _id?: ObjectId
@@ -29,6 +34,9 @@ export class Database {
 
   @ApiProperty()
   password: string
+
+  @ApiProperty()
+  dataSize: number
 
   @ApiProperty({ enum: DatabaseState })
   state: DatabaseState

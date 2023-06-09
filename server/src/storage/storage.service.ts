@@ -54,6 +54,7 @@ export class StorageService {
       appid,
       accessKey,
       secretKey,
+      dataSize: 0,
       state: StorageState.Active,
       phase: StoragePhase.Created,
       lockedAt: TASK_LOCK_INIT_TIME,
