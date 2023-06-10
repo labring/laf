@@ -23,7 +23,7 @@ export const GITIGNORE_FILE = 'gitignore'
 export const APP_SCHEMA_NAME = '.app.yaml'
 export const PROJECT_SCHEMA_NAME = 'laf.yaml'
 export const USER_SCHEMA_NAME = 'user.yaml'
-export const FUNCTION_SCHEMA_DIRCTORY = 'functions'
+export const FUNCTION_SCHEMA_DIRECTORY = 'functions'
 export const FUNCTION_SCHEMA_SUFFIX = '.yaml'
 export const DEPLOY_SCHEMA_NAME = 'deploy.yaml'
 
