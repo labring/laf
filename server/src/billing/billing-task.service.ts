@@ -42,11 +42,11 @@ export class BillingTaskService {
         },
       })
 
-    const concurrency = total > 10 ? 10 : total
-    if (total > 10) {
+    const concurrency = total > 1 ? 1 : total
+    if (total > 1) {
       setTimeout(() => {
         this.createBillingScheduler()
-      }, 2000)
+      }, 1000)
     }
 
     times(concurrency, () => {
@@ -70,11 +70,11 @@ export class BillingTaskService {
         lockedAt: { $lt: new Date(Date.now() - 1000 * 60) },
       })
 
-    const concurrency = total > 10 ? 10 : total
-    if (total > 10) {
+    const concurrency = total > 1 ? 1 : total
+    if (total > 1) {
       setTimeout(() => {
         this.payBillingScheduler()
-      }, 2000)
+      }, 1000)
     }
 
     times(concurrency, () => {
