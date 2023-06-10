@@ -27,7 +27,7 @@ export class BillingTaskService {
 
   constructor(private readonly billing: BillingService) {}
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async createBillingScheduler() {
     const db = SystemDatabase.db
     if (ServerConfig.DISABLED_BILLING_TASK) {
@@ -42,8 +42,8 @@ export class BillingTaskService {
         },
       })
 
-    const concurrency = total > 1 ? 1 : total
-    if (total > 1) {
+    const concurrency = total > 2 ? 2 : total
+    if (total > 2) {
       setTimeout(() => {
         this.createBillingScheduler()
       }, 1000)
@@ -56,7 +56,7 @@ export class BillingTaskService {
     })
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async payBillingScheduler() {
     const db = SystemDatabase.db
     if (ServerConfig.DISABLED_BILLING_TASK) {
@@ -70,8 +70,8 @@ export class BillingTaskService {
         lockedAt: { $lt: new Date(Date.now() - 1000 * 60) },
       })
 
-    const concurrency = total > 1 ? 1 : total
-    if (total > 1) {
+    const concurrency = total > 2 ? 2 : total
+    if (total > 2) {
       setTimeout(() => {
         this.payBillingScheduler()
       }, 1000)
@@ -97,7 +97,7 @@ export class BillingTaskService {
           },
         },
         { $set: { lockedAt: new Date() } },
-        { sort: { lockedAt: 1, createdAt: 1 }, returnDocument: 'after' },
+        { returnDocument: 'after' },
       )
 
     if (!res.value) {
@@ -120,6 +120,8 @@ export class BillingTaskService {
       await session.withTransaction(async () => {
         // update the account balance
         const amount = new Decimal(billing.amount).mul(100).toNumber()
+
+        // TODO: write lock might cause performance issue?
         const res = await db
           .collection<Account>('Account')
           .findOneAndUpdate(
@@ -236,11 +238,7 @@ export class BillingTaskService {
     assert(bundle, `bundle not found ${app.appid}`)
 
     // calculate billing price
-    const priceInput = await this.buildCalculatePriceInput(
-      app,
-      meteringData,
-      bundle,
-    )
+    const priceInput = this.buildCalculatePriceInput(app, meteringData, bundle)
     const priceResult = await this.billing.calculatePrice(priceInput)
 
     // free trial
@@ -285,7 +283,7 @@ export class BillingTaskService {
     return nextMeteringTime
   }
 
-  private async buildCalculatePriceInput(
+  private buildCalculatePriceInput(
     app: Application,
     meteringData: any[],
     bundle: ApplicationBundle,
@@ -331,6 +329,7 @@ export class BillingTaskService {
     const db = SystemDatabase.db
 
     // get latest billing
+    // TODO: perf issue?
     const latestBilling = await db
       .collection<ApplicationBilling>('ApplicationBilling')
       .findOne({ appid }, { sort: { endAt: -1 } })
