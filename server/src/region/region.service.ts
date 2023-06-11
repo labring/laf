@@ -1,15 +1,25 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { SystemDatabase } from 'src/system-database'
 import { Region } from './entities/region'
 import { Application } from 'src/application/entities/application'
 import { assert } from 'console'
 import { ObjectId } from 'mongodb'
+import { CACHE_MANAGER } from '@nestjs/cache-manager'
+import { Cache } from 'cache-manager'
 
 @Injectable()
 export class RegionService {
   private readonly db = SystemDatabase.db
+  private readonly CACHE_PREFIX = 'laf:region'
+
+  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
   async findByAppId(appid: string) {
+    const region = this.cacheManager.get<Region>(
+      `${this.CACHE_PREFIX}:findByAppId:${appid}`,
+    )
+    if (region) return region
+
     const app = await this.db
       .collection<Application>('Application')
       .findOne({ appid })
@@ -18,6 +28,7 @@ export class RegionService {
     const doc = await this.db
       .collection<Region>('Region')
       .findOne({ _id: app.regionId })
+    this.cacheManager.set(`${this.CACHE_PREFIX}:findByAppId:${appid}`, doc)
 
     return doc
   }
@@ -33,6 +44,11 @@ export class RegionService {
   }
 
   async findOneDesensitized(id: ObjectId) {
+    const _region = this.cacheManager.get<Region>(
+      `${this.CACHE_PREFIX}:findOneDesensitized:${id.toString()}`,
+    )
+    if (_region) return _region
+
     const projection = {
       _id: 1,
       name: 1,
@@ -43,6 +59,10 @@ export class RegionService {
     const region = await this.db
       .collection<Region>('Region')
       .findOne({ _id: new ObjectId(id) }, { projection })
+    this.cacheManager.set(
+      `${this.CACHE_PREFIX}:findOneDesensitized:${id.toString()}`,
+      region,
+    )
 
     return region
   }
@@ -56,6 +76,11 @@ export class RegionService {
       bundles: 1,
     }
 
+    const _regions = this.cacheManager.get<Document[]>(
+      `${this.CACHE_PREFIX}:findAllDesensitized`,
+    )
+    if (_regions) return _regions
+
     const regions = await this.db
       .collection<Region>('Region')
       .aggregate()
@@ -68,6 +93,8 @@ export class RegionService {
       })
       .project(projection)
       .toArray()
+
+    this.cacheManager.set(`${this.CACHE_PREFIX}:findAllDesensitized`, regions)
 
     return regions
   }

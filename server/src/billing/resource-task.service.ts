@@ -1,5 +1,5 @@
 import { MinioService } from 'src/storage/minio/minio.service'
-import { Injectable, Logger } from '@nestjs/common'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { times } from 'lodash'
 import { Application } from 'src/application/entities/application'
@@ -11,6 +11,8 @@ import { StorageBucket } from 'src/storage/entities/storage-bucket'
 import { StorageUser } from 'src/storage/entities/storage-user'
 import { ServerConfig } from 'src/constants'
 import { ApplicationBundle } from 'src/application/entities/application-bundle'
+import { CACHE_MANAGER } from '@nestjs/cache-manager'
+import { Cache } from 'cache-manager'
 
 @Injectable()
 export class ResourceTaskService {
@@ -18,6 +20,7 @@ export class ResourceTaskService {
     private readonly regionService: RegionService,
     private readonly databaseService: DatabaseService,
     private readonly minioService: MinioService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   private readonly logger = new Logger(ResourceTaskService.name)
@@ -185,9 +188,16 @@ export class ResourceTaskService {
     const database = await this.databaseService.findOne(appid)
 
     // get storageCapacity and databaseCapacity
-    const bundle = await db
-      .collection<ApplicationBundle>('ApplicationBundle')
-      .findOne({ appid })
+    let bundle = await this.cacheManager.get<ApplicationBundle>(
+      `laf:application:bundle:${appid}`,
+    )
+    if (!bundle) {
+      bundle = await db
+        .collection<ApplicationBundle>('ApplicationBundle')
+        .findOne({ appid })
+      this.cacheManager.set(`laf:application:bundle:${appid}`, bundle)
+    }
+
     const { storageCapacity, databaseCapacity } = bundle.resource
 
     // overused
