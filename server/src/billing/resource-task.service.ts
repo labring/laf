@@ -24,14 +24,17 @@ export class ResourceTaskService {
   ) {}
 
   private readonly logger = new Logger(ResourceTaskService.name)
-  private readonly captureResourceUsageLockTimeout = 60 * 60 + 60 * 2 // in second
+  private readonly captureResourceUsageLockTimeout = 60 * 60 + 60 // in second
   private readonly detectResourceOverusedLockTimeout = 60 * 30 // in second
 
-  private getHourTime() {
+  private getLockTime() {
     const latestTime = new Date()
-    latestTime.setMinutes(0)
+    latestTime.setMinutes(30)
     latestTime.setSeconds(0)
     latestTime.setMilliseconds(0)
+    if (latestTime.getTime() > Date.now()) {
+      latestTime.setTime(latestTime.getTime() - 1000 * 60 * 60)
+    }
     return latestTime
   }
 
@@ -79,7 +82,7 @@ export class ResourceTaskService {
             ),
           },
         },
-        { $set: { resourceUsageLockedAt: this.getHourTime() } },
+        { $set: { resourceUsageLockedAt: this.getLockTime() } },
         {
           sort: { resourceUsageLockedAt: 1, updatedAt: 1 },
           returnDocument: 'after',
@@ -95,22 +98,24 @@ export class ResourceTaskService {
 
     // Database Usage
     const database = await this.databaseService.findAndConnect(appid)
-    try {
-      const data = await database.db.stats()
-      const { dataSize } = data
-      await db.collection<Database>('Database').findOneAndUpdate(
-        {
-          appid,
-        },
-        {
-          $set: {
-            dataSize: dataSize / 1024 / 1024,
-            updatedAt: new Date(),
+    if (database) {
+      try {
+        const data = await database.db.stats()
+        const { dataSize } = data
+        await db.collection<Database>('Database').findOneAndUpdate(
+          {
+            appid,
           },
-        },
-      )
-    } finally {
-      await database.client.close()
+          {
+            $set: {
+              dataSize: dataSize / 1024 / 1024,
+              updatedAt: new Date(),
+            },
+          },
+        )
+      } finally {
+        await database.client.close()
+      }
     }
 
     // Storage Usage
@@ -195,7 +200,7 @@ export class ResourceTaskService {
       bundle = await db
         .collection<ApplicationBundle>('ApplicationBundle')
         .findOne({ appid })
-      this.cacheManager.set(`laf:application:bundle:${appid}`, bundle)
+      await this.cacheManager.set(`laf:application:bundle:${appid}`, bundle)
     }
 
     const { storageCapacity, databaseCapacity } = bundle.resource
