@@ -15,7 +15,7 @@ export class RegionService {
   constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
   async findByAppId(appid: string) {
-    const region = this.cacheManager.get<Region>(
+    const region = await this.cacheManager.get<Region>(
       `${this.CACHE_PREFIX}:findByAppId:${appid}`,
     )
     if (region) return region
@@ -28,7 +28,10 @@ export class RegionService {
     const doc = await this.db
       .collection<Region>('Region')
       .findOne({ _id: app.regionId })
-    this.cacheManager.set(`${this.CACHE_PREFIX}:findByAppId:${appid}`, doc)
+    await this.cacheManager.set(
+      `${this.CACHE_PREFIX}:findByAppId:${appid}`,
+      doc,
+    )
 
     return doc
   }
@@ -44,7 +47,7 @@ export class RegionService {
   }
 
   async findOneDesensitized(id: ObjectId) {
-    const _region = this.cacheManager.get<Region>(
+    const _region = await this.cacheManager.get<Region>(
       `${this.CACHE_PREFIX}:findOneDesensitized:${id.toString()}`,
     )
     if (_region) return _region
@@ -59,7 +62,7 @@ export class RegionService {
     const region = await this.db
       .collection<Region>('Region')
       .findOne({ _id: new ObjectId(id) }, { projection })
-    this.cacheManager.set(
+    await this.cacheManager.set(
       `${this.CACHE_PREFIX}:findOneDesensitized:${id.toString()}`,
       region,
     )
@@ -76,7 +79,7 @@ export class RegionService {
       bundles: 1,
     }
 
-    const _regions = this.cacheManager.get<Document[]>(
+    const _regions = await this.cacheManager.get<Document[]>(
       `${this.CACHE_PREFIX}:findAllDesensitized`,
     )
     if (_regions) return _regions
@@ -94,7 +97,10 @@ export class RegionService {
       .project(projection)
       .toArray()
 
-    this.cacheManager.set(`${this.CACHE_PREFIX}:findAllDesensitized`, regions)
+    await this.cacheManager.set(
+      `${this.CACHE_PREFIX}:findAllDesensitized`,
+      regions,
+    )
 
     return regions
   }

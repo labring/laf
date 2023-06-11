@@ -317,7 +317,10 @@ export class ApplicationService {
       )
 
     if (res.value)
-      this.cacheManager.set(`${this.CACHE_PREFIX}:bundle:${appid}`, res.value)
+      await this.cacheManager.set(
+        `${this.CACHE_PREFIX}:bundle:${appid}`,
+        res.value,
+      )
 
     return res.value
   }
