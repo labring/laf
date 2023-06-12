@@ -61,16 +61,20 @@ const useResizable = ({
             return reverse ? left + width - x : x - left;
           }
           return reverse ? document.body.offsetWidth - x : x;
+        } else {
+          const y = e instanceof MouseEvent ? e.clientY : e.touches[0].clientY;
+          if (containerRef?.current) {
+            const containerNode = containerRef.current;
+            const { top, height } = containerNode.getBoundingClientRect();
+            return reverse ? top + height - y : y - top;
+          }
+          return reverse ? document.body.offsetHeight - y : y;
         }
-        const y = e instanceof MouseEvent ? e.clientY : e.touches[0].clientY;
-        if (containerRef?.current) {
-          const containerNode = containerRef.current;
-          const { top, height } = containerNode.getBoundingClientRect();
-          return reverse ? top + height - y : y - top;
-        }
-        return reverse ? document.body.offsetHeight - y : y;
       })();
-      if (min < currentPosition && currentPosition < max) {
+
+      if (currentPosition <= 4) return setPosition(4);
+
+      if (min <= currentPosition && currentPosition <= max) {
         setPosition(currentPosition);
       }
     },

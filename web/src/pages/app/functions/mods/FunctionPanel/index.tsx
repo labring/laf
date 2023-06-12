@@ -127,7 +127,7 @@ export default function FunctionList() {
   };
 
   return (
-    <Panel className="min-w-[250px] flex-grow overflow-hidden">
+    <Panel className="min-w-[215px] flex-grow overflow-hidden">
       <Panel.Header
         title={
           <div className="flex">
@@ -160,12 +160,13 @@ export default function FunctionList() {
 
       <InputGroup className="mb-2">
         <InputLeftElement
-          height={"8"}
+          height={"6"}
           pointerEvents="none"
           children={<Search2Icon color="gray.300" fontSize={12} />}
         />
         <Input
-          size="sm"
+          size="xs"
+          pl={8}
           rounded={"full"}
           placeholder={String(t("FunctionPanel.SearchPlaceholder"))}
           onChange={(e) => {
@@ -190,7 +191,7 @@ export default function FunctionList() {
                     navigate(`/app/${currentApp?.appid}/${Pages.function}/${func?.name}`);
                   }}
                 >
-                  <div className="overflow-hidden text-ellipsis whitespace-nowrap font-semibold leading-loose">
+                  <div className="overflow-hidden text-ellipsis whitespace-nowrap">
                     <FileTypeIcon type={FileType.ts} />
                     <span className="ml-2 text-base">{func?.name}</span>
                   </div>

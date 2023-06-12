@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
-export const SideBarWidth = 64;
+export const SideBarWidth = 52;
 export const SmallNavHeight = 42;
+export const PanelMinHeight = 32;
 
 export const VITE_SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL || "";
 

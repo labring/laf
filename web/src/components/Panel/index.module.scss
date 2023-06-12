@@ -1,17 +1,18 @@
 .sectionHeader {
-  min-height: 50px;
+  min-height: 32px;
+  max-height: 32px;
   display: flex;
   align-items: center;
 
   h4 {
-    padding-left: 14px;
+    padding-left: 10px;
     font-weight: 500;
-    font-size: 14px;
+    font-size: 12px;
     position: relative;
 
     &::before {
       content: " ";
-      height: 15px;
+      height: 12px;
       position: absolute;
       left: 0;
       top: 3px;

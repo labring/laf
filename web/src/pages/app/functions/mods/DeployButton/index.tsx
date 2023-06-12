@@ -79,13 +79,13 @@ export default function DeployButton() {
       >
         <Button
           variant={"text"}
+          size={"xs"}
           isLoading={functionDetailQuery.isFetching}
           disabled={store.getFunctionUrl() === ""}
           onClick={() => {
             onOpen();
           }}
           leftIcon={<SynchronizeUpIcon />}
-          className="w-20"
         >
           {t("FunctionPanel.Deploy")}
         </Button>

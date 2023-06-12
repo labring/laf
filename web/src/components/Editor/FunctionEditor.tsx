@@ -37,7 +37,7 @@ monaco?.editor.defineTheme("lafEditorTheme", {
   inherit: true,
   rules: [
     {
-      foreground: "#0066ff",
+      foreground: "#008189",
       token: "keyword",
     },
   ],
@@ -159,7 +159,7 @@ function FunctionEditor(props: {
         formatOnPaste: true,
         overviewRulerLanes: 0,
         lineNumbersMinChars: 4,
-        fontSize: 14,
+        fontSize: 13,
         theme: colorMode === COLOR_MODE.dark ? "lafEditorThemeDark" : "lafEditorTheme",
         scrollBeyondLastLine: false,
       });

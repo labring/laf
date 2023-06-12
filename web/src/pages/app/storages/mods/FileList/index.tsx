@@ -197,7 +197,7 @@ export default function FileList() {
                           <Td>{file.LastModified ? formatDate(file.LastModified) : "--"}</Td>
                           <Td
                             isNumeric
-                            className={clsx("flex justify-end space-x-2", {
+                            className={clsx("flex justify-end space-x-1", {
                               "text-grayModern-900": !darkMode,
                             })}
                           >

@@ -17,7 +17,7 @@ function StatusBar() {
 
   return (
     <Panel className="!flex-row justify-between">
-      <HStack px={3} py={2} spacing={4}>
+      <HStack spacing={2}>
         <div>
           {t("StatusBar.CurrentApplication")}: {currentApp?.name}
         </div>
@@ -28,7 +28,7 @@ function StatusBar() {
         </SysSetting>
         <StatusBadge statusConditions={currentApp?.phase} state={currentApp?.state} />
       </HStack>
-      <HStack px={3} py={2} spacing={4}>
+      <HStack spacing={4}>
         <div>CPU: {`${currentApp?.bundle?.resource?.limitCPU! / 1000} ${t("Unit.CPU")}`}</div>
         <div>
           {t("Spec.RAM")}: {`${currentApp?.bundle?.resource.limitMemory} ${t("Unit.MB")}`}

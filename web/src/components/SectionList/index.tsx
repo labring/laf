@@ -9,10 +9,7 @@ function SectionList(props: {
   className?: string;
 }) {
   return (
-    <ul
-      className={styles.sectionList + " mb-4 text-grayIron-600 " + props.className}
-      style={props.style || {}}
-    >
+    <ul className={styles.sectionList + " mb-4 " + props.className} style={props.style || {}}>
       {props.children}
     </ul>
   );

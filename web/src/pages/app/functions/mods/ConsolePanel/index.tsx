@@ -31,7 +31,7 @@ function ConsolePanel() {
 
   return (
     <Panel className="flex-1">
-      <Panel.Header title="Console"></Panel.Header>
+      <Panel.Header title="Console" pageId="functionPage" panelId="ConsolePanel"></Panel.Header>
       <div
         className="text-sm relative flex flex-col overflow-y-auto px-2 font-mono"
         style={{ height: "100%" }}

@@ -21,7 +21,7 @@ import JSONViewer from "@/components/Editor/JSONViewer";
 import { Row } from "@/components/Grid";
 import Panel from "@/components/Panel";
 import Resize from "@/components/Resize";
-import { COLOR_MODE, Pages } from "@/constants";
+import { COLOR_MODE, Pages, PanelMinHeight } from "@/constants";
 
 import { useCompileMutation, useUpdateFunctionMutation } from "../../service";
 import useFunctionStore from "../../store";
@@ -132,8 +132,15 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
   return (
     <>
       <Panel className="min-w-[200px] flex-grow overflow-hidden !px-0">
-        <Tabs width="100%" colorScheme={"primary"} display="flex" flexDirection={"column"} h="full">
-          <TabList>
+        <Tabs
+          width="100%"
+          colorScheme={"primary"}
+          display="flex"
+          flexDirection={"column"}
+          h="full"
+          size={"sm"}
+        >
+          <TabList h={PanelMinHeight}>
             <Tab px="4">
               <span
                 className={clsx("font-semibold", {
@@ -154,7 +161,16 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
                 {t("HomePage.NavBar.docs")}
               </span>
             </Tab> */}
-            <Tab>Laf Pilot</Tab>
+            <Tab>
+              <span
+                className={clsx("font-semibold", {
+                  "text-black": !darkMode,
+                  "text-white": darkMode,
+                })}
+              >
+                Laf Pilot
+              </span>
+            </Tab>
           </TabList>
 
           <TabPanels flex={1} className="overflow-hidden">
@@ -169,9 +185,9 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
                 <div className="flex flex-none items-center px-2 py-4">
                   <span className="mr-3 whitespace-nowrap">{t("FunctionPanel.Methods")}</span>
                   <Select
-                    width="150px"
+                    width="100px"
                     variant="filled"
-                    size="sm"
+                    size="xs"
                     value={runningMethod}
                     disabled={getFunctionUrl() === "" || !currentFunction.methods?.length}
                     onChange={(e) => {
@@ -189,6 +205,7 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
                   <Tooltip label={`快捷键: ${displayName.toUpperCase()}`}>
                     <Button
                       variant={"secondary"}
+                      size={"xs"}
                       disabled={getFunctionUrl() === ""}
                       className="ml-2"
                       onClick={() => runningCode()}
@@ -277,7 +294,11 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
               />
               <Row {...functionPageConfig.RunningPanel} className="flex-1">
                 <Panel className="min-w-[200px]">
-                  <Panel.Header title={t("FunctionPanel.DebugResult")} />
+                  <Panel.Header
+                    title={t("FunctionPanel.DebugResult")}
+                    pageId="functionPage"
+                    panelId="RunningPanel"
+                  />
                   <div className="relative flex-1 overflow-auto">
                     {isLoading ? (
                       <div className="absolute left-0 right-0">

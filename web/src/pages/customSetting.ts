@@ -3,7 +3,10 @@ import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
+import { PanelMinHeight } from "@/constants";
+
 type TLayoutConfig = {
+  id: string;
   style: React.CSSProperties;
 };
 
@@ -35,6 +38,7 @@ type State = {
       [K in collectionPanel]: TLayoutConfig;
     };
   };
+  getLayoutInfoStyle: (pageId: page, panelId: panel) => any;
   getLayoutInfo: (pageId: page, panelId: panel) => any;
   setLayoutInfo: (
     pageId: page,
@@ -51,46 +55,48 @@ const useCustomSettingStore = create<State>()(
         layoutInfo: {
           functionPage: {
             SideBar: {
+              id: "SideBar",
               style: {
                 width: 300,
                 minWidth: 0,
-                maxWidth: 500,
               },
             },
 
             RightPanel: {
+              id: "RightPanel",
               style: {
                 width: 320,
                 minWidth: 0,
-                maxWidth: 500,
               },
             },
 
             DependencePanel: {
+              id: "DependencePanel",
               style: {
                 height: 300,
-                minHeight: 45,
+                minHeight: PanelMinHeight,
                 maxHeight: 500,
               },
             },
 
             ConsolePanel: {
+              id: "ConsolePanel",
               style: {
                 height: 200,
-                minHeight: 45,
-                maxHeight: 500,
+                minHeight: PanelMinHeight,
               },
             },
 
             RunningPanel: {
+              id: "RunningPanel",
               style: {
                 height: 200,
-                minHeight: 45,
-                maxHeight: 500,
+                minHeight: PanelMinHeight,
               },
             },
 
             Bottom: {
+              id: "Bottom",
               style: {
                 height: 40,
               },
@@ -99,24 +105,27 @@ const useCustomSettingStore = create<State>()(
 
           collectionPage: {
             SideBar: {
+              id: "SideBar",
               style: {
                 width: 300,
                 minWidth: 0,
-                maxWidth: 500,
               },
             },
             CollectionPanel: {
+              id: "CollectionPanel",
               style: {},
             },
 
             PolicyPanel: {
+              id: "PolicyPanel",
               style: {
                 height: 200,
-                minHeight: 45,
+                minHeight: PanelMinHeight,
                 maxHeight: 500,
               },
             },
             Bottom: {
+              id: "Bottom",
               style: {
                 height: 40,
               },
@@ -125,6 +134,7 @@ const useCustomSettingStore = create<State>()(
 
           storagePage: {
             SideBar: {
+              id: "SideBar",
               style: {
                 width: 300,
                 minWidth: 0,
@@ -141,7 +151,8 @@ const useCustomSettingStore = create<State>()(
               display[panelId].style.display === "none" ? "flex" : "none";
           });
         },
-        getLayoutInfo: (pageId, panelId) => get().layoutInfo[pageId][panelId].style,
+        getLayoutInfoStyle: (pageId, panelId) => get().layoutInfo[pageId][panelId].style,
+        getLayoutInfo: (pageId, panelId) => get().layoutInfo[pageId][panelId],
         setLayoutInfo: (pageId, panelId, position: { width: number; height: number }) => {
           set((state: any) => {
             const { display, width } = state.layoutInfo[pageId][panelId].style;
@@ -157,7 +168,7 @@ const useCustomSettingStore = create<State>()(
 
       {
         name: "laf_custom_setting",
-        version: 1,
+        version: 2,
       },
     ),
   ),
