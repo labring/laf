@@ -18,7 +18,7 @@ if [ -n "$1" ]; then
 fi
 
 SCRIPT_DIR=$(pwd)/$(dirname "$0")
-PROJECT_ROOT=$SCRIPT_DIR/../..
+PROJECT_ROOT=$SCRIPT_DIR/..
 KUBECONF=~/.kube/config
 
 # if set second param in command line, use it as KUBECONF_DIR
