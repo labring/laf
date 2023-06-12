@@ -15,7 +15,7 @@ import { formatDate } from '../../util/format'
 import { invokeFunction } from '../../api/debug'
 import { exist, remove } from '../../util/file'
 import { getEmoji } from '../../util/print'
-import { getAppPath } from '../../util/sys'
+import { getBaseDir } from '../../util/sys'
 import { FUNCTION_SCHEMA_DIRECTORY } from '../../common/constant'
 import { confirm } from '../../common/prompts'
 import { AppSchema } from '../../schema/app'
@@ -68,7 +68,7 @@ export async function del(funcName: string) {
   if (FunctionSchema.exist(funcName)) {
     FunctionSchema.delete(funcName)
   }
-  const funcPath = path.join(process.cwd(), 'functions', funcName + '.ts')
+  const funcPath = path.join(getBaseDir(), 'functions', funcName + '.ts')
   if (exist(funcPath)) {
     remove(funcPath)
   }
@@ -85,7 +85,7 @@ async function pull(funcName: string) {
     tags: func.tags,
   }
   FunctionSchema.write(func.name, functionSchema)
-  const codePath = path.join(process.cwd(), 'functions', func.name + '.ts')
+  const codePath = path.join(getBaseDir(), 'functions', func.name + '.ts')
   fs.writeFileSync(codePath, func.source.code)
 }
 
@@ -106,7 +106,7 @@ export async function pullOne(funcName: string) {
 async function push(funcName: string, isCreate: boolean) {
   const appSchema = AppSchema.read()
   const funcSchema = FunctionSchema.read(funcName)
-  const codePath = path.join(process.cwd(), 'functions', funcName + '.ts')
+  const codePath = path.join(getBaseDir(), 'functions', funcName + '.ts')
   const code = fs.readFileSync(codePath, 'utf-8')
   if (isCreate) {
     const createDto: CreateFunctionDto = {
@@ -193,7 +193,7 @@ export async function exec(
   },
 ) {
   // compile code
-  const codePath = path.join(process.cwd(), 'functions', funcName + '.ts')
+  const codePath = path.join(getBaseDir(), 'functions', funcName + '.ts')
   if (!exist(codePath)) {
     console.error(`${getEmoji('❌')} function ${funcName} not found, please pull or create it!`)
     process.exit(1)
@@ -261,7 +261,7 @@ async function printLog(appid: string, requestId: string) {
 }
 
 function getLocalFuncs() {
-  const funcDir = path.join(getAppPath(), FUNCTION_SCHEMA_DIRECTORY)
+  const funcDir = path.join(getBaseDir(), FUNCTION_SCHEMA_DIRECTORY)
   const files = fs.readdirSync(funcDir)
   const funcs = files.filter((file) => file.endsWith('.ts')).map((file) => file.replace('.ts', ''))
   return funcs

@@ -25,6 +25,7 @@ import { getEmoji } from '../../util/print'
 import { formatDate } from '../../util/format'
 import { regionControllerGetRegions } from '../../api/v1/public'
 import { ProjectSchema } from '../../schema/project'
+import { getBaseDir } from '../../util/sys'
 
 export async function list() {
   const table = new Table({
@@ -118,9 +119,9 @@ export async function init(appid: string, options: { sync: boolean }) {
 
 function initFunction() {
   // if not exist，create functions directory
-  ensureDirectory(path.join(process.cwd(), FUNCTION_SCHEMA_DIRECTORY))
+  ensureDirectory(path.join(getBaseDir(), FUNCTION_SCHEMA_DIRECTORY))
 
-  const typeDir = path.resolve(process.cwd(), TYPE_DIR)
+  const typeDir = path.resolve(getBaseDir(), TYPE_DIR)
   ensureDirectory(typeDir)
 
   // from template dir
@@ -138,22 +139,22 @@ function initFunction() {
 
   // generate package.json
   const fromPackageFile = path.resolve(templateDir, PACKAGE_FILE)
-  const outPackageFile = path.resolve(process.cwd(), PACKAGE_FILE)
+  const outPackageFile = path.resolve(getBaseDir(), PACKAGE_FILE)
   fs.writeFileSync(outPackageFile, fs.readFileSync(fromPackageFile, 'utf-8'))
 
   // generate tsconfig.json
   const fromTsConfigFile = path.resolve(templateDir, TSCONFIG_FILE)
-  const outTsConfigFile = path.resolve(process.cwd(), TSCONFIG_FILE)
+  const outTsConfigFile = path.resolve(getBaseDir(), TSCONFIG_FILE)
   fs.writeFileSync(outTsConfigFile, fs.readFileSync(fromTsConfigFile, 'utf-8'))
 
   // generate .gitignore
   const fromGitIgnoreFile = path.resolve(templateDir, GITIGNORE_FILE)
-  const outGitIgnoreFile = path.resolve(process.cwd(), '.' + GITIGNORE_FILE)
+  const outGitIgnoreFile = path.resolve(getBaseDir(), '.' + GITIGNORE_FILE)
   if (!exist(outGitIgnoreFile)) {
     fs.writeFileSync(outGitIgnoreFile, fs.readFileSync(fromGitIgnoreFile, 'utf-8'))
   }
 }
 
 function initPolicy() {
-  ensureDirectory(path.join(process.cwd(), 'policies'))
+  ensureDirectory(path.join(getBaseDir(), 'policies'))
 }
