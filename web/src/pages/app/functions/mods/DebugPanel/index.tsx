@@ -140,7 +140,7 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
           h="full"
           size={"sm"}
         >
-          <TabList h={PanelMinHeight}>
+          <TabList h={`${PanelMinHeight}px`}>
             <Tab px="4">
               <span
                 className={clsx("font-semibold", {
