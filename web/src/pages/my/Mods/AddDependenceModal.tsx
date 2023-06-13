@@ -96,24 +96,15 @@ const AddDependenceModal = (props: {
                 }
               }}
             >
-              {/* {isEdit ? (
-                <Text fontSize="lg">{packageItem.package.name}</Text>
-              ) : ( */}
               <Checkbox
                 colorScheme="primary"
                 size="lg"
-                // isDisabled={packageList.some(
-                //   (item) => item.package.name === packageItem.package.name,
-                // )}
                 onChange={() => {
                   setCheck(packageItem);
                 }}
-                isChecked={
-                  checkList.some(
-                    (item: TDependenceItem) => item.package.name === packageItem.package.name,
-                  )
-                  // ) || packageList.some((item) => item.package.name === packageItem.package.name)
-                }
+                isChecked={checkList.some(
+                  (item: TDependenceItem) => item.package.name === packageItem.package.name,
+                )}
               >
                 <Box ml={5} width="350px">
                   <b>{packageItem.package.name}</b>
@@ -132,13 +123,6 @@ const AddDependenceModal = (props: {
                   size="sm"
                   variant="filled"
                   placeholder={packageItem.package.version}
-                  // isDisabled={
-                  //   // !isEdit &&
-                  //   packageList.some((item) => item.package.name === packageItem.package.name)
-                  // }
-                  // onChange={(e) => {
-                  //   setVersion(e.target.value, packageItem.package.name);
-                  // }}
                   onClick={() => {
                     if (packageItem.versions.length === 0 && !clickItem.loading) {
                       setClickItem({ package: packageItem.package.name, loading: true });
@@ -167,17 +151,13 @@ const AddDependenceModal = (props: {
         React.cloneElement(children, {
           onClick: () => {
             onOpen();
-            // reset(defaultValues);
-            // setTimeout(() => {
-            //   setFocus("name");
-            // }, 0);
           },
         })}
 
       <Modal isOpen={isOpen} onClose={onClose} size={"2xl"}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>添加依赖</ModalHeader>
+          <ModalHeader>{t("FunctionPanel.DependenceAdd")}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <div>
@@ -207,17 +187,11 @@ const AddDependenceModal = (props: {
               <span
                 className="mr-2 text-lg hover:cursor-pointer "
                 onClick={() => {
-                  // if (!isEdit) {
                   setIsShowChecked((pre) => !pre);
-                  console.log(checkList);
-                  // }
                 }}
               >
                 {t("FunctionPanel.Select")}:
                 <span className="mx-2 text-blue-500 ">
-                  {/* {isEdit ? (
-                    packageList.length
-                  ) : */}
                   {isShowChecked ? (
                     <SmallCloseIcon fontSize={16} className="align-middle" />
                   ) : (
@@ -228,7 +202,6 @@ const AddDependenceModal = (props: {
             )}
 
             <Button
-              // isLoading={editPackageMutation.isLoading || addPackageMutation.isLoading}
               onClick={() => {
                 setPackageList(checkList);
                 onClose();

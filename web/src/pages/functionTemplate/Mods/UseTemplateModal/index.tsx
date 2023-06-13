@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-// import { useForm } from "react-hook-form";
 import {
   Box,
   Modal,
@@ -18,17 +17,21 @@ import { useQuery } from "@tanstack/react-query";
 import { formatDate } from "@/utils/format";
 import getRegionById from "@/utils/getRegionById";
 
+import { useFunctionTemplateUseMutation } from "../../service";
+
 import { ApplicationControllerFindAll } from "@/apis/v1/applications";
 import useGlobalStore from "@/pages/globalStore";
 import { APP_LIST_QUERY_KEY } from "@/pages/home";
 import BundleInfo from "@/pages/home/mods/List/BundleInfo";
 import StatusBadge from "@/pages/home/mods/StatusBadge";
 
-const UseTemplateModal = (props: { children: any }) => {
+const UseTemplateModal = (props: { children: any; templateId: string }) => {
+  const { templateId } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [appList, setAppList] = useState([]);
-  const { regions } = useGlobalStore();
+  const { regions, showSuccess } = useGlobalStore();
   const { t } = useTranslation();
+  const useTemplateMutation = useFunctionTemplateUseMutation();
   const navigate = useNavigate();
   useQuery(
     APP_LIST_QUERY_KEY,
@@ -47,18 +50,14 @@ const UseTemplateModal = (props: { children: any }) => {
       {React.cloneElement(props.children, {
         onClick: (event?: any) => {
           event?.preventDefault();
-          // reset(defaultValues);
           onOpen();
-          // setTimeout(() => {
-          //   setFocus("name");
-          // }, 0);
         },
       })}
 
       <Modal isOpen={isOpen} onClose={onClose} size="2xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>选择你要使用的应用</ModalHeader>
+          <ModalHeader>{t("Template.Select the application you want to use")}</ModalHeader>
           <ModalCloseButton />
 
           <ModalBody>
@@ -68,8 +67,14 @@ const UseTemplateModal = (props: { children: any }) => {
                   <Box
                     key={item?.appid}
                     className="group mb-3 flex cursor-pointer items-center rounded-xl border-2 px-3 py-5 hover:border-primary-500 lg:px-6"
-                    onClick={() => {
-                      console.log(item?.appid);
+                    onClick={async () => {
+                      const res = await useTemplateMutation.mutateAsync({
+                        appid: item?.appid,
+                        functionTemplateId: templateId,
+                      });
+                      if (!res.error) {
+                        showSuccess(t("Template.UsedSuccessfully"));
+                      }
                       navigate(`/app/${item?.appid}/function`);
                     }}
                   >

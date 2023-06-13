@@ -18,7 +18,6 @@ import clsx from "clsx";
 import { t } from "i18next";
 
 import { TextIcon } from "@/components/CommonIcon";
-import InputTag from "@/components/InputTag";
 import { SUPPORTED_METHODS } from "@/constants";
 
 const AddFunctionModal = (props: {
@@ -32,7 +31,6 @@ const AddFunctionModal = (props: {
   const defaultValues = {
     name: "",
     methods: ["GET"],
-    tags: [],
     description: "",
   };
   const {
@@ -46,8 +44,8 @@ const AddFunctionModal = (props: {
 
   const onSubmit = (data: any) => {
     if (setFunctionList && setCurrentFunction) {
-      setFunctionList([...(functionList || []), { ...data, code: "" }]);
-      setCurrentFunction({ ...data, code: "" });
+      setFunctionList([...(functionList || []), { ...data, source: { code: "" } }]);
+      setCurrentFunction({ ...data, source: { code: "" } });
       onClose();
     }
   };
@@ -106,7 +104,7 @@ const AddFunctionModal = (props: {
                 )}
               />
             </HStack>
-            <HStack className="mb-1 w-full">
+            {/* <HStack className="mb-1 w-full">
               <Controller
                 name="tags"
                 control={control}
@@ -114,7 +112,7 @@ const AddFunctionModal = (props: {
                   <InputTag value={value || []} onChange={onChange} tagList={[]} />
                 )}
               />
-            </HStack>
+            </HStack> */}
             <div className={clsx("flex w-full items-center focus-within:border-b-2")}>
               <TextIcon fontSize={18} color={"#D9D9D9"} />
               <input

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 import { Box, Button, Radio, RadioGroup, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
@@ -9,17 +9,25 @@ import clsx from "clsx";
 import { TextIcon } from "@/components/CommonIcon";
 import ConfirmButton from "@/components/ConfirmButton";
 import FileTypeIcon from "@/components/FileTypeIcon";
-import InputTag from "@/components/InputTag";
 
 import AddDependenceModal from "../Mods/AddDependenceModal";
+import AddEnvironmentsModal from "../Mods/AddEnvironmentsModal";
 import AddFunctionModal from "../Mods/AddFunctionModal";
+import {
+  useCreateFunctionTemplateMutation,
+  useDeleteFunctionTemplateMutation,
+  useUpdateFunctionTemplateMutation,
+} from "../service";
 
 import MonacoEditor from "@/pages/functionTemplate/Mods/MonacoEditor";
+import { useGetOneFunctionTemplateQuery } from "@/pages/functionTemplate/service";
+import useGlobalStore from "@/pages/globalStore";
 
 export default function CreateFuncTemplate() {
-  // const data = {
+  const createFunctionMutation = useCreateFunctionTemplateMutation();
+  const updateFunctionMutation = useUpdateFunctionTemplateMutation();
+  const deleteFunctionMutation = useDeleteFunctionTemplateMutation();
 
-  // }
   const { t } = useTranslation();
   const { colorMode } = useColorMode();
   const darkMode = colorMode === "dark";
@@ -27,8 +35,38 @@ export default function CreateFuncTemplate() {
   const [packageList, setPackageList] = useState<any[]>([]);
   const [functionList, setFunctionList] = useState<any[]>([]);
   const [currentFunction, setCurrentFunction] = useState<any>(undefined);
+  const [environments, setEnvironments] = useState<any[]>([]);
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [templateId, setTemplateId] = useState<string>("");
+  const [data, setData] = useState<any>(undefined);
+  const navigate = useNavigate();
   const location = useLocation();
+  const { showSuccess } = useGlobalStore();
+
+  useGetOneFunctionTemplateQuery(
+    { id: templateId },
+    {
+      enabled: isEdit,
+      onSuccess: (data: any) => {
+        console.log(data.data[0]);
+        setFunctionList(data.data[0].items);
+        setPackageList(
+          data.data[0].dependencies.map((item: any) => {
+            const [name, version] = item.split("@");
+            return {
+              package: {
+                name: name,
+                version: version,
+              },
+            };
+          }),
+        );
+        setEnvironments(data.data[0].environments);
+        setCurrentFunction(data.data[0].items[0]);
+        setData(data.data[0]);
+      },
+    },
+  );
 
   useEffect(() => {
     let id = null;
@@ -36,7 +74,7 @@ export default function CreateFuncTemplate() {
     if (pathname.startsWith("/my/edit/")) {
       id = pathname.substring("/my/edit/".length);
       setIsEdit(true);
-      console.log(id);
+      setTemplateId(id);
     } else if (pathname === "/my/create") {
     } else {
       console.log("error");
@@ -44,7 +82,7 @@ export default function CreateFuncTemplate() {
   }, [location.pathname]);
 
   type FormData = {
-    title: string;
+    name: string;
     visibility: string;
     description: string;
     tags: string[];
@@ -59,12 +97,56 @@ export default function CreateFuncTemplate() {
     // mode: "onChange",
   });
 
-  const onSubmit = (data: FormData) => {
-    console.log({
-      ...data,
-      functionList,
-      packageList,
-    });
+  const onSubmit = async (data: FormData) => {
+    let res = null;
+    const { name, visibility, description } = data;
+
+    if (isEdit) {
+      res = await updateFunctionMutation.mutateAsync({
+        functionTemplateId: templateId,
+        name,
+        private: visibility === "private",
+        description,
+        items: functionList.map((item) => {
+          return {
+            name: item.name,
+            description: item.desc,
+            methods: item.methods,
+            code: item.source.code || "",
+          };
+        }),
+        dependencies: packageList.map((item) => {
+          return {
+            name: item.package.name,
+            spec: item.package.version,
+          };
+        }),
+        environments: environments,
+      });
+    } else {
+      res = await createFunctionMutation.mutateAsync({
+        name,
+        private: visibility === "private",
+        description,
+        items: functionList.map((item) => {
+          return {
+            ...item,
+            code: item.source.code || "",
+          };
+        }),
+        dependencies: packageList.map((item) => {
+          return {
+            name: item.package.name,
+            spec: item.package.version,
+          };
+        }),
+        environments: environments,
+      });
+    }
+    if (!res?.error) {
+      showSuccess(t("Create function template success"));
+    }
+    navigate("/my");
   };
 
   return (
@@ -80,17 +162,19 @@ export default function CreateFuncTemplate() {
         <div className="h-full w-10/12">
           <div className="flex h-12 w-full items-center border-b-2">
             <input
-              {...register("title", { required: true })}
+              {...register("name", { required: true })}
               className="h-8 w-full border-l-2 border-primary-600 bg-transparent pl-4 text-2xl font-medium"
               style={{ outline: "none", boxShadow: "none" }}
               placeholder="Title"
+              defaultValue={isEdit ? data?.name : ""}
             />
           </div>
-          {errors.title && <span className="text-red-500">This field is required</span>}
+          {errors.name && <span className="text-red-500">This field is required</span>}
           <Controller
             control={control}
             name="visibility"
             rules={{ required: true }}
+            defaultValue={isEdit ? (data?.private ? "private" : "public") : "public"}
             render={({ field }) => (
               <RadioGroup className="w-full pt-2" {...field}>
                 <Radio value="public">{t("Template.public")}</Radio>
@@ -102,7 +186,7 @@ export default function CreateFuncTemplate() {
           />
           {errors.visibility && <span className="text-red-500">This field is required</span>}
 
-          <div className="mt-1 w-full">
+          {/* <div className="mt-1 w-full">
             <Controller
               name="tags"
               control={control}
@@ -110,7 +194,7 @@ export default function CreateFuncTemplate() {
                 <InputTag value={value || []} onChange={onChange} tagList={[]} />
               )}
             />
-          </div>
+          </div> */}
 
           <div
             className={clsx(
@@ -123,20 +207,23 @@ export default function CreateFuncTemplate() {
               placeholder={String(t("Template.Description"))}
               className="w-full bg-transparent py-2 pl-2 text-lg"
               style={{ outline: "none", boxShadow: "none" }}
+              defaultValue={isEdit ? data?.description : ""}
               {...register("description")}
             />
           </div>
           {currentFunction && (
             <div className="h-[55vh] w-full">
               <MonacoEditor
-                value={currentFunction?.code || ""}
+                value={currentFunction?.source.code || ""}
                 onChange={(value: string | undefined) => {
                   setFunctionList(
                     functionList.map((item) => {
                       if (item.name === currentFunction.name) {
                         return {
                           ...item,
-                          code: value,
+                          source: {
+                            code: value,
+                          },
                         };
                       }
                       return item;
@@ -163,7 +250,7 @@ export default function CreateFuncTemplate() {
         </div>
 
         <div className="ml-8 flex h-[75vh] w-2/12 flex-col overflow-auto">
-          <Box className="mb-4 w-full border-b-2 pb-2">
+          <Box className="w-full border-b-2 pb-2">
             <div className="flex items-center justify-between">
               <span className="text-xl font-bold">{t("Template.Function")}</span>
               <span className="cursor-pointer">
@@ -249,21 +336,49 @@ export default function CreateFuncTemplate() {
               })}
             </Box>
           </Box>
-
-          {/* <Box className="w-full">
-            <span className="text-xl font-bold">环境变量</span>
+          <Box className="w-full border-b-2 pb-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xl font-bold">{t("Template.EnvironmentVariables")}</span>
+              <span className="cursor-pointer">
+                <AddEnvironmentsModal environments={environments} setEnvironments={setEnvironments}>
+                  <AddIcon />
+                </AddEnvironmentsModal>
+              </span>
+            </div>
             <Box>
-              <div className="flex h-8 items-center font-medium">OPEN_AI_KEY</div>
+              {environments.map((item) => {
+                return (
+                  <Box
+                    key={item.name}
+                    className="my-1 flex h-4 w-full items-center justify-between pl-2 font-medium"
+                  >
+                    {item.name}
+                  </Box>
+                );
+              })}
             </Box>
-          </Box> */}
+          </Box>
         </div>
       </div>
       <div className="mt-4 flex justify-center">
-        <Button className="mr-12 w-36" variant={"secondary"} onClick={handleSubmit(onSubmit)}>
+        {/* <Button className="mr-12 w-36" variant={"secondary"} onClick={handleSubmit(onSubmit)}>
           {t("Save")}
-        </Button>
+        </Button> */}
+        {isEdit && (
+          <Button
+            className="mr-12 w-36 bg-red-100"
+            variant={"warnText"}
+            onClick={async () => {
+              await deleteFunctionMutation.mutateAsync({ id: templateId });
+              showSuccess(t("DeleteSuccess"));
+              navigate("/my");
+            }}
+          >
+            {t("Delete")}
+          </Button>
+        )}
         <Button className="w-36" onClick={handleSubmit(onSubmit)}>
-          {t("Publish")}
+          {isEdit ? t("Template.Edit") : t("Publish")}
         </Button>
       </div>
     </div>

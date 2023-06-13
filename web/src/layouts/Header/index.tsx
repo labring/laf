@@ -56,7 +56,7 @@ const Header = (props: { bg: string }) => {
         darkMode ? "" : "text-grayModern-600",
       )}
     >
-      <div className="flex items-center pl-9">
+      <div className="flex items-center pl-12">
         <img
           src={darkMode ? "/logo_light.png" : "/logo_text.png"}
           className="mr-9 h-auto w-20"
@@ -69,7 +69,7 @@ const Header = (props: { bg: string }) => {
               key={index}
               target={item.ref.startsWith("http") ? "_blank" : "_self"}
               href={item.ref}
-              className="mr-6 text-lg"
+              className="mr-8 text-lg"
               rel="noreferrer"
             >
               {item.text}

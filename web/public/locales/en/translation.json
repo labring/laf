@@ -469,7 +469,19 @@
     "Description": "Enter function template description",
     "updatedAt": "Updated At",
     "UsedBy": "Used By",
-    "Draft": "Draft"
+    "Draft": "Draft",
+    "AddEnvironmentVariables": "Add Environment Variables",
+    "Total": "Total",
+    "UsedSuccessfully": "Used Successfully",
+    "Select the application you want to use": "Select the application you want to use",
+    "recentUsed": "Recent Used",
+    "myStar": "My Star",
+    "myTemplate": "My Template",
+    "recommend": "Recommend",
+    "MostRecent": "Most Recent",
+    "useTemplateSuccess": "Use Template Success",
+    "cancelStarSuccess": "Cancel Star Success",
+    "starSuccess": "Star Success"
   },
   "Fee": "Fee",
   "PleaseCloseApplicationFirst": "Please close your application first.",
@@ -483,5 +495,6 @@
   "Stop": "Stop",
   "SendMessagePlaceHolder": "Send a message",
   "Publish": "Publish",
-  "MyTemplate": "My Template"
+  "MyTemplate": "My Template",
+  "Create function template success": "Create function template success"
 }

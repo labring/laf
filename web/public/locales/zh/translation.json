@@ -469,7 +469,19 @@
     "Description": "请输入函数模板介绍信息",
     "updatedAt": "更新于",
     "UsedBy": "应用者",
-    "Draft": "草稿"
+    "Draft": "草稿",
+    "AddEnvironmentVariables": "添加环境变量",
+    "Total": "总数",
+    "UsedSuccessfully": "应用成功",
+    "Select the application you want to use": "选择你要使用的应用",
+    "recentUsed": "最近使用",
+    "myStar": "我收藏的",
+    "myTemplate": "我创建的",
+    "recommend": "推荐模板",
+    "MostRecent": "按时间最新",
+    "useTemplateSuccess": "函数模板使用成功",
+    "cancelStarSuccess": "取消收藏成功",
+    "starSuccess": "收藏成功"
   },
   "Fee": "费用",
   "PleaseCloseApplicationFirst": "请先关闭应用",
@@ -483,5 +495,6 @@
   "Stop": "停止",
   "SendMessagePlaceHolder": "提问",
   "Publish": "发布",
-  "MyTemplate": "我的模板"
+  "MyTemplate": "我的模板",
+  "Create function template success": "创建函数模板成功"
 }

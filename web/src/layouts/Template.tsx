@@ -18,7 +18,7 @@ export default function TemplateLayout() {
   }, [init]);
 
   return (
-    <div className={clsx("h-screen", darkMode ? "" : "bg-white")}>
+    <div className={clsx("min-h-screen flex-grow", darkMode ? "" : "bg-white")}>
       <Header bg="bg-gray-100" />
       {loading ? (
         <Center style={{ minHeight: 300 }}>

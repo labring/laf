@@ -1,12 +1,8 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Search2Icon } from "@chakra-ui/icons";
 import {
   Box,
   HStack,
-  Input,
-  InputGroup,
-  InputLeftElement,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -19,55 +15,70 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
+import { TemplateList, TFunctionTemplate } from "@/apis/typing";
 import MonacoEditor from "@/pages/functionTemplate/Mods/MonacoEditor";
 import TemplateInfo from "@/pages/functionTemplate/Mods/TemplateInfo";
-import TemplateList from "@/pages/functionTemplate/Mods/TemplateList";
+import TemplateNameList from "@/pages/functionTemplate/Mods/TemplateList";
+import { useGetFunctionTemplateUsedByQuery } from "@/pages/functionTemplate/service";
+import { useGetMyFunctionTemplatesQuery } from "@/pages/my/service";
 
 const FunctionTemplate = (props: { children?: React.ReactElement }) => {
-  const data_recent = [
-    {
-      name: "test",
-      code: "",
-    },
-    {
-      name: "test2",
-      code: "",
-    },
-  ];
-  const data_star = [
-    {
-      name: "test1",
-      code: "",
-    },
-  ];
-  const data_recommend = [
-    {
-      name: "空白模板",
-      code: "",
-    },
-    {
-      name: "数据库操作",
-      code: "",
-    },
-    {
-      name: "用户登录和注册",
-      code: "",
-    },
-    {
-      name: "ChatGPT示例",
-      code: "",
-    },
-    {
-      name: "文件上传",
-      code: "",
-    },
-  ];
-
-  const [selectedItem, setSelectedItem] = useState(data_recent[0]);
   const { onOpen, isOpen, onClose } = useDisclosure();
   const { children } = props;
   const { t } = useTranslation();
   const { colorMode } = useColorMode();
+
+  const [myTemplateList, setMyTemplateList] = useState<TemplateList>();
+  const [myStarTemplateList, setMyStarTemplateList] = useState<TemplateList>();
+  const [recentUsedList, setRecentUsedList] = useState<TemplateList>();
+  const [recommendList, setRecommendList] = useState<TemplateList>();
+  const [currentFunctionTemplate, setCurrentFunctionTemplate] = useState<TFunctionTemplate>();
+  const [usedBy, setUsedBy] = useState<any[]>([]);
+
+  useGetMyFunctionTemplatesQuery(
+    { page: 1, pageSize: 2, recent: 1, recentUsed: true },
+    {
+      onSuccess: (data: any) => {
+        setRecentUsedList(data.data);
+        setCurrentFunctionTemplate(data.data.list[0]);
+      },
+    },
+  );
+  useGetMyFunctionTemplatesQuery(
+    { page: 1, pageSize: 2, recent: 1, stared: true },
+    {
+      onSuccess: (data: any) => {
+        setMyStarTemplateList(data.data);
+      },
+    },
+  );
+  useGetMyFunctionTemplatesQuery(
+    { page: 1, pageSize: 2, recent: 1 },
+    {
+      onSuccess: (data: any) => {
+        setMyTemplateList(data.data);
+      },
+    },
+  );
+
+  useGetMyFunctionTemplatesQuery(
+    { page: 1, pageSize: 2, recent: 1, hot: true },
+    {
+      onSuccess: (data: any) => {
+        setRecommendList(data.data);
+      },
+    },
+  );
+
+  useGetFunctionTemplateUsedByQuery(
+    { page: 1, pageSize: 2, recent: 1, id: currentFunctionTemplate?._id },
+    {
+      enabled: !!currentFunctionTemplate,
+      onSuccess: (data: any) => {
+        setUsedBy(data.data.list);
+      },
+    },
+  );
 
   return (
     <>
@@ -78,7 +89,7 @@ const FunctionTemplate = (props: { children?: React.ReactElement }) => {
           },
         })}
 
-      <Modal isOpen={isOpen} onClose={onClose} size="5xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="6xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{t("market.funcTemplate")}</ModalHeader>
@@ -86,66 +97,56 @@ const FunctionTemplate = (props: { children?: React.ReactElement }) => {
 
           <ModalBody>
             <HStack spacing={6} className="h-[500px] justify-between">
-              <VStack className="h-full w-3/12">
-                <div>
-                  <InputGroup className="pb-4">
-                    <InputLeftElement
-                      height={"8"}
-                      left="1"
-                      pointerEvents="none"
-                      children={<Search2Icon color="#7B838B" fontSize={16} />}
-                    />
-                    <Input
-                      rounded={"100px"}
-                      placeholder={String(t("Search"))}
-                      variant="outline"
-                      borderWidth={"1px"}
-                      height={"8"}
-                      width={"44"}
-                      backgroundColor={"#F6F8F9"}
-                    />
-                  </InputGroup>
-
-                  <TemplateList
-                    title={"最近使用"}
-                    data={data_recent}
-                    selectedItem={selectedItem}
-                    setSelectedItem={setSelectedItem}
-                  />
-                  <TemplateList
-                    title={"我的模板"}
-                    data={data_star}
-                    selectedItem={selectedItem}
-                    setSelectedItem={setSelectedItem}
-                  />
-                  <TemplateList
-                    title={"推荐模板"}
-                    data={data_recommend}
-                    selectedItem={selectedItem}
-                    setSelectedItem={setSelectedItem}
-                  />
-                </div>
+              <VStack className="h-full w-2/12">
+                <TemplateNameList
+                  title={t("Template.recentUsed")}
+                  data={recentUsedList?.list}
+                  selectedItem={currentFunctionTemplate}
+                  setSelectedItem={setCurrentFunctionTemplate}
+                />
+                <TemplateNameList
+                  title={t("Template.myStar")}
+                  data={myStarTemplateList?.list}
+                  selectedItem={currentFunctionTemplate}
+                  setSelectedItem={setCurrentFunctionTemplate}
+                />
+                <TemplateNameList
+                  title={t("Template.myTemplate")}
+                  data={myTemplateList?.list}
+                  selectedItem={currentFunctionTemplate}
+                  setSelectedItem={setCurrentFunctionTemplate}
+                />
+                <TemplateNameList
+                  title={t("Template.recommend")}
+                  data={recommendList?.list}
+                  selectedItem={currentFunctionTemplate}
+                  setSelectedItem={setCurrentFunctionTemplate}
+                />
               </VStack>
               <VStack className="relative h-full w-8/12">
-                <Box className="absolute bottom-20 top-0 w-full">
-                  <div className="pb-2 text-xl font-semibold">用户登录和注册</div>
-                  <div className="pb-2 text-second">获取用户登录信息</div>
-                  <MonacoEditor
-                    value={`import cloud from '@lafjs/cloud'
-
-export default async function (ctx: FunctionContext) {
-  console.log('server side code')
-  return { data: 'hi, laf' }
-}
-`}
-                    title="register"
-                    readOnly={false}
-                    colorMode={colorMode}
-                  />
+                <Box className="absolute bottom-20 top-0 w-full px-2">
+                  <div className="pb-2 text-xl font-semibold">{currentFunctionTemplate?.name}</div>
+                  <div className="pb-2 text-second">{currentFunctionTemplate?.description}</div>
+                  <div className="h-[450px] overflow-scroll scroll-auto">
+                    {currentFunctionTemplate?.items?.map((item: any) => {
+                      return (
+                        <div className="mb-2 h-4/5">
+                          <MonacoEditor
+                            value={item?.source.code}
+                            title={item?.name}
+                            readOnly={false}
+                            colorMode={colorMode}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
                 </Box>
               </VStack>
-              <VStack className="h-full w-3/12">
-                <TemplateInfo author="laf-test" functionList={[]} packageList={[]} />
+              <VStack className="h-full w-2/12">
+                {currentFunctionTemplate && (
+                  <TemplateInfo functionTemplate={currentFunctionTemplate} usedBy={usedBy} />
+                )}
               </VStack>
             </HStack>
           </ModalBody>
