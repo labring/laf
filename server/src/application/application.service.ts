@@ -57,6 +57,13 @@ export class ApplicationService {
           {
             appid,
             environments: [appSecret],
+            autoscaling: {
+              enable: false,
+              minReplicas: 1,
+              maxReplicas: 5,
+              targetCPUUtilizationPercentage: 50,
+              targetMemoryUtilizationPercentage: 50,
+            },
             dependencies: [],
             createdAt: new Date(),
             updatedAt: new Date(),
