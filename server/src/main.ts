@@ -10,7 +10,9 @@ import { SystemDatabase } from './system-database'
 async function bootstrap() {
   await SystemDatabase.ready
 
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn', 'log', 'debug', 'verbose'],
+  })
 
   app.enableCors()
 
