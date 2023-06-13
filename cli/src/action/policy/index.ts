@@ -15,7 +15,7 @@ import { POLICIES_DIRECTORY_NAME } from '../../common/constant'
 import { writeYamlFile, loadYamlFile } from '../../util/file'
 import { CreatePolicyDto, CreatePolicyRuleDto, UpdatePolicyRuleDto } from '../../api/v1/data-contracts'
 import { getEmoji } from '../../util/print'
-import { getAppPath } from '../../util/sys'
+import { getBaseDir } from '../../util/sys'
 import { confirm } from '../../common/prompts'
 import { AppSchema } from '../../schema/app'
 
@@ -50,7 +50,7 @@ export async function pullAll() {
 async function pull(policyName: string) {
   const appSchema = AppSchema.read()
   const rules = await policyRuleControllerFindAll(appSchema.appid, policyName)
-  const rulePath = path.join(process.cwd(), POLICIES_DIRECTORY_NAME, policyName + '.yaml')
+  const rulePath = path.join(getBaseDir(), POLICIES_DIRECTORY_NAME, policyName + '.yaml')
   const ruleList: PolicyRule[] = []
   for (let item of rules) {
     ruleList.push({
@@ -134,7 +134,7 @@ async function push(policyName: string, isCreate: boolean) {
   for (let item of serverRules) {
     serverRulesMap.set(item.collectionName, true)
   }
-  const rulePath = path.join(process.cwd(), POLICIES_DIRECTORY_NAME, policyName + '.yaml')
+  const rulePath = path.join(getBaseDir(), POLICIES_DIRECTORY_NAME, policyName + '.yaml')
   const localRules: PolicyRule[] = loadYamlFile(rulePath)
   const localRulesMap = new Map<string, boolean>()
 
@@ -166,7 +166,7 @@ async function push(policyName: string, isCreate: boolean) {
 }
 
 function getLocalPolicies(): string[] {
-  const dir = path.join(getAppPath(), POLICIES_DIRECTORY_NAME)
+  const dir = path.join(getBaseDir(), POLICIES_DIRECTORY_NAME)
   const files = fs.readdirSync(dir)
   const policies: string[] = []
   for (let item of files) {

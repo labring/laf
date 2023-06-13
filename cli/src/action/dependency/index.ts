@@ -11,7 +11,7 @@ import { waitApplicationState } from '../../common/wait'
 import { getEmoji } from '../../util/print'
 import { AppSchema } from '../../schema/app'
 import { ProjectSchema } from '../../schema/project'
-import { getAppPath } from '../../util/sys'
+import { getBaseDir } from '../../util/sys'
 
 export async function add(dependencyName: string, options: { targetVersion: string }) {
   const appSchema = AppSchema.read()
@@ -42,7 +42,7 @@ async function pullOne(updateYaml: boolean = true) {
 
   const dependencies = await dependencyControllerGetDependencies(appSchema.appid)
 
-  const packagePath = path.resolve(getAppPath(), PACKAGE_FILE)
+  const packagePath = path.resolve(getBaseDir(), PACKAGE_FILE)
   let packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'))
   const devDependencies = {}
   const localDependencies = {}
