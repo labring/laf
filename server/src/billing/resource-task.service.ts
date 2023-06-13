@@ -28,6 +28,7 @@ export class ResourceTaskService {
   private readonly detectResourceOverusedLockTimeout = 60 * 30 // in second
 
   private getLockTime() {
+    // halfway through each hour
     const latestTime = new Date()
     latestTime.setMinutes(30)
     latestTime.setSeconds(0)
@@ -38,7 +39,7 @@ export class ResourceTaskService {
     return latestTime
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async captureResourceUsage() {
     const db = SystemDatabase.db
     if (ServerConfig.DISABLED_RESOURCE_USAGE_TASK) {
@@ -55,11 +56,11 @@ export class ResourceTaskService {
         },
       })
 
-    const concurrency = total > 10 ? 10 : total
-    if (total > 10) {
+    const concurrency = total > 2 ? 2 : total
+    if (total > 2) {
       setTimeout(() => {
         this.captureResourceUsage()
-      }, 2000)
+      }, 1000)
     }
 
     times(concurrency, () => {
@@ -172,7 +173,6 @@ export class ResourceTaskService {
         },
         { $set: { resourceOveruseDetectionLockedAt: new Date() } },
         {
-          sort: { resourceOveruseDetectionLockedAt: 1, updatedAt: 1 },
           returnDocument: 'after',
         },
       )
