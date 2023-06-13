@@ -1,9 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import {
-  Application,
-  ApplicationState,
-} from 'src/application/entities/application'
+import { Application } from 'src/application/entities/application'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/system-database'
 import {
@@ -13,160 +10,35 @@ import {
 import { MeteringDatabase } from './metering-database'
 import { CalculatePriceDto } from './dto/calculate-price.dto'
 import { BillingService } from './billing.service'
-import { times } from 'lodash'
 import { ApplicationBundle } from 'src/application/entities/application-bundle'
-import * as assert from 'assert'
-import { Account } from 'src/account/entities/account'
-import { AccountTransaction } from 'src/account/entities/account-transaction'
-import Decimal from 'decimal.js'
 
 @Injectable()
-export class BillingTaskService {
-  private readonly logger = new Logger(BillingTaskService.name)
-  private readonly lockTimeout = 60 * 60 + 60 // in second
+export class BillingCreationTaskService {
+  private readonly logger = new Logger(BillingCreationTaskService.name)
+  private readonly lockTimeout = 60 * 60 // in second
 
   constructor(private readonly billing: BillingService) {}
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
-  async createBillingScheduler() {
-    const db = SystemDatabase.db
-    if (ServerConfig.DISABLED_BILLING_TASK) {
+  /**
+   * Cron job method that runs every 10 minute
+   */
+  @Cron(CronExpression.EVERY_30_MINUTES)
+  async tick() {
+    // If billing creation task is disabled, return
+    if (ServerConfig.DISABLED_BILLING_CREATION_TASK) {
       return
     }
 
-    const total = await db
-      .collection<Application>('Application')
-      .countDocuments({
-        billingLockedAt: {
-          $lt: new Date(Date.now() - 1000 * this.lockTimeout),
-        },
-      })
-
-    const concurrency = total > 2 ? 2 : total
-    if (total > 2) {
-      setTimeout(() => {
-        this.createBillingScheduler()
-      }, 1000)
-    }
-
-    times(concurrency, () => {
-      this.handleApplicationBillingCreating().catch((err) => {
-        this.logger.error('handleApplicationBillingCreating error', err)
-      })
-    })
-  }
-
-  @Cron(CronExpression.EVERY_5_MINUTES)
-  async payBillingScheduler() {
-    const db = SystemDatabase.db
-    if (ServerConfig.DISABLED_BILLING_TASK) {
-      return
-    }
-
-    const total = await db
-      .collection<ApplicationBilling>('ApplicationBilling')
-      .countDocuments({
-        state: ApplicationBillingState.Pending,
-        lockedAt: { $lt: new Date(Date.now() - 1000 * 60) },
-      })
-
-    const concurrency = total > 2 ? 2 : total
-    if (total > 2) {
-      setTimeout(() => {
-        this.payBillingScheduler()
-      }, 1000)
-    }
-
-    times(concurrency, () => {
-      this.handlePendingApplicationBilling().catch((err) => {
-        this.logger.error('handlePendingApplicationBilling error', err)
-      })
-    })
-  }
-
-  private async handlePendingApplicationBilling() {
-    const db = SystemDatabase.db
-
-    const res = await db
-      .collection<ApplicationBilling>('ApplicationBilling')
-      .findOneAndUpdate(
-        {
-          state: ApplicationBillingState.Pending,
-          lockedAt: {
-            $lt: new Date(Date.now() - 1000 * 60),
-          },
-        },
-        { $set: { lockedAt: new Date() } },
-        { returnDocument: 'after' },
-      )
-
-    if (!res.value) {
-      return
-    }
-
-    const billing = res.value
-
-    // get account
-    const account = await db
-      .collection<Account>('Account')
-      .findOne({ createdBy: billing.createdBy })
-
-    assert(account, `Account ${billing.createdBy} not found`)
-
-    // pay billing
-    const session = SystemDatabase.client.startSession()
-
+    // Handle application billing creation
     try {
-      await session.withTransaction(async () => {
-        // update the account balance
-        const amount = new Decimal(billing.amount).mul(100).toNumber()
-
-        // TODO: write lock might cause performance issue?
-        const res = await db
-          .collection<Account>('Account')
-          .findOneAndUpdate(
-            { _id: account._id },
-            { $inc: { balance: -amount } },
-            { session, returnDocument: 'after' },
-          )
-
-        assert(res.value, `Account ${account._id} not found`)
-
-        // create transaction
-        await db.collection<AccountTransaction>('AccountTransaction').insertOne(
-          {
-            accountId: account._id,
-            amount: -amount,
-            balance: res.value.balance,
-            message: `Application ${billing.appid} billing`,
-            billingId: billing._id,
-            createdAt: new Date(),
-          },
-          { session },
-        )
-
-        // update billing state
-        await db
-          .collection<ApplicationBilling>('ApplicationBilling')
-          .updateOne(
-            { _id: billing._id },
-            { $set: { state: ApplicationBillingState.Done } },
-            { session },
-          )
-
-        // stop application if balance is not enough
-        if (res.value.balance < 0) {
-          await db
-            .collection<Application>('Application')
-            .updateOne(
-              { appid: billing.appid, state: ApplicationState.Running },
-              { $set: { state: ApplicationState.Stopped } },
-              { session },
-            )
-        }
-      })
-    } finally {
-      session.endSession()
+      this.logger.debug('Start handling application billing creation')
+      await this.handleApplicationBillingCreating()
+    } catch (err) {
+      this.logger.error(
+        'Error occurred while handling application billing creation',
+        err,
+        err.stack,
+      )
     }
   }
 
@@ -182,30 +54,48 @@ export class BillingTaskService {
           },
         },
         { $set: { billingLockedAt: this.getHourTime() } },
-        { sort: { billingLockedAt: 1, updatedAt: 1 }, returnDocument: 'after' },
       )
 
     if (!res.value) {
+      this.logger.log('No application found for billing')
       return
     }
 
     const app = res.value
+    this.logger.debug(`Application found for billing: ${app.appid}`)
+
     const billingTime = await this.createApplicationBilling(app)
-    if (!billingTime) return
+    if (!billingTime) {
+      this.logger.warn(`No billing time found for application: ${app.appid}`)
+      return
+    }
 
     // unlock billing if billing time is not the latest
     if (Date.now() - billingTime.getTime() > 1000 * this.lockTimeout) {
+      this.logger.warn(
+        `Unlocking billing for application: ${app.appid} since billing time is not the latest`,
+      )
+
       await db
         .collection<Application>('Application')
         .updateOne(
           { appid: app.appid },
           { $set: { billingLockedAt: TASK_LOCK_INIT_TIME } },
         )
-      return
     }
+
+    this.handleApplicationBillingCreating().catch((err) => {
+      this.logger.error(
+        'handleApplicationBillingCreating recursive error',
+        err,
+        err.stack,
+      )
+    })
   }
 
   private async createApplicationBilling(app: Application) {
+    this.logger.debug(`Start creating billing for application: ${app.appid}`)
+
     const appid = app.appid
     const db = SystemDatabase.db
 
@@ -217,6 +107,7 @@ export class BillingTaskService {
     )
 
     if (!nextMeteringTime) {
+      this.logger.warn(`No next metering time for application: ${appid}`)
       return
     }
 
@@ -227,6 +118,7 @@ export class BillingTaskService {
       .toArray()
 
     if (meteringData.length === 0) {
+      this.logger.log(`No metering data found for application: ${appid}`)
       return
     }
 
@@ -235,7 +127,10 @@ export class BillingTaskService {
       .collection<ApplicationBundle>('ApplicationBundle')
       .findOne({ appid: app.appid })
 
-    assert(bundle, `bundle not found ${app.appid}`)
+    if (!bundle) {
+      this.logger.warn(`No bundle found for application: ${appid}`)
+      return
+    }
 
     // calculate billing price
     const priceInput = this.buildCalculatePriceInput(app, meteringData, bundle)
@@ -280,6 +175,7 @@ export class BillingTaskService {
       createdBy: app.createdBy,
     })
 
+    this.logger.debug(`Billing creation complete for application: ${appid}`)
     return nextMeteringTime
   }
 
@@ -319,6 +215,7 @@ export class BillingTaskService {
       )
 
     if (!nextMeteringData) {
+      this.logger.debug(`No next metering data for application: ${appid}`)
       return null
     }
 
@@ -335,8 +232,13 @@ export class BillingTaskService {
       .findOne({ appid }, { sort: { endAt: -1 } })
 
     if (latestBilling) {
+      this.logger.log(`Found latest billing record for application: ${appid}`)
       return latestBilling.endAt
     }
+
+    this.logger.debug(
+      `No previous billing record, setting latest time to last hour for application: ${appid}`,
+    )
 
     const latestTime = this.getHourTime()
     latestTime.setHours(latestTime.getHours() - 1)
