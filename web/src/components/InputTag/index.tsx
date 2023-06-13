@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
-  Input,
   Menu,
   MenuButton,
   MenuItem,
@@ -9,12 +8,13 @@ import {
   Tag,
   TagCloseButton,
   TagLabel,
-  useColorMode,
+  // useColorMode,
 } from "@chakra-ui/react";
 import clsx from "clsx";
 import { t } from "i18next";
 
-import { COLOR_MODE } from "@/constants";
+// import { COLOR_MODE } from "@/constants";
+import { LabelIcon } from "../CommonIcon";
 
 export default function InputTag(props: {
   value: string[];
@@ -23,8 +23,8 @@ export default function InputTag(props: {
 }) {
   const { value, onChange, tagList } = props;
   const [inputV, setInputV] = useState("");
-  const { colorMode } = useColorMode();
-  const darkMode = colorMode === COLOR_MODE.dark;
+  // const { colorMode } = useColorMode();
+  // const darkMode = colorMode === COLOR_MODE.dark;
 
   const handleMenuItemClick = (tag: any) => {
     if (!value.some((x) => x === tag.tagName)) {
@@ -48,15 +48,10 @@ export default function InputTag(props: {
   };
 
   return (
-    <div
-      className={clsx(
-        "flex items-center rounded-md p-2 ",
-        darkMode ? "bg-gray-800" : "bg-gray-100",
-      )}
-    >
+    <div className={clsx("flex w-full items-center rounded-md text-lg")}>
       {value.length > 0
         ? value.map((item) => (
-            <Tag className="mr-2 bg-white " key={item} variant="inputTag">
+            <Tag className="mr-2" key={item}>
               <TagLabel>{item}</TagLabel>
               <TagCloseButton
                 onClick={() => {
@@ -66,16 +61,17 @@ export default function InputTag(props: {
             </Tag>
           ))
         : null}
-      <Input
-        className="flex-1"
-        minWidth={{ base: "100px", md: "100px" }}
+
+      <LabelIcon boxSize={4} color={"#D9D9D9"} />
+      <input
+        className="ml-2 flex-1 border-none bg-transparent outline-none"
         placeholder={String(t("CollectionPanel.CreateTagTip"))}
         value={inputV}
-        onKeyDown={(e) => handleEnter(e)}
         onChange={(e) => {
           // onChange([e.target.value]);
           setInputV(e.target.value);
         }}
+        onKeyDown={(e) => handleEnter(e)}
       />
       <Menu placement="bottom-end">
         <MenuButton className="cursor-pointer">

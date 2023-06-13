@@ -112,6 +112,8 @@
     "LeaveFunctionPage": "About to leave the function edit page",
     "PromptDescription": "Use natural language to describe your needs, laf will help you generate code, for example: help me write a hello world, return {hello: 'laf AI'}",
     "CreateWithAITip": "Create functions with AI assistance",
+    "CreateNow": "Create Now",
+    "CreateFromTemplate": "Create from Template",
     "getCodeOnline": "Retrieve the latest released online code"
   },
   "HomePanel": {
@@ -372,7 +374,9 @@
       "forum": "Forum",
       "contact": "Contact",
       "start": "Start Now",
-      "stars": "3.9K"
+      "stars": "3.9K",
+      "funcTemplate": "Function Template",
+      "appMarket": "Application Market"
     },
     "HomePage": {
       "slogan": "Write Code as effortlessly as Blogging",
@@ -434,6 +438,51 @@
   "LinkCopied": "Link Copied",
   "create success": "create success",
   "ServerStatus": "STATUS",
+  "market": {
+    "explore": "Explore",
+    "category": "Category",
+    "appTemplate": "Application Template",
+    "funcTemplate": "Function Template",
+    "all": "All",
+    "market": "Template Market"
+  },
+  "Template": {
+    "useTemplate": "Use Template",
+    "DeveloperInformation": "Developer Information",
+    "Sponsor": "Sponsor",
+    "Function": "Function",
+    "Dependency": "Dependency",
+    "EnvironmentVariables": "Environment Variables",
+    "public": "public",
+    "private": "private",
+    "MyTemplate": "MyTemplate",
+    "SortOrd": "Sort: ",
+    "CreateTemplate": "Create Template",
+    "Details": "Details",
+    "My": "My Template",
+    "Edit": "Edit",
+    "Create": "Create",
+    "CreatedAt": "Created At",
+    "byTime": "by Time",
+    "byFavorites": "by Favorites",
+    "byLikes": "by Likes",
+    "Description": "Enter function template description",
+    "updatedAt": "Updated At",
+    "UsedBy": "Used By",
+    "Draft": "Draft",
+    "AddEnvironmentVariables": "Add Environment Variables",
+    "Total": "Total",
+    "UsedSuccessfully": "Used Successfully",
+    "Select the application you want to use": "Select the application you want to use",
+    "recentUsed": "Recent Used",
+    "myStar": "My Star",
+    "myTemplate": "My Template",
+    "recommend": "Recommend",
+    "MostRecent": "Most Recent",
+    "useTemplateSuccess": "Use Template Success",
+    "cancelStarSuccess": "Cancel Star Success",
+    "starSuccess": "Star Success"
+  },
   "Fee": "Fee",
   "PleaseCloseApplicationFirst": "Please close your application first.",
   "custom": "Custom",
@@ -444,5 +493,8 @@
   "AIWelcomeMessage": "Hello, I am Laf AI Development Assistant, how can I help you?",
   "Send": "Send",
   "Stop": "Stop",
-  "SendMessagePlaceHolder": "Send a message"
+  "SendMessagePlaceHolder": "Send a message",
+  "Publish": "Publish",
+  "MyTemplate": "My Template",
+  "Create function template success": "Create function template success"
 }

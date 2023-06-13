@@ -207,20 +207,6 @@ declare namespace Definitions {
     domain?: string;
   };
 
-  export type Pat2TokenDto = {
-    pat?: string /* PAT */;
-  };
-
-  export type UserWithProfile = {
-    _id?: string;
-    username?: string;
-    email?: string;
-    phone?: string;
-    createdAt?: string;
-    updatedAt?: string;
-    profile?: Definitions.UserProfile;
-  };
-
   export type PasswdSignupDto = {
     username?: string /* username, 3-64 characters */;
     password?: string /* password, 8-64 characters */;
@@ -270,6 +256,20 @@ declare namespace Definitions {
     code?: string /* sms verify code */;
   };
 
+  export type Pat2TokenDto = {
+    pat?: string /* PAT */;
+  };
+
+  export type UserWithProfile = {
+    _id?: string;
+    username?: string;
+    email?: string;
+    phone?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    profile?: Definitions.UserProfile;
+  };
+
   export type CreatePATDto = {
     name?: string;
     expiresIn?: number;
@@ -283,18 +283,6 @@ declare namespace Definitions {
 
   export type DeleteDependencyDto = {
     name?: string;
-  };
-
-  export type ApplicationBilling = {
-    _id?: string;
-    appid?: string;
-    state?: string;
-    amount?: number;
-    detail?: Definitions.ApplicationBillingDetail;
-    startAt?: string;
-    endAt?: string;
-    createdAt?: string;
-    updatedAt?: string;
   };
 
   export type CalculatePriceDto = {
@@ -311,6 +299,34 @@ declare namespace Definitions {
     storageCapacity?: number;
     databaseCapacity?: number;
     total?: number;
+  };
+
+  export type CreateFunctionTemplateDto = {
+    name?: string /* function template name */;
+    dependencies?: Definitions.CreateDependencyDto[] /* Dependencies */;
+    environments?: Definitions.CreateEnvironmentDto[] /* environments */;
+    private?: boolean /* Private flag */;
+    description?: string /* function template description */;
+    items?: Definitions.FunctionTemplateItemDto[] /* items of the function template */;
+  };
+
+  export type UseFunctionTemplateDto = {
+    functionTemplateId?: string /* The ObjectId of function template */;
+    appid?: string;
+  };
+
+  export type UpdateFunctionTemplateDto = {
+    functionTemplateId?: any /* Function template id */;
+    name?: string /* Template name */;
+    dependencies?: Definitions.CreateDependencyDto[] /* Dependencies */;
+    environments?: Definitions.CreateEnvironmentDto[] /* Environments */;
+    private?: boolean /* Private flag */;
+    description?: string /* Template description */;
+    items?: Definitions.FunctionTemplateItemDto[] /* Template items */;
+  };
+
+  export type StarFunctionTemplateDto = {
+    functionTemplateId?: string /* The ObjectId of function template */;
   };
 
   export type Region = {
@@ -390,17 +406,16 @@ declare namespace Definitions {
     updatedAt?: string;
   };
 
-  export type ApplicationBillingDetail = {
-    cpu?: Definitions.ApplicationBillingDetailItem;
-    memory?: Definitions.ApplicationBillingDetailItem;
-    databaseCapacity?: Definitions.ApplicationBillingDetailItem;
-    storageCapacity?: Definitions.ApplicationBillingDetailItem;
-    networkTraffic?: Definitions.ApplicationBillingDetailItem;
+  export type CreateDependencyDto = {
+    name?: string;
+    spec?: string;
   };
 
-  export type ApplicationBillingDetailItem = {
-    usage?: number;
-    amount?: number;
+  export type FunctionTemplateItemDto = {
+    name?: string /* FunctionTemplate function name */;
+    description?: string;
+    methods?: string[];
+    code?: string /* The source code of the function */;
   };
 }
 
@@ -781,22 +796,6 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace AuthControllerPat2token {
-    export type QueryParameters = any;
-
-    export type BodyParameters = Definitions.Pat2TokenDto;
-
-    export type Responses = any;
-  }
-
-  namespace AuthControllerGetProfile {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
   namespace UserPasswordControllerSignup {
     export type QueryParameters = any;
 
@@ -865,6 +864,22 @@ declare namespace Paths {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.BindUsernameDto;
+
+    export type Responses = any;
+  }
+
+  namespace AuthenticationControllerPat2token {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.Pat2TokenDto;
+
+    export type Responses = any;
+  }
+
+  namespace AuthenticationControllerGetProfile {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
 
     export type Responses = any;
   }
@@ -1014,6 +1029,150 @@ declare namespace Paths {
   }
 
   namespace ResourceControllerGetResourceBundles {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionTemplateControllerCreateFunctionTemplate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.CreateFunctionTemplateDto;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionTemplateControllerUseFunctionTemplate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.UseFunctionTemplateDto;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionTemplateControllerUpdateFunctionTemplate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.UpdateFunctionTemplateDto;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionTemplateControllerDeleteFunctionTemplate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionTemplateControllerStarFunctionTemplate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.StarFunctionTemplateDto;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionTemplateControllerGetUserFunctionTemplateStarState {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionTemplateControllerGetFunctionTemplateUsedBy {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionTemplateControllerGetOneFunctionTemplate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionTemplateControllerGetAllFunctionTemplate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionTemplateControllerGetAllFunctionTemplateByName {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionTemplateControllerGetHotFunctionTemplate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionTemplateControllerGetMyHotFunctionTemplate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionTemplateControllerGetMyFunctionTemplate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionTemplateControllerGetMyFunctionTemplateByName {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionTemplateControllerGetMyStaredFunctionTemplate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionTemplateControllerGetMyRecentUseFunctionTemplate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AuthControllerGetProfile {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AuthControllerPat2token {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
