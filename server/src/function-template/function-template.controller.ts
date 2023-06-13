@@ -4,11 +4,11 @@ import {
   Post,
   Body,
   Patch,
-  Param,
   Delete,
   UseGuards,
   Req,
   Query,
+  Param,
 } from '@nestjs/common'
 import { FunctionTemplateService } from './function-template.service'
 import { CreateFunctionTemplateDto } from './dto/create-function-template.dto'
@@ -24,8 +24,7 @@ import {
   ApiResponseArray,
   ApiResponsePagination,
 } from 'src/utils/response'
-import { JwtAuthGuard } from 'src/auth/jwt.auth.guard'
-import { ApplicationAuthGuard } from 'src/auth/application.auth.guard'
+import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
 import { ObjectId } from 'mongodb'
 import { FunctionService } from 'src/function/function.service'
 import { BundleService } from 'src/application/bundle.service'
@@ -39,7 +38,7 @@ import {
 
 @ApiTags('FunctionTemplate')
 @ApiBearerAuth('Authorization')
-@Controller('function-template/:appid')
+@Controller('function-template')
 export class FunctionTemplateController {
   constructor(
     private readonly functionsService: FunctionService,
@@ -55,9 +54,9 @@ export class FunctionTemplateController {
    */
   @ApiOperation({ summary: 'create a function template' })
   @ApiResponseArray(FunctionTemplateSwagger)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post('create')
-  async createFunctiomTemplate(
+  async createFunctionTemplate(
     @Body() dto: CreateFunctionTemplateDto,
     @Req() req: IRequest,
   ) {
@@ -77,14 +76,23 @@ export class FunctionTemplateController {
 
   @ApiOperation({ summary: 'use a function template' })
   @ApiResponseArray(FunctionTemplateSwagger)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post('use')
-  async useFunctiomTemplate(
-    @Param('appid') appid: string,
+  async useFunctionTemplate(
     @Body() dto: UseFunctionTemplateDto,
     @Req() req: IRequest,
   ) {
     dto.functionTemplateId = new ObjectId(dto.functionTemplateId)
+
+    // Check if appid is a valid resource
+    const valid = await this.functionTemplateService.applicationAuthGuard(
+      dto.appid,
+      req.user._id,
+    )
+
+    if (!valid) {
+      return ResponseUtil.error('invalid resource')
+    }
 
     // check if the function template is exist
     const found = await this.functionTemplateService.findOneFunctionTemplate(
@@ -96,7 +104,7 @@ export class FunctionTemplateController {
 
     // function check
     const functionTemplateItems =
-      await this.functionTemplateService.findFunctionTemplateitems(
+      await this.functionTemplateService.findFunctionTemplateItems(
         dto.functionTemplateId,
       )
     if (functionTemplateItems.length === 0 || !functionTemplateItems) {
@@ -106,17 +114,17 @@ export class FunctionTemplateController {
     for (const functionTemplateItem of functionTemplateItems) {
       // check name is unique
       const found = await this.functionsService.findOne(
-        appid,
+        dto.appid,
         functionTemplateItem.name,
       )
       if (found) {
         return ResponseUtil.error('function name is not unique')
       }
       // check if meet the count limit
-      const bundle = await this.bundleService.findOne(appid)
+      const bundle = await this.bundleService.findOne(dto.appid)
       const MAX_FUNCTION_COUNT =
         bundle?.resource?.limitCountOfCloudFunction || 0
-      const count = await this.functionsService.count(appid)
+      const count = await this.functionsService.count(dto.appid)
       if (count >= MAX_FUNCTION_COUNT) {
         return ResponseUtil.error('exceed the count limit')
       }
@@ -124,7 +132,7 @@ export class FunctionTemplateController {
 
     const res = await this.functionTemplateService.useFunctionTemplate(
       req.user._id,
-      appid,
+      dto.appid,
       dto,
     )
 
@@ -133,9 +141,9 @@ export class FunctionTemplateController {
 
   @ApiOperation({ summary: 'update a function template' })
   @ApiResponseArray(FunctionTemplateSwagger)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch('update')
-  async updateFunctiomTemplate(
+  async updateFunctionTemplate(
     @Body() dto: UpdateFunctionTemplateDto,
     @Req() req: IRequest,
   ) {
@@ -161,10 +169,10 @@ export class FunctionTemplateController {
 
   @ApiOperation({ summary: 'delete a function template' })
   @ApiResponseArray(FunctionTemplateSwagger)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
-  @Delete('delete')
-  async deleteFunctiomTemplate(
-    @Query('id') templateId: string,
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async deleteFunctionTemplate(
+    @Param('id') templateId: string,
     @Req() req: IRequest,
   ) {
     const found = await this.functionTemplateService.findOneFunctionTemplate(
@@ -183,9 +191,9 @@ export class FunctionTemplateController {
 
   @ApiOperation({ summary: 'star a function template' })
   @ApiResponseString()
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post('star')
-  async starFunctiomTemplate(
+  async starFunctionTemplate(
     @Body() dto: StarFunctionTemplateDto,
     @Req() req: IRequest,
   ) {
@@ -205,10 +213,10 @@ export class FunctionTemplateController {
 
   @ApiOperation({ summary: 'get function template user star state' })
   @ApiResponseString()
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
-  @Get('star')
+  @UseGuards(JwtAuthGuard)
+  @Get('star/:id')
   async getUserFunctionTemplateStarState(
-    @Query('id') templateId: string,
+    @Param('id') templateId: string,
     @Req() req: IRequest,
   ) {
     const res =
@@ -221,10 +229,10 @@ export class FunctionTemplateController {
 
   @ApiOperation({ summary: 'get people who use this function template' })
   @ApiResponsePagination(GetFunctionTemplateUsedByItemSwagger)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
-  @Get('used-by')
+  @UseGuards(JwtAuthGuard)
+  @Get('used-by/:id')
   async getFunctionTemplateUsedBy(
-    @Query('id') templateId: string,
+    @Param('id') templateId: string,
     @Query('recent') recent: number,
     @Query('page') page: number,
     @Query('pageSize') pageSize: number,
@@ -249,10 +257,10 @@ export class FunctionTemplateController {
 
   @ApiOperation({ summary: 'get one function template' })
   @ApiResponseArray(FunctionTemplateSwagger)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
-  @Get('one')
+  @UseGuards(JwtAuthGuard)
+  @Get('one/:id')
   async getOneFunctionTemplate(
-    @Query('id') templateId: string,
+    @Param('id') templateId: string,
     @Req() req: IRequest,
   ) {
     const template = await this.functionTemplateService.findOneFunctionTemplate(
@@ -278,13 +286,43 @@ export class FunctionTemplateController {
 
   @ApiOperation({ summary: 'get all function template' })
   @ApiResponsePagination(FunctionTemplateSwagger)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('all')
   async getAllFunctionTemplate(
     @Query('recent') recent: number,
     @Query('page') page: number,
     @Query('pageSize') pageSize: number,
+    @Query('name') name: string,
+    @Query('starAsc') starAsc: number,
+    @Query('hot') hot: boolean,
   ) {
+    if (name) {
+      recent = recent === 0 ? Number(recent) : 1
+      page = page ? Number(page) : 1
+      pageSize = pageSize ? Number(pageSize) : 10
+
+      const res =
+        await this.functionTemplateService.findFunctionTemplatesByName(
+          recent,
+          page,
+          pageSize,
+          name,
+        )
+      return ResponseUtil.ok(res)
+    }
+    if (hot) {
+      starAsc = starAsc === 0 ? Number(starAsc) : 1
+      page = page ? Number(page) : 1
+      pageSize = pageSize ? Number(pageSize) : 10
+
+      const res =
+        await this.functionTemplateService.findMostStarFunctionTemplates(
+          starAsc,
+          page,
+          pageSize,
+        )
+      return ResponseUtil.ok(res)
+    }
     recent = recent === 0 ? Number(recent) : 1
     page = page ? Number(page) : 1
     pageSize = pageSize ? Number(pageSize) : 10
@@ -294,41 +332,172 @@ export class FunctionTemplateController {
       page,
       pageSize,
     )
+
     return ResponseUtil.ok(res)
   }
 
-  @ApiOperation({ summary: 'get most star function template' })
-  @ApiResponsePagination(FunctionTemplateSwagger)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
-  @Get('hot')
-  async getHotFunctionTemplate(
-    @Query('starAsc') starAsc: number,
-    @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
-  ) {
-    starAsc = starAsc === 0 ? Number(starAsc) : 1
-    page = page ? Number(page) : 1
-    pageSize = pageSize ? Number(pageSize) : 10
+  // @ApiOperation({ summary: 'get all function template' })
+  // @ApiResponsePagination(FunctionTemplateSwagger)
+  // @UseGuards(JwtAuthGuard)
+  // @Get('all-byname')
+  // async getAllFunctionTemplateByName(
+  //   @Query('recent') recent: number,
+  //   @Query('page') page: number,
+  //   @Query('pageSize') pageSize: number,
+  //   @Query('name') name: string,
+  // ) {
+  //   recent = recent === 0 ? Number(recent) : 1
+  //   page = page ? Number(page) : 1
+  //   pageSize = pageSize ? Number(pageSize) : 10
 
-    const res =
-      await this.functionTemplateService.findMostStarFunctionTemplates(
-        starAsc,
-        page,
-        pageSize,
-      )
-    return ResponseUtil.ok(res)
-  }
+  //   const res = await this.functionTemplateService.findFunctionTemplatesByName(
+  //     recent,
+  //     page,
+  //     pageSize,
+  //     name,
+  //   )
+  //   return ResponseUtil.ok(res)
+  // }
 
-  @ApiOperation({ summary: 'get most star function template' })
+  // @ApiOperation({ summary: 'get most star function template' })
+  // @ApiResponsePagination(FunctionTemplateSwagger)
+  // @UseGuards(JwtAuthGuard)
+  // @Get('hot')
+  // async getHotFunctionTemplate(
+  //   @Query('starAsc') starAsc: number,
+  //   @Query('page') page: number,
+  //   @Query('pageSize') pageSize: number,
+  // ) {
+  //   starAsc = starAsc === 0 ? Number(starAsc) : 1
+  //   page = page ? Number(page) : 1
+  //   pageSize = pageSize ? Number(pageSize) : 10
+
+  //   const res =
+  //     await this.functionTemplateService.findMostStarFunctionTemplates(
+  //       starAsc,
+  //       page,
+  //       pageSize,
+  //     )
+  //   return ResponseUtil.ok(res)
+  // }
+
+  // @ApiOperation({ summary: 'get my most star function template' })
+  // @ApiResponsePagination(FunctionTemplateSwagger)
+  // @UseGuards(JwtAuthGuard)
+  // @Get('my-hot')
+  // async getMyHotFunctionTemplate(
+  //   @Query('starAsc') starAsc: number,
+  //   @Query('page') page: number,
+  //   @Query('pageSize') pageSize: number,
+  //   @Req() req: IRequest,
+  // ) {
+  //   starAsc = starAsc === 0 ? Number(starAsc) : 1
+  //   page = page ? Number(page) : 1
+  //   pageSize = pageSize ? Number(pageSize) : 10
+
+  //   const res =
+  //     await this.functionTemplateService.findMyMostStarFunctionTemplates(
+  //       starAsc,
+  //       page,
+  //       pageSize,
+  //       req.user._id,
+  //     )
+  //   return ResponseUtil.ok(res)
+  // }
+
+  @ApiOperation({ summary: 'get my template function' })
   @ApiResponsePagination(FunctionTemplateSwagger)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('my')
   async getMyFunctionTemplate(
     @Query('recent') recent: number,
     @Query('page') page: number,
     @Query('pageSize') pageSize: number,
+    @Query('name') name: string,
+    @Query('starName') starName: string,
+    @Query('stared') stared: boolean,
+    @Query('recentUsed') recentUsed: boolean,
+    @Query('hot') hot: boolean,
+    @Query('starAsc') starAsc: number,
     @Req() req: IRequest,
   ) {
+    if (name) {
+      recent = recent === 0 ? Number(recent) : 1
+      page = page ? Number(page) : 1
+      pageSize = pageSize ? Number(pageSize) : 10
+
+      const res =
+        await this.functionTemplateService.findMyFunctionTemplatesByName(
+          recent,
+          page,
+          pageSize,
+          req.user._id,
+          name,
+        )
+      return ResponseUtil.ok(res)
+    }
+
+    if (starName) {
+      recent = recent === 0 ? Number(recent) : 1
+      page = page ? Number(page) : 1
+      pageSize = pageSize ? Number(pageSize) : 10
+
+      const res =
+        await this.functionTemplateService.findMyStaredFunctionTemplates(
+          recent,
+          page,
+          pageSize,
+          req.user._id,
+          starName,
+        )
+      return ResponseUtil.ok(res)
+    }
+
+    if (stared) {
+      recent = recent === 0 ? Number(recent) : 1
+      page = page ? Number(page) : 1
+      pageSize = pageSize ? Number(pageSize) : 10
+
+      const res =
+        await this.functionTemplateService.findMyStaredFunctionTemplates(
+          recent,
+          page,
+          pageSize,
+          req.user._id,
+        )
+      return ResponseUtil.ok(res)
+    }
+
+    if (recentUsed) {
+      recent = recent === 0 ? Number(recent) : 1
+      page = page ? Number(page) : 1
+      pageSize = pageSize ? Number(pageSize) : 10
+
+      const res =
+        await this.functionTemplateService.findMyRecentUseFunctionTemplates(
+          recent,
+          page,
+          pageSize,
+          req.user._id,
+        )
+      return ResponseUtil.ok(res)
+    }
+
+    if (hot) {
+      starAsc = starAsc === 0 ? Number(starAsc) : 1
+      page = page ? Number(page) : 1
+      pageSize = pageSize ? Number(pageSize) : 10
+
+      const res =
+        await this.functionTemplateService.findMyMostStarFunctionTemplates(
+          starAsc,
+          page,
+          pageSize,
+          req.user._id,
+        )
+      return ResponseUtil.ok(res)
+    }
+
     recent = recent === 0 ? Number(recent) : 1
     page = page ? Number(page) : 1
     pageSize = pageSize ? Number(pageSize) : 10
@@ -342,51 +511,77 @@ export class FunctionTemplateController {
     return ResponseUtil.ok(res)
   }
 
-  @ApiOperation({ summary: 'get my star function template' })
-  @ApiResponsePagination(GetMyStaredFunctionTemplateSwagger)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
-  @Get('my-star')
-  async getMyStaredFunctionTemplate(
-    @Query('recent') recent: number,
-    @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
-    @Req() req: IRequest,
-  ) {
-    recent = recent === 0 ? Number(recent) : 1
-    page = page ? Number(page) : 1
-    pageSize = pageSize ? Number(pageSize) : 10
+  // @ApiOperation({ summary: 'get my template function by name' })
+  // @ApiResponsePagination(FunctionTemplateSwagger)
+  // @UseGuards(JwtAuthGuard)
+  // @Get('my-byname')
+  // async getMyFunctionTemplateByName(
+  //   @Query('recent') recent: number,
+  //   @Query('page') page: number,
+  //   @Query('pageSize') pageSize: number,
+  //   @Query('name') name: string,
+  //   @Req() req: IRequest,
+  // ) {
+  //   recent = recent === 0 ? Number(recent) : 1
+  //   page = page ? Number(page) : 1
+  //   pageSize = pageSize ? Number(pageSize) : 10
 
-    const res =
-      await this.functionTemplateService.findMyStaredFunctionTemplates(
-        recent,
-        page,
-        pageSize,
-        req.user._id,
-      )
-    return ResponseUtil.ok(res)
-  }
+  //   const res =
+  //     await this.functionTemplateService.findMyFunctionTemplatesByName(
+  //       recent,
+  //       page,
+  //       pageSize,
+  //       req.user._id,
+  //       name,
+  //     )
+  //   return ResponseUtil.ok(res)
+  // }
 
-  @ApiOperation({ summary: 'get my recent used function template' })
-  @ApiResponsePagination(GetMyRecentUseFunctionTemplateSwagger)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
-  @Get('my-recent')
-  async getMyRecentUseFunctionTemplate(
-    @Query('recent') recent: number,
-    @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
-    @Req() req: IRequest,
-  ) {
-    recent = recent === 0 ? Number(recent) : 1
-    page = page ? Number(page) : 1
-    pageSize = pageSize ? Number(pageSize) : 10
+  // @ApiOperation({ summary: 'get my star function template' })
+  // @ApiResponsePagination(FunctionTemplateSwagger)
+  // @UseGuards(JwtAuthGuard)
+  // @Get('my-star')
+  // async getMyStaredFunctionTemplate(
+  //   @Query('recent') recent: number,
+  //   @Query('page') page: number,
+  //   @Query('pageSize') pageSize: number,
+  //   @Req() req: IRequest,
+  // ) {
+  //   recent = recent === 0 ? Number(recent) : 1
+  //   page = page ? Number(page) : 1
+  //   pageSize = pageSize ? Number(pageSize) : 10
 
-    const res =
-      await this.functionTemplateService.findMyRecentUseFunctionTemplates(
-        recent,
-        page,
-        pageSize,
-        req.user._id,
-      )
-    return ResponseUtil.ok(res)
-  }
+  //   const res =
+  //     await this.functionTemplateService.findMyStaredFunctionTemplates(
+  //       recent,
+  //       page,
+  //       pageSize,
+  //       req.user._id,
+  //     )
+  //   return ResponseUtil.ok(res)
+  // }
+
+  // @ApiOperation({ summary: 'get my recent used function template' })
+  // @ApiResponsePagination(FunctionTemplateSwagger)
+  // @UseGuards(JwtAuthGuard)
+  // @Get('my-recent')
+  // async getMyRecentUseFunctionTemplate(
+  //   @Query('recent') recent: number,
+  //   @Query('page') page: number,
+  //   @Query('pageSize') pageSize: number,
+  //   @Req() req: IRequest,
+  // ) {
+  //   recent = recent === 0 ? Number(recent) : 1
+  //   page = page ? Number(page) : 1
+  //   pageSize = pageSize ? Number(pageSize) : 10
+
+  //   const res =
+  //     await this.functionTemplateService.findMyRecentUseFunctionTemplates(
+  //       recent,
+  //       page,
+  //       pageSize,
+  //       req.user._id,
+  //     )
+  //   return ResponseUtil.ok(res)
+  // }
 }

@@ -19,6 +19,7 @@ import { compileTs2js } from '../utils/lang'
 import { CN_PUBLISHED_CONF, CN_PUBLISHED_FUNCTIONS } from 'src/constants'
 import { DatabaseService } from 'src/database/database.service'
 import { DependencyService } from 'src/dependency/dependency.service'
+import { ApplicationService } from '../application/application.service'
 
 @Injectable()
 export class FunctionTemplateService {
@@ -26,6 +27,7 @@ export class FunctionTemplateService {
     private readonly environmentVariableService: EnvironmentVariableService,
     private readonly databaseService: DatabaseService,
     private readonly dependencyService: DependencyService,
+    private readonly appService: ApplicationService,
   ) {}
 
   private readonly logger = new Logger(FunctionTemplateService.name)
@@ -250,17 +252,17 @@ export class FunctionTemplateService {
       )
       // add function template dependencies to application configuration
       //
-      const extraDenpendencies = await this.dependencyService.getExtras(appid)
+      const extraDependencies = await this.dependencyService.getExtras(appid)
       const builtinDependencies = this.dependencyService.getBuiltins()
-      const all = extraDenpendencies.concat(builtinDependencies)
-      const allnames = all.map((item) => npa(item).name)
+      const all = extraDependencies.concat(builtinDependencies)
+      const allNames = all.map((item) => npa(item).name)
 
       // If the dependency already exists, use the original dependency.
       const filtered = functionTemplate.dependencies.filter((item) => {
         const name = npa(item).name
-        return !allnames.includes(name)
+        return !allNames.includes(name)
       })
-      const deps = extraDenpendencies.concat(filtered)
+      const deps = extraDependencies.concat(filtered)
 
       await this.db
         .collection<ApplicationConfiguration>('ApplicationConfiguration')
@@ -275,11 +277,11 @@ export class FunctionTemplateService {
 
       // add function template Env to application configuration
       //
-      const orginEnv = await this.environmentVariableService.findAll(appid)
+      const originEnv = await this.environmentVariableService.findAll(appid)
       const mergedEnv = [
-        ...orginEnv,
+        ...originEnv,
         ...functionTemplate.environments.filter(
-          (item2) => !orginEnv.some((item1) => item1.name === item2.name),
+          (item2) => !originEnv.some((item1) => item1.name === item2.name),
         ),
       ]
 
@@ -302,7 +304,7 @@ export class FunctionTemplateService {
 
       // publish function template items to CloudFunction and app database
       //
-      const functionTemplateItems = await this.findFunctionTemplateitems(
+      const functionTemplateItems = await this.findFunctionTemplateItems(
         dto.functionTemplateId,
       )
 
@@ -649,6 +651,144 @@ export class FunctionTemplateService {
     return res
   }
 
+  async findFunctionTemplatesByName(
+    recent: number,
+    page: number,
+    pageSize: number,
+    name: string,
+  ) {
+    const safeName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const reg = new RegExp(safeName, 'i')
+    const pipe = [
+      { $match: { private: false, name: { $regex: reg } } },
+
+      {
+        $lookup: {
+          from: 'FunctionTemplateItem',
+          localField: '_id',
+          foreignField: 'templateId',
+          as: 'items',
+        },
+      },
+      { $sort: { createdAt: recent === 0 ? 1 : -1 } },
+      { $skip: (page - 1) * pageSize },
+      { $limit: pageSize },
+    ]
+
+    const total = await this.db
+      .collection<FunctionTemplate>('FunctionTemplate')
+      .countDocuments(
+        { private: false, name: { $regex: reg } },
+        { maxTimeMS: 5000 },
+      )
+
+    const functionTemplate = await this.db
+      .collection<FunctionTemplate>('FunctionTemplate')
+      .aggregate(pipe)
+      .maxTimeMS(5000)
+      .toArray()
+
+    const res = {
+      list: functionTemplate,
+      total: total,
+      page,
+      pageSize,
+    }
+
+    return res
+  }
+
+  async findMyMostStarFunctionTemplates(
+    starAsc: number,
+    page: number,
+    pageSize: number,
+    userid: ObjectId,
+  ) {
+    const pipe = [
+      { $match: { private: false, uid: userid } },
+      {
+        $lookup: {
+          from: 'FunctionTemplateItem',
+          localField: '_id',
+          foreignField: 'templateId',
+          as: 'items',
+        },
+      },
+      {
+        $sort: {
+          star: starAsc === 0 ? 1 : -1,
+        },
+      },
+      { $skip: (page - 1) * pageSize },
+      { $limit: pageSize },
+    ]
+
+    const total = await this.db
+      .collection<FunctionTemplate>('FunctionTemplate')
+      .countDocuments({ private: false, uid: userid })
+
+    const templates = await this.db
+      .collection<FunctionTemplate>('FunctionTemplate')
+      .aggregate(pipe)
+      .toArray()
+
+    const res = {
+      list: templates,
+      total: total,
+      page,
+      pageSize,
+    }
+
+    return res
+  }
+
+  async findMyFunctionTemplatesByName(
+    recent: number,
+    page: number,
+    pageSize: number,
+    userid: ObjectId,
+    name: string,
+  ) {
+    const safeName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const reg = new RegExp(safeName, 'i')
+    const pipe = [
+      { $match: { uid: userid, name: { $regex: reg } } },
+      {
+        $lookup: {
+          from: 'FunctionTemplateItem',
+          localField: '_id',
+          foreignField: 'templateId',
+          as: 'items',
+        },
+      },
+      { $sort: { createdAt: recent === 0 ? 1 : -1 } },
+      { $skip: (page - 1) * pageSize },
+      { $limit: pageSize },
+    ]
+
+    const total = await this.db
+      .collection<FunctionTemplate>('FunctionTemplate')
+      .countDocuments(
+        { uid: userid, name: { $regex: reg } },
+        { maxTimeMS: 5000 },
+      )
+
+    const myTemplate = await this.db
+      .collection<FunctionTemplate>('FunctionTemplate')
+      .aggregate(pipe)
+      .maxTimeMS(5000)
+      .toArray()
+
+    const res = {
+      list: myTemplate,
+      total: total,
+      page,
+      pageSize,
+    }
+
+    return res
+  }
+
   async findMyFunctionTemplates(
     recent: number,
     page: number,
@@ -694,7 +834,90 @@ export class FunctionTemplateService {
     page: number,
     pageSize: number,
     userid: ObjectId,
+    name?: string,
   ) {
+    if (name) {
+      const safeName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      const reg = new RegExp(safeName, 'i')
+
+      const pipe = [
+        {
+          $lookup: {
+            from: 'FunctionTemplate',
+            localField: 'templateId',
+            foreignField: '_id',
+            as: 'functionTemplate',
+          },
+        },
+        {
+          $lookup: {
+            from: 'FunctionTemplateItem',
+            localField: 'templateId',
+            foreignField: 'templateId',
+            as: 'items',
+          },
+        },
+        { $match: { uid: userid, 'functionTemplate.name': { $regex: reg } } },
+        { $sort: { createdAt: recent === 0 ? 1 : -1 } },
+        { $skip: (page - 1) * pageSize },
+        { $limit: pageSize },
+      ]
+
+      const pipe2 = [
+        {
+          $lookup: {
+            from: 'FunctionTemplate',
+            localField: 'templateId',
+            foreignField: '_id',
+            as: 'functionTemplate',
+          },
+        },
+        {
+          $lookup: {
+            from: 'FunctionTemplateItem',
+            localField: 'templateId',
+            foreignField: 'templateId',
+            as: 'items',
+          },
+        },
+        { $match: { uid: userid, 'functionTemplate.name': { $regex: reg } } },
+        { $group: { _id: null, count: { $sum: 1 } } },
+      ]
+
+      const total = await this.db
+        .collection<FunctionTemplateStarRelation>(
+          'FunctionTemplateStarRelation',
+        )
+        .aggregate(pipe2)
+        .maxTimeMS(5000)
+        .toArray()
+
+      const myStarTemplates = await this.db
+        .collection<FunctionTemplateStarRelation>(
+          'FunctionTemplateStarRelation',
+        )
+        .aggregate(pipe)
+        .maxTimeMS(5000)
+        .toArray()
+
+      const transformedData = myStarTemplates.map((element) => {
+        const { functionTemplate, items } = element
+        const [template] = functionTemplate
+        const result = { ...template }
+        result.items = items
+        return result
+      })
+
+      const res = {
+        list: transformedData,
+        total: total[0] ? total[0].count : 0,
+        page,
+        pageSize,
+      }
+
+      return res
+    }
+
     const pipe = [
       { $match: { uid: userid } },
       {
@@ -727,8 +950,16 @@ export class FunctionTemplateService {
       .aggregate(pipe)
       .toArray()
 
+    const transformedData = myStarTemplates.map((element) => {
+      const { functionTemplate, items } = element
+      const [template] = functionTemplate
+      const result = { ...template }
+      result.items = items
+      return result
+    })
+
     const res = {
-      list: myStarTemplates,
+      list: transformedData,
       total: total,
       page,
       pageSize,
@@ -750,7 +981,7 @@ export class FunctionTemplateService {
           from: 'FunctionTemplate',
           localField: 'templateId',
           foreignField: '_id',
-          as: 'functionTemplates',
+          as: 'functionTemplate',
         },
       },
       {
@@ -775,8 +1006,16 @@ export class FunctionTemplateService {
       .collection<FunctionTemplateUseRelation>('FunctionTemplateUseRelation')
       .countDocuments({ uid: userid })
 
+    const transformedData = recentUseFunctionTemplates.map((element) => {
+      const { functionTemplate, items } = element
+      const [template] = functionTemplate
+      const result = { ...template }
+      result.items = items
+      return result
+    })
+
     const res = {
-      list: recentUseFunctionTemplates,
+      list: transformedData,
       total: total,
       page,
       pageSize,
@@ -800,12 +1039,26 @@ export class FunctionTemplateService {
     return res
   }
 
-  async findFunctionTemplateitems(templateId: ObjectId) {
+  async findFunctionTemplateItems(templateId: ObjectId) {
     const functionTemplateItems = await this.db
       .collection<FunctionTemplateItem>('FunctionTemplateItem')
       .find({ templateId: templateId })
       .toArray()
 
     return functionTemplateItems
+  }
+
+  async applicationAuthGuard(appid, userid) {
+    const app = await this.appService.findOne(appid)
+    if (!app) {
+      return false
+    }
+
+    const author_id = app.createdBy?.toString()
+    if (author_id !== userid.toString()) {
+      return false
+    }
+
+    return true
   }
 }

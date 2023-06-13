@@ -1,6 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
-  CloudFunction,
   CloudFunctionSource,
   HttpMethod,
 } from 'src/function/entities/cloud-function'

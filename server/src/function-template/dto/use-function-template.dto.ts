@@ -5,7 +5,11 @@ import { ObjectId } from 'mongodb'
 export class UseFunctionTemplateDto {
   @ApiProperty({
     description: 'The ObjectId of function template',
+    type: 'string',
   })
   @IsNotEmpty()
   functionTemplateId: ObjectId
+
+  @ApiProperty()
+  appid: string
 }
