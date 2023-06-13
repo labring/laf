@@ -35,7 +35,7 @@ laf login [pat]
 默认登录 `laf.run`，如果要登录 `laf.dev` 或私有部署的 laf 或其他`laf.run`账号可通过 添加user：
 
 ```shell
-laf user add dev https://laf.dev
+laf user add dev -r https://laf.dev
 laf user switch dev
 laf login [pat]
 ```
