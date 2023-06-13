@@ -32,7 +32,7 @@ spec:
               memory: 64Mi
           env:
             - name: MONGO_URI
-              value: {{ .Values.meteringDatabaseUrl | quote }}
+              value: "mongodb://admin:gvm3kyvdq8kwsd04stdjpof97alzl6cw@mongodb-0.mongo.laf-system.svc.cluster.local:27017/sealos-resources?authSource=admin&replicaSet=rs0&w=majority"
           imagePullPolicy: Always
 ---
 apiVersion: v1
@@ -325,7 +325,7 @@ spec:
             - /manager
           env:
             - name: MONGO_URI
-              value: {{ .Values.meteringDatabaseUrl | quote }}
+              value: "mongodb://admin:gvm3kyvdq8kwsd04stdjpof97alzl6cw@mongodb-0.mongo.laf-system.svc.cluster.local:27017/sealos-resources?authSource=admin&replicaSet=rs0&w=majority"
           image: docker.io/bxy4543/laf-resources-controller:v0.0.2
           imagePullPolicy: Always
           livenessProbe:
