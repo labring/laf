@@ -7,18 +7,13 @@ import {
   Patch,
   UseGuards,
 } from '@nestjs/common'
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger'
-import { ResponseUtil } from 'src/utils/response'
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiResponseObject, ResponseUtil } from 'src/utils/response'
 import { AutoscalingService } from './autoscaling.service'
 import { CreateAutoscalingDto } from './dto/create-autoscaling.dto'
 import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
 import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
+import { Autoscaling } from './entities/application-configuration'
 
 @ApiTags('Application')
 @ApiBearerAuth('Authorization')
@@ -34,7 +29,7 @@ export class AutoscalingController {
    * @param dto
    * @returns
    */
-  @ApiResponse({ type: ResponseUtil })
+  @ApiResponseObject(Autoscaling)
   @ApiOperation({ summary: 'Update autoscaling setting' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Patch()
@@ -59,7 +54,7 @@ export class AutoscalingController {
    * @param appid
    * @returns
    */
-  @ApiResponse({ type: ResponseUtil })
+  @ApiResponseObject(Autoscaling)
   @ApiOperation({ summary: 'Get autoscaling setting' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get()

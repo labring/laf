@@ -455,6 +455,34 @@ export class InstanceService {
       targetMemoryUtilizationPercentage,
     } = app.configuration.autoscaling
 
+    const metrics: V2HorizontalPodAutoscalerSpec['metrics'] = []
+
+    if (targetCPUUtilizationPercentage) {
+      metrics.push({
+        type: 'Resource',
+        resource: {
+          name: 'cpu',
+          target: {
+            type: 'Utilization',
+            averageUtilization: targetCPUUtilizationPercentage,
+          },
+        },
+      })
+    }
+
+    if (targetMemoryUtilizationPercentage) {
+      metrics.push({
+        type: 'Resource',
+        resource: {
+          name: 'memory',
+          target: {
+            type: 'Utilization',
+            averageUtilization: targetMemoryUtilizationPercentage,
+          },
+        },
+      })
+    }
+
     const spec: V2HorizontalPodAutoscalerSpec = {
       scaleTargetRef: {
         apiVersion: 'apps/v1',
@@ -463,28 +491,27 @@ export class InstanceService {
       },
       minReplicas,
       maxReplicas,
-      metrics: [
-        {
-          type: 'Resource',
-          resource: {
-            name: 'cpu',
-            target: {
-              type: 'Utilization',
-              averageUtilization: targetCPUUtilizationPercentage,
+      metrics,
+      behavior: {
+        scaleDown: {
+          policies: [
+            {
+              type: 'Pods',
+              value: 1,
+              periodSeconds: 60,
             },
-          },
+          ],
         },
-        {
-          type: 'Resource',
-          resource: {
-            name: 'memory',
-            target: {
-              type: 'Utilization',
-              averageUtilization: targetMemoryUtilizationPercentage,
+        scaleUp: {
+          policies: [
+            {
+              type: 'Pods',
+              value: 1,
+              periodSeconds: 60,
             },
-          },
+          ],
         },
-      ],
+      },
     }
     return spec
   }

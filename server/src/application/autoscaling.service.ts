@@ -13,8 +13,8 @@ export class AutoscalingService {
     const autoscaling = {
       minReplicas: 1,
       maxReplicas: 5,
-      targetCPUUtilizationPercentage: 50,
-      targetMemoryUtilizationPercentage: 50,
+      targetCPUUtilizationPercentage: null,
+      targetMemoryUtilizationPercentage: null,
       ...dto,
     }
 

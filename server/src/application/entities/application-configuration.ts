@@ -20,10 +20,10 @@ export class Autoscaling {
   maxReplicas: number
 
   @ApiProperty()
-  targetCPUUtilizationPercentage: number
+  targetCPUUtilizationPercentage?: number
 
   @ApiProperty()
-  targetMemoryUtilizationPercentage: number
+  targetMemoryUtilizationPercentage?: number
 }
 
 export class ApplicationConfiguration {

@@ -3,7 +3,7 @@ import {
   IsBoolean,
   IsInt,
   IsNotEmpty,
-  IsNumber,
+  IsOptional,
   Max,
   Min,
   ValidateIf,
@@ -32,25 +32,31 @@ export class CreateAutoscalingDto {
   maxReplicas: number
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsNumber()
+  @IsOptional()
+  @IsInt()
   @Min(0)
   @Max(100)
   @ValidateIf(({ enable }) => enable)
-  targetCPUUtilizationPercentage: number
+  targetCPUUtilizationPercentage?: number
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsNumber()
+  @IsOptional()
+  @IsInt()
   @Min(0)
   @Max(100)
   @ValidateIf(({ enable }) => enable)
-  targetMemoryUtilizationPercentage: number
+  targetMemoryUtilizationPercentage?: number
 
   validate() {
     if (this.enable) {
       if (this.maxReplicas <= this.minReplicas) {
         return 'Max replicas must be smaller than min replicas.'
+      }
+      if (
+        !this.targetCPUUtilizationPercentage &&
+        !this.targetMemoryUtilizationPercentage
+      ) {
+        return 'Either targetCPUUtilizationPercentage or targetMemoryUtilizationPercentage must be specified.'
       }
     }
     return null
