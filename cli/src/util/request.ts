@@ -78,6 +78,9 @@ request.interceptors.response.use(
       } else if (status === 503) {
         console.log('The server is abnormal, please contact the administrator!')
         process.exit(1)
+      } else if (status === 404) { 
+        console.log(`Request ${ error.response.config.url} not found, please check remote server url`)
+        process.exit(1)
       }
       return Promise.reject(error.message)
     }

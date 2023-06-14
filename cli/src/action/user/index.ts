@@ -59,7 +59,10 @@ export async function add(name, options: { remote?: string }) {
     }
   }
 
-  const server = options.remote || DEFAULT_SERVER
+  let server = options.remote || DEFAULT_SERVER
+  if (server?.endsWith('/')) {
+    server = server.substring(0, server.length - 1)
+  }
   userSchema.users.push({
     name: name,
     server: server,
