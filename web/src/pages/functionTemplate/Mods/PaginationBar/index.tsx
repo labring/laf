@@ -1,4 +1,3 @@
-import React from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import clsx from "clsx";
@@ -14,14 +13,14 @@ const PaginationBar = (props: { page: number; setPage: any; total?: number; page
         {t("Template.Total")}: {total}
       </span>
       <div
-        className="cursor-pointer rounded-full px-2 py-1 hover:bg-gray-100"
+        className="mr-2 cursor-pointer rounded-full px-2 py-1 hover:bg-gray-100"
         onClick={() => {
           setPage(1);
         }}
       >
         <ArrowLeftIcon boxSize={2} />
       </div>
-      <div className="cursor-pointer rounded-full p-1 hover:bg-gray-100">
+      <div className="mr-2 cursor-pointer rounded-full p-1 hover:bg-gray-100">
         <ChevronLeftIcon
           onClick={() => {
             if (page === 1) return;
@@ -29,18 +28,12 @@ const PaginationBar = (props: { page: number; setPage: any; total?: number; page
           }}
         />
       </div>
-      <span
-        className={clsx(
-          "pl-1",
-          page === 1 && "text-gray-400",
-          page === totalPage && "text-gray-400",
-        )}
-      >
+      <span className={clsx(page === 1 && "text-gray-400", page === totalPage && "text-gray-400")}>
         {page}
       </span>
       <span className="px-2">/</span>
-      <span className="pr-1">{totalPage}</span>
-      <div className="cursor-pointer rounded-full p-1 hover:bg-gray-100">
+      <span>{totalPage}</span>
+      <div className="ml-2 cursor-pointer rounded-full p-1 hover:bg-gray-100">
         <ChevronRightIcon
           className="cursor-pointer hover:bg-gray-100"
           onClick={() => {
@@ -50,7 +43,7 @@ const PaginationBar = (props: { page: number; setPage: any; total?: number; page
         />
       </div>
       <div
-        className="cursor-pointer rounded-full px-2 py-1 hover:bg-gray-100"
+        className="ml-2 cursor-pointer rounded-full px-2 py-1 hover:bg-gray-100"
         onClick={() => {
           setPage(totalPage);
         }}

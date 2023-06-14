@@ -1,27 +1,18 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Avatar, Box, Button, Tooltip, useColorMode, VStack } from "@chakra-ui/react";
+import { Avatar, Box, Button, Tooltip, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import { FilledHeartIcon, HeartIcon } from "@/components/CommonIcon";
 import FileTypeIcon from "@/components/FileTypeIcon";
 
-import {
-  useFunctionTemplateStarMutation,
-  useFunctionTemplateUseMutation,
-  useGetStarStateQuery,
-} from "../../service";
+import { useFunctionTemplateStarMutation, useGetStarStateQuery } from "../../service";
 import UseTemplateModal from "../UseTemplateModal";
 
 import { TFunctionTemplate } from "@/apis/typing";
-import useGlobalStore from "@/pages/globalStore";
 
-const TemplateInfo = (props: {
-  isFromMarket?: boolean;
-  functionTemplate: TFunctionTemplate;
-  usedBy: any[];
-}) => {
-  const { functionTemplate, isFromMarket, usedBy } = props;
+const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[] }) => {
+  const { functionTemplate, usedBy } = props;
   const {
     items: functionList,
     environments,
@@ -29,7 +20,6 @@ const TemplateInfo = (props: {
     star,
     _id: templateId,
   } = functionTemplate;
-  const { currentApp, showError, showSuccess } = useGlobalStore();
 
   const { t } = useTranslation();
   const [starState, setStarState] = useState(false);
@@ -37,10 +27,9 @@ const TemplateInfo = (props: {
   const { colorMode } = useColorMode();
   const darkMode = colorMode === "dark";
   const starMutation = useFunctionTemplateStarMutation();
-  const useTemplateMutation = useFunctionTemplateUseMutation();
 
   useGetStarStateQuery(
-    { id: templateId || "" },
+    { id: templateId },
     {
       onSuccess: (data: any) => {
         setStarState(data.data === "stared");
@@ -54,21 +43,19 @@ const TemplateInfo = (props: {
         <button
           className={clsx(
             "mr-2 flex cursor-pointer items-center rounded-3xl border-2 px-3 py-1 text-xl",
-            starState ? "border-gray-800" : "text-gray-400",
-            starState && darkMode ? "border-gray-100" : "",
+            starState && !darkMode ? "border-gray-800" : "text-gray-400",
+            starState && darkMode ? "border-gray-400" : "",
           )}
           onClick={async () => {
-            const res = await starMutation.mutateAsync({ functionTemplateId: templateId || "" });
+            const res = await starMutation.mutateAsync({ templateId: templateId || "" });
             if (!res.error) {
               console.log(res.data);
               if (starState) {
                 setStarState(false);
                 setStarNum(starNum - 1);
-                showError(t("Template.cancelStarSuccess"));
               } else if (starNum >= 0) {
                 setStarState(true);
                 setStarNum(starNum + 1);
-                showSuccess(t("Template.starSuccess"));
               }
             }
           }}
@@ -76,29 +63,12 @@ const TemplateInfo = (props: {
           {starState ? <FilledHeartIcon /> : <HeartIcon />}
           <span className="pl-1">{starNum}</span>
         </button>
-        {isFromMarket ? (
-          <UseTemplateModal templateId={templateId || ""}>
-            <Button>{t("Template.useTemplate")}</Button>
-          </UseTemplateModal>
-        ) : (
-          <Button
-            onClick={async () => {
-              const res = await useTemplateMutation.mutateAsync({
-                appid: currentApp.appid || "",
-                functionTemplateId: templateId,
-              });
-              if (!res.error) {
-                showSuccess(t("Template.UsedSuccessfully"));
-                window.location.reload();
-              }
-            }}
-          >
-            {t("Template.useTemplate")}
-          </Button>
-        )}
+        <UseTemplateModal templateId={templateId || ""}>
+          <Button>{t("Template.useTemplate")}</Button>
+        </UseTemplateModal>
       </Box>
 
-      <VStack>
+      <div>
         {/* <Box className="w-full border-b-2">
           <span className="text-xl font-bold">{t("Template.DeveloperInformation")}</span>
           <Box className="flex h-20 items-center justify-between">
@@ -120,12 +90,12 @@ const TemplateInfo = (props: {
             </SponsorModal>
           </Box>
         </Box> */}
-        <Box className="w-full border-b-2 pb-2">
-          <span className="text-xl font-bold">{t("Template.Function")}</span>
-          <Box>
+        <Box className="w-full border-b-[1px]">
+          <span className="text-xl font-semibold">{t("Template.Function")}</span>
+          <Box className="py-3">
             {(functionList || []).map((item) => {
               return (
-                <div key={item.name} className="flex h-8 items-center font-medium">
+                <div key={item.name} className="my-2 items-center font-medium">
                   <FileTypeIcon type="ts" />
                   <span className="pl-1 text-lg">{item.name}</span>
                 </div>
@@ -133,13 +103,13 @@ const TemplateInfo = (props: {
             })}
           </Box>
         </Box>
-        <Box className="w-full border-b-2 pb-2">
-          <span className="text-xl font-bold">{t("Template.Dependency")}</span>
+        <Box className="w-full border-b-[1px] pt-5">
+          <span className="text-xl font-semibold">{t("Template.Dependency")}</span>
           <Box>
             {(packageList || []).map((item) => {
               const [name, version] = item.split("@");
               return (
-                <div key={item} className="flex h-8 items-center justify-between font-medium">
+                <div key={item} className="my-5 flex items-center justify-between font-medium">
                   <div className="flex items-center">
                     <FileTypeIcon type="npm" />
                     <span className="pl-1">{name}</span>
@@ -150,18 +120,18 @@ const TemplateInfo = (props: {
             })}
           </Box>
         </Box>
-        <Box className="w-full border-b-2 pb-2">
+        <Box className="w-full border-b-[1px] pt-5">
           <span className="text-xl font-bold">{t("Template.EnvironmentVariables")}</span>
           {(environments || []).map((item) => {
             return (
               <Box key={item.name}>
-                <div className="flex items-center py-1 font-medium">{item.name}</div>
+                <div className="my-5 flex items-center font-medium">{item.name}</div>
               </Box>
             );
           })}
         </Box>
-        <Box className="w-full">
-          <div className="flex items-center">
+        <Box className="w-full border-b-[1px]">
+          <div className="flex items-center pt-5">
             <span className="text-xl font-bold">{t("Template.UsedBy")}</span>
             <span
               className={clsx(
@@ -172,7 +142,7 @@ const TemplateInfo = (props: {
               {usedBy.length}
             </span>
           </div>
-          <div className="mt-1 flex">
+          <div className="flex">
             {usedBy.map((item) => {
               return (
                 <Tooltip
@@ -180,7 +150,7 @@ const TemplateInfo = (props: {
                   label={item.users[0].username}
                   aria-label="A tooltip"
                 >
-                  <Box className="mr-1">
+                  <Box className="my-5 mr-2">
                     <Avatar size="sm" name={item.users[0].username} />
                   </Box>
                 </Tooltip>
@@ -188,7 +158,7 @@ const TemplateInfo = (props: {
             })}
           </div>
         </Box>
-      </VStack>
+      </div>
     </div>
   );
 };

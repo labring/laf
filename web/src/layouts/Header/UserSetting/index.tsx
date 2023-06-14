@@ -1,8 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import { Avatar, Menu, MenuButton, MenuItem, MenuList, useColorMode } from "@chakra-ui/react";
-
-import i18n from "@/utils/i18n";
+import { Avatar, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 
 import SettingModal, { TabKeys } from "@/pages/app/setting";
 import PATList from "@/pages/app/setting/PATList";
@@ -10,8 +7,6 @@ import Usage from "@/pages/app/setting/Usage";
 import UserInfo from "@/pages/app/setting/UserInfo";
 export default function UserSetting(props: { name: string; avatar?: string; width: string }) {
   const { t } = useTranslation();
-  const { toggleColorMode } = useColorMode();
-  const navigate = useNavigate();
   return (
     <Menu>
       <MenuButton>
@@ -73,34 +68,6 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
         >
           <MenuItem minH="40px">{t("SettingPanel.Usage")}</MenuItem>
         </SettingModal>
-
-        <MenuItem
-          minH="40px"
-          onClick={() => {
-            navigate("/my");
-          }}
-        >
-          {t("MyTemplate")}
-        </MenuItem>
-
-        <MenuItem
-          minH="40px"
-          onClick={() => {
-            i18n.changeLanguage(i18n.language === "en" ? "zh" : "en");
-          }}
-        >
-          {t("SwitchLanguage")}
-        </MenuItem>
-
-        <MenuItem
-          minH="40px"
-          onClick={() => {
-            toggleColorMode();
-            window.dispatchEvent(new Event("ColorModeChange"));
-          }}
-        >
-          {t("SwitchColorMode")}
-        </MenuItem>
 
         <MenuItem
           onClick={() => {

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import clsx from "clsx";
-// import * as monaco from "monaco-editor";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
 import { COLOR_MODE } from "@/constants";
@@ -70,7 +69,6 @@ const MonacoEditor = (props: {
   onChange?: (value: string | undefined) => void;
 }) => {
   const { readOnly, value, title, colorMode, onChange } = props;
-  // const parseImports = debounce(autoImportTypings.parse, 1500).bind(autoImportTypings);
   const monacoEl = useRef(null);
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);

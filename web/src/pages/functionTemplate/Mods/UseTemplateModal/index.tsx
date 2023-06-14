@@ -26,13 +26,14 @@ import BundleInfo from "@/pages/home/mods/List/BundleInfo";
 import StatusBadge from "@/pages/home/mods/StatusBadge";
 
 const UseTemplateModal = (props: { children: any; templateId: string }) => {
-  const { templateId } = props;
+  const { children, templateId } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [appList, setAppList] = useState([]);
   const { regions, showSuccess } = useGlobalStore();
   const { t } = useTranslation();
   const useTemplateMutation = useFunctionTemplateUseMutation();
   const navigate = useNavigate();
+
   useQuery(
     APP_LIST_QUERY_KEY,
     () => {
@@ -47,7 +48,7 @@ const UseTemplateModal = (props: { children: any; templateId: string }) => {
 
   return (
     <>
-      {React.cloneElement(props.children, {
+      {React.cloneElement(children, {
         onClick: (event?: any) => {
           event?.preventDefault();
           onOpen();
@@ -70,7 +71,7 @@ const UseTemplateModal = (props: { children: any; templateId: string }) => {
                     onClick={async () => {
                       const res = await useTemplateMutation.mutateAsync({
                         appid: item?.appid,
-                        functionTemplateId: templateId,
+                        templateId: templateId,
                       });
                       if (!res.error) {
                         showSuccess(t("Template.UsedSuccessfully"));

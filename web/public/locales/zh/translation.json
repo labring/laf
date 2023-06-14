@@ -371,11 +371,11 @@
       "aboutUs": "关于我们",
       "docs": "文档",
       "contact": "联系我们",
-      "forum": "开发者社区",
+      "forum": "社区",
       "faq": "FAQ",
       "start": "立即开发",
       "stars": "3.9K",
-      "funcTemplate": "函数模板",
+      "funcTemplate": "函数市场",
       "appMarket": "应用市场"
     },
     "HomePage": {
@@ -459,7 +459,7 @@
     "SortOrd": "排序：",
     "CreateTemplate": "新建模板",
     "Details": "函数详情",
-    "My": "我的",
+    "My": "我的模板",
     "Edit": "编辑",
     "Create": "新建",
     "CreatedAt": "创建于",
@@ -481,7 +481,15 @@
     "MostRecent": "按时间最新",
     "useTemplateSuccess": "函数模板使用成功",
     "cancelStarSuccess": "取消收藏成功",
-    "starSuccess": "收藏成功"
+    "starSuccess": "收藏成功",
+    "FunctionNameExist": "函数名已存在",
+    "AllTemplates": "社区模板",
+    "Community": "社区模板",
+    "StaredTemplate": "我收藏的",
+    "Recent": "最近使用",
+    "Earliest": "按时间最早",
+    "MostStars": "按收藏数最多",
+    "Latest": "按时间最新"
   },
   "Fee": "费用",
   "PleaseCloseApplicationFirst": "请先关闭应用",
@@ -496,5 +504,9 @@
   "SendMessagePlaceHolder": "提问",
   "Publish": "发布",
   "MyTemplate": "我的模板",
-  "Create function template success": "创建函数模板成功"
+  "Create function template success": "创建函数模板成功",
+  "Update function template success": "更新函数模板成功",
+  "Templates": {
+    "My": "我的模板"
+  }
 }

@@ -75,57 +75,46 @@ const routes = [
         ],
       },
       {
-        path: "/function-templates",
+        path: "/function-templates/:pages",
         element: <TemplateLayout />,
         auth: true,
         children: [
           {
-            path: "/function-templates",
+            path: "/function-templates/:pages",
             element: () => import("@/pages/functionTemplate"),
           },
         ],
       },
       {
-        path: "/function-templates/:templateId",
+        path: "/function-templates/:pages/:templateId",
         element: <TemplateLayout />,
         auth: true,
         children: [
           {
-            path: "/function-templates/:templateId",
+            path: "/function-templates/:pages/:templateId",
             element: () => import("@/pages/functionTemplate/funcTemplateItem"),
           },
         ],
       },
       {
-        path: "/my",
+        path: "/function-templates/:pages/:templateId/edit",
         element: <TemplateLayout />,
         auth: true,
         children: [
           {
-            path: "/my",
-            element: () => import("@/pages/my"),
+            path: "/function-templates/:pages/:templateId/edit",
+            element: () => import("@/pages/functionTemplate/CreateFuncTemplate"),
           },
         ],
       },
       {
-        path: "/my/create",
+        path: "/function-templates/create",
         element: <TemplateLayout />,
         auth: true,
         children: [
           {
-            path: "/my/create",
-            element: () => import("@/pages/my/CreateFuncTemplate"),
-          },
-        ],
-      },
-      {
-        path: "/my/edit/:templateId",
-        element: <TemplateLayout />,
-        auth: true,
-        children: [
-          {
-            path: "/my/edit/:templateId",
-            element: () => import("@/pages/my/CreateFuncTemplate"),
+            path: "/function-templates/create",
+            element: () => import("@/pages/functionTemplate/CreateFuncTemplate"),
           },
         ],
       },

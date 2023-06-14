@@ -375,7 +375,7 @@
       "contact": "Contact",
       "start": "Start Now",
       "stars": "3.9K",
-      "funcTemplate": "Function Template",
+      "funcTemplate": "Function Market",
       "appMarket": "Application Market"
     },
     "HomePage": {
@@ -481,7 +481,15 @@
     "MostRecent": "Most Recent",
     "useTemplateSuccess": "Use Template Success",
     "cancelStarSuccess": "Cancel Star Success",
-    "starSuccess": "Star Success"
+    "starSuccess": "Star Success",
+    "FunctionNameExist": "Function Name Exist",
+    "AllTemplates": "All Templates",
+    "Community": "Community Template",
+    "StaredTemplate": "Stared Template",
+    "Recent": "Recent Template",
+    "Earliest": "Earliest",
+    "MostStars": "Most Stars",
+    "Latest": "Latest"
   },
   "Fee": "Fee",
   "PleaseCloseApplicationFirst": "Please close your application first.",
@@ -496,5 +504,9 @@
   "SendMessagePlaceHolder": "Send a message",
   "Publish": "Publish",
   "MyTemplate": "My Template",
-  "Create function template success": "Create function template success"
+  "Create function template success": "Create function template success",
+  "Update function template success": "Update function template success",
+  "Templates": {
+    "My": "My"
+  }
 }

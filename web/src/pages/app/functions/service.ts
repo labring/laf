@@ -17,13 +17,17 @@ const queryKeys = {
   useFunctionDetailQuery: (name: string) => ["useFunctionDetailQuery", name],
 };
 
-export const useFunctionListQuery = (config?: { onSuccess?: (data: any) => void }) => {
+export const useFunctionListQuery = (
+  config?: { onSuccess?: (data: any) => void; enabled?: boolean },
+  params?: any,
+) => {
   return useQuery(
     queryKeys.useFunctionListQuery,
     () => {
-      return FunctionControllerFindAll({});
+      return FunctionControllerFindAll(params);
     },
     {
+      enabled: config?.enabled,
       onSuccess: config?.onSuccess,
     },
   );

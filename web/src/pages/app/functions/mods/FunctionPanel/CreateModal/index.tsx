@@ -26,7 +26,7 @@ import { SUPPORTED_METHODS } from "@/constants";
 
 import { useCreateFunctionMutation, useUpdateFunctionMutation } from "../../../service";
 import useFunctionStore from "../../../store";
-import FunctionTemplate from "../FunctionTemplate";
+import FuncTemplate from "../FunctionTemplate";
 
 import functionTemplates from "./functionTemplates";
 
@@ -137,11 +137,14 @@ const CreateModal = (props: {
                     style={{ outline: "none", boxShadow: "none" }}
                   />
                   {isEdit ? null : (
-                    <FunctionTemplate>
-                      <span className="w-2/12 cursor-pointer pl-2 text-lg font-medium text-primary-600">
+                    <FuncTemplate>
+                      <span
+                        className="w-2/12 cursor-pointer pl-2 text-lg font-medium text-primary-600"
+                        onClick={() => {}}
+                      >
                         {t("FunctionPanel.CreateFromTemplate")}
                       </span>
-                    </FunctionTemplate>
+                    </FuncTemplate>
                   )}
                 </div>
                 <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
@@ -181,7 +184,7 @@ const CreateModal = (props: {
               </FormControl>
 
               <FormControl>
-                <div className="flex w-full items-center focus-within:border-b-2">
+                <div className="flex w-full items-center border-b-2 border-transparent focus-within:border-grayModern-200">
                   <TextIcon fontSize={16} color={"gray.300"} />
                   <input
                     id="description"

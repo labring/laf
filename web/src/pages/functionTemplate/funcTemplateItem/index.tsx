@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ChevronRightIcon } from "@chakra-ui/icons";
 import { Box, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
@@ -37,20 +38,22 @@ const FuncTemplateItem = () => {
   );
 
   return (
-    <div className={clsx("flex flex-1 flex-col", colorMode === "dark" ? "" : "bg-white")}>
-      <div className="flex h-12 items-center pl-16 text-lg">
-        <a href="/function-templates" className="text-second">
+    <div className={clsx("flex flex-col px-20", colorMode === "dark" ? "" : "bg-white")}>
+      <div className="pt-8 text-lg">
+        <a href="/function-templates/all" className="text-second">
           {t("market.funcTemplate")}
         </a>
-        <span className="px-2">{`>`}</span>
+        <span className="px-3">
+          <ChevronRightIcon />
+        </span>
         <span>{t("Template.Details")}</span>
       </div>
       {template && (
-        <div className="flex px-16">
-          <div className="w-10/12 pr-8">
+        <div className="flex pt-3">
+          <div className="mr-9 w-4/5">
             <Box>
               <div className="pb-2 text-xl font-semibold">{template.name}</div>
-              <div className="pb-4 text-second">{template.description}</div>
+              <div className="pb-6 text-second">{template.description}</div>
               {(template.items || []).map((item) => {
                 return (
                   <div key={item.name} className="mb-4 h-[60vh]">
@@ -65,8 +68,8 @@ const FuncTemplateItem = () => {
               })}
             </Box>
           </div>
-          <div className="h-full w-2/12">
-            <TemplateInfo isFromMarket={true} functionTemplate={template} usedBy={usedBy} />
+          <div className="h-full w-1/5">
+            <TemplateInfo functionTemplate={template} usedBy={usedBy} />
           </div>
         </div>
       )}

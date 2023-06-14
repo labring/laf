@@ -136,10 +136,7 @@ const Navbar = () => {
                 {stars}
               </a>
             ) : null}
-
-            <div className="flex justify-evenly">
-              <Language />
-            </div>
+            <Language fontSize={24} />
             <div>
               <Link
                 to={Routes.dashboard}
@@ -239,7 +236,7 @@ const Navbar = () => {
                   darkMode ? "flex px-4 py-2 hover:bg-gray-900" : "flex px-4 py-2 hover:bg-gray-100"
                 }
               >
-                <Language />
+                <Language fontSize={24} />
               </div>
             </div>
           </ul>

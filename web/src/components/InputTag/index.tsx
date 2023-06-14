@@ -1,10 +1,5 @@
-import { useState } from "react";
-import { ChevronDownIcon } from "@chakra-ui/icons";
+import { createRef, useEffect, useRef, useState } from "react";
 import {
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Tag,
   TagCloseButton,
   TagLabel,
@@ -25,6 +20,26 @@ export default function InputTag(props: {
   const [inputV, setInputV] = useState("");
   // const { colorMode } = useColorMode();
   // const darkMode = colorMode === COLOR_MODE.dark;
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRefs = useRef([]);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    menuRefs.current = Array(tagList.length).map(
+      (_, index) => menuRefs.current[index] || createRef(),
+    );
+  }, [tagList]);
+
+  const handleInputClick = () => {
+    setIsMenuOpen(true);
+  };
+
+  const handleClickOutside = (e: any) => {
+    if (menuRef.current && !(menuRef.current as HTMLElement).contains(e.target)) {
+      setIsMenuOpen(false);
+    }
+  };
 
   const handleMenuItemClick = (tag: any) => {
     if (!value.some((x) => x === tag.tagName)) {
@@ -47,6 +62,13 @@ export default function InputTag(props: {
     onChange(value.filter((name) => name !== item));
   };
 
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className={clsx("flex w-full items-center rounded-md text-lg")}>
       {value.length > 0
@@ -63,32 +85,37 @@ export default function InputTag(props: {
         : null}
 
       <LabelIcon boxSize={4} color={"#D9D9D9"} />
+
       <input
         className="ml-2 flex-1 border-none bg-transparent outline-none"
         placeholder={String(t("CollectionPanel.CreateTagTip"))}
         value={inputV}
         onChange={(e) => {
-          // onChange([e.target.value]);
           setInputV(e.target.value);
+          if (isMenuOpen) setIsMenuOpen(false);
         }}
-        onKeyDown={(e) => handleEnter(e)}
+        onClick={handleInputClick}
+        onKeyDown={handleEnter}
       />
-      <Menu placement="bottom-end">
-        <MenuButton className="cursor-pointer">
-          <ChevronDownIcon boxSize={8} color="gray.400" />
-        </MenuButton>
-        <MenuList className="mt-1 max-h-72 overflow-y-auto">
-          {(tagList || []).map((tag: any) => (
-            <MenuItem
+      {tagList.length > 0 && isMenuOpen && (
+        <div
+          className="absolute top-7 z-50 ml-6 flex w-96 flex-wrap rounded-md bg-white p-2 drop-shadow-md"
+          ref={menuRef}
+        >
+          {tagList.map((tag: any, index: number) => (
+            <div
               key={tag.tagName}
-              onClick={() => handleMenuItemClick(tag)}
-              className="p-2 text-lg"
+              ref={menuRefs.current[index]}
+              onClick={() => {
+                handleMenuItemClick(tag);
+              }}
+              className="mx-2 my-2 cursor-pointer rounded-md bg-gray-100 px-2 text-lg"
             >
               {tag.tagName}
-            </MenuItem>
+            </div>
           ))}
-        </MenuList>
-      </Menu>
+        </div>
+      )}
     </div>
   );
 }

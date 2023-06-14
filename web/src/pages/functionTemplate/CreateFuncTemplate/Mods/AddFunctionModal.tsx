@@ -20,17 +20,27 @@ import { t } from "i18next";
 import { TextIcon } from "@/components/CommonIcon";
 import { SUPPORTED_METHODS } from "@/constants";
 
+import useGlobalStore from "@/pages/globalStore";
+
 const AddFunctionModal = (props: {
   children?: React.ReactElement;
   functionList?: any[];
   setFunctionList?: React.Dispatch<React.SetStateAction<any[]>>;
   setCurrentFunction?: React.Dispatch<React.SetStateAction<any>>;
+  currentFunction?: any;
 }) => {
-  const { children = null, functionList, setFunctionList, setCurrentFunction } = props;
+  const {
+    children = null,
+    functionList,
+    setFunctionList,
+    setCurrentFunction,
+    currentFunction,
+  } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { showError } = useGlobalStore();
   const defaultValues = {
     name: "",
-    methods: ["GET"],
+    methods: ["GET", "POST"],
     description: "",
   };
   const {
@@ -43,9 +53,12 @@ const AddFunctionModal = (props: {
   } = useForm();
 
   const onSubmit = (data: any) => {
-    if (setFunctionList && setCurrentFunction) {
+    if (functionList?.some((item) => item.name === data.name)) {
+      showError(t("Template.FunctionNameExist"));
+    } else if (setFunctionList && setCurrentFunction) {
       setFunctionList([...(functionList || []), { ...data, source: { code: "" } }]);
       setCurrentFunction({ ...data, source: { code: "" } });
+      console.log("AddFunctionModal", currentFunction);
       onClose();
     }
   };
@@ -55,6 +68,12 @@ const AddFunctionModal = (props: {
       {children &&
         React.cloneElement(children, {
           onClick: () => {
+            if (functionList && setCurrentFunction) {
+              setCurrentFunction(
+                functionList.find((item) => item.name === currentFunction?.name) || null,
+              );
+            }
+            console.log(currentFunction);
             onOpen();
             reset(defaultValues);
             setTimeout(() => {
@@ -104,16 +123,11 @@ const AddFunctionModal = (props: {
                 )}
               />
             </HStack>
-            {/* <HStack className="mb-1 w-full">
-              <Controller
-                name="tags"
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <InputTag value={value || []} onChange={onChange} tagList={[]} />
-                )}
-              />
-            </HStack> */}
-            <div className={clsx("flex w-full items-center focus-within:border-b-2")}>
+            <div
+              className={clsx(
+                "flex w-full items-center border-b-2 border-transparent focus-within:border-grayModern-200",
+              )}
+            >
               <TextIcon fontSize={18} color={"#D9D9D9"} />
               <input
                 id="description"

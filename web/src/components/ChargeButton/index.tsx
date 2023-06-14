@@ -77,7 +77,7 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                 <Input
                   className="mb-4 text-3xl"
                   style={{ fontSize: "30px" }}
-                  defaultValue={amount}
+                  value={amount}
                   onChange={(event) => {
                     setAmount(Number(event.target.value));
                   }}
