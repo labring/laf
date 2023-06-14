@@ -32,12 +32,13 @@ cli 的主要功能就是把在 laf web 上的操作集成到命令行里，下�
 laf login [pat]
 ```
 
-默认登录 `laf.run`，如果要登录私有部署的 laf 可通过 `-r` 参数指定：
-  
-`laf login [pat] -r https://api.laf.run`
-::: tip
-这里要注意，https 后面需要加上 api
-:::
+默认登录 `laf.run`，如果要登录 `laf.dev` 或私有部署的 laf 或其他`laf.run`账号可通过 添加user：
+
+```shell
+laf user add dev -r https://laf.dev
+laf user switch dev
+laf login [pat]
+```
 
 ### 退出登录
 
