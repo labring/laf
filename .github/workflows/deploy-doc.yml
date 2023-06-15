@@ -36,7 +36,10 @@ jobs:
       - name: Setup laf-cli
         run: npm i laf-cli -g
       - name: Login laf-cli
-        run: laf login -r ${{ env.LAF_API_URL }} ${{ env.LAF_CI_DOCS_PAT }}
+        run: | 
+          laf user add doc -r ${{ env.LAF_API_URL }}
+          laf user switch doc
+          laf login ${{ env.LAF_CI_DOCS_PAT }}
       - name: Deploy to laf
         working-directory: docs/.vitepress
         run: |
