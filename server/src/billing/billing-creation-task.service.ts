@@ -16,16 +16,26 @@ import { ApplicationBundle } from 'src/application/entities/application-bundle'
 export class BillingCreationTaskService {
   private readonly logger = new Logger(BillingCreationTaskService.name)
   private readonly lockTimeout = 60 * 60 // in second
+  private lastTick = TASK_LOCK_INIT_TIME
 
   constructor(private readonly billing: BillingService) {}
 
   /**
    * Cron job method that runs every 10 minute
    */
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  @Cron(CronExpression.EVERY_MINUTE)
   async tick() {
     // If billing creation task is disabled, return
     if (ServerConfig.DISABLED_BILLING_CREATION_TASK) {
+      this.logger.warn('Skip billing creation task due to config')
+      return
+    }
+
+    // If last tick is less than 1 minute ago, return
+    if (Date.now() - this.lastTick.getTime() < 1000 * 60) {
+      this.logger.debug(
+        `Skip billing creation task due to last tick time ${this.lastTick.toISOString()}}`,
+      )
       return
     }
 
@@ -43,8 +53,9 @@ export class BillingCreationTaskService {
   }
 
   private async handleApplicationBillingCreating() {
-    const db = SystemDatabase.db
+    this.lastTick = new Date()
 
+    const db = SystemDatabase.db
     const res = await db
       .collection<Application>('Application')
       .findOneAndUpdate(

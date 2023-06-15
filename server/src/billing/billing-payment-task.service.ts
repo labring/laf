@@ -4,7 +4,7 @@ import {
   Application,
   ApplicationState,
 } from 'src/application/entities/application'
-import { ServerConfig } from 'src/constants'
+import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/system-database'
 import {
   ApplicationBilling,
@@ -18,14 +18,25 @@ import Decimal from 'decimal.js'
 @Injectable()
 export class BillingPaymentTaskService {
   private readonly logger = new Logger(BillingPaymentTaskService.name)
-  private readonly lockTimeout = 5 * 60 // in second
+  private readonly lockTimeout = 60 * 60 // in second
+  private lastTick = TASK_LOCK_INIT_TIME
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  @Cron(CronExpression.EVERY_MINUTE)
   async tick() {
     if (ServerConfig.DISABLED_BILLING_PAYMENT_TASK) {
+      this.logger.warn('Skip billing payment task due to config')
       return
     }
 
+    // If last tick is less than 1 minute ago, return
+    if (Date.now() - this.lastTick.getTime() < 1000 * 60) {
+      this.logger.debug(
+        `Skip billing payment task due to last tick time ${this.lastTick.toISOString()}}`,
+      )
+      return
+    }
+
+    this.logger.debug('Start handling pending application billing')
     this.handlePendingApplicationBilling().catch((err) => {
       this.logger.error(
         'Error occurred while handling pending application billing',
@@ -35,8 +46,9 @@ export class BillingPaymentTaskService {
   }
 
   private async handlePendingApplicationBilling() {
-    const db = SystemDatabase.db
+    this.lastTick = new Date()
 
+    const db = SystemDatabase.db
     const res = await db
       .collection<ApplicationBilling>('ApplicationBilling')
       .findOneAndUpdate(
@@ -70,7 +82,6 @@ export class BillingPaymentTaskService {
         // update the account balance
         const amount = new Decimal(billing.amount).mul(100).toNumber()
 
-        // TODO: write lock might cause performance issue?
         const updated = await db
           .collection<Account>('Account')
           .updateOne(
@@ -106,7 +117,11 @@ export class BillingPaymentTaskService {
           )
 
         this.logger.debug(
-          `Billing payment done for application ${billing.appid} from ${billing.startAt} to ${billing.endAt}}`,
+          `Billing payment done for application ${
+            billing.appid
+          } from ${billing.startAt?.toISOString()} to ${billing.endAt?.toISOString()} for billing ${
+            billing._id
+          }`,
         )
 
         // stop application if balance is not enough
@@ -116,7 +131,7 @@ export class BillingPaymentTaskService {
             {
               $set: {
                 state: ApplicationState.Stopped,
-                stoppedAt: new Date(),
+                forceStoppedAt: new Date(),
               },
             },
             { session },
