@@ -62,6 +62,7 @@ export class BillingPaymentTaskService {
       )
 
     if (!res.value) {
+      this.logger.debug('No pending application billing found')
       return
     }
 
@@ -116,7 +117,7 @@ export class BillingPaymentTaskService {
             { session },
           )
 
-        this.logger.debug(
+        this.logger.log(
           `Billing payment done for application ${
             billing.appid
           } from ${billing.startAt?.toISOString()} to ${billing.endAt?.toISOString()} for billing ${
@@ -143,21 +144,13 @@ export class BillingPaymentTaskService {
       })
     } catch (error) {
       this.logger.error(
-        'Error occurred while paying billing',
+        'Error occurred while handling pending application billing',
         error,
         error.stack,
       )
     } finally {
       await session.endSession()
+      this.handlePendingApplicationBilling()
     }
-
-    // next tick
-    this.handlePendingApplicationBilling().catch((err) => {
-      this.logger.error(
-        'Error occurred while handling pending application billing',
-        err,
-        err.stack,
-      )
-    })
   }
 }
