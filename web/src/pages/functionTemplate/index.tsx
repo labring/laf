@@ -58,7 +58,7 @@ export default function FunctionTemplate() {
     starName: "",
     recentName: "",
   };
-  const [selectedItem, setSelectedItem] = useState(sideBar_data[0]);
+  const [selectedItem, setSelectedItem] = useState({ text: "", value: "" });
   const [queryData, setQueryData] = useState(defaultQueryData);
   const [expendData, setExpendData] = useState(defaultExpendData);
   const [sorting, setSorting] = useState(sortList[0]);
@@ -235,7 +235,7 @@ export default function FunctionTemplate() {
                     className="mb-3 rounded-md pt-4"
                     onClick={(event: any) => {
                       event?.preventDefault();
-                      navigate(`/function-templates/${selectedItem.value}/${item._id}`);
+                      navigate(`/function-templates/${selectedItem.value || "all"}/${item._id}`);
                     }}
                   >
                     <div
