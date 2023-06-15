@@ -1,14 +1,10 @@
-import { ObjectId } from 'mongodb'
 import { CreateEnvironmentDto } from '../../application/dto/create-env.dto'
 import { CreateDependencyDto } from 'src/dependency/dto/create-dependency.dto'
-import { CloudFunctionSource } from 'src/function/entities/cloud-function'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
-  IsArray,
   IsBoolean,
   IsIn,
   IsNotEmpty,
-  IsOptional,
   IsString,
   Matches,
   MaxLength,
@@ -19,7 +15,7 @@ import { HTTP_METHODS } from '../../constants'
 import { HttpMethod } from '../../function/entities/cloud-function'
 export class FunctionTemplateItemDto {
   @ApiProperty({
-    description: 'FunctionTemplate function name',
+    description: 'FunctionTemplate item name',
   })
   @IsNotEmpty()
   @Matches(/^[a-zA-Z0-9_.\-\/]{1,256}$/)
@@ -48,6 +44,7 @@ export class CreateFunctionTemplateDto {
   @ApiProperty({ description: 'function template name' })
   @IsNotEmpty()
   @IsString()
+  @MaxLength(64)
   name: string
 
   @ApiProperty({ description: 'Dependencies', type: [CreateDependencyDto] })
@@ -67,6 +64,7 @@ export class CreateFunctionTemplateDto {
 
   @ApiPropertyOptional({ description: 'function template description' })
   @IsString()
+  @MaxLength(256)
   description?: string
 
   @ApiProperty({

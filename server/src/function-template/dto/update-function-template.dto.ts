@@ -1,30 +1,27 @@
 import { ObjectId } from 'mongodb'
 import { CreateEnvironmentDto } from '../../application/dto/create-env.dto'
 import { CreateDependencyDto } from 'src/dependency/dto/create-dependency.dto'
-import { CloudFunctionSource } from 'src/function/entities/cloud-function'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
-  IsArray,
   IsBoolean,
-  IsIn,
   IsNotEmpty,
-  IsOptional,
   IsString,
-  Matches,
+  Length,
   MaxLength,
   ValidateNested,
 } from 'class-validator'
 import { Type } from 'class-transformer'
-import { HTTP_METHODS } from '../../constants'
-import { HttpMethod } from '../../function/entities/cloud-function'
 import { FunctionTemplateItemDto } from './create-function-template.dto'
 
 export class UpdateFunctionTemplateDto {
   @ApiProperty({ description: 'Function template id' })
+  @IsNotEmpty()
+  @Length(24, 24)
   functionTemplateId: ObjectId
 
   @ApiProperty({ description: 'Template name' })
   @IsNotEmpty()
+  @MaxLength(64)
   @IsString()
   name: string
 
@@ -43,12 +40,13 @@ export class UpdateFunctionTemplateDto {
   @IsBoolean()
   private: boolean
 
-  @ApiPropertyOptional({ description: 'Template description' })
+  @ApiPropertyOptional({ description: 'function template description' })
   @IsString()
+  @MaxLength(256)
   description?: string
 
   @ApiPropertyOptional({
-    description: 'Template items',
+    description: 'items of the function template',
     type: [FunctionTemplateItemDto],
   })
   @IsNotEmpty()

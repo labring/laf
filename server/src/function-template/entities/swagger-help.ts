@@ -1,13 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import {
-  CloudFunction,
-  CloudFunctionSource,
-  HttpMethod,
-} from 'src/function/entities/cloud-function'
+import { HttpMethod } from 'src/function/entities/cloud-function'
 import { EnvironmentVariable } from 'src/application/entities/application-configuration'
 import { ObjectId } from 'mongodb'
 import { User } from 'src/user/entities/user'
-import { FunctionTemplate, FunctionTemplateItem } from './function-template'
+import { FunctionTemplate } from './function-template'
 
 class FunctionTemplateItemSourceSwagger {
   @ApiProperty({ description: 'The source code of the function' })

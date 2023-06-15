@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { CreateFunctionTemplateDto } from './dto/create-function-template.dto'
-import { UseFunctionTemplateDto } from './dto/use-function-template.dto'
 import { UpdateFunctionTemplateDto } from './dto/update-function-template.dto'
 import { SystemDatabase } from 'src/system-database'
 import {
@@ -8,6 +7,7 @@ import {
   FunctionTemplateItem,
   FunctionTemplateUseRelation,
   FunctionTemplateStarRelation,
+  RelationState,
 } from './entities/function-template'
 import { ObjectId } from 'mongodb'
 import { EnvironmentVariableService } from 'src/application/environment.service'
@@ -20,6 +20,15 @@ import { CN_PUBLISHED_CONF, CN_PUBLISHED_FUNCTIONS } from 'src/constants'
 import { DatabaseService } from 'src/database/database.service'
 import { DependencyService } from 'src/dependency/dependency.service'
 import { ApplicationService } from '../application/application.service'
+
+interface FindFunctionTemplatesParams {
+  recent: number
+  page: number
+  pageSize: number
+  name?: string
+  hot?: boolean
+  starAsc?: number
+}
 
 @Injectable()
 export class FunctionTemplateService {
@@ -125,40 +134,53 @@ export class FunctionTemplateService {
           .collection<FunctionTemplateStarRelation>(
             'FunctionTemplateStarRelation',
           )
-          .deleteMany(
+          .updateMany(
             { templateId: templateId, uid: { $ne: userid } },
+            {
+              $set: { state: RelationState.Disabled },
+              $currentDate: { updatedAt: true },
+            },
             { session },
           )
         await this.db
           .collection<FunctionTemplateUseRelation>(
             'FunctionTemplateUseRelation',
           )
-          .deleteMany(
+          .updateMany(
             { templateId: templateId, uid: { $ne: userid } },
+            {
+              $set: { state: RelationState.Disabled },
+              $currentDate: { updatedAt: true },
+            },
             { session },
           )
-        const star = await this.db
+      }
+
+      if (found.private === true && dto.private === false) {
+        await this.db
           .collection<FunctionTemplateStarRelation>(
             'FunctionTemplateStarRelation',
           )
-          .findOne({ uid: userid, templateId: templateId }, { session })
-        if (star) {
-          await this.db
-            .collection<FunctionTemplate>('FunctionTemplate')
-            .updateOne(
-              { _id: templateId, uid: userid },
-              { $set: { star: 1 } },
-              { session },
-            )
-        } else {
-          await this.db
-            .collection<FunctionTemplate>('FunctionTemplate')
-            .updateOne(
-              { _id: templateId, uid: userid },
-              { $set: { star: 0 } },
-              { session },
-            )
-        }
+          .updateMany(
+            { templateId: templateId, uid: { $ne: userid } },
+            {
+              $set: { state: RelationState.Enabled },
+              $currentDate: { updatedAt: true },
+            },
+            { session },
+          )
+        await this.db
+          .collection<FunctionTemplateUseRelation>(
+            'FunctionTemplateUseRelation',
+          )
+          .updateMany(
+            { templateId: templateId, uid: { $ne: userid } },
+            {
+              $set: { state: RelationState.Enabled },
+              $currentDate: { updatedAt: true },
+            },
+            { session },
+          )
       }
 
       const res = await this.db
@@ -183,6 +205,7 @@ export class FunctionTemplateService {
             returnDocument: 'after',
           },
         )
+
       if (res.lastErrorObject.updatedExisting) {
         const functionTemplateItems = dto.items.map((item) => ({
           templateId: res.value._id,
@@ -200,6 +223,7 @@ export class FunctionTemplateService {
           .collection<FunctionTemplateItem>('FunctionTemplateItem')
           .insertMany(functionTemplateItems, { session })
       }
+
       await session.commitTransaction()
 
       const pipe = [
@@ -213,6 +237,7 @@ export class FunctionTemplateService {
           },
         },
       ]
+
       const template = await this.db
         .collection<FunctionTemplate>('FunctionTemplate')
         .aggregate(pipe)
@@ -227,11 +252,11 @@ export class FunctionTemplateService {
     }
   }
 
-  // use function template
+  // use a function template
   async useFunctionTemplate(
     userid: ObjectId,
     appid: string,
-    dto: UseFunctionTemplateDto,
+    templateId: ObjectId,
   ) {
     const client = SystemDatabase.client
     const appDataBaseInfo = await this.databaseService.findOne(appid)
@@ -242,14 +267,14 @@ export class FunctionTemplateService {
     try {
       session.startTransaction()
 
-      const functionTemplate = await this.findOneFunctionTemplate(
-        dto.functionTemplateId,
-      )
+      const functionTemplate = await this.findOneFunctionTemplate(templateId)
+
       assert(
         functionTemplate.private === false ||
           functionTemplate.uid.toString() === userid.toString(),
         'private function template can only be used by the owner',
       )
+
       // add function template dependencies to application configuration
       //
       const extraDependencies = await this.dependencyService.getExtras(appid)
@@ -305,49 +330,84 @@ export class FunctionTemplateService {
       // publish function template items to CloudFunction and app database
       //
       const functionTemplateItems = await this.findFunctionTemplateItems(
-        dto.functionTemplateId,
+        templateId,
       )
 
+      const existingNames = new Set(
+        await this.db
+          .collection<CloudFunction>('CloudFunction')
+          .aggregate([
+            { $match: { appid: appid } },
+            { $group: { _id: null, names: { $addToSet: '$name' } } },
+          ])
+          .toArray()
+          .then((result) => (result.length > 0 ? result[0].names : [])),
+      )
+
+      const documents = []
+
       for (const functionTemplateItem of functionTemplateItems) {
-        await this.db.collection<CloudFunction>('CloudFunction').insertOne(
-          {
-            appid,
-            name: functionTemplateItem.name,
-            source: {
-              code: functionTemplateItem.source.code,
-              compiled: compileTs2js(functionTemplateItem.source.code),
-              version: 0,
-            },
-            desc: functionTemplateItem.desc || '',
-            createdBy: userid,
-            methods: functionTemplateItem.methods,
-            tags: [],
-            createdAt: new Date(),
-            updatedAt: new Date(),
+        // Check name is unique
+        while (existingNames.has(functionTemplateItem.name)) {
+          functionTemplateItem.name = `${functionTemplateItem.name}-copy`
+        }
+
+        // Add the unique name to the set
+        existingNames.add(functionTemplateItem.name)
+
+        const document = {
+          appid,
+          name: functionTemplateItem.name,
+          source: {
+            code: functionTemplateItem.source.code,
+            compiled: compileTs2js(functionTemplateItem.source.code),
+            version: 0,
           },
-          { session },
-        )
+          desc: functionTemplateItem.desc || '',
+          createdBy: userid,
+          methods: functionTemplateItem.methods,
+          tags: [],
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }
+
+        documents.push(document)
       }
+
+      await this.db
+        .collection<CloudFunction>('CloudFunction')
+        .insertMany(documents, { session })
+
+      // Prepare the names to be searched and documents to be inserted
+      const namesToSearch = functionTemplateItems.map((item) => item.name)
+      let documentsToInsert
 
       // add function template items to app database
-      for (const functionTemplateItem of functionTemplateItems) {
-        const fn = await this.db
-          .collection<CloudFunction>('CloudFunction')
-          .findOne(
-            { appid: appid, name: functionTemplateItem.name },
-            { session },
-          )
+      // Find all documents with matching names
+      await this.db
+        .collection<CloudFunction>('CloudFunction')
+        .find({ appid: appid, name: { $in: namesToSearch } }, { session })
+        .toArray()
+        .then((docs) => {
+          documentsToInsert = docs
+        })
 
-        const coll = appDataBase.collection(CN_PUBLISHED_FUNCTIONS)
-        await coll.deleteOne({ name: fn.name }, { session })
-        await coll.insertOne(fn, { session })
-      }
+      // Get the collection
+      const collectionFunction = appDataBase.collection(CN_PUBLISHED_FUNCTIONS)
+      // Delete existing documents with the matching names
+      await collectionFunction.deleteMany(
+        { name: { $in: namesToSearch } },
+        { session },
+      )
+      // Insert all new documents
+      await collectionFunction.insertMany(documentsToInsert, { session })
 
-      // user use relation
+      // add user use relation
+      //
       const res = await this.db
         .collection<FunctionTemplateUseRelation>('FunctionTemplateUseRelation')
         .findOneAndUpdate(
-          { uid: userid, templateId: dto.functionTemplateId },
+          { uid: userid, templateId: templateId },
           {
             $currentDate: { updatedAt: true },
           },
@@ -361,7 +421,8 @@ export class FunctionTemplateService {
           .insertOne(
             {
               uid: userid,
-              templateId: dto.functionTemplateId,
+              templateId: templateId,
+              state: RelationState.Enabled,
               createdAt: new Date(),
               updatedAt: new Date(),
             },
@@ -372,7 +433,7 @@ export class FunctionTemplateService {
       await session.commitTransaction()
 
       const pipe = [
-        { $match: { _id: dto.functionTemplateId } },
+        { $match: { _id: templateId } },
         {
           $lookup: {
             from: 'FunctionTemplateItem',
@@ -422,8 +483,20 @@ export class FunctionTemplateService {
       await this.db
         .collection<FunctionTemplate>('FunctionTemplate')
         .deleteOne({ _id: templateId, uid: userid }, { session })
+
       await this.db
         .collection<FunctionTemplateItem>('FunctionTemplateItem')
+        .deleteMany({ templateId: templateId }, { session })
+
+      // remove use relation and star relation
+      await this.db
+        .collection<FunctionTemplateStarRelation>(
+          'FunctionTemplateStarRelation',
+        )
+        .deleteMany({ templateId: templateId }, { session })
+
+      await this.db
+        .collection<FunctionTemplateUseRelation>('FunctionTemplateUseRelation')
         .deleteMany({ templateId: templateId }, { session })
 
       await session.commitTransaction()
@@ -441,6 +514,7 @@ export class FunctionTemplateService {
     const session = client.startSession()
     try {
       session.startTransaction()
+
       const functionTemplate = await this.findOneFunctionTemplate(templateId)
       assert(
         functionTemplate.private === false ||
@@ -457,27 +531,21 @@ export class FunctionTemplateService {
       if (found) {
         await this.db
           .collection<FunctionTemplate>('FunctionTemplate')
-          .updateOne(
-            { _id: templateId },
-            { $inc: { star: -1 }, $currentDate: { updatedAt: true } },
-            { session },
-          )
+          .updateOne({ _id: templateId }, { $inc: { star: -1 } }, { session })
+
         await this.db
           .collection<FunctionTemplateStarRelation>(
             'FunctionTemplateStarRelation',
           )
           .deleteOne({ uid: userid, templateId: templateId }, { session })
+
         await session.commitTransaction()
         return 'unstar'
       }
 
       await this.db
         .collection<FunctionTemplate>('FunctionTemplate')
-        .updateOne(
-          { _id: templateId },
-          { $inc: { star: 1 }, $currentDate: { updatedAt: true } },
-          { session },
-        )
+        .updateOne({ _id: templateId }, { $inc: { star: 1 } }, { session })
 
       await this.db
         .collection<FunctionTemplateStarRelation>(
@@ -487,6 +555,7 @@ export class FunctionTemplateService {
           {
             uid: userid,
             templateId: templateId,
+            state: RelationState.Enabled,
             createdAt: new Date(),
             updatedAt: new Date(),
           },
@@ -565,6 +634,7 @@ export class FunctionTemplateService {
         },
       },
     ]
+
     const functionTemplate = await this.db
       .collection<FunctionTemplate>('FunctionTemplate')
       .aggregate(pipe)
@@ -573,7 +643,53 @@ export class FunctionTemplateService {
     return functionTemplate
   }
 
-  async findFunctionTemplates(recent: number, page: number, pageSize: number) {
+  // get all public function templates
+  async findFunctionTemplates(
+    recent: number,
+    page: number,
+    pageSize: number,
+    hot?: boolean,
+    starAsc?: number,
+  ) {
+    if (hot) {
+      const pipe = [
+        { $match: { private: false } },
+        {
+          $lookup: {
+            from: 'FunctionTemplateItem',
+            localField: '_id',
+            foreignField: 'templateId',
+            as: 'items',
+          },
+        },
+        {
+          $sort: {
+            star: starAsc === 0 ? 1 : -1,
+          },
+        },
+        { $skip: (page - 1) * pageSize },
+        { $limit: pageSize },
+      ]
+
+      const total = await this.db
+        .collection<FunctionTemplate>('FunctionTemplate')
+        .countDocuments({ private: false })
+
+      const functionTemplate = await this.db
+        .collection<FunctionTemplate>('FunctionTemplate')
+        .aggregate(pipe)
+        .toArray()
+
+      const res = {
+        list: functionTemplate,
+        total: total,
+        page,
+        pageSize,
+      }
+
+      return res
+    }
+
     const pipe = [
       { $match: { private: false } },
       {
@@ -608,49 +724,6 @@ export class FunctionTemplateService {
     return res
   }
 
-  async findMostStarFunctionTemplates(
-    starAsc: number,
-    page: number,
-    pageSize: number,
-  ) {
-    const pipe = [
-      { $match: { private: false } },
-      {
-        $lookup: {
-          from: 'FunctionTemplateItem',
-          localField: '_id',
-          foreignField: 'templateId',
-          as: 'items',
-        },
-      },
-      {
-        $sort: {
-          star: starAsc === 0 ? 1 : -1,
-        },
-      },
-      { $skip: (page - 1) * pageSize },
-      { $limit: pageSize },
-    ]
-
-    const total = await this.db
-      .collection<FunctionTemplate>('FunctionTemplate')
-      .countDocuments({ private: false })
-
-    const templates = await this.db
-      .collection<FunctionTemplate>('FunctionTemplate')
-      .aggregate(pipe)
-      .toArray()
-
-    const res = {
-      list: templates,
-      total: total,
-      page,
-      pageSize,
-    }
-
-    return res
-  }
-
   async findFunctionTemplatesByName(
     recent: number,
     page: number,
@@ -659,6 +732,7 @@ export class FunctionTemplateService {
   ) {
     const safeName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
     const reg = new RegExp(safeName, 'i')
+
     const pipe = [
       { $match: { private: false, name: { $regex: reg } } },
 
@@ -698,14 +772,55 @@ export class FunctionTemplateService {
     return res
   }
 
-  async findMyMostStarFunctionTemplates(
-    starAsc: number,
+  async findMyFunctionTemplates(
+    recent: number,
     page: number,
     pageSize: number,
     userid: ObjectId,
+    hot?: boolean,
+    starAsc?: number,
   ) {
+    if (hot) {
+      const pipe = [
+        { $match: { uid: userid } },
+        {
+          $lookup: {
+            from: 'FunctionTemplateItem',
+            localField: '_id',
+            foreignField: 'templateId',
+            as: 'items',
+          },
+        },
+        {
+          $sort: {
+            star: starAsc === 0 ? 1 : -1,
+          },
+        },
+        { $skip: (page - 1) * pageSize },
+        { $limit: pageSize },
+      ]
+
+      const total = await this.db
+        .collection<FunctionTemplate>('FunctionTemplate')
+        .countDocuments({ uid: userid })
+
+      const myTemplate = await this.db
+        .collection<FunctionTemplate>('FunctionTemplate')
+        .aggregate(pipe)
+        .toArray()
+
+      const res = {
+        list: myTemplate,
+        total: total,
+        page,
+        pageSize,
+      }
+
+      return res
+    }
+
     const pipe = [
-      { $match: { private: false, uid: userid } },
+      { $match: { uid: userid } },
       {
         $lookup: {
           from: 'FunctionTemplateItem',
@@ -714,26 +829,22 @@ export class FunctionTemplateService {
           as: 'items',
         },
       },
-      {
-        $sort: {
-          star: starAsc === 0 ? 1 : -1,
-        },
-      },
+      { $sort: { createdAt: recent === 0 ? 1 : -1 } },
       { $skip: (page - 1) * pageSize },
       { $limit: pageSize },
     ]
 
     const total = await this.db
       .collection<FunctionTemplate>('FunctionTemplate')
-      .countDocuments({ private: false, uid: userid })
+      .countDocuments({ uid: userid })
 
-    const templates = await this.db
+    const myTemplate = await this.db
       .collection<FunctionTemplate>('FunctionTemplate')
       .aggregate(pipe)
       .toArray()
 
     const res = {
-      list: templates,
+      list: myTemplate,
       total: total,
       page,
       pageSize,
@@ -751,6 +862,7 @@ export class FunctionTemplateService {
   ) {
     const safeName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
     const reg = new RegExp(safeName, 'i')
+
     const pipe = [
       { $match: { uid: userid, name: { $regex: reg } } },
       {
@@ -789,53 +901,17 @@ export class FunctionTemplateService {
     return res
   }
 
-  async findMyFunctionTemplates(
-    recent: number,
-    page: number,
-    pageSize: number,
-    userid: ObjectId,
-  ) {
-    const pipe = [
-      { $match: { uid: userid } },
-      {
-        $lookup: {
-          from: 'FunctionTemplateItem',
-          localField: '_id',
-          foreignField: 'templateId',
-          as: 'items',
-        },
-      },
-      { $sort: { createdAt: recent === 0 ? 1 : -1 } },
-      { $skip: (page - 1) * pageSize },
-      { $limit: pageSize },
-    ]
-
-    const total = await this.db
-      .collection<FunctionTemplate>('FunctionTemplate')
-      .countDocuments({ uid: userid })
-
-    const myTemplate = await this.db
-      .collection<FunctionTemplate>('FunctionTemplate')
-      .aggregate(pipe)
-      .toArray()
-
-    const res = {
-      list: myTemplate,
-      total: total,
-      page,
-      pageSize,
-    }
-
-    return res
-  }
-
   async findMyStaredFunctionTemplates(
-    recent: number,
-    page: number,
-    pageSize: number,
     userid: ObjectId,
-    name?: string,
+    condition: FindFunctionTemplatesParams,
   ) {
+    const recent = condition.recent
+    const page = condition.page
+    const pageSize = condition.pageSize
+    const name = condition.name
+    const hot = condition.hot
+    const starAsc = condition.starAsc
+
     if (name) {
       const safeName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
       const reg = new RegExp(safeName, 'i')
@@ -857,7 +933,13 @@ export class FunctionTemplateService {
             as: 'items',
           },
         },
-        { $match: { uid: userid, 'functionTemplate.name': { $regex: reg } } },
+        {
+          $match: {
+            uid: userid,
+            state: RelationState.Enabled,
+            'functionTemplate.name': { $regex: reg },
+          },
+        },
         { $sort: { createdAt: recent === 0 ? 1 : -1 } },
         { $skip: (page - 1) * pageSize },
         { $limit: pageSize },
@@ -880,7 +962,13 @@ export class FunctionTemplateService {
             as: 'items',
           },
         },
-        { $match: { uid: userid, 'functionTemplate.name': { $regex: reg } } },
+        {
+          $match: {
+            uid: userid,
+            state: RelationState.Enabled,
+            'functionTemplate.name': { $regex: reg },
+          },
+        },
         { $group: { _id: null, count: { $sum: 1 } } },
       ]
 
@@ -918,8 +1006,67 @@ export class FunctionTemplateService {
       return res
     }
 
+    if (hot) {
+      const pipe = [
+        { $match: { uid: userid, state: RelationState.Enabled } },
+        {
+          $lookup: {
+            from: 'FunctionTemplate',
+            localField: 'templateId',
+            foreignField: '_id',
+            as: 'functionTemplate',
+          },
+        },
+        {
+          $lookup: {
+            from: 'FunctionTemplateItem',
+            localField: 'templateId',
+            foreignField: 'templateId',
+            as: 'items',
+          },
+        },
+        {
+          $sort: {
+            'functionTemplate.star': starAsc === 0 ? 1 : -1,
+          },
+        },
+        { $skip: (page - 1) * pageSize },
+        { $limit: pageSize },
+      ]
+
+      const total = await this.db
+        .collection<FunctionTemplateStarRelation>(
+          'FunctionTemplateStarRelation',
+        )
+        .countDocuments({ uid: userid, state: RelationState.Enabled })
+
+      const myStarTemplates = await this.db
+        .collection<FunctionTemplateStarRelation>(
+          'FunctionTemplateStarRelation',
+        )
+        .aggregate(pipe)
+        .toArray()
+
+      const transformedData = myStarTemplates.map((element) => {
+        const { functionTemplate, items } = element
+        const [template] = functionTemplate
+        const result = { ...template }
+        result.items = items
+        return result
+      })
+
+      const res = {
+        list: transformedData,
+        total: total,
+        page,
+        pageSize,
+      }
+
+      return res
+    }
+
     const pipe = [
-      { $match: { uid: userid } },
+      { $match: { uid: userid, state: RelationState.Enabled } },
       {
         $lookup: {
           from: 'FunctionTemplate',
@@ -943,7 +1090,7 @@ export class FunctionTemplateService {
 
     const total = await this.db
       .collection<FunctionTemplateStarRelation>('FunctionTemplateStarRelation')
-      .countDocuments({ uid: userid })
+      .countDocuments({ uid: userid, state: RelationState.Enabled })
 
     const myStarTemplates = await this.db
       .collection<FunctionTemplateStarRelation>('FunctionTemplateStarRelation')
@@ -969,13 +1116,162 @@ export class FunctionTemplateService {
   }
 
   async findMyRecentUseFunctionTemplates(
-    recent: number,
-    page: number,
-    pageSize: number,
     userid: ObjectId,
+    condition: FindFunctionTemplatesParams,
   ) {
+    const recent = condition.recent
+    const page = condition.page
+    const pageSize = condition.pageSize
+    const starAsc = condition.starAsc
+    const name = condition.name
+    const hot = condition.hot
+
+    if (name) {
+      const safeName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      const reg = new RegExp(safeName, 'i')
+      const pipe = [
+        {
+          $lookup: {
+            from: 'FunctionTemplate',
+            localField: 'templateId',
+            foreignField: '_id',
+            as: 'functionTemplate',
+          },
+        },
+        {
+          $lookup: {
+            from: 'FunctionTemplateItem',
+            localField: 'templateId',
+            foreignField: 'templateId',
+            as: 'items',
+          },
+        },
+        {
+          $match: {
+            uid: userid,
+            state: RelationState.Enabled,
+            'functionTemplate.name': { $regex: reg },
+          },
+        },
+        { $sort: { createdAt: recent === 0 ? 1 : -1 } },
+        { $skip: (page - 1) * pageSize },
+        { $limit: pageSize },
+      ]
+
+      const pipe2 = [
+        {
+          $lookup: {
+            from: 'FunctionTemplate',
+            localField: 'templateId',
+            foreignField: '_id',
+            as: 'functionTemplate',
+          },
+        },
+        {
+          $lookup: {
+            from: 'FunctionTemplateItem',
+            localField: 'templateId',
+            foreignField: 'templateId',
+            as: 'items',
+          },
+        },
+        {
+          $match: {
+            uid: userid,
+            state: RelationState.Enabled,
+            'functionTemplate.name': { $regex: reg },
+          },
+        },
+        { $group: { _id: null, count: { $sum: 1 } } },
+      ]
+
+      const total = await this.db
+        .collection<FunctionTemplateUseRelation>('FunctionTemplateUseRelation')
+        .aggregate(pipe2)
+        .maxTimeMS(5000)
+        .toArray()
+
+      const myStarTemplates = await this.db
+        .collection<FunctionTemplateUseRelation>('FunctionTemplateUseRelation')
+        .aggregate(pipe)
+        .maxTimeMS(5000)
+        .toArray()
+
+      const transformedData = myStarTemplates.map((element) => {
+        const { functionTemplate, items } = element
+        const [template] = functionTemplate
+        const result = { ...template }
+        result.items = items
+        return result
+      })
+
+      const res = {
+        list: transformedData,
+        total: total[0] ? total[0].count : 0,
+        page,
+        pageSize,
+      }
+
+      return res
+    }
+
+    if (hot) {
+      const pipe = [
+        { $match: { uid: userid, state: RelationState.Enabled } },
+        {
+          $lookup: {
+            from: 'FunctionTemplate',
+            localField: 'templateId',
+            foreignField: '_id',
+            as: 'functionTemplate',
+          },
+        },
+        {
+          $lookup: {
+            from: 'FunctionTemplateItem',
+            localField: 'templateId',
+            foreignField: 'templateId',
+            as: 'items',
+          },
+        },
+        {
+          $sort: {
+            'functionTemplate.star': starAsc === 0 ? 1 : -1,
+          },
+        },
+        { $skip: (page - 1) * pageSize },
+        { $limit: pageSize },
+      ]
+
+      const recentUseFunctionTemplates = await this.db
+        .collection<FunctionTemplateUseRelation>('FunctionTemplateUseRelation')
+        .aggregate(pipe)
+        .toArray()
+
+      const total = await this.db
+        .collection<FunctionTemplateUseRelation>('FunctionTemplateUseRelation')
+        .countDocuments({ uid: userid, state: RelationState.Enabled })
+
+      const transformedData = recentUseFunctionTemplates.map((element) => {
+        const { functionTemplate, items } = element
+        const [template] = functionTemplate
+        const result = { ...template }
+        result.items = items
+        return result
+      })
+
+      const res = {
+        list: transformedData,
+        total: total,
+        page,
+        pageSize,
+      }
+
+      return res
+    }
+
     const pipe = [
-      { $match: { uid: userid } },
+      { $match: { uid: userid, state: RelationState.Enabled } },
       {
         $lookup: {
           from: 'FunctionTemplate',
@@ -1004,7 +1300,7 @@ export class FunctionTemplateService {
 
     const total = await this.db
       .collection<FunctionTemplateUseRelation>('FunctionTemplateUseRelation')
-      .countDocuments({ uid: userid })
+      .countDocuments({ uid: userid, state: RelationState.Enabled })
 
     const transformedData = recentUseFunctionTemplates.map((element) => {
       const { functionTemplate, items } = element
@@ -1026,7 +1322,7 @@ export class FunctionTemplateService {
 
   async findOneFunctionTemplate(templateId: ObjectId, userid?: ObjectId) {
     if (userid) {
-      // 查找一个 function template
+      // find one function template
       const res = await this.db
         .collection<FunctionTemplate>('FunctionTemplate')
         .findOne({ _id: templateId, uid: userid })
@@ -1039,6 +1335,7 @@ export class FunctionTemplateService {
     return res
   }
 
+  // get items of a function template
   async findFunctionTemplateItems(templateId: ObjectId) {
     const functionTemplateItems = await this.db
       .collection<FunctionTemplateItem>('FunctionTemplateItem')
@@ -1048,6 +1345,7 @@ export class FunctionTemplateService {
     return functionTemplateItems
   }
 
+  // Verify the relationship between the user and the appid
   async applicationAuthGuard(appid, userid) {
     const app = await this.appService.findOne(appid)
     if (!app) {

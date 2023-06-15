@@ -6,6 +6,11 @@ import {
 import { EnvironmentVariable } from 'src/application/entities/application-configuration'
 import { ObjectId } from 'mongodb'
 
+export enum RelationState {
+  Enabled = 'Active',
+  Disabled = 'Inactive',
+}
+
 export class FunctionTemplate {
   @ApiProperty({ type: String })
   _id?: ObjectId
@@ -82,6 +87,8 @@ export class FunctionTemplateStarRelation {
   createdAt: Date
   @ApiProperty()
   updatedAt: Date
+  @ApiProperty({ type: String })
+  state?: RelationState
 }
 
 export class FunctionTemplateUseRelation {
@@ -95,4 +102,6 @@ export class FunctionTemplateUseRelation {
   createdAt: Date
   @ApiProperty()
   updatedAt: Date
+  @ApiProperty({ type: String })
+  state?: RelationState
 }
