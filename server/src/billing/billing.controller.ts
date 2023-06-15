@@ -1,24 +1,10 @@
-import {
-  Controller,
-  Get,
-  Logger,
-  Param,
-  Query,
-  Req,
-  UseGuards,
-} from '@nestjs/common'
+import { Controller, Get, Logger, Query, Req, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
-import {
-  ApiResponseObject,
-  ApiResponsePagination,
-  ResponseUtil,
-} from 'src/utils/response'
+import { ApiResponsePagination, ResponseUtil } from 'src/utils/response'
 import { BillingQuery, BillingService } from './billing.service'
 
 import { ApplicationBilling } from './entities/application-billing'
 import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
-import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
-import { ObjectId } from 'mongodb'
 import { IRequest } from 'src/utils/interface'
 
 @ApiTags('Billing')
