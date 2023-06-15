@@ -1,14 +1,10 @@
 import { createRef, useEffect, useRef, useState } from "react";
-import {
-  Tag,
-  TagCloseButton,
-  TagLabel,
-  // useColorMode,
-} from "@chakra-ui/react";
+import { Tag, TagCloseButton, TagLabel, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 import { t } from "i18next";
 
-// import { COLOR_MODE } from "@/constants";
+import { COLOR_MODE } from "@/constants";
+
 import { LabelIcon } from "../CommonIcon";
 
 export default function InputTag(props: {
@@ -18,15 +14,15 @@ export default function InputTag(props: {
 }) {
   const { value, onChange, tagList } = props;
   const [inputV, setInputV] = useState("");
-  // const { colorMode } = useColorMode();
-  // const darkMode = colorMode === COLOR_MODE.dark;
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRefs = useRef([]);
   const menuRef = useRef(null);
 
   useEffect(() => {
-    menuRefs.current = Array(tagList.length).map(
+    menuRefs.current = Array((tagList || []).length).map(
       (_, index) => menuRefs.current[index] || createRef(),
     );
   }, [tagList]);
@@ -87,7 +83,7 @@ export default function InputTag(props: {
       <LabelIcon boxSize={4} color={"#D9D9D9"} />
 
       <input
-        className="ml-2 flex-1 border-none bg-transparent outline-none"
+        className="my-1 ml-2 flex-1 border-none bg-transparent outline-none"
         placeholder={String(t("CollectionPanel.CreateTagTip"))}
         value={inputV}
         onChange={(e) => {
@@ -97,9 +93,12 @@ export default function InputTag(props: {
         onClick={handleInputClick}
         onKeyDown={handleEnter}
       />
-      {tagList.length > 0 && isMenuOpen && (
+      {(tagList || []).length > 0 && isMenuOpen && (
         <div
-          className="absolute top-7 z-50 ml-6 flex w-96 flex-wrap rounded-md bg-white p-2 drop-shadow-md"
+          className={clsx(
+            "absolute top-8 z-50 ml-6 flex w-11/12 flex-wrap rounded-md p-2 drop-shadow-md",
+            darkMode ? "bg-gray-800" : "bg-white",
+          )}
           ref={menuRef}
         >
           {tagList.map((tag: any, index: number) => (
@@ -109,7 +108,10 @@ export default function InputTag(props: {
               onClick={() => {
                 handleMenuItemClick(tag);
               }}
-              className="mx-2 my-2 cursor-pointer rounded-md bg-gray-100 px-2 text-lg"
+              className={clsx(
+                "mx-2 my-2 cursor-pointer rounded-md bg-gray-100 px-2 text-lg",
+                darkMode ? "bg-gray-700" : "bg-gray-100",
+              )}
             >
               {tag.tagName}
             </div>

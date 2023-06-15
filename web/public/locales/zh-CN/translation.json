@@ -444,7 +444,7 @@
     "appTemplate": "应用模板",
     "funcTemplate": "函数模板",
     "all": "全部",
-    "market": "模板市场"
+    "market": "函数市场"
   },
   "Template": {
     "useTemplate": "使用模板",
@@ -489,7 +489,12 @@
     "Recent": "最近使用",
     "Earliest": "按时间最早",
     "MostStars": "按收藏数最多",
-    "Latest": "按时间最新"
+    "Latest": "按时间最新",
+    "Please select template permission": "请选择模板权限",
+    "Please enter template name": "请输入模板名",
+    "EditTemplate": "编辑模板",
+    "DeleteTemplate": "删除模板",
+    "FunctionListEmpty": "请至少添加一个函数"
   },
   "Fee": "费用",
   "PleaseCloseApplicationFirst": "请先关闭应用",

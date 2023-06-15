@@ -114,7 +114,7 @@ const CreateModal = (props: {
           </ModalHeader>
           <ModalCloseButton />
 
-          <ModalBody pb={6}>
+          <ModalBody>
             <VStack align="flex-start">
               <FormControl isInvalid={!!errors?.name}>
                 <div

@@ -20,6 +20,7 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
     star,
     _id: templateId,
   } = functionTemplate;
+  console.log(environments);
 
   const { t } = useTranslation();
   const [starState, setStarState] = useState(false);
@@ -95,8 +96,8 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
           <Box className="py-3">
             {(functionList || []).map((item) => {
               return (
-                <div key={item.name} className="my-2 items-center font-medium">
-                  <FileTypeIcon type="ts" />
+                <div key={item.name} className="my-5 flex items-center font-medium">
+                  <FileTypeIcon type="ts" fontSize={18} />
                   <span className="pl-1 text-lg">{item.name}</span>
                 </div>
               );
@@ -124,8 +125,11 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
           <span className="text-xl font-bold">{t("Template.EnvironmentVariables")}</span>
           {(environments || []).map((item) => {
             return (
-              <Box key={item.name}>
-                <div className="my-5 flex items-center font-medium">{item.name}</div>
+              <Box key={item.name} className="my-5 flex justify-between">
+                <div className="flex w-5/12 truncate font-medium">{item.name}</div>
+                <Tooltip label={item.value} aria-label="A tooltip">
+                  <div className="truncate pl-4">{item.value}</div>
+                </Tooltip>
               </Box>
             );
           })}

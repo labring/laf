@@ -444,7 +444,7 @@
     "appTemplate": "Application Template",
     "funcTemplate": "Function Template",
     "all": "All",
-    "market": "Template Market"
+    "market": "Function Market"
   },
   "Template": {
     "useTemplate": "Use Template",
@@ -489,7 +489,12 @@
     "Recent": "Recent Template",
     "Earliest": "Earliest",
     "MostStars": "Most Stars",
-    "Latest": "Latest"
+    "Latest": "Latest",
+    "Please select template permission": "Please select template permission",
+    "Please enter template name": "Please enter template name",
+    "EditTemplate": "Edit Template",
+    "DeleteTemplate": "Delete Template",
+    "FunctionListEmpty": "Please add at least one function."
   },
   "Fee": "Fee",
   "PleaseCloseApplicationFirst": "Please close your application first.",

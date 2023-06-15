@@ -131,14 +131,14 @@ const Header = (props: { bg: string }) => {
               className="mr-8 flex items-center text-lg"
               rel="noreferrer"
             >
-              <span className="pr-2">{item.icon}</span>
-              {item.text}
+              <span className={clsx("pr-2", index !== 1 && "pb-1")}>{item.icon}</span>
+              <span>{item.text}</span>
             </a>
           );
         })}
         <Language fontSize={20} />
         <div
-          className="mr-8 cursor-pointer"
+          className="mr-8 cursor-pointer pb-1"
           onClick={() => {
             toggleColorMode();
             window.dispatchEvent(new Event("ColorModeChange"));

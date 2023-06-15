@@ -40,9 +40,26 @@ export default function CreateFuncTemplate() {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [defaultFunction, setDefaultFunction] = useState<any>();
   const [templateId, setTemplateId] = useState<string>("");
+
   const navigate = useNavigate();
   const location = useLocation();
-  const { showSuccess } = useGlobalStore();
+  const { showSuccess, showError } = useGlobalStore();
+
+  type FormData = {
+    name: string;
+    visibility: string;
+    description: string;
+    tags: string[];
+  };
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<FormData>({
+    defaultValues: defaultFunction,
+  });
 
   useGetOneFunctionTemplateQuery(
     { id: templateId },
@@ -85,23 +102,6 @@ export default function CreateFuncTemplate() {
     }
   }, [location.pathname]);
 
-  type FormData = {
-    name: string;
-    visibility: string;
-    description: string;
-    tags: string[];
-  };
-
-  const {
-    register,
-    handleSubmit,
-    control,
-    reset,
-    formState: { errors },
-  } = useForm<FormData>({
-    defaultValues: defaultFunction,
-  });
-
   useEffect(() => {
     reset(defaultFunction);
   }, [defaultFunction, reset]);
@@ -109,6 +109,11 @@ export default function CreateFuncTemplate() {
   const onSubmit = async (data: FormData) => {
     let res = null;
     const { name, visibility, description } = data;
+
+    if (functionList.length === 0) {
+      showError(t("Template.FunctionListEmpty"));
+      return;
+    }
 
     if (isEdit) {
       res = await updateFunctionMutation.mutateAsync({
@@ -172,6 +177,7 @@ export default function CreateFuncTemplate() {
         </span>
         <span>{isEdit ? t("Template.Edit") : t("Template.Create")}</span>
       </div>
+
       <div className="flex h-full pt-9">
         <div className="mr-9 h-full w-4/5">
           <div className="flex h-12 w-full items-center border-b-[2px]">
@@ -182,7 +188,9 @@ export default function CreateFuncTemplate() {
               placeholder="Title"
             />
           </div>
-          {errors.name && <span className="text-red-500">请输入函数模板名</span>}
+          {errors.name && (
+            <span className="text-red-500">{t("Template.Please enter template name")}</span>
+          )}
           <Controller
             control={control}
             name="visibility"
@@ -196,7 +204,9 @@ export default function CreateFuncTemplate() {
               </RadioGroup>
             )}
           />
-          {errors.visibility && <span className="text-red-500">请选择模板权限</span>}
+          {errors.visibility && (
+            <span className="text-red-500">{t("Template.Please select template permission")}</span>
+          )}
 
           <div
             className={clsx(
@@ -230,7 +240,6 @@ export default function CreateFuncTemplate() {
                       return item;
                     }),
                   );
-                  // setCurrentFunction({ ...currentFunction, source: { code: value } });
                 }}
                 title={currentFunction?.name}
                 colorMode={colorMode}
@@ -277,7 +286,7 @@ export default function CreateFuncTemplate() {
                   <div
                     key={item.name}
                     className={clsx(
-                      "group my-5 flex cursor-pointer items-center justify-between rounded-md font-medium hover:opacity-100",
+                      "group my-4 flex cursor-pointer items-center justify-between rounded-md py-1 font-medium hover:opacity-100",
                       darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100",
                       currentFunction?.name === item.name && darkMode ? "bg-gray-700" : "",
                       currentFunction?.name === item.name && !darkMode ? "bg-gray-100" : "",
@@ -286,9 +295,9 @@ export default function CreateFuncTemplate() {
                       setCurrentFunction(item);
                     }}
                   >
-                    <div>
-                      <FileTypeIcon type="ts" />
-                      <span className="pl-1 text-lg">{item.name}</span>
+                    <div className="flex w-10/12 items-center">
+                      <FileTypeIcon type="ts" fontSize={18} />
+                      <span className="truncate pl-1 text-lg">{item.name}</span>
                     </div>
                     <ConfirmButton
                       onSuccessAction={async () => {
@@ -353,11 +362,9 @@ export default function CreateFuncTemplate() {
             <Box>
               {environments.map((item) => {
                 return (
-                  <Box
-                    key={item.name}
-                    className="flex h-4 w-full items-center justify-between py-5 pl-2 font-medium"
-                  >
-                    {item.name}
+                  <Box key={item.name} className="my-5 flex justify-between">
+                    <div className="flex w-5/12 truncate font-medium">{item.name}</div>
+                    <div className="ml-8 truncate">{item.value}</div>
                   </Box>
                 );
               })}
@@ -365,6 +372,7 @@ export default function CreateFuncTemplate() {
           </Box>
         </div>
       </div>
+
       <div className="mt-4 flex justify-center pb-4">
         {/* <Button className="mr-12 w-36" variant={"secondary"} onClick={handleSubmit(onSubmit)}>
           {t("Save")}

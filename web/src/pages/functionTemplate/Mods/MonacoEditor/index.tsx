@@ -92,7 +92,7 @@ const MonacoEditor = (props: {
         lineNumbersMinChars: 4,
         fontSize: 14,
         scrollBeyondLastLine: false,
-        theme: colorMode === COLOR_MODE.dark ? "vs-dark" : "lafEditorTheme",
+        theme: colorMode === COLOR_MODE.dark ? "lafEditorThemeDark" : "lafEditorTheme",
       });
     }
 
@@ -105,7 +105,6 @@ const MonacoEditor = (props: {
     if (onChange) {
       subscriptionRef.current = editorRef.current?.onDidChangeModelContent(() => {
         onChange(editorRef.current?.getValue());
-        // parseImports(editorRef.current?.getValue() || "");
       });
     }
   }, [onChange]);
