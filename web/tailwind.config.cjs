@@ -8,6 +8,7 @@ module.exports = {
       md: "768px",
       lg: "976px",
       xl: "1440px",
+      '2xl': "1680px",
     },
     boxShadow: {
       DEFAULT: "0px 4px 10px rgba(191, 202, 213, 0.25)",
