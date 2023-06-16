@@ -1,4 +1,9 @@
-import { V1Deployment, V1DeploymentSpec } from '@kubernetes/client-node'
+import {
+  V1Deployment,
+  V1DeploymentSpec,
+  V2HorizontalPodAutoscaler,
+  V2HorizontalPodAutoscalerSpec,
+} from '@kubernetes/client-node'
 import { Injectable, Logger } from '@nestjs/common'
 import { GetApplicationNamespaceByAppId } from '../utils/getter'
 import {
@@ -53,18 +58,23 @@ export class InstanceService {
     if (!res.service) {
       await this.createService(app, labels)
     }
+
+    if (!res.hpa) {
+      await this.createHorizontalPodAutoscaler(app, labels)
+    }
   }
 
   public async remove(appid: string) {
     const app = await this.applicationService.findOneUnsafe(appid)
     const region = app.region
-    const { deployment, service } = await this.get(appid)
+    const { deployment, service, hpa } = await this.get(appid)
 
     const namespace = await this.cluster.getAppNamespace(region, app.appid)
     if (!namespace) return // namespace not found, nothing to do
 
     const appsV1Api = this.cluster.makeAppsV1Api(region)
     const coreV1Api = this.cluster.makeCoreV1Api(region)
+    const hpaV2Api = this.cluster.makeHorizontalPodAutoscalingV2Api(region)
 
     // ensure deployment deleted
     if (deployment) {
@@ -76,6 +86,14 @@ export class InstanceService {
       const name = appid
       await coreV1Api.deleteNamespacedService(name, namespace.metadata.name)
     }
+
+    if (hpa) {
+      await hpaV2Api.deleteNamespacedHorizontalPodAutoscaler(
+        appid,
+        namespace.metadata.name,
+      )
+    }
+
     this.logger.log(`remove k8s deployment ${deployment?.metadata?.name}`)
   }
 
@@ -84,18 +102,19 @@ export class InstanceService {
     const region = app.region
     const namespace = await this.cluster.getAppNamespace(region, app.appid)
     if (!namespace) {
-      return { deployment: null, service: null }
+      return { deployment: null, service: null, hpa: null, app }
     }
 
     const deployment = await this.getDeployment(app)
     const service = await this.getService(app)
-    return { deployment, service }
+    const hpa = await this.getHorizontalPodAutoscaler(app)
+    return { deployment, service, hpa, app }
   }
 
   public async restart(appid: string) {
     const app = await this.applicationService.findOneUnsafe(appid)
     const region = app.region
-    const { deployment } = await this.get(appid)
+    const { deployment, hpa } = await this.get(appid)
     if (!deployment) {
       await this.create(appid)
       return
@@ -114,6 +133,9 @@ export class InstanceService {
     )
 
     this.logger.log(`restart k8s deployment ${res.body?.metadata?.name}`)
+
+    // reapply hpa when application is restarted
+    await this.reapplyHorizontalPodAutoscaler(app, hpa)
   }
 
   private async createDeployment(app: ApplicationWithRelations, labels: any) {
@@ -364,5 +386,154 @@ export class InstanceService {
       }, // end of template {}
     }
     return spec
+  }
+
+  private async createHorizontalPodAutoscaler(
+    app: ApplicationWithRelations,
+    labels: any,
+  ) {
+    if (!app.bundle.autoscaling.enable) return null
+
+    const spec = this.makeHorizontalPodAutoscalerSpec(app)
+    const hpaV2Api = this.cluster.makeHorizontalPodAutoscalingV2Api(app.region)
+    const namespace = GetApplicationNamespaceByAppId(app.appid)
+    const res = await hpaV2Api.createNamespacedHorizontalPodAutoscaler(
+      namespace,
+      {
+        apiVersion: 'autoscaling/v2',
+        kind: 'HorizontalPodAutoscaler',
+        spec,
+        metadata: {
+          name: app.appid,
+          labels,
+        },
+      },
+    )
+    this.logger.log(`create k8s hpa ${res.body?.metadata?.name}`)
+    return res.body
+  }
+
+  private async getHorizontalPodAutoscaler(app: ApplicationWithRelations) {
+    const appid = app.appid
+    const hpaV2Api = this.cluster.makeHorizontalPodAutoscalingV2Api(app.region)
+
+    try {
+      const hpaName = appid
+      const namespace = GetApplicationNamespaceByAppId(appid)
+      const res = await hpaV2Api.readNamespacedHorizontalPodAutoscaler(
+        hpaName,
+        namespace,
+      )
+      return res.body
+    } catch (error) {
+      if (error?.response?.body?.reason === 'NotFound') return null
+      throw error
+    }
+  }
+
+  private makeHorizontalPodAutoscalerSpec(app: ApplicationWithRelations) {
+    const {
+      minReplicas,
+      maxReplicas,
+      targetCPUUtilizationPercentage,
+      targetMemoryUtilizationPercentage,
+    } = app.bundle.autoscaling
+
+    const metrics: V2HorizontalPodAutoscalerSpec['metrics'] = []
+
+    if (targetCPUUtilizationPercentage) {
+      metrics.push({
+        type: 'Resource',
+        resource: {
+          name: 'cpu',
+          target: {
+            type: 'Utilization',
+            averageUtilization: targetCPUUtilizationPercentage,
+          },
+        },
+      })
+    }
+
+    if (targetMemoryUtilizationPercentage) {
+      metrics.push({
+        type: 'Resource',
+        resource: {
+          name: 'memory',
+          target: {
+            type: 'Utilization',
+            averageUtilization: targetMemoryUtilizationPercentage,
+          },
+        },
+      })
+    }
+
+    const spec: V2HorizontalPodAutoscalerSpec = {
+      scaleTargetRef: {
+        apiVersion: 'apps/v1',
+        kind: 'Deployment',
+        name: app.appid,
+      },
+      minReplicas,
+      maxReplicas,
+      metrics,
+      behavior: {
+        scaleDown: {
+          policies: [
+            {
+              type: 'Pods',
+              value: 1,
+              periodSeconds: 60,
+            },
+          ],
+        },
+        scaleUp: {
+          policies: [
+            {
+              type: 'Pods',
+              value: 1,
+              periodSeconds: 60,
+            },
+          ],
+        },
+      },
+    }
+    return spec
+  }
+
+  public async reapplyHorizontalPodAutoscalerByAppid(appid: string) {
+    const { hpa, app } = await this.get(appid)
+    if (!hpa) {
+      const labels = { [LABEL_KEY_APP_ID]: appid }
+      return await this.createHorizontalPodAutoscaler(app, labels)
+    }
+    return await this.reapplyHorizontalPodAutoscaler(app, hpa)
+  }
+
+  private async reapplyHorizontalPodAutoscaler(
+    app: ApplicationWithRelations,
+    oldHpa: V2HorizontalPodAutoscaler,
+  ) {
+    const { region, appid } = app
+    const hpaV2Api = this.cluster.makeHorizontalPodAutoscalingV2Api(region)
+    const namespace = GetApplicationNamespaceByAppId(appid)
+
+    const hpa = oldHpa
+    hpa.spec = this.makeHorizontalPodAutoscalerSpec(app)
+
+    if (!app.bundle.autoscaling.enable) {
+      if (!hpa) return
+      await hpaV2Api.deleteNamespacedHorizontalPodAutoscaler(
+        app.appid,
+        namespace,
+      )
+      this.logger.log(`delete k8s hpa ${app.appid}`)
+    } else {
+      await hpaV2Api.replaceNamespacedHorizontalPodAutoscaler(
+        app.appid,
+        namespace,
+        hpa,
+      )
+      this.logger.log(`reapply k8s hpa ${app.appid}`)
+    }
   }
 }

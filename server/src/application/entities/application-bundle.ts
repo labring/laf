@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { ObjectId } from 'mongodb'
+import { Autoscaling } from './application-configuration'
 
 export class ApplicationBundleResource {
   @ApiProperty({ example: 500 })
@@ -52,6 +53,9 @@ export class ApplicationBundle {
 
   @ApiProperty()
   resource: ApplicationBundleResource
+
+  @ApiProperty()
+  autoscaling: Autoscaling
 
   @ApiPropertyOptional()
   isTrialTier?: boolean

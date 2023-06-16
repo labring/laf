@@ -164,4 +164,9 @@ export class ClusterService {
     const kc = this.loadKubeConfig(region)
     return kc.makeApiClient(k8s.CustomObjectsApi)
   }
+
+  makeHorizontalPodAutoscalingV2Api(region: Region) {
+    const kc = this.loadKubeConfig(region)
+    return kc.makeApiClient(k8s.AutoscalingV2Api)
+  }
 }
