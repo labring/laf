@@ -35,7 +35,7 @@ export default function ChargeButton(props: { amount?: number; children: React.R
   const darkMode = useColorMode().colorMode === "dark";
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [amount, setAmount] = React.useState<number>();
+  const [amount, setAmount] = React.useState<number>(0);
   const [bonus, setBonus] = React.useState<[{ amount: number; reward: number }]>();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -75,14 +75,15 @@ export default function ChargeButton(props: { amount?: number; children: React.R
       enabled: isOpen,
       onSuccess: (res) => {
         setBonus(res.data);
+        console.log(res.data);
       },
     },
   );
 
   const matchBonus = (amount: number) => {
-    const index = (bonus || []).findIndex((item) => item.amount > (amount || 0));
+    const index = (bonus || []).findIndex((item) => item.amount > amount);
     const matchedItem = index === -1 ? bonus?.[bonus?.length - 1] : bonus?.[index - 1];
-    return matchedItem?.reward;
+    return matchedItem?.reward && matchedItem?.reward / 100;
   };
 
   return (
@@ -107,23 +108,23 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                   <div className="relative">
                     {item.reward && (
                       <span className="absolute left-20 top-1 z-50 whitespace-nowrap rounded-full rounded-bl-none bg-purple-200 px-4 py-[1.5px] text-[12px] text-purple-600">
-                        {t("application.bonus")} ¥{item.reward}
+                        {t("application.bonus")} ¥{item.reward / 100}
                       </span>
                     )}
                     <Button
                       className={clsx(
                         "w-full !rounded-md !border-2 bg-gray-100 py-10 !text-[24px]",
-                        item.amount === amount
+                        item.amount === amount * 100
                           ? "!border-primary-400 !text-primary-600"
                           : "!border-transparent",
                       )}
                       variant={"outline"}
                       key={item.amount}
                       onClick={() => {
-                        setAmount(item.amount);
+                        setAmount(item.amount / 100);
                       }}
                     >
-                      ¥{item.amount}
+                      ¥{item.amount / 100}
                     </Button>
                   </div>
                 ))}
@@ -140,7 +141,7 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                     if (isNumber(value) && !isNaN(value)) {
                       setAmount(value);
                     } else {
-                      if (inputRef.current) inputRef.current.value = String(amount || "");
+                      if (inputRef.current) inputRef.current.value = String(amount);
                     }
                   }}
                 />
@@ -149,7 +150,7 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                     <span className="ml-3 whitespace-nowrap rounded-full rounded-bl-none bg-purple-200 px-2 py-[1.5px] text-[12px] text-purple-600">
                       {t("application.bonus")}
                     </span>
-                    <span className="pl-1 font-semibold">¥{amount && matchBonus(amount)}</span>
+                    <span className="pl-1 font-semibold">¥{matchBonus(amount * 100)}</span>
                   </div>
                 )}
               </InputGroup>
