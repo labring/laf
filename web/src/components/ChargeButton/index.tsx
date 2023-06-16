@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   Button,
   Input,
@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { t } from "i18next";
+import isNumber from "lodash/isNumber";
 import { QRCodeSVG } from "qrcode.react";
 
 import { CHARGE_CHANNEL, CURRENCY } from "@/constants";
@@ -27,6 +28,7 @@ export default function ChargeButton(props: { amount?: number; children: React.R
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [amount, setAmount] = React.useState<number>();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [phaseStatus, setPhaseStatus] = React.useState<string | undefined>();
 
@@ -75,11 +77,17 @@ export default function ChargeButton(props: { amount?: number; children: React.R
               <InputGroup>
                 <InputLeftAddon children="¥" />
                 <Input
+                  ref={inputRef}
                   className="mb-4 text-3xl"
                   style={{ fontSize: "30px" }}
                   defaultValue={amount}
-                  onChange={(event) => {
-                    setAmount(Number(event.target.value));
+                  onInput={(event) => {
+                    const value = Number(event.currentTarget.value);
+                    if (isNumber(value) && !isNaN(value)) {
+                      setAmount(value);
+                    } else {
+                      if (inputRef.current) inputRef.current.value = String(amount || "");
+                    }
                   }}
                 />
               </InputGroup>
@@ -91,6 +99,7 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                     key={item}
                     onClick={() => {
                       setAmount(item / 100);
+                      if (inputRef.current) inputRef.current.value = String(item / 100);
                     }}
                   >
                     ¥{item / 100}
@@ -98,6 +107,7 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                 ))}
               </div>
               <Button
+                isDisabled={!amount || !isNumber(amount)}
                 className="w-full !rounded-full"
                 size="lg"
                 isLoading={createChargeOrder.isLoading}
