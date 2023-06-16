@@ -58,6 +58,12 @@ export class CreateAutoscalingDto {
       ) {
         return 'Either targetCPUUtilizationPercentage or targetMemoryUtilizationPercentage must be specified.'
       }
+      if (
+        this.targetCPUUtilizationPercentage &&
+        this.targetMemoryUtilizationPercentage
+      ) {
+        return 'TargetCPUUtilizationPercentage and TargetMemoryUtilizationPercentage cannot be specified simultaneously.'
+      }
     }
     return null
   }

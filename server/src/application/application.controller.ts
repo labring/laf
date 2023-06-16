@@ -65,6 +65,11 @@ export class ApplicationController {
   @ApiResponseObject(ApplicationWithRelations)
   @Post()
   async create(@Req() req: IRequest, @Body() dto: CreateApplicationDto) {
+    const error = dto.autoscaling.validate()
+    if (error) {
+      return ResponseUtil.error(error)
+    }
+
     const user = req.user
 
     // check regionId exists
@@ -274,6 +279,11 @@ export class ApplicationController {
     @Body() dto: UpdateApplicationBundleDto,
     @Req() req: IRequest,
   ) {
+    const error = dto.autoscaling.validate()
+    if (error) {
+      return ResponseUtil.error(error)
+    }
+
     const app = await this.application.findOne(appid)
     const user = req.user
     const regionId = app.regionId
