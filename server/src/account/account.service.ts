@@ -13,6 +13,7 @@ import {
   PaymentChannelType,
 } from './entities/account-charge-order'
 import { AccountTransaction } from './entities/account-transaction'
+import { AccountChargeReward } from './entities/account-charge-reward'
 
 @Injectable()
 export class AccountService {
@@ -171,5 +172,21 @@ export class AccountService {
     }
 
     throw new Error('Unsupported payment channel')
+  }
+
+  async findAllChargeRewards() {
+    const rewards = await this.db
+      .collection<AccountChargeReward>('AccountChargeReward')
+      .find(
+        {},
+        {
+          sort: {
+            amount: 1,
+          },
+        },
+      )
+      .toArray()
+
+    return rewards
   }
 }
