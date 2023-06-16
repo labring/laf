@@ -39,9 +39,6 @@ export class ApplicationConfiguration {
   @ApiProperty()
   dependencies: string[]
 
-  @ApiProperty({ type: Autoscaling })
-  autoscaling: Autoscaling
-
   @ApiProperty()
   createdAt: Date
 

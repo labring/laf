@@ -114,7 +114,7 @@ export class InstanceService {
   public async restart(appid: string) {
     const app = await this.applicationService.findOneUnsafe(appid)
     const region = app.region
-    const { deployment } = await this.get(appid)
+    const { deployment, hpa } = await this.get(appid)
     if (!deployment) {
       await this.create(appid)
       return
@@ -134,8 +134,8 @@ export class InstanceService {
 
     this.logger.log(`restart k8s deployment ${res.body?.metadata?.name}`)
 
-    // if we need to reapply hpa when application is restarted
-    // await this.reapplyHorizontalPodAutoscaler(app, hpa)
+    // reapply hpa when application is restarted
+    await this.reapplyHorizontalPodAutoscaler(app, hpa)
   }
 
   private async createDeployment(app: ApplicationWithRelations, labels: any) {
@@ -392,7 +392,7 @@ export class InstanceService {
     app: ApplicationWithRelations,
     labels: any,
   ) {
-    if (!app.configuration.autoscaling.enable) return null
+    if (!app.bundle.autoscaling.enable) return null
 
     const spec = this.makeHorizontalPodAutoscalerSpec(app)
     const hpaV2Api = this.cluster.makeHorizontalPodAutoscalingV2Api(app.region)
@@ -437,7 +437,7 @@ export class InstanceService {
       maxReplicas,
       targetCPUUtilizationPercentage,
       targetMemoryUtilizationPercentage,
-    } = app.configuration.autoscaling
+    } = app.bundle.autoscaling
 
     const metrics: V2HorizontalPodAutoscalerSpec['metrics'] = []
 
@@ -520,7 +520,7 @@ export class InstanceService {
     const hpa = oldHpa
     hpa.spec = this.makeHorizontalPodAutoscalerSpec(app)
 
-    if (!app.configuration.autoscaling.enable) {
+    if (!app.bundle.autoscaling.enable) {
       if (!hpa) return
       await hpaV2Api.deleteNamespacedHorizontalPodAutoscaler(
         app.appid,

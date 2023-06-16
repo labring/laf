@@ -16,16 +16,10 @@ import { WebsiteService } from 'src/website/website.service'
 import { AccountModule } from 'src/account/account.module'
 import { BundleService } from './bundle.service'
 import { ResourceService } from 'src/billing/resource.service'
-import { AutoscalingService } from './autoscaling.service'
-import { AutoscalingController } from './autoscaling.controller'
 
 @Module({
   imports: [StorageModule, DatabaseModule, GatewayModule, AccountModule],
-  controllers: [
-    ApplicationController,
-    EnvironmentVariableController,
-    AutoscalingController,
-  ],
+  controllers: [ApplicationController, EnvironmentVariableController],
   providers: [
     ApplicationService,
     ApplicationTaskService,
@@ -33,7 +27,6 @@ import { AutoscalingController } from './autoscaling.controller'
     JwtService,
     FunctionService,
     EnvironmentVariableService,
-    AutoscalingService,
     ApplicationConfigurationService,
     TriggerService,
     WebsiteService,

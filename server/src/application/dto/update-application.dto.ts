@@ -1,6 +1,15 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsIn, IsInt, IsNotEmpty, IsString, Length } from 'class-validator'
+import {
+  IsIn,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  Length,
+  ValidateNested,
+} from 'class-validator'
 import { ApplicationState } from '../entities/application'
+import { CreateAutoscalingDto } from './create-autoscaling.dto'
+import { Type } from 'class-transformer'
 
 const STATES = [
   ApplicationState.Running,
@@ -64,4 +73,9 @@ export class UpdateApplicationBundleDto {
   @IsNotEmpty()
   @IsInt()
   storageCapacity: number
+
+  @ApiProperty({ type: CreateAutoscalingDto })
+  @ValidateNested()
+  @Type(() => CreateAutoscalingDto)
+  autoscaling: CreateAutoscalingDto
 }

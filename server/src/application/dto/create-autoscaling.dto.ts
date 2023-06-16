@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
   IsBoolean,
   IsInt,
@@ -10,12 +10,12 @@ import {
 } from 'class-validator'
 
 export class CreateAutoscalingDto {
-  @ApiProperty()
+  @ApiProperty({ default: false })
   @IsNotEmpty()
   @IsBoolean()
   enable: boolean
 
-  @ApiProperty()
+  @ApiProperty({ default: 1 })
   @IsNotEmpty()
   @IsInt()
   @Min(1)
@@ -23,7 +23,7 @@ export class CreateAutoscalingDto {
   @ValidateIf(({ enable }) => enable)
   minReplicas: number
 
-  @ApiProperty()
+  @ApiProperty({ default: 5 })
   @IsNotEmpty()
   @IsInt()
   @Min(2)
@@ -31,7 +31,7 @@ export class CreateAutoscalingDto {
   @ValidateIf(({ enable }) => enable)
   maxReplicas: number
 
-  @ApiProperty()
+  @ApiPropertyOptional({ default: 50 })
   @IsOptional()
   @IsInt()
   @Min(0)
@@ -39,7 +39,7 @@ export class CreateAutoscalingDto {
   @ValidateIf(({ enable }) => enable)
   targetCPUUtilizationPercentage?: number
 
-  @ApiProperty()
+  @ApiPropertyOptional({ default: 50 })
   @IsOptional()
   @IsInt()
   @Min(0)
