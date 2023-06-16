@@ -112,7 +112,7 @@ export async function init(appid: string, options: { sync: boolean }) {
     // pull policies
     policyPull()
     // pull functions
-    funcPull()
+    funcPull({ force: true })
   }
   console.log(`${getEmoji('🚀')} application ${app.name} init success`)
 }
