@@ -86,7 +86,13 @@ export class FunctionCache {
     if (module.startsWith('@/')) {
       return FunctionCache.requireCloudFunction(module.replace('@/', ''))
     }
+    try {
+    // Try importing as ESM
+    return import(module) as any
+  } catch (err) {
+    // Use require for CommonJS 
     return require(module) as any
+  }
   }
 
   static getFunctionByName(funcName: string): ICloudFunctionData {
