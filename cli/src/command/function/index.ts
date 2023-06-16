@@ -38,12 +38,13 @@ export function command(): Command {
   cmd
     .command('pull')
     .argument('[funcName]', 'funcName')
+    .option('-f, --force', 'force to overwrite the local', false)
     .description('pull function, if funcName does not exist, pull all')
-    .action((funcName) => {
+    .action((funcName, options) => {
       if (funcName) {
         pullOne(funcName)
       } else {
-        pullAll()
+        pullAll(options)
       }
     })
 

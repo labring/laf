@@ -89,12 +89,31 @@ async function pull(funcName: string) {
   fs.writeFileSync(codePath, func.source.code)
 }
 
-export async function pullAll() {
+export async function pullAll(options: { force: boolean }) {
   const appSchema = AppSchema.read()
   const funcs = await functionControllerFindAll(appSchema.appid)
+  const serverFuncMap = new Map<string, boolean>()
   for (let func of funcs) {
     await pull(func.name)
     console.log(`${getEmoji('✅')} function ${func.name} pulled`)
+    serverFuncMap.set(func.name, true)
+  }
+  // remove remote not exist function
+  const localFuncs = getLocalFuncs()
+  for (let item of localFuncs) {
+    if (!serverFuncMap.has(item)) {
+      if (options.force) {
+        removeFunction(item)
+        console.log(`${getEmoji('✅')} function ${item} deleted`)
+      } else {
+        const res = await confirm('confirm remove function in local ' + item + '?')
+        if (res.value) {
+          removeFunction(item)
+          console.log(`${getEmoji('✅')} function ${item} deleted`)
+        }
+      }
+    }
+
   }
 }
 
@@ -265,4 +284,14 @@ function getLocalFuncs() {
   const files = fs.readdirSync(funcDir)
   const funcs = files.filter((file) => file.endsWith('.ts')).map((file) => file.replace('.ts', ''))
   return funcs
+}
+
+function removeFunction(name: string) { 
+  if (FunctionSchema.exist(name)) {
+    FunctionSchema.delete(name)
+  }
+  const funcPath = path.join(getBaseDir(), 'functions', name + '.ts')
+  if (exist(funcPath)) {
+    remove(funcPath)
+  }
 }
