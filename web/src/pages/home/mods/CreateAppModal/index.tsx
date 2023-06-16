@@ -569,7 +569,6 @@ const CreateAppModal = (props: {
                             </Select>
                           </div>
                           <Input
-                            // value={defaultAutoscaling.targetCPUUtilizationPercentage ? defaultAutoscaling.targetCPUUtilizationPercentage as number : defaultAutoscaling.targetMemoryUtilizationPercentage as number}
                             value={
                               autoscaling.targetCPUUtilizationPercentage
                                 ? (autoscaling.targetCPUUtilizationPercentage as number)
