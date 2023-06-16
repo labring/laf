@@ -14,7 +14,6 @@ import StatusBadge from "@/pages/home/mods/StatusBadge";
 function StatusBar() {
   const { t } = useTranslation();
   const { currentApp } = useGlobalStore((state) => state);
-  console.log(currentApp);
 
   return (
     <Panel className="!flex-row justify-between">
