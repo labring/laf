@@ -75,8 +75,8 @@ export async function init(appid: string, options: { sync: boolean }) {
     appid: app.appid,
     invokeUrl: app.tls ? 'https://' + app.domain.domain : 'http://' + app.domain.domain,
     function: {
-      debugToken: app.function_debug_token,
-      debugTokenExpire: timestamp + DEBUG_TOKEN_EXPIRE,
+      developToken: app.develop_token,
+      developTokenExpire: timestamp + DEBUG_TOKEN_EXPIRE,
     },
     storage: {
       endpoint: app.storage.credentials.endpoint,

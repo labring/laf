@@ -9,8 +9,8 @@ export class AppSchema {
   appid: string
   invokeUrl?: string
   function?: {
-    debugToken?: string
-    debugTokenExpire?: number
+    developToken?: string
+    developTokenExpire?: number
   }
   storage?: {
     endpoint: string
@@ -41,8 +41,8 @@ export class AppSchema {
     let timestamp = Date.parse(new Date().toString()) / 1000
 
     appSchema.function = {
-      debugToken: app.function_debug_token,
-      debugTokenExpire: timestamp + DEBUG_TOKEN_EXPIRE,
+      developToken: app.develop_token,
+      developTokenExpire: timestamp + DEBUG_TOKEN_EXPIRE,
     }
 
     appSchema.storage = {
