@@ -205,7 +205,7 @@ export class AccountController {
             { sort: { amount: -1 } },
           )
 
-        const realAmount = reward ? reward.amount + order.amount : order.amount
+        const realAmount = reward ? reward.reward + order.amount : order.amount
 
         const ret = await db
           .collection<Account>('Account')
