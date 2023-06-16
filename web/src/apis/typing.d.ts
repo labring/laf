@@ -284,6 +284,24 @@ export type Source = {
   lang: any;
 };
 
+export type TFunctionTemplate = {
+  _id: string;
+  name: string;
+  description: string;
+  private: boolean;
+  createdAt: string;
+  updatedAt: string;
+  star: number;
+  items: { name: string; source: { code: string } }[];
+  dependencies: string[];
+  environments: { name: string; value: string }[];
+};
+
+export type TemplateList = {
+  list: TFunctionTemplate[];
+  total: number;
+};
+
 export type TLogItem = {
   _id: string;
   request_id: string;
