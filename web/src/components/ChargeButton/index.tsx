@@ -60,9 +60,10 @@ export default function ChargeButton(props: { amount?: number; children: React.R
       refetchInterval: phaseStatus === "Pending" && isOpen ? 1000 : false,
       onSuccess: (res) => {
         setPhaseStatus(res?.data?.phase);
-        if (res?.data?.phase === "Paid") {
+        if (res?.data?.phase === "Paid" && phaseStatus !== "Paid") {
           accountRefetch();
           onClose();
+          setPhaseStatus(res?.data?.phase);
         }
       },
     },
@@ -174,7 +175,7 @@ export default function ChargeButton(props: { amount?: number; children: React.R
               </Button>
             </div>
 
-            {createOrderRes?.data?.result?.code_url && (
+            {createOrderRes?.data?.result?.code_url && phaseStatus !== "Paid" && (
               <div className="mt-4 flex flex-col items-center text-xl ">
                 <h2 className="mb-2">{t("Scan with WeChat")}</h2>
                 <QRCodeSVG
