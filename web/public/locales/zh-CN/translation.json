@@ -522,5 +522,5 @@
     "Number of Instances": "实例数",
     "CPU Threshold": "CPU 阈值"
   },
-  "Storage Threshold": "存储阈值"
+  "Storage Threshold": "内存阈值"
 }

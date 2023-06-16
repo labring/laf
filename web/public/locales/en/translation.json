@@ -524,5 +524,5 @@
     "targetCPUUtilization": "CPU Utilization",
     "CPU Threshold": "CPU Threshold"
   },
-  "Storage Threshold": "Storage Threshold"
+  "Storage Threshold": "Memory Threshold"
 }
