@@ -207,20 +207,6 @@ declare namespace Definitions {
     domain?: string;
   };
 
-  export type Pat2TokenDto = {
-    pat?: string /* PAT */;
-  };
-
-  export type UserWithProfile = {
-    _id?: string;
-    username?: string;
-    email?: string;
-    phone?: string;
-    createdAt?: string;
-    updatedAt?: string;
-    profile?: Definitions.UserProfile;
-  };
-
   export type PasswdSignupDto = {
     username?: string /* username, 3-64 characters */;
     password?: string /* password, 8-64 characters */;
@@ -270,6 +256,20 @@ declare namespace Definitions {
     code?: string /* sms verify code */;
   };
 
+  export type Pat2TokenDto = {
+    pat?: string /* PAT */;
+  };
+
+  export type UserWithProfile = {
+    _id?: string;
+    username?: string;
+    email?: string;
+    phone?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    profile?: Definitions.UserProfile;
+  };
+
   export type CreatePATDto = {
     name?: string;
     expiresIn?: number;
@@ -283,18 +283,6 @@ declare namespace Definitions {
 
   export type DeleteDependencyDto = {
     name?: string;
-  };
-
-  export type ApplicationBilling = {
-    _id?: string;
-    appid?: string;
-    state?: string;
-    amount?: number;
-    detail?: Definitions.ApplicationBillingDetail;
-    startAt?: string;
-    endAt?: string;
-    createdAt?: string;
-    updatedAt?: string;
   };
 
   export type CalculatePriceDto = {
@@ -389,23 +377,26 @@ declare namespace Definitions {
     createdAt?: string;
     updatedAt?: string;
   };
-
-  export type ApplicationBillingDetail = {
-    cpu?: Definitions.ApplicationBillingDetailItem;
-    memory?: Definitions.ApplicationBillingDetailItem;
-    databaseCapacity?: Definitions.ApplicationBillingDetailItem;
-    storageCapacity?: Definitions.ApplicationBillingDetailItem;
-    networkTraffic?: Definitions.ApplicationBillingDetailItem;
-  };
-
-  export type ApplicationBillingDetailItem = {
-    usage?: number;
-    amount?: number;
-  };
 }
 
 declare namespace Paths {
   namespace AppControllerGetRuntimes {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AuthControllerPat2token {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AuthControllerGetProfile {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -725,6 +716,14 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace AccountControllerGetChargeRewardList {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace AccountControllerWechatNotify {
     export type QueryParameters = any;
 
@@ -777,22 +776,6 @@ declare namespace Paths {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.BindCustomDomainDto;
-
-    export type Responses = any;
-  }
-
-  namespace AuthControllerPat2token {
-    export type QueryParameters = any;
-
-    export type BodyParameters = Definitions.Pat2TokenDto;
-
-    export type Responses = any;
-  }
-
-  namespace AuthControllerGetProfile {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
 
     export type Responses = any;
   }
@@ -865,6 +848,22 @@ declare namespace Paths {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.BindUsernameDto;
+
+    export type Responses = any;
+  }
+
+  namespace AuthenticationControllerPat2token {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.Pat2TokenDto;
+
+    export type Responses = any;
+  }
+
+  namespace AuthenticationControllerGetProfile {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
 
     export type Responses = any;
   }

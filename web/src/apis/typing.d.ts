@@ -323,6 +323,13 @@ export type TApplicationItem = {
       limitStorageTPS: number;
       reservedTimeAfterExpired: number;
     };
+    autoscaling: {
+      enable: boolean;
+      minReplicas: number;
+      maxReplicas: number;
+      targetCPUUtilizationPercentage: number | null;
+      targetMemoryUtilizationPercentage: number | null;
+    };
     createdAt: string;
     updatedAt: string;
   };
