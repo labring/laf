@@ -513,5 +513,15 @@
   "Update function template success": "更新函数模板成功",
   "Templates": {
     "My": "我的模板"
-  }
+  },
+  "application": {
+    "bonus": "赠",
+    "Recharge": "输入金额",
+    "RecommendedSpecifications": "推荐规格",
+    "ChooseSpecifications": "选择规格",
+    "autoscaling": "弹性伸缩",
+    "Number of Instances": "实例数",
+    "CPU Threshold": "CPU 阈值"
+  },
+  "Storage Threshold": "存储阈值"
 }

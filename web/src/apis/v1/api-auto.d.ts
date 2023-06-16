@@ -428,6 +428,22 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace AuthControllerPat2token {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AuthControllerGetProfile {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace FunctionControllerCreate {
     export type QueryParameters = any;
 
@@ -736,6 +752,14 @@ declare namespace Paths {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.CreateChargeOrderDto;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerGetChargeRewardList {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
 
     export type Responses = any;
   }

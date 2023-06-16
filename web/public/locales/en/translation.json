@@ -513,5 +513,16 @@
   "Update function template success": "Update function template success",
   "Templates": {
     "My": "My"
-  }
+  },
+  "application": {
+    "bonus": "bonus",
+    "Recharge": "Recharge",
+    "RecommendedSpecifications": "Recommended Specifications: ",
+    "ChooseSpecifications": "Choose Specifications",
+    "autoscaling": "AutoScaling",
+    "Number of Instances": "Number of Instances",
+    "targetCPUUtilization": "CPU Utilization",
+    "CPU Threshold": "CPU Threshold"
+  },
+  "Storage Threshold": "Storage Threshold"
 }
