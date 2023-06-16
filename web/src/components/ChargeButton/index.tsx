@@ -101,7 +101,7 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                   ¥ {formatPrice(accountRes?.data?.balance)}
                 </span>
               </div>
-              <p className="mb-4 text-second">{t("Recharge amount")}</p>
+              {bonus && <p className="mb-4 text-second">{t("Recharge amount")}</p>}
               <div className="mb-5 grid grid-cols-3 gap-4">
                 {(bonus || []).map((item) => (
                   <div className="relative">
@@ -129,7 +129,7 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                 ))}
               </div>
               <InputGroup className="flex items-center pb-5">
-                <div className="w-3/12 text-lg text-second">{t("application.Recharge")}</div>
+                <div className="w-20 text-lg text-second">{t("application.Recharge")}</div>
                 <InputLeftAddon className="!px-0 !pl-3" children="¥" />
                 <Input
                   ref={inputRef}
@@ -144,10 +144,14 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                     }
                   }}
                 />
-                <span className="ml-3 whitespace-nowrap rounded-full rounded-bl-none bg-purple-200 px-2 py-[1.5px] text-[12px] text-purple-600">
-                  赠
-                </span>
-                <span className="pl-1 font-semibold">¥{amount && matchBonus(amount)}</span>
+                {bonus && (
+                  <div>
+                    <span className="ml-3 whitespace-nowrap rounded-full rounded-bl-none bg-purple-200 px-2 py-[1.5px] text-[12px] text-purple-600">
+                      {t("application.bonus")}
+                    </span>
+                    <span className="pl-1 font-semibold">¥{amount && matchBonus(amount)}</span>
+                  </div>
+                )}
               </InputGroup>
               {/* <span className="flex items-center cursor-pointer text-[#1D8CDC] pb-6">
                 <InfoOutlineIcon className="mr-2" />
