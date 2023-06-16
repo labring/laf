@@ -225,7 +225,7 @@ export async function exec(
 
   const res = await invokeFunction(
     appSchema.invokeUrl || '',
-    appSchema?.function?.debugToken,
+    appSchema?.function?.developToken,
     funcName,
     func,
     options.method,
