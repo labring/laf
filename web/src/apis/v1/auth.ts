@@ -175,3 +175,41 @@ export async function AuthenticationControllerBindUsername(
     data: params,
   });
 }
+
+/**
+ * Get user token by PAT
+ */
+export async function AuthenticationControllerPat2token(params: Definitions.Pat2TokenDto): Promise<{
+  error: string;
+  data: Paths.AuthenticationControllerPat2token.Responses;
+}> {
+  // /v1/auth/pat2token
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/auth/pat2token`, {
+    method: "POST",
+    data: params,
+  });
+}
+
+/**
+ * Get current user profile
+ */
+export async function AuthenticationControllerGetProfile(
+  params: Paths.AuthenticationControllerGetProfile.BodyParameters,
+): Promise<{
+  error: string;
+  data: Definitions.UserWithProfile;
+}> {
+  // /v1/auth/profile
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/auth/profile`, {
+    method: "GET",
+    params: params,
+  });
+}

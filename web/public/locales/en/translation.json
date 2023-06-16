@@ -444,5 +444,16 @@
   "AIWelcomeMessage": "Hello, I am Laf AI Development Assistant, how can I help you?",
   "Send": "Send",
   "Stop": "Stop",
-  "SendMessagePlaceHolder": "Send a message"
+  "SendMessagePlaceHolder": "Send a message",
+  "application": {
+    "bonus": "bonus",
+    "Recharge": "Recharge",
+    "RecommendedSpecifications": "Recommended Specifications: ",
+    "ChooseSpecifications": "Choose Specifications",
+    "autoscaling": "AutoScaling",
+    "Number of Instances": "Number of Instances",
+    "targetCPUUtilization": "CPU Utilization",
+    "CPU Threshold": "CPU Threshold"
+  },
+  "Storage Threshold": "Storage Threshold"
 }
