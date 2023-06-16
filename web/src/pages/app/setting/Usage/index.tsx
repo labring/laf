@@ -56,7 +56,7 @@ export default function Usage() {
               </Tr>
             </Thead>
             <Tbody>
-              {(billingRes?.data?.list || []).map((item: Definitions.ApplicationBilling) => (
+              {(billingRes?.data?.list || []).map((item: any) => (
                 <Tr key={item._id}>
                   <Td>{item.appid}</Td>
                   <Td>{item.detail?.cpu?.amount}</Td>
