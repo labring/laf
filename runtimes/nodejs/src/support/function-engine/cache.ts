@@ -73,7 +73,7 @@ export class FunctionCache {
     })
 
     stream.on('close', () => {
-      logger.error('cloud function change stream closed')
+      logger.error('Cloud function change stream closed')
       setTimeout(() => {
         logger.info('Reconnecting cloud function change stream...')
         this.streamChange()
