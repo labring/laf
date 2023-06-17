@@ -146,19 +146,16 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                     }
                   }}
                 />
-                {bonus && (
+                {bonus && matchBonus(amount * 100) && (
                   <div>
                     <span className="ml-3 whitespace-nowrap rounded-full rounded-bl-none bg-purple-200 px-2 py-[1.5px] text-[12px] text-purple-600">
                       {t("application.bonus")}
                     </span>
+                    <span className="pl-1 font-semibold">¥{matchBonus(amount * 100) || 0}</span>
                     <span className="pl-1 font-semibold">¥{matchBonus(amount * 100)}</span>
                   </div>
                 )}
               </InputGroup>
-              {/* <span className="flex items-center cursor-pointer text-[#1D8CDC] pb-6">
-                <InfoOutlineIcon className="mr-2" />
-                查看优惠规则
-              </span> */}
               <Button
                 isDisabled={!amount || !isNumber(amount)}
                 className="!h-9 w-full !rounded-full"
