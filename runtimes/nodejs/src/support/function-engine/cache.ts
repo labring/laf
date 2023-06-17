@@ -71,6 +71,14 @@ export class FunctionCache {
         }
       }
     })
+
+    stream.on('error', (err) => {
+      logger.error('Error in cloud function change stream...', err)
+      setTimeout(() => {
+        logger.info('Reconnecting cloud function change stream...')
+        this.streamChange()
+       }, 3000)
+    })
   }
 
   /**
