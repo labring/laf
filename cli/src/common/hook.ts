@@ -9,9 +9,9 @@ export function checkApplication() {
 
 export async function checkFunctionDebugToken() {
   const appSchema = AppSchema.read()
-  const { debugToken, debugTokenExpire } = appSchema.function
+  const { developToken, developTokenExpire } = appSchema.function
   let timestamp = Date.parse(new Date().toString()) / 1000
-  if (!debugToken || debugTokenExpire < timestamp) {
+  if (!developToken || developTokenExpire < timestamp) {
     await AppSchema.refresh()
   }
 }
