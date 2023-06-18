@@ -29,7 +29,7 @@ export class InstanceService {
     private readonly storageService: StorageService,
     private readonly databaseService: DatabaseService,
     private readonly applicationService: ApplicationService,
-  ) { }
+  ) {}
 
   public async create(appid: string) {
     const app = await this.applicationService.findOneUnsafe(appid)
