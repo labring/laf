@@ -152,7 +152,6 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                       {t("application.bonus")}
                     </span>
                     <span className="pl-1 font-semibold">¥{matchBonus(amount * 100) || 0}</span>
-                    <span className="pl-1 font-semibold">¥{matchBonus(amount * 100)}</span>
                   </div>
                 )}
               </InputGroup>
