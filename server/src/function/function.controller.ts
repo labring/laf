@@ -13,13 +13,12 @@ import {
 } from '@nestjs/common'
 import { CreateFunctionDto } from './dto/create-function.dto'
 import { UpdateFunctionDto } from './dto/update-function.dto'
-import { ResponseUtil } from '../utils/response'
 import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger'
+  ApiResponseArray,
+  ApiResponseObject,
+  ResponseUtil,
+} from '../utils/response'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { FunctionService } from './function.service'
 import { IRequest } from '../utils/interface'
 import { CompileFunctionDto } from './dto/compile-function.dto'
@@ -28,6 +27,8 @@ import { I18n, I18nContext, I18nService } from 'nestjs-i18n'
 import { I18nTranslations } from '../generated/i18n.generated'
 import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
 import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
+import { CloudFunctionHistory } from './entities/cloud-function-history'
+import { CloudFunction } from './entities/cloud-function'
 
 @ApiTags('Function')
 @ApiBearerAuth('Authorization')
@@ -44,7 +45,7 @@ export class FunctionController {
    * @param dto
    * @returns
    */
-  @ApiResponse({ type: ResponseUtil })
+  @ApiResponseObject(CloudFunction)
   @ApiOperation({ summary: 'Create a new function' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post()
@@ -90,7 +91,7 @@ export class FunctionController {
    * Query function list of an app
    * @returns
    */
-  @ApiResponse({ type: ResponseUtil })
+  @ApiResponseArray(CloudFunction)
   @ApiOperation({ summary: 'Query function list of an app' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get()
@@ -104,7 +105,7 @@ export class FunctionController {
    * @param appid
    * @param name
    */
-  @ApiResponse({ type: ResponseUtil })
+  @ApiResponseObject(CloudFunction)
   @ApiOperation({ summary: 'Get a function by its name' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get(':name')
@@ -130,7 +131,7 @@ export class FunctionController {
    * @param dto
    * @returns
    */
-  @ApiResponse({ type: ResponseUtil })
+  @ApiResponseObject(CloudFunction)
   @ApiOperation({ summary: 'Update a function' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Patch(':name')
@@ -161,7 +162,7 @@ export class FunctionController {
    * @param name
    * @returns
    */
-  @ApiResponse({ type: ResponseUtil })
+  @ApiResponseObject(CloudFunction)
   @ApiOperation({ summary: 'Delete a function' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Delete(':name')
@@ -191,7 +192,7 @@ export class FunctionController {
    * @param name
    * @returns
    */
-  @ApiResponse({ type: ResponseUtil })
+  @ApiResponseObject(CloudFunction)
   @ApiOperation({ summary: 'Compile a function ' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post(':name/compile')
@@ -214,6 +215,30 @@ export class FunctionController {
     }
 
     const res = await this.functionsService.compile(func, dto)
+    return ResponseUtil.ok(res)
+  }
+
+  /**
+   * Get function history
+   */
+  @ApiResponseArray(CloudFunctionHistory)
+  @ApiOperation({ summary: 'Get cloud function history' })
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Get(':name/history')
+  async getHistory(
+    @Param('appid') appid: string,
+    @Param('name') name: string,
+    @I18n() i18n: I18nContext<I18nTranslations>,
+  ) {
+    const func = await this.functionsService.findOne(appid, name)
+    if (!func) {
+      throw new HttpException(
+        i18n.t('function.common.notFound', { args: { name } }),
+        HttpStatus.NOT_FOUND,
+      )
+    }
+
+    const res = await this.functionsService.getHistory(func)
     return ResponseUtil.ok(res)
   }
 }
