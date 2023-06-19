@@ -1,12 +1,10 @@
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-// import { CheckIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
   FormErrorMessage,
   Input,
-  // HStack,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -37,6 +35,7 @@ import { t } from "i18next";
 import { find } from "lodash";
 
 import ChargeButton from "@/components/ChargeButton";
+import { AutoScalingIcon, RecommendIcon, TextIcon } from "@/components/CommonIcon";
 import { APP_STATUS } from "@/constants/index";
 import { formatPrice } from "@/utils/format";
 
@@ -106,17 +105,6 @@ const CreateAppModal = (props: {
     regionId: string;
     runtimeId: string;
     bundleId: string;
-    cpu: number;
-    memory: number;
-    databaseCapacity: number;
-    storageCapacity: number;
-    autoscaling: {
-      enable: boolean;
-      minReplicas: number;
-      maxReplicas: number;
-      targetCPUUtilizationPercentage: number | null;
-      targetMemoryUtilizationPercentage: number | null;
-    };
   };
 
   const currentRegion =
@@ -168,19 +156,12 @@ const CreateAppModal = (props: {
     minReplicas: application?.bundle.autoscaling?.minReplicas || 1,
     maxReplicas: application?.bundle.autoscaling?.maxReplicas || 5,
     targetCPUUtilizationPercentage:
-      application?.bundle.autoscaling?.targetCPUUtilizationPercentage || 50,
+      application?.bundle.autoscaling?.targetCPUUtilizationPercentage || null,
     targetMemoryUtilizationPercentage:
       application?.bundle.autoscaling?.targetMemoryUtilizationPercentage || null,
   };
 
   const [bundle, setBundle] = React.useState(defaultBundle);
-
-  const [customActive, setCustomActive] = React.useState(false);
-
-  const [tooltipValue, setTooltipValue] = React.useState([
-    defaultAutoscaling.minReplicas,
-    defaultAutoscaling.maxReplicas,
-  ]);
 
   const [autoscaling, setAutoscaling] = React.useState(defaultAutoscaling);
 
@@ -226,7 +207,6 @@ const CreateAppModal = (props: {
         res = await updateAppMutation.mutateAsync({
           name: data.name,
           appid: application?.appid,
-          autoscaling,
         });
         break;
 
@@ -239,12 +219,27 @@ const CreateAppModal = (props: {
         break;
 
       case "create":
-        res = await createAppMutation.mutateAsync({
-          ...data,
-          ...bundle,
-          autoscaling,
-          // duration: subscriptionOption.duration,
-        });
+        if (
+          !autoscaling.targetCPUUtilizationPercentage &&
+          !autoscaling.targetMemoryUtilizationPercentage &&
+          autoscaling.enable
+        ) {
+          res = await createAppMutation.mutateAsync({
+            ...data,
+            ...bundle,
+            autoscaling: {
+              ...autoscaling,
+              targetCPUUtilizationPercentage: 50,
+            },
+          });
+        } else {
+          res = await createAppMutation.mutateAsync({
+            ...data,
+            ...bundle,
+            autoscaling,
+            // duration: subscriptionOption.duration,
+          });
+        }
         break;
 
       default:
@@ -255,6 +250,8 @@ const CreateAppModal = (props: {
       onClose();
       if (type !== "create") {
         showSuccess(t("update success"));
+      } else {
+        showSuccess(t("create success"));
       }
 
       // Run every 2 seconds, 2 times in total
@@ -291,6 +288,8 @@ const CreateAppModal = (props: {
         onClick: (event?: any) => {
           event?.preventDefault();
           reset(defaultValues);
+          setBundle(defaultBundle);
+          setAutoscaling(defaultAutoscaling);
           onOpen();
           setTimeout(() => {
             setFocus("name");
@@ -303,7 +302,7 @@ const CreateAppModal = (props: {
           <ModalContent maxW={"80%"} width={"auto"} minW={"700px"} m={"auto"}>
             <ModalHeader>{title}</ModalHeader>
             <ModalCloseButton />
-            <ModalBody pb={6}>
+            <ModalBody>
               <VStack spacing={6} align="flex-start">
                 <FormControl
                   isRequired
@@ -358,119 +357,140 @@ const CreateAppModal = (props: {
                   </HStack>
                 </FormControl> */}
                 <FormControl hidden={type === "edit"}>
-                  {/* <FormLabel htmlFor="bundleId">{t("HomePanel.Spec")}</FormLabel> */}
-                  <div>
-                    <Controller
-                      name="bundleId"
-                      control={control}
-                      render={({ field: { onChange, value } }) => {
-                        return (
-                          <div className="flex">
-                            <div className="flex-1 rounded-md border">
-                              <div
-                                className={clsx(
-                                  "flex items-center justify-between px-8 py-3.5",
-                                  darkMode ? "" : "bg-[#F6F8F9]",
-                                )}
-                              >
+                  <Controller
+                    name="bundleId"
+                    control={control}
+                    render={({ field: { onChange, value } }) => {
+                      return (
+                        <div className="flex">
+                          <div className="flex-1 rounded-md border">
+                            <div
+                              className={clsx(
+                                "flex items-center justify-between px-8 py-3.5",
+                                darkMode ? "" : "bg-[#F6F8F9]",
+                              )}
+                            >
+                              <div className="flex items-center">
+                                <TextIcon
+                                  boxSize={3}
+                                  mr={2}
+                                  color={darkMode ? "" : "grayModern.600"}
+                                />
                                 <span className="text-lg font-semibold">
                                   {t("application.ChooseSpecifications")}
                                 </span>
-                                <div className="flex items-center">
-                                  <span className="">
-                                    {t("application.RecommendedSpecifications")}
-                                  </span>
-                                  {(bundles || []).map((item: TBundle) => {
-                                    return (
-                                      <BundleItem
-                                        onChange={() => {
-                                          // billingPriceQuery.refetch();
-                                          setCustomActive(false);
-                                          setBundle({
-                                            cpu: item.spec.cpu.value,
-                                            memory: item.spec.memory.value,
-                                            databaseCapacity: item.spec.databaseCapacity.value,
-                                            storageCapacity: item.spec.storageCapacity.value,
-                                          });
-                                        }}
-                                        bundle={item}
-                                        isActive={activeBundle?._id === item._id && !customActive}
-                                        key={item._id}
-                                      />
-                                    );
-                                  })}
-                                </div>
                               </div>
-                              <div className="pb-8">
-                                {billingResourceOptionsRes?.data?.map(
-                                  (item: {
-                                    type: "cpu" | "memory" | "databaseCapacity" | "storageCapacity";
-                                    specs: { value: number; price: number }[];
-                                    price: number;
-                                  }) => {
-                                    return item.specs.length > 0 ? (
-                                      <div className="ml-8 mt-8 flex" key={item.type}>
-                                        <span className="w-2/12 text-grayModern-600">
-                                          {t(`SpecItem.${item.type}`)}
-                                        </span>
-                                        <Slider
-                                          id="slider"
-                                          className="mr-12"
-                                          value={item.specs.findIndex(
-                                            (spec) => spec.value === bundle[item.type],
-                                          )}
-                                          min={0}
-                                          max={item.specs.length - 1}
-                                          colorScheme="primary"
-                                          onChange={(v) => {
-                                            setBundle({
-                                              ...bundle,
-                                              [item.type]: item.specs[v].value,
-                                            });
-                                          }}
-                                        >
-                                          {item.specs.map((spec: any, i: number) => (
-                                            <SliderMark
-                                              key={spec.value}
-                                              value={i}
-                                              className="mt-2 whitespace-nowrap text-grayModern-600"
-                                              ml={"-3"}
-                                            >
-                                              {spec.label}
-                                            </SliderMark>
-                                          ))}
-
-                                          <SliderTrack>
-                                            <SliderFilledTrack bg={"primary.200"} />
-                                          </SliderTrack>
-                                          <SliderThumb bg={"primary.500"} />
-                                        </Slider>
-                                      </div>
-                                    ) : null;
-                                  },
-                                )}
+                              <div className="flex items-center">
+                                <RecommendIcon boxSize={4} mr={2} color={"primary.600"} />
+                                <span className="">
+                                  {t("application.RecommendedSpecifications")}
+                                </span>
+                                {(bundles || []).map((item: TBundle) => {
+                                  return (
+                                    <BundleItem
+                                      onChange={() => {
+                                        // billingPriceQuery.refetch();
+                                        setBundle({
+                                          cpu: item.spec.cpu.value,
+                                          memory: item.spec.memory.value,
+                                          databaseCapacity: item.spec.databaseCapacity.value,
+                                          storageCapacity: item.spec.storageCapacity.value,
+                                        });
+                                      }}
+                                      bundle={item}
+                                      isActive={activeBundle?._id === item._id}
+                                      key={item._id}
+                                    />
+                                  );
+                                })}
                               </div>
                             </div>
+                            <div className="pb-8">
+                              {billingResourceOptionsRes?.data?.map(
+                                (item: {
+                                  type: "cpu" | "memory" | "databaseCapacity" | "storageCapacity";
+                                  specs: { value: number; price: number }[];
+                                  price: number;
+                                }) => {
+                                  return item.specs.length > 0 ? (
+                                    <div className="ml-8 mt-8 flex" key={item.type}>
+                                      <span
+                                        className={clsx(
+                                          "w-2/12",
+                                          darkMode ? "" : "text-grayModern-600",
+                                        )}
+                                      >
+                                        {t(`SpecItem.${item.type}`)}
+                                      </span>
+                                      <Slider
+                                        id="slider"
+                                        className="mr-12"
+                                        value={item.specs.findIndex(
+                                          (spec) => spec.value === bundle[item.type],
+                                        )}
+                                        min={0}
+                                        max={item.specs.length - 1}
+                                        colorScheme="primary"
+                                        onChange={(v) => {
+                                          setBundle({
+                                            ...bundle,
+                                            [item.type]: item.specs[v].value,
+                                          });
+                                        }}
+                                      >
+                                        {item.specs.map((spec: any, i: number) => (
+                                          <SliderMark
+                                            key={spec.value}
+                                            value={i}
+                                            className={clsx(
+                                              "mt-2 whitespace-nowrap",
+                                              darkMode ? "" : "text-grayModern-600",
+                                            )}
+                                            ml={"-3"}
+                                          >
+                                            {spec.label}
+                                          </SliderMark>
+                                        ))}
+
+                                        <SliderTrack>
+                                          <SliderFilledTrack bg={"primary.200"} />
+                                        </SliderTrack>
+                                        <SliderThumb bg={"primary.500"} />
+                                      </Slider>
+                                    </div>
+                                  ) : null;
+                                },
+                              )}
+                            </div>
                           </div>
-                        );
-                      }}
-                      rules={{
-                        required: { value: true, message: t("LimitSelect") },
-                      }}
-                    />
-                  </div>
+                        </div>
+                      );
+                    }}
+                    rules={{
+                      required: { value: true, message: t("LimitSelect") },
+                    }}
+                  />
                   <FormErrorMessage>{errors?.bundleId?.message}</FormErrorMessage>
                 </FormControl>
 
-                <FormControl>
+                <FormControl hidden={type === "edit"}>
                   <div className="rounded-md border">
                     <div
                       className={clsx(
-                        "flex items-center justify-between px-8 py-3.5",
+                        "flex justify-between px-8 py-3.5",
                         darkMode ? "" : "bg-[#F6F8F9]",
                       )}
                     >
-                      <span className="text-lg font-semibold">{t("application.autoscaling")}</span>
+                      <div className="flex items-center">
+                        <AutoScalingIcon
+                          mr={2}
+                          boxSize={3}
+                          color={darkMode ? "" : "grayModern.600"}
+                        />
+                        <span className="text-lg font-semibold">
+                          {t("application.autoscaling")}
+                        </span>
+                      </div>
                       <Switch
                         id="email-alerts"
                         defaultChecked={defaultAutoscaling.enable}
@@ -486,7 +506,7 @@ const CreateAppModal = (props: {
                     {autoscaling.enable && (
                       <div>
                         <div className="flex px-8 pt-8">
-                          <span className="w-2/12 text-grayModern-600">
+                          <span className={clsx("w-2/12", darkMode ? "" : "text-grayModern-600")}>
                             {t("application.Number of Instances")}
                           </span>
                           <RangeSlider
@@ -498,7 +518,6 @@ const CreateAppModal = (props: {
                             max={20}
                             colorScheme="primary"
                             onChange={(v) => {
-                              setTooltipValue(v);
                               setAutoscaling({
                                 ...autoscaling,
                                 minReplicas: v[0],
@@ -509,8 +528,12 @@ const CreateAppModal = (props: {
                             {[1, 10, 20].map((value) => (
                               <RangeSliderMark
                                 value={value}
-                                className="mt-2 whitespace-nowrap text-grayModern-600"
+                                className={clsx(
+                                  "mt-2 whitespace-nowrap",
+                                  darkMode ? "" : "text-grayModern-600",
+                                )}
                                 ml={"-1.5"}
+                                key={value}
                               >
                                 {value}
                               </RangeSliderMark>
@@ -520,7 +543,7 @@ const CreateAppModal = (props: {
                             </RangeSliderTrack>
                             <Tooltip
                               hasArrow
-                              label={String(tooltipValue[0])}
+                              label={String(autoscaling.minReplicas)}
                               placement="top"
                               bg={"primary.500"}
                             >
@@ -528,7 +551,7 @@ const CreateAppModal = (props: {
                             </Tooltip>
                             <Tooltip
                               hasArrow
-                              label={String(tooltipValue[1])}
+                              label={String(autoscaling.maxReplicas)}
                               placement="top"
                               bg={"primary.500"}
                             >
@@ -540,7 +563,7 @@ const CreateAppModal = (props: {
                           <div className="ml-8 mr-4 flex w-24">
                             <Select
                               onChange={(e) => {
-                                if (e.target.value === t("application.CPU Threshold")) {
+                                if (e.target.value === t("Storage Threshold")) {
                                   setAutoscaling({
                                     ...autoscaling,
                                     targetCPUUtilizationPercentage: null,
@@ -555,7 +578,9 @@ const CreateAppModal = (props: {
                                 }
                               }}
                               defaultValue={
-                                defaultAutoscaling.targetCPUUtilizationPercentage
+                                defaultAutoscaling.targetCPUUtilizationPercentage !== null ||
+                                (defaultAutoscaling.targetMemoryUtilizationPercentage === null &&
+                                  defaultAutoscaling.targetCPUUtilizationPercentage === null)
                                   ? String(t("application.CPU Threshold"))
                                   : String(t("Storage Threshold"))
                               }
@@ -572,7 +597,7 @@ const CreateAppModal = (props: {
                             value={
                               autoscaling.targetCPUUtilizationPercentage
                                 ? (autoscaling.targetCPUUtilizationPercentage as number)
-                                : (autoscaling.targetMemoryUtilizationPercentage as number)
+                                : (autoscaling.targetMemoryUtilizationPercentage as number) || 50
                             }
                             className="!h-8 !w-20"
                             onChange={(e) => {
@@ -590,7 +615,7 @@ const CreateAppModal = (props: {
                                 });
                               }
                             }}
-                          ></Input>
+                          />
                           <span className="pl-2">%</span>
                         </div>
                       </div>

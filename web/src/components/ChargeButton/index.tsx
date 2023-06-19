@@ -1,5 +1,4 @@
 import React, { useRef } from "react";
-// import { InfoOutlineIcon } from "@chakra-ui/icons";
 import {
   Button,
   Input,
