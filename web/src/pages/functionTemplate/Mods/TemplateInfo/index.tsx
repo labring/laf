@@ -20,7 +20,6 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
     star,
     _id: templateId,
   } = functionTemplate;
-  console.log(environments);
 
   const { t } = useTranslation();
   const [starState, setStarState] = useState(false);
@@ -44,8 +43,8 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
         <button
           className={clsx(
             "mr-2 flex cursor-pointer items-center rounded-3xl border-2 px-3 py-1 text-xl",
-            starState && !darkMode ? "border-gray-800" : "text-gray-400",
-            starState && darkMode ? "border-gray-400" : "",
+            starState && !darkMode ? "border-gray-800 text-gray-800" : "text-gray-400",
+            starState && darkMode ? "border-white text-white" : "text-gray-400",
           )}
           onClick={async () => {
             const res = await starMutation.mutateAsync({ templateId: templateId || "" });

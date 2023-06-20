@@ -11,7 +11,6 @@ import { COLOR_MODE } from "@/constants";
 import { useFunctionListQuery } from "../../service";
 import useFunctionStore from "../../store";
 import DeployButton from "../DeployButton";
-import FetchButton from "../FetchButton";
 import CreateModal from "../FunctionPanel/CreateModal";
 import PromptModal from "../FunctionPanel/CreateModal/PromptModal";
 
@@ -62,7 +61,6 @@ function EditorPanel() {
               <Input w={"220px"} size="xs" readOnly value={getFunctionUrl()} />
             </CopyText>
 
-            <FetchButton />
             <DeployButton />
           </HStack>
         </Panel.Header>

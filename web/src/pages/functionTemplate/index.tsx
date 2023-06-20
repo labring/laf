@@ -33,34 +33,38 @@ import styles from "./Mods/SideBar/index.module.scss";
 import { TemplateList } from "@/apis/typing";
 import PaginationBar from "@/pages/functionTemplate/Mods/PaginationBar";
 
+type queryData = {
+  page: number;
+  pageSize: number;
+  keyword: string;
+  type: string;
+  asc: number;
+  sort: string | null;
+};
+
 export default function FunctionTemplate() {
   const deleteFunctionMutation = useDeleteFunctionTemplateMutation();
 
   const { t } = useTranslation();
   const sortList = [t("Template.Latest"), t("Template.Earliest"), t("Template.MostStars")];
   const sideBar_data = [
-    { text: t("Template.Community"), value: "all" },
+    { text: t("Template.CommunityTemplate"), value: "all" },
     { text: t("Template.My"), value: "my" },
     { text: t("Template.StaredTemplate"), value: "stared" },
     { text: t("Template.Recent"), value: "recent" },
   ];
-  const defaultQueryData = {
+
+  const defaultQueryData: queryData = {
     page: 1,
     pageSize: 12,
-    name: "",
-    recent: 1,
-    starAsc: 1,
-    hot: false,
+    keyword: "",
+    type: "default",
+    asc: 1,
+    sort: null,
   };
-  const defaultExpendData = {
-    stared: false,
-    recentUsed: false,
-    starName: "",
-    recentName: "",
-  };
+
   const [selectedItem, setSelectedItem] = useState({ text: "", value: "" });
   const [queryData, setQueryData] = useState(defaultQueryData);
-  const [expendData, setExpendData] = useState(defaultExpendData);
   const [sorting, setSorting] = useState(sortList[0]);
   const [page, setPage] = useState(1);
   const [templateList, setTemplateList] = useState<TemplateList>();
@@ -76,9 +80,9 @@ export default function FunctionTemplate() {
       if (foundItem) {
         setSelectedItem(foundItem);
         if (foundItem.value === "stared") {
-          setExpendData({ ...expendData, stared: true, recentUsed: false });
+          setQueryData({ ...queryData, type: "stared" });
         } else if (foundItem.value === "recent") {
-          setExpendData({ ...expendData, stared: false, recentUsed: true });
+          setQueryData({ ...queryData, type: "recentUsed" });
         }
       }
     }
@@ -102,7 +106,6 @@ export default function FunctionTemplate() {
     {
       ...queryData,
       page: page,
-      ...expendData,
     },
     {
       enabled: selectedItem.value !== "all",
@@ -117,11 +120,11 @@ export default function FunctionTemplate() {
     setQueryData(defaultQueryData);
     setSorting(sortList[0]);
     if (item.value === "my") {
-      setExpendData({ ...expendData, stared: false, recentUsed: false });
+      setQueryData(defaultQueryData);
     } else if (item.value === "stared") {
-      setExpendData({ ...expendData, stared: true, recentUsed: false });
+      setQueryData({ ...defaultQueryData, type: "stared" });
     } else if (item.value === "recent") {
-      setExpendData({ ...expendData, stared: false, recentUsed: true });
+      setQueryData({ ...defaultQueryData, type: "recentUsed" });
     }
     setPage(1);
     window.history.replaceState(
@@ -132,26 +135,17 @@ export default function FunctionTemplate() {
   };
 
   const handleSearch = (e: any) => {
-    if (selectedItem.value === "stared") {
-      setQueryData({ ...queryData, name: "" });
-      setExpendData({ ...expendData, starName: e.target.value, recentName: "" });
-    } else if (selectedItem.value === "recent") {
-      setQueryData({ ...queryData, name: "" });
-      setExpendData({ ...expendData, recentName: e.target.value, starName: "" });
-    } else {
-      setQueryData({ ...queryData, name: e.target.value });
-      setExpendData({ ...expendData, starName: "", recentName: "" });
-    }
+    setQueryData({ ...defaultQueryData, keyword: e.target.value });
   };
 
   const handleSortListClick = (e: any) => {
     setSorting(e.currentTarget.value);
     if (e.currentTarget.value === sortList[0]) {
-      setQueryData({ ...defaultQueryData, recent: 1 });
+      setQueryData({ ...queryData, asc: 1, sort: null });
     } else if (e.currentTarget.value === sortList[1]) {
-      setQueryData({ ...defaultQueryData, recent: 0 });
+      setQueryData({ ...queryData, asc: 0, sort: null });
     } else if (e.currentTarget.value === sortList[2]) {
-      setQueryData({ ...defaultQueryData, hot: true });
+      setQueryData({ ...queryData, asc: 1, sort: "hot" });
     }
   };
 
@@ -159,7 +153,7 @@ export default function FunctionTemplate() {
     <div className="pt-4">
       <div className="w-45 absolute bottom-0 top-20 ml-20 flex flex-col">
         <div className={clsx(darkMode ? styles.title_dark : styles.title)}>
-          {t("market.market")}
+          {t("HomePage.NavBar.funcTemplate")}
         </div>
         {sideBar_data.map((item) => {
           return (
