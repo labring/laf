@@ -11,7 +11,7 @@
   [![](https://img.shields.io/docker/pulls/lafyun/system-server)](https://hub.docker.com/r/lafyun/system-server)
   ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?logo=typescript&logoColor=white)
   [![Website](https://img.shields.io/website?url=https%3A%2F%2Fdocs.lafyun.com&logo=Postwoman)](https://docs.lafyun.com/)
-  <a href="https://oss.lafyun.com/wofnib-image/2022-04-22-14-21-MRJH9o.png"><img src="https://img.shields.io/badge/%E5%BE%AE%E4%BF%A1%E7%BE%A4-2000%2B-brightgreen"></a>
+  <img src="https://img.shields.io/badge/%E5%BE%AE%E4%BF%A1%E7%BE%A4-2000%2B-brightgreen"></a>
 
   </p>
 </div>
