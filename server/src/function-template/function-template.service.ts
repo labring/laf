@@ -22,7 +22,7 @@ import { DependencyService } from 'src/dependency/dependency.service'
 import { ApplicationService } from '../application/application.service'
 
 interface FindFunctionTemplatesParams {
-  recent: number
+  asc: number
   page: number
   pageSize: number
   name?: string
@@ -394,11 +394,6 @@ export class FunctionTemplateService {
 
       // Get the collection
       const collectionFunction = appDataBase.collection(CN_PUBLISHED_FUNCTIONS)
-      // Delete existing documents with the matching names
-      await collectionFunction.deleteMany(
-        { name: { $in: namesToSearch } },
-        { session },
-      )
       // Insert all new documents
       await collectionFunction.insertMany(documentsToInsert, { session })
 
@@ -585,7 +580,7 @@ export class FunctionTemplateService {
 
   async functionTemplateUsedBy(
     templateId: ObjectId,
-    recent: number,
+    asc: number,
     page: number,
     pageSize: number,
   ) {
@@ -599,7 +594,7 @@ export class FunctionTemplateService {
           as: 'users',
         },
       },
-      { $sort: { updatedAt: recent === 0 ? 1 : -1 } },
+      { $sort: { updatedAt: asc === 0 ? 1 : -1 } },
       { $skip: (page - 1) * pageSize },
       { $limit: pageSize },
     ]
@@ -645,11 +640,10 @@ export class FunctionTemplateService {
 
   // get all public function templates
   async findFunctionTemplates(
-    recent: number,
+    asc: number,
     page: number,
     pageSize: number,
     hot?: boolean,
-    starAsc?: number,
   ) {
     if (hot) {
       const pipe = [
@@ -664,7 +658,7 @@ export class FunctionTemplateService {
         },
         {
           $sort: {
-            star: starAsc === 0 ? 1 : -1,
+            star: asc === 0 ? 1 : -1,
           },
         },
         { $skip: (page - 1) * pageSize },
@@ -700,7 +694,7 @@ export class FunctionTemplateService {
           as: 'items',
         },
       },
-      { $sort: { createdAt: recent === 0 ? 1 : -1 } },
+      { $sort: { createdAt: asc === 0 ? 1 : -1 } },
       { $skip: (page - 1) * pageSize },
       { $limit: pageSize },
     ]
@@ -725,7 +719,7 @@ export class FunctionTemplateService {
   }
 
   async findFunctionTemplatesByName(
-    recent: number,
+    asc: number,
     page: number,
     pageSize: number,
     name: string,
@@ -744,7 +738,7 @@ export class FunctionTemplateService {
           as: 'items',
         },
       },
-      { $sort: { createdAt: recent === 0 ? 1 : -1 } },
+      { $sort: { createdAt: asc === 0 ? 1 : -1 } },
       { $skip: (page - 1) * pageSize },
       { $limit: pageSize },
     ]
@@ -773,12 +767,11 @@ export class FunctionTemplateService {
   }
 
   async findMyFunctionTemplates(
-    recent: number,
+    asc: number,
     page: number,
     pageSize: number,
     userid: ObjectId,
     hot?: boolean,
-    starAsc?: number,
   ) {
     if (hot) {
       const pipe = [
@@ -793,7 +786,7 @@ export class FunctionTemplateService {
         },
         {
           $sort: {
-            star: starAsc === 0 ? 1 : -1,
+            star: asc === 0 ? 1 : -1,
           },
         },
         { $skip: (page - 1) * pageSize },
@@ -829,7 +822,7 @@ export class FunctionTemplateService {
           as: 'items',
         },
       },
-      { $sort: { createdAt: recent === 0 ? 1 : -1 } },
+      { $sort: { createdAt: asc === 0 ? 1 : -1 } },
       { $skip: (page - 1) * pageSize },
       { $limit: pageSize },
     ]
@@ -854,7 +847,7 @@ export class FunctionTemplateService {
   }
 
   async findMyFunctionTemplatesByName(
-    recent: number,
+    asc: number,
     page: number,
     pageSize: number,
     userid: ObjectId,
@@ -873,7 +866,7 @@ export class FunctionTemplateService {
           as: 'items',
         },
       },
-      { $sort: { createdAt: recent === 0 ? 1 : -1 } },
+      { $sort: { createdAt: asc === 0 ? 1 : -1 } },
       { $skip: (page - 1) * pageSize },
       { $limit: pageSize },
     ]
@@ -905,12 +898,7 @@ export class FunctionTemplateService {
     userid: ObjectId,
     condition: FindFunctionTemplatesParams,
   ) {
-    const recent = condition.recent
-    const page = condition.page
-    const pageSize = condition.pageSize
-    const name = condition.name
-    const hot = condition.hot
-    const starAsc = condition.starAsc
+    const { asc, page, pageSize, name, hot } = condition
 
     if (name) {
       const safeName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -940,7 +928,7 @@ export class FunctionTemplateService {
             'functionTemplate.name': { $regex: reg },
           },
         },
-        { $sort: { createdAt: recent === 0 ? 1 : -1 } },
+        { $sort: { createdAt: asc === 0 ? 1 : -1 } },
         { $skip: (page - 1) * pageSize },
         { $limit: pageSize },
       ]
@@ -1027,7 +1015,7 @@ export class FunctionTemplateService {
         },
         {
           $sort: {
-            'functionTemplate.star': starAsc === 0 ? 1 : -1,
+            'functionTemplate.star': asc === 0 ? 1 : -1,
           },
         },
         { $skip: (page - 1) * pageSize },
@@ -1083,7 +1071,7 @@ export class FunctionTemplateService {
           as: 'items',
         },
       },
-      { $sort: { createdAt: recent === 0 ? 1 : -1 } },
+      { $sort: { createdAt: asc === 0 ? 1 : -1 } },
       { $skip: (page - 1) * pageSize },
       { $limit: pageSize },
     ]
@@ -1119,12 +1107,7 @@ export class FunctionTemplateService {
     userid: ObjectId,
     condition: FindFunctionTemplatesParams,
   ) {
-    const recent = condition.recent
-    const page = condition.page
-    const pageSize = condition.pageSize
-    const starAsc = condition.starAsc
-    const name = condition.name
-    const hot = condition.hot
+    const { asc, page, pageSize, name, hot } = condition
 
     if (name) {
       const safeName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -1153,7 +1136,7 @@ export class FunctionTemplateService {
             'functionTemplate.name': { $regex: reg },
           },
         },
-        { $sort: { createdAt: recent === 0 ? 1 : -1 } },
+        { $sort: { updatedAt: asc === 0 ? 1 : -1 } },
         { $skip: (page - 1) * pageSize },
         { $limit: pageSize },
       ]
@@ -1236,7 +1219,7 @@ export class FunctionTemplateService {
         },
         {
           $sort: {
-            'functionTemplate.star': starAsc === 0 ? 1 : -1,
+            'functionTemplate.star': asc === 0 ? 1 : -1,
           },
         },
         { $skip: (page - 1) * pageSize },
@@ -1288,7 +1271,7 @@ export class FunctionTemplateService {
           as: 'items',
         },
       },
-      { $sort: { updatedAt: recent === 0 ? 1 : -1 } },
+      { $sort: { updatedAt: asc === 0 ? 1 : -1 } },
       { $skip: (page - 1) * pageSize },
       { $limit: pageSize },
     ]

@@ -14,7 +14,7 @@ import {
 import { FunctionTemplateService } from './function-template.service'
 import { CreateFunctionTemplateDto } from './dto/create-function-template.dto'
 import { UpdateFunctionTemplateDto } from './dto/update-function-template.dto'
-import * as assert from 'node:assert'
+// import * as assert from 'node:assert'
 import { IRequest } from '../utils/interface'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import {
@@ -234,7 +234,7 @@ export class FunctionTemplateController {
   @Get(':id/used-by')
   async getFunctionTemplateUsedBy(
     @Param('id') templateId: string,
-    @Query('recent') recent: number,
+    @Query('asc') asc: number,
     @Query('page') page: number,
     @Query('pageSize') pageSize: number,
   ) {
@@ -242,7 +242,7 @@ export class FunctionTemplateController {
       return ResponseUtil.error('invalid templateId')
     }
 
-    recent = recent === 0 ? Number(recent) : 1
+    asc = asc === 0 ? Number(asc) : 1
     page = page ? Number(page) : 1
     pageSize = pageSize ? Number(pageSize) : 10
     const found = await this.functionTemplateService.findOneFunctionTemplate(
@@ -253,189 +253,195 @@ export class FunctionTemplateController {
     }
     const res = await this.functionTemplateService.functionTemplateUsedBy(
       new ObjectId(templateId),
-      recent,
+      asc,
       page,
       pageSize,
     )
     return ResponseUtil.ok(res)
   }
 
-  @ApiOperation({ summary: 'get my template function' })
+  /**
+   * asc default is time
+   * type sort asc= sort type
+   *
+   * @param page
+   * @param pageSize
+   * @param keyword
+   * @param asc
+   * @param sort
+   * @param type
+   * @param req
+   * @returns
+   */
+  @ApiOperation({ summary: 'get my function template' })
   @ApiResponsePagination(FunctionTemplateSwagger)
   @UseGuards(JwtAuthGuard)
   @Get('my')
   async getMyFunctionTemplate(
-    @Query('recent') recent: number,
     @Query('page') page: number,
     @Query('pageSize') pageSize: number,
-    @Query('name') name: string,
-    @Query('starName') starName: string,
-    @Query('stared') stared: boolean,
-    @Query('recentName') recentName: string,
-    @Query('recentUsed') recentUsed: boolean,
-    @Query('hot') hot: boolean,
-    @Query('starAsc') starAsc: number,
+    @Query('keyword') keyword: string,
+    @Query('asc') asc: number,
+    @Query('sort') sort: string,
+    @Query('type') type: string,
     @Req() req: IRequest,
   ) {
-    if (name) {
-      recent = recent === 0 ? Number(recent) : 1
+    if (type === 'default' && keyword) {
+      asc = asc === 0 ? Number(asc) : 1
       page = page ? Number(page) : 1
       pageSize = pageSize ? Number(pageSize) : 10
 
       const res =
         await this.functionTemplateService.findMyFunctionTemplatesByName(
-          recent,
+          asc,
           page,
           pageSize,
           req.user._id,
-          name,
+          keyword,
         )
       return ResponseUtil.ok(res)
     }
 
-    if (starName) {
-      recent = recent === 0 ? Number(recent) : 1
+    if (type === 'default' && sort === 'hot') {
+      asc = asc === 0 ? Number(asc) : 1
       page = page ? Number(page) : 1
       pageSize = pageSize ? Number(pageSize) : 10
-
-      const condition = {
-        recent,
-        page,
-        pageSize,
-        name: starName,
-      }
-      const res =
-        await this.functionTemplateService.findMyStaredFunctionTemplates(
-          req.user._id,
-          condition,
-        )
-      return ResponseUtil.ok(res)
-    }
-
-    if (stared && hot) {
-      starAsc = starAsc === 0 ? Number(starAsc) : 1
-      page = page ? Number(page) : 1
-      pageSize = pageSize ? Number(pageSize) : 10
-      recent = recent === 0 ? Number(recent) : 1
-      const condition = {
-        recent,
-        page,
-        pageSize,
-        hot,
-        starAsc,
-      }
-      const res =
-        await this.functionTemplateService.findMyStaredFunctionTemplates(
-          req.user._id,
-          condition,
-        )
-      return ResponseUtil.ok(res)
-    }
-
-    if (stared) {
-      recent = recent === 0 ? Number(recent) : 1
-      page = page ? Number(page) : 1
-      pageSize = pageSize ? Number(pageSize) : 10
-
-      const condition = {
-        recent,
-        page,
-        pageSize,
-      }
-      const res =
-        await this.functionTemplateService.findMyStaredFunctionTemplates(
-          req.user._id,
-          condition,
-        )
-      return ResponseUtil.ok(res)
-    }
-
-    if (recentName) {
-      recent = recent === 0 ? Number(recent) : 1
-      page = page ? Number(page) : 1
-      pageSize = pageSize ? Number(pageSize) : 10
-
-      const condition = {
-        recent,
-        page,
-        pageSize,
-        name: recentName,
-      }
-      const res =
-        await this.functionTemplateService.findMyRecentUseFunctionTemplates(
-          req.user._id,
-          condition,
-        )
-      return ResponseUtil.ok(res)
-    }
-
-    if (recentUsed && hot) {
-      starAsc = starAsc === 0 ? Number(starAsc) : 1
-      recent = recent === 0 ? Number(recent) : 1
-      page = page ? Number(page) : 1
-      pageSize = pageSize ? Number(pageSize) : 10
-
-      const condition = {
-        recent,
-        page,
-        pageSize,
-        hot,
-        starAsc,
-      }
-      const res =
-        await this.functionTemplateService.findMyRecentUseFunctionTemplates(
-          req.user._id,
-          condition,
-        )
-      return ResponseUtil.ok(res)
-    }
-
-    if (recentUsed) {
-      recent = recent === 0 ? Number(recent) : 1
-      page = page ? Number(page) : 1
-      pageSize = pageSize ? Number(pageSize) : 10
-
-      const condition = {
-        recent,
-        page,
-        pageSize,
-      }
-      const res =
-        await this.functionTemplateService.findMyRecentUseFunctionTemplates(
-          req.user._id,
-          condition,
-        )
-      return ResponseUtil.ok(res)
-    }
-
-    if (hot) {
-      starAsc = starAsc === 0 ? Number(starAsc) : 1
-      recent = recent === 0 ? Number(recent) : 1
-      page = page ? Number(page) : 1
-      pageSize = pageSize ? Number(pageSize) : 10
+      const hot = true
 
       const res = await this.functionTemplateService.findMyFunctionTemplates(
-        recent,
+        asc,
         page,
         pageSize,
         req.user._id,
         hot,
-        starAsc,
       )
       return ResponseUtil.ok(res)
     }
 
-    recent = recent === 0 ? Number(recent) : 1
-    page = page ? Number(page) : 1
-    pageSize = pageSize ? Number(pageSize) : 10
+    if (type === 'default') {
+      asc = asc === 0 ? Number(asc) : 1
+      page = page ? Number(page) : 1
+      pageSize = pageSize ? Number(pageSize) : 10
 
-    const res = await this.functionTemplateService.findMyFunctionTemplates(
-      recent,
-      page,
-      pageSize,
-      req.user._id,
-    )
-    return ResponseUtil.ok(res)
+      const res = await this.functionTemplateService.findMyFunctionTemplates(
+        asc,
+        page,
+        pageSize,
+        req.user._id,
+      )
+      return ResponseUtil.ok(res)
+    }
+
+    if (type === 'stared' && keyword) {
+      asc = asc === 0 ? Number(asc) : 1
+      page = page ? Number(page) : 1
+      pageSize = pageSize ? Number(pageSize) : 10
+
+      const condition = {
+        asc,
+        page,
+        pageSize,
+        name: keyword,
+      }
+      const res =
+        await this.functionTemplateService.findMyStaredFunctionTemplates(
+          req.user._id,
+          condition,
+        )
+      return ResponseUtil.ok(res)
+    }
+
+    if (type === 'stared' && sort === 'hot') {
+      asc = asc === 0 ? Number(asc) : 1
+      page = page ? Number(page) : 1
+      pageSize = pageSize ? Number(pageSize) : 10
+      const condition = {
+        page,
+        pageSize,
+        asc,
+        hot: true,
+      }
+      const res =
+        await this.functionTemplateService.findMyStaredFunctionTemplates(
+          req.user._id,
+          condition,
+        )
+      return ResponseUtil.ok(res)
+    }
+
+    if (type === 'stared') {
+      asc = asc === 0 ? Number(asc) : 1
+      page = page ? Number(page) : 1
+      pageSize = pageSize ? Number(pageSize) : 10
+
+      const condition = {
+        asc,
+        page,
+        pageSize,
+      }
+      const res =
+        await this.functionTemplateService.findMyStaredFunctionTemplates(
+          req.user._id,
+          condition,
+        )
+      return ResponseUtil.ok(res)
+    }
+
+    if ((type = 'recentUsed' && keyword)) {
+      asc = asc === 0 ? Number(asc) : 1
+      page = page ? Number(page) : 1
+      pageSize = pageSize ? Number(pageSize) : 10
+
+      const condition = {
+        asc,
+        page,
+        pageSize,
+        name: keyword,
+      }
+      const res =
+        await this.functionTemplateService.findMyRecentUseFunctionTemplates(
+          req.user._id,
+          condition,
+        )
+      return ResponseUtil.ok(res)
+    }
+
+    if (type === 'recentUsed' && sort === 'hot') {
+      asc = asc === 0 ? Number(asc) : 1
+      page = page ? Number(page) : 1
+      pageSize = pageSize ? Number(pageSize) : 10
+
+      const condition = {
+        asc,
+        page,
+        pageSize,
+        hot: true,
+      }
+      const res =
+        await this.functionTemplateService.findMyRecentUseFunctionTemplates(
+          req.user._id,
+          condition,
+        )
+      return ResponseUtil.ok(res)
+    }
+
+    if (type === 'recentUsed') {
+      asc = asc === 0 ? Number(asc) : 1
+      page = page ? Number(page) : 1
+      pageSize = pageSize ? Number(pageSize) : 10
+
+      const condition = {
+        asc,
+        page,
+        pageSize,
+      }
+      const res =
+        await this.functionTemplateService.findMyRecentUseFunctionTemplates(
+          req.user._id,
+          condition,
+        )
+      return ResponseUtil.ok(res)
+    }
   }
 
   @ApiOperation({ summary: 'get one function template' })
@@ -454,14 +460,13 @@ export class FunctionTemplateController {
       new ObjectId(templateId),
     )
 
-    try {
-      assert(
-        template.private === false ||
-          template.uid.toString() === req.user._id.toString(),
+    if (
+      template.private === true &&
+      template.uid.toString() !== req.user._id.toString()
+    ) {
+      return ResponseUtil.error(
         'private function template can only be inspect by the owner',
       )
-    } catch (error) {
-      return ResponseUtil.error(error.message)
     }
 
     const res = await this.functionTemplateService.findOne(
@@ -476,49 +481,48 @@ export class FunctionTemplateController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async getAllFunctionTemplate(
-    @Query('recent') recent: number,
+    @Query('asc') asc: number,
     @Query('page') page: number,
     @Query('pageSize') pageSize: number,
-    @Query('name') name: string,
-    @Query('starAsc') starAsc: number,
-    @Query('hot') hot: boolean,
+    @Query('keyword') keyword: string,
+    @Query('sort') sort: string,
   ) {
-    if (name) {
-      recent = recent === 0 ? Number(recent) : 1
+    if (keyword) {
+      asc = asc === 0 ? Number(asc) : 1
       page = page ? Number(page) : 1
       pageSize = pageSize ? Number(pageSize) : 10
 
       const res =
         await this.functionTemplateService.findFunctionTemplatesByName(
-          recent,
+          asc,
           page,
           pageSize,
-          name,
+          keyword,
         )
       return ResponseUtil.ok(res)
     }
 
-    if (hot) {
-      starAsc = starAsc === 0 ? Number(starAsc) : 1
+    if (sort === 'hot') {
+      asc = asc === 0 ? Number(asc) : 1
       page = page ? Number(page) : 1
       pageSize = pageSize ? Number(pageSize) : 10
 
+      const hot = true
       const res = await this.functionTemplateService.findFunctionTemplates(
-        starAsc,
+        asc,
         page,
         pageSize,
         hot,
-        starAsc,
       )
       return ResponseUtil.ok(res)
     }
 
-    recent = recent === 0 ? Number(recent) : 1
+    asc = asc === 0 ? Number(asc) : 1
     page = page ? Number(page) : 1
     pageSize = pageSize ? Number(pageSize) : 10
 
     const res = await this.functionTemplateService.findFunctionTemplates(
-      recent,
+      asc,
       page,
       pageSize,
     )
