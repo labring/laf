@@ -17,6 +17,7 @@ import { ObjectId } from 'mongodb'
 import { CloudFunction } from './entities/cloud-function'
 import { ApplicationConfiguration } from 'src/application/entities/application-configuration'
 import { FunctionLog } from 'src/log/entities/function-log'
+import { CloudFunctionHistory } from './entities/cloud-function-history'
 
 @Injectable()
 export class FunctionService {
@@ -45,6 +46,8 @@ export class FunctionService {
     })
 
     const fn = await this.findOne(appid, dto.name)
+
+    await this.addOneHistoryRecord(fn)
     await this.publish(fn)
     return fn
   }
@@ -94,6 +97,7 @@ export class FunctionService {
     )
 
     const fn = await this.findOne(func.appid, func.name)
+    await this.addOneHistoryRecord(fn)
     await this.publish(fn)
     return fn
   }
@@ -104,6 +108,7 @@ export class FunctionService {
       .collection<CloudFunction>('CloudFunction')
       .findOneAndDelete({ appid, name })
 
+    await this.deleteHistory(res.value)
     await this.unpublish(appid, name)
     return res.value
   }
@@ -112,6 +117,8 @@ export class FunctionService {
     const res = await this.db
       .collection<CloudFunction>('CloudFunction')
       .deleteMany({ appid })
+
+    await this.deleteHistoryAll(appid)
 
     return res
   }
@@ -233,5 +240,55 @@ export class FunctionService {
     } finally {
       await client.close()
     }
+  }
+
+  async getHistory(func: CloudFunction) {
+    const history = await this.db
+      .collection<CloudFunctionHistory>('CloudFunctionHistory')
+      .find(
+        {
+          functionId: func._id,
+        },
+        {
+          limit: 30,
+          sort: {
+            createdAt: -1,
+          },
+        },
+      )
+      .toArray()
+
+    return history
+  }
+
+  async addOneHistoryRecord(func: CloudFunction) {
+    await this.db
+      .collection<CloudFunctionHistory>('CloudFunctionHistory')
+      .insertOne({
+        appid: func.appid,
+        functionId: func._id,
+        source: {
+          code: func.source.code,
+        },
+        createdAt: new Date(),
+      })
+  }
+
+  async deleteHistory(func: CloudFunction) {
+    const res = await this.db
+      .collection<CloudFunctionHistory>('CloudFunctionHistory')
+      .deleteMany({
+        functionId: func._id,
+      })
+    return res
+  }
+
+  async deleteHistoryAll(appid: string) {
+    const res = await this.db
+      .collection<CloudFunctionHistory>('CloudFunctionHistory')
+      .deleteMany({
+        appid,
+      })
+    return res
   }
 }
