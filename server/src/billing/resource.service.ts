@@ -15,7 +15,8 @@ export class ResourceService {
   async findAll() {
     const options = await this.db
       .collection<ResourceOption>('ResourceOption')
-      .find()
+      .find({})
+      .sort({ createdAt: 1 })
       .toArray()
     return options
   }
@@ -60,6 +61,7 @@ export class ResourceService {
     const options = await this.db
       .collection<ResourceBundle>('ResourceBundle')
       .find()
+      .sort({ createdAt: 1 })
       .toArray()
 
     return options
@@ -69,6 +71,7 @@ export class ResourceService {
     const options = await this.db
       .collection<ResourceBundle>('ResourceBundle')
       .find({ regionId })
+      .sort({ createdAt: 1 })
       .toArray()
 
     return options
