@@ -11,7 +11,11 @@ import {
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { IRequest, IResponse } from 'src/utils/interface'
-import { ApiResponseObject, ResponseUtil } from 'src/utils/response'
+import {
+  ApiResponseArray,
+  ApiResponseObject,
+  ResponseUtil,
+} from 'src/utils/response'
 import { AccountService } from './account.service'
 import {
   CreateChargeOrderDto,
@@ -35,6 +39,7 @@ import { SystemDatabase } from 'src/system-database'
 import { Account } from './entities/account'
 import { AccountTransaction } from './entities/account-transaction'
 import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
+import { AccountChargeReward } from './entities/account-charge-reward'
 
 @ApiTags('Account')
 @Controller('accounts')
@@ -113,6 +118,18 @@ export class AccountController {
   }
 
   /**
+   * Get charge reward list
+   */
+  @ApiOperation({ summary: 'Get charge reward list' })
+  @ApiResponseArray(AccountChargeReward)
+  @UseGuards(JwtAuthGuard)
+  @Get('charge-reward')
+  async getChargeRewardList() {
+    const rewards = await this.accountService.findAllChargeRewards()
+    return ResponseUtil.ok(rewards)
+  }
+
+  /**
    * WeChat payment notify
    */
   @Post('payment/wechat-notify')
@@ -178,12 +195,23 @@ export class AccountController {
           return
         }
 
-        // get & update account balance
+        // get max reward
+        const reward = await db
+          .collection<AccountChargeReward>('AccountChargeReward')
+          .findOne(
+            {
+              amount: { $lte: order.amount },
+            },
+            { sort: { amount: -1 } },
+          )
+
+        const realAmount = reward ? reward.reward + order.amount : order.amount
+
         const ret = await db
           .collection<Account>('Account')
           .findOneAndUpdate(
             { _id: order.accountId },
-            { $inc: { balance: order.amount } },
+            { $inc: { balance: realAmount } },
             { session, returnDocument: 'after' },
           )
 
@@ -194,6 +222,7 @@ export class AccountController {
           {
             accountId: order.accountId,
             amount: order.amount,
+            reward: reward?.reward,
             balance: ret.value.balance,
             message: 'Recharge by WeChat Pay',
             orderId: order._id,

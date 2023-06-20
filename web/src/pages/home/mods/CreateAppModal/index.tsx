@@ -1,13 +1,12 @@
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { CheckIcon } from "@chakra-ui/icons";
+// import { CheckIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
   FormErrorMessage,
-  FormLabel,
-  HStack,
   Input,
+  // HStack,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -15,10 +14,25 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  RangeSlider,
+  RangeSliderFilledTrack,
+  RangeSliderMark,
+  RangeSliderThumb,
+  RangeSliderTrack,
+  Select,
+  Slider,
+  SliderFilledTrack,
+  SliderMark,
+  SliderThumb,
+  SliderTrack,
+  Switch,
+  Tooltip,
+  useColorMode,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import clsx from "clsx";
 import { t } from "i18next";
 import { find } from "lodash";
 
@@ -50,6 +64,14 @@ type TypeBundle = {
   storageCapacity: number;
 };
 
+type TypeAutoscaling = {
+  enable: boolean;
+  minReplicas: number;
+  maxReplicas: number;
+  targetCPUUtilizationPercentage: number | null;
+  targetMemoryUtilizationPercentage: number | null;
+};
+
 const CreateAppModal = (props: {
   type: "create" | "edit" | "change";
   application?: TApplicationItem;
@@ -65,6 +87,8 @@ const CreateAppModal = (props: {
   const { runtimes = [], regions = [] } = useGlobalStore();
 
   const { data: accountRes } = useAccountQuery();
+
+  const darkMode = useColorMode().colorMode === "dark";
 
   const { data: billingResourceOptionsRes, isLoading } = useQuery(
     queryKeys.useBillingResourceOptionsQuery,
@@ -86,6 +110,13 @@ const CreateAppModal = (props: {
     memory: number;
     databaseCapacity: number;
     storageCapacity: number;
+    autoscaling: {
+      enable: boolean;
+      minReplicas: number;
+      maxReplicas: number;
+      targetCPUUtilizationPercentage: number | null;
+      targetMemoryUtilizationPercentage: number | null;
+    };
   };
 
   const currentRegion =
@@ -132,9 +163,26 @@ const CreateAppModal = (props: {
       application?.bundle.resource.storageCapacity || bundles[0].spec.storageCapacity.value,
   };
 
+  const defaultAutoscaling: TypeAutoscaling = {
+    enable: application?.bundle.autoscaling?.enable || false,
+    minReplicas: application?.bundle.autoscaling?.minReplicas || 1,
+    maxReplicas: application?.bundle.autoscaling?.maxReplicas || 5,
+    targetCPUUtilizationPercentage:
+      application?.bundle.autoscaling?.targetCPUUtilizationPercentage || 50,
+    targetMemoryUtilizationPercentage:
+      application?.bundle.autoscaling?.targetMemoryUtilizationPercentage || null,
+  };
+
   const [bundle, setBundle] = React.useState(defaultBundle);
 
   const [customActive, setCustomActive] = React.useState(false);
+
+  const [tooltipValue, setTooltipValue] = React.useState([
+    defaultAutoscaling.minReplicas,
+    defaultAutoscaling.maxReplicas,
+  ]);
+
+  const [autoscaling, setAutoscaling] = React.useState(defaultAutoscaling);
 
   const { showSuccess } = useGlobalStore();
 
@@ -175,17 +223,26 @@ const CreateAppModal = (props: {
 
     switch (type) {
       case "edit":
-        res = await updateAppMutation.mutateAsync({ name: data.name, appid: application?.appid });
+        res = await updateAppMutation.mutateAsync({
+          name: data.name,
+          appid: application?.appid,
+          autoscaling,
+        });
         break;
 
       case "change":
-        res = await changeBundleMutation.mutateAsync({ ...bundle, appid: application?.appid });
+        res = await changeBundleMutation.mutateAsync({
+          ...bundle,
+          appid: application?.appid,
+          autoscaling,
+        });
         break;
 
       case "create":
         res = await createAppMutation.mutateAsync({
           ...data,
           ...bundle,
+          autoscaling,
           // duration: subscriptionOption.duration,
         });
         break;
@@ -243,10 +300,9 @@ const CreateAppModal = (props: {
       {isOpen && !isLoading ? (
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
-          <ModalContent maxW={"80%"} width={"auto"} minW={"500px"} m={"auto"}>
+          <ModalContent maxW={"80%"} width={"auto"} minW={"700px"} m={"auto"}>
             <ModalHeader>{title}</ModalHeader>
             <ModalCloseButton />
-
             <ModalBody pb={6}>
               <VStack spacing={6} align="flex-start">
                 <FormControl
@@ -255,15 +311,20 @@ const CreateAppModal = (props: {
                   isDisabled={type === "change"}
                   hidden={type === "change"}
                 >
-                  <FormLabel htmlFor="name">{t("HomePanel.Application") + t("Name")}</FormLabel>
-                  <Input
-                    {...register("name", {
-                      required: `${t("HomePanel.Application") + t("Name") + t("IsRequired")}`,
-                    })}
-                  />
+                  <div className="mb-3 flex h-12 w-full items-center border-b-2">
+                    <input
+                      {...register("name", {
+                        required: `${t("HomePanel.Application") + t("Name") + t("IsRequired")}`,
+                      })}
+                      id="name"
+                      placeholder={String(t("HomePanel.Application") + t("Name"))}
+                      className="h-8 w-10/12 border-l-2 border-primary-600 bg-transparent pl-4 text-2xl font-medium"
+                      style={{ outline: "none", boxShadow: "none" }}
+                    />
+                  </div>
                   <FormErrorMessage>{errors?.name && errors?.name?.message}</FormErrorMessage>
                 </FormControl>
-                <FormControl hidden={type !== "create"}>
+                {/* <FormControl hidden={type !== "create"}>
                   <FormLabel htmlFor="regionId">{t("HomePanel.Region")}</FormLabel>
                   <HStack spacing={6}>
                     <Controller
@@ -295,9 +356,9 @@ const CreateAppModal = (props: {
                       }}
                     />
                   </HStack>
-                </FormControl>
+                </FormControl> */}
                 <FormControl hidden={type === "edit"}>
-                  <FormLabel htmlFor="bundleId">{t("HomePanel.Spec")}</FormLabel>
+                  {/* <FormLabel htmlFor="bundleId">{t("HomePanel.Spec")}</FormLabel> */}
                   <div>
                     <Controller
                       name="bundleId"
@@ -305,77 +366,90 @@ const CreateAppModal = (props: {
                       render={({ field: { onChange, value } }) => {
                         return (
                           <div className="flex">
-                            <div className="flex-col pt-4">
-                              {(bundles || []).map((item: TBundle) => {
-                                return (
-                                  <BundleItem
-                                    onChange={() => {
-                                      // billingPriceQuery.refetch();
-                                      setCustomActive(false);
-                                      setBundle({
-                                        cpu: item.spec.cpu.value,
-                                        memory: item.spec.memory.value,
-                                        databaseCapacity: item.spec.databaseCapacity.value,
-                                        storageCapacity: item.spec.storageCapacity.value,
-                                      });
-                                    }}
-                                    bundle={item}
-                                    isActive={activeBundle?._id === item._id && !customActive}
-                                    key={item._id}
-                                  />
-                                );
-                              })}
-                              <BundleItem
-                                onChange={() => {
-                                  setCustomActive(true);
-                                }}
-                                bundle={{
-                                  displayName: t("custom"),
-                                  _id: "custom",
-                                }}
-                                isActive={!activeBundle || customActive}
-                              />
-                            </div>
-                            <div className="ml-6 flex-1 border-l pl-6 pr-2">
-                              {billingResourceOptionsRes?.data?.map(
-                                (item: {
-                                  type: "cpu" | "memory" | "databaseCapacity" | "storageCapacity";
-                                  specs: { value: number; price: number }[];
-                                  price: number;
-                                }) => {
-                                  return item.specs.length > 0 ? (
-                                    <div className="mb-8" key={item.type}>
-                                      <p className="mb-2">
-                                        <span className="mr-2 text-lg font-semibold  ">
+                            <div className="flex-1 rounded-md border">
+                              <div
+                                className={clsx(
+                                  "flex items-center justify-between px-8 py-3.5",
+                                  darkMode ? "" : "bg-[#F6F8F9]",
+                                )}
+                              >
+                                <span className="text-lg font-semibold">
+                                  {t("application.ChooseSpecifications")}
+                                </span>
+                                <div className="flex items-center">
+                                  <span className="">
+                                    {t("application.RecommendedSpecifications")}
+                                  </span>
+                                  {(bundles || []).map((item: TBundle) => {
+                                    return (
+                                      <BundleItem
+                                        onChange={() => {
+                                          // billingPriceQuery.refetch();
+                                          setCustomActive(false);
+                                          setBundle({
+                                            cpu: item.spec.cpu.value,
+                                            memory: item.spec.memory.value,
+                                            databaseCapacity: item.spec.databaseCapacity.value,
+                                            storageCapacity: item.spec.storageCapacity.value,
+                                          });
+                                        }}
+                                        bundle={item}
+                                        isActive={activeBundle?._id === item._id && !customActive}
+                                        key={item._id}
+                                      />
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                              <div className="pb-8">
+                                {billingResourceOptionsRes?.data?.map(
+                                  (item: {
+                                    type: "cpu" | "memory" | "databaseCapacity" | "storageCapacity";
+                                    specs: { value: number; price: number }[];
+                                    price: number;
+                                  }) => {
+                                    return item.specs.length > 0 ? (
+                                      <div className="ml-8 mt-8 flex" key={item.type}>
+                                        <span className="w-2/12 text-grayModern-600">
                                           {t(`SpecItem.${item.type}`)}
                                         </span>
-                                        {/* {item.price} */}
-                                      </p>
-                                      {item.specs.map((spec: any, i: number) => (
-                                        <Button
-                                          key={`${item.type}-${i}`}
-                                          onClick={(v) => {
+                                        <Slider
+                                          id="slider"
+                                          className="mr-12"
+                                          value={item.specs.findIndex(
+                                            (spec) => spec.value === bundle[item.type],
+                                          )}
+                                          min={0}
+                                          max={item.specs.length - 1}
+                                          colorScheme="primary"
+                                          onChange={(v) => {
                                             setBundle({
                                               ...bundle,
-                                              [item.type]: spec.value,
+                                              [item.type]: item.specs[v].value,
                                             });
                                           }}
-                                          size={"sm"}
-                                          variant={
-                                            spec.value === bundle[item.type] ? "thirdly" : "outline"
-                                          }
-                                          minW={"64px"}
-                                          mr={1}
-                                          mb={1}
-                                          rounded="sm"
                                         >
-                                          {spec.label}
-                                        </Button>
-                                      ))}
-                                    </div>
-                                  ) : null;
-                                },
-                              )}
+                                          {item.specs.map((spec: any, i: number) => (
+                                            <SliderMark
+                                              key={spec.value}
+                                              value={i}
+                                              className="mt-2 whitespace-nowrap text-grayModern-600"
+                                              ml={"-3"}
+                                            >
+                                              {spec.label}
+                                            </SliderMark>
+                                          ))}
+
+                                          <SliderTrack>
+                                            <SliderFilledTrack bg={"primary.200"} />
+                                          </SliderTrack>
+                                          <SliderThumb bg={"primary.500"} />
+                                        </Slider>
+                                      </div>
+                                    ) : null;
+                                  },
+                                )}
+                              </div>
                             </div>
                           </div>
                         );
@@ -386,6 +460,142 @@ const CreateAppModal = (props: {
                     />
                   </div>
                   <FormErrorMessage>{errors?.bundleId?.message}</FormErrorMessage>
+                </FormControl>
+
+                <FormControl>
+                  <div className="rounded-md border">
+                    <div
+                      className={clsx(
+                        "flex items-center justify-between px-8 py-3.5",
+                        darkMode ? "" : "bg-[#F6F8F9]",
+                      )}
+                    >
+                      <span className="text-lg font-semibold">{t("application.autoscaling")}</span>
+                      <Switch
+                        id="email-alerts"
+                        defaultChecked={defaultAutoscaling.enable}
+                        colorScheme="primary"
+                        onChange={() => {
+                          setAutoscaling({
+                            ...autoscaling,
+                            enable: !autoscaling.enable,
+                          });
+                        }}
+                      />
+                    </div>
+                    {autoscaling.enable && (
+                      <div>
+                        <div className="flex px-8 pt-8">
+                          <span className="w-2/12 text-grayModern-600">
+                            {t("application.Number of Instances")}
+                          </span>
+                          <RangeSlider
+                            defaultValue={[
+                              defaultAutoscaling.minReplicas,
+                              defaultAutoscaling.maxReplicas,
+                            ]}
+                            min={1}
+                            max={20}
+                            colorScheme="primary"
+                            onChange={(v) => {
+                              setTooltipValue(v);
+                              setAutoscaling({
+                                ...autoscaling,
+                                minReplicas: v[0],
+                                maxReplicas: v[1],
+                              });
+                            }}
+                          >
+                            {[1, 10, 20].map((value) => (
+                              <RangeSliderMark
+                                value={value}
+                                className="mt-2 whitespace-nowrap text-grayModern-600"
+                                ml={"-1.5"}
+                              >
+                                {value}
+                              </RangeSliderMark>
+                            ))}
+                            <RangeSliderTrack>
+                              <RangeSliderFilledTrack bg={"primary.200"} />
+                            </RangeSliderTrack>
+                            <Tooltip
+                              hasArrow
+                              label={String(tooltipValue[0])}
+                              placement="top"
+                              bg={"primary.500"}
+                            >
+                              <RangeSliderThumb bg={"primary.500"} index={0} />
+                            </Tooltip>
+                            <Tooltip
+                              hasArrow
+                              label={String(tooltipValue[1])}
+                              placement="top"
+                              bg={"primary.500"}
+                            >
+                              <RangeSliderThumb bg={"primary.500"} index={1} />
+                            </Tooltip>
+                          </RangeSlider>
+                        </div>
+                        <div className="flex items-center pb-8 pt-6">
+                          <div className="ml-8 mr-4 flex w-24">
+                            <Select
+                              onChange={(e) => {
+                                if (e.target.value === t("application.CPU Threshold")) {
+                                  setAutoscaling({
+                                    ...autoscaling,
+                                    targetCPUUtilizationPercentage: null,
+                                    targetMemoryUtilizationPercentage: 50,
+                                  });
+                                } else {
+                                  setAutoscaling({
+                                    ...autoscaling,
+                                    targetCPUUtilizationPercentage: 50,
+                                    targetMemoryUtilizationPercentage: null,
+                                  });
+                                }
+                              }}
+                              defaultValue={
+                                defaultAutoscaling.targetCPUUtilizationPercentage
+                                  ? String(t("application.CPU Threshold"))
+                                  : String(t("Storage Threshold"))
+                              }
+                              className={clsx(
+                                "!h-8 !border-none !px-2 !text-[12px]",
+                                darkMode ? "" : "!bg-[#F4F6F8]",
+                              )}
+                            >
+                              <option className="">{t("application.CPU Threshold")}</option>
+                              <option>{t("Storage Threshold")}</option>
+                            </Select>
+                          </div>
+                          <Input
+                            value={
+                              autoscaling.targetCPUUtilizationPercentage
+                                ? (autoscaling.targetCPUUtilizationPercentage as number)
+                                : (autoscaling.targetMemoryUtilizationPercentage as number)
+                            }
+                            className="!h-8 !w-20"
+                            onChange={(e) => {
+                              if (autoscaling.targetCPUUtilizationPercentage) {
+                                setAutoscaling({
+                                  ...autoscaling,
+                                  targetCPUUtilizationPercentage: Number(e.target.value),
+                                  targetMemoryUtilizationPercentage: null,
+                                });
+                              } else {
+                                setAutoscaling({
+                                  ...autoscaling,
+                                  targetCPUUtilizationPercentage: null,
+                                  targetMemoryUtilizationPercentage: Number(e.target.value),
+                                });
+                              }
+                            }}
+                          ></Input>
+                          <span className="pl-2">%</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </FormControl>
                 {activeBundle?.message && (
                   <div

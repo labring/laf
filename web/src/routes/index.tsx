@@ -3,6 +3,7 @@ import { lazy, Suspense } from "react";
 import AuthLayout from "@/layouts/Auth";
 import BasicLayout from "@/layouts/Basic";
 import FunctionLayout from "@/layouts/Function";
+import TemplateLayout from "@/layouts/Template";
 
 const route404 = {
   path: "*",
@@ -70,6 +71,50 @@ const routes = [
           {
             path: "/app/:appid/:pageId/:id?/*",
             element: () => import("@/pages/app/index"),
+          },
+        ],
+      },
+      {
+        path: "/market/templates/:pages",
+        element: <TemplateLayout />,
+        auth: true,
+        children: [
+          {
+            path: "/market/templates/:pages",
+            element: () => import("@/pages/functionTemplate"),
+          },
+        ],
+      },
+      {
+        path: "/market/templates/:pages/:templateId",
+        element: <TemplateLayout />,
+        auth: true,
+        children: [
+          {
+            path: "/market/templates/:pages/:templateId",
+            element: () => import("@/pages/functionTemplate/funcTemplateItem"),
+          },
+        ],
+      },
+      {
+        path: "/market/templates/:pages/:templateId/edit",
+        element: <TemplateLayout />,
+        auth: true,
+        children: [
+          {
+            path: "/market/templates/:pages/:templateId/edit",
+            element: () => import("@/pages/functionTemplate/CreateFuncTemplate"),
+          },
+        ],
+      },
+      {
+        path: "/market/templates/create",
+        element: <TemplateLayout />,
+        auth: true,
+        children: [
+          {
+            path: "/market/templates/create",
+            element: () => import("@/pages/functionTemplate/CreateFuncTemplate"),
           },
         ],
       },

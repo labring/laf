@@ -14,7 +14,7 @@ export default function BasicLayout() {
 
   return (
     <div>
-      <Header size="lg" />
+      <Header bg="" />
       <div className="pb-10">
         {loading ? (
           <Center style={{ minHeight: 300 }}>
@@ -25,7 +25,7 @@ export default function BasicLayout() {
         )}
       </div>
       <div className="fixed bottom-0 -z-10 w-full py-4 text-center">
-        Made with <AiFillHeart className="inline text-red-500" />️ by laf team
+        Made with <AiFillHeart className="inline text-red-500" /> by laf team
       </div>
     </div>
   );

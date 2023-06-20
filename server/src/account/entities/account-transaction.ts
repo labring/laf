@@ -15,6 +15,9 @@ export class AccountTransaction {
   balance: number
 
   @ApiProperty()
+  reward?: number
+
+  @ApiProperty()
   message: string
 
   @ApiPropertyOptional({ type: String })

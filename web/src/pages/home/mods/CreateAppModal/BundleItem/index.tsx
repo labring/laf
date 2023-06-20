@@ -1,8 +1,7 @@
-import { useColorMode } from "@chakra-ui/react";
+// import { useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
-import { COLOR_MODE } from "@/constants";
-
+// import { COLOR_MODE } from "@/constants";
 import { TBundle } from "@/apis/typing";
 
 export default function BundleItem(props: {
@@ -11,20 +10,20 @@ export default function BundleItem(props: {
   isActive: boolean;
 }) {
   const { bundle, isActive, onChange } = props;
-  const { colorMode } = useColorMode();
-  const darkMode = colorMode === COLOR_MODE.dark;
+  // const { colorMode } = useColorMode();
+  // const darkMode = colorMode === COLOR_MODE.dark;
 
   return (
     <div
       onClick={() => onChange(bundle._id)}
       key={bundle._id}
-      className={clsx("mb-2 min-w-[170px] cursor-pointer rounded-md border  p-2", {
-        "bg-primary-500 text-white": isActive,
-        "bg-lafDark-400": isActive && darkMode,
+      className={clsx("cursor-pointer rounded-md pl-4", {
+        "text-blue-600": isActive,
+        // "bg-lafDark-400": isActive && darkMode,
       })}
     >
       <div>
-        <p className="text-lg font-semibold">{bundle.displayName}</p>
+        <p className="text-lg">{bundle.displayName}</p>
       </div>
     </div>
   );

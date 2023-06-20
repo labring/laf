@@ -9,6 +9,23 @@ export class EnvironmentVariable {
   value: string
 }
 
+export class Autoscaling {
+  @ApiProperty()
+  enable: boolean
+
+  @ApiProperty()
+  minReplicas: number
+
+  @ApiProperty()
+  maxReplicas: number
+
+  @ApiProperty()
+  targetCPUUtilizationPercentage?: number
+
+  @ApiProperty()
+  targetMemoryUtilizationPercentage?: number
+}
+
 export class ApplicationConfiguration {
   @ApiProperty({ type: String })
   _id?: ObjectId

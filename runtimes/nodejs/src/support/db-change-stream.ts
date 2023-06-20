@@ -22,6 +22,15 @@ export class DatabaseChangeStream {
     stream.on('change', async (_change) => {
       this.updateEnvironments()
     })
+
+    stream.on('close', () => { 
+      logger.info('Conf collection change stream closed.')
+      setTimeout(() => { 
+        logger.info('Reconnecting conf collection change stream...')
+        this.watchConf()
+      }, 3000)
+    })
+
   }
 
   private static async updateEnvironments() {

@@ -6,9 +6,7 @@ import {
   CheckboxGroup,
   FormControl,
   FormErrorMessage,
-  FormLabel,
   HStack,
-  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -16,19 +14,20 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Select,
-  Switch,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
+import clsx from "clsx";
 import { t } from "i18next";
 
+import { TextIcon } from "@/components/CommonIcon";
 import InputTag from "@/components/InputTag";
 import { SUPPORTED_METHODS } from "@/constants";
 
 import { useCreateFunctionMutation, useUpdateFunctionMutation } from "../../../service";
 import useFunctionStore from "../../../store";
 
+// import FuncTemplate from "../FunctionTemplate";
 import functionTemplates from "./functionTemplates";
 
 import { TMethod } from "@/apis/typing";
@@ -107,7 +106,7 @@ const CreateModal = (props: {
           },
         })}
 
-      <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="2xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>
@@ -115,39 +114,43 @@ const CreateModal = (props: {
           </ModalHeader>
           <ModalCloseButton />
 
-          <ModalBody pb={6}>
-            <VStack spacing={6} align="flex-start">
+          <ModalBody>
+            <VStack align="flex-start">
               <FormControl isInvalid={!!errors?.name}>
-                <FormLabel htmlFor="name">{t("FunctionPanel.FunctionName")}</FormLabel>
-                <Input
-                  {...register("name", {
-                    pattern: {
-                      value: /^[a-zA-Z0-9_.\-\/]{1,256}$/,
-                      message: t("FunctionPanel.FunctionNameRule"),
-                    },
-                  })}
-                  id="name"
-                  placeholder={String(t("FunctionPanel.FunctionNameTip"))}
-                  disabled={isEdit}
-                  variant="filled"
-                />
+                <div
+                  className={clsx(
+                    "mb-3 flex h-12 w-full items-center border-b-2",
+                    isEdit ? "rounded-md bg-gray-100" : "",
+                  )}
+                >
+                  <input
+                    {...register("name", {
+                      pattern: {
+                        value: /^[a-zA-Z0-9_.\-/]{1,256}$/,
+                        message: t("FunctionPanel.FunctionNameRule"),
+                      },
+                    })}
+                    id="name"
+                    placeholder={String(t("FunctionPanel.FunctionNameTip"))}
+                    disabled={isEdit}
+                    className="h-8 w-10/12 border-l-2 border-primary-600 bg-transparent pl-4 text-2xl font-medium"
+                    style={{ outline: "none", boxShadow: "none" }}
+                  />
+                  {/* {isEdit ? null : (
+                    <FuncTemplate>
+                      <span
+                        className="w-2/12 cursor-pointer pl-2 text-lg font-medium text-primary-600"
+                        onClick={() => {}}
+                      >
+                        {t("FunctionPanel.CreateFromTemplate")}
+                      </span>
+                    </FuncTemplate>
+                  )} */}
+                </div>
                 <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
               </FormControl>
 
-              <FormControl isInvalid={!!errors?.tags}>
-                <FormLabel htmlFor="tags">{t("FunctionPanel.Tags")}</FormLabel>
-                <Controller
-                  name="tags"
-                  control={control}
-                  render={({ field: { onChange, value } }) => (
-                    <InputTag value={value} onChange={onChange} tagList={tagList} />
-                  )}
-                />
-                <FormErrorMessage>{errors.tags && errors.tags.message}</FormErrorMessage>
-              </FormControl>
-
               <FormControl isInvalid={!!errors?.methods}>
-                <FormLabel htmlFor="methods">{t("FunctionPanel.Methods")}</FormLabel>
                 <HStack spacing={6}>
                   <Controller
                     name="methods"
@@ -169,37 +172,37 @@ const CreateModal = (props: {
               </FormControl>
 
               <FormControl>
-                <FormLabel htmlFor="description">{t("FunctionPanel.Description")}</FormLabel>
-                <Input
-                  {...register("description")}
-                  id="description"
-                  placeholder={t("FunctionPanel.Description").toString()}
-                  variant="filled"
-                />
+                <HStack className="mt-1 w-full">
+                  <Controller
+                    name="tags"
+                    control={control}
+                    render={({ field: { onChange, value } }) => (
+                      <InputTag value={value || []} onChange={onChange} tagList={tagList} />
+                    )}
+                  />
+                </HStack>
               </FormControl>
 
-              {isEdit ? null : (
-                <FormControl>
-                  <FormLabel htmlFor="code">{t("FunctionPanel.Code")}</FormLabel>
-                  <Select {...register("code")} id="code" placeholder="" variant="filled">
-                    {functionTemplates.map((item) => {
-                      return (
-                        <option value={item.value.trim()} key={item.label}>
-                          {item.label}
-                        </option>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
-              )}
+              <FormControl>
+                <div className="flex w-full items-center border-b-2 border-transparent focus-within:border-grayModern-200">
+                  <TextIcon fontSize={16} color={"gray.300"} />
+                  <input
+                    id="description"
+                    placeholder={t("FunctionPanel.Description").toString()}
+                    className="w-full bg-transparent py-2 pl-2 text-lg text-second"
+                    style={{ outline: "none", boxShadow: "none" }}
+                    {...register("description")}
+                  />
+                </div>
+              </FormControl>
 
-              <FormControl isInvalid={!!errors?.websocket} hidden>
+              {/* <FormControl isInvalid={!!errors?.websocket} hidden>
                 <FormLabel htmlFor="websocket">{t("FunctionPanel.isSupport")} websocket</FormLabel>
                 <Switch {...register("websocket")} id="websocket" variant="filled" />
                 <FormErrorMessage>
                   {errors.websocket && errors.websocket.message}
                 </FormErrorMessage>{" "}
-              </FormControl>
+              </FormControl> */}
             </VStack>
           </ModalBody>
 

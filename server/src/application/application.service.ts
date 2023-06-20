@@ -69,6 +69,7 @@ export class ApplicationService {
         {
           appid,
           resource: this.buildBundleResource(dto),
+          autoscaling: this.buildAutoscalingConfig(dto),
           isTrialTier: isTrialTier,
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -292,11 +293,13 @@ export class ApplicationService {
   ) {
     const db = SystemDatabase.db
     const resource = this.buildBundleResource(dto)
+    const autoscaling = this.buildAutoscalingConfig(dto)
+
     const res = await db
       .collection<ApplicationBundle>('ApplicationBundle')
       .findOneAndUpdate(
         { appid },
-        { $set: { resource, updatedAt: new Date(), isTrialTier } },
+        { $set: { resource, autoscaling, updatedAt: new Date(), isTrialTier } },
         {
           projection: {
             'bundle.resource.requestCPU': 0,
@@ -385,5 +388,17 @@ export class ApplicationService {
     })
 
     return resource
+  }
+
+  private buildAutoscalingConfig(dto: UpdateApplicationBundleDto) {
+    const autoscaling = {
+      enable: false,
+      minReplicas: 1,
+      maxReplicas: 5,
+      targetCPUUtilizationPercentage: null,
+      targetMemoryUtilizationPercentage: null,
+      ...dto.autoscaling,
+    }
+    return autoscaling
   }
 }

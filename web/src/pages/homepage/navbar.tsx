@@ -10,9 +10,7 @@ import { COLOR_MODE, Routes } from "@/constants";
 
 import Language from "./language";
 
-type Props = {};
-
-const Navbar = (props: Props) => {
+const Navbar = () => {
   const [showBanner, setShowBanner] = useState(false);
   const [toggleSidebar, setToggleSidebar] = useState(false);
   const [stars, setStars] = useState<string | null>(null);
@@ -53,7 +51,7 @@ const Navbar = (props: Props) => {
       if (match) {
         const matchedText = match[1];
         setStars(`${matchedText}K`);
-        console.log(matchedText); // 输出：4k
+        // console.log(matchedText); // 输出：4k
       } else {
         console.log("No match found");
       }
@@ -138,10 +136,7 @@ const Navbar = (props: Props) => {
                 {stars}
               </a>
             ) : null}
-
-            <div className="flex justify-evenly">
-              <Language />
-            </div>
+            <Language fontSize={24} />
             <div>
               <Link
                 to={Routes.dashboard}
@@ -202,41 +197,6 @@ const Navbar = (props: Props) => {
             aria-labelledby="dropdownDefaultButton"
           >
             <div>
-              {/* <li>
-                <a href="/homepage/" className="block px-4 py-2">
-                  {t("HomePage.NavBar.home")}
-                </a>
-              </li>
-              <li>
-                <a
-                  target="_blank"
-                  href="https://doc.laf.dev"
-                  className="block px-4 py-2"
-                  rel="noreferrer"
-                >
-                  {t("HomePage.NavBar.docs")}
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://forum.laf.run/"
-                  target="_blank"
-                  className="block px-4 py-2 hover:bg-gray-100"
-                  rel="noreferrer"
-                >
-                  {t("HomePage.NavBar.forum")}
-                </a>
-              </li>
-              <li>
-                <a
-                  target="_blank"
-                  href="https://www.wenjuan.com/s/I36ZNbl/"
-                  className="block px-4 py-2 hover:bg-gray-100"
-                  rel="noreferrer"
-                >
-                  {t("HomePage.NavBar.contact")}
-                </a>
-              </li> */}
               {navList.map((item, index) => {
                 return (
                   <li key={index}>
@@ -260,7 +220,6 @@ const Navbar = (props: Props) => {
               {stars ? (
                 <a
                   href="https://github.com/labring/laf"
-                  // className="flex px-4 py-2 hover:bg-gray-100"
                   className={
                     darkMode
                       ? "flex px-4 py-2 hover:bg-gray-900"
@@ -277,7 +236,7 @@ const Navbar = (props: Props) => {
                   darkMode ? "flex px-4 py-2 hover:bg-gray-900" : "flex px-4 py-2 hover:bg-gray-100"
                 }
               >
-                <Language />
+                <Language fontSize={24} />
               </div>
             </div>
           </ul>

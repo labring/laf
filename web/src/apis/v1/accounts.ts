@@ -69,6 +69,26 @@ export async function AccountControllerCharge(params: Definitions.CreateChargeOr
 }
 
 /**
+ * Get charge reward list
+ */
+export async function AccountControllerGetChargeRewardList(
+  params: Paths.AccountControllerGetChargeRewardList.BodyParameters,
+): Promise<{
+  error: string;
+  data: Paths.AccountControllerGetChargeRewardList.Responses;
+}> {
+  // /v1/accounts/charge-reward
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/accounts/charge-reward`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+/**
  *
  */
 export async function AccountControllerWechatNotify(
