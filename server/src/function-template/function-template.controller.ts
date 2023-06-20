@@ -14,7 +14,6 @@ import {
 import { FunctionTemplateService } from './function-template.service'
 import { CreateFunctionTemplateDto } from './dto/create-function-template.dto'
 import { UpdateFunctionTemplateDto } from './dto/update-function-template.dto'
-// import * as assert from 'node:assert'
 import { IRequest } from '../utils/interface'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import {
@@ -30,7 +29,7 @@ import { BundleService } from 'src/application/bundle.service'
 import { DependencyService } from 'src/dependency/dependency.service'
 import {
   FunctionTemplateSwagger,
-  GetFunctionTemplateUsedByItemSwagger,
+  GetFunctionTemplateUsedBySwagger,
 } from './entities/swagger-help'
 
 @ApiTags('FunctionTemplate')
@@ -80,7 +79,7 @@ export class FunctionTemplateController {
     @Param('appid') appid: string,
     @Req() req: IRequest,
   ) {
-    if (templateId.length != 24) {
+    if (templateId.length !== 24) {
       return ResponseUtil.error('invalid templateId')
     }
     // Check if appid is a valid resource
@@ -106,7 +105,7 @@ export class FunctionTemplateController {
       await this.functionTemplateService.findFunctionTemplateItems(
         new ObjectId(templateId),
       )
-    if (functionTemplateItems.length === 0 || !functionTemplateItems) {
+    if (!functionTemplateItems || functionTemplateItems.length === 0) {
       return ResponseUtil.error('function template items not found')
     }
 
@@ -136,7 +135,7 @@ export class FunctionTemplateController {
     @Body() dto: UpdateFunctionTemplateDto,
     @Req() req: IRequest,
   ) {
-    if (templateId.length != 24) {
+    if (templateId.length !== 24) {
       return ResponseUtil.error('invalid templateId')
     }
 
@@ -145,6 +144,7 @@ export class FunctionTemplateController {
       new ObjectId(templateId),
       req.user._id,
     )
+
     if (!found) {
       return ResponseUtil.error('function template not found')
     }
@@ -166,7 +166,7 @@ export class FunctionTemplateController {
     @Param('id') templateId: string,
     @Req() req: IRequest,
   ) {
-    if (templateId.length != 24) {
+    if (templateId.length !== 24) {
       return ResponseUtil.error('invalid templateId')
     }
 
@@ -174,13 +174,16 @@ export class FunctionTemplateController {
       new ObjectId(templateId),
       req.user._id,
     )
+
     if (!found) {
       return ResponseUtil.error('function template not found')
     }
+
     const res = await this.functionTemplateService.deleteFunctionTemplate(
       new ObjectId(templateId),
       req.user._id,
     )
+
     return ResponseUtil.ok(res)
   }
 
@@ -192,19 +195,23 @@ export class FunctionTemplateController {
     @Param('templateId') templateId: string,
     @Req() req: IRequest,
   ) {
-    if (templateId.length != 24) {
+    if (templateId.length !== 24) {
       return ResponseUtil.error('invalid templateId')
     }
+
     const found = await this.functionTemplateService.findOneFunctionTemplate(
       new ObjectId(templateId),
     )
+
     if (!found) {
       return ResponseUtil.error('function template not found')
     }
+
     const res = await this.functionTemplateService.starFunctionTemplate(
       new ObjectId(templateId),
       req.user._id,
     )
+
     return ResponseUtil.ok(res)
   }
 
@@ -216,7 +223,7 @@ export class FunctionTemplateController {
     @Param('id') templateId: string,
     @Req() req: IRequest,
   ) {
-    if (templateId.length != 24) {
+    if (templateId.length !== 24) {
       return ResponseUtil.error('invalid templateId')
     }
 
@@ -229,7 +236,7 @@ export class FunctionTemplateController {
   }
 
   @ApiOperation({ summary: 'get people who use this function template' })
-  @ApiResponsePagination(GetFunctionTemplateUsedByItemSwagger)
+  @ApiResponsePagination(GetFunctionTemplateUsedBySwagger)
   @UseGuards(JwtAuthGuard)
   @Get(':id/used-by')
   async getFunctionTemplateUsedBy(
@@ -238,7 +245,7 @@ export class FunctionTemplateController {
     @Query('page') page: number,
     @Query('pageSize') pageSize: number,
   ) {
-    if (templateId.length != 24) {
+    if (templateId.length !== 24) {
       return ResponseUtil.error('invalid templateId')
     }
 
@@ -261,17 +268,9 @@ export class FunctionTemplateController {
   }
 
   /**
-   * asc default is time
-   * type sort asc= sort type
-   *
-   * @param page
-   * @param pageSize
-   * @param keyword
-   * @param asc
-   * @param sort
-   * @param type
-   * @param req
-   * @returns
+   * asc is sorted by time by default
+   * If sort has a value, then asc's sort type is the type of sort's value
+   * For example, if the value of sort is hot, then asc's sort is the star field
    */
   @ApiOperation({ summary: 'get my function template' })
   @ApiResponsePagination(FunctionTemplateSwagger)
@@ -387,7 +386,7 @@ export class FunctionTemplateController {
       return ResponseUtil.ok(res)
     }
 
-    if ((type = 'recentUsed' && keyword)) {
+    if (type === 'recentUsed' && keyword) {
       asc = asc === 0 ? Number(asc) : 1
       page = page ? Number(page) : 1
       pageSize = pageSize ? Number(pageSize) : 10

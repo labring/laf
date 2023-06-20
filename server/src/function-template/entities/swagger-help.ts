@@ -73,7 +73,7 @@ export class FunctionTemplateSwagger {
   items: FunctionTemplateItemSwagger[]
 }
 
-export class GetFunctionTemplateUsedByItemSwagger {
+export class GetFunctionTemplateUsedBySwagger {
   @ApiProperty({ type: String })
   _id: ObjectId
 

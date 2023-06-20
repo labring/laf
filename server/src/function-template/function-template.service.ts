@@ -27,7 +27,6 @@ interface FindFunctionTemplatesParams {
   pageSize: number
   name?: string
   hot?: boolean
-  starAsc?: number
 }
 
 @Injectable()
@@ -155,7 +154,7 @@ export class FunctionTemplateService {
             { session },
           )
       }
-
+      // If a template becomes public, restart the usage and collection relationship for that template
       if (found.private === true && dto.private === false) {
         await this.db
           .collection<FunctionTemplateStarRelation>(
@@ -378,23 +377,16 @@ export class FunctionTemplateService {
         .collection<CloudFunction>('CloudFunction')
         .insertMany(documents, { session })
 
-      // Prepare the names to be searched and documents to be inserted
-      const namesToSearch = functionTemplateItems.map((item) => item.name)
-      let documentsToInsert
-
       // add function template items to app database
-      // Find all documents with matching names
-      await this.db
+      const namesToSearch = functionTemplateItems.map((item) => item.name)
+      const documentsToInsert = await this.db
         .collection<CloudFunction>('CloudFunction')
         .find({ appid: appid, name: { $in: namesToSearch } }, { session })
         .toArray()
-        .then((docs) => {
-          documentsToInsert = docs
-        })
 
-      // Get the collection
+      // Get the app database collection
       const collectionFunction = appDataBase.collection(CN_PUBLISHED_FUNCTIONS)
-      // Insert all new documents
+      // Insert function template items
       await collectionFunction.insertMany(documentsToInsert, { session })
 
       // add user use relation
