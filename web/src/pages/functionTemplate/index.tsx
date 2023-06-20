@@ -39,7 +39,7 @@ export default function FunctionTemplate() {
   const { t } = useTranslation();
   const sortList = [t("Template.Latest"), t("Template.Earliest"), t("Template.MostStars")];
   const sideBar_data = [
-    { text: t("Template.Community"), value: "all" },
+    { text: t("Template.CommunityTemplate"), value: "all" },
     { text: t("Template.My"), value: "my" },
     { text: t("Template.StaredTemplate"), value: "stared" },
     { text: t("Template.Recent"), value: "recent" },
@@ -159,7 +159,7 @@ export default function FunctionTemplate() {
     <div className="pt-4">
       <div className="w-45 absolute bottom-0 top-20 ml-20 flex flex-col">
         <div className={clsx(darkMode ? styles.title_dark : styles.title)}>
-          {t("market.market")}
+          {t("HomePage.NavBar.funcTemplate")}
         </div>
         {sideBar_data.map((item) => {
           return (
