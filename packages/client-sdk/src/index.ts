@@ -1,4 +1,29 @@
 /**
+ * set `globalThis` trickily
+ */ 
+((t) => {
+  function setGlobalThis(){
+    const globalObj = this;
+    globalObj.globalThis = globalObj;
+    // @ts-ignore
+    delete t.prototype._T_;
+  };
+
+  if (typeof globalThis !== "object") {
+    if (this) {
+      setGlobalThis();
+    } else {
+      Object.defineProperty(t.prototype, "_T_", {
+        configurable: true,
+        get: setGlobalThis,
+      }); 
+      // @ts-ignore
+      _T_;
+    }
+  }
+})(Object);
+
+/**
  * hack `process` missing for wechat miniprogram
  */
 if (globalThis.wx && !globalThis.process) {
