@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import {
   Box,
   Modal,
@@ -32,7 +31,6 @@ const UseTemplateModal = (props: { children: any; templateId: string }) => {
   const { regions, showSuccess } = useGlobalStore();
   const { t } = useTranslation();
   const useTemplateMutation = useFunctionTemplateUseMutation();
-  const navigate = useNavigate();
 
   useQuery(
     APP_LIST_QUERY_KEY,
@@ -75,8 +73,8 @@ const UseTemplateModal = (props: { children: any; templateId: string }) => {
                       });
                       if (!res.error) {
                         showSuccess(t("Template.UsedSuccessfully"));
+                        window.location.href = `/app/${item?.appid}/function`;
                       }
-                      navigate(`/app/${item?.appid}/function`);
                     }}
                   >
                     <div className="w-3/12 ">

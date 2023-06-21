@@ -62,6 +62,7 @@ const FuncTemplateItem = () => {
                       colorMode={colorMode}
                       readOnly={true}
                       title={item.name}
+                      currentFunction={item}
                     />
                   </div>
                 );

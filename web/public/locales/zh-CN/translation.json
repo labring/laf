@@ -473,7 +473,10 @@
     "Please enter template name": "请输入模板名",
     "EditTemplate": "编辑模板",
     "DeleteTemplate": "删除模板",
-    "FunctionListEmpty": "请至少添加一个函数"
+    "FunctionListEmpty": "请至少添加一个函数",
+    "EmptyTemplate": "暂无模板",
+    "AddMore": "继续添加",
+    "Save": "保存"
   },
   "Fee": "费用",
   "PleaseCloseApplicationFirst": "请先关闭应用",
@@ -498,5 +501,8 @@
     "CPU Threshold": "CPU 阈值"
   },
   "Storage Threshold": "内存阈值",
-  "State": "状态"
+  "State": "状态",
+  "Yesterday": "昨天",
+  "Today": "今天",
+  "DaysAgo": " 天前"
 }

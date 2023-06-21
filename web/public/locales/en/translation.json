@@ -112,7 +112,7 @@
     "PromptDescription": "Use natural language to describe your needs, laf will help you generate code, for example: help me write a hello world, return {hello: 'laf AI'}",
     "CreateWithAITip": "Create functions with AI assistance",
     "CreateNow": "Create Now",
-    "CreateFromTemplate": "Create from Template",
+    "CreateFromTemplate": "Templates",
     "getCodeOnline": "Retrieve the latest released online code",
     "versionHistory": "Version History",
     "Restore": "Restore"
@@ -494,9 +494,15 @@
     "public": "public",
     "updatedAt": "Updated at",
     "useTemplate": "use template",
-    "UsedSuccessfully": "Use successfully"
+    "UsedSuccessfully": "Use successfully",
+    "EmptyTemplate": "Template Empty",
+    "AddMore": "Add More",
+    "Save": "Save"
   },
   "Create function template success": "Create function template successfully",
   "Publish": "release",
-  "Update function template success": "Update function template succeeded"
+  "Update function template success": "Update function template succeeded",
+  "Today": "Today",
+  "Yesterday": "Yesterday",
+  "DaysAgo": " Days Ago"
 }
