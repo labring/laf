@@ -9,9 +9,9 @@ import { SystemDatabase } from 'src/system-database'
 import { StorageBucket } from 'src/storage/entities/storage-bucket'
 import { StorageUser } from 'src/storage/entities/storage-user'
 import { ServerConfig } from 'src/constants'
-import pLimit from 'p-limit'
 import { StorageService } from 'src/storage/storage.service'
 import { BundleService } from 'src/application/bundle.service'
+import pLimit from 'src/utils/p-limt'
 
 @Injectable()
 export class ResourceUsageCaptureTaskService {
