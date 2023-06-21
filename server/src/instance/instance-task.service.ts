@@ -165,7 +165,6 @@ export class InstanceTaskService {
           state: toState,
           phase: ApplicationPhase.Started,
           lockedAt: TASK_LOCK_INIT_TIME,
-          resourceOveruseDetectionLockedAt: TASK_LOCK_INIT_TIME,
           resourceUsageLockedAt: TASK_LOCK_INIT_TIME,
           updatedAt: new Date(),
         },

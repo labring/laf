@@ -6,10 +6,10 @@ import { BillingCreationTaskService } from './billing-creation-task.service'
 import { ApplicationModule } from 'src/application/application.module'
 import { ResourceController } from './resource.controller'
 import { BillingPaymentTaskService } from './billing-payment-task.service'
-import { ResourceTaskService } from './resource-task.service'
 import { DatabaseModule } from 'src/database/database.module'
 import { RegionModule } from 'src/region/region.module'
 import { StorageModule } from 'src/storage/storage.module'
+import { ResourceUsageCaptureTaskService } from './resource-usage-capture-task.service'
 
 @Module({
   imports: [ApplicationModule, DatabaseModule, RegionModule, StorageModule],
@@ -19,7 +19,7 @@ import { StorageModule } from 'src/storage/storage.module'
     ResourceService,
     BillingCreationTaskService,
     BillingPaymentTaskService,
-    ResourceTaskService,
+    ResourceUsageCaptureTaskService,
   ],
   exports: [BillingService, ResourceService],
 })

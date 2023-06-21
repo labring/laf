@@ -62,12 +62,8 @@ export class ServerConfig {
     return process.env.DISABLED_BILLING_PAYMENT_TASK === 'true'
   }
 
-  static get DISABLED_RESOURCE_USAGE_TASK() {
-    return process.env.DISABLED_RESOURCE_USAGE_TASK === 'true'
-  }
-
-  static get DISABLED_RESOURCE_OVERUSE_DETECTION_TASK() {
-    return process.env.DISABLED_RESOURCE_OVERUSE_DETECTION_TASK === 'true'
+  static get DISABLED_RESOURCE_USAGE_CAPTURE_TASK() {
+    return process.env.DISABLED_RESOURCE_USAGE_CAPTURE_TASK === 'true'
   }
 
   static get APPID_LENGTH(): number {
