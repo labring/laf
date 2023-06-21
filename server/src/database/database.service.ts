@@ -143,14 +143,16 @@ export class DatabaseService {
   }
 
   async revokeWritePermission(name: string, username: string) {
+    const db = SystemDatabase.client.db(name)
     try {
-      const result = await this.db.command({
+      const result = await db.command({
         updateUser: username,
         roles: [
           { role: DatabasePermission.Read, db: name },
           { role: 'dbAdmin', db: name },
         ],
       })
+      this.logger.log(`Revoke write permission of ${username} on ${name}`)
       return result
     } catch (error) {
       this.logger.error(
@@ -162,14 +164,16 @@ export class DatabaseService {
   }
 
   async grantWritePermission(name: string, username: string) {
+    const db = SystemDatabase.client.db(name)
     try {
-      const result = await this.db.command({
+      const result = await db.command({
         updateUser: username,
         roles: [
           { role: DatabasePermission.ReadWrite, db: name },
           { role: 'dbAdmin', db: name },
         ],
       })
+      this.logger.warn(`Grant write permission to ${username} on ${name}`)
       return result
     } catch (error) {
       this.logger.error(

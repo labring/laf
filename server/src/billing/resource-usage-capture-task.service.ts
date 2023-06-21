@@ -57,6 +57,8 @@ export class ResourceUsageCaptureTaskService {
     // remaining tasks
     const taskAmount = total - this.limit.pendingCount
 
+    if (taskAmount <= 0) return
+
     const taskList = Array.from({ length: taskAmount }).map(() =>
       this.limit(() =>
         this.handleCaptureResourceUsage().catch((err) => {
@@ -65,6 +67,7 @@ export class ResourceUsageCaptureTaskService {
       ),
     )
 
+    this.logger.debug('Start ResourceUsageCaptureTask, total: ' + taskAmount)
     await Promise.all(taskList)
   }
 
@@ -135,6 +138,10 @@ export class ResourceUsageCaptureTaskService {
         },
       },
     )
+
+    this.logger.log(
+      `captureStorageUsage ${appid}: ${totalSize / 1024 / 1024} MB`,
+    )
   }
 
   async captureDatabaseUsage(appid: string) {
@@ -152,6 +159,10 @@ export class ResourceUsageCaptureTaskService {
             updatedAt: new Date(),
           },
         },
+      )
+
+      this.logger.log(
+        `captureDatabaseUsage ${appid}: ${dataSize / 1024 / 1024} MB`,
       )
     } finally {
       await client.close()

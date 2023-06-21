@@ -101,6 +101,8 @@ export class MinioService {
     }
 
     const sub_cmd = `admin group add ${target} ${MINIO_COMMON_USER_GROUP} ${username}`
+
+    this.logger.warn(`move ${username} to default group`)
     return await this.executeMinioClientCmd(region, sub_cmd)
   }
 
@@ -124,6 +126,8 @@ export class MinioService {
     }
 
     const sub_cmd = `admin group add ${target} ${MINIO_READONLY_USER_GROUP} ${username}`
+
+    this.logger.warn(`move ${username} to readonly group`)
     return await this.executeMinioClientCmd(region, sub_cmd)
   }
 
