@@ -68,6 +68,23 @@ export async function FunctionControllerFindOne(
   });
 }
 
+export async function FunctionControllerGetHistory(
+  params: Paths.FunctionControllerGetHistory.BodyParameters,
+): Promise<{
+  error: string;
+  data: Paths.FunctionControllerGetHistory.Responses;
+}> {
+  // /v1/apps/{appid}/functions/{name}/history
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/functions/${_params.name}/history`, {
+    method: "GET",
+    params: params,
+  });
+}
+
 /**
  * Update a function
  */

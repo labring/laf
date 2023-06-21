@@ -307,11 +307,11 @@ const examplesSideBarConfig = [
     items: [
       {
         text: "接入 ChatGPT",
-        link: "/3min/ChatGPT/",
+        link: "/3min/chatgpt/",
       },
       {
         text: "接入 Claude",
-        link: "/3min/Claude/",
+        link: "/3min/claude/",
       },
       {
         text: "接入 Midjourney",

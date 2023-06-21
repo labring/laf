@@ -7,6 +7,7 @@ import {
   FunctionControllerCreate,
   FunctionControllerFindAll,
   FunctionControllerFindOne,
+  FunctionControllerGetHistory,
   FunctionControllerRemove,
   FunctionControllerUpdate,
 } from "@/apis/v1/apps";
@@ -38,6 +39,18 @@ export const useFunctionDetailQuery = (name: string, config: any) => {
     queryKeys.useFunctionDetailQuery(name),
     () => {
       return FunctionControllerFindOne({
+        name,
+      });
+    },
+    config,
+  );
+};
+
+export const useFunctionHistoryQuery = (name: string, config: any) => {
+  return useQuery(
+    ["useFunctionHistoryQuery", name],
+    () => {
+      return FunctionControllerGetHistory({
         name,
       });
     },

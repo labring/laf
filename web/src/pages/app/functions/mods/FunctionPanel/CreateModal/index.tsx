@@ -26,8 +26,8 @@ import { SUPPORTED_METHODS } from "@/constants";
 
 import { useCreateFunctionMutation, useUpdateFunctionMutation } from "../../../service";
 import useFunctionStore from "../../../store";
+import FuncTemplate from "../FunctionTemplate";
 
-// import FuncTemplate from "../FunctionTemplate";
 import functionTemplates from "./functionTemplates";
 
 import { TMethod } from "@/apis/typing";
@@ -136,7 +136,7 @@ const CreateModal = (props: {
                     className="h-8 w-10/12 border-l-2 border-primary-600 bg-transparent pl-4 text-2xl font-medium"
                     style={{ outline: "none", boxShadow: "none" }}
                   />
-                  {/* {isEdit ? null : (
+                  {isEdit ? null : (
                     <FuncTemplate>
                       <span
                         className="w-2/12 cursor-pointer pl-2 text-lg font-medium text-primary-600"
@@ -145,7 +145,7 @@ const CreateModal = (props: {
                         {t("FunctionPanel.CreateFromTemplate")}
                       </span>
                     </FuncTemplate>
-                  )} */}
+                  )}
                 </div>
                 <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
               </FormControl>
