@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { BiCloudUpload, BiRefresh } from "react-icons/bi";
 import { DeleteIcon, LinkIcon, ViewIcon } from "@chakra-ui/icons";
 import {
@@ -23,6 +24,7 @@ import CopyText from "@/components/CopyText";
 import EmptyBox from "@/components/EmptyBox";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
+import Pagination, { PageValues } from "@/components/Pagination";
 import Panel from "@/components/Panel";
 import { BUCKET_POLICY_TYPE, COLOR_MODE } from "@/constants";
 import { formatDate, formateType, formatSize } from "@/utils/format";
@@ -51,6 +53,13 @@ export default function FileList() {
     },
   );
 
+  const [pageValues, setPageValues] = useState<PageValues>({
+    page: 1,
+    limit: query.data ? Math.ceil(query.data.length / 20) : 0,
+    pageSize: 20,
+    total: query.data ? query.data.length : 0,
+  });
+
   const getLinkUrl = (file: TFile) => {
     let fileUrl = "";
     if (bucketType === "private") {
@@ -73,6 +82,20 @@ export default function FileList() {
   const changeDirectory = (file: TFile) => {
     setPrefix(file.Prefix!);
   };
+
+  const handlePageChange = (values: PageValues) => {
+    setPageValues(values);
+  };
+
+  useEffect(() => {
+    if (query.data) {
+      setPageValues((prevPageValues) => ({
+        ...prevPageValues,
+        total: query.data.length,
+        limit: Math.ceil(query.data.length / 20),
+      }));
+    }
+  }, [query.data]);
 
   return (
     <>
@@ -119,7 +142,7 @@ export default function FileList() {
             TODO: 文件数： {currentStorage?.name}
           </span> */}
         </Panel.Header>
-        <div className="flex-grow overflow-hidden px-2 pb-2">
+        <div className="flex-grow overflow-y-scroll px-2 pb-2">
           {query.isFetching ? (
             <Center className="bg-white-200 h-full opacity-60">
               <Spinner size="lg" />
@@ -138,121 +161,133 @@ export default function FileList() {
               </UploadButton>
             </EmptyBox>
           ) : (
-            <TableContainer className="h-full" style={{ overflowY: "auto" }}>
-              <Table variant="simple" size="sm">
-                <Thead
-                  className={clsx("h-8", {
-                    "bg-lafWhite-400": !darkMode,
-                    "bg-lafDark-100": darkMode,
-                  })}
-                >
-                  <Tr>
-                    <Th>{t("StoragePanel.FileName")}</Th>
-                    <Th>{t("StoragePanel.FileType")}</Th>
-                    <Th>{t("StoragePanel.Size")}</Th>
-                    <Th>{t("StoragePanel.Time")}</Th>
-                    <Th isNumeric>
-                      <span className="mr-2">{t("Operation")}</span>
-                    </Th>
-                  </Tr>
-                </Thead>
-                <Tbody className="text-grayModern-500">
-                  {query.data
-                    .filter((file) => file.Key !== prefix)
-                    .map((file: TFile) => {
-                      const fileName = file.Key?.split("/");
-                      const dirName = file.Prefix?.split("/") || [];
-                      const fileType = file.Prefix
-                        ? "folder"
-                        : formateType(fileName[fileName.length - 1]);
-                      return (
-                        <Tr
-                          className={clsx({
-                            "hover:bg-lafWhite-600": !darkMode,
-                            "hover:bg-lafDark-300": darkMode,
-                          })}
-                          key={file.Key || file.Prefix}
-                        >
-                          <Td
-                            style={{
-                              maxWidth: 200,
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                            }}
-                            onClick={() =>
-                              file.Prefix ? changeDirectory(file) : viewAppFile(file)
-                            }
-                            className="cursor-pointer font-bold"
-                          >
-                            <FileTypeIcon type={fileType} />
-                            {file.Prefix ? (
-                              <span className="ml-2">{dirName[dirName.length - 2]}</span>
-                            ) : (
-                              <span className="ml-2">{fileName[fileName.length - 1]}</span>
-                            )}
-                          </Td>
-                          <Td>{fileType}</Td>
-                          <Td>{file.Size ? formatSize(file.Size) : "--"}</Td>
-                          <Td>{file.LastModified ? formatDate(file.LastModified) : "--"}</Td>
-                          <Td
-                            isNumeric
-                            className={clsx("flex justify-end space-x-1", {
-                              "text-grayModern-900": !darkMode,
-                            })}
-                          >
-                            <IconWrap
-                              placement="left"
-                              tooltip={
-                                bucketType === BUCKET_POLICY_TYPE.private && file.Key
-                                  ? t("StoragePanel.TimeTip").toString()
-                                  : undefined
-                              }
-                              onClick={() => viewAppFile(file)}
-                            >
-                              <ViewIcon fontSize={12} />
-                            </IconWrap>
-                            {!file.Prefix ? (
-                              <>
-                                <IconWrap>
-                                  <CopyText text={getLinkUrl(file)} tip={String(t("LinkCopied"))}>
-                                    <LinkIcon />
-                                  </CopyText>
-                                </IconWrap>
-                                <ConfirmButton
-                                  onSuccessAction={async () => {
-                                    await deleteFile(bucketName!, file.Key);
-                                    query.refetch();
-                                  }}
-                                  headerText={String(t("Delete"))}
-                                  bodyText={t("StoragePanel.DeleteFileTip")}
-                                >
-                                  <IconWrap tooltip={String(t("Delete"))}>
-                                    <DeleteIcon fontSize={14} />
-                                  </IconWrap>
-                                </ConfirmButton>
-                              </>
-                            ) : (
-                              <ConfirmButton
-                                onSuccessAction={async () => {
-                                  await deleteFile(bucketName!, file.Prefix as string);
-                                  query.refetch();
-                                }}
-                                headerText={String(t("Delete"))}
-                                bodyText={t("StoragePanel.DeleteFolderTip")}
-                              >
-                                <IconWrap tooltip={String(t("Delete"))}>
-                                  <DeleteIcon fontSize={14} />
-                                </IconWrap>
-                              </ConfirmButton>
-                            )}
-                          </Td>
-                        </Tr>
-                      );
+            <div>
+              <TableContainer className="h-full" style={{ overflowY: "auto" }}>
+                <Table variant="simple" size="sm">
+                  <Thead
+                    className={clsx("h-8", {
+                      "bg-lafWhite-400": !darkMode,
+                      "bg-lafDark-100": darkMode,
                     })}
-                </Tbody>
-              </Table>
-            </TableContainer>
+                  >
+                    <Tr>
+                      <Th>{t("StoragePanel.FileName")}</Th>
+                      <Th>{t("StoragePanel.FileType")}</Th>
+                      <Th>{t("StoragePanel.Size")}</Th>
+                      <Th>{t("StoragePanel.Time")}</Th>
+                      <Th isNumeric>
+                        <span className="mr-2">{t("Operation")}</span>
+                      </Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody className="text-grayModern-500">
+                    {pageValues.page &&
+                      pageValues.pageSize &&
+                      query.data
+                        .slice(
+                          (pageValues.page - 1) * pageValues.pageSize,
+                          pageValues.page * pageValues.pageSize,
+                        )
+                        .filter((file) => file.Key !== prefix)
+                        .map((file: TFile) => {
+                          const fileName = file.Key?.split("/");
+                          const dirName = file.Prefix?.split("/") || [];
+                          const fileType = file.Prefix
+                            ? "folder"
+                            : formateType(fileName[fileName.length - 1]);
+                          return (
+                            <Tr
+                              className={clsx({
+                                "hover:bg-lafWhite-600": !darkMode,
+                                "hover:bg-lafDark-300": darkMode,
+                              })}
+                              key={file.Key || file.Prefix}
+                            >
+                              <Td
+                                style={{
+                                  maxWidth: 200,
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  whiteSpace: "nowrap",
+                                }}
+                                onClick={() =>
+                                  file.Prefix ? changeDirectory(file) : viewAppFile(file)
+                                }
+                                className="cursor-pointer font-bold"
+                              >
+                                <FileTypeIcon type={fileType} />
+                                {file.Prefix ? (
+                                  <span className="ml-2">{dirName[dirName.length - 2]}</span>
+                                ) : (
+                                  <span className="ml-2">{fileName[fileName.length - 1]}</span>
+                                )}
+                              </Td>
+                              <Td>{fileType}</Td>
+                              <Td>{file.Size ? formatSize(file.Size) : "--"}</Td>
+                              <Td>{file.LastModified ? formatDate(file.LastModified) : "--"}</Td>
+                              <Td
+                                isNumeric
+                                className={clsx("flex justify-end space-x-1", {
+                                  "text-grayModern-900": !darkMode,
+                                })}
+                              >
+                                <IconWrap
+                                  placement="left"
+                                  tooltip={
+                                    bucketType === BUCKET_POLICY_TYPE.private && file.Key
+                                      ? t("StoragePanel.TimeTip").toString()
+                                      : undefined
+                                  }
+                                  onClick={() => viewAppFile(file)}
+                                >
+                                  <ViewIcon fontSize={12} />
+                                </IconWrap>
+                                {!file.Prefix ? (
+                                  <>
+                                    <IconWrap>
+                                      <CopyText
+                                        text={getLinkUrl(file)}
+                                        tip={String(t("LinkCopied"))}
+                                      >
+                                        <LinkIcon />
+                                      </CopyText>
+                                    </IconWrap>
+                                    <ConfirmButton
+                                      onSuccessAction={async () => {
+                                        await deleteFile(bucketName!, file.Key);
+                                        query.refetch();
+                                      }}
+                                      headerText={String(t("Delete"))}
+                                      bodyText={t("StoragePanel.DeleteFileTip")}
+                                    >
+                                      <IconWrap tooltip={String(t("Delete"))}>
+                                        <DeleteIcon fontSize={14} />
+                                      </IconWrap>
+                                    </ConfirmButton>
+                                  </>
+                                ) : (
+                                  <ConfirmButton
+                                    onSuccessAction={async () => {
+                                      await deleteFile(bucketName!, file.Prefix as string);
+                                      query.refetch();
+                                    }}
+                                    headerText={String(t("Delete"))}
+                                    bodyText={t("StoragePanel.DeleteFolderTip")}
+                                  >
+                                    <IconWrap tooltip={String(t("Delete"))}>
+                                      <DeleteIcon fontSize={14} />
+                                    </IconWrap>
+                                  </ConfirmButton>
+                                )}
+                              </Td>
+                            </Tr>
+                          );
+                        })}
+                  </Tbody>
+                </Table>
+              </TableContainer>
+              <Pagination values={pageValues} onChange={handlePageChange} />
+            </div>
           )}
         </div>
       </Panel>
