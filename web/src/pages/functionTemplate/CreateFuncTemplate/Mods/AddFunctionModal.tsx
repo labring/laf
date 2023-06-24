@@ -28,21 +28,38 @@ const AddFunctionModal = (props: {
   setFunctionList?: React.Dispatch<React.SetStateAction<any[]>>;
   setCurrentFunction?: React.Dispatch<React.SetStateAction<any>>;
   currentFunction?: any;
+  isEdit?: boolean;
 }) => {
   const {
     children = null,
     functionList,
     setFunctionList,
-    setCurrentFunction,
+    // setCurrentFunction,
     currentFunction,
+    isEdit,
   } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { showError } = useGlobalStore();
-  const defaultValues = {
-    name: "",
-    methods: ["GET", "POST"],
-    description: "",
-  };
+  const defaultValues = isEdit
+    ? {
+        name: currentFunction?.name,
+        methods: currentFunction?.methods,
+        description: currentFunction?.desc,
+      }
+    : {
+        name: "",
+        methods: ["GET", "POST"],
+        description: "",
+      };
+
+  const defaultCode = `import cloud from '@lafjs/cloud'
+
+export default async function (ctx: FunctionContext) {
+  console.log('Hello World')
+  return { data: 'hi, laf' }
+}
+`;
+
   const {
     handleSubmit,
     register,
@@ -50,16 +67,39 @@ const AddFunctionModal = (props: {
     setFocus,
     control,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues,
+  });
 
   const onSubmit = (data: any) => {
-    if (functionList?.some((item) => item.name === data.name)) {
-      showError(t("Template.FunctionNameExist"));
-    } else if (setFunctionList && setCurrentFunction) {
-      setFunctionList([...(functionList || []), { ...data, source: { code: "" } }]);
-      setCurrentFunction({ ...data, source: { code: "" } });
-      console.log("AddFunctionModal", currentFunction);
-      onClose();
+    const updateData = {
+      name: data.name,
+      methods: data.methods,
+      desc: data.description,
+    };
+
+    if (setFunctionList) {
+      if (isEdit) {
+        setFunctionList(
+          functionList?.map((item) => {
+            if (item.name === currentFunction.name) {
+              return { ...updateData, source: { code: currentFunction.source.code } };
+            }
+            return item;
+          }) || [],
+        );
+        onClose();
+      } else {
+        if (functionList?.some((item) => item.name === data.name)) {
+          showError(t("Template.FunctionNameExist"));
+          return;
+        }
+        setFunctionList([
+          ...(functionList || []),
+          { ...updateData, source: { code: defaultCode } },
+        ]);
+        onClose();
+      }
     }
   };
 
@@ -68,12 +108,6 @@ const AddFunctionModal = (props: {
       {children &&
         React.cloneElement(children, {
           onClick: () => {
-            if (functionList && setCurrentFunction) {
-              setCurrentFunction(
-                functionList.find((item) => item.name === currentFunction?.name) || null,
-              );
-            }
-            console.log(currentFunction);
             onOpen();
             reset(defaultValues);
             setTimeout(() => {
@@ -84,11 +118,18 @@ const AddFunctionModal = (props: {
       <Modal isOpen={isOpen} onClose={onClose} size="2xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{t("FunctionPanel.AddFunction")}</ModalHeader>
+          <ModalHeader>
+            {isEdit ? t("FunctionPanel.EditFunction") : t("FunctionPanel.AddFunction")}
+          </ModalHeader>
           <ModalCloseButton />
 
-          <ModalBody className="">
-            <div className="mb-3 flex h-12 w-full items-center border-b-2">
+          <ModalBody>
+            <div
+              className={clsx(
+                "mb-3 flex h-12 w-full items-center border-b-2",
+                isEdit && "rounded-md bg-gray-100",
+              )}
+            >
               <input
                 {...register("name", {
                   required: true,
@@ -101,6 +142,7 @@ const AddFunctionModal = (props: {
                 placeholder={String(t("FunctionPanel.FunctionNameTip"))}
                 className="h-8 w-10/12 border-l-2 border-primary-600 bg-transparent pl-4 text-2xl font-medium"
                 style={{ outline: "none", boxShadow: "none" }}
+                disabled={isEdit}
               />
             </div>
             {errors.name && (

@@ -103,12 +103,17 @@ module.exports = {
         },
         rose: {
           100: "#FDEAF1",
+          500: "#ED598E",
         },
         purple: {
           300: "#DBBDE9",
           400: "#C99CDF",
           600: "#A55AC9",
           700: "#7167AA",
+        },
+        adora: {
+          200: "#E6E3F7",
+          600: "#8172D8"
         },
         blue: {
           100: "#EBF7FD",

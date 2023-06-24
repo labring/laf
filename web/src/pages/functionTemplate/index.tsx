@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
-import { AddIcon, ChevronDownIcon, RepeatClockIcon, Search2Icon } from "@chakra-ui/icons";
+import { AddIcon, ChevronDownIcon, Search2Icon } from "@chakra-ui/icons";
 import {
   Button,
   Input,
@@ -17,10 +17,11 @@ import {
 import clsx from "clsx";
 import { debounce } from "lodash";
 
-import { FileIcon, LikeIcon } from "@/components/CommonIcon";
+import { FileIcon, LikeIcon, TimeIcon } from "@/components/CommonIcon";
+import EmptyBox from "@/components/EmptyBox";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
-import { formatDate } from "@/utils/format";
+import { daysAgo, formatDate } from "@/utils/format";
 
 import {
   useDeleteFunctionTemplateMutation,
@@ -106,6 +107,7 @@ export default function FunctionTemplate() {
     {
       ...queryData,
       page: page,
+      pageSize: 8,
     },
     {
       enabled: selectedItem.value !== "all",
@@ -175,12 +177,12 @@ export default function FunctionTemplate() {
       <div className="flex items-center justify-between py-5 pl-72">
         {selectedItem.value === "my" ? (
           <Button
-            padding={5}
             onClick={() => {
               navigate("/market/templates/create");
             }}
             leftIcon={<AddIcon />}
             className="mr-8"
+            height={"2rem"}
           >
             {t("Template.CreateTemplate")}
           </Button>
@@ -217,46 +219,53 @@ export default function FunctionTemplate() {
         </div>
       </div>
       <div className="flex flex-wrap pl-72 pr-8">
-        {templateList &&
+        {templateList && templateList.list.length > 0 ? (
           (templateList?.list).map((item) => {
             return (
-              <div className={clsx("mb-4 w-1/3")} key={item._id}>
+              <div
+                className={clsx("mb-3", selectedItem.value === "all" ? "w-1/3" : "w-1/2")}
+                key={item._id}
+              >
                 <div
-                  className="mr-6 cursor-pointer rounded-lg border-[1px]"
+                  className="mr-4 cursor-pointer rounded-lg border-[1px]"
                   style={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.outlineWidth = "2px";
+                    e.currentTarget.style.boxShadow =
+                      "0px 2px 4px rgba(0, 0, 0, 0.1), 0px 0px 0px 2px #66CBCA";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.outlineWidth = "1px";
+                    e.currentTarget.style.boxShadow = "0px 2px 4px rgba(0, 0, 0, 0.1)";
+                  }}
                 >
                   <div
-                    className="mb-3 rounded-md pt-4"
+                    className="mx-5 pt-4"
                     onClick={(event: any) => {
                       event?.preventDefault();
                       navigate(`/market/templates/${selectedItem.value || "all"}/${item._id}`);
                     }}
                   >
-                    <div
-                      className={clsx(
-                        "flex justify-between pl-5",
-                        selectedItem.value !== "my" && "pr-5",
-                      )}
-                    >
+                    <div className={clsx("mb-1 flex justify-between")}>
                       <div
                         className={clsx(
-                          "flex items-center pb-1.5",
-                          darkMode ? "text-gray-300" : "text-second",
+                          "flex items-center",
+                          darkMode ? "text-gray-300" : "text-grayIron-600",
                         )}
                       >
-                        <RepeatClockIcon />
+                        <TimeIcon color={darkMode ? "gray.300" : "grayIron.500"} />
                         <span className="pl-2">
                           {t("Template.CreatedAt")} {formatDate(item.createdAt)}
                         </span>
                       </div>
                       <div className="flex items-center">
-                        {selectedItem.value !== "all" && (
+                        {selectedItem.value === "my" && (
                           <span
                             className={clsx(
-                              "p-1 px-2 font-semibold",
+                              "mr-3 px-2 font-semibold",
                               item.private === false
                                 ? "bg-blue-100 text-blue-600"
-                                : "bg-red-100 text-red-600",
+                                : "bg-adora-200 text-adora-600",
                             )}
                           >
                             {item.private ? "Private" : "Public"}
@@ -298,22 +307,25 @@ export default function FunctionTemplate() {
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center px-5 pb-3 text-xl font-semibold">
+                    <div className="flex items-center pb-2 text-xl font-semibold">
                       <FileTypeIcon type="ts" fontSize={20} />
                       <div className="truncate pl-2">{item.name}</div>
                     </div>
                     <div
                       className={clsx(
-                        "h-4 truncate px-5",
+                        "flex h-4 items-center truncate",
                         darkMode ? "text-gray-300" : "text-second",
                       )}
                     >
                       {item.description}
                     </div>
                   </div>
-                  <div className="flex items-center justify-between px-5 pb-4">
-                    <span className={clsx("pr-2", darkMode ? "text-gray-300" : "text-second")}>
-                      {t("Template.updatedAt")} {formatDate(item.updatedAt)}
+
+                  <div className="mx-5 my-3 flex items-center justify-between">
+                    <span
+                      className={clsx("pr-2", darkMode ? "text-gray-300" : "text-grayModern-500")}
+                    >
+                      {t("Template.updatedAt")} {daysAgo(item.updatedAt)}
                     </span>
                     <div className="flex text-base">
                       <span className="pl-2">
@@ -327,9 +339,21 @@ export default function FunctionTemplate() {
                 </div>
               </div>
             );
-          })}
+          })
+        ) : (
+          <EmptyBox>
+            <p>{t("Template.EmptyTemplate")}</p>
+          </EmptyBox>
+        )}
       </div>
-      <PaginationBar page={page} setPage={setPage} total={templateList?.total || 0} pageSize={12} />
+      {templateList && templateList.list.length > 0 && (
+        <PaginationBar
+          page={page}
+          setPage={setPage}
+          total={templateList?.total || 0}
+          pageSize={selectedItem.value === "all" ? 12 : 8}
+        />
+      )}
     </div>
   );
 }

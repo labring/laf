@@ -13,8 +13,8 @@ import UserSetting from "./UserSetting";
 import useGlobalStore from "@/pages/globalStore";
 import Language from "@/pages/homepage/language";
 
-const Header = (props: { bg: string }) => {
-  const { bg } = props;
+const Header = (props: { width: string }) => {
+  const { width } = props;
   const [stars, setStars] = useState<string | null>(null);
   const { t } = useTranslation();
   const { userInfo } = useGlobalStore((state) => state);
@@ -77,7 +77,7 @@ const Header = (props: { bg: string }) => {
     <div
       className={clsx(
         "flex h-[52px] w-full justify-between font-medium",
-        darkMode ? "" : { [bg]: !!bg },
+        { [width]: !!width },
         darkMode ? "" : "text-grayModern-600",
       )}
     >
