@@ -425,7 +425,7 @@ Send emails using SMTP service.
 Create a `sendmail` cloud function, install the `nodemailer` dependency, and write the following code:
 
 ```typescript
-import from 'nodemailer'
+import nodemailer from 'nodemailer'
 
 // Mail server configuration
 const transportConfig = {
@@ -502,17 +502,18 @@ async function UploadToWeixin(url) {
 }
 ```
 
-
 ## Laf Function Authentication, Token Retrieval, and Token Expiration Handling
 
 Original Post: <https://forum.laf.run/d/535>
 
 Process:
+
 1. The cloud function generates a token and returns it to the frontend.
 2. The frontend includes the token in its requests.
 3. The cloud function checks whether the `ctx.user` contains the token and if it has expired.
 
 Example Code:
+
 1. The cloud function generates a token and returns it to the frontend.
 
 ```typescript
@@ -563,7 +564,7 @@ axios({
   url: "functionUrl",
   headers: {
     // Include the token here
-    Authorization: `token ${token}`,
+    Authorization: `Bearer ${token}`,
   },
 })
 ```

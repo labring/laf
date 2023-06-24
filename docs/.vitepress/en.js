@@ -318,11 +318,11 @@ const examplesSideBarConfig_en = [
     items: [
       {
         text: "Accessing ChatGPT",
-        link: "/en/3min/ChatGPT/",
+        link: "/en/3min/chatgpt/",
       },
       {
         text: "Accessing Claude",
-        link: "/en/3min/Claude/",
+        link: "/en/3min/claude/",
       },
       {
         text: "Accessing Midjourney",

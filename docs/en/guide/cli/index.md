@@ -26,17 +26,12 @@ To perform the login operation, we need to obtain our Personal Access Token (PAT
 
 ![](../../doc-images/creat-token.png)
 
-After generating the token, copy and execute the following command with the token to login.
-
-```shell
-laf login [pat]
-```
-
 By default, it logs in to `laf.run`. If you want to log in to `laf.dev` or a privately deployed instance of laf, or another `laf.run` account, you can add a user:
 
 ```shell
 laf user add dev -r https://laf.dev
 laf user switch dev
+laf user list
 laf login [pat]
 ```
 
