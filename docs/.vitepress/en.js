@@ -125,7 +125,7 @@ const guideSiderbarConfig_en = [
           },
           {
             text: "Import the SDK",
-            link: "/en/guide/function/function-sdk#导入-sdk",
+            link: "/en/guide/function/function-sdk#importing-the-sdk",
           },
           {
             text: "Send the requests",
