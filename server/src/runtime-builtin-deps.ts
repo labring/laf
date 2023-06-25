@@ -5,7 +5,7 @@ export const RUNTIME_BUILTIN_DEPENDENCIES = {
   '@kubernetes/client-node': '^0.18.0',
   '@lafjs/cloud': '1.0.0-beta.7',
   chatgpt: '^5.2.5',
-  'alipay-sdk': '^3.2.0',
+  'alipay-sdk': '^3.4.0',
   axios: '^1.4.0',
   'database-proxy': '^0.8.2',
   dayjs: '^1.11.7',
