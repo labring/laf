@@ -212,9 +212,9 @@ export default function CreateFuncTemplate() {
               <span className="pl-4">{t("FunctionPanel.AddFunction")}</span>
             </button>
           </AddFunctionModal>
-          <div className="mt-4 h-[50vh] overflow-auto">
+          <div className="mt-4 overflow-auto xl:h-[45vh] 2xl:h-[55vh]">
             {functionList.map((functionItem) => (
-              <div className="mb-4 h-[40vh] w-full" key={functionItem.name}>
+              <div className="mb-4" key={functionItem.name}>
                 <MonacoEditor
                   value={functionItem.source.code}
                   onChange={(value: string | undefined) => {

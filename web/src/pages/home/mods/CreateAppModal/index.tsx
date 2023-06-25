@@ -32,7 +32,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import { t } from "i18next";
-import { find } from "lodash";
+import { debounce, find } from "lodash";
 
 import ChargeButton from "@/components/ChargeButton";
 import { AutoScalingIcon, RecommendIcon, TextIcon } from "@/components/CommonIcon";
@@ -170,7 +170,7 @@ const CreateAppModal = (props: {
   const [totalPrice, setTotalPrice] = React.useState(0);
 
   const billingQuery = useQuery(
-    [queryKeys.useBillingPriceQuery, bundle, isOpen],
+    [queryKeys.useBillingPriceQuery],
     async () => {
       return ResourceControllerCalculatePrice({
         ...getValues(),
@@ -187,11 +187,19 @@ const CreateAppModal = (props: {
   );
 
   useEffect(() => {
-    if (isOpen) {
+    const debouncedBillingQuery = debounce(() => {
       billingQuery.refetch();
+    }, 500);
+
+    if (isOpen) {
+      debouncedBillingQuery();
     }
+
+    return () => {
+      debouncedBillingQuery.cancel();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, bundle]);
+  }, [isOpen, bundle, autoscaling]);
 
   const updateAppMutation = useMutation((params: any) => ApplicationControllerUpdateName(params));
   const createAppMutation = useMutation((params: any) => ApplicationControllerCreate(params));

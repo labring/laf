@@ -6,7 +6,6 @@ import IconWrap from "@/components/IconWrap";
 
 const FunctionPopOver = (props: { currentFunction: any }) => {
   const { currentFunction } = props;
-  console.log(currentFunction);
 
   return (
     <Popover trigger="hover" placement="bottom-start" isLazy>
@@ -27,7 +26,11 @@ const FunctionPopOver = (props: { currentFunction: any }) => {
             <div className="truncate pb-2 text-grayIron-600">{currentFunction.desc}</div>
             <div className="flex text-grayIron-600">
               {currentFunction.methods.map((method: any) => {
-                return <div className="mr-1 rounded-md bg-gray-100 px-1">{method}</div>;
+                return (
+                  <div className="mr-1 rounded-md bg-gray-100 px-1" key={method}>
+                    {method}
+                  </div>
+                );
               })}
             </div>
           </PopoverBody>

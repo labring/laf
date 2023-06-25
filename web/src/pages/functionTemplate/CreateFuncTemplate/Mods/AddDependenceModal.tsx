@@ -52,7 +52,6 @@ const AddDependenceModal = (props: {
       return existItem ? existItem : { ...item, versions: [] };
     });
     setList(list);
-    console.log(list);
   });
 
   const search = useMemo(
