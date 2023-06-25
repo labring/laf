@@ -44,8 +44,7 @@ const Navbar = () => {
         "https://img.shields.io/github/stars/labring/laf?style=plastic",
       );
       const str = axiosRes.data;
-
-      const reg = /textLength="130">(.*?)k<\/text>/;
+      const reg = /(\d+(\.\d+)?)(k)/;
       const match = str.match(reg);
 
       if (match) {
