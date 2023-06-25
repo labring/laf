@@ -90,6 +90,17 @@ export class RuntimeDomainTaskService {
       this.logger.debug(route)
     }
 
+    // custom domain
+    if (doc.customDomain) {
+      const id = `app-custom-${doc.appid}`
+      const route = await this.apisixService.getRoute(region, id)
+      if (!route) {
+        await this.apisixService.createAppCustomRoute(region, doc)
+        this.logger.log('app custom route created: ' + doc.appid)
+        this.logger.debug(route)
+      }
+    }
+
     // update phase to `Created`
     await db.collection<RuntimeDomain>('RuntimeDomain').updateOne(
       { _id: doc._id, phase: DomainPhase.Creating },
@@ -127,12 +138,24 @@ export class RuntimeDomainTaskService {
     assert(region, 'region not found')
 
     // delete route first if exists
-    const id = `app-${doc.appid}`
-    const route = await this.apisixService.getRoute(region, id)
-    if (route) {
-      await this.apisixService.deleteAppRoute(region, doc.appid)
-      this.logger.log('app route deleted: ' + doc.appid)
-      this.logger.debug(route)
+    {
+      const id = `app-${doc.appid}`
+      const route = await this.apisixService.getRoute(region, id)
+      if (route) {
+        await this.apisixService.deleteAppRoute(region, doc.appid)
+        this.logger.log('app route deleted: ' + doc.appid)
+        this.logger.debug(route)
+      }
+    }
+
+    {
+      const id = `app-custom-${doc.appid}`
+      const route = await this.apisixService.getRoute(region, id)
+      if (route) {
+        await this.apisixService.deleteAppCustomRoute(region, doc.appid)
+        this.logger.log('app custom route deleted: ' + doc.appid)
+        this.logger.debug(route)
+      }
     }
 
     // update phase to `Deleted`
