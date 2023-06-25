@@ -341,7 +341,10 @@ export class ApplicationController {
     @Body() dto: BindCustomDomainDto,
   ) {
     const runtimeDomain = await this.runtimeDomain.findOne(appid)
-    if (runtimeDomain?.customDomain) {
+    if (
+      runtimeDomain?.customDomain &&
+      runtimeDomain.customDomain === dto.domain
+    ) {
       return ResponseUtil.error('domain already binded')
     }
 
