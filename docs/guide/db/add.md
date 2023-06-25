@@ -51,14 +51,14 @@ const db = cloud.mongo.db
 
 export async function main(ctx: FunctionContext) {
   // 向 user 集合中插入单个文档
-  const result1 = db.collection('user').insertOne({ name: "jack" })
+  const result1 = await db.collection('user').insertOne({ name: "jack" })
   console.log(result1)
   // 向 user 集合中批量插入文档
   const documents = [
     { name: "Jane Doe", age: 25 },
     { name: "Bob Smith", age: 40 }
   ];
-  const result2 = db.collection('user').insertMany(documents);
+  const result2 = await db.collection('user').insertMany(documents);
   console.log(result2)
 }
 ```

@@ -500,15 +500,6 @@ export class InstanceService {
     return spec
   }
 
-  public async reapplyHorizontalPodAutoscalerByAppid(appid: string) {
-    const { hpa, app } = await this.get(appid)
-    if (!hpa) {
-      const labels = { [LABEL_KEY_APP_ID]: appid }
-      return await this.createHorizontalPodAutoscaler(app, labels)
-    }
-    return await this.reapplyHorizontalPodAutoscaler(app, hpa)
-  }
-
   private async reapplyHorizontalPodAutoscaler(
     app: ApplicationWithRelations,
     oldHpa: V2HorizontalPodAutoscaler,
@@ -518,7 +509,6 @@ export class InstanceService {
     const namespace = GetApplicationNamespaceByAppId(appid)
 
     const hpa = oldHpa
-    hpa.spec = this.makeHorizontalPodAutoscalerSpec(app)
 
     if (!app.bundle.autoscaling.enable) {
       if (!hpa) return
@@ -528,11 +518,17 @@ export class InstanceService {
       )
       this.logger.log(`delete k8s hpa ${app.appid}`)
     } else {
-      await hpaV2Api.replaceNamespacedHorizontalPodAutoscaler(
-        app.appid,
-        namespace,
-        hpa,
-      )
+      if (hpa) {
+        hpa.spec = this.makeHorizontalPodAutoscalerSpec(app)
+        await hpaV2Api.replaceNamespacedHorizontalPodAutoscaler(
+          app.appid,
+          namespace,
+          hpa,
+        )
+      } else {
+        const labels = { [LABEL_KEY_APP_ID]: appid }
+        await this.createHorizontalPodAutoscaler(app, labels)
+      }
       this.logger.log(`reapply k8s hpa ${app.appid}`)
     }
   }

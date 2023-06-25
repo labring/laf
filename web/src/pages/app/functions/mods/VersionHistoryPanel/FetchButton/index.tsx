@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Button,
   Modal,
@@ -7,52 +8,35 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
 import { t } from "i18next";
 
-import { SynchronizeDownIcon } from "@/components/CommonIcon";
 import CommonDiffEditor from "@/components/Editor/CommonDiffEditor";
 
-import { useFunctionDetailQuery } from "../../service";
-import useFunctionStore from "../../store";
+import useFunctionStore from "../../../store";
 
 import useFunctionCache from "@/hooks/useFunctionCache";
 import useGlobalStore from "@/pages/globalStore";
 
-export default function FetchButton() {
+export default function FetchButton(props: { children: React.ReactElement; functionCode: string }) {
+  const { children, functionCode } = props;
   const functionCache = useFunctionCache();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const store = useFunctionStore((state) => state);
   const { currentFunction, updateFunctionCode, setIsFetchButtonClicked } = store;
-  const functionDetailQuery = useFunctionDetailQuery(
-    encodeURIComponent(store.currentFunction.name),
-    {
-      enabled: isOpen,
-    },
-  );
-  const data = functionDetailQuery.data?.data?.source?.code;
   const { showSuccess } = useGlobalStore((state) => state);
 
   return (
     <>
-      <Tooltip label={t("FunctionPanel.getCodeOnline")} placement="bottom">
-        <Button
-          variant={"text"}
-          size={"xs"}
-          isLoading={functionDetailQuery.isFetching}
-          disabled={store.getFunctionUrl() === ""}
-          onClick={() => {
+      {children &&
+        React.cloneElement(children, {
+          onClick: () => {
             onOpen();
-          }}
-          leftIcon={<SynchronizeDownIcon />}
-        >
-          {t("FunctionPanel.Fetch")}
-        </Button>
-      </Tooltip>
+          },
+        })}
 
-      {isOpen && !functionDetailQuery.isFetching ? (
+      {isOpen ? (
         <Modal isOpen={isOpen} onClose={onClose} size="6xl" isCentered>
           <ModalOverlay />
           <ModalContent maxW={"80%"}>
@@ -60,7 +44,7 @@ export default function FetchButton() {
             <ModalCloseButton />
             <ModalBody borderBottom={"1px"} borderBottomColor="gray.200">
               <CommonDiffEditor
-                modified={data}
+                modified={functionCode}
                 original={functionCache.getCache(
                   currentFunction?._id,
                   currentFunction?.source?.code,
@@ -75,14 +59,14 @@ export default function FetchButton() {
               <Button
                 variant="primary"
                 onClick={() => {
-                  updateFunctionCode(currentFunction, data || "");
-                  functionCache.setCache(currentFunction!._id, data || "");
+                  updateFunctionCode(currentFunction, functionCode || "");
+                  functionCache.setCache(currentFunction!._id, functionCode || "");
                   setIsFetchButtonClicked();
                   onClose();
                   showSuccess(t("FunctionPanel.FetchSuccess"));
                 }}
               >
-                {t("FunctionPanel.ConfirmFetch")}
+                {t("FunctionPanel.Restore")}
               </Button>
             </ModalFooter>
           </ModalContent>

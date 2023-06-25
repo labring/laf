@@ -2,12 +2,11 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
-import { AddIcon, ChevronRightIcon, CloseIcon } from "@chakra-ui/icons";
+import { AddIcon, ChevronRightIcon, DeleteIcon } from "@chakra-ui/icons";
 import { Box, Button, Radio, RadioGroup, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import { TextIcon } from "@/components/CommonIcon";
-import ConfirmButton from "@/components/ConfirmButton";
 import FileTypeIcon from "@/components/FileTypeIcon";
 
 import {
@@ -35,7 +34,6 @@ export default function CreateFuncTemplate() {
 
   const [packageList, setPackageList] = useState<any[]>([]);
   const [functionList, setFunctionList] = useState<any[]>([]);
-  const [currentFunction, setCurrentFunction] = useState<any>(undefined);
   const [environments, setEnvironments] = useState<any[]>([]);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [defaultFunction, setDefaultFunction] = useState<any>();
@@ -79,7 +77,6 @@ export default function CreateFuncTemplate() {
           }),
         );
         setEnvironments(data.data[0].environments);
-        setCurrentFunction(data.data[0].items[0]);
         setDefaultFunction({
           name: data.data[0].name,
           visibility: data.data[0].private ? "private" : "public",
@@ -107,57 +104,34 @@ export default function CreateFuncTemplate() {
   }, [defaultFunction, reset]);
 
   const onSubmit = async (data: FormData) => {
-    let res = null;
     const { name, visibility, description } = data;
 
     if (functionList.length === 0) {
       showError(t("Template.FunctionListEmpty"));
       return;
     }
+    const mutation = isEdit ? updateFunctionMutation : createFunctionMutation;
+    const mutationArgs = {
+      name,
+      private: visibility === "private",
+      description,
+      items: functionList.map((item) => ({
+        name: item.name,
+        description: item.desc,
+        methods: item.methods,
+        code: item.source.code || "",
+      })),
+      dependencies: packageList.map((item) => ({
+        name: item.package.name,
+        spec: item.package.version,
+      })),
+      environments: environments,
+    };
 
-    if (isEdit) {
-      res = await updateFunctionMutation.mutateAsync({
-        id: templateId,
-        functionTemplateId: templateId,
-        name,
-        private: visibility === "private",
-        description,
-        items: functionList.map((item) => {
-          return {
-            name: item.name,
-            description: item.desc,
-            methods: item.methods,
-            code: item.source.code || "",
-          };
-        }),
-        dependencies: packageList.map((item) => {
-          return {
-            name: item.package.name,
-            spec: item.package.version,
-          };
-        }),
-        environments: environments,
-      });
-    } else {
-      res = await createFunctionMutation.mutateAsync({
-        name,
-        private: visibility === "private",
-        description,
-        items: functionList.map((item) => {
-          return {
-            ...item,
-            code: item.source.code || "",
-          };
-        }),
-        dependencies: packageList.map((item) => {
-          return {
-            name: item.package.name,
-            spec: item.package.version,
-          };
-        }),
-        environments: environments,
-      });
-    }
+    const res = await mutation.mutateAsync(
+      isEdit ? { id: templateId, functionTemplateId: templateId, ...mutationArgs } : mutationArgs,
+    );
+
     if (!res?.error) {
       showSuccess(
         isEdit ? t("Update function template success") : t("Create function template success"),
@@ -214,7 +188,7 @@ export default function CreateFuncTemplate() {
               darkMode ? "focus-within:bg-gray-800" : "focus-within:bg-[#F4F6F8]",
             )}
           >
-            <TextIcon fontSize={18} color={"#7B838B"} />
+            <TextIcon fontSize={18} color={"gray.400"} />
             <input
               placeholder={String(t("Template.Description"))}
               className="w-full bg-transparent py-2 pl-2 text-lg"
@@ -222,60 +196,80 @@ export default function CreateFuncTemplate() {
               {...register("description")}
             />
           </div>
-          {currentFunction && (
-            <div className="mt-1 h-[55vh] w-full">
-              <MonacoEditor
-                value={currentFunction.source.code}
-                onChange={(value: string | undefined) => {
-                  setFunctionList(
-                    functionList.map((item) => {
-                      if (item.name === currentFunction.name) {
-                        return {
-                          ...item,
-                          source: {
-                            code: value,
-                          },
-                        };
-                      }
-                      return item;
-                    }),
-                  );
-                }}
-                title={currentFunction?.name}
-                colorMode={colorMode}
-              />
-            </div>
-          )}
 
-          {!currentFunction && (
-            <AddFunctionModal
-              functionList={functionList}
-              setFunctionList={setFunctionList}
-              setCurrentFunction={setCurrentFunction}
-              currentFunction={currentFunction}
+          <AddFunctionModal
+            functionList={functionList}
+            setFunctionList={setFunctionList}
+            isEdit={false}
+          >
+            <button
+              className={clsx(
+                "my-2 flex h-10 w-full items-center justify-center rounded-md border-[1px] text-lg",
+                darkMode ? "" : " bg-[#F4F6F8]",
+              )}
             >
-              <button
-                className="mt-4 flex h-10 w-full items-center justify-center rounded-md border-[1px] text-lg"
-                onClick={() => {
-                  setCurrentFunction(null);
+              <AddIcon boxSize={2.5} />
+              <span className="pl-4">{t("FunctionPanel.AddFunction")}</span>
+            </button>
+          </AddFunctionModal>
+          <div className="mt-4 h-[50vh] overflow-auto">
+            {functionList.map((functionItem) => (
+              <div className="mb-4 h-[40vh] w-full" key={functionItem.name}>
+                <MonacoEditor
+                  value={functionItem.source.code}
+                  onChange={(value: string | undefined) => {
+                    setFunctionList(
+                      functionList.map((item) => {
+                        if (item.name === functionItem.name) {
+                          return {
+                            ...item,
+                            source: {
+                              code: value,
+                            },
+                          };
+                        }
+                        return item;
+                      }),
+                    );
+                  }}
+                  title={functionItem?.name}
+                  colorMode={colorMode}
+                  currentFunction={functionItem}
+                  functionList={functionList}
+                  setFunctionList={setFunctionList}
+                />
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 flex justify-center pb-4">
+            {isEdit && (
+              <Button
+                className="mr-12 w-36 bg-red-100"
+                variant={"warnText"}
+                onClick={async () => {
+                  await deleteFunctionMutation.mutateAsync({ id: templateId });
+                  showSuccess(t("DeleteSuccess"));
+                  navigate("/market/templates/my");
                 }}
               >
-                <AddIcon boxSize={2.5} />{" "}
-                <span className="pl-4">{t("FunctionPanel.AddFunction")}</span>
-              </button>
-            </AddFunctionModal>
-          )}
+                {t("Delete")}
+              </Button>
+            )}
+            <Button className="w-36" onClick={handleSubmit(onSubmit)}>
+              {isEdit ? t("Template.Save") : t("Publish")}
+            </Button>
+          </div>
         </div>
 
         <div className="flex h-[70vh] w-1/5 flex-col overflow-auto">
-          <Box className="border-b-[1px]">
+          <Box className={clsx("border-b-[1px]", functionList.length === 0 && "pb-2")}>
             <div className="flex items-center justify-between">
               <span className="text-xl font-semibold">{t("Template.Function")}</span>
               <AddFunctionModal
                 functionList={functionList}
                 setFunctionList={setFunctionList}
-                setCurrentFunction={setCurrentFunction}
-                currentFunction={currentFunction}
+                isEdit={false}
               >
                 <AddIcon className="cursor-pointer" />
               </AddFunctionModal>
@@ -286,47 +280,20 @@ export default function CreateFuncTemplate() {
                   <div
                     key={item.name}
                     className={clsx(
-                      "group my-4 flex cursor-pointer items-center justify-between rounded-md py-1 font-medium hover:opacity-100",
+                      "group my-3 flex cursor-pointer items-center justify-between rounded-md py-1 font-medium hover:opacity-100",
                       darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100",
-                      currentFunction?.name === item.name && darkMode ? "bg-gray-700" : "",
-                      currentFunction?.name === item.name && !darkMode ? "bg-gray-100" : "",
                     )}
-                    onClick={() => {
-                      setCurrentFunction(item);
-                    }}
                   >
                     <div className="flex w-10/12 items-center">
                       <FileTypeIcon type="ts" fontSize={18} />
                       <span className="truncate pl-1 text-lg">{item.name}</span>
                     </div>
-                    <ConfirmButton
-                      onSuccessAction={async () => {
-                        const updatedFunctionList = functionList.filter(
-                          (func) => func.name !== item?.name,
-                        );
-                        setFunctionList(updatedFunctionList);
-                        if (currentFunction?.name === item.name) {
-                          setCurrentFunction(updatedFunctionList[0]);
-                        }
-                      }}
-                      headerText={String(t("Delete"))}
-                      bodyText={String(t("FunctionPanel.DeleteConfirm"))}
-                    >
-                      <CloseIcon
-                        boxSize={2}
-                        color={"gray.400"}
-                        className={clsx(
-                          "mr-2 opacity-0 hover:text-gray-800 group-hover:opacity-100",
-                          currentFunction?.name === item.name ? "opacity-100" : "",
-                        )}
-                      />
-                    </ConfirmButton>
                   </div>
                 );
               })}
             </Box>
           </Box>
-          <Box className="mt-5 border-b-[1px]">
+          <Box className={clsx("mt-3 border-b-[1px]", packageList.length === 0 && "pb-2")}>
             <div className="flex items-center justify-between">
               <span className="text-xl font-semibold">{t("Template.Dependency")}</span>
               <AddDependenceModal packageList={packageList} setPackageList={setPackageList}>
@@ -338,19 +305,36 @@ export default function CreateFuncTemplate() {
                 return (
                   <Box
                     key={item.package.name}
-                    className="my-5 flex items-center justify-between font-medium"
+                    className={clsx(
+                      "group my-3 flex cursor-pointer items-center justify-between rounded-md py-1 font-medium",
+                      darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100",
+                    )}
                   >
                     <div>
                       <FileTypeIcon type="npm" />
                       <span className="pl-1">{item.package.name}</span>
                     </div>
-                    <span>{item.package.version}</span>
+                    <div className="flex items-center">
+                      <span className="pr-2">{item.package.version}</span>
+                      <DeleteIcon
+                        boxSize={3}
+                        color={"gray.400"}
+                        className={clsx(
+                          "mr-2 opacity-0 hover:text-gray-800 group-hover:opacity-100",
+                        )}
+                        onClick={() => {
+                          setPackageList(
+                            packageList.filter((pkg) => pkg.package.name !== item.package.name),
+                          );
+                        }}
+                      />
+                    </div>
                   </Box>
                 );
               })}
             </Box>
           </Box>
-          <Box className="mt-5 border-b-[1px]">
+          <Box className={clsx("mt-3 border-b-[1px]", environments.length === 0 && "pb-2")}>
             <div className="flex items-center justify-between">
               <span className="text-xl font-semibold">{t("Template.EnvironmentVariables")}</span>
               <span className="cursor-pointer">
@@ -371,28 +355,6 @@ export default function CreateFuncTemplate() {
             </Box>
           </Box>
         </div>
-      </div>
-
-      <div className="mt-4 flex justify-center pb-4">
-        {/* <Button className="mr-12 w-36" variant={"secondary"} onClick={handleSubmit(onSubmit)}>
-          {t("Save")}
-        </Button> */}
-        {isEdit && (
-          <Button
-            className="mr-12 w-36 bg-red-100"
-            variant={"warnText"}
-            onClick={async () => {
-              await deleteFunctionMutation.mutateAsync({ id: templateId });
-              showSuccess(t("DeleteSuccess"));
-              navigate("/market/templates/my");
-            }}
-          >
-            {t("Delete")}
-          </Button>
-        )}
-        <Button className="w-36" onClick={handleSubmit(onSubmit)}>
-          {isEdit ? t("Template.Edit") : t("Publish")}
-        </Button>
       </div>
     </div>
   );

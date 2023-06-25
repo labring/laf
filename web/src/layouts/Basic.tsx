@@ -14,7 +14,7 @@ export default function BasicLayout() {
 
   return (
     <div>
-      <Header bg="" />
+      <Header width="" />
       <div className="pb-10">
         {loading ? (
           <Center style={{ minHeight: 300 }}>

@@ -73,7 +73,6 @@
     "AddFunction": "添加函数",
     "Code": "函数模板",
     "ConfirmDeploy": "确认发布",
-    "ConfirmFetch": "确认拉取",
     "CustomDependence": "自定义依赖",
     "CustomDependenceTip": "暂无自定义依赖",
     "DeleteDependencyConfirm": "确认要删除该依赖吗？删除依赖后会立即重启应用。",
@@ -89,7 +88,7 @@
     "Deploy": "发布",
     "DeploySuccess": "发布成功",
     "Fetch": "拉取",
-    "FetchSuccess": "拉取成功",
+    "FetchSuccess": "恢复成功",
     "Description": "函数描述",
     "EditFunction": "编辑函数",
     "Function": "函数",
@@ -114,7 +113,9 @@
     "CreateWithAITip": "使用 AI 辅助创建函数",
     "CreateNow": "立即创建",
     "CreateFromTemplate": "通过模板创建",
-    "getCodeOnline": "获取线上最新发布的代码"
+    "getCodeOnline": "获取线上最新发布的代码",
+    "versionHistory": "历史版本",
+    "Restore": "恢复"
   },
   "HomePanel": {
     "APP": "Android or iOS 应用",
@@ -349,7 +350,6 @@
   "Scan with WeChat": "微信扫码支付",
   "Order Number": "订单号",
   "payment status": "支付状态",
-  "Monthly": "月",
   "CreateFolder": "新建文件夹",
   "Or": "或",
   "Generating": "正在生成",
@@ -438,14 +438,6 @@
   "LinkCopied": "链接复制成功",
   "create success": "创建成功",
   "ServerStatus": "服务状态",
-  "market": {
-    "explore": "探索",
-    "category": "分类",
-    "appTemplate": "应用模板",
-    "funcTemplate": "函数模板",
-    "all": "全部",
-    "market": "函数市场"
-  },
   "Template": {
     "useTemplate": "使用模板",
     "DeveloperInformation": "开发者信息",
@@ -463,28 +455,15 @@
     "Edit": "编辑",
     "Create": "新建",
     "CreatedAt": "创建于",
-    "byTime": "按时间",
-    "byFavorites": "按收藏数",
-    "byLikes": "按点赞数",
     "Description": "请输入函数模板介绍信息",
     "updatedAt": "更新于",
     "UsedBy": "应用者",
-    "Draft": "草稿",
     "AddEnvironmentVariables": "添加环境变量",
     "Total": "总数",
-    "UsedSuccessfully": "应用成功",
+    "UsedSuccessfully": "使用成功",
     "Select the application you want to use": "选择你要使用的应用",
-    "recentUsed": "最近使用",
-    "myStar": "我收藏的",
-    "myTemplate": "我创建的",
-    "recommend": "推荐模板",
-    "MostRecent": "按时间最新",
-    "useTemplateSuccess": "函数模板使用成功",
-    "cancelStarSuccess": "取消收藏成功",
-    "starSuccess": "收藏成功",
     "FunctionNameExist": "函数名已存在",
-    "AllTemplates": "社区模板",
-    "Community": "社区模板",
+    "CommunityTemplate": "社区模板",
     "StaredTemplate": "我收藏的",
     "Recent": "最近使用",
     "Earliest": "按时间最早",
@@ -494,7 +473,10 @@
     "Please enter template name": "请输入模板名",
     "EditTemplate": "编辑模板",
     "DeleteTemplate": "删除模板",
-    "FunctionListEmpty": "请至少添加一个函数"
+    "FunctionListEmpty": "请至少添加一个函数",
+    "EmptyTemplate": "暂无模板",
+    "AddMore": "继续添加",
+    "Save": "保存"
   },
   "Fee": "费用",
   "PleaseCloseApplicationFirst": "请先关闭应用",
@@ -507,12 +489,8 @@
   "Stop": "停止",
   "SendMessagePlaceHolder": "提问",
   "Publish": "发布",
-  "MyTemplate": "我的模板",
   "Create function template success": "创建函数模板成功",
   "Update function template success": "更新函数模板成功",
-  "Templates": {
-    "My": "我的模板"
-  },
   "application": {
     "bonus": "赠",
     "Recharge": "输入金额",
@@ -522,5 +500,9 @@
     "Number of Instances": "实例数",
     "CPU Threshold": "CPU 阈值"
   },
-  "Storage Threshold": "存储阈值"
+  "Storage Threshold": "内存阈值",
+  "State": "状态",
+  "Yesterday": "昨天",
+  "Today": "今天",
+  "DaysAgo": " 天前"
 }

@@ -8,6 +8,18 @@ export function formatDate(
   return dayjs(date).format(format);
 }
 
+export function daysAgo(date: string | number | Date | dayjs.Dayjs | null | undefined) {
+  const daysDiff = dayjs().diff(dayjs(date), "days");
+
+  if (daysDiff === 0) {
+    return t("Today");
+  } else if (daysDiff === 1) {
+    return t("Yesterday");
+  } else {
+    return daysDiff + t("DaysAgo");
+  }
+}
+
 export function formatSize(size: number) {
   const units = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
   let i = 0;

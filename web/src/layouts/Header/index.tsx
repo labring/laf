@@ -13,23 +13,23 @@ import UserSetting from "./UserSetting";
 import useGlobalStore from "@/pages/globalStore";
 import Language from "@/pages/homepage/language";
 
-const Header = (props: { bg: string }) => {
-  const { bg } = props;
+const Header = (props: { width: string }) => {
+  const { width } = props;
   const [stars, setStars] = useState<string | null>(null);
   const { t } = useTranslation();
   const { userInfo } = useGlobalStore((state) => state);
   const { colorMode } = useColorMode();
   const darkMode = colorMode === COLOR_MODE.dark;
   const { toggleColorMode } = useColorMode();
-  // const [chosenItem, setChosenItem] = useState<string>("");
+  const [chosenItem, setChosenItem] = useState<string>("");
 
   const navList_left = [
     { text: t("HomePage.NavBar.home"), ref: "/dashboard" },
-    // {
-    //   text: t("HomePage.NavBar.funcTemplate"),
-    //   ref: "/market/templates/all",
-    //   value: "templateMarket",
-    // },
+    {
+      text: t("HomePage.NavBar.funcTemplate"),
+      ref: "/market/templates/all",
+      value: "templateMarket",
+    },
     // { text: t("HomePage.NavBar.appMarket"), ref: "/function-templates" },
   ];
   const navList_right = [
@@ -67,17 +67,17 @@ const Header = (props: { bg: string }) => {
     return () => {};
   }, []);
 
-  // useEffect(() => {
-  //   if (window.location.href.includes("function-templates")) {
-  //     setChosenItem("templateMarket");
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (window.location.href.includes("function-templates")) {
+      setChosenItem("templateMarket");
+    }
+  }, []);
 
   return (
     <div
       className={clsx(
         "flex h-[52px] w-full justify-between font-medium",
-        darkMode ? "" : { [bg]: !!bg },
+        { [width]: !!width },
         darkMode ? "" : "text-grayModern-600",
       )}
     >
@@ -98,8 +98,8 @@ const Header = (props: { bg: string }) => {
               href={item.ref}
               className={clsx(
                 "mr-8 text-lg",
-                // item.value === chosenItem && !darkMode ? "font-semibold text-grayModern-900" : "",
-                // item.value === chosenItem && darkMode ? "font-semibold text-grayModern-100" : "",
+                item.value === chosenItem && !darkMode ? "font-semibold text-grayModern-900" : "",
+                item.value === chosenItem && darkMode ? "font-semibold text-grayModern-100" : "",
               )}
               rel="noreferrer"
             >

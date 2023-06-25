@@ -11,6 +11,7 @@ import {
   Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useQueryClient } from "@tanstack/react-query";
 import { t } from "i18next";
 
 import { SynchronizeUpIcon } from "@/components/CommonIcon";
@@ -27,6 +28,7 @@ import useGlobalStore from "@/pages/globalStore";
 export default function DeployButton() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const store = useFunctionStore((state) => state);
+  const queryClient = useQueryClient();
   const functionCache = useFunctionCache();
 
   const headerRef = React.useRef(null);
@@ -68,6 +70,7 @@ export default function DeployButton() {
       functionCache.removeCache(store.currentFunction!._id);
       onClose();
       showSuccess(t("FunctionPanel.DeploySuccess"));
+      queryClient.invalidateQueries(["useFunctionHistoryQuery"]);
     }
   };
 

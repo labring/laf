@@ -431,7 +431,7 @@ export default async function (ctx: FunctionContext) {
 创建 `sendmail` 云函数，安装依赖 `nodemailer`，代码如下：
 
 ```typescript
-import from 'nodemailer'
+import nodemailer from 'nodemailer'
 
 // 邮件服务器配置
 const transportConfig = {
@@ -568,7 +568,7 @@ axios({
   url: "functionUrl",
   headers: {
     // 这里带上 token
-    Authorization: `token ${token}`,
+    Authorization: `Bearer ${token}`,
   },
 })
 ```

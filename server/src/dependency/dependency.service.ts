@@ -125,7 +125,7 @@ export class DependencyService {
    * @param appid
    * @returns
    */
-  private async getExtras(appid: string) {
+  async getExtras(appid: string) {
     const conf = await this.db
       .collection<ApplicationConfiguration>('ApplicationConfiguration')
       .findOne({ appid })
@@ -138,12 +138,12 @@ export class DependencyService {
    * Get the built-in dependencies in string array
    * @returns
    */
-  private getBuiltins() {
+  getBuiltins() {
     const obj = RUNTIME_BUILTIN_DEPENDENCIES
     return Object.keys(obj).map((key) => `${key}@${obj[key]}`)
   }
 
-  private validate(dto: CreateDependencyDto) {
+  validate(dto: CreateDependencyDto) {
     try {
       npa.resolve(dto.name, dto.spec)
       return true

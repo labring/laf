@@ -41,7 +41,7 @@ const FuncTemplateItem = () => {
     <div className={clsx("flex flex-col px-20", colorMode === "dark" ? "" : "bg-white")}>
       <div className="pt-8 text-lg">
         <a href="/market/templates/all" className="text-second">
-          {t("market.funcTemplate")}
+          {t("HomePage.NavBar.funcTemplate")}
         </a>
         <span className="px-3">
           <ChevronRightIcon />
@@ -62,6 +62,7 @@ const FuncTemplateItem = () => {
                       colorMode={colorMode}
                       readOnly={true}
                       title={item.name}
+                      currentFunction={item}
                     />
                   </div>
                 );

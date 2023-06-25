@@ -26,6 +26,7 @@ import { COLOR_MODE, Pages, PanelMinHeight } from "@/constants";
 import { useCompileMutation, useUpdateFunctionMutation } from "../../service";
 import useFunctionStore from "../../store";
 import AIChatPanel from "../AIChatPanel";
+import VersionHistoryPanel from "../VersionHistoryPanel";
 
 import BodyParamsTab from "./BodyParamsTab";
 import QueryParamsTab from "./QueryParamsTab";
@@ -42,7 +43,7 @@ const HAS_BODY_PARAMS_METHODS: (TMethod | undefined)[] = ["POST", "PUT", "PATCH"
 export default function DebugPanel(props: { containerRef: any; showOverlay: boolean }) {
   const { t } = useTranslation();
   const { getFunctionUrl, currentFunction, setCurrentFunction, setCurrentRequestId } =
-    useFunctionStore((state) => state);
+    useFunctionStore((state: any) => state);
   const updateFunctionMutation = useUpdateFunctionMutation();
   const globalStore = useGlobalStore((state) => state);
 
@@ -169,6 +170,16 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
                 })}
               >
                 Laf Pilot
+              </span>
+            </Tab>
+            <Tab>
+              <span
+                className={clsx("font-semibold", {
+                  "text-black": !darkMode,
+                  "text-white": darkMode,
+                })}
+              >
+                {t("FunctionPanel.versionHistory")}
               </span>
             </Tab>
           </TabList>
@@ -321,7 +332,6 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
                 </Panel>
               </Row>
             </TabPanel>
-
             {/* <TabPanel padding={0} h="full">
               {props.showOverlay && (
                 <div
@@ -343,6 +353,9 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
             </TabPanel> */}
             <TabPanel padding={0} h="full">
               <AIChatPanel />
+            </TabPanel>
+            <TabPanel padding={0} h="full">
+              <VersionHistoryPanel />
             </TabPanel>
           </TabPanels>
         </Tabs>

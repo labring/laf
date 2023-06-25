@@ -428,6 +428,14 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace FunctionControllerGetHistory {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace AuthControllerPat2token {
     export type QueryParameters = any;
 
