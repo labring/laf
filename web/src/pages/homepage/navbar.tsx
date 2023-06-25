@@ -45,13 +45,12 @@ const Navbar = () => {
       );
       const str = axiosRes.data;
 
-      const reg = /textLength="250">(.*?)k<\/text>/;
+      const reg = /textLength="130">(.*?)k<\/text>/;
       const match = str.match(reg);
 
       if (match) {
         const matchedText = match[1];
         setStars(`${matchedText}K`);
-        // console.log(matchedText); // 输出：4k
       } else {
         console.log("No match found");
       }
@@ -152,8 +151,7 @@ const Navbar = () => {
       <div
         className={
           showBanner
-            ? // ? "fixed top-12 z-40 flex w-full justify-between px-8 py-4 lg:hidden "
-              clsx("fixed top-12 z-40 flex w-full justify-between px-8 py-4 lg:hidden", {
+            ? clsx("fixed top-12 z-40 flex w-full justify-between px-8 py-4 lg:hidden", {
                 "bg-lafDark-100": darkMode,
                 "bg-lafWhite-600": !darkMode,
               })
