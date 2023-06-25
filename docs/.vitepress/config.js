@@ -387,9 +387,8 @@ export default defineConfig({
     },
     en: {
       label: "English",
-      lang: "en", // optional, will be added  as `lang` attribute on `html` tag
-      link: "/en/", // default /fr/ -- shows on navbar translations menu, can be external
-      // other locale specific properties...
+      lang: "en",
+      link: "/en/",
       title: "laf Cloud Development",
       markdown: {
         lineNumbers: true,
@@ -411,9 +410,9 @@ export default defineConfig({
         },
         editLink: {
           pattern: "https://github.com/labring/laf/edit/main/docs/:path",
-          text: "在 GitHub 上编辑此页",
+          text: "Edited this page on github",
         },
-        lastUpdated: "更新于",
+        lastUpdated: "Update time",
         nav: NavConfig_en,
         socialLinks: [
           { icon: "github", link: "https://github.com/labring/laf" },
