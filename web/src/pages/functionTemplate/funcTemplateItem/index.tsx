@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronRightIcon } from "@chakra-ui/icons";
-import { Box, useColorMode } from "@chakra-ui/react";
+import { useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import TemplateInfo from "../Mods/TemplateInfo";
@@ -50,13 +50,13 @@ const FuncTemplateItem = () => {
       </div>
       {template && (
         <div className="flex pt-3">
-          <div className="mr-9 w-4/5">
-            <Box>
-              <div className="pb-2 text-xl font-semibold">{template.name}</div>
-              <div className="pb-6 text-second">{template.description}</div>
+          <div className="mr-9 h-full w-4/5">
+            <div className="pb-2 text-xl font-semibold">{template.name}</div>
+            <div className="pb-6 text-second">{template.description}</div>
+            <div className="h-[70vh] overflow-auto">
               {(template.items || []).map((item) => {
                 return (
-                  <div key={item.name} className="mb-4 h-[60vh]">
+                  <div key={item.name} className="mb-4">
                     <MonacoEditor
                       value={item.source.code}
                       colorMode={colorMode}
@@ -67,7 +67,7 @@ const FuncTemplateItem = () => {
                   </div>
                 );
               })}
-            </Box>
+            </div>
           </div>
           <div className="h-full w-1/5">
             <TemplateInfo functionTemplate={template} usedBy={usedBy} />

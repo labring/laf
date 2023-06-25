@@ -48,7 +48,6 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
           onClick={async () => {
             const res = await starMutation.mutateAsync({ templateId: templateId || "" });
             if (!res.error) {
-              console.log(res.data);
               if (starState) {
                 setStarState(false);
                 setStarNum(starNum - 1);

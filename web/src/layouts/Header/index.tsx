@@ -2,10 +2,9 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { useColorMode } from "@chakra-ui/react";
-import axios from "axios";
 import clsx from "clsx";
 
-import { ChatIcon, ContactIcon, GithubIcon, TextIcon } from "@/components/CommonIcon";
+import { ChatIcon, ContactIcon, TextIcon } from "@/components/CommonIcon";
 import { COLOR_MODE } from "@/constants";
 
 import UserSetting from "./UserSetting";
@@ -15,7 +14,6 @@ import Language from "@/pages/homepage/language";
 
 const Header = (props: { width: string }) => {
   const { width } = props;
-  const [stars, setStars] = useState<string | null>(null);
   const { t } = useTranslation();
   const { userInfo } = useGlobalStore((state) => state);
   const { colorMode } = useColorMode();
@@ -45,27 +43,6 @@ const Header = (props: { width: string }) => {
       icon: <ContactIcon />,
     },
   ];
-
-  useEffect(() => {
-    (async () => {
-      const axiosRes = await axios.get(
-        "https://img.shields.io/github/stars/labring/laf?style=plastic",
-      );
-      const str = axiosRes.data;
-
-      const reg = /textLength="250">(.*?)k<\/text>/;
-      const match = str.match(reg);
-
-      if (match) {
-        const matchedText = match[1];
-        setStars(`${matchedText}K`);
-      } else {
-        console.log("No match found");
-      }
-    })();
-
-    return () => {};
-  }, []);
 
   useEffect(() => {
     if (window.location.href.includes("function-templates")) {
@@ -110,18 +87,6 @@ const Header = (props: { width: string }) => {
       </div>
 
       <div className="flex items-center pr-9">
-        {stars ? (
-          <a
-            href="https://github.com/labring/laf"
-            target="_blank"
-            className="flex cursor-pointer items-center pr-7 text-lg"
-            rel="noreferrer"
-          >
-            <GithubIcon className="mr-2" fontSize={24} color={darkMode ? "#F6F8F9" : "#3C455D"} />
-            {stars}
-          </a>
-        ) : null}
-
         {navList_right.map((item, index) => {
           return (
             <a
