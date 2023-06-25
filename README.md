@@ -137,7 +137,7 @@
 
 ## 🖥 Try it now
 
-🎉 [lafyun.com](http://www.lafyun.com) is a `laf` service hosted by us, you can try `laf` for free!
+🎉 [laf.dev](http://laf.dev) is a `laf` service hosted by us, you can try `laf` for free!
 
 Independent domain names and HTTPS licenses can be applied to your applications now, develop fast, and enjoy the freedom of `laf`!
 
