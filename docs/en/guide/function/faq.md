@@ -1,33 +1,33 @@
 ---
-title: 云函数常见问题
+title: Common Issues with Cloud Functions
 ---
 
 # {{ $frontmatter.title }}
 
-这里是云函数开发过程中可能会遇到的一些问题。欢迎 Pr～
+Here are some common issues that you may encounter during cloud function development. Feel free to contribute through PR~
 
 [[toc]]
 
-## 前端跨域
+## Frontend Cross-Origin Resource Sharing (CORS)
 
-laf 云函数默认是没有域名限制的，但是部分同学在开发过程中发现，还是会出现跨域问题。可以将 `withCredentials` 设置为 `false`
+By default, LAF cloud functions do not have any domain restrictions. However, some developers still face CORS issues during the development process. You can set `withCredentials` to `false`.
 
-下面是 3 种常见的`withCredentials` 设置为 `false`的方法：
+Here are three common ways to set `withCredentials` to `false`:
 
 ```js
-// 方式一
+// Method 1
 axios.defaults.withCredentials = false
 
-// 方式二
+// Method 2
 axios.get('http://example.com', {
   withCredentials: false 
 })
 
-// 方式三
+// Method 3
 XMLHttpRequest.prototype.withCredentials = false
 ```
 
-## 云函数延迟执行
+## Delayed Execution of Cloud Functions
 
 ```typescript
 import cloud from '@lafjs/cloud'
@@ -35,7 +35,7 @@ import cloud from '@lafjs/cloud'
 export async function main(ctx: FunctionContext) {
   const startTime = Date.now()
   console.log(startTime)
-  await sleep(5000) // 延迟 5 秒
+  await sleep(5000) // Delay for 5 seconds
   console.log(Date.now() - startTime)
 }
 
@@ -46,14 +46,14 @@ async function sleep(ms) {
 }
 ```
 
-## 云函数设置某请求超时时间
+## Setting a Timeout for a Cloud Function
 
 ```typescript
 import cloud from '@lafjs/cloud'
 
 export async function main(ctx: FunctionContext) {
-  // 如果 getData 的异步操作在 4 秒内完成并返回，则 responseText 为 getDat 的返回值
-  // 如果 4 秒内未完成，则 responseText 为''，不影响 getData 的实际运行
+  // If the asynchronous operation in getData is completed and returned within 4 seconds, responseText will be the returned value of getData
+  // If not completed within 4 seconds, responseText will be '', but it does not affect the actual execution of getData
   const responseText = await Promise.race([
     getData(),
     sleep(4000).then(() => ''),
@@ -68,17 +68,17 @@ async function sleep(ms) {
 }
 
 async function getData(){
-  // 某个异步操作，以下通过 sleep 模拟超过 4 秒的情况
+  // Some asynchronous operation, here we simulate a case where it takes more than 4 seconds using sleep
   await sleep(5000)
-  const text = "getData 的返回值"
+  const text = "Return value of getData"
   console.log(text, Date.now())
   return text
 }
 ```
 
-## 云函数对接公众号简单示例
+## Simple Example of Integrating Cloud Functions with WeChat Official Account
 
-以下代码只兼容明文模式
+The following code is only compatible with plaintext mode.
 
 ```typescript
 import * as crypto from 'crypto'
@@ -86,28 +86,28 @@ import cloud from '@lafjs/cloud'
 
 export async function main(ctx: FunctionContext) {
   const { signature, timestamp, nonce, echostr } = ctx.query;
-  const token = '123456'; // 这里的 token 自定义，需要对应微信后台的配置的 token
+  const token = '123456'; // The token here is custom and needs to correspond to the token configured in the WeChat backend
 
-  // 验证消息是否合法，若不合法则返回错误信息
+  // Verify if the message is legitimate. If not, return an error message.
   if (!verifySignature(signature, timestamp, nonce, token)) {
     return 'Invalid signature';
   }
 
-  // 如果是首次验证，则返回 echostr 给微信服务器
+  // If it is the first verification, return echostr to the WeChat server
   if (echostr) {
     return echostr;
   }
 
-  // 处理接收到的消息
+  // Handle the received message
   const payload = ctx.body.xml;
-  // 如果接收的是文本
+  // If the received message type is text
   if (payload.msgtype[0] === 'text') {
-    // 公众号发什么回复什么
+    // Reply with the same content sent by the official account
     return toXML(payload, payload.content[0]);
   }
 }
 
-// 校验微信服务器发送的消息是否合法
+// Check if the message sent by the WeChat server is legitimate
 function verifySignature(signature, timestamp, nonce, token) {
   const arr = [token, timestamp, nonce].sort();
   const str = arr.join('');
@@ -116,7 +116,7 @@ function verifySignature(signature, timestamp, nonce, token) {
   return sha1.digest('hex') === signature;
 }
 
-// 返回组装 xml
+// Return the assembled XML
 function toXML(payload, content) {
   const timestamp = Date.now();
   const { tousername: fromUserName, fromusername: toUserName } = payload;
@@ -132,9 +132,9 @@ function toXML(payload, content) {
 }
 ```
 
-## 云函数合成图片
+## Cloud Function for Image Composition
 
-需要先安装依赖 `canvas`
+First, you need to install the dependency `canvas`.
 
 ```typescript
 import { createCanvas } from 'canvas'
@@ -161,16 +161,16 @@ export async function main(ctx: FunctionContext) {
   context.rotate(0.1)
   context.fillText('Laf!', 50, 150)
   console.log(canvas.toDataURL())
-  return `<img src= ${canvas.toDataURL()} />`
+  return `<img src=${canvas.toDataURL()} />`
 }
 ```
 
-## 云函数合成带中文字体的图片
+## Cloud Function for Image Composition with Chinese Fonts
 
-先把支持中文字体的字体文件上传到云存储，获得云存储的字体下载地址，然后保存到临时文件中，再去通过 canvas 合成。
+First, upload the font file that supports Chinese fonts to cloud storage and get the download URL for the font. Then save it to a temporary file and use it for composition through canvas.
 
 :::tip
-Laf 应用重启后，临时文件会清空哦～
+Temporary files will be cleared when Laf restarts.
 :::
 
 ```typescript
@@ -180,8 +180,8 @@ import cloud from '@lafjs/cloud'
 
 export async function main(ctx: FunctionContext) {
 
-  const url = ''  // 字体文件网址
-  const dest = '/tmp/fangzheng.ttf'  // 本地保存路径
+  const url = ''  // Font file URL
+  const dest = '/tmp/fangzheng.ttf'  // Local save path
 
   if (fs.existsSync(dest)) {
     console.log('File exists!')
@@ -217,23 +217,23 @@ export async function main(ctx: FunctionContext) {
   context.rotate(0.1)
   context.fillText('Laf!', 50, 150)
   console.log(canvas.toDataURL())
-  return `<img src= ${canvas.toDataURL()} />`
+  return `<img src=${canvas.toDataURL()} />`
 }
 ```
 
-## 云函数防抖
+## Cloud Function for Debouncing
 
-通过 Laf 云函数的全局缓存可以很方便的设置防抖
+Debouncing can be easily set up using the global cache of Laf Cloud Functions.
 
-以下是一个简单的防抖例子，前端请求时，需要在 header 中带上用户 token。
+Here is a simple example of debouncing. When making a request from the frontend, you need to include the user token in the header.
 
 ```typescript
-// 云函数生成 Token
+// Cloud function generates Token
 const accessToken_payload = {
-  // 除了示例的，还可以加别的参数
-  uid: login_user[0]._id, //一般是 user 表的_id
-  role: login_user[0].role, //如果没有 role，可以不要
-  exp: (Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7) * 1000, //7天过期
+  // Besides the examples, you can also add other parameters
+  uid: login_user[0]._id, // Usually the _id of the user table
+  role: login_user[0].role, // If there is no role, it can be omitted
+  exp: (Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7) * 1000, // Expires in 7 days
 }
 const token = cloud.getToken(accessToken_payload)
 console.log(token)
@@ -248,50 +248,46 @@ export async function main(ctx: FunctionContext) {
   let lastCallTime = cloud.shared.get(sharedName)
   console.log(lastCallTime)
   if (lastCallTime > Date.now()) {
-    console.log("请求太快了")
-    return '请求太快了'
+    console.log("Request is too fast")
+    return 'Request is too fast'
   }
   cloud.shared.set(sharedName, Date.now() + 1000)
-  // 原有逻辑
+  // Original logic
 
-  // 逻辑完毕后删除全局缓存
+  // Delete global cache after logic completion
   cloud.shared.delete(sharedName)
 }
 ```
 
-## 云函数域名验证
+## Cloud Function Domain Verification
 
-部分微信服务需要验证 MP 开头的 txt 文件的值，以判断域名是否有权限
+Some WeChat services require verification of the value of a txt file starting with "MP" in order to determine if the domain has permission.
 
-可以新建一个该文件名的云函数，如：`MP_123456789.txt`
-
-直接返回该文本的内容
+You can create a cloud function with the same file name, such as `MP_123456789.txt`, and simply return the content of the text file.
 
 ```typescript
 import cloud from '@lafjs/cloud'
 
 export async function main(ctx: FunctionContext) {
-  // 这里直接返回文本内容
+  // Here we simply return the content of the text file
   return 'abcd...'
 }
 ```
 
-## Laf 应用 IP 池（IP 白名单）
+## Laf Application IP Pool (IP Whitelist)
 
-下满例子为使用的是 laf.run 的情况。使用 laf.dev 或其他，下面命令需要更换域名。
+To check the IP pool used by Laf.run, use laf.dev or other variations, replace the domain in the following commands.
 
-- Windows 可在 CMD 中执行 `nslookup laf.run`
+- For Windows, execute `nslookup laf.run` in CMD.
+- For Mac, execute `nslookup laf.run` in Terminal.
 
-- Mac 可在终端中执行 `nslookup laf.run`
+This will display the entire IP pool.
 
-可看到全部 IP 池
+## Cloud Function for Sending Aliyun SMS Verification Code
 
-## 云函数发送阿里云短信验证码
+Use the Aliyun SMS API to write a cloud function for sending SMS verification codes. You will need to provide the `AccessKey` and `SecretKey` for Aliyun SMS service, as well as the SMS template ID.
 
-使用阿里云短信接口，编写发送短信验证码的云函数。
-需要你提供阿里云短信服务的 `AccessKey` 和 `SecretKey`，以及短信模板 ID。
-
-创建 `sendsms` 云函数，添加依赖 @alicloud/dysmsapi20170525，编写以下代码：
+Create a `sendsms` cloud function and add the dependency `@alicloud/dysmsapi20170525`. Write the following code:
 
 ```typescript
 import Dysmsapi, * as dysmsapi from "@alicloud/dysmsapi20170525";
@@ -323,18 +319,16 @@ export default async function (ctx: FunctionContext) {
 };
 ```
 
-## 云函数微信 native 支付
+## Cloud Function for WeChat Native Payment
 
-Native 支付适用于 PC 网站、实体店单品或订单、媒体广告支付等场景。[微信官方介绍](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/open/pay/chapter2_7_0.shtml)
+Native payment is suitable for scenarios such as PC websites, physical store items or orders, and media advertising payments. [Official WeChat Documentation](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/open/pay/chapter2_7_0.shtml)
 
-Native 支付服务端下单之后微信支付会返回一个 code-url, 然后前端接收这个返回值，直接把这个 code-url 在前端
-生成一个二维码即可用微信扫描支付。
+After the server-side order is placed for native payment, WeChat Pay will return a `code-url`, which can be directly used by the frontend to generate a QR code for WeChat payment.
 
-- `code-url` 结构类似：`weixin://wxpay/bizpayurl?pr=aIQrOYOzz`
+- The structure of `code-url` is similar to: `weixin://wxpay/bizpayurl?pr=aIQrOYOzz`
+- You can also write a Laf cloud function to receive payment result notifications. This code does not include the `notify_url`.
 
-- `notify_url` 也可以写一个 laf 云函数来接受支付结果的通知。此处不包含 `notify_url` 代码。
-
-创建 `wx-pay` 云函数，安装依赖 [wxpay-v3](https://github.com/yangfuhe/node-wxpay)，代码如下：
+Create a `wx-pay` cloud function and install the dependency [wxpay-v3](https://github.com/yangfuhe/node-wxpay). Here is the code:
 
 ```typescript
 import cloud from "@lafjs/cloud";
@@ -353,7 +347,7 @@ export default async function (ctx: FunctionContext) {
     notify_url: "付退款结果通知的回调地址",
   });
 
-  // 下单
+  // place an order
   const result = await payment.native({
     description: goodsName,
     out_trade_no: payOrderId,
@@ -377,12 +371,12 @@ uI205SwTsTaT70/vF90AwQ==
 }
 ```
 
-## 云函数支付宝支付
+## Cloud Function AliPay Payment
 
-创建 `aliPay` 云函数，安装依赖 `alipay-sdk`，编写以下代码：
+Create an `aliPay` cloud function, install the `alipay-sdk` dependency, and write the following code:
 
 ```typescript
-import cloud from "@lafjs/cloud";
+import clouasssssad from "@lafjs/cloud";
 import alipay from "alipay-sdk";
 const AlipayFormData = require("alipay-sdk/lib/form").default;
 
@@ -395,7 +389,7 @@ export default async function (ctx: FunctionContext) {
     signType: "RSA2",
     privateKey: "MIIEow......Yf2Mlz6xqG/Aq",
     alipayPublicKey: "MIIBI......IDAQAB",
-    gateway: "https://openapi.alipaydev.com/gateway.do", //沙箱测试网关
+    gateway: "https://openapi.alipaydev.com/gateway.do", // Sandbox test gateway
   });
 
   const formData = new AlipayFormData();
@@ -424,33 +418,33 @@ export default async function (ctx: FunctionContext) {
 };
 ```
 
-## 云函数发送邮件
+## Cloud Function Send Email
 
-使用 SMTP 服务发送邮件
+Send emails using SMTP service.
 
-创建 `sendmail` 云函数，安装依赖 `nodemailer`，代码如下：
+Create a `sendmail` cloud function, install the `nodemailer` dependency, and write the following code:
 
 ```typescript
 import nodemailer from 'nodemailer'
 
-// 邮件服务器配置
+// Mail server configuration
 const transportConfig = {
-  host: 'smtp.exmail.qq.com', // smtp 服务地址，示例腾讯企业邮箱地址
-  port: 465,  // smtp 服务端口，一般服务器未开此端口，需要手动开启
-  secureConnection: true, // 使用了 SSL
+  host: 'smtp.exmail.qq.com', // smtp service address, e.g., Tencent Enterprise Mail address
+  port: 465,  // smtp service port, usually not open by default, need to manually enable
+  secureConnection: true, // Use SSL
   auth: {
-    user: 'sender@xx.com',  // 发件人邮箱，写你的邮箱地址即可
-    pass: 'your password',  // 你设置的 smtp 专用密码或登录密码，每家服务不相同，QQ 邮箱需要开启并配置授权码，即这里的 pass
+    user: 'sender@xx.com',  // sender's email, replace it with your own email address
+    pass: 'your password',  // SMTP dedicated password or login password set by you, different for each service, QQ Mail needs to enable and configure an authorization code
   }
 }
 
-// 邮件配置
+// Email configuration
 const mailOptions = {
-  from: '"SenderName" <sender@xx.com>', // 发件人
-  to: 'hi@xx.com', // 收件人
-  subject: 'Hello',   // 邮件主题
-  html: '<b>Hello world?</b>'  // html 格式邮件正文
-  // text: 'hello'  // 文本格式有限正文
+  from: '"SenderName" <sender@xx.com>', // sender
+  to: 'hi@xx.com', // recipient
+  subject: 'Hello',   // email subject
+  html: '<b>Hello world?</b>'  // HTML formatted email body
+  // text: 'hello'  // text format email body
 }
 
 export default async function (ctx: FunctionContext) {
@@ -466,30 +460,30 @@ export default async function (ctx: FunctionContext) {
 };
 ```
 
-## 云函数上传文件到微信公众号临时素材
+## Uploading Files to WeChat Official Account Temporary Media
 
-公众号回复图片或者文件，需要先把文件上传到临时素材才可以回复。
+To reply with an image or file in a WeChat Official Account, you need to upload the file to temporary media first.
 
-以下例子为，通过文件 URL 上传到临时素材
+The following example shows how to upload a file to temporary media using a file URL:
 
 ```typescript
-import fs from 'fs'
+import fs from 'fs';
 const request = require('request');
 const util = require('util');
 const postRequest = util.promisify(request.post);
 
 export default async function (ctx: FunctionContext) {
-  const res = await UploadToWinxin(url)
-  console.log(res)
+  const res = await UploadToWeixin(url);
+  console.log(res);
 }
 
-async function UploadToWinxin(url) {
+async function UploadToWeixin(url) {
   const res = await cloud.fetch.get(url, {
     responseType: 'arraybuffer'
-  })
-  fs.writeFileSync('/tmp/tmp.jpg', Buffer.from(res.data))
-  // 这里 getAccess_token 不做演示
-  const access_token = await getAccess_token()
+  });
+  fs.writeFileSync('/tmp/tmp.jpg', Buffer.from(res.data));
+  // The demonstration of getAccess_token is not provided here
+  const access_token = await getAccess_token();
   const formData = {
     media: {
       value: fs.createReadStream('/tmp/tmp.jpg'),
@@ -499,26 +493,28 @@ async function UploadToWinxin(url) {
       }
     }
   };
-  // 由于 axios 上传微信素材有 BUG，所以这里使用 request 封装 post 请求来上传
+  // Due to a bug in axios when uploading WeChat media, request is used here to wrap the post request for uploading
   const uploadResponse = await postRequest({
     url: `https://api.weixin.qq.com/cgi-bin/media/upload?access_token=${access_token}&type=image`,
     formData: formData
   });
-  return uploadResponse.body
- }
+  return uploadResponse.body;
+}
 ```
 
-## Laf 云函数的鉴权，获取 token，token 过期处理
+## Laf Function Authentication, Token Retrieval, and Token Expiration Handling
 
-原帖：<https://forum.laf.run/d/535>
+Original Post: <https://forum.laf.run/d/535>
 
-流程：
-1.云函数生成 token 返回给前端。
-2.前端请求时带上 token。
-3.云函数中根据 `ctx.user` 来判断是否传 `token` 是否过期。
+Process:
 
-示例代码：
-1.云函数生成 token 返回给前端。
+1. The cloud function generates a token and returns it to the frontend.
+2. The frontend includes the token in its requests.
+3. The cloud function checks whether the `ctx.user` contains the token and if it has expired.
+
+Example Code:
+
+1. The cloud function generates a token and returns it to the frontend.
 
 ```typescript
 import cloud from '@lafjs/cloud'
@@ -526,38 +522,38 @@ import cloud from '@lafjs/cloud'
 export async function main(ctx: FunctionContext) {
 
   const payload = {
-    // uid 一般用表里用户的 id 这里演示随便写
+    // uid is usually the user ID from the database, this is just a demo
     uid: 1,
-    // 这里做演示 过期时间设置为 10s 
-    // 这样写就是过期时间 7 天 exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
+    // For demonstration purposes, the expiration time is set to 10 seconds
+    // In reality, it would be something like: exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
     exp: Math.floor(Date.now() / 1000) + 10,
   };
 
-  // 生成 access_token
+  // Generate the access_token
   const access_token = cloud.getToken(payload);
 
   return { access_token }
 }
 ```
 
-2.前端请求时带上 token。
-第一种使用 `laf-client-sdk`.
+2. The frontend includes the token in its requests.
+The first method involves using the `laf-client-sdk`.
 
 ```typescript
-import { Cloud } from "laf-client-sdk"; // 引入 laf-client-sdk
+import { Cloud } from "laf-client-sdk"; // Import laf-client-sdk
 import axios from "axios";
 
-// 创建 cloud 对象
+// Create a cloud object
 const cloud = new Cloud({
-  baseUrl: "", // 填你的云函数地址如：https://appid.laf.dev
-  // 传入 access_token 从本地缓存中取出 access_token
+  baseUrl: "", // Fill in your cloud function URL, e.g., https://appid.laf.dev
+  // Retrieve the access_token from local storage
   getAccessToken: () => localStorage.getItem("access_token"),
 });
-// invoke 调用云函数时会自动带上 access_token
+// When invoking a cloud function, the access_token will be automatically included
 const res = await cloud.invoke("test");
 ```
 
-第二种通过 axios
+The second method involves using axios.
 
 ```typescript
 import axios from "axios";
@@ -567,13 +563,13 @@ axios({
   method: "get",
   url: "functionUrl",
   headers: {
-    // 这里带上 token
+    // Include the token here
     Authorization: `Bearer ${token}`,
   },
 })
 ```
 
-3.云函数中根据 ctx.user 来判断是否传 token 是否过期。  
+3. The cloud function checks whether the `ctx.user` contains the token and if it has expired.
 
 ```typescript
 import cloud from '@lafjs/cloud'
@@ -581,8 +577,8 @@ import cloud from '@lafjs/cloud'
 export async function main(ctx: FunctionContext) {
 
   console.log(ctx.user)
-  // 如果前端传了 token 并且没过期： { uid: 1, exp: 1683861234, iat: 1683861224 }
-  // 如果前端没传 token 或者 token 不在有效期：null
+  // If the token was included by the frontend and has not expired: { uid: 1, exp: 1683861234, iat: 1683861224 }
+  // If the token was not included or has expired: null
 
 }
 ```
