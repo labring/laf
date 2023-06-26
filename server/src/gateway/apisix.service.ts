@@ -11,6 +11,30 @@ export class ApisixService {
 
   constructor(private readonly httpService: HttpService) {}
 
+  get gzipConf() {
+    return {
+      gzip: {
+        comp_level: 6,
+        min_length: 100,
+        types: [
+          'text/plain',
+          'text/css',
+          'text/html',
+          'text/xml',
+          'text/javascript',
+          'application/json',
+          'application/x-javascript',
+          'application/javascript',
+          'image/bmp',
+          'image/png',
+          'font/ttf',
+          'font/otf',
+          'font/eot',
+        ],
+      },
+    }
+  }
+
   async createAppRoute(region: Region, appid: string, domain: string) {
     const host = domain
     const namespace = GetApplicationNamespaceByAppId(appid)
@@ -40,6 +64,7 @@ export class ApisixService {
       },
       plugins: {
         cors: {},
+        ...this.gzipConf,
       },
       enable_websocket: true,
     }
@@ -87,6 +112,7 @@ export class ApisixService {
       },
       plugins: {
         cors: {},
+        ...this.gzipConf,
       },
       enable_websocket: true,
     }
@@ -131,6 +157,7 @@ export class ApisixService {
       },
       plugins: {
         cors: {},
+        ...this.gzipConf,
       },
     }
 
@@ -188,6 +215,7 @@ export class ApisixService {
             },
           ],
         },
+        ...this.gzipConf,
       },
     }
 
