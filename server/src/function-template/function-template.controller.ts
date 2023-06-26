@@ -331,6 +331,9 @@ export class FunctionTemplateController {
       return ResponseUtil.ok(res)
     }
 
+    /**
+     * stared function template
+     */
     if (type === 'stared' && keyword) {
       asc = asc === 0 ? Number(asc) : 1
       page = page ? Number(page) : 1
@@ -386,6 +389,9 @@ export class FunctionTemplateController {
       return ResponseUtil.ok(res)
     }
 
+    /**
+     * recent used function template
+     */
     if (type === 'recentUsed' && keyword) {
       asc = asc === 0 ? Number(asc) : 1
       page = page ? Number(page) : 1
@@ -441,6 +447,71 @@ export class FunctionTemplateController {
         )
       return ResponseUtil.ok(res)
     }
+  }
+
+  @ApiOperation({ summary: 'get all recommend function template' })
+  @ApiResponsePagination(FunctionTemplateSwagger)
+  @UseGuards(JwtAuthGuard)
+  @Get('recommend')
+  async getRecommendFunctionTemplate(
+    @Query('asc') asc: number,
+    @Query('page') page: number,
+    @Query('pageSize') pageSize: number,
+    @Query('keyword') keyword: string,
+    @Query('sort') sort: string,
+  ) {
+    if (keyword) {
+      asc = asc === 0 ? Number(asc) : 1
+      page = page ? Number(page) : 1
+      pageSize = pageSize ? Number(pageSize) : 10
+
+      const condition = {
+        asc,
+        page,
+        pageSize,
+        name: keyword,
+      }
+
+      const res =
+        await this.functionTemplateService.findRecommendFunctionTemplates(
+          condition,
+        )
+      return ResponseUtil.ok(res)
+    }
+
+    if (sort === 'hot') {
+      asc = asc === 0 ? Number(asc) : 1
+      page = page ? Number(page) : 1
+      pageSize = pageSize ? Number(pageSize) : 10
+
+      const condition = {
+        page,
+        pageSize,
+        asc,
+        hot: true,
+      }
+      const res =
+        await this.functionTemplateService.findRecommendFunctionTemplates(
+          condition,
+        )
+      return ResponseUtil.ok(res)
+    }
+
+    asc = asc === 0 ? Number(asc) : 1
+    page = page ? Number(page) : 1
+    pageSize = pageSize ? Number(pageSize) : 10
+    const condition = {
+      asc,
+      page,
+      pageSize,
+    }
+
+    const res =
+      await this.functionTemplateService.findRecommendFunctionTemplates(
+        condition,
+      )
+
+    return ResponseUtil.ok(res)
   }
 
   @ApiOperation({ summary: 'get one function template' })

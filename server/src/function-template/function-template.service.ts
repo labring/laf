@@ -496,6 +496,7 @@ export class FunctionTemplateService {
       await session.endSession()
     }
   }
+
   async starFunctionTemplate(templateId: ObjectId, userid: ObjectId) {
     const client = SystemDatabase.client
     const session = client.startSession()
@@ -598,6 +599,12 @@ export class FunctionTemplateService {
     const total = await this.db
       .collection<FunctionTemplateUseRelation>('FunctionTemplateUseRelation')
       .countDocuments({ templateId })
+
+    usedBy.forEach((item) => {
+      item.users[0].username = item.users[0].username.slice(0, 3)
+      item.users[0].email = null
+      item.users[0].phone = null
+    })
 
     const res = {
       list: usedBy,
@@ -746,6 +753,132 @@ export class FunctionTemplateService {
       .collection<FunctionTemplate>('FunctionTemplate')
       .aggregate(pipe)
       .maxTimeMS(5000)
+      .toArray()
+
+    const res = {
+      list: functionTemplate,
+      total: total,
+      page,
+      pageSize,
+    }
+
+    return res
+  }
+
+  // get all recommend function templates
+  async findRecommendFunctionTemplates(condition: FindFunctionTemplatesParams) {
+    const { asc, page, pageSize, name, hot } = condition
+
+    if (name) {
+      const safeName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      const reg = new RegExp(safeName, 'i')
+
+      const pipe = [
+        {
+          $match: {
+            private: false,
+            isRecommended: true,
+            name: { $regex: reg },
+          },
+        },
+        {
+          $lookup: {
+            from: 'FunctionTemplateItem',
+            localField: '_id',
+            foreignField: 'templateId',
+            as: 'items',
+          },
+        },
+        { $sort: { createdAt: asc === 0 ? 1 : -1 } },
+        { $skip: (page - 1) * pageSize },
+        { $limit: pageSize },
+      ]
+
+      const total = await this.db
+        .collection<FunctionTemplate>('FunctionTemplate')
+        .countDocuments(
+          { private: false, isRecommended: true, name: { $regex: reg } },
+          { maxTimeMS: 5000 },
+        )
+
+      const functionTemplate = await this.db
+        .collection<FunctionTemplate>('FunctionTemplate')
+        .aggregate(pipe)
+        .maxTimeMS(5000)
+        .toArray()
+
+      const res = {
+        list: functionTemplate,
+        total: total,
+        page,
+        pageSize,
+      }
+
+      return res
+    }
+
+    if (hot) {
+      const pipe = [
+        { $match: { private: false, isRecommended: true } },
+
+        {
+          $lookup: {
+            from: 'FunctionTemplateItem',
+            localField: '_id',
+            foreignField: 'templateId',
+            as: 'items',
+          },
+        },
+        {
+          $sort: {
+            star: asc === 0 ? 1 : -1,
+          },
+        },
+        { $skip: (page - 1) * pageSize },
+        { $limit: pageSize },
+      ]
+
+      const total = await this.db
+        .collection<FunctionTemplate>('FunctionTemplate')
+        .countDocuments({ private: false, isRecommended: true })
+
+      const functionTemplate = await this.db
+        .collection<FunctionTemplate>('FunctionTemplate')
+        .aggregate(pipe)
+        .toArray()
+
+      const res = {
+        list: functionTemplate,
+        total: total,
+        page,
+        pageSize,
+      }
+
+      return res
+    }
+
+    const pipe = [
+      { $match: { private: false, isRecommended: true } },
+      {
+        $lookup: {
+          from: 'FunctionTemplateItem',
+          localField: '_id',
+          foreignField: 'templateId',
+          as: 'items',
+        },
+      },
+      { $sort: { createdAt: asc === 0 ? 1 : -1 } },
+      { $skip: (page - 1) * pageSize },
+      { $limit: pageSize },
+    ]
+
+    const total = await this.db
+      .collection<FunctionTemplate>('FunctionTemplate')
+      .countDocuments({ private: false, isRecommended: true })
+
+    const functionTemplate = await this.db
+      .collection<FunctionTemplate>('FunctionTemplate')
+      .aggregate(pipe)
       .toArray()
 
     const res = {
