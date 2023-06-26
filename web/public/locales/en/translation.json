@@ -504,5 +504,7 @@
   "Update function template success": "Update function template succeeded",
   "Today": "Today",
   "Yesterday": "Yesterday",
-  "DaysAgo": " Days Ago"
+  "DaysAgo": " Days Ago",
+  "WeeksAgo": " Weeks Ago",
+  "MonthsAgo": " Months Ago"
 }

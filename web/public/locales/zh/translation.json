@@ -504,5 +504,7 @@
   "Storage Threshold": "内存阈值",
   "Yesterday": "昨天",
   "Today": "今天",
-  "DaysAgo": " 天前"
+  "DaysAgo": " 天前",
+  "MonthsAgo": " 月前",
+  "WeeksAgo": " 周前"
 }

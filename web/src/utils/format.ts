@@ -11,10 +11,17 @@ export function formatDate(
 export function daysAgo(date: string | number | Date | dayjs.Dayjs | null | undefined) {
   const daysDiff = dayjs().diff(dayjs(date), "days");
 
+  const weeks = Math.floor(daysDiff / 7);
+  const months = Math.floor(daysDiff / 30);
+
   if (daysDiff === 0) {
     return t("Today");
   } else if (daysDiff === 1) {
     return t("Yesterday");
+  } else if (weeks > 0 && weeks <= 4) {
+    return weeks + t("WeeksAgo");
+  } else if (months > 0) {
+    return months + t("MonthsAgo");
   } else {
     return daysDiff + t("DaysAgo");
   }
