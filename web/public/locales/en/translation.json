@@ -497,7 +497,8 @@
     "UsedSuccessfully": "Use successfully",
     "EmptyTemplate": "Template Empty",
     "AddMore": "Add More",
-    "Save": "Save"
+    "Save": "Save",
+    "Recommended": "Recommended Template"
   },
   "Create function template success": "Create function template successfully",
   "Publish": "release",

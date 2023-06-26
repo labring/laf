@@ -146,7 +146,7 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
           <div className="flex">
             {usedBy.map((item) => {
               return (
-                <Box className="my-5 mr-2">
+                <Box className="my-5 mr-2" key={item.users[0].username}>
                   <Avatar size="sm" name={item.users[0].username} />
                 </Box>
               );

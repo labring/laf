@@ -476,7 +476,8 @@
     "FunctionListEmpty": "请至少添加一个函数",
     "EmptyTemplate": "暂无模板",
     "AddMore": "继续添加",
-    "Save": "保存"
+    "Save": "保存",
+    "Recommended": "推荐模板"
   },
   "Fee": "费用",
   "PleaseCloseApplicationFirst": "请先关闭应用",

@@ -27,6 +27,7 @@ import {
   useDeleteFunctionTemplateMutation,
   useGetFunctionTemplatesQuery,
   useGetMyFunctionTemplatesQuery,
+  useGetRecommendFunctionTemplatesQuery,
 } from "./service";
 
 import styles from "./Mods/SideBar/index.module.scss";
@@ -50,6 +51,7 @@ export default function FunctionTemplate() {
   const sortList = [t("Template.Latest"), t("Template.Earliest"), t("Template.MostStars")];
   const sideBar_data = [
     { text: t("Template.CommunityTemplate"), value: "all" },
+    { text: t("Template.Recommended"), value: "recommended" },
     { text: t("Template.My"), value: "my" },
     { text: t("Template.StaredTemplate"), value: "stared" },
     { text: t("Template.Recent"), value: "recent" },
@@ -103,6 +105,19 @@ export default function FunctionTemplate() {
     },
   );
 
+  useGetRecommendFunctionTemplatesQuery(
+    {
+      ...queryData,
+      page: page,
+    },
+    {
+      enabled: selectedItem.value === "recommended",
+      onSuccess: (data: any) => {
+        setTemplateList(data.data);
+      },
+    },
+  );
+
   useGetMyFunctionTemplatesQuery(
     {
       ...queryData,
@@ -110,7 +125,7 @@ export default function FunctionTemplate() {
       pageSize: 8,
     },
     {
-      enabled: selectedItem.value !== "all",
+      enabled: ["my", "stared", "recent"].includes(selectedItem.value),
       onSuccess: (data: any) => {
         setTemplateList(data.data);
       },
@@ -223,7 +238,12 @@ export default function FunctionTemplate() {
           (templateList?.list).map((item) => {
             return (
               <div
-                className={clsx("mb-3", selectedItem.value === "all" ? "w-1/3" : "w-1/2")}
+                className={clsx(
+                  "mb-3",
+                  selectedItem.value === "all" || selectedItem.value === "recommended"
+                    ? "w-1/3"
+                    : "w-1/2",
+                )}
                 key={item._id}
               >
                 <div

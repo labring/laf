@@ -7,6 +7,8 @@ declare namespace Definitions {
     tags?: string[];
   };
 
+  export type CloudFunction = {};
+
   export type UpdateFunctionDto = {
     description?: string;
     methods?: string[];
@@ -24,6 +26,7 @@ declare namespace Definitions {
     memory?: number;
     databaseCapacity?: number;
     storageCapacity?: number;
+    autoscaling?: Definitions.CreateAutoscalingDto;
     name?: string;
     state?: string;
     regionId?: string;
@@ -76,12 +79,14 @@ declare namespace Definitions {
     memory?: number;
     databaseCapacity?: number;
     storageCapacity?: number;
+    autoscaling?: Definitions.CreateAutoscalingDto;
   };
 
   export type ApplicationBundle = {
     _id?: string;
     appid?: string;
     resource?: Definitions.ApplicationBundleResource;
+    autoscaling?: Definitions.Autoscaling;
     isTrialTier?: boolean;
     createdAt?: string;
     updatedAt?: string;
@@ -290,6 +295,7 @@ declare namespace Definitions {
     memory?: number;
     databaseCapacity?: number;
     storageCapacity?: number;
+    autoscaling?: Definitions.CreateAutoscalingDto;
     regionId?: string;
   };
 
@@ -310,23 +316,22 @@ declare namespace Definitions {
     items?: Definitions.FunctionTemplateItemDto[] /* items of the function template */;
   };
 
-  export type UseFunctionTemplateDto = {
-    functionTemplateId?: string /* The ObjectId of function template */;
-    appid?: string;
-  };
-
   export type UpdateFunctionTemplateDto = {
     functionTemplateId?: any /* Function template id */;
     name?: string /* Template name */;
     dependencies?: Definitions.CreateDependencyDto[] /* Dependencies */;
     environments?: Definitions.CreateEnvironmentDto[] /* Environments */;
     private?: boolean /* Private flag */;
-    description?: string /* Template description */;
-    items?: Definitions.FunctionTemplateItemDto[] /* Template items */;
+    description?: string /* function template description */;
+    items?: Definitions.FunctionTemplateItemDto[] /* items of the function template */;
   };
 
-  export type StarFunctionTemplateDto = {
-    functionTemplateId?: string /* The ObjectId of function template */;
+  export type CreateAutoscalingDto = {
+    enable?: boolean;
+    minReplicas?: number;
+    maxReplicas?: number;
+    targetCPUUtilizationPercentage?: number;
+    targetMemoryUtilizationPercentage?: number;
   };
 
   export type Region = {
@@ -350,6 +355,14 @@ declare namespace Definitions {
     limitCountOfTrigger?: number;
     limitCountOfWebsiteHosting?: number;
     reservedTimeAfterExpired?: number;
+  };
+
+  export type Autoscaling = {
+    enable?: boolean;
+    minReplicas?: number;
+    maxReplicas?: number;
+    targetCPUUtilizationPercentage?: number;
+    targetMemoryUtilizationPercentage?: number;
   };
 
   export type Runtime = {
@@ -412,7 +425,7 @@ declare namespace Definitions {
   };
 
   export type FunctionTemplateItemDto = {
-    name?: string /* FunctionTemplate function name */;
+    name?: string /* FunctionTemplate item name */;
     description?: string;
     methods?: string[];
     code?: string /* The source code of the function */;
@@ -420,22 +433,13 @@ declare namespace Definitions {
 }
 
 declare namespace Paths {
-  namespace AppControllerGetRuntimes {
+  namespace AuthControllerGetProfile {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
 
     export type Responses = any;
   }
-
-  namespace FunctionControllerGetHistory {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
   namespace AuthControllerPat2token {
     export type QueryParameters = any;
 
@@ -443,8 +447,7 @@ declare namespace Paths {
 
     export type Responses = any;
   }
-
-  namespace AuthControllerGetProfile {
+  namespace AppControllerGetRuntimes {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -496,6 +499,14 @@ declare namespace Paths {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.CompileFunctionDto;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionControllerGetHistory {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
 
     export type Responses = any;
   }
@@ -1076,10 +1087,18 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace FunctionTemplateControllerGetAllFunctionTemplate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace FunctionTemplateControllerUseFunctionTemplate {
     export type QueryParameters = any;
 
-    export type BodyParameters = Definitions.UseFunctionTemplateDto;
+    export type BodyParameters = any;
 
     export type Responses = any;
   }
@@ -1100,10 +1119,18 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace FunctionTemplateControllerGetOneFunctionTemplate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace FunctionTemplateControllerStarFunctionTemplate {
     export type QueryParameters = any;
 
-    export type BodyParameters = Definitions.StarFunctionTemplateDto;
+    export type BodyParameters = any;
 
     export type Responses = any;
   }
@@ -1124,46 +1151,6 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace FunctionTemplateControllerGetOneFunctionTemplate {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace FunctionTemplateControllerGetAllFunctionTemplate {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace FunctionTemplateControllerGetAllFunctionTemplateByName {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace FunctionTemplateControllerGetHotFunctionTemplate {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace FunctionTemplateControllerGetMyHotFunctionTemplate {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
   namespace FunctionTemplateControllerGetMyFunctionTemplate {
     export type QueryParameters = any;
 
@@ -1172,39 +1159,7 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace FunctionTemplateControllerGetMyFunctionTemplateByName {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace FunctionTemplateControllerGetMyStaredFunctionTemplate {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace FunctionTemplateControllerGetMyRecentUseFunctionTemplate {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AuthControllerGetProfile {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AuthControllerPat2token {
+  namespace FunctionTemplateControllerGetRecommendFunctionTemplate {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
