@@ -18,6 +18,10 @@ import { TPackage, useDelPackageMutation, usePackageQuery } from "./service";
 import useCustomSettingStore from "@/pages/customSetting";
 import useGlobalStore from "@/pages/globalStore";
 
+export const openDependenceDetail = (depName: string) => {
+  window.open(`https://www.npmjs.com/package/${encodeURIComponent(depName)}`, "_blank");
+};
+
 export default function DependenceList() {
   const packageQuery = usePackageQuery();
   const globalStore = useGlobalStore((state) => state);
@@ -77,7 +81,9 @@ export default function DependenceList() {
                       size="small"
                       isActive={false}
                       key={packageItem?.name!}
-                      onClick={() => {}}
+                      onClick={() => {
+                        openDependenceDetail(packageItem.name);
+                      }}
                       className="group"
                     >
                       <FileTypeIcon type={FileType.npm} />
@@ -93,7 +99,9 @@ export default function DependenceList() {
                         {!packageItem?.builtin ? (
                           <span className=" ml-2 hidden w-[10px] group-hover:inline-block">
                             <ConfirmButton
-                              onSuccessAction={async () => {
+                              onSuccessAction={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
                                 delPackageMutation.mutate({ name: packageItem?.name });
                               }}
                               headerText={String(t("Delete"))}
@@ -124,8 +132,11 @@ export default function DependenceList() {
                     isActive={false}
                     key={packageItem?.name!}
                     className="group"
+                    onClick={() => {
+                      openDependenceDetail(packageItem.name);
+                    }}
                   >
-                    <div className=" text-second">
+                    <div className="text-second">
                       <span className="inline-block w-40 overflow-hidden overflow-ellipsis whitespace-nowrap">
                         {packageItem?.name}
                       </span>
