@@ -60,6 +60,7 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
   const [queryParams, setQueryParams] = useState([]);
   const [bodyParams, setBodyParams] = useState<{ contentType: string; data: any }>();
   const [headerParams, setHeaderParams] = useState([]);
+
   const functionPageConfig = useCustomSettingStore((store) => store.layoutInfo.functionPage);
   const { displayName } = useHotKey(
     DEFAULT_SHORTCUTS.send_request,
@@ -76,6 +77,10 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
       setRunningMethod(currentFunction.params?.runningMethod || currentFunction.methods[0]);
     }
   }, [setRunningMethod, currentFunction]);
+
+  useEffect(() => {
+    setBodyParams(currentFunction?.params?.bodyParams);
+  }, [currentFunction]);
 
   const runningCode = async () => {
     if (isLoading || !currentFunction?._id) return;
