@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { ObjectId } from 'mongodb'
 
 export class AccountChargeReward {
@@ -10,6 +10,9 @@ export class AccountChargeReward {
 
   @ApiProperty({})
   reward: number
+
+  @ApiPropertyOptional()
+  message?: string
 
   @ApiProperty()
   createdAt: Date
