@@ -2,7 +2,7 @@
 
 <div align="center">
   <p>
-    <b>Write function of cloud like blogging!</b>
+    <b>Write code like writing a blog!</b>
   </p>
 
   <p>
@@ -38,7 +38,7 @@
 - Cloud Functions
 - Cloud Database
 - Cloud Storage
-- WebIDE, Write function of cloud like blogging
+- WebIDE, Write code like writing a blog
 - Web-hosting
 - WebSocket support
 
