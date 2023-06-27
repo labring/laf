@@ -38,6 +38,3 @@ lerna-debug.log*
 .env
 
 test.js
-
-# npm run watch output stream
-output.txt
