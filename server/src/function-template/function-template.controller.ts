@@ -63,6 +63,16 @@ export class FunctionTemplateController {
     if (!valid) {
       return ResponseUtil.error('function template dependencies is invalid')
     }
+
+    const counts =
+      await this.functionTemplateService.getCountOfFunctionTemplates(
+        req.user._id,
+      )
+
+    if (counts >= 100) {
+      return ResponseUtil.error('function template exceed the count limit')
+    }
+
     const res = await this.functionTemplateService.createFunctionTemplate(
       req.user._id,
       dto,

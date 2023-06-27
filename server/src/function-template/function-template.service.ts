@@ -727,7 +727,12 @@ export class FunctionTemplateService {
     const reg = new RegExp(safeName, 'i')
 
     const pipe = [
-      { $match: { private: false, name: { $regex: reg } } },
+      {
+        $match: {
+          private: false,
+          $or: [{ name: { $regex: reg } }, { description: { $regex: reg } }],
+        },
+      },
 
       {
         $lookup: {
@@ -982,7 +987,12 @@ export class FunctionTemplateService {
     const reg = new RegExp(safeName, 'i')
 
     const pipe = [
-      { $match: { uid: userid, name: { $regex: reg } } },
+      {
+        $match: {
+          uid: userid,
+          $or: [{ name: { $regex: reg } }, { description: { $regex: reg } }],
+        },
+      },
       {
         $lookup: {
           from: 'FunctionTemplateItem',
@@ -1451,6 +1461,14 @@ export class FunctionTemplateService {
       .toArray()
 
     return functionTemplateItems
+  }
+
+  async getCountOfFunctionTemplates(uid: ObjectId) {
+    const count = await this.db
+      .collection<FunctionTemplate>('FunctionTemplate')
+      .countDocuments({ uid: uid })
+
+    return count
   }
 
   // Verify the relationship between the user and the appid
