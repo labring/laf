@@ -22,7 +22,7 @@ export default function TemplateLayout() {
       <div className={clsx("flex justify-center", darkMode ? "" : "bg-gray-100")}>
         <Header width="max-w-screen-xl" />
       </div>
-      <div className="flex justify-center">
+      <div className="flex justify-center border-t border-[#E4E9EE]">
         <div className="w-full max-w-screen-xl">
           {loading ? (
             <Center style={{ minHeight: 300 }}>

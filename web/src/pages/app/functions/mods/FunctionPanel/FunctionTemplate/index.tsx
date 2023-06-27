@@ -26,9 +26,9 @@ const FuncTemplate = (props: { children?: React.ReactElement }) => {
       <Modal isOpen={isOpen} onClose={onClose} size="7xl">
         <ModalOverlay />
         <ModalContent minH={"90%"} maxW={"90%"} m={"auto"}>
-          <ModalCloseButton />
           <ModalBody>
-            <FunctionTemplate />
+            <ModalCloseButton />
+            <FunctionTemplate isModal={true} />
           </ModalBody>
           <ModalFooter></ModalFooter>
         </ModalContent>

@@ -112,7 +112,7 @@
     "PromptDescription": "Use natural language to describe your needs, laf will help you generate code, for example: help me write a hello world, return {hello: 'laf AI'}",
     "CreateWithAITip": "Create functions with AI assistance",
     "CreateNow": "Create Now",
-    "CreateFromTemplate": "Templates",
+    "CreateFromTemplate": "More Templates",
     "getCodeOnline": "Retrieve the latest released online code",
     "versionHistory": "Version History",
     "Restore": "Restore"
@@ -463,7 +463,7 @@
     "Recent": "Recently Used",
     "AddEnvironmentVariables": "Add environment variables",
     "Create": "new build",
-    "CommunityTemplate": "Community Template",
+    "CommunityTemplate": "All Template",
     "CreateTemplate": "New template",
     "DeleteTemplate": "Delete template",
     "CreatedAt": "Created at",

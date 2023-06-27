@@ -67,30 +67,9 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
       </Box>
 
       <div>
-        {/* <Box className="w-full border-b-2">
-          <span className="text-xl font-bold">{t("Template.DeveloperInformation")}</span>
-          <Box className="flex h-20 items-center justify-between">
-            <div className="flex">
-              <img src="/logo.png" alt="avatar" className="w-10" />
-              <div className="pl-2">
-                <span className="text-lg font-semibold">{author}</span>
-                <div>
-                  <GithubIcon className="mr-1 cursor-pointer" color={"grayModern.400"} />
-                  <WechatIcon className="mr-1 cursor-pointer" color={"grayModern.400"} />
-                  <PhoneIcon className="mr-1 cursor-pointer" color={"grayModern.400"} />
-                </div>
-              </div>
-            </div>
-            <SponsorModal>
-              <button className="h-6 w-16 rounded-3xl bg-primary-200 font-semibold text-primary-600 hover:bg-primary-300">
-                {t("Template.Sponsor")}
-              </button>
-            </SponsorModal>
-          </Box>
-        </Box> */}
         <Box className="border-b-[1px]">
           <span className="text-xl font-semibold">{t("Template.Function")}</span>
-          <Box className="py-2">
+          <Box className="max-h-40 overflow-auto py-2">
             {(functionList || []).map((item) => {
               return (
                 <div key={item.name} className="my-5 flex items-center font-medium">
@@ -103,7 +82,7 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
         </Box>
         <Box className={clsx("border-b-[1px] pt-5", packageList.length === 0 && "pb-2")}>
           <span className="text-xl font-semibold">{t("Template.Dependency")}</span>
-          <Box>
+          <Box className="max-h-32 overflow-auto">
             {packageList.map((item) => {
               const [name, version] = item.split("@");
               return (
@@ -120,16 +99,18 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
         </Box>
         <Box className={clsx("border-b-[1px] pt-5", environments.length === 0 && "pb-2")}>
           <span className="text-xl font-bold">{t("Template.EnvironmentVariables")}</span>
-          {environments.map((item) => {
-            return (
-              <Box key={item.name} className="my-5 flex justify-between">
-                <div className="flex w-5/12 truncate font-medium">{item.name}</div>
-                <Tooltip label={item.value} aria-label="A tooltip">
-                  <div className="truncate pl-4">{item.value}</div>
-                </Tooltip>
-              </Box>
-            );
-          })}
+          <Box className="max-h-32 overflow-hidden">
+            {environments.map((item) => {
+              return (
+                <Box key={item.name} className="my-5 flex justify-between">
+                  <div className="flex w-5/12 truncate font-medium">{item.name}</div>
+                  <Tooltip label={item.value} aria-label="A tooltip">
+                    <div className="truncate pl-4">{item.value}</div>
+                  </Tooltip>
+                </Box>
+              );
+            })}
+          </Box>
         </Box>
         <Box className={clsx("border-b-[1px]", usedBy.length === 0 && "pb-2")}>
           <div className="flex items-center pt-5">
@@ -143,7 +124,7 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
               {usedBy.length}
             </span>
           </div>
-          <div className="flex">
+          <div className="flex w-full overflow-auto">
             {usedBy.map((item) => {
               return (
                 <Box className="my-5 mr-2" key={item.users[0].username}>
