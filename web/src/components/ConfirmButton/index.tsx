@@ -14,7 +14,7 @@ import {
 import { t } from "i18next";
 
 interface ConfirmButtonProps {
-  onSuccessAction: () => void;
+  onSuccessAction: React.MouseEventHandler<HTMLButtonElement>;
   headerText: string;
   bodyText: string | React.ReactElement | any;
   confirmButtonText?: string;
@@ -31,8 +31,8 @@ const ConfirmButton = ({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef<any>();
 
-  const onSubmit = () => {
-    onSuccessAction();
+  const onSubmit: React.MouseEventHandler<HTMLButtonElement> = (event) => {
+    onSuccessAction(event);
     onClose();
   };
 

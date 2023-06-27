@@ -22,6 +22,7 @@
   },
   "cSpell.words": [
     "aarch",
+    "Adora",
     "alicloud",
     "alipay",
     "alisms",
@@ -130,5 +131,7 @@
   "i18n-ally.namespace": false,
   "i18n-ally.pathMatcher": "{locale}/translation.json",
   "i18n-ally.keystyle": "nested",
-  "i18n-ally.keysInUse": ["description.part2_whatever"]
+  "i18n-ally.keysInUse": [
+    "description.part2_whatever"
+  ]
 }

@@ -26,17 +26,12 @@ cli 的主要功能就是把在 laf web 上的操作集成到命令行里，下�
 
 ![](../../doc-images/creat-token.png)
 
-生成 token 之后我们复制放在 laf login 后面执行此命令即可登录。
-
-```shell
-laf login [pat]
-```
-
-默认登录 `laf.run`，如果要登录 `laf.dev` 或私有部署的 laf 或其他`laf.run`账号可通过 添加user：
+默认登录 `laf.run`，如果要登录 `laf.dev` 或私有部署的 laf 或其他`laf.run`账号可通过 添加 user：
 
 ```shell
 laf user add dev -r https://laf.dev
 laf user switch dev
+laf user list
 laf login [pat]
 ```
 
@@ -56,8 +51,8 @@ laf app list
 
 ### 初始化 app
 
-初始化需要用到 appid ，我们可以在 web 端首页拿到。  
-这里稍微解释一下，初始化 app 是指在你运行这个命令的目录下生成模版文件，默认是空的，如果想把 web 端的东西同步过来需要加上 -s 。
+初始化需要用到 appid，我们可以在 web 端首页拿到。  
+这里稍微解释一下，初始化 app 是指在你运行这个命令的目录下生成模版文件，默认是空的，如果想把 web 端的东西同步过来需要加上 -s。
 ::: tip
 建议在一个空的目录下尝试此命令。
 :::
@@ -74,7 +69,7 @@ laf app init [appid]
 laf dep pull
 ```
 
-如果我们想添加依赖可以使用 add ，注意这里的 add 是在 web 端和本地同时添加这个依赖，添加之后 npm i 即可使用。
+如果我们想添加依赖可以使用 add，注意这里的 add 是在 web 端和本地同时添加这个依赖，添加之后 npm i 即可使用。
 
 ```shell
 laf dep add [dependencyName]
@@ -112,7 +107,7 @@ laf func list
 laf func pull [funcName] 
 ```
 
-推送本地云函数代码到 web 。
+推送本地云函数代码到 web。
 
 ```shell
 laf func push [funcName] 
@@ -132,13 +127,13 @@ laf func exec [funcName]
 laf storage list
 ```
 
-新建 bucket 。
+新建 bucket。
 
 ```shell
 laf storage create [bucketName]
 ```
 
-删除 bucket 。
+删除 bucket。
 
 ```shell
 laf storage del [bucketName]
@@ -156,7 +151,7 @@ laf storage update [bucketName]
 laf storage pull [bucketName] [outPath]
 ```
 
-上传本地文件到 bucket 。
+上传本地文件到 bucket。
 
 ```shell
 laf storage push [bucketName] [inPath]

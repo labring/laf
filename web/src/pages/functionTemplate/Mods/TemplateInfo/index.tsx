@@ -38,18 +38,16 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
   );
 
   return (
-    <div className="w-full">
-      <Box className="flex w-full justify-between pb-8">
+    <div>
+      <Box className="flex justify-end pb-8">
         <button
           className={clsx(
-            "mr-2 flex cursor-pointer items-center rounded-3xl border-2 px-3 py-1 text-xl",
-            starState && !darkMode ? "border-gray-800 text-gray-800" : "text-gray-400",
-            starState && darkMode ? "border-white text-white" : "text-gray-400",
+            "mr-4 flex h-9 cursor-pointer items-center rounded-3xl border px-3 text-xl",
+            starState ? "border-rose-500 text-rose-500" : "text-gray-400",
           )}
           onClick={async () => {
             const res = await starMutation.mutateAsync({ templateId: templateId || "" });
             if (!res.error) {
-              console.log(res.data);
               if (starState) {
                 setStarState(false);
                 setStarNum(starNum - 1);
@@ -64,7 +62,7 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
           <span className="pl-1">{starNum}</span>
         </button>
         <UseTemplateModal templateId={templateId || ""}>
-          <Button>{t("Template.useTemplate")}</Button>
+          <Button height={9}>{t("Template.useTemplate")}</Button>
         </UseTemplateModal>
       </Box>
 
@@ -90,9 +88,9 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
             </SponsorModal>
           </Box>
         </Box> */}
-        <Box className="w-full border-b-[1px]">
+        <Box className="border-b-[1px]">
           <span className="text-xl font-semibold">{t("Template.Function")}</span>
-          <Box className="py-3">
+          <Box className="py-2">
             {(functionList || []).map((item) => {
               return (
                 <div key={item.name} className="my-5 flex items-center font-medium">
@@ -103,10 +101,10 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
             })}
           </Box>
         </Box>
-        <Box className="w-full border-b-[1px] pt-5">
+        <Box className={clsx("border-b-[1px] pt-5", packageList.length === 0 && "pb-2")}>
           <span className="text-xl font-semibold">{t("Template.Dependency")}</span>
           <Box>
-            {(packageList || []).map((item) => {
+            {packageList.map((item) => {
               const [name, version] = item.split("@");
               return (
                 <div key={item} className="my-5 flex items-center justify-between font-medium">
@@ -120,9 +118,9 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
             })}
           </Box>
         </Box>
-        <Box className="w-full border-b-[1px] pt-5">
+        <Box className={clsx("border-b-[1px] pt-5", environments.length === 0 && "pb-2")}>
           <span className="text-xl font-bold">{t("Template.EnvironmentVariables")}</span>
-          {(environments || []).map((item) => {
+          {environments.map((item) => {
             return (
               <Box key={item.name} className="my-5 flex justify-between">
                 <div className="flex w-5/12 truncate font-medium">{item.name}</div>
@@ -133,7 +131,7 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
             );
           })}
         </Box>
-        <Box className="w-full border-b-[1px]">
+        <Box className={clsx("border-b-[1px]", usedBy.length === 0 && "pb-2")}>
           <div className="flex items-center pt-5">
             <span className="text-xl font-bold">{t("Template.UsedBy")}</span>
             <span
@@ -148,15 +146,9 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
           <div className="flex">
             {usedBy.map((item) => {
               return (
-                <Tooltip
-                  key={item.users[0].username}
-                  label={item.users[0].username}
-                  aria-label="A tooltip"
-                >
-                  <Box className="my-5 mr-2">
-                    <Avatar size="sm" name={item.users[0].username} />
-                  </Box>
-                </Tooltip>
+                <Box className="my-5 mr-2">
+                  <Avatar size="sm" name={item.users[0].username} />
+                </Box>
               );
             })}
           </div>

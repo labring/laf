@@ -1,12 +1,12 @@
-![laf](https://socialify.git.ci/labring/laf/image?description=1&descriptionEditable=%E5%83%8F%E5%86%99%E5%8D%9A%E5%AE%A2%E4%B8%80%E6%A0%B7%E5%86%99%E4%BB%A3%E7%A0%81%EF%BC%81&font=Inter&forks=1&language=1&name=1&owner=1&pattern=Circuit%20Board&stargazers=1&theme=Dark)
+![laf](https://socialify.git.ci/labring/laf/image?description=1&descriptionEditable=Write%20code%20like%20writing%20a%20blog!&font=Inter&forks=1&language=1&name=1&owner=1&pattern=Circuit%20Board&stargazers=1&theme=Dark)
 
 <div align="center">
   <p>
-    <b>像写博客一样写函数！</b>
+    <b>Write code like writing a blog!</b>
   </p>
 
   <p>
-  
+
   [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/labring/laf)
   [![](https://img.shields.io/docker/pulls/lafyun/system-server)](https://hub.docker.com/r/lafyun/system-server)
   ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?logo=typescript&logoColor=white)
@@ -18,81 +18,141 @@
 
 ---
 
-> [English](README_en.md) | 中文
+> English | [中文](README_cn.md)
 
-## 🚀 Quick Start
+## 👀 What is `laf`
 
-[三分钟体验使用 laf 写一个自己的 ChatGPT (开发到上线)](https://icloudnative.io/posts/build-chatgpt-web-using-laf/)  
-[三分钟体验使用 laf 开发一个简单的 「Todo List」 ](./docs/guide/quick-start/Todo.md)
+- laf is a cloud-native development platform
+- laf is an open-source BaaS platform (Backend as a Service)
+- laf is an out-of-the-box serverless platform.
+- laf is an one-stop-shop for all your cloud-native development needs:
+  - Cloud Function
+  - Cloud Datastore
+  - Cloud Storage
+  - API Gateway
+  - _And MORE!_
+- laf can be the open-source alternative to **Firebase**.
+- laf can be the self-hosted and automatically configured alternative to **AWS** with all its cloud native capabilities and so much more!
 
-## 🖥 在线体验
+[`laf`](https://github.com/labring/laf) provides **teams of any sizes** with a single, unified cloud-native development platform **at any time** with almost **zero cost**!
 
-🎉 [laf.run](https://laf.run) 可免费体验 `laf` 云开发。（国内版）
+## 🎉 What does `laf` provide
 
-🎉 [laf.dev](https://laf.dev) 可免费体验 `laf` 云开发。（海外版）
-
-## 👀 `laf` 是什么
-
-laf 是开源的云开发平台，提供云函数、云数据库、云存储等开箱即用的应用资源。让开发者专注于业务开发，无需折腾服务器，快速释放创意。
-
-
-## 🎉 `laf` 有什么
-
-- 云函数
-- 云数据库
-- 云存储
-- WebIDE，像写博客一样写代码
-- 网站托管
-- WebSocket 支持
+- **Application Management**
+  - deploy/start/stop your application within seconds. There's no need to configure anything!
+- **Cloud Function**
+  - run your code in the cloud zero extra cost.
+- **Cloud Database**
+  - out-of-the-box DB service for your applications.
+- **Cloud Storage**
+  - easy-to-use storage service that are **compatible with AWS S3** and more.
+- **WebIDE**
+  - a cloud-native IDE for your code with code-linting, formatting and auto completion.
+- **Static Site Hosting**
+  - only one click to deploy your static sites, no more **Nginx** configuration!
+- **Client DB**
+  - Supports **"direct" access** from front-end client to your cloud database through [laf-client-sdk](https://github.com/labring/laf/tree/main/packages/client-sdk) with fine-grained access control.
+  - Speed up your development and **no more naive CRUD**!
+- **WebSocket**
+  - Built-in support for WebSocket, everything you need is included!
 
 ![](https://sif268-laf-image.oss.laf.dev/dev.png)
 
-## 👨‍💻 谁适合使用 `laf` ?
+## 👨‍💻 Who is `laf` for?
 
-1. 前端开发者 + `laf` = 全栈开发者，前端秒变全栈，成为真正的大前端
+1. **Front-end Developer** + `laf` = Full Stack Developer
+   - `laf` provided [laf-client-sdk](https://github.com/labring/laf/tree/main/packages/client-sdk) for front-end which can be used in any JS runtime.
+   - `laf` cloud function are developed using JS/TS, no need to learn any other languages.
+   - `laf` provides static site hosting in one click, no more worries about server config, nginx, domain name, etc.
+   - `laf` will provides more SDK in the future (Flutter/Android/iOS) to give you a unified experience on any platforms.
+2. **Front-end Developer**, free you from all the trivia and configs, focus on the code itself!
 
-   - `laf` 为前端提供了 [laf-client-sdk](https://github.com/labring/laf/tree/main/packages/client-sdk)，适用于任何 js 运行环境
-   - `laf` 云函数使用 js/ts 开发，前后端代码无隔裂，无门槛快速上手
-   - `laf` 提供了静态网站托管，可将前端构建的网页直接同步部署上来，无需再配置服务器、nginx、域名等
-   - `laf` 后续会提供多种客户端的 SDK（Flutter/Android/iOS 等），为所有客户端开发者提供后端开发服务和一致的开发体验
+   - `laf` saves you from tedious server admin/operation works.
+   - `laf` saves you from boring `nginx` configs.
+   - `laf` saves you from the hassle of manual DB deployment, security config.
+   - `laf` saves you from the torment of [10 min coding, 10 hour deploying].
+   - `laf` lets you inspect logs in the browser in any places at any time. No more SSH to the server!
+   - `laf` lets you [write functions like blog], just code and click to deploy!
 
-2. 后端开发者，可以从琐事中解放出来，专注于业务本身，提升开发效率
+3. **Cloud Native Developer**, get a more powerful, user-friendly and flexiable platform. No more contraints from **AWS** or **GCP**!
 
-   - `laf` 可以节约服务器运维、多环境部署和管理精力
-   - `laf` 让你告别配置、调试 nginx
-   - `laf` 让你告别「为每个项目手动部署数据库、安全顾虑等重复性工作」
-   - `laf` 让你告别「修改一次、发布半天」的重复繁琐的迭代体验
-   - `laf` 让你随时随地在 Web 上查看函数的运行日志，不必再连接服务器，费神费眼翻找
-   - `laf` 让你「像写博客一样写一个函数」，招之即来，挥之即去，随手发布！
+   - You can provide full source code to your clients which enables them to deploy the application in **any** environment.
+   - You can modify/customize your cloud platform, `laf` is open-sourced and built with customization in mind.
 
-3. 云开发用户，若你是其它厂商的云开发用户，你不仅可以获得更强大、快速的开发体验，还不被云厂商锁定
+4. **Node.js Developer**，`laf` is developed using `Node.js`, you can treat it as another **Node.js** framework/platform.
 
-   - 你可以为客户提供源码交付，为客户私有部署一套 `laf` + 你的云开发应用，而使用闭源的云开发服务，无法交付可独立运行的源码
-   - 你可以根据未来的需要，随时将自己的产品部署到自己的服务器上，`laf` 是开源免费的
-   - 你甚至可以修改、订制自己的云开发平台，`laf` 是开源的、高度可扩展的
+   - You can write/debug/deploy your cloud functions in the browser with minimal effort.
+   - You can inspect/search logs with no configuration needed.
+   - No more hassle of DB/Storage/Nginx configuration, deploy your application at any time.
+   - Make any `Node.js` code cloud-native (a crawler, a automatic script, etc), write code like writing a blog!
 
-4. 独立开发者、创业团队， 节约成本，快速开始，专注业务
-   - 减少启动项目开发的流程，快速启动，缩短产品验证周期
-   - 极大程度提高迭代速度，随时应对变化，随时发布
-   - 专注于产品业务本身，快速推出最小可用产品(MVP)，快速进行产品、市场验证
-   - 一个人 + `laf` = 团队
+5. **Individual Developer & Startup Team**, reduce cost and start fast!
+   - Reduce development time, shorten your product verfication cycle.
+   - Be agile and adpat to the changing market.
+   - Focus on your product, start fast and fail fast.
+   - One developer + `laf` = A whole team.
 
 > life is short, you need laf:)
 
+## 💥 How can `laf` be used?
 
-## 🎉 Self-hosted Deployment
+> `laf` is a back-end development platform which can theoretically support any kinds of application!
 
-[Deployment](./deploy/README.md)
+1. Develop Android, iOS or Web Application:
 
-## 🏘️ Community Groups
+   - Use Cloud Function/DB/Storage for your product.
+   - Deploy your admin front-end in `laf` with on click.
+   - User Cloud Function for payment, authentication, hot-update, etc.
+
+2. Deploy blog or homepage
+
+   - For static blogs generated by vuepress/hexo/hugo, you can deploy them with `laf` in one click. (See [laf-cli](https://github.com/labring/laf-cli) for more info)
+   - Use Cloud Function to handle comments, likes, statistics, etc.
+   - Use Cloud Function to support features like online course/voting/survey/etc.
+   - Use Cloud Function for crawling/live-feed/etc.
+   - Use Cloud Storage for video/images/etc.
+
+3. Enterprise Informatization: Deploy your own cloud platform.
+
+   - Fast development/deployment of any internal systems.
+   - Multi-tenancy/users/roles/apps support, segragate or connect different sectors/teams/apps.
+   - Take advantage of the `laf` community, use and customize existing applications, save your budget!
+   - Use free and open-source software, no litmitations, customize as you wish!
+
+4. Handy toolkit for Individual Developers
+
+   - `laf` makes any of your code cloud-native instantly.
+   - Just like writing a note in your memo, but also auto synced to cloud and accessible from anywhere.
+   - Make `laf` your notebook or "personal assitent", write a reminder app, email forwarding app, etc.
+
+5. Other
+   - Some use `laf` as a cloud drive.
+   - Some use `laf` as a logging server for collection and analyzing data.
+   - Some use `laf` as a crawler for latest news, etc.
+   - Some use `laf` as a webhook for Github, Slack, Discord, etc.
+   - Some use `laf` as a chaos-monkey for other services.
+   - ...
+
+> In the future, `lafyun.com` will have a `application market` where users can publish sample applications/templates!
+
+## 🖥 Try it now
+
+🎉 [laf.dev](http://laf.dev) is a `laf` service hosted by us, you can try `laf` for free!
+
+Independent domain names and HTTPS licenses can be applied to your applications now, develop fast, and enjoy the freedom of `laf`!
+
+## 🚀 Quick Start
+
+[develop a [Todo List] feature within 3 minutes](./docs/guide/quick-start/Todo.md)
+
+## 🎉 Self-hosting
+
+[self-hosting](./deploy/README.md)
+
+## 🏘️ Community
 
 - [Discord](https://discord.gg/uWZqAwwdvy)
-- [微信群](https://oss.lafyun.com/wofnib-image/2022-04-22-14-21-MRJH9o.png)
-- [QQ 群：603059673](https://jq.qq.com/?_wv=1027&k=DdRCCiuz)
-
-## :point_right: Roadmap
-- [**laf project roadmap**](https://github.com/orgs/labring/projects/5/views/1)
-
+- [Twitter](https://twitter.com/laf_dev)
 
 ## 🌟 Star History
 

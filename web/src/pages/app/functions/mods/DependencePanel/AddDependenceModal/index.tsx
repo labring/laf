@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AddIcon, EditIcon, SearchIcon, SmallCloseIcon } from "@chakra-ui/icons";
+import { AddIcon, EditIcon, ExternalLinkIcon, SearchIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -36,6 +36,7 @@ import {
   usePackageSearchQuery,
   usePackageVersionsQuery,
 } from "../service";
+import { openDependenceDetail } from "..";
 
 import useGlobalStore from "@/pages/globalStore";
 
@@ -205,7 +206,17 @@ const AddDependenceModal = () => {
                   }
                 >
                   <Box ml={5} width="350px">
-                    <b>{packageItem.package.name}</b>
+                    <div className="flex items-center space-x-1">
+                      <b>{packageItem.package.name}</b>
+                      <ExternalLinkIcon
+                        className="!text-primary-700 hover:scale-110"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          openDependenceDetail(packageItem.package.name);
+                        }}
+                      />
+                    </div>
                     <p className="overflow-hidden text-ellipsis whitespace-nowrap text-base text-second ">
                       {packageItem.package.description}
                     </p>

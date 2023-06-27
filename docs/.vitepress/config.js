@@ -1,5 +1,10 @@
 import { defineConfig, DefaultTheme } from "vitepress";
 import mdItCustomAttrs from "markdown-it-custom-attrs";
+import {
+  guideSiderbarConfig_en,
+  examplesSideBarConfig_en,
+  NavConfig_en,
+} from "./en";
 
 /**
  * @type {DefaultTheme.NavItem[]}
@@ -322,57 +327,119 @@ const examplesSideBarConfig = [
 ];
 
 export default defineConfig({
-  lang: "zh-CN",
-  title: "laf 云开发",
-  description: "laf 云开发，像写博客一样写函数，随手上线",
-  markdown: {
-    lineNumbers: true,
-    config: (md) => {
-      // use more markdown-it plugins!
-      md.use(mdItCustomAttrs, "image", {
-        "data-fancybox": "gallery",
-      });
+  locales: {
+    root: {
+      label: "简体中文",
+      lang: "zh-CN",
+      link: "/",
+      title: "laf 云开发",
+      description: "laf 云开发，像写博客一样写函数，随手上线",
+      markdown: {
+        lineNumbers: true,
+        config: (md) => {
+          // use more markdown-it plugins!
+          md.use(mdItCustomAttrs, "image", {
+            "data-fancybox": "gallery",
+          });
+        },
+      },
+      themeConfig: {
+        logo: "/logo.png",
+        repo: "labring/laf",
+        docsBranch: "main",
+        docsDir: "docs",
+        footer: {
+          message: "Apache License V2.0",
+          copyright: "Copyright © 2021-present labring/laf",
+        },
+        editLink: {
+          pattern: "https://github.com/labring/laf/edit/main/docs/:path",
+          text: "在 GitHub 上编辑此页",
+        },
+        lastUpdated: "更新于",
+        nav: NavConfig,
+        socialLinks: [
+          { icon: "github", link: "https://github.com/labring/laf" },
+          { icon: "discord", link: "https://discord.gg/KaxHF86CcF" },
+          { icon: "twitter", link: "https://twitter.com/laf_dev" },
+        ],
+        sidebar: {
+          "/guide/": guideSiderbarConfig,
+          "/3min/": examplesSideBarConfig,
+        },
+      },
+      head: [
+        ["link", { rel: "icon", href: "/logo.png" }],
+        [
+          "link",
+          {
+            rel: "stylesheet",
+            href: "/fancybox.css",
+          },
+        ],
+        [
+          "script",
+          {
+            src: "/fancybox.umd.js",
+          },
+        ],
+      ],
+    },
+    en: {
+      label: "English",
+      lang: "en",
+      link: "/en/",
+      title: "laf Cloud Development",
+      markdown: {
+        lineNumbers: true,
+        config: (md) => {
+          // use more markdown-it plugins!
+          md.use(mdItCustomAttrs, "image", {
+            "data-fancybox": "gallery",
+          });
+        },
+      },
+      themeConfig: {
+        logo: "/logo.png",
+        repo: "labring/laf",
+        docsBranch: "main",
+        docsDir: "docs",
+        footer: {
+          message: "Apache License V2.0",
+          copyright: "Copyright © 2021-present labring/laf",
+        },
+        editLink: {
+          pattern: "https://github.com/labring/laf/edit/main/docs/:path",
+          text: "Edited this page on github",
+        },
+        lastUpdated: "Update time",
+        nav: NavConfig_en,
+        socialLinks: [
+          { icon: "github", link: "https://github.com/labring/laf" },
+          { icon: "discord", link: "https://discord.gg/KaxHF86CcF" },
+          { icon: "twitter", link: "https://twitter.com/laf_dev" },
+        ],
+        sidebar: {
+          "/en/guide/": guideSiderbarConfig_en,
+          "/en/3min/": examplesSideBarConfig_en,
+        },
+      },
+      head: [
+        ["link", { rel: "icon", href: "/logo.png" }],
+        [
+          "link",
+          {
+            rel: "stylesheet",
+            href: "/fancybox.css",
+          },
+        ],
+        [
+          "script",
+          {
+            src: "/fancybox.umd.js",
+          },
+        ],
+      ],
     },
   },
-  themeConfig: {
-    logo: "/logo.png",
-    repo: "labring/laf",
-    docsBranch: "main",
-    docsDir: "docs",
-    footer: {
-      message: "Apache License V2.0",
-      copyright: "Copyright © 2021-present labring/laf",
-    },
-    editLink: {
-      pattern: "https://github.com/labring/laf/edit/main/docs/:path",
-      text: "在 GitHub 上编辑此页",
-    },
-    lastUpdated: "更新于",
-    nav: NavConfig,
-    socialLinks: [
-      { icon: "github", link: "https://github.com/labring/laf" },
-      { icon: "discord", link: "https://discord.gg/KaxHF86CcF" },
-      { icon: "twitter", link: "https://twitter.com/laf_dev" },
-    ],
-    sidebar: {
-      "/guide/": guideSiderbarConfig,
-      "/3min/": examplesSideBarConfig,
-    },
-  },
-  head: [
-    ["link", { rel: "icon", href: "/logo.png" }],
-    [
-      "link",
-      {
-        rel: "stylesheet",
-        href: "/fancybox.css",
-      },
-    ],
-    [
-      "script",
-      {
-        src: "/fancybox.umd.js",
-      },
-    ],
-  ],
 });

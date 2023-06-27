@@ -402,7 +402,7 @@ export default async function (ctx: FunctionContext) {
   formData.setMethod("get");
   formData.addField(
     "notifyUrl",
-    "https://APPID.lafyun.com/alipay_notify_callback"
+    "https://APPID.laf.run/alipay_notify_callback"
   );
   formData.addField("bizContent", {
     subject: goodsName,
