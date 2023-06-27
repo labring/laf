@@ -3,6 +3,7 @@ import { Db } from 'database-ql'
 import { Request } from './request/request'
 import { UniRequest } from './request/request-uni'
 import { WxmpRequest } from './request/request-wxmp'
+import { TaroRequest } from "./request/request-taro";
 import { CloudOptions, EnvironmentType, RequestInterface } from './types'
 
 
@@ -24,6 +25,8 @@ class Cloud {
       ret = UniRequest
     } else if (env === EnvironmentType.WX_MP) {
       ret = WxmpRequest
+    } else if (env === EnvironmentType.TARO) {
+      ret = TaroRequest
     } else {
       ret = Request
     }
