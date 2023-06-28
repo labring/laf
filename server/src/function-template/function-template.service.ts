@@ -1094,11 +1094,45 @@ export class FunctionTemplateService {
 
     const pipe = [
       {
-        $match: {
-          uid: userid,
-          $or: [{ name: { $regex: reg } }, { description: { $regex: reg } }],
+        $lookup: {
+          from: 'FunctionTemplateItem',
+          localField: '_id',
+          foreignField: 'templateId',
+          as: 'items',
         },
       },
+
+      {
+        $addFields: {
+          matchCount: {
+            $size: {
+              $filter: {
+                input: '$items',
+                as: 'item',
+                cond: { $regexMatch: { input: '$$item.name', regex: reg } },
+              },
+            },
+          },
+        },
+      },
+
+      {
+        $match: {
+          uid: userid,
+          $or: [
+            { name: { $regex: reg } },
+            { description: { $regex: reg } },
+            { matchCount: { $gt: 0 } },
+          ],
+        },
+      },
+
+      { $sort: { updatedAt: asc === 0 ? 1 : -1 } },
+      { $skip: (page - 1) * pageSize },
+      { $limit: pageSize },
+    ]
+
+    const pipe2 = [
       {
         $lookup: {
           from: 'FunctionTemplateItem',
@@ -1107,20 +1141,39 @@ export class FunctionTemplateService {
           as: 'items',
         },
       },
-      { $sort: { updatedAt: asc === 0 ? 1 : -1 } },
-      { $skip: (page - 1) * pageSize },
-      { $limit: pageSize },
+
+      {
+        $addFields: {
+          matchCount: {
+            $size: {
+              $filter: {
+                input: '$items',
+                as: 'item',
+                cond: { $regexMatch: { input: '$$item.name', regex: reg } },
+              },
+            },
+          },
+        },
+      },
+
+      {
+        $match: {
+          uid: userid,
+          $or: [
+            { name: { $regex: reg } },
+            { description: { $regex: reg } },
+            { matchCount: { $gt: 0 } },
+          ],
+        },
+      },
+      { $group: { _id: null, count: { $sum: 1 } } },
     ]
 
     const total = await this.db
       .collection<FunctionTemplate>('FunctionTemplate')
-      .countDocuments(
-        {
-          uid: userid,
-          $or: [{ name: { $regex: reg } }, { description: { $regex: reg } }],
-        },
-        { maxTimeMS: 5000 },
-      )
+      .aggregate(pipe2)
+      .maxTimeMS(5000)
+      .toArray()
 
     const myTemplate = await this.db
       .collection<FunctionTemplate>('FunctionTemplate')
@@ -1130,7 +1183,7 @@ export class FunctionTemplateService {
 
     const res = {
       list: myTemplate,
-      total: total,
+      total: total[0] ? total[0].count : 0,
       page,
       pageSize,
     }
@@ -1165,13 +1218,19 @@ export class FunctionTemplateService {
             as: 'items',
           },
         },
+
         {
           $match: {
             uid: userid,
             state: RelationState.Enabled,
-            'functionTemplate.name': { $regex: reg },
+            $or: [
+              { 'functionTemplate.name': { $regex: reg } },
+              { 'functionTemplate.description': { $regex: reg } },
+              { 'items.name': { $regex: reg } },
+            ],
           },
         },
+
         { $sort: { updatedAt: asc === 0 ? 1 : -1 } },
         { $skip: (page - 1) * pageSize },
         { $limit: pageSize },
@@ -1194,11 +1253,16 @@ export class FunctionTemplateService {
             as: 'items',
           },
         },
+
         {
           $match: {
             uid: userid,
             state: RelationState.Enabled,
-            'functionTemplate.name': { $regex: reg },
+            $or: [
+              { 'functionTemplate.name': { $regex: reg } },
+              { 'functionTemplate.description': { $regex: reg } },
+              { 'items.name': { $regex: reg } },
+            ],
           },
         },
         { $group: { _id: null, count: { $sum: 1 } } },
@@ -1234,7 +1298,6 @@ export class FunctionTemplateService {
         page,
         pageSize,
       }
-
       return res
     }
 
@@ -1377,7 +1440,11 @@ export class FunctionTemplateService {
           $match: {
             uid: userid,
             state: RelationState.Enabled,
-            'functionTemplate.name': { $regex: reg },
+            $or: [
+              { 'functionTemplate.name': { $regex: reg } },
+              { 'functionTemplate.description': { $regex: reg } },
+              { 'items.name': { $regex: reg } },
+            ],
           },
         },
         { $sort: { updatedAt: asc === 0 ? 1 : -1 } },
@@ -1406,7 +1473,11 @@ export class FunctionTemplateService {
           $match: {
             uid: userid,
             state: RelationState.Enabled,
-            'functionTemplate.name': { $regex: reg },
+            $or: [
+              { 'functionTemplate.name': { $regex: reg } },
+              { 'functionTemplate.description': { $regex: reg } },
+              { 'items.name': { $regex: reg } },
+            ],
           },
         },
         { $group: { _id: null, count: { $sum: 1 } } },
