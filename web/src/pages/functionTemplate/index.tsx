@@ -67,6 +67,11 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
     isModal ? { text: "", value: "" } : { text: t("Template.Recommended"), value: "recommended" },
   );
   const [queryData, setQueryData] = useState(defaultQueryData);
+  const [setQueryDataDebounced] = useState(() =>
+    debounce((value) => {
+      setQueryData({ ...defaultQueryData, keyword: value });
+    }, 500),
+  );
   const [sorting, setSorting] = useState(sortList[0]);
   const [page, setPage] = useState(1);
   const [templateList, setTemplateList] = useState<TemplateList>();
@@ -152,10 +157,6 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
       "",
       window.location.href.replace(/\/([^/]+)\/?$/, `/${item.value}`),
     );
-  };
-
-  const handleSearch = (e: any) => {
-    setQueryData({ ...queryData, keyword: e.target.value });
   };
 
   const handleSortListClick = (e: any) => {
@@ -250,7 +251,11 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
                     height={"2rem"}
                     borderRadius={"6.25rem"}
                     placeholder={String(t("Search"))}
-                    onChange={debounce(handleSearch, 500)}
+                    onChange={(e) => {
+                      setSearchKey(e.target.value);
+                      setQueryDataDebounced(e.target.value);
+                    }}
+                    value={searchKey || ""}
                   />
                 </InputGroup>
               )}
