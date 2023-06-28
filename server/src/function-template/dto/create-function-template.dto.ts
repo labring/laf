@@ -2,12 +2,14 @@ import { CreateEnvironmentDto } from '../../application/dto/create-env.dto'
 import { CreateDependencyDto } from 'src/dependency/dto/create-dependency.dto'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
+  ArrayMaxSize,
   IsBoolean,
   IsIn,
   IsNotEmpty,
   IsString,
   Matches,
   MaxLength,
+  MinLength,
   ValidateNested,
 } from 'class-validator'
 import { Type } from 'class-transformer'
@@ -64,6 +66,7 @@ export class CreateFunctionTemplateDto {
 
   @ApiPropertyOptional({ description: 'function template description' })
   @IsString()
+  @MinLength(8)
   @MaxLength(256)
   description?: string
 
@@ -73,6 +76,7 @@ export class CreateFunctionTemplateDto {
   })
   @IsNotEmpty()
   @ValidateNested({ each: true })
+  @ArrayMaxSize(20)
   @Type(() => FunctionTemplateItemDto)
   items: FunctionTemplateItemDto[]
 }
