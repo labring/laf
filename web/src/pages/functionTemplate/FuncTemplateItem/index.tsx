@@ -5,8 +5,6 @@ import { ChevronRightIcon } from "@chakra-ui/icons";
 import { useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
-import { changeURL } from "@/utils/format";
-
 import TemplateInfo from "../Mods/TemplateInfo";
 import { useGetFunctionTemplateUsedByQuery, useGetOneFunctionTemplateQuery } from "../service";
 
@@ -57,7 +55,7 @@ const FuncTemplateItem = (props: { setSelectedItem: any; selectedItem: any; isMo
         <span
           className="cursor-pointer text-second"
           onClick={() => {
-            navigate(changeURL(`/recommended`));
+            navigate(-1);
             setSelectedItem({ text: t("Template.Recommended"), value: "recommended" });
           }}
         >

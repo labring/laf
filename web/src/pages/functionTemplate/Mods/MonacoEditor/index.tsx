@@ -186,7 +186,7 @@ const MonacoEditor = (props: {
                     (func: any) => func.name !== currentFunction?.name,
                   );
                   setFunctionList(updatedFunctionList);
-                  setCurrentFunction(functionList[0]);
+                  setCurrentFunction(updatedFunctionList[0]);
                 }}
                 headerText={String(t("Delete"))}
                 bodyText={String(t("FunctionPanel.DeleteConfirm"))}

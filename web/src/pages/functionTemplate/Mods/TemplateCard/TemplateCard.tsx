@@ -46,7 +46,7 @@ const TemplateCard = (props: IProps) => {
         <div className="mx-5" onClick={onClick}>
           <div className={clsx("mb-3 flex justify-between pt-4")}>
             <div className="flex items-center text-2xl font-semibold">
-              <div className="truncate">{template.name}</div>
+              <div className="line-clamp-1">{template.name}</div>
             </div>
             <div className="flex items-center">
               {templateCategory === "my" && (
