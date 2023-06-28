@@ -69,7 +69,7 @@ const UseTemplateModal = (props: { children: any; templateId: string; packageLis
     <>
       {React.cloneElement(children, {
         onClick: (event?: any) => {
-          event?.preventDefault();
+          // event?.preventDefault();
           onOpen();
         },
       })}
