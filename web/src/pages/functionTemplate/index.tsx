@@ -212,18 +212,24 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
                 {t("Template.CreateTemplate")}
               </Button>
             ) : null}
-            <div className="flex flex-1">
+            <div className="flex w-full">
               {selectedItem.value === "all" || selectedItem.value === "recommended" ? (
-                <InputGroup className="w-full">
+                <InputGroup className="flex">
                   <InputLeftElement children={<Search2Icon />} height={"2.5rem"} />
                   <Input
-                    width={isModal ? "50rem" : "56rem"}
+                    className="flex-1"
+                    width={"100%"}
                     height={"2.5rem"}
                     borderRadius={"6.25rem"}
                     placeholder={String(t("Search"))}
                     onChange={(e) => setSearchKey(e.target.value)}
                     border={"1px solid #DEE0E2"}
                     value={searchKey || ""}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        setQueryData({ ...defaultQueryData, keyword: searchKey });
+                      }
+                    }}
                   />
                   <InputRightElement width={"5.1rem"}>
                     <Button
@@ -248,9 +254,11 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
                   />
                 </InputGroup>
               )}
-              <InputGroup className={clsx("flex items-center justify-end", isModal ? "" : "pr-16")}>
-                <span className="text-lg text-grayModern-400">{t("Template.SortOrd")} </span>
-                <span className="pl-2 text-lg">{sorting}</span>
+              <div className={clsx("flex items-center justify-end pl-4", isModal ? "" : "pr-16")}>
+                <span className="whitespace-nowrap text-lg text-grayModern-400">
+                  {t("Template.SortOrd")}{" "}
+                </span>
+                <span className="whitespace-nowrap pl-2 text-lg">{sorting}</span>
                 <Menu>
                   <MenuButton className="cursor-pointer">
                     <ChevronDownIcon boxSize={6} color="gray.400" />
@@ -265,7 +273,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
                     })}
                   </MenuList>
                 </Menu>
-              </InputGroup>
+              </div>
             </div>
           </div>
           <div className={clsx("flex flex-wrap", isModal ? "pl-52" : "pl-72 pr-8")}>
@@ -273,7 +281,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
               templateList.list.map((item) => (
                 <section
                   className={clsx(
-                    "mb-3",
+                    "mb-3 min-w-[18rem]",
                     selectedItem.value === "all" || selectedItem.value === "recommended"
                       ? "w-1/3"
                       : "w-1/2",

@@ -18,7 +18,7 @@ export default function TemplateLayout() {
   }, [init]);
 
   return (
-    <div className={clsx("min-h-screen", darkMode ? "" : "bg-white")}>
+    <div className={clsx("h-screen overflow-hidden", darkMode ? "" : "bg-white")}>
       <div className={clsx("flex justify-center", darkMode ? "" : "bg-gray-100")}>
         <Header width="max-w-screen-xl" />
       </div>

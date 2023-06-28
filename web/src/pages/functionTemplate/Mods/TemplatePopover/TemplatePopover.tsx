@@ -19,8 +19,8 @@ const TemplatePopOver = (props: { children?: ReactNode; template: TFunctionTempl
       <PopoverTrigger>
         <span>{children}</span>
       </PopoverTrigger>
-      <Portal>
-        <PopoverContent width={761} height={561} zIndex={99999} position="relative">
+      <Portal appendToParentPortal>
+        <PopoverContent width={761} height={561}>
           <PopoverBody px="6" py="4">
             <TemplateFunctionInfo template={template} popover />
           </PopoverBody>

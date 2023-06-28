@@ -12,6 +12,11 @@
   height: 6px;
 }
 
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
 /* 滚动槽 */
 ::-webkit-scrollbar-track {
   border-radius: 2px;
