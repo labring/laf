@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { BsThreeDotsVertical } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { AddIcon, ChevronDownIcon, Search2Icon } from "@chakra-ui/icons";
 import {
@@ -8,6 +7,7 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  InputRightElement,
   Menu,
   MenuButton,
   MenuItem,
@@ -17,16 +17,15 @@ import {
 import clsx from "clsx";
 import { debounce } from "lodash";
 
-import { FileIcon, LikeIcon, TimeIcon } from "@/components/CommonIcon";
 import EmptyBox from "@/components/EmptyBox";
-import FileTypeIcon from "@/components/FileTypeIcon";
-import IconWrap from "@/components/IconWrap";
-import { daysAgo, formatDate } from "@/utils/format";
 
+import TemplateCard from "./Mods/TemplateCard/TemplateCard";
+import TemplatePopOver from "./Mods/TemplatePopover/TemplatePopover";
+import FuncTemplateItem from "./FuncTemplateItem";
 import {
-  useDeleteFunctionTemplateMutation,
   useGetFunctionTemplatesQuery,
   useGetMyFunctionTemplatesQuery,
+  useGetRecommendFunctionTemplatesQuery,
 } from "./service";
 
 import styles from "./Mods/SideBar/index.module.scss";
@@ -43,12 +42,12 @@ type queryData = {
   sort: string | null;
 };
 
-export default function FunctionTemplate() {
-  const deleteFunctionMutation = useDeleteFunctionTemplateMutation();
-
+export default function FunctionTemplate(props: { isModal?: boolean }) {
+  const { isModal } = props;
   const { t } = useTranslation();
-  const sortList = [t("Template.Latest"), t("Template.Earliest"), t("Template.MostStars")];
+  const sortList = [t("Template.MostStars"), t("Template.Latest")];
   const sideBar_data = [
+    { text: t("Template.Recommended"), value: "recommended" },
     { text: t("Template.CommunityTemplate"), value: "all" },
     { text: t("Template.My"), value: "my" },
     { text: t("Template.StaredTemplate"), value: "stared" },
@@ -61,14 +60,22 @@ export default function FunctionTemplate() {
     keyword: "",
     type: "default",
     asc: 1,
-    sort: null,
+    sort: "hot",
   };
 
-  const [selectedItem, setSelectedItem] = useState({ text: "", value: "" });
+  const [selectedItem, setSelectedItem] = useState(
+    isModal ? { text: "", value: "" } : { text: t("Template.Recommended"), value: "recommended" },
+  );
   const [queryData, setQueryData] = useState(defaultQueryData);
+  const [setQueryDataDebounced] = useState(() =>
+    debounce((value) => {
+      setQueryData({ ...defaultQueryData, keyword: value });
+    }, 500),
+  );
   const [sorting, setSorting] = useState(sortList[0]);
   const [page, setPage] = useState(1);
   const [templateList, setTemplateList] = useState<TemplateList>();
+  const [searchKey, setSearchKey] = useState("");
 
   const navigate = useNavigate();
   const { colorMode } = useColorMode();
@@ -85,10 +92,12 @@ export default function FunctionTemplate() {
         } else if (foundItem.value === "recent") {
           setQueryData({ ...queryData, type: "recentUsed" });
         }
+      } else {
+        setSelectedItem({ text: "", value: "" });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [window.location.href]);
 
   useGetFunctionTemplatesQuery(
     {
@@ -103,6 +112,19 @@ export default function FunctionTemplate() {
     },
   );
 
+  useGetRecommendFunctionTemplatesQuery(
+    {
+      ...queryData,
+      page: page,
+    },
+    {
+      enabled: selectedItem.value === "recommended",
+      onSuccess: (data: any) => {
+        setTemplateList(data.data);
+      },
+    },
+  );
+
   useGetMyFunctionTemplatesQuery(
     {
       ...queryData,
@@ -110,7 +132,7 @@ export default function FunctionTemplate() {
       pageSize: 8,
     },
     {
-      enabled: selectedItem.value !== "all",
+      enabled: ["my", "stared", "recent"].includes(selectedItem.value),
       onSuccess: (data: any) => {
         setTemplateList(data.data);
       },
@@ -121,6 +143,7 @@ export default function FunctionTemplate() {
     setSelectedItem(item);
     setQueryData(defaultQueryData);
     setSorting(sortList[0]);
+    setSearchKey("");
     if (item.value === "my") {
       setQueryData(defaultQueryData);
     } else if (item.value === "stared") {
@@ -136,222 +159,179 @@ export default function FunctionTemplate() {
     );
   };
 
-  const handleSearch = (e: any) => {
-    setQueryData({ ...defaultQueryData, keyword: e.target.value });
-  };
-
   const handleSortListClick = (e: any) => {
     setSorting(e.currentTarget.value);
-    if (e.currentTarget.value === sortList[0]) {
+    if (e.currentTarget.value === sortList[1]) {
       setQueryData({ ...queryData, asc: 1, sort: null });
-    } else if (e.currentTarget.value === sortList[1]) {
-      setQueryData({ ...queryData, asc: 0, sort: null });
-    } else if (e.currentTarget.value === sortList[2]) {
+    } else if (e.currentTarget.value === sortList[0]) {
       setQueryData({ ...queryData, asc: 1, sort: "hot" });
     }
   };
 
   return (
     <div className="pt-4">
-      <div className="w-45 absolute bottom-0 top-20 ml-20 flex flex-col">
-        <div className={clsx(darkMode ? styles.title_dark : styles.title)}>
-          {t("HomePage.NavBar.funcTemplate")}
-        </div>
-        {sideBar_data.map((item) => {
-          return (
-            <div
-              key={item.value}
-              className={clsx(
-                styles.explore_item,
-                item.value === selectedItem.value
-                  ? "bg-primary-100 text-primary-600"
-                  : "bg-[#F4F6F8] text-[#5A646E]",
-              )}
-              onClick={() => handleSideBarClick(item)}
-            >
-              {item.text}
-            </div>
-          );
-        })}
-      </div>
-      <div className="flex items-center justify-between py-5 pl-72">
-        {selectedItem.value === "my" ? (
-          <Button
-            onClick={() => {
-              navigate("/market/templates/create");
-            }}
-            leftIcon={<AddIcon />}
-            className="mr-8"
-            height={"2rem"}
+      {selectedItem.value ? (
+        <div>
+          <div
+            className={clsx(
+              "w-45 absolute bottom-0 flex flex-col",
+              isModal ? "top-12" : "top-16 ml-20",
+            )}
           >
-            {t("Template.CreateTemplate")}
-          </Button>
-        ) : null}
-        <div className="flex flex-1">
-          <InputGroup>
-            <InputLeftElement children={<Search2Icon />} height={"2rem"} />
-            <Input
-              width={"18.75rem"}
-              height={"2rem"}
-              borderRadius={"6.25rem"}
-              placeholder={String(t("Search"))}
-              onChange={debounce(handleSearch, 500)}
-            />
-          </InputGroup>
-          <InputGroup className="flex items-center justify-end pr-16">
-            <span className="text-lg text-grayModern-400">{t("Template.SortOrd")} </span>
-            <span className="pl-2 text-lg">{sorting}</span>
-            <Menu>
-              <MenuButton className="cursor-pointer">
-                <ChevronDownIcon boxSize={6} color="gray.400" />
-              </MenuButton>
-              <MenuList>
-                {sortList.map((item) => {
-                  return (
-                    <MenuItem key={item} value={item} onClick={handleSortListClick}>
-                      {item}
-                    </MenuItem>
-                  );
-                })}
-              </MenuList>
-            </Menu>
-          </InputGroup>
-        </div>
-      </div>
-      <div className="flex flex-wrap pl-72 pr-8">
-        {templateList && templateList.list.length > 0 ? (
-          (templateList?.list).map((item) => {
-            return (
-              <div
-                className={clsx("mb-3", selectedItem.value === "all" ? "w-1/3" : "w-1/2")}
-                key={item._id}
-              >
+            <div className={clsx(darkMode ? styles.title_dark : styles.title)}>
+              {t("HomePage.NavBar.funcTemplate")}
+            </div>
+            {sideBar_data.map((item) => {
+              return (
                 <div
-                  className="mr-4 cursor-pointer rounded-lg border-[1px]"
-                  style={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.outlineWidth = "2px";
-                    e.currentTarget.style.boxShadow =
-                      "0px 2px 4px rgba(0, 0, 0, 0.1), 0px 0px 0px 2px #66CBCA";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.outlineWidth = "1px";
-                    e.currentTarget.style.boxShadow = "0px 2px 4px rgba(0, 0, 0, 0.1)";
-                  }}
+                  key={item.value}
+                  className={clsx(
+                    styles.explore_item,
+                    item.value === selectedItem.value
+                      ? "bg-primary-100 text-primary-600"
+                      : !darkMode && "text-[#5A646E]",
+                  )}
+                  onClick={() => handleSideBarClick(item)}
                 >
-                  <div
-                    className="mx-5 pt-4"
-                    onClick={(event: any) => {
-                      event?.preventDefault();
-                      navigate(`/market/templates/${selectedItem.value || "all"}/${item._id}`);
-                    }}
-                  >
-                    <div className={clsx("mb-1 flex justify-between")}>
-                      <div
-                        className={clsx(
-                          "flex items-center",
-                          darkMode ? "text-gray-300" : "text-grayIron-600",
-                        )}
-                      >
-                        <TimeIcon color={darkMode ? "gray.300" : "grayIron.500"} />
-                        <span className="pl-2">
-                          {t("Template.CreatedAt")} {formatDate(item.createdAt)}
-                        </span>
-                      </div>
-                      <div className="flex items-center">
-                        {selectedItem.value === "my" && (
-                          <span
-                            className={clsx(
-                              "mr-3 px-2 font-semibold",
-                              item.private === false
-                                ? "bg-blue-100 text-blue-600"
-                                : "bg-adora-200 text-adora-600",
-                            )}
-                          >
-                            {item.private ? "Private" : "Public"}
-                          </span>
-                        )}
-                        {selectedItem.value === "my" && (
-                          <Menu placement="bottom-end">
-                            <MenuButton
-                              onClick={(e) => {
-                                e.stopPropagation();
-                              }}
-                            >
-                              <IconWrap>
-                                <BsThreeDotsVertical size={12} />
-                              </IconWrap>
-                            </MenuButton>
-                            <MenuList width={12} minW={24}>
-                              <MenuItem
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  navigate(
-                                    `/market/templates/${selectedItem.value}/${item._id}/edit`,
-                                  );
-                                }}
-                              >
-                                {t("Template.EditTemplate")}
-                              </MenuItem>
-                              <MenuItem
-                                onClick={async (e) => {
-                                  e.stopPropagation();
-                                  await deleteFunctionMutation.mutateAsync({ id: item._id });
-                                  window.location.reload();
-                                }}
-                              >
-                                {t("Template.DeleteTemplate")}
-                              </MenuItem>
-                            </MenuList>
-                          </Menu>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center pb-2 text-xl font-semibold">
-                      <FileTypeIcon type="ts" fontSize={20} />
-                      <div className="truncate pl-2">{item.name}</div>
-                    </div>
-                    <div
-                      className={clsx(
-                        "flex h-4 items-center truncate",
-                        darkMode ? "text-gray-300" : "text-second",
-                      )}
-                    >
-                      {item.description}
-                    </div>
-                  </div>
-
-                  <div className="mx-5 my-3 flex items-center justify-between">
-                    <span
-                      className={clsx("pr-2", darkMode ? "text-gray-300" : "text-grayModern-500")}
-                    >
-                      {t("Template.updatedAt")} {daysAgo(item.updatedAt)}
-                    </span>
-                    <div className="flex text-base">
-                      <span className="pl-2">
-                        <FileIcon /> {item.items.length}
-                      </span>
-                      <span className="pl-2">
-                        <LikeIcon /> {item.star}
-                      </span>
-                    </div>
-                  </div>
+                  {item.text}
                 </div>
+              );
+            })}
+          </div>
+          <div
+            className={clsx("flex items-center justify-between py-5", isModal ? "pl-52" : "pl-72")}
+          >
+            {selectedItem.value === "my" ? (
+              <Button
+                onClick={() => {
+                  navigate("/market/templates/create");
+                }}
+                leftIcon={<AddIcon />}
+                className="mr-8"
+                height={"2rem"}
+              >
+                {t("Template.CreateTemplate")}
+              </Button>
+            ) : null}
+            <div className="flex w-full">
+              {selectedItem.value === "all" || selectedItem.value === "recommended" ? (
+                <InputGroup className="flex">
+                  <InputLeftElement children={<Search2Icon />} height={"2.5rem"} />
+                  <Input
+                    className="flex-1"
+                    width={"100%"}
+                    height={"2.5rem"}
+                    borderRadius={"6.25rem"}
+                    placeholder={String(t("Search"))}
+                    onChange={(e) => setSearchKey(e.target.value)}
+                    border={"1px solid #DEE0E2"}
+                    value={searchKey || ""}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        setQueryData({ ...defaultQueryData, keyword: searchKey });
+                      }
+                    }}
+                  />
+                  <InputRightElement width={"5.1rem"}>
+                    <Button
+                      className="!h-9"
+                      onClick={() => {
+                        setQueryData({ ...defaultQueryData, keyword: searchKey });
+                      }}
+                    >
+                      {t("Search")}
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
+              ) : (
+                <InputGroup>
+                  <InputLeftElement children={<Search2Icon />} height={"2rem"} />
+                  <Input
+                    width={"18.75rem"}
+                    height={"2rem"}
+                    borderRadius={"6.25rem"}
+                    placeholder={String(t("Search"))}
+                    onChange={(e) => {
+                      setSearchKey(e.target.value);
+                      setQueryDataDebounced(e.target.value);
+                    }}
+                    value={searchKey || ""}
+                  />
+                </InputGroup>
+              )}
+              <div className={clsx("flex items-center justify-end pl-4", isModal ? "" : "pr-16")}>
+                <span className="whitespace-nowrap text-lg text-grayModern-400">
+                  {t("Template.SortOrd")}{" "}
+                </span>
+                <span className="whitespace-nowrap pl-2 text-lg">{sorting}</span>
+                <Menu>
+                  <MenuButton className="cursor-pointer">
+                    <ChevronDownIcon boxSize={6} color="gray.400" />
+                  </MenuButton>
+                  <MenuList>
+                    {sortList.map((item) => {
+                      return (
+                        <MenuItem key={item} value={item} onClick={handleSortListClick}>
+                          {item}
+                        </MenuItem>
+                      );
+                    })}
+                  </MenuList>
+                </Menu>
               </div>
-            );
-          })
-        ) : (
-          <EmptyBox>
-            <p>{t("Template.EmptyTemplate")}</p>
-          </EmptyBox>
-        )}
-      </div>
-      {templateList && templateList.list.length > 0 && (
-        <PaginationBar
-          page={page}
-          setPage={setPage}
-          total={templateList?.total || 0}
-          pageSize={selectedItem.value === "all" ? 12 : 8}
+            </div>
+          </div>
+          <div className={clsx("flex flex-wrap", isModal ? "pl-52" : "pl-72 pr-8")}>
+            {templateList && templateList.list.length > 0 ? (
+              templateList.list.map((item) => (
+                <section
+                  className={clsx(
+                    "mb-3 min-w-[18rem]",
+                    selectedItem.value === "all" || selectedItem.value === "recommended"
+                      ? "w-1/3"
+                      : "w-1/2",
+                  )}
+                  key={item._id}
+                >
+                  <TemplatePopOver template={item}>
+                    <TemplateCard
+                      onClick={() => {
+                        const currentURL = window.location.pathname;
+                        const lastIndex = currentURL.lastIndexOf("/");
+                        const newURL = currentURL.substring(0, lastIndex) + `/${item._id}`;
+                        navigate(newURL);
+                        setSelectedItem({ text: "", value: "" });
+                      }}
+                      template={item}
+                      templateCategory={selectedItem.value}
+                    ></TemplateCard>
+                  </TemplatePopOver>
+                </section>
+              ))
+            ) : (
+              <div className="w-full pt-20">
+                <EmptyBox>
+                  <p>{t("Template.EmptyTemplate")}</p>
+                </EmptyBox>
+              </div>
+            )}
+          </div>
+          {templateList && templateList.list.length > 0 && (
+            <PaginationBar
+              page={page}
+              setPage={setPage}
+              total={templateList?.total || 0}
+              pageSize={
+                selectedItem.value === "all" || selectedItem.value === "recommended" ? 12 : 8
+              }
+            />
+          )}
+        </div>
+      ) : (
+        <FuncTemplateItem
+          setSelectedItem={setSelectedItem}
+          selectedItem={selectedItem}
+          isModal={isModal!}
         />
       )}
     </div>

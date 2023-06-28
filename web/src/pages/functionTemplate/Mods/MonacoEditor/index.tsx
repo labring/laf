@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { ChevronDownIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import clsx from "clsx";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
@@ -74,6 +74,7 @@ const MonacoEditor = (props: {
   colorMode?: string;
   onChange?: (value: string | undefined) => void;
   currentFunction?: any;
+  setCurrentFunction?: any;
   functionList?: any;
   setFunctionList?: any;
 }) => {
@@ -84,6 +85,7 @@ const MonacoEditor = (props: {
     colorMode,
     onChange,
     currentFunction,
+    setCurrentFunction,
     functionList,
     setFunctionList,
   } = props;
@@ -91,19 +93,7 @@ const MonacoEditor = (props: {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
   const { t } = useTranslation();
-  const [showFunction, setShowFunction] = React.useState(true);
-
-  const adjustHeight = () => {
-    if (!monacoEl.current) return;
-
-    const model = editorRef.current?.getModel();
-    const lineHeight = editorRef.current?.getOption(monaco.editor.EditorOption.lineHeight) || 18;
-    const lineCount = model?.getLineCount() || 1;
-    const newHeight = lineCount * lineHeight;
-
-    monacoEl.current.style.height = `${newHeight}px`;
-    editorRef.current?.layout();
-  };
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   useEffect(() => {
     if (monacoEl && !editorRef.current) {
@@ -116,27 +106,22 @@ const MonacoEditor = (props: {
         readOnly: readOnly,
         scrollBeyondLastLine: false,
         scrollbar: {
-          vertical: "hidden",
-          alwaysConsumeMouseWheel: false,
+          verticalScrollbarSize: 4,
+          horizontalScrollbarSize: 8,
         },
         mouseWheelScrollSensitivity: 0,
         formatOnPaste: true,
         overviewRulerLanes: 0,
         lineNumbersMinChars: 4,
         fontSize: 14,
-        theme: colorMode === COLOR_MODE.dark ? "lafEditorThemeDark" : "lafEditorTheme",
-      });
-
-      editorRef.current.onDidChangeModelContent(() => {
-        adjustHeight();
+        theme: darkMode ? "lafEditorThemeDark" : "lafEditorTheme",
       });
     }
 
     updateModel(value, editorRef);
-    adjustHeight();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showFunction]);
+  }, [value]);
 
   useEffect(() => {
     subscriptionRef.current?.dispose();
@@ -150,22 +135,22 @@ const MonacoEditor = (props: {
   useEffect(() => {
     if (monacoEl && editorRef.current) {
       editorRef.current.updateOptions({
-        theme: colorMode === COLOR_MODE.dark ? "lafEditorThemeDark" : "lafEditorTheme",
+        theme: darkMode ? "lafEditorThemeDark" : "lafEditorTheme",
       });
     }
-  }, [colorMode]);
+  }, [darkMode]);
 
   return (
     <div
       className={clsx(
         "h-full overflow-hidden rounded-md border",
-        colorMode === COLOR_MODE.dark ? "bg-[#202631]" : "bg-white",
+        darkMode ? "bg-[#202631]" : "bg-white",
       )}
     >
       <div
         className={clsx(
           "flex h-8 w-full items-center justify-between rounded-t-md px-6 text-lg font-semibold",
-          colorMode === COLOR_MODE.dark ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-800",
+          darkMode ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-800",
         )}
         placeholder="Function Name"
         style={{ outline: "none", boxShadow: "none" }}
@@ -183,12 +168,16 @@ const MonacoEditor = (props: {
                 functionList={functionList}
                 setFunctionList={setFunctionList}
                 currentFunction={currentFunction}
+                setCurrentFunction={setCurrentFunction}
                 isEdit={true}
               >
                 <EditIcon
                   boxSize={3}
                   color={"grayModern.900"}
-                  className={clsx("mr-6 cursor-pointer hover:text-gray-400")}
+                  className={clsx(
+                    "mr-6 cursor-pointer hover:text-gray-400",
+                    darkMode && "!text-gray-400",
+                  )}
                 />
               </AddFunctionModal>
               <ConfirmButton
@@ -197,6 +186,7 @@ const MonacoEditor = (props: {
                     (func: any) => func.name !== currentFunction?.name,
                   );
                   setFunctionList(updatedFunctionList);
+                  setCurrentFunction(functionList[0]);
                 }}
                 headerText={String(t("Delete"))}
                 bodyText={String(t("FunctionPanel.DeleteConfirm"))}
@@ -204,20 +194,17 @@ const MonacoEditor = (props: {
                 <DeleteIcon
                   boxSize={3}
                   color={"grayModern.900"}
-                  className={clsx("mr-6 cursor-pointer hover:text-gray-400")}
+                  className={clsx(
+                    "mr-2 cursor-pointer hover:text-gray-400",
+                    darkMode && "!text-gray-400",
+                  )}
                 />
               </ConfirmButton>
             </span>
           )}
-          <ChevronDownIcon
-            boxSize={4}
-            color={"grayModern.900"}
-            className={clsx("cursor-pointer hover:text-gray-400")}
-            onClick={() => setShowFunction(!showFunction)}
-          />
         </span>
       </div>
-      <div ref={monacoEl} className={clsx("mb-2 mt-1", showFunction ? "" : "hidden")} />
+      <div ref={monacoEl} className="mb-2 mt-1 h-[90%]" />
     </div>
   );
 };
