@@ -978,7 +978,7 @@ export class FunctionTemplateService {
           as: 'items',
         },
       },
-      { $sort: { createdAt: asc === 0 ? 1 : -1 } },
+      { $sort: { updatedAt: asc === 0 ? 1 : -1 } },
       { $skip: (page - 1) * pageSize },
       { $limit: pageSize },
     ]
