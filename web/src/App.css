@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-color: #fafafa;
+}
+
+/* 设置滚动条的样式 */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 6px;
+}
+
+/* 滚动槽 */
+::-webkit-scrollbar-track {
+  border-radius: 2px;
+}
+
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+/* overrides chakra default value */
+body {
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  background-position: center !important;
+  font-variant-numeric: lining-nums;
+  font-size: 12px;
+}
+
+[data-theme="light"] body {
+  background-color: #eef0f2 !important;
+  /* background-image: url("/bg.png") !important; */
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  /* 滚动条滑块 */
+  background: rgba(21, 22, 26, 0.4);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    color: white;
+    background: black;
+  }
+}

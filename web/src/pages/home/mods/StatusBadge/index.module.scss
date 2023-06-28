@@ -1,0 +1,47 @@
+.badgeStyle {
+  text-align: center;
+  margin-right: 2px;
+  border-radius: 50px;
+
+  span::before {
+    content: "";
+    display: inline-block;
+    margin-bottom: 1px;
+    width: 6px;
+    height: 6px;
+    margin-right: 4px;
+    border-radius: 50%;
+  }
+
+  &.primary {
+    color: var(--chakra-colors-primary-600);
+
+    span::before {
+      background-color: var(--chakra-colors-primary-600);
+    }
+  }
+
+  &.warn {
+    color: var(--chakra-colors-warn-600);
+
+    span::before {
+      background-color: var(--chakra-colors-warn-600);
+    }
+  }
+
+  &.blue {
+    color: var(--chakra-colors-blue-600);
+
+    span::before {
+      background-color: var(--chakra-colors-blue-600);
+    }
+  }
+
+  &.error {
+    color: var(--chakra-colors-error-600);
+
+    span::before {
+      background-color: var(--chakra-colors-error-600);
+    }
+  }
+}

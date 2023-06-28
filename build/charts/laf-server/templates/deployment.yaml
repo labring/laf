@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "laf-server.fullname" . }}
+  labels:
+    {{- include "laf-server.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "laf-server.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "laf-server.selectorLabels" . | nindent 8 }}
+    spec:
+      automountServiceAccountToken: {{ .Values.serviceAccount.create }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "laf-server.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /v1/regions
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /v1/regions
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: DATABASE_URL
+              value: {{ .Values.databaseUrl | quote}}
+            - name: METERING_DATABASE_URL
+              value: {{ .Values.meteringDatabaseUrl | quote}}
+            - name: JWT_SECRET
+              value: {{ .Values.jwt.secret | quote}}
+            - name: API_SERVER_URL
+              value: {{ .Values.apiServerUrl | quote}}
+            - name: JWT_EXPIRES_IN
+              value: {{ .Values.jwt.expires_in | quote}}
+            - name: DEFAULT_REGION_DATABASE_URL
+              value: {{ .Values.default_region.database_url | quote}}
+            - name: DEFAULT_REGION_MINIO_DOMAIN
+              value: {{ .Values.default_region.minio_domain }}
+            - name: DEFAULT_REGION_MINIO_EXTERNAL_ENDPOINT
+              value: {{ .Values.default_region.minio_external_endpoint }}
+            - name: DEFAULT_REGION_MINIO_INTERNAL_ENDPOINT
+              value: {{ .Values.default_region.minio_internal_endpoint }}
+            - name: DEFAULT_REGION_MINIO_ROOT_ACCESS_KEY
+              value: {{ .Values.default_region.minio_root_access_key | quote}}
+            - name: DEFAULT_REGION_MINIO_ROOT_SECRET_KEY
+              value: {{ .Values.default_region.minio_root_secret_key | quote}}
+            - name: DEFAULT_REGION_RUNTIME_DOMAIN
+              value: {{ .Values.default_region.runtime_domain }}
+            - name: DEFAULT_REGION_WEBSITE_DOMAIN
+              value: {{ .Values.default_region.website_domain }}
+            - name: DEFAULT_REGION_TLS
+              value: {{ .Values.default_region.tls | quote}}
+            - name: DEFAULT_REGION_APISIX_PUBLIC_PORT
+              value: {{ .Values.default_region.apisix_public_port | quote }}
+            - name: DEFAULT_REGION_APISIX_API_URL
+              value: {{ .Values.default_region.apisix_api_url }}
+            - name: DEFAULT_REGION_APISIX_API_KEY
+              value: {{ .Values.default_region.apisix_api_key }}
+            - name: SITE_NAME
+              value: {{ .Values.siteName | quote}}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

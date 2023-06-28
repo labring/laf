@@ -1,0 +1,35 @@
+.sectionList {
+  overflow-y: hidden;
+
+  li {
+    cursor: pointer;
+    display: flex;
+    height: 28px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 12px;
+    margin-bottom: 2px;
+
+    span {
+      vertical-align: middle;
+    }
+
+    svg {
+      fill: #9ca2a8;
+    }
+
+    &.small {
+      height: 32px;
+    }
+
+    &:hover,
+    &.active {
+      background-color: rgba(0, 169, 157, 0.05);
+      color: var(--chakra-colors-primary-700);
+
+      svg {
+        fill: var(--chakra-colors-primary-700);
+      }
+    }
+  }
+}

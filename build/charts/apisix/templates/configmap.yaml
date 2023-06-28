@@ -1,0 +1,390 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+{{- if .Values.apisix.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "apisix.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+data:
+  config.yaml: |-
+    #
+    # Licensed to the Apache Software Foundation (ASF) under one or more
+    # contributor license agreements.  See the NOTICE file distributed with
+    # this work for additional information regarding copyright ownership.
+    # The ASF licenses this file to You under the Apache License, Version 2.0
+    # (the "License"); you may not use this file except in compliance with
+    # the License.  You may obtain a copy of the License at
+    #
+    #     http://www.apache.org/licenses/LICENSE-2.0
+    #
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+    #
+    {{- if .Values.apisix.enableCustomizedConfig }}
+    {{- range $key, $value := .Values.apisix.customizedConfig }}
+    {{ $key }}:
+      {{- include "apisix.tplvalues.render" (dict "value" $value "context" $) | nindent 6 }}
+    {{- end }}
+    {{- else }}
+    apisix:    # universal configurations
+      {{- if not (eq .Values.deployment.role "control_plane") }}
+      node_listen:    # APISIX listening port
+        - {{ .Values.gateway.http.containerPort }}
+        {{- with .Values.gateway.http.additionalContainerPorts }}
+        {{- toYaml . | nindent 8}}
+        {{- end }}
+      {{- end }}
+      enable_heartbeat: true
+      enable_admin: {{ .Values.admin.enabled }}
+      enable_admin_cors: {{ .Values.admin.cors }}
+      enable_debug: false
+      {{- if or .Values.customPlugins.enabled .Values.apisix.luaModuleHook.enabled }}
+      extra_lua_path: {{ .Values.customPlugins.luaPath }};{{ .Values.apisix.luaModuleHook.luaPath }}
+      {{- end }}
+
+      {{- if .Values.apisix.luaModuleHook.enabled }}
+      lua_module_hook: {{ .Values.apisix.luaModuleHook.hookPoint | quote }}
+      {{- end }}
+
+      enable_dev_mode: false                       # Sets nginx worker_processes to 1 if set to true
+      enable_reuseport: true                       # Enable nginx SO_REUSEPORT switch if set to true.
+      enable_ipv6: {{ .Values.apisix.enableIPv6 }} # Enable nginx IPv6 resolver
+      enable_server_tokens: {{ .Values.apisix.enableServerTokens }} # Whether the APISIX version number should be shown in Server header
+
+      # proxy_protocol:                   # Proxy Protocol configuration
+      #   listen_http_port: 9181          # The port with proxy protocol for http, it differs from node_listen and admin_listen.
+      #                                   # This port can only receive http request with proxy protocol, but node_listen & admin_listen
+      #                                   # can only receive http request. If you enable proxy protocol, you must use this port to
+      #                                   # receive http request with proxy protocol
+      #   listen_https_port: 9182         # The port with proxy protocol for https
+      #   enable_tcp_pp: true             # Enable the proxy protocol for tcp proxy, it works for stream_proxy.tcp option
+      #   enable_tcp_pp_to_upstream: true # Enables the proxy protocol to the upstream server
+
+      proxy_cache:                         # Proxy Caching configuration
+        cache_ttl: 10s                     # The default caching time if the upstream does not specify the cache time
+        zones:                             # The parameters of a cache
+        - name: disk_cache_one             # The name of the cache, administrator can be specify
+                                           # which cache to use by name in the admin api
+          memory_size: 50m                 # The size of shared memory, it's used to store the cache index
+          disk_size: 1G                    # The size of disk, it's used to store the cache data
+          disk_path: "/tmp/disk_cache_one" # The path to store the cache data
+          cache_levels: "1:2"              # The hierarchy levels of a cache
+      #  - name: disk_cache_two
+      #    memory_size: 50m
+      #    disk_size: 1G
+      #    disk_path: "/tmp/disk_cache_two"
+      #    cache_levels: "1:2"
+
+      router:
+        http: {{ .Values.apisix.httpRouter }}  # radixtree_uri: match route by uri(base on radixtree)
+                                    # radixtree_host_uri: match route by host + uri(base on radixtree)
+                                    # radixtree_uri_with_parameter: match route by uri with parameters
+        ssl: 'radixtree_sni'        # radixtree_sni: match route by SNI(base on radixtree)
+
+      {{- if or (index .Values "ingress-controller" "enabled") (and .Values.gateway.stream.enabled (or (gt (len .Values.gateway.stream.tcp) 0) (gt (len .Values.gateway.stream.udp) 0))) }}
+      stream_proxy:                 # TCP/UDP proxy
+        only: {{ .Values.gateway.stream.only }}
+        {{- if or (index .Values "ingress-controller" "enabled") (gt (len .Values.gateway.stream.tcp) 0) }}
+        tcp:                        # TCP proxy port list
+          {{- if gt (len .Values.gateway.stream.tcp) 0}}
+          {{- range .Values.gateway.stream.tcp }}
+          {{- if kindIs "map" . }}
+          - addr: {{ .addr }}
+          {{- if hasKey . "tls" }}
+            tls: {{ .tls }}
+          {{- end }}
+          {{- else }}
+          - {{ . }}
+          {{- end }}
+          {{- end }}
+          {{- else}}
+          - 9100
+          {{- end }}
+        {{- end }}
+        {{- if or (index .Values "ingress-controller" "enabled") (gt (len .Values.gateway.stream.udp) 0) }}
+        udp:                        # UDP proxy port list
+          {{- if gt (len .Values.gateway.stream.udp) 0}}
+          {{- range .Values.gateway.stream.udp }}
+          - {{ . }}
+          {{- end }}
+          {{- else}}
+          - 9200
+          {{- end }}
+        {{- end }}
+      {{- end }}
+      # dns_resolver:
+      #   {{- range $resolver := .Values.dns.resolvers }}
+      #   - {{ $resolver }}
+      #   {{- end }}
+      dns_resolver_valid: {{.Values.dns.validity}}
+      resolver_timeout: {{.Values.dns.timeout}}
+      ssl:
+        enable: {{ .Values.gateway.tls.enabled }}
+        listen:
+          - port: {{ .Values.gateway.tls.containerPort }}
+            enable_http2: {{ .Values.gateway.tls.http2.enabled }}
+          {{- with .Values.gateway.tls.additionalContainerPorts }}
+          {{- toYaml . | nindent 10}}
+          {{- end }}
+        ssl_protocols: {{ .Values.gateway.tls.sslProtocols | quote }}
+        ssl_ciphers: "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA256:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA"
+        {{- if and .Values.gateway.tls.enabled .Values.gateway.tls.existingCASecret }}
+        ssl_trusted_certificate: "/usr/local/apisix/conf/ssl/{{ .Values.gateway.tls.certCAFilename }}"
+        {{- end }}
+
+    nginx_config:    # config for render the template to genarate nginx.conf
+      error_log: "{{ .Values.logs.errorLog }}"
+      error_log_level: "{{ .Values.logs.errorLogLevel }}"    # warn,error
+      worker_processes: "{{ .Values.nginx.workerProcesses }}"
+      enable_cpu_affinity: {{ and true .Values.nginx.enableCPUAffinity }}
+      worker_rlimit_nofile: {{ default "20480" .Values.nginx.workerRlimitNofile }}  # the number of files a worker process can open, should be larger than worker_connections
+      event:
+        worker_connections: {{ default "10620" .Values.nginx.workerConnections  }}
+      {{- with .Values.nginx.envs }}
+      envs:
+      {{- range $env := . }}
+        - {{ $env }}
+      {{- end }}
+      {{- end }}
+      http:
+        enable_access_log: {{ .Values.logs.enableAccessLog }}
+        {{- if .Values.logs.enableAccessLog }}
+        access_log: "{{ .Values.logs.accessLog }}"
+        access_log_format: '{{ .Values.logs.accessLogFormat }}'
+        access_log_format_escape: {{ .Values.logs.accessLogFormatEscape }}
+        {{- end }}
+        keepalive_timeout: 60s         # timeout during which a keep-alive client connection will stay open on the server side.
+        client_header_timeout: 60s     # timeout for reading client request header, then 408 (Request Time-out) error is returned to the client
+        client_body_timeout: 60s       # timeout for reading client request body, then 408 (Request Time-out) error is returned to the client
+        send_timeout: 10s              # timeout for transmitting a response to the client.then the connection is closed
+        underscores_in_headers: "on"   # default enables the use of underscores in client request header fields
+        real_ip_header: "X-Real-IP"    # http://nginx.org/en/docs/http/ngx_http_realip_module.html#real_ip_header
+        real_ip_from:                  # http://nginx.org/en/docs/http/ngx_http_realip_module.html#set_real_ip_from
+          - 127.0.0.1
+          - 'unix:'
+        {{- if .Values.apisix.customLuaSharedDicts }}
+        custom_lua_shared_dict:        # add custom shared cache to nginx.conf
+        {{- range $dict := .Values.apisix.customLuaSharedDicts }}
+          {{ $dict.name }}: {{ $dict.size }}
+        {{- end }}
+        {{- end }}
+      {{- if .Values.configurationSnippet.main }}
+      main_configuration_snippet: {{- toYaml .Values.configurationSnippet.main | indent 6 }}
+      {{- end }}
+      {{- if .Values.configurationSnippet.httpStart }}
+      http_configuration_snippet: {{- toYaml .Values.configurationSnippet.httpStart | indent 6 }}
+      {{- end }}
+      {{- if .Values.configurationSnippet.httpEnd }}
+      http_end_configuration_snippet: {{- toYaml .Values.configurationSnippet.httpEnd | indent 6 }}
+      {{- end }}
+      {{- if .Values.configurationSnippet.httpSrv }}
+      http_server_configuration_snippet: {{- toYaml .Values.configurationSnippet.httpSrv | indent 6 }}
+      {{- end }}
+      {{- if .Values.configurationSnippet.httpAdmin }}
+      http_admin_configuration_snippet: {{ toYaml .Values.configurationSnippet.httpAdmin | indent 6 }}
+      {{- end }}
+      {{- if .Values.configurationSnippet.stream }}
+      stream_configuration_snippet: {{- toYaml .Values.configurationSnippet.stream | indent 6 }}
+      {{- end }}
+
+    {{- if .Values.discovery.enabled }}
+    discovery:
+      {{- range $key, $value := .Values.discovery.registry }}
+      {{- if $value }}
+      {{ $key }}:
+        {{- include "apisix.tplvalues.render" (dict "value" $value "context" $) | nindent 8 }}
+      {{- else }}
+      {{ $key }}: {}
+      {{- end }}
+      {{- end }}
+    {{- end }}
+
+    {{- if .Values.vault.enabled }}
+    vault:
+      host: {{ .Values.vault.host }}
+      timeout: {{ .Values.vault.timeout }}
+      token: {{ .Values.vault.token }}
+      prefix: {{ .Values.vault.prefix }}
+    {{- end }}
+
+    {{- if .Values.plugins }}
+    plugins:    # plugin list
+    {{- range $plugin := .Values.plugins }}
+      {{- if ne $plugin "" }}
+      - {{ $plugin }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.customPlugins.enabled }}
+    {{- range $plugin := .Values.customPlugins.plugins }}
+      - {{ $plugin.name }}
+    {{- end }}
+    {{- end }}
+    {{- end }}
+    {{- if .Values.stream_plugins }}
+    stream_plugins:
+    {{- range $plugin := .Values.stream_plugins }}
+      {{- if ne $plugin "" }}
+      - {{ $plugin }}
+      {{- end }}
+    {{- end }}
+    {{- end }}
+
+    {{- if .Values.extPlugin.enabled }}
+    ext-plugin:
+      cmd:
+      {{- range $arg := .Values.extPlugin.cmd }}
+        - {{ $arg }}
+      {{- end }}
+    {{- end }}
+
+    {{- if or .Values.pluginAttrs .Values.customPlugins.enabled .Values.serviceMonitor.enabled}}
+    {{- $pluginAttrs := include "apisix.pluginAttrs" . -}}
+    {{- if gt (len ($pluginAttrs | fromYaml)) 0 }}
+    plugin_attr: {{- $pluginAttrs | nindent 6 }}
+    {{- end }}
+    {{- end }}
+
+    {{- if .Values.wasmPlugins.enabled }}
+    wasm:
+      plugins:
+        {{- toYaml .Values.wasmPlugins.plugins | nindent 8 }}
+    {{- end }}
+
+    deployment:
+      role: {{ .Values.deployment.role }}
+      {{- if or (eq .Values.deployment.role "traditional") (eq .Values.deployment.role "control_plane") }}
+
+      {{- if eq .Values.deployment.role "traditional" }}
+      role_traditional:
+        config_provider: etcd
+      {{- end }}
+
+      {{- if eq .Values.deployment.role "control_plane" }}
+      role_control_plane:
+        config_provider: etcd
+        conf_server:
+          listen: 0.0.0.0:{{ .Values.deployment.controlPlane.confServerPort }}
+          cert: "/conf-server-ssl/{{ .Values.deployment.controlPlane.cert }}"
+          cert_key: "/conf-server-ssl/{{ .Values.deployment.controlPlane.certKey }}"
+          {{- if .Values.deployment.certs.mTLSCACertSecret }}
+          client_ca_cert: "/conf-ca-ssl/{{ .Values.deployment.certs.mTLSCACert }}"
+          {{- end }}
+      {{- end }}
+
+      admin:
+        allow_admin:    # http://nginx.org/en/docs/http/ngx_http_access_module.html#allow
+        {{- if .Values.admin.allow.ipList }}
+        {{- range $ips := .Values.admin.allow.ipList }}
+          - {{ $ips }}
+        {{- end }}
+        {{- else }}
+          - 0.0.0.0/0
+        {{- end}}
+        {{- if or (index .Values "ingress-controller" "enabled") .Values.dashboard.enabled  }}
+          - 0.0.0.0/0
+        {{- end}}
+        #   - "::/64"
+        {{- if .Values.admin.enabled }}
+        admin_listen:
+          ip: {{ .Values.admin.ip }}
+          port: {{ .Values.admin.port }}
+        {{- end }}
+        # Default token when use API to call for Admin API.
+        # *NOTE*: Highly recommended to modify this value to protect APISIX's Admin API.
+        # Disabling this configuration item means that the Admin API does not
+        # require any authentication.
+        admin_key:
+          # admin: can everything for configuration data
+          - name: "admin"
+            {{- if .Values.admin.credentials.secretName }}
+            key: "{{"{{"}}APISIX_ADMIN_KEY{{"}}"}}"
+            {{- else }}
+            key: {{ .Values.admin.credentials.admin }}
+            {{- end }}
+            role: admin
+          # viewer: only can view configuration data
+          - name: "viewer"
+            {{- if .Values.admin.credentials.secretName }}
+            key: "{{"{{"}}APISIX_VIEWER_KEY{{"}}"}}"
+            {{- else }}
+            key: {{ .Values.admin.credentials.viewer }}
+            {{- end }}
+            role: viewer
+
+      {{- if not (eq .Values.deployment.role "data_plane") }}
+      etcd:
+      {{- if .Values.etcd.enabled }}
+        host:                          # it's possible to define multiple etcd hosts addresses of the same etcd cluster.
+          {{- if .Values.etcd.fullnameOverride }}
+          - "{{ include "apisix.etcd.auth.scheme" . }}://{{ .Values.etcd.fullnameOverride }}:{{ .Values.etcd.service.port }}"
+          {{- else }}
+          - "{{ include "apisix.etcd.auth.scheme" . }}://{{ .Release.Name }}-etcd.{{ .Release.Namespace }}.svc.{{ .Values.etcd.clusterDomain }}:{{ .Values.etcd.service.port }}"
+          {{- end}}
+      {{- else }}
+        host:                          # it's possible to define multiple etcd hosts addresses of the same etcd cluster.
+          {{- range $value := .Values.etcd.host }}
+          - "{{ $value }}"             # multiple etcd address
+          {{- end}}
+      {{- end }}
+        prefix: {{ .Values.etcd.prefix | quote }}    # configuration prefix in etcd
+        timeout: {{ .Values.etcd.timeout }}    # 30 seconds
+        {{- if and (not .Values.etcd.enabled) .Values.etcd.user }}
+        user: {{ .Values.etcd.user | quote }}
+        password: {{ .Values.etcd.password | quote }}
+        {{- else if and .Values.etcd.enabled .Values.etcd.auth.rbac.create }}
+        user: "root"
+        password: {{ .Values.etcd.auth.rbac.rootPassword | quote }}
+        {{- end }}
+        {{- if .Values.etcd.auth.tls.enabled }}
+        tls:
+          cert: "/etcd-ssl/{{ .Values.etcd.auth.tls.certFilename }}"
+          key: "/etcd-ssl/{{ .Values.etcd.auth.tls.certKeyFilename }}"
+          verify: {{ .Values.etcd.auth.tls.verify }}
+          sni: "{{ .Values.etcd.auth.tls.sni }}"
+        {{- end }}
+    {{- end }}
+    {{- end }}
+      {{- end }}
+
+      {{- if eq .Values.deployment.role "data_plane" }}
+      role_data_plane:
+        config_provider: control_plane
+        control_plane:
+          host:
+            {{- range $.Values.deployment.dataPlane.controlPlane.host }}
+            - {{ . | quote }}
+            {{- end }}
+          prefix: {{ .Values.deployment.dataPlane.controlPlane.prefix }}
+          timeout: {{ .Values.deployment.dataPlane.controlPlane.timeout }}
+      {{- end }}
+
+      {{- if eq .Values.deployment.mode "decoupled"}}
+      {{- if .Values.deployment.certs.certsSecret }}
+      certs:
+        cert: "/conf-client-ssl/{{ .Values.deployment.certs.cert }}"
+        cert_key: "/conf-client-ssl/{{ .Values.deployment.certs.cert_key }}"
+        {{- if .Values.deployment.certs.mTLSCACertSecret }}
+        trusted_ca_cert: "/conf-ca-ssl/{{ .Values.deployment.certs.mTLSCACert }}"
+        {{- end }}
+      {{- end }}
+      {{- end }}
+
+{{- end }}

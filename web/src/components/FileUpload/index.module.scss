@@ -1,0 +1,43 @@
+.formFileUpload {
+  height: 16rem;
+  width: 29rem;
+  max-width: 100%;
+  text-align: center;
+  position: relative;
+}
+
+.inputFileUpload {
+  display: none;
+}
+
+.labelFileUpload {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-width: 2px;
+  border-radius: 1rem;
+  border-style: dashed;
+}
+
+.uploadButton {
+  cursor: pointer;
+  padding: 0.25rem;
+  font-size: 1rem;
+  border: none;
+}
+
+.uploadButton:hover {
+  text-decoration-line: underline;
+}
+
+.dragFileElement {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 1rem;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+}

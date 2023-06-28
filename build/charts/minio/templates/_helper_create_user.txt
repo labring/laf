@@ -1,0 +1,105 @@
+#!/bin/sh
+set -e ; # Have script exit in the event of a failed command.
+
+{{- if .Values.configPathmc }}
+MC_CONFIG_DIR="{{ .Values.configPathmc }}"
+MC="/usr/bin/mc --insecure --config-dir ${MC_CONFIG_DIR}"
+{{- else }}
+MC="/usr/bin/mc --insecure"
+{{- end }}
+
+# AccessKey and secretkey credentials file are added to prevent shell execution errors caused by special characters.
+# Special characters for example : ',",<,>,{,}
+MINIO_ACCESSKEY_SECRETKEY_TMP="/tmp/accessKey_and_secretKey_tmp"
+
+# connectToMinio
+# Use a check-sleep-check loop to wait for MinIO service to be available
+connectToMinio() {
+  SCHEME=$1
+  ATTEMPTS=0 ; LIMIT=29 ; # Allow 30 attempts
+  set -e ; # fail if we can't read the keys.
+  ACCESS=$(cat /config/rootUser) ; SECRET=$(cat /config/rootPassword) ;
+  set +e ; # The connections to minio are allowed to fail.
+  echo "Connecting to MinIO server: $SCHEME://$MINIO_ENDPOINT:$MINIO_PORT" ;
+  MC_COMMAND="${MC} alias set myminio $SCHEME://$MINIO_ENDPOINT:$MINIO_PORT $ACCESS $SECRET" ;
+  $MC_COMMAND ;
+  STATUS=$? ;
+  until [ $STATUS = 0 ]
+  do
+    ATTEMPTS=`expr $ATTEMPTS + 1` ;
+    echo \"Failed attempts: $ATTEMPTS\" ;
+    if [ $ATTEMPTS -gt $LIMIT ]; then
+      exit 1 ;
+    fi ;
+    sleep 2 ; # 1 second intervals between attempts
+    $MC_COMMAND ;
+    STATUS=$? ;
+  done ;
+  set -e ; # reset `e` as active
+  return 0
+}
+
+# checkUserExists ()
+# Check if the user exists, by using the exit code of `mc admin user info`
+checkUserExists() {
+  CMD=$(${MC} admin user info myminio $(head -1 $MINIO_ACCESSKEY_SECRETKEY_TMP) > /dev/null 2>&1)
+  return $?
+}
+
+# createUser ($policy)
+createUser() {
+  POLICY=$1
+  #check accessKey_and_secretKey_tmp file
+  if [[ ! -f $MINIO_ACCESSKEY_SECRETKEY_TMP ]];then
+    echo "credentials file does not exist"
+    return 1
+  fi
+  if [[ $(cat $MINIO_ACCESSKEY_SECRETKEY_TMP|wc -l) -ne 2 ]];then
+    echo "credentials file is invalid"
+    rm -f $MINIO_ACCESSKEY_SECRETKEY_TMP
+    return 1
+  fi
+  USER=$(head -1 $MINIO_ACCESSKEY_SECRETKEY_TMP)
+  # Create the user if it does not exist
+  if ! checkUserExists ; then
+    echo "Creating user '$USER'"
+    cat $MINIO_ACCESSKEY_SECRETKEY_TMP | ${MC} admin user add myminio
+  else
+    echo "User '$USER' already exists."
+  fi
+  #clean up credentials files.
+  rm -f $MINIO_ACCESSKEY_SECRETKEY_TMP
+
+  # set policy for user
+  if [ ! -z $POLICY -a $POLICY != " " ] ; then
+      echo "Adding policy '$POLICY' for '$USER'"
+      ${MC} admin policy set myminio $POLICY user=$USER
+  else
+      echo "User '$USER' has no policy attached."
+  fi
+}
+
+# Try connecting to MinIO instance
+{{- if .Values.tls.enabled }}
+scheme=https
+{{- else }}
+scheme=http
+{{- end }}
+connectToMinio $scheme
+
+{{ if .Values.users }}
+{{ $global := . }}
+# Create the users
+{{- range .Values.users }}
+echo {{ tpl .accessKey $global }} > $MINIO_ACCESSKEY_SECRETKEY_TMP
+{{- if .existingSecret }}
+cat /config/secrets/{{ tpl .existingSecretKey $global }} >> $MINIO_ACCESSKEY_SECRETKEY_TMP
+# Add a new line if it doesn't exist
+sed -i '$a\' $MINIO_ACCESSKEY_SECRETKEY_TMP
+createUser {{ .policy }}
+{{ else }}
+echo {{ .secretKey }} >> $MINIO_ACCESSKEY_SECRETKEY_TMP
+createUser {{ .policy }}
+{{- end }}
+{{- end }}
+{{- end }}

@@ -4,34 +4,31 @@ title: 前端使用 STS 令牌访问云存储
 
 # {{ $frontmatter.title }}
 
-在前端使用 [使用云函数生成云存储临时令牌(STS)](get-sts.md) 生成的 STS 令牌信息，访问云存储。
+在前端使用 [使用云函数生成云存储临时令牌 (STS)](get-sts.md) 生成的 STS 令牌信息，访问云存储。本方法需要先把文件上传至云函数，再由云函数上传到云存储，而是直接上传文件到云存储。
 
-1. 安装前端依赖
+1.安装前端依赖
 
 ```bash
 npm i @aws-sdk/client-s3 laf-client-sdk
 ```
 
-2. 编写前端代码实现文件上传：
+2.编写前端代码实现文件上传：
 
-```ts
+```typescript
 import { S3, PutObjectCommand } from "@aws-sdk/client-s3";
 import { Cloud } from "laf-client-sdk";
 
-const APPID = "YOUR_APPID";
+const APPID = "YOUR_APPID"; // Laf 应用 appid
 
 const cloud = new Cloud({
-  baseUrl: `https://${appid}.lafyun.com`,
+  baseUrl: `https://${appid}.laf.run`,
   getAccessToken: () => localStorage.getItem("access_token"),
 });
 
 // 获取云存储临时令牌
-const { credentials, endpoint, region } = await cloud.invokeFunction(
-  "get-sts",
-  {}
-);
+const { credentials, endpoint, region } = await cloud.invoke("get-sts");
 
-const s3 = new S3({
+const s3Client = new S3({
   endpoint: endpoint,
   region: region,
   credentials: {
@@ -48,14 +45,16 @@ const bucket = `${APPID}-public`;
 const cmd = new PutObjectCommand({
   Bucket: bucket,
   Key: "index.html",
-  Body: "Hello from laf oss!", // 文件内容可以是二进制数据，也可以是文本数据， 或者是 File 对象
+  Body: "Hello from laf oss!", // 文件内容可以是二进制数据，也可以是文本数据，或者是 File 对象
   ContentType: "text/html",
 });
 
-const res = await s3.send(cmd);
+const res = await s3Client.send(cmd);
 console.log(res);
 ```
 
-::: info
-这里我们使用 `@aws-sdk/client-s3` 库，实现文件上传，你可以使用任何兼容 aws s3 接口的 SDK 来替代，如 [minio js sdk](https://docs.min.io/docs/javascript-client-quickstart-guide.html)
+::: tip
+这里我们使用 `@aws-sdk/client-s3` 库，实现文件上传，其他命令使用方法同[云函数调用云存储](/guide/oss/oss-by-function)
+
+你可以使用任何兼容 aws s3 接口的 SDK 来替代，如 [minio js sdk](https://docs.min.io/docs/javascript-client-quickstart-guide.html)
 :::

@@ -1,0 +1,246 @@
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import { useColorMode } from "@chakra-ui/react";
+import axios from "axios";
+import clsx from "clsx";
+
+import { GithubIcon, MenuIcon } from "@/components/CommonIcon";
+import { COLOR_MODE, Routes } from "@/constants";
+
+import Language from "./language";
+
+const Navbar = () => {
+  const [showBanner, setShowBanner] = useState(false);
+  const [toggleSidebar, setToggleSidebar] = useState(false);
+  const [stars, setStars] = useState<string | null>(null);
+  const { t } = useTranslation();
+  const navList = [
+    { text: t("HomePage.NavBar.home"), ref: "/" },
+    { text: t("HomePage.NavBar.docs"), ref: String(t("HomePage.DocsLink")) },
+    { text: t("HomePage.NavBar.forum"), ref: "https://forum.laf.run/" },
+    { text: t("HomePage.NavBar.contact"), ref: "https://www.wenjuan.com/s/I36ZNbl/" },
+  ];
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === COLOR_MODE.dark;
+
+  useEffect(() => {
+    const expirationTime = 24 * 60 * 60 * 1000;
+    const lastCanceledTime: string | null = localStorage.getItem("lastCanceledTime");
+    const now = new Date().getTime();
+    // console.log("now:",now,"last",lastCanceledTime);
+    //如果本地已经存有上次的删除时间，且小于24h，则不显示banner
+    if (lastCanceledTime && now - Number(lastCanceledTime) < expirationTime) {
+      setShowBanner(false);
+    } else {
+      //没有本地的删除时间，或者已经大于24h，显示banner
+      setShowBanner(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      const axiosRes = await axios.get(
+        "https://img.shields.io/github/stars/labring/laf?style=plastic",
+      );
+      const str = axiosRes.data;
+      const reg = /(\d+(\.\d+)?)(k)/;
+      const match = str.match(reg);
+
+      if (match) {
+        const matchedText = match[1];
+        setStars(`${matchedText}K`);
+      } else {
+        console.log("No match found");
+      }
+    })();
+
+    return () => {};
+  }, []);
+
+  return (
+    <div className="flex flex-col items-center justify-center">
+      <div className={showBanner ? "fixed top-0  z-40 block" : "hidden"}>
+        <div className="flex h-12 w-screen items-center justify-center bg-[url('/homepage/banner.png')] bg-center lg:px-32">
+          <a
+            className="whitespace-nowrap text-[6px] text-white lg:text-xl"
+            target="_blank"
+            href="https://github.com/labring/laf"
+            rel="noreferrer"
+          >
+            {t("HomePage.NavBar.title")}
+          </a>
+        </div>
+        <img
+          className="absolute right-4 top-3 z-40 hover:cursor-pointer lg:right-36 "
+          src="/homepage/cancel_btn.svg"
+          alt={"cancel"}
+          onClick={() => {
+            setShowBanner(false);
+            localStorage.setItem("lastCanceledTime", new Date().getTime().toString());
+          }}
+        />
+      </div>
+      <div
+        className={
+          showBanner
+            ? clsx("fixed top-12 z-40  hidden w-full justify-center px-28 py-4 lg:flex", {
+                "bg-lafDark-100": darkMode,
+                "bg-lafWhite-600": !darkMode,
+              })
+            : clsx("fixed top-0 z-40  hidden w-full justify-center px-28 py-4 lg:flex", {
+                "bg-lafDark-100": darkMode,
+                "bg-lafWhite-600": !darkMode,
+              })
+        }
+      >
+        <div className="flex w-full max-w-[1200px] justify-between">
+          <div className="flex items-center">
+            <div>
+              <img
+                src={darkMode ? "logo_light.png" : "logo_text.png"}
+                className="h-auto w-20"
+                alt={"logo"}
+              />
+            </div>
+
+            {navList.map((item, index) => {
+              return (
+                <a
+                  key={index}
+                  target={item.ref.startsWith("http") ? "_blank" : "_self"}
+                  href={item.ref}
+                  className="ml-10"
+                  rel="noreferrer"
+                >
+                  {item.text}
+                </a>
+              );
+            })}
+          </div>
+          <div className="flex w-80 items-center justify-evenly">
+            {stars ? (
+              <a
+                href="https://github.com/labring/laf"
+                target="_blank"
+                className="flex"
+                rel="noreferrer"
+              >
+                <GithubIcon
+                  className="mr-1"
+                  fontSize={24}
+                  color={darkMode ? "#F6F8F9" : "#3C455D"}
+                />
+                {stars}
+              </a>
+            ) : null}
+            <Language fontSize={24} />
+            <div>
+              <Link
+                to={Routes.dashboard}
+                className="bg-primary text-sm rounded px-5 py-2 text-white"
+              >
+                {t("HomePage.NavBar.start")}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        className={
+          showBanner
+            ? clsx("fixed top-12 z-40 flex w-full justify-between px-8 py-4 lg:hidden", {
+                "bg-lafDark-100": darkMode,
+                "bg-lafWhite-600": !darkMode,
+              })
+            : clsx("fixed top-0 z-40 flex w-full justify-between px-8 py-4 lg:hidden", {
+                "bg-lafDark-100": darkMode,
+                "bg-lafWhite-600": !darkMode,
+              })
+        }
+      >
+        <img className="h-10" src={darkMode ? "logo_light.png" : "logo_text.png"} alt="logo" />
+
+        <MenuIcon
+          fontSize={32}
+          color={darkMode ? "#F6F8F9" : "#3C455D"}
+          onClick={() => setToggleSidebar(!toggleSidebar)}
+        />
+      </div>
+      {toggleSidebar && (
+        <div
+          id="dropdown"
+          className={
+            showBanner
+              ? clsx(
+                  "fixed right-4 top-28 z-40 block w-28 divide-y divide-gray-100 rounded-lg shadow lg:hidden",
+                  {
+                    "bg-lafDark-300 text-lafWhite-600": darkMode,
+                    "bg-lafWhite-600 text-gray-700": !darkMode,
+                  },
+                )
+              : clsx(
+                  "fixed right-4 top-16 z-40 block w-28 divide-y divide-gray-100 rounded-lg shadow lg:hidden",
+                  {
+                    "bg-lafDark-300 text-lafWhite-600": darkMode,
+                    "bg-lafWhite-600 text-gray-700": !darkMode,
+                  },
+                )
+          }
+        >
+          <ul
+            className="text-sm divide-y divide-gray-100 py-2"
+            aria-labelledby="dropdownDefaultButton"
+          >
+            <div>
+              {navList.map((item, index) => {
+                return (
+                  <li key={index}>
+                    <a
+                      href={item.ref}
+                      target={item.ref.startsWith("http") ? "_blank" : "_self"}
+                      className={
+                        darkMode
+                          ? "block px-4 py-2 hover:bg-gray-900"
+                          : "block px-4 py-2 hover:bg-gray-100"
+                      }
+                      rel="noreferrer"
+                    >
+                      {item.text}
+                    </a>
+                  </li>
+                );
+              })}
+            </div>
+            <div>
+              {stars ? (
+                <a
+                  href="https://github.com/labring/laf"
+                  className={
+                    darkMode
+                      ? "flex px-4 py-2 hover:bg-gray-900"
+                      : "flex px-4 py-2 hover:bg-gray-100"
+                  }
+                >
+                  <GithubIcon fontSize={24} color={darkMode ? "#F6F8F9" : "#3C455D"} />
+                  {stars}
+                </a>
+              ) : null}
+
+              <div
+                className={
+                  darkMode ? "flex px-4 py-2 hover:bg-gray-900" : "flex px-4 py-2 hover:bg-gray-100"
+                }
+              >
+                <Language fontSize={24} />
+              </div>
+            </div>
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Navbar;

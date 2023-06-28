@@ -4,64 +4,130 @@ title: 云函数处理 WebSocket 长连接
 
 # {{ $frontmatter.title }}
 
-`laf.js` 于 `v0.6.11` 新增支持了 WebSocket 能力。
+WebSocket 是一个长连接，可以主动给客户端推送消息，但是很可惜很多 Severless 架构不支持 WebSocket 的功能。值得开心的是，Laf 可以很轻松的使用 WebSocket，这给了我们更多的应用场景。
 
-## WebSocket 触发器
+## WebSocket 云函数
 
-当应用收到 WebSocket 消息时，会触发以下云函数事件，开发者为任一云函数配置以下触发器，即可处理 WebSocket 消息
+在 Laf 使用 WebSocket 需要创建一个云函数并且命名为 `__websocket__`
 
-- `WebSocket:connection` 有新 WebSocket 连接建立时触发，通过 `ctx.socket` 获取连接
-- `WebSocket:message` 接收 WebSocket 消息时触发，通过 `ctx.params` 获取消息数据
-- `WebSocket:close` 有 WebSocket 连接关闭时触发
-- `WebSocket:error` 有 WebSocket 连接出错时触发
+:::tip
+WebSocket 云函数名为固定云函数名：`__websocket__`，其他名称均不会生效
+:::
 
 以下是云函数中处理 WebSocket 示例：
 
-```ts
-exports.main = async function (ctx) {
+```typescript
+export async function main(ctx: FunctionContext) {
+
   if (ctx.method === "WebSocket:connection") {
-    ctx.socket.send("hi connection succeed");
+    ctx.socket.send('hi connection succeed')
   }
 
-  if (ctx.method === "WebSocket:message") {
+  if (ctx.method === 'WebSocket:message') {
     const { data } = ctx.params;
     console.log(data.toString());
     ctx.socket.send("I have received your message");
   }
-};
+}
 ```
 
-以下是通过云函数向所有 WebSocket 连接发送消息示例：
-
-```ts
-import cloud from "@/cloud-sdk";
-
-exports.main = async function (ctx) {
-  const sockets: Set<WebSocket> = cloud.sockets;
-  sockets.forEach((socket) => {
-    socket.send("Everyone will receive this message");
-  });
-  return "ok";
-};
-```
-
-更多用法请参考： https://github.com/websockets/ws
+更多用法请参考： <https://github.com/websockets/ws>
 
 ## 客户端 WebSocket 连接
 
-```js
-const wss = new WebSocket("wss://your-own-appid.lafyun.com");
+```typescript
+const wss = new WebSocket("wss://your-own-appid.laf.run/__websocket__");
+
 wss.onopen = (socket) => {
   console.log("connected");
   wss.send("hi");
 };
 
 wss.onmessage = (res) => {
-  console.log("收到了新的信息......")
+  console.log("收到了新的信息......");
   console.log(res.data);
 };
 
 wss.onclose = () => {
   console.log("closed");
 };
+```
+
+## 连接演示
+
+1、替换 `__websocket__` 代码并发布
+
+```js
+import cloud from '@lafjs/cloud'
+
+export async function main(ctx: FunctionContext) {
+  // 初始化 websocket user Map 列表
+  // 也可用数据库保存，本示例代码用的 Laf 云函数的全局缓存
+  let wsMap = cloud.shared.get("wsMap") // 获取 wsMap
+  if(!wsMap){
+    wsMap = new Map()
+    cloud.shared.set("wsMap", wsMap) // 设置 wsMap
+  }
+  // websocket 连接成功
+  if (ctx.method === "WebSocket:connection") {
+    const userId = generateUserId()
+    wsMap = cloud.shared.get("wsMap") // 获取 wsMap
+    wsMap.set(userId, ctx.socket);
+    cloud.shared.set("wsMap", wsMap) // 设置 wsMap
+    ctx.socket.send("连接成功，你的 userID 是："+userId);
+  }
+
+  // websocket 消息事件
+  if (ctx.method === "WebSocket:message") {
+    const { data } = ctx.params;
+    console.log("接收到的信息：",data.toString());
+    const userId = getKeyByValue(wsMap, ctx.socket);
+    ctx.socket.send("服务端已接收到消息事件，你的 userID 是："+userId);
+  }
+
+  // websocket 关闭消息
+  if (ctx.method === "WebSocket:close") {
+    wsMap = cloud.shared.get("wsMap") // 获取 wsMap 
+    const userId = getKeyByValue(wsMap, ctx.socket);
+    wsMap.delete(userId);
+    cloud.shared.set("wsMap", wsMap) // 设置 wsMap
+    ctx.socket.send("服务端已接收到关闭事件消息，你的 userID 是："+userId);
+  }
+}
+// 生成随机用户 ID 
+function generateUserId() {
+  return Math.random().toString(36).substring(2, 15);
+}
+
+// 遍历 userID
+function getKeyByValue(map, value) {
+  for (const [key, val] of map.entries()) {
+    if (val === value) {
+      return key;
+    }
+  }
+}
+```
+
+2、获得你的 WebSocket 链接
+
+一般格式为：
+
+your-own-appid 换成你的 Laf 应用 appid
+
+`wss://your-own-appid.laf.run/__websocket__`
+
+3、客户端链接 WebSocket 链接，并获得 userID
+
+4、新建云函数通过 userID 去推送消息
+
+```js
+import cloud from '@lafjs/cloud'
+
+export async function main(ctx: FunctionContext) {
+  const userID = ''
+  let wsMap = cloud.shared.get("wsMap")
+  ctx.socket = wsMap.get(userID)
+  ctx.socket.send("消息测试");
+}
 ```

@@ -1,0 +1,20 @@
+.breathing-gradient {
+  background: #5cdd8b;
+  display: inline-block;
+  border-radius: 50rem;
+  width: 5px;
+  height: 16px;
+  margin-right: 2px;
+}
+
+@keyframes breathing {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}

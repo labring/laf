@@ -1,0 +1,28 @@
+.sectionHeader {
+  min-height: 32px;
+  max-height: 32px;
+  display: flex;
+  align-items: center;
+
+  h4 {
+    padding-left: 10px;
+    font-weight: 500;
+    font-size: 12px;
+    position: relative;
+
+    &::before {
+      content: " ";
+      height: 12px;
+      position: absolute;
+      left: 0;
+      top: 3px;
+      width: 3px;
+      background: #00a99d;
+      border-radius: 24px;
+    }
+  }
+
+  h4 svg {
+    vertical-align: -4px !important;
+  }
+}

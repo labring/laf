@@ -1,6 +1,6 @@
 {
   "name": "laf-client-sdk",
-  "version": "0.8.2",
+  "version": "1.0.0-beta.8",
   "description": "",
   "main": "dist/commonjs/index.js",
   "module": "dist/esm/index.js",
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lafjs/laf.git"
+    "url": "git+https://github.com/labring/laf.git"
   },
   "keywords": [
     "laf",
@@ -24,12 +24,12 @@
   "author": "maslow (wangfugen@126.com)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/lafjs/laf/issues"
+    "url": "https://github.com/labring/laf/issues"
   },
-  "homepage": "https://github.com/lafjs/laf#readme",
+  "homepage": "https://github.com/labring/laf#readme",
   "dependencies": {
     "axios": "^0.21.1",
-    "database-ql": "^0.8.2"
+    "database-ql": "^1.0.0-beta.2"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",

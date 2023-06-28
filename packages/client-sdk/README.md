@@ -1,6 +1,6 @@
 ### 介绍
 
-Javascript client sdk of [`LaF`](https://github.com/lafjs/laf).
+Javascript client sdk of [`laf`](https://github.com/labring/laf).
 
 ### 安装
 
@@ -11,7 +11,7 @@ Javascript client sdk of [`LaF`](https://github.com/lafjs/laf).
 ### 使用示例
 
 ```js
-import { Cloud } from 'laf-client-sdk'
+import { Cloud } from "laf-client-sdk";
 
 const cloud = new Cloud({
   // the laf app server base url
@@ -68,7 +68,7 @@ const cloud = new Cloud({
   baseUrl: "https://APPID.lafyun.com",
   // the database proxy entry, `app` is the policy name which response for the security of database access
   dbProxyUrl: "/proxy/app",
-  getAccessToken: () => localStorage.getItem("access_token"),
+  getAccessToken: () => wx.getStorageSync('access_token'),
   environment: "wxmp",
 });
 ```
@@ -451,17 +451,17 @@ collection.field()
 
 参数说明
 
-| 参数 | 类型   | 必填 | 说明                                      |
-| ---- | ------ | ---- | ----------------------------------------- |
-| -    | object | 是   | 要过滤的字段，不返回传 false，返回传 true |
+| 参数 | 类型   | 必填 | 说明                               |
+| ---- | ------ | ---- | ---------------------------------- |
+| -    | object | 是   | 要过滤的字段，不返回传 0，返回传 1 |
 
 使用示例
 
 ```js
-collection.field({ age: true });
+collection.field({ age: 1 });
 ```
 
-备注：只能指定要返回的字段或者不要返回的字段。即{'a': true, 'b': false}是一种错误的参数格式
+备注：只能指定要返回的字段或者不要返回的字段。即{'a': 1, 'b': 0}是一种错误的参数格式
 
 ### 查询指令
 
@@ -695,7 +695,7 @@ collection
   .get()
   .then((res) => {
     const promiseList = res.data.map((document) => {
-      return collection.doc(document.id).remove();
+      return collection.doc(document._id).remove();
     });
     Promise.all(promiseList);
   })

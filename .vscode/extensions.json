@@ -1,17 +1,11 @@
 {
   "recommendations": [
-    "octref.vetur",
     "dbaeumer.vscode-eslint",
-    "eamodio.gitlens",
-    "humao.rest-client",
+    "esbenp.prettier-vscode",
     "christian-kohler.npm-intellisense",
-    "kisstkondoros.vscode-gutter-preview",
-    "alefragnani.bookmarks",
-    "hbenl.vscode-mocha-test-adapter"
-  ],
-  "unwantedRecommendations": [
-    "hookyqr.beautify",
-    "dbaeumer.jshint",
-    "ms-vscode.vscode-typescript-tslint-plugin"
+    "streetsidesoftware.code-spell-checker",
+    "pomdtr.excalidraw-editor",
+    "Tim-Koehler.helm-intellisense",
+    "lokalise.i18n-ally"
   ]
 }

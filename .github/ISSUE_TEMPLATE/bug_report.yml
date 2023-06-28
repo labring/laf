@@ -1,0 +1,96 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+name: Bug report
+title: "[bug] bug title "
+description: If something isn't working as expected.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For better global communication, please write in English.
+        (为了更好的国际化交流，请您使用英语描述问题。)
+
+        You can use ChatGPT to translate your native language into English:
+        (您可以使用ChatGPT将您的母语翻译成英文。）
+        - [ChatGPT](https://chat.openai.com/)
+
+  - type: checkboxes
+    attributes:
+      label: Search before asking
+      description: >
+        Please make sure to search in the [issues](https://github.com/labring/laf/issues?q=is%3Aissue)
+        first to see whether the same issue was reported already.
+      options:
+        - label: >
+            I had searched in the [issues](https://github.com/labring/laf/issues?q=is%3Aissue) and found
+            no similar issues.
+          required: true
+
+  - type: dropdown
+    attributes:
+      label: Environment
+      description: Describe the environment.
+      options:
+        - https://laf.dev
+        - https://laf.run
+        - Linux (self-host)
+        - Mac (self-host)
+        - Windows (self-host)
+        - Laf-cli
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: What happened
+      description: Describe what happened.
+      placeholder: >
+        A clear and concise description of what the bug is.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: How to reproduce
+      description: >
+        Describe the steps to reproduce the bug here.
+      placeholder: >
+        Please make sure you provide a reproducible step-by-step case of how to reproduce the problem
+        as minimally and precisely as possible.
+
+        1. xxx
+
+        2. xxx
+
+        3. ...
+    validations:
+      required: true
+
+  - type: checkboxes
+    attributes:
+      label: Are you willing to submit PR?
+      description: >
+        This is absolutely not required, but we are happy to guide you in the contribution process
+        especially if you already have a good understanding of how to implement the fix.
+      options:
+        - label: Yes I am willing to submit a PR!
+
+  - type: markdown
+    attributes:
+      value: "Thanks for completing our form!"

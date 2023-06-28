@@ -1,0 +1,7 @@
+
+Domains: 
+- http://{{ .Values.domain }}
+- http://api.{{ .Values.domain }}
+- http://minio.{{ .Values.domain }}
+
+> Please resolve the `*.{{ .Values.domain }}` and `{{ .Values.domain }}` to the IP address of the server.

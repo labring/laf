@@ -371,14 +371,14 @@ collection.field()
 
 | 参数 | 类型   | 必填 | 说明                                    |
 | ---- | ------ | ---- | --------------------------------------- |
-| -    | object | 是   | 要过滤的字段，不返回传false，返回传true |
+| -    | object | 是   | 要过滤的字段，不返回传0，返回传1 |
 
 使用示例
 
 ```js
-collection.field({ 'age': true })
+collection.field({ 'age': 1 })
 ```
-备注：只能指定要返回的字段或者不要返回的字段。即{'a': true, 'b': false}是一种错误的参数格式
+备注：只能指定要返回的字段或者不要返回的字段。即{'a': 1, 'b': 0}是一种错误的参数格式
 
 ### 查询指令
 #### eq
@@ -602,7 +602,7 @@ collection.doc(_id).remove()
 collection.get()
   .then((res) => {
     const promiseList = res.data.map(document => {
-      return collection.doc(document.id).remove();
+      return collection.doc(document._id).remove();
     });
     Promise.all(promiseList);
   })

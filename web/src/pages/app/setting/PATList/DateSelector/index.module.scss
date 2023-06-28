@@ -1,0 +1,29 @@
+.customStyleDateSelector {
+  :global {
+    .react-datepicker__month-container {
+      border: 1px solid #000;
+      border-color: var(--chakra-colors-chakra-border-color);
+    }
+
+    .customStyle {
+      .react-datepicker__day:hover {
+        background-color: #e0f6f4;
+        border-radius: 100%;
+      }
+
+      .react-datepicker__header {
+        border: 0px;
+        background-color: #fff;
+      }
+
+      .react-datepicker__day--selected,
+      .react-datepicker__day--selected:hover,
+      .react-datepicker__day--keyboard-selected,
+      .react-datepicker__day--keyboard-selected:hover {
+        background-color: var(--chakra-colors-primary-500);
+        border-radius: 100%;
+        color: #fff;
+      }
+    }
+  }
+}

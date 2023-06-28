@@ -1,44 +1,74 @@
-## 安装教程
 
-### 快速部署 `laf`
+## Intro
 
-> 基于 Docker Compose 快速部署，需要你熟悉 Docker 以及 Docker Compose 的使用。
+> WARNING: This is a work in progress. The scripts are not yet ready for production use.
 
-##### 安装 Docker
+> This script is used to deploy the v1.0 development environment. The v1.0 environment has not been released yet, so this script is only for laf contributors to use in the development environment.
 
-- 安装 Docker: https://docs.docker.com/engine/install/
-- 安装 Docker Compose: https://docs.docker.com/compose/install/
+## Create development environment on Linux
 
-##### 启动服务（docker-compose）
+```bash
+cd deploy
 
-```sh
-git clone https://github.com/labring/laf.git
+# replace with your domain here.
+export DOMAIN=127.0.0.1.nip.io
 
-cd laf/deploy/docker-compose
-
-docker network create laf_shared_network --driver bridge || true
-
-# 启动所有服务
-docker-compose up
-
-# 浏览器打开 http://console.127-0-0-1.nip.io:8000 访问
+# install k8s cluster
+sh install-on-linux.sh $DOMAIN
 ```
 
-## FQA
+## Create development environment on MacOS
 
-1. 修改域名或端口，可直接编辑 `.env` 文件
+1. Install multipass on MacOS
 
-2. Console 响应 `502` 怎么办？
-   a. 是否通过 IP 访问？laf 强依赖域名，只可通过 `.env` 里配置的域名访问，不能通过 IP 访问
-   b. 查看 gateway 日志，查看是否有错误信息：`docker-compose logs -f gateway`
-   c. 是否开启了 VPN？ 本地运行可能需要关闭 VPN。
+```bash
+# Skip this step if you have already installed multipass
+# see https://multipass.run/install
+brew install --cask multipass
+```
 
-3. 无法连接数据库？
-   a. 查看 mongodb 日志：`docker-compose logs -f mongodb`，看是否启动成功？
-   b. 苹果 M1 芯片暂不支持 mongo 5.0，需要修改为 4.4 版本：bitnami/mongodb:4.4.13
-   c. 部分老 intel 处理器不支持 mongo 5，需要修改为 4.4 版本：bitnami/mongodb:4.4.13
-   d. 可能由于 MongoDb 首次启动初始化时间较长，导致其它服务连接超时，尝试重启服务：`docker-compose restart system-server instance-contro ller`
+2. Create vm & deploy in it
 
-4. 尝试重启所有服务？
-   a. 不清除数据重启：`docker-compose down && docker-compose up`
-   b. 清除数据重启： `docker-compose down -v && docker-compose up`
+```bash
+cd deploy
+sh install-on-mac.sh  # create vm & setup in it
+```
+## Create development environment on Windows
+
+1. Install [multipass](https://multipass.run/install) on Windows
+
+> Skip this step if you have already installed multipass
+>
+> Note: `Restart` your computer after install multipass
+
+2. Create vm and mount laf into vm
+```powershell
+multipass launch --name laf-dev --cpus 2 --memory 4G --disk 50G
+
+# Enable multipass mount local directory into vm
+multipass set local.privileged-mounts=true
+
+# Mount laf into vm
+multipass mount ${YOUR_LAF_DIRECOTRY_PATH} laf-dev:/laf/
+```
+
+3. **Remember change CRLF To LF**
+
+File EOF will end by CRLF on windows by default, you need change back to ensure shell scripts could run successfully after mount.
+
+
+4. Run install-script in vm
+```powershell
+# Get VM ip
+multipass info laf-dev | Where-Object{$_ -match "IPv4"} | ForEach-Object{ ($_ -split "\s+")[1] }
+#eg. 172.27.x.y -> 172.27.x.y.nip.io
+multipass exec laf-dev -- sudo -u root sh /laf/deploy/install-on-linux.sh $VM_IP_GOT_ABOVE.nip.io
+```
+
+
+5. Wait k8s cluster ready & Copy kubeconfig to host
+```powershell
+multipass exec $NAME -- sudo -u root kubectl get nodes
+# After nodes status changed to Ready, you can copy kubeconfig file into your host machine
+multipass exec laf-dev -- sudo -u root cat /root/.kube/config > $HOST_PATH_WHERE_YOU_WANT_LOCATE_CONFIG_FILE
+```

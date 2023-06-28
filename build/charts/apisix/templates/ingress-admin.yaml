@@ -1,0 +1,76 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+{{- if (and .Values.admin.enabled .Values.admin.ingress.enabled) -}}
+{{- $fullName := include "apisix.fullname" . -}}
+{{- $svcPort := .Values.admin.servicePort -}}
+{{- if and .Values.admin.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.admin.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.admin.ingress.annotations "kubernetes.io/ingress.class" .Values.admin.ingress.className}}
+  {{- end }}
+{{- end }}
+{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.Version }}
+apiVersion: networking.k8s.io/v1
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.Version }}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-admin
+  labels:
+    {{- include "apisix.labels" . | nindent 4 }}
+  {{- with .Values.admin.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if and .Values.admin.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.admin.ingress.className }}
+  {{- end }}
+  {{- if .Values.admin.ingress.tls }}
+  tls:
+    {{- range .Values.admin.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- range .Values.admin.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ . }}
+            {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.Version }}
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ $fullName }}-admin
+                port:
+                  number:  {{ $svcPort }}
+            {{- else }}
+            backend:
+              serviceName: {{ $fullName }}-admin
+              servicePort: {{ $svcPort }}
+            {{- end }}
+          {{- end }}
+    {{- end }}
+  {{- end }}

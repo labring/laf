@@ -1,0 +1,17 @@
+FROM scratch
+
+USER 65532:65532
+COPY charts  ./charts
+# COPY manifests ./manifests
+COPY registry ./registry
+COPY start.sh ./start.sh
+
+ENV DOMAIN=127.0.0.1.nip.io
+ENV NAMESPACE=laf-system
+ENV REGION=default
+ENV HTTP_SCHEMA=http
+
+ENV DB_PV_SIZE=10Gi
+ENV OSS_PV_SIZE=20Gi
+
+CMD ["DOMAIN=$(DOMAIN) REGION=$(REGION) NAMESPACE=$(NAMESPACE) HTTP_SCHEMA=$(HTTP_SCHEMA) DB_PV_SIZE=$(DB_PV_SIZE) OSS_PV_SIZE=$(OSS_PV_SIZE) sh start.sh"]

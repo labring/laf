@@ -1,0 +1,59 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+name: Question
+title: "[Question] Question title "
+description: I have a question that isn't answered in docs or issue.
+labels: [ "question" ]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For better global communication, Please write in English.
+        (为了更好的国际化交流，请您使用英语描述您的问题。)
+
+        You can use the following translation tool to translate, but please check the translation carefully after translation to avoid misinterpretation:
+        (你可以使用以下翻译工具进行翻译，但是翻译完成后请仔细检查译文，以免有错误的理解：）
+        - [Google Translate](https://translate.google.com/)
+        - [Baidu Translate](https://fanyi.baidu.com/)
+        - [YouDao Translate](https://fanyi.baidu.com/)
+        - ChatGPT
+
+  - type: checkboxes
+    attributes:
+      label: Search before asking
+      description: >
+        Please make sure to search in the [issues](https://github.com/labring/laf/issues?q=is%3Aissue)
+        first to see whether the same issue was reported already.
+      options:
+        - label: >
+            I had searched in the [issues](https://github.com/labring/laf/issues?q=is%3Aissue) and found
+            no similar issues.
+          required: true
+
+  - type: textarea
+    attributes:
+      label: Question
+      description: Describe your question.
+      placeholder: >
+        Describe your question here :D
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: "Thanks for completing our form!"

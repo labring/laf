@@ -10,4 +10,6 @@ tmp
 .idea
 
 coverage
-.nyc_output
+.nyc_
+
+.vitepress/cache

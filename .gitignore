@@ -15,3 +15,20 @@ coverage
 kubernetes-dev/mongo-data
 
 kubernetes-local/
+.vscode/configurationCache.log
+.vscode/dryrun.log
+.vscode/targets.log
+
+.kube/
+
+build/*/manifests
+build/*/registry
+build/*/charts
+build/registry
+build-dev
+docs/.vitepress/.temp
+.idea/
+
+update-changelog.sh
+runtimes/nodejs-esm
+yarn.lock

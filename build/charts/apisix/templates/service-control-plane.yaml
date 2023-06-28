@@ -1,0 +1,38 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+{{- if and (eq .Values.deployment.mode "decoupled") (eq .Values.deployment.role "control_plane") }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "apisix.fullname" . }}-control-plane
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- range $key, $value := .Values.admin.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  labels:
+    {{- include "apisix.labels" . | nindent 4 }}
+    app.kubernetes.io/service: apisix-control-plane
+spec:
+  type: "ClusterIP"
+  ports:
+  - name: apisix-control-plane
+    port: {{ .Values.deployment.controlPlane.confServerPort }}
+    targetPort: {{ .Values.deployment.controlPlane.confServerPort }}
+    protocol: TCP
+  selector:
+    {{- include "apisix.selectorLabels" . | nindent 4 }}
+{{ end }}

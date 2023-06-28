@@ -1,0 +1,42 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import {
+  IsArray,
+  IsIn,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator'
+import { HTTP_METHODS } from '../../constants'
+import { HttpMethod } from '../entities/cloud-function'
+
+export class UpdateFunctionDto {
+  @ApiPropertyOptional()
+  @MaxLength(256)
+  description: string
+
+  @ApiProperty({ type: [String], enum: HttpMethod })
+  @IsIn(HTTP_METHODS, { each: true })
+  methods: HttpMethod[] = []
+
+  @ApiProperty({ description: 'The source code of the function' })
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(1024 * 512)
+  code: string
+
+  @ApiPropertyOptional({ type: [String] })
+  @IsString({ each: true })
+  @IsArray()
+  @MaxLength(16, { each: true })
+  @IsNotEmpty({ each: true })
+  tags: string[]
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  params: any
+
+  validate() {
+    return null
+  }
+}

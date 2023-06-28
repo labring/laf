@@ -1,0 +1,38 @@
+.icon {
+  color: #888d97;
+  cursor: pointer;
+  border-radius: 4px;
+  height: 52px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  svg {
+    fill: #9ca2a8;
+  }
+}
+
+.icon:hover,
+.icon.current {
+  background-color: var(--chakra-colors-primary-200);
+  color: var(--chakra-colors-primary-700);
+
+  svg {
+    fill: var(--chakra-colors-primary-600);
+  }
+}
+
+[data-theme="dark"] .icon:hover,
+[data-theme="dark"] .icon.current {
+  background: none;
+
+  svg {
+    fill: var(--chakra-colors-primary-600);
+  }
+}
+
+.icon.bottom {
+  width: 100%;
+  position: absolute;
+  bottom: 10px;
+}
