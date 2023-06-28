@@ -22,6 +22,8 @@ export class StorageUser {
   phase: StoragePhase
   dataSize: number
   lockedAt: Date
+  usageCaptureLockedAt: Date
+  usageLimitLockedAt: Date
   createdAt: Date
   updatedAt: Date
 

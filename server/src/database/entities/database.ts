@@ -45,6 +45,9 @@ export class Database {
   phase: DatabasePhase
   lockedAt: Date
 
+  usageCaptureLockedAt: Date
+  usageLimitLockedAt: Date
+
   @ApiProperty()
   createdAt: Date
 

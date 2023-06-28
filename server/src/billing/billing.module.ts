@@ -9,7 +9,6 @@ import { BillingPaymentTaskService } from './billing-payment-task.service'
 import { DatabaseModule } from 'src/database/database.module'
 import { RegionModule } from 'src/region/region.module'
 import { StorageModule } from 'src/storage/storage.module'
-import { ResourceUsageCaptureTaskService } from './resource-usage-capture-task.service'
 
 @Module({
   imports: [ApplicationModule, DatabaseModule, RegionModule, StorageModule],
@@ -19,7 +18,6 @@ import { ResourceUsageCaptureTaskService } from './resource-usage-capture-task.s
     ResourceService,
     BillingCreationTaskService,
     BillingPaymentTaskService,
-    ResourceUsageCaptureTaskService,
   ],
   exports: [BillingService, ResourceService],
 })

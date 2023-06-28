@@ -58,6 +58,8 @@ export class StorageService {
       state: StorageState.Active,
       phase: StoragePhase.Created,
       lockedAt: TASK_LOCK_INIT_TIME,
+      usageCaptureLockedAt: TASK_LOCK_INIT_TIME,
+      usageLimitLockedAt: TASK_LOCK_INIT_TIME,
       updatedAt: new Date(),
       createdAt: new Date(),
     })

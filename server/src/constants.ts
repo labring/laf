@@ -62,8 +62,20 @@ export class ServerConfig {
     return process.env.DISABLED_BILLING_PAYMENT_TASK === 'true'
   }
 
-  static get DISABLED_RESOURCE_USAGE_CAPTURE_TASK() {
-    return process.env.DISABLED_RESOURCE_USAGE_CAPTURE_TASK === 'true'
+  static get DISABLED_DATABASE_USAGE_CAPTURE_TASK() {
+    return process.env.DISABLED_DATABASE_USAGE_CAPTURE_TASK === 'true'
+  }
+
+  static get DISABLED_DATABASE_USAGE_LIMIT_TASK() {
+    return process.env.DISABLED_DATABASE_USAGE_LIMIT_TASK === 'true'
+  }
+
+  static get DISABLED_STORAGE_USAGE_CAPTURE_TASK() {
+    return process.env.DISABLED_STORAGE_USAGE_CAPTURE_TASK === 'true'
+  }
+
+  static get DISABLED_STORAGE_USAGE_LIMIT_TASK() {
+    return process.env.DISABLED_STORAGE_USAGE_LIMIT_TASK === 'true'
   }
 
   static get APPID_LENGTH(): number {

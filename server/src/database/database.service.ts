@@ -52,6 +52,8 @@ export class DatabaseService {
       phase: DatabasePhase.Created,
       dataSize: 0,
       lockedAt: TASK_LOCK_INIT_TIME,
+      usageCaptureLockedAt: TASK_LOCK_INIT_TIME,
+      usageLimitLockedAt: TASK_LOCK_INIT_TIME,
       createdAt: new Date(),
       updatedAt: new Date(),
     })
