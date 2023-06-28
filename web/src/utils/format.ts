@@ -8,25 +8,6 @@ export function formatDate(
   return dayjs(date).format(format);
 }
 
-export function daysAgo(date: string | number | Date | dayjs.Dayjs | null | undefined) {
-  const daysDiff = dayjs().diff(dayjs(date), "days");
-
-  const weeks = Math.floor(daysDiff / 7);
-  const months = Math.floor(daysDiff / 30);
-
-  if (daysDiff === 0) {
-    return t("Today");
-  } else if (daysDiff === 1) {
-    return t("Yesterday");
-  } else if (weeks > 0 && weeks <= 4) {
-    return weeks + t("WeeksAgo");
-  } else if (months > 0) {
-    return months + t("MonthsAgo");
-  } else {
-    return daysDiff + t("DaysAgo");
-  }
-}
-
 export function formatSize(size: number) {
   const units = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
   let i = 0;
@@ -110,4 +91,10 @@ export function convertMoney(money: number) {
 
 export function hidePhoneNumber(phone: string) {
   return phone.replace(/(\d{3})\d{4}(\d{4})/, "$1****$2");
+}
+
+export function changeURL(param: string) {
+  const currentURL = window.location.pathname;
+  const lastIndex = currentURL.lastIndexOf("/");
+  return currentURL.substring(0, lastIndex) + param;
 }

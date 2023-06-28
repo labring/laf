@@ -13,7 +13,7 @@ const TemplatePopOver = (props: { children?: ReactNode; template: TFunctionTempl
       isLazy
       preventOverflow
       offset={[80, -80]}
-      placement="left-start"
+      placement="auto"
       strategy="fixed"
     >
       <PopoverTrigger>

@@ -477,7 +477,8 @@
     "EmptyTemplate": "暂无模板",
     "AddMore": "继续添加",
     "Save": "保存",
-    "Recommended": "推荐模板"
+    "Recommended": "推荐模板",
+    "confirm": "如果存在依赖包未安装，将会自动重启应用，确定使用该模板吗？"
   },
   "Fee": "费用",
   "PleaseCloseApplicationFirst": "请先关闭应用",

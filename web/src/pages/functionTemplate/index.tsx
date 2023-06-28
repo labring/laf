@@ -7,6 +7,7 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  InputRightElement,
   Menu,
   MenuButton,
   MenuItem,
@@ -69,6 +70,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
   const [sorting, setSorting] = useState(sortList[0]);
   const [page, setPage] = useState(1);
   const [templateList, setTemplateList] = useState<TemplateList>();
+  const [searchKey, setSearchKey] = useState("");
 
   const navigate = useNavigate();
   const { colorMode } = useColorMode();
@@ -90,7 +92,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [window.location.href]);
 
   useGetFunctionTemplatesQuery(
     {
@@ -136,6 +138,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
     setSelectedItem(item);
     setQueryData(defaultQueryData);
     setSorting(sortList[0]);
+    setSearchKey("");
     if (item.value === "my") {
       setQueryData(defaultQueryData);
     } else if (item.value === "stared") {
@@ -152,7 +155,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
   };
 
   const handleSearch = (e: any) => {
-    setQueryData({ ...defaultQueryData, keyword: e.target.value });
+    setQueryData({ ...queryData, keyword: e.target.value });
   };
 
   const handleSortListClick = (e: any) => {
@@ -170,8 +173,8 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
         <div>
           <div
             className={clsx(
-              "w-45 absolute bottom-0 ml-20 flex flex-col",
-              isModal ? "top-7" : "top-16",
+              "w-45 absolute bottom-0 flex flex-col",
+              isModal ? "top-12" : "top-16 ml-20",
             )}
           >
             <div className={clsx(darkMode ? styles.title_dark : styles.title)}>
@@ -185,7 +188,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
                     styles.explore_item,
                     item.value === selectedItem.value
                       ? "bg-primary-100 text-primary-600"
-                      : "bg-[#F4F6F8] text-[#5A646E]",
+                      : "text-[#5A646E]",
                   )}
                   onClick={() => handleSideBarClick(item)}
                 >
@@ -194,7 +197,9 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
               );
             })}
           </div>
-          <div className="flex items-center justify-between py-5 pl-72">
+          <div
+            className={clsx("flex items-center justify-between py-5", isModal ? "pl-52" : "pl-72")}
+          >
             {selectedItem.value === "my" ? (
               <Button
                 onClick={() => {
@@ -208,17 +213,42 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
               </Button>
             ) : null}
             <div className="flex flex-1">
-              <InputGroup>
-                <InputLeftElement children={<Search2Icon />} height={"2rem"} />
-                <Input
-                  width={"18.75rem"}
-                  height={"2rem"}
-                  borderRadius={"6.25rem"}
-                  placeholder={String(t("Search"))}
-                  onChange={debounce(handleSearch, 500)}
-                />
-              </InputGroup>
-              <InputGroup className="flex items-center justify-end pr-16">
+              {selectedItem.value === "all" || selectedItem.value === "recommended" ? (
+                <InputGroup className="w-full">
+                  <InputLeftElement children={<Search2Icon />} height={"2.5rem"} />
+                  <Input
+                    width={isModal ? "50rem" : "56rem"}
+                    height={"2.5rem"}
+                    borderRadius={"6.25rem"}
+                    placeholder={String(t("Search"))}
+                    onChange={(e) => setSearchKey(e.target.value)}
+                    border={"1px solid #DEE0E2"}
+                    value={searchKey || ""}
+                  />
+                  <InputRightElement width={"5.1rem"}>
+                    <Button
+                      className="!h-9"
+                      onClick={() => {
+                        setQueryData({ ...defaultQueryData, keyword: searchKey });
+                      }}
+                    >
+                      {t("Search")}
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
+              ) : (
+                <InputGroup>
+                  <InputLeftElement children={<Search2Icon />} height={"2rem"} />
+                  <Input
+                    width={"18.75rem"}
+                    height={"2rem"}
+                    borderRadius={"6.25rem"}
+                    placeholder={String(t("Search"))}
+                    onChange={debounce(handleSearch, 500)}
+                  />
+                </InputGroup>
+              )}
+              <InputGroup className={clsx("flex items-center justify-end", isModal ? "" : "pr-16")}>
                 <span className="text-lg text-grayModern-400">{t("Template.SortOrd")} </span>
                 <span className="pl-2 text-lg">{sorting}</span>
                 <Menu>
@@ -238,7 +268,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
               </InputGroup>
             </div>
           </div>
-          <div className="flex flex-wrap pl-72 pr-8">
+          <div className={clsx("flex flex-wrap", isModal ? "pl-52" : "pl-72 pr-8")}>
             {templateList && templateList.list.length > 0 ? (
               templateList.list.map((item) => (
                 <section
@@ -285,7 +315,11 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
           )}
         </div>
       ) : (
-        <FuncTemplateItem setSelectedItem={setSelectedItem} selectedItem={selectedItem} />
+        <FuncTemplateItem
+          setSelectedItem={setSelectedItem}
+          selectedItem={selectedItem}
+          isModal={isModal!}
+        />
       )}
     </div>
   );

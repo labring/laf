@@ -92,7 +92,9 @@ const CreateModal = (props: {
       asc: 1,
       sort: null,
     },
-    {},
+    {
+      enabled: isOpen,
+    },
   );
 
   const onSubmit = async (data: any) => {
@@ -151,7 +153,7 @@ const CreateModal = (props: {
                     id="name"
                     placeholder={String(t("FunctionPanel.FunctionNameTip"))}
                     disabled={isEdit}
-                    className="h-8 border-l-2 border-primary-600 bg-transparent pl-4 text-2xl font-medium"
+                    className="h-8 w-full border-l-2 border-primary-600 bg-transparent pl-4 text-2xl font-medium"
                     style={{ outline: "none", boxShadow: "none" }}
                     onChange={debounce((e) => {
                       setSearchKey(e.target.value);
@@ -216,10 +218,9 @@ const CreateModal = (props: {
                   )}
                   <div className="flex flex-wrap">
                     {TemplateList.data?.data.list.map((item: TFunctionTemplate) => (
-                      <div className="mb-3 w-1/3 pr-3">
+                      <div className="mb-3 w-1/3 pr-3" key={item._id}>
                         <TemplatePopOver template={item}>
                           <div
-                            key={item._id}
                             onClick={() => {
                               const currentURL = window.location.pathname;
                               const lastIndex = currentURL.lastIndexOf("/");

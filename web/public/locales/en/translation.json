@@ -498,7 +498,8 @@
     "EmptyTemplate": "Template Empty",
     "AddMore": "Add More",
     "Save": "Save",
-    "Recommended": "Recommended Template"
+    "Recommended": "Recommended Template",
+    "confirm": "If there are missing dependencies, the application will be automatically restarted. Are you sure you want to use this template?"
   },
   "Create function template success": "Create function template successfully",
   "Publish": "release",

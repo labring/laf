@@ -5,6 +5,8 @@ import { ChevronRightIcon } from "@chakra-ui/icons";
 import { useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
+import { changeURL } from "@/utils/format";
+
 import TemplateInfo from "../Mods/TemplateInfo";
 import { useGetFunctionTemplateUsedByQuery, useGetOneFunctionTemplateQuery } from "../service";
 
@@ -12,8 +14,8 @@ import TemplateFunctionInfo from "./TemplateFunctionInfo";
 
 import { TFunctionTemplate } from "@/apis/typing";
 
-const FuncTemplateItem = (props: { setSelectedItem: any; selectedItem: any }) => {
-  const { setSelectedItem } = props;
+const FuncTemplateItem = (props: { setSelectedItem: any; selectedItem: any; isModal: boolean }) => {
+  const { setSelectedItem, isModal } = props;
   const { colorMode } = useColorMode();
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -44,15 +46,18 @@ const FuncTemplateItem = (props: { setSelectedItem: any; selectedItem: any }) =>
   );
 
   return (
-    <div className={clsx("flex flex-col px-20", colorMode === "dark" ? "" : "bg-white")}>
-      <div className="pt-8 text-lg">
+    <div
+      className={clsx(
+        "flex flex-col",
+        colorMode === "dark" ? "" : "bg-white",
+        isModal ? "" : "px-20 pt-8",
+      )}
+    >
+      <div className="text-lg">
         <span
           className="cursor-pointer text-second"
           onClick={() => {
-            const currentURL = window.location.pathname;
-            const lastIndex = currentURL.lastIndexOf("/");
-            const newURL = currentURL.substring(0, lastIndex) + `/recommended`;
-            navigate(newURL);
+            navigate(changeURL(`/recommended`));
             setSelectedItem({ text: t("Template.Recommended"), value: "recommended" });
           }}
         >
