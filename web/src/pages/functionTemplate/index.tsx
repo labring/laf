@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { AddIcon, ChevronDownIcon, Search2Icon } from "@chakra-ui/icons";
@@ -67,10 +67,12 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
     isModal ? { text: "", value: "" } : { text: t("Template.Recommended"), value: "recommended" },
   );
   const [queryData, setQueryData] = useState(defaultQueryData);
-  const [setQueryDataDebounced] = useState(() =>
-    debounce((value) => {
-      setQueryData({ ...defaultQueryData, keyword: value });
-    }, 500),
+  const setQueryDataDebounced = useMemo(
+    () =>
+      debounce((value) => {
+        setQueryData({ ...queryData, keyword: value });
+      }, 500),
+    [queryData],
   );
   const [sorting, setSorting] = useState(sortList[0]);
   const [page, setPage] = useState(1);
@@ -141,15 +143,14 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
 
   const handleSideBarClick = (item: any) => {
     setSelectedItem(item);
-    setQueryData(defaultQueryData);
     setSorting(sortList[0]);
     setSearchKey("");
-    if (item.value === "my") {
-      setQueryData(defaultQueryData);
-    } else if (item.value === "stared") {
+    if (item.value === "stared") {
       setQueryData({ ...defaultQueryData, type: "stared" });
     } else if (item.value === "recent") {
       setQueryData({ ...defaultQueryData, type: "recentUsed" });
+    } else {
+      setQueryData(defaultQueryData);
     }
     setPage(1);
     window.history.replaceState(
@@ -228,7 +229,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
                     value={searchKey || ""}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        setQueryData({ ...defaultQueryData, keyword: searchKey });
+                        setQueryData({ ...queryData, keyword: searchKey });
                       }
                     }}
                   />
@@ -236,7 +237,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
                     <Button
                       className="!h-9"
                       onClick={() => {
-                        setQueryData({ ...defaultQueryData, keyword: searchKey });
+                        setQueryData({ ...queryData, keyword: searchKey });
                       }}
                     >
                       {t("Search")}
