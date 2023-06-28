@@ -32,7 +32,8 @@ import FuncTemplate from "../FunctionTemplate";
 
 import functionTemplates from "./functionTemplates";
 
-import { TMethod } from "@/apis/typing";
+import { TFunctionTemplate, TMethod } from "@/apis/typing";
+import TemplatePopOver from "@/pages/functionTemplate/Mods/TemplatePopover/TemplatePopover";
 import { useGetRecommendFunctionTemplatesQuery } from "@/pages/functionTemplate/service";
 import useGlobalStore from "@/pages/globalStore";
 
@@ -214,62 +215,64 @@ const CreateModal = (props: {
                     </div>
                   )}
                   <div className="flex flex-wrap">
-                    {TemplateList.data?.data.list.map((item: any) => {
-                      return (
-                        <div
-                          key={item._id}
-                          className="mb-3 w-1/3 pr-3"
-                          onClick={() => {
-                            const currentURL = window.location.pathname;
-                            const lastIndex = currentURL.lastIndexOf("/");
-                            const newURL = currentURL.substring(0, lastIndex) + `/${item._id}`;
-                            navigate(newURL);
-                          }}
-                        >
-                          <FuncTemplate>
-                            <div
-                              className="cursor-pointer rounded-lg border-[1px] px-5"
-                              style={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.outlineWidth = "2px";
-                                e.currentTarget.style.boxShadow =
-                                  "0px 2px 4px rgba(0, 0, 0, 0.1), 0px 0px 0px 2px #66CBCA";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.outlineWidth = "1px";
-                                e.currentTarget.style.boxShadow = "0px 2px 4px rgba(0, 0, 0, 0.1)";
-                              }}
-                            >
-                              <div className={clsx("mb-3 flex justify-between pt-4")}>
-                                <div className="flex items-center truncate text-2xl font-semibold">
-                                  {item.name}
+                    {TemplateList.data?.data.list.map((item: TFunctionTemplate) => (
+                      <div className="mb-3 w-1/3 pr-3">
+                        <TemplatePopOver template={item}>
+                          <div
+                            key={item._id}
+                            onClick={() => {
+                              const currentURL = window.location.pathname;
+                              const lastIndex = currentURL.lastIndexOf("/");
+                              const newURL = currentURL.substring(0, lastIndex) + `/${item._id}`;
+                              navigate(newURL);
+                            }}
+                          >
+                            <FuncTemplate>
+                              <div
+                                className="cursor-pointer rounded-lg border-[1px] px-5"
+                                style={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.outlineWidth = "2px";
+                                  e.currentTarget.style.boxShadow =
+                                    "0px 2px 4px rgba(0, 0, 0, 0.1), 0px 0px 0px 2px #66CBCA";
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.outlineWidth = "1px";
+                                  e.currentTarget.style.boxShadow =
+                                    "0px 2px 4px rgba(0, 0, 0, 0.1)";
+                                }}
+                              >
+                                <div className={clsx("mb-3 flex justify-between pt-4")}>
+                                  <div className="flex items-center text-xl font-semibold">
+                                    <span className="line-clamp-1">{item.name}</span>
+                                  </div>
+                                </div>
+                                <div
+                                  className={clsx(
+                                    "mb-3 flex h-4 items-center truncate",
+                                    // darkMode ? "text-gray-300" : "text-second",
+                                  )}
+                                >
+                                  {item.description}
+                                </div>
+                                <div className="flex w-full overflow-hidden pb-4">
+                                  {item.items.map((item: any) => {
+                                    return (
+                                      <div
+                                        key={item.name}
+                                        className="mr-2 whitespace-nowrap rounded-md bg-blue-100 px-2 py-1 text-center font-medium text-blue-700"
+                                      >
+                                        {item.name}
+                                      </div>
+                                    );
+                                  })}
                                 </div>
                               </div>
-                              <div
-                                className={clsx(
-                                  "mb-3 flex h-4 items-center truncate",
-                                  // darkMode ? "text-gray-300" : "text-second",
-                                )}
-                              >
-                                {item.description}
-                              </div>
-                              <div className="flex w-full overflow-hidden pb-4">
-                                {item.items.map((item: any) => {
-                                  return (
-                                    <div
-                                      key={item.name}
-                                      className="mr-2 whitespace-nowrap rounded-md bg-blue-100 px-2 py-1 text-center font-medium text-blue-700"
-                                    >
-                                      {item.name}
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          </FuncTemplate>
-                        </div>
-                      );
-                    })}
+                            </FuncTemplate>
+                          </div>
+                        </TemplatePopOver>
+                      </div>
+                    ))}
                   </div>
                   <div
                     onClick={() => {

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { BsThreeDotsVertical } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { AddIcon, ChevronDownIcon, Search2Icon } from "@chakra-ui/icons";
 import {
@@ -17,14 +16,12 @@ import {
 import clsx from "clsx";
 import { debounce } from "lodash";
 
-import { LikeIcon, TimeIcon } from "@/components/CommonIcon";
 import EmptyBox from "@/components/EmptyBox";
-import IconWrap from "@/components/IconWrap";
-import { formatDate } from "@/utils/format";
 
-import FuncTemplateItem from "./funcTemplateItem";
+import TemplateCard from "./Mods/TemplateCard/TemplateCard";
+import TemplatePopOver from "./Mods/TemplatePopover/TemplatePopover";
+import FuncTemplateItem from "./FuncTemplateItem";
 import {
-  useDeleteFunctionTemplateMutation,
   useGetFunctionTemplatesQuery,
   useGetMyFunctionTemplatesQuery,
   useGetRecommendFunctionTemplatesQuery,
@@ -45,8 +42,6 @@ type queryData = {
 };
 
 export default function FunctionTemplate(props: { isModal?: boolean }) {
-  const deleteFunctionMutation = useDeleteFunctionTemplateMutation();
-
   const { isModal } = props;
   const { t } = useTranslation();
   const sortList = [t("Template.MostStars"), t("Template.Latest")];
@@ -90,6 +85,8 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
         } else if (foundItem.value === "recent") {
           setQueryData({ ...queryData, type: "recentUsed" });
         }
+      } else {
+        setSelectedItem({ text: "", value: "" });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -243,137 +240,31 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
           </div>
           <div className="flex flex-wrap pl-72 pr-8">
             {templateList && templateList.list.length > 0 ? (
-              (templateList?.list).map((item) => {
-                return (
-                  <div
-                    className={clsx(
-                      "mb-3",
-                      selectedItem.value === "all" || selectedItem.value === "recommended"
-                        ? "w-1/3"
-                        : "w-1/2",
-                    )}
-                    key={item._id}
-                  >
-                    <div
-                      className="mr-4 cursor-pointer rounded-lg border-[1px]"
-                      style={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.outlineWidth = "2px";
-                        e.currentTarget.style.boxShadow =
-                          "0px 2px 4px rgba(0, 0, 0, 0.1), 0px 0px 0px 2px #66CBCA";
+              templateList.list.map((item) => (
+                <section
+                  className={clsx(
+                    "mb-3",
+                    selectedItem.value === "all" || selectedItem.value === "recommended"
+                      ? "w-1/3"
+                      : "w-1/2",
+                  )}
+                  key={item._id}
+                >
+                  <TemplatePopOver template={item}>
+                    <TemplateCard
+                      onClick={() => {
+                        const currentURL = window.location.pathname;
+                        const lastIndex = currentURL.lastIndexOf("/");
+                        const newURL = currentURL.substring(0, lastIndex) + `/${item._id}`;
+                        navigate(newURL);
+                        setSelectedItem({ text: "", value: "" });
                       }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.outlineWidth = "1px";
-                        e.currentTarget.style.boxShadow = "0px 2px 4px rgba(0, 0, 0, 0.1)";
-                      }}
-                    >
-                      <div
-                        className="mx-5"
-                        onClick={() => {
-                          const currentURL = window.location.pathname;
-                          const lastIndex = currentURL.lastIndexOf("/");
-                          const newURL = currentURL.substring(0, lastIndex) + `/${item._id}`;
-                          navigate(newURL);
-                          setSelectedItem({ text: "", value: "" });
-                        }}
-                      >
-                        <div className={clsx("mb-3 flex justify-between pt-4")}>
-                          <div className="flex items-center text-2xl font-semibold">
-                            <div className="truncate">{item.name}</div>
-                          </div>
-                          <div className="flex items-center">
-                            {selectedItem.value === "my" && (
-                              <span
-                                className={clsx(
-                                  "mr-3 px-2 font-semibold",
-                                  item.private === false
-                                    ? "bg-blue-100 text-blue-600"
-                                    : "bg-adora-200 text-adora-600",
-                                )}
-                              >
-                                {item.private ? "Private" : "Public"}
-                              </span>
-                            )}
-                            {selectedItem.value === "my" && (
-                              <Menu placement="bottom-end">
-                                <MenuButton
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                  }}
-                                >
-                                  <IconWrap>
-                                    <BsThreeDotsVertical size={12} />
-                                  </IconWrap>
-                                </MenuButton>
-                                <MenuList width={12} minW={24}>
-                                  <MenuItem
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      navigate(
-                                        `/market/templates/${selectedItem.value}/${item._id}/edit`,
-                                      );
-                                    }}
-                                  >
-                                    {t("Template.EditTemplate")}
-                                  </MenuItem>
-                                  <MenuItem
-                                    onClick={async (e) => {
-                                      e.stopPropagation();
-                                      await deleteFunctionMutation.mutateAsync({ id: item._id });
-                                      window.location.reload();
-                                    }}
-                                  >
-                                    {t("Template.DeleteTemplate")}
-                                  </MenuItem>
-                                </MenuList>
-                              </Menu>
-                            )}
-                          </div>
-                        </div>
-
-                        <div
-                          className={clsx(
-                            "mb-3 flex h-4 items-center truncate",
-                            darkMode ? "text-gray-300" : "text-second",
-                          )}
-                        >
-                          {item.description}
-                        </div>
-
-                        <div className="flex w-full overflow-hidden">
-                          {item.items.map((item) => {
-                            return (
-                              <div
-                                key={item.name}
-                                className="mr-2 rounded-md bg-blue-100 px-2 py-1 font-medium text-blue-700 "
-                              >
-                                {item.name}
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        <div className="my-3 flex items-center justify-between">
-                          <span
-                            className={clsx(
-                              "flex items-center pr-2",
-                              darkMode ? "text-gray-300" : "text-grayModern-500",
-                            )}
-                          >
-                            <TimeIcon className="mr-1.5" />
-                            {t("Template.updatedAt")} {formatDate(item.updatedAt)}
-                          </span>
-                          <div className="flex text-base">
-                            <span className="pl-2">
-                              <LikeIcon /> {item.star}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
+                      template={item}
+                      templateCategory={selectedItem.value}
+                    ></TemplateCard>
+                  </TemplatePopOver>
+                </section>
+              ))
             ) : (
               <div className="w-full pt-20">
                 <EmptyBox>

@@ -1,71 +1,24 @@
-import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Avatar, Box, Button, Tooltip, useColorMode } from "@chakra-ui/react";
+import { Avatar, Box, Tooltip, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
-import { FilledHeartIcon, HeartIcon } from "@/components/CommonIcon";
 import FileTypeIcon from "@/components/FileTypeIcon";
 
-import { useFunctionTemplateStarMutation, useGetStarStateQuery } from "../../service";
-import UseTemplateModal from "../UseTemplateModal";
+import UseTemplate from "./UseTemplate";
 
 import { TFunctionTemplate } from "@/apis/typing";
 
 const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[] }) => {
   const { functionTemplate, usedBy } = props;
-  const {
-    items: functionList,
-    environments,
-    dependencies: packageList,
-    star,
-    _id: templateId,
-  } = functionTemplate;
+  const { items: functionList, environments, dependencies: packageList } = functionTemplate;
 
   const { t } = useTranslation();
-  const [starState, setStarState] = useState(false);
-  const [starNum, setStarNum] = useState(star);
   const { colorMode } = useColorMode();
   const darkMode = colorMode === "dark";
-  const starMutation = useFunctionTemplateStarMutation();
-
-  useGetStarStateQuery(
-    { id: templateId },
-    {
-      onSuccess: (data: any) => {
-        setStarState(data.data === "stared");
-      },
-    },
-  );
 
   return (
     <div>
-      <Box className="flex justify-end pb-8">
-        <button
-          className={clsx(
-            "mr-4 flex h-9 cursor-pointer items-center rounded-3xl border px-3 text-xl",
-            starState ? "border-rose-500 text-rose-500" : "text-gray-400",
-          )}
-          onClick={async () => {
-            const res = await starMutation.mutateAsync({ templateId: templateId || "" });
-            if (!res.error) {
-              if (starState) {
-                setStarState(false);
-                setStarNum(starNum - 1);
-              } else if (starNum >= 0) {
-                setStarState(true);
-                setStarNum(starNum + 1);
-              }
-            }
-          }}
-        >
-          {starState ? <FilledHeartIcon /> : <HeartIcon />}
-          <span className="pl-1">{starNum}</span>
-        </button>
-        <UseTemplateModal templateId={templateId || ""}>
-          <Button height={9}>{t("Template.useTemplate")}</Button>
-        </UseTemplateModal>
-      </Box>
-
+      <UseTemplate template={functionTemplate} />
       <div>
         <Box className="border-b-[1px]">
           <span className="text-xl font-semibold">{t("Template.Function")}</span>
