@@ -189,7 +189,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
                     styles.explore_item,
                     item.value === selectedItem.value
                       ? "bg-primary-100 text-primary-600"
-                      : "text-[#5A646E]",
+                      : !darkMode && "text-[#5A646E]",
                   )}
                   onClick={() => handleSideBarClick(item)}
                 >

@@ -93,6 +93,7 @@ const MonacoEditor = (props: {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
   const { t } = useTranslation();
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   useEffect(() => {
     if (monacoEl && !editorRef.current) {
@@ -113,7 +114,7 @@ const MonacoEditor = (props: {
         overviewRulerLanes: 0,
         lineNumbersMinChars: 4,
         fontSize: 14,
-        theme: colorMode === COLOR_MODE.dark ? "lafEditorThemeDark" : "lafEditorTheme",
+        theme: darkMode ? "lafEditorThemeDark" : "lafEditorTheme",
       });
     }
 
@@ -134,22 +135,22 @@ const MonacoEditor = (props: {
   useEffect(() => {
     if (monacoEl && editorRef.current) {
       editorRef.current.updateOptions({
-        theme: colorMode === COLOR_MODE.dark ? "lafEditorThemeDark" : "lafEditorTheme",
+        theme: darkMode ? "lafEditorThemeDark" : "lafEditorTheme",
       });
     }
-  }, [colorMode]);
+  }, [darkMode]);
 
   return (
     <div
       className={clsx(
         "h-full overflow-hidden rounded-md border",
-        colorMode === COLOR_MODE.dark ? "bg-[#202631]" : "bg-white",
+        darkMode ? "bg-[#202631]" : "bg-white",
       )}
     >
       <div
         className={clsx(
           "flex h-8 w-full items-center justify-between rounded-t-md px-6 text-lg font-semibold",
-          colorMode === COLOR_MODE.dark ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-800",
+          darkMode ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-800",
         )}
         placeholder="Function Name"
         style={{ outline: "none", boxShadow: "none" }}
@@ -173,7 +174,10 @@ const MonacoEditor = (props: {
                 <EditIcon
                   boxSize={3}
                   color={"grayModern.900"}
-                  className={clsx("mr-6 cursor-pointer hover:text-gray-400")}
+                  className={clsx(
+                    "mr-6 cursor-pointer hover:text-gray-400",
+                    darkMode && "!text-gray-400",
+                  )}
                 />
               </AddFunctionModal>
               <ConfirmButton
@@ -190,7 +194,10 @@ const MonacoEditor = (props: {
                 <DeleteIcon
                   boxSize={3}
                   color={"grayModern.900"}
-                  className={clsx("mr-2 cursor-pointer hover:text-gray-400")}
+                  className={clsx(
+                    "mr-2 cursor-pointer hover:text-gray-400",
+                    darkMode && "!text-gray-400",
+                  )}
                 />
               </ConfirmButton>
             </span>

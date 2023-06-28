@@ -14,6 +14,7 @@ const TemplateFunctionInfo = ({
   popover?: boolean;
 }) => {
   const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
 
   const [currentFunction, setCurrentFunction] = useState<TFunctionTemplate["items"][number]>(
     template.items[0],
@@ -32,9 +33,10 @@ const TemplateFunctionInfo = ({
         {template.items.map((item) => (
           <div
             className={clsx(
-              "mb-2 mr-2 cursor-pointer rounded-md border bg-[#F6F8F9] px-8 py-1 text-[14px]",
+              "mb-2 mr-2 cursor-pointer rounded-md border px-8 py-1 text-[14px]",
+              !darkMode && "bg-[#F6F8F9]",
               "hover:border-blue-400 hover:bg-blue-100 hover:text-blue-700",
-              currentFunction.name === item.name ? "border-blue-400 bg-blue-100 text-blue-700" : "",
+              currentFunction?.name === item.name && "border-blue-400 bg-blue-100 text-blue-700",
             )}
             onClick={() => {
               setCurrentFunction(item);
