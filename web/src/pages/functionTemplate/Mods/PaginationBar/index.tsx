@@ -11,7 +11,7 @@ const PaginationBar = (props: { page: number; setPage: any; total?: number; page
   const darkMode = colorMode === "dark";
 
   return (
-    <div className="flex w-full flex-wrap-reverse items-center justify-end pb-8 pr-16 pt-4 text-lg">
+    <div className="flex w-full flex-wrap-reverse items-center justify-end pb-8 pr-8 pt-4 text-lg">
       <span className="mr-4">
         {t("Template.Total")}: {total}
       </span>

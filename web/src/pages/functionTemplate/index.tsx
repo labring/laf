@@ -23,7 +23,6 @@ import EmptyBox from "@/components/EmptyBox";
 import { changeURL } from "@/utils/format";
 
 import TemplateCard from "./Mods/TemplateCard/TemplateCard";
-import TemplatePopOver from "./Mods/TemplatePopover/TemplatePopover";
 import FuncTemplateItem from "./FuncTemplateItem";
 import {
   useGetFunctionTemplatesQuery,
@@ -302,23 +301,23 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
               </div>
             </div>
           </div>
-          <div className={clsx("flex flex-wrap", isModal ? "pl-52" : "pl-72 pr-8")}>
+          <div className={isModal ? "pl-52" : "pl-72 pr-8"}>
             {isLoading ? (
-              <Center className="h-full w-full">
+              <Center className="w-full pt-36">
                 <Spinner />
               </Center>
             ) : templateList && templateList.list.length > 0 ? (
-              templateList.list.map((item) => (
-                <section
-                  className={clsx(
-                    "mb-3 min-w-[18rem]",
-                    selectedItem.value === "all" || selectedItem.value === "recommended"
-                      ? "w-1/3"
-                      : "w-1/2",
-                  )}
-                  key={item._id}
-                >
-                  <TemplatePopOver template={item}>
+              <div className="flex flex-wrap">
+                {templateList.list.map((item) => (
+                  <section
+                    className={clsx(
+                      "mb-3 min-w-[18rem]",
+                      selectedItem.value === "all" || selectedItem.value === "recommended"
+                        ? "w-1/3"
+                        : "w-1/2",
+                    )}
+                    key={item._id}
+                  >
                     <TemplateCard
                       onClick={() => {
                         navigate(changeURL(`/${item._id}`));
@@ -327,9 +326,17 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
                       template={item}
                       templateCategory={selectedItem.value}
                     />
-                  </TemplatePopOver>
-                </section>
-              ))
+                  </section>
+                ))}
+                <PaginationBar
+                  page={page}
+                  setPage={setPage}
+                  total={templateList?.total || 0}
+                  pageSize={
+                    selectedItem.value === "all" || selectedItem.value === "recommended" ? 12 : 8
+                  }
+                />
+              </div>
             ) : (
               <div className="w-full pt-20">
                 <EmptyBox>
@@ -338,23 +345,9 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
               </div>
             )}
           </div>
-          {templateList && templateList.list.length > 0 && (
-            <PaginationBar
-              page={page}
-              setPage={setPage}
-              total={templateList?.total || 0}
-              pageSize={
-                selectedItem.value === "all" || selectedItem.value === "recommended" ? 12 : 8
-              }
-            />
-          )}
         </div>
       ) : (
-        <FuncTemplateItem
-          setSelectedItem={setSelectedItem}
-          selectedItem={selectedItem}
-          isModal={isModal!}
-        />
+        <FuncTemplateItem isModal={isModal!} />
       )}
     </div>
   );

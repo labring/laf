@@ -88,7 +88,7 @@ const UseTemplateModal = (props: { children: any; templateId: string; packageLis
                     <ConfirmButton
                       headerText={t("Confirm")}
                       confirmButtonText={String(t("Confirm"))}
-                      bodyText={t("Template.confirm")}
+                      bodyText={t("Template.Confirm")}
                       onSuccessAction={async () => {
                         const res = await useTemplateMutation.mutateAsync({
                           appid: item?.appid,

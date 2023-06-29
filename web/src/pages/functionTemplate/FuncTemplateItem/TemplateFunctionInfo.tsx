@@ -22,21 +22,26 @@ const TemplateFunctionInfo = ({
 
   return (
     <>
-      <div className="flex justify-between">
-        <div className="w-full">
-          <div className="truncate pb-2 text-[24px] font-semibold">{template.name}</div>
-          <div className="truncate text-second">{template.description}</div>
+      {!popover && (
+        <div>
+          <div className="mb-2 flex justify-between">
+            <div className="w-full">
+              <div className="truncate pb-2 text-[24px] font-semibold">{template.name}</div>
+              <div className="truncate text-second">{template.description}</div>
+            </div>
+          </div>
+          <Divider marginY={4} variant="dashed" />
         </div>
-      </div>
-      <Divider marginY={4} variant="dashed" />
-      <div className="mb-2 flex w-full overflow-auto">
+      )}
+      <div className="flex w-full overflow-auto">
         {template.items.map((item) => (
           <div
             className={clsx(
-              "mb-2 mr-2 cursor-pointer rounded-md border px-8 py-1 text-[14px]",
+              "mr-2 cursor-pointer whitespace-nowrap rounded-md border px-8 py-1 text-[14px]",
               !darkMode && "bg-[#F6F8F9]",
               "hover:border-blue-400 hover:bg-blue-100 hover:text-blue-700",
               currentFunction?.name === item.name && "border-blue-400 bg-blue-100 text-blue-700",
+              popover ? "mb-2" : "mb-4",
             )}
             onClick={() => {
               setCurrentFunction(item);
@@ -50,7 +55,7 @@ const TemplateFunctionInfo = ({
       <div
         className="overflow-auto"
         style={{
-          height: popover ? "400px" : "60vh",
+          height: popover ? "250px" : "60vh",
         }}
       >
         <MonacoEditor
@@ -59,6 +64,7 @@ const TemplateFunctionInfo = ({
           readOnly={true}
           title={currentFunction.name}
           currentFunction={currentFunction}
+          popover={popover}
         />
       </div>
     </>
