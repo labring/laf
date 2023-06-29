@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Popover, PopoverBody, PopoverContent, PopoverTrigger, Portal } from "@chakra-ui/react";
+import { Popover, PopoverBody, PopoverContent, PopoverTrigger } from "@chakra-ui/react";
 
 import TemplateFunctionInfo from "../../FuncTemplateItem/TemplateFunctionInfo";
 
@@ -12,20 +12,23 @@ const TemplatePopOver = (props: { children?: ReactNode; template: TFunctionTempl
       trigger="hover"
       isLazy
       preventOverflow
-      offset={[80, -80]}
-      placement="auto"
-      strategy="fixed"
+      placement="auto-start"
+      strategy="absolute"
+      openDelay={500}
     >
       <PopoverTrigger>
         <span>{children}</span>
       </PopoverTrigger>
-      <Portal appendToParentPortal>
-        <PopoverContent width={761} height={561}>
-          <PopoverBody px="6" py="4">
-            <TemplateFunctionInfo template={template} popover />
-          </PopoverBody>
-        </PopoverContent>
-      </Portal>
+      <PopoverContent
+        width={528}
+        height={314}
+        borderRadius={12}
+        boxShadow={"0px 11px 20px 0px rgba(0, 0, 0, 0.25);"}
+      >
+        <PopoverBody px="6" py="4">
+          <TemplateFunctionInfo template={template} popover />
+        </PopoverBody>
+      </PopoverContent>
     </Popover>
   );
 };

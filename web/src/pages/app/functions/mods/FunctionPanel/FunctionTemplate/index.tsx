@@ -36,7 +36,7 @@ const FuncTemplate = (props: { children?: React.ReactElement }) => {
 
       <Modal isOpen={isOpen} onClose={handleModalClose}>
         <ModalOverlay />
-        <ModalContent minH={"90%"} maxW={"80%"} m={"auto"}>
+        <ModalContent height={"95%"} maxW={"80%"} m={"auto"} overflow={"auto"}>
           <ModalHeader pb={-0.5}>{t("HomePage.NavBar.funcTemplate")}</ModalHeader>
           <ModalBody>
             <ModalCloseButton />
