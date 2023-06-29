@@ -45,11 +45,16 @@ const TemplateCard = (props: IProps) => {
       >
         <div className="mx-5" onClick={onClick}>
           <div className={clsx("mb-3 flex justify-between pt-4")}>
-            <div className="flex items-center text-2xl font-semibold">
+            <div
+              className={clsx(
+                "flex items-center text-2xl font-semibold",
+                templateCategory === "my" ? "w-9/12" : "w-full",
+              )}
+            >
               <div className="truncate">{template.name}</div>
             </div>
-            <div className="flex items-center">
-              {templateCategory === "my" && (
+            {templateCategory === "my" && (
+              <div className="flex items-center">
                 <span
                   className={clsx(
                     "mr-3 px-2 font-semibold",
@@ -60,8 +65,6 @@ const TemplateCard = (props: IProps) => {
                 >
                   {template.private ? "Private" : "Public"}
                 </span>
-              )}
-              {templateCategory === "my" && (
                 <Menu placement="bottom-end">
                   <MenuButton
                     onClick={(e) => {
@@ -92,8 +95,8 @@ const TemplateCard = (props: IProps) => {
                     </MenuItem>
                   </MenuList>
                 </Menu>
-              )}
-            </div>
+              </div>
+            )}
           </div>
 
           <div
@@ -110,7 +113,7 @@ const TemplateCard = (props: IProps) => {
               return (
                 <div
                   key={item.name}
-                  className="mr-2 rounded-md bg-blue-100 px-2 py-1 font-medium text-blue-700 "
+                  className="mr-2 whitespace-nowrap rounded-md bg-blue-100 px-2 py-1 font-medium text-blue-700"
                 >
                   {item.name}
                 </div>
