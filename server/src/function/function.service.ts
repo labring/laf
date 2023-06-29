@@ -78,6 +78,42 @@ export class FunctionService {
   }
 
   async updateOne(func: CloudFunction, dto: UpdateFunctionDto) {
+    if (dto.name) {
+      const existingNames = new Set(
+        await this.db
+          .collection<CloudFunction>('CloudFunction')
+          .aggregate([
+            { $match: { appid: func.appid } },
+            { $group: { _id: null, names: { $addToSet: '$name' } } },
+          ])
+          .toArray()
+          .then((result) => (result.length > 0 ? result[0].names : [])),
+      )
+
+      if (existingNames.has(dto.name)) {
+        return new Error('Function name already exists')
+      }
+
+      const fn = await this.db
+        .collection<CloudFunction>('CloudFunction')
+        .findOneAndUpdate(
+          { appid: func.appid, name: func.name },
+          {
+            $set: {
+              name: dto.name,
+              desc: dto.description,
+              methods: dto.methods,
+              tags: dto.tags || [],
+              updatedAt: new Date(),
+            },
+          },
+          { returnDocument: 'after' },
+        )
+
+      await this.publish(fn.value, func.name)
+      return fn.value
+    }
+
     await this.db.collection<CloudFunction>('CloudFunction').updateOne(
       { appid: func.appid, name: func.name },
       {
@@ -123,13 +159,16 @@ export class FunctionService {
     return res
   }
 
-  async publish(func: CloudFunction) {
+  async publish(func: CloudFunction, oldFuncName?: string) {
     const { db, client } = await this.databaseService.findAndConnect(func.appid)
     const session = client.startSession()
     try {
       await session.withTransaction(async () => {
         const coll = db.collection(CN_PUBLISHED_FUNCTIONS)
-        await coll.deleteOne({ name: func.name }, { session })
+        await coll.deleteOne(
+          { name: oldFuncName ? oldFuncName : func.name },
+          { session },
+        )
         await coll.insertOne(func, { session })
       })
     } finally {

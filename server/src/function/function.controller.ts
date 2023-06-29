@@ -148,11 +148,14 @@ export class FunctionController {
         HttpStatus.NOT_FOUND,
       )
     }
-
     const res = await this.functionsService.updateOne(func, dto)
     if (!res) {
       return ResponseUtil.error(i18n.t('function.update.error'))
     }
+    if (res instanceof Error) {
+      return ResponseUtil.error(res.message)
+    }
+
     return ResponseUtil.ok(res)
   }
 
