@@ -308,9 +308,7 @@ export default function CreateFuncTemplate() {
                 return (
                   <div
                     key={item.name}
-                    className={clsx(
-                      "my-3 flex items-center justify-between rounded-md py-1 font-medium hover:opacity-100",
-                    )}
+                    className="my-3 flex items-center justify-between rounded-md py-1 font-medium hover:opacity-100"
                   >
                     <div className="flex w-10/12 items-center">
                       <FileTypeIcon type="ts" fontSize={18} />
@@ -333,10 +331,7 @@ export default function CreateFuncTemplate() {
                 return (
                   <Box
                     key={item.package.name}
-                    className={clsx(
-                      "my-3 flex items-center justify-between py-1 font-medium",
-                      // darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100",
-                    )}
+                    className="my-3 flex items-center justify-between py-1 font-medium"
                   >
                     <div>
                       <FileTypeIcon type="npm" />
@@ -347,7 +342,7 @@ export default function CreateFuncTemplate() {
                       <DeleteIcon
                         boxSize={3}
                         color={"gray.400"}
-                        className={clsx("cursor-pointer hover:text-gray-800")}
+                        className="cursor-pointer hover:text-gray-800"
                         onClick={() => {
                           setPackageList(
                             packageList.filter((pkg) => pkg.package.name !== item.package.name),

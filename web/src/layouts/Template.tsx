@@ -27,7 +27,7 @@ export default function TemplateLayout() {
       >
         <Header width="max-w-screen-xl" />
       </div>
-      <div className={clsx("overflow-auto")}>
+      <div className="overflow-auto">
         <div className="fixed bottom-0 left-0 right-0 top-0 -z-40 bg-white"></div>
 
         <div className="flex justify-center">
