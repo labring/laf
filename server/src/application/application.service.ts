@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import * as nanoid from 'nanoid'
 import { UpdateApplicationBundleDto } from './dto/update-application.dto'
 import {
@@ -21,15 +21,10 @@ import {
   ApplicationBundle,
   ApplicationBundleResource,
 } from './entities/application-bundle'
-import { CACHE_MANAGER } from '@nestjs/cache-manager'
-import { Cache } from 'cache-manager'
 
 @Injectable()
 export class ApplicationService {
   private readonly logger = new Logger(ApplicationService.name)
-  private readonly CACHE_PREFIX = 'laf:application'
-
-  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
   /**
    * Create application
@@ -312,12 +307,6 @@ export class ApplicationService {
           },
           returnDocument: 'after',
         },
-      )
-
-    if (res.value)
-      await this.cacheManager.set(
-        `${this.CACHE_PREFIX}:bundle:${appid}`,
-        res.value,
       )
 
     return res.value
