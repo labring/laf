@@ -12,6 +12,7 @@ import {
   Currency,
   PaymentChannelType,
 } from './entities/account-charge-order'
+import { GiftCode } from './entities/account-gift-code'
 import { AccountTransaction } from './entities/account-transaction'
 import { AccountChargeReward } from './entities/account-charge-reward'
 
@@ -188,5 +189,91 @@ export class AccountService {
       .toArray()
 
     return rewards
+  }
+
+  async useGiftCode(userid: ObjectId, code: ObjectId) {
+    const client = SystemDatabase.client
+    const session = client.startSession()
+
+    const giftCode = await this.findOneGiftCode(code)
+    const account = await this.findOne(userid)
+
+    try {
+      session.startTransaction()
+      // update account balance
+      const res = await this.db.collection<Account>('Account').findOneAndUpdate(
+        { _id: account._id },
+        {
+          $inc: { balance: giftCode.creditAmount },
+          $set: { updatedAt: new Date() },
+        },
+        { session, returnDocument: 'after' },
+      )
+
+      // add transaction record
+      const transaction = await this.db
+        .collection<AccountTransaction>('AccountTransaction')
+        .insertOne(
+          {
+            accountId: account._id,
+            amount: giftCode.creditAmount,
+            balance: res.value.balance,
+            message: 'Gift Code Redemption',
+            createdAt: new Date(),
+          },
+          { session },
+        )
+
+      // void gift code
+      await this.db.collection<GiftCode>('GiftCode').findOneAndUpdate(
+        {
+          _id: code,
+        },
+        {
+          $set: {
+            used: true,
+            usedAt: new Date(),
+            usedBy: account._id,
+            transactionId: transaction.insertedId,
+          },
+        },
+        { session },
+      )
+
+      await session.commitTransaction()
+
+      return res.value
+    } catch (error) {
+      await session.abortTransaction()
+      this.logger.error(error)
+      throw error
+    } finally {
+      await session.endSession()
+    }
+  }
+
+  async findOneGiftCode(
+    code: ObjectId,
+    used = false,
+  ): Promise<GiftCode | null> {
+    const giftCode = await this.db.collection<GiftCode>('GiftCode').findOne({
+      _id: code,
+      used: used,
+    })
+
+    return giftCode
+  }
+
+  async generateGiftCode(creditAmount: number): Promise<GiftCode | null> {
+    const res = await this.db.collection<GiftCode>('GiftCode').insertOne({
+      creditAmount: creditAmount,
+      used: false,
+      createdAt: new Date(),
+    })
+    const giftCode = await this.db
+      .collection<GiftCode>('GiftCode')
+      .findOne({ _id: res.insertedId })
+
+    return giftCode
   }
 }

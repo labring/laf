@@ -21,6 +21,7 @@ import {
   CreateChargeOrderDto,
   CreateChargeOrderOutDto,
 } from './dto/create-charge-order.dto'
+import { UseGiftCodeDto } from './dto/use-gift-code.dto'
 import { PaymentChannelService } from './payment/payment-channel.service'
 import {
   WeChatPayChargeOrder,
@@ -239,5 +240,22 @@ export class AccountController {
     }
 
     return res.status(200).send()
+  }
+
+  /**
+   * Use a gift code
+   */
+  @ApiOperation({ summary: 'Use a gift code' })
+  @ApiResponseObject(Account)
+  @UseGuards(JwtAuthGuard)
+  @Post('gift-code')
+  async giftCode(@Req() req: IRequest, @Body() dto: UseGiftCodeDto) {
+    dto.code = new ObjectId(dto.code)
+    const found = await this.accountService.findOneGiftCode(dto.code)
+    if (!found) {
+      return ResponseUtil.error("gift code doesn't exist")
+    }
+    const res = await this.accountService.useGiftCode(req.user._id, dto.code)
+    return ResponseUtil.ok(res)
   }
 }
