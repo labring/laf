@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { AddIcon, ChevronDownIcon, Search2Icon } from "@chakra-ui/icons";
 import {
   Button,
+  Center,
   Input,
   InputGroup,
   InputLeftElement,
@@ -12,12 +13,14 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Spinner,
   useColorMode,
 } from "@chakra-ui/react";
 import clsx from "clsx";
 import { debounce } from "lodash";
 
 import EmptyBox from "@/components/EmptyBox";
+import { changeURL } from "@/utils/format";
 
 import TemplateCard from "./Mods/TemplateCard/TemplateCard";
 import TemplatePopOver from "./Mods/TemplatePopover/TemplatePopover";
@@ -63,9 +66,6 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
     sort: "hot",
   };
 
-  const [selectedItem, setSelectedItem] = useState(
-    isModal ? { text: "", value: "" } : { text: t("Template.Recommended"), value: "recommended" },
-  );
   const [queryData, setQueryData] = useState(defaultQueryData);
   const setQueryDataDebounced = useMemo(
     () =>
@@ -83,25 +83,28 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
   const { colorMode } = useColorMode();
   const darkMode = colorMode === "dark";
 
-  useEffect(() => {
+  const getInitialSelectedItem = () => {
     const match = window.location.href.match(/\/([^/]+)\/?$/);
     if (match && match[1]) {
       const foundItem = sideBar_data.find((item) => item.value === match[1]);
       if (foundItem) {
-        setSelectedItem(foundItem);
-        if (foundItem.value === "stared") {
-          setQueryData({ ...queryData, type: "stared" });
-        } else if (foundItem.value === "recent") {
-          setQueryData({ ...queryData, type: "recentUsed" });
-        }
-      } else {
-        setSelectedItem({ text: "", value: "" });
+        return foundItem;
       }
+    }
+    return { text: "", value: "" };
+  };
+
+  const [selectedItem, setSelectedItem] = useState(getInitialSelectedItem);
+
+  useEffect(() => {
+    const newSelectedItem = getInitialSelectedItem();
+    if (newSelectedItem.value !== selectedItem.value) {
+      setSelectedItem(newSelectedItem);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [window.location.href]);
 
-  useGetFunctionTemplatesQuery(
+  const functionTemplatesQuery = useGetFunctionTemplatesQuery(
     {
       ...queryData,
       page: page,
@@ -114,7 +117,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
     },
   );
 
-  useGetRecommendFunctionTemplatesQuery(
+  const recommendFunctionTemplatesQuery = useGetRecommendFunctionTemplatesQuery(
     {
       ...queryData,
       page: page,
@@ -127,7 +130,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
     },
   );
 
-  useGetMyFunctionTemplatesQuery(
+  const myFunctionTemplatesQuery = useGetMyFunctionTemplatesQuery(
     {
       ...queryData,
       page: page,
@@ -140,6 +143,21 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
       },
     },
   );
+
+  function getLoadingStatus(selectedValue: any, queryMapping: any) {
+    const defaultLoadingStatus = false;
+    return queryMapping[selectedValue]?.isLoading ?? defaultLoadingStatus;
+  }
+
+  const queryMapping = {
+    all: functionTemplatesQuery,
+    recommended: recommendFunctionTemplatesQuery,
+    my: myFunctionTemplatesQuery,
+    stared: myFunctionTemplatesQuery,
+    recent: myFunctionTemplatesQuery,
+  };
+
+  let isLoading = getLoadingStatus(selectedItem.value, queryMapping);
 
   const handleSideBarClick = (item: any) => {
     setSelectedItem(item);
@@ -264,10 +282,12 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
                 <span className="whitespace-nowrap text-lg text-grayModern-400">
                   {t("Template.SortOrd")}{" "}
                 </span>
-                <span className="whitespace-nowrap pl-2 text-lg">{sorting}</span>
                 <Menu>
-                  <MenuButton className="cursor-pointer">
-                    <ChevronDownIcon boxSize={6} color="gray.400" />
+                  <MenuButton className="flex cursor-pointer">
+                    <span className="whitespace-nowrap pl-2 text-lg">
+                      {sorting}
+                      <ChevronDownIcon boxSize={6} color="gray.400" />
+                    </span>
                   </MenuButton>
                   <MenuList>
                     {sortList.map((item) => {
@@ -283,7 +303,11 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
             </div>
           </div>
           <div className={clsx("flex flex-wrap", isModal ? "pl-52" : "pl-72 pr-8")}>
-            {templateList && templateList.list.length > 0 ? (
+            {isLoading ? (
+              <Center className="h-full w-full">
+                <Spinner />
+              </Center>
+            ) : templateList && templateList.list.length > 0 ? (
               templateList.list.map((item) => (
                 <section
                   className={clsx(
@@ -297,15 +321,12 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
                   <TemplatePopOver template={item}>
                     <TemplateCard
                       onClick={() => {
-                        const currentURL = window.location.pathname;
-                        const lastIndex = currentURL.lastIndexOf("/");
-                        const newURL = currentURL.substring(0, lastIndex) + `/${item._id}`;
-                        navigate(newURL);
+                        navigate(changeURL(`/${item._id}`));
                         setSelectedItem({ text: "", value: "" });
                       }}
                       template={item}
                       templateCategory={selectedItem.value}
-                    ></TemplateCard>
+                    />
                   </TemplatePopOver>
                 </section>
               ))
