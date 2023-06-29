@@ -25,7 +25,7 @@ const Header = (props: { width: string }) => {
     { text: t("HomePage.NavBar.home"), ref: "/dashboard" },
     {
       text: t("HomePage.NavBar.funcTemplate"),
-      ref: "/market/templates/all",
+      ref: "/market/templates/recommended",
       value: "templateMarket",
     },
     // { text: t("HomePage.NavBar.appMarket"), ref: "/function-templates" },

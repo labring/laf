@@ -36,5 +36,8 @@ lerna-debug.log*
 
 .env.local
 .env
+<<<<<<< HEAD
 
 test.js
+=======
+>>>>>>> feat/function-templates

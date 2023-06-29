@@ -15,7 +15,7 @@ import useGlobalStore from "@/pages/globalStore";
  */
 export async function FunctionControllerCreate(params: Definitions.CreateFunctionDto): Promise<{
   error: string;
-  data: Paths.FunctionControllerCreate.Responses;
+  data: Definitions.CloudFunction;
 }> {
   // /v1/apps/{appid}/functions
   let _params: { [key: string]: any } = {
@@ -55,7 +55,7 @@ export async function FunctionControllerFindOne(
   params: Paths.FunctionControllerFindOne.BodyParameters,
 ): Promise<{
   error: string;
-  data: Paths.FunctionControllerFindOne.Responses;
+  data: Definitions.CloudFunction;
 }> {
   // /v1/apps/{appid}/functions/{name}
   let _params: { [key: string]: any } = {
@@ -68,29 +68,12 @@ export async function FunctionControllerFindOne(
   });
 }
 
-export async function FunctionControllerGetHistory(
-  params: Paths.FunctionControllerGetHistory.BodyParameters,
-): Promise<{
-  error: string;
-  data: Paths.FunctionControllerGetHistory.Responses;
-}> {
-  // /v1/apps/{appid}/functions/{name}/history
-  let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
-    ...params,
-  };
-  return request(`/v1/apps/${_params.appid}/functions/${_params.name}/history`, {
-    method: "GET",
-    params: params,
-  });
-}
-
 /**
  * Update a function
  */
 export async function FunctionControllerUpdate(params: Definitions.UpdateFunctionDto): Promise<{
   error: string;
-  data: Paths.FunctionControllerUpdate.Responses;
+  data: Definitions.CloudFunction;
 }> {
   // /v1/apps/{appid}/functions/{name}
   let _params: { [key: string]: any } = {
@@ -110,7 +93,7 @@ export async function FunctionControllerRemove(
   params: Paths.FunctionControllerRemove.BodyParameters,
 ): Promise<{
   error: string;
-  data: Paths.FunctionControllerRemove.Responses;
+  data: Definitions.CloudFunction;
 }> {
   // /v1/apps/{appid}/functions/{name}
   let _params: { [key: string]: any } = {
@@ -128,7 +111,7 @@ export async function FunctionControllerRemove(
  */
 export async function FunctionControllerCompile(params: Definitions.CompileFunctionDto): Promise<{
   error: string;
-  data: Paths.FunctionControllerCompile.Responses;
+  data: Definitions.CloudFunction;
 }> {
   // /v1/apps/{appid}/functions/{name}/compile
   let _params: { [key: string]: any } = {
@@ -138,6 +121,26 @@ export async function FunctionControllerCompile(params: Definitions.CompileFunct
   return request(`/v1/apps/${_params.appid}/functions/${_params.name}/compile`, {
     method: "POST",
     data: params,
+  });
+}
+
+/**
+ * Get cloud function history
+ */
+export async function FunctionControllerGetHistory(
+  params: Paths.FunctionControllerGetHistory.BodyParameters,
+): Promise<{
+  error: string;
+  data: Paths.FunctionControllerGetHistory.Responses;
+}> {
+  // /v1/apps/{appid}/functions/{name}/history
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/functions/${_params.name}/history`, {
+    method: "GET",
+    params: params,
   });
 }
 

@@ -40,7 +40,7 @@ const ConfirmButton = ({
     <>
       {React.cloneElement(children, {
         onClick: (event: any) => {
-          event?.preventDefault();
+          // event?.preventDefault();
           onOpen();
         },
       })}

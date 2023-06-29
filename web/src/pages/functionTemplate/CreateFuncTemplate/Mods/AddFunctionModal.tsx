@@ -12,6 +12,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
 import clsx from "clsx";
@@ -26,7 +27,7 @@ const AddFunctionModal = (props: {
   children?: React.ReactElement;
   functionList?: any[];
   setFunctionList?: React.Dispatch<React.SetStateAction<any[]>>;
-  setCurrentFunction?: React.Dispatch<React.SetStateAction<any>>;
+  setCurrentFunction: React.Dispatch<React.SetStateAction<any>>;
   currentFunction?: any;
   isEdit?: boolean;
 }) => {
@@ -34,12 +35,14 @@ const AddFunctionModal = (props: {
     children = null,
     functionList,
     setFunctionList,
-    // setCurrentFunction,
+    setCurrentFunction,
     currentFunction,
     isEdit,
   } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { showError } = useGlobalStore();
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
   const defaultValues = isEdit
     ? {
         name: currentFunction?.name,
@@ -88,7 +91,6 @@ export default async function (ctx: FunctionContext) {
             return item;
           }) || [],
         );
-        onClose();
       } else {
         if (functionList?.some((item) => item.name === data.name)) {
           showError(t("Template.FunctionNameExist"));
@@ -98,8 +100,9 @@ export default async function (ctx: FunctionContext) {
           ...(functionList || []),
           { ...updateData, source: { code: defaultCode } },
         ]);
-        onClose();
       }
+      setCurrentFunction({ ...updateData, source: { code: defaultCode } });
+      onClose();
     }
   };
 
@@ -108,6 +111,11 @@ export default async function (ctx: FunctionContext) {
       {children &&
         React.cloneElement(children, {
           onClick: () => {
+            if (functionList && setCurrentFunction) {
+              setCurrentFunction(
+                functionList.find((item) => item.name === currentFunction?.name) || null,
+              );
+            }
             onOpen();
             reset(defaultValues);
             setTimeout(() => {
@@ -127,7 +135,8 @@ export default async function (ctx: FunctionContext) {
             <div
               className={clsx(
                 "mb-3 flex h-12 w-full items-center border-b-2",
-                isEdit && "rounded-md bg-gray-100",
+                isEdit && !darkMode && "rounded-md bg-gray-100",
+                isEdit && darkMode && "rounded-md bg-gray-800",
               )}
             >
               <input

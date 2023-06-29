@@ -102,7 +102,7 @@ export default function DeployButton() {
             <ModalCloseButton />
             <ModalBody borderBottom={"1px"} borderBottomColor="gray.200">
               <CommonDiffEditor
-                original={functionDetailQuery.data?.data?.source?.code}
+                original={(functionDetailQuery.data?.data as any)?.source?.code}
                 modified={functionCache.getCache(
                   store.currentFunction?._id,
                   store.currentFunction?.source?.code,

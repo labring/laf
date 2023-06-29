@@ -109,7 +109,7 @@ export const useDeleteFunctionMutation = () => {
       return FunctionControllerRemove(updatedValues);
     },
     {
-      onSuccess(data) {
+      onSuccess(data: any) {
         if (!data.error) {
           queryClient.invalidateQueries(queryKeys.useFunctionListQuery);
           store.setCurrentFunction({});

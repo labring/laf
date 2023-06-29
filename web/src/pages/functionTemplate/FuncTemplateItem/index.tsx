@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
@@ -7,12 +8,15 @@ import clsx from "clsx";
 import TemplateInfo from "../Mods/TemplateInfo";
 import { useGetFunctionTemplateUsedByQuery, useGetOneFunctionTemplateQuery } from "../service";
 
-import { TFunctionTemplate } from "@/apis/typing";
-import MonacoEditor from "@/pages/functionTemplate/Mods/MonacoEditor";
+import TemplateFunctionInfo from "./TemplateFunctionInfo";
 
-const FuncTemplateItem = () => {
+import { TFunctionTemplate } from "@/apis/typing";
+
+const FuncTemplateItem = (props: { setSelectedItem: any; selectedItem: any; isModal: boolean }) => {
+  const { setSelectedItem, isModal } = props;
   const { colorMode } = useColorMode();
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const [template, setTemplate] = useState<TFunctionTemplate>();
   const [usedBy, setUsedBy] = useState<any[]>([]);
@@ -22,6 +26,7 @@ const FuncTemplateItem = () => {
   useGetOneFunctionTemplateQuery(
     { id: id },
     {
+      enabled: (id as string)?.length > 12,
       onSuccess: (data: any) => {
         setTemplate(data.data[0]);
       },
@@ -31,6 +36,7 @@ const FuncTemplateItem = () => {
   useGetFunctionTemplateUsedByQuery(
     { id: id },
     {
+      enabled: (id as string)?.length > 12,
       onSuccess: (data: any) => {
         setUsedBy(data.data.list);
       },
@@ -38,11 +44,23 @@ const FuncTemplateItem = () => {
   );
 
   return (
-    <div className={clsx("flex flex-col px-20", colorMode === "dark" ? "" : "bg-white")}>
-      <div className="pt-8 text-lg">
-        <a href="/market/templates/all" className="text-second">
+    <div
+      className={clsx(
+        "flex flex-col",
+        colorMode === "dark" ? "" : "bg-white",
+        isModal ? "" : "px-20 pt-8",
+      )}
+    >
+      <div className="text-lg">
+        <span
+          className="cursor-pointer text-second"
+          onClick={() => {
+            navigate(-1);
+            setSelectedItem({ text: t("Template.Recommended"), value: "recommended" });
+          }}
+        >
           {t("HomePage.NavBar.funcTemplate")}
-        </a>
+        </span>
         <span className="px-3">
           <ChevronRightIcon />
         </span>
@@ -51,25 +69,9 @@ const FuncTemplateItem = () => {
       {template && (
         <div className="flex pt-3">
           <div className="mr-9 h-full w-4/5">
-            <div className="pb-2 text-xl font-semibold">{template.name}</div>
-            <div className="pb-6 text-second">{template.description}</div>
-            <div className="h-[70vh] overflow-auto">
-              {(template.items || []).map((item) => {
-                return (
-                  <div key={item.name} className="mb-4">
-                    <MonacoEditor
-                      value={item.source.code}
-                      colorMode={colorMode}
-                      readOnly={true}
-                      title={item.name}
-                      currentFunction={item}
-                    />
-                  </div>
-                );
-              })}
-            </div>
+            <TemplateFunctionInfo template={template} />
           </div>
-          <div className="h-full w-1/5">
+          <div className="w-1/5">
             <TemplateInfo functionTemplate={template} usedBy={usedBy} />
           </div>
         </div>

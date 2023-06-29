@@ -1,19 +1,30 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalFooter,
+  ModalHeader,
   ModalOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
+import { t } from "i18next";
+
+import { changeURL } from "@/utils/format";
 
 import FunctionTemplate from "@/pages/functionTemplate";
 
 const FuncTemplate = (props: { children?: React.ReactElement }) => {
   const { onOpen, isOpen, onClose } = useDisclosure();
   const { children } = props;
+  const navigate = useNavigate();
+
+  const handleModalClose = () => {
+    navigate(changeURL(`/function`));
+    onClose();
+  };
   return (
     <>
       {children &&
@@ -23,12 +34,13 @@ const FuncTemplate = (props: { children?: React.ReactElement }) => {
           },
         })}
 
-      <Modal isOpen={isOpen} onClose={onClose} size="7xl">
+      <Modal isOpen={isOpen} onClose={handleModalClose}>
         <ModalOverlay />
-        <ModalContent minH={"90%"} maxW={"90%"} m={"auto"}>
-          <ModalCloseButton />
+        <ModalContent minH={"90%"} maxW={"80%"} m={"auto"}>
+          <ModalHeader pb={-0.5}>{t("HomePage.NavBar.funcTemplate")}</ModalHeader>
           <ModalBody>
-            <FunctionTemplate />
+            <ModalCloseButton />
+            <FunctionTemplate isModal={true} />
           </ModalBody>
           <ModalFooter></ModalFooter>
         </ModalContent>
