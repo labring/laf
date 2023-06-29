@@ -12,8 +12,8 @@ import TemplateFunctionInfo from "./TemplateFunctionInfo";
 
 import { TFunctionTemplate } from "@/apis/typing";
 
-const FuncTemplateItem = (props: { setSelectedItem: any; selectedItem: any; isModal: boolean }) => {
-  const { setSelectedItem, isModal } = props;
+const FuncTemplateItem = (props: { isModal: boolean }) => {
+  const { isModal } = props;
   const { colorMode } = useColorMode();
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -56,7 +56,6 @@ const FuncTemplateItem = (props: { setSelectedItem: any; selectedItem: any; isMo
           className="cursor-pointer text-second"
           onClick={() => {
             navigate(-1);
-            setSelectedItem({ text: t("Template.Recommended"), value: "recommended" });
           }}
         >
           {t("HomePage.NavBar.funcTemplate")}

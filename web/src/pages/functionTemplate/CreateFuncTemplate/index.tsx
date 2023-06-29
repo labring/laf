@@ -7,6 +7,7 @@ import { Box, Button, Radio, RadioGroup, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import { TextIcon } from "@/components/CommonIcon";
+import ConfirmButton from "@/components/ConfirmButton";
 import FileTypeIcon from "@/components/FileTypeIcon";
 
 import {
@@ -145,9 +146,14 @@ export default function CreateFuncTemplate() {
   return (
     <div className={clsx("flex flex-col px-20 2xl:px-48", colorMode === "dark" ? "" : "bg-white")}>
       <div className="pt-8 text-lg">
-        <a href="/market/templates/my" className="text-second">
-          {t("Template.MyTemplate")}
-        </a>
+        <span
+          className="cursor-pointer text-second"
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
+          {t("HomePage.NavBar.funcTemplate")}
+        </span>
         <span className="px-3">
           <ChevronRightIcon />
         </span>
@@ -273,17 +279,19 @@ export default function CreateFuncTemplate() {
 
           <div className="mt-4 flex justify-center pb-4">
             {isEdit && (
-              <Button
-                className="mr-12 w-36 bg-red-100"
-                variant={"warnText"}
-                onClick={async () => {
+              <ConfirmButton
+                headerText={t("Delete")}
+                bodyText={t("Template.ConfirmDeleteTemplate")}
+                onSuccessAction={async () => {
                   await deleteFunctionMutation.mutateAsync({ id: templateId });
                   showSuccess(t("DeleteSuccess"));
                   navigate("/market/templates/my");
                 }}
               >
-                {t("Delete")}
-              </Button>
+                <Button className="mr-4 w-36 bg-red-100" variant={"warnText"}>
+                  {t("Delete")}
+                </Button>
+              </ConfirmButton>
             )}
             <Button className="w-36" onClick={handleSubmit(onSubmit)}>
               {isEdit ? t("Template.Save") : t("Publish")}
@@ -301,8 +309,7 @@ export default function CreateFuncTemplate() {
                   <div
                     key={item.name}
                     className={clsx(
-                      "group my-3 flex cursor-pointer items-center justify-between rounded-md py-1 font-medium hover:opacity-100",
-                      darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100",
+                      "my-3 flex items-center justify-between rounded-md py-1 font-medium hover:opacity-100",
                     )}
                   >
                     <div className="flex w-10/12 items-center">
@@ -327,8 +334,8 @@ export default function CreateFuncTemplate() {
                   <Box
                     key={item.package.name}
                     className={clsx(
-                      "group my-3 flex cursor-pointer items-center justify-between rounded-md py-1 font-medium",
-                      darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100",
+                      "my-3 flex items-center justify-between py-1 font-medium",
+                      // darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100",
                     )}
                   >
                     <div>
@@ -340,9 +347,7 @@ export default function CreateFuncTemplate() {
                       <DeleteIcon
                         boxSize={3}
                         color={"gray.400"}
-                        className={clsx(
-                          "mr-2 opacity-0 hover:text-gray-800 group-hover:opacity-100",
-                        )}
+                        className={clsx("cursor-pointer hover:text-gray-800")}
                         onClick={() => {
                           setPackageList(
                             packageList.filter((pkg) => pkg.package.name !== item.package.name),

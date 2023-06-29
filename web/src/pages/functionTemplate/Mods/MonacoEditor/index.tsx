@@ -77,6 +77,7 @@ const MonacoEditor = (props: {
   setCurrentFunction?: any;
   functionList?: any;
   setFunctionList?: any;
+  popover?: boolean;
 }) => {
   const {
     readOnly,
@@ -88,6 +89,7 @@ const MonacoEditor = (props: {
     setCurrentFunction,
     functionList,
     setFunctionList,
+    popover,
   } = props;
   const monacoEl = useRef<HTMLDivElement | null>(null);
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
@@ -113,7 +115,7 @@ const MonacoEditor = (props: {
         formatOnPaste: true,
         overviewRulerLanes: 0,
         lineNumbersMinChars: 4,
-        fontSize: 14,
+        fontSize: popover ? 10 : 14,
         theme: darkMode ? "lafEditorThemeDark" : "lafEditorTheme",
       });
     }
@@ -143,7 +145,7 @@ const MonacoEditor = (props: {
   return (
     <div
       className={clsx(
-        "h-full overflow-hidden rounded-md border",
+        "h-full overflow-hidden rounded-md border border-grayModern-200",
         darkMode ? "bg-[#202631]" : "bg-white",
       )}
     >

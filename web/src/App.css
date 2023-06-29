@@ -71,8 +71,3 @@ a {
     background: black;
   }
 }
-
-.chakra-portal {
-  position: relative;
-  z-index: 9999;
-}
