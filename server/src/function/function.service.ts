@@ -78,19 +78,10 @@ export class FunctionService {
   }
 
   async updateOne(func: CloudFunction, dto: UpdateFunctionDto) {
+    // update function name
     if (dto.name) {
-      const existingNames = new Set(
-        await this.db
-          .collection<CloudFunction>('CloudFunction')
-          .aggregate([
-            { $match: { appid: func.appid } },
-            { $group: { _id: null, names: { $addToSet: '$name' } } },
-          ])
-          .toArray()
-          .then((result) => (result.length > 0 ? result[0].names : [])),
-      )
-
-      if (existingNames.has(dto.name)) {
+      const found = await this.findOne(func.appid, dto.name)
+      if (found) {
         return new Error('Function name already exists')
       }
 
