@@ -97,8 +97,11 @@ export class FunctionService {
     )
 
     const fn = await this.findOne(func.appid, func.name)
-    await this.addOneHistoryRecord(fn)
-    await this.publish(fn)
+    // deploy function
+    if (!dto.params) {
+      await this.addOneHistoryRecord(fn)
+      await this.publish(fn)
+    }
     return fn
   }
 
