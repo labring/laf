@@ -23,7 +23,7 @@ export class UpdateFunctionTemplateDto {
 
   @ApiProperty({ description: 'Template name' })
   @IsNotEmpty()
-  @MaxLength(64)
+  @MaxLength(32)
   @IsString()
   name: string
 

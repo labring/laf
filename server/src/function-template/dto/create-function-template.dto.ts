@@ -20,6 +20,7 @@ export class FunctionTemplateItemDto {
     description: 'FunctionTemplate item name',
   })
   @IsNotEmpty()
+  @MaxLength(60)
   @Matches(/^[a-zA-Z0-9_.\-\/]{1,256}$/)
   name: string
 
@@ -46,7 +47,7 @@ export class CreateFunctionTemplateDto {
   @ApiProperty({ description: 'function template name' })
   @IsNotEmpty()
   @IsString()
-  @MaxLength(64)
+  @MaxLength(32)
   name: string
 
   @ApiProperty({ description: 'Dependencies', type: [CreateDependencyDto] })
