@@ -15,7 +15,8 @@ export class UpdateFunctionDto {
   @ApiProperty({
     description: 'Function name is unique in the application',
   })
-  @IsNotEmpty()
+  @IsOptional()
+  // @IsNotEmpty()
   @Matches(/^[a-zA-Z0-9_.\-\/]{1,256}$/)
   newName?: string
 
