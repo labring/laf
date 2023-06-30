@@ -556,8 +556,8 @@ configurationSnippet:
   main: |
 
   httpStart: |
-    client_header_buffer_size 1024k;
-    large_client_header_buffers 8 128k;
+    client_header_buffer_size 4096k;
+    large_client_header_buffers 8 512k;
   httpEnd: |
 
   httpSrv: |
