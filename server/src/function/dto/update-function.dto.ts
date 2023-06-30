@@ -41,10 +41,6 @@ export class UpdateFunctionDto {
   @IsNotEmpty({ each: true })
   tags: string[]
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  params: any
-
   validate() {
     return null
   }

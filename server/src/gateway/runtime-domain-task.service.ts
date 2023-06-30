@@ -10,6 +10,8 @@ import {
   DomainState,
   RuntimeDomain,
 } from './entities/runtime-domain'
+import { ApisixCustomCertService } from './apisix-custom-cert.service'
+import { isConditionTrue } from 'src/utils/getter'
 
 @Injectable()
 export class RuntimeDomainTaskService {
@@ -19,6 +21,7 @@ export class RuntimeDomainTaskService {
   constructor(
     private readonly apisixService: ApisixService,
     private readonly regionService: RegionService,
+    private readonly certService: ApisixCustomCertService,
   ) {}
 
   @Cron(CronExpression.EVERY_SECOND)
@@ -90,6 +93,62 @@ export class RuntimeDomainTaskService {
       this.logger.debug(route)
     }
 
+    // custom domain
+    if (doc.customDomain) {
+      const id = `app-custom-${doc.appid}`
+      const route = await this.apisixService.getRoute(region, id)
+      if (!route) {
+        await this.apisixService.createAppCustomRoute(region, doc)
+        this.logger.log('app custom route created: ' + doc.appid)
+        this.logger.debug(route)
+      }
+
+      {
+        // create custom certificate if custom domain is set
+        const waitingTime = Date.now() - doc.updatedAt.getTime()
+
+        // create custom domain certificate
+        let cert = await this.certService.readAppCustomDomainCert(region, doc)
+        if (!cert) {
+          cert = await this.certService.createAppCustomDomainCert(region, doc)
+          this.logger.log(`create app custom domain cert: ${doc.appid}`)
+          // return to wait for cert to be ready
+          return await this.relock(doc.appid, waitingTime)
+        }
+
+        // check if cert status is Ready
+        const conditions = (cert as any).status?.conditions || []
+        if (!isConditionTrue('Ready', conditions)) {
+          this.logger.log(`app custom domain cert is not ready: ${doc.appid}`)
+          // return to wait for cert to be ready
+          return await this.relock(doc.appid, waitingTime)
+        }
+
+        // config custom domain certificate to apisix
+        let apisixTls = await this.certService.readAppCustomDomainApisixTls(
+          region,
+          doc,
+        )
+        if (!apisixTls) {
+          apisixTls = await this.certService.createAppCustomDomainApisixTls(
+            region,
+            doc,
+          )
+          this.logger.log(`create app custom domain apisix tls: ${doc.appid}`)
+          // return to wait for tls config to be ready
+          return await this.relock(doc.appid, waitingTime)
+        }
+
+        // check if apisix tls status is Ready
+        const apisixTlsConditions = (apisixTls as any).status?.conditions || []
+        if (!isConditionTrue('ResourcesAvailable', apisixTlsConditions)) {
+          this.logger.log(`website apisix tls is not ready: ${doc.appid}`)
+          // return to wait for tls config to be ready
+          return await this.relock(doc.appid, waitingTime)
+        }
+      }
+    }
+
     // update phase to `Created`
     await db.collection<RuntimeDomain>('RuntimeDomain').updateOne(
       { _id: doc._id, phase: DomainPhase.Creating },
@@ -127,19 +186,59 @@ export class RuntimeDomainTaskService {
     assert(region, 'region not found')
 
     // delete route first if exists
-    const id = `app-${doc.appid}`
-    const route = await this.apisixService.getRoute(region, id)
-    if (route) {
-      await this.apisixService.deleteAppRoute(region, doc.appid)
-      this.logger.log('app route deleted: ' + doc.appid)
-      this.logger.debug(route)
+    {
+      const id = `app-${doc.appid}`
+      const route = await this.apisixService.getRoute(region, id)
+      if (route) {
+        await this.apisixService.deleteAppRoute(region, doc.appid)
+        this.logger.log('app route deleted: ' + doc.appid)
+        this.logger.debug(route)
+      }
+    }
+
+    {
+      const id = `app-custom-${doc.appid}`
+      const route = await this.apisixService.getRoute(region, id)
+      if (route) {
+        await this.apisixService.deleteAppCustomRoute(region, doc.appid)
+        this.logger.log('app custom route deleted: ' + doc.appid)
+        this.logger.debug(route)
+      }
+
+      // delete app custom certificate if custom domain is set
+      const waitingTime = Date.now() - doc.updatedAt.getTime()
+
+      // delete custom domain certificate
+      const cert = await this.certService.readAppCustomDomainCert(region, doc)
+      if (cert) {
+        await this.certService.deleteAppCustomDomainCert(region, doc)
+        this.logger.log(`delete app custom domain cert: ${doc.appid}`)
+        // return to wait for cert to be deleted
+        return await this.relock(doc.appid, waitingTime)
+      }
+
+      // delete custom domain tls config from apisix
+      const tls = await this.certService.readAppCustomDomainApisixTls(
+        region,
+        doc,
+      )
+      if (tls) {
+        await this.certService.deleteAppCustomDomainApisixTls(region, doc)
+        this.logger.log(`delete app custom domain tls: ${doc.appid}`)
+        // return to wait for tls config to be deleted
+        return this.relock(doc.appid, waitingTime)
+      }
     }
 
     // update phase to `Deleted`
     await db.collection<RuntimeDomain>('RuntimeDomain').updateOne(
       { _id: doc._id, phase: DomainPhase.Deleting },
       {
-        $set: { phase: DomainPhase.Deleted, lockedAt: TASK_LOCK_INIT_TIME },
+        $set: {
+          phase: DomainPhase.Deleted,
+          lockedAt: TASK_LOCK_INIT_TIME,
+          updatedAt: new Date(),
+        },
       },
     )
 
@@ -207,5 +306,16 @@ export class RuntimeDomainTaskService {
       state: DomainState.Deleted,
       phase: DomainPhase.Deleted,
     })
+  }
+
+  /**
+   * Relock application by appid, lockedTime is in milliseconds
+   */
+  async relock(appid: string, lockedTime = 0) {
+    const db = SystemDatabase.db
+    const lockedAt = new Date(Date.now() - 1000 * this.lockTimeout + lockedTime)
+    await db
+      .collection<RuntimeDomain>('RuntimeDomain')
+      .updateOne({ appid }, { $set: { lockedAt } })
   }
 }

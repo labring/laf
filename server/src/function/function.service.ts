@@ -21,6 +21,7 @@ import { FunctionLog } from 'src/log/entities/function-log'
 import { CloudFunctionHistory } from './entities/cloud-function-history'
 import { TriggerService } from 'src/trigger/trigger.service'
 import { TriggerPhase } from 'src/trigger/entities/cron-trigger'
+import { UpdateFunctionDebugDto } from './dto/update-function-debug.dto'
 
 @Injectable()
 export class FunctionService {
@@ -161,18 +162,29 @@ export class FunctionService {
           desc: dto.description,
           methods: dto.methods,
           tags: dto.tags || [],
-          params: dto.params,
           updatedAt: new Date(),
         },
       },
     )
 
     const fn = await this.findOne(func.appid, func.name)
-    // deploy function
-    if (!dto.params) {
-      await this.addOneHistoryRecord(fn)
-      await this.publish(fn)
-    }
+    await this.addOneHistoryRecord(fn)
+    await this.publish(fn)
+
+    return fn
+  }
+
+  async updateOneDebug(func: CloudFunction, dto: UpdateFunctionDebugDto) {
+    await this.db.collection<CloudFunction>('CloudFunction').updateOne(
+      { appid: func.appid, name: func.name },
+      {
+        $set: {
+          params: dto.params,
+        },
+      },
+    )
+
+    const fn = await this.findOne(func.appid, func.name)
     return fn
   }
 

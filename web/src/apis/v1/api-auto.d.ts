@@ -14,6 +14,9 @@ declare namespace Definitions {
     methods?: string[];
     code?: string /* The source code of the function */;
     tags?: string[];
+  };
+
+  export type UpdateFunctionDebugDto = {
     params?: {};
   };
 
@@ -433,6 +436,20 @@ declare namespace Definitions {
 }
 
 declare namespace Paths {
+  namespace ApplicationControllerCheckResolved {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+  namespace ApplicationControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
   namespace AuthControllerGetProfile {
     export type QueryParameters = any;
 
@@ -491,6 +508,14 @@ declare namespace Paths {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionControllerUpdateDebug {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.UpdateFunctionDebugDto;
 
     export type Responses = any;
   }

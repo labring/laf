@@ -29,6 +29,7 @@ import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
 import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
 import { CloudFunctionHistory } from './entities/cloud-function-history'
 import { CloudFunction } from './entities/cloud-function'
+import { UpdateFunctionDebugDto } from './dto/update-function-debug.dto'
 
 @ApiTags('Function')
 @ApiBearerAuth('Authorization')
@@ -122,6 +123,38 @@ export class FunctionController {
       )
     }
     return ResponseUtil.ok(data)
+  }
+
+  /**
+   * Update function debug info
+   * @param appid
+   * @param name
+   * @param dto
+   * @returns
+   */
+  @ApiResponseObject(CloudFunction)
+  @ApiOperation({ summary: 'Update function debug info' })
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Patch(':name/debug/params')
+  async updateDebug(
+    @Param('appid') appid: string,
+    @Param('name') name: string,
+    @Body() dto: UpdateFunctionDebugDto,
+    @I18n() i18n: I18nContext<I18nTranslations>,
+  ) {
+    const func = await this.functionsService.findOne(appid, name)
+    if (!func) {
+      throw new HttpException(
+        i18n.t('function.common.notFound', { args: { name } }),
+        HttpStatus.NOT_FOUND,
+      )
+    }
+
+    const res = await this.functionsService.updateOneDebug(func, dto)
+    if (!res) {
+      return ResponseUtil.error(i18n.t('function.update.error'))
+    }
+    return ResponseUtil.ok(res)
   }
 
   /**

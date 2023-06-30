@@ -107,6 +107,26 @@ export async function FunctionControllerRemove(
 }
 
 /**
+ * Update function debug info
+ */
+export async function FunctionControllerUpdateDebug(
+  params: Definitions.UpdateFunctionDebugDto,
+): Promise<{
+  error: string;
+  data: Definitions.CloudFunction;
+}> {
+  // /v1/apps/{appid}/functions/{name}/debug
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/functions/${_params.name}/debug/params`, {
+    method: "PATCH",
+    data: params,
+  });
+}
+
+/**
  * Compile a function
  */
 export async function FunctionControllerCompile(params: Definitions.CompileFunctionDto): Promise<{

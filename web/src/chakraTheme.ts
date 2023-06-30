@@ -123,6 +123,14 @@ const Button = defineStyleConfig({
       },
     },
 
+    warn: {
+      bg: "error.100",
+      color: "error.500",
+      _hover: {
+        bg: "error.200",
+      },
+    },
+
     warnText: {
       color: "error.500",
       _hover: {

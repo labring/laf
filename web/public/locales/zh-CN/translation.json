@@ -51,7 +51,7 @@
   "DeleteConfirm": "确定删除该行数据吗?",
   "DeleteSuccess": "删除成功",
   "DeleteTip": "无法撤销",
-  "Edit": "编辑名称",
+  "Edit": "编辑",
   "Empty": "清空",
   "Generate": "生成",
   "InputTip": "请输入",
@@ -240,7 +240,9 @@
     "CancelHost": "取消托管",
     "Inaccessible": "无法访问",
     "InstantUpload": "立即上传",
-    "RemoveHost": "取消静态托管"
+    "RemoveHost": "取消静态托管",
+    "DomainUpdateSuccess": "域名修改成功",
+    "DomainDeleteSuccess": "域名删除成功"
   },
   "TriggerPanel": {
     "AddTrigger": "新建触发器",
