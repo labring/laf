@@ -8,6 +8,7 @@ import {
   DomainState,
   RuntimeDomain,
 } from './entities/runtime-domain'
+import * as dns from 'node:dns'
 
 @Injectable()
 export class RuntimeDomainService {
@@ -36,6 +37,68 @@ export class RuntimeDomainService {
     })
 
     return await this.findOne(appid)
+  }
+
+  async checkResolved(appid: string, customDomain: string) {
+    const runtimeDomain = await this.db
+      .collection<RuntimeDomain>('RuntimeDomain')
+      .findOne({
+        appid,
+      })
+
+    const cnameTarget = runtimeDomain.domain
+
+    // check domain is available
+    const resolver = new dns.promises.Resolver({ timeout: 3000, tries: 1 })
+    const result = await resolver
+      .resolveCname(customDomain as string)
+      .catch(() => {
+        return
+      })
+
+    if (!result) return false
+    if (false === (result || []).includes(cnameTarget)) return false
+    return true
+  }
+
+  async bindCustomDomain(appid: string, customDomain: string) {
+    const res = await this.db
+      .collection<RuntimeDomain>('RuntimeDomain')
+      .findOneAndUpdate(
+        { appid },
+        {
+          $set: {
+            customDomain,
+            phase: DomainPhase.Deleting,
+            updatedAt: new Date(),
+          },
+        },
+        {
+          returnDocument: 'after',
+        },
+      )
+
+    return res.value
+  }
+
+  async removeCustomDomain(appid: string) {
+    const res = await this.db
+      .collection<RuntimeDomain>('RuntimeDomain')
+      .findOneAndUpdate(
+        { appid },
+        {
+          $set: {
+            customDomain: null,
+            phase: DomainPhase.Deleting,
+            updatedAt: new Date(),
+          },
+        },
+        {
+          returnDocument: 'after',
+        },
+      )
+
+    return res.value
   }
 
   /**

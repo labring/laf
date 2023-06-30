@@ -4,6 +4,7 @@ import { ClusterService } from 'src/region/cluster/cluster.service'
 import { Region } from 'src/region/entities/region'
 import { GetApplicationNamespaceByAppId } from 'src/utils/getter'
 import { WebsiteHosting } from 'src/website/entities/website'
+import { RuntimeDomain } from './entities/runtime-domain'
 
 // This class handles the creation and deletion of website domain certificates
 // and ApisixTls resources using Kubernetes Custom Resource Definitions (CRDs).
@@ -12,11 +13,10 @@ export class ApisixCustomCertService {
   private readonly logger = new Logger(ApisixCustomCertService.name)
   constructor(private readonly clusterService: ClusterService) {}
 
-  // Read a certificate for a given website using cert-manager.io CRD
-  async readWebsiteDomainCert(region: Region, website: WebsiteHosting) {
+  async readDomainCert(region: Region, appid: string, name: string) {
     try {
       // Get the namespace based on the application ID
-      const namespace = GetApplicationNamespaceByAppId(website.appid)
+      const namespace = GetApplicationNamespaceByAppId(appid)
       // Create a Kubernetes API client for the specified region
       const api = this.clusterService.makeCustomObjectApi(region)
 
@@ -26,7 +26,7 @@ export class ApisixCustomCertService {
         'v1',
         namespace,
         'certificates',
-        website._id.toString(),
+        name,
       )
 
       return res.body
@@ -38,10 +38,15 @@ export class ApisixCustomCertService {
     }
   }
 
-  // Create a certificate for a given website using cert-manager.io CRD
-  async createWebsiteDomainCert(region: Region, website: WebsiteHosting) {
+  async createDomainCert(
+    region: Region,
+    appid: string,
+    name: string,
+    domain: string,
+    labels: Record<string, string>,
+  ) {
     // Get the namespace based on the application ID
-    const namespace = GetApplicationNamespaceByAppId(website.appid)
+    const namespace = GetApplicationNamespaceByAppId(appid)
     // Create a Kubernetes API client for the specified region
     const api = this.clusterService.makeObjectApi(region)
 
@@ -51,18 +56,14 @@ export class ApisixCustomCertService {
       kind: 'Certificate',
       // Set the metadata for the Certificate resource
       metadata: {
-        name: website._id.toString(),
+        name,
         namespace,
-        labels: {
-          'laf.dev/website': website._id.toString(),
-          'laf.dev/website-domain': website.domain,
-          [LABEL_KEY_APP_ID]: website.appid,
-        },
+        labels,
       },
       // Define the specification for the Certificate resource
       spec: {
-        secretName: website._id.toString(),
-        dnsNames: [website.domain],
+        secretName: name,
+        dnsNames: [domain],
         issuerRef: {
           name: ServerConfig.CertManagerIssuerName,
           kind: 'ClusterIssuer',
@@ -72,10 +73,9 @@ export class ApisixCustomCertService {
     return res.body
   }
 
-  // Delete a certificate for a given website using cert-manager.io CRD
-  async deleteWebsiteDomainCert(region: Region, website: WebsiteHosting) {
+  async deleteDomainCert(region: Region, appid: string, name: string) {
     // Get the namespace based on the application ID
-    const namespace = GetApplicationNamespaceByAppId(website.appid)
+    const namespace = GetApplicationNamespaceByAppId(appid)
     // Create a Kubernetes API client for the specified region
     const api = this.clusterService.makeObjectApi(region)
 
@@ -84,7 +84,7 @@ export class ApisixCustomCertService {
       apiVersion: 'cert-manager.io/v1',
       kind: 'Certificate',
       metadata: {
-        name: website._id.toString(),
+        name,
         namespace,
       },
     })
@@ -95,7 +95,7 @@ export class ApisixCustomCertService {
         apiVersion: 'v1',
         kind: 'Secret',
         metadata: {
-          name: website._id.toString(),
+          name,
           namespace,
         },
       })
@@ -108,11 +108,10 @@ export class ApisixCustomCertService {
     return res.body
   }
 
-  // Read an ApisixTls resource for a given website using apisix.apache.org CRD
-  async readWebsiteApisixTls(region: Region, website: WebsiteHosting) {
+  async readApisixTls(region: Region, appid: string, name: string) {
     try {
       // Get the namespace based on the application ID
-      const namespace = GetApplicationNamespaceByAppId(website.appid)
+      const namespace = GetApplicationNamespaceByAppId(appid)
       // Create an API object for the specified region
       const api = this.clusterService.makeCustomObjectApi(region)
 
@@ -122,7 +121,7 @@ export class ApisixCustomCertService {
         'v2',
         namespace,
         'apisixtlses',
-        website._id.toString(),
+        name,
       )
       return res.body
     } catch (err) {
@@ -133,10 +132,15 @@ export class ApisixCustomCertService {
     }
   }
 
-  // Create an ApisixTls resource for a given website using apisix.apache.org CRD
-  async createWebsiteApisixTls(region: Region, website: WebsiteHosting) {
+  async createApisixTls(
+    region: Region,
+    appid: string,
+    name: string,
+    domain: string,
+    labels: Record<string, string>,
+  ) {
     // Get the namespace based on the application ID
-    const namespace = GetApplicationNamespaceByAppId(website.appid)
+    const namespace = GetApplicationNamespaceByAppId(appid)
     // Create an API object for the specified region
     const api = this.clusterService.makeObjectApi(region)
 
@@ -146,19 +150,15 @@ export class ApisixCustomCertService {
       kind: 'ApisixTls',
       // Set the metadata for the ApisixTls resource
       metadata: {
-        name: website._id.toString(),
+        name,
         namespace,
-        labels: {
-          'laf.dev/website': website._id.toString(),
-          'laf.dev/website-domain': website.domain,
-          [LABEL_KEY_APP_ID]: website.appid,
-        },
+        labels,
       },
       // Define the specification for the ApisixTls resource
       spec: {
-        hosts: [website.domain],
+        hosts: [domain],
         secret: {
-          name: website._id.toString(),
+          name,
           namespace,
         },
       },
@@ -166,10 +166,9 @@ export class ApisixCustomCertService {
     return res.body
   }
 
-  // Deletes the APISIX TLS configuration for a specific website domain
-  async deleteWebsiteApisixTls(region: Region, website: WebsiteHosting) {
+  async deleteApisixTls(region: Region, appid: string, name: string) {
     // Get the application namespace using the website's appid
-    const namespace = GetApplicationNamespaceByAppId(website.appid)
+    const namespace = GetApplicationNamespaceByAppId(appid)
 
     // Create an API object for the specified region
     const api = this.clusterService.makeObjectApi(region)
@@ -179,11 +178,157 @@ export class ApisixCustomCertService {
       apiVersion: 'apisix.apache.org/v2',
       kind: 'ApisixTls',
       metadata: {
-        name: website._id.toString(),
+        name,
         namespace,
       },
     })
 
     return res.body
+  }
+
+  // Read a certificate for a given website using cert-manager.io CRD
+  async readWebsiteDomainCert(region: Region, website: WebsiteHosting) {
+    return await this.readDomainCert(
+      region,
+      website.appid,
+      website._id.toString(),
+    )
+  }
+
+  // Create a certificate for a given website using cert-manager.io CRD
+  async createWebsiteDomainCert(region: Region, website: WebsiteHosting) {
+    return await this.createDomainCert(
+      region,
+      website.appid,
+      website._id.toString(),
+      website.domain,
+      {
+        'laf.dev/website': website._id.toString(),
+        'laf.dev/website-domain': website.domain,
+        [LABEL_KEY_APP_ID]: website.appid,
+      },
+    )
+  }
+
+  // Delete a certificate for a given website using cert-manager.io CRD
+  async deleteWebsiteDomainCert(region: Region, website: WebsiteHosting) {
+    return await this.deleteDomainCert(
+      region,
+      website.appid,
+      website._id.toString(),
+    )
+  }
+
+  // Read an ApisixTls resource for a given website using apisix.apache.org CRD
+  async readWebsiteApisixTls(region: Region, website: WebsiteHosting) {
+    return await this.readApisixTls(
+      region,
+      website.appid,
+      website._id.toString(),
+    )
+  }
+
+  // Create an ApisixTls resource for a given website using apisix.apache.org CRD
+  async createWebsiteApisixTls(region: Region, website: WebsiteHosting) {
+    return await this.createApisixTls(
+      region,
+      website.appid,
+      website._id.toString(),
+      website.domain,
+      {
+        'laf.dev/website': website._id.toString(),
+        'laf.dev/website-domain': website.domain,
+        [LABEL_KEY_APP_ID]: website.appid,
+      },
+    )
+  }
+
+  // Deletes the APISIX TLS configuration for a specific website domain
+  async deleteWebsiteApisixTls(region: Region, website: WebsiteHosting) {
+    return await this.deleteApisixTls(
+      region,
+      website.appid,
+      website._id.toString(),
+    )
+  }
+
+  // ========= App Custom Domain
+  // Read a certificate for app custom domain using cert-manager.io CRD
+  async readAppCustomDomainCert(region: Region, runtimeDomain: RuntimeDomain) {
+    return await this.readDomainCert(
+      region,
+      runtimeDomain.appid,
+      runtimeDomain.appid,
+    )
+  }
+
+  // Create a certificate for app custom domain using cert-manager.io CRD
+  async createAppCustomDomainCert(
+    region: Region,
+    runtimeDomain: RuntimeDomain,
+  ) {
+    return await this.createDomainCert(
+      region,
+      runtimeDomain.appid,
+      runtimeDomain.appid,
+      runtimeDomain.customDomain,
+      {
+        'laf.dev/app-custom-domain': runtimeDomain.customDomain,
+        [LABEL_KEY_APP_ID]: runtimeDomain.appid,
+      },
+    )
+  }
+
+  // Delete a certificate for app custom domain using cert-manager.io CRD
+  async deleteAppCustomDomainCert(
+    region: Region,
+    runtimeDomain: RuntimeDomain,
+  ) {
+    return await this.deleteDomainCert(
+      region,
+      runtimeDomain.appid,
+      runtimeDomain.appid,
+    )
+  }
+
+  // Read an ApisixTls resource for app custom domain using apisix.apache.org CRD
+  async readAppCustomDomainApisixTls(
+    region: Region,
+    runtimeDomain: RuntimeDomain,
+  ) {
+    return await this.readApisixTls(
+      region,
+      runtimeDomain.appid,
+      runtimeDomain.appid,
+    )
+  }
+
+  // Create an ApisixTls resource for app custom domain using apisix.apache.org CRD
+  async createAppCustomDomainApisixTls(
+    region: Region,
+    runtimeDomain: RuntimeDomain,
+  ) {
+    return await this.createApisixTls(
+      region,
+      runtimeDomain.appid,
+      runtimeDomain.appid,
+      runtimeDomain.customDomain,
+      {
+        'laf.dev/app-custom-domain': runtimeDomain.customDomain,
+        [LABEL_KEY_APP_ID]: runtimeDomain.appid,
+      },
+    )
+  }
+
+  // Deletes the APISIX TLS configuration for app custom domain
+  async deleteAppCustomDomainApisixTls(
+    region: Region,
+    runtimeDomain: RuntimeDomain,
+  ) {
+    return await this.deleteApisixTls(
+      region,
+      runtimeDomain.appid,
+      runtimeDomain.appid,
+    )
   }
 }

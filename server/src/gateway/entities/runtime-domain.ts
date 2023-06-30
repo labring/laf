@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { ObjectId } from 'mongodb'
 
 export enum DomainPhase {
@@ -23,6 +23,9 @@ export class RuntimeDomain {
 
   @ApiProperty()
   domain: string
+
+  @ApiPropertyOptional()
+  customDomain?: string
 
   @ApiProperty({ enum: DomainState })
   state: DomainState

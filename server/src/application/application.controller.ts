@@ -10,7 +10,12 @@ import {
   Post,
   Delete,
 } from '@nestjs/common'
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 import { IRequest } from '../utils/interface'
 import { JwtAuthGuard } from '../authentication/jwt.auth.guard'
 import {
@@ -41,6 +46,9 @@ import { Runtime } from './entities/runtime'
 import { ObjectId } from 'mongodb'
 import { ApplicationBundle } from './entities/application-bundle'
 import { ResourceService } from 'src/billing/resource.service'
+import { RuntimeDomainService } from 'src/gateway/runtime-domain.service'
+import { BindCustomDomainDto } from 'src/website/dto/update-website.dto'
+import { RuntimeDomain } from 'src/gateway/entities/runtime-domain'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -55,6 +63,7 @@ export class ApplicationController {
     private readonly storage: StorageService,
     private readonly account: AccountService,
     private readonly resource: ResourceService,
+    private readonly runtimeDomain: RuntimeDomainService,
   ) {}
 
   /**
@@ -318,6 +327,80 @@ export class ApplicationController {
     }
 
     return ResponseUtil.ok(doc)
+  }
+
+  /**
+   * Bind custom domain to application
+   */
+  @ApiResponseObject(RuntimeDomain)
+  @ApiOperation({ summary: 'Bind custom domain to application' })
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Patch(':appid/domain')
+  async bindDomain(
+    @Param('appid') appid: string,
+    @Body() dto: BindCustomDomainDto,
+  ) {
+    const runtimeDomain = await this.runtimeDomain.findOne(appid)
+    if (
+      runtimeDomain?.customDomain &&
+      runtimeDomain.customDomain === dto.domain
+    ) {
+      return ResponseUtil.error('domain already binded')
+    }
+
+    // check if domain resolved
+    const resolved = await this.runtimeDomain.checkResolved(appid, dto.domain)
+    if (!resolved) {
+      return ResponseUtil.error('domain not resolved')
+    }
+
+    // bind domain
+    const binded = await this.runtimeDomain.bindCustomDomain(appid, dto.domain)
+    if (!binded) {
+      return ResponseUtil.error('failed to bind domain')
+    }
+
+    return ResponseUtil.ok(binded)
+  }
+
+  /**
+   * Check if domain is resolved
+   */
+  @ApiResponse({ type: ResponseUtil<boolean> })
+  @ApiOperation({ summary: 'Check if domain is resolved' })
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Post(':appid/domain/resolved')
+  async checkResolved(
+    @Param('appid') appid: string,
+    @Body() dto: BindCustomDomainDto,
+  ) {
+    const resolved = await this.runtimeDomain.checkResolved(appid, dto.domain)
+    if (!resolved) {
+      return ResponseUtil.error('domain not resolved')
+    }
+
+    return ResponseUtil.ok(resolved)
+  }
+
+  /**
+   * Remove custom domain of application
+   */
+  @ApiResponseObject(RuntimeDomain)
+  @ApiOperation({ summary: 'Remove custom domain of application' })
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Delete(':appid/domain')
+  async remove(@Param('appid') appid: string) {
+    const runtimeDomain = await this.runtimeDomain.findOne(appid)
+    if (!runtimeDomain?.customDomain) {
+      return ResponseUtil.error('custom domain not found')
+    }
+
+    const deleted = await this.runtimeDomain.removeCustomDomain(appid)
+    if (!deleted) {
+      return ResponseUtil.error('failed to remove custom domain')
+    }
+
+    return ResponseUtil.ok(deleted)
   }
 
   /**
