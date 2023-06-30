@@ -31,7 +31,7 @@ export default function EditDomain(props: { children: any }) {
   const { currentApp, showSuccess, setCurrentApp } = useGlobalStore();
 
   const { register, handleSubmit, reset } = useForm<{ domain: string }>({
-    defaultValues: { domain: currentApp?.domain.customDomain || "" },
+    defaultValues: { domain: currentApp?.domain?.customDomain || "" },
   });
 
   const bindDomainMutation = useBindDomainMutation();
@@ -43,7 +43,7 @@ export default function EditDomain(props: { children: any }) {
         {React.cloneElement(children, {
           onClick: (event?: any) => {
             event?.preventDefault();
-            reset({ domain: currentApp?.domain.customDomain || "" });
+            reset({ domain: currentApp?.domain?.customDomain || "" });
             onOpen();
           },
         })}
@@ -58,10 +58,10 @@ export default function EditDomain(props: { children: any }) {
             <FormControl>
               <FormLabel>CNAME</FormLabel>
               <InputGroup>
-                <Input variant="filled" value={currentApp?.domain.domain} readOnly />
+                <Input variant="filled" value={currentApp?.domain?.domain} readOnly />
                 <InputRightAddon
                   children={
-                    <CopyText text={currentApp?.domain.domain} className="cursor-pointer" />
+                    <CopyText text={currentApp?.domain?.domain} className="cursor-pointer" />
                   }
                 />
               </InputGroup>
