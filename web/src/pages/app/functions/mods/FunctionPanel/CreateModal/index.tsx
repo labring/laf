@@ -18,6 +18,7 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
+import { useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import { t } from "i18next";
 import { debounce } from "lodash";
@@ -25,6 +26,7 @@ import { debounce } from "lodash";
 import { TextIcon } from "@/components/CommonIcon";
 import InputTag from "@/components/InputTag";
 import { SUPPORTED_METHODS } from "@/constants";
+import { changeURL } from "@/utils/format";
 
 import { useCreateFunctionMutation, useUpdateFunctionMutation } from "../../../service";
 import useFunctionStore from "../../../store";
@@ -44,7 +46,8 @@ const CreateModal = (props: {
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const store = useFunctionStore();
-  const { showSuccess } = useGlobalStore();
+  const { showSuccess, currentApp } = useGlobalStore();
+  const queryClient = useQueryClient();
 
   const { functionItem, children = null, tagList } = props;
   const isEdit = !!functionItem;
@@ -93,14 +96,18 @@ const CreateModal = (props: {
       sort: null,
     },
     {
-      enabled: isOpen,
+      enabled: isOpen && !isEdit,
     },
   );
 
   const onSubmit = async (data: any) => {
     let res: any = {};
     if (isEdit) {
-      res = await updateFunctionMutation.mutateAsync(data);
+      res = await updateFunctionMutation.mutateAsync({
+        ...data,
+        name: functionItem.name,
+        newName: data.name,
+      });
     } else {
       res = await createFunctionMutation.mutateAsync(data);
     }
@@ -110,6 +117,8 @@ const CreateModal = (props: {
       onClose();
       store.setCurrentFunction(res.data);
       reset(defaultValues);
+      navigate(`/app/${currentApp.appid}/function/${res.data.name}`);
+      queryClient.invalidateQueries(["useTriggerQuery"]);
     }
   };
 
@@ -137,12 +146,7 @@ const CreateModal = (props: {
           <ModalBody>
             <VStack align="flex-start">
               <FormControl isInvalid={!!errors?.name}>
-                <div
-                  className={clsx(
-                    "mb-3 flex h-12 w-full items-center border-b-2",
-                    isEdit ? "rounded-md bg-gray-100" : "",
-                  )}
-                >
+                <div className="mb-3 flex h-12 w-full items-center border-b-2">
                   <input
                     {...register("name", {
                       pattern: {
@@ -152,7 +156,6 @@ const CreateModal = (props: {
                     })}
                     id="name"
                     placeholder={String(t("FunctionPanel.FunctionNameTip"))}
-                    disabled={isEdit}
                     className="h-8 w-full border-l-2 border-primary-600 bg-transparent pl-4 text-2xl font-medium"
                     style={{ outline: "none", boxShadow: "none" }}
                     onChange={debounce((e) => {
@@ -248,12 +251,7 @@ const CreateModal = (props: {
                                     <span className="line-clamp-1">{item.name}</span>
                                   </div>
                                 </div>
-                                <div
-                                  className={clsx(
-                                    "mb-3 flex h-4 items-center truncate",
-                                    // darkMode ? "text-gray-300" : "text-second",
-                                  )}
-                                >
+                                <div className="mb-3 flex h-4 items-center truncate">
                                   {item.description}
                                 </div>
                                 <div className="flex w-full overflow-hidden pb-4">
@@ -277,10 +275,7 @@ const CreateModal = (props: {
                   </div>
                   <div
                     onClick={() => {
-                      const currentURL = window.location.pathname;
-                      const lastIndex = currentURL.lastIndexOf("/");
-                      const newURL = currentURL.substring(0, lastIndex) + `/recommended`;
-                      navigate(newURL);
+                      navigate(changeURL(`/recommended`));
                     }}
                   >
                     <FuncTemplate>
