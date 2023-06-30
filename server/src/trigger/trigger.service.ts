@@ -105,8 +105,8 @@ export class TriggerService {
         .updateMany(
           { appid, target },
           { $set: { state: TriggerState.Deleted } },
+          { session },
         )
-
       return res
     }
     const res = await this.db
