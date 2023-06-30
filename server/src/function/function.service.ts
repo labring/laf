@@ -153,6 +153,23 @@ export class FunctionService {
     }
   }
 
+  async publishMany(funcs: CloudFunction[]) {
+    const { db, client } = await this.databaseService.findAndConnect(
+      funcs[0].appid,
+    )
+    const session = client.startSession()
+    try {
+      await session.withTransaction(async () => {
+        const coll = db.collection(CN_PUBLISHED_FUNCTIONS)
+        // this is used by function template service, don't need to delete many
+        await coll.insertMany(funcs, { session })
+      })
+    } finally {
+      await session.endSession()
+      await client.close()
+    }
+  }
+
   async unpublish(appid: string, name: string) {
     const { db, client } = await this.databaseService.findAndConnect(appid)
     try {

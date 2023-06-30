@@ -16,10 +16,11 @@ import * as assert from 'node:assert'
 import * as npa from 'npm-package-arg'
 import { CloudFunction } from 'src/function/entities/cloud-function'
 import { compileTs2js } from '../utils/lang'
-import { CN_PUBLISHED_CONF, CN_PUBLISHED_FUNCTIONS } from 'src/constants'
 import { DatabaseService } from 'src/database/database.service'
 import { DependencyService } from 'src/dependency/dependency.service'
 import { ApplicationService } from '../application/application.service'
+import { ApplicationConfigurationService } from 'src/application/configuration.service'
+import { FunctionService } from 'src/function/function.service'
 
 interface FindFunctionTemplatesParams {
   asc: number
@@ -36,6 +37,8 @@ export class FunctionTemplateService {
     private readonly databaseService: DatabaseService,
     private readonly dependencyService: DependencyService,
     private readonly appService: ApplicationService,
+    private readonly confService: ApplicationConfigurationService,
+    private readonly functionsService: FunctionService,
   ) {}
 
   private readonly logger = new Logger(FunctionTemplateService.name)
@@ -258,8 +261,6 @@ export class FunctionTemplateService {
     templateId: ObjectId,
   ) {
     const client = SystemDatabase.client
-    const appDataBaseInfo = await this.databaseService.findOne(appid)
-    const appDataBase = client.db(appDataBaseInfo.name)
 
     const session = client.startSession()
 
@@ -322,9 +323,7 @@ export class FunctionTemplateService {
       assert(applicationConf?.value, 'application configuration not found')
 
       // publish application configuration to app database
-      const coll = appDataBase.collection(CN_PUBLISHED_CONF)
-      await coll.deleteOne({ appid: applicationConf.value.appid }, { session })
-      await coll.insertOne(applicationConf.value, { session })
+      await this.confService.publish(applicationConf.value)
 
       // publish function template items to CloudFunction and app database
       //
@@ -377,17 +376,14 @@ export class FunctionTemplateService {
         .collection<CloudFunction>('CloudFunction')
         .insertMany(documents, { session })
 
-      // add function template items to app database
+      // publish function template items to app database
       const namesToSearch = functionTemplateItems.map((item) => item.name)
-      const documentsToInsert = await this.db
+      const itemsToInsert = await this.db
         .collection<CloudFunction>('CloudFunction')
         .find({ appid: appid, name: { $in: namesToSearch } }, { session })
         .toArray()
 
-      // Get the app database collection
-      const collectionFunction = appDataBase.collection(CN_PUBLISHED_FUNCTIONS)
-      // Insert function template items
-      await collectionFunction.insertMany(documentsToInsert, { session })
+      await this.functionsService.publishMany(itemsToInsert)
 
       // add user use relation
       //
@@ -1650,6 +1646,11 @@ export class FunctionTemplateService {
 
     return count
   }
+
+  // async publishApplicationConfiguration(appid:string,applicationConf:) {
+
+  //   const { db, client } = await this.databaseService.findAndConnect(appid)
+  // }
 
   // Verify the relationship between the user and the appid
   async applicationAuthGuard(appid, userid) {
