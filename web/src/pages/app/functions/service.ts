@@ -15,6 +15,7 @@ import {
   FunctionControllerGetHistory,
   FunctionControllerRemove,
   FunctionControllerUpdate,
+  FunctionControllerUpdateDebug,
 } from "@/apis/v1/apps";
 import useFunctionCache from "@/hooks/useFunctionCache";
 
@@ -90,6 +91,26 @@ export const useUpdateFunctionMutation = () => {
         name: encodeURIComponent(values.name),
       };
       return FunctionControllerUpdate(updatedValues);
+    },
+    {
+      onSuccess(data) {
+        if (!data.error) {
+          queryClient.invalidateQueries(queryKeys.useFunctionListQuery);
+        }
+      },
+    },
+  );
+};
+
+export const useUpdateDebugFunctionMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation(
+    (values: any) => {
+      const updatedValues = {
+        ...values,
+        name: encodeURIComponent(values.name),
+      };
+      return FunctionControllerUpdateDebug(updatedValues);
     },
     {
       onSuccess(data) {
