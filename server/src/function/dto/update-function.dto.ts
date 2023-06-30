@@ -16,7 +16,6 @@ export class UpdateFunctionDto {
     description: 'Function name is unique in the application',
   })
   @IsOptional()
-  // @IsNotEmpty()
   @Matches(/^[a-zA-Z0-9_.\-\/]{1,256}$/)
   newName?: string
 

@@ -90,7 +90,7 @@ export class FunctionService {
 
       const found = await this.findOne(func.appid, dto.newName)
       if (found) {
-        return new Error('Function name' + found.name + 'already exists')
+        return new Error(`Function name ${found.name} already exists`)
       }
 
       try {
@@ -113,7 +113,7 @@ export class FunctionService {
           )
 
         // publish
-        this.publish(fn.value, func.name)
+        await this.publish(fn.value, func.name)
 
         // trigger
         const triggers = await this.triggerService.findAllByTarget(
