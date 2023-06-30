@@ -240,7 +240,9 @@
     "RemoveHost": "Remove Host",
     "CancelHost": "Cancel Host",
     "InstantUpload": "Instant Upload",
-    "parsing": "parsing"
+    "parsing": "parsing",
+    "DomainUpdateSuccess": "Domain Update Success",
+    "DomainDeleteSuccess": "Domain Delete Success"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",
