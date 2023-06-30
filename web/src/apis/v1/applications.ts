@@ -149,3 +149,63 @@ export async function ApplicationControllerUpdateBundle(
     data: params,
   });
 }
+
+/**
+ * Bind custom domain to application
+ */
+export async function ApplicationControllerBindDomain(
+  params: Definitions.BindCustomDomainDto,
+): Promise<{
+  error: string;
+  data: Definitions.RuntimeDomain;
+}> {
+  // /v1/applications/{appid}/domain
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/applications/${_params.appid}/domain`, {
+    method: "PATCH",
+    data: params,
+  });
+}
+
+/**
+ * Remove custom domain of application
+ */
+export async function ApplicationControllerRemove(
+  params: Paths.ApplicationControllerRemove.BodyParameters,
+): Promise<{
+  error: string;
+  data: Definitions.RuntimeDomain;
+}> {
+  // /v1/applications/{appid}/domain
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/applications/${_params.appid}/domain`, {
+    method: "DELETE",
+    data: params,
+  });
+}
+
+/**
+ * Check if domain is resolved
+ */
+export async function ApplicationControllerCheckResolved(
+  params: Definitions.BindCustomDomainDto,
+): Promise<{
+  error: string;
+  data: Paths.ApplicationControllerCheckResolved.Responses;
+}> {
+  // /v1/applications/{appid}/domain/resolved
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/applications/${_params.appid}/domain/resolved`, {
+    method: "POST",
+    data: params,
+  });
+}

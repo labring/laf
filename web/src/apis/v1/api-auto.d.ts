@@ -433,6 +433,20 @@ declare namespace Definitions {
 }
 
 declare namespace Paths {
+  namespace ApplicationControllerCheckResolved {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+  namespace ApplicationControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
   namespace AuthControllerGetProfile {
     export type QueryParameters = any;
 

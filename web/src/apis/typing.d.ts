@@ -134,6 +134,7 @@ export type TDomain = {
   _id: string;
   appid: string;
   domain: string;
+  customDomain: string;
   state: string;
   phase: string;
   lockedAt: string;
