@@ -17,7 +17,7 @@ export class UpdateFunctionDto {
   })
   @IsNotEmpty()
   @Matches(/^[a-zA-Z0-9_.\-\/]{1,256}$/)
-  name?: string
+  newName?: string
 
   @ApiPropertyOptional()
   @MaxLength(256)

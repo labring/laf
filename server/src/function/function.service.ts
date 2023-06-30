@@ -79,10 +79,10 @@ export class FunctionService {
 
   async updateOne(func: CloudFunction, dto: UpdateFunctionDto) {
     // update function name
-    if (dto.name) {
-      const found = await this.findOne(func.appid, dto.name)
+    if (dto.newName) {
+      const found = await this.findOne(func.appid, dto.newName)
       if (found) {
-        return new Error('Function name already exists')
+        return new Error('Function name' + found.name + 'already exists')
       }
 
       const fn = await this.db
@@ -91,7 +91,7 @@ export class FunctionService {
           { appid: func.appid, name: func.name },
           {
             $set: {
-              name: dto.name,
+              name: dto.newName,
               desc: dto.description,
               methods: dto.methods,
               tags: dto.tags || [],
