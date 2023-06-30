@@ -34,7 +34,8 @@ function EditorPanel() {
       {currentFunction?.name ? (
         <Panel.Header
           className={clsx("!mb-0 h-[50px] px-2", {
-            "border-b-2 border-lafWhite-400": !darkMode,
+            "border-b-2 ": !darkMode,
+            "border-lafWhite-400": !darkMode,
           })}
         >
           <HStack maxW={"55%"} spacing={2}>
@@ -58,7 +59,7 @@ function EditorPanel() {
           </HStack>
 
           <HStack spacing={1}>
-            <div className="flex items-center bg-[#F6F8F9]">
+            <div className={clsx("flex items-center", !darkMode && "bg-[#F6F8F9]")}>
               <Input w={"200px"} size="xs" readOnly value={getFunctionUrl()} />
               <EditDomain>
                 <EditIcon className="mx-2 cursor-pointer !text-grayModern-300" />
