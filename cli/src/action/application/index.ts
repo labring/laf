@@ -56,7 +56,7 @@ async function getRegionMap(): Promise<Map<string, any>> {
   return regionMap
 }
 
-export async function init(appid: string, options: { sync: boolean }) {
+export async function init(appid: string, options: { sync: boolean, schemaOnly: boolean }) {
   if (AppSchema.exist()) {
     console.log(
       `${getEmoji(
@@ -87,6 +87,12 @@ export async function init(appid: string, options: { sync: boolean }) {
     },
   }
   AppSchema.write(appSchema)
+
+  if (options.schemaOnly) {
+    console.log(`${getEmoji('🚀')} application ${app.name} init schema success`)
+    return
+  }
+
 
   if (!ProjectSchema.exist()) {
   // init project schema
