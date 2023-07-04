@@ -1647,11 +1647,6 @@ export class FunctionTemplateService {
     return count
   }
 
-  // async publishApplicationConfiguration(appid:string,applicationConf:) {
-
-  //   const { db, client } = await this.databaseService.findAndConnect(appid)
-  // }
-
   // Verify the relationship between the user and the appid
   async applicationAuthGuard(appid, userid) {
     const app = await this.appService.findOne(appid)
