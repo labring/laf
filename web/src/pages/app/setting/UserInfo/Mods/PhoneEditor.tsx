@@ -14,6 +14,10 @@ import {
 
 import { SendSmsCodeButton } from "@/components/SendSmsCodeButton";
 
+import { useBindPhoneMutation } from "../service";
+
+import useGlobalStore from "@/pages/globalStore";
+
 type FormData = {
   oldPhone: string;
   oldSmsNumber: string;
@@ -26,6 +30,10 @@ export default function PhoneEditor(props: { setShowItem: any }) {
   const { t } = useTranslation();
   const [oldPhone, setOldPhone] = useState("");
   const [newPhone, setNewPhone] = useState("");
+  const bindPhone = useBindPhoneMutation();
+
+  const { showSuccess, updateUserInfo } = useGlobalStore();
+
   const {
     register,
     handleSubmit,
@@ -40,7 +48,12 @@ export default function PhoneEditor(props: { setShowItem: any }) {
   });
 
   const onSubmit = async (data: FormData) => {
-    console.log(data);
+    const res = await bindPhone.mutateAsync(data);
+    if (res) {
+      updateUserInfo();
+      showSuccess(t("UserInfo.EditPhoneSuccess"));
+      setShowItem("");
+    }
   };
 
   return (

@@ -8,9 +8,9 @@ import { formatPort } from "@/utils/format";
 
 import { TApplicationDetail, TRegion, TRuntime } from "@/apis/typing";
 import { ApplicationControllerUpdateState } from "@/apis/v1/applications";
-import { AuthControllerGetProfile } from "@/apis/v1/profile";
 import { RegionControllerGetRegions } from "@/apis/v1/regions";
 import { AppControllerGetRuntimes } from "@/apis/v1/runtimes";
+import { UserControllerGetProfile } from "@/apis/v1/user";
 
 const { toast } = createStandaloneToast();
 
@@ -26,7 +26,7 @@ type State = {
   deleteCurrentApp(): void;
   currentPageId: string | undefined;
   setCurrentPage: (pageId: string) => void;
-
+  updateUserInfo(): void;
   visitedViews: string[];
 
   showSuccess: (text: string | React.ReactNode) => void;
@@ -47,7 +47,7 @@ const useGlobalStore = create<State>()(
 
       visitedViews: [],
 
-      setCurrentPage(pageId) {
+      setCurrentPage: (pageId) => {
         set((state) => {
           state.currentPageId = pageId;
           if (!state.visitedViews.includes(pageId)) {
@@ -62,7 +62,7 @@ const useGlobalStore = create<State>()(
           return;
         }
 
-        const userInfoRes = await AuthControllerGetProfile({});
+        const userInfoRes = await UserControllerGetProfile({});
 
         const runtimesRes = await AppControllerGetRuntimes({});
         const regionsRes = await RegionControllerGetRegions({});
@@ -72,6 +72,13 @@ const useGlobalStore = create<State>()(
           state.loading = false;
           state.runtimes = runtimesRes.data;
           state.regions = regionsRes.data;
+        });
+      },
+
+      updateUserInfo: async () => {
+        const userInfoRes = await UserControllerGetProfile({});
+        set((state) => {
+          state.userInfo = userInfoRes.data;
         });
       },
 

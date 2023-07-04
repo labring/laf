@@ -17,7 +17,7 @@ export default function UserNameEditor(props: { setShowItem: any }) {
       </span>
       <div className="flex flex-col">
         <span className="w-full text-center text-xl">{t("UserInfo.EditPassword")}</span>
-        <ResetPassword isModal={true} />
+        <ResetPassword isModal={true} setShowItem={setShowItem} />
       </div>
     </>
   );

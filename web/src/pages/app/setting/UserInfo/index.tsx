@@ -4,6 +4,7 @@ import { Avatar, Box, Divider } from "@chakra-ui/react";
 import { t } from "i18next";
 
 import { hidePhoneNumber } from "@/utils/format";
+import { getAvatarUrl } from "@/utils/getAvatarUrl";
 
 import AvatarEditor from "./Mods/AvatarEditor";
 import EmailEditor from "./Mods/EmailEditor";
@@ -18,8 +19,6 @@ import useGlobalStore from "@/pages/globalStore";
 export default function UserInfo() {
   const [showItem, setShowItem] = useState("");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [croppedImageUrl, setCroppedImageUrl] = useState<string | null>(null);
-
   const { userInfo } = useGlobalStore((state) => state);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -50,7 +49,7 @@ export default function UserInfo() {
             <Avatar
               size={"xl"}
               name={userInfo?.username}
-              src={croppedImageUrl || userInfo?.profile?.avatar}
+              src={getAvatarUrl(userInfo?._id || "")}
               bgColor="primary.500"
               color="white"
               boxShadow="base"
@@ -68,7 +67,7 @@ export default function UserInfo() {
                 onClick={handleClick}
               >
                 <EditIcon className="mr-1" />
-                编辑
+                {t("Edit")}
               </span>
             </div>
           </Box>
@@ -135,13 +134,7 @@ export default function UserInfo() {
       )}
       {showItem === "username" && <UserNameEditor setShowItem={setShowItem} />}
       {showItem === "password" && <PasswordEditor setShowItem={setShowItem} />}
-      {showItem === "avatar" && (
-        <AvatarEditor
-          img={selectedImage}
-          setCroppedImageUrl={setCroppedImageUrl}
-          setShowItem={setShowItem}
-        />
-      )}
+      {showItem === "avatar" && <AvatarEditor img={selectedImage} setShowItem={setShowItem} />}
       {showItem === "phone" && <PhoneEditor setShowItem={setShowItem} />}
       {showItem === "email" && <EmailEditor setShowItem={setShowItem} />}
     </Box>

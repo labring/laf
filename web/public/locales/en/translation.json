@@ -520,6 +520,10 @@
     "OldPhoneNumber": "Old Phone Number",
     "OldSmsNumber": "Old Sms Number",
     "NewPhoneNumber": "New Phone Number",
-    "NewSmsNumber": "New Sms Number"
+    "NewSmsNumber": "New Sms Number",
+    "EditUserNameSuccess": "Edit UserName Success",
+    "EditPasswordSuccess": "Edit Password Success",
+    "EditPhoneSuccess": "Edit Phone Success",
+    "EditAvatarSuccess": "Edit Avatar Success"
   }
 }
