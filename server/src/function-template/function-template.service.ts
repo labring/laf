@@ -383,7 +383,7 @@ export class FunctionTemplateService {
         .find({ appid: appid, name: { $in: namesToSearch } }, { session })
         .toArray()
 
-      await this.functionsService.publishMany(itemsToInsert)
+      await this.functionsService.publishFunctionTemplateItems(itemsToInsert)
 
       // add user use relation
       //

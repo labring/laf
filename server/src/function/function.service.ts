@@ -153,7 +153,7 @@ export class FunctionService {
     }
   }
 
-  async publishMany(funcs: CloudFunction[]) {
+  async publishFunctionTemplateItems(funcs: CloudFunction[]) {
     const { db, client } = await this.databaseService.findAndConnect(
       funcs[0].appid,
     )
