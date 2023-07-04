@@ -22,7 +22,7 @@ import cloud from '@lafjs/cloud';
 // 处理接收到的微信公众号消息
 export async function main(event) {
   const { signature, timestamp, nonce, echostr } = event.query;
-  const token = process.dev.WECHAT_TOKEN;
+  const token = process.env.WECHAT_TOKEN;
 
   // 验证消息是否合法，若不合法则返回错误信息
   if (!verifySignature(signature, timestamp, nonce, token)) {
