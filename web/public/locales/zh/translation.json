@@ -368,11 +368,12 @@
     "NavBar": {
       "title": "如果你喜欢 Laf 的话，请在 Github 上给我们一个 Star 吧！",
       "home": "主页",
+      "dashboard": "控制台",
       "price": "价格",
       "case": "案例",
       "aboutUs": "关于我们",
       "docs": "文档",
-      "contact": "联系我们",
+      "contact": "商务合作",
       "forum": "社区",
       "faq": "FAQ",
       "start": "立即开发",
