@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { ObjectId } from 'mongodb'
 
+export enum CodePrefix {
+  FRM = 'FRM',
+  GRP = 'GRP',
+  GHC = 'GHC',
+}
+
 export class GiftCode {
   @ApiProperty({ type: String })
   _id?: ObjectId

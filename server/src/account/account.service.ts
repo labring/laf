@@ -6,13 +6,14 @@ import { TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/system-database'
 import { Account, BaseState } from './entities/account'
 import { ObjectId, ClientSession } from 'mongodb'
+import { GenerateGiftCode } from 'src/utils/random'
 import {
   AccountChargeOrder,
   AccountChargePhase,
   Currency,
   PaymentChannelType,
 } from './entities/account-charge-order'
-import { GiftCode } from './entities/account-gift-code'
+import { GiftCode, CodePrefix } from './entities/account-gift-code'
 import { AccountTransaction } from './entities/account-transaction'
 import { AccountChargeReward } from './entities/account-charge-reward'
 
@@ -191,7 +192,7 @@ export class AccountService {
     return rewards
   }
 
-  async useGiftCode(userid: ObjectId, code: ObjectId) {
+  async useGiftCode(userid: ObjectId, code: string) {
     const client = SystemDatabase.client
     const session = client.startSession()
 
@@ -227,7 +228,7 @@ export class AccountService {
       // void gift code
       await this.db.collection<GiftCode>('GiftCode').findOneAndUpdate(
         {
-          _id: code,
+          _id: giftCode._id,
         },
         {
           $set: {
@@ -252,28 +253,52 @@ export class AccountService {
     }
   }
 
-  async findOneGiftCode(
-    code: ObjectId,
-    used = false,
-  ): Promise<GiftCode | null> {
+  async findOneGiftCode(code: string, used = false): Promise<GiftCode | null> {
     const giftCode = await this.db.collection<GiftCode>('GiftCode').findOne({
-      _id: code,
+      code: code,
       used: used,
     })
 
     return giftCode
   }
 
-  async generateGiftCode(creditAmount: number): Promise<GiftCode | null> {
-    const res = await this.db.collection<GiftCode>('GiftCode').insertOne({
-      creditAmount: creditAmount,
-      used: false,
-      createdAt: new Date(),
+  // delete an unused gift code
+  async deleteOneGiftCode(code: string, used = false): Promise<any> {
+    const giftCode = await this.db.collection<GiftCode>('GiftCode').deleteOne({
+      code: code,
+      used: used,
     })
-    const giftCode = await this.db
-      .collection<GiftCode>('GiftCode')
-      .findOne({ _id: res.insertedId })
-
     return giftCode
+  }
+
+  async generateGiftCode(
+    creditAmount: number,
+    prefix: keyof typeof CodePrefix,
+  ): Promise<GiftCode | null> {
+    if (CodePrefix[prefix] === undefined) {
+      throw new Error(`Invalid prefix: ${prefix}`)
+    }
+
+    while (true) {
+      const nanoid = GenerateGiftCode()
+      const code = `${CodePrefix[prefix]}-${nanoid}`
+      const found = await this.db
+        .collection<GiftCode>('GiftCode')
+        .findOne({ code })
+
+      if (!found) {
+        const res = await this.db.collection<GiftCode>('GiftCode').insertOne({
+          code: code,
+          creditAmount: creditAmount,
+          used: false,
+          createdAt: new Date(),
+        })
+        const giftCode = await this.db
+          .collection<GiftCode>('GiftCode')
+          .findOne({ _id: res.insertedId })
+
+        return giftCode
+      }
+    }
   }
 }

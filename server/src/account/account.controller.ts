@@ -250,7 +250,6 @@ export class AccountController {
   @UseGuards(JwtAuthGuard)
   @Post('gift-code')
   async giftCode(@Req() req: IRequest, @Body() dto: UseGiftCodeDto) {
-    dto.code = new ObjectId(dto.code)
     const found = await this.accountService.findOneGiftCode(dto.code)
     if (!found) {
       return ResponseUtil.error("gift code doesn't exist")
