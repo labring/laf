@@ -20,11 +20,13 @@ export default function SysSetting(props: {
           key: "info",
           name: t("SettingPanel.AppInfo"),
           component: <AppInfoList />,
+          icon: <></>,
         },
         {
           key: "env",
           name: t("SettingPanel.AppEnv"),
           component: <AppEnvList />,
+          icon: <></>,
         },
       ]}
     >

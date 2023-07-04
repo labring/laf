@@ -187,7 +187,9 @@
     "Usage": "Usage",
     "Avatar": "Avatar",
     "UserName": "UserName",
-    "Email": "Email"
+    "Email": "Email",
+    "PassWord": "PassWord",
+    "UserInvite": "UserInvite"
   },
   "StoragePanel": {
     "All": "Total Capacity",
@@ -508,5 +510,16 @@
   "Yesterday": "Yesterday",
   "DaysAgo": " Days Ago",
   "WeeksAgo": " Weeks Ago",
-  "MonthsAgo": " Months Ago"
+  "MonthsAgo": " Months Ago",
+  "UserInfo": {
+    "EditUserName": "Edit UserName",
+    "UserName": "UserName",
+    "EditPassword": "Edit Password",
+    "EditPhone": "Edit Phone Number",
+    "PhoneNumber": "Phone Number",
+    "OldPhoneNumber": "Old Phone Number",
+    "OldSmsNumber": "Old Sms Number",
+    "NewPhoneNumber": "New Phone Number",
+    "NewSmsNumber": "New Sms Number"
+  }
 }

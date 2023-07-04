@@ -1,6 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { Avatar, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 
+import { BillingIcon, PATIcon, UserIcon } from "@/components/CommonIcon";
+
 import SettingModal, { TabKeys } from "@/pages/app/setting";
 import PATList from "@/pages/app/setting/PATList";
 import Usage from "@/pages/app/setting/Usage";
@@ -27,16 +29,19 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
               key: TabKeys.UserInfo,
               name: String(t("SettingPanel.UserInfo")),
               component: <UserInfo />,
+              icon: <UserIcon />,
             },
             {
               key: TabKeys.Usage,
               name: String(t("SettingPanel.Usage")),
               component: <Usage />,
+              icon: <BillingIcon />,
             },
             {
               key: TabKeys.PAT,
               name: t("Personal Access Token"),
               component: <PATList />,
+              icon: <PATIcon />,
             },
           ]}
           headerTitle={t("SettingPanel.UserSetting")}
@@ -51,16 +56,19 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
               key: TabKeys.UserInfo,
               name: String(t("SettingPanel.UserInfo")),
               component: <UserInfo />,
+              icon: <UserIcon />,
             },
             {
               key: TabKeys.Usage,
               name: String(t("SettingPanel.Usage")),
               component: <Usage />,
+              icon: <BillingIcon />,
             },
             {
               key: TabKeys.PAT,
               name: t("Personal Access Token"),
               component: <PATList />,
+              icon: <PATIcon />,
             },
           ]}
           headerTitle={t("SettingPanel.UserSetting")}

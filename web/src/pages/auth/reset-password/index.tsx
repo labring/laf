@@ -14,9 +14,10 @@ import {
 import clsx from "clsx";
 import { t } from "i18next";
 
+import { SendSmsCodeButton } from "@/components/SendSmsCodeButton";
 import { COLOR_MODE } from "@/constants";
 
-import { useResetPasswordMutation, useSendSmsCodeMutation } from "@/pages/auth/service";
+import { useResetPasswordMutation } from "@/pages/auth/service";
 import useGlobalStore from "@/pages/globalStore";
 
 type FormData = {
@@ -27,23 +28,20 @@ type FormData = {
   confirmPassword: string;
 };
 
-export default function ResetPassword() {
+export default function ResetPassword(props: { isModal?: boolean }) {
+  const { isModal } = props;
   const resetPasswordMutation = useResetPasswordMutation();
-  const sendSmsCodeMutation = useSendSmsCodeMutation();
-
   const { showSuccess, showError } = useGlobalStore();
   const navigate = useNavigate();
 
-  const [isSendSmsCode, setIsSendSmsCode] = useState(false);
-  const [countdown, setCountdown] = useState(60);
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const { colorMode } = useColorMode();
   const darkMode = colorMode === COLOR_MODE.dark;
 
   const {
     register,
-    getValues,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({
@@ -72,59 +70,24 @@ export default function ResetPassword() {
 
     if (res?.data) {
       showSuccess(t("AuthPanel.ResetPasswordSuccess"));
-      navigate("/login", { replace: true });
+      !isModal && navigate("/login", { replace: true });
     }
-  };
-
-  const handleSendSmsCode = async () => {
-    if (isSendSmsCode) {
-      return;
-    }
-
-    const phone = getValues("phone") || "";
-    const isValidate = /^1[2-9]\d{9}$/.test(phone);
-    if (!isValidate) {
-      showError(t("AuthPanel.PhoneTip"));
-      return;
-    }
-
-    switchSmsCodeStatus();
-
-    const res = await sendSmsCodeMutation.mutateAsync({
-      phone,
-      type: "ResetPassword",
-    });
-
-    if (res?.data) {
-      showSuccess(t("AuthPanel.SmsCodeSendSuccess"));
-    }
-  };
-
-  const switchSmsCodeStatus = () => {
-    setIsSendSmsCode(true);
-    setCountdown(60);
-    const timer = setInterval(() => {
-      setCountdown((countdown) => {
-        if (countdown === 0) {
-          clearInterval(timer);
-          setIsSendSmsCode(false);
-          return 0;
-        }
-        return countdown - 1;
-      });
-    }, 1000);
   };
 
   return (
     <div
       className={clsx(
-        "absolute left-1/2 top-1/2 w-[560px] -translate-y-1/2 rounded-[10px] p-[65px]",
+        !isModal
+          ? "absolute left-1/2 top-1/2 w-[560px] -translate-y-1/2 rounded-[10px] p-[65px]"
+          : "pt-10",
         { "bg-white": !darkMode, "bg-lafDark-100": darkMode },
       )}
     >
-      <div className="mb-[45px]">
-        <img src="/logo.png" alt="logo" width={40} className="mr-4" />
-      </div>
+      {!isModal ? (
+        <div className="mb-[45px]">
+          <img src="/logo.png" alt="logo" width={40} className="mr-4" />
+        </div>
+      ) : null}
       <div className="mb-[65px]">
         <FormControl isInvalid={!!errors?.phone} className="mb-6 flex items-center">
           <FormLabel className="w-20" htmlFor="phone">
@@ -142,15 +105,12 @@ export default function ResetPassword() {
               type="tel"
               id="phone"
               placeholder={t("AuthPanel.PhonePlaceholder") || ""}
+              onChange={(e) => {
+                setPhoneNumber(e.target.value);
+              }}
             />
             <InputRightElement width="6rem">
-              <Button
-                className="w-20"
-                variant={isSendSmsCode ? "thirdly_disabled" : "thirdly"}
-                onClick={handleSendSmsCode}
-              >
-                {isSendSmsCode ? `${countdown}s` : t("AuthPanel.getValidationCode")}
-              </Button>
+              <SendSmsCodeButton phone={phoneNumber} />
             </InputRightElement>
           </InputGroup>
         </FormControl>
@@ -218,18 +178,24 @@ export default function ResetPassword() {
         <div className="mb-6">
           <Button
             type="submit"
-            className="w-full pb-5 pt-5"
+            className={clsx("w-full", !isModal && "pb-5 pt-5")}
             isLoading={resetPasswordMutation.isLoading}
             onClick={handleSubmit(onSubmit)}
           >
             {t("AuthPanel.ResetPassword")}
           </Button>
         </div>
-        <div className="mt-2 flex justify-end">
-          <Button size="xs" variant={"text"} onClick={() => navigate("/login", { replace: true })}>
-            {t("AuthPanel.ToLogin")}
-          </Button>
-        </div>
+        {!isModal && (
+          <div className="mt-2 flex justify-end">
+            <Button
+              size="xs"
+              variant={"text"}
+              onClick={() => navigate("/login", { replace: true })}
+            >
+              {t("AuthPanel.ToLogin")}
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

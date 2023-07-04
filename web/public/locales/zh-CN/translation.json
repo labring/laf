@@ -187,7 +187,9 @@
     "Usage": "费用中心",
     "Avatar": "头像",
     "UserName": "用户名",
-    "Email": "邮箱"
+    "Email": "邮箱",
+    "PassWord": "密码",
+    "UserInvite": "我的推广"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -508,5 +510,16 @@
   "Today": "今天",
   "DaysAgo": " 天前",
   "MonthsAgo": " 月前",
-  "WeeksAgo": " 周前"
+  "WeeksAgo": " 周前",
+  "UserInfo": {
+    "EditUserName": "更改用户名",
+    "UserName": "用户名",
+    "EditPassword": "修改密码",
+    "EditPhone": "更改手机号",
+    "PhoneNumber": "手机号",
+    "OldPhoneNumber": "旧手机号",
+    "OldSmsNumber": "旧验证码",
+    "NewPhoneNumber": "新手机号",
+    "NewSmsNumber": "新手机号"
+  }
 }
