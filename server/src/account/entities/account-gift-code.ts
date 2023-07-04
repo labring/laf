@@ -6,6 +6,9 @@ export class GiftCode {
   _id?: ObjectId
 
   @ApiProperty()
+  code: string
+
+  @ApiProperty()
   creditAmount: number
 
   @ApiProperty({})
