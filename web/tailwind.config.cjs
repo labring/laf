@@ -9,6 +9,9 @@ module.exports = {
       lg: "976px",
       xl: "1440px",
       '2xl': "1680px",
+      'phone': { 'min': '320px', 'max': '480px' },
+      'laptop': { 'min': '1024px', 'max': '1440px' },
+      'pc': { 'min': '1441px' },
     },
     boxShadow: {
       DEFAULT: "0px 4px 10px rgba(191, 202, 213, 0.25)",
