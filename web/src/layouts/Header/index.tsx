@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import { HamburgerIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { Menu, MenuButton, MenuItem, MenuList, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
@@ -144,20 +144,7 @@ const Header = (props: { width: string }) => {
           <div className="mt-3 flex w-full items-center px-5">
             <Menu>
               <MenuButton>
-                <svg
-                  className="icon"
-                  viewBox="0 0 1024 1024"
-                  version="1.1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  p-id="1454"
-                  width="30"
-                  height="30"
-                >
-                  <path
-                    d="M904 160H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8zM904 784H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8zM904 472H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8z"
-                    p-id="1455"
-                  ></path>
-                </svg>
+                <HamburgerIcon w={7} h={7} />
               </MenuButton>
               <MenuList minW={"150px"}>
                 {navList_left.map((item, index) => {
@@ -213,7 +200,7 @@ const Header = (props: { width: string }) => {
                 window.dispatchEvent(new Event("ColorModeChange"));
               }}
             >
-              {darkMode ? <MoonIcon /> : <SunIcon boxSize={4} />}
+              {darkMode ? <MoonIcon /> : <SunIcon w={7} h={7} />}
             </div>
             {userInfo?._id ? (
               <>
