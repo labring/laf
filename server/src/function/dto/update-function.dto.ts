@@ -1,12 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import {
-  IsArray,
-  IsIn,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  MaxLength,
-} from 'class-validator'
+import { IsArray, IsIn, IsNotEmpty, IsString, MaxLength } from 'class-validator'
 import { HTTP_METHODS } from '../../constants'
 import { HttpMethod } from '../entities/cloud-function'
 
@@ -31,10 +24,6 @@ export class UpdateFunctionDto {
   @MaxLength(16, { each: true })
   @IsNotEmpty({ each: true })
   tags: string[]
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  params: any
 
   validate() {
     return null

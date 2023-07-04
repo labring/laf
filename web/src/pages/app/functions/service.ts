@@ -3,6 +3,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useFunctionStore from "./store";
 
 import {
+  ApplicationControllerBindDomain,
+  ApplicationControllerCheckResolved,
+  ApplicationControllerRemove,
+} from "@/apis/v1/applications";
+import {
   FunctionControllerCompile,
   FunctionControllerCreate,
   FunctionControllerFindAll,
@@ -10,6 +15,7 @@ import {
   FunctionControllerGetHistory,
   FunctionControllerRemove,
   FunctionControllerUpdate,
+  FunctionControllerUpdateDebug,
 } from "@/apis/v1/apps";
 import useFunctionCache from "@/hooks/useFunctionCache";
 
@@ -96,6 +102,26 @@ export const useUpdateFunctionMutation = () => {
   );
 };
 
+export const useUpdateDebugFunctionMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation(
+    (values: any) => {
+      const updatedValues = {
+        ...values,
+        name: encodeURIComponent(values.name),
+      };
+      return FunctionControllerUpdateDebug(updatedValues);
+    },
+    {
+      onSuccess(data) {
+        if (!data.error) {
+          queryClient.invalidateQueries(queryKeys.useFunctionListQuery);
+        }
+      },
+    },
+  );
+};
+
 export const useDeleteFunctionMutation = () => {
   const store = useFunctionStore();
   const functionCache = useFunctionCache();
@@ -137,4 +163,49 @@ export const useCompileMutation = () => {
       }
     },
   });
+};
+
+export const useBindDomainMutation = (config?: { onSuccess: (data: any) => void }) => {
+  return useMutation(
+    (values: any) => {
+      return ApplicationControllerBindDomain(values);
+    },
+    {
+      onSuccess: async (data) => {
+        if (!data.error) {
+          config?.onSuccess && config.onSuccess(data);
+        }
+      },
+    },
+  );
+};
+
+export const useCheckResolvedMutation = (config?: { onSuccess: (data: any) => void }) => {
+  return useMutation(
+    (values: any) => {
+      return ApplicationControllerCheckResolved(values);
+    },
+    {
+      onSuccess: async (data) => {
+        if (!data.error) {
+          config?.onSuccess && config.onSuccess(data);
+        }
+      },
+    },
+  );
+};
+
+export const useRemoveApplicationMutation = (config?: { onSuccess: (data: any) => void }) => {
+  return useMutation(
+    (values: any) => {
+      return ApplicationControllerRemove(values);
+    },
+    {
+      onSuccess: async (data) => {
+        if (!data.error) {
+          config?.onSuccess && config.onSuccess(data);
+        }
+      },
+    },
+  );
 };
