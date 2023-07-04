@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
-import { useColorMode } from "@chakra-ui/react";
+import { Menu, MenuButton, MenuItem, MenuList, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import { ChatIcon, ContactIcon, TextIcon } from "@/components/CommonIcon";
@@ -50,77 +50,183 @@ const Header = (props: { width: string }) => {
     }
   }, []);
 
+  function isMobileDevice() {
+    const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+    return mobileRegex.test(navigator.userAgent);
+  }
+
   return (
-    <div
-      className={clsx(
-        "flex h-[52px] w-full justify-between font-medium",
-        { [width]: !!width },
-        darkMode ? "" : "text-grayModern-600",
-      )}
-    >
-      <div className="flex items-center pl-12">
-        <a href="/">
-          <img
-            src={darkMode ? "/logo_light.png" : "/logo_text.png"}
-            className="mr-9 h-auto w-20"
-            alt={"logo"}
-          />
-        </a>
-
-        {navList_left.map((item, index) => {
-          return (
-            <a
-              key={index}
-              target={item.ref.startsWith("http") ? "_blank" : "_self"}
-              href={item.ref}
-              className={clsx(
-                "mr-8 text-lg",
-                item.value === chosenItem && !darkMode ? "font-semibold text-grayModern-900" : "",
-                item.value === chosenItem && darkMode ? "font-semibold text-grayModern-100" : "",
-              )}
-              rel="noreferrer"
-            >
-              {item.text}
-            </a>
-          );
-        })}
-      </div>
-
-      <div className="flex items-center pr-9">
-        {navList_right.map((item, index) => {
-          return (
-            <a
-              key={index}
-              target={item.ref.startsWith("http") ? "_blank" : "_self"}
-              href={item.ref}
-              className="mr-8 flex items-center text-lg"
-              rel="noreferrer"
-            >
-              <span className={clsx("pr-2", index !== 1 && "pb-1")}>{item.icon}</span>
-              <span>{item.text}</span>
-            </a>
-          );
-        })}
-        <Language fontSize={20} />
+    <div>
+      {!isMobileDevice() ? (
         <div
-          className="mr-8 cursor-pointer pb-1"
-          onClick={() => {
-            toggleColorMode();
-            window.dispatchEvent(new Event("ColorModeChange"));
-          }}
+          className={clsx(
+            "flex h-[52px] w-full justify-between font-medium",
+            { [width]: !!width },
+            darkMode ? "" : "text-grayModern-600",
+          )}
         >
-          {darkMode ? <MoonIcon /> : <SunIcon boxSize={4} />}
+          <div className="flex items-center pl-12">
+            <a href="/">
+              <img
+                src={darkMode ? "/logo_light.png" : "/logo_text.png"}
+                className="mr-9 h-auto w-20"
+                alt={"logo"}
+              />
+            </a>
+
+            {navList_left.map((item, index) => {
+              return (
+                <a
+                  key={index}
+                  target={item.ref.startsWith("http") ? "_blank" : "_self"}
+                  href={item.ref}
+                  className={clsx(
+                    "mr-8 text-lg",
+                    item.value === chosenItem && !darkMode
+                      ? "font-semibold text-grayModern-900"
+                      : "",
+                    item.value === chosenItem && darkMode
+                      ? "font-semibold text-grayModern-100"
+                      : "",
+                  )}
+                  rel="noreferrer"
+                >
+                  {item.text}
+                </a>
+              );
+            })}
+          </div>
+
+          <div className="flex items-center pr-9">
+            {navList_right.map((item, index) => {
+              return (
+                <a
+                  key={index}
+                  target={item.ref.startsWith("http") ? "_blank" : "_self"}
+                  href={item.ref}
+                  className="mr-8 flex items-center text-lg"
+                  rel="noreferrer"
+                >
+                  <span className={clsx("pr-2", index !== 1 && "pb-1")}>{item.icon}</span>
+                  <span>{item.text}</span>
+                </a>
+              );
+            })}
+            <Language fontSize={20} />
+            <div
+              className="mr-8 cursor-pointer pb-1"
+              onClick={() => {
+                toggleColorMode();
+                window.dispatchEvent(new Event("ColorModeChange"));
+              }}
+            >
+              {darkMode ? <MoonIcon /> : <SunIcon boxSize={4} />}
+            </div>
+            {userInfo?._id ? (
+              <>
+                <UserSetting
+                  name={userInfo?.username!}
+                  avatar={userInfo?.profile?.avatar}
+                  width={"2.25rem"}
+                />
+              </>
+            ) : null}
+          </div>
         </div>
-        {userInfo?._id ? (
-          <>
-            <UserSetting
-              name={userInfo?.username!}
-              avatar={userInfo?.profile?.avatar}
-              width={"2.25rem"}
-            />
-          </>
-        ) : null}
-      </div>
+      ) : (
+        <div
+          className={clsx(
+            "flex h-[52px] w-full justify-between font-medium",
+            { [width]: !!width },
+            darkMode ? "" : "text-grayModern-600",
+          )}
+        >
+          <div className="mt-3 flex w-full items-center px-5">
+            <Menu>
+              <MenuButton>
+                <svg
+                  className="icon"
+                  viewBox="0 0 1024 1024"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  p-id="1454"
+                  width="30"
+                  height="30"
+                >
+                  <path
+                    d="M904 160H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8zM904 784H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8zM904 472H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8z"
+                    p-id="1455"
+                  ></path>
+                </svg>
+              </MenuButton>
+              <MenuList minW={"150px"}>
+                {navList_left.map((item, index) => {
+                  return (
+                    <MenuItem key={index}>
+                      <a
+                        target={item.ref.startsWith("http") ? "_blank" : "_self"}
+                        href={item.ref}
+                        className={clsx(
+                          "mr-8 text-lg",
+                          item.value === chosenItem && !darkMode
+                            ? "font-semibold text-grayModern-900"
+                            : "",
+                          item.value === chosenItem && darkMode
+                            ? "font-semibold text-grayModern-100"
+                            : "",
+                        )}
+                        rel="noreferrer"
+                      >
+                        {item.text}
+                      </a>
+                    </MenuItem>
+                  );
+                })}
+                {navList_right.map((item, index) => {
+                  return (
+                    <MenuItem key={index}>
+                      <a
+                        target={item.ref.startsWith("http") ? "_blank" : "_self"}
+                        href={item.ref}
+                        className="flex items-center text-lg"
+                        rel="noreferrer"
+                      >
+                        <span className={clsx("pr-2")}>{item.icon}</span>
+                        <span>{item.text}</span>
+                      </a>
+                    </MenuItem>
+                  );
+                })}
+              </MenuList>
+            </Menu>
+            <a href="/" className="pl-3">
+              <img
+                src={darkMode ? "/logo_light.png" : "/logo_text.png"}
+                className="mr-9 h-auto w-20"
+                alt={"logo"}
+              />
+            </a>
+            <div
+              className="ml-auto mr-3 flex cursor-pointer justify-end"
+              onClick={() => {
+                toggleColorMode();
+                window.dispatchEvent(new Event("ColorModeChange"));
+              }}
+            >
+              {darkMode ? <MoonIcon /> : <SunIcon boxSize={4} />}
+            </div>
+            {userInfo?._id ? (
+              <>
+                <UserSetting
+                  name={userInfo?.username!}
+                  avatar={userInfo?.profile?.avatar}
+                  width={"1.95rem"}
+                />
+              </>
+            ) : null}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
