@@ -1,9 +1,24 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsArray, IsIn, IsNotEmpty, IsString, MaxLength } from 'class-validator'
+import {
+  IsArray,
+  IsIn,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Matches,
+  MaxLength,
+} from 'class-validator'
 import { HTTP_METHODS } from '../../constants'
 import { HttpMethod } from '../entities/cloud-function'
 
 export class UpdateFunctionDto {
+  @ApiProperty({
+    description: 'Function name is unique in the application',
+  })
+  @IsOptional()
+  @Matches(/^[a-zA-Z0-9_.\-\/]{1,256}$/)
+  newName?: string
+
   @ApiPropertyOptional()
   @MaxLength(256)
   description: string
