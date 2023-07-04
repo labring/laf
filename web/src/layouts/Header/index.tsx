@@ -22,7 +22,7 @@ const Header = (props: { width: string }) => {
   const [chosenItem, setChosenItem] = useState<string>("");
 
   const navList_left = [
-    { text: t("HomePage.NavBar.home"), ref: "/dashboard" },
+    { text: t("HomePage.NavBar.dashboard"), ref: "/dashboard" },
     {
       text: t("HomePage.NavBar.funcTemplate"),
       ref: "/market/templates/recommended",
