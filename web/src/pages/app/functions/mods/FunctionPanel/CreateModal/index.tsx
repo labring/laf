@@ -18,7 +18,6 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import { useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import { t } from "i18next";
 import { debounce } from "lodash";
@@ -47,7 +46,6 @@ const CreateModal = (props: {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const store = useFunctionStore();
   const { showSuccess, currentApp } = useGlobalStore();
-  const queryClient = useQueryClient();
 
   const { functionItem, children = null, tagList } = props;
   const isEdit = !!functionItem;
@@ -118,7 +116,6 @@ const CreateModal = (props: {
       store.setCurrentFunction(res.data);
       reset(defaultValues);
       navigate(`/app/${currentApp.appid}/function/${res.data.name}`);
-      queryClient.invalidateQueries(["useTriggerQuery"]);
     }
   };
 
