@@ -524,6 +524,8 @@
     "EditUserNameSuccess": "Edit UserName Success",
     "EditPasswordSuccess": "Edit Password Success",
     "EditPhoneSuccess": "Edit Phone Success",
-    "EditAvatarSuccess": "Edit Avatar Success"
-  }
+    "EditAvatarSuccess": "Edit Avatar Success",
+    "Change": "Change"
+  },
+  "Reset": "Reset"
 }

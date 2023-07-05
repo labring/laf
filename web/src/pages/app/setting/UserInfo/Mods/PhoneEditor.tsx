@@ -19,10 +19,10 @@ import { useBindPhoneMutation } from "../service";
 import useGlobalStore from "@/pages/globalStore";
 
 type FormData = {
-  oldPhone: string;
-  oldSmsNumber: string;
-  newPhone: string;
-  newSmsNumber: string;
+  oldPhoneNumber: string;
+  oldSmsCode: string;
+  newPhoneNumber: string;
+  newSmsCode: string;
 };
 
 export default function PhoneEditor(props: { setShowItem: any }) {
@@ -40,16 +40,16 @@ export default function PhoneEditor(props: { setShowItem: any }) {
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
-      oldPhone: "",
-      oldSmsNumber: "",
-      newPhone: "",
-      newSmsNumber: "",
+      oldPhoneNumber: "",
+      oldSmsCode: "",
+      newPhoneNumber: "",
+      newSmsCode: "",
     },
   });
 
   const onSubmit = async (data: FormData) => {
     const res = await bindPhone.mutateAsync(data);
-    if (res) {
+    if (!res.error) {
       updateUserInfo();
       showSuccess(t("UserInfo.EditPhoneSuccess"));
       setShowItem("");
@@ -67,11 +67,14 @@ export default function PhoneEditor(props: { setShowItem: any }) {
       <VStack className="flex w-full flex-col">
         <span className="w-full text-center text-xl">{t("UserInfo.EditPhone")}</span>
         <Box className="flex flex-col">
-          <FormControl isInvalid={!!errors?.oldPhone} className="flex flex-col justify-center">
+          <FormControl
+            isInvalid={!!errors?.oldPhoneNumber}
+            className="flex flex-col justify-center"
+          >
             <div className="pb-2">{t("UserInfo.OldPhoneNumber")}</div>
             <InputGroup>
               <Input
-                {...register("oldPhone", { required: true })}
+                {...register("oldPhoneNumber", { required: true })}
                 width={64}
                 bg={"#F8FAFB"}
                 border={"1px"}
@@ -85,21 +88,21 @@ export default function PhoneEditor(props: { setShowItem: any }) {
               </InputRightElement>
             </InputGroup>
           </FormControl>
-          <FormControl isInvalid={!!errors.oldSmsNumber} className="flex flex-col justify-center">
+          <FormControl isInvalid={!!errors.oldSmsCode} className="flex flex-col justify-center">
             <div className="py-2">{t("UserInfo.OldSmsNumber")}</div>
             <Input
-              {...register("oldSmsNumber", { required: true })}
+              {...register("oldSmsCode", { required: true })}
               width={64}
               bg={"#F8FAFB"}
               border={"1px"}
               borderColor={"#D5D6E1"}
             />
           </FormControl>
-          <FormControl isInvalid={!!errors.newPhone} className="flex flex-col justify-center">
+          <FormControl isInvalid={!!errors.newPhoneNumber} className="flex flex-col justify-center">
             <div className="py-2">{t("UserInfo.NewPhoneNumber")}</div>
             <InputGroup>
               <Input
-                {...register("newPhone", { required: true })}
+                {...register("newPhoneNumber", { required: true })}
                 width={64}
                 bg={"#F8FAFB"}
                 border={"1px"}
@@ -113,10 +116,10 @@ export default function PhoneEditor(props: { setShowItem: any }) {
               </InputRightElement>
             </InputGroup>
           </FormControl>
-          <FormControl isInvalid={!!errors.newSmsNumber} className="flex flex-col justify-center">
+          <FormControl isInvalid={!!errors.newSmsCode} className="flex flex-col justify-center">
             <div className="py-2">{t("UserInfo.NewSmsNumber")}</div>
             <Input
-              {...register("newSmsNumber", { required: true })}
+              {...register("newSmsCode", { required: true })}
               width={64}
               bg={"#F8FAFB"}
               border={"1px"}

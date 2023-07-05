@@ -82,7 +82,7 @@ export default function UserInfo() {
                     setShowItem("username");
                   }}
                 >
-                  更改 <ChevronRightIcon boxSize={5} />
+                  {t("UserInfo.Change")} <ChevronRightIcon boxSize={5} />
                 </span>
               </span>
             </div>
@@ -96,7 +96,7 @@ export default function UserInfo() {
                     setShowItem("password");
                   }}
                 >
-                  设置 <ChevronRightIcon boxSize={5} />
+                  {t("Reset")} <ChevronRightIcon boxSize={5} />
                 </span>
               </span>
             </div>
@@ -113,7 +113,7 @@ export default function UserInfo() {
                     setShowItem("phone");
                   }}
                 >
-                  更改 <ChevronRightIcon boxSize={5} />
+                  {t("UserInfo.Change")} <ChevronRightIcon boxSize={5} />
                 </span>
               </span>
             </div>
