@@ -7,7 +7,7 @@ const Language = (props: { fontSize: number }) => {
   const { i18n } = useTranslation();
 
   return (
-    <div className="mr-7">
+    <div className="mr-4">
       <a
         className="flex items-center text-lg"
         href={"/language"}

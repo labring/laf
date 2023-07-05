@@ -8,6 +8,7 @@ import { ChatIcon, ContactIcon, TextIcon } from "@/components/CommonIcon";
 import { COLOR_MODE } from "@/constants";
 import { getAvatarUrl } from "@/utils/getAvatarUrl";
 
+import UserBalance from "./UserBalance";
 import UserSetting from "./UserSetting";
 
 import useGlobalStore from "@/pages/globalStore";
@@ -17,6 +18,7 @@ const Header = (props: { width: string }) => {
   const { width } = props;
   const { t } = useTranslation();
   const { userInfo } = useGlobalStore((state) => state);
+
   const { colorMode } = useColorMode();
   const darkMode = colorMode === COLOR_MODE.dark;
   const { toggleColorMode } = useColorMode();
@@ -113,6 +115,7 @@ const Header = (props: { width: string }) => {
                 </a>
               );
             })}
+            <UserBalance />
             <Language fontSize={20} />
             <div
               className="mr-8 cursor-pointer pb-1"
