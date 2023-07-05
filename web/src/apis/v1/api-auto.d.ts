@@ -253,19 +253,13 @@ declare namespace Definitions {
     inviteCode?: string /* invite code */;
   };
 
-  export type BindPhoneDto = {
-    phone?: string /* phone number */;
-    code?: string /* sms verify code */;
-  };
-
-  export type BindUsernameDto = {
-    username?: string /* username */;
-    phone?: string /* phone */;
-    code?: string /* sms verify code */;
-  };
-
   export type Pat2TokenDto = {
     pat?: string /* PAT */;
+  };
+
+  export type CreatePATDto = {
+    name?: string;
+    expiresIn?: number;
   };
 
   export type UserWithProfile = {
@@ -278,9 +272,15 @@ declare namespace Definitions {
     profile?: Definitions.UserProfile;
   };
 
-  export type CreatePATDto = {
-    name?: string;
-    expiresIn?: number;
+  export type BindPhoneDto = {
+    oldPhoneNumber?: string /* old phone number */;
+    newPhoneNumber?: string /* new phone number */;
+    oldSmsCode?: string /* sms verify code for old phone number */;
+    newSmsCode?: string /* sms verify code for new phone number */;
+  };
+
+  export type BindUsernameDto = {
+    username?: string /* username */;
   };
 
   export type CreateTriggerDto = {
@@ -457,6 +457,7 @@ declare namespace Paths {
 
     export type Responses = any;
   }
+
   namespace AuthControllerPat2token {
     export type QueryParameters = any;
 
@@ -464,6 +465,7 @@ declare namespace Paths {
 
     export type Responses = any;
   }
+
   namespace AppControllerGetRuntimes {
     export type QueryParameters = any;
 
@@ -920,34 +922,10 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace AuthenticationControllerBindPhone {
-    export type QueryParameters = any;
-
-    export type BodyParameters = Definitions.BindPhoneDto;
-
-    export type Responses = any;
-  }
-
-  namespace AuthenticationControllerBindUsername {
-    export type QueryParameters = any;
-
-    export type BodyParameters = Definitions.BindUsernameDto;
-
-    export type Responses = any;
-  }
-
   namespace AuthenticationControllerPat2token {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.Pat2TokenDto;
-
-    export type Responses = any;
-  }
-
-  namespace AuthenticationControllerGetProfile {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
 
     export type Responses = any;
   }
@@ -969,6 +947,46 @@ declare namespace Paths {
   }
 
   namespace PatControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace UserControllerUpdateAvatar {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace UserControllerGetAvatar {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace UserControllerBindPhone {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.BindPhoneDto;
+
+    export type Responses = any;
+  }
+
+  namespace UserControllerBindUsername {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.BindUsernameDto;
+
+    export type Responses = any;
+  }
+
+  namespace UserControllerGetProfile {
     export type QueryParameters = any;
 
     export type BodyParameters = any;

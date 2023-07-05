@@ -28,8 +28,8 @@ type FormData = {
   confirmPassword: string;
 };
 
-export default function ResetPassword(props: { isModal?: boolean }) {
-  const { isModal } = props;
+export default function ResetPassword(props: { isModal?: boolean; setShowItem?: any }) {
+  const { isModal, setShowItem } = props;
   const resetPasswordMutation = useResetPasswordMutation();
   const { showSuccess, showError } = useGlobalStore();
   const navigate = useNavigate();
@@ -68,9 +68,12 @@ export default function ResetPassword(props: { isModal?: boolean }) {
 
     const res = await resetPasswordMutation.mutateAsync(params);
 
-    if (res?.data) {
+    if (res?.data && !isModal) {
       showSuccess(t("AuthPanel.ResetPasswordSuccess"));
-      !isModal && navigate("/login", { replace: true });
+      navigate("/login", { replace: true });
+    } else if (res?.data && isModal) {
+      showSuccess(t("AuthPanel.ResetPasswordSuccess"));
+      setShowItem("");
     }
   };
 

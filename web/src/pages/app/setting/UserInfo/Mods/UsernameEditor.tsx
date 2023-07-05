@@ -3,9 +3,16 @@ import { useTranslation } from "react-i18next";
 import { ChevronLeftIcon } from "@chakra-ui/icons";
 import { Box, Button, FormControl, Input, VStack } from "@chakra-ui/react";
 
+import { useBindUsernameMutation } from "../service";
+
+import useGlobalStore from "@/pages/globalStore";
+
 export default function UserNameEditor(props: { setShowItem: any }) {
   const { setShowItem } = props;
   const { t } = useTranslation();
+  const bindUsername = useBindUsernameMutation();
+  const { userInfo, updateUserInfo, showSuccess } = useGlobalStore((state) => state);
+
   const {
     register,
     handleSubmit,
@@ -13,7 +20,12 @@ export default function UserNameEditor(props: { setShowItem: any }) {
   } = useForm();
 
   const onSubmit = async (data: any) => {
-    console.log(data);
+    const res = await bindUsername.mutateAsync(data);
+    if (res) {
+      updateUserInfo();
+      setShowItem("");
+      showSuccess(t("UserInfo.EditUserNameSuccess"));
+    }
   };
 
   return (
@@ -33,6 +45,7 @@ export default function UserNameEditor(props: { setShowItem: any }) {
               {...register("username", {
                 required: true,
               })}
+              defaultValue={userInfo?.username}
               width={64}
               bg={"#F8FAFB"}
               border={"1px"}
