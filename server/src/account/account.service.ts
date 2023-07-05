@@ -336,6 +336,7 @@ export class AccountService {
       }
     }
   }
+
   async findOneInviteCode(uid: ObjectId): Promise<InviteCode | null> {
     const inviteCode = await this.db
       .collection<InviteCode>('InviteCode')
