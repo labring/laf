@@ -6,6 +6,7 @@ import clsx from "clsx";
 
 import { ChatIcon, ContactIcon, TextIcon } from "@/components/CommonIcon";
 import { COLOR_MODE } from "@/constants";
+import { getAvatarUrl } from "@/utils/getAvatarUrl";
 
 import UserSetting from "./UserSetting";
 
@@ -126,7 +127,7 @@ const Header = (props: { width: string }) => {
               <>
                 <UserSetting
                   name={userInfo?.username!}
-                  avatar={userInfo?.profile?.avatar}
+                  avatar={getAvatarUrl(userInfo?._id || "")}
                   width={"2.25rem"}
                 />
               </>
@@ -206,7 +207,7 @@ const Header = (props: { width: string }) => {
               <>
                 <UserSetting
                   name={userInfo?.username!}
-                  avatar={userInfo?.profile?.avatar}
+                  avatar={getAvatarUrl(userInfo?._id || "")}
                   width={"1.95rem"}
                 />
               </>
