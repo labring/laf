@@ -74,7 +74,7 @@ export async function custom(bucketName: string, domain: string, options: any) {
     bucketName = appSchema.appid + '-' + bucketName
   }
 
-  const targetId = websites.find((item) => item.bucketName === bucketName)?.id
+  const targetId = websites.find((item) => item.bucketName === bucketName)?._id
   if (!targetId) {
     console.log(`${getEmoji('❌')} website ${bucketName} not found`)
     return
