@@ -30,7 +30,7 @@ export default function Usage() {
 
   const { t } = useTranslation();
   return (
-    <div className="absolute left-[272px] bg-white">
+    <div>
       <h1 className="mb-4 text-2xl font-bold">Usage</h1>
       <HStack className="mt-4">
         <span className=" text-grayModern-500">{t("Balance")}:</span>
