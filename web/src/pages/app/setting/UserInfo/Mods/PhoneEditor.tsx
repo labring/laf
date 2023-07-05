@@ -25,8 +25,8 @@ type FormData = {
   newSmsCode: string;
 };
 
-export default function PhoneEditor(props: { setShowItem: any }) {
-  const { setShowItem } = props;
+export default function PhoneEditor(props: { handleBack: any }) {
+  const { handleBack } = props;
   const { t } = useTranslation();
   const [oldPhone, setOldPhone] = useState("");
   const [newPhone, setNewPhone] = useState("");
@@ -52,14 +52,14 @@ export default function PhoneEditor(props: { setShowItem: any }) {
     if (!res.error) {
       updateUserInfo();
       showSuccess(t("UserInfo.EditPhoneSuccess"));
-      setShowItem("");
+      handleBack("");
     }
   };
 
   return (
     <>
       <span
-        onClick={() => setShowItem("")}
+        onClick={() => handleBack("")}
         className="absolute left-[280px] flex cursor-pointer items-center"
       >
         <ChevronLeftIcon boxSize={6} /> {t("Back")}

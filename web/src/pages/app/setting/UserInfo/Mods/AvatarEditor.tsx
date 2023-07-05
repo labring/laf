@@ -41,8 +41,8 @@ function getCroppedImg(image: HTMLImageElement, crop: Crop): Promise<Blob> {
   });
 }
 
-export default function AvatarEditor(props: { img: string | null; setShowItem: any }) {
-  const { img, setShowItem } = props;
+export default function AvatarEditor(props: { img: string | null; handleBack: any }) {
+  const { img, handleBack } = props;
   const { t } = useTranslation();
   const imgRef = useRef<HTMLImageElement>(null);
   const [crop, setCrop] = useState<Crop>({
@@ -64,7 +64,7 @@ export default function AvatarEditor(props: { img: string | null; setShowItem: a
       updateAvatar.mutateAsync(formData);
       updateUserInfo();
       showSuccess(t("UserInfo.EditAvatarSuccess"));
-      setShowItem("");
+      handleBack();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [crop]);
@@ -72,7 +72,7 @@ export default function AvatarEditor(props: { img: string | null; setShowItem: a
   return (
     <>
       <span
-        onClick={() => setShowItem("")}
+        onClick={() => handleBack()}
         className="absolute left-[280px] flex cursor-pointer items-center"
       >
         <ChevronLeftIcon boxSize={6} /> {t("Back")}

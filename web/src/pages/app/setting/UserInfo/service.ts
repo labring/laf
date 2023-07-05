@@ -3,22 +3,9 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   UserControllerBindPhone,
   UserControllerBindUsername,
-  UserControllerGetAvatar,
   UserControllerGetProfile,
   UserControllerUpdateAvatar,
 } from "@/apis/v1/user";
-
-export const useGetUserAvatar = (onSuccess: (result: any) => void) => {
-  return useQuery(
-    ["useGetUserAvatarQuery"],
-    async () => {
-      return UserControllerGetAvatar({});
-    },
-    {
-      onSuccess,
-    },
-  );
-};
 
 export const useUpdateUserAvatar = (config?: { onSuccess: (result: any) => void }) => {
   return useMutation(
@@ -62,7 +49,7 @@ export const useBindUsernameMutation = (config?: { onSuccess: (result: any) => v
 export const useGetUserProfile = (config?: { onSuccess: (result: any) => void }) => {
   return useQuery(
     ["useGetUserProfileQuery"],
-    async () => {
+    () => {
       return UserControllerGetProfile({});
     },
     {

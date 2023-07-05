@@ -7,8 +7,8 @@ import { useBindUsernameMutation } from "../service";
 
 import useGlobalStore from "@/pages/globalStore";
 
-export default function UserNameEditor(props: { setShowItem: any }) {
-  const { setShowItem } = props;
+export default function UsernameEditor(props: { handleBack: any }) {
+  const { handleBack } = props;
   const { t } = useTranslation();
   const bindUsername = useBindUsernameMutation();
   const { userInfo, updateUserInfo, showSuccess } = useGlobalStore((state) => state);
@@ -23,7 +23,7 @@ export default function UserNameEditor(props: { setShowItem: any }) {
     const res = await bindUsername.mutateAsync(data);
     if (res) {
       updateUserInfo();
-      setShowItem("");
+      handleBack();
       showSuccess(t("UserInfo.EditUserNameSuccess"));
     }
   };
@@ -31,7 +31,7 @@ export default function UserNameEditor(props: { setShowItem: any }) {
   return (
     <>
       <span
-        onClick={() => setShowItem("")}
+        onClick={() => handleBack()}
         className="absolute left-[290px] flex cursor-pointer items-center"
       >
         <ChevronLeftIcon boxSize={6} /> {t("Back")}

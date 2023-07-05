@@ -1,12 +1,12 @@
 import { ChevronLeftIcon } from "@chakra-ui/icons";
 import { Box, Button, FormControl, Input, VStack } from "@chakra-ui/react";
 
-export default function EmailEditor(props: { setShowItem: any }) {
-  const { setShowItem } = props;
+export default function EmailEditor(props: { handleBack: any }) {
+  const { handleBack } = props;
   return (
     <>
       <span
-        onClick={() => setShowItem("")}
+        onClick={() => handleBack()}
         className="absolute left-[280px] flex cursor-pointer items-center"
       >
         <ChevronLeftIcon boxSize={6} /> 返回

@@ -10,7 +10,7 @@ import AvatarEditor from "./Mods/AvatarEditor";
 import EmailEditor from "./Mods/EmailEditor";
 import PasswordEditor from "./Mods/PasswordEditor";
 import PhoneEditor from "./Mods/PhoneEditor";
-import UserNameEditor from "./Mods/UsernameEditor";
+import UsernameEditor from "./Mods/UsernameEditor";
 
 import "react-image-crop/dist/ReactCrop.css";
 
@@ -41,6 +41,10 @@ export default function UserInfo() {
     setShowItem("avatar");
   };
 
+  const handleBack = () => {
+    setShowItem("");
+  };
+
   return (
     <Box className="flex justify-center pb-4 text-lg">
       {showItem === "" && (
@@ -58,7 +62,7 @@ export default function UserInfo() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/*"
+                accept="jpeg,png,gif/*"
                 style={{ display: "none" }}
                 onChange={handleFileChange}
               />
@@ -132,11 +136,11 @@ export default function UserInfo() {
           </Box>
         </>
       )}
-      {showItem === "username" && <UserNameEditor setShowItem={setShowItem} />}
-      {showItem === "password" && <PasswordEditor setShowItem={setShowItem} />}
-      {showItem === "avatar" && <AvatarEditor img={selectedImage} setShowItem={setShowItem} />}
-      {showItem === "phone" && <PhoneEditor setShowItem={setShowItem} />}
-      {showItem === "email" && <EmailEditor setShowItem={setShowItem} />}
+      {showItem === "username" && <UsernameEditor handleBack={handleBack} />}
+      {showItem === "password" && <PasswordEditor handleBack={handleBack} />}
+      {showItem === "avatar" && <AvatarEditor img={selectedImage} handleBack={handleBack} />}
+      {showItem === "phone" && <PhoneEditor handleBack={handleBack} />}
+      {showItem === "email" && <EmailEditor handleBack={handleBack} />}
     </Box>
   );
 }

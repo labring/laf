@@ -14,7 +14,6 @@ export function SendSmsCodeButton(props: { phone: string }) {
   const { showSuccess, showError } = useGlobalStore();
 
   const handleSendSmsCode = async () => {
-    console.log(phone);
     if (isSendSmsCode) {
       return;
     }

@@ -28,8 +28,8 @@ type FormData = {
   confirmPassword: string;
 };
 
-export default function ResetPassword(props: { isModal?: boolean; setShowItem?: any }) {
-  const { isModal, setShowItem } = props;
+export default function ResetPassword(props: { isModal?: boolean; handleBack?: any }) {
+  const { isModal, handleBack } = props;
   const resetPasswordMutation = useResetPasswordMutation();
   const { showSuccess, showError } = useGlobalStore();
   const navigate = useNavigate();
@@ -73,7 +73,7 @@ export default function ResetPassword(props: { isModal?: boolean; setShowItem?: 
       navigate("/login", { replace: true });
     } else if (res?.data && isModal) {
       showSuccess(t("AuthPanel.ResetPasswordSuccess"));
-      setShowItem("");
+      handleBack();
     }
   };
 
@@ -181,7 +181,7 @@ export default function ResetPassword(props: { isModal?: boolean; setShowItem?: 
         <div className="mb-6">
           <Button
             type="submit"
-            className={clsx("w-full", !isModal && "pb-5 pt-5")}
+            className={clsx("w-full", !isModal ? "pb-5 pt-5" : "")}
             isLoading={resetPasswordMutation.isLoading}
             onClick={handleSubmit(onSubmit)}
           >
