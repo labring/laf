@@ -127,7 +127,7 @@ const Header = (props: { width: string }) => {
               <>
                 <UserSetting
                   name={userInfo?.username!}
-                  avatar={userInfo?.profile?.avatar}
+                  avatar={getAvatarUrl(userInfo?._id || "")}
                   width={"2.25rem"}
                 />
               </>
@@ -208,7 +208,7 @@ const Header = (props: { width: string }) => {
                 <UserSetting
                   name={userInfo?.username!}
                   avatar={getAvatarUrl(userInfo?._id || "")}
-                  width={"2.25rem"}
+                  width={"1.95rem"}
                 />
               </>
             ) : null}
