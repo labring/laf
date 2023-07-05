@@ -21,7 +21,7 @@ export default function UsernameEditor(props: { handleBack: any }) {
 
   const onSubmit = async (data: any) => {
     const res = await bindUsername.mutateAsync(data);
-    if (res) {
+    if (!res.error) {
       updateUserInfo();
       handleBack();
       showSuccess(t("UserInfo.EditUserNameSuccess"));
