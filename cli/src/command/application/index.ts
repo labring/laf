@@ -8,6 +8,7 @@ export function command(): Command {
     .command('init <appid>')
     .description('initialize application')
     .option('-s, --sync', 'sync application data', false)
+    .option('-b --basic-mode', 'only create .app.yaml, do not init whole project', false)
     .action((appid, options) => {
       init(appid, options)
     })
