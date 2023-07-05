@@ -52,14 +52,14 @@ export default function PhoneEditor(props: { handleBack: any }) {
     if (!res.error) {
       updateUserInfo();
       showSuccess(t("UserInfo.EditPhoneSuccess"));
-      handleBack("");
+      handleBack();
     }
   };
 
   return (
     <>
       <span
-        onClick={() => handleBack("")}
+        onClick={() => handleBack()}
         className="absolute left-[280px] flex cursor-pointer items-center"
       >
         <ChevronLeftIcon boxSize={6} /> {t("Back")}

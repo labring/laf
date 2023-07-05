@@ -62,7 +62,7 @@ export default function UserInfo() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="jpeg,png,gif/*"
+                accept="image/png,image/jpeg,image/gif"
                 style={{ display: "none" }}
                 onChange={handleFileChange}
               />
