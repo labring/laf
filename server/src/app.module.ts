@@ -23,6 +23,7 @@ import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n'
 import { BillingModule } from './billing/billing.module'
 import { AuthenticationModule } from './authentication/authentication.module'
 import { FunctionTemplateModule } from './function-template/function-template.module'
+import { MulterModule } from '@nestjs/platform-express'
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { FunctionTemplateModule } from './function-template/function-template.mo
     }),
     BillingModule,
     FunctionTemplateModule,
+    MulterModule.register(),
   ],
   controllers: [AppController],
   providers: [AppService],

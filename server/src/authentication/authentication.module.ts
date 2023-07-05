@@ -33,7 +33,7 @@ import { SmsService } from './phone/sms.service'
     SmsService,
     AuthenticationService,
   ],
-  exports: [],
+  exports: [SmsService],
   controllers: [
     UserPasswordController,
     PhoneController,
