@@ -10,8 +10,8 @@ export class InviteCode {
   uid: ObjectId
   code: string
   state: InviteCodeState
-  name: string
-  description: string
+  name?: string
+  description?: string
   createdAt: Date
   updatedAt: Date
 }
@@ -22,4 +22,5 @@ export class InviteRelation {
   invitedBy: ObjectId
   codeId: ObjectId
   createdAt: Date
+  transactionId?: ObjectId
 }

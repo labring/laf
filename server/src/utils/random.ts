@@ -17,6 +17,14 @@ export function GenerateGiftCode(length?: number) {
   return nano()
 }
 
+export function GenerateInviteCode(length?: number) {
+  const nano = nanoid.customAlphabet(
+    '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    length || 7,
+  )
+  return nano()
+}
+
 export function GenerateRandomString(length: number) {
   return GenerateAlphaNumericPassword(length)
 }

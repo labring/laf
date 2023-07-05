@@ -5,6 +5,7 @@ import {
   Logger,
   Param,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -14,6 +15,7 @@ import { IRequest, IResponse } from 'src/utils/interface'
 import {
   ApiResponseArray,
   ApiResponseObject,
+  ApiResponsePagination,
   ResponseUtil,
 } from 'src/utils/response'
 import { AccountService } from './account.service'
@@ -41,6 +43,7 @@ import { Account } from './entities/account'
 import { AccountTransaction } from './entities/account-transaction'
 import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
 import { AccountChargeReward } from './entities/account-charge-reward'
+import { InviteCode } from 'src/authentication/entities/invite-code'
 
 @ApiTags('Account')
 @Controller('accounts')
@@ -255,6 +258,45 @@ export class AccountController {
       return ResponseUtil.error("gift code doesn't exist")
     }
     const res = await this.accountService.useGiftCode(req.user._id, dto.code)
+    return ResponseUtil.ok(res)
+  }
+
+  /**
+   * generate a invite code
+   */
+  @ApiOperation({ summary: 'Generate invite code' })
+  @ApiResponseObject(InviteCode)
+  @UseGuards(JwtAuthGuard)
+  @Get('invite-code')
+  async inviteCode(@Req() req: IRequest) {
+    const found = await this.accountService.findOneInviteCode(req.user._id)
+    if (found) {
+      return ResponseUtil.ok(found)
+    }
+    const res = await this.accountService.generateInviteCode(req.user._id)
+    return ResponseUtil.ok(res)
+  }
+
+  /**
+   * get invite code profit
+   */
+  @ApiOperation({ summary: 'get invite code profit' })
+  @ApiResponseObject(InviteCode)
+  @ApiResponsePagination(InviteCode)
+  @UseGuards(JwtAuthGuard)
+  @Get('invite-profit')
+  async inviteCodeProfit(
+    @Req() req: IRequest,
+    @Query('page') page: number,
+    @Query('pageSize') pageSize: number,
+  ) {
+    page = page || 1
+    pageSize = pageSize || 8
+    const res = await this.accountService.getInviteProfit(
+      req.user._id,
+      page,
+      pageSize,
+    )
     return ResponseUtil.ok(res)
   }
 }
