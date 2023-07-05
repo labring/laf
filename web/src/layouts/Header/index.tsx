@@ -59,7 +59,7 @@ const Header = (props: { width: string }) => {
   }
 
   return (
-    <div>
+    <>
       {!isMobileDevice() ? (
         <div
           className={clsx(
@@ -218,7 +218,7 @@ const Header = (props: { width: string }) => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
