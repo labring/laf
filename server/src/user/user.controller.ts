@@ -130,7 +130,7 @@ export class UserController {
     }
 
     // check phone if have already been bound
-    const user = await this.userService.findOneByPhone(oldPhoneNumber)
+    const user = await this.userService.findOneByPhone(newPhoneNumber)
     if (user) {
       return ResponseUtil.error('phone has already been bound')
     }
