@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common'
 import { SystemDatabase } from 'src/system-database'
 import { User, UserWithProfile } from './entities/user'
 import { ObjectId } from 'mongodb'
+import * as sharp from 'sharp'
+import { UserAvatar } from './entities/user-avatar'
+import { UserProfile } from './entities/user-profile'
 
 @Injectable()
 export class UserService {
@@ -63,5 +66,63 @@ export class UserService {
       .updateOne({ _id: id }, { $set: data })
 
     return await this.findOneById(id)
+  }
+
+  async updateAvatar(image: Express.Multer.File, userid: ObjectId) {
+    const buffer = await sharp(image.buffer).resize(100, 100).webp().toBuffer()
+
+    const client = SystemDatabase.client
+    const session = client.startSession()
+    session.startTransaction()
+
+    try {
+      await this.db
+        .collection<UserAvatar>('UserAvatar')
+        .deleteOne({ createdBy: userid }, { session })
+
+      await this.db.collection<UserAvatar>('UserAvatar').insertOne(
+        {
+          data: buffer,
+          createdBy: new ObjectId(userid),
+          createdAt: new Date(),
+        },
+        { session },
+      )
+
+      await this.db.collection<UserProfile>('UserProfile').updateOne(
+        { uid: userid },
+        {
+          $set: {
+            avatar: '',
+          },
+        },
+        { session },
+      )
+      await session.commitTransaction()
+    } catch (error) {
+      await session.abortTransaction()
+      throw error
+    } finally {
+      await session.endSession()
+    }
+
+    return await this.findOneById(userid)
+  }
+
+  async getAvatarData(uid: ObjectId) {
+    const user = await this.findOneById(uid)
+    if (!user) {
+      return null
+    }
+
+    const avatar = await this.db
+      .collection<UserAvatar>('UserAvatar')
+      .findOne({ createdBy: user._id })
+
+    if (!avatar?.data) {
+      return null
+    }
+
+    return avatar.data.buffer
   }
 }
