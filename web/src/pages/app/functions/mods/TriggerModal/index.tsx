@@ -48,6 +48,7 @@ export default function TriggerModal(props: { children: React.ReactElement }) {
       {React.cloneElement(props.children, {
         onClick: () => {
           onOpen();
+          triggerListQuery.refetch();
         },
       })}
 

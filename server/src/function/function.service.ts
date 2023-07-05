@@ -4,6 +4,7 @@ import {
   APPLICATION_SECRET_KEY,
   CN_FUNCTION_LOGS,
   CN_PUBLISHED_FUNCTIONS,
+  TASK_LOCK_INIT_TIME,
 } from '../constants'
 import { CreateFunctionDto } from './dto/create-function.dto'
 import { UpdateFunctionDto } from './dto/update-function.dto'
@@ -18,6 +19,8 @@ import { CloudFunction } from './entities/cloud-function'
 import { ApplicationConfiguration } from 'src/application/entities/application-configuration'
 import { FunctionLog } from 'src/log/entities/function-log'
 import { CloudFunctionHistory } from './entities/cloud-function-history'
+import { TriggerService } from 'src/trigger/trigger.service'
+import { TriggerPhase } from 'src/trigger/entities/cron-trigger'
 import { UpdateFunctionDebugDto } from './dto/update-function-debug.dto'
 
 @Injectable()
@@ -28,6 +31,7 @@ export class FunctionService {
   constructor(
     private readonly databaseService: DatabaseService,
     private readonly jwtService: JwtService,
+    private readonly triggerService: TriggerService,
   ) {}
   async create(appid: string, userid: ObjectId, dto: CreateFunctionDto) {
     await this.db.collection<CloudFunction>('CloudFunction').insertOne({
@@ -79,6 +83,73 @@ export class FunctionService {
   }
 
   async updateOne(func: CloudFunction, dto: UpdateFunctionDto) {
+    // update function name
+    if (dto.newName) {
+      const client = SystemDatabase.client
+      const session = client.startSession()
+
+      const found = await this.findOne(func.appid, dto.newName)
+      if (found) {
+        return new Error(`Function name ${found.name} already exists`)
+      }
+
+      try {
+        session.startTransaction()
+
+        const fn = await this.db
+          .collection<CloudFunction>('CloudFunction')
+          .findOneAndUpdate(
+            { appid: func.appid, name: func.name },
+            {
+              $set: {
+                name: dto.newName,
+                desc: dto.description,
+                methods: dto.methods,
+                tags: dto.tags || [],
+                updatedAt: new Date(),
+              },
+            },
+            { session, returnDocument: 'after' },
+          )
+
+        // publish
+        await this.publish(fn.value, func.name)
+
+        // trigger
+        const triggers = await this.triggerService.findAllByTarget(
+          func.appid,
+          func.name,
+        )
+        if (triggers.length !== 0) {
+          const triggersToInsert = triggers.map((doc) => ({
+            appid: doc.appid,
+            desc: doc.desc,
+            cron: doc.cron,
+            target: dto.newName, // set to new function name
+            state: doc.state,
+            phase: TriggerPhase.Creating,
+            lockedAt: TASK_LOCK_INIT_TIME,
+            createdAt: new Date(doc.createdAt),
+            updatedAt: new Date(),
+          }))
+          await this.triggerService.removeAllByTarget(
+            func.appid,
+            func.name,
+            session,
+          )
+          await this.triggerService.createMany(triggersToInsert, session)
+        }
+        await session.commitTransaction()
+        return fn.value
+      } catch (error) {
+        await session.abortTransaction()
+        this.logger.error(error)
+        throw error
+      } finally {
+        await session.endSession()
+      }
+    }
+
     await this.db.collection<CloudFunction>('CloudFunction').updateOne(
       { appid: func.appid, name: func.name },
       {
@@ -138,14 +209,34 @@ export class FunctionService {
     return res
   }
 
-  async publish(func: CloudFunction) {
+  async publish(func: CloudFunction, oldFuncName?: string) {
     const { db, client } = await this.databaseService.findAndConnect(func.appid)
     const session = client.startSession()
     try {
       await session.withTransaction(async () => {
         const coll = db.collection(CN_PUBLISHED_FUNCTIONS)
-        await coll.deleteOne({ name: func.name }, { session })
+        await coll.deleteOne(
+          { name: oldFuncName ? oldFuncName : func.name },
+          { session },
+        )
         await coll.insertOne(func, { session })
+      })
+    } finally {
+      await session.endSession()
+      await client.close()
+    }
+  }
+
+  async publishFunctionTemplateItems(funcs: CloudFunction[]) {
+    const { db, client } = await this.databaseService.findAndConnect(
+      funcs[0].appid,
+    )
+    const session = client.startSession()
+    try {
+      await session.withTransaction(async () => {
+        const coll = db.collection(CN_PUBLISHED_FUNCTIONS)
+        // this is used by function template service, don't need to delete many
+        await coll.insertMany(funcs, { session })
       })
     } finally {
       await session.endSession()

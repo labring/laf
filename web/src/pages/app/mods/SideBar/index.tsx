@@ -8,6 +8,7 @@ import clsx from "clsx";
 import { t } from "i18next";
 
 import { Pages, Routes, SideBarWidth } from "@/constants/index";
+import { getAvatarUrl } from "@/utils/getAvatarUrl";
 
 import SysSetting from "../../setting/SysSetting";
 
@@ -68,7 +69,7 @@ export default function SideBar() {
       component: (
         <UserSetting
           name={userInfo?.profile?.name || ""}
-          avatar={userInfo?.profile?.avatar}
+          avatar={getAvatarUrl(userInfo?._id || "")}
           width={"28px"}
         />
       ),

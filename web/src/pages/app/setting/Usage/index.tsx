@@ -11,10 +11,10 @@ import getPageInfo from "@/utils/getPageInfo";
 import { BillingControllerFindAll } from "@/apis/v1/billings";
 import { useAccountQuery } from "@/pages/home/service";
 
-const LIMIT_OPTIONS = [20, 100, 200];
+const LIMIT_OPTIONS = [7, 20, 100, 200];
 const DEFAULT_PAGE_INFO = {
   page: 1,
-  pageSize: 20,
+  pageSize: 7,
 };
 
 export default function Usage() {
@@ -30,7 +30,7 @@ export default function Usage() {
 
   const { t } = useTranslation();
   return (
-    <div className="min-h-[500px]">
+    <div>
       <h1 className="mb-4 text-2xl font-bold">Usage</h1>
       <HStack className="mt-4">
         <span className=" text-grayModern-500">{t("Balance")}:</span>

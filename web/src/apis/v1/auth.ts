@@ -139,44 +139,6 @@ export async function AuthenticationControllerGetProviders(
 }
 
 /**
- * Bind username
- */
-export async function AuthenticationControllerBindPhone(params: Definitions.BindPhoneDto): Promise<{
-  error: string;
-  data: Paths.AuthenticationControllerBindPhone.Responses;
-}> {
-  // /v1/auth/bind/phone
-  let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
-    ...params,
-  };
-  return request(`/v1/auth/bind/phone`, {
-    method: "POST",
-    data: params,
-  });
-}
-
-/**
- * Bind username
- */
-export async function AuthenticationControllerBindUsername(
-  params: Definitions.BindUsernameDto,
-): Promise<{
-  error: string;
-  data: Paths.AuthenticationControllerBindUsername.Responses;
-}> {
-  // /v1/auth/bind/username
-  let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
-    ...params,
-  };
-  return request(`/v1/auth/bind/username`, {
-    method: "POST",
-    data: params,
-  });
-}
-
-/**
  * Get user token by PAT
  */
 export async function AuthenticationControllerPat2token(params: Definitions.Pat2TokenDto): Promise<{
@@ -191,25 +153,5 @@ export async function AuthenticationControllerPat2token(params: Definitions.Pat2
   return request(`/v1/auth/pat2token`, {
     method: "POST",
     data: params,
-  });
-}
-
-/**
- * Get current user profile
- */
-export async function AuthenticationControllerGetProfile(
-  params: Paths.AuthenticationControllerGetProfile.BodyParameters,
-): Promise<{
-  error: string;
-  data: Definitions.UserWithProfile;
-}> {
-  // /v1/auth/profile
-  let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
-    ...params,
-  };
-  return request(`/v1/auth/profile`, {
-    method: "GET",
-    params: params,
   });
 }

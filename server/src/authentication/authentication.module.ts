@@ -37,7 +37,7 @@ import { AccountService } from 'src/account/account.service'
     AuthenticationService,
     AccountService,
   ],
-  exports: [],
+  exports: [SmsService],
   controllers: [
     UserPasswordController,
     PhoneController,
