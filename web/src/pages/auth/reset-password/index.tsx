@@ -83,7 +83,7 @@ export default function ResetPassword(props: { isModal?: boolean; handleBack?: a
         !isModal
           ? "absolute left-1/2 top-1/2 w-[560px] -translate-y-1/2 rounded-[10px] p-[65px]"
           : "pt-10",
-        { "bg-white": !darkMode, "bg-lafDark-100": darkMode },
+        { "bg-white": !darkMode, "bg-lafDark-100": darkMode && !isModal },
       )}
     >
       {!isModal ? (

@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { ChevronRightIcon, EditIcon } from "@chakra-ui/icons";
-import { Avatar, Box, Divider } from "@chakra-ui/react";
+import { Avatar, Box, Divider, useColorMode } from "@chakra-ui/react";
+import clsx from "clsx";
 import { t } from "i18next";
 
 import { hidePhoneNumber } from "@/utils/format";
@@ -22,6 +23,8 @@ export default function UserInfo() {
   const { userInfo } = useGlobalStore((state) => state);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
 
   const handleClick = () => {
     if (fileInputRef.current) {
@@ -46,7 +49,7 @@ export default function UserInfo() {
   };
 
   return (
-    <Box className="flex justify-center pb-4 text-lg">
+    <Box className={clsx("flex justify-center pb-4 text-lg", showItem === "" && "pt-12")}>
       {showItem === "" && (
         <>
           <Box className="flex flex-col pr-10">
@@ -75,11 +78,13 @@ export default function UserInfo() {
               </span>
             </div>
           </Box>
-          <Box className="w-[270px]">
+          <Box className="w-[270px] pt-1">
             <div className="flex flex-col pb-4">
-              <span className="pb-3 text-xl text-grayModern-900">{t("SettingPanel.UserName")}</span>
+              <span className={clsx("pb-3 text-xl", !darkMode && "text-grayModern-900")}>
+                {t("SettingPanel.UserName")}
+              </span>
               <span className="flex justify-between text-base">
-                <span className="text-grayModern-700">{userInfo?.username}</span>
+                <span className={!darkMode ? "text-grayModern-700" : ""}>{userInfo?.username}</span>
                 <span
                   className="flex cursor-pointer items-center text-[#0884DD]"
                   onClick={() => {
@@ -91,9 +96,11 @@ export default function UserInfo() {
               </span>
             </div>
             <div className="flex flex-col pb-4">
-              <span className="pb-3 text-xl text-grayModern-900">{t("SettingPanel.PassWord")}</span>
+              <span className={clsx("pb-3 text-xl", !darkMode && "text-grayModern-900")}>
+                {t("SettingPanel.PassWord")}
+              </span>
               <span className="flex justify-between text-base">
-                <span className="text-grayModern-700">******</span>
+                <span className={!darkMode ? "text-grayModern-700" : ""}>∗∗∗∗∗∗</span>
                 <span
                   className="flex cursor-pointer items-center text-[#0884DD]"
                   onClick={() => {
@@ -106,9 +113,11 @@ export default function UserInfo() {
             </div>
             <Divider className="text-grayModern-200" />
             <div className="mt-4 flex flex-col pb-4">
-              <span className="pb-3 text-xl text-grayModern-900">{t("SettingPanel.Tel")}</span>
+              <span className={clsx("pb-3 text-xl", !darkMode && "text-grayModern-900")}>
+                {t("SettingPanel.Tel")}
+              </span>
               <span className="flex justify-between text-base">
-                <span className="text-grayModern-700">
+                <span className={!darkMode ? "text-grayModern-700" : ""}>
                   {userInfo?.phone ? hidePhoneNumber(userInfo.phone) : t("NoInfo")}
                 </span>
                 <span
