@@ -142,7 +142,7 @@ export class UserPasswordService {
       )
 
       await session.commitTransaction()
-      return this.userService.findOneById(user.insertedId)
+      return await this.userService.findOneById(user.insertedId)
     } catch (error) {
       await session.abortTransaction()
       throw error
