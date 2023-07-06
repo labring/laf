@@ -7,9 +7,11 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalOverlay,
+  useColorMode,
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
+import clsx from "clsx";
 import { t } from "i18next";
 
 import SectionList from "@/components/SectionList";
@@ -42,6 +44,7 @@ const SettingModal = (props: {
   const [item, setItem] = useState<TTabItem>(tabMatch[currentIndex]);
   const { setCurrentApp } = useGlobalStore((state) => state);
   const borderColor = useColorModeValue("lafWhite.600", "lafDark.600");
+  const darkMode = useColorMode().colorMode === "dark";
   return (
     <>
       {React.cloneElement(children, {
@@ -55,11 +58,16 @@ const SettingModal = (props: {
 
       <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
         <ModalOverlay />
-        <ModalContent maxW={"80%"} width={"auto"} minW={960} height={481}>
-          <ModalBody py={2} flex="none" height={"full"} className="relative">
+        <ModalContent maxW={"80%"} width={"auto"} minW={960}>
+          <ModalBody py={2} flex="none" minH={481} className="relative">
             <ModalCloseButton />
             <Box className="flex h-full" borderColor={borderColor}>
-              <SectionList className="absolute bottom-0 left-0 top-0 min-w-[268px] rounded-l-lg bg-[#E4E9EE]">
+              <SectionList
+                className={clsx(
+                  "absolute bottom-0 left-0 top-0 min-w-[268px] rounded-l-lg",
+                  !darkMode && "border border-r-[#E4E9EE] bg-[#F4F6F8]",
+                )}
+              >
                 <span className="relative left-6 top-5 text-2xl font-semibold">
                   {headerTitle || t("SettingPanel.Setting")}
                 </span>
@@ -67,7 +75,7 @@ const SettingModal = (props: {
                   {tabMatch.map((tab) => {
                     return (
                       <SectionList.Item
-                        className="mt-2 w-[220px] rounded-md"
+                        className="mt-2 !h-[42px] w-[220px] rounded-md"
                         isActive={item?.key === tab.key}
                         key={tab.key}
                         onClick={() => {

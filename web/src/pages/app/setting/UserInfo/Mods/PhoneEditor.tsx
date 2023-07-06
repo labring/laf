@@ -9,6 +9,7 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  useColorMode,
   VStack,
 } from "@chakra-ui/react";
 
@@ -31,6 +32,8 @@ export default function PhoneEditor(props: { handleBack: any }) {
   const [oldPhone, setOldPhone] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const bindPhone = useBindPhoneMutation();
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
 
   const { showSuccess, updateUserInfo } = useGlobalStore();
 
@@ -76,7 +79,7 @@ export default function PhoneEditor(props: { handleBack: any }) {
               <Input
                 {...register("oldPhoneNumber", { required: true })}
                 width={64}
-                bg={"#F8FAFB"}
+                bg={!darkMode ? "#F8FAFB" : "none"}
                 border={"1px"}
                 borderColor={"#D5D6E1"}
                 onChange={(e) => {
@@ -93,7 +96,7 @@ export default function PhoneEditor(props: { handleBack: any }) {
             <Input
               {...register("oldSmsCode", { required: true })}
               width={64}
-              bg={"#F8FAFB"}
+              bg={!darkMode ? "#F8FAFB" : "none"}
               border={"1px"}
               borderColor={"#D5D6E1"}
             />
@@ -104,7 +107,7 @@ export default function PhoneEditor(props: { handleBack: any }) {
               <Input
                 {...register("newPhoneNumber", { required: true })}
                 width={64}
-                bg={"#F8FAFB"}
+                bg={!darkMode ? "#F8FAFB" : "none"}
                 border={"1px"}
                 borderColor={"#D5D6E1"}
                 onChange={(e) => {
@@ -121,7 +124,7 @@ export default function PhoneEditor(props: { handleBack: any }) {
             <Input
               {...register("newSmsCode", { required: true })}
               width={64}
-              bg={"#F8FAFB"}
+              bg={!darkMode ? "#F8FAFB" : "none"}
               border={"1px"}
               borderColor={"#D5D6E1"}
             />

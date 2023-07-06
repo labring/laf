@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { ChevronLeftIcon } from "@chakra-ui/icons";
-import { Box, Button, FormControl, Input, VStack } from "@chakra-ui/react";
+import { Box, Button, FormControl, Input, useColorMode, VStack } from "@chakra-ui/react";
 
 import { useBindUsernameMutation } from "../service";
 
@@ -12,6 +12,8 @@ export default function UsernameEditor(props: { handleBack: any }) {
   const { t } = useTranslation();
   const bindUsername = useBindUsernameMutation();
   const { userInfo, updateUserInfo, showSuccess } = useGlobalStore((state) => state);
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
 
   const {
     register,
@@ -47,7 +49,7 @@ export default function UsernameEditor(props: { handleBack: any }) {
               })}
               defaultValue={userInfo?.username}
               width={64}
-              bg={"#F8FAFB"}
+              bg={!darkMode ? "#F8FAFB" : "none"}
               border={"1px"}
               borderColor={"#D5D6E1"}
             />

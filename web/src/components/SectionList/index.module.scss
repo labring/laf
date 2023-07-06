@@ -5,7 +5,7 @@
   li {
     cursor: pointer;
     display: flex;
-    height: 42px;
+    height: 24px;
     align-items: center;
     justify-content: space-between;
     padding: 0px 12px;
@@ -26,7 +26,7 @@
 
     &:hover,
     &.active {
-      background-color: rgba(0, 179, 176, 0.10);
+      background-color: #00B3B01A;
       color: var(--chakra-colors-primary-600);
 
       svg {
