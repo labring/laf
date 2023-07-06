@@ -22,6 +22,7 @@ export default defineConfig(({ command, mode }) => {
       react(),
       pluginRewriteAll(),
       VitePWA({
+        registerType: "autoUpdate",
         includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.png"],
         manifest: {
           name: "laf 云开发",
