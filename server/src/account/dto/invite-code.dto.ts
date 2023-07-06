@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger'
 import { User } from 'src/user/entities/user'
 import { ObjectId } from 'mongodb'
 
-export class GetMyStaredFunctionTemplateSwagger {
+export class InviteCodeProfit {
   @ApiProperty({ type: String })
   _id: ObjectId
 

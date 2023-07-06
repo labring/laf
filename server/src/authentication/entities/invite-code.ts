@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger'
 import { ObjectId } from 'mongodb'
 
 export enum InviteCodeState {
@@ -6,13 +7,28 @@ export enum InviteCodeState {
 }
 
 export class InviteCode {
+  @ApiProperty({ type: String })
   _id?: ObjectId
+
+  @ApiProperty({ type: String })
   uid: ObjectId
+
+  @ApiProperty({ type: String })
   code: string
+
+  @ApiProperty({ enum: InviteCodeState })
   state: InviteCodeState
+
+  @ApiProperty({ type: String })
   name?: string
+
+  @ApiProperty({ type: String })
   description?: string
+
+  @ApiProperty()
   createdAt: Date
+
+  @ApiProperty()
   updatedAt: Date
 }
 

@@ -384,7 +384,7 @@ export class AccountService {
 
     inviteCodeProfits.forEach((item) => {
       item.profit = inviteProfit ? inviteProfit.amount : 0
-      item.user[0].username = item.users[0].username.slice(0, 3)
+      item.user[0].username = item.user[0].username.slice(0, 2)
       item.user[0].email = null
       item.user[0].phone = null
     })

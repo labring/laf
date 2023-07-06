@@ -44,6 +44,7 @@ import { AccountTransaction } from './entities/account-transaction'
 import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
 import { AccountChargeReward } from './entities/account-charge-reward'
 import { InviteCode } from 'src/authentication/entities/invite-code'
+import { InviteCodeProfit } from './dto/invite-code.dto'
 
 @ApiTags('Account')
 @Controller('accounts')
@@ -262,9 +263,9 @@ export class AccountController {
   }
 
   /**
-   * generate a invite code
+   * get a invite code
    */
-  @ApiOperation({ summary: 'Generate invite code' })
+  @ApiOperation({ summary: 'get a invite code' })
   @ApiResponseObject(InviteCode)
   @UseGuards(JwtAuthGuard)
   @Get('invite-code')
@@ -281,8 +282,7 @@ export class AccountController {
    * get invite code profit
    */
   @ApiOperation({ summary: 'get invite code profit' })
-  @ApiResponseObject(InviteCode)
-  @ApiResponsePagination(InviteCode)
+  @ApiResponsePagination(InviteCodeProfit)
   @UseGuards(JwtAuthGuard)
   @Get('invite-profit')
   async inviteCodeProfit(
@@ -291,7 +291,7 @@ export class AccountController {
     @Query('pageSize') pageSize: number,
   ) {
     page = page || 1
-    pageSize = pageSize || 8
+    pageSize = pageSize || 12
     const res = await this.accountService.getInviteProfit(
       req.user._id,
       page,
