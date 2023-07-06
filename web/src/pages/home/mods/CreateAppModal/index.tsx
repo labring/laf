@@ -111,13 +111,16 @@ const CreateAppModal = (props: {
     regions.find((item: any) => item._id === application?.regionId) || regions[0];
 
   const bundles = currentRegion.bundles;
+  const sortedBundles = [...bundles].sort(
+    (a: TBundle, b: TBundle) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  );
 
   let defaultValues = {
     name: application?.name,
     state: application?.state,
     regionId: application?.regionId,
     runtimeId: runtimes[0]._id,
-    bundleId: bundles[0]._id,
+    bundleId: sortedBundles[0]._id,
   };
 
   if (type === "create") {
@@ -126,7 +129,7 @@ const CreateAppModal = (props: {
       state: APP_STATUS.Running,
       regionId: regions[0]._id,
       runtimeId: runtimes[0]._id,
-      bundleId: bundles[0]._id,
+      bundleId: sortedBundles[0]._id,
     };
   }
 
@@ -143,12 +146,12 @@ const CreateAppModal = (props: {
   });
 
   const defaultBundle: TypeBundle = {
-    cpu: application?.bundle.resource.limitCPU || bundles[0].spec.cpu.value,
-    memory: application?.bundle.resource.limitMemory || bundles[0].spec.memory.value,
+    cpu: application?.bundle.resource.limitCPU || sortedBundles[0].spec.cpu.value,
+    memory: application?.bundle.resource.limitMemory || sortedBundles[0].spec.memory.value,
     databaseCapacity:
-      application?.bundle.resource.databaseCapacity || bundles[0].spec.databaseCapacity.value,
+      application?.bundle.resource.databaseCapacity || sortedBundles[0].spec.databaseCapacity.value,
     storageCapacity:
-      application?.bundle.resource.storageCapacity || bundles[0].spec.storageCapacity.value,
+      application?.bundle.resource.storageCapacity || sortedBundles[0].spec.storageCapacity.value,
   };
 
   const defaultAutoscaling: TypeAutoscaling = {
@@ -273,7 +276,7 @@ const CreateAppModal = (props: {
     }
   };
 
-  const activeBundle = find(bundles, {
+  const activeBundle = find(sortedBundles, {
     spec: {
       cpu: {
         value: bundle.cpu,
@@ -393,7 +396,7 @@ const CreateAppModal = (props: {
                                 <span className="">
                                   {t("application.RecommendedSpecifications")}
                                 </span>
-                                {(bundles || []).map((item: TBundle) => {
+                                {(sortedBundles || []).map((item: TBundle) => {
                                   return (
                                     <BundleItem
                                       onChange={() => {
