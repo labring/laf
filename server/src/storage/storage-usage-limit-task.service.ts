@@ -68,9 +68,7 @@ export class StorageUsageLimitTaskService {
   }
 
   async handleLimitStorageUsage() {
-    const db = SystemDatabase.db
-
-    const res = await db
+    const res = await this.db
       .collection<StorageUser>('StorageUser')
       .findOneAndUpdate(
         {
