@@ -6,14 +6,14 @@ import { TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/system-database'
 import { Account, BaseState } from './entities/account'
 import { ObjectId, ClientSession } from 'mongodb'
-import { GenerateGiftCode, GenerateInviteCode } from 'src/utils/random'
+import { GenerateInviteCode } from 'src/utils/random'
 import {
   AccountChargeOrder,
   AccountChargePhase,
   Currency,
   PaymentChannelType,
 } from './entities/account-charge-order'
-import { GiftCode, CodePrefix } from './entities/account-gift-code'
+import { GiftCode } from './entities/account-gift-code'
 import { AccountTransaction } from './entities/account-transaction'
 import { AccountChargeReward } from './entities/account-charge-reward'
 import {
@@ -269,45 +269,6 @@ export class AccountService {
     return giftCode
   }
 
-  // delete an unused gift code
-  async deleteOneGiftCode(code: string, used = false): Promise<any> {
-    const giftCode = await this.db.collection<GiftCode>('GiftCode').deleteOne({
-      code: code,
-      used: used,
-    })
-    return giftCode
-  }
-
-  async generateGiftCode(
-    creditAmount: number,
-    prefix: keyof typeof CodePrefix,
-  ): Promise<GiftCode | null> {
-    if (CodePrefix[prefix] === undefined) {
-      throw new Error(`Invalid prefix: ${prefix}`)
-    }
-
-    while (true) {
-      const nanoid = GenerateGiftCode()
-      const code = `${CodePrefix[prefix]}-${nanoid}`
-      const found = await this.db
-        .collection<GiftCode>('GiftCode')
-        .findOne({ code })
-
-      if (!found) {
-        const res = await this.db.collection<GiftCode>('GiftCode').insertOne({
-          code: code,
-          creditAmount: creditAmount,
-          used: false,
-          createdAt: new Date(),
-        })
-        const giftCode = await this.db
-          .collection<GiftCode>('GiftCode')
-          .findOne({ _id: res.insertedId })
-
-        return giftCode
-      }
-    }
-  }
   // invite code
   async generateInviteCode(uid: ObjectId): Promise<InviteCode | null> {
     while (true) {
@@ -351,7 +312,7 @@ export class AccountService {
     const inviteProfit = await this.db
       .collection<InvitationProfitAmount>('Setting')
       .findOne({
-        settingName: 'invitation Profit Amount',
+        settingName: 'Invitation Profit Amount',
       })
 
     const pipe = [

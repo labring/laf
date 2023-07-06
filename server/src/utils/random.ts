@@ -9,14 +9,6 @@ export function GenerateAlphaNumericPassword(length: number) {
   return nano()
 }
 
-export function GenerateGiftCode(length?: number) {
-  const nano = nanoid.customAlphabet(
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
-    length || 12,
-  )
-  return nano()
-}
-
 export function GenerateInviteCode(length?: number) {
   const nano = nanoid.customAlphabet(
     '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
