@@ -197,7 +197,8 @@
     "RechargeHistory": "充值记录",
     "PricingStandards": "计价标准",
     "EnterGiftCode": "输入卡密",
-    "ExchangeSuccess": "兑换成功"
+    "ExchangeSuccess": "兑换成功",
+    "Domain": "域名设置"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -252,7 +253,8 @@
     "InstantUpload": "立即上传",
     "RemoveHost": "取消静态托管",
     "DomainUpdateSuccess": "域名修改成功",
-    "DomainDeleteSuccess": "域名删除成功"
+    "DomainDeleteSuccess": "域名删除成功",
+    "CustomApplicationDomain": "自定义应用域名"
   },
   "TriggerPanel": {
     "AddTrigger": "新建触发器",

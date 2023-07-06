@@ -64,7 +64,7 @@ const SettingModal = (props: {
           <ModalBody py={2} flex="none" minH={481} className="relative">
             <ModalCloseButton />
             <Box className="flex h-full" borderColor={borderColor}>
-              <SectionList className="absolute bottom-0 left-0 top-0 min-w-[268px] rounded-l-lg bg-[#E4E9EE]">
+              <SectionList className="absolute bottom-0 left-0 top-0 min-w-[268px] rounded-l-lg border border-r-[#E4E9EE] bg-[#F4F6F8]">
                 <span className="relative left-6 top-5 text-2xl font-semibold">
                   {headerTitle || t("SettingPanel.Setting")}
                 </span>

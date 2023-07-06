@@ -197,7 +197,8 @@
     "RechargeHistory": "Recharge History",
     "PricingStandards": "Pricing Standards",
     "EnterGiftCode": "Enter Gift Code",
-    "ExchangeSuccess": "Exchange Success"
+    "ExchangeSuccess": "Exchange Success",
+    "Domain": "Custom Domain"
   },
   "StoragePanel": {
     "All": "Total Capacity",
@@ -252,7 +253,8 @@
     "InstantUpload": "Instant Upload",
     "parsing": "parsing",
     "DomainUpdateSuccess": "Domain Update Success",
-    "DomainDeleteSuccess": "Domain Delete Success"
+    "DomainDeleteSuccess": "Domain Delete Success",
+    "CustomApplicationDomain": "Custom Application Domain"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",
