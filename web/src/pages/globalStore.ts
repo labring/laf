@@ -8,9 +8,10 @@ import { formatPort } from "@/utils/format";
 
 import { TApplicationDetail, TRegion, TRuntime } from "@/apis/typing";
 import { ApplicationControllerUpdateState } from "@/apis/v1/applications";
+// import { UserControllerGetProfile } from "@/apis/v1/user";
+import { AuthControllerGetProfile } from "@/apis/v1/profile";
 import { RegionControllerGetRegions } from "@/apis/v1/regions";
 import { AppControllerGetRuntimes } from "@/apis/v1/runtimes";
-import { UserControllerGetProfile } from "@/apis/v1/user";
 
 const { toast } = createStandaloneToast();
 
@@ -62,7 +63,7 @@ const useGlobalStore = create<State>()(
           return;
         }
 
-        const userInfoRes = await UserControllerGetProfile({});
+        const userInfoRes = await AuthControllerGetProfile({});
 
         const runtimesRes = await AppControllerGetRuntimes({});
         const regionsRes = await RegionControllerGetRegions({});
@@ -76,7 +77,7 @@ const useGlobalStore = create<State>()(
       },
 
       updateUserInfo: async () => {
-        const userInfoRes = await UserControllerGetProfile({});
+        const userInfoRes = await AuthControllerGetProfile({});
         set((state) => {
           state.userInfo = userInfoRes.data;
         });

@@ -44,6 +44,7 @@
     "react-markdown": "^8.0.7",
     "react-router-dom": "^6.11.2",
     "react-syntax-highlighter": "^15.5.0",
+    "recharts": "^2.7.2",
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
     "sass": "^1.62.1",

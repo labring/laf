@@ -1,11 +1,10 @@
 import { useTranslation } from "react-i18next";
 import { Avatar, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 
-import { BillingIcon, PATIcon, UserIcon } from "@/components/CommonIcon";
+import { PATIcon, UserIcon } from "@/components/CommonIcon";
 
 import SettingModal, { TabKeys } from "@/pages/app/setting";
 import PATList from "@/pages/app/setting/PATList";
-import Usage from "@/pages/app/setting/Usage";
 import UserInfo from "@/pages/app/setting/UserInfo";
 export default function UserSetting(props: { name: string; avatar?: string; width: string }) {
   const { t } = useTranslation();
@@ -32,12 +31,6 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
               icon: <UserIcon />,
             },
             {
-              key: TabKeys.Usage,
-              name: String(t("SettingPanel.Usage")),
-              component: <Usage />,
-              icon: <BillingIcon />,
-            },
-            {
               key: TabKeys.PAT,
               name: t("Personal Access Token"),
               component: <PATList />,
@@ -50,7 +43,7 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
           <MenuItem minH="40px">{t("SettingPanel.UserSetting")}</MenuItem>
         </SettingModal>
 
-        <SettingModal
+        {/* <SettingModal
           tabMatch={[
             {
               key: TabKeys.UserInfo,
@@ -75,7 +68,7 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
           currentTab={TabKeys.Usage}
         >
           <MenuItem minH="40px">{t("SettingPanel.Usage")}</MenuItem>
-        </SettingModal>
+        </SettingModal> */}
 
         <MenuItem
           onClick={() => {

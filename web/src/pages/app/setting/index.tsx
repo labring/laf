@@ -83,7 +83,7 @@ const SettingModal = (props: {
                   })}
                 </div>
               </SectionList>
-              <div className="ml-[268px] w-full overflow-hidden p-2 pt-10">
+              <div className="ml-[268px] w-full overflow-hidden p-2">
                 {React.cloneElement(item?.component || <></>, {
                   onClose,
                 })}

@@ -46,7 +46,7 @@ export default function UserInfo() {
   };
 
   return (
-    <Box className="flex justify-center pb-4 text-lg">
+    <Box className="flex justify-center pb-4 pt-10 text-lg">
       {showItem === "" && (
         <>
           <Box className="flex flex-col pr-10">
