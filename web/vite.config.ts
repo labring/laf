@@ -25,7 +25,7 @@ export default defineConfig(({ command, mode }) => {
         registerType: "autoUpdate",
         includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.png"],
         manifest: {
-          name: "laf 云开发",
+          name: "laf",
           short_name: "Laf",
           description: "life is short, you need laf:)",
           theme_color: "#eef0f2",
