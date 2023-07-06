@@ -189,7 +189,15 @@
     "UserName": "用户名",
     "Email": "邮箱",
     "PassWord": "密码",
-    "UserInvite": "我的推广"
+    "UserInvite": "我的推广",
+    "UserCenter": "用户中心",
+    "CostOverview": "成本总览",
+    "CardRedemption": "点卡兑换",
+    "BillingDetails": "账单明细",
+    "RechargeHistory": "充值记录",
+    "PricingStandards": "计价标准",
+    "EnterGiftCode": "输入卡密",
+    "ExchangeSuccess": "兑换成功"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -490,7 +498,7 @@
   "PleaseCloseApplicationFirst": "请先关闭应用",
   "custom": "自定义",
   "CostTime": "扣费时间",
-  "Duration": "计费周期",
+  "Duration": "交易时间",
   "State": "状态",
   "TotalAmount": "总费用",
   "AIWelcomeMessage": "你好，我是 Laf AI 开发助理，请问有什么可以帮助您的吗？",
@@ -529,7 +537,15 @@
     "EditPasswordSuccess": "密码修改成功",
     "EditPhoneSuccess": "电话号修改成功",
     "EditAvatarSuccess": "头像更新成功",
-    "Change": "更改"
+    "Change": "更改",
+    "InviteLink": "推广链接",
+    "BonusDetails": "奖励明细",
+    "Bonus": "奖励",
+    "Channel": "获得渠道",
+    "Time": "时间"
   },
-  "Reset": "重置"
+  "Reset": "重置",
+  "SettingModal": {
+    "Exchange": "兑换"
+  }
 }

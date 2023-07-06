@@ -107,3 +107,61 @@ export async function AccountControllerWechatNotify(
     data: params,
   });
 }
+
+/**
+ * Use a gift code
+ */
+export async function AccountControllerGiftCode(params: Definitions.UseGiftCodeDto): Promise<{
+  error: string;
+  data: Definitions.Account;
+}> {
+  // /v1/accounts/gift-code
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/accounts/gift-code`, {
+    method: "POST",
+    data: params,
+  });
+}
+
+/**
+ * get a invite code
+ */
+export async function AccountControllerInviteCode(
+  params: Paths.AccountControllerInviteCode.BodyParameters,
+): Promise<{
+  error: string;
+  data: Definitions.InviteCode;
+}> {
+  // /v1/accounts/invite-code
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/accounts/invite-code`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+/**
+ * get invite code profit
+ */
+export async function AccountControllerInviteCodeProfit(
+  params: Paths.AccountControllerInviteCodeProfit.BodyParameters,
+): Promise<{
+  error: string;
+  data: Paths.AccountControllerInviteCodeProfit.Responses;
+}> {
+  // /v1/accounts/invite-profit
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/accounts/invite-profit`, {
+    method: "GET",
+    params: params,
+  });
+}

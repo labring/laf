@@ -24,9 +24,14 @@ export type TTabItem = {
 };
 
 export const TabKeys = {
-  Usage: "usage",
+  CostOverview: "cost-overview",
+  CardRedemption: "card-redemption",
+  BillingDetails: "billing-details",
+  RechargeHistory: "recharge-history",
+  PricingStandards: "pricing-standards",
   UserInfo: "user-info",
   PAT: "pat",
+  UserInvite: "user-invite",
 };
 
 const SettingModal = (props: {
@@ -55,8 +60,8 @@ const SettingModal = (props: {
 
       <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
         <ModalOverlay />
-        <ModalContent maxW={"80%"} width={"auto"} minW={960} height={481}>
-          <ModalBody py={2} flex="none" height={"full"} className="relative">
+        <ModalContent maxW={"80%"} width={"auto"} minW={960}>
+          <ModalBody py={2} flex="none" minH={481} className="relative">
             <ModalCloseButton />
             <Box className="flex h-full" borderColor={borderColor}>
               <SectionList className="absolute bottom-0 left-0 top-0 min-w-[268px] rounded-l-lg bg-[#E4E9EE]">

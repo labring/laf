@@ -189,7 +189,15 @@
     "UserName": "UserName",
     "Email": "Email",
     "PassWord": "PassWord",
-    "UserInvite": "UserInvite"
+    "UserInvite": "UserInvite",
+    "UserCenter": "User Center",
+    "CostOverview": "Cost Overview",
+    "CardRedemption": "Card Redemption",
+    "BillingDetails": "Billing Details",
+    "RechargeHistory": "Recharge History",
+    "PricingStandards": "Pricing Standards",
+    "EnterGiftCode": "Enter Gift Code",
+    "ExchangeSuccess": "Exchange Success"
   },
   "StoragePanel": {
     "All": "Total Capacity",
@@ -447,7 +455,7 @@
   "PleaseCloseApplicationFirst": "Please close your application first.",
   "custom": "Custom",
   "CostTime": "CostTime",
-  "Duration": "Duration",
+  "Duration": "Trade Time",
   "State": "State",
   "TotalAmount": "Total",
   "AIWelcomeMessage": "Hello, I am Laf AI Development Assistant, how can I help you?",
@@ -529,7 +537,15 @@
     "EditPasswordSuccess": "Edit Password Success",
     "EditPhoneSuccess": "Edit Phone Success",
     "EditAvatarSuccess": "Edit Avatar Success",
-    "Change": "Change"
+    "Change": "Change",
+    "InviteLink": "Invite Link",
+    "BonusDetails": "Bonus Details",
+    "Bonus": "Bonus",
+    "Channel": "Channel",
+    "Time": "Time"
   },
-  "Reset": "Reset"
+  "Reset": "Reset",
+  "SettingModal": {
+    "Exchange": "Exange"
+  }
 }

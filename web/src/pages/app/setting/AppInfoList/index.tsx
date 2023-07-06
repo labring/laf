@@ -38,7 +38,11 @@ const AppEnvList = () => {
             >
               {currentApp?.name}
             </Box>
-            <StatusBadge statusConditions={currentApp?.phase} state={currentApp?.state} />
+            <StatusBadge
+              className="rounded-full bg-primary-100"
+              statusConditions={currentApp?.phase}
+              state={currentApp?.state}
+            />
           </HStack>
           <HStack
             spacing={2}
@@ -137,23 +141,6 @@ const AppEnvList = () => {
               },
             ]}
           />
-
-          {/* <InfoDetail
-            className="mt-6"
-            title={t("SettingPanel.Subscription")}
-            leftData={[
-              {
-                key: t("CreateTime"),
-                value: `${formatDate(currentApp?.subscription?.createdAt)}`,
-              },
-            ]}
-            rightData={[
-              {
-                key: t("EndTime"),
-                value: `${formatDate(currentApp?.subscription?.expiredAt)}`,
-              },
-            ]}
-          /> */}
         </div>
       </div>
     </>

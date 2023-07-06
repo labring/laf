@@ -3,7 +3,7 @@ import { Avatar, Button } from "@chakra-ui/react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis } from "recharts";
 
 import ChargeButton from "@/components/ChargeButton";
-import { ExpendIcon, RechargeIcon } from "@/components/CommonIcon";
+import { CostIcon, ExpendIcon, RechargeIcon } from "@/components/CommonIcon";
 import { formatPrice, hidePhoneNumber } from "@/utils/format";
 
 import useGlobalStore from "@/pages/globalStore";
@@ -59,7 +59,10 @@ export default function Usage() {
   const { data: accountRes } = useAccountQuery();
   return (
     <div>
-      <div className="pb-6 text-2xl">成本总览</div>
+      <div className="flex items-center pb-6 pt-2 text-2xl">
+        <CostIcon boxSize={5} mr={3} />
+        成本总览
+      </div>
       <div className="flex pb-6">
         <div className="flex flex-col pr-4">
           <span>我的账户</span>
@@ -108,7 +111,7 @@ export default function Usage() {
         </div>
       </div>
       <span>成本趋势</span>
-      <ResponsiveContainer width={626} height={180} className="mt-3">
+      <ResponsiveContainer width={626} height={160} className="mt-3">
         <AreaChart data={data}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} />
           <XAxis dataKey="name" />
