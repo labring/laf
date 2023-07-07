@@ -243,7 +243,7 @@ export class AccountService {
         { $sort: { createdAt: -1 } },
         { $skip: (condition.page - 1) * condition.pageSize },
         { $limit: condition.pageSize },
-        { $unwind: '$transaction' },
+        { $unwind: { path: '$transaction', preserveNullAndEmptyArrays: true } },
         {
           $addFields: {
             reward: '$transaction.reward',
