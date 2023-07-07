@@ -38,7 +38,7 @@ APISIX_API_KEY=$PASSWD_OR_SECRET
 helm install apisix -n ${NAMESPACE} \
     --set apisix.kind=DaemonSet \
     --set apisix.securityContext.runAsUser=0 \
-    --set apisix.hostNetwork=true \
+    --set apisix.hostNetwork=false \
     --set admin.credentials.admin=${APISIX_API_KEY} \
     --set etcd.enabled=true \
     --set etcd.host[0]="http://apisix-etcd:2379" \
@@ -47,8 +47,8 @@ helm install apisix -n ${NAMESPACE} \
     --set ingress-controller.config.apisix.adminKey="${APISIX_API_KEY}" \
     --set ingress-controller.config.apisix.serviceNamespace=${NAMESPACE} \
     --set gateway.http.containerPort=80 \
-	--set gateway.stream.enabled=true \
-	--set gateway.tls.enabled=true \
+   	--set gateway.stream.enabled=true \
+  	--set gateway.tls.enabled=true \
     --set gateway.tls.containerPort=443 \
     ./charts/apisix
 
@@ -66,6 +66,7 @@ helm install minio -n ${NAMESPACE} \
     --set persistence.size=${OSS_PV_SIZE:-3Gi} \
     --set domain=${MINIO_DOMAIN} \
     --set consoleHost=minio.${DOMAIN} \
+    --set persistence.storageClass=openebs-hostpath \
     ./charts/minio
 
 
