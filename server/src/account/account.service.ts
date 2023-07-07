@@ -21,7 +21,6 @@ import {
   InviteCodeState,
   InviteRelation,
 } from 'src/authentication/entities/invite-code'
-import { InvitationProfitAmount } from './entities/invitation-profit-amount'
 import { AccountChargeOrderQuery } from './interface/account-query.interface'
 
 @Injectable()
@@ -434,11 +433,6 @@ export class AccountService {
   }
 
   async getInviteProfit(uid: ObjectId, page: number, pageSize: number) {
-    const inviteProfit = await this.db
-      .collection<InvitationProfitAmount>('Setting')
-      .findOne({
-        settingName: 'Invitation Profit Amount',
-      })
     const query = {
       invitedBy: uid,
     }
@@ -449,26 +443,56 @@ export class AccountService {
       {
         $lookup: {
           from: 'User',
-          localField: 'uid',
-          foreignField: '_id',
+          let: { userId: '$uid' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$_id', '$$userId'],
+                },
+              },
+            },
+            {
+              $project: { username: 1, _id: 0 },
+            },
+          ],
           as: 'user',
         },
       },
-      { $sort: { createdAt: -1 } },
-      { $skip: (page - 1) * pageSize },
-      { $limit: pageSize },
-      { $unwind: '$user' },
+      {
+        $lookup: {
+          from: 'AccountTransaction',
+          let: { transactionId: '$transactionId' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$_id', '$$transactionId'],
+                },
+              },
+            },
+            {
+              $project: { amount: 1, _id: 0 },
+            },
+          ],
+          as: 'transaction',
+        },
+      },
       {
         $addFields: {
-          username: '$user.username',
-          inviteProfit: inviteProfit ? inviteProfit.amount : 0,
+          username: { $arrayElemAt: ['$user.username', 0] },
+          inviteProfit: { $arrayElemAt: ['$transaction.amount', 0] },
         },
       },
       {
         $project: {
           user: 0,
+          transaction: 0,
         },
       },
+      { $sort: { createdAt: -1 } },
+      { $skip: (page - 1) * pageSize },
+      { $limit: pageSize },
     ]
 
     const total = await this.db

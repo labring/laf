@@ -83,7 +83,8 @@ export class UserPasswordService {
           const inviteProfit = await this.db
             .collection<InvitationProfitAmount>('Setting')
             .findOne({
-              settingName: 'invitation Profit Amount',
+              settingName: 'Invitation Profit Amount',
+              active: true,
             })
           if (inviteProfit) {
             amount = inviteProfit.amount
