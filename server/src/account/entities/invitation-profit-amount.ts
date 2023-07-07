@@ -6,5 +6,5 @@ export class InvitationProfitAmount {
   amount: number
   createdAt: Date
   updatedAt: Date
-  Active: boolean
+  active: boolean
 }
