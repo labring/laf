@@ -46,6 +46,7 @@ import { AccountChargeReward } from './entities/account-charge-reward'
 import { InviteCode } from 'src/authentication/entities/invite-code'
 import { InviteCodeProfit } from './dto/invite-code.dto'
 import { AccountChargeOrderQuery } from './interface/account-query.interface'
+import { GetAccountChargeOrdersDto } from './dto/get-charge-order.dto'
 
 @ApiTags('Account')
 @Controller('accounts')
@@ -115,7 +116,7 @@ export class AccountController {
    * get all charge order
    */
   @ApiOperation({ summary: 'get all charge order' })
-  @ApiResponsePagination(AccountChargeOrder)
+  @ApiResponsePagination(GetAccountChargeOrdersDto)
   @UseGuards(JwtAuthGuard)
   @Get('charge-orders')
   async chargeRecord(

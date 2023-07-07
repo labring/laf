@@ -217,7 +217,11 @@ export class AccountService {
     }
 
     if (condition.endTime) {
-      query['createdAt'] = { $lte: condition.endTime }
+      if (condition.startTime) {
+        query['createdAt']['$lte'] = condition.endTime
+      } else {
+        query['createdAt'] = { $lte: condition.endTime }
+      }
     }
 
     const total = await this.db
@@ -268,11 +272,17 @@ export class AccountService {
       createdBy: userid,
       phase: AccountChargePhase.Paid,
     }
-    if (condition.endTime) {
-      query['createdAt'] = { $lte: condition.endTime }
-    }
+
     if (condition.startTime) {
       query['createdAt'] = { $gte: condition.startTime }
+    }
+
+    if (condition.endTime) {
+      if (condition.startTime) {
+        query['createdAt']['$lte'] = condition.endTime
+      } else {
+        query['createdAt'] = { $lte: condition.endTime }
+      }
     }
 
     const rechargeAmount = await this.db
@@ -448,8 +458,6 @@ export class AccountService {
       .collection<InviteRelation>('InviteRelation')
       .aggregate(pipe)
       .toArray()
-
-    console.log(JSON.stringify(inviteCodeProfits, null, 2))
 
     const res = {
       list: inviteCodeProfits,
