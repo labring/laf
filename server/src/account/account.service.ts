@@ -312,6 +312,20 @@ export class AccountService {
 
     try {
       session.startTransaction()
+      // add gift-code charge order
+      await this.db
+        .collection<AccountChargeOrder>('AccountChargeOrder')
+        .insertOne({
+          accountId: account._id,
+          amount: giftCode.creditAmount,
+          currency: Currency.CNY,
+          phase: AccountChargePhase.Paid,
+          channel: PaymentChannelType.GiftCode,
+          createdBy: new ObjectId(userid),
+          lockedAt: TASK_LOCK_INIT_TIME,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
       // update account balance
       const res = await this.db.collection<Account>('Account').findOneAndUpdate(
         { _id: account._id },
