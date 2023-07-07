@@ -19,7 +19,7 @@ export default function CardRedemption() {
   } = useForm();
 
   const onSubmit = async (data: any) => {
-    const res = await useGiftCode.mutateAsync(data);
+    const res = await useGiftCode.mutateAsync({ code: data.giftCode });
     if (!res.error) {
       showSuccess(t("SettingPanel.ExchangeSuccess"));
     }

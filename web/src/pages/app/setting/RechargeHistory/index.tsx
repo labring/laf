@@ -166,11 +166,11 @@ export default function RechargeHistory() {
                     <Td className={item.phase === "Paid" ? "text-primary-600" : "text-error-600"}>
                       {item.phase}
                     </Td>
-                    <Td className="font-medium text-grayModern-900">{formatPrice(item.amount)}</Td>
-                    <Td className="font-medium text-grayModern-900">{formatPrice(item.reward)}</Td>
                     <Td className="font-medium text-grayModern-900">
-                      {formatPrice(item.amount - item.reward)}
+                      {formatPrice(item.amount + item.reward)}
                     </Td>
+                    <Td className="font-medium text-grayModern-900">{formatPrice(item.reward)}</Td>
+                    <Td className="font-medium text-grayModern-900">{formatPrice(item.amount)}</Td>
                   </Tr>
                 ))}
               </Tbody>
